@@ -1,6 +1,6 @@
 #include "ovl_39.h"
 
-void menu_save_init(void) {
+void menuSave_init(void) {
     s32 i;
 
     g_menuSave.mode = g_menu.unkC;
@@ -12,20 +12,20 @@ void menu_save_init(void) {
     g_menuSave.newestCounter = 0;
     g_menuSave.newestFile = 0;
     g_menu.unk2 &= 1;
-    menu_save_initScan();
-    menu_save_initMessage();
-    menu_save_initSavedMsg();
-    menu_save_initConfirm();
-    menu_save_initAccess();
-    menu_save_loadImage();
-    menu_save_loadCardIconImage();
-    func_8003556C(menu_save_setHelp);
+    menuSave_initScan();
+    menuSave_initMessage();
+    menuSave_initSavedMsg();
+    menuSave_initConfirm();
+    menuSave_initAccess();
+    menuSave_loadImage();
+    menuSave_loadCardIconImage();
+    func_8003556C(menuSave_setHelp);
     text_setBank(g_saveMenuText);
     g_menuSave.help = text_get(SAVE_TEXT_SELECT_SLOT);
     g_menuSave.cardStatus[0] = CARD_RES_ERROR;
     g_menuSave.cardStatus[1] = CARD_RES_ERROR;
-    menu_save_cardInit();
-    menu_save_openCardEvents();
+    menuSave_cardInit();
+    menuSave_openCardEvents();
     func_801F5A60();
     for (i = 0; i < 2; i++) {
         g_menuSave.unk18[i] = D_80073998[i];
@@ -33,11 +33,11 @@ void menu_save_init(void) {
     }
 }
 
-void menu_save_drawHelp(void) {
+void menuSave_drawHelp(void) {
     u8 *s = text_get(g_menu.unk2 + SAVE_TEXT_SLOT1);
     s32 w = func_8002BA68((s32)s);
 
-    text_drawBlock(g_menuSavePortNameRect.x + ((g_menuSavePortNameRect.w - w) >> 1), g_menuSavePortNameRect.y + 2, 5, s, (menu_save_isPortReady(g_menu.unk2, 1) == 0) * 2);
+    text_drawBlock(g_menuSavePortNameRect.x + ((g_menuSavePortNameRect.w - w) >> 1), g_menuSavePortNameRect.y + 2, 5, s, (menuSave_isPortReady(g_menu.unk2, 1) == 0) * 2);
     if (g_menuSave.help != NULL) {
         text_drawBlock(g_menuSaveHelpRect.x + 0xA, g_menuSaveHelpRect.y + 6, 5, g_menuSave.help, 0);
     }
@@ -47,11 +47,11 @@ void menu_save_drawHelp(void) {
     func_8002705C(&g_menuSaveHelpRect, 5, 1);
 }
 
-void menu_save_portInput(void) {
+void menuSave_portInput(void) {
     if (g_padRepeat & BTN_CIRCLE) {
         snd_playSe(SE_CANCEL);
         if (g_menu.unk1 != 0) {
-            menu_save_close();
+            menuSave_close();
             return;
         }
         func_800361CC(0);
@@ -66,11 +66,11 @@ void menu_save_portInput(void) {
         g_menu.unk2 = g_menu.unk2 != 0 ? 0 : g_menu.unk2 + 1;
     }
     if (g_padRepeat & BTN_CROSS) {
-        menu_save_selectPort();
+        menuSave_selectPort();
     }
 }
 
-void menu_save_drawPorts(void) {
+void menuSave_drawPorts(void) {
     s32 i;
     s32 ok;
     u8 *str;
@@ -89,41 +89,41 @@ void menu_save_drawPorts(void) {
     }
 }
 
-void menu_save_drawFileList(void) {
+void menuSave_drawFileList(void) {
     MenuView v;
     RECT r;
     RECT a, b;
     s32 i;
     MenuList *l = &g_menuSave.list;
 
-    menu_save_drawScrollArrows();
+    menuSave_drawScrollArrows();
     ui_drawLabel(0xE, 0x23, 0x2C, D_80070444, 0);
     ui_drawRule(8, 0x26, 0x2C, 1, 0x12C, (g_gameState->unk24 >> 18) & 1);
     r.x = SAVE_LIST_X;
     r.y = 0;
     r.w = SAVE_LIST_W;
     r.h = SAVE_ROW_H;
-    menu_save_listGetView(l, &v);
+    menuSave_listGetView(l, &v);
     win_setClip(NULL, 0x2D, 4);
     for (i = 0; i < v.unk0; i++) {
         r.y = i * SAVE_ROW_H + (s16)(v.unk2 + SAVE_LIST_Y);
-        menu_save_drawFile(&r, 0x2D, v.unk1 + i);
+        menuSave_drawFile(&r, 0x2D, v.unk1 + i);
     }
     if (l->unk8 & 4) {
         a.x = SAVE_LIST_X;
         a.y = SAVE_LIST_Y;
         a.w = SAVE_LIST_W;
         a.h = SAVE_LIST_H;
-        menu_save_listPageClip(l, &a, &b);
+        menuSave_getScrollClip(l, &a, &b);
         win_setClip(&b, 0x2D, 4);
-        menu_save_drawPageScroll();
+        menuSave_drawPageScroll();
     }
     r.y = SAVE_LIST_Y;
     r.h = SAVE_LIST_H;
     win_setClip(&r, 0x2D, 4);
 }
 
-void menu_save_drawFile(RECT *r, s32 otz, s32 file) {
+void menuSave_drawFile(RECT *r, s32 otz, s32 file) {
     char name[8];
     void (*fn)(RECT *, s32, s32);
     s32 v;
@@ -145,7 +145,7 @@ void menu_save_drawFile(RECT *r, s32 otz, s32 file) {
     func_8002CD4C(r, 0x2D, 0, v);
 }
 
-void menu_save_drawFileInfo(RECT *r, s32 z, s32 i) {
+void menuSave_drawFileInfo(RECT *r, s32 z, s32 i) {
     u8 buf[16];
     RECT rr;
     SaveFile *s;
@@ -186,7 +186,7 @@ void menu_save_drawFileInfo(RECT *r, s32 z, s32 i) {
     func_8002CD4C(&rr, z, 0, s->unk48);
 }
 
-void menu_save_drawCursor(void) {
+void menuSave_drawCursor(void) {
     u8 blink = (g_menu.unk10 & 3) != 0;
 
     if (!func_8002F810() && g_menuSave.phase == SAVE_PH_READY) {
@@ -206,13 +206,13 @@ void menu_save_drawCursor(void) {
     }
 }
 
-void menu_save_fileListTick(void) {
+void menuSave_fileListTick(void) {
     MenuList *l = &g_menuSave.list;
     s32 v;
     s32 dec;
 
     if (g_menuSave.cardStatus[g_menu.unk2] != CARD_RES_DONE) {
-        menu_save_showInfo(SAVE_TEXT_NO_CARD);
+        menuSave_showInfo(SAVE_TEXT_NO_CARD);
         return;
     }
     if (l->unk8 != 0) {
@@ -242,7 +242,7 @@ void menu_save_fileListTick(void) {
     }
 }
 
-void menu_save_setHelp(void) {
+void menuSave_setHelp(void) {
     RECT r = g_menuSavePortHelpRect;
     u8 st;
     s32 v;
@@ -260,14 +260,14 @@ void menu_save_setHelp(void) {
             }
             D_80077DE8.unk8 = text_get(v + g_menu.unk2);
         } else if (st == SAVE_ST_LIST) {
-            menu_save_setFileHelp();
+            menuSave_setFileHelp();
         } else if (st == SAVE_ST_CONFIRM) {
-            D_80077DE8.unk8 = menu_save_getConfirmHelp();
+            D_80077DE8.unk8 = menuSave_getConfirmHelp();
         }
     }
 }
 
-void menu_save_setFileHelp(void) {
+void menuSave_setFileHelp(void) {
     MenuList *l;
     SaveMember *m;
     s32 idx;
@@ -308,32 +308,32 @@ void menu_save_setFileHelp(void) {
     }
 }
 
-void menu_save_update(void) {
-    menu_save_drawTitle();
-    menu_save_drawHelp();
-    menu_save_input();
-    menu_save_draw();
-    menu_save_tick();
+void menuSave_update(void) {
+    menuSave_drawTitle();
+    menuSave_drawHelp();
+    menuSave_input();
+    menuSave_draw();
+    menuSave_tick();
 }
 
-void menu_save_exit(void) {
+void menuSave_exit(void) {
     s32 i;
 
     func_8003563C(0);
     func_8003556C(NULL);
-    menu_save_closeCardEvents();
-    menu_save_restoreVram();
-    menu_save_freeImage();
+    menuSave_closeCardEvents();
+    menuSave_restoreVram();
+    menuSave_freeImage();
     for (i = 0; i < 2; i++) {
         D_80073998[i] = g_menuSave.unk18[i];
     }
 }
 
-u8 menu_save_isLoaded(void) {
+u8 menuSave_isLoaded(void) {
     return g_menuSave.loaded;
 }
 
-u8 menu_save_isPortReady(s32 port, u8 allowNew) {
+u8 menuSave_isPortReady(s32 port, u8 allowNew) {
     s32 st = g_menuSave.cardStatus[port];
     s32 r;
 
@@ -347,38 +347,38 @@ u8 menu_save_isPortReady(s32 port, u8 allowNew) {
     return st == CARD_RES_DONE;
 }
 
-void menu_save_backToPorts(void) {
+void menuSave_backToPorts(void) {
     func_8002F9F0();
-    func_8002F8A8(menu_save_returnToPorts);
+    func_8002F8A8(menuSave_returnToPorts);
 }
 
-void menu_save_close(void) {
+void menuSave_close(void) {
     func_8002F8E4(g_menuSave.unk14);
     func_800325E0();
 }
 
-void menu_save_drawTitle(void) {
+void menuSave_drawTitle(void) {
     func_8002DEE4(&g_menuSaveTitleRect, 5, 2);
     func_8002705C(&g_menuSaveTitleRect, 5, 2);
     text_drawBlock(g_menuSaveTitleRect.x + 0xA, g_menuSaveTitleRect.y + 6, 4, (u8 *)text_getFrom(g_saveMenuText, g_menuSave.mode), 0);
 }
 
-void menu_save_draw(void) {
+void menuSave_draw(void) {
     void (*fn)(void) = g_menuSaveDrawFns[g_menuSave.state];
 
     if (fn != NULL) {
         fn();
     }
     if (g_menuSave.showCursor != 0) {
-        menu_save_drawCursor();
+        menuSave_drawCursor();
     }
 }
 
-void menu_save_input(void) {
+void menuSave_input(void) {
     if (!func_8002F810()) {
         switch (g_menuSave.phase) {
         case SAVE_PH_MESSAGE:
-            menu_save_messageInput();
+            menuSave_messageInput();
             break;
         case SAVE_PH_READY:
             if (g_menuSaveInputFns[g_menuSave.state] != NULL) {
@@ -389,57 +389,57 @@ void menu_save_input(void) {
     }
 }
 
-void menu_save_tick(void) {
-    menu_save_cardPoll();
-    g_menuSave.cardStatus[0] = menu_save_getCardStatus(CARD_CHAN(0));
-    g_menuSave.cardStatus[1] = menu_save_getCardStatus(CARD_CHAN(1));
+void menuSave_tick(void) {
+    menuSave_cardPoll();
+    g_menuSave.cardStatus[0] = menuSave_getCardStatus(CARD_CHAN(0));
+    g_menuSave.cardStatus[1] = menuSave_getCardStatus(CARD_CHAN(1));
     if (g_menuSave.phase == SAVE_PH_READY) {
         if (g_menuSaveTickFns[g_menuSave.state] != NULL) {
             g_menuSaveTickFns[g_menuSave.state]();
         }
     }
-    menu_save_tickCardAnim();
-    menu_save_updateHelpVisibility();
+    menuSave_tickCardAnim();
+    menuSave_updateHelpVisibility();
 }
 
-void menu_save_fileListInput(void) {
+void menuSave_fileListInput(void) {
     MenuList *l = &g_menuSave.list;
 
     if (l->unk8 == 0) {
         if (g_padRepeat & BTN_CIRCLE) {
             snd_playSe(SE_CANCEL);
-            menu_save_backToPorts();
+            menuSave_backToPorts();
             return;
         }
         if (g_padRepeat & BTN_CROSS) {
-            menu_save_selectFile();
+            menuSave_selectFile();
             return;
         }
         menuList_up(l, g_padRepeat);
         menuList_down(l, g_padRepeat);
-        menu_save_listPageUp(l, g_padRepeat);
-        menu_save_listPageDown(l, g_padRepeat);
+        menuSave_listPageUp(l, g_padRepeat);
+        menuSave_listPageDown(l, g_padRepeat);
     }
 }
 
-void menu_save_drawPageScroll(void) {
+void menuSave_drawPageScroll(void) {
     MenuView v;
     RECT r;
     s32 i;
 
-    menu_save_listGetPageView(&g_menuSave.list, &v);
+    menuSave_listGetPageView(&g_menuSave.list, &v);
     r.x = SAVE_LIST_X;
     r.w = SAVE_LIST_W;
     r.y = 0;
     r.h = SAVE_ROW_H;
     for (i = 0; i < v.unk0; i++) {
         r.y = i * SAVE_ROW_H + (s16)(v.unk2 + SAVE_LIST_Y);
-        menu_save_drawFile(&r, 0x2D, v.unk1 + i);
+        menuSave_drawFile(&r, 0x2D, v.unk1 + i);
         func_8002DEE4(&r, 0x2D, 0);
     }
 }
 
-void menu_save_drawScrollArrows(void) {
+void menuSave_drawScrollArrows(void) {
     s32 blink = (((u32)g_menu.unk10 >> 4) ^ 1) & 1;
     MenuList *l = &g_menuSave.list;
 
@@ -447,39 +447,39 @@ void menu_save_drawScrollArrows(void) {
     ui_drawSprite(0x12E, 0xCF, 0x2A, 0xB9, l->unk5 < l->unk2 - l->unk3 ? blink : 1);
 }
 
-void menu_save_drawEmptyFile(RECT *r, s32 otz) {
+void menuSave_drawEmptyFile(RECT *r, s32 otz) {
     text_drawBlock(r->x + 0x10, r->y + 0x16, otz, text_get(SAVE_TEXT_EMPTY_BLOCK), 0);
 }
 
-void menu_save_drawOtherFile(RECT *r, s32 otz) {
+void menuSave_drawOtherFile(RECT *r, s32 otz) {
     text_drawBlock(r->x + 0x10, r->y + 0x16, otz, text_get(SAVE_TEXT_OTHER_GAME), 0);
 }
 
-void menu_save_drawCorruptFile(RECT *r, s32 otz) {
+void menuSave_drawCorruptFile(RECT *r, s32 otz) {
     text_drawBlock(r->x + 0x10, r->y + 0x16, otz, text_get(SAVE_TEXT_DATA_CORRUPTED), 0);
 }
 
-void menu_save_selectPort(void) {
-    if (!menu_save_isPortReady_inline(g_menu.unk2, 1)) {
+void menuSave_selectPort(void) {
+    if (!menuSave_isPortReady_inline(g_menu.unk2, 1)) {
         snd_playSe(SE_BUZZER);
-        menu_save_showInfo(SAVE_TEXT_NO_CARD);
+        menuSave_showInfo(SAVE_TEXT_NO_CARD);
         return;
     }
     snd_playSe(SE_CURSOR);
-    menu_save_startScan();
+    menuSave_startScan();
 }
 
-void menu_save_selectFile(void) {
+void menuSave_selectFile(void) {
     s32 i = g_menuSave.list.unk5 + g_menuSave.list.cursor;
 
     if (g_menuSave.mode == SAVE_MODE_LOAD) {
-        menu_save_selectLoadFile(i, i);
+        menuSave_selectLoadFile(i, i);
         return;
     }
-    menu_save_selectSaveFile(i, i);
+    menuSave_selectSaveFile(i, i);
 }
 
-void menu_save_updateHelpVisibility(void) {
+void menuSave_updateHelpVisibility(void) {
     u8 hide;
 
     hide = g_menuSave.loaded != 0;
@@ -492,7 +492,7 @@ void menu_save_updateHelpVisibility(void) {
     func_8003563C(hide);
 }
 
-void menu_save_returnToPorts(void) {
+void menuSave_returnToPorts(void) {
     g_menuSave.state = SAVE_ST_PORT;
     g_menuSave.help = text_get(SAVE_TEXT_SELECT_SLOT);
     func_8002F9D0();
@@ -501,7 +501,7 @@ void menu_save_returnToPorts(void) {
 void func_801F5A60(void) {
 }
 
-void menu_save_drawCardIcon(s32 x, s32 y, s32 z, s32 idx) {
+void menuSave_drawCardIcon(s32 x, s32 y, s32 z, s32 idx) {
     u32 clut;
     Ovl39Sprite *e;
 
@@ -521,7 +521,7 @@ void menu_save_drawCardIcon(s32 x, s32 y, s32 z, s32 idx) {
     g_primPtr += sizeof(DR_TPAGE);
 }
 
-void menu_save_loadCardIconImage(void) {
+void menuSave_loadCardIconImage(void) {
     RECT r;
     u8 *img = g_menuSaveCardIconImage;
     u8 *buf = g_menuSaveVramBackup;
@@ -559,7 +559,7 @@ void menu_save_loadCardIconImage(void) {
     }
 }
 
-void menu_save_restoreVram(void) {
+void menuSave_restoreVram(void) {
     RECT r;
     u8 *img;
     u8 *buf;
@@ -590,7 +590,7 @@ void menu_save_restoreVram(void) {
     }
 }
 
-void menu_save_tickCardAnim(void) {
+void menuSave_tickCardAnim(void) {
     if (g_menuSaveCardAnim.enabled != 0) {
         if (++g_menuSaveCardAnim.tick >= CARD_ANIM_TICKS) {
             g_menuSaveCardAnim.tick = 0;
@@ -601,23 +601,23 @@ void menu_save_tickCardAnim(void) {
     }
 }
 
-void menu_save_resetCardAnim(void) {
+void menuSave_resetCardAnim(void) {
     g_menuSaveCardAnim.frame = 0;
     g_menuSaveCardAnim.tick = 0;
 }
 
-u8 menu_save_enableCardAnim(u8 v) {
+u8 menuSave_enableCardAnim(u8 v) {
     u8 old = g_menuSaveCardAnim.enabled;
 
     g_menuSaveCardAnim.enabled = v;
     return old;
 }
 
-void menu_save_drawCardAnim(s32 x, s32 y, s32 otz) {
-    menu_save_drawCardIcon(x, y, otz, g_menuSaveCardAnim.frame);
+void menuSave_drawCardAnim(s32 x, s32 y, s32 otz) {
+    menuSave_drawCardIcon(x, y, otz, g_menuSaveCardAnim.frame);
 }
 
-void menu_save_openConfirm(s32 id, s32 yes, s32 no) {
+void menuSave_openConfirm(s32 id, s32 yes, s32 no) {
     RECT r;
     u16 sz;
     s32 w, h;
@@ -638,15 +638,15 @@ void menu_save_openConfirm(s32 id, s32 yes, s32 no) {
     r.x = (g_gameState->unkC->disp.w - w) >> 1;
     r.y = (g_gameState->unkC->disp.h - h) >> 1;
     g_menuSaveConfirm.win = func_8002DC54(&r, 0x19, 2);
-    win_setOnOpened(g_menuSaveConfirm.win, menu_save_onConfirmOpened);
-    win_setOnClosed(g_menuSaveConfirm.win, menu_save_onConfirmClosed);
-    win_setDrawContent(g_menuSaveConfirm.win, menu_save_drawConfirm);
-    win_setDrawOverlay(g_menuSaveConfirm.win, menu_save_drawConfirmCursor);
+    win_setOnOpened(g_menuSaveConfirm.win, menuSave_onConfirmOpened);
+    win_setOnClosed(g_menuSaveConfirm.win, menuSave_onConfirmClosed);
+    win_setDrawContent(g_menuSaveConfirm.win, menuSave_drawConfirm);
+    win_setDrawOverlay(g_menuSaveConfirm.win, menuSave_drawConfirmCursor);
     func_8002E31C(g_menuSaveConfirm.win, 1);
     func_8002E304(g_menuSaveConfirm.win, D_8007048C);
 }
 
-void menu_save_drawConfirm(Window *w) {
+void menuSave_drawConfirm(Window *w) {
     u32 a = text_getInfo(SAVE_TEXT_YES);
     u32 b = text_getInfo(SAVE_TEXT_NO) & 0xFFF;
     s32 d1 = 0x26;
@@ -662,7 +662,7 @@ void menu_save_drawConfirm(Window *w) {
     text_drawBlock(w->unk0 + ((s32)(w->unk4 - m) >> 1), (w->unk2 - d2) + w->unk6, w->unk18, text_get(SAVE_TEXT_NO), 0);
 }
 
-void menu_save_drawConfirmCursor(Window *w) {
+void menuSave_drawConfirmCursor(Window *w) {
     u32 a = text_getInfo(SAVE_TEXT_YES);
     u32 b = text_getInfo(SAVE_TEXT_NO) & 0xFFF;
     s32 z;
@@ -679,11 +679,11 @@ void menu_save_drawConfirmCursor(Window *w) {
     }
 }
 
-void menu_save_initConfirm(void) {
+void menuSave_initConfirm(void) {
     g_menuSaveConfirm.active = 0;
 }
 
-void menu_save_confirmInput(void) {
+void menuSave_confirmInput(void) {
     if (g_menuSaveConfirm.win->unk1C == WIN_OPEN) {
         if (g_padRepeat & BTN_CROSS) {
             snd_playSe(SE_CURSOR);
@@ -705,7 +705,7 @@ void menu_save_confirmInput(void) {
     }
 }
 
-void menu_save_confirmTick(void) {
+void menuSave_confirmTick(void) {
     u8 st = g_menuSave.cardStatus[g_menu.unk2];
 
     if (st != CARD_RES_DONE && st != CARD_RES_NEW) {
@@ -713,34 +713,34 @@ void menu_save_confirmTick(void) {
         win_close(g_menuSaveConfirm.win);
         g_menuSaveConfirm.active = 0;
         g_menuSaveConfirm.win = NULL;
-        menu_save_showInfo(SAVE_TEXT_NO_CARD);
+        menuSave_showInfo(SAVE_TEXT_NO_CARD);
     }
 }
 
-void menu_save_setConfirmCallback(void (*v)(SaveConfirm *)) {
+void menuSave_setConfirmCallback(void (*v)(SaveConfirm *)) {
     g_menuSaveConfirm.onYes = v;
 }
 
-u8 menu_save_isConfirmActive(void) {
+u8 menuSave_isConfirmActive(void) {
     return g_menuSaveConfirm.active;
 }
 
-u8 menu_save_setConfirmActive(u8 v) {
+u8 menuSave_setConfirmActive(u8 v) {
     u8 old = g_menuSaveConfirm.active;
 
     g_menuSaveConfirm.active = v;
     return old;
 }
 
-u8 *menu_save_getConfirmHelp(void) {
+u8 *menuSave_getConfirmHelp(void) {
     return text_get(g_menuSaveConfirm.choice == CONFIRM_YES ? g_menuSaveConfirm.yesHelp : g_menuSaveConfirm.noHelp);
 }
 
-void menu_save_onConfirmOpened(Window *w) {
+void menuSave_onConfirmOpened(Window *w) {
     g_menuSave.phase = SAVE_PH_READY;
 }
 
-void menu_save_onConfirmClosed(Window *w) {
+void menuSave_onConfirmClosed(Window *w) {
     g_menuSave.state = SAVE_ST_LIST;
     if (g_menuSaveConfirm.choice == CONFIRM_YES) {
         g_menuSaveConfirm.onYes(&g_menuSaveConfirm);
@@ -749,7 +749,7 @@ void menu_save_onConfirmClosed(Window *w) {
     g_menuSave.phase = SAVE_PH_READY;
 }
 
-void menu_save_startScan(void) {
+void menuSave_startScan(void) {
     s32 sl;
     s32 i;
 
@@ -775,61 +775,61 @@ void menu_save_startScan(void) {
         g_menuSave.files[i].index = i;
         g_menuSaveScan.unk2B4[i] = 0;
     }
-    menu_save_resetCardAnim();
-    menu_save_enableCardAnim(1);
-    win_setDrawContent(g_menuSaveScan.win, menu_save_drawScan);
-    win_setOnOpened(g_menuSaveScan.win, menu_save_onScanOpened);
-    win_setOnClosed(g_menuSaveScan.win, menu_save_onScanClosed);
+    menuSave_resetCardAnim();
+    menuSave_enableCardAnim(1);
+    win_setDrawContent(g_menuSaveScan.win, menuSave_drawScan);
+    win_setOnOpened(g_menuSaveScan.win, menuSave_onScanOpened);
+    win_setOnClosed(g_menuSaveScan.win, menuSave_onScanClosed);
     func_8002E304(g_menuSaveScan.win, D_80070420);
     func_8002E31C(g_menuSaveScan.win, 1);
     sl = g_menu.unk2;
     switch (g_menuSave.cardStatus[sl]) {
     case CARD_RES_NEW:
         g_menuSaveScan.step = SCAN_STEP_CLEAR;
-        if (menu_save_cardClearSync(CARD_CHAN(g_menu.unk2)) != CARD_RES_DONE) {
-            menu_save_scanError(SAVE_TEXT_CHECK_FAILED);
+        if (menuSave_cardClearSync(CARD_CHAN(g_menu.unk2)) != CARD_RES_DONE) {
+            menuSave_scanError(SAVE_TEXT_CHECK_FAILED);
         }
         break;
     case CARD_RES_DONE:
         g_menuSaveScan.step = SCAN_STEP_LOAD;
-        if (menu_save_cardLoad(CARD_CHAN(g_menu.unk2), menu_save_onCardLoaded) == 0) {
-            menu_save_scanError(SAVE_TEXT_CHECK_FAILED);
+        if (menuSave_cardLoad(CARD_CHAN(g_menu.unk2), menuSave_onCardLoaded) == 0) {
+            menuSave_scanError(SAVE_TEXT_CHECK_FAILED);
         }
         break;
     case CARD_RES_TIMEOUT:
-        menu_save_scanError(SAVE_TEXT_NO_CARD);
+        menuSave_scanError(SAVE_TEXT_NO_CARD);
         break;
     case CARD_RES_ERROR:
-        menu_save_scanError(SAVE_TEXT_CHECK_FAILED);
+        menuSave_scanError(SAVE_TEXT_CHECK_FAILED);
         break;
     }
 }
 
-void menu_save_onCardLoaded(void) {
+void menuSave_onCardLoaded(void) {
     s32 r;
 
-    r = menu_save_getCardResult(CARD_CHAN(g_menu.unk2));
+    r = menuSave_getCardResult(CARD_CHAN(g_menu.unk2));
 
     g_menuSaveScan.tries++;
     g_menuSaveScan.triesPerResult[r]++;
     if (g_menuSaveScan.tries == g_menuSaveScan.triesPerResult[r]) {
         if (g_menuSaveScan.tries < g_menuSaveScanRetries[r]) {
-            menu_save_retryScan(r);
+            menuSave_retryScan(r);
             return;
         }
         switch (r) {
         case CARD_RES_DONE:
-            menu_save_onCardFormatted();
+            menuSave_onCardFormatted();
             return;
         case CARD_RES_NEW:
-            menu_save_onCardUnformatted();
+            menuSave_onCardUnformatted();
             return;
         }
     }
-    menu_save_scanError(SAVE_TEXT_CHECK_FAILED);
+    menuSave_scanError(SAVE_TEXT_CHECK_FAILED);
 }
 
-u8 menu_save_readDir(void) {
+u8 menuSave_readDir(void) {
     DirEnt *d;
     SaveName20 *p;
     s32 i;
@@ -837,15 +837,15 @@ u8 menu_save_readDir(void) {
     s32 k;
     s32 n;
 
-    g_menuSaveScan.dirCount = menu_save_countFiles();
+    g_menuSaveScan.dirCount = menuSave_countFiles();
     if (g_menuSaveScan.dirCount < 0) {
-        menu_save_scanError(SAVE_TEXT_CHECK_FAILED);
+        menuSave_scanError(SAVE_TEXT_CHECK_FAILED);
         return 0;
     }
     for (i = 0; i < g_menuSaveScan.dirCount; i++) {
         d = &g_menuSaveScan.dir[i];
-        if (strncmp((char *)d, (char *)menu_save_getFilePrefix(), SAVE_PREFIX_LEN) == 0) {
-            k = menu_save_parseFileNumber(d->name.v);
+        if (strncmp((char *)d, (char *)menuSave_getFilePrefix(), SAVE_PREFIX_LEN) == 0) {
+            k = menuSave_parseFileNumber(d->name.v);
             p = &g_menuSave.files[k].fileName.name;
             *p = d->name;
             g_menuSave.files[k].fileName.term[0] = 0;
@@ -855,10 +855,10 @@ u8 menu_save_readDir(void) {
     }
     for (i = 0; i < g_menuSaveScan.dirCount; i++) {
         d = &g_menuSaveScan.dir[i];
-        if (strncmp((char *)d, (char *)menu_save_getFilePrefix(), SAVE_PREFIX_LEN) != 0) {
+        if (strncmp((char *)d, (char *)menuSave_getFilePrefix(), SAVE_PREFIX_LEN) != 0) {
             n = (g_menuSaveScan.dir[i].size + CARD_BLOCK - 1) / CARD_BLOCK;
             for (j = 0; j < n; j++) {
-                k = menu_save_findLastEmpty();
+                k = menuSave_findLastEmpty();
                 p = &g_menuSave.files[k].fileName.name;
                 *p = d->name;
                 g_menuSave.files[k].fileName.term[0] = 0;
@@ -867,46 +867,46 @@ u8 menu_save_readDir(void) {
             }
         }
     }
-    return menu_save_checkSpace();
+    return menuSave_checkSpace();
 }
 
-/* Inlined copy of menu_save_readHeader */
-static inline void menu_save_readHeader_inline(s32 file) {
+/* Inlined copy of menuSave_readHeader */
+static inline void menuSave_readHeader_inline(s32 file) {
     s32 fd;
 
     g_menuSaveScan.file = file;
-    fd = menu_save_openFile(CARD_CHAN(g_menu.unk2), (char *)g_menuSave.files[file].fileName.name.v);
+    fd = menuSave_openFile(CARD_CHAN(g_menu.unk2), (char *)g_menuSave.files[file].fileName.name.v);
     g_menuSaveScan.fd = fd;
     if (fd < 0) {
-        menu_save_scanError(SAVE_TEXT_CHECK_FAILED);
+        menuSave_scanError(SAVE_TEXT_CHECK_FAILED);
         return;
     }
-    menu_save_readAsync(fd, (s32)g_menuSaveScan.buf, SCAN_HEADER_SIZE, menu_save_onHeaderRead);
+    menuSave_readAsync(fd, (s32)g_menuSaveScan.buf, SCAN_HEADER_SIZE, menuSave_onHeaderRead);
 }
 
-void menu_save_onHeaderRead(void) {
-    if (menu_save_closeFile(g_menuSaveScan.fd) < 0) {
-        menu_save_scanError(SAVE_TEXT_CHECK_FAILED);
+void menuSave_onHeaderRead(void) {
+    if (menuSave_closeFile(g_menuSaveScan.fd) < 0) {
+        menuSave_scanError(SAVE_TEXT_CHECK_FAILED);
         return;
     }
-    switch (menu_save_getCardResult(CARD_CHAN(g_menu.unk2))) {
+    switch (menuSave_getCardResult(CARD_CHAN(g_menu.unk2))) {
     case CARD_RES_TIMEOUT:
-        menu_save_scanError(SAVE_TEXT_NO_CARD);
+        menuSave_scanError(SAVE_TEXT_NO_CARD);
         return;
     case CARD_RES_ERROR:
     case CARD_RES_NEW:
-        menu_save_scanError(SAVE_TEXT_CHECK_FAILED);
+        menuSave_scanError(SAVE_TEXT_CHECK_FAILED);
         return;
     }
-    menu_save_copyHeader(&g_menuSave.files[g_menuSaveScan.file], (SaveHeader *)&g_menuSaveScan.buf[sizeof(CardFileHeader)]);
+    menuSave_copyHeader(&g_menuSave.files[g_menuSaveScan.file], (SaveHeader *)&g_menuSaveScan.buf[sizeof(CardFileHeader)]);
     if (++g_menuSaveScan.headersRead < g_menuSaveScan.ff9Files) {
-        menu_save_readHeader_inline(menu_save_findUsed(g_menuSaveScan.headersRead));
+        menuSave_readHeader_inline(menuSave_findUsed(g_menuSaveScan.headersRead));
         return;
     }
-    menu_save_finishScan();
+    menuSave_finishScan();
 }
 
-void menu_save_enterFileList(void) {
+void menuSave_enterFileList(void) {
     g_menuSave.phase = SAVE_PH_READY;
     g_menuSave.state = SAVE_ST_LIST;
     g_menuSave.help = text_get(SAVE_TEXT_SELECT_BLOCK);
@@ -917,10 +917,10 @@ void menu_save_enterFileList(void) {
         g_menuSave.list.unk5 = g_menuSave.newestFile - g_menuSave.list.cursor;
     }
     func_8002F9D0();
-    func_8002F8A8(menu_save_onFileListFadedIn);
+    func_8002F8A8(menuSave_onFileListFadedIn);
 }
 
-void menu_save_findNewest(void) {
+void menuSave_findNewest(void) {
     s32 i;
 
     g_menuSave.newestCounter = 0;
@@ -937,15 +937,15 @@ void menu_save_findNewest(void) {
     }
 }
 
-void menu_save_initScan(void) {
+void menuSave_initScan(void) {
     g_menuSaveScan.active = 0;
 }
 
-void menu_save_scanTick(void) {
+void menuSave_scanTick(void) {
     void (*fn)(void);
 
-    if (!menu_save_isPortReady(g_menu.unk2, 1)) {
-        menu_save_scanError(SAVE_TEXT_NO_CARD);
+    if (!menuSave_isPortReady(g_menu.unk2, 1)) {
+        menuSave_scanError(SAVE_TEXT_NO_CARD);
         return;
     }
     fn = g_menuSaveScanSteps[g_menuSaveScan.step];
@@ -954,18 +954,18 @@ void menu_save_scanTick(void) {
     }
 }
 
-u8 menu_save_isScanActive(void) {
+u8 menuSave_isScanActive(void) {
     return g_menuSaveScan.active;
 }
 
-u8 menu_save_setScanActive(u8 v) {
+u8 menuSave_setScanActive(u8 v) {
     u8 old = g_menuSaveScan.active;
 
     g_menuSaveScan.active = v;
     return old;
 }
 
-s32 menu_save_findLastEmpty(void) {
+s32 menuSave_findLastEmpty(void) {
     s32 i;
 
     for (i = 0; i < SAVE_FILES; i++) {
@@ -976,7 +976,7 @@ s32 menu_save_findLastEmpty(void) {
     return -1;
 }
 
-s32 menu_save_findUsed(s32 n) {
+s32 menuSave_findUsed(s32 n) {
     s32 found = 0;
     s32 i;
 
@@ -991,79 +991,79 @@ s32 menu_save_findUsed(s32 n) {
     return -1;
 }
 
-s32 menu_save_parseFileNumber(u8 *name) {
+s32 menuSave_parseFileNumber(u8 *name) {
     return (name[SAVE_NAME_NUMBER] - '0') * 10 + (name[SAVE_NAME_NUMBER + 1] - '0');
 }
 
-void menu_save_scanWaitClear(void) {
-    if (menu_save_isCardBusy() == 0) {
+void menuSave_scanWaitClear(void) {
+    if (menuSave_isCardBusy() == 0) {
         g_menuSaveScan.step++;
-        if (menu_save_cardLoad(CARD_CHAN(g_menu.unk2), menu_save_onCardLoaded) == 0) {
-            menu_save_scanError(SAVE_TEXT_CHECK_FAILED);
+        if (menuSave_cardLoad(CARD_CHAN(g_menu.unk2), menuSave_onCardLoaded) == 0) {
+            menuSave_scanError(SAVE_TEXT_CHECK_FAILED);
         }
     }
 }
 
-void menu_save_onCardFormatted(void) {
+void menuSave_onCardFormatted(void) {
     g_menuSave.formatted = 1;
-    if (menu_save_readDir()) {
+    if (menuSave_readDir()) {
         if (g_menuSaveScan.headersRead < g_menuSaveScan.ff9Files) {
             g_menuSaveScan.step = SCAN_STEP_HEADERS;
-            menu_save_readHeader(menu_save_findUsed(g_menuSaveScan.headersRead));
+            menuSave_readHeader(menuSave_findUsed(g_menuSaveScan.headersRead));
             return;
         }
-        menu_save_finishScan();
+        menuSave_finishScan();
     }
 }
 
-void menu_save_onCardUnformatted(void) {
+void menuSave_onCardUnformatted(void) {
     g_menuSave.formatted = 0;
     if (g_menuSave.mode == SAVE_MODE_LOAD) {
-        menu_save_scanInfo(SAVE_TEXT_NO_FF9_DATA);
+        menuSave_scanInfo(SAVE_TEXT_NO_FF9_DATA);
         return;
     }
-    menu_save_finishScan();
+    menuSave_finishScan();
 }
 
-void menu_save_retryScan(s32 result) {
+void menuSave_retryScan(s32 result) {
     if (result == CARD_RES_NEW) {
         g_menuSaveScan.step = SCAN_STEP_CLEAR;
-        if (menu_save_cardClearSync(CARD_CHAN(g_menu.unk2)) == CARD_RES_DONE) {
+        if (menuSave_cardClearSync(CARD_CHAN(g_menu.unk2)) == CARD_RES_DONE) {
             return;
         }
-    } else if (menu_save_cardLoad(CARD_CHAN(g_menu.unk2), menu_save_onCardLoaded) != 0) {
+    } else if (menuSave_cardLoad(CARD_CHAN(g_menu.unk2), menuSave_onCardLoaded) != 0) {
         return;
     }
-    menu_save_scanError(SAVE_TEXT_CHECK_FAILED);
+    menuSave_scanError(SAVE_TEXT_CHECK_FAILED);
 }
 
-void menu_save_drawScan(Window *w) {
-    menu_save_drawCardAnim(w->unk0 + 0xE, w->unk2 + 0x12, w->unk18);
+void menuSave_drawScan(Window *w) {
+    menuSave_drawCardAnim(w->unk0 + 0xE, w->unk2 + 0x12, w->unk18);
     text_drawBlock(w->unk0 + 0x4A, w->unk2 + 0xE, w->unk18, text_get(SAVE_TEXT_DO_NOT_REMOVE), 0);
 }
 
-void menu_save_onScanOpened(Window *w) {
+void menuSave_onScanOpened(Window *w) {
     g_menuSave.phase = SAVE_PH_READY;
     g_menuSave.help = text_get(SAVE_TEXT_CHECKING);
 }
 
-void menu_save_onScanClosed(Window *w) {
+void menuSave_onScanClosed(Window *w) {
 }
 
-s32 menu_save_checkSpace(void) {
+s32 menuSave_checkSpace(void) {
     if (g_menuSave.mode != SAVE_MODE_LOAD) {
         if (g_menuSaveScan.otherBlocks >= SAVE_FILES) {
-            menu_save_scanInfo(SAVE_TEXT_CARD_FULL);
+            menuSave_scanInfo(SAVE_TEXT_CARD_FULL);
             return 0;
         }
     } else if (g_menuSaveScan.ff9Files == 0) {
-        menu_save_scanInfo(SAVE_TEXT_NO_FF9_DATA);
+        menuSave_scanInfo(SAVE_TEXT_NO_FF9_DATA);
         return 0;
     }
     return 1;
 }
 
-s32 menu_save_countFiles(void) {
+s32 menuSave_countFiles(void) {
     s32 port;
     s32 n;
     s32 prev;
@@ -1073,53 +1073,53 @@ s32 menu_save_countFiles(void) {
     n = 0;
     port = CARD_CHAN(g_menu.unk2);
     do {
-        r = menu_save_readDirectory(port, (s32)g_menuSaveScan.dir);
+        r = menuSave_readDirectory(port, (s32)g_menuSaveScan.dir);
         if (n != 0 && prev != r) {
             goto fail;
         }
         n++;
         prev = r;
     } while (n < 3);
-    if (menu_save_cardInfoSync(port) == CARD_RES_DONE) {
+    if (menuSave_cardInfoSync(port) == CARD_RES_DONE) {
         return r;
     }
 fail:
-    menu_save_scanError(SAVE_TEXT_CHECK_FAILED);
+    menuSave_scanError(SAVE_TEXT_CHECK_FAILED);
     return -1;
 }
 
-void menu_save_finishScan(void) {
+void menuSave_finishScan(void) {
     g_menuSaveScan.step = SCAN_STEP_DONE;
     g_menuSaveScan.active = 0;
-    menu_save_findNewest();
-    if (!menu_save_isMessageActive()) {
+    menuSave_findNewest();
+    if (!menuSave_isMessageActive()) {
         g_menuSave.phase = SAVE_PH_WAIT;
         func_8002F9F0();
-        func_8002F8A8(menu_save_enterFileList);
+        func_8002F8A8(menuSave_enterFileList);
         snd_playSe(SE_SAVE_LIST);
     }
 }
 
-void menu_save_onFileListFadedIn(void) {
+void menuSave_onFileListFadedIn(void) {
     if (g_menuSave.phase != SAVE_PH_MESSAGE) {
         g_menuSave.phase = SAVE_PH_READY;
     }
 }
 
-void menu_save_readHeader(s32 file) {
+void menuSave_readHeader(s32 file) {
     s32 fd;
 
     g_menuSaveScan.file = file;
-    fd = menu_save_openFile(CARD_CHAN(g_menu.unk2), (char *)g_menuSave.files[file].fileName.name.v);
+    fd = menuSave_openFile(CARD_CHAN(g_menu.unk2), (char *)g_menuSave.files[file].fileName.name.v);
     g_menuSaveScan.fd = fd;
     if (fd < 0) {
-        menu_save_scanError(SAVE_TEXT_CHECK_FAILED);
+        menuSave_scanError(SAVE_TEXT_CHECK_FAILED);
         return;
     }
-    menu_save_readAsync(fd, (s32)g_menuSaveScan.buf, SCAN_HEADER_SIZE, menu_save_onHeaderRead);
+    menuSave_readAsync(fd, (s32)g_menuSaveScan.buf, SCAN_HEADER_SIZE, menuSave_onHeaderRead);
 }
 
-void menu_save_copyHeader(SaveFile *s, SaveHeader *h) {
+void menuSave_copyHeader(SaveFile *s, SaveHeader *h) {
     s32 i;
 
     s->version = h->version;
@@ -1138,40 +1138,40 @@ void menu_save_copyHeader(SaveFile *s, SaveHeader *h) {
     }
 }
 
-void menu_save_scanError(s32 id) {
+void menuSave_scanError(s32 id) {
     g_menuSaveScan.step = SCAN_STEP_FAILED;
     win_close(g_menuSaveScan.win);
     g_menuSaveScan.win = NULL;
-    menu_save_showError(id);
+    menuSave_showError(id);
 }
 
-void menu_save_scanInfo(s32 id) {
+void menuSave_scanInfo(s32 id) {
     g_menuSaveScan.step = SCAN_STEP_FAILED;
     win_close(g_menuSaveScan.win);
     g_menuSaveScan.win = NULL;
-    menu_save_showInfo(id);
+    menuSave_showInfo(id);
 }
 
-void menu_save_initSavedMsg(void) {
+void menuSave_initSavedMsg(void) {
     g_menuSaveSavedMsg.active = 0;
     g_menuSaveSavedMsg.win = 0;
     g_menuSaveSavedMsg.timer = 0;
 }
 
-void menu_save_openSavedMsg(SaveMenu *m) {
+void menuSave_openSavedMsg(SaveMenu *m) {
     if (g_menuSaveSavedMsg.active == 0) {
         g_menuSave.phase = SAVE_PH_WAIT;
         g_menuSaveSavedMsg.timer = 0;
         g_menuSaveSavedMsgRect.y = g_menuSave.list.cursor * SAVE_ROW_H + 0x3F;
         g_menuSaveSavedMsg.win = func_8002DC54(&g_menuSaveSavedMsgRect, 0x14, 2);
-        win_setDrawContent(g_menuSaveSavedMsg.win, menu_save_drawSavedMsg);
-        win_setOnOpened(g_menuSaveSavedMsg.win, menu_save_onSavedMsgOpened);
-        win_setOnClosed(g_menuSaveSavedMsg.win, menu_save_onSavedMsgClosed);
+        win_setDrawContent(g_menuSaveSavedMsg.win, menuSave_drawSavedMsg);
+        win_setOnOpened(g_menuSaveSavedMsg.win, menuSave_onSavedMsgOpened);
+        win_setOnClosed(g_menuSaveSavedMsg.win, menuSave_onSavedMsgClosed);
         func_8002E31C(g_menuSaveSavedMsg.win, 1);
     }
 }
 
-void menu_save_savedMsgInput(void) {
+void menuSave_savedMsgInput(void) {
     if (g_menuSaveSavedMsg.win->unk1C == WIN_OPEN && (g_padRepeat & (BTN_CIRCLE | BTN_CROSS))) {
         snd_playSe(SE_CANCEL);
         g_menuSave.phase = SAVE_PH_WAIT;
@@ -1179,10 +1179,10 @@ void menu_save_savedMsgInput(void) {
     }
 }
 
-void menu_save_savedMsgTick(void) {
-    if (!menu_save_isPortReady(g_menu.unk2, 0)) {
+void menuSave_savedMsgTick(void) {
+    if (!menuSave_isPortReady(g_menu.unk2, 0)) {
         func_8002DE10(g_menuSaveSavedMsg.win);
-        menu_save_showInfo(SAVE_TEXT_NO_CARD);
+        menuSave_showInfo(SAVE_TEXT_NO_CARD);
         return;
     }
     if (++g_menuSaveSavedMsg.timer >= SAVED_MSG_TICKS) {
@@ -1191,12 +1191,12 @@ void menu_save_savedMsgTick(void) {
     }
 }
 
-void menu_save_onSavedMsgOpened(Window *w) {
+void menuSave_onSavedMsgOpened(Window *w) {
     g_menuSave.phase = SAVE_PH_READY;
     g_menuSave.state = SAVE_ST_SAVED;
 }
 
-void menu_save_onSavedMsgClosed(Window *w) {
+void menuSave_onSavedMsgClosed(Window *w) {
     g_menuSave.phase = SAVE_PH_READY;
     g_menuSave.state = SAVE_ST_LIST;
     g_menuSaveSavedMsg.win = 0;
@@ -1204,13 +1204,13 @@ void menu_save_onSavedMsgClosed(Window *w) {
     g_menuSave.help = text_get(SAVE_TEXT_SELECT_BLOCK);
 }
 
-void menu_save_drawSavedMsg(Window *w) {
+void menuSave_drawSavedMsg(Window *w) {
     u8 *s = text_get(SAVE_TEXT_DATA_SAVED);
 
     text_drawBlock(w->unk0 + ((w->unk4 - func_8002BA68((s32)s)) >> 1), w->unk2 + 8, w->unk18, s, 0);
 }
 
-void menu_save_openMessage(s32 id, s32 title) {
+void menuSave_openMessage(s32 id, s32 title) {
     SaveMessage *m = &g_menuSaveMessage;
     RECT r;
     s32 i;
@@ -1234,19 +1234,19 @@ void menu_save_openMessage(s32 id, s32 title) {
         r.x = (g_gameState->unkC->disp.w - w) >> 1;
         r.y = (g_gameState->unkC->disp.h - h) >> 1;
         m->win = func_8002DC54(&r, 0xF, 2);
-        win_setDrawContent(m->win, menu_save_drawMessage);
-        win_setOnOpened(m->win, menu_save_onMessageOpened);
-        win_setOnClosed(m->win, menu_save_onMessageClosed);
+        win_setDrawContent(m->win, menuSave_drawMessage);
+        win_setOnOpened(m->win, menuSave_onMessageOpened);
+        win_setOnClosed(m->win, menuSave_onMessageClosed);
         func_8002E31C(m->win, 1);
         func_8002E304(m->win, title);
     }
 }
 
-void menu_save_initMessage(void) {
+void menuSave_initMessage(void) {
     g_menuSaveMessage.active = 0;
 }
 
-void menu_save_messageInput(void) {
+void menuSave_messageInput(void) {
     if (g_menuSaveMessage.win->unk1C == WIN_OPEN && (g_padRepeat & (BTN_CIRCLE | BTN_CROSS))) {
         snd_playSe(SE_CANCEL);
         g_menuSave.phase = SAVE_PH_WAIT;
@@ -1254,68 +1254,68 @@ void menu_save_messageInput(void) {
     }
 }
 
-void menu_save_showError(s32 id) {
-    menu_save_openMessage(id, D_80070440);
+void menuSave_showError(s32 id) {
+    menuSave_openMessage(id, D_80070440);
 }
 
-void menu_save_showInfo(s32 id) {
-    menu_save_openMessage(id, D_8007048C);
+void menuSave_showInfo(s32 id) {
+    menuSave_openMessage(id, D_8007048C);
 }
 
-u8 menu_save_setMessageActive(u8 v) {
+u8 menuSave_setMessageActive(u8 v) {
     u8 old = g_menuSaveMessage.active;
 
     g_menuSaveMessage.active = v;
     return old;
 }
 
-u8 menu_save_isMessageActive(void) {
+u8 menuSave_isMessageActive(void) {
     return g_menuSaveMessage.active;
 }
 
-void menu_save_drawMessage(Window *w) {
+void menuSave_drawMessage(Window *w) {
     text_drawBlock(w->unk0 + 8, w->unk2 + 8, w->unk18, g_menuSaveMessage.text, 0);
 }
 
-void menu_save_onMessageOpened(Window *w) {
+void menuSave_onMessageOpened(Window *w) {
     g_menuSave.phase = SAVE_PH_MESSAGE;
 }
 
-void menu_save_onMessageClosed(Window *w) {
+void menuSave_onMessageClosed(Window *w) {
     g_menuSave.phase = SAVE_PH_READY;
     g_menuSaveMessage.win = NULL;
     g_menuSaveMessage.active = 0;
     if (g_menuSaveResetAfterMsg[g_menuSave.state] != 0) {
         g_menuSave.phase = SAVE_PH_WAIT;
         func_8002F9F0();
-        func_8002F8A8(menu_save_resetToPorts);
+        func_8002F8A8(menuSave_resetToPorts);
         return;
     }
     g_menuSave.help = text_get(SAVE_TEXT_SELECT_SLOT);
     g_menuSave.state = SAVE_ST_PORT;
 }
 
-void menu_save_resetToPorts(void) {
+void menuSave_resetToPorts(void) {
     g_menuSave.help = text_get(SAVE_TEXT_SELECT_SLOT);
     g_menuSave.state = SAVE_ST_PORT;
     g_menuSave.phase = SAVE_PH_READY;
     func_8002F9D0();
-    func_8002F8A8(menu_save_onPortsFadedIn);
+    func_8002F8A8(menuSave_onPortsFadedIn);
 }
 
-void menu_save_onPortsFadedIn(void) {
+void menuSave_onPortsFadedIn(void) {
     g_menuSave.phase = SAVE_PH_READY;
 }
 
-void menu_save_loadImage(void) {
+void menuSave_loadImage(void) {
     func_80028720(g_menuSaveImage, 10);
 }
 
-void menu_save_freeImage(void) {
+void menuSave_freeImage(void) {
     func_8002886C();
 }
 
-u8 menu_save_getPortrait(Character *c) {
+u8 menuSave_getPortrait(Character *c) {
     s32 m;
 
     if (c == NULL) {
@@ -1331,7 +1331,7 @@ u8 menu_save_getPortrait(Character *c) {
     return g_menuSavePortraitIds[m];
 }
 
-u8 menu_save_startAccess(s32 mode) {
+u8 menuSave_startAccess(s32 mode) {
     g_menuSave.state = SAVE_ST_ACCESS;
     g_menuSave.phase = SAVE_PH_WAIT;
     g_menuSaveAccess.active = 1;
@@ -1342,13 +1342,13 @@ u8 menu_save_startAccess(s32 mode) {
     g_menuSaveAccess.lastProgress = 0;
     g_menuSaveAccess.progressTicks = 0;
     g_menuSaveAccess.unk1 = 0;
-    menu_save_resetCardAnim();
-    menu_save_resetReadProgress();
-    menu_save_resetWriteProgress();
+    menuSave_resetCardAnim();
+    menuSave_resetReadProgress();
+    menuSave_resetWriteProgress();
     g_menuSaveAccess.win = func_8002DC54(&g_menuSaveAccessRect, 0x1E, 2);
-    win_setDrawContent(g_menuSaveAccess.win, menu_save_drawAccess);
-    win_setOnOpened(g_menuSaveAccess.win, menu_save_onAccessOpened);
-    win_setOnClosed(g_menuSaveAccess.win, menu_save_onAccessClosed);
+    win_setDrawContent(g_menuSaveAccess.win, menuSave_drawAccess);
+    win_setOnOpened(g_menuSaveAccess.win, menuSave_onAccessOpened);
+    win_setOnClosed(g_menuSaveAccess.win, menuSave_onAccessClosed);
     func_8002E31C(g_menuSaveAccess.win, 1);
     func_8002E304(g_menuSaveAccess.win, D_800703FC.unk0[g_menuSaveAccessTitles[mode]]);
     return 1;
@@ -1370,7 +1370,7 @@ INCLUDE_RODATA("asm/us/ovl_39/nonmatchings/ovl_39", g_menuSaveIconMinute);
 
 INCLUDE_RODATA("asm/us/ovl_39/nonmatchings/ovl_39", g_menuSaveIconHour);
 
-void menu_save_saveTick(void) {
+void menuSave_saveTick(void) {
     SaveAccess *p;
     SaveMenu *m;
     s32 t;
@@ -1397,7 +1397,7 @@ void menu_save_saveTick(void) {
     case ACCESS_STAGE_FORMAT:
         if (++g_menuSaveAccess.delay >= ACCESS_TICKS) {
             g_menuSaveAccess.delay = 0;
-            if (menu_save_formatCard()) {
+            if (menuSave_formatCard()) {
                 g_menuSaveAccess.stage = ACCESS_STAGE_FORMATTING;
             }
         }
@@ -1407,7 +1407,7 @@ void menu_save_saveTick(void) {
     case ACCESS_STAGE_IO:
         if (++g_menuSaveAccess.delay >= ACCESS_TICKS) {
             g_menuSaveAccess.delay = 0;
-            if (menu_save_writeFile()) {
+            if (menuSave_writeFile()) {
                 g_menuSaveAccess.stage = ACCESS_STAGE_WAIT;
             }
         }
@@ -1421,7 +1421,7 @@ void menu_save_saveTick(void) {
     }
 }
 
-void menu_save_loadTick(void) {
+void menuSave_loadTick(void) {
     switch (g_menuSaveAccess.stage) {
     case ACCESS_STAGE_OPEN:
         if (++g_menuSaveAccess.delay >= ACCESS_TICKS) {
@@ -1433,7 +1433,7 @@ void menu_save_loadTick(void) {
     case ACCESS_STAGE_IO:
         if (++g_menuSaveAccess.delay >= ACCESS_TICKS) {
             g_menuSaveAccess.delay = 0;
-            if (menu_save_readFile()) {
+            if (menuSave_readFile()) {
                 g_menuSaveAccess.stage = ACCESS_STAGE_WAIT;
             }
         }
@@ -1443,7 +1443,7 @@ void menu_save_loadTick(void) {
     }
 }
 
-void menu_save_drawAccess(Window *w) {
+void menuSave_drawAccess(Window *w) {
     RECT *r;
     s32 st;
     s32 n;
@@ -1451,18 +1451,18 @@ void menu_save_drawAccess(Window *w) {
     r = (RECT *)w;
     if (g_menuSave.formatted != 0) {
         if (g_menuSave.mode != SAVE_MODE_LOAD) {
-            st = menu_save_getWriteProgress();
+            st = menuSave_getWriteProgress();
         } else {
-            st = menu_save_getReadProgress();
+            st = menuSave_getReadProgress();
         }
         g_menuSaveAccess.progressTicks = st == g_menuSaveAccess.lastProgress ? g_menuSaveAccess.progressTicks + 1 : 0;
         n = g_menuSaveAccess.progressTicks * 2;
         if (n >= 6) {
             n = 5;
         }
-        menu_save_drawCardAnim(r->x + 0xE, r->y + 0x12, w->unk18);
+        menuSave_drawCardAnim(r->x + 0xE, r->y + 0x12, w->unk18);
         text_drawBlock(r->x + 0x4A, r->y + 0xE, w->unk18, text_get(SAVE_TEXT_DO_NOT_REMOVE), 0);
-        menu_save_drawGauge(r->x + 0x1A, r->y + 0x44, w->unk18, st * ACCESS_GAUGE_STEP + n, ACCESS_GAUGE_W);
+        menuSave_drawGauge(r->x + 0x1A, r->y + 0x44, w->unk18, st * ACCESS_GAUGE_STEP + n, ACCESS_GAUGE_W);
         g_menuSaveAccess.lastProgress = st;
         return;
     }
@@ -1470,7 +1470,7 @@ void menu_save_drawAccess(Window *w) {
     text_drawBlock(r->x + 0x32, r->y + 0x20, w->unk18, text_get(SAVE_TEXT_DO_NOT_REMOVE), 0);
 }
 
-u8 menu_save_writeFile(void) {
+u8 menuSave_writeFile(void) {
     SaveFile *sl;
     s32 port;
     s32 fd;
@@ -1479,30 +1479,30 @@ u8 menu_save_writeFile(void) {
     sl = &g_menuSave.files[g_menuSave.file];
     /* not SAVE_FILE_CORRUPT or SAVE_FILE_USED: create a new file */
     if ((u32)(sl->state - SAVE_FILE_CORRUPT) >= 2) {
-        strcpy((char *)g_menuSaveAccess.fileName.name.v, menu_save_getFilePrefix());
+        strcpy((char *)g_menuSaveAccess.fileName.name.v, menuSave_getFilePrefix());
         strcat(g_menuSaveAccess.fileName.name.v, "00000-");
         g_menuSaveAccess.fileName.name.v[SAVE_NAME_NUMBER] = g_menuSave.file / 10 + '0';
         g_menuSaveAccess.fileName.name.v[SAVE_NAME_NUMBER + 1] = g_menuSave.file % 10 + '0';
         /* called before its definition without a prototype: int result */
-        if (!((s32 (*)(s32, char *))menu_save_createFile)(port, (char *)g_menuSaveAccess.fileName.name.v)) {
-            menu_save_abortAccess(SAVE_TEXT_SAVE_FAILED);
+        if (!((s32 (*)(s32, char *))menuSave_createFile)(port, (char *)g_menuSaveAccess.fileName.name.v)) {
+            menuSave_abortAccess(SAVE_TEXT_SAVE_FAILED);
             return 0;
         }
     } else {
         strcpy((char *)g_menuSaveAccess.fileName.name.v, sl->fileName.name.v);
     }
-    fd = menu_save_openFile(port, (char *)g_menuSaveAccess.fileName.name.v);
+    fd = menuSave_openFile(port, (char *)g_menuSaveAccess.fileName.name.v);
     g_menuSaveAccess.fd = fd;
     if (fd < 0) {
-        menu_save_abortAccess(SAVE_TEXT_SAVE_FAILED);
+        menuSave_abortAccess(SAVE_TEXT_SAVE_FAILED);
         return 0;
     }
-    menu_save_writeAsync(fd, (s32)SAVE_BUF, SAVE_BUF_SIZE, menu_save_onFileIo);
-    menu_save_enableCardAnim(1);
+    menuSave_writeAsync(fd, (s32)SAVE_BUF, SAVE_BUF_SIZE, menuSave_onFileIo);
+    menuSave_enableCardAnim(1);
     return 1;
 }
 
-void menu_save_drawGauge(s32 x, s32 y, s32 otz, s32 pos, s32 w) {
+void menuSave_drawGauge(s32 x, s32 y, s32 otz, s32 pos, s32 w) {
     GaugeIcon *ic;
     GaugeIcon *mid;
     GaugeIcon *ec;
@@ -1554,56 +1554,56 @@ void menu_save_drawGauge(s32 x, s32 y, s32 otz, s32 pos, s32 w) {
     g_primPtr += 8;
 }
 
-void menu_save_initAccess(void) {
+void menuSave_initAccess(void) {
     g_menuSaveAccess.active = 0;
 }
 
-void menu_save_accessTick(void) {
-    if (!menu_save_isPortReady(g_menu.unk2, 0)) {
-        menu_save_abortAccess(SAVE_TEXT_NO_CARD);
+void menuSave_accessTick(void) {
+    if (!menuSave_isPortReady(g_menu.unk2, 0)) {
+        menuSave_abortAccess(SAVE_TEXT_NO_CARD);
         return;
     }
     if (g_menuSave.phase != SAVE_PH_MESSAGE) {
         if (g_menuSaveAccess.mode == ACCESS_SAVE) {
-            menu_save_saveTick();
+            menuSave_saveTick();
         } else {
-            menu_save_loadTick();
+            menuSave_loadTick();
         }
     }
 }
 
-u8 menu_save_isAccessActive(void) {
+u8 menuSave_isAccessActive(void) {
     return g_menuSaveAccess.active;
 }
 
-u8 menu_save_setAccessActive(u8 v) {
+u8 menuSave_setAccessActive(u8 v) {
     u8 old = g_menuSaveAccess.active;
 
     g_menuSaveAccess.active = v;
     return old;
 }
 
-u8 *menu_save_getFilePrefix(void) {
+u8 *menuSave_getFilePrefix(void) {
     memcpy(g_menuSaveFilePrefix, g_menuSaveProductCode, SAVE_PREFIX_LEN + 1);
     return g_menuSaveFilePrefix;
 }
 
-void menu_save_onAccessOpened(Window *w) {
+void menuSave_onAccessOpened(Window *w) {
     g_menuSave.phase = SAVE_PH_READY;
     g_menuSaveAccess.stage = ACCESS_STAGE_OPEN;
 }
 
-void menu_save_onAccessClosed(Window *w) {
+void menuSave_onAccessClosed(Window *w) {
     g_menuSaveAccess.active = 0;
     g_menuSave.phase = SAVE_PH_READY;
     if (g_menuSave.mode != SAVE_MODE_LOAD) {
-        menu_save_openSavedMsg(&g_menuSave);
+        menuSave_openSavedMsg(&g_menuSave);
         return;
     }
     g_menuSave.state = SAVE_ST_LIST;
 }
 
-u8 menu_save_readFile(void) {
+u8 menuSave_readFile(void) {
     SaveFile *sl;
     s32 port;
     s32 fd;
@@ -1611,74 +1611,74 @@ u8 menu_save_readFile(void) {
     port = CARD_CHAN(g_menu.unk2);
     sl = &g_menuSave.files[g_menuSave.file];
     strcpy((char *)g_menuSaveAccess.fileName.name.v, sl->fileName.name.v);
-    fd = menu_save_openFile(port, (char *)g_menuSaveAccess.fileName.name.v);
+    fd = menuSave_openFile(port, (char *)g_menuSaveAccess.fileName.name.v);
     g_menuSaveAccess.fd = fd;
     if (fd < 0) {
-        menu_save_abortAccess(SAVE_TEXT_LOAD_FAILED);
+        menuSave_abortAccess(SAVE_TEXT_LOAD_FAILED);
         return 0;
     }
-    menu_save_readAsync(fd, (s32)SAVE_BUF, SAVE_BUF_SIZE, menu_save_onFileIo);
+    menuSave_readAsync(fd, (s32)SAVE_BUF, SAVE_BUF_SIZE, menuSave_onFileIo);
     return 1;
 }
 
-u8 menu_save_formatCard(void) {
-    if (menu_save_cardFormat(CARD_CHAN(g_menu.unk2)) == 0) {
-        menu_save_abortAccess(SAVE_TEXT_FORMAT_FAILED);
+u8 menuSave_formatCard(void) {
+    if (menuSave_cardFormat(CARD_CHAN(g_menu.unk2)) == 0) {
+        menuSave_abortAccess(SAVE_TEXT_FORMAT_FAILED);
         return 0;
     }
-    if (menu_save_cardLoad(CARD_CHAN(g_menu.unk2), menu_save_onFormatDone) != 0) {
+    if (menuSave_cardLoad(CARD_CHAN(g_menu.unk2), menuSave_onFormatDone) != 0) {
         return 1;
     }
-    menu_save_abortAccess(SAVE_TEXT_SAVE_FAILED);
+    menuSave_abortAccess(SAVE_TEXT_SAVE_FAILED);
     return 0;
 }
 
-void menu_save_onFileIo(void) {
-    s32 n = menu_save_getCardResult(CARD_CHAN(g_menu.unk2));
+void menuSave_onFileIo(void) {
+    s32 n = menuSave_getCardResult(CARD_CHAN(g_menu.unk2));
 
-    if (menu_save_closeFile(g_menuSaveAccess.fd) < 0) {
-        menu_save_abortAccess(g_menuSave.mode == SAVE_MODE_LOAD ? SAVE_TEXT_LOAD_FAILED : SAVE_TEXT_SAVE_FAILED);
+    if (menuSave_closeFile(g_menuSaveAccess.fd) < 0) {
+        menuSave_abortAccess(g_menuSave.mode == SAVE_MODE_LOAD ? SAVE_TEXT_LOAD_FAILED : SAVE_TEXT_SAVE_FAILED);
         return;
     }
     if (n == CARD_RES_DONE) {
-        menu_save_onFileIoDone();
+        menuSave_onFileIoDone();
         return;
     }
-    menu_save_onFileIoFailed(n);
+    menuSave_onFileIoFailed(n);
 }
 
-void menu_save_onFileIoDone(void) {
+void menuSave_onFileIoDone(void) {
     u8 mode;
 
     win_close(g_menuSaveAccess.win);
     g_menuSave.phase = SAVE_PH_WAIT;
     mode = g_menuSave.mode;
     if (mode != SAVE_MODE_LOAD) {
-        menu_save_storeSavedFile(g_menuSave.file, &SAVE_BUF->hdr);
+        menuSave_storeSavedFile(g_menuSave.file, &SAVE_BUF->hdr);
         snd_playSe(SE_SAVE_DONE);
         return;
     }
-    if (menu_save_applyLoaded()) {
+    if (menuSave_applyLoaded()) {
         g_menuSave.loaded = mode;
         snd_playSe(SE_SAVE_DONE);
         if (g_menu.unk1 == 0) {
             func_800361CC(0);
             return;
         }
-        menu_save_close();
+        menuSave_close();
     }
 }
 
-void menu_save_onFileIoFailed(s32 result) {
+void menuSave_onFileIoFailed(s32 result) {
     if (result <= CARD_RES_NEW) {
         if (result <= CARD_RES_DONE) {
             return;
         }
-        menu_save_abortAccess(g_menuSave.mode != SAVE_MODE_LOAD ? SAVE_TEXT_SAVE_FAILED : SAVE_TEXT_LOAD_FAILED);
+        menuSave_abortAccess(g_menuSave.mode != SAVE_MODE_LOAD ? SAVE_TEXT_SAVE_FAILED : SAVE_TEXT_LOAD_FAILED);
     }
 }
 
-void menu_save_storeSavedFile(s32 file, SaveHeader *h) {
+void menuSave_storeSavedFile(s32 file, SaveHeader *h) {
     SaveFile *s;
     SaveFileName *n;
     s32 i;
@@ -1702,16 +1702,16 @@ void menu_save_storeSavedFile(s32 file, SaveHeader *h) {
     }
 }
 
-void menu_save_abortAccess(s32 msg) {
+void menuSave_abortAccess(s32 msg) {
     g_menuSave.showCursor = 1;
-    menu_save_closeFile(g_menuSaveAccess.fd);
-    win_setOnClosed(g_menuSaveAccess.win, menu_save_onAccessAborted);
+    menuSave_closeFile(g_menuSaveAccess.fd);
+    win_setOnClosed(g_menuSaveAccess.win, menuSave_onAccessAborted);
     win_close(g_menuSaveAccess.win);
-    menu_save_showError(msg);
+    menuSave_showError(msg);
 }
 
-void menu_save_onFormatDone(void) {
-    s32 r = menu_save_getCardResult();
+void menuSave_onFormatDone(void) {
+    s32 r = menuSave_getCardResult();
 
     g_menuSave.showCursor = 1;
     if (r == CARD_RES_DONE) {
@@ -1722,17 +1722,17 @@ void menu_save_onFormatDone(void) {
         g_menuSave.help = text_get(SAVE_TEXT_SAVING);
         return;
     }
-    win_setOnClosed(g_menuSaveAccess.win, menu_save_onAccessAborted);
+    win_setOnClosed(g_menuSaveAccess.win, menuSave_onAccessAborted);
     win_close(g_menuSaveAccess.win);
-    menu_save_showError(SAVE_TEXT_SAVE_FAILED);
+    menuSave_showError(SAVE_TEXT_SAVE_FAILED);
 }
 
-void menu_save_onAccessAborted(Window *w) {
+void menuSave_onAccessAborted(Window *w) {
     g_menuSaveAccess.active = 0;
     g_menuSave.phase = SAVE_PH_READY;
 }
 
-MenuView *menu_save_listGetView(MenuList *l, MenuView *v) {
+MenuView *menuSave_listGetView(MenuList *l, MenuView *v) {
     s32 d;
     u8 f;
 
@@ -1765,7 +1765,7 @@ MenuView *menu_save_listGetView(MenuList *l, MenuView *v) {
     return v;
 }
 
-MenuView *menu_save_listGetPageView(MenuList *l, MenuView *v) {
+MenuView *menuSave_listGetPageView(MenuList *l, MenuView *v) {
     s32 x;
 
     if (l->unk8 & 2) {
@@ -1781,7 +1781,7 @@ MenuView *menu_save_listGetPageView(MenuList *l, MenuView *v) {
     return v;
 }
 
-void menu_save_listPageClip(MenuList *m, RECT *src, RECT *dst) {
+void menuSave_getScrollClip(MenuList *m, RECT *src, RECT *dst) {
     dst->x = src->x;
     dst->w = src->w;
     if (m->unk8 & 2) {
@@ -1792,7 +1792,7 @@ void menu_save_listPageClip(MenuList *m, RECT *src, RECT *dst) {
     dst->h = src->h - m->unk9;
 }
 
-void menu_save_listPageUp(MenuList *l, s32 btn) {
+void menuSave_listPageUp(MenuList *l, s32 btn) {
     s32 top;
     s32 d;
 
@@ -1810,7 +1810,7 @@ void menu_save_listPageUp(MenuList *l, s32 btn) {
     }
 }
 
-void menu_save_listPageDown(MenuList *l, s32 pad) {
+void menuSave_listPageDown(MenuList *l, s32 pad) {
     s32 h;
     s32 page;
     s32 top;
@@ -1832,7 +1832,7 @@ void menu_save_listPageDown(MenuList *l, s32 pad) {
     }
 }
 
-void menu_save_buildHeader(SaveBuf *buf) {
+void menuSave_buildHeader(SaveBuf *buf) {
     SaveHeader *h;
     Unk8004AB64 *o;
     s32 t;
@@ -1841,7 +1841,7 @@ void menu_save_buildHeader(SaveBuf *buf) {
 
     h = &buf->hdr;
     t = game_getPlayTime();
-    menu_save_buildCardHeader(&buf->card, t);
+    menuSave_buildCardHeader(&buf->card, t);
     n = 0;
     o = func_8004AE00();
     if (o != NULL) {
@@ -1852,7 +1852,7 @@ void menu_save_buildHeader(SaveBuf *buf) {
     } else {
         h->discs = g_gameState->unkB;
     }
-    h->discs = menu_save_getDiscBit();
+    h->discs = menuSave_getDiscBit();
     h->version = SAVE_VERSION;
     h->level = g_gameState->unk1C->characters[n].level;
     h->playTime = t;
@@ -1861,11 +1861,11 @@ void menu_save_buildHeader(SaveBuf *buf) {
     h->counter = ++g_menuSave.newestCounter;
     h->cursor = g_menuSave.list.cursor;
     h->name = *(SaveName *)g_gameState->unk1C->characters[n].unk0;
-    menu_save_getLocation((u8 *)&h->location);
+    menuSave_getLocation((u8 *)&h->location);
     for (i = 0; i < 4; i++) {
         if (g_gameState->unk1C->party[i] != NULL) {
             h->party[i].present = 1;
-            h->party[i].portrait = menu_save_getPortrait(g_gameState->unk1C->party[i]);
+            h->party[i].portrait = menuSave_getPortrait(g_gameState->unk1C->party[i]);
             h->party[i].level = g_gameState->unk1C->party[i]->level;
             *(Name10 *)h->party[i].name = *(Name10 *)g_gameState->unk1C->party[i]->unk0;
         } else {
@@ -1877,7 +1877,7 @@ void menu_save_buildHeader(SaveBuf *buf) {
     }
 }
 
-void menu_save_getLocation(u8 *dst) {
+void menuSave_getLocation(u8 *dst) {
     u8 *name;
     u8 *s;
 
@@ -1899,7 +1899,7 @@ void menu_save_getLocation(u8 *dst) {
     }
 }
 
-void menu_save_buildCardHeader(CardFileHeader *buf, s32 t) {
+void menuSave_buildCardHeader(CardFileHeader *buf, s32 t) {
     u8 *title;
     IconTmpl *icon;
     s32 sec;
@@ -1946,24 +1946,24 @@ void menu_save_buildCardHeader(CardFileHeader *buf, s32 t) {
     buf->icon = *icon;
 }
 
-void menu_save_selectSaveFile(s32 file, s32 unused) {
+void menuSave_selectSaveFile(s32 file, s32 unused) {
     g_menuSave.file = file;
     if (g_menuSave.formatted == 0) {
         snd_playSe(SE_CURSOR);
-        menu_save_setConfirmCallback(menu_save_doSave);
-        menu_save_openConfirm(g_menu.unk2 + SAVE_TEXT_UNFORMATTED, SAVE_TEXT_FORMAT_YES, SAVE_TEXT_FORMAT_NO);
+        menuSave_setConfirmCallback(menuSave_doSave);
+        menuSave_openConfirm(g_menu.unk2 + SAVE_TEXT_UNFORMATTED, SAVE_TEXT_FORMAT_YES, SAVE_TEXT_FORMAT_NO);
         return;
     }
     switch (g_menuSave.files[g_menuSave.file].state) {
     case SAVE_FILE_EMPTY:
     case SAVE_FILE_CORRUPT:
         snd_playSe(SE_CURSOR);
-        menu_save_doSave();
+        menuSave_doSave();
         break;
     case SAVE_FILE_USED:
         snd_playSe(SE_CURSOR);
-        menu_save_setConfirmCallback(menu_save_doSave);
-        menu_save_openConfirm(SAVE_TEXT_OVERWRITE, SAVE_TEXT_OVERWRITE_YES, SAVE_TEXT_OVERWRITE_NO);
+        menuSave_setConfirmCallback(menuSave_doSave);
+        menuSave_openConfirm(SAVE_TEXT_OVERWRITE, SAVE_TEXT_OVERWRITE_YES, SAVE_TEXT_OVERWRITE_NO);
         break;
     case SAVE_FILE_OTHER:
         snd_playSe(SE_BUZZER);
@@ -1971,25 +1971,25 @@ void menu_save_selectSaveFile(s32 file, s32 unused) {
     }
 }
 
-void menu_save_doSave(void) {
-    menu_save_initCrcTable();
-    menu_save_buildHeader(SAVE_BUF);
-    menu_save_packData(&SAVE_BUF->data);
-    SAVE_BUF->crc = menu_save_crc16((u8 *)SAVE_BUF, SAVE_CRC_LEN);
-    menu_save_startAccess(ACCESS_SAVE);
+void menuSave_doSave(void) {
+    menuSave_initCrcTable();
+    menuSave_buildHeader(SAVE_BUF);
+    menuSave_packData(&SAVE_BUF->data);
+    SAVE_BUF->crc = menuSave_crc16((u8 *)SAVE_BUF, SAVE_CRC_LEN);
+    menuSave_startAccess(ACCESS_SAVE);
 }
 
-void menu_save_packData(SaveData *d) {
-    menu_save_packState(&d->state);
-    menu_save_packEvents(&d->events);
-    menu_save_packParty(&d->party);
-    menu_save_packMisc(&d->misc);
-    menu_save_packItems(&d->items);
-    menu_save_packCards(d->cards);
+void menuSave_packData(SaveData *d) {
+    menuSave_packState(&d->state);
+    menuSave_packEvents(&d->events);
+    menuSave_packParty(&d->party);
+    menuSave_packMisc(&d->misc);
+    menuSave_packItems(&d->items);
+    menuSave_packCards(d->cards);
 }
 
 /* Story counter thresholds: g_evtGlobalVars.h[0] below 0xF3C is disc 1, and so on. */
-s32 menu_save_getDiscBit(void) {
+s32 menuSave_getDiscBit(void) {
     if ((u16)g_evtGlobalVars.h[0] < 0xF3C) {
         return 1 << 0;
     }
@@ -2002,7 +2002,7 @@ s32 menu_save_getDiscBit(void) {
     return 1 << 3;
 }
 
-void menu_save_initCrcTable(void) {
+void menuSave_initCrcTable(void) {
     u16 i;
     u16 j;
     u16 c;
@@ -2020,7 +2020,7 @@ void menu_save_initCrcTable(void) {
     }
 }
 
-u16 menu_save_crc16(u8 *p, s32 n) {
+u16 menuSave_crc16(u8 *p, s32 n) {
     Crc16 c = { CRC16_INIT };
 
     while (--n >= 0) {
@@ -2029,7 +2029,7 @@ u16 menu_save_crc16(u8 *p, s32 n) {
     return c.w;
 }
 
-void menu_save_selectLoadFile(s32 file, s32 arg1) {
+void menuSave_selectLoadFile(s32 file, s32 arg1) {
     SaveFile *s;
 
     s = g_menuSave.files;
@@ -2037,7 +2037,7 @@ void menu_save_selectLoadFile(s32 file, s32 arg1) {
     switch (s[file].state) {
     case SAVE_FILE_USED:
         snd_playSe(SE_CURSOR);
-        menu_save_doLoad();
+        menuSave_doLoad();
         break;
     case SAVE_FILE_EMPTY:
     case SAVE_FILE_OTHER:
@@ -2047,37 +2047,37 @@ void menu_save_selectLoadFile(s32 file, s32 arg1) {
     }
 }
 
-u8 menu_save_applyLoaded(void) {
+u8 menuSave_applyLoaded(void) {
     SaveHeader *h;
     u8 ret;
 
     ret = 1;
-    menu_save_initCrcTable();
-    if (SAVE_BUF->crc == menu_save_crc16((u8 *)SAVE_BUF, SAVE_CRC_LEN)) {
+    menuSave_initCrcTable();
+    if (SAVE_BUF->crc == menuSave_crc16((u8 *)SAVE_BUF, SAVE_CRC_LEN)) {
         h = &SAVE_BUF->hdr;
         g_gameState->unkB = h->discs;
         game_setPlayTime(h->playTime);
-        menu_save_unpackState(&SAVE_BUF->data.state);
-        menu_save_unpackEvents(&SAVE_BUF->data.events);
-        menu_save_unpackParty(&SAVE_BUF->data.party);
-        menu_save_unpackMisc(&SAVE_BUF->data.misc);
-        menu_save_unpackItems(&SAVE_BUF->data.items);
-        menu_save_unpackCards(SAVE_BUF->data.cards);
+        menuSave_unpackState(&SAVE_BUF->data.state);
+        menuSave_unpackEvents(&SAVE_BUF->data.events);
+        menuSave_unpackParty(&SAVE_BUF->data.party);
+        menuSave_unpackMisc(&SAVE_BUF->data.misc);
+        menuSave_unpackItems(&SAVE_BUF->data.items);
+        menuSave_unpackCards(SAVE_BUF->data.cards);
     } else {
-        menu_save_showError(SAVE_TEXT_CORRUPTED);
+        menuSave_showError(SAVE_TEXT_CORRUPTED);
         ret = 0;
     }
     return ret;
 }
 
-void menu_save_doLoad(void) {
-    if (!menu_save_startAccess(ACCESS_LOAD)) {
-        menu_save_showError(SAVE_TEXT_LOAD_FAILED);
+void menuSave_doLoad(void) {
+    if (!menuSave_startAccess(ACCESS_LOAD)) {
+        menuSave_showError(SAVE_TEXT_LOAD_FAILED);
     }
 }
 
 
-void menu_save_packParty(SaveParty *s) {
+void menuSave_packParty(SaveParty *s) {
     GameData *gd;
     s32 i;
 
@@ -2100,7 +2100,7 @@ void menu_save_packParty(SaveParty *s) {
     s->unk520 = gd->unk56C;
 }
 
-void menu_save_unpackParty(SaveParty *s) {
+void menuSave_unpackParty(SaveParty *s) {
     GameData *gd;
     s32 i;
 
@@ -2123,7 +2123,7 @@ void menu_save_unpackParty(SaveParty *s) {
     gd->unk56C = s->unk520;
 }
 
-void menu_save_packState(SaveState *h) {
+void menuSave_packState(SaveState *h) {
     GameData *gd;
     s32 i;
 
@@ -2149,7 +2149,7 @@ void menu_save_packState(SaveState *h) {
     }
 }
 
-void menu_save_unpackState(SaveState *p) {
+void menuSave_unpackState(SaveState *p) {
     GameState *gs = g_gameState;
     GameData *gd;
 
@@ -2164,7 +2164,7 @@ void menu_save_unpackState(SaveState *p) {
     gd->unk7DE = p->unk2A;
 }
 
-void menu_save_copyCards(CardData *d, CardData *s) {
+void menuSave_copyCards(CardData *d, CardData *s) {
     s32 i;
 
     d->unk0 = s->unk0;
@@ -2182,50 +2182,50 @@ void menu_save_copyCards(CardData *d, CardData *s) {
     d->unk27E = s->unk27E;
 }
 
-void menu_save_packCards(void *p) {
-    menu_save_copyCards(p, func_80062824());
+void menuSave_packCards(void *p) {
+    menuSave_copyCards(p, func_80062824());
 }
 
-void menu_save_unpackCards(void *p) {
-    menu_save_copyCards(func_80062824(), p);
+void menuSave_unpackCards(void *p) {
+    menuSave_copyCards(func_80062824(), p);
 }
 
-void menu_save_packEvents(SaveEvents *d) {
+void menuSave_packEvents(SaveEvents *d) {
     d->vars = g_evtGlobalVars;
     d->unk800 = D_8007AEC4;
 }
 
-void menu_save_unpackEvents(SaveEvents *s) {
+void menuSave_unpackEvents(SaveEvents *s) {
     g_evtGlobalVars = s->vars;
     D_8007AEC4 = s->unk800;
 }
 
-void menu_save_packItems(SaveItems *s) {
+void menuSave_packItems(SaveItems *s) {
     s->items = g_gameState->unk1C->items;
     s->flags = g_gameState->unk1C->unk774;
     s->unk240 = *(GameStateUnk24 *)&g_gameState->unk24;
 }
 
-void menu_save_unpackItems(SaveItems *s) {
+void menuSave_unpackItems(SaveItems *s) {
     g_gameState->unk1C->items = s->items;
     g_gameState->unk1C->unk774 = s->flags;
     *(GameStateUnk24 *)&g_gameState->unk24 = s->unk240;
     func_8002397C();
 }
 
-void menu_save_packMisc(SaveMisc *p) {
+void menuSave_packMisc(SaveMisc *p) {
     p->unk0 = g_gameState->unk1C->unk844;
     p->unk4 = g_gameState->unk1C->unk880;
     p->unk14 = g_gameState->unk1C->unk892;
 }
 
-void menu_save_unpackMisc(SaveMisc *p) {
+void menuSave_unpackMisc(SaveMisc *p) {
     g_gameState->unk1C->unk844 = p->unk0;
     g_gameState->unk1C->unk880 = p->unk4;
     g_gameState->unk1C->unk892 = p->unk14;
 }
 
-void menu_save_cardInit(void) {
+void menuSave_cardInit(void) {
     g_menuSaveCardOp = CARD_OP_INFO;
     g_menuSaveCardInfoChan = 0;
     g_menuSaveCardInfoBusy = 0;
@@ -2239,7 +2239,7 @@ INCLUDE_RODATA("asm/us/ovl_39/nonmatchings/ovl_39", g_menuSaveProductCode);
 INCLUDE_RODATA("asm/us/ovl_39/nonmatchings/ovl_39", g_menuSaveTitleTemplate);
 
 /* dir: a struct DIRENTRY * passed as an int, as libapi's firstfile/nextfile take it */
-s32 menu_save_firstFile(s32 chan, s32 dir) {
+s32 menuSave_firstFile(s32 chan, s32 dir) {
     char path[16];
 
     if (chan == 0) {
@@ -2249,30 +2249,30 @@ s32 menu_save_firstFile(s32 chan, s32 dir) {
     }
     _card_wait(0);
     _card_wait(1);
-    menu_save_cardIdle();
+    menuSave_cardIdle();
     return firstfile(path, dir);
 }
 
-s32 menu_save_nextFile(s32 dir) {
+s32 menuSave_nextFile(s32 dir) {
     _card_wait(0);
     _card_wait(1);
-    menu_save_cardIdle();
+    menuSave_cardIdle();
     return nextfile(dir);
 }
 
-s32 menu_save_readDirectory(s32 chan, s32 dir) {
+s32 menuSave_readDirectory(s32 chan, s32 dir) {
     s32 n = 0;
 
-    if (menu_save_firstFile(chan, dir) == dir) {
+    if (menuSave_firstFile(chan, dir) == dir) {
         do {
             n++;
             dir += sizeof(DirEnt);
-        } while (menu_save_nextFile(dir) == dir);
+        } while (menuSave_nextFile(dir) == dir);
     }
     return n;
 }
 
-s32 menu_save_getCardStatus(s32 chan) {
+s32 menuSave_getCardStatus(s32 chan) {
     if (chan == 0) {
 
         return g_menuSaveCardStatus[0];
@@ -2280,74 +2280,74 @@ s32 menu_save_getCardStatus(s32 chan) {
     return g_menuSaveCardStatus[1];
 }
 
-s32 menu_save_cardInfoSync(s32 chan) {
+s32 menuSave_cardInfoSync(s32 chan) {
     s32 r;
 
-    menu_save_clearSwCard();
+    menuSave_clearSwCard();
     _card_wait(0);
     _card_wait(1);
     _card_info(chan);
-    while ((r = menu_save_testSwCard()) == -1) {
+    while ((r = menuSave_testSwCard()) == -1) {
     }
     return r;
 }
 
-s32 menu_save_getCardOp(void) {
+s32 menuSave_getCardOp(void) {
     return g_menuSaveCardOp;
 }
 
-void menu_save_resetReadProgress(void) {
+void menuSave_resetReadProgress(void) {
     g_menuSaveSectorsDone = 0;
 }
 
-void menu_save_resetWriteProgress(void) {
+void menuSave_resetWriteProgress(void) {
     g_menuSaveSectorsDone = 0;
 }
 
-s32 menu_save_getReadProgress(void) {
+s32 menuSave_getReadProgress(void) {
     return g_menuSaveSectorsDone;
 }
 
-s32 menu_save_getWriteProgress(void) {
+s32 menuSave_getWriteProgress(void) {
     return g_menuSaveSectorsDone;
 }
 
-s32 menu_save_isCardBusy(void) {
+s32 menuSave_isCardBusy(void) {
     return g_menuSaveCardOp != CARD_OP_INFO;
 }
 
-s32 menu_save_cardClearSync(s32 chan) {
+s32 menuSave_cardClearSync(s32 chan) {
     s32 r;
 
     _card_wait(0);
     _card_wait(1);
-    menu_save_clearHwCard();
+    menuSave_clearHwCard();
     _card_clear(chan);
     do {
-        r = menu_save_testHwCard();
+        r = menuSave_testHwCard();
     } while (r == -1);
-    menu_save_cardIdle();
+    menuSave_cardIdle();
     return r;
 }
 
-s32 menu_save_cardLoad(s32 chan, void (*cb)(void)) {
-    s32 r = menu_save_cardLoadStart(chan);
+s32 menuSave_cardLoad(s32 chan, void (*cb)(void)) {
+    s32 r = menuSave_cardLoadStart(chan);
 
     g_menuSaveCardCallback = cb;
     return r;
 }
 
-s32 menu_save_cardLoadStart(s32 chan) {
+s32 menuSave_cardLoadStart(s32 chan) {
     g_menuSaveCardCallback = NULL;
     g_menuSaveCardChan = chan;
     _card_wait(0);
     _card_wait(1);
-    menu_save_clearSwCard();
+    menuSave_clearSwCard();
     g_menuSaveCardOp = CARD_OP_LOAD;
     return _card_load(chan);
 }
 
-s32 menu_save_openFile(s32 chan, char *name) {
+s32 menuSave_openFile(s32 chan, char *name) {
     char path[32];
 
     _card_wait(0);
@@ -2359,38 +2359,38 @@ s32 menu_save_openFile(s32 chan, char *name) {
         strcpy(path, "bu10:");
     }
     strcat((u8 *)path, (u8 *)name);
-    menu_save_cardIdle();
+    menuSave_cardIdle();
     return open(path, FASYNC | FWRITE | FREAD);
 }
 
-s32 menu_save_closeFile(s32 fd) {
+s32 menuSave_closeFile(s32 fd) {
     _card_wait(0);
     _card_wait(1);
-    menu_save_cardIdle();
+    menuSave_cardIdle();
     return close(fd);
 }
 
-s32 menu_save_writeAsync(s32 fd, s32 buf, s32 size, void (*cb)(void)) {
-    s32 r = menu_save_writeStart(fd, buf, size);
+s32 menuSave_writeAsync(s32 fd, s32 buf, s32 size, void (*cb)(void)) {
+    s32 r = menuSave_writeStart(fd, buf, size);
 
     g_menuSaveCardCallback = cb;
     return r;
 }
 
-s32 menu_save_writeStart(s32 fd, s32 buf, s32 size) {
+s32 menuSave_writeStart(s32 fd, s32 buf, s32 size) {
     g_menuSaveCardCallback = NULL;
     g_menuSaveFd = fd;
     g_menuSaveSectorsDone = 0;
     g_menuSaveIoBuf = buf;
     g_menuSaveSectorsLeft = (size + CARD_SECTOR - 1) / CARD_SECTOR - 1;
-    menu_save_writeSector();
+    menuSave_writeSector();
     return 1;
 }
 
-s32 menu_save_writeSector(void) {
+s32 menuSave_writeSector(void) {
     _card_wait(0);
     _card_wait(1);
-    menu_save_clearSwCard();
+    menuSave_clearSwCard();
     if (write(g_menuSaveFd, g_menuSaveIoBuf, CARD_SECTOR) == -1) {
         return 0;
     }
@@ -2398,14 +2398,14 @@ s32 menu_save_writeSector(void) {
     return 1;
 }
 
-s32 menu_save_readAsync(s32 fd, s32 buf, s32 size, void (*cb)(void)) {
-    s32 r = menu_save_readStart(fd, buf, size);
+s32 menuSave_readAsync(s32 fd, s32 buf, s32 size, void (*cb)(void)) {
+    s32 r = menuSave_readStart(fd, buf, size);
 
     g_menuSaveCardCallback = cb;
     return r;
 }
 
-s32 menu_save_readStart(s32 fd, s32 buf, s32 size) {
+s32 menuSave_readStart(s32 fd, s32 buf, s32 size) {
     g_menuSaveCardCallback = NULL;
     g_menuSaveFd = fd;
     g_menuSaveSectorsDone = 0;
@@ -2413,15 +2413,15 @@ s32 menu_save_readStart(s32 fd, s32 buf, s32 size) {
     g_menuSaveSectorsLeft = (size + CARD_SECTOR - 1) / CARD_SECTOR - 1;
     _card_wait(0);
     _card_wait(1);
-    menu_save_clearSwCard();
-    menu_save_readSector();
+    menuSave_clearSwCard();
+    menuSave_readSector();
     return 1;
 }
 
-s32 menu_save_readSector(void) {
+s32 menuSave_readSector(void) {
     _card_wait(0);
     _card_wait(1);
-    menu_save_clearSwCard();
+    menuSave_clearSwCard();
     if (read(g_menuSaveFd, g_menuSaveIoBuf, CARD_SECTOR) == -1) {
         return 0;
     }
@@ -2429,7 +2429,7 @@ s32 menu_save_readSector(void) {
     return 1;
 }
 
-u8 menu_save_createFile(s32 chan, char *name) {
+u8 menuSave_createFile(s32 chan, char *name) {
     char path[32];
     s32 fd;
     s32 ok;
@@ -2448,20 +2448,20 @@ u8 menu_save_createFile(s32 chan, char *name) {
     return ok;
 }
 
-s32 menu_save_cardFormat(s32 chan) {
+s32 menuSave_cardFormat(s32 chan) {
     _card_wait(0);
     _card_wait(1);
-    menu_save_cardIdle();
+    menuSave_cardIdle();
     return _card_format(chan);
 }
 
-void menu_save_cardPoll(void) {
+void menuSave_cardPoll(void) {
     s32 r;
 
     switch (g_menuSaveCardOp) {
     case CARD_OP_INFO:
         if (g_menuSaveCardInfoBusy == 0) {
-            menu_save_clearSwCard();
+            menuSave_clearSwCard();
             /* alternate between the two slots */
             g_menuSaveCardChan = g_menuSaveCardInfoChan = (g_menuSaveCardInfoChan + CARD_CHAN(1)) & CARD_CHAN(1);
             _card_wait(0);
@@ -2469,17 +2469,17 @@ void menu_save_cardPoll(void) {
             _card_info(g_menuSaveCardChan);
             g_menuSaveCardInfoBusy = 1;
         }
-        r = menu_save_testSwCard();
+        r = menuSave_testSwCard();
         switch (r) {
         case CARD_RES_DONE:
-            menu_save_cardPoll_set(g_menuSaveCardChan, CARD_RES_DONE);
+            menuSave_cardPoll_set(g_menuSaveCardChan, CARD_RES_DONE);
             break;
         case CARD_RES_ERROR:
         case CARD_RES_NEW:
-            menu_save_cardPoll_set(g_menuSaveCardChan, r);
+            menuSave_cardPoll_set(g_menuSaveCardChan, r);
             break;
         case CARD_RES_TIMEOUT:
-            menu_save_cardPoll_retry(g_menuSaveCardChan, r);
+            menuSave_cardPoll_retry(g_menuSaveCardChan, r);
             break;
         }
         if (r != -1) {
@@ -2497,17 +2497,17 @@ void menu_save_cardPoll(void) {
         }
         break;
     case CARD_OP_CLEAR:
-        menu_save_testHwCard();
+        menuSave_testHwCard();
         break;
     case CARD_OP_LOAD:
-        r = menu_save_testSwCard();
+        r = menuSave_testSwCard();
         g_menuSaveCardResult = r;
         if (r == -1) {
             break;
         }
         goto callback;
     case CARD_OP_READ:
-        r = menu_save_testSwCard();
+        r = menuSave_testSwCard();
         g_menuSaveCardResult = r;
         if (r == -1) {
             break;
@@ -2521,12 +2521,12 @@ void menu_save_cardPoll(void) {
         if (g_menuSaveSectorsLeft != 0) {
             g_menuSaveSectorsLeft--;
             g_menuSaveIoBuf += CARD_SECTOR;
-            menu_save_readSector();
+            menuSave_readSector();
             break;
         }
         goto callback;
     case CARD_OP_WRITE:
-        r = menu_save_testSwCard();
+        r = menuSave_testSwCard();
         g_menuSaveCardResult = r;
         if (r == -1) {
             break;
@@ -2538,7 +2538,7 @@ void menu_save_cardPoll(void) {
         if (g_menuSaveSectorsLeft != 0) {
             g_menuSaveSectorsLeft--;
             g_menuSaveIoBuf += CARD_SECTOR;
-            menu_save_writeSector();
+            menuSave_writeSector();
             break;
         }
     callback:
@@ -2549,17 +2549,17 @@ void menu_save_cardPoll(void) {
     }
 }
 
-s32 menu_save_getCardResult(s32 chan) {
+s32 menuSave_getCardResult(s32 chan) {
     return g_menuSaveCardResult;
 }
 
-void menu_save_cardIdle(void) {
+void menuSave_cardIdle(void) {
     g_menuSaveCardOp = CARD_OP_INFO;
 
     g_menuSaveCardInfoBusy = 0;
 }
 
-s32 menu_save_testSwCard(void) {
+s32 menuSave_testSwCard(void) {
     s32 r = -1;
 
     if (TestEvent(g_menuSaveSwEventIoe) == 1) {
@@ -2572,12 +2572,12 @@ s32 menu_save_testSwCard(void) {
         r = CARD_RES_NEW;
     }
     if (r != -1) {
-        menu_save_cardIdle();
+        menuSave_cardIdle();
     }
     return r;
 }
 
-s32 menu_save_testHwCard(void) {
+s32 menuSave_testHwCard(void) {
     s32 r = -1;
 
     if (TestEvent(g_menuSaveHwEventIoe) == 1) {
@@ -2590,12 +2590,12 @@ s32 menu_save_testHwCard(void) {
         r = CARD_RES_NEW;
     }
     if (r != -1) {
-        menu_save_cardIdle();
+        menuSave_cardIdle();
     }
     return r;
 }
 
-void menu_save_openCardEvents(void) {
+void menuSave_openCardEvents(void) {
     EnterCriticalSection();
     g_menuSaveSwEventIoe = OpenEvent(SwCARD, EvSpIOE, EvMdNOINTR, NULL);
     g_menuSaveSwEventError = OpenEvent(SwCARD, EvSpERROR, EvMdNOINTR, NULL);
@@ -2616,21 +2616,21 @@ void menu_save_openCardEvents(void) {
     ExitCriticalSection();
 }
 
-void menu_save_clearSwCard(void) {
+void menuSave_clearSwCard(void) {
     TestEvent(g_menuSaveSwEventIoe);
     TestEvent(g_menuSaveSwEventError);
     TestEvent(g_menuSaveSwEventTimeout);
     TestEvent(g_menuSaveSwEventNew);
 }
 
-void menu_save_clearHwCard(void) {
+void menuSave_clearHwCard(void) {
     TestEvent(g_menuSaveHwEventIoe);
     TestEvent(g_menuSaveHwEventError);
     TestEvent(g_menuSaveHwEventTimeout);
     TestEvent(g_menuSaveHwEventNew);
 }
 
-void menu_save_closeCardEvents(void) {
+void menuSave_closeCardEvents(void) {
     EnterCriticalSection();
     CloseEvent(g_menuSaveSwEventIoe);
     CloseEvent(g_menuSaveSwEventError);
