@@ -389,9 +389,10 @@ s32 fx_17d_4_op80(s32 mode, Fx17d4Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
                 w13_c6 = frame << 9;
             }
             ex->func_800D23D8((u8 *)ex->btlfx_getFileData(entry->unk8, 3), &work->unk10, NULL, 0x1000, 0, 1, w13_c6);
-            c_5 = 0;
             if (frame >= 6) {
                 c_5 = ((frame - 6) << 12) / 14;
+            } else {
+                c_5 = 0;
             }
             BTLFX_COPY_SVEC(&s, &work->unk10);
             s.vy += ex->math_sin(r_c6 >> 2) >> 3;
