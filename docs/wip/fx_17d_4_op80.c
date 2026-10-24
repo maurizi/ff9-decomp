@@ -411,7 +411,7 @@ s32 fx_17d_4_op80(s32 mode, Fx17d4Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
                 work->unk8.vx = D_801E971C.vx;
                 work->unk8.vy = D_801E971C.vy;
                 work->unk8.vz = D_801E971C.vz;
-                work->unk10.vy = D_801E971C.vy;
+                work->unk10.vy = work->unk8.vy;
                 work->unk10.vx = work->unk8.vx;
                 work->unk10.vz = work->unk8.vz;
                 env->unk2C->unk0[3].vx = work->unk8.vx;
