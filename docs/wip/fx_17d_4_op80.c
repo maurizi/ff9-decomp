@@ -60,6 +60,7 @@ void func_801E7B8C(Unk80100C78Entry *entry, SVECTOR *from, s32 n, s32 ot);
 void func_801E7EB4(Unk80100C78Entry *entry, SVECTOR *from, s32 ot);
 
 s32 fx_17d_4_op80(s32 mode, Fx17d4Work80 *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *arg4) {
+    s32 g5;
     s32 x_c0;
     Pool6CEntry *p_c1;
     s32 w13_c2;
@@ -111,6 +112,8 @@ s32 fx_17d_4_op80(s32 mode, Fx17d4Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
     s32 g;
     s32 flag;
     s32 f3;
+    s32 k5;
+    s32 n5;
     s32 w3;
 
     if (mode == 0) {
@@ -418,11 +421,15 @@ s32 fx_17d_4_op80(s32 mode, Fx17d4Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
             env->unk28 = 0x10;
             t_c5 = (frame << 12) / 24;
             c_1 = ex->math_cos(t_c5 >> 1) >> 1;
-            g = ex->math_cos(t_c5 >> 2) >> 1;
-            a.vx = b.vx = work->unk8.vx + ((ex->math_cos(c_1) * g) >> 12);
+            g5 = ex->math_cos(t_c5 >> 2) >> 1;
+            k5 = (ex->math_cos(c_1) * g5) >> 12;
+            n5 = (ex->math_sin(c_1) * g5) >> 12;
+            a.vx = work->unk8.vx + k5;
             a.vy = work->unk8.vy;
-            a.vz = b.vz = work->unk8.vz + ((ex->math_sin(c_1) * g) >> 12);
+            a.vz = work->unk8.vz + n5;
+            b.vx = a.vx;
             b.vy = work->unk8.vy - 0x1000;
+            b.vz = a.vz;
             ex->func_800D23D8((u8 *)ex->btlfx_getFileData(entry->unk8, 3), &a, NULL, 0xAAA, 0, 1, t_c5);
             func_801E7720((u8 *)ex->btlfx_getFileData(entry->unk8, 0x20), &a, &b, frame, t_c5, 1, 0x20);
             env->unk28 = 0;
