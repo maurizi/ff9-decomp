@@ -2,47 +2,47 @@
 
 void scene_init(void) {
     s32 i;
-    Ovl14Mode *m;
+    SceneMode *m;
 
     i = 0;
     m = g_sceneModes;
-    g_scene.unk0 = 0;
+    g_scene.cur = 0;
     g_scene.unk2 = 0;
-    g_scene.unk3 = 0;
+    g_scene.fadeScreen = 0;
     for (; i < 6; i++, m++) {
-        if (m->unk0 != NULL) {
-            m->unk0();
+        if (m->init != NULL) {
+            m->init();
         }
     }
-    if (g_sceneModes[g_scene.unk0].unk4 != NULL) {
-        g_sceneModes[g_scene.unk0].unk4();
+    if (g_sceneModes[g_scene.cur].enter != NULL) {
+        g_sceneModes[g_scene.cur].enter();
     }
 }
 
 void scene_update(void) {
-    if (g_sceneModes[g_scene.unk0].unk8 != NULL) {
-        g_sceneModes[g_scene.unk0].unk8();
+    if (g_sceneModes[g_scene.cur].update != NULL) {
+        g_sceneModes[g_scene.cur].update();
     }
 }
 
 void scene_exit(void) {
-    if (g_sceneModes[g_scene.unk0].unkC != NULL) {
-        g_sceneModes[g_scene.unk0].unkC();
+    if (g_sceneModes[g_scene.cur].leave != NULL) {
+        g_sceneModes[g_scene.cur].leave();
     }
 }
 
 s32 scene_get(void) {
-    return g_scene.unk0;
+    return g_scene.cur;
 }
 
 void scene_set(s32 arg0) {
-    if (arg0 != g_scene.unk0) {
-        if (g_sceneModes[g_scene.unk0].unkC != NULL) {
-            g_sceneModes[g_scene.unk0].unkC();
+    if (arg0 != g_scene.cur) {
+        if (g_sceneModes[g_scene.cur].leave != NULL) {
+            g_sceneModes[g_scene.cur].leave();
         }
-        g_scene.unk0 = arg0;
-        if (g_sceneModes[g_scene.unk0].unk4 != NULL) {
-            g_sceneModes[g_scene.unk0].unk4();
+        g_scene.cur = arg0;
+        if (g_sceneModes[g_scene.cur].enter != NULL) {
+            g_sceneModes[g_scene.cur].enter();
         }
     }
 }
@@ -86,16 +86,16 @@ s32 scene_isTitleIdle(void) {
     if (func_8002F810() != 0) {
         return 0;
     }
-    return g_scene.unk0 == 1;
+    return g_scene.cur == 1;
 }
 
 void scene_setFadeScreen(s32 arg0) {
-    g_scene.unk3 = arg0;
+    g_scene.fadeScreen = arg0;
     if (scene_get() == 1) {
         opening_titleRefresh();
     }
 }
 
 u8 scene_getFadeScreen(void) {
-    return g_scene.unk3;
+    return g_scene.fadeScreen;
 }

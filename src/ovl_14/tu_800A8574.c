@@ -1,7 +1,7 @@
 #include "ovl_14.h"
 
 void opening_titleInit(void) {
-    g_titleMenu.unk3 = 1;
+    g_titleMenu.cursor = 1;
     opening_titleLoadImages();
 }
 
@@ -10,16 +10,16 @@ void opening_titleEnter(void) {
 
     func_80032574();
     func_8002C4B0(1);
-    g_titleMenu.unk8 = 0;
+    g_titleMenu.decided = 0;
     g_titleMenu.unk0 = 1;
-    g_titleMenu.unk7 = 0;
-    g_titleMenu.unk6 = 0;
-    g_titleMenu.unk1 = 0;
-    g_titleMenu.unk2 = 0;
-    g_titleMenu.unkC = 0;
+    g_titleMenu.cardPolling = 0;
+    g_titleMenu.cardPort = 0;
+    g_titleMenu.shown = 0;
+    g_titleMenu.fadingIn = 0;
+    g_titleMenu.fadeFrames = 0;
     g_titleMenu.unk10 = 0;
     for (i = 0; i < 2; i++) {
-        g_titleMenu.unk4[i] = 0;
+        g_titleMenu.cardIn[i] = 0;
     }
     opening_titleOpenCardEvents();
     opening_titleStartFadeIn();
@@ -31,7 +31,7 @@ void opening_titleRefresh(void) {
 
 void opening_titleUpdate(void) {
     func_8002C308(0);
-    if (g_titleMenu.unk8 == 0) {
+    if (g_titleMenu.decided == 0) {
         opening_titleInput();
         opening_titleDraw();
         opening_titleTick();
@@ -43,20 +43,20 @@ void opening_titleUpdate(void) {
 void opening_titleLeave(void) {
     func_8002C4B0(0);
     opening_titleCloseCardEvents();
-    if (g_titleMenu.unk3 == 1) {
+    if (g_titleMenu.cursor == 1) {
         menu_open(4, 1);
     }
 }
 
 void opening_titleInput(void) {
     if (func_8002F810() == 0) {
-        if (g_titleMenu.unk1 != 0 && g_titleMenu.unk2 == 0) {
+        if (g_titleMenu.shown != 0 && g_titleMenu.fadingIn == 0) {
             if (g_padRepeat & PAD_UP) {
                 snd_playSe(0x67);
-                g_titleMenu.unk3 = g_titleMenu.unk3 != 0 ? g_titleMenu.unk3 - 1 : 1;
+                g_titleMenu.cursor = g_titleMenu.cursor != 0 ? g_titleMenu.cursor - 1 : 1;
             } else if (g_padRepeat & PAD_DOWN) {
                 snd_playSe(0x67);
-                g_titleMenu.unk3 = g_titleMenu.unk3 == 0 ? g_titleMenu.unk3 + 1 : 0;
+                g_titleMenu.cursor = g_titleMenu.cursor == 0 ? g_titleMenu.cursor + 1 : 0;
             } else if (g_padRepeat & (PAD_START | BTN_CROSS)) {
                 opening_titleDecide();
             }
@@ -108,30 +108,30 @@ void opening_titleLoadTims(s32 *pack) {
         u = img->x & 0x3F;
         mode = tim->unk4 & 3;
         sh = 2 - mode;
-        g_titleMenu.unk24[i].unk0.s.u = u << sh;
-        g_titleMenu.unk24[i].unk0.s.v = img->y;
-        g_titleMenu.unk24[i].unk4 = img->w << sh;
-        g_titleMenu.unk24[i].unk5 = img->h;
+        g_titleMenu.images[i].uvClut.s.u = u << sh;
+        g_titleMenu.images[i].uvClut.s.v = img->y;
+        g_titleMenu.images[i].w = img->w << sh;
+        g_titleMenu.images[i].h = img->h;
         tp = mode << 7;
         yb = (s16)((s16)(img->y & 0x100) >> 4);
         xb = (img->x & 0x3FF) >> 6;
         y2 = (s16)(img->y & 0x200) << 2;
-        g_titleMenu.unk24[i].unk6 = ((i == 10) ? (tp | (yb | 0x20)) : (tp | yb)) | xb | y2;
+        g_titleMenu.images[i].tpage = ((i == 10) ? (tp | (yb | 0x20)) : (tp | yb)) | xb | y2;
         if (mode < 2) {
-            g_titleMenu.unk24[i].unk0.s.clut = (clut->y << 6) | ((clut->x >> 4) & 0x3F);
+            g_titleMenu.images[i].uvClut.s.clut = (clut->y << 6) | ((clut->x >> 4) & 0x3F);
         } else {
-            g_titleMenu.unk24[i].unk0.s.clut = 0;
+            g_titleMenu.images[i].uvClut.s.clut = 0;
         }
         DrawSync(0);
     }
 }
 
 void opening_titleDecide(void) {
-    if (g_titleMenu.unk3 == 1 && opening_titleHasCard() == 0) {
+    if (g_titleMenu.cursor == 1 && opening_titleHasCard() == 0) {
         snd_playSe(0x66);
         return;
     }
-    snd_playSe(g_titleMenu.unk3 == 0 ? 0xC18 : 0x67);
+    snd_playSe(g_titleMenu.cursor == 0 ? 0xC18 : 0x67);
     func_8002FAAC(0x10);
     func_8002F8A8(opening_titleOnFadeOut);
 }
@@ -143,43 +143,43 @@ void opening_titleDrawBackground(void) {
     s32 i;
 
     for (i = 0; i < 10; i++) {
-        func_80027710(i << 5, 0, 10, &g_titleMenu.unk24[i], 0);
+        func_80027710(i << 5, 0, 10, &g_titleMenu.images[i], 0);
     }
-    func_80027710(g_titleImage10Pos.x, g_titleImage10Pos.y, 5, &g_titleMenu.unk24[10], 1);
-    if (g_titleMenu.unk1 != 0) {
-        if (g_titleMenu.unk2 == 0) {
-            func_80027710(g_titleImage13Pos.x, g_titleImage13Pos.y, 5, &g_titleMenu.unk24[13], 0);
+    func_80027710(g_titleImage10Pos.x, g_titleImage10Pos.y, 5, &g_titleMenu.images[10], 1);
+    if (g_titleMenu.shown != 0) {
+        if (g_titleMenu.fadingIn == 0) {
+            func_80027710(g_titleImage13Pos.x, g_titleImage13Pos.y, 5, &g_titleMenu.images[13], 0);
         } else {
-            opening_titleDrawFading(g_titleImage13Pos.x, g_titleImage13Pos.y, 5, &g_titleMenu.unk24[13], 0);
+            opening_titleDrawFading(g_titleImage13Pos.x, g_titleImage13Pos.y, 5, &g_titleMenu.images[13], 0);
         }
     }
 }
 
 void opening_titleDrawChoices(void) {
-    if (g_titleMenu.unk1 != 0) {
-        if (g_titleMenu.unk2 == 0) {
-            func_80027710(g_titleNewGamePos.x, g_titleNewGamePos.y, 5, &g_titleMenu.unk24[11], 0);
-            func_80027710(g_titleContinuePos.x, g_titleContinuePos.y, 5, &g_titleMenu.unk24[12], opening_titleHasCard() == 0);
+    if (g_titleMenu.shown != 0) {
+        if (g_titleMenu.fadingIn == 0) {
+            func_80027710(g_titleNewGamePos.x, g_titleNewGamePos.y, 5, &g_titleMenu.images[11], 0);
+            func_80027710(g_titleContinuePos.x, g_titleContinuePos.y, 5, &g_titleMenu.images[12], opening_titleHasCard() == 0);
         } else {
-            opening_titleDrawFading(g_titleNewGamePos.x, g_titleNewGamePos.y, 5, &g_titleMenu.unk24[11], 0);
-            opening_titleDrawFading(g_titleContinuePos.x, g_titleContinuePos.y, 5, &g_titleMenu.unk24[12], opening_titleHasCard() == 0);
+            opening_titleDrawFading(g_titleNewGamePos.x, g_titleNewGamePos.y, 5, &g_titleMenu.images[11], 0);
+            opening_titleDrawFading(g_titleContinuePos.x, g_titleContinuePos.y, 5, &g_titleMenu.images[12], opening_titleHasCard() == 0);
         }
     }
 }
 
 void opening_titleDrawCursor(void) {
-    if (func_8002F810() == 0 && g_titleMenu.unk1 != 0 && g_titleMenu.unk2 == 0) {
-        D_80077DE8.unk0 = g_titleCursorPos[g_titleMenu.unk3].x - 0x1A;
-        D_80077DE8.unk2 = g_titleCursorPos[g_titleMenu.unk3].y + 3;
+    if (func_8002F810() == 0 && g_titleMenu.shown != 0 && g_titleMenu.fadingIn == 0) {
+        D_80077DE8.unk0 = g_titleCursorPos[g_titleMenu.cursor].x - 0x1A;
+        D_80077DE8.unk2 = g_titleCursorPos[g_titleMenu.cursor].y + 3;
         D_80077DE8.unk4 = 3;
         func_800355E4(&D_80077DE8);
     }
 }
 
 void opening_titleStepFadeIn(void) {
-    if (++g_titleMenu.unkC > 0x30) {
-        g_titleMenu.unkC = 0;
-        g_titleMenu.unk2 = 0;
+    if (++g_titleMenu.fadeFrames > 0x30) {
+        g_titleMenu.fadeFrames = 0;
+        g_titleMenu.fadingIn = 0;
     }
 }
 
@@ -190,7 +190,7 @@ void opening_titleOpenCardEvents(void) {
     EnterCriticalSection();
     for (i = 0; i < 4; i++) {
         h = OpenEvent(0xF4000001, g_titleCardEvents[i], 0x2000, 0);
-        g_titleMenu.unk14[i] = h;
+        g_titleMenu.cardEvents[i] = h;
         EnableEvent(h);
     }
     ExitCriticalSection();
@@ -201,8 +201,8 @@ void opening_titleCloseCardEvents(void) {
 
     EnterCriticalSection();
     for (i = 0; i < 4; i++) {
-        DisableEvent(g_titleMenu.unk14[i]);
-        CloseEvent(g_titleMenu.unk14[i]);
+        DisableEvent(g_titleMenu.cardEvents[i]);
+        CloseEvent(g_titleMenu.cardEvents[i]);
     }
     ExitCriticalSection();
 }
@@ -210,15 +210,15 @@ void opening_titleCloseCardEvents(void) {
 void opening_titlePollCard(void) {
     s32 r;
 
-    if (g_titleMenu.unk7 == 0) {
+    if (g_titleMenu.cardPolling == 0) {
         opening_titleStartCardInfo();
-        g_titleMenu.unk7 = 1;
+        g_titleMenu.cardPolling = 1;
     }
     r = opening_titleTestCardEvents();
     if (r != -1) {
-        g_titleMenu.unk4[g_titleMenu.unk6] = (r == 0 || r == 3) ? 1 : 0;
-        g_titleMenu.unk7 = 0;
-        g_titleMenu.unk6 ^= 1;
+        g_titleMenu.cardIn[g_titleMenu.cardPort] = (r == 0 || r == 3) ? 1 : 0;
+        g_titleMenu.cardPolling = 0;
+        g_titleMenu.cardPort ^= 1;
     }
 }
 
@@ -227,7 +227,7 @@ u8 opening_titleHasCard(void) {
     u8 r = 0;
 
     for (i = 0; i < 2; i++) {
-        r |= g_titleMenu.unk4[i];
+        r |= g_titleMenu.cardIn[i];
     }
     return r;
 }
@@ -236,11 +236,11 @@ void opening_titleStartCardInfo(void) {
     s32 i;
 
     for (i = 0; i < 4; i++) {
-        TestEvent(g_titleMenu.unk14[i]);
+        TestEvent(g_titleMenu.cardEvents[i]);
     }
     _card_wait(0);
     _card_wait(1);
-    _card_info(g_titleMenu.unk6 << 4);
+    _card_info(g_titleMenu.cardPort << 4);
 }
 
 s32 opening_titleTestCardEvents(void) {
@@ -248,7 +248,7 @@ s32 opening_titleTestCardEvents(void) {
     s32 r = -1;
 
     for (i = 0; i < 4; i++) {
-        if (TestEvent(g_titleMenu.unk14[i]) == 1) {
+        if (TestEvent(g_titleMenu.cardEvents[i]) == 1) {
             r = i;
             break;
         }
@@ -257,39 +257,39 @@ s32 opening_titleTestCardEvents(void) {
 }
 
 void opening_titleOnFadeOut(void) {
-    g_titleMenu.unk8 = 1;
+    g_titleMenu.decided = 1;
 }
 
 s32 opening_titleGetCursor(void) {
-    return g_titleMenu.unk3;
+    return g_titleMenu.cursor;
 }
 
 void opening_titleStartFadeIn(void) {
     if (scene_getFadeScreen() == 0) {
-        g_titleMenu.unk1 = 1;
-        g_titleMenu.unk2 = 1;
-        g_titleMenu.unkC = 0;
+        g_titleMenu.shown = 1;
+        g_titleMenu.fadingIn = 1;
+        g_titleMenu.fadeFrames = 0;
     } else {
-        g_titleMenu.unk1 = 1;
-        g_titleMenu.unk2 = 0;
-        g_titleMenu.unkC = 0;
+        g_titleMenu.shown = 1;
+        g_titleMenu.fadingIn = 0;
+        g_titleMenu.fadeFrames = 0;
         func_8002FA50(0x20);
     }
 }
 
-void opening_titleDrawFading(s32 x, s32 y, s32 z, Ovl14Text *t, s32 arg4) {
+void opening_titleDrawFading(s32 x, s32 y, s32 z, TitleImage *t, s32 arg4) {
     SprtWords *p;
-    s32 c = g_titleMenu.unkC;
+    s32 c = g_titleMenu.fadeFrames;
 
     setlen(g_primPtr, 4);
     p = (SprtWords *)g_primPtr;
     p->rgbc = (c << 1) | (c << 9) | (c << 17) | 0x66000000;
     p->xy = x | (y << 16);
-    p->uvclut = t->unk0.w;
-    p->wh = t->unk4 | (t->unk5 << 16);
+    p->uvclut = t->uvClut.w;
+    p->wh = t->w | (t->h << 16);
     g_primPtr = (u8 *)(p + 1);
     addPrim(&g_ot[z], p);
-    SetDrawTPage(g_primPtr, 1, 1, t->unk6 | 0x20);
+    SetDrawTPage(g_primPtr, 1, 1, t->tpage | 0x20);
     addPrim(&g_ot[z], g_primPtr);
     g_primPtr += sizeof(SprtWords); /* sic: the DR_TPAGE is only 8 bytes */
 }
@@ -297,7 +297,7 @@ void opening_titleDrawFading(s32 x, s32 y, s32 z, Ovl14Text *t, s32 arg4) {
 void opening_titleConfirm(void) {
     s32 r;
 
-    switch (g_titleMenu.unk3) {
+    switch (g_titleMenu.cursor) {
     case 0:
         g_gameState->unkB = 1;
         r = scene_checkDisc();

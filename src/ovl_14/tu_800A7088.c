@@ -106,7 +106,7 @@ void opening_findSceneSectors(void) {
     s32 base;
     u8 *area;
     u8 *start;
-    Ovl14Dir *e;
+    SceneDirEntry *e;
     s32 key;
     s32 id;
 
@@ -118,17 +118,17 @@ void opening_findSceneSectors(void) {
         if (mode == 1) {
             key = (s16)ctx->fieldId;
             start = area + ((f->unk48 - base) << 11);
-            e = (Ovl14Dir *)start + f->unk44 - 1;
+            e = (SceneDirEntry *)start + f->unk44 - 1;
         } else {
             key = ctx->unk7DC;
             start = area + ((f->unk38 - base) << 11);
-            e = (Ovl14Dir *)start + f->unk34 - 1;
+            e = (SceneDirEntry *)start + f->unk34 - 1;
         }
         for (;;) {
-            if (e->unk0 == key) {
-                id = e->unk2;
-                ctx->sceneSector[1] = e->unk4;
-                ctx->sceneSectors[1] = e[1].unk4 - e->unk4;
+            if (e->id == key) {
+                id = e->link;
+                ctx->sceneSector[1] = e->sector;
+                ctx->sceneSectors[1] = e[1].sector - e->sector;
                 break;
             }
             e--;
@@ -137,11 +137,11 @@ void opening_findSceneSectors(void) {
             }
         }
         start = area + ((gs->unk14->unk28 - base) << 11);
-        e = (Ovl14Dir *)start + gs->unk14->unk24 - 1;
+        e = (SceneDirEntry *)start + gs->unk14->unk24 - 1;
         for (;;) {
-            if (e->unk0 == id) {
-                ctx->sceneSector[0] = e->unk4;
-                ctx->sceneSectors[0] = e[1].unk4 - e->unk4;
+            if (e->id == id) {
+                ctx->sceneSector[0] = e->sector;
+                ctx->sceneSectors[0] = e[1].sector - e->sector;
                 break;
             }
             e--;

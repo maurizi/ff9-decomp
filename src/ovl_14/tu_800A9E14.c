@@ -66,25 +66,25 @@ s32 opening_attract(s32 arg0) {
                     addPrim(&g_gameState->unk1C->unk10[g_gameState->unk1C->unk8][8], (g_attractTpages[g_gameState->unk1C->unk8] + 1));
                     pad &= 0x4008;
                     btn = pad;
-                    if (!(g_attractFlags.unk0 & 1) || btn) {
+                    if (!(g_attractFlags.bits & 1) || btn) {
                         if (btn) {
                             if (timer >= 0x1F) {
                                 timer = 0x1E;
                             }
                             g_attractSkipped = 1;
                             D_80073998[0] = -1;
-                            g_attractFlags.unk0 |= 0x100;
+                            g_attractFlags.bits |= 0x100;
                         }
-                        if (!(g_attractFlags.unk0 & 1) && timer < 0xF1) {
+                        if (!(g_attractFlags.bits & 1) && timer < 0xF1) {
                             func_800320B8(1, 1, timer, 0xFFFFFF);
-                            g_attractFlags.unk0 |= 1;
+                            g_attractFlags.bits |= 1;
                         }
                     }
                     timer--;
                 } else {
                     timer = -1;
-                    g_attractFlags.unk0 &= ~1;
-                    if (g_attractFlags.unk0 & 0x100) {
+                    g_attractFlags.bits &= ~1;
+                    if (g_attractFlags.bits & 0x100) {
                         i = 4;
                     } else {
                         i++;
@@ -105,12 +105,12 @@ s32 opening_attract(s32 arg0) {
             }
             func_80032100();
             func_80023A0C();
-            if (!(g_attractFlags.unk0 & 0x10) && (u8)scene_isTitleIdle() && timer < 0x5B) {
+            if (!(g_attractFlags.bits & 0x10) && (u8)scene_isTitleIdle() && timer < 0x5B) {
                 func_800320B8(1, 1, 0x5A, 0xFFFFFF);
                 if (g_gameState->unkB != 0xFF && (g_gameState->unkB & 1)) {
                     opening_soundCmd(0x8301, 0x7003A, 0x5A, 0, 0);
                 }
-                g_attractFlags.unk0 |= 0x10;
+                g_attractFlags.bits |= 0x10;
             }
             if (timer == 0) {
                 if (g_attractState != 4) {
@@ -120,7 +120,7 @@ s32 opening_attract(s32 arg0) {
                     opening_soundCmd(0x100, 0x7003A, 0, 0, 0);
                 }
             }
-            if ((g_attractFlags.unk0 & 0x10) || (u8)scene_isTitleIdle()) {
+            if ((g_attractFlags.bits & 0x10) || (u8)scene_isTitleIdle()) {
                 timer--;
             }
             break;
@@ -147,7 +147,7 @@ s32 opening_attractInit(s32 idx) {
     db_register((s32)buf, 0);
     func_800320B8(1, 1, 0, 0xFFFFFF);
     g_attractState = 0;
-    g_attractFlags.unk0 = 0;
+    g_attractFlags.bits = 0;
     D_80073998[0] = 0;
     return 0;
 }
