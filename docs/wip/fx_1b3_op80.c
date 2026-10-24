@@ -1,4 +1,4 @@
-/* Draft of fx_1b3 fx_1b3_op80 (Fx1b3Split/Fx1b3Blast in include/fxmod/fx_1b3.h). Status: 266 lines, 178 ignoring registers (build/w/nd.py). The frame matches with the tex/clut lists, trail points and flash locals sharing three function-scope buffers (v, w, sc), as the original stack offsets show. Hi_RegisterTexListModel is called with three arguments (a3 left over), see REGTEX. The frame switch is sparse (a compare tree, bodies in ascending case order). */
+/* Draft of fx_1b3 fx_1b3_op80 (Fx1b3Split/Fx1b3Blast in include/fxmod/fx_1b3.h). Status: 99 lines, 66 ignoring registers (build/w/nd.py). The frame matches with the tex/clut lists, trail points and flash locals sharing three function-scope buffers (v, w, sc), as the original stack offsets show. Hi_RegisterTexListModel is called with three arguments (a3 left over), see REGTEX. The frame switch is sparse (a compare tree, bodies in ascending case order). */
 #include "fxmod/fx_1b3.h"
 
 typedef struct {
@@ -91,6 +91,8 @@ s32 fx_1b3_op80(s32 mode, Fx1b3Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
     s32 j;
     s32 c;
     s32 zz1;
+    s32 zz2;
+    s32 zz3;
 
     if (mode == 0) {
         *arg4 = 0x264;
@@ -612,18 +614,18 @@ s32 fx_1b3_op80(s32 mode, Fx1b3Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
         }
         if (work->unk0[0] != 0) {
             work->unk0[0]--;
-            c = ex->btlfx_lerpRatio(0x40, 0, work->unk0[0], 0x10);
-            ex->btlfx_drawScreenTint((u32 *)env->unk20, 1, c, c, c);
+            zz3 = ex->btlfx_lerpRatio(0x40, 0, work->unk0[0], 0x10);
+            ex->btlfx_drawScreenTint((u32 *)env->unk20, 1, zz3, zz3, zz3);
         }
         if (work->unk0[12] != 0) {
             work->unk0[12]--;
-            c = ex->btlfx_lerpRatio(0xFF, 0, work->unk0[12], 0x20);
-            ex->btlfx_drawScreenTint((u32 *)env->unk20, 1, c, c, c);
+            zz3 = ex->btlfx_lerpRatio(0xFF, 0, work->unk0[12], 0x20);
+            ex->btlfx_drawScreenTint((u32 *)env->unk20, 1, zz3, zz3, zz3);
         }
         if (work->unk0[1] != 0) {
             work->unk0[1]--;
-            c = 0x40;
-            ex->btlfx_drawScreenTint((u32 *)env->unk20, 1, c, c, c);
+            zz3 = 0x40;
+            ex->btlfx_drawScreenTint((u32 *)env->unk20, 1, zz3, zz3, zz3);
         }
         if (work->unk0[2] != 0) {
             work->unk0[2]--;
@@ -655,18 +657,16 @@ s32 fx_1b3_op80(s32 mode, Fx1b3Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             case 2:
                 for (i = 0; i < 5; i++) {
                     if (D_801EB0C4[i].unk4C == 0 && work->unk0[2] >= 0xD) {
-                        s32 k;
 
                         D_801EB0C4[i].unk4C = (ex->btlfx_rand() & 3) + 4;
-                        for (k = 0; k < 4; k++) {
-                            s32 m;
+                        for (zz2 = 0; zz2 < 4; zz2++) {
 
                             if (work->unk0[3] == 1) {
-                                ex->func_800DC818(0x10, D_801EB004[k], (u16 *)&v[1]);
-                                ex->func_800DC818(0x10, D_801EB004[k + 1], (u16 *)&v[2]);
+                                ex->func_800DC818(0x10, D_801EB004[zz2], (u16 *)&v[1]);
+                                ex->func_800DC818(0x10, D_801EB004[zz2 + 1], (u16 *)&v[2]);
                             } else {
-                                ex->func_800DC818(0x10, D_801EB018[k], (u16 *)&v[1]);
-                                ex->func_800DC818(0x10, D_801EB018[k + 1], (u16 *)&v[2]);
+                                ex->func_800DC818(0x10, D_801EB018[zz2], (u16 *)&v[1]);
+                                ex->func_800DC818(0x10, D_801EB018[zz2 + 1], (u16 *)&v[2]);
                             }
                             v[2].vx += ex->btlfx_randRange(-0x100, 0x100);
                             v[2].vy += ex->btlfx_randRange(-0x100, 0x100);
@@ -674,13 +674,13 @@ s32 fx_1b3_op80(s32 mode, Fx1b3Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
                             v[2].vx = (s16)(v[2].vx - v[1].vx) >> 2;
                             v[2].vy = (s16)(v[2].vy - v[1].vy) >> 2;
                             v[2].vz = (s16)(v[2].vz - v[1].vz) >> 2;
-                            for (m = 0; m < 2; m++) {
-                                D_801EB0C4[i].unk50[k * 2 + m].vx = v[1].vx;
-                                D_801EB0C4[i].unk50[k * 2 + m].vy = v[1].vy;
-                                D_801EB0C4[i].unk50[k * 2 + m].vz = v[1].vz;
-                                D_801EB0C4[i].unk98[k * 2 + m].vx = ex->btlfx_randRange(-0x20, 0x20);
-                                D_801EB0C4[i].unk98[k * 2 + m].vz = ex->btlfx_randRange(-0x20, 0x20);
-                                D_801EB0C4[i].unk98[k * 2 + m].vy = ex->btlfx_randRange(-4, 4);
+                            for (c = 0; c < 2; c++) {
+                                D_801EB0C4[i].unk50[zz2 * 2 + c].vx = v[1].vx;
+                                D_801EB0C4[i].unk50[zz2 * 2 + c].vy = v[1].vy;
+                                D_801EB0C4[i].unk50[zz2 * 2 + c].vz = v[1].vz;
+                                D_801EB0C4[i].unk98[zz2 * 2 + c].vx = ex->btlfx_randRange(-0x20, 0x20);
+                                D_801EB0C4[i].unk98[zz2 * 2 + c].vz = ex->btlfx_randRange(-0x20, 0x20);
+                                D_801EB0C4[i].unk98[zz2 * 2 + c].vy = ex->btlfx_randRange(-4, 4);
                                 v[1].vx += v[2].vx;
                                 v[1].vy += v[2].vy;
                                 v[1].vz += v[2].vz;
@@ -698,25 +698,24 @@ s32 fx_1b3_op80(s32 mode, Fx1b3Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             case 3:
                 for (i = 0; i < 6; i++) {
                     if (D_801EB0C4[i].unk4C == 0 && work->unk0[2] >= 0xD) {
-                        s32 rad;
                         s32 ang;
 
                         D_801EB0C4[i].unk4C = (ex->btlfx_rand() & 3) + 4;
                         if (i & 1) {
                             ex->func_800DC818(0x10, 3, (u16 *)&v[0]);
-                            rad = 0x200;
+                            c = 0x200;
                         } else {
                             ex->func_800DC818(0x10, 9, (u16 *)&v[0]);
-                            rad = 0x180;
+                            c = 0x180;
                         }
                         ang = ex->btlfx_rand() & 0xFFF;
-                        for (j = 0; j < 8; j++) {
-                            D_801EB0C4[i].unk50[j].vx = v[0].vx + ((ex->math_sin(ang) * (rad + (ex->btlfx_rand() & 0x7F))) >> 12);
-                            D_801EB0C4[i].unk50[j].vz = v[0].vz + ((ex->math_cos(ang) * (rad + (ex->btlfx_rand() & 0x7F))) >> 12);
-                            D_801EB0C4[i].unk50[j].vy = v[0].vy + ex->btlfx_randRange(-0x40, 0x40);
-                            D_801EB0C4[i].unk98[j].vx = ex->btlfx_randRange(-0x20, 0x20);
-                            D_801EB0C4[i].unk98[j].vz = ex->btlfx_randRange(-0x20, 0x20);
-                            D_801EB0C4[i].unk98[j].vy = ex->btlfx_randRange(-0x20, 0x20);
+                        for (zz2 = 0; zz2 < 8; zz2++) {
+                            D_801EB0C4[i].unk50[zz2].vx = v[0].vx + ((ex->math_sin(ang) * (c + (ex->btlfx_rand() & 0x7F))) >> 12);
+                            D_801EB0C4[i].unk50[zz2].vz = v[0].vz + ((ex->math_cos(ang) * (c + (ex->btlfx_rand() & 0x7F))) >> 12);
+                            D_801EB0C4[i].unk50[zz2].vy = v[0].vy + ex->btlfx_randRange(-0x40, 0x40);
+                            D_801EB0C4[i].unk98[zz2].vx = ex->btlfx_randRange(-0x20, 0x20);
+                            D_801EB0C4[i].unk98[zz2].vz = ex->btlfx_randRange(-0x20, 0x20);
+                            D_801EB0C4[i].unk98[zz2].vy = ex->btlfx_randRange(-0x20, 0x20);
                             ang += 0x100;
                         }
                         D_801EB0C4[i].unk98[8].vx = 0;
