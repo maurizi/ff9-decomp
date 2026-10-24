@@ -850,7 +850,7 @@ s32 fx_0e3_1_op80(s32 mode, Fx0e31Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
             env->unk28 = 0x300;
             ang = work->unk4 << 7;
             y11 = ((ex->math_cos(t >> 2) * 0xEB) >> 12) + 0x20;
-            for (i5 = 0; i5 < 5; i5++) {
+            for (i5 = 0; i5 < 5; i5++, ang += 0x333 + ex->btlfx_randCentered(0x20)) {
                 f9.vx = work->unk30.vx;
                 f9.vy = work->unk30.vy;
                 f9.vz = work->unk30.vz;
@@ -864,7 +864,6 @@ s32 fx_0e3_1_op80(s32 mode, Fx0e31Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
                 t9.vy -= 0xF00;
                 func_801ECDEC(entry, (Fx0e31Bolt *)&D_801F0A14[i5], &t9, &f9, 0x80, 0x200, ang, 0xFF, 0,
                               ex->math_cos(t >> 2), y11);
-                ang = ang + 0x333 + ex->btlfx_randCentered(0x20);
             }
             env->unk28 = 0;
             if (frame == 0x31) {
