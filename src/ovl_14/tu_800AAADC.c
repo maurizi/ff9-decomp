@@ -55,7 +55,7 @@ void func_800AAF40(void) {
     func_8001D9CC(D_800AB2F4, 0, 0xE0, 0x280, 0);
     func_8001D8A8(D_800AB2F4);
     func_800320B8(1, 1, 0, 0xFFFFFF);
-    D_80073998[0] = 0;
+    g_padPortMask[0] = 0;
 }
 
 void func_800AB06C(void) {

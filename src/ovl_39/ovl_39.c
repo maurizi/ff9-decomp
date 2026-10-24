@@ -28,8 +28,8 @@ void func_801F4414(void) {
     func_801FAC68();
     func_801F5A60();
     for (i = 0; i < 2; i++) {
-        D_801FB1A8.unk18[i] = D_80073998[i];
-        D_80073998[i] |= 0x300;
+        D_801FB1A8.unk18[i] = g_padPortMask[i];
+        g_padPortMask[i] |= 0x300;
     }
 }
 
@@ -323,7 +323,7 @@ void func_801F52C0(void) {
     func_801F5D00();
     func_801F7950();
     for (i = 0; i < 2; i++) {
-        D_80073998[i] = D_801FB1A8.unk18[i];
+        g_padPortMask[i] = D_801FB1A8.unk18[i];
     }
 }
 

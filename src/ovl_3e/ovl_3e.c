@@ -7,7 +7,7 @@ void func_801F605C(void) {
     u8 r;
     u8 state;
 
-    src = D_80073998;
+    src = g_padPortMask;
     st = &D_801F6BBC;
     st->unk2 = 0;
     st->unk10 = 0;
@@ -152,7 +152,7 @@ void func_801F65D4(void) {
     if (D_801F6BBC.unk6 != 15000) {
         evt_setNextLocation(D_801F6BBC.unk6);
     }
-    dst = D_80073998;
+    dst = g_padPortMask;
     st = &D_801F6BBC;
     g_gameState->unk0 |= 0x100000;
     for (i = 0; i < 2; i++) {

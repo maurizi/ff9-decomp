@@ -1896,11 +1896,11 @@ s32 evt_execInstr(void) {
         return 0;
     case 0xB9:
         a = evt_getArg8_inline();
-        D_80073998[a] |= evt_getArg16_inline();
+        g_padPortMask[a] |= evt_getArg16_inline();
         return 0;
     case 0xBA:
         a = evt_getArg8_inline();
-        D_80073998[a] &= ~evt_getArg16_inline();
+        g_padPortMask[a] &= ~evt_getArg16_inline();
         return 0;
     case 0xC5:
         a = evt_getArg16_inline();
@@ -1972,10 +1972,10 @@ s32 evt_execInstr(void) {
         func_800B5004((a >> 14) & 3, a & 0x3FFF);
         return 1;
     case 0xAA:
-        D_80073998[0] &= ~0x40000;
+        g_padPortMask[0] &= ~0x40000;
         return 0;
     case 0xAB:
-        D_80073998[0] |= 0x40000;
+        g_padPortMask[0] |= 0x40000;
         return 1;
     case 0x48:
         a = evt_getArg16_inline();
@@ -2354,10 +2354,10 @@ void func_800475D8(Unk8004AB64 *obj) {
     analog = 0;
     memset(&v, 0, 8);
     pad = func_8004E8D4();
-    if (((D_80073940[0].unk0 >> 12) & 0xF) == 7) {
-        x = D_80073938[0].unk0[2];
-        y = D_80073938[0].unk0[3];
-        func_80019750((Unk4 *)dz);
+    if (((g_padBuf[0].unk0 >> 12) & 0xF) == 7) {
+        x = g_padAnalog[0].unk0[2];
+        y = g_padAnalog[0].unk0[3];
+        pad_getAnalogThresholds((Unk4 *)dz);
         /* The do-while(0) (a macro in the original?) doubles y's reference count in flow,
            which puts y ahead of x in global-alloc order (y s0, x s1). */
         if (x < dz[2] || dz[3] < x) {
@@ -3326,7 +3326,7 @@ void evt_init(u8 *data) {
     GameState *gs;
 
     t = D_80011A44;
-    func_80019774(&t);
+    pad_setAnalogThresholds(&t);
     k = data[3];
     D_8007ADF8 = data + 0x80;
     gs = g_gameState;

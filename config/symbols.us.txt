@@ -312,3 +312,20 @@ g_encounterSlotThresholds = 0x8006E648; // [code] per pattern (table byte & 3) t
 game_setNextScene = 0x8001E2AC; // type:func [code] stores the destination id for the current mode - field scene unkA, battle unk11C0->unk4, world unk8->unk24 - read when the mode exits (fld_exit, btl_cleanup)
 evt_setNextLocation = 0x80021640; // type:func [code] game_setNextScene for script opcodes 0x2B (field jump, returns 4) and 0xB6 (world map, returns 5)
 evt_setNextBattle = 0x80021660; // type:func [code] game_setNextScene for script opcodes 0x2A/0x8C and evt_rollEncounter (event return value 3 = battle)
+game_reset = 0x80016A28; // type:func [code] start of every game_main loop pass clears VRAM, resets CD, db, pad (pad_resetState), SPU reverb, then the subsystems' inits
+game_shutdown = 0x80016B6C; // type:func [code] end of a game_main loop pass (GameState.unk0 bit 0) stops sound and db, counts D_80067950
+pad_resetState = 0x80018F50; // type:func [code] clears every per-port pad array and installs the default button mapping through pad_setMapping
+pad_setMapping = 0x80019708; // type:func [code] D_80073730[port][bit index of b] = c which raw controller buttons set game button b (pad_update ORs 1 << index)
+pad_getFlags = 0x80019150; // type:func [code] returns D_80073720 (pad_update's per-port init bits, 0x8000 = analog stick acts as d-pad)
+pad_setFlags = 0x80019160; // type:func [code] sets or clears bits a of D_80073720 (tu_8002BEEC toggles 0x8000)
+pad_getAnalogThresholds = 0x80019750; // type:func [code] copies D_80068158, the four stick thresholds pad_update compares the analog bytes against for the d-pad bits
+pad_setAnalogThresholds = 0x80019774; // type:func [code] sets D_80068158 (see pad_getAnalogThresholds)
+g_padFlags = 0x80073720; // [code] per port (4 bits each) init/actuator state in pad_update, 0x8000 maps the analog stick to the d-pad
+g_padMapping = 0x80073730; // [code] [port][game button bit] -> raw button mask, written by pad_setMapping, read by pad_update
+g_padHoldFrames = 0x80073830; // [code] [port][game button bit] frames held, counted in pad_update
+g_padAnalogThresholds = 0x80068158; // [code] stick thresholds {up, down, left, right} compared with the analog bytes in pad_update
+g_padAnalog = 0x80073938; // [code] per port the four analog stick bytes copied from the pad buffer in pad_update
+g_padBuf = 0x80073940; // [code] PadInitDirect receive buffers, one per port (pad_init)
+g_padPortMask = 0x80073998; // [code] per port game buttons masked out of g_padPortHeld in pad_update (battle sets 8, ovl_15 -1)
+g_padActuator = 0x800739B0; // [code] PadSetAct data per port in pad_update
+g_padActAlign = 0x8006815C; // [code] PadSetActAlign table in pad_update

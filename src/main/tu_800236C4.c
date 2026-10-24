@@ -34,14 +34,14 @@ void func_80023784(void) {
     for (; port < 2; port++) {
         for (i = 0; i < 8; i++) {
             act = D_800686A0;
-            func_80019708(port, tbl[i], act[func_80023784_remap(i)]);
+            pad_setMapping(port, tbl[i], act[func_80023784_remap(i)]);
         }
         for (i = 0; i < 1; i++) {
-            func_80019708(port, D_800686C0[i], act[func_80023784_remap(D_800686C4[i])]);
+            pad_setMapping(port, D_800686C0[i], act[func_80023784_remap(D_800686C4[i])]);
         }
-        func_80019708(port, 0x04000000, 8);
-        func_80019708(port, 0x02000000, 1);
-        func_80019708(port, 0x08000000, 1);
+        pad_setMapping(port, 0x04000000, 8);
+        pad_setMapping(port, 0x02000000, 1);
+        pad_setMapping(port, 0x08000000, 1);
     }
 }
 

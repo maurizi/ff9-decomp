@@ -99,7 +99,7 @@ void func_8002C210(void) {
     g_padRepeat = v;
     g_padPressed = v;
     g_padHeld = v;
-    func_80019750(&D_8007717C);
+    pad_getAnalogThresholds(&D_8007717C);
     for (p = 0; p < 2; p++) {
         func_8002C52C(p);
         for (i = 0; i < 23; i++) {
@@ -154,18 +154,18 @@ void func_8002C308(s32 port) {
 }
 
 s32 func_8002C47C(s32 i) {
-    return ((D_80073940[i].unk0 >> 12) & 0xF) == 7;
+    return ((g_padBuf[i].unk0 >> 12) & 0xF) == 7;
 }
 
 void func_8002C4B0(u8 on) {
     if (on) {
-        D_80077178 = func_80019150() >> 15;
-        func_80019160(0x8000, 1);
-        func_80019750(&D_8007717C);
-        func_80019774(&D_8006BCF8);
+        D_80077178 = pad_getFlags() >> 15;
+        pad_setFlags(0x8000, 1);
+        pad_getAnalogThresholds(&D_8007717C);
+        pad_setAnalogThresholds(&D_8006BCF8);
     } else {
-        func_80019160(0x8000, D_80077178);
-        func_80019774(&D_8007717C);
+        pad_setFlags(0x8000, D_80077178);
+        pad_setAnalogThresholds(&D_8007717C);
     }
 }
 

@@ -90,8 +90,8 @@ void func_800A8CA4(void) {
     s32 i;
 
     for (i = 1; i >= 0; i--) {
-        D_800739B0[i].unk1 = 0;
-        D_800739B0[i].unk0 = 0;
+        g_padActuator[i].unk1 = 0;
+        g_padActuator[i].unk0 = 0;
     }
     w_frameSystemDestructor();
     func_800A91B4();
@@ -1326,7 +1326,7 @@ void func_800AC7D4(void) {
     g_gameState->unk1C->unk0 |= 0x2F;
     g_gameState->unk1C->unk8E4.world->unk0 |= 0x300;
     g_gameState->vsyncMode = 0;
-    D_80073998[0] |= 0x04000000;
+    g_padPortMask[0] |= 0x04000000;
 }
 
 void func_800ACAFC(void) {
@@ -1373,7 +1373,7 @@ void func_800ACAFC(void) {
     } else if (o->unk18 == -2 && (o->unk0 & 1)) {
         gd->unk0 &= ~0x2F;
         g_gameState->unk1C->unk8E4.world->unk0 &= ~0x300;
-        D_80073998[0] &= ~0x04000000;
+        g_padPortMask[0] &= ~0x04000000;
         g_gameState->unk0 |= 0x1000;
     }
 }
@@ -1408,8 +1408,8 @@ void func_800ACEEC(void) {
         func_8005562C(0);
         func_80023F60(1);
         for (i = 1; i >= 0; i--) {
-            D_800739B0[i].unk1 = 0;
-            D_800739B0[i].unk0 = 0;
+            g_padActuator[i].unk1 = 0;
+            g_padActuator[i].unk0 = 0;
         }
         ClearOTag(&D_800CE0E0, 1);
         func_80027834((320 - D_800686D0[235].unk4) / 2, (218 - D_800686D0[235].unk5) / 2, &D_800CE0E0, 0xEB, 0, buf, D_800CE098);

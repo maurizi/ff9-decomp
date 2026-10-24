@@ -557,8 +557,8 @@ void func_8004D2C0(Unk8007B9C0 *w, u8 *e) {
             case 8:
                 tmp = D_80011A6C;
                 n = D_8007BB7C;
-                func_80019750(&D_8007B99C);
-                func_80019774(&tmp);
+                pad_getAnalogThresholds(&D_8007B99C);
+                pad_setAnalogThresholds(&tmp);
                 D_8007B968 = n;
                 w->unk28 |= 2;
                 break;

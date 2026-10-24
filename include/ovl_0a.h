@@ -192,7 +192,7 @@ typedef struct {
     u8 unk3;
     s16 unk4;
     s16 unk6;
-    s32 unk8[2]; /* saved D_80073998 */
+    s32 unk8[2]; /* saved g_padPortMask */
 } Unk800CA058;
 
 typedef struct {

@@ -172,8 +172,8 @@ void func_800A82F8(void) {
     s32 i;
 
     for (i = 1; i >= 0; i--) {
-        D_800739B0[i].unk1 = 0;
-        D_800739B0[i].unk0 = 0;
+        g_padActuator[i].unk1 = 0;
+        g_padActuator[i].unk0 = 0;
     }
     func_800B1CE4();
     func_800A8588();
@@ -355,7 +355,7 @@ void fld_load(s32 arg0) {
     g_gameState->unk1C->unk0 |= 0x20;
     g_gameState->unk1C->unk8E4.field->unk0 |= 4;
     func_8001CCB4(0, 0, 0);
-    D_80073998[0] &= 0xFFFF0006;
+    g_padPortMask[0] &= 0xFFFF0006;
     for (i = 1; i >= 0; i--) {
         for (j = 3; j >= 0; j--) {
             D_800C9EF0.unk0[i][j] = 0;
@@ -406,7 +406,7 @@ void fld_load(s32 arg0) {
     sc->unk20 = D_80067948;
     sc->unk4 = D_80067948;
     func_8004A8A4();
-    D_80073998[0] |= 0x40000;
+    g_padPortMask[0] |= 0x40000;
     g_gameState->unk1C->unk0 &= ~0x20;
 }
 
@@ -418,7 +418,7 @@ void fld_exit(void) {
     sc = g_gameState->unk1C->unk8E4.field->unkC->unk14;
     DrawSync(0);
     func_800B1E04(sc, g_gameState->unk1C->fieldId);
-    D_80073998[0] &= 0xFFFF0006;
+    g_padPortMask[0] &= 0xFFFF0006;
     func_800AA0A8(sc, g_gameState->unk1C->fieldId);
     func_800AA074(sc, g_gameState->unk1C->fieldId);
     func_800AAA54();

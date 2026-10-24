@@ -125,7 +125,7 @@ s32 func_800ADC3C(void) {
     D_800B5000 = 0;
     D_800AE4A8 = 0;
     D_800AE4AC = 0;
-    D_80073998[0] = 0;
+    g_padPortMask[0] = 0;
     return 0;
 }
 

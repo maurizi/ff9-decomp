@@ -99,7 +99,7 @@ s32 func_800AB490(void) {
                 timer = -1;
                 D_800B0FD0 = 2;
                 snd_playSe(0xC18);
-                D_80073998[0] = -1;
+                g_padPortMask[0] = -1;
             }
         } else if (g_padPortPressed[0] & D_800AE3F0[D_800AE3EC]) {
             if (++D_800AE3EC == 0x10) {
@@ -109,7 +109,7 @@ s32 func_800AB490(void) {
             wait = 5;
             D_800AE3EC = 0;
         }
-        D_800739B0[0].unk0 = 0;
+        g_padActuator[0].unk0 = 0;
         if (wait > 0) {
             wait--;
         }
@@ -131,7 +131,7 @@ s32 func_800AC374(void) {
     func_800320B8(1, 1, 0, 0xFFFFFF);
     D_800B0FD0 = 0;
     D_800AE430 = 0;
-    D_80073998[0] = 0;
+    g_padPortMask[0] = 0;
     return 0;
 }
 
@@ -314,8 +314,8 @@ void func_800ACB98(void) {
     s32 i;
 
     for (i = 1; i >= 0; i--) {
-        D_800739B0[i].unk1 = 0;
-        D_800739B0[i].unk0 = 0;
+        g_padActuator[i].unk1 = 0;
+        g_padActuator[i].unk0 = 0;
     }
     g_gameState->unk1C->unk83C = func_800AC598;
     func_800ACD70();

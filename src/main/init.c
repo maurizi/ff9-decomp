@@ -14,7 +14,7 @@ void game_initLibraries(void) {
     cd_init();
 }
 
-void func_80016A28(void) {
+void game_reset(void) {
     RECT r;
     s32 i;
 
@@ -30,7 +30,7 @@ void func_80016A28(void) {
     DrawSync(0);
     cd_resetState();
     func_8001C6F8();
-    func_80018F50();
+    pad_resetState();
     D_80073690.mask = 0x19;
     D_80073690.mode = 0x100;
     D_80073690.depth.left = 0;
@@ -54,7 +54,7 @@ void func_80016A28(void) {
     mbg_resetState();
 }
 
-void func_80016B6C(void) {
+void game_shutdown(void) {
     func_80055210();
     func_8001C718();
     D_80067950++;

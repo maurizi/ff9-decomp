@@ -959,3 +959,22 @@ D_800CCFF4 g_worldZoneEncounterCount  # [code] half the number of g_worldEncount
 D_800CF444 g_worldDataSet  # [code] 1, or 4 when the story counter is >= 0x2B52 (func_800B69B4); selects world data 0x41B.. or 0x41E.. and the +0xFE encounter entries
 D_800CCE4B g_worldFog  # [string] printed as "Now Fog" by wm_getEncounterEntry, matched against the encounter entries' fog bit
 D_800D32E4 g_worldEncounterEventRows  # [code] world data pack entry 4: rows of 12 u16 entry numbers used by wm_applyEncounterEvents
+
+## main: main cleanup/naming pass
+func_80016A28 game_reset  # [code] start of every game_main loop pass: clears VRAM, resets CD, db, pad (pad_resetState), SPU reverb, then the subsystems' inits
+func_80016B6C game_shutdown  # [code] end of a game_main loop pass (GameState.unk0 bit 0): stops sound and db, counts D_80067950
+func_80018F50 pad_resetState  # [code] clears every per-port pad array and installs the default button mapping through pad_setMapping
+func_80019708 pad_setMapping  # [code] D_80073730[port][bit index of b] = c: which raw controller buttons set game button b (pad_update ORs 1 << index)
+func_80019150 pad_getFlags  # [code] returns D_80073720 (pad_update's per-port init bits, 0x8000 = analog stick acts as d-pad)
+func_80019160 pad_setFlags  # [code] sets or clears bits a of D_80073720 (tu_8002BEEC toggles 0x8000)
+func_80019750 pad_getAnalogThresholds  # [code] copies D_80068158, the four stick thresholds pad_update compares the analog bytes against for the d-pad bits
+func_80019774 pad_setAnalogThresholds  # [code] sets D_80068158 (see pad_getAnalogThresholds)
+D_80073720 g_padFlags  # [code] per port (4 bits each) init/actuator state in pad_update; 0x8000 maps the analog stick to the d-pad
+D_80073730 g_padMapping  # [code] [port][game button bit] -> raw button mask, written by pad_setMapping, read by pad_update
+D_80073830 g_padHoldFrames  # [code] [port][game button bit] frames held, counted in pad_update
+D_80068158 g_padAnalogThresholds  # [code] stick thresholds {up, down, left, right} compared with the analog bytes in pad_update
+D_80073938 g_padAnalog  # [code] per port the four analog stick bytes copied from the pad buffer in pad_update
+D_80073940 g_padBuf  # [code] PadInitDirect receive buffers, one per port (pad_init)
+D_80073998 g_padPortMask  # [code] per port game buttons masked out of g_padPortHeld in pad_update (battle sets 8, ovl_15 -1)
+D_800739B0 g_padActuator  # [code] PadSetAct data per port in pad_update
+D_8006815C g_padActAlign  # [code] PadSetActAlign table in pad_update

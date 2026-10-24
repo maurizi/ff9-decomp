@@ -72,7 +72,7 @@ s32 func_800A9E14(s32 arg0) {
                                 timer = 0x1E;
                             }
                             D_800AB2EC = 1;
-                            D_80073998[0] = -1;
+                            g_padPortMask[0] = -1;
                             D_800AB2D0.unk0 |= 0x100;
                         }
                         if (!(D_800AB2D0.unk0 & 1) && timer < 0xF1) {
@@ -92,7 +92,7 @@ s32 func_800A9E14(s32 arg0) {
                 }
             } else {
                 timer = 0x4EC;
-                D_80073998[0] = 0;
+                g_padPortMask[0] = 0;
                 func_800A82F4(D_800AB2EC);
                 func_800A812C(1);
                 D_800AB440 = 2;
@@ -148,7 +148,7 @@ s32 func_800AA848(s32 idx) {
     func_800320B8(1, 1, 0, 0xFFFFFF);
     D_800AB440 = 0;
     D_800AB2D0.unk0 = 0;
-    D_80073998[0] = 0;
+    g_padPortMask[0] = 0;
     return 0;
 }
 

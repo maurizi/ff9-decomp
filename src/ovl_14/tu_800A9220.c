@@ -87,7 +87,7 @@ s32 func_800A9220(void) {
                     timer = 6;
                     func_800320B8(1, 1, 0, 0);
                     func_800320B8(1, 1, timer, 0xFFFFFF);
-                    D_80073998[0] = -1;
+                    g_padPortMask[0] = -1;
                     D_800AB2C4 |= 0x20;
                 }
                 D_800AB2CE = g_mbgFrame;
@@ -102,7 +102,7 @@ s32 func_800A9220(void) {
                 g_gameState->unkC[0].disp.x = 0x140;
                 timer = 0x4EC;
                 g_gameState->unkC[1].disp.x = 0;
-                D_80073998[0] = 0;
+                g_padPortMask[0] = 0;
                 func_800A82F4(D_800AB2CC);
                 func_800A812C(1);
                 D_800AB3C8 = 4;
@@ -170,7 +170,7 @@ s32 func_800A9968(void) {
     D_800AB2C8 = 0;
     func_800A82F4(0);
     func_800A812C(1);
-    D_80073998[0] = 0;
+    g_padPortMask[0] = 0;
     return 0;
 }
 

@@ -17,7 +17,7 @@ typedef struct {
     u8 unk4;  /* wanted disc (0-3) */
     u8 pad5;
     s16 unk6;
-    s32 unk8[2]; /* saved D_80073998[] */
+    s32 unk8[2]; /* saved g_padPortMask[] */
     u32 unk10;   /* frame counter */
 } Ovl3eState;
 extern Ovl3eState D_801F6BBC;

@@ -1213,9 +1213,9 @@ void fld_movieUpdate(void) {
             D_800C9EF0.unk20[0][b - 1] = 0x40;
             D_800C9EF0.unk20[1][b] = 0x40;
             D_800C9EF0.unk20[0][b] = 2;
-            if (!(D_80073998[0] & 0x04000000)) {
+            if (!(g_padPortMask[0] & 0x04000000)) {
                 g_gameState->unk1C->unk8E4.field->unkC->unk14->unk0 |= 0x1000;
-                D_80073998[0] |= 0x04000000;
+                g_padPortMask[0] |= 0x04000000;
             }
             g_gameState->vsyncMode = 4;
             func_80056248(0);
@@ -1284,7 +1284,7 @@ void fld_movieUpdate(void) {
 
 void func_800AE4F8(void) {
     if (g_gameState->unk1C->unk8E4.field->unkC->unk14->unk0 & 0x1000) {
-        D_80073998[0] &= ~0x04000000;
+        g_padPortMask[0] &= ~0x04000000;
         g_gameState->unk1C->unk8E4.field->unkC->unk14->unk0 &= ~0x1000;
     }
     mbg_shutdown();
@@ -1409,7 +1409,7 @@ void func_800AED04(void) {
     D_800C9EF0.unk0[0][0] = 0x43;
     D_800C9EF0.unk0[0][2] = 0x3C;
     D_800C9EF0.unk10[0][2] = 0x1919;
-    D_80073998[0] |= 0x04000000;
+    g_padPortMask[0] |= 0x04000000;
 }
 
 void func_800AED6C(void) {
@@ -1457,8 +1457,8 @@ void func_800AED6C(void) {
             func_800557A8(g_gameState->unk1C->unk82C, 0x200000, 0xF, 0);
         }
         for (i = 1; i >= 0; i--) {
-            D_800739B0[i].unk1 = 0;
-            D_800739B0[i].unk0 = 0;
+            g_padActuator[i].unk1 = 0;
+            g_padActuator[i].unk0 = 0;
         }
         func_80056228();
         g_gameState->unk1C->unk8E4.field->unkC->unk14->unk41++;
@@ -1527,7 +1527,7 @@ void func_800AED6C(void) {
         && g_gameState->unk1C->unk8E4.field->unkC->unk14->unk9 == -3) {
         g_gameState->unk1C->unk0 &= ~0x7F;
         g_gameState->unk1C->unk8E4.field->unk0 &= ~0x1919;
-        D_80073998[0] &= 0xFBFFFFFF;
+        g_padPortMask[0] &= 0xFBFFFFFF;
         g_gameState->unk0 |= 2;
     }
 }
@@ -1548,8 +1548,8 @@ void func_800AF740(void) {
         func_8005562C(0);
         func_80023F60(1);
         for (i = 1; i >= 0; i--) {
-            D_800739B0[i].unk1 = 0;
-            D_800739B0[i].unk0 = 0;
+            g_padActuator[i].unk1 = 0;
+            g_padActuator[i].unk0 = 0;
         }
         ClearOTag(&D_800C9F98, 1);
         func_80027834((320 - D_800686D0[235].unk4) / 2, (224 - D_800686D0[235].unk5) / 2, &D_800C9F98, 0xEB, 0, &tmp, &D_800C9FA0);

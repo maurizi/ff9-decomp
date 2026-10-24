@@ -66,7 +66,7 @@ void func_800B69B4(void) {
     func_80050E34(D_800CF400);
     func_80050EFC(0x24, 0x30);
     func_800325A4();
-    D_80073998[0] |= 0xF0000;
+    g_padPortMask[0] |= 0xF0000;
 }
 
 INCLUDE_RODATA("asm/us/ovl_0c/nonmatchings/w_frame", D_800A71D8);
@@ -139,7 +139,7 @@ s32 func_800B6BC4(void) {
     if (D_800CF440 != 0) {
         busy = 1;
     }
-    func_80019160(0x8000, busy);
+    pad_setFlags(0x8000, busy);
     switch (D_800CF49C) {
     case 3:
         if ((u8)D_800CCCC0[D_800CE3DC->unk11].unk8 >> 2 == 0x34) {
@@ -155,7 +155,7 @@ s32 func_800B6BC4(void) {
     case 4:
         printf("MAP JUMP\n");
         if (D_800D3E75 >= 0) {
-            D_80073998[0] &= 0xFDF7FFFF;
+            g_padPortMask[0] &= 0xFDF7FFFF;
         }
         func_80022D3C(0);
         while (cd_getState() != 0) {

@@ -40,8 +40,8 @@ void func_800B5114(void) {
 
     DrawSync(0);
     for (i = 0; i < 2; i++) {
-        D_800CA058.unk8[i] = D_80073998[i];
-        D_80073998[i] = 0x04000300;
+        D_800CA058.unk8[i] = g_padPortMask[i];
+        g_padPortMask[i] = 0x04000300;
     }
     D_800CA058.unk0 = 1;
     D_800CA058.unk3 = 0;
@@ -60,7 +60,7 @@ void func_800B51D0(void) {
     }
     DrawSync(0);
     for (i = 0; i < 2; i++) {
-        D_80073998[i] = D_800CA058.unk8[i];
+        g_padPortMask[i] = D_800CA058.unk8[i];
     }
     f = g_gameState->unk1C->unk8E4.field;
     f->unk0 |= 0x10000;

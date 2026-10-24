@@ -561,7 +561,7 @@ typedef struct {
 
 /* ---- misc globals ---- */
 
-extern UnkPair D_800739B0[2];
+extern UnkPair g_padActuator[2];
 
 typedef struct {
     u8 unk0;
@@ -761,7 +761,7 @@ extern u8 D_80077DE0;
 extern struct Unk8007B9C0 *D_8007BB78;
 extern s32 D_800834C8;
 extern s32 D_8006798C;
-extern u16 D_80073720;
+extern u16 g_padFlags;
 extern u8 D_8006825C;
 extern u8 D_8006826C;
 
@@ -1311,7 +1311,7 @@ typedef struct {
     s16 unk26;
 } Unk800219D8;
 
-extern Unk4 D_80068158;
+extern Unk4 g_padAnalogThresholds;
 
 extern u8 D_800739B8[];
 extern Unk80080A10 *D_8007F790;
@@ -1539,7 +1539,7 @@ typedef struct {
     u32 unk0;
     u8 pad4[0x24 - 4];
 } Unk80073940; /* 0x24-byte entries */
-extern Unk80073940 D_80073940[];
+extern Unk80073940 g_padBuf[];
 
 typedef Unk8004AB64 Unk800367D0; /* func_800367D0 creates a script object */
 
@@ -1787,7 +1787,7 @@ extern s32 D_80070450;
 extern s32 D_80070454;
 extern s32 D_80070460;
 extern s32 D_800704AC;
-extern s32 D_80073998[];
+extern s32 g_padPortMask[];
 /* Pad bits in g_padHeld/g_padPressed/g_padRepeat and g_padPort*: the low 16 are the controller's own
  * button bits, the high ones the game's buttons, named after their default mapping (checked at runtime by
  * holding each button, docs/runtime-findings.md). Triangle also sets 0x1000000, Select 0x2000000 | 0x8000000. */
@@ -1947,10 +1947,10 @@ void akao_setVoicePitch(s32, s32);
 void akao_setVoiceVolume(s32, u32, u32, s32);
 u8 func_8002F800(void);
 void func_80032238(void);
-u16 func_80019150(void);
-void func_80019160(u16, s32);
-void func_80019750(Unk4 *);
-void func_80019774(Unk4 *);
+u16 pad_getFlags(void);
+void pad_setFlags(u16, s32);
+void pad_getAnalogThresholds(Unk4 *);
+void pad_setAnalogThresholds(Unk4 *);
 extern u8 D_80077178;
 extern Unk4 D_8007717C;
 extern Unk4 D_8006BCF8;
@@ -2642,17 +2642,17 @@ extern s32 g_padPortPressed[2]; /* went down this frame, per port */
 #endif
 extern s32 g_padPortReleased[2]; /* buttons released this frame */
 extern s32 g_padPortPrevHeld[2]; /* previous g_padPortHeld */
-extern s32 D_80073830[2][32]; /* frames each button has been held */
-extern Unk4 D_80073938[2]; /* analog stick bytes */
-extern u8 D_8006815C[]; /* actuator alignment */
-/* byte view of a D_80073940 pad buffer */
+extern s32 g_padHoldFrames[2][32]; /* frames each button has been held */
+extern Unk4 g_padAnalog[2]; /* analog stick bytes */
+extern u8 g_padActAlign[]; /* actuator alignment */
+/* byte view of a g_padBuf pad buffer */
 typedef struct {
     u8 unk0; /* status, 0 = ok */
     u8 unk1;
     u16 unk2; /* buttons, active low */
     u8 unk4[4]; /* analog sticks */
 } PadBuf;
-#define PADBUF(i) ((PadBuf *)&D_80073940[i])
+#define PADBUF(i) ((PadBuf *)&g_padBuf[i])
 void pad_update(void);
 void func_80032098(void);
 void func_80023A4C(void);
@@ -2711,7 +2711,7 @@ static inline void func_8004EEA0_inline(Unk8007B9C0 *p) {
             win_close(p->unk14);
         }
         if (D_8007B968 >= 0 && D_8007B970 == p->unkA) {
-            func_80019774(&D_8007B99C);
+            pad_setAnalogThresholds(&D_8007B99C);
         }
         func_8004E958_inline(p);
     }
@@ -3340,7 +3340,7 @@ void cd_onSectorReady(void);
 extern SpuReverbAttr D_80073690;
 extern s32 D_800736A4; /* reverb mode */
 extern DRAWENV D_80073C88;
-void func_80018F50(void);
+void pad_resetState(void);
 void cd_resetState(void);
 void func_8001C6F8(void);
 void mbg_resetState(void);
@@ -3362,9 +3362,9 @@ extern u32 D_80068680[8];
 extern s32 D_800686A0[];
 extern u32 D_800686C0[1]; /* extra button masks (parallel to D_800686C4) */
 extern s32 D_800686C4[1]; /* their action indices */
-void func_80019708(s32, u32, s32);
-extern s32 D_80073730[2][32]; /* indexed by leading-zero count (func_80019708) */
-extern s32 D_80073830[2][32];
+void pad_setMapping(s32, u32, s32);
+extern s32 g_padMapping[2][32]; /* indexed by leading-zero count (pad_setMapping) */
+extern s32 g_padHoldFrames[2][32];
 extern s32 g_padPortPrevHeld[];
 extern s32 g_padPortReleased[];
 
@@ -3375,7 +3375,7 @@ s32 EnterCriticalSection(void); /* BIOS EnterCriticalSection */
 void ExitCriticalSection(void); /* BIOS ExitCriticalSection */
 void func_8001D30C(void);
 void func_8001CB70(void);
-void func_80016B6C(void);
+void game_shutdown(void);
 void func_8001CFB4(void);
 
 /* overlay load addresses by game mode (game_loadModeOverlay). The rodata block

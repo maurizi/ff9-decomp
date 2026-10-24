@@ -55,11 +55,11 @@ void func_800A882C(void) {
             func_8005562C(0);
             func_80023F60(1);
             for (i = 1; i >= 0; i--) {
-                D_800739B0[i].unk1 = 0;
-                D_800739B0[i].unk0 = 0;
+                g_padActuator[i].unk1 = 0;
+                g_padActuator[i].unk0 = 0;
             }
             if (g_gameState->unk1C->unk8E4.battle->unk0 & 0x20) {
-                D_80073998[0] |= 8;
+                g_padPortMask[0] |= 8;
             }
             ClearOTag(D_800FDEB0, 1);
             setlen(&D_800FDF18, 2);
@@ -98,7 +98,7 @@ void func_800A882C(void) {
     }
     func_80023F60(0);
     func_80055698(0);
-    D_80073998[0] &= ~8;
+    g_padPortMask[0] &= ~8;
     func_800EA34C();
     g_gameState->unk1C->unk0 &= ~0x20;
     func_800EA338(0);
@@ -158,8 +158,8 @@ void btl_initMode(void) {
 void btl_exitMode(void) {
     s32 i;
     for (i = 1; i >= 0; i--) {
-        D_800739B0[i].unk1 = 0;
-        D_800739B0[i].unk0 = 0;
+        g_padActuator[i].unk1 = 0;
+        g_padActuator[i].unk0 = 0;
     }
     func_800A91EC();
 }

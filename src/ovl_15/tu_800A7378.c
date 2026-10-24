@@ -55,7 +55,7 @@ s32 func_800A7378(s32 arg0, s32 arg1) {
                 g_gameState->unkC[0].disp.x = 0x140;
                 D_800AE4C0 = 4;
                 g_gameState->unkC[1].disp.x = 0;
-                D_80073998[0] = 0;
+                g_padPortMask[0] = 0;
             }
             break;
         }
@@ -98,7 +98,7 @@ s32 func_800A766C(s32 arg0, s32 arg1) {
         }
     }
     D_800AE0E4 = 0;
-    D_80073998[0] = 0;
+    g_padPortMask[0] = 0;
     return 0;
 }
 
@@ -1208,7 +1208,7 @@ s32 func_800A9488(void) {
         ui_drawSmallDigits(0x10C - (func_8002B9B8(buf) >> 1), 0xB0, 0x10, buf, D_800B0F44 ? 0 : 2);
         sprintf(buf, D_800A7048);
         ui_drawSmallDigits(0x10C - (func_8002B9B8(buf) >> 1), 0xC0, 0x10, buf, D_800B0F4C ? 0 : 2);
-        D_800739B0[0].unk0 = 0;
+        g_padActuator[0].unk0 = 0;
         if (cnt > 0) {
             cnt--;
         }
@@ -1263,7 +1263,7 @@ s32 func_800AAD24(void) {
     }
     func_800320B8(1, 1, 0, 0xFFFFFF);
     D_800B0DF8 = 0;
-    D_80073998[0] = 0;
+    g_padPortMask[0] = 0;
     return 0;
 }
 

@@ -69,8 +69,8 @@ void func_80032238(void) {
     g_gameState->unk10[1].g0 = 0;
     g_gameState->unk10[1].b0 = 0;
     func_8002DE60();
-    g_menu.unk18 = D_80073998[0];
-    D_80073998[0] = 0x4000000;
+    g_menu.unk18 = g_padPortMask[0];
+    g_padPortMask[0] = 0x4000000;
     func_8002C4B0(1);
     for (i = 0; i < 2; i++) {
         func_8002C584(i);
@@ -102,7 +102,7 @@ void func_80032384(void) {
         fn(idx);
     }
     func_8002C4B0(0);
-    D_80073998[0] = g_menu.unk18;
+    g_padPortMask[0] = g_menu.unk18;
     if (g_menu.unk24 != 0) {
         ((void (*)(void))g_menu.unk24)();
     }

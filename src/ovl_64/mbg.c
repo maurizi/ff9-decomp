@@ -62,8 +62,8 @@ u8 *mbg_readFrame(Ovl64Out *out) {
         }
     }
     if (flag != NULL && (!((Ovl64Cfg *)&g_gameState->unk24)->b7 || g_gameState->mode == 5)) {
-        D_800739B0[0].unk0 = flag->unk0;
-        D_800739B0[0].unk1 = flag->unk1;
+        g_padActuator[0].unk0 = flag->unk0;
+        g_padActuator[0].unk1 = flag->unk1;
     }
     if (pair != NULL && pair->unk0 != 0) {
         bcopy((void *)pair->unk4, &g_mbgMaskData[g_gameState->unk1C->unk8 ^ 1], pair->unk0);
@@ -158,8 +158,8 @@ void mbg_mdecOutCallback(void) {
             g_mbgPaused = 1;
             g_mbgPlayer.pauseReq = 0;
             mbg_streamSetPaused(1);
-            D_800739B0[0].unk0 = 0;
-            D_800739B0[0].unk1 = 0;
+            g_padActuator[0].unk0 = 0;
+            g_padActuator[0].unk1 = 0;
         }
         g_mbgDecode.slice.x = g_mbgDecode.frameRect[g_gameState->unk1C->unk8 ^ 1].x;
         g_mbgDecode.slice.y = g_mbgDecode.frameRect[g_gameState->unk1C->unk8 ^ 1].y;
@@ -625,8 +625,8 @@ s32 mbg_setPause(s32 arg0) {
 s32 mbg_stop(void) {
     func_80056228();
     mbg_streamStop();
-    D_800739B0[0].unk0 = 0;
-    D_800739B0[0].unk1 = 0;
+    g_padActuator[0].unk0 = 0;
+    g_padActuator[0].unk1 = 0;
     g_mbgState--;
     if (g_mbgPlayer.endCallback != NULL) {
         g_mbgPlayer.endCallback();

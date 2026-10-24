@@ -937,7 +937,7 @@ void func_800BD3F8(void) {
                     D_800CE202 = 0;
                     D_800D33F4 = st;
                     D_800CF46C = 2;
-                    D_80073998[0] &= 0xFFF4FFFF;
+                    g_padPortMask[0] &= 0xFFF4FFFF;
                     func_800B30C0();
                 }
             }
@@ -1978,9 +1978,9 @@ void func_800C0F34(void) {
         D_800D3E88 = 3;
     }
     if (b <= (u32)D_800CF4AC) {
-        D_80073998[0] &= ~0x02080000;
+        g_padPortMask[0] &= ~0x02080000;
     } else {
-        D_80073998[0] |= 0x02080000;
+        g_padPortMask[0] |= 0x02080000;
     }
     if (D_800D3E88 == 1) {
         if (D_800D3E76 == 0) {

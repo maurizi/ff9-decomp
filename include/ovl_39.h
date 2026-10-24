@@ -94,7 +94,7 @@ typedef struct {
     u32 unkC;  /* highest save counter */
     s32 unk10; /* slot holding it */
     s32 unk14; /* saved func_8002F8E4 mode */
-    s32 unk18[2]; /* saved D_80073998[] */
+    s32 unk18[2]; /* saved g_padPortMask[] */
     u8 *unk20; /* help text */
     MenuList unk24; /* slot list */
     SaveSlot unk34[15];

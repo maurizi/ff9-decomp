@@ -812,7 +812,7 @@ u8 func_801F126C(void) {
     s32 i;
 
     for (i = 0; i < 2; i++) {
-        if (((D_80073940[i].unk0 >> 12) & 0xF) == 7) {
+        if (((g_padBuf[i].unk0 >> 12) & 0xF) == 7) {
             return 1;
         }
         if (g_padPortState[i] == 6) {
@@ -827,14 +827,14 @@ void func_801F12D0(u8 on) {
 
     if (on) {
         for (i = 0; i < 2; i++) {
-            D_800739B0[i].unk1 = 0xFF;
-            D_800739B0[i].unk0 = 1;
+            g_padActuator[i].unk1 = 0xFF;
+            g_padActuator[i].unk0 = 1;
         }
         return;
     }
     for (i = 0; i < 2; i++) {
-        D_800739B0[i].unk0 = 0;
-        D_800739B0[i].unk1 = 0;
+        g_padActuator[i].unk0 = 0;
+        g_padActuator[i].unk1 = 0;
     }
 }
 

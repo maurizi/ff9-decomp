@@ -8,7 +8,7 @@ void game_main(void) {
     __main();
     game_initLibraries();
     for (;;) {
-        func_80016A28();
+        game_reset();
         func_8001CB08();
         func_8001D268();
         do {
@@ -49,7 +49,7 @@ void game_main(void) {
         } while (!(g_gameState->unk0 & 1));
         func_8001D30C();
         func_8001CB70();
-        func_80016B6C();
+        game_shutdown();
     }
 }
 
