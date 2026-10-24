@@ -1212,3 +1212,296 @@ D_801FA958 s_menuItemScrollClip  # [code] clip RECT of the rows scrolling in (fu
 D_801FA968 s_menuItemSortBuf  # [code] inventory sort buffer (menuItem_sortAuto)
 D_801FAB68 s_menuItemSortTmp  # [code] swap temp of menuItem_sortAuto
 # FIELDS include/ovl_37.h ItemMenu: unk0=tab,unk1=state,unk2=slot,unk3=targetKind,unk4=targetMode,unk5=arrangeCursor,unk6=swapFrom,unk7=swapPicked,unk8=charWinOpen,unkC=itemList,unk1C=keyList,unk2C=cmdRect,unk34=listRect,unk3C=charWin,unk4C=popup,unk50=popupTimer,unk54=keyView,unk55=keyViewPhase,unk56=keyViewId,unk57=keyViewStep,unk58=keyViewX,unk60=keyItems,unkB0=keyCount; ItemList: unk0=select,unk4=drawRow,unk8=list
+
+## ovl_32: ovl_32 (Chocograph menu, menu type 5)
+func_801F7AC0 menuChocograph_init  # [runtime] docs/runtime-findings.md field/menu campaign, menu type 5 (D_8006C9D4[5]) opens the Chocograph screen
+func_801F8FF8 menuChocograph_update  # [runtime] docs/runtime-findings.md field/menu campaign, D_8006C9D4[5] entry 1 (per frame)
+func_801F904C menuChocograph_exit  # [runtime] docs/runtime-findings.md field/menu campaign, D_8006C9D4[5] entry 2
+func_801F7C8C menuChocograph_inputTabs  # [runtime] docs/runtime-findings.md field/menu campaign (code), s_menuChocographInputFuncs[1], Left/Right between Select and Cancel, Cross on Cancel clears the selection
+func_801F7DC0 menuChocograph_inputList  # [runtime] docs/runtime-findings.md field/menu campaign (code), s_menuChocographInputFuncs[2], Cross selects when owned and the ability count suffices
+func_801F7EB4 menuChocograph_drawSelected  # [runtime] docs/runtime-findings.md field/menu campaign, ablation removes the selected chocograph window
+func_801F8010 menuChocograph_drawList  # [runtime] docs/runtime-findings.md field/menu campaign, ablation removes the list window
+func_801F8130 menuChocograph_drawCounts  # [runtime] docs/runtime-findings.md field/menu campaign, ablation removes "Inventory" / "Loc. Found"
+func_801F8240 menuChocograph_drawHint  # [runtime] docs/runtime-findings.md field/menu campaign, ablation removes the picture, clue and "Ability Required" window
+func_801F8404 menuChocograph_drawCursor  # [runtime] docs/runtime-findings.md field/menu campaign, ablation removes the hand cursor
+func_801F84F0 menuChocograph_updateHelp  # [runtime] docs/runtime-findings.md field/menu campaign (code), help-text callback (func_8003556C)
+func_801F85EC menuChocograph_readFlags  # [runtime] docs/runtime-findings.md field/menu campaign, event var bytes 0xBB-0xBD owned, 0xB8-0xBA found, 0xBF ability count (poked values shown on screen)
+func_801F86D0 menuChocograph_loadImages  # [code] loads the icon and frame images, and per chocograph saves its VRAM area into s_menuChocographPictures[i] and loads picture i+1 there
+func_801F8800 menuChocograph_restoreVram  # [code] loads the saved VRAM areas back from s_menuChocographPictures[0..23], first moving the selected picture elsewhere when g_gameState->mode is 3
+func_801F88F4 menuChocograph_drawPicture  # [runtime] docs/runtime-findings.md field/menu campaign (code), 42x28 4-bit sprite of chocograph id
+func_801F8AB0 menuChocograph_drawFrame  # [code] four POLY_FT4 frame pieces (s_menuChocographFramePieces) around the picture plus two shadow pieces
+func_801F907C menuChocograph_input  # [runtime] docs/runtime-findings.md field/menu campaign (code), calls s_menuChocographInputFuncs[mode] unless func_8002F810
+func_801F90D4 menuChocograph_draw  # [runtime] docs/runtime-findings.md field/menu campaign (code), draws every window and the cursor
+func_801F912C menuChocograph_updateList  # [code] func_8002EB74 on the list in list mode
+func_801F9164 menuChocograph_drawTitle  # [runtime] docs/runtime-findings.md field/menu campaign, ablation removes the "Chocograph" title box
+func_801F91D8 menuChocograph_drawTabs  # [runtime] docs/runtime-findings.md field/menu campaign, ablation removes the Select/Cancel window
+func_801F92C0 menuChocograph_drawAbilities  # [runtime] docs/runtime-findings.md field/menu campaign, ablation removes the chocobo ability icons
+func_801F9394 menuChocograph_drawScrollRows  # [code] list rows of the scrolling view (func_8002F344), clipped, while the list scrolls
+func_801F93FC menuChocograph_drawRow  # [runtime] docs/runtime-findings.md field/menu campaign, ablation removes the list rows
+func_801F9518 menuChocograph_drawIcon  # [runtime] docs/runtime-findings.md field/menu campaign (code), func_80027710 with entry icon of s_menuChocographIcons
+func_801F95E8 menuChocograph_getRequiredAbility  # [runtime] docs/runtime-findings.md field/menu campaign (code), s_menuChocographRequiredAbility[id]
+func_801F9600 menuChocograph_scrollTo  # [code] sets the list scroll top and cursor so that index idx shows
+func_801F9668 menuChocograph_getPictureRects  # [code] VRAM RECTs of chocograph i, its clut row (0, 0x1E8 + i) and its 21x28 pixel block
+D_801F9850 s_menuChocograph  # [runtime] docs/runtime-findings.md field/menu campaign, Chocograph menu state, see ChocographMenu in include/ovl_32.h
+D_801F96E4 s_menuChocographInputFuncs  # [code] per-mode input handlers called by menuChocograph_input
+D_801F96F0 s_menuChocographTabNeedsSel  # [code] per tab, 1 = greyed while no chocograph is selected (menuChocograph_drawTabs), {0, 1}
+D_801F96F4 s_menuChocographRequiredAbility  # [code] per chocograph, the ability level needed to select it (menuChocograph_getRequiredAbility)
+D_801F9750 s_menuChocographHelpBuf  # [code] buffer for the hint plus "Inadequate ability" help text, menuChocograph_updateHelp
+D_801EDF04 s_menuChocographIcons  # [code] 16 icons drawn by menuChocograph_drawIcon (ability levels, locked, chocograph found/not found)
+D_801EF1E4 s_menuChocographPictures  # [code] 25 {clut, pixels} picture slots, [0] receives the saved VRAM, menuChocograph_loadImages / menuChocograph_restoreVram
+D_801F713C s_menuChocographIconImage  # [code] icon clut (14 rows) then pixels, loaded at s_menuChocographIconClutRect / s_menuChocographIconRect
+D_801F7948 s_menuChocographFrameImage  # [code] frame clut (2 rows) then pixels, loaded at s_menuChocographFrameClutRect / s_menuChocographFrameRect
+D_801F970C s_menuChocographIconClutRect  # [code] RECT for the clut part of s_menuChocographIconImage
+D_801F9714 s_menuChocographIconRect  # [code] RECT for the pixel part of s_menuChocographIconImage
+D_801F971C s_menuChocographFrameClutRect  # [code] RECT for the clut part of s_menuChocographFrameImage
+D_801F9724 s_menuChocographFrameRect  # [code] RECT for the pixel part of s_menuChocographFrameImage
+D_801F972C s_menuChocographFramePieces  # [code] the 4 frame pieces drawn by menuChocograph_drawFrame
+D_801F974C s_menuChocographFrameShadowPieces  # [code] the 2 frame pieces menuChocograph_drawFrame draws again as a shadow
+# FIELDS include/ovl_32.h ChocographMenu (was Ovl32State): unk0=tab,unk1=mode,unk2=ownedCount,unk3=foundCount,unk4=ability,unk8=owned,unkC=found,unk10=list,unk20=titleRect,unk28=tabRect,unk30=selectedRect,unk38=abilityRect,unk40=countRect,unk48=listRect,unk50=infoRect,unk58=textBuf,unk2058=textPtr; Ovl32Image: unk0=clut,unk80=pixels; RectTbl16 -> IconTable
+
+## ovl_36: ovl_36 (Card screen: Tetra Master collection, main-menu screen 6)
+func_801F08F4 menuCard_init  # [runtime] docs/runtime-findings.md field/menu campaign, main-menu screen 6 (Card) entry 0 of main's D_8006E530
+func_801F23DC menuCard_update  # [runtime] docs/runtime-findings.md field/menu campaign, screen 6 entry 1 (per frame)
+func_801F240C menuCard_exit  # [runtime] docs/runtime-findings.md field/menu campaign, screen 6 entry 2
+func_801F24A0 menuCard_input  # [runtime] docs/runtime-findings.md field/menu campaign, calls s_menuCardInputFuncs[state] unless fading or flipping
+func_801F0AE8 menuCard_inputGrid  # [runtime] docs/runtime-findings.md field/menu campaign, s_menuCardInputFuncs[1], runs c_move/c_r1 (d-pad moves in the 10x10 grid, L1/R1 flip through copies)
+func_801F2578 menuCard_inputDiscard  # [runtime] docs/runtime-findings.md field/menu campaign, s_menuCardInputFuncs[2], runs c_x/c_xo (Yes/No of the Discard window)
+func_801F2C5C menuCard_selectCard  # [runtime] docs/runtime-findings.md field/menu campaign, (id) called once per cursor move (c_move)
+func_801F1778 menuCard_loadCardImage  # [runtime] docs/runtime-findings.md field/menu campaign, decodes the selected card's image (menuCard_decodeRle) and uploads it into a cache slot
+func_801F3034 menuCard_decodeRle  # [runtime] docs/runtime-findings.md field/menu campaign, run-length decoder used by menuCard_loadCardImage
+func_801F2FE0 menuCard_flipCopy  # [runtime] docs/runtime-findings.md field/menu campaign, (id, dir) R1 in c_r1 gives (0, 1)
+func_801F2B94 menuCard_updateFlip  # [runtime] docs/runtime-findings.md field/menu campaign, steps the flip animation, advances the shown copy at its end
+func_801F0CC8 menuCard_openDiscard  # [runtime] docs/runtime-findings.md field/menu campaign, Cross in c_x opens the "Discard?" Yes/No window
+func_801F2F34 menuCard_drawDiscardWindow  # [runtime] docs/runtime-findings.md field/menu campaign, content callback of the Discard window (text 0x20-0x22)
+func_801F2F14 menuCard_onDiscardOpened  # [runtime] docs/runtime-findings.md field/menu campaign, window opened callback, state 2
+func_801F2F24 menuCard_onDiscardClosed  # [runtime] docs/runtime-findings.md field/menu campaign, window closed callback, state 1 (c_xo)
+func_801F1C88 menuCard_refresh  # [runtime] docs/runtime-findings.md field/menu campaign, counts per id (func_80062560), collector points and rank
+func_801F2138 menuCard_calcCollectorPoints  # [runtime] docs/runtime-findings.md field/menu campaign, out = 110, 1, 5, 116 at menu_card (screen "Collectors Lv 116p")
+func_801F0DB0 menuCard_drawGrid  # [runtime] docs/runtime-findings.md field/menu campaign, ablation removes the CARD window
+func_801F0F9C menuCard_drawInfo  # [runtime] docs/runtime-findings.md field/menu campaign, ablation removes the INFO window (rank, Win/Lose/Draw)
+func_801F2664 menuCard_drawCardInfo  # [runtime] docs/runtime-findings.md field/menu campaign, ablation removes the CARD INFO window
+func_801F166C menuCard_drawCursor  # [runtime] docs/runtime-findings.md field/menu campaign, ablation removes the hand cursor
+func_801F2860 menuCard_drawCell  # [runtime] docs/runtime-findings.md field/menu campaign, ablation removes the grid cells
+func_801F12B8 menuCard_drawCardStack  # [runtime] docs/runtime-findings.md field/menu campaign, ablation removes the card stack in CARD INFO
+func_801F2730 menuCard_drawCard  # [runtime] docs/runtime-findings.md field/menu campaign, ablation removes the cards of the stack
+func_801F2A04 menuCard_drawArrows  # [runtime] docs/runtime-findings.md field/menu campaign, ablation removes the card's arrows
+func_801F2AB8 menuCard_drawStats  # [runtime] docs/runtime-findings.md field/menu campaign, ablation removes the "8PFF" stats string
+func_801F1AE8 menuCard_drawFace  # [runtime] docs/runtime-findings.md field/menu campaign, ablation removes the card picture
+func_801F1508 menuCard_drawCellHighlight  # [runtime] docs/runtime-findings.md field/menu campaign, pulsing quads at the cursor cell
+func_801F1D6C menuCard_drawSprite  # [runtime] docs/runtime-findings.md field/menu campaign (code), SPRT of entry idx of s_menuCardSprites
+func_801F2508 menuCard_draw  # [runtime] docs/runtime-findings.md field/menu campaign, draws the windows, the highlight and the cursor
+func_801F1EA0 menuCard_saveVram  # [runtime] docs/runtime-findings.md field/menu campaign (code), StoreImage of the areas the screen uses, on init
+func_801F1FE8 menuCard_restoreVram  # [runtime] docs/runtime-findings.md field/menu campaign (code), LoadImage of the saved areas, on exit
+func_801F2CD4 menuCard_initImageCache  # [runtime] docs/runtime-findings.md field/menu campaign (code), empties the 12 card image slots
+func_801F2D30 menuCard_findCachedImage  # [runtime] docs/runtime-findings.md field/menu campaign (code), slot holding the image of card id, or NULL
+func_801F2D88 menuCard_showCachedImage  # [runtime] docs/runtime-findings.md field/menu campaign (code), MoveImage of a slot to where menuCard_drawFace reads it
+func_801F22DC menuCard_updateHelp  # [code] help-text callback (func_8003556C), text 0x23/0x24 on the grid, 0x25 + cursor in the Discard window
+func_801F2548 menuCard_updateAnims  # [code] per frame, image loading, flip and fade steps
+func_801F1A48 menuCard_updateImageLoad  # [code] finishes a CD read of a card image (menuCard_loadCardImage) and starts the next requested one
+func_801F2C14 menuCard_updateFade  # [code] counts the 4 fade frames after the selected card changes
+func_801F2E60 menuCard_loadImages  # [code] menuCard_saveVram to 0x801F6D30, then loads s_menuCardImage1 and s_menuCardImage2
+func_801F2EE8 menuCard_unloadImages  # [code] menuCard_restoreVram from 0x801F6D30
+func_801F2FCC menuCard_initFlip  # [code] clears the flip animation
+func_801F30C8 menuCard_getStatsColor  # [code] the colour word menuCard_drawArrows and menuCard_drawStats draw with
+D_801F347C s_menuCard  # [runtime] docs/runtime-findings.md field/menu campaign, Card screen state, see CardMenu in include/ovl_36.h
+D_801F30F4 s_menuCardInputFuncs  # [runtime] docs/runtime-findings.md field/menu campaign, per-state input handlers, [1] menuCard_inputGrid [2] menuCard_inputDiscard
+D_801F3100 s_menuCardDiscardRect  # [code] RECT of the Discard window, menuCard_openDiscard
+D_801F3108 s_menuCardArrows  # [code] sprite and offset per arrow bit, menuCard_drawArrows
+D_801F3128 s_menuCardRankPoints  # [code] collector points needed per rank, menuCard_refresh
+D_801F3188 s_menuCardSprites  # [code] SPRT uv/clut, size and tpage per sprite, menuCard_drawSprite
+D_801F3378 s_menuCardTypePoints  # [code] collector points per copy by card type, menuCard_calcCollectorPoints
+D_801F337C s_menuCardArrowsSeen  # [code] one flag per arrow pattern seen, menuCard_calcCollectorPoints
+D_801F3348 s_menuCardSaveClutRect0  # [code] RECT saved by menuCard_saveVram (clut row 0x1F2)
+D_801F3350 s_menuCardSaveClutRect1  # [code] RECT saved by menuCard_saveVram (clut row 0x1F3)
+D_801F3358 s_menuCardSaveRect  # [code] RECT saved by menuCard_saveVram (64,256 16x16)
+D_801F3360 s_menuCardRestoreClutRect0  # [code] RECT restored by menuCard_restoreVram (clut row 0x1F2)
+D_801F3368 s_menuCardRestoreClutRect1  # [code] RECT restored by menuCard_restoreVram (clut row 0x1F3)
+D_801F3370 s_menuCardRestoreRect  # [code] RECT restored by menuCard_restoreVram (64,256 16x16)
+D_801F3168 s_menuCardImage1ClutRect  # [code] RECT for the clut part of s_menuCardImage1, menuCard_loadImages
+D_801F3170 s_menuCardImage1Rect  # [code] RECT for the pixel part of s_menuCardImage1, menuCard_loadImages
+D_801F3178 s_menuCardImage2ClutRect  # [code] RECT for the clut part of s_menuCardImage2, menuCard_loadImages
+D_801F3180 s_menuCardImage2Rect  # [code] RECT for the pixel part of s_menuCardImage2, menuCard_loadImages
+D_801EE1B4 s_menuCardImage1  # [code] clut then pixels loaded by menuCard_loadImages (the screen's sprites)
+D_801EEFB4 s_menuCardImage2  # [code] clut then pixels loaded by menuCard_loadImages
+D_801F0274 s_menuCardImageOffsets  # [code] per card id, offset of its packed image part (from 4 bytes before the table), menuCard_loadCardImage
+D_801EDF08 s_menuCardSlotClutRect  # [code] RECT of a cache slot's clut row (y set per slot), menuCard_saveVram / menuCard_restoreVram
+D_801EDF10 s_menuCardSlotRect  # [code] RECT of a cache slot's 19x47 pixel block (x, y set per slot), menuCard_saveVram / menuCard_restoreVram
+D_801EDF1C g_cardMenuText  # [code] the text bank starts at 0x801EDF18 (u16 count 0x2D, which gcc had emitted as the string "-" in menuCard_init), so the symbol moved there
+D_801EDF04 s_menuCardPointsUnit  # [code] "P" drawn with ui_drawSmallDigits right after the collector points total by menuCard_drawInfo
+# FIELDS include/ovl_36.h CardMenu: unk0=state,unk1=row,unk2=col,unk3=kinds,unk4=loadingId,unk5=discardCursor,unk7=rank,unk8=count,unk6C=shown,unkD0=clutBuf,unk2D0=pixelBuf,unk10D0=sectorBuf,unk18D0=gridRect,unk18D8=infoRect,unk18E0=cardInfoRect,unk18E8=discardWin,unk18EC=imageFile,unk18F0=points,unk1900=cache,unk1941=flip,unk1948=saved; CardCache: unk0=oldest,unk1=next,unk2=used,unk3=loading,unk4=pending,unk5=cur,unk6=prev,unk7=shown,unk8=fadeTicks,unk9=fading,unkA=reading,unkD=slots; CardSlot: unk0=used,unk1=id,unk2=vram; CardFlip (was CardTurn): unk0=active,unk1=dir,unk2=ticks,unk3=id; RleHeader: unk1=notKey,unk2=size,unk4=data; Ovl36Sprite: unk0=uvclut,unk4=w,unk5=h,unk6=tpage; CardArrow (was Unk801F3108): unk0=sprite,unk2=x,unk3=y
+
+## ovl_3c: ovl_3c (shop: buy, sell, synthesis, menu type 2)
+func_801F45E4 shop_init  # [runtime] docs/runtime-findings.md field/menu campaign, menu type 2 (D_8006C9D4[2]) opens the shop, arg = shop id
+func_801F4688 shop_update  # [runtime] docs/runtime-findings.md field/menu campaign, D_8006C9D4[2] entry 1 (per frame)
+func_801F4720 shop_exit  # [runtime] docs/runtime-findings.md field/menu campaign, D_8006C9D4[2] entry 2
+func_801F40AC shop_inputMenu  # [runtime] docs/runtime-findings.md field/menu campaign, Buy/Sell/Exit cursor (sh_idle, sh_down)
+func_801F4960 shop_selectMenu  # [runtime] docs/runtime-findings.md field/menu campaign, once per Cross on the menu
+func_801F4AC0 shop_enterMode  # [runtime] docs/runtime-findings.md field/menu campaign, fade callback running the mode's init
+func_801F4B38 shop_onModeEntered  # [runtime] docs/runtime-findings.md field/menu campaign, fade-in done, moves the message window to otz 0x24
+func_801F43F8 shop_leaveMode  # [runtime] docs/runtime-findings.md field/menu campaign (code), Circle in a mode's list fades out to shop_onModeLeft
+func_801F4854 shop_onModeLeft  # [runtime] docs/runtime-findings.md field/menu campaign (code), runs the mode's exit, back to the menu with text 0xE "Anything else"
+func_801F4A14 shop_close  # [runtime] docs/runtime-findings.md field/menu campaign, Circle on the menu (sh_exit) or Exit closes the shop
+func_801F4A90 shop_getKind  # [runtime] docs/runtime-findings.md field/menu campaign, shop 0 gives 1 and 0x20 gives 2
+func_801F59A8 shop_isEquipmentShop  # [runtime] docs/runtime-findings.md field/menu campaign, 1 when every item of the shop's list is equipment
+func_801F442C shop_setHelp  # [runtime] docs/runtime-findings.md field/menu campaign (code), (text id) sets the message of the top window
+func_801F49C4 shop_updateHelp  # [runtime] docs/runtime-findings.md field/menu campaign (code), help-text callback (func_8003556C) for the menu options
+func_801F4458 shop_getId  # [runtime] docs/runtime-findings.md field/menu campaign (code), the shop id passed to the menu
+func_801F4468 shop_collectMembers  # [runtime] docs/runtime-findings.md field/menu campaign (code), party list for the stat comparison
+func_801F48F4 shop_countEntries  # [runtime] docs/runtime-findings.md field/menu campaign (code), 1 (Exit) + the modes of a kind with handlers
+func_801F42A8 shop_sumArmorStat  # [runtime] docs/runtime-findings.md field/menu campaign (code), sums D_8006D328 bonuses of the armor in an equipment set, by slot
+func_801F4A44 shop_loadImages  # [runtime] docs/runtime-findings.md field/menu campaign (code), loads s_shopIconImage (clut and pixels)
+func_801F4000 shop_drawMessage  # [runtime] docs/runtime-findings.md field/menu campaign, ablation removes the top help line (60 frames)
+func_801F4748 shop_drawTitle  # [runtime] docs/runtime-findings.md field/menu campaign, ablation removes the "Weapons" box
+func_801F4198 shop_drawMenu  # [runtime] docs/runtime-findings.md field/menu campaign, ablation removes the Buy/Sell/Exit window
+func_801F47F8 shop_drawMenuCursor  # [runtime] docs/runtime-findings.md field/menu campaign, ablation removes the menu hand
+func_801F44F4 shop_drawStatIcon  # [runtime] docs/runtime-findings.md field/menu campaign, ablation removes the stat icons
+func_801F47C8 shop_drawMenuAll  # [runtime] docs/runtime-findings.md field/menu campaign, menu window plus cursor
+func_801F4B48 shopBuy_init  # [runtime] docs/runtime-findings.md field/menu campaign, s_shopModes Buy init
+func_801F5940 shopBuy_update  # [runtime] docs/runtime-findings.md field/menu campaign, s_shopModes Buy update
+func_801F5988 shopBuy_exit  # [runtime] docs/runtime-findings.md field/menu campaign, s_shopModes Buy exit
+func_801F5A1C shopBuy_input  # [runtime] docs/runtime-findings.md field/menu campaign, calls s_shopBuyInputFuncs[state]
+func_801F5AE4 shopBuy_inputList  # [runtime] docs/runtime-findings.md field/menu campaign, item list (sh_buy)
+func_801F57C8 shopBuy_openQuantity  # [runtime] docs/runtime-findings.md field/menu campaign, Cross on Dagger opens the quantity window (sh_buyx)
+func_801F4C68 shopBuy_inputQuantity  # [runtime] docs/runtime-findings.md field/menu campaign, Left/Right 1, Up/Down 10
+func_801F5E4C shopBuy_confirm  # [runtime] docs/runtime-findings.md field/menu campaign, buying a Dagger takes 320 gil and adds one (sh_buyxx)
+func_801F5D14 shopBuy_closeQuantity  # [runtime] docs/runtime-findings.md field/menu campaign (code), closes the quantity window
+func_801F5D40 shopBuy_onQuantityOpened  # [runtime] docs/runtime-findings.md field/menu campaign (code), window opened callback, state 2
+func_801F5D6C shopBuy_onQuantityClosed  # [runtime] docs/runtime-findings.md field/menu campaign (code), window closed callback, state 1
+func_801F5D98 shopBuy_loadList  # [runtime] docs/runtime-findings.md field/menu campaign, the shop's item list s_shopItems[id]
+func_801F5A74 shopBuy_draw  # [runtime] docs/runtime-findings.md field/menu campaign (code), draws the Buy windows and cursor
+func_801F5AAC shopBuy_updateList  # [runtime] docs/runtime-findings.md field/menu campaign (code), func_8002EB74 while the list scrolls
+func_801F5B64 shopBuy_drawScrollRows  # [runtime] docs/runtime-findings.md field/menu campaign (code), rows of the scrolling view
+func_801F4E1C shopBuy_drawInfo  # [runtime] docs/runtime-findings.md field/menu campaign, ablation removes INFO (funds, stock, equipped)
+func_801F506C shopBuy_drawList  # [runtime] docs/runtime-findings.md field/menu campaign, ablation removes the item list
+func_801F51B8 shopBuy_drawParty  # [runtime] docs/runtime-findings.md field/menu campaign, ablation removes the members and stat arrows
+func_801F56E4 shopBuy_drawCursor  # [runtime] docs/runtime-findings.md field/menu campaign, ablation removes the hand
+func_801F5BCC shopBuy_drawRow  # [runtime] docs/runtime-findings.md field/menu campaign, ablation removes the list rows
+func_801F551C shopBuy_drawQuantityWindow  # [runtime] docs/runtime-findings.md field/menu campaign, ablation removes the quantity window content (sh_buyx)
+func_801F5EEC shopBuy_updateHelp  # [code] help-text callback (func_8003556C), item help in the list, text 3 "Select quantity" in the quantity window
+func_801F7770 shopSell_init  # [runtime] docs/runtime-findings.md field/menu campaign, s_shopModes Sell init (sh_sell)
+func_801F832C shopSell_update  # [runtime] docs/runtime-findings.md field/menu campaign, s_shopModes Sell update
+func_801F835C shopSell_exit  # [runtime] docs/runtime-findings.md field/menu campaign (code), s_shopModes Sell exit
+func_801F837C shopSell_input  # [runtime] docs/runtime-findings.md field/menu campaign, calls s_shopSellInputFuncs[state]
+func_801F8434 shopSell_inputList  # [runtime] docs/runtime-findings.md field/menu campaign (code), inventory list
+func_801F80D0 shopSell_openQuantity  # [runtime] docs/runtime-findings.md field/menu campaign, Cross opens the QUANTITY and INFO windows (sh_sellx)
+func_801F7848 shopSell_inputQuantity  # [runtime] docs/runtime-findings.md field/menu campaign, Left/Right 1, Up/Down 10
+func_801F8224 shopSell_confirm  # [runtime] docs/runtime-findings.md field/menu campaign (code), item_remove, gil += price / 2 * n capped at 9999999
+func_801F8680 shopSell_closeQuantity  # [runtime] docs/runtime-findings.md field/menu campaign (code), closes both windows
+func_801F86D0 shopSell_onQuantityOpened  # [runtime] docs/runtime-findings.md field/menu campaign (code), window opened callback, state 2
+func_801F86FC shopSell_onQuantityClosed  # [runtime] docs/runtime-findings.md field/menu campaign (code), window closed callback, state 1
+func_801F79FC shopSell_drawList  # [runtime] docs/runtime-findings.md field/menu campaign, the two-column inventory list
+func_801F7BC4 shopSell_drawQuantityWindow  # [runtime] docs/runtime-findings.md field/menu campaign, QUANTITY window content
+func_801F7DA8 shopSell_drawInfoWindow  # [runtime] docs/runtime-findings.md field/menu campaign, INFO window content
+func_801F7FE0 shopSell_drawCursor  # [runtime] docs/runtime-findings.md field/menu campaign, the hand
+func_801F856C shopSell_drawRow  # [runtime] docs/runtime-findings.md field/menu campaign, an inventory entry
+func_801F84D8 shopSell_drawScrollRows  # [runtime] docs/runtime-findings.md field/menu campaign (code), rows of the scrolling view
+func_801F83D4 shopSell_draw  # [runtime] docs/runtime-findings.md field/menu campaign (code), list and cursor
+func_801F83FC shopSell_updateList  # [runtime] docs/runtime-findings.md field/menu campaign (code), func_8002EB74 while the list scrolls
+func_801F8728 shopSell_updateHelp  # [runtime] docs/runtime-findings.md field/menu campaign (code), help-text callback, item help or text 3 "Select quantity"
+func_801F5F88 shopSynth_init  # [runtime] docs/runtime-findings.md field/menu campaign, s_shopModes Synth init (menu_shop_synth)
+func_801F7390 shopSynth_update  # [runtime] docs/runtime-findings.md field/menu campaign, s_shopModes Synth update
+func_801F73C0 shopSynth_exit  # [runtime] docs/runtime-findings.md field/menu campaign (code), s_shopModes Synth exit
+func_801F73E0 shopSynth_input  # [runtime] docs/runtime-findings.md field/menu campaign, calls s_shopSynthInputFuncs[state]
+func_801F74A8 shopSynth_inputList  # [runtime] docs/runtime-findings.md field/menu campaign, recipe list (sh_synth)
+func_801F6F00 shopSynth_openQuantity  # [runtime] docs/runtime-findings.md field/menu campaign, Cross opens the quantity window (sh_synthx)
+func_801F60A8 shopSynth_inputQuantity  # [runtime] docs/runtime-findings.md field/menu campaign, Left/Right 1, Up/Down 10
+func_801F7614 shopSynth_confirm  # [runtime] docs/runtime-findings.md field/menu campaign (code), item_add the product, item_remove both ingredients, gil
+func_801F7590 shopSynth_closeQuantity  # [runtime] docs/runtime-findings.md field/menu campaign (code), closes the quantity window
+func_801F75BC shopSynth_onQuantityOpened  # [runtime] docs/runtime-findings.md field/menu campaign, window opened callback, state 2
+func_801F75E8 shopSynth_onQuantityClosed  # [runtime] docs/runtime-findings.md field/menu campaign (code), window closed callback, state 1
+func_801F7250 shopSynth_loadRecipes  # [runtime] docs/runtime-findings.md field/menu campaign, recipes whose shop mask has bit id - 0x20
+func_801F625C shopSynth_drawInfo  # [runtime] docs/runtime-findings.md field/menu campaign, INFO window with the required items
+func_801F65C8 shopSynth_drawList  # [runtime] docs/runtime-findings.md field/menu campaign, recipe list
+func_801F6714 shopSynth_drawParty  # [runtime] docs/runtime-findings.md field/menu campaign, members and stat arrows
+func_801F6A7C shopSynth_drawQuantityWindow  # [runtime] docs/runtime-findings.md field/menu campaign, quantity window content
+func_801F6C50 shopSynth_drawCursor  # [runtime] docs/runtime-findings.md field/menu campaign, the hand
+func_801F6D34 shopSynth_drawRow  # [runtime] docs/runtime-findings.md field/menu campaign, a recipe row
+func_801F7528 shopSynth_drawScrollRows  # [runtime] docs/runtime-findings.md field/menu campaign (code), rows of the scrolling view
+func_801F7438 shopSynth_draw  # [runtime] docs/runtime-findings.md field/menu campaign (code), draws the Synth windows and cursor
+func_801F7470 shopSynth_updateList  # [runtime] docs/runtime-findings.md field/menu campaign (code), func_8002EB74 while the list scrolls
+func_801F76C8 shopSynth_updateHelp  # [runtime] docs/runtime-findings.md field/menu campaign (code), help-text callback, product help or text 4 "Select quantity"
+D_801FC2D0 s_shop  # [runtime] docs/runtime-findings.md field/menu campaign, shop state, see Shop in include/ovl_3c.h
+D_801FBBA0 s_shopModes  # [runtime] docs/runtime-findings.md field/menu campaign, {init, update, exit} per kind and menu option, read at sh_buy/sh_sell/sh_synth
+D_801FC2F8 s_shopBuy  # [runtime] docs/runtime-findings.md field/menu campaign, Buy state
+D_801FC338 s_shopSynth  # [runtime] docs/runtime-findings.md field/menu campaign, Synth state
+D_801FC438 s_shopSell  # [runtime] docs/runtime-findings.md field/menu campaign, Sell state
+D_801FC044 s_shopBuyInputFuncs  # [code] per-state input handlers, shopBuy_input
+D_801FC09C s_shopSynthInputFuncs  # [code] per-state input handlers, shopSynth_input
+D_801FC27C s_shopSellInputFuncs  # [code] per-state input handlers, shopSell_input
+D_801FBC0C s_shopTitleRect  # [code] RECT of the title window, shop_drawTitle
+D_801FBC14 s_shopMessageRect  # [code] RECT of the message window, shop_drawMessage
+D_801FBC1C s_shopMenuRect  # [code] RECT of the menu window (height set per option count), shop_drawMenu
+D_801FBC24 s_shopMenuText  # [code] per kind, first text id of the menu options (3 Buy/Sell/Exit, 6 Synth/Exit)
+D_801FBC28 s_shopHelpRect  # [code] RECT passed to func_80035580 by shop_updateHelp
+D_801FBC30 s_shopMenuHelpText  # [code] per kind, first help text id of the menu options (8, 0xB)
+D_801FBC34 s_shopIconClutRect  # [code] RECT for the clut part of s_shopIconImage, shop_loadImages
+D_801FBC3C s_shopIconRect  # [code] RECT for the pixel part of s_shopIconImage, shop_loadImages
+D_801FBC44 s_shopItems  # [code] 0x20 item ids per shop id, 0xFF ends, shopBuy_loadList
+D_801FC0FC s_shopRecipes  # [code] 64 synthesis recipes {price, ingredients, product, shop mask}, shopSynth_loadRecipes
+D_801F87EC s_shopItemHelp  # [code] item help strings, indexed by the item table's help offset (shopBuy_updateHelp)
+D_801FC288 s_shopSellListRectPtr  # [code] points to s_shopSell.listRect, shopSell_drawList
+D_801FC2B0 s_shopSellWindows  # [code] style, content callback, otz and label of the QUANTITY and INFO windows, shopSell_openQuantity
+D_801FC050 s_shopBuyInfoRowY  # [code] y of the Funds/Stock/Equipped rows, shopBuy_drawInfo
+D_801FC05C s_shopBuyInfoRowAlways  # [code] per row, 1 = drawn normal even for non-equipment, shopBuy_drawInfo
+D_801FC060 s_shopBuyInfoGil  # [code] gil suffix appended to the funds, shopBuy_drawInfo
+D_801FC064 s_shopBuyInfoRowText  # [code] text ids of the Funds/Stock/Equipped rows, shopBuy_drawInfo
+D_801FC070 s_shopBuyPartyLabel  # [code] D_800703FC label index for weapons / armor, shopBuy_drawParty
+D_801FC078 s_shopBuyStatIcon  # [code] stat icon per equip slot, shopBuy_drawParty
+D_801FC080 s_shopBuyEquipMask  # [code] item equip mask bit per character set (chr_getDefaultSet), shopBuy_drawParty
+D_801FC098 s_shopBuyQuantityGil  # [code] gil suffix, shopBuy_drawQuantityWindow
+D_801FC0A8 s_shopSynthInfoRowY  # [code] y of the Funds/Stock/Equipped/Required Item rows, shopSynth_drawInfo
+D_801FC0B8 s_shopSynthInfoRowAlways  # [code] as s_shopBuyInfoRowAlways, shopSynth_drawInfo
+D_801FC0BC s_shopSynthInfoGil  # [code] gil suffix, shopSynth_drawInfo
+D_801FC0C0 s_shopSynthInfoRowText  # [code] text ids of the INFO rows, shopSynth_drawInfo
+D_801FC0D0 s_shopSynthPartyLabel  # [code] as s_shopBuyPartyLabel, shopSynth_drawParty
+D_801FC0D8 s_shopSynthStatIcon  # [code] as s_shopBuyStatIcon, shopSynth_drawParty
+D_801FC0E0 s_shopSynthEquipMask  # [code] as s_shopBuyEquipMask, shopSynth_drawParty
+D_801FC0F8 s_shopSynthQuantityGil  # [code] gil suffix, shopSynth_drawQuantityWindow
+D_801FC28C s_shopSellQuantityGil  # [code] gil suffix, shopSell_drawQuantityWindow
+D_801FC290 s_shopSellInfoRowY  # [code] y of the Funds/Stock/Equipped rows, shopSell_drawInfoWindow
+D_801FC29C s_shopSellInfoRowAlways  # [code] as s_shopBuyInfoRowAlways, shopSell_drawInfoWindow
+D_801FC2A0 s_shopSellInfoGil  # [code] gil suffix, shopSell_drawInfoWindow
+D_801FC2A4 s_shopSellInfoRowText  # [code] text ids of the INFO rows, shopSell_drawInfoWindow
+D_801EDF04 s_shopIcons  # [code] 7 icons drawn by shop_drawStatIcon (per equip slot, up and down arrows)
+D_801EDF3C s_shopImage  # [code] image data passed to func_80028720 by shop_init
+D_801F36FC s_shopIconImage  # [code] clut (16x3) then pixels loaded by shop_loadImages
+D_801F3C9C g_shopText  # [code] text bank of the shop (titles, menu, messages, INFO labels), text_setBank in shop_init
+D_801F3E98 g_shopBuyText  # [code] text bank set by shopBuy_init
+D_801F3F08 g_shopSynthText  # [code] text bank set by shopSynth_init
+D_801F3F88 g_shopSellText  # [code] text bank set by shopSell_init
+D_801F3FF8 s_shopBuyNoStat  # [code] "--" drawn for accessories, shopBuy_drawParty
+D_801F3FFC s_shopSynthNoStat  # [code] "--" drawn for accessories, shopSynth_drawParty
+# FIELDS include/ovl_3c.h Shop (was ShopHub): unk0=kind,unk1=cursor,unk2=entryCount,unk3=inMode,unk4=visits,unk8=id,unkC=savedOtz,unk10=help,unk14=memberCount,unk18=members,unk20=messageOtz; ShopBuy and ShopSynth: unk0=state,unk1=count,unk2=quantity,unk3=maxQuantity,unk4=hasEquipment,unk8=infoRect,unk10=listRect,unk18=partyRect,unk20=quantityRect,unk28=list,unk38=quantityWin, ShopBuy unk3C=items, ShopSynth unk3C=recipes; ShopSell: unk0=state,unk1=quantity,unk2=maxQuantity,unk4=list,unk14=listRect,unk1C=winRects,unk2C=wins; SynthRecipe: unk0=price,unk2=ingredients,unk4=product,unk5=shopMask; ShopWinDef: unk0=style,unk4=draw,unk8=otz,unkC=label
+
+## ovl_3e: ovl_3e (disc change screen, menu type 8)
+func_801F605C discChange_init  # [runtime] docs/runtime-findings.md field/menu campaign, menu type 8 (D_8006C9D4[8]) opened with force_menu.py shows the "Change to DISC" art
+func_801F65A4 discChange_update  # [runtime] docs/runtime-findings.md field/menu campaign, D_8006C9D4[8] entry 1 (per frame)
+func_801F65D4 discChange_exit  # [runtime] docs/runtime-findings.md field/menu campaign, D_8006C9D4[8] entry 2, jumps to the arg's field unless it is 15000
+func_801F6124 discChange_drawBackground  # [runtime] docs/runtime-findings.md field/menu campaign, ablation removes the whole picture
+func_801F6254 discChange_drawPanel  # [runtime] docs/runtime-findings.md field/menu campaign (code), 194x168 sprite drawn in states 3-4 after a failed check
+func_801F6368 discChange_checkDisc  # [runtime] docs/runtime-findings.md field/menu campaign (code), CdControlB/CdGetDiskType then the disc bit in g_gameState->unkB, 7 = right disc
+func_801F6654 discChange_input  # [runtime] docs/runtime-findings.md field/menu campaign (code), calls s_discChangeInputFuncs[state] unless func_8002F810
+func_801F66AC discChange_draw  # [runtime] docs/runtime-findings.md field/menu campaign (code), calls s_discChangeDrawFuncs[state]
+func_801F66F4 discChange_updateState  # [runtime] docs/runtime-findings.md field/menu campaign (code), calls s_discChangeUpdateFuncs[state]
+func_801F673C discChange_loadPicture  # [runtime] docs/runtime-findings.md field/menu campaign (code), reads the wanted disc's picture file in two halves to VRAM, loads the clut and the panel image
+func_801F682C discChange_loadPictureHalf  # [code] LoadImage of half i (160 wide) at s_discChangePictureRect
+func_801F689C discChange_inputLidClosed  # [code] s_discChangeInputFuncs[1] (lid closed), Cross starts the check
+func_801F68D8 discChange_inputLidOpen  # [code] s_discChangeInputFuncs[2] (lid open), Cross starts the check
+func_801F6914 discChange_inputError  # [code] s_discChangeInputFuncs[3] (check failed), Cross fades back with discChange_closeError
+func_801F6968 discChange_updateLidClosed  # [code] s_discChangeUpdateFuncs[1], goes to state 2 when cd_checkShellOpen
+func_801F69A4 discChange_updateLidOpen  # [code] s_discChangeUpdateFuncs[2], starts the check when the lid closes
+func_801F69E8 discChange_updateError  # [code] s_discChangeUpdateFuncs[3], after 180 frames does what Cross does in discChange_inputError
+func_801F6A3C discChange_startCheck  # [code] state 0, func_8002FAAC then discChange_doCheck as the func_8002F8A8 callback
+func_801F6A78 discChange_doCheck  # [code] runs discChange_checkDisc, closes the menu (func_800325E0) on the right disc else goes to state 3
+func_801F6AF0 discChange_closeError  # [code] state 0, func_8002FA50 then discChange_resetState as the callback
+func_801F6B24 discChange_resetState  # [code] state 2 when cd_checkShellOpen else 1
+D_801F6BBC s_discChange  # [code] disc change state, see DiscChange in include/ovl_3e.h
+D_801F6B60 s_discChangeInputFuncs  # [runtime] docs/runtime-findings.md field/menu campaign (code), per-state input handlers called by discChange_input
+D_801F6B74 s_discChangeDrawFuncs  # [runtime] docs/runtime-findings.md field/menu campaign (code), per-state draw functions called by discChange_draw
+D_801F6B88 s_discChangeUpdateFuncs  # [runtime] docs/runtime-findings.md field/menu campaign (code), per-state lid/timer handlers called by discChange_updateState
+D_801F6B9C s_discChangeClutRect  # [code] RECT 256x1 at y 0x1FF for the clut, discChange_loadPicture
+D_801F6BA4 s_discChangePanelRect  # [code] RECT 320,256 for the panel image, discChange_loadPicture
+D_801F6BAC s_discChangePictureFiles  # [code] file ids 0x28-0x2B in dir 1, the picture per wanted disc, discChange_loadPicture
+D_801EDF04 s_discChangePictureRect  # [code] RECT 0,256 160x224 of the first picture half, discChange_loadPictureHalf
+D_801EDF0C s_discChangeClut  # [code] 256-entry clut followed by the 194x168 panel image, loaded by discChange_loadPicture
+# FIELDS include/ovl_3e.h DiscChange (was Ovl3eState): unk0=shellOpen,unk1=state,unk3=checkResult,unk4=disc,unk6=nextLocation,unk8=savedFlags,unk10=timer
