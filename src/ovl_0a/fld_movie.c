@@ -294,7 +294,7 @@ s32 fld_isModelTexAnimActive(Unk800C95C8 *arg0) {
     return 0;
 }
 
-s32 fld_collectModels(FieldObjSlot **arg0) {
+s32 fld_collectVisibleModels(FieldObjSlot **arg0) {
     s32 n;
     Unk16D8 *e;
     FieldObjSlot *s;
@@ -387,7 +387,7 @@ void fld_drawModels(void) {
     i = 0;
     ot = g_gameState->unk1C->unk10[g_gameState->unk1C->unk8];
     g_gameState->unk1C->unk10[g_gameState->unk1C->unk8] = ot + g_gameState->unk1C->unk8E4.field->unkC->unk14->unk30;
-    n = fld_collectModels((FieldObjSlot **)list);
+    n = fld_collectVisibleModels((FieldObjSlot **)list);
     for (; i < n; i++) {
         c = list[i];
         if (c != NULL) {

@@ -71,7 +71,7 @@ void fld_main(s32 arg0) {
                 break;
             }
             if (!(g_gameState->unk1C->unk0 & 8)) {
-                fldbg_update();
+                fldbg_draw();
             }
             if (!(g_gameState->unk1C->unk0 & 4)) {
                 fld_drawModels();

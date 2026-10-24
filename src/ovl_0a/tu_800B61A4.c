@@ -2490,7 +2490,7 @@ void fldmdl_drawMeshMirrored(Unk800C95C8 *arg0, u8 arg1) {
     }
 }
 
-s32 fldbg_buildLayerSprites(Unk800C9DB4Obj *arg0, BgSprt *arg1, BgSprt **arg2) {
+s32 fldbg_buildOverlaySprites(Unk800C9DB4Obj *arg0, BgSprt *arg1, BgSprt **arg2) {
     BgPos *pos;
     BgTile *tile;
     u32 i;
@@ -2592,7 +2592,7 @@ s32 fldbg_initEffectList(void) {
     return 1;
 }
 
-s32 fldbg_updateLayerAnims(void) {
+s32 fldbg_updateOverlayAnims(void) {
     Unk800C9DB4 *d = g_fieldBgData;
     u32 i;
     Unk800C9DB4Path *p;
@@ -2656,24 +2656,24 @@ s32 fldbg_updateLayerAnims(void) {
 }
 
 /* initialise the screen fade quads */
-s32 fldbg_initFollowLayers(void) {
+s32 fldbg_initFollowOverlays(void) {
     u16 i;
     u16 j;
 
-    g_fieldBgFollowLayerCount = 0;
+    g_fieldBgFollowOverlayCount = 0;
     for (i = 0; i < 10; i++) {
-        g_fieldBgFollowLayers[i].unk0 = -1;
-        g_fieldBgFollowLayers[i].unk1 = 0x80;
-        g_fieldBgFollowLayers[i].unk2 = 0x80;
-        g_fieldBgFollowLayers[i].unk3 = 0x80;
-        g_fieldBgFollowLayers[i].unk4 = -1;
-        g_fieldBgFollowLayers[i].unk6 = 0;
-        g_fieldBgFollowLayers[i].unk8 = 0;
+        g_fieldBgFollowOverlays[i].unk0 = -1;
+        g_fieldBgFollowOverlays[i].unk1 = 0x80;
+        g_fieldBgFollowOverlays[i].unk2 = 0x80;
+        g_fieldBgFollowOverlays[i].unk3 = 0x80;
+        g_fieldBgFollowOverlays[i].unk4 = -1;
+        g_fieldBgFollowOverlays[i].unk6 = 0;
+        g_fieldBgFollowOverlays[i].unk8 = 0;
         for (j = 0; j < 4; j++) {
-            SetPolyF4(&g_fieldBgFollowLayers[i].unkC[0][j]);
-            setRGB0(&g_fieldBgFollowLayers[i].unkC[0][j], g_fieldBgFollowLayers[i].unk1, g_fieldBgFollowLayers[i].unk2, g_fieldBgFollowLayers[i].unk3);
-            SetPolyF4(&g_fieldBgFollowLayers[i].unkC[1][j]);
-            setRGB0(&g_fieldBgFollowLayers[i].unkC[1][j], g_fieldBgFollowLayers[i].unk1, g_fieldBgFollowLayers[i].unk2, g_fieldBgFollowLayers[i].unk3);
+            SetPolyF4(&g_fieldBgFollowOverlays[i].unkC[0][j]);
+            setRGB0(&g_fieldBgFollowOverlays[i].unkC[0][j], g_fieldBgFollowOverlays[i].unk1, g_fieldBgFollowOverlays[i].unk2, g_fieldBgFollowOverlays[i].unk3);
+            SetPolyF4(&g_fieldBgFollowOverlays[i].unkC[1][j]);
+            setRGB0(&g_fieldBgFollowOverlays[i].unkC[1][j], g_fieldBgFollowOverlays[i].unk1, g_fieldBgFollowOverlays[i].unk2, g_fieldBgFollowOverlays[i].unk3);
         }
     }
     return 1;
@@ -2746,7 +2746,7 @@ s32 fldbg_drawFollowMask(Unk800C9DB4 *bg, Unk800C9DB4Obj *o, Unk800CA068 *st, Fi
     return 1;
 }
 
-s32 fldbg_updateFollowLayers(void) {
+s32 fldbg_updateFollowOverlays(void) {
     SVECTOR v;
     s32 sxy;
     Unk800CA068 *st;
@@ -2762,7 +2762,7 @@ s32 fldbg_updateFollowLayers(void) {
     s16 y;
     s16 x;
 
-    if (g_fieldBgFollowLayerCount == 0) {
+    if (g_fieldBgFollowOverlayCount == 0) {
         return 0;
     } else {
         st = &g_fieldBgState;
@@ -2794,8 +2794,8 @@ s32 fldbg_updateFollowLayers(void) {
         gte_stsxy(&sxy);
         sx = sxy;
         sy = sxy >> 16;
-        f = g_fieldBgFollowLayers;
-        for (i = 0; i < g_fieldBgFollowLayerCount; i++, f++) {
+        f = g_fieldBgFollowOverlays;
+        for (i = 0; i < g_fieldBgFollowOverlayCount; i++, f++) {
             o = (Unk800C9DB4Obj *)((u16)f->unk4 * sizeof(Unk800C9DB4Obj) + (u32)objs);
             if ((o->unk0 & 2) && o->unk24 == st->unk75) {
                 x = st->unk4.unk0 + (sx - bg->unk24 - (f->unk6 + 0xA0));
@@ -2811,7 +2811,7 @@ s32 fldbg_updateFollowLayers(void) {
     }
 }
 
-s32 fldbg_initLayers(u8 *arg0, BgSprt **arg1) {
+s32 fldbg_initOverlays(u8 *arg0, BgSprt **arg1) {
     Unk800C9DA4Hdr *h;
     Unk800C9DB4Cam *c;
     s32 x;
@@ -2861,7 +2861,7 @@ s32 fldbg_initLayers(u8 *arg0, BgSprt **arg1) {
         g_fieldBgCtx.unk1C[i * 3 + 2] = 0x80;
         g_fieldBgCtx.unk20[i] = 0;
         p = o;
-        if (fldbg_buildLayerSprites(p, *arg1, arg1) != 1) {
+        if (fldbg_buildOverlaySprites(p, *arg1, arg1) != 1) {
             return 0;
         }
         o->unk10 = -0x8000;
@@ -2875,7 +2875,7 @@ s32 fldbg_initLayers(u8 *arg0, BgSprt **arg1) {
     return 1;
 }
 
-s32 fldbg_drawLayer(Unk800C9DB4Obj *o, u8 *arg1) {
+s32 fldbg_drawOverlay(Unk800C9DB4Obj *o, u8 *arg1) {
     BgSprt *spr;
     u32 *ot;
     Unk800C9DA4Hdr *h;
@@ -3104,7 +3104,7 @@ s32 fldbg_drawLayer(Unk800C9DB4Obj *o, u8 *arg1) {
     return 1;
 }
 
-s32 fldbg_updateLayerScroll(Unk800C9DA4Hdr *arg0) {
+s32 fldbg_updateOverlayScroll(Unk800C9DA4Hdr *arg0) {
     s32 i;
     s32 n;
     Unk800C9DB4Obj *o;
@@ -3530,7 +3530,7 @@ BgSprt *fldbg_init(void) {
     *(s32 *)&g_fieldBgState.unkA4 = 0;
     g_fieldBgState.unk1C = (MATRIX *)g_fieldBgCtx.unk14;
     g_fieldBgState.unk20 = (u16 *)g_fieldBgCtx.unk4;
-    if (fldbg_initLayers(g_fieldBgCtx.unk18, &spr) != 1) {
+    if (fldbg_initOverlays(g_fieldBgCtx.unk18, &spr) != 1) {
         return NULL;
     }
     h = g_fieldBgCtx.unk10;
@@ -3545,7 +3545,7 @@ BgSprt *fldbg_init(void) {
         trk[*((u8 *)h + anims[i].unkC)].unk0 |= 2;
     }
     fldbg_initEffectList();
-    fldbg_initFollowLayers();
+    fldbg_initFollowOverlays();
     v.vx = 0;
     v.vy = 0;
     v.vz = 0;
@@ -3562,14 +3562,14 @@ BgSprt *fldbg_init(void) {
     return spr;
 }
 
-s32 fldbg_update(void) {
+s32 fldbg_draw(void) {
     Unk800C9DA4Hdr *h;
     Unk800C9DB4Obj *o;
     Unk800CA068 *c;
     u32 i;
     s32 j;
 
-    fldbg_updateLayerAnims();
+    fldbg_updateOverlayAnims();
     /* the switch results are dead; only the loads and the hoisted 0x10/0x40 survive */
     do {
         for (i = 0; i < g_fieldBgCtx.unk24; i++) {
@@ -3586,8 +3586,8 @@ s32 fldbg_update(void) {
     j = 0;
     fldbg_updateScroll();
     fldbg_followPlayer();
-    fldbg_updateLayerScroll(g_fieldBgCtx.unk10);
-    fldbg_updateFollowLayers();
+    fldbg_updateOverlayScroll(g_fieldBgCtx.unk10);
+    fldbg_updateFollowOverlays();
     c = &g_fieldBgState;
     h = g_fieldBgCtx.unk10;
     h->unk30 = h->unk24 - (s16)(c->unk4.unk0 - 0xA0);
@@ -3595,7 +3595,7 @@ s32 fldbg_update(void) {
     o = (Unk800C9DB4Obj *)((u8 *)h + h->unk10);
     for (j = 0; j < h->unk6; j++) {
         if ((o[j].unk0 & 2) && o[j].unk24 == c->unk75) {
-            fldbg_drawLayer(&o[j], g_fieldBgCtx.unk1C + j * 3);
+            fldbg_drawOverlay(&o[j], g_fieldBgCtx.unk1C + j * 3);
         }
     }
     return 1;
@@ -3700,37 +3700,37 @@ s32 fldbg_scrollToPlayer(s32 arg0, s32 arg1) {
 }
 
 /* add a screen fade: rectangle (arg0..arg2), mode arg3, colour arg4..arg6 */
-s32 fldbg_addFollowLayer(s16 arg0, s16 arg1, s16 arg2, s8 arg3, u8 arg4, u8 arg5, u8 arg6) {
+s32 fldbg_addFollowOverlay(s16 arg0, s16 arg1, s16 arg2, s8 arg3, u8 arg4, u8 arg5, u8 arg6) {
     u32 i;
 
-    g_fieldBgFollowLayers[g_fieldBgFollowLayerCount].unk4 = arg0;
-    g_fieldBgFollowLayers[g_fieldBgFollowLayerCount].unk6 = arg1;
-    g_fieldBgFollowLayers[g_fieldBgFollowLayerCount].unk8 = arg2;
-    g_fieldBgFollowLayers[g_fieldBgFollowLayerCount].unk0 = arg3;
+    g_fieldBgFollowOverlays[g_fieldBgFollowOverlayCount].unk4 = arg0;
+    g_fieldBgFollowOverlays[g_fieldBgFollowOverlayCount].unk6 = arg1;
+    g_fieldBgFollowOverlays[g_fieldBgFollowOverlayCount].unk8 = arg2;
+    g_fieldBgFollowOverlays[g_fieldBgFollowOverlayCount].unk0 = arg3;
     if (arg3 >= 0) {
-        g_fieldBgFollowLayers[g_fieldBgFollowLayerCount].unk1 = arg4;
-        g_fieldBgFollowLayers[g_fieldBgFollowLayerCount].unk2 = arg5;
-        g_fieldBgFollowLayers[g_fieldBgFollowLayerCount].unk3 = arg6;
+        g_fieldBgFollowOverlays[g_fieldBgFollowOverlayCount].unk1 = arg4;
+        g_fieldBgFollowOverlays[g_fieldBgFollowOverlayCount].unk2 = arg5;
+        g_fieldBgFollowOverlays[g_fieldBgFollowOverlayCount].unk3 = arg6;
         for (i = 0; i < 4; i++) {
-            SetPolyF4(&g_fieldBgFollowLayers[g_fieldBgFollowLayerCount].unkC[0][i]);
-            setRGB0(&g_fieldBgFollowLayers[g_fieldBgFollowLayerCount].unkC[0][i], arg4, arg5, arg6);
-            SetPolyF4(&g_fieldBgFollowLayers[g_fieldBgFollowLayerCount].unkC[0][i + 4]); /* = unkC[1][i] */
-            setRGB0(&g_fieldBgFollowLayers[g_fieldBgFollowLayerCount].unkC[1][i], arg4, arg5, arg6);
+            SetPolyF4(&g_fieldBgFollowOverlays[g_fieldBgFollowOverlayCount].unkC[0][i]);
+            setRGB0(&g_fieldBgFollowOverlays[g_fieldBgFollowOverlayCount].unkC[0][i], arg4, arg5, arg6);
+            SetPolyF4(&g_fieldBgFollowOverlays[g_fieldBgFollowOverlayCount].unkC[0][i + 4]); /* = unkC[1][i] */
+            setRGB0(&g_fieldBgFollowOverlays[g_fieldBgFollowOverlayCount].unkC[1][i], arg4, arg5, arg6);
             if (arg3 >= 4) {
-                setSemiTrans(&g_fieldBgFollowLayers[g_fieldBgFollowLayerCount].unkC[0][i], 0);
-                setSemiTrans(&g_fieldBgFollowLayers[g_fieldBgFollowLayerCount].unkC[1][i], 0);
+                setSemiTrans(&g_fieldBgFollowOverlays[g_fieldBgFollowOverlayCount].unkC[0][i], 0);
+                setSemiTrans(&g_fieldBgFollowOverlays[g_fieldBgFollowOverlayCount].unkC[1][i], 0);
             } else {
-                setSemiTrans(&g_fieldBgFollowLayers[g_fieldBgFollowLayerCount].unkC[0][i], 1);
-                setSemiTrans(&g_fieldBgFollowLayers[g_fieldBgFollowLayerCount].unkC[1][i], 1);
+                setSemiTrans(&g_fieldBgFollowOverlays[g_fieldBgFollowOverlayCount].unkC[0][i], 1);
+                setSemiTrans(&g_fieldBgFollowOverlays[g_fieldBgFollowOverlayCount].unkC[1][i], 1);
             }
         }
     }
-    g_fieldBgFollowLayerCount++;
+    g_fieldBgFollowOverlayCount++;
     return 1;
 }
 
 /* toggle a background object's tint */
-s32 fldbg_toggleLayerColor(s32 arg0, u8 arg1, u8 arg2, u8 arg3) {
+s32 fldbg_toggleOverlayColor(s32 arg0, u8 arg1, u8 arg2, u8 arg3) {
     Unk800C9DA4Hdr *h;
     Unk800C9DB4Obj *o;
     BgSprt *s;
@@ -4085,7 +4085,7 @@ s32 fldbg_setViewportScrollRate(s32 arg0, s16 arg1, s16 arg2) {
 }
 
 /* move a background object, clamped to its limits */
-s32 fldbg_moveLayer(s32 arg0, s16 arg1, s16 arg2, s16 arg3) {
+s32 fldbg_moveOverlay(s32 arg0, s16 arg1, s16 arg2, s16 arg3) {
     Unk800C9DB4Obj *o = &((Unk800C9DB4Obj *)((u8 *)g_fieldBgData + g_fieldBgData->unk10))[arg0];
     s16 x = o->unk8 + arg1;
     s16 y = o->unkA + arg2;
@@ -4110,14 +4110,14 @@ s32 fldbg_moveLayer(s32 arg0, s16 arg1, s16 arg2, s16 arg3) {
     return 1;
 }
 
-s32 fldbg_getLayerColor(s32 arg0, u8 *arg1, u8 *arg2, u8 *arg3) {
+s32 fldbg_getOverlayColor(s32 arg0, u8 *arg1, u8 *arg2, u8 *arg3) {
     *arg1 = g_fieldBgCtx.unk1C[arg0 * 3];
     *arg2 = g_fieldBgCtx.unk1C[arg0 * 3 + 1];
     *arg3 = g_fieldBgCtx.unk1C[arg0 * 3 + 2];
     return 1;
 }
 
-s32 fldbg_setLayerColor(s32 arg0, u8 arg1, u8 arg2, u8 arg3) {
+s32 fldbg_setOverlayColor(s32 arg0, u8 arg1, u8 arg2, u8 arg3) {
     Unk800C9DA4Hdr *h;
     Unk800C9DB4Obj *o;
     BgSprt *s;
@@ -4142,7 +4142,7 @@ s32 fldbg_setLayerColor(s32 arg0, u8 arg1, u8 arg2, u8 arg3) {
     return 1;
 }
 
-s32 fldbg_showLayer(s32 arg0, s32 arg1) {
+s32 fldbg_showOverlay(s32 arg0, s32 arg1) {
     Unk800C9DB4Obj *o = func_800C9DB4_obj(arg0);
     u8 v;
 
@@ -4155,7 +4155,7 @@ s32 fldbg_showLayer(s32 arg0, s32 arg1) {
     return 1;
 }
 
-s32 fldbg_setLayerLoop(s32 arg0, s32 arg1, s16 arg2, s16 arg3) {
+s32 fldbg_setOverlayLoop(s32 arg0, s32 arg1, s16 arg2, s16 arg3) {
     Unk800C9DB4Obj *o = func_800C9DB4_obj(arg0);
 
     if (arg1 != 0) {
@@ -4170,7 +4170,7 @@ s32 fldbg_setLayerLoop(s32 arg0, s32 arg1, s16 arg2, s16 arg3) {
     return 1;
 }
 
-s32 fldbg_setLayerFlag1(s32 arg0, s32 arg1) {
+s32 fldbg_setOverlayFlag1(s32 arg0, s32 arg1) {
     Unk800C9DB4Obj *o = func_800C9DB4_obj(arg0);
     u8 v;
 
@@ -4183,7 +4183,7 @@ s32 fldbg_setLayerFlag1(s32 arg0, s32 arg1) {
     return 1;
 }
 
-s32 fldbg_setLayerSkewLoop(s32 arg0, s32 arg1, s16 arg2, s16 arg3, s32 arg4) {
+s32 fldbg_setOverlaySkewLoop(s32 arg0, s32 arg1, s16 arg2, s16 arg3, s32 arg4) {
     Unk800C9DB4Obj *o = func_800C9DB4_obj(arg0);
 
     if (arg1 != 0) {
@@ -4205,7 +4205,7 @@ s32 fldbg_setLayerSkewLoop(s32 arg0, s32 arg1, s16 arg2, s16 arg3, s32 arg4) {
     return 1;
 }
 
-s32 fldbg_setLayerParallax(s32 arg0, s32 arg1, s16 arg2, s16 arg3) {
+s32 fldbg_setOverlayParallax(s32 arg0, s32 arg1, s16 arg2, s16 arg3) {
     Unk800C9DB4Obj *o = func_800C9DB4_obj(arg0);
 
     if (arg1 != 0) {
@@ -4218,7 +4218,7 @@ s32 fldbg_setLayerParallax(s32 arg0, s32 arg1, s16 arg2, s16 arg3) {
     return 1;
 }
 
-s32 fldbg_setLayerPos(s32 arg0, s16 arg1, s16 arg2) {
+s32 fldbg_setOverlayPos(s32 arg0, s16 arg1, s16 arg2) {
     Unk800C9DB4Obj *o = func_800C9DB4_obj(arg0);
 
     o->unkC = arg1;
@@ -4229,7 +4229,7 @@ s32 fldbg_setLayerPos(s32 arg0, s16 arg1, s16 arg2) {
     return 1;
 }
 
-s32 fldbg_setLayerViewport(s32 arg0, s32 arg1) {
+s32 fldbg_setOverlayViewport(s32 arg0, s32 arg1) {
     Unk800C9DB4Obj *o = func_800C9DB4_obj(arg0);
 
     o->unk25_1 = arg1;
@@ -4452,7 +4452,7 @@ s32 func_800C1D08(void) {
     return 1;
 }
 
-s32 fldbg_setLayerSpriteColor(s32 arg0, u8 arg1, u8 arg2, u8 arg3) {
+s32 fldbg_setOverlaySpriteColor(s32 arg0, u8 arg1, u8 arg2, u8 arg3) {
     Unk800C9DB4Obj *o = func_800C9DB4_obj(arg0);
     u16 n = o->unk26;
     BgSprt *s = o->unk30;

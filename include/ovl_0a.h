@@ -353,7 +353,7 @@ typedef struct {
     u8 pad34[4];
 } Unk800C9DB4Obj; /* 0x38 */
 
-/* Unk800C9DB4Obj's unk24/unk25/unk25_1 bitfield word as a plain u32 (fldbg_buildLayerSprites masks it by hand) */
+/* Unk800C9DB4Obj's unk24/unk25/unk25_1 bitfield word as a plain u32 (fldbg_buildOverlaySprites masks it by hand) */
 typedef struct {
     u8 pad0[0x24];
     u32 unk24;
@@ -896,7 +896,7 @@ typedef struct {
     BgAnim unk4[1];
 } BgAnimHdr;
 
-/* screen fade quads (g_fieldBgFollowLayers, fldbg_addFollowLayer) */
+/* screen fade quads (g_fieldBgFollowOverlays, fldbg_addFollowOverlay) */
 typedef struct {
     s8 unk0; /* flags */
     u8 unk1; /* rgb */
@@ -910,8 +910,8 @@ typedef struct {
     DR_TPAGE unkCC[2];
 } FieldFade; /* 0xDC */
 
-extern FieldFade g_fieldBgFollowLayers[];
-extern u16 g_fieldBgFollowLayerCount; /* FieldFade count */
+extern FieldFade g_fieldBgFollowOverlays[];
+extern u16 g_fieldBgFollowOverlayCount; /* FieldFade count */
 
 /* palette fade packet (fldbg_startClutFade), in the g_fieldBgCtx.unk2C buffer */
 typedef struct {
@@ -1247,7 +1247,7 @@ s32 bgi_moveActor(BgiActor *);
 s32 bgi_slide(BgiActor *, BgiTriangle **, s16 *, SVECTOR *, s16, s16, s32, s32);
 s32 bgi_applyPushes(BgiActor *, SVECTOR *, BgiTriangle **, s16 *);
 s32 func_800C1DC4(s32, s32); /* 16.16 multiply */
-s32 fldbg_drawLayer(Unk800C9DB4Obj *, u8 *); /* adds a background layer's tiles to the OT */
+s32 fldbg_drawOverlay(Unk800C9DB4Obj *, u8 *); /* adds a background layer's tiles to the OT */
 s32 fldbg_followPlayer(void); /* camera follow */
 extern BgiTriangle *D_800C9E00; /* = g_fieldBgi.unk10, referenced by its own name */
 s32 bgi_initAnim(u32);
