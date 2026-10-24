@@ -12,7 +12,7 @@ void btl_startBattle(void) {
     func_800B0FC0(b);
     func_800C972C();
     g_btlRewards.unkB = (b->unk132C.unk0 >> 13) & 1;
-    func_8004C204();
+    msg_beginDraw();
     func_8004BC38();
     func_800AB580(1);
     fade_in(0x20);

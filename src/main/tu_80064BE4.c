@@ -4,7 +4,7 @@ void func_80064BE4(void) {
 }
 
 void func_80064BEC(s32 a, u32 *b) {
-    func_8004C204();
+    msg_beginDraw();
     D_8007BCA4 = b;
     func_800512E4(0x808080);
 }

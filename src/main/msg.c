@@ -7,7 +7,7 @@ void msg_init(void) {
     if (D_8007B950 != 0) {
         D_8007B950 = 0;
     } else {
-        func_8004E924();
+        msg_resetWindows();
         win_closeAll();
     }
     s = g_gameState;
@@ -68,7 +68,7 @@ void msg_readPad(void) {
     D_8007B978 = cur;
 }
 
-void func_8004C204(void) {
+void msg_beginDraw(void) {
     GameState *s = g_gameState;
     GameData *g;
     u8 **pp;
@@ -177,7 +177,7 @@ void msg_measureLine(u8 **pp, s32 *pw) {
                 w += msg_measureLine_width(D_8007B930);
                 break;
             case 0xE:
-                n = D_8007BBA8[*s++];
+                n = g_msgNumbers[*s++];
                 if (n < 0x100) {
                     str = D_8006A218 + D_80069018[n].unk0;
                 } else if (n < 0x200) {
@@ -188,7 +188,7 @@ void msg_measureLine(u8 **pp, s32 *pw) {
                 w += msg_measureLine_width(str);
                 break;
             case 0x40:
-                n = D_8007BBA8[*s++];
+                n = g_msgNumbers[*s++];
                 if (n < 0) {
                     n = -n;
                     w += 9;
@@ -204,7 +204,7 @@ void msg_measureLine(u8 **pp, s32 *pw) {
                 i = c & 7;
                 t = NULL;
                 if (g < 4 && i < 8 && (tbl = D_8007BB80[g]) != NULL) {
-                    k = D_8007BBA8[i];
+                    k = g_msgNumbers[i];
                     if (k < *tbl) {
                         tbl++;
                         k <<= 1;
@@ -215,7 +215,7 @@ void msg_measureLine(u8 **pp, s32 *pw) {
                 w += msg_measureLine_width(t);
                 break;
             case 0x70:
-                if ((u32)D_8007BBA8[0] & (1 << *s++)) {
+                if ((u32)g_msgNumbers[0] & (1 << *s++)) {
                     w += 0x19;
                 }
                 break;
@@ -255,8 +255,8 @@ static inline void msg_renderText_skip(s32 id, u8 **pp) {
 }
 
 /* typewriter: advance the shown character count of an embedded value of n characters */
-static inline void msg_renderText_type(Unk8007B9C0 *w, s32 n) {
-    w->unk24 += w->unk29;
+static inline void msg_renderText_type(MsgWindow *w, s32 n) {
+    w->unk24 += w->speed;
     w->unk2A += w->unk24 >> 3;
     w->unk24 &= 7;
     if (w->unk2A >= n) {
@@ -272,7 +272,7 @@ static inline u8 *msg_renderText_text(u32 a, u32 b) {
     s32 k;
 
     if (a < 4 && b < 8 && (tbl = D_8007BB80[a]) != NULL) {
-        k = D_8007BBA8[b];
+        k = g_msgNumbers[b];
         if (k < *tbl) {
             tbl++;
             k <<= 1;
@@ -284,7 +284,7 @@ static inline u8 *msg_renderText_text(u32 a, u32 b) {
 }
 
 /* print an embedded value, typewriter-style when it ends the text */
-static inline void msg_renderText_value(Unk8007B9C0 *w, s32 arg, s32 (*fn)(), s32 last) {
+static inline void msg_renderText_value(MsgWindow *w, s32 arg, s32 (*fn)(), s32 last) {
     if (last && w->unk2A != 0) {
         msg_renderText_type(w, fn(arg, w->unk2A));
     } else {
@@ -292,7 +292,7 @@ static inline void msg_renderText_value(Unk8007B9C0 *w, s32 arg, s32 (*fn)(), s3
     }
 }
 
-void msg_renderText(Unk8007B9C0 *w, u8 *s) {
+void msg_renderText(MsgWindow *w, u8 *s) {
     u8 *p;
     u8 *end;
     s32 c;
@@ -305,8 +305,8 @@ void msg_renderText(Unk8007B9C0 *w, u8 *s) {
     u8 *q;
 
     D_8007BB7C = 0;
-    end = s + w->unk20;
-    p = s + w->unk22;
+    end = s + w->textPos;
+    p = s + w->pageStart;
     msg_renderText_skip(w->unkA, &p);
     while (p < end) {
         c = *p++;
@@ -321,7 +321,7 @@ void msg_renderText(Unk8007B9C0 *w, u8 *s) {
             D_8007BB7C++;
             msg_renderText_skip(w->unkA, &p);
             if (p >= end) {
-                w->unk20 = p - s;
+                w->textPos = p - s;
             }
             break;
         case 0xF9:
@@ -347,7 +347,7 @@ void msg_renderText(Unk8007B9C0 *w, u8 *s) {
                 c = *p++;
                 c |= *p++ << 8;
                 msg_measureLine(&p, &c);
-                func_800512C8((w->unk18 - c) >> 1, 0);
+                func_800512C8((w->w - c) >> 1, 0);
                 break;
             case 0x20:
             case 0x21:
@@ -362,19 +362,19 @@ void msg_renderText(Unk8007B9C0 *w, u8 *s) {
                 break;
             case 0x40:
                 last = end - p == 1;
-                v = D_8007BBA8[*p++];
-                msg_renderText_value(w, v, func_8004F0C8, last);
+                v = g_msgNumbers[*p++];
+                msg_renderText_value(w, v, msg_emitNumber, last);
                 break;
             case 0x6:
                 c = *p++;
                 last = end - p == 1;
                 t = msg_renderText_text(c, *p++);
-                msg_renderText_value(w, (s32)t, func_8004F1F0, last);
+                msg_renderText_value(w, (s32)t, msg_emitString, last);
                 break;
             case 0xE:
                 last = end - p == 1;
                 func_80050F4C(4);
-                msg_renderText_value(w, D_8007BBA8[*p++], func_8004F2B4, last);
+                msg_renderText_value(w, g_msgNumbers[*p++], msg_emitItemName, last);
                 func_80050F4C(0);
                 break;
             case 0x10:
@@ -385,14 +385,14 @@ void msg_renderText(Unk8007B9C0 *w, u8 *s) {
             case 0x15:
             case 0x16:
             case 0x17:
-                msg_renderText_value(w, c - 0x10, func_8004F3E8, end == p);
+                msg_renderText_value(w, c - 0x10, msg_emitCharName, end == p);
                 break;
             case 0x18:
             case 0x19:
             case 0x1A:
             case 0x1B:
                 last = end - p == 0;
-                msg_renderText_value(w, func_8004B120(c - 0x18), func_8004F3E8, last);
+                msg_renderText_value(w, func_8004B120(c - 0x18), msg_emitCharName, last);
                 break;
             case 0x80:
             case 0x81:
@@ -402,7 +402,7 @@ void msg_renderText(Unk8007B9C0 *w, u8 *s) {
             case 0x85:
             case 0x86:
             case 0x87:
-                msg_renderText_value(w, c - 0x80, func_8004F4A4, end == p);
+                msg_renderText_value(w, c - 0x80, msg_emitCharNameCaps, end == p);
                 break;
             case 0x30:
             case 0x31:
@@ -474,7 +474,7 @@ void msg_renderText(Unk8007B9C0 *w, u8 *s) {
                 func_800513CC(*p++);
                 break;
             case 0x70:
-                if ((u32)D_8007BBA8[0] & (1 << *p++)) {
+                if ((u32)g_msgNumbers[0] & (1 << *p++)) {
                     func_800512C8(6, 3);
                     func_800513CC(0xB6);
                     if (VSync(-1) % 48 >= 16) {
@@ -507,14 +507,14 @@ void msg_renderText(Unk8007B9C0 *w, u8 *s) {
     }
 }
 
-void msg_advanceText(Unk8007B9C0 *w, u8 *e) {
+void msg_advanceText(MsgWindow *w, u8 *e) {
     u8 *p;
     s32 c;
     u8 *start;
     Unk4 tmp;
     s32 n;
 
-    p = e + w->unk20;
+    p = e + w->textPos;
     start = p;
     while (w->unk26 == 0 && w->unk2A == 0 && w->unk24 >= 8) {
         start = p;
@@ -530,7 +530,7 @@ void msg_advanceText(Unk8007B9C0 *w, u8 *e) {
                 msg_measureLine(&p, &c);
                 break;
             case 0x41:
-                if (!(w->unk28 & 4)) {
+                if (!(w->flags & 4)) {
                     w->unk26 = *p++;
                 } else {
                     p++;
@@ -538,18 +538,18 @@ void msg_advanceText(Unk8007B9C0 *w, u8 *e) {
                 break;
             case 0:
             case 1:
-                w->unk28 = (w->unk28 & ~4) | 8;
+                w->flags = (w->flags & ~4) | 8;
             set26:
                 w->unk26 = *p++;
                 break;
             case 2:
-                w->unk29 = *p++;
+                w->speed = *p++;
                 break;
             case 0x42:
-                w->unk29 = D_8006E688[(g_gameState->config >> 14) & 7];
+                w->speed = D_8006E688[(g_gameState->config >> 14) & 7];
                 break;
             case 0xC:
-                w->unk28 |= 4;
+                w->flags |= 4;
                 break;
             case 7:
                 p += 2;
@@ -560,15 +560,15 @@ void msg_advanceText(Unk8007B9C0 *w, u8 *e) {
                 pad_getAnalogThresholds(&D_8007B99C);
                 pad_setAnalogThresholds(&tmp);
                 g_msgChoiceLine = n;
-                w->unk28 |= 2;
+                w->flags |= 2;
                 break;
             case 9:
                 w->unk26 = 0xFF;
             case 0x45:
-                w->unk28 |= 0x40;
+                w->flags |= 0x40;
                 break;
             case 0xA:
-                w->unk28 |= 8;
+                w->flags |= 8;
                 break;
             case 0xF:
                 D_8007BBD8 = *p++;
@@ -601,7 +601,7 @@ void msg_advanceText(Unk8007B9C0 *w, u8 *e) {
             case 0x85:
             case 0x86:
             case 0x87:
-                if (!(w->unk28 & 4)) {
+                if (!(w->flags & 4)) {
                     w->unk2A = 1;
                     w->unk24 = 0;
                 }
@@ -630,21 +630,21 @@ void msg_advanceText(Unk8007B9C0 *w, u8 *e) {
         case 0xFD:
             p++;
         default:
-            if (!(w->unk28 & 4)) {
+            if (!(w->flags & 4)) {
                 w->unk24 -= 8;
             }
             break;
         }
     }
-    w->unk20 = (w->unk26 != 0 ? start : p) - e;
+    w->textPos = (w->unk26 != 0 ? start : p) - e;
     if (w->unk26 == 0xFF) {
-        w->unk28 &= ~4;
+        w->flags &= ~4;
     }
-    w->unk24 += w->unk29;
+    w->unk24 += w->speed;
 }
 
-void func_8004D69C(Unk8007B9C0 *w, u8 *e) {
-    u8 *p = e + w->unk20;
+void msg_stepControl(MsgWindow *w, u8 *e) {
+    u8 *p = e + w->textPos;
     s32 c;
 
     c = *p++;
@@ -653,39 +653,39 @@ void func_8004D69C(Unk8007B9C0 *w, u8 *e) {
         c = *p++;
         switch (c) {
         case 0x41:
-            w->unk20 = p + 1 - e;
+            w->textPos = p + 1 - e;
             break;
         case 1:
-            func_8004EEA0_inline(w);
+            msg_closeWindow_inline(w);
             break;
         case 0:
-            w->unk22 = p + 1 - e;
-            w->unk28 &= ~8;
+            w->pageStart = p + 1 - e;
+            w->flags &= ~8;
             break;
         }
         break;
     case 0xFF:
-        func_8004EEA0_inline(w);
+        msg_closeWindow_inline(w);
         break;
     case 0xFE:
-        w->unk22 = p - e;
+        w->pageStart = p - e;
         break;
     }
 }
 
-void msg_drawText(Unk8007B9C0 *w) {
+void msg_drawText(MsgWindow *w) {
     u8 *e = NULL;
-    s32 i = w->unk1E;
+    s32 i = w->msgId;
 
     if (i >= 0 && i < D_8007B954->unk0) {
         e = (u8 *)D_8007B954->unk4;
         e += *(u16 *)&((u32 *)e)[(g_evtMode == 2 || g_evtMode == 4) ? i : i * 2 + 1];
     }
     if (e != NULL) {
-        func_800512C8(((w->unk18 - w->unk1C) >> 1) + 4, 2);
+        func_800512C8(((w->w - w->unk1C) >> 1) + 4, 2);
         func_80051300();
-        if (w->unk20 < w->unk22) {
-            w->unk20 = w->unk22;
+        if (w->textPos < w->pageStart) {
+            w->textPos = w->pageStart;
         }
         D_8007BB98.unk0 = 0;
         D_8007B964 = D_8007B960;
@@ -693,17 +693,17 @@ void msg_drawText(Unk8007B9C0 *w) {
         if (w->unk26 == 0) {
             if (w->unk2A == 0) {
                 msg_advanceText(w, e);
-            } else if (w->unk28 & 4) {
+            } else if (w->flags & 4) {
                 w->unk2A = 0;
                 w->unk24 = 8;
             }
         } else {
             w->unk26 -= (w->unk26 != 0xFF);
-            if (w->unk28 & 4) {
+            if (w->flags & 4) {
                 w->unk26 = 0;
             }
             if (w->unk26 == 0) {
-                func_8004D69C(w, e);
+                msg_stepControl(w, e);
             }
         }
         func_80051380();
@@ -716,11 +716,11 @@ void msg_drawText(Unk8007B9C0 *w) {
    0x10000 path needs (pointer in v0, %hi(g_msgChoice) in v1). The 0x10000 path must come
    last in the chain so its call falls into the shared `return 1` and jump2 cross-jumps the
    0x10/0x40 calls onto its jalr. */
-s32 msg_input(Unk8007B9C0 *w, s32 pad) {
+s32 msg_input(MsgWindow *w, s32 pad) {
     u8 f;
 
     if ((g_evtMode == 1 && (pad & 0xA0000)) || (g_evtMode != 1 && (pad & 0x20000))) {
-        f = w->unk28;
+        f = w->flags;
         if (!(f & 0x40)) {
             if (w->unk26 == 0xFF) {
                 w->unk26 = 1;
@@ -730,7 +730,7 @@ s32 msg_input(Unk8007B9C0 *w, s32 pad) {
                 return 1;
             }
             if (!(f & 8)) {
-                w->unk28 = f | 4;
+                w->flags = f | 4;
                 return 1;
             }
         }
@@ -764,35 +764,35 @@ s32 msg_input(Unk8007B9C0 *w, s32 pad) {
     return 0;
 }
 
-static inline Unk8007B9C0 *msg_open_init(s32 id, WinLayout *l) {
-    Unk8007B9C0 *w;
-    Unk8007B9C0 *parent;
+static inline MsgWindow *msg_open_init(s32 id, WinLayout *l) {
+    MsgWindow *w;
+    MsgWindow *parent;
 
-    func_8004EEA0_inline(&g_msgWindows[id]);
+    msg_closeWindow_inline(&g_msgWindows[id]);
     parent = g_msgFocus;
     w = &g_msgWindows[id];
-    w->unk8 = 1;
-    w->unkC = NULL;
+    w->open = 1;
+    w->onInput = NULL;
     w->unk10 = 0;
-    w->unk6 = 0;
-    w->unk4 = 0;
+    w->y = 0;
+    w->x = 0;
     w->unkA = 0;
-    w->unk0 = parent;
+    w->parent = parent;
     if (l->unk0 != 0) {
-        w->unk4 = l->unk0;
-        w->unk6 = (u8)l->unk8;
+        w->x = l->unk0;
+        w->y = (u8)l->unk8;
     } else {
-        w->unk4 = 0xA0 - (l->unk2 >> 1);
-        w->unk6 = 0x78 - (l->unk9 >> 1);
+        w->x = 0xA0 - (l->unk2 >> 1);
+        w->y = 0x78 - (l->unk9 >> 1);
     }
-    w->unk18 = l->unk2;
-    w->unk27 = l->unk9;
-    w->unk28 = 0;
-    w->unk1E = 0;
-    w->unk20 = 0;
+    w->w = l->unk2;
+    w->h = l->unk9;
+    w->flags = 0;
+    w->msgId = 0;
+    w->textPos = 0;
     w->unk1A = 0;
     w->unk2B = 0;
-    w->unk14 = NULL;
+    w->window = NULL;
     return w;
 }
 
@@ -802,7 +802,7 @@ INCLUDE_RODATA("asm/us/main/nonmatchings/msg", D_80011EFC);
 INCLUDE_RODATA("asm/us/main/nonmatchings/msg", D_80011F10);
 
 void msg_open(s32 msg, s32 id, WinLayout *l, s32 flags) {
-    Unk8007B9C0 *w;
+    MsgWindow *w;
     RECT r;
     s32 style;
     s32 n;
@@ -817,25 +817,25 @@ void msg_open(s32 msg, s32 id, WinLayout *l, s32 flags) {
         return;
     }
     w = msg_open_init(id, l);
-    w->unkC = msg_input;
+    w->onInput = msg_input;
     w->unk26 = 0;
     w->unkA = id;
-    w->unk1E = msg;
-    w->unk29 = D_8006E688[(g_gameState->config >> 14) & 7];
-    w->unk22 = 0;
+    w->msgId = msg;
+    w->speed = D_8006E688[(g_gameState->config >> 14) & 7];
+    w->pageStart = 0;
     w->unk24 = 8;
     w->unk2A = 0;
     w->unk1A = l->unk4;
     w->unk2B = l->unk6;
     w->unk1C = l->unk2;
-    w->unk28 |= 0x10;
+    w->flags |= 0x10;
     if (!(l->unkB & 1)) {
         g_msgFocus = w;
     }
-    r.x = w->unk4;
-    r.y = w->unk6;
-    r.w = w->unk18 + 3;
-    r.h = w->unk27 + 3;
+    r.x = w->x;
+    r.y = w->y;
+    r.w = w->w + 3;
+    r.h = w->h + 3;
     style = 4;
     if (!(l->unk6 & 0x10)) {
         style = 3;
@@ -843,21 +843,21 @@ void msg_open(s32 msg, s32 id, WinLayout *l, s32 flags) {
             style = 2;
         }
     }
-    w->unk14 = win_open(&r, 2, style, id);
-    if (w->unk14 != NULL) {
-        w->unk14->unk50 = (s32)w;
-        win_setDrawContent(w->unk14, (void (*)(Window *))msg_drawWindowContent);
-        win_setDrawOverlay(w->unk14, msg_drawChoiceCursor);
+    w->window = win_open(&r, 2, style, id);
+    if (w->window != NULL) {
+        w->window->unk50 = (s32)w;
+        win_setDrawContent(w->window, (void (*)(Window *))msg_drawWindowContent);
+        win_setDrawOverlay(w->window, msg_drawChoiceCursor);
         if (l->unk4 != 0 && !(flags & 4)) {
-            win_setTail(w->unk14, l->unk6 & 3, l->unk4);
+            win_setTail(w->window, l->unk6 & 3, l->unk4);
         }
         if (D_8007BB90 != 0) {
-            win_setOpenAnim(w->unk14, 3);
+            win_setOpenAnim(w->window, 3);
         }
         if (flags & 0x40) {
-            win_setTitle(w->unk14, (s32)D_80011EFC);
+            win_setTitle(w->window, (s32)D_80011EFC);
         } else if (flags & 8) {
-            win_setTitle(w->unk14, (s32)D_80011F10);
+            win_setTitle(w->window, (s32)D_80011F10);
         }
     }
     if (!(l->unkB & 1)) {
@@ -1017,12 +1017,12 @@ WinLayout *msg_getLayout(s32 id, s32 *x, s32 *y, s32 *z) {
     return &D_8007B940;
 }
 
-void func_8004E76C(s32 a) {
+void msg_setOtz(s32 a) {
     GameData *d = g_gameState->unk1C;
     D_8007BCA4 = d->unk10[d->unk8] + a;
 }
 
-s32 func_8004E7A4(s32 i) {
+s32 msg_getPartyMemberId(s32 i) {
     Character *p = g_gameState->unk1C->party[i];
     if (p == NULL) {
         return -1;
@@ -1030,14 +1030,14 @@ s32 func_8004E7A4(s32 i) {
     return p->unk34.b.id;
 }
 
-void func_8004E7E0(void) {
+void msg_resetPad(void) {
     D_8007B978 = 0;
     D_8007B988.unk0 = 0;
     D_8007B988.unk4 = 0;
 }
 
 void msg_update(void) {
-    Unk8007B9C0 *p = msg_getFocus();
+    MsgWindow *p = msg_getFocus();
     s32 a;
     msg_readPad();
     if (D_8007B988.unk0 < 3) {
@@ -1047,10 +1047,10 @@ void msg_update(void) {
                 if (D_8007B988.unk0 == 2) {
                     a |= 0x80000000;
                 }
-                if (p->unkC(p, a) != 0) {
+                if (p->onInput(p, a) != 0) {
                     break;
                 }
-                p = p->unk0;
+                p = p->parent;
             }
         }
     }
@@ -1074,77 +1074,77 @@ u32 msg_getPadReleased(void) {
 void func_8004E91C(void) {
 }
 
-void func_8004E924(void) {
-    Unk8007B9C0 *p;
+void msg_resetWindows(void) {
+    MsgWindow *p;
     for (p = g_msgWindows; p < g_msgWindows + 10; p++) {
-        p->unk8 = 0;
+        p->open = 0;
     }
     g_msgFocus = NULL;
 }
 
 void msg_closeAll(void) {
-    Unk8007B9C0 *p;
-    Unk8007B9C0 *q;
+    MsgWindow *p;
+    MsgWindow *q;
     for (p = g_msgWindows; p < g_msgWindows + 8; p++) {
-        if (p != NULL && p->unk8 != 0) {
-            p->unk8 = 0;
+        if (p != NULL && p->open != 0) {
+            p->open = 0;
             if (msg_getFocus() == p) {
-                msg_setFocus(p->unk0);
+                msg_setFocus(p->parent);
             }
             for (q = g_msgWindows; q < g_msgWindows + 10; q++) {
-                if (q->unk8 != 0 && q->unk0 == p) {
-                    q->unk0 = NULL;
+                if (q->open != 0 && q->parent == p) {
+                    q->parent = NULL;
                 }
             }
         }
     }
 }
 
-void msg_setFocus(Unk8007B9C0 *a) {
+void msg_setFocus(MsgWindow *a) {
     g_msgFocus = a;
 }
 
-Unk8007B9C0 *msg_getFocus(void) {
+MsgWindow *msg_getFocus(void) {
     return g_msgFocus;
 }
 
-void func_8004EA4C(s32 i) {
-    func_8004EEA0_inline(&g_msgWindows[i]);
+void msg_close(s32 i) {
+    msg_closeWindow_inline(&g_msgWindows[i]);
 }
 
-Unk8007B9C0 *func_8004EB68(void) {
-    Unk8007B9C0 *p;
-    Unk8007B9C0 *r = NULL;
+MsgWindow *msg_getLastModal(void) {
+    MsgWindow *p;
+    MsgWindow *r = NULL;
     for (p = g_msgWindows; p < g_msgWindows + 10; p++) {
-        if (p->unk8 != 0 && (p->unk28 & 2)) {
+        if (p->open != 0 && (p->flags & 2)) {
             r = p;
         }
     }
     return r;
 }
 
-s32 func_8004EBC0(Unk8004EBC0 *r) {
-    Unk8007B9C0 *p;
+s32 msg_overlapsRect(Unk8004EBC0 *r) {
+    MsgWindow *p;
     for (p = g_msgWindows; p < g_msgWindows + 8; p++) {
-        if (p->unk8 != 0 && r->unk0 < p->unk4 + p->unk18 && p->unk4 < r->unk0 + r->unk2 &&
-            r->unk8 < p->unk6 + p->unk27 && p->unk6 < r->unk8 + r->unk9) {
+        if (p->open != 0 && r->unk0 < p->x + p->w && p->x < r->unk0 + r->unk2 &&
+            r->unk8 < p->y + p->h && p->y < r->unk8 + r->unk9) {
             return 1;
         }
     }
     return 0;
 }
 
-void func_8004EC74(u32 i, s32 v) {
+void msg_setNumber(u32 i, s32 v) {
     if (i < 8) {
-        D_8007BBA8[i] = v;
+        g_msgNumbers[i] = v;
     }
 }
 
-s16 func_8004EC98(s32 i) {
-    return g_msgWindows[i].unk8;
+s16 msg_isOpen(s32 i) {
+    return g_msgWindows[i].open;
 }
 
-s32 func_8004ECC4(void) {
+s32 msg_getChoiceIndex(void) {
     s32 i = -1;
     s32 b = D_8007B960;
     s32 a = g_msgChoice;
@@ -1159,7 +1159,7 @@ s32 func_8004ECC4(void) {
     return i;
 }
 
-void func_8004ED00(s32 a, s32 b) {
+void msg_setChoiceMask(s32 a, s32 b) {
     s32 r;
     D_8007B974 = a;
     r = -1;
@@ -1177,59 +1177,59 @@ void func_8004ED00(s32 a, s32 b) {
 }
 
 void func_8004ED3C(void) {
-    Unk8007B9C0 *p;
+    MsgWindow *p;
     for (p = g_msgWindows; p < g_msgWindows + 10; p++) {
-        if (p->unk8 != 0 && p->unk14 != NULL) {
-            p->unk14->unk18 = 0;
+        if (p->open != 0 && p->window != NULL) {
+            p->window->unk18 = 0;
         }
     }
 }
 
 Window *msg_getWindow(s32 i) {
-    Unk8007B9C0 *e = &g_msgWindows[i];
+    MsgWindow *e = &g_msgWindows[i];
     Window *r = NULL;
-    if (e->unk8 != 0) {
-        r = e->unk14;
+    if (e->open != 0) {
+        r = e->window;
     }
     return r;
 }
 
-Unk8007B9C0 *func_8004EDD0(Unk8004EBC0 *r, Unk8007B9C0 *a, s32 idx, s32 flag) {
-    Unk8007B9C0 *e = &g_msgWindows[idx];
-    e->unk8 = 1;
-    e->unk0 = a;
-    e->unkC = 0;
+MsgWindow *msg_allocWindow(Unk8004EBC0 *r, MsgWindow *a, s32 idx, s32 flag) {
+    MsgWindow *e = &g_msgWindows[idx];
+    e->open = 1;
+    e->parent = a;
+    e->onInput = 0;
     e->unk10 = 0;
-    e->unk6 = 0;
-    e->unk4 = 0;
+    e->y = 0;
+    e->x = 0;
     e->unkA = 0;
     if (r->unk0 != 0) {
-        e->unk4 = r->unk0;
-        e->unk6 = r->unk8;
+        e->x = r->unk0;
+        e->y = r->unk8;
     } else {
-        e->unk4 = 160 - (r->unk2 >> 1);
-        e->unk6 = 120 - (r->unk9 >> 1);
+        e->x = 160 - (r->unk2 >> 1);
+        e->y = 120 - (r->unk9 >> 1);
     }
-    e->unk18 = r->unk2;
-    e->unk27 = r->unk9;
+    e->w = r->unk2;
+    e->h = r->unk9;
     if (flag != 0) {
-        e->unk28 = 2;
+        e->flags = 2;
     } else {
-        e->unk28 = 0;
+        e->flags = 0;
     }
-    e->unk1E = 0;
-    e->unk20 = 0;
+    e->msgId = 0;
+    e->textPos = 0;
     e->unk1A = 0;
     e->unk2B = 0;
-    e->unk14 = NULL;
+    e->window = NULL;
     return e;
 }
 
-void func_8004EEA0(Unk8007B9C0 *p) {
-    func_8004EEA0_inline(p);
+void msg_closeWindow(MsgWindow *p) {
+    msg_closeWindow_inline(p);
 }
 
-void func_8004EFA0(void) {
+void msg_keepWindowsOnInit(void) {
     D_8007B950 = 1;
 }
 
@@ -1261,7 +1261,7 @@ void *msg_getText(s32 i) {
     return e;
 }
 
-s32 func_8004F0C8(s32 v, s32 n) {
+s32 msg_emitNumber(s32 v, s32 n) {
     s32 d;
     s32 digits;
     s32 i;
@@ -1293,7 +1293,7 @@ s32 func_8004F0C8(s32 v, s32 n) {
     return digits;
 }
 
-s32 func_8004F1F0(u8 *s, s32 max) {
+s32 msg_emitString(u8 *s, s32 max) {
     s32 n = 0;
     s32 i;
     u8 *p;
@@ -1323,7 +1323,7 @@ s32 func_8004F1F0(u8 *s, s32 max) {
     return n;
 }
 
-s32 func_8004F2B4(s32 id, s32 n) {
+s32 msg_emitItemName(s32 id, s32 n) {
     s32 esc = 0;
     u8 *s;
     s32 len;
@@ -1353,7 +1353,7 @@ s32 func_8004F2B4(s32 id, s32 n) {
     return len;
 }
 
-s32 func_8004F3E8(s32 arg0, s32 n) {
+s32 msg_emitCharName(s32 arg0, s32 n) {
     u8 *name = g_gameState->unk1C->characters[arg0].unk0;
     s32 len;
     s32 i;
@@ -1372,7 +1372,7 @@ s32 func_8004F3E8(s32 arg0, s32 n) {
     return len;
 }
 
-s32 func_8004F4A4(s32 ch, s32 n) {
+s32 msg_emitCharNameCaps(s32 ch, s32 n) {
     s32 i;
     s32 j;
     s32 k;
@@ -1488,7 +1488,7 @@ void msg_drawHereIcon(Unk8004AB64 *o) {
     }
 }
 
-void func_8004F9A0(void) {
+void msg_drawPlayerBubble(void) {
     Unk80068788 *s = &D_80068788;
     s32 c = D_8007BC00;
     s32 hw = D_8007BBF8;
@@ -1542,7 +1542,7 @@ void func_8004F9A0(void) {
     q->clut = p->clut = s->unk2;
 }
 
-void func_8004FBD8(void) {
+void msg_updatePlayerBubble(void) {
     Unk8004AB64 *o;
 
     if (D_8007BBF0 == 0 && D_8007BBEC != 0) {
@@ -1582,7 +1582,7 @@ void func_8004FBD8(void) {
         if (o != NULL && o->unk5 == 4) {
             func_800515B8();
             func_8004ACA4(o, -2, 0);
-            func_8004F9A0();
+            msg_drawPlayerBubble();
             func_80051610();
         }
     }
@@ -1591,7 +1591,7 @@ void func_8004FBD8(void) {
     }
 }
 
-void func_8004FE0C(void) {
+void msg_drawAtePrompt(void) {
     if (D_8007BC10 == 0) {
         return;
     }
@@ -1644,26 +1644,26 @@ void msg_startHereIcon(s32 arg0) {
     }
 }
 
-void func_80050044(void) {
+void msg_resetPlayerBubble(void) {
     D_8007BC0C = 0;
     D_8007BC08 = 0;
     D_8007BBF0 = 0;
     D_8007BBEC = 0;
 }
 
-void func_80050068(s32 a) {
+void msg_showPlayerBubble(s32 a) {
     D_8007BBEC = 1;
     D_8007BBF4 = a;
 }
 
-void func_80050080(s32 a) {
+void msg_setAtePrompt(s32 a) {
     if (D_8007BC10 != a) {
         D_8007BC10 = a;
         D_8007BC14 = 0x2C;
     }
 }
 
-s32 func_800500A8(Unk8004AB64 *o, s32 op) {
+s32 evt_modelOpField(Unk8004AB64 *o, s32 op) {
     s32 a;
     s32 b;
     u32 *p;
@@ -1713,7 +1713,7 @@ s32 func_800500A8(Unk8004AB64 *o, s32 op) {
     return 0;
 }
 
-s32 func_80050410(Unk8004AB64 *o, s32 op) {
+s32 evt_modelOpBattle(Unk8004AB64 *o, s32 op) {
     s32 a;
     s32 b;
     u32 *p;
@@ -1762,7 +1762,7 @@ s32 func_80050410(Unk8004AB64 *o, s32 op) {
     return 0;
 }
 
-s32 func_80050744(Unk8004AB64 *o, s32 op) {
+s32 evt_modelOpWorld(Unk8004AB64 *o, s32 op) {
     s32 a;
     s32 b;
     u32 *p;

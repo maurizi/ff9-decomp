@@ -111,7 +111,7 @@ s32 battleEnd_update(void) {
     GameData *g;
 
     g = g_gameState->unk1C;
-    func_8004C204();
+    msg_beginDraw();
     switch (g->unk56E) {
     case 1:
     case 2:

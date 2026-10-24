@@ -1517,12 +1517,12 @@ void func_800BE984(void) {
                 func_800BF544(x, z, 1, 1, c0, c1, 0x40, 0x28, 9, 1);
             }
             if (D_800D3E77 != 0) {
-                func_8004E76C(5);
+                msg_setOtz(5);
                 func_800515B8();
                 func_800512B8((D_800CD104 >> 12) + 18, (D_800CD108 >> 12) + 6);
                 func_800513CC(1);
                 func_800515EC();
-                func_8004E76C(2);
+                msg_setOtz(2);
             }
             func_800C1428();
         }

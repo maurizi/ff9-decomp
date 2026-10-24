@@ -1336,7 +1336,7 @@ void func_800AE788(void) {
     } else {
         ClearOTagR(g_gameState->unk1C->unk10[g_gameState->unk1C->unk8], 0x1000);
     }
-    func_8004C204();
+    msg_beginDraw();
 }
 
 /* end of frame: flip buffers, draw and apply the queued flag changes */

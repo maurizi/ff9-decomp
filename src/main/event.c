@@ -44,7 +44,7 @@ s32 evt_getSysVar(s32 op) {
         r = D_8007BBD8;
         break;
     case 9:
-        r = func_8004ECC4();
+        r = msg_getChoiceIndex();
         break;
     case 10:
         r = D_8007AE24;
@@ -605,7 +605,7 @@ void func_80038FD8(Unk8004AB64 *obj, WinLayout *w, s32 dir, s32 fixed) {
     }
     func_80038FD8_x(w, sx, right, &tx);
     func_80038FD8_y(w, sy, &below, fixed);
-    if (fixed == 0 && func_8004EBC0((Unk8004EBC0 *)w)) {
+    if (fixed == 0 && msg_overlapsRect((Unk8004EBC0 *)w)) {
         below ^= 1;
         func_80038FD8_y(w, sy, &below, 0);
     }
@@ -1093,17 +1093,17 @@ s32 evt_execInstr(void) {
         return 1;
     case 0x66:
         a = evt_getArg8_inline();
-        func_8004EC74(a, evt_getArg16_inline());
+        msg_setNumber(a, evt_getArg16_inline());
         return 0;
     case 0xE3:
         D_8007BBD8 = evt_getArg8_inline();
         return 0;
     case 0x7C:
         a = evt_getArg16_inline();
-        func_8004ED00(a, evt_getArg8_inline());
+        msg_setChoiceMask(a, evt_getArg8_inline());
         return 0;
     case 0x53:
-        func_8004EFA0();
+        msg_keepWindowsOnInit();
         return 0;
     case 0x1F:
         D_8007B704->unk10 = evt_getArg8_inline();
@@ -1139,10 +1139,10 @@ s32 evt_execInstr(void) {
         return 0;
     case 0x21:
         a = evt_getArg8_inline();
-        func_8004EA4C(a);
+        msg_close(a);
         return 0;
     case 0xEB:
-        func_8004E924();
+        msg_resetWindows();
         win_closeAll();
         return 0;
     case 0x54:
@@ -1880,10 +1880,10 @@ s32 evt_execInstr(void) {
         }
         return 0;
     case 0x68:
-        func_80050068(evt_getArg8_inline());
+        msg_showPlayerBubble(evt_getArg8_inline());
         return 0;
     case 0xD7:
-        func_80050080(evt_getArg8_inline());
+        msg_setAtePrompt(evt_getArg8_inline());
         return 0;
     case 0xEF:
         msg_startHereIcon(evt_getArg8_inline());
@@ -2323,11 +2323,11 @@ s32 evt_execInstr(void) {
     default:
         switch (g_evtMode) {
         case 1:
-            return func_800500A8(po, op);
+            return evt_modelOpField(po, op);
         case 2:
-            return func_80050410(po, op);
+            return evt_modelOpBattle(po, op);
         case 3:
-            return func_80050744(po, op);
+            return evt_modelOpWorld(po, op);
         }
         return 1;
     }
@@ -3276,7 +3276,7 @@ u8 *func_80049ED8(u8 *p) {
     u8 *src;
 
     for (; i < 4; i++) {
-        c = func_8004E7A4(i);
+        c = msg_getPartyMemberId(i);
         if (c >= 0) {
             mask |= 1 << c;
         }
@@ -3366,8 +3366,8 @@ void evt_init(u8 *data) {
     g_evtState->unk16E0 = g_evtState->unk15D8;
     g_evtState->unk16DC = NULL;
     g_evtState->unk16D8 = NULL;
-    func_80050044();
-    func_80050080(0);
+    msg_resetPlayerBubble();
+    msg_setAtePrompt(0);
     for (i = 0; i < 0x50; i++) {
         g_evtState->unk0[i] = 0;
     }
@@ -3401,7 +3401,7 @@ void evt_init(u8 *data) {
     D_8007AE04 = 0;
     if (g_evtMode == 2) {
         for (i = 0; i < 4; i++) {
-            r = func_8004E7A4(i);
+            r = msg_getPartyMemberId(i);
             if (r >= 0) {
                 evt_execInstr_newactor(r + D_8007ADFC - 9, 0);
             }

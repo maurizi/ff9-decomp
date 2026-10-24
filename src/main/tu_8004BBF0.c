@@ -2,8 +2,8 @@
 
 void func_8004BBF0(void) {
     func_80051568();
-    func_8004E924();
-    func_8004E7E0();
+    msg_resetWindows();
+    msg_resetPad();
     rand_init(GetRCnt(2));
     func_8004AC80();
 }
@@ -16,8 +16,8 @@ u8 a;
         msg_update();
         evt_updateIdleTimer();
         r = evt_updateObjects();
-        func_8004FBD8();
-        func_8004FE0C();
+        msg_updatePlayerBubble();
+        msg_drawAtePrompt();
     }
     return r;
 }

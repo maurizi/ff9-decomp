@@ -139,7 +139,7 @@ u8 *text_buildBlock(s32 x, s32 y, u32 *ot, u8 *s, s32 mode, u8 *pkt) {
                 y -= *s;
             } else if (*s == TEXT_MSG_NUMBER) {
                 s++;
-                text_formatInt(D_8007BBA8[*s & 7], g_textNumberBuf, 0);
+                text_formatInt(g_msgNumbers[*s & 7], g_textNumberBuf, 0);
                 pkt = text_buildPlain(x, y, ot, (Character *)g_textNumberBuf, &w, pkt);
                 x += w;
             } else if (*s == TEXT_ARG_NUMBER) {
@@ -859,7 +859,7 @@ TextSize text_measure(u8 *s) {
                 w = *s;
             } else if (*s == TEXT_MSG_NUMBER) {
                 s++;
-                w += text_measureNumber(D_8007BBA8[*s], 0);
+                w += text_measureNumber(g_msgNumbers[*s], 0);
             } else if (*s == TEXT_ARG_NUMBER) {
                 s++;
                 w += text_measureNumber(g_textNumberArgs[*s], 0);

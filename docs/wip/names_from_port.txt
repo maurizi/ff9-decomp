@@ -1520,3 +1520,37 @@ D_80077080 g_textNumberBuf  # [code] text_buildBlock formats number arguments in
 D_8006BBA0 g_textPalettes  # [code] CLUT per text colour (text_buildGlyph)
 # FIELDS include/ff9.h Character: unk58=ap
 # ff9.h: TEXT_* text control codes (TEXT_END/NEWLINE/ESC and the escape bytes) used in src/main/text.c
+func_8004C204 msg_beginDraw  # [code] picks the packet buffer (battle: its own D_8007B9B0 per buffer, else g_primPtr) and this frame's OT for the message drawing
+func_8004D69C msg_stepControl  # [code] handles the control code at a window's text position: 0xF9 0x41 skip, 0xF9 0x01 / 0xFF close, 0xF9 0x00 / 0xFE next page
+func_8004E76C msg_setOtz  # [code] D_8007BCA4 = this frame's OT + a
+func_8004E7A4 msg_getPartyMemberId  # [code] character id of party slot i, -1 if empty
+func_8004E7E0 msg_resetPad  # [code] clears msg_readPad's previous buttons and pending event
+func_8004E924 msg_resetWindows  # [code] marks all 10 g_msgWindows closed, no focus (msg_init)
+func_8004EA4C msg_close  # [code] msg_closeWindow(&g_msgWindows[i])
+func_8004EEA0 msg_closeWindow  # [code] closes a message window and its Window
+func_8004EB68 msg_getLastModal  # [code] last open message window with flag 2 (opened with flag by msg_allocWindow)
+func_8004EBC0 msg_overlapsRect  # [code] 1 when an open message window overlaps the rect
+func_8004EC74 msg_setNumber  # [code] D_8007BBA8[i] = v (i < 8), shown by text code TEXT_MSG_NUMBER
+D_8007BBA8 g_msgNumbers  # [code] msg_setNumber; text_buildBlock/text_measure show them for TEXT_MSG_NUMBER
+func_8004EC98 msg_isOpen  # [code] g_msgWindows[i].unk8
+func_8004ECC4 msg_getChoiceIndex  # [code] g_msgChoice counted through the enabled-choice mask D_8007B960: the choice's original index
+func_8004ED00 msg_setChoiceMask  # [code] D_8007B974 = enabled choices, D_8007BB94 = index of the last enabled one below n
+func_8004EDD0 msg_allocWindow  # [code] fills g_msgWindows[idx]: parent, position (centred when the rect has none), size, flag 2
+func_8004EFA0 msg_keepWindowsOnInit  # [code] D_8007B950 = 1: the next msg_init keeps the windows open
+func_8004F0C8 msg_emitNumber  # [code] up to n digits of v (leading blanks 0xF) through func_80051004, returns the digit count
+func_8004F1F0 msg_emitString  # [code] up to max characters of a text (two-byte codes counted) through func_80051004
+func_8004F2B4 msg_emitItemName  # [code] name of an item (< 0x100), key item (< 0x200) or card, up to n characters
+func_8004F3E8 msg_emitCharName  # [code] character's name, up to n characters
+func_8004F4A4 msg_emitCharNameCaps  # [code] character's name converted to capitals (D_8007B930), up to n characters
+func_8004F9A0 msg_drawPlayerBubble  # [code] the two textured quads of the bubble animation over the player (frame values from msg_updatePlayerBubble)
+func_8004FBD8 msg_updatePlayerBubble  # [code] steps the bubble animation script (D_8006E690/6D8/6F0) and draws it over the player object; runtime notes call it the "!" bubble
+func_80050044 msg_resetPlayerBubble  # [code] clears the bubble script and its triggers
+func_80050068 msg_showPlayerBubble  # [code] requests the bubble this frame (D_8007BBEC) with variant a
+func_8004FE0C msg_drawAtePrompt  # [code] blinking sprite strings at (16, 200) in modes D_8007BC10 (runtime notes: the ATE prompt), only with control enabled unless bit 4
+func_80050080 msg_setAtePrompt  # [code] D_8007BC10 = mode, restarts the blink
+func_800500A8 evt_modelOpField  # [code] event opcodes 0x7F-0x85 and 0xD8 on an object's model in the field (GameData field scene model slots)
+func_80050410 evt_modelOpBattle  # [code] the same opcodes on battle models (unk11C0)
+func_80050744 evt_modelOpWorld  # [code] the same opcodes on world-map models
+# Types renamed: Unk8007B9C0 -> MsgWindow, Unk80083248 -> CardInventory
+# FIELDS include/ff9.h MsgWindow: unk0=parent,unk4=x,unk6=y,unk8=open,unkC=onInput,unk14=window,unk18=w,unk1E=msgId,unk20=textPos,unk22=pageStart,unk27=h,unk28=flags,unk29=speed
+# FIELDS include/ff9.h CardInventory (g_cards): unk0=wins,unk2=losses,unk4=draws,unk6=cards

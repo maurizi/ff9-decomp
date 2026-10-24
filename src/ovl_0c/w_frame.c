@@ -93,7 +93,7 @@ s32 func_800B6BC4(void) {
     }
     if (!(g_gameState->unk1C->unk0 & 0x1C)) {
         D_800CF404 = D_800CF420[*D_800CF45C];
-        func_8004C204();
+        msg_beginDraw();
         D_800CF43C = VSync(1);
         if (!(g_gameState->unk1C->unk0 & 2)) {
             func_800B7098();

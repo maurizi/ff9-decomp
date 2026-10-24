@@ -844,3 +844,34 @@ g_textIconArgs = 0x80077130; // [code] text_setIconArg
 g_textColor = 0x800770AC; // [code] text_getColor/text_setColor, the palette index of text_buildGlyph
 g_textNumberBuf = 0x80077080; // [code] text_buildBlock formats number arguments into it
 g_textPalettes = 0x8006BBA0; // [code] CLUT per text colour (text_buildGlyph)
+msg_beginDraw = 0x8004C204; // type:func [code] picks the packet buffer (battle its own D_8007B9B0 per buffer, else g_primPtr) and this frame's OT for the message drawing
+msg_stepControl = 0x8004D69C; // type:func [code] handles the control code at a window's text position 0xF9 0x41 skip, 0xF9 0x01 / 0xFF close, 0xF9 0x00 / 0xFE next page
+msg_setOtz = 0x8004E76C; // type:func [code] D_8007BCA4 = this frame's OT + a
+msg_getPartyMemberId = 0x8004E7A4; // type:func [code] character id of party slot i, -1 if empty
+msg_resetPad = 0x8004E7E0; // type:func [code] clears msg_readPad's previous buttons and pending event
+msg_resetWindows = 0x8004E924; // type:func [code] marks all 10 g_msgWindows closed, no focus (msg_init)
+msg_close = 0x8004EA4C; // type:func [code] msg_closeWindow(&g_msgWindows[i])
+msg_closeWindow = 0x8004EEA0; // type:func [code] closes a message window and its Window
+msg_getLastModal = 0x8004EB68; // type:func [code] last open message window with flag 2 (opened with flag by msg_allocWindow)
+msg_overlapsRect = 0x8004EBC0; // type:func [code] 1 when an open message window overlaps the rect
+msg_setNumber = 0x8004EC74; // type:func [code] D_8007BBA8[i] = v (i < 8), shown by text code TEXT_MSG_NUMBER
+g_msgNumbers = 0x8007BBA8; // [code] msg_setNumber, text_buildBlock/text_measure show them for TEXT_MSG_NUMBER
+msg_isOpen = 0x8004EC98; // type:func [code] g_msgWindows[i].unk8
+msg_getChoiceIndex = 0x8004ECC4; // type:func [code] g_msgChoice counted through the enabled-choice mask D_8007B960 the choice's original index
+msg_setChoiceMask = 0x8004ED00; // type:func [code] D_8007B974 = enabled choices, D_8007BB94 = index of the last enabled one below n
+msg_allocWindow = 0x8004EDD0; // type:func [code] fills g_msgWindows[idx] parent, position (centred when the rect has none), size, flag 2
+msg_keepWindowsOnInit = 0x8004EFA0; // type:func [code] D_8007B950 = 1 the next msg_init keeps the windows open
+msg_emitNumber = 0x8004F0C8; // type:func [code] up to n digits of v (leading blanks 0xF) through func_80051004, returns the digit count
+msg_emitString = 0x8004F1F0; // type:func [code] up to max characters of a text (two-byte codes counted) through func_80051004
+msg_emitItemName = 0x8004F2B4; // type:func [code] name of an item (< 0x100), key item (< 0x200) or card, up to n characters
+msg_emitCharName = 0x8004F3E8; // type:func [code] character's name, up to n characters
+msg_emitCharNameCaps = 0x8004F4A4; // type:func [code] character's name converted to capitals (D_8007B930), up to n characters
+msg_drawPlayerBubble = 0x8004F9A0; // type:func [code] the two textured quads of the bubble animation over the player (frame values from msg_updatePlayerBubble)
+msg_updatePlayerBubble = 0x8004FBD8; // type:func [code] steps the bubble animation script (D_8006E690/6D8/6F0) and draws it over the player object, runtime notes call it the "!" bubble
+msg_resetPlayerBubble = 0x80050044; // type:func [code] clears the bubble script and its triggers
+msg_showPlayerBubble = 0x80050068; // type:func [code] requests the bubble this frame (D_8007BBEC) with variant a
+msg_drawAtePrompt = 0x8004FE0C; // type:func [code] blinking sprite strings at (16, 200) in modes D_8007BC10 (runtime notes the ATE prompt), only with control enabled unless bit 4
+msg_setAtePrompt = 0x80050080; // type:func [code] D_8007BC10 = mode, restarts the blink
+evt_modelOpField = 0x800500A8; // type:func [code] event opcodes 0x7F-0x85 and 0xD8 on an object's model in the field (GameData field scene model slots)
+evt_modelOpBattle = 0x80050410; // type:func [code] the same opcodes on battle models (unk11C0)
+evt_modelOpWorld = 0x80050744; // type:func [code] the same opcodes on world-map models

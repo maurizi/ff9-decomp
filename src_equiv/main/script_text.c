@@ -60,7 +60,7 @@ s32 func_8004B5CC(void);
 s32 func_80036CCC(s32 op);
 s32 func_8004B574(void);
 s32 func_80037738(void);
-s16 func_8004EC98(s32 i);
+s16 msg_isOpen(s32 i);
 void func_8004BB30(void *p);
 void math_rotMatrixZYX(void *a, void *b);
 void func_8004E91C(void);
@@ -1127,7 +1127,7 @@ s32 func_80052870(Unk16D8 *n) {
         if (o->unkD != 0) {
             if (o->unkD == 0xFE) {
                 if (o->unk10 != 0xFF) {
-                    if (func_8004EC98(o->unk10) != 0) {
+                    if (msg_isOpen(o->unk10) != 0) {
                         goto next;
                     }
                     o->unk10 = 0xFF;

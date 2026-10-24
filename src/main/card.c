@@ -3,11 +3,11 @@
 void card_initAll(void) {
     s32 v = 0xFF;
     s32 i;
-    g_cards.unk0 = 0;
-    g_cards.unk2 = 0;
-    g_cards.unk4 = 0;
+    g_cards.wins = 0;
+    g_cards.losses = 0;
+    g_cards.draws = 0;
     for (i = 0x68; i >= 0; i--) {
-        g_cards.unk6[i].unk0 = v;
+        g_cards.cards[i].unk0 = v;
     }
 }
 
@@ -22,8 +22,8 @@ s32 card_add(s32 a) {
         return -1;
     }
     for (i = 0; i < 100; i++) {
-        if (g_cards.unk6[i].unk0 == 0xFF) {
-            card_rollStats(&g_cards.unk6[i], a);
+        if (g_cards.cards[i].unk0 == 0xFF) {
+            card_rollStats(&g_cards.cards[i], a);
             return card_countOf(a) == 1;
         }
     }
@@ -33,13 +33,13 @@ s32 card_add(s32 a) {
 s32 card_addWithStats(u8 id, u8 a, u8 b, u8 c, u8 d, u8 e) {
     s32 i;
     for (i = 0; i < 0x69; i++) {
-        if (g_cards.unk6[i].unk0 == 0xFF) {
-            g_cards.unk6[i].unk0 = id;
-            g_cards.unk6[i].unk1 = a;
-            g_cards.unk6[i].unk2 = b;
-            g_cards.unk6[i].unk3 = c;
-            g_cards.unk6[i].unk4 = d;
-            g_cards.unk6[i].unk5 = e;
+        if (g_cards.cards[i].unk0 == 0xFF) {
+            g_cards.cards[i].unk0 = id;
+            g_cards.cards[i].unk1 = a;
+            g_cards.cards[i].unk2 = b;
+            g_cards.cards[i].unk3 = c;
+            g_cards.cards[i].unk4 = d;
+            g_cards.cards[i].unk5 = e;
             return card_countOf(id) == 1;
         }
     }
@@ -47,32 +47,32 @@ s32 card_addWithStats(u8 id, u8 a, u8 b, u8 c, u8 d, u8 e) {
 }
 
 s16 card_getWins(void) {
-    return g_cards.unk0;
+    return g_cards.wins;
 }
 
 void card_addWin(void) {
-    if (++g_cards.unk0 == 10000) {
-        g_cards.unk0 = 9999;
+    if (++g_cards.wins == 10000) {
+        g_cards.wins = 9999;
     }
 }
 
 s16 card_getLosses(void) {
-    return g_cards.unk2;
+    return g_cards.losses;
 }
 
 void card_addLoss(void) {
-    if (++g_cards.unk2 == 10000) {
-        g_cards.unk2 = 9999;
+    if (++g_cards.losses == 10000) {
+        g_cards.losses = 9999;
     }
 }
 
 s16 card_getDraws(void) {
-    return g_cards.unk4;
+    return g_cards.draws;
 }
 
 void card_addDraw(void) {
-    if (++g_cards.unk4 == 10000) {
-        g_cards.unk4 = 9999;
+    if (++g_cards.draws == 10000) {
+        g_cards.draws = 9999;
     }
 }
 
@@ -82,7 +82,7 @@ s32 card_countOf(a)
     s32 n = 0;
     s32 i;
     for (i = 0; i < 0x69; i++) {
-        if (g_cards.unk6[i].unk0 == a) {
+        if (g_cards.cards[i].unk0 == a) {
             n++;
         }
     }
@@ -93,9 +93,9 @@ Unk6 *card_find(s32 id, s32 n) {
     s32 k = 0;
     s32 i;
     for (i = 0; i < 0x69; i++) {
-        if (g_cards.unk6[i].unk0 == (u8)id) {
+        if (g_cards.cards[i].unk0 == (u8)id) {
             if (n == k) {
-                return &g_cards.unk6[i];
+                return &g_cards.cards[i];
             }
             k++;
         }
@@ -107,7 +107,7 @@ s32 card_countAll(void) {
     s32 n = 0;
     s32 i;
     for (i = 0; i < 0x69; i++) {
-        if (g_cards.unk6[i].unk0 != 0xFF) {
+        if (g_cards.cards[i].unk0 != 0xFF) {
             n++;
         }
     }
@@ -126,8 +126,8 @@ s32 card_countKinds(void) {
         *p-- = 0;
     }
     for (i = 0; i < 0x69; i++) {
-        if (g_cards.unk6[i].unk0 != 0xFF) {
-            cnt[g_cards.unk6[i].unk0]++;
+        if (g_cards.cards[i].unk0 != 0xFF) {
+            cnt[g_cards.cards[i].unk0]++;
         }
     }
     n = 0;
@@ -143,9 +143,9 @@ s32 card_remove(s32 id, s32 n) {
     s32 k = 0;
     s32 i;
     for (i = 0; i < 0x69; i++) {
-        if (g_cards.unk6[i].unk0 == (u8)id) {
+        if (g_cards.cards[i].unk0 == (u8)id) {
             if (k == n) {
-                g_cards.unk6[i].unk0 = 0xFF;
+                g_cards.cards[i].unk0 = 0xFF;
                 return 0;
             }
             k++;
@@ -158,7 +158,7 @@ void card_clearAll(void) {
     s32 v = 0xFF;
     s32 i;
     for (i = 0x68; i >= 0; i--) {
-        g_cards.unk6[i].unk0 = v;
+        g_cards.cards[i].unk0 = v;
     }
 }
 

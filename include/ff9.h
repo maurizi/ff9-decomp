@@ -160,7 +160,7 @@ typedef struct {
     struct Unk11C0Slot *unk28; /* per-object model slots, indexed by unk3B */
 } Unk11C0;
 
-/* Unk11C0.unk28 entry (0x28 bytes), written by script opcodes in func_80050410 */
+/* Unk11C0.unk28 entry (0x28 bytes), written by script opcodes in evt_modelOpBattle */
 typedef struct Unk11C0Slot {
     u32 unk0_0 : 8;
     u32 unk0_8 : 12;
@@ -683,7 +683,7 @@ void win_updateAll(void);
 #define TEXT_CHAR_NAME 0x10 /* + character 0-7 */
 #define TEXT_PARTY_NAME 0x18 /* + party slot 0-3 */
 #define TEXT_COLOR 0x20 /* + palette 0-9 (g_textColor) */
-#define TEXT_MSG_NUMBER 0x40 /* + index: number from the message system (D_8007BBA8) */
+#define TEXT_MSG_NUMBER 0x40 /* + index: number from the message system (g_msgNumbers) */
 #define TEXT_X_ADD 0x43 /* + s8 */
 #define TEXT_X_SET 0x44 /* + x from the line start */
 #define TEXT_Y_DOWN 0x49 /* + pixels */
@@ -777,7 +777,7 @@ extern u8 D_80077DB2;
 extern s32 D_800704C8;
 extern s32 D_8007041C;
 extern u8 g_partyChanged;
-extern struct Unk8007B9C0 *g_msgFocus;
+extern struct MsgWindow *g_msgFocus;
 extern s32 D_800834C8;
 extern s32 D_8006798C;
 extern u16 g_padFlags;
@@ -1259,7 +1259,7 @@ extern Unk4 D_80011A44; /* rodata */
 extern s32 D_8007B6FC;
 extern s32 D_8007AEC0;
 extern s32 g_evtEncounterPending;
-void func_80050044(void);
+void msg_resetPlayerBubble(void);
 
 /* Inlined copy of evt_getObject (find object by id). */
 static inline Unk8004AB64 *evt_getObject_inline(s32 id) {
@@ -1379,7 +1379,7 @@ extern u8 D_80077E53;
 extern s32 g_evtLastEncounter;
 extern u8 D_8007954E;
 extern u8 D_8007AD1E;
-extern s32 D_8007BBA8[8];
+extern s32 g_msgNumbers[8];
 extern u8 *D_8007BC0C; /* help-arrow animation script */
 extern s32 D_8007BC08;
 extern s32 D_8007BBF0;
@@ -1498,38 +1498,40 @@ typedef struct {
     u8 unk5;
 } Unk6; /* card inventory entry */
 
+/* Tetra Master card inventory (runtime field/menu campaign) */
 typedef struct {
-    s16 unk0;
-    s16 unk2;
-    s16 unk4;
-    Unk6 unk6[105];
-} Unk80083248;
-extern Unk80083248 g_cards;
+    s16 wins;
+    s16 losses;
+    s16 draws;
+    Unk6 cards[105]; /* id 0xFF = empty */
+} CardInventory;
+extern CardInventory g_cards;
 
-typedef struct Unk8007B9C0 {
-    struct Unk8007B9C0 *unk0; /* parent */
-    s16 unk4; /* x */
-    s16 unk6; /* y */
-    s16 unk8;
+/* message window (g_msgWindows[10]; runtime field/menu campaign) */
+typedef struct MsgWindow {
+    struct MsgWindow *parent; /* next in the focus chain (msg_update) */
+    s16 x;
+    s16 y;
+    s16 open;
     s16 unkA;
-    s32 (*unkC)(struct Unk8007B9C0 *, s32); /* input handler */
+    s32 (*onInput)(struct MsgWindow *, s32); /* pad handler, msg_update */
     s32 unk10;
-    Window *unk14;
-    s16 unk18; /* w */
+    Window *window;
+    s16 w;
     s16 unk1A;
     s16 unk1C;
-    s16 unk1E; /* message index */
-    s16 unk20;
-    s16 unk22;
+    s16 msgId; /* message index */
+    s16 textPos; /* offset of the next character */
+    s16 pageStart;
     s16 unk24;
     u8 unk26;
-    u8 unk27; /* h */
-    u8 unk28;
-    u8 unk29; /* text speed */
+    u8 h;
+    u8 flags; /* 2 modal (msg_allocWindow), 4, 8 */
+    u8 speed; /* text speed */
     u8 unk2A;
     u8 unk2B;
-} Unk8007B9C0;
-extern Unk8007B9C0 g_msgWindows[];
+} MsgWindow;
+extern MsgWindow g_msgWindows[];
 
 extern u8 D_80077E2F;
 extern s16 D_80077E30; /* = D_80077E28.unk8 */
@@ -1677,7 +1679,7 @@ typedef struct {
     s16 unk1A;
 } Unk80065ADC;
 
-void func_8004C204(void);
+void msg_beginDraw(void);
 void func_800512E4(s32);
 void preload_setEntry(PreloadEntry *, s32, s32, s32, s32, s32, s32, s32);
 PreloadEntry *preload_find(s32);
@@ -1923,8 +1925,8 @@ typedef struct {
 } Unk8006D548;
 extern Unk8006D548 D_8006D548[];
 void chr_setRecruited(u32);
-void msg_setFocus(Unk8007B9C0 *);
-Unk8007B9C0 *msg_getFocus(void);
+void msg_setFocus(MsgWindow *);
+MsgWindow *msg_getFocus(void);
 extern s32 g_msgChoiceLine;
 extern s32 g_msgChoiceWindow;
 extern Unk4 D_8007B99C;
@@ -1953,7 +1955,7 @@ typedef struct {
     u8 unk8; /* y */
     u8 unk9; /* h */
 } Unk8004EBC0;
-s32 func_8004EBC0(Unk8004EBC0 *r);
+s32 msg_overlapsRect(Unk8004EBC0 *r);
 extern s32 D_8007F720[]; /* AKAO header copy (0x70 bytes) */
 extern u8 D_8006CACC[];
 void menu_onOverlayRead(u8 *);
@@ -2040,8 +2042,8 @@ extern u32 D_8006CA78[];
 extern u32 g_fadeBattleOt[];
 s32 func_80056700(s32, s32);
 void func_80051568(void);
-void func_8004E924(void);
-void func_8004E7E0(void);
+void msg_resetWindows(void);
+void msg_resetPad(void);
 void rand_init(s32);
 void func_8004AC80(void);
 extern u16 D_8007AE12;
@@ -2303,8 +2305,8 @@ Window *msg_getWindow(s32);
 void func_80039444(Unk8004AB64 *, Window *);
 s32 func_800531D0(Unk8004AB64 *, Unk8004AB64 *, s32);
 void func_800530A8(SVECTOR *, s32, s32);
-void func_8004FBD8(void);
-void func_8004FE0C(void);
+void msg_updatePlayerBubble(void);
+void msg_drawAtePrompt(void);
 
 u16 btl_getUnitMask(u32); /* ovl_0b code */
 void menuScreen_startTitleAnim(void);
@@ -2710,26 +2712,26 @@ extern u8 D_8007393B;
 void printf(const char *, ...);
 
 /* Inlined body of msg_closeAll for one entry (close and unlink). */
-static inline void msg_closeAll_inline(Unk8007B9C0 *p) {
-    Unk8007B9C0 *q;
-    if (p != NULL && p->unk8 != 0) {
-        p->unk8 = 0;
+static inline void msg_closeAll_inline(MsgWindow *p) {
+    MsgWindow *q;
+    if (p != NULL && p->open != 0) {
+        p->open = 0;
         if (msg_getFocus() == p) {
-            msg_setFocus(p->unk0);
+            msg_setFocus(p->parent);
         }
         for (q = g_msgWindows; q < g_msgWindows + 10; q++) {
-            if (q->unk8 != 0 && q->unk0 == p) {
-                q->unk0 = NULL;
+            if (q->open != 0 && q->parent == p) {
+                q->parent = NULL;
             }
         }
     }
 }
 
-/* Inlined copy of func_8004EEA0 (close an entry, its window and its children). */
-static inline void func_8004EEA0_inline(Unk8007B9C0 *p) {
-    if (p != NULL && p->unk8 != 0) {
-        if (p->unk14 != NULL) {
-            win_close(p->unk14);
+/* Inlined copy of msg_closeWindow (close an entry, its window and its children). */
+static inline void msg_closeWindow_inline(MsgWindow *p) {
+    if (p != NULL && p->open != 0) {
+        if (p->window != NULL) {
+            win_close(p->window);
         }
         if (g_msgChoiceLine >= 0 && g_msgChoiceWindow == p->unkA) {
             pad_setAnalogThresholds(&D_8007B99C);
@@ -2926,7 +2928,7 @@ typedef struct {
 } Unk8007BB98;
 extern Unk8007BB98 D_8007BB98;
 extern s32 D_8007B964;
-void msg_renderText(Unk8007B9C0 *, u8 *); /* draw a window's text */
+void msg_renderText(MsgWindow *, u8 *); /* draw a window's text */
 extern DVECTOR *D_8007BC98; /* pen position stack (func_80051300) */
 typedef union {
     s32 w;
@@ -2949,13 +2951,13 @@ extern s32 D_8007BBE4; /* balloon flipped (pen x < 24) */
 extern u8 D_8006E67C[];
 void func_800512B4(s32);
 void func_80051444(void);
-s32 func_8004F0C8(s32, s32);
-s32 func_8004F1F0(u8 *, s32);
-s32 func_8004F2B4(s32, s32);
-s32 func_8004F3E8(s32, s32);
-s32 func_8004F4A4(s32, s32);
-void msg_advanceText(Unk8007B9C0 *, u8 *);
-void func_8004D69C(Unk8007B9C0 *, u8 *);
+s32 msg_emitNumber(s32, s32);
+s32 msg_emitString(u8 *, s32);
+s32 msg_emitItemName(s32, s32);
+s32 msg_emitCharName(s32, s32);
+s32 msg_emitCharNameCaps(s32, s32);
+void msg_advanceText(MsgWindow *, u8 *);
+void msg_stepControl(MsgWindow *, u8 *);
 void func_80051300(void);
 void func_80051380(void);
 void func_80050F4C(s32);
@@ -3038,7 +3040,7 @@ extern u8 D_8006E690[];
 extern u8 D_8006E6F0[];
 Unk8004AB64 *evt_getObject(s32);
 void func_8004ACA4(Unk8004AB64 *, s32, s32);
-void func_8004F9A0(void);
+void msg_drawPlayerBubble(void);
 /* zero the first three bytes (r, g, b) of a 4-byte colour */
 static inline void fade_init_clear3(u8 *p) {
     p[0] = 0;
@@ -3051,10 +3053,10 @@ typedef struct {
     u8 pad4[0x18 - 4];
     s16 unk18;
     u8 pad1A[0x50 - 0x1A];
-    Unk8007B9C0 *unk50;
+    MsgWindow *unk50;
 } Unk8004F5D4;
 void func_80051600(void);
-void msg_drawText(Unk8007B9C0 *);
+void msg_drawText(MsgWindow *);
 /* 8-byte message-table entry (D_8007B954 in modes other than 4) */
 typedef struct {
     u32 unk0;
@@ -3532,7 +3534,7 @@ typedef struct {
     u8 unkB;  /* bit 0: don't make it the current window */
 } WinLayout;
 extern s32 D_8007BB90;
-s32 msg_input(Unk8007B9C0 *, s32);
+s32 msg_input(MsgWindow *, s32);
 void msg_drawWindowContent(Unk8004F5D4 *);
 void msg_drawChoiceCursor(Window *);
 
@@ -3641,9 +3643,9 @@ extern u8 *g_evtInstrStart;
 extern s32 D_8007AE04;
 Unk8004AB64 *func_80038150(void);
 void evt_returnFromFunc(Unk8004AB64 *);
-s32 func_800500A8(Unk8004AB64 *, s32);
-s32 func_80050410(Unk8004AB64 *, s32);
-s32 func_80050744(Unk8004AB64 *, s32);
+s32 evt_modelOpField(Unk8004AB64 *, s32);
+s32 evt_modelOpBattle(Unk8004AB64 *, s32);
+s32 evt_modelOpWorld(Unk8004AB64 *, s32);
 
 extern s32 D_8007AEA4;
 extern Unk8004AB64 *D_8007AE68;
@@ -3653,9 +3655,9 @@ extern s32 D_8007BB7C; /* message counter */
 extern u8 D_8006E688[]; /* text speed per config setting */
 void func_800398D0(Unk8004AB64 *, s32, s32, s32);
 s32 func_80052F24(s32, s32);
-void func_8004EC74(u32, s32);
-void func_8004ED00(s32, s32);
-void func_8004EFA0(void);
+void msg_setNumber(u32, s32);
+void msg_setChoiceMask(s32, s32);
+void msg_keepWindowsOnInit(void);
 WinLayout *func_80039660(Unk8004AB64 *, s32, s32);
 void msg_open(s32, s32, WinLayout *, s32);
 
@@ -3694,8 +3696,8 @@ static inline s32 evt_getArg8_inline(void) {
 extern s32 D_8007B710;
 extern s32 D_8007AE24;
 extern s32 D_8007AE28;
-void func_8004EA4C(s32);
-void func_8004E924(void);
+void msg_close(s32);
+void msg_resetWindows(void);
 void win_closeAll(void);
 void func_8004ED3C(void);
 void *msg_getText(s32);
@@ -3795,8 +3797,8 @@ extern s32 D_8007AE2C;
 extern s32 D_8007AE30;
 extern s32 D_8007AE38;
 extern s32 D_8007AE3C;
-void func_80050068(s32);
-void func_80050080(s32);
+void msg_showPlayerBubble(s32);
+void msg_setAtePrompt(s32);
 void evt_onMenuOpen(void);
 void keyItem_add(s32);
 void keyItem_remove(s32);
@@ -3823,7 +3825,7 @@ static inline s32 func_8004B914_inline(void) {
 
 extern u8 D_8006E630[];
 extern u8 D_8006E63C[];
-s32 func_8004E7A4(s32);
+s32 msg_getPartyMemberId(s32);
 void chr_join(s32, u8, s32);
 s32 chr_resetAp(s32, s32);
 s32 chr_learnAbility(s32, s32);
@@ -3859,7 +3861,7 @@ static inline void evt_execInstr_party(void) {
 
     *(s32 *)g_evtState->unk16E4 = -1;
     for (; i < 4; i++) {
-        r = func_8004E7A4(i);
+        r = msg_getPartyMemberId(i);
         if (r >= 0) {
             mask |= 1 << D_8006E63C[r];
         }
@@ -4061,7 +4063,7 @@ s32 btl_getBattleVar(s32);
 u32 game_getPlayTimeSeconds(void);
 s32 timer_getSeconds(void);
 s32 func_8006275C(void);
-s32 func_8004ECC4(void);
+s32 msg_getChoiceIndex(void);
 
 /* random encounter check (evt_rollEncounter). ovl_0c declares wm_getEncounterEntry with its own
  * table type, so these are hidden there. */
