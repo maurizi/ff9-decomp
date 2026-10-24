@@ -22,7 +22,7 @@ s32 fx_17e_op80(s32 mode, Fx17eWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
         work->unk8.vx = 0x1000;
         work->unk8.vy = 0x1000;
         work->unk8.vz = 0x1000;
-        work->unk0 = ex->func_800E8F50((Unk800E8F50 *)ex->btlfx_getFileData(entry->unk8, 9), 0xFF);
+        work->unk0 = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->unk8, 9), 0xFF);
         work->unk4 = 0;
         ex->btlfx_getUnitBodyPos(0, 0, (s16 *)&work->unk38);
     } else {

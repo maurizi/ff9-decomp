@@ -84,14 +84,14 @@ s32 fx_0c2_op81(s32 mode, Fx0c2Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
         }
         switch (frame) {
         case 5:
-            ex->func_800E9930(7, entry->unk8, -1);
-            ex->func_800E9930(8, entry->unk8, -1);
-            ex->func_800E9930(9, entry->unk8, -1);
+            ex->btlfx_playFileSound(7, entry->unk8, -1);
+            ex->btlfx_playFileSound(8, entry->unk8, -1);
+            ex->btlfx_playFileSound(9, entry->unk8, -1);
             break;
         case 0xD:
-            ex->func_800E9930(0xE, entry->unk8, -1);
-            ex->func_800E9930(0xF, entry->unk8, -1);
-            ex->func_800E9930(0x10, entry->unk8, -1);
+            ex->btlfx_playFileSound(0xE, entry->unk8, -1);
+            ex->btlfx_playFileSound(0xF, entry->unk8, -1);
+            ex->btlfx_playFileSound(0x10, entry->unk8, -1);
             break;
         }
         if (frame >= 4) {

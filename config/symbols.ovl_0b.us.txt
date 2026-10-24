@@ -828,3 +828,58 @@ btlbg_startRain = 0x800CEBAC; // type:func [code] D_800F7274 = 0x1F streaks for 
 btlbg_stopRain = 0x800CEBBC; // type:func [code] D_800F7274 = 0
 btlbg_drawRain = 0x800CEBC8; // type:func [code] D_800F7274 random vertical LINE_G2 streaks in blue-grey around the camera, semi-transparent
 g_btlbgRainCount = 0x800F7274; // [code] number of streaks btlbg_drawRain draws (btlbg_startRain / btlbg_stopRain)
+btlfx_initCommonData = 0x800E4098; // type:func [code] loads the common effect data (file 0x2BF) through btlfx_reloadCommonData and its CLUT rows, sets the common offset table
+g_btlfxCommonTable = 0x80104DF8; // [code] self-relative offset table of the common effect data (btlfx_initCommonData, btlfx_getCommonData)
+btlfx_getCommonData = 0x800E454C; // type:func [code] address of entry n of the common effect data (g_btlfxCommonTable)
+btlfx_stepBack = 0x800E4218; // type:func [code] against an enemy side moves the unit 400 back from home while playing motion 0x1D, 1 when done
+btlfx_opSetResArgsA = 0x800E4568; // type:func [code] resident op 0x20 (g_btlfxResidentOps) two argument bytes into D_80104DF0 for the following ops
+btlfx_opSetResArgsB = 0x800E45A0; // type:func [code] resident op 0x26 two more argument bytes into D_80104DF0
+btlfx_opSetResArgsC = 0x800E56DC; // type:func [code] resident op 0x22 two argument bytes into D_80104DF4
+g_btlfxResArgs = 0x80104DF0; // [code] argument bytes of resident ops 0x20/0x26 (btlfx_opSetResArgsA/B), read by op 0x21
+g_btlfxResArgs2 = 0x80104DF4; // [code] argument bytes of resident op 0x22 (btlfx_opSetResArgsC), read by op 0x21
+btlfx_startFadeBackground = 0x800E60A4; // type:func [code] spawns resident op 0x2A (btlfx_opFadeBackground) towards level D_800F8D0C[n] (0x80 for n < 0)
+btlfx_startFadeUnits = 0x800E6244; // type:func [code] spawns resident op 0x24 (btlfx_opFadeUnits)
+btlfx_opPlaySound = 0x800E639C; // type:func [code] resident op 0x2D plays a sound of the effect file at a unit (btlfx_playFileSound)
+btlfx_startScreenFade = 0x800E63E4; // type:func [code] spawns resident op 0x2E (btlfx_opScreenFade)
+btlfx_opScreenFade = 0x800E6410; // type:func [code] resident op 0x2E black or white full-screen tint (btlfx_drawScreenTint) for n frames
+btlfx_sampleGradient = 0x800E651C; // type:func [code] colour at x along a run-length gradient (Grad), interpolated with LoadAverageCol
+btlfx_initEnv = 0x800E702C; // type:func [code] effect environment for the frame OT, disp/draw env, view matrix of the current buffer
+btl_isModelPart = 0x800E7298; // type:func [code] (unk68 & 0x800001) == 0x800000 an enemy part without its own model (btl_findBodyUnit has it)
+btl_getUnitHeight = 0x800E7370; // type:func [code] model header unk8, btl_getUnitBodyPos lifts party units by it (half for the chest)
+btlfx_getUnitHeight = 0x800E738C; // type:func [code] btl_getUnitHeight of an effect unit index
+btl_getBaseBonePos = 0x800E73B4; // type:func [code] position of the unit's base bone (BtlUnit.unk7C)
+btl_getUnitPos = 0x800E748C; // type:func [code] ground position the base bone for model parts and enemies, else BtlUnit.pos
+btl_getUnitBodyPos = 0x800E753C; // type:func [code] arg 0 chest / 1 head height on top of btl_getUnitPos (party), an enemy's bone otherwise
+btlfx_getBouncePos = 0x800E774C; // type:func [code] body position and rotation of the n-th bounced unit, 1 when there is none
+btlfx_turnUnitToward = 0x800E78B4; // type:func [code] turns a unit toward a point over frames (btlfx_aimAngles, btlfx_turnToward)
+btlfx_setUnitScale = 0x800E7ACC; // type:func [code] model scale, flag 2 off at 1.0 (counterpart of btlfx_getUnitScale)
+btlfx_compareDepth = 0x800E7C54; // type:func [code] which of two units is nearer along the camera's view (z order flipped by the camera yaw)
+btlfx_getUnitSlot = 0x800E7D18; // type:func [code] (unk68 >> 5) & 7, the unit's slot id
+btlfx_getWeaponPos = 0x800E7D3C; // type:func [code] arg 0 the weapon bone (Character.unk21), else the weapon tip offset (weapon record) through that bone
+btlfx_fadeUnitById = 0x800E806C; // type:func [code] -1 hides / -2 shows all meshes, else btlfx_fadeUnit
+btlfx_setUnitLight = 0x800E80CC; // type:func [code] lit models (flag bits 0x30 = 0x20) colour offset level - 0x80 (btl_setModelRgb)
+btlfx_clearUnitStatus = 0x800E8274; // type:func [code] enemies lose all statuses but KO/low HP/Stop/death immunity, party units all
+btlfx_nextUnitPos = 0x800E82CC; // type:func [code] iterator over targetable units' body positions, -2 at the end
+btlfx_getScaledRadius = 0x800E8498; // type:func [code] model radius times the unit's x scale
+btlfx_isUnitKind = 0x800E865C; // type:func [code] unit's character kind (0x13 for enemies) == D_800F8D70[n]
+btlfx_swapModelData = 0x800E871C; // type:func [code] saves a model file's data behind a 0x1234 marker, or restores it from there
+btl_forEachModelVertex = 0x800E8854; // type:func [code] calls fn(vertex, index) for every vertex of every mesh group of a model
+btlfx_countVisibleParty = 0x800E8AD0; // type:func [code] party units without the hidden bit 22 (runtime per frame during summons)
+btlfx_showCasterCmdName = 0x800E8D14; // type:func [code] btl_showCmdName(curCmd) when the caster is a party unit
+btlfx_isResultDeferred = 0x800E8D60; // type:func [code] enemy caster with unit arguments and effect flag 0x8000 btlfx_execCmd / btlfx_showPopups do nothing
+btlfx_registerEffectModel = 0x800E8F50; // type:func [code] 'so' (0x6F73) model header Hi_RegisterTexListModel for textured lists, else Hi_RegisterGouEffModel
+btlfx_registerSummonModel = 0x800E9000; // type:func [code] 'so' header into a summon model record, then Hi_RegisterSummonModel (g_btlfxLoader.unk54/unk60)
+btlfx_getFirstTarget = 0x800E9124; // type:func [code] effect unit 0, or 8 when the spell was reflected
+btlfx_updateCameraEnable = 0x800E9168; // type:func [code] D_800F8D74 = effect cameras allowed effect flag 8, else not with the camera option off (GameState.unk24 bit 4), a Mini/Vanish caster or the scene's no-camera flags
+g_btlfxCameraOn = 0x800F8D74; // [code] effect cameras allowed (btlfx_updateCameraEnable), btlfx_opPlayCamera and btlfx_playCmdCamera test it
+btlfx_playCmdCamera = 0x800E9290; // type:func [code] the cast camera for the command common entries D_800F8D78 by trance/kind, scene data 3/4, or the enemy type's camera (runtime once or twice per spell)
+btlfx_playBounceCamera = 0x800E94C4; // type:func [code] camera for a Reflect bounce (D_800F8D80 / D_800F8D81 by side)
+btlfx_initSounds = 0x800E954C; // type:func [code] clears the 6 effect sound slots (D_80104E30)
+btlfx_updateSounds = 0x800E9578; // type:func [code] frees finished effect sounds and re-pans the playing ones at their unit
+btlfx_allocSound = 0x800E9638; // type:func [code] free effect sound slot (or the oldest), its voice bit, stops a voice still playing there
+btlfx_stopAllSounds = 0x800E970C; // type:func [code] func_8005546C(0, 0x3F) the six effect voices
+btlfx_findSound = 0x800E9730; // type:func [code] D_80104E34 entry of a voice bit
+btlfx_stopSound = 0x800E9884; // type:func [code] stops a voice and frees its D_80104E34 entry
+btlfx_playFileSound = 0x800E9930; // type:func [code] sound n of an effect file (btlfx_getFileData) on a free slot, panned at a unit
+btlfx_replaceSound = 0x800E99B0; // type:func [code] btlfx_stopSound then btlfx_playFileSound
+btlfx_playCommonSound = 0x800E9A00; // type:func [code] common-data sound n (btlfx_getCommonData) on a free slot, panned at a unit

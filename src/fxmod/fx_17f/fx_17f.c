@@ -29,12 +29,12 @@ s32 fx_17f_op80(s32 mode, Fx17fWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
             ex->btlfx_getUnitScale(0x10, (VECTOR *)work->unk0);
             ex->btlfx_getUnitPos(0x10, (s16 *)&work->unkC);
             ex->func_800E8980(0);
-            ex->func_800E806C(0x10, -1);
-            work->unk1C = (BtlUnit9C8 *)ex->func_800E871C(0xE, D_801E88E0);
-            ex->func_800E806C(0x11, 0x1000);
-            ex->func_800E806C(0x11, -2);
+            ex->btlfx_fadeUnitById(0x10, -1);
+            work->unk1C = (BtlUnit9C8 *)ex->btlfx_swapModelData(0xE, D_801E88E0);
+            ex->btlfx_fadeUnitById(0x11, 0x1000);
+            ex->btlfx_fadeUnitById(0x11, -2);
             ex->btlfx_setUnitRot(0x11, (s16 *)&work->unk14);
-            ex->func_800E7ACC(0x11, work->unk0);
+            ex->btlfx_setUnitScale(0x11, work->unk0);
             ex->btlfx_aimAngles((s16 *)&work->unkC, (s16 *)&work->unk20, (s16 *)&ang);
             ex->func_800CFD78((s16 *)&work->unkC, (s16 *)&ang, -0x104, (s16 *)&work->unkC);
             ex->btlfx_setUnitPos(0x11, (s16 *)&work->unkC);
@@ -47,13 +47,13 @@ s32 fx_17f_op80(s32 mode, Fx17fWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
         }
     } else {
         frame = entry->unk0;
-        ex->func_800E8854(work->unk1C, func_801E7704);
+        ex->btl_forEachModelVertex(work->unk1C, func_801E7704);
         if (frame >= 0x37) {
             c = 0x80 - (frame - 0x37) * 8;
             if (c < 0x10) {
                 c = 0x10;
             }
-            ex->func_800E806C(0x11, c);
+            ex->btlfx_fadeUnitById(0x11, c);
         }
         if (frame == 3) {
             p = ex->func_800E3CEC(ex->btlfx_getFileData(entry->unk8, 0xB), (s32)&work->unk20);
@@ -77,8 +77,8 @@ s32 fx_17f_op80(s32 mode, Fx17fWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
         }
         work->unk20.vy += 5;
         if (frame >= 0x47) {
-            ex->func_800E806C(0x11, -1);
-            ex->func_800E871C(0xE, D_801E88E0);
+            ex->btlfx_fadeUnitById(0x11, -1);
+            ex->btlfx_swapModelData(0xE, D_801E88E0);
             work->unkC.vx = 0;
             work->unkC.vy = 0;
             work->unkC.vz = 0x3A98;

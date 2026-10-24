@@ -66,8 +66,8 @@ s32 fx_0ba_op80(s32 mode, Fx0baWork80 *work, Unk800F78A4 *env, Unk80100C78Entry 
         work->unk4 = 0;
         D_801EC5F0 = env;
         ex->btlfx_initEffModels(D_801EC600, 6);
-        work->unk7C = ex->func_800E8F50((Unk800E8F50 *)ex->btlfx_getFileData(entry->unk8, 0x20), 0);
-        work->unk8C = ex->func_800E8F50((Unk800E8F50 *)ex->btlfx_getFileData(entry->unk8, 0x18), 0);
+        work->unk7C = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->unk8, 0x20), 0);
+        work->unk8C = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->unk8, 0x18), 0);
         work->unk48.vx = 0;
         work->unk60.vy = 0x800;
         work->unk54.vx = 0x1000;
@@ -172,8 +172,8 @@ s32 fx_0ba_op80(s32 mode, Fx0baWork80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             }
             if (frame >= 0x3C) {
                 if (frame == 0x3C) {
-                    work->unk84 = ex->func_800E8F50((Unk800E8F50 *)ex->btlfx_getFileData(entry->unk8, 0x81), 1);
-                    work->unk88 = ex->func_800E8F50((Unk800E8F50 *)ex->btlfx_getFileData(entry->unk8, 0x80), 1);
+                    work->unk84 = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->unk8, 0x81), 1);
+                    work->unk88 = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->unk8, 0x80), 1);
                     work->unk10.vx = work->unk48.vx;
                     work->unk10.vy = work->unk48.vy;
                     work->unk10.vz = work->unk48.vz;
@@ -238,8 +238,8 @@ s32 fx_0ba_op80(s32 mode, Fx0baWork80 *work, Unk800F78A4 *env, Unk80100C78Entry 
                 env->camera->points[2].vx = work->unk18.vx;
                 env->camera->points[2].vy = work->unk18.vy;
                 env->camera->points[2].vz = work->unk18.vz;
-                work->unk80 = ex->func_800E8F50((Unk800E8F50 *)ex->btlfx_getFileData(entry->unk8, 0x82), 1);
-                work->unk90 = ex->func_800E8F50((Unk800E8F50 *)ex->btlfx_getFileData(entry->unk8, 0x83), 1);
+                work->unk80 = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->unk8, 0x82), 1);
+                work->unk90 = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->unk8, 0x83), 1);
             }
             break;
         case 2:
@@ -399,11 +399,11 @@ s32 fx_0ba_op81(s32 mode, Fx0baPWork81 *work, Unk800F78A4 *env, Unk80100C78Entry
         work->unk4 = 0;
         D_801EC5F0 = env;
         ex->btlfx_initEffModels(D_801ECB90, 5);
-        work->unk70 = ex->func_800E8F50((Unk800E8F50 *)ex->btlfx_getFileData(entry->unk8, 0x1F), 1);
-        work->unk74 = ex->func_800E8F50((Unk800E8F50 *)ex->btlfx_getFileData(entry->unk8, 0x26), 0);
-        work->unk78 = ex->func_800E8F50((Unk800E8F50 *)ex->btlfx_getFileData(entry->unk8, 0x18), 0);
-        work->unk80 = ex->func_800E8F50((Unk800E8F50 *)ex->btlfx_getFileData(entry->unk8, 4), 0);
-        work->unk7C = ex->func_800E8F50((Unk800E8F50 *)ex->btlfx_getFileData(entry->unk8, 0x83), 1);
+        work->unk70 = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->unk8, 0x1F), 1);
+        work->unk74 = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->unk8, 0x26), 0);
+        work->unk78 = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->unk8, 0x18), 0);
+        work->unk80 = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->unk8, 4), 0);
+        work->unk7C = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->unk8, 0x83), 1);
         work->unk8.vx = 0;
         work->unk8.vy = 0;
         work->unk8.vz = 0;
@@ -473,23 +473,23 @@ s32 fx_0ba_op81(s32 mode, Fx0baPWork81 *work, Unk800F78A4 *env, Unk80100C78Entry
                 ex->btlfx_drawScreenTint((u32 *)(env->ot + 2), 1, 0, c2 >> 14, c2 >> 12);
             }
             if (frame == 3) {
-                ex->func_800E60A4(1, 6);
+                ex->btlfx_startFadeBackground(1, 6);
             }
             if (frame >= 9) {
                 work->unk0 = 2;
                 entry->unk0 = -1;
                 ex->btlfx_drawScreenTint((u32 *)(env->ot + 2), 2, 0xFF, 0xFF, 0);
-                ex->func_800E60A4(-1, 2);
+                ex->btlfx_startFadeBackground(-1, 2);
                 work->unk6C = NULL;
             }
             break;
         case 2:
             t = (frame << 12) / 51;
             if (frame == 0) {
-                ex->func_800E60A4(-1, 1);
+                ex->btlfx_startFadeBackground(-1, 1);
             }
             if (frame == 2) {
-                ex->func_800E60A4(0, 3);
+                ex->btlfx_startFadeBackground(0, 3);
             }
             if (frame < 4) {
                 c3 = 0xFF - frame * 0xFF / 4;
@@ -639,16 +639,16 @@ s32 fx_0ba_op81(s32 mode, Fx0baPWork81 *work, Unk800F78A4 *env, Unk80100C78Entry
                 ex->btlfx_drawScreenTint((u32 *)(env->ot + 1), 1, c9, c9, c9 >> 3);
             }
             if (frame == 24) {
-                ex->func_800E60A4(-1, 0);
+                ex->btlfx_startFadeBackground(-1, 0);
             }
             if (frame == 25) {
-                ex->func_800E60A4(0, 5);
+                ex->btlfx_startFadeBackground(0, 5);
             }
             if (frame == 29) {
                 ex->btlfx_drawScreenTint((u32 *)(env->ot + 1), 1, 0x20, 0x64, 0xFF);
             }
             if (frame == 41) {
-                ex->func_800E60A4(1, 8);
+                ex->btlfx_startFadeBackground(1, 8);
             }
             if (frame == 33) {
                 ex->btlfx_drawScreenTint((u32 *)(env->ot + 1), 2, 0x40, 0x40, 0);
@@ -680,7 +680,7 @@ s32 fx_0ba_op81(s32 mode, Fx0baPWork81 *work, Unk800F78A4 *env, Unk80100C78Entry
             if (frame >= 51) {
                 work->unk0 = 3;
                 entry->unk0 = -1;
-                ex->func_800E60A4(-1, 6);
+                ex->btlfx_startFadeBackground(-1, 6);
                 p = ex->func_800E3CEC(ex->btlfx_getFileData(entry->unk8, 0x2C), (s32)&work->unk10);
                 if (p != NULL) {
                     p->unk22 = 0x96;

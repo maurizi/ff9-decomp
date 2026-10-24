@@ -98,8 +98,8 @@ s32 fx_03d_op82(s32 mode, Fx03dWork82 *work, Unk800F78A4 *env, Unk80100C78Entry 
         work->unk28.vx = 0x1000;
         work->unk28.vy = 0x1000;
         work->unk28.vz = 0x1000;
-        work->unk40 = ex->func_800E8F50((Unk800E8F50 *)ex->btlfx_getFileData(entry->unk8, 0x17), 1);
-        work->unk42 = ex->func_800E8F50((Unk800E8F50 *)ex->btlfx_getFileData(entry->unk8, 0x16), 1);
+        work->unk40 = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->unk8, 0x17), 1);
+        work->unk42 = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->unk8, 0x16), 1);
         work->unk3C = -1;
         work->unk3E = -1;
     } else {

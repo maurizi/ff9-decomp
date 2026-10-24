@@ -1477,7 +1477,7 @@ void func_800E3D54(Pool6CEntry *arg0) {
 }
 
 void func_800E3D80(void) {
-    func_800E4098();
+    btlfx_initCommonData();
     btlfx_resetAll();
 }
 
@@ -1487,7 +1487,7 @@ void btlfx_resetAll(void) {
     btlfx_initTasks();
     func_800DA4E8();
     func_800E3C58();
-    func_800E954C();
+    btlfx_initSounds();
     btlfx_clearEffModels();
     btlfx_clearSummonModels();
     func_80054F80();

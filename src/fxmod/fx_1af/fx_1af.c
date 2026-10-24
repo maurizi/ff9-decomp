@@ -41,11 +41,11 @@ s32 fx_1af_op80(s32 mode, Fx1afWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
             if (frame > 0) {
                 work->unk0 = 1;
                 entry->unk0 = -1;
-                ex->func_800E806C(0x10, 0);
+                ex->btlfx_fadeUnitById(0x10, 0);
                 ex->func_800E87C4(0x50);
                 ex->btlfx_initEffModels(D_801E7F58, 5);
                 for (i = 0; i < 5; i++) {
-                    work->unk40[i] = ex->func_800E8F50((Unk800E8F50 *)ex->btlfx_getFileData(entry->unk8, D_801E7EF4[i]), 0);
+                    work->unk40[i] = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->unk8, D_801E7EF4[i]), 0);
                 }
                 ex->btlfx_drawScreenTint((u32 *)(env->ot + 2), 1, 0x80, 0x80, 0xAA);
             }
@@ -160,7 +160,7 @@ s32 fx_1af_op83(s32 mode, void *work, Unk800F78A4 *env, Unk80100C78Entry *entry,
         *arg4 = 0;
     } else if (mode == 1) {
         D_801E7F48 = env;
-        ex->func_800E8274(0x10);
+        ex->btlfx_clearUnitStatus(0x10);
     } else {
         return 1;
     }

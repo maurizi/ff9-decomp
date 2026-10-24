@@ -269,13 +269,13 @@ s32 fx_195_op80(s32 mode, Fx195Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
         work->unk4 = 0;
         D_801EA278 = env;
         ex->btlfx_initEffModels(D_801EA288, 7);
-        work->unk80 = ex->func_800E8F50((Unk800E8F50 *)ex->btlfx_getFileData(entry->unk8, 0x11), 1);
-        work->unk84 = ex->func_800E8F50((Unk800E8F50 *)ex->btlfx_getFileData(entry->unk8, 0x14), 1);
-        work->unk5C = ex->func_800E8F50((Unk800E8F50 *)ex->btlfx_getFileData(entry->unk8, 0x1C), 0);
-        work->unk88 = ex->func_800E8F50((Unk800E8F50 *)ex->btlfx_getFileData(entry->unk8, 0x16), 1);
-        work->unk8C = ex->func_800E8F50((Unk800E8F50 *)ex->btlfx_getFileData(entry->unk8, 0x15), 0);
-        work->unk90 = ex->func_800E8F50((Unk800E8F50 *)ex->btlfx_getFileData(entry->unk8, 0x1A), 0);
-        work->unk94 = ex->func_800E8F50((Unk800E8F50 *)ex->btlfx_getFileData(entry->unk8, 0x13), 1);
+        work->unk80 = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->unk8, 0x11), 1);
+        work->unk84 = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->unk8, 0x14), 1);
+        work->unk5C = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->unk8, 0x1C), 0);
+        work->unk88 = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->unk8, 0x16), 1);
+        work->unk8C = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->unk8, 0x15), 0);
+        work->unk90 = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->unk8, 0x1A), 0);
+        work->unk94 = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->unk8, 0x13), 1);
         BTLFX_COPY_SVEC(&work->unk8, &D_801EA228);
         BTLFX_COPY_SVEC(&work->unk20, &D_801EA228);
         work->unk20.vy -= 0x980;
@@ -441,10 +441,10 @@ s32 fx_195_op80(s32 mode, Fx195Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
                 if (p != NULL) {
                     p->unk22 = 0x400;
                 }
-                work->unk30 = ex->func_800E9930(0x22, entry->unk8, -1);
-                work->unk32 = ex->func_800E9930(0x23, entry->unk8, -1);
-                ex->func_800E9930(0x20, entry->unk8, -1);
-                ex->func_800E9930(0x21, entry->unk8, -1);
+                work->unk30 = ex->btlfx_playFileSound(0x22, entry->unk8, -1);
+                work->unk32 = ex->btlfx_playFileSound(0x23, entry->unk8, -1);
+                ex->btlfx_playFileSound(0x20, entry->unk8, -1);
+                ex->btlfx_playFileSound(0x21, entry->unk8, -1);
                 env->camera->points[2].vx = 0;
                 env->camera->points[2].vy = -0xC8;
                 env->camera->points[2].vz = 0x300;
@@ -642,8 +642,8 @@ s32 fx_195_op80(s32 mode, Fx195Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
                 ex->Hi_ModifyEffModelRGB(work->unk80, (c_407 >> 5) - 0x80, (c_407 >> 5) - 0x80, (c_407 >> 5) - 0x80);
             }
             if (frame == 0x3C) {
-                ex->func_800E99B0(0x24, entry->unk8, -1, work->unk30);
-                ex->func_800E99B0(0x25, entry->unk8, -1, work->unk32);
+                ex->btlfx_replaceSound(0x24, entry->unk8, -1, work->unk30);
+                ex->btlfx_replaceSound(0x25, entry->unk8, -1, work->unk32);
             }
             BTLFX_COPY_SVEC(&v1, &work->unk10);
             BTLFX_COPY_SVEC(&v2, &v1);

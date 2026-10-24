@@ -80,7 +80,7 @@ s32 fx_09b_op80(s32 mode, Fx09bWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
         work->unk2C.vx = 0x1000;
         work->unk2C.vy = 0x1000;
         work->unk2C.vz = 0x1000;
-        work->unk70 = ex->func_800E8F50((Unk800E8F50 *)ex->btlfx_getFileData(entry->unk8, 6), 1);
+        work->unk70 = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->unk8, 6), 1);
         work->unk0 = ex->func_800E3CEC(ex->btlfx_getFileData(entry->unk8, 1), (s32)&work->unk3C);
         work->unk4 = ex->func_800E3CEC(ex->btlfx_getFileData(entry->unk8, D_801E80F4[work->unk6C]),
                                        (s32)&D_801E9A64[work->unk6C]);
@@ -118,9 +118,9 @@ s32 fx_09b_op80(s32 mode, Fx09bWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
             }
             break;
         case 6:
-            ex->func_800E9930(0x13, entry->unk8, -1);
-            ex->func_800E9930(0x14, entry->unk8, -1);
-            ex->func_800E9930(0x15, entry->unk8, -1);
+            ex->btlfx_playFileSound(0x13, entry->unk8, -1);
+            ex->btlfx_playFileSound(0x14, entry->unk8, -1);
+            ex->btlfx_playFileSound(0x15, entry->unk8, -1);
             break;
         case 8:
             ex->func_800E3D54(work->unk4);

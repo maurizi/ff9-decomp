@@ -916,7 +916,7 @@ void btlbg_projectVertices(BtlBgRec *, u8 *, u32 *, s32);
 extern s32 D_800FE508;
 extern s32 D_800FE518;
 extern s16 D_80100DCC;
-extern s32 *D_80104DF8; /* offset table, entries relative to its start */
+extern s32 *g_btlfxCommonTable; /* offset table, entries relative to its start */
 typedef struct {
     s16 unk0;          /* count of unk14 */
     s16 unk2;          /* count of unk4 */
@@ -1552,13 +1552,13 @@ typedef struct {
         (a) *= (n);         \
         (a) = wt - (a);     \
     }
-/* colour gradient header (func_800E651C), followed by 8-byte keys
+/* colour gradient header (btlfx_sampleGradient), followed by 8-byte keys
    {CVECTOR color (cd = key length); u16 len; u16 start} terminated by cd == 0 */
 typedef struct {
     s32 total; /* 0 until the keys' start/len are filled in */
     s32 count;
 } Grad;
-void func_800E651C(u8 *, CVECTOR *, s32);
+void btlfx_sampleGradient(u8 *, CVECTOR *, s32);
 /* sprite set header (btlfx_drawAnimQuads, func_800D2DBC): u16 frame offsets, then at
    unk8[count] a palette (u16 count, u16 entries[]) and per frame a byte count of
    3-byte sprites */
@@ -1888,8 +1888,8 @@ typedef struct {
 extern Pool30Entry D_801014B8[0x100];
 extern Pool30 D_801044B8;
 extern Pool6C D_801044C8; /* 0x920 bytes */
-extern Unk80100D88 D_80104DF0;
-extern Unk80100D88 D_80104DF4;
+extern Unk80100D88 g_btlfxResArgs;
+extern Unk80100D88 g_btlfxResArgs2;
 extern s32 D_80104E00;
 extern MATRIX D_80104E10;
 extern u16 D_800F8D0C[];
@@ -2018,9 +2018,9 @@ extern Unk80104E34 D_80104E34[6];
 
 extern u16 D_800F51E8[];
 extern u8 D_800F8D70[];
-extern s32 D_800F8D74;
+extern s32 g_btlfxCameraOn;
 extern u8 D_800F8D78[5]; /* battle message ids */
-BtlUnit *func_800E9124(void);
+BtlUnit *btlfx_getFirstTarget(void);
 extern u8 D_800F8D80;
 extern u8 D_800F8D81;
 extern char g_battleText[];
@@ -2338,7 +2338,7 @@ s32 btlfx_stepHitSound(u8 *, s32, s32);
 void btl_saveCharacter(BtlUnit *, s32);
 void btl_tryEscape(u8);
 void btl_spawnPopups(BtlUnit *);
-s32 func_800E8D60(void);
+s32 btlfx_isResultDeferred(void);
 void btlui_initPartyEntries(void);
 BtlUnit *btlui_popMenuUnit(void);
 void btlui_pruneMenuQueue(void);
@@ -2409,10 +2409,10 @@ void btl_unloadEnemyModels(void);
 u32 btl_addStatus(BtlUnit *, u32);
 u32 btl_countActiveUnits(u32);
 void btlcam_play(s32);
-s32 func_800E454C(s32);
-void func_800E73B4(BtlUnit *, u16 *);
+s32 btlfx_getCommonData(s32);
+void btl_getBaseBonePos(BtlUnit *, u16 *);
 void btlfx_copyWords(s32 *, s32 *, u32);
-s32 func_800E9638(s32);
+s32 btlfx_allocSound(s32);
 void btlui_vsync(void);
 void btlui_enable(u8);
 void btlui_initMenu(void);
@@ -2523,18 +2523,18 @@ void btl_clearUnitStatus(BtlUnit *);
 s32 btl_removeStatuses(BtlUnit *, u32);
 s32 btlfx_getMotionLength(s32);
 u16 func_800DF7A0(BtlUnit9C *, u16, s32, s32 *, s32);
-s32 func_800E7298(BtlUnit *);
-s32 func_800E7370(BtlUnit *);
-void func_800E748C(BtlUnit *, s16 *);
-void func_800E753C(BtlUnit *, s32, s16 *);
+s32 btl_isModelPart(BtlUnit *);
+s32 btl_getUnitHeight(BtlUnit *);
+void btl_getUnitPos(BtlUnit *, s16 *);
+void btl_getUnitBodyPos(BtlUnit *, s32, s16 *);
 typedef union {
     s32 w[2];
     s16 h[4];
 } SVec4; /* SVECTOR accessed as words */
-void func_800E78B4(s32, s16 *, s16 *, s32, s32, s32, s32);
+void btlfx_turnUnitToward(s32, s16 *, s16 *, s32, s32, s32, s32);
 void btlfx_getUnitScale(s32, VECTOR *);
 void btlfx_fadeUnit(BtlUnit *, s32);
-s32 func_800E9A00(s32, s32);
+s32 btlfx_playCommonSound(s32, s32);
 BtlUnit *btl_getUnitById(u16);
 void btl_main(s32);
 void btl_initMode(void);
@@ -2553,8 +2553,8 @@ void func_800DA4E8(void);
 void func_800E3C58(void);
 void btlfx_clearTargets(void);
 void btl_setVsyncMode(s32);
-void func_800E954C(void);
-s32 func_800E9930(s32, s32, s32);
+void btlfx_initSounds(void);
+s32 btlfx_playFileSound(s32, s32, s32);
 s32 btl_cancelUnitCmds(BtlUnit *);
 void btlcam_loadScript(s32);
 void func_800C36D0(void);
@@ -2579,9 +2579,9 @@ void func_800E00DC(s32, Pool30Entry *, Pool30 *);
 void func_800E14D8(u32, Pool6C *);
 Pool6CEntry *func_800E1534(Pool30 *, Pool6C *, u8 *, s32);
 Pool6CEntry *func_800E3CEC(s32, s32);
-void func_800E94C4(void);
+void btlfx_playBounceCamera(void);
 void func_800E49D0(s32, s32);
-s32 func_800E774C(s32, s16 *, s16 *);
+s32 btlfx_getBouncePos(s32, s16 *, s16 *);
 
 /* func_800E4634 work area */
 typedef struct {
@@ -2663,7 +2663,7 @@ s32 func_800E1874(Pool30 *, Pool6C *);
 void func_800E2000(Pool30 *, Pool6C *);
 void btlfx_heapInit(Heap *, s32);
 void btlfx_resetAll(void);
-void func_800E4098(void);
+void btlfx_initCommonData(void);
 s32 btlfx_isEnemyUnit(s32);
 void func_800E8B28(s32, s32, s32);
 s32 btl_unloadCommonData(void);
@@ -2995,7 +2995,7 @@ s32 btlui_getMenuState(void);
 s32 btlui_getTargetReturnState(void);
 extern u8 D_800FD7AC[];
 void btlui_drawSideCmd(); /* (Window *); btlui_drawCmdList passes its own */
-s32 func_800E865C(s32, s32);
+s32 btlfx_isUnitKind(s32, s32);
 void btlfx_projectSliceMesh(BtlUnit9C *, u8);
 u8 *func_800DE11C(BtlUnit9C *, u8, u8 *);
 void btlfx_projectMorphMesh(BtlUnit9C *, u8, u16);
@@ -3308,13 +3308,13 @@ void SetDrawMove(DR_MOVE *p, RECT *rect, int x, int y);
 void func_8005562C(s32);
 void func_800D0940(void);
 /* the frame update btlfx_runFrame runs (src_equiv/ovl_0b/effect_frame.c) */
-void func_800E702C(void);
+void btlfx_initEnv(void);
 void btlfx_runScript(void);
 void btlfx_updateLoader(void);
 s32 btlfx_updateTasks(void);
 void func_800E3C98(void);
 void func_800E3E08(void);
-void func_800E9578(void);
+void btlfx_updateSounds(void);
 extern s32 g_btlfxRandSeed;
 extern s32 g_btlfxSavedSp;
 /* main exe: candidates for ff9.h */
@@ -4179,13 +4179,13 @@ typedef struct {
 } Unk800E57B0; /* 0x2C */
 
 extern u16 D_800F8D04[];
-s32 func_800E7C54(s32, s32);
+s32 btlfx_compareDepth(s32, s32);
 s32 func_800E7CC4(s32, s32);
-void func_800E7D3C(s32, s32, s16 *);
+void btlfx_getWeaponPos(s32, s32, s16 *);
 
 void btlfx_getUnitPos(s32, s16 *);
 void btlfx_getUnitBodyPos(s32, s32, s16 *);
-void func_800E60A4(s32, s32);
+void btlfx_startFadeBackground(s32, s32);
 Pool6CEntry *func_800E4A3C(s32, s32, s16 *, s16 *);
 /* The definition takes its 3rd-5th argument slots as one 12-byte struct by value (a2, a3, stack 0x30):
    it overwrites slots 4 and 5 with the 3rd (b = c = a) and reads them back from their stack homes, and the
@@ -4199,7 +4199,7 @@ typedef struct {
 } Unk800E4A3CArgs;
 Pool6CEntry *func_800E4A3C_def(s32, s32, Unk800E4A3CArgs) __asm__("func_800E4A3C");
 void func_800E8C84(s32);
-void func_800E8D14(void);
+void btlfx_showCasterCmdName(void);
 
 
 /* btlfx_runScript: battle event script */
@@ -4214,13 +4214,13 @@ s32 func_800DA5C4(void);
 s32 func_800DA634(s32);
 s32 func_800DA6B4(s32, s32);
 void btlfx_startCasterTask(s32);
-u32 func_800E7D18(s32);
+u32 btlfx_getUnitSlot(s32);
 void btlfx_restorePartyLooks(void);
 void btlfx_restoreUnitLook(s32);
 s32 func_800E8CE4(void);
-void func_800E9168(void);
-void func_800E9290(s32);
-void func_800E970C(void);
+void btlfx_updateCameraEnable(void);
+void btlfx_playCmdCamera(s32);
+void btlfx_stopAllSounds(void);
 void btlfx_retryOp(void);
 extern s32 D_800FE530[];
 extern u8 D_800FF068[];
@@ -4246,7 +4246,7 @@ void btlui_drawPulseGradient(s32, s32, s32, s32, s32, CVECTOR *);
 /* btlfx_updateLoader */
 extern u16 D_800FEC68[];
 extern s32 D_80100D90[][2];
-s32 func_800E8AD0(void);
+s32 btlfx_countVisibleParty(void);
 void btlfx_initSummonModels(BtlModel *, s32);
 typedef void (*Unk800DA92CFn)(s32, Unk800F78A4 *, s32);
 /* main exe: candidates for ff9.h */

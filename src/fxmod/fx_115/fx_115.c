@@ -24,8 +24,8 @@ s32 fx_115_op80(s32 mode, Fx115Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
         work->unk20.vx = work->unk10.vx;
         work->unk20.vy = work->unk10.vy;
         work->unk20.vz = work->unk10.vz;
-        work->unkA0 = ex->func_800E8F50((Unk800E8F50 *)ex->btlfx_getFileData(entry->unk8, 5), 1);
-        work->unkA2 = ex->func_800E8F50((Unk800E8F50 *)ex->btlfx_getFileData(entry->unk8, 5), 1);
+        work->unkA0 = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->unk8, 5), 1);
+        work->unkA2 = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->unk8, 5), 1);
     } else {
         frame = entry->unk0;
         if (frame < 8) {

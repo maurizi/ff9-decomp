@@ -23,7 +23,7 @@ s32 fx_122_op80(s32 mode, Fx122Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
         work->unk1C.vz = 0x2000;
         work->unk4.vy = work->unk38.vy + 0x800;
         if (ex->btlfx_isEnemyUnit(0)) {
-            id = ex->func_800E738C(0);
+            id = ex->btlfx_getUnitHeight(0);
             r = ex->btlfx_getUnitRadius(0x100);
             o = D_801E7C94;
             for (i = 0; i < 0x11; i++, o++) {
@@ -63,7 +63,7 @@ s32 fx_122_op80(s32 mode, Fx122Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
         work->unk48 = -1;
         work->unk4A = -1;
         ex->btlfx_initEffModels(D_801E7D54, 1);
-        work->unk4C = ex->func_800E8F50((Unk800E8F50 *)ex->btlfx_getFileData(entry->unk8, 1), 1);
+        work->unk4C = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->unk8, 1), 1);
     } else {
         frame = entry->unk0;
         ex->Hi_DrawEffModel(&work->unk4, &work->unkC, (s32)&work->unk1C, work->unk4C);

@@ -14,7 +14,7 @@ s32 btlfx_resolveFirstUse(s32 arg0) {
     GameState *g;
 
     id = arg0;
-    if (func_800E8498(0) >= 0x385) {
+    if (btlfx_getScaledRadius(0) >= 0x385) {
         for (p = D_800F727C[0]; *p != 0xFF; p += 2) {
             if (p[0] == arg0) {
                 id = p[1];
@@ -172,10 +172,10 @@ void btlfx_runScript(void) {
             break;
         }
         d->unk21 = 0;
-        func_800E9168();
+        btlfx_updateCameraEnable();
         btlcam_beginEffect();
         if (!(g_btlfxEnv->targets->kind & 1)) {
-            func_800E9290(d->unk1C);
+            btlfx_playCmdCamera(d->unk1C);
         }
         if (btlfx_loadFile(d->unk2) == 0) {
             k = (u8)d->unk1C >> 4;
@@ -196,7 +196,7 @@ void btlfx_runScript(void) {
     case 2:
         d->unk18 = btlfx_findScript(d->unk2);
         d->unk0 = 4;
-        func_800E8D14();
+        btlfx_showCasterCmdName();
         break;
     case 4:
         /* padded: a zero word follows the first jump table */
@@ -227,8 +227,8 @@ void btlfx_runScript(void) {
                             if (d->unk21 == 0) {
                                 btlcam_endEffect();
                                 func_800E3C58();
-                                func_800E970C();
-                                func_800E954C();
+                                btlfx_stopAllSounds();
+                                btlfx_initSounds();
                                 btlfx_reloadCommonData(0);
                                 d->unk21 = 1;
                             } else if (btlfx_reloadCommonData(1) != 0) {
@@ -239,8 +239,8 @@ void btlfx_runScript(void) {
                             g_btlfxEnv->targets = NULL;
                             btlcam_endEffect();
                             func_800E3C58();
-                            func_800E970C();
-                            func_800E954C();
+                            btlfx_stopAllSounds();
+                            btlfx_initSounds();
                             func_80054F80();
                         }
                     }
@@ -339,7 +339,7 @@ void btlfx_runScript(void) {
                         }
                         cont = 0;
                     } else {
-                        n = func_800E7D18(b);
+                        n = btlfx_getUnitSlot(b);
                         func_800AB3E4(n, 1);
                         n++;
                         d->unk24 = n;

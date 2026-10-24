@@ -42,9 +42,9 @@ s32 fx_1a6_op80(s32 mode, Fx1a6Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
         if (n >= 3) {
             return 1;
         }
-        ex->func_800E9930(2, entry->unk8, -1);
-        ex->func_800E9930(4, entry->unk8, -1);
-        ex->func_800E9930(7, entry->unk8, -1);
+        ex->btlfx_playFileSound(2, entry->unk8, -1);
+        ex->btlfx_playFileSound(4, entry->unk8, -1);
+        ex->btlfx_playFileSound(7, entry->unk8, -1);
         ex->btlfx_getUnitBodyPos(0x10, 0, (s16 *)&work->unk10);
         ex->btlfx_getUnitBodyPos(0, 0, (s16 *)&work->unk18);
         ex->func_800DC858(0x10, 0, (u16 *)&work->unk20);
@@ -109,9 +109,9 @@ s32 fx_1a6_op80(s32 mode, Fx1a6Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             }
             break;
         case 8:
-            ex->func_800E9930(8, entry->unk8, -1);
-            ex->func_800E9930(0xD, entry->unk8, -1);
-            ex->func_800E9930(0xE, entry->unk8, -1);
+            ex->btlfx_playFileSound(8, entry->unk8, -1);
+            ex->btlfx_playFileSound(0xD, entry->unk8, -1);
+            ex->btlfx_playFileSound(0xE, entry->unk8, -1);
             break;
         }
         if (work->unk0 != NULL) {

@@ -91,9 +91,9 @@ s32 fx_0ea_op81(s32 mode, Fx0eaWork81 *work, Unk800F78A4 *env, Unk80100C78Entry 
             return 1;
         }
         func_801E7DE0(env, 7, 0);
-        ex->func_800E9930(0x13, entry->unk8, -1);
-        ex->func_800E9930(0x14, entry->unk8, -1);
-        ex->func_800E9930(0x15, entry->unk8, -1);
+        ex->btlfx_playFileSound(0x13, entry->unk8, -1);
+        ex->btlfx_playFileSound(0x14, entry->unk8, -1);
+        ex->btlfx_playFileSound(0x15, entry->unk8, -1);
         ex->btlfx_getUnitBodyPos(0x10, 0, (s16 *)&work->unk8);
         D_801E7E5C.vx = work->unk8.vx;
         D_801E7E5C.vy = work->unk8.vy;

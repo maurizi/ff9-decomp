@@ -132,7 +132,7 @@ s32 fx_17d_1_op80(s32 mode, Fx17d1Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
         work->unk4 = 0;
         D_801ED420 = env;
         ex->btlfx_initEffModels(D_801ED430, 2);
-        work->unk78 = ex->func_800E8F50((Unk800E8F50 *)ex->btlfx_getFileData(entry->unk8, 0x9E), 1);
+        work->unk78 = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->unk8, 0x9E), 1);
         ex->Hi_SetSummonMotion(((Fx17d1Summon *)env->unk4)->unk54->unk180, ((Fx17d1Summon *)env->unk4)->unk60);
         work->unk28.vx = 0;
         work->unk28.vy = 0;

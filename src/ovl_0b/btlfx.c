@@ -1256,7 +1256,7 @@ void btlfx_drawBackdrop(BtlBgLayers *arg0, s32 arg1) {
     for (; i < n; i++) {
         L = (BtlBgLayer *)((u8 *)arg0 + offs[i]);
         if (L->unkC != 0) {
-            func_800E651C((u8 *)arg0 + L->unkC, &col, arg1 % L->unkA);
+            btlfx_sampleGradient((u8 *)arg0 + L->unkC, &col, arg1 % L->unkA);
         } else {
             *(s32 *)&col = 0x808080;
         }

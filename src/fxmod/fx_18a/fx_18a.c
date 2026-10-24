@@ -90,8 +90,8 @@ s32 fx_18a_op80(s32 mode, Fx18aWork80 *work, Unk800F78A4 *env, Unk80100C78Entry 
                 work->unk0 = 2;
                 entry->unk0 = -1;
                 env->camera->unk52 = 0;
-                ex->func_800E806C(0x10, -1);
-                ex->func_800E806C(0, -2);
+                ex->btlfx_fadeUnitById(0x10, -1);
+                ex->btlfx_fadeUnitById(0, -2);
                 work->unkC.vz += 0x64;
                 ex->btlfx_setUnitPos(0, (s16 *)&work->unkC);
                 ex->func_800E3D54(work->unk8);

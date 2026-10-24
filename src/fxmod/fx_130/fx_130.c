@@ -49,7 +49,7 @@ s32 fx_130_op80(s32 mode, Fx130Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
             D_801E8124[i].unk18 = i * 6;
             D_801E8124[i].unk1C = 0x20;
             D_801E8124[i].unk20 = i * 6;
-            D_801E8124[i].unk24 = ex->func_800E8F50((Unk800E8F50 *)ex->btlfx_getFileData(entry->unk8, 1), 1);
+            D_801E8124[i].unk24 = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->unk8, 1), 1);
             setVector(&D_801E8124[i].unk30, D_801E8124[i].unk0.vx, D_801E8124[i].unk0.vy, D_801E8124[i].unk0.vz);
             setVector(&D_801E8124[i].unk28, 0, 0, 0);
             setVector(&D_801E8124[i].unk40, 0x1000, 0x1000, 0x1000);

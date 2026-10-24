@@ -48,14 +48,14 @@ s32 fx_0e8_op80(s32 mode, Fx0e8Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
                 scale.vx = 0;
                 scale.vy = 0;
                 scale.vz = 0;
-                ex->func_800E806C(0x10, 0);
+                ex->btlfx_fadeUnitById(0x10, 0);
             } else {
                 ex->btlfx_getUnitScale(0x10, &scale);
                 scale.vx = work->unk2C.vx - work->unk2C.vx / 4 * i;
                 scale.vy += 0x190;
                 scale.vz = work->unk2C.vz - work->unk2C.vz / 4 * i;
             }
-            ex->func_800E7ACC(0x10, (s32 *)&scale);
+            ex->btlfx_setUnitScale(0x10, (s32 *)&scale);
         }
         return frame >= 0x2D;
     }

@@ -47,7 +47,7 @@ s32 fx_1ad_op80(s32 mode, Fx1adWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
         D_801E7D8C = env;
         ex->btlfx_initEffModels(D_801E7D9C, 1);
         ex->btlfx_getUnitBodyPos(0, 0, (s16 *)&work->unk10);
-        work->unk24 = (s16)ex->func_800E8F50((Unk800E8F50 *)ex->btlfx_getFileData(entry->unk8, 2), 1);
+        work->unk24 = (s16)ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->unk8, 2), 1);
     } else {
         frame = entry->unk0;
         ex->func_800DC818(0x10, 0xF, (u16 *)&work->unk8);

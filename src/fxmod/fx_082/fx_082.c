@@ -25,8 +25,8 @@ s32 fx_082_op80(s32 mode, Fx082Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
         work->unk18.vy -= 0x145;
         BTLFX_COPY_SVEC(&work->unk28, &work->unk20);
         ex->btlfx_initEffModels(D_801E7E74, 2);
-        work->unk30 = ex->func_800E8F50((Unk800E8F50 *)ex->btlfx_getFileData(entry->unk8, 5), 0);
-        work->unk34 = ex->func_800E8F50((Unk800E8F50 *)ex->btlfx_getFileData(entry->unk8, 5), 0);
+        work->unk30 = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->unk8, 5), 0);
+        work->unk34 = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->unk8, 5), 0);
         env->camera->points[0].vx = work->unk18.vx;
         env->camera->points[0].vy = work->unk18.vy;
         env->camera->points[0].vz = work->unk18.vz;
@@ -155,9 +155,9 @@ s32 fx_082_op81(s32 mode, Fx082Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
         k = (ex->math_sin(b) * k) >> 12;
         v[0] += k;
         v[2] += k;
-        ex->func_800E7ACC(0, v);
+        ex->btlfx_setUnitScale(0, v);
         if (frame >= 0x10) {
-            ex->func_800E7ACC(0, work->unk0);
+            ex->btlfx_setUnitScale(0, work->unk0);
             return 1;
         }
     } else {

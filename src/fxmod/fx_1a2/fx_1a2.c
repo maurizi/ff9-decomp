@@ -487,8 +487,8 @@ s32 fx_1a2_op80(s32 mode, Fx1a2Work80 *w, Unk800F78A4 *env, Unk80100C78Entry *en
                 w->unk24 = w->unk8.vz;
                 w->unk22 -= 0x1AE;
                 ex->btlfx_drawScreenTint((u32 *)(env->ot + 1), 1, 0x10, 0x3C, 0x46);
-                ex->func_800E806C(0, 0);
-                ex->func_800E806C(0x11, -2);
+                ex->btlfx_fadeUnitById(0, 0);
+                ex->btlfx_fadeUnitById(0x11, -2);
                 ex->btlfx_setUnitPos(0x11, (s16 *)&w->unk8);
             }
             pos.vx = w->unk8.vx;
@@ -612,7 +612,7 @@ s32 fx_1a2_op81(s32 mode, SVECTOR *work, Unk800F78A4 *env, Unk80100C78Entry *ent
         } else {
             a = 0x80 - (frame - 0x24) * 0x10;
         }
-        ex->func_800E806C(0x10, a);
+        ex->btlfx_fadeUnitById(0x10, a);
         if (frame >= 0x2C) {
             return 1;
         }

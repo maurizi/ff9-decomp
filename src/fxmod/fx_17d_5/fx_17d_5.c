@@ -227,11 +227,11 @@ s32 fx_17d_5_op80(s32 mode, Fx17d5Work80 *w, Unk800F78A4 *env, Unk80100C78Entry 
         D_801EE52C = env;
         ex->func_800E3C58();
         ex->btlfx_initEffModels(D_801EE53C, 5);
-        w->unk84 = ex->func_800E8F50((Unk800E8F50 *)ex->btlfx_getFileData(entry->unk8, 0x85), 1);
-        w->unk88 = ex->func_800E8F50((Unk800E8F50 *)ex->btlfx_getFileData(entry->unk8, 0x87), 1);
-        w->unk8C = ex->func_800E8F50((Unk800E8F50 *)ex->btlfx_getFileData(entry->unk8, 0x88), 1);
-        w->unk90 = ex->func_800E8F50((Unk800E8F50 *)ex->btlfx_getFileData(entry->unk8, 0x9B), 1);
-        w->unk94 = ex->func_800E8F50((Unk800E8F50 *)ex->btlfx_getFileData(entry->unk8, 0x91), 1);
+        w->unk84 = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->unk8, 0x85), 1);
+        w->unk88 = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->unk8, 0x87), 1);
+        w->unk8C = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->unk8, 0x88), 1);
+        w->unk90 = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->unk8, 0x9B), 1);
+        w->unk94 = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->unk8, 0x91), 1);
         ex->Hi_SetSummonMotion(((Fx17d5Summon *)env->unk4)->unk54->unk1A4, ((Fx17d5Summon *)env->unk4)->unk60);
         ex->Hi_SetSummonMotFrame(((Fx17d5Summon *)env->unk4)->unk60, 3);
         w->unk64.vx = 0;

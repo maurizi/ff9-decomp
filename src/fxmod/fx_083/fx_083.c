@@ -45,7 +45,7 @@ s32 fx_083_op80(s32 mode, Fx083Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
             work->unkD8[i] = -1;
         }
         work->unk168 = ex->btlfx_getUnitRadius(0);
-        work->unk16C = ex->func_800E738C(0);
+        work->unk16C = ex->btlfx_getUnitHeight(0);
         ex->btlfx_getUnitPos(0, (s16 *)&work->unk160);
         work->unk160.vy = -0x80;
         work->unkC4[0] = 1;

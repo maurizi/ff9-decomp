@@ -332,8 +332,8 @@ s32 fx_1fd_op82(s32 mode, Fx1fdWork82 *work, Unk800F78A4 *env, Unk80100C78Entry 
         setVector(&work->unk14, 0, 0, 0);
         setVector(&work->unk1C, 0, 0, 0x4B0);
         setVector(&work->unk2C, 0x1CCC, 0x1000, 0x1CCC);
-        work->unk68 = ex->func_800E8F50((Unk800E8F50 *)ex->btlfx_getFileData(entry->unk8, 5), mode);
-        work->unk6A = ex->func_800E8F50((Unk800E8F50 *)ex->btlfx_getFileData(entry->unk8, 6), mode);
+        work->unk68 = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->unk8, 5), mode);
+        work->unk6A = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->unk8, 6), mode);
         work->unk58 = -1;
         work->unk5C = -1;
         work->unk60 = mode;

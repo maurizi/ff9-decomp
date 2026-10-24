@@ -25,8 +25,8 @@ s32 fx_17d_6_op80(s32 mode, Fx17d6Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
         D_801E93B4 = env;
         ex->func_800E3C58();
         ex->btlfx_initEffModels(D_801E93C4, 3);
-        work->unk7C = ex->func_800E8F50((Unk800E8F50 *)ex->btlfx_getFileData(entry->unk8, 0x8B), 1);
-        work->unk80 = ex->func_800E8F50((Unk800E8F50 *)ex->btlfx_getFileData(entry->unk8, 0x8D), 2);
+        work->unk7C = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->unk8, 0x8B), 1);
+        work->unk80 = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->unk8, 0x8D), 2);
         ex->Hi_SetSummonMotion(SUMMON(env)->unk54->unk1A8, SUMMON(env)->unk60);
         work->unk70.vx = 0x100;
         work->unk70.vy = 0x780;

@@ -31,7 +31,7 @@ s32 fx_05a_op80(s32 mode, Fx05aWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
         work->unk20.vz = work->unk8.vz;
         if (ex->btlfx_isEnemyUnit(0)) {
             s = 0x155;
-            h = ex->func_800E738C(0);
+            h = ex->btlfx_getUnitHeight(0);
             r = ex->btlfx_getUnitRadius(0);
             if (h > 0x190) {
                 s += (h - 0x190) / 4;

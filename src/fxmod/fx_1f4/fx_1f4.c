@@ -44,11 +44,11 @@ s32 fx_1f4_op80(s32 mode, Fx1f4Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
         }
         if (work->unk0 != 0) {
             work->unk0--;
-            ex->func_800E806C(0, work->unk0 * 8);
+            ex->btlfx_fadeUnitById(0, work->unk0 * 8);
         }
         if (work->unk4 != 0) {
             work->unk4--;
-            ex->func_800E806C(0, 0x80 - work->unk4 * 8);
+            ex->btlfx_fadeUnitById(0, 0x80 - work->unk4 * 8);
         }
         return frame >= 0x56;
     }

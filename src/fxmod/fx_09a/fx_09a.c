@@ -122,7 +122,7 @@ s32 fx_09a_op80(s32 mode, Fx09aWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
         work->unk4 = 0;
         D_801E8858 = env;
         file = ex->btlfx_getFileData(entry->unk8, 2);
-        ex->func_800E9000((Unk800E9000 *)ex->btlfx_getFileData(entry->unk8, 8), &file, 1, &D_801E8868);
+        ex->btlfx_registerSummonModel((Unk800E9000 *)ex->btlfx_getFileData(entry->unk8, 8), &file, 1, &D_801E8868);
         work->unk8 = -1;
         work->unkC = -1;
         work->unk10 = env->targets->targetCount;
@@ -179,9 +179,9 @@ s32 fx_09a_op80(s32 mode, Fx09aWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
             work->unk34.vx = 0;
             work->unk34.vz = 0;
             work->unk34.vy = work->unk1C.vy;
-            ex->func_800E9930(0xF, entry->unk8, -1);
-            ex->func_800E9930(0x10, entry->unk8, -1);
-            ex->func_800E9930(0x11, entry->unk8, -1);
+            ex->btlfx_playFileSound(0xF, entry->unk8, -1);
+            ex->btlfx_playFileSound(0x10, entry->unk8, -1);
+            ex->btlfx_playFileSound(0x11, entry->unk8, -1);
             work->unk0 = 2;
             entry->unk0 = -1;
             break;
@@ -205,9 +205,9 @@ s32 fx_09a_op80(s32 mode, Fx09aWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
                 k = 0x1000;
             }
             if (frame == 24) {
-                ex->func_800E9930(0x12, entry->unk8, -1);
-                ex->func_800E9930(0x13, entry->unk8, -1);
-                ex->func_800E9930(0x14, entry->unk8, -1);
+                ex->btlfx_playFileSound(0x12, entry->unk8, -1);
+                ex->btlfx_playFileSound(0x13, entry->unk8, -1);
+                ex->btlfx_playFileSound(0x14, entry->unk8, -1);
             }
             if (frame == 26) {
                 ex->btlfx_drawScreenTint((u32 *)(env->ot + 2), 2, 0xFF, 0xFF, 0);
@@ -223,9 +223,9 @@ s32 fx_09a_op80(s32 mode, Fx09aWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
                 if (p != NULL) {
                     p->unk22 = ex->func_800E7CC4(work->unk8, 0x40);
                 }
-                ex->func_800E9930(0x15, entry->unk8, -1);
-                ex->func_800E9930(0x16, entry->unk8, -1);
-                ex->func_800E9930(0x17, entry->unk8, -1);
+                ex->btlfx_playFileSound(0x15, entry->unk8, -1);
+                ex->btlfx_playFileSound(0x16, entry->unk8, -1);
+                ex->btlfx_playFileSound(0x17, entry->unk8, -1);
             }
             if (frame == 28) {
                 ex->btlfx_drawScreenTint((u32 *)(env->ot + 2), 1, 0xDC, 0, 0x20);

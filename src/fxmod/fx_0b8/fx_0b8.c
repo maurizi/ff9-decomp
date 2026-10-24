@@ -105,8 +105,8 @@ s32 fx_0b8_op80(s32 mode, Fx0b8Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
         work->unk1DC.vx = 0;
         work->unk1DC.vy = -0x2500;
         work->unk1DC.vz = -0xA00;
-        work->unkCC = ex->func_800E8F50((Unk800E8F50 *)ex->btlfx_getFileData(entry->unk8, 0x84), 0xFF);
-        work->unkD0 = ex->func_800E8F50((Unk800E8F50 *)ex->btlfx_getFileData(entry->unk8, 0x87), 0xFF);
+        work->unkCC = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->unk8, 0x84), 0xFF);
+        work->unkD0 = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->unk8, 0x87), 0xFF);
     } else {
         frame = entry->unk0;
         env->camera->points[3].vx = work->unk13C.vx;
@@ -114,7 +114,7 @@ s32 fx_0b8_op80(s32 mode, Fx0b8Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
         env->camera->points[3].vz = work->unk13C.vz;
         switch (frame) {
         case 0:
-            work->unk28 = ex->func_800E8F50((Unk800E8F50 *)ex->btlfx_getFileData(entry->unk8, 0x8A), 1);
+            work->unk28 = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->unk8, 0x8A), 1);
             work->unk44.vy = -0x900;
             work->unk44.vx = 0;
             work->unk44.vz = 0x1000;
@@ -141,7 +141,7 @@ s32 fx_0b8_op80(s32 mode, Fx0b8Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             work->unk8C.vx = 0xF00;
             work->unk8C.vy = 0xF00;
             work->unk8C.vz = 0xF00;
-            work->unkD4 = ex->func_800E8F50((Unk800E8F50 *)ex->btlfx_getFileData(entry->unk8, 0x83), 0xFF);
+            work->unkD4 = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->unk8, 0x83), 0xFF);
             work->unkBC.vy = 0x800;
             work->unkBC.vx = 0;
             work->unkBC.vz = 0;
@@ -174,11 +174,11 @@ s32 fx_0b8_op80(s32 mode, Fx0b8Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             work->unk164.vx = 0;
             work->unk164.vy = -0x2500;
             work->unk164.vz = -0x1000;
-            work->unkE8 = ex->func_800E8F50((Unk800E8F50 *)ex->btlfx_getFileData(entry->unk8, 0x88), 0xFF);
-            work->unkEC = ex->func_800E8F50((Unk800E8F50 *)ex->btlfx_getFileData(entry->unk8, 0x80), 1);
-            work->unkF0 = ex->func_800E8F50((Unk800E8F50 *)ex->btlfx_getFileData(entry->unk8, 0x86), 1);
-            work->unkF4 = ex->func_800E8F50((Unk800E8F50 *)ex->btlfx_getFileData(entry->unk8, 0x81), 1);
-            work->unkF8 = ex->func_800E8F50((Unk800E8F50 *)ex->btlfx_getFileData(entry->unk8, 0x82), 1);
+            work->unkE8 = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->unk8, 0x88), 0xFF);
+            work->unkEC = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->unk8, 0x80), 1);
+            work->unkF0 = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->unk8, 0x86), 1);
+            work->unkF4 = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->unk8, 0x81), 1);
+            work->unkF8 = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->unk8, 0x82), 1);
             work->unk124 = 0x800;
             work->unk10C.vx = 0;
             work->unk10C.vy = 0;
@@ -386,7 +386,7 @@ s32 fx_0b8_op80(s32 mode, Fx0b8Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             break;
         case 0x11E:
             for (i = 0; i < env->targets->targetCount; i++) {
-                ex->func_800E7ACC(i, (s32 *)&D_801EC8C0[i].unk8);
+                ex->btlfx_setUnitScale(i, (s32 *)&D_801EC8C0[i].unk8);
                 ex->btlfx_setUnitRot(i, &D_801EC8C0[i].unk0.vx);
             }
             work->unk0[0x20] = 8;
@@ -623,7 +623,7 @@ s32 fx_0b8_op80(s32 mode, Fx0b8Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
                 p2.vz = work->unk164.vz + ((ex->math_cos(D_801EC8C0[i].unk1E) * r) >> 12);
                 ex->btlfx_setUnitPos(i, &p2.vx);
                 sc.vx = sc.vy = sc.vz = func_801E7704(0, 0x30, work->unk0[0x1B], D_801EC8C0[i].unk8.vy, 0);
-                ex->func_800E7ACC(i, (s32 *)&sc);
+                ex->btlfx_setUnitScale(i, (s32 *)&sc);
                 D_801EC8C0[i].unk24.vx += D_801EC8C0[i].unk2C;
                 D_801EC8C0[i].unk24.vy += D_801EC8C0[i].unk2E;
                 D_801EC8C0[i].unk24.vz += D_801EC8C0[i].unk30;

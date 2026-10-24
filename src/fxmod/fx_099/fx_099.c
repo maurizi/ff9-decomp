@@ -20,7 +20,7 @@ s32 fx_099_op80(s32 mode, Fx099Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
         work->unk8.vy = 0;
         ex->btlfx_getUnitBodyPos(0, 0, (s16 *)&work->unk10);
         ex->btlfx_initEffModels(D_801E7C38, 1);
-        work->unk1C = ex->func_800E8F50((Unk800E8F50 *)ex->btlfx_getFileData(entry->unk8, 1), 0);
+        work->unk1C = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->unk8, 1), 0);
         r = (ex->btlfx_getUnitRadius(0) << 12) / 720;
         if (r < 0x800) {
             r = 0x800;

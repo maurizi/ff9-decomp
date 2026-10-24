@@ -847,7 +847,7 @@ s32 fx_0fb_1_op80(s32 mode, Fx0fb1Op80Work *work, Unk800F78A4 *env, Unk80100C78E
             ex->btlfx_drawScreenTint((u32 *)(env->ot + 1), 1, n >> 1, n >> 1, n);
         }
         work->unk8C.vz += 0x18;
-        ex->func_800E651C(D_801F0834, &col, frame);
+        ex->btlfx_sampleGradient(D_801F0834, &col, frame);
         f6 = t >> 2;
         func_801EC738(&work->unkC, &work->unk8C, (VECTOR *)&work->unk80, 0x1C00, 0x1800, &col, 0x1B, 0x3E80, 0, 0,
                       ((ex->math_sin(f6) * 0x58) >> 12) + 0x40, 0xFF);
@@ -1068,7 +1068,7 @@ s32 fx_0fb_1_op81(s32 mode, Fx0fb1Work81 *work, Unk800F78A4 *env, Unk80100C78Ent
                 sc.vx = work->unk0[i].vx / 2;
                 sc.vy = work->unk0[i].vy / 2;
                 sc.vz = work->unk0[i].vz / 2;
-                ex->func_800E7ACC(i, (s32 *)&sc);
+                ex->btlfx_setUnitScale(i, (s32 *)&sc);
             }
         }
     } else {
@@ -1079,7 +1079,7 @@ s32 fx_0fb_1_op81(s32 mode, Fx0fb1Work81 *work, Unk800F78A4 *env, Unk80100C78Ent
                 work->unk160[j].vz += work->unk120[j].vz;
                 ex->btlfx_setUnitRot(j, (s16 *)&work->unk160[j]);
                 if (D_801F0D34 != 0x1000) {
-                    ex->func_800E80CC(j, D_801F0D34 >> 5);
+                    ex->btlfx_setUnitLight(j, D_801F0D34 >> 5);
                 }
             }
         }
@@ -1089,7 +1089,7 @@ s32 fx_0fb_1_op81(s32 mode, Fx0fb1Work81 *work, Unk800F78A4 *env, Unk80100C78Ent
                     ex->btlfx_setUnitRot(j, (s16 *)&work->unkE0[j]);
                     ex->btlfx_getUnitHomePos(j, (s16 *)&sc);
                     ex->btlfx_setUnitPos(j, (s16 *)&sc);
-                    ex->func_800E7ACC(j, (s32 *)&work->unk0[j]);
+                    ex->btlfx_setUnitScale(j, (s32 *)&work->unk0[j]);
                 }
             }
             return 1;

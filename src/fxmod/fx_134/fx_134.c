@@ -683,7 +683,7 @@ s32 fx_134_op80(s32 mode, Fx134Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
                     work->unk24.vx = work->unk8.vx;
                     work->unk24.vy = work->unk8.vy;
                     work->unk24.vz = work->unk8.vz;
-                    ex->func_800E63E4(1, 1);
+                    ex->btlfx_startScreenFade(1, 1);
                 }
                 break;
             }
@@ -748,7 +748,7 @@ s32 fx_134_op80(s32 mode, Fx134Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
                     work->unk3C.vx = 0x400;
                     work->unk3C.vy = 0;
                     work->unk3C.vz = 0;
-                    ex->func_800E63E4(1, 1);
+                    ex->btlfx_startScreenFade(1, 1);
                 }
                 break;
             }
@@ -1031,7 +1031,7 @@ s32 fx_134_op80(s32 mode, Fx134Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
                 work->unk24.vx = work->unk8.vx;
                 work->unk24.vz = work->unk8.vz;
                 work->unk24.vy -= 0x280;
-                ex->func_800E63E4(0, 1);
+                ex->btlfx_startScreenFade(0, 1);
             }
             break;
         }
@@ -1139,7 +1139,7 @@ s32 fx_134_op80(s32 mode, Fx134Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
                     work->unk10.vz = work->unk24.vz;
                     ex->btlfx_aimAngles((s16 *)&work->unk8, (s16 *)&work->unk10, (s16 *)&work->unk3C);
                     BTLFX_COPY_SVEC(&work->unk50, &work->unk3C);
-                    ex->func_800E63E4(1, 1);
+                    ex->btlfx_startScreenFade(1, 1);
                     work->unk3C.vz += 0x320;
                 }
                 break;

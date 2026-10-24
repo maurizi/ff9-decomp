@@ -431,16 +431,16 @@ s32 fx_0e3_1_op80(s32 mode, Fx0e31Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
         work->unk0 = 0;
         work->unk4 = 0;
         D_801F0A04 = env;
-        work->unkC4 = ex->func_800E8F50((Unk800E8F50 *)ex->btlfx_getFileData(entry->unk8, 0x84), 1);
-        work->unkC8 = ex->func_800E8F50((Unk800E8F50 *)ex->btlfx_getFileData(entry->unk8, 0x25), 1);
-        work->unkCC = ex->func_800E8F50((Unk800E8F50 *)ex->btlfx_getFileData(entry->unk8, 1), 1);
-        work->unk7C = ex->func_800E8F50((Unk800E8F50 *)ex->btlfx_getFileData(entry->unk8, 0x85), 0);
-        work->unkA0 = ex->func_800E8F50((Unk800E8F50 *)ex->btlfx_getFileData(entry->unk8, 0x21), 0);
-        work->unkD0 = ex->func_800E8F50((Unk800E8F50 *)ex->btlfx_getFileData(entry->unk8, 0xF), 1);
-        work->unkD4 = ex->func_800E8F50((Unk800E8F50 *)ex->btlfx_getFileData(entry->unk8, 0xD), 0);
-        work->unkD8 = ex->func_800E8F50((Unk800E8F50 *)ex->btlfx_getFileData(entry->unk8, 0x26), 0);
-        work->unkDC = ex->func_800E8F50((Unk800E8F50 *)ex->btlfx_getFileData(entry->unk8, 8), 1);
-        work->unkE0 = ex->func_800E8F50((Unk800E8F50 *)ex->btlfx_getFileData(entry->unk8, 0x81), 0);
+        work->unkC4 = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->unk8, 0x84), 1);
+        work->unkC8 = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->unk8, 0x25), 1);
+        work->unkCC = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->unk8, 1), 1);
+        work->unk7C = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->unk8, 0x85), 0);
+        work->unkA0 = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->unk8, 0x21), 0);
+        work->unkD0 = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->unk8, 0xF), 1);
+        work->unkD4 = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->unk8, 0xD), 0);
+        work->unkD8 = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->unk8, 0x26), 0);
+        work->unkDC = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->unk8, 8), 1);
+        work->unkE0 = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->unk8, 0x81), 0);
         BTLFX_COPY_SVEC(&work->unk8, &D_801F09B4);
         work->unk28.vy = 0x800;
         work->unk28.vx = 0;
@@ -754,10 +754,10 @@ s32 fx_0e3_1_op80(s32 mode, Fx0e31Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
         case 4:
             t = (frame << 12) / 14;
             if (frame == 5) {
-                ex->func_800E9930(0x28, entry->unk8, -1);
-                ex->func_800E9930(0x2A, entry->unk8, -1);
-                ex->func_800E9930(0x2B, entry->unk8, -1);
-                ex->func_800E9930(0x2C, entry->unk8, -1);
+                ex->btlfx_playFileSound(0x28, entry->unk8, -1);
+                ex->btlfx_playFileSound(0x2A, entry->unk8, -1);
+                ex->btlfx_playFileSound(0x2B, entry->unk8, -1);
+                ex->btlfx_playFileSound(0x2C, entry->unk8, -1);
             }
             shake = ex->math_cos(t >> 2);
             if (frame == 0) {
@@ -884,10 +884,10 @@ s32 fx_0e3_1_op80(s32 mode, Fx0e31Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
                 if (p != NULL) {
                     p->unk22 = 0x400;
                 }
-                work->unk78 = ex->func_800E9930(0x30, entry->unk8, -1);
-                work->unk7A = ex->func_800E9930(0x31, entry->unk8, -1);
-                ex->func_800E9930(0x2D, entry->unk8, -1);
-                ex->func_800E9930(0x2E, entry->unk8, -1);
+                work->unk78 = ex->btlfx_playFileSound(0x30, entry->unk8, -1);
+                work->unk7A = ex->btlfx_playFileSound(0x31, entry->unk8, -1);
+                ex->btlfx_playFileSound(0x2D, entry->unk8, -1);
+                ex->btlfx_playFileSound(0x2E, entry->unk8, -1);
                 env->camera->points[2].vx = 0;
                 env->camera->points[2].vy = -0xC8;
                 env->camera->points[2].vz = 0x300;

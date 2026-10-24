@@ -97,7 +97,7 @@ s32 fx_0d5_op84(s32 mode, Fx0d5Work84 *work, Unk800F78A4 *env, Unk80100C78Entry 
         b = 0;
         c = 0;
         frame = entry->unk0;
-        ex->func_800E7D3C(0x10, 1, (s16 *)&work->unk8);
+        ex->btlfx_getWeaponPos(0x10, 1, (s16 *)&work->unk8);
         ry = 0;
         switch (work->unk0) {
         case 0:

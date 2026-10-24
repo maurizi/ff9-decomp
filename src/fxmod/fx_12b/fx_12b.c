@@ -59,8 +59,8 @@ s32 func_801E7994(Fx12bParticle *p, SVECTOR *pos, Fx12bShard *s, Fx12bPath *path
     SVECTOR v;
 
     if (frame == 0) {
-        ex->func_800E9930(0x39, 0, -1);
-        ex->func_800E9930(0x3A, 0, -1);
+        ex->btlfx_playFileSound(0x39, 0, -1);
+        ex->btlfx_playFileSound(0x3A, 0, -1);
     }
     func_801E9744(path, s->unk20 - 2, &v);
     v.vx += ofs->vx;

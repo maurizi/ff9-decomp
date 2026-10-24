@@ -243,8 +243,8 @@ s32 fx_026_op80(s32 mode, Fx026Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
         if (frame >= 66) {
             work->unk0 = 2;
             entry->unk0 = -1;
-            D_801EC5DC = work->unk68 = ex->func_800E8F50((Unk800E8F50 *)ex->btlfx_getFileData(entry->unk8, 0x85), 0);
-            work->unk6C = D_801EC5E0 = ex->func_800E8F50((Unk800E8F50 *)ex->btlfx_getFileData(entry->unk8, 0x87), 1);
+            D_801EC5DC = work->unk68 = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->unk8, 0x85), 0);
+            work->unk6C = D_801EC5E0 = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->unk8, 0x87), 1);
         }
         break;
     case 2:
@@ -542,7 +542,7 @@ s32 fx_026_op82(s32 mode, Fx026Work82 *work, Unk800F78A4 *env, Unk80100C78Entry 
             }
             if (frame >= 39 && frame < 92) {
                 if (frame == 39) {
-                    work->unk10 = ex->func_800E8F50((Unk800E8F50 *)ex->btlfx_getFileData(entry->unk8, 0xAB), 1);
+                    work->unk10 = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->unk8, 0xAB), 1);
                 }
                 rot.vz = 0;
                 rot.vx = 0;
@@ -957,11 +957,11 @@ s32 fx_026_op81(s32 mode, Fx026Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
         work->unk4 = 0;
         for (i = 0; i < 6; i++) {
             for (j = 0; j < 3; j++) {
-                work->unk18[i][j] = ex->func_800E8F50((Unk800E8F50 *)ex->btlfx_getFileData(entry->unk8, D_801EA788[i][j]), 0);
+                work->unk18[i][j] = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->unk8, D_801EA788[i][j]), 0);
             }
         }
         for (i = 0; i < 7; i++) {
-            work->unk6C[i] = ex->func_800E8F50((Unk800E8F50 *)ex->btlfx_getFileData(entry->unk8, D_801EA7D0[i]), 1);
+            work->unk6C[i] = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->unk8, D_801EA7D0[i]), 1);
         }
         work->unk8.vx = D_801EA780.vx;
         work->unk8.vy = D_801EA780.vy;

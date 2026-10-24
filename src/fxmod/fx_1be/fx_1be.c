@@ -97,7 +97,7 @@ s32 fx_1be_op80(s32 mode, Fx1beWork80 *w, Unk800F78A4 *env, Unk80100C78Entry *en
         w->unkCC.vx = 0;
         w->unkCC.vy = -0x2000;
         w->unkCC.vz = 0x418;
-        w->unk60 = ex->func_800E8F50((Unk800E8F50 *)ex->btlfx_getFileData(entry->unk8, 0xC), 0xFF);
+        w->unk60 = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->unk8, 0xC), 0xFF);
         w->unk74.vx = 0x1800;
         w->unk74.vy = 0x1800;
         w->unk74.vz = 0x1800;
@@ -113,10 +113,10 @@ s32 fx_1be_op80(s32 mode, Fx1beWork80 *w, Unk800F78A4 *env, Unk80100C78Entry *en
         w->unkAC.vx = 0x1A80;
         w->unkAC.vy = 0x1A80;
         w->unkAC.vz = 0x1A80;
-        w->unkA8 = ex->func_800E8F50((Unk800E8F50 *)ex->btlfx_getFileData(entry->unk8, 0xD), 1);
-        w->unk98 = ex->func_800E8F50((Unk800E8F50 *)ex->btlfx_getFileData(entry->unk8, 0xE), 1);
-        w->unk94 = ex->func_800E8F50((Unk800E8F50 *)ex->btlfx_getFileData(entry->unk8, 9), 1);
-        w->unkA4 = ex->func_800E8F50((Unk800E8F50 *)ex->btlfx_getFileData(entry->unk8, 0xA), 1);
+        w->unkA8 = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->unk8, 0xD), 1);
+        w->unk98 = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->unk8, 0xE), 1);
+        w->unk94 = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->unk8, 9), 1);
+        w->unkA4 = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->unk8, 0xA), 1);
     } else {
         frame = entry->unk0;
         env->camera->points[1].vx = 0;
@@ -199,7 +199,7 @@ s32 fx_1be_op80(s32 mode, Fx1beWork80 *w, Unk800F78A4 *env, Unk80100C78Entry *en
             break;
         case 0x7C:
             for (i = 0; i < env->targets->targetCount; i++) {
-                ex->func_800E7ACC(i, (s32 *)&D_801E95E8[i].unk8);
+                ex->btlfx_setUnitScale(i, (s32 *)&D_801E95E8[i].unk8);
                 ex->btlfx_setUnitRot(i, (s16 *)&D_801E95E8[i].unk0);
             }
             w->unk0[0x10] = 8;
@@ -277,7 +277,7 @@ s32 fx_1be_op80(s32 mode, Fx1beWork80 *w, Unk800F78A4 *env, Unk80100C78Entry *en
                         func_801E7704(1, 0x28, u->unk30, &D_801E95E8[i].unk18, &w->unk8C, &ang);
                         ex->btlfx_setUnitPos(i, (s16 *)&ang);
                         sc.vx = sc.vy = sc.vz = func_801E7840(1, 0x28, u->unk30, u->unk8.vy, 0);
-                        ex->func_800E7ACC(i, (s32 *)&sc);
+                        ex->btlfx_setUnitScale(i, (s32 *)&sc);
                         u->unk20.vx += u->unk28.vx;
                         u->unk20.vy += u->unk28.vy;
                         u->unk20.vz += u->unk28.vz;

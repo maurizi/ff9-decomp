@@ -121,7 +121,7 @@ s32 fx_114_op80(s32 mode, Fx114Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
         work->unk78.vy = 0x1000;
         work->unk78.vz = 0x1000;
         func_801EA880(&D_801ED0C8, (u16 *)ex->btlfx_getFileData(entry->unk8, 0x95));
-        work->unk178 = ex->func_800E8F50((Unk800E8F50 *)ex->btlfx_getFileData(entry->unk8, 0x80), 1);
+        work->unk178 = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->unk8, 0x80), 1);
         work->unk88.vx = 0;
         work->unk88.vy = 0;
         work->unk88.vz = 0;

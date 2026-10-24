@@ -167,11 +167,11 @@ s32 fx_1ea_op81(s32 mode, Fx1eaWork81 *work, Unk800F78A4 *env, Unk80100C78Entry 
         work->unk44.vz = 0x1800;
         func_801E8CB0((Fx1eaPath *)&D_801E95F0, (u16 *)ex->btlfx_getFileData(entry->unk8, 0xB));
         for (i = 0; i < 5; i++) {
-            work->unkA4[i] = ex->func_800E8F50((Unk800E8F50 *)ex->btlfx_getFileData(entry->unk8, D_801E8D5C[i]), 1);
+            work->unkA4[i] = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->unk8, D_801E8D5C[i]), 1);
         }
         for (i = 0; i < 5; i++) {
             func_801E8CB0((Fx1eaPath *)&D_801E95F8[i], (u16 *)ex->btlfx_getFileData(entry->unk8, D_801E8D74[i]));
-            work->unkA4[i + 5] = ex->func_800E8F50((Unk800E8F50 *)ex->btlfx_getFileData(entry->unk8, D_801E8D68[i]), 1);
+            work->unkA4[i + 5] = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->unk8, D_801E8D68[i]), 1);
         }
         D_801E95B8.unk8 = 0;
         D_801E95B8.unkA = 1;

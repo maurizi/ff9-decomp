@@ -239,8 +239,8 @@ s32 fx_0cb_op80(s32 mode, Fx0cbWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
         work->unk14.vy = work->unkC.vy;
         work->unk14.vz = work->unkC.vz;
         ex->btlfx_initEffModels(D_801E8680, 3);
-        work->unk20 = ex->func_800E8F50((Unk800E8F50 *)ex->btlfx_getFileData(entry->unk8, 0x12), 1);
-        work->unk24 = ex->func_800E8F50((Unk800E8F50 *)ex->btlfx_getFileData(entry->unk8, 8), 1);
+        work->unk20 = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->unk8, 0x12), 1);
+        work->unk24 = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->unk8, 8), 1);
     } else {
         frame = entry->unk0;
         if (work->unk0 == 0) {

@@ -228,7 +228,7 @@ s32 fx_08f_op80(s32 mode, Fx08fWork80 *work, Unk800F78A4 *env, Unk80100C78Entry 
                 env->camera->points[3].vz = work->unk1C.vz;
                 env->camera->points[3].vx += 0x1800;
                 env->camera->points[3].vx -= 0x1000;
-                ex->func_800E63E4(1, 1);
+                ex->btlfx_startScreenFade(1, 1);
                 work->unk0 = 2;
                 entry->unk0 = -1;
             }

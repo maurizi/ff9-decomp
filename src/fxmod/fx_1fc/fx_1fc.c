@@ -86,7 +86,7 @@ s32 fx_1fc_op83(s32 mode, Fx1fcWork83 *work, Unk800F78A4 *env, Unk80100C78Entry 
         work->unk20.vz = 0x1000;
         D_801EC14C = env;
         func_801E87D0((Fx1fcPath *)&D_801EDA5C, (u16 *)ex->btlfx_getFileData(entry->unk8, 0x13));
-        work->unk136[0] = ex->func_800E8F50(&D_801E99A4, 1);
+        work->unk136[0] = ex->btlfx_registerEffectModel(&D_801E99A4, 1);
         work->unk8.vx = 0;
         work->unk8.vy = 0x800;
         work->unk8.vz = 0;
@@ -112,7 +112,7 @@ s32 fx_1fc_op83(s32 mode, Fx1fcWork83 *work, Unk800F78A4 *env, Unk80100C78Entry 
         work->unk48.vy = 0x1000;
         work->unk48.vz = 0x1000;
         for (i = 0; i < 5; i++) {
-            work->unk136[i + 4] = ex->func_800E8F50((Unk800E8F50 *)func_801E86A0(D_801E8CE8, i), 1);
+            work->unk136[i + 4] = ex->btlfx_registerEffectModel((Unk800E8F50 *)func_801E86A0(D_801E8CE8, i), 1);
         }
         for (i = 0; i < 10; i++) {
             func_801E87D0((Fx1fcPath *)&D_801EDA7C[i],
@@ -162,7 +162,7 @@ s32 fx_1fc_op83(s32 mode, Fx1fcWork83 *work, Unk800F78A4 *env, Unk80100C78Entry 
             work->unk132 = 0x10;
             work->unk134 = 0;
             for (q = 0; q < env->targets->targetCount; q++) {
-                ex->func_800E7ACC(q, (s32 *)&D_801EDF1C[q]);
+                ex->btlfx_setUnitScale(q, (s32 *)&D_801EDF1C[q]);
             }
             env->camera->points[0].vx = 0;
             env->camera->points[0].vy = 0;
@@ -230,7 +230,7 @@ s32 fx_1fc_op83(s32 mode, Fx1fcWork83 *work, Unk800F78A4 *env, Unk80100C78Entry 
                 work->unk98[q].vx = (D_801EDF1C[q].vx * e.vx) / 4096;
                 work->unk98[q].vy = (D_801EDF1C[q].vy * e.vy) / 4096;
                 work->unk98[q].vz = (D_801EDF1C[q].vz * e.vz) / 4096;
-                ex->func_800E7ACC(q, (s32 *)&work->unk98[q]);
+                ex->btlfx_setUnitScale(q, (s32 *)&work->unk98[q]);
             }
         }
         if ((u32)(frame - 3) < 0x23 && work->unk0 != NULL) {

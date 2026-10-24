@@ -87,9 +87,9 @@ s32 fx_1eb_op82(s32 mode, Fx1ebWork82 *work, Unk800F78A4 *env, Unk80100C78Entry 
         func_801E81B4(&D_801E8740, (u16 *)ex->btlfx_getFileData(entry->unk8, 7));
         for (j = 0; j < 3; j++) {
             func_801E8108(&D_801E8728[j], (u16 *)ex->btlfx_getFileData(entry->unk8, D_801E8218[j]));
-            work->unk52[j] = ex->func_800E8F50((Unk800E8F50 *)ex->btlfx_getFileData(entry->unk8, D_801E8210[j]), 1);
+            work->unk52[j] = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->unk8, D_801E8210[j]), 1);
         }
-        work->unk58 = ex->func_800E8F50((Unk800E8F50 *)ex->btlfx_getFileData(entry->unk8, 6), 1);
+        work->unk58 = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->unk8, 6), 1);
         work->unk4C = -1;
     } else {
         frame = entry->unk0;

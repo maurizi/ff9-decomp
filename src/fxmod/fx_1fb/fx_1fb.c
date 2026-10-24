@@ -67,13 +67,13 @@ s32 fx_1fb_op81(s32 mode, void *work, Unk800F78A4 *env, Unk80100C78Entry *entry,
         if (D_801E7B84[0] != 0) {
             D_801E7B84[0]--;
             for (i = 0; i < env->targets->targetCount; i++) {
-                ex->func_800E806C(i, D_801E7B84[0] * 8);
+                ex->btlfx_fadeUnitById(i, D_801E7B84[0] * 8);
             }
         }
         if (D_801E7B84[1] != 0) {
             D_801E7B84[1]--;
             for (i = 0; i < env->targets->targetCount; i++) {
-                ex->func_800E806C(i, 0x80 - D_801E7B84[1] * 8);
+                ex->btlfx_fadeUnitById(i, 0x80 - D_801E7B84[1] * 8);
             }
         }
         return frame >= 0x38;

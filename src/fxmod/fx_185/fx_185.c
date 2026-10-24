@@ -35,7 +35,7 @@ s32 fx_185_op80(s32 mode, Fx185Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
         work->unk18.vx = work->unk0.vx;
         work->unk18.vy = work->unk0.vy;
         work->unk18.vz = work->unk0.vz;
-        work->unk3C = ex->func_800E8F50((Unk800E8F50 *)ex->btlfx_getFileData(entry->unk8, 0xB), 1);
+        work->unk3C = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->unk8, 0xB), 1);
     } else {
         frame = entry->unk0;
         if (frame < 6) {

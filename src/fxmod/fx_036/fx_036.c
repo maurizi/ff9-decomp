@@ -69,7 +69,7 @@ s32 fx_036_op81(s32 mode, s16 *work, Unk800F78A4 *env, Unk80100C78Entry *entry, 
         D_801E7C28 = env;
         *work = 0x80;
     } else {
-        ex->func_800E806C(0x10, *work);
+        ex->btlfx_fadeUnitById(0x10, *work);
         *work -= 8;
         return *work < 0;
     }

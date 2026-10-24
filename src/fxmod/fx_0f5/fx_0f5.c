@@ -45,11 +45,11 @@ void func_801E7704(SVECTOR *pos, SVECTOR *rot, VECTOR *scale, s32 r0, s32 r1, s3
         col1.r = col1.g = col1.b = c;
     } else {
         D_801E8A28 &= 0x1F;
-        ex->func_800E651C(D_801E89F8, &col0, D_801E8A28);
+        ex->btlfx_sampleGradient(D_801E89F8, &col0, D_801E8A28);
         col0.r = (col0.r * c) >> 7;
         col0.g = (col0.g * c) >> 7;
         col0.b = (col0.b * c) >> 7;
-        ex->func_800E651C(D_801E89F8, &col1, D_801E8A28);
+        ex->btlfx_sampleGradient(D_801E89F8, &col1, D_801E8A28);
         D_801E8A28++;
         col1.r = (col1.r * c) >> 7;
         col1.g = (col1.g * c) >> 7;
@@ -196,7 +196,7 @@ s32 fx_0f5_op80(s32 mode, Fx0f5Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
     } else if (mode == 1) {
         D_801E8A74 = env;
         ex->btlfx_initEffModels(D_801E8A84, 1);
-        work->unk20 = ex->func_800E8F50((Unk800E8F50 *)ex->btlfx_getFileData(entry->unk8, 9), 1);
+        work->unk20 = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->unk8, 9), 1);
         work->unk0 = 0;
         work->unk4 = 0;
         BTLFX_COPY_SVEC(&work->unk8, &env->targets->centerX);

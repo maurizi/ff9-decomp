@@ -98,7 +98,7 @@ s32 fx_129_op80(s32 mode, Fx129Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
             } else {
                 work->unk70.vy = work->unk64.vy;
             }
-            ex->func_800E7ACC(0, (s32 *)&work->unk70);
+            ex->btlfx_setUnitScale(0, (s32 *)&work->unk70);
         }
         env->camera->points[0].vy = work->unk4.vy = work->unk2C.vy + work->unk40;
         ex->Hi_DrawEffModel(&work->unk14, &work->unk4, (s32)&work->unk1C, work->unk0);

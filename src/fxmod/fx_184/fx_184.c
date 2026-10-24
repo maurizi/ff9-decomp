@@ -22,7 +22,7 @@ s32 fx_184_op80(s32 mode, Fx184Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
         work->unk30.vy = 0x1000;
         work->unk30.vz = 0x1000;
         ex->btlfx_setWeaponVisible(0x10, 0);
-        work->unk40 = ex->func_800E8F50((Unk800E8F50 *)ex->btlfx_getFileData(entry->unk8, 2), 1);
+        work->unk40 = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->unk8, 2), 1);
     } else {
         frame = entry->unk0;
         if (frame < 6) {

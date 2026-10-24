@@ -456,15 +456,15 @@ s32 fx_197_op81(s32 mode, Fx197Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
         work->unk4 = 0;
         D_801E9660 = env;
         ex->btlfx_initEffModels(D_801E9670, 0x20);
-        D_801EAF74 = ex->func_800E8F50((Unk800E8F50 *)ex->btlfx_getFileData(entry->unk8, 0xD8), 0);
-        D_801EAF70 = ex->func_800E8F50((Unk800E8F50 *)ex->btlfx_getFileData(entry->unk8, 0xD9), 1);
+        D_801EAF74 = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->unk8, 0xD8), 0);
+        D_801EAF70 = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->unk8, 0xD9), 1);
         for (i = 0; i < 6; i++) {
             for (j = 0; j < 3; j++) {
-                work->unk18[i][j] = ex->func_800E8F50((Unk800E8F50 *)ex->btlfx_getFileData(entry->unk8, D_801E9130[i][j]), 0);
+                work->unk18[i][j] = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->unk8, D_801E9130[i][j]), 0);
             }
         }
         for (i = 0; i < 7; i++) {
-            work->unk6C[i] = ex->func_800E8F50((Unk800E8F50 *)ex->btlfx_getFileData(entry->unk8, D_801E9178[i]), 1);
+            work->unk6C[i] = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->unk8, D_801E9178[i]), 1);
         }
         work->unk8.vx = D_801E9128.vx;
         work->unk8.vy = D_801E9128.vy;

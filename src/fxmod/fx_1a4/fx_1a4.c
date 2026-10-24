@@ -72,9 +72,9 @@ s32 fx_1a4_op80(s32 mode, Fx1a4Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             work->unk34 = func_801E80C8(0, -0x80, 0x20 - work->unk40, 0x20);
             c = work->unk34 + 0x80;
             if (c < 0x46) {
-                ex->func_800E806C(0x10, 0x46);
+                ex->btlfx_fadeUnitById(0x10, 0x46);
             } else {
-                ex->func_800E806C(0x10, c);
+                ex->btlfx_fadeUnitById(0x10, c);
             }
             work->unk40--;
         }
@@ -121,9 +121,9 @@ s32 fx_1a4_op81(s32 mode, Fx1a4Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
         work->unk20.vx = work->unk44.vx;
         work->unk20.vy = work->unk44.vy;
         work->unk20.vz = work->unk44.vz;
-        work->unk54 = ex->func_800E8F50((Unk800E8F50 *)ex->btlfx_getFileData(entry->unk8, 7), 1);
-        work->unk56 = ex->func_800E8F50((Unk800E8F50 *)ex->btlfx_getFileData(entry->unk8, 0xE), 1);
-        work->unk58 = ex->func_800E8F50((Unk800E8F50 *)ex->btlfx_getFileData(entry->unk8, 0xF), 1);
+        work->unk54 = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->unk8, 7), 1);
+        work->unk56 = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->unk8, 0xE), 1);
+        work->unk58 = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->unk8, 0xF), 1);
         work->unk52 = -1;
         work->unk4E = 8;
         work->unk4C = 0;

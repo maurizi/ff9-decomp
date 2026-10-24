@@ -148,11 +148,11 @@ s32 fx_19f_op81(s32 mode, Fx19fWork81 *work, Unk800F78A4 *env, Unk80100C78Entry 
         work->unk4 = 0;
         D_801EAA48 = env;
         ex->btlfx_initEffModels(D_801EAB28, 5);
-        work->unk70 = ex->func_800E8F50((Unk800E8F50 *)ex->btlfx_getFileData(entry->unk8, 0x21), 1);
-        work->unk74 = ex->func_800E8F50((Unk800E8F50 *)ex->btlfx_getFileData(entry->unk8, 0x27), 0);
-        work->unk78 = ex->func_800E8F50((Unk800E8F50 *)ex->btlfx_getFileData(entry->unk8, 0x1A), 0);
-        work->unk80 = ex->func_800E8F50((Unk800E8F50 *)ex->btlfx_getFileData(entry->unk8, 5), 0);
-        work->unk7C = ex->func_800E8F50((Unk800E8F50 *)ex->btlfx_getFileData(entry->unk8, 0x22), 1);
+        work->unk70 = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->unk8, 0x21), 1);
+        work->unk74 = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->unk8, 0x27), 0);
+        work->unk78 = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->unk8, 0x1A), 0);
+        work->unk80 = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->unk8, 5), 0);
+        work->unk7C = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->unk8, 0x22), 1);
         work->unk8.vx = 0;
         work->unk8.vy = 0;
         work->unk8.vz = 0;
@@ -222,23 +222,23 @@ s32 fx_19f_op81(s32 mode, Fx19fWork81 *work, Unk800F78A4 *env, Unk80100C78Entry 
                 ex->btlfx_drawScreenTint((u32 *)(env->ot + 2), 1, 0, c2 >> 14, c2 >> 12);
             }
             if (frame == 3) {
-                ex->func_800E60A4(1, 6);
+                ex->btlfx_startFadeBackground(1, 6);
             }
             if (frame >= 9) {
                 work->unk0 = 2;
                 entry->unk0 = -1;
                 ex->btlfx_drawScreenTint((u32 *)(env->ot + 2), 2, 0xFF, 0xFF, 0);
-                ex->func_800E60A4(-1, 2);
+                ex->btlfx_startFadeBackground(-1, 2);
                 work->unk6C = NULL;
             }
             break;
         case 2:
             t = (frame << 12) / 43;
             if (frame == 0) {
-                ex->func_800E60A4(-1, 1);
+                ex->btlfx_startFadeBackground(-1, 1);
             }
             if (frame == 2) {
-                ex->func_800E60A4(0, 3);
+                ex->btlfx_startFadeBackground(0, 3);
             }
             if (frame < 4) {
                 c3 = 0xFF - frame * 0xFF / 4;
@@ -388,16 +388,16 @@ s32 fx_19f_op81(s32 mode, Fx19fWork81 *work, Unk800F78A4 *env, Unk80100C78Entry 
                 ex->btlfx_drawScreenTint((u32 *)(env->ot + 1), 1, c9, c9, c9 >> 3);
             }
             if (frame == 24) {
-                ex->func_800E60A4(-1, 0);
+                ex->btlfx_startFadeBackground(-1, 0);
             }
             if (frame == 25) {
-                ex->func_800E60A4(0, 5);
+                ex->btlfx_startFadeBackground(0, 5);
             }
             if (frame == 29) {
                 ex->btlfx_drawScreenTint((u32 *)(env->ot + 1), 1, 0x20, 0x64, 0xFF);
             }
             if (frame == 36) {
-                ex->func_800E60A4(1, 7);
+                ex->btlfx_startFadeBackground(1, 7);
             }
             if (frame == 33) {
                 ex->btlfx_drawScreenTint((u32 *)(env->ot + 1), 2, 0x40, 0x40, 0);
@@ -429,7 +429,7 @@ s32 fx_19f_op81(s32 mode, Fx19fWork81 *work, Unk800F78A4 *env, Unk80100C78Entry 
             if (frame >= 43) {
                 work->unk0 = 3;
                 entry->unk0 = -1;
-                ex->func_800E60A4(-1, 6);
+                ex->btlfx_startFadeBackground(-1, 6);
                 p = ex->func_800E3CEC(ex->btlfx_getFileData(entry->unk8, 0x2A), (s32)&work->unk10);
                 if (p != NULL) {
                     p->unk22 = 0x96;

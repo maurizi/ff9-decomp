@@ -81,7 +81,7 @@ s32 fx_079_op80(s32 mode, Fx079Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
         ex->btlfx_getUnitBodyPos(0, 0, (s16 *)&D_801E8994);
         ex->btlfx_getUnitHomePos(0, (s16 *)&D_801E896C);
         ex->btlfx_getUnitScale(0, &D_801E8974);
-        D_801E898C = ex->func_800E738C(0);
+        D_801E898C = ex->btlfx_getUnitHeight(0);
         work->unk94.vx = D_801E8984.vx = D_801E8964.vx;
         work->unk94.vy = D_801E8964.vy;
         work->unk94.vz = D_801E8984.vz = D_801E8964.vz;
@@ -148,7 +148,7 @@ s32 fx_079_op80(s32 mode, Fx079Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
             if (D_801E898C > 0x200) {
                 scale.vx = scale.vy = scale.vz =
                     func_801E77B8(2, 0x10, work->unk0[6], D_801E8974.vy, D_801E8974.vy >> 1);
-                ex->func_800E7ACC(0, (s32 *)&scale);
+                ex->btlfx_setUnitScale(0, (s32 *)&scale);
             }
             pos.vy = D_801E896C.vy + func_801E77B8(2, 0x10, work->unk0[6], 0, -0x200);
             pos.vx = D_801E896C.vx;
@@ -167,14 +167,14 @@ s32 fx_079_op80(s32 mode, Fx079Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
                 if (D_801E898C > 0x200) {
                     scale.vx = scale.vy = scale.vz =
                         func_801E77B8(2, 0x10, work->unk0[7], D_801E8974.vy >> 1, D_801E8974.vy);
-                    ex->func_800E7ACC(0, (s32 *)&scale);
+                    ex->btlfx_setUnitScale(0, (s32 *)&scale);
                 }
                 pos.vy = D_801E896C.vy + func_801E77B8(2, 0x10, work->unk0[7], -0x200, 0);
                 pos.vx = D_801E896C.vx;
                 pos.vz = D_801E896C.vz;
             } else {
                 ex->btlfx_getUnitHomePos(0, (s16 *)&pos);
-                ex->func_800E7ACC(0, (s32 *)&D_801E8974);
+                ex->btlfx_setUnitScale(0, (s32 *)&D_801E8974);
             }
             ex->btlfx_setUnitPos(0, (s16 *)&pos);
         }

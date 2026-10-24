@@ -105,7 +105,7 @@ s32 fx_058_op80(s32 mode, Fx058Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
         ex->btlfx_getUnitRot(0x10, (s16 *)&work->unk14);
         work->unk14.vy += 0x800;
         ex->btlfx_initEffModels(D_801E7E74, 1);
-        work->unk24 = ex->func_800E8F50((Unk800E8F50 *)ex->btlfx_getFileData(entry->unk8, 0xA), 1);
+        work->unk24 = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->unk8, 0xA), 1);
     } else if (work->unk0 == 0) {
         if (work->unk1C < 0x20) {
             work->unk1C++;

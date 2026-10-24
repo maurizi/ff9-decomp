@@ -37,7 +37,7 @@ s32 fx_0fe_op80(s32 mode, Fx0feWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
             (work->unk4 + i)->vz = 0;
         }
         for (i = 0; i < 3; i++) {
-            work->unkB8[i] = ex->func_800E8F50((Unk800E8F50 *)ex->btlfx_getFileData(entry->unk8, D_801E7BF4[i]), 1);
+            work->unkB8[i] = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->unk8, D_801E7BF4[i]), 1);
         }
         work->unkB0 = -1;
         work->unkB4 = -1;

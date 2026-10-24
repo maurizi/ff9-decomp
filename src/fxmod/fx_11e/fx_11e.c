@@ -21,9 +21,9 @@ s32 fx_11e_op80(s32 mode, Fx11eWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
             return 1;
         }
         func_801E7F70(env, 7, 0);
-        ex->func_800E9930(7, entry->unk8, -1);
-        ex->func_800E9930(8, entry->unk8, -1);
-        ex->func_800E9930(9, entry->unk8, -1);
+        ex->btlfx_playFileSound(7, entry->unk8, -1);
+        ex->btlfx_playFileSound(8, entry->unk8, -1);
+        ex->btlfx_playFileSound(9, entry->unk8, -1);
         if (D_801E7F84 == 0) {
             ex->btlfx_initEffModels(D_801E7FE0, 8);
             D_801E7F84 = mode;
@@ -39,8 +39,8 @@ s32 fx_11e_op80(s32 mode, Fx11eWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
         work->unkC.vx = work->unk48.vx;
         work->unkC.vy = work->unk48.vy;
         work->unkC.vz = work->unk48.vz;
-        work->unk5C = ex->func_800E8F50((Unk800E8F50 *)ex->btlfx_getFileData(entry->unk8, 1), 1);
-        work->unk5E = ex->func_800E8F50((Unk800E8F50 *)ex->btlfx_getFileData(entry->unk8, 2), 1);
+        work->unk5C = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->unk8, 1), 1);
+        work->unk5E = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->unk8, 2), 1);
         work->unk30 = ex->btlfx_rand() % 2;
         work->unk34 = ex->btlfx_rand() % 2;
         work->unk38 = ex->btlfx_rand() % 400 + 200;

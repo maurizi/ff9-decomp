@@ -56,7 +56,7 @@ s32 fx_062_op80(s32 mode, Fx062Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
         }
         ex->btlfx_getUnitHomePos(0, (s16 *)&D_801E8F64);
         ex->btlfx_getUnitScale(0, &D_801E8F6C);
-        D_801E8F78 = ex->func_800E738C(0);
+        D_801E8F78 = ex->btlfx_getUnitHeight(0);
         ex->btlfx_getUnitBodyPos(0, 0, (s16 *)&D_801E8F5C);
         env->camera->points[0].vx = work->unk94.vx = D_801E8F5C.vx;
         env->camera->points[0].vz = work->unk94.vz = D_801E8F5C.vz;
@@ -155,7 +155,7 @@ s32 fx_062_op80(s32 mode, Fx062Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
             if (D_801E8F78 > 0x200) {
                 scale.vx = scale.vy = scale.vz =
                     func_801E77F0(2, 0x10, work->unk0[7], D_801E8F6C.vy, D_801E8F6C.vy >> 1);
-                ex->func_800E7ACC(0, (s32 *)&scale);
+                ex->btlfx_setUnitScale(0, (s32 *)&scale);
             }
             pos.vx = D_801E8F64.vx;
             pos.vz = D_801E8F64.vz;
@@ -177,7 +177,7 @@ s32 fx_062_op80(s32 mode, Fx062Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
                 if (D_801E8F78 > 0x200) {
                     scale.vx = scale.vy = scale.vz =
                         func_801E77F0(2, 0x10, work->unk0[8], D_801E8F6C.vy >> 1, D_801E8F6C.vy);
-                    ex->func_800E7ACC(0, (s32 *)&scale);
+                    ex->btlfx_setUnitScale(0, (s32 *)&scale);
                 }
                 pos.vy = D_801E8F64.vy + func_801E77F0(2, 0x10, work->unk0[8], -0x200, 0) +
                     ((ex->math_sin(frame << 8) * work->unk0[8]) >> 10);
@@ -185,7 +185,7 @@ s32 fx_062_op80(s32 mode, Fx062Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
                 pos.vz = D_801E8F64.vz;
             } else {
                 ex->btlfx_getUnitHomePos(0, (s16 *)&pos);
-                ex->func_800E7ACC(0, (s32 *)&D_801E8F6C);
+                ex->btlfx_setUnitScale(0, (s32 *)&D_801E8F6C);
             }
             ex->btlfx_setUnitPos(0, (s16 *)&pos);
             ex->btlfx_getUnitBodyPos(0, 0, (s16 *)&D_801E8F5C);

@@ -24,7 +24,7 @@ s32 fx_10b_op80(s32 mode, Fx10bWork80 *work, Unk800F78A4 *env, Unk80100C78Entry 
         work->unk20.vx = work->unk10.vx;
         work->unk20.vy = work->unk10.vy;
         work->unk20.vz = work->unk10.vz;
-        work->unk70 = ex->func_800E8F50((Unk800E8F50 *)ex->btlfx_getFileData(entry->unk8, 5), 1);
+        work->unk70 = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->unk8, 5), 1);
         work->unk72 = ex->Hi_RegisterTexEffModel((BtlUnit9C8 *)ex->btlfx_getFileData(entry->unk8, 0xC), 0x97, 0x3D40, 0, 0);
     } else {
         frame = entry->unk0;

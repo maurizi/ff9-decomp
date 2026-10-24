@@ -156,14 +156,14 @@ s32 fx_0ed_op80(s32 mode, Fx0edWork80 *work, Unk800F78A4 *env, Unk80100C78Entry 
         env->camera->points[2].vy = ((SVECTOR *)&pos)[1].vy;
         env->camera->points[2].vz = ((SVECTOR *)&pos)[1].vz;
         file = (u8 *)ex->btlfx_getFileData(entry->unk8, 2);
-        ex->func_800E9000((Unk800E9000 *)ex->btlfx_getFileData(entry->unk8, 7), (s32 *)&file, 1, &D_801E9234);
+        ex->btlfx_registerSummonModel((Unk800E9000 *)ex->btlfx_getFileData(entry->unk8, 7), (s32 *)&file, 1, &D_801E9234);
         ex->Hi_SetSummonMotion(((Fx0edSummon *)env->unk4)->unk54->unk180, ((Fx0edSummon *)env->unk4)->unk60);
         work->unk34[0] = work->unk34[1] = work->unk34[2] = 0x1000;
         work->unk2C.vx = 0;
         work->unk2C.vz = 0;
         work->unk2C.vy = work->unk10.vy;
         ex->btlfx_initEffModels(D_801E93C4, 1);
-        work->unk28 = (s16)ex->func_800E8F50((Unk800E8F50 *)ex->btlfx_getFileData(entry->unk8, 8), 0);
+        work->unk28 = (s16)ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->unk8, 8), 0);
     } else {
         state = work->unk0;
         frame = entry->unk0;
@@ -354,7 +354,7 @@ s32 fx_0ed_op81(s32 mode, Fx0edWork81 *work, Unk800F78A4 *env, Unk80100C78Entry 
         switch (work->unk0) {
         case 0:
             do {
-                r = ex->func_800E82CC(0, (s16 *)&work->unk10, &work->unkC, &tmp);
+                r = ex->btlfx_nextUnitPos(0, (s16 *)&work->unk10, &work->unkC, &tmp);
                 if (r == -2) {
                     work->unkC = (BtlUnit *)-1;
                 }
@@ -374,7 +374,7 @@ s32 fx_0ed_op81(s32 mode, Fx0edWork81 *work, Unk800F78A4 *env, Unk80100C78Entry 
             env->camera->points[1].vx = u.v.vx;
             env->camera->points[1].vy = u.v.vy;
             env->camera->points[1].vz = u.v.vz;
-            ex->func_800E9930(3, entry->unk8, -1);
+            ex->btlfx_playFileSound(3, entry->unk8, -1);
             if (++work->unk8 >= 0x10 && r == 1) {
                 work->unk0 = 2;
             } else {

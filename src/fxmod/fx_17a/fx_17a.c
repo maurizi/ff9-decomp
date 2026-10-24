@@ -426,7 +426,7 @@ s32 fx_17a_op80(s32 mode, Fx17aWork80 *work, Unk800F78A4 *env, Unk80100C78Entry 
                 ex->btlfx_drawScreenTint((u32 *)(env->ot + 1), 1, i >> 1, i >> 1, i);
             }
             work->unk6C.vz += 0x18;
-            ex->func_800E651C(D_801E9ACC, &col, frame);
+            ex->btlfx_sampleGradient(D_801E9ACC, &col, frame);
             f6 = t >> 2;
             func_801E7718(&work->unkC, &work->unk6C, (VECTOR *)&work->unk60, 0x1C00, 0x1800, &col, 0x17, 0x3E80, 0, 0,
                           ((ex->math_sin(f6) * 0x58) >> 12) + 0x40, 0xFF);

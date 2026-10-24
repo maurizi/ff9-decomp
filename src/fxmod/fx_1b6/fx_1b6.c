@@ -238,13 +238,13 @@ s32 fx_1b6_op80(s32 mode, Fx1b6Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             }
             if (frame >= 0x18) {
                 ex->func_800E3C58();
-                ex->func_800E806C(0x10, 0);
+                ex->btlfx_fadeUnitById(0x10, 0);
                 ex->func_800E87C4(0x64);
                 work->unk0 = 1;
                 entry->unk0 = -1;
                 ex->btlfx_initEffModels(D_801E9754, 7);
                 for (i = 0; i < 7; i++) {
-                    work->unk28[i] = ex->func_800E8F50((Unk800E8F50 *)ex->btlfx_getFileData(entry->unk8, D_801E855C[i]), 0);
+                    work->unk28[i] = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->unk8, D_801E855C[i]), 0);
                 }
                 buf = ((Fx1b6Summon *)env->unk4)->unk54->unk50 + 0x19000;
                 func_801E7704((Fx1b6Split *)buf, (SVECTOR (*)[3])(buf + 0xC5A8));
@@ -310,7 +310,7 @@ s32 fx_1b6_op83(s32 mode, void *work, Unk800F78A4 *env, Unk80100C78Entry *entry,
         *arg4 = 0;
     } else if (mode == 1) {
         D_801E85B4 = env;
-        ex->func_800E8274(0x10);
+        ex->btlfx_clearUnitStatus(0x10);
     } else {
         return 1;
     }

@@ -78,10 +78,10 @@ s32 fx_1f0_op80(s32 mode, Fx1f0Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
         for (i = 15; i >= 0; i--) {
             work->unk0[i] = 0;
         }
-        work->unk60 = ex->func_800E8F50((Unk800E8F50 *)ex->btlfx_getFileData(entry->unk8, 3), 1);
-        work->unk64 = ex->func_800E8F50((Unk800E8F50 *)ex->btlfx_getFileData(entry->unk8, 5), 1);
-        work->unk68 = ex->func_800E8F50((Unk800E8F50 *)ex->btlfx_getFileData(entry->unk8, 6), 1);
-        work->unk6C = ex->func_800E8F50((Unk800E8F50 *)ex->btlfx_getFileData(entry->unk8, 7), 1);
+        work->unk60 = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->unk8, 3), 1);
+        work->unk64 = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->unk8, 5), 1);
+        work->unk68 = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->unk8, 6), 1);
+        work->unk6C = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->unk8, 7), 1);
         work->unk80.vx = 0x19B0;
         work->unk80.vy = 0x19B0;
         work->unk80.vz = 0x19B0;
@@ -107,7 +107,7 @@ s32 fx_1f0_op80(s32 mode, Fx1f0Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
         for (i = 0; i < env->targets->targetCount; i++) {
             u = &D_801E8558[i];
             u->unk28 = NULL;
-            ex->func_800E806C(i, -2);
+            ex->btlfx_fadeUnitById(i, -2);
             ex->btlfx_getUnitHomePos(i, (s16 *)&D_801E8558[i].unk10);
             u->unk8.vx = u->unk10.vx;
             u->unk8.vy = u->unk10.vy + 0x3000;

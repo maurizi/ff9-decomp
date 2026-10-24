@@ -46,13 +46,13 @@ s32 fx_112_op80(s32 mode, Fx112Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
         if (frame == 0) {
             u.s0.scale0.vx = u.s0.scale0.vz = work->unk14.vx;
             u.s0.scale0.vy = work->unk14.vx + 0x1CC;
-            ex->func_800E7ACC(0, (s32 *)&u.s0.scale0);
+            ex->btlfx_setUnitScale(0, (s32 *)&u.s0.scale0);
         }
         if (frame == 3) {
             func_801E7718(0xA0, 0x8C, 0x80, 0xC0, 0x1C0, 0x100);
         }
         if (frame == 4) {
-            ex->func_800E806C(0, 0);
+            ex->btlfx_fadeUnitById(0, 0);
             ex->btlfx_getUnitBodyPos(0, 0, (s16 *)&work->unk40);
             p = ex->func_800E3CEC(ex->btlfx_getFileData(entry->unk8, 3), (s32)&work->unk40);
             if (p != NULL) {
@@ -134,14 +134,14 @@ s32 fx_112_op80(s32 mode, Fx112Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
         }
         if (frame < 0xD) {
             if (frame == 1) {
-                ex->func_800E806C(0, 0x80);
+                ex->btlfx_fadeUnitById(0, 0x80);
             }
             ex->btlfx_lerpVec((s16 *)&work->unk48, (s16 *)&work->unk4, (frame << 12) / 12, (s16 *)&u.s4.v);
             u.s4.v.vy -= ex->math_sin((frame << 12) / 12 >> 1) >> 3;
             ex->btlfx_setUnitPos(0, (s16 *)&u.s4.v);
             u.s4.scale.vx = u.s4.scale.vy = u.s4.scale.vz =
                 work->unk14.vx / 2 + ((work->unk14.vx / 2 * ((frame << 12) / 12)) >> 12);
-            ex->func_800E7ACC(0, (s32 *)&u.s4.scale);
+            ex->btlfx_setUnitScale(0, (s32 *)&u.s4.scale);
             u.s4.r.vx = work->unkC.vx + ((0x1000 - (frame << 12) / 12) >> 1);
             u.s4.r.vy = work->unkC.vy - (0x1000 - (frame << 12) / 12) / 3;
             u.s4.r.vz = work->unkC.vz;

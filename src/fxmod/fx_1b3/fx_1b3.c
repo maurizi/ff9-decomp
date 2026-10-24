@@ -541,7 +541,7 @@ s32 fx_1b3_op80(s32 mode, Fx1b3Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             work->unk0[10] = 0xE0;
             break;
         case 0x1E5:
-            ex->func_800E806C(0x10, 0);
+            ex->btlfx_fadeUnitById(0x10, 0);
             break;
         case 0x264:
             ex->func_800E3CEC(ex->btlfx_getFileData(entry->unk8, 0x13), (s32)&D_801EB7EC);

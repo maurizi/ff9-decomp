@@ -17,9 +17,9 @@ s32 fx_1f6_op80(s32 mode, Fx1f6Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
         ex->btlfx_initEffModels(D_801E7DE4, 3);
         ex->btlfx_getUnitPos(0, (s16 *)&work->unkA4);
         ex->btlfx_getUnitBodyPos(0, 0, (s16 *)&work->unkAC);
-        work->unk20[0].unk0 = ex->func_800E8F50((Unk800E8F50 *)ex->btlfx_getFileData(entry->unk8, 6), 1);
-        work->unk20[1].unk0 = ex->func_800E8F50((Unk800E8F50 *)ex->btlfx_getFileData(entry->unk8, 3), 1);
-        work->unk20[2].unk0 = ex->func_800E8F50((Unk800E8F50 *)ex->btlfx_getFileData(entry->unk8, 1), 1);
+        work->unk20[0].unk0 = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->unk8, 6), 1);
+        work->unk20[1].unk0 = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->unk8, 3), 1);
+        work->unk20[2].unk0 = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->unk8, 1), 1);
         work->unk20[2].unk4.vx = 0;
         work->unk20[2].unk4.vy = 0;
         work->unk20[2].unk4.vz = 0;

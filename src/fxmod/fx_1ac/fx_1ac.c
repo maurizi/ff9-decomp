@@ -76,7 +76,7 @@ s32 fx_1ac_op80(s32 mode, Fx1acWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
             work->unk0[0] = 0xE;
             break;
         case 14:
-            ex->func_800E806C(0, 0);
+            ex->btlfx_fadeUnitById(0, 0);
             ex->btlfx_getUnitHomePos(0, (s16 *)&v);
             ex->btlfx_setUnitPos(0, (s16 *)&v);
             break;
@@ -102,7 +102,7 @@ s32 fx_1ac_op80(s32 mode, Fx1acWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
             break;
         case 50:
             work->unk0[2] = 2;
-            ex->func_800E806C(0, 0x80);
+            ex->btlfx_fadeUnitById(0, 0x80);
             ex->btlfx_setUnitRot(0, (s16 *)&work->unk44);
             ex->btlfx_getUnitHomePos(0, (s16 *)&D_801E85A0);
             work->unk4C[4] = ex->func_800E3CEC(ex->btlfx_getFileData(entry->unk8, 3), (s32)&D_801E85A0);

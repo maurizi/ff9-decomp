@@ -343,7 +343,7 @@ p = d->unk1C; cont = 1; d->unk10 = p[0]; d->unk12 = p[1]; d->unk1C += 2; d->unkC
                 d->unk17 = ((u8 *)p)[1];
                 if (g_btlfxEnv->targets->kind & 8) {
                     if (d->unk16 == 4 || d->unk16 == 9) {
-                        if (func_800E8AD0() != 0) {
+                        if (btlfx_countVisibleParty() != 0) {
                             break;
                         }
                     }

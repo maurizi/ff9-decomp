@@ -112,14 +112,14 @@ s32 fx_128_op81(s32 mode, Fx128Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
         work->unk3C.vx = 0x1000;
         work->unk3C.vy = 0x1000;
         work->unk3C.vz = 0x1000;
-        work->unkA0[0] = ex->func_800E8F50((Unk800E8F50 *)ex->btlfx_getFileData(entry->unk8, 0xB), 1);
-        work->unkA0[1] = ex->func_800E8F50((Unk800E8F50 *)ex->btlfx_getFileData(entry->unk8, 0x1F), 1);
+        work->unkA0[0] = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->unk8, 0xB), 1);
+        work->unkA0[1] = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->unk8, 0x1F), 1);
         func_801E87F0((Fx128Path *)&D_801E8F5C, (u16 *)ex->btlfx_getFileData(entry->unk8, 2));
         func_801E889C(&D_801E8F8C, (u16 *)ex->btlfx_getFileData(entry->unk8, 0x25));
         func_801E8918((Fx128Path *)&D_801E8F94, (u16 *)ex->btlfx_getFileData(entry->unk8, 3));
         for (j = 0; j < 5; j++) {
             func_801E87F0((Fx128Path *)&D_801E8F64[j], (u16 *)ex->btlfx_getFileData(entry->unk8, D_801E8980[j]));
-            work->unkA0[j + 2] = ex->func_800E8F50((Unk800E8F50 *)ex->btlfx_getFileData(entry->unk8, D_801E8974[j]), 1);
+            work->unkA0[j + 2] = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->unk8, D_801E8974[j]), 1);
         }
         work->unk98 = -1;
         work->unk9C = -1;

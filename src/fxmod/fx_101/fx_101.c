@@ -52,7 +52,7 @@ s32 fx_101_op80(s32 mode, Fx101Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             work->unk0 = 1;
             entry->unk0 = -1;
             ((Fx101BattleState *)env->unk0)->unk10 = 0;
-            ex->func_800E806C(0x10, 0);
+            ex->btlfx_fadeUnitById(0x10, 0);
             work->unk8 = ex->func_800E3CEC(ex->btlfx_getFileData(entry->unk8, 5), (s32)&work->unk14);
             if (work->unk8 != NULL) {
                 work->unk8->unk22 = ex->func_800E7CC4(0x10, 0x20);
@@ -83,7 +83,7 @@ s32 fx_101_op80(s32 mode, Fx101Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             work->unk0 = 2;
             entry->unk0 = -1;
             env->camera->unk52 = 0;
-            ex->func_800E806C(0x10, 0x80);
+            ex->btlfx_fadeUnitById(0x10, 0x80);
             ex->func_800E3D54(work->unk8);
             p = ex->func_800E3CEC(ex->btlfx_getFileData(entry->unk8, 0xF), (s32)&work->unkC);
             if (p != NULL) {

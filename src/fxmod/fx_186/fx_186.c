@@ -99,8 +99,8 @@ s32 fx_186_op80(s32 mode, Fx186Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
         work->unk8.vx = 0;
         work->unk8.vy = 0;
         work->unk8.vz = 0;
-        work->unk44 = ex->func_800E8F50((Unk800E8F50 *)ex->btlfx_getFileData(entry->unk8, 0xB), 1);
-        work->unk48 = ex->func_800E8F50((Unk800E8F50 *)ex->btlfx_getFileData(entry->unk8, 0x1B), 1);
+        work->unk44 = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->unk8, 0xB), 1);
+        work->unk48 = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->unk8, 0x1B), 1);
         env->camera->points[3].vx = work->unk8.vx;
         env->camera->points[3].vy = work->unk8.vy;
         env->camera->points[3].vz = work->unk8.vz;
@@ -217,10 +217,10 @@ s32 fx_186_op80(s32 mode, Fx186Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
                     for (i = 0; i < 10; i++) {
                         if (n != 0) {
                             work->unk1C[i] =
-                                ex->func_800E8F50((Unk800E8F50 *)ex->btlfx_getFileData(entry->unk8, D_801E8DB8[i]), 0);
+                                ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->unk8, D_801E8DB8[i]), 0);
                         } else {
                             work->unk1C[i] =
-                                ex->func_800E8F50((Unk800E8F50 *)ex->btlfx_getFileData(entry->unk8, D_801E8DA4[i]), 0);
+                                ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->unk8, D_801E8DA4[i]), 0);
                         }
                     }
                 }

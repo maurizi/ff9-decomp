@@ -638,7 +638,7 @@ s32 fx_1cc_op80(s32 mode, Fx1ccWork80 *work, Unk800F78A4 *env, Unk80100C78Entry 
         case 5:
             c = 0x1000;
             t = (frame << 12) / 10;
-            ex->func_800E806C(0, (t << 7) >> 12);
+            ex->btlfx_fadeUnitById(0, (t << 7) >> 12);
             rot.vx = -0x400;
             rot.vy = 0;
             rot.vz = -0x400;

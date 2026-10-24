@@ -158,14 +158,14 @@ s32 fx_05e_op80(s32 mode, Fx05eWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
         env->camera->points[2].vy = ((SVECTOR *)&pos)[1].vy;
         env->camera->points[2].vz = ((SVECTOR *)&pos)[1].vz;
         file = (u8 *)ex->btlfx_getFileData(entry->unk8, 2);
-        ex->func_800E9000((Unk800E9000 *)ex->btlfx_getFileData(entry->unk8, 6), (s32 *)&file, 1, &D_801E8E84);
+        ex->btlfx_registerSummonModel((Unk800E9000 *)ex->btlfx_getFileData(entry->unk8, 6), (s32 *)&file, 1, &D_801E8E84);
         ex->Hi_SetSummonMotion(((Fx05eSummon *)env->unk4)->unk54->unk180, ((Fx05eSummon *)env->unk4)->unk60);
         work->unk34[0] = work->unk34[1] = work->unk34[2] = 0x1000;
         work->unk2C.vx = 0;
         work->unk2C.vz = 0;
         work->unk2C.vy = work->unk10.vy;
         ex->btlfx_initEffModels(D_801E9014, 1);
-        work->unk28 = (s16)ex->func_800E8F50((Unk800E8F50 *)ex->btlfx_getFileData(entry->unk8, 0x1C), 0);
+        work->unk28 = (s16)ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->unk8, 0x1C), 0);
     } else {
         state = work->unk0;
         frame = entry->unk0;

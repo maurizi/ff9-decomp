@@ -659,7 +659,7 @@ s32 fx_0df_op84(s32 mode, Fx0dfWork84 *work, Unk800F78A4 *env, Unk80100C78Entry 
         } else {
             r = c = b = a = 0;
             frame = entry->unk0;
-            ex->func_800E7D3C(0x10, 1, (s16 *)&work->unk8);
+            ex->btlfx_getWeaponPos(0x10, 1, (s16 *)&work->unk8);
             switch (work->unk0) {
             case 0:
                 r = 0x200;

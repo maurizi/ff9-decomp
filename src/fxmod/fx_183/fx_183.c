@@ -68,7 +68,7 @@ s32 fx_183_op81(s32 mode, Fx183Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
         work->unk38.vx = 0x1000;
         work->unk38.vy = 0x1000;
         work->unk38.vz = 0x1000;
-        work->unk48 = ex->func_800E8F50((Unk800E8F50 *)ex->btlfx_getFileData(entry->unk8, 0x1D), 1);
+        work->unk48 = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->unk8, 0x1D), 1);
     } else {
         frame = entry->unk0;
         if (frame == 4) {
@@ -121,7 +121,7 @@ s32 fx_183_op82(s32 mode, Fx183Work82 *work, Unk800F78A4 *env, Unk80100C78Entry 
         work->unk2C.vz = 0x1800;
         for (j = 0; j < 6; j++) {
             func_801E81DC(&D_801E8878[j], (u16 *)ex->btlfx_getFileData(entry->unk8, D_801E8294[j]));
-            work->unk50[j] = ex->func_800E8F50((Unk800E8F50 *)ex->btlfx_getFileData(entry->unk8, D_801E8288[j]), 1);
+            work->unk50[j] = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->unk8, D_801E8288[j]), 1);
         }
         work->unk48 = -1;
         work->unk4C = -1;

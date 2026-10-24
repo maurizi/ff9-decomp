@@ -44,7 +44,7 @@ typedef struct BtlfxExports {
     s32 (*Hi_DrawEffModel)(SVECTOR *, VECTOR *, s32, s32); /* 0x060 */
     s32 (*Hi_DrawSummonModel)(SVECTOR *, VECTOR *, s32, s32, s32); /* 0x064 */
     s32 (*Hi_SetSummonMotion)(BtlUnit9CC *, s32); /* 0x068 */
-    s32 (*func_800E8854)(BtlUnit9C8 *, void (*)(SVECTOR *, s32)); /* 0x06C */
+    s32 (*btl_forEachModelVertex)(BtlUnit9C8 *, void (*)(SVECTOR *, s32)); /* 0x06C */
     s32 (*btlfx_initEffModels)(BtlModel *, s32); /* 0x070 */
     s32 (*btlfx_initSummonModels)(BtlModel *, s32); /* 0x074 */
     s32 (*btlfx_clearEffModels)(void); /* 0x078 */
@@ -142,24 +142,24 @@ typedef struct BtlfxExports {
     s32 (*func_800E6DB8)(s32); /* 0x1E8 */
     s32 (*btlfx_clearTargets)(void); /* 0x1EC */
     s32 (*btlfx_getUnitRadius)(s32); /* 0x1F0 */
-    s32 (*func_800E738C)(s32); /* 0x1F4 */
+    s32 (*btlfx_getUnitHeight)(s32); /* 0x1F4 */
     s32 (*btlfx_getUnitHomePos)(s32, s16 *); /* 0x1F8 */
     s32 (*btlfx_getUnitPos)(s32, s16 *); /* 0x1FC */
     s32 (*btlfx_getUnitBodyPos)(s32, s32, s16 *); /* 0x200 */
     s32 (*btlfx_setUnitPos)(s32, s16 *); /* 0x204 */
-    s32 (*func_800E82CC)(s32, s16 *, BtlUnit **, s32 *); /* 0x208 */
+    s32 (*btlfx_nextUnitPos)(s32, s16 *, BtlUnit **, s32 *); /* 0x208 */
     s32 (*btlfx_getUnitRot)(s32, s16 *); /* 0x20C */
     s32 (*btlfx_isEnemyUnit)(s32); /* 0x210 */
-    s32 (*func_800E78B4)(s32, s16 *, s16 *, s32, s32, s32, s32); /* 0x214 */
+    s32 (*btlfx_turnUnitToward)(s32, s16 *, s16 *, s32, s32, s32, s32); /* 0x214 */
     s32 (*btlfx_getStrikePos)(s32, s32, s16 *); /* 0x218 */
-    s32 (*func_800E7C54)(s32, s32); /* 0x21C */
+    s32 (*btlfx_compareDepth)(s32, s32); /* 0x21C */
     s32 (*func_800E7CC4)(s32, s32); /* 0x220 */
     s32 (*btlfx_fadeUnitGroup)(u32, s32); /* 0x224 */
     s32 (*btlfx_execCmd)(s32); /* 0x228 */
     s32 (*btlfx_addPrimAbr)(s32, s32, void *, s32); /* 0x22C */
     s32 (*btlfx_showPopups)(s32); /* 0x230 */
     s32 (*btlfx_addPrim)(u32, s32, void *); /* 0x234 */
-    s32 (*func_800E651C)(u8 *, CVECTOR *, s32); /* 0x238 */
+    s32 (*btlfx_sampleGradient)(u8 *, CVECTOR *, s32); /* 0x238 */
     s32 (*btlfx_linkPrimAbr)(u32, u32 *, void *, s32); /* 0x23C */
     s32 (*func_800E6624)(s32, s32, s32, s32, s32, s32, s32); /* 0x240 */
     s32 (*Hi_DrawMorphModelByBone)(s32, s32, s32, s32, s32, s32); /* 0x244 */
@@ -187,24 +187,24 @@ typedef struct BtlfxExports {
     int (*MoveImage)(RECT *, int, int); /* 0x298 */
     s32 (*func_800DF938)(void); /* 0x29C */
     s32 (*btlfx_getUnitScale)(s32, VECTOR *); /* 0x2A0 */
-    s32 (*func_800E7ACC)(s32, s32 *); /* 0x2A4 */
+    s32 (*btlfx_setUnitScale)(s32, s32 *); /* 0x2A4 */
     s32 (*btlfx_setUnitRot)(s32, s16 *); /* 0x2A8 */
     s32 (*Hi_RegisterTexPtrModel)(BtlUnit9C8 *, s16 *, s16 *); /* 0x2AC */
     s32 (*func_800CFE88)(MATRIX *, s32, s32); /* 0x2B0 */
     s32 (*func_800CFF40)(MATRIX *, s16 *); /* 0x2B4 */
-    s32 (*func_800E7D3C)(s32, s32, s16 *); /* 0x2B8 */
-    s32 (*func_800E806C)(s32, s32); /* 0x2BC */
+    s32 (*btlfx_getWeaponPos)(s32, s32, s16 *); /* 0x2B8 */
+    s32 (*btlfx_fadeUnitById)(s32, s32); /* 0x2BC */
     s32 (*func_800E8B28)(s32, s32, s32); /* 0x2C0 */
     s32 (*func_800DC8AC)(s32, s32, BtlBone *); /* 0x2C4 */
     s32 (*func_800DC8EC)(s32, s32, BtlBone *); /* 0x2C8 */
-    s32 (*func_800E63E4)(s32, s32); /* 0x2CC */
+    s32 (*btlfx_startScreenFade)(s32, s32); /* 0x2CC */
     s32 (*func_800E98C8)(s32, s32); /* 0x2D0 */
     s32 (*func_800E98F8)(s32); /* 0x2D4 */
-    s32 (*func_800E9930)(s32, s32, s32); /* 0x2D8 */
+    s32 (*btlfx_playFileSound)(s32, s32, s32); /* 0x2D8 */
     s32 (*func_800E8554)(s32, s32); /* 0x2DC */
-    s32 * (*func_800E871C)(s32, s32 *); /* 0x2E0 */
+    s32 * (*btlfx_swapModelData)(s32, s32 *); /* 0x2E0 */
     s32 (*Hi_SetEffModelOffset)(s32, s32); /* 0x2E4 */
-    s32 (*func_800E80CC)(s32, s32); /* 0x2E8 */
+    s32 (*btlfx_setUnitLight)(s32, s32); /* 0x2E8 */
     s32 (*btlfx_setUnitVisible)(s32, s32); /* 0x2EC */
     s32 (*func_800E8980)(s32); /* 0x2F0 */
     s32 (*func_800E6E1C)(s32, s32, s32, s32, u32 *, s32, s32, s32); /* 0x2F4 */
@@ -223,15 +223,15 @@ typedef struct BtlfxExports {
     s32 (*btlfx_getMotionLength)(s32); /* 0x328 */
     s32 (*btlfx_isUnitActive)(s32); /* 0x32C */
     s32 (*func_800CFC2C)(s32, s32, s32, s32, s32, s32 *); /* 0x330 */
-    s32 (*func_800E60A4)(s32, s32); /* 0x334 */
-    s32 (*func_800E8F50)(Unk800E8F50 *, s32); /* 0x338 */
-    s32 (*func_800E865C)(s32, s32); /* 0x33C */
-    s32 (*func_800E9000)(Unk800E9000 *, s32 *, s32, Unk80100DC054 *); /* 0x340 */
+    s32 (*btlfx_startFadeBackground)(s32, s32); /* 0x334 */
+    s32 (*btlfx_registerEffectModel)(Unk800E8F50 *, s32); /* 0x338 */
+    s32 (*btlfx_isUnitKind)(s32, s32); /* 0x33C */
+    s32 (*btlfx_registerSummonModel)(Unk800E9000 *, s32 *, s32, Unk80100DC054 *); /* 0x340 */
     s32 (*func_800DA898)(void); /* 0x344 */
-    s32 (*func_800E99B0)(s32, s32, s32, s32); /* 0x348 */
+    s32 (*btlfx_replaceSound)(s32, s32, s32, s32); /* 0x348 */
     s32 (*func_800E83EC)(void); /* 0x34C */
-    s32 (*func_800E9884)(s32); /* 0x350 */
-    s32 (*func_800E8274)(s32); /* 0x354 */
+    s32 (*btlfx_stopSound)(s32); /* 0x350 */
+    s32 (*btlfx_clearUnitStatus)(s32); /* 0x354 */
     s32 (*func_800E87C4)(s32); /* 0x358 */
     s32 (*func_800DD120)(BtlTexInfo *, BtlTexInfo *, s32); /* 0x35C */
 } BtlfxExports; /* followed in ovl_0b by the g_btlfxEnv block (D_800F7870) */
