@@ -22,9 +22,9 @@ s32 fx_184_op80(s32 mode, Fx184Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
         work->unk30.vy = 0x1000;
         work->unk30.vz = 0x1000;
         ex->btlfx_setWeaponVisible(0x10, 0);
-        work->unk40 = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->unk8, 2), 1);
+        work->unk40 = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, 2), 1);
     } else {
-        frame = entry->unk0;
+        frame = entry->frame;
         if (frame < 6) {
             ex->btlfx_lerpVec((s16 *)&work->unk10, (s16 *)&work->unk8, frame << 10, (s16 *)&v);
             work->unk20.vx = v.vx;
@@ -50,12 +50,12 @@ s32 fx_184_op81(s32 mode, Fx184Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
         D_801E7DC4 = env;
         ex->btlfx_getUnitPos(0, (s16 *)&work->unk4);
         work->unk4.vy = 0;
-        work->unk0 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->unk8, 1), (s32)&work->unk4);
+        work->unk0 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 1), (s32)&work->unk4);
         if (work->unk0 != NULL) {
             work->unk0->unk22 = ex->func_800E7CC4(0, 0x80);
         }
     } else {
-        return entry->unk0 >= 0x1E;
+        return entry->frame >= 0x1E;
     }
     return 0;
 }
@@ -84,7 +84,7 @@ s32 fx_184_op82(s32 mode, Fx184Work82 *work, Unk800F78A4 *env, Unk80100C78Entry 
         work->unk34 = 6;
         work->unk38 = 0;
     } else {
-        if (entry->unk0 == 6) {
+        if (entry->frame == 6) {
             ex->btlfx_setWeaponVisible(0x10, 1);
         }
         switch (work->unk30) {

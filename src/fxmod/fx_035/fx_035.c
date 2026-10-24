@@ -14,15 +14,15 @@ s32 fx_035_op80(s32 mode, Fx035Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
         work->unk1C.vy = work->unkC.vy;
         work->unk1C.vz = work->unkC.vz;
         work->unk1C.vy = 0;
-        work->unk0 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->unk8, 8), (s32)&work->unk14);
+        work->unk0 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 8), (s32)&work->unk14);
         if (work->unk0 != NULL) {
             work->unk0->unk22 = ex->func_800E7CC4(0, 0x10);
         }
     } else {
-        frame = entry->unk0;
+        frame = entry->frame;
         if (frame == 0x14) {
-            work->unk4 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->unk8, 3), (s32)&work->unk1C);
-            work->unk8 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->unk8, 9), (s32)&work->unk1C);
+            work->unk4 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 3), (s32)&work->unk1C);
+            work->unk8 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 9), (s32)&work->unk1C);
             if (work->unk8 != NULL) {
                 work->unk8->unk22 = ex->func_800E7CC4(0, 0x20);
             }

@@ -17,7 +17,7 @@ s32 fx_05a_op80(s32 mode, Fx05aWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
         work->unk10.vx = work->unk8.vx;
         work->unk10.vy = work->unk8.vy;
         work->unk10.vz = work->unk8.vz;
-        work->unk0 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->unk8, 8), (s32)&work->unk8);
+        work->unk0 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 8), (s32)&work->unk8);
         if (work->unk0 != NULL) {
             work->unk0->unk14 = (s32)D_801E7BF0;
             work->unk0->unk12 = 0xA;
@@ -51,13 +51,13 @@ s32 fx_05a_op80(s32 mode, Fx05aWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
             work->unk30.vy = 0x155;
             work->unk30.vz = 0x155;
         }
-        work->unk44 = ex->Hi_RegisterTexEffModel((BtlUnit9C8 *)ex->btlfx_getFileData(entry->unk8, 0xA), 0x117, 0, 0, 0xC0);
+        work->unk44 = ex->Hi_RegisterTexEffModel((BtlUnit9C8 *)ex->btlfx_getFileData(entry->file, 0xA), 0x117, 0, 0, 0xC0);
         work->unk40 = -0x14;
         work->unk42 = 0xFF;
     } else {
-        frame = entry->unk0;
+        frame = entry->frame;
         if (frame == 0x19) {
-            work->unk4 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->unk8, 9), (s32)&work->unk10);
+            work->unk4 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 9), (s32)&work->unk10);
             if (work->unk4 != NULL) {
                 work->unk4->unk22 = ex->func_800E7CC4(0, 0x80);
             }
@@ -71,7 +71,7 @@ s32 fx_05a_op80(s32 mode, Fx05aWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
                 ex->Hi_ModifyEffModelRGB(work->unk44, work->unk40, work->unk40, work->unk40);
                 work->unk40 -= 4;
             }
-            ex->btlfx_drawBackdrop((BtlBgLayers *)ex->btlfx_getFileData(entry->unk8, 7), t);
+            ex->btlfx_drawBackdrop((BtlBgLayers *)ex->btlfx_getFileData(entry->file, 7), t);
         }
         if (frame >= 0x19 && frame < 0x21) {
             ex->btlfx_drawScreenTint((u32 *)env->ot, 1, work->unk42, work->unk42, work->unk42);

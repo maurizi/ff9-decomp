@@ -49,7 +49,7 @@ s32 fx_063_op80(s32 mode, Fx063Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
         }
         for (i = 0; i < 10; i++) {
             D_801E8E40[i].unk100 = 0;
-            ex->btlfx_drawTrail((u8 *)ex->btlfx_getFileData(entry->unk8, 0xD), 0, NULL, -1, 0x1000, 0x1000, 1,
+            ex->btlfx_drawTrail((u8 *)ex->btlfx_getFileData(entry->file, 0xD), 0, NULL, -1, 0x1000, 0x1000, 1,
                                 (u8 *)&D_801E8E40[i], 0);
         }
         if (env->targets->centerZ < 0) {
@@ -67,7 +67,7 @@ s32 fx_063_op80(s32 mode, Fx063Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
             ex->btlfx_getUnitHomePos(i, (s16 *)&D_801E9870[i].unkC);
             ex->btlfx_getUnitHomePos(i, (s16 *)&D_801E9870[i].unk14);
         }
-        work->unk40[0].unk0 = ex->Hi_RegisterTexEffModel((BtlUnit9C8 *)ex->btlfx_getFileData(entry->unk8, 8), 0x137,
+        work->unk40[0].unk0 = ex->Hi_RegisterTexEffModel((BtlUnit9C8 *)ex->btlfx_getFileData(entry->file, 8), 0x137,
                                                          0xFFFF, 0, 0x80);
         work->unk40[0].unk4.vx = 0;
         work->unk40[0].unk4.vy = 0;
@@ -75,21 +75,21 @@ s32 fx_063_op80(s32 mode, Fx063Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
         work->unk40[0].unkC.vx = 0;
         work->unk40[0].unkC.vy = 0;
         work->unk40[0].unkC.vz = 0;
-        work->unk40[1].unk0 = ex->Hi_RegisterGouEffModel((BtlUnit9C8 *)ex->btlfx_getFileData(entry->unk8, 0xB));
+        work->unk40[1].unk0 = ex->Hi_RegisterGouEffModel((BtlUnit9C8 *)ex->btlfx_getFileData(entry->file, 0xB));
         work->unk40[1].unk4.vx = 0;
         work->unk40[1].unk4.vy = 0;
         work->unk40[1].unk4.vz = 0;
         work->unk40[1].unkC.vx = 0;
         work->unk40[1].unkC.vy = 0;
         work->unk40[1].unkC.vz = 0;
-        work->unk40[2].unk0 = ex->Hi_RegisterGouEffModel((BtlUnit9C8 *)ex->btlfx_getFileData(entry->unk8, 0xC));
+        work->unk40[2].unk0 = ex->Hi_RegisterGouEffModel((BtlUnit9C8 *)ex->btlfx_getFileData(entry->file, 0xC));
         work->unk40[2].unk4.vx = 0;
         work->unk40[2].unk4.vy = 0;
         work->unk40[2].unk4.vz = 0;
         work->unk40[2].unkC.vx = 0;
         work->unk40[2].unkC.vy = 0x100;
         work->unk40[2].unkC.vz = 0;
-        work->unkAC = ex->Hi_RegisterTexEffModel((BtlUnit9C8 *)ex->btlfx_getFileData(entry->unk8, 9), 0x17A, 0xFFFF, 0,
+        work->unkAC = ex->Hi_RegisterTexEffModel((BtlUnit9C8 *)ex->btlfx_getFileData(entry->file, 9), 0x17A, 0xFFFF, 0,
                                                  0x80);
         work->unkB0.vx = 0;
         work->unkB0.vy = 0;
@@ -98,7 +98,7 @@ s32 fx_063_op80(s32 mode, Fx063Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
         work->unkC8.vy = 0;
         work->unkC8.vz = 0x400;
     } else {
-        frame = entry->unk0;
+        frame = entry->frame;
         switch (frame) {
         case 0:
             ex->btlfx_drawBgOffscreen(0x280, 0x100, 0x70, 0x70, D_801E8A40, work->unkB8.vx, work->unkB8.vz, 0x200);
@@ -236,10 +236,10 @@ s32 fx_063_op80(s32 mode, Fx063Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
                     pt->vy = 0;
                     pt->unk6 = tr->unkFC;
                     if (tr->unk100 < 4) {
-                        ex->btlfx_drawTrail((u8 *)ex->btlfx_getFileData(entry->unk8, 0xD), 0, NULL, frame, 0x1000,
+                        ex->btlfx_drawTrail((u8 *)ex->btlfx_getFileData(entry->file, 0xD), 0, NULL, frame, 0x1000,
                                             tr->unk100 << 10, 1, strip, 0);
                     } else {
-                        ex->btlfx_drawTrail((u8 *)ex->btlfx_getFileData(entry->unk8, 0xD), 0, NULL, frame, 0x1000,
+                        ex->btlfx_drawTrail((u8 *)ex->btlfx_getFileData(entry->file, 0xD), 0, NULL, frame, 0x1000,
                                             0x1000, 1, strip, 0);
                     }
                 } else if (work->unk0[0] >= 7) {
@@ -259,11 +259,11 @@ s32 fx_063_op80(s32 mode, Fx063Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
             }
         }
         if (work->unk0[9] != 0) {
-            ex->btlfx_drawBackdrop((BtlBgLayers *)ex->btlfx_getFileData(entry->unk8, 7), work->unk0[9] - 1);
+            ex->btlfx_drawBackdrop((BtlBgLayers *)ex->btlfx_getFileData(entry->file, 7), work->unk0[9] - 1);
             work->unk0[9]++;
         }
         if (work->unk0[10] != 0) {
-            ex->btlfx_drawBackdrop((BtlBgLayers *)ex->btlfx_getFileData(entry->unk8, 0xA), work->unk0[10] - 1);
+            ex->btlfx_drawBackdrop((BtlBgLayers *)ex->btlfx_getFileData(entry->file, 0xA), work->unk0[10] - 1);
             work->unk0[10]++;
         }
         return frame >= 0x46;

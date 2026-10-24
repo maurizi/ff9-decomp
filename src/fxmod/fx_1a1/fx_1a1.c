@@ -22,7 +22,7 @@ s32 fx_1a1_op80(s32 mode, Fx1a1Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
         work->unk18.vx += (ex->math_sin(work->unk28.vy + 0x800) * 0x514) >> 12;
         work->unk18.vz += (ex->math_cos(work->unk28.vy + 0x800) * 0x514) >> 12;
     } else {
-        frame = entry->unk0;
+        frame = entry->frame;
         switch (frame) {
         case 0:
             work->unk4 = 5;
@@ -36,7 +36,7 @@ s32 fx_1a1_op80(s32 mode, Fx1a1Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
             work->unk10.vz = work->unk20.vz;
             break;
         case 10:
-            p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->unk8, 1), (s32)&work->unk8);
+            p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 1), (s32)&work->unk8);
             if (p != NULL) {
                 p->unk22 = ex->func_800E7CC4(0, 0x80);
             }

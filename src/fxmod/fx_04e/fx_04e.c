@@ -11,17 +11,17 @@ s32 fx_04e_op80(s32 mode, Fx04eWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
         work->unkC.vy = env->targets->centerY;
         work->unkC.vz = env->targets->centerZ;
         D_801E7930 = env;
-        work->unk0 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->unk8, 6), (s32)&work->unkC);
+        work->unk0 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 6), (s32)&work->unkC);
         if (work->unk0 != NULL) {
             work->unk0->unk14 = (s32)D_801E7940;
             work->unk0->unk12 = 0xE;
             work->unk0->unkC = 0x50;
         }
     } else {
-        frame = entry->unk0;
+        frame = entry->frame;
         switch (frame) {
         case 0x13:
-            work->unk4 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->unk8, 8), (s32)&work->unkC);
+            work->unk4 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 8), (s32)&work->unkC);
             if (work->unk4 != NULL) {
                 work->unk4->unk14 = (s32)D_801E7DA0;
                 work->unk4->unk12 = 0x1E;
@@ -29,11 +29,11 @@ s32 fx_04e_op80(s32 mode, Fx04eWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
             }
             break;
         case 0x27:
-            work->unk8 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->unk8, 7), (s32)&work->unkC);
+            work->unk8 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 7), (s32)&work->unkC);
             break;
         }
         if (frame >= 0x13) {
-            ex->btlfx_drawBackdrop((BtlBgLayers *)ex->btlfx_getFileData(entry->unk8, 9), frame - 0x13);
+            ex->btlfx_drawBackdrop((BtlBgLayers *)ex->btlfx_getFileData(entry->file, 9), frame - 0x13);
         }
         return frame >= 0x50;
     }

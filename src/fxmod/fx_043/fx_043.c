@@ -36,7 +36,7 @@ s32 fx_043_op80(s32 mode, Fx043Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
         env->camera->points[0].vx = work->unkC.vx;
         env->camera->points[0].vy = work->unkC.vy;
         env->camera->points[0].vz = work->unkC.vz;
-        work->unk0 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->unk8, 2), (s32)&D_801E7BE0);
+        work->unk0 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 2), (s32)&D_801E7BE0);
         if (work->unk0 != NULL) {
             work->unk0->unk14 = (s32)D_801E7BE8;
             work->unk0->unk12 = 0xB;
@@ -46,7 +46,7 @@ s32 fx_043_op80(s32 mode, Fx043Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             ((s32 *)work->unk0->unk0)[2] = (s32)func_801E7704;
         }
     } else {
-        return entry->unk0 >= 0x1E;
+        return entry->frame >= 0x1E;
     }
     return 0;
 }
@@ -64,18 +64,18 @@ s32 fx_043_op81(s32 mode, Fx043Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
         ex->btlfx_aimAngles((s16 *)&work->unk8, (s16 *)&D_801E7BD0, (s16 *)&work->unk20);
         ex->btlfx_pointAhead((s16 *)&work->unk8, (s16 *)&work->unk20, 0xC8, (s16 *)&work->unk18);
         work->unk18.vy -= 0x64;
-        work->unk0 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->unk8, 1), (s32)&work->unk18);
+        work->unk0 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 1), (s32)&work->unk18);
         if (work->unk0 != NULL) {
             work->unk0->unk14 = (s32)D_801E7D48;
             work->unk0->unk12 = 0x34;
             work->unk0->unkC = 0x20;
         }
-        work->unk4 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->unk8, 3), (s32)&work->unk10);
+        work->unk4 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 3), (s32)&work->unk10);
         if (work->unk0 != NULL) {
             work->unk0->unk22 = ex->func_800E7CC4(0, 0x20);
         }
     } else {
-        frame = entry->unk0;
+        frame = entry->frame;
         if (work->unk0 != NULL) {
             if (work->unk0->unk30 == -1) {
                 work->unk0 = NULL;

@@ -10,18 +10,18 @@ s32 fx_1fa_op80(s32 mode, void *work, Unk800F78A4 *env, Unk80100C78Entry *entry,
         D_801E80E4.vy = 0;
         D_801E80E4.vz = -0x618;
         D_801E80DC = env;
-        ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->unk8, 0x1E), (s32)&D_801E80E4);
+        ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0x1E), (s32)&D_801E80E4);
     } else {
-        return entry->unk0 >= 0x40;
+        return entry->frame >= 0x40;
     }
     return 0;
 }
 
 #define LOAD(r, a, b) \
-    D_801E811C[r][0].unk8 = (u8 *)ex->btlfx_getFileData(entry->unk8, a); \
-    D_801E811C[r][1].unk8 = (u8 *)ex->btlfx_getFileData(entry->unk8, b); \
-    D_801E811C[r][2].unk8 = (u8 *)ex->btlfx_getFileData(entry->unk8, b); \
-    D_801E811C[r][3].unk8 = (u8 *)ex->btlfx_getFileData(entry->unk8, b);
+    D_801E811C[r][0].unk8 = (u8 *)ex->btlfx_getFileData(entry->file, a); \
+    D_801E811C[r][1].unk8 = (u8 *)ex->btlfx_getFileData(entry->file, b); \
+    D_801E811C[r][2].unk8 = (u8 *)ex->btlfx_getFileData(entry->file, b); \
+    D_801E811C[r][3].unk8 = (u8 *)ex->btlfx_getFileData(entry->file, b);
 
 s32 fx_1fa_op81(s32 mode, void *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *arg4) {
     BtlfxExports *ex = BTLFX_EXPORTS(env);
@@ -63,13 +63,13 @@ s32 fx_1fa_op81(s32 mode, void *work, Unk800F78A4 *env, Unk80100C78Entry *entry,
         D_801E80F4.vy = env->camera->points[3].vy;
         D_801E80F4.vz = env->camera->points[3].vz;
     } else {
-        frame = entry->unk0;
+        frame = entry->frame;
         switch (frame) {
         case 0:
             D_801E80EC[0] = 0x20;
             break;
         case 8:
-            p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->unk8, 0x13), (s32)&D_801E80F4);
+            p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0x13), (s32)&D_801E80F4);
             if (p != NULL) {
                 p->unk22 = 0x80;
             }
@@ -77,15 +77,15 @@ s32 fx_1fa_op81(s32 mode, void *work, Unk800F78A4 *env, Unk80100C78Entry *entry,
         case 0x18:
             for (i = 0; i < env->targets->targetCount; i++) {
                 ex->btlfx_getUnitBodyPos(i, 0, (s16 *)&D_801E80FC[i]);
-                p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->unk8, 0x14), (s32)&D_801E80FC[i]);
+                p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0x14), (s32)&D_801E80FC[i]);
                 if (p != NULL) {
                     p->unk22 = ex->func_800E7CC4(i, 0x80);
                 }
-                p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->unk8, 2), (s32)&D_801E80FC[i]);
+                p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 2), (s32)&D_801E80FC[i]);
                 if (p != NULL) {
                     p->unk22 = ex->func_800E7CC4(i, 0x80);
                 }
-                p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->unk8, 0x17), (s32)&D_801E80FC[i]);
+                p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0x17), (s32)&D_801E80FC[i]);
                 if (p != NULL) {
                     p->unk22 = ex->func_800E7CC4(i, 0x80);
                 }

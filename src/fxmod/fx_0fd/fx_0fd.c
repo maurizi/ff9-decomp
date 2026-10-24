@@ -6,7 +6,7 @@ s32 fx_0fd_op80(s32 mode, void *work, Unk800F78A4 *env, Unk80100C78Entry *entry,
     } else if (mode == 1) {
         D_801E778C = env;
     } else {
-        return entry->unk0 >= 0x28;
+        return entry->frame >= 0x28;
     }
     return 0;
 }

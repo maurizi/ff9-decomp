@@ -1527,17 +1527,18 @@ typedef struct Heap {
     u8 unkC[1];
 } Heap;
 
+/* effect task (g_btlfxTasks, btlfx_spawnTask): an op handler called with mode 0 size query, 1 start, 2 step */
 typedef struct {
-    s32 unk0; /* frame */
+    s32 frame; /* steps run */
     union {
         s32 w; /* cleared as a word */
         s16 h;
-    } unk4; /* state */
-    s16 unk8; /* heap index */
+    } state; /* 0 free */
+    s16 file; /* effect file slot the op came from */
     s16 unkA; /* use the shared heap */
-    void *unkC; /* work data */
-    struct Unk800DA1B8 *unk10;
-    s32 (*unk14)(s32, void *, Unk800F78A4 *, void *, void *);
+    void *work; /* work data (size from mode 0) */
+    struct Unk800DA1B8 *pool; /* element pool (btlfx_poolInit) */
+    s32 (*handler)(s32, void *, Unk800F78A4 *, void *, void *);
 } Unk80100C78Entry; /* 0x18 */
 
 /* effect handler: (mode, work, camera, entry, args) */

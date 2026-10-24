@@ -12,20 +12,20 @@ s32 fx_182_op80(s32 mode, SVECTOR *work, Unk800F78A4 *env, Unk80100C78Entry *ent
         work->vz = env->targets->centerZ;
         work->vy = -0x200;
         D_801E78A0 = env;
-        p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->unk8, 3), (s32)work);
+        p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 3), (s32)work);
         if (p != NULL) {
             p->unk22 = 0x40;
         }
     } else {
-        frame = entry->unk0;
+        frame = entry->frame;
         if (frame == 0x28) {
-            p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->unk8, 6), (s32)work);
+            p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 6), (s32)work);
             if (p != NULL) {
                 p->unk22 = 0x40;
             }
         }
         if (frame >= 0x28) {
-            ex->btlfx_drawBackdrop((BtlBgLayers *)ex->btlfx_getFileData(entry->unk8, 1), frame);
+            ex->btlfx_drawBackdrop((BtlBgLayers *)ex->btlfx_getFileData(entry->file, 1), frame);
         }
         return frame >= 0x50;
     }

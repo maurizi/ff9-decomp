@@ -33,7 +33,7 @@ s32 fx_0e4_op80(s32 mode, Fx0e4Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
         work->unk20.vy = 0x6000;
         work->unk20.vz = 0x5000;
         for (i = 0; i < 3; i++) {
-            work->unk68[i] = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->unk8, D_801E7CF8[i]), 1);
+            work->unk68[i] = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, D_801E7CF8[i]), 1);
         }
         work->unk54.vx = 0x400;
         work->unk5E = 0x1000;
@@ -46,7 +46,7 @@ s32 fx_0e4_op80(s32 mode, Fx0e4Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
         work->unk4C.vy = work->unk10.vy;
         work->unk4C.vz = work->unk10.vz;
     } else {
-        frame = entry->unk0;
+        frame = entry->frame;
         if (frame == 0xC) {
             work->unk62 = 0x10;
         }
@@ -59,8 +59,8 @@ s32 fx_0e4_op80(s32 mode, Fx0e4Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
                     work->unk44.vy = work->unk10.vy;
                     work->unk44.vz = work->unk10.vz;
                     work->unk44.vy = 0;
-                    work->unk0 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->unk8, 7), (s32)&work->unk44);
-                    work->unk4 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->unk8, 5), (s32)&work->unk34);
+                    work->unk0 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 7), (s32)&work->unk44);
+                    work->unk4 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 5), (s32)&work->unk34);
                 }
             }
             work->unk5C += 0x200;
@@ -69,7 +69,7 @@ s32 fx_0e4_op80(s32 mode, Fx0e4Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
                 n = 0x1000;
             }
             work->unk5C = n;
-            ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->unk8, 6), &work->unk4C, &work->unk54, work->unk5C,
+            ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->file, 6), &work->unk4C, &work->unk54, work->unk5C,
                               f, 2, work->unk5E);
             switch (work->unk64) {
             case 0:

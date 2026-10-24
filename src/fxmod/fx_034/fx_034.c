@@ -140,7 +140,7 @@ s32 fx_034_op80(s32 mode, Fx034Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
         ex->btlfx_getUnitRot(0x10, (s16 *)&work->unk3C);
         ex->btlfx_getUnitPos(0, (s16 *)&work->unk44);
         ex->btlfx_getUnitArgBonePos(0x10, 0, (u16 *)&work->unk4C);
-        work->unk0 = (Pool6CEntry *)ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->unk8, 3), (s32)&work->unk4C);
+        work->unk0 = (Pool6CEntry *)ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 3), (s32)&work->unk4C);
         if (work->unk0 != NULL) {
             work->unk0->unk14 = (s32)D_801EA040;
             work->unk0->unk12 = 0x28;
@@ -170,14 +170,14 @@ s32 fx_034_op80(s32 mode, Fx034Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
         work->unk20.vy = 0x800;
         work->unk20.vz = 0x800;
         work->unk30 = -0x20;
-        work->unk6E = ex->Hi_RegisterTexEffModel((BtlUnit9C8 *)ex->btlfx_getFileData(entry->unk8, 1), 0x99, 0x3D80, 0, 0);
-        work->unk70 = ex->Hi_RegisterTexEffModel((BtlUnit9C8 *)ex->btlfx_getFileData(entry->unk8, 0xA), 0x9A, 0x3DC0, 0, 0x80);
+        work->unk6E = ex->Hi_RegisterTexEffModel((BtlUnit9C8 *)ex->btlfx_getFileData(entry->file, 1), 0x99, 0x3D80, 0, 0);
+        work->unk70 = ex->Hi_RegisterTexEffModel((BtlUnit9C8 *)ex->btlfx_getFileData(entry->file, 0xA), 0x9A, 0x3DC0, 0, 0x80);
         work->unk6C = 0;
     } else {
-        frame = entry->unk0;
+        frame = entry->frame;
         switch (frame) {
         case 15:
-            work->unk4 = q = (Pool6CEntry *)ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->unk8, 2), (s32)&work->unk64);
+            work->unk4 = q = (Pool6CEntry *)ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 2), (s32)&work->unk64);
             if (q != NULL) {
                 q->unk22 = 0x80;
             }

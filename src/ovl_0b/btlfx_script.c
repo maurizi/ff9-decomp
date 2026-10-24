@@ -403,7 +403,7 @@ void btlfx_initTasks(void) {
     btlfx_heapInit(&D_800FF470, 0x1800);
     p = g_btlfxTasks.unk4;
     for (i = 10; i >= 0; i--) {
-        p->unk4.w = 0;
+        p->state.w = 0;
         p++;
     }
 }
@@ -412,7 +412,7 @@ s32 btlfx_allocTaskMem(Unk80100C78Entry *arg0, s32 arg1) {
     s32 r = 0;
     s32 size = arg1 + 4;
     s32 i = 0;
-    Heap *h = g_btlfxLoader.unk3C[arg0->unk8];
+    Heap *h = g_btlfxLoader.unk3C[arg0->file];
     for (; i < 2; i++) {
         if (arg0->unkA != 0 && h != NULL) {
             if (btlfx_heapWrapIfFull(h, size) == 0) {
@@ -443,7 +443,7 @@ void btlfx_spawnTask(s32 arg0, s32 arg1, s32 arg2, s32 arg3) {
     e = d->unk4;
     i = 0;
 loop:
-    if (e->unk4.h != 0) {
+    if (e->state.h != 0) {
         i++;
         e++;
         if (i < 11) {
@@ -451,42 +451,42 @@ loop:
         }
     }
     d->unk0++;
-    e->unk4.h = 1;
+    e->state.h = 1;
     e->unkA = 1;
-    e->unk0 = 0;
-    e->unk8 = arg1;
+    e->frame = 0;
+    e->file = arg1;
     if (arg0 >= 0x80) {
-        e->unk14 = D_80100C70[arg1][arg0 - 0x80];
+        e->handler = D_80100C70[arg1][arg0 - 0x80];
     } else {
         if (arg0 < 0x30) {
-            e->unk14 = g_btlfxResidentOps[arg0];
+            e->handler = g_btlfxResidentOps[arg0];
         } else {
-            e->unk14 = g_btlfxUnitOps[arg0 - 0x30];
+            e->handler = g_btlfxUnitOps[arg0 - 0x30];
         }
     }
     init.unk4 = 0;
     init.unk0 = 0;
-    e->unk10 = 0;
-    e->unkC = 0;
-    if (e->unk14(0, 0, 0, 0, &init) == 0) {
+    e->pool = 0;
+    e->work = 0;
+    if (e->handler(0, 0, 0, 0, &init) == 0) {
         if (init.unk4 != 0) {
-            e->unk10 = (void *)btlfx_allocTaskMem(e, btlfx_poolSize(init.unk8, init.unk4));
-            btlfx_poolInit(e->unk10, e, init.unk8, init.unk4, init.unk14);
+            e->pool = (void *)btlfx_allocTaskMem(e, btlfx_poolSize(init.unk8, init.unk4));
+            btlfx_poolInit(e->pool, e, init.unk8, init.unk4, init.unk14);
         }
         if (init.unk0 != 0) {
-            e->unkC = (void *)btlfx_allocTaskMem(e, btlfx_align4(init.unk0));
+            e->work = (void *)btlfx_allocTaskMem(e, btlfx_align4(init.unk0));
         }
     }
     args[0] = arg2;
     args[1] = arg3;
-    if (e->unk14(1, e->unkC, g_btlfxEnv, e, args) != 0) {
-        e->unk4.h = 0;
+    if (e->handler(1, e->work, g_btlfxEnv, e, args) != 0) {
+        e->state.h = 0;
         d->unk0--;
-        if (e->unkC != 0) {
-            btlfx_heapFree(e->unkC);
+        if (e->work != 0) {
+            btlfx_heapFree(e->work);
         }
-        if (e->unk10 != 0) {
-            btlfx_heapFree(e->unk10);
+        if (e->pool != 0) {
+            btlfx_heapFree(e->pool);
         }
     }
 }
@@ -501,27 +501,27 @@ s32 btlfx_updateTasks(void) {
     e = d->unk4;
     n = 0;
     for (i = 0; i < 11; i++, e++) {
-        if (e->unk4.h != 0) {
+        if (e->state.h != 0) {
             n++;
             g_btlfxEnv->unk28 = 0;
-            if (e->unk14(2, e->unkC, g_btlfxEnv, e, NULL) != 0) {
-                e->unk4.h = 2;
+            if (e->handler(2, e->work, g_btlfxEnv, e, NULL) != 0) {
+                e->state.h = 2;
             } else {
-                e->unk0++;
+                e->frame++;
             }
-            if (e->unk10 != NULL) {
-                r = btlfx_poolUpdate(e->unk10);
+            if (e->pool != NULL) {
+                r = btlfx_poolUpdate(e->pool);
             } else {
                 r = 0;
             }
-            if (r == 0 && e->unk4.h == 2) {
-                e->unk4.h = 0;
+            if (r == 0 && e->state.h == 2) {
+                e->state.h = 0;
                 d->unk0--;
-                if (e->unkC != NULL) {
-                    btlfx_heapFree(e->unkC);
+                if (e->work != NULL) {
+                    btlfx_heapFree(e->work);
                 }
-                if (e->unk10 != NULL) {
-                    btlfx_heapFree(e->unk10);
+                if (e->pool != NULL) {
+                    btlfx_heapFree(e->pool);
                 }
             }
         }

@@ -15,11 +15,11 @@ s32 fx_030_op80(s32 mode, Fx030Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
         work->unk8.vy = 0;
         ex->btlfx_aimAngles((s16 *)&work->unk0, (s16 *)&work->unk8, (s16 *)&work->unk10);
         ex->btlfx_aimAngles((s16 *)&work->unk8, (s16 *)&work->unk0, (s16 *)&work->unk18);
-        work->unk20 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->unk8, 3), (s32)&work->unk0);
-        work->unk24 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->unk8, 1), (s32)&work->unk0);
-        work->unk28 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->unk8, 8), (s32)&work->unk0);
+        work->unk20 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 3), (s32)&work->unk0);
+        work->unk24 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 1), (s32)&work->unk0);
+        work->unk28 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 8), (s32)&work->unk0);
     } else {
-        frame = entry->unk0;
+        frame = entry->frame;
         if (work->unk20 != NULL && work->unk20->unk30 == -1) {
             work->unk20 = NULL;
         }
@@ -47,7 +47,7 @@ s32 fx_030_op80(s32 mode, Fx030Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
         if (frame == 6) {
             for (i = 0; i < env->targets->targetCount; i++) {
                 ex->btlfx_getUnitBodyPos(i, 0, (s16 *)&work->unk2C[i]);
-                ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->unk8, 2), (s32)&work->unk2C[i]);
+                ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 2), (s32)&work->unk2C[i]);
             }
         }
         return frame >= 0x32;

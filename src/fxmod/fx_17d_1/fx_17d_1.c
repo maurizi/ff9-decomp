@@ -132,7 +132,7 @@ s32 fx_17d_1_op80(s32 mode, Fx17d1Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
         work->unk4 = 0;
         D_801ED420 = env;
         ex->btlfx_initEffModels(D_801ED430, 2);
-        work->unk78 = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->unk8, 0x9E), 1);
+        work->unk78 = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, 0x9E), 1);
         ex->Hi_SetSummonMotion(((Fx17d1Summon *)env->unk4)->unk54->unk180, ((Fx17d1Summon *)env->unk4)->unk60);
         work->unk28.vx = 0;
         work->unk28.vy = 0;
@@ -162,7 +162,7 @@ s32 fx_17d_1_op80(s32 mode, Fx17d1Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
         env->camera->points[2].vz = work->unk18.vz;
     } else {
         state = work->unk0;
-        frame = entry->unk0;
+        frame = entry->frame;
         switch (state) {
         case 0:
             t = (frame << 12) / 24;
@@ -196,7 +196,7 @@ s32 fx_17d_1_op80(s32 mode, Fx17d1Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
                 ex->btlfx_drawScreenTint((u32 *)(env->ot + 2), 1, ((frame - 12) << 7) / 12, 0, 0);
             }
             if (frame == 8) {
-                p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->unk8, 0x9D), (s32)&work->unk10);
+                p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0x9D), (s32)&work->unk10);
                 work->unk74 = p;
                 if (p != NULL) {
                     p->unk14 = (s32)D_801ED5C0;
@@ -206,7 +206,7 @@ s32 fx_17d_1_op80(s32 mode, Fx17d1Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
                         work->unk74->unk22 = 0x80;
                     }
                 }
-                p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->unk8, 8), (s32)&work->unk10);
+                p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 8), (s32)&work->unk10);
                 if (p != NULL) {
                     p->unk22 = 0x80;
                 }
@@ -226,7 +226,7 @@ s32 fx_17d_1_op80(s32 mode, Fx17d1Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
                 ex->btlfx_rangeProgress(frame, 4, 0x14, 0, 0x1000, &k);
                 env->unk28 = 0x100;
                 work->unk10.vz += 0x258;
-                ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->unk8, 5), &work->unk10, NULL, 0x1000, 0, 1, k);
+                ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->file, 5), &work->unk10, NULL, 0x1000, 0, 1, k);
                 work->unk10.vz -= 0x258;
                 env->unk28 = 0;
             }
@@ -235,7 +235,7 @@ s32 fx_17d_1_op80(s32 mode, Fx17d1Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
             }
             if (frame >= 24) {
                 work->unk0 = 1;
-                entry->unk0 = -1;
+                entry->frame = -1;
                 ex->btlfx_stopEmitter(work->unk74);
                 lo = ((s32 *)&work->unk8)[0];
                 hi = ((s32 *)&work->unk8)[1];
@@ -253,7 +253,7 @@ s32 fx_17d_1_op80(s32 mode, Fx17d1Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
                 env->camera->points[3].vx = work->unk18.vx;
                 env->camera->points[3].vy = work->unk18.vy;
                 env->camera->points[3].vz = work->unk18.vz;
-                p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->unk8, 0x9F), (s32)&work->unk10);
+                p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0x9F), (s32)&work->unk10);
                 work->unk70 = p;
                 if (p != NULL) {
                     p->unk22 = 0x80;
@@ -275,7 +275,7 @@ s32 fx_17d_1_op80(s32 mode, Fx17d1Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
             work->unk10.vy = work->unk28.vy;
             work->unk10.vz = work->unk28.vz;
             env->unk28 = 0x100;
-            ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->unk8, 5), &work->unk10, NULL, 0x1000, 0, 1, -1);
+            ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->file, 5), &work->unk10, NULL, 0x1000, 0, 1, -1);
             env->unk28 = 0;
             if (work->unk70 != NULL) {
                 if (work->unk70->unk30 == -1) {

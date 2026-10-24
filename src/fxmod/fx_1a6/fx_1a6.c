@@ -42,9 +42,9 @@ s32 fx_1a6_op80(s32 mode, Fx1a6Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
         if (n >= 3) {
             return 1;
         }
-        ex->btlfx_playFileSound(2, entry->unk8, -1);
-        ex->btlfx_playFileSound(4, entry->unk8, -1);
-        ex->btlfx_playFileSound(7, entry->unk8, -1);
+        ex->btlfx_playFileSound(2, entry->file, -1);
+        ex->btlfx_playFileSound(4, entry->file, -1);
+        ex->btlfx_playFileSound(7, entry->file, -1);
         ex->btlfx_getUnitBodyPos(0x10, 0, (s16 *)&work->unk10);
         ex->btlfx_getUnitBodyPos(0, 0, (s16 *)&work->unk18);
         ex->btlfx_getUnitArgBonePos(0x10, 0, (u16 *)&work->unk20);
@@ -65,8 +65,8 @@ s32 fx_1a6_op80(s32 mode, Fx1a6Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
         D_801EDD48[work->unk48].vx = work->unk18.vx;
         D_801EDD48[work->unk48].vy = work->unk18.vy;
         D_801EDD48[work->unk48].vz = work->unk18.vz;
-        work->unk0 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->unk8, 3), (s32)&work->unk28);
-        work->unk4 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->unk8, D_801E823C[work->unk48]),
+        work->unk0 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 3), (s32)&work->unk28);
+        work->unk4 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, D_801E823C[work->unk48]),
                                        (s32)&D_801EDD68[work->unk48]);
         if (work->unk0 != NULL) {
             work->unk0->unk14 = (s32)D_801E82A8[work->unk48];
@@ -88,14 +88,14 @@ s32 fx_1a6_op80(s32 mode, Fx1a6Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             work->unk4->unk22 = ex->func_800E7CC4(0, 0x20);
         }
     } else {
-        frame = entry->unk0;
+        frame = entry->frame;
         switch (frame) {
         case 6:
             if (work->unk48 != 2) {
                 func_801E81A4(0);
             }
-            work->unk8 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->unk8, 6), (s32)&work->unk18);
-            work->unkC = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->unk8, 5), (s32)&work->unk18);
+            work->unk8 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 6), (s32)&work->unk18);
+            work->unkC = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 5), (s32)&work->unk18);
             if (work->unk8 != NULL) {
                 work->unk8->unk14 = (s32)D_801E9CA8[work->unk48];
                 work->unk8->unk12 = 0x56;
@@ -109,9 +109,9 @@ s32 fx_1a6_op80(s32 mode, Fx1a6Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             }
             break;
         case 8:
-            ex->btlfx_playFileSound(8, entry->unk8, -1);
-            ex->btlfx_playFileSound(0xD, entry->unk8, -1);
-            ex->btlfx_playFileSound(0xE, entry->unk8, -1);
+            ex->btlfx_playFileSound(8, entry->file, -1);
+            ex->btlfx_playFileSound(0xD, entry->file, -1);
+            ex->btlfx_playFileSound(0xE, entry->file, -1);
             break;
         }
         if (work->unk0 != NULL) {
@@ -152,9 +152,9 @@ s32 fx_1a6_op81(s32 mode, Fx1a6Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
     } else if (mode == 1) {
         D_801E8298 = env;
         ex->btlfx_getUnitPos(0, (s16 *)&work->unk4);
-        work->unk0 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->unk8, 1), (s32)&work->unk4);
+        work->unk0 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 1), (s32)&work->unk4);
     } else {
-        return entry->unk0 >= 0x28;
+        return entry->frame >= 0x28;
     }
     return 0;
 }

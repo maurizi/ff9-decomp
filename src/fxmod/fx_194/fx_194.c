@@ -48,12 +48,12 @@ s32 fx_194_op80(s32 mode, Fx194Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
         D_801E7DFC = env;
         ex->btlfx_getUnitBodyPos(0x10, 0, (s16 *)&work->unk4);
         ex->btlfx_getUnitPos(0x10, (s16 *)&work->unkC);
-        p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->unk8, 1), (s32)&work->unk4);
+        p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 1), (s32)&work->unk4);
         if (p != NULL) {
             p->unk22 = 0x200;
         }
-        ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->unk8, 3), (s32)&work->unkC);
-        p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->unk8, 2), (s32)&work->unk4);
+        ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 3), (s32)&work->unkC);
+        p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 2), (s32)&work->unk4);
         if (p != NULL) {
             p->unk22 = 0x200;
         }
@@ -64,7 +64,7 @@ s32 fx_194_op80(s32 mode, Fx194Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
         env->camera->points[3].vy = work->unk14.vy;
         env->camera->points[3].vz = work->unk14.vz;
     } else {
-        frame = entry->unk0;
+        frame = entry->frame;
         state = work->unk0;
         switch (state) {
         case 0:
@@ -81,7 +81,7 @@ s32 fx_194_op80(s32 mode, Fx194Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
             env->camera->points[3].vz = v.vz;
             if (frame >= 0x18) {
                 work->unk0 = 1;
-                entry->unk0 = -1;
+                entry->frame = -1;
             }
             break;
         case 1:
@@ -121,7 +121,7 @@ s32 fx_194_op81(s32 mode, Fx194Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
         D_801E7DFC = env;
         work->unk0 = 0;
         ex->btlfx_getUnitBodyPos(0x10, 0, (s16 *)&work->unk4);
-        p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->unk8, 6), (s32)&work->unk4);
+        p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 6), (s32)&work->unk4);
         if (p != NULL) {
             p->unk22 = 0x200;
         }
@@ -129,7 +129,7 @@ s32 fx_194_op81(s32 mode, Fx194Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
         env->camera->points[3].vy = work->unk4.vy;
         env->camera->points[3].vz = work->unk4.vz;
     } else {
-        s32 frame = entry->unk0;
+        s32 frame = entry->frame;
         if (work->unk0 == 0 && frame >= 0x20) {
             return 1;
         }

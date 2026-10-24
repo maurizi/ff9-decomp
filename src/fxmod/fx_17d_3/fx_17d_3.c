@@ -21,10 +21,10 @@ s32 fx_17d_3_op80(s32 mode, Fx17d3Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
         D_801EEC84 = env;
         ex->btlfx_initParticleSystem();
         ex->btlfx_initEffModels(D_801EEC94, 5);
-        work->unk68 = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->unk8, 0x83), 0);
-        work->unk6C = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->unk8, 0x81), 1);
-        work->unk70 = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->unk8, 0x82), 0);
-        work->unk74 = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->unk8, 0x80), 0);
+        work->unk68 = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, 0x83), 0);
+        work->unk6C = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, 0x81), 1);
+        work->unk70 = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, 0x82), 0);
+        work->unk74 = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, 0x80), 0);
         ex->Hi_SetSummonMotion(SUMMON(env)->unk54->unk180[1], SUMMON(env)->unk60);
         work->unk48[1] = 0;
         work->unk48[0] = 0;
@@ -42,7 +42,7 @@ s32 fx_17d_3_op80(s32 mode, Fx17d3Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
         work->unk28[2] = work->unk48[2];
         work->unk28[1] -= 0x200;
     } else {
-        frame = entry->unk0;
+        frame = entry->frame;
         switch (work->unk0) {
         case 0: {
             VECTOR pp;
@@ -67,7 +67,7 @@ s32 fx_17d_3_op80(s32 mode, Fx17d3Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
             BTLFX_COPY_SVEC(&work->unk10, &work->unk20);
             work->unk10.vy += 0x300;
             if (frame == 0) {
-                p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->unk8, 2), (s32)&work->unk10);
+                p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 2), (s32)&work->unk10);
                 if (p != NULL) {
                     p->unk14 = (s32)D_801EF084;
                     p->unk12 = 0x10;
@@ -114,7 +114,7 @@ s32 fx_17d_3_op80(s32 mode, Fx17d3Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
             }
             if (frame >= 0x18) {
                 work->unk0 = 1;
-                entry->unk0 = -1;
+                entry->frame = -1;
                 ex->btlfx_initParticleSystem();
             }
             break;
@@ -139,7 +139,7 @@ s32 fx_17d_3_op80(s32 mode, Fx17d3Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
             BTLFX_COPY_SVEC(&work->unk10, &work->unk20);
             work->unk10.vy += 0x300;
             if (frame == 0) {
-                p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->unk8, 2), (s32)&work->unk10);
+                p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 2), (s32)&work->unk10);
                 if (p != NULL) {
                     p->unk14 = (s32)D_801EF084;
                     p->unk12 = 0x10;
@@ -186,7 +186,7 @@ s32 fx_17d_3_op80(s32 mode, Fx17d3Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
             }
             if (frame >= 0x18) {
                 work->unk0 = 2;
-                entry->unk0 = -1;
+                entry->frame = -1;
                 ex->btlfx_initParticleSystem();
                 work->unk78 = work->unk7C = NULL;
                 ex->Hi_SetSummonMotion(SUMMON(env)->unk54->unk180[2], SUMMON(env)->unk60);
@@ -226,7 +226,7 @@ s32 fx_17d_3_op80(s32 mode, Fx17d3Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
             s2.vy = work->unk3C[1] / 2;
             ex->Hi_DrawEffModel(&work->unk34, (VECTOR *)work->unk28, (s32)&s2, work->unk6C);
             if (frame == 0xC) {
-                work->unk78 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->unk8, 1), (s32)&work->unk10);
+                work->unk78 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 1), (s32)&work->unk10);
                 if (work->unk78 != NULL) {
                     work->unk78->unk14 = (s32)D_801EFD44;
                     work->unk78->unk12 = 0x32;
@@ -235,7 +235,7 @@ s32 fx_17d_3_op80(s32 mode, Fx17d3Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
                 if (work->unk78 != NULL) {
                     work->unk78->unk22 = 0x20;
                 }
-                work->unk7C = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->unk8, 1), (s32)&work->unk18);
+                work->unk7C = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 1), (s32)&work->unk18);
                 if (work->unk7C != NULL) {
                     work->unk7C->unk14 = (s32)D_801F02C4;
                     work->unk7C->unk12 = 0x32;
@@ -272,7 +272,7 @@ s32 fx_17d_3_op80(s32 mode, Fx17d3Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
             ex->btlfx_drawScrollMove(work->unk4 * 0x10, 0x340, 0x100, 0x20, 0x80, 0x360, 0x100);
             if (frame >= 0x15) {
                 work->unk0 = 3;
-                entry->unk0 = -1;
+                entry->frame = -1;
                 work->unk78 = work->unk7C = NULL;
                 work->unk28[1] -= 0x64;
                 ex->Hi_SetSummonMotion(SUMMON(env)->unk54->unk180[4], SUMMON(env)->unk60);
@@ -310,7 +310,7 @@ s32 fx_17d_3_op80(s32 mode, Fx17d3Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
             s2.vy = work->unk3C[1] / 2;
             ex->Hi_DrawEffModel(&work->unk34, (VECTOR *)work->unk28, (s32)&s2, work->unk6C);
             if (frame == 0xC) {
-                work->unk78 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->unk8, 6), (s32)&work->unk10);
+                work->unk78 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 6), (s32)&work->unk10);
                 if (work->unk78 != NULL) {
                     work->unk78->unk14 = (s32)D_801EFD44;
                     work->unk78->unk12 = 0x32;
@@ -319,7 +319,7 @@ s32 fx_17d_3_op80(s32 mode, Fx17d3Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
                 if (work->unk78 != NULL) {
                     work->unk78->unk22 = 0x20;
                 }
-                work->unk7C = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->unk8, 6), (s32)&work->unk18);
+                work->unk7C = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 6), (s32)&work->unk18);
                 if (work->unk7C != NULL) {
                     work->unk7C->unk14 = (s32)D_801F02C4;
                     work->unk7C->unk12 = 0x32;
@@ -356,7 +356,7 @@ s32 fx_17d_3_op80(s32 mode, Fx17d3Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
             ex->btlfx_drawScrollMove(work->unk4 * 0x10, 0x340, 0x100, 0x20, 0x80, 0x360, 0x100);
             if (frame >= 0x15) {
                 work->unk0 = 4;
-                entry->unk0 = -1;
+                entry->frame = -1;
                 work->unk78 = work->unk7C = NULL;
                 ex->Hi_SetSummonMotion(SUMMON(env)->unk54->unk180[5], SUMMON(env)->unk60);
                 work->unk28[1] -= 0xC18;
@@ -386,7 +386,7 @@ s32 fx_17d_3_op80(s32 mode, Fx17d3Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
             ex->Hi_GetSummonBonePos(SUMMON(env)->unk60, D_801EEC34[0], (u16 *)&work->unk10);
             ex->Hi_GetSummonBonePos(SUMMON(env)->unk60, D_801EEC34[1], (u16 *)&work->unk18);
             if (frame == 6) {
-                work->unk78 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->unk8, 6), (s32)&work->unk10);
+                work->unk78 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 6), (s32)&work->unk10);
                 if (work->unk78 != NULL) {
                     work->unk78->unk14 = (s32)D_801EFD44;
                     work->unk78->unk12 = 0x32;
@@ -395,7 +395,7 @@ s32 fx_17d_3_op80(s32 mode, Fx17d3Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
                 if (work->unk78 != NULL) {
                     work->unk78->unk22 = 0x20;
                 }
-                work->unk7C = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->unk8, 6), (s32)&work->unk18);
+                work->unk7C = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 6), (s32)&work->unk18);
                 if (work->unk7C != NULL) {
                     work->unk7C->unk14 = (s32)D_801F02C4;
                     work->unk7C->unk12 = 0x32;
@@ -436,7 +436,7 @@ s32 fx_17d_3_op80(s32 mode, Fx17d3Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
             ex->btlfx_drawScrollMove(work->unk4 * 0x10, 0x340, 0x100, 0x20, 0x80, 0x360, 0x100);
             if (frame >= 0x18) {
                 work->unk0 = 5;
-                entry->unk0 = -1;
+                entry->frame = -1;
                 ex->btlfx_initParticleSystem();
                 work->unk78 = work->unk7C = NULL;
                 work->unk28[1] -= 0x384;
@@ -466,7 +466,7 @@ s32 fx_17d_3_op80(s32 mode, Fx17d3Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
             work->unk18.vy -= 0x46;
             work->unk18.vz -= 0x80;
             if (frame == 0xB) {
-                work->unk78 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->unk8, 4), (s32)&work->unk10);
+                work->unk78 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 4), (s32)&work->unk10);
                 if (work->unk78 != NULL) {
                     work->unk78->unk14 = (s32)D_801EFD44;
                     work->unk78->unk12 = 0x32;
@@ -475,7 +475,7 @@ s32 fx_17d_3_op80(s32 mode, Fx17d3Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
                 if (work->unk78 != NULL) {
                     work->unk78->unk22 = -0x80;
                 }
-                ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->unk8, 0xE), (s32)&work->unk10);
+                ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0xE), (s32)&work->unk10);
                 if (work->unk78 != NULL) {
                     work->unk78->unk22 = -0x80;
                 }
@@ -494,7 +494,7 @@ s32 fx_17d_3_op80(s32 mode, Fx17d3Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
                 }
             }
             if (frame == 0) {
-                work->unk7C = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->unk8, 6), (s32)&work->unk18);
+                work->unk7C = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 6), (s32)&work->unk18);
                 if (work->unk7C != NULL) {
                     work->unk7C->unk14 = (s32)D_801F02C4;
                     work->unk7C->unk12 = 0x32;
@@ -525,7 +525,7 @@ s32 fx_17d_3_op80(s32 mode, Fx17d3Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
             ex->btlfx_drawScrollMove(work->unk4 * 0x10, 0x340, 0x100, 0x20, 0x80, 0x360, 0x100);
             if (frame >= 0x15) {
                 work->unk0 = 6;
-                entry->unk0 = -1;
+                entry->frame = -1;
                 work->unk78 = work->unk7C = NULL;
                 ex->btlfx_initParticleSystem();
                 ex->Hi_SetSummonMotFrame(SUMMON(env)->unk60, 0x18);
@@ -559,7 +559,7 @@ s32 fx_17d_3_op80(s32 mode, Fx17d3Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
             work->unk18.vy -= 0x46;
             work->unk18.vz -= 0x80;
             if (frame == 0xB) {
-                work->unk78 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->unk8, 4), (s32)&work->unk10);
+                work->unk78 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 4), (s32)&work->unk10);
                 if (work->unk78 != NULL) {
                     work->unk78->unk14 = (s32)D_801EFD44;
                     work->unk78->unk12 = 0x32;
@@ -568,7 +568,7 @@ s32 fx_17d_3_op80(s32 mode, Fx17d3Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
                 if (work->unk78 != NULL) {
                     work->unk78->unk22 = -0x80;
                 }
-                ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->unk8, 0xE), (s32)&work->unk10);
+                ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0xE), (s32)&work->unk10);
                 if (work->unk78 != NULL) {
                     work->unk78->unk22 = -0x80;
                 }
@@ -587,7 +587,7 @@ s32 fx_17d_3_op80(s32 mode, Fx17d3Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
                 }
             }
             if (frame == 0) {
-                work->unk7C = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->unk8, 6), (s32)&work->unk18);
+                work->unk7C = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 6), (s32)&work->unk18);
                 if (work->unk7C != NULL) {
                     work->unk7C->unk14 = (s32)D_801F02C4;
                     work->unk7C->unk12 = 0x32;
@@ -618,7 +618,7 @@ s32 fx_17d_3_op80(s32 mode, Fx17d3Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
             ex->btlfx_drawScrollMove(work->unk4 * 0x10, 0x340, 0x100, 0x20, 0x80, 0x360, 0x100);
             if (frame >= 0x15) {
                 work->unk0 = 7;
-                entry->unk0 = -1;
+                entry->frame = -1;
                 ex->btlfx_initParticleSystem();
                 work->unk78 = work->unk7C = NULL;
                 ex->Hi_SetSummonMotion(SUMMON(env)->unk54->unk180[6], SUMMON(env)->unk60);
@@ -655,7 +655,7 @@ s32 fx_17d_3_op80(s32 mode, Fx17d3Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
             ex->Hi_GetSummonBonePos(SUMMON(env)->unk60, 4, (u16 *)&work->unk10);
             work->unk10.vz += 0x226;
             if (frame == 0xA) {
-                work->unk78 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->unk8, 9), (s32)&work->unk10);
+                work->unk78 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 9), (s32)&work->unk10);
                 if (work->unk78 != NULL) {
                     work->unk78->unk22 = 0x80;
                 }

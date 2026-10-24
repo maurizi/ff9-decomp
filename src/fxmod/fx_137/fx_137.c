@@ -21,9 +21,9 @@ s32 fx_137_op80(s32 mode, Fx137Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
         work->unk18.vy = 0;
         ex->btlfx_getUnitArgBonePos(0x10, 0, (u16 *)&work->unk8);
         ex->btlfx_aimAngles((s16 *)&work->unk8, (s16 *)&work->unk18, (s16 *)&work->unk0);
-        work->unk20 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->unk8, 6), (s32)&work->unk8);
+        work->unk20 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 6), (s32)&work->unk8);
     } else {
-        frame = entry->unk0;
+        frame = entry->frame;
         if (work->unk20 != NULL) {
             if (work->unk20->unk30 == -1) {
                 work->unk20 = NULL;
@@ -49,7 +49,7 @@ s32 fx_137_op80(s32 mode, Fx137Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
         }
         if (frame == 0x10) {
             for (i = 0; i < env->targets->targetCount; i++) {
-                p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->unk8, 5), (s32)&D_801E7AD0[i]);
+                p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 5), (s32)&D_801E7AD0[i]);
                 if (p != NULL) {
                     p->unk22 = ex->func_800E7CC4(i, 0x40);
                 }

@@ -20,7 +20,7 @@ s32 fx_129_op80(s32 mode, Fx129Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
         clut[1] = 0x80;
         clut[3] = 0;
         /* passes three arguments; the fourth parameter keeps whatever is in $a3 */
-        work->unk0 = (u16)((s32(*)())ex->Hi_RegisterTexListModel)(ex->btlfx_getFileData(entry->unk8, 7), tex, clut);
+        work->unk0 = (u16)((s32(*)())ex->Hi_RegisterTexListModel)(ex->btlfx_getFileData(entry->file, 7), tex, clut);
         ex->btlfx_getUnitBodyPos(0, 1, (s16 *)&work->unk2C);
         ex->btlfx_getUnitRot(0, (s16 *)&work->unk14);
         work->unk14.vy += 0x800;
@@ -43,7 +43,7 @@ s32 fx_129_op80(s32 mode, Fx129Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
         work->unk70.vx = work->unk64.vx;
         work->unk70.vz = work->unk64.vz;
     } else {
-        frame = entry->unk0;
+        frame = entry->frame;
         if (work->unk34 < 9) {
             t = ++work->unk44;
             switch (work->unk34 & 1) {
@@ -58,11 +58,11 @@ s32 fx_129_op80(s32 mode, Fx129Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
                     work->unk1C.vy = 0x330 - work->unk38;
                     switch (work->unk58) {
                     case 0:
-                        ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->unk8, 3), (s32)&work->unk2C);
+                        ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 3), (s32)&work->unk2C);
                         break;
                     case 1:
                     case 2:
-                        ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->unk8, 1), (s32)&work->unk2C);
+                        ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 1), (s32)&work->unk2C);
                         break;
                     }
                     work->unk58++;

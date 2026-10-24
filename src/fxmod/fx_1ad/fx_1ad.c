@@ -47,9 +47,9 @@ s32 fx_1ad_op80(s32 mode, Fx1adWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
         D_801E7D8C = env;
         ex->btlfx_initEffModels(D_801E7D9C, 1);
         ex->btlfx_getUnitBodyPos(0, 0, (s16 *)&work->unk10);
-        work->unk24 = (s16)ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->unk8, 2), 1);
+        work->unk24 = (s16)ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, 2), 1);
     } else {
-        frame = entry->unk0;
+        frame = entry->frame;
         ex->btlfx_getUnitBonePos(0x10, 0xF, (u16 *)&work->unk8);
         pos.vx = work->unk8.vx;
         pos.vy = work->unk8.vy;
@@ -58,9 +58,9 @@ s32 fx_1ad_op80(s32 mode, Fx1adWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
             k = 0x40;
             n = work->unk4;
             ex->btlfx_drawScrollMove(n * 4, 0x200, 0x100, 0x20, k, ((n & 3) << 5) + 0x240, ((n * 16) & 0xC0) + 0x100);
-            ex->btlfx_drawBackdrop((BtlBgLayers *)ex->btlfx_getFileData(entry->unk8, 1), work->unk4);
+            ex->btlfx_drawBackdrop((BtlBgLayers *)ex->btlfx_getFileData(entry->file, 1), work->unk4);
             if (frame == 0) {
-                work->unk20 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->unk8, 5), (s32)&work->unk10);
+                work->unk20 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 5), (s32)&work->unk10);
                 if (work->unk20 != NULL) {
                     work->unk20->unk14 = (s32)D_801E7E6C;
                     work->unk20->unk12 = 0x48;
@@ -72,7 +72,7 @@ s32 fx_1ad_op80(s32 mode, Fx1adWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
                 if (work->unk20 != NULL) {
                     ((EffMotion *)work->unk20->unk0)->unk8 = func_801E7704;
                 }
-                p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->unk8, 4), (s32)&work->unk10);
+                p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 4), (s32)&work->unk10);
                 if (p != NULL) {
                     p->unk14 = (s32)D_801E8F4C;
                     p->unk12 = 0x10;

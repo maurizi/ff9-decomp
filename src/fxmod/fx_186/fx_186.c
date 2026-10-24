@@ -99,20 +99,20 @@ s32 fx_186_op80(s32 mode, Fx186Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
         work->unk8.vx = 0;
         work->unk8.vy = 0;
         work->unk8.vz = 0;
-        work->unk44 = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->unk8, 0xB), 1);
-        work->unk48 = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->unk8, 0x1B), 1);
+        work->unk44 = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, 0xB), 1);
+        work->unk48 = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, 0x1B), 1);
         env->camera->points[3].vx = work->unk8.vx;
         env->camera->points[3].vy = work->unk8.vy;
         env->camera->points[3].vz = work->unk8.vz;
         env->camera->points[3].vy -= 0x100;
     } else {
         tint = 0;
-        frame = entry->unk0;
+        frame = entry->frame;
         switch (work->unk0) {
         case 3:
             ex->btlfx_drawBgOffscreen(0x1C0, 0x100, 0x100, 0x100, D_801E8E14, work->unk8.vx, work->unk8.vz, 0xC00);
             work->unk0 = 0;
-            entry->unk0 = -1;
+            entry->frame = -1;
             break;
         case 0:
             /* gcc 2.8 frees block-scoped stack slots only at the end of a switch; the original reuses each case's
@@ -199,15 +199,15 @@ s32 fx_186_op80(s32 mode, Fx186Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
                     rot2.vz = 0;
                     rot2.pad = 1;
                     a = (frame - 8) << 9;
-                    ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->unk8, 0x1E), &work->unk8, &rot2,
+                    ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->file, 0x1E), &work->unk8, &rot2,
                                       ex->math_sin(a >> 2), 0,
                                       1, ex->math_sin(a >> 2));
-                    ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->unk8, 0x1F), &work->unk8, &rot2,
+                    ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->file, 0x1F), &work->unk8, &rot2,
                                       ex->math_sin(a >> 2) >> 1, 0, 1, ex->math_sin(a >> 2));
                 }
                 if (frame >= 0x10) {
                     work->unk0 = 1;
-                    entry->unk0 = -1;
+                    entry->frame = -1;
                     ex->btlfx_drawScreenTint((u32 *)(env->ot + 2), 1, 0xFF, 0xFF, 0xFF);
                     for (n = 0, q = D_801E9B84, k = 0; k < 0x60; k++, q++) {
                         if (*q == 0) {
@@ -217,10 +217,10 @@ s32 fx_186_op80(s32 mode, Fx186Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
                     for (i = 0; i < 10; i++) {
                         if (n != 0) {
                             work->unk1C[i] =
-                                ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->unk8, D_801E8DB8[i]), 0);
+                                ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, D_801E8DB8[i]), 0);
                         } else {
                             work->unk1C[i] =
-                                ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->unk8, D_801E8DA4[i]), 0);
+                                ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, D_801E8DA4[i]), 0);
                         }
                     }
                 }
@@ -249,12 +249,12 @@ s32 fx_186_op80(s32 mode, Fx186Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
                 if (frame == 0) {
                     BTLFX_COPY_SVEC(&work->unk10, &work->unk8);
                     work->unk10.vy -= 0x180;
-                    work->unk18 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->unk8, 0x1A), (s32)&work->unk10);
+                    work->unk18 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0x1A), (s32)&work->unk10);
                     if (work->unk18 != NULL) {
                         work->unk18->unk22 = 0x100;
                     }
                     for (j = 0; j < 25; j++) {
-                        o = ex->btlfx_poolSpawn((s16 *)entry->unk10);
+                        o = ex->btlfx_poolSpawn((s16 *)entry->pool);
                         if (o != NULL) {
                             o->unk20 = work->unk1C[j];
                             o->unkC.vx = work->unk8.vx;
@@ -297,14 +297,14 @@ s32 fx_186_op80(s32 mode, Fx186Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
                     rot2.vy = 0;
                     rot2.vz = 0;
                     env->unk28 = 0x100;
-                    ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->unk8, 0x1F), &work->unk8, &rot2,
+                    ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->file, 0x1F), &work->unk8, &rot2,
                                       (ex->math_sin((frame << 8) >> 2) >> 1) + 0x800, 0, 1,
                                       ex->math_cos((frame << 8) >> 2));
                     env->unk28 = 0;
                 }
                 if (frame >= 0x20) {
                     work->unk0 = 2;
-                    entry->unk0 = -1;
+                    entry->frame = -1;
                     ex->btlfx_stopEmitter(work->unk18);
                 }
             }
@@ -317,7 +317,7 @@ s32 fx_186_op80(s32 mode, Fx186Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             t = (frame << 12) / 40;
             tint = 0x89;
             if (frame == 1) {
-                p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->unk8, 0x1D), (s32)&work->unk8);
+                p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0x1D), (s32)&work->unk8);
                 if (p != NULL) {
                     p->unk22 = 0x100;
                 }
@@ -399,7 +399,7 @@ s32 fx_186_op81(s32 mode, Fx186Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
             k++;
         } while (k < work->unk104);
     } else {
-        frame = entry->unk0;
+        frame = entry->frame;
         switch (work->unk0) {
         case 0:
             t = frame << 7;
@@ -413,7 +413,7 @@ s32 fx_186_op81(s32 mode, Fx186Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
             }
             if (frame >= 0x20) {
                 work->unk0 = 1;
-                entry->unk0 = -1;
+                entry->frame = -1;
             }
             break;
         case 1:
@@ -437,7 +437,7 @@ s32 fx_186_op81(s32 mode, Fx186Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
                     ex->btlfx_setUnitPos(i, (s16 *)&p);
                 }
                 work->unk0 = 2;
-                entry->unk0 = -1;
+                entry->frame = -1;
             }
             break;
         case 2:
@@ -447,7 +447,7 @@ s32 fx_186_op81(s32 mode, Fx186Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
             rot.pad = 1;
             t = (frame << 12) / 7;
             for (i = 0; i < work->unk104; i++) {
-                ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->unk8, 0xF), &work->unk4[i], &rot, 0x1000, frame, 1,
+                ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->file, 0xF), &work->unk4[i], &rot, 0x1000, frame, 1,
                                   ex->math_cos(t >> 2));
             }
             if (frame >= 7) {

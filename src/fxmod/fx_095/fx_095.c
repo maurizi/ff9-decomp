@@ -77,13 +77,13 @@ s32 func_801E7704(s32 mode, Fx095Part *part, Unk800F78A4 *env, Unk80100C78Entry 
     y = ctl->unkA + ((ex->math_sin(a) * t) >> 12);
     /* One call per table: jump2 cross-jumps the identical tails, leaving only the table address in each arm. */
     if (part->unk4 < 2) {
-        ex->btlfx_drawSpriteAtOt(3, (u8 *)ex->btlfx_getFileData(entry->unk8, D_801E882C[part->unk8]), x, y, 0, abr, bright);
+        ex->btlfx_drawSpriteAtOt(3, (u8 *)ex->btlfx_getFileData(entry->file, D_801E882C[part->unk8]), x, y, 0, abr, bright);
     } else {
-        ex->btlfx_drawSpriteAtOt(3, (u8 *)ex->btlfx_getFileData(entry->unk8, D_801E888C[part->unk8]), x, y, 0, abr, bright);
+        ex->btlfx_drawSpriteAtOt(3, (u8 *)ex->btlfx_getFileData(entry->file, D_801E888C[part->unk8]), x, y, 0, abr, bright);
     }
     if (glow != 0) {
-        ex->btlfx_drawSpriteAtOt(3, (u8 *)ex->btlfx_getFileData(entry->unk8, D_801E885C[part->unk8]), x, y, 0, 1, glow);
-        ex->btlfx_drawSpriteAtOt(2, (u8 *)ex->btlfx_getFileData(entry->unk8, 0x2C), x, y, glowFrame, 1, 0x1000);
+        ex->btlfx_drawSpriteAtOt(3, (u8 *)ex->btlfx_getFileData(entry->file, D_801E885C[part->unk8]), x, y, 0, 1, glow);
+        ex->btlfx_drawSpriteAtOt(2, (u8 *)ex->btlfx_getFileData(entry->file, 0x2C), x, y, glowFrame, 1, 0x1000);
     }
     return 0;
 }
@@ -106,7 +106,7 @@ s32 fx_095_op80(s32 mode, Fx095Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
         work->unk0 = 0;
         work->unkC = 0;
     } else {
-        frame = entry->unk0;
+        frame = entry->frame;
         gte_SetRotMatrix(env->viewMatrix);
         gte_SetTransMatrix(env->viewMatrix);
         gte_ldv0(&D_801E890C);
@@ -115,7 +115,7 @@ s32 fx_095_op80(s32 mode, Fx095Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
         switch (work->unk0) {
         case 0:
             for (i = 0; i < 2; i++) {
-                part = ex->btlfx_poolSpawn((s16 *)entry->unk10);
+                part = ex->btlfx_poolSpawn((s16 *)entry->pool);
                 if (part != NULL) {
                     part->unk8 = work->unk4;
                     part->unk0 = ((work->unk4 + 1) << 12) / 12;
@@ -124,20 +124,20 @@ s32 fx_095_op80(s32 mode, Fx095Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             }
             if (work->unk4 >= 12) {
                 work->unk0 = 1;
-                entry->unk0 = -1;
+                entry->frame = -1;
             }
             break;
         case 1:
             if (frame >= 16) {
                 work->unk0 = 2;
-                entry->unk0 = -1;
+                entry->frame = -1;
                 work->unkC = 1;
             }
             break;
         case 2:
             if (frame >= 16) {
                 work->unk0 = 3;
-                entry->unk0 = -1;
+                entry->frame = -1;
             }
             break;
         case 3:
@@ -349,7 +349,7 @@ s32 fx_095_op81(s32 mode, Fx095Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
         work->unk0 = 0;
         work->unk4 = 0;
     } else {
-        frame = entry->unk0;
+        frame = entry->frame;
         rect.x = 0x1C0;
         rect.y = 0x100;
         rect.w = 0xC0;
@@ -364,7 +364,7 @@ s32 fx_095_op81(s32 mode, Fx095Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
             func_801E7CBC(frame, xy.vx, xy.vy, work->unk8, &rect);
             if (frame >= 6) {
                 work->unk0 = 1;
-                entry->unk0 = -1;
+                entry->frame = -1;
                 ex->btlfx_drawScreenTint((u32 *)(env->ot + 2), 2, 0x9B, 0xFF, 0);
             }
             break;
@@ -373,16 +373,16 @@ s32 fx_095_op81(s32 mode, Fx095Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
                 ex->btlfx_drawScreenTint((u32 *)(env->ot + 2), 1, 0x80, 0x80, 0xFF);
             }
             func_801E7F48(8, xy.vx, xy.vy, 0x60, 0x80, &rect);
-            ex->btlfx_drawSpriteAtOt(7, (u8 *)ex->btlfx_getFileData(entry->unk8, 0x20), xy.vx, xy.vy, 0, 1, 0x1000);
+            ex->btlfx_drawSpriteAtOt(7, (u8 *)ex->btlfx_getFileData(entry->file, 0x20), xy.vx, xy.vy, 0, 1, 0x1000);
             if (frame >= 16) {
                 work->unk0 = 2;
-                entry->unk0 = -1;
+                entry->frame = -1;
             }
             break;
         case 2:
             c = 0x1000 - (frame << 9);
             func_801E7F48(8, xy.vx, xy.vy, 0x60, c >> 5, &rect);
-            ex->btlfx_drawSpriteAtOt(7, (u8 *)ex->btlfx_getFileData(entry->unk8, 0x20), xy.vx, xy.vy, 0, 1, c);
+            ex->btlfx_drawSpriteAtOt(7, (u8 *)ex->btlfx_getFileData(entry->file, 0x20), xy.vx, xy.vy, 0, 1, c);
             if (frame >= 8) {
                 return 1;
             }

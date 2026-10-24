@@ -239,10 +239,10 @@ s32 fx_0cb_op80(s32 mode, Fx0cbWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
         work->unk14.vy = work->unkC.vy;
         work->unk14.vz = work->unkC.vz;
         ex->btlfx_initEffModels(D_801E8680, 3);
-        work->unk20 = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->unk8, 0x12), 1);
-        work->unk24 = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->unk8, 8), 1);
+        work->unk20 = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, 0x12), 1);
+        work->unk24 = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, 8), 1);
     } else {
-        frame = entry->unk0;
+        frame = entry->frame;
         if (work->unk0 == 0) {
             t = (frame << 12) / 50;
             if (frame == 0) {
@@ -251,14 +251,14 @@ s32 fx_0cb_op80(s32 mode, Fx0cbWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
                 u = 0x78 - (frame - 1) * 0x14;
                 ex->btlfx_drawScreenTint((u32 *)(env->ot + 1), 1, u, u, u >> 1);
             }
-            ex->btlfx_drawBackdrop((BtlBgLayers *)ex->btlfx_getFileData(entry->unk8, 0xC), work->unk4);
+            ex->btlfx_drawBackdrop((BtlBgLayers *)ex->btlfx_getFileData(entry->file, 0xC), work->unk4);
             ex->btlfx_drawScrollMove(frame * 8, 0x240, 0x100, 0x38, 0x70, 0x278, 0x100);
             if (frame < 0x20) {
                 if (frame == frame / 3 * 3) {
                     a = frame << 7;
                     r1 = (a >> 4) + 0x100;
                     sc = 0xAAA - (a >> 1);
-                    part = ex->btlfx_poolSpawn((s16 *)entry->unk10);
+                    part = ex->btlfx_poolSpawn((s16 *)entry->pool);
                     if (part != NULL) {
                         ex->btlfx_randRotation(&v);
                         if (frame != 0) {
@@ -283,19 +283,19 @@ s32 fx_0cb_op80(s32 mode, Fx0cbWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
             q = t >> 2;
             c = ex->math_cos(q);
             env->unk28 = work->unk8 + 0x46;
-            data = (u8 *)ex->btlfx_getFileData(entry->unk8, 5);
+            data = (u8 *)ex->btlfx_getFileData(entry->file, 5);
             ex->btlfx_drawRings(data, &work->unkC, &v, ex->math_cos(q) / 3 + 0x2AA, 0, 1, c);
-            ex->btlfx_drawBackdrop((BtlBgLayers *)ex->btlfx_getFileData(entry->unk8, 0xF), work->unk4);
+            ex->btlfx_drawBackdrop((BtlBgLayers *)ex->btlfx_getFileData(entry->file, 0xF), work->unk4);
             v.vx = 0x200;
             v.vy = 0x590;
             v.vz = 0x80;
             v.pad = 1;
-            ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->unk8, 0x11), &work->unkC, &v, t / 2 + 0x555, 0, 1, c);
+            ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->file, 0x11), &work->unkC, &v, t / 2 + 0x555, 0, 1, c);
             v.vx = 0x600;
             v.vy = 0x990;
             v.vz = 0x80;
             v.pad = 1;
-            ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->unk8, 0x11), &work->unkC, &v, t / 2 + 0x555, 0, 1, c);
+            ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->file, 0x11), &work->unkC, &v, t / 2 + 0x555, 0, 1, c);
             env->unk28 = 0;
             if (frame >= 0x32) {
                 ex->btlfx_clearEffModels();

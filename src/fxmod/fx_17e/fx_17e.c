@@ -22,11 +22,11 @@ s32 fx_17e_op80(s32 mode, Fx17eWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
         work->unk8.vx = 0x1000;
         work->unk8.vy = 0x1000;
         work->unk8.vz = 0x1000;
-        work->unk0 = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->unk8, 9), 0xFF);
+        work->unk0 = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, 9), 0xFF);
         work->unk4 = 0;
         ex->btlfx_getUnitBodyPos(0, 0, (s16 *)&work->unk38);
     } else {
-        frame = entry->unk0;
+        frame = entry->frame;
         switch (frame) {
         case 1:
             work->unk40[3] = 0x1A;
@@ -41,7 +41,7 @@ s32 fx_17e_op80(s32 mode, Fx17eWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
             work->unk40[2] = 3;
             break;
         case 26:
-            p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->unk8, 2), (s32)&work->unk38);
+            p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 2), (s32)&work->unk38);
             if (p != NULL) {
                 p->unk22 = ex->func_800E7CC4(0, 0x80);
             }

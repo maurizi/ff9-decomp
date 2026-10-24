@@ -43,8 +43,8 @@ s32 fx_1f1_op80(s32 mode, s32 *work, Unk800F78A4 *env, Unk80100C78Entry *entry, 
         }
         for (i = 0; i < env->targets->targetCount; i++) {
             u = &D_801E7F14[i];
-            u->unk18 = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->unk8, 2), 1);
-            u->unk1C = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->unk8, 4), 1);
+            u->unk18 = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, 2), 1);
+            u->unk1C = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, 4), 1);
             ex->btlfx_getUnitPos(i, (s16 *)&D_801E7F14[i].unkC);
             setVector(&D_801E7F14[i].unk20, 0, 0, 0);
             setVector(&D_801E7F14[i].unk28, 0, 0, 0);
@@ -57,7 +57,7 @@ s32 fx_1f1_op80(s32 mode, s32 *work, Unk800F78A4 *env, Unk80100C78Entry *entry, 
             u->unk0 = k;
         }
     } else {
-        frame = entry->unk0;
+        frame = entry->frame;
         if (frame == 0) {
             work[0] = 0x50;
         }
@@ -72,13 +72,13 @@ s32 fx_1f1_op80(s32 mode, s32 *work, Unk800F78A4 *env, Unk80100C78Entry *entry, 
                             ex->btlfx_getUnitPos(i, (s16 *)&D_801E7F14[i].unkC);
                             u->unk8 = u->unkC.vy;
                             u->unkC.vy = 0;
-                            p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->unk8, 5), (s32)&D_801E7F14[i].unkC);
+                            p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 5), (s32)&D_801E7F14[i].unkC);
                             if (p != NULL) {
                                 p->unk22 = ex->func_800E7CC4(i, 0x100);
                             }
-                            ex->btlfx_playFileSound(6, entry->unk8, -1);
-                            ex->btlfx_playFileSound(7, entry->unk8, -1);
-                            ex->btlfx_playFileSound(8, entry->unk8, -1);
+                            ex->btlfx_playFileSound(6, entry->file, -1);
+                            ex->btlfx_playFileSound(7, entry->file, -1);
+                            ex->btlfx_playFileSound(8, entry->file, -1);
                         }
                         /* mm holds the base so q and m are computed from it (base + 0x30, + 0x10) while its last
                          * use is the &mm[i] giv: loop.c then hoists the base without dragging + 0x10 along */

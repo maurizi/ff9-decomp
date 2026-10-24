@@ -78,10 +78,10 @@ s32 fx_1f0_op80(s32 mode, Fx1f0Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
         for (i = 15; i >= 0; i--) {
             work->unk0[i] = 0;
         }
-        work->unk60 = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->unk8, 3), 1);
-        work->unk64 = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->unk8, 5), 1);
-        work->unk68 = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->unk8, 6), 1);
-        work->unk6C = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->unk8, 7), 1);
+        work->unk60 = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, 3), 1);
+        work->unk64 = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, 5), 1);
+        work->unk68 = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, 6), 1);
+        work->unk6C = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, 7), 1);
         work->unk80.vx = 0x19B0;
         work->unk80.vy = 0x19B0;
         work->unk80.vz = 0x19B0;
@@ -120,7 +120,7 @@ s32 fx_1f0_op80(s32 mode, Fx1f0Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
         }
         D_801E8558[0].unk20.vy -= 0x100;
     } else {
-        frame = entry->unk0;
+        frame = entry->frame;
         switch (frame) {
         case 0:
             work->unk0[0] = 0x32;
@@ -181,11 +181,11 @@ s32 fx_1f0_op80(s32 mode, Fx1f0Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
                 if (D_801E8558[i].unk0 > 0) {
                     ex->btlfx_setUnitPos(i, (s16 *)&D_801E8558[i].unk8);
                     if (D_801E8558[i].unk0 == 8) {
-                        D_801E8558[i].unk28 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->unk8, 1), (s32)&D_801E8558[i].unk18);
+                        D_801E8558[i].unk28 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 1), (s32)&D_801E8558[i].unk18);
                         if (D_801E8558[i].unk28 != NULL) {
                             D_801E8558[i].unk28->unk22 = 0x80;
                         }
-                        p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->unk8, 4), (s32)&D_801E8558[i].unk20);
+                        p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 4), (s32)&D_801E8558[i].unk20);
                         if (p != NULL) {
                             p->unk22 = 0x80;
                         }

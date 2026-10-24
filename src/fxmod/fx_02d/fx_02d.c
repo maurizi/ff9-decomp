@@ -10,10 +10,10 @@ s32 fx_02d_op80(s32 mode, SVECTOR *work, Unk800F78A4 *env, Unk80100C78Entry *ent
         work->vy = -0xC8;
         work->vz = env->targets->centerZ;
         D_801E7838 = env;
-        ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->unk8, 2), (s32)work);
-        ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->unk8, 7), (s32)work);
+        ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 2), (s32)work);
+        ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 7), (s32)work);
     } else {
-        return entry->unk0 >= 0x28;
+        return entry->frame >= 0x28;
     }
     return 0;
 }

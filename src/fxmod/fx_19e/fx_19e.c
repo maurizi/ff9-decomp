@@ -10,12 +10,12 @@ s32 fx_19e_op80(s32 mode, Fx19eWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
         work->unk4.vy = env->targets->centerY;
         work->unk4.vz = env->targets->centerZ;
         D_801E7EC8 = env;
-        work->unk0 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->unk8, 1), (s32)&work->unk4);
+        work->unk0 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 1), (s32)&work->unk4);
         if (work->unk0 != NULL) {
             work->unk0->unk22 = 0x80;
         }
     } else {
-        return entry->unk0 >= 0x28;
+        return entry->frame >= 0x28;
     }
     return 0;
 }
@@ -35,7 +35,7 @@ s32 fx_19e_op81(s32 mode, Fx19eWork81 *work, Unk800F78A4 *env, Unk80100C78Entry 
         work->unk8.vy += 0x800;
         ex->btlfx_pointAhead((s16 *)&work->unk18, (s16 *)&work->unk8, 0x514, (s16 *)&work->unk10);
     } else {
-        s32 frame = entry->unk0;
+        s32 frame = entry->frame;
         return func_801E7990(0x10, &work->unk10, frame, 7, 0, &work->unk20) != 0;
     }
     return 0;

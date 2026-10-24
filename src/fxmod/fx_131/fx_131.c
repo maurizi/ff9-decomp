@@ -10,12 +10,12 @@ s32 fx_131_op80(s32 mode, Fx131Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
     } else if (mode == 1) {
         D_801E78EC = env;
         ex->btlfx_getUnitBonePos(0x10, 0xC, (u16 *)&work->unk8);
-        work->unk18 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->unk8, 1), (s32)&work->unk8);
+        work->unk18 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 1), (s32)&work->unk8);
         if (work->unk18 != NULL) {
             work->unk18->unk22 = ex->func_800E7CC4(0x10, 0x80);
         }
     } else {
-        frame = entry->unk0;
+        frame = entry->frame;
         if (work->unk18 != NULL && work->unk18->unk30 == -1) {
             work->unk18 = NULL;
         }
@@ -23,7 +23,7 @@ s32 fx_131_op80(s32 mode, Fx131Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
         ex->btlfx_moveEmitterTo((s32)work->unk18, (s32)&work->unk10);
         if (frame == 8) {
             ex->btlfx_getUnitPos(0x10, (s16 *)&work->unk0);
-            p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->unk8, 2), (s32)&work->unk0);
+            p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 2), (s32)&work->unk0);
             if (p != NULL) {
                 p->unk22 = ex->func_800E7CC4(0x10, 0x80);
             }

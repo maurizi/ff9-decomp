@@ -25,22 +25,22 @@ s32 fx_078_op80(s32 mode, Fx078Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
         work->unk30.vy = 0x1000;
         work->unk30.vz = 0x1000;
         for (i = 0; i < 10; i++) {
-            work->unk4C[i] = ex->Hi_RegisterTexEffModel((BtlUnit9C8 *)ex->btlfx_getFileData(entry->unk8, D_801E7D18[i]),
+            work->unk4C[i] = ex->Hi_RegisterTexEffModel((BtlUnit9C8 *)ex->btlfx_getFileData(entry->file, D_801E7D18[i]),
                                                         0x97, 0x3D40, 0, 0);
         }
-        func_801E7B70(&D_801E8EAC, (u16 *)ex->btlfx_getFileData(entry->unk8, 0xD));
-        func_801E7CA0(&D_801E8EB4, (u16 *)ex->btlfx_getFileData(entry->unk8, 0xC));
-        func_801E7C20(&D_801E8EBC, (u16 *)ex->btlfx_getFileData(entry->unk8, 0x15));
+        func_801E7B70(&D_801E8EAC, (u16 *)ex->btlfx_getFileData(entry->file, 0xD));
+        func_801E7CA0(&D_801E8EB4, (u16 *)ex->btlfx_getFileData(entry->file, 0xC));
+        func_801E7C20(&D_801E8EBC, (u16 *)ex->btlfx_getFileData(entry->file, 0x15));
     } else {
-        frame = entry->unk0;
+        frame = entry->frame;
         switch (frame) {
         case 0:
-            work->unk4 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->unk8, 0x14), (s32)&D_801E8EC4);
-            work->unk0 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->unk8, 2), (s32)&work->unk10);
+            work->unk4 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0x14), (s32)&D_801E8EC4);
+            work->unk0 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 2), (s32)&work->unk10);
             break;
         case 0x26:
-            work->unk8 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->unk8, 0x16), (s32)&work->unk10);
-            work->unkC = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->unk8, 0x17), (s32)&work->unk10);
+            work->unk8 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0x16), (s32)&work->unk10);
+            work->unkC = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0x17), (s32)&work->unk10);
             if (work->unk8 != NULL) {
                 work->unk8->unk14 = (s32)D_801E854C;
                 work->unk8->unk12 = 0x3C;

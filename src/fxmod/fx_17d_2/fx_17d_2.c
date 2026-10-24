@@ -56,11 +56,11 @@ s32 fx_17d_2_op80(s32 mode, Fx17d2Work *work, Unk800F78A4 *env, Unk80100C78Entry
         D_801E8048 = env;
         ex->btlfx_initParticleSystem();
         ex->btlfx_initEffModels(D_801E8058, 5);
-        work->unk78 = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->unk8, 7), 1);
-        work->unk68 = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->unk8, 0xB), 1);
-        work->unk6C = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->unk8, 5), 1);
-        work->unk70 = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->unk8, 0xA), 1);
-        work->unk74 = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->unk8, 2), 1);
+        work->unk78 = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, 7), 1);
+        work->unk68 = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, 0xB), 1);
+        work->unk6C = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, 5), 1);
+        work->unk70 = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, 0xA), 1);
+        work->unk74 = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, 2), 1);
         work->unk28[0] = 0;
         work->unk28[1] = -0x2000;
         work->unk28[2] = 0;
@@ -85,13 +85,13 @@ s32 fx_17d_2_op80(s32 mode, Fx17d2Work *work, Unk800F78A4 *env, Unk80100C78Entry
         env->camera->points[3].vx = work->unk18.vx;
         env->camera->points[3].vy = work->unk18.vy;
         env->camera->points[3].vz = work->unk18.vz;
-        work->unk7C = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->unk8, 3), (s32)&work->unk10);
+        work->unk7C = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 3), (s32)&work->unk10);
         if (work->unk7C != NULL) {
             work->unk7C->unk22 = 0x80;
         }
         for (i = 0; i < 0x14; i++) {
             y = i * 0x140 - 0x400;
-            e = ex->btlfx_poolSpawn((s16 *)entry->unk10);
+            e = ex->btlfx_poolSpawn((s16 *)entry->pool);
             if (e != NULL) {
                 e->unk8.vx = work->unk28[0];
                 e->unk8.vz = work->unk28[2];
@@ -104,7 +104,7 @@ s32 fx_17d_2_op80(s32 mode, Fx17d2Work *work, Unk800F78A4 *env, Unk80100C78Entry
             }
         }
     } else {
-        frame = entry->unk0;
+        frame = entry->frame;
         if (work->unk0 == 0) {
             work->unk54.vz += 2;
             t = (frame << 12) / 60;
@@ -124,13 +124,13 @@ s32 fx_17d_2_op80(s32 mode, Fx17d2Work *work, Unk800F78A4 *env, Unk80100C78Entry
             s3.vx = s3.vy = s3.vz = t / 5 + 0x333;
             ex->Hi_DrawEffModel(&work->unk40, (VECTOR *)work->unk28, (s32)&s3, work->unk70);
             env->unk28 = 0x100;
-            ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->unk8, 1), &work->unk10, NULL, 0xAAA, 0, 1, -1);
+            ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->file, 1), &work->unk10, NULL, 0xAAA, 0, 1, -1);
             env->unk28 = 0;
             ex->btlfx_drawScrollMove(frame * 10, 0x180, 0x100, 0x40, 0x80, 0x180, 0x180);
             ex->btlfx_drawScrollMove(frame * 7, 0x240, 0x100, 0x40, 0x80, 0x280, 0x100);
-            ex->btlfx_drawSpriteAtOt(0xC00, (u8 *)ex->btlfx_getFileData(entry->unk8, 8), frame / 3 + 0x10E, 0x40 - frame / 3,
+            ex->btlfx_drawSpriteAtOt(0xC00, (u8 *)ex->btlfx_getFileData(entry->file, 8), frame / 3 + 0x10E, 0x40 - frame / 3,
                               0, 0xFF, -1);
-            ex->btlfx_drawSpriteAtOt(0xE00, (u8 *)ex->btlfx_getFileData(entry->unk8, 9), frame / 3 + 0xA0, 0x70 - frame / 3,
+            ex->btlfx_drawSpriteAtOt(0xE00, (u8 *)ex->btlfx_getFileData(entry->file, 9), frame / 3 + 0xA0, 0x70 - frame / 3,
                               0, 0xFF, 0x1000 - t / 2);
             col.r = col.g = col.b = 0x84;
             sc.vy = sc.vx = (frame >> 1) + 0x1000;
@@ -148,7 +148,7 @@ s32 fx_17d_2_op80(s32 mode, Fx17d2Work *work, Unk800F78A4 *env, Unk80100C78Entry
                 work->unk7C->unk5C.vz = work->unk40.vz;
             }
             if (frame >= 0x3C) {
-                ex->btlfx_poolClear((Unk800DA1B8 *)entry->unk10);
+                ex->btlfx_poolClear((Unk800DA1B8 *)entry->pool);
                 ex->btlfx_clearEffModels();
                 return 1;
             }

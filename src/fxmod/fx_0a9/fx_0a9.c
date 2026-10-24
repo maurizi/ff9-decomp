@@ -11,12 +11,12 @@ s32 fx_0a9_op80(s32 mode, Fx0a9Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
         work->unk0 = 0;
         D_801E7F58 = env;
         ex->btlfx_getUnitBodyPos(0, 0, (s16 *)&work->unk4);
-        p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->unk8, 3), (s32)&work->unk4);
+        p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 3), (s32)&work->unk4);
         if (p != NULL) {
             p->unk22 = ex->func_800E7CC4(0, 0x18);
         }
     } else {
-        frame = entry->unk0;
+        frame = entry->frame;
         switch (work->unk0) {
         case 0:
             if (frame >= 0x20) {
@@ -49,10 +49,10 @@ s32 func_801E77EC(s32 mode, Fx0a9Part *part, Unk800F78A4 *env, Unk80100C78Entry 
             ((Fx0a9Bolt *)(part->unk18 - 2))->unk0 = ((Fx0a9Bolt *)(part->unk18 - 2))->unk2 = 0xA;
             ((Fx0a9Bolt *)(part->unk18 - 2))->unk1 = 0;
             if (part->unk17 == 0) {
-                ex->btlfx_drawTrail((u8 *)ex->btlfx_getFileData(entry->unk8, 1), 0, NULL, 4, 0x1000, c, 1,
+                ex->btlfx_drawTrail((u8 *)ex->btlfx_getFileData(entry->file, 1), 0, NULL, 4, 0x1000, c, 1,
                                   (u8 *)part->unk18 - 4, 0);
             } else {
-                ex->btlfx_drawTrail((u8 *)ex->btlfx_getFileData(entry->unk8, 4), 0, NULL, 4, 0x1000, c, 1,
+                ex->btlfx_drawTrail((u8 *)ex->btlfx_getFileData(entry->file, 4), 0, NULL, 4, 0x1000, c, 1,
                                   (u8 *)part->unk18 - 4, 2);
             }
         }
@@ -94,7 +94,7 @@ void func_801E79D4(Unk80100C78Entry *entry, SVECTOR *from, SVECTOR *to) {
         ex->btlfx_lerpVec((s16 *)from, (s16 *)to, t, (s16 *)&pos);
         z = ((t * 3) >> 1) + r + ex->btlfx_randCentered(0x100);
         ex->func_800D044C(&pos, (s32)p, 0, (XY32 *)&ang, (s * ((ex->btlfx_rand() & 0x7F) + 0x40)) >> 12, z);
-        part = ex->btlfx_poolSpawn((s16 *)entry->unk10);
+        part = ex->btlfx_poolSpawn((s16 *)entry->pool);
         if (part != NULL) {
             part->unk14 = D_801E8528;
             part->unk16 = 0xA - i;
@@ -131,7 +131,7 @@ s32 fx_0a9_op83(s32 mode, Fx0a9Work83 *work, Unk800F78A4 *env, Unk80100C78Entry 
         func_801E79C8();
         return 0;
     } else {
-        frame = entry->unk0;
+        frame = entry->frame;
         ex->btlfx_getUnitArgBonePos(0x10, 0, (u16 *)&work->unk8);
         if (frame < 0x18) {
             for (i = 0; i < 2; i++) {
@@ -143,7 +143,7 @@ s32 fx_0a9_op83(s32 mode, Fx0a9Work83 *work, Unk800F78A4 *env, Unk80100C78Entry 
             }
         }
         env->unk28 = 0x40;
-        ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->unk8, 6), &work->unk8, NULL,
+        ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->file, 6), &work->unk8, NULL,
                           ex->math_sin((frame << 11) / 24) * 2 / 3, 0, 1, 0x1000 - ((frame & 1) << 11));
         env->unk28 = 0;
         if (frame >= 0x18) {

@@ -29,7 +29,7 @@ s32 fx_112_op80(s32 mode, Fx112Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
     } else if (mode == 1) {
         D_801E8050 = env;
         ex->btlfx_initEffModels(D_801E8060, 1);
-        work->unk20 = ex->Hi_RegisterTexEffModel((BtlUnit9C8 *)ex->btlfx_getFileData(entry->unk8, 1), 0x137, 0xFFFF, 0, 0);
+        work->unk20 = ex->Hi_RegisterTexEffModel((BtlUnit9C8 *)ex->btlfx_getFileData(entry->file, 1), 0x137, 0xFFFF, 0, 0);
         ex->btlfx_getUnitPos(0, (s16 *)&work->unk4);
         ex->btlfx_getUnitRot(0, (s16 *)&work->unkC);
         ex->btlfx_getUnitScale(0, (VECTOR *)&work->unk14);
@@ -40,7 +40,7 @@ s32 fx_112_op80(s32 mode, Fx112Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
         env->camera->points[3].vz = work->unk38.vz;
         work->unk0 = 0;
     } else {
-    frame = entry->unk0;
+    frame = entry->frame;
     switch (work->unk0) {
     case 0:
         if (frame == 0) {
@@ -54,7 +54,7 @@ s32 fx_112_op80(s32 mode, Fx112Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
         if (frame == 4) {
             ex->btlfx_fadeUnitById(0, 0);
             ex->btlfx_getUnitBodyPos(0, 0, (s16 *)&work->unk40);
-            p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->unk8, 3), (s32)&work->unk40);
+            p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 3), (s32)&work->unk40);
             if (p != NULL) {
                 p->unk22 = 0x80;
             }
@@ -74,7 +74,7 @@ s32 fx_112_op80(s32 mode, Fx112Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
         }
         if (frame >= 0x20) {
             work->unk0 = 1;
-            entry->unk0 = -1;
+            entry->frame = -1;
         }
         break;
     case 1:
@@ -93,14 +93,14 @@ s32 fx_112_op80(s32 mode, Fx112Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
         ex->Hi_DrawEffModel(&u.s1.rot, &u.s1.tr, (s32)&u.s1.scale, work->unk20);
         if (frame >= 9) {
             work->unk0 = 2;
-            entry->unk0 = -1;
+            entry->frame = -1;
         }
         break;
     case 2:
         ex->btlfx_getUnitBonePos(0x10, 4, (u16 *)&work->unk48);
         k = frame / 5;
         if (frame == k * 5) {
-            q = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->unk8, 2), (s32)&work->unk48);
+            q = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 2), (s32)&work->unk48);
             if (q != NULL) {
                 q->unk14 = (s32)D_801E8130[k];
                 q->unk12 = 0x14;
@@ -110,14 +110,14 @@ s32 fx_112_op80(s32 mode, Fx112Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
         }
         if (frame >= 0x13) {
             work->unk0 = 3;
-            entry->unk0 = -1;
+            entry->frame = -1;
         }
         break;
     case 3:
         if (frame >= 0x10) {
             work->unk0 = 4;
-            entry->unk0 = -1;
-            work->unk50 = p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->unk8, 4), (s32)&work->unk48);
+            entry->frame = -1;
+            work->unk50 = p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 4), (s32)&work->unk48);
             if (p != NULL) {
                 p->unk22 = 0x80;
             }

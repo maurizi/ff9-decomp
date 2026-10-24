@@ -39,7 +39,7 @@ s32 fx_084_op80(s32 mode, Fx084Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
         ex->btlfx_getUnitBodyPos(0, 0, (s16 *)&work->unk4);
         BTLFX_COPY_SVEC(&D_801E7B98, &work->unk4);
     } else {
-        frame = entry->unk0;
+        frame = entry->frame;
         if (ex->btlfx_isEnemyUnit(0x10) == 0) {
             ex->btlfx_getUnitBodyPos(0x10, 1, (s16 *)&work->unkC);
         } else {
@@ -49,8 +49,8 @@ s32 fx_084_op80(s32 mode, Fx084Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
         switch (work->unk0) {
         case 0:
             work->unk0 = 1;
-            entry->unk0 = -1;
-            work->unk1C = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->unk8, 2), (s32)&D_801E7B98);
+            entry->frame = -1;
+            work->unk1C = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 2), (s32)&D_801E7B98);
             if (work->unk1C != NULL) {
                 work->unk1C->unk22 = 0x10;
             }
@@ -61,8 +61,8 @@ s32 fx_084_op80(s32 mode, Fx084Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
         case 1:
             if (frame >= 0x10) {
                 work->unk0 = 2;
-                entry->unk0 = -1;
-                work->unk20 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->unk8, 6), (s32)&work->unkC);
+                entry->frame = -1;
+                work->unk20 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 6), (s32)&work->unkC);
                 if (work->unk20 != NULL) {
                     work->unk20->unk22 = ex->func_800E7CC4(0x10, 0x18);
                 }
@@ -81,7 +81,7 @@ s32 fx_084_op80(s32 mode, Fx084Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
                 }
             }
             if (frame == 6) {
-                p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->unk8, 1), (s32)&work->unkC);
+                p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 1), (s32)&work->unkC);
                 if (p != NULL) {
                     p->unk22 = ex->func_800E7CC4(0x10, 0x18);
                 }
