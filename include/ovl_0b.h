@@ -2119,41 +2119,41 @@ extern u8 D_80104E75;
 
 struct Unk800F412C;
 typedef struct Unk800F3F10 {
-    s16 unk0; /* dx per frame */
-    s16 unk2; /* dy per frame */
-    s32 unk4; /* frames */
-    void (*unk8)(struct Unk800F412C *); /* on finish */
+    s16 dx; /* per frame */
+    s16 dy; /* per frame */
+    s32 frames; /* frames */
+    void (*onDone)(struct Unk800F412C *); /* called when the slide ends */
 } Unk800F3F10;
 
 /* moving menu sprite */
 typedef struct Unk800F412C {
-    s16 unk0; /* text id */
-    s16 unk2;
-    u8 unk4;
+    s16 text; /* label index into D_800703FC */
+    s16 align; /* 1 = right-aligned (btlui_alignPanelLabel) */
+    u8 visible;
     u8 unk5;
-    u16 unk6; /* frame */
-    u16 unk8; /* x */
-    u16 unkA; /* y */
-    Unk800F3F10 *unkC;
+    u16 frame; /* slide frame */
+    u16 x; /* x */
+    u16 y; /* y */
+    Unk800F3F10 *slide; /* running slide, NULL when still */
 } Unk800F412C; /* 0x10 */
 
 typedef struct {
-    u8 unk0;
+    u8 shown; /* panel drawn (btlui_showPanel) */
     u8 unk1;
-    u8 unk2;
+    u8 highlightRow; /* row of the menu unit, 0xFF none (btlui_findHighlightRow) */
     u8 pad3;
-    Unk800F412C unk4[5];
-    u32 unk54;
-    s32 unk58;
-    u32 unk5C; /* count */
-    s32 unk60;
-    BtlUnit *unk64;
-    BtlUnit *unk68[4];
-    s8 unk78[4];
-    u8 unk7C[4];
-    u8 unk80[4];
-    u8 unk84[4];
-    u8 unk88[4];
+    Unk800F412C labels[5]; /* header labels with their slides */
+    u32 pulse; /* highlight pulse 0..0x1F (btlui_pulsePanelHighlight) */
+    s32 returnState; /* menu state btlui_hideListHeader restores */
+    u32 rowCount; /* party rows */
+    s32 y; /* panel top */
+    BtlUnit *menuUnit; /* unit whose row is highlighted */
+    BtlUnit *units[4]; /* unit per row */
+    s8 rowColor[4]; /* text colour per row (btlui_updatePanelRowColor: 3 KO, 4 low HP) */
+    u8 cantAct[4]; /* per row: the unit can't act (gauge greyed) */
+    u8 slot[4]; /* per row: unit slot id */
+    u8 atbKind[4]; /* per row: 0 normal, 2 slow/stop, 3 haste (gauge colour) */
+    u8 tranceKind[4]; /* per row: 0 no trance gauge, 1 gauge, 2 in trance */
 } Unk80105078;
 extern Unk80105078 *g_btluiPanel;
 extern s32 D_800F9028[];

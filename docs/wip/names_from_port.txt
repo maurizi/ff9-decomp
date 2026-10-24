@@ -1524,3 +1524,6 @@ func_800F4180 btlui_onListLabelOut  # [code] slide done hook: hides label 4, bac
 # include/ovl_0b.h BtlPopupRing: unk1C4=scanUnit
 # include/ovl_0b.h Unk80104F88Entry: unk0=gauges,unk10=unit,unk14=chr,unk18=slot,unk19=learns,unk1A=defaultSet,unk1B=port,unk1C=apCounters,unk31C=apNeeded,unk3DC=fromEquip,unk49C=cursor
 # include/ovl_0b.h Unk80104F88 (g_btlUi): unk0=entries,unk12A4=windows,unk12B6=frozenSide,unk12B7=swdMagPartner,unk12B8=swdMagBlocked,unk12BC=ambush,unk12C0=tick,unk12C4=queueCount,unk12C5=queueHead,unk12C8=queue
+# include/ovl_0b.h Unk80105078 (g_btluiPanel): unk0=shown,unk2=highlightRow,unk4=labels,unk54=pulse,unk58=returnState,unk5C=rowCount,unk60=y,unk64=menuUnit,unk68=units,unk78=rowColor,unk7C=cantAct,unk80=slot,unk84=atbKind,unk88=tranceKind
+# include/ovl_0b.h Unk800F412C (panel label): unk0=text,unk2=align,unk4=visible,unk6=frame,unk8=x,unkA=y,unkC=slide
+# include/ovl_0b.h Unk800F3F10 (label slide): unk0=dx,unk2=dy,unk4=frames,unk8=onDone

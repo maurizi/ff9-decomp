@@ -899,7 +899,7 @@ void btlui_updateHelpSlide(void) {
 }
 
 void btlui_checkHelpClose(void) {
-    if (btlui_getPanel()->unk5C == 0) {
+    if (btlui_getPanel()->rowCount == 0) {
         if (g_btluiHelp.unk0 != 0) {
             g_btluiHelp.unk3 = 1;
         }
@@ -2954,7 +2954,7 @@ void btlui_drawListCursors(Window *arg0) {
     SprtWords *p;
     DR_TPAGE *t;
 
-    if (b->unk2 == 0 || arg0->unk1C != 3 || m->unk0 == 0) {
+    if (b->unk2 == 0 || arg0->unk1C != 3 || m->shown == 0) {
         return;
     }
     c = 0x64808080;
@@ -3099,13 +3099,13 @@ void btlui_cacheHeader(void) {
     RECT r;
 
     p = btlui_getPanel();
-    setRECT(&r, 0xD0, p->unk60 - 4, 0x40, 4);
+    setRECT(&r, 0xD0, p->y - 4, 0x40, 4);
     r.x += g_btluiDispOrigin[g_gameState->unk1C->unk8 & 1][0];
     r.y += g_btluiDispOrigin[g_gameState->unk1C->unk8 & 1][1];
     SetDrawMove((DR_MOVE *)g_primPtr, &r, 0x3C0, 0x1F8);
     addPrim(&g_ot[19], g_primPtr);
     g_primPtr += sizeof(DR_MOVE);
-    setRECT(&r, 0x110, p->unk60 - 4, 0x30, 4);
+    setRECT(&r, 0x110, p->y - 4, 0x30, 4);
     r.x += g_btluiDispOrigin[g_gameState->unk1C->unk8 & 1][0];
     r.y += g_btluiDispOrigin[g_gameState->unk1C->unk8 & 1][1];
     SetDrawMove((DR_MOVE *)g_primPtr, &r, 0x3C0, 0x1FC);
@@ -3116,7 +3116,7 @@ void btlui_cacheHeader(void) {
 void btlui_drawCachedHeader(void) {
     SPRT *a = &g_btluiPrims->unkB0[g_drawBufs.unk0];
     SPRT *b = &g_btluiPrims->unkD8[g_drawBufs.unk0];
-    a->y0 = b->y0 = btlui_getPanel()->unk60 - 4;
+    a->y0 = b->y0 = btlui_getPanel()->y - 4;
     addPrim(&g_ot[18], a);
     addPrim(&g_ot[18], b);
     addPrim(&g_ot[18], &g_btluiPrims->unk100[g_drawBufs.unk0]);
@@ -3148,8 +3148,8 @@ void btlui_initCachedHeader(s32 arg0) {
 void btlui_openListWindow(s32 arg0) {
     Unk80105078 *p = btlui_getPanel();
     Window *w;
-    D_800F8EFC.y = p->unk60;
-    D_800F8EFC.h = p->unk5C * 12 + 8;
+    D_800F8EFC.y = p->y;
+    D_800F8EFC.h = p->rowCount * 12 + 8;
     w = win_open(&D_800F8EFC, 0xA, 0, 1);
     g_btlUi->windows[1] = w;
     win_setDrawContent(w, btlui_drawListWindow);
@@ -3174,11 +3174,11 @@ void btlui_resizeListWindow(void) {
     RECT *r;
     s16 h;
 
-    if (D_80105058.unk0 != 0 && p->unk5C != 0) {
+    if (D_80105058.unk0 != 0 && p->rowCount != 0) {
         w = g_btlUi->windows[1];
         r = &w->unk8;
-        r->y = w->unk2 = p->unk60;
-        h = p->unk5C * 12 + 8;
+        r->y = w->unk2 = p->y;
+        h = p->rowCount * 12 + 8;
         w->unk6 = h;
         if (w->unk1C == 2 || w->unk1C == 3) {
             r->h = h;
@@ -3195,7 +3195,7 @@ u8 btlui_isListWindowOpen(void) {
 }
 
 void btlui_drawListWindow(Window *arg0) {
-    if (btlui_getPanel()->unk0 != 0) {
+    if (btlui_getPanel()->shown != 0) {
         D_800F8F04[D_80105058.unk1](arg0);
     }
 }
@@ -3225,29 +3225,29 @@ void btlui_updatePanel(void) {
     s32 n = 0;
     for (; u != NULL; u = u->next) {
         if (u->flags & 1) {
-            g_btluiPanel->unk68[n] = u;
-            g_btluiPanel->unk7C[n] = (btl_hasStatus(u, (BTL_STATUS_PETRIFY | BTL_STATUS_VENOM | BTL_STATUS_KO | BTL_STATUS_CONFUSE | BTL_STATUS_BERSERK | BTL_STATUS_STOP | BTL_STATUS_SLEEP | BTL_STATUS_FREEZE | BTL_STATUS_JUMP)) & 0xFF) != 0;
-            g_btluiPanel->unk80[n] = (u8)u->flags >> 5;
+            g_btluiPanel->units[n] = u;
+            g_btluiPanel->cantAct[n] = (btl_hasStatus(u, (BTL_STATUS_PETRIFY | BTL_STATUS_VENOM | BTL_STATUS_KO | BTL_STATUS_CONFUSE | BTL_STATUS_BERSERK | BTL_STATUS_STOP | BTL_STATUS_SLEEP | BTL_STATUS_FREEZE | BTL_STATUS_JUMP)) & 0xFF) != 0;
+            g_btluiPanel->slot[n] = (u8)u->flags >> 5;
             if (btl_hasStatus(u, (BTL_STATUS_STOP | BTL_STATUS_SLOW)) & 0xFF) {
-                g_btluiPanel->unk84[n] = 2;
+                g_btluiPanel->atbKind[n] = 2;
             } else if (btl_hasStatus(u, BTL_STATUS_HASTE) & 0xFF) {
-                g_btluiPanel->unk84[n] = 3;
+                g_btluiPanel->atbKind[n] = 3;
             } else {
-                g_btluiPanel->unk84[n] = 0;
+                g_btluiPanel->atbKind[n] = 0;
             }
             if ((u->flags >> 30) & 1) {
-                g_btluiPanel->unk88[n] = (btl_hasStatus(u, BTL_STATUS_TRANCE) & 0xFF) ? 2 : 1;
+                g_btluiPanel->tranceKind[n] = (btl_hasStatus(u, BTL_STATUS_TRANCE) & 0xFF) ? 2 : 1;
             } else {
-                g_btluiPanel->unk88[n] = 0;
+                g_btluiPanel->tranceKind[n] = 0;
             }
             n++;
         }
     }
-    g_btluiPanel->unk64 = g_btlUi->cmdUnit;
-    g_btluiPanel->unk5C = n;
-    g_btluiPanel->unk60 = D_800F9028[n - 1];
+    g_btluiPanel->menuUnit = g_btlUi->cmdUnit;
+    g_btluiPanel->rowCount = n;
+    g_btluiPanel->y = D_800F9028[n - 1];
     g_btluiPanel->unk1 = 0;
-    g_btluiPanel->unk2 = 0xFF;
+    g_btluiPanel->highlightRow = 0xFF;
 }
 
 void btlui_initHighlightPrim(s32 arg0) {
@@ -3314,14 +3314,14 @@ void btlui_initCachedRows(s32 arg0) {
 void btlui_drawPartyPanel(void) {
     u32 i;
     s32 j;
-    if (g_btluiPanel->unk0 != 0 && g_btluiPanel->unk5C != 0) {
+    if (g_btluiPanel->shown != 0 && g_btluiPanel->rowCount != 0) {
         btlui_drawPanelHighlight();
         btlui_drawPanelHeader();
-        for (i = 0; i < g_btluiPanel->unk5C; i++) {
+        for (i = 0; i < g_btluiPanel->rowCount; i++) {
             for (j = 0; j < 4; j++) {
                 btlui_updatePanelRowColor(i);
-                if (g_btluiPanel->unk4[j].unk4 != 0 && D_800F9038[j] != 0) {
-                    D_800F9038[j](g_btluiPanel->unk68[i], i);
+                if (g_btluiPanel->labels[j].visible != 0 && D_800F9038[j] != 0) {
+                    D_800F9038[j](g_btluiPanel->units[i], i);
                 }
             }
         }
@@ -3403,29 +3403,29 @@ void btlui_drawPanelHeader(void) {
     s32 i;
     Unk800F412C *e;
 
-    ui_drawRule(0x8E, g_btluiPanel->unk60, 8, 1, 0xA9, (g_gameState->unk24 >> 18) & 1);
+    ui_drawRule(0x8E, g_btluiPanel->y, 8, 1, 0xA9, (g_gameState->unk24 >> 18) & 1);
     r.x = 0x8E;
-    r.y = g_btluiPanel->unk60 - 3;
+    r.y = g_btluiPanel->y - 3;
     r.w = g_gameState->unkC->disp.w - 0x8E;
     r.h = 7;
     win_setClip(NULL, 7, 4);
-    e = g_btluiPanel->unk4;
+    e = g_btluiPanel->labels;
     for (i = 0; i < 5; e++, i++) {
-        if (e->unk4 != 0) {
-            ui_drawLabel((s16)e->unk8, g_btluiPanel->unk60 + (s16)e->unkA, 7,
-                          ((s32 *)&D_800703FC)[e->unk0], 0);
+        if (e->visible != 0) {
+            ui_drawLabel((s16)e->x, g_btluiPanel->y + (s16)e->y, 7,
+                          ((s32 *)&D_800703FC)[e->text], 0);
         }
     }
     win_setClip(&r, 7, 4);
 }
 
 void btlui_drawPanelHighlight(void) {
-    u8 c = g_btluiPanel->unk2;
+    u8 c = g_btluiPanel->highlightRow;
     POLY_G4 *p;
     s32 y;
     s32 d = 4;
     if (c != 0xFF && D_80104E77 != 0) {
-        y = g_btluiPanel->unk60 + (c * 12 + d);
+        y = g_btluiPanel->y + (c * 12 + d);
         p = &g_btluiPrims->unk310[g_drawBufs.unk0];
         p->y0 = p->y1 = y;
         p->y2 = p->y3 = y + 13;
@@ -3435,31 +3435,31 @@ void btlui_drawPanelHighlight(void) {
 }
 
 void btlui_drawPanelName(s32 arg0, u32 arg1) {
-    s32 k = g_btluiPanel->unk80[arg1];
+    s32 k = g_btluiPanel->slot[arg1];
     SPRT *s = &g_btluiPrims->unk110[k][g_drawBufs.unk0];
-    s->y0 = g_btluiPanel->unk60 + arg1 * 12 + 3;
-    s->clut = D_800F9048[(u8)g_btluiPanel->unk78[arg1]] + ((k >> 1) << 6);
+    s->y0 = g_btluiPanel->y + arg1 * 12 + 3;
+    s->clut = D_800F9048[(u8)g_btluiPanel->rowColor[arg1]] + ((k >> 1) << 6);
     addPrim(&g_ot[16], s);
-    if (arg1 >= g_btluiPanel->unk5C - 1) {
+    if (arg1 >= g_btluiPanel->rowCount - 1) {
         addPrim(&g_ot[16], &g_btluiPrims->unk2F0[g_drawBufs.unk0]);
     }
 }
 
 void btlui_drawPanelGauges(BtlUnit *arg0, s32 arg1) {
-    s32 m = g_btluiPanel->unk88[arg1];
+    s32 m = g_btluiPanel->tranceKind[arg1];
     u8 f = 0;
-    u32 y = g_btluiPanel->unk60 + arg1 * 12;
+    u32 y = g_btluiPanel->y + arg1 * 12;
     if (arg0->cmdIssued == 0) {
-        f = g_btluiPanel->unk7C[arg1] == 0;
+        f = g_btluiPanel->cantAct[arg1] == 0;
     }
     if (m == 2) {
         ui_drawGauge(0x10C, y + 10, 14, arg0->trance, 0xFF, 1, f);
-        ui_drawGauge(0x108, y + 6, 14, arg0->atb, arg0->max->maxAtb, g_btluiPanel->unk84[arg1], f);
+        ui_drawGauge(0x108, y + 6, 14, arg0->atb, arg0->max->maxAtb, g_btluiPanel->atbKind[arg1], f);
     } else if (m == 1) {
-        ui_drawGauge(0x108, y + 6, 14, arg0->atb, arg0->max->maxAtb, g_btluiPanel->unk84[arg1], f);
+        ui_drawGauge(0x108, y + 6, 14, arg0->atb, arg0->max->maxAtb, g_btluiPanel->atbKind[arg1], f);
         ui_drawGauge(0x10C, y + 10, 14, arg0->trance, 0xFF, m, f);
     } else {
-        ui_drawGauge(0x108, y + 8, 14, arg0->atb, arg0->max->maxAtb, g_btluiPanel->unk84[arg1], f);
+        ui_drawGauge(0x108, y + 8, 14, arg0->atb, arg0->max->maxAtb, g_btluiPanel->atbKind[arg1], f);
     }
 }
 
@@ -3467,12 +3467,12 @@ void btlui_cacheRows(void) {
     RECT a = D_800A858C;
     RECT b = D_800A8594;
     s16 h;
-    if (g_btluiPanel->unk0 != 0 && g_btluiPanel->unk5C != 0) {
+    if (g_btluiPanel->shown != 0 && g_btluiPanel->rowCount != 0) {
         a.x += g_btluiDispOrigin[g_gameState->unk1C->unk8 & 1][0];
         b.x += g_btluiDispOrigin[g_gameState->unk1C->unk8 & 1][0];
-        a.y += g_btluiDispOrigin[g_gameState->unk1C->unk8 & 1][1] + g_btluiPanel->unk60;
-        b.y += g_btluiDispOrigin[g_gameState->unk1C->unk8 & 1][1] + g_btluiPanel->unk60;
-        h = g_btluiPanel->unk5C * 12;
+        a.y += g_btluiDispOrigin[g_gameState->unk1C->unk8 & 1][1] + g_btluiPanel->y;
+        b.y += g_btluiDispOrigin[g_gameState->unk1C->unk8 & 1][1] + g_btluiPanel->y;
+        h = g_btluiPanel->rowCount * 12;
         b.h = h;
         a.h = h;
         SetDrawMove((DR_MOVE *)g_primPtr, &a, 0x3C0, 0x1B0);
@@ -3485,13 +3485,13 @@ void btlui_cacheRows(void) {
 }
 
 void btlui_drawCachedRows(void) {
-    s32 y = g_btluiPanel->unk60 + 6;
+    s32 y = g_btluiPanel->y + 6;
     u8 v = 0xB0;
     u32 i;
     SPRT *a;
     SPRT *b;
-    if (g_btluiPanel->unk0 != 0 && g_btluiPanel->unk5C != 0) {
-        for (i = 0; i < g_btluiPanel->unk5C; i++) {
+    if (g_btluiPanel->shown != 0 && g_btluiPanel->rowCount != 0) {
+        for (i = 0; i < g_btluiPanel->rowCount; i++) {
             b = &g_btluiPrims->unk1B0[i][g_drawBufs.unk0];
             a = &g_btluiPrims->unk250[i][g_drawBufs.unk0];
             a->y0 = y;
@@ -3512,15 +3512,15 @@ void btlui_initPanel(void) {
     g_btluiPanel = btlui_alloc(0x8C);
     btlui_updatePanel();
     for (i = 0; i < 5; i++) {
-        g_btluiPanel->unk4[i] = D_800F8FD8[i];
-        btlui_alignPanelLabel(&g_btluiPanel->unk4[i]);
+        g_btluiPanel->labels[i] = D_800F8FD8[i];
+        btlui_alignPanelLabel(&g_btluiPanel->labels[i]);
     }
-    for (i = 0; i < g_btluiPanel->unk5C; i++) {
+    for (i = 0; i < g_btluiPanel->rowCount; i++) {
         btlui_resetGauges(i);
     }
-    g_btluiPanel->unk54 = 0;
-    g_btluiPanel->unk0 = 1;
-    g_btluiPanel->unk64 = 0;
+    g_btluiPanel->pulse = 0;
+    g_btluiPanel->shown = 1;
+    g_btluiPanel->menuUnit = 0;
 }
 
 void btlui_updatePanelAnims(void) {
@@ -3530,26 +3530,26 @@ void btlui_updatePanelAnims(void) {
 }
 
 void btlui_showListHeader(s32 arg0) {
-    btlui_startLabelSlide(&g_btluiPanel->unk4[1], &D_800F9058);
-    btlui_startLabelSlide(&g_btluiPanel->unk4[2], &D_800F9058);
-    btlui_startLabelSlide(&g_btluiPanel->unk4[3], &D_800F9058);
-    btlui_startLabelSlide(&g_btluiPanel->unk4[4], &D_800F9064);
-    g_btluiPanel->unk4[4].unk0 = D_800F9070[arg0].unk0;
+    btlui_startLabelSlide(&g_btluiPanel->labels[1], &D_800F9058);
+    btlui_startLabelSlide(&g_btluiPanel->labels[2], &D_800F9058);
+    btlui_startLabelSlide(&g_btluiPanel->labels[3], &D_800F9058);
+    btlui_startLabelSlide(&g_btluiPanel->labels[4], &D_800F9064);
+    g_btluiPanel->labels[4].text = D_800F9070[arg0].unk0;
     btlui_setMenuState(BTLUI_MENU_CLOSING);
 }
 
 void btlui_hideListHeader(s32 arg0) {
-    g_btluiPanel->unk58 = arg0;
-    btlui_startLabelSlide(&g_btluiPanel->unk4[1], &D_800F9084);
-    btlui_startLabelSlide(&g_btluiPanel->unk4[2], &D_800F9084);
-    btlui_startLabelSlide(&g_btluiPanel->unk4[3], &D_800F9084);
-    btlui_startLabelSlide(&g_btluiPanel->unk4[4], &D_800F9090);
+    g_btluiPanel->returnState = arg0;
+    btlui_startLabelSlide(&g_btluiPanel->labels[1], &D_800F9084);
+    btlui_startLabelSlide(&g_btluiPanel->labels[2], &D_800F9084);
+    btlui_startLabelSlide(&g_btluiPanel->labels[3], &D_800F9084);
+    btlui_startLabelSlide(&g_btluiPanel->labels[4], &D_800F9090);
     btlui_setMenuState(BTLUI_MENU_CLOSING);
 }
 
 void btlui_refreshPanel(void) {
     btlui_updatePanel();
-    if (g_btluiPanel->unk64 != 0) {
+    if (g_btluiPanel->menuUnit != 0) {
         btlui_findHighlightRow();
     }
 }
@@ -3559,11 +3559,11 @@ Unk80105078 *btlui_getPanel(void) {
 }
 
 u8 btlui_isPanelShown(void) {
-    return g_btluiPanel->unk0;
+    return g_btluiPanel->shown;
 }
 
 void btlui_showPanel(u8 arg0) {
-    g_btluiPanel->unk0 = arg0;
+    g_btluiPanel->shown = arg0;
 }
 
 void btlui_initPanelPrims(s32 arg0) {
@@ -3574,17 +3574,17 @@ void btlui_initPanelPrims(s32 arg0) {
 
 void btlui_slidePanelLabels(void) {
     s32 i;
-    Unk800F412C *e = g_btluiPanel->unk4;
+    Unk800F412C *e = g_btluiPanel->labels;
     for (i = 0; i < 5; i++) {
-        if (e->unkC != 0) {
-            e->unk8 += e->unkC->unk0;
-            e->unkA += e->unkC->unk2;
-            if (++e->unk6 >= e->unkC->unk4) {
-                e->unk6 = 0;
-                if (e->unkC->unk8 != 0) {
-                    e->unkC->unk8(e);
+        if (e->slide != 0) {
+            e->x += e->slide->dx;
+            e->y += e->slide->dy;
+            if (++e->frame >= e->slide->frames) {
+                e->frame = 0;
+                if (e->slide->onDone != 0) {
+                    e->slide->onDone(e);
                 }
-                e->unkC = 0;
+                e->slide = 0;
             }
         }
         e++;
@@ -3594,14 +3594,14 @@ void btlui_slidePanelLabels(void) {
 void btlui_pulsePanelHighlight(void) {
     Unk80105078 *p = g_btluiPanel;
     u32 v = D_80104E80 & 0x3F;
-    p->unk54 = v;
+    p->pulse = v;
     if (v >= 0x20) {
-        p->unk54 = 0x3F - v;
+        p->pulse = 0x3F - v;
     }
 }
 
 void btlui_resetGauges(s32 arg0) {
-    BtlUnit *u = g_btluiPanel->unk68[arg0];
+    BtlUnit *u = g_btluiPanel->units[arg0];
     Unk80104F88Entry *e = u->menu;
     Unk80104F88Gauge *g;
     s16 v;
@@ -3616,44 +3616,44 @@ void btlui_resetGauges(s32 arg0) {
 }
 
 void btlui_updatePanelRowColor(s32 arg0) {
-    BtlUnit *u = g_btluiPanel->unk68[arg0];
+    BtlUnit *u = g_btluiPanel->units[arg0];
     s32 hp = u->hp;
     if (hp == 0) {
-        g_btluiPanel->unk78[arg0] = 3;
+        g_btluiPanel->rowColor[arg0] = 3;
         return;
     }
-    g_btluiPanel->unk78[arg0] = ((s32)(u16)(u->max->maxHp / 6) >= hp) << 2;
+    g_btluiPanel->rowColor[arg0] = ((s32)(u16)(u->max->maxHp / 6) >= hp) << 2;
 }
 
 void btlui_alignPanelLabel(Unk800F412C *arg0) {
-    if (arg0->unk2 == 1) {
-        arg0->unk8 -= func_8002AE7C(((u8 **)&D_800703FC)[arg0->unk0]);
+    if (arg0->align == 1) {
+        arg0->x -= func_8002AE7C(((u8 **)&D_800703FC)[arg0->text]);
     }
 }
 
 void btlui_startLabelSlide(Unk800F412C *arg0, Unk800F3F10 *arg1) {
-    arg0->unkC = arg1;
-    arg0->unk4 = 1;
-    arg0->unk6 = 0;
+    arg0->slide = arg1;
+    arg0->visible = 1;
+    arg0->frame = 0;
 }
 
 void btlui_onPanelLabelsOut(void) {
-    g_btluiPanel->unk4[1].unk4 = 0;
-    g_btluiPanel->unk4[2].unk4 = 0;
-    g_btluiPanel->unk4[3].unk4 = 0;
+    g_btluiPanel->labels[1].visible = 0;
+    g_btluiPanel->labels[2].visible = 0;
+    g_btluiPanel->labels[3].visible = 0;
     btlui_setMenuState(BTLUI_MENU_TARGET);
 }
 
 void btlui_onListLabelOut(void) {
-    g_btluiPanel->unk4[4].unk4 = 0;
-    btlui_setMenuState(g_btluiPanel->unk58);
+    g_btluiPanel->labels[4].visible = 0;
+    btlui_setMenuState(g_btluiPanel->returnState);
 }
 
 void btlui_drawPanelHp(BtlUnit *arg0, s32 arg1) {
     u8 buf[8];
     s32 dy = 6;
     text_formatNumber(arg0->menu->gauges[0].unk2, buf, 4, 1);
-    ui_drawDigits(0xD0, g_btluiPanel->unk60 + (arg1 * 12 + dy), 0xE, buf, (u8)g_btluiPanel->unk78[arg1]);
+    ui_drawDigits(0xD0, g_btluiPanel->y + (arg1 * 12 + dy), 0xE, buf, (u8)g_btluiPanel->rowColor[arg1]);
 }
 
 void btlui_drawPanelMp(BtlUnit *arg0, s32 arg1) {
@@ -3664,17 +3664,17 @@ void btlui_drawPanelMp(BtlUnit *arg0, s32 arg1) {
     mp = arg0->menu->gauges[1].unk2 < 0 ? 0 : arg0->menu->gauges[1].unk2;
     c = ((s16)(arg0->max->maxMp / 6) >= mp) << 2;
     text_formatNumber(mp, buf, 3, 1);
-    ui_drawDigits(0xEF, g_btluiPanel->unk60 + (arg1 * 12 + dy), 0xE, buf, c);
+    ui_drawDigits(0xEF, g_btluiPanel->y + (arg1 * 12 + dy), 0xE, buf, c);
 }
 
 void btlui_findHighlightRow(void) {
     BtlUnit *u = g_gameState->unk1C->unk8E4.battle->unitList;
     s32 i = 0;
-    if (g_btluiPanel->unk5C != 0 && D_80104E70 == 0) {
+    if (g_btluiPanel->rowCount != 0 && D_80104E70 == 0) {
         for (; u != 0; u = u->next) {
             if (u->flags & 1) {
-                if (g_btluiPanel->unk64 == u) {
-                    g_btluiPanel->unk2 = i;
+                if (g_btluiPanel->menuUnit == u) {
+                    g_btluiPanel->highlightRow = i;
                     return;
                 }
                 i++;
