@@ -111,6 +111,7 @@ s32 fx_17d_4_op80(s32 mode, Fx17d4Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
     s32 f;
     s32 q;
     s32 g;
+    s32 x6n;
     s32 flag;
     s32 f3;
     s32 n5z;
@@ -118,7 +119,6 @@ s32 fx_17d_4_op80(s32 mode, Fx17d4Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
     s32 n5x;
     s32 k5x;
     s32 fk;
-    s32 x6n;
     s32 s6a;
     s32 c6a;
     s32 k5;
@@ -483,19 +483,19 @@ s32 fx_17d_4_op80(s32 mode, Fx17d4Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
             if (frame < 0x26) {
                 k5x = 0x20;
                 if (frame < 0x1E) {
+                    x6n = frame;
+                    f3 = 0;
                     k5 = 0x1000;
                     g = 0;
                     q_c6 = 0;
                     k = 0;
-                    x6n = frame;
                     flag = 1;
-                    f3 = 0;
                 } else {
+                    x6n = 0x1D;
                     n5y = (frame - 0x1E) << 9;
                     k5x = 0x27;
                     k5 = 0x1000;
                     g = 0;
-                    x6n = 0x1D;
                     f3 = (frame - 0x1E) * 3;
                     q_c6 = 0x1000;
                     if (n5y >= 0x800) {
