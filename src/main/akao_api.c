@@ -421,15 +421,15 @@ s32 akao_uploadBank(s32 *buf, u32 size, s32 wait) {
 
     if (g_akaoFlags.unk0 & 1) {
         if (g_akaoUpload.unk4 == 0) {
-            if (buf[0] == 0x4F414B41) {
-                akao_copy(buf, g_akaoBankHeader, 0x40);
+            if (buf[0] == AKAO_MAGIC) {
+                akao_copy(buf, (u32 *)&g_akaoBankHeader, sizeof(AkaoBankHeader));
                 buf += 16;
-                size -= 0x40;
-                g_akaoUpload.unk4 = g_akaoBankHeader[4];
-                g_akaoBankHeader[6] = slot = g_akaoBankHeader[6];
-                g_akaoUpload.unk8 = g_akaoBankHeader[5];
+                size -= sizeof(AkaoBankHeader);
+                g_akaoUpload.unk4 = g_akaoBankHeader.spuAddr;
+                g_akaoBankHeader.slot = slot = g_akaoBankHeader.slot;
+                g_akaoUpload.unk8 = g_akaoBankHeader.sampleSize;
                 g_akaoUpload.unk0 = &g_akaoInstruments[slot];
-                g_akaoUpload.unkC = g_akaoBankHeader[7] * 16;
+                g_akaoUpload.unkC = g_akaoBankHeader.instCount * 16;
             } else {
                 size = 0;
                 g_akaoUpload.unk8 = 0;
@@ -450,7 +450,7 @@ s32 akao_uploadBank(s32 *buf, u32 size, s32 wait) {
             g_akaoUpload.unk0 = (Unk8005EBB4 *)((s32 *)g_akaoUpload.unk0 + (n >> 2));
             g_akaoUpload.unkC -= n;
             if (g_akaoUpload.unkC == 0) {
-                akao_relocInstruments((s32 *)&g_akaoInstruments[g_akaoBankHeader[6]], &g_akaoInstruments[g_akaoBankHeader[6]], g_akaoBankHeader[4], g_akaoBankHeader[7]);
+                akao_relocInstruments((s32 *)&g_akaoInstruments[g_akaoBankHeader.slot], &g_akaoInstruments[g_akaoBankHeader.slot], g_akaoBankHeader.spuAddr, g_akaoBankHeader.instCount);
             }
         }
         if (size != 0) {
@@ -484,20 +484,20 @@ void func_80056028(s32 a, s32 b) {
 }
 
 s32 func_80056048(s32 *a, s32 b, s32 c) {
-    s32 *h = a;
+    AkaoBankHeader *h = (AkaoBankHeader *)a;
     s32 y;
     s32 id;
     u32 i;
 
     for (i = 0; i < 7; i++) {
-        if (D_800809C0[i] == h[1]) {
+        if (D_800809C0[i] == h->id) {
             D_800809C0[i] = 0;
         }
     }
-    i = h[6] + b * 8;
-    y = h[4];
+    i = h->slot + b * 8;
+    y = h->spuAddr;
     if (b != 0) {
-        id = h[1];
+        id = h->id;
         if ((u32)(id - 500) < 100) {
             y += b << 12;
         } else if ((u32)(id - 200) < 100) {
@@ -507,7 +507,7 @@ s32 func_80056048(s32 *a, s32 b, s32 c) {
             b += 4;
         }
     }
-    D_800809C0[b] = h[1];
+    D_800809C0[b] = h->id;
     akao_loadBankAt(a, c, i, y);
     return 0;
 }

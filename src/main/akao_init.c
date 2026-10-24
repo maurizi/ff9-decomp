@@ -14,7 +14,7 @@ void akao_relocInstruments(s32 *src, Unk8005EBB4 *dst, u32 base, s32 n) {
 }
 
 s32 akao_checkHeader(s32 *a) {
-    return *a - 0x4F414B41; /* "AKAO" */
+    return *a - AKAO_MAGIC;
 }
 
 void akao_onSpuTransferDone(void) {
@@ -52,20 +52,20 @@ s32 akao_loadBank(s32 bank, s32 wait) {
     if (akao_checkHeader((s32 *)bank) != 0) {
         return -1;
     }
-    akao_loadBankAt((s32 *)bank, wait, ((s32 *)bank)[6], ((s32 *)bank)[4]);
+    akao_loadBankAt((s32 *)bank, wait, ((AkaoBankHeader *)bank)->slot, ((AkaoBankHeader *)bank)->spuAddr);
     return 0;
 }
 
 s32 akao_loadBankAt(s32 *buf, s32 wait, s32 slot, u32 addr) {
-    s32 *h;
+    AkaoBankHeader *h;
 
     akao_waitSpuTransfer();
-    h = buf;
-    if (h[0] == 0x4F414B41) {
+    h = (AkaoBankHeader *)buf;
+    if (h->magic == AKAO_MAGIC) {
         SpuSetTransferStartAddr(addr);
         buf += 16;
-        akao_spuWrite(buf + h[7] * 4, h[5]);
-        akao_relocInstruments(buf, &g_akaoInstruments[slot], addr, h[7]);
+        akao_spuWrite(buf + h->instCount * 4, h->sampleSize);
+        akao_relocInstruments(buf, &g_akaoInstruments[slot], addr, h->instCount);
         if (wait != 0) {
             akao_waitSpuTransfer();
         }

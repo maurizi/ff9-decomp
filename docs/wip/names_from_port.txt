@@ -4266,3 +4266,4 @@ func_8005729C akao_lfoSineScaled  # [code] D_8006FB40[5]: akao_lfoSine scaled by
 func_800573CC akao_lfoTriangleScaled  # [code] D_8006FB40[6]: akao_lfoTriangle scaled by bits 10-11
 func_80057534 akao_lfoTableScaled  # [code] D_8006FB40[7]: akao_lfoTable scaled by bits 9-10
 D_8006FB40 g_akaoLfoWaves  # [code] the 8 LFO waveform functions, picked by an opcode argument & 7
+# ff9.h: AkaoBankHeader (g_akaoBankHeader retyped from s32[16]), AKAO_MAGIC; header word indexing in akao_init.c/akao_api.c converted to fields

@@ -4176,7 +4176,20 @@ typedef struct {
     u32 unkC;          /* sample-info bytes left */
 } Unk80083228;
 extern Unk80083228 g_akaoUpload;
-extern s32 g_akaoBankHeader[16]; /* AKAO header copy */
+/* header of an AKAO instrument bank (akao_loadBankAt, akao_uploadBank); instrument entries follow, then the samples */
+#define AKAO_MAGIC 0x4F414B41 /* "AKAO" */
+typedef struct {
+    s32 magic; /* AKAO_MAGIC */
+    s32 id; /* bank id (D_800809C0 keeps the loaded ones) */
+    s32 unk8;
+    s32 unkC;
+    s32 spuAddr; /* where the samples go in SPU RAM */
+    s32 sampleSize;
+    s32 slot; /* first g_akaoInstruments entry */
+    s32 instCount; /* 16-byte instrument entries after the header */
+    s32 unk20[8];
+} AkaoBankHeader; /* 0x40 */
+extern AkaoBankHeader g_akaoBankHeader; /* AKAO header copy */
 extern u32 D_80083230; /* = g_akaoUpload.unk8 */
 
 /* ovl_0a functions called from the main script interpreter */

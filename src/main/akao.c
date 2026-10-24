@@ -2282,7 +2282,7 @@ s32 func_80061FBC(s32 a, s32 b, s32 n, void (*cb)(void)) {
 
     if (g_akaoStream.unkC != 0) {
         h = (AkaoStream *)(g_akaoStream.unk0 + 0x80);
-        if (h->unk0 == 0x4F414B41) {
+        if (h->unk0 == AKAO_MAGIC) {
             SpuSetIRQ(0);
             SpuSetTransferStartAddr(a);
             akao_beginSpuTransfer();
