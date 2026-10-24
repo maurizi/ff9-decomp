@@ -25,7 +25,7 @@
  * sparks block and the unk58 block's i * 0x150 to sp+0xCC (tr = &D_801EBB90[i] gives that but grows the frame by 8);
  * the original's reload register is t8 (all of t0-t7 used somewhere), ours t3); the mode-1 spark init's
  * i * 0x150 copy (s6 there, spilled here). *
- * Pass 28 update: 121 aligned mismatches, 23 ignoring registers (of which 4 are symbol-addend artefacts:
+ * Pass 28 update: 89 aligned mismatches, 23 ignoring registers (of which 4 are symbol-addend artefacts:
  * D_801EA278/D_801EA2D8/D_801EA3E8 = base + 8). Levers: the unk58 block's SVECTOR at sp+0x90 is
  * ((SVECTOR *)out)[1] (vx 0x90, vz 0x94); variables shared between distant blocks become long global pseudos
  * that take callee-saved registers, so block-specific copies (unk4C's dz/dx instead of c/a, the ring loop's lo,
@@ -158,23 +158,22 @@ s32 fx_1f2_op80(s32 mode, Fx1f2Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
     s32 n;
     s32 tint;
     s32 j_m1s;
-    s32 r_m1s;
-    Fx1f2Model *md_r0;
+    s32 lo_m1s;
+    s32 a_m1s;
     s32 lo_r0;
-    s32 i_sp;
+    Fx1f2Model *md_r28;
     Fx1f2Trail *tr_sp;
     s32 lo_sp;
-    s32 i_sp2;
     Fx1f2Trail *tr_sp2;
     SVECTOR *sv_sp2;
     s32 alpha_u4c;
-    s32 j_u4cn;
+    s32 j_u4ce;
     s32 alpha_u4cn;
     s32 j_u58;
-    Fx1f2Trail *tr_u58;
     s32 alpha_u58;
     s32 a_u58;
     SVECTOR *sv_u58;
+    s32 n_u58;
     Fx1f2Model *mm;
     VECTOR *q;
     VECTOR *q2;
@@ -215,17 +214,17 @@ s32 fx_1f2_op80(s32 mode, Fx1f2Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
             D_801EA690[i].unk4C = ex->btlfx_rand() & 0xF;
             for (j_m1s = 0; j_m1s < 0x10;) {
                 if (i & 1) {
-                    a = j_m1s << 8;
+                    a_m1s = j_m1s << 8;
                     c = 1;
-                    r_m1s = (ex->btlfx_rand() & 0xFF) + 0x17E;
+                    r = (ex->btlfx_rand() & 0xFF) + 0x17E;
                 } else {
-                    a = 0x1000 - (j_m1s << 8);
+                    a_m1s = 0x1000 - (j_m1s << 8);
                     c = 0;
-                    r_m1s = (ex->btlfx_rand() & 0xFF) + 0x200;
+                    r = (ex->btlfx_rand() & 0xFF) + 0x200;
                 }
-                lo = (ex->math_sin(a) * r_m1s) >> 12;
-                hi = ex->math_cos(a) * r_m1s;
-                D_801EA690[i].unk50[j_m1s].vx = work->unk110[c].vx - lo;
+                lo_m1s = (ex->math_sin(a_m1s) * r) >> 12;
+                hi = ex->math_cos(a_m1s) * r;
+                D_801EA690[i].unk50[j_m1s].vx = work->unk110[c].vx - lo_m1s;
                 D_801EA690[i].unk50[j_m1s].vz = work->unk110[c].vz - (hi >> 12);
                 D_801EA690[i].unk50[j_m1s].vy = work->unk110[c].vy + (ex->btlfx_rand() & 0xFF) - 0x80;
                 D_801EA690[i].unk50[j_m1s].pad = j_m1s + 1;
@@ -471,13 +470,13 @@ s32 fx_1f2_op80(s32 mode, Fx1f2Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
                 ex->Hi_DrawEffModel(&D_801EA300[i].unk10, &D_801EA300[i].unk18, (s32)&D_801EA300[i].unk28, rg->unk0);
             }
             for (i = 0; i < 2; i++) {
-                md_r0 = &D_801EA410[i];
-                lo_r0 = ex->math_cos(md_r0->unk8.vz) * md_r0->unk4;
-                md_r0->unk10.vx = 0;
-                md_r0->unk10.vz = 0;
-                md_r0->unk10.vy = lo_r0 >> 12;
-                ex->Hi_DrawEffModel(&D_801EA410[i].unk8, &D_801EA410[i].unk10, (s32)&D_801EA410[i].unk20, md_r0->unk0);
-                md_r0->unk4 -= 4;
+                md = &D_801EA410[i];
+                lo_r0 = ex->math_cos(md->unk8.vz) * md->unk4;
+                md->unk10.vx = 0;
+                md->unk10.vz = 0;
+                md->unk10.vy = lo_r0 >> 12;
+                ex->Hi_DrawEffModel(&D_801EA410[i].unk8, &D_801EA410[i].unk10, (s32)&D_801EA410[i].unk20, md->unk0);
+                md->unk4 -= 4;
             }
             D_801EA270.unk8.vy++;
             D_801EA2D0.unk8.vy--;
@@ -531,24 +530,24 @@ s32 fx_1f2_op80(s32 mode, Fx1f2Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
         if (work->unk28 != 0) {
             work->unk28--;
             for (i = 0; i < 4; i++) {
-                md = &D_801EA530[i];
-                md->unk8.vx = D_801EA658.vx + 0x800;
-                md->unk8.vy = D_801EA658.vy;
-                ex->Hi_DrawEffModel(&D_801EA530[i].unk8, &D_801EA530[i].unk10, (s32)&D_801EA530[i].unk20, md->unk0);
+                md_r28 = &D_801EA530[i];
+                md_r28->unk8.vx = D_801EA658.vx + 0x800;
+                md_r28->unk8.vy = D_801EA658.vy;
+                ex->Hi_DrawEffModel(&D_801EA530[i].unk8, &D_801EA530[i].unk10, (s32)&D_801EA530[i].unk20, md_r28->unk0);
                 if (work->unk28 > 0x70) {
                     tint = (0x70 - work->unk28) * 0x10;
-                    ex->Hi_ModifyEffModelRGB(md->unk0, tint, tint, tint);
+                    ex->Hi_ModifyEffModelRGB(md_r28->unk0, tint, tint, tint);
                 }
                 if (work->unk28 < 0x20) {
                     tint = (work->unk28 - 0x20) * 8;
-                    ex->Hi_ModifyEffModelRGB(md->unk0, tint, tint, tint);
+                    ex->Hi_ModifyEffModelRGB(md_r28->unk0, tint, tint, tint);
                 }
             }
             ex->func_800E6624(frame * 8, 0x300, 0x100, 0x20, 0x80, 0x320, 0x100);
             ex->func_800E6624(frame * 0x10, 0x320, 0x180, 0x20, 0x80, 0x360, 0x180);
         }
-        for (i = 0, md = D_801EA530; i < 4; i++) {
-            md[i].unk8.vz += work->unk2C;
+        for (i = 0, md_r28 = D_801EA530; i < 4; i++) {
+            md_r28[i].unk8.vz += work->unk2C;
         }
         if (work->unk50 != 0) {
             work->unk50--;
@@ -612,8 +611,8 @@ s32 fx_1f2_op80(s32 mode, Fx1f2Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
         }
         if (work->unk34 != 0) {
             work->unk34--;
-            for (i_sp = 0; i_sp < 0x10; i_sp++) {
-                tr_sp = &D_801EA690[i_sp];
+            for (i = 0; i < 0x10; i++) {
+                tr_sp = &D_801EA690[i];
                 if (tr_sp->unk4C == 0 && work->unk34 >= 0xD) {
                     ex->func_800316D8(&D_801EA568, &m);
                     m.t[0] = D_801EA650.vx;
@@ -622,7 +621,7 @@ s32 fx_1f2_op80(s32 mode, Fx1f2Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
                     gte_SetRotMatrix(&m);
                     gte_SetTransMatrix(&m);
                     for (j = 0; j < 2; j++) {
-                        if (i_sp & 1) {
+                        if (i & 1) {
                             in[j].vx = ex->btlfx_randRange(0xC00 - j * 0x2400, 0x1800 - j * 0x2400);
                         } else {
                             in[j].vx = ex->btlfx_randRange(j * 0x2400 - 0x1800, j * 0x2400 - 0xC00);
@@ -639,12 +638,12 @@ s32 fx_1f2_op80(s32 mode, Fx1f2Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
                     step.vy = (out[0].vy - out[1].vy) / 9;
                     step.vz = (out[0].vz - out[1].vz) / 9;
                     for (j = 0; j < 9; j++) {
-                        D_801EA690[i_sp].unk50[j].vx = out[0].vx;
-                        D_801EA690[i_sp].unk50[j].vy = out[0].vy;
-                        D_801EA690[i_sp].unk50[j].vz = out[0].vz;
-                        D_801EA690[i_sp].unkD0[j].vx = ex->btlfx_randRange(-0x80, 0x80);
-                        D_801EA690[i_sp].unkD0[j].vy = ex->btlfx_randRange(-0x80, 0x80);
-                        D_801EA690[i_sp].unkD0[j].vz = ex->btlfx_randRange(-0x80, 0x80);
+                        D_801EA690[i].unk50[j].vx = out[0].vx;
+                        D_801EA690[i].unk50[j].vy = out[0].vy;
+                        D_801EA690[i].unk50[j].vz = out[0].vz;
+                        D_801EA690[i].unkD0[j].vx = ex->btlfx_randRange(-0x80, 0x80);
+                        D_801EA690[i].unkD0[j].vy = ex->btlfx_randRange(-0x80, 0x80);
+                        D_801EA690[i].unkD0[j].vz = ex->btlfx_randRange(-0x80, 0x80);
                         out[0].vx -= step.vx;
                         out[0].vy -= step.vy;
                         out[0].vz -= step.vz;
@@ -652,8 +651,8 @@ s32 fx_1f2_op80(s32 mode, Fx1f2Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
                 }
             }
             env->unk28 = 0x80;
-            for (i_sp2 = 0; i_sp2 < 0x10; i_sp2++) {
-                tr_sp2 = &D_801EA690[i_sp2];
+            for (i = 0; i < 0x10; i++) {
+                tr_sp2 = &D_801EA690[i];
                 if (tr_sp2->unk4C != 0) {
                     if (--tr_sp2->unk4C < 8) {
                         s32 n = 9;
@@ -662,12 +661,12 @@ s32 fx_1f2_op80(s32 mode, Fx1f2Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
                         tr_sp2->unk1 = 0;
                         sv_sp2 = tr_sp2->unk4;
                         for (j = 0; j < n; j++) {
-                            D_801EA690[i_sp2].unk50[j].vx += D_801EA690[i_sp2].unkD0[j].vx;
-                            D_801EA690[i_sp2].unk50[j].vy += D_801EA690[i_sp2].unkD0[j].vy;
-                            D_801EA690[i_sp2].unk50[j].vz += D_801EA690[i_sp2].unkD0[j].vz;
-                            sv_sp2->vx = D_801EA690[i_sp2].unk50[j].vx;
-                            sv_sp2->vy = D_801EA690[i_sp2].unk50[j].vy;
-                            sv_sp2->vz = D_801EA690[i_sp2].unk50[j].vz;
+                            D_801EA690[i].unk50[j].vx += D_801EA690[i].unkD0[j].vx;
+                            D_801EA690[i].unk50[j].vy += D_801EA690[i].unkD0[j].vy;
+                            D_801EA690[i].unk50[j].vz += D_801EA690[i].unkD0[j].vz;
+                            sv_sp2->vx = D_801EA690[i].unk50[j].vx;
+                            sv_sp2->vy = D_801EA690[i].unk50[j].vy;
+                            sv_sp2->vz = D_801EA690[i].unk50[j].vz;
                             sv_sp2->pad = work->unk38;
                             sv_sp2++;
                         }
@@ -737,13 +736,13 @@ s32 fx_1f2_op80(s32 mode, Fx1f2Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
                         }
                     } else {
                         tr->unk4C = (ex->btlfx_rand() & 3) + 8;
-                        for (j = 0; j < 9; j++) {
-                            D_801EA690[i].unk50[j].vx = 0;
-                            D_801EA690[i].unk50[j].vy = 0;
-                            D_801EA690[i].unk50[j].vz = 0;
-                            D_801EA690[i].unkD0[j].vx = (ex->btlfx_rand() & 0xF) - 8;
-                            D_801EA690[i].unkD0[j].vy = (ex->btlfx_rand() & 0x1F) - 0x10;
-                            D_801EA690[i].unkD0[j].vz = (ex->btlfx_rand() & 0x1F) - 0x10;
+                        for (j_u4ce = 0; j_u4ce < 9; j_u4ce++) {
+                            D_801EA690[i].unk50[j_u4ce].vx = 0;
+                            D_801EA690[i].unk50[j_u4ce].vy = 0;
+                            D_801EA690[i].unk50[j_u4ce].vz = 0;
+                            D_801EA690[i].unkD0[j_u4ce].vx = (ex->btlfx_rand() & 0xF) - 8;
+                            D_801EA690[i].unkD0[j_u4ce].vy = (ex->btlfx_rand() & 0x1F) - 0x10;
+                            D_801EA690[i].unkD0[j_u4ce].vz = (ex->btlfx_rand() & 0x1F) - 0x10;
                         }
                     }
                 } else {
@@ -753,7 +752,7 @@ s32 fx_1f2_op80(s32 mode, Fx1f2Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
                     tr->unk4C = D_801EA690[i].unk50[a].pad;
                     tr->unk0 = tr->unk2 = 8;
                     tr->unk1 = 0;
-                    for (j_u4cn = 0; j_u4cn < n; j_u4cn++) {
+                    for (j = 0; j < n; j++) {
                         sv->vx = D_801EA690[i].unk50[a].vx;
                         sv->vy = D_801EA690[i].unk50[a].vy;
                         sv->vz = D_801EA690[i].unk50[a].vz;
@@ -778,20 +777,20 @@ s32 fx_1f2_op80(s32 mode, Fx1f2Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
             work->unk58--;
             env->unk28 = 0x40;
             for (i = 0; i < env->unkC->unk24; i++) {
-                tr_u58 = &D_801EBB90[i];
-                if (tr_u58->unk4C != 0) {
-                    if (--tr_u58->unk4C < 8) {
-                        n = 9;
-                        sv_u58 = tr_u58->unk4;
-                        tr_u58->unk0 = tr_u58->unk2 = 8;
-                        tr_u58->unk1 = 0;
-                        for (j_u58 = 0; j_u58 < n; j_u58++) {
-                            tr_u58->unk50[j_u58].vx += tr_u58->unkD0[j_u58].vx;
-                            tr_u58->unk50[j_u58].vy += tr_u58->unkD0[j_u58].vy;
-                            tr_u58->unk50[j_u58].vz += tr_u58->unkD0[j_u58].vz;
-                            sv_u58->vx = tr_u58->unk50[j_u58].vx;
-                            sv_u58->vy = tr_u58->unk50[j_u58].vy;
-                            sv_u58->vz = tr_u58->unk50[j_u58].vz;
+                tr = &D_801EBB90[i];
+                if (tr->unk4C != 0) {
+                    if (--tr->unk4C < 8) {
+                        n_u58 = 9;
+                        sv_u58 = tr->unk4;
+                        tr->unk0 = tr->unk2 = 8;
+                        tr->unk1 = 0;
+                        for (j_u58 = 0; j_u58 < n_u58; j_u58++) {
+                            tr->unk50[j_u58].vx += tr->unkD0[j_u58].vx;
+                            tr->unk50[j_u58].vy += tr->unkD0[j_u58].vy;
+                            tr->unk50[j_u58].vz += tr->unkD0[j_u58].vz;
+                            sv_u58->vx = tr->unk50[j_u58].vx;
+                            sv_u58->vy = tr->unk50[j_u58].vy;
+                            sv_u58->vz = tr->unk50[j_u58].vz;
                             sv_u58->pad = 0x80;
                             sv_u58++;
                         }
@@ -800,20 +799,20 @@ s32 fx_1f2_op80(s32 mode, Fx1f2Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
                             alpha_u58 = work->unk58 << 9;
                         }
                         ex->btlfx_drawTrail((u8 *)ex->btlfx_getFileData(entry->unk8, 6), 0, NULL, frame, 0x1000, alpha_u58, 1,
-                                            (u8 *)tr_u58, 0);
+                                            (u8 *)tr, 0);
                     }
                 } else {
-                    tr_u58->unk4C = 8;
+                    tr->unk4C = 8;
                     ((SVECTOR *)out)[1].vx = D_801EA670[i].vx + ex->btlfx_randRange(-0x40, 0x40);
                     ((SVECTOR *)out)[1].vz = D_801EA670[i].vz + ex->btlfx_randRange(-0x40, 0x40);
                     for (j_u58 = 0; j_u58 < 9; j_u58++) {
                         a_u58 = j_u58 + 1;
-                        tr_u58->unk50[j_u58].vx = ((SVECTOR *)out)[1].vx + ex->btlfx_randRange(-a_u58 * 2, a_u58 * 2);
-                        tr_u58->unk50[j_u58].vz = ((SVECTOR *)out)[1].vz + ex->btlfx_randRange(-a_u58 * 2, a_u58 * 2);
-                        tr_u58->unk50[j_u58].vy = ex->btlfx_randRange(-a_u58 * 4, 0) - (j_u58 << 6);
-                        tr_u58->unkD0[j_u58].vx = ex->btlfx_randRange(-a_u58 * 2, a_u58 * 2);
-                        tr_u58->unkD0[j_u58].vz = ex->btlfx_randRange(-a_u58 * 2, a_u58 * 2);
-                        tr_u58->unkD0[j_u58].vy = -ex->btlfx_rand() & 7;
+                        tr->unk50[j_u58].vx = ((SVECTOR *)out)[1].vx + ex->btlfx_randRange(-a_u58 * 2, a_u58 * 2);
+                        tr->unk50[j_u58].vz = ((SVECTOR *)out)[1].vz + ex->btlfx_randRange(-a_u58 * 2, a_u58 * 2);
+                        tr->unk50[j_u58].vy = ex->btlfx_randRange(-a_u58 * 4, 0) - (j_u58 << 6);
+                        tr->unkD0[j_u58].vx = ex->btlfx_randRange(-a_u58 * 2, a_u58 * 2);
+                        tr->unkD0[j_u58].vz = ex->btlfx_randRange(-a_u58 * 2, a_u58 * 2);
+                        tr->unkD0[j_u58].vy = -ex->btlfx_rand() & 7;
                     }
                 }
             }
