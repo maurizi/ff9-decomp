@@ -30,7 +30,7 @@
 
 /* ---- overlay ---- */
 
-/* DiscSwap.state: index into g_menuDisc{Input,Draw,Poll}Funcs */
+/* DiscChange.state: index into g_discChange{Input,Draw,Poll}Funcs */
 enum {
     DISC_ST_BUSY,        /* fading / checking the disc: no input or poll handler */
     DISC_ST_LID_CLOSED,  /* picture shown, lid closed: Cross checks */
@@ -40,7 +40,7 @@ enum {
 };
 #define DISC_ERROR_FRAMES 180
 
-/* menu_disc_check results */
+/* discChange_check results */
 enum {
     DISC_CHECK_SHELL_OPEN = 1, /* CdlStatShellOpen seen */
     DISC_CHECK_NO_DISC,        /* motor didn't spin up in 600 frames, or CdGetDiskType says no disc */
@@ -59,40 +59,40 @@ enum {
 #define DISC_PICTURE_HALF_BYTES 0x11800 /* 160 * 224 * 2 */
 #define DISC_PICTURE_HALF_SECTORS 0x23
 
-/* Disc swap state (g_menuDisc). */
+/* Disc change state (g_discChange). */
 typedef struct {
     u8 shellOpen;   /* last cd_checkShellOpen */
     u8 state;       /* DISC_ST_* */
     u8 unk2;        /* cleared, never read */
-    u8 checkResult; /* last menu_disc_check (DISC_CHECK_*) */
+    u8 checkResult; /* last discChange_check (DISC_CHECK_*) */
     u8 disc;        /* wanted disc (0-3) */
     u8 pad5;
     s16 nextLocation; /* DISC_REQ_LOCATION, or DISC_NO_LOCATION */
     s32 savedFlags[2]; /* D_80073998[0..1], restored on exit */
     u32 timer;      /* frames in DISC_ST_ERROR */
-} DiscSwap;
-extern DiscSwap g_menuDisc;
+} DiscChange;
+extern DiscChange g_discChange;
 
-extern void (*g_menuDiscInputFuncs[])(void);
-extern void (*g_menuDiscDrawFuncs[])(void);
-extern void (*g_menuDiscPollFuncs[])(void);
-extern RECT g_menuDiscClutRect;
-extern RECT g_menuDiscErrorRect;
-extern s32 g_menuDiscPictureFiles[];
-extern RECT g_menuDiscPictureRect;
-extern u32 g_menuDiscClut[];
+extern void (*g_discChangeInputFuncs[])(void);
+extern void (*g_discChangeDrawFuncs[])(void);
+extern void (*g_discChangePollFuncs[])(void);
+extern RECT g_discChangeClutRect;
+extern RECT g_discChangeErrorRect;
+extern s32 g_discChangePictureFiles[];
+extern RECT g_discChangePictureRect;
+extern u32 g_discChangeClut[];
 
-void menu_disc_drawPicture(void);
-void menu_disc_drawError(void);
-u8 menu_disc_check(void);
-void menu_disc_input(void);
-void menu_disc_draw(void);
-void menu_disc_poll(void);
-void menu_disc_loadImages(void);
-void menu_disc_loadPictureHalf(u32 *, s32);
-void menu_disc_startCheck(void);
-void menu_disc_doCheck(void);
-void menu_disc_closeError(void);
-void menu_disc_resetState(void);
+void discChange_drawPicture(void);
+void discChange_drawError(void);
+u8 discChange_check(void);
+void discChange_input(void);
+void discChange_draw(void);
+void discChange_poll(void);
+void discChange_loadImages(void);
+void discChange_loadPictureHalf(u32 *, s32);
+void discChange_startCheck(void);
+void discChange_doCheck(void);
+void discChange_closeError(void);
+void discChange_resetState(void);
 
 #endif

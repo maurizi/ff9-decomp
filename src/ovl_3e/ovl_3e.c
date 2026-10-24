@@ -1,14 +1,14 @@
 #include "ovl_3e.h"
 
-void menu_disc_init(void) {
+void discChange_init(void) {
     s32 *src;
-    DiscSwap *st;
+    DiscChange *st;
     s32 i;
     u8 r;
     u8 state;
 
     src = D_80073998;
-    st = &g_menuDisc;
+    st = &g_discChange;
     st->unk2 = 0;
     st->timer = 0;
     g_menu.unk9 = 0;
@@ -19,17 +19,17 @@ void menu_disc_init(void) {
         src[i] |= 0x300;
     }
     func_8003556C(0);
-    menu_disc_loadImages();
+    discChange_loadImages();
     cd_stopMotor();
-    g_menuDisc.shellOpen = r = cd_checkShellOpen();
+    g_discChange.shellOpen = r = cd_checkShellOpen();
     state = DISC_ST_LID_CLOSED;
     if (r) {
         state = DISC_ST_LID_OPEN;
     }
-    g_menuDisc.state = state;
+    g_discChange.state = state;
 }
 
-void menu_disc_drawPicture(void) {
+void discChange_drawPicture(void) {
     SprtWords *p;
     s32 i;
     RECT unused[2];
@@ -49,7 +49,7 @@ void menu_disc_drawPicture(void) {
     }
 }
 
-void menu_disc_drawError(void) {
+void discChange_drawError(void) {
     SprtWords *p;
     u32 clut = GetClut(0, 0x1FF) << 16;
 
@@ -66,7 +66,7 @@ void menu_disc_drawError(void) {
     g_primPtr += 8;
 }
 
-u8 menu_disc_check(void) {
+u8 discChange_check(void) {
     CdlLOC loc;
     u8 result[8];
     s32 mask;
@@ -74,7 +74,7 @@ u8 menu_disc_check(void) {
     s32 ret;
     s32 type;
 
-    mask = 1 << g_menuDisc.disc;
+    mask = 1 << g_discChange.disc;
     CdControlB(CdlNop, NULL, result);
     i = 0;
     if (result[0] & CdlStatShellOpen) {
@@ -138,149 +138,149 @@ u8 menu_disc_check(void) {
     return DISC_CHECK_OK;
 }
 
-void menu_disc_update(void) {
-    menu_disc_input();
-    menu_disc_draw();
-    menu_disc_poll();
+void discChange_update(void) {
+    discChange_input();
+    discChange_draw();
+    discChange_poll();
 }
 
-void menu_disc_exit(void) {
+void discChange_exit(void) {
     s32 *dst;
-    DiscSwap *st;
+    DiscChange *st;
     s32 i;
 
-    if (g_menuDisc.nextLocation != DISC_NO_LOCATION) {
-        evt_setNextLocation(g_menuDisc.nextLocation);
+    if (g_discChange.nextLocation != DISC_NO_LOCATION) {
+        evt_setNextLocation(g_discChange.nextLocation);
     }
     dst = D_80073998;
-    st = &g_menuDisc;
+    st = &g_discChange;
     g_gameState->unk0 |= 0x100000;
     for (i = 0; i < 2; i++) {
         dst[i] = st->savedFlags[i];
     }
 }
 
-void menu_disc_input(void) {
+void discChange_input(void) {
     void (*f)(void);
 
     if (!func_8002F810()) {
-        f = g_menuDiscInputFuncs[g_menuDisc.state];
+        f = g_discChangeInputFuncs[g_discChange.state];
         if (f != NULL) {
             f();
         }
     }
 }
 
-void menu_disc_draw(void) {
-    void (*f)(void) = g_menuDiscDrawFuncs[g_menuDisc.state];
+void discChange_draw(void) {
+    void (*f)(void) = g_discChangeDrawFuncs[g_discChange.state];
 
     if (f != NULL) {
         f();
     }
 }
 
-void menu_disc_poll(void) {
-    void (*f)(void) = g_menuDiscPollFuncs[g_menuDisc.state];
+void discChange_poll(void) {
+    void (*f)(void) = g_discChangePollFuncs[g_discChange.state];
 
     if (f != NULL) {
         f();
     }
 }
 
-void menu_disc_loadImages(void) {
+void discChange_loadImages(void) {
     u32 *buf = (u32 *)0x801CDF00;
     s32 size;
-    u32 *clut = g_menuDiscClut;
+    u32 *clut = g_discChangeClut;
     s32 i;
     s32 sector;
 
-    sector = g_gameState->unk20 + file_find(1, g_menuDiscPictureFiles[g_menuDisc.disc & 3])->unk4;
+    sector = g_gameState->unk20 + file_find(1, g_discChangePictureFiles[g_discChange.disc & 3])->unk4;
     size = DISC_PICTURE_HALF_BYTES;
     for (i = 0; i < 2; i++) {
         cd_readSync(sector, size, buf);
-        menu_disc_loadPictureHalf(buf, i);
+        discChange_loadPictureHalf(buf, i);
         sector += DISC_PICTURE_HALF_SECTORS;
     }
-    LoadImage(&g_menuDiscClutRect, clut);
+    LoadImage(&g_discChangeClutRect, clut);
     DrawSync(0);
-    LoadImage(&g_menuDiscErrorRect, clut + 0x80);
+    LoadImage(&g_discChangeErrorRect, clut + 0x80);
     DrawSync(0);
 }
 
-void menu_disc_loadPictureHalf(u32 *p, s32 i) {
-    RECT r = g_menuDiscPictureRect;
+void discChange_loadPictureHalf(u32 *p, s32 i) {
+    RECT r = g_discChangePictureRect;
 
     r.x += i * DISC_PICTURE_W;
     LoadImage(&r, p);
     DrawSync(0);
 }
 
-void menu_disc_inputLidClosed(void) {
+void discChange_inputLidClosed(void) {
     if (g_padRepeat & BTN_CROSS) {
         snd_playSe(SE_CURSOR);
-        menu_disc_startCheck();
+        discChange_startCheck();
     }
 }
 
-void menu_disc_inputLidOpen(void) {
+void discChange_inputLidOpen(void) {
     if (g_padRepeat & BTN_CROSS) {
         snd_playSe(SE_CURSOR);
-        menu_disc_startCheck();
+        discChange_startCheck();
     }
 }
 
-void menu_disc_inputError(void) {
+void discChange_inputError(void) {
     if (g_padRepeat & BTN_CROSS) {
         snd_playSe(SE_CURSOR);
-        g_menuDisc.state = DISC_ST_ERROR_CLOSE;
+        g_discChange.state = DISC_ST_ERROR_CLOSE;
         func_8002FAAC(0x18);
-        func_8002F8A8(menu_disc_closeError);
+        func_8002F8A8(discChange_closeError);
     }
 }
 
-void menu_disc_pollLidClosed(void) {
+void discChange_pollLidClosed(void) {
     u8 r;
 
-    g_menuDisc.shellOpen = r = cd_checkShellOpen();
+    g_discChange.shellOpen = r = cd_checkShellOpen();
     if (r) {
-        g_menuDisc.state = DISC_ST_LID_OPEN;
+        g_discChange.state = DISC_ST_LID_OPEN;
     }
 }
 
-void menu_disc_pollLidOpen(void) {
+void discChange_pollLidOpen(void) {
     u8 r;
 
-    g_menuDisc.shellOpen = r = cd_checkShellOpen();
+    g_discChange.shellOpen = r = cd_checkShellOpen();
     if (!r) {
         snd_playSe(SE_CURSOR);
-        menu_disc_startCheck();
+        discChange_startCheck();
     }
 }
 
-void menu_disc_pollError(void) {
-    if (++g_menuDisc.timer >= DISC_ERROR_FRAMES) {
-        g_menuDisc.state = DISC_ST_ERROR_CLOSE;
+void discChange_pollError(void) {
+    if (++g_discChange.timer >= DISC_ERROR_FRAMES) {
+        g_discChange.state = DISC_ST_ERROR_CLOSE;
         func_8002FAAC(0x18);
-        func_8002F8A8(menu_disc_closeError);
+        func_8002F8A8(discChange_closeError);
     }
 }
 
-void menu_disc_startCheck(void) {
-    g_menuDisc.unk2 = 0;
-    g_menuDisc.state = DISC_ST_BUSY;
+void discChange_startCheck(void) {
+    g_discChange.unk2 = 0;
+    g_discChange.state = DISC_ST_BUSY;
     func_8002FAAC(0x18);
-    func_8002F8A8(menu_disc_doCheck);
+    func_8002F8A8(discChange_doCheck);
 }
 
-void menu_disc_doCheck(void) {
+void discChange_doCheck(void) {
     u8 r;
 
-    g_menuDisc.checkResult = r = menu_disc_check();
-    g_menuDisc.timer = 0;
+    g_discChange.checkResult = r = discChange_check();
+    g_discChange.timer = 0;
     switch (r) {
     case DISC_CHECK_SHELL_OPEN:
     default:
-        g_menuDisc.state = DISC_ST_ERROR;
+        g_discChange.state = DISC_ST_ERROR;
         func_8002FA50(0x18);
         break;
     case DISC_CHECK_OK:
@@ -291,16 +291,16 @@ void menu_disc_doCheck(void) {
     }
 }
 
-void menu_disc_closeError(void) {
-    g_menuDisc.state = DISC_ST_BUSY;
+void discChange_closeError(void) {
+    g_discChange.state = DISC_ST_BUSY;
     func_8002FA50(0x18);
-    func_8002F8A8(menu_disc_resetState);
+    func_8002F8A8(discChange_resetState);
 }
 
-void menu_disc_resetState(void) {
-    g_menuDisc.state = cd_checkShellOpen() ? DISC_ST_LID_OPEN : DISC_ST_LID_CLOSED;
+void discChange_resetState(void) {
+    g_discChange.state = cd_checkShellOpen() ? DISC_ST_LID_OPEN : DISC_ST_LID_CLOSED;
 }
 
-INCLUDE_RODATA("asm/us/ovl_3e/nonmatchings/ovl_3e", g_menuDiscPictureRect);
+INCLUDE_RODATA("asm/us/ovl_3e/nonmatchings/ovl_3e", g_discChangePictureRect);
 
-INCLUDE_RODATA("asm/us/ovl_3e/nonmatchings/ovl_3e", g_menuDiscClut);
+INCLUDE_RODATA("asm/us/ovl_3e/nonmatchings/ovl_3e", g_discChangeClut);
