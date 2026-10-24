@@ -302,12 +302,13 @@ s32 fx_0e3_1_op80(s32 mode, Fx0e31Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
             ex->func_800CFF40(&m3, &work->unk58.vx);
             work->unk58.vx -= 0x800;
             if (frame >= 0x10) {
+                s32 u4 = work->unk4;
                 from.vx = work->unk30.vx;
                 tA = (frame - 0x10) << 7;
                 from.vy = work->unk30.vy;
                 from.vz = work->unk30.vz;
                 w1 = (tA >> 7) + 0x10;
-                ang1 = work->unk4 << 8;
+                ang1 = u4 << 8;
                 n1 = (ex->math_sin(tA >> 2) * 6) >> 12;
                 for (i = 0; i < n1; i++) {
                     k1 = ex->btlfx_rand();
