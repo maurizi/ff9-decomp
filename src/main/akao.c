@@ -213,7 +213,7 @@ u32 akao_tickChannels(AkaoChannel *chans, s32 sub) {
                         } else if (c->unk98 == 0) {
                             g_akaoSeq->unk18 |= bit;
                         }
-                        func_800579B4(c, bit, 0);
+                        akao_stepChannelSlides(c, bit, 0);
                         active &= ~bit;
                     }
                     c++;
@@ -322,7 +322,7 @@ s32 akao_tick(void) {
             }
         }
         if ((g_akaoFlags.unk8 | g_akaoSeq->unk14 | g_akaoSeState.unk8) != 0 || (g_akaoSubSeq != NULL && g_akaoSubSeq->unk14 != 0)) {
-            func_800589F0();
+            akao_updateVoices();
         }
         if (g_akaoSeq->unk4 != 0) {
             akao_tickChannels(g_akaoChannels, 0);
@@ -360,7 +360,7 @@ s32 akao_tick(void) {
                                 g_akaoSeState.unkC |= bit;
                                 g_akaoSeState.unk8 &= ~bit;
                             }
-                            func_800579B4(c, bit, 1);
+                            akao_stepChannelSlides(c, bit, 1);
                         }
                         mask ^= bit;
                     }

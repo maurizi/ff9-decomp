@@ -908,7 +908,7 @@ typedef struct {
     s16 voiceVolL; /* volume left */
     s16 voiceVolR; /* volume right */
 } AkaoChannel; /* 0x134 */
-void func_80057D80(AkaoChannel *, u32); /* channel LFO / pitch update (func_800585E0 passes the channel bit) */
+void akao_calcChannelVoice(AkaoChannel *, u32); /* channel LFO / pitch update (akao_assignVoices passes the channel bit) */
 
 /* 8-byte key-split region of an AKAO instrument (AkaoChannel.unk18) */
 typedef struct {
@@ -1061,7 +1061,7 @@ extern s32 g_akaoTickTimeSum;
 extern u16 g_akaoTickCount; /* tick counter */
 extern s32 g_akaoTickTimes[4]; /* recent tick timings */
 void func_80058F94(void);
-void func_800589F0(void);
+void akao_updateVoices(void);
 void func_8005D628(Unk80080A10 *, AkaoChannel *);
 extern AkaoChannel *D_800809EC;
 extern s32 D_8007F8D8[2];
@@ -1721,7 +1721,7 @@ extern u8 D_8006CAD8[][5];
 extern s32 D_800809B8;
 extern u8 D_80083156; /* tempo scale */
 void akao_execChannel(AkaoChannel *, u32);
-void func_800579B4(AkaoChannel *, u32, s32);
+void akao_stepChannelSlides(AkaoChannel *, u32, s32);
 
 void akao_cmdPlayMusic(Unk80080AA0 *);
 
@@ -2517,8 +2517,8 @@ typedef struct {
     s16 unk4;
     u8 pad6[2];
 } Unk8007F798;
-extern Unk8007F798 D_8007F798[24];
-void func_80058830(); /* (AkaoChannel *, s32 voice) */
+extern Unk8007F798 g_akaoVoiceEnv[24];
+void akao_detachVoice(); /* (AkaoChannel *, s32 voice) */
 
 typedef struct {
     s32 unk0;
@@ -4335,14 +4335,14 @@ extern const u8 D_80010DC4[]; /* default character names: count, then {offset, l
 extern const u8 D_80011EFC[]; /* "ACTIVE TIME EVENT" window title */
 extern const u8 D_80011F10[]; /* "MOGNET" window title */
 
-/* sound driver (AKAO) routines used by func_800589F0 */
+/* sound driver (AKAO) routines used by akao_updateVoices */
 void akao_setReverbVoices(u32 x);
 void akao_setNoiseVoices(u32 x);
 void akao_setPitchModVoices(u32 x);
 void akao_flushVoice(s32 v, AkaoVoiceRegs *p);
-void func_80058118(AkaoChannel *c, u32 bit);
-void func_800585E0(AkaoChannel *ch, u32 mask, u32 keep, u32 *used);
-void func_800588B0(u32 extra);
+void akao_calcSeChannelVoice(AkaoChannel *c, u32 bit);
+void akao_assignVoices(AkaoChannel *ch, u32 mask, u32 keep, u32 *used);
+void akao_readEnvelopes(u32 extra);
 void func_80058990(AkaoChannel *c);
 void func_800589E0(Unk800589E0 *a);
 void func_80059140(u32 *out, u32 m1, u32 m2, u32 extra);

@@ -4933,3 +4933,13 @@ func_8005A320 akao_resumeSeq  # [code] restores the sequence saved in g_akaoSave
 # FIELDS include/ff9.h GameData: battleEndKind=battleResult (second pass), unk570=rainCount
 # FIELDS include/ff9.h GameConfig: unk0_11=battleMsgSpeed
 # ff9.h: BTL_CMD_ENEMY_TURN/COUNTER/DEATH hoisted from ovl_0b.h (used in event.c); CFG_BIT_*/CFG_SHIFT_* hoisted from ovl_34.h (replacing CONFIG_HERE_ICON_OFF/WINDOW_CLASSIC/TARGET_WINDOW_ALWAYS); psyq.h: GPU_STP
+func_800579B4 akao_stepChannelSlides  # [code] per tick volume/pan/pitch slides of a channel (unkB8 counts down, marks the voice dirty on change)
+func_80057D80 akao_calcChannelVoice  # [code] music channel: volume x expression, LFO vibrato/tremolo through the wave function, pan and pitch into the voice registers
+func_80058118 akao_calcSeChannelVoice  # [code] the sound-effect version of akao_calcChannelVoice
+func_800584C8 akao_stealVoice  # [code] no free voice: takes the one with the lowest envelope (D_8007F798) and detaches it from its channels
+func_80058578 akao_findFreeVoice  # [code] first voice with a zero envelope (D_8007F798), 24 if none
+func_800585E0 akao_assignVoices  # [code] per tick: for each active channel of a sequence, picks a SPU voice (free or stolen) and writes its registers
+func_80058830 akao_detachVoice  # [code] removes a SPU voice from every channel of the main and sub sequences
+func_800588B0 akao_readEnvelopes  # [code] reads each voice's envelope level (SpuGetVoiceEnvelope) into D_8007F798, detaching voices that went silent
+D_8007F798 g_akaoVoiceEnv  # [code] per-SPU-voice envelope level for voice allocation (akao_readEnvelopes, akao_findFreeVoice)
+func_800589F0 akao_updateVoices  # [code] per tick: envelopes, then voices for the sub and main sequences' channels, then key-on
