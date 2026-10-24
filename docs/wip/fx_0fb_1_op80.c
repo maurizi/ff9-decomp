@@ -1,4 +1,4 @@
-/* Draft of fx_0fb_1 fx_0fb_1_op80. Status: 81 lines, 51 ignoring registers (build/w/nd.py, which now masks all |imm| >= 10000 data offsets). Cases 3-6 use fx_17a op80's final variable roles (src/fxmod/fx_17a); mode 0/1 are if/else-if branches with one return 0 (as fx_17a); further splits found by build/w/pgreedy.py + gen_regions.py. */
+/* Draft of fx_0fb_1 fx_0fb_1_op80. Status: 60 lines, 39 ignoring registers (build/w/nd.py, which now masks all |imm| >= 10000 data offsets). Cases 3-6 use fx_17a op80's final variable roles (src/fxmod/fx_17a); mode 0/1 are if/else-if branches with one return 0 (as fx_17a); further splits found by build/w/pgreedy.py + gen_regions.py. */
 #include "fxmod/fx_0fb_1.h"
 
 typedef struct {
@@ -100,6 +100,8 @@ s32 fx_0fb_1_op80(s32 mode, Fx0fb1Op80Work *work, Unk800F78A4 *env, Unk80100C78E
     s32 zz5;
     s32 zz6;
     Fx0fb1Rock *zz7;
+    s32 zz8;
+    s32 zz9;
 
     if (mode == 0) {
         init->unk0 = 0xE8;
@@ -124,26 +126,27 @@ s32 fx_0fb_1_op80(s32 mode, Fx0fb1Op80Work *work, Unk800F78A4 *env, Unk80100C78E
         work->unkB8 = ex->Hi_RegisterTexEffModel((BtlUnit9C8 *)ex->btlfx_getFileData(entry->unk8, 0x23), 0x3D, 0x3E81, 0, 0x80);
         work->unkBC = ex->Hi_RegisterTexEffModel((BtlUnit9C8 *)ex->btlfx_getFileData(entry->unk8, 3), 0x138, 0xFFFF, 0, 0x80);
         work->unkC0 = ex->Hi_RegisterTexEffModel((BtlUnit9C8 *)ex->btlfx_getFileData(entry->unk8, 0x8C), 0x3A, 0x3D0A, 0, 0x80);
+        work->unk8C.vz = 0;
+        work->unk80.vz = 0x1000;
         work->unkC.vx = 0;
+        work->unkC.vz = 0;
+        work->unk74.vx = work->unkC.vx;
         work->unkC.vy = -0x1000;
+        work->unk74.vx += 0x5000;
+        work->unk74.vy = work->unkC.vy;
         work->unk8C.vx = -0x400;
         work->unk8C.vy = 0x200;
         work->unk80.vx = 0x1800;
+        work->unk54.vy = work->unkC.vy;
+        work->unk54.vx = work->unkC.vx;
         work->unk80.vy = 0x1800;
-        work->unkC.vz = 0;
         work->unk60.vx = 0x400;
         work->unk60.vy = 0x400;
+        work->unk74.vy += 0x4000;
         work->unk60.vz = 0x400;
-        work->unk74.vx = work->unk54.vx = work->unkC.vx;
-        work->unk74.vy = work->unkC.vy;
         work->unk74.vz = work->unkC.vz;
         work->unk74.vz -= 0x3000;
-        work->unk74.vx += 0x5000;
-        work->unk74.vy += 0x4000;
-        work->unk54.vy = work->unkC.vy;
         work->unk54.vz = work->unkC.vz;
-        work->unk8C.vz = 0;
-        work->unk80.vz = 0x1000;
         work->unk54.vy += 0x1000;
         work->unk54.vz -= 0x2000;
         {
@@ -419,9 +422,9 @@ s32 fx_0fb_1_op80(s32 mode, Fx0fb1Op80Work *work, Unk800F78A4 *env, Unk80100C78E
             ex->btlfx_drawScreenTint((u32 *)(env->unk20 + 1), 1, k, k, k);
         }
         if (frame >= 0x15) {
-            n = frame - 0x14;
-            k = ex->math_sin((n << 10) / 17);
-            ex->func_800D3B6C((u8 *)ex->btlfx_getFileData(entry->unk8, 0xC), &work->unkC, n, k);
+            zz9 = frame - 0x14;
+            k = ex->math_sin((zz9 << 10) / 17);
+            ex->func_800D3B6C((u8 *)ex->btlfx_getFileData(entry->unk8, 0xC), &work->unkC, zz9, k);
         }
         if (frame >= 0x25) {
             work->unk0 = 4;
@@ -551,8 +554,8 @@ s32 fx_0fb_1_op80(s32 mode, Fx0fb1Op80Work *work, Unk800F78A4 *env, Unk80100C78E
         } else if (frame == 1) {
             ex->btlfx_drawScreenTint((u32 *)(env->unk20 + 1), 2, 0xFF, 0xFF, 0);
         } else if (frame < 6) {
-            i = 0xFF - ((frame * 0xFF) / 6);
-            ex->btlfx_drawScreenTint((u32 *)(env->unk20 + 1), 1, i >> 1, i >> 1, i);
+            zz8 = 0xFF - ((frame * 0xFF) / 6);
+            ex->btlfx_drawScreenTint((u32 *)(env->unk20 + 1), 1, zz8 >> 1, zz8 >> 1, zz8);
         }
         work->unk8C.vz += 0x18;
         ex->func_800E651C(D_801F0834, &col, frame);
@@ -587,7 +590,7 @@ s32 fx_0fb_1_op80(s32 mode, Fx0fb1Op80Work *work, Unk800F78A4 *env, Unk80100C78E
         ang.vx = (ex->math_sin(t >> 2) * 2) / 3;
         ang.vy = work->unk4 << 3;
         ang.vz = 0;
-        for (i = 0, f4 = work->unk4 * 0xC; i < 0x80; i++, f4 += 0x20) {
+        for (zz8 = 0, f4 = work->unk4 * 0xC; zz8 < 0x80; zz8++, f4 += 0x20) {
             ex->func_800D044C(&work->unkC, (s32)&at, 0, (XY32 *)&ang, c, f4);
             ex->btlfx_drawParticles((u8 *)ex->btlfx_getFileData(entry->unk8, 7), &at, NULL, 0x260E, 0, 1, g2, 0, 0);
             ang.vx += 0x40;
