@@ -354,8 +354,8 @@ void tm_setup(TmState *s) {
     s->hasLostCard = 0;
     s->quitting = 0;
     s->opponent = (u16)g_gameState->unk1C->unk8B2;
-    s->deck = ((TmLevel *)0x80104000)[s->opponent].unk0;
-    s->aiLevel = ((TmLevel *)0x80104000)[s->opponent].unk1;
+    s->deck = ((TmOpponent *)0x80104000)[s->opponent].deck;
+    s->aiLevel = ((TmOpponent *)0x80104000)[s->opponent].aiLevel;
     s->unk454 = 1;
     tm_taskInit(s);
     s->savedConfig[0] = func_8002C700(0, 0);
@@ -576,8 +576,8 @@ void tm_loadTim(TmTim *tim, s32 x, s32 y, s32 cx, s32 cy) {
     TmTimImage *img;
     s32 tp;
 
-    img = (TmTimImage *)((u8 *)tim + (tim->unk8 + 8));
-    switch ((s32)(tim->unk4 & 3)) {
+    img = (TmTimImage *)((u8 *)tim + (tim->clutLen + 8));
+    switch ((s32)(tim->flags & 3)) {
     case 0:
         tp = 0;
         LoadTPage(img->data, tp, 0, x, y, img->w << 2, img->h);
@@ -687,25 +687,25 @@ void *tm_taskPlayerSelect(u32 *ot, void *p, TmState *s) {
         pad = g_padRepeat;
         c = tm_getHandCard(s, 0, s->cursor);
         if (tm_countInHand(s, 0) != 5) {
-            ry = c->unk10 + 0x34;
+            ry = c->y + 0x34;
             if (s->cursor == 3) {
-                ry = c->unk10 - 0x19;
+                ry = c->y - 0x19;
             }
         } else {
-            ry = c->unk10 + 0x2A;
+            ry = c->y + 0x2A;
             if (s->cursor == 4) {
-                ry = c->unk10 - 0x19;
+                ry = c->y - 0x19;
             }
         }
         if (tm_countInHand(s, 0) != 0) {
             if (tm_countPlayerHand(s, 0) != 5) {
                 w = 0x104;
-                x = c->unkC - 0xF;
-                y = c->unk10 + 6;
+                x = c->x - 0xF;
+                y = c->y + 6;
             } else {
                 w = 0x108;
-                x = c->unkC - 0x12;
-                y = c->unk10 + 3;
+                x = c->x - 0x12;
+                y = c->y + 3;
             }
             tm_setHelpArea(w);
             sp = tm_drawCursor(ot, p, s, x, y, 0);
@@ -753,16 +753,16 @@ void *tm_taskPlayerSelect(u32 *ot, void *p, TmState *s) {
                 s->nameSlide--;
             }
             if (s->nameSlide > 0) {
-                r.w = func_80062794(c->unk0) + 0x10;
+                r.w = func_80062794(c->id) + 0x10;
                 r.x = 0x11A - r.w / 2;
                 if (r.x + r.w >= 0x140) {
-                    r.x = 0x130 - func_80062794(c->unk0);
+                    r.x = 0x130 - func_80062794(c->id);
                 }
                 r.y = ry;
                 r.h = 0x19;
                 k = s->nameSlide * 0xC - 0x78;
                 r.x -= k;
-                text_drawBlock(r.x + 8, r.y + 6, 5, (u8 *)func_8006276C(c->unk0), 0);
+                text_drawBlock(r.x + 8, r.y + 6, 5, (u8 *)func_8006276C(c->id), 0);
                 func_8002DEE4(&r, 5, 2);
             }
             if (pad & 0x20000) {
@@ -798,16 +798,16 @@ void *tm_taskPlayerSet(u32 *ot, void *p, TmState *s) {
     p = tm_drawCursor(ot, p, s, cx - 0xF, cy + 6, 0);
     c = tm_getHandCard(s, 0, s->cursor);
     if (tm_countPlayerHand(s, 0) != 5) {
-        x = c->unkC - 0xF;
-        y = c->unk10 + 6;
+        x = c->x - 0xF;
+        y = c->y + 6;
     } else {
-        x = c->unkC - 0x12;
-        y = c->unk10 + 3;
+        x = c->x - 0x12;
+        y = c->y + 3;
     }
     p = tm_drawCursor(ot, p, s, x, y, 1);
     D_80077DE8.unk0 = cx - 0xD;
     D_80077DE8.unk2 = cy + 7;
-    if (cell->unk0 == 1) {
+    if (cell->state == 1) {
         D_80077DE8.unk8 = text_get(0x22);
     } else {
         D_80077DE8.unk8 = text_get(0x30);
@@ -821,14 +821,14 @@ void *tm_taskPlayerSet(u32 *ot, void *p, TmState *s) {
         return p;
     }
     if (pad & 0x20000) {
-        if (cell->unk0 == 1) {
+        if (cell->state == 1) {
             c = tm_getHandCard(s, 0, s->cursor);
-            c->unkC = cx;
-            c->unk10 = cy;
-            c->unk18 = 1;
-            c->unk1C = 0;
-            cell->unk0 = 0;
-            cell->unk4 = c;
+            c->x = cx;
+            c->y = cy;
+            c->onBoard = 1;
+            c->small = 0;
+            cell->state = 0;
+            cell->card = c;
             s->cursor = 0;
             s->srcX = s->boardX;
             s->srcY = s->boardY;
@@ -919,16 +919,16 @@ void tm_autoPlace(TmState *arg0) {
             x = rand() & 3;
             y = rand() & 3;
             cell = tm_getCell(arg0, x, y);
-        } while (cell->unk0 != 1);
+        } while (cell->state != 1);
         px = x * 0x2B + 0x48;
         py = y * 0x34 + 8;
         card = tm_getHandCard(arg0, 0, 0);
-        card->unkC = px;
-        card->unk10 = py;
-        card->unk1C = 0;
-        card->unk18 = 1;
-        cell->unk0 = 0;
-        cell->unk4 = card;
+        card->x = px;
+        card->y = py;
+        card->small = 0;
+        card->onBoard = 1;
+        cell->state = 0;
+        cell->card = card;
         arg0->srcX = x;
         arg0->srcY = y;
         tm_checkBattles(arg0);
@@ -1099,7 +1099,7 @@ void tm_stockInput(TmState *s) {
             if (s->handCount != 0) {
                 s->handCount--;
                 c = &s->cards[s->handCount];
-                func_80062420(c->unk0, c->unk1, c->unk2, c->unk3, c->unk4, c->unk5);
+                func_80062420(c->id, c->arrows, c->power, c->type, c->pdef, c->mdef);
                 tm_playSe(3);
             }
         } else if (pad & 0x20000) {
@@ -1121,12 +1121,12 @@ void tm_stockInput(TmState *s) {
             d = func_800625A0(tm_getStockCursorId(s), s->copyIdx);
             if (d != (Unk6 *)-1) {
                 c = &s->cards[s->handCount];
-                c->unk0 = d->unk0;
-                c->unk2 = d->unk2;
-                c->unk3 = d->unk3;
-                c->unk4 = d->unk4;
-                c->unk5 = d->unk5;
-                c->unk1 = d->unk1;
+                c->id = d->unk0;
+                c->power = d->unk2;
+                c->type = d->unk3;
+                c->pdef = d->unk4;
+                c->mdef = d->unk5;
+                c->arrows = d->unk1;
                 func_800626D0(tm_getStockCursorId(s), s->copyIdx);
                 s->copyIdx = 0;
                 tm_playSe(5);
@@ -1175,7 +1175,7 @@ void tm_taskChoice2(TmState *s) {
                 s->task = 0x12;
                 s->handCount = 4;
                 c = &s->cards[4];
-                func_80062420(c->unk0, c->unk1, c->unk2, c->unk3, c->unk4, c->unk5);
+                func_80062420(c->id, c->arrows, c->power, c->type, c->pdef, c->mdef);
             }
             win_close(s->msgWin);
             tm_playSe(1);
@@ -1260,8 +1260,8 @@ void tm_taskStageSelect(TmState *s) {
             s->arrowOdds[s->oddsRow]--;
         }
     }
-    s->deck = ((TmLevel *)0x80104000)[s->opponent].unk0;
-    s->aiLevel = ((TmLevel *)0x80104000)[s->opponent].unk1;
+    s->deck = ((TmOpponent *)0x80104000)[s->opponent].deck;
+    s->aiLevel = ((TmOpponent *)0x80104000)[s->opponent].aiLevel;
 }
 
 void tm_taskAwayInfo(TmState *arg0) {
@@ -1364,8 +1364,8 @@ void *tm_taskBattleSelect(u32 *ot, void *p, TmState *s) {
     }
     if (pad & 0x20000) {
         cell = tm_getCell(s, s->boardX, s->boardY);
-        if (cell->unk0 == 0) {
-            c = cell->unk4;
+        if (cell->state == 0) {
+            c = cell->card;
             for (i = 0; i < s->numTargets; i++) {
                 if (c == s->targets[i]) {
                     s->timer = 0;
@@ -1386,8 +1386,8 @@ void *tm_taskBattleSelect(u32 *ot, void *p, TmState *s) {
     D_80077DE8.unk2 = y + 0xF;
     D_80077DE8.unk8 = text_get(0x31);
     cell = tm_getCell(s, s->boardX, s->boardY);
-    if (cell->unk0 == 0) {
-        c = cell->unk4;
+    if (cell->state == 0) {
+        c = cell->card;
         for (i = 0; i < s->numTargets; i++) {
             if (c == s->targets[i]) {
                 D_80077DE8.unk8 = text_get(0x23);
@@ -1454,8 +1454,8 @@ void *tm_taskGetSelect(u32 *ot, void *p, TmState *s) {
         tm_playSe(1);
     }
     sel = tm_getCaptured(s, s->getCursor);
-    x = sel->unkC;
-    y = sel->unk10;
+    x = sel->x;
+    y = sel->y;
     p = tm_drawCursor(ot, p, s, x + 0x22, y + 5, 2);
     D_80077DE8.unk0 = x + 0x25;
     D_80077DE8.unk2 = y + 6;
@@ -1477,16 +1477,16 @@ void *tm_taskGetSelect(u32 *ot, void *p, TmState *s) {
         for (i = 0; i < 10; i++) {
             c = &cards[i];
             if (i < 5) {
-                if (c->unk14 == 1) {
-                    e[k].unk10 = c;
-                    e[k].unk0 = 1;
-                    e[k].unkC = 0;
+                if (c->owner == 1) {
+                    e[k].card = c;
+                    e[k].mode = 1;
+                    e[k].arg = 0;
                     k++;
                 }
-            } else if (c->unk14 == 0 && sel != c) {
-                e[k].unk10 = c;
-                e[k].unk0 = 1;
-                e[k].unkC = 1;
+            } else if (c->owner == 0 && sel != c) {
+                e[k].card = c;
+                e[k].mode = 1;
+                e[k].arg = 1;
                 k++;
             }
         }
@@ -1497,9 +1497,9 @@ void *tm_taskGetSelect(u32 *ot, void *p, TmState *s) {
     cards = s->cards;
     for (i = 0; i < 10; i++) {
         if (i >= 5 && tm_getCaptured(s, s->getCursor) == &cards[i]) {
-            n = func_80062560(cards[i].unk0);
+            n = func_80062560(cards[i].id);
             for (j = 0; j < 5; j++) {
-                if (cards[i].unk0 == cards[j].unk0) {
+                if (cards[i].id == cards[j].id) {
                     n++;
                 }
             }
@@ -1511,7 +1511,7 @@ void *tm_taskGetSelect(u32 *ot, void *p, TmState *s) {
     text_append(buf, text_get(0x34));
     r2.w = func_8002BA68((s32)buf) + 0x10;
     r2.x = 0x52;
-    r2.y = sel->unk10 - 9;
+    r2.y = sel->y - 9;
     r2.h = 0x19;
     text_drawBlock(0x5A, r2.y + 6, 3, buf, 0);
     func_8002DEE4(&r2, 3, 2);
@@ -1550,8 +1550,8 @@ void tm_taskGameQuit(TmState *s) {
             if (s->quitChoice == 0) {
                 for (i = 0; i < s->handCount; i++) {
                     c = &s->cards[i];
-                    func_80062420(c->unk0, c->unk1, c->unk2, c->unk3,
-                                  c->unk4, c->unk5);
+                    func_80062420(c->id, c->arrows, c->power, c->type,
+                                  c->pdef, c->mdef);
                 }
                 s->handCount = 0;
                 func_80062750(1);
@@ -1601,19 +1601,19 @@ void tm_checkBattles(TmState *s) {
     n = 0;
     s->valuesTimer = 0;
     c = tm_getCardAt(s, s->srcX, s->srcY);
-    owner = c->unk14;
-    arrows = c->unk1;
+    owner = c->owner;
+    arrows = c->arrows;
     for (dir = 0; dir < 8; dir++) {
         if (arrows & 1) {
-            pos.unk0 = s->srcX;
-            pos.unk4 = s->srcY;
+            pos.x = s->srcX;
+            pos.y = s->srcY;
             if (tm_getDefender(s, &pos, dir, owner) != NULL) {
-                s->dstX = pos.unk0;
-                y = pos.unk4;
+                s->dstX = pos.x;
+                y = pos.y;
                 s->timer = 0;
                 s->dstY = y;
-                s->attacker = tm_getCell(s, s->srcX, s->srcY)->unk4;
-                s->targets[n] = tm_getCell(s, pos.unk0, pos.unk4)->unk4;
+                s->attacker = tm_getCell(s, s->srcX, s->srcY)->card;
+                s->targets[n] = tm_getCell(s, pos.x, pos.y)->card;
                 n++;
             }
         }
@@ -1638,7 +1638,7 @@ void tm_checkBattles(TmState *s) {
 
 void *tm_taskBattle(u32 *ot, void *vp, TmState *s) {
     SPRT *p = vp;
-    TmPos pos;
+    TmBattle pos;
     TmCard *a;
     TmCard *b;
     TmCard *l;
@@ -1658,8 +1658,8 @@ void *tm_taskBattle(u32 *ot, void *vp, TmState *s) {
         tm_playSe(0xB);
     }
     if (s->timer < 0x23) {
-        s->atkShown = pos.unk0;
-        s->defShown = pos.unk4;
+        s->atkShown = pos.atk;
+        s->defShown = pos.def;
     } else if (s->timer < 0x43) {
         x = (s->srcX + s->dstX) * 43 / 2 + 0x48;
         y = (s->srcY + s->dstY) * 26 + 9;
@@ -1686,27 +1686,27 @@ void *tm_taskBattle(u32 *ot, void *vp, TmState *s) {
         setlen((DR_TPAGE *)p, 1);
         ((DR_TPAGE *)p)->code[0] = (GetTPage(1, 1, 0x200, 0x100) & 0x9FF) | 0xE1000000;
         AddPrim(o, p);
-        s->atkShown = pos.unk0;
+        s->atkShown = pos.atk;
         p = (SPRT *)((DR_TPAGE *)p + 1);
-        s->defShown = pos.unk4;
+        s->defShown = pos.def;
     } else {
         if (s->timer == 0x43) {
-            s->atkRoll = rand() % pos.unk0;
-            s->defRoll = rand() % pos.unk4;
+            s->atkRoll = rand() % pos.atk;
+            s->defRoll = rand() % pos.def;
         }
-        s->atkShown = pos.unk0 - (pos.unk0 - s->atkRoll) * (s->timer - 0x43) / 23;
-        s->defShown = pos.unk4 - (pos.unk4 - s->defRoll) * (s->timer - 0x43) / 23;
+        s->atkShown = pos.atk - (pos.atk - s->atkRoll) * (s->timer - 0x43) / 23;
+        s->defShown = pos.def - (pos.def - s->defRoll) * (s->timer - 0x43) / 23;
         if (s->timer >= 0x5A) {
             e = s->flips;
             tm_clearFlips(s);
-            e->unk0 = 3;
+            e->mode = 3;
             s->flashMode = 3;
             s->task = 5;
             tm_playSe(9);
             if (s->atkRoll > s->defRoll) {
                 l = a;
-                e->unk4 = s->dstX;
-                e->unk8 = s->dstY;
+                e->x = s->dstX;
+                e->y = s->dstY;
                 s->flashNext = 9;
                 s->flipOwner = s->turn;
             } else {
@@ -1715,21 +1715,21 @@ void *tm_taskBattle(u32 *ot, void *vp, TmState *s) {
                 } else {
                     s->flipOwner = 0;
                 }
-                e->unk4 = s->srcX;
-                e->unk8 = s->srcY;
+                e->x = s->srcX;
+                e->y = s->srcY;
                 l = b;
                 s->flashNext = 0xA;
             }
-            switch (l->unk3) {
+            switch (l->type) {
             case 0:
             case 1:
                 if ((rand() & 0x3F) == 0) {
-                    l->unk3 = 2;
+                    l->type = 2;
                 }
                 break;
             case 2:
                 if ((rand() & 0x7F) == 0) {
-                    l->unk3 = 3;
+                    l->type = 3;
                 }
                 break;
             }
@@ -1740,7 +1740,7 @@ void *tm_taskBattle(u32 *ot, void *vp, TmState *s) {
     return p;
 }
 
-void tm_getBattleValues(s32 unused, TmPos *out, TmCard *a, TmCard *b) {
+void tm_getBattleValues(s32 unused, TmBattle *out, TmCard *a, TmCard *b) {
     s32 atk;
     s32 def;
     s32 aatk;
@@ -1751,14 +1751,14 @@ void tm_getBattleValues(s32 unused, TmPos *out, TmCard *a, TmCard *b) {
     s32 bmdef;
 
     atk = 0;
-    aatk = a->unk2;
-    apdef = a->unk4;
-    amdef = a->unk5;
-    batk = b->unk2;
-    bpdef = b->unk4;
-    bmdef = b->unk5;
+    aatk = a->power;
+    apdef = a->pdef;
+    amdef = a->mdef;
+    batk = b->power;
+    bpdef = b->pdef;
+    bmdef = b->mdef;
     def = 0;
-    switch (a->unk3) {
+    switch (a->type) {
     case 0:
         atk = aatk;
         def = bpdef;
@@ -1797,8 +1797,8 @@ void tm_getBattleValues(s32 unused, TmPos *out, TmCard *a, TmCard *b) {
     if (def == 0) {
         def = 1;
     }
-    out->unk0 = atk;
-    out->unk4 = def;
+    out->atk = atk;
+    out->def = def;
 }
 
 void tm_taskBattleWin(TmState *arg0) {
@@ -1885,14 +1885,14 @@ void *tm_drawFlash(u32 *ot, TILE *p, TmState *s) {
         }
     }
     for (i = 0; i < 10; i++) {
-        if (e[i].unk0 != 0) {
+        if (e[i].mode != 0) {
             if (s->phase == 1) {
-                tm_getCell(s, e[i].unk4, e[i].unk8)->unk4->unk14 = s->flipOwner;
+                tm_getCell(s, e[i].x, e[i].y)->card->owner = s->flipOwner;
             }
             if (s->flashMode == 1) {
                 setlen(p, 3);
                 p->code = 0x62;
-                setXY0(p, e[i].unk4 * 43 + 0x48, e[i].unk8 * 52 + 8);
+                setXY0(p, e[i].x * 43 + 0x48, e[i].y * 52 + 8);
                 setWH(p, 0x2A, 0x33);
                 setRGB0(p, c, c, c);
                 AddPrim(ot + 0x1E, p);
@@ -1901,17 +1901,17 @@ void *tm_drawFlash(u32 *ot, TILE *p, TmState *s) {
             if (s->flashMode == 2) {
                 k = 0xFF - t * 9;
                 c = k;
-                d = &tbl.v[e[i].unkC];
-                dx = d->unk4;
-                dy = d->unk8;
-                ex = d->unkC;
-                ey = d->unk10;
-                bx = e[i].unk4 * 43 + 0x48 + d->unk14;
-                by = e[i].unk8 * 52 + 8 + d->unk18;
+                d = &tbl.v[e[i].arg];
+                dx = d->dirX;
+                dy = d->dirY;
+                ex = d->cornerX;
+                ey = d->cornerY;
+                bx = e[i].x * 43 + 0x48 + d->offX;
+                by = e[i].y * 52 + 8 + d->offY;
                 if (k < 0) {
                     c = 0;
                 }
-                switch (d->unk0) {
+                switch (d->shape) {
                 case 0:
                     x = bx;
                     w = 0x2A;
@@ -1965,7 +1965,7 @@ void *tm_drawFlash(u32 *ot, TILE *p, TmState *s) {
             if (s->flashMode == 3) {
                 setlen(p, 3);
                 p->code = 0x62;
-                setXY0(p, e[i].unk4 * 43 + 0x48, e[i].unk8 * 52 + 8);
+                setXY0(p, e[i].x * 43 + 0x48, e[i].y * 52 + 8);
                 setWH(p, 0x2A, 0x33);
                 if (s->timer & 4) {
                     setRGB0(p, 0x80, 0x80, 0x80);
@@ -2014,24 +2014,24 @@ void *tm_drawFlash2(u32 *ot, TILE *p, TmState *s) {
         }
     }
     for (i = 0; i < 10; i++) {
-        if (e[i].unk0 == 1) {
-            card = e[i].unk10;
+        if (e[i].mode == 1) {
+            card = e[i].card;
             if (s->phase == 1) {
-                card->unk14 = e[i].unkC;
+                card->owner = e[i].arg;
             }
             setlen(p, 3);
             p->code = 0x62;
-            p->x0 = card->unkC;
-            p->y0 = card->unk10;
+            p->x0 = card->x;
+            p->y0 = card->y;
             p->w = 0x2A;
             p->h = 0x33;
             p->r0 = c;
             p->g0 = c;
             p->b0 = c;
-            AddPrim(ot + card->unk30 - 1, p);
+            AddPrim(ot + card->depth - 1, p);
             p++;
             SetDrawTPage(p, 0, 0, GetTPage(0, 1, 0, 0));
-            AddPrim(ot + card->unk30 - 1, p);
+            AddPrim(ot + card->depth - 1, p);
             p = (TILE *)((DR_TPAGE *)p + 1);
         }
     }
@@ -2052,9 +2052,9 @@ void tm_clearFlips(TmState *arg0) {
     arg0->timer = 0;
     arg0->phase = 0;
     for (i = 0; i < 10; i++) {
-        p[i].unk0 = 0;
-        p[i].unk4 = 0;
-        p[i].unk8 = 0;
+        p[i].mode = 0;
+        p[i].x = 0;
+        p[i].y = 0;
     }
 }
 
@@ -2078,8 +2078,8 @@ void tm_layoutCards(TmState *s) {
     b = NULL;
     k = 0;
     if (s->task == 7) {
-        a = tm_getCell(s, s->srcX, s->srcY)->unk4;
-        b = tm_getCell(s, s->dstX, s->dstY)->unk4;
+        a = tm_getCell(s, s->srcX, s->srcY)->card;
+        b = tm_getCell(s, s->dstX, s->dstY)->card;
         if ((u32)(s->timer - 0x23) < 0xF) {
             k = s->timer - 0x23;
             if (s->timer >= 0x2A) {
@@ -2097,58 +2097,58 @@ void tm_layoutCards(TmState *s) {
     for (i = 0, n = 0; i < 10; i++) {
         c = &cards[i];
         if (s->task == 0x12 || s->task == 0x23 || s->quitting != 0) {
-            c->unk30 = i + 0x28;
+            c->depth = i + 0x28;
         } else {
-            c->unk30 = 0x3C - i;
+            c->depth = 0x3C - i;
         }
-        if (c->unk14 == 0) {
-            if (c->unk18 == 0) {
-                c->unk1C = 0;
-                c->unk10 = x;
+        if (c->owner == 0) {
+            if (c->onBoard == 0) {
+                c->small = 0;
+                c->y = x;
                 if (tm_countPlayerHand(s, 0) == 5 || s->task == 0x12 || s->task == 0x23 || s->quitting != 0) {
                     x += 0x2A;
-                    c->unkC = 0x108;
-                    c->unk1C = 1;
+                    c->x = 0x108;
+                    c->small = 1;
                 } else {
                     x += 0x34;
-                    c->unk1C = 0;
-                    c->unkC = 0x104;
+                    c->small = 0;
+                    c->x = 0x104;
                 }
             }
             if (s->task == 0x22 && i >= 5) {
                 if (tm_getCaptured(s, s->getCursor) == c) {
-                    c->unkC = 0x16;
+                    c->x = 0x16;
                 } else {
-                    c->unkC = 0x10;
+                    c->x = 0x10;
                 }
             }
             if (s->task == 0xF && i >= 5) {
-                c->unkC = 0x10;
+                c->x = 0x10;
             }
         }
-        if (c->unk14 == 1 && c->unk18 == 0) {
-            c->unk10 = n * 14 + 0x1A;
+        if (c->owner == 1 && c->onBoard == 0) {
+            c->y = n * 14 + 0x1A;
             n++;
-            c->unkC = 0x10;
+            c->x = 0x10;
         }
         if (s->task == 7) {
             if (a == c) {
                 t = s->srcX * 43;
                 m = dx * k / 256 - 0x48;
-                c->unkC = t - m;
+                c->x = t - m;
                 t = s->srcY * 52;
                 m = dy * k / 256 - 8;
-                c->unk10 = t - m;
-                c->unk30 = 0x26;
+                c->y = t - m;
+                c->depth = 0x26;
             }
             if (b == c) {
                 t = s->dstX * 43;
                 m = dx * k / 256 + 0x48;
-                c->unkC = t + m;
+                c->x = t + m;
                 t = s->dstY * 52;
                 m = dy * k / 256 + 8;
-                c->unk10 = t + m;
-                c->unk30 = 0x27;
+                c->y = t + m;
+                c->depth = 0x27;
             }
         }
     }
@@ -2170,13 +2170,13 @@ void *tm_drawCards(u32 *ot, void *p, TmState *s) {
     cards = s->cards;
     for (i = 0; i < 10; i++) {
         c = &cards[i];
-        if (cards[i].unk34 == 0) {
+        if (cards[i].visible == 0) {
             continue;
         }
         a = s->brightness;
         m = s->task;
         b = a;
-        if (m == 6 && cards[i].unk18 == 1) {
+        if (m == 6 && cards[i].onBoard == 1) {
             a = 0x40;
             b = a;
             for (k = 0; k < s->numTargets; k++) {
@@ -2196,7 +2196,7 @@ void *tm_drawCards(u32 *ot, void *p, TmState *s) {
                 b -= (i - 5) * 22;
             }
         }
-        if (m == 1 && c->unk14 == 0 && c->unk18 == 0) {
+        if (m == 1 && c->owner == 0 && c->onBoard == 0) {
             b = 0x40;
             a = b;
             if (c == tm_getHandCard(s, 0, s->cursor)) {
@@ -2204,13 +2204,13 @@ void *tm_drawCards(u32 *ot, void *p, TmState *s) {
                 a = b;
             }
         }
-        z = c->unk30;
+        z = c->depth;
         if (s->task == 6 && a != b) {
             o = ot + z;
             setlen((SPRT *)p, 4);
             ((SPRT *)p)->code = 0x64;
-            ((SPRT *)p)->x0 = c->unkC + 5;
-            ((SPRT *)p)->y0 = c->unk10 + 0x15;
+            ((SPRT *)p)->x0 = c->x + 5;
+            ((SPRT *)p)->y0 = c->y + 0x15;
             ((SPRT *)p)->v0 = 0xF0;
             ((SPRT *)p)->w = 0x20;
             ((SPRT *)p)->h = 0x10;
@@ -2229,37 +2229,37 @@ void *tm_drawCards(u32 *ot, void *p, TmState *s) {
         if (s->task == 0x22 && tm_getCaptured(s, s->getCursor) == c) {
             z = 0x28;
         }
-        if (c->unk8 == 0) {
+        if (c->hidden == 0) {
             sel = 0;
             if (s->task == 0x1D) {
                 sel = s->comboCard == c;
             }
             o2 = ot + z;
-            p = tm_drawArrows(o2, p, s, c->unkC, c->unk10, c->unk1, c->unk1C, b, sel);
-            if (c->unk8 == 0) {
+            p = tm_drawArrows(o2, p, s, c->x, c->y, c->arrows, c->small, b, sel);
+            if (c->hidden == 0) {
                 p = tm_drawCardStats(o2, p, s, c, b);
-                if (c->unk8 == 0) {
-                    p = tm_drawCardFace(o2, p, s, c, a, c->unk1C);
+                if (c->hidden == 0) {
+                    p = tm_drawCardFace(o2, p, s, c, a, c->small);
                 }
             }
         }
-        if (c->unk1C == 0) {
+        if (c->small == 0) {
             setlen((SPRT *)p, 4);
             ((SPRT *)p)->code = 0x64;
-            ((SPRT *)p)->x0 = c->unkC;
-            ((SPRT *)p)->y0 = cards[i].unk10;
+            ((SPRT *)p)->x0 = c->x;
+            ((SPRT *)p)->y0 = cards[i].y;
             ((SPRT *)p)->w = 0x2A;
             ((SPRT *)p)->h = 0x33;
             ((SPRT *)p)->r0 = a;
             ((SPRT *)p)->g0 = a;
             ((SPRT *)p)->b0 = a;
-            if (cards[i].unk14 == 0) {
+            if (cards[i].owner == 0) {
                 ((SPRT *)p)->u0 = 8;
             } else {
                 ((SPRT *)p)->u0 = 0x38;
             }
             ((SPRT *)p)->v0 = 0x40;
-            if (cards[i].unk8 == 1) {
+            if (cards[i].hidden == 1) {
                 ((SPRT *)p)->u0 = 0xC8;
                 ((SPRT *)p)->v0 = 0x40;
             }
@@ -2268,14 +2268,14 @@ void *tm_drawCards(u32 *ot, void *p, TmState *s) {
             p = (SPRT *)p + 1;
         } else {
             SetPolyFT4((POLY_FT4 *)p);
-            ((POLY_FT4 *)p)->x0 = cards[i].unkC;
-            ((POLY_FT4 *)p)->y0 = cards[i].unk10;
-            ((POLY_FT4 *)p)->x1 = cards[i].unkC + 0x22;
-            ((POLY_FT4 *)p)->y1 = cards[i].unk10;
-            ((POLY_FT4 *)p)->x2 = cards[i].unkC;
-            ((POLY_FT4 *)p)->y2 = cards[i].unk10 + 0x29;
-            ((POLY_FT4 *)p)->x3 = cards[i].unkC + 0x22;
-            ((POLY_FT4 *)p)->y3 = cards[i].unk10 + 0x29;
+            ((POLY_FT4 *)p)->x0 = cards[i].x;
+            ((POLY_FT4 *)p)->y0 = cards[i].y;
+            ((POLY_FT4 *)p)->x1 = cards[i].x + 0x22;
+            ((POLY_FT4 *)p)->y1 = cards[i].y;
+            ((POLY_FT4 *)p)->x2 = cards[i].x;
+            ((POLY_FT4 *)p)->y2 = cards[i].y + 0x29;
+            ((POLY_FT4 *)p)->x3 = cards[i].x + 0x22;
+            ((POLY_FT4 *)p)->y3 = cards[i].y + 0x29;
             ((POLY_FT4 *)p)->u0 = 8;
             ((POLY_FT4 *)p)->u1 = 0x32;
             ((POLY_FT4 *)p)->v0 = 0x40;
@@ -2304,14 +2304,14 @@ void tm_startCardMove(TmState *arg0) {
     s32 i;
     TmCard *c = arg0->cards;
     for (i = 0; i < 10; i++) {
-        c[i].unk20 = c[i].unkC << 8;
-        c[i].unk24 = c[i].unk10 << 8;
+        c[i].fromX = c[i].x << 8;
+        c[i].fromY = c[i].y << 8;
         if (i < 5) {
-            c[i].unk28 = 0x10400;
-            c[i].unk2C = i * 0x2000 + 0x1900;
+            c[i].toX = 0x10400;
+            c[i].toY = i * 0x2000 + 0x1900;
         } else {
-            c[i].unk28 = 0x1000;
-            c[i].unk2C = (i - 5) * 0x2000 + 0x1900;
+            c[i].toX = 0x1000;
+            c[i].toY = (i - 5) * 0x2000 + 0x1900;
         }
     }
     arg0->moveFrames = 0x14;
@@ -2337,20 +2337,20 @@ void *tm_taskCardMove(u32 *ot, void *p, TmState *s) {
         cards = s->cards;
         for (i = 0; i < 10; i++) {
             c = &cards[i];
-            a = (c->unk28 - c->unk20) / s->moveFrames;
-            b = (c->unk2C - c->unk24) / s->moveFrames;
-            c->unkC = (c->unk20 + a * s->timer) >> 8;
-            c->unk10 = (c->unk24 + b * s->timer) >> 8;
+            a = (c->toX - c->fromX) / s->moveFrames;
+            b = (c->toY - c->fromY) / s->moveFrames;
+            c->x = (c->fromX + a * s->timer) >> 8;
+            c->y = (c->fromY + b * s->timer) >> 8;
         }
     } else {
         cards = s->cards;
         for (i = 0; i < 10; i++) {
             if (i < 5) {
-                cards[i].unkC = 0x104;
-                cards[i].unk10 = i * 32 + 0x19;
+                cards[i].x = 0x104;
+                cards[i].y = i * 32 + 0x19;
             } else {
-                cards[i].unkC = 0x10;
-                cards[i].unk10 = i * 32 - 0x87;
+                cards[i].x = 0x10;
+                cards[i].y = i * 32 - 0x87;
             }
         }
     }
@@ -2363,7 +2363,7 @@ void *tm_taskCardMove(u32 *ot, void *p, TmState *s) {
             }
         }
         if (s->result == 0) {
-            if (s->hasLostCard != 0 && (&s->cards[5])[s->lostSlot].unk14 == 0) {
+            if (s->hasLostCard != 0 && (&s->cards[5])[s->lostSlot].owner == 0) {
                 s->hasLostCard = 0;
             }
         }
@@ -2386,11 +2386,11 @@ void *tm_taskCardMove(u32 *ot, void *p, TmState *s) {
         for (i = 0; i < 10; i++) {
             c = &cards[i];
             if (i < 5) {
-                if (c->unk14 == 1) {
+                if (c->owner == 1) {
                     if (k != skip && tm_countOwned(s, 1) != 10) {
-                        e[j].unk10 = c;
-                        e[j].unk0 = 1;
-                        e[j].unkC = 0;
+                        e[j].card = c;
+                        e[j].mode = 1;
+                        e[j].arg = 0;
                         j++;
                         flag = 1;
                     }
@@ -2398,12 +2398,12 @@ void *tm_taskCardMove(u32 *ot, void *p, TmState *s) {
                         k++;
                     }
                 }
-            } else if (c->unk14 == 0) {
+            } else if (c->owner == 0) {
                 st = s->result;
                 if (st == 1) {
-                    e[j].unk10 = c;
-                    e[j].unk0 = st;
-                    e[j].unkC = st;
+                    e[j].card = c;
+                    e[j].mode = st;
+                    e[j].arg = st;
                     j++;
                     flag = 1;
                 }
@@ -2431,7 +2431,7 @@ s32 tm_countCapturedBeforeLost(TmState *arg0) {
     s32 i;
     TmCard *c = arg0->cards;
     for (i = 0; i < arg0->lostSlot; i++) {
-        if (c[i + 5].unk14 == 0) {
+        if (c[i + 5].owner == 0) {
             n++;
         }
     }
@@ -2449,7 +2449,7 @@ s32 tm_countKept(TmState *arg0, s32 arg1) {
     }
     n = 0;
     for (i = 0; i < 5; i++) {
-        if (c[i].unk14 == arg1) {
+        if (c[i].owner == arg1) {
             n++;
         }
     }
@@ -2477,13 +2477,13 @@ void tm_nextTrade(TmState *s) {
     found = 0;
     c = s->cards;
     for (i = 0; i < 5; i++) {
-        if ((c + j)[i].unk14 == owner && (c + j)[i].unkC == x) {
+        if ((c + j)[i].owner == owner && (c + j)[i].x == x) {
             found = 1;
             s->tradeCard = &(c + j)[i];
             s->moveFrames = 0xA;
             s->timer = 0;
-            (c + j)[i].unk20 = (c + j)[i].unkC << 8;
-            (c + j)[i].unk24 = (c + j)[i].unk10 << 8;
+            (c + j)[i].fromX = (c + j)[i].x << 8;
+            (c + j)[i].fromY = (c + j)[i].y << 8;
             break;
         }
     }
@@ -2533,29 +2533,29 @@ void *tm_taskCardChange(u32 *ot, void *p, TmState *s) {
 
     c = s->tradeCard;
     if (s->timer < s->moveFrames) {
-        dx = (0x8B00 - c->unk20) / s->moveFrames;
-        dy = (0x5500 - c->unk24) / s->moveFrames;
-        c->unkC = (c->unk20 + dx * s->timer) >> 8;
-        c->unk10 = (c->unk24 + dy * s->timer) >> 8;
+        dx = (0x8B00 - c->fromX) / s->moveFrames;
+        dy = (0x5500 - c->fromY) / s->moveFrames;
+        c->x = (c->fromX + dx * s->timer) >> 8;
+        c->y = (c->fromY + dy * s->timer) >> 8;
         tm_stackHands(s, 0);
         return p;
     }
     if (s->result == 0) {
-        g_tmTradeBadge = func_80062420(c->unk0, c->unk1, c->unk2, c->unk3, c->unk4, c->unk5);
+        g_tmTradeBadge = func_80062420(c->id, c->arrows, c->power, c->type, c->pdef, c->mdef);
     } else {
-        s->lostCard.id = c->unk0;
-        s->lostCard.power = c->unk2;
-        s->lostCard.arrows = c->unk1;
-        s->lostCard.type = c->unk3;
-        s->lostCard.pdef = c->unk4;
-        s->lostCard.mdef = c->unk5;
+        s->lostCard.id = c->id;
+        s->lostCard.power = c->power;
+        s->lostCard.arrows = c->arrows;
+        s->lostCard.type = c->type;
+        s->lostCard.pdef = c->pdef;
+        s->lostCard.mdef = c->mdef;
         s->hasLostCard = 1;
         g_tmTradeBadge = 0;
-        if (func_80062560(c->unk0) == 0) {
+        if (func_80062560(c->id) == 0) {
             found = NULL;
             cards = s->cards;
             for (i = 0; i < 5; i++) {
-                if (cards[i].unk0 == c->unk0) {
+                if (cards[i].id == c->id) {
                     found = &cards[i];
                 }
             }
@@ -2565,10 +2565,10 @@ void *tm_taskCardChange(u32 *ot, void *p, TmState *s) {
         }
     }
     n = s->result;
-    c->unkC = 0x8B;
-    c->unk10 = 0x55;
+    c->x = 0x8B;
+    c->y = 0x55;
     g_tmTradeLost = n;
-    g_tmTradeCardId = id = c->unk0;
+    g_tmTradeCardId = id = c->id;
     func_8002BD54(buf, (u8 *)func_8006276C(id));
     if (g_tmTradeLost == 0) {
         text_append(buf, text_get(3));
@@ -2641,9 +2641,9 @@ void tm_drawTradeWin(Window *w) {
 
 void tm_endTrade(TmState *arg0) {
     TmCard *c = arg0->tradeCard;
-    c->unk30 = 0x28;
-    c->unk20 = c->unkC << 8;
-    c->unk24 = c->unk10 << 8;
+    c->depth = 0x28;
+    c->fromX = c->x << 8;
+    c->fromY = c->y << 8;
     arg0->timer = 0;
     arg0->task = 0x11;
     win_close(arg0->msgWin);
@@ -2657,19 +2657,19 @@ void *tm_taskChange2(u32 *ot, void *p, TmState *s) {
     c = s->tradeCard;
     if (s->timer < s->moveFrames) {
         if (s->result == 0) {
-            dx = (0x10400 - c->unk20) / s->moveFrames;
+            dx = (0x10400 - c->fromX) / s->moveFrames;
         } else {
-            dx = (0x1000 - c->unk20) / s->moveFrames;
+            dx = (0x1000 - c->fromX) / s->moveFrames;
         }
-        dy = (0x9900 - c->unk24) / s->moveFrames;
-        c->unkC = (c->unk20 + dx * s->timer) >> 8;
-        c->unk10 = (c->unk24 + dy * s->timer) >> 8;
+        dy = (0x9900 - c->fromY) / s->moveFrames;
+        c->x = (c->fromX + dx * s->timer) >> 8;
+        c->y = (c->fromY + dy * s->timer) >> 8;
     } else {
-        c->unk10 = 0x19;
+        c->y = 0x19;
         if (s->result == 0) {
-            c->unkC = 0x104;
+            c->x = 0x104;
         } else {
-            c->unkC = 0x10;
+            c->x = 0x10;
         }
         tm_stackHands(s, 1);
         tm_nextTrade(s);
@@ -2702,7 +2702,7 @@ void tm_stackHands(TmState *s, s32 flag) {
         n = 0;
         c = s->cards;
         for (i = 0; i < 10; i++) {
-            if (c[i].unkC == x) {
+            if (c[i].x == x) {
                 n++;
             }
         }
@@ -2712,20 +2712,20 @@ void tm_stackHands(TmState *s, s32 flag) {
         }
         j = 0;
         for (i = 0; i < 5; i++) {
-            if (first[i].unkC == x) {
+            if (first[i].x == x) {
                 if (flag != 0) {
-                    first[i].unk30 = 0x3C - j;
+                    first[i].depth = 0x3C - j;
                 }
-                first[i].unk10 = j * step + 0x19;
+                first[i].y = j * step + 0x19;
                 j++;
             }
         }
         for (i = 0; i < 5; i++) {
-            if (second[i].unkC == x) {
+            if (second[i].x == x) {
                 if (flag != 0) {
-                    second[i].unk30 = 0x3C - j;
+                    second[i].depth = 0x3C - j;
                 }
-                second[i].unk10 = j * step + 0x19;
+                second[i].y = j * step + 0x19;
                 j++;
             }
         }
@@ -2737,7 +2737,7 @@ s32 tm_countInHand(TmState *arg0, s32 arg1) {
     s32 i;
     TmCard *c = arg0->cards;
     for (i = 0; i < 10; i++) {
-        if (c[i].unk14 == arg1 && c[i].unk18 == 0) {
+        if (c[i].owner == arg1 && c[i].onBoard == 0) {
             n++;
         }
     }
@@ -2749,7 +2749,7 @@ s32 tm_countPlayerHand(TmState *arg0, s32 arg1) {
     s32 i;
     TmCard *c = arg0->cards;
     for (i = 0; i < 5; i++) {
-        if (c[i].unk34 != 0 && c[i].unk14 == arg1 && c[i].unk18 == 0) {
+        if (c[i].visible != 0 && c[i].owner == arg1 && c[i].onBoard == 0) {
             n++;
         }
     }
@@ -2761,7 +2761,7 @@ s32 tm_countCaptured(TmState *arg0) {
     s32 i;
     TmCard *c = arg0->cards + 5;
     for (i = 0; i < 5; i++) {
-        if (c[i].unk14 == 0) {
+        if (c[i].owner == 0) {
             n++;
         }
     }
@@ -2775,7 +2775,7 @@ TmCard *tm_getCaptured(TmState *arg0, s32 arg1) {
     i = 0;
     c = base = &arg0->cards[5];
     for (; i < 5; i++, c++) {
-        if (c->unk14 == 0) {
+        if (c->owner == 0) {
             if (arg1 == 0) {
                 return c;
             }
@@ -2790,7 +2790,7 @@ s32 tm_countOnBoard(TmState *arg0, s32 arg1) {
     s32 i;
     TmCard *c = arg0->cards;
     for (i = 0; i < 10; i++) {
-        if (c[i].unk18 == 1 && c[i].unk14 == arg1) {
+        if (c[i].onBoard == 1 && c[i].owner == arg1) {
             n++;
         }
     }
@@ -2802,7 +2802,7 @@ s32 tm_countOwned(TmState *arg0, s32 arg1) {
     s32 i;
     TmCard *c = arg0->cards;
     for (i = 0; i < 10; i++) {
-        if (c[i].unk14 == arg1) {
+        if (c[i].owner == arg1) {
             n++;
         }
     }
@@ -2814,7 +2814,7 @@ TmCard *tm_getHandCard(TmState *arg0, s32 arg1, s32 arg2) {
     s32 i;
     TmCard *c = arg0->cards;
     for (i = 0; i < 10; i++) {
-        if (c[i].unk14 == arg1 && c[i].unk18 == 0) {
+        if (c[i].owner == arg1 && c[i].onBoard == 0) {
             if (arg2 == n) {
                 return &c[i];
             }
@@ -2838,44 +2838,44 @@ void tm_initHands(TmState *s) {
 
     for (i = 0; i < 10; i++) {
         c = &base[i];
-        c->unkC = 0xDC;
-        c->unk10 = i * 30;
-        c->unk14 = 0;
-        c->unk18 = 0;
-        c->unk8 = 0;
-        c->unk30 = 0x28;
-        c->unk0 = 0;
-        c->unk1 = rand();
-        c->unk2 = rand();
+        c->x = 0xDC;
+        c->y = i * 30;
+        c->owner = 0;
+        c->onBoard = 0;
+        c->hidden = 0;
+        c->depth = 0x28;
+        c->id = 0;
+        c->arrows = rand();
+        c->power = rand();
         r = rand() & 3;
         switch (r) {
         case 0:
-            c->unk3 = 0;
+            c->type = 0;
             break;
         case 1:
-            c->unk3 = r;
+            c->type = r;
             break;
         case 2:
-            c->unk3 = 3;
+            c->type = 3;
             break;
         case 3:
-            c->unk3 = 2;
+            c->type = 2;
             break;
         }
-        c->unk4 = rand();
-        c->unk5 = rand();
+        c->pdef = rand();
+        c->mdef = rand();
         id = i;
-        c->unk0 = id;
-        c->unk1 = rand();
-        c->unk2 = tbl[id].unk0;
-        c->unk3 = tbl[id].unk1;
-        c->unk4 = tbl[id].unk2;
-        v = tbl[id].unk3;
-        c->unk34 = 0;
-        c->unk5 = v;
+        c->id = id;
+        c->arrows = rand();
+        c->power = tbl[id].power;
+        c->type = tbl[id].type;
+        c->pdef = tbl[id].pdef;
+        v = tbl[id].mdef;
+        c->visible = 0;
+        c->mdef = v;
     }
     for (i = 5; i < 10; i++) {
-        base[i].unk34 = 0;
+        base[i].visible = 0;
     }
 }
 
@@ -2886,20 +2886,20 @@ void tm_dealEnemyHand(TmState *s) {
     u8 id;
     TmCard *c;
     TmCard *base;
-    TmDeckOdds *odds;
+    TmDeck *odds;
 
-    odds = (TmDeckOdds *)0x80103C00;
+    odds = (TmDeck *)0x80103C00;
     s->lostSlot = rand() % 5;
     base = &s->cards[5];
     for (i = 0; i < 5; i++) {
         c = &base[i];
-        c->unkC = 0x10;
-        c->unk10 = 0x12C;
-        c->unk14 = 1;
-        c->unk18 = 0;
-        c->unk8 = 1;
-        c->unk1C = 0;
-        c->unk30 = 0x28;
+        c->x = 0x10;
+        c->y = 0x12C;
+        c->owner = 1;
+        c->onBoard = 0;
+        c->hidden = 1;
+        c->small = 0;
+        c->depth = 0x28;
         r = rand() & 0xFF;
         if (r < 20) {
             k = 0;
@@ -2934,26 +2934,26 @@ void tm_dealEnemyHand(TmState *s) {
         } else {
             k = 15;
         }
-        id = odds[s->deck].v[k];
+        id = odds[s->deck].ids[k];
         if (s->autoPlay != 0) {
             id = rand() % 100;
         }
         if (i == s->lostSlot && s->hasLostCard != 0) {
-            c->unk0 = s->lostCard.id;
-            c->unk2 = s->lostCard.power;
-            c->unk1 = s->lostCard.arrows;
-            c->unk3 = s->lostCard.type;
-            c->unk4 = s->lostCard.pdef;
-            c->unk5 = s->lostCard.mdef;
+            c->id = s->lostCard.id;
+            c->power = s->lostCard.power;
+            c->arrows = s->lostCard.arrows;
+            c->type = s->lostCard.type;
+            c->pdef = s->lostCard.pdef;
+            c->mdef = s->lostCard.mdef;
         } else {
             tm_makeCard(s, c, id, 1);
         }
-        c->unk34 = 1;
+        c->visible = 1;
     }
 }
 
 TmCard *tm_getCardAt(TmState *arg0, s32 arg1, s32 arg2) {
-    return tm_getCell(arg0, arg1, arg2)->unk4;
+    return tm_getCell(arg0, arg1, arg2)->card;
 }
 
 INCLUDE_RODATA("asm/us/ovl_0d/nonmatchings/tu_800A7E10", g_tmFlashBars);
@@ -2979,13 +2979,13 @@ void tm_showStockCard(TmState *s) {
     for (i = 0; i < 5; i++) {
         p = &q[i];
         if (i < s->handCount) {
-            p->unk34 = 1;
+            p->visible = 1;
         } else {
-            p->unk34 = 0;
+            p->visible = 0;
         }
     }
     for (i = 4, q = &s->cards[9]; i >= 0; i--, q--) {
-        q->unk34 = 0;
+        q->visible = 0;
     }
     i = 5;
     if (s->handCount != i && s->task != 0x1B) {
@@ -3021,25 +3021,25 @@ void tm_showStockCard(TmState *s) {
                     }
                 }
                 d = func_800625A0(tm_getStockCursorId(s), k);
-                c->unkC = 0xC2 + i * 4 + dx;
-                c->unk10 = i + 0x81;
-                c->unk30 = i + 0x28;
-                c->unk34 = 1;
-                c->unk1C = 0;
-                c->unk18 = 1;
-                c->unk14 = 0;
-                c->unk0 = d->unk0;
+                c->x = 0xC2 + i * 4 + dx;
+                c->y = i + 0x81;
+                c->depth = i + 0x28;
+                c->visible = 1;
+                c->small = 0;
+                c->onBoard = 1;
+                c->owner = 0;
+                c->id = d->unk0;
                 if (i == 0) {
-                    c0->unk1 = d->unk1;
+                    c0->arrows = d->unk1;
                 } else {
-                    c->unk1 = 0;
+                    c->arrows = 0;
                 }
-                c->unk2 = d->unk2;
-                c->unk3 = d->unk3;
-                c->unk4 = d->unk4;
-                c->unk5 = d->unk5;
+                c->power = d->unk2;
+                c->type = d->unk3;
+                c->pdef = d->unk4;
+                c->mdef = d->unk5;
                 k++;
-                c->unk34 = 1;
+                c->visible = 1;
                 if (k == n) {
                     k = 0;
                 }
@@ -3048,7 +3048,7 @@ void tm_showStockCard(TmState *s) {
             text_drawBlock(0xD9 - i / 2, 0xC7, 0xFFA, (u8 *)func_8006276C(tm_getStockCursorId(s)), 0);
         }
     } else {
-        s->cards[5].unk34 = 0;
+        s->cards[5].visible = 0;
     }
 }
 
@@ -3056,8 +3056,8 @@ void tm_returnKept(TmState *arg0) {
     s32 i;
     TmCard *c = arg0->cards;
     for (i = 0; i < 5; i++) {
-        if (c[i].unk14 == 0) {
-            func_80062420(c[i].unk0, c[i].unk1, c[i].unk2, c[i].unk3, c[i].unk4, c[i].unk5);
+        if (c[i].owner == 0) {
+            func_80062420(c[i].id, c[i].arrows, c[i].power, c[i].type, c[i].pdef, c[i].mdef);
         }
     }
 }
@@ -3069,7 +3069,7 @@ void tm_returnHand(TmState *arg0) {
         if (arg0->result == 0) {
             tm_levelUpRandom(arg0, &c[i]);
         }
-        func_80062420(c[i].unk0, c[i].unk1, c[i].unk2, c[i].unk3, c[i].unk4, c[i].unk5);
+        func_80062420(c[i].id, c[i].arrows, c[i].power, c[i].type, c[i].pdef, c[i].mdef);
     }
 }
 
@@ -3077,7 +3077,7 @@ void tm_addRandomCard(TmState *arg0, u8 arg1) {
     TmCard c;
     if (func_800625F8() < 0x64) {
         tm_makeCard(arg0, &c, arg1, 1);
-        func_80062420(arg1, c.unk1, c.unk2, c.unk3, c.unk4, c.unk5);
+        func_80062420(arg1, c.arrows, c.power, c.type, c.pdef, c.mdef);
     }
 }
 
@@ -3088,7 +3088,7 @@ s32 tm_getStockCursorId(TmState *arg0) {
 void tm_hideCards(TmState *arg0) {
     s32 i;
     for (i = 9; i >= 0; i--) {
-        arg0->cards[i].unk34 = 0;
+        arg0->cards[i].visible = 0;
     }
 }
 
@@ -3096,24 +3096,24 @@ void tm_showCards(TmState *arg0) {
     s32 i;
     s32 one = 1;
     for (i = 9; i >= 0; i--) {
-        arg0->cards[i].unk34 = one;
+        arg0->cards[i].visible = one;
     }
 }
 
 void tm_levelUpStat(TmState *s, TmCard *c, s32 stat) {
     TmCard base;
 
-    tm_makeCard(s, &base, c->unk0, 0);
-    if (stat == 0 && c->unk2 != base.unk2) {
-        c->unk2++;
+    tm_makeCard(s, &base, c->id, 0);
+    if (stat == 0 && c->power != base.power) {
+        c->power++;
     }
-    if (stat == 1 && c->unk4 != base.unk4) {
-        c->unk4++;
+    if (stat == 1 && c->pdef != base.pdef) {
+        c->pdef++;
     }
-    if (stat == 2 && c->unk5 != base.unk5) {
-        c->unk5++;
+    if (stat == 2 && c->mdef != base.mdef) {
+        c->mdef++;
     }
-    printf("AP=%x : PD=%x : MD=%x \n", c->unk2, c->unk4, c->unk5);
+    printf("AP=%x : PD=%x : MD=%x \n", c->power, c->pdef, c->mdef);
 }
 
 void tm_levelUpRandom(TmState *s, TmCard *c) {
@@ -3134,30 +3134,30 @@ void tm_makeCard(TmState *s, TmCard *c, s32 arg2, s32 random) {
 
     dirs = g_tmArrowBits;
     tbl = (TmCardData *)0x80103800;
-    c->unk0 = arg2;
+    c->id = arg2;
     id = arg2;
     if (random == 0) {
-        c->unk2 = tbl[(u8)id].unk0;
-        c->unk4 = tbl[(u8)id].unk2;
-        c->unk5 = tbl[(u8)id].unk3;
+        c->power = tbl[(u8)id].power;
+        c->pdef = tbl[(u8)id].pdef;
+        c->mdef = tbl[(u8)id].mdef;
     } else {
-        v = tbl[(u8)id].unk0 >> 1;
+        v = tbl[(u8)id].power >> 1;
         if (v != 0) {
-            c->unk2 = v + rand() % v;
+            c->power = v + rand() % v;
         } else {
-            c->unk2 = 0;
+            c->power = 0;
         }
-        v = tbl[(u8)id].unk2 >> 1;
+        v = tbl[(u8)id].pdef >> 1;
         if (v != 0) {
-            c->unk4 = v + rand() % v;
+            c->pdef = v + rand() % v;
         } else {
-            c->unk4 = 0;
+            c->pdef = 0;
         }
-        v = tbl[(u8)id].unk3 >> 1;
+        v = tbl[(u8)id].mdef >> 1;
         if (v != 0) {
-            c->unk5 = v + rand() % v;
+            c->mdef = v + rand() % v;
         } else {
-            c->unk5 = 0;
+            c->mdef = 0;
         }
     }
     r = rand() % 100;
@@ -3188,20 +3188,20 @@ void tm_makeCard(TmState *s, TmCard *c, s32 arg2, s32 random) {
     } else {
         n = 8;
     }
-    c->unk1 = 0;
+    c->arrows = 0;
     for (i = 0; i < n; i++) {
         done = 0;
         while (done == 0) {
             bp = &dirs.v[rand() & 7];
-            if (!(c->unk1 & *bp)) {
-                c->unk1 |= *bp;
+            if (!(c->arrows & *bp)) {
+                c->arrows |= *bp;
                 done = 1;
             }
         }
     }
-    c->unk3 = tbl[(u8)id].unk1;
+    c->type = tbl[(u8)id].type;
     if (!(rand() & 0x7F)) {
-        c->unk3 = 2;
+        c->type = 2;
     }
 }
 
@@ -3222,8 +3222,8 @@ void tm_taskEnemyAppear(TmState *s) {
                 tm_playSe(5);
             }
         }
-        c[i].unk30 = 0x3C - i;
-        c[i].unk10 = t * t + i * 0xE + 0x1A;
+        c[i].depth = 0x3C - i;
+        c[i].y = t * t + i * 0xE + 0x1A;
     }
     if (s->timer >= 0x29 && s->blocksDone != 0) {
         s->timer = 0;
@@ -3246,14 +3246,14 @@ void tm_animEnemyThink(TmState *s) {
     n = 0;
     c = &s->cards[5];
     for (i = 0; i < 5; i++) {
-        if (c[i].unk18 == 0) {
-            c[i].unkC = 0x10;
+        if (c[i].onBoard == 0) {
+            c[i].x = 0x10;
             if (s->phase == 1) {
                 if (n == s->timer / 4) {
-                    c[i].unkC = 0x1A;
+                    c[i].x = 0x1A;
                 }
             } else if (n == 0) {
-                c[i].unkC = 0x1A;
+                c[i].x = 0x1A;
             }
             n++;
         }
@@ -3267,16 +3267,16 @@ void *tm_drawCardStats(u32 *ot, SPRT *p, TmState *s, TmCard *card, u8 c) {
     s32 x;
     s32 y;
 
-    x = card->unkC;
-    y = card->unk10;
-    if (card->unk1C != 0) {
+    x = card->x;
+    y = card->y;
+    if (card->small != 0) {
         x -= 5;
         y -= 13;
     } else {
         y -= 2;
     }
-    p = tm_drawStatGlyph(ot, p, (s32)s, x + 9, y + 0x28, card->unk2 >> 4, c);
-    switch (card->unk3) {
+    p = tm_drawStatGlyph(ot, p, (s32)s, x + 9, y + 0x28, card->power >> 4, c);
+    switch (card->type) {
     case 0:
         p = tm_drawStatGlyph(ot, p, (s32)s, x + 15, y + 0x28, 0x10, c);
         break;
@@ -3290,8 +3290,8 @@ void *tm_drawCardStats(u32 *ot, SPRT *p, TmState *s, TmCard *card, u8 c) {
         p = tm_drawStatGlyph(ot, p, (s32)s, x + 15, y + 0x28, 0xA, c);
         break;
     }
-    p = tm_drawStatGlyph(ot, p, (s32)s, x + 0x15, y + 0x28, card->unk4 >> 4, c);
-    p = tm_drawStatGlyph(ot, p, (s32)s, x + 0x1B, y + 0x28, card->unk5 >> 4, c);
+    p = tm_drawStatGlyph(ot, p, (s32)s, x + 0x15, y + 0x28, card->pdef >> 4, c);
+    p = tm_drawStatGlyph(ot, p, (s32)s, x + 0x1B, y + 0x28, card->mdef >> 4, c);
     setlen((DR_TPAGE *)p, 1);
     ((DR_TPAGE *)p)->code[0] = (GetTPage(1, 0, 0x300, 0x100) & 0x9FF) | 0xE1000000;
     AddPrim(ot, p);
@@ -3538,7 +3538,7 @@ void tm_stopSe(s32 arg0) {
 void tm_revealBlocks(TmState *arg0) {
     if (arg0->blocksDone == 0) {
         if (arg0->numBlocks != 0) {
-            arg0->blocks[arg0->blockIdx].unk0 = 0;
+            arg0->blocks[arg0->blockIdx].hidden = 0;
             if (arg0->blockTimer >= 9) {
                 tm_playSe(7);
                 arg0->blockTimer = 0;
@@ -3570,7 +3570,7 @@ void *tm_drawBlocks(u32 *ot, void *p, TmState *s) {
     }
     e = s->blocks;
     for (i = 0; i < 6; i++) {
-        if (e[i].unk0 != 0) {
+        if (e[i].hidden != 0) {
             continue;
         }
         if (s->task == 0x21 && s->blocksDone == 0 && i == s->blockIdx) {
@@ -3583,16 +3583,16 @@ void *tm_drawBlocks(u32 *ot, void *p, TmState *s) {
             dw = dx + 0x2A;
             dh = dy + 0x33;
             SetPolyFT4((POLY_FT4 *)p);
-            ((POLY_FT4 *)p)->x0 = e[i].unk4 - dx;
-            ((POLY_FT4 *)p)->y0 = e[i].unk8 - dy;
-            ((POLY_FT4 *)p)->x1 = e[i].unk4 + dw;
-            ((POLY_FT4 *)p)->y1 = e[i].unk8 - dy;
-            ((POLY_FT4 *)p)->x2 = e[i].unk4 - dx;
-            ((POLY_FT4 *)p)->y2 = e[i].unk8 + dh;
-            ((POLY_FT4 *)p)->x3 = e[i].unk4 + dw;
-            ((POLY_FT4 *)p)->y3 = e[i].unk8 + dh;
+            ((POLY_FT4 *)p)->x0 = e[i].x - dx;
+            ((POLY_FT4 *)p)->y0 = e[i].y - dy;
+            ((POLY_FT4 *)p)->x1 = e[i].x + dw;
+            ((POLY_FT4 *)p)->y1 = e[i].y - dy;
+            ((POLY_FT4 *)p)->x2 = e[i].x - dx;
+            ((POLY_FT4 *)p)->y2 = e[i].y + dh;
+            ((POLY_FT4 *)p)->x3 = e[i].x + dw;
+            ((POLY_FT4 *)p)->y3 = e[i].y + dh;
             u = 0x98;
-            if (e[i].unkC == 0) {
+            if (e[i].style == 0) {
                 u = 0x68;
             }
             ((POLY_FT4 *)p)->u0 = u;
@@ -3616,12 +3616,12 @@ void *tm_drawBlocks(u32 *ot, void *p, TmState *s) {
             if (s->task == 0x15) {
                 ((SPRT *)p)->code = 0x66;
             }
-            ((SPRT *)p)->x0 = e[i].unk4;
-            ((SPRT *)p)->y0 = e[i].unk8;
+            ((SPRT *)p)->x0 = e[i].x;
+            ((SPRT *)p)->y0 = e[i].y;
             ((SPRT *)p)->r0 = c;
             ((SPRT *)p)->g0 = c;
             ((SPRT *)p)->b0 = c;
-            if (e[i].unkC == 0) {
+            if (e[i].style == 0) {
                 ((SPRT *)p)->u0 = 0x68;
                 ((SPRT *)p)->v0 = 0x40;
             } else {
@@ -3653,8 +3653,8 @@ void tm_placeBlocks(TmState *s) {
 
     base = s->blocks;
     for (i = 0; i < 6; i++) {
-        base[i].unk0 = 1;
-        base[i].unk4 = 0;
+        base[i].hidden = 1;
+        base[i].x = 0;
     }
     r = rand() % 100;
     if (r < 3) {
@@ -3679,12 +3679,12 @@ void tm_placeBlocks(TmState *s) {
             x = rand() & 3;
             y = rand() & 3;
             cell = tm_getCell(s, x, y);
-        } while (cell->unk0 != 1);
-        cell->unk0 = 2;
-        base[i].unk4 = x * 43 + 0x48;
-        base[i].unk0 = 1;
-        base[i].unk8 = y * 52 + 8;
-        base[i].unkC = rand() & 1;
+        } while (cell->state != 1);
+        cell->state = 2;
+        base[i].x = x * 43 + 0x48;
+        base[i].hidden = 1;
+        base[i].y = y * 52 + 8;
+        base[i].style = rand() & 1;
     }
 }
 
@@ -3705,7 +3705,7 @@ void *tm_taskEnemyThink(u32 *ot, void *p, TmState *s) {
 
 void tm_enemySelect(TmState *s) {
     s32 score[80];
-    TmPos res;
+    TmBattle res;
     s32 bc;
     s32 by;
     s32 bx;
@@ -3756,7 +3756,7 @@ void tm_enemySelect(TmState *s) {
         for (x = 0; x < 4; x++) {
             for (y = 0; y < 4; y++) {
                 score[k] = 0;
-                if (tm_getCell(s, x, y)->unk0 != 1) {
+                if (tm_getCell(s, x, y)->state != 1) {
                     score[k] = -0x7FFF;
                 } else {
                     card = tm_getHandCard(s, 1, c);
@@ -3766,7 +3766,7 @@ void tm_enemySelect(TmState *s) {
                     }
                     if (v < 0) {
                         tm_getBattleValues((s32)s, &res, card, tm_findDefender(s, x, y, card));
-                        r = res.unk0 * 100 / (res.unk0 + res.unk4);
+                        r = res.atk * 100 / (res.atk + res.def);
                         if (s->aiLevel == 3) {
                             mul = 1;
                             if (r < 0x3C) {
@@ -3813,12 +3813,12 @@ void tm_enemySelect(TmState *s) {
     }
     sel = tm_getHandCard(s, 1, bc);
     cell = tm_getCell(s, bx, by);
-    cell->unk0 = 0;
-    cell->unk4 = sel;
-    sel->unkC = bx * 43 + 0x48;
-    sel->unk10 = by * 52 + 8;
-    sel->unk8 = 0;
-    sel->unk18 = 1;
+    cell->state = 0;
+    cell->card = sel;
+    sel->x = bx * 43 + 0x48;
+    sel->y = by * 52 + 8;
+    sel->hidden = 0;
+    sel->onBoard = 1;
     s->srcX = bx;
     s->srcY = by;
     tm_playSe(5);
@@ -3827,10 +3827,10 @@ void tm_enemySelect(TmState *s) {
 
 s32 tm_setCellOwner(TmState *arg0, s32 arg1, s32 arg2, s32 arg3) {
     TmCell *cell = tm_getCell(arg0, arg2, arg3);
-    if (cell->unk0 == 0) {
-        TmCard *c = cell->unk4;
-        if (c->unk14 != arg1) {
-            c->unk14 = arg1;
+    if (cell->state == 0) {
+        TmCard *c = cell->card;
+        if (c->owner != arg1) {
+            c->owner = arg1;
         }
     }
     return 0;
@@ -3851,17 +3851,17 @@ s32 tm_evalPlacement(TmState *s, s32 owner, s32 x, s32 y, TmCard *c) {
     if (c == (TmCard *)-1) {
         c = tm_getCardAt(s, x, y);
     }
-    bits = c->unk1;
+    bits = c->arrows;
     for (i = 0; i < 8; i++, bits >>= 1) {
         if (bits & 1) {
-            p.unk0 = x;
-            p.unk4 = y;
+            p.x = x;
+            p.y = y;
             tm_stepDir(&p, i);
-            cell = tm_getCell(s, p.unk0, p.unk4);
-            if (cell->unk0 == 0) {
-                t = cell->unk4;
-                if (t->unk14 != owner) {
-                    if (t->unk1 & m.v[i]) {
+            cell = tm_getCell(s, p.x, p.y);
+            if (cell->state == 0) {
+                t = cell->card;
+                if (t->owner != owner) {
+                    if (t->arrows & m.v[i]) {
                         win++;
                     } else {
                         lose++;
@@ -3887,16 +3887,16 @@ TmCard *tm_findDefender(TmState *s, s32 x, s32 y, TmCard *c) {
     s32 i;
     u8 bits;
 
-    bits = c->unk1;
+    bits = c->arrows;
     for (i = 0; i < 8; i++, bits >>= 1) {
         if (bits & 1) {
-            p.unk0 = x;
-            p.unk4 = y;
+            p.x = x;
+            p.y = y;
             tm_stepDir(&p, i);
-            cell = tm_getCell(s, p.unk0, p.unk4);
-            if (cell->unk0 == 0) {
-                t = cell->unk4;
-                if (t->unk14 != 1 && (t->unk1 & m.v[i])) {
+            cell = tm_getCell(s, p.x, p.y);
+            if (cell->state == 0) {
+                t = cell->card;
+                if (t->owner != 1 && (t->arrows & m.v[i])) {
                     return t;
                 }
             }
@@ -3919,29 +3919,29 @@ s32 tm_setFlips(TmState *s, s32 owner, s32 x, s32 y, s32 arg4, s32 mode) {
     bit = 1;
     i = 0;
 
-    c = cell->unk4;
+    c = cell->card;
     s->comboCount = 1;
     s->comboCard = c;
-    bits = c->unk1;
+    bits = c->arrows;
     e = s->flips;
     s->comboDirs = 0;
     do {
         if (bits & 1) {
-            p.unk0 = x;
-            p.unk4 = y;
+            p.x = x;
+            p.y = y;
             tm_stepDir(&p, i);
-            cell = tm_getCell(s, p.unk0, p.unk4);
-            if (cell->unk0 == 0 && (c = cell->unk4)->unk14 != owner) {
+            cell = tm_getCell(s, p.x, p.y);
+            if (cell->state == 0 && (c = cell->card)->owner != owner) {
                 s->comboDirs |= bit;
                 if (mode == 2) {
-                    e[i].unkC = i;
+                    e[i].arg = i;
                     s->comboX = x * 43 + 0x39;
                     s->comboY = y * 52 + 0x19;
                     s->comboCount++;
                 }
-                e[i].unk0 = mode;
-                e[i].unk4 = p.unk0;
-                e[i].unk8 = p.unk4;
+                e[i].mode = mode;
+                e[i].x = p.x;
+                e[i].y = p.y;
             }
         }
         bits >>= 1;
@@ -3967,10 +3967,10 @@ TmCard *tm_getDefender(TmState *s, TmPos *p, s32 dir, s32 owner) {
     TmCard *c;
 
     tm_stepDir(p, dir);
-    cell = tm_getCell(s, p->unk0, p->unk4);
-    if (cell->unk0 == 0) {
-        c = cell->unk4;
-        if (c->unk14 != owner && (c->unk1 & m.v[dir])) {
+    cell = tm_getCell(s, p->x, p->y);
+    if (cell->state == 0) {
+        c = cell->card;
+        if (c->owner != owner && (c->arrows & m.v[dir])) {
             return c;
         }
     }
@@ -3979,25 +3979,25 @@ TmCard *tm_getDefender(TmState *s, TmPos *p, s32 dir, s32 owner) {
 
 void tm_stepDir(TmPos *p, s32 dir) {
     if (dir == 0) {
-        p->unk4--;
+        p->y--;
     } else if (dir == 1) {
-        p->unk0++;
-        p->unk4--;
+        p->x++;
+        p->y--;
     } else if (dir == 2) {
-        p->unk0++;
+        p->x++;
     } else if (dir == 3) {
-        p->unk0++;
-        p->unk4++;
+        p->x++;
+        p->y++;
     } else if (dir == 4) {
-        p->unk4++;
+        p->y++;
     } else if (dir == 5) {
-        p->unk0--;
-        p->unk4++;
+        p->x--;
+        p->y++;
     } else if (dir == 6) {
-        p->unk0--;
+        p->x--;
     } else if (dir == 7) {
-        p->unk0--;
-        p->unk4--;
+        p->x--;
+        p->y--;
     }
 }
 
@@ -4014,11 +4014,11 @@ void *tm_drawArrows(u32 *ot, SPRT_16 *p, TmState *s, s32 x, s32 y, u8 mask, s32 
             setlen(p, 3);
             p->code = 0x74;
             if (flip == 0) {
-                p->x0 = tbl.v[i].unk0 + x;
-                p->y0 = tbl.v[i].unk4 + y;
+                p->x0 = tbl.v[i].x + x;
+                p->y0 = tbl.v[i].y + y;
             } else {
-                p->x0 = tbl.v[i].unk8 + x;
-                p->y0 = tbl.v[i].unkC + y;
+                p->x0 = tbl.v[i].smallX + x;
+                p->y0 = tbl.v[i].smallY + y;
             }
             col = c;
             if (blink != 0 && (bits & 1)) {
@@ -4030,8 +4030,8 @@ void *tm_drawArrows(u32 *ot, SPRT_16 *p, TmState *s, s32 x, s32 y, u8 mask, s32 
             p->r0 = col;
             p->g0 = col;
             p->b0 = col;
-            p->u0 = tbl.v[i].unk10;
-            p->v0 = tbl.v[i].unk14;
+            p->u0 = tbl.v[i].u;
+            p->v0 = tbl.v[i].v;
             p->clut = 0x3A80;
             AddPrim(ot, p);
             p++;
@@ -4143,10 +4143,10 @@ TmCell *tm_getCell(TmState *arg0, s32 arg1, s32 arg2) {
 void tm_initBoard(TmState *arg0) {
     s32 x, y;
     TmCell(*b)[4] = arg0->board;
-    g_tmOffBoardCell.unk0 = 3;
+    g_tmOffBoardCell.state = 3;
     for (y = 0; y < 4; y++) {
         for (x = 3; x >= 0; x--) {
-            b[y][x].unk0 = 1;
+            b[y][x].state = 1;
         }
     }
     tm_placeBlocks(arg0);
@@ -4580,7 +4580,7 @@ void *tm_drawCardFace(u32 *ot, void *prim, TmState *s, TmCard *card, u8 c, s32 f
     s32 u;
     s32 v;
 
-    id = card->unk0;
+    id = card->id;
     page = (u8)(id / 30);
     n = (u8)(id % 30);
     u = (n % 6) * 42;
@@ -4588,8 +4588,8 @@ void *tm_drawCardFace(u32 *ot, void *prim, TmState *s, TmCard *card, u8 c, s32 f
     if (flip == 0) {
         setlen((SPRT *)prim, 4);
         ((SPRT *)prim)->code = 0x64;
-        ((SPRT *)prim)->x0 = card->unkC;
-        ((SPRT *)prim)->y0 = card->unk10;
+        ((SPRT *)prim)->x0 = card->x;
+        ((SPRT *)prim)->y0 = card->y;
         ((SPRT *)prim)->w = 0x2A;
         ((SPRT *)prim)->h = 0x33;
         ((SPRT *)prim)->r0 = c;
@@ -4606,14 +4606,14 @@ void *tm_drawCardFace(u32 *ot, void *prim, TmState *s, TmCard *card, u8 c, s32 f
         prim = (DR_TPAGE *)prim + 1;
     } else {
         SetPolyFT4(prim);
-        ((POLY_FT4 *)prim)->x0 = card->unkC;
-        ((POLY_FT4 *)prim)->y0 = card->unk10;
-        ((POLY_FT4 *)prim)->x1 = card->unkC + 0x22;
-        ((POLY_FT4 *)prim)->y1 = card->unk10;
-        ((POLY_FT4 *)prim)->x2 = card->unkC;
-        ((POLY_FT4 *)prim)->y2 = card->unk10 + 0x29;
-        ((POLY_FT4 *)prim)->x3 = card->unkC + 0x22;
-        ((POLY_FT4 *)prim)->y3 = card->unk10 + 0x29;
+        ((POLY_FT4 *)prim)->x0 = card->x;
+        ((POLY_FT4 *)prim)->y0 = card->y;
+        ((POLY_FT4 *)prim)->x1 = card->x + 0x22;
+        ((POLY_FT4 *)prim)->y1 = card->y;
+        ((POLY_FT4 *)prim)->x2 = card->x;
+        ((POLY_FT4 *)prim)->y2 = card->y + 0x29;
+        ((POLY_FT4 *)prim)->x3 = card->x + 0x22;
+        ((POLY_FT4 *)prim)->y3 = card->y + 0x29;
         ((POLY_FT4 *)prim)->u0 = u;
         ((POLY_FT4 *)prim)->v0 = v;
         ((POLY_FT4 *)prim)->u1 = u + 0x2A;
@@ -4688,12 +4688,12 @@ void *tm_taskCoin(u32 *ot, SPRT *p, TmState *s) {
         p->code |= 2;
     }
     fr = &f.v[frame];
-    p->w = fr->unkC;
+    p->w = fr->w;
     p->h = 0x28;
-    p->u0 = fr->unk4;
-    p->v0 = fr->unk8;
+    p->u0 = fr->u;
+    p->v0 = fr->v;
     k = dx + 0x9D;
-    p->x0 = fr->unk0 + k;
+    p->x0 = fr->x + k;
     p->y0 = dy + 0x5C;
     if (flip == 0) {
         c = 0x80;
@@ -4799,12 +4799,12 @@ void *tm_drawBattleValues(u32 *ot, void *vp, TmState *s) {
         for (i = 0; i < 2; i++) {
             if (i == 0) {
                 n = s->atkShown;
-                x = a->unkC + 8;
-                y = a->unk10 + 0x12;
+                x = a->x + 8;
+                y = a->y + 0x12;
             } else {
                 n = s->defShown;
-                x = b->unkC + 8;
-                y = b->unk10 + 0x12;
+                x = b->x + 8;
+                y = b->y + 0x12;
             }
             if (n < 10) {
                 x += 9;

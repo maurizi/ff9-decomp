@@ -8,75 +8,101 @@
 
 /* ---- Tetra Master ---- */
 
+/* Card types (TmCard.type): what the power is tested against (tm_getBattleValues) and the
+ * letter tm_drawCardStats shows. */
+enum {
+    TM_TYPE_P, /* "P": power against pdef */
+    TM_TYPE_M, /* "M": power against mdef */
+    TM_TYPE_X, /* "X": power against the lower defence */
+    TM_TYPE_A  /* "A": the highest own stat against the lowest of the target */
+};
+
+/* A card in a hand or on the board. Stats are hex digits on screen (value >> 4). */
 typedef struct {
-    u8 unk0; /* card id? */
-    u8 unk1;
-    u8 unk2;
-    u8 unk3;
-    u8 unk4;
-    u8 unk5;
+    u8 id;     /* 0-99 */
+    u8 arrows; /* bit d = arrow in direction d (TM_DIR_*) */
+    u8 power;  /* "AP" in tm_levelUpStat's printf */
+    u8 type;   /* TM_TYPE_* */
+    u8 pdef;   /* "PD" */
+    u8 mdef;   /* "MD" */
     u8 pad6[2];
-    s32 unk8;
-    s32 unkC;  /* x */
-    s32 unk10; /* y */
-    s32 unk14; /* owner: 0 player, 1 enemy */
-    s32 unk18; /* 1: on the board */
-    s32 unk1C;
-    s32 unk20; /* x << 8 */
-    s32 unk24; /* y << 8 */
-    s32 unk28;
-    s32 unk2C;
-    s32 unk30;
-    s32 unk34;
+    s32 hidden;  /* face down (enemy hand), drawn as the card back */
+    s32 x;
+    s32 y;
+    s32 owner;   /* TM_PLAYER / TM_ENEMY, the card's colour */
+    s32 onBoard;
+    s32 small;   /* drawn shrunk (POLY_FT4), the compact player hand */
+    s32 fromX;   /* move animation start, 24.8 fixed point */
+    s32 fromY;
+    s32 toX;     /* move animation target, 24.8 fixed point */
+    s32 toY;
+    s32 depth;   /* ordering table index */
+    s32 visible;
     u8 pad38[0x3C - 0x38];
 } TmCard; /* 0x3C */
 
+/* TmCell.state */
+enum {
+    TM_CELL_CARD,    /* a card lies here (TmCell.card) */
+    TM_CELL_EMPTY,
+    TM_CELL_BLOCK,   /* block stone (tm_placeBlocks) */
+    TM_CELL_OFFBOARD /* g_tmOffBoardCell */
+};
+
 typedef struct {
-    s32 unk0;
-    TmCard *unk4;
+    s32 state;    /* TM_CELL_* */
+    TmCard *card;
 } TmCell; /* board square */
 
-typedef struct {
-    s32 unk0;
-    s32 unk4;
-    s32 unk8;
-    s32 unkC;
-    TmCard *unk10;
-} TmFlip;
+/* TmFlip.mode, TmState.flashMode */
+enum {
+    TM_FLIP_NONE,
+    TM_FLIP_CHANGE, /* card changes owner (unopposed capture, or changing hands after the game) */
+    TM_FLIP_COMBO,  /* combo from a battle winner, arg = direction */
+    TM_FLIP_BATTLE  /* the battle loser blinks */
+};
 
 typedef struct {
-    s32 unk0;
-    s32 unk4;
-    s32 unk8;
-    s32 unkC;
-} TmBlock;
+    s32 mode; /* TM_FLIP_* */
+    s32 x;    /* board square */
+    s32 y;
+    s32 arg;  /* TM_FLIP_CHANGE: new owner, TM_FLIP_COMBO: direction */
+    TmCard *card;
+} TmFlip; /* a card flash / flip entry (TmState.flips) */
 
 typedef struct {
-    s32 unk0; /* x */
-    s32 unk4; /* y */
-} TmPos;
+    s32 hidden; /* not shown yet (tm_revealBlocks clears it) */
+    s32 x;      /* screen position */
+    s32 y;
+    s32 style;  /* one of two block pictures */
+} TmBlock; /* block stone on the board */
 
 typedef struct {
-    s32 unk0; /* offset << 11 of entry */
-    s32 unk4;
-} TmFileEntry; /* file table loaded at 0x80104A00 */
+    s32 x;
+    s32 y;
+} TmPos; /* board square */
 
 typedef struct {
-    u8 unk0;
-    u8 unk1;
-    u8 unk2;
-    u8 unk3;
+    s32 atk;
+    s32 def;
+} TmBattle; /* tm_getBattleValues */
+
+typedef struct {
+    u8 power;
+    u8 type;
+    u8 pdef;
+    u8 mdef;
     u8 unk4;
-} TmCardData; /* card stats table loaded at 0x80103800 */
+} TmCardData; /* g_tmCardData entry, base stats of a card id */
 
 typedef struct {
-    u8 v[16];
-} TmDeckOdds; /* card id by rarity roll, loaded at 0x80103C00 */
+    u8 ids[16]; /* card id by rarity roll, rarest last (tm_dealEnemyHand) */
+} TmDeck; /* g_tmDecks entry */
 
 typedef struct {
-    u8 unk0;
-    u8 unk1;
-} TmLevel; /* opponent level table, loaded at 0x80104000 */
+    u8 deck;    /* index into g_tmDecks */
+    u8 aiLevel; /* TmState.aiLevel */
+} TmOpponent; /* g_tmOpponents entry */
 
 /* Card stats as kept in the card stock (main's Unk6) */
 typedef struct {
@@ -183,12 +209,12 @@ extern TmDirMask g_tmArrowBits; /* single-bit masks, one per arrow */
 extern TmDirMask g_tmBackArrowBits;
 
 typedef struct {
-    s32 unk0; /* x */
-    s32 unk4; /* y */
-    s32 unk8; /* x when flipped */
-    s32 unkC; /* y when flipped */
-    s32 unk10; /* u */
-    s32 unk14; /* v */
+    s32 x;      /* offset from the card */
+    s32 y;
+    s32 smallX; /* offset from a small card (TmCard.small) */
+    s32 smallY;
+    s32 u;
+    s32 v;
 } TmArrow;
 
 typedef struct {
@@ -197,10 +223,10 @@ typedef struct {
 extern TmArrowTbl g_tmArrowSprites;
 
 typedef struct {
-    s32 unk0; /* x */
-    s32 unk4; /* u */
-    s32 unk8; /* v */
-    s32 unkC; /* w */
+    s32 x; /* offset */
+    s32 u;
+    s32 v;
+    s32 w;
 } TmCoinFrame;
 
 typedef struct {
@@ -209,10 +235,10 @@ typedef struct {
 extern TmCoinFrames g_tmCoinFrames;
 
 typedef struct {
-    u32 unk0; /* id */
-    s32 unk4; /* flags: bpp in low bits */
-    u32 unk8; /* clut block length */
-    s16 unkC[4]; /* clut rect */
+    u32 id;
+    s32 flags;    /* bpp in the low bits */
+    u32 clutLen;  /* clut block length */
+    s16 clutRect[4];
     u32 clut[1];
 } TmTim; /* TIM image */
 
@@ -358,7 +384,7 @@ void tm_revealBlocks(TmState *);
 void tm_enemySelect(TmState *);
 void tm_taskEndFade(TmState *);
 
-void tm_getBattleValues(s32, TmPos *, TmCard *, TmCard *);
+void tm_getBattleValues(s32, TmBattle *, TmCard *, TmCard *);
 TmCard *tm_findDefender(TmState *, s32, s32, TmCard *);
 void tm_drawConfirmWin(Window *);
 void tm_drawDiscardWin(Window *);
@@ -397,13 +423,13 @@ void func_80055A34(s32, s32, s32, s32);
 
 /* Capture flash bar pieces (tm_drawFlash), one per direction. */
 typedef struct {
-    s32 unk0; /* 0: horizontal bar, 1: corner, 2: vertical bar */
-    s32 unk4;
-    s32 unk8;
-    s32 unkC;
-    s32 unk10;
-    s32 unk14; /* x offset */
-    s32 unk18; /* y offset */
+    s32 shape;   /* 0: horizontal bar, 1: corner, 2: vertical bar */
+    s32 dirX;    /* -1/0/1: direction the bar sweeps in */
+    s32 dirY;
+    s32 cornerX; /* corner: side and direction of its vertical piece */
+    s32 cornerY;
+    s32 offX;    /* start offset from the square */
+    s32 offY;
 } TmFlash;
 
 typedef struct {
