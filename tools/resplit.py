@@ -178,12 +178,21 @@ def merge(old, fresh, aliases, old_ranges=()):
         _, items, tail = parse(text)
         items, absorbed = glue(items)
         still = set().union(*(set(RODATA_ANY.findall(new[p])) for p in same_bin(path, new)))
+        # Which new file emits each rodata slot and each function slot: rodata only travels with the
+        # item below it while both land in the same file (a subsegment split can separate them).
+        home, dest = {}, {}
+        for p in same_bin(path, new):
+            home.update((n, p) for n in RODATA_ANY.findall(new[p]))
+            dest.update((n, p) for n in ASM_SLOT.findall(new[p]))
         out, run = [], []
         for it in items:
             if it.kind == "rodata":
                 run.append(it)
                 continue
             if run:
+                d = dest.get(aliases.get(it.name, it.name), home.get(it.name))
+                stay = [r for r in run if r.name in still and d and home.get(r.name) not in (d, None)]
+                run = [r for r in run if r not in stay]
                 it.lead = "".join(r.chunk + "\n" if r.name in still else r.lead for r in run) + it.lead
                 absorbed.update(r.name for r in run)
                 run = []

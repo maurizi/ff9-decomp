@@ -1,0 +1,316 @@
+#include "ff9.h"
+
+void func_8001C6F8(void) {
+    func_8001C720();
+}
+
+void func_8001C718(void) {
+}
+
+void func_8001C720(void) {
+    s32 i;
+
+    g_dbList.unk0 = 0;
+    g_dbList.unk2 = 0;
+    for (i = 15; i >= 0; i--) {
+        g_dbList.unk4[i] = 0;
+    }
+}
+
+s32 db_register(s32 a, s32 b) {
+    g_dbList.unk4[g_dbList.unk2] = a;
+    g_dbList.unk2++;
+    return 0;
+}
+
+s32 db_unregister(void *arg0) {
+    s32 i;
+
+    for (i = g_dbList.unk2 - 1; i >= 0; i--) {
+        if (g_dbList.unk4[i] == arg0) {
+            g_dbList.unk4[i] = g_dbList.unk4[g_dbList.unk2 - 1];
+            g_dbList.unk2--;
+            return 0;
+        }
+    }
+    return -1;
+}
+
+void *db_lookupRegistered(s32 mode, s32 a1, s32 a2) {
+    s32 i;
+    s32 r = -1;
+    void *ret;
+
+    for (i = g_dbList.unk2 - 1; i >= 0; i--) {
+        r = db_lookup((s32)g_dbList.unk4[i], mode, a1, a2);
+        if (r != -1) {
+            return (void *)r;
+        }
+    }
+    ret = (void *)-1;
+    if (r == -1) {
+        r = mode & 1;
+        ret = NULL;
+        if (r != 0) {
+            ret = (void *)-1;
+        }
+    }
+    return ret;
+}
+
+s32 db_lookup(s32 arg0, s32 mode, s32 key, s32 arg3) {
+    u8 *base = (u8 *)arg0;
+    u32 *ent;
+    s32 i;
+    s32 n;
+    s32 j;
+    s32 cnt;
+    s32 type;
+    u8 *blk;
+    u16 *ids;
+    u32 *ofs;
+    u32 *p;
+    s32 hi;
+    s32 lo;
+    s32 r;
+
+    if (base == NULL) {
+        return 0;
+    }
+    ent = (u32 *)(base + 4);
+    hi = (key >> 16) & 0xFF;
+    n = base[1];
+    lo = key & 0xFFFF;
+    for (i = 0; i < n; i++, ent++) {
+        blk = (u8 *)*ent;
+        type = ((u32)blk >> 24) & 0x7F;
+        if (type == hi) {
+            blk = (u8 *)ent + ((u32)blk & 0xFFFFFF);
+            cnt = blk[1];
+            if (mode == 0) {
+                return (s32)blk;
+            }
+            ids = (u16 *)(blk + 4);
+            if (mode == 1) {
+                return cnt;
+            }
+            ofs = (u32 *)((u8 *)ids + cnt * 2);
+            if ((s32)ofs & 3) {
+                ofs = (u32 *)((u8 *)ofs - (((s32)ofs & 3) - 4));
+            }
+            if (mode == 3) {
+                return (type << 16) | ids[lo];
+            }
+            if (mode == 2) {
+                p = &ofs[lo];
+                return (s32)p + (*p & 0xFFFFFF);
+            }
+            for (j = 0; j < cnt; j++) {
+                if (*ids == lo) {
+                    switch (mode) {
+                    case 4:
+                        do {
+                        } while (0);
+                        return (s32)ofs + (*ofs & 0xFFFFFF);
+                    case 5:
+                        return (ofs[1] & 0xFFFFFF) - (ofs[0] & 0xFFFFFF) + 4;
+                    case 9:
+                        r = db_lookup(arg0, 3, arg3, 0);
+                        return r;
+                    case 8:
+                        r = db_lookup(arg0, 2, arg3, 0);
+                        return r;
+                    case 11:
+                        r = db_lookup(arg0, 1, arg3, 0);
+                        return r;
+                    default:
+                        return -1;
+                    }
+                }
+                ids++;
+                ofs++;
+            }
+        }
+    }
+    return -1;
+}
+
+s32 func_8001CA70(s32 a) {
+    u8 *p = (u8 *)a;
+    u32 *q;
+    u8 *e;
+    u32 *r;
+    s32 k;
+    s32 n;
+    s32 m;
+
+    if (p == NULL || p[0] != 0xDB) {
+        return -1;
+    }
+    n = p[1];
+    if (n <= 0) {
+        return 4;
+    }
+    q = (u32 *)p + n;
+    e = (u8 *)q + (*q & 0xFFFFFF);
+    k = e[1];
+    n = k * 2 + 4;
+    m = n & 3;
+    if (m != 0) {
+        n += 4 - m;
+    }
+    r = (u32 *)(e + n + k * 4);
+    return (u8 *)r + (*r & 0xFFFFFF) - p;
+}
+
+void func_8001CB08(void) {
+    GameState *gs;
+
+    func_8001CB78();
+    gs = g_gameState;
+    func_8001CBD0();
+    func_8001CD04(0xE0);
+    func_8001DCB8();
+    func_8001DE50();
+    func_80023918();
+    func_80023A2C();
+    gs->unk4 = g_allocTop;
+}
+
+void func_8001CB70(void) {
+}
+
+void func_8001CB78(void) {
+    g_allocTop = 0x8008B000;
+    g_gameState = (GameState *)0x8008B000;
+    g_gameState->unkC = (DISPENV *)0x8008B044;
+    g_gameState->unk10 = (DRAWENV *)0x8008B06C;
+    g_gameState->unk14 = (GameStateUnk14 *)0x8008B124;
+    g_gameState->unk18 = (void *)0x8008B214;
+    g_allocTop = 0x8008B250;
+}
+
+void func_8001CBD0(void) {
+    GameState *gs = g_gameState;
+    s32 i;
+
+    gs->unk0 = 0x100000;
+    gs->unkB = 0xFF;
+    gs->unk4 = 0;
+    gs->mode = 0;
+    gs->unkA = 0;
+    gs->unk20 = -1;
+    gs->unk1C = NULL;
+    func_8001CCB4(0, 0, 0);
+    func_8001CD04(0xE0);
+    gs->vsyncMode = 0;
+    for (i = 14; i >= 0; i--) {
+        ((DirInfo *)gs->unk14)[i].unk0 = i;
+        ((DirInfo *)gs->unk14)[i].unk4 = 0;
+        ((DirInfo *)gs->unk14)[i].unk8 = 0;
+        ((DirInfo *)gs->unk14)[i].unkC = 0;
+        gs->unk18[i] = NULL;
+    }
+    gs->unk30 = 0;
+    for (i = 0; (u32)i < 15; i++) {
+        gs->unk34[i] = 0;
+    }
+}
+
+void func_8001CCB4(s32 r, s32 g, s32 b) {
+    DRAWENV *env;
+
+    env = g_gameState->unk10;
+    env[1].r0 = r;
+    env[0].r0 = r;
+    env = g_gameState->unk10;
+    env[1].g0 = g;
+    env[0].g0 = g;
+    env = g_gameState->unk10;
+    env[1].b0 = b;
+    env[0].b0 = b;
+}
+
+void func_8001CD04(s32 h) {
+    Unk4 func_8002F9A8(void);
+    Unk4 col;
+    RECT r;
+    s32 fade;
+    s32 busy;
+    DRAWENV *draw;
+
+    fade = 0;
+    if (func_8002F800() || func_8002F810()) {
+        fade = 1;
+    }
+    busy = func_8002F864();
+    col = func_8002F9A8();
+    if (busy == 1) {
+        col.unk0[0] = 0xFF - col.unk0[0];
+        col.unk0[1] = 0xFF - col.unk0[1];
+        col.unk0[2] = 0xFF - col.unk0[2];
+    }
+    if (!fade) {
+        col.unk0[0] = g_gameState->unk10->r0;
+        col.unk0[1] = g_gameState->unk10->g0;
+        col.unk0[2] = g_gameState->unk10->b0;
+    }
+    if (g_gameState->unkC->disp.h < h) {
+        r.x = 0;
+        r.y = g_gameState->unkC->disp.h;
+        r.w = 0x280;
+        r.h = h - g_gameState->unkC->disp.h;
+        ClearImage(&r, col.unk0[0], col.unk0[1], col.unk0[2]);
+        DrawSync(0);
+    }
+    SetDefDispEnv(&g_gameState->unkC[0], 0x140, 0, 0x140, h);
+    SetDefDispEnv(&g_gameState->unkC[1], 0, 0, 0x140, h);
+    g_gameState->unkC[0].isinter = g_gameState->unkC[1].isinter = 0;
+    g_gameState->unkC[0].screen.x = g_gameState->unkC[1].screen.x = 0;
+    g_gameState->unkC[0].screen.y = g_gameState->unkC[1].screen.y = (0xF0 - h) / 2;
+    g_gameState->unkC[0].screen.h = g_gameState->unkC[1].screen.h = h;
+    SetDefDrawEnv(&g_gameState->unk10[0], 0, 0, 0x140, h);
+    SetDefDrawEnv(&g_gameState->unk10[1], 0x140, 0, 0x140, h);
+    draw = g_gameState->unk10;
+    draw[1].dfe = 1;
+    draw[0].dfe = 1;
+    draw = g_gameState->unk10;
+    draw[1].dtd = 1;
+    draw[0].dtd = 1;
+    draw = g_gameState->unk10;
+    draw[1].isbg = 1;
+    draw[0].isbg = 1;
+    VSync(0);
+    if (g_gameState->unk1C != NULL) {
+        PutDispEnv(&g_gameState->unkC[g_gameState->unk1C->unk8]);
+    }
+}
+
+void func_8001CFB4(void) {
+    Unk4 func_8002F9A8(void); /* ovl_0a declares it with an out-pointer */
+    Unk4 col;
+    s32 fade;
+    s32 busy;
+
+    if (g_gameState->unk1C != NULL) {
+        VSync(0);
+        PutDispEnv(&g_gameState->unkC[g_gameState->unk1C->unk8]);
+        fade = 0;
+        memmove(&D_80073C88, &g_gameState->unk10[g_gameState->unk1C->unk8 ^ 1], sizeof(DRAWENV));
+        if (func_8002F800() || func_8002F810()) {
+            fade = 1;
+        }
+        busy = func_8002F864();
+        col = func_8002F9A8();
+        if (fade && !busy) {
+            D_80073C88.isbg = 1;
+            D_80073C88.r0 = col.unk0[0];
+            D_80073C88.g0 = col.unk0[1];
+            D_80073C88.b0 = col.unk0[2];
+        } else {
+            D_80073C88.isbg = 0;
+        }
+        PutDrawEnv(&D_80073C88);
+        DrawSync(0);
+    }
+}
