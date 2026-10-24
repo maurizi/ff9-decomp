@@ -232,6 +232,10 @@ typedef struct {
 #define TM_FILE_CARD_DATA 1 /* -> g_tmCardData */
 #define TM_FILE_DECKS     2 /* -> g_tmDecks */
 #define TM_FILE_OPPONENTS 3 /* -> g_tmOpponents */
+#define TM_FILE_BG        4 /* background, VRAM 0x280 (tm_drawBackground's first 256 columns) */
+#define TM_FILE_BOARD     5 /* board picture, VRAM 0x340 (tm_drawBoard) */
+#define TM_FILE_BATTLE    9 /* battle animation frames, VRAM 0x200,0x100 (tm_taskBattle) */
+#define TM_FILE_BG_RIGHT  0xB /* background right of x 256, VRAM 0x300 */
 
 /* Tables tm_setup copies out of the image file, at fixed addresses. */
 #define g_tmCardData  ((TmCardData *)0x80103800) /* [100] */

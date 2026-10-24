@@ -325,12 +325,12 @@ void tm_setup(TmState *s) {
         v = y / 6;
         tm_loadTim((TmTim *)(p + i * 0xA80), x * 128 + (y % 6) * 21, v * 51 + 0x100, 0x180, i + 0x19C);
     }
-    tm_loadTim((TmTim *)tm_getFileEntry(0xB), 0x300, 0, 0, 0xEE);
-    tm_loadTim((TmTim *)tm_getFileEntry(4), 0x280, 0, 0, 0xE0);
-    tm_loadTim((TmTim *)tm_getFileEntry(5), 0x340, 0, 0, 0xE7);
+    tm_loadTim((TmTim *)tm_getFileEntry(TM_FILE_BG_RIGHT), 0x300, 0, 0, 0xEE);
+    tm_loadTim((TmTim *)tm_getFileEntry(TM_FILE_BG), 0x280, 0, 0, 0xE0);
+    tm_loadTim((TmTim *)tm_getFileEntry(TM_FILE_BOARD), 0x340, 0, 0, 0xE7);
     tm_loadTim((TmTim *)tm_getFileEntry(7), 0x300, 0x100, 0, 0xEA);
     tm_loadTim((TmTim *)tm_getFileEntry(8), 0x300, 0x180, 0, 0xEB);
-    tm_loadTim((TmTim *)tm_getFileEntry(9), 0x200, 0x100, 0, 0xEC);
+    tm_loadTim((TmTim *)tm_getFileEntry(TM_FILE_BATTLE), 0x200, 0x100, 0, 0xEC);
     tm_loadTim((TmTim *)tm_getFileEntry(0xA), 0x340, 0x1E0, 0, 0xED);
     tm_loadTim((TmTim *)tm_getFileEntry(6), 0x280, 0x100, 0, 0xE9);
     tm_copyFileEntry((u8 *)g_tmOpponents, TM_FILE_OPPONENTS, 0x200);
