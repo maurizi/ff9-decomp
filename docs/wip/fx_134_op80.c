@@ -1,4 +1,4 @@
-/* Pass 4: 82 aligned mismatches, frame size matches. Variables split per case (build/s/split17.py) and at each
+/* Pass 4: 57 aligned mismatches, frame size matches. Variables split per case (build/s/split17.py) and at each
  * top-level re-assignment (build/s/phase.py) and at nested assignments
  * whose value stays in their block (build/s/webs.py); case 3's first angle is t >> 2 of t = (frame << 12) / 24 in a
  * block-local variable (a3x): with it the case-3 block has eight call-crossing locals, the 0x1000 constant lands
@@ -419,12 +419,12 @@ s32 fx_134_op80(s32 mode, Fx134Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
                 work->unk24.vx = work->unk8.vx;
                 work->unk24.vz = work->unk8.vz;
                 work->unk24.vy = work->unk8.vy;
+                work->unk10.vz = work->unk24.vz;
                 work->unk24.vy -= 0x800;
                 work->unk30.vx = 0x36D;
                 work->unk30.vy = 0x36D;
                 work->unk30.vz = 0x36D;
                 work->unk10.vx = work->unk24.vx;
-                work->unk10.vz = work->unk24.vz;
                 work->unk10.vy = work->unk24.vy;
                 work->unk7C = ex->func_800E3CEC(ex->btlfx_getFileData(entry->unk8, 0x15), (s32)&work->unk10);
                 work->unk80 = ex->func_800E3CEC(ex->btlfx_getFileData(entry->unk8, 0x16), (s32)&work->unk10);
@@ -455,9 +455,9 @@ s32 fx_134_op80(s32 mode, Fx134Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
             yo = 0;
             work->unk3C.vz += 0x20;
             work->unk24.vy += 0x60 + ex->btlfx_randCentered(8);
-            work->unk10.vz = work->unk24.vz;
-            work->unk10.vy = work->unk24.vy;
             work->unk10.vx = work->unk24.vx;
+            work->unk10.vy = work->unk24.vy;
+            work->unk10.vz = work->unk24.vz;
             work->unk10.vy += 0x578;
             ex->Hi_DrawEffModel(&work->unk3C, (VECTOR *)&work->unk24, (s32)&work->unk30, work->unk64);
             ex->Hi_ModifyEffModelRGB(work->unk64, 0, 0, 0);
@@ -513,7 +513,7 @@ s32 fx_134_op80(s32 mode, Fx134Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
                 func_801E7B38(&pos3, &rot3, 0x600, k_c4_w3, 0x1A, 0x3D02, (i_c4 & 3) << 6, (i_c4 >> 2) << 6, 0x40, 0x40, 1);
             }
             env->unk28 = 0;
-            n_c4 = frame % 5;
+            n_c4 = frame - (frame / 5) * 5;
             if (n_c4 == 2) {
                 o_c4 = ex->btlfx_poolSpawn((s16 *)entry->unk10);
                 if (o_c4 != NULL) {
@@ -601,8 +601,8 @@ s32 fx_134_op80(s32 mode, Fx134Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
                 work->unk24.vy += 0xAF0;
                 yo = 0;
                 xo = 0;
-                scale.vz = 0x555;
                 scale.vx = scale.vy = ex->math_sin(a_c5) * 2 / 3 + 0x100;
+                scale.vz = 0x555;
                 pos.vx = work->unk24.vx;
                 a_c5_p2 = t >> 1;
                 pos.vy = work->unk24.vy;
