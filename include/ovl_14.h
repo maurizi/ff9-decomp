@@ -43,8 +43,9 @@ typedef struct {
 #define DISC_NONE 0xFF
 #define DISC_1    1
 #define DISC_4    8
-#define MENU_SAVE 4 /* menu_open id of the save / load menu (ovl_39); argument 1 = load */
-#define MENU_DISC 8 /* menu_open id given scene_checkDisc's disc, (disc << 14) | 15000 */
+/* menu_open types (docs/runtime-findings.md field/menu campaign) */
+#define MENU_SAVE 4 /* save / load (ovl_39); argument 1 = title Continue */
+#define MENU_DISC 8 /* "Change to DISC" (ovl_3e); argument (disc & 3) << 14 | field id, 0x3A98 here */
 void func_8001D910(void *, RECT **, RECT **); /* TIM: clut rect, image rect */
 typedef struct {
     u32 unk0;
