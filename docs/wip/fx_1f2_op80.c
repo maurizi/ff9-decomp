@@ -25,7 +25,7 @@
  * sparks block and the unk58 block's i * 0x150 to sp+0xCC (tr = &D_801EBB90[i] gives that but grows the frame by 8);
  * the original's reload register is t8 (all of t0-t7 used somewhere), ours t3); the mode-1 spark init's
  * i * 0x150 copy (s6 there, spilled here). *
- * Pass 28 update: 151 aligned mismatches, 43 ignoring registers (of which 4 are symbol-addend artefacts:
+ * Pass 28 update: 121 aligned mismatches, 23 ignoring registers (of which 4 are symbol-addend artefacts:
  * D_801EA278/D_801EA2D8/D_801EA3E8 = base + 8). Levers: the unk58 block's SVECTOR at sp+0x90 is
  * ((SVECTOR *)out)[1] (vx 0x90, vz 0x94); variables shared between distant blocks become long global pseudos
  * that take callee-saved registers, so block-specific copies (unk4C's dz/dx instead of c/a, the ring loop's lo,
@@ -34,7 +34,9 @@
  * copies of i, j, tr, sv, alpha, lo, md and tint chosen by a knob search (build/w/g1f2.py + build/w/ksa.py)
  * ex is s7 and the loop counters fp as in the original. The ring tints use the function-wide tint (its
  * conflicts keep it off a1: the original copies v0 into a1); the sparks loop is tr = &D_801EA690[i] inside
- * the body and its x range uses j * 0x2400 (all givs). */
+ * the body and its x range uses j * 0x2400 (all givs); the unk4C pad path reads the next index before the
+ * header stores; dx += 0x60 before j++; unk58 stores unkD0[j].vy before the j++ of a plain for loop; and
+ * the else branch ends in its own return 0 (the original jumps to the shared epilogue). */
 #include "fxmod/fx_1f2.h"
 
 typedef struct {
@@ -707,7 +709,7 @@ s32 fx_1f2_op80(s32 mode, Fx1f2Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
                             sv = tr->unk4;
                             D_801EA690[i].unk0 = D_801EA690[i].unk2 = 8;
                             D_801EA690[i].unk1 = 0;
-                            for (j = 0, dx = 0; j < n; j++, dx += 0x60) {
+                            for (j = 0, dx = 0; j < n; dx += 0x60, j++) {
                                 ((SVECTOR *)out)->vx = D_801EA690[i].unk50[j].vx + dx - 0x180;
                                 ((SVECTOR *)out)->vz = D_801EA690[i].unk50[j].vz + dz;
                                 ((SVECTOR *)out)->vy = D_801EA690[i].unk50[j].vy;
@@ -747,10 +749,10 @@ s32 fx_1f2_op80(s32 mode, Fx1f2Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
                 } else {
                     n = 9;
                     sv = tr->unk4;
-                    tr->unk0 = tr->unk2 = 8;
-                    tr->unk1 = 0;
                     a = tr->unk4C;
                     tr->unk4C = D_801EA690[i].unk50[a].pad;
+                    tr->unk0 = tr->unk2 = 8;
+                    tr->unk1 = 0;
                     for (j_u4cn = 0; j_u4cn < n; j_u4cn++) {
                         sv->vx = D_801EA690[i].unk50[a].vx;
                         sv->vy = D_801EA690[i].unk50[a].vy;
@@ -804,21 +806,21 @@ s32 fx_1f2_op80(s32 mode, Fx1f2Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
                     tr_u58->unk4C = 8;
                     ((SVECTOR *)out)[1].vx = D_801EA670[i].vx + ex->btlfx_randRange(-0x40, 0x40);
                     ((SVECTOR *)out)[1].vz = D_801EA670[i].vz + ex->btlfx_randRange(-0x40, 0x40);
-                    for (j_u58 = 0; j_u58 < 9;) {
+                    for (j_u58 = 0; j_u58 < 9; j_u58++) {
                         a_u58 = j_u58 + 1;
                         tr_u58->unk50[j_u58].vx = ((SVECTOR *)out)[1].vx + ex->btlfx_randRange(-a_u58 * 2, a_u58 * 2);
                         tr_u58->unk50[j_u58].vz = ((SVECTOR *)out)[1].vz + ex->btlfx_randRange(-a_u58 * 2, a_u58 * 2);
                         tr_u58->unk50[j_u58].vy = ex->btlfx_randRange(-a_u58 * 4, 0) - (j_u58 << 6);
                         tr_u58->unkD0[j_u58].vx = ex->btlfx_randRange(-a_u58 * 2, a_u58 * 2);
                         tr_u58->unkD0[j_u58].vz = ex->btlfx_randRange(-a_u58 * 2, a_u58 * 2);
-                        j_u58 = a_u58;
-                        tr_u58->unkD0[j_u58 - 1].vy = -ex->btlfx_rand() & 7;
+                        tr_u58->unkD0[j_u58].vy = -ex->btlfx_rand() & 7;
                     }
                 }
             }
             env->unk28 = 0;
         }
         D_801EA3E0.unk8.vy += 3;
+        return 0;
     }
     return 0;
 }
