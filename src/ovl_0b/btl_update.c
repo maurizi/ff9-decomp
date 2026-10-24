@@ -143,18 +143,18 @@ void btl_victory(GameData *arg0, Battle *arg1) {
         if (!((u->flags >> 22) & 1)) {
             btl_updateUnitModel(u, &sp18);
             switch (arg1->subPhase) {
-            case 0:
+            case BTL_END_VICTORY:
                 btl_updateHpStatus(u);
                 if ((!(u->flags & 1) && !(u->status & (BTL_STATUS_PETRIFY | BTL_STATUS_VENOM | BTL_STATUS_STOP))) || ((u->flags & 1) && (u->status & BTL_STATUS_KO) && u->model->motion != (BtlUnit9CC *)u->motions[4])) {
                     done = 0;
                 }
                 break;
-            case 1:
+            case BTL_END_DEFEAT:
                 if ((u->flags & 1) && u->model->motion != (BtlUnit9CC *)u->motions[4] && !(u->status & (BTL_STATUS_PETRIFY | BTL_STATUS_VENOM | BTL_STATUS_STOP))) {
                     done = 0;
                 }
                 break;
-            case 2:
+            case BTL_END_STOPPED:
                 btl_updateHpStatus(u);
                 if (u->flags & 1) {
                     btl_removeStatuses(u, (BTL_STATUS_CONFUSE | BTL_STATUS_STOP | BTL_STATUS_DEFEND | BTL_STATUS_FREEZE));
@@ -176,7 +176,7 @@ void btl_victory(GameData *arg0, Battle *arg1) {
                     }
                 }
                 break;
-            case 3:
+            case BTL_END_ESCAPE:
                 if (u->status & BTL_STATUS_KO) {
                     if (u->koState == 0) {
                         u->koState = 1;
@@ -207,14 +207,14 @@ void btl_victory(GameData *arg0, Battle *arg1) {
         }
         btl_updateKo(u);
     }
-    if (arg1->subPhase == 3 && (s8)arg1->fleeBrightness < 0x20) {
+    if (arg1->subPhase == BTL_END_ESCAPE && (s8)arg1->fleeBrightness < 0x20) {
         arg1->fleeBrightness -= 2;
     }
     if (done) {
         btlui_enable(0);
         switch (arg1->subPhase) {
-        case 0:
-        case 4:
+        case BTL_END_VICTORY:
+        case BTL_END_SCRIPT_VICTORY:
             arg0->unk56F |= 0x40;
             arg0->unk56E = 1;
             if ((arg1->scene.unk0 >> 6) & 1) {
@@ -247,11 +247,11 @@ void btl_victory(GameData *arg0, Battle *arg1) {
             }
             arg1->phase = BTL_PHASE_EXIT;
             break;
-        case 1:
+        case BTL_END_DEFEAT:
             arg0->unk56E = 3;
             arg1->phase = BTL_PHASE_EXIT_DEFEAT;
             break;
-        case 2:
+        case BTL_END_STOPPED:
             if ((arg1->scene.unk0 & 0x4040) == 0x4000) {
                 arg0->unk56F |= 8;
             }
@@ -266,7 +266,7 @@ void btl_victory(GameData *arg0, Battle *arg1) {
                 }
             }
             break;
-        case 3:
+        case BTL_END_ESCAPE:
             exp = g_btlRewards.unk0;
             arg0->unk56F |= 0x40;
             for (u = arg1->unitList; u != NULL; u = u->next) {

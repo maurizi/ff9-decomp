@@ -793,8 +793,8 @@ void btl_checkSideDefeated(BtlUnit *arg0) {
         if (!found) {
             return;
         }
-        if (b->subPhase != 1) {
-            b->subPhase = 0;
+        if (b->subPhase != BTL_END_DEFEAT) {
+            b->subPhase = BTL_END_VICTORY;
         }
     } else {
         for (u = b->unitList; u != NULL; u = u->next) {
@@ -822,7 +822,7 @@ void btl_checkSideDefeated(BtlUnit *arg0) {
                 }
             }
         }
-        b->subPhase = 1;
+        b->subPhase = BTL_END_DEFEAT;
         btl_showMessage(BTL_MSG_ANNIHILATED);
     }
     btlui_setAtbEnabled(0);

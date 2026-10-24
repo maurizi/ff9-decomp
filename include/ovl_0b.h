@@ -428,6 +428,32 @@ typedef struct {
 #define BTL_PHASE_EXIT_DEFEAT 7 /* code: from a defeat (GameData.unk56E = 3) */
 #define BTL_PHASE_EXIT_OTHER  8 /* code: from an escape or a script-ended battle */
 
+/* Battle.subPhase in BTL_PHASE_END: how the battle ended (btl_victory switches on it) */
+#define BTL_END_VICTORY        0 /* the enemies are down; rewards (BTL_PHASE_EXIT) */
+#define BTL_END_DEFEAT         1 /* btl_checkSideDefeated: party down (BTL_PHASE_EXIT_DEFEAT) */
+#define BTL_END_STOPPED        2 /* BTL_SETVAR_STOP_COMBAT: back to BTL_PHASE_SCRIPT */
+#define BTL_END_ESCAPE         3 /* BTL_CMD_ESCAPE succeeded (BTL_PHASE_EXIT_OTHER) */
+#define BTL_END_SCRIPT_VICTORY 4 /* BTL_SETVAR_END with result 1: handled like a victory */
+
+/* event-script battle variables: btl_getBattleVar ids */
+#define BTL_GETVAR_AMBUSH         32 /* scene.unk0 & 3: 0 back attack, 1 preemptive, 2 normal */
+#define BTL_GETVAR_GIL            33
+#define BTL_GETVAR_PHASE          34 /* Battle.phase (BTL_PHASE_*) */
+#define BTL_GETVAR_SUB_PHASE      35 /* Battle.subPhase */
+#define BTL_GETVAR_ATTACKER       36 /* unit bit of curCmd's caster */
+#define BTL_GETVAR_TARGETS        37 /* curCmd's target mask */
+#define BTL_GETVAR_WEAPON_ELEMENT 38 /* element of curCmd's caster's weapon */
+#define BTL_GETVAR_ABILITY_ELEMENT 39 /* element of curCmd's ability */
+#define BTL_GETVAR_LOAD_FLAGS     40 /* Battle.loadFlags */
+/* btl_setBattleVar ids */
+#define BTL_SETVAR_STOP_COMBAT    32 /* phase END with subPhase 2: the units settle, then BTL_PHASE_SCRIPT */
+#define BTL_SETVAR_END            33 /* in BTL_PHASE_SCRIPT: ends the battle with result n (GameData.unk56E) */
+#define BTL_SETVAR_DEFEAT         34 /* in BTL_PHASE_SCRIPT: BTL_PHASE_EXIT_DEFEAT, result 3 */
+#define BTL_SETVAR_RESUME         35 /* in BTL_PHASE_SCRIPT: back to BTL_PHASE_ENTRANCE, then combat */
+#define BTL_SETVAR_PLAY_CAMERA    36 /* in BTL_PHASE_SCRIPT: btlcam_playScene(btl_getSceneData(n)) */
+#define BTL_SETVAR_NEXT_LOCATION  37 /* evt_setNextLocation(n) */
+#define BTL_SETVAR_ADD_GIL        38 /* gil += n, at most 9999999 */
+
 /* element bits (BtlUnit.elem*, BtlCmd8.element, weapon[6]); names from the element texts btl_getElementName returns */
 #define BTL_ELEM_FIRE    0x01
 #define BTL_ELEM_ICE     0x02

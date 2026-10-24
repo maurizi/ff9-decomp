@@ -646,7 +646,7 @@ s32 btl_checkCmdUsable(Battle *arg0, BtlCmd *arg1) {
                     t->obj->frame = 0;
                 }
                 arg0->phase = BTL_PHASE_END;
-                arg0->subPhase = 3;
+                arg0->subPhase = BTL_END_ESCAPE;
             }
         }
         if (*(u16 *)&arg0->phase == 0x305) {
@@ -869,7 +869,7 @@ void btl_execCmd(BtlUnit *arg0) {
             btlui_setAtbEnabled(0);
             if (b->phase != BTL_PHASE_END) {
                 b->phase = BTL_PHASE_END;
-                b->subPhase = 0;
+                b->subPhase = BTL_END_VICTORY;
                 btl_clearCmdQueue(b);
             }
         }

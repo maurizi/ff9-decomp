@@ -549,34 +549,34 @@ s32 btl_getBattleVar(s32 arg0) {
     BtlUnit *u;
     s32 k;
     switch (arg0) {
-    case 32:
+    case BTL_GETVAR_AMBUSH:
         r = b->scene.unk0 & 3;
         break;
-    case 33:
+    case BTL_GETVAR_GIL:
         r = g_gameState->unk1C->gil;
         break;
-    case 34:
+    case BTL_GETVAR_PHASE:
         r = b->phase;
         break;
-    case 35:
+    case BTL_GETVAR_SUB_PHASE:
         r = b->subPhase;
         break;
-    case 36:
+    case BTL_GETVAR_ATTACKER:
         if (b->curCmd != NULL && b->curCmd->caster != NULL) {
             r = b->curCmd->caster->unitBit;
         }
         break;
-    case 37:
+    case BTL_GETVAR_TARGETS:
         if (b->curCmd != NULL) {
             r = (u16)b->curCmd->targets;
         }
         break;
-    case 38:
+    case BTL_GETVAR_WEAPON_ELEMENT:
         if (b->curCmd != NULL && b->curCmd->caster != NULL && b->curCmd->caster->weapon != NULL) {
             r = b->curCmd->caster->weapon[6];
         }
         break;
-    case 39:
+    case BTL_GETVAR_ABILITY_ELEMENT:
         if (b->curCmd != NULL && b->curCmd->caster != NULL) {
             r = 0;
             if (!(b->curCmd->caster->support[1] & 1)) {
@@ -584,7 +584,7 @@ s32 btl_getBattleVar(s32 arg0) {
             }
         }
         break;
-    case 40:
+    case BTL_GETVAR_LOAD_FLAGS:
         r = b->loadFlags;
         break;
     case 41:
@@ -614,23 +614,23 @@ void btl_setBattleVar(s32 arg0, s32 arg1) {
     u32 f;
 
     switch (arg0) {
-    case 32:
+    case BTL_SETVAR_STOP_COMBAT:
         btlui_setAtbEnabled(0);
         b->phase = BTL_PHASE_END;
         b->escapeHeld = 0;
-        b->subPhase = 2;
+        b->subPhase = BTL_END_STOPPED;
         b->cmdFlags &= ~1;
         btl_clearCmdQueue(b);
         for (u = b->unitList; u != NULL; u = u->next) {
             u->flags &= ~0x80000;
         }
         break;
-    case 33:
+    case BTL_SETVAR_END:
         if (b->phase == BTL_PHASE_SCRIPT) {
             g_gameState->unk1C->unk56E = arg1;
             if (arg1 == 1 && ((b->scene.unk0 >> 6) & 1)) {
                 b->phase = BTL_PHASE_END;
-                b->subPhase = 4;
+                b->subPhase = BTL_END_SCRIPT_VICTORY;
             } else {
                 if (g_gameState->unk1C->unk56E == 1) {
                     g_gameState->unk1C->unk56E = 2;
@@ -640,14 +640,14 @@ void btl_setBattleVar(s32 arg0, s32 arg1) {
             }
         }
         break;
-    case 34:
+    case BTL_SETVAR_DEFEAT:
         if (b->phase == BTL_PHASE_SCRIPT) {
             b->phase = BTL_PHASE_EXIT_DEFEAT;
             b->subPhase = 0;
             g_gameState->unk1C->unk56E = 3;
         }
         break;
-    case 35:
+    case BTL_SETVAR_RESUME:
         if (b->phase == BTL_PHASE_SCRIPT) {
             f = b->scene.unk0;
             b->phase = BTL_PHASE_ENTRANCE;
@@ -657,16 +657,16 @@ void btl_setBattleVar(s32 arg0, s32 arg1) {
             }
         }
         break;
-    case 36:
+    case BTL_SETVAR_PLAY_CAMERA:
         if (b->phase == BTL_PHASE_SCRIPT) {
             btlcam_playScene(btl_getSceneData(arg1));
         }
         break;
-    case 37:
+    case BTL_SETVAR_NEXT_LOCATION:
         g_gameState->unk1C->unk56F |= 1;
         evt_setNextLocation(arg1);
         break;
-    case 38:
+    case BTL_SETVAR_ADD_GIL:
         g_gameState->unk1C->gil += arg1;
         if (g_gameState->unk1C->gil > 9999999) {
             g_gameState->unk1C->gil = 9999999;
