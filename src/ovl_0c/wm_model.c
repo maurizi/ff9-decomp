@@ -1345,7 +1345,7 @@ s32 wm_drawSprite3D(s32 arg0, WmSprHdr *h, SVECTOR *pos, SVECTOR *rot, s32 scale
     gte_SetRotMatrix(&m);
     gte_SetTransMatrix(&m);
     c.unk20 = (abr == 0xFF) ? 0x2C : 0x2E;
-    c.unk28 = -D_800CF442;
+    c.unk28 = -g_worldOtBias;
     c.unk18 = arg7;
     c.unk24 = argA;
     return wm_emitSprite3D((u8 *)h, &c, arg0, arg8);

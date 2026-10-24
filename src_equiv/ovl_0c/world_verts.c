@@ -4,11 +4,11 @@
  * without a stack frame (they save them to the scratchpad at 0x1F8003E0-0x1F8003FF and restore them before
  * returning) and clobber $k1, $at and the $t registers. The C signatures are the ones in ovl_0c.h.
  *
- * They light and project the vertices of a mesh block `o` for the face pass (world_faces.c); func_800B3A80
+ * They light and project the vertices of a mesh block `o` for the face pass (world_faces.c); wm_backdropVerts
  * in wm_misc.c is a sibling with its own fog formula.
  *   o+0x00: vertex count in the low byte (done three at a time, so effectively rounded up to a multiple of 3)
  *   o+0x04: vertices, SVECTORs; pad bits 0-7 = index into the normal table D_800CD794, pad bit 9 = which
- *           of the two D_800D1FE0 fog entries ({ colour, u16 fog offset, u16 lit offset }) applies.
+ *           of the two g_worldFogParams fog entries ({ colour, u16 fog offset, u16 lit offset }) applies.
  * For each group of three vertices:
  *   - RTPT on the raw vertices (current rotation/translation) for their depths SZ, then NCT on their normals;
  *   - colours, either
@@ -21,7 +21,7 @@
  *     in wm_blockVertsFar by INTPL toward a zero red far colour (the original order of GTE loads is kept there);
  *   - RTPT again: screen xy into the scratchpad (one word per vertex from 0x1F800000) and the depth into
  *     D_800D29F8[i], as SZ (u32) or SZ / 8 (u16).
- * Like func_800B3A80 the loop reads (but doesn't use) the six words after the last group.
+ * Like wm_backdropVerts the loop reads (but doesn't use) the six words after the last group.
  *
  * Equivalence: tools/equiv.py with GTE commands hashed (see the commit message for the trial counts).
  */
@@ -51,9 +51,9 @@ static s32 wv_depth(u32 sz, u32 ofs, s32 flags) {
     return p;
 }
 
-/* attr: the vertex's vz/pad word; bit 25 (pad bit 9) picks D_800D1FE0[0] or [1]. */
+/* attr: the vertex's vz/pad word; bit 25 (pad bit 9) picks g_worldFogParams[0] or [1]. */
 static void wv_fog(u32 rgb, u32 sz, u32 attr, s32 flags, u32 *lit, u32 *fog) {
-    u32 *e = (u32 *)D_800D1FE0 + ((attr >> 25) & 1) * 2;
+    u32 *e = (u32 *)g_worldFogParams + ((attr >> 25) & 1) * 2;
     u32 col = e[0];
     u32 ofs = e[1];
     u32 c;

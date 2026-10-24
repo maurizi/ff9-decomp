@@ -231,9 +231,9 @@ main func_80064A2C libgpu: GP1 0x10 info query via GPU register pointers
 main func_8006605C libcard: patches a BIOS device-table (0x150) entry by name
 main func_800661E0 libcard: memory card sector write/verify with checksum retries
 ovl_0c func_800B3844 hand-written asm (agent report)
-ovl_0c func_800B3998 hand-written asm (agent report)
-ovl_0c func_800B3A80 hand-written asm (agent report)
-ovl_0c func_800B3FEC hand-written asm (mesh face emitter, $s0-$s7 saved to scratchpad, $k1 clobbered; C in src_equiv/ovl_0c/world_faces.c)
+ovl_0c wm_depthCueClut hand-written asm (agent report)
+ovl_0c wm_backdropVerts hand-written asm (agent report)
+ovl_0c wm_backdropFaces hand-written asm (mesh face emitter, $s0-$s7 saved to scratchpad, $k1 clobbered; C in src_equiv/ovl_0c/world_faces.c)
 ovl_0c wm_blockVertsFog hand-written asm (mesh vertex light/project pass, $s0-$s7 saved to scratchpad, $k1 clobbered; C in src_equiv/ovl_0c/world_verts.c)
 ovl_0c wm_modelVerts hand-written asm (mesh vertex light/project pass, $s0-$s7 saved to scratchpad, $k1 clobbered; C in src_equiv/ovl_0c/world_verts.c)
 ovl_0c wm_modelVertsFlat hand-written asm (mesh vertex light/project pass, $s0-$s7 saved to scratchpad, $k1 clobbered; C in src_equiv/ovl_0c/world_verts.c)

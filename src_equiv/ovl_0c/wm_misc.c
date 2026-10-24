@@ -45,7 +45,7 @@ s32 func_800B3844(u8 *o, u32 *rects, s32 idx) {
 
 /* Depth-cue a palette: dst[0] = src[0], then 15 colours (15-bit BGR + bit 15) go through DPCL with IR0 = depth
  * and IR1-3 = col[0..2]; bit 15 is kept. */
-void func_800B3998(u16 *src, u16 *dst, s32 depth, s16 *col) {
+void wm_depthCueClut(u16 *src, u16 *dst, s32 depth, s16 *col) {
     s32 i;
     u32 c;
     u32 rgb;
@@ -67,7 +67,7 @@ extern u32 D_800D23F0[];     /* per-vertex lit colours */
 extern u16 D_800D29F8[];     /* per-vertex SZ / 16 */
 
 /* (sz - 0x8000 + ofs) / 2, clamped to 0..0x1000 (an IR0 depth-cue factor). */
-static s32 func_800B3A80_depth(s32 sz, s32 ofs) {
+static s32 wm_backdropVerts_depth(s32 sz, s32 ofs) {
     s32 p = (sz - 0x8000 + ofs) >> 1;
 
     if (p <= 0) {
@@ -82,11 +82,11 @@ static s32 func_800B3A80_depth(s32 sz, s32 ofs) {
 /* Light and project a world-map mesh, three vertices at a time (the count is rounded up to a multiple of 3).
  * o+0x00: count in the low byte, o+0x04: vertices (SVECTORs, normal index in the low byte of pad).
  * For each vertex: NCT with its normal gives a colour, which DPCS pulls toward the far colour by
- * depth(SZ, D_800D1FD8.unk6) into D_800D23F0; D_800D1FD8's colour pulled by 1 - depth(SZ, D_800D1FD8.unk4)
+ * depth(SZ, g_worldBackdropFog.unk6) into D_800D23F0; g_worldBackdropFog's colour pulled by 1 - depth(SZ, g_worldBackdropFog.unk4)
  * goes into D_800D1FF0. Vertices with y >= 0 get lit colour 0 and the plain fog colour instead.
  * Then y is scaled by (4096 - SZ/16)/4096 (the world's curvature), and RTPT writes screen xy to the
  * scratchpad (3 words per triangle) and SZ/16 to D_800D29F8. */
-void func_800B3A80(s32 arg0) {
+void wm_backdropVerts(s32 arg0) {
     u8 *o = (u8 *)arg0;
     s32 n = *(u32 *)o & 0xFF;
     SVECTOR *v = *(SVECTOR **)(o + 4);
@@ -94,9 +94,9 @@ void func_800B3A80(s32 arg0) {
     u32 *lit = D_800D23F0;
     u32 *sxy = (u32 *)SCRATCHPAD;
     u16 *zs = D_800D29F8;
-    u32 fogCol = *(u32 *)&D_800D1FD8.unk0;
-    s32 fogOfs = (s16)D_800D1FD8.unk4;
-    s32 litOfs = (s16)D_800D1FD8.unk6;
+    u32 fogCol = *(u32 *)&g_worldBackdropFog.unk0;
+    s32 fogOfs = (s16)g_worldBackdropFog.unk4;
+    s32 litOfs = (s16)g_worldBackdropFog.unk6;
     SVECTOR w[3];
     SVECTOR nrm[3];
     s32 z[3];
@@ -118,11 +118,11 @@ void func_800B3A80(s32 arg0) {
         gte_strgb3(rgb);
         for (i = 0; i < 3; i++) {
             gte_ldrgbc(rgb[i]);
-            gte_lddp(func_800B3A80_depth(z[i], litOfs));
+            gte_lddp(wm_backdropVerts_depth(z[i], litOfs));
             gte_dpcs();
             gte_strgb2(lit[i]);
             gte_ldrgbc(fogCol);
-            gte_lddp(0x1000 - func_800B3A80_depth(z[i], fogOfs));
+            gte_lddp(0x1000 - wm_backdropVerts_depth(z[i], fogOfs));
             gte_dpcs();
             gte_strgb2(fog[i]);
         }

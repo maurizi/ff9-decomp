@@ -37,14 +37,14 @@ void wm_setupWorldData(void) {
     while (cd_getState() != 0) {
     }
     if (g_worldDataSet == WM_DATASET_DISC1) {
-        D_800CE3F4 = db_lookupRegistered(4, 0x411, 0);
+        g_worldTexAnimPack = db_lookupRegistered(4, 0x411, 0);
         g_worldDataPack = db_lookupRegistered(4, 0x41B, 0);
         g_worldChunkTable = db_lookupRegistered(4, 0x425, 0);
         g_worldChunkTableT = db_lookupRegistered(4, 0x42F, 0);
         f[4] = db_lookupRegistered(4, 0x439, 0);
         f[5] = db_lookupRegistered(4, 0x443, 0);
     } else {
-        D_800CE3F4 = db_lookupRegistered(4, 0x414, 0);
+        g_worldTexAnimPack = db_lookupRegistered(4, 0x414, 0);
         g_worldDataPack = db_lookupRegistered(4, 0x41E, 0);
         g_worldChunkTable = db_lookupRegistered(4, 0x428, 0);
         g_worldChunkTableT = db_lookupRegistered(4, 0x432, 0);
@@ -66,7 +66,7 @@ void wm_setupWorldData(void) {
     g_worldDepth = h << 14;
     *(WmCellMap *)g_worldChunkFlags = *(WmCellMap *)f[0];
     wm_applyStoryForms();
-    w_frameExtruct(D_800CE3F4);
+    w_frameExtruct(g_worldTexAnimPack);
     w_frameExtruct((s32 *)g_worldDataPack);
     w_frameExtruct((s32 *)f[1]);
     w_frameExtruct((s32 *)f[2]);
@@ -109,7 +109,7 @@ void wm_setupWorldData(void) {
         break;
     }
     if (g_worldTitleId != -1) {
-        if (D_800CCE40 == 0) {
+        if (g_worldTitleWide == 0) {
             wm_loadTim((u32 *)f[2], g_worldTitleId * 2 + 5, 0x300, 0x40, 0x280, 0xF4, 0);
             wm_loadTim((u32 *)f[2], g_worldTitleId * 2 + 6, 0x320, 0x40, 0x290, 0xF4, 0);
         } else {
@@ -160,9 +160,9 @@ void wm_applyEncounterEvents(void) {
         g_worldAmbientSeOn[i] = 0;
     }
     if (*g_worldStoryCounterPtr - 0x1B4EU < 0x1004) {
-        D_800D5410 = 0;
+        g_worldBlockFx7Spin = 0;
     } else {
-        D_800D5410 = 1;
+        g_worldBlockFx7Spin = 1;
     }
     wm_blockListInit();
     wm_initTextureLists();
@@ -173,23 +173,23 @@ void wm_drawMap(void) {
     MATRIX *o;
 
     SetBackColor(g_worldWeatherData.unk5E0[0].unk20.c[0], g_worldWeatherData.unk5E0[0].unk20.c[2], g_worldWeatherData.unk5E0[0].unk20.c[4]);
-    SetLightMatrix(&D_800CF540);
-    SetColorMatrix(&D_800CF500);
-    func_800BD5A8();
+    SetLightMatrix(&g_worldMapLightMatrix);
+    SetColorMatrix(&g_worldMapColorMatrix);
+    wm_updateTextureLists();
     wm_drawBlocks();
     SetBackColor(g_worldWeatherData.unk5E0[0].unk28.c[0], g_worldWeatherData.unk5E0[0].unk28.c[2], g_worldWeatherData.unk5E0[0].unk28.c[4]);
-    if (D_800CF46D != 0) {
+    if (g_worldBackdropOn != 0) {
         MATRIX m1 = { { { 0x1000, 0, 0 }, { 0, 0x1000, 0 }, { 0, 0, 0x1000 } }, { 0, 0xE10, 0 } };
         MATRIX out;
-        MATRIX m2 = *D_800CF448;
+        MATRIX m2 = *g_worldViewMatrix;
 
         if (g_worldFog != 0) {
-            m1.t[1] = -D_800CE19C - 0x9C4;
+            m1.t[1] = -g_worldCameraEye[1] - 0x9C4;
         } else {
-            m1.t[1] = -D_800CE19C - 0x258;
+            m1.t[1] = -g_worldCameraEye[1] - 0x258;
         }
-        SetLightMatrix(&D_800CF520);
-        SetColorMatrix(&D_800CF4E0);
+        SetLightMatrix(&g_worldBackdropLightMatrix);
+        SetColorMatrix(&g_worldBackdropColorMatrix);
         p = w_framePackGetPtr(g_worldDataPack, 0x3B);
         m2.t[0] = 0;
         m2.t[1] = 0;
@@ -198,7 +198,7 @@ void wm_drawMap(void) {
         CompMatrix(&m1, &m2, o);
         SetRotMatrix(o);
         SetTransMatrix(o);
-        func_800BA3F4(p->unk8, 0);
+        wm_drawBackdrop(p->unk8, 0);
     }
 }
 
@@ -272,13 +272,13 @@ void wm_updateMap(void) {
             if (h > 0x10) {
                 h >>= 4;
                 func_80050EFC(h, 0x40);
-                D_800CF44C = 1;
+                g_worldPointFxOn = 1;
                 g_gameState->unk1C->unk570 = h >> 4;
                 return;
             }
         }
     }
-    D_800CF44C = 0;
+    g_worldPointFxOn = 0;
     g_gameState->unk1C->unk570 = 0;
 }
 
@@ -303,7 +303,7 @@ void wm_applyStoryForms(void) {
     }
     if (i >= 0 && g_worldDataSet == WM_DATASET_DISC1) {
         for (n = 0; n < 7; n++) {
-            switch (D_800CD010[n][i]) {
+            switch (g_worldFormStatusTable[n][i]) {
             case 1:
                 WM_CELL(18, 14) |= 0x80;
                 WM_CELL(17, 12) |= 0x80;
@@ -349,7 +349,7 @@ void wm_applyStoryForms(void) {
             /* the original second jump table is 8-aligned */
             __asm__(".rdata\n\t.word 0\n\t.text");
             if (g_worldMapDebugFlags & WM_DEBUG_FORM) {
-                switch (D_800CD010[n][i]) {
+                switch (g_worldFormStatusTable[n][i]) {
                 case 0:
                     printf("BGI Form : SGATE\n");
                     break;
@@ -454,10 +454,10 @@ s32 wm_worldToView(VECTOR *arg0, VECTOR *arg1, VECTOR *arg2, s32 *arg3) {
     if (v.vz < 0x8000 - g_worldDepth) {
         v.vz = g_worldDepth + v.vz;
     }
-    ApplyMatrixLV(D_800CF448, &v, arg2);
+    ApplyMatrixLV(g_worldViewMatrix, &v, arg2);
     s = 0x1000 - ((arg2->vz >> 4) + (arg2->vz >> 6));
     v.vy = ((arg0->vy * s) >> 12) - g_worldCameraEye[1];
-    ApplyMatrixLV(D_800CF448, &v, arg2);
+    ApplyMatrixLV(g_worldViewMatrix, &v, arg2);
     arg1->vx = arg0->vx - g_worldCameraTarget[0];
     arg1->vy = ((arg0->vy * s) >> 12) - g_worldCameraTarget[1];
     arg1->vz = arg0->vz - g_worldCameraTarget[2];
@@ -482,10 +482,10 @@ s32 wm_worldToView(VECTOR *arg0, VECTOR *arg1, VECTOR *arg2, s32 *arg3) {
     return 1;
 }
 
-void func_800BC098(void) {
+void wm_mapTerm(void) {
 }
 
-void func_800BC0A0(void) {
+void wm_mapSystemTerm(void) {
 }
 
 void wm_wrapPos(s32 *arg0, s32 *arg1) {
@@ -598,8 +598,8 @@ void wm_chunkListInit(void) {
     g_worldChunkCenter = -1;
     g_worldChunkTail.unk0 = NULL;
     g_worldMapLoaded = 0;
-    func_800C2040();
-    func_800C26DC();
+    wm_readtxReset();
+    wm_frmbufReset();
 }
 
 void wm_updateChunks(void) {
@@ -616,18 +616,18 @@ void wm_updateChunks(void) {
             if (t < 0x100) {
                 t = 0x100;
             }
-            D_800D3730[0] = g_worldCameraEye[0] + ((g_worldCameraDir[0] * g_worldMoveModeInfo->unkA * t) >> 9);
-            D_800D3730[2] = g_worldCameraEye[2] + ((g_worldCameraDir[2] * g_worldMoveModeInfo->unkA * t) >> 9);
+            g_worldChunkLookPos[0] = g_worldCameraEye[0] + ((g_worldCameraDir[0] * g_worldMoveModeInfo->unkA * t) >> 9);
+            g_worldChunkLookPos[2] = g_worldCameraEye[2] + ((g_worldCameraDir[2] * g_worldMoveModeInfo->unkA * t) >> 9);
         } else {
-            D_800D3730[0] = g_worldCameraEye[0] + g_worldCameraDir[0] * g_worldMoveModeInfo->unkA;
-            D_800D3730[2] = g_worldCameraEye[2] + g_worldCameraDir[2] * g_worldMoveModeInfo->unkA;
+            g_worldChunkLookPos[0] = g_worldCameraEye[0] + g_worldCameraDir[0] * g_worldMoveModeInfo->unkA;
+            g_worldChunkLookPos[2] = g_worldCameraEye[2] + g_worldCameraDir[2] * g_worldMoveModeInfo->unkA;
         }
     } else {
-        D_800D3730[0] = g_worldCameraEye[0] + g_worldCameraDir[0] * g_worldMoveModeInfo->unkA;
-        D_800D3730[2] = g_worldCameraEye[2] + g_worldCameraDir[2] * g_worldMoveModeInfo->unkA;
+        g_worldChunkLookPos[0] = g_worldCameraEye[0] + g_worldCameraDir[0] * g_worldMoveModeInfo->unkA;
+        g_worldChunkLookPos[2] = g_worldCameraEye[2] + g_worldCameraDir[2] * g_worldMoveModeInfo->unkA;
     }
-    wm_wrapPos(&D_800D3730[0], &D_800D3730[2]);
-    wm_posToCell(D_800D3730[0] - 0x6000, D_800D3730[2] + 0x6000, &a);
+    wm_wrapPos(&g_worldChunkLookPos[0], &g_worldChunkLookPos[2]);
+    wm_posToCell(g_worldChunkLookPos[0] - 0x6000, g_worldChunkLookPos[2] + 0x6000, &a);
     wm_cellToChunk(a, &b);
     if (b != g_worldChunkCenter) {
         wm_requestChunks(b);
@@ -678,8 +678,8 @@ void wm_requestChunks(s32 arg0) {
     }
     for (k = 0; k < n; k++) {
         if (k == 4) {
-            D_800D3338++;
-    D_800D3338 %= 4;
+            g_worldChunkGeneration++;
+    g_worldChunkGeneration %= 4;
         }
         wm_chunkRequest(missing[k]);
         c = g_worldChunkFlags[missing[k]];
@@ -689,8 +689,8 @@ void wm_requestChunks(s32 arg0) {
     }
     wm_chunkListCompact();
     wm_readtxCompact();
-    D_800D3338++;
-    D_800D3338 %= 4;
+    g_worldChunkGeneration++;
+    g_worldChunkGeneration %= 4;
 }
 
 /* request texture pack arg0: reuse a free or matching slot and move it behind the loaded ones */
@@ -739,7 +739,7 @@ s32 wm_chunkRequest(s16 arg0) {
         n++;
     } while (p != &g_worldChunkTail);
     if (p != &g_worldChunkTail) {
-        p->generation = D_800D3338;
+        p->generation = g_worldChunkGeneration;
     }
     return n != 32;
 }
@@ -757,12 +757,12 @@ void wm_readChunks(void) {
     WmChunkSlot *h;
 
     if (g_worldCdUser == WM_CD_FREE) {
-        wm_findChunkRun(D_800D33F8, &D_800D3320[D_800CD094], &D_800D3490[D_800CD094]);
-        if (D_800D3490[D_800CD094] == 0) {
+        wm_findChunkRun(g_worldChunkRun, &g_worldChunkRunCount[g_worldChunkRunSlot], &g_worldChunkRunDir[g_worldChunkRunSlot]);
+        if (g_worldChunkRunDir[g_worldChunkRunSlot] == 0) {
             goto end;
         }
-        for (i = 0; i < D_800D3320[D_800CD094]; i++) {
-            n = D_800D33F8[i];
+        for (i = 0; i < g_worldChunkRunCount[g_worldChunkRunSlot]; i++) {
+            n = g_worldChunkRun[i];
             h = &g_worldChunkHead;
             id2 = n->chunkId;
             id = n->chunkId;
@@ -774,7 +774,7 @@ void wm_readChunks(void) {
             h->unk4->unk0 = n;
             h->unk4 = n;
             n->state = 1;
-            if (D_800D3490[D_800CD094] == 1) {
+            if (g_worldChunkRunDir[g_worldChunkRunSlot] == 1) {
                 wm_getChunkEntry(id, 0, &a);
                 wm_getChunkEntry(id, 1, &b);
             } else {
@@ -790,66 +790,66 @@ void wm_readChunks(void) {
             r = (*cell & 0x3F) ? wm_readtxFind(*cell, 0) : 0;
             n->unk10 = 1;
             if (!(*cell & 0x80)) {
-                D_800D3410[i * 4 + 0].unk0 = a.unk2 << 11;
-                D_800D3410[i * 4 + 0].unk4 = n->unk8;
-                D_800D3410[i * 4 + 1].unk0 = a.unk3 << 11;
-                D_800D3410[i * 4 + 1].unk4 = (void *)r;
-                D_800D3410[i * 4 + 2].unk0 = b.unk2 << 11;
-                D_800D3410[i * 4 + 2].unk4 = NULL;
-                D_800D3410[i * 4 + 3].unk0 = b.unk3 << 11;
-                D_800D3410[i * 4 + 3].unk4 = NULL;
-                if (D_800D3410[i * 4 + 1].unk0 == 0) {
-                    D_800D3410[i * 4 + 1].unk4 = NULL;
+                g_worldChunkReadReqs[i * 4 + 0].unk0 = a.unk2 << 11;
+                g_worldChunkReadReqs[i * 4 + 0].unk4 = n->unk8;
+                g_worldChunkReadReqs[i * 4 + 1].unk0 = a.unk3 << 11;
+                g_worldChunkReadReqs[i * 4 + 1].unk4 = (void *)r;
+                g_worldChunkReadReqs[i * 4 + 2].unk0 = b.unk2 << 11;
+                g_worldChunkReadReqs[i * 4 + 2].unk4 = NULL;
+                g_worldChunkReadReqs[i * 4 + 3].unk0 = b.unk3 << 11;
+                g_worldChunkReadReqs[i * 4 + 3].unk4 = NULL;
+                if (g_worldChunkReadReqs[i * 4 + 1].unk0 == 0) {
+                    g_worldChunkReadReqs[i * 4 + 1].unk4 = NULL;
                 }
-                if (D_800D3410[i * 4 + 0].unk0 == 0) {
-                    D_800D3410[i * 4 + 0].unk4 = NULL;
+                if (g_worldChunkReadReqs[i * 4 + 0].unk0 == 0) {
+                    g_worldChunkReadReqs[i * 4 + 0].unk4 = NULL;
                     n->unk10 = 0;
-                    D_800D3740[i] = NULL;
-                    D_800D3310[i] = NULL;
+                    g_worldChunkRunPacks[i] = NULL;
+                    g_worldChunkRunTex[i] = NULL;
                 } else {
-                    D_800D3740[i] = D_800D3410[i * 4 + 0].unk4;
-                    D_800D3310[i] = D_800D3410[i * 4 + 1].unk4;
+                    g_worldChunkRunPacks[i] = g_worldChunkReadReqs[i * 4 + 0].unk4;
+                    g_worldChunkRunTex[i] = g_worldChunkReadReqs[i * 4 + 1].unk4;
                 }
             } else {
-                D_800D3410[i * 4 + 0].unk0 = a.unk2 << 11;
-                D_800D3410[i * 4 + 0].unk4 = NULL;
-                D_800D3410[i * 4 + 1].unk0 = a.unk3 << 11;
-                D_800D3410[i * 4 + 1].unk4 = NULL;
-                D_800D3410[i * 4 + 2].unk0 = b.unk2 << 11;
-                D_800D3410[i * 4 + 2].unk4 = n->unk8;
-                D_800D3410[i * 4 + 3].unk0 = b.unk3 << 11;
-                D_800D3410[i * 4 + 3].unk4 = (void *)r;
-                if (D_800D3410[i * 4 + 3].unk0 == 0) {
-                    D_800D3410[i * 4 + 3].unk4 = NULL;
+                g_worldChunkReadReqs[i * 4 + 0].unk0 = a.unk2 << 11;
+                g_worldChunkReadReqs[i * 4 + 0].unk4 = NULL;
+                g_worldChunkReadReqs[i * 4 + 1].unk0 = a.unk3 << 11;
+                g_worldChunkReadReqs[i * 4 + 1].unk4 = NULL;
+                g_worldChunkReadReqs[i * 4 + 2].unk0 = b.unk2 << 11;
+                g_worldChunkReadReqs[i * 4 + 2].unk4 = n->unk8;
+                g_worldChunkReadReqs[i * 4 + 3].unk0 = b.unk3 << 11;
+                g_worldChunkReadReqs[i * 4 + 3].unk4 = (void *)r;
+                if (g_worldChunkReadReqs[i * 4 + 3].unk0 == 0) {
+                    g_worldChunkReadReqs[i * 4 + 3].unk4 = NULL;
                 }
-                if (D_800D3410[i * 4 + 2].unk0 == 0) {
-                    D_800D3410[i * 4 + 2].unk4 = NULL;
+                if (g_worldChunkReadReqs[i * 4 + 2].unk0 == 0) {
+                    g_worldChunkReadReqs[i * 4 + 2].unk4 = NULL;
                     n->unk10 = 0;
-                    D_800D3740[i] = NULL;
-                    D_800D3310[i] = NULL;
+                    g_worldChunkRunPacks[i] = NULL;
+                    g_worldChunkRunTex[i] = NULL;
                 } else {
-                    D_800D3740[i] = D_800D3410[i * 4 + 2].unk4;
-                    D_800D3310[i] = D_800D3410[i * 4 + 3].unk4;
+                    g_worldChunkRunPacks[i] = g_worldChunkReadReqs[i * 4 + 2].unk4;
+                    g_worldChunkRunTex[i] = g_worldChunkReadReqs[i * 4 + 3].unk4;
                 }
             }
         }
-        if (D_800D3490[D_800CD094] == 1) {
-            wm_getChunkEntry(D_800D33F8[0]->chunkId, 0, &a);
-            base = D_800CF5A4;
+        if (g_worldChunkRunDir[g_worldChunkRunSlot] == 1) {
+            wm_getChunkEntry(g_worldChunkRun[0]->chunkId, 0, &a);
+            base = g_worldImageSectors[3];
         } else {
-            wm_getChunkEntryT(D_800D33F8[0]->chunkId, 0, &a);
-            base = D_800CF5A8;
+            wm_getChunkEntryT(g_worldChunkRun[0]->chunkId, 0, &a);
+            base = g_worldImageSectors[4];
         }
-        D_800D3728 = 0;
-        for (i = 0; i < D_800D3320[D_800CD094] * 4; i++) {
-            if (D_800D3410[i].unk0 != 0) {
-                D_800D3370[D_800D3728].unk4 = D_800D3410[i].unk4;
-                D_800D3370[D_800D3728++].unk0 = D_800D3410[i].unk0;
+        g_worldChunkReadCount = 0;
+        for (i = 0; i < g_worldChunkRunCount[g_worldChunkRunSlot] * 4; i++) {
+            if (g_worldChunkReadReqs[i].unk0 != 0) {
+                g_worldChunkReadList[g_worldChunkReadCount].unk4 = g_worldChunkReadReqs[i].unk4;
+                g_worldChunkReadList[g_worldChunkReadCount++].unk0 = g_worldChunkReadReqs[i].unk0;
             }
         }
         g_worldCdUser = WM_CD_CHUNKS;
-        if (D_800D3728 != 0) {
-            cd_readChunks(a.unk0 + base, D_800D3370, D_800D3728, 0);
+        if (g_worldChunkReadCount != 0) {
+            cd_readChunks(a.unk0 + base, g_worldChunkReadList, g_worldChunkReadCount, 0);
         }
     }
 end:
@@ -875,7 +875,7 @@ u8 wm_findChunkRun(WmChunkSlot **out, s32 *count, s32 *dir) {
     vhi = 4;
     vlo = 4;
     for (p = g_worldChunkHead.unk4; p->unk8 != NULL; p = p->unk4) {
-        if (p->state == 0 && p->chunkId != -1 && p->generation == D_800CD098) {
+        if (p->state == 0 && p->chunkId != -1 && p->generation == g_worldChunkRunGeneration) {
             h[hlo] = p;
             h[hhi] = p;
             v[vlo] = p;
@@ -912,8 +912,8 @@ u8 wm_findChunkRun(WmChunkSlot **out, s32 *count, s32 *dir) {
             break;
         }
     }
-    D_800CD098++;
-    D_800CD098 %= 4;
+    g_worldChunkRunGeneration++;
+    g_worldChunkRunGeneration %= 4;
     return *count;
 }
 
@@ -921,19 +921,19 @@ void wm_chunksLoaded(void) {
     s32 i;
     u8 st;
 
-    for (i = 0; i < D_800D3320[D_800CD094]; i++) {
-        st = D_800D33F8[i]->state;
+    for (i = 0; i < g_worldChunkRunCount[g_worldChunkRunSlot]; i++) {
+        st = g_worldChunkRun[i]->state;
         if (st == 1) {
-            D_800D33F8[i]->state = 2;
-            if (D_800D3740[i] != NULL) {
-                wm_relocatePack(D_800D3740[i]);
+            g_worldChunkRun[i]->state = 2;
+            if (g_worldChunkRunPacks[i] != NULL) {
+                wm_relocatePack(g_worldChunkRunPacks[i]);
             }
-            if (D_800D3310[i] != NULL) {
-                wm_readtxDone(D_800D3310[i]);
+            if (g_worldChunkRunTex[i] != NULL) {
+                wm_readtxDone(g_worldChunkRunTex[i]);
             }
             if (g_worldMapLoaded == 0) {
                 if (++g_worldChunksLoadedCount == 16) {
-                    D_800D30C5 = st;
+                    g_worldLoadedFrames = st;
                     g_worldCameraHold = 0;
                     g_worldMapLoaded = st;
                     g_worldState = WM_STATE_RUNNING;
@@ -949,12 +949,12 @@ void wm_chunksLoaded(void) {
 void wm_initTextureLists(void) {
     wm_readtxInit();
     wm_frmbufInit();
-    D_800D3338 = 0;
+    g_worldChunkGeneration = 0;
 }
 
-void func_800BD5A8(void) {
-    func_800C2048();
-    func_800C26E4();
+void wm_updateTextureLists(void) {
+    wm_readtxUpdate();
+    wm_frmbufUpdate();
 }
 
 void wm_chunkListCompact(void) {
@@ -994,7 +994,7 @@ void wm_blockListInit(void) {
 
     g_worldBlockListDirty = 0;
     g_worldBlockNodes[0].unk0 = &g_worldBlockHead;
-    g_worldBlockNodes[0].unkC = &D_800D3AB8[0];
+    g_worldBlockNodes[0].unkC = &g_worldBlockPositions[0];
     g_worldBlockNodes[0].unk4 = &g_worldBlockNodes[1];
     g_worldBlockNodes[0].unk8 = NULL;
     g_worldBlockNodes[0].unk12 = 0;
@@ -1010,7 +1010,7 @@ void wm_blockListInit(void) {
         g_worldBlockNodes[i].unk13 = -1;
     }
     for (i = 1; i < 20; i++) {
-        g_worldBlockNodes[i].unkC = &D_800D3AB8[i];
+        g_worldBlockNodes[i].unkC = &g_worldBlockPositions[i];
         g_worldBlockNodes[i].unk13 = i;
     }
     i = 39;
@@ -1031,7 +1031,7 @@ void wm_drawBlocks(void) {
     WmBlockNode *n;
     WmBlockPos *pos;
     MATRIX m;
-    WmQuad quad = D_800A7FB8;
+    WmQuad quad = g_worldBlockBackQuad;
     long sxy[4];
     VECTOR a;
     VECTOR b;
@@ -1047,10 +1047,10 @@ void wm_drawBlocks(void) {
     n = g_worldBlockHead.unk4;
     while (n->unk10 != -1) {
         pos = n->unkC;
-        D_800D3770.t[0] = pos->unk0[0] - g_worldCameraTarget[0];
-        D_800D3770.t[1] = pos->unk0[1] - g_worldCameraTarget[1];
-        D_800D3770.t[2] = pos->unk0[2] - g_worldCameraTarget[2];
-        CompMatrix(D_800CF448, &D_800D3770, &m);
+        g_worldBlockMatrix.t[0] = pos->unk0[0] - g_worldCameraTarget[0];
+        g_worldBlockMatrix.t[1] = pos->unk0[1] - g_worldCameraTarget[1];
+        g_worldBlockMatrix.t[2] = pos->unk0[2] - g_worldCameraTarget[2];
+        CompMatrix(g_worldViewMatrix, &g_worldBlockMatrix, &m);
         SetRotMatrix(&m);
         SetTransMatrix(&m);
         wm_worldToView((VECTOR *)pos, &a, &b, 0);
@@ -1123,9 +1123,9 @@ void wm_updateVisibleBlocks(void) {
     n = 0;
     if (g_worldMoveMode < 6) {
         if (g_worldPlayer->pos.vy >= -0x9C3) {
-            D_800CD09C[1].y0 = D_800CD09C[0].y0 = -0x3C;
+            g_worldBlockCullRects[1].y0 = g_worldBlockCullRects[0].y0 = -0x3C;
         } else {
-            D_800CD09C[1].y0 = D_800CD09C[0].y0 = -0x1E;
+            g_worldBlockCullRects[1].y0 = g_worldBlockCullRects[0].y0 = -0x1E;
         }
     }
     for (j = -3; j < 4; j++) {
@@ -1135,10 +1135,10 @@ void wm_updateVisibleBlocks(void) {
             e = (WmBlock *)wm_getCellBlock(cell, NULL);
             if (e != NULL) {
                 wm_cellToPos(cell, &pos.vx, &pos.vz);
-                D_800D3770.t[0] = pos.vx - g_worldCameraTarget[0];
-                D_800D3770.t[1] = pos.vy - g_worldCameraTarget[1];
-                D_800D3770.t[2] = pos.vz - g_worldCameraTarget[2];
-                CompMatrix(D_800CF448, &D_800D3770, &m);
+                g_worldBlockMatrix.t[0] = pos.vx - g_worldCameraTarget[0];
+                g_worldBlockMatrix.t[1] = pos.vy - g_worldCameraTarget[1];
+                g_worldBlockMatrix.t[2] = pos.vz - g_worldCameraTarget[2];
+                CompMatrix(g_worldViewMatrix, &g_worldBlockMatrix, &m);
                 SetRotMatrix(&m);
                 SetTransMatrix(&m);
                 hit = 0;
@@ -1163,7 +1163,7 @@ void wm_updateVisibleBlocks(void) {
                         } else {
                             k &= ~1;
                         }
-                        if ((sx[cnt] >= D_800CD09C[k].x0) & (D_800CD09C[k].x1 >= sx[cnt]) & (sy[cnt] >= D_800CD09C[k].y0) & (D_800CD09C[k].y1 >= sy[cnt])) {
+                        if ((sx[cnt] >= g_worldBlockCullRects[k].x0) & (g_worldBlockCullRects[k].x1 >= sx[cnt]) & (sy[cnt] >= g_worldBlockCullRects[k].y0) & (g_worldBlockCullRects[k].y1 >= sy[cnt])) {
                             hit = 1;
                             break;
                         }
@@ -1187,9 +1187,9 @@ void wm_updateVisibleBlocks(void) {
                     if (d.vz < -0xFFFF) {
                         d.vz += g_worldDepth;
                     }
-                    D_800D3C10[n].unk8 = SquareRoot0((d.vx >> 2) * (d.vx >> 2) + (d.vz >> 2) * (d.vz >> 2));
-                    D_800D3C10[n].unk4 = e;
-                    D_800D3C10[n].unk0 = cell;
+                    g_worldNearCells[n].unk8 = SquareRoot0((d.vx >> 2) * (d.vx >> 2) + (d.vz >> 2) * (d.vz >> 2));
+                    g_worldNearCells[n].unk4 = e;
+                    g_worldNearCells[n].unk0 = cell;
                     n++;
                 }
             }
@@ -1198,10 +1198,10 @@ void wm_updateVisibleBlocks(void) {
     for (j = 0; j < n - 1; j++) {
         for (i = n - 1; j < i; i = t) {
             t = i - 1;
-            if (D_800D3C10[t].unk8 > D_800D3C10[i].unk8) {
-                tmp = D_800D3C10[i];
-                D_800D3C10[i] = D_800D3C10[t];
-                D_800D3C10[t] = tmp;
+            if (g_worldNearCells[t].unk8 > g_worldNearCells[i].unk8) {
+                tmp = g_worldNearCells[i];
+                g_worldNearCells[i] = g_worldNearCells[t];
+                g_worldNearCells[t] = tmp;
             }
         }
     }
@@ -1218,8 +1218,8 @@ void wm_updateVisibleBlocks(void) {
     cnt2 = 0;
     last = -1;
     for (i = 0; i < n; i++) {
-        id = D_800D3C10[i].unk4->unk1;
-        wm_blockListRequest(D_800D3C10[i].unk0);
+        id = g_worldNearCells[i].unk4->unk1;
+        wm_blockListRequest(g_worldNearCells[i].unk0);
         if (id != 0) {
             if (cnt2 < 2) {
                 w_frmbufRequest(id);
@@ -1237,7 +1237,7 @@ void wm_updateVisibleBlocks(void) {
     wm_blockListCompact();
     wm_blockListResolve();
     nd = g_worldBlockHead.unk4;
-    D_800D1FD0 = 0;
+    g_worldClutAnimFx2 = 0;
     while (nd->unk10 != -1) {
         {
             u8 s = nd->unk8->unk21;
@@ -1362,18 +1362,18 @@ s32 wm_getCellBlock(s16 arg0, u8 *arg1) {
 }
 
 void wm_initBlockMatrix(void) {
-    D_800D3770.m[2][2] = 0x1000;
-    D_800D3770.m[1][1] = 0x1000;
-    D_800D3770.m[0][0] = 0x1000;
-    D_800D3770.t[2] = 0;
-    D_800D3770.t[1] = 0;
-    D_800D3770.t[0] = 0;
-    D_800D3770.m[2][1] = 0;
-    D_800D3770.m[2][0] = 0;
-    D_800D3770.m[1][2] = 0;
-    D_800D3770.m[1][0] = 0;
-    D_800D3770.m[0][2] = 0;
-    D_800D3770.m[0][1] = 0;
+    g_worldBlockMatrix.m[2][2] = 0x1000;
+    g_worldBlockMatrix.m[1][1] = 0x1000;
+    g_worldBlockMatrix.m[0][0] = 0x1000;
+    g_worldBlockMatrix.t[2] = 0;
+    g_worldBlockMatrix.t[1] = 0;
+    g_worldBlockMatrix.t[0] = 0;
+    g_worldBlockMatrix.m[2][1] = 0;
+    g_worldBlockMatrix.m[2][0] = 0;
+    g_worldBlockMatrix.m[1][2] = 0;
+    g_worldBlockMatrix.m[1][0] = 0;
+    g_worldBlockMatrix.m[0][2] = 0;
+    g_worldBlockMatrix.m[0][1] = 0;
 }
 
 void wm_blockListCompact(void) {
@@ -1437,7 +1437,7 @@ INCLUDE_RODATA("asm/us/ovl_0c/nonmatchings/tu_800BA528", D_800A7F48);
 
 INCLUDE_RODATA("asm/us/ovl_0c/nonmatchings/tu_800BA528", D_800A7F94);
 
-INCLUDE_RODATA("asm/us/ovl_0c/nonmatchings/tu_800BA528", D_800A7FB8);
+INCLUDE_RODATA("asm/us/ovl_0c/nonmatchings/tu_800BA528", g_worldBlockBackQuad);
 
 void wm_naviInit(void) {
     s32 i;
@@ -1449,7 +1449,7 @@ void wm_naviInit(void) {
     g_worldTitleFade = 0;
     g_worldTitleDelay = 0x14;
     g_worldNaviPlace = 0x3F;
-    D_800D3E79 = 0;
+    g_worldNaviPlaceCycled = 0;
     g_worldTitlePhase = 3;
     g_worldNaviCursorDraw = 1;
     g_worldNaviVisible = 1;
@@ -1483,15 +1483,15 @@ void wm_naviDraw(void) {
     case 1:
         if (g_worldVehicleActor != NULL && g_worldVehicleActor->unkE == 1 && (g_worldVehicleActor->unkF & 1) &&
             !((u8)g_worldMoveMode >= 7 && (u8)g_worldMoveMode < 10)) {
-            CVECTOR c0 = D_800A7FF0;
-            CVECTOR c1 = D_800A7FF4;
+            CVECTOR c0 = g_worldNaviVehicleColorA;
+            CVECTOR c1 = g_worldNaviVehicleColorB;
             wm_naviWorldToMap(g_worldVehicleActor->pos.vx, g_worldVehicleActor->pos.vz, &x, &z, page * 2);
             wm_naviDrawMarker(x, z, 1, 1, c0, c1, 0x40, 0xC8, 0x82, 1);
         }
         if (g_worldMountActor != NULL && g_worldMountActor->unkE == 1 && (g_worldMountActor->unkF & 1) &&
             !((u8)g_worldMoveMode >= 1 && (u8)g_worldMoveMode < 7)) {
-            CVECTOR c0 = D_800A7FF8;
-            CVECTOR c2 = D_800A7FFC;
+            CVECTOR c0 = g_worldNaviMountColorA;
+            CVECTOR c2 = g_worldNaviMountColorB;
             wm_naviWorldToMap(g_worldMountActor->pos.vx, g_worldMountActor->pos.vz, &x, &z, page * 2);
             wm_naviDrawMarker(x, z, 1, 1, c0, c2, 0x40, 0xC8, 0x82, 1);
         }
@@ -1504,15 +1504,15 @@ void wm_naviDraw(void) {
         if (g_worldNaviVisible != 0) {
             if (g_worldVehicleActor != NULL && g_worldVehicleActor->unkE == 1 && (g_worldVehicleActor->unkF & 1) &&
                 !((u8)g_worldMoveMode >= 7 && (u8)g_worldMoveMode < 10)) {
-                CVECTOR c0 = D_800A7FF0;
-                CVECTOR c3 = D_800A7FF4;
+                CVECTOR c0 = g_worldNaviVehicleColorA;
+                CVECTOR c3 = g_worldNaviVehicleColorB;
                 wm_naviWorldToMap(g_worldVehicleActor->pos.vx, g_worldVehicleActor->pos.vz, &x, &z, page * 2 + 1);
                 wm_naviDrawMarker(x, z, 1, 1, c0, c3, 0x40, 0x28, 9, 1);
             }
             if (g_worldMountActor != NULL && g_worldMountActor->unkE == 1 && (g_worldMountActor->unkF & 1) &&
                 !((u8)g_worldMoveMode >= 1 && (u8)g_worldMoveMode < 7)) {
-                CVECTOR c0 = D_800A7FF8;
-                CVECTOR c1 = D_800A7FFC;
+                CVECTOR c0 = g_worldNaviMountColorA;
+                CVECTOR c1 = g_worldNaviMountColorB;
                 wm_naviWorldToMap(g_worldMountActor->pos.vx, g_worldMountActor->pos.vz, &x, &z, page * 2 + 1);
                 wm_naviDrawMarker(x, z, 1, 1, c0, c1, 0x40, 0x28, 9, 1);
             }
@@ -1623,7 +1623,7 @@ void wm_naviUpdate(void) {
                     }
                     do {
                         g_worldNaviPlace = (g_worldNaviPlace + dir) & 0x3F;
-                        D_800D3E79 = 1;
+                        g_worldNaviPlaceCycled = 1;
                     } while (!(u8)wm_naviIsPlaceKnown(g_worldNaviPlace) || (g_worldNaviPlaces[g_worldNaviPage][g_worldNaviPlace].unk0 == g_worldNaviPlaces[g_worldNaviPage][g_worldNaviPlace - dir].unk0 &&
                              g_worldNaviPlaces[g_worldNaviPage][g_worldNaviPlace].unk2 == g_worldNaviPlaces[g_worldNaviPage][g_worldNaviPlace - dir].unk2 &&
                              (u8)wm_naviIsPlaceKnown(g_worldNaviPlace - dir)));
@@ -1636,7 +1636,7 @@ void wm_naviUpdate(void) {
                 ex = (g_worldNaviPlaces[g_worldNaviPage][i].unk0 << 12) - g_worldNaviCursorX;
                 ez = (g_worldNaviPlaces[g_worldNaviPage][i].unk2 << 12) - g_worldNaviCursorY;
                 if (g_worldNaviPage != 1 || ((u32)(i - 6) >= 4 && i != 15)) {
-                    lim = D_800CD70C;
+                    lim = g_worldNaviSnapDist;
                     best = ex >= 0 ? ex : -ex;
                     if (best < lim) {
                         ang = ez >= 0 ? ez : -ez;
@@ -1651,8 +1651,8 @@ void wm_naviUpdate(void) {
                     }
                 }
             }
-            if (D_800D3E79 == 1) {
-                D_800D3E79 = 0;
+            if (g_worldNaviPlaceCycled == 1) {
+                g_worldNaviPlaceCycled = 0;
                 g_evtGlobalVars.b[0x67] = 0;
             } else {
                 g_evtGlobalVars.b[0x67] = last + 1;
@@ -1706,7 +1706,7 @@ void wm_naviDrawMarker(s32 arg0, s32 arg1, s32 arg2, s32 arg3, CVECTOR arg4, CVE
 #define TILE(x0_, y0_, x1_, y1_, u0_, v0_, u1_, v1_, cl)                                   \
     setXY4((POLY_FT4 *)g_worldPrimPtr, x0_, y0_, x1_, y0_, x0_, y1_, x1_, y1_);              \
     setUV4((POLY_FT4 *)g_worldPrimPtr, u0_, v0_, u1_, v0_, u0_, v1_, u1_, v1_);              \
-    setRGB0((POLY_FT4 *)g_worldPrimPtr, D_800CD734, D_800CD738, D_800CD73C);                 \
+    setRGB0((POLY_FT4 *)g_worldPrimPtr, g_worldNaviTileR, g_worldNaviTileG, g_worldNaviTileB);                 \
     ((POLY_FT4 *)g_worldPrimPtr)->tpage = 0xA;                                                \
     ((POLY_FT4 *)g_worldPrimPtr)->clut = cl;                                                  \
     setPolyFT4((POLY_FT4 *)g_worldPrimPtr);                                                   \
@@ -1739,7 +1739,7 @@ void wm_naviDrawFullMap(void) {
     s32 y2;
 
     ot = (u32 *)g_worldOt[*g_worldBufIndex];
-    arrow = D_800A8000;
+    arrow = g_worldNaviFullMapArrow;
     memset(&rot0, 0, 8);
     rot0.vz = g_worldPlayer->pos.rotY - 0x400;
     rot = rot0;
@@ -1806,29 +1806,29 @@ void wm_naviDrawFullMap(void) {
     y1 = y + ay + 9;
     x2 = x + bx + 0x28;
     y2 = y + by + 9;
-    D_800D3E7C = (POLY_G3 *)g_worldPrimPtr;
-    D_800D3E7C->r0 = D_800CD728;
-    D_800D3E7C->g0 = D_800CD72C;
-    D_800D3E7C->b0 = D_800CD730;
-    D_800D3E7C->r1 = 0;
-    D_800D3E7C->g1 = 0;
-    D_800D3E7C->b1 = 0;
-    D_800D3E7C->r2 = 0;
-    D_800D3E7C->g2 = 0;
-    D_800D3E7C->b2 = 0;
-    D_800D3E7C->x0 = x + 0x28;
-    D_800D3E7C->y0 = y + 9;
-    D_800D3E7C->x1 = x1;
-    D_800D3E7C->y1 = y1;
-    D_800D3E7C->x2 = x2;
-    D_800D3E7C->y2 = y2;
-    setPolyG3(D_800D3E7C);
-    setSemiTrans(D_800D3E7C, 1);
+    g_worldNaviConePrim = (POLY_G3 *)g_worldPrimPtr;
+    g_worldNaviConePrim->r0 = g_worldNaviConeR;
+    g_worldNaviConePrim->g0 = g_worldNaviConeG;
+    g_worldNaviConePrim->b0 = g_worldNaviConeB;
+    g_worldNaviConePrim->r1 = 0;
+    g_worldNaviConePrim->g1 = 0;
+    g_worldNaviConePrim->b1 = 0;
+    g_worldNaviConePrim->r2 = 0;
+    g_worldNaviConePrim->g2 = 0;
+    g_worldNaviConePrim->b2 = 0;
+    g_worldNaviConePrim->x0 = x + 0x28;
+    g_worldNaviConePrim->y0 = y + 9;
+    g_worldNaviConePrim->x1 = x1;
+    g_worldNaviConePrim->y1 = y1;
+    g_worldNaviConePrim->x2 = x2;
+    g_worldNaviConePrim->y2 = y2;
+    setPolyG3(g_worldNaviConePrim);
+    setSemiTrans(g_worldNaviConePrim, 1);
     if (g_worldNaviVisible) {
-        addPrim(&ot[10], D_800D3E7C);
+        addPrim(&ot[10], g_worldNaviConePrim);
     }
-    D_800D3E7C++;
-    g_worldPrimPtr = (s32)D_800D3E7C;
+    g_worldNaviConePrim++;
+    g_worldPrimPtr = (s32)g_worldNaviConePrim;
     setDrawTPage((DR_TPAGE *)g_worldPrimPtr, 0, 1, GetTPage(0, 1, 0, 0));
     addPrim(&ot[10], (DR_TPAGE *)g_worldPrimPtr);
     g_worldPrimPtr += sizeof(DR_TPAGE);
@@ -1875,7 +1875,7 @@ void wm_naviDrawMiniMap(void) {
     s32 y2;
 
     ot = (u32 *)g_worldOt[*g_worldBufIndex];
-    arrow = D_800A8020;
+    arrow = g_worldNaviMiniMapArrow;
     memset(&rot0, 0, 8);
     rot0.vz = g_worldPlayer->pos.rotY - 0x400;
     rot = rot0;
@@ -1919,31 +1919,31 @@ void wm_naviDrawMiniMap(void) {
     bx = math_sin(b) * 12 >> 12;
     by = math_cos(b) * 12 >> 12;
     wm_naviWorldToMap(g_worldPlayer->pos.vx, g_worldPlayer->pos.vz, px, py, g_worldNaviPage * 2);
-    D_800D3E7C = (POLY_G3 *)g_worldPrimPtr;
+    g_worldNaviConePrim = (POLY_G3 *)g_worldPrimPtr;
     x1 = x + ax + 200;
     y1 = y + ay + 130;
     x2 = x + bx + 200;
     y2 = y + by + 130;
-    D_800D3E7C->r0 = 0x8E;
-    D_800D3E7C->g0 = 0xC8;
-    D_800D3E7C->b0 = 0;
-    D_800D3E7C->r1 = 0;
-    D_800D3E7C->g1 = 0;
-    D_800D3E7C->b1 = 0;
-    D_800D3E7C->r2 = 0;
-    D_800D3E7C->g2 = 0;
-    D_800D3E7C->b2 = 0;
-    D_800D3E7C->x0 = x + 200;
-    D_800D3E7C->y0 = y + 130;
-    D_800D3E7C->x1 = x1;
-    D_800D3E7C->y1 = y1;
-    D_800D3E7C->x2 = x2;
-    D_800D3E7C->y2 = y2;
-    setPolyG3(D_800D3E7C);
-    setSemiTrans(D_800D3E7C, 1);
-    addPrim(&ot[10], D_800D3E7C);
-    D_800D3E7C++;
-    g_worldPrimPtr = (s32)D_800D3E7C;
+    g_worldNaviConePrim->r0 = 0x8E;
+    g_worldNaviConePrim->g0 = 0xC8;
+    g_worldNaviConePrim->b0 = 0;
+    g_worldNaviConePrim->r1 = 0;
+    g_worldNaviConePrim->g1 = 0;
+    g_worldNaviConePrim->b1 = 0;
+    g_worldNaviConePrim->r2 = 0;
+    g_worldNaviConePrim->g2 = 0;
+    g_worldNaviConePrim->b2 = 0;
+    g_worldNaviConePrim->x0 = x + 200;
+    g_worldNaviConePrim->y0 = y + 130;
+    g_worldNaviConePrim->x1 = x1;
+    g_worldNaviConePrim->y1 = y1;
+    g_worldNaviConePrim->x2 = x2;
+    g_worldNaviConePrim->y2 = y2;
+    setPolyG3(g_worldNaviConePrim);
+    setSemiTrans(g_worldNaviConePrim, 1);
+    addPrim(&ot[10], g_worldNaviConePrim);
+    g_worldNaviConePrim++;
+    g_worldPrimPtr = (s32)g_worldNaviConePrim;
     setDrawTPage((DR_TPAGE *)g_worldPrimPtr, 0, 1, GetTPage(0, 1, 0, 0));
     addPrim(&ot[10], (DR_TPAGE *)g_worldPrimPtr);
     g_worldPrimPtr += sizeof(DR_TPAGE);
@@ -1998,42 +1998,42 @@ void wm_drawTitle(void) {
     if (g_worldTitlePhase == 3) {
         g_worldTitleId = -1;
     }
-    D_800D3E68 = (POLY_FT4 *)g_worldPrimPtr;
+    g_worldTitlePrim = (POLY_FT4 *)g_worldPrimPtr;
     if (g_worldTitleFade != 0 && g_worldTitlePhase != 0) {
-        setRGB0(D_800D3E68, g_worldTitleFade, g_worldTitleFade, g_worldTitleFade);
-        if (D_800CCE40 == 0) {
-            setXY4(D_800D3E68, 0x60, 0x32, 0xDF, 0x32, 0x60, 0x71, 0xDF, 0x71);
-            setUV4(D_800D3E68, 0, 0x40, 0x7F, 0x40, 0, 0x7F, 0x7F, 0x7F);
+        setRGB0(g_worldTitlePrim, g_worldTitleFade, g_worldTitleFade, g_worldTitleFade);
+        if (g_worldTitleWide == 0) {
+            setXY4(g_worldTitlePrim, 0x60, 0x32, 0xDF, 0x32, 0x60, 0x71, 0xDF, 0x71);
+            setUV4(g_worldTitlePrim, 0, 0x40, 0x7F, 0x40, 0, 0x7F, 0x7F, 0x7F);
         } else {
-            setXY4(D_800D3E68, 0x20, 0x32, 0x11F, 0x32, 0x20, 0x51, 0x11F, 0x51);
-            setUV4(D_800D3E68, 0, 0x40, 0xFF, 0x40, 0, 0x5F, 0xFF, 0x5F);
+            setXY4(g_worldTitlePrim, 0x20, 0x32, 0x11F, 0x32, 0x20, 0x51, 0x11F, 0x51);
+            setUV4(g_worldTitlePrim, 0, 0x40, 0xFF, 0x40, 0, 0x5F, 0xFF, 0x5F);
         }
-        D_800D3E68->tpage = 0x2C;
-        D_800D3E68->clut = 0x3D28;
-        setlen(D_800D3E68, 9);
-        setcode(D_800D3E68, 0x2C);
-        setSemiTrans(D_800D3E68, 1);
-        addPrim(&ot[10], D_800D3E68);
-        D_800D3E68++;
-        setRGB0(D_800D3E68, g_worldTitleFade, g_worldTitleFade, g_worldTitleFade);
-        if (D_800CCE40 == 0) {
-            setXY4(D_800D3E68, 0x60, 0x32, 0xDF, 0x32, 0x60, 0x71, 0xDF, 0x71);
-            setUV4(D_800D3E68, 0x80, 0x40, 0xFF, 0x40, 0x80, 0x7F, 0xFF, 0x7F);
+        g_worldTitlePrim->tpage = 0x2C;
+        g_worldTitlePrim->clut = 0x3D28;
+        setlen(g_worldTitlePrim, 9);
+        setcode(g_worldTitlePrim, 0x2C);
+        setSemiTrans(g_worldTitlePrim, 1);
+        addPrim(&ot[10], g_worldTitlePrim);
+        g_worldTitlePrim++;
+        setRGB0(g_worldTitlePrim, g_worldTitleFade, g_worldTitleFade, g_worldTitleFade);
+        if (g_worldTitleWide == 0) {
+            setXY4(g_worldTitlePrim, 0x60, 0x32, 0xDF, 0x32, 0x60, 0x71, 0xDF, 0x71);
+            setUV4(g_worldTitlePrim, 0x80, 0x40, 0xFF, 0x40, 0x80, 0x7F, 0xFF, 0x7F);
         } else {
-            setXY4(D_800D3E68, 0x20, 0x32, 0x11F, 0x32, 0x20, 0x51, 0x11F, 0x51);
-            setUV4(D_800D3E68, 0, 0x60, 0xFF, 0x60, 0, 0x7F, 0xFF, 0x7F);
+            setXY4(g_worldTitlePrim, 0x20, 0x32, 0x11F, 0x32, 0x20, 0x51, 0x11F, 0x51);
+            setUV4(g_worldTitlePrim, 0, 0x60, 0xFF, 0x60, 0, 0x7F, 0xFF, 0x7F);
         }
-        D_800D3E68->tpage = 0x4C;
-        D_800D3E68->clut = 0x3D28;
-        setlen(D_800D3E68, 9);
-        setcode(D_800D3E68, 0x2C);
-        setSemiTrans(D_800D3E68, 1);
-        p = D_800D3E68;
+        g_worldTitlePrim->tpage = 0x4C;
+        g_worldTitlePrim->clut = 0x3D28;
+        setlen(g_worldTitlePrim, 9);
+        setcode(g_worldTitlePrim, 0x2C);
+        setSemiTrans(g_worldTitlePrim, 1);
+        p = g_worldTitlePrim;
         setaddr(p, getaddr(&ot[10]));
-        D_800D3E68 = p + 1;
+        g_worldTitlePrim = p + 1;
         setaddr(&ot[10], p);
     }
-    g_worldPrimPtr = (s32)D_800D3E68;
+    g_worldPrimPtr = (s32)g_worldTitlePrim;
 }
 
 void wm_naviDrawPlaces(void) {
@@ -2114,11 +2114,11 @@ void func_800C16C0(void) {
     ((POLY_FT4 *)g_worldPrimPtr)->code = 0x2C;
     addPrim(&ot[10], g_worldPrimPtr);
     g_worldPrimPtr += sizeof(POLY_FT4);
-    func_800C1824(0xF5, 0x5C, 9, 0);
+    wm_naviDrawFrame(0xF5, 0x5C, 9, 0);
 }
 
 /* draw the four compass frame pieces at (arg0, arg1) */
-void func_800C1824(s32 arg0, s32 arg1) {
+void wm_naviDrawFrame(s32 arg0, s32 arg1) {
     POLY_FT4 *p;
     s16 clut;
     u32 *ot;
@@ -2130,17 +2130,17 @@ void func_800C1824(s32 arg0, s32 arg1) {
     for (i = 0; i < 4; i++) {
         SetPolyFT4(p);
         if (i < 2) {
-            setXYWH(p, D_800CD744[i].unk0 + arg0, D_800CD744[i].unk2 + arg1, D_800CD744[i].unk8,
-                    D_800CD744[i].unkA);
+            setXYWH(p, g_worldNaviFrameParts[i].unk0 + arg0, g_worldNaviFrameParts[i].unk2 + arg1, g_worldNaviFrameParts[i].unk8,
+                    g_worldNaviFrameParts[i].unkA);
         } else {
             /* rotated a quarter turn */
-            setXY4(p, D_800CD744[i].unk0 + arg0, D_800CD744[i].unk2 + arg1 + D_800CD744[i].unk8,
-                   D_800CD744[i].unk0 + arg0, arg1 + D_800CD744[i].unk2 - (i != 2),
-                   D_800CD744[i].unk0 + arg0 + D_800CD744[i].unkA,
-                   D_800CD744[i].unk2 + arg1 + D_800CD744[i].unk8,
-                   D_800CD744[i].unk0 + arg0 + D_800CD744[i].unkA, arg1 + D_800CD744[i].unk2 - (i != 2));
+            setXY4(p, g_worldNaviFrameParts[i].unk0 + arg0, g_worldNaviFrameParts[i].unk2 + arg1 + g_worldNaviFrameParts[i].unk8,
+                   g_worldNaviFrameParts[i].unk0 + arg0, arg1 + g_worldNaviFrameParts[i].unk2 - (i != 2),
+                   g_worldNaviFrameParts[i].unk0 + arg0 + g_worldNaviFrameParts[i].unkA,
+                   g_worldNaviFrameParts[i].unk2 + arg1 + g_worldNaviFrameParts[i].unk8,
+                   g_worldNaviFrameParts[i].unk0 + arg0 + g_worldNaviFrameParts[i].unkA, arg1 + g_worldNaviFrameParts[i].unk2 - (i != 2));
         }
-        setUVWH(p, D_800CD744[i].unk4, D_800CD744[i].unk6, D_800CD744[i].unk8, D_800CD744[i].unkA);
+        setUVWH(p, g_worldNaviFrameParts[i].unk4, g_worldNaviFrameParts[i].unk6, g_worldNaviFrameParts[i].unk8, g_worldNaviFrameParts[i].unkA);
         setRGB0(p, 0x80, 0x80, 0x80);
         p->tpage = 0xC;
         p->clut = clut;
@@ -2204,14 +2204,14 @@ void wm_readtxInit(void) {
     g_worldReadtxDirty = 0;
 }
 
-INCLUDE_RODATA("asm/us/ovl_0c/nonmatchings/tu_800BA528", D_800A7FF0);
+INCLUDE_RODATA("asm/us/ovl_0c/nonmatchings/tu_800BA528", g_worldNaviVehicleColorA);
 
-INCLUDE_RODATA("asm/us/ovl_0c/nonmatchings/tu_800BA528", D_800A7FF4);
+INCLUDE_RODATA("asm/us/ovl_0c/nonmatchings/tu_800BA528", g_worldNaviVehicleColorB);
 
-INCLUDE_RODATA("asm/us/ovl_0c/nonmatchings/tu_800BA528", D_800A7FF8);
+INCLUDE_RODATA("asm/us/ovl_0c/nonmatchings/tu_800BA528", g_worldNaviMountColorA);
 
-INCLUDE_RODATA("asm/us/ovl_0c/nonmatchings/tu_800BA528", D_800A7FFC);
+INCLUDE_RODATA("asm/us/ovl_0c/nonmatchings/tu_800BA528", g_worldNaviMountColorB);
 
-INCLUDE_RODATA("asm/us/ovl_0c/nonmatchings/tu_800BA528", D_800A8000);
+INCLUDE_RODATA("asm/us/ovl_0c/nonmatchings/tu_800BA528", g_worldNaviFullMapArrow);
 
-INCLUDE_RODATA("asm/us/ovl_0c/nonmatchings/tu_800BA528", D_800A8020);
+INCLUDE_RODATA("asm/us/ovl_0c/nonmatchings/tu_800BA528", g_worldNaviMiniMapArrow);

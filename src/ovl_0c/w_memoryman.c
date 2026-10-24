@@ -78,11 +78,11 @@ void wm_initClutAnims(void) {
     src = 0;
     memset(&r, 0, 8);
     r.h = 1;
-    D_800D1FD0 = 0;
-    D_800CFE98[0] = 0;
-    D_800CFE98[1] = 0;
+    g_worldClutAnimFx2 = 0;
+    g_worldTexAnimStep[0] = 0;
+    g_worldTexAnimStep[1] = 0;
     for (i = 7; i >= 0; i--) {
-        D_800CFE88[i] = 0;
+        g_worldTexScrollAcc[i] = 0;
     }
     for (i = 0; i < 18; i++) {
         e = &g_worldClutAnims[i];
@@ -113,9 +113,9 @@ void wm_initClutAnims(void) {
             g_worldClutBuf[1][off + b + r.w] = g_worldClutBuf[0][off + j];
             g_worldClutBuf[1][off + b] = g_worldClutBuf[0][off + j];
         }
-        D_800CFE20[i] = off;
-        D_800CFE70[i] = 0;
-        D_800CFE48[i] = 0;
+        g_worldClutAnimOffset[i] = off;
+        g_worldClutAnimFrame[i] = 0;
+        g_worldClutAnimAcc[i] = 0;
         off += (u16)e->unk6 * 2;
     }
 }
@@ -218,9 +218,9 @@ void wm_scrollTextures(void) {
         y = g_worldTexScrolls[i].unk2;
         w = g_worldTexScrolls[i].unk4;
         h = g_worldTexScrolls[i].unk6;
-        t = D_800CFE88[i] + g_worldTexScrolls[i].unk8;
+        t = g_worldTexScrollAcc[i] + g_worldTexScrolls[i].unk8;
         n = (s16)t >> 8;
-        D_800CFE88[i] = t & 0xFF;
+        g_worldTexScrollAcc[i] = t & 0xFF;
         if (n != 0) {
             r = (RECT *)g_worldPrimPtr;
             r->x = x;
@@ -251,15 +251,15 @@ void wm_animTextures(void) {
 
     t = D_800CFEF8;
     if (t != 0 && g_worldFrameCount % t == 0) {
-        wm_loadTim(D_800CE3F4, D_800CCFAC[D_800CFE98[0]] + 8, 0, 0, 0, 0, 0);
-        wm_loadTim(D_800CE3F4, D_800CCFAC[D_800CFE98[0]], 0, 0, 0, 0, 0);
-        D_800CFE98[0] = (s8)(D_800CFE98[0] + 1) % 6;
+        wm_loadTim(g_worldTexAnimPack, g_worldTexAnimSeq[g_worldTexAnimStep[0]] + 8, 0, 0, 0, 0, 0);
+        wm_loadTim(g_worldTexAnimPack, g_worldTexAnimSeq[g_worldTexAnimStep[0]], 0, 0, 0, 0, 0);
+        g_worldTexAnimStep[0] = (s8)(g_worldTexAnimStep[0] + 1) % 6;
     }
     t = D_800CFF02;
     if (t != 0 && (g_worldFrameCount + 2) % t == 0) {
-        wm_loadTim(D_800CE3F4, D_800CCFAC[D_800CFE98[1]] + 4, 0, 0, 0, 0, 0);
-        wm_loadTim(D_800CE3F4, D_800CCFAC[D_800CFE98[1]] + 12, 0, 0, 0, 0, 0);
-        D_800CFE98[1] = (s8)(D_800CFE98[1] + 1) % 6;
+        wm_loadTim(g_worldTexAnimPack, g_worldTexAnimSeq[g_worldTexAnimStep[1]] + 4, 0, 0, 0, 0, 0);
+        wm_loadTim(g_worldTexAnimPack, g_worldTexAnimSeq[g_worldTexAnimStep[1]] + 12, 0, 0, 0, 0, 0);
+        g_worldTexAnimStep[1] = (s8)(g_worldTexAnimStep[1] + 1) % 6;
     }
 }
 
@@ -272,8 +272,8 @@ void wm_animCluts(void) {
     s32 e = 0;
     WmFrmbufSlot *n;
 
-    if (D_800D1FD0 != 0) {
-        if (D_800D30CB == 0) {
+    if (g_worldClutAnimFx2 != 0) {
+        if (g_worldFormFlags[3] == 0) {
             a = 0xC;
             b = 0xD;
             c = 0xF;
@@ -313,18 +313,18 @@ void wm_stepClutAnims(s32 arg0, s32 arg1, s32 arg2) {
     s32 n;
 
     for (i = arg0; i <= arg1; i++) {
-        D_800CFE48[i] += g_worldClutAnims[i].unk8;
-        n = D_800CFE48[i] / 256;
-        D_800CFE48[i] &= 0xFF;
+        g_worldClutAnimAcc[i] += g_worldClutAnims[i].unk8;
+        n = g_worldClutAnimAcc[i] / 256;
+        g_worldClutAnimAcc[i] &= 0xFF;
         if (n != 0) {
             r = (RECT *)g_worldPrimPtr;
             r->x = g_worldClutAnims[i].unk0 + g_worldClutAnims[i].unk4;
             r->y = g_worldClutAnims[i].unk2 + arg2;
             r->w = g_worldClutAnims[i].unk6;
             r->h = 1;
-            D_800CFE70[i] += n;
-            D_800CFE70[i] %= r->w;
-            LoadImage(r++, (u32 *)&g_worldClutBuf[D_800CFE70[i] & 1][D_800CFE20[i] + (D_800CFE70[i] & 0xFFFE)]);
+            g_worldClutAnimFrame[i] += n;
+            g_worldClutAnimFrame[i] %= r->w;
+            LoadImage(r++, (u32 *)&g_worldClutBuf[g_worldClutAnimFrame[i] & 1][g_worldClutAnimOffset[i] + (g_worldClutAnimFrame[i] & 0xFFFE)]);
             g_worldPrimPtr = (s32)r;
         }
     }
@@ -345,22 +345,22 @@ void wm_loadTimPack(s32 *arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4) {
     }
 }
 
-void func_800B9774(void) {
-    D_800D1FE0[0].unk0.r = g_worldWeatherData.unk5E0[0].unk30[1].unk4[0];
-    D_800D1FE0[0].unk0.g = g_worldWeatherData.unk5E0[0].unk30[1].unk4[1];
-    D_800D1FE0[0].unk0.b = g_worldWeatherData.unk5E0[0].unk30[1].unk4[2];
-    D_800D1FE0[0].unk4 = g_worldWeatherData.unk5E0[0].unk30[1].unk0;
-    D_800D1FE0[0].unk6 = g_worldWeatherData.unk5E0[0].unk30[1].unk2;
-    D_800D1FE0[1].unk0.r = g_worldWeatherData.unk5E0[0].unk30[0].unk4[0];
-    D_800D1FE0[1].unk0.g = g_worldWeatherData.unk5E0[0].unk30[0].unk4[1];
-    D_800D1FE0[1].unk0.b = g_worldWeatherData.unk5E0[0].unk30[0].unk4[2];
-    D_800D1FE0[1].unk4 = g_worldWeatherData.unk5E0[0].unk30[0].unk0;
-    D_800D1FE0[1].unk6 = g_worldWeatherData.unk5E0[0].unk30[0].unk2;
-    D_800D1FD8.unk0.r = g_worldWeatherData.unk5E0[0].unk30[2].unk4[0];
-    D_800D1FD8.unk0.g = g_worldWeatherData.unk5E0[0].unk30[2].unk4[1];
-    D_800D1FD8.unk0.b = g_worldWeatherData.unk5E0[0].unk30[2].unk4[2];
-    D_800D1FD8.unk4 = g_worldWeatherData.unk5E0[0].unk30[2].unk0;
-    D_800D1FD8.unk6 = g_worldWeatherData.unk5E0[0].unk30[2].unk2;
+void wm_updateFogParams(void) {
+    g_worldFogParams[0].unk0.r = g_worldWeatherData.unk5E0[0].unk30[1].unk4[0];
+    g_worldFogParams[0].unk0.g = g_worldWeatherData.unk5E0[0].unk30[1].unk4[1];
+    g_worldFogParams[0].unk0.b = g_worldWeatherData.unk5E0[0].unk30[1].unk4[2];
+    g_worldFogParams[0].unk4 = g_worldWeatherData.unk5E0[0].unk30[1].unk0;
+    g_worldFogParams[0].unk6 = g_worldWeatherData.unk5E0[0].unk30[1].unk2;
+    g_worldFogParams[1].unk0.r = g_worldWeatherData.unk5E0[0].unk30[0].unk4[0];
+    g_worldFogParams[1].unk0.g = g_worldWeatherData.unk5E0[0].unk30[0].unk4[1];
+    g_worldFogParams[1].unk0.b = g_worldWeatherData.unk5E0[0].unk30[0].unk4[2];
+    g_worldFogParams[1].unk4 = g_worldWeatherData.unk5E0[0].unk30[0].unk0;
+    g_worldFogParams[1].unk6 = g_worldWeatherData.unk5E0[0].unk30[0].unk2;
+    g_worldBackdropFog.unk0.r = g_worldWeatherData.unk5E0[0].unk30[2].unk4[0];
+    g_worldBackdropFog.unk0.g = g_worldWeatherData.unk5E0[0].unk30[2].unk4[1];
+    g_worldBackdropFog.unk0.b = g_worldWeatherData.unk5E0[0].unk30[2].unk4[2];
+    g_worldBackdropFog.unk4 = g_worldWeatherData.unk5E0[0].unk30[2].unk0;
+    g_worldBackdropFog.unk6 = g_worldWeatherData.unk5E0[0].unk30[2].unk2;
 }
 
 INCLUDE_RODATA("asm/us/ovl_0c/nonmatchings/w_memoryman", D_800A7CCC);
@@ -478,9 +478,9 @@ s32 wm_getBlockHeight(s32 cell, WmBlock *tex, VECTOR *pos, u32 *attr, s32 *idx, 
                 y = (a->vy + b->vy + c->vy) / 3;
             }
             n = 1;
-            D_800D27F8[0] = y;
+            g_worldHitHeights[0] = y;
             found = n;
-            D_800D2DF8[0] = p;
+            g_worldHitPolys[0] = p;
             break;
         }
     }
@@ -533,25 +533,25 @@ s32 wm_getBlockHeight(s32 cell, WmBlock *tex, VECTOR *pos, u32 *attr, s32 *idx, 
             } else {
                 m = n;
                 n++;
-                D_800D27F8[m] = y;
-                D_800D2DF8[m] = i;
+                g_worldHitHeights[m] = y;
+                g_worldHitPolys[m] = i;
             }
         }
     }
     if (n != 0) {
         y0 = pos->vy;
-        best = abs(D_800D27F8[0] - y0);
+        best = abs(g_worldHitHeights[0] - y0);
         bi = 0;
         for (i = 1; i < n; i++) {
-            d = abs(D_800D27F8[i] - y0);
+            d = abs(g_worldHitHeights[i] - y0);
             if (d < best) {
                 best = d;
                 bi = i;
             }
         }
-        *idx = D_800D2DF8[bi];
+        *idx = g_worldHitPolys[bi];
         *attr = polys[*idx].unkE;
-        y = D_800D27F8[bi];
+        y = g_worldHitHeights[bi];
         if (cache != NULL && !found) {
             (*slot)++;
             *slot %= 6;
@@ -567,7 +567,7 @@ s32 wm_getBlockHeight(s32 cell, WmBlock *tex, VECTOR *pos, u32 *attr, s32 *idx, 
         *attr = 0;
         y = pos->vy;
         printf("Not hit polygon\n");
-        if (D_800D30C5 >= 2) {
+        if (g_worldLoadedFrames >= 2) {
             sprintf(g_worldMapErrorMsg, "no polygon [ %d,%d,%d:%d ] \n", g_worldPlayer->pos.vx, g_worldPlayer->pos.vy,
                     g_worldPlayer->pos.vz, found);
             printf(D_800A7D20, g_worldMapErrorMsg);
@@ -587,29 +587,29 @@ void wm_initTexPages(void) {
     s32 u;
 
     i = 0;
-    D_800D2FF8[0].unk0 = 0;
-    D_800D2FF8[0].unk2 = 0;
-    D_800D2FF8[0].unk4 = 0;
-    D_800D2FF8[0].unk5 = 0;
-    D_800D2FF8[0].unk8 = 0;
+    g_worldTexAreas[0].unk0 = 0;
+    g_worldTexAreas[0].unk2 = 0;
+    g_worldTexAreas[0].unk4 = 0;
+    g_worldTexAreas[0].unk5 = 0;
+    g_worldTexAreas[0].unk8 = 0;
     do {
         v = i / 8;
         x = (i % 8) * 16 + 0x300;
         y = i + 0xF0;
         u = (i % 4) << 6;
-        D_800D2FF8[i + 1].unk0 = getTPage(0, 1, x, 0x100);
-        D_800D2FF8[i + 1].unk2 = getClut(0x300, y);
-        D_800D2FF8[i + 1].unk4 = u;
-        D_800D2FF8[i + 1].unk5 = v << 7;
-        D_800D2FF8[i + 1].unk8 = 0;
+        g_worldTexAreas[i + 1].unk0 = getTPage(0, 1, x, 0x100);
+        g_worldTexAreas[i + 1].unk2 = getClut(0x300, y);
+        g_worldTexAreas[i + 1].unk4 = u;
+        g_worldTexAreas[i + 1].unk5 = v << 7;
+        g_worldTexAreas[i + 1].unk8 = 0;
         i++;
     } while (i < 16);
 }
 
-void func_800BA29C(void) {
+void wm_initMapState(void) {
     wm_initTexPages();
     g_worldUsePolyCache = 1;
-    D_800D30C5 = 0;
+    g_worldLoadedFrames = 0;
     D_800D30C4 = 0;
 }
 
@@ -621,7 +621,7 @@ void wm_drawBlock(u8 *arg0, s32 arg1, s32 arg2) {
     s32 unused[2];
 
     t = g_worldOt[*g_worldBufIndex];
-    D_800D27F0 = &D_800D2FF8[arg0[1]];
+    g_worldCurTexArea = &g_worldTexAreas[arg0[1]];
     if (g_worldFog != 0) {
         wm_blockVertsFog(arg0);
     } else if (arg2 == 0) {
@@ -638,11 +638,11 @@ void wm_drawBlock(u8 *arg0, s32 arg1, s32 arg2) {
     }
 }
 
-void func_800BA3F4(s32 arg0, s32 arg1) {
+void wm_drawBackdrop(s32 arg0, s32 arg1) {
     s32 ot = g_worldOt[*g_worldBufIndex];
 
-    func_800B3A80(arg0);
-    g_worldPrimPtr = func_800B3FEC(arg0, g_worldPrimPtr, ot);
+    wm_backdropVerts(arg0);
+    g_worldPrimPtr = wm_backdropFaces(arg0, g_worldPrimPtr, ot);
 }
 
 void wm_drawModel(s32 arg0, s32 arg1, u32 arg2) {

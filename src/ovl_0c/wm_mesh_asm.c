@@ -2,11 +2,11 @@
 
 INCLUDE_ASM("asm/us/ovl_0c/nonmatchings/wm_mesh_asm", func_800B3844);
 
-INCLUDE_ASM("asm/us/ovl_0c/nonmatchings/wm_mesh_asm", func_800B3998);
+INCLUDE_ASM("asm/us/ovl_0c/nonmatchings/wm_mesh_asm", wm_depthCueClut);
 
-INCLUDE_ASM("asm/us/ovl_0c/nonmatchings/wm_mesh_asm", func_800B3A80);
+INCLUDE_ASM("asm/us/ovl_0c/nonmatchings/wm_mesh_asm", wm_backdropVerts);
 
-INCLUDE_ASM("asm/us/ovl_0c/nonmatchings/wm_mesh_asm", func_800B3FEC);
+INCLUDE_ASM("asm/us/ovl_0c/nonmatchings/wm_mesh_asm", wm_backdropFaces);
 
 INCLUDE_ASM("asm/us/ovl_0c/nonmatchings/wm_mesh_asm", wm_blockVertsFog);
 

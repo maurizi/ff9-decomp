@@ -61,20 +61,20 @@ void wm_init(void) {
     SetDispMask(1);
     g_gameState->unk1C->unk838 = (s32 (*)(s32, void *))wm_loadActorModel;
     g_gameState->unk1C->unk83C = wm_soundCommand;
-    g_gameState->unk1C->unk8BC = func_800AD10C;
+    g_gameState->unk1C->unk8BC = wm_preloadRequest;
     g_gameState->unk1C->unk84C = 0;
     gd = g_gameState->unk1C;
     gd->unk39 = 0;
     gd->unk38 = 0;
     wm->unk0 |= 1;
     wm_loadWorldData();
-    func_800A91A4();
+    wm_afterLoadWorldData();
     wm_loadSoundBanks();
-    func_800A919C();
+    wm_afterLoadSoundBanks();
     wm_loadResidentMusic();
-    func_800A91AC();
+    wm_afterLoadResidentMusic();
     wm_loadShadowTexture();
-    func_800A9220();
+    wm_afterLoadShadowTexture();
     wm_systemInit();
     func_800239D0();
     if (func_800C45D8() == 0) {
@@ -131,7 +131,7 @@ s32 wm_loadSoundBanks(void) {
         addr = db_lookupRegistered(4, id, 0);
         size = (u32)db_lookupRegistered(5, id, 0);
         if (ids[i] == 0x17B) {
-            r = &D_800CE0B8[D_800CCA1C];
+            r = &g_worldParkedSoundRects[g_worldParkedSoundRectIdx];
             r->x = g_gameState->unk10[g_gameState->unk1C->unk8].clip.x;
             r->y = g_gameState->unk10[g_gameState->unk1C->unk8].clip.y;
             r->h = 218;
@@ -193,15 +193,15 @@ s32 wm_loadWorldData(void) {
     return 0;
 }
 
-s32 func_800A919C(void) {
+s32 wm_afterLoadSoundBanks(void) {
     return 0;
 }
 
-s32 func_800A91A4(void) {
+s32 wm_afterLoadWorldData(void) {
     return 0;
 }
 
-s32 func_800A91AC(void) {
+s32 wm_afterLoadResidentMusic(void) {
     return 0;
 }
 
@@ -215,7 +215,7 @@ s32 wm_freeWorldData(void) {
     return 0;
 }
 
-s32 func_800A9220(void) {
+s32 wm_afterLoadShadowTexture(void) {
     return 0;
 }
 
@@ -269,7 +269,7 @@ void wm_load(s32 arg0) {
     obj->unk4 = (void *)D_80067948;
     obj->primCursor = (s32)obj->unk30;
     func_8004A8A4();
-    func_800B7F7C();
+    wm_finishLoad();
     preload_init();
     g_gameState->unk1C->unk8E4.world->unk0 &= ~1;
 }
@@ -388,7 +388,7 @@ void wm_fetchParkedSound(void) {
     u32 *dst;
 
     if (gd->unk8E4.world->parkedSoundSize != -1) {
-        r = &D_800CE0B8[D_800CCA1C];
+        r = &g_worldParkedSoundRects[g_worldParkedSoundRectIdx];
         h = 0xDA;
         r->x = g_gameState->unk10[gd->unk8].clip.x;
         r->y = g_gameState->unk10[g_gameState->unk1C->unk8].clip.y;
@@ -1053,7 +1053,7 @@ state:
             g_gameState->unk1C->unk8C0 = (s32)(D_80067944 + 0x91800);
             g_gameState->unk1C->unk878 = 0x48000;
         } else {
-            g_gameState->unk1C->unk8C0 = func_800B8108();
+            g_gameState->unk1C->unk8C0 = wm_getModelCacheBottom();
             g_gameState->unk1C->unk878 = 0x10000;
         }
         g_gameState->unk1C->unk87C = 0;
@@ -1065,7 +1065,7 @@ state:
         if (func_800217C4(g_gameState->unk1C->unk854) == 0 && func_80055DCC() == 0) {
             if (g_gameState->unk1C->unk854[0].unkC + g_gameState->unk1C->unk854[0].unk10 < g_gameState->unk1C->unk87C) {
                 g_gameState->unk1C->unk8C0 = (s32)g_gameState->unk1C->unk854[0].unk8;
-                d = 0x10000 + func_800B8108() - g_gameState->unk1C->unk8C0;
+                d = 0x10000 + wm_getModelCacheBottom() - g_gameState->unk1C->unk8C0;
                 d = d / 2048 * 2048;
                 func_8002177C(g_gameState->unk1C->unk854, g_worldMusicSector, g_gameState->unk1C->unk854[0].unk4, (void *)g_gameState->unk1C->unk8C0,
                               g_gameState->unk1C->unk854[0].unkC + g_gameState->unk1C->unk854[0].unk10, d, wm_streamSoundChunk);
@@ -1292,7 +1292,7 @@ void wm_startBattleTransition(void) {
     WmObjSlot *s;
 
     D_8007BD28 = 0;
-    D_8007BD30 = func_800B8114();
+    D_8007BD30 = wm_getChunkBuffer();
     o = g_gameState->unk1C->unk8E4.world->unk8;
     o->swirlFrames = 0;
     a = func_8004AE00();
@@ -1412,7 +1412,7 @@ void wm_togglePause(void) {
             D_800739B0[i].unk0 = 0;
         }
         ClearOTag(&g_worldPauseOT, 1);
-        func_80027834((320 - D_800686D0[235].unk4) / 2, (218 - D_800686D0[235].unk5) / 2, &g_worldPauseOT, 0xEB, 0, buf, D_800CE098);
+        func_80027834((320 - D_800686D0[235].unk4) / 2, (218 - D_800686D0[235].unk5) / 2, &g_worldPauseOT, 0xEB, 0, buf, g_worldPauseSprite);
         setlen(&g_worldPauseTile, 3);
         g_worldPauseTile.code = 0x62;
         setRGB0(&g_worldPauseTile, 0x60, 0x60, 0x60);
@@ -1432,7 +1432,7 @@ void wm_togglePause(void) {
     }
 }
 
-s32 func_800AD10C(void) {
+s32 wm_preloadRequest(void) {
     return 0;
 }
 

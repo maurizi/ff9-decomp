@@ -107,34 +107,34 @@ void wm_frmbufTransfer(void) {
         if (p->texId != -1 && p->vramArea != 0 && p->transferred == 0) {
             r = wm_readtxFind(p->texId, 1);
             if (r != 0) {
-                D_800D3F78[n].unk0 = r;
-                D_800D3F78[n].unk5 = p->vramArea;
-                D_800D3F78[n].unk4 = p->texId & 0x3F;
+                g_worldFrmbufTransfers[n].unk0 = r;
+                g_worldFrmbufTransfers[n].unk5 = p->vramArea;
+                g_worldFrmbufTransfers[n].unk4 = p->texId & 0x3F;
                 n++;
                 p->transferred = 1;
             }
         }
     }
     for (i = 0; i < n; i++) {
-        id = D_800D3F78[i].unk4;
-        k = D_800D3F78[i].unk5 - 1;
+        id = g_worldFrmbufTransfers[i].unk4;
+        k = g_worldFrmbufTransfers[i].unk5 - 1;
         if (g_worldMapDebugFlags & WM_DEBUG_TEXTURE) {
-            printf(D_800A8118, (u8)(id + 0x60), D_800D3F78[i].unk0, k);
+            printf(D_800A8118, (u8)(id + 0x60), g_worldFrmbufTransfers[i].unk0, k);
         }
-        px = &D_800CDF14[k];
-        py = &D_800CDF18[k];
-        cx = &D_800CDF1C[k];
-        cy = &D_800CDF20[k];
-        wm_loadTimPack((s32 *)D_800D3F78[i].unk0, *px, *py, *cx, *cy);
-        D_800D2FF8[id].unk8 = getTPage(1, 1, *px, *py);
-        D_800D2FF8[id].unkA = getClut(*cx, *cy);
+        px = &g_worldFrmbufAreaX[k];
+        py = &g_worldFrmbufAreaY[k];
+        cx = &g_worldFrmbufClutX[k];
+        cy = &g_worldFrmbufClutY[k];
+        wm_loadTimPack((s32 *)g_worldFrmbufTransfers[i].unk0, *px, *py, *cx, *cy);
+        g_worldTexAreas[id].unk8 = getTPage(1, 1, *px, *py);
+        g_worldTexAreas[id].unkA = getClut(*cx, *cy);
     }
 }
 
-void func_800C26DC(void) {
+void wm_frmbufReset(void) {
 }
 
-void func_800C26E4(void) {
+void wm_frmbufUpdate(void) {
 }
 
 void wm_weatherUpdate(void) {
@@ -165,7 +165,7 @@ void wm_weatherUpdate(void) {
         t = 0;
     }
     wm_blendWeather(&g_worldWeatherData.unk5E0[0], &g_worldWeatherData.unk5E0[1], &g_worldWeatherData.unk5E0[2], t, t);
-    func_800B9774();
+    wm_updateFogParams();
     wm_updateColorMatrices();
     func_8001CCB4((u8)g_worldWeatherData.unk5E0[0].unk30[1].unk4[0], (u8)g_worldWeatherData.unk5E0[0].unk30[1].unk4[1],
                   (u8)g_worldWeatherData.unk5E0[0].unk30[1].unk4[2]);
@@ -186,7 +186,7 @@ void wm_weatherAuto(void) {
             g_worldWeatherData.unk0[3].unk30[0].unk0 = 0x7F58;
             g_worldWeatherData.unk0[3].unk30[0].unk2 = 0x7F58;
             wm_setWeather(id, wm_getStoryFog() & 0xFF, 0x80);
-            D_800CF46D = 0;
+            g_worldBackdropOn = 0;
             break;
         }
     }

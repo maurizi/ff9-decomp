@@ -83,10 +83,10 @@ void wm_readtxCompact(void) {
     }
 }
 
-void func_800C2040(void) {
+void wm_readtxReset(void) {
 }
 
-void func_800C2048(void) {
+void wm_readtxUpdate(void) {
 }
 
 /* find the loaded frame pack for (id, variant) */

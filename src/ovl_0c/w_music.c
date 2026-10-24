@@ -269,7 +269,7 @@ void wm_stopAllSe(void) {
             }
         }
     }
-    if ((u8)func_800C49EC() && g_worldEventResult != WM_EVT_BATTLE) {
+    if ((u8)wm_isMapSongPlaying() && g_worldEventResult != WM_EVT_BATTLE) {
         g_gameState->unk1C->unk0 |= 0x400000;
     }
 }
@@ -295,10 +295,10 @@ void wm_musicInit(void) {
     g_worldMusicStarted = 0;
 }
 
-void func_800C464C(void) {
+void wm_musicSetup(void) {
 }
 
-void func_800C4654(void) {
+void wm_musicTerm(void) {
 }
 
 void wm_musicPlay(u16 arg0) {
@@ -394,7 +394,7 @@ s32 wm_getSongMusicId(u16 arg0) {
     return g_worldSongMusicIds[arg0];
 }
 
-s32 func_800C49EC(void) {
+s32 wm_isMapSongPlaying(void) {
     u8 r = g_worldMusicId == g_worldSongMusicIds[0];
 
     if (g_worldMusicId == g_worldSongMusicIds[1]) {

@@ -5,13 +5,13 @@
  * before returning) and clobber $k1, $at and the $t registers. The C signatures are the ones in ovl_0c.h.
  *
  * Each routine walks the faces of a mesh block `o` whose vertices a vertex-pass routine (world_verts.c,
- * func_800B3A80 in wm_misc.c) has already projected: screen xy in the scratchpad (one word per vertex from
+ * wm_backdropVerts in wm_misc.c) has already projected: screen xy in the scratchpad (one word per vertex from
  * 0x1F800000), depths in D_800D29F8, lit colours in D_800D23F0 and fog colours in D_800D1FF0.
- *   o+0x02: face count (s16 in func_800B3FEC, u16 elsewhere; read once, do-while, so 0 means 65536)
+ *   o+0x02: face count (s16 in wm_backdropFaces, u16 elsewhere; read once, do-while, so 0 means 65536)
  *   o+0x08: faces, 16 bytes each: word 0 = the three vertex indices in bytes 0-2 (bit 24: depths + 0x200
  *           in the world-block routines); words 1-3 = the POLY_GT3 uv0|clut, uv1|tpage and uv2 words (bit 17 of
- *           word 3: use the alternate texture page described by the 12-byte entry *D_800D27F0, which every
- *           routine but func_800B3FEC first copies to the scratchpad at 0x1F8003D0).
+ *           word 3: use the alternate texture page described by the 12-byte entry *g_worldCurTexArea, which every
+ *           routine but wm_backdropFaces first copies to the scratchpad at 0x1F8003D0).
  * A face is drawn when NCLIP of its three screen points is > 0 and its OT slot is in range. It gets
  *   - a POLY_G3 of the fog colours, if any of them is non-zero (in the variants that draw fog); its code is
  *     0x30, or 0x32 (semi-transparent) when the face has a non-zero lit colour;
@@ -34,7 +34,7 @@ extern u32 D_800D1FF0[]; /* per-vertex fog colours */
 extern u32 D_800D23F0[]; /* per-vertex lit colours */
 extern u16 D_800D29F8[]; /* per-vertex depth: u32 SZ or u16 SZ / 8, depending on the vertex routine */
 
-#define WF_FIXED_OT 1   /* func_800B3FEC: every face goes to OT slot 0xFA0, no depth test */
+#define WF_FIXED_OT 1   /* wm_backdropFaces: every face goes to OT slot 0xFA0, no depth test */
 #define WF_Z32 2        /* depth = max of the u32 depths (+ 0x200 if face bit 24), slot = depth >> 3 */
 #define WF_Z32_GRID 4   /* as WF_Z32, but the maximum is chosen on ((depth >> 3) & ~0xF) and range-tested on that */
 #define WF_Z16 8        /* slot = max of the s16 depths & ~0xF */
@@ -184,7 +184,7 @@ static u32 *wf_face(u32 *face, u32 *pkt, u32 *ot, s32 flags, s32 limit) {
 
 static s32 wf_mesh(u8 *o, s32 pkt, s32 ot, s32 flags, s32 limit) {
     u32 *alt = (u32 *)(SCRATCHPAD + 0x3D0);
-    u32 *src = (u32 *)D_800D27F0;
+    u32 *src = (u32 *)g_worldCurTexArea;
     u32 *face = *(u32 **)(o + 8);
     u16 n = *(u16 *)(o + 2);
     u32 *p = (u32 *)pkt;
@@ -199,9 +199,9 @@ static s32 wf_mesh(u8 *o, s32 pkt, s32 ot, s32 flags, s32 limit) {
     return (s32)p;
 }
 
-/* Faces of a func_800B3A80 mesh (u16 depths unused): all into OT slot 0xFA0, POLY_G3 fog under every
+/* Faces of a wm_backdropVerts mesh (u16 depths unused): all into OT slot 0xFA0, POLY_G3 fog under every
  * POLY_GT3. */
-s32 func_800B3FEC(s32 o, s32 pkt, s32 ot) {
+s32 wm_backdropFaces(s32 o, s32 pkt, s32 ot) {
     u32 *face = *(u32 **)((u8 *)o + 8);
     s32 n = *(s16 *)((u8 *)o + 2);
     u32 *p = (u32 *)pkt;

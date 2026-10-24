@@ -1,7 +1,7 @@
 #include "ovl_0c.h"
 
 void wm_initBuffers(void) {
-    D_800CF400 = D_800CE400;
+    g_worldPointFxBufPtr = g_worldPointFxBuf;
     g_worldChunkBuffer = 0x80138800;
     g_worldPrimBuffers[0] = 0x801A2300;
     g_worldPrimBuffers[1] = 0x801C8100;
@@ -12,12 +12,12 @@ void wm_initBuffers(void) {
     g_worldPrimPtr = g_worldPrimBuffers[*g_worldBufIndex];
 }
 
-void func_800B69AC(void) {
+void wm_frameTerm(void) {
 }
 
 /* world map start-up */
 void wm_systemInit(void) {
-    RECT r = D_800A71D8;
+    RECT r = g_worldVramSaveRect;
 
     g_worldStartup = 1;
     if (g_evtGlobalVars.b[0x65] & 1) {
@@ -36,18 +36,18 @@ void wm_systemInit(void) {
     g_worldReadyFrameCount = 0;
     g_worldCdUser = WM_CD_FREE;
     g_worldState = WM_STATE_START;
-    D_800CF44C = 0;
-    D_800CF46D = 1;
+    g_worldPointFxOn = 0;
+    g_worldBackdropOn = 1;
     g_worldMogChoice = 0;
-    D_800CF47C = 0;
-    D_800CF442 = 0;
+    g_worldVehiclesFound = 0;
+    g_worldOtBias = 0;
     D_800CF47E = 0;
-    D_800CF434 = 0;
+    g_worldSuspended = 0;
     g_worldMapJump = 0;
     g_worldBufIndex = &g_gameState->unk1C->unk8;
     g_worldOt[0] = (s32)g_gameState->unk1C->unk10[0];
     g_worldOt[1] = (s32)g_gameState->unk1C->unk10[1];
-    D_800CF448 = &g_gameState->unk1C->unk18;
+    g_worldViewMatrix = &g_gameState->unk1C->unk18;
     ResetGraph(1);
     wm_musicInit();
     StoreImage(&r, (u32 *)g_worldClutBuf);
@@ -62,16 +62,16 @@ void wm_systemInit(void) {
     wm_naviInit();
     wm_weatherInit();
     wm_initLighting();
-    func_800BA29C();
-    func_80050E34(D_800CF400);
+    wm_initMapState();
+    func_80050E34(g_worldPointFxBufPtr);
     func_80050EFC(0x24, 0x30);
     func_800325A4();
     D_80073998[0] |= 0xF0000;
 }
 
-INCLUDE_RODATA("asm/us/ovl_0c/nonmatchings/w_frame", D_800A71D8);
+INCLUDE_RODATA("asm/us/ovl_0c/nonmatchings/w_frame", g_worldVramSaveRect);
 
-INCLUDE_RODATA("asm/us/ovl_0c/nonmatchings/w_frame", D_800A71E0);
+INCLUDE_RODATA("asm/us/ovl_0c/nonmatchings/w_frame", g_worldVramParkRect);
 
 /* world map frame */
 s32 wm_frameMain(void) {
@@ -79,7 +79,7 @@ s32 wm_frameMain(void) {
     s32 busy;
 
     g_worldStartup = 0;
-    if (D_800CF47C != 0) {
+    if (g_worldVehiclesFound != 0) {
         g_gameState->unk1C->unk892 = 1;
     }
     g_worldEventResult = 0;
@@ -100,19 +100,19 @@ s32 wm_frameMain(void) {
         }
         if (g_worldFrameCount == 4 && g_worldState == WM_STATE_START) {
             wm_applyEncounterEvents();
-            func_800B8724();
+            wm_frameSetup();
             wm_initClutAnims();
             wm_setMountPalette();
             wm_updateCameraNoView();
             wm_weatherStart();
-            func_800C464C();
+            wm_musicSetup();
             wm_findVehicles();
             g_worldState = WM_STATE_SETUP;
         }
         g_worldTimeLogic = VSync(1) - g_worldTimeLogic;
         g_worldTimeDraw = VSync(1);
         wm_updateDraw();
-        func_800B8560();
+        wm_postDraw();
         g_worldTimeDraw = VSync(1) - g_worldTimeDraw;
         t = g_worldPrimPtr - g_worldPrimBuffers[*g_worldBufIndex];
         g_worldFrameCount++;
@@ -121,12 +121,12 @@ s32 wm_frameMain(void) {
         if (g_worldMapLoaded != 0) {
             g_worldReadyFrameCount++;
         }
-        if (D_800CF434 != 0 && g_worldCdUser == WM_CD_SCRIPT) {
-            D_800CF434 = 0;
+        if (g_worldSuspended != 0 && g_worldCdUser == WM_CD_SCRIPT) {
+            g_worldSuspended = 0;
             g_worldCdUser = WM_CD_FREE;
         }
     } else {
-        D_800CF434 = 1;
+        g_worldSuspended = 1;
     }
     if (!(g_gameState->unk1C->unk0 & 1)) {
         func_80032100();
@@ -164,7 +164,7 @@ s32 wm_frameMain(void) {
         }
         break;
     }
-    if (D_800CF47C != 0) {
+    if (g_worldVehiclesFound != 0) {
         g_gameState->unk1C->unk892 = 0;
     }
     g_worldTimeTotal = 0;
@@ -217,8 +217,8 @@ void wm_updateLogic(void) {
     }
     g_worldDebugStep = 10;
     w_musicUpdate();
-    if ((u8)(D_800D30C5 - 1) < 199) {
-        D_800D30C5++;
+    if ((u8)(g_worldLoadedFrames - 1) < 199) {
+        g_worldLoadedFrames++;
     }
 }
 
@@ -229,11 +229,11 @@ void wm_updateDraw(void) {
         if (g_worldNaviMode != mode) {
             g_worldDebugStep = 0x64;
             SetGeomScreen(g_gameState->unk1C->unkA);
-            D_800CF468 = VSync(1);
+            g_worldTimeActorDraw = VSync(1);
             if (D_800CCE49 < 2 && g_worldDrawActors != 0) {
                 wm_drawActors();
             }
-            D_800CF468 = VSync(1) - D_800CF468;
+            g_worldTimeActorDraw = VSync(1) - g_worldTimeActorDraw;
             g_worldDebugStep = 0x65;
             g_worldTimeMapDraw = VSync(1);
             wm_drawMap();
@@ -243,7 +243,7 @@ void wm_updateDraw(void) {
             g_worldDebugStep = 0x67;
             wm_drawEffects();
             g_worldDebugStep = 0x68;
-            if (D_800CF44C != 0 && g_worldNaviMode != 2) {
+            if (g_worldPointFxOn != 0 && g_worldNaviMode != 2) {
                 g_worldPrimPtr = func_80050D38(g_worldPrimPtr);
             }
         } else {
@@ -526,9 +526,9 @@ s32 w_frameGetParameter(s32 arg0) {
     case WM_PARAM_REQ0:
         return g_worldReqParams[0];
     case WM_PARAM_REQ1:
-        return D_800CF48C;
+        return g_worldReqParams[1];
     case WM_PARAM_REQ2:
-        return D_800CF490;
+        return g_worldReqParams[2];
     case 0xC6:
         return g_gameState->unk1C->unk844;
     case WM_PARAM_CAMERA_YAW:
@@ -633,8 +633,8 @@ void wm_debugAdjustScreen(void) {
     }
 }
 
-void func_800B7F7C(void) {
-    RECT r = D_800A71E0;
+void wm_finishLoad(void) {
+    RECT r = g_worldVramParkRect;
 
     g_gameState->unk1C->unk0 &= ~0x400000;
     LoadImage(&r, (u32 *)g_worldClutBuf);
@@ -650,11 +650,11 @@ void w_frameMapDestructor(void) {
         printf(D_800A71F4);
     }
     wm_stopAllSe();
-    func_800BC098();
+    wm_mapTerm();
 }
 
 void w_frameSystemDestructor(void) {
-    RECT r = D_800A71E0;
+    RECT r = g_worldVramParkRect;
 
     MoveImage(&r, 0x100, 0xFD);
     DrawSync(0);
@@ -662,17 +662,17 @@ void w_frameSystemDestructor(void) {
         printf(D_800A720C);
     }
     wm_termEffects();
-    func_800C4654();
-    func_800BC0A0();
-    func_800B69AC();
+    wm_musicTerm();
+    wm_mapSystemTerm();
+    wm_frameTerm();
     w_memorymanDestructor();
 }
 
-s32 func_800B8108(void) {
+s32 wm_getModelCacheBottom(void) {
     return 0x801EDF00;
 }
 
-s32 func_800B8114(void) {
+s32 wm_getChunkBuffer(void) {
     return g_worldChunkBuffer;
 }
 
@@ -771,12 +771,12 @@ s32 wm_getPadPressed(void) {
 
 void func_800B84E8(void) {
     wm_applyEncounterEvents();
-    func_800B8724();
+    wm_frameSetup();
     wm_initClutAnims();
     wm_setMountPalette();
     wm_updateCameraNoView();
     wm_weatherStart();
-    func_800C464C();
+    wm_musicSetup();
     wm_findVehicles();
     g_worldState = WM_STATE_SETUP;
 }
@@ -785,7 +785,7 @@ s32 func_800B8548(void) {
     return (u32)(g_worldWeatherMode - 2) < 2U;
 }
 
-void func_800B8560(void) {
+void wm_postDraw(void) {
 }
 
 s32 func_800B8568(void) {
@@ -793,33 +793,33 @@ s32 func_800B8568(void) {
 }
 
 void wm_initLighting(void) {
-    D_800CF540.m[0][0] = 0;
-    D_800CF540.m[0][1] = -0x1000;
-    D_800CF540.m[0][2] = 0;
-    D_800CF540.m[1][0] = 0x1000;
-    D_800CF540.m[1][1] = 0;
-    D_800CF540.m[1][2] = 0;
-    D_800CF540.m[2][0] = 0;
-    D_800CF540.m[2][1] = -0x400;
-    D_800CF540.m[2][2] = 0x1000;
-    D_800CF520.m[0][0] = 0;
-    D_800CF520.m[0][1] = 0x1000;
-    D_800CF520.m[0][2] = 0;
-    D_800CF520.m[1][0] = 0x1000;
-    D_800CF520.m[1][1] = 0;
-    D_800CF520.m[1][2] = 0;
-    D_800CF520.m[2][0] = 0;
-    D_800CF520.m[2][1] = 0;
-    D_800CF520.m[2][2] = 0x1000;
-    D_800CF4C0.m[0][0] = 0;
-    D_800CF4C0.m[0][1] = 0x1000;
-    D_800CF4C0.m[0][2] = 0;
-    D_800CF4C0.m[1][0] = 0x1000;
-    D_800CF4C0.m[1][1] = 0;
-    D_800CF4C0.m[1][2] = 0;
-    D_800CF4C0.m[2][0] = 0;
-    D_800CF4C0.m[2][1] = 0;
-    D_800CF4C0.m[2][2] = 0x1000;
+    g_worldMapLightMatrix.m[0][0] = 0;
+    g_worldMapLightMatrix.m[0][1] = -0x1000;
+    g_worldMapLightMatrix.m[0][2] = 0;
+    g_worldMapLightMatrix.m[1][0] = 0x1000;
+    g_worldMapLightMatrix.m[1][1] = 0;
+    g_worldMapLightMatrix.m[1][2] = 0;
+    g_worldMapLightMatrix.m[2][0] = 0;
+    g_worldMapLightMatrix.m[2][1] = -0x400;
+    g_worldMapLightMatrix.m[2][2] = 0x1000;
+    g_worldBackdropLightMatrix.m[0][0] = 0;
+    g_worldBackdropLightMatrix.m[0][1] = 0x1000;
+    g_worldBackdropLightMatrix.m[0][2] = 0;
+    g_worldBackdropLightMatrix.m[1][0] = 0x1000;
+    g_worldBackdropLightMatrix.m[1][1] = 0;
+    g_worldBackdropLightMatrix.m[1][2] = 0;
+    g_worldBackdropLightMatrix.m[2][0] = 0;
+    g_worldBackdropLightMatrix.m[2][1] = 0;
+    g_worldBackdropLightMatrix.m[2][2] = 0x1000;
+    g_worldBlockFxLightMatrix.m[0][0] = 0;
+    g_worldBlockFxLightMatrix.m[0][1] = 0x1000;
+    g_worldBlockFxLightMatrix.m[0][2] = 0;
+    g_worldBlockFxLightMatrix.m[1][0] = 0x1000;
+    g_worldBlockFxLightMatrix.m[1][1] = 0;
+    g_worldBlockFxLightMatrix.m[1][2] = 0;
+    g_worldBlockFxLightMatrix.m[2][0] = 0;
+    g_worldBlockFxLightMatrix.m[2][1] = 0;
+    g_worldBlockFxLightMatrix.m[2][2] = 0x1000;
     SetBackColor(0, 0, 0);
     SetFarColor(0, 0, 0);
     SetFogNearFar(5000, 30000, g_gameState->unk1C->unkA);
@@ -827,36 +827,36 @@ void wm_initLighting(void) {
 }
 
 void wm_updateColorMatrices(void) {
-    D_800CF560.m[0][0] = 0;
-    D_800CF560.m[1][0] = 0;
-    D_800CF560.m[2][0] = 0;
-    D_800CF500.m[0][0] = g_worldWeatherData.unk5E0[0].unk0[0].vx;
-    D_800CF500.m[1][0] = g_worldWeatherData.unk5E0[0].unk0[0].vy;
-    D_800CF500.m[2][0] = g_worldWeatherData.unk5E0[0].unk0[0].vz;
-    D_800CF500.m[0][1] = g_worldWeatherData.unk5E0[0].unk0[1].vx;
-    D_800CF500.m[1][1] = g_worldWeatherData.unk5E0[0].unk0[1].vy;
-    D_800CF500.m[2][1] = g_worldWeatherData.unk5E0[0].unk0[1].vz;
-    D_800CF500.m[0][2] = g_worldWeatherData.unk5E0[0].unk0[2].vx;
-    D_800CF500.m[1][2] = g_worldWeatherData.unk5E0[0].unk0[2].vy;
-    D_800CF500.m[2][2] = g_worldWeatherData.unk5E0[0].unk0[2].vz;
-    D_800CF4E0.m[0][0] = g_worldWeatherData.unk5E0[0].unk18.vx;
-    D_800CF4E0.m[0][1] = g_worldWeatherData.unk5E0[0].unk18.vx;
-    D_800CF4E0.m[1][0] = g_worldWeatherData.unk5E0[0].unk18.vy;
-    D_800CF4E0.m[2][0] = g_worldWeatherData.unk5E0[0].unk18.vz;
-    D_800CF4E0.m[1][1] = g_worldWeatherData.unk5E0[0].unk18.vy;
-    D_800CF4E0.m[2][1] = g_worldWeatherData.unk5E0[0].unk18.vz;
-    D_800CF4E0.m[0][2] = g_worldWeatherData.unk5E0[0].unk18.vx;
-    D_800CF4E0.m[1][2] = g_worldWeatherData.unk5E0[0].unk18.vy;
-    D_800CF4E0.m[2][2] = g_worldWeatherData.unk5E0[0].unk18.vz;
-    D_800CF560.m[0][1] = 0;
-    D_800CF560.m[1][1] = 0;
-    D_800CF560.m[2][1] = 0;
-    D_800CF560.m[0][2] = 0;
-    D_800CF560.m[1][2] = 0;
-    D_800CF560.m[2][2] = 0;
+    g_worldBlockFxColorMatrix.m[0][0] = 0;
+    g_worldBlockFxColorMatrix.m[1][0] = 0;
+    g_worldBlockFxColorMatrix.m[2][0] = 0;
+    g_worldMapColorMatrix.m[0][0] = g_worldWeatherData.unk5E0[0].unk0[0].vx;
+    g_worldMapColorMatrix.m[1][0] = g_worldWeatherData.unk5E0[0].unk0[0].vy;
+    g_worldMapColorMatrix.m[2][0] = g_worldWeatherData.unk5E0[0].unk0[0].vz;
+    g_worldMapColorMatrix.m[0][1] = g_worldWeatherData.unk5E0[0].unk0[1].vx;
+    g_worldMapColorMatrix.m[1][1] = g_worldWeatherData.unk5E0[0].unk0[1].vy;
+    g_worldMapColorMatrix.m[2][1] = g_worldWeatherData.unk5E0[0].unk0[1].vz;
+    g_worldMapColorMatrix.m[0][2] = g_worldWeatherData.unk5E0[0].unk0[2].vx;
+    g_worldMapColorMatrix.m[1][2] = g_worldWeatherData.unk5E0[0].unk0[2].vy;
+    g_worldMapColorMatrix.m[2][2] = g_worldWeatherData.unk5E0[0].unk0[2].vz;
+    g_worldBackdropColorMatrix.m[0][0] = g_worldWeatherData.unk5E0[0].unk18.vx;
+    g_worldBackdropColorMatrix.m[0][1] = g_worldWeatherData.unk5E0[0].unk18.vx;
+    g_worldBackdropColorMatrix.m[1][0] = g_worldWeatherData.unk5E0[0].unk18.vy;
+    g_worldBackdropColorMatrix.m[2][0] = g_worldWeatherData.unk5E0[0].unk18.vz;
+    g_worldBackdropColorMatrix.m[1][1] = g_worldWeatherData.unk5E0[0].unk18.vy;
+    g_worldBackdropColorMatrix.m[2][1] = g_worldWeatherData.unk5E0[0].unk18.vz;
+    g_worldBackdropColorMatrix.m[0][2] = g_worldWeatherData.unk5E0[0].unk18.vx;
+    g_worldBackdropColorMatrix.m[1][2] = g_worldWeatherData.unk5E0[0].unk18.vy;
+    g_worldBackdropColorMatrix.m[2][2] = g_worldWeatherData.unk5E0[0].unk18.vz;
+    g_worldBlockFxColorMatrix.m[0][1] = 0;
+    g_worldBlockFxColorMatrix.m[1][1] = 0;
+    g_worldBlockFxColorMatrix.m[2][1] = 0;
+    g_worldBlockFxColorMatrix.m[0][2] = 0;
+    g_worldBlockFxColorMatrix.m[1][2] = 0;
+    g_worldBlockFxColorMatrix.m[2][2] = 0;
 }
 
-void func_800B8724(void) {
+void wm_frameSetup(void) {
 }
 
 INCLUDE_RODATA("asm/us/ovl_0c/nonmatchings/w_frame", D_800A7AE8);
@@ -866,7 +866,7 @@ void wm_initDiscImage(void) {
 
     if (g_worldDataSet == WM_DATASET_DISC1) {
         for (i = 0; i < 5; i++) {
-            D_800CF580[i] = D_800CCF84[i];
+            g_worldImageNames[i] = D_800CCF84[i];
         }
         printf("Read CD Image [Disc-1]\n");
         g_worldImageSectors[0] = file_find(0xC, 0x3F3)->unk4 + g_gameState->unk20;
@@ -874,7 +874,7 @@ void wm_initDiscImage(void) {
         g_worldImageSectors[4] = file_find(0xC, 0x407)->unk4 + g_gameState->unk20;
     } else {
         for (i = 0; i < 5; i++) {
-            D_800CF580[i] = D_800CCF98[i];
+            g_worldImageNames[i] = D_800CCF98[i];
         }
         printf("Read CD Image [Disc-4]\n");
         g_worldImageSectors[0] = file_find(0xC, 0x3F6)->unk4 + g_gameState->unk20;
