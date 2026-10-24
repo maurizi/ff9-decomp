@@ -1,4 +1,4 @@
-/* Draft of fx_0fb_1 fx_0fb_1_op80. Status: 330 lines, 150 ignoring registers (build/w/nd.py, which now masks all |imm| >= 10000 data offsets). Cases 3-6 use fx_17a op80's final variable roles (src/fxmod/fx_17a); mode 0/1 are if/else-if branches with one return 0 (as fx_17a); further splits found by build/w/pgreedy.py + gen_regions.py. */
+/* Draft of fx_0fb_1 fx_0fb_1_op80. Status: 286 lines, 138 ignoring registers (build/w/nd.py, which now masks all |imm| >= 10000 data offsets). Cases 3-6 use fx_17a op80's final variable roles (src/fxmod/fx_17a); mode 0/1 are if/else-if branches with one return 0 (as fx_17a); further splits found by build/w/pgreedy.py + gen_regions.py. */
 #include "fxmod/fx_0fb_1.h"
 
 typedef struct {
@@ -94,6 +94,7 @@ s32 fx_0fb_1_op80(s32 mode, Fx0fb1Op80Work *work, Unk800F78A4 *env, Unk80100C78E
     s32 m;
     s32 sp;
     s32 zz1;
+    s32 zz2;
 
     if (mode == 0) {
         init->unk0 = 0xE8;
@@ -131,9 +132,9 @@ s32 fx_0fb_1_op80(s32 mode, Fx0fb1Op80Work *work, Unk800F78A4 *env, Unk80100C78E
         work->unk74.vx = work->unkC.vx;
         work->unk74.vy = work->unkC.vy;
         work->unk74.vz = work->unkC.vz;
+        work->unk74.vz -= 0x3000;
         work->unk74.vx += 0x5000;
         work->unk74.vy += 0x4000;
-        work->unk74.vz -= 0x3000;
         work->unk54.vx = work->unkC.vx;
         work->unk54.vy = work->unkC.vy;
         work->unk54.vz = work->unkC.vz;
@@ -297,8 +298,8 @@ s32 fx_0fb_1_op80(s32 mode, Fx0fb1Op80Work *work, Unk800F78A4 *env, Unk80100C78E
         }
         break;
     case 2:
-        c = (frame << 12) / 96;
         zz1 = (frame << 12) / 24;
+        c = zz1 >> 2;
         b = ex->math_cos(c);
         env->unk2C->unk0[3].vx = work->unkC.vx;
         s = b;
@@ -383,9 +384,9 @@ s32 fx_0fb_1_op80(s32 mode, Fx0fb1Op80Work *work, Unk800F78A4 *env, Unk80100C78E
             ex->func_800D23D8((u8 *)ex->btlfx_getFileData(entry->unk8, 0x1A), &work->unk14, NULL, b, 0, 1, i);
         }
         if (frame >= 0x15) {
-            x2 = ((frame - 0x14) << 12) / 17;
-            r = x2 >> 2;
-            sc.vx = sc.vy = sc.vz = x2;
+            zz2 = ((frame - 0x14) << 12) / 17;
+            r = zz2 >> 2;
+            sc.vx = sc.vy = sc.vz = zz2;
             for (b = 0; b < 4; b++) {
                 work->unkC4[b].vz = (s16)(work->unkC4[b].vz - 0x18) - b * 0x30;
                 ex->Hi_DrawEffModel(&work->unkC4[b], (VECTOR *)&work->unk54, (s32)&sc, work->unkB4);
