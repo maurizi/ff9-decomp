@@ -1,4 +1,4 @@
-/* Draft of fx_0fb_1 fx_0fb_1_op80. Status: 60 lines, 39 ignoring registers (build/w/nd.py, which now masks all |imm| >= 10000 data offsets). Cases 3-6 use fx_17a op80's final variable roles (src/fxmod/fx_17a); mode 0/1 are if/else-if branches with one return 0 (as fx_17a); further splits found by build/w/pgreedy.py + gen_regions.py. */
+/* Draft of fx_0fb_1 fx_0fb_1_op80. Status: 38 lines, 18 ignoring registers (build/w/nd.py, which now masks all |imm| >= 10000 data offsets). Cases 3-6 use fx_17a op80's final variable roles (src/fxmod/fx_17a); mode 0/1 are if/else-if branches with one return 0 (as fx_17a); further splits found by build/w/pgreedy.py + gen_regions.py. */
 #include "fxmod/fx_0fb_1.h"
 
 typedef struct {
@@ -282,28 +282,28 @@ s32 fx_0fb_1_op80(s32 mode, Fx0fb1Op80Work *work, Unk800F78A4 *env, Unk80100C78E
             entry->unk0 = -1;
             ex->btlfx_poolClear(entry->unk10);
             ex->func_800E3C58();
-            work->unk94.vx = 0x800;
-            work->unk94.vy = 0x800;
-            work->unk94.vz = 0x800;
+            work->unk54.vx = work->unkC.vx;
             work->unk6C.vx = 0;
             work->unk6C.vy = 0;
             work->unk6C.vz = 0;
+            D_801F0D34 = 0x1000;
             work->unk34.vx = 0;
+            work->unk94.vx = 0x800;
             work->unk34.vy = 0;
             work->unk34.vz = 0;
             work->unk28.vx = 0x1000;
-            work->unk28.vy = 0x1000;
-            work->unk28.vz = 0x1000;
-            work->unk54.vx = work->unkC.vx;
-            work->unk14.vz = work->unkC.vz - 0x2555;
             work->unk54.vy = work->unkC.vy;
+            work->unk28.vy = 0x1000;
             work->unk54.vz = work->unkC.vz;
             work->unk14.vx = work->unkC.vx;
+            work->unk94.vy = 0x800;
+            work->unk94.vz = 0x800;
             work->unk14.vy = work->unkC.vy;
+            work->unk14.vz = work->unkC.vz - 0x2555;
             work->unk1C.vz = work->unkC.vz - 0x2800;
             work->unk1C.vy = work->unkC.vy + 0x14C0;
+            work->unk28.vz = 0x1000;
             work->unk14.vy += 0xCAC;
-            D_801F0D34 = 0x1000;
             ex->Hi_SetSummonMotion(((Fx0fb1Summon *)env->unk4)->unk54->unk18C, ((Fx0fb1Summon *)env->unk4)->unk60);
             ex->Hi_SetSummonMotFrame(((Fx0fb1Summon *)env->unk4)->unk60, 0);
         }
