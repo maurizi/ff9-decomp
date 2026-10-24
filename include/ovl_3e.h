@@ -7,41 +7,93 @@
  * different overlays, so they live here, not in ff9.h. */
 #include "ff9.h"
 
+/* main exe: candidates for ff9.h */
+#ifndef SE_CURSOR
+#define SE_CURSOR 0x67  /* cursor move / pick */
+#define SE_BUZZER 0x66  /* refused action */
+#define SE_CANCEL 0x65  /* Circle backs out */
+#endif
+/* libcd (PsyQ libcd.h names) */
+#define CdlNop           0x01
+#define CdlStandby       0x07
+#define CdlSetmode       0x0E
+#define CdlSeekL         0x15
+#define CdlModeSpeed     0x80
+#define CdlStatError     0x01
+#define CdlStatStandby   0x02
+#define CdlStatShellOpen 0x10
+#define CdlComplete      0x02
+#define CdlDiskError     0x05
+#define CdlStatNoDisk    0
+#define CdlOtherFormat   1
+#define CdlCdromFormat   2
+
 /* ---- overlay ---- */
 
+/* DiscChange.state: index into s_discChange{Input,Draw,Poll}Funcs */
+enum {
+    DISC_ST_BUSY,        /* fading / checking the disc: no input or poll handler */
+    DISC_ST_LID_CLOSED,  /* picture shown, lid closed: Cross checks */
+    DISC_ST_LID_OPEN,    /* picture shown, lid open: closing it (or Cross) checks */
+    DISC_ST_ERROR,       /* check failed: error image until Cross or DISC_ERROR_FRAMES */
+    DISC_ST_ERROR_CLOSE  /* fading the error image out */
+};
+#define DISC_ERROR_FRAMES 180
+
+/* discChange_checkDisc results */
+enum {
+    DISC_CHECK_SHELL_OPEN = 1, /* CdlStatShellOpen seen */
+    DISC_CHECK_NO_DISC,        /* motor didn't spin up in 600 frames, or CdGetDiskType says no disc */
+    DISC_CHECK_OTHER_FORMAT,   /* CdDiskReady error or not a CD-ROM */
+    DISC_CHECK_ERROR,
+    DISC_CHECK_WRONG_DISC = 6, /* g_gameState->unkB doesn't have the wanted disc's bit */
+    DISC_CHECK_OK              /* the wanted disc */
+};
+
+/* g_menu.unkC when the menu opens: wanted disc in bits 14-15, next location in bits 0-13 */
+#define DISC_REQ_DISC(x)     (((x) >> 14) & 3)
+#define DISC_REQ_LOCATION(x) ((u16)(x) & 0x3FFF)
+#define DISC_NO_LOCATION     15000 /* don't call evt_setNextLocation on exit */
+
+#define DISC_PICTURE_W 160 /* the 320x224 16-bit picture is read and drawn as two halves */
+#define DISC_PICTURE_HALF_BYTES 0x11800 /* 160 * 224 * 2 */
+#define DISC_PICTURE_HALF_SECTORS 0x23
+#define DISC_PICTURE_BUF ((u32 *)0x801CDF00) /* CD read buffer for one half */
+
+/* Disc change state (s_discChange). */
 typedef struct {
-    u8 unk0;  /* result of cd_checkShellOpen */
-    u8 unk1;  /* state, index into the handler tables */
-    u8 unk2;
-    u8 unk3;  /* last func_801F6368 result */
-    u8 unk4;  /* wanted disc (0-3) */
+    u8 shellOpen;   /* last cd_checkShellOpen */
+    u8 state;       /* DISC_ST_* */
+    u8 unk2;        /* cleared, never read */
+    u8 checkResult; /* last discChange_checkDisc (DISC_CHECK_*) */
+    u8 disc;        /* wanted disc (0-3) */
     u8 pad5;
-    s16 unk6;
-    s32 unk8[2]; /* saved D_80073998[] */
-    u32 unk10;   /* frame counter */
-} Ovl3eState;
-extern Ovl3eState D_801F6BBC;
+    s16 nextLocation; /* DISC_REQ_LOCATION, or DISC_NO_LOCATION */
+    s32 savedFlags[2]; /* D_80073998[0..1], restored on exit */
+    u32 timer;      /* frames in DISC_ST_ERROR */
+} DiscChange;
+extern DiscChange s_discChange;
 
-extern void (*D_801F6B60[])(void);
-extern void (*D_801F6B74[])(void);
-extern void (*D_801F6B88[])(void);
-extern RECT D_801F6B9C;
-extern RECT D_801F6BA4;
-extern s32 D_801F6BAC[];
-extern RECT D_801EDF04;
-extern u32 D_801EDF0C[];
+extern void (*s_discChangeInputFuncs[])(void);
+extern void (*s_discChangeDrawFuncs[])(void);
+extern void (*s_discChangeUpdateFuncs[])(void);
+extern RECT s_discChangeClutRect;
+extern RECT s_discChangePanelRect;
+extern s32 s_discChangePictureFiles[];
+extern RECT s_discChangePictureRect;
+extern u32 s_discChangeClut[];
 
-void func_801F6124(void);
-void func_801F6254(void);
-u8 func_801F6368(void);
-void func_801F6654(void);
-void func_801F66AC(void);
-void func_801F66F4(void);
-void func_801F673C(void);
-void func_801F682C(u32 *, s32);
-void func_801F6A3C(void);
-void func_801F6A78(void);
-void func_801F6AF0(void);
-void func_801F6B24(void);
+void discChange_drawBackground(void);
+void discChange_drawPanel(void);
+u8 discChange_checkDisc(void);
+void discChange_input(void);
+void discChange_draw(void);
+void discChange_updateState(void);
+void discChange_loadPicture(void);
+void discChange_loadPictureHalf(u32 *, s32);
+void discChange_startCheck(void);
+void discChange_doCheck(void);
+void discChange_closeError(void);
+void discChange_resetState(void);
 
 #endif
