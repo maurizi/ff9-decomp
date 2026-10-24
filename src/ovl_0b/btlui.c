@@ -2633,7 +2633,7 @@ void *btlui_getTargetHelpText(void) {
         if (t == NULL) {
             return NULL;
         }
-        func_8002BD54(g_btluiHelpText, text_get(D_80104FF2 + 5));
+        func_8002BD54(g_btluiHelpText, text_get(g_btlTarget.unk2 + 5));
         text_append(g_btluiHelpText, btl_getUnitName(t));
     } else if ((u8)(g_btlTarget.unk2 - 3) < 3) {
         n = 0;
@@ -2709,7 +2709,7 @@ void btlui_updateTarget(void) {
 }
 
 u8 func_800F1360(void) {
-    return D_80104FFC;
+    return g_btlTarget.unkC;
 }
 
 Window *btlui_getTargetWindow(void) {
@@ -2719,7 +2719,7 @@ Window *btlui_getTargetWindow(void) {
 s32 func_800F1388(void) {
     s32 ret = 0;
     if (g_btlUi->menuState == BTLUI_MENU_TARGET) {
-        ret = D_80104FFF != 0;
+        ret = g_btlTarget.unkF != 0;
     }
     return ret;
 }
@@ -2780,7 +2780,7 @@ Unk80105020 *btlui_getCursorPositions(void) {
 void btlui_targetMove(void) {
     s32 i;
     s32 m;
-    if (D_80104FFC == 0) {
+    if (g_btlTarget.unkC == 0) {
         m = func_800C2DF4();
     } else {
         m = 0;
@@ -2819,7 +2819,7 @@ void btlui_targetPartySide(void) {
 void btlui_targetFirst(u8 arg0, u8 arg1) {
     BtlUnit *u = g_gameState->unk1C->unk8E4.battle->unitList;
     if (arg0 == 0xFF) {
-        arg0 = D_80104FFA;
+        arg0 = g_btlTarget.unkA;
     }
     for (; u != NULL; u = u->next) {
         if (((u->unk68 >> 28) & 1) && (u->unk68 & 1) == arg0) {
@@ -2841,7 +2841,7 @@ void btlui_targetDefault(u8 arg0, u8 arg1) {
     u32 side;
 
     if (arg0 == 0xFF) {
-        arg0 = D_80104FFA;
+        arg0 = g_btlTarget.unkA;
     }
     if (g_btlTarget.unk4 != 0) {
         t = btlui_findKoUnit(arg0);
@@ -3196,7 +3196,7 @@ u8 btlui_isListWindowOpen(void) {
 
 void func_800F29B4(Window *arg0) {
     if (btlui_getPanel()->unk0 != 0) {
-        D_800F8F04[D_80105059](arg0);
+        D_800F8F04[D_80105058.unk1](arg0);
     }
 }
 

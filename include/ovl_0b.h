@@ -917,7 +917,6 @@ extern s32 D_800FE508;
 extern s32 D_800FE518;
 extern s16 D_80100DCC;
 extern s32 *D_80104DF8; /* offset table, entries relative to its start */
-extern u8 D_80104FFC;
 typedef struct {
     s16 unk0;          /* count of unk14 */
     s16 unk2;          /* count of unk4 */
@@ -2156,11 +2155,8 @@ typedef struct {
     BtlUnit *unk24; /* last target */
 } Unk80104FF0;
 extern Unk80104FF0 g_btlTarget;
-extern u8 D_80104FFF;
-extern u8 D_80104FFA;
 extern BtlUnit *D_80104FE4;
 extern u8 D_800F8EE4[];
-extern u8 D_80105059;
 extern void (*D_800F8F04[])(Window *);
 
 typedef struct {
@@ -3456,7 +3452,6 @@ void btlfx_heapFree(void *);
 s32 btlfx_poolUpdate(Unk800DA1B8 *);
 void btlui_targetDefault(u8, u8);
 BtlUnit *btlui_findKoUnit(u8);
-extern u8 D_80104FF2;
 
 /* first unit flagged as the current target (bits 28 and 29 of unk68) */
 static inline BtlUnit *find_target(void) {
