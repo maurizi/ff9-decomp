@@ -846,15 +846,15 @@ typedef struct {
 extern Unk80100DC0 g_btlfxLoader;
 
 typedef struct {
-    s32 unk0;
-    struct Unk80104FD4 *unk4;
-    s32 unk8;
-    s32 unkC;
-    s16 unk10;
-    s16 unk12;
-    struct BtlUnit *unk14;
-    u8 unk18;
-    u8 unk19;
+    s32 cmdNo;
+    struct Unk80104FD4 *cmd; /* command table entry (D_800FD56C) of the list */
+    s32 label; /* list window title label */
+    s32 label2; /* second title label (right-aligned) */
+    s16 doubleCast; /* Dbl Wht / Dbl Blk picks made (btlui_nextDoubleCast) */
+    s16 label2Width;
+    struct BtlUnit *unit;
+    u8 halfMp; /* support ability 0xE2 (btl_getMpCost halves the cost) */
+    u8 trance; /* the list was opened in trance */
 } Unk80104FD0;
 extern Unk80104FD0 g_btluiList;
 
@@ -2124,32 +2124,32 @@ extern s32 (*D_800F8E58[])(void);
 extern void (*D_800F8E48[])(s32, s32, s32, MenuView *);
 
 typedef struct {
-    u8 unk0;
-    u8 unk1;
-    u8 unk2;
+    u8 returnState; /* menu state btlui_cancelTarget returns to */
+    u8 cmdNo;
+    u8 targetType; /* target type of the ability (D_800F8E84 / D_800F8E68 by type; 0xC all, 0xD self) */
     u8 unk3;
     u8 unk4;
     u8 unk5;
-    u8 unk6;
+    u8 targetAll; /* the whole side is marked */
     u8 unk7;
     u8 unk8;
     u8 unk9;
-    u8 unkA;
-    u8 unkB;
-    u8 unkC;
-    u8 unkD;
+    u8 side; /* side the cursor is on (unit flag bit 0) */
+    u8 allowKo; /* KO units can be targeted */
+    u8 windowOpen; /* target-name window open (btlui_openTargetWindow) */
+    u8 halfMp; /* the caster has support ability 0xE2 (MP costs halved, btlui_isCmdUsable) */
     u8 unkE;
     u8 unkF;
-    u8 unk10;
+    u8 doubleCast; /* Dbl Wht / Dbl Blk: the first pick is stored (btlui_confirmDoubleCast) */
     u8 unk11;
     s8 unk12;
-    u8 unk13;
-    u8 unk14;
+    u8 firstCmdNo; /* double cast: first pick */
+    u8 firstTargeting;
     u8 pad15[0x18 - 0x15];
-    s16 unk18;
-    s16 unk1A;
-    s32 unk1C;
-    BtlUnit *unk20;
+    s16 firstSubNo;
+    s16 subNo; /* ability or item id */
+    s32 firstTargets;
+    BtlUnit *unit; /* the unit choosing targets */
     BtlUnit *unk24; /* last target */
 } Unk80104FF0;
 extern Unk80104FF0 g_btlTarget;
@@ -3599,7 +3599,7 @@ static inline BtlUnit *BtlFindTargetCursor(void) {
 static inline s32 btlui_getTargeting_inline(void) {
     BtlUnit *u;
     s32 n;
-    if (g_btlTarget.unk2 >= 9 && g_btlTarget.unk2 <= 11) {
+    if (g_btlTarget.targetType >= 9 && g_btlTarget.targetType <= 11) {
         return 2;
     }
     n = 0;

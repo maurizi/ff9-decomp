@@ -1723,20 +1723,20 @@ void btlui_openList(Unk800EE37C *arg0) {
     Unk800EB518 *c;
 
     btlui_setMenuState(BTLUI_MENU_CLOSING);
-    g_btluiList.unk14 = g_btlUi->cmdUnit;
-    g_btluiList.unk0 = arg0->unk0;
-    g_btluiList.unk4 = (struct Unk80104FD4 *)arg0->unk4;
-    g_btluiList.unk8 = arg0->unk8;
-    g_btluiList.unkC = arg0->unkC;
-    g_btluiList.unk19 = arg0->unk2;
-    g_btluiList.unk10 = 0;
-    g_btluiList.unk12 = (arg0->unkC != 0) ? func_8002AE7C((u8 *)arg0->unkC) : 0;
-    g_btluiList.unk18 = func_800349BC((g_btluiList.unk14->unk68 >> 1) & 0xF, 0xE2);
-    n = g_btluiList.unk4->unk7;
+    g_btluiList.unit = g_btlUi->cmdUnit;
+    g_btluiList.cmdNo = arg0->unk0;
+    g_btluiList.cmd = (struct Unk80104FD4 *)arg0->unk4;
+    g_btluiList.label = arg0->unk8;
+    g_btluiList.label2 = arg0->unkC;
+    g_btluiList.trance = arg0->unk2;
+    g_btluiList.doubleCast = 0;
+    g_btluiList.label2Width = (arg0->unkC != 0) ? func_8002AE7C((u8 *)arg0->unkC) : 0;
+    g_btluiList.halfMp = func_800349BC((g_btluiList.unit->unk68 >> 1) & 0xF, 0xE2);
+    n = g_btluiList.cmd->unk7;
     func_8002EDFC(&l, n, (n < 5) ? n : 4, 1, 0x44);
     f = (g_gameState->unk24 >> 2) & 1;
     if (f == 1) {
-        e = g_btluiList.unk14->unkB4;
+        e = g_btluiList.unit->unkB4;
         c = &e->unk49C;
         l.unk5 = c->unk8[e->unk49C.unk0];
         l.cursor = c->unk4[e->unk49C.unk0];
@@ -1755,11 +1755,11 @@ void btlui_listInput(void) {
         if (g_padRepeat & BTN_CIRCLE) {
             snd_playSe(0x65);
             w = g_btlUi->unk12A4[2];
-            btlui_saveCursor(&g_btluiList.unk14->unkB4->unk49C, 1, w->unk30.unk5, w->unk30.cursor);
-            if (g_btluiList.unk10 == 0) {
+            btlui_saveCursor(&g_btluiList.unit->unkB4->unk49C, 1, w->unk30.unk5, w->unk30.cursor);
+            if (g_btluiList.doubleCast == 0) {
                 btlui_closeList();
             } else {
-                g_btluiList.unk10--;
+                g_btluiList.doubleCast--;
             }
         } else if (g_padRepeat & BTN_CROSS) {
             btlui_listConfirm();
@@ -1778,22 +1778,22 @@ s32 btlui_selectAbility(void) {
     Unk800EF80C s;
     MenuList *l = &g_btlUi->unk12A4[2]->unk30;
     s32 n = l->cursor + l->unk5;
-    u8 k = D_800FDD10[g_btluiList.unk4->unk8 + n];
+    u8 k = D_800FDD10[g_btluiList.cmd->unk8 + n];
     s32 r = btlui_getAbilityState(k);
     if (r != 2) {
         return 0;
     }
     {
         s.unk0 = r;
-        s.unk1 = g_btluiList.unk0;
+        s.unk1 = g_btluiList.cmdNo;
         s.unk6 = btlui_resolveAbility(k);
         s.unk2 = g_gameState->unk1C->unk8E4.battle->abilities[k].unk0_0;
         s.unk3 = g_gameState->unk1C->unk8E4.battle->abilities[k].unk0_4;
         s.unk4 = g_gameState->unk1C->unk8E4.battle->abilities[k].unk0_31;
         s.unk7 = g_gameState->unk1C->unk8E4.battle->abilities[k].unk0_5;
         s.unk5 = g_gameState->unk1C->unk8E4.battle->abilities[k].unk0_29;
-        s.unk8 = g_btluiList.unk10;
-        s.unk9 = g_btluiList.unk19;
+        s.unk8 = g_btluiList.doubleCast;
+        s.unk9 = g_btluiList.trance;
         btlui_startTargetSelect(&s);
         return 1;
     }
@@ -1812,15 +1812,15 @@ s32 btlui_selectItem(void) {
     }
     if ((n = p->unk1) - btlui_getItemReserved(p->unk0) >= 0 && n != btlui_getItemReserved(p->unk0)) {
         s.unk0 = 2;
-        s.unk1 = g_btluiList.unk0;
+        s.unk1 = g_btluiList.cmdNo;
         s.unk6 = p->unk0;
         s.unk2 = e->unk0_0;
         s.unk3 = e->unk0_4;
         s.unk4 = e->unk0_31;
         s.unk7 = e->unk0_5;
         s.unk5 = e->unk0_29;
-        s.unk8 = g_btluiList.unk10;
-        s.unk9 = g_btluiList.unk19;
+        s.unk8 = g_btluiList.doubleCast;
+        s.unk9 = g_btluiList.trance;
         btlui_startTargetSelect(&s);
         r = 1;
     }
@@ -1832,7 +1832,7 @@ s32 btlui_selectThrow(void) {
     MenuList *l = &g_btlUi->unk12A4[2]->unk30;
     u8 r = 0;
     UnkPair *p = btlui_getThrowListEntry(l->cursor + l->unk5);
-    Battle16CC *e = &g_gameState->unk1C->unk8E4.battle->abilities[g_btluiList.unk4->unk8];
+    Battle16CC *e = &g_gameState->unk1C->unk8E4.battle->abilities[g_btluiList.cmd->unk8];
     s32 n;
 
     if (p == NULL) {
@@ -1840,15 +1840,15 @@ s32 btlui_selectThrow(void) {
     }
     if ((n = p->unk1) - btlui_getItemReserved(p->unk0) >= 0 && n != btlui_getItemReserved(p->unk0)) {
         s.unk0 = 2;
-        s.unk1 = g_btluiList.unk0;
+        s.unk1 = g_btluiList.cmdNo;
         s.unk6 = p->unk0;
         s.unk2 = e->unk0_0;
         s.unk3 = e->unk0_4;
         s.unk4 = e->unk0_31;
         s.unk7 = e->unk0_5;
         s.unk5 = e->unk0_29;
-        s.unk8 = g_btluiList.unk10;
-        s.unk9 = g_btluiList.unk19;
+        s.unk8 = g_btluiList.doubleCast;
+        s.unk9 = g_btluiList.trance;
         btlui_startTargetSelect(&s);
         r = 1;
     }
@@ -1856,21 +1856,21 @@ s32 btlui_selectThrow(void) {
 }
 
 s32 btlui_getAbilityState(s32 arg0) {
-    Unk80104F88Entry *e = g_btluiList.unk14->unkB4;
+    Unk80104F88Entry *e = g_btluiList.unit->unkB4;
     Battle16CC *a = &g_gameState->unk1C->unk8E4.battle->abilities[arg0];
 
     if (e->unk19 != 0 && e->unk3DC[arg0] == 0 && (s16)*e->unk1C[arg0] < (s16)e->unk31C[arg0]) {
         return 0;
     }
     if (a->unk8 & 2) {
-        if ((u8)btl_hasStatus(g_btluiList.unk14, BTL_STATUS_SILENCE)) {
+        if ((u8)btl_hasStatus(g_btluiList.unit, BTL_STATUS_SILENCE)) {
             return 1;
         }
         if ((g_gameState->unk1C->unk8E4.battle->scene.unk0 >> 9) & 1) {
             return 1;
         }
     }
-    if (btl_getMpCost((BtlCmd8 *)a) > g_btluiList.unk14->mp) {
+    if (btl_getMpCost((BtlCmd8 *)a) > g_btluiList.unit->mp) {
         return 1;
     }
     return 2;
@@ -1882,42 +1882,42 @@ void btlui_drawListOverlay(Window *arg0) {
     s32 y;
     s32 dy = 10;
     s32 dx = 0x74;
-    if (g_btluiList.unk8 != 0) {
-        ui_drawLabel(arg0->unk8.x + 6, r->y - 4, arg0->unk18, g_btluiList.unk8, 0);
+    if (g_btluiList.label != 0) {
+        ui_drawLabel(arg0->unk8.x + 6, r->y - 4, arg0->unk18, g_btluiList.label, 0);
     }
-    if (g_btluiList.unkC != 0) {
-        ui_drawLabel(arg0->unk8.x - (g_btluiList.unk12 - dx), r->y - 4, arg0->unk18, g_btluiList.unkC, 0);
+    if (g_btluiList.label2 != 0) {
+        ui_drawLabel(arg0->unk8.x - (g_btluiList.label2Width - dx), r->y - 4, arg0->unk18, g_btluiList.label2, 0);
     }
     if (btlui_getMenuState() == BTLUI_MENU_LIST || (btlui_getMenuState() == BTLUI_MENU_TARGET && btlui_getTargetReturnState() == BTLUI_MENU_LIST && !(func_800F1360() & 0xFF) && (D_80104E80 & 1))) {
         x = arg0->unk8.x - 0x12;
         y = r->y + (arg0->unk30.cursor * 15 + dy);
-        if (g_btluiList.unk0 == BTL_CMD_DBL_BLK || g_btluiList.unk0 == BTL_CMD_DBL_WHT) {
-            ui_drawSprite(x + 7, y + 2, arg0->unk18, g_btluiList.unk10 + 0x5A, 0);
+        if (g_btluiList.cmdNo == BTL_CMD_DBL_BLK || g_btluiList.cmdNo == BTL_CMD_DBL_WHT) {
+            ui_drawSprite(x + 7, y + 2, arg0->unk18, g_btluiList.doubleCast + 0x5A, 0);
         }
         ui_drawHand(x, y, arg0->unk18);
     }
 }
 
 void btlui_updateList(void) {
-    if (g_btluiList.unk0 == BTL_CMD_SWD_MAG) {
+    if (g_btluiList.cmdNo == BTL_CMD_SWD_MAG) {
         if (g_btlUi->unk12B7 == 0 || g_btlUi->unk12B8.h != 0) {
             btlui_closeList();
             snd_playSe(0x65);
         }
     }
-    if (g_btluiList.unk19 == 0 && (u8)btl_hasStatus(g_btluiList.unk14, BTL_STATUS_TRANCE)) {
+    if (g_btluiList.trance == 0 && (u8)btl_hasStatus(g_btluiList.unit, BTL_STATUS_TRANCE)) {
         btlui_closeList();
         snd_playSe(0x65);
     }
 }
 
 void btlui_nextDoubleCast(void) {
-    g_btluiList.unk10++;
+    g_btluiList.doubleCast++;
 }
 
 s32 btlui_getListHelpText(void) {
     s32 r = 0;
-    s32 (*f)(void) = D_800F8E58[g_btluiList.unk4->unk6];
+    s32 (*f)(void) = D_800F8E58[g_btluiList.cmd->unk6];
     if (f != NULL) {
         r = f();
     }
@@ -1926,10 +1926,10 @@ s32 btlui_getListHelpText(void) {
 
 void btlui_listConfirm(void) {
     Window *w;
-    if ((u8)D_800F8E38[g_btluiList.unk4->unk6]()) {
+    if ((u8)D_800F8E38[g_btluiList.cmd->unk6]()) {
         snd_playSe(0x67);
         w = g_btlUi->unk12A4[2];
-        btlui_saveCursor(&g_btluiList.unk14->unkB4->unk49C, 1, w->unk30.unk5, w->unk30.cursor);
+        btlui_saveCursor(&g_btluiList.unit->unkB4->unk49C, 1, w->unk30.unk5, w->unk30.cursor);
     } else {
         snd_playSe(0x66);
     }
@@ -1974,12 +1974,12 @@ void btlui_closeList(void) {
 }
 
 void btlui_drawListRow(s32 arg0, s32 arg1, s32 arg2, MenuView *arg3) {
-    D_800F8E48[g_btluiList.unk4->unk6](arg0, arg1, arg2, arg3);
+    D_800F8E48[g_btluiList.cmd->unk6](arg0, arg1, arg2, arg3);
 }
 
 void btlui_drawAbilityRow(s32 arg0, s32 arg1, s32 arg2, MenuView *arg3) {
     u8 buf[8];
-    u8 k = D_800FDD10[g_btluiList.unk4->unk8 + arg2];
+    u8 k = D_800FDD10[g_btluiList.cmd->unk8 + arg2];
     Window *w = g_btlUi->unk12A4[2];
     RECT *r = &w->unk8;
     s32 dy = w->unk6 - r->h;
@@ -2064,7 +2064,7 @@ void btlui_drawThrowRow(s32 arg0, s32 arg1, s32 arg2, Window *arg3) {
 s32 btlui_resolveAbility(s32 arg0) {
     s32 t;
     if (arg0 == 0x44) {
-        switch (g_btluiList.unk14->unkB4->unk14->equip[4]) {
+        switch (g_btluiList.unit->unkB4->unk14->equip[4]) {
         case 0xE4:
             arg0 = 0x45;
             break;
@@ -2076,7 +2076,7 @@ s32 btlui_resolveAbility(s32 arg0) {
             break;
         }
     } else if (arg0 == 0x42) {
-        t = g_btluiList.unk14->unkB4->unk14->equip[4] == 0xDE;
+        t = g_btluiList.unit->unkB4->unk14->equip[4] == 0xDE;
         arg0 = t + 0x42;
     }
     return arg0;
@@ -2089,7 +2089,7 @@ s32 btl_getMpCost(BtlCmd8 *arg0) {
             cost *= 4;
         }
     }
-    if (g_btluiList.unk18 != 0) {
+    if (g_btluiList.halfMp != 0) {
         cost >>= 1;
     }
     return cost;
@@ -2098,7 +2098,7 @@ s32 btl_getMpCost(BtlCmd8 *arg0) {
 char *btlui_getAbilityHelpText(void) {
     MenuList *l = &g_btlUi->unk12A4[2]->unk30;
     s32 n = l->cursor + l->unk5;
-    u8 k = D_800FDD10[g_btluiList.unk4->unk8 + n];
+    u8 k = D_800FDD10[g_btluiList.cmd->unk8 + n];
     if (btlui_getAbilityState(k) == 0) {
         return NULL;
     }
@@ -2141,20 +2141,20 @@ void btlui_onListClosed(Window *arg0) {
 void btlui_startTargetSelect(Unk800EF80C *arg0) {
     s32 i;
 
-    g_btlTarget.unk20 = g_btlUi->cmdUnit;
-    g_btlTarget.unk0 = arg0->unk0;
-    g_btlTarget.unk1 = arg0->unk1;
-    g_btlTarget.unk2 = arg0->unk2;
+    g_btlTarget.unit = g_btlUi->cmdUnit;
+    g_btlTarget.returnState = arg0->unk0;
+    g_btlTarget.cmdNo = arg0->unk1;
+    g_btlTarget.targetType = arg0->unk2;
     g_btlTarget.unk3 = arg0->unk3;
     g_btlTarget.unk4 = arg0->unk4;
-    g_btlTarget.unkA = arg0->unk3;
-    g_btlTarget.unk1A = arg0->unk6;
+    g_btlTarget.side = arg0->unk3;
+    g_btlTarget.subNo = arg0->unk6;
     g_btlTarget.unkF = arg0->unk7;
-    g_btlTarget.unkB = arg0->unk5;
-    g_btlTarget.unk10 = arg0->unk8;
-    g_btlTarget.unk6 = D_800F8E84[g_btlTarget.unk2];
-    g_btlTarget.unkC = 0;
-    g_btlTarget.unkD = func_800349BC((g_btlTarget.unk20->unk68 >> 1) & 0xF, 0xE2);
+    g_btlTarget.allowKo = arg0->unk5;
+    g_btlTarget.doubleCast = arg0->unk8;
+    g_btlTarget.targetAll = D_800F8E84[g_btlTarget.targetType];
+    g_btlTarget.windowOpen = 0;
+    g_btlTarget.halfMp = func_800349BC((g_btlTarget.unit->unk68 >> 1) & 0xF, 0xE2);
     g_btlTarget.unkE = arg0->unk9;
     g_btlTarget.unk7 = (u32)(arg0->unk2 - 6) < 3;
     g_btlTarget.unk8 = arg0->unk2 == 0 || arg0->unk2 == 3 || arg0->unk2 == 9 || arg0->unk2 == 6;
@@ -2183,18 +2183,18 @@ void btlui_startTargetSelect(Unk800EF80C *arg0) {
 
 void btlui_setDefaultTargets(s32 arg0) {
     BtlUnit *u;
-    if (g_btlTarget.unk2 == 0xC) {
+    if (g_btlTarget.targetType == 0xC) {
         for (u = g_gameState->unk1C->unk8E4.battle->unitList; u != 0; u = u->next) {
-            if (((u->unk68 >> 28) & 1) && (!(u->status & BTL_STATUS_KO) || g_btlTarget.unkB != 0)) {
+            if (((u->unk68 >> 28) & 1) && (!(u->status & BTL_STATUS_KO) || g_btlTarget.allowKo != 0)) {
                 u->unk68 |= 0x20000000;
             }
         }
-    } else if (g_btlTarget.unk2 == 0xD) {
-        g_btlTarget.unk20->unk68 |= 0x20000000;
+    } else if (g_btlTarget.targetType == 0xD) {
+        g_btlTarget.unit->unk68 |= 0x20000000;
     } else if (arg0 & 0xFF) {
-        btlui_targetDefault(D_800F8E68[g_btlTarget.unk2][0], D_800F8E68[g_btlTarget.unk2][1]);
+        btlui_targetDefault(D_800F8E68[g_btlTarget.targetType][0], D_800F8E68[g_btlTarget.targetType][1]);
     } else {
-        btlui_targetFirst(D_800F8E68[g_btlTarget.unk2][0], D_800F8E68[g_btlTarget.unk2][1]);
+        btlui_targetFirst(D_800F8E68[g_btlTarget.targetType][0], D_800F8E68[g_btlTarget.targetType][1]);
     }
 }
 
@@ -2205,10 +2205,10 @@ s32 btlui_cycleTarget(s32 arg0) {
     s32 cur = 0;
     s32 n;
     s32 k;
-    if (g_btlTarget.unk6 != 0) {
+    if (g_btlTarget.targetAll != 0) {
         return 0;
     }
-    if (g_btlTarget.unk2 == 0xD) {
+    if (g_btlTarget.targetType == 0xD) {
         return 0;
     }
     u = BtlFindTargetCursor();
@@ -2218,7 +2218,7 @@ s32 btlui_cycleTarget(s32 arg0) {
     memset((s32)list, 0, 0x10);
     n = 0;
     for (p = g_gameState->unk1C->unk8E4.battle->unitList; p != NULL; p = p->next) {
-        if (((p->unk68 >> 28) & 1) && (p->unk68 & 1) == g_btlTarget.unkA && (!(p->status & BTL_STATUS_KO) || g_btlTarget.unkB != 0)) {
+        if (((p->unk68 >> 28) & 1) && (p->unk68 & 1) == g_btlTarget.side && (!(p->status & BTL_STATUS_KO) || g_btlTarget.allowKo != 0)) {
             list[n] = p;
             if (p == u) {
                 cur = n;
@@ -2268,19 +2268,19 @@ found:
             return 0;
         }
         side = !k;
-        g_btlTarget.unkA = side;
+        g_btlTarget.side = side;
         memset(list, 0, sizeof(list));
         n = 0;
         for (t = g_gameState->unk1C->unk8E4.battle->unitList; t != NULL; t = t->next) {
             if (((t->unk68 >> 28) & 1) && (t->unk68 & 1) == side) {
-                if (!(t->status & BTL_STATUS_KO) || g_btlTarget.unkB) {
+                if (!(t->status & BTL_STATUS_KO) || g_btlTarget.allowKo) {
                     list[n++] = t;
                 }
             }
         }
         if (n != 0) {
             cur->unk68 &= ~0x20000000;
-            if (g_btlTarget.unk6 == 0) {
+            if (g_btlTarget.targetAll == 0) {
                 list[0]->unk68 |= 0x20000000;
             } else {
                 btlui_clearTargeted();
@@ -2295,7 +2295,7 @@ found:
 }
 
 void btlui_toggleTargetAll(void) {
-    u8 old = g_btlTarget.unk6;
+    u8 old = g_btlTarget.targetAll;
     BtlUnit *u;
     BtlUnit *p;
     s32 n;
@@ -2308,7 +2308,7 @@ void btlui_toggleTargetAll(void) {
             }
             btlui_clearTargeted();
             u->unk68 |= 0x20000000;
-            g_btlTarget.unk6 = 0;
+            g_btlTarget.targetAll = 0;
         } else {
             p = g_gameState->unk1C->unk8E4.battle->unitList;
             u = BtlFindTargetCursor();
@@ -2316,45 +2316,45 @@ void btlui_toggleTargetAll(void) {
             g_btlTarget.unk24 = u;
             btlui_clearTargeted();
             for (; p != NULL; p = p->next) {
-                if (((p->unk68 >> 28) & 1) && (p->unk68 & 1) == (u->unk68 & 1) && (!(p->status & BTL_STATUS_KO) || g_btlTarget.unkB != 0)) {
+                if (((p->unk68 >> 28) & 1) && (p->unk68 & 1) == (u->unk68 & 1) && (!(p->status & BTL_STATUS_KO) || g_btlTarget.allowKo != 0)) {
                     p->unk68 |= 0x20000000;
                     n++;
                 }
             }
             if (n != 0) {
-                g_btlTarget.unk6 = 1;
+                g_btlTarget.targetAll = 1;
             }
         }
-        if (old != g_btlTarget.unk6) {
+        if (old != g_btlTarget.targetAll) {
             snd_playSe(0x67);
         }
     }
 }
 
 s32 btlui_isCmdUsable(void) {
-    Unk800FD56C *e = &D_800FD56C[g_btlTarget.unk1];
+    Unk800FD56C *e = &D_800FD56C[g_btlTarget.cmdNo];
     Battle16CC *b;
     u8 cost;
-    if (g_btlTarget.unk1 == BTL_CMD_SWD_MAG && (g_btlUi->unk12B7 == 0 || g_btlUi->unk12B8.h != 0)) {
+    if (g_btlTarget.cmdNo == BTL_CMD_SWD_MAG && (g_btlUi->unk12B7 == 0 || g_btlUi->unk12B8.h != 0)) {
         return 0;
     }
-    if (g_btlTarget.unkE == 0 && (btl_hasStatus(g_btlTarget.unk20, BTL_STATUS_TRANCE) & 0xFF)) {
+    if (g_btlTarget.unkE == 0 && (btl_hasStatus(g_btlTarget.unit, BTL_STATUS_TRANCE) & 0xFF)) {
         return 0;
     }
     if (e->unk6 == 1) {
-        b = &g_gameState->unk1C->unk8E4.battle->abilities[g_btlTarget.unk1A];
+        b = &g_gameState->unk1C->unk8E4.battle->abilities[g_btlTarget.subNo];
         cost = b->mpCost;
-        if (g_btlTarget.unkD != 0) {
+        if (g_btlTarget.halfMp != 0) {
             cost >>= 1;
         }
-        if (g_btlTarget.unk20->mp < cost) {
+        if (g_btlTarget.unit->mp < cost) {
             return 0;
         }
-        if ((b->unk8 & 2) && (btl_hasStatus(g_btlTarget.unk20, BTL_STATUS_SILENCE) & 0xFF)) {
+        if ((b->unk8 & 2) && (btl_hasStatus(g_btlTarget.unit, BTL_STATUS_SILENCE) & 0xFF)) {
             return 0;
         }
     }
-    if ((u32)(e->unk6 - 2) < 2 && item_getCount(g_btlTarget.unk1A) - btlui_getItemReserved(g_btlTarget.unk1A) <= 0) {
+    if ((u32)(e->unk6 - 2) < 2 && item_getCount(g_btlTarget.subNo) - btlui_getItemReserved(g_btlTarget.subNo) <= 0) {
         return 0;
     }
     return 1;
@@ -2368,27 +2368,27 @@ s32 btlui_refreshTargets(void) {
         btlui_setDefaultTargets(0);
         return 1;
     }
-    if (g_btlTarget.unk6 == 0) {
-        if ((u->status & BTL_STATUS_KO) && g_btlTarget.unkB == 0) {
+    if (g_btlTarget.targetAll == 0) {
+        if ((u->status & BTL_STATUS_KO) && g_btlTarget.allowKo == 0) {
             u->unk68 &= ~0x20000000;
             btlui_setDefaultTargets(0);
             return 1;
         }
         return 1;
     }
-    if (g_btlTarget.unk2 != 0xC) {
+    if (g_btlTarget.targetType != 0xC) {
         p = g_gameState->unk1C->unk8E4.battle->unitList;
         n = 0;
         btlui_clearTargeted();
         while (p != NULL) {
-            if (((p->unk68 >> 28) & 1) && (p->unk68 & 1) == (u->unk68 & 1) && (!(p->status & BTL_STATUS_KO) || g_btlTarget.unkB != 0)) {
+            if (((p->unk68 >> 28) & 1) && (p->unk68 & 1) == (u->unk68 & 1) && (!(p->status & BTL_STATUS_KO) || g_btlTarget.allowKo != 0)) {
                 p->unk68 |= 0x20000000;
                 n++;
             }
             p = p->next;
         }
         if (n != 0) {
-            g_btlTarget.unk6 = 1;
+            g_btlTarget.targetAll = 1;
         }
     }
     return 1;
@@ -2398,7 +2398,7 @@ void btlui_confirmTarget(void) {
     s32 mask = 0;
     u8 ok = 1;
     BtlUnit *u = g_gameState->unk1C->unk8E4.battle->unitList;
-    Unk800FD56C *e = &D_800FD56C[g_btlTarget.unk1];
+    Unk800FD56C *e = &D_800FD56C[g_btlTarget.cmdNo];
     Unk80104FF0 *d;
     for (; u != NULL; u = u->next) {
         if ((u->unk68 & 0x30000000) == 0x30000000) {
@@ -2407,17 +2407,17 @@ void btlui_confirmTarget(void) {
     }
     d = &g_btlTarget;
     btlui_setMenuState(BTLUI_MENU_CLOSING);
-    if (d->unk1 == BTL_CMD_DBL_BLK || d->unk1 == BTL_CMD_DBL_WHT) {
+    if (d->cmdNo == BTL_CMD_DBL_BLK || d->cmdNo == BTL_CMD_DBL_WHT) {
         ok = btlui_confirmDoubleCast(mask);
     } else {
-        d->unk20->cmdIssued = 1;
-        d->unk20->inMenuQueue = 0;
-        btl_setCmd((s32)g_btlTarget.unk20->cmd, g_btlTarget.unk1, g_btlTarget.unk1A, mask & 0xFFFF, btlui_getTargeting_inline());
+        d->unit->cmdIssued = 1;
+        d->unit->inMenuQueue = 0;
+        btl_setCmd((s32)g_btlTarget.unit->cmd, g_btlTarget.cmdNo, g_btlTarget.subNo, mask & 0xFFFF, btlui_getTargeting_inline());
     }
     btlui_clearTargeted();
     if (ok) {
         if ((u32)(e->unk6 - 2) < 2) {
-            btlui_reserveItem(g_btlTarget.unk1A);
+            btlui_reserveItem(g_btlTarget.subNo);
         }
         btlui_closeWindows();
     }
@@ -2429,11 +2429,11 @@ s32 btlui_confirmDoubleCast(s32 arg0) {
     s32 n;
     s8 v;
     s32 r = 0;
-    if (g_btlTarget.unk10 == 0) {
-        g_btlTarget.unk1C = arg0;
-        g_btlTarget.unk13 = g_btlTarget.unk1;
-        g_btlTarget.unk18 = g_btlTarget.unk1A;
-        if ((u32)(g_btlTarget.unk2 - 9) < 3) {
+    if (g_btlTarget.doubleCast == 0) {
+        g_btlTarget.firstTargets = arg0;
+        g_btlTarget.firstCmdNo = g_btlTarget.cmdNo;
+        g_btlTarget.firstSubNo = g_btlTarget.subNo;
+        if ((u32)(g_btlTarget.targetType - 9) < 3) {
             v = 2;
         } else {
             n = 0;
@@ -2444,14 +2444,14 @@ s32 btlui_confirmDoubleCast(s32 arg0) {
             }
             v = n >= 2;
         }
-        g_btlTarget.unk14 = v;
+        g_btlTarget.firstTargeting = v;
         btlui_cancelTarget();
         btlui_nextDoubleCast();
     } else {
-        g_btlTarget.unk20->inMenuQueue = 0;
-        g_btlTarget.unk20->cmdIssued = 1;
-        btl_setCmd((s32)g_btlTarget.unk20->delayedCmd, g_btlTarget.unk13, g_btlTarget.unk18, (u16)g_btlTarget.unk1C, g_btlTarget.unk14);
-        if ((u32)(g_btlTarget.unk2 - 9) < 3) {
+        g_btlTarget.unit->inMenuQueue = 0;
+        g_btlTarget.unit->cmdIssued = 1;
+        btl_setCmd((s32)g_btlTarget.unit->delayedCmd, g_btlTarget.firstCmdNo, g_btlTarget.firstSubNo, (u16)g_btlTarget.firstTargets, g_btlTarget.firstTargeting);
+        if ((u32)(g_btlTarget.targetType - 9) < 3) {
             v = 2;
         } else {
             n = 0;
@@ -2462,7 +2462,7 @@ s32 btlui_confirmDoubleCast(s32 arg0) {
             }
             v = n >= 2;
         }
-        btl_setCmd((s32)g_btlTarget.unk20->cmd, g_btlTarget.unk1, g_btlTarget.unk1A, arg0 & 0xFFFF, v);
+        btl_setCmd((s32)g_btlTarget.unit->cmd, g_btlTarget.cmdNo, g_btlTarget.subNo, arg0 & 0xFFFF, v);
         r = 1;
     }
     return r;
@@ -2472,16 +2472,16 @@ void btlui_cancelTarget(void) {
     BtlUnit *u;
     s32 i;
     if (g_btlTarget.unkF == 0) {
-        if (g_btlTarget.unkC != 0) {
-            btlui_closeTargetWindow(g_btlTarget.unk0);
+        if (g_btlTarget.windowOpen != 0) {
+            btlui_closeTargetWindow(g_btlTarget.returnState);
         } else {
-            btlui_setMenuState(g_btlTarget.unk0);
+            btlui_setMenuState(g_btlTarget.returnState);
         }
     } else {
-        if (g_btlTarget.unkC != 0) {
+        if (g_btlTarget.windowOpen != 0) {
             btlui_closeTargetWindow(5);
         }
-        btlui_closeListWindow(g_btlTarget.unk0);
+        btlui_closeListWindow(g_btlTarget.returnState);
     }
     for (u = g_gameState->unk1C->unk8E4.battle->unitList; u != 0; u = u->next) {
         u->unk68 &= ~0x20000000;
@@ -2493,9 +2493,9 @@ void btlui_cancelTarget(void) {
 }
 
 void btlui_updateTargetWindow(void) {
-    if ((g_btlTarget.unkC == 0 || (u32)(g_btlUi->unk12A4[0]->unk1C - 1) >= 2) && g_btlTarget.unkC != D_80104E6B) {
+    if ((g_btlTarget.windowOpen == 0 || (u32)(g_btlUi->unk12A4[0]->unk1C - 1) >= 2) && g_btlTarget.windowOpen != D_80104E6B) {
         if (D_80104E6B != 0) {
-            if (g_btlTarget.unkC == 0) {
+            if (g_btlTarget.windowOpen == 0) {
                 btlui_setMenuState(BTLUI_MENU_CLOSING);
                 g_btlUi->unk12A4[0] = win_open(&D_800F8EF4, 5, 2, 0);
                 win_setOpenAnim(g_btlUi->unk12A4[0], 4);
@@ -2503,9 +2503,9 @@ void btlui_updateTargetWindow(void) {
                 win_setDrawContent(g_btlUi->unk12A4[0], btlui_drawTargetList);
                 win_setDrawOverlay(g_btlUi->unk12A4[0], btlui_drawTargetListOverlay);
                 g_btlTarget.unk11 = 3;
-                g_btlTarget.unkC = 1;
+                g_btlTarget.windowOpen = 1;
             }
-        } else if (g_btlTarget.unkC != 0) {
+        } else if (g_btlTarget.windowOpen != 0) {
             g_btlTarget.unk12 = 3;
             btlui_setMenuState(BTLUI_MENU_CLOSING);
             win_setOnClosed(g_btlUi->unk12A4[0], btlui_onTargetWindowClosed);
@@ -2628,16 +2628,16 @@ void *btlui_getTargetHelpText(void) {
     s32 n;
     s32 k;
 
-    if (g_btlTarget.unk2 < 3) {
+    if (g_btlTarget.targetType < 3) {
         t = find_target();
         if (t == NULL) {
             return NULL;
         }
-        func_8002BD54(g_btluiHelpText, text_get(g_btlTarget.unk2 + 5));
+        func_8002BD54(g_btluiHelpText, text_get(g_btlTarget.targetType + 5));
         text_append(g_btluiHelpText, btl_getUnitName(t));
-    } else if ((u8)(g_btlTarget.unk2 - 3) < 3) {
+    } else if ((u8)(g_btlTarget.targetType - 3) < 3) {
         n = 0;
-        k = g_btlTarget.unk2 - 3;
+        k = g_btlTarget.targetType - 3;
         for (u = g_gameState->unk1C->unk8E4.battle->unitList; u != NULL; u = u->next) {
             if ((u->unk68 >> 29) & 1) {
                 n++;
@@ -2654,14 +2654,14 @@ void *btlui_getTargetHelpText(void) {
             func_8002BD54(g_btluiHelpText, text_get(k + 0x16));
         }
     } else {
-        func_8002BD54(g_btluiHelpText, text_get(g_btlTarget.unk2 + 5));
+        func_8002BD54(g_btluiHelpText, text_get(g_btlTarget.targetType + 5));
     }
     text_append(g_btluiHelpText, text_get(0x1A));
     return g_btluiHelpText;
 }
 
 void btlui_onUnitTargetable(BtlUnit *arg0) {
-    if (g_btlTarget.unk6 != 0 && D_800F8EE4[g_btlTarget.unk2] != 0) {
+    if (g_btlTarget.targetAll != 0 && D_800F8EE4[g_btlTarget.targetType] != 0) {
         btlui_setDefaultTargets(0);
     }
 }
@@ -2669,7 +2669,7 @@ void btlui_onUnitTargetable(BtlUnit *arg0) {
 void btlui_onUnitUntargetable(BtlUnit *arg0) {
     if ((arg0->unk68 >> 29) & 1) {
         arg0->unk68 &= ~0x20000000;
-        if (g_btlTarget.unk6 == 0) {
+        if (g_btlTarget.targetAll == 0) {
             btlui_setDefaultTargets(0);
         }
     }
@@ -2709,7 +2709,7 @@ void btlui_updateTarget(void) {
 }
 
 u8 func_800F1360(void) {
-    return g_btlTarget.unkC;
+    return g_btlTarget.windowOpen;
 }
 
 Window *btlui_getTargetWindow(void) {
@@ -2725,7 +2725,7 @@ s32 func_800F1388(void) {
 }
 
 s32 btlui_getTargetReturnState(void) {
-    return g_btlTarget.unk0;
+    return g_btlTarget.returnState;
 }
 
 s32 btlui_countTargeted(void) {
@@ -2780,7 +2780,7 @@ Unk80105020 *btlui_getCursorPositions(void) {
 void btlui_targetMove(void) {
     s32 i;
     s32 m;
-    if (g_btlTarget.unkC == 0) {
+    if (g_btlTarget.windowOpen == 0) {
         m = func_800C2DF4();
     } else {
         m = 0;
@@ -2819,11 +2819,11 @@ void btlui_targetPartySide(void) {
 void btlui_targetFirst(u8 arg0, u8 arg1) {
     BtlUnit *u = g_gameState->unk1C->unk8E4.battle->unitList;
     if (arg0 == 0xFF) {
-        arg0 = g_btlTarget.unkA;
+        arg0 = g_btlTarget.side;
     }
     for (; u != NULL; u = u->next) {
         if (((u->unk68 >> 28) & 1) && (u->unk68 & 1) == arg0) {
-            if (!(u->status & BTL_STATUS_KO) || g_btlTarget.unkB != 0) {
+            if (!(u->status & BTL_STATUS_KO) || g_btlTarget.allowKo != 0) {
                 u->unk68 |= 0x20000000;
                 if (arg1 == 0) {
                     return;
@@ -2841,7 +2841,7 @@ void btlui_targetDefault(u8 arg0, u8 arg1) {
     u32 side;
 
     if (arg0 == 0xFF) {
-        arg0 = g_btlTarget.unkA;
+        arg0 = g_btlTarget.side;
     }
     if (g_btlTarget.unk4 != 0) {
         t = btlui_findKoUnit(arg0);
@@ -2856,11 +2856,11 @@ void btlui_targetDefault(u8 arg0, u8 arg1) {
         if (!((f >> 28) & 1) || side != arg0) {
             continue;
         }
-        if ((u->status & BTL_STATUS_KO) && g_btlTarget.unkB == 0) {
+        if ((u->status & BTL_STATUS_KO) && g_btlTarget.allowKo == 0) {
             continue;
         }
         if (arg1 == 0 && side != 0) {
-            if (u == g_btlTarget.unk20) {
+            if (u == g_btlTarget.unit) {
                 u->unk68 = f | 0x20000000;
                 found = 1;
             }
@@ -2894,11 +2894,11 @@ void btlui_openTargetWindow(s8 arg0) {
     win_setDrawContent(g_btlUi->unk12A4[0], btlui_drawTargetList);
     win_setDrawOverlay(g_btlUi->unk12A4[0], btlui_drawTargetListOverlay);
     g_btlTarget.unk11 = arg0;
-    g_btlTarget.unkC = 1;
+    g_btlTarget.windowOpen = 1;
 }
 
 void btlui_closeTargetWindow(s32 arg0) {
-    if (g_btlTarget.unkC != 0) {
+    if (g_btlTarget.windowOpen != 0) {
         g_btlTarget.unk12 = arg0;
         btlui_setMenuState(BTLUI_MENU_CLOSING);
         win_setOnClosed(g_btlUi->unk12A4[0], btlui_onTargetWindowClosed);
@@ -2907,7 +2907,7 @@ void btlui_closeTargetWindow(s32 arg0) {
 }
 
 void btlui_onTargetWindowOpened(Window *arg0) {
-    if (g_btlTarget.unk0 == BTLUI_MENU_LIST) {
+    if (g_btlTarget.returnState == BTLUI_MENU_LIST) {
         func_8002E32C(g_btlUi->unk12A4[2], 0);
     }
     func_8002E32C(g_btlUi->unk12A4[3], 0);
@@ -2915,11 +2915,11 @@ void btlui_onTargetWindowOpened(Window *arg0) {
 }
 
 void btlui_onTargetWindowClosed(Window *arg0) {
-    if (g_btlTarget.unk0 == BTLUI_MENU_LIST) {
+    if (g_btlTarget.returnState == BTLUI_MENU_LIST) {
         func_8002E32C(g_btlUi->unk12A4[2], 1);
     }
     func_8002E32C(g_btlUi->unk12A4[3], 1);
-    g_btlTarget.unkC = 0;
+    g_btlTarget.windowOpen = 0;
     g_btlUi->unk12A4[0] = 0;
     btlui_setMenuState((u8)g_btlTarget.unk12);
 }
@@ -2927,7 +2927,7 @@ void btlui_onTargetWindowClosed(Window *arg0) {
 s32 btlui_getTargeting(void) {
     BtlUnit *u;
     s32 n;
-    if (g_btlTarget.unk2 >= 9 && g_btlTarget.unk2 <= 11) {
+    if (g_btlTarget.targetType >= 9 && g_btlTarget.targetType <= 11) {
         return 2;
     }
     n = 0;
