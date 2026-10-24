@@ -1,4 +1,4 @@
-/* Draft of fx_0fb_1 fx_0fb_1_op80. Status: 173 lines, 81 ignoring registers (build/w/nd.py, which now masks all |imm| >= 10000 data offsets). Cases 3-6 use fx_17a op80's final variable roles (src/fxmod/fx_17a); mode 0/1 are if/else-if branches with one return 0 (as fx_17a); further splits found by build/w/pgreedy.py + gen_regions.py. */
+/* Draft of fx_0fb_1 fx_0fb_1_op80. Status: 166 lines, 74 ignoring registers (build/w/nd.py, which now masks all |imm| >= 10000 data offsets). Cases 3-6 use fx_17a op80's final variable roles (src/fxmod/fx_17a); mode 0/1 are if/else-if branches with one return 0 (as fx_17a); further splits found by build/w/pgreedy.py + gen_regions.py. */
 #include "fxmod/fx_0fb_1.h"
 
 typedef struct {
@@ -252,6 +252,7 @@ s32 fx_0fb_1_op80(s32 mode, Fx0fb1Op80Work *work, Unk800F78A4 *env, Unk80100C78E
             ex->Hi_DrawEffModel(&work->unk6C, (VECTOR *)&work->unk54, (s32)&work->unk60, work->unkA8);
             work->unk6C.vz += 0x400;
             ex->Hi_DrawEffModel(&work->unk6C, (VECTOR *)&work->unk54, (s32)&work->unk60, work->unkA8);
+            work->unk6C.vz -= 0x400;
         } else {
             s32 m;
 
@@ -259,8 +260,8 @@ s32 fx_0fb_1_op80(s32 mode, Fx0fb1Op80Work *work, Unk800F78A4 *env, Unk80100C78E
             ex->Hi_DrawMorphEffModel(&work->unk6C, (VECTOR *)&work->unk54, (s32)&work->unk60, work->unkA8, work->unkAC, m);
             work->unk6C.vz += 0x400;
             ex->Hi_DrawMorphEffModel(&work->unk6C, (VECTOR *)&work->unk54, (s32)&work->unk60, work->unkA8, work->unkAC, m);
+            work->unk6C.vz -= 0x400;
         }
-        work->unk6C.vz -= 0x400;
         ex->btlfx_drawScreenTint((u32 *)(env->unk20 + 1), 1, t >> 8, t >> 7, t >> 6);
         if (frame >= 0x13) {
             s32 c1 = ((frame - 0x12) * 0xFF) >> 2;
