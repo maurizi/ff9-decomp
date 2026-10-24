@@ -1142,3 +1142,73 @@ D_801F14AC g_menuConfigPortClose  # [code] slide-out TweenDef of the port window
 D_801F1544 g_menuConfigGaugeTexWindow  # [code] texture window of the gauge (menu_config_drawGauge)
 D_801F154C g_menuConfigGaugeColors  # [code] colours of the gauge's 3 fill lines
 # FIELDS include/ovl_34.h ConfigMenu: unk0=subCursor,unk1=charCount,unk2=editing,unk3=rumbleTest,unk4=sliderDir,unk5=sliderTicks,unk6=rumbleTicks,unk8=charPortBit,unk11=charIdx,unk1C=wins,unk3C=list,unk4C=prim,unk50=primBufs,unk58=primFree; ScrollPos: unk0=rows,unk1=first,unk2=y; ConfigPadEntry: unk0=text,unk1=icon; ConfigBits: b0=sound,b1=controller,b2=cursor,b3=atb,b4=camera,b5=btlControl,b6=movement,b7=vibration,b8=btlSpeed,b14=msgSpeed,b17=hereIcon,b18=windowColor,b19=targetWindow,b20=charPort
+
+## ovl_37: ovl_37 (items menu)
+func_801F0C18 menu_items_init  # [code] main-menu entry Item (file 0x37 in main's D_8006E510) init of main's D_8006E530/D_8006E5B0; text bank, key item list, the two lists, windows, key item picture
+func_801F2160 menu_items_update  # [code] Item entry update of main's D_8006E530 (per frame), input, draw, animate
+func_801F2190 menu_items_exit  # [code] Item entry exit of main's D_8006E530
+func_801F21E8 menu_items_input  # [code] runs the D_801F307C handler of the current state
+func_801F0D18 menu_items_inputCmd  # [code] state 1 - Circle back to the main menu, Cross enters the list (Arrange opens the Auto/Manual window), Left/Right pick Use/Arrange/Key
+func_801F22C8 menu_items_inputList  # [code] state 2 - Circle back to the top row, Cross selects the entry (menu_items_select), list movement
+func_801F0E10 menu_items_inputTarget  # [code] state 3 - Circle closes the character window, Cross uses the item on the character, Up/Down pick a party member
+func_801F23C4 menu_items_inputArrange  # [code] state 4 - Auto sorts the inventory (menu_items_sort), Manual enters state 5, Circle closes the window
+func_801F0F50 menu_items_inputManual  # [code] state 5 - Cross picks a slot, then swaps it with the next one picked; Circle back to the Auto/Manual window
+func_801F2488 menu_items_inputKeyView  # [code] state 6 - Circle or Cross closes the key item view
+func_801F24DC menu_items_select  # [code] calls the current list's select function on the entry under the cursor
+func_801F10C4 menu_items_selectItem  # [code] select function of the item list - usable items (D_80069018.unkF bit 0) are used at once or open the character window
+func_801F253C menu_items_selectKeyItem  # [code] select function of the key item list - opens the key item view
+func_801F2590 menu_items_useItem  # [code] applies the item to the party member (func_800654F8), SE_USE_ITEM and item_remove on success
+func_801F1778 menu_items_openTarget  # [code] slides the character window in on the side away from the cursor and picks the first party member
+func_801F2C58 menu_items_closeTarget  # [code] slides the character window out (D_801F3120)
+func_801F2CC4 menu_items_onTargetOpened  # [code] tween callback of the character window slide-in (D_801F30E0) - state 3
+func_801F2CD4 menu_items_onTargetClosed  # [code] tween callback of the slide-out (D_801F3120) - state 2, window hidden
+func_801F187C menu_items_sort  # [code] Auto arrange - packs the inventory and sorts it by D_80069018.unk10 then id
+func_801F2CEC menu_items_initKeyItems  # [code] collects the key item ids the party has (func_800281A4) into keyItems/keyCount
+func_801F2D58 menu_items_openArrange  # [code] opens the Auto/Manual window (win_* callbacks below)
+func_801F2E18 menu_items_closeArrange  # [code] win_close of the Auto/Manual window
+func_801F2E40 menu_items_drawArrange  # [code] content callback of the Auto/Manual window - text 3 "Auto", 4 "Manual"
+func_801F2EBC menu_items_onArrangeOpened  # [code] on-opened callback of the Auto/Manual window - state 4
+func_801F2ECC menu_items_onArrangeClosed  # [code] on-closed callback of the Auto/Manual window - state 1
+func_801F2F38 menu_items_openKeyView  # [code] starts the key item view sliding in (keyViewPhase 1), state 0
+func_801F2FA0 menu_items_closeKeyView  # [code] starts the key item view sliding out (keyViewPhase 3)
+func_801F1D88 menu_items_stepKeyView  # [code] moves the key item view by the D_801F3064 deltas, state 6 when in, state 2 when out
+func_801F1E88 menu_items_drawKeyView  # [code] key item name, description and its picture sprites
+func_801F2240 menu_items_draw  # [code] calls the top row, list, character window, key item view and cursor drawers
+func_801F2280 menu_items_animate  # [code] help text, key item view, "Kweeeh!" timer, character window tween and list scrolling
+func_801F262C menu_items_drawCmds  # [code] top row window - "Use", "Arrange", "Key"
+func_801F11E4 menu_items_drawList  # [code] list window - labels, visible rows (the list's drawRow) and the rows scrolling in
+func_801F26E0 menu_items_drawListScroll  # [code] rows scrolling in during a page scroll (func_8002F344)
+func_801F2870 menu_items_drawItemRow  # [code] drawRow of the item list - name, icon and count, greyed when not usable
+func_801F29D0 menu_items_drawKeyRow  # [code] drawRow of the key item list - name, blinking new marker when func_800281D0 is clear
+func_801F27A0 menu_items_drawTargets  # [code] character window - the party members (func_80026EA0)
+func_801F13F8 menu_items_drawCursor  # [code] the hands for the top row, Auto/Manual, the list (two columns), the character window and the manual swap slot
+func_801F1B78 menu_items_setHelpText  # [code] help text per state - top row help, item or key item description, "Select character.", Auto/Manual help
+func_801F2FC4 menu_items_getCursorIndex  # [code] entry index under the list cursor (two per row), allowing for a running scroll
+func_801F2EDC menu_items_loadImages  # [code] LoadImage of D_801EDFD8 (key item view CLUT and picture)
+func_801F1A7C menu_items_callChocobo  # [code] called by main's item formula (func_800654F8, cmd 0x121) - on the world map with event var 0xBF set and 0xB5 clear it calls ovl_0c func_800B8124/func_800B81A0, sets 0xB5 and shows text 0xB "Kweeeh!"
+func_801F2B20 menu_items_onKwehOpened  # [code] on-opened callback of the "Kweeeh!" window - func_8002F514(0x44A) on the world map
+func_801F2B58 menu_items_drawKweh  # [code] content callback of the "Kweeeh!" window - centred text 0xB
+func_801F2BC0 menu_items_stepKweh  # [code] after 0x60 frames of the "Kweeeh!" window closes the whole menu (func_800362C8)
+D_801FAB78 g_menuItems  # [code] items menu state, ItemMenu in include/ovl_37.h
+D_801F3040 g_menuItemsLists  # [code] per top-row command - select function, row drawer and MenuList
+D_801F307C g_menuItemsInputFns  # [code] input handler per ItemMenu.state
+D_801F3064 g_menuItemsKeyViewSlide  # [code] x deltas of the key item view slide (22 in, 8 out)
+D_801F30E0 g_menuItemsTargetOpen  # [code] character window slide-in tweens, by side
+D_801F3120 g_menuItemsTargetClose  # [code] character window slide-out tweens, by side
+D_801F3098 g_menuItemsCmdText  # [code] text ids of the top row
+D_801F309C g_menuItemsCmdX  # [code] x of each top-row name
+D_801F30AC g_menuItemsCmdCursorX  # [code] hand x per top-row entry
+D_801F30A8 g_menuItemsListRect  # [code] -> ItemMenu.listRect
+D_801F30B8 g_menuItemsArrangeRect  # [code] RECT of the Auto/Manual window
+D_801F3148 g_menuItemsKwehRect  # [code] RECT of the "Kweeeh!" window
+D_801F3150 g_menuItemsArrangeHelpArea  # [code] help area while the Auto/Manual window is up (func_80035580)
+D_801F3158 g_menuItemsKeyClutRect  # [code] VRAM (960,432) 16x2, CLUT of the key item picture
+D_801F3160 g_menuItemsKeyImageRect  # [code] VRAM (896,384) 44x128, the key item picture
+D_801EDFD8 g_menuItemsKeyImage  # [code] key item picture CLUT and pixels (menu_items_loadImages)
+D_801F3168 g_menuItemsHelp  # [code] item help strings (D_80069018.unk2 offsets)
+D_801F651C g_menuItemsKeyHelp  # [code] key item help strings (D_8006B374.unk2 offsets)
+D_801F79F8 g_menuItemsKeyDesc  # [code] key item descriptions (D_8006B374.unk6 offsets)
+D_801FA958 g_menuItemsScrollClip  # [code] clip RECT of the rows scrolling in (func_8002F40C)
+D_801FA968 g_menuItemsSortBuf  # [code] inventory sort buffer (menu_items_sort)
+D_801FAB68 g_menuItemsSortTmp  # [code] swap temp of menu_items_sort
+# FIELDS include/ovl_37.h ItemMenu: unk0=cmd,unk1=state,unk2=slot,unk3=targetKind,unk4=targetMode,unk5=arrangeCursor,unk6=swapFrom,unk7=swapPicked,unk8=charWinOpen,unkC=itemList,unk1C=keyList,unk2C=cmdRect,unk34=listRect,unk3C=charWin,unk4C=popup,unk50=popupTimer,unk54=keyView,unk55=keyViewPhase,unk56=keyViewId,unk57=keyViewStep,unk58=keyViewX,unk60=keyItems,unkB0=keyCount; ItemList: unk0=select,unk4=drawRow,unk8=list
