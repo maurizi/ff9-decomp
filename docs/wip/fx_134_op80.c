@@ -1,4 +1,4 @@
-/* Pass 4: 522 aligned mismatches, frame size matches. Variables split per case (build/s/split17.py) and at each
+/* Pass 4: 500 aligned mismatches, frame size matches. Variables split per case (build/s/split17.py) and at each
  * top-level re-assignment (build/s/phase.py) and at nested assignments
  * whose value stays in their block (build/s/webs.py); case 3's first angle is t >> 2 of t = (frame << 12) / 24 in a
  * block-local variable (a3x): with it the case-3 block has eight call-crossing locals, the 0x1000 constant lands
@@ -639,13 +639,12 @@ s32 fx_134_op80(s32 mode, Fx134Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
                     work->unk0 = 6;
                     entry->unk0 = -1;
                     D_801EC860.vz += 0x400;
-                    work->unk8.vx = D_801EC860.vx;
-                    work->unk8.vz = D_801EC860.vz;
+                    BTLFX_COPY_SVEC(&work->unk8, &D_801EC860);
                     D_801EC860.vz -= 0x400;
                     work->unk30.vx = 0x2800;
                     work->unk30.vy = 0x2800;
-                    work->unk24.vy = work->unk8.vy;
                     work->unk24.vx = work->unk8.vx;
+                    work->unk24.vy = work->unk8.vy;
                     work->unk24.vz = work->unk8.vz;
                     work->unk24.vz -= 0x1C00;
                     work->unk24.vy -= 0x3800;
@@ -654,8 +653,7 @@ s32 fx_134_op80(s32 mode, Fx134Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
                     work->unk10.vy = work->unk24.vy;
                     work->unk10.vz = work->unk24.vz;
                     ex->btlfx_aimAngles((s16 *)&work->unk8, (s16 *)&work->unk10, (s16 *)&work->unk3C);
-                    work->unk50.vx = work->unk3C.vx;
-                    work->unk50.vz = work->unk3C.vz;
+                    BTLFX_COPY_SVEC(&work->unk50, &work->unk3C);
                     ex->func_800E63E4(1, 1);
                     work->unk3C.vz += 0x320;
                 }
