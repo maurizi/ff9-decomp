@@ -14,9 +14,9 @@ extern s8 g_mbgPaused;
 void func_80056228(void);
 char *strcpy(char *, const char *);
 extern s8 D_80071E30;
-void func_80022F1C(s32, void (*)());
+void cd_readStreamAsync(s32, void (*)());
 void func_80022FD0(s32);
-void func_80023018(void);
+void cd_pause(void);
 void CdSetDebug(s32);
 void func_80056448(s32, s32);
 void func_80056488(void *);
@@ -360,7 +360,7 @@ u32 func_8019D3F0(u16 *p);
 void mbg_mdecOutCallback(void);
 
 /* mbg_streamReadyCallback: the two cross-jumped timeout blocks (one inline, called twice) */
-void func_80022F64(s32); /* main exe */
+void cd_restartAt(s32); /* main exe */
 s32 DecDCToutSync(s32);
 extern s32 D_801A07F0[];
 extern s32 D_801A06F0[];
@@ -372,10 +372,10 @@ static inline void mbg_streamReadyCallback_retry(void) {
         limit = 0x438;
     }
     if (VSync(-1) - g_mbgStream.lastReadTime < limit) {
-        func_80022F64(g_mbgStream.sector);
+        cd_restartAt(g_mbgStream.sector);
     } else {
         g_mbgStream.unk2 = 2;
-        func_80023018();
+        cd_pause();
     }
 }
 

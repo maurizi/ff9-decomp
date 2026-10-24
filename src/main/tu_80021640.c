@@ -14,11 +14,11 @@ void func_80021680(a)
     g_gameState->unk1C->unk8B2 = a;
 }
 
-s32 func_80021698(Unk8004AB64 *a) {
+s32 evt_createModel(Unk8004AB64 *a) {
     return g_gameState->unk1C->unk838(a->unk34 | 0x20000, a);
 }
 
-s32 func_800216D8(a, b)
+s32 evt_getAnimFrameCount(a, b)
     s32 a;
     u16 b;
 {
@@ -43,7 +43,7 @@ void mbg_resetState(void) {
     g_mbgState = 0;
 }
 
-CdReadCtx *func_8002177C(void *arg0, s32 a, s32 b, void *c, s32 d, s32 e, void (*f)(CdReadCtx *)) {
+CdReadCtx *cdRead_init(void *arg0, s32 a, s32 b, void *c, s32 d, s32 e, void (*f)(CdReadCtx *)) {
     CdReadCtx *p = arg0;
     if (p != NULL) {
         p->unk0 = a;
@@ -59,7 +59,7 @@ CdReadCtx *func_8002177C(void *arg0, s32 a, s32 b, void *c, s32 d, s32 e, void (
     return p;
 }
 
-s32 func_800217C4(void *arg0) {
+s32 cdRead_update(void *arg0) {
     CdReadCtx *p = arg0;
     s32 n;
 
@@ -98,7 +98,7 @@ s32 func_800217C4(void *arg0) {
     return 0;
 }
 
-s32 func_80021910(Unk80021910 *a) {
+s32 cdRead_getBytesRead(Unk80021910 *a) {
     if (a->unk1C >= 3) {
         return g_cdLoad.bytesRead;
     }

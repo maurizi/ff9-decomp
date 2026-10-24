@@ -125,7 +125,7 @@ u8 func_801F6368(void) {
     CdControlB(0xE, (u8 *)0x80, result);
     VSync(3);
     for (i = 0; i < 10; i++) {
-        func_8001DCB8();
+        file_initImg();
         if (g_gameState->unkB != 0xFF) {
             break;
         }

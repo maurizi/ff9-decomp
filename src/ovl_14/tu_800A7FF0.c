@@ -54,7 +54,7 @@ s32 func_800A81B8(void) {
     i = 0;
     prev = g_gameState->unkB;
     do {
-        func_8001DCB8();
+        file_initImg();
     } while (g_gameState->unkB == 0xFF && ++i < 10);
     func_80033D1C(1);
     if (func_800A8298(prev, g_gameState->unkB)) {

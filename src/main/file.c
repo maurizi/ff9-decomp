@@ -1,6 +1,6 @@
 #include "ff9.h"
 
-void func_8001D8A8(s32 addr) {
+void file_loadTim(s32 addr) {
     TimHeader *tim = (TimHeader *)addr;
     TimBlock *b = &tim->clut;
 
@@ -11,7 +11,7 @@ void func_8001D8A8(s32 addr) {
     LoadImage((RECT *)&b->x, (u32 *)(b + 1));
 }
 
-void func_8001D910(TimHeader *tim, RECT **clut, RECT **image) {
+void file_getTimRects(TimHeader *tim, RECT **clut, RECT **image) {
     TimBlock *b;
 
     if (tim != NULL) {
@@ -28,7 +28,7 @@ void func_8001D910(TimHeader *tim, RECT **clut, RECT **image) {
     }
 }
 
-void func_8001D960(TimHeader *tim, s32 *cx, s32 *cy, s32 *px, s32 *py) {
+void file_getTimPos(TimHeader *tim, s32 *cx, s32 *cy, s32 *px, s32 *py) {
     TimBlock *b;
 
     if (tim != NULL) {
@@ -43,7 +43,7 @@ void func_8001D960(TimHeader *tim, s32 *cx, s32 *cy, s32 *px, s32 *py) {
     }
 }
 
-void func_8001D9CC(s32 addr, s32 cx, s32 cy, s32 px, s32 py) {
+void file_setTimPos(s32 addr, s32 cx, s32 cy, s32 px, s32 py) {
     TimHeader *tim = (TimHeader *)addr;
     TimBlock *b;
 
@@ -59,27 +59,27 @@ void func_8001D9CC(s32 addr, s32 cx, s32 cy, s32 px, s32 py) {
     }
 }
 
-u32 func_8001DA18(u32 a) {
+u32 tpage_getTp(u32 a) {
     return (a >> 7) & 3;
 }
 
-u32 func_8001DA24(u32 a) {
+u32 tpage_getAbr(u32 a) {
     return (a >> 5) & 3;
 }
 
-s32 func_8001DA30(s32 a) {
+s32 tpage_getX(s32 a) {
     return (a << 6) & 0x3C0;
 }
 
-s32 func_8001DA3C(s16 arg0) {
+s32 tpage_getY(s16 arg0) {
     return ((arg0 << 4) & 0x100) | (s16)((arg0 >> 2) & 0x200);
 }
 
-s32 func_8001DA60(s32 a) {
+s32 clut_getX(s32 a) {
     return (a & 0x3F) << 4;
 }
 
-s32 func_8001DA6C(s32 a) {
+s32 clut_getY(s32 a) {
     return (s16)a >> 6;
 }
 
@@ -91,7 +91,7 @@ void func_8001DA78(u8 **arg0, s32 arg1) {
     }
 }
 
-s32 func_8001DAA4(s32 dst, s32 src, s32 size, RECT *rc) {
+s32 file_copyViaVram(s32 dst, s32 src, s32 size, RECT *rc) {
     s32 done = 0;
     RECT *r;
     u32 left;
@@ -141,7 +141,7 @@ s32 func_8001DAA4(s32 dst, s32 src, s32 size, RECT *rc) {
     return done;
 }
 
-void func_8001DCB8(void) {
+void file_initImg(void) {
     CdlFILE fp;
     char *names[4] = { "\\SLUS_012.51;1", "\\SLUS_012.95;1", "\\SLUS_012.96;1", "\\SLUS_012.97;1" };
     s32 i;
@@ -174,7 +174,7 @@ void func_8001DCB8(void) {
     }
 }
 
-void func_8001DE50(void) {
+void file_loadDirTables(void) {
     GameState *gs;
     u8 *buf;
     DirInfo *dir;

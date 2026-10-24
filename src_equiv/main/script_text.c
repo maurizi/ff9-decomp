@@ -1021,7 +1021,7 @@ void evt_runExpr(void) {
             break;
         case 0x6A:
             t = evt_popValue();
-            v = func_800216D8(D_8007B704->unk34, t);
+            v = evt_getAnimFrameCount(D_8007B704->unk34, t);
             break;
         case 0x6B:
             v = func_8004B85C(evt_popValue());

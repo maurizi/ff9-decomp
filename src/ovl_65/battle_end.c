@@ -40,7 +40,7 @@ void battleEnd_init(void) {
     FileEntry *e;
 
     game_freezeScreen();
-    func_80021CDC(0);
+    preload_setHook(0);
     func_801F0E30();
     func_801EF6F8();
     func_801EF6D8();
@@ -97,15 +97,15 @@ s32 func_801EF6F8(void) {
     FileEntry *e;
     PreloadEntry *f;
 
-    if (func_800220E8(0x2713)) {
+    if (preload_isReady(0x2713)) {
         f = preload_find(0x2713);
-        func_8001DAA4(D_80067948, f->unk8, f->unkC, 0);
-        func_80022390(0x2713);
+        file_copyViaVram(D_80067948, f->unk8, f->unkC, 0);
+        preload_remove(0x2713);
         DrawSync(0);
     } else {
         e = file_find(1, 0x2713);
-        func_8002177C(g_gameState->unk1C->unk854, e->unk4, (e->unkC - e->unk4) << 11, (void *)D_80067948, 0, -1, 0);
-        while (func_800217C4(g_gameState->unk1C->unk854)) {
+        cdRead_init(g_gameState->unk1C->unk854, e->unk4, (e->unkC - e->unk4) << 11, (void *)D_80067948, 0, -1, 0);
+        while (cdRead_update(g_gameState->unk1C->unk854)) {
         }
     }
     g_gameState->unk1C->unk8E4.ovl65->unk1354->unk4 = D_80067948;
@@ -146,7 +146,7 @@ void func_801EF890(void) {
     f = file_find(0, id);
     dst = b->unk1C;
     size = (f->unkC - f->unk4) << 11;
-    func_80021974(preload_add(), 0, id, (s32)dst, size, size, f->unk4, size);
+    preload_setEntry(preload_add(), 0, id, (s32)dst, size, size, f->unk4, size);
     dst += size;
     if (b->unk6 == 1) {
         id = 0x2714;
@@ -160,7 +160,7 @@ void func_801EF890(void) {
     size = (f->unkC - f->unk4) << 11;
     at = D_80067944 - (dst + k);
     at = at / 0x800 * 0x800;
-    func_80021974(preload_add(), 0, id, (s32)dst, at, size, f->unk4, size);
+    preload_setEntry(preload_add(), 0, id, (s32)dst, at, size, f->unk4, size);
     dst += size;
     if (b->unk6 != 1) {
         return;
@@ -170,19 +170,19 @@ void func_801EF890(void) {
     size = g_gameState->unk1C->sceneSectors[0] << 11;
     at = D_80067944 - (dst + k);
     at = at / 0x800 * 0x800;
-    func_80021974(preload_add(), 0, id, (s32)dst, at, size, sector, size);
+    preload_setEntry(preload_add(), 0, id, (s32)dst, at, size, sector, size);
     dst += size;
     sector = g_gameState->unk1C->sceneSector[1];
     id = g_gameState->unk1C->fieldId | 0x50000;
     size = g_gameState->unk1C->sceneSectors[1] << 11;
     at = D_80067944 - (dst + k);
     at = at / 0x800 * 0x800;
-    func_80021974(preload_add(), 0, id, (s32)dst, at, size, sector, size);
+    preload_setEntry(preload_add(), 0, id, (s32)dst, at, size, sector, size);
     g = g_gameState->unk1C;
     if ((s16)g->fieldId == g->unk7EA && g->unk8AC != -1) {
         sector = g->unk8AC;
         id = g->unk7E8 | 0x70000;
-        func_80021974(preload_add(), 1, id, 0, 0, 0, sector, -1);
+        preload_setEntry(preload_add(), 1, id, 0, 0, 0, sector, -1);
     }
 }
 

@@ -74,7 +74,7 @@ void mbg_streamOnVideoSector(void) {
         s = (Ovl64SectHdr *)p;
         if (s->unk8 != g_mbgStream.frame) {
             g_mbgStream.unk2 = 2;
-            func_80023018();
+            cd_pause();
         }
         if (s->unk2 != 4) {
             goto end;
@@ -99,7 +99,7 @@ end:
         h->unk0 = (h->unk0 & 0xFFF) | 0xC000;
         if (g_mbgStream.frame > g_mbgStream.lastFrame) {
             g_mbgStream.unk2 = 1;
-            func_80023018();
+            cd_pause();
         }
         g_mbgStream.unk64 = 0;
         if (g_mbgStream.unk68 == 0) {
@@ -188,7 +188,7 @@ void mbg_streamOnAudioSector(void) {
         h->unk0 = (h->unk0 & 0xFFF) | 0xC000;
         if (g_mbgStream.frame > g_mbgStream.lastFrame) {
             g_mbgStream.unk2 = 1;
-            func_80023018();
+            cd_pause();
         }
         g_mbgStream.unk64 = 0;
         if (g_mbgStream.unk68 == 0) {
@@ -232,7 +232,7 @@ s32 mbg_streamStart(s32 unused, u32 arg1, s32 arg2, void (*arg3)(void), s32 arg4
     }
     g_mbgStreamBusy = 0;
     CdSetDebug(0);
-    func_80022F1C(g_mbgStream.sector, mbg_streamReadyCallback);
+    cd_readStreamAsync(g_mbgStream.sector, mbg_streamReadyCallback);
     func_80056448((s32)g_mbgStream.unk90, g_mbgStream.unk7C << 11);
     return 0;
 }
@@ -297,7 +297,7 @@ void mbg_streamReadyCallback(u8 status, u8 *result) {
         }
     } else if (hdr[5] == hdr[9] && g_mbgStream.channel != hdr[5]) {
         g_mbgStream.unk2 = 2;
-        func_80023018();
+        cd_pause();
     }
     g_mbgStreamBusy = 1;
     D_8019DE0C = 0;
@@ -327,7 +327,7 @@ void mbg_streamReadyCallback(u8 status, u8 *result) {
                 D_8019DE0C++;
                 CdGetSector(addr, 0x245);
                 g_cdLoad.bytesRead += 0x800;
-                func_80023018();
+                cd_pause();
                 mbg_streamOnVideoSector();
                 g_mbgStream.unk1 = 1;
                 goto end;
@@ -446,7 +446,7 @@ s32 mbg_streamSeek(CdlLOC *loc) {
         while (cd_getState() != 0) {
         }
     }
-    func_80022F1C(pos, mbg_streamReadyCallback);
+    cd_readStreamAsync(pos, mbg_streamReadyCallback);
     return 0;
 }
 
@@ -508,9 +508,9 @@ s32 mbg_streamUngetFrame(void) {
 
 s32 mbg_streamSetPaused(s32 arg0) {
     if (arg0 != 0) {
-        func_80023018();
+        cd_pause();
     } else {
-        func_80022F1C(g_mbgStream.sector, mbg_streamReadyCallback);
+        cd_readStreamAsync(g_mbgStream.sector, mbg_streamReadyCallback);
     }
     return 0;
 }
@@ -531,7 +531,7 @@ s32 mbg_streamFreeFrame(u8 *data) {
 
     h->unk0 = (h->unk0 & 0xFFF) | 0x1000;
     if (g_mbgStream.unk1 != 0) {
-        func_80022F1C(g_mbgStream.sector, mbg_streamReadyCallback);
+        cd_readStreamAsync(g_mbgStream.sector, mbg_streamReadyCallback);
         g_mbgStream.unk1 = 0;
     }
     return 0;

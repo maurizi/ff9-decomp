@@ -303,6 +303,25 @@ u16 GetClut(int x, int y);
 void *memmove(void *dst, const void *src, int n);
 int sprintf(char *buf, const char *fmt, ...);
 
+/* libcd.h: CdControl* commands, CdlStat* status bits, CdlMode* mode bits, sync/ready callback intr codes */
+#define CdlNop 0x01
+#define CdlSetloc 0x02
+#define CdlPlay 0x03
+#define CdlReadN 0x06
+#define CdlStandby 0x07
+#define CdlStop 0x08
+#define CdlPause 0x09
+#define CdlSetmode 0x0E
+#define CdlSeekL 0x15
+#define CdlSeekP 0x16
+#define CdlReadS 0x1B
+#define CdlStatShellOpen 0x10
+#define CdlModeSpeed 0x80
+#define CdlModeSize1 0x20
+#define CdlNoIntr 0x00
+#define CdlDataReady 0x01
+#define CdlComplete 0x02
+#define CdlDiskError 0x05
 int CdControlF(u8 com, u8 *param);
 int CD_getsector(void *madr, int size);
 int CD_getsector2(void *madr, int size);

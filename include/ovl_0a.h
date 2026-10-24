@@ -1216,9 +1216,9 @@ typedef struct {
     s32 unk0;
     s32 unk4;
 } Unk8002208C;
-Unk8002208C *func_8002208C(void);
-s32 func_800221C0(s32, s32);
-void func_80022280(s32, s32);
+Unk8002208C *preload_waitCurrent(void);
+s32 preload_overlaps(s32, s32);
+void preload_discardRange(s32, s32);
 s32 func_80050BE0(s32);
 
 extern RECT *D_800C9EA0;
@@ -1310,7 +1310,7 @@ void func_80032100(void);
 Unk8004AB64 *func_8004AE00(void);
 u32 func_8004AB64(void *); /* actor -> model slot */
 void func_80023A0C(void);
-void func_800223CC(void);
+void preload_reset(void);
 void func_80031264(void *, void *); /* rotation (SVECTOR) -> bone matrix */
 
 /* field state for fld_movieCommand command 3: 0x11, 1 or 0x10/0 */
@@ -1439,8 +1439,8 @@ s32 mbg_update(s32);
 s32 mbg_getLastFrame(void);
 /* main exe: candidates for ff9.h */
 s32 cd_findFile(char *);
-void func_8001D910(void *, RECT **, RECT **); /* TIM: clut rect, image rect */
-u8 func_80022ED4(s32);
+void file_getTimRects(void *, RECT **, RECT **); /* TIM: clut rect, image rect */
+u8 cd_seekStreamAsync(s32);
 void func_80056248(s32);
 
 /* field setup (func_800AED6C) */
@@ -1453,7 +1453,7 @@ extern u8 *D_8007BD30;
 void func_800559FC(s32, s32, s32);
 void func_800557A8(void *, s32, s32, s32);
 void func_800559C8(s32, s32);
-void func_800219D8(PreloadEntry *, s16, s16, s16, s16);
+void preload_setVramRect(PreloadEntry *, s16, s16, s16, s16);
 u8 func_80053A10(s32, s32);
 
 /* func_800C2AF0 (walkmesh slide along the triangle edges) */

@@ -2195,7 +2195,7 @@ void SetGeomScreen(s32);
 s32 ReadGeomScreen(void);
 s32 func_80055DCC(void);
 void func_80056388(s32, s32);
-s8 func_80021698(Unk8004AB64 *);
+s8 evt_createModel(Unk8004AB64 *);
 
 /* ovl_0b functions */
 s32 btlfx_moveUnitArc(s32, s16 *, s32, s32, s32, s16 *);
@@ -3357,7 +3357,7 @@ static inline BtlUnit *find_target(void) {
 
 extern u8 D_800F8E68[][2];
 void func_800F1A20(s32);
-s32 func_8001DA6C(s16);
+s32 clut_getY(s16);
 s32 func_80063830(s32);
 void btl_startHitMotion(BtlUnit *);
 s32 btlfx_heapAlloc(Heap *, s32);

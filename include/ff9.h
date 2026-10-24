@@ -44,7 +44,7 @@ typedef struct {
     s16 unk22;
     s16 unk24;
     s16 unk26;
-} PreloadEntry; /* element passed to func_80021938 */
+} PreloadEntry; /* element passed to preload_clearEntry */
 
 typedef struct PreloadQueue {
     u8 unk0;
@@ -54,8 +54,8 @@ typedef struct PreloadQueue {
     PreloadEntry unk4[7];
     s32 (*unk11C)(struct PreloadQueue *); /* hook, nonzero = handled */
 } PreloadQueue;
-PreloadEntry *func_80021B34(PreloadEntry *, PreloadEntry *);
-s32 func_80021ED4(void);
+PreloadEntry *preload_makeChunk(PreloadEntry *, PreloadEntry *);
+s32 preload_startRead(void);
 
 typedef struct {
     u8 unk0;
@@ -321,7 +321,7 @@ typedef struct {
     u8 unk850;
     u8 unk851;
     u16 unk852;
-    CdReadCtx unk854[1]; /* CD read context (func_8002177C) */
+    CdReadCtx unk854[1]; /* CD read context (cdRead_init) */
     s32 unk878;
     s32 unk87C; /* end of the world map data */
     Unk880 unk880;
@@ -388,7 +388,7 @@ typedef struct {
 } GameState;
 
 extern GameState *g_gameState;
-void func_8001DE50(); /* game_initState calls it without arguments */
+void file_loadDirTables(); /* game_initState calls it without arguments */
 
 /* Inlined copy of func_80034A04 (support ability bit test). */
 static inline u8 func_80034A04_inline(u32 *bits, s32 b) {
@@ -634,9 +634,9 @@ extern Unk80010CE0 D_80010CE0;
 s32 db_unregister(void *);
 void memset(void *, s32, s32);
 void (*CdReadyCallback(void (*)()))(); /* returns the previous callback */
-void func_80021938(PreloadEntry *);
+void preload_clearEntry(PreloadEntry *);
 void cd_controlF(u8, u8 *);
-void func_800235A0(u8, u8 *);
+void cd_onStreamReady(u8, u8 *);
 void func_8002423C(s32, s32, s32, Character *);
 u8 *win_buildFill(RECT *, u32 *, u8, u8, s32, u8 *);
 u8 *win_buildBorder(RECT *, u32 *, u8, u8, s32, s32, u8 *);
@@ -1366,7 +1366,7 @@ extern s32 D_8007BBF0;
 extern volatile s32 D_800809E0;
 
 void db_clear(void);
-s32 func_8001D848(void);
+s32 game_unloadCommonDb(void);
 s32 strncmp(char *, char *, s32);
 void game_setNextScene(u16);
 void func_800236C4(void);
@@ -1516,8 +1516,8 @@ extern s16 D_80077E30; /* = D_80077E28.unk8 */
 
 void func_80036470(void);
 void func_80059AA8(s32, s32);
-s32 func_80021FB4(void);
-void func_80022050(void);
+s32 preload_poll(void);
+void preload_clearBusy(void);
 void help_init(void);
 void func_80023918(void);
 void func_80032078(void);
@@ -1658,9 +1658,9 @@ typedef struct {
 
 void func_8004C204(void);
 void func_800512E4(s32);
-void func_80021974(PreloadEntry *, s32, s32, s32, s32, s32, s32, s32);
+void preload_setEntry(PreloadEntry *, s32, s32, s32, s32, s32, s32, s32);
 PreloadEntry *preload_find(s32);
-s32 func_80021C20(PreloadEntry *);
+s32 preload_wait(PreloadEntry *);
 void func_8002BEEC(u32 *, u32 *, s32, s32);
 
 typedef struct {
@@ -1690,7 +1690,7 @@ s32 SpuRead(s32, s32);
 void func_80056614(void);
 void func_8006008C(AkaoChannel *, s32);
 void func_800600C0(AkaoChannel *, s32);
-u8 func_80022D3C(void (*)(u8 *));
+u8 cd_syncAsync(void (*)(u8 *));
 
 
 
@@ -1827,12 +1827,12 @@ s32 db_lookup(s32, s32, s32, s32);
 s32 db_getSize(s32); /* file size */
 void game_setClearColor(s32, s32, s32);
 void game_freezeScreen(void);
-void func_8001D8A8(s32);
-void func_8001D9CC(s32, s32, s32, s32, s32);
-s32 func_8001DAA4(s32, s32, s32, RECT *); /* copy through VRAM, returns bytes done */
+void file_loadTim(s32);
+void file_setTimPos(s32, s32, s32, s32, s32);
+s32 file_copyViaVram(s32, s32, s32, RECT *); /* copy through VRAM, returns bytes done */
 extern u8 D_80068234;      /* next slot in D_80073CE8 */
-extern RECT D_80073CE8[6]; /* transfer rects (func_8001DAA4) */
-void func_8001DCB8(void);
+extern RECT D_80073CE8[6]; /* transfer rects (file_copyViaVram) */
+void file_initImg(void);
 FileEntry *file_find(s32, s32);
 void evt_setNextLocation(s32);
 void func_80024070(void);
@@ -1964,7 +1964,7 @@ s32 func_800C0FB0(void); /* field overlay (ovl_0a) */
 extern CdRequest g_cdReadRequest;
 s32 func_8005EB40(s32 *, s32, s32, s32);
 s32 CdMode(void);
-s32 func_800233CC(); /* called with a u8 it ignores; callers see an int return (no prototype in the original) */
+s32 cd_startTransfer(); /* called with a u8 it ignores; callers see an int return (no prototype in the original) */
 u8 func_800240E8(void);
 void func_80023A6C(void);
 void func_8002417C(void);
@@ -1981,7 +1981,7 @@ extern u8 *D_800809E8;
 extern s32 D_800809C0[];
 extern s32 D_800809D8; /* = D_800809C0[6] */
 void func_800616F8(s32, s32, s32, s32);
-s32 func_80021A1C(PreloadEntry *);
+s32 preload_isBusy(PreloadEntry *);
 u8 func_8002F8BC(); /* called with an argument it ignores */
 extern void (*D_8006CA64[])(void);
 extern s32 D_8006CA40[];
@@ -2027,17 +2027,17 @@ extern u16 D_8007AE12;
 void func_80032384(void);
 void func_800326B0(void);
 void func_80036560(void);
-CdReadCtx *func_8002177C(void *, s32, s32, void *, s32, s32, void (*)(CdReadCtx *));
-s32 func_800217C4(void *);
+CdReadCtx *cdRead_init(void *, s32, s32, void *, s32, s32, void (*)(CdReadCtx *));
+s32 cdRead_update(void *);
 void preload_init(); /* takes no args, but ovl_0b passes one */
-void func_80021CDC(s32);
+void preload_setHook(s32);
 PreloadEntry *preload_add(void);
-s32 func_800220E8(s32);
-void func_80022390(s32);
+s32 preload_isReady(s32);
+void preload_remove(s32);
 s32 cd_cancel(void);
 void cd_stopMotor(void);
 s32 cd_readSync(); /* TODO: (sector, size, dst); ovl_14 passes a 4th argument */
-s32 func_800230A0(void);
+s32 cd_isShellOpen(void);
 u8 cd_checkShellOpen(void);
 void func_800239D0(void);
 void func_80024BD8(void);
@@ -2327,8 +2327,8 @@ typedef struct {
 
 /* ---- main batch 2 ---- */
 
-extern CdRequest D_80076178;
-extern CdRequest D_800761A8;
+extern CdRequest g_cdRetryRequest;
+extern CdRequest g_cdRestartRequest;
 extern Unk8004AB64 *D_8007B704;
 
 /* Same as evt_getArg8_inline, but written as `>>= (D_8007B6F8 = 1)` (srav). */
@@ -2420,9 +2420,9 @@ struct BtlUnit *btl_findUnitByBit(u16);
 s32 btl_getUnitById(s32, s32);
 void btl_setUnitAttr(s32, s32, s32);
 #endif
-void func_80023304(s32);
-void func_8002325C(u8);
-extern void (*D_80068668[])(s32);
+void cd_onDiskError(s32);
+void cd_onSyncQueued(u8);
+extern void (*g_cdStateHandlers[])(s32);
 
 /* ---- main batch 4 ---- */
 u8 func_80035B64(Unk80035B90 *, u8);
@@ -2480,8 +2480,8 @@ void func_80061E1C(s32, s32, void (*)(void));
 void func_800621D4(void);
 
 /* ---- main batch 5 ---- */
-s32 func_800219FC(PreloadEntry *);
-PreloadEntry *func_80021E20(void);
+s32 preload_isUsed(PreloadEntry *);
+PreloadEntry *preload_getCurrent(void);
 void func_80028B20(u8 *);
 u8 func_80033D28(void);
 void FlushCache(void);
@@ -2750,7 +2750,7 @@ typedef struct {
     u8 pad6A[0x7C - 0x6A];
     u8 unk7C[4];
 } Unk8004B9B8;
-s32 func_800216D8();
+s32 evt_getAnimFrameCount();
 s32 func_8001E350(s32);
 
 /* Inlined copy of func_8004B9B8. */
@@ -2762,7 +2762,7 @@ static inline void func_8004B9B8_inline(Unk8004B9B8 *p) {
         p->unk36 = v;
         p->unk3A = 0;
         p->unk64 = 0;
-        p->unk38 = func_800216D8(p->unk34, v);
+        p->unk38 = evt_getAnimFrameCount(p->unk34, v);
         p->unk5D = p->unk69;
     }
     p->unkF &= 0x7F;
@@ -3274,7 +3274,7 @@ typedef struct {
     s32 unkC;
 } DirInfo;
 
-/* func_8001DE50: 8-byte entries of directory lists 8 and 11 */
+/* file_loadDirTables: 8-byte entries of directory lists 8 and 11 */
 typedef struct {
     u16 unk0;
     u16 unk2;
@@ -3282,7 +3282,7 @@ typedef struct {
     u16 unk6;
 } Unk8001DE50;
 
-/* func_8001DE50: 16-byte records copied out of directory list 11 */
+/* file_loadDirTables: 16-byte records copied out of directory list 11 */
 typedef struct {
     u8 pad0[8];
     u16 unk8;
@@ -3326,15 +3326,15 @@ void CdSetDebug(s32);
 void _bu_init(void);
 void pad_init(void);
 
-s32 func_8001D610(void);
-void func_8001D32C(void);
-void func_8001D3C4(void);
+s32 game_loadCommonAkao(void);
+void game_allocData(void);
+void game_resetData(void);
 void func_8001E3A4(); /* (Unk8001E3A4 *); ovl_0b declares it with void * */
-s32 func_8001D67C(void);
-s32 func_8001D768(void);
+s32 game_loadCommonImages(void);
+s32 game_loadCommonDb(void);
 
 s32 CdGetSector(void *, s32);
-s32 func_80021A8C(PreloadEntry *);
+s32 preload_isLoaded(PreloadEntry *);
 void cd_onSectorReady(void);
 
 extern SpuReverbAttr D_80073690;
@@ -3373,7 +3373,7 @@ void game_loadModeOverlay(s32);
 void FlushCache(void); /* BIOS FlushCache */
 s32 EnterCriticalSection(void); /* BIOS EnterCriticalSection */
 void ExitCriticalSection(void); /* BIOS ExitCriticalSection */
-void func_8001D30C(void);
+void game_quitData(void);
 void game_quitState(void);
 void game_shutdown(void);
 void game_freezeScreen(void);
@@ -3685,7 +3685,7 @@ static inline void evt_execInstr_anim(Unk8004AB64 *p, s32 anim) {
     p->unk62 &= ~0x46;
     p->unk62 |= (p->unk60 > p->unk61) ? 0xC0 : 0x80;
     p->unk64 = 0;
-    p->unk38 = func_800216D8(p->unk34, anim);
+    p->unk38 = evt_getAnimFrameCount(p->unk34, anim);
     p->unk5D = p->unk69;
 }
 

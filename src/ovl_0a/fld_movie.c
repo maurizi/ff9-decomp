@@ -49,13 +49,13 @@ s32 func_800AA4E8(s32 arg0) {
     size = (f->unkC - f->unk4) << 11;
     c = func_800AC344(arg0);
     if (c->unk4 == 0) {
-        func_8002177C(g_gameState->unk1C->unk854, f->unk4, size,
+        cdRead_init(g_gameState->unk1C->unk854, f->unk4, size,
                       (void *)(func_800AC3D8(arg0, size) != 0 ? c->unk4 : D_80067948), 0, -1, 0);
-        while (func_800217C4(g_gameState->unk1C->unk854) != 0) {
+        while (cdRead_update(g_gameState->unk1C->unk854) != 0) {
         }
     }
     if (c->unk4 != 0) {
-        s32 m = func_8001DAA4(D_80067948, c->unk4, size, NULL);
+        s32 m = file_copyViaVram(D_80067948, c->unk4, size, NULL);
         DrawSync(0);
         func_800AC67C(D_80067948 + m);
     }
@@ -91,8 +91,8 @@ s32 func_800AA4E8(s32 arg0) {
             uv[i * 2 + 1] = y % 256;
             ent[i].unk4 = x;
             ent[i].unk6 = y;
-            func_8001D9CC(img, cx, cy, x, y);
-            func_8001D8A8(img);
+            file_setTimPos(img, cx, cy, x, y);
+            file_loadTim(img);
         }
     }
     for (i = 0; i < hdr[7]; i++) {
@@ -123,8 +123,8 @@ s32 func_800AA4E8(s32 arg0) {
                     break;
                 }
             }
-            func_8001D9CC(img, cx2, cy2, x2, y2);
-            func_8001D8A8(img);
+            file_setTimPos(img, cx2, cy2, x2, y2);
+            file_loadTim(img);
         }
     }
     DrawSync(0);
@@ -841,7 +841,7 @@ void func_800AC474(void) {
         s = &D_800C9CCC[bi];
         addr = top - s->unk8;
         if (s->unk4 != addr) {
-            func_8001DAA4(addr, s->unk4, s->unk8, NULL);
+            file_copyViaVram(addr, s->unk4, s->unk8, NULL);
             s->unk4 = addr;
         }
         top = addr;
@@ -1153,7 +1153,7 @@ void fld_movieStart(s8 arg0, s8 arg1, s8 arg2) {
     g_gameState->unk1C->unk8E4.field->unkC->unk14->unk49 = arg1;
     g_gameState->unk1C->unk8E4.field->unkC->unk14->unk43 = arg2;
     func_800AC5F0();
-    func_800223CC();
+    preload_reset();
     g_gameState->unk1C->unk8E4.field->unk0 |= 0x1000;
     g_gameState->unk1C->unk8E4.field->unkC->unk14->unk42 = 1;
 }
@@ -1167,16 +1167,16 @@ void fld_movieUpdate(void) {
     switch (g_gameState->unk1C->unk8E4.field->unkC->unk14->unk42) {
     case 1:
         if (cd_getState() == 0) {
-            if (func_800217C4(g_gameState->unk1C->unk854) == 0) {
+            if (cdRead_update(g_gameState->unk1C->unk854) == 0) {
                 FileEntry *f = file_find(0, 0x64);
-                func_8002177C(g_gameState->unk1C->unk854, f->unk4, (f->unkC - f->unk4) << 11,
+                cdRead_init(g_gameState->unk1C->unk854, f->unk4, (f->unkC - f->unk4) << 11,
                               (void *)(D_80067944 + 0xF1700), 0, 0x15000, NULL);
             }
             g_gameState->unk1C->unk8E4.field->unkC->unk14->unk42 = 2;
         }
         break;
     case 2:
-        if (func_800217C4(g_gameState->unk1C->unk854) == 0) {
+        if (cdRead_update(g_gameState->unk1C->unk854) == 0) {
             D_800C9D44 |= 8;
             g_gameState->unk1C->unk8E4.field->unkC->unk14->unk42 = 3;
         }
@@ -1187,7 +1187,7 @@ void fld_movieUpdate(void) {
                 g_mbgMovieLists[g_gameState->unk1C->unk8E4.field->unkC->unk14->unk48]
                     .unk4[g_gameState->unk1C->unk8E4.field->unkC->unk14->unk49].unk0);
             if (cd_getState() == 0) {
-                func_80022ED4(g_gameState->unk1C->unk8E4.field->unkC->unk14->unk44);
+                cd_seekStreamAsync(g_gameState->unk1C->unk8E4.field->unkC->unk14->unk44);
                 g_gameState->unk1C->unk8E4.field->unkC->unk14->unk42 = 4;
             }
         }
@@ -1464,7 +1464,7 @@ void func_800AED6C(void) {
         g_gameState->unk1C->unk8E4.field->unkC->unk14->unk41++;
     } else {
         if (!(g_gameState->unk1C->unk8E4.field->unkC->unk14->unk0 & 2)) {
-            if (func_800220E8(0x1000B) != 0) {
+            if (preload_isReady(0x1000B) != 0) {
                 e = preload_find(0x1000B);
                 ClearOTag(&D_800C9F98, 1);
                 setlen(&D_800C9F60[g_gameState->unk1C->unk8 ^ 1], 2);
@@ -1481,11 +1481,11 @@ void func_800AED6C(void) {
                 }
                 LoadImage(&r, (u32 *)e->unk8);
                 DrawSync(0);
-                func_800219D8(e, r.x, r.y, r.w, r.h);
+                preload_setVramRect(e, r.x, r.y, r.w, r.h);
             } else {
-                func_80022390(func_8002208C()->unk4);
+                preload_remove(preload_waitCurrent()->unk4);
             }
-            func_80022280((s32)D_80067944, 0x156F00);
+            preload_discardRange((s32)D_80067944, 0x156F00);
             func_800B0124(0xD000, 0x27C, 0, 0x80, 0x7F);
             func_800B0124(0xD000, 0x27B, 0, 0x80, 0x7F);
             func_800B0124(0xD000, 0x27A, 0, 0x80, 0x7F);
@@ -1572,7 +1572,7 @@ void func_800AF740(void) {
                 sp = &D_800C9FA0.unk0;
                 sp++;
                 SetDrawTPage(sp, 1, 1,
-                             getTPage(0, 2, func_8001DA30((s16)D_800686D0[235].unk6), func_8001DA3C((s16)D_800686D0[235].unk6)));
+                             getTPage(0, 2, tpage_getX((s16)D_800686D0[235].unk6), tpage_getY((s16)D_800686D0[235].unk6)));
             }
         }
         setlen(&D_800C9FE0, 3);

@@ -146,7 +146,7 @@ s32 func_800B6BC4(void) {
             D_800CF49C = 0;
         }
         g_gameState->unk1C->unk571 = func_800B8548();
-        func_80022D3C(0);
+        cd_syncAsync(0);
         while (cd_getState() != 0) {
         }
         while (func_800AB0C0(0xC00, 0, 0, 0, 0) != 0) {
@@ -157,7 +157,7 @@ s32 func_800B6BC4(void) {
         if (D_800D3E75 >= 0) {
             g_padPortMask[0] &= 0xFDF7FFFF;
         }
-        func_80022D3C(0);
+        cd_syncAsync(0);
         while (cd_getState() != 0) {
         }
         while (func_800AB0C0(0xC00, 0, 0, 0, 0) != 0) {

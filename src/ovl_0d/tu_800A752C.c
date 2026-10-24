@@ -52,8 +52,8 @@ s32 func_800A76F8(void) {
 s32 func_800A7764(void) {
     s32 dst = (s32)(D_80067944 + 0x57800);
     FileEntry *f = file_find(1, 0x2715);
-    func_8002177C(g_gameState->unk1C->unk854, f->unk4, (f->unkC - f->unk4) << 11, (void *)dst, 0, -1, 0);
-    while (func_800217C4(g_gameState->unk1C->unk854) != 0) {
+    cdRead_init(g_gameState->unk1C->unk854, f->unk4, (f->unkC - f->unk4) << 11, (void *)dst, 0, -1, 0);
+    while (cdRead_update(g_gameState->unk1C->unk854) != 0) {
     }
     D_800B365C = dst;
     db_register(dst, 0);

@@ -123,8 +123,8 @@ s32 func_800AB490(void) {
 s32 func_800AC374(void) {
     s32 p = (s32)db_lookupRegistered(4, D_800AE432 | 0x40000, 0);
 
-    func_8001D9CC(p, 0, 0xE0, 0x280, 0);
-    func_8001D8A8(p);
+    file_setTimPos(p, 0, 0xE0, 0x280, 0);
+    file_loadTim(p);
     func_800552B8(0);
     func_800AC598(0, 0x7009C, 0, 0, 0);
     func_800AC598(0xC401, 0x7009C, 0x5A, 0, 0x7F);
@@ -358,8 +358,8 @@ void func_800ACD70(void) {
 
     buf = D_80067944 + 0x10000;
     e = file_find(1, 0x2F44);
-    func_8002177C(g_gameState->unk1C->unk854, e->unk4, (e->unkC - e->unk4) << 11, buf, 0, -1, 0);
-    while (func_800217C4(g_gameState->unk1C->unk854) != 0) {
+    cdRead_init(g_gameState->unk1C->unk854, e->unk4, (e->unkC - e->unk4) << 11, buf, 0, -1, 0);
+    while (cdRead_update(g_gameState->unk1C->unk854) != 0) {
     }
     D_800AE440 = buf;
     db_register((s32)buf, 0);

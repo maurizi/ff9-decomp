@@ -139,7 +139,7 @@ void func_800B8DC0(u32 *arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, s32 arg5, 
     tim = (u32 *)arg0[arg1 + 1];
     if ((arg2 | arg3 | arg4 | arg5) == 0) {
         if (arg6 != 0) {
-            func_8001D8A8((s32)tim);
+            file_loadTim((s32)tim);
             return;
         }
     }

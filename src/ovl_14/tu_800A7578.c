@@ -104,8 +104,8 @@ void func_800A78C0(void) {
 
     buf = D_80067944 + 0x10000;
     e = file_find(1, 0x2717);
-    func_8002177C(g_gameState->unk1C->unk854, e->unk4, (e->unkC - e->unk4) << 11, buf, 0, -1, 0);
-    while (func_800217C4(g_gameState->unk1C->unk854) != 0) {
+    cdRead_init(g_gameState->unk1C->unk854, e->unk4, (e->unkC - e->unk4) << 11, buf, 0, -1, 0);
+    while (cdRead_update(g_gameState->unk1C->unk854) != 0) {
     }
     D_800AB230 = buf;
     db_register((s32)buf, 0);

@@ -54,7 +54,7 @@ s32 func_800ACFE4(void) {
     s32 pad = g_gameState->unkB;
 
     do {
-        func_8001DCB8();
+        file_initImg();
     } while (g_gameState->unkB == 0xFF && ++i < 10);
     func_80033D1C(1);
     if (func_800AD0C4(pad, g_gameState->unkB)) {

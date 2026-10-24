@@ -1,25 +1,25 @@
 #include "ff9.h"
 
-void func_8001D268(void) {
+void game_initData(void) {
     GameData *gd;
 
     g_allocTop = g_gameState->unk4;
-    func_8001D32C();
+    game_allocData();
     gd = g_gameState->unk1C;
-    func_8001D3C4();
+    game_resetData();
     PutDispEnv(&g_gameState->unkC[gd->unk8]);
     preload_init();
-    func_8001D768();
-    func_8001D610();
-    func_8001D67C();
+    game_loadCommonDb();
+    game_loadCommonAkao();
+    game_loadCommonImages();
     gd->unk4 = g_allocTop;
 }
 
-void func_8001D30C(void) {
-    func_8001D848();
+void game_quitData(void) {
+    game_unloadCommonDb();
 }
 
-void func_8001D32C(void) {
+void game_allocData(void) {
     GameData *gd;
     u8 *q;
     s32 i;
@@ -46,7 +46,7 @@ void func_8001D32C(void) {
     g_allocTop = w + 0x3000;
 }
 
-void func_8001D3C4(void) {
+void game_resetData(void) {
     GameData *gd = g_gameState->unk1C;
     s32 i;
 
@@ -128,7 +128,7 @@ void func_8001D3C4(void) {
     }
 }
 
-s32 func_8001D610(void) {
+s32 game_loadCommonAkao(void) {
     s32 addr = (s32)db_lookupRegistered(4, 0x90084, 0);
     s32 size = (s32)db_lookupRegistered(5, 0x90084, 0);
 
@@ -137,7 +137,7 @@ s32 func_8001D610(void) {
     return 0;
 }
 
-s32 func_8001D67C(void) {
+s32 game_loadCommonImages(void) {
     GameData *gd = g_gameState->unk1C;
     u16 ids[8] = { 0, 0x2710, 0x2711, 0x2712, 0x2713, 0x2714, 0x2715, 0x2716 };
     u32 i;
@@ -147,19 +147,19 @@ s32 func_8001D67C(void) {
     for (i = 0; i < 8; i++) {
         addr = (s32)db_lookupRegistered(4, ids[i] | 0x40000, 0);
         if (addr != 0) {
-            func_8001D8A8(addr);
+            file_loadTim(addr);
             DrawSync(0);
         }
     }
     return 0;
 }
 
-s32 func_8001D768(void) {
+s32 game_loadCommonDb(void) {
     FileEntry *f = file_find(1, 0x271A);
 
-    func_8002177C(g_gameState->unk1C->unk854, f->unk4, (f->unkC - f->unk4) << 11, (void *)g_allocTop, 0,
+    cdRead_init(g_gameState->unk1C->unk854, f->unk4, (f->unkC - f->unk4) << 11, (void *)g_allocTop, 0,
                   -1, NULL);
-    while (func_800217C4(g_gameState->unk1C->unk854)) {
+    while (cdRead_update(g_gameState->unk1C->unk854)) {
     }
     g_gameState->unk1C->unk7D8 = (void *)g_allocTop;
     db_register((s32)g_gameState->unk1C->unk7D8, 0);
@@ -167,7 +167,7 @@ s32 func_8001D768(void) {
     return 0;
 }
 
-s32 func_8001D848(void) {
+s32 game_unloadCommonDb(void) {
     db_unregister(g_gameState->unk1C->unk7D8);
     g_gameState->unk1C->unk7D8 = 0;
     return 0;

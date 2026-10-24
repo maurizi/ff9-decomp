@@ -59,7 +59,7 @@ s32 func_800A9220(void) {
                 if ((g_mbgFrame >= end || D_800AB2CE >= g_mbgFrame || timer == 0) && !(D_800AB2C4 & 0x40)) {
                     if (timer == 0) {
                         mbg_stop();
-                        func_80023018();
+                        cd_pause();
                         if (!(g_gameState->unk1C->unk0 & 0x20000000)) {
                             func_800A799C(0, 0x7003A, 0, 0, 0);
                             func_800A799C(0xC401, 0x7003A, 0x5A, 0, 0x7F);
@@ -143,18 +143,18 @@ s32 func_800A9968(void) {
     s32 h;
     s32 i, j;
 
-    while (func_800217C4(g_gameState->unk1C->unk854) != 0) {
+    while (cdRead_update(g_gameState->unk1C->unk854) != 0) {
     }
     f = file_find(0, 0x64);
-    func_8002177C(g_gameState->unk1C->unk854, f->unk4, (f->unkC - f->unk4) << 11, D_80067944 + 0xF1700, 0, 0x15000, NULL);
-    while (func_800217C4(g_gameState->unk1C->unk854) != 0) {
+    cdRead_init(g_gameState->unk1C->unk854, f->unk4, (f->unkC - f->unk4) << 11, D_80067944 + 0xF1700, 0, 0x15000, NULL);
+    while (cdRead_update(g_gameState->unk1C->unk854) != 0) {
     }
     EnterCriticalSection();
     FlushCache();
     ExitCriticalSection();
     if (g_gameState->unkB != 0xFF && (g_gameState->unkB & 1)) {
         h = cd_findFile(*D_8019DC68);
-        func_80022ED4(h);
+        cd_seekStreamAsync(h);
         while (cd_getState() != 0) {
         }
         mbg_streamSetBaseSector(h);

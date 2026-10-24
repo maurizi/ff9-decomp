@@ -283,7 +283,7 @@ void btl_resetUnit(BtlUnit *arg0, Unk8E0 *arg1) {
 
 void func_800BBF30(Unk8004AB64 *arg0, s16 arg1) {
     arg0->unk34 = arg1;
-    arg0->unk3B = func_80021698(arg0);
+    arg0->unk3B = evt_createModel(arg0);
 }
 
 void btl_initWeapon(Character *arg0, BtlUnit *arg1) {

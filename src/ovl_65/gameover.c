@@ -104,7 +104,7 @@ void func_801F3A20(s32 arg0) {
     FileEntry *e = file_find(1, 0xB);
 
     cd_readSync(g_gameState->unk20 + e->unk4, (e->unkC - e->unk4) << 11, arg0);
-    func_8001D8A8(arg0);
+    file_loadTim(arg0);
 }
 
 s32 battleEnd_update(void) {

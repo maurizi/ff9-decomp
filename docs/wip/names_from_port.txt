@@ -1009,3 +1009,71 @@ func_80035744 help_onOpened  # [code] open-animation callback set by help_toggle
 # by hand: ovl_0d/33/34/37 C and headers used the overlay-link name D_800355DC; now help_nullHandler
 # config/xrefs.us.txt: btl_findUnitByBit = 0x800BED6C (ovl_0b), used by func_8004B7A4 instead of D_800BED6C
 # FIELDS include/ff9.h Unk80077DE8 (now HelpState): unk0=x,unk2=y,unk4=otz,unk8=text,unkC=handler,unk10=bounds,unk18=isOpen,unk19=opening,unk1A=textShown,unk1B=disabled,unk1C=atCursor,unk1D=drawHand,unk20=anim
+func_8001D268 game_initData  # [code] game_main loop start after game_initState: allocates and resets GameData, then loads the common db, sounds and images
+func_8001D30C game_quitData  # [code] game_main loop end: game_unloadCommonDb
+func_8001D32C game_allocData  # [code] places GameData at g_allocTop with its two OT buffers and the work areas behind it
+func_8001D3C4 game_resetData  # [code] initial GameData values (identity matrix, battle 0x235, all scene/return sectors -1, ...)
+func_8001D610 game_loadCommonAkao  # [code] passes the common db's AKAO block (type 9, id 0x84) to the AKAO loader (func_80055E14 checks the "AKAO" magic)
+func_8001D67C game_loadCommonImages  # [code] file_loadTim for the common db's images 0 and 0x2710-0x2716 (db type 4)
+func_8001D768 game_loadCommonDb  # [code] reads file 0x271A of dir 1 to g_allocTop and db_registers it as GameData.unk7D8
+func_8001D848 game_unloadCommonDb  # [code] db_unregister of GameData.unk7D8 (game_loadCommonDb)
+func_8001D8A8 file_loadTim  # [code] LoadImage of a TIM's CLUT (flag bit 3) and image blocks
+func_8001D910 file_getTimRects  # [code] returns pointers to a TIM's CLUT and image RECTs
+func_8001D960 file_getTimPos  # [code] returns a TIM's CLUT and image VRAM x/y
+func_8001D9CC file_setTimPos  # [code] overwrites a TIM's CLUT and image VRAM x/y
+func_8001DA18 tpage_getTp  # [code] (tpage >> 7) & 3: the colour-mode bits of a tpage word (inverse of getTPage)
+func_8001DA24 tpage_getAbr  # [code] (tpage >> 5) & 3: the semi-transparency bits of a tpage word
+func_8001DA30 tpage_getX  # [code] (tpage & 0xF) * 64: VRAM x of a tpage word
+func_8001DA3C tpage_getY  # [code] tpage bit 4 -> 256, bit 11 -> 512: VRAM y of a tpage word
+func_8001DA60 clut_getX  # [code] (clut & 0x3F) * 16: VRAM x of a clut word (inverse of getClut)
+func_8001DA6C clut_getY  # [code] clut >> 6: VRAM y of a clut word
+func_8001DAA4 file_copyViaVram  # [code] copies size bytes from src to dst through VRAM (LoadImage then StoreImage, in screen-sized strips); game_loadModeOverlay copies preloaded overlays with it
+func_8001DCB8 file_initImg  # [code] finds the disc's SLUS_012.xx file (sets GameState.unkB to the disc bit), FF9.IMG's sector (unk20) and copies the image's directory table to unk14
+func_8001DE50 file_loadDirTables  # [code] reads FF9.IMG's file tables for dirs 0, 1, 8, 10-13 below g_gameState and keeps the dir 11 entries dir 8 refers to
+func_80021698 evt_createModel  # [code] calls the mode's GameData.unk838 hook with db key obj.unk34 | 0x20000 (model); the result is the object's model slot unk3B (evt_execInstr, btl_init)
+func_800216D8 evt_getAnimFrameCount  # [code] second u16 of the db type-3 (animation) entry; evt_execInstr stores it as the object's animation frame count
+func_8002177C cdRead_init  # [code] fills a CdReadCtx (sector, size, dest, offset, chunk size, done callback) and sets its state to 1
+func_800217C4 cdRead_update  # [code] CdReadCtx state machine: wait for the drive, cd_readAsync the next chunk, run the done callback; returns the state
+func_80021910 cdRead_getBytesRead  # [code] g_cdLoad.bytesRead once the CdReadCtx is reading (state >= 3), else 0
+func_80021938 preload_clearEntry  # [code] preload_setEntry with an empty entry (fileId -1)
+func_80021974 preload_setEntry  # [code] fills a PreloadEntry (kind, fileId, dest, size rounded to sectors, chunk, sector, length)
+func_800219D8 preload_setVramRect  # [code] sets entry flag 0x20 and the VRAM rect at unk20 (fld_movie); game_loadModeOverlay StoreImages such entries back
+func_800219FC preload_isUsed  # [code] entry != NULL and fileId != -1
+func_80021A1C preload_isBusy  # [code] entry flag 1: a CD request for it is running (set by preload_startRead)
+func_80021A28 preload_isDone  # [code] kind 0: preload_isLoaded; kind 1 (seek): request finished without error
+func_80021A8C preload_isLoaded  # [code] kind 0 entry fully read into RAM (flag 2 or 0x80, not busy, not in VRAM, has a destination)
+func_80021AE0 preload_isInVram  # [code] finished entry with flag 0x20 and a non-empty VRAM rect (preload_setVramRect)
+func_80021B34 preload_makeChunk  # [code] builds the next read (queue slot 6) for an entry: continues at dest + bytes done, at most one chunk, whole sectors
+func_80021C20 preload_wait  # [code] if the entry is busy, spins on func_80022D3C until the CD queue drains; returns 1 if it waited
+func_80021CDC preload_setHook  # [code] sets PreloadQueue.unk11C, called first in preload_update (fld_main passes a field callback, others 0)
+func_80021D7C preload_next  # [code] advances PreloadQueue.cur to the next used entry, marks it 0x40, returns it
+func_80021E20 preload_getCurrent  # [code] &queue entries[cur]
+func_80021ED4 preload_startRead  # [code] submits the chunk in slot 6 for the current entry (cd_readAsync, or cd_seekAsync for kind 1) with preload_onReadDone
+func_80021FB4 preload_poll  # [code] > 0 while the current entry's request is running, -1 on error/unused
+func_80022020 preload_finishRead  # [code] waits for preload_poll then preload_clearBusy
+func_80022050 preload_clearBusy  # [code] clears flags 1 and 0x80 of the current entry
+func_8002208C preload_waitCurrent  # [code] waits for the current entry's request and returns the entry
+func_800220E8 preload_isReady  # [code] 1 when file id was preloaded (to RAM or VRAM), waiting for its read; game_loadModeOverlay uses it
+func_800221C0 preload_overlaps  # [code] 1 when a RAM preload entry's destination overlaps [addr, addr + size)
+func_80022280 preload_discardRange  # [code] waits for and clears every started RAM entry overlapping [addr, addr + size)
+func_80022390 preload_remove  # [code] preload_find(id), wait, clear
+func_800223CC preload_reset  # [code] waits for and clears every entry, state 4, count 0
+func_80022B9C cd_abort  # [code] CdFlush, removes both callbacks, state 0
+func_80022D3C cd_syncAsync  # [code] request flags 4: no CD command, the done callback runs once the queue drains (preload_wait spins on it)
+func_80022E70 cd_sync  # [code] cd_syncAsync without callback, then waits for cd_getState() == 0
+func_80022ED4 cd_seekStreamAsync  # [code] request flags 9 (seek with bit 8 = CdlSeekP in func_800233CC)
+func_80022F1C cd_readStreamAsync  # [code] request flags 0xB (read with bit 8 = CdlReadS, the ready callback through func_800235A0); ovl_64 movie streaming
+func_80022F64 cd_restartAt  # [code] sets the current request's sector, state 5 and pauses; the pause completion (func_8002350C) restarts the request
+func_80023018 cd_pause  # [code] drops the queued request and pauses the drive (state 4)
+func_800230A0 cd_isShellOpen  # [code] bit 4 (CdlStatShellOpen) of the last status byte in g_cdResult
+func_8002325C cd_onSyncQueued  # [code] cd_onSync while a request is queued: completes the current request and starts the queued one
+func_80023304 cd_onDiskError  # [code] cd_onSync for CdlDiskError: marks a retry (unk3), counts it, pauses
+func_8002336C cd_onSetloc  # [code] after CdlSetloc: CdlSetmode (speed, size1) unless already set, else cd_startTransfer
+func_800233CC cd_startTransfer  # [code] issues CdlReadN/CdlReadS (flag 2) or CdlSeekL/CdlSeekP for the current request
+func_8002345C cd_onPaused  # [code] after CdlPause: completes the request (done callback), or restarts it when a retry is marked
+func_8002350C cd_onRestart  # [code] restarts the current request (cd_restartAt's pause)
+func_800235A0 cd_onStreamReady  # [code] ready callback for CdlReadS requests: pauses if a request is queued, else forwards to the request's own callback
+D_80068668 g_cdStateHandlers  # [code] cd_onSync calls [g_cdLoad.state](CdlComplete) when a command completes
+D_80076178 g_cdRetryRequest  # [code] copy of the current request restarted by cd_onPaused after an error
+D_800761A8 g_cdRestartRequest  # [code] copy of the current request restarted by cd_onRestart
+# psyq.h: libcd Cdl* command/mode/status/intr constants added, used in src/main/cd.c

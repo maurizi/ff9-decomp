@@ -103,8 +103,8 @@ void func_800A8868(s32 *pack) {
     p = pack + 1;
     for (i = 0; i < n; i++) {
         tim = (TmTimLike *)((u8 *)pack + p[i]);
-        func_8001D8A8((s32)tim);
-        func_8001D910(tim, &clut, &img);
+        file_loadTim((s32)tim);
+        file_getTimRects(tim, &clut, &img);
         u = img->x & 0x3F;
         mode = tim->unk4 & 3;
         sh = 2 - mode;

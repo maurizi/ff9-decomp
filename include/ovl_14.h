@@ -28,16 +28,16 @@ typedef struct {
 } Ovl14Dir;
 
 /* main exe: candidates for ff9.h */
-void func_8001D910(void *, RECT **, RECT **); /* TIM: clut rect, image rect */
+void file_getTimRects(void *, RECT **, RECT **); /* TIM: clut rect, image rect */
 typedef struct {
     u32 unk0;
     u32 unk4; /* flags: bpp in low bits */
 } TmTimLike; /* TIM header */
 s32 cd_findFile(char *);
 extern s32 g_mbgFrame;
-u8 func_80022ED4(s32);
+u8 cd_seekStreamAsync(s32);
 void func_80032100(void);
-void func_80023018(void);
+void cd_pause(void);
 void mbg_stop(void);
 s32 func_80055290(void *);
 void func_800552B8(s32);

@@ -64,7 +64,7 @@ void func_800B51D0(void) {
     }
     f = g_gameState->unk1C->unk8E4.field;
     f->unk0 |= 0x10000;
-    func_8001DE50((GameState *)f);
+    file_loadDirTables((GameState *)f);
     func_800A9570();
 }
 

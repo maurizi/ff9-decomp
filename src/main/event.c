@@ -789,7 +789,7 @@ void func_800398D0(Unk8004AB64 *p, s32 d, s32 wrap, s32 speed) {
         speed = 0x10;
     }
     if (d < 0) {
-        frames = func_800216D8(p->unk34, (u16)p->unk40.unk20);
+        frames = evt_getAnimFrameCount(p->unk34, (u16)p->unk40.unk20);
         rate = frames * 16 / speed;
         if (-d < 0x400) {
             rate = rate * -d >> 10;
@@ -811,7 +811,7 @@ void func_800398D0(Unk8004AB64 *p, s32 d, s32 wrap, s32 speed) {
             p->pos.rotY = a;
         }
     } else {
-        frames = func_800216D8(p->unk34, (u16)p->unk40.rotY);
+        frames = evt_getAnimFrameCount(p->unk34, (u16)p->unk40.rotY);
         rate = frames * 16 / speed;
         if (d < 0x400) {
             rate = rate * d >> 10;
@@ -1416,7 +1416,7 @@ s32 evt_execInstr(void) {
     }
     case 0x2F:
         po->unk34 = evt_getArg16_inline();
-        po->unk3B = func_80021698(g_evtCurObj);
+        po->unk3B = evt_createModel(g_evtCurObj);
         g_evtCurObj->unkF |= 1;
         po->unk32 = -(evt_getArg8_inline() << 2);
         return 0;
@@ -3040,7 +3040,7 @@ s32 func_80048F54(void) {
                         p->unk36 = anim;
                         p->unk3A = 0;
                         p->unk64 = 0;
-                        p->unk38 = func_800216D8(p->unk34, anim);
+                        p->unk38 = evt_getAnimFrameCount(p->unk34, anim);
                         p->unk5D = p->unk69;
                     }
                 }
@@ -3106,7 +3106,7 @@ void func_800499D8(Unk8004B9B8 *p) {
             p->unk36 = v;
             p->unk3A = 0;
             p->unk64 = 0;
-            p->unk38 = func_800216D8(p->unk34, v);
+            p->unk38 = evt_getAnimFrameCount(p->unk34, v);
             p->unk5D = p->unk69;
         }
         p->unk3A = 0;
@@ -3452,7 +3452,7 @@ void func_8004A8A4(void) {
         for (n = g_evtState->unk16D8; n != NULL; n = n->unk0) {
             o = n->unk4;
             if (o->unk5 == 4 && o->unk34 != 0xFFFF) {
-                o->unk3B = func_80021698(o);
+                o->unk3B = evt_createModel(o);
                 if (g_evtMode == 1) {
                     q = (s16 *)func_800C748C(o->unk3B);
                     func_800C7570(o->unk3B, o->unk26 * 4);

@@ -62,7 +62,7 @@ void func_800A7088(void) {
         }
     }
     g_gameState->unk0 |= 0x100000;
-    func_8001DE50(g_gameState);
+    file_loadDirTables(g_gameState);
     func_800A741C();
     func_800A80D4();
     func_800A77BC();

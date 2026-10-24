@@ -6,7 +6,7 @@ void func_800AAADC(void) {
 
     t = 0xD2;
     func_800AAF40();
-    func_8001D910((void *)D_800AB2F4, NULL, &r);
+    file_getTimRects((void *)D_800AB2F4, NULL, &r);
     r->w *= 4;
     do {
         func_800AB09C();
@@ -42,18 +42,18 @@ void func_800AAF40(void) {
     u8 *buf;
     FileEntry *e;
 
-    while (func_800217C4(g_gameState->unk1C->unk854) != 0) {
+    while (cdRead_update(g_gameState->unk1C->unk854) != 0) {
     }
     e = file_find(1, 0x2718);
-    func_8002177C(g_gameState->unk1C->unk854, e->unk4, (e->unkC - e->unk4) << 11, D_80067944 + 0x10000, 0, -1, 0);
-    while (func_800217C4(g_gameState->unk1C->unk854) != 0) {
+    cdRead_init(g_gameState->unk1C->unk854, e->unk4, (e->unkC - e->unk4) << 11, D_80067944 + 0x10000, 0, -1, 0);
+    while (cdRead_update(g_gameState->unk1C->unk854) != 0) {
     }
     buf = D_80067944 + 0x10000;
     D_800AB2F0 = buf;
     db_register((s32)buf, 0);
     D_800AB2F4 = (s32)db_lookupRegistered(4, 0x44FB0, 0);
-    func_8001D9CC(D_800AB2F4, 0, 0xE0, 0x280, 0);
-    func_8001D8A8(D_800AB2F4);
+    file_setTimPos(D_800AB2F4, 0, 0xE0, 0x280, 0);
+    file_loadTim(D_800AB2F4);
     func_800320B8(1, 1, 0, 0xFFFFFF);
     g_padPortMask[0] = 0;
 }

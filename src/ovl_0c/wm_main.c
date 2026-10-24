@@ -158,8 +158,8 @@ s32 func_800A8F18(void) {
 s32 func_800A8F8C(void) {
     s32 addr = (s32)db_lookupRegistered(4, 0x42774, 0);
 
-    func_8001D9CC(addr, 0x280, 0xDE, 0x330, 0xB0);
-    func_8001D8A8(addr);
+    file_setTimPos(addr, 0x280, 0xDE, 0x330, 0xB0);
+    file_loadTim(addr);
     DrawSync(0);
     return 0;
 }
@@ -173,19 +173,19 @@ s32 func_800A8FF0(void) {
     id = func_800A9228();
     f = file_find(1, id);
     buf = D_80067944 + 0x34000;
-    if (func_800220E8(id) != 0) {
+    if (preload_isReady(id) != 0) {
         e = preload_find(id);
-        func_8001DAA4((s32)buf, e->unk8, e->unkC, 0);
+        file_copyViaVram((s32)buf, e->unk8, e->unkC, 0);
         DrawSync(0);
         if (e->unkC < e->unk1C) {
-            func_8002177C(g_gameState->unk1C->unk854, f->unk4, (f->unkC - f->unk4) << 11, buf + e->unkC, e->unkC, -1, 0);
-            while (func_800217C4(g_gameState->unk1C->unk854) != 0) {
+            cdRead_init(g_gameState->unk1C->unk854, f->unk4, (f->unkC - f->unk4) << 11, buf + e->unkC, e->unkC, -1, 0);
+            while (cdRead_update(g_gameState->unk1C->unk854) != 0) {
             }
         }
-        func_80022390(id);
+        preload_remove(id);
     } else {
-        func_8002177C(g_gameState->unk1C->unk854, f->unk4, (f->unkC - f->unk4) << 11, buf, 0, -1, 0);
-        while (func_800217C4(g_gameState->unk1C->unk854) != 0) {
+        cdRead_init(g_gameState->unk1C->unk854, f->unk4, (f->unkC - f->unk4) << 11, buf, 0, -1, 0);
+        while (cdRead_update(g_gameState->unk1C->unk854) != 0) {
         }
     }
     g_gameState->unk1C->unk8E4.world->unkC = buf;
@@ -424,8 +424,8 @@ s32 wm_loadFile(WorldMapObj *arg0) {
     s32 c;
 
     gd = g_gameState->unk1C;
-    func_8002177C(gd->unk854, gd->sceneSector[1], gd->sceneSectors[1] << 11, arg0->unk30, 0, -1, 0);
-    while (func_800217C4(g_gameState->unk1C->unk854) != 0) {
+    cdRead_init(gd->unk854, gd->sceneSector[1], gd->sceneSectors[1] << 11, arg0->unk30, 0, -1, 0);
+    while (cdRead_update(g_gameState->unk1C->unk854) != 0) {
     }
     buf = arg0->unk30;
     a = db_lookup((s32)buf, 4, 0x1B0000, 0);
@@ -434,7 +434,7 @@ s32 wm_loadFile(WorldMapObj *arg0) {
     for (i = db_lookup(a, 1, 0x40000, 0) - 1; i >= 0; i--) {
         p = db_lookup(a, 2, (i & 0xFFFF) | 0x40000, 0);
         if (p != -1) {
-            func_8001D8A8(p);
+            file_loadTim(p);
         }
     }
     DrawSync(0);
@@ -1057,17 +1057,17 @@ state:
             g_gameState->unk1C->unk878 = 0x10000;
         }
         g_gameState->unk1C->unk87C = 0;
-        func_8002177C(g_gameState->unk1C->unk854, D_800CCA18, sz, (void *)g_gameState->unk1C->unk8C0, 0,
+        cdRead_init(g_gameState->unk1C->unk854, D_800CCA18, sz, (void *)g_gameState->unk1C->unk8C0, 0,
                       g_gameState->unk1C->unk878, func_800AC424);
         g_gameState->unk1C->unk851 = 3;
         break;
     case 3:
-        if (func_800217C4(g_gameState->unk1C->unk854) == 0 && func_80055DCC() == 0) {
+        if (cdRead_update(g_gameState->unk1C->unk854) == 0 && func_80055DCC() == 0) {
             if (g_gameState->unk1C->unk854[0].unkC + g_gameState->unk1C->unk854[0].unk10 < g_gameState->unk1C->unk87C) {
                 g_gameState->unk1C->unk8C0 = (s32)g_gameState->unk1C->unk854[0].unk8;
                 d = 0x10000 + func_800B8108() - g_gameState->unk1C->unk8C0;
                 d = d / 2048 * 2048;
-                func_8002177C(g_gameState->unk1C->unk854, D_800CCA18, g_gameState->unk1C->unk854[0].unk4, (void *)g_gameState->unk1C->unk8C0,
+                cdRead_init(g_gameState->unk1C->unk854, D_800CCA18, g_gameState->unk1C->unk854[0].unk4, (void *)g_gameState->unk1C->unk8C0,
                               g_gameState->unk1C->unk854[0].unkC + g_gameState->unk1C->unk854[0].unk10, d, func_800AC424);
             } else if (D_800CCA12 == 7) {
                 if (D_800CCA14 != 9) {
@@ -1088,16 +1088,16 @@ state:
         t = 0x6800 - n;
         g_gameState->unk1C->unk8C0 = (s32)((u8 *)g_gameState->unk1C->unk814 + n);
         t = t / 2048 * 2048;
-        func_8002177C(g_gameState->unk1C->unk854, D_800CCA18, g_gameState->unk1C->unk854[0].unk4, (void *)g_gameState->unk1C->unk8C0,
+        cdRead_init(g_gameState->unk1C->unk854, D_800CCA18, g_gameState->unk1C->unk854[0].unk4, (void *)g_gameState->unk1C->unk8C0,
                       g_gameState->unk1C->unk854[0].unkC + g_gameState->unk1C->unk854[0].unk10, t, NULL);
         g_gameState->unk1C->unk851 = 5;
         break;
     case 5:
-        if (func_800217C4(g_gameState->unk1C->unk854) == 0) {
+        if (cdRead_update(g_gameState->unk1C->unk854) == 0) {
             if (g_gameState->unk1C->unk854[0].unkC + g_gameState->unk1C->unk854[0].unk10 < g_gameState->unk1C->unk854[0].unk4) {
                 m = g_gameState->unk1C->unk854[0].unkC + g_gameState->unk1C->unk854[0].unk10 - g_gameState->unk1C->unk87C;
                 g_gameState->unk1C->unk8C0 = (s32)((u8 *)g_gameState->unk1C->unk814 + m);
-                func_8002177C(g_gameState->unk1C->unk854, D_800CCA18, g_gameState->unk1C->unk854[0].unk4, (void *)g_gameState->unk1C->unk8C0, m, 0x6800 - m, NULL);
+                cdRead_init(g_gameState->unk1C->unk854, D_800CCA18, g_gameState->unk1C->unk854[0].unk4, (void *)g_gameState->unk1C->unk8C0, m, 0x6800 - m, NULL);
             } else {
                 func_800AC3A8((s32)g_gameState->unk1C->unk814);
                 g_gameState->unk1C->unk0 |= 0x10000000;
@@ -1447,7 +1447,7 @@ void func_800AD114(s32 arg0, s32 arg1, s32 arg2) {
         r.y = 0;
         r.h = 0xDA;
     }
-    func_8001DAA4(arg0, arg1, arg2, rp);
+    file_copyViaVram(arg0, arg1, arg2, rp);
 }
 
 void func_800AD180(void) {

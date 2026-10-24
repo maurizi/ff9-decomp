@@ -526,10 +526,10 @@ void btl_setStoneClut(BtlUnit *arg0, s32 arg1) {
     }
     i = 0;
     if (arg0->unk68 & 1) {
-        arg0->unkA8->unk18->unk2 = ((d + func_8001DA6C(arg0->unkA8->unk18->unk2)) << 6) | 0x10;
+        arg0->unkA8->unk18->unk2 = ((d + clut_getY(arg0->unkA8->unk18->unk2)) << 6) | 0x10;
     }
     while (i < func_80063830(arg0->unk84 | 0x20000)) {
-        arg0->unk9C->unk18[i].unk2 = ((d + func_8001DA6C(arg0->unk9C->unk18[i].unk2)) << 6) | 0x10;
+        arg0->unk9C->unk18[i].unk2 = ((d + clut_getY(arg0->unk9C->unk18[i].unk2)) << 6) | 0x10;
         i++;
     }
 }
@@ -542,7 +542,7 @@ void func_800C0544(BtlUnit *arg0) {
 
     for (i = 0; i < func_80063830(arg0->unk84 | 0x20000); i++) {
         D_800FDF50.x = 0x100;
-        D_800FDF50.y = func_8001DA6C(arg0->unk9C->unk18[i].unk2);
+        D_800FDF50.y = clut_getY(arg0->unk9C->unk18[i].unk2);
         D_800FDF50.w = 0x100;
         D_800FDF50.h = 1;
         StoreImage(&D_800FDF50, (u32 *)D_800FDF60[i]);

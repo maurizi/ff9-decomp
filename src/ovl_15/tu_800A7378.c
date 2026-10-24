@@ -73,18 +73,18 @@ s32 func_800A766C(s32 arg0, s32 arg1) {
     s32 i;
     s32 j;
 
-    while (func_800217C4(g_gameState->unk1C->unk854) != 0) {
+    while (cdRead_update(g_gameState->unk1C->unk854) != 0) {
     }
     e = file_find(0, 0x64);
-    func_8002177C(g_gameState->unk1C->unk854, e->unk4, (e->unkC - e->unk4) << 11, D_80067944 + 0xF1700, 0, 0x15000, 0);
-    while (func_800217C4(g_gameState->unk1C->unk854) != 0) {
+    cdRead_init(g_gameState->unk1C->unk854, e->unk4, (e->unkC - e->unk4) << 11, D_80067944 + 0xF1700, 0, 0x15000, 0);
+    while (cdRead_update(g_gameState->unk1C->unk854) != 0) {
     }
     EnterCriticalSection();
     FlushCache();
     ExitCriticalSection();
     if (g_gameState->unkB != 0xFF && (g_gameState->unkB & 8)) {
         h = cd_findFile(g_mbgMovieLists[arg0].unk4[arg1].unk0);
-        func_80022ED4(h);
+        cd_seekStreamAsync(h);
         while (cd_getState() != 0) {
         }
         mbg_streamSetBaseSector(h);
@@ -1233,25 +1233,25 @@ s32 func_800AAD24(void) {
     s32 p;
 
     p = (s32)db_lookupRegistered(4, 0x44F4C, 0);
-    func_8001D9CC(p, 0, 0xE4, 0x1C0, 0x180);
-    func_8001D8A8(p);
-    func_8001D9CC(p, 0, 0xE5, 0x1C0, 0x180);
-    func_8001D8A8(p);
+    file_setTimPos(p, 0, 0xE4, 0x1C0, 0x180);
+    file_loadTim(p);
+    file_setTimPos(p, 0, 0xE5, 0x1C0, 0x180);
+    file_loadTim(p);
     p = (s32)db_lookupRegistered(4, 0x44F4D, 0);
-    func_8001D9CC(p, 0, 0xE6, 0x1EC, 0x100);
-    func_8001D8A8(p);
+    file_setTimPos(p, 0, 0xE6, 0x1EC, 0x100);
+    file_loadTim(p);
     p = (s32)db_lookupRegistered(4, 0x44F4E, 0);
-    func_8001D9CC(p, 0, 0xE0, 0x1C0, 0x100);
-    func_8001D8A8(p);
+    file_setTimPos(p, 0, 0xE0, 0x1C0, 0x100);
+    file_loadTim(p);
     p = (s32)db_lookupRegistered(4, 0x44F50, 0);
-    func_8001D9CC(p, 0, 0xE1, 0x1D6, 0x100);
-    func_8001D8A8(p);
+    file_setTimPos(p, 0, 0xE1, 0x1D6, 0x100);
+    file_loadTim(p);
     p = (s32)db_lookupRegistered(4, 0x44F4F, 0);
-    func_8001D9CC(p, 0, 0xE2, 0x1C0, 0x140);
-    func_8001D8A8(p);
+    file_setTimPos(p, 0, 0xE2, 0x1C0, 0x140);
+    file_loadTim(p);
     p = (s32)db_lookupRegistered(4, 0x44F51, 0);
-    func_8001D9CC(p, 0, 0xE9, 0x280, 0x100);
-    func_8001D8A8(p);
+    file_setTimPos(p, 0, 0xE9, 0x280, 0x100);
+    file_loadTim(p);
     setRECT(&D_800AE4E0, 0x20, 0xE4, 0x10, 1);
     LoadImage(&D_800AE4E0, D_800AE0EC);
     DrawSync(0);

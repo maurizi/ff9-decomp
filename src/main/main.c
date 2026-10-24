@@ -10,7 +10,7 @@ void game_main(void) {
     for (;;) {
         game_reset();
         game_initState();
-        func_8001D268();
+        game_initData();
         do {
             switch (g_gameState->mode) {
             case 0:
@@ -47,7 +47,7 @@ void game_main(void) {
                 break;
             }
         } while (!(g_gameState->unk0 & 1));
-        func_8001D30C();
+        game_quitData();
         game_quitState();
         game_shutdown();
     }
@@ -65,15 +65,15 @@ void game_loadModeOverlay(s32 mode) {
     id = files[mode] | 0x10000;
     while (cd_getState()) {
     }
-    if (func_800220E8(id)) {
+    if (preload_isReady(id)) {
         e = preload_find(id);
-        if (func_80021AE0(e)) {
+        if (preload_isInVram(e)) {
             StoreImage((RECT *)&e->unk20, addrs.unk0[mode]);
         } else if ((s32)addrs.unk0[mode] != e->unk8) {
-            func_8001DAA4((s32)addrs.unk0[mode], e->unk8, e->unkC, NULL);
+            file_copyViaVram((s32)addrs.unk0[mode], e->unk8, e->unkC, NULL);
         }
         loaded = e->unkC >> 11;
-        func_80022390(id);
+        preload_remove(id);
         DrawSync(0);
     }
     f = file_find(0, id);

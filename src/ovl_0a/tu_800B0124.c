@@ -458,14 +458,14 @@ state:
         m = g_gameState->unk1C->unk878;
         g_gameState->unk1C->unk878 = m / 2048 * 2048;
         g_gameState->unk1C->unk87C = 0;
-        func_8002177C(g_gameState->unk1C->unk854, D_800C9D54, sz, (void *)g_gameState->unk1C->unk8C0, 0,
+        cdRead_init(g_gameState->unk1C->unk854, D_800C9D54, sz, (void *)g_gameState->unk1C->unk8C0, 0,
                       g_gameState->unk1C->unk878, func_800B29F8);
         g_gameState->unk1C->unk851 = 3;
         break;
     case 3:
-        if (func_800217C4(g_gameState->unk1C->unk854) == 0 && func_80055DCC() == 0) {
+        if (cdRead_update(g_gameState->unk1C->unk854) == 0 && func_80055DCC() == 0) {
             func_800AC67C((s32)g_gameState->unk1C->unk854[0].unk20);
-            func_80022280((s32)g_gameState->unk1C->unk854[0].unk8, g_gameState->unk1C->unk854[0].unk10);
+            preload_discardRange((s32)g_gameState->unk1C->unk854[0].unk8, g_gameState->unk1C->unk854[0].unk10);
             if (g_gameState->unk1C->unk854[0].unkC + g_gameState->unk1C->unk854[0].unk10 < g_gameState->unk1C->unk87C) {
                 g_gameState->unk1C->unk8C0 = (s32)g_gameState->unk1C->unk854[0].unk8;
                 d = 0x156F00 - ((s32)g_gameState->unk1C->unk854[0].unk8 - (s32)D_80067944);
@@ -473,7 +473,7 @@ state:
                     d -= 0x3000;
                 }
                 d = d / 2048 * 2048;
-                func_8002177C(g_gameState->unk1C->unk854, D_800C9D54, g_gameState->unk1C->unk854[0].unk4, (void *)g_gameState->unk1C->unk8C0,
+                cdRead_init(g_gameState->unk1C->unk854, D_800C9D54, g_gameState->unk1C->unk854[0].unk4, (void *)g_gameState->unk1C->unk8C0,
                               g_gameState->unk1C->unk854[0].unkC + g_gameState->unk1C->unk854[0].unk10, d, func_800B29F8);
             } else if (D_800C9D52 == 7) {
                 if (D_800C9D4C != 9) {
@@ -494,16 +494,16 @@ state:
         t = 0x6800 - n;
         g_gameState->unk1C->unk8C0 = (s32)((u8 *)g_gameState->unk1C->unk814 + n);
         t = t / 2048 * 2048;
-        func_8002177C(g_gameState->unk1C->unk854, D_800C9D54, g_gameState->unk1C->unk854[0].unk4, (void *)g_gameState->unk1C->unk8C0,
+        cdRead_init(g_gameState->unk1C->unk854, D_800C9D54, g_gameState->unk1C->unk854[0].unk4, (void *)g_gameState->unk1C->unk8C0,
                       g_gameState->unk1C->unk854[0].unkC + g_gameState->unk1C->unk854[0].unk10, t, NULL);
         g_gameState->unk1C->unk851 = 5;
         break;
     case 5:
-        if (func_800217C4(g_gameState->unk1C->unk854) == 0) {
+        if (cdRead_update(g_gameState->unk1C->unk854) == 0) {
             if (g_gameState->unk1C->unk854[0].unkC + g_gameState->unk1C->unk854[0].unk10 < g_gameState->unk1C->unk854[0].unk4) {
                 m = g_gameState->unk1C->unk854[0].unkC + g_gameState->unk1C->unk854[0].unk10 - g_gameState->unk1C->unk87C;
                 g_gameState->unk1C->unk8C0 = (s32)((u8 *)g_gameState->unk1C->unk814 + m);
-                func_8002177C(g_gameState->unk1C->unk854, D_800C9D54, g_gameState->unk1C->unk854[0].unk4, (void *)g_gameState->unk1C->unk8C0, m, 0x6800 - m, NULL);
+                cdRead_init(g_gameState->unk1C->unk854, D_800C9D54, g_gameState->unk1C->unk854[0].unk4, (void *)g_gameState->unk1C->unk8C0, m, 0x6800 - m, NULL);
             } else {
                 func_800B2BC4((s32)g_gameState->unk1C->unk814);
                 g_gameState->unk1C->unk0 |= 0x10000000;
@@ -1219,8 +1219,8 @@ s32 func_800B3444(s32 arg0, s32 arg1, s32 arg2) {
                 if (start == 0) {
                     start = D_80067948;
                 }
-                if (func_800221C0(start, 0x5000) != 0) {
-                    func_80022390(func_8002208C()->unk4);
+                if (preload_overlaps(start, 0x5000) != 0) {
+                    preload_remove(preload_waitCurrent()->unk4);
                 }
                 if (g_gameState->unk1C->unk8E4.field->unkC->unk14->unk20 != 0) {
                     start = g_gameState->unk1C->unk8E4.field->unkC->unk14->unk20;
@@ -1233,7 +1233,7 @@ s32 func_800B3444(s32 arg0, s32 arg1, s32 arg2) {
                     D_80067948 = end;
                 }
                 func_800AC620();
-                func_80022280(start, size);
+                preload_discardRange(start, size);
                 g_gameState->unk1C->unk8E4.field->unkC->unk14->unk0 |= 0x100;
             }
             g_gameState->unk1C->unk8E4.field->unkC->unk14->unk0 |= 0x200;
@@ -1289,9 +1289,9 @@ s32 func_800B36E0(s32 arg0, s32 arg1) {
         if (!(g_gameState->unk1C->unk8E4.field->unkC->unk14->unk0 & 0x100000)) {
             goto done;
         }
-        p = func_80021E20();
+        p = preload_getCurrent();
         if (p != NULL && p->fileId != k) {
-            func_80021C20(p);
+            preload_wait(p);
         }
         if (flag || preload_find(k) != NULL) {
             goto set;
@@ -1317,10 +1317,10 @@ s32 func_800B36E0(s32 arg0, s32 arg1) {
         }
         e = preload_find(id);
         if (e != NULL && e->unk2 == 0) {
-            if (func_80021A1C(e)) {
+            if (preload_isBusy(e)) {
                 return -1;
             }
-            if (!func_80021A1C(e) && (e->unk1C >> 2) < e->unkC) {
+            if (!preload_isBusy(e) && (e->unk1C >> 2) < e->unkC) {
                 return -1;
             }
         }
@@ -1334,9 +1334,9 @@ s32 func_800B36E0(s32 arg0, s32 arg1) {
         if (!(g_gameState->unk1C->unk8E4.field->unkC->unk14->unk0 & 0x100000)) {
             goto done;
         }
-        e = func_80021E20();
-        if (e != NULL && e->fileId != id && func_80021A1C(e)) {
-            func_80021C20(e);
+        e = preload_getCurrent();
+        if (e != NULL && e->fileId != id && preload_isBusy(e)) {
+            preload_wait(e);
         }
         q = preload_find(id);
         if (!flag && (q == NULL || q->unk2 != 0)) {
@@ -1354,7 +1354,7 @@ s32 func_800B36E0(s32 arg0, s32 arg1) {
 void func_800B3A80(void) {
     preload_init();
     g_gameState->unk1C->unk8BC = func_800B36E0;
-    func_80021CDC((s32)func_800B4894);
+    preload_setHook((s32)func_800B4894);
     func_800B3ACC();
 }
 
@@ -1502,7 +1502,7 @@ s32 func_800B3E48(s32 arg0, s32 arg1, s32 arg2, s32 arg3) {
     if (p == NULL) {
         return 0;
     }
-    func_80021974(p, arg1, arg0, arg1 == 0 ? D_800C9D58 : 0, size, arg3, arg2, arg3);
+    preload_setEntry(p, arg1, arg0, arg1 == 0 ? D_800C9D58 : 0, size, arg3, arg2, arg3);
     D_800C9D58 += arg3;
     return (s32)p;
 }
@@ -1681,8 +1681,8 @@ s32 func_800B4894(void) {
     }
     s = g_gameState->unk1C->unk8E4.field->unkC->unk14;
     if (s->unk0 & 0x800000) {
-        if (func_80021FB4() <= 0) {
-            func_800223CC();
+        if (preload_poll() <= 0) {
+            preload_reset();
             if (!(g_gameState->unk1C->unk8E4.field->unkC->unk14->unk0 & 0x100000)) {
                 func_800B3B2C(g_gameState->unk1C->unk8E4.field->unkC->unk14->unk20);
                 func_800B3F8C();
@@ -1715,10 +1715,10 @@ void func_800B4A5C(void) {
     u32 state;
 
     tim = (s32)db_lookupRegistered(4, 0x44E20, 0);
-    func_8001D910((void *)tim, &clut, &img);
+    file_getTimRects((void *)tim, &clut, &img);
     setRECT(img, 0, 0x100, img->w, img->h);
     setRECT(clut, 0x100, 0xE0, clut->w, clut->h);
-    func_8001D8A8(tim);
+    file_loadTim(tim);
     DrawSync(0);
     n = 0;
     state = 0;
@@ -1750,7 +1750,7 @@ void func_800B4A5C(void) {
         i--;
     } while (i >= 0);
     func_800AC67C((s32)p);
-    func_800223CC();
+    preload_reset();
     game_setClearColor(0, 0, 0);
     do {
         ClearOTagR(g_gameState->unk1C->unk10[g_gameState->unk1C->unk8], 0x1000);

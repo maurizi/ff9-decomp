@@ -28,8 +28,8 @@ s32 func_800A9E14(s32 arg0) {
                 id = D_800AB2DC[k] | 0x40000;
                 if (timer == -1) {
                     tim = (s32)db_lookupRegistered(4, id, 0);
-                    func_8001D9CC(tim, 0, 0xE0, 0x280, 0);
-                    func_8001D8A8(tim);
+                    file_setTimPos(tim, 0, 0xE0, 0x280, 0);
+                    file_loadTim(tim);
                     timer = 0x3A2;
                     func_800320B8(1, 1, 0xF0, 0);
                 } else if (timer != 0) {
@@ -136,11 +136,11 @@ s32 func_800AA848(s32 idx) {
     u8 *buf;
     FileEntry *e;
 
-    while (func_800217C4(g_gameState->unk1C->unk854) != 0) {
+    while (cdRead_update(g_gameState->unk1C->unk854) != 0) {
     }
     e = file_find(1, D_800AB2D8[idx]);
-    func_8002177C(g_gameState->unk1C->unk854, e->unk4, (e->unkC - e->unk4) << 11, D_80067944 + 0x10000, 0, -1, 0);
-    while (func_800217C4(g_gameState->unk1C->unk854) != 0) {
+    cdRead_init(g_gameState->unk1C->unk854, e->unk4, (e->unkC - e->unk4) << 11, D_80067944 + 0x10000, 0, -1, 0);
+    while (cdRead_update(g_gameState->unk1C->unk854) != 0) {
     }
     buf = D_80067944 + 0x10000;
     D_800AB2D4 = buf;

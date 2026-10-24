@@ -147,7 +147,7 @@ void func_800A8198(void) {
     g_gameState->unk1C->unk838 = func_800AAB30;
     g_gameState->unk1C->unk83C = func_800B0124;
     g_gameState->unk1C->unk8BC = func_800B36E0;
-    func_80021CDC(0);
+    preload_setHook(0);
     g_gameState->unk0 &= ~7;
     g_gameState->unk1C->unk84C = 0;
     gd = g_gameState->unk1C;
@@ -210,7 +210,7 @@ s32 func_800A83E0(void) {
     s32 addr = (s32)db_lookupRegistered(4, 0x90164, 0);
     s32 size = (s32)db_lookupRegistered(5, 0x90164, 0);
 
-    func_8001DAA4((s32)(D_80067944 + 0x146F00), addr, size, NULL);
+    file_copyViaVram((s32)(D_80067944 + 0x146F00), addr, size, NULL);
     DrawSync(0);
     g_gameState->unk1C->unk8E4.field->unk20 = size;
     return 0;
@@ -220,15 +220,15 @@ s32 func_800A847C(void) {
     PreloadEntry *p;
     FileEntry *f;
 
-    if (func_800220E8(0x2714) != 0) {
+    if (preload_isReady(0x2714) != 0) {
         p = preload_find(0x2714);
-        func_8001DAA4(D_80067948, p->unk8, p->unkC, NULL);
-        func_80022390(0x2714);
+        file_copyViaVram(D_80067948, p->unk8, p->unkC, NULL);
+        preload_remove(0x2714);
         DrawSync(0);
     } else {
         f = file_find(1, 0x2714);
-        func_8002177C(g_gameState->unk1C->unk854, f->unk4, (f->unkC - f->unk4) << 11, (void *)D_80067948, 0, -1, 0);
-        while (func_800217C4(g_gameState->unk1C->unk854) != 0) {
+        cdRead_init(g_gameState->unk1C->unk854, f->unk4, (f->unkC - f->unk4) << 11, (void *)D_80067948, 0, -1, 0);
+        while (cdRead_update(g_gameState->unk1C->unk854) != 0) {
         }
     }
     g_gameState->unk1C->unk8E4.field->unk10 = (void *)D_80067948;
@@ -308,24 +308,24 @@ s32 func_800A87DC(FieldMapObj *arg0, s32 arg1) {
     gd = g_gameState->unk1C;
     id = (u16)arg1 | 0x60000;
     cd = gd->unk854;
-    if (func_800220E8(id) != 0) {
+    if (preload_isReady(id) != 0) {
         e = preload_find(id);
         g_gameState->unk1C->unk854->unk20 = (u8 *)(e->unk8 + e->unkC);
         g_gameState->unk1C->unk854->unk10 = e->unkC;
         g_gameState->unk1C->unk854->unk4 = e->unk1C;
-        func_8001DAA4(D_80067948, e->unk8, e->unkC, NULL);
-        func_80022390(id);
+        file_copyViaVram(D_80067948, e->unk8, e->unkC, NULL);
+        preload_remove(id);
         DrawSync(0);
         g = g_gameState->unk1C;
         t = g->unk854->unk10;
         if (t < g->unk854->unk4) {
-            func_8002177C(g->unk854, g->sceneSector[0], g->sceneSectors[0] << 11, (void *)(D_80067948 + t), t, -1, NULL);
-            while (func_800217C4(g_gameState->unk1C->unk854) != 0) {
+            cdRead_init(g->unk854, g->sceneSector[0], g->sceneSectors[0] << 11, (void *)(D_80067948 + t), t, -1, NULL);
+            while (cdRead_update(g_gameState->unk1C->unk854) != 0) {
             }
         }
     } else {
-        func_8002177C(cd, gd->sceneSector[0], gd->sceneSectors[0] << 11, (void *)D_80067948, 0, -1, NULL);
-        while (func_800217C4(cd) != 0) {
+        cdRead_init(cd, gd->sceneSector[0], gd->sceneSectors[0] << 11, (void *)D_80067948, 0, -1, NULL);
+        while (cdRead_update(cd) != 0) {
         }
     }
     arg0->unkC = (void *)D_80067948;
@@ -658,7 +658,7 @@ void func_800A9570(void) {
             e--;
         } while (e >= start);
         func_800AC5F0();
-        func_80022280((s32)g_gameState->unk1C->unk854[0].unk8, g_gameState->unk1C->unk854[0].unk10);
+        preload_discardRange((s32)g_gameState->unk1C->unk854[0].unk8, g_gameState->unk1C->unk854[0].unk10);
     }
 }
 
@@ -758,18 +758,18 @@ s32 fld_loadFile(FieldScene *sc, s32 arg1) {
         size = size / 2048 * 2048;
     }
     id = (u16)arg1 | 0x50000;
-    if (func_800220E8(id)) {
+    if (preload_isReady(id)) {
         e = preload_find(id);
         g_gameState->unk1C->unk854[0].unk20 = (u8 *)(e->unk8 + e->unkC);
         g_gameState->unk1C->unk854[0].unk10 = e->unkC;
         g_gameState->unk1C->unk854[0].unk4 = e->unk1C;
-        func_8001DAA4(D_80067948, e->unk8, e->unkC, NULL);
-        func_80022390(id);
+        file_copyViaVram(D_80067948, e->unk8, e->unkC, NULL);
+        preload_remove(id);
         DrawSync(0);
     } else {
-        func_8002177C(g_gameState->unk1C->unk854, g_gameState->unk1C->sceneSector[1], g_gameState->unk1C->sceneSectors[1] << 11,
+        cdRead_init(g_gameState->unk1C->unk854, g_gameState->unk1C->sceneSector[1], g_gameState->unk1C->sceneSectors[1] << 11,
                       (void *)D_80067948, 0, size, NULL);
-        while (func_800217C4(g_gameState->unk1C->unk854) != 0) {
+        while (cdRead_update(g_gameState->unk1C->unk854) != 0) {
         }
     }
     func_800AC67C((s32)g_gameState->unk1C->unk854[0].unk20);
@@ -780,9 +780,9 @@ s32 fld_loadFile(FieldScene *sc, s32 arg1) {
         r = db_lookup(base, 5, 0x1B0000, 0);
         if ((u32)(D_80067948 + g_gameState->unk1C->unk854[0].unk10) < (u32)(id + r)) {
             rest = g_gameState->unk1C->unk854[0].unk10;
-            func_8002177C(g_gameState->unk1C->unk854, g_gameState->unk1C->sceneSector[1], g_gameState->unk1C->sceneSectors[1] << 11,
+            cdRead_init(g_gameState->unk1C->unk854, g_gameState->unk1C->sceneSector[1], g_gameState->unk1C->sceneSectors[1] << 11,
                           (void *)(D_80067948 + rest), rest, size - g_gameState->unk1C->unk854[0].unk10, NULL);
-            while (func_800217C4(g_gameState->unk1C->unk854) != 0) {
+            while (cdRead_update(g_gameState->unk1C->unk854) != 0) {
             }
             g_gameState->unk1C->unk854[0].unk10 += rest;
             func_800AC67C((s32)g_gameState->unk1C->unk854[0].unk20);
@@ -790,7 +790,7 @@ s32 fld_loadFile(FieldScene *sc, s32 arg1) {
         for (i = db_lookup(id, 1, 0x40000, 0) - 1; i >= 0; i--) {
             k = db_lookup(id, 2, (u16)i | 0x40000, 0);
             if (k != -1) {
-                func_8001D8A8(k);
+                file_loadTim(k);
             }
         }
         for (i = db_lookup(id, 1, 0x170000, 0) - 1; i >= 0; i--) {
@@ -803,13 +803,13 @@ s32 fld_loadFile(FieldScene *sc, s32 arg1) {
     }
     sc->unk24 = (void *)db_lookup(base, 2, 0x1B0001, 0);
     size = g_gameState->unk1C->unk854[0].unk10 - ((s32)sc->unk24 - base);
-    func_8001DAA4(id, (s32)sc->unk24, size, NULL);
+    file_copyViaVram(id, (s32)sc->unk24, size, NULL);
     DrawSync(0);
     sc->unk24 = (void *)id;
     if (g_gameState->unk1C->unk854[0].unk10 < g_gameState->unk1C->unk854[0].unk4) {
-        func_8002177C(g_gameState->unk1C->unk854, g_gameState->unk1C->sceneSector[1], g_gameState->unk1C->sceneSectors[1] << 11,
+        cdRead_init(g_gameState->unk1C->unk854, g_gameState->unk1C->sceneSector[1], g_gameState->unk1C->sceneSectors[1] << 11,
                       (void *)(id + size), g_gameState->unk1C->unk854[0].unk10, -1, NULL);
-        while (func_800217C4(g_gameState->unk1C->unk854) != 0) {
+        while (cdRead_update(g_gameState->unk1C->unk854) != 0) {
         }
     }
     db_register((s32)sc->unk24, 0);
