@@ -213,7 +213,7 @@ s32 func_800AAB30(s32 arg0, void *arg1) {
         s->unk8->unk50 = db_lookupRegistered(4, sprId, 0);
         func_800BB3C4((BgSprHdr *)s->unk8->unk50, (BgSprOfs *)spr);
     }
-    if (g_gameState->unk1C->unk8E4.field->unkC->unk14->unk18 != NULL) {
+    if (g_gameState->unk1C->unk8E4.field->unkC->unk14->walkmesh != NULL) {
         if (slot < 9) {
             func_800C74A8(slot, s);
         } else {
@@ -1653,7 +1653,7 @@ u8 *func_800AFCBC(u8 *arg0) {
     s32 n;
     Unk800AFCBC *h;
 
-    func_800AA0C8(g_gameState->unk1C->unk8E4.field->unkC->unk14, (s16)g_gameState->unk1C->fieldId);
+    fld_getBgKey(g_gameState->unk1C->unk8E4.field->unkC->unk14, (s16)g_gameState->unk1C->fieldId);
     i = 0;
     n = 0x10;
     h = (Unk800AFCBC *)arg0;

@@ -959,3 +959,33 @@ D_800CCFF4 g_worldZoneEncounterCount  # [code] half the number of g_worldEncount
 D_800CF444 g_worldDataSet  # [code] 1, or 4 when the story counter is >= 0x2B52 (func_800B69B4); selects world data 0x41B.. or 0x41E.. and the +0xFE encounter entries
 D_800CCE4B g_worldFog  # [string] printed as "Now Fog" by wm_getEncounterEntry, matched against the encounter entries' fog bit
 D_800D32E4 g_worldEncounterEventRows  # [code] world data pack entry 4: rows of 12 u16 entry numbers used by wm_applyEncounterEvents
+
+## ovl_0a/0c cleanup/naming pass
+# (ovl_0a lines: rename.py --bin ovl_0a; ovl_0c lines: --bin ovl_0c; FIELD lines are struct members renamed with rename_fields.py)
+### ovl_0a: fld_main.c
+func_800A7A48 fld_entry  # [code] mode-1 entry, called by main game_main after game_loadModeOverlay(1) - fld_init, fld_runArea until GameState.unk0 & 3, fld_quit
+func_800A7AAC fld_runArea  # [code] fld_loadArea, then fld_main(GameData.fieldId) until GameState.unk0 & 7, then fld_unloadArea (called by fld_entry with GameData.unk3A)
+func_800A8198 fld_init  # [code] field-mode init called once by fld_entry - allocates the FieldMap, vsyncMode 2, GameData callbacks unk838/83C/8BC, loads the common file and sound bank
+func_800A82F8 fld_quit  # [code] end of fld_entry - clears D_800739B0[0..1], func_800B1CE4, fld_freeCommon
+func_800A8344 fld_allocMap  # [code] puts the 0x50-byte FieldMap (GameData.unk8E4.field) at D_80067944+0x2A000 and advances the allocation pointer D_80067948
+func_800A8380 fld_initMap  # [code] resets every FieldMap member (fld_init)
+func_800A83E0 fld_readSoundBank  # [code] copies db item 0x90164 to D_80067944+0x146F00 and keeps its size in FieldMap.unk20, fld_startAudio uploads it with func_80055E14 (AKAO data)
+func_800A847C fld_loadCommon  # [code] loads dir-1 file 0x2714 (preloaded copy or CD) at D_80067948 and registers it as a db container in FieldMap.unk10 (fld_init)
+func_800A8588 fld_freeCommon  # [code] db_unregister of FieldMap.unk10, the fld_loadCommon container (fld_quit)
+func_800A85F4 fld_loadArea  # [code] allocates and resets the FieldMapObj, reads the area bundle (fld_readAreaFile) and finds its 0x60000|id item (fld_runArea)
+func_800A8698 fld_unloadArea  # [code] fld_freeAreaFile, then GameData.unk3A = FieldMapObj.unk10, the area to load next (fld_runArea)
+func_800A86FC fld_allocArea  # [code] takes a FieldMapObj from the allocation pointer D_80067948 and stores it in FieldMap.unkC
+func_800A8724 fld_initArea  # [code] resets the FieldMapObj, unk10 = GameData.unk3A
+func_800A879C fld_findAreaItem  # [code] FieldMapObj.unk8 = db item 0x60000|area (fld_loadArea)
+func_800A87DC fld_readAreaFile  # [code] reads the area bundle at GameData.sceneSector[0] (or its preload copy) to D_80067948 and registers it (FieldMapObj.unkC)
+func_800A8990 fld_freeAreaFile  # [code] db_unregister of FieldMapObj.unkC (fld_unloadArea)
+func_800A9350 fld_allocScene  # [code] allocates the FieldScene at D_80067948 plus its actor-info (0x1E0) and trigger (0xC0) tables (fld_load)
+func_800A939C fld_initScene  # [code] resets every FieldScene member, the 24 FieldActorInfo records and the 16 FieldTrig entries (fld_load)
+func_800A9570 fld_refindSectors  # [code] when FieldMap.unk0 & 0x10000, finds the field, area and music sectors again in the CD directory tables (GameState.unk14), called after the disc-change screen
+func_800A97D4 fld_findEventScript  # [code] FieldScene.unkC = db item 0x50000|field (the event script, docs/encounters.md), passed to evt_init by fld_load
+func_800A9860 fld_setupBackground  # [code] finds the field background (key from fld_getBgKey) -> FieldScene.unk14 for func_800C0DA4, and its 0xB0000 link (walkmesh) -> unk18 for func_800C3B80
+func_800A9998 fld_startAudio  # [code] waits for the sound request handler (func_800B0124 0xC00), starts the music when GameData.unk0 & 0x400000, uploads the fld_readSoundBank data
+func_800A9AAC fld_loadTexturesInCdOrder  # [code] loads the queued textures (D_800C9F20, FieldScene.unk60 entries) with func_800AA4E8, lowest CD sector (file_find(0xA)) first
+func_800AA074 fld_freeFieldFile  # [code] db_unregister of FieldScene.unk24, the container fld_loadFile registered (fld_exit)
+func_800AA0C8 fld_getBgKey  # [code] db_lookup mode 3 (key by index) of block kind 0xA in the field file container FieldScene.unk24
+# FIELD FieldScene unkA nextId, unkC eventScript, unk14 bg, unk18 walkmesh, unk24 fieldFile, unk4A exitReason (FLD_EXIT_* in ovl_0a.h)

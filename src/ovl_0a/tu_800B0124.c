@@ -617,7 +617,7 @@ void func_800B1D9C(s32 arg0) {
 }
 
 void func_800B1E04(FieldScene *arg0, s16 arg1) {
-    s32 t = (s32)arg0->unk24;
+    s32 t = (s32)arg0->fieldFile;
     s32 i;
 
     for (i = db_lookup(t, 1, 0x80000, 0) - 1; i >= 0; i--) {
@@ -764,7 +764,7 @@ void func_800B238C(void) {
 
     o = g_gameState->unk1C->unk8E4.field->unkC->unk14;
     o->unk3C = g_gameState->unk1C->unk81C[0];
-    key = (u16)o->unkA;
+    key = (u16)o->nextId;
     g_gameState->unk1C->unk8E4.field->unkC->unk14->unk3E = g_gameState->unk1C->unk820[0];
     base = g_gameState->unk1C->depTable->unk4;
     key |= 0x110000;
@@ -1806,7 +1806,7 @@ s32 func_800B4F9C(void) {
     GameData *gd = g_gameState->unk1C;
     FieldScene *sc = gd->unk8E4.field->unkC->unk14;
 
-    if (sc->unk4A == 1 && (s16)gd->fieldId == 0x34 && sc->unkA == 100) {
+    if (sc->exitReason == FLD_EXIT_FIELD && (s16)gd->fieldId == 0x34 && sc->nextId == 100) {
         return 1;
     }
     return 0;

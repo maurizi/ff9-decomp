@@ -1,19 +1,19 @@
 #include "ovl_0a.h"
 
-void func_800A7A48(void) {
-    func_800A8198();
+void fld_entry(void) {
+    fld_init();
     do {
-        func_800A7AAC((s16)g_gameState->unk1C->unk3A);
+        fld_runArea((s16)g_gameState->unk1C->unk3A);
     } while (!(g_gameState->unk0 & 3));
-    func_800A82F8();
+    fld_quit();
 }
 
-void func_800A7AAC(s32 arg0) {
-    func_800A85F4(arg0);
+void fld_runArea(s32 arg0) {
+    fld_loadArea(arg0);
     do {
         fld_main((s16)g_gameState->unk1C->fieldId);
     } while (!(g_gameState->unk0 & 7));
-    func_800A8698();
+    fld_unloadArea();
 }
 
 /* field main loop */
@@ -37,27 +37,27 @@ void fld_main(s32 arg0) {
             if (!(g_gameState->unk1C->unk0 & 2)) {
                 switch (func_8004BC38()) {
                 case 3:
-                    g_gameState->unk1C->unk8E4.field->unkC->unk14->unk4A = 2;
+                    g_gameState->unk1C->unk8E4.field->unkC->unk14->exitReason = FLD_EXIT_BATTLE;
                     func_800AED04();
                     break;
                 case 4:
-                    if (g_gameState->unk1C->unk8E4.field->unkC->unk14->unkA == 0x3E80) {
-                        g_gameState->unk1C->unk8E4.field->unkC->unk14->unk4A = 4;
+                    if (g_gameState->unk1C->unk8E4.field->unkC->unk14->nextId == 0x3E80) {
+                        g_gameState->unk1C->unk8E4.field->unkC->unk14->exitReason = 4;
                         g_gameState->unk0 |= 2;
                     } else {
                         g_gameState->unk0 |= 8;
                     }
                     break;
                 case 5:
-                    g_gameState->unk1C->unk8E4.field->unkC->unk14->unk4A = 3;
+                    g_gameState->unk1C->unk8E4.field->unkC->unk14->exitReason = FLD_EXIT_WORLD;
                     g_gameState->unk0 |= 2;
                     break;
                 case 7:
-                    g_gameState->unk1C->unk8E4.field->unkC->unk14->unk4A = 9;
+                    g_gameState->unk1C->unk8E4.field->unkC->unk14->exitReason = FLD_EXIT_TETRA_MASTER;
                     g_gameState->unk0 |= 2;
                     break;
                 case 8:
-                    g_gameState->unk1C->unk8E4.field->unkC->unk14->unk4A = 7;
+                    g_gameState->unk1C->unk8E4.field->unkC->unk14->exitReason = FLD_EXIT_GAME_OVER;
                     g_gameState->unk0 |= 2;
                     break;
                 }
@@ -119,7 +119,7 @@ void fld_main(s32 arg0) {
 void fld_gameOver(void) {
     s32 i;
 
-    gameover_main(g_gameState->unk1C->unk8E4.field->unkC->unk14->unkC);
+    gameover_main(g_gameState->unk1C->unk8E4.field->unkC->unk14->eventScript);
     g_gameState->mode = 0;
     g_gameState->unk0 |= 0x100000;
     if ((g_gameState->unk1C->unk0 & 0x20000000) && g_gameState->unk1C->unk81C[0] != 0xFFFF) {
@@ -132,14 +132,14 @@ void fld_gameOver(void) {
     D_80067950++;
 }
 
-void func_800A8198(void) {
+void fld_init(void) {
     FieldMap *f;
     GameData *gd;
     GameData *gd2;
 
-    func_800A8344();
+    fld_allocMap();
     f = g_gameState->unk1C->unk8E4.field;
-    func_800A8380();
+    fld_initMap();
     g_gameState->vsyncMode = 2;
     func_8001CD04(0xE0);
     func_8001CFB4();
@@ -158,8 +158,8 @@ void func_800A8198(void) {
     gd2->unk834 = 0xFFFF;
     func_800B1D60();
     func_800AC5F0();
-    func_800A847C();
-    func_800A83E0();
+    fld_loadCommon();
+    fld_readSoundBank();
     func_800239D0();
     if (g_gameState->unk1C->unk0 & 0x400000) {
         func_800B0124(0x8601, 0, 0x78, 0, 0);
@@ -168,7 +168,7 @@ void func_800A8198(void) {
     f->unk4 = D_80067948;
 }
 
-void func_800A82F8(void) {
+void fld_quit(void) {
     s32 i;
 
     for (i = 1; i >= 0; i--) {
@@ -176,17 +176,17 @@ void func_800A82F8(void) {
         D_800739B0[i].unk0 = 0;
     }
     func_800B1CE4();
-    func_800A8588();
+    fld_freeCommon();
 }
 
-void func_800A8344(void) {
+void fld_allocMap(void) {
     D_80067948 = (s32)(D_80067944 + 0x28000);
     D_80067948 += 0x2000;
     g_gameState->unk1C->unk8E4.field = (FieldMap *)D_80067948;
     D_80067948 += 0x50;
 }
 
-void func_800A8380(void) {
+void fld_initMap(void) {
     s32 i = 0x2B;
     FieldMap *fm = g_gameState->unk1C->unk8E4.field;
 
@@ -206,7 +206,7 @@ void func_800A8380(void) {
     } while (i >= 0);
 }
 
-s32 func_800A83E0(void) {
+s32 fld_readSoundBank(void) {
     s32 addr = (s32)db_lookupRegistered(4, 0x90164, 0);
     s32 size = (s32)db_lookupRegistered(5, 0x90164, 0);
 
@@ -216,7 +216,7 @@ s32 func_800A83E0(void) {
     return 0;
 }
 
-s32 func_800A847C(void) {
+s32 fld_loadCommon(void) {
     PreloadEntry *p;
     FileEntry *f;
 
@@ -236,7 +236,7 @@ s32 func_800A847C(void) {
     return 0;
 }
 
-s32 func_800A8588(void) {
+s32 fld_freeCommon(void) {
     void *p = g_gameState->unk1C->unk8E4.field->unk10;
 
     if (p != NULL) {
@@ -246,35 +246,35 @@ s32 func_800A8588(void) {
     return 0;
 }
 
-void func_800A85F4(s32 arg0) {
+void fld_loadArea(s32 arg0) {
     FieldMapObj *o;
 
     D_80067948 = g_gameState->unk1C->unk8E4.field->unk4;
-    func_800A86FC();
+    fld_allocArea();
     o = g_gameState->unk1C->unk8E4.field->unkC;
-    func_800A8724();
+    fld_initArea();
     func_8001CFB4();
-    func_800A87DC(o, arg0);
-    func_800A879C(o, arg0);
+    fld_readAreaFile(o, arg0);
+    fld_findAreaItem(o, arg0);
     o->unk4 = D_80067948;
 }
 
-void func_800A8698(void) {
+void fld_unloadArea(void) {
     GameData *gd = g_gameState->unk1C;
     FieldMapObj *obj = gd->unk8E4.field->unkC;
 
-    func_800A8990(obj, gd->unk3A);
+    fld_freeAreaFile(obj, gd->unk3A);
     g_gameState->unk1C->unk3A = obj->unk10;
 }
 
-void func_800A86FC(void) {
+void fld_allocArea(void) {
     FieldMapObj *p = (FieldMapObj *)D_80067948;
 
     D_80067948 = (s32)(p + 1);
     g_gameState->unk1C->unk8E4.field->unkC = p;
 }
 
-void func_800A8724(void) {
+void fld_initArea(void) {
     FieldMapObj *obj = g_gameState->unk1C->unk8E4.field->unkC;
     s32 i;
 
@@ -292,12 +292,12 @@ void func_800A8724(void) {
     }
 }
 
-s32 func_800A879C(FieldMapObj *arg0, u16 arg1) {
+s32 fld_findAreaItem(FieldMapObj *arg0, u16 arg1) {
     arg0->unk8 = db_lookupRegistered(4, arg1 | 0x60000, 0);
     return 0;
 }
 
-s32 func_800A87DC(FieldMapObj *arg0, s32 arg1) {
+s32 fld_readAreaFile(FieldMapObj *arg0, s32 arg1) {
     s32 id;
     GameData *gd;
     PreloadEntry *e;
@@ -334,7 +334,7 @@ s32 func_800A87DC(FieldMapObj *arg0, s32 arg1) {
     return 0;
 }
 
-s32 func_800A8990(FieldMapObj *arg0, s16 arg1) {
+s32 fld_freeAreaFile(FieldMapObj *arg0, s16 arg1) {
     db_unregister(arg0->unkC);
     arg0->unkC = NULL;
     return 0;
@@ -347,9 +347,9 @@ void fld_load(s32 arg0) {
     s32 j;
 
     D_80067948 = g_gameState->unk1C->unk8E4.field->unkC->unk4;
-    func_800A9350();
+    fld_allocScene();
     sc = g_gameState->unk1C->unk8E4.field->unkC->unk14;
-    func_800A939C();
+    fld_initScene();
     func_8001CFB4();
     g_gameState->unk0 &= ~0x30F;
     g_gameState->unk1C->unk0 |= 0x20;
@@ -366,20 +366,20 @@ void fld_load(s32 arg0) {
     func_800AA4BC();
     g_gameState->unk1C->unk8E4.field->unk9 = 0;
     g_gameState->unk1C->fieldId = arg0;
-    sc->unkA = arg0;
+    sc->nextId = arg0;
     fld_loadFile(sc, arg0);
-    func_800A97D4(sc, arg0);
+    fld_findEventScript(sc, arg0);
     func_800A9814(sc, arg0);
-    func_800A9860(sc, arg0);
+    fld_setupBackground(sc, arg0);
     func_800A9954(sc, arg0);
     func_800AA01C(&g_gameState->unk1C->unk8E4.field->unkC->unk14->unk50, &g_gameState->unk1C->unk8E4.field->unkC->unk14->unk52);
     func_800B3A80();
-    func_800A9998();
+    fld_startAudio();
     func_800B0124(0x900, -1, 0, 0, 0);
-    func_80049ED8(sc->unkC);
-    evt_init(sc->unkC);
+    func_80049ED8(sc->eventScript);
+    evt_init(sc->eventScript);
     func_800AC474();
-    func_800A9AAC();
+    fld_loadTexturesInCdOrder();
     while (func_800B0124(0xC00, -1, 0, 0, 0) != 0) {
     }
     func_8004BFB0();
@@ -420,7 +420,7 @@ void fld_exit(void) {
     func_800B1E04(sc, g_gameState->unk1C->fieldId);
     D_80073998[0] &= 0xFFFF0006;
     func_800AA0A8(sc, g_gameState->unk1C->fieldId);
-    func_800AA074(sc, g_gameState->unk1C->fieldId);
+    fld_freeFieldFile(sc, g_gameState->unk1C->fieldId);
     func_800AAA54();
     for (i = 0; i < 9; i++) {
         if (g_gameState->unk1C->unk8D8[i].unk0 & 1) {
@@ -436,23 +436,23 @@ void fld_exit(void) {
         g_gameState->unk1C->returnSector[i] = g_gameState->unk1C->sceneSector[i];
         g_gameState->unk1C->returnSectors[i] = g_gameState->unk1C->sceneSectors[i];
     }
-    switch (g_gameState->unk1C->unk8E4.field->unkC->unk14->unk4A) {
-    case 2:
-        fld_depFindBackground(fld_depFindBattle(sc->unkA, &g_gameState->unk1C->sceneSector[0], &g_gameState->unk1C->sceneSectors[0]),
+    switch (g_gameState->unk1C->unk8E4.field->unkC->unk14->exitReason) {
+    case FLD_EXIT_BATTLE:
+        fld_depFindBackground(fld_depFindBattle(sc->nextId, &g_gameState->unk1C->sceneSector[0], &g_gameState->unk1C->sceneSectors[0]),
                       &g_gameState->unk1C->sceneSector[1], &g_gameState->unk1C->sceneSectors[1]);
-        g_gameState->unk1C->battleId = sc->unkA;
+        g_gameState->unk1C->battleId = sc->nextId;
         g_gameState->mode = 2;
         g_gameState->unkA = 1;
         break;
-    case 3:
-        id = fld_depFindArea(fld_depFindField(sc->unkA, &g_gameState->unk1C->sceneSector[1], &g_gameState->unk1C->sceneSectors[1]),
+    case FLD_EXIT_WORLD:
+        id = fld_depFindArea(fld_depFindField(sc->nextId, &g_gameState->unk1C->sceneSector[1], &g_gameState->unk1C->sceneSectors[1]),
                            &g_gameState->unk1C->sceneSector[0], &g_gameState->unk1C->sceneSectors[0]);
-        g_gameState->unk1C->unk7DC = sc->unkA;
+        g_gameState->unk1C->unk7DC = sc->nextId;
         g_gameState->unk1C->unk7DE = id;
         g_gameState->mode = 3;
         g_gameState->unkA = 1;
         break;
-    case 9:
+    case FLD_EXIT_TETRA_MASTER:
         if (g_gameState->unk1C->unk0 & 0x20000000) {
             func_800B0124(0x800, g_gameState->unk1C->unk81C[0], 0, 0, 0);
         }
@@ -461,7 +461,7 @@ void fld_exit(void) {
         g_gameState->mode = 9;
         g_gameState->unkA = 1;
         break;
-    case 7:
+    case FLD_EXIT_GAME_OVER:
         func_8005546C(-1, 0);
         func_80056228();
         g_gameState->mode = 7;
@@ -473,11 +473,11 @@ void fld_exit(void) {
         g_gameState->mode = 4;
         g_gameState->unkA = 1;
         break;
-    case 1:
+    case FLD_EXIT_FIELD:
         if (g_gameState->unk1C->unk8E4.field->unk0 & 0x10000) {
             id = (s16)g_gameState->unk1C->unk8E4.field->unkC->unk10;
         } else {
-            id = fld_depFindArea(fld_depFindField(sc->unkA, &g_gameState->unk1C->sceneSector[1], &g_gameState->unk1C->sceneSectors[1]),
+            id = fld_depFindArea(fld_depFindField(sc->nextId, &g_gameState->unk1C->sceneSector[1], &g_gameState->unk1C->sceneSectors[1]),
                                &g_gameState->unk1C->sceneSector[0], &g_gameState->unk1C->sceneSectors[0]);
         }
         if (id != (g_gameState->unk1C->unk3A | 0x60000)) {
@@ -486,7 +486,7 @@ void fld_exit(void) {
         g_gameState->unk1C->unk8E4.field->unk0 &= ~0x10000;
         g_gameState->unk1C->unk8E4.field->unkC->unk10 = id;
         g_gameState->unk1C->unk8E4.field->unkA = g_gameState->unk1C->fieldId;
-        g_gameState->unk1C->fieldId = sc->unkA;
+        g_gameState->unk1C->fieldId = sc->nextId;
         break;
     default:
         SystemError(0x39, 0xC9);
@@ -496,7 +496,7 @@ void fld_exit(void) {
 }
 
 /* allocate the field scene block and its tables */
-void func_800A9350(void) {
+void fld_allocScene(void) {
     FieldScene *sc;
 
     g_gameState->unk1C->unk8E4.field->unkC->unk14 = sc = (FieldScene *)D_80067948;
@@ -508,7 +508,7 @@ void func_800A9350(void) {
     D_80067948 += 0xC0;
 }
 
-void func_800A939C(void) {
+void fld_initScene(void) {
     FieldScene *sc;
     s32 i;
     FieldActorInfo *info;
@@ -521,10 +521,10 @@ void func_800A939C(void) {
     sc->unk8 = 0;
     sc->unk0 = 0;
     sc->unk4 = 0;
-    sc->unkC = NULL;
+    sc->eventScript = NULL;
     sc->unk4C = NULL;
-    sc->unk14 = NULL;
-    sc->unk18 = NULL;
+    sc->bg = NULL;
+    sc->walkmesh = NULL;
     base = D_80067944 + 0x106700;
     sc->unk30 = 0;
     sc->unk10 = NULL;
@@ -568,13 +568,13 @@ void func_800A939C(void) {
     sc->unk5F = 0;
     sc->unk52 = 0;
     sc->unk50 = 0;
-    sc->unk24 = NULL;
+    sc->fieldFile = NULL;
     for (i = 0; i < 9; i++) {
         sc->unk28[i] = 0;
     }
-    sc->unkA = -1;
+    sc->nextId = -1;
     sc->unk40 = 0;
-    sc->unk4A = 1;
+    sc->exitReason = FLD_EXIT_FIELD;
     sc->unk4B = 0;
     for (i = 15; i >= 0; i--) {
         t = &sc->unk58[i];
@@ -598,7 +598,7 @@ void func_800A939C(void) {
     }
 }
 
-void func_800A9570(void) {
+void fld_refindSectors(void) {
     GameState *gs;
     GameState *gs2;
     GameData *gd;
@@ -624,7 +624,7 @@ void func_800A9570(void) {
         base = D_80067944 + ((t << 11) + 0x14C700);
         start = (FieldDirEnt *)(base + ((g->unk48 - t) << 11));
         e = &start[g->unk44] - 1;
-        key = f->unkC->unk14->unkA;
+        key = f->unkC->unk14->nextId;
         do {
             if (e->unk0 == key) {
                 id = e->unk2;
@@ -662,8 +662,8 @@ void func_800A9570(void) {
     }
 }
 
-s32 func_800A97D4(FieldScene *arg0, u16 arg1) {
-    arg0->unkC = db_lookupRegistered(4, arg1 | 0x50000, 0);
+s32 fld_findEventScript(FieldScene *arg0, u16 arg1) {
+    arg0->eventScript = db_lookupRegistered(4, arg1 | 0x50000, 0);
     return 0;
 }
 
@@ -677,29 +677,29 @@ s32 func_800A9814(FieldScene *arg0, u16 arg1) {
     return 0;
 }
 
-s32 func_800A9860(FieldScene *arg0, s32 arg1) {
+s32 fld_setupBackground(FieldScene *arg0, s32 arg1) {
     GameData *gd = g_gameState->unk1C;
     s32 id;
 
     func_800C0D40(&gd->unk8, &gd->unkA, gd->unk10[0], gd->unk10[1], &gd->unk18, D_80067948 + 0x400);
     func_800C0D8C(D_80067948, 0x400);
-    id = func_800AA0C8(arg0, arg1);
-    arg0->unk14 = db_lookupRegistered(4, id, 0);
-    func_800C0DA4(arg0->unk14);
+    id = fld_getBgKey(arg0, arg1);
+    arg0->bg = db_lookupRegistered(4, id, 0);
+    func_800C0DA4(arg0->bg);
     D_80067948 = func_800BFCE8();
     func_800C7430();
-    arg0->unk18 = db_lookupRegistered(4, (s32)db_lookupRegistered(9, id, 0xB0000), 0);
-    func_800C3B80((u8 *)arg0->unk18 + 4);
+    arg0->walkmesh = db_lookupRegistered(4, (s32)db_lookupRegistered(9, id, 0xB0000), 0);
+    func_800C3B80((u8 *)arg0->walkmesh + 4);
     D_80067948 = func_800AFCBC(D_80067948);
     return 0;
 }
 
 s32 func_800A9954(FieldScene *arg0) {
-    arg0->unk1C = db_lookupRegistered(4, (u16)func_800AA0C8(arg0) | 0x1F0000, 0);
+    arg0->unk1C = db_lookupRegistered(4, (u16)fld_getBgKey(arg0) | 0x1F0000, 0);
     return 0;
 }
 
-void func_800A9998(void) {
+void fld_startAudio(void) {
     while (func_800B0124(0xC00, -1, 0, 0, 0) != 0) {
     }
     if (g_gameState->unk1C->unk0 & 0x400000) {
@@ -713,7 +713,7 @@ void func_800A9998(void) {
     }
 }
 
-s32 func_800A9AAC(void) {
+s32 fld_loadTexturesInCdOrder(void) {
     s32 best;
     s32 i;
     s32 min;
@@ -801,19 +801,19 @@ s32 fld_loadFile(FieldScene *sc, s32 arg1) {
         }
         DrawSync(0);
     }
-    sc->unk24 = (void *)db_lookup(base, 2, 0x1B0001, 0);
-    size = g_gameState->unk1C->unk854[0].unk10 - ((s32)sc->unk24 - base);
-    func_8001DAA4(id, (s32)sc->unk24, size, NULL);
+    sc->fieldFile = (void *)db_lookup(base, 2, 0x1B0001, 0);
+    size = g_gameState->unk1C->unk854[0].unk10 - ((s32)sc->fieldFile - base);
+    func_8001DAA4(id, (s32)sc->fieldFile, size, NULL);
     DrawSync(0);
-    sc->unk24 = (void *)id;
+    sc->fieldFile = (void *)id;
     if (g_gameState->unk1C->unk854[0].unk10 < g_gameState->unk1C->unk854[0].unk4) {
         func_8002177C(g_gameState->unk1C->unk854, g_gameState->unk1C->sceneSector[1], g_gameState->unk1C->sceneSectors[1] << 11,
                       (void *)(id + size), g_gameState->unk1C->unk854[0].unk10, -1, NULL);
         while (func_800217C4(g_gameState->unk1C->unk854) != 0) {
         }
     }
-    db_register((s32)sc->unk24, 0);
-    D_80067948 = (s32)sc->unk24 + func_8001CA70((s32)sc->unk24);
+    db_register((s32)sc->fieldFile, 0);
+    D_80067948 = (s32)sc->fieldFile + func_8001CA70((s32)sc->fieldFile);
     return 0;
 }
 
@@ -825,9 +825,9 @@ s32 func_800AA01C(u16 *arg0, u16 *arg1) {
     return 0;
 }
 
-s32 func_800AA074(FieldScene *arg0, s16 arg1) {
-    db_unregister(arg0->unk24);
-    arg0->unk24 = NULL;
+s32 fld_freeFieldFile(FieldScene *arg0, s16 arg1) {
+    db_unregister(arg0->fieldFile);
+    arg0->fieldFile = NULL;
     return 0;
 }
 
@@ -837,10 +837,10 @@ s32 func_800AA0A8(FieldScene *arg0, s16 arg1) {
 }
 
 /* old-style definition: some callers pass a second argument */
-s32 func_800AA0C8(arg0)
+s32 fld_getBgKey(arg0)
     FieldScene *arg0;
 {
-    return db_lookup((s32)arg0->unk24, 3, 0xA0000, 0);
+    return db_lookup((s32)arg0->fieldFile, 3, 0xA0000, 0);
 }
 
 s32 fld_depFindBattle(u16 arg0, s32 *arg1, s32 *arg2) {

@@ -24,3 +24,28 @@ gameover_main = 0x801F3488; // type:func [runtime] ovl_65 function at this addre
 fld_movieCommand = 0x800AD944; // type:func [code] event-script opcode 0x28 (main) passes (mode, list<<8|entry, rgb24), mode 0 starts a movie (fld_movieStart), 4 returns mbg_getFrame, 5 mbg_setRgb24, main's script variables 14/15 read modes 4/3
 fld_movieStart = 0x800ADA7C; // type:func [code] stores the movie list/entry/rgb24 for fld_movieUpdate and sets its state to 1
 fld_movieUpdate = 0x800ADB74; // type:func [code] per-frame field movie state machine called from fld_main - loads ovl_64 (file 0x64) to 0x80198700, MBG_init/mbg_play/mbg_update, shutdown at the end
+fld_entry = 0x800A7A48; // type:func [code] mode-1 entry, called by main game_main after game_loadModeOverlay(1) - fld_init, fld_runArea until GameState.unk0 & 3, fld_quit
+fld_runArea = 0x800A7AAC; // type:func [code] fld_loadArea, then fld_main(GameData.fieldId) until GameState.unk0 & 7, then fld_unloadArea (called by fld_entry with GameData.unk3A)
+fld_init = 0x800A8198; // type:func [code] field-mode init called once by fld_entry - allocates the FieldMap, vsyncMode 2, GameData callbacks unk838/83C/8BC, loads the common file and sound bank
+fld_quit = 0x800A82F8; // type:func [code] end of fld_entry - clears D_800739B0[0..1], func_800B1CE4, fld_freeCommon
+fld_allocMap = 0x800A8344; // type:func [code] puts the 0x50-byte FieldMap (GameData.unk8E4.field) at D_80067944+0x2A000 and advances the allocation pointer D_80067948
+fld_initMap = 0x800A8380; // type:func [code] resets every FieldMap member (fld_init)
+fld_readSoundBank = 0x800A83E0; // type:func [code] copies db item 0x90164 to D_80067944+0x146F00 and keeps its size in FieldMap.unk20, fld_startAudio uploads it with func_80055E14 (AKAO data)
+fld_loadCommon = 0x800A847C; // type:func [code] loads dir-1 file 0x2714 (preloaded copy or CD) at D_80067948 and registers it as a db container in FieldMap.unk10 (fld_init)
+fld_freeCommon = 0x800A8588; // type:func [code] db_unregister of FieldMap.unk10, the fld_loadCommon container (fld_quit)
+fld_loadArea = 0x800A85F4; // type:func [code] allocates and resets the FieldMapObj, reads the area bundle (fld_readAreaFile) and finds its 0x60000|id item (fld_runArea)
+fld_unloadArea = 0x800A8698; // type:func [code] fld_freeAreaFile, then GameData.unk3A = FieldMapObj.unk10, the area to load next (fld_runArea)
+fld_allocArea = 0x800A86FC; // type:func [code] takes a FieldMapObj from the allocation pointer D_80067948 and stores it in FieldMap.unkC
+fld_initArea = 0x800A8724; // type:func [code] resets the FieldMapObj, unk10 = GameData.unk3A
+fld_findAreaItem = 0x800A879C; // type:func [code] FieldMapObj.unk8 = db item 0x60000|area (fld_loadArea)
+fld_readAreaFile = 0x800A87DC; // type:func [code] reads the area bundle at GameData.sceneSector[0] (or its preload copy) to D_80067948 and registers it (FieldMapObj.unkC)
+fld_freeAreaFile = 0x800A8990; // type:func [code] db_unregister of FieldMapObj.unkC (fld_unloadArea)
+fld_allocScene = 0x800A9350; // type:func [code] allocates the FieldScene at D_80067948 plus its actor-info (0x1E0) and trigger (0xC0) tables (fld_load)
+fld_initScene = 0x800A939C; // type:func [code] resets every FieldScene member, the 24 FieldActorInfo records and the 16 FieldTrig entries (fld_load)
+fld_refindSectors = 0x800A9570; // type:func [code] when FieldMap.unk0 & 0x10000, finds the field, area and music sectors again in the CD directory tables (GameState.unk14), called after the disc-change screen
+fld_findEventScript = 0x800A97D4; // type:func [code] FieldScene.unkC = db item 0x50000|field (the event script, docs/encounters.md), passed to evt_init by fld_load
+fld_setupBackground = 0x800A9860; // type:func [code] finds the field background (key from fld_getBgKey) -> FieldScene.unk14 for func_800C0DA4, and its 0xB0000 link (walkmesh) -> unk18 for func_800C3B80
+fld_startAudio = 0x800A9998; // type:func [code] waits for the sound request handler (func_800B0124 0xC00), starts the music when GameData.unk0 & 0x400000, uploads the fld_readSoundBank data
+fld_loadTexturesInCdOrder = 0x800A9AAC; // type:func [code] loads the queued textures (D_800C9F20, FieldScene.unk60 entries) with func_800AA4E8, lowest CD sector (file_find(0xA)) first
+fld_freeFieldFile = 0x800AA074; // type:func [code] db_unregister of FieldScene.unk24, the container fld_loadFile registered (fld_exit)
+fld_getBgKey = 0x800AA0C8; // type:func [code] db_lookup mode 3 (key by index) of block kind 0xA in the field file container FieldScene.unk24
