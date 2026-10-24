@@ -679,11 +679,11 @@ void btl_showCmdName(BtlCmd *arg0) {
     u8 buf[32];
     u16 t;
     switch (arg0->cmdNo) {
-    case 0xE:
-    case 0xF:
+    case BTL_CMD_ITEM:
+    case BTL_CMD_THROW:
         s = btl_getItemName(arg0->subNo);
         break;
-    case 0x32:
+    case BTL_CMD_RETURN_MAGIC:
         s = g_gameState->unk1C->unk8E4.battle->unk11C0->unk14 + arg0->ability->nameOfs;
         break;
     default:

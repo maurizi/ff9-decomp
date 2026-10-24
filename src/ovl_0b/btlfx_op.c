@@ -1706,7 +1706,7 @@ s32 func_800E8498(s32 arg0) {
 
 s32 func_800E84F0(s32 arg0) {
     s32 ret = 0;
-    if (g_gameState->unk1C->unk8E4.battle->curCmd->cmdNo == 0x33) {
+    if (g_gameState->unk1C->unk8E4.battle->curCmd->cmdNo == BTL_CMD_AUTO_POTION) {
         ret = btl_isCmdPending(btl_getUnit(arg0)->cmd) != 0;
     }
     return ret;

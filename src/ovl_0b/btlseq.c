@@ -595,7 +595,7 @@ void btlseq_opScale(BtlScript *arg0, BtlUnit *arg1) {
 s32 btlseq_stepScale(BtlScript *arg0, BtlUnit *arg1) {
     s16 *p = arg0->unk28;
     u16 v = arg0->unk28[0] + p[1] * arg0->unk10 / p[2];
-    btl_setUnitAttr((s32)arg1, 0x37, v);
+    btl_setUnitAttr((s32)arg1, BTL_ATTR_SCALE, v);
     if (v == 0x1000) {
         arg1->model->unk0 &= ~2;
     }

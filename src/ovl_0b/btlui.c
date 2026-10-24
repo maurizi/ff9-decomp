@@ -137,7 +137,7 @@ void func_800E9F68(u8 arg0) {
 
 BtlUnit *btlui_getActiveUnit(void) {
     BtlUnit *u = NULL;
-    if (g_btlUi->menuState != 0) {
+    if (g_btlUi->menuState != BTLUI_MENU_NONE) {
         u = g_btlUi->cmdUnit;
     }
     return u;
@@ -148,7 +148,7 @@ s32 func_800E9FF4(void) {
 }
 
 s32 func_800EA004(void) {
-    return g_btlUi->menuState == 3;
+    return g_btlUi->menuState == BTLUI_MENU_TARGET;
 }
 
 u8 func_800EA024(void) {
@@ -164,7 +164,7 @@ u8 btl_isAtbRunning(void) {
     if (f != 1) {
         return 1;
     }
-    return g_btlUi->menuState < 2;
+    return g_btlUi->menuState < BTLUI_MENU_LIST;
 }
 
 s32 func_800EA094(void) {
@@ -503,7 +503,7 @@ BtlUnit *func_800EAD94(void) {
     BtlUnit *u;
     u8 ok;
     for (;;) {
-        if (g_btlUi->unk12C4 == 0 || g_btlUi->menuState != 0) {
+        if (g_btlUi->unk12C4 == 0 || g_btlUi->menuState != BTLUI_MENU_NONE) {
             return NULL;
         }
         u = g_btlUi->unk12C8[g_btlUi->unk12C5];
@@ -565,7 +565,7 @@ void func_800EB05C(void) {
     s32 i;
     Unk80104F88 *p = func_800F2A60(0x12D8);
     g_btlUi = p;
-    p->menuState = 0;
+    p->menuState = BTLUI_MENU_NONE;
     p->cmdUnit = NULL;
     g_btlUi->unk12C0 = 0;
     g_btlUi->unk12BC = g_gameState->unk1C->unk8E4.battle->unk132C.unk0 & 3;
@@ -582,10 +582,10 @@ void btlui_menuInput(void) {
     u8 st;
     func_800EAE8C();
     st = g_btlUi->menuState;
-    if (st == 4) {
+    if (st == BTLUI_MENU_CLOSING) {
         return;
     }
-    if (st == 0) {
+    if (st == BTLUI_MENU_NONE) {
         BtlUnit *u = func_800EAD94();
         g_btlUi->cmdUnit = u;
         if (u != NULL) {
@@ -625,7 +625,7 @@ s32 func_800EB2A4(void) {
 
 s32 btlui_setMenuState(s32 arg0) {
     s32 old = g_btlUi->menuState;
-    if (arg0 != 5) {
+    if (arg0 != BTLUI_MENU_KEEP) {
         g_btlUi->menuState = arg0;
     }
     return old;
@@ -676,8 +676,8 @@ void func_800EB410(void) {
     if (u != NULL) {
         u->inMenuQueue = 0;
     }
-    if (g_btlUi->menuState != 0) {
-        g_btlUi->menuState = 4;
+    if (g_btlUi->menuState != BTLUI_MENU_NONE) {
+        g_btlUi->menuState = BTLUI_MENU_CLOSING;
         func_800EB46C();
     }
     func_800F142C();
@@ -685,7 +685,7 @@ void func_800EB410(void) {
 
 void func_800EB46C(void) {
     s32 i;
-    if (g_btlUi->menuState != 0) {
+    if (g_btlUi->menuState != BTLUI_MENU_NONE) {
         if (!func_800F29A4()) {
             win_setOnClosed(g_btlUi->unk12A4[3], func_800EBA10);
             win_closeAll();
@@ -806,14 +806,14 @@ void func_800EB81C(void) {
                 u->unkB2 = 0;
                 u->unk68 &= ~0x10000;
                 u->unk68 &= ~0x10000000;
-                if (g_btlUi->menuState == 3) {
+                if (g_btlUi->menuState == BTLUI_MENU_TARGET) {
                     func_800F11A4(u);
                 }
             } else if (c == 3) {
                 u->unkB2 = 1;
                 u->unk68 |= 0x10000;
                 u->unk68 |= 0x10000000;
-                if (g_btlUi->menuState == 3) {
+                if (g_btlUi->menuState == BTLUI_MENU_TARGET) {
                     func_800F1150(u);
                 }
             }
@@ -847,7 +847,7 @@ s32 func_800EB9E0(void) {
 }
 
 void func_800EBA10(Window *arg0) {
-    g_btlUi->menuState = 0;
+    g_btlUi->menuState = BTLUI_MENU_NONE;
 }
 
 void btlui_drawHelpWindow(void) {
@@ -1128,7 +1128,7 @@ void func_800EC4EC(void) {
     g_btlCmdMenu.unit = g_btlUi->cmdUnit;
     p->unk1 = 0;
     p->unk2 = 0;
-    btlui_setMenuState(4);
+    btlui_setMenuState(BTLUI_MENU_CLOSING);
     w = win_open(&D_800F8DDC, 0xF, 2, 3);
     g_btlUi->unk12A4[3] = w;
     win_setDrawContent(w, btlui_drawCmdList);
@@ -1534,7 +1534,7 @@ void *btlui_getCmdHelpText(void) {
 
 void func_800EDC3C(void) {
     s32 v = g_btlCmdMenu.unit->unkB4->unk1B;
-    btlui_setMenuState(1);
+    btlui_setMenuState(BTLUI_MENU_CMD);
     if (v != D_80104E68.unk15) {
         func_8002C584(v);
     }
@@ -1571,7 +1571,7 @@ void func_800EDD9C(void) {
 
 void func_800EDDF8(void) {
     func_800EB518(&g_btlCmdMenu.unit->unkB4->unk49C, 0, g_btlCmdMenu.cursor, 0);
-    btlui_setMenuState(4);
+    btlui_setMenuState(BTLUI_MENU_CLOSING);
     win_setOnClosed(g_btlUi->unk12A4[3], func_800EE120);
     win_close(g_btlUi->unk12A4[3]);
 }
@@ -1631,18 +1631,18 @@ void func_800EE048(void) {
     g_btlCmdMenu.unit->inMenuQueue = 0;
     g_btlCmdMenu.unit->cmdIssued = 1;
     btl_setCmd((s32)g_btlCmdMenu.unit->cmd, v, D_800FD56C[v].unk8, g_btlCmdMenu.unit->unitBit, 0);
-    btlui_setMenuState(4);
+    btlui_setMenuState(BTLUI_MENU_CLOSING);
     win_setOnClosed(g_btlUi->unk12A4[3], func_800EE0FC);
     win_close(g_btlUi->unk12A4[3]);
 }
 
 void func_800EE0FC(Window *arg0) {
-    btlui_setMenuState(0);
+    btlui_setMenuState(BTLUI_MENU_NONE);
     g_btlCmdMenu.unk10.unk0 = 0;
 }
 
 void func_800EE120(Window *arg0) {
-    btlui_setMenuState(0);
+    btlui_setMenuState(BTLUI_MENU_NONE);
     g_btlCmdMenu.unk10.unk0 = 0;
     func_800EB358(g_btlCmdMenu.unit);
 }
@@ -1722,7 +1722,7 @@ void func_800EE37C(Unk800EE37C *arg0) {
     u8 f;
     Unk800EB518 *c;
 
-    btlui_setMenuState(4);
+    btlui_setMenuState(BTLUI_MENU_CLOSING);
     D_80104FD0.unk14 = g_btlUi->cmdUnit;
     D_80104FD0.unk0 = arg0->unk0;
     D_80104FD0.unk4 = (struct Unk80104FD4 *)arg0->unk4;
@@ -1963,12 +1963,12 @@ void func_800EEFA8(Window *arg0) {
 }
 
 void func_800EF00C(void) {
-    btlui_setMenuState(2);
+    btlui_setMenuState(BTLUI_MENU_LIST);
     g_btlUi->unk12A4[3]->unk1E = 0;
 }
 
 void func_800EF044(void) {
-    btlui_setMenuState(4);
+    btlui_setMenuState(BTLUI_MENU_CLOSING);
     win_setOnClosed(g_btlUi->unk12A4[2], func_800EF7D4);
     win_close(g_btlUi->unk12A4[2]);
 }
@@ -2134,7 +2134,7 @@ u8 *func_800EF724(void) {
 }
 
 void func_800EF7D4(Window *arg0) {
-    btlui_setMenuState(1);
+    btlui_setMenuState(BTLUI_MENU_CMD);
     g_btlUi->unk12A4[3]->unk1E = 1;
 }
 
@@ -2165,7 +2165,7 @@ void func_800EF80C(Unk800EF80C *arg0) {
     func_800EFA10(1);
     if (g_btlTarget.unkF == 0) {
         if (D_80104E6B == 0) {
-            btlui_setMenuState(3);
+            btlui_setMenuState(BTLUI_MENU_TARGET);
         } else {
             func_800F1970(3);
         }
@@ -2406,7 +2406,7 @@ void btlui_confirmTarget(void) {
         }
     }
     d = &g_btlTarget;
-    btlui_setMenuState(4);
+    btlui_setMenuState(BTLUI_MENU_CLOSING);
     if (d->unk1 == 0x17 || d->unk1 == 0x15) {
         ok = func_800F0620(mask);
     } else {
@@ -2496,7 +2496,7 @@ void btlui_updateTargetWindow(void) {
     if ((g_btlTarget.unkC == 0 || (u32)(g_btlUi->unk12A4[0]->unk1C - 1) >= 2) && g_btlTarget.unkC != D_80104E6B) {
         if (D_80104E6B != 0) {
             if (g_btlTarget.unkC == 0) {
-                btlui_setMenuState(4);
+                btlui_setMenuState(BTLUI_MENU_CLOSING);
                 g_btlUi->unk12A4[0] = win_open(&D_800F8EF4, 5, 2, 0);
                 win_setOpenAnim(g_btlUi->unk12A4[0], 4);
                 win_setOnOpened(g_btlUi->unk12A4[0], func_800F1A8C);
@@ -2507,7 +2507,7 @@ void btlui_updateTargetWindow(void) {
             }
         } else if (g_btlTarget.unkC != 0) {
             g_btlTarget.unk12 = 3;
-            btlui_setMenuState(4);
+            btlui_setMenuState(BTLUI_MENU_CLOSING);
             win_setOnClosed(g_btlUi->unk12A4[0], func_800F1AF8);
             win_close(g_btlUi->unk12A4[0]);
         }
@@ -2718,7 +2718,7 @@ Window *func_800F1370(void) {
 
 s32 func_800F1388(void) {
     s32 ret = 0;
-    if (g_btlUi->menuState == 3) {
+    if (g_btlUi->menuState == BTLUI_MENU_TARGET) {
         ret = D_80104FFF != 0;
     }
     return ret;
@@ -2886,7 +2886,7 @@ BtlUnit *func_800F18F0(u8 arg0) {
 
 void func_800F1970(s8 arg0) {
     Window *w;
-    btlui_setMenuState(4);
+    btlui_setMenuState(BTLUI_MENU_CLOSING);
     w = win_open(&D_800F8EF4, 5, 2, 0);
     g_btlUi->unk12A4[0] = w;
     win_setOpenAnim(w, 4);
@@ -2900,7 +2900,7 @@ void func_800F1970(s8 arg0) {
 void func_800F1A20(s32 arg0) {
     if (g_btlTarget.unkC != 0) {
         g_btlTarget.unk12 = arg0;
-        btlui_setMenuState(4);
+        btlui_setMenuState(BTLUI_MENU_CLOSING);
         win_setOnClosed(g_btlUi->unk12A4[0], func_800F1AF8);
         win_close(g_btlUi->unk12A4[0]);
     }
@@ -3535,7 +3535,7 @@ void func_800F3D3C(s32 arg0) {
     func_800F412C(&D_80105078->unk4[3], &D_800F9058);
     func_800F412C(&D_80105078->unk4[4], &D_800F9064);
     D_80105078->unk4[4].unk0 = D_800F9070[arg0].unk0;
-    btlui_setMenuState(4);
+    btlui_setMenuState(BTLUI_MENU_CLOSING);
 }
 
 void func_800F3DE0(s32 arg0) {
@@ -3544,7 +3544,7 @@ void func_800F3DE0(s32 arg0) {
     func_800F412C(&D_80105078->unk4[2], &D_800F9084);
     func_800F412C(&D_80105078->unk4[3], &D_800F9084);
     func_800F412C(&D_80105078->unk4[4], &D_800F9090);
-    btlui_setMenuState(4);
+    btlui_setMenuState(BTLUI_MENU_CLOSING);
 }
 
 void func_800F3E60(void) {
@@ -3641,7 +3641,7 @@ void func_800F4140(void) {
     D_80105078->unk4[1].unk4 = 0;
     D_80105078->unk4[2].unk4 = 0;
     D_80105078->unk4[3].unk4 = 0;
-    btlui_setMenuState(3);
+    btlui_setMenuState(BTLUI_MENU_TARGET);
 }
 
 void func_800F4180(void) {

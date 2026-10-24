@@ -408,7 +408,7 @@ s32 btlcam_step(void) {
             if ((b->unk132C.unk0 >> 2) & 1) {
                 b->unkD80 = e;
             } else {
-                g_gameState->unk1C->unk8E4.battle->unkD80 = 3;
+                g_gameState->unk1C->unk8E4.battle->unkD80 = BTL_PHASE_ENTRANCE;
             }
             g_btlCamera.unk67 = 0;
         }

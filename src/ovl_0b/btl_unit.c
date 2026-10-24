@@ -154,7 +154,7 @@ s32 btl_setIdleMotion(BtlUnit *u) {
         return 0;
     }
     if ((u->status & (BTL_STATUS_PETRIFY | BTL_STATUS_VENOM | BTL_STATUS_STOP | BTL_STATUS_FREEZE | BTL_STATUS_JUMP)) || ((u->unk68 >> 17) & 1)
-        || ((u->unk68 & 1) && g->characters[(u->unk68 >> 1) & 0xF].unk34.b.unk4 == 2 && cmd->cmdNo == 0x1F)) {
+        || ((u->unk68 & 1) && g->characters[(u->unk68 >> 1) & 0xF].unk34.b.unk4 == 2 && cmd->cmdNo == BTL_CMD_SWD_MAG)) {
         return 0;
     }
     {
@@ -329,7 +329,7 @@ void btl_updateKo(BtlUnit *u) {
                 btl_addEnemyRewards(e->unk0);
             }
             u->unk7D++;
-            if (g_gameState->unk1C->unk8E4.battle->unkD80 != 5 ||
+            if (g_gameState->unk1C->unk8E4.battle->unkD80 != BTL_PHASE_END ||
                 (u32)(g_gameState->unk1C->unk8E4.battle->unkD81 - 2) >= 2) {
                 btl_checkSideDefeated(u);
             }

@@ -82,7 +82,7 @@ void btl_playCmdEffect(BtlCmd *arg0, s32 arg1, s16 *arg2) {
         if (u->unitBit & mask) {
             l->unk28[l->unk27++] = u;
         }
-        if (arg0->cmdNo == 0x1F && (u->unk68 & 1) && g_gameState->unk1C->characters[(u->unk68 >> 1) & 0xF].unk34.b.unk4 == 2) {
+        if (arg0->cmdNo == BTL_CMD_SWD_MAG && (u->unk68 & 1) && g_gameState->unk1C->characters[(u->unk68 >> 1) & 0xF].unk34.b.unk4 == 2) {
             l->unk44 = u;
         }
     }
@@ -101,9 +101,9 @@ void btl_startCmdEffect(BtlCmd *cmd) {
     u16 t;
 
     switch (cmd->cmdNo) {
-    case 0x1:
-    case 0x31:
-    case 0x34:
+    case BTL_CMD_ATTACK:
+    case BTL_CMD_COUNTER:
+    case BTL_CMD_CHARGE_ATTACK:
         if (u->unk68 & 1) {
             id = g_gameState->unk1C->characters[(u->unk68 >> 1) & 0xF].unk34.b.unk4 + 0x64;
         } else {
@@ -111,7 +111,7 @@ void btl_startCmdEffect(BtlCmd *cmd) {
         }
         btl_playCmdEffect(cmd, id, 0);
         break;
-    case 0x2:
+    case BTL_CMD_STEAL:
         if (u->unk68 & 1) {
             k = g_gameState->unk1C->characters[(u->unk68 >> 1) & 0xF].unk34.b.unk4;
         } else {
@@ -135,21 +135,21 @@ void btl_startCmdEffect(BtlCmd *cmd) {
             break;
         }
         break;
-    case 0x4:
+    case BTL_CMD_DEFEND:
         btl_showCmdName(cmd);
         u->model->unkC = (BtlUnit9CC *)u->motions[12];
         u->unkA0->unk3A = 0;
         btl_execCmd(u);
         return;
-    case 0x7:
+    case BTL_CMD_CHANGE:
         btl_showCmdName(cmd);
         u->model->unkC = (BtlUnit9CC *)u->motions[9];
         return;
-    case 0xE:
-    case 0x33:
+    case BTL_CMD_ITEM:
+    case BTL_CMD_AUTO_POTION:
         btl_playCmdEffect(cmd, D_8006B1F4[cmd->subNo - 0xE0].unk0_8, 0);
         break;
-    case 0xF:
+    case BTL_CMD_THROW:
         /* padded: the first jump table is 8-aligned in its object */
         __asm__(".section .rodata\n\t.word 0\n\t.section .text");
         switch (D_80069018[cmd->subNo].unk8) {
@@ -185,7 +185,7 @@ void btl_startCmdEffect(BtlCmd *cmd) {
             break;
         }
         break;
-    case 0x2F:
+    case BTL_CMD_ENEMY_TURN:
         if ((u16)cmd->targets < 0x10 && (cmd->ability->unk8 & 8) && !cmd->unk10.b.unk0_0) {
             t = btl_findCover((u16)cmd->targets);
             if (t) {
@@ -193,19 +193,19 @@ void btl_startCmdEffect(BtlCmd *cmd) {
                 cmd->unk10.b.unk0_5 = 1;
             }
         }
-    case 0x35:
-    case 0x36:
-    case 0x37:
+    case BTL_CMD_ENEMY_COUNTER:
+    case BTL_CMD_ENEMY_DEATH:
+    case BTL_CMD_ENEMY_REACT:
         btl_startEnemySeq(cmd);
         return;
-    case 0x3B:
+    case BTL_CMD_TRANCE:
         id = 0x1E9;
         if (u->status & BTL_STATUS_TRANCE) {
             id = 0x101;
         }
         btl_playCmdEffect(cmd, id, 0);
         break;
-    case 0x12:
+    case BTL_CMD_EIDOLON:
         switch (cmd->subNo) {
         case 0x31:
             g_gameState->unk1C->unk8E4.battle->unk11BB = 0x99;
@@ -234,7 +234,7 @@ void btl_startCmdEffect(BtlCmd *cmd) {
         }
     default:
         if ((cmd->ability->unk0_0 == 3 && !cmd->unk10.b.unk0_0) || (cmd->unk10.w & 0x600) ||
-            cmd->cmdNo == 0x20 || cmd->cmdNo == 0x21) {
+            cmd->cmdNo == BTL_CMD_SEIKEN || cmd->cmdNo == BTL_CMD_SEIKEN2) {
             btl_playCmdEffect(cmd, cmd->ability->unkC, 0);
         } else {
             btl_playCmdEffect(cmd, cmd->ability->unk0_8, 0);

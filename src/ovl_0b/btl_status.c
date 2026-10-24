@@ -73,7 +73,7 @@ u32 btl_addStatus(BtlUnit *u, u32 f) {
             blk |= tbl[i].unk8;
         }
     }
-    if (btl_isCmdQueued(u, 0x3E)) {
+    if (btl_isCmdQueued(u, BTL_CMD_PETRIFY)) {
         blk |= tbl[0].unk8;
     }
     if (blk & f) {
@@ -92,8 +92,8 @@ u32 btl_addStatus(BtlUnit *u, u32 f) {
     switch (n) {
     case 0:
         if (!btl_isCmdPending(u->koCmd)) {
-            if (g_gameState->unk1C->unk8E4.battle->unkD80 >= 3) {
-                btl_setCmd(u->koCmd, 0x3E, 0, u->unitBit, 0);
+            if (g_gameState->unk1C->unk8E4.battle->unkD80 >= BTL_PHASE_ENTRANCE) {
+                btl_setCmd(u->koCmd, BTL_CMD_PETRIFY, 0, u->unitBit, 0);
             } else {
                 if (u->unk68 & 1) {
                     func_800C0544(u);
@@ -105,7 +105,7 @@ u32 btl_addStatus(BtlUnit *u, u32 f) {
         }
         break;
     case 1:
-        if (g_gameState->unk1C->unk8E4.battle->unkD80 >= 3) {
+        if (g_gameState->unk1C->unk8E4.battle->unkD80 >= BTL_PHASE_ENTRANCE) {
             btl_checkSideDefeated(u);
         }
     case 17:
@@ -133,7 +133,7 @@ u32 btl_addStatus(BtlUnit *u, u32 f) {
         }
         u->atb = 0;
         if (!btl_isCmdPending(u->koCmd)) {
-            btl_setCmd(u->koCmd, 0x3C, 0, u->unitBit, 0);
+            btl_setCmd(u->koCmd, BTL_CMD_KO, 0, u->unitBit, 0);
             if (!(u->unk68 & 1)) {
                 btl_checkEnemiesKO(u);
             }
@@ -143,7 +143,7 @@ u32 btl_addStatus(BtlUnit *u, u32 f) {
         btl_checkSideDefeated(u);
         break;
     case 14:
-        btl_setCmd(u->tranceCmd, 0x3B, 0, u->unitBit, 0);
+        btl_setCmd(u->tranceCmd, BTL_CMD_TRANCE, 0, u->unitBit, 0);
         break;
     case 19:
         if (u->status & BTL_STATUS_SLOW) {
@@ -214,7 +214,7 @@ s32 btl_removeStatus(BtlUnit *u, u32 f) {
     if (!(s->unk8 & f)) {
         return 1;
     }
-    if (!(u->unk68 & 1) && g_gameState->unk1C->unk8E4.battle->unkD80 == 5 && (f & 0x1003)) {
+    if (!(u->unk68 & 1) && g_gameState->unk1C->unk8E4.battle->unkD80 == BTL_PHASE_END && (f & 0x1003)) {
         return 1;
     }
     s->unk8 &= ~f;
@@ -255,7 +255,7 @@ s32 btl_removeStatus(BtlUnit *u, u32 f) {
         if (c->unk4 != u || c->cmdNo > 0x30) {
             u->cmdIssued = 0;
         }
-        btl_removeQueuedCmd(u, 0x3C);
+        btl_removeQueuedCmd(u, BTL_CMD_KO);
         if (u->autoStatus & BTL_STATUS_REGEN) {
             btl_initDotTimer(u, 0x12);
         }
@@ -280,7 +280,7 @@ s32 btl_removeStatus(BtlUnit *u, u32 f) {
             u->model->unkC = (BtlUnit9CC *)u->motions[(u->unk68 >> 18) & 1];
             u->unkA0->unk3A = 0;
         }
-        btl_setCmd(u->tranceCmd, 0x3B, 0, u->unitBit, 0);
+        btl_setCmd(u->tranceCmd, BTL_CMD_TRANCE, 0, u->unitBit, 0);
         break;
     case 0x80000:
     case 0x100000:
@@ -307,7 +307,7 @@ s32 btl_removeStatus(BtlUnit *u, u32 f) {
         u->delayedCmd->targets = 0;
         break;
     case 0x80000000:
-        btl_removeQueuedCmd(u, 0x3E);
+        btl_removeQueuedCmd(u, BTL_CMD_PETRIFY);
         break;
     }
     return 2;
@@ -362,7 +362,7 @@ void btl_updateUnitStatus(BtlUnit *arg0) {
                     if (fl & 4) {
                         if (!(fl & 8)) {
                             if (b->unk11BC <= 0) {
-                                btl_setCmd(arg0->delayedCmd, 0x39, g_gameState->unk1C->unk8E4.battle->unk11BB, btl_getUnitsWithStatus(1, 0), 8);
+                                btl_setCmd(arg0->delayedCmd, BTL_CMD_TRANCE_EIDOLON, g_gameState->unk1C->unk8E4.battle->unk11BB, btl_getUnitsWithStatus(1, 0), 8);
                                 g_gameState->unk1C->unk8E4.battle->unk11B8 |= 8;
                             } else {
                                 b->unk11BC -= arg0->atbSpeed;
@@ -375,10 +375,10 @@ void btl_updateUnitStatus(BtlUnit *arg0) {
                 t->unk2E -= arg0->atbSpeed;
                 if (t->unk2E < 0) {
                     c = arg0->delayedCmd;
-                    if (c->cmdNo == 3) {
-                        btl_queueAutoCmd(arg0, 0xA, 0xB9, (u16)c->targets);
+                    if (c->cmdNo == BTL_CMD_JUMP) {
+                        btl_queueAutoCmd(arg0, BTL_CMD_SPEAR, BTL_ABIL_SPEAR, (u16)c->targets);
                     } else {
-                        btl_queueAutoCmd(arg0, 0xB, 0xBA, (u16)c->targets);
+                        btl_queueAutoCmd(arg0, BTL_CMD_SPEAR_TRANCE, BTL_ABIL_SPEAR_TRANCE, (u16)c->targets);
                     }
                 }
             }
@@ -784,7 +784,7 @@ void btl_checkSideDefeated(BtlUnit *arg0) {
         found = 0;
         for (u = b->unk6F8; u != NULL; u = u->next) {
             if (u->unk68 & 1) {
-                if (!(u->status & (BTL_STATUS_PETRIFY | BTL_STATUS_VENOM | BTL_STATUS_KO | BTL_STATUS_STOP)) || ((u->hp == 0 || (u->status & BTL_STATUS_KO)) && (u->status & BTL_STATUS_AUTO_LIFE)) || btl_isCmdQueued(u, 0x3D)) {
+                if (!(u->status & (BTL_STATUS_PETRIFY | BTL_STATUS_VENOM | BTL_STATUS_KO | BTL_STATUS_STOP)) || ((u->hp == 0 || (u->status & BTL_STATUS_KO)) && (u->status & BTL_STATUS_AUTO_LIFE)) || btl_isCmdQueued(u, BTL_CMD_AUTO_LIFE)) {
                     found = 1;
                     break;
                 }
@@ -808,7 +808,7 @@ void btl_checkSideDefeated(BtlUnit *arg0) {
                 if (u->status & (BTL_STATUS_PETRIFY | BTL_STATUS_VENOM | BTL_STATUS_ZOMBIE | BTL_STATUS_STOP)) {
                     break;
                 }
-                if (btl_isCmdQueued(u, 0x3A)) {
+                if (btl_isCmdQueued(u, BTL_CMD_REBIRTH_FLAME)) {
                     return;
                 }
                 if (g_randPtr >= g_randTableEnd) {
@@ -817,7 +817,7 @@ void btl_checkSideDefeated(BtlUnit *arg0) {
                 k = item_getCount(0xF9);
                 if (*g_randPtr++ < k) {
                     func_800E9F68(1);
-                    btl_setCmd(u->cmd, 0x3A, 0x49, btl_getUnitMask(0) & 0xFFFF, 1);
+                    btl_setCmd(u->cmd, BTL_CMD_REBIRTH_FLAME, BTL_ABIL_REBIRTH_FLAME, btl_getUnitMask(0) & 0xFFFF, 1);
                     return;
                 }
             }
@@ -826,7 +826,7 @@ void btl_checkSideDefeated(BtlUnit *arg0) {
         btl_showMessage(5);
     }
     func_800E9F68(0);
-    b->unkD80 = 5;
+    b->unkD80 = BTL_PHASE_END;
     btl_clearCmdQueue(b);
 }
 
@@ -954,12 +954,12 @@ void btl_checkPartyDisabled(BtlUnit *arg0) {
             if ((u->hp == 0 || (st & BTL_STATUS_KO)) && (st & BTL_STATUS_AUTO_LIFE)) {
                 return;
             }
-            if (btl_isCmdQueued(u, 0x3D)) {
+            if (btl_isCmdQueued(u, BTL_CMD_AUTO_LIFE)) {
                 return;
             }
         }
     }
-    if (six == 0 || !btl_isCmdQueued(six, 0x3A)) {
+    if (six == 0 || !btl_isCmdQueued(six, BTL_CMD_REBIRTH_FLAME)) {
         func_800E9F68(0);
         btl_flushCmdQueue(b);
         b->escapeHeld = 0;
