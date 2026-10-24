@@ -155,7 +155,8 @@ void func_801F2FE0(s32, s32);
 s32 func_801F3034(u8 *, u8 *);
 u32 func_801F30C8(void);
 
-extern u8 D_801EDF04[];
+extern u8 g_cardMenuPointsUnit[];
+extern const u8 g_cardMenuText[]; /* text bank for this menu */
 /* main exe: candidates for ff9.h */
 s32 func_80062498(void); /* collector points */
 s32 func_800624D8(void);

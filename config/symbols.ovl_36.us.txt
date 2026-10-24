@@ -1,1 +1,2 @@
-D_801EDF1C = 0x801EDF1C; // force_not_migration:True
+g_cardMenuText = 0x801EDF18; // force_not_migration:True [code] text bank passed to text_setBank by menu_card_init (count 45, ranks "Beginner".."The Collector", discard prompt)
+g_cardMenuPointsUnit = 0x801EDF04; // force_not_migration:True [code] "P" drawn with ui_drawSmallDigits right after the collector points total by menu_card_drawRank

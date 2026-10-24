@@ -1,10 +1,13 @@
 #include "ovl_36.h"
 
-INCLUDE_RODATA("asm/us/ovl_36/nonmatchings/ovl_36", D_801EDF04);
+INCLUDE_RODATA("asm/us/ovl_36/nonmatchings/ovl_36", g_cardMenuPointsUnit);
 
 INCLUDE_RODATA("asm/us/ovl_36/nonmatchings/ovl_36", D_801EDF08);
 
 INCLUDE_RODATA("asm/us/ovl_36/nonmatchings/ovl_36", D_801EDF10);
+
+/* text bank for this menu (count + {offset, info} table, then strings) */
+INCLUDE_RODATA("asm/us/ovl_36/nonmatchings/ovl_36", g_cardMenuText);
 
 void func_801F08F4(void) {
     s32 i;
@@ -16,7 +19,7 @@ void func_801F08F4(void) {
     D_801F347C.unk4 = 0;
     D_801F347C.unk3 = func_80062638();
     D_801F347C.unk6 = 0xFF;
-    text_setBank("-");
+    text_setBank(g_cardMenuText);
     func_801F2E60();
     func_801F2CD4();
     func_8003556C(D_801F347C.unk3 ? func_801F22DC : 0);
@@ -43,9 +46,6 @@ void func_801F08F4(void) {
         func_801F2C5C(id);
     }
 }
-
-/* table and text after func_801F08F4's "-" (not referenced by it) */
-INCLUDE_RODATA("asm/us/ovl_36/nonmatchings/ovl_36", D_801EDF1C);
 
 void func_801F0AE8(void) {
     s32 cur;
@@ -187,7 +187,7 @@ void func_801F0F9C(void) {
     text_drawBlock(r->x + 0xA, r->y + 0x30, 0x14, text_get(0x2B), 0);
     text_drawBlock(r->x + 0xA, r->y + 0x3A, 0x14, text_get(0x2C), 0);
     ui_drawSmallDigits(r->x + 0x5A, r->y + 9, 0x14, buf, 0);
-    ui_drawSmallDigits(r->x + 0x78, r->y + 0xB, 0x14, D_801EDF04, 0);
+    ui_drawSmallDigits(r->x + 0x78, r->y + 0xB, 0x14, g_cardMenuPointsUnit, 0);
     w = func_801F0F9C_width(text_get(0x2C));
     text_formatNumber(a, buf, 5, 1);
     w += 0xB;
