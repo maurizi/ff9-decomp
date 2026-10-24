@@ -192,6 +192,7 @@ s32 fx_1f2_op80(s32 mode, Fx1f2Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
     Fx1f2Model *mm;
     VECTOR *q;
     VECTOR *q2;
+    Fx1f2Trail *pt;
 
     if (mode == 0) {
         *arg4 = 0x128;
@@ -700,7 +701,6 @@ s32 fx_1f2_op80(s32 mode, Fx1f2Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
                 s32 dz;
                 s32 dx;
 
-                tr = &D_801EA690[i];
                 if (i >= 8) {
                     if (D_801EA690[i].unk4C != 0) {
                         if (--D_801EA690[i].unk4C < 8) {
@@ -720,13 +720,14 @@ s32 fx_1f2_op80(s32 mode, Fx1f2Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
                             gte_SetRotMatrix(&m);
                             gte_SetTransMatrix(&m);
                             n = 9;
-                            D_801EA690[i].unk0 = D_801EA690[i].unk2 = 8;
-                            D_801EA690[i].unk1 = 0;
-                            sv = D_801EA690[i].unk4;
-                            for (j = 0, dx = 0; j < n; dx += 0x60, j++) {
-                                ((SVECTOR *)out)->vx = D_801EA690[i].unk50[j].vx + dx - 0x180;
-                                ((SVECTOR *)out)->vz = D_801EA690[i].unk50[j].vz + dz;
-                                ((SVECTOR *)out)->vy = D_801EA690[i].unk50[j].vy;
+                            pt = &D_801EA690[i];
+                            pt->unk0 = pt->unk2 = 8;
+                            pt->unk1 = 0;
+                            sv = pt->unk4;
+                            for (j_u4ce = 0; j_u4ce < n; j_u4ce++) {
+                                ((SVECTOR *)out)->vx = D_801EA690[i].unk50[j_u4ce].vx + j_u4ce * 0x60 - 0x180;
+                                ((SVECTOR *)out)->vz = D_801EA690[i].unk50[j_u4ce].vz + dz;
+                                ((SVECTOR *)out)->vy = D_801EA690[i].unk50[j_u4ce].vy;
                                 gte_ldv0((SVECTOR *)out);
                                 gte_rtv0tr();
                                 gte_stlvnl((VECTOR *)in);
@@ -736,9 +737,9 @@ s32 fx_1f2_op80(s32 mode, Fx1f2Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
                                 sv->vz = ((VECTOR *)in)->vz;
                                 sv->pad = 0x40;
                                 sv++;
-                                D_801EA690[i].unk50[j].vx += D_801EA690[i].unkD0[j].vx;
-                                D_801EA690[i].unk50[j].vy += D_801EA690[i].unkD0[j].vy;
-                                D_801EA690[i].unk50[j].vz += D_801EA690[i].unkD0[j].vz;
+                                D_801EA690[i].unk50[j_u4ce].vx += D_801EA690[i].unkD0[j_u4ce].vx;
+                                D_801EA690[i].unk50[j_u4ce].vy += D_801EA690[i].unkD0[j_u4ce].vy;
+                                D_801EA690[i].unk50[j_u4ce].vz += D_801EA690[i].unkD0[j_u4ce].vz;
                             }
                             alpha_u4c = 0x800;
                             if (i & 1) {
@@ -760,12 +761,13 @@ s32 fx_1f2_op80(s32 mode, Fx1f2Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
                     }
                 } else {
                     n = 9;
-                    sv = tr->unk4;
+                    { Fx1f2Trail *tp = &D_801EA690[i]; sv = tp->unk4; }
                     a = D_801EA690[i].unk4C;
                     D_801EA690[i].unk4C = D_801EA690[i].unk50[a].pad;
-                    D_801EA690[i].unk0 = D_801EA690[i].unk2 = 8;
-                    D_801EA690[i].unk1 = 0;
-                    for (j = 0; j < n; j++) {
+                    pt = &D_801EA690[i];
+                    pt->unk0 = pt->unk2 = 8;
+                    pt->unk1 = 0;
+                    for (j_u4ce = 0; j_u4ce < n; j_u4ce++) {
                         sv->vx = D_801EA690[i].unk50[a].vx;
                         sv->vy = D_801EA690[i].unk50[a].vy;
                         sv->vz = D_801EA690[i].unk50[a].vz;
@@ -776,10 +778,11 @@ s32 fx_1f2_op80(s32 mode, Fx1f2Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
                     env->unk28 = 0x80;
                     alpha_u4cn = 0xFFF;
                     if (i & 1) {
-                        ex->btlfx_drawTrail((u8 *)ex->btlfx_getFileData(entry->unk8, 0xC), 0, NULL, frame, 0x1000, alpha_u4cn, 1, (u8 *)&D_801EA690[i], 0);
+                        fd = ex->btlfx_getFileData(entry->unk8, 0xC);
                     } else {
-                        ex->btlfx_drawTrail((u8 *)ex->btlfx_getFileData(entry->unk8, 6), 0, NULL, frame, 0x1000, alpha_u4cn, 1, (u8 *)&D_801EA690[i], 0);
+                        fd = ex->btlfx_getFileData(entry->unk8, 6);
                     }
+                    ex->btlfx_drawTrail((u8 *)fd, 0, NULL, frame, 0x1000, alpha_u4cn, 1, (u8 *)&D_801EA690[i], 0);
                     env->unk28 = 0;
                 }
             }
