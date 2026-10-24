@@ -1,4 +1,4 @@
-/* Pass 4: 57 aligned mismatches, frame size matches. Variables split per case (build/s/split17.py) and at each
+/* Pass 4: 41 aligned mismatches, frame size matches. Variables split per case (build/s/split17.py) and at each
  * top-level re-assignment (build/s/phase.py) and at nested assignments
  * whose value stays in their block (build/s/webs.py); case 3's first angle is t >> 2 of t = (frame << 12) / 24 in a
  * block-local variable (a3x): with it the case-3 block has eight call-crossing locals, the 0x1000 constant lands
@@ -377,12 +377,12 @@ s32 fx_134_op80(s32 mode, Fx134Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
             scale.vx = scale.vy = ex->math_sin(a3x) * 2 + 0x400;
             scale.vz = 0x1000;
             pos.vx = work->unk24.vx;
-            a_c3 = t >> 1;
             pos.vy = work->unk24.vy;
+            a_c3 = t >> 1;
+            pos.vz = work->unk24.vz;
             rot.vx = 0x400;
             rot.vy = 0;
             rot.vz = frame << 7;
-            pos.vz = work->unk24.vz;
             for (i_c3 = 0; i_c3 < 4; i_c3++) {
                 ex->Hi_DrawEffModel(&rot, (VECTOR *)&pos, (s32)&scale, work->unk70);
                 ex->Hi_ModifyEffModelRGB(work->unk70, (ex->math_sin(a_c3) >> 5) - 0x80, (ex->math_sin(a_c3) >> 5) - 0x80,
