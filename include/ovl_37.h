@@ -6,54 +6,93 @@
  * live here, not in ff9.h. */
 #include "ff9.h"
 
-/* Items menu state (D_801FAB78). */
+/* ItemMenu.state: input handler in s_menuItemInput */
+enum {
+    ITEM_STATE_BUSY,     /* no input: a window is moving */
+    ITEM_STATE_TABS,     /* Use / Arrange / Key */
+    ITEM_STATE_LIST,     /* item or key item list */
+    ITEM_STATE_TARGET,   /* picking the character to use the item on */
+    ITEM_STATE_ARRANGE,  /* Auto / Manual window */
+    ITEM_STATE_MANUAL,   /* manual arrange: pick two slots to swap */
+    ITEM_STATE_KEY_VIEW  /* a key item's picture and description */
+};
+
+enum { ITEM_TAB_USE, ITEM_TAB_ARRANGE, ITEM_TAB_KEY }; /* ItemMenu.tab */
+
+enum { KEY_VIEW_NONE, KEY_VIEW_OPENING, KEY_VIEW_SHOWN, KEY_VIEW_CLOSING }; /* ItemMenu.keyViewPhase */
+
+#define ITEM_SLOT_COUNT   0x100 /* GameData.items slots */
+#define KEY_ITEM_COUNT    0x50  /* key item ids (func_800281A4) */
+#define ITEM_FIRST_USABLE 0xE0  /* items from here have a use entry in D_8006B1F4 */
+
+/* g_itemMenuText ids */
+#define ITEM_TEXT_USE          0   /* "Use", "Arrange", "Key": the tabs, + ITEM_TAB_* */
+#define ITEM_TEXT_AUTO         3   /* "Auto", "Manual" */
+#define ITEM_TEXT_TAB_HELP     5   /* help of the tabs, + ITEM_TAB_* */
+#define ITEM_TEXT_SELECT_CHAR  8   /* "Select character." */
+#define ITEM_TEXT_ARRANGE_HELP 9   /* help of Auto / Manual, + cursor */
+#define ITEM_TEXT_KWEH         0xB /* "Kweeeh!" (menuItem_callChocobo) */
+
+/* Items menu state (s_menuItem). */
 typedef struct {
-    u8 unk0; /* active list, index into D_801F3040 */
-    u8 unk1; /* state, index into D_801F307C */
-    u8 unk2; /* party slot */
-    u8 unk3;
-    u8 unk4;
-    u8 unk5;
-    u8 unk6;
-    u8 unk7;
-    u8 unk8;
+    u8 tab;           /* ITEM_TAB_*, index into s_menuItemTabs */
+    u8 state;         /* ITEM_STATE_* */
+    u8 slot;          /* party slot of the target */
+    u8 targetKind;    /* D_8006B1F4 target kind of the item being used */
+    u8 targetMode;    /* D_8006B1F4 bits 5-7: 0 = use at once, else pick a character (cursor mode) */
+    u8 arrangeCursor; /* 0 = Auto, 1 = Manual */
+    u8 swapFrom;      /* manual arrange: first slot picked */
+    u8 swapPicked;    /* manual arrange: swapFrom is set */
+    u8 charWinOpen;   /* the character window is shown */
     u8 pad9[3];
-    MenuList unkC;  /* item list */
-    MenuList unk1C; /* key item list */
-    RECT unk2C;
-    RECT unk34;
-    WinDef unk3C;
-    Window *unk4C;
-    u32 unk50; /* timer */
-    u8 unk54;
-    u8 unk55;
-    u8 unk56;
-    u8 unk57;
-    s32 unk58;
+    MenuList itemList;
+    MenuList keyList;
+    RECT cmdRect;     /* top row window */
+    RECT listRect;    /* list window */
+    WinDef charWin;   /* character window (slides in from the list side) */
+    Window *popup;    /* Auto/Manual window, or the "Kweeeh!" window */
+    u32 popupTimer;   /* frames the "Kweeeh!" window has been up, closes the menu after 0x60 */
+    u8 keyView;       /* key item view is up */
+    u8 keyViewPhase;  /* KEY_VIEW_* */
+    u8 keyViewId;     /* key item shown */
+    u8 keyViewStep;   /* step in s_menuItemKeyItemSlide */
+    s32 keyViewX;     /* x of the view, moved by the s_menuItemKeyItemSlide deltas */
     u8 pad5C[4];
-    u8 unk60[0x50]; /* key item ids */
-    s32 unkB0;      /* key item count */
+    u8 keyItems[KEY_ITEM_COUNT]; /* key item ids the party has */
+    s32 keyCount;
 } ItemMenu;
-extern ItemMenu D_801FAB78;
+extern ItemMenu s_menuItem;
 
 typedef struct {
-    void (*unk0)(s32, MenuList *);
-    void (*unk4)(s32, s32, s32, MenuView *);
-    MenuList *unk8;
+    void (*select)(s32, MenuList *);           /* Cross on an entry */
+    void (*drawRow)(s32, s32, s32, MenuView *); /* one entry */
+    MenuList *list;
 } ItemList; /* 12 bytes */
-extern ItemList D_801F3040[2];
-extern s8 D_801F3064[24];
-extern void (*D_801F307C[])(void);
-extern u8 D_801F3120[2][0x10];
-extern RECT D_801F3158;
-extern RECT D_801F3160;
-extern u8 D_801EDFD8[];
+extern ItemList s_menuItemTabs[3]; /* per ItemMenu.tab */
+extern s8 s_menuItemKeyItemSlide[24];
+extern void (*s_menuItemInput[])(void);
+extern u8 s_menuItemTargetClose[2][0x10];
+extern RECT s_menuItemKeyClutRect;
+extern RECT s_menuItemKeyImageRect;
+extern u8 s_menuItemKeyImage[];
 
-extern s32 D_801F309C[3];
-extern u8 D_801F3098[3];
-extern RECT D_801F30B8;
+extern s32 s_menuItemTabX[3];
+extern u8 s_menuItemTabText[3];
+extern RECT s_menuItemArrangeRect;
 
 /* main exe: candidates for ff9.h */
+/* Menu sounds for snd_playSe: main's menuList_up/down play SE_CURSOR on a move, menus play it on a pick too,
+ * SE_CANCEL on Circle backing out, SE_BUZZER when an action is refused. */
+#ifndef SE_CURSOR
+#define SE_CURSOR 0x67
+#define SE_BUZZER 0x66
+#define SE_CANCEL 0x65
+#endif
+#define SE_USE_ITEM 0x6A /* an item was used (menuItem_useOnTarget) */
+#ifndef ITEM_NONE
+#define ITEM_NONE 0xFF /* empty item id */
+#endif
+void func_800355DC(void); /* empty function, passed to func_8003556C as a no-op callback */
 extern s32 D_80077E54; /* = D_80077E50.unk4, referenced by its own name */
 typedef struct {
     unsigned int unk0 : 4;   /* target kind */
@@ -67,72 +106,70 @@ typedef struct {
 extern Unk8006B1F4 D_8006B1F4[];
 u8 func_800654F8(Character *, Character *, Unk8006B1F4 *, s32, s32);
 extern s32 D_80070408;
-/* func_800355DC; this overlay's link only has the D_ name */
-void D_800355DC(void);
 void func_801F3038(void);
-void func_801F2CEC(void);
-void func_801F2EDC(void);
-void func_801F26E0(void);
-extern RECT *D_801F30A8;
-extern RECT D_801FA958;
+void menuItem_collectKeyItems(void);
+void menuItem_loadImages(void);
+void menuItem_drawScrollRows(void);
+extern RECT *s_menuItemListRect;
+extern RECT s_menuItemScrollClip;
 
-extern u8 D_801F30E0[2][0x10];
-extern RECT D_801F3148;
+extern u8 s_menuItemTargetOpen[2][0x10];
+extern RECT s_menuItemKwehRect;
 extern u8 D_801F3140[];
-extern RECT D_801F3150;
-extern u8 D_801F3168[]; /* item help text */
-extern u8 D_801F79F8[]; /* key item descriptions */
-extern s32 D_801F30AC[3]; /* list cursor x per list */
-extern u8 D_801F651C[]; /* key item help text */
-s32 func_801F2FC4(MenuList *);
+extern RECT s_menuItemArrangeHelpBounds;
+extern u8 s_menuItemHelp[]; /* item help text */
+extern u8 s_menuItemKeyDesc[]; /* key item descriptions */
+extern s32 s_menuItemTabCursorX[3]; /* list cursor x per list */
+extern u8 s_menuItemKeyHelp[]; /* key item help text */
+s32 menuItem_getSlot(MenuList *);
 
 /* other overlay */
 s8 func_800B8124(void);
 void func_800B81A0(void);
 
-extern ItemSlot D_801FA968[0x100]; /* inventory sort buffer */
-extern ItemSlot D_801FAB68; /* swap temp for the inventory sort */
+extern ItemSlot s_menuItemSortBuf[0x100]; /* inventory sort buffer */
+extern ItemSlot s_menuItemSortTmp; /* swap temp for the inventory sort */
 
-void func_801F0D18(void);
-void func_801F1778(void);
-void func_801F2590(s32);
-void func_801F2C58(void);
+void menuItem_inputTabs(void);
+void menuItem_openTarget(void);
+void menuItem_useOnTarget(s32);
+void menuItem_closeTarget(void);
 u8 func_800281D0(s32); /* main exe */
 void ui_drawItemIcon(s32, s32, s32, s32, u8); /* main exe */
-void func_801F2B20(Window *);
-void func_801F2B58(Window *);
-void func_801F2D58(void);
+void menuItem_onKwehOpened(Window *);
+void menuItem_drawKweh(Window *);
+void menuItem_openArrange(void);
 void func_80028128(s32); /* main exe */
 void func_80026EA0(s32, s32, s32, s32, s32); /* main exe */
-void func_801F187C(void);
-void func_801F24DC(void);
-void func_801F2E18(void);
-void func_801F2E40(Window *);
-void func_801F2EBC(Window *);
-void func_801F2ECC(Window *);
-void func_801F0E10(void);
-void func_801F0F50(void);
-void func_801F10C4(s32, MenuList *);
-void func_801F11E4(void);
-void func_801F13F8(void);
-void func_801F1B78(void);
-void func_801F1D88(void);
-void func_801F1E88(void);
-void func_801F21E8(void);
-void func_801F2240(void);
-void func_801F2280(void);
-void func_801F22C8(void);
-void func_801F23C4(void);
-void func_801F2488(void);
-void func_801F253C(s32);
-void func_801F262C(void);
-void func_801F27A0(void);
-void func_801F2870(s32, s32, s32, MenuView *);
-void func_801F29D0(s32, s32, s32, MenuView *);
-void func_801F2BC0(void);
+void menuItem_sortAuto(void);
+void menuItem_selectRow(void);
+void menuItem_closeArrange(void);
+void menuItem_drawArrangeWindow(Window *);
+void menuItem_onArrangeOpened(Window *);
+void menuItem_onArrangeClosed(Window *);
+void menuItem_inputTarget(void);
+void menuItem_inputManualArrange(void);
+void menuItem_selectItem(s32, MenuList *);
+void menuItem_drawList(void);
+void menuItem_drawCursor(void);
+void menuItem_updateHelp(void);
+void menuItem_updateKeyItemAnim(void);
+void menuItem_drawKeyItem(void);
+void menuItem_input(void);
+void menuItem_draw(void);
+void menuItem_updateAnims(void);
+void menuItem_inputList(void);
+void menuItem_inputArrange(void);
+void menuItem_inputKeyItem(void);
+void menuItem_selectKeyItem(s32);
+void menuItem_drawTabs(void);
+void menuItem_drawTargetWindow(void);
+void menuItem_drawRow(s32, s32, s32, MenuView *);
+void menuItem_drawKeyRow(s32, s32, s32, MenuView *);
+void menuItem_stepKweh(void);
 void func_801F2F30(void);
-void func_801F2F38(s32);
-void func_801F2FA0(void);
+void menuItem_showKeyItem(s32);
+void menuItem_hideKeyItem(void);
 
 extern const u8 g_itemMenuText[]; /* text bank for this menu */
 

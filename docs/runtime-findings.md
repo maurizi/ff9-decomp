@@ -1214,3 +1214,590 @@ for a name on its own. Port names are leads; the decomp code has to confirm each
   (gil transfer). The X taps came every 120 frames, so the transitions line up with them. low-medium: rewards_stateExp,
   rewards_stateExpDone, rewards_stateItems, rewards_stateGil.
 - Defeat only: gameover_main (already named), func_801F3818 and func_801F3A20 (both once from gameover_main). Leads.
+
+## Field/menu campaign (2026-10-24): method, states, helper scripts  (status: reference)
+- Redux disc 1. Field states `field_dali_inn` (Lv 50 save, card 2 FILE02) and `field_dali_inn_moogle`; menu states
+  `menu_main` / `menu_items` (Burmecia vault Lv 99 save). New states (all disc 1, listed in docs/emulator.md):
+  `menu_status`, `menu_equip`, `menu_ability`, `menu_card`, `menu_config` (opened from `menu_main` with the pad),
+  and, from `field_dali_inn`, `menu_shop_weapons`, `menu_shop_synth`, `menu_name_entry`, `menu_party_select`,
+  `menu_save`, `menu_chocograph`, `menu_chocograph2`, `menu_disc_change` (forced with `force_menu.py`, below).
+- Menu types: `menu_open(type, arg)` loads overlay `D_8006CA40[type]` (s32[9]: ff, 3a, 3c, 3b, 39, 32, 3d, ff, 3e)
+  to 0x801EDF00 and runs `D_8006C9D4[type]` = {init, update, exit}. `build/rtf/force_menu.py STATE TYPE ARG FRAMES
+  [SAVE]` (scratch) loads a field state, presses Triangle, breaks at `menu_open`, rewrites a0/a1 and lets the menu
+  load (optional `POKES=addr=hex,...` are written first). Results (screenshots `build/rtf/fm_*.png`): type 1 = name
+  entry (ovl_3a), 2 = shop (ovl_3c; arg = shop id, 0 = "Weapons" Buy/Sell/Exit, >= 0x20 = synthesis), 3 = party select
+  (ovl_3b; arg = request pointer, `&D_8007AE70` gave four Zidanes), 4 = save/load (ovl_39; arg 2 = field save, 1 =
+  title Continue), 5 = Chocograph (ovl_32), 8 = "Change to DISC" (ovl_3e; arg = (disc & 3) << 14 | field id, 0x3A98
+  from ovl_14). So `config/overlays.us.txt` can now say: ovl_36 = Card (Tetra Master collection, main-menu screen 6),
+  ovl_3c = shop (buy/sell/synthesis, menu type 2), ovl_3e = disc change screen (menu type 8), ovl_3d = menu type 6
+  (no code). Types 6 and 7 were not tried.
+- Main-menu screens (menu type 0): `D_8006E510` (s32[8]: ff, 37, 33, 33, 38, ff, 36, 34) is the overlay of each
+  screen (main, Item, Ability, Equip, Status, Order, Card, Config) and `D_8006E530` the field table of {init, update,
+  exit, needsMember} per screen (`D_8006E5B0` the world-map one, picked by `func_80035D3C` when GameState.mode == 3).
+  The command screen itself lives in ovl_0a 0x800C8124-0x800C9700 (ovl_0c has its own copy).
+- Coverage: `tools/rt/cov.py start --bin main --bin ovl_0a [--bin ovl_XX]`, then `tools/rt/act.py NAME STATE SEQ`
+  (wrapper `build/rtf/mc.sh`), outputs `build/rt/cov_NAME.json`. `build/rtf/fl.py mat|cmp BINS RUNS` (scratch) is
+  `tools/rt/matrix.py`/`cmp.py` for any binary, printing each function's source file. Runs: field `f_idle`, `f_walk`,
+  `f_idle2`, `f_moog` (Cross on the Moogle: MOGNET window), `f_moogdown` (+ Down x2), `f_menu` (Triangle); main menu
+  `m_idle`, `m_down`, `m_item`, `m_abil`, `m_equip`, `m_status`, `m_order`, `m_card`, `m_config`, `m_help` (Select),
+  `m_close` (Circle), `m_abilsel`; item `i_*`; status `s_*`; shop `sh_*`; save `sv_*`; card `c_*`.
+- Ablation: `tools/rt/ablate.py STATE PRESEQ FUNCS --frames 60`, montages `build/rt/abl_*.png`. In menus 20-30
+  frames were sometimes not enough for the change to show (ovl_3c 0x801F4000 and ovl_37 0x801F262C only vanished
+  at 30/60 frames), so 60 was used; a stub with no visible change at 60 frames named nothing.
+- Two scripts driving the emulator at once corrupt each other's runs (happened once; that run was repeated).
+  With LuaJIT off there was no hang in ~30k frames.
+
+## Main menu, command screen (ovl_0a 0x800C8124-0x800C9630)  (status: proposed)
+State `menu_main` (Item..Config list, party panels, TIME & GIL, LOCATION). `D_800CB188` (Unk800CB188): +0 command
+cursor (0-6), +1 state (0 commands, 1 pick a member, 2 Order), +2 Order cursor, +3 Order target, +4 Order "first
+member picked", +8 WinDef[6] panel tweens. Read: `menu_main` 00 00, `menu_status` 03 01, after an Order swap 04 02 01 01.
+- D_800CB188 → s_menuMain (cursor, state, orderCursor, orderTarget, orderPicked, panels). high.
+- func_800C93D4 → menuMain_init: init of `D_8006E530[0]`; once when the menu opens (f_menu). high.
+- func_800C94B0 → menuMain_update: `D_8006E530[0]` update, once per frame in every m_* run. high.
+- func_800C94E0 → menuMain_exit: `D_8006E530[0]` exit; once when Item/Ability/... is entered (m_item, ...). high.
+- func_800C951C → menuMain_input: dispatches `D_800C9E14[state]` (cov: 800C8284 in state 0, 800C8354 in m_abilsel,
+  800C842C in m_order). high.
+- func_800C8284 → menuMain_inputCommand: Up/Down move the cursor (m_down), Cross → 800C923C, Circle closes the
+  menu (m_close: func_800362C8). high.
+- func_800C923C → menuMain_selectCommand: once per Cross in m_item ... m_order; Order → state 2, screens that need
+  a member → state 1, others → func_800361CC(screen). high.
+- func_800C8354 → menuMain_inputMember: state-1 handler (m_abilsel: 86 hits, Down moved the hand to Vivi). high.
+- func_800C842C → menuMain_inputOrder: state-2 handler (m_order: 72 hits). high.
+- func_800C85B8 → menuMain_reorder (`(slotA, slotB)`): run o_row (Order, Cross, Cross on Zidane) called it with
+  (0, 0): Zidane's panel shifts (Character+0x34 bit 9 toggled, 0x0E10 → 0x0C10). Run o_swap (Cross Zidane, Down,
+  Cross): (0, 1), party[0]/party[1] swapped, Vivi now first (`build/rt/o_row.png`, `o_swap.png`). high.
+- func_800C86C8 → menuMain_swapPortraits: called from 800C85B8 only for the real swap (o_swap: (0, 1)); swaps the two
+  portraits in VRAM (StoreImage/MoveImage/LoadImage). high.
+- func_800C9580 → menuMain_draw: calls the draw functions below. high (cov + calls).
+- func_800C9630 → menuMain_drawParty: ablation (`abl_mm.png`): the four party panels go. high.
+- func_800C883C → menuMain_drawMember (`(slot)`): ablation: portrait, name, Lv/HP/MP, stones go; frames stay. high.
+- func_800C8AE8 → menuMain_drawPortraitShade: TILE 0x2E x 0x30; ablation: the dark rectangle behind the portraits
+  goes. medium.
+- func_800C8C08 → menuMain_drawTimeGil: ablation: TIME & GIL window goes. high.
+- func_800C8D40 → menuMain_drawLocation: ablation: LOCATION window goes. high.
+- func_800C8E2C → menuMain_drawCursor: ablation: the hand goes. high.
+- func_800C9014 → menuMain_updateHelp: the help callback set by menuMain_init; runs only with the Select help open
+  (m_help: 73 hits). high.
+- func_800C95B8 → menuMain_updatePanels: steps the six panel tweens while D_80077E50.unk1 is set. medium.
+- func_800C8124 → menuMain_initPanels: sets the six panel rects and starts their slide-in (f_menu: once). medium.
+- func_800C92BC → menuMain_onSlideInDone: clears D_80077E50.unk1; f_menu: once, from the tween code (ra 0x80063294). medium.
+- func_800C9510 → menuMain_setCursor (`(u8)`): called by func_80036560 with the screen being left. medium (code).
+- func_800C90D0 → menuMain_setExpHelp, func_800C92C8 → menuMain_setEquipHelp: help text for the Status (EXP/Next)
+  and Equip (five slots) cases of 800C9014. medium (code).
+- CharBits.unk9 (Character+0x34 bit 9) is the battle row toggled by Order; with it set the portrait is drawn 14
+  pixels further left. All four members of this save had it set. Name it `frontRow` only if a battle check agrees
+  (btl_cmd.c compares it with the unit's row); medium as "row".
+
+## Main menu screen manager (main tu_80035D3C)  (status: proposed)
+`D_80077E50` (Unk80077E50): +0 menu running (1 in all menu states), +1 panels sliding in, +2 current screen (read:
+menu_main 0, menu_items 1, menu_status 4, menu_card 6), +3 selected member, +4 frame counter (+1 per frame).
+`D_80077E28` is the screen-switch state (+7 target screen, +0x14 command-window RECT, +0x1C screen table).
+- D_80077E50 → g_menuScreen (active, slideIn, screen, member, frame). high.
+- D_8006E510 → g_menuScreenOvl, D_8006E530 → g_menuScreensField, D_8006E5B0 → g_menuScreensWorld. high.
+- D_8006CA40 → g_menuTypeOvl, D_8006C9D4 → g_menuTypes (the menu_open tables above). high.
+- func_80035D3C → menuScreen_init: init of menu type 0 (`D_8006C9D4[0]`), prints the ff9db.h path; once in f_menu. high.
+- func_8003613C → menuScreen_update: type-0 update, every frame in all m_* runs; command window, switch step,
+  the screen's update, frame counter. high.
+- func_800361A8 → menuScreen_exit: type-0 exit (m_close: once). high.
+- func_80035E40 → menuScreen_drawCommands: ablation at `menu_main`: the Item..Config window goes; inside a screen it
+  draws only that screen's name (the "Item"/"Status" box at the top right). high.
+- func_800361CC → menuScreen_open (`(screen)`): once per screen entered (m_item ... m_config); fade out, load the
+  overlay (80036470), then the screen's init. high.
+- func_80036270 → menuScreen_switch (`(u8 screen)`): Square on the Ability screen (`menu_ability`) called it with 3
+  and the Equip screen came up without an overlay load (`build/rt/ab_sq.png`). high.
+- func_80036560 → menuScreen_onSwitchFaded: called from the fade update right after 80036270 in that run: old exit,
+  new init, fade in. high.
+- func_80035F94 → menuScreen_updateOpen: waits for the title animation and the overlay read, then calls the new
+  screen's init. medium.
+- func_80036470 → menuScreen_loadOverlay: cd_readAsync of `D_8006E510[screen]` to 0x801EDF00 (once per open). high.
+- func_80036444 → menuScreen_requestOverlay: calls 80036470 when the screen has an overlay. medium.
+- func_80036634 → menuScreen_onOverlayRead (read callback), func_80036528 → menuScreen_onOpenFaded (fade callback
+  set by 800361CC): once per open each. high.
+- func_800362C8 → menuScreen_close: Circle on the command list (m_close). high.
+- func_80036300 → menuScreen_needsMember (`u8 (screen)`): table flag +0xC (1 for Ability, Equip, Status);
+  800C923C goes to state 1 with it (m_abil/m_status: 1 call). high.
+- func_8003631C → menuScreen_getCommandHelp: help text of command i (m_help: 73 calls). high.
+- func_800362B8 → menuScreen_getCurrent: returns g_menuScreen.screen. medium (code).
+- func_800363BC → menuScreen_startTitleAnim, func_800360B0 → menuScreen_stepTitleScroll, func_80036344 →
+  menuScreen_stepTitleResize: the command window shrinks to the one-name title box while a screen opens (80036344:
+  12 calls per open, h 0x74 ↔ 0x1A). medium.
+
+## Help window and menu cursor (main tu_80035108)  (status: proposed)
+`D_80077DE8` (Unk80077DE8, the most-referenced main global): +0/+2 hand x/y, +4 hand OT index, +8 help text, +0xC
+help callback, +0x10 help bounds, +0x18 help open, +0x19 opening, +0x1A text shown, +0x1B help locked, +0x1C help
+follows the hand, +0x1D hand drawn above the help, +0x20 moogle-icon animation.
+- D_80077DE8 → g_menuHelp. high (every screen writes the hand position there before func_800355E4).
+- func_800355E4 → help_drawCursor: sprite 1 (the hand) at g_menuHelp x/y/otz; each screen's cursor ablation
+  (menuMain_drawCursor, ovl_37 801F13F8, ...) removes the hand by skipping this call. high.
+- func_80035490 → help_update: every menu frame; Select (0x8000000) toggles the help (m_help). high.
+- func_80035680 → help_toggle: m_help: once, on Select (sound 0x2AA). high.
+- func_80035108 → help_draw: m_help only (73 hits): moogle icon, text, frame. high.
+- func_80035214 → help_layout: m_help only; places the box next to the hand inside the bounds. high.
+- func_80035744 → help_onIconAnimDone: m_help: once (the moogle animation's done callback shows the text). medium.
+- func_80035430 → help_init: once per menu open (f_menu). high.
+- func_8003556C → help_setCallback, func_80035580 → help_setBounds (NULL = whole screen), func_8003561C →
+  help_isOpen, func_8003562C → help_isLocked, func_8003563C → help_setLocked, func_80035648 → help_getFollow,
+  func_80035658 → help_setFollow, func_80035664 → help_getCursorOnTop, func_80035674 → help_setCursorOnTop:
+  accessors of the fields above, called from every screen's init/draw. medium (code; field meanings from 80035108/80035214).
+
+## Sprite animation player (main tu_800357E0)  (status: proposed)
+Drives the moogle icon of the help window; only m_help reaches it.
+- func_80035C2C → sprAnim_draw (m_help: 73, one per help frame), func_800357E0 → sprAnim_drawCell (SPRT),
+  func_8003595C → sprAnim_drawScaledCell (POLY_FT4), func_80035B90 → sprAnim_update (every menu frame),
+  func_80035B24 → sprAnim_init, func_80035B64 → sprAnim_setPlaying, func_80035B74 → sprAnim_setOnDone,
+  func_80035B7C → sprAnim_reset (the last three once when the help opens). medium (cov; not ablated).
+
+## Screen fade (main tu_8002F7E8 + func_8002F6C8)  (status: proposed)
+`D_80077C78` read every 2 frames after Triangle in `field_dali_inn`: +0 1, +1 1, +2 active, +8 = 0xC, +0xC counts
+1..0xC, +0x10 = 0x80032238 (callback), +0x24 0xFFFFFF, +0x28 rising 0x18 per frame (the screen darkens); then a
+0x10-frame fade from 0xFFFFFF back to 0 as the menu appears.
+- D_80077C78 → g_fade (active +2, frames +8, frame +0xC, onDone +0x10, otz +0x1C, startColor +0x20, endColor
+  +0x24, color +0x28). high.
+- func_8002FC8C → fade_start (`(type, subtract, frames, color)`). high.
+- func_8002FAAC → fade_out (`(frames)`, 0 → 0xFFFFFF), func_8002FA50 → fade_in (`(frames)`, 0xFFFFFF → 0),
+  func_8002F9F0 → fade_outDefault (12), func_8002F9D0 → fade_inDefault (16): the menu-open sequence above. high.
+  func_8002FB64 → fade_outAdditive, func_8002FB08 → fade_inAdditive (same with flag 0). medium (code).
+- func_8002F8A8 → fade_setOnDone, func_8002F810 → fade_isBusy (every menu input handler returns while it is set),
+  func_8002F8E4 → fade_setOtz (returns the old value; screens set 3, the shop 7), func_8002F904 → fade_getOtz. high.
+- func_8002F6C8 → fade_update: every frame in field and menus; calls onDone when the count reaches the length
+  (traces: 0x80036560 and 0x80032238 called from func_8002F6C8+0x110). high. It is the last function of menulist.c
+  by the current split; the TU boundary may be at 0x8002F6C8 (the data-cut window is 0x8002F6C8-0x8002F800).
+- func_8002F7E8 → fade_setActive, func_8002F800 → fade_isActive, func_8002FC38 → fade_init. medium (code).
+
+## Window helpers (main window.c)  (status: proposed)
+- func_8002DEE4 → win_drawBox (`(RECT *, otz, style)`): ablation at `menu_main`: every window frame and fill goes,
+  the contents stay. high.
+- func_8002CD4C → win_drawBoxEx (`(RECT *, otz, style, abr)`): the body of 8002DEE4 (style 0 panel, 1 ruled list,
+  2 window, 3/4 help). medium (code).
+- func_8002E040 → win_drawListBox (`(RECT *, otz, style, MenuList *)`): ablation at `menu_items`: the item list's
+  frame, fill and scroll arrows go, the rows stay. high.
+- func_8002DC54 → win_openFree (`(RECT *, otz, style)`): first free slot + win_init; the item Arrange window, shop
+  quantity window and card Discard window open through it (cov i_arr, sh_buyx, c_x). high.
+- func_8002E304 → win_setTitle (`(Window *, label)`), func_8002E588 → win_drawTitle: ablating 8002E588 in the Moogle
+  window removes the "MOGNET" label; msg_open passes its labels through 8002E304. high.
+- func_8002DE60 → win_closeAllNow: all live windows to state 0 with their onClosed callback (m_close: once, from
+  func_80032384). medium.
+
+## UI drawing and inventory helpers (main ui.c / text.c / chr.c / tu_800654F8)  (status: proposed)
+- func_80026FC4 → ui_drawStatusIcons (`(x, y, otz, u8 bits, flag)`): Character+0x38 poked to 0x7F / 0x01 / 0x04 for
+  Zidane / Vivi / Freya at `menu_main`: 7, 1 and 1 icons appear after the names (`build/rtf/stat.png`). high.
+- Character.unk38 → Character.status (the persistent status bits those icons show; ovl_33 treats `& 9` as "can't
+  use abilities"). high.
+- func_800283E0 → ui_drawPortrait (`(x, y, otz, slot, h, ko)`): ablation at `menu_main` and in the item target
+  window: the portraits go. high.
+- func_800273C0 → ui_drawStones (`(x, y, otz, cur, max)`): ablation: the gem icon and "37/99" go. high.
+- func_80026EA0 → ui_drawMemberSummary (`(x, y, otz, slot, mode)`): ablation in the item target window: portraits and
+  stats go. func_80026F8C → ui_drawMemberStats: ablation: name/Lv/HP/MP go, portraits stay. high.
+- func_80024428 → ui_drawMemberHeader: ablation at `menu_status`: the portrait/name/Lv/HP/MP block goes (status,
+  equip and ability screens share it). high.
+- func_80028D08 → ui_startMemberSwitch (`(state, from, to, dir)`): R1 on the status screen (s_r1) called it with
+  (hdr, 0, 1, 2) and the header slid to Vivi. func_80028CF8 → ui_initMemberSwitch (once per screen init),
+  func_80028D2C → ui_updateMemberSwitch (every frame). medium-high.
+- func_80027834 → ui_buildSprite (`(x, y, ot, id, flag, *w, pkt)`): ablation at `menu_status`: the equipment-slot
+  icons and the "Lv" of "Next Lv" go. high.
+- func_80026C7C → ui_buildItemIcon: packet builder of ui_drawItemIcon (its stub corrupts the item list). medium.
+- func_800269F4 → ui_drawEtchedLine (`(x, y, otz, len)`: three 1-pixel lines, vertical when len < 0). medium (code;
+  its stub showed no visible change on the status screen).
+- func_80027D84 → item_add (`(id, n)`): equipping Mage Masher over The Ogre (e_eq) called it with (8, 1) and the old
+  weapon went back to the inventory; buying a Dagger called it with the quantity (sh_buyxx: stock 6 → 7). high.
+- func_80032E84 → chr_calcEquipStats (`(in, out)`): 53 calls while the Equip item list is open (e_eq), feeding the
+  stat comparison; func_8003384C → chr_updateStats: once per equip change (e_eq). medium.
+- func_800654F8 → item_useOnMember (`(user, target, item, effect, all)`): Potion on Zidane (i_use: HP 100 → 200);
+  the Ability screen's field abilities go through it too (ovl_33 801EED10). high.
+
+## Card inventory (main tu_80062344)  (status: proposed)
+`D_80083248` at `menu_card`: s16 wins 10, losses 3, draws 3 (the screen: "Win 10 Lose 3 Draw 3"), then 0x69 cards of
+6 bytes from +6 (id, arrows, attack, type, pdef, mdef; 0xFF = empty slot). 23 slots used, 11 distinct ids, id 0 four
+times: the screen shows "Stock: 23", "Type: 11" and "1/4 Goblin" on card 0.
+- D_80083248 → g_cards (wins, losses, draws, cards[0x69]). high.
+- func_80062498 → card_getWins, func_800624D8 → card_getLosses, func_8006251C → card_getDraws (the INFO window
+  prints them, capped at 99999); func_800624A8 → card_addWin, func_800624E8 → card_addLoss, func_8006252C →
+  card_addDraw (+1, capped at 9999). high (values) / medium for the add functions (code).
+- func_800625F8 → card_countAll (23 = "Stock"), func_80062638 → card_countKinds (11 = "Type"), func_80062560 →
+  card_countOf(id) (4 for Goblin, "1/4"). high.
+- func_800625A0 → card_find (`(id, n)`: n-th copy), func_800626D0 → card_remove (`(id, n)`, called by the Discard
+  confirmation 0x801F2578), func_8006276C → card_getName, func_80062794 → card_getNameWidth. medium-high.
+- func_8006238C → card_add (`(id)`: random stats via 80062830, -1 when 100 cards), func_80062420 → card_addWithStats,
+  func_80062830 → card_rollStats, func_80062344 → card_initAll, func_80062724 → card_clearAll, func_80062B30 →
+  card_getInfoTable, func_80062824 → card_getInventory, func_800627BC → card_getRarity (id → 0..6, the grid icon
+  class). medium (code).
+
+## Item screen (ovl_37)  (status: proposed)
+State `menu_items` (state 2, Use tab). `D_801FAB78` (ItemMenu): +0 tab (0 Use, 1 Arrange, 2 Key), +1 state, +2 target
+member, +5 arrange choice, +6/+7 manual-arrange first slot. State handlers `D_801F307C` (read): [1] 801F0D18, [2]
+801F22C8, [3] 801F0E10, [4] 801F23C4, [5] 801F0F50, [6] 801F2488. Tab table `D_801F3040` {onSelect, drawRow, list}:
+Use/Arrange 801F10C4, 801F2870; Key 801F253C, 801F29D0.
+- D_801FAB78 → s_menuItem, D_801F307C → s_menuItemInput, D_801F3040 → s_menuItemTabs. high.
+- func_801F0C18 → menuItem_init, func_801F2160 → menuItem_update, func_801F2190 → menuItem_exit (screen-1 entry
+  of g_menuScreensField: 0x801F0C18/0x801F2160/0x801F2190). high.
+- func_801F21E8 → menuItem_input (dispatch). func_801F0D18 → menuItem_inputTabs (state 1; i_tab: Circle from the
+  list). func_801F22C8 → menuItem_inputList (state 2; i_idle). func_801F0E10 → menuItem_inputTarget (state 3; i_use
+  61 frames). func_801F23C4 → menuItem_inputArrange (state 4; i_arr). func_801F0F50 → menuItem_inputManualArrange
+  (state 5; i_arrman 114). func_801F2488 → menuItem_inputKeyItem (state 6; i_keyshow). high.
+- i_use (Zidane's HP poked to 100, Cross on Potion, Cross on Zidane): func_801F24DC → menuItem_selectRow (calls the
+  tab's onSelect) → func_801F10C4 → menuItem_selectItem → func_801F1778 → menuItem_openTarget; then
+  func_801F2590 → menuItem_useOnTarget (`(id)`, 0xEC) → item_remove(0xEC, 1), HP 100 → 200. high.
+- func_801F2CC4 → menuItem_onTargetOpened, func_801F2C58 → menuItem_closeTarget (i_tgtcancel: Circle),
+  func_801F2CD4 → menuItem_onTargetClosed. high.
+- func_801F2D58 → menuItem_openArrange (i_arr: win_openFree + callbacks), func_801F2E40 → menuItem_drawArrangeWindow
+  (its content: two text lines, Auto/Manual), func_801F2EBC → menuItem_onArrangeOpened (state 4),
+  func_801F2ECC → menuItem_onArrangeClosed, func_801F2E18 → menuItem_closeArrange. high / medium for the last two.
+- func_801F187C → menuItem_sortAuto: Arrange → first choice; sorts the inventory by item-table +0x10, then id. medium (code).
+- func_801F253C → menuItem_selectKeyItem, func_801F2F38 → menuItem_showKeyItem (i_keyshow: once each),
+  func_801F2FA0 → menuItem_hideKeyItem, func_801F1D88 → menuItem_updateKeyItemAnim, func_801F1E88 →
+  menuItem_drawKeyItem (the slide-in key item card). medium-high.
+- Ablation at `menu_items` (`abl_items.png`, `abl_items2.png`, `abl_t.png`): func_801F262C → menuItem_drawTabs
+  (Use/Arrange/Key bar), func_801F11E4 → menuItem_drawList (the list window), func_801F13F8 → menuItem_drawCursor,
+  func_801F2870 → menuItem_drawRow, func_801F2240 → menuItem_draw (everything but the title box),
+  func_801F27A0 → menuItem_drawTargetWindow (with the target window open). high.
+- func_801F29D0 → menuItem_drawKeyRow (Key tab only: i_key / i_keyshow). high.
+- func_801F26E0 → menuItem_drawScrollRows (rows while the list scrolls), func_801F1B78 → menuItem_updateHelp,
+  func_801F2280 → menuItem_updateAnims, func_801F2CEC → menuItem_collectKeyItems, func_801F2FC4 →
+  menuItem_getSlot (`(MenuList *)`), func_801F2EDC → menuItem_loadImages. medium (code + cov).
+- Item table (`D_80069018`, Unk80069018) +4 = price: the shop shows Dagger 320 and charges 320 (below); sell
+  price = +4 >> 1 (0x801F7BC4). high.
+
+## Status screen (ovl_38)  (status: proposed)
+State `menu_status`. `D_801F120C` (StatusMenu): +0 state, +1 open ability pages, +2 member. Handlers `D_801EFBA4`:
+[1] 801EE568, [2] 801EF8A0.
+- D_801F120C → s_menuStatus. high.
+- func_801EE440 → menuStatus_init, func_801EF69C → menuStatus_update, func_801EF6CC → menuStatus_exit (screen 4
+  entry). high.
+- func_801EF708 → menuStatus_input, func_801EE568 → menuStatus_inputMain (s_idle), func_801EF8A0 →
+  menuStatus_inputAbilities (s_x). high.
+- func_801EF568 → menuStatus_setMember (`(slot, dir)`): R1 (s_r1) → (1, 2), the screen switches to Vivi; func_801EFAF8
+  → menuStatus_onMemberSwitched (the switch-animation callback, s_r1 once). high.
+- func_801EF494 → menuStatus_openAbilityPage (Cross, s_x: page NO1 opens; again, NO2), func_801EF9D4 →
+  menuStatus_closeAbilityPages (Circle, s_xo), func_801EFA80 → menuStatus_onPageOpened, func_801EFABC →
+  menuStatus_onPagesClosed. high.
+- Ablation (`abl_st.png`): func_801EE650 → menuStatus_drawHeader (portrait/name/Lv/HP/MP, stones, status icons),
+  func_801EE740 → menuStatus_drawCommands (COMMAND window), func_801EE9E8 → menuStatus_drawStats (Speed .. Magic
+  Eva), func_801EED18 → menuStatus_drawExp (Trance, EXP, Next Lv), func_801EEF00 → menuStatus_drawEquipment,
+  func_801EF904 → menuStatus_drawFrame. high.
+- func_801EF760 → menuStatus_draw, func_801EF0A0 → menuStatus_drawAbilityPages, func_801EF258 →
+  menuStatus_drawAbilityRow (name + AP stars; 504 calls with one page open, 1360 with two). high.
+- func_801EF80C → menuStatus_updateAnims, func_801EFB08 → menuStatus_updateHelp. medium.
+- func_80027170 → ui_buildApGauge (main; the star/AP gauge of every ability row). medium.
+
+## Ability screen (ovl_33 tu_801EE7C0)  (status: proposed)
+State `menu_ability`. `D_801FBF84` (EquipMenu, despite the name): +0 tab (0 Use, 1 Equip), +1 state, +2 member,
++3 target. Handlers `D_801F33A8`: [1] 801EEA50, [2] 801F070C, [3] 801EEBE0.
+- D_801FBF84 → s_menuAbility. high.
+- func_801EE7C0 → menuAbility_init, func_801F05FC → menuAbility_update, func_801F062C → menuAbility_exit (screen 2
+  entry). high.
+- func_801F0664 → menuAbility_input, func_801EEA50 → menuAbility_inputTabs (m_abil 181; Square → menuScreen_switch(3)),
+  func_801F070C → menuAbility_inputList (ab_sup 86), func_801EEBE0 → menuAbility_inputTarget. high / medium for
+  the last (code).
+- func_801EFE2C → menuAbility_toggleSupport: run ab_sup (Right, Cross, Cross at `menu_ability`): called once,
+  func_8003493C(0, 0xD7, 0) followed, Zidane's stones 37 → 42 and Character+0x88 bit 0x00800000 cleared. high.
+  func_8003493C → chr_setSupportAbility (`(charId, abilityId, on)`). high. Character.unk88 → supportAbilities. high.
+- func_801EFCB4 → menuAbility_selectAction (Use tab, opens the target window), func_801EED10 →
+  menuAbility_useOnTarget (item_useOnMember, pays MP), func_801F0DDC → menuAbility_closeTarget, func_801F0E3C →
+  menuAbility_onTargetOpened, func_801F0E4C → menuAbility_onTargetClosed. medium (code).
+- func_801EFB8C → menuAbility_getActionState (`(id, c)`: 0 hidden, 2 greyed, 3 usable; 1584 calls in m_abil),
+  func_801F0CC4 → menuAbility_getSupportState (4 = equipped; ab_sup 1863 calls), func_801F1018 → menuAbility_getMpCost.
+  medium-high.
+- func_801EF900 → menuAbility_setMember (`(slot, dir)`: builds the two lists; m_abil once), func_801F0ED4 →
+  menuAbility_onMemberSwitched, func_801F1048 / func_801F0410 → menuAbility_initActionCursor /
+  menuAbility_initSupportCursor, func_801F0EE4 → menuAbility_loadImages. medium.
+- Ablation (`abl_ab.png`): func_801F07DC → menuAbility_drawTabs, func_801EEEA8 → menuAbility_drawPlayer (PLAYER
+  window), func_801EEFDC → menuAbility_drawInfo (INFO), func_801EF270 → menuAbility_drawCommand (COMMAND window),
+  func_801EF3A8 → menuAbility_drawList, func_801F0934 → menuAbility_drawRow, func_801EF644 → menuAbility_drawCursor.
+  high. func_801F06BC → menuAbility_draw, func_801F09CC → menuAbility_drawActionRow (Use tab: m_abil only),
+  func_801F0AB8 → menuAbility_drawSupportRow (Equip tab: ab_sup only), func_801EF560 → menuAbility_drawTargetWindow,
+  func_801EE978 → menuAbility_updateAnims. medium-high.
+
+## Equip screen (ovl_33 tu_801F1150)  (status: proposed)
+State `menu_equip`. `D_801FC840` (AbilityMenu, despite the name): +0 tab (Equip/Optimize/Off), +1 state, +2 slot,
++3 member. Handlers `D_801F7420`: [1] 801F12C8, [2] 801F1454, [3] 801F2DB4.
+- D_801FC840 → s_menuEquip. high.
+- func_801F1150 → menuEquip_init, func_801F2C0C → menuEquip_update, func_801F2C3C → menuEquip_exit (screen 3
+  entry). high.
+- func_801F2C78 → menuEquip_input, func_801F12C8 → menuEquip_inputTabs (m_equip 181), func_801F1454 →
+  menuEquip_inputSlot (e_eq 81), func_801F2DB4 → menuEquip_inputList (e_eq 53). high.
+- Run e_eq (Cross, Cross on the weapon slot, Down, Cross): func_801F2894 → menuEquip_buildItemList, func_801F301C →
+  menuEquip_openList, func_801F30B0 → menuEquip_onListOpened, func_801F30D8 → menuEquip_equipSelected (item_add(8,1),
+  item_remove(7,1): weapon 8 → 7), func_801F32E0 → menuEquip_applyEquip (`(Character *)`), func_801F26C4 →
+  menuEquip_dropUnlearnedSupport, func_801F307C → menuEquip_closeList, func_801F30C0 → menuEquip_onListClosed
+  (each once). high.
+- func_801F24EC → menuEquip_optimize, func_801F31B0 → menuEquip_removeSlot (Off). medium (code).
+- func_801F3278 → menuEquip_setMember (`(slot, dir)`), func_801F3264 → menuEquip_onMemberSwitched. medium.
+- Ablation in the weapon list (`abl_eq.png`): func_801F2E34 → menuEquip_drawTabs, func_801F15E0 → menuEquip_drawInfo
+  (INFO with stats), func_801F1A94 → menuEquip_drawAbilities (ABILITY window), func_801F1F08 → menuEquip_drawList
+  (WEAPON list window), func_801F239C → menuEquip_drawCursor, func_801F20A0 → menuEquip_drawStatCompare (the
+  "99 → 32" columns), func_801F2F3C → menuEquip_drawListRow. high. func_801F189C → menuEquip_drawEquipment
+  (EQUIPMENT window; hidden under the list during the ablation) medium-high, func_801F2CD0 → menuEquip_draw,
+  func_801F3344 → menuEquip_drawStatLabel. medium.
+
+## Card screen (ovl_36)  (status: proposed)
+State `menu_card`. `D_801F347C` (CardMenu): +0 state, +1 row, +2 column, +7 collector rank, +8 count per card id,
++0x6C shown copy per id, +0x18F0 collector points {kinds, arrows, types, total} = {110, 1, 5, 116} (the screen:
+"Collectors Lv: 116p Beginner"). Handlers `D_801F30F4`: [1] 801F0AE8, [2] 801F2578.
+- D_801F347C → s_menuCard. high.
+- func_801F08F4 → menuCard_init, func_801F23DC → menuCard_update, func_801F240C → menuCard_exit (screen 6). high.
+- func_801F24A0 → menuCard_input, func_801F0AE8 → menuCard_inputGrid (c_move/c_r1), func_801F2578 →
+  menuCard_inputDiscard (c_x/c_xo). high.
+- func_801F2C5C → menuCard_selectCard (`(id)`: Down in c_move → (1)), func_801F1778 → menuCard_loadCardImage (the
+  selected card's image decoded with 801F3034 and uploaded; c_move once), func_801F3034 → menuCard_decodeRle,
+  func_801F2FE0 → menuCard_flipCopy (`(id, dir)`: R1 in c_r1 → (0, 1)), func_801F2B94 → menuCard_updateFlip. high.
+- func_801F0CC8 → menuCard_openDiscard (Cross, c_x: window with "Discard?" and Yes/No), func_801F2F34 →
+  menuCard_drawDiscardWindow, func_801F2F14 → menuCard_onDiscardOpened, func_801F2F24 → menuCard_onDiscardClosed
+  (c_xo). high.
+- func_801F1C88 → menuCard_refresh (counts per id via card_countOf, collector points, rank), func_801F2138 →
+  menuCard_calcCollectorPoints (out = 110, 1, 5, 116 at `menu_card`). high.
+- Ablation (`abl_card.png`): func_801F0DB0 → menuCard_drawGrid (CARD window), func_801F0F9C → menuCard_drawInfo
+  (INFO: rank, Win/Lose/Draw), func_801F2664 → menuCard_drawCardInfo (CARD INFO window), func_801F166C →
+  menuCard_drawCursor, func_801F2860 → menuCard_drawCell, func_801F12B8 → menuCard_drawCardStack, func_801F2730 →
+  menuCard_drawCard, func_801F2A04 → menuCard_drawArrows, func_801F2AB8 → menuCard_drawStats (the "8PFF" string),
+  func_801F1AE8 → menuCard_drawFace. high. func_801F1508 → menuCard_drawCellHighlight (pulsing quads at the cursor
+  cell), func_801F1D6C → menuCard_drawSprite, func_801F2508 → menuCard_draw. medium.
+- func_801F1EA0 / func_801F1FE8 → menuCard_saveVram / menuCard_restoreVram (StoreImage on init, LoadImage on exit),
+  func_801F2CD4 → menuCard_initImageCache, func_801F2D30 → menuCard_findCachedImage, func_801F2D88 →
+  menuCard_showCachedImage. medium (code).
+
+## Config screen (ovl_34)  (status: proposed)
+State `menu_config`. Each row toggled with Right then Left (script in this campaign), GameState+0x24 before/after
+(base 0x00019AC0): row 0 Sound bit 0 (1 = Mono), 1 Controller bit 1 (Custom), 2 Cursor bit 2 (Memory), 3 ATB bit 3
+(Wait), 4 Battle Camera bit 4 (Fixed), 5 Battle Control bit 5 (Custom), 6 Movement bit 6 (1 = Run, the save's
+setting), 7 Battle Speed bits 8-10 (2), 8 Field Message bits 14-16 (6), 9 HERE Icon bit 17 (1 = OFF), 10 Window
+Color bit 18 (1 = Classic), 11 Target Window bit 19 (Always), 12 Vibration bit 7 (no change: no analog pad).
+Row names from the screen (`build/rt/cfg_scroll.png` for rows 4-12).
+- GameState.unk24 → GameState.config; ConfigBits b0 → soundMono, b1 → padCustom, b2 → cursorMemory, b3 → atbWait,
+  b4 → battleCameraFixed, b5 → battleControlCustom, b6 → movementRun, b7 → vibration, b8 → battleSpeed,
+  b14 → messageSpeed, b17 → hereIconOff, b18 → windowClassic, b19 → targetWindowAlways. high. b11 (bits 11-13) and
+  b20 (per-character controller port for Battle Control, 801EEEF8) stay as they are. `(unk24 >> 18) & 1`, read by
+  all window drawing as "abr", is the Window Color option. GameState.unk28 = the custom pad mapping (4 bits per
+  action, drawn by 801EF110). medium.
+- D_801F1558 → s_menuConfig. high.
+- func_801EEA1C → menuConfig_init, func_801F00A8 → menuConfig_update, func_801F00D8 → menuConfig_exit (screen 7). high.
+- func_801F00F8 → menuConfig_input, func_801EECB4 → menuConfig_inputList (m_config 185), func_801EF50C →
+  menuConfig_setOption (`(u8 value)`: the bit writes above), func_801EFA54 → menuConfig_stepSlider (slider rows
+  change after 5 frames), func_801F02CC / func_801F0380 → menuConfig_pageUp / menuConfig_pageDown. high.
+- func_801EF938 → menuConfig_openSubWindow (Cross on Controller/Battle Control when Custom), func_801EED9C →
+  menuConfig_inputPadMap, func_801EEEF8 → menuConfig_inputBattleControl, func_801EF110 → menuConfig_drawPadMap,
+  func_801EF2B4 → menuConfig_drawBattleControl, func_801F0BE8 → menuConfig_drawSubWindows. medium (code).
+- Ablation (`abl_cfg.png`): func_801EEB68 → menuConfig_drawRows, func_801EF3F8 → menuConfig_drawCursor,
+  func_801F0C78 → menuConfig_drawScrollArrows, func_801F0550 → menuConfig_drawRow, func_801F0D20 →
+  menuConfig_drawChoice (the two option words), func_801EFC20 → menuConfig_drawSlider, func_801F05D0 →
+  menuConfig_drawSoundRow (the Sound row goes), func_801F08F8 → menuConfig_drawBattleSpeedRow (the Battle Speed row
+  goes). high. The other row drawers of the same table (`D_801F14BC`; row i prints title `D_801F13F0[i]` and reads
+  its own bit; rows matched to the screen): func_801F0640 → menuConfig_drawControllerRow, func_801F06B4 →
+  menuConfig_drawCursorRow, func_801F0728 → menuConfig_drawAtbRow, func_801F079C → menuConfig_drawCameraRow,
+  func_801F0810 → menuConfig_drawBattleControlRow, func_801F0884 → menuConfig_drawMovementRow, func_801F0974 →
+  menuConfig_drawMessageSpeedRow, func_801F09F0 → menuConfig_drawHereIconRow, func_801F0A64 →
+  menuConfig_drawWindowColorRow, func_801F0AD8 → menuConfig_drawTargetWindowRow, func_801F0B4C →
+  menuConfig_drawVibrationRow. high.
+- func_801F0184 → menuConfig_draw, func_801F025C → menuConfig_updateAnims, func_801EFB38 → menuConfig_updateHelp,
+  func_801F0DD8 → menuConfig_drawSliderRow, func_801F0FE8 → menuConfig_drawText. medium.
+
+## Shop (ovl_3c)  (status: proposed)
+States `menu_shop_weapons` (menu type 2, shop 0, "Weapons") and `menu_shop_synth` (shop 0x20, "Synth"). `D_801FC2D0`
+(shop): +0 kind (0 items, 1 equipment, 2 synthesis; 1 here), +1 Buy/Sell/Exit cursor, +2 entry count, +3 in a
+sub-screen, +8 shop id, +0x10 help text. `D_801FBBA0[kind][entry]` = {init, update, exit} (read): kinds 0/1: Buy
+801F4B48/801F5940/801F5988, Sell 801F7770/801F832C/801F835C; kind 2: Synth 801F5F88/801F7390/801F73C0. Buy state
+`D_801FC2F8`, Synth `D_801FC338`, Sell `D_801FC438` (+0 state 1 list, 2 quantity window). Run sh_buyxx (Buy, Cross,
+Cross on Dagger 320 G): funds 6028798 → 6028478 and "Stock" 6 → 7 (`build/rtf/mont.png` of that run).
+- D_801FC2D0 → s_shop, D_801FBBA0 → s_shopModes, D_801FC2F8 → s_shopBuy, D_801FC338 → s_shopSynth,
+  D_801FC438 → s_shopSell. high.
+- func_801F45E4 → shop_init, func_801F4688 → shop_update, func_801F4720 → shop_exit (`D_8006C9D4[2]`). high.
+- func_801F40AC → shop_inputMenu (Buy/Sell/Exit: sh_idle, sh_down), func_801F4960 → shop_selectMenu (once per Cross),
+  func_801F4AC0 → shop_enterMode (fade callback: runs the mode's init), func_801F4B38 → shop_onModeEntered,
+  func_801F43F8 → shop_leaveMode (Circle in a list), func_801F4854 → shop_onModeLeft, func_801F4A14 → shop_close
+  (sh_exit: Circle on the menu). high / medium for the leave pair (code).
+- func_801F4A90 → shop_getKind (`(id)`: id >= 0x20 → 2, else func_801F59A8 → shop_isEquipmentShop: 1 when every
+  item is equipment). high (shop 0 → 1, 0x20 → 2).
+- func_801F442C → shop_setHelp (`(text id)`), func_801F49C4 → shop_updateHelp, func_801F4458 → shop_getId,
+  func_801F4468 → shop_collectMembers (party list for the stat comparison), func_801F48F4 → shop_countEntries,
+  func_801F42A8 → shop_sumArmorStat, func_801F4A44 → shop_loadImages. medium (code + cov).
+- Ablation (`abl_shop*.png`): func_801F4000 → shop_drawMessage (the top help line; needs 60 frames),
+  func_801F4748 → shop_drawTitle ("Weapons" box), func_801F4198 → shop_drawMenu (Buy/Sell/Exit window),
+  func_801F47F8 → shop_drawMenuCursor, func_801F44F4 → shop_drawStatIcon. high. func_801F47C8 → shop_drawMenuAll. medium.
+- Buy: func_801F4B48 → shopBuy_init, func_801F5940 → shopBuy_update, func_801F5988 → shopBuy_exit,
+  func_801F5A1C → shopBuy_input, func_801F5AE4 → shopBuy_inputList (sh_buy), func_801F57C8 → shopBuy_openQuantity
+  (Cross on Dagger, sh_buyx), func_801F4C68 → shopBuy_inputQuantity (Left/Right ±1, Up/Down ±10), func_801F5E4C →
+  shopBuy_confirm (item_add, gil -= price × n; sh_buyxx), func_801F5D14 → shopBuy_closeQuantity, func_801F5D40 /
+  func_801F5D6C → shopBuy_onQuantityOpened / shopBuy_onQuantityClosed, func_801F5D98 → shopBuy_loadList (the shop's
+  item list `D_801FBC44[id]`), func_801F5A74 → shopBuy_draw, func_801F5AAC → shopBuy_updateList, func_801F5B64 →
+  shopBuy_drawScrollRows. high (cov) / medium for draw/update wrappers.
+  Ablation: func_801F4E1C → shopBuy_drawInfo (INFO: funds/stock/equipped), func_801F506C → shopBuy_drawList,
+  func_801F51B8 → shopBuy_drawParty (ATTACK window: members and stat arrows), func_801F56E4 → shopBuy_drawCursor,
+  func_801F5BCC → shopBuy_drawRow. high. func_801F551C → shopBuy_drawQuantityWindow (window content; sh_buyx 63). high.
+- Sell (sh_sell, sh_sellx: list of the inventory, Cross opens QUANTITY + INFO windows): func_801F7770 → shopSell_init,
+  func_801F832C → shopSell_update, func_801F835C → shopSell_exit, func_801F837C → shopSell_input, func_801F8434 →
+  shopSell_inputList, func_801F80D0 → shopSell_openQuantity, func_801F7848 → shopSell_inputQuantity, func_801F8224 →
+  shopSell_confirm (item_remove, gil += price/2 × n, cap 9999999; code), func_801F8680 → shopSell_closeQuantity,
+  func_801F86D0 / func_801F86FC → shopSell_onQuantityOpened / shopSell_onQuantityClosed, func_801F79FC →
+  shopSell_drawList, func_801F7BC4 → shopSell_drawQuantityWindow, func_801F7DA8 → shopSell_drawInfoWindow,
+  func_801F7FE0 → shopSell_drawCursor, func_801F856C → shopSell_drawRow, func_801F84D8 → shopSell_drawScrollRows,
+  func_801F83D4 → shopSell_draw, func_801F83FC → shopSell_updateList, func_801F8728 → shopSell_updateHelp.
+  high for those seen in sh_sell/sh_sellx (init, update, input, inputList, openQuantity, inputQuantity, drawList,
+  the two window contents, drawCursor, drawRow), medium for the rest (same structure as Buy).
+- Synthesis (`menu_shop_synth`, sh_synth/sh_synthx: "What would you like to synthesize?", Required Item list):
+  func_801F5F88 → shopSynth_init, func_801F7390 → shopSynth_update, func_801F73C0 → shopSynth_exit, func_801F73E0 →
+  shopSynth_input, func_801F74A8 → shopSynth_inputList, func_801F6F00 → shopSynth_openQuantity, func_801F60A8 →
+  shopSynth_inputQuantity, func_801F7614 → shopSynth_confirm (item_add product, item_remove both ingredients, gil;
+  code), func_801F7590 → shopSynth_closeQuantity, func_801F75BC / func_801F75E8 → shopSynth_onQuantityOpened /
+  shopSynth_onQuantityClosed, func_801F7250 → shopSynth_loadRecipes (recipes whose shop mask has bit id - 0x20),
+  func_801F625C → shopSynth_drawInfo, func_801F65C8 → shopSynth_drawList, func_801F6714 → shopSynth_drawParty,
+  func_801F6A7C → shopSynth_drawQuantityWindow, func_801F6C50 → shopSynth_drawCursor, func_801F6D34 →
+  shopSynth_drawRow, func_801F7528 → shopSynth_drawScrollRows, func_801F7438 → shopSynth_draw, func_801F7470 →
+  shopSynth_updateList, func_801F76C8 → shopSynth_updateHelp. high for the ones covered in sh_synth/sh_synthx
+  (init, update, input, inputList, openQuantity, inputQuantity, the draw functions, onQuantityOpened), medium for
+  the rest (code; parallel to Buy).
+
+## Save / load (ovl_39)  (status: proposed)
+State `menu_save` (menu type 4, arg 2: "Select MEMORY CARD slot." with slot 1 / slot 2). `D_801FB1A8`: +0 mode
+(menu arg), +1 state (1 slot select, 4 file list, 3 confirm), +2 sub-state, +4[2] card status per slot, +0x24 file
+MenuList, +0x34 file entries. Run sv_yesno (Cross on slot 2, Down to the empty FILE03, Cross) went straight to
+"Saving..." (no confirmation for an empty block) and wrote a real save: memory card 2 block 6 "FF9/FILE03/99:56"
+is new from this campaign. Runs sv_idle, sv_up, sv_slot2, sv_slot2down.
+- D_801FB1A8 → s_menuSave. high.
+- func_801F4414 → menuSave_init, func_801F5280 → menuSave_update, func_801F52C0 → menuSave_exit (`D_8006C9D4[4]`). high.
+- func_801F4664 → menuSave_inputSlot (sv_idle/sv_up), func_801F58E0 → menuSave_selectSlot (Cross: sv_slot2),
+  func_801F55D8 → menuSave_inputFileList (sv_slot2down), func_801F5960 → menuSave_selectFile (sv_yesno: once, then
+  func_801F94D0 → menuSave_saveFile(2, 2) in save mode; func_801F9788 is the load-mode branch). high.
+- func_801F63D8 → menuSave_openCheck: opens the CHECK window ("Do not remove MEMORY CARDs ...", "Checking...") and
+  starts reading the card (sv_slot2 once). medium-high.
+- Ablation (`abl_sv.png`, `abl_sv2.png`): func_801F4760 → menuSave_drawSlotWindow, func_801F4538 →
+  menuSave_drawHelp (help line + slot name box), func_801F53E0 → menuSave_drawTitle ("Save" box), func_801F4840 →
+  menuSave_drawFileList (FILE window), func_801F49C4 → menuSave_drawFile ("FILE01" etc. + the entry), func_801F4B18 →
+  menuSave_drawFileInfo (portraits, name, Lv, time, gil, location), func_801F4E00 → menuSave_drawCursor,
+  func_801F573C → menuSave_drawScrollArrows. high.
+- func_801F500C → menuSave_updateHelp, func_801F5114 → menuSave_setFileHelp, func_801F5460 → menuSave_drawState,
+  func_801F54C8 → menuSave_input, func_801F5550 → menuSave_updateState, func_801F5A68 → menuSave_drawBookIcon /
+  func_801F5E68 → menuSave_drawBook (the animated book of the CHECK window), func_801F5BE0 / func_801F5D00 →
+  menuSave_saveVram / menuSave_restoreVram. medium (code + cov).
+- func_801F5E90 → menuSave_openConfirm (`(text, yes, no)`), func_801F5FE4 → menuSave_drawConfirm, func_801F60DC →
+  menuSave_drawConfirmCursor, func_801F61BC → menuSave_inputConfirm: the Yes/No dialog; not reached (empty block
+  saves without asking). medium (code).
+
+## Name entry (ovl_3a)  (status: proposed)
+State `menu_name_entry` (menu type 1, arg 0 = Zidane: "Pick a name.", Alphabet/Symbol/Delete/Confirm/Default).
+`D_801F4BBC`: +0 in the character grid, +1 command cursor, +2 page (Alphabet/Symbol), +3 grid cursor, +4 length,
++7 name buffer, +0x11 default name, +0x130 character.
+- D_801F4BBC → s_menuName. high.
+- func_801F3874 → menuName_init, func_801F4748 → menuName_update, func_801F4770 → menuName_exit (`D_8006C9D4[1]`). high.
+- Ablation (`abl_name.png`, `abl_name2.png`): func_801F3FAC → menuName_drawPortrait, func_801F4110 →
+  menuName_drawCommands, func_801F4238 → menuName_drawNameWindow (name + character grid), func_801F459C →
+  menuName_drawCursor, func_801F48A0 → menuName_drawTitle ("Name" box), func_801F490C → menuName_drawHelp. high.
+- func_801F3A98 → menuName_input, func_801F3BBC → menuName_inputGrid, func_801F47E8 → menuName_inputCommands,
+  func_801F3D9C → menuName_confirm (Cross: add a character / page / Delete / Confirm copies the name to the
+  Character / Default), func_801F47A0 → menuName_draw, func_801F49A0 → menuName_loadPortrait. medium (code).
+
+## Party select (ovl_3b)  (status: proposed)
+State `menu_party_select` (menu type 3; the bogus request filled all slots with Zidane, the layout is still the
+real one: PARTY column, HELP "Form Party", INFO with the reserve grid).
+- D_801F4748 → s_menuParty. high.
+- func_801F3FEC → menuParty_init, func_801F405C → menuParty_update, func_801F4084 → menuParty_exit (`D_8006C9D4[3]`). high.
+- Ablation (`abl_party.png`): func_801F3B3C → menuParty_drawParty, func_801F3CF0 → menuParty_drawInfo,
+  func_801F3E58 → menuParty_drawCursor, func_801F4190 → menuParty_drawTitle, func_801F4204 → menuParty_drawHelp,
+  func_801F43FC → menuParty_drawPortrait. high. func_801F4360 → menuParty_drawMember, func_801F4150 → menuParty_draw. medium.
+- func_801F40AC → menuParty_input, func_801F37A8 → menuParty_inputParty, func_801F38D8 → menuParty_inputReserve,
+  func_801F3A60 → menuParty_pick (first Cross picks, second swaps), func_801F42A4 → menuParty_confirm (Circle:
+  party_setMember for each slot, close). medium (code).
+
+## Chocograph (ovl_32)  (status: proposed)
+`menu_chocograph` (none owned) and `menu_chocograph2`: before opening, g_evtGlobalVars bytes 0xB8.. = 03 01 00,
+0xBB.. = 07 00 00, 0xBF = 03 were poked; the screen then shows "Inventory: 3", "Loc. Found: 3", three chocobo
+abilities (Field, Reef, Mt.) and the list Streamside / Between mountains / Uncultivated land (`ch_list.png`). So
+g_evtGlobalVars b[0xBB..0xBD] = chocographs owned (bit per chocograph), b[0xB8..0xBA] = treasure found, b[0xBF] =
+chocobo ability count, and GameData.unk844 = the selected chocograph (1-24, 0 none). high.
+- D_801F9850 → s_menuChocograph. high.
+- func_801F7AC0 → menuChocograph_init, func_801F8FF8 → menuChocograph_update, func_801F904C → menuChocograph_exit. high.
+- Ablation (`abl_choco.png`): func_801F9164 → menuChocograph_drawTitle, func_801F91D8 → menuChocograph_drawTabs
+  (Select/Cancel), func_801F7EB4 → menuChocograph_drawSelected, func_801F8010 → menuChocograph_drawList,
+  func_801F8130 → menuChocograph_drawCounts, func_801F92C0 → menuChocograph_drawAbilities, func_801F8240 →
+  menuChocograph_drawHint, func_801F8404 → menuChocograph_drawCursor, func_801F93FC → menuChocograph_drawRow. high.
+- func_801F907C → menuChocograph_input, func_801F7C8C → menuChocograph_inputTabs, func_801F7DC0 →
+  menuChocograph_inputList (Cross selects when the ability count suffices), func_801F90D4 → menuChocograph_draw,
+  func_801F85EC → menuChocograph_readFlags (the evt vars above), func_801F84F0 → menuChocograph_updateHelp,
+  func_801F95E8 → menuChocograph_getRequiredAbility, func_801F88F4 → menuChocograph_drawPicture, func_801F9518 →
+  menuChocograph_drawIcon. medium (code).
+
+## Disc change (ovl_3e)  (status: proposed)
+`menu_disc_change` (menu type 8, arg 0x3A98): the "Change to DISC" art over the whole screen.
+- func_801F605C → discChange_init, func_801F65A4 → discChange_update, func_801F65D4 → discChange_exit
+  (`D_8006C9D4[8]`; exit jumps to the arg's field unless it is 15000). high.
+- func_801F6124 → discChange_drawBackground: ablation: the whole picture goes (`abl_disc.png`). high.
+- func_801F6368 → discChange_checkDisc (CdControlB/CdGetDiskType; 7 = right disc), func_801F673C →
+  discChange_loadPicture, func_801F6254 → discChange_drawPanel (states 3-4), func_801F6654 / func_801F66AC /
+  func_801F66F4 → discChange_input / discChange_draw / discChange_updateState (tables `D_801F6B60`, `D_801F6B74`,
+  `D_801F6B88`). medium (code).
+
+## Message windows (main msg.c)  (status: proposed)
+`field_dali_inn_moogle`, Cross on the Moogle: MOGNET window "Gumo / Can I help you, kupo? / Save / Tent / Mognet /
+Cancel". After each Down (frames 100, 120, 140): D_8007B958 0, 1, 2, 3; D_8007B95C 4; D_8007B968 2; D_8007B96C 3;
+D_8007B970 2.
+- D_8007B958 → g_msgChoice (cursor), D_8007B95C → g_msgChoiceCount, D_8007B968 → g_msgChoiceLine (first choice
+  line in the text), D_8007B96C → g_msgChoiceCancel (Cancel = choice 3), D_8007B970 → g_msgChoiceWindow (window id).
+  high. D_8007B9C0 → g_msgWindows (10 entries), D_8007BB78 → g_msgFocus (top window). medium.
+- func_8004F5D4 → msg_drawWindowContent (the Window content callback set by msg_open): ablation removes the
+  text, the frame stays (`abl_msg.png`). high.
+- func_8004D940 → msg_drawText (`(msgwin)`), func_8004C8C4 → msg_renderText: ablation: the text goes. high.
+- func_8004D2C0 → msg_advanceText: stubbed 8 frames after opening, no character ever appears (`abl_msg2.png`). high.
+- func_8004F660 → msg_drawChoiceCursor (the Window overlay callback): stubbed from the start, no hand. medium-high.
+- func_8004DAD0 → msg_input (`(msgwin, pad)`): Up/Down move g_msgChoice with sound 0x67, Cross confirms (cov:
+  f_moogdown). medium-high.
+- func_8004E248 → msg_getLayout (`(id, *x, *y, *z)`): parses the message's leading 0xF9 codes (size, choices,
+  position); f_moog: once before msg_open, from func_80039660 (the event layout helper called by evt_execInstr). high.
+- func_8004C2C0 → msg_measureLine (f_moog: once, from msg_getLayout; returns a line's width). medium.
+- func_8004E7FC → msg_update (every field frame: pad edges → the focused window's input callback), func_8004C0E8 →
+  msg_readPad, func_8004E8D4 → msg_getPadHeld, func_8004E8EC → msg_getPadPressed, func_8004E904 →
+  msg_getPadReleased. medium (code; called every frame).
+- func_8004E958 → msg_closeAll (menu open: once, from evt), func_8004BFB0 → msg_init (code: resets the windows and picks the text bank per mode), func_8004E16C →
+  msg_resetChoices, func_8004EFB0 → msg_getEntry (`(id, *size)`), func_8004F058 → msg_getText, func_8004ED94 →
+  msg_getWindow, func_8004EA3C → msg_getFocus, func_8004EA30 → msg_setFocus. medium (code).
+- func_8004FF98 → msg_startHereIcon (`(reason)`; 0 = stop) and func_8004F74C → msg_drawHereIcon: the arrow over the
+  player, gated by Config "HERE Icon" (bit 17) and g_evtState.controlEnabled. medium (code; the icon was not seen
+  in the runs).
+
+## Event system (main event.c)  (status: proposed)
+- Unk8007AECC (g_evtState) +0x16EC → controlEnabled: at `field_dali_inn_moogle` 1 while walking, 0 during the
+  Moogle dialog, 1 again after it closed. high. (+0x16ED is the known playerUid.)
+- func_80048A5C → evt_checkPlayerAction: every field frame; on Cross it called func_80038618(player, 4) → the Moogle
+  (0x80078588) and then func_800384D0(moogle, 1, 3, 0) (run t_talk). Function 3 of an object is "talk", 2
+  "touch/proximity", 8 the Square-button variant (0x80000 = card game challenge). high.
+- func_80038618 → evt_findNearestObject (`(o, flags, *dist)`): flags 4 = in front, talk range; 0 = collision
+  (func_800475D8 calls it while walking). high.
+- func_800384D0 → evt_callObjectFunc (`(o, level, func, save)`): runs script function `func` of object o at
+  priority `level` (t_talk: moogle func 3; evt_execInstr+0x73C: player func 0x16). high.
+- func_80038278 → evt_returnFromFunc: pops the object's call stack when a function ends (t_talk: once, from the
+  expression code). medium.
+- func_80037D6C → evt_getSysVar (`(id)`): system variables of the expression evaluator (0 random, 2 controlEnabled,
+  6 gil, 20 play time, 24 battle id, ...); called from evt_runExpr (t_talk: 35 calls with id 2). high.
+- func_800475D8 → evt_movePlayer: pad → player direction/speed; Config Movement bit (b6) picks run (60) or walk
+  (30), Circle inverts it. Runs every field frame (f_idle/f_walk). high.
+- func_80038990 → evt_moveObjectTo (`(x, y, z, flags)`): script-driven walk toward a point with collision. medium (code).
+- func_80048F54 → evt_updateObjects (all objects each frame), func_8004883C → evt_updateIdleTimer (random idle
+  animation timer of the player). medium.
+- func_8004AE00 → evt_getPlayer (the object whose uid is playerUid, i.e. Zidane 0x8007805C in Dali), func_8004AE84 → evt_isControlEnabled,
+  func_8004AE9C → evt_getObjectList, func_8004B040 → evt_getObject (`(uid)`), func_8004A9E8 → evt_onMenuOpen (called
+  by fld_main right after menu_open: closes message windows). medium-high.
+- func_8004B68C → evt_getObjectProp (`(o, prop)`: 0-2 position, 3 direction, 4 flags, 5 uid, ...). medium (code).
+
+## Field frame (ovl_0a fld_movie.c)  (status: proposed)
+- func_800AE788 → fld_beginFrame: clears this frame's OT (ClearOTag/ClearOTagR); ablation at `field_dali_inn`: the
+  background is replaced by stale white layers (`abl_f1.png`). high.
+- func_800AE930 → fld_endFrame: soft reset (L1+L2+R1+R2+Start+Select), VSync, PutDispEnv/DrawOTag, buffer flip and the
+  four-frame deferred flag queue (D_800C9EF0). medium-high (the btl_endFrame counterpart).
+- func_800AB3CC → fld_drawModels: ablation: Zidane and the Moogle vanish, the background stays. high.
+- func_800AB110 → fld_collectVisibleModels (`(list)` → count): its stub (no return value) also removed every model. medium.
+- func_800BE158 → bg_drawOverlay (`(overlay, ...)`): 16 calls per field frame at `field_dali_inn`; its stub leaves
+  only the models on a white screen (`abl_f3.png`). high. func_800BFEE0 → bg_draw: once per frame, updates the
+  background (800BF0C4, 800BF660, 800BEDE8, 800BDC44) and calls 800BE158 for each visible overlay of the current
+  camera (`D_800CA068.unk75`). medium-high. Both are in tu_800B61A4.c, which then looks like the field background
+  module (D_800C9DA4 = its state, `.unk10` the loaded background header).
+- func_800B61A4: its stub garbles the models' geometry (Zidane's mesh stretched across the room); leads only.
+  No visible change in a still frame for 800B1E8C, 800B2D10, 800B3254, 800B3294, 800B3300, 800B3684, 800B4894,
+  800BD4D4, 800BDC44, 800BEDE8, 800C1368, 800C3EC0, 800C44F4, 800C4EC8, 800C60F0, 800C7100, 800B7F14, 800BA560,
+  800BF0C4, 800BF660, 800C3608 (`abl_f2-4.png`); 800B3378's stub turned the Moogle white (lighting). Not named.
+
+## What the campaign did not reach  (status: reference)
+- Field: walking events, NPC dialogue with speech tails (func_8002D398, the tail setter, is code-only), the "!"
+  bubble (func_8004FBD8 / func_8004F9A0 did nothing visible next to the Moogle) and the HERE icon (not shown after
+  Select); ATE prompt (func_8004FE0C); field → world exit; Chocobo minigames; the opcode handlers of evt_execInstr.
+- Menus: the item Auto sort, Tetra Master challenge (Square), the save/load Yes/No dialog and loading a file,
+  memory card wrappers 0x801FA0C8-0x801FAF74 of ovl_39 (all `_card_*` callers), menu types 6/7 (ovl_3d has no code),
+  the world-map copies of the main menu (ovl_0c), ovl_65 beyond the battle campaign.
+- Party select and Chocograph were opened outside their story context, so their logic (picking members against a
+  real request, using a chocograph) was not exercised; the names there are mostly from ablation + code.

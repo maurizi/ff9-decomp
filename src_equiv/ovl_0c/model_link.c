@@ -1,4 +1,4 @@
-/* ovl_0c func_800C709C (the world map's copy of ovl_0a func_800B5958; the only differences are the depth
+/* ovl_0c wm_drawMesh (the world map's copy of ovl_0a func_800B5958; the only differences are the depth
  * scaling: quads use >> 5 instead of >> 4, and triangles shift the AVSZ3 result right by 1): link one mesh group's prebuilt primitives into the current OT (hand-written asm in the
  * original, standard C ABI otherwise).
  *
@@ -36,7 +36,7 @@ static const PrimKind kinds[8] = {
     { 0x10, 0, 0x0C, 0x0B, 0x14, 4, { 0x08, 0x0C, 0x10 } },        /* flat triangle */
 };
 
-void func_800C709C(Unk800C95C8 *model, u8 group) {
+void wm_drawMesh(ModelObj *model, u8 group) {
     u8 *m = (u8 *)model;
     u8 *grp = *(u8 **)(*(u8 **)(m + 8) + 0x10) + group * 0x28;
     u8 *pkt = *(u8 **)(*(u8 **)(m + 0x44) + group * 12 + 4);

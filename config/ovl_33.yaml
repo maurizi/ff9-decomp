@@ -43,10 +43,10 @@ segments:
     bss_size: 0x0
     subsegments:
       - [0x0, rodata]   # overlay header word (overlay id), an object of its own
-      - [0x4, .rodata, tu_801EE7C0]
-      - [0x744, .rodata, tu_801F1150]
-      - [0x8C0, c, tu_801EE7C0]
-      - [0x3250, c, tu_801F1150]
+      - [0x4, .rodata, menu_ability]
+      - [0x744, .rodata, menu_equip]
+      - [0x8C0, c, menu_ability]
+      - [0x3250, c, menu_equip]
       - [0x54A8, data]
 
   - [0xF000]

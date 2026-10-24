@@ -32,7 +32,7 @@ void battleEnd_main(void) {
         g_gameState->unk1C->unk8 ^= 1;
         func_8002C0DC(g_gameState->unk1C->unk8);
     } while (g_gameState->mode == 8);
-    func_801EF5C8();
+    battleEnd_exit();
 }
 
 void battleEnd_init(void) {
@@ -41,10 +41,10 @@ void battleEnd_init(void) {
 
     func_8001CFB4();
     func_80021CDC(0);
-    func_801F0E30();
-    func_801EF6F8();
+    rewards_init();
+    battleEnd_loadDb();
     func_801EF6D8();
-    func_801EF814();
+    battleEnd_unloadDb();
     if (s->unk10 != 0 && g_btlRewards.unkB != 0) {
         evt_init(s->unk10);
         if (s->unk14 != 0) {
@@ -64,10 +64,10 @@ void battleEnd_init(void) {
             }
         }
     }
-    func_801EF890();
+    battleEnd_preloadScene();
 }
 
-void func_801EF5C8(void) {
+void battleEnd_exit(void) {
     GameData *g = g_gameState->unk1C;
     s32 i;
 
@@ -93,7 +93,7 @@ s32 func_801EF6D8(void) {
     return 0;
 }
 
-s32 func_801EF6F8(void) {
+s32 battleEnd_loadDb(void) {
     FileEntry *e;
     PreloadEntry *f;
 
@@ -113,7 +113,7 @@ s32 func_801EF6F8(void) {
     return 0;
 }
 
-s32 func_801EF814(void) {
+s32 battleEnd_unloadDb(void) {
     Unk1354 *p = g_gameState->unk1C->unk8E4.ovl65->unk1354;
     if (p->unk4 != 0) {
         db_unregister((void *)p->unk4);
@@ -122,7 +122,7 @@ s32 func_801EF814(void) {
     return 0;
 }
 
-void func_801EF890(void) {
+void battleEnd_preloadScene(void) {
     Unk11C0 *b;
     FileEntry *f;
     GameData *g;
@@ -186,19 +186,19 @@ void func_801EF890(void) {
     }
 }
 
-void func_801EFB98(void) {
-    RECT *r = &D_801F7A78.unkAC[0].unk4;
+void rewards_drawInfo(void) {
+    RECT *r = &s_rewards.wins[0].unk4;
     s32 x, y;
     ui_drawLabel(r->x + 6, r->y - 3, 0xB, D_80070460, 0);
     func_8002DEE4(r, 0xB, 1);
     func_8002705C(r, 0xC, 1);
     x = r->x;
     y = r->y;
-    D_801F7A78.unk374 = func_8002920C(x + 0x13, y + 6, g_ot + 10,
-                                      text_get(D_801F3BB8[D_801F7A78.unkA]), 0, D_801F7A78.unk374);
+    s_rewards.prim = func_8002920C(x + 0x13, y + 6, g_ot + 10,
+                                      text_get(s_rewardsTitleText[s_rewards.screen]), 0, s_rewards.prim);
 }
 
-void func_801EFC68(void) {
+void rewards_drawMembers(void) {
     u8 buf[16];
     RECT *r;
     Character *c;
@@ -210,35 +210,35 @@ void func_801EFC68(void) {
     u8 *p;
 
     for (i = 0; i < 4; i++) {
-        if (D_801F7A78.unk14C[i + 2] != 0) {
-            r = &D_801F7A78.unkAC[i + 2].unk4;
+        if (s_rewards.winShown[i + 2] != 0) {
+            r = &s_rewards.wins[i + 2].unk4;
             c = g_gameState->unk1C->party[i];
             if (c != NULL) {
-                alive = func_801F171C(c, i);
+                alive = rewards_isRewarded(c, i);
                 dim = !alive;
                 col = dim * 2;
                 if (!alive) {
-                    func_801F0394(r);
+                    rewards_drawPanelShade(r);
                 }
                 func_80028AF0(r->x + 4, r->y + 4, 0xB, i, dim);
-                func_801F2264(r->x + 0x24, r->y + 0x12, 0xB, &D_801F7A78.unk258[i]);
-                D_801F7A78.unk374 = func_8002920C(r->x + 0x29, r->y + 4, g_ot + 0xB, c->unk0, col, D_801F7A78.unk374);
+                rewards_drawLevelUp(r->x + 0x24, r->y + 0x12, 0xB, &s_rewards.levelPopups[i]);
+                s_rewards.prim = func_8002920C(r->x + 0x29, r->y + 4, g_ot + 0xB, c->unk0, col, s_rewards.prim);
                 text_formatNumber(c->level, buf, 2, 1);
                 ui_drawSprite(r->x + 0x72, r->y + 7, 0xB, 0xB4, dim);
                 p = buf;
-                D_801F7A78.unk374 = func_8002B644(r->x + 0x84, r->y + 5, g_ot + 0xB, p, col, D_801F7A78.unk374);
+                s_rewards.prim = func_8002B644(r->x + 0x84, r->y + 5, g_ot + 0xB, p, col, s_rewards.prim);
                 func_80026FC4(r->x + 0x28, r->y + 0x13, 0xB, c->unk38, dim);
-                text_drawBlock(r->x + 0x29, r->y + 0x1C, 0xB, text_get(0), col);
+                text_drawBlock(r->x + 0x29, r->y + 0x1C, 0xB, text_get(REWARDS_TEXT_EXP), col);
                 text_formatNumber(c->exp, p, 7, 1);
                 ui_drawSmallDigits(r->x + 0x62, r->y + 0x20, 0xB, p, col);
-                if (c->level < 99) {
+                if (c->level < LEVEL_MAX) {
                     n = g_levelExp[c->level];
                 } else {
                     n = c->exp;
                 }
                 text_formatNumber(n - c->exp, buf, 6, 1);
                 ui_drawSmallDigits(r->x + 0x69, r->y + 0x2A, 0xB, buf, col);
-                text_drawBlock(r->x + 0x29, r->y + 0x26, 0xB, text_get(0xC), col);
+                text_drawBlock(r->x + 0x29, r->y + 0x26, 0xB, text_get(REWARDS_TEXT_NEXT), col);
             }
             func_8002DEE4(r, 0xB, 0);
             func_8002705C(r, 0xC, 0);
@@ -246,90 +246,90 @@ void func_801EFC68(void) {
     }
 }
 
-void func_801EFF50(void) {
-    RECT *r = &D_801F7A78.unkAC[6].unk4;
+void rewards_drawExp(void) {
+    RECT *r = &s_rewards.wins[6].unk4;
     u8 buf[16];
     s32 x, y;
 
-    if (D_801F7A78.unk14C[6] != 0) {
+    if (s_rewards.winShown[6] != 0) {
         func_8002DEE4(r, 0xB, 2);
         func_8002705C(r, 0xC, 2);
-        text_formatNumber(D_801F7A78.unk24.unk0, buf, 6, 1);
+        text_formatNumber(s_rewards.rewards.expEach, buf, 6, 1);
         x = r->x;
         y = r->y;
-        D_801F7A78.unk374 = func_8002920C(x + 0xC, y + 5, g_ot + 10,
-                                          text_get(0), 0, D_801F7A78.unk374);
-        D_801F7A78.unk374 = func_80029D60(r->x + 0x5A, r->y + 9, g_ot + 10,
-                                          buf, 0, D_801F7A78.unk374);
+        s_rewards.prim = func_8002920C(x + 0xC, y + 5, g_ot + 10,
+                                          text_get(REWARDS_TEXT_EXP), 0, s_rewards.prim);
+        s_rewards.prim = func_80029D60(r->x + 0x5A, r->y + 9, g_ot + 10,
+                                          buf, 0, s_rewards.prim);
     }
 }
 
-void func_801F0044(void) {
-    RECT *r = &D_801F7A78.unkAC[7].unk4;
+void rewards_drawAp(void) {
+    RECT *r = &s_rewards.wins[7].unk4;
     u8 buf[16];
     s32 x, y;
 
-    if (D_801F7A78.unk14C[7] != 0) {
+    if (s_rewards.winShown[7] != 0) {
         func_8002DEE4(r, 0xB, 2);
         func_8002705C(r, 0xC, 2);
-        text_formatNumber(D_801F7A78.unk24.unk4, buf, 3, 1);
+        text_formatNumber(s_rewards.rewards.ap, buf, 3, 1);
         x = r->x;
         y = r->y;
-        D_801F7A78.unk374 = func_8002920C(x + 0xC, y + 5, g_ot + 10,
-                                          text_get(1), 0, D_801F7A78.unk374);
-        D_801F7A78.unk374 = func_80029D60(r->x + 0x6F, r->y + 9, g_ot + 10,
-                                          buf, 0, D_801F7A78.unk374);
+        s_rewards.prim = func_8002920C(x + 0xC, y + 5, g_ot + 10,
+                                          text_get(REWARDS_TEXT_AP), 0, s_rewards.prim);
+        s_rewards.prim = func_80029D60(r->x + 0x6F, r->y + 9, g_ot + 10,
+                                          buf, 0, s_rewards.prim);
     }
 }
 
-void func_801F0138(void) {
-    RECT *r = &D_801F7A78.unkAC[8].unk4;
+void rewards_drawReceivedGil(void) {
+    RECT *r = &s_rewards.wins[8].unk4;
     u8 buf[16];
     s32 x, y;
-    u32 gil = D_801F7A78.unk24.unk7C.unk0 - D_801F7A78.unk24.unk7C.unk8;
+    u32 gil = s_rewards.rewards.gil.target - s_rewards.rewards.gil.cur;
 
     if (gil > 999999) {
         gil = 999999;
     }
-    if (D_801F7A78.unk14C[8] != 0) {
+    if (s_rewards.winShown[8] != 0) {
         func_8002DEE4(r, 0xE, 2);
         func_8002705C(r, 0xF, 2);
         text_formatNumber(gil, buf, 6, 1);
-        strcat(buf, D_801F3BC0);
+        strcat(buf, s_rewardsGilUnit);
         x = r->x;
         y = r->y;
-        D_801F7A78.unk374 = func_8002920C(x + 0xC, y + 5, g_ot + 13,
-                                          text_get(0xD), 0, D_801F7A78.unk374);
-        D_801F7A78.unk374 = func_80029D60(r->x + 0x54, r->y + 9, g_ot + 13,
-                                          buf, 0, D_801F7A78.unk374);
+        s_rewards.prim = func_8002920C(x + 0xC, y + 5, g_ot + 13,
+                                          text_get(REWARDS_TEXT_RECEIVED_GIL), 0, s_rewards.prim);
+        s_rewards.prim = func_80029D60(r->x + 0x54, r->y + 9, g_ot + 13,
+                                          buf, 0, s_rewards.prim);
     }
 }
 
-void func_801F0264(void) {
-    RECT *r = &D_801F7A78.unkAC[9].unk4;
+void rewards_drawCurrentGil(void) {
+    RECT *r = &s_rewards.wins[9].unk4;
     u8 buf[16];
     s32 x, y;
     u32 gil = g_gameState->unk1C->gil;
 
-    if (gil > 9999999) {
-        gil = 9999999;
+    if (gil > GIL_MAX) {
+        gil = GIL_MAX;
     }
-    if (D_801F7A78.unk14C[9] != 0) {
+    if (s_rewards.winShown[9] != 0) {
         func_8002DEE4(r, 0xE, 2);
         func_8002705C(r, 0xF, 2);
         text_formatNumber(gil, buf, 7, 1);
-        strcat(buf, D_801F3BC4);
+        strcat(buf, s_rewardsGilUnit2);
         x = r->x;
         y = r->y;
-        D_801F7A78.unk374 = func_8002920C(x + 0xC, y + 5, g_ot + 13,
-                                          text_get(0xE), 0, D_801F7A78.unk374);
-        D_801F7A78.unk374 = func_80029D60(r->x + 0x4D, r->y + 9, g_ot + 13,
-                                          buf, 0, D_801F7A78.unk374);
+        s_rewards.prim = func_8002920C(x + 0xC, y + 5, g_ot + 13,
+                                          text_get(REWARDS_TEXT_CURRENT_GIL), 0, s_rewards.prim);
+        s_rewards.prim = func_80029D60(r->x + 0x4D, r->y + 9, g_ot + 13,
+                                          buf, 0, s_rewards.prim);
     }
 }
 
-void func_801F0394(RECT *r) {
-    u8 *p = D_801F7A78.unk374;
+void rewards_drawPanelShade(RECT *r) {
+    u8 *p = s_rewards.prim;
 
     setlen(p, 3);
     ((TileWords *)p)->rgbc = 0x62202020;
@@ -340,24 +340,24 @@ void func_801F0394(RECT *r) {
     SetDrawTPage(p, 1, 1, 0);
     addPrim(g_ot + 11, p);
     p += 8;
-    D_801F7A78.unk374 = p;
+    s_rewards.prim = p;
 }
 
-void func_801F04BC(void) {
+void rewards_initWindows(void) {
     s32 i;
 
     for (i = 0; i < 10; i++) {
-        D_801F7A78.unk14C[i] = D_801F3BC8[i].unk8;
-        D_801F7A78.unkAC[i].unk4 = D_801F3BC8[i].unk0;
-        if (D_801F3BC8[i].unk8 != 0) {
-            func_80063118(&D_801F7A78.unkAC[i], D_801F3C4C[i], 1);
+        s_rewards.winShown[i] = s_rewardsWinInit[i].shown;
+        s_rewards.wins[i].unk4 = s_rewardsWinInit[i].rect;
+        if (s_rewardsWinInit[i].shown != 0) {
+            func_80063118(&s_rewards.wins[i], s_rewardsWinOpen[i], 1);
         } else {
-            func_80063118(&D_801F7A78.unkAC[i], NULL, 0);
+            func_80063118(&s_rewards.wins[i], NULL, 0);
         }
     }
 }
 
-void func_801F0594(void) {
+void rewards_moveMemberWins(void) {
     s32 i;
     Window *w;
     Window *w2;
@@ -369,32 +369,32 @@ void func_801F0594(void) {
     WinDef *d;
 
     for (i = 0; i < 4; i++) {
-        if (D_801F7A78.unk14[i] != 0) {
-            w = D_801F7A78.unk158[i].unk0;
+        if (s_rewards.getsExp[i] != 0) {
+            w = s_rewards.levelWins[i].win;
             if (w != NULL && w->unk1C != 0) {
                 tx = w->unk0 - 0x26;
-                dx = D_801F7A78.unkAC[i + 2].unk4.x - tx;
+                dx = s_rewards.wins[i + 2].unk4.x - tx;
                 ty = w->unk2 - 2;
-                dy = D_801F7A78.unkAC[i + 2].unk4.y - ty;
+                dy = s_rewards.wins[i + 2].unk4.y - ty;
                 w->unk0 += dx;
-                D_801F7A78.unk158[i].unk0->unk8.x += dx;
-                D_801F7A78.unk158[i].unk0->unk2 += dy;
-                D_801F7A78.unk158[i].unk0->unk8.y += dy;
+                s_rewards.levelWins[i].win->unk8.x += dx;
+                s_rewards.levelWins[i].win->unk2 += dy;
+                s_rewards.levelWins[i].win->unk8.y += dy;
             }
         }
-        if (D_801F7A78.unk18[i] != 0) {
-            w2 = D_801F7A78.unk1D8[i].unk0;
-            d = &D_801F7A78.unkAC[i + 2];
+        if (s_rewards.getsAp[i] != 0) {
+            w2 = s_rewards.learnWins[i].win;
+            d = &s_rewards.wins[i + 2];
             if (w2 != NULL && w2->unk1C != 0) {
                 t = d->unkC;
                 if (t != NULL && d->unk2 >= 2) {
                     if (t->unk4 != NULL) {
                         w2->unk0 += t->unk4[d->unk2];
-                        D_801F7A78.unk1D8[i].unk0->unk8.x += t->unk4[d->unk2];
+                        s_rewards.learnWins[i].win->unk8.x += t->unk4[d->unk2];
                     }
                     if (t->unk8 != NULL) {
-                        D_801F7A78.unk1D8[i].unk0->unk2 += t->unk8[d->unk2];
-                        D_801F7A78.unk1D8[i].unk0->unk8.y += t->unk8[d->unk2];
+                        s_rewards.learnWins[i].win->unk2 += t->unk8[d->unk2];
+                        s_rewards.learnWins[i].win->unk8.y += t->unk8[d->unk2];
                     }
                 }
             }
@@ -402,208 +402,208 @@ void func_801F0594(void) {
     }
 }
 
-void func_801F076C(void) {
+void rewards_stateGil(void) {
     s32 se;
 
-    if (D_801F7A78.unk3 == 0) {
-        func_801F2C7C();
+    if (s_rewards.gilSkipped == 0) {
+        rewards_stepGil();
         func_801F325C();
         if (!func_8002F810() && (g_padRepeat & BTN_CROSS)) {
-            func_801F1688();
+            rewards_finishGil();
         }
-    } else if (++D_801F7A78.unkC >= 24) {
-        se = D_801F3BA0[D_801F7A78.unk8];
+    } else if (++s_rewards.timer >= 24) {
+        se = s_rewardsStateSe[s_rewards.state];
         if (se != 0) {
             snd_playSe(se);
         }
-        D_801F7A78.unk8++;
-        func_8002F8E4(D_801F7A78.unk370);
+        s_rewards.state++;
+        func_8002F8E4(s_rewards.savedOtz);
         if (D_80077DB5 != 0) {
             func_800325E0();
         } else {
             func_8002FAAC(0x10);
-            func_8002F8A8(func_801F17D4);
+            func_8002F8A8(rewards_onClosed);
         }
     }
 }
 
-void func_801F0878(void) {
-    Rewards *r = &D_801F7A78.unk24;
+void rewards_finishExp(void) {
+    Rewards *r = &s_rewards.rewards;
     s32 i;
 
     for (i = 0; i < 4; i++) {
-        if (D_801F7A78.unk14[i] != 0) {
-            func_801F2560(i, r->unk1C[i].unk0 - r->unk1C[i].unk8);
-            func_801F269C(i);
+        if (s_rewards.getsExp[i] != 0) {
+            rewards_addExp(i, r->exp[i].target - r->exp[i].cur);
+            rewards_showLevelUp(i);
         }
     }
-    func_8002F55C(0x69);
-    snd_playSe(0x67);
+    func_8002F55C(SE_EXP_COUNT);
+    snd_playSe(SE_CURSOR);
     for (i = 0; i < 7; i++) {
-        func_80063118(&D_801F7A78.unkAC[2 + i], &D_801F3CDC[i], 0);
+        func_80063118(&s_rewards.wins[2 + i], &s_rewardsWinClose[i], 0);
     }
-    D_801F7A78.unkA = 1;
-    D_801F7A78.unk14C[9] = 1;
-    D_801F7A78.unk14C[8] = 1;
-    D_801F7A78.unk370 = func_8002F8E4(0xC);
+    s_rewards.screen = 1;
+    s_rewards.winShown[9] = 1;
+    s_rewards.winShown[8] = 1;
+    s_rewards.savedOtz = func_8002F8E4(0xC);
     func_8002FAAC(4);
-    func_8002F8A8(func_801F16F4);
+    func_8002F8A8(rewards_onItemsFaded);
 }
 
-void func_801F0978(void) {
+void rewards_onExpWindowsClosed(void) {
     s32 i;
     s32 se;
 
-    D_801F7A78.unk14C[7] = 0;
-    D_801F7A78.unk14C[6] = 0;
-    D_801F7A78.unk14C[5] = 0;
-    D_801F7A78.unk14C[4] = 0;
-    D_801F7A78.unk14C[3] = 0;
-    D_801F7A78.unk14C[2] = 0;
-    func_801F1318();
+    s_rewards.winShown[7] = 0;
+    s_rewards.winShown[6] = 0;
+    s_rewards.winShown[5] = 0;
+    s_rewards.winShown[4] = 0;
+    s_rewards.winShown[3] = 0;
+    s_rewards.winShown[2] = 0;
+    rewards_closeMemberWins();
     for (i = 0; i < 4; i++) {
-        WinSlot_clear(&D_801F7A78.unk1D8[i]);
-        WinSlot_clear(&D_801F7A78.unk158[i]);
+        WinSlot_clear(&s_rewards.learnWins[i]);
+        WinSlot_clear(&s_rewards.levelWins[i]);
     }
-    se = D_801F3BA0[D_801F7A78.unk8];
+    se = s_rewardsStateSe[s_rewards.state];
     if (se != 0) {
         snd_playSe(se);
     }
-    D_801F7A78.unk8++;
+    s_rewards.state++;
 }
 
-void func_801F0A44(void) {
+void rewards_findMembers(void) {
     s32 i;
     Character *c;
 
     for (i = 0; i < 4; i++) {
-        D_801F7A78.unk18[i] = 0;
-        D_801F7A78.unk14[i] = 0;
+        s_rewards.getsAp[i] = 0;
+        s_rewards.getsExp[i] = 0;
     }
     i = 0;
-    D_801F7A78.unk9 = 0;
+    s_rewards.expMembers = 0;
     for (; i < 4; i++) {
-        if ((g_btlRewards.unkA >> i) & 1) {
+        if ((g_btlRewards.expMask >> i) & 1) {
             if (g_gameState->unk1C->party[i] != NULL) {
-                D_801F7A78.unk14[i] = func_801F_canExp(g_gameState->unk1C->party[i]);
-                D_801F7A78.unk18[i] = func_801F_canAp(g_gameState->unk1C->party[i]);
-                if (D_801F7A78.unk14[i]) {
-                    D_801F7A78.unk9++;
+                s_rewards.getsExp[i] = func_801F_canExp(g_gameState->unk1C->party[i]);
+                s_rewards.getsAp[i] = func_801F_canAp(g_gameState->unk1C->party[i]);
+                if (s_rewards.getsExp[i]) {
+                    s_rewards.expMembers++;
                 }
             }
         }
     }
 }
 
-void func_801F0C0C(void) {
+void rewards_compute(void) {
     Rewards *rw;
     u32 j;
     u8 found;
     s32 i;
     u32 q;
 
-    rw = &D_801F7A78.unk24;
-    memset(rw, 0, 0x88);
-    func_801F0A44();
-    if (D_801F7A78.unk9 != 0) {
-        q = g_btlRewards.unk4 / D_801F7A78.unk9;
+    rw = &s_rewards.rewards;
+    memset(rw, 0, sizeof(Rewards));
+    rewards_findMembers();
+    if (s_rewards.expMembers != 0) {
+        q = g_btlRewards.exp / s_rewards.expMembers;
     } else {
         q = 0;
     }
-    rw->unk0 = q;
-    rw->unkC = 0;
-    rw->unk4 = g_btlRewards.unk8;
-    rw->unk7C.unk0 = g_btlRewards.unk0;
-    rw->unk8 = (func_800625F8() < 100) ? g_btlRewards.unk1C : 0xFF;
-    for (i = 0; i < 16; i++) {
+    rw->expEach = q;
+    rw->itemCount = 0;
+    rw->ap = g_btlRewards.ap;
+    rw->gil.target = g_btlRewards.gil;
+    rw->card = (func_800625F8() < 100) ? g_btlRewards.card : ITEM_NONE;
+    for (i = 0; i < BTL_DROP_COUNT; i++) {
         found = 0;
-        if (g_btlRewards.unkC[i] == 0xFF) {
+        if (g_btlRewards.items[i] == ITEM_NONE) {
             continue;
         }
-        for (j = 0; j < rw->unkC; j++) {
-            if (g_btlRewards.unkC[i] == rw->unk10[j][0]) {
+        for (j = 0; j < rw->itemCount; j++) {
+            if (g_btlRewards.items[i] == rw->items[j][0]) {
                 found = 1;
-                rw->unk10[j][1]++;
+                rw->items[j][1]++;
                 break;
             }
         }
         if (!found) {
-            if (rw->unkC >= 6) {
+            if (rw->itemCount >= REWARDS_ITEM_KINDS) {
                 return;
             }
-            rw->unk10[rw->unkC][0] = g_btlRewards.unkC[i];
-            rw->unk10[rw->unkC][1] = 1;
-            rw->unkC++;
+            rw->items[rw->itemCount][0] = g_btlRewards.items[i];
+            rw->items[rw->itemCount][1] = 1;
+            rw->itemCount++;
         }
     }
 }
 
-void func_801F0D98(s32 arg0, s32 arg1, s32 arg2, u8 *arg3, s32 arg4) {
-    D_801F7A78.unk374 = func_80029D60(arg0, arg1, g_ot + arg2, arg3, arg4, D_801F7A78.unk374);
+void rewards_drawSmallText(s32 arg0, s32 arg1, s32 arg2, u8 *arg3, s32 arg4) {
+    s_rewards.prim = func_80029D60(arg0, arg1, g_ot + arg2, arg3, arg4, s_rewards.prim);
 }
 
-void func_801F0DE4(s32 arg0, s32 arg1, s32 arg2, u8 *arg3, s32 arg4) {
-    D_801F7A78.unk374 = func_8002920C(arg0, arg1, g_ot + arg2, arg3, arg4, D_801F7A78.unk374);
+void rewards_drawText(s32 arg0, s32 arg1, s32 arg2, u8 *arg3, s32 arg4) {
+    s_rewards.prim = func_8002920C(arg0, arg1, g_ot + arg2, arg3, arg4, s_rewards.prim);
 }
 
-void func_801F0E30(void) {
+void rewards_init(void) {
     func_800239D0();
     func_8002C064(0);
     func_8003556C(0);
     g_gameState->vsyncMode = 2;
-    D_801F7A78.unkA = 0;
-    D_801F7A78.unk8 = 0;
-    D_801F7A78.unk36C = 0;
-    D_801F7A78.unk10 = 0;
-    D_801F7A78.unk0 = 1;
-    D_801F7A78.unkC = 0;
-    D_801F7A78.unk3 = 0;
-    D_801F7A78.unk4 = 0;
-    switch (func_801F1004()) {
+    s_rewards.screen = 0;
+    s_rewards.state = REWARDS_STATE_OPENING;
+    s_rewards.frame = 0;
+    s_rewards.closeFrames = 0;
+    s_rewards.active = 1;
+    s_rewards.timer = 0;
+    s_rewards.gilSkipped = 0;
+    s_rewards.done = 0;
+    switch (rewards_getKind()) {
     case 0:
-        func_801F1060();
+        rewards_skip();
         break;
     case 1:
-        func_801F107C();
+        rewards_open();
         break;
     case 2:
-        func_801F114C();
+        rewards_waitEvent();
         break;
     }
 }
 
 u8 rewards_update(void) {
-    if (D_801F7A78.unk1 != 0) {
-        if (D_801F7A78.unk2 != 0) {
+    if (s_rewards.running != 0) {
+        if (s_rewards.closing != 0) {
             goto count;
         }
-        D_801F7A78.unk374 = D_801F7A78.unk378[g_drawBufs.unk0];
+        s_rewards.prim = s_rewards.primBufs[g_drawBufs.unk0];
         if (D_80077DB5 == 0) {
             func_8002C308(0);
         }
-        func_801F1160();
-        func_801F11B8();
+        rewards_draw();
+        rewards_updateState();
     }
-    if (D_801F7A78.unk2 != 0) {
+    if (s_rewards.closing != 0) {
     count:
-        if (++D_801F7A78.unk10 >= 2) {
-            D_801F7A78.unk4 = 1;
+        if (++s_rewards.closeFrames >= 2) {
+            s_rewards.done = 1;
         }
     }
-    return D_801F7A78.unk4 == 0;
+    return s_rewards.done == 0;
 }
 
-void func_801F0FC4(void) {
+void rewards_exit(void) {
     func_8003556C(0);
-    func_801F2E24();
-    D_801F7A78.unk2 = 1;
+    rewards_restoreVram();
+    s_rewards.closing = 1;
 }
 
-void func_801F0FF4(void) {
-    D_801F7A78.unk2 = 1;
+void rewards_requestClose(void) {
+    s_rewards.closing = 1;
 }
 
-s32 func_801F1004(void) {
+s32 rewards_getKind(void) {
     u8 mode = g_gameState->unk1C->unk56E;
     s32 ret = 0;
 
@@ -618,256 +618,256 @@ s32 func_801F1004(void) {
     return ret;
 }
 
-void func_801F1060(void) {
-    D_801F7A78.unk1 = 0;
-    D_801F7A78.unk2 = 1;
-    D_801F7A78.unk4 = 0;
+void rewards_skip(void) {
+    s_rewards.running = 0;
+    s_rewards.closing = 1;
+    s_rewards.done = 0;
 }
 
-void func_801F107C(void) {
+void rewards_open(void) {
     s32 i;
 
-    D_801F7A78.unk1 = 1;
-    D_801F7A78.unk2 = 0;
-    func_801F0C0C();
-    func_801F1300(&D_801F7A78.unk348);
+    s_rewards.running = 1;
+    s_rewards.closing = 0;
+    rewards_compute();
+    rewards_clearWinSlot(&s_rewards.fullWin);
     for (i = 0; i < 4; i++) {
-        func_801F1300(&D_801F7A78.unk158[i]);
-        func_801F1300(&D_801F7A78.unk1D8[i]);
+        rewards_clearWinSlot(&s_rewards.levelWins[i]);
+        rewards_clearWinSlot(&s_rewards.learnWins[i]);
     }
     text_setBank(g_rewardsText);
-    func_801F12E0();
-    func_801F2490();
-    func_801F1FEC();
-    func_801F3250();
-    func_801F2D74();
-    func_801F2BBC();
-    func_801F04BC();
+    rewards_initPrimBufs();
+    rewards_initExp();
+    rewards_initLearns();
+    rewards_resetFullWarning();
+    rewards_loadImages();
+    rewards_initGil();
+    rewards_initWindows();
     g_gameState->vsyncMode = 0;
     func_8002F9D0();
 }
 
-void func_801F114C(void) {
-    D_801F7A78.unk1 = 0;
-    D_801F7A78.unk2 = 0;
+void rewards_waitEvent(void) {
+    s_rewards.running = 0;
+    s_rewards.closing = 0;
 }
 
-void func_801F1160(void) {
+void rewards_draw(void) {
     func_80024BD8();
-    func_801EFB98();
-    func_801F1228();
-    func_801EFC68();
-    func_801EFF50();
-    func_801F0044();
-    func_801F0138();
-    func_801F0264();
+    rewards_drawInfo();
+    rewards_drawHelp();
+    rewards_drawMembers();
+    rewards_drawExp();
+    rewards_drawAp();
+    rewards_drawReceivedGil();
+    rewards_drawCurrentGil();
 }
 
-void func_801F11B8(void) {
-    void (*fn)(void) = D_801F3B88[D_801F7A78.unk8];
+void rewards_updateState(void) {
+    void (*fn)(void) = s_rewardsStates[s_rewards.state];
 
     if (fn != NULL) {
         fn();
     }
-    func_801F13B4();
-    func_801F0594();
-    D_801F7A78.unk36C++;
+    rewards_stepWindows();
+    rewards_moveMemberWins();
+    s_rewards.frame++;
 }
 
-void func_801F1228(void) {
+void rewards_drawHelp(void) {
     s32 x, y;
-    RECT *r = &D_801F7A78.unkAC[1].unk4;
+    RECT *r = &s_rewards.wins[1].unk4;
     ui_drawLabel(r->x + 6, r->y - 3, 0xB, D_80070450, 0);
     func_8002DEE4(r, 0xB, 1);
     func_8002705C(r, 0xC, 1);
     x = r->x;
     y = r->y;
-    D_801F7A78.unk374 = func_8002920C(x + 0x13, y + 6, g_ot + 10,
-                                      text_get(7), 0, D_801F7A78.unk374);
+    s_rewards.prim = func_8002920C(x + 0x13, y + 6, g_ot + 10,
+                                      text_get(REWARDS_TEXT_CONFIRM), 0, s_rewards.prim);
 }
 
-void func_801F12E0(void) {
-    D_801F7A78.unk378[0] = D_801F5278[0];
-    D_801F7A78.unk378[1] = D_801F5278[1];
+void rewards_initPrimBufs(void) {
+    s_rewards.primBufs[0] = s_rewardsPrimBufs[0];
+    s_rewards.primBufs[1] = s_rewardsPrimBufs[1];
 }
 
-void func_801F1300(WinSlot *arg0) {
-    arg0->unk4 = 0;
-    arg0->unk6 = 0;
-    arg0->unk1C = 0;
-    arg0->unk8 = 0;
-    arg0->unk0 = 0;
+void rewards_clearWinSlot(WinSlot *arg0) {
+    arg0->queued = 0;
+    arg0->shown = 0;
+    arg0->timer = 0;
+    arg0->delay = 0;
+    arg0->win = 0;
 }
 
-void func_801F1318(void) {
+void rewards_closeMemberWins(void) {
     s32 i;
 
     for (i = 0; i < 4; i++) {
-        if (D_801F7A78.unk14[i] != 0 && D_801F7A78.unk158[i].unk0 != NULL) {
-            win_close(D_801F7A78.unk158[i].unk0);
+        if (s_rewards.getsExp[i] != 0 && s_rewards.levelWins[i].win != NULL) {
+            win_close(s_rewards.levelWins[i].win);
         }
-        if (D_801F7A78.unk18[i] != 0 && D_801F7A78.unk1D8[i].unk0 != NULL) {
-            win_close(D_801F7A78.unk1D8[i].unk0);
+        if (s_rewards.getsAp[i] != 0 && s_rewards.learnWins[i].win != NULL) {
+            win_close(s_rewards.learnWins[i].win);
         }
     }
 }
 
-void func_801F13B4(void) {
+void rewards_stepWindows(void) {
     s32 i;
 
     for (i = 0; i < 10; i++) {
-        if (D_801F7A78.unk14C[i] != 0 && D_801F7A78.unkAC[i].unkC != 0) {
-            func_800631AC(&D_801F7A78.unkAC[i]);
+        if (s_rewards.winShown[i] != 0 && s_rewards.wins[i].unkC != 0) {
+            func_800631AC(&s_rewards.wins[i]);
         }
     }
 }
 
-void func_801F143C(void) {
+void rewards_stateReceived(void) {
     s32 se;
 
     if (!func_8002F810() && (g_padRepeat & BTN_CROSS)) {
-        se = D_801F3BA0[D_801F7A78.unk8];
+        se = s_rewardsStateSe[s_rewards.state];
         if (se != 0) {
             snd_playSe(se);
         }
-        D_801F7A78.unk8++;
-        func_801F1560();
+        s_rewards.state++;
+        rewards_giveAp();
     }
 }
 
-void func_801F14C0(void) {
-    func_801F2538();
-    func_801F2080();
+void rewards_stateExp(void) {
+    rewards_updateExp();
+    rewards_updateAp();
     if (!func_8002F810() && (g_padRepeat & BTN_CROSS)) {
-        func_801F0878();
+        rewards_finishExp();
     }
 }
 
-void func_801F1518(void) {
+void rewards_stateItems(void) {
     if (!func_8002F810() && (g_padRepeat & BTN_CROSS)) {
-        func_801F160C();
+        rewards_takeItems();
     }
 }
 
-void func_801F1560(void) {
-    Rewards *r = &D_801F7A78.unk24;
+void rewards_giveAp(void) {
+    Rewards *r = &s_rewards.rewards;
     s32 i;
     u8 any = 0;
 
     for (i = 0; i < 4; i++) {
-        if (D_801F7A78.unk18[i] != 0) {
-            func_801F1A04(i, r->unk4C[i].unk0);
+        if (s_rewards.getsAp[i] != 0) {
+            rewards_addAp(i, r->apGain[i].target);
         }
-        if (D_801F7A78.unk14[i] != 0) {
+        if (s_rewards.getsExp[i] != 0) {
             any = 1;
         }
     }
     if (any) {
-        func_8002F514(0x69);
+        func_8002F514(SE_EXP_COUNT);
     }
 }
 
-void func_801F160C(void) {
+void rewards_takeItems(void) {
     s32 se;
 
-    if (func_801F3264()) {
-        se = D_801F3BA0[D_801F7A78.unk8];
+    if (rewards_tryAddItems()) {
+        se = s_rewardsStateSe[s_rewards.state];
         if (se != 0) {
             snd_playSe(se);
         }
-        D_801F7A78.unk8++;
-        if (g_btlRewards.unk0 != 0) {
-            func_8002F514(0x6D);
+        s_rewards.state++;
+        if (g_btlRewards.gil != 0) {
+            func_8002F514(SE_GIL_COUNT);
         }
     }
 }
 
-void func_801F1688(void) {
-    Rewards *r = &D_801F7A78.unk24;
+void rewards_finishGil(void) {
+    Rewards *r = &s_rewards.rewards;
 
-    if (r->unk7C.unk0 != r->unk7C.unk8) {
-        func_801F2D08(r->unk7C.unk0 - r->unk7C.unk8);
-        r->unk7C.unk8 = r->unk7C.unk0;
-        func_8002F55C(0x6D);
-        D_801F7A78.unkC = 0;
+    if (r->gil.target != r->gil.cur) {
+        rewards_addGil(r->gil.target - r->gil.cur);
+        r->gil.cur = r->gil.target;
+        func_8002F55C(SE_GIL_COUNT);
+        s_rewards.timer = 0;
     } else {
-        D_801F7A78.unkC = 24;
+        s_rewards.timer = 24;
     }
-    D_801F7A78.unk3 = 1;
+    s_rewards.gilSkipped = 1;
 }
 
-void func_801F16F4(void) {
-    func_801F332C();
+void rewards_onItemsFaded(void) {
+    rewards_openItemsWin();
     func_8002FA50(0xC);
 }
 
-u8 func_801F171C(Character *arg0, s32 arg1) {
+u8 rewards_isRewarded(Character *arg0, s32 arg1) {
     if (!func_801F_alive(arg0)) {
         return 0;
     }
-    return (g_btlRewards.unkA >> arg1) & 1;
+    return (g_btlRewards.expMask >> arg1) & 1;
 }
 
-void func_801F1774(void) {
-    s32 se = D_801F3BA0[D_801F7A78.unk8];
+void rewards_onWindowsOpened(void) {
+    s32 se = s_rewardsStateSe[s_rewards.state];
 
     if (se != 0) {
         snd_playSe(se);
     }
-    D_801F7A78.unk8++;
+    s_rewards.state++;
 }
 
-void func_801F17D4(void) {
-    D_801F7A78.unk2 = 1;
+void rewards_onClosed(void) {
+    s_rewards.closing = 1;
     func_8002DE60();
 }
 
-void func_801F17FC(s32 arg0, s32 arg1, s32 arg2, u8 *arg3, s32 arg4) {
-    D_801F7A78.unk374 = func_8002B644(arg0, arg1, g_ot + arg2, arg3, arg4, D_801F7A78.unk374);
+void rewards_drawDigits(s32 arg0, s32 arg1, s32 arg2, u8 *arg3, s32 arg4) {
+    s_rewards.prim = func_8002B644(arg0, arg1, g_ot + arg2, arg3, arg4, s_rewards.prim);
 }
 
-void func_801F1848(void) {
+void rewards_updateLearnWins(void) {
     WinSlot *w;
     RECT *r;
     s32 i;
     RECT *rr;
 
-    w = D_801F7A78.unk1D8;
+    w = s_rewards.learnWins;
     for (i = 0; i < 4; w++, i++) {
-        if (D_801F7A78.unk18[i] != 0) {
-            if (w->unk8 == 0) {
-                if (w->unk0 == NULL) {
-                    if (w->unk4 != 0) {
-                        D_801F8200 = r = &D_801F7A78.unkAC[i + 2].unk4;
-                        D_801F81F8.x = r->x + 0x26;
-                        rr = &D_801F81F8;
+        if (s_rewards.getsAp[i] != 0) {
+            if (w->delay == 0) {
+                if (w->win == NULL) {
+                    if (w->queued != 0) {
+                        s_rewardsLearnPanel = r = &s_rewards.wins[i + 2].unk4;
+                        s_rewardsLearnRect.x = r->x + 0x26;
+                        rr = &s_rewardsLearnRect;
                         rr->y = r->y + 0x1B;
                         rr->w = 0x70;
                         rr->h = 0x19;
-                        w->unk0 = func_8002DC54(rr, 6, 2);
-                        w->unk0->unk50 = i;
-                        func_8002E304(w->unk0, (s32)D_801F5228);
-                        win_setDrawContent(w->unk0, func_801F1D94);
-                        win_setOnClosed(w->unk0, func_801F2248);
-                        win_setOpenAnim(w->unk0, 0);
-                        snd_playSe(0x413);
-                        w->unk4--;
+                        w->win = func_8002DC54(rr, 6, 2);
+                        w->win->unk50 = i;
+                        func_8002E304(w->win, (s32)s_rewardsLearnLabel);
+                        win_setDrawContent(w->win, rewards_drawLearnWin);
+                        win_setOnClosed(w->win, rewards_onLearnWinClosed);
+                        win_setOpenAnim(w->win, 0);
+                        snd_playSe(SE_LEARN);
+                        w->queued--;
                     }
-                } else if (++w->unk1C >= 0x40) {
-                    func_8002D1AC(w->unk0, 0);
-                    win_close(w->unk0);
-                    w->unk8 = 4;
-                    w->unk1C = 0;
-                    w->unk6++;
+                } else if (++w->timer >= 0x40) {
+                    func_8002D1AC(w->win, 0);
+                    win_close(w->win);
+                    w->delay = 4;
+                    w->timer = 0;
+                    w->shown++;
                 }
             } else {
-                w->unk8--;
+                w->delay--;
             }
         }
     }
 }
 
-void func_801F1A04(s32 arg0, u32 arg1) {
+void rewards_addAp(s32 arg0, u32 arg1) {
     Character *c;
     s32 i;
     s32 j;
@@ -878,9 +878,9 @@ void func_801F1A04(s32 arg0, u32 arg1) {
 
     c = g_gameState->unk1C->party[arg0];
     if (arg1 != 0 && func_80034A30(c)) {
-        D_801F7A78.unk24.unk4C[arg0].unk8 += arg1;
+        s_rewards.rewards.apGain[arg0].cur += arg1;
         for (i = 0; i < 5; i++) {
-            if (c->equip[i] != 0xFF) {
+            if (c->equip[i] != ITEM_NONE) {
                 e = &D_80069018[c->equip[i]];
                 for (j = 0; j < 3; j++) {
                     if (e->unkC[j] != 0) {
@@ -891,7 +891,7 @@ void func_801F1A04(s32 arg0, u32 arg1) {
                             if (have < need) {
                                 if (arg1 >= need - have) {
                                     c->unk58[k] = need;
-                                    func_801F21DC(arg0, e->unkC[j]);
+                                    rewards_addLearned(arg0, e->unkC[j]);
                                 } else {
                                     c->unk58[k] = have + arg1;
                                 }
@@ -904,7 +904,7 @@ void func_801F1A04(s32 arg0, u32 arg1) {
     }
 }
 
-u8 func_801F1BA4(Character *c, s32 arg1) {
+u8 rewards_willLearn(Character *c, s32 arg1) {
     u8 ret;
     s32 i;
     s32 j;
@@ -917,9 +917,9 @@ u8 func_801F1BA4(Character *c, s32 arg1) {
     ret = 0;
     eq = c->equip;
     ch = c->unk34.b.id;
-    memset(D_801F8208, 0, 0x30);
+    memset(s_rewardsAbilityItems, 0, 0x30);
     for (i = 0; i < 5; i++) {
-        if (eq[i] != 0xFF) {
+        if (eq[i] != ITEM_NONE) {
             e = &D_80069018[eq[i]];
             for (j = 0; j < 3; j++) {
                 if (e->unkC[j] != 0) {
@@ -927,7 +927,7 @@ u8 func_801F1BA4(Character *c, s32 arg1) {
                     if (k >= 0) {
                         have = c->unk58[k];
                         if (have < D_8006CB28[c->unk34.b.row][k].unk1) {
-                            D_801F8208[k]++;
+                            s_rewardsAbilityItems[k]++;
                         }
                     }
                 }
@@ -935,9 +935,9 @@ u8 func_801F1BA4(Character *c, s32 arg1) {
         }
     }
     for (i = 0; i < 0x30; i++) {
-        if (D_801F8208[i] != 0) {
+        if (s_rewardsAbilityItems[i] != 0) {
             have = c->unk58[i];
-            if (D_801F8208[i] * arg1 >= D_8006CB28[c->unk34.b.row][i].unk1 - have) {
+            if (s_rewardsAbilityItems[i] * arg1 >= D_8006CB28[c->unk34.b.row][i].unk1 - have) {
                 ret = 1;
                 break;
             }
@@ -946,7 +946,7 @@ u8 func_801F1BA4(Character *c, s32 arg1) {
     return ret;
 }
 
-void func_801F1D94(Window *w) {
+void rewards_drawLearnWin(Window *w) {
     Window *v;
     WinSlot *s;
     TileWords *t;
@@ -957,13 +957,13 @@ void func_801F1D94(Window *w) {
 
     v = w;
     slot = w->unk50;
-    s = &D_801F7A78.unk1D8[slot];
-    id = s->unkA[s->unk6];
-    if (id < 0xC0) {
-        name = D_801F494C + D_801F3D4C[id].unkE;
+    s = &s_rewards.learnWins[slot];
+    id = s->ids[s->shown];
+    if (id < ABILITY_SUPPORT_FIRST) {
+        name = s_rewardsActionNames + s_rewardsActionTable[id].unkE;
         ui_drawSprite(w->unk0 + 6, w->unk2 + 7, w->unk18, 0xBC, 0);
     } else {
-        name = D_801F4F94 + D_8006D128[id - 0xC0].unk2;
+        name = s_rewardsSupportNames + D_8006D128[id - ABILITY_SUPPORT_FIRST].unk2;
         if (func_80034A04(g_gameState->unk1C->party[slot]->unk88, id)) {
             icon = 0xBD;
         } else {
@@ -984,71 +984,71 @@ void func_801F1D94(Window *w) {
     g_primPtr += sizeof(DrTpageWords);
 }
 
-void func_801F1FEC(void) {
+void rewards_initLearns(void) {
     s32 i;
 
     for (i = 0; i < 4; i++) {
-        if (D_801F7A78.unk18[i] != 0) {
-            D_801F7A78.unk20[i] = func_801F1BA4(g_gameState->unk1C->party[i], func_801F20A8(i));
+        if (s_rewards.getsAp[i] != 0) {
+            s_rewards.learns[i] = rewards_willLearn(g_gameState->unk1C->party[i], rewards_initApCounter(i));
         } else {
-            D_801F7A78.unk20[i] = 0;
+            s_rewards.learns[i] = 0;
         }
     }
 }
 
-void func_801F2080(void) {
-    func_801F213C();
-    func_801F1848();
+void rewards_updateAp(void) {
+    rewards_stepAp();
+    rewards_updateLearnWins();
 }
 
-s32 func_801F20A8(s32 i) {
-    u32 ap = D_801F7A78.unk24.unk4;
-    Counter *c = &D_801F7A78.unk24.unk4C[i];
+s32 rewards_initApCounter(s32 i) {
+    u32 ap = s_rewards.rewards.ap;
+    Counter *c = &s_rewards.rewards.apGain[i];
 
-    if (func_800349BC(g_gameState->unk1C->party[i]->unk34.b.id, 0xEC)) {
-        c->unk0 = ap * 2;
+    if (func_800349BC(g_gameState->unk1C->party[i]->unk34.b.id, SUPPORT_ABILITY_UP)) {
+        c->target = ap * 2;
     } else {
-        c->unk0 = ap;
+        c->target = ap;
     }
-    c->unk4 = 1;
-    c->unk8 = 0;
-    return c->unk0;
+    c->step = 1;
+    c->cur = 0;
+    return c->target;
 }
 
-void func_801F213C(void) {
+void rewards_stepAp(void) {
     s32 i;
     Counter *c;
 
     for (i = 0; i < 4; i++) {
-        if (D_801F7A78.unk18[i] != 0) {
-            c = &D_801F7A78.unk24.unk4C[i];
-            if (c->unk8 < c->unk0) {
-                func_801F1A04(i, Counter_step(c));
+        if (s_rewards.getsAp[i] != 0) {
+            c = &s_rewards.rewards.apGain[i];
+            if (c->cur < c->target) {
+                rewards_addAp(i, Counter_step(c));
             }
         }
     }
 }
 
-void func_801F21DC(s32 arg0, u8 arg1) {
-    D_801F7A78.unk1D8[arg0].unkA[D_801F7A78.unk1D8[arg0].unk4] = arg1;
-    D_801F7A78.unk1D8[arg0].unk4++;
-    D_801F7A78.unk2B8[arg0].unk11[D_801F7A78.unk2B8[arg0].unk10] = arg1;
-    D_801F7A78.unk2B8[arg0].unk10++;
+void rewards_addLearned(s32 arg0, u8 arg1) {
+    s_rewards.learnWins[arg0].ids[s_rewards.learnWins[arg0].queued] = arg1;
+    s_rewards.learnWins[arg0].queued++;
+    s_rewards.learned[arg0].ids[s_rewards.learned[arg0].count] = arg1;
+    s_rewards.learned[arg0].count++;
 }
 
-void func_801F2248(Window *arg0) {
-    D_801F7A78.unk1D8[arg0->unk50].unk0 = 0;
+void rewards_onLearnWinClosed(Window *arg0) {
+    s_rewards.learnWins[arg0->unk50].win = 0;
 }
 
-void func_801F2264(s32 x, s32 y, s32 otz, Popup *p) {
+void rewards_drawLevelUp(s32 x, s32 y, s32 otz, Popup *p) {
     SprtWords *s;
     u8 *pkt;
     u32 clut;
     u32 xy;
     DR_TPAGE *t;
 
-    if (p->unk0 != 0 && p->unk1 != 3) {
-        y += p->unk16;
+    if (p->active != 0 && p->phase != 3) {
+        y += p->y;
         clut = GetClut(0, 0x1FF) << 16;
         setlen(g_primPtr, 4);
         xy = (x & 0xFFFF) | (y << 16);
@@ -1078,255 +1078,255 @@ void func_801F2264(s32 x, s32 y, s32 otz, Popup *p) {
     }
 }
 
-void func_801F2490(void) {
+void rewards_initExp(void) {
     s32 i;
 
     for (i = 0; i < 4; i++) {
-        if (D_801F7A78.unk14[i] != 0) {
-            D_801F7A78.unk1C[i] = func_801F27F0(g_gameState->unk1C->party[i], func_801F26F8(i));
+        if (s_rewards.getsExp[i] != 0) {
+            s_rewards.levelsUp[i] = rewards_willLevelUp(g_gameState->unk1C->party[i], rewards_initExpCounter(i));
         } else {
-            D_801F7A78.unk1C[i] = 0;
+            s_rewards.levelsUp[i] = 0;
         }
-        func_801F2A4C(&D_801F7A78.unk258[i]);
+        rewards_initPopup(&s_rewards.levelPopups[i]);
     }
 }
 
-void func_801F2538(void) {
-    func_801F2834();
-    func_801F28F0();
+void rewards_updateExp(void) {
+    rewards_stepExp();
+    rewards_updateLevelUps();
 }
 
-void func_801F2560(s32 i, u32 exp) {
+void rewards_addExp(s32 i, u32 exp) {
     u32 need;
     Character *c = g_gameState->unk1C->party[i];
 
     if (exp != 0) {
-        if (c->exp > 9999998) {
-            c->exp = 9999999;
+        if (c->exp >= EXP_MAX) {
+            c->exp = EXP_MAX;
             return;
         }
-        D_801F7A78.unk24.unk1C[i].unk8 += exp;
+        s_rewards.rewards.exp[i].cur += exp;
         c->exp += exp;
-        if (c->exp > 9999998) {
-            c->exp = 9999999;
+        if (c->exp >= EXP_MAX) {
+            c->exp = EXP_MAX;
         }
-        if (c->level < 99 && (need = g_levelExp[c->level]) <= c->exp) {
+        if (c->level < LEVEL_MAX && (need = g_levelExp[c->level]) <= c->exp) {
             do {
-                func_801F29BC(i);
-            } while (c->level < 99 && (need = g_levelExp[c->level]) <= c->exp);
+                rewards_levelUp(i);
+            } while (c->level < LEVEL_MAX && (need = g_levelExp[c->level]) <= c->exp);
         }
     }
 }
 
-void func_801F269C(s32 arg0) {
-    Popup *p = &D_801F7A78.unk258[arg0];
+void rewards_showLevelUp(s32 arg0) {
+    Popup *p = &s_rewards.levelPopups[arg0];
 
-    if (p->unk14 != 0 || p->unk0 != 0) {
-        p->unk1 = 2;
-        p->unk16 = -0x11;
-        p->unk4 = 0;
-        p->unk2 = 0;
-        p->unk0 = 1;
+    if (p->pending != 0 || p->active != 0) {
+        p->phase = POPUP_HOLD;
+        p->y = -0x11;
+        p->timer = 0;
+        p->enabled = 0;
+        p->active = 1;
     }
 }
 
-u32 func_801F26F8(s32 arg0) {
-    u32 exp = D_801F7A78.unk24.unk0;
+u32 rewards_initExpCounter(s32 arg0) {
+    u32 exp = s_rewards.rewards.expEach;
     Character *m = g_gameState->unk1C->party[arg0];
-    Counter *c = &D_801F7A78.unk24.unk1C[arg0];
+    Counter *c = &s_rewards.rewards.exp[arg0];
     u32 step;
 
-    c->unk0 = exp;
-    if (func_800349BC(m->unk34.b.id, 0xEB)) {
-        c->unk0 += exp >> 1;
+    c->target = exp;
+    if (func_800349BC(m->unk34.b.id, SUPPORT_LEVEL_UP)) {
+        c->target += exp >> 1;
     }
     if (exp < 16) {
-        c->unk4 = 1;
+        c->step = 1;
     } else if (exp < 512) {
-        c->unk4 = (exp + 15) >> 4;
+        c->step = (exp + 15) >> 4;
     } else {
         step = 32;
-        c->unk4 = step;
+        c->step = step;
         if (exp / step > 192) {
-            c->unk4 = (exp + 191) / 192;
+            c->step = (exp + 191) / 192;
         }
     }
-    c->unk8 = 0;
-    return c->unk0;
+    c->cur = 0;
+    return c->target;
 }
 
-s32 func_801F27F0(Character *arg0, s32 arg1) {
-    if (arg0->level >= 99) {
+s32 rewards_willLevelUp(Character *arg0, s32 arg1) {
+    if (arg0->level >= LEVEL_MAX) {
         return 0;
     }
     return arg0->exp + arg1 >= g_levelExp[arg0->level];
 }
 
-void func_801F2834(void) {
+void rewards_stepExp(void) {
     s32 i;
     Counter *c;
     s32 step;
     u8 done = 1;
 
     for (i = 0; i < 4; i++) {
-        if (D_801F7A78.unk14[i] != 0) {
-            c = &D_801F7A78.unk24.unk1C[i];
-            if (c->unk8 < c->unk0) {
+        if (s_rewards.getsExp[i] != 0) {
+            c = &s_rewards.rewards.exp[i];
+            if (c->cur < c->target) {
             step = Counter_step(c);
-            func_801F2560(i, step);
+            rewards_addExp(i, step);
             done = 0;
             }
         }
     }
     if (done) {
-        func_8002F55C(0x69);
+        func_8002F55C(SE_EXP_COUNT);
     }
 }
 
-void func_801F28F0(void) {
+void rewards_updateLevelUps(void) {
     Popup *p;
     s32 i;
 
-    for (p = D_801F7A78.unk258, i = 0; i < 4; p++, i++) {
-        if (D_801F7A78.unk14[i] != 0) {
-            if (p->unk0 == 0) {
-                if (p->unk14 != 0) {
-                    func_801F2A6C(p);
+    for (p = s_rewards.levelPopups, i = 0; i < 4; p++, i++) {
+        if (s_rewards.getsExp[i] != 0) {
+            if (p->active == 0) {
+                if (p->pending != 0) {
+                    rewards_startPopup(p);
                 }
-            } else if (p->unk2 != 0 && func_801F2AC8(p) == 4) {
-                func_801F2AAC(p);
+            } else if (p->enabled != 0 && rewards_stepPopup(p) == POPUP_DONE) {
+                rewards_endPopup(p);
             }
         }
     }
 }
 
-void func_801F29BC(s32 arg0) {
+void rewards_levelUp(s32 arg0) {
     Character *m = g_gameState->unk1C->party[arg0];
 
     func_80033CCC(m->unk34.b.id, m->level + 1);
-    D_801F7A78.unk158[arg0].unk4++;
-    D_801F7A78.unk258[arg0].unk14++;
+    s_rewards.levelWins[arg0].queued++;
+    s_rewards.levelPopups[arg0].pending++;
 }
 
-void func_801F2A4C(Popup *arg0) {
-    arg0->unk0 = 0;
-    arg0->unk14 = 0;
-    arg0->unk16 = 0;
-    arg0->unk4 = 0;
-    arg0->unk1 = 0;
-    arg0->unk2 = 1;
+void rewards_initPopup(Popup *arg0) {
+    arg0->active = 0;
+    arg0->pending = 0;
+    arg0->y = 0;
+    arg0->timer = 0;
+    arg0->phase = 0;
+    arg0->enabled = 1;
 }
 
-void func_801F2A6C(Popup *arg0) {
-    arg0->unk4 = 0;
-    arg0->unk16 = 0;
-    arg0->unk1 = 1;
-    arg0->unk0 = 1;
-    arg0->unk14--;
-    snd_playSe(0x2AB);
+void rewards_startPopup(Popup *arg0) {
+    arg0->timer = 0;
+    arg0->y = 0;
+    arg0->phase = POPUP_RISE;
+    arg0->active = 1;
+    arg0->pending--;
+    snd_playSe(SE_LEVEL_UP);
 }
 
-void func_801F2AAC(Popup *arg0) {
-    arg0->unk0 = 0;
-    arg0->unk4 = 0;
-    arg0->unk16 = 0;
-    arg0->unk15++;
+void rewards_endPopup(Popup *arg0) {
+    arg0->active = 0;
+    arg0->timer = 0;
+    arg0->y = 0;
+    arg0->count++;
 }
 
-s32 func_801F2AC8(Popup *arg0) {
-    switch (arg0->unk1) {
-    case 1:
-        arg0->unk16 += D_801F5230[arg0->unk4];
-        if (++arg0->unk4 >= 10) {
-            arg0->unk1 = 2;
-            arg0->unk4 = 0;
+s32 rewards_stepPopup(Popup *arg0) {
+    switch (arg0->phase) {
+    case POPUP_RISE:
+        arg0->y += s_rewardsPopupRise[arg0->timer];
+        if (++arg0->timer >= 10) {
+            arg0->phase = POPUP_HOLD;
+            arg0->timer = 0;
         }
         break;
     case 2:
-        if (++arg0->unk4 >= 0x40) {
-            arg0->unk4 = 0;
-            if (arg0->unk14 != 0) {
-                arg0->unk1 = 3;
+        if (++arg0->timer >= 0x40) {
+            arg0->timer = 0;
+            if (arg0->pending != 0) {
+                arg0->phase = POPUP_GAP;
             } else {
-                arg0->unk1 = 4;
+                arg0->phase = POPUP_DONE;
             }
         }
         break;
     case 3:
-        if (++arg0->unk4 >= 4) {
-            arg0->unk1 = 4;
-            arg0->unk4 = 0;
+        if (++arg0->timer >= 4) {
+            arg0->phase = POPUP_DONE;
+            arg0->timer = 0;
         }
         break;
     }
-    return arg0->unk1;
+    return arg0->phase;
 }
 
-void func_801F2BBC(void) {
-    Counter *c = &D_801F7A78.unk24.unk7C;
+void rewards_initGil(void) {
+    Counter *c = &s_rewards.rewards.gil;
     s32 i;
     u8 found = 0;
     Character *m;
 
     for (i = 0; i < 4; i++) {
         m = g_gameState->unk1C->party[i];
-        if (m != NULL && func_800349BC(m->unk34.b.id, 0xED)) {
+        if (m != NULL && func_800349BC(m->unk34.b.id, SUPPORT_MILLIONAIRE)) {
             found = 1;
         }
     }
     if (found) {
-        c->unk0 += c->unk0 >> 1;
+        c->target += c->target >> 1;
     }
-    c->unk4 = 1;
-    c->unk8 = 0;
+    c->step = 1;
+    c->cur = 0;
 }
 
-void func_801F2C7C(void) {
-    Counter *c = &D_801F7A78.unk24.unk7C;
+void rewards_stepGil(void) {
+    Counter *c = &s_rewards.rewards.gil;
     s32 step;
 
-    if (c->unk8 < c->unk0) {
+    if (c->cur < c->target) {
         step = Counter_step(c);
-        func_801F2D08(step);
-        if (c->unk8 >= c->unk0) {
-            func_8002F55C(0x6D);
+        rewards_addGil(step);
+        if (c->cur >= c->target) {
+            func_8002F55C(SE_GIL_COUNT);
         }
     }
 }
 
-void func_801F2D08(s32 arg0) {
+void rewards_addGil(s32 arg0) {
     u32 gil;
 
     if (arg0 != 0) {
-        D_801F7A78.unk24.unk7C.unk8 += arg0;
+        s_rewards.rewards.gil.cur += arg0;
         gil = g_gameState->unk1C->gil;
-        if (gil + arg0 > 9999999) {
-            arg0 = 9999999 - gil;
-            D_801F7A78.unk24.unk7C.unk8 = D_801F7A78.unk24.unk7C.unk0;
+        if (gil + arg0 > GIL_MAX) {
+            arg0 = GIL_MAX - gil;
+            s_rewards.rewards.gil.cur = s_rewards.rewards.gil.target;
         }
         g_gameState->unk1C->gil += arg0;
     }
 }
 
-void func_801F2D74(void) {
-    StoreImage(&D_801F524C, D_801F7DF8);
+void rewards_loadImages(void) {
+    StoreImage(&s_rewardsClutRect1, s_rewardsVramSave);
     DrawSync(0);
-    LoadImage(&D_801F523C, (u32 *)D_801EE03C);
+    LoadImage(&s_rewardsClutRect0, (u32 *)s_rewardsImage0);
     DrawSync(0);
-    LoadImage(&D_801F5244, (u32 *)(D_801EE03C + 0x20));
+    LoadImage(&s_rewardsImageRect0, (u32 *)(s_rewardsImage0 + 0x20));
     DrawSync(0);
-    LoadImage(&D_801F524C, (u32 *)D_801EE19C);
+    LoadImage(&s_rewardsClutRect1, (u32 *)s_rewardsImage1);
     DrawSync(0);
-    LoadImage(&D_801F5254, (u32 *)(D_801EE19C + 0x200));
-    DrawSync(0);
-}
-
-void func_801F2E24(void) {
-    LoadImage(&D_801F525C, D_801F7DF8);
+    LoadImage(&s_rewardsImageRect1, (u32 *)(s_rewardsImage1 + 0x200));
     DrawSync(0);
 }
 
-u8 func_801F2E58(void) {
+void rewards_restoreVram(void) {
+    LoadImage(&s_rewardsVramRestoreRect, s_rewardsVramSave);
+    DrawSync(0);
+}
+
+u8 rewards_addItems(void) {
     TextSize ts;
     RECT rr;
     u32 i;
@@ -1338,36 +1338,36 @@ u8 func_801F2E58(void) {
     s32 k;
 
     full = 0;
-    rw = &D_801F7A78.unk24;
-    ws = &D_801F7A78.unk348;
-    for (i = 0; i < rw->unkC; i++) {
-        n = rw->unk10[i][1];
-        if (n != func_80027D84(rw->unk10[i][0], n)) {
+    rw = &s_rewards.rewards;
+    ws = &s_rewards.fullWin;
+    for (i = 0; i < rw->itemCount; i++) {
+        n = rw->items[i][1];
+        if (n != func_80027D84(rw->items[i][0], n)) {
             full = 1;
         }
     }
     f = full;
-    if (rw->unk8 != 0xFF) {
-        func_8006238C(rw->unk8);
+    if (rw->card != ITEM_NONE) {
+        func_8006238C(rw->card);
     }
     if (f) {
         k = 0x10;
-        ts = func_8002AF70(text_get(0xA));
-        rr.x = D_801F7A78.unk368->unk0 + ((D_801F7A78.unk368->unk4 - k - ts.w) >> 1);
-        rr.y = D_801F7A78.unk368->unk2 + ((D_801F7A78.unk368->unk6 - k - ts.h) >> 1);
+        ts = func_8002AF70(text_get(REWARDS_TEXT_ITEMS_FULL));
+        rr.x = s_rewards.itemsWin->unk0 + ((s_rewards.itemsWin->unk4 - k - ts.w) >> 1);
+        rr.y = s_rewards.itemsWin->unk2 + ((s_rewards.itemsWin->unk6 - k - ts.h) >> 1);
         rr.w = ts.w + 0x10;
         rr.h = ts.h + 0xF;
-        ws->unk0 = func_8002DC54(&rr, 6, 2);
-        win_setDrawContent(ws->unk0, func_801F3434);
-        win_setOnClosed(ws->unk0, (void (*)(Window *))func_801F347C);
-        win_setOpenAnim(ws->unk0, 0);
-        func_8002E31C(ws->unk0, 1);
-        func_8002E304(ws->unk0, D_800704C8);
+        ws->win = func_8002DC54(&rr, 6, 2);
+        win_setDrawContent(ws->win, rewards_drawFullWarning);
+        win_setOnClosed(ws->win, (void (*)(Window *))rewards_onFullWarningClosed);
+        win_setOpenAnim(ws->win, 0);
+        func_8002E31C(ws->win, 1);
+        func_8002E304(ws->win, D_800704C8);
     }
     return !f;
 }
 
-void func_801F2FE8(Window *w) {
+void rewards_drawItems(Window *w) {
     Window *r;
     Unk80069018 *it;
     u8 *s;
@@ -1382,70 +1382,70 @@ void func_801F2FE8(Window *w) {
 
     r = w;
     i = 0;
-    rw = &D_801F7A78.unk24;
+    rw = &s_rewards.rewards;
     off = r->unk6 - r->unk8.h;
-    for (; i < rw->unkC; i++) {
-        it = &D_80069018[rw->unk10[i][0]];
+    for (; i < rw->itemCount; i++) {
+        it = &D_80069018[rw->items[i][0]];
         y = i * 15 + 7;
         y2 = i * 15 + 10;
-        text_formatNumber(rw->unk10[i][1], D_801F8238, 2, 1);
-        ui_drawItemIcon(r->unk0 + 7, r->unk2 + y - off, w->unk18, rw->unk10[i][0], 1);
+        text_formatNumber(rw->items[i][1], s_rewardsTextBuf, 2, 1);
+        ui_drawItemIcon(r->unk0 + 7, r->unk2 + y - off, w->unk18, rw->items[i][0], 1);
         text_drawBlock(r->unk0 + 0x16, r->unk2 + y - off, w->unk18, D_8006A218 + it->unk0, 0);
-        ui_drawSmallDigits(r->unk0 + 0x88, r->unk2 + y2 - off, w->unk18, D_801F8238, 0);
+        ui_drawSmallDigits(r->unk0 + 0x88, r->unk2 + y2 - off, w->unk18, s_rewardsTextBuf, 0);
     }
-    if (rw->unkC == 0) {
-        s = text_get(9);
-        text_drawBlock(r->unk0 + ((r->unk4 - (text_getInfo(9) & 0xFFF)) >> 1), r->unk2 - (k1 = off - 0x28), w->unk18, s, 0);
+    if (rw->itemCount == 0) {
+        s = text_get(REWARDS_TEXT_NO_ITEM);
+        text_drawBlock(r->unk0 + ((r->unk4 - (text_getInfo(REWARDS_TEXT_NO_ITEM) & 0xFFF)) >> 1), r->unk2 - (k1 = off - 0x28), w->unk18, s, 0);
     }
-    if (rw->unk8 != 0xFF) {
+    if (rw->card != ITEM_NONE) {
         k = off - 0x66;
-        func_80027710(r->unk0 + 8, r->unk2 - k, w->unk18, &D_801F526C, 0);
-        func_8002BD54(D_801F8238, (u8 *)func_8006276C(rw->unk8));
-        text_append(D_801F8238, text_get(0xB));
-        text_drawBlock(r->unk0 + 0x16, r->unk2 - k, w->unk18, D_801F8238, 0);
+        func_80027710(r->unk0 + 8, r->unk2 - k, w->unk18, &s_rewardsCardIcon, 0);
+        func_8002BD54(s_rewardsTextBuf, (u8 *)func_8006276C(rw->card));
+        text_append(s_rewardsTextBuf, text_get(REWARDS_TEXT_CARD));
+        text_drawBlock(r->unk0 + 0x16, r->unk2 - k, w->unk18, s_rewardsTextBuf, 0);
     }
     func_800269F4(r->unk0 + 2, r->unk2 - (k3 = off - 0x61), w->unk18, r->unk4 - 5);
 }
 
-void func_801F3250(void) {
-    D_801F8278 = 0;
+void rewards_resetFullWarning(void) {
+    s_rewardsFullShown = 0;
 }
 
 void func_801F325C(void) {
 }
 
-u8 func_801F3264(void) {
+u8 rewards_tryAddItems(void) {
     u8 ret = 0;
 
-    if (D_801F8278 != 1) {
-        if (!func_801F2E58()) {
-            snd_playSe(0x416);
-            D_801F8278 = 1;
+    if (s_rewardsFullShown != 1) {
+        if (!rewards_addItems()) {
+            snd_playSe(SE_ITEMS_FULL);
+            s_rewardsFullShown = 1;
         } else {
             ret = 1;
         }
     } else {
-        func_8002D1AC(D_801F7A78.unk348.unk0, 0);
-        win_close(D_801F7A78.unk348.unk0);
+        func_8002D1AC(s_rewards.fullWin.win, 0);
+        win_close(s_rewards.fullWin.win);
         ret = 1;
     }
     if (ret) {
-        if (D_801F7A78.unk24.unkC != 0 || D_801F7A78.unk24.unk8 != 0xFF) {
-            snd_playSe(0x6C);
+        if (s_rewards.rewards.itemCount != 0 || s_rewards.rewards.card != ITEM_NONE) {
+            snd_playSe(SE_ITEMS);
         }
     }
     return ret;
 }
 
-void func_801F332C(void) {
-    D_801F7A78.unk368 = func_8002DC54(&D_801F5264, 0xE, 1);
-    win_setDrawContent(D_801F7A78.unk368, func_801F2FE8);
-    win_setDrawOverlay(D_801F7A78.unk368, func_801F33A0);
-    func_8002E31C(D_801F7A78.unk368, 1);
-    func_8002E334(D_801F7A78.unk368, 0x10);
+void rewards_openItemsWin(void) {
+    s_rewards.itemsWin = func_8002DC54(&s_rewardsItemsRect, 0xE, 1);
+    win_setDrawContent(s_rewards.itemsWin, rewards_drawItems);
+    win_setDrawOverlay(s_rewards.itemsWin, rewards_drawItemsLabels);
+    func_8002E31C(s_rewards.itemsWin, 1);
+    func_8002E334(s_rewards.itemsWin, 0x10);
 }
 
-void func_801F33A0(Window *w) {
+void rewards_drawItemsLabels(Window *w) {
     s32 n = func_8002AE7C((u8 *)D_800703FC.unk94);
     s32 k = 0x97;
 
@@ -1453,16 +1453,16 @@ void func_801F33A0(Window *w) {
     ui_drawLabel(w->unk0 - (n - k), w->unk2 - 3, w->unk18 - 1, D_800703FC.unk94, 0);
 }
 
-void func_801F3434(Window *arg0) {
-    text_drawBlock(arg0->unk0 + 8, arg0->unk2 + 8, arg0->unk18, text_get(0xA), 0);
+void rewards_drawFullWarning(Window *arg0) {
+    text_drawBlock(arg0->unk0 + 8, arg0->unk2 + 8, arg0->unk18, text_get(REWARDS_TEXT_ITEMS_FULL), 0);
 }
 
-void func_801F347C(void) {
-    D_801F7A78.unk348.unk0 = NULL;
+void rewards_onFullWarningClosed(void) {
+    s_rewards.fullWin.win = NULL;
 }
 
 INCLUDE_RODATA("asm/us/ovl_65/nonmatchings/battle_end", g_rewardsText);
 
-INCLUDE_RODATA("asm/us/ovl_65/nonmatchings/battle_end", D_801EE03C);
+INCLUDE_RODATA("asm/us/ovl_65/nonmatchings/battle_end", s_rewardsImage0);
 
-INCLUDE_RODATA("asm/us/ovl_65/nonmatchings/battle_end", D_801EE19C);
+INCLUDE_RODATA("asm/us/ovl_65/nonmatchings/battle_end", s_rewardsImage1);
