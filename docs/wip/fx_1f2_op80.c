@@ -25,7 +25,7 @@
  * sparks block and the unk58 block's i * 0x150 to sp+0xCC (tr = &D_801EBB90[i] gives that but grows the frame by 8);
  * the original's reload register is t8 (all of t0-t7 used somewhere), ours t3); the mode-1 spark init's
  * i * 0x150 copy (s6 there, spilled here). *
- * Pass 28 update: 77 aligned mismatches, 11 ignoring registers (of which 4 are symbol-addend artefacts:
+ * Pass 28 update: 67 aligned mismatches, 11 ignoring registers (of which 4 are symbol-addend artefacts:
  * D_801EA278/D_801EA2D8/D_801EA3E8 = base + 8). Levers: the unk58 block's SVECTOR at sp+0x90 is
  * ((SVECTOR *)out)[1] (vx 0x90, vz 0x94); variables shared between distant blocks become long global pseudos
  * that take callee-saved registers, so block-specific copies (unk4C's dz/dx instead of c/a, the ring loop's lo,
@@ -44,7 +44,8 @@
  * inner one): move_movables' test threshold * savings * lifetime >= insn_count passes here (threshold 22,
  * 2 * 296 insns); the original apparently has one more early move or a longer loop.
  * Open elsewhere: the ring/twin-model products are LO pseudos reloaded through t8 in the original (here
- * reload evicts them from LO into v1); unk58's constant 8 is a spilled hoisted pseudo in the original. */
+ * reload evicts them from LO into v1); unk58's 8 is a variable (k8) set before
+ * the loop: a long global pseudo, spilled and rematerialized through t8 as in the original. */
 #include "fxmod/fx_1f2.h"
 
 typedef struct {
@@ -165,7 +166,6 @@ s32 fx_1f2_op80(s32 mode, Fx1f2Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
     s32 alpha;
     s32 n;
     s32 tint;
-    s32 fd;
     s32 j_m1s;
     s32 lo_m1s;
     s32 a_m1s;
@@ -183,6 +183,8 @@ s32 fx_1f2_op80(s32 mode, Fx1f2Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
     s32 a_u58;
     SVECTOR *sv_u58;
     s32 n_u58;
+    s32 k8;
+    s32 fd;
     Fx1f2Model *mm;
     VECTOR *q;
     VECTOR *q2;
@@ -783,13 +785,14 @@ s32 fx_1f2_op80(s32 mode, Fx1f2Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
         if (work->unk58 != 0) {
             work->unk58--;
             env->unk28 = 0x40;
+            k8 = 8;
             for (i = 0; i < env->unkC->unk24; i++) {
                 tr = &D_801EBB90[i];
                 if (tr->unk4C != 0) {
                     if (--tr->unk4C < 8) {
                         n_u58 = 9;
                         sv_u58 = tr->unk4;
-                        tr->unk0 = tr->unk2 = 8;
+                        tr->unk0 = tr->unk2 = k8;
                         tr->unk1 = 0;
                         for (j_u58 = 0; j_u58 < n_u58; j_u58++) {
                             tr->unk50[j_u58].vx += tr->unkD0[j_u58].vx;
@@ -809,7 +812,7 @@ s32 fx_1f2_op80(s32 mode, Fx1f2Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
                                             (u8 *)tr, 0);
                     }
                 } else {
-                    tr->unk4C = 8;
+                    tr->unk4C = k8;
                     ((SVECTOR *)out)[1].vx = D_801EA670[i].vx + ex->btlfx_randRange(-0x40, 0x40);
                     ((SVECTOR *)out)[1].vz = D_801EA670[i].vz + ex->btlfx_randRange(-0x40, 0x40);
                     for (j_u58 = 0; j_u58 < 9; j_u58++) {
