@@ -1054,11 +1054,11 @@ typedef struct {
 
 typedef struct {
     u8 pad0;
-    u8 unk1;
-    u16 unk2; /* timer scale */
+    u8 tickScale; /* Venom/Poison/Regen tick period factor (btl_initDotTimer) */
+    u16 timerScale; /* duration factor of the timed status (btl_addStatus, btl_initDoomCount) */
     s32 unk4;
-    u32 unk8; /* statuses blocking this one */
-} Battle154C; /* 0xC, one per status bit */
+    u32 prevents; /* statuses this one keeps from being added (btl_addStatus) */
+} BtlStatusInfo; /* 0xC, one per status bit */
 
 typedef struct Battle1538 {
     u8 pad0[0x20];
@@ -1360,7 +1360,7 @@ typedef struct Battle {
     s32 dataSector; /* battle data file sector */
     struct Battle1538 **unk1538;
     s32 unk153C[4];
-    Battle154C statusInfo[32];
+    BtlStatusInfo statusInfo[32];
     Battle16CC abilities[0xC0]; /* runtime: BtlCmd.ability = &abilities[subNo] (Attack 176, Focus 188) */
     s32 statusSets[64]; /* status masks indexed by ability/weapon status-set bytes (btl_applyAbilityStatus) */
 } Battle; /* 0x23CC */
@@ -4010,14 +4010,14 @@ void btl_tickStatusTimers(BtlUnit *);
 
 /* BtlUnit.statusImmune viewed as one block (status timers at unkC..) */
 typedef struct {
-    s32 unk0;
-    u32 unk4;
-    u32 unk8;
-    s16 unkC;
-    s16 unkE;
-    s16 unk10;
-    s16 unk12[14];
-    s16 unk2E;
+    s32 statusImmune;
+    u32 autoStatus;
+    u32 status;
+    s16 venomTimer; /* dot timers (BtlUnit.dotTimers) */
+    s16 poisonTimer;
+    s16 regenTimer;
+    s16 statusTimers[14]; /* BtlUnit.statusTimers */
+    s16 jumpTimer; /* statusTimers[14]: Jump (bit 30) lands when it runs out */
 } BtlUnit34;
 
 /* status bits set in either status word */

@@ -48,7 +48,7 @@ BtlUnit *btl_findUnitByBit(u16 arg0) {
 
 u32 btl_addStatus(BtlUnit *u, u32 f) {
     u32 n = 0;
-    Battle154C *tbl = g_gameState->unk1C->unk8E4.battle->statusInfo;
+    BtlStatusInfo *tbl = g_gameState->unk1C->unk8E4.battle->statusInfo;
     BtlUnit34 *s = (BtlUnit34 *)&u->statusImmune;
     u32 i;
     u32 blk;
@@ -57,10 +57,10 @@ u32 btl_addStatus(BtlUnit *u, u32 f) {
     if (u->statusImmune & f) {
         return 0;
     }
-    if (s->unk4 & f) {
+    if (s->autoStatus & f) {
         return 1;
     }
-    if ((s->unk8 & f) && (f & 0x8800FF7F)) {
+    if ((s->status & f) && (f & 0x8800FF7F)) {
         return 1;
     }
     i = 0;
@@ -69,12 +69,12 @@ u32 btl_addStatus(BtlUnit *u, u32 f) {
         if (f & (1 << i)) {
             n = i;
         }
-        if (s->unk8 & (1 << i)) {
-            blk |= tbl[i].unk8;
+        if (s->status & (1 << i)) {
+            blk |= tbl[i].prevents;
         }
     }
     if (btl_isCmdQueued(u, BTL_CMD_PETRIFY)) {
-        blk |= tbl[0].unk8;
+        blk |= tbl[0].prevents;
     }
     if (blk & f) {
         return 1;
@@ -87,7 +87,7 @@ u32 btl_addStatus(BtlUnit *u, u32 f) {
                 u->cmdIssued = 0;
             }
         }
-        s->unk8 |= f;
+        s->status |= f;
     }
     switch (n) {
     case 0:
@@ -98,7 +98,7 @@ u32 btl_addStatus(BtlUnit *u, u32 f) {
                 if (u->flags & 1) {
                     btl_makeGreyCluts(u);
                 }
-                s->unk8 |= f;
+                s->status |= f;
                 u->flags &= ~0x10000;
                 btl_setStoneClut(u, 1);
             }
@@ -152,7 +152,7 @@ u32 btl_addStatus(BtlUnit *u, u32 f) {
         }
         btl_resetAtbSpeed((Unk800BD8F0 *)u);
         u->atbSpeed = u->atbSpeed * 3 / 2;
-        s->unk8 |= f;
+        s->status |= f;
         break;
     case 20:
         if (u->status & BTL_STATUS_HASTE) {
@@ -161,13 +161,13 @@ u32 btl_addStatus(BtlUnit *u, u32 f) {
         }
         btl_resetAtbSpeed((Unk800BD8F0 *)u);
         u->atbSpeed = u->atbSpeed * 2 / 3;
-        s->unk8 |= f;
+        s->status |= f;
         break;
     case 26:
         btl_hideMeshes(u, u->vanishMeshes);
         break;
     case 28:
-        s->unk8 ^= f;
+        s->status ^= f;
         if (u->status & BTL_STATUS_MINI) {
             u->model->flags |= 2;
             u->model->scaleX = 0x800;
@@ -194,7 +194,7 @@ u32 btl_addStatus(BtlUnit *u, u32 f) {
         } else {
             k = (0x3C - u->spirit) * 4;
         }
-        u->statusTimers[n - 16] = tbl[n].unk2 * k;
+        u->statusTimers[n - 16] = tbl[n].timerScale * k;
     }
     if (f & 0x50002) {
         btl_initDotTimer(u, n);
@@ -208,16 +208,16 @@ s32 btl_removeStatus(BtlUnit *u, u32 f) {
     s32 *a4;
     BtlCmd *c;
 
-    if (s->unk4 & f) {
+    if (s->autoStatus & f) {
         return 1;
     }
-    if (!(s->unk8 & f)) {
+    if (!(s->status & f)) {
         return 1;
     }
     if (!(u->flags & 1) && g_gameState->unk1C->unk8E4.battle->phase == BTL_PHASE_END && (f & 0x1003)) {
         return 1;
     }
-    s->unk8 &= ~f;
+    s->status &= ~f;
     switch (f) {
     case 0x1:
         btl_setStoneClut(u, 0);
@@ -329,31 +329,31 @@ void btl_updateUnitStatus(BtlUnit *arg0) {
         if (btl_isAtbRunning()) {
             if ((arg0->flags >> 16) & 1) {
                 if (arg0->status & BTL_STATUS_VENOM) {
-                    if (t->unkC <= 0) {
+                    if (t->venomTimer <= 0) {
                         btl_initDotTimer(arg0, 1);
                         btl_tickPoison(arg0);
                         btl_tickVenomMp(arg0);
                         btl_spawnTickPopups(arg0);
                     } else {
-                        t->unkC -= arg0->atbSpeed;
+                        t->venomTimer -= arg0->atbSpeed;
                     }
                 }
                 if (arg0->status & BTL_STATUS_POISON) {
-                    if (t->unkE <= 0) {
+                    if (t->poisonTimer <= 0) {
                         btl_initDotTimer(arg0, 0x10);
                         btl_tickPoison(arg0);
                         btl_spawnTickPopups(arg0);
                     } else {
-                        t->unkE -= arg0->atbSpeed;
+                        t->poisonTimer -= arg0->atbSpeed;
                     }
                 }
                 if (BtlUnitHasStatus(arg0, BTL_STATUS_REGEN)) {
-                    if (t->unk10 <= 0) {
+                    if (t->regenTimer <= 0) {
                         btl_initDotTimer(arg0, 0x12);
                         btl_tickRegen(arg0);
                         btl_spawnTickPopups(arg0);
                     } else {
-                        t->unk10 -= arg0->atbSpeed;
+                        t->regenTimer -= arg0->atbSpeed;
                     }
                 }
                 if ((arg0->status & BTL_STATUS_TRANCE) && ((arg0->flags >> 1) & 0xF) == 2) {
@@ -372,8 +372,8 @@ void btl_updateUnitStatus(BtlUnit *arg0) {
                 }
                 btl_tickStatusTimers(arg0);
             } else if ((arg0->status & BTL_STATUS_JUMP) && !(g_gameState->unk1C->unk8E4.battle->cmdFlags & 0x10)) {
-                t->unk2E -= arg0->atbSpeed;
-                if (t->unk2E < 0) {
+                t->jumpTimer -= arg0->atbSpeed;
+                if (t->jumpTimer < 0) {
                     c = arg0->delayedCmd;
                     if (c->cmdNo == BTL_CMD_JUMP) {
                         btl_queueAutoCmd(arg0, BTL_CMD_SPEAR, BTL_ABIL_SPEAR, (u16)c->targets);
@@ -655,7 +655,7 @@ void btl_clearUnitStatus(BtlUnit *arg0) {
 
 void btl_initDoomCount(Unk800C09D8 *arg0) {
     s32 t = (0x3C - arg0->unk33) * 8;
-    arg0->unk66 = t * g_gameState->unk1C->unk8E4.battle->statusInfo[27].unk2;
+    arg0->unk66 = t * g_gameState->unk1C->unk8E4.battle->statusInfo[27].timerScale;
 }
 
 void btl_interruptUnit(BtlUnit *arg0, s32 arg1) {
@@ -707,7 +707,7 @@ void btl_initDotTimer(BtlUnit *u, s32 n) {
         v = (0x3C - u->spirit) * 4;
         k = 2;
     }
-    u->dotTimers[k] = g_gameState->unk1C->unk8E4.battle->statusInfo[n].unk1 * v;
+    u->dotTimers[k] = g_gameState->unk1C->unk8E4.battle->statusInfo[n].tickScale * v;
 }
 
 void btl_saveEnemyCluts(u32 *arg0) {
