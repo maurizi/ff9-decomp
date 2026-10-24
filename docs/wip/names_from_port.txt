@@ -959,3 +959,38 @@ D_800CCFF4 g_worldZoneEncounterCount  # [code] half the number of g_worldEncount
 D_800CF444 g_worldDataSet  # [code] 1, or 4 when the story counter is >= 0x2B52 (func_800B69B4); selects world data 0x41B.. or 0x41E.. and the +0xFE encounter entries
 D_800CCE4B g_worldFog  # [string] printed as "Now Fog" by wm_getEncounterEntry, matched against the encounter entries' fog bit
 D_800D32E4 g_worldEncounterEventRows  # [code] world data pack entry 4: rows of 12 u16 entry numbers used by wm_applyEncounterEvents
+
+## other overlays cleanup/naming pass
+# Code-derived names for ovl_0d/14/15/32-3e/64/65 (cleanup branch). Each "## bin" sub-section is
+# rename.py --bin BIN input; FIELDS lines list struct members renamed in the overlay header.
+# ovl_0d/33/34/37: D_800355DC (main's empty function passed to func_8003556C) is now func_800355DC, declared in
+# their headers, with a func_800355DC line in each overlay's symbols file until main names it.
+
+## ovl_3b: ovl_3b (party select menu)
+func_801F3FEC menu_party_init  # [code] menu 3 (file 0x3B in main's D_8006CA40) entry 0 of main's D_8006C9D4 table; sets the text bank and loads g_menu.unkC as the PartyRequest
+func_801F405C menu_party_update  # [code] menu 3 entry 1 of main's D_8006C9D4 (per frame), calls input then draw
+func_801F4084 menu_party_exit  # [code] menu 3 entry 2 of main's D_8006C9D4, clears the help callback
+func_801F40AC menu_party_input  # [code] Circle -> menu_party_back, Cross -> menu_party_select, else moves the cursor of its row
+func_801F4150 menu_party_draw  # [code] draws the title, help, PARTY and INFO windows and the cursors
+func_801F37A8 menu_party_moveInParty  # [code] Up/Down within the party column, Right goes over to the reserve grid
+func_801F38D8 menu_party_moveInReserve  # [code] Up/Down/Left/Right in the 4x2 reserve grid, Left from column 0 goes back to the party
+func_801F3A60 menu_party_select  # [code] Cross: first press picks a slot ("Move from this slot?"), second swaps it with the target slot
+func_801F42A4 menu_party_back  # [code] Circle: leaves swap mode, or writes the party with party_setMember and closes the menu (func_800325E0) when menu_party_isValid
+func_801F3B3C menu_party_drawParty  # [code] "PARTY" label window, the 4 members or "Character N"/"Unused" text
+func_801F3CF0 menu_party_drawInfo  # [code] "INFO" label window, the slot under the cursor and the reserve portraits
+func_801F3E58 menu_party_drawCursor  # [code] hand at the active cursor, blinking hand at the picked slot in swap mode
+func_801F4190 menu_party_drawTitle  # [code] window with text 0 "Form Party"
+func_801F4204 menu_party_drawHelp  # [code] "HELP" label window with text[size] "Select N member(s)."
+func_801F4360 menu_party_drawMember  # [code] portrait (menu_party_drawPortrait) plus func_8002423C for the character
+func_801F43FC menu_party_drawPortrait  # [code] character portrait (func_80028204) with status icons for Character.unk38 bits and hp 0
+func_801F457C menu_party_loadRequest  # [code] copies a PartyRequest (size, party, reserve, fixed) into g_menuParty
+func_801F4614 menu_party_isFixed  # [code] fixed flag of the character under cursor[i]; a fixed one can't be swapped out of the party
+func_801F465C menu_party_isValid  # [code] party has size members and at least one with hp and no Character.unk38 & 3
+func_801F46FC menu_party_setHelpText  # [code] help-text callback (func_8003556C): text 0xA + mode, "Move from this slot?" / "To which slot?"
+D_801F4748 g_menuParty  # [code] party select state, see PartySelect in include/ovl_3b.h
+D_801F4728 g_menuPartyTitleRect  # [code] RECT of the title window (menu_party_drawTitle)
+D_801F4730 g_menuPartyHelpRect  # [code] RECT of the HELP window (menu_party_drawHelp)
+D_801F4738 g_menuPartyListRect  # [code] RECT of the PARTY window (menu_party_drawParty)
+D_801F4740 g_menuPartyInfoRect  # [code] RECT of the INFO window (menu_party_drawInfo)
+D_801EDFE8 g_menuPartyImage  # [code] image data passed to func_80028720 by menu_party_init
+# FIELDS include/ovl_3b.h PartyRequest: unk0=size,unk4=party,unk8=reserve,unk10=fixed; Cursor: unk0=idx,unk1=row; PartySelect: unk0=mode,unk1=size,unk4=cursor,unk8=partyIdx,unk9=reserveIdx,unkA=slots,unk1A=fixed

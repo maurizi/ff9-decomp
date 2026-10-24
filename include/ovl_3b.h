@@ -6,62 +6,82 @@
  * overlays, so they live here, not in ff9.h. */
 #include "ff9.h"
 
-/* Party select request passed to func_801F457C. */
+#define PARTY_EMPTY 0xFF /* empty slot in PartyRequest/PartySelect.slots */
+
+/* Party select request passed to menu_party_loadRequest (g_menu.unkC when the menu opens). */
 typedef struct {
-    u8 unk0;     /* party size */
+    u8 size;      /* members to pick */
     u8 pad1[3];
-    u8 unk4[4];  /* current party (character ids, 0xFF = empty) */
-    u8 unk8[8];  /* reserve */
-    u8 unk10[8]; /* per-character value */
+    u8 party[4];  /* current party (character ids, PARTY_EMPTY = empty) */
+    u8 reserve[8];
+    u8 fixed[8];  /* per character: nonzero = can't leave the party (menu_party_isFixed) */
 } PartyRequest;
 
+enum { PARTY_ROW_PARTY, PARTY_ROW_RESERVE };
+
 typedef struct {
-    u8 unk0; /* column */
-    u8 unk1; /* row */
+    u8 idx; /* slot in the row: 0-3 in the party, 0-7 (4 per line) in the reserve */
+    u8 row; /* PARTY_ROW_* */
 } Cursor;
 
-/* Party select state (D_801F4748). */
+enum { PARTY_SEL_PICK, PARTY_SEL_SWAP }; /* PartySelect.mode */
+
+/* g_partyMenuText ids */
+#define PARTY_TEXT_TITLE     0   /* "Form Party" */
+                                 /* 1-4: "Select N member(s).", by party size */
+#define PARTY_TEXT_SLOT1     5   /* "Character 1".."Character 4": empty slot */
+#define PARTY_TEXT_UNUSED    9   /* slot past the party size */
+#define PARTY_TEXT_MOVE_FROM 0xA /* "Move from this slot?", then 0xB "To which slot?" (+ mode) */
+
+/* Party select state (g_menuParty). */
 typedef struct {
-    u8 unk0;       /* 0 = picking, 1 = swapping */
-    u8 unk1;       /* party size */
+    u8 mode;       /* PARTY_SEL_*: picking the first slot, or the slot to swap it with */
+    u8 size;       /* party size */
     u8 pad2[2];
-    Cursor unk4[2]; /* [0] = current, [1] = swap source */
-    u8 unk8;
-    u8 unk9;
-    u8 unkA[2][8]; /* rows: party, reserve (character ids, 0xFF = empty) */
-    u8 unk1A[8];
+    Cursor cursor[2]; /* [mode]: [0] = picking, [1] = swap target */
+    u8 partyIdx;   /* party cursor saved while in the reserve */
+    u8 reserveIdx; /* reserve cursor saved while in the party */
+    u8 slots[2][8]; /* [PARTY_ROW_*]: character ids, PARTY_EMPTY = empty */
+    u8 fixed[8];   /* PartyRequest.fixed */
 } PartySelect;
-extern PartySelect D_801F4748;
+extern PartySelect g_menuParty;
 
-/* RECTs, not code: splat starts .data at 0x6830 instead of 0x6828, so the
- * first one keeps a func_ name. */
-extern RECT D_801F4728;
-extern RECT D_801F4730;
-extern RECT D_801F4738;
-extern RECT D_801F4740;
+/* Window RECTs (.data) */
+extern RECT g_menuPartyTitleRect;
+extern RECT g_menuPartyHelpRect;
+extern RECT g_menuPartyListRect;
+extern RECT g_menuPartyInfoRect;
 
-/* main exe: candidates for ff9.h. Defined as u8 in main, but callers here
+/* main exe: candidates for ff9.h */
+/* Menu sounds for snd_playSe: main's menuList_up/down play SE_CURSOR on a move, menus play it on a pick too,
+ * SE_CANCEL on Circle backing out, SE_BUZZER when an action is refused. */
+#ifndef SE_CURSOR
+#define SE_CURSOR 0x67
+#define SE_BUZZER 0x66
+#define SE_CANCEL 0x65
+#endif
+/* Defined as u8 in main, but callers here
  * (and ovl_3a) use the result unmasked, i.e. called it unprototyped. */
 s32 func_80028954(s32);
 
-void func_801F37A8(void);
-void func_801F38D8(void);
-void func_801F3A60(void);
-void func_801F3B3C(void);
-void func_801F3CF0(void);
-void func_801F3E58(void);
-void func_801F40AC(void);
-void func_801F4150(void);
-void func_801F4190(void);
-void func_801F4204(void);
-void func_801F42A4(void);
-void func_801F4360(s32, s32, s32, s32);
-void func_801F43FC(s32, s32, s32, s32, s32, u8);
-u8 func_801F4614(s32);
-u8 func_801F465C(void);
-void func_801F457C(PartyRequest *);
-void func_801F46FC(void);
-extern u8 D_801EDFE8[]; /* image data for func_80028720 */
+void menu_party_moveInParty(void);
+void menu_party_moveInReserve(void);
+void menu_party_select(void);
+void menu_party_drawParty(void);
+void menu_party_drawInfo(void);
+void menu_party_drawCursor(void);
+void menu_party_input(void);
+void menu_party_draw(void);
+void menu_party_drawTitle(void);
+void menu_party_drawHelp(void);
+void menu_party_back(void);
+void menu_party_drawMember(s32, s32, s32, s32);
+void menu_party_drawPortrait(s32, s32, s32, s32, s32, u8);
+u8 menu_party_isFixed(s32);
+u8 menu_party_isValid(void);
+void menu_party_loadRequest(PartyRequest *);
+void menu_party_setHelpText(void);
+extern u8 g_menuPartyImage[]; /* image data for func_80028720 */
 
 extern const u8 g_partyMenuText[]; /* text bank for this menu */
 
