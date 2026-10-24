@@ -271,8 +271,8 @@ come from one template. Each has its own state struct and byte-identical helpers
 
 | file | range | funcs | evidence |
 |---|---|---|---|
-| tu_801EE7C0.c | 801EE7C0-801F1150 | 41 | rodata 801EDF04-801EE644; end medium: no call crosses 0x801F1150, and the rodata, data and bss order each allow the cut with items on both sides (the window is 0x801F0FA4-0x801F1150) |
-| tu_801F1150.c | 801F1150-801F33A8 | 32 | rodata 801EE644-801EE7C0; each half has its own screen-init triple (0x801F05FC / 0x801F2C0C, the same shape) |
+| menu_ability.c | 801EE7C0-801F1150 | 41 | rodata 801EDF04-801EE644; end medium: no call crosses 0x801F1150, and the rodata, data and bss order each allow the cut with items on both sides (the window is 0x801F0FA4-0x801F1150) |
+| menu_equip.c | 801F1150-801F33A8 | 32 | rodata 801EE644-801EE7C0; each half has its own screen-init triple (0x801F05FC / 0x801F2C0C, the same shape) |
 
 ## ovl_64 (movie player): 5 files
 
