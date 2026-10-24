@@ -4244,3 +4244,25 @@ D_8007BCA0 g_penColor  # [code] pen colour (pen_setColor)
 D_8007BCA4 g_penOt  # [code] OT entry the pen links its packets into (msg_beginDraw, msg_setOtz)
 D_8007BCA8 g_penPktPtr  # [code] address of the packet pointer the pen uses (&g_primPtr or the battle message buffer)
 D_8007BC98 g_penStackPtr  # [code] pen_pushPos/pen_popPos stack pointer into D_8007BC78
+func_8005CE04 akao_copy  # [code] word copy of n bytes, four words per step (sequence / channel state copies)
+func_8005CE8C akao_swap  # [code] swaps two word buffers of n bytes
+func_8005CF04 akao_tickSe  # [code] per tick: CD volume fade, then the active sound-effect channels (g_akaoSeChannels) through akao_execChannel
+func_8005D384 akao_tickChannels  # [code] per tick update of a sequence's channels (akao_tick: main and sub sequence)
+func_8005E3FC akao_execChannel  # [code] sequence interpreter for one channel: opcodes >= 0xA0 through D_8006FB60 / 0xFE xx through D_8006FCE0, notes below
+D_8006FB60 g_akaoOps  # [code] handlers of sequence opcodes 0xA0-0xFF (akao_execChannel)
+D_8006FCE0 g_akaoOpsFE  # [code] handlers of the 0xFE xx sequence opcodes (akao_execChannel)
+func_8005DD54 akao_remapInstrument  # [code] instruments 0x20-0x7F move up by 0x30 when flag 0x20 is set (as akao_shiftInstrumentUp)
+func_8005EBB4 akao_setChannelInstrument  # [code] start/loop address and ADSR of a channel from an instrument entry, marks the voice registers dirty
+func_8005EBE8 akao_setChannelProgram  # [code] akao_setChannelInstrument with g_akaoInstruments[i]
+func_8005EC20 akao_stopSeChannel  # [code] clears a sound-effect channel's bits in every g_akaoSeState mask and its id
+func_8005DD7C akao_applyKeySplit  # [code] picks the instrument region of a key (AkaoRegion) for a channel's note
+func_8005715C akao_isqrt  # [code] digit-by-digit integer square root (akao_lfoSine)
+func_80057488 akao_lfoSquare  # [code] D_8006FB40[0]: +-0x10000 by phase bit 8
+func_80057234 akao_lfoSine  # [code] D_8006FB40[1]: quarter waves sqrt(1 - v*v) by phase
+func_80057364 akao_lfoTriangle  # [code] D_8006FB40[2]: ramps by phase quarter
+func_80057518 akao_lfoTable  # [code] D_8006FB40[3]: D_8006F440[phase] << 8
+func_800574A0 akao_lfoSquareScaled  # [code] D_8006FB40[4]: akao_lfoSquare scaled 1/4, 1/2 or 3/4 by bits 9-10
+func_8005729C akao_lfoSineScaled  # [code] D_8006FB40[5]: akao_lfoSine scaled by bits 10-11
+func_800573CC akao_lfoTriangleScaled  # [code] D_8006FB40[6]: akao_lfoTriangle scaled by bits 10-11
+func_80057534 akao_lfoTableScaled  # [code] D_8006FB40[7]: akao_lfoTable scaled by bits 9-10
+D_8006FB40 g_akaoLfoWaves  # [code] the 8 LFO waveform functions, picked by an opcode argument & 7

@@ -1,6 +1,6 @@
 #include "ff9.h"
 
-s32 func_8005715C(s32 x) {
+s32 akao_isqrt(s32 x) {
     s32 n = 5;
     u32 xs = x << 8;
     u32 r = 0;
@@ -41,7 +41,7 @@ end:
     return r;
 }
 
-s32 func_80057234(u32 x) {
+s32 akao_lfoSine(u32 x) {
     s32 v = x & 0xFF;
     s32 r;
 
@@ -49,7 +49,7 @@ s32 func_80057234(u32 x) {
     if (!(x & 1)) {
         v = 0x100 - v;
     }
-    r = func_8005715C(0x10000 - v * v);
+    r = akao_isqrt(0x10000 - v * v);
     if (x & 2) {
         r = ~r;
         r++;
@@ -57,7 +57,7 @@ s32 func_80057234(u32 x) {
     return r;
 }
 
-static inline s32 func_800574A0_curve(s32 r, u32 x) {
+static inline s32 akao_lfoSquareScaled_curve(s32 r, u32 x) {
     if (x < 3) {
         switch (x) {
         case 1:
@@ -74,7 +74,7 @@ static inline s32 func_800574A0_curve(s32 r, u32 x) {
     return r;
 }
 
-s32 func_8005729C(u32 x) {
+s32 akao_lfoSineScaled(u32 x) {
     s32 v = x & 0xFF;
     s32 r;
 
@@ -82,16 +82,16 @@ s32 func_8005729C(u32 x) {
     if (!(x & 1)) {
         v = 0x100 - v;
     }
-    r = func_8005715C(0x10000 - v * v);
+    r = akao_isqrt(0x10000 - v * v);
     if (x & 2) {
         r = ~r;
         r++;
     }
     x >>= 2;
-    return func_800574A0_curve(r, x);
+    return akao_lfoSquareScaled_curve(r, x);
 }
 
-s32 func_80057364(u32 x) {
+s32 akao_lfoTriangle(u32 x) {
     s32 v = (x & 0xFF) << 8;
 
     switch ((x >> 8) & 3) {
@@ -108,7 +108,7 @@ s32 func_80057364(u32 x) {
     return v;
 }
 
-s32 func_800573CC(u32 x) {
+s32 akao_lfoTriangleScaled(u32 x) {
     s32 v = (x & 0xFF) << 8;
 
     x >>= 8;
@@ -124,10 +124,10 @@ s32 func_800573CC(u32 x) {
         break;
     }
     x >>= 2;
-    return func_800574A0_curve(v, x);
+    return akao_lfoSquareScaled_curve(v, x);
 }
 
-s32 func_80057488(s32 a) {
+s32 akao_lfoSquare(s32 a) {
     s32 r = 0x10000;
     if (a & 0x100) {
         r = 0xFFFF0000;
@@ -135,7 +135,7 @@ s32 func_80057488(s32 a) {
     return r;
 }
 
-s32 func_800574A0(u32 x) {
+s32 akao_lfoSquareScaled(u32 x) {
     s32 r = (x & 0x100) ? -0x10000 : 0x10000;
 
     x >>= 9;
@@ -155,16 +155,16 @@ s32 func_800574A0(u32 x) {
     return r;
 }
 
-static inline s32 func_80057518_inline(s32 x) {
+static inline s32 akao_lfoTable_inline(s32 x) {
     s32 i = x & 0xFF;
     return D_8006F440[i] << 8;
 }
 
-s32 func_80057518(s32 x) {
-    return func_80057518_inline(x);
+s32 akao_lfoTable(s32 x) {
+    return akao_lfoTable_inline(x);
 }
 
-s32 func_80057534(u32 code) {
+s32 akao_lfoTableScaled(u32 code) {
     s32 v;
     u32 sel;
 

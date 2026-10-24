@@ -1601,8 +1601,8 @@ u16 akao_calcPitch(Unk8005EBB4 *p, s32 note, u8 fine, s32 *out);
 extern u8 D_8006F374[]; /* operand length of opcodes 0xA0-0xFF, 0 = special */
 extern u8 D_8006F3D4[]; /* operand length of 0xFE xx opcodes */
 s32 func_8005DB40(AkaoChannel *c);
-extern void (*D_8006FB60[])(AkaoChannel *, u32); /* opcode 0xA0-0xFF handlers */
-extern void (*D_8006FCE0[])(AkaoChannel *, u32); /* 0xFE xx opcode handlers */
+extern void (*g_akaoOps[])(AkaoChannel *, u32); /* opcode 0xA0-0xFF handlers */
+extern void (*g_akaoOpsFE[])(AkaoChannel *, u32); /* 0xFE xx opcode handlers */
 extern u16 D_8006F3F4[]; /* note lengths */
 
 /* drum kit key entry (func_8005E170) */
@@ -1616,7 +1616,7 @@ typedef struct {
     u8 unk6;
     u8 unk7; /* pan, bit 7: flag */
 } AkaoDrumKey;
-void func_8005EBB4(AkaoChannel *, Unk8005EBB4 *, s32);
+void akao_setChannelInstrument(AkaoChannel *, Unk8005EBB4 *, s32);
 
 typedef struct {
     void (*unk0)(void);
@@ -1720,7 +1720,7 @@ u8 cd_syncAsync(void (*)(u8 *));
 extern u8 D_8006CAD8[][5];
 extern s32 D_800809B8;
 extern u8 D_80083156; /* tempo scale */
-void func_8005E3FC(AkaoChannel *, u32);
+void akao_execChannel(AkaoChannel *, u32);
 void func_800579B4(AkaoChannel *, u32, s32);
 
 void akao_cmdPlayMusic(Unk80080AA0 *);
@@ -2038,7 +2038,7 @@ void pad_initRepeat(void);
 void win_initAll(void);
 void preload_onReadDone(u8 *);
 u8 cd_seekAsync(s32, void (*)(u8 *));
-void func_8005EC20(AkaoChannel *, u32);
+void akao_stopSeChannel(AkaoChannel *, u32);
 typedef struct {
     u8 unk0[4]; /* stat bonuses */
     u8 unk4[4]; /* OR'd into BtlUnit.unk70[] (btl_initEquipElements) */
@@ -2082,7 +2082,7 @@ extern s32 D_8007F720[]; /* AKAO header copy (0x70 bytes) */
 extern u8 D_8006CACC[];
 void menu_onOverlayRead(u8 *);
 extern AkaoChannel g_akaoSavedChannels[];
-void func_8005CE04(); /* (u32 *src, u32 *dst, u32 size): word copy */
+void akao_copy(); /* (u32 *src, u32 *dst, u32 size): word copy */
 u16 akao_shiftInstrumentDown(u32, AkaoChannel *);
 s32 text_initNameImage(s32);
 void text_renderPartyName(s32);
@@ -2336,7 +2336,7 @@ extern s32 D_8007AE34;
 extern CdlATV D_8007F718;
 void func_8005A284(); /* (Unk80080A10 *, AkaoChannel *) */
 void card_rollStats(Unk6 *, u8);
-extern s32 D_8006FB40[];
+extern s32 g_akaoLfoWaves[];
 
 typedef struct {
     s32 unk0;
@@ -2440,9 +2440,9 @@ void cd_startRequest(CdRequest *);
 u8 cd_submit(CdRequest *);
 void cd_onSync(u8, u8 *);
 void cd_onDataReady(u8, u8 *);
-s32 func_8005DD54(s32, s32);
+s32 akao_remapInstrument(s32, s32);
 s32 func_8005EC8C(s32, s32);
-void func_8005EBE8(AkaoChannel *, s32);
+void akao_setChannelProgram(AkaoChannel *, s32);
 void akao_spuWrite(void *, s32);
 void akao_waitSpuTransfer(void);
 void akao_initState(void);
@@ -3226,7 +3226,7 @@ typedef struct {
 #define SPU_CD_VOL_R 0x1F801DB2
 extern s16 g_akaoCdVolumeHi;
 extern s32 g_akaoCdVolumeStep;
-s32 func_8005715C(s32);
+s32 akao_isqrt(s32);
 extern s32 D_8007F8E8;
 extern s32 D_8007F8E4;
 extern s32 D_8007F740;

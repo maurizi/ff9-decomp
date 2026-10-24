@@ -422,7 +422,7 @@ s32 akao_uploadBank(s32 *buf, u32 size, s32 wait) {
     if (g_akaoFlags.unk0 & 1) {
         if (g_akaoUpload.unk4 == 0) {
             if (buf[0] == 0x4F414B41) {
-                func_8005CE04(buf, g_akaoBankHeader, 0x40);
+                akao_copy(buf, g_akaoBankHeader, 0x40);
                 buf += 16;
                 size -= 0x40;
                 g_akaoUpload.unk4 = g_akaoBankHeader[4];
@@ -444,7 +444,7 @@ s32 akao_uploadBank(s32 *buf, u32 size, s32 wait) {
             if (n >= size) {
                 n = size;
             }
-            func_8005CE04(buf, g_akaoUpload.unk0, n);
+            akao_copy(buf, g_akaoUpload.unk0, n);
             buf += n >> 2;
             size -= n;
             g_akaoUpload.unk0 = (Unk8005EBB4 *)((s32 *)g_akaoUpload.unk0 + (n >> 2));
@@ -578,7 +578,7 @@ s32 akao_uploadSeBank(s32 *a, s32 b) {
         SpuSetTransferStartAddr(addr);
         akao_spuWrite(a, h[4]);
         h[8] = addr;
-        func_8005CE04(h, D_8007F720, 0x70);
+        akao_copy(h, D_8007F720, 0x70);
     } else {
         D_8007F740 = 0;
     }
