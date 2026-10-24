@@ -1,79 +1,79 @@
 #include "ovl_14.h"
 
-void func_800A7088(void) {
+void opening_main(void) {
     s32 n;
 
     n = 0;
-    func_800A767C();
-    func_800A7FF0();
-    D_800AB300 = D_80067950 == 0 ? 6 : 0;
-    while (D_800AB300 < 7) {
-        switch (D_800AB300) {
-        case 0:
-            if (func_800A9220() != 0) {
-                D_800AB300 = 7;
+    opening_init();
+    scene_init();
+    g_openingState = D_80067950 == 0 ? OPENING_BOOT : OPENING_MOVIE;
+    while (g_openingState < OPENING_DONE) {
+        switch (g_openingState) {
+        case OPENING_MOVIE:
+            if (opening_movieThenTitle() != 0) {
+                g_openingState = OPENING_DONE;
             } else {
-                D_800AB300 = 1;
+                g_openingState = OPENING_ATTRACT1;
             }
             break;
-        case 1:
-            if (func_800A9E14(0) != 0) {
-                D_800AB300 = 7;
-            } else if (g_gameState->unkB != 0xFF && (g_gameState->unkB & 1)) {
-                n = 180;
-                D_800AB300 = 2;
+        case OPENING_ATTRACT1:
+            if (opening_attract(0) != 0) {
+                g_openingState = OPENING_DONE;
+            } else if (g_gameState->unkB != DISC_NONE && (g_gameState->unkB & DISC_1)) {
+                n = OPENING_PAUSE_FRAMES;
+                g_openingState = OPENING_PAUSE1;
             } else {
-                D_800AB300 = 4;
+                g_openingState = OPENING_ATTRACT2;
             }
             break;
-        case 2:
+        case OPENING_PAUSE1:
             VSync(0);
             if (--n == 0) {
-                D_800AB300 = 3;
+                g_openingState = OPENING_MOVIE2;
             }
             break;
-        case 3:
-            if (func_800A9220() == 0) {
-                D_800AB300 = 4;
+        case OPENING_MOVIE2:
+            if (opening_movieThenTitle() == 0) {
+                g_openingState = OPENING_ATTRACT2;
             } else {
-                D_800AB300 = 7;
+                g_openingState = OPENING_DONE;
             }
             break;
-        case 4:
-            if (func_800A9E14(1) != 0) {
-                D_800AB300 = 7;
-            } else if (g_gameState->unkB != 0xFF && (g_gameState->unkB & 1)) {
-                n = 180;
-                D_800AB300 = 5;
+        case OPENING_ATTRACT2:
+            if (opening_attract(1) != 0) {
+                g_openingState = OPENING_DONE;
+            } else if (g_gameState->unkB != DISC_NONE && (g_gameState->unkB & DISC_1)) {
+                n = OPENING_PAUSE_FRAMES;
+                g_openingState = OPENING_PAUSE2;
             } else {
-                D_800AB300 = 1;
+                g_openingState = OPENING_ATTRACT1;
             }
             break;
-        case 5:
+        case OPENING_PAUSE2:
             VSync(0);
             if (--n == 0) {
-                D_800AB300 = 0;
+                g_openingState = OPENING_MOVIE;
             }
             break;
-        case 6:
-            func_800AAADC();
-            D_800AB300 = 0;
+        case OPENING_BOOT:
+            opening_bootScreen();
+            g_openingState = OPENING_MOVIE;
             break;
         }
     }
     g_gameState->unk0 |= 0x100000;
     func_8001DE50(g_gameState);
-    func_800A741C();
-    func_800A80D4();
-    func_800A77BC();
+    opening_findSceneSectors();
+    scene_exit();
+    opening_exit();
 }
 
-void func_800A727C(void) {
+void opening_clearOt(void) {
     GameData *ctx = g_gameState->unk1C;
     ClearOTagR(ctx->unk10[ctx->unk8], 0x1000);
 }
 
-void func_800A72C0(void) {
+void opening_swapBuffers(void) {
     GameData *ctx;
     u8 i;
 
@@ -98,7 +98,7 @@ void func_800A73B8(void) {
 }
 
 /* looks up the current area/field ids in the two directories at D_80067944 + 0x14C700 and stores their sector ranges */
-void func_800A741C(void) {
+void opening_findSceneSectors(void) {
     GameState *gs = g_gameState;
     s32 mode = gs->mode;
     GameData *ctx = gs->unk1C;
@@ -106,7 +106,7 @@ void func_800A741C(void) {
     s32 base;
     u8 *area;
     u8 *start;
-    Ovl14Dir *e;
+    SceneDirEntry *e;
     s32 key;
     s32 id;
 
@@ -118,17 +118,17 @@ void func_800A741C(void) {
         if (mode == 1) {
             key = (s16)ctx->fieldId;
             start = area + ((f->unk48 - base) << 11);
-            e = (Ovl14Dir *)start + f->unk44 - 1;
+            e = (SceneDirEntry *)start + f->unk44 - 1;
         } else {
             key = ctx->unk7DC;
             start = area + ((f->unk38 - base) << 11);
-            e = (Ovl14Dir *)start + f->unk34 - 1;
+            e = (SceneDirEntry *)start + f->unk34 - 1;
         }
         for (;;) {
-            if (e->unk0 == key) {
-                id = e->unk2;
-                ctx->sceneSector[1] = e->unk4;
-                ctx->sceneSectors[1] = e[1].unk4 - e->unk4;
+            if (e->id == key) {
+                id = e->link;
+                ctx->sceneSector[1] = e->sector;
+                ctx->sceneSectors[1] = e[1].sector - e->sector;
                 break;
             }
             e--;
@@ -137,11 +137,11 @@ void func_800A741C(void) {
             }
         }
         start = area + ((gs->unk14->unk28 - base) << 11);
-        e = (Ovl14Dir *)start + gs->unk14->unk24 - 1;
+        e = (SceneDirEntry *)start + gs->unk14->unk24 - 1;
         for (;;) {
-            if (e->unk0 == id) {
-                ctx->sceneSector[0] = e->unk4;
-                ctx->sceneSectors[0] = e[1].unk4 - e->unk4;
+            if (e->id == id) {
+                ctx->sceneSector[0] = e->sector;
+                ctx->sceneSectors[0] = e[1].sector - e->sector;
                 break;
             }
             e--;

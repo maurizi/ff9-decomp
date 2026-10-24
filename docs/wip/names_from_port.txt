@@ -1756,3 +1756,1497 @@ D_800C9DD0 g_fieldBgCtxWork  # [code] label of g_fieldBgCtx.work (work buffer se
 D_800C9E00 g_fieldBgiTriangles  # [code] label of g_fieldBgi.triangles, read under its own name by bgi_moveActor
 D_800C9D52 g_fieldSoundLoadKind  # [code] byte 2 of g_fieldSoundLoadId, the kind of the file fld_soundCommand is loading (7 music, 9 sound bank)
 func_800CB1EC wm_emitSprite3D  # [code] hand-written asm that builds the sprite primitives from WmSprCtx for wm_drawSprite3D (ovl_0a twin fld_emitSprite3D)
+## other overlays cleanup/naming pass
+# Code-derived names for ovl_0d/14/15/32-3e/64/65 (cleanup branch). Each "## bin" sub-section is
+# rename.py --bin BIN input; FIELDS lines list struct members renamed in the overlay header.
+# ovl_0d/33/34/37: D_800355DC (main's empty function passed to func_8003556C) is now func_800355DC, declared in
+# their headers, with a func_800355DC line in each overlay's symbols file until main names it.
+
+## ovl_3b: ovl_3b (party select menu)
+func_801F3FEC menuParty_init  # [code] menu 3 (file 0x3B in main's D_8006CA40) entry 0 of main's D_8006C9D4 table; sets the text bank and loads g_menu.unkC as the PartyRequest
+func_801F405C menuParty_update  # [code] menu 3 entry 1 of main's D_8006C9D4 (per frame), calls input then draw
+func_801F4084 menuParty_exit  # [code] menu 3 entry 2 of main's D_8006C9D4, clears the help callback
+func_801F40AC menuParty_input  # [code] Circle -> menuParty_confirm, Cross -> menuParty_pick, else moves the cursor of its row
+func_801F4150 menuParty_draw  # [code] draws the title, help, PARTY and INFO windows and the cursors
+func_801F37A8 menuParty_inputParty  # [code] Up/Down within the party column, Right goes over to the reserve grid
+func_801F38D8 menuParty_inputReserve  # [code] Up/Down/Left/Right in the 4x2 reserve grid, Left from column 0 goes back to the party
+func_801F3A60 menuParty_pick  # [code] Cross: first press picks a slot ("Move from this slot?"), second swaps it with the target slot
+func_801F42A4 menuParty_confirm  # [code] Circle: leaves swap mode, or writes the party with party_setMember and closes the menu (func_800325E0) when menuParty_isValid
+func_801F3B3C menuParty_drawParty  # [code] "PARTY" label window, the 4 members or "Character N"/"Unused" text
+func_801F3CF0 menuParty_drawInfo  # [code] "INFO" label window, the slot under the cursor and the reserve portraits
+func_801F3E58 menuParty_drawCursor  # [code] hand at the active cursor, blinking hand at the picked slot in swap mode
+func_801F4190 menuParty_drawTitle  # [code] window with text 0 "Form Party"
+func_801F4204 menuParty_drawHelp  # [code] "HELP" label window with text[size] "Select N member(s)."
+func_801F4360 menuParty_drawMember  # [code] portrait (menuParty_drawPortrait) plus func_8002423C for the character
+func_801F43FC menuParty_drawPortrait  # [code] character portrait (func_80028204) with status icons for Character.unk38 bits and hp 0
+func_801F457C menuParty_loadRequest  # [code] copies a PartyRequest (size, party, reserve, fixed) into s_menuParty
+func_801F4614 menuParty_isFixed  # [code] fixed flag of the character under cursor[i]; a fixed one can't be swapped out of the party
+func_801F465C menuParty_isValid  # [code] party has size members and at least one with hp and no Character.unk38 & 3
+func_801F46FC menuParty_updateHelp  # [code] help-text callback (func_8003556C): text 0xA + mode, "Move from this slot?" / "To which slot?"
+D_801F4748 s_menuParty  # [code] party select state, see PartySelect in include/ovl_3b.h
+D_801F4728 s_menuPartyTitleRect  # [code] RECT of the title window (menuParty_drawTitle)
+D_801F4730 s_menuPartyHelpRect  # [code] RECT of the HELP window (menuParty_drawHelp)
+D_801F4738 s_menuPartyListRect  # [code] RECT of the PARTY window (menuParty_drawParty)
+D_801F4740 s_menuPartyInfoRect  # [code] RECT of the INFO window (menuParty_drawInfo)
+D_801EDFE8 s_menuPartyImage  # [code] image data passed to func_80028720 by menuParty_init
+# FIELDS include/ovl_3b.h PartyRequest: unk0=size,unk4=party,unk8=reserve,unk10=fixed; Cursor: unk0=idx,unk1=row; PartySelect: unk0=mode,unk1=size,unk4=cursor,unk8=partyIdx,unk9=reserveIdx,unkA=slots,unk1A=fixed
+
+## ovl_3a: ovl_3a (name entry menu)
+func_801F3874 menuName_init  # [code] menu 1 (file 0x3A in main's D_8006CA40) entry 0 of main's D_8006C9D4; sets the text bank, the name being edited and the windows
+func_801F4748 menuName_update  # [code] menu 1 entry 1 of main's D_8006C9D4 (per frame), input then draw
+func_801F4770 menuName_exit  # [code] menu 1 entry 2 of main's D_8006C9D4, clears the help callbacks and restores the CLUT row
+func_801F3A98 menuName_input  # [code] Start jumps to Confirm, L1/R1 switch the character set, Cross selects, else moves in the side menu or the grid
+func_801F3BBC menuName_inputGrid  # [code] Up/Down/Right/Left in the 15-column character grid (Left from column 0 goes to the side menu), Circle deletes the last letter
+func_801F3D9C menuName_confirm  # [code] Cross - side menu rows Alphabet/Symbol/Delete/Confirm/Default (Confirm copies the name into the character record and closes), or enters the grid character
+func_801F47E8 menuName_inputCommands  # [code] Up/Down in the 5-row side menu (wraps), Right goes to the grid
+func_801F47A0 menuName_draw  # [code] calls the title, portrait, side menu, help, name/grid and cursor drawers
+func_801F48A0 menuName_drawTitle  # [code] window with text 0 "Name"
+func_801F3FAC menuName_drawPortrait  # [code] SPRT of the character portrait (CLUT row loaded by menuName_loadPortrait) in the portrait window
+func_801F4110 menuName_drawCommands  # [code] side menu window - "Alphabet"/"Symbol" (current one highlighted) and "Delete"/"Confirm"/"Default"
+func_801F490C menuName_drawHelp  # [code] "HELP" label window with text 1 "Pick a name."
+func_801F4238 menuName_drawNameWindow  # [code] the name with blinking underlines and the character grid of the current set
+func_801F459C menuName_drawCursor  # [code] places the hand (D_80077DE8) at the side-menu row or the grid character
+func_801F49A0 menuName_loadPortrait  # [code] saves the CLUT row (StoreImage) and loads the character's portrait CLUT and pixels from s_menuNamePortraits
+func_801F4A34 menuName_restoreClut  # [code] LoadImage of the CLUT row saved by menuName_loadPortrait
+func_801F4A68 menuName_getNameId  # [code] menu argument -> chr_setDefaultName id (s_menuNameIds)
+func_801F4A84 menuName_getCharIdx  # [code] name id -> character record index (s_menuNameCharIdx)
+func_801F4A9C menuName_updateHelp  # [code] help-text callback (func_8003556C) - side-menu row help, or the grid's button help
+func_801F4AE0 menuName_clampCursor  # [code] after switching to the smaller symbol grid, moves the grid cursor into its last row
+D_801F4BBC s_menuName  # [code] name entry state, NameEntry in include/ovl_3a.h
+D_801F4B48 s_menuNameHelpBounds  # [code] help window RECT set with func_80035580 while the grid has focus (NULL = default otherwise)
+D_801F4B50 s_menuNameGridSize  # [code] characters per set (60, 30), copied to NameEntry.gridSize
+D_801F4B54 s_menuNameTitleWin  # [code] -> windows[0], menuName_drawTitle
+D_801F4B58 s_menuNamePortraitWin  # [code] -> windows[1], menuName_drawPortrait
+D_801F4B5C s_menuNameCommandWin  # [code] -> windows[2], menuName_drawCommands
+D_801F4B60 s_menuNameHelpWin  # [code] -> windows[3], menuName_drawHelp
+D_801F4B64 s_menuNameNameWin  # [code] -> windows[4], menuName_drawNameWindow
+D_801F4B68 s_menuNameClutRect  # [code] VRAM (0,256) 128x1, saved then loaded with the portrait CLUT by menuName_loadPortrait
+D_801F4B70 s_menuNamePortraitRect  # [code] VRAM (960,432) 16x46, the portrait pixels
+D_801F4B78 s_menuNameClutRestoreRect  # [code] same CLUT row, restored by menuName_restoreClut
+D_801F4B80 s_menuNameIds  # [code] menu argument -> name id table (menuName_getNameId)
+D_801F4BB0 s_menuNameCharIdx  # [code] name id -> character index table (menuName_getCharIdx)
+D_801EE0B4 s_menuNamePortraits  # [code] 0x6C0-byte portrait images (CLUT + pixels) by func_80028954 index, menuName_loadPortrait
+# FIELDS include/ovl_3a.h NameEntry: unk0=focus,unk1=menuCursor,unk2=charSet,unk3=gridCursor,unk4=len,unk5=gridSize,unk7=name,unk11=defaultName,unk1C=charSets,unk24=startDefault,unk28=savedClut,unk12C=nameId,unk130=charIdx,unk134=windows
+
+## ovl_38: ovl_38 (status menu)
+func_801EE440 menuStatus_init  # [code] main-menu entry Status (file 0x38 in main's D_8006E510) init of main's D_8006E530/D_8006E5B0 tables; text bank, first character, window, primitive buffers
+func_801EF69C menuStatus_update  # [code] Status entry update of main's D_8006E530 (per frame), input, draw, animate
+func_801EF6CC menuStatus_exit  # [code] Status entry exit of main's D_8006E530, stores the shown party slot in D_80077E53, restores the help flag
+func_801EF708 menuStatus_input  # [code] runs the D_801EFBA4 input handler of the current state
+func_801EE568 menuStatus_inputMain  # [code] state 1 - Circle back to the main menu (func_800361CC(0)), Cross opens the ability pages, R1/L1 next/previous character
+func_801EF8A0 menuStatus_inputAbilities  # [code] state 2 - Circle closes the ability pages, Cross opens the next one
+func_801EF760 menuStatus_draw  # [code] swaps the primitive buffers and calls every window drawer
+func_801EF80C menuStatus_updateAnims  # [code] steps the page windows' slide animations (func_800631AC) and the character header
+func_801EF904 menuStatus_drawFrame  # [code] the main window with its divider lines
+func_801EE650 menuStatus_drawHeader  # [code] character header, magic-stone gauge (Character.stones/maxStones) and status icons
+func_801EE740 menuStatus_drawCommands  # [code] the four battle commands of the character (names from the copied command table) under label D_8007042C
+func_801EE9E8 menuStatus_drawStats  # [code] Speed/Strength/Magic/Spirit and Attack/Defense/Evade/Magic Def/Magic Eva labels and values
+func_801EED18 menuStatus_drawExp  # [code] Trance gauge (when D_8007AF00 is set), EXP and Next (g_levelExp)
+func_801EEF00 menuStatus_drawEquipment  # [code] the five equipment slots - slot icon, item icon and item name
+func_801EF0A0 menuStatus_drawAbilityPages  # [code] the open ability page windows, 8 rows each, with the page number on the top one
+func_801EF258 menuStatus_drawAbilityRow  # [code] one ability row - icon, name (action table or D_8006D128 support) and AP gauge (func_80027170)
+func_801EF494 menuStatus_openAbilityPage  # [code] Cross - slides in the next ability page window (D_801F1134, then func_801EFA80), or closes them all after the last
+func_801EF9D4 menuStatus_closeAbilityPages  # [code] slides out the open page windows (D_801F114C, the last one calls func_801EFABC)
+func_801EFA80 menuStatus_onPageOpened  # [code] tween callback of D_801F1134 - state 2, the previous page loses its top flag, pagesOpen++
+func_801EFABC menuStatus_onPagesClosed  # [code] tween callback of D_801F114C[0] - state 1, clears the page flags
+func_801EFAF8 menuStatus_onMemberSwitched  # [code] callback given to func_80028CF8 - state 1 once the character header is in place
+func_801EF568 menuStatus_setMember  # [code] shows party slot (func_80028D08 slides the header in direction dir) and counts its learnable abilities and pages
+func_801EFB08 menuStatus_updateHelp  # [code] help-text callback (func_8003556C) - text 0 (status ailments) and its string/value arguments
+D_801F120C s_menuStatus  # [code] status menu state, StatusMenu in include/ovl_38.h
+D_801EFBA4 s_menuStatusInput  # [code] input handler per StatusMenu.state (NULL, inputMain, inputPages, NULL)
+D_801EFBB4 s_menuStatusCmds  # [code] the four command ids drawn by menuStatus_drawCommands (Attack, two per character, Item)
+D_801EFBB8 s_menuStatusCharCmds  # [code] the two character-specific command ids per command set (Character.unk34.b.row)
+D_801EFBE0 s_menuStatusBaseStatText  # [code] text ids of Speed, Strength, Magic, Spirit
+D_801EFBF0 s_menuStatusBattleStatText  # [code] text ids of Attack, Defense, Evade, Magic Def, Magic Eva
+D_801EFC08 s_menuStatusActionAbilities  # [code] action ability table read by menuStatus_drawAbilityRow for ids below 0xC0
+D_801F0808 s_menuStatusActionNames  # [code] action ability name pool (s_menuStatusActionAbilities.unkE offsets)
+D_801F0E50 s_menuStatusSupportNames  # [code] support ability name pool (D_8006D128.unk2 offsets)
+D_801EFC04 s_menuStatusPageLabel  # [code] page number label, its digit patched to '1'+page by menuStatus_drawAbilityPages
+D_801F10E4 s_menuStatusPageRects  # [code] page window positions, copied into pageWins by menuStatus_openAbilityPage
+D_801F1134 s_menuStatusPageOpenTween  # [code] page window slide-in, callback menuStatus_onPageOpened
+D_801F114C s_menuStatusPageCloseTweens  # [code] page window slide-outs, the first with callback menuStatus_onPagesClosed
+D_801EDF04 s_menuStatusCmdTable  # [code] battle command table (name offset first), copied to the stack by menuStatus_drawCommands
+D_801EE144 s_menuStatusCmdNames  # [code] battle command names ("Attack", "Steal", "Jump"...) indexed by s_menuStatusCmdTable
+# FIELDS include/ovl_38.h StatusMenu: unk0=state,unk1=pagesOpen,unk2=slot,unk3=pageCount,unk4=abilityCount,unk5=savedHelp,unk8=win,unk10=pageOpen,unk16=pageOnTop,unk1C=pageWins,unk7C=prim,unk80=primBufs,unk88=primFree,unk8C=header; TextWin renamed TextTween
+
+## ovl_34: ovl_34 (config menu)
+func_801EEA1C menuConfig_init  # [code] main-menu entry Config (file 0x34 in main's D_8006E510) init of main's D_8006E530/D_8006E5B0; text bank, the 13-row list, primitive buffers, the controller-port character rows
+func_801F00A8 menuConfig_update  # [code] Config entry update of main's D_8006E530 (per frame), input, draw, animate
+func_801F00D8 menuConfig_exit  # [code] Config entry exit of main's D_8006E530, clears the help callback
+func_801F00F8 menuConfig_input  # [code] list input, or the custom window's handler from s_menuConfigSubInput
+func_801EECB4 menuConfig_inputList  # [code] Circle back to the main menu (func_800361CC(0)), Cross opens a custom window, list up/down/page, Left/Right set the row's option
+func_801EED9C menuConfig_inputPadMap  # [code] button mapping window - Start closes it (func_8002397C), Up/Down pick an action, a button press assigns that button
+func_801EEEF8 menuConfig_inputBattleControl  # [code] controller port window - Circle closes it, Left/Right set the character's port bit in the config word, Up/Down pick a character
+func_801EF938 menuConfig_openSubWindow  # [code] Cross on Controller or Battle Control set to Custom - slides in the two custom windows
+func_801F1250 menuConfig_closeSubWindow  # [code] tween callback of the custom windows' slide-out - editing = 0
+func_801EF50C menuConfig_setOption  # [code] Left/Right on a row - writes the config word bitfield (sliders start a knob move), checks vibration support, plays SE_CURSOR and calls func_8002397C when changed
+func_801EFA54 menuConfig_stepSlider  # [code] after 5 frames of knob movement adds +/-1 to the battle speed or message speed field
+func_801F0184 menuConfig_draw  # [code] swaps the primitive buffers, draws the label and rule, the list, custom windows, scroll arrows and cursor
+func_801F025C menuConfig_updateAnims  # [code] help text, slider or window tweens, list scroll and the vibration test
+func_801EEB68 menuConfig_drawRows  # [code] the visible rows (menuConfig_drawRow), plus the incoming ones during a page scroll
+func_801F049C menuConfig_drawScrollRows  # [code] rows scrolling in during a page scroll (menuConfig_getScrollView)
+func_801F0550 menuConfig_drawRow  # [code] divider and the row's drawer from s_menuConfigRowDraw
+func_801F05D0 menuConfig_drawSoundRow  # [code] row 0 Sound - Stereo/Mono from config bit 0
+func_801F0640 menuConfig_drawControllerRow  # [code] row 1 Controller - Normal/Custom from config bit 1
+func_801F06B4 menuConfig_drawCursorRow  # [code] row 2 Cursor - Initial/Memory from config bit 2
+func_801F0728 menuConfig_drawAtbRow  # [code] row 3 ATB - Active/Wait from config bit 3
+func_801F079C menuConfig_drawCameraRow  # [code] row 4 Battle Camera - Auto/Fixed from config bit 4
+func_801F0810 menuConfig_drawBattleControlRow  # [code] row 5 Battle Control - Normal/Custom from config bit 5
+func_801F0884 menuConfig_drawMovementRow  # [code] row 6 Movement - Walk/Run from config bit 6
+func_801F08F8 menuConfig_drawBattleSpeedRow  # [code] row 7 Battle Speed slider (config bits 8-10)
+func_801F0974 menuConfig_drawMessageSpeedRow  # [code] row 8 Field Message slider (config bits 14-16)
+func_801F09F0 menuConfig_drawHereIconRow  # [code] row 9 HERE Icon - ON/OFF from config bit 17
+func_801F0A64 menuConfig_drawWindowColorRow  # [code] row 10 Window Color - Normal/Classic from config bit 18
+func_801F0AD8 menuConfig_drawTargetWindowRow  # [code] row 11 Target Window - Auto/Always from config bit 19
+func_801F0B4C menuConfig_drawVibrationRow  # [code] row 12 Vibration - ON/OFF from config bit 7, greyed out without a vibration pad
+func_801F0D20 menuConfig_drawChoice  # [code] the row's two option names, the unselected one greyed
+func_801F0DD8 menuConfig_drawSliderRow  # [code] Slow/Fast labels and the gauge with the knob at value (plus the moving offset)
+func_801EFC20 menuConfig_drawSlider  # [code] slider gauge - end caps, DR_TWIN-repeated middle and 3 LINE_F2 fill lines (same code as ovl_39 0x801F7FD4)
+func_801EF110 menuConfig_drawPadMap  # [code] button mapping window - per action the mapped button, arrow, button and action name (GameState.unk28 nibbles)
+func_801EF2B4 menuConfig_drawBattleControl  # [code] controller port window - character names and port 1/port 2 icons
+func_801F0BE8 menuConfig_drawSubWindows  # [code] frames of the two custom windows and the button mapping or port window
+func_801EF3F8 menuConfig_drawCursor  # [code] the hand at the list row, and at the custom window row while editing (blinking list hand)
+func_801F0C78 menuConfig_drawScrollArrows  # [code] up/down arrow sprites 0xB8/0xB9, blinking while there is more to scroll
+func_801F0F48 menuConfig_drawSmallText  # [code] func_80029D60 into the menu's primitive buffer
+func_801F0F94 menuConfig_drawIcon  # [code] func_80027834 icon into the menu's primitive buffer
+func_801F0FE8 menuConfig_drawText  # [code] text id via func_8002920C into the menu's primitive buffer
+func_801EFB38 menuConfig_updateHelp  # [code] help-text callback - row help with its option names, or the custom window's help
+func_801EFF58 menuConfig_getListView  # [code] visible rows/first row/y offset of the list, with scroll animation (like main's menuList_getView)
+func_801F1334 menuConfig_getScrollView  # [code] rows scrolling in during a page scroll
+func_801F02CC menuConfig_pageUp  # [code] BTN_L1 - starts a page scroll up (flag 7), same code as ovl_39 0x801F8C34
+func_801F0380 menuConfig_pageDown  # [code] BTN_R1 - starts a page scroll down (flag 5), same code as ovl_39 0x801F8CE8
+func_801F043C menuConfig_getScrollClip  # [code] clip RECT shifted by the list's scroll offset, same code as ovl_39 0x801F8BD4
+func_801F1074 menuConfig_stepWindows  # [code] steps the custom windows' tweens (func_800631AC)
+func_801F10C8 menuConfig_stepScroll  # [code] advances the list's row scroll (4 px) or page scroll (9 px)
+func_801F1168 menuConfig_stepRumble  # [code] ends the vibration test after 9 frames (menuConfig_setRumble(0))
+func_801F11C4 menuConfig_setPadButton  # [code] maps button v to action slot, swapping with the slot that had it (GameState.unk28 nibbles)
+func_801F125C menuConfig_isWindowMoving  # [code] custom window tween still running
+func_801F126C menuConfig_hasVibration  # [code] a pad of type 7 (analog) or in state 6 is connected
+func_801F12D0 menuConfig_setRumble  # [code] sets both pads' actuator bytes (D_800739B0) on or off
+D_801F1558 s_menuConfig  # [code] config menu state, ConfigMenu in include/ovl_34.h
+D_801F13F0 s_menuConfigRowText  # [code] per row - title and option text ids
+D_801F1424 s_menuConfigSubInput  # [code] input handler per row while a custom window is open (rows 1 and 5)
+D_801F14BC s_menuConfigRowDraw  # [code] row drawers called by menuConfig_drawRow
+D_801F1474 s_menuConfigPadBits  # [code] pad bit per button mapping slot
+D_801F14FC s_menuConfigPadActions  # [code] action text id and button sprite per mapping slot
+D_801F14F0 s_menuConfigSlowText  # [code] text id of the slider's left label "Slow"
+D_801F14F4 s_menuConfigFastText  # [code] text id of the slider's right label "Fast"
+D_801F1524 s_menuConfigSubOpen  # [code] slide-in TweenDef of the custom windows (menuConfig_openSubWindow)
+D_801F1534 s_menuConfigSubRects  # [code] the custom windows' RECTs
+D_801F1464 s_menuConfigPadMapClose  # [code] slide-out TweenDef of the button mapping window, then menuConfig_closeSubWindow
+D_801F14AC s_menuConfigBattleControlClose  # [code] slide-out TweenDef of the port window, then menuConfig_closeSubWindow
+D_801F1544 s_menuConfigSliderTexWindow  # [code] texture window of the gauge (menuConfig_drawSlider)
+D_801F154C s_menuConfigSliderColors  # [code] colours of the gauge's 3 fill lines
+# FIELDS include/ovl_34.h ConfigMenu: unk0=subCursor,unk1=charCount,unk2=editing,unk3=rumbleTest,unk4=sliderDir,unk5=sliderTicks,unk6=rumbleTicks,unk8=charPortBit,unk11=charIdx,unk1C=wins,unk3C=list,unk4C=prim,unk50=primBufs,unk58=primFree; ScrollPos: unk0=rows,unk1=first,unk2=y; ConfigPadEntry: unk0=text,unk1=icon; ConfigBits: b0=soundMono,b1=padCustom,b2=cursorMemory,b3=atbWait,b4=battleCameraFixed,b5=battleControlCustom,b6=movementRun,b7=vibration,b8=battleSpeed,b14=messageSpeed,b17=hereIconOff,b18=windowClassic,b19=targetWindowAlways,b20=charPort
+
+## ovl_37: ovl_37 (items menu)
+func_801F0C18 menuItem_init  # [code] main-menu entry Item (file 0x37 in main's D_8006E510) init of main's D_8006E530/D_8006E5B0; text bank, key item list, the two lists, windows, key item picture
+func_801F2160 menuItem_update  # [code] Item entry update of main's D_8006E530 (per frame), input, draw, animate
+func_801F2190 menuItem_exit  # [code] Item entry exit of main's D_8006E530
+func_801F21E8 menuItem_input  # [code] runs the D_801F307C handler of the current state
+func_801F0D18 menuItem_inputTabs  # [code] state 1 - Circle back to the main menu, Cross enters the list (Arrange opens the Auto/Manual window), Left/Right pick Use/Arrange/Key
+func_801F22C8 menuItem_inputList  # [code] state 2 - Circle back to the top row, Cross selects the entry (menuItem_selectRow), list movement
+func_801F0E10 menuItem_inputTarget  # [code] state 3 - Circle closes the character window, Cross uses the item on the character, Up/Down pick a party member
+func_801F23C4 menuItem_inputArrange  # [code] state 4 - Auto sorts the inventory (menuItem_sortAuto), Manual enters state 5, Circle closes the window
+func_801F0F50 menuItem_inputManualArrange  # [code] state 5 - Cross picks a slot, then swaps it with the next one picked; Circle back to the Auto/Manual window
+func_801F2488 menuItem_inputKeyItem  # [code] state 6 - Circle or Cross closes the key item view
+func_801F24DC menuItem_selectRow  # [code] calls the current list's select function on the entry under the cursor
+func_801F10C4 menuItem_selectItem  # [code] select function of the item list - usable items (D_80069018.unkF bit 0) are used at once or open the character window
+func_801F253C menuItem_selectKeyItem  # [code] select function of the key item list - opens the key item view
+func_801F2590 menuItem_useOnTarget  # [code] applies the item to the party member (func_800654F8), SE_USE_ITEM and item_remove on success
+func_801F1778 menuItem_openTarget  # [code] slides the character window in on the side away from the cursor and picks the first party member
+func_801F2C58 menuItem_closeTarget  # [code] slides the character window out (D_801F3120)
+func_801F2CC4 menuItem_onTargetOpened  # [code] tween callback of the character window slide-in (D_801F30E0) - state 3
+func_801F2CD4 menuItem_onTargetClosed  # [code] tween callback of the slide-out (D_801F3120) - state 2, window hidden
+func_801F187C menuItem_sortAuto  # [code] Auto arrange - packs the inventory and sorts it by D_80069018.unk10 then id
+func_801F2CEC menuItem_collectKeyItems  # [code] collects the key item ids the party has (func_800281A4) into keyItems/keyCount
+func_801F2D58 menuItem_openArrange  # [code] opens the Auto/Manual window (win_* callbacks below)
+func_801F2E18 menuItem_closeArrange  # [code] win_close of the Auto/Manual window
+func_801F2E40 menuItem_drawArrangeWindow  # [code] content callback of the Auto/Manual window - text 3 "Auto", 4 "Manual"
+func_801F2EBC menuItem_onArrangeOpened  # [code] on-opened callback of the Auto/Manual window - state 4
+func_801F2ECC menuItem_onArrangeClosed  # [code] on-closed callback of the Auto/Manual window - state 1
+func_801F2F38 menuItem_showKeyItem  # [code] starts the key item view sliding in (keyViewPhase 1), state 0
+func_801F2FA0 menuItem_hideKeyItem  # [code] starts the key item view sliding out (keyViewPhase 3)
+func_801F1D88 menuItem_updateKeyItemAnim  # [code] moves the key item view by the D_801F3064 deltas, state 6 when in, state 2 when out
+func_801F1E88 menuItem_drawKeyItem  # [code] key item name, description and its picture sprites
+func_801F2240 menuItem_draw  # [code] calls the top row, list, character window, key item view and cursor drawers
+func_801F2280 menuItem_updateAnims  # [code] help text, key item view, "Kweeeh!" timer, character window tween and list scrolling
+func_801F262C menuItem_drawTabs  # [code] top row window - "Use", "Arrange", "Key"
+func_801F11E4 menuItem_drawList  # [code] list window - labels, visible rows (the list's drawRow) and the rows scrolling in
+func_801F26E0 menuItem_drawScrollRows  # [code] rows scrolling in during a page scroll (func_8002F344)
+func_801F2870 menuItem_drawRow  # [code] drawRow of the item list - name, icon and count, greyed when not usable
+func_801F29D0 menuItem_drawKeyRow  # [code] drawRow of the key item list - name, blinking new marker when func_800281D0 is clear
+func_801F27A0 menuItem_drawTargetWindow  # [code] character window - the party members (func_80026EA0)
+func_801F13F8 menuItem_drawCursor  # [code] the hands for the top row, Auto/Manual, the list (two columns), the character window and the manual swap slot
+func_801F1B78 menuItem_updateHelp  # [code] help text per state - top row help, item or key item description, "Select character.", Auto/Manual help
+func_801F2FC4 menuItem_getSlot  # [code] entry index under the list cursor (two per row), allowing for a running scroll
+func_801F2EDC menuItem_loadImages  # [code] LoadImage of D_801EDFD8 (key item view CLUT and picture)
+func_801F1A7C menuItem_callChocobo  # [code] called by main's item formula (func_800654F8, cmd 0x121) - on the world map with event var 0xBF set and 0xB5 clear it calls ovl_0c func_800B8124/func_800B81A0, sets 0xB5 and shows text 0xB "Kweeeh!"
+func_801F2B20 menuItem_onKwehOpened  # [code] on-opened callback of the "Kweeeh!" window - func_8002F514(0x44A) on the world map
+func_801F2B58 menuItem_drawKweh  # [code] content callback of the "Kweeeh!" window - centred text 0xB
+func_801F2BC0 menuItem_stepKweh  # [code] after 0x60 frames of the "Kweeeh!" window closes the whole menu (func_800362C8)
+D_801FAB78 s_menuItem  # [code] items menu state, ItemMenu in include/ovl_37.h
+D_801F3040 s_menuItemTabs  # [code] per top-row command - select function, row drawer and MenuList
+D_801F307C s_menuItemInput  # [code] input handler per ItemMenu.state
+D_801F3064 s_menuItemKeyItemSlide  # [code] x deltas of the key item view slide (22 in, 8 out)
+D_801F30E0 s_menuItemTargetOpen  # [code] character window slide-in tweens, by side
+D_801F3120 s_menuItemTargetClose  # [code] character window slide-out tweens, by side
+D_801F3098 s_menuItemTabText  # [code] text ids of the top row
+D_801F309C s_menuItemTabX  # [code] x of each top-row name
+D_801F30AC s_menuItemTabCursorX  # [code] hand x per top-row entry
+D_801F30A8 s_menuItemListRect  # [code] -> ItemMenu.listRect
+D_801F30B8 s_menuItemArrangeRect  # [code] RECT of the Auto/Manual window
+D_801F3148 s_menuItemKwehRect  # [code] RECT of the "Kweeeh!" window
+D_801F3150 s_menuItemArrangeHelpBounds  # [code] help area while the Auto/Manual window is up (func_80035580)
+D_801F3158 s_menuItemKeyClutRect  # [code] VRAM (960,432) 16x2, CLUT of the key item picture
+D_801F3160 s_menuItemKeyImageRect  # [code] VRAM (896,384) 44x128, the key item picture
+D_801EDFD8 s_menuItemKeyImage  # [code] key item picture CLUT and pixels (menuItem_loadImages)
+D_801F3168 s_menuItemHelp  # [code] item help strings (D_80069018.unk2 offsets)
+D_801F651C s_menuItemKeyHelp  # [code] key item help strings (D_8006B374.unk2 offsets)
+D_801F79F8 s_menuItemKeyDesc  # [code] key item descriptions (D_8006B374.unk6 offsets)
+D_801FA958 s_menuItemScrollClip  # [code] clip RECT of the rows scrolling in (func_8002F40C)
+D_801FA968 s_menuItemSortBuf  # [code] inventory sort buffer (menuItem_sortAuto)
+D_801FAB68 s_menuItemSortTmp  # [code] swap temp of menuItem_sortAuto
+# FIELDS include/ovl_37.h ItemMenu: unk0=tab,unk1=state,unk2=slot,unk3=targetKind,unk4=targetMode,unk5=arrangeCursor,unk6=swapFrom,unk7=swapPicked,unk8=charWinOpen,unkC=itemList,unk1C=keyList,unk2C=cmdRect,unk34=listRect,unk3C=charWin,unk4C=popup,unk50=popupTimer,unk54=keyView,unk55=keyViewPhase,unk56=keyViewId,unk57=keyViewStep,unk58=keyViewX,unk60=keyItems,unkB0=keyCount; ItemList: unk0=select,unk4=drawRow,unk8=list
+
+## ovl_33: ovl_33 (Ability and Equip screens)
+func_801EE7C0 menuAbility_init  # [runtime] docs/runtime-findings.md field/menu campaign, screen 2 entry of g_menuScreensField at menu_ability, high
+func_801F05FC menuAbility_update  # [runtime] docs/runtime-findings.md field/menu campaign, high
+func_801F062C menuAbility_exit  # [runtime] docs/runtime-findings.md field/menu campaign, high
+func_801F0664 menuAbility_input  # [runtime] docs/runtime-findings.md field/menu campaign, high
+func_801EEA50 menuAbility_inputTabs  # [runtime] docs/runtime-findings.md field/menu campaign m_abil, Square switches to Equip, high
+func_801F070C menuAbility_inputList  # [runtime] docs/runtime-findings.md field/menu campaign ab_sup, high
+func_801EEBE0 menuAbility_inputTarget  # [runtime] docs/runtime-findings.md field/menu campaign, medium (code)
+func_801EFE2C menuAbility_toggleSupport  # [runtime] docs/runtime-findings.md field/menu campaign ab_sup, stones 37 to 42, high
+func_801EFCB4 menuAbility_selectAction  # [runtime] docs/runtime-findings.md field/menu campaign, medium (code)
+func_801EED10 menuAbility_useOnTarget  # [runtime] docs/runtime-findings.md field/menu campaign, medium (code)
+func_801F0DDC menuAbility_closeTarget  # [runtime] docs/runtime-findings.md field/menu campaign, medium (code)
+func_801F0E3C menuAbility_onTargetOpened  # [runtime] docs/runtime-findings.md field/menu campaign, medium (code)
+func_801F0E4C menuAbility_onTargetClosed  # [runtime] docs/runtime-findings.md field/menu campaign, medium (code)
+func_801EFB8C menuAbility_getActionState  # [runtime] docs/runtime-findings.md field/menu campaign, 1584 calls in m_abil, medium-high
+func_801F0CC4 menuAbility_getSupportState  # [runtime] docs/runtime-findings.md field/menu campaign, 4 = equipped, medium-high
+func_801F1018 menuAbility_getMpCost  # [runtime] docs/runtime-findings.md field/menu campaign, medium-high
+func_801EF900 menuAbility_setMember  # [runtime] docs/runtime-findings.md field/menu campaign m_abil, medium
+func_801F0ED4 menuAbility_onMemberSwitched  # [runtime] docs/runtime-findings.md field/menu campaign, medium
+func_801F1048 menuAbility_initActionCursor  # [runtime] docs/runtime-findings.md field/menu campaign, medium
+func_801F0410 menuAbility_initSupportCursor  # [runtime] docs/runtime-findings.md field/menu campaign, medium
+func_801F0EE4 menuAbility_loadImages  # [runtime] docs/runtime-findings.md field/menu campaign, medium
+func_801F07DC menuAbility_drawTabs  # [runtime] docs/runtime-findings.md field/menu campaign ablation, high
+func_801EEEA8 menuAbility_drawPlayer  # [runtime] docs/runtime-findings.md field/menu campaign ablation, high
+func_801EEFDC menuAbility_drawInfo  # [runtime] docs/runtime-findings.md field/menu campaign ablation, high
+func_801EF270 menuAbility_drawCommand  # [runtime] docs/runtime-findings.md field/menu campaign ablation, high
+func_801EF3A8 menuAbility_drawList  # [runtime] docs/runtime-findings.md field/menu campaign ablation, high
+func_801F0934 menuAbility_drawRow  # [runtime] docs/runtime-findings.md field/menu campaign ablation, high
+func_801EF644 menuAbility_drawCursor  # [runtime] docs/runtime-findings.md field/menu campaign ablation, high
+func_801F06BC menuAbility_draw  # [runtime] docs/runtime-findings.md field/menu campaign, medium-high
+func_801F09CC menuAbility_drawActionRow  # [runtime] docs/runtime-findings.md field/menu campaign, m_abil only, medium-high
+func_801F0AB8 menuAbility_drawSupportRow  # [runtime] docs/runtime-findings.md field/menu campaign, ab_sup only, medium-high
+func_801EF560 menuAbility_drawTargetWindow  # [runtime] docs/runtime-findings.md field/menu campaign, medium-high
+func_801EE978 menuAbility_updateAnims  # [runtime] docs/runtime-findings.md field/menu campaign, medium-high
+func_801F0024 menuAbility_updateHelp  # [code] help text per state - tab help with the reason a tab is greyed, ability help, target help
+func_801F0890 menuAbility_drawScrollRows  # [code] rows scrolling in during a page scroll (func_8002F344)
+func_801F0C10 menuAbility_findCommand  # [code] which of the character's two commands (D_801F33D0) lists the action ability, index into D_801F6FEC
+func_801F0E64 menuAbility_canTargetAll  # [code] action kind 3-5 and at least two party members - the target window can toggle all
+func_801F0F38 menuAbility_drawIcon  # [code] func_80027710 of menuAbility_getIcon(i)
+func_801F0F90 menuAbility_getIcon  # [code] &D_801F3494[i]
+func_801F0FA4 menuAbility_getSlot  # [code] entry index under the list cursor, allowing for a running scroll (as ovl_37 menuItem_getSlot)
+func_801F1150 menuEquip_init  # [runtime] docs/runtime-findings.md field/menu campaign, screen 3 entry at menu_equip, high
+func_801F2C0C menuEquip_update  # [runtime] docs/runtime-findings.md field/menu campaign, high
+func_801F2C3C menuEquip_exit  # [runtime] docs/runtime-findings.md field/menu campaign, high
+func_801F2C78 menuEquip_input  # [runtime] docs/runtime-findings.md field/menu campaign, high
+func_801F12C8 menuEquip_inputTabs  # [runtime] docs/runtime-findings.md field/menu campaign m_equip, high
+func_801F1454 menuEquip_inputSlot  # [runtime] docs/runtime-findings.md field/menu campaign e_eq, high
+func_801F2DB4 menuEquip_inputList  # [runtime] docs/runtime-findings.md field/menu campaign e_eq, high
+func_801F2894 menuEquip_buildItemList  # [runtime] docs/runtime-findings.md field/menu campaign e_eq, high
+func_801F301C menuEquip_openList  # [runtime] docs/runtime-findings.md field/menu campaign e_eq, high
+func_801F30B0 menuEquip_onListOpened  # [runtime] docs/runtime-findings.md field/menu campaign e_eq, high
+func_801F30D8 menuEquip_equipSelected  # [runtime] docs/runtime-findings.md field/menu campaign e_eq, weapon 8 to 7, high
+func_801F32E0 menuEquip_applyEquip  # [runtime] docs/runtime-findings.md field/menu campaign e_eq, high
+func_801F26C4 menuEquip_dropUnlearnedSupport  # [runtime] docs/runtime-findings.md field/menu campaign e_eq, high
+func_801F307C menuEquip_closeList  # [runtime] docs/runtime-findings.md field/menu campaign e_eq, high
+func_801F30C0 menuEquip_onListClosed  # [runtime] docs/runtime-findings.md field/menu campaign e_eq, high
+func_801F24EC menuEquip_optimize  # [runtime] docs/runtime-findings.md field/menu campaign, medium (code)
+func_801F31B0 menuEquip_removeSlot  # [runtime] docs/runtime-findings.md field/menu campaign, medium (code)
+func_801F3278 menuEquip_setMember  # [runtime] docs/runtime-findings.md field/menu campaign, medium
+func_801F3264 menuEquip_onMemberSwitched  # [runtime] docs/runtime-findings.md field/menu campaign, medium
+func_801F2E34 menuEquip_drawTabs  # [runtime] docs/runtime-findings.md field/menu campaign ablation, high
+func_801F15E0 menuEquip_drawInfo  # [runtime] docs/runtime-findings.md field/menu campaign ablation, high
+func_801F1A94 menuEquip_drawAbilities  # [runtime] docs/runtime-findings.md field/menu campaign ablation, high
+func_801F1F08 menuEquip_drawList  # [runtime] docs/runtime-findings.md field/menu campaign ablation, high
+func_801F239C menuEquip_drawCursor  # [runtime] docs/runtime-findings.md field/menu campaign ablation, high
+func_801F20A0 menuEquip_drawStatCompare  # [runtime] docs/runtime-findings.md field/menu campaign ablation, high
+func_801F2F3C menuEquip_drawListRow  # [runtime] docs/runtime-findings.md field/menu campaign ablation, high
+func_801F189C menuEquip_drawEquipment  # [runtime] docs/runtime-findings.md field/menu campaign, medium-high
+func_801F2CD0 menuEquip_draw  # [runtime] docs/runtime-findings.md field/menu campaign, medium
+func_801F3344 menuEquip_drawStatLabel  # [runtime] docs/runtime-findings.md field/menu campaign, medium
+func_801F2AB4 menuEquip_updateHelp  # [code] help text per state - tab help, equipped item's description or "Nothing is equipped.", list item's description
+func_801F2D18 menuEquip_updateAnims  # [code] help, list scrolling, list window tween, member header
+func_801F2ED4 menuEquip_drawScrollRows  # [code] rows scrolling in during a page scroll (func_8002F344)
+D_801FBF84 s_menuAbility  # [runtime] docs/runtime-findings.md field/menu campaign, high
+D_801FC840 s_menuEquip  # [runtime] docs/runtime-findings.md field/menu campaign, high
+D_801EDF04 g_abilityMenuText  # [code] the text bank menuAbility_init passes to text_setBank ("Use", "Equip", ...)
+D_801EE648 g_equipMenuText  # [code] the text bank menuEquip_init passes to text_setBank ("Equip", "Optimize", "Off", ...)
+D_801F33A8 s_menuAbilityInput  # [code] input handler per AbilityMenu.state
+D_801F7420 s_menuEquipInput  # [code] input handler per EquipMenu.state
+D_801F34EC s_menuAbilityActionTable  # [code] action ability table (name offset +0xE, MP +0xA, flags +0xB) of the Ability screen
+D_801F40EC s_menuAbilityActionNames  # [code] action ability names (s_menuAbilityActionTable.unkE offsets)
+D_801F4734 s_menuAbilityActionHelp  # [code] action ability help strings
+D_801F6240 s_menuAbilityActionHelpOfs  # [code] help string offsets per action ability
+D_801F6540 s_menuAbilitySupportNames  # [code] support ability names (D_8006D128.unk2 offsets)
+D_801F67D4 s_menuAbilitySupportHelp  # [code] support ability help strings (D_8006D128 +4 offsets)
+D_801F6FEC s_menuAbilityCmds  # [code] battle command table copy (name, kind, ability count, first ability)
+D_801F722C s_menuAbilityCmdNames  # [code] battle command names (MenuCmd.name offsets)
+D_801F734C s_menuAbilityCmdAbilities  # [code] ability ids listed by the commands (MenuCmd.first)
+D_801F33D0 s_menuAbilityCharCmds  # [code] the two commands of each command set (Character.unk34.b.row)
+D_801F33C0 s_menuAbilityTabX  # [code] x of each tab name
+D_801F33C8 s_menuAbilityTabCursorX  # [code] hand x per tab
+D_801F740C s_menuAbilityStateColor  # [code] text colour per ability state
+D_801F3418 s_menuAbilityTargetOpenR  # [code] target window slide-in (window on the right)
+D_801F3428 s_menuAbilityTargetOpenL  # [code] target window slide-in (window on the left)
+D_801F3458 s_menuAbilityTargetCloseR  # [code] target window slide-out
+D_801F3468 s_menuAbilityTargetCloseL  # [code] target window slide-out
+D_801F3478 s_menuAbilityHelpArg  # [code] string argument 0 of the tab help text
+D_801FBD84 s_menuAbilityHelpBuf  # [code] tab help text built by menuAbility_updateHelp
+D_801F3484 s_menuAbilityClutRect  # [code] VRAM (960,503) 16x9, menuAbility_loadImages
+D_801F348C s_menuAbilityImageRect  # [code] VRAM (960,432) 40x40, menuAbility_loadImages
+D_801EE164 s_menuAbilityImage  # [code] CLUTs and icon pixels loaded by menuAbility_loadImages
+D_801F3494 s_menuAbilityIcons  # [code] Icon table of menuAbility_getIcon (equipped-support animation, gems)
+D_801F7430 s_menuEquipTabX  # [code] x of each tab name
+D_801F893C s_menuEquipTabCursorX  # [code] hand x per tab
+D_801F743C s_menuEquipActionTable  # [code] action ability table of the Equip screen (same layout as s_menuAbilityActionTable)
+D_801F803C s_menuEquipActionNames  # [code] action ability names of the Equip screen
+D_801F8684 s_menuEquipSupportNames  # [code] support ability names of the Equip screen
+D_801F8918 s_menuEquipSlotLabel  # [code] label index (D_800703FC) of the item list title per equipment slot
+D_801F892C s_menuEquipArrow  # [code] arrow between old and new value in menuEquip_drawStatCompare
+D_801F8930 s_menuEquipBaseStatText  # [code] text ids of Speed/Strength/Magic/Spirit
+D_801F8934 s_menuEquipBattleStatText  # [code] text ids of Attack/Defense/Evade/Magic Def/Magic Eva
+D_801F8948 s_menuEquipOptSlotMask  # [code] D_80069018.unkF bit per equipment slot, menuEquip_optimize
+D_801F8950 s_menuEquipOptCharMask  # [code] D_80069018.unk6 bit per character type, menuEquip_optimize
+D_801F8968 s_menuEquipCharMask  # [code] D_80069018.unk6 bit per character type, menuEquip_buildItemList
+D_801F8980 s_menuEquipSlotMask  # [code] D_80069018.unkF bit per equipment slot, menuEquip_buildItemList
+D_801F8988 s_menuEquipHelpArg  # [code] string argument 0 of the tab help text ("ABILITY")
+D_801F8990 s_menuEquipItemHelp  # [code] item help strings (D_80069018.unk2 offsets)
+D_801FBD54 s_menuEquipListOpen  # [code] item list window slide-in
+D_801FBD74 s_menuEquipListClose  # [code] item list window slide-out
+D_801FC700 s_menuEquipTaught  # [code] per support ability, 1 = an equipped item teaches it (menuEquip_dropUnlearnedSupport)
+D_801FC740 s_menuEquipHelpBuf  # [code] tab help text built by menuEquip_updateHelp
+# FIELDS include/ovl_33.h AbilityMenu (was EquipMenu, D_801FBF84): unk0=tab,unk1=state,unk2=slot,unk3=target,unk4=tabEnabled,unk8=lists,unk28=tabRect,unk30=playerRect,unk38=infoRect,unk40=commandRect,unk48=listRect,unk50=targetRect,unk58=targetWin,unk68=equipSlots,unk168=equipItems,unk668=actions,unk728=supports,unk768=targetWinOpen,unk769=actionCount,unk76A=supportCount,unk76B=animTick,unk76C=animFrame,unk76D=targetMode,unk76E=partySize,unk76F=canTargetAll,unk770=header
+# FIELDS include/ovl_33.h EquipMenu (was AbilityMenu, D_801FC840): unk0=tab,unk1=state,unk2=equipSlot,unk3=slot,unk4=list,unk14=tabRect,unk1C=infoRect,unk24=equipRect,unk2C=abilityRect,unk34=listRect,unk3C=items,unk23C=listWin,unk24C=header,unk25C=initStones,unk260=listOpen,unk261=savedState
+# FIELDS include/ovl_33.h EquipEntry renamed ActionRow: unk0=id,unk1=cmd; Unk801F6FEC renamed MenuCmd: unk0=name,unk6=kind,unk7=count,unk8=first
+
+## ovl_65: ovl_65 (battle end: rewards screen, game over)
+func_801EF5C8 battleEnd_exit  # [code] after battleEnd_main's loop - sets GameData flags, and when going back to the field (mode 0) fades the music, waits 30 vsyncs and calls func_80055210
+func_801EF6F8 battleEnd_loadDb  # [code] loads file 0x2713 (from the preload queue or the CD) to D_80067948 and db_registers it
+func_801EF814 battleEnd_unloadDb  # [code] db_unregister of the block loaded by battleEnd_loadDb
+func_801EF890 battleEnd_preloadScene  # [code] queues preload_add reads of the next scene's files (0x1000A/0x1000C, 0x2712/0x2714/0x2716, the area and field)
+func_801F0E30 rewards_init  # [code] init of menu type 7 (main's D_8006C9D4[7] = 0x801F0E30/0x801F0F04/0x801F0FC4), picks skip / screen / event by rewards_getKind
+func_801F0FC4 rewards_exit  # [code] exit of menu type 7, restores the VRAM row
+func_801F0FF4 rewards_requestClose  # [code] called by main's evt_execInstr opcode 0xE1 - starts the closing count of an event-driven rewards phase
+func_801F1004 rewards_getKind  # [code] 0 no screen, 1 rewards screen, 2 event (g_btlRewards.unkB) from GameData.unk56E
+func_801F1060 rewards_skip  # [code] kind 0 - not running, closing at once
+func_801F107C rewards_open  # [code] kind 1 - computes the rewards, sets up windows, counters, images and fades in
+func_801F114C rewards_waitEvent  # [code] kind 2 - neither running nor closing until rewards_requestClose
+func_801F11B8 rewards_updateState  # [code] runs the D_801F3B88 handler of the state, steps the windows; [runtime] docs/runtime-findings.md battle campaign 3, every frame of the victory run
+func_801F1160 rewards_draw  # [code] calls every window drawer; [runtime] docs/runtime-findings.md battle campaign 3, every frame of the victory run
+func_801F143C rewards_stateReceived  # [code] state 1 - "Received EXP and AP!" up, Cross gives the AP (rewards_giveAp) and starts the exp count; [runtime] docs/runtime-findings.md battle campaign 3 (first state of the victory run)
+func_801F14C0 rewards_stateExp  # [code] state 2 - exp and AP counting, level-up labels, learned-ability windows; Cross ends it (rewards_finishExp)
+func_801F1518 rewards_stateItems  # [code] state 3 - items and gil screen, Cross takes the items; [runtime] docs/runtime-findings.md battle campaign 3 (Items/Gil screen)
+func_801F076C rewards_stateGil  # [code] state 4 - gil counting into the party's gil, Cross finishes it, then the screen closes; [runtime] docs/runtime-findings.md battle campaign 3 (gil transfer)
+func_801F1774 rewards_onWindowsOpened  # [code] tween callback in D_801F3C4C - plays the state's sound, next state
+func_801F0978 rewards_onExpWindowsClosed  # [code] tween callback in D_801F3CDC - hides the exp screen's windows, closes the member windows, next state
+func_801F0878 rewards_finishExp  # [code] Cross in state 2 - adds the remaining exp, slides the exp windows out, shows the gil windows, fades to the items screen
+func_801F16F4 rewards_onItemsFaded  # [code] fade callback of rewards_finishExp - opens the items window and fades in
+func_801F160C rewards_takeItems  # [code] Cross in state 3 - adds the items (rewards_tryAddItems), next state, starts the gil count sound
+func_801F1688 rewards_finishGil  # [code] Cross in state 4 - adds the remaining gil at once and starts the closing wait
+func_801F17D4 rewards_onClosed  # [code] fade callback at the end - closing, all windows closed (func_8002DE60)
+func_801F0A44 rewards_findMembers  # [code] per party slot - gets exp (in g_btlRewards.expMask, alive, below the exp cap) and gets AP (can learn)
+func_801F0C0C rewards_compute  # [code] exp share, AP, gil, card (when fewer than 100 cards) and the dropped items merged into kinds
+func_801F171C rewards_isRewarded  # [code] member alive and in g_btlRewards.expMask
+func_801F04BC rewards_initWindows  # [code] sets the 10 windows from D_801F3BC8 and slides the shown ones in (D_801F3C4C)
+func_801F13B4 rewards_stepWindows  # [code] steps the shown windows' tweens (func_800631AC)
+func_801F0594 rewards_moveMemberWins  # [code] keeps each member's level/learn windows on their sliding panel
+func_801F12E0 rewards_initPrimBufs  # [code] primBufs = the two D_801F5278 buffers
+func_801F1300 rewards_clearWinSlot  # [code] zeroes a WinSlot
+func_801F1318 rewards_closeMemberWins  # [code] win_close of the members' level and learn windows
+func_801EFB98 rewards_drawInfo  # [code] INFO label window with the screen's title text (D_801F3BB8)
+func_801F1228 rewards_drawHelp  # [code] HELP label window with text 7 "Press Cross to confirm."
+func_801EFC68 rewards_drawMembers  # [code] the four member panels - portrait, level-up label, name, Lv, status icons, EXP, Next
+func_801F0394 rewards_drawPanelShade  # [code] dark TILE over the panel of a member who gets nothing
+func_801EFF50 rewards_drawExp  # [code] EXP window with the exp each member gets
+func_801F0044 rewards_drawAp  # [code] AP window
+func_801F0138 rewards_drawReceivedGil  # [code] "Received Gil" window with the gil still to transfer
+func_801F0264 rewards_drawCurrentGil  # [code] "Current Gil" window
+func_801F0D98 rewards_drawSmallText  # [code] func_80029D60 into the screen's primitive buffer
+func_801F0DE4 rewards_drawText  # [code] func_8002920C into the screen's primitive buffer
+func_801F17FC rewards_drawDigits  # [code] func_8002B644 into the screen's primitive buffer
+func_801F2490 rewards_initExp  # [code] per member - exp counter and whether it levels up, level-up labels reset
+func_801F26F8 rewards_initExpCounter  # [code] exp counter of a member - target exp (x1.5 with support ability 0xEB "Level Up"), step size
+func_801F27F0 rewards_willLevelUp  # [code] exp + gain reaches g_levelExp[level] (below level 99)
+func_801F2538 rewards_updateExp  # [code] steps the exp counters and the level-up labels
+func_801F2834 rewards_stepExp  # [code] adds this frame's exp step per member, stops the count sound when all are done
+func_801F2560 rewards_addExp  # [code] adds exp to a member (capped at 9999999) and levels up while it reaches g_levelExp
+func_801F29BC rewards_levelUp  # [code] func_80033CCC(character, level + 1) and queues a level-up label
+func_801F28F0 rewards_updateLevelUps  # [code] starts the next queued level-up label, ends finished ones
+func_801F269C rewards_showLevelUp  # [code] when the exp count is cut short - shows a pending level-up label in its hold phase
+func_801F2A4C rewards_initPopup  # [code] resets a level-up label
+func_801F2A6C rewards_startPopup  # [code] starts a level-up label rising, plays SE_LEVEL_UP
+func_801F2AAC rewards_endPopup  # [code] hides a level-up label, counts it shown
+func_801F2AC8 rewards_stepPopup  # [code] level-up label phases - rise by D_801F5230 (10 frames), hold 0x40, gap 4, done
+func_801F2264 rewards_drawLevelUp  # [code] the level-up label - two SPRTs from the image at CLUT row 511
+func_801F1FEC rewards_initLearns  # [code] per member - whether its AP gain completes an ability (rewards_willLearn)
+func_801F20A8 rewards_initApCounter  # [code] AP counter of a member - AP x2 with support ability 0xEC "Ability Up"
+func_801F1BA4 rewards_willLearn  # [code] some ability taught by the member's equipment reaches its AP need with this gain
+func_801F1560 rewards_giveAp  # [code] gives each member its whole AP gain (rewards_addAp), starts the exp count sound
+func_801F2080 rewards_updateAp  # [code] steps the AP counters and the learned-ability windows
+func_801F213C rewards_stepAp  # [code] adds this frame's AP step per member
+func_801F1A04 rewards_addAp  # [code] adds AP to the abilities of the member's equipment, queues the ones that complete (rewards_addLearned)
+func_801F21DC rewards_addLearned  # [code] queues a learned ability for the member's window and its learned list
+func_801F1848 rewards_updateLearnWins  # [code] opens each member's next "Learned" window (SE_LEARN) under its panel, closes it after 0x40 frames
+func_801F1D94 rewards_drawLearnWin  # [code] content callback of a "Learned" window - ability icon and name
+func_801F2248 rewards_onLearnWinClosed  # [code] on-closed callback of a "Learned" window - clears its WinSlot
+func_801F2BBC rewards_initGil  # [code] gil counter - x1.5 when a member has support ability 0xED "Millionaire"
+func_801F2C7C rewards_stepGil  # [code] adds this frame's gil step, stops the count sound when done
+func_801F2D08 rewards_addGil  # [code] adds gil to GameData.gil, capped at 9999999
+func_801F2D74 rewards_loadImages  # [code] saves VRAM row 511 (StoreImage) and loads the screen's CLUTs and images
+func_801F2E24 rewards_restoreVram  # [code] LoadImage of the saved VRAM row
+func_801F332C rewards_openItemsWin  # [code] opens the items window (rewards_drawItems / rewards_drawItemsLabels)
+func_801F2FE8 rewards_drawItems  # [code] content callback of the items window - received items with counts, "No item received.", the card
+func_801F33A0 rewards_drawItemsLabels  # [code] overlay callback of the items window - its two labels
+func_801F3250 rewards_resetFullWarning  # [code] D_801F8278 = 0
+func_801F3264 rewards_tryAddItems  # [code] adds the items (rewards_addItems); when some don't fit shows the warning first and adds on the next Cross; SE_ITEMS when anything was received
+func_801F2E58 rewards_addItems  # [code] item_add of each kind and card_add of the card, opens the "cannot carry more than 99" window when an item didn't fit
+func_801F3434 rewards_drawFullWarning  # [code] content callback of the warning window - text 0xA
+func_801F347C rewards_onFullWarningClosed  # [code] on-closed callback of the warning window
+func_801F3818 gameover_initDisp  # [code] two draw/display buffers with the GAME OVER picture sprites and the fade TILE
+func_801F3A20 gameover_loadImage  # [code] cd_readSync of file (1, 0xB) to the given buffer and func_8001D8A8 on it
+D_801F7A78 s_rewards  # [code] rewards screen state, RewardsMenu in include/ovl_65.h
+D_801F3B88 s_rewardsStates  # [code] handler per RewardsMenu.state
+D_801F3BA0 s_rewardsStateSe  # [code] sound played when each state ends
+D_801F3BB8 s_rewardsTitleText  # [code] title text id per screen (5 "Received EXP and AP!", 6 "Received Item(s) and Gil")
+D_801F3BC0 s_rewardsGilUnit  # [code] string appended after the received gil number
+D_801F3BC4 s_rewardsGilUnit2  # [code] string appended after the current gil number
+D_801F3BC8 s_rewardsWinInit  # [code] RECT and initially-shown flag of the 10 windows
+D_801F3C4C s_rewardsWinOpen  # [code] slide-in TweenDefs of the 10 windows
+D_801F3CDC s_rewardsWinClose  # [code] slide-out TweenDefs of the exp screen's windows
+D_801F3D4C s_rewardsActionTable  # [code] action ability table (name offset +0xE)
+D_801F494C s_rewardsActionNames  # [code] action ability names
+D_801F4F94 s_rewardsSupportNames  # [string] support ability names ("Level Up", "Ability Up", "Millionaire" at 0xEB-0xED)
+D_801F5228 s_rewardsLearnLabel  # [code] label of the learned-ability windows (func_8002E304)
+D_801F5230 s_rewardsPopupRise  # [code] y deltas of the level-up label's rise
+D_801F523C s_rewardsClutRect0  # [code] VRAM (960,494) 16x1, rewards_loadImages
+D_801F5244 s_rewardsImageRect0  # [code] VRAM (960,474) 8x20, rewards_loadImages
+D_801F524C s_rewardsClutRect1  # [code] VRAM (0,511) 256x1, saved and then loaded by rewards_loadImages
+D_801F5254 s_rewardsImageRect1  # [code] VRAM (960,432) 45x42, rewards_loadImages
+D_801F525C s_rewardsVramRestoreRect  # [code] VRAM (0,511) 256x1, rewards_restoreVram
+D_801F5264 s_rewardsItemsRect  # [code] RECT of the items window
+D_801F526C s_rewardsCardIcon  # [code] Icon drawn before the received card's name
+D_801F5278 s_rewardsPrimBufs  # [code] the two primitive buffers
+D_801F7DF8 s_rewardsVramSave  # [code] VRAM row 511 saved by rewards_loadImages
+D_801F81F8 s_rewardsLearnRect  # [code] RECT of the learned-ability window being opened
+D_801F8200 s_rewardsLearnPanel  # [code] the member panel RECT it was placed under
+D_801F8208 s_rewardsAbilityItems  # [code] per ability slot - equipped items teaching it (rewards_willLearn)
+D_801F8238 s_rewardsTextBuf  # [code] number/name text buffer of rewards_drawItems
+D_801F8278 s_rewardsFullShown  # [code] the "cannot carry more" warning is up
+D_801EE03C s_rewardsImage0  # [code] CLUT and image loaded to s_rewardsClutRect0/s_rewardsImageRect0
+D_801EE19C s_rewardsImage1  # [code] CLUT and image (the level-up label) loaded to s_rewardsClutRect1/s_rewardsImageRect1
+D_801EF260 s_gameoverClearRect  # [code] {0, 0, 320, 224}, cleared by gameover_main
+D_801EF27C s_gameoverVramRect  # [code] {0, 0, 640, 224}, cleared by gameover_initDisp
+# FIELDS include/ovl_65.h Unk801F7A78 renamed RewardsMenu: unk0=active,unk1=running,unk2=closing,unk3=gilSkipped,unk4=done,unk8=state,unk9=expMembers,unkA=screen,unkC=timer,unk10=closeFrames,unk14=getsExp,unk18=getsAp,unk1C=levelsUp,unk20=learns,unk24=rewards,unkAC=wins,unk14C=winShown,unk158=levelWins,unk1D8=learnWins,unk258=levelPopups,unk2B8=learned,unk348=fullWin,unk368=itemsWin,unk36C=frame,unk370=savedOtz,unk374=prim,unk378=primBufs
+# FIELDS include/ovl_65.h Rewards: unk0=expEach,unk4=ap,unk8=card,unkC=itemCount,unk10=items,unk1C=exp,unk4C=apGain,unk7C=gil; Counter: unk0=target,unk4=step,unk8=cur; WinSlot: unk0=win,unk4=queued,unk6=shown,unk8=delay,unkA=ids,unk1C=timer; Popup: unk0=active,unk1=phase,unk2=enabled,unk4=timer,unk14=pending,unk15=count,unk16=y; LearnList: unk10=count,unk11=ids; WinInit: unk0=rect,unk8=shown; BattleResult (ovl_65's view of ovl_0b g_btlRewards): unk0=gil,unk4=exp,unk8=ap,unkA=expMask,unkC=items,unk1C=card
+
+## ovl_39: ovl_39 (save / load menu, menu 4)
+func_801F4414 menuSave_init  # [code] menu 4 (file 0x39 in main's D_8006CA40) entry 0 of main's D_8006C9D4, takes the mode from g_menu.unkC, sets the text bank, opens the card events and starts at the card slot select [runtime] docs/runtime-findings.md field/menu campaign, D_8006C9D4[4], high
+func_801F5280 menuSave_update  # [code] menu 4 entry 1 of main's D_8006C9D4 (per frame), title, help, input, state draw and tick [runtime] docs/runtime-findings.md field/menu campaign, D_8006C9D4[4], high
+func_801F52C0 menuSave_exit  # [code] menu 4 entry 2 of main's D_8006C9D4, closes the card events and restores VRAM and the pad settings [runtime] docs/runtime-findings.md field/menu campaign, D_8006C9D4[4], high
+func_801F4538 menuSave_drawHelp  # [code] help window (label D_80070450) plus the box with the selected card slot name, text 3/4 "slot 1/2", greyed when the slot can't be used [runtime] docs/runtime-findings.md field/menu campaign, ablation abl_sv.png, high
+func_801F4664 menuSave_inputSlot  # [code] state 1 input (s_menuSaveInputFns[1]), Up/Down pick card slot 1/2 in g_menu.unk2, Cross selects, Circle leaves the menu [runtime] docs/runtime-findings.md field/menu campaign, runs sv_idle/sv_up, high
+func_801F4760 menuSave_drawSlotWindow  # [code] states 1-2 draw (s_menuSaveDrawFns), "slot 1"/"slot 2" list greyed unless menuSave_isSlotReady [runtime] docs/runtime-findings.md field/menu campaign, ablation abl_sv.png, high
+func_801F4840 menuSave_drawFileList  # [code] states 3-6 draw, the 15 file rows of 60 px with the page scroll and the scroll arrows [runtime] docs/runtime-findings.md field/menu campaign, ablation abl_sv2.png, high
+func_801F49C4 menuSave_drawFile  # [code] one row, "File00"+n then the drawer for its SaveSlot.state from s_menuSaveFileDrawers [runtime] docs/runtime-findings.md field/menu campaign, ablation abl_sv2.png, high
+func_801F4B18 menuSave_drawFileInfo  # [code] row drawer for a used file, "/DISC" list, party portraits, leader name and level, play time, gil, location [runtime] docs/runtime-findings.md field/menu campaign, ablation abl_sv2.png, high
+func_801F4E00 menuSave_drawCursor  # [code] hand cursor at the card slot (state 1) or the file row (states 4/5, blinking in 3) [runtime] docs/runtime-findings.md field/menu campaign, ablation, high
+func_801F4F30 menuSave_updateFileList  # [code] state 4 tick (s_menuSaveUpdateFns[4]), message 0x2D when the card is pulled, else steps the list scroll animation
+func_801F500C menuSave_updateHelp  # [code] help callback given to func_8003556C, text 5-8 "Saves to/Loads from MEMORY CARD slot N", the file help or the confirm help [runtime] docs/runtime-findings.md field/menu campaign, medium (code + cov)
+func_801F5114 menuSave_setFileHelp  # [code] help of the file under the cursor, text 10-12 for empty/other/corrupt, party "name Lv" lines (text 0xD-0x11) for a used one [runtime] docs/runtime-findings.md field/menu campaign, medium (code + cov)
+func_801F5330 menuSave_isLoaded  # [code] returns SaveMenu.loaded, set by menuSave_onFileIoDone after a load (no caller in this overlay)
+func_801F5340 menuSave_isSlotReady  # [code] card status of a slot is CARD_RES_DONE, or also CARD_RES_NEW when allowNew
+func_801F5384 menuSave_backToSlots  # [code] Circle in the file list, fades out to menuSave_returnToSlots
+func_801F53B0 menuSave_close  # [code] restores the func_8002F8E4 mode and closes the menu (func_800325E0)
+func_801F53E0 menuSave_drawTitle  # [code] title window with text[mode] "Save"/"Load" [runtime] docs/runtime-findings.md field/menu campaign, ablation abl_sv.png, high
+func_801F5460 menuSave_drawState  # [code] calls s_menuSaveDrawFns[state] and menuSave_drawCursor [runtime] docs/runtime-findings.md field/menu campaign, medium (code + cov)
+func_801F54C8 menuSave_input  # [code] message window input in phase 1, s_menuSaveInputFns[state] in phase 2 [runtime] docs/runtime-findings.md field/menu campaign, medium (code + cov)
+func_801F5550 menuSave_updateState  # [code] polls the card (menuSave_cardPoll), refreshes both slots' status, runs s_menuSaveUpdateFns[state], book animation, help visibility [runtime] docs/runtime-findings.md field/menu campaign, medium (code + cov)
+func_801F55D8 menuSave_inputFileList  # [code] state 4 input, Circle back to the slots, Cross selects the file, Up/Down/L1/R1 move in the list [runtime] docs/runtime-findings.md field/menu campaign, run sv_slot2down, high
+func_801F5688 menuSave_drawScrollRows  # [code] rows scrolling in during a page jump (menuSave_getScrollView)
+func_801F573C menuSave_drawScrollArrows  # [code] blinking sprites 0xB8/0xB9 when the list can scroll up/down [runtime] docs/runtime-findings.md field/menu campaign, ablation, high
+func_801F57E4 menuSave_drawEmptyFile  # [code] row drawer for state 1, text 0x13 "Empty block."
+func_801F5838 menuSave_drawOtherFile  # [code] row drawer for state 2, text 0x14 "Data from another game."
+func_801F588C menuSave_drawCorruptFile  # [code] row drawer for state 3, text 0x15 "Data corrupted."
+func_801F58E0 menuSave_selectSlot  # [code] Cross on a card slot, buzzer and message 0x2D unless usable, else starts the card check [runtime] docs/runtime-findings.md field/menu campaign, Cross in run sv_slot2, high
+func_801F5960 menuSave_selectFile  # [code] Cross on a file, menuSave_loadFile in load mode, else menuSave_saveFile [runtime] docs/runtime-findings.md field/menu campaign, run sv_yesno, high
+func_801F59B8 menuSave_updateHelpVisibility  # [code] func_8003563C(hide) unless ready in state 1, 3 or 4 and nothing loaded
+func_801F5A24 menuSave_returnToSlots  # [code] fade callback, state 1 with help 0x16 "Select MEMORY CARD slot." then fade in
+func_801F5A68 menuSave_drawBookIcon  # [code] SPRT frame idx of the book sheet (s_menuSaveBookFrames, CLUT row 0xE0) plus its DR_TPAGE [runtime] docs/runtime-findings.md field/menu campaign, the animated book of the CHECK window, medium (code + cov)
+func_801F5BE0 menuSave_saveVram  # [code] init, backs up the VRAM CLUT row 0xE0 and the 0x58x33 area at (0x40,0x100) then uploads s_menuSaveBookImage there [runtime] docs/runtime-findings.md field/menu campaign, medium (code + cov)
+func_801F5D00 menuSave_restoreVram  # [code] exit, puts back the VRAM saved by menuSave_saveVram [runtime] docs/runtime-findings.md field/menu campaign, medium (code + cov)
+func_801F5DE0 menuSave_updateBookAnim  # [code] advances the book frame (0-3) every 8 ticks while enabled
+func_801F5E40 menuSave_resetBookAnim  # [code] frame and tick of s_menuSaveBookAnim to 0
+func_801F5E54 menuSave_enableBookAnim  # [code] sets s_menuSaveBookAnim.enabled, returns the old value
+func_801F5E68 menuSave_drawBook  # [code] menuSave_drawBookIcon with the current frame [runtime] docs/runtime-findings.md field/menu campaign, the animated book of the CHECK window, medium (code + cov)
+func_801F5E90 menuSave_openConfirm  # [code] state 3, Yes/No window for question text id with help text ids for Yes and No [runtime] docs/runtime-findings.md field/menu campaign, medium (code)
+func_801F5FE4 menuSave_drawConfirm  # [code] confirm window content, question plus text 0x21 "Yes" / 0x22 "No" [runtime] docs/runtime-findings.md field/menu campaign, medium (code)
+func_801F60DC menuSave_drawConfirmCursor  # [code] confirm window overlay, hand at Yes/No once the window is open [runtime] docs/runtime-findings.md field/menu campaign, medium (code)
+func_801F61B0 menuSave_initConfirm  # [code] clears s_menuSaveConfirm.active
+func_801F61BC menuSave_inputConfirm  # [code] state 3 input, Cross closes with the choice, Circle closes on No, Up/Down toggle [runtime] docs/runtime-findings.md field/menu campaign, medium (code)
+func_801F6274 menuSave_updateConfirm  # [code] state 3 tick, closes the dialog with message 0x2D when the card is pulled
+func_801F62F0 menuSave_setConfirmCallback  # [code] callback run by menuSave_onConfirmClosed on Yes
+func_801F62FC menuSave_isConfirmActive  # [code] getter of s_menuSaveConfirm.active (no caller)
+func_801F630C menuSave_setConfirmActive  # [code] setter of s_menuSaveConfirm.active returning the old value (no caller)
+func_801F6320 menuSave_getConfirmHelp  # [code] help text id of the Yes or No under the cursor
+func_801F6368 menuSave_onConfirmOpened  # [code] confirm window opened callback, phase ready
+func_801F6378 menuSave_onConfirmClosed  # [code] confirm window closed callback, back to state 4 and runs the callback on Yes
+func_801F63D8 menuSave_openCheck  # [code] state 2, opens the "Checking..." window and starts _card_clear or _card_load on the slot by its card status [runtime] docs/runtime-findings.md field/menu campaign, opens the CHECK window in run sv_slot2, medium-high
+func_801F65C4 menuSave_onCardLoaded  # [code] _card_load callback, retries per result (s_menuSaveCheckRetries) then reads the directory or treats the card as unformatted
+func_801F6694 menuSave_readDir  # [code] fills the file list from the directory, FF9 files by their number, other games' files by block count from the end
+func_801F6938 menuSave_onHeaderRead  # [code] read callback of a file's first 0x180 bytes, copies the save header into its row and reads the next FF9 file
+func_801F6A84 menuSave_enterFileList  # [code] fade callback, state 4 with help 0x1A "Select block.", cursor on the newest save
+func_801F6B48 menuSave_findNewest  # [code] marks wrong-version files corrupt and finds the used file with the highest save counter
+func_801F6BD4 menuSave_initCheck  # [code] clears s_menuSaveCheck.active
+func_801F6BE0 menuSave_updateCheck  # [code] state 2 tick, message 0x2D when the card is pulled, else s_menuSaveCheckSteps[step]
+func_801F6C50 menuSave_isCheckActive  # [code] getter of s_menuSaveCheck.active (no caller)
+func_801F6C60 menuSave_setCheckActive  # [code] setter of s_menuSaveCheck.active returning the old value (no caller)
+func_801F6C74 menuSave_findLastEmpty  # [code] last row still SAVE_FILE_EMPTY, for other games' blocks
+func_801F6CD0 menuSave_findUsed  # [code] row of the n-th used file
+func_801F6D24 menuSave_parseFileNumber  # [code] the two ASCII digits at 0x12 of a card file name
+func_801F6D4C menuSave_checkWaitClear  # [code] check step 1 (s_menuSaveCheckSteps), once _card_clear is done starts _card_load
+func_801F6DAC menuSave_onCardFormatted  # [code] _card_load succeeded, formatted flag, reads the directory and the FF9 files' headers
+func_801F6E1C menuSave_onCardUnformatted  # [code] _card_load gave CARD_RES_NEW, load mode says 0x30 "No FF9 save data.", save mode goes to the list (format on save)
+func_801F6E68 menuSave_retryCheck  # [code] repeats _card_clear or _card_load after a failed result
+func_801F6EDC menuSave_drawCheck  # [code] "Checking..." window content, book and text 0x12 "Do not remove MEMORY CARDs..."
+func_801F6F3C menuSave_onCheckOpened  # [code] CHECK window opened callback, help 0x17 "Checking..."
+func_801F6F74 menuSave_onCheckClosed  # [code] CHECK window closed callback (empty)
+func_801F6F7C menuSave_checkSpace  # [code] save needs a free block (0x2F "MEMORY CARD is full."), load needs an FF9 file (0x30)
+func_801F6FE8 menuSave_countFiles  # [code] reads the directory 3 times until two counts agree, then _card_info
+func_801F7084 menuSave_finishCheck  # [code] check done, menuSave_findNewest then fades over to menuSave_enterFileList with SE 0x414
+func_801F70E4 menuSave_onFileListFadedIn  # [code] fade-in callback of the file list, phase ready unless a message is up
+func_801F7108 menuSave_readHeader  # [code] opens a file and reads its first 0x180 bytes into s_menuSaveCheck.buf
+func_801F7190 menuSave_copyHeader  # [code] SaveHeader read from the card into a file row
+func_801F72B4 menuSave_checkError  # [code] closes the CHECK window and shows an error message
+func_801F7300 menuSave_checkNotice  # [code] closes the CHECK window and shows a NOTICE message
+func_801F734C menuSave_initSavedMsg  # [code] clears s_menuSaveSavedMsg
+func_801F7364 menuSave_openSavedMsg  # [code] state 6, small window with text 0x2C "Data saved." next to the file row
+func_801F740C menuSave_inputSavedMsg  # [code] state 6 input, Circle or Cross closes the "Data saved." window
+func_801F7474 menuSave_updateSavedMsg  # [code] state 6 tick, closes the "Data saved." window after 0x40 frames
+func_801F74F4 menuSave_onSavedMsgOpened  # [code] "Data saved." window opened callback, state 6
+func_801F7510 menuSave_onSavedMsgClosed  # [code] "Data saved." window closed callback, back to state 4
+func_801F7560 menuSave_drawSavedMsg  # [code] "Data saved." window content, text 0x2C centred
+func_801F75C8 menuSave_openMessage  # [code] message window for text id with a title, clears every row's state
+func_801F770C menuSave_initMessage  # [code] clears s_menuSaveMessage.active
+func_801F7718 menuSave_inputMessage  # [code] phase 1 input, Circle or Cross closes the message
+func_801F7780 menuSave_showError  # [string] message window labelled "ERROR" (D_80070440, entry 17 of main's label table D_800703FC), used for every failed card access
+func_801F77A8 menuSave_showNotice  # [string] message window labelled "NOTICE" (D_8007048C, entry 36 of D_800703FC), used for card missing, card full and no FF9 data
+func_801F77D0 menuSave_setMessageActive  # [code] setter of s_menuSaveMessage.active returning the old value (no caller)
+func_801F77E4 menuSave_isMessageActive  # [code] getter of s_menuSaveMessage.active
+func_801F77F4 menuSave_drawMessage  # [code] message window content
+func_801F7830 menuSave_onMessageOpened  # [code] message window opened callback, phase 1 (message input)
+func_801F7840 menuSave_onMessageClosed  # [code] message window closed callback, fades back to the slots in the states marked in s_menuSaveResetAfterMsg
+func_801F78CC menuSave_resetToSlots  # [code] fade callback, state 1 with help 0x16 then fade in
+func_801F7918 menuSave_onSlotsFadedIn  # [code] fade-in callback of menuSave_resetToSlots, phase ready
+func_801F7928 menuSave_loadImage  # [code] init, func_80028720(s_menuSaveImage, 10)
+func_801F7950 menuSave_freeImage  # [code] exit, func_8002886C (pair of menuSave_loadImage)
+func_801F7970 menuSave_getPortrait  # [code] portrait id stored in a SaveMember, drawn by func_80028204 in menuSave_drawFileInfo
+func_801F79F4 menuSave_startAccess  # [code] state 5, opens the access window (title s_menuSaveAccessTitles[mode]) for a save (0) or load (1)
+func_801F7AF4 menuSave_updateSave  # [code] access stages of a save, formats first when the card is unformatted ("Formatting..."), then writes ("Saving...")
+func_801F7C20 menuSave_updateLoad  # [code] access stages of a load, help 0x1E "Loading..." then reads
+func_801F7CD0 menuSave_drawAccess  # [code] access window content, book, "Do not remove..." and the progress gauge, or 0x2A "Formatting MEMORY CARD."
+func_801F7E68 menuSave_writeFile  # [code] creates the file for an empty row (name from menuSave_getFilePrefix), opens it and writes the 0x1400-byte save buffer
+func_801F7FD4 menuSave_drawGauge  # [code] progress bar, 3 LINE_F2 fill rows of length pos plus left cap, tiled middle and right cap sprites from D_80068988 (same code as ovl_34 0x801EFC20)
+func_801F830C menuSave_initAccess  # [code] clears s_menuSaveAccess.active
+func_801F8318 menuSave_updateAccess  # [code] state 5 tick, message 0x2D when the card is pulled, else menuSave_updateSave or menuSave_updateLoad
+func_801F8394 menuSave_isAccessActive  # [code] getter of s_menuSaveAccess.active (no caller)
+func_801F83A4 menuSave_setAccessActive  # [code] setter of s_menuSaveAccess.active returning the old value (no caller)
+func_801F83B8 menuSave_getFilePrefix  # [code] copy of "BASLUS-01251", the first 12 characters of every FF9 card file name
+func_801F8408 menuSave_onAccessOpened  # [code] access window opened callback, stage 1
+func_801F8424 menuSave_onAccessClosed  # [code] access window closed callback, "Data saved." after a save, state 4 after a load
+func_801F8478 menuSave_readFile  # [code] opens the file of the selected row and reads 0x1400 bytes into the save buffer
+func_801F8524 menuSave_formatCard  # [code] _card_format then _card_load with menuSave_onFormatDone, 0x32 "Failed to format." on error
+func_801F8588 menuSave_onFileIo  # [code] read/write completion callback, closes the file then done or failed by the card result
+func_801F8610 menuSave_onFileIoDone  # [code] saved, updates the row and plays SE 0x4ED, or loaded, applies the data and closes the menu
+func_801F86C0 menuSave_onFileIoFailed  # [code] 0x33 "Failed to save data." / 0x34 "Failed to load data." for results 1-3
+func_801F8704 menuSave_storeSavedFile  # [code] after a save, the row gets the new file name, SAVE_FILE_USED and the header just written
+func_801F889C menuSave_abortAccess  # [code] closes the file and the access window and shows an error message
+func_801F8904 menuSave_onFormatDone  # [code] _card_load callback after the format, goes on to write ("Saving...") or fails with 0x33
+func_801F89A0 menuSave_onAccessAborted  # [code] access window closed callback after an error
+func_801F89B8 menuSave_getListView  # [code] copy of main's menuList_getView with 60-pixel rows
+func_801F8B10 menuSave_getScrollView  # [code] rows of the page coming in during a page jump (MenuList.unk8 & 4)
+func_801F8BD4 menuSave_getScrollClip  # [code] clip rect of the incoming page during a page jump (same code as ovl_34 0x801F043C)
+func_801F8C34 menuSave_pageUp  # [code] copy of main's menuList_pageUp (pad 0x100000) with SE_CURSOR (same code as ovl_34 0x801F02CC)
+func_801F8CE8 menuSave_pageDown  # [code] copy of main's menuList_pageDown (pad 0x200000) with SE_CURSOR (same code as ovl_34 0x801F0380)
+func_801F8DA4 menuSave_buildHeader  # [code] card file header plus the SaveHeader shown in the file list (version, disc, leader, time, gil, location, party)
+func_801F9024 menuSave_getLocation  # [code] location name for the header, GameData.unk80C, "Start of DISC N" (text 0x36+) in mode 2, text 0x20 when none
+func_801F9120 menuSave_buildCardHeader  # [code] PS1 card file header, "SC", icon flag 0x11, 1 block, title "FF9/FILEnn/hhmm/", icon picked by the play time
+func_801F94D0 menuSave_saveFile  # [code] Cross on a file when saving, format question (0x23+slot) or overwrite question (0x27), or saves straight away [runtime] docs/runtime-findings.md field/menu campaign, run sv_yesno (saveFile(2, 2) wrote FILE03), high
+func_801F95E4 menuSave_startSave  # [code] builds the save buffer, header, game data and CRC-16, then menuSave_startAccess(0)
+func_801F963C menuSave_packData  # [code] game data part of the save buffer, state, events, party, misc, items, cards
+func_801F9688 menuSave_getDiscBit  # [code] 1/2/4/8 from the story counter g_evtGlobalVars.h[0], shown as the "/DISC" list
+func_801F96CC menuSave_initCrcTable  # [code] reflected CRC-16 table, polynomial 0x8408
+func_801F973C menuSave_crc16  # [code] CRC-16 over n bytes, initial 0xFFFF
+func_801F9788 menuSave_loadFile  # [code] Cross on a file when loading, used files only (buzzer otherwise) [runtime] docs/runtime-findings.md field/menu campaign, the load-mode branch of menuSave_selectFile, high
+func_801F9804 menuSave_applyLoaded  # [code] checks the buffer's CRC-16 then unpacks it into the game state, 0x35 "Data corrupted." otherwise
+func_801F98D0 menuSave_startLoad  # [code] menuSave_startAccess(1)
+func_801F9904 menuSave_packParty  # [code] characters, party, gil and the next GameData fields into SaveParty
+func_801F99FC menuSave_unpackParty  # [code] reverse of menuSave_packParty
+func_801F9B00 menuSave_packState  # [code] GameState mode and unkA, field/battle ids into SaveState
+func_801F9BEC menuSave_unpackState  # [code] reverse of menuSave_packState
+func_801F9C58 menuSave_copyCards  # [code] copies the D_80083248 block (func_80062824), the Tetra Master card list of ovl_0d/ovl_36 (100 cards)
+func_801F9CE8 menuSave_packCards  # [code] card list into the save buffer
+func_801F9D18 menuSave_unpackCards  # [code] card list from the save buffer
+func_801F9D48 menuSave_packEvents  # [code] g_evtGlobalVars and D_8007AEC4 into SaveEvents
+func_801F9DF8 menuSave_unpackEvents  # [code] reverse of menuSave_packEvents
+func_801F9EA8 menuSave_packItems  # [code] GameData.items, unk774 and GameState.unk24 into SaveItems
+func_801F9F5C menuSave_unpackItems  # [code] reverse of menuSave_packItems
+func_801FA01C menuSave_packMisc  # [code] GameData unk844, unk880, unk892 into SaveMisc
+func_801FA078 menuSave_unpackMisc  # [code] reverse of menuSave_packMisc
+func_801FA0C8 menuSave_cardInit  # [code] clears the card op, the info state and the info callbacks
+func_801FA0F4 menuSave_firstFile  # [code] firstfile on "bu00*" or "bu10*"
+func_801FA184 menuSave_nextFile  # [code] nextfile wrapper
+func_801FA1C4 menuSave_readDirectory  # [code] fills consecutive DIRENTRYs with firstfile/nextfile, returns the count
+func_801FA21C menuSave_getCardStatus  # [code] last _card_info result of channel 0 or 0x10
+func_801FA240 menuSave_cardInfoSync  # [code] _card_info and waits for its software card event
+func_801FA290 menuSave_getCardOp  # [code] getter of s_menuSaveCardOp (no caller)
+func_801FA2A0 menuSave_resetReadProgress  # [code] clears s_menuSaveSectorsDone (same body as menuSave_resetWriteProgress)
+func_801FA2AC menuSave_resetWriteProgress  # [code] clears s_menuSaveSectorsDone (same body as menuSave_resetReadProgress)
+func_801FA2B8 menuSave_getReadProgress  # [code] sectors done, used by menuSave_drawAccess in load mode
+func_801FA2C8 menuSave_getWriteProgress  # [code] sectors done, used by menuSave_drawAccess in save mode
+func_801FA2D8 menuSave_isCardBusy  # [code] s_menuSaveCardOp != CARD_OP_INFO
+func_801FA2E8 menuSave_cardClearSync  # [code] _card_clear and waits for its hardware card event
+func_801FA350 menuSave_cardLoad  # [code] menuSave_cardLoadStart and sets the completion callback
+func_801FA37C menuSave_cardLoadStart  # [code] _card_load on a channel, op CARD_OP_LOAD
+func_801FA3D8 menuSave_openFile  # [code] open "bu00"/"bu10" + name, mode 0x8003 (read, write, async)
+func_801FA478 menuSave_closeFile  # [code] close wrapper
+func_801FA4B8 menuSave_writeAsync  # [code] menuSave_writeStart and sets the completion callback
+func_801FA4E4 menuSave_writeStart  # [code] sets fd, buffer and sector count, writes the first 0x80-byte sector
+func_801FA53C menuSave_writeSector  # [code] write of one 0x80-byte sector, op CARD_OP_WRITE
+func_801FA5A4 menuSave_readAsync  # [code] menuSave_readStart and sets the completion callback
+func_801FA5D0 menuSave_readStart  # [code] sets fd, buffer and sector count, reads the first 0x80-byte sector
+func_801FA644 menuSave_readSector  # [code] read of one 0x80-byte sector, op CARD_OP_READ
+func_801FA6AC menuSave_createFile  # [code] open "bu00"/"bu10" + name with mode 0x10200 (create, 1 block) and closes it
+func_801FA754 menuSave_cardFormat  # [code] _card_format wrapper
+func_801FA794 menuSave_cardPoll  # [code] per frame, polls _card_info on both slots while idle, else the pending load or the next read/write sector, then the callback
+func_801FAAE4 menuSave_getCardResult  # [code] last card event result
+func_801FAAF4 menuSave_cardIdle  # [code] op CARD_OP_INFO, info not pending
+func_801FAB08 menuSave_testSwCard  # [code] which SwCARD event fired, IOE/ERROR/TIMOUT/NEW as 0-3, or -1
+func_801FABB8 menuSave_testHwCard  # [code] which HwCARD event fired, IOE/ERROR/TIMOUT/NEW as 0-3, or -1
+func_801FAC68 menuSave_openCardEvents  # [code] OpenEvent/EnableEvent of the 4 SwCARD and 4 HwCARD events
+func_801FAE1C menuSave_clearSwCard  # [code] TestEvent on the 4 SwCARD events
+func_801FAE74 menuSave_clearHwCard  # [code] TestEvent on the 4 HwCARD events
+func_801FAECC menuSave_closeCardEvents  # [code] CloseEvent of the 8 card events
+D_801FB1A8 s_menuSave  # [code] save menu state, see SaveMenu in include/ovl_39.h [runtime] docs/runtime-findings.md field/menu campaign, D_801FB1A8 state seen in runs sv_idle/sv_up/sv_slot2, high
+D_801FBAC8 s_menuSaveBookAnim  # [code] book animation (menuSave_updateBookAnim)
+D_801FBACC s_menuSaveVramBackup  # [code] VRAM saved by menuSave_saveVram, put back by menuSave_restoreVram
+D_801FBEE0 s_menuSaveConfirm  # [code] Yes/No dialog state (menuSave_openConfirm)
+D_801FBEF8 s_menuSaveCheck  # [code] card check state (menuSave_openCheck)
+D_801FC348 s_menuSaveSavedMsg  # [code] "Data saved." window state (menuSave_openSavedMsg)
+D_801FC358 s_menuSaveMessage  # [code] message window state (menuSave_openMessage)
+D_801FC368 s_menuSaveFilePrefix  # [code] buffer of menuSave_getFilePrefix
+D_801FC388 s_menuSaveAccess  # [code] save/load/format access state (menuSave_startAccess)
+D_801FC3B8 s_menuSaveLocationBuf  # [code] location name buffer of menuSave_getLocation
+D_801FC3E0 s_menuSaveCrcTable  # [code] CRC-16 table (menuSave_initCrcTable)
+D_801FB0A8 s_menuSaveHelpBuf  # [code] help text built by menuSave_setFileHelp
+D_801FB074 s_menuSaveCardOp  # [code] pending card operation polled by menuSave_cardPoll, CARD_OP_*
+D_801FB078 s_menuSaveCardInfoBusy  # [code] _card_info issued, waiting for its event (menuSave_cardPoll)
+D_801FB07C s_menuSaveCardInfoChan  # [code] channel of the last _card_info, alternates 0 and 0x10
+D_801FB080 s_menuSaveFileChan  # [code] channel given to menuSave_openFile (not read)
+D_801FB084 s_menuSaveSectorsDone  # [code] 0x80-byte sectors read or written so far, the access gauge
+D_801FB088 s_menuSaveCardStatus  # [code] last _card_info result per slot, read by menuSave_getCardStatus
+D_801FB090 s_menuSaveCardTimeouts  # [code] per slot, a timeout only counts after one retry (menuSave_cardPoll)
+D_801FB098 s_menuSaveCardCallback  # [code] completion callback of a card load/read/write
+D_801FB09C s_menuSaveInfoCallback1  # [code] slot 1 callback after a _card_info result (menuSave_cardPoll), never set
+D_801FB0A0 s_menuSaveInfoCallback2  # [code] slot 2 callback after a _card_info result (menuSave_cardPoll), never set
+D_801FC5E0 s_menuSaveSectorsLeft  # [code] sectors after the current one (menuSave_readStart/writeStart)
+D_801FC5E4 s_menuSaveFd  # [code] file of the current read/write
+D_801FC5E8 s_menuSaveIoBuf  # [code] buffer address of the current sector
+D_801FC5EC s_menuSaveCardChan  # [code] channel of the current _card_info/_card_load
+D_801FC5F4 s_menuSaveSwEventIoe  # [code] SwCARD EvSpIOE event (menuSave_openCardEvents), result CARD_RES_DONE of menuSave_testSwCard
+D_801FC5F8 s_menuSaveSwEventError  # [code] SwCARD EvSpERROR event (menuSave_openCardEvents)
+D_801FC5FC s_menuSaveSwEventTimeout  # [code] SwCARD EvSpTIMOUT event (menuSave_openCardEvents)
+D_801FC600 s_menuSaveSwEventNew  # [code] SwCARD EvSpNEW event (menuSave_openCardEvents)
+D_801FC604 s_menuSaveCardResult  # [code] last card event result (menuSave_getCardResult)
+D_801FC608 s_menuSaveHwEventIoe  # [code] HwCARD EvSpIOE event (menuSave_openCardEvents), result CARD_RES_DONE of menuSave_testHwCard
+D_801FC60C s_menuSaveHwEventError  # [code] HwCARD EvSpERROR event (menuSave_openCardEvents)
+D_801FC610 s_menuSaveHwEventTimeout  # [code] HwCARD EvSpTIMOUT event (menuSave_openCardEvents)
+D_801FC614 s_menuSaveHwEventNew  # [code] HwCARD EvSpNEW event (menuSave_openCardEvents)
+D_801FAF74 s_menuSaveTitleRect  # [code] RECT of the title window (menuSave_drawTitle)
+D_801FAF7C s_menuSaveHelpRect  # [code] RECT of the help window (menuSave_drawHelp)
+D_801FAF84 s_menuSaveSlotNameRect  # [code] RECT of the selected card slot name box (menuSave_drawHelp)
+D_801FAFE0 s_menuSaveSlotWindowRect  # [code] RECT of the card slot list (menuSave_drawSlotWindow)
+D_801FB00C s_menuSaveCheckRect  # [code] RECT of the "Checking..." window (menuSave_openCheck)
+D_801FB030 s_menuSaveSavedMsgRect  # [code] RECT of the "Data saved." window (menuSave_openSavedMsg)
+D_801FB058 s_menuSaveAccessRect  # [code] RECT of the access window (menuSave_startAccess)
+D_801EDF14 s_menuSaveSlotHelpRect  # [code] help window RECT given to func_80035580 in state 1 (menuSave_updateHelp)
+D_801FAF8C s_menuSaveInputFns  # [code] input function per state (menuSave_input)
+D_801FAFA8 s_menuSaveDrawFns  # [code] draw function per state (menuSave_drawState)
+D_801FAFC4 s_menuSaveUpdateFns  # [code] tick function per state (menuSave_updateState)
+D_801FAFE8 s_menuSaveFileDrawers  # [code] row drawer per SaveSlot.state (menuSave_drawFile)
+D_801FAFFC s_menuSaveBookFrames  # [code] u, v, w, h of the 4 book frames (menuSave_drawBookIcon)
+D_801FB014 s_menuSaveCheckSteps  # [code] function per check step (menuSave_updateCheck)
+D_801FB02C s_menuSaveCheckRetries  # [code] tries allowed per card result (menuSave_onCardLoaded)
+D_801FB038 s_menuSaveResetAfterMsg  # [code] per state, nonzero = fade back to the card slots when a message closes (menuSave_onMessageClosed)
+D_801FB040 s_menuSavePortraitIds  # [code] portrait per func_80028954 result (menuSave_getPortrait)
+D_801FB050 s_menuSaveAccessTitles  # [string] label index into main's D_800703FC per access mode, 0x2B "SAVE" and 0x1B "LOAD" (menuSave_startAccess)
+D_801FB060 s_menuSaveGaugeTexWindow  # [code] texture window reset after the gauge middle (menuSave_drawGauge)
+D_801FB068 s_menuSaveGaugeColors  # [code] colours of the 3 gauge fill lines (menuSave_drawGauge)
+D_801EE4D4 s_menuSaveImage  # [code] image data passed to func_80028720 by menuSave_loadImage
+D_801F2854 s_menuSaveBookImage  # [code] CLUT and 0x58x33 image of the book frames (menuSave_saveVram)
+D_801F4104 s_menuSaveIconEven  # [code] card file icon for an even frame count (menuSave_buildCardHeader)
+D_801F41A4 s_menuSaveIconOdd  # [code] card file icon for an odd frame count (menuSave_buildCardHeader)
+D_801F4244 s_menuSaveIconMinute  # [code] card file icon when the play time is a whole minute (menuSave_buildCardHeader)
+D_801F42E4 s_menuSaveIconHour  # [code] card file icon when the play time is a whole hour (menuSave_buildCardHeader)
+D_801F43A8 s_menuSaveProductCode  # [string] "BASLUS-01251", the card file name prefix (menuSave_getFilePrefix)
+D_801F43B8 s_menuSaveTitleTemplate  # [code] SJIS card file title "FF9/FILE00/0000/" (menuSave_buildCardHeader)
+# FIELDS include/ovl_39.h SaveMenu: unk0=mode,unk1=state,unk2=phase,unk3=file,unk4=cardStatus,unk6=formatted,unk7=loaded,unk8=showCursor,unkC=newestCounter,unk10=newestFile,unk14=savedFadeOtz,unk20=help,unk24=list,unk34=files
+# FIELDS include/ovl_39.h SaveFile (was SaveSlot): unk0=version,unk4=fileName,unk1A=state,unk1B=index,unk1C=discs,unk1D=level,unk1E=name,unk28=location,unk44=cursor,unk48=windowColor,unk4C=counter,unk50=playTime,unk54=gil,unk58=party
+# FIELDS include/ovl_39.h SaveHeader: unk0=version,unk4=discs,unk5=level,unk6=name,unk10=location,unk2C=playTime,unk30=gil,unk34=party,unk74=windowColor,unk78=counter,unk7C=cursor (SaveHdr merged into it)
+# FIELDS include/ovl_39.h SaveMember: unk0=present,unk1=portrait,unk2=name,unkC=level; SaveFileName: unk0=name,unk14=term; DirEnt: unk0=name,unk14=attr,unk18=size,unk1C=next,unk20=head,unk24=system
+# FIELDS include/ovl_39.h BookAnim (was Unk801FBAC8): unk0=enabled,unk1=tick,unk2=frame; SaveConfirm (was Unk801FBEE0): unk0=active,unk1=choice,unk2=textSize,unk4=text,unk8=win,unkC=onYes,unk10=yesHelp,unk12=noHelp
+# FIELDS include/ovl_39.h SaveCheck (was Unk801FBEF8): unk0=active,unk1=step,unk2=file,unk3=tries,unk4=triesPerResult,unk8=dirCount,unkC=otherBlocks,unk10=ff9Files,unk14=headersRead,unk18=fd,unk1C=win,unk20=dir,unk2D0=buf
+# FIELDS include/ovl_39.h SavedMsg (was Unk801FC348): unk0=active,unk4=timer,unk8=win; SaveMessage (was Unk801FC358): unk0=active,unk2=textSize,unk4=win,unk8=text
+# FIELDS include/ovl_39.h SaveAccess (was Unk801FC388): unk0=active,unk2=stage,unk3=mode,unk4=lastProgress,unk5=progressTicks,unk6=fileName,unk1C=win,unk20=fd,unk24=delay
+# FIELDS include/ovl_39.h SaveState (was Unk801F9BEC): unk0=mode,unk2=reserved2,unk20=fieldId,unk24=battleId,unk2C=reserved2C; SaveEvents: unk0=vars; SaveParty: unk0=characters,unk510=party,unk516=firstUseFxSeen,unk518=gil; SaveMisc (was Unk801FA078); SaveItems: unk0=items,unk200=flags; SaveData: unk0=state,unk40=events,unk850=party,unkD88=misc,unkDA0=items,unkFF8=cards; Ovl39Sprite: unk0=u,unk1=v,unk2=w,unk3=h
+# FIELDS include/ovl_39.h SaveBuf: unk0=card (CardFileHeader: magic,iconFlag,blocks,title,pad44,icon),unk100=hdr,unk180=data,unk13FE=crc; the buffer at 0x801FCB00 is SAVE_BUF, D_801FDEFE is SAVE_BUF->crc
+# D_801FB08C is s_menuSaveCardStatus[1]; D_801FBF18 is s_menuSaveCheck.dir; D_80077DB2 is g_menu.unk2, D_80077DC0 is g_menu.unk10 (now written that way)
+
+## ovl_0d: ovl_0d (Tetra Master card game; files tu_800A752C.c -> tm_main.c, tu_800A7E10.c -> tm_game.c)
+func_800A752C tm_main  # [code] first function of .text, runs tm_init, tm_mainLoop, tm_exit (game mode 9 loads file 0x0D in game_loadModeOverlay's table)
+func_800A755C tm_init  # [code] installs tm_soundCmd as the GameData.unk83C sound hook, loads the data file, sound blocks and music 0x42 and starts that music
+func_800A75E0 tm_exit  # [code] stops music 0x42 (tm_soundCmd 0x100), frees the data copy, sets GameState.unkA = 9 and mode 1
+func_800A7634 tm_loadSoundBlocks  # [code] passes every 0x9xxxx block of g_tmDataFile to func_80055E14, as battle's func_800A8F8C does with its two
+func_800A76F8 tm_loadMusic  # [code] copies block 0x70042 (music 0x42, the one tm_init starts) into GameData.unk814, the buffer tm_soundCmd's music start reads
+func_800A7764 tm_loadDataFile  # [code] reads file 0x2715 of directory 1 to D_80067944+0x57800 (func_8002177C), registers it with db_register
+func_800A7818 tm_copyDataFile  # [code] copies g_tmDataFile up to its 0x70000 block to D_80067944+0x141000 and registers the copy
+func_800A7884 tm_freeDataFile  # [code] db_unregister of g_tmDataFile, clears it
+func_800A78B8 tm_freeDataCopy  # [code] db_unregister of g_tmDataCopy, clears it
+func_800A78EC tm_soundCmd  # [code] same body as ovl_0b btl_soundCmd (music class 0, sound effects 0x8xxxx class 1), installed as GameData.unk83C by tm_init
+func_800A7E10 tm_mainLoop  # [string] per-frame loop that runs the handler of each task and passes its name ("PLAYER CARD SELECT", "BATTLE", ...) to tm_debugPrint, until task 12
+func_800A8B80 tm_clearOt  # [code] ClearOTagR of the current buffer's 0x1000-entry ordering table
+func_800A8BC4 tm_endFrame  # [code] L1+L2+R1+R2+Start+Select ends the game, DrawSync, VSync, PutDispEnv/PutDrawEnv, DrawOTag, swaps the buffers
+func_800A8D74 tm_setup  # [code] loads the 100 card images, the opponent/card/deck tables and the text bank, reads the opponent id from GameData.unk8B2, saves 12 config values, sets the arrow odds
+func_800A9298 tm_taskInit  # [string] "INIT" task handler, resets cursors and windows, deals the hands (tm_initHands), clears the board (tm_initBoard) and opens the stock (tm_openStock)
+func_800A932C tm_debugPrint  # [code] empty, tm_mainLoop passes it each task name string
+func_800A9334 tm_loadImageFile  # [code] reads file 0x44C of directory 1 to 0x80104A00, SystemError(0x46, 0x3E6) when missing
+func_800A93A0 tm_getFileEntry  # [code] address of entry i of the file at 0x80104A00 (its table of 2-word entries, offsets in 0x800 sectors)
+func_800A93C8 tm_copyFileEntry  # [code] copies n bytes of tm_getFileEntry(i) to a fixed address (the opponent, card and deck tables)
+func_800A9424 tm_drawBackground  # [code] 16x15 + 4x15 16px sprites of the background at VRAM 0x280/0x300, faded out right of column 3 in FIELD FADE
+func_800A96B0 tm_drawBoard  # [code] 14x15 sprites of the board image (VRAM 0x340), faded in by FIELD FADE, which ends here by switching to ENEMY APEAR
+func_800A986C tm_loadTim  # [code] LoadTPage of a 4 or 8 bpp TIM's pixels and LoadClut of its palette
+func_800A993C tm_drawScore  # [code] board card count of each side (tm_countOnBoard) as a big digit, "10" double width
+func_800A9B2C tm_taskPlayerSelect  # [string] "PLAYER CARD SELECT" handler, Up/Down picks a hand card, R1 slides out its name, Cross goes to PLAYER CARD SET
+func_800A9F10 tm_taskPlayerSet  # [string] "PLAYER CARD SET" handler, board cursor, Cross places the card on an empty square, Circle goes back to PLAYER CARD SELECT
+func_800AA1FC tm_taskResult  # [string] "RESULT" handler, on Circle/Cross starts the card move (win/lose) or returns the cards after a draw
+func_800AA368 tm_taskExtension  # [string] "EXTENSION" handler, closes the "ended in a draw" window and goes back to INIT
+func_800AA3C0 tm_drawDrawWin  # [code] window content, text 0x19 "The game ended in a draw..."
+func_800AA408 tm_autoPlace  # [string] "PLAYER AUTO SELECT" handler, puts the first hand card on a random empty square
+func_800AA504 tm_taskTrade  # [string] "TRADE" handler, Cross/Square ends the trade message (tm_endTrade)
+func_800AA548 tm_taskTryAgain  # [string] "TRY AGAIN" handler, Yes/No of the rematch window, under 5 cards opens the CARD LESS5 window
+func_800AA790 tm_stockInput  # [code] stock grid cursor (10x10 card ids) for CHOICE and CARD AWAY, L1/R1 cycles copies, Cross picks a card into the hand or opens the discard window
+func_800AAEB4 tm_taskChoice2  # [string] "CHOICE2" handler, "Confirm selection" Yes starts FIELD FADE, No returns to CHOICE
+func_800AB060 tm_drawConfirmWin  # [code] window content, text 6 "Confirm selection, Yes, No"
+func_800AB0A8 tm_drawLess5Win  # [code] window content, text 0x1A "You don't have 5 cards. End card game."
+func_800AB0F0 tm_taskStageSelect  # [string] "STAGE SELECT" handler (debug), opponent id and arrow odds editor
+func_800AB2E0 tm_taskAwayInfo  # [string] "AWAY INFO" handler, closes the over-100-cards window and goes to CARD AWAY
+func_800AB338 tm_taskCardAway2  # [string] "CARD AWAY2" handler, Yes/No of the discard window
+func_800AB52C tm_drawDiscardWin  # [code] window content, text 0x18 "Discard, Yes, No"
+func_800AB574 tm_taskBattleSelect  # [string] "BATTLE SELECT" handler, board cursor over the cards the placed card can battle, Cross starts BATTLE
+func_800AB854 tm_taskCardLess5  # [string] "CARD LESS5" handler, closes the window and ends the game (tm_startEndFade)
+func_800AB89C tm_waitWindow  # [code] sets the window's opened callback to tm_onWindowOpened and g_tmWindowOpening, which the input handlers wait on
+func_800AB8C8 tm_onWindowOpened  # [code] window opened callback, clears g_tmWindowOpening
+func_800AB8E8 tm_setWindowOpening  # [code] stores g_tmWindowOpening
+func_800AB8F4 tm_setHelpArea  # [code] passes RECT {0, 0, w, 240} to func_80035580, the clip area of the help bubble D_80077DE8
+func_800AB928 tm_taskGetSelect  # [string] "GET SELECT" handler, picks the opponent card to take after a perfect win, shows the stock count of the card
+func_800ABC74 tm_taskGameQuit  # [string] "GAME QUIT" handler, Yes/No of the "End card game" window
+func_800ABE74 tm_drawQuitWin  # [code] window content, text 0x2D "End card game, Yes, No"
+func_800ABEC4 tm_checkBattles  # [code] after a placement or win, finds the adjacent opponent cards that point back at the placed card, BATTLE or BATTLE SELECT, else flips the unopposed ones (tm_setFlips) or ends the TURN
+func_800AC060 tm_taskBattle  # [string] "BATTLE" handler, battle animation, random rolls from the attack and defence values, flips the loser
+func_800AC4C8 tm_getBattleValues  # [code] attack and defence by the attacker's type, 0 power vs pdef, 1 vs mdef, 2 vs the lower defence, 3 the highest own stat vs the lowest of the target
+func_800AC5AC tm_taskBattleWin  # [string] "BATTLE WIN" handler, combo flips from the defeated card, else the next battle check
+func_800AC624 tm_taskBattleLose  # [string] "BATTLE LOSE" handler, combo flips for the other side, else TURN
+func_800AC6A4 tm_taskTurn  # [string] "TURN" handler, passes the turn to the other side (ENEMY THINK or PLAYER CARD SELECT)
+func_800AC708 tm_drawFlash  # [string] "FLASH" task drawer, white flash over the flipped squares, combo arrow bars or the battle loser blink, then sets the new owner
+func_800ACDA0 tm_drawFlash2  # [string] "FLASH2" task drawer, flash over the cards changing hands after the game
+func_800ACF8C tm_taskFlashArrow  # [string] "FLASH ARROW" handler, after 21 frames goes to FLASH
+func_800ACFC8 tm_clearFlips  # [code] clears the 10 flip entries, the task timer and phase
+func_800ACFFC tm_layoutCards  # [code] positions and depth of the hand cards each frame, and the battle approach of the two battling cards
+func_800AD400 tm_drawCards  # [code] draws the 10 cards, frame, face (tm_drawCardFace), arrows and stats, dimmed or blinking by task
+func_800AD974 tm_startCardMove  # [code] sets start and target positions of all 10 cards and starts CARD_MOVE
+func_800AD9F8 tm_taskCardMove  # [string] "CARD_MOVE" task drawer, moves the cards back to the hands, then GET SELECT or FLASH2
+func_800ADDCC tm_countCapturedBeforeLost  # [code] counts the enemy hand cards before slot TmState.unk550 that the player owns (unused)
+func_800ADE14 tm_countKept  # [code] cards of a side's own hand (0 player 0-4, 1 enemy 5-9) still owned by that side
+func_800ADE5C tm_nextTrade  # [code] finds the next card to change hands, CARD_CHANGE, else the over-100-cards window or the rematch question
+func_800ADFFC tm_drawOver100Win  # [code] window content, text 0x16 "You have over 100 cards. Select card to discard."
+func_800AE044 tm_drawDiscardTitle  # [code] window content, text 0x17 "Discard " (unused)
+func_800AE084 tm_taskCardChange  # [string] "CARD_CHANGE" task drawer, moves the card to the middle, adds or keeps it and opens the "Received"/"Lost" window
+func_800AE398 tm_drawTradeBadge  # [string] "TRADE" task drawer, 56x24 label over the card when g_tmTradeBadge
+func_800AE494 tm_drawTradeWin  # [code] window content, text 3 "Received" or 4 "Lost", card name, text 7
+func_800AE54C tm_endTrade  # [code] closes the trade window, starts CHANGE2
+func_800AE5A0 tm_taskChange2  # [string] "CHANGE2" task drawer, moves the traded card to the top of its new hand, then tm_nextTrade
+func_800AE6EC tm_stackHands  # [code] spreads the cards stacked at each hand's x position over 128 lines, optionally resets their depth
+func_800AE830 tm_countInHand  # [code] cards owned by a side and not on the board
+func_800AE878 tm_countPlayerHand  # [code] visible cards 0-4 owned by a side and not on the board
+func_800AE8D0 tm_countCaptured  # [code] enemy hand cards (5-9) owned by the player
+func_800AE908 tm_getCaptured  # [code] n-th enemy hand card owned by the player
+func_800AE94C tm_countOnBoard  # [code] board cards owned by a side, the score tm_drawScore shows
+func_800AE998 tm_countOwned  # [code] cards owned by a side
+func_800AE9D0 tm_getHandCard  # [code] n-th card owned by a side and not on the board
+func_800AEA24 tm_initHands  # [code] resets the 10 cards, stats from the card table, all hidden
+func_800AEBB4 tm_dealEnemyHand  # [code] 5 enemy cards drawn from the opponent's deck by a rarity roll, the card won last game at slot unk550
+func_800AEE08 tm_getCardAt  # [code] card of board square x, y
+func_800AEE2C tm_showStockCard  # [code] CHOICE/CARD AWAY preview, "NO" number, up to 5 copies of the card under the stock cursor and its name
+func_800AF100 tm_returnKept  # [code] adds the player's cards still owned back to the stock (func_80062420)
+func_800AF170 tm_returnHand  # [code] adds the 5 player cards back to the stock, each with a stat level-up when the player won
+func_800AF1F4 tm_addRandomCard  # [code] adds a card with random stats (tm_makeCard) when the stock has under 100
+func_800AF268 tm_getStockCursorId  # [code] card id under the stock cursor, column * 10 + row
+func_800AF288 tm_hideCards  # [code] clears the visible flag of the 10 cards
+func_800AF2A8 tm_showCards  # [code] sets the visible flag of the 10 cards (unused)
+func_800AF2CC tm_levelUpStat  # [string] printf "AP=%x : PD=%x : MD=%x", raises power, pdef or mdef by 1 up to the card table value
+func_800AF388 tm_levelUpRandom  # [code] tm_levelUpStat of a random stat
+func_800AF3E8 tm_makeCard  # [code] stats from the card table (random 50-100% when asked), arrow count from the arrow odds, type from the table, 1/128 type 2
+func_800AF760 tm_taskEnemyAppear  # [string] "ENEMY APEAR" handler, drops the enemy cards in, then the COIN toss
+func_800AF890 tm_animEnemyThink  # [string] "ENEMY THINK" handler, slides the enemy hand cards out one after another
+func_800AF95C tm_drawCardStats  # [code] power, type letter, pdef and mdef glyphs under a card
+func_800AFB60 tm_drawStatGlyph  # [code] one 8x8 stat glyph (hex digit or type letter)
+func_800AFBE4 tm_checkGameEnd  # [code] when both hands are empty compares the board counts, records the win, loss or draw (func_800624A8/E8/52C) and starts RESULT
+func_800AFCE4 tm_drawResult  # [string] "RESULT" task drawer, WIN/PERFECT/LOSE/DRAW banner, plays its jingle
+func_800B01E8 tm_playSe  # [code] tm_soundCmd 0xD000 (sound effect start) of g_tmSeIds[i]
+func_800B022C tm_stopSe  # [code] tm_soundCmd 0x5100 of g_tmSeIds[i], stops the coin sound tm_taskEnemyAppear started
+func_800B026C tm_revealBlocks  # [string] "ENEMY APEAR" handler, shows one block every 9 frames
+func_800B030C tm_drawBlocks  # [code] block stones on the board, the appearing one zooms in
+func_800B0618 tm_placeBlocks  # [code] 0-6 blocks (weighted roll) on random empty squares
+func_800B07DC tm_taskEnemyThink  # [string] "ENEMY THINK" task drawer, random delay then ENEMY CARD SELECT
+func_800B08CC tm_enemySelect  # [string] "ENEMY CARD SELECT" handler, scores every hand card on every empty square by the opponent's AI level and places the best
+func_800B0E58 tm_setCellOwner  # [code] sets the owner of the card on a board square (unused)
+func_800B0EB8 tm_evalPlacement  # [code] for a card on a square, minus the number of battles, else the number of unopposed captures
+func_800B1010 tm_findDefender  # [code] first adjacent player card whose arrow points back at the card
+func_800B1110 tm_setFlips  # [code] marks the adjacent opponent cards a card's arrows point at, mode 1 flips (FLASH), mode 2 combo (FLASH ARROW)
+func_800B12F0 tm_getDefender  # [code] steps a position one square in a direction, returns the opponent card there if its arrow points back
+func_800B13C0 tm_stepDir  # [code] moves a board position one square in direction 0-7 (up, clockwise)
+func_800B14AC tm_drawArrows  # [code] arrow sprites of a card, blinking the combo directions
+func_800B16A4 tm_drawCursor  # [code] animated hand cursor sprite and its shadow, mirrored for mode 2
+func_800B19D4 tm_getCell  # [code] board square x, y, g_tmOffBoardCell outside the 4x4 board
+func_800B1A24 tm_initBoard  # [code] empties the 16 squares, marks g_tmOffBoardCell and places the blocks
+func_800B1A84 tm_drawStock  # [string] "Stock:", "Type:", "WIN"/"LOSE"/"DRAW" labels with the stock grid of card counts
+func_800B295C tm_openStock  # [code] refreshes the stock counts and starts CHOICE
+func_800B299C tm_drawSelectTitle  # [code] window content, text 0x13 "Select cards" (unused)
+func_800B29DC tm_resetStockCursor  # [code] clears the stock cursor, hand count and copy index
+func_800B29F0 tm_drawCardFace  # [code] card picture from the 100 images loaded by tm_setup (page id/30, clut 0x19C + id), mirrored when small
+func_800B2C5C tm_taskCoin  # [string] "COIN" task drawer, coin toss animation that picks the first turn
+func_800B2F60 tm_drawCombo  # [code] combo label and count (TmState.unk4FC) for unk4F0 frames, set by tm_drawFlash
+func_800B3198 tm_drawBattleValues  # [code] the two battle values over the battling cards (TmState.unk574/578)
+func_800B33CC tm_drawBigDigit  # [code] one 10x16 digit sprite
+func_800B3488 tm_askRematch  # [code] text 2 "Play a rematch, Yes, No" window and TRY AGAIN, forced opponents 0x7C-0x7F go to END FADE
+func_800B355C tm_drawRematchWin  # [code] window content, text 2 "Play a rematch, Yes, No"
+func_800B35A4 tm_taskEndFade  # [string] "END FADE" handler, fades out and ends the game loop after 31 frames
+func_800B35F8 tm_startEndFade  # [code] starts the screen and music fade (0xC401) and END FADE
+D_800B365C g_tmDataFile  # [code] address of the data file tm_loadDataFile reads (file 0x2715), db container
+D_800B3660 g_tmDataCopy  # [code] address of the copy tm_copyDataFile makes
+D_800B3C8C g_tmSeIds  # [code] sound effect ids played by tm_playSe(index)
+D_800B3CD0 g_tmWindowOpening  # [code] set while a window opens (tm_waitWindow), input handlers wait for 0
+D_800B3CD8 g_tmTradeCardId  # [code] id of the card changing hands, shown by tm_drawTradeWin
+D_800B3CDC g_tmTradeBadge  # [code] tm_drawTradeBadge draws its label when set, the card is the first copy received or the last copy lost
+D_800B3CE0 g_tmTradeLost  # [code] 0 card received, 1 lost (text 3 or 4 in tm_drawTradeWin)
+D_800B3CE8 g_tmOffBoardCell  # [code] returned by tm_getCell outside the board, state 3
+D_800B3CF0 g_tmStockCount  # [string] number drawn after "Stock:" by tm_drawStock
+D_800B3CF4 g_tmStockTypes  # [string] number drawn after "Type:" by tm_drawStock
+D_800A72B8 g_tmFlashBars  # [code] per direction bar piece of the combo flash (tm_drawFlash)
+D_800A73B4 g_tmArrowBits  # [code] arrow bit of direction 0-7 (1 << dir), tm_makeCard
+D_800A73BC g_tmBackArrowBits  # [code] arrow bit of the opposite direction, tested on the target card
+D_800A73C4 g_tmArrowSprites  # [code] arrow sprite position and uv per direction (tm_drawArrows)
+D_800A74A8 g_tmSlash  # [code] "/" between copy index and count in tm_drawStock
+D_800A74AC g_tmCoinFrames  # [code] coin toss animation frames (tm_taskCoin)
+D_800A7398 g_tmNoLabel  # [code] "NO" before the card number in tm_showStockCard
+func_800A9B0C tm_updatePad  # [code] func_8002C308(0) each frame, main's key-repeat update that sets g_padRepeat from port 0
+func_800ABEBC tm_drawBattleSelect  # [string] empty drawer tm_mainLoop runs in the "BATTLE SELECT" task
+func_800B3480 tm_drawTryAgain  # [string] empty drawer tm_mainLoop runs in the "TRY AGAIN" task
+# g_cardGameText (0x800B3668, already named) renamed to g_tmText by hand for the tm_ prefix
+# FIELDS include/ovl_0d.h TmCard: unk0=id,unk1=arrows,unk2=power,unk3=type,unk4=pdef,unk5=mdef,unk8=hidden,unkC=x,unk10=y,unk14=owner,unk18=onBoard,unk1C=small,unk20=fromX,unk24=fromY,unk28=toX,unk2C=toY,unk30=depth,unk34=visible
+# FIELDS include/ovl_0d.h TmCell: unk0=state,unk4=card; TmFlip (was TmUnk350): unk0=mode,unk4=x,unk8=y,unkC=arg,unk10=card; TmBlock (was TmUnk2F0): unk0=hidden,unk4=x,unk8=y,unkC=style; TmPos: unk0=x,unk4=y; TmBattle (new, tm_getBattleValues, was TmPos): atk,def
+# FIELDS include/ovl_0d.h TmCardData: unk0=power,unk1=type,unk2=pdef,unk3=mdef; TmDeck (was TmDeckOdds): v=ids; TmOpponent (was TmLevel): unk0=deck,unk1=aiLevel; TmArrow: unk0=x,unk4=y,unk8=smallX,unkC=smallY,unk10=u,unk14=v; TmCoinFrame: unk0=x,unk4=u,unk8=v,unkC=w; TmFlash: unk0=shape,unk4=dirX,unk8=dirY,unkC=cornerX,unk10=cornerY,unk14=offX,unk18=offY; TmTim: unk0=id,unk4=flags,unk8=clutLen,unkC=clutRect
+# FIELDS include/ovl_0d.h TmState: unk0=task,unk4=cursor,unk8=boardX,unkC=boardY,unk10=cards,unk268=board,unk2E8=timer,unk2EC=brightness,unk2F0=blocks,unk350=flips,unk418=phase,unk41C=flipOwner,unk420=flashNext,unk424=srcX,unk428=srcY,unk42C=dstX,unk430=dstY,unk434=turn,unk438=autoPlay,unk43C=wins,unk440=losses,unk444=draws,unk448=deck,unk44C=aiLevel,unk450=opponent,unk458=msgWin,unk45C=result,unk460=moveFrames,unk464=showScore,unk468=showBoard,unk46C=showBlocks,unk470=tradeCard,unk474=stockCol,unk478=stockRow,unk47C=handCount,unk480=animFrame,unk484=quitWin,unk488=savedFrame,unk48C=targets,unk4AC=numTargets,unk4B0=attacker,unk4B4=copyIdx,unk4B8=infoWin,unk4C4=less5Win,unk4C8=arrowOdds,unk4EC=oddsRow,unk4F0=comboTimer,unk4F4=comboX,unk4F8=comboY,unk4FC=comboShown,unk500=comboCount,unk504=flashMode,unk508=comboCard,unk50C=comboDirs,unk510=lostCard (TmCardStats id/arrows/power/type/pdef/mdef),unk54C=hasLostCard,unk550=lostSlot,unk558=savedRepeat,unk564=nameSlide,unk568=scrollTimer,unk56C=blockIdx,unk570=numBlocks,unk574=atkShown,unk578=defShown,unk57C=valuesTimer,unk590=landed,unk5A4=thinkDelay,unk5A8=blockTimer,unk5AC=blocksDone,unk5B0=getCursor,unk5B4=quitChoice,unk5B8=quitting,unk5BC=atkRoll,unk5C0=defRoll
+
+## ovl_14: ovl_14 (opening: boot screen, opening movie, title screen, attract images)
+# Source files renamed: tu_800A7088 opening, tu_800A7578 opening_setup, tu_800A7FF0 scene (module W, also in ovl_15), tu_800A833C opening_scenes, tu_800A8574 title_menu, tu_800A9220 opening_movie, tu_800A9E14 opening_attract, tu_800AAADC opening_boot
+func_800A7088 opening_main  # [code] overlay entry, loops boot screen, opening movie + title, attract image sets until the title starts a game, then hands over to the field (g_gameState->unk0 0x100000)
+func_800A727C opening_clearOt  # [code] ClearOTagR of this frame's OT, same as the copies in the movie/attract/boot loops (uncalled)
+func_800A72C0 opening_swapBuffers  # [code] DrawSync, VSync, PutDispEnv, DrawOTagEnv, flips GameData.unk8 (uncalled, ovl_15 ending_swapBuffers is the same code)
+func_800A741C opening_findSceneSectors  # [code] looks the field id (mode 1) or world id (mode 3) up in the directory lists at D_80067944 + 0x14C700 and stores GameData.sceneSector/sceneSectors
+func_800A7578 opening_initNewGame  # [code] run by the start scene's leave when the title cursor is on New Game, before the field id 0x46 is set; clears the event globals and calls the other new-game inits
+func_800A75C8 opening_resetGameData  # [code] opening_resetFieldState and other GameData resets, also run before a loaded game is started
+func_800A7600 opening_resetFieldState  # [code] clears GameData scene bytes and the return sectors (-1)
+func_800A767C opening_init  # [code] first call of opening_main, installs opening_soundCmd as GameData.unk83C, loads the data file and the title music
+func_800A7768 opening_resetMusicSlots  # [code] sets GameData.unk81C/unk820 to 0xFFFF and the volumes unk826 to 0x7F, the music slots opening_soundCmd fills
+func_800A77BC opening_exit  # [code] last call of opening_main, SetDispMask(0)
+func_800A780C opening_loadMusic  # [code] copies db entry 0x7003A (the music opening_soundCmd plays) to GameData.unk814 and loads sound bank 0x90122
+func_800A78C0 opening_loadData  # [code] reads file 0x2717 of dir 1 to D_80067944 + 0x10000 and db_registers it
+func_800A796C opening_freeData  # [code] db_unregister of the opening_loadData buffer
+func_800A799C opening_soundCmd  # [code] the opening's GameData.unk83C sound hook (same role as btl_soundCmd in ovl_0b), dispatches music (0x0xxx) and sound (0x1xxx) commands
+func_800A7F70 opening_setMusicVolume  # [code] stores the music volume in GameData.unk826[0], a fade to 0 records its length and start VSync
+func_800A7FB0 opening_isMusicFading  # [code] VSync(-1) - GameData.unk8C4 < unk842, the fade started by opening_setMusicVolume (uncalled)
+func_800A7FF0 scene_init  # [code] module W (also in ovl_15), calls every scene's init in g_sceneModes and enters scene 0
+func_800A808C scene_update  # [code] module W, calls the current scene's update
+func_800A80D4 scene_exit  # [code] module W, calls the current scene's leave
+func_800A811C scene_get  # [code] module W, returns g_scene.cur
+func_800A812C scene_set  # [code] module W, leaves the current scene and enters the new one when it differs
+func_800A81B8 scene_checkDisc  # [code] module W, re-reads the disc bits (g_gameState->unkB) and returns the index of the disc that was in before when that disc is gone, else 0xFF; the result goes to menu 8
+func_800A8260 scene_discIndex  # [code] module W, index of the lowest of 4 disc bits
+func_800A8298 scene_isDiscGone  # [code] module W, whether a disc bit of the first mask is missing from the second
+func_800A82B0 scene_isTitleIdle  # [code] module W, no fade running and the title scene is current; the title's idle timeout only runs then
+func_800A82F4 scene_setFadeScreen  # [code] module W, stores g_scene.fadeScreen and restarts the title fade-in when the title is current
+func_800A832C scene_getFadeScreen  # [code] module W, returns g_scene.fadeScreen
+func_800A8344 opening_discEnter  # [code] g_sceneModes[3] enter, sets opening_discOnClose as the menu close callback (the disc prompt of menu 8 is open in this scene)
+func_800A8378 opening_discOnClose  # [code] menu close callback of the disc scene, goes to the start scene
+func_800A83A0 opening_startEnter  # [code] g_sceneModes[4] enter, clears the frame counter
+func_800A83AC opening_startUpdate  # [code] g_sceneModes[4] update, goes to the end scene after 2 frames
+func_800A83E8 opening_startLeave  # [code] g_sceneModes[4] leave, New Game on the title: opening_initNewGame and field 0x46
+func_800A8450 opening_loadEnter  # [code] g_sceneModes[2] enter (Continue opened the load menu), sets opening_loadOnClose as the menu close callback
+func_800A847C opening_loadUpdate  # [code] g_sceneModes[2] update, runs opening_loadDone once the menu closed
+func_800A84B0 opening_loadOnClose  # [code] close callback of the load menu, flags it and checks func_801F5330 (ovl_39 loaded a game)
+func_800A84EC opening_loadDone  # [code] after the load menu: a loaded game goes to the disc prompt or the start scene, else back to the title with the cursor on Continue
+func_800A8574 opening_titleInit  # [code] g_sceneModes[1] init, cursor on Continue and loads the title images
+func_800A859C opening_titleEnter  # [code] g_sceneModes[1] enter, resets the title state, opens the memory card events, starts the fade-in
+func_800A8618 opening_titleRefresh  # [code] called by scene_setFadeScreen while the title is current, restarts the fade-in
+func_800A8638 opening_titleUpdate  # [code] g_sceneModes[1] update, input, draw and card polling until a choice is made, then opening_titleConfirm
+func_800A8694 opening_titleLeave  # [code] g_sceneModes[1] leave, closes the card events, opens the load menu (menu 4) when the cursor is on Continue
+func_800A86D8 opening_titleInput  # [code] Up/Down move the cursor between New Game and Continue, Start/Cross decide
+func_800A87AC opening_titleDraw  # [code] draws the title images, the two choices and the cursor
+func_800A87E4 opening_titleTick  # [code] polls the memory cards and steps the fade-in
+func_800A880C opening_titleLoadImages  # [code] reads file 0x3C of dir 1 to 0x801CDF00 and uploads it with opening_titleLoadTims
+func_800A8868 opening_titleLoadTims  # [code] uploads each TIM of the pack and fills g_titleMenu.images (uv, clut, size, tpage)
+func_800A8A0C opening_titleDecide  # [code] buzzer on Continue without a memory card, else plays the sound and fades out with opening_titleOnFadeOut
+func_800A8A94 opening_titleDrawBackground  # [code] draws title images 0-9 (10 strips 32 wide across the screen), then 10 and 13
+func_800A8B7C opening_titleDrawChoices  # [code] draws New Game and Continue (images 11, 12 at the cursor positions), Continue dimmed without a memory card
+func_800A8C60 opening_titleDrawCursor  # [code] the hand cursor left of g_titleCursorPos[cursor]
+func_800A8CF8 opening_titleStepFadeIn  # [code] counts the fade-in frames to 0x30, then ends the fade-in
+func_800A8D2C opening_titleOpenCardEvents  # [code] OpenEvent(0xF4000001, ...) for the 4 memory card events of g_titleCardEvents
+func_800A8DB0 opening_titleCloseCardEvents  # [code] DisableEvent and CloseEvent of the 4 memory card events
+func_800A8E10 opening_titlePollCard  # [code] starts _card_info on one port and records whether a card answered, alternating ports
+func_800A8EA4 opening_titleHasCard  # [code] whether a memory card is in either port
+func_800A8ED8 opening_titleStartCardInfo  # [code] clears the card events, _card_wait and _card_info of the polled port
+func_800A8F44 opening_titleTestCardEvents  # [code] index of the card event that fired (0 IOE, 3 NEW = card present), -1 = none
+func_800A8FBC opening_titleOnFadeOut  # [code] fade-out callback of opening_titleDecide, marks the choice made
+func_800A8FCC opening_titleGetCursor  # [code] returns the title cursor (0 New Game, 1 Continue)
+func_800A8FDC opening_titleStartFadeIn  # [code] fades the choices in, or shows them and fades the screen in when scene_getFadeScreen
+func_800A903C opening_titleDrawFading  # [code] sprite of a title image with the fade-in brightness
+func_800A9180 opening_titleConfirm  # [code] New Game: disc 1 check then the disc or start scene, Continue: load scene and menu 4
+func_800A9220 opening_movieThenTitle  # [code] plays the opening movie (ovl_64 list 1 entry 0) when disc 1 is in, then runs the scenes (title) until the idle timeout (0) or the end scene (1)
+func_800A9968 opening_movieInit  # [code] loads ovl_64 (file 0x64 of dir 0) to D_80067944 + 0xF1700 and finds the movie file
+func_800A9B14 opening_movieClearOt  # [code] ClearOTagR of this frame's OT (copy)
+func_800A9B58 opening_movieSwap  # [code] frame swap of the movie loop, applies the queued flag sets and clears
+func_800A9DD4 opening_movieOnEnd  # [code] mbg_setEndCallback callback, shuts the player down and goes to the title
+func_800A9E14 opening_attract  # [code] shows the 4 images of attract set N (skippable with Start/Cross), then runs the scenes (title) until the idle timeout (0) or the end scene (1)
+func_800AA848 opening_attractInit  # [code] reads the image file g_attractFiles[set] and db_registers it
+func_800AA960 opening_attractFree  # [code] db_unregister of the attract image file
+func_800AA994 opening_attractClearOt  # [code] ClearOTagR of this frame's OT (copy)
+func_800AA9D8 opening_attractSwap  # [code] frame swap of the attract loop
+func_800AAADC opening_bootScreen  # [code] first boot only (D_80067950 == 0), shows image 0x44FB0 centred for 0xD2 frames
+func_800AAF40 opening_bootScreenLoad  # [code] reads file 0x2718 of dir 1 and uploads image 0x44FB0
+func_800AB06C opening_bootScreenFree  # [code] db_unregister of the boot screen file
+func_800AB09C opening_bootClearOt  # [code] ClearOTagR of this frame's OT (copy)
+func_800AB0E0 opening_bootSwap  # [code] frame swap of the boot screen loop (copy of opening_attractSwap)
+D_800AB230 g_openingData  # [code] buffer of opening_loadData
+D_800AB234 g_openingSoundPending  # [code] -1, set to the command kind while opening_soundCmd starts music, reset after
+D_800AB238 g_sceneModes  # [code] module W table, init enter update leave per scene id (SceneMode)
+D_800AB298 g_titleImage10Pos  # [code] position of title image 10 (opening_titleDrawBackground)
+D_800AB29C g_titleImage13Pos  # [code] position of title image 13 (opening_titleDrawBackground)
+D_800AB2A0 g_titleNewGamePos  # [code] position of the New Game image 11
+D_800AB2A4 g_titleContinuePos  # [code] position of the Continue image 12
+D_800AB2A8 g_titleCursorPos  # [code] cursor positions per choice, the first two equal the New Game and Continue image positions
+D_800AB2B4 g_titleCardEvents  # [code] memory card event specs opened by opening_titleOpenCardEvents (4 IOE, 0x8000 ERROR, 0x100 TIMOUT, 0x2000 NEW)
+D_800AB2C4 g_movieFlags  # [code] opening movie loop flags (MOVIE_*)
+D_800AB2C8 g_movieFrame  # [code] frames of the movie loop, ++ in opening_movieSwap
+D_800AB2CC g_movieSkipped  # [code] 1 when the movie was skipped or not played, passed to scene_setFadeScreen
+D_800AB2CE g_movieLastFrame  # [code] g_mbgFrame seen in the previous loop, a frame number that stops rising ends the movie
+D_800AB2D0 g_attractFlags  # [code] attract loop flags (ATTRACT_*)
+D_800AB2D4 g_attractData  # [code] buffer of opening_attractInit
+D_800AB2D8 g_attractFiles  # [code] dir 1 file id of each attract image set
+D_800AB2DC g_attractImages  # [code] db image ids, 4 per attract set
+D_800AB2EC g_attractSkipped  # [code] passed to scene_setFadeScreen after the attract images
+D_800AB2F0 g_bootScreenData  # [code] buffer of opening_bootScreenLoad
+D_800AB2F4 g_bootScreenImage  # [code] TIM 0x44FB0 drawn by opening_bootScreen
+D_800AB300 g_openingState  # [code] opening_main state (OPENING_*)
+D_800AB308 g_scene  # [code] module W state, current scene
+D_800AB310 g_startFrames  # [code] frames counted by opening_startUpdate
+D_800AB318 g_loadMenuClosed  # [code] set by opening_loadOnClose
+D_800AB320 g_titleMenu  # [code] title menu state (TitleMenu)
+D_800AB3B8 g_movieFlagQueue  # [code] [0] flags to set, [1] flags to clear, one entry per coming frame, shifted by opening_movieSwap
+D_800AB3C8 g_movieState  # [code] state of opening_movieThenTitle
+D_800AB3D0 g_attractSprites  # [code] the two sprites of an attract image, per buffer
+D_800AB420 g_attractTpages  # [code] their DR_TPAGEs
+D_800AB440 g_attractState  # [code] state of opening_attract
+D_800AB448 g_bootScreenSprite  # [code] sprite of the boot screen, per buffer
+D_800AB470 g_bootScreenTpage  # [code] its DR_TPAGE
+func_800A833C opening_discInit  # [code] g_sceneModes[3] init (empty)
+func_800A8368 opening_discUpdate  # [code] g_sceneModes[3] update (empty, the disc menu runs on its own)
+func_800A8370 opening_discLeave  # [code] g_sceneModes[3] leave (empty)
+func_800A8398 opening_startInit  # [code] g_sceneModes[4] init (empty)
+func_800A8448 opening_loadInit  # [code] g_sceneModes[2] init (empty)
+func_800A84A8 opening_loadLeave  # [code] g_sceneModes[2] leave (empty)
+D_8019DC68 g_mbgMovieLists[1].movies  # [code] by hand: the use became g_mbgMovieLists[1].movies[0].path (symbol line g_mbgMovieLists = 0x8019DC5C added)
+# FIELDS include/ovl_14.h Ovl14Text->TitleImage: unk0=uvClut,unk4=w,unk5=h,unk6=tpage; Ovl14Dir->SceneDirEntry: unk0=id,unk2=link,unk4=sector; Ovl14Mode->SceneMode: unk0=init,unk4=enter,unk8=update,unkC=leave; Ovl14ModeState->SceneState: unk0=cur,unk3=fadeScreen; Ovl14Unk320->TitleMenu: unk1=shown,unk2=fadingIn,unk3=cursor,unk4=cardIn,unk6=cardPort,unk7=cardPolling,unk8=decided,unkC=fadeFrames,unk14=cardEvents,unk24=images; Ovl14Flags->AttractFlags: unk0=bits; Ovl14Pos->ScreenPos
+
+## ovl_15: ovl_15 (ending: last movie, The End screen, Blackjack)
+# Source files renamed: tu_800A713C ending, tu_800A7378 blackjack, tu_800AB100 bj_action, tu_800AB490 the_end, tu_800ACE1C scene (module W), tu_800AD138 bj_wager, tu_800AD44C ending_menu, tu_800AD7DC ending_messages
+func_800A713C ending_main  # [code] overlay entry, plays the ending movie FMV059 (ovl_64 list 4 entry 0x12), then loops the end screen and Blackjack (states 1 and 2, the message pages and FMV060, are never reached)
+func_800A723C ending_clearOt  # [code] ClearOTagR of this frame's OT (uncalled copy)
+func_800A7280 ending_swapBuffers  # [code] DrawSync, VSync, PutDispEnv, DrawOTagEnv, flips GameData.unk8 (uncalled, same code as ovl_14 opening_swapBuffers)
+func_800A7378 ending_playMovie  # [code] plays ovl_64 movie list/entry (args) when disc 4 is in (g_gameState->unkB bit 3), with the flag-queue loop of ovl_14 opening_movieThenTitle
+func_800A766C ending_movieInit  # [code] loads ovl_64 (file 0x64 of dir 0) to D_80067944 + 0xF1700 and finds the movie file g_mbgMovieLists[list].movies[entry]
+func_800A7838 ending_movieClearOt  # [code] ClearOTagR of this frame's OT (copy)
+func_800A787C ending_movieSwap  # [code] frame swap of the movie loop, applies the queued flag sets and clears
+func_800A7A84 ending_movieOnEnd  # [code] mbg_setEndCallback callback, shuts the player down and ends the loop
+func_800A7ABC bj_drawResult  # [code] Blackjack, draws result banner 0/1/2 (the player won / lost / push, by the callers in bj_main) from two sprites at brightness c
+func_800A8528 bj_drawCardBack  # [code] Blackjack, card-sized sprite 0x38x0x48 from v 0x80 with the back CLUT, drawn for the hole card, the shoe and dealt cards in flight
+func_800A8630 bj_drawCard  # [code] Blackjack, card face (rank, suit) with corner indices, suit pips from g_bjPips or a face picture for ranks 9-11
+func_800A8F00 bj_drawShoe  # [code] Blackjack, three stacked card backs at the shoe position (0xF0, 0xA) cards are dealt from
+func_800A8F58 bj_shoeInit  # [code] Blackjack, fills the shoe with 6 decks of cards 0-51
+func_800A8FA4 bj_shoeShuffle  # [code] Blackjack, 5 passes of random swaps over the 312 cards
+func_800A90B8 bj_dealCard  # [code] Blackjack, takes the next shoe card into the hand and updates its value (aces 11 or 1, bust over 21), flags a reshuffle after card 249
+func_800A91F0 bj_handInit  # [code] Blackjack, clears a hand and sets its screen position
+func_800A9228 bj_splitHand  # [code] Blackjack, moves the second card of the player hand to the split hand and revalues both (split aces flagged)
+func_800A92FC bj_handOptions  # [code] Blackjack, 2 = two cards (can double), 3 = a pair (can also split)
+func_800A9334 bj_drawHand  # [code] Blackjack, draws the hand's cards (or the first count), the hole card face down
+func_800A945C bj_isBlackjack  # [code] Blackjack, value 21 with two cards
+func_800A9488 bj_main  # [code] Blackjack game loop, bet, deal, hit stand double split, dealer draws to 17, settles the bankroll
+func_800AAD24 bj_init  # [code] uploads the Blackjack images and CLUT, starts the music
+func_800AAFA4 bj_exit  # [code] last call of bj_main (returns 0)
+func_800AAFAC bj_clearOt  # [code] ClearOTagR of this frame's OT and resets the Blackjack primitive counters
+func_800AAFFC bj_swapBuffers  # [code] frame swap of bj_main
+func_800AB100 bj_actionInit  # [code] g_sceneModes[3] init, cursor on Stand
+func_800AB10C bj_actionEnter  # [code] g_sceneModes[3] enter (bj_main sets scene 3 for the player's move)
+func_800AB160 bj_actionUpdate  # [code] g_sceneModes[3] update, input then draw
+func_800AB198 bj_actionLeave  # [code] g_sceneModes[3] leave
+func_800AB1B8 bj_actionGetCursor  # [code] the chosen move, 0 Stand 1 Hit 2 Double 3 Split (bj_main, matching the labels drawn at y 0x90-0xC0)
+func_800AB1C8 bj_actionInput  # [code] Up/Down over Stand Hit Double Split, skipping Double and Split when not allowed, Cross decides
+func_800AB34C bj_actionDraw  # [code] draws the cursor (the other two steps are empty)
+func_800AB37C bj_actionTick  # [code] steps the fade-in counter
+func_800AB39C bj_actionDecide  # [code] cursor sound, scene 4 (bj_main sees the move made)
+func_800AB3D4 bj_actionDrawCursor  # [code] hand cursor left of g_bjActionCursorPos[cursor]
+func_800AB45C bj_actionStepFadeIn  # [code] counts to 48, then ends the fade-in
+func_800AB490 ending_theEnd  # [code] shows the last ending image until the 16-button g_endingSecretCode is entered and Start is held, then fades out and returns 1 (Blackjack)
+func_800AC374 ending_theEndInit  # [code] uploads image g_endingImage, restarts the music
+func_800AC448 ending_theEndExit  # [code] last call of ending_theEnd (returns 0)
+func_800AC450 ending_theEndClearOt  # [code] ClearOTagR of this frame's OT (copy)
+func_800AC494 ending_theEndSwap  # [code] frame swap of ending_theEnd
+func_800AC598 ending_soundCmd  # [code] the ending's GameData.unk83C sound hook, same dispatcher as ovl_14 opening_soundCmd
+func_800ACB98 ending_init  # [code] first call of ending_main, installs ending_soundCmd, loads the data file and the music
+func_800ACC08 ending_exit  # [code] last call of ending_main, fades the music out and frees the data file
+func_800ACCB4 ending_loadMusic  # [code] copies db entry 0x7009C (the music ending_soundCmd plays) to GameData.unk814 and loads sound bank 0x901F3
+func_800ACD70 ending_loadData  # [code] reads file 0x2F44 of dir 1 to D_80067944 + 0x10000 and db_registers it
+func_800ACE1C scene_init  # [code] module W (also in ovl_14), calls every scene's init in g_sceneModes and enters scene 0
+func_800ACEB8 scene_update  # [code] module W, calls the current scene's update
+func_800ACF00 scene_exit  # [code] module W, calls the current scene's leave
+func_800ACF48 scene_get  # [code] module W, returns g_scene.cur
+func_800ACF58 scene_set  # [code] module W, leaves the current scene and enters the new one when it differs
+func_800ACFE4 scene_checkDisc  # [code] module W (uncalled here), see ovl_14 scene_checkDisc
+func_800AD08C scene_discIndex  # [code] module W, index of the lowest of 4 disc bits
+func_800AD0C4 scene_isDiscGone  # [code] module W, whether a disc bit of the first mask is missing from the second
+func_800AD0DC scene_isMenuIdle  # [code] module W (uncalled here), no fade running and one of the menu scenes 1-3 is current (ovl_14 scene_isTitleIdle)
+func_800AD11C scene_setFadeScreen  # [code] module W (uncalled here), stores g_scene.fadeScreen
+func_800AD128 scene_getFadeScreen  # [code] module W, returns g_scene.fadeScreen
+func_800AD138 bj_wagerInit  # [code] g_sceneModes[2] init
+func_800AD144 bj_wagerEnter  # [code] g_sceneModes[2] enter (bj_main sets scene 2 for the bet)
+func_800AD194 bj_wagerUpdate  # [code] g_sceneModes[2] update, input then draw
+func_800AD1CC bj_wagerLeave  # [code] g_sceneModes[2] leave
+func_800AD1EC bj_wagerGetCursor  # [code] returns the wager screen cursor (uncalled)
+func_800AD1FC bj_wagerInput  # [code] Right/Left raise and lower the wager by 10 (10 to 1000, at most the bankroll), Cross decides
+func_800AD308 bj_wagerDraw  # [code] draws the cursor (the other two steps are empty)
+func_800AD338 bj_wagerTick  # [code] steps the fade-in counter
+func_800AD358 bj_wagerDecide  # [code] cursor sound, scene 4 (bj_main deals)
+func_800AD390 bj_wagerDrawCursor  # [code] hand cursor left of g_bjWagerCursorPos
+func_800AD418 bj_wagerStepFadeIn  # [code] counts to 48, then ends the fade-in
+func_800AD44C ending_menuInit  # [code] g_sceneModes[1] init of a 4-choice menu nothing enters (scene_set is only called with 2, 3, 4), a copy of ovl_14's title menu
+func_800AD458 ending_menuEnter  # [code] g_sceneModes[1] enter (unused menu)
+func_800AD4AC ending_menuUpdate  # [code] g_sceneModes[1] update (unused menu)
+func_800AD4E4 ending_menuLeave  # [code] g_sceneModes[1] leave (unused menu)
+func_800AD504 ending_menuGetCursor  # [code] returns the unused menu's cursor (uncalled)
+func_800AD514 ending_menuInput  # [code] Up/Down over 4 choices, Cross decides (unused menu)
+func_800AD5EC ending_menuDraw  # [code] draws the cursor (unused menu)
+func_800AD624 ending_menuTick  # [code] steps the fade-in counter (unused menu)
+func_800AD644 ending_menuDecide  # [code] fades out with ending_menuOnFadeOut (unused menu)
+func_800AD690 ending_menuDrawCursor  # [code] hand cursor left of g_endingMenuCursorPos[cursor] (unused menu)
+func_800AD728 ending_menuStepFadeIn  # [code] counts to 48, then ends the fade-in (unused menu)
+func_800AD75C ending_menuOnFadeOut  # [code] fade-out callback, scene 4 (unused menu)
+func_800AD77C ending_menuStartFadeIn  # [code] same code as ovl_14 opening_titleStartFadeIn (unused menu)
+func_800AD7DC ending_messages  # [code] shows message pages 0-5 of g_endingMessages centred, fading each in and out (ending_main state 1, never reached)
+func_800ADC3C ending_messagesInit  # [code] resets the message loop
+func_800ADC98 ending_messagesClearOt  # [code] ClearOTagR of this frame's OT, resets the primitive pointer to this buffer
+func_800ADD04 ending_messagesSwap  # [code] frame swap of ending_messages
+func_800ADE14 ending_getMessage  # [code] string idx of a text bank (count, then u16 offset + u16 info per string)
+func_800ADE30 ending_drawText  # [code] draws a string with the GameData.unk7D4 font (two-byte codes above its first page), returns the next free primitive
+func_800ADF90 ending_textWidth  # [code] pixel width of a string in the GameData.unk7D4 font
+func_800AE028 ending_drawGlyph  # [code] one glyph sprite of the font, returns its advance in *out
+D_800A70EC g_endingMessages  # [code] text bank of ending_messages (6 Japanese strings)
+D_800AE0E0 g_movieFlags  # [code] ending movie loop flags (MOVIE_*, as ovl_14's)
+D_800AE0E4 g_movieFrame  # [code] frames of the movie loop, ++ in ending_movieSwap
+D_800AE0E8 g_bjBankroll  # [code] Blackjack money, starts at 1000 and is refilled to 1000 below 10, drawn under "Bankroll"
+D_800AE0EC g_bjClut  # [code] 16 white CLUT entries uploaded by bj_init
+D_800AE10C g_bjPips  # [code] pip positions on a card face per rank (bj_drawCard)
+D_800AE3DC g_bjActionCursorPos  # [code] cursor positions of Stand Hit Double Split (bj_actionDrawCursor)
+D_800AE3EC g_endingCodePos  # [code] how many buttons of g_endingSecretCode were entered, 16 = complete
+D_800AE3F0 g_endingSecretCode  # [code] the 16 buttons ending_theEnd compares with the pressed pad, in order
+D_800AE432 g_endingImage  # [code] db image id (| 0x40000) shown by ending_theEnd
+D_800AE43C g_endingSoundPending  # [code] -1, set to the command kind while ending_soundCmd starts music, reset after
+D_800AE440 g_endingData  # [code] buffer of ending_loadData
+D_800AE444 g_sceneModes  # [code] module W table, init enter update leave per scene id (SceneMode)
+D_800AE494 g_bjWagerCursorPos  # [code] cursor position of the wager screen
+D_800AE498 g_endingMenuCursorPos  # [code] cursor positions of the unused 4-choice menu
+D_800AE4AC g_messagesFrame  # [code] frames of ending_messages, ++ in ending_messagesSwap
+D_800AE4B0 g_messagesPrim  # [code] next free primitive of ending_messages, reset to g_messagesPrims[buffer] each frame
+D_800AE4B8 g_endingState  # [code] ending_main state
+D_800AE4C0 g_movieState  # [code] state of ending_playMovie
+D_800AE4C8 g_movieFlagQueue  # [code] [0] flags to set, [1] flags to clear, one entry per coming frame, shifted by ending_movieSwap
+D_800AE4D8 g_bjSprtCount  # [code] sprites used this frame from g_bjSprites
+D_800AE4DC g_bjTpageCount  # [code] DR_TPAGEs used this frame from g_bjTpages
+D_800AE4E0 g_bjClutRect  # [code] RECT of the g_bjClut upload
+D_800AE4E8 g_bjTpage  # [code] draw mode set before the Blackjack text
+D_800AE4F8 g_bjTpages  # [code] DR_TPAGE pool of Blackjack, per buffer
+D_800AE5F8 g_bjSprites  # [code] sprite pool of Blackjack, per buffer
+D_800B0DF8 g_bjState  # [code] bj_main state
+D_800B0E08 g_bjShoe  # [code] the 6-deck shoe (BjShoe)
+D_800B0F44 g_bjCanDouble  # [code] Double offered this move, bj_actionInput skips it otherwise and the label is drawn dimmed
+D_800B0F48 g_bjWager  # [code] Blackjack bet, 10 to 1000 in steps of 10, drawn under "Wager"
+D_800B0F4C g_bjCanSplit  # [code] Split offered this move
+D_800B0F50 g_bjAction  # [code] state of the action menu scene (SceneMenu)
+D_800B0F60 g_theEndSprites  # [code] the two sprites of the end image, per buffer
+D_800B0FB0 g_theEndTpages  # [code] their DR_TPAGEs
+D_800B0FD0 g_theEndState  # [code] state of ending_theEnd
+D_800B0FD8 g_scene  # [code] module W state, current scene
+D_800B0FE0 g_bjWagerMenu  # [code] state of the wager scene (SceneMenu)
+D_800B0FF0 g_endingMenu  # [code] state of the unused menu scene (SceneMenu)
+D_800B1000 g_messagesPrims  # [code] primitive buffers of ending_messages, per buffer
+D_800B5000 g_messagesState  # [code] state of ending_messages
+D_800A7018 g_bjFmt2d  # [string] "%2d", hand values in bj_main
+D_800A701C g_bjStrBankroll  # [string] "Bankroll" label in bj_main
+D_800A7028 g_bjFmtLong  # [string] "%ld", bankroll and wager in bj_main
+D_800A702C g_bjStrWager  # [string] "Wager" label in bj_main
+D_800A7034 g_bjStrStand  # [string] "Stand" label in bj_main
+D_800A703C g_bjStrHit  # [string] "Hit" label in bj_main
+D_800A7040 g_bjStrDouble  # [string] "Double" label in bj_main
+D_800A7048 g_bjStrSplit  # [string] "Split" label in bj_main
+# FIELDS include/ovl_15.h Ovl15Hand->BjHand: unk0=flags,unk2=count,unk4=value,unk6=hardValue,unk8=x,unkA=y,unkC=cards; Ovl15Shoe->BjShoe: unk0=flags,unk2=next,unk4=cards; Ovl15Mode->SceneMode: unk0=init,unk4=enter,unk8=update,unkC=leave; Ovl15ModeState->SceneState: unk0=cur,unk3=fadeScreen; Ovl15Screen->SceneMenu: unk1=shown,unk2=fadingIn,unk3=cursor,unk8=fadeFrames; Ovl15Pip->BjPip; Ovl15Pos->ScreenPos; Unk8019DC5C->MbgMovieList: unk0=count,unk4=movies; Unk8019DC5CSub->MbgMovie: unk0=path
+
+## ovl_64: ovl_64 (movie player, remaining globals)
+D_8019903C g_mbgScratchpadMsg  # [string] "Using scratchpad\n", printed by mbg_play when the VLC table is on the scratchpad
+D_8019DE0C g_mbgSectorLogCount  # [code] entries in g_mbgSectorLogFrame/g_mbgSectorLogSlot, reset per movie, counted per video sector read (mbg_streamOnVideoSector)
+D_801A07F0 g_mbgSectorLogFrame  # [code] frame number of each logged sector read
+D_801A06F0 g_mbgSectorLogSlot  # [code] ring slot of each logged sector read
+D_8019F7D0 g_mbgSlotRumble  # [code] per ring slot - the frame's pad vibration (MbgRumble), copied to the actuator bytes D_800739B0 by mbg_readFrame
+# FIELDS include/ovl_64.h Ovl64Flag renamed MbgRumble: unk0=on,unk1=level
+
+## ovl_64: ovl_64 (movie player, frame camera)
+D_8019F278 g_mbgStartCameraId  # [code] id (Ovl64FrameInfo.id) of the first frame's camera, saved with g_mbgStartCamera by mbg_readFrame and returned by mbg_getStartCamera
+# FIELDS include/ovl_64.h Ovl64FrameInfo: unk0=id,unk2..unk12=m00..m22,unk14=tx,unk18=ty,unk1C=tz,unk20=ofsX,unk22=ofsY; Ovl64Header: unk0..unk10=m00..m22,unk14=tx,unk18=ty,unk1C=tz; Ovl64Size: unk0=x,unk4=y; Ovl64Pair: unk0=size,unk4=data; Ovl64Cfg: b7=vibrationOff
+
+## ovl_38: ovl_38 (status menu, help arguments)
+D_801F11CC s_menuStatusHelpArgs  # [code] string and value arguments of help text 0 (func_8002BE44 / func_8002BE74), set by menuStatus_updateHelp
+D_801F1204 s_menuStatusHelpArg7  # [code] string argument 7 of help text 0
+# FIELDS include/ovl_38.h TextTween: unk0=delay,unk2=frames,unk4=dx,unk8=dy,unkC=onDone; Unk801F11CC renamed HelpArg: unk0=str,unk4=val
+# FIELDS include/ovl_34.h ConfigText: unk0=title,unk1=options; GaugeIcon: unk0=twX,unk1=twY,unk2=uv,unk4=w,unk5=h
+# FIELDS include/ovl_65.h DispBuf: unk70=ot,unk78=picTpage0,unk80=pic0,unk94=picTpage1,unk9C=pic1,unkB0=fadeTpage,unkB8=fade
+
+## ovl_32: ovl_32 (Chocograph menu, menu type 5)
+func_801F7AC0 menuChocograph_init  # [runtime] docs/runtime-findings.md field/menu campaign, menu type 5 (D_8006C9D4[5]) opens the Chocograph screen
+func_801F8FF8 menuChocograph_update  # [runtime] docs/runtime-findings.md field/menu campaign, D_8006C9D4[5] entry 1 (per frame)
+func_801F904C menuChocograph_exit  # [runtime] docs/runtime-findings.md field/menu campaign, D_8006C9D4[5] entry 2
+func_801F7C8C menuChocograph_inputTabs  # [runtime] docs/runtime-findings.md field/menu campaign (code), s_menuChocographInputFuncs[1], Left/Right between Select and Cancel, Cross on Cancel clears the selection
+func_801F7DC0 menuChocograph_inputList  # [runtime] docs/runtime-findings.md field/menu campaign (code), s_menuChocographInputFuncs[2], Cross selects when owned and the ability count suffices
+func_801F7EB4 menuChocograph_drawSelected  # [runtime] docs/runtime-findings.md field/menu campaign, ablation removes the selected chocograph window
+func_801F8010 menuChocograph_drawList  # [runtime] docs/runtime-findings.md field/menu campaign, ablation removes the list window
+func_801F8130 menuChocograph_drawCounts  # [runtime] docs/runtime-findings.md field/menu campaign, ablation removes "Inventory" / "Loc. Found"
+func_801F8240 menuChocograph_drawHint  # [runtime] docs/runtime-findings.md field/menu campaign, ablation removes the picture, clue and "Ability Required" window
+func_801F8404 menuChocograph_drawCursor  # [runtime] docs/runtime-findings.md field/menu campaign, ablation removes the hand cursor
+func_801F84F0 menuChocograph_updateHelp  # [runtime] docs/runtime-findings.md field/menu campaign (code), help-text callback (func_8003556C)
+func_801F85EC menuChocograph_readFlags  # [runtime] docs/runtime-findings.md field/menu campaign, event var bytes 0xBB-0xBD owned, 0xB8-0xBA found, 0xBF ability count (poked values shown on screen)
+func_801F86D0 menuChocograph_loadImages  # [code] loads the icon and frame images, and per chocograph saves its VRAM area into s_menuChocographPictures[i] and loads picture i+1 there
+func_801F8800 menuChocograph_restoreVram  # [code] loads the saved VRAM areas back from s_menuChocographPictures[0..23], first moving the selected picture elsewhere when g_gameState->mode is 3
+func_801F88F4 menuChocograph_drawPicture  # [runtime] docs/runtime-findings.md field/menu campaign (code), 42x28 4-bit sprite of chocograph id
+func_801F8AB0 menuChocograph_drawFrame  # [code] four POLY_FT4 frame pieces (s_menuChocographFramePieces) around the picture plus two shadow pieces
+func_801F907C menuChocograph_input  # [runtime] docs/runtime-findings.md field/menu campaign (code), calls s_menuChocographInputFuncs[mode] unless func_8002F810
+func_801F90D4 menuChocograph_draw  # [runtime] docs/runtime-findings.md field/menu campaign (code), draws every window and the cursor
+func_801F912C menuChocograph_updateList  # [code] func_8002EB74 on the list in list mode
+func_801F9164 menuChocograph_drawTitle  # [runtime] docs/runtime-findings.md field/menu campaign, ablation removes the "Chocograph" title box
+func_801F91D8 menuChocograph_drawTabs  # [runtime] docs/runtime-findings.md field/menu campaign, ablation removes the Select/Cancel window
+func_801F92C0 menuChocograph_drawAbilities  # [runtime] docs/runtime-findings.md field/menu campaign, ablation removes the chocobo ability icons
+func_801F9394 menuChocograph_drawScrollRows  # [code] list rows of the scrolling view (func_8002F344), clipped, while the list scrolls
+func_801F93FC menuChocograph_drawRow  # [runtime] docs/runtime-findings.md field/menu campaign, ablation removes the list rows
+func_801F9518 menuChocograph_drawIcon  # [runtime] docs/runtime-findings.md field/menu campaign (code), func_80027710 with entry icon of s_menuChocographIcons
+func_801F95E8 menuChocograph_getRequiredAbility  # [runtime] docs/runtime-findings.md field/menu campaign (code), s_menuChocographRequiredAbility[id]
+func_801F9600 menuChocograph_scrollTo  # [code] sets the list scroll top and cursor so that index idx shows
+func_801F9668 menuChocograph_getPictureRects  # [code] VRAM RECTs of chocograph i, its clut row (0, 0x1E8 + i) and its 21x28 pixel block
+D_801F9850 s_menuChocograph  # [runtime] docs/runtime-findings.md field/menu campaign, Chocograph menu state, see ChocographMenu in include/ovl_32.h
+D_801F96E4 s_menuChocographInputFuncs  # [code] per-mode input handlers called by menuChocograph_input
+D_801F96F0 s_menuChocographTabNeedsSel  # [code] per tab, 1 = greyed while no chocograph is selected (menuChocograph_drawTabs), {0, 1}
+D_801F96F4 s_menuChocographRequiredAbility  # [code] per chocograph, the ability level needed to select it (menuChocograph_getRequiredAbility)
+D_801F9750 s_menuChocographHelpBuf  # [code] buffer for the hint plus "Inadequate ability" help text, menuChocograph_updateHelp
+D_801EDF04 s_menuChocographIcons  # [code] 16 icons drawn by menuChocograph_drawIcon (ability levels, locked, chocograph found/not found)
+D_801EF1E4 s_menuChocographPictures  # [code] 25 {clut, pixels} picture slots, [0] receives the saved VRAM, menuChocograph_loadImages / menuChocograph_restoreVram
+D_801F713C s_menuChocographIconImage  # [code] icon clut (14 rows) then pixels, loaded at s_menuChocographIconClutRect / s_menuChocographIconRect
+D_801F7948 s_menuChocographFrameImage  # [code] frame clut (2 rows) then pixels, loaded at s_menuChocographFrameClutRect / s_menuChocographFrameRect
+D_801F970C s_menuChocographIconClutRect  # [code] RECT for the clut part of s_menuChocographIconImage
+D_801F9714 s_menuChocographIconRect  # [code] RECT for the pixel part of s_menuChocographIconImage
+D_801F971C s_menuChocographFrameClutRect  # [code] RECT for the clut part of s_menuChocographFrameImage
+D_801F9724 s_menuChocographFrameRect  # [code] RECT for the pixel part of s_menuChocographFrameImage
+D_801F972C s_menuChocographFramePieces  # [code] the 4 frame pieces drawn by menuChocograph_drawFrame
+D_801F974C s_menuChocographFrameShadowPieces  # [code] the 2 frame pieces menuChocograph_drawFrame draws again as a shadow
+# FIELDS include/ovl_32.h ChocographMenu (was Ovl32State): unk0=tab,unk1=mode,unk2=ownedCount,unk3=foundCount,unk4=ability,unk8=owned,unkC=found,unk10=list,unk20=titleRect,unk28=tabRect,unk30=selectedRect,unk38=abilityRect,unk40=countRect,unk48=listRect,unk50=infoRect,unk58=textBuf,unk2058=textPtr; Ovl32Image: unk0=clut,unk80=pixels; RectTbl16 -> IconTable
+
+## ovl_36: ovl_36 (Card screen: Tetra Master collection, main-menu screen 6)
+func_801F08F4 menuCard_init  # [runtime] docs/runtime-findings.md field/menu campaign, main-menu screen 6 (Card) entry 0 of main's D_8006E530
+func_801F23DC menuCard_update  # [runtime] docs/runtime-findings.md field/menu campaign, screen 6 entry 1 (per frame)
+func_801F240C menuCard_exit  # [runtime] docs/runtime-findings.md field/menu campaign, screen 6 entry 2
+func_801F24A0 menuCard_input  # [runtime] docs/runtime-findings.md field/menu campaign, calls s_menuCardInputFuncs[state] unless fading or flipping
+func_801F0AE8 menuCard_inputGrid  # [runtime] docs/runtime-findings.md field/menu campaign, s_menuCardInputFuncs[1], runs c_move/c_r1 (d-pad moves in the 10x10 grid, L1/R1 flip through copies)
+func_801F2578 menuCard_inputDiscard  # [runtime] docs/runtime-findings.md field/menu campaign, s_menuCardInputFuncs[2], runs c_x/c_xo (Yes/No of the Discard window)
+func_801F2C5C menuCard_selectCard  # [runtime] docs/runtime-findings.md field/menu campaign, (id) called once per cursor move (c_move)
+func_801F1778 menuCard_loadCardImage  # [runtime] docs/runtime-findings.md field/menu campaign, decodes the selected card's image (menuCard_decodeRle) and uploads it into a cache slot
+func_801F3034 menuCard_decodeRle  # [runtime] docs/runtime-findings.md field/menu campaign, run-length decoder used by menuCard_loadCardImage
+func_801F2FE0 menuCard_flipCopy  # [runtime] docs/runtime-findings.md field/menu campaign, (id, dir) R1 in c_r1 gives (0, 1)
+func_801F2B94 menuCard_updateFlip  # [runtime] docs/runtime-findings.md field/menu campaign, steps the flip animation, advances the shown copy at its end
+func_801F0CC8 menuCard_openDiscard  # [runtime] docs/runtime-findings.md field/menu campaign, Cross in c_x opens the "Discard?" Yes/No window
+func_801F2F34 menuCard_drawDiscardWindow  # [runtime] docs/runtime-findings.md field/menu campaign, content callback of the Discard window (text 0x20-0x22)
+func_801F2F14 menuCard_onDiscardOpened  # [runtime] docs/runtime-findings.md field/menu campaign, window opened callback, state 2
+func_801F2F24 menuCard_onDiscardClosed  # [runtime] docs/runtime-findings.md field/menu campaign, window closed callback, state 1 (c_xo)
+func_801F1C88 menuCard_refresh  # [runtime] docs/runtime-findings.md field/menu campaign, counts per id (func_80062560), collector points and rank
+func_801F2138 menuCard_calcCollectorPoints  # [runtime] docs/runtime-findings.md field/menu campaign, out = 110, 1, 5, 116 at menu_card (screen "Collectors Lv 116p")
+func_801F0DB0 menuCard_drawGrid  # [runtime] docs/runtime-findings.md field/menu campaign, ablation removes the CARD window
+func_801F0F9C menuCard_drawInfo  # [runtime] docs/runtime-findings.md field/menu campaign, ablation removes the INFO window (rank, Win/Lose/Draw)
+func_801F2664 menuCard_drawCardInfo  # [runtime] docs/runtime-findings.md field/menu campaign, ablation removes the CARD INFO window
+func_801F166C menuCard_drawCursor  # [runtime] docs/runtime-findings.md field/menu campaign, ablation removes the hand cursor
+func_801F2860 menuCard_drawCell  # [runtime] docs/runtime-findings.md field/menu campaign, ablation removes the grid cells
+func_801F12B8 menuCard_drawCardStack  # [runtime] docs/runtime-findings.md field/menu campaign, ablation removes the card stack in CARD INFO
+func_801F2730 menuCard_drawCard  # [runtime] docs/runtime-findings.md field/menu campaign, ablation removes the cards of the stack
+func_801F2A04 menuCard_drawArrows  # [runtime] docs/runtime-findings.md field/menu campaign, ablation removes the card's arrows
+func_801F2AB8 menuCard_drawStats  # [runtime] docs/runtime-findings.md field/menu campaign, ablation removes the "8PFF" stats string
+func_801F1AE8 menuCard_drawFace  # [runtime] docs/runtime-findings.md field/menu campaign, ablation removes the card picture
+func_801F1508 menuCard_drawCellHighlight  # [runtime] docs/runtime-findings.md field/menu campaign, pulsing quads at the cursor cell
+func_801F1D6C menuCard_drawSprite  # [runtime] docs/runtime-findings.md field/menu campaign (code), SPRT of entry idx of s_menuCardSprites
+func_801F2508 menuCard_draw  # [runtime] docs/runtime-findings.md field/menu campaign, draws the windows, the highlight and the cursor
+func_801F1EA0 menuCard_saveVram  # [runtime] docs/runtime-findings.md field/menu campaign (code), StoreImage of the areas the screen uses, on init
+func_801F1FE8 menuCard_restoreVram  # [runtime] docs/runtime-findings.md field/menu campaign (code), LoadImage of the saved areas, on exit
+func_801F2CD4 menuCard_initImageCache  # [runtime] docs/runtime-findings.md field/menu campaign (code), empties the 12 card image slots
+func_801F2D30 menuCard_findCachedImage  # [runtime] docs/runtime-findings.md field/menu campaign (code), slot holding the image of card id, or NULL
+func_801F2D88 menuCard_showCachedImage  # [runtime] docs/runtime-findings.md field/menu campaign (code), MoveImage of a slot to where menuCard_drawFace reads it
+func_801F22DC menuCard_updateHelp  # [code] help-text callback (func_8003556C), text 0x23/0x24 on the grid, 0x25 + cursor in the Discard window
+func_801F2548 menuCard_updateAnims  # [code] per frame, image loading, flip and fade steps
+func_801F1A48 menuCard_updateImageLoad  # [code] finishes a CD read of a card image (menuCard_loadCardImage) and starts the next requested one
+func_801F2C14 menuCard_updateFade  # [code] counts the 4 fade frames after the selected card changes
+func_801F2E60 menuCard_loadImages  # [code] menuCard_saveVram to 0x801F6D30, then loads s_menuCardImage1 and s_menuCardImage2
+func_801F2EE8 menuCard_unloadImages  # [code] menuCard_restoreVram from 0x801F6D30
+func_801F2FCC menuCard_initFlip  # [code] clears the flip animation
+func_801F30C8 menuCard_getStatsColor  # [code] the colour word menuCard_drawArrows and menuCard_drawStats draw with
+D_801F347C s_menuCard  # [runtime] docs/runtime-findings.md field/menu campaign, Card screen state, see CardMenu in include/ovl_36.h
+D_801F30F4 s_menuCardInputFuncs  # [runtime] docs/runtime-findings.md field/menu campaign, per-state input handlers, [1] menuCard_inputGrid [2] menuCard_inputDiscard
+D_801F3100 s_menuCardDiscardRect  # [code] RECT of the Discard window, menuCard_openDiscard
+D_801F3108 s_menuCardArrows  # [code] sprite and offset per arrow bit, menuCard_drawArrows
+D_801F3128 s_menuCardRankPoints  # [code] collector points needed per rank, menuCard_refresh
+D_801F3188 s_menuCardSprites  # [code] SPRT uv/clut, size and tpage per sprite, menuCard_drawSprite
+D_801F3378 s_menuCardTypePoints  # [code] collector points per copy by card type, menuCard_calcCollectorPoints
+D_801F337C s_menuCardArrowsSeen  # [code] one flag per arrow pattern seen, menuCard_calcCollectorPoints
+D_801F3348 s_menuCardSaveClutRect0  # [code] RECT saved by menuCard_saveVram (clut row 0x1F2)
+D_801F3350 s_menuCardSaveClutRect1  # [code] RECT saved by menuCard_saveVram (clut row 0x1F3)
+D_801F3358 s_menuCardSaveRect  # [code] RECT saved by menuCard_saveVram (64,256 16x16)
+D_801F3360 s_menuCardRestoreClutRect0  # [code] RECT restored by menuCard_restoreVram (clut row 0x1F2)
+D_801F3368 s_menuCardRestoreClutRect1  # [code] RECT restored by menuCard_restoreVram (clut row 0x1F3)
+D_801F3370 s_menuCardRestoreRect  # [code] RECT restored by menuCard_restoreVram (64,256 16x16)
+D_801F3168 s_menuCardImage1ClutRect  # [code] RECT for the clut part of s_menuCardImage1, menuCard_loadImages
+D_801F3170 s_menuCardImage1Rect  # [code] RECT for the pixel part of s_menuCardImage1, menuCard_loadImages
+D_801F3178 s_menuCardImage2ClutRect  # [code] RECT for the clut part of s_menuCardImage2, menuCard_loadImages
+D_801F3180 s_menuCardImage2Rect  # [code] RECT for the pixel part of s_menuCardImage2, menuCard_loadImages
+D_801EE1B4 s_menuCardImage1  # [code] clut then pixels loaded by menuCard_loadImages (the screen's sprites)
+D_801EEFB4 s_menuCardImage2  # [code] clut then pixels loaded by menuCard_loadImages
+D_801F0274 s_menuCardImageOffsets  # [code] per card id, offset of its packed image part (from 4 bytes before the table), menuCard_loadCardImage
+D_801EDF08 s_menuCardSlotClutRect  # [code] RECT of a cache slot's clut row (y set per slot), menuCard_saveVram / menuCard_restoreVram
+D_801EDF10 s_menuCardSlotRect  # [code] RECT of a cache slot's 19x47 pixel block (x, y set per slot), menuCard_saveVram / menuCard_restoreVram
+D_801EDF1C g_cardMenuText  # [code] the text bank starts at 0x801EDF18 (u16 count 0x2D, which gcc had emitted as the string "-" in menuCard_init), so the symbol moved there
+D_801EDF04 s_menuCardPointsUnit  # [code] "P" drawn with ui_drawSmallDigits right after the collector points total by menuCard_drawInfo
+# FIELDS include/ovl_36.h CardMenu: unk0=state,unk1=row,unk2=col,unk3=kinds,unk4=loadingId,unk5=discardCursor,unk7=rank,unk8=count,unk6C=shown,unkD0=clutBuf,unk2D0=pixelBuf,unk10D0=sectorBuf,unk18D0=gridRect,unk18D8=infoRect,unk18E0=cardInfoRect,unk18E8=discardWin,unk18EC=imageFile,unk18F0=points,unk1900=cache,unk1941=flip,unk1948=saved; CardCache: unk0=oldest,unk1=next,unk2=used,unk3=loading,unk4=pending,unk5=cur,unk6=prev,unk7=shown,unk8=fadeTicks,unk9=fading,unkA=reading,unkD=slots; CardSlot: unk0=used,unk1=id,unk2=vram; CardFlip (was CardTurn): unk0=active,unk1=dir,unk2=ticks,unk3=id; RleHeader: unk1=notKey,unk2=size,unk4=data; Ovl36Sprite: unk0=uvclut,unk4=w,unk5=h,unk6=tpage; CardArrow (was Unk801F3108): unk0=sprite,unk2=x,unk3=y
+
+## ovl_3c: ovl_3c (shop: buy, sell, synthesis, menu type 2)
+func_801F45E4 shop_init  # [runtime] docs/runtime-findings.md field/menu campaign, menu type 2 (D_8006C9D4[2]) opens the shop, arg = shop id
+func_801F4688 shop_update  # [runtime] docs/runtime-findings.md field/menu campaign, D_8006C9D4[2] entry 1 (per frame)
+func_801F4720 shop_exit  # [runtime] docs/runtime-findings.md field/menu campaign, D_8006C9D4[2] entry 2
+func_801F40AC shop_inputMenu  # [runtime] docs/runtime-findings.md field/menu campaign, Buy/Sell/Exit cursor (sh_idle, sh_down)
+func_801F4960 shop_selectMenu  # [runtime] docs/runtime-findings.md field/menu campaign, once per Cross on the menu
+func_801F4AC0 shop_enterMode  # [runtime] docs/runtime-findings.md field/menu campaign, fade callback running the mode's init
+func_801F4B38 shop_onModeEntered  # [runtime] docs/runtime-findings.md field/menu campaign, fade-in done, moves the message window to otz 0x24
+func_801F43F8 shop_leaveMode  # [runtime] docs/runtime-findings.md field/menu campaign (code), Circle in a mode's list fades out to shop_onModeLeft
+func_801F4854 shop_onModeLeft  # [runtime] docs/runtime-findings.md field/menu campaign (code), runs the mode's exit, back to the menu with text 0xE "Anything else"
+func_801F4A14 shop_close  # [runtime] docs/runtime-findings.md field/menu campaign, Circle on the menu (sh_exit) or Exit closes the shop
+func_801F4A90 shop_getKind  # [runtime] docs/runtime-findings.md field/menu campaign, shop 0 gives 1 and 0x20 gives 2
+func_801F59A8 shop_isEquipmentShop  # [runtime] docs/runtime-findings.md field/menu campaign, 1 when every item of the shop's list is equipment
+func_801F442C shop_setHelp  # [runtime] docs/runtime-findings.md field/menu campaign (code), (text id) sets the message of the top window
+func_801F49C4 shop_updateHelp  # [runtime] docs/runtime-findings.md field/menu campaign (code), help-text callback (func_8003556C) for the menu options
+func_801F4458 shop_getId  # [runtime] docs/runtime-findings.md field/menu campaign (code), the shop id passed to the menu
+func_801F4468 shop_collectMembers  # [runtime] docs/runtime-findings.md field/menu campaign (code), party list for the stat comparison
+func_801F48F4 shop_countEntries  # [runtime] docs/runtime-findings.md field/menu campaign (code), 1 (Exit) + the modes of a kind with handlers
+func_801F42A8 shop_sumArmorStat  # [runtime] docs/runtime-findings.md field/menu campaign (code), sums D_8006D328 bonuses of the armor in an equipment set, by slot
+func_801F4A44 shop_loadImages  # [runtime] docs/runtime-findings.md field/menu campaign (code), loads s_shopIconImage (clut and pixels)
+func_801F4000 shop_drawMessage  # [runtime] docs/runtime-findings.md field/menu campaign, ablation removes the top help line (60 frames)
+func_801F4748 shop_drawTitle  # [runtime] docs/runtime-findings.md field/menu campaign, ablation removes the "Weapons" box
+func_801F4198 shop_drawMenu  # [runtime] docs/runtime-findings.md field/menu campaign, ablation removes the Buy/Sell/Exit window
+func_801F47F8 shop_drawMenuCursor  # [runtime] docs/runtime-findings.md field/menu campaign, ablation removes the menu hand
+func_801F44F4 shop_drawStatIcon  # [runtime] docs/runtime-findings.md field/menu campaign, ablation removes the stat icons
+func_801F47C8 shop_drawMenuAll  # [runtime] docs/runtime-findings.md field/menu campaign, menu window plus cursor
+func_801F4B48 shopBuy_init  # [runtime] docs/runtime-findings.md field/menu campaign, s_shopModes Buy init
+func_801F5940 shopBuy_update  # [runtime] docs/runtime-findings.md field/menu campaign, s_shopModes Buy update
+func_801F5988 shopBuy_exit  # [runtime] docs/runtime-findings.md field/menu campaign, s_shopModes Buy exit
+func_801F5A1C shopBuy_input  # [runtime] docs/runtime-findings.md field/menu campaign, calls s_shopBuyInputFuncs[state]
+func_801F5AE4 shopBuy_inputList  # [runtime] docs/runtime-findings.md field/menu campaign, item list (sh_buy)
+func_801F57C8 shopBuy_openQuantity  # [runtime] docs/runtime-findings.md field/menu campaign, Cross on Dagger opens the quantity window (sh_buyx)
+func_801F4C68 shopBuy_inputQuantity  # [runtime] docs/runtime-findings.md field/menu campaign, Left/Right 1, Up/Down 10
+func_801F5E4C shopBuy_confirm  # [runtime] docs/runtime-findings.md field/menu campaign, buying a Dagger takes 320 gil and adds one (sh_buyxx)
+func_801F5D14 shopBuy_closeQuantity  # [runtime] docs/runtime-findings.md field/menu campaign (code), closes the quantity window
+func_801F5D40 shopBuy_onQuantityOpened  # [runtime] docs/runtime-findings.md field/menu campaign (code), window opened callback, state 2
+func_801F5D6C shopBuy_onQuantityClosed  # [runtime] docs/runtime-findings.md field/menu campaign (code), window closed callback, state 1
+func_801F5D98 shopBuy_loadList  # [runtime] docs/runtime-findings.md field/menu campaign, the shop's item list s_shopItems[id]
+func_801F5A74 shopBuy_draw  # [runtime] docs/runtime-findings.md field/menu campaign (code), draws the Buy windows and cursor
+func_801F5AAC shopBuy_updateList  # [runtime] docs/runtime-findings.md field/menu campaign (code), func_8002EB74 while the list scrolls
+func_801F5B64 shopBuy_drawScrollRows  # [runtime] docs/runtime-findings.md field/menu campaign (code), rows of the scrolling view
+func_801F4E1C shopBuy_drawInfo  # [runtime] docs/runtime-findings.md field/menu campaign, ablation removes INFO (funds, stock, equipped)
+func_801F506C shopBuy_drawList  # [runtime] docs/runtime-findings.md field/menu campaign, ablation removes the item list
+func_801F51B8 shopBuy_drawParty  # [runtime] docs/runtime-findings.md field/menu campaign, ablation removes the members and stat arrows
+func_801F56E4 shopBuy_drawCursor  # [runtime] docs/runtime-findings.md field/menu campaign, ablation removes the hand
+func_801F5BCC shopBuy_drawRow  # [runtime] docs/runtime-findings.md field/menu campaign, ablation removes the list rows
+func_801F551C shopBuy_drawQuantityWindow  # [runtime] docs/runtime-findings.md field/menu campaign, ablation removes the quantity window content (sh_buyx)
+func_801F5EEC shopBuy_updateHelp  # [code] help-text callback (func_8003556C), item help in the list, text 3 "Select quantity" in the quantity window
+func_801F7770 shopSell_init  # [runtime] docs/runtime-findings.md field/menu campaign, s_shopModes Sell init (sh_sell)
+func_801F832C shopSell_update  # [runtime] docs/runtime-findings.md field/menu campaign, s_shopModes Sell update
+func_801F835C shopSell_exit  # [runtime] docs/runtime-findings.md field/menu campaign (code), s_shopModes Sell exit
+func_801F837C shopSell_input  # [runtime] docs/runtime-findings.md field/menu campaign, calls s_shopSellInputFuncs[state]
+func_801F8434 shopSell_inputList  # [runtime] docs/runtime-findings.md field/menu campaign (code), inventory list
+func_801F80D0 shopSell_openQuantity  # [runtime] docs/runtime-findings.md field/menu campaign, Cross opens the QUANTITY and INFO windows (sh_sellx)
+func_801F7848 shopSell_inputQuantity  # [runtime] docs/runtime-findings.md field/menu campaign, Left/Right 1, Up/Down 10
+func_801F8224 shopSell_confirm  # [runtime] docs/runtime-findings.md field/menu campaign (code), item_remove, gil += price / 2 * n capped at 9999999
+func_801F8680 shopSell_closeQuantity  # [runtime] docs/runtime-findings.md field/menu campaign (code), closes both windows
+func_801F86D0 shopSell_onQuantityOpened  # [runtime] docs/runtime-findings.md field/menu campaign (code), window opened callback, state 2
+func_801F86FC shopSell_onQuantityClosed  # [runtime] docs/runtime-findings.md field/menu campaign (code), window closed callback, state 1
+func_801F79FC shopSell_drawList  # [runtime] docs/runtime-findings.md field/menu campaign, the two-column inventory list
+func_801F7BC4 shopSell_drawQuantityWindow  # [runtime] docs/runtime-findings.md field/menu campaign, QUANTITY window content
+func_801F7DA8 shopSell_drawInfoWindow  # [runtime] docs/runtime-findings.md field/menu campaign, INFO window content
+func_801F7FE0 shopSell_drawCursor  # [runtime] docs/runtime-findings.md field/menu campaign, the hand
+func_801F856C shopSell_drawRow  # [runtime] docs/runtime-findings.md field/menu campaign, an inventory entry
+func_801F84D8 shopSell_drawScrollRows  # [runtime] docs/runtime-findings.md field/menu campaign (code), rows of the scrolling view
+func_801F83D4 shopSell_draw  # [runtime] docs/runtime-findings.md field/menu campaign (code), list and cursor
+func_801F83FC shopSell_updateList  # [runtime] docs/runtime-findings.md field/menu campaign (code), func_8002EB74 while the list scrolls
+func_801F8728 shopSell_updateHelp  # [runtime] docs/runtime-findings.md field/menu campaign (code), help-text callback, item help or text 3 "Select quantity"
+func_801F5F88 shopSynth_init  # [runtime] docs/runtime-findings.md field/menu campaign, s_shopModes Synth init (menu_shop_synth)
+func_801F7390 shopSynth_update  # [runtime] docs/runtime-findings.md field/menu campaign, s_shopModes Synth update
+func_801F73C0 shopSynth_exit  # [runtime] docs/runtime-findings.md field/menu campaign (code), s_shopModes Synth exit
+func_801F73E0 shopSynth_input  # [runtime] docs/runtime-findings.md field/menu campaign, calls s_shopSynthInputFuncs[state]
+func_801F74A8 shopSynth_inputList  # [runtime] docs/runtime-findings.md field/menu campaign, recipe list (sh_synth)
+func_801F6F00 shopSynth_openQuantity  # [runtime] docs/runtime-findings.md field/menu campaign, Cross opens the quantity window (sh_synthx)
+func_801F60A8 shopSynth_inputQuantity  # [runtime] docs/runtime-findings.md field/menu campaign, Left/Right 1, Up/Down 10
+func_801F7614 shopSynth_confirm  # [runtime] docs/runtime-findings.md field/menu campaign (code), item_add the product, item_remove both ingredients, gil
+func_801F7590 shopSynth_closeQuantity  # [runtime] docs/runtime-findings.md field/menu campaign (code), closes the quantity window
+func_801F75BC shopSynth_onQuantityOpened  # [runtime] docs/runtime-findings.md field/menu campaign, window opened callback, state 2
+func_801F75E8 shopSynth_onQuantityClosed  # [runtime] docs/runtime-findings.md field/menu campaign (code), window closed callback, state 1
+func_801F7250 shopSynth_loadRecipes  # [runtime] docs/runtime-findings.md field/menu campaign, recipes whose shop mask has bit id - 0x20
+func_801F625C shopSynth_drawInfo  # [runtime] docs/runtime-findings.md field/menu campaign, INFO window with the required items
+func_801F65C8 shopSynth_drawList  # [runtime] docs/runtime-findings.md field/menu campaign, recipe list
+func_801F6714 shopSynth_drawParty  # [runtime] docs/runtime-findings.md field/menu campaign, members and stat arrows
+func_801F6A7C shopSynth_drawQuantityWindow  # [runtime] docs/runtime-findings.md field/menu campaign, quantity window content
+func_801F6C50 shopSynth_drawCursor  # [runtime] docs/runtime-findings.md field/menu campaign, the hand
+func_801F6D34 shopSynth_drawRow  # [runtime] docs/runtime-findings.md field/menu campaign, a recipe row
+func_801F7528 shopSynth_drawScrollRows  # [runtime] docs/runtime-findings.md field/menu campaign (code), rows of the scrolling view
+func_801F7438 shopSynth_draw  # [runtime] docs/runtime-findings.md field/menu campaign (code), draws the Synth windows and cursor
+func_801F7470 shopSynth_updateList  # [runtime] docs/runtime-findings.md field/menu campaign (code), func_8002EB74 while the list scrolls
+func_801F76C8 shopSynth_updateHelp  # [runtime] docs/runtime-findings.md field/menu campaign (code), help-text callback, product help or text 4 "Select quantity"
+D_801FC2D0 s_shop  # [runtime] docs/runtime-findings.md field/menu campaign, shop state, see Shop in include/ovl_3c.h
+D_801FBBA0 s_shopModes  # [runtime] docs/runtime-findings.md field/menu campaign, {init, update, exit} per kind and menu option, read at sh_buy/sh_sell/sh_synth
+D_801FC2F8 s_shopBuy  # [runtime] docs/runtime-findings.md field/menu campaign, Buy state
+D_801FC338 s_shopSynth  # [runtime] docs/runtime-findings.md field/menu campaign, Synth state
+D_801FC438 s_shopSell  # [runtime] docs/runtime-findings.md field/menu campaign, Sell state
+D_801FC044 s_shopBuyInputFuncs  # [code] per-state input handlers, shopBuy_input
+D_801FC09C s_shopSynthInputFuncs  # [code] per-state input handlers, shopSynth_input
+D_801FC27C s_shopSellInputFuncs  # [code] per-state input handlers, shopSell_input
+D_801FBC0C s_shopTitleRect  # [code] RECT of the title window, shop_drawTitle
+D_801FBC14 s_shopMessageRect  # [code] RECT of the message window, shop_drawMessage
+D_801FBC1C s_shopMenuRect  # [code] RECT of the menu window (height set per option count), shop_drawMenu
+D_801FBC24 s_shopMenuText  # [code] per kind, first text id of the menu options (3 Buy/Sell/Exit, 6 Synth/Exit)
+D_801FBC28 s_shopHelpRect  # [code] RECT passed to func_80035580 by shop_updateHelp
+D_801FBC30 s_shopMenuHelpText  # [code] per kind, first help text id of the menu options (8, 0xB)
+D_801FBC34 s_shopIconClutRect  # [code] RECT for the clut part of s_shopIconImage, shop_loadImages
+D_801FBC3C s_shopIconRect  # [code] RECT for the pixel part of s_shopIconImage, shop_loadImages
+D_801FBC44 s_shopItems  # [code] 0x20 item ids per shop id, 0xFF ends, shopBuy_loadList
+D_801FC0FC s_shopRecipes  # [code] 64 synthesis recipes {price, ingredients, product, shop mask}, shopSynth_loadRecipes
+D_801F87EC s_shopItemHelp  # [code] item help strings, indexed by the item table's help offset (shopBuy_updateHelp)
+D_801FC288 s_shopSellListRectPtr  # [code] points to s_shopSell.listRect, shopSell_drawList
+D_801FC2B0 s_shopSellWindows  # [code] style, content callback, otz and label of the QUANTITY and INFO windows, shopSell_openQuantity
+D_801FC050 s_shopBuyInfoRowY  # [code] y of the Funds/Stock/Equipped rows, shopBuy_drawInfo
+D_801FC05C s_shopBuyInfoRowAlways  # [code] per row, 1 = drawn normal even for non-equipment, shopBuy_drawInfo
+D_801FC060 s_shopBuyInfoGil  # [code] gil suffix appended to the funds, shopBuy_drawInfo
+D_801FC064 s_shopBuyInfoRowText  # [code] text ids of the Funds/Stock/Equipped rows, shopBuy_drawInfo
+D_801FC070 s_shopBuyPartyLabel  # [code] D_800703FC label index for weapons / armor, shopBuy_drawParty
+D_801FC078 s_shopBuyStatIcon  # [code] stat icon per equip slot, shopBuy_drawParty
+D_801FC080 s_shopBuyEquipMask  # [code] item equip mask bit per character set (chr_getDefaultSet), shopBuy_drawParty
+D_801FC098 s_shopBuyQuantityGil  # [code] gil suffix, shopBuy_drawQuantityWindow
+D_801FC0A8 s_shopSynthInfoRowY  # [code] y of the Funds/Stock/Equipped/Required Item rows, shopSynth_drawInfo
+D_801FC0B8 s_shopSynthInfoRowAlways  # [code] as s_shopBuyInfoRowAlways, shopSynth_drawInfo
+D_801FC0BC s_shopSynthInfoGil  # [code] gil suffix, shopSynth_drawInfo
+D_801FC0C0 s_shopSynthInfoRowText  # [code] text ids of the INFO rows, shopSynth_drawInfo
+D_801FC0D0 s_shopSynthPartyLabel  # [code] as s_shopBuyPartyLabel, shopSynth_drawParty
+D_801FC0D8 s_shopSynthStatIcon  # [code] as s_shopBuyStatIcon, shopSynth_drawParty
+D_801FC0E0 s_shopSynthEquipMask  # [code] as s_shopBuyEquipMask, shopSynth_drawParty
+D_801FC0F8 s_shopSynthQuantityGil  # [code] gil suffix, shopSynth_drawQuantityWindow
+D_801FC28C s_shopSellQuantityGil  # [code] gil suffix, shopSell_drawQuantityWindow
+D_801FC290 s_shopSellInfoRowY  # [code] y of the Funds/Stock/Equipped rows, shopSell_drawInfoWindow
+D_801FC29C s_shopSellInfoRowAlways  # [code] as s_shopBuyInfoRowAlways, shopSell_drawInfoWindow
+D_801FC2A0 s_shopSellInfoGil  # [code] gil suffix, shopSell_drawInfoWindow
+D_801FC2A4 s_shopSellInfoRowText  # [code] text ids of the INFO rows, shopSell_drawInfoWindow
+D_801EDF04 s_shopIcons  # [code] 7 icons drawn by shop_drawStatIcon (per equip slot, up and down arrows)
+D_801EDF3C s_shopImage  # [code] image data passed to func_80028720 by shop_init
+D_801F36FC s_shopIconImage  # [code] clut (16x3) then pixels loaded by shop_loadImages
+D_801F3C9C g_shopText  # [code] text bank of the shop (titles, menu, messages, INFO labels), text_setBank in shop_init
+D_801F3E98 g_shopBuyText  # [code] text bank set by shopBuy_init
+D_801F3F08 g_shopSynthText  # [code] text bank set by shopSynth_init
+D_801F3F88 g_shopSellText  # [code] text bank set by shopSell_init
+D_801F3FF8 s_shopBuyNoStat  # [code] "--" drawn for accessories, shopBuy_drawParty
+D_801F3FFC s_shopSynthNoStat  # [code] "--" drawn for accessories, shopSynth_drawParty
+# FIELDS include/ovl_3c.h Shop (was ShopHub): unk0=kind,unk1=cursor,unk2=entryCount,unk3=inMode,unk4=visits,unk8=id,unkC=savedOtz,unk10=help,unk14=memberCount,unk18=members,unk20=messageOtz; ShopBuy and ShopSynth: unk0=state,unk1=count,unk2=quantity,unk3=maxQuantity,unk4=hasEquipment,unk8=infoRect,unk10=listRect,unk18=partyRect,unk20=quantityRect,unk28=list,unk38=quantityWin, ShopBuy unk3C=items, ShopSynth unk3C=recipes; ShopSell: unk0=state,unk1=quantity,unk2=maxQuantity,unk4=list,unk14=listRect,unk1C=winRects,unk2C=wins; SynthRecipe: unk0=price,unk2=ingredients,unk4=product,unk5=shopMask; ShopWinDef: unk0=style,unk4=draw,unk8=otz,unkC=label
+
+## ovl_3e: ovl_3e (disc change screen, menu type 8)
+func_801F605C discChange_init  # [runtime] docs/runtime-findings.md field/menu campaign, menu type 8 (D_8006C9D4[8]) opened with force_menu.py shows the "Change to DISC" art
+func_801F65A4 discChange_update  # [runtime] docs/runtime-findings.md field/menu campaign, D_8006C9D4[8] entry 1 (per frame)
+func_801F65D4 discChange_exit  # [runtime] docs/runtime-findings.md field/menu campaign, D_8006C9D4[8] entry 2, jumps to the arg's field unless it is 15000
+func_801F6124 discChange_drawBackground  # [runtime] docs/runtime-findings.md field/menu campaign, ablation removes the whole picture
+func_801F6254 discChange_drawPanel  # [runtime] docs/runtime-findings.md field/menu campaign (code), 194x168 sprite drawn in states 3-4 after a failed check
+func_801F6368 discChange_checkDisc  # [runtime] docs/runtime-findings.md field/menu campaign (code), CdControlB/CdGetDiskType then the disc bit in g_gameState->unkB, 7 = right disc
+func_801F6654 discChange_input  # [runtime] docs/runtime-findings.md field/menu campaign (code), calls s_discChangeInputFuncs[state] unless func_8002F810
+func_801F66AC discChange_draw  # [runtime] docs/runtime-findings.md field/menu campaign (code), calls s_discChangeDrawFuncs[state]
+func_801F66F4 discChange_updateState  # [runtime] docs/runtime-findings.md field/menu campaign (code), calls s_discChangeUpdateFuncs[state]
+func_801F673C discChange_loadPicture  # [runtime] docs/runtime-findings.md field/menu campaign (code), reads the wanted disc's picture file in two halves to VRAM, loads the clut and the panel image
+func_801F682C discChange_loadPictureHalf  # [code] LoadImage of half i (160 wide) at s_discChangePictureRect
+func_801F689C discChange_inputLidClosed  # [code] s_discChangeInputFuncs[1] (lid closed), Cross starts the check
+func_801F68D8 discChange_inputLidOpen  # [code] s_discChangeInputFuncs[2] (lid open), Cross starts the check
+func_801F6914 discChange_inputError  # [code] s_discChangeInputFuncs[3] (check failed), Cross fades back with discChange_closeError
+func_801F6968 discChange_updateLidClosed  # [code] s_discChangeUpdateFuncs[1], goes to state 2 when cd_checkShellOpen
+func_801F69A4 discChange_updateLidOpen  # [code] s_discChangeUpdateFuncs[2], starts the check when the lid closes
+func_801F69E8 discChange_updateError  # [code] s_discChangeUpdateFuncs[3], after 180 frames does what Cross does in discChange_inputError
+func_801F6A3C discChange_startCheck  # [code] state 0, func_8002FAAC then discChange_doCheck as the func_8002F8A8 callback
+func_801F6A78 discChange_doCheck  # [code] runs discChange_checkDisc, closes the menu (func_800325E0) on the right disc else goes to state 3
+func_801F6AF0 discChange_closeError  # [code] state 0, func_8002FA50 then discChange_resetState as the callback
+func_801F6B24 discChange_resetState  # [code] state 2 when cd_checkShellOpen else 1
+D_801F6BBC s_discChange  # [code] disc change state, see DiscChange in include/ovl_3e.h
+D_801F6B60 s_discChangeInputFuncs  # [runtime] docs/runtime-findings.md field/menu campaign (code), per-state input handlers called by discChange_input
+D_801F6B74 s_discChangeDrawFuncs  # [runtime] docs/runtime-findings.md field/menu campaign (code), per-state draw functions called by discChange_draw
+D_801F6B88 s_discChangeUpdateFuncs  # [runtime] docs/runtime-findings.md field/menu campaign (code), per-state lid/timer handlers called by discChange_updateState
+D_801F6B9C s_discChangeClutRect  # [code] RECT 256x1 at y 0x1FF for the clut, discChange_loadPicture
+D_801F6BA4 s_discChangePanelRect  # [code] RECT 320,256 for the panel image, discChange_loadPicture
+D_801F6BAC s_discChangePictureFiles  # [code] file ids 0x28-0x2B in dir 1, the picture per wanted disc, discChange_loadPicture
+D_801EDF04 s_discChangePictureRect  # [code] RECT 0,256 160x224 of the first picture half, discChange_loadPictureHalf
+D_801EDF0C s_discChangeClut  # [code] 256-entry clut followed by the 194x168 panel image, loaded by discChange_loadPicture
+# FIELDS include/ovl_3e.h DiscChange (was Ovl3eState): unk0=shellOpen,unk1=state,unk3=checkResult,unk4=disc,unk6=nextLocation,unk8=savedFlags,unk10=timer
+
+## ovl_14: ovl_14 references to ovl_39 (by hand: symbol line in config/symbols.ovl_14.us.txt, rename in its src and header)
+# func_801F5330 menuSave_isLoaded
+# Main still calls two of these overlays' functions by placeholder (main-side, not renamed here): func_801F1A7C
+# (ovl_37 menuItem_callChocobo, from tu_800654F8.c) and func_801F0FF4 (ovl_65 rewards_requestClose, from event.c
+# opcode 0xE1); both want a line in config/xrefs.us.txt.
