@@ -2448,3 +2448,9 @@ D_801F6BAC s_discChangePictureFiles  # [code] file ids 0x28-0x2B in dir 1, the p
 D_801EDF04 s_discChangePictureRect  # [code] RECT 0,256 160x224 of the first picture half, discChange_loadPictureHalf
 D_801EDF0C s_discChangeClut  # [code] 256-entry clut followed by the 194x168 panel image, loaded by discChange_loadPicture
 # FIELDS include/ovl_3e.h DiscChange (was Ovl3eState): unk0=shellOpen,unk1=state,unk3=checkResult,unk4=disc,unk6=nextLocation,unk8=savedFlags,unk10=timer
+
+## ovl_14: ovl_14 references to ovl_39 (by hand: symbol line in config/symbols.ovl_14.us.txt, rename in its src and header)
+# func_801F5330 menuSave_isLoaded
+# Main still calls two of these overlays' functions by placeholder (main-side, not renamed here): func_801F1A7C
+# (ovl_37 menuItem_callChocobo, from tu_800654F8.c) and func_801F0FF4 (ovl_65 rewards_requestClose, from event.c
+# opcode 0xE1); both want a line in config/xrefs.us.txt.
