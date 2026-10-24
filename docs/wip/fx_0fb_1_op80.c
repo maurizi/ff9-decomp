@@ -1,4 +1,4 @@
-/* Draft of fx_0fb_1 fx_0fb_1_op80. Status: 156 lines, 72 ignoring registers (build/w/nd.py, which now masks all |imm| >= 10000 data offsets). Cases 3-6 use fx_17a op80's final variable roles (src/fxmod/fx_17a); mode 0/1 are if/else-if branches with one return 0 (as fx_17a); further splits found by build/w/pgreedy.py + gen_regions.py. */
+/* Draft of fx_0fb_1 fx_0fb_1_op80. Status: 128 lines, 74 ignoring registers (build/w/nd.py, which now masks all |imm| >= 10000 data offsets). Cases 3-6 use fx_17a op80's final variable roles (src/fxmod/fx_17a); mode 0/1 are if/else-if branches with one return 0 (as fx_17a); further splits found by build/w/pgreedy.py + gen_regions.py. */
 #include "fxmod/fx_0fb_1.h"
 
 typedef struct {
@@ -99,6 +99,7 @@ s32 fx_0fb_1_op80(s32 mode, Fx0fb1Op80Work *work, Unk800F78A4 *env, Unk80100C78E
     s32 zz4;
     s32 zz5;
     s32 zz6;
+    Fx0fb1Rock *zz7;
 
     if (mode == 0) {
         init->unk0 = 0xE8;
@@ -183,25 +184,25 @@ s32 fx_0fb_1_op80(s32 mode, Fx0fb1Op80Work *work, Unk800F78A4 *env, Unk80100C78E
         s = 0x1000;
         work->unk6C.vz -= 0x400;
         glow = 0x97;
-        q = ex->btlfx_poolSpawn((s16 *)entry->unk10);
-        if (q != NULL) {
-            q->unk0 = frame % 3;
-            q->unkC.vx = work->unk54.vx;
-            q->unkC.vy = work->unk54.vy;
-            q->unkC.vz = work->unk54.vz;
-            if (q->unk0 == 2) {
-                q->unk0 = 3;
+        zz7 = ex->btlfx_poolSpawn((s16 *)entry->unk10);
+        if (zz7 != NULL) {
+            zz7->unk0 = frame % 3;
+            zz7->unkC.vx = work->unk54.vx;
+            zz7->unkC.vy = work->unk54.vy;
+            zz7->unkC.vz = work->unk54.vz;
+            if (zz7->unk0 == 2) {
+                zz7->unk0 = 3;
                 f4 = ex->btlfx_rand();
-                q->unkC.vx += (ex->math_sin(f4) * 2) / 3;
+                zz7->unkC.vx += (ex->math_sin(f4) * 2) / 3;
                 c = ex->math_cos(f4);
-                q->unkC.vz += 0x800;
-                q->unkC.vy = (s16)(q->unkC.vy - 0x400) - (c * 2) / 3;
+                zz7->unkC.vz += 0x800;
+                zz7->unkC.vy = (s16)(zz7->unkC.vy - 0x400) - (c * 2) / 3;
             } else {
-                q->unkC.vx += ex->btlfx_randCentered(0x800);
-                q->unkC.vy = (s16)(q->unkC.vy - 0x400) - ex->btlfx_randCentered(0x800);
-                q->unkC.vz += 0x800;
+                zz7->unkC.vx += ex->btlfx_randCentered(0x800);
+                zz7->unkC.vy = (s16)(zz7->unkC.vy - 0x400) - ex->btlfx_randCentered(0x800);
+                zz7->unkC.vz += 0x800;
             }
-            q->unkA = ex->btlfx_randCentered(0x800) + 0x1800;
+            zz7->unkA = ex->btlfx_randCentered(0x800) + 0x1800;
         }
         if (frame >= 0x1C) {
             work->unk0 = 1;
@@ -217,17 +218,17 @@ s32 fx_0fb_1_op80(s32 mode, Fx0fb1Op80Work *work, Unk800F78A4 *env, Unk80100C78E
             work->unk54.vy += 0xB84;
             work->unk54.vz -= 0x1708;
             for (i = 0, zz4 = 0; i < 0x19; i += 1 + (zz4 & 1)) {
-                q = ex->btlfx_poolSpawn((s16 *)entry->unk10);
-                if (q != NULL) {
-                    q->unk0 = i & 1;
-                    q->unkC.vx = work->unkC.vx;
-                    q->unkC.vy = work->unkC.vy;
-                    q->unkC.vz = work->unkC.vz;
+                zz7 = ex->btlfx_poolSpawn((s16 *)entry->unk10);
+                if (zz7 != NULL) {
+                    zz7->unk0 = i & 1;
+                    zz7->unkC.vx = work->unkC.vx;
+                    zz7->unkC.vy = work->unkC.vy;
+                    zz7->unkC.vz = work->unkC.vz;
                     zz3 = (i + 1) % 7;
-                    q->unkC.vy -= D_801F0868[i * 2] * 2 - zz3 * 0x140;
-                    q->unkC.vz -= (zz3 << 10) + ex->btlfx_randCentered(0x200);
-                    q->unkC.vx -= D_801F0868[i * 2 + 1] * 2;
-                    q->unkA = ex->btlfx_randCentered(0x800) + 0x1000;
+                    zz7->unkC.vy -= D_801F0868[i * 2] * 2 - zz3 * 0x140;
+                    zz7->unkC.vz -= (zz3 << 10) + ex->btlfx_randCentered(0x200);
+                    zz7->unkC.vx -= D_801F0868[i * 2 + 1] * 2;
+                    zz7->unkA = ex->btlfx_randCentered(0x800) + 0x1000;
                 }
                 zz4++;
             }
@@ -535,14 +536,14 @@ s32 fx_0fb_1_op80(s32 mode, Fx0fb1Op80Work *work, Unk800F78A4 *env, Unk80100C78E
         if (frame < 0x20) {
             f4 = (frame << 12) >> 7;
             a = (ex->math_sin(f4) * 3) >> 1;
-            i = ex->math_cos(f4);
+            n = ex->math_cos(f4);
             dir.vx = 0x200;
             dir.vy = 0x280;
             dir.vz = work->unk4 * 32;
             dir.pad = 1;
-            ex->func_800D23D8((u8 *)ex->btlfx_getFileData(entry->unk8, 0xD), &work->unkC, &dir, a, 0, 1, i);
+            ex->func_800D23D8((u8 *)ex->btlfx_getFileData(entry->unk8, 0xD), &work->unkC, &dir, a, 0, 1, n);
             dir.vy += 0x800;
-            ex->func_800D23D8((u8 *)ex->btlfx_getFileData(entry->unk8, 0xD), &work->unkC, &dir, a, 0, 1, i);
+            ex->func_800D23D8((u8 *)ex->btlfx_getFileData(entry->unk8, 0xD), &work->unkC, &dir, a, 0, 1, n);
         }
         if (frame == 0) {
             ex->btlfx_drawScreenTint((u32 *)(env->unk20 + 1), 0xFF, 0xA0, 0, 0xFF);
