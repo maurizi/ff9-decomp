@@ -488,10 +488,10 @@ typedef struct BtlUnit {
     s32 statusImmune; /* add-status (btl_addStatus) refuses these bits; runtime: Iifa monster 0x4400E004 */
     u32 autoStatus; /* permanent BTL_STATUS_* bits: support abilities set them at battle start (e.g. BTL_STATUS_REGEN); add-status (btl_addStatus) does nothing for a bit already set here */
     u32 status; /* current BTL_STATUS_* bits; runtime: Sleep 0x20000, KO 0x100 (added by btl_addStatus) */
-    s16 unk40[3];
-    s16 unk46[16]; /* status timers */
-    s16 unk66;
-    u32 unk68; /* flags: bit 0 player, bits 1-4 character slot, bits 5-7 id */
+    s16 dotTimers[3]; /* Venom/Poison/Regen tick timers (btl_initDotTimer) */
+    s16 statusTimers[16]; /* per timed status bit 16-31 (btl_tickStatusTimers) */
+    s16 countdownStep; /* timer units per number of the Doom/petrify countdown (btl_initDoomCount, btl_drawStatusCountdown) */
+    u32 flags; /* bit 0 party, 1-4 slot, 5-7 id, 8-9 row, 16 ATB fills, 18 weak stance, 21 motion held, 22 hidden, 23 model part, 28 targetable, 29 targeted */
     u8 defense; /* Character.defense (btl_initPartyUnit) */
     u8 evade;
     u8 magicDef;
@@ -505,25 +505,25 @@ typedef struct BtlUnit {
     u8 elemBoost; /* element bits dealt x1.5 (btl_applyWeaponElementBoost) */
     u8 level; /* Character.level, enemy record level */
     u8 unk7B;
-    u8 unk7C;
-    u8 unk7D;
+    u8 baseBone; /* bone used as the unit position (btl_getBaseBonePos) */
+    u8 koState; /* KO state machine step (btl_updateKo) */
     u16 popupFlags; /* btl_spawnPopups: BtlCalc.unk1B bits (1 hp, 2 heal, 4 critical, 8 mp, 0x10 mp heal), 0x20 miss, 0x40 killed, 0x80 guard */
     s16 hpChange; /* damage or heal shown by btl_spawnPopups */
     s16 mpChange;
     u16 modelId;
     s16 rot[3]; /* rot[1] = facing */
     s32 pos[3]; /* position, 16.16 */
-    struct BtlUnit98 *unk98;
+    struct BtlUnit98 *home; /* home position block */
     BtlUnit9C *model;
-    BtlUnitA0 *unkA0;
+    BtlUnitA0 *obj; /* model object entry (GameData.unk8E0): start position/rotation, motion frame */
     s32 *motions; /* motion table (BtlUnit9CC * per slot); unk9C->unkC is the playing one */
     BtlUnit9C *weaponModel;
     u16 hiddenMeshes; /* BTL_ATTR_HIDE_MESHES / BTL_ATTR_SHOW_MESHES */
-    u16 unkAE;
+    u16 vanishMeshes; /* mesh groups Vanish hides */
     u16 unitBit; /* bit in target masks (BtlCmd.targets): party 0-3, enemies from 4 */
     u8 unkB2;
     u8 cmdIssued; /* set when the menu issues its command, cleared when it ends */
-    struct Unk80104F88Entry *unkB4; /* menu data (party members) */
+    struct Unk80104F88Entry *menu; /* party member menu data */
     s16 screenX;
     s16 screenY;
     u8 onScreen; /* screenX/Y valid (btl_projectUnitPos) */
@@ -3453,7 +3453,7 @@ BtlUnit *btlui_findKoUnit(u8);
 static inline BtlUnit *find_target(void) {
     BtlUnit *u;
     for (u = g_gameState->unk1C->unk8E4.battle->unitList; u != NULL; u = u->next) {
-        if ((u->unk68 & 0x30000000) == 0x30000000) {
+        if ((u->flags & 0x30000000) == 0x30000000) {
             return u;
         }
     }
@@ -3587,7 +3587,7 @@ s32 chr_getDefaultSet(Character *);
 static inline BtlUnit *BtlFindTargetCursor(void) {
     BtlUnit *p;
     for (p = g_gameState->unk1C->unk8E4.battle->unitList; p != NULL; p = p->next) {
-        if ((p->unk68 & 0x30000000) == 0x30000000) {
+        if ((p->flags & 0x30000000) == 0x30000000) {
             return p;
         }
     }
@@ -3603,7 +3603,7 @@ static inline s32 btlui_getTargeting_inline(void) {
     }
     n = 0;
     for (u = g_gameState->unk1C->unk8E4.battle->unitList; u != 0; u = u->next) {
-        if ((u->unk68 & 0x30000000) == 0x30000000) {
+        if ((u->flags & 0x30000000) == 0x30000000) {
             n++;
         }
     }
@@ -3618,7 +3618,7 @@ static inline u8 BtlUnitCanAct(BtlUnit *u) {
     if (u->hp == 0 || (u8)btl_hasStatus(u, (BTL_STATUS_PETRIFY | BTL_STATUS_VENOM | BTL_STATUS_KO | BTL_STATUS_CONFUSE | BTL_STATUS_BERSERK | BTL_STATUS_STOP | BTL_STATUS_SLEEP | BTL_STATUS_FREEZE | BTL_STATUS_JUMP)) != 0) {
         return 0;
     }
-    if ((g_btlRewards.unkA >> ((u8)u->unk68 >> 5)) & 1) {
+    if ((g_btlRewards.unkA >> ((u8)u->flags >> 5)) & 1) {
         return 1;
     }
     return 0;

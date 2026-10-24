@@ -382,44 +382,44 @@ void btl_placeParty(void) {
     rot = ((*flags & 3) != 0) << 11;
     u = g_gameState->unk1C->unk8E4.battle->unitList;
     for (; i < n; i++) {
-        if (!(u->unk68 & 1)) {
+        if (!(u->flags & 1)) {
             return;
         }
-        m = u->unk68 & ~0x300;
-        m |= (g_gameState->unk1C->characters[(u->unk68 >> 1) & 0xF].unk34.w >> 1) & 0x100;
-        u->unk68 = m;
+        m = u->flags & ~0x300;
+        m |= (g_gameState->unk1C->characters[(u->flags >> 1) & 0xF].unk34.w >> 1) & 0x100;
+        u->flags = m;
         if (!(*flags & 3)) {
-            u->unk68 = (u->unk68 & ~0x300) | ((((u->unk68 >> 8) & 3) ^ 1) << 8);
+            u->flags = (u->flags & ~0x300) | ((((u->flags >> 8) & 3) ^ 1) << 8);
         }
-        u->pos[0] = u->unk98->unk0[0] = u->unkA0->unk14 = x << 16;
-        p98 = u->unk98;
-        pa0 = u->unkA0;
+        u->pos[0] = u->home->unk0[0] = u->obj->unk14 = x << 16;
+        p98 = u->home;
+        pa0 = u->obj;
         if ((u8)btl_hasStatus(u, BTL_STATUS_FLOAT)) {
             v = 0xFF380000;
         } else {
             v = 0;
         }
         u->pos[1] = p98->unk0[1] = pa0->unk18 = v;
-        q98 = u->unk98;
-        qa0 = u->unkA0;
+        q98 = u->home;
+        qa0 = u->obj;
         w = 0xF9E80000;
-        if (!((u->unk68 >> 8) & 3)) {
+        if (!((u->flags >> 8) & 3)) {
             w = 0xF8580000;
         }
         u->pos[2] = q98->unk0[2] = qa0->unk1C = w;
-        u->unkA0->unk20 = 0;
+        u->obj->unk20 = 0;
         u->rot[0] = 0;
-        u->unkA0->unk22 = rot;
+        u->obj->unk22 = rot;
         u->rot[1] = rot;
-        u->unkA0->unk24 = 0;
+        u->obj->unk24 = 0;
         u->rot[2] = 0;
         tbl = D_800F57F0;
-        e = &tbl[g_gameState->unk1C->characters[(u->unk68 >> 1) & 0xF].unk34.b.unk4];
+        e = &tbl[g_gameState->unk1C->characters[(u->flags >> 1) & 0xF].unk34.b.unk4];
         u->unkBD = e->unk0;
         u->unkBE = e->unk1;
         btl_setShadowSize(u, e->unk2, e->unk3);
         x -= 0x278;
-        g_gameState->unk1C->unk8E4.battle->unk11C0->unk28[(u->unk68 >> 1) & 0xF].unk4_22 = e->unk4;
+        g_gameState->unk1C->unk8E4.battle->unk11C0->unk28[(u->flags >> 1) & 0xF].unk4_22 = e->unk4;
         u = u->next;
     }
 }
@@ -461,26 +461,26 @@ void btl_initEnemyType(Unk800C9D1C *arg0, Battle4880 *arg1) {
 
 void btl_initEnemyUnit(Unk800C9EE0 *arg0, BtlUnit *arg1, s32 *arg2, s32 arg3) {
     Battle *b = g_gameState->unk1C->unk8E4.battle;
-    Battle488 *s = &b->enemies[(arg1->unk68 >> 1) & 0xF];
+    Battle488 *s = &b->enemies[(arg1->flags >> 1) & 0xF];
     Battle4880 *e;
     s16 r;
     s->unk0 = &b->enemyTypes[arg0->unk0];
-    arg1->unk68 = (((arg1->unk68 & ~0x10000000) | ((arg0->unk1 & 1) << 28)) & ~0x300) | 0x200;
+    arg1->flags = (((arg1->flags & ~0x10000000) | ((arg0->unk1 & 1) << 28)) & ~0x300) | 0x200;
     e = &g_gameState->unk1C->unk8E4.battle->enemyTypes[arg0->unk0];
     arg1->max = &e->unk4;
     arg1->hp = e->unk4.maxHp;
     arg1->mp = arg1->max->maxMp;
     s->unk4 = (s->unk4 & ~0x100) | ((arg0->unk1 << 7) & 0x100);
     if (!((s->unk4 >> 9) & 1)) {
-        arg1->pos[0] = arg1->unk98->unk0[0] = arg1->unkA0->unk14 = arg0->unk4 << 16;
-        arg1->pos[1] = arg1->unk98->unk0[1] = arg1->unkA0->unk18 = arg0->unk6 << 16;
-        arg1->pos[2] = arg1->unk98->unk0[2] = arg1->unkA0->unk1C = arg0->unk8 << 16;
-        arg1->unkA0->unk20 = 0;
+        arg1->pos[0] = arg1->home->unk0[0] = arg1->obj->unk14 = arg0->unk4 << 16;
+        arg1->pos[1] = arg1->home->unk0[1] = arg1->obj->unk18 = arg0->unk6 << 16;
+        arg1->pos[2] = arg1->home->unk0[2] = arg1->obj->unk1C = arg0->unk8 << 16;
+        arg1->obj->unk20 = 0;
         arg1->rot[0] = 0;
-        arg1->unkA0->unk24 = 0;
+        arg1->obj->unk24 = 0;
         arg1->rot[2] = 0;
         r = (arg0->unkA + D_800F5850[*arg2 & 3]) & 0xFFF;
-        arg1->unkA0->unk22 = r;
+        arg1->obj->unk22 = r;
         arg1->rot[1] = r;
     }
     arg1->motions = (s32 *)s->unk0->unkC;
@@ -506,15 +506,15 @@ void btl_setEnemyStats(Unk800C9D1C *arg0, BtlUnit *arg1) {
     arg1->spirit = arg0->unk34[3];
     *(s32 *)&arg1->elemGuard = arg0->unk3C;
     *(s32 *)&arg1->hiddenMeshes = arg0->unk2C;
-    arg1->unk7C = arg0->unk4B;
-    s = &g_gameState->unk1C->unk8E4.battle->enemies[(arg1->unk68 >> 1) & 0xF];
+    arg1->baseBone = arg0->unk4B;
+    s = &g_gameState->unk1C->unk8E4.battle->enemies[(arg1->flags >> 1) & 0xF];
     s->unk8.w = arg0->unk18;
     s->unk4 = (s->unk4 & ~0x40) | ((arg0->unk30 & 1) << 6);
     s->unk4 = (s->unk4 & ~0x80) | ((arg0->unk30 << 6) & 0x80);
     btl_setShadowSize(arg1, arg0->unk64, arg0->unk66);
     arg1->unkBD = arg0->unk68;
     arg1->unkBE = arg0->unk6E;
-    t = &g_gameState->unk1C->unk8E4.battle->unk11C0->unk28[((arg1->unk68 >> 1) & 0xF) + 9];
+    t = &g_gameState->unk1C->unk8E4.battle->unk11C0->unk28[((arg1->flags >> 1) & 0xF) + 9];
     t->unk4_12 = arg0->unk6A;
     t->unk4_22 = arg0->unk6C;
 }

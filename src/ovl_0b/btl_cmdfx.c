@@ -2,9 +2,9 @@
 
 void btl_setShadowSize(BtlUnit *arg0, s32 arg1, u32 arg2) {
     s32 k;
-    k = arg0->unk68 >> 1;
+    k = arg0->flags >> 1;
     k &= 0xF;
-    if (!(arg0->unk68 & 1)) {
+    if (!(arg0->flags & 1)) {
         k += 9;
     }
     arg0->shadowW = (arg1 & 0xFFFF) / 14;
@@ -19,7 +19,7 @@ void btl_setUnitFade(BtlUnit *arg0, s32 arg1) {
     btl_setModelAbr(arg0->model, 0x60);
     btl_fillModelRgb(arg0->model, (p->lightR * arg1) << 11 >> 16, (p->lightG * arg1) << 11 >> 16, (p->lightB * arg1) << 11 >> 16);
     if (arg1 == 0) {
-        arg0->unk68 |= 0x400000;
+        arg0->flags |= 0x400000;
     }
 }
 
@@ -65,7 +65,7 @@ void btl_playCmdEffect(BtlCmd *arg0, s32 arg1, s16 *arg2) {
         }
     } else if (arg0->unk10.b.reflect == 2) {
         arg0->unk10.b.reflect = 1;
-        if (!(arg0->caster->unk68 & 1)) {
+        if (!(arg0->caster->flags & 1)) {
             arg0->unk10.b.unk0_11 = 1;
         }
         l->kind = 0x11;
@@ -76,13 +76,13 @@ void btl_playCmdEffect(BtlCmd *arg0, s32 arg1, s16 *arg2) {
             u->popupFlags = 0;
             u->mpChange = 0;
             u->hpChange = 0;
-            sum[0] += u->unk98->unk0[0] >> 16;
-            sum[2] += u->unk98->unk0[2] >> 16;
+            sum[0] += u->home->unk0[0] >> 16;
+            sum[2] += u->home->unk0[2] >> 16;
         }
         if (u->unitBit & mask) {
             l->bounced[l->bounceCount++] = u;
         }
-        if (arg0->cmdNo == BTL_CMD_SWD_MAG && (u->unk68 & 1) && g_gameState->unk1C->characters[(u->unk68 >> 1) & 0xF].unk34.b.unk4 == 2) {
+        if (arg0->cmdNo == BTL_CMD_SWD_MAG && (u->flags & 1) && g_gameState->unk1C->characters[(u->flags >> 1) & 0xF].unk34.b.unk4 == 2) {
             l->partner = u;
         }
     }
@@ -104,16 +104,16 @@ void btl_startCmdEffect(BtlCmd *cmd) {
     case BTL_CMD_ATTACK:
     case BTL_CMD_COUNTER:
     case BTL_CMD_CHARGE_ATTACK:
-        if (u->unk68 & 1) {
-            id = g_gameState->unk1C->characters[(u->unk68 >> 1) & 0xF].unk34.b.unk4 + 0x64;
+        if (u->flags & 1) {
+            id = g_gameState->unk1C->characters[(u->flags >> 1) & 0xF].unk34.b.unk4 + 0x64;
         } else {
             id = 0x77;
         }
         btl_playCmdEffect(cmd, id, 0);
         break;
     case BTL_CMD_STEAL:
-        if (u->unk68 & 1) {
-            k = g_gameState->unk1C->characters[(u->unk68 >> 1) & 0xF].unk34.b.unk4;
+        if (u->flags & 1) {
+            k = g_gameState->unk1C->characters[(u->flags >> 1) & 0xF].unk34.b.unk4;
         } else {
             k = 0x13;
         }
@@ -138,7 +138,7 @@ void btl_startCmdEffect(BtlCmd *cmd) {
     case BTL_CMD_DEFEND:
         btl_showCmdName(cmd);
         u->model->motion = (BtlUnit9CC *)u->motions[12];
-        u->unkA0->unk3A = 0;
+        u->obj->unk3A = 0;
         btl_execCmd(u);
         return;
     case BTL_CMD_CHANGE:

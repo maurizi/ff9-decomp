@@ -531,11 +531,11 @@ s32 btl_reloadPartyStep(s32 arg0) {
                 } else {
                     goto use9;
                 }
-            } else if (u == g_gameState->unk1C->unk8E4.battle->curCmd->caster || ((u->unk68 >> 19) & 1)) {
+            } else if (u == g_gameState->unk1C->unk8E4.battle->curCmd->caster || ((u->flags >> 19) & 1)) {
             use9:
                 u->model->motion = (BtlUnit9CC *)u->motions[9];
             } else {
-                u->model->motion = (BtlUnit9CC *)u->motions[(u->unk68 >> 18) & 1];
+                u->model->motion = (BtlUnit9CC *)u->motions[(u->flags >> 18) & 1];
             }
             e->unkC->unk3A = 0;
             m = u->weaponModel;
@@ -1325,7 +1325,7 @@ s32 btl_getPartyModelId(s32 arg0, s32 arg1) {
     if (!(arg1 & 0x20)) {
         u = btl_getUnitBySlot(arg0);
         if (u != NULL) {
-            m = ((s16)u->modelId != D_800F5200[(u->unk68 & 1) ? (g_gameState->unk1C->characters[(u->unk68 >> 1) & 0xF].unk34.w >> 4) & 0x1F : 0x13]) << 4;
+            m = ((s16)u->modelId != D_800F5200[(u->flags & 1) ? (g_gameState->unk1C->characters[(u->flags >> 1) & 0xF].unk34.w >> 4) & 0x1F : 0x13]) << 4;
         }
     }
     idx = g_gameState->unk1C->party[arg0]->unk34.w >> 4;
@@ -1482,7 +1482,7 @@ s32 btl_swapPartyModelStep(s32 arg0, s32 arg1) {
             if (u->status & BTL_STATUS_KO) {
                 u->model->motion = (BtlUnit9CC *)u->motions[4];
             } else {
-                u->model->motion = (BtlUnit9CC *)u->motions[(u->unk68 >> 18) & 1];
+                u->model->motion = (BtlUnit9CC *)u->motions[(u->flags >> 18) & 1];
             }
             ent->unkC->unk3A = 0;
             u->weaponModel->parent = ent->unk8;

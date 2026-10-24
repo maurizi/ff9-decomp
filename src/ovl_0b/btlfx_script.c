@@ -1068,9 +1068,9 @@ void btlfx_resetUnitMotion(s32 arg0, u8 arg1) {
     BtlUnit *u = btl_getUnit(arg0);
     btlfx_setUnitMotion(arg0, u->motions[0]);
     if (arg1) {
-        u->rot[0] = u->unkA0->unk20;
-        u->rot[1] = u->unkA0->unk22;
-        u->rot[2] = u->unkA0->unk24;
+        u->rot[0] = u->obj->unk20;
+        u->rot[1] = u->obj->unk22;
+        u->rot[2] = u->obj->unk24;
     }
 }
 
@@ -1080,7 +1080,7 @@ void btlfx_setUnitMotion(s32 arg0, s32 arg1) {
         BtlUnit9C *m = u->model;
         if (m != NULL) {
             m->motion = (BtlUnit9CC *)arg1;
-            u->unkA0->unk3A = 0;
+            u->obj->unk3A = 0;
         }
     }
 }
@@ -1094,7 +1094,7 @@ void btlfx_setMotionFrame(s32 arg0, s32 arg1) {
     if (arg1 >= u->model->motion->unk2) {
         arg1 = u->model->motion->unk2;
     }
-    u->unkA0->unk3A = arg1;
+    u->obj->unk3A = arg1;
 }
 
 s32 btlfx_getMotionLength(s32 arg0) {
@@ -1102,7 +1102,7 @@ s32 btlfx_getMotionLength(s32 arg0) {
 }
 
 u8 btlfx_getMotionFrame(s32 arg0) {
-    return btl_getUnit(arg0)->unkA0->unk3A;
+    return btl_getUnit(arg0)->obj->unk3A;
 }
 
 void btlfx_turnUnit(s32 arg0, s32 arg1) {
@@ -1112,7 +1112,7 @@ void btlfx_turnUnit(s32 arg0, s32 arg1) {
     s16 c[4];
     switch (arg1) {
     case 0:
-        u->rot[1] = u->unkA0->unk22 + 0x800;
+        u->rot[1] = u->obj->unk22 + 0x800;
         break;
     case 1:
         btlfx_getUnitPos(arg0, a);
@@ -1123,9 +1123,9 @@ void btlfx_turnUnit(s32 arg0, s32 arg1) {
         btlfx_setUnitRot(arg0, c);
         break;
     case 2:
-        u->rot[0] = u->unkA0->unk20;
-        u->rot[1] = u->unkA0->unk22;
-        u->rot[2] = u->unkA0->unk24;
+        u->rot[0] = u->obj->unk20;
+        u->rot[1] = u->obj->unk22;
+        u->rot[2] = u->obj->unk24;
         break;
     }
 }
@@ -1133,7 +1133,7 @@ void btlfx_turnUnit(s32 arg0, s32 arg1) {
 void btlfx_playSwingSound(s32 arg0) {
     BtlUnit *u = btl_getUnit(arg0);
     if (btlfx_isPartyUnit(arg0) != 0) {
-        btl_soundCmd(0xD000, btl_getWeaponSound((u8)u->unk68 >> 5, 0), 0, btl_soundPan(arg0), 0x7F);
+        btl_soundCmd(0xD000, btl_getWeaponSound((u8)u->flags >> 5, 0), 0, btl_soundPan(arg0), 0x7F);
     }
 }
 
@@ -1147,21 +1147,21 @@ void btlfx_playHitSound(s32 arg0, s32 arg1, s32 arg2) {
 
 u32 btlfx_holdMotion(s32 arg0) {
     BtlUnit *u = btl_getUnit(arg0);
-    u32 f = u->unk68;
-    u->unk68 = f | 0x200000;
+    u32 f = u->flags;
+    u->flags = f | 0x200000;
     return (f >> 21) & 1;
 }
 
 void btlfx_setMotionHeld(s32 arg0, s32 arg1) {
     BtlUnit *u = btl_getUnit(arg0);
-    u->unk68 = (u->unk68 & ~0x200000) | ((arg1 & 1) << 21);
+    u->flags = (u->flags & ~0x200000) | ((arg1 & 1) << 21);
 }
 
 s32 btlfx_isPartyUnit(s32 arg0) {
     if (arg0 == 0xFF) {
         arg0 = 0;
     }
-    return btl_getUnit(arg0)->unk68 & 1;
+    return btl_getUnit(arg0)->flags & 1;
 }
 
 s32 btlfx_isSameSide(s32 arg0, s32 arg1) {
@@ -1178,21 +1178,21 @@ s32 btlfx_isSameUnit(s32 arg0, s32 arg1) {
 }
 
 s32 btlfx_getUnitKind(s32 arg0) {
-    s32 idx = (btl_getUnit(arg0)->unk68 >> 1) & 0xF;
+    s32 idx = (btl_getUnit(arg0)->flags >> 1) & 0xF;
     return g_gameState->unk1C->characters[idx].unk34.b.unk4;
 }
 
 s32 btlfx_getUnitWeapon(s32 arg0) {
-    s32 idx = (btl_getUnit(arg0)->unk68 >> 1) & 0xF;
+    s32 idx = (btl_getUnit(arg0)->flags >> 1) & 0xF;
     return g_gameState->unk1C->characters[idx].equip[0];
 }
 
 void btlfx_setUnitVisible(s32 arg0, s32 arg1) {
     BtlUnit *u = btl_getUnit(arg0);
     if (arg1 != 0) {
-        u->unk68 &= ~0x400000;
+        u->flags &= ~0x400000;
     } else {
-        u->unk68 |= 0x400000;
+        u->flags |= 0x400000;
     }
 }
 
@@ -1654,9 +1654,9 @@ s32 btlfx_stepFaceHome(Unk800D8124 *arg0, s32 arg1, s32 *arg2) {
     u = btl_getUnit(arg0->unk0);
     if (arg0->unk2 == 0 || btlfx_isPartyUnit(arg0->unk1) == 0) {
         if (v == 0) {
-            arg0->unk8[0] = u->unkA0->unk20 - u->rot[0];
-            arg0->unk8[1] = u->unkA0->unk22 - u->rot[1];
-            arg0->unk8[2] = u->unkA0->unk24 - u->rot[2];
+            arg0->unk8[0] = u->obj->unk20 - u->rot[0];
+            arg0->unk8[1] = u->obj->unk22 - u->rot[1];
+            arg0->unk8[2] = u->obj->unk24 - u->rot[2];
         }
         btlfx_getUnitRot(arg0->unk0, rot);
         rot[0] += arg0->unk8[0] / arg0->unk4;
@@ -1669,8 +1669,8 @@ s32 btlfx_stepFaceHome(Unk800D8124 *arg0, s32 arg1, s32 *arg2) {
         g_btlfxState.turnDone = 1;
         return 1;
     }
-    u->rot[0] = u->unkA0->unk20;
-    a = u->unkA0;
+    u->rot[0] = u->obj->unk20;
+    a = u->obj;
     u->rot[1] = a->unk22;
     *(volatile s16 *)&u->rot[2] = a->unk24;
     return g_btlfxState.turnDone = 1;

@@ -41,7 +41,7 @@ void btlseq_init(void) {
 void btl_startEnemySeq(BtlCmd *arg0) {
     if (g_gameState->unk1C->unk8E4.battle->unk11C4.unk8[arg0->subNo] != 0 && btlseq_start(arg0) != NULL) {
         BtlUnit *u = arg0->caster;
-        if (!(u->unk68 & 1)) {
+        if (!(u->flags & 1)) {
             u->rot[1] = 0;
         }
     }
@@ -178,9 +178,9 @@ void btlseq_update(void) {
 
 s32 btlseq_opEnd(BtlScript *arg0, BtlUnit *arg1) {
     BtlUnit9C *m = arg1->model;
-    if (!((arg0->unk0 >> 2) & 1) && arg0->unk14 != 0 && arg1->unkA0->unk3A >= m->motion->unk2) {
-        m->motion = (BtlUnit9CC *)arg1->motions[(arg1->unk68 >> 18) & 1];
-        arg1->unkA0->unk3A = 0;
+    if (!((arg0->unk0 >> 2) & 1) && arg0->unk14 != 0 && arg1->obj->unk3A >= m->motion->unk2) {
+        m->motion = (BtlUnit9CC *)arg1->motions[(arg1->flags >> 18) & 1];
+        arg1->obj->unk3A = 0;
         arg0->unk0 |= 4;
     }
     if ((arg1->status & (BTL_STATUS_VENOM | BTL_STATUS_STOP | BTL_STATUS_FREEZE)) || ((arg0->unk0 >> 2) & 1)) {
@@ -288,7 +288,7 @@ void btlseq_opMoveHome(BtlScript *arg0, BtlUnit *arg1) {
     for (i = 0; i < 3; i++) {
         s16 *q = p + i;
         q[0] = arg1->pos[i] >> 16;
-        v = arg1->unk98->unk0;
+        v = arg1->home->unk0;
         q[3] = v[i] >> 16;
     }
 }
@@ -362,13 +362,13 @@ s32 btlseq_opPlayAnim(BtlScript *arg0, BtlUnit *arg1) {
     u8 *p = arg0->unk8;
     s32 idx;
     if (p[1] == 0xFF) {
-        f = arg1->unk68;
+        f = arg1->flags;
         arg1->model->motion = g_gameState->unk1C->unk8E4.battle->enemies[(f >> 1) & 0xF].unk0->unkC[(f >> 18) & 1];
     } else {
         idx = arg0->unk16 + p[1];
         arg1->model->motion = g_gameState->unk1C->unk8E4.battle->unk11C4.unk0[idx];
     }
-    arg1->unkA0->unk3A = 0;
+    arg1->obj->unk3A = 0;
     arg0->unk14 = 0;
     arg0->unk8 += 2;
     return 1;
@@ -402,7 +402,7 @@ s32 btlseq_opEffect(BtlScript *arg0) {
 
 s32 btlseq_opWaitAnim(BtlScript *arg0, BtlUnit *arg1) {
     BtlUnit9C *m = arg1->model;
-    BtlUnitA0 *a = arg1->unkA0;
+    BtlUnitA0 *a = arg1->obj;
     if (arg0->unk14 != 0 && (a->unk3A >= m->motion->unk2 || (arg1->status & (BTL_STATUS_VENOM | BTL_STATUS_STOP | BTL_STATUS_FREEZE)))) {
         g_btlfxEnv->camera->unk52 = 0;
         arg0->unk8 += 1;
@@ -462,7 +462,7 @@ s32 btlseq_opShowName(BtlScript *arg0, BtlUnit *arg1) {
     if (idx & 0x80) {
         func_800F4F44((s32)(txt + arg0->unk4->unk8->nameOfs), 1);
     } else {
-        idx += b->enemies[(arg1->unk68 >> 1) & 0xF].unk0->unk28;
+        idx += b->enemies[(arg1->flags >> 1) & 0xF].unk0->unk28;
         ofs = ((u16 *)txt)[idx * 2 + 2] + 4;
         if (pc[0] == 0x21) {
             func_800F4F44((s32)(txt + ofs), 3);
@@ -475,7 +475,7 @@ s32 btlseq_opShowName(BtlScript *arg0, BtlUnit *arg1) {
 }
 
 s32 func_800CB808(BtlScript *arg0, BtlUnit *arg1) {
-    arg1->unk68 = (arg1->unk68 & ~0x40000) | ((arg0->unk8[1] & 1) << 18);
+    arg1->flags = (arg1->flags & ~0x40000) | ((arg0->unk8[1] & 1) << 18);
     arg0->unk8 += 2;
     return 1;
 }
@@ -519,7 +519,7 @@ s32 btlseq_opPlayCamera(BtlScript *arg0, BtlUnit *arg1) {
     s->unk148 = arg1;
     s->unk14C = (s32)btlseq_findUnit(arg0->unk4->unkC);
     g_gameState->unk1C->unk8E4.battle->unk131C = arg0->unk8[1];
-    btlcam_playSeq(g_gameState->unk1C->unk8E4.battle->enemies[(arg1->unk68 >> 1) & 0xF].unk0->unk2C);
+    btlcam_playSeq(g_gameState->unk1C->unk8E4.battle->enemies[(arg1->flags >> 1) & 0xF].unk0->unk2C);
 end:
     arg0->unk8 += 2;
     return 1;
@@ -545,7 +545,7 @@ s32 btlseq_opTurn(BtlScript *arg0, BtlUnit *arg1) {
     if (a & 0x8000) {
         switch (a & 0x7FFF) {
         case 0:
-            ang = arg1->unkA0->unk22;
+            ang = arg1->obj->unk22;
             break;
         case 1:
             btlseq_getTargetCenter(arg0->unk4->unkC, (u16 *)&d[0], (u16 *)&d[1]);
@@ -648,7 +648,7 @@ s32 btlseq_opDelayedSound(BtlScript *arg0) {
 }
 
 s32 func_800CBEFC(BtlScript *arg0, BtlUnit *arg1) {
-    arg1->unk7C = arg0->unk8[1];
+    arg1->baseBone = arg0->unk8[1];
     arg0->unk8 += 2;
     return 1;
 }
@@ -660,7 +660,7 @@ s32 btlseq_opFadeOut(BtlScript *arg0, BtlUnit *arg1) {
 }
 
 s32 func_800CBF50(BtlScript *arg0, BtlUnit *arg1) {
-    arg1->unk68 = (arg1->unk68 & ~0x1000000) | ((arg0->unk8[1] & 1) << 24);
+    arg1->flags = (arg1->flags & ~0x1000000) | ((arg0->unk8[1] & 1) << 24);
     arg0->unk8 += 2;
     return 1;
 }

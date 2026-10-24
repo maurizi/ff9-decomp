@@ -30,13 +30,13 @@ void btl_initParty(Battle *arg0) {
     k = arg0->scene.unk0 & 3;
     if (k == 0) {
         for (u = arg0->unitList; u != NULL; u = u->next) {
-            if (u->unk68 & 1) {
+            if (u->flags & 1) {
                 u->atb = 0;
             }
         }
     } else if (k == 1) {
         for (u = arg0->unitList; u != NULL; u = u->next) {
-            if (!(u->unk68 & 1)) {
+            if (!(u->flags & 1)) {
                 u->atb = 0;
             }
         }
@@ -67,16 +67,16 @@ void btl_initEnemies(Battle *arg0) {
         }
         k = i;
         u->unitBit = 0x10 << k;
-        u->unk68 &= ~1;
-        u->unk68 = (u->unk68 & ~0x1E) | ((k & 0xF) << 1);
-        u->unk68 = (u->unk68 & ~0xE0) | (((k + 4) & 7) << 5);
-        u->unk68 &= ~0x40000000;
-        u->unk68 = (u->unk68 & ~0x800000) | (((e->unk4 >> 9) & 1) << 23);
+        u->flags &= ~1;
+        u->flags = (u->flags & ~0x1E) | ((k & 0xF) << 1);
+        u->flags = (u->flags & ~0xE0) | (((k + 4) & 7) << 5);
+        u->flags &= ~0x40000000;
+        u->flags = (u->flags & ~0x800000) | (((e->unk4 >> 9) & 1) << 23);
         btl_resetUnit(u, &g_gameState->unk1C->unk8E0[k]);
-        u->unk98 = (struct BtlUnit98 *)&e->unkC;
+        u->home = (struct BtlUnit98 *)&e->unkC;
         u->weaponModel = NULL;
         u->support = (u32 *)D_800F5244;
-        u->unk68 &= ~0x40000;
+        u->flags &= ~0x40000;
         if (prev != NULL) {
             prev->next = u;
         }
@@ -99,20 +99,20 @@ void btl_initPartyUnit(Character *c, BtlUnit *u, u16 slot, u16 n) {
 
     u->unitBit = 1 << n;
     g_btlRewards.unkA |= 1 << (s = slot);
-    u->unk68 |= 1;
-    u->unk68 = (u->unk68 & ~0x1E) | ((c->unk34.w & 0xF) << 1);
-    u->unk68 |= 0x10000000;
-    u->unk68 = (u->unk68 & ~0xE0) | ((s & 7) << 5);
-    u->unk68 &= ~0x800000;
+    u->flags |= 1;
+    u->flags = (u->flags & ~0x1E) | ((c->unk34.w & 0xF) << 1);
+    u->flags |= 0x10000000;
+    u->flags = (u->flags & ~0xE0) | ((s & 7) << 5);
+    u->flags &= ~0x800000;
     if (g_evtGlobalVars.b[0x10] == 0 || (c->unkA & 0x10) ||
-        (((u->unk68 >> 1) & 0xF) == 2 && g_evtGlobalVars.b[0x11] != 0)) {
+        (((u->flags >> 1) & 0xF) == 2 && g_evtGlobalVars.b[0x11] != 0)) {
         u->trance = 0;
-        u->unk68 &= ~0x40000000;
+        u->flags &= ~0x40000000;
     } else {
-        u->unk68 |= 0x40000000;
+        u->flags |= 0x40000000;
         u->trance = c->trance;
     }
-    u->unk7C = 0;
+    u->baseBone = 0;
     u->support = c->unk88;
     u->speed = c->speed;
     u->strength = c->strength;
@@ -122,7 +122,7 @@ void btl_initPartyUnit(Character *c, BtlUnit *u, u16 slot, u16 n) {
     u->max = (BtlUnit24 *)&c->maxHp;
     btl_copyStats((Unk800BD8C0 *)&u->hp, (Unk800BD8C0 *)&c->hp);
     btl_resetUnit(u, &g_gameState->unk1C->unk8D8[c->unk34.w & 0xF]);
-    u->unkAE = 0xFFFF;
+    u->vanishMeshes = 0xFFFF;
     btl_initDoomCount((Unk800C09D8 *)u);
     u->max->maxAtb = (0x3C - u->speed) * 160;
     btl_resetAtbSpeed((Unk800BD8F0 *)u);
@@ -159,15 +159,15 @@ void btl_initPartyUnit(Character *c, BtlUnit *u, u16 slot, u16 n) {
         btl_addStatus(u, BTL_STATUS_PETRIFY);
     }
     btl_applyAutoAbilities(u);
-    u->unk98 = (struct BtlUnit98 *)&u->unkA0->unk14;
+    u->home = (struct BtlUnit98 *)&u->obj->unk14;
     if (u->hp == 0 && btl_addStatus(u, BTL_STATUS_KO) == 2) {
-        u->unk7D = 5;
+        u->koState = 5;
         btl_setKoMotion(u);
         return;
     }
-    u->unk68 = (u->unk68 & ~0x40000) | ((btl_hasStatus(u, (BTL_STATUS_VENOM | BTL_STATUS_LOW_HP | BTL_STATUS_POISON | BTL_STATUS_SLEEP)) & 1) << 18);
-    u->model->motion = (BtlUnit9CC *)u->motions[(u->unk68 >> 18) & 1];
-    u->unkA0->unk3A = 0;
+    u->flags = (u->flags & ~0x40000) | ((btl_hasStatus(u, (BTL_STATUS_VENOM | BTL_STATUS_LOW_HP | BTL_STATUS_POISON | BTL_STATUS_SLEEP)) & 1) << 18);
+    u->model->motion = (BtlUnit9CC *)u->motions[(u->flags >> 18) & 1];
+    u->obj->unk3A = 0;
 }
 
 u32 *btl_initEnemyState(Battle *arg0, u32 *arg1) {
@@ -197,7 +197,7 @@ u32 *btl_initEnemyState(Battle *arg0, u32 *arg1) {
             u->weapon = NULL;
             btl_initDoomCount((Unk800C09D8 *)u);
             btl_hideMeshes(u, u->hiddenMeshes);
-            if ((u->unk68 >> 23) & 1) {
+            if ((u->flags >> 23) & 1) {
                 u->atb = 0;
                 u->atbSpeed = 0;
                 memset(&r, 0, 8);
@@ -206,9 +206,9 @@ u32 *btl_initEnemyState(Battle *arg0, u32 *arg1) {
                 r.vz = u->rot[2];
                 r2 = r;
                 func_80031244(&r2, &u->model->matrix);
-                u->model->matrix.t[0] = u->unkA0->unk14 >> 16;
-                u->model->matrix.t[1] = u->unkA0->unk18 >> 16;
-                u->model->matrix.t[2] = u->unkA0->unk1C >> 16;
+                u->model->matrix.t[0] = u->obj->unk14 >> 16;
+                u->model->matrix.t[1] = u->obj->unk18 >> 16;
+                u->model->matrix.t[2] = u->obj->unk1C >> 16;
                 cc = u->model->motion;
                 if (IS_OFFSET(cc->unkC)) {
                     t = cc->unk10;
@@ -218,14 +218,14 @@ u32 *btl_initEnemyState(Battle *arg0, u32 *arg1) {
                     }
                 }
                 arg1 = (u32 *)btl_calcBoneMatrices(u->model, 0, (u8 *)arg1);
-                u->unk98->unk0[0] = u->model->bones[u->unk7C].unk14 << 16;
-                u->unk98->unk0[1] = 0;
-                u->unk98->unk0[2] = u->model->bones[u->unk7C].unk1C << 16;
+                u->home->unk0[0] = u->model->bones[u->baseBone].unk14 << 16;
+                u->home->unk0[1] = 0;
+                u->home->unk0[2] = u->model->bones[u->baseBone].unk1C << 16;
             } else {
-                u->unk98->unk0[0] = u->unkA0->unk14;
-                u->unk98->unk0[1] = u->unkA0->unk18;
-                u->unk98->unk0[2] = u->unkA0->unk1C;
-                a0 = u->unkA0;
+                u->home->unk0[0] = u->obj->unk14;
+                u->home->unk0[1] = u->obj->unk18;
+                u->home->unk0[2] = u->obj->unk1C;
+                a0 = u->obj;
                 if (g_randPtr >= g_randTableEnd) {
                     rand_refill();
                 }
@@ -242,7 +242,7 @@ void btl_resetUnit(BtlUnit *arg0, Unk8E0 *arg1) {
     btl_initUnitCmds(arg0);
     btl_clearUnitStatus(arg0);
     arg0->unk7B = 0;
-    arg0->unkB4 = NULL;
+    arg0->menu = NULL;
     arg0->inMenuQueue = 0;
     arg0->popupFlags = 0;
     arg0->hpChange = 0;
@@ -251,8 +251,8 @@ void btl_resetUnit(BtlUnit *arg0, Unk8E0 *arg1) {
     arg0->tickHeal = 0;
     arg0->tickDamage = 0;
     arg0->tickMpDamage = 0;
-    arg0->unk7D = 0;
-    f = arg0->unk68;
+    arg0->koState = 0;
+    f = arg0->flags;
     f &= ~0x20000;
     f &= ~0x80000;
     f &= ~0x100000;
@@ -263,14 +263,14 @@ void btl_resetUnit(BtlUnit *arg0, Unk8E0 *arg1) {
     f &= ~0x4000000;
     f &= ~0x8000000;
     f &= ~0x20000000;
-    arg0->unk68 = f;
+    arg0->flags = f;
     arg1->unk10 = arg0;
-    if ((arg0->unk68 >> 23) & 1) {
+    if ((arg0->flags >> 23) & 1) {
         arg0->model = g_gameState->unk1C->unk8E0->unk8;
-        arg0->unkA0 = g_gameState->unk1C->unk8E0->unkC;
+        arg0->obj = g_gameState->unk1C->unk8E0->unkC;
     } else {
         arg0->model = arg1->unk8;
-        arg0->unkA0 = arg1->unkC;
+        arg0->obj = arg1->unkC;
         arg0->model->texAnims[2].unk4 |= 1;
         arg0->model->texAnims[2].unkC = 0;
         arg0->model->texAnims[2].unk12 = 0x1000;
@@ -293,8 +293,8 @@ void btl_initWeapon(Character *arg0, BtlUnit *arg1) {
     s32 id;
     arg1->weapon = (u8 *)&D_8006E0E8[arg0->equip[0]];
     id = ((Unk8006E0E8 *)arg1->weapon)->unk2 | 0x20000;
-    arg1->weaponModel->header = (BtlUnit9C8 *)btl_findWeaponModel(id, (u8)arg1->unk68 >> 5);
-    btl_getWeaponTexInfo(id, (u8)arg1->unk68 >> 5, &a, &b, &c);
+    arg1->weaponModel->header = (BtlUnit9C8 *)btl_findWeaponModel(id, (u8)arg1->flags >> 5);
+    btl_getWeaponTexInfo(id, (u8)arg1->flags >> 5, &a, &b, &c);
     btl_applyModelTextures(arg1->weaponModel, (s16 *)a, (s16 *)b);
     btl_applyBgLight(arg1->weaponModel);
     arg1->weaponModel->motion = 0;

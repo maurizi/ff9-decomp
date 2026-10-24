@@ -58,7 +58,7 @@ void btlcam_playSeq(s32 arg0) {
 
 void func_800C30B8(void) {
     BtlUnit *u = g_btlfxEnv->targets->caster;
-    if (u->unk68 & 1) {
+    if (u->flags & 1) {
         D_800FE484 = u;
     }
 }
@@ -179,7 +179,7 @@ void btlcam_loadScript(s32 arg) {
             case 3:
                 if (g_btlCamera.unkCC == NULL) {
                     g_btlCamera.unkA8 = 0;
-                } else if ((g_btlCamera.unkCC->status & (BTL_STATUS_PETRIFY | BTL_STATUS_VENOM | BTL_STATUS_KO | BTL_STATUS_STOP | BTL_STATUS_JUMP)) || !((g_btlRewards.unkA >> ((u8)g_btlCamera.unkCC->unk68 >> 5)) & 1)) {
+                } else if ((g_btlCamera.unkCC->status & (BTL_STATUS_PETRIFY | BTL_STATUS_VENOM | BTL_STATUS_KO | BTL_STATUS_STOP | BTL_STATUS_JUMP)) || !((g_btlRewards.unkA >> ((u8)g_btlCamera.unkCC->flags >> 5)) & 1)) {
                     g_btlCamera.unkA8 = 0;
                 } else {
                     n = g_gameState->unk1C->unk8E4.battle->scene.unk0 & 3;
@@ -188,7 +188,7 @@ void btlcam_loadScript(s32 arg) {
                     } else {
                         r = 0;
                         for (u = g_gameState->unk1C->unk8E4.battle->unitList; u != NULL; u = u->next) {
-                            if ((u->unk68 & 1) && !(u->status & (BTL_STATUS_KO | BTL_STATUS_JUMP))) {
+                            if ((u->flags & 1) && !(u->status & (BTL_STATUS_KO | BTL_STATUS_JUMP))) {
                                 r++;
                             }
                         }
@@ -437,8 +437,8 @@ void func_800C3F78(Unk800C412C *arg0, Unk800C3F78 *arg1) {
             goto other;
         }
         u = (k == 1) ? D_800FE368.unk0 : D_800FE368.unk4;
-        if (u->unk68 & 1) {
-            idx = ((g_gameState->unk1C->characters[(u->unk68 >> 1) & 0xF].unk34.w >> 4) & 0x1F) +
+        if (u->flags & 1) {
+            idx = ((g_gameState->unk1C->characters[(u->flags >> 1) & 0xF].unk34.w >> 4) & 0x1F) +
                   (arg1->unk2_14 - 1) * 19;
             tb = D_800F5758;
             t = &tb[idx];
@@ -674,7 +674,7 @@ void func_800C4B9C(s32 arg0, s32 arg1, s16 *arg2, s16 *arg3) {
         t = (math_cos(arg2[0] + b[0]) * c) >> 12;
         ang = arg2[1] + b[1];
         u = (BtlUnit *)func_800C5890(arg0 & 0x1F);
-        if (u != NULL && (u->unk68 & 1)) {
+        if (u != NULL && (u->flags & 1)) {
             ang ^= 0xFFF;
         }
         arg3[0] = (-math_sin(ang) * t) >> 12;
@@ -755,9 +755,9 @@ s32 func_800C4E84(s32 arg0, s16 *arg1, s16 *arg2, s32 *arg3) {
     }
     if (u != NULL) {
         if (arg0 & 0x20) {
-            arg2[0] = u->unkA0->unk20;
-            arg2[1] = u->unkA0->unk22;
-            arg2[2] = u->unkA0->unk24;
+            arg2[0] = u->obj->unk20;
+            arg2[1] = u->obj->unk22;
+            arg2[2] = u->obj->unk24;
         } else {
             arg2[0] = u->rot[0];
             arg2[1] = u->rot[1];
@@ -769,18 +769,18 @@ s32 func_800C4E84(s32 arg0, s16 *arg1, s16 *arg2, s32 *arg3) {
         if (u == NULL) {
             u = g_gameState->unk1C->unk8E4.battle->unitList;
         }
-        arg2[0] = u->unkA0->unk20;
-        arg2[2] = u->unkA0->unk24;
-        if (u->unk68 & 1) {
+        arg2[0] = u->obj->unk20;
+        arg2[2] = u->obj->unk24;
+        if (u->flags & 1) {
             arg2[1] = 0x800;
         } else {
             arg2[1] = 0;
         }
     }
-    if (!((u->unk68 >> 23) & 1)) {
+    if (!((u->flags >> 23) & 1)) {
         if (arg0 & 0x20) {
-            arg1[0] = u->unk98->unk0[0] >> 16;
-            arg1[2] = u->unk98->unk0[2] >> 16;
+            arg1[0] = u->home->unk0[0] >> 16;
+            arg1[2] = u->home->unk0[2] >> 16;
         } else {
             arg1[0] = u->pos[0] >> 16;
             arg1[2] = u->pos[2] >> 16;
@@ -912,7 +912,7 @@ void btlcam_applyTargetView(SVECTOR *arg0, SVECTOR *arg1) {
 
 void btlcam_getUnitAnchors(BtlUnit *arg0, s16 *arg1) {
     s32 i;
-    if (arg0->unk68 & 1) {
+    if (arg0->flags & 1) {
         s32 h = arg0->model->header->height;
         s16 y = arg0->pos[1] >> 16;
         arg1[0] = y - (h >> 2);
@@ -920,7 +920,7 @@ void btlcam_getUnitAnchors(BtlUnit *arg0, s16 *arg1) {
         arg1[2] = y - (h - (h >> 2));
     } else {
         for (i = 0; i < 3; i++) {
-            arg1[i] = arg0->model->bones[g_gameState->unk1C->unk8E4.battle->enemies[(arg0->unk68 >> 1) & 0xF].unk0->unk29[i]].unk18;
+            arg1[i] = arg0->model->bones[g_gameState->unk1C->unk8E4.battle->enemies[(arg0->flags >> 1) & 0xF].unk0->unk29[i]].unk18;
         }
     }
     arg1[3] = arg0->pos[0] >> 16;
