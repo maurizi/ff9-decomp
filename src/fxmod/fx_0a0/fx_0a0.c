@@ -85,7 +85,7 @@ s32 fx_0a0_op80(s32 mode, Fx0a0Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
         BTLFX_COPY_SVEC(&D_801E8864, &work->unk4);
         BTLFX_COPY_SVEC(&work->unkC, &work->unk4);
         ex->btlfx_getUnitBodyPos(0, 0, (s16 *)&work->unk14);
-        work->unk1C = ex->func_800E3CEC(ex->btlfx_getFileData(entry->unk8, 1), (s32)&work->unk14);
+        work->unk1C = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->unk8, 1), (s32)&work->unk14);
         if (work->unk1C != NULL) {
             work->unk1C->unk22 = ex->func_800E7CC4(0, 0x10);
         }
@@ -95,7 +95,7 @@ s32 fx_0a0_op80(s32 mode, Fx0a0Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
             work->unk1C->unkC = 0xAC;
         }
         work->unk1C->unk18->unk24 = func_801E78F8;
-        work->unk20 = ex->func_800E3CEC(ex->btlfx_getFileData(entry->unk8, 2), (s32)&work->unkC);
+        work->unk20 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->unk8, 2), (s32)&work->unkC);
         if (work->unk20 != NULL) {
             work->unk20->unk22 = 0x20;
         }
@@ -108,7 +108,7 @@ s32 fx_0a0_op80(s32 mode, Fx0a0Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
             if (work->unk20 != NULL && work->unk20->unk30 == -1) {
                 work->unk20 = NULL;
             }
-            ex->func_800E3D20((s32)work->unk20, (s32)&work->unk4);
+            ex->btlfx_moveEmitterTo((s32)work->unk20, (s32)&work->unk4);
             if (frame >= 0x29) {
                 work->unk0 = 1;
                 entry->unk0 = -1;
@@ -118,7 +118,7 @@ s32 fx_0a0_op80(s32 mode, Fx0a0Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
             t = frame * 0x200;
             D_801E8870 = 0x1000 - t;
             if (frame >= 8) {
-                ex->func_800E3D54(work->unk1C);
+                ex->btlfx_stopEmitter(work->unk1C);
                 return 1;
             }
             break;

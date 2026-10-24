@@ -42,7 +42,7 @@ s32 fx_0f2_op80(s32 mode, Fx0f2Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
         work->unk40.vx = work->unk10.vx;
         work->unk40.vy = work->unk10.vy;
         work->unk40.vz = work->unk10.vz;
-        work->unk0 = ex->func_800E3CEC(ex->btlfx_getFileData(entry->unk8, 8), (s32)&work->unk38);
+        work->unk0 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->unk8, 8), (s32)&work->unk38);
         work->unk54 = -1;
         work->unk56 = -1;
     } else {
@@ -52,7 +52,7 @@ s32 fx_0f2_op80(s32 mode, Fx0f2Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
             work->unk48.vx = work->unk10.vx;
             work->unk48.vy = work->unk10.vy;
             work->unk48.vz = work->unk10.vz;
-            work->unk4 = ex->func_800E3CEC(ex->btlfx_getFileData(entry->unk8, 9), (s32)&work->unk48);
+            work->unk4 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->unk8, 9), (s32)&work->unk48);
             work->unk54 = 3;
             break;
         case 0x15:

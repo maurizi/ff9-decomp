@@ -58,11 +58,11 @@ s32 fx_129_op80(s32 mode, Fx129Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
                     work->unk1C.vy = 0x330 - work->unk38;
                     switch (work->unk58) {
                     case 0:
-                        ex->func_800E3CEC(ex->btlfx_getFileData(entry->unk8, 3), (s32)&work->unk2C);
+                        ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->unk8, 3), (s32)&work->unk2C);
                         break;
                     case 1:
                     case 2:
-                        ex->func_800E3CEC(ex->btlfx_getFileData(entry->unk8, 1), (s32)&work->unk2C);
+                        ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->unk8, 1), (s32)&work->unk2C);
                         break;
                     }
                     work->unk58++;

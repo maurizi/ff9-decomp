@@ -387,7 +387,7 @@ s32 func_801E8628(s32 mode, Fx0e0Obj *it, Unk800F78A4 *env, Unk80100C78Entry *en
                 if (d.vx * d.vx + d.vy * d.vy + d.vz * d.vz < D_801EB1D8 * D_801EB1D8 * D_801EB1D8) {
                     it->unk2 = 1;
                     ((s16 *)it)[-1] = -1;
-                    it->unk20 = e = ex->func_800E3CEC(ex->btlfx_getFileData(entry->unk8, 0xD), (s32)&it->unkC);
+                    it->unk20 = e = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->unk8, 0xD), (s32)&it->unkC);
                     if (e != NULL) {
                         e->unk22 = 0x20;
                     }
@@ -749,7 +749,7 @@ s32 fx_0e0_op80(s32 mode, Fx0e0Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
                 work->unk10.vz = work->unk18.vz;
                 work->unk10.vx -= 0x2800;
                 work->unk10.vy += 0xB86;
-                ex->func_800E3CEC(ex->btlfx_getFileData(entry->unk8, 0x20), (s32)&work->unk10);
+                ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->unk8, 0x20), (s32)&work->unk10);
             }
             break;
         case 8:
@@ -782,17 +782,17 @@ s32 fx_0e0_op80(s32 mode, Fx0e0Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
                 }
             }
             if (frame == 1) {
-                ex->func_800E3CEC(ex->btlfx_getFileData(entry->unk8, 0x21), (s32)&work->unk10);
+                ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->unk8, 0x21), (s32)&work->unk10);
             }
             if (frame == 4) {
-                ex->func_800E3CEC(ex->btlfx_getFileData(entry->unk8, 0x21), (s32)&work->unk10);
+                ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->unk8, 0x21), (s32)&work->unk10);
             }
             if (frame >= 0x20) {
                 work->unk0 = 0xA;
                 entry->unk0 = -1;
                 ex->btlfx_drawScreenTint((u32 *)(env->ot + 2), 1, 0xFF, 0xFF, 0xFF);
                 ex->btlfx_poolClear(entry->unk10);
-                ex->func_800E3C58();
+                ex->btlfx_initParticleSystem();
                 work->unk18.vx = 0;
                 work->unk18.vy = -0x200;
                 work->unk18.vz = 0;

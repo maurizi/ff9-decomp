@@ -108,7 +108,7 @@ s32 func_801E7CEC(s32 mode, Fx003Bolt *it, Unk800F78A4 *env, Unk80100C78Entry *e
             func_801E7BF8(entry, strip, br, it->unk18, it->unk12, c, (0x1000 - t) >> 6, it->unk14);
             func_801E7BF8(entry, strip, br, it->unk18 + 3, it->unk13, c, (0x1000 - t) >> 6, it->unk14);
             if (frame == 0) {
-                it->unk1C = ex->func_800E3CEC(ex->btlfx_getFileData(entry->unk8, 0xC), (s32)&it->unk0);
+                it->unk1C = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->unk8, 0xC), (s32)&it->unk0);
                 if (it->unk1C != NULL) {
                     it->unk1C->unk22 = ex->func_800E7CC4(0, 0x40);
                 }
@@ -118,7 +118,7 @@ s32 func_801E7CEC(s32 mode, Fx003Bolt *it, Unk800F78A4 *env, Unk80100C78Entry *e
                 ex->btlfx_drawScreenTint((u32 *)(env->ot + 1), 1, 0, 7, 0x20);
             }
             if (frame == 1) {
-                it->unk20 = ex->func_800E3CEC(ex->btlfx_getFileData(entry->unk8, 0xA), (s32)&it->unk0);
+                it->unk20 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->unk8, 0xA), (s32)&it->unk0);
                 if (it->unk20 != NULL) {
                     it->unk20->unk22 = ex->func_800E7CC4(0, 0x40);
                 }

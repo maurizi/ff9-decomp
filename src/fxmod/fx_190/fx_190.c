@@ -35,8 +35,8 @@ s32 fx_190_op80(s32 mode, Fx190Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
         case 0x12:
         case 0x24:
         case 0x36:
-            work->unk54[work->unk0] = ex->func_800E3CEC(ex->btlfx_getFileData(entry->unk8, 2), (s32)&work->unk44);
-            work->unk64[work->unk0] = ex->func_800E3CEC(ex->btlfx_getFileData(entry->unk8, 1), (s32)&work->unk4C);
+            work->unk54[work->unk0] = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->unk8, 2), (s32)&work->unk44);
+            work->unk64[work->unk0] = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->unk8, 1), (s32)&work->unk4C);
             work->unk14[work->unk0].vy += work->unkC.vy;
             work->unk14[work->unk0].vx += work->unkC.vx;
             work->unk14[work->unk0].vz += work->unkC.vz;
@@ -44,7 +44,7 @@ s32 fx_190_op80(s32 mode, Fx190Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
             break;
         }
         if (frame == 0xF) {
-            ex->func_800E3CEC(ex->btlfx_getFileData(entry->unk8, 4), (s32)&work->unk3C);
+            ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->unk8, 4), (s32)&work->unk3C);
         }
         for (i = 0; i < work->unk0; i++) {
             if (work->unk54[i] != NULL && work->unk54[i]->unk30 == -1) {

@@ -16,7 +16,7 @@ s32 func_801E7704(s32 mode, Fx038Item *it, Unk800F78A4 *env, Unk80100C78Entry *e
 
     if (mode == 1) {
         it->unk0 = 0;
-        it->unk14 = (Pool6CEntry *)ex->func_800E3CEC(ex->btlfx_getFileData(entry->unk8, 3), (s32)&it->unk4);
+        it->unk14 = (Pool6CEntry *)ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->unk8, 3), (s32)&it->unk4);
         if (it->unk14 != NULL) {
             it->unk14->unk22 = 0x10;
         }
@@ -67,7 +67,7 @@ s32 func_801E7704(s32 mode, Fx038Item *it, Unk800F78A4 *env, Unk80100C78Entry *e
             }
             it->unk4.vy = 0;
             ex->btlfx_drawScreenTint((u32 *)(env->ot + 1), 2, 0x18, 0x18, 0x18);
-            it->unk14 = (Pool6CEntry *)ex->func_800E3CEC(ex->btlfx_getFileData(entry->unk8, 9), (s32)&it->unk4);
+            it->unk14 = (Pool6CEntry *)ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->unk8, 9), (s32)&it->unk4);
             if (it->unk14 != NULL) {
                 it->unk14->unk22 = 0x46;
             }

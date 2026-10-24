@@ -196,7 +196,7 @@ s32 fx_17d_1_op80(s32 mode, Fx17d1Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
                 ex->btlfx_drawScreenTint((u32 *)(env->ot + 2), 1, ((frame - 12) << 7) / 12, 0, 0);
             }
             if (frame == 8) {
-                p = ex->func_800E3CEC(ex->btlfx_getFileData(entry->unk8, 0x9D), (s32)&work->unk10);
+                p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->unk8, 0x9D), (s32)&work->unk10);
                 work->unk74 = p;
                 if (p != NULL) {
                     p->unk14 = (s32)D_801ED5C0;
@@ -206,7 +206,7 @@ s32 fx_17d_1_op80(s32 mode, Fx17d1Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
                         work->unk74->unk22 = 0x80;
                     }
                 }
-                p = ex->func_800E3CEC(ex->btlfx_getFileData(entry->unk8, 8), (s32)&work->unk10);
+                p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->unk8, 8), (s32)&work->unk10);
                 if (p != NULL) {
                     p->unk22 = 0x80;
                 }
@@ -236,7 +236,7 @@ s32 fx_17d_1_op80(s32 mode, Fx17d1Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
             if (frame >= 24) {
                 work->unk0 = 1;
                 entry->unk0 = -1;
-                ex->func_800E3D54(work->unk74);
+                ex->btlfx_stopEmitter(work->unk74);
                 lo = ((s32 *)&work->unk8)[0];
                 hi = ((s32 *)&work->unk8)[1];
                 ((s32 *)&work->unk18)[0] = lo;
@@ -253,7 +253,7 @@ s32 fx_17d_1_op80(s32 mode, Fx17d1Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
                 env->camera->points[3].vx = work->unk18.vx;
                 env->camera->points[3].vy = work->unk18.vy;
                 env->camera->points[3].vz = work->unk18.vz;
-                p = ex->func_800E3CEC(ex->btlfx_getFileData(entry->unk8, 0x9F), (s32)&work->unk10);
+                p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->unk8, 0x9F), (s32)&work->unk10);
                 work->unk70 = p;
                 if (p != NULL) {
                     p->unk22 = 0x80;

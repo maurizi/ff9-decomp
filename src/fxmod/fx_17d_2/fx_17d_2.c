@@ -54,7 +54,7 @@ s32 fx_17d_2_op80(s32 mode, Fx17d2Work *work, Unk800F78A4 *env, Unk80100C78Entry
         work->unk0 = 0;
         work->unk4 = 0;
         D_801E8048 = env;
-        ex->func_800E3C58();
+        ex->btlfx_initParticleSystem();
         ex->btlfx_initEffModels(D_801E8058, 5);
         work->unk78 = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->unk8, 7), 1);
         work->unk68 = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->unk8, 0xB), 1);
@@ -85,7 +85,7 @@ s32 fx_17d_2_op80(s32 mode, Fx17d2Work *work, Unk800F78A4 *env, Unk80100C78Entry
         env->camera->points[3].vx = work->unk18.vx;
         env->camera->points[3].vy = work->unk18.vy;
         env->camera->points[3].vz = work->unk18.vz;
-        work->unk7C = ex->func_800E3CEC(ex->btlfx_getFileData(entry->unk8, 3), (s32)&work->unk10);
+        work->unk7C = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->unk8, 3), (s32)&work->unk10);
         if (work->unk7C != NULL) {
             work->unk7C->unk22 = 0x80;
         }

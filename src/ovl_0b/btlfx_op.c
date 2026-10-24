@@ -208,7 +208,7 @@ s32 func_800E4634(s32 arg0, Unk800E4634 *c, Unk800E4634Arg2 *arg2, s32 *arg3, s3
             }
         }
     } else if (btlfx_getBouncePos(c->unk0, (s16 *)&c->unk8[c->unk0], c->unk28) == 0) {
-        c->unk30[c->unk0] = func_800E3CEC(btlfx_getCommonData(3), (s32)&c->unk8[c->unk0]);
+        c->unk30[c->unk0] = btlfx_startEmitter(btlfx_getCommonData(3), (s32)&c->unk8[c->unk0]);
         if (c->unk30[c->unk0] != NULL) {
             c->unk30[c->unk0]->unk22 = 0x73;
             if (c->unk30[c->unk0] != NULL) {
@@ -260,7 +260,7 @@ Pool6CEntry *func_800E4A3C_def(s32 arg0, s32 arg1, Unk800E4A3CArgs arg2) {
     switch (arg1) {
     case 0:
     case 2:
-        e = func_800E3CEC(btlfx_getCommonData(5), (s32)arg2.a);
+        e = btlfx_startEmitter(btlfx_getCommonData(5), (s32)arg2.a);
         if (arg1 == 0) {
             if (e != NULL) {
                 e->unk18[0].unk1C = btlfx_getCommonData(7);
@@ -284,7 +284,7 @@ Pool6CEntry *func_800E4A3C_def(s32 arg0, s32 arg1, Unk800E4A3CArgs arg2) {
     case 1:
     case 7:
         arg2.b[1] -= 0x40;
-        e = func_800E3CEC(btlfx_getCommonData(1), (s32)arg2.a);
+        e = btlfx_startEmitter(btlfx_getCommonData(1), (s32)arg2.a);
         if (e != NULL) {
             e->unk18[0].unk1C = btlfx_getCommonData(0x14);
             e->unk18[1].unk1C = btlfx_getCommonData(6);
@@ -295,7 +295,7 @@ Pool6CEntry *func_800E4A3C_def(s32 arg0, s32 arg1, Unk800E4A3CArgs arg2) {
         btlfx_playSoundSet(2, arg0);
         break;
     case 4:
-        e = func_800E3CEC(btlfx_getCommonData(4), (s32)arg2.a);
+        e = btlfx_startEmitter(btlfx_getCommonData(4), (s32)arg2.a);
         if (e != NULL) {
             e->unk18[0].unk1C = btlfx_getCommonData(7);
             e->unk18[1].unk1C = btlfx_getCommonData(6);
@@ -456,7 +456,7 @@ s32 btlfx_opCast(s32 arg0, Unk800E4C88 *arg1, Unk800F78A4 *arg2, s32 *arg3, s32 
                 }
             }
             if (t % arg1->unk8 == 0 && t >= 25 && arg1->unk6 >= 27 && g_btlfxState.unk10.b[2] != 0) {
-                func_800E3D54(arg1->unk24);
+                btlfx_stopEmitter(arg1->unk24);
                 g_btlfxState.unk10.b[3] = 1;
                 g_btlfxState.unk25 = 1;
                 arg2->camera->unk52 = 0;
@@ -508,7 +508,7 @@ s32 btlfx_opCast(s32 arg0, Unk800E4C88 *arg1, Unk800F78A4 *arg2, s32 *arg3, s32 
                     if (t != 4) {
                         goto skip;
                     }
-                    func_800E3D54(arg1->unk24);
+                    btlfx_stopEmitter(arg1->unk24);
                 }
             }
             g_btlfxState.unk10.b[3] = 1;
@@ -707,7 +707,7 @@ s32 func_800E57B0(s32 arg0, Unk800E57B0 *arg1, Unk800F78A4 *arg2, s32 *arg3, s32
                         btlfx_getUnitBodyPos(arg1->unk1, 0, &arg1->unk1C.vx);
                     }
                 }
-                e = func_800E3CEC((s32)func_800E4530(arg1->unkA), (s32)&arg1->unk1C);
+                e = btlfx_startEmitter((s32)func_800E4530(arg1->unkA), (s32)&arg1->unk1C);
                 if (e != NULL) {
                     e->unk22 = arg1->unk2;
                 }

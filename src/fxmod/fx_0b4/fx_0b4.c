@@ -83,13 +83,13 @@ s32 fx_0b4_op80(s32 mode, Fx0b4Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
         frame = entry->unk0;
         switch (frame) {
         case 0:
-            work->unk1C = ex->func_800E3CEC(ex->btlfx_getFileData(entry->unk8, 0x11), (s32)&work->unk34);
+            work->unk1C = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->unk8, 0x11), (s32)&work->unk34);
             break;
         case 8:
-            work->unk20 = ex->func_800E3CEC(ex->btlfx_getFileData(entry->unk8, 0xF), (s32)&work->unk34);
+            work->unk20 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->unk8, 0xF), (s32)&work->unk34);
             break;
         case 20:
-            work->unk18 = ex->func_800E3CEC(ex->btlfx_getFileData(entry->unk8, 0x19), (s32)&work->unk34);
+            work->unk18 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->unk8, 0x19), (s32)&work->unk34);
             if (work->unk18 != NULL) {
                 work->unk18->unk14 = (s32)D_801ED2F4;
                 work->unk18->unk12 = 0x12;
@@ -97,16 +97,16 @@ s32 fx_0b4_op80(s32 mode, Fx0b4Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
             }
             break;
         case 25:
-            work->unk24 = ex->func_800E3CEC(ex->btlfx_getFileData(entry->unk8, 0x10), (s32)&work->unk2C);
+            work->unk24 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->unk8, 0x10), (s32)&work->unk2C);
             break;
         case 45:
-            work->unk28 = ex->func_800E3CEC(ex->btlfx_getFileData(entry->unk8, 0xE), (s32)&work->unk34);
+            work->unk28 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->unk8, 0xE), (s32)&work->unk34);
             break;
         }
         tm = D_801E80EC;
         for (i = 0, cnt = &tm->unk2; i < 6; i++, cnt += 2, tm++) {
             if (frame == tm->unk0) {
-                work->unk0[i] = ex->func_800E3CEC(ex->btlfx_getFileData(entry->unk8, D_801E8104[i]), (s32)&D_801E8194[i]);
+                work->unk0[i] = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->unk8, D_801E8104[i]), (s32)&D_801E8194[i]);
                 if (work->unk0[i] != NULL) {
                     work->unk0[i]->unk14 = (s32)D_801E81F4[i];
                     work->unk0[i]->unk12 = 0x18;

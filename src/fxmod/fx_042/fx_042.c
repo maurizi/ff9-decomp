@@ -108,7 +108,7 @@ s32 func_801E7CEC(s32 mode, Fx042Bolt *it, Unk800F78A4 *env, Unk80100C78Entry *e
             func_801E7BF8(entry, strip, br, it->unk18, it->unk12, c, (0x1000 - t) >> 6, it->unk14);
             func_801E7BF8(entry, strip, br, it->unk18 + 3, it->unk13, c, (0x1000 - t) >> 6, it->unk14);
             if (frame == 0) {
-                it->unk1C = ex->func_800E3CEC(ex->btlfx_getFileData(entry->unk8, 8), (s32)&it->unk0);
+                it->unk1C = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->unk8, 8), (s32)&it->unk0);
                 if (it->unk1C != NULL) {
                     it->unk1C->unk22 = ex->func_800E7CC4(0, 0x40);
                 }

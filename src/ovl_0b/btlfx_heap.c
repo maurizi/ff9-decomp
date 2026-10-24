@@ -1,6 +1,6 @@
 #include "ovl_0b.h"
 
-void func_800E00DC(s32 arg0, Pool30Entry *arg1, Pool30 *arg2) {
+void btlfx_initParticles(s32 arg0, Pool30Entry *arg1, Pool30 *arg2) {
     s32 i = 0;
     arg2->unk0 = arg0 / (s32)sizeof(Pool30Entry);
     arg2->unkC = arg1;
@@ -24,7 +24,7 @@ s32 func_800E0134(Pool30Entry *arg0, Pool6CEntry *arg1) {
     return p + t;
 }
 
-s32 func_800E0168(Pool30 *pool) {
+s32 btlfx_updateParticles(Pool30 *pool) {
     SVECTOR rel;
     SVECTOR pos;
     SVECTOR v;
@@ -474,7 +474,7 @@ s32 func_800E0168(Pool30 *pool) {
     return pool->unk4;
 }
 
-void func_800E14D8(u32 arg0, Pool6C *arg1) {
+void btlfx_initEmitters(u32 arg0, Pool6C *arg1) {
     s32 i;
     Pool6CEntry *e = arg1->unk10;
     arg1->unk0 = (arg0 - 0x10) / sizeof(Pool6CEntry);
@@ -488,7 +488,7 @@ void func_800E14D8(u32 arg0, Pool6C *arg1) {
     }
 }
 
-Pool6CEntry *func_800E1534(Pool30 *arg0, Pool6C *arg1, u8 *arg2, s32 arg3) {
+Pool6CEntry *btlfx_spawnEmitter(Pool30 *arg0, Pool6C *arg1, u8 *arg2, s32 arg3) {
     Pool6CEntry *e;
     s32 i;
     u32 k;
@@ -566,7 +566,7 @@ Pool6CEntry *func_800E1534(Pool30 *arg0, Pool6C *arg1, u8 *arg2, s32 arg3) {
     return NULL;
 }
 
-void func_800E1708(Pool30 *arg0, s32 arg1, s32 arg2) {
+void btlfx_moveEmitter(Pool30 *arg0, s32 arg1, s32 arg2) {
     Pool6CEntry *m = (Pool6CEntry *)arg1;
     SVECTOR *v = (SVECTOR *)arg2;
     VECTOR d;
@@ -587,7 +587,7 @@ void func_800E1708(Pool30 *arg0, s32 arg1, s32 arg2) {
     m->unk28->vz = v->vz;
 }
 
-void func_800E1810(Pool30 *arg0, Pool6CEntry *arg1) {
+void btlfx_killEmitter(Pool30 *arg0, Pool6CEntry *arg1) {
     s32 i = 0;
     Pool30Entry *p = arg0->unkC;
     if (i < arg0->unk0) {
@@ -602,7 +602,7 @@ void func_800E1810(Pool30 *arg0, Pool6CEntry *arg1) {
     arg1->unk30 = -1;
 }
 
-s32 func_800E1874(Pool30 *arg0, Pool6C *arg1) {
+s32 btlfx_updateEmitters(Pool30 *arg0, Pool6C *arg1) {
     union {
         s16 h[4];
         s32 w;
@@ -803,7 +803,7 @@ s32 func_800E1874(Pool30 *arg0, Pool6C *arg1) {
     return p->unk4;
 }
 
-Pool30Entry *func_800E1F90(Pool30 *arg0) {
+Pool30Entry *btlfx_allocParticle(Pool30 *arg0) {
     s32 i;
     Pool30Entry *p = arg0->unkC;
     for (i = 0; i < arg0->unk0; i++, p++) {
@@ -820,7 +820,7 @@ Pool30Entry *func_800E1F90(Pool30 *arg0) {
     return p;
 }
 
-void func_800E2000(Pool30 *pool, Pool6C *list) {
+void btlfx_runEmitters(Pool30 *pool, Pool6C *list) {
     SVECTOR off;
     SVECTOR rot;
     SVECTOR tmp;
@@ -859,7 +859,7 @@ void func_800E2000(Pool30 *pool, Pool6C *list) {
             if (e->unk34.s.x >= e->unk24->unk4.unk8) {
                 break;
             }
-            p = func_800E1F90(pool);
+            p = btlfx_allocParticle(pool);
             if (p == NULL) {
                 break;
             }
@@ -1203,7 +1203,7 @@ void func_800E2F84(Pool30 *pool, Pool30Entry *e, SVECTOR *pos, SVECTOR *rot) {
                 if (owner->unk34.s.y >= sub->unk10) {
                     return;
                 }
-                p = func_800E1F90(pool);
+                p = btlfx_allocParticle(pool);
                 if (p == NULL) {
                     return;
                 }
@@ -1449,34 +1449,34 @@ s32 btlfx_heapWrapIfFull(Heap *arg0, s32 arg1) {
 void btlfx_heapFree(void *arg0) {
 }
 
-void func_800E3C58(void) {
-    func_800E00DC(0x3000, D_801014B8, &D_801044B8);
-    func_800E14D8(0x920, &D_801044C8);
+void btlfx_initParticleSystem(void) {
+    btlfx_initParticles(0x3000, g_btlfxParticleBuf, &g_btlfxParticles);
+    btlfx_initEmitters(0x920, &g_btlfxEmitters);
 }
 
-void func_800E3C98(void) {
-    func_800E2000(&D_801044B8, &D_801044C8);
-    func_800E0168(&D_801044B8);
-    func_800E1874(&D_801044B8, &D_801044C8);
+void btlfx_updateParticleSystem(void) {
+    btlfx_runEmitters(&g_btlfxParticles, &g_btlfxEmitters);
+    btlfx_updateParticles(&g_btlfxParticles);
+    btlfx_updateEmitters(&g_btlfxParticles, &g_btlfxEmitters);
 }
 
-Pool6CEntry *func_800E3CEC(s32 arg0, s32 arg1) {
-    return func_800E1534(&D_801044B8, &D_801044C8, (u8 *)arg0, arg1);
+Pool6CEntry *btlfx_startEmitter(s32 arg0, s32 arg1) {
+    return btlfx_spawnEmitter(&g_btlfxParticles, &g_btlfxEmitters, (u8 *)arg0, arg1);
 }
 
-void func_800E3D20(s32 arg0, s32 arg1) {
+void btlfx_moveEmitterTo(s32 arg0, s32 arg1) {
     if (arg0 != 0) {
-        func_800E1708(&D_801044B8, arg0, arg1);
+        btlfx_moveEmitter(&g_btlfxParticles, arg0, arg1);
     }
 }
 
-void func_800E3D54(Pool6CEntry *arg0) {
+void btlfx_stopEmitter(Pool6CEntry *arg0) {
     if (arg0 != NULL) {
-        func_800E1810(&D_801044B8, arg0);
+        btlfx_killEmitter(&g_btlfxParticles, arg0);
     }
 }
 
-void func_800E3D80(void) {
+void btlfx_initAll(void) {
     btlfx_initCommonData();
     btlfx_resetAll();
 }
@@ -1486,14 +1486,14 @@ void btlfx_resetAll(void) {
     btlfx_reset();
     btlfx_initTasks();
     func_800DA4E8();
-    func_800E3C58();
+    btlfx_initParticleSystem();
     btlfx_initSounds();
     btlfx_clearEffModels();
     btlfx_clearSummonModels();
     func_80054F80();
 }
 
-void func_800E3E08(void) {
+void btlfx_copyDisplayToDraw(void) {
     RECT r;
     DR_MOVE *p;
     s32 i;

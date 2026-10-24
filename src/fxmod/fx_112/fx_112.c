@@ -54,7 +54,7 @@ s32 fx_112_op80(s32 mode, Fx112Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
         if (frame == 4) {
             ex->btlfx_fadeUnitById(0, 0);
             ex->btlfx_getUnitBodyPos(0, 0, (s16 *)&work->unk40);
-            p = ex->func_800E3CEC(ex->btlfx_getFileData(entry->unk8, 3), (s32)&work->unk40);
+            p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->unk8, 3), (s32)&work->unk40);
             if (p != NULL) {
                 p->unk22 = 0x80;
             }
@@ -100,7 +100,7 @@ s32 fx_112_op80(s32 mode, Fx112Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
         ex->func_800DC818(0x10, 4, (u16 *)&work->unk48);
         k = frame / 5;
         if (frame == k * 5) {
-            q = ex->func_800E3CEC(ex->btlfx_getFileData(entry->unk8, 2), (s32)&work->unk48);
+            q = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->unk8, 2), (s32)&work->unk48);
             if (q != NULL) {
                 q->unk14 = (s32)D_801E8130[k];
                 q->unk12 = 0x14;
@@ -117,7 +117,7 @@ s32 fx_112_op80(s32 mode, Fx112Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
         if (frame >= 0x10) {
             work->unk0 = 4;
             entry->unk0 = -1;
-            work->unk50 = p = ex->func_800E3CEC(ex->btlfx_getFileData(entry->unk8, 4), (s32)&work->unk48);
+            work->unk50 = p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->unk8, 4), (s32)&work->unk48);
             if (p != NULL) {
                 p->unk22 = 0x80;
             }

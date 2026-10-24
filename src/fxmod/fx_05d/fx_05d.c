@@ -40,16 +40,16 @@ s32 fx_05d_op80(s32 mode, Fx05dWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
         frame = entry->unk0;
         switch (frame) {
         case 0:
-            work->unk4 = ex->func_800E3CEC(ex->btlfx_getFileData(entry->unk8, 0x14), (s32)&D_801E8DC0);
-            work->unk0 = ex->func_800E3CEC(ex->btlfx_getFileData(entry->unk8, 0x12), (s32)&work->unk10);
+            work->unk4 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->unk8, 0x14), (s32)&D_801E8DC0);
+            work->unk0 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->unk8, 0x12), (s32)&work->unk10);
             break;
         case 0x23:
             func_801E7F34(&D_801E8DA0, 0x23, NULL, &work->unk4C);
             work->unk4C.vx += work->unk10.vx;
             work->unk4C.vy += work->unk10.vy;
             work->unk4C.vz += work->unk10.vz;
-            work->unk8 = ex->func_800E3CEC(ex->btlfx_getFileData(entry->unk8, 0x11), (s32)&work->unk4C);
-            work->unkC = ex->func_800E3CEC(ex->btlfx_getFileData(entry->unk8, 0x13), (s32)&work->unk4C);
+            work->unk8 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->unk8, 0x11), (s32)&work->unk4C);
+            work->unkC = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->unk8, 0x13), (s32)&work->unk4C);
             if (work->unk8 != NULL) {
                 work->unk8->unk14 = (s32)D_801E8558;
                 work->unk8->unk12 = 0x35;
@@ -144,7 +144,7 @@ s32 fx_05d_op80(s32 mode, Fx05dWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
                 if (work->unk4 != NULL && work->unk4->unk30 == -1) {
                     work->unk4 = NULL;
                 }
-                ex->func_800E3D20((s32)work->unk4, (s32)&work->unk44);
+                ex->btlfx_moveEmitterTo((s32)work->unk4, (s32)&work->unk44);
             }
             work->unk54++;
         }

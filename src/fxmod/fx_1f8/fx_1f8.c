@@ -10,7 +10,7 @@ s32 fx_1f8_op80(s32 mode, void *work, Unk800F78A4 *env, Unk80100C78Entry *entry,
         D_801E7B6C.vy = 0;
         D_801E7B6C.vz = -0x618;
         D_801E7B64 = env;
-        ex->func_800E3CEC(ex->btlfx_getFileData(entry->unk8, 2), (s32)&D_801E7B6C);
+        ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->unk8, 2), (s32)&D_801E7B6C);
     } else {
         return entry->unk0 >= 0x40;
     }
@@ -49,8 +49,8 @@ s32 fx_1f8_op81(s32 mode, void *work, Unk800F78A4 *env, Unk80100C78Entry *entry,
         if (frame == 0) {
             D_801E7B74[0] = 0x20;
             for (i = 0; i < env->targets->targetCount; i++) {
-                ex->func_800E3CEC(ex->btlfx_getFileData(entry->unk8, 0xA), (s32)&D_801E7BF4[i]);
-                ex->func_800E3CEC(ex->btlfx_getFileData(entry->unk8, 5), (s32)&D_801E7BF4[i]);
+                ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->unk8, 0xA), (s32)&D_801E7BF4[i]);
+                ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->unk8, 5), (s32)&D_801E7BF4[i]);
             }
         }
         if (D_801E7B74[0] != 0) {

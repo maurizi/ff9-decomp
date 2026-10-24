@@ -19,12 +19,12 @@ s32 fx_0a5_op80(s32 mode, Fx0a5Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
         work->unk20.vz = env->targets->centerZ;
         work->unk18.vx = 0x5DC;
         work->unk20.vx = -0x5DC;
-        work->unk4 = ex->func_800E3CEC(ex->btlfx_getFileData(entry->unk8, 8), (s32)&work->unk8);
+        work->unk4 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->unk8, 8), (s32)&work->unk8);
         ex->btlfx_aimAngles((s16 *)&work->unk8, &env->targets->centerX, (s16 *)&work->unk10);
     } else {
         frame = entry->unk0;
         if (frame == 0x19) {
-            work->unk0 = ex->func_800E3CEC(ex->btlfx_getFileData(entry->unk8, 7), (s32)&work->unk18);
+            work->unk0 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->unk8, 7), (s32)&work->unk18);
             if (work->unk0 != NULL) {
                 work->unk0->unk14 = (s32)D_801E7A3C;
                 work->unk0->unk12 = 0x80;

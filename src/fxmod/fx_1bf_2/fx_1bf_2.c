@@ -66,7 +66,7 @@ s32 fx_1bf_2_op80(s32 mode, Fx1bf2Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
         work->unk0 = 0;
         work->unk4 = 0;
         D_801E8A44 = env;
-        ex->func_800E3C58();
+        ex->btlfx_initParticleSystem();
         ex->btlfx_initEffModels(D_801E8A54, 7);
         work->unk64 = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->unk8, 0xd), 0);
         work->unk68 = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->unk8, 0xf), 1);
@@ -183,7 +183,7 @@ s32 fx_1bf_2_op80(s32 mode, Fx1bf2Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
                 work->unk18.vy = work->unk54.vy;
                 work->unk18.vz = work->unk54.vz;
                 work->unk18.vx -= 0xC00;
-                p = ex->func_800E3CEC(ex->btlfx_getFileData(entry->unk8, 0x7), (s32)&work->unk10);
+                p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->unk8, 0x7), (s32)&work->unk10);
                 if (p != NULL) {
                     p->unk2C = (s32)&work->unk18;
                     p->unk22 = 0x80;

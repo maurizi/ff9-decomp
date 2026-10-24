@@ -10,7 +10,7 @@ s32 fx_1fa_op80(s32 mode, void *work, Unk800F78A4 *env, Unk80100C78Entry *entry,
         D_801E80E4.vy = 0;
         D_801E80E4.vz = -0x618;
         D_801E80DC = env;
-        ex->func_800E3CEC(ex->btlfx_getFileData(entry->unk8, 0x1E), (s32)&D_801E80E4);
+        ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->unk8, 0x1E), (s32)&D_801E80E4);
     } else {
         return entry->unk0 >= 0x40;
     }
@@ -69,7 +69,7 @@ s32 fx_1fa_op81(s32 mode, void *work, Unk800F78A4 *env, Unk80100C78Entry *entry,
             D_801E80EC[0] = 0x20;
             break;
         case 8:
-            p = ex->func_800E3CEC(ex->btlfx_getFileData(entry->unk8, 0x13), (s32)&D_801E80F4);
+            p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->unk8, 0x13), (s32)&D_801E80F4);
             if (p != NULL) {
                 p->unk22 = 0x80;
             }
@@ -77,15 +77,15 @@ s32 fx_1fa_op81(s32 mode, void *work, Unk800F78A4 *env, Unk80100C78Entry *entry,
         case 0x18:
             for (i = 0; i < env->targets->targetCount; i++) {
                 ex->btlfx_getUnitBodyPos(i, 0, (s16 *)&D_801E80FC[i]);
-                p = ex->func_800E3CEC(ex->btlfx_getFileData(entry->unk8, 0x14), (s32)&D_801E80FC[i]);
+                p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->unk8, 0x14), (s32)&D_801E80FC[i]);
                 if (p != NULL) {
                     p->unk22 = ex->func_800E7CC4(i, 0x80);
                 }
-                p = ex->func_800E3CEC(ex->btlfx_getFileData(entry->unk8, 2), (s32)&D_801E80FC[i]);
+                p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->unk8, 2), (s32)&D_801E80FC[i]);
                 if (p != NULL) {
                     p->unk22 = ex->func_800E7CC4(i, 0x80);
                 }
-                p = ex->func_800E3CEC(ex->btlfx_getFileData(entry->unk8, 0x17), (s32)&D_801E80FC[i]);
+                p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->unk8, 0x17), (s32)&D_801E80FC[i]);
                 if (p != NULL) {
                     p->unk22 = ex->func_800E7CC4(i, 0x80);
                 }

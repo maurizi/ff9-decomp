@@ -83,22 +83,22 @@ s32 fx_083_op80(s32 mode, Fx083Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
         case 0x14:
             work->unk0[3] = 0x20;
             work->unk0[7] = 0x20;
-            work->unk170[0] = ex->func_800E3CEC(ex->btlfx_getFileData(entry->unk8, 2), (s32)&work->unk180[0]);
-            work->unk170[1] = ex->func_800E3CEC(ex->btlfx_getFileData(entry->unk8, 2), (s32)&work->unk180[1]);
-            work->unk170[2] = ex->func_800E3CEC(ex->btlfx_getFileData(entry->unk8, 2), (s32)&work->unk180[2]);
-            work->unk170[3] = ex->func_800E3CEC(ex->btlfx_getFileData(entry->unk8, 2), (s32)&work->unk180[3]);
+            work->unk170[0] = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->unk8, 2), (s32)&work->unk180[0]);
+            work->unk170[1] = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->unk8, 2), (s32)&work->unk180[1]);
+            work->unk170[2] = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->unk8, 2), (s32)&work->unk180[2]);
+            work->unk170[3] = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->unk8, 2), (s32)&work->unk180[3]);
             work->unk0[8] = 0x30;
             break;
         case 0x30:
-            e = ex->func_800E3CEC(ex->btlfx_getFileData(entry->unk8, 0xB), (s32)&work->unk160);
+            e = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->unk8, 0xB), (s32)&work->unk160);
             if (e != NULL) {
                 e->unk22 = ex->func_800E7CC4(0, 0x100);
             }
-            e = ex->func_800E3CEC(ex->btlfx_getFileData(entry->unk8, 0xC), (s32)&work->unk160);
+            e = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->unk8, 0xC), (s32)&work->unk160);
             if (e != NULL) {
                 e->unk22 = ex->func_800E7CC4(0, 0x100);
             }
-            e = ex->func_800E3CEC(ex->btlfx_getFileData(entry->unk8, 7), (s32)&work->unk160);
+            e = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->unk8, 7), (s32)&work->unk160);
             if (e != NULL) {
                 e->unk22 = ex->func_800E7CC4(0, 0x100);
             }
@@ -167,7 +167,7 @@ s32 fx_083_op80(s32 mode, Fx083Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
                 if (work->unk170[i] != NULL && work->unk170[i]->unk30 == -1) {
                     work->unk170[i] = NULL;
                 }
-                ex->func_800E3D20((s32)work->unk170[i], (s32)&work->unk1A0[i]);
+                ex->btlfx_moveEmitterTo((s32)work->unk170[i], (s32)&work->unk1A0[i]);
             }
         }
         if (work->unk0[4] != 0) {

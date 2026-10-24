@@ -10,11 +10,11 @@ s32 fx_011_op80(s32 mode, SVECTOR *work, Unk800F78A4 *env, Unk80100C78Entry *ent
     } else if (mode == 1) {
         D_801E78EC = env;
         ex->btlfx_getUnitBodyPos(0, 0, (s16 *)work);
-        p = ex->func_800E3CEC(ex->btlfx_getFileData(entry->unk8, 8), (s32)work);
+        p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->unk8, 8), (s32)work);
         if (p != NULL) {
             p->unk22 = ex->func_800E7CC4(0, 0x80);
         }
-        p = ex->func_800E3CEC(ex->btlfx_getFileData(entry->unk8, 7), (s32)work);
+        p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->unk8, 7), (s32)work);
         if (p != NULL) {
             p->unk14 = (s32)D_801E78FC;
             p->unk12 = 0x19;
@@ -24,7 +24,7 @@ s32 fx_011_op80(s32 mode, SVECTOR *work, Unk800F78A4 *env, Unk80100C78Entry *ent
     } else {
         frame = entry->unk0;
         if (frame == 6) {
-            p = ex->func_800E3CEC(ex->btlfx_getFileData(entry->unk8, 9), (s32)work);
+            p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->unk8, 9), (s32)work);
             if (p != NULL) {
                 p->unk22 = ex->func_800E7CC4(0, 0x80);
             }

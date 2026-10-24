@@ -13,7 +13,7 @@ s32 fx_022_op80(s32 mode, Fx022Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
         env->camera->points[0].vx = work->unk4.vx;
         env->camera->points[0].vy = work->unk4.vy;
         env->camera->points[0].vz = work->unk4.vz;
-        work->unk0 = ex->func_800E3CEC(ex->btlfx_getFileData(entry->unk8, 1), (s32)&work->unk4);
+        work->unk0 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->unk8, 1), (s32)&work->unk4);
     } else {
         frame = entry->unk0;
         if (work->unk0 != NULL) {

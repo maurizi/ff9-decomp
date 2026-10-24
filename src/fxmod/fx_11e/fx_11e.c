@@ -47,7 +47,7 @@ s32 fx_11e_op80(s32 mode, Fx11eWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
         work->unk3C = ex->btlfx_rand() % 0x1000;
         work->unk40 = ex->btlfx_rand() % 16;
         work->unk44 = ex->btlfx_rand() % 16;
-        work->unk0 = ex->func_800E3CEC(ex->btlfx_getFileData(entry->unk8, 3), (s32)&work->unk50);
+        work->unk0 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->unk8, 3), (s32)&work->unk50);
     } else {
         frame = entry->unk0;
         if ((u32)(frame - 0x1E) < 0x28) {

@@ -11,7 +11,7 @@ s32 func_801E7704(s32 mode, Fx0ccPart *part, Unk800F78A4 *env, Unk80100C78Entry 
 
     if (mode == 1) {
         part->unk0 = 0;
-        part->unkC = ex->func_800E3CEC(ex->btlfx_getFileData(entry->unk8, 9), (s32)&part->unk4);
+        part->unkC = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->unk8, 9), (s32)&part->unk4);
         if (part->unkC != NULL) {
             part->unkC->unk22 = 0;
         }

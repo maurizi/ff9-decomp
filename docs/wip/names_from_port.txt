@@ -1377,3 +1377,24 @@ func_800D23D8 btlfx_drawRings  # [code] ring grid of textured FT4s (btlfx_emitRi
 func_800D2938 btlfx_drawFan  # [code] textured FT4 fan (func_800D57D0) or Gouraud G3 fan (func_800D59D0) plus DR_MODE (ff9-ds F13)
 func_800D3A6C btlfx_ease  # [code] 0x1000 * t / n linear (0), 1 - cos (1) or sin (2) of the quarter turn
 func_800D3B6C btlfx_drawSpriteLine  # [code] sprites at fixed fractions along a screen segment from a projected point to a moving end, fading in (btlfx_drawSpriteAtOt)
+
+## ovl_0b: ovl_0b (cleanup pass: effect particles and emitters, btlfx_heap.c; btlfx_mod.h members and src/fxmod renamed by hand)
+func_800E00DC btlfx_initParticles  # [code] particle pool (Pool30, 0x30-byte entries) over a buffer, all free
+func_800E0168 btlfx_updateParticles  # [code] steps and draws the live particles of a pool (btlfx_drawParticles, btlfx_drawSprite, btlfx_drawTrail by element kind)
+func_800E14D8 btlfx_initEmitters  # [code] emitter pool (Pool6C, 0x6C-byte entries), all free
+func_800E1534 btlfx_spawnEmitter  # [code] takes a free emitter, binds it to an effect element file (relocating its element offsets)
+func_800E1708 btlfx_moveEmitter  # [code] moves an emitter's anchor and shifts its live particles by the same amount
+func_800E1810 btlfx_killEmitter  # [code] sends the emitter's particles to their last frame and marks it dying (-1)
+func_800E1874 btlfx_updateEmitters  # [code] steps the emitters' element animations and frees finished ones
+func_800E1F90 btlfx_allocParticle  # [code] first free particle of a pool, NULL when full
+func_800E2000 btlfx_runEmitters  # [code] lets every live emitter spawn its particles for the frame
+func_800E3C58 btlfx_initParticleSystem  # [code] the effect particle pool (0x3000 bytes at D_801014B8) and emitter pool (0x920 bytes)
+func_800E3C98 btlfx_updateParticleSystem  # [code] btlfx_runEmitters, btlfx_updateParticles, btlfx_updateEmitters on the effect pools
+func_800E3CEC btlfx_startEmitter  # [code] btlfx_spawnEmitter on the effect pools
+func_800E3D20 btlfx_moveEmitterTo  # [code] btlfx_moveEmitter on the effect pools when the emitter exists
+func_800E3D54 btlfx_stopEmitter  # [code] btlfx_killEmitter on the effect pools when the emitter exists
+func_800E3D80 btlfx_initAll  # [code] btlfx_initCommonData, then btlfx_resetAll
+func_800E3E08 btlfx_copyDisplayToDraw  # [code] ten DR_MOVEs copy the displayed frame into the draw buffer (frozen background for an effect)
+D_801044B8 g_btlfxParticles  # [code] effect particle pool (btlfx_initParticleSystem)
+D_801044C8 g_btlfxEmitters  # [code] effect emitter pool (btlfx_initParticleSystem)
+D_801014B8 g_btlfxParticleBuf  # [code] 0x3000-byte buffer of g_btlfxParticles

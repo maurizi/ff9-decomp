@@ -96,16 +96,16 @@ typedef struct BtlfxExports {
     s32 (*func_800D2DBC)(u8 *, s32, s32, s32, s32, s32); /* 0x130 */
     s32 (*btlfx_drawBackdrop)(BtlBgLayers *, s32); /* 0x134 */
     s32 (*btlfx_drawSpriteLine)(u8 *, SVECTOR *, s32, s32); /* 0x138 */
-    s32 (*func_800E00DC)(s32, Pool30Entry *, Pool30 *); /* 0x13C */
+    s32 (*btlfx_initParticles)(s32, Pool30Entry *, Pool30 *); /* 0x13C */
     s32 (*func_800E0134)(Pool30Entry *, Pool6CEntry *); /* 0x140 */
-    s32 (*func_800E0168)(Pool30 *); /* 0x144 */
-    s32 (*func_800E14D8)(u32, Pool6C *); /* 0x148 */
-    Pool6CEntry * (*func_800E1534)(Pool30 *, Pool6C *, u8 *, s32); /* 0x14C */
-    s32 (*func_800E1708)(Pool30 *, s32, s32); /* 0x150 */
-    s32 (*func_800E1810)(Pool30 *, Pool6CEntry *); /* 0x154 */
-    s32 (*func_800E1874)(Pool30 *, Pool6C *); /* 0x158 */
-    Pool30Entry * (*func_800E1F90)(Pool30 *); /* 0x15C */
-    s32 (*func_800E2000)(Pool30 *, Pool6C *); /* 0x160 */
+    s32 (*btlfx_updateParticles)(Pool30 *); /* 0x144 */
+    s32 (*btlfx_initEmitters)(u32, Pool6C *); /* 0x148 */
+    Pool6CEntry * (*btlfx_spawnEmitter)(Pool30 *, Pool6C *, u8 *, s32); /* 0x14C */
+    s32 (*btlfx_moveEmitter)(Pool30 *, s32, s32); /* 0x150 */
+    s32 (*btlfx_killEmitter)(Pool30 *, Pool6CEntry *); /* 0x154 */
+    s32 (*btlfx_updateEmitters)(Pool30 *, Pool6C *); /* 0x158 */
+    Pool30Entry * (*btlfx_allocParticle)(Pool30 *); /* 0x15C */
+    s32 (*btlfx_runEmitters)(Pool30 *, Pool6C *); /* 0x160 */
     s32 (*func_800E2F84)(Pool30 *, Pool30Entry *, SVECTOR *, SVECTOR *); /* 0x164 */
     s32 (*btlfx_initTasks)(void); /* 0x168 */
     s32 (*btlfx_allocTaskMem)(Unk80100C78Entry *, s32); /* 0x16C */
@@ -132,11 +132,11 @@ typedef struct BtlfxExports {
     s32 (*btlfx_heapAlloc)(Heap *, s32); /* 0x1C0 */
     s32 (*btlfx_heapWrapIfFull)(Heap *, s32); /* 0x1C4 */
     s32 (*btlfx_heapFree)(void *); /* 0x1C8 */
-    s32 (*func_800E3C58)(void); /* 0x1CC */
-    s32 (*func_800E3C98)(void); /* 0x1D0 */
-    Pool6CEntry * (*func_800E3CEC)(s32, s32); /* 0x1D4 */
-    s32 (*func_800E3D20)(s32, s32); /* 0x1D8 */
-    s32 (*func_800E3D54)(Pool6CEntry *); /* 0x1DC */
+    s32 (*btlfx_initParticleSystem)(void); /* 0x1CC */
+    s32 (*btlfx_updateParticleSystem)(void); /* 0x1D0 */
+    Pool6CEntry * (*btlfx_startEmitter)(s32, s32); /* 0x1D4 */
+    s32 (*btlfx_moveEmitterTo)(s32, s32); /* 0x1D8 */
+    s32 (*btlfx_stopEmitter)(Pool6CEntry *); /* 0x1DC */
     s32 (*btlfx_setTargets)(BtlUnitList *); /* 0x1E0 */
     s32 (*btlfx_popGeomScreen)(void); /* 0x1E4 */
     s32 (*btlfx_pushGeomScreen)(s32); /* 0x1E8 */

@@ -10,14 +10,14 @@ s32 fx_09e_op80(s32 mode, Fx09eWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
     } else if (mode == 1) {
         D_801E7880 = env;
         ex->btlfx_getUnitBodyPos(0, 0, (s16 *)&work->unk0);
-        p = ex->func_800E3CEC(ex->btlfx_getFileData(entry->unk8, 8), (s32)&work->unk0);
+        p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->unk8, 8), (s32)&work->unk0);
         if (p != NULL) {
             p->unk22 = ex->func_800E7CC4(0, 0x80);
         }
     } else {
         frame = entry->unk0;
         if (frame == 0x18) {
-            p = ex->func_800E3CEC(ex->btlfx_getFileData(entry->unk8, 6), (s32)&work->unk0);
+            p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->unk8, 6), (s32)&work->unk0);
             if (p != NULL) {
                 p->unk22 = ex->func_800E7CC4(0, 0x80);
             }

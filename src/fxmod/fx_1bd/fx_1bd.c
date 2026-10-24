@@ -126,7 +126,7 @@ s32 fx_1bd_op82(s32 mode, Fx1bdWork82 *work, Unk800F78A4 *env, Unk80100C78Entry 
             work->unk58.vx = -3;
             work->unk58.vy = 0;
             work->unk58.vz = 0x320;
-            work->unk0 = ex->func_800E3CEC(ex->btlfx_getFileData(entry->unk8, 0x18), (s32)&work->unk58);
+            work->unk0 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->unk8, 0x18), (s32)&work->unk58);
             break;
         case 21:
             work->unk60 = 4;
@@ -302,8 +302,8 @@ s32 fx_1bd_op83(s32 mode, Fx1bdWork83 *work, Unk800F78A4 *env, Unk80100C78Entry 
             work->unkF4.vx = work->unk20.unk8.vx;
             work->unkF4.vy = work->unk20.unk8.vy;
             work->unkF4.vz = work->unk20.unk8.vz;
-            work->unk0 = ex->func_800E3CEC(ex->btlfx_getFileData(entry->unk8, 0x12), (s32)&work->unkF4);
-            work->unk4 = ex->func_800E3CEC(ex->btlfx_getFileData(entry->unk8, 0x26), (s32)&work->unkF4);
+            work->unk0 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->unk8, 0x12), (s32)&work->unkF4);
+            work->unk4 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->unk8, 0x26), (s32)&work->unkF4);
             break;
         case 3:
             work->unkCC.unk8.vx = work->unk20.unk8.vx;
@@ -312,7 +312,7 @@ s32 fx_1bd_op83(s32 mode, Fx1bdWork83 *work, Unk800F78A4 *env, Unk80100C78Entry 
             work->unkFC.vx = work->unk20.unk8.vx;
             work->unkFC.vy = work->unk20.unk8.vy;
             work->unkFC.vz = work->unk20.unk8.vz;
-            work->unk8 = ex->func_800E3CEC(ex->btlfx_getFileData(entry->unk8, 0xA), (s32)&work->unkFC);
+            work->unk8 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->unk8, 0xA), (s32)&work->unkFC);
             if (work->unk8 != NULL) {
                 work->unk8->unk22 = 0x100;
             }

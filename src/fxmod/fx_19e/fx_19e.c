@@ -10,7 +10,7 @@ s32 fx_19e_op80(s32 mode, Fx19eWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
         work->unk4.vy = env->targets->centerY;
         work->unk4.vz = env->targets->centerZ;
         D_801E7EC8 = env;
-        work->unk0 = ex->func_800E3CEC(ex->btlfx_getFileData(entry->unk8, 1), (s32)&work->unk4);
+        work->unk0 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->unk8, 1), (s32)&work->unk4);
         if (work->unk0 != NULL) {
             work->unk0->unk22 = 0x80;
         }

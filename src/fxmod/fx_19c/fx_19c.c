@@ -15,7 +15,7 @@ s32 fx_19c_op80(s32 mode, Fx19cWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
         env->unk28 = 0x80;
         ex->btlfx_drawSprite((u8 *)ex->btlfx_getFileData(entry->unk8, 2), &work->unk4, frame, 1, -1);
         if (frame == 3) {
-            work->unk0 = ex->func_800E3CEC(ex->btlfx_getFileData(entry->unk8, 1), (s32)&work->unk4);
+            work->unk0 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->unk8, 1), (s32)&work->unk4);
             if (work->unk0 != NULL) {
                 work->unk0->unk22 = ex->func_800E7CC4(0, 0x80);
             }

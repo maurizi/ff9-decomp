@@ -342,7 +342,7 @@ s32 fx_196_op85(s32 mode, Fx196Work85 *work, Unk800F78A4 *env, Unk80100C78Entry 
 
             t = (frame << 12) / 81;
             if (frame == 0x12) {
-                work->unk48 = ex->func_800E3CEC(ex->btlfx_getFileData(entry->unk8, 5), (s32)&work->unk10);
+                work->unk48 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->unk8, 5), (s32)&work->unk10);
                 if (work->unk48 != NULL) {
                     work->unk48->unk24->unk0 = -1;
                     ((EffTailSpawn *)work->unk48->unk24)->unk3C = (s32 (*)(SVECTOR *, SVECTOR *, s32, s32))func_801E8370;
@@ -427,7 +427,7 @@ s32 fx_196_op85(s32 mode, Fx196Work85 *work, Unk800F78A4 *env, Unk80100C78Entry 
                 work->unk10.vx = (v0.vx + v1.vx) / 2;
                 work->unk10.vy = (v0.vy + v1.vy) / 2;
                 work->unk10.vz = (v0.vz + v1.vz) / 2;
-                e = ex->func_800E3CEC(ex->btlfx_getFileData(entry->unk8, 7), (s32)&work->unk10);
+                e = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->unk8, 7), (s32)&work->unk10);
                 if (e != NULL) {
                     e->unk22 = 0x40;
                 }
@@ -531,7 +531,7 @@ s32 fx_196_op86(s32 mode, Fx196Work86 *work, Unk800F78A4 *env, Unk80100C78Entry 
                 ex->btlfx_getUnitHomePos(i, (s16 *)&work->unk0[i]);
                 work->unk0[i].vz -= ex->btlfx_getUnitRadius(i);
                 work->unk0[i].vy -= 0x200;
-                p = ex->func_800E3CEC(ex->btlfx_getFileData(entry->unk8, 8), (s32)&work->unk0[i]);
+                p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->unk8, 8), (s32)&work->unk0[i]);
                 if (p != NULL) {
                     p->unk22 = ex->func_800E7CC4(i, 0x200);
                 }

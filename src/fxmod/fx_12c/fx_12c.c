@@ -56,14 +56,14 @@ s32 fx_12c_op80(s32 mode, Fx12cWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
         case 1:
             ex->func_800DC858(0x10, 0, (u16 *)&work->unk28);
             work->unk28.vy = 0;
-            p = ex->func_800E3CEC(ex->btlfx_getFileData(entry->unk8, 0x11), (s32)&work->unk28);
+            p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->unk8, 0x11), (s32)&work->unk28);
             if (p != NULL) {
                 p->unk22 = -0x100;
             }
-            ex->func_800E3CEC(ex->btlfx_getFileData(entry->unk8, 0x12), (s32)&work->unk28);
+            ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->unk8, 0x12), (s32)&work->unk28);
             break;
         case 9:
-            p = ex->func_800E3CEC(ex->btlfx_getFileData(entry->unk8, 0x10), (s32)&work->unk20);
+            p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->unk8, 0x10), (s32)&work->unk20);
             if (p != NULL) {
                 p->unk22 = 0x100;
             }

@@ -432,11 +432,11 @@ s32 fx_0ec_op80(s32 mode, Fx0ecWork80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             k = 0x1755;
         }
         work->unk5C = k;
-        p = ex->func_800E3CEC(ex->btlfx_getFileData(entry->unk8, 8), (s32)&work->unk18);
+        p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->unk8, 8), (s32)&work->unk18);
         if (p != NULL) {
             p->unk22 = -0x40;
         }
-        p = ex->func_800E3CEC(ex->btlfx_getFileData(entry->unk8, 0xC), (s32)&work->unk20);
+        p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->unk8, 0xC), (s32)&work->unk20);
         if (p != NULL) {
             p->unk22 = 0x80;
         }
@@ -569,7 +569,7 @@ s32 fx_0ec_op80(s32 mode, Fx0ecWork80 *work, Unk800F78A4 *env, Unk80100C78Entry 
                 gte_rtv0tr();
                 gte_stlvnl(&out);
                 setVector(&work->unk28[i], out.vx, out.vy, out.vz);
-                p = ex->func_800E3CEC(ex->btlfx_getFileData(entry->unk8, 0xB), (s32)&work->unk28[i]);
+                p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->unk8, 0xB), (s32)&work->unk28[i]);
                 if (p != NULL) {
                     p->unk22 = 0x40;
                 }
@@ -598,7 +598,7 @@ s32 fx_0ec_op80(s32 mode, Fx0ecWork80 *work, Unk800F78A4 *env, Unk80100C78Entry 
                 work->unk20.vy = work->unk18.vy;
                 work->unk20.vz = work->unk18.vz;
                 work->unk20.vy -= (work->unk5C << 10) >> 12;
-                work->unk60 = p = ex->func_800E3CEC(ex->btlfx_getFileData(entry->unk8, 0xE), (s32)&work->unk18);
+                work->unk60 = p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->unk8, 0xE), (s32)&work->unk18);
                 if (p == NULL) {
                     goto skip; /* the original's NULL branch skips the unk60 check (unk60 is NULL then) */
                 }

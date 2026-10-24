@@ -388,7 +388,7 @@ void btl_initBattleState(void) {
     gd->characters[3].unk34.w = (gd->characters[3].unk34.w & ~0x1F0) | (v << 4);
     g_gameState->unk1C->unk56E = 0;
     btl_initState();
-    func_800E3D80();
+    btlfx_initAll();
     btlcam_init();
     btl_clearPopups();
     func_800F4DFC();

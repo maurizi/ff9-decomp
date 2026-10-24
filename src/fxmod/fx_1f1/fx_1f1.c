@@ -72,7 +72,7 @@ s32 fx_1f1_op80(s32 mode, s32 *work, Unk800F78A4 *env, Unk80100C78Entry *entry, 
                             ex->btlfx_getUnitPos(i, (s16 *)&D_801E7F14[i].unkC);
                             u->unk8 = u->unkC.vy;
                             u->unkC.vy = 0;
-                            p = ex->func_800E3CEC(ex->btlfx_getFileData(entry->unk8, 5), (s32)&D_801E7F14[i].unkC);
+                            p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->unk8, 5), (s32)&D_801E7F14[i].unkC);
                             if (p != NULL) {
                                 p->unk22 = ex->func_800E7CC4(i, 0x100);
                             }

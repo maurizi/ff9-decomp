@@ -331,7 +331,7 @@ s32 fx_086_op80(s32 mode, Fx086Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             func_801E7F6C((u32 *)(env->ot + 8), 0x180, 0x80, z, &v, D_801EA3BC, &col,
                           ex->math_cos((frame << 10) / 49) * 3 / 4 + 0x400, 1);
             if (frame == 2) {
-                work->unk44 = p = ex->func_800E3CEC(ex->btlfx_getFileData(entry->unk8, 0xB), (s32)&work->unk14);
+                work->unk44 = p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->unk8, 0xB), (s32)&work->unk14);
                 if (p != NULL) {
                     p->unk22 = 0x5C;
                 }
@@ -357,7 +357,7 @@ s32 fx_086_op80(s32 mode, Fx086Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             py = 0x140 - (frame + 5) % 10 * 60;
             ex->btlfx_drawSpriteAtOt(2, (u8 *)ex->btlfx_getFileData(entry->unk8, 0xE), px - 0x40, py + 0x78, 0, 1, s);
             if (frame >= 49) {
-                ex->func_800E3D54(work->unk44);
+                ex->btlfx_stopEmitter(work->unk44);
                 BTLFX_COPY_SVEC(&work->unk1C, &env->targets->centerX);
                 env->camera->points[3].vx = work->unk1C.vx;
                 env->camera->points[3].vy = work->unk1C.vy;
@@ -495,13 +495,13 @@ s32 fx_086_op80(s32 mode, Fx086Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
                 env->camera->points[3].vz += ex->btlfx_randCentered(c20);
             }
             if (frame == 12) {
-                p = ex->func_800E3CEC(ex->btlfx_getFileData(entry->unk8, 9), (s32)&work->unk1C);
+                p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->unk8, 9), (s32)&work->unk1C);
                 if (p != NULL) {
                     p->unk22 = 0x20;
                 }
             }
             if (frame == 20) {
-                p = ex->func_800E3CEC(ex->btlfx_getFileData(entry->unk8, 6), (s32)&work->unk1C);
+                p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->unk8, 6), (s32)&work->unk1C);
                 if (p != NULL) {
                     p->unk22 = 0x20;
                 }

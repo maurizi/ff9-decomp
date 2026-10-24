@@ -235,10 +235,10 @@ s32 fx_0b8_op80(s32 mode, Fx0b8Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             work->unk0[0x12] = 0x30;
             break;
         case 4:
-            ex->func_800E3CEC(ex->btlfx_getFileData(entry->unk8, 0xB), (s32)&work->unkC4);
+            ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->unk8, 0xB), (s32)&work->unkC4);
             break;
         case 0x20:
-            p = ex->func_800E3CEC(ex->btlfx_getFileData(entry->unk8, 0xE), (s32)&work->unk1DC);
+            p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->unk8, 0xE), (s32)&work->unk1DC);
             if (p != NULL) {
                 p->unk14 = (s32)D_801ECA60;
                 p->unk12 = 0x28;
@@ -250,15 +250,15 @@ s32 fx_0b8_op80(s32 mode, Fx0b8Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             work->unk0[0xB] = 8;
             break;
         case 0x34:
-            p = ex->func_800E3CEC(ex->btlfx_getFileData(entry->unk8, 0xD), (s32)&work->unk1CC);
+            p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->unk8, 0xD), (s32)&work->unk1CC);
             if (p != NULL) {
                 p->unk22 = 0x80;
             }
-            p = ex->func_800E3CEC(ex->btlfx_getFileData(entry->unk8, 0xD), (s32)&work->unk1D4);
+            p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->unk8, 0xD), (s32)&work->unk1D4);
             if (p != NULL) {
                 p->unk22 = 0x80;
             }
-            work->unk1B8 = ex->func_800E3CEC(ex->btlfx_getFileData(entry->unk8, 2), (s32)&work->unk1BC);
+            work->unk1B8 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->unk8, 2), (s32)&work->unk1BC);
             break;
         case 0x3F:
             D_801ED8C0 = 4;
@@ -304,7 +304,7 @@ s32 fx_0b8_op80(s32 mode, Fx0b8Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             work->unk0[0xA] = 1;
             work->unk0[0x22] = 1;
             work->unk0[0x23] = 0x30;
-            work->unk19C = ex->func_800E3CEC(ex->btlfx_getFileData(entry->unk8, 8), (s32)&work->unk1A0);
+            work->unk19C = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->unk8, 8), (s32)&work->unk1A0);
             break;
         case 0x90:
             work->unk0[0x1C] = 0x20;
@@ -317,8 +317,8 @@ s32 fx_0b8_op80(s32 mode, Fx0b8Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             work->unk0[0xD] = 8;
             break;
         case 0xAE:
-            work->unk184 = ex->func_800E3CEC(ex->btlfx_getFileData(entry->unk8, 7), (s32)&work->unk188);
-            work->unk190 = ex->func_800E3CEC(ex->btlfx_getFileData(entry->unk8, 0x20), (s32)&work->unk194);
+            work->unk184 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->unk8, 7), (s32)&work->unk188);
+            work->unk190 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->unk8, 0x20), (s32)&work->unk194);
             if (work->unk184 != NULL) {
                 work->unk184->unk22 = 0x80;
             }
@@ -332,7 +332,7 @@ s32 fx_0b8_op80(s32 mode, Fx0b8Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             work->unk0[0x1B] = 0x30;
             break;
         case 0xBC:
-            work->unk1B0 = p = ex->func_800E3CEC(ex->btlfx_getFileData(entry->unk8, 0xC), (s32)&work->unk1A8);
+            work->unk1B0 = p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->unk8, 0xC), (s32)&work->unk1A8);
             if (p != NULL) {
                 *(s32 *)&p->unk0->unk8 = (s32)func_801EA558;
             }
@@ -348,7 +348,7 @@ s32 fx_0b8_op80(s32 mode, Fx0b8Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             work->unk0[3] = 0;
             work->unk0[0x1F] = 0;
             work->unk0[0x19] = 0x40;
-            ex->func_800E3D54(work->unk1B0);
+            ex->btlfx_stopEmitter(work->unk1B0);
             work->unk14C.vx = 0x555;
             work->unk14C.vy = 0x555;
             work->unk14C.vz = 0x555;
@@ -358,18 +358,18 @@ s32 fx_0b8_op80(s32 mode, Fx0b8Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             work->unk164.vx = 0;
             work->unk164.vy = -0x800;
             work->unk164.vz = 0x418;
-            p = ex->func_800E3CEC(ex->btlfx_getFileData(entry->unk8, 9), (s32)&work->unk164);
+            p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->unk8, 9), (s32)&work->unk164);
             if (p != NULL) {
                 p->unk22 = 0x400;
             }
             break;
         case 0xF2:
-            ex->func_800E3CEC(ex->btlfx_getFileData(entry->unk8, 0xA), (s32)&work->unk164);
-            p = ex->func_800E3CEC(ex->btlfx_getFileData(entry->unk8, 0x21), (s32)&work->unk164);
+            ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->unk8, 0xA), (s32)&work->unk164);
+            p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->unk8, 0x21), (s32)&work->unk164);
             if (p != NULL) {
                 p->unk22 = 0x80;
             }
-            p = ex->func_800E3CEC(ex->btlfx_getFileData(entry->unk8, 0x22), (s32)&work->unk164);
+            p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->unk8, 0x22), (s32)&work->unk164);
             if (p != NULL) {
                 p->unk22 = 0x100;
             }
@@ -534,7 +534,7 @@ s32 fx_0b8_op80(s32 mode, Fx0b8Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
                 work->unk14C.vz = func_801E7704(2, 4, work->unk0[0xC], 0x2800, 0x800);
             }
             work->unk164.vz = work->unk13C.vz = func_801E7704(2, 8, work->unk0[0xC], -0x1000, 0x1000);
-            ex->func_800E3D20((s32)work->unk1B8, (s32)&work->unk164);
+            ex->btlfx_moveEmitterTo((s32)work->unk1B8, (s32)&work->unk164);
         }
         if (work->unk0[0xF] != 0) {
             work->unk0[0xF]--;
@@ -570,7 +570,7 @@ s32 fx_0b8_op80(s32 mode, Fx0b8Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
                 work->unk13C.vy = func_801E7704(2, 0x18, work->unk0[0x23], -0x1300, -0xC00);
             }
             work->unk164.vy = work->unk13C.vy;
-            ex->func_800E3D20((s32)work->unk19C, (s32)&work->unk164);
+            ex->btlfx_moveEmitterTo((s32)work->unk19C, (s32)&work->unk164);
         }
         if (work->unk0[0x24] != 0) {
             work->unk0[0x24]--;
@@ -594,8 +594,8 @@ s32 fx_0b8_op80(s32 mode, Fx0b8Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
         }
         if (work->unk0[0x1E] != 0) {
             work->unk0[0x1E]--;
-            ex->func_800E3D20((s32)work->unk184, (s32)&work->unk164);
-            ex->func_800E3D20((s32)work->unk190, (s32)&work->unk164);
+            ex->btlfx_moveEmitterTo((s32)work->unk184, (s32)&work->unk164);
+            ex->btlfx_moveEmitterTo((s32)work->unk190, (s32)&work->unk164);
         }
         if (work->unk0[0x13] != 0) {
             pos.vx = work->unk13C.vx;
@@ -661,7 +661,7 @@ s32 fx_0b8_op80(s32 mode, Fx0b8Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
                 ex->btlfx_setUnitPos(i, &D_801EC8C0[i].unk14.vx);
                 if (work->unk0[0x20] == 0) {
                     D_801EC8C0[i].unk14.vy = 0;
-                    p = ex->func_800E3CEC(ex->btlfx_getFileData(entry->unk8, 0xF), (s32)&D_801EC8C0[i].unk14);
+                    p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->unk8, 0xF), (s32)&D_801EC8C0[i].unk14);
                     if (p != NULL) {
                         p->unk22 = -0x100;
                     }
@@ -675,7 +675,7 @@ s32 fx_0b8_op80(s32 mode, Fx0b8Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
                     work->unk19C->unk20 = work->unk0[0x21] << 8;
                 }
             } else {
-                ex->func_800E3D54(work->unk19C);
+                ex->btlfx_stopEmitter(work->unk19C);
             }
         }
         if (work->unk0[0x1D] != 0) {
@@ -688,8 +688,8 @@ s32 fx_0b8_op80(s32 mode, Fx0b8Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
                     work->unk190->unk20 = work->unk0[0x1D] << 8;
                 }
             } else {
-                ex->func_800E3D54(work->unk184);
-                ex->func_800E3D54(work->unk190);
+                ex->btlfx_stopEmitter(work->unk184);
+                ex->btlfx_stopEmitter(work->unk190);
             }
         }
         if (work->unk0[0x19] != 0) {

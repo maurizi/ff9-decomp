@@ -201,7 +201,7 @@ s32 fx_08f_op80(s32 mode, Fx08fWork80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             func_801E7858((u32 *)(env->ot + 8), 0x180, 0x80, y0, &rot2, D_801E9054, &c,
                           ex->math_cos((frame << 10) / 49) * 3 / 4 + 0x400, 1);
             if (frame == 2) {
-                p = ex->func_800E3CEC(ex->btlfx_getFileData(entry->unk8, 0xB), (s32)&work->unk14);
+                p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->unk8, 0xB), (s32)&work->unk14);
                 work->unk44 = p;
                 if (p != NULL) {
                     p->unk22 = 0x5C;
@@ -219,7 +219,7 @@ s32 fx_08f_op80(s32 mode, Fx08fWork80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             y = 0x140 - k;
             ex->btlfx_drawSpriteAtOt(2, (u8 *)ex->btlfx_getFileData(entry->unk8, 0xE), x - 0x40, y + 0x78, 0, 1, t);
             if (frame >= 0x31) {
-                ex->func_800E3D54(work->unk44);
+                ex->btlfx_stopEmitter(work->unk44);
                 work->unk1C.vx = 0;
                 work->unk1C.vy = -0x140;
                 work->unk1C.vz = 0;
@@ -255,7 +255,7 @@ s32 fx_08f_op80(s32 mode, Fx08fWork80 *work, Unk800F78A4 *env, Unk80100C78Entry 
                 env->camera->points[3].vz = pos.vz;
             }
             if (frame == 7) {
-                p = ex->func_800E3CEC(ex->btlfx_getFileData(entry->unk8, 0x1B), (s32)&work->unk14);
+                p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->unk8, 0x1B), (s32)&work->unk14);
                 if (p != NULL) {
                     p->unk22 = 0x5C;
                 }

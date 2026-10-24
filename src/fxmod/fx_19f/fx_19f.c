@@ -338,14 +338,14 @@ s32 fx_19f_op81(s32 mode, Fx19fWork81 *work, Unk800F78A4 *env, Unk80100C78Entry 
                                   ex->math_sin(c7 >> 1));
             }
             if (frame == 20) {
-                p = ex->func_800E3CEC(ex->btlfx_getFileData(entry->unk8, 0xC), (s32)&work->unk10);
+                p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->unk8, 0xC), (s32)&work->unk10);
                 work->unk6C = p;
                 if (p != NULL) {
                     p->unk22 = 0x96;
                 }
             }
             if (frame == 14) {
-                p = ex->func_800E3CEC(ex->btlfx_getFileData(entry->unk8, 0x16), (s32)&work->unk8);
+                p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->unk8, 0x16), (s32)&work->unk8);
                 work->unk68 = p;
                 if (p != NULL) {
                     p->unk22 = -0x20;
@@ -430,7 +430,7 @@ s32 fx_19f_op81(s32 mode, Fx19fWork81 *work, Unk800F78A4 *env, Unk80100C78Entry 
                 work->unk0 = 3;
                 entry->unk0 = -1;
                 ex->btlfx_startFadeBackground(-1, 6);
-                p = ex->func_800E3CEC(ex->btlfx_getFileData(entry->unk8, 0x2A), (s32)&work->unk10);
+                p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->unk8, 0x2A), (s32)&work->unk10);
                 if (p != NULL) {
                     p->unk22 = 0x96;
                 }
@@ -459,7 +459,7 @@ s32 fx_19f_op81(s32 mode, Fx19fWork81 *work, Unk800F78A4 *env, Unk80100C78Entry 
                     }
                 }
                 if (frame == 9) {
-                    ex->func_800E3D54(work->unk68);
+                    ex->btlfx_stopEmitter(work->unk68);
                 }
             }
             if (work->unk6C != NULL && frame < 8) {
@@ -471,7 +471,7 @@ s32 fx_19f_op81(s32 mode, Fx19fWork81 *work, Unk800F78A4 *env, Unk80100C78Entry 
                     work->unk6C->unk1C = 0x1000 - q9;
                 }
                 if (frame == 7) {
-                    ex->func_800E3D54(work->unk6C);
+                    ex->btlfx_stopEmitter(work->unk6C);
                 }
             }
             if (frame < 14) {

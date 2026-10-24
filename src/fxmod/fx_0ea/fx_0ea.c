@@ -44,7 +44,7 @@ s32 fx_0ea_op80(s32 mode, Fx0eaWork80 *work, Unk800F78A4 *env, Unk80100C78Entry 
         work->unk10.vx = work->unk8.vx;
         work->unk10.vy = work->unk8.vy;
         work->unk10.vz = work->unk8.vz;
-        work->unk0 = ex->func_800E3CEC(ex->btlfx_getFileData(entry->unk8, 1), (s32)&work->unk8);
+        work->unk0 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->unk8, 1), (s32)&work->unk8);
         if (work->unk0 != NULL) {
             work->unk0->unk22 = ex->func_800E7CC4(0x10, 0x80);
         }
@@ -53,7 +53,7 @@ s32 fx_0ea_op80(s32 mode, Fx0eaWork80 *work, Unk800F78A4 *env, Unk80100C78Entry 
     } else {
         frame = entry->unk0;
         if (frame == 0x1E) {
-            work->unk4 = ex->func_800E3CEC(ex->btlfx_getFileData(entry->unk8, 2), (s32)&work->unk8);
+            work->unk4 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->unk8, 2), (s32)&work->unk8);
             if (work->unk4 != NULL) {
                 work->unk4->unk22 = ex->func_800E7CC4(0x10, 0x80);
             }
@@ -103,7 +103,7 @@ s32 fx_0ea_op81(s32 mode, Fx0eaWork81 *work, Unk800F78A4 *env, Unk80100C78Entry 
         D_801E7E64[work->unk20].vy = work->unk10.vy;
         D_801E7E64[work->unk20].vz = work->unk10.vz;
         ex->btlfx_getUnitPos(work->unk20, (s16 *)&work->unk18);
-        work->unk0 = ex->func_800E3CEC(ex->btlfx_getFileData(entry->unk8, D_801E7DF4[work->unk20]), (s32)&D_801E7E84);
+        work->unk0 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->unk8, D_801E7DF4[work->unk20]), (s32)&D_801E7E84);
         if (work->unk0 != NULL) {
             ((Fx0eaEffHdr *)work->unk0->unk0)->unk8 = D_801E7DFC[work->unk20];
             if (work->unk0 != NULL) {
@@ -113,7 +113,7 @@ s32 fx_0ea_op81(s32 mode, Fx0eaWork81 *work, Unk800F78A4 *env, Unk80100C78Entry 
     } else {
         frame = entry->unk0;
         if (frame == 0x14) {
-            work->unk4 = ex->func_800E3CEC(ex->btlfx_getFileData(entry->unk8, 5), (s32)&work->unk18);
+            work->unk4 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->unk8, 5), (s32)&work->unk18);
             if (work->unk4 != NULL) {
                 work->unk4->unk22 = ex->func_800E7CC4(work->unk20, 0x80);
             }

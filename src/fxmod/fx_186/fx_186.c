@@ -249,7 +249,7 @@ s32 fx_186_op80(s32 mode, Fx186Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
                 if (frame == 0) {
                     BTLFX_COPY_SVEC(&work->unk10, &work->unk8);
                     work->unk10.vy -= 0x180;
-                    work->unk18 = ex->func_800E3CEC(ex->btlfx_getFileData(entry->unk8, 0x1A), (s32)&work->unk10);
+                    work->unk18 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->unk8, 0x1A), (s32)&work->unk10);
                     if (work->unk18 != NULL) {
                         work->unk18->unk22 = 0x100;
                     }
@@ -305,7 +305,7 @@ s32 fx_186_op80(s32 mode, Fx186Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
                 if (frame >= 0x20) {
                     work->unk0 = 2;
                     entry->unk0 = -1;
-                    ex->func_800E3D54(work->unk18);
+                    ex->btlfx_stopEmitter(work->unk18);
                 }
             }
             }
@@ -317,7 +317,7 @@ s32 fx_186_op80(s32 mode, Fx186Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             t = (frame << 12) / 40;
             tint = 0x89;
             if (frame == 1) {
-                p = ex->func_800E3CEC(ex->btlfx_getFileData(entry->unk8, 0x1D), (s32)&work->unk8);
+                p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->unk8, 0x1D), (s32)&work->unk8);
                 if (p != NULL) {
                     p->unk22 = 0x100;
                 }

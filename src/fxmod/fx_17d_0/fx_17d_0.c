@@ -343,7 +343,7 @@ s32 fx_17d_0_op80(s32 mode, Fx17d0Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
                 BTLFX_COPY_SVEC(&work->unk40, &work->unk8);
                 work->unk40.vy -= 0x140;
                 work->unk40.vz += 0x1000;
-                p = ex->func_800E3CEC(ex->btlfx_getFileData(entry->unk8, 0x23), (s32)&work->unk40);
+                p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->unk8, 0x23), (s32)&work->unk40);
                 if (p != NULL) {
                     p->unk22 = -0x100;
                 }

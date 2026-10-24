@@ -22,11 +22,11 @@ s32 fx_00e_op80(s32 mode, Fx00eWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
         work->unk18[2] = work->unk8.vz;
         ex->btlfx_initEffModels(D_801E7A88, 2);
         work->unk24 = ex->Hi_RegisterTexEffModel((BtlUnit9C8 *)ex->btlfx_getFileData(entry->unk8, 4), 0x138, 0xFFFF, 0, 0x80);
-        p = ex->func_800E3CEC(ex->btlfx_getFileData(entry->unk8, 0xA), (s32)&work->unk8);
+        p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->unk8, 0xA), (s32)&work->unk8);
         if (p != NULL) {
             p->unk22 = ex->func_800E7CC4(0, 0x20);
         }
-        p = ex->func_800E3CEC(ex->btlfx_getFileData(entry->unk8, 0xB), (s32)&work->unk8);
+        p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->unk8, 0xB), (s32)&work->unk8);
         if (p != NULL) {
             p->unk22 = ex->func_800E7CC4(0, 0x20);
         }

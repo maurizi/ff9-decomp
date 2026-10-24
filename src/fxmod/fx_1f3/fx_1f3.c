@@ -134,25 +134,25 @@ s32 fx_1f3_op80(s32 mode, Fx1f3Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             break;
         case 0x22:
             ex->func_800DC818(0x10, 0x2E, (u16 *)&work->unk64);
-            work->unk40[0] = ex->func_800E3CEC(ex->btlfx_getFileData(entry->unk8, 0xE), (s32)&work->unk64);
+            work->unk40[0] = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->unk8, 0xE), (s32)&work->unk64);
             if (work->unk40[0] != NULL) {
                 work->unk40[0]->unk22 = 0x200;
             }
             break;
         case 0x2A:
-            p = work->unk40[1] = ex->func_800E3CEC(ex->btlfx_getFileData(entry->unk8, 0xF), (s32)&work->unk64);
+            p = work->unk40[1] = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->unk8, 0xF), (s32)&work->unk64);
             if (p != NULL) {
                 p->unk22 = 0x200;
             }
             break;
         case 0x52:
-            p = work->unk40[3] = ex->func_800E3CEC(ex->btlfx_getFileData(entry->unk8, 7), (s32)&work->unk5C);
+            p = work->unk40[3] = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->unk8, 7), (s32)&work->unk5C);
             if (p != NULL) {
                 p->unk22 = 0x200;
             }
             break;
         case 0x62:
-            work->unk40[2] = ex->func_800E3CEC(ex->btlfx_getFileData(entry->unk8, 5), (s32)&work->unk5C);
+            work->unk40[2] = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->unk8, 5), (s32)&work->unk5C);
             if (work->unk40[2] != NULL) {
                 work->unk40[2]->unk14 = (s32)D_801EA6C0;
                 work->unk40[2]->unk12 = 0x24;
@@ -161,7 +161,7 @@ s32 fx_1f3_op80(s32 mode, Fx1f3Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
                     work->unk40[2]->unk22 = 0x200;
                 }
             }
-            p = work->unk40[4] = ex->func_800E3CEC(ex->btlfx_getFileData(entry->unk8, 4), (s32)&work->unk5C);
+            p = work->unk40[4] = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->unk8, 4), (s32)&work->unk5C);
             if (p != NULL) {
                 p->unk22 = 0x200;
             }
@@ -170,14 +170,14 @@ s32 fx_1f3_op80(s32 mode, Fx1f3Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             work->unk0[0] = 0x80;
             break;
         case 0x7E:
-            p = work->unk40[6] = ex->func_800E3CEC(ex->btlfx_getFileData(entry->unk8, 3), (s32)&work->unk5C);
+            p = work->unk40[6] = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->unk8, 3), (s32)&work->unk5C);
             if (p != NULL) {
                 p->unk22 = 0x200;
             }
             break;
         case 0x92:
-            ex->func_800E3D54(work->unk40[6]);
-            p = ex->func_800E3CEC(ex->btlfx_getFileData(entry->unk8, 0x12), (s32)&work->unk5C);
+            ex->btlfx_stopEmitter(work->unk40[6]);
+            p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->unk8, 0x12), (s32)&work->unk5C);
             if (p != NULL) {
                 p->unk22 = 0x200;
             }
@@ -188,10 +188,10 @@ s32 fx_1f3_op80(s32 mode, Fx1f3Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             break;
         case 0x9D:
             work->unk0[0] = 0;
-            ex->func_800E3D54(work->unk40[2]);
-            ex->func_800E3D54(work->unk40[3]);
-            ex->func_800E3D54(work->unk40[4]);
-            ex->func_800E3D54(work->unk40[6]);
+            ex->btlfx_stopEmitter(work->unk40[2]);
+            ex->btlfx_stopEmitter(work->unk40[3]);
+            ex->btlfx_stopEmitter(work->unk40[4]);
+            ex->btlfx_stopEmitter(work->unk40[6]);
             break;
         case 0x9E:
             work->unk0[3] = 8;
@@ -199,7 +199,7 @@ s32 fx_1f3_op80(s32 mode, Fx1f3Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             work->unk0[6] = 0x20;
             work->unk0[8] = 0x20;
             work->unk0[4] = 0x60;
-            p = ex->func_800E3CEC(ex->btlfx_getFileData(entry->unk8, 0xB), (s32)&work->unk5C);
+            p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->unk8, 0xB), (s32)&work->unk5C);
             if (p != NULL) {
                 p->unk22 = 0x200;
             }

@@ -10,7 +10,7 @@ s32 fx_1fb_op80(s32 mode, void *work, Unk800F78A4 *env, Unk80100C78Entry *entry,
         D_801E7B7C.vy = 0;
         D_801E7B7C.vz = -0x618;
         D_801E7B74 = env;
-        ex->func_800E3CEC(ex->btlfx_getFileData(entry->unk8, 1), (s32)&D_801E7B7C);
+        ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->unk8, 1), (s32)&D_801E7B7C);
     } else {
         return entry->unk0 >= 0x40;
     }
@@ -31,7 +31,7 @@ s32 fx_1fb_op81(s32 mode, void *work, Unk800F78A4 *env, Unk80100C78Entry *entry,
         D_801E7B74 = env;
         for (i = 0; i < env->targets->targetCount; i++) {
             ex->btlfx_getUnitBodyPos(i, 0, (s16 *)&D_801E7B94[i]);
-            p = ex->func_800E3CEC(ex->btlfx_getFileData(entry->unk8, 4), (s32)&D_801E7B94[i]);
+            p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->unk8, 4), (s32)&D_801E7B94[i]);
             if (p != NULL) {
                 p->unk22 = ex->func_800E7CC4(i, 0x200);
                 p->unk12 = 0x1E;
@@ -44,14 +44,14 @@ s32 fx_1fb_op81(s32 mode, void *work, Unk800F78A4 *env, Unk80100C78Entry *entry,
         switch (frame) {
         case 16:
             for (i = 0; i < env->targets->targetCount; i++) {
-                p = ex->func_800E3CEC(ex->btlfx_getFileData(entry->unk8, 5), (s32)&D_801E7B94[i]);
+                p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->unk8, 5), (s32)&D_801E7B94[i]);
                 if (p != NULL) {
                     p->unk22 = ex->func_800E7CC4(i, 0x200);
                     p->unk12 = 0x1E;
                     p->unk14 = (s32)D_801E9B94[i];
                     p->unkC = 0x9C;
                 }
-                p = ex->func_800E3CEC(ex->btlfx_getFileData(entry->unk8, 6), (s32)&D_801E7B94[i]);
+                p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->unk8, 6), (s32)&D_801E7B94[i]);
                 if (p != NULL) {
                     p->unk22 = ex->func_800E7CC4(0, 0x200);
                 }

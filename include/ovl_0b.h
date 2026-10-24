@@ -1718,7 +1718,7 @@ typedef struct {
     s16 unk50[8];
 } EffTail;
 
-/* EffTail as seen by the particle spawner (func_800E2000), by EffTail.unk0 kind */
+/* EffTail as seen by the particle spawner (btlfx_runEmitters), by EffTail.unk0 kind */
 typedef struct {
     s32 unk0; /* kind */
     EffAnim unk4;
@@ -1885,9 +1885,9 @@ typedef struct {
     Pool30Entry *unkC;
 } Pool30;
 
-extern Pool30Entry D_801014B8[0x100];
-extern Pool30 D_801044B8;
-extern Pool6C D_801044C8; /* 0x920 bytes */
+extern Pool30Entry g_btlfxParticleBuf[0x100];
+extern Pool30 g_btlfxParticles;
+extern Pool6C g_btlfxEmitters; /* 0x920 bytes */
 extern Unk80100D88 g_btlfxResArgs;
 extern Unk80100D88 g_btlfxResArgs2;
 extern s32 g_btlfxSavedGeomScreen;
@@ -2471,7 +2471,7 @@ void btl_addItem(s32);
 u32 btlfx_holdMotion(s32);
 s32 btlfx_stepTurnUnit(u8 *, s32, s32);
 void btlfx_error(char *);
-void func_800E3D80(void);
+void btlfx_initAll(void);
 u8 btl_isAtbRunning(void);
 void btl_useItem(s32);
 void btlui_setAtbEnabled(u8);
@@ -2550,7 +2550,7 @@ void btlfx_clearSummonModels(void);
 void btlfx_reset(void);
 void btlfx_initTasks(void);
 void func_800DA4E8(void);
-void func_800E3C58(void);
+void btlfx_initParticleSystem(void);
 void btlfx_clearTargets(void);
 void btl_setVsyncMode(s32);
 void btlfx_initSounds(void);
@@ -2575,10 +2575,10 @@ void func_800DC9D0(BtlUnit9C *, s32, u16 *);
 void func_800DCA18(BtlUnit9C *, s32, BtlBone *);
 BtlObjSlot *btlfx_getEffModel(s32, char *);
 u8 func_800DD10C(BtlUnit9C *);
-void func_800E00DC(s32, Pool30Entry *, Pool30 *);
-void func_800E14D8(u32, Pool6C *);
-Pool6CEntry *func_800E1534(Pool30 *, Pool6C *, u8 *, s32);
-Pool6CEntry *func_800E3CEC(s32, s32);
+void btlfx_initParticles(s32, Pool30Entry *, Pool30 *);
+void btlfx_initEmitters(u32, Pool6C *);
+Pool6CEntry *btlfx_spawnEmitter(Pool30 *, Pool6C *, u8 *, s32);
+Pool6CEntry *btlfx_startEmitter(s32, s32);
 void btlfx_playBounceCamera(void);
 void btlfx_playSoundSet(s32, s32);
 s32 btlfx_getBouncePos(s32, s16 *, s16 *);
@@ -2603,10 +2603,10 @@ typedef struct {
     Unk800E4634Arg2C *unkC;
 } Unk800E4634Arg2;
 
-void func_800E1708(Pool30 *, s32, s32);
-void func_800E1810(Pool30 *, Pool6CEntry *);
-s32 func_800E0168(Pool30 *);
-/* particle helpers used by func_800E0168 */
+void btlfx_moveEmitter(Pool30 *, s32, s32);
+void btlfx_killEmitter(Pool30 *, Pool6CEntry *);
+s32 btlfx_updateParticles(Pool30 *);
+/* particle helpers used by btlfx_updateParticles */
 s32 btlfx_distance(SVECTOR *, SVECTOR *);
 s32 btlfx_randCentered(s32);
 void btlfx_randRotation(SVECTOR *);
@@ -2659,8 +2659,8 @@ extern s32 D_801014B0; /* saved g_btlfxEnv->unk28 */
 /* main exe: candidates for ff9.h */
 int VectorNormalS(VECTOR *, SVECTOR *);
 MATRIX *MulMatrix2(MATRIX *, MATRIX *);
-s32 func_800E1874(Pool30 *, Pool6C *);
-void func_800E2000(Pool30 *, Pool6C *);
+s32 btlfx_updateEmitters(Pool30 *, Pool6C *);
+void btlfx_runEmitters(Pool30 *, Pool6C *);
 void btlfx_heapInit(Heap *, s32);
 void btlfx_resetAll(void);
 void btlfx_initCommonData(void);
@@ -3312,8 +3312,8 @@ void btlfx_initEnv(void);
 void btlfx_runScript(void);
 void btlfx_updateLoader(void);
 s32 btlfx_updateTasks(void);
-void func_800E3C98(void);
-void func_800E3E08(void);
+void btlfx_updateParticleSystem(void);
+void btlfx_copyDisplayToDraw(void);
 void btlfx_updateSounds(void);
 extern s32 g_btlfxRandSeed;
 extern s32 g_btlfxSavedSp;

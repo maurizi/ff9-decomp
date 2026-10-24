@@ -33,8 +33,8 @@ s32 fx_18c_op80(s32 mode, Fx18cWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
             D_801E7B20[i] = 0;
         }
         ex->btlfx_getUnitHomePos(0, (s16 *)&work->unk0);
-        ex->func_800E3CEC(ex->btlfx_getFileData(entry->unk8, 1), (s32)&work->unk0);
-        ex->func_800E3CEC(ex->btlfx_getFileData(entry->unk8, 2), (s32)&work->unk0);
+        ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->unk8, 1), (s32)&work->unk0);
+        ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->unk8, 2), (s32)&work->unk0);
     } else {
         frame = entry->unk0;
         switch (frame) {

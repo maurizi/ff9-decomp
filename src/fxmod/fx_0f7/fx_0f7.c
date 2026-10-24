@@ -21,21 +21,21 @@ s32 fx_0f7_op80(s32 mode, Fx0f7Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
         frame = entry->unk0;
         switch (frame) {
         case 0:
-            work->unkC = ex->func_800E3CEC(ex->btlfx_getFileData(entry->unk8, 0xE), (s32)&work->unk4);
+            work->unkC = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->unk8, 0xE), (s32)&work->unk4);
             if (work->unkC != NULL) {
                 work->unkC->unk22 = ex->func_800E7CC4(0, 0x80);
             }
             work->unk0 = 0x30;
             break;
         case 0x20:
-            work->unk10 = ex->func_800E3CEC(ex->btlfx_getFileData(entry->unk8, 0xF), (s32)&work->unk4);
+            work->unk10 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->unk8, 0xF), (s32)&work->unk4);
             if (work->unk10 != NULL) {
                 work->unk10->unk22 = ex->func_800E7CC4(0, 0x80);
             }
             break;
         case 0x28:
-            ex->func_800E3D54(work->unkC);
-            work->unk14 = ex->func_800E3CEC(ex->btlfx_getFileData(entry->unk8, 0xB), (s32)&work->unk4);
+            ex->btlfx_stopEmitter(work->unkC);
+            work->unk14 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->unk8, 0xB), (s32)&work->unk4);
             if (work->unk14 != NULL) {
                 work->unk14->unk22 = ex->func_800E7CC4(0, 0xC0);
             }

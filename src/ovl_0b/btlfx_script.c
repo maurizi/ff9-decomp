@@ -226,7 +226,7 @@ void btlfx_runScript(void) {
                         if (d->unk1C & 1) {
                             if (d->unk21 == 0) {
                                 btlcam_endEffect();
-                                func_800E3C58();
+                                btlfx_initParticleSystem();
                                 btlfx_stopAllSounds();
                                 btlfx_initSounds();
                                 btlfx_reloadCommonData(0);
@@ -238,7 +238,7 @@ void btlfx_runScript(void) {
                             d->unk0 = -1;
                             g_btlfxEnv->targets = NULL;
                             btlcam_endEffect();
-                            func_800E3C58();
+                            btlfx_initParticleSystem();
                             btlfx_stopAllSounds();
                             btlfx_initSounds();
                             func_80054F80();

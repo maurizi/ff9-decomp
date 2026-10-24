@@ -180,7 +180,7 @@ s32 fx_1bf_0_op80(s32 mode, Fx1bf0Work *work, Unk800F78A4 *env, Unk80100C78Entry
         work->unk0 = 5;
         work->unk4 = 0;
         D_801E8830 = env;
-        ex->func_800E3C58();
+        ex->btlfx_initParticleSystem();
         ex->btlfx_initEffModels(D_801EA5FC, 5);
         work->unk8.vx = D_801E86BC.vx;
         work->unk8.vy = D_801E86BC.vy;

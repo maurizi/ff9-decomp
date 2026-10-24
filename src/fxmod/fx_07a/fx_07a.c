@@ -131,7 +131,7 @@ s32 fx_07a_op80(s32 mode, Fx07aWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
             work->unk0[6] = 0x1C;
             break;
         case 12:
-            ex->func_800E3CEC(ex->btlfx_getFileData(entry->unk8, 6), (s32)&D_801E9B94);
+            ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->unk8, 6), (s32)&D_801E9B94);
             break;
         case 24:
             work->unk0[13] = 0x10;
@@ -139,7 +139,7 @@ s32 fx_07a_op80(s32 mode, Fx07aWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
             break;
         case 36:
             work->unk0[7] = 4;
-            p = ex->func_800E3CEC(ex->btlfx_getFileData(entry->unk8, 9), (s32)&D_801E9B94);
+            p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->unk8, 9), (s32)&D_801E9B94);
             if (p != NULL) {
                 p->unk22 = ex->func_800E7CC4(0, 0x80);
             }

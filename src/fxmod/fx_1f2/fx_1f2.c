@@ -228,16 +228,16 @@ s32 fx_1f2_op80(s32 mode, Fx1f2Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
         case 0:
             work->unk2C = 0x20;
             work->unk4C = 0x5F;
-            p = work->unk84 = ex->func_800E3CEC(ex->btlfx_getFileData(entry->unk8, 0xB), (s32)&work->unk120);
+            p = work->unk84 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->unk8, 0xB), (s32)&work->unk120);
             if (p != NULL) {
                 p->unk22 = 0x200;
             }
             break;
         case 0x2D:
             work->unk54 = 0x32;
-            ex->func_800E3CEC(ex->btlfx_getFileData(entry->unk8, 0xD), (s32)&work->unk110[0]);
-            ex->func_800E3CEC(ex->btlfx_getFileData(entry->unk8, 0xE), (s32)&work->unk110[1]);
-            p = work->unk80 = ex->func_800E3CEC(ex->btlfx_getFileData(entry->unk8, 0xA), (s32)&work->unk120);
+            ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->unk8, 0xD), (s32)&work->unk110[0]);
+            ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->unk8, 0xE), (s32)&work->unk110[1]);
+            p = work->unk80 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->unk8, 0xA), (s32)&work->unk120);
             if (p != NULL) {
                 p->unk22 = 0x200;
             }
@@ -268,11 +268,11 @@ s32 fx_1f2_op80(s32 mode, Fx1f2Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
             work->unk108.vx = 0;
             work->unk108.vy = 0x4C8;
             work->unk108.vz = 0;
-            p = ex->func_800E3CEC(ex->btlfx_getFileData(entry->unk8, 3), (s32)&work->unk100);
+            p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->unk8, 3), (s32)&work->unk100);
             if (p != NULL) {
                 p->unk22 = 0x200;
             }
-            p = ex->func_800E3CEC(ex->btlfx_getFileData(entry->unk8, 4), (s32)&work->unk108);
+            p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->unk8, 4), (s32)&work->unk108);
             if (p != NULL) {
                 p->unk22 = 0x200;
             }
@@ -283,17 +283,17 @@ s32 fx_1f2_op80(s32 mode, Fx1f2Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
             work->unk38 = 0x200;
             break;
         case 0xFF:
-            p = ex->func_800E3CEC(ex->btlfx_getFileData(entry->unk8, 5), (s32)&D_801EA650);
+            p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->unk8, 5), (s32)&D_801EA650);
             if (p != NULL) {
                 p->unk22 = 0x200;
             }
             break;
         case 0x11F:
-            p = work->unk88 = ex->func_800E3CEC(ex->btlfx_getFileData(entry->unk8, 0x10), (s32)&D_801EA660);
+            p = work->unk88 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->unk8, 0x10), (s32)&D_801EA660);
             if (p != NULL) {
                 p->unk22 = 0x400;
             }
-            p = work->unk8C = ex->func_800E3CEC(ex->btlfx_getFileData(entry->unk8, 0x11), (s32)&D_801EA660);
+            p = work->unk8C = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->unk8, 0x11), (s32)&D_801EA660);
             if (p != NULL) {
                 p->unk22 = 0x200;
             }
@@ -310,8 +310,8 @@ s32 fx_1f2_op80(s32 mode, Fx1f2Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
             D_801EA600.vx = 0;
             D_801EA600.vy = -0x4FD;
             D_801EA600.vz = 0;
-            ex->func_800E3D20((s32)work->unk88, (s32)&D_801EA650);
-            ex->func_800E3D20((s32)work->unk8C, (s32)&D_801EA650);
+            ex->btlfx_moveEmitterTo((s32)work->unk88, (s32)&D_801EA650);
+            ex->btlfx_moveEmitterTo((s32)work->unk8C, (s32)&D_801EA650);
             work->unk18 = 0x10;
             work->unk50 = 0x68;
             work->unk24 = 0;
@@ -333,8 +333,8 @@ s32 fx_1f2_op80(s32 mode, Fx1f2Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
             break;
         case 0x19F:
             work->unk18 = 0x10;
-            ex->func_800E3D54(work->unk8C);
-            ex->func_800E3D54(work->unk88);
+            ex->btlfx_stopEmitter(work->unk8C);
+            ex->btlfx_stopEmitter(work->unk88);
             break;
         case 0x1A7:
             work->unk58 = 0x18;

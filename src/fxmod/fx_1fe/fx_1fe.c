@@ -182,7 +182,7 @@ s32 fx_1fe_op81(s32 mode, Fx1feWork81 *work, Unk800F78A4 *env, Unk80100C78Entry 
                 BTLFX_COPY_SVEC(&work->unk10, &D_801E88F8);
                 work->unk10.vy -= 0x1000;
                 work->unk10.vz -= 0x200;
-                p = ex->func_800E3CEC(ex->btlfx_getFileData(entry->unk8, 0x10), (s32)&work->unk10);
+                p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->unk8, 0x10), (s32)&work->unk10);
                 if (p != NULL) {
                     p->unk14 = D_801E8960;
                     p->unk12 = 0x40;
@@ -211,7 +211,7 @@ s32 fx_1fe_op81(s32 mode, Fx1feWork81 *work, Unk800F78A4 *env, Unk80100C78Entry 
             break;
         case 2:
             if (frame == 0) {
-                p = ex->func_800E3CEC(ex->btlfx_getFileData(entry->unk8, 0x11), (s32)&D_801E88F8);
+                p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->unk8, 0x11), (s32)&D_801E88F8);
                 if (p != NULL) {
                     p->unk22 = 0x100;
                 }
@@ -219,14 +219,14 @@ s32 fx_1fe_op81(s32 mode, Fx1feWork81 *work, Unk800F78A4 *env, Unk80100C78Entry 
                 work->unk10.vy = D_801E88F8.vy;
                 work->unk10.vz = D_801E88F8.vz;
                 work->unk10.vy -= 0x200;
-                p = ex->func_800E3CEC(ex->btlfx_getFileData(entry->unk8, 0x15), (s32)&work->unk10);
+                p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->unk8, 0x15), (s32)&work->unk10);
                 if (p != NULL) {
                     p->unk22 = 0x100;
                 }
             }
             if (frame == 7) {
-                ex->func_800E3C58();
-                p = ex->func_800E3CEC(ex->btlfx_getFileData(entry->unk8, 0x12), (s32)&D_801E88F8);
+                ex->btlfx_initParticleSystem();
+                p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->unk8, 0x12), (s32)&D_801E88F8);
                 if (p != NULL) {
                     p->unk22 = 0x100;
                 }
@@ -328,7 +328,7 @@ s32 fx_1fe_op81(s32 mode, Fx1feWork81 *work, Unk800F78A4 *env, Unk80100C78Entry 
                 work->unk10.vy = D_801E8900.vy;
                 work->unk10.vz = D_801E8900.vz - 0x100;
                 work->unk10.vy -= 0x400;
-                p = ex->func_800E3CEC(ex->btlfx_getFileData(entry->unk8, 0x16), (s32)&work->unk10);
+                p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->unk8, 0x16), (s32)&work->unk10);
                 if (p != NULL) {
                     p->unk22 = 0x10;
                 }
@@ -338,7 +338,7 @@ s32 fx_1fe_op81(s32 mode, Fx1feWork81 *work, Unk800F78A4 *env, Unk80100C78Entry 
                 work->unk18.vy = D_801E8900.vy;
                 work->unk18.vz = D_801E8900.vz;
                 work->unk10.vz -= 0x100;
-                p = ex->func_800E3CEC(ex->btlfx_getFileData(entry->unk8, 0x17), (s32)&work->unk18);
+                p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->unk8, 0x17), (s32)&work->unk18);
                 if (p != NULL) {
                     p->unk22 = 0x10;
                 }

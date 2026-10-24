@@ -99,7 +99,7 @@ s32 fx_079_op80(s32 mode, Fx079Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
             work->unk0[6] = 0x10;
             break;
         case 16:
-            D_801E8990 = ex->func_800E3CEC(ex->btlfx_getFileData(entry->unk8, 2), (s32)&D_801E8994);
+            D_801E8990 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->unk8, 2), (s32)&D_801E8994);
             break;
         case 24:
             work->unk0[8] = 4;
@@ -109,7 +109,7 @@ s32 fx_079_op80(s32 mode, Fx079Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
             work->unk0[7] = 0x10;
             break;
         case 40:
-            p = ex->func_800E3CEC(ex->btlfx_getFileData(entry->unk8, 1), (s32)&D_801E8964);
+            p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->unk8, 1), (s32)&D_801E8964);
             if (p != NULL) {
                 p->unk22 = ex->func_800E7CC4(0, 0x80);
             }
@@ -185,7 +185,7 @@ s32 fx_079_op80(s32 mode, Fx079Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
         if (D_801E8990 != NULL && D_801E8990->unk30 == -1) {
             D_801E8990 = NULL;
         }
-        ex->func_800E3D20((s32)D_801E8990, (s32)&D_801E899C);
+        ex->btlfx_moveEmitterTo((s32)D_801E8990, (s32)&D_801E899C);
         if (work->unk0[1] != 0) {
             work->unk94.vx = D_801E8984.vx;
             work->unk94.vy = D_801E8984.vy;
