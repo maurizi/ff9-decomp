@@ -1,16 +1,29 @@
 #ifndef OVL_15_H
 #define OVL_15_H
 
-/* Declarations local to overlay 0x15 (Blackjack minigame, loaded at
- * 0x800A7000). Addresses in the overlay range mean different things in
+/* Declarations local to overlay 0x15 (the ending: last movie, "The End" screen and the Blackjack
+ * minigame its secret code opens; loaded at 0x800A7000). Addresses in the overlay range mean different things in
  * different overlays, so they live here, not in ff9.h. */
 #include "ff9.h"
 
 /* main exe: candidates for ff9.h */
+/* Menu sounds for snd_playSe: main's menuList_up/down play SE_CURSOR on a move, menus play it on a pick too,
+ * SE_CANCEL on Circle backing out, SE_BUZZER when an action is refused. */
+#ifndef SE_CURSOR
+#define SE_CURSOR 0x67
+#define SE_BUZZER 0x66
+#define SE_CANCEL 0x65
+#endif
+#define SE_GAME_START 0xC18 /* the secret code accepted (ovl_14: New Game on the title) */
+/* g_gameState->unkB: one bit per disc of the game found in the drive (bit 0 = disc 1), 0xFF = no disc read.
+ * The ending plays its movie only with disc 4 in (see ovl_14.h). */
+#define DISC_NONE 0xFF
+#define DISC_1    1
+#define DISC_4    8
 void func_800552B8(s32);
 s32 func_8002B9B8(u8 *); /* text width */
 void func_8001D9CC(s32, s32, s32, s32, s32);
-s32 cd_findFile(s32);
+s32 cd_findFile(char *);
 void func_80022ED4(s32);
 s32 func_80055290(void *);
 void func_800553EC(s32, s32, s32, s32);
@@ -39,67 +52,194 @@ void mbg_shutdown(void);
 void mbg_setEndCallback(void (*)(void));
 void mbg_getLastFrame(void);
 void mbg_streamSetBaseSector(s32);
+/* movie table (ovl_64's g_mbgMovieLists): list 4 is the disc 4 movies */
 typedef struct {
-    s32 unk0;
-    u8 pad4[0x14 - 4];
-} Unk8019DC5CSub;
+    char *path; /* movie file name */
+    s32 pad4[4];
+} MbgMovie; /* 0x14 bytes */
 typedef struct {
-    s32 unk0;
-    Unk8019DC5CSub *unk4;
-} Unk8019DC5C;
-extern Unk8019DC5C g_mbgMovieLists[];
+    s16 count;
+    s16 pad2;
+    MbgMovie *movies;
+} MbgMovieList;
+extern MbgMovieList g_mbgMovieLists[];
 
 /* ---- this overlay ---- */
 
-/* Card shoe: 6 decks of 52 cards. Card ids are rank * 4 + suit. */
-typedef struct {
-    u16 unk0; /* flags: 2 = shuffled, 4 = needs reshuffle */
-    u16 unk2; /* next card */
-    u8 unk4[6 * 52];
-} Ovl15Shoe;
+/* g_endingState: the states of ending_main */
+enum {
+    ENDING_MOVIE,     /* FMV059 */
+    ENDING_MESSAGES,  /* never reached: ending_messages, then FMV060 */
+    ENDING_MOVIE2,
+    ENDING_THE_END,   /* the end screen, until the secret code */
+    ENDING_BLACKJACK,
+    ENDING_DONE       /* never reached */
+};
+#define ENDING_MOVIE_LIST 4    /* ovl_64 movie list of disc 4 */
+#define ENDING_FMV059     0x12 /* its entries: \ENDING\FMV059.STR, FMV060.STR */
+#define ENDING_FMV060     0x13
 
-/* A blackjack hand. */
+/* g_movieFlags (ending_playMovie), the bits of ovl_14's opening movie loop */
+#define MOVIE_NO_SCENES 0x1
+#define MOVIE_NO_FADE   0x2  /* don't run the screen fade (func_80032098) */
+#define MOVIE_NO_OT     0x4  /* ending_movieSwap only puts the draw env, the decoder draws */
+#define MOVIE_PLAYING   0x10
+#define MOVIE_DONE      0x80 /* movie over (ending_movieOnEnd, or no movie) */
+/* g_movieState */
+enum { MOVIE_ST_START, MOVIE_ST_OPEN, MOVIE_ST_PLAY, MOVIE_ST_END, MOVIE_ST_DONE };
+
+/* db ids of the music the ending plays through ending_soundCmd, and of its sound bank (ending_loadMusic) */
+#define ENDING_MUSIC      0x7009C
+#define ENDING_MUSIC_BANK 0x901F3
+
+/* g_theEndState: ending_theEnd */
+enum {
+    THEEND_ST_START,
+    THEEND_ST_SHOW,     /* the image, waiting for the code */
+    THEEND_ST_FADE,     /* code entered and Start held: fade out */
+    THEEND_ST_UNUSED,   /* never set; would make ending_theEnd return 0 */
+    THEEND_ST_BLACKJACK
+};
+#define ENDING_CODE_LEN 16 /* buttons in g_endingSecretCode */
+
+/* g_messagesState: ending_messages shows pages 1-4 with a pause (5) after each */
+enum { MESSAGES_ST_START, MESSAGES_ST_PAUSE = 5, MESSAGES_ST_DONE };
+
+/* Module W ("scene" table, the same source as ovl_14's): one SceneMode per scene id. */
 typedef struct {
-    u16 unk0; /* flags: 1 = soft ace, 2 = bust, 8 = ace, 0x10 = hole card */
-    u16 unk2; /* card count */
-    u16 unk4; /* hand value */
-    u16 unk6; /* value with aces as 1 */
-    s16 unk8; /* screen x */
-    s16 unkA; /* screen y */
-    s32 unkC[22]; /* cards */
-} Ovl15Hand;
+    void (*init)(void);   /* scene_init calls all of them */
+    void (*enter)(void);
+    void (*update)(void); /* scene_update, every frame */
+    void (*leave)(void);
+} SceneMode;
+
+/* scene ids of the ending, index into g_sceneModes */
+enum {
+    SCENE_NONE,
+    SCENE_MENU,      /* ending_menu*: never entered */
+    SCENE_BJ_WAGER,  /* set the wager */
+    SCENE_BJ_ACTION, /* Stand / Hit / Double / Split */
+    SCENE_CHOSEN,    /* no scene: the menus set it when Cross picked, bj_main waits for it */
+    SCENE_COUNT
+};
+extern SceneMode g_sceneModes[SCENE_COUNT];
 
 typedef struct {
-    void (*unk0)(void); /* init */
-    void (*unk4)(void); /* enter */
-    void (*unk8)(void); /* update */
-    void (*unkC)(void); /* leave */
-} Ovl15Mode;
-extern Ovl15Mode g_sceneModes[5];
-
-typedef struct {
-    u8 unk0; /* current mode, index into g_sceneModes */
+    u8 cur; /* scene id */
     u8 unk1;
     u8 unk2;
-    u8 unk3;
-} Ovl15ModeState;
-extern Ovl15ModeState g_scene;
+    u8 fadeScreen; /* ending_menuStartFadeIn: 0 fades the menu in, 1 shows it and fades the screen in */
+} SceneState;
+extern SceneState g_scene;
 
-/* Per-mode screen state (g_bjAction, g_bjWagerMenu, g_endingMenu). */
+/* State of a menu scene (g_bjAction, g_bjWagerMenu, g_endingMenu), one template. */
 typedef struct {
     u8 unk0;
-    u8 unk1;
-    u8 unk2;
-    u8 unk3; /* done */
+    u8 shown;    /* input and cursor on */
+    u8 fadingIn; /* no input while set */
+    u8 cursor;
     u8 pad4[2];
     u8 unk6;
     u8 unk7;
-    s32 unk8; /* frame counter */
+    s32 fadeFrames; /* the fade-in ends after SCENE_MENU_FADE_FRAMES */
     s32 unkC;
-} Ovl15Screen;
-extern Ovl15Screen g_bjAction;
-extern Ovl15Screen g_bjWagerMenu;
-extern Ovl15Screen g_endingMenu;
+} SceneMenu;
+#define SCENE_MENU_FADE_FRAMES 48
+extern SceneMenu g_bjAction;
+extern SceneMenu g_bjWagerMenu;
+extern SceneMenu g_endingMenu;
+
+/* ---- Blackjack ---- */
+
+/* Cards are rank * 4 + suit. Ranks 0-8 are the 2 to the 10 (worth rank + 2), 9-11 the face cards
+ * (bj_drawCard draws picture rank - 9), 12 the ace. */
+#define BJ_RANK_JACK 9
+#define BJ_RANK_ACE  12
+#define BJ_ACE_VALUE 11 /* an ace counts 11, or BJ_ACE_LOW when that busts */
+#define BJ_ACE_LOW   1
+#define BJ_TEN_VALUE 10 /* face cards */
+#define BJ_BLACKJACK 21
+#define BJ_BUST      22 /* hand values from here are bust */
+#define BJ_DEALER_STAND 17 /* the dealer draws below this */
+
+#define BJ_DECKS     6
+#define BJ_DECK_SIZE 52
+#define BJ_SHOE_SIZE (BJ_DECKS * BJ_DECK_SIZE)
+#define BJ_SHUFFLE_PASSES 5
+#define BJ_CUT_CARD  249 /* dealing card 249 flags the shoe for the end of the session */
+
+/* BjShoe.flags */
+#define BJ_SHOE_FRESH     0x1 /* filled in order (bj_shoeInit) */
+#define BJ_SHOE_SHUFFLED  0x2
+#define BJ_SHOE_CUT       0x4 /* the cut card came out: bj_main ends after this round */
+
+/* The card shoe. */
+typedef struct {
+    u16 flags; /* BJ_SHOE_* */
+    u16 next;  /* next card to deal */
+    u8 cards[BJ_SHOE_SIZE];
+} BjShoe;
+
+/* BjHand.flags */
+#define BJ_HAND_SOFT       0x1  /* an ace counts BJ_ACE_VALUE */
+#define BJ_HAND_BUST       0x2
+#define BJ_HAND_DOUBLED    0x4  /* pays twice the wager, ends after one card */
+#define BJ_HAND_SPLIT_ACES 0x8  /* ends after one card */
+#define BJ_HAND_HOLE       0x10 /* the dealer's second card is drawn face down */
+
+#define BJ_HAND_MAX 22
+
+/* A blackjack hand. */
+typedef struct {
+    u16 flags;     /* BJ_HAND_* */
+    u16 count;     /* cards */
+    u16 value;     /* hand value */
+    u16 hardValue; /* value with aces as 1 */
+    s16 x;         /* screen position */
+    s16 y;
+    s32 cards[BJ_HAND_MAX];
+} BjHand;
+
+/* bj_handOptions */
+#define BJ_CAN_SPLIT  0x1 /* a pair */
+#define BJ_CAN_DOUBLE 0x2 /* two cards */
+
+/* bj_actionGetCursor: the player's move */
+enum { BJ_STAND, BJ_HIT, BJ_DOUBLE, BJ_SPLIT };
+
+/* bj_drawResult banners */
+enum { BJ_RESULT_WIN, BJ_RESULT_LOSE, BJ_RESULT_PUSH };
+#define BJ_SE_LOSE 0x6B
+#define BJ_SE_WIN  0x6C
+
+#define BJ_MIN_BET  10 /* also the wager step; a bankroll below it ends the session */
+#define BJ_MAX_BET  1000
+#define BJ_BANKROLL 1000 /* g_bjBankroll's start, and the refill when it fell below BJ_MIN_BET */
+
+/* Where cards are dealt from (bj_drawShoe) */
+#define BJ_SHOE_X 0xF0
+#define BJ_SHOE_Y 0xA
+#define BJ_DEAL_FRAMES 30 /* frames a dealt card flies */
+#define BJ_RESULT_FRAMES 0x94
+
+/* g_bjState: bj_main */
+enum {
+    BJ_ST_START,
+    BJ_ST_SHUFFLE,  /* new shoe, shuffle animation */
+    BJ_ST_BET,      /* SCENE_BJ_WAGER */
+    BJ_ST_DEAL,     /* two cards each, then blackjack checks */
+    BJ_ST_PLAYER,   /* SCENE_BJ_ACTION, the current hand */
+    BJ_ST_DEALER,   /* the dealer draws to BJ_DEALER_STAND */
+    BJ_ST_SETTLE_SPLIT, /* both split hands against the dealer */
+    BJ_ST_BUST,     /* shakes the busted hand */
+    BJ_ST_BLACKJACK, /* pays 3:2, or loses to the dealer's */
+    BJ_ST_WIN,
+    BJ_ST_PUSH,
+    BJ_ST_LOSE,
+    BJ_ST_NEXT,     /* next round, or BJ_ST_END when the cut card came out */
+    BJ_ST_END,      /* fade out; Start or a bankroll below BJ_MIN_BET also get here */
+    BJ_ST_DONE
+};
 
 typedef struct {
     s16 x;
@@ -115,7 +255,7 @@ extern u16 g_movieFlags; /* flags */
 extern s32 g_movieFrame; /* frame counter */
 extern u16 g_movieFlagQueue[2][4]; /* queued flag sets / clears */
 extern s32 g_bjBankroll; /* bankroll */
-extern s16 D_800AE430;
+extern s16 D_800AE430; /* cleared by ending_theEndInit, never read */
 extern u16 g_endingImage;
 extern u8 g_bjCanDouble; /* double allowed */
 extern s32 g_bjWager; /* bet */
@@ -124,12 +264,12 @@ extern u32 g_theEndState;
 extern SPRT g_theEndSprites[2][2];
 extern DR_TPAGE g_theEndTpages[2][2];
 extern s32 g_endingCodePos;
-extern u32 g_endingSecretCode[16];
+extern u32 g_endingSecretCode[ENDING_CODE_LEN]; /* pad bits, in order */
 s32 ending_theEndInit(void);
 s32 ending_theEndExit(void);
 void ending_theEndClearOt(void);
 void ending_theEndSwap(void);
-extern s16 D_800AE4A8;
+extern s16 D_800AE4A8; /* cleared by ending_messagesInit and ending_messagesSwap, never read */
 extern s32 g_messagesFrame;
 extern u8 *g_messagesPrim; /* next free primitive */
 extern u32 g_movieState; /* FMV state */
@@ -148,11 +288,11 @@ extern DR_TPAGE g_bjTpages[2][16];
 typedef struct {
     s32 x;
     s32 y;
-} Ovl15Pip;
-extern Ovl15Pip g_bjPips[][10];
+} BjPip;
+extern BjPip g_bjPips[][10];
 
 s32 bj_drawCardBack(s32, s32);
-s32 bj_handInit(Ovl15Hand *, s16, s16);
+s32 bj_handInit(BjHand *, s16, s16);
 s32 bj_drawCard(s32, s32, s32, s32);
 void bj_actionInput(void);
 void ending_movieClearOt(void);
@@ -208,8 +348,8 @@ u8 *ending_getMessage(u8 *, s32);
 void *ending_drawText(s32, s32, u32 *, u8 *, void *);
 s32 ending_textWidth(u8 *);
 void *ending_drawGlyph(s32, s32, u32 *, u32, s32 *, SprtWords *);
-s32 bj_splitHand(Ovl15Hand *, Ovl15Hand *);
-s32 bj_isBlackjack(Ovl15Hand *);
+s32 bj_splitHand(BjHand *, BjHand *);
+s32 bj_isBlackjack(BjHand *);
 
 /* bj_main's format strings and UI labels (INCLUDE_RODATA, never C literals) */
 extern const char g_bjFmt2d[]; /* "%2d" */
@@ -222,12 +362,12 @@ extern const char g_bjStrDouble[]; /* "Double" */
 extern const char g_bjStrSplit[]; /* "Split" */
 
 /* used by bj_main */
-extern Ovl15Shoe g_bjShoe;
-s32 bj_shoeInit(Ovl15Shoe *);
-s32 bj_shoeShuffle(Ovl15Shoe *);
-s32 bj_dealCard(Ovl15Hand *, Ovl15Shoe *);
-s32 bj_handOptions(Ovl15Hand *);
-s32 bj_drawHand(Ovl15Hand *, s32, s32, s32);
+extern BjShoe g_bjShoe;
+s32 bj_shoeInit(BjShoe *);
+s32 bj_shoeShuffle(BjShoe *);
+s32 bj_dealCard(BjHand *, BjShoe *);
+s32 bj_handOptions(BjHand *);
+s32 bj_drawHand(BjHand *, s32, s32, s32);
 void scene_update(void);
 s32 bj_drawResult(s32, s32, s32, s32);
 void bj_clearOt(void);

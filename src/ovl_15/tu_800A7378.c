@@ -83,7 +83,7 @@ s32 ending_movieInit(s32 arg0, s32 arg1) {
     FlushCache();
     ExitCriticalSection();
     if (g_gameState->unkB != 0xFF && (g_gameState->unkB & 8)) {
-        h = cd_findFile(g_mbgMovieLists[arg0].unk4[arg1].unk0);
+        h = cd_findFile(g_mbgMovieLists[arg0].movies[arg1].path);
         func_80022ED4(h);
         while (cd_getState() != 0) {
         }
@@ -442,21 +442,21 @@ s32 bj_drawShoe(s32 x, s32 y) {
     return 0;
 }
 
-s32 bj_shoeInit(Ovl15Shoe *shoe) {
+s32 bj_shoeInit(BjShoe *shoe) {
     s32 i;
     s32 j;
 
     for (i = 0; i < 6; i++) {
         for (j = 0; j < 52; j++) {
-            shoe->unk4[i * 52 + j] = j;
+            shoe->cards[i * 52 + j] = j;
         }
     }
-    shoe->unk0 = 1;
-    shoe->unk2 = 0;
+    shoe->flags = 1;
+    shoe->next = 0;
     return 0;
 }
 
-s32 bj_shoeShuffle(Ovl15Shoe *shoe) {
+s32 bj_shoeShuffle(BjShoe *shoe) {
     s32 pass;
     s32 n;
     s32 i;
@@ -469,108 +469,108 @@ s32 bj_shoeShuffle(Ovl15Shoe *shoe) {
                 rand_refill();
             }
             j = (*g_randPtr++ * 2) % n;
-            t = shoe->unk4[i];
-            shoe->unk4[i] = shoe->unk4[i + j];
-            shoe->unk4[i + j] = t;
+            t = shoe->cards[i];
+            shoe->cards[i] = shoe->cards[i + j];
+            shoe->cards[i + j] = t;
         }
     }
-    shoe->unk0 = (shoe->unk0 & ~1) | 2;
+    shoe->flags = (shoe->flags & ~1) | 2;
     return 0;
 }
 
-s32 bj_dealCard(Ovl15Hand *hand, Ovl15Shoe *shoe) {
-    s32 card = shoe->unk4[shoe->unk2++];
+s32 bj_dealCard(BjHand *hand, BjShoe *shoe) {
+    s32 card = shoe->cards[shoe->next++];
     s32 rank;
 
-    hand->unkC[hand->unk2++] = card;
+    hand->cards[hand->count++] = card;
     rank = card / 4;
     if (rank < 9) {
-        hand->unk4 += rank + 2;
-        hand->unk6 += rank + 2;
+        hand->value += rank + 2;
+        hand->hardValue += rank + 2;
     } else if (rank == 12) {
-        hand->unk4 += 11;
-        hand->unk6 += 1;
-        hand->unk0 |= 1;
+        hand->value += 11;
+        hand->hardValue += 1;
+        hand->flags |= 1;
     } else {
-        hand->unk4 += 10;
-        hand->unk6 += 10;
+        hand->value += 10;
+        hand->hardValue += 10;
     }
-    if (hand->unk4 >= 22) {
-        if (hand->unk0 & 1) {
-            hand->unk4 -= 10;
-            if (hand->unk6 >= hand->unk4) {
-                hand->unk0 &= ~1;
+    if (hand->value >= 22) {
+        if (hand->flags & 1) {
+            hand->value -= 10;
+            if (hand->hardValue >= hand->value) {
+                hand->flags &= ~1;
             }
         } else {
-            hand->unk0 |= 2;
+            hand->flags |= 2;
         }
     }
-    if (shoe->unk2 >= 249) {
-        shoe->unk0 |= 4;
+    if (shoe->next >= 249) {
+        shoe->flags |= 4;
     }
     return 0;
 }
 
-s32 bj_handInit(Ovl15Hand *hand, s16 x, s16 y) {
+s32 bj_handInit(BjHand *hand, s16 x, s16 y) {
     s32 i;
 
-    hand->unk0 = 0;
-    hand->unk2 = 0;
-    hand->unk4 = 0;
-    hand->unk6 = 0;
-    hand->unk8 = x;
-    hand->unkA = y;
+    hand->flags = 0;
+    hand->count = 0;
+    hand->value = 0;
+    hand->hardValue = 0;
+    hand->x = x;
+    hand->y = y;
     for (i = 21; i >= 0; i--) {
-        hand->unkC[i] = 0;
+        hand->cards[i] = 0;
     }
     return 0;
 }
 
-s32 bj_splitHand(Ovl15Hand *a, Ovl15Hand *b) {
+s32 bj_splitHand(BjHand *a, BjHand *b) {
     s32 r;
     u16 v;
 
-    a->unk2 = 1;
-    a->unk8 = 0x1E;
-    a->unkA = 0x8C;
+    a->count = 1;
+    a->x = 0x1E;
+    a->y = 0x8C;
     bj_handInit(b, 0x1E, 0x60);
-    b->unk2 = 1;
-    b->unkC[0] = a->unkC[1];
-    r = (u32)a->unkC[1] >> 2;
+    b->count = 1;
+    b->cards[0] = a->cards[1];
+    r = (u32)a->cards[1] >> 2;
     if (r < 9) {
         v = r + 2;
     } else if (r == 12) {
-        a->unk4 = 11;
-        a->unk6 = 1;
-        a->unk0 |= 9;
-        b->unk4 = 11;
-        b->unk6 = 1;
-        b->unk0 |= 9;
+        a->value = 11;
+        a->hardValue = 1;
+        a->flags |= 9;
+        b->value = 11;
+        b->hardValue = 1;
+        b->flags |= 9;
         goto end;
     } else {
         v = 10;
     }
-    a->unk4 = v;
-    a->unk6 = v;
-    b->unk4 = v;
-    b->unk6 = v;
+    a->value = v;
+    a->hardValue = v;
+    b->value = v;
+    b->hardValue = v;
 end:
     return 0;
 }
 
-s32 bj_handOptions(Ovl15Hand *hand) {
+s32 bj_handOptions(BjHand *hand) {
     s32 ret = 0;
 
-    if (hand->unk2 == 2) {
+    if (hand->count == 2) {
         ret = 2;
-        if ((u32)hand->unkC[0] >> 2 == (u32)hand->unkC[1] >> 2) {
+        if ((u32)hand->cards[0] >> 2 == (u32)hand->cards[1] >> 2) {
             ret = 3;
         }
     }
     return ret;
 }
 
-s32 bj_drawHand(Ovl15Hand *hand, s32 dx, s32 dy, s32 count) {
+s32 bj_drawHand(BjHand *hand, s32 dx, s32 dy, s32 count) {
     s32 first;
     s32 n;
     s32 i;
@@ -583,17 +583,17 @@ s32 bj_drawHand(Ovl15Hand *hand, s32 dx, s32 dy, s32 count) {
     }
     n = count - 1;
     if (count < 0) {
-        n = hand->unk2 - 1;
-        if (hand->unk2 == 0) {
+        n = hand->count - 1;
+        if (hand->count == 0) {
             return 1;
         }
     }
     first = 1;
-    x = hand->unk8 + dx + n * 13;
-    y = hand->unkA + dy;
+    x = hand->x + dx + n * 13;
+    y = hand->y + dy;
     for (i = n; i >= 0; i--) {
-        card = hand->unkC[i];
-        if (first && (hand->unk0 & 0x10) && n == 1) {
+        card = hand->cards[i];
+        if (first && (hand->flags & 0x10) && n == 1) {
             bj_drawCardBack(x, y);
             first = 0;
         } else {
@@ -604,8 +604,8 @@ s32 bj_drawHand(Ovl15Hand *hand, s32 dx, s32 dy, s32 count) {
     return 0;
 }
 
-s32 bj_isBlackjack(Ovl15Hand *h) {
-    if (h->unk4 == 0x15 && h->unk2 == 2) {
+s32 bj_isBlackjack(BjHand *h) {
+    if (h->value == 0x15 && h->count == 2) {
         return 1;
     }
     return 0;
@@ -632,11 +632,11 @@ s32 bj_main(void) {
     char buf[16];
     s32 ofsX[3];
     s32 ofsY[3];
-    Ovl15Hand dealer;
-    Ovl15Hand player;
-    Ovl15Hand split;
+    BjHand dealer;
+    BjHand player;
+    BjHand split;
     s32 t;
-    Ovl15Hand *cur;
+    BjHand *cur;
     s32 nsplit;
     s32 cnt;
     s32 i;
@@ -645,7 +645,7 @@ s32 bj_main(void) {
     s32 y;
     s32 dx;
     s32 dy;
-    Ovl15Hand *p1;
+    BjHand *p1;
     s32 r;
     s32 a;
     s32 c;
@@ -683,7 +683,7 @@ s32 bj_main(void) {
                 func_800320B8(1, 1, 0x3C, 0);
                 i = 0;
             } else if (t != 0) {
-                c = g_bjShoe.unk4[i];
+                c = g_bjShoe.cards[i];
                 bj_drawCard(c >> 2, c & 3, 0xF0, 0xA);
                 i += 4;
                 t--;
@@ -704,7 +704,7 @@ s32 bj_main(void) {
             break;
         case 3:
             if (t == -1) {
-                dealer.unk0 |= 0x10;
+                dealer.flags |= 0x10;
                 bj_dealCard(p1, &g_bjShoe);
                 bj_dealCard(&dealer, &g_bjShoe);
                 bj_dealCard(p1, &g_bjShoe);
@@ -714,8 +714,8 @@ s32 bj_main(void) {
                 x = 0xF00000;
                 y = 0xA0000;
                 t = 0x78;
-                dx = (((player.unk8 - 0xF0) << 8) / 30) << 8;
-                dy = (((player.unkA - 0xA) << 8) / 30) << 8;
+                dx = (((player.x - 0xF0) << 8) / 30) << 8;
+                dy = (((player.y - 0xA) << 8) / 30) << 8;
             } else if (t > 0) {
                 bj_drawCardBack(x >> 16, y >> 16);
                 bj_drawHand(&dealer, 0, 0, i >= 2);
@@ -735,16 +735,16 @@ s32 bj_main(void) {
                     y = 0xA0000;
                     switch (i) {
                     case 1:
-                        dx = (((dealer.unk8 - 0xF0) << 8) / 30) << 8;
-                        dy = (((dealer.unkA - 0xA) << 8) / 30) << 8;
+                        dx = (((dealer.x - 0xF0) << 8) / 30) << 8;
+                        dy = (((dealer.y - 0xA) << 8) / 30) << 8;
                         break;
                     case 2:
-                        dx = (((player.unk8 - 0xE3) << 8) / 30) << 8;
-                        dy = (((player.unkA - 0xA) << 8) / 30) << 8;
+                        dx = (((player.x - 0xE3) << 8) / 30) << 8;
+                        dy = (((player.y - 0xA) << 8) / 30) << 8;
                         break;
                     case 3:
-                        dx = (((dealer.unk8 - 0xE3) << 8) / 30) << 8;
-                        dy = (((dealer.unkA - 0xA) << 8) / 30) << 8;
+                        dx = (((dealer.x - 0xE3) << 8) / 30) << 8;
+                        dy = (((dealer.y - 0xA) << 8) / 30) << 8;
                         break;
                     }
                 }
@@ -791,34 +791,34 @@ s32 bj_main(void) {
                             x = 0xF00000;
                             y = 0xA0000;
                             t = 30;
-                            dx = (((cur->unk8 + cur->unk2 * 13 - 0xF0) << 8) / 30) << 8;
-                            dy = (((cur->unkA - 0xA) << 8) / 30) << 8;
+                            dx = (((cur->x + cur->count * 13 - 0xF0) << 8) / 30) << 8;
+                            dy = (((cur->y - 0xA) << 8) / 30) << 8;
                             nsplit = 2;
                         } else {
                             g_bjState = 5;
-                            dealer.unk0 &= ~0x10;
+                            dealer.flags &= ~0x10;
                         }
                     } else if (bj_actionGetCursor() == 1) {
                         x = 0xF00000;
                         y = 0xA0000;
                         t = 30;
-                        dx = (((cur->unk8 + cur->unk2 * 13 - 0xF0) << 8) / 30) << 8;
-                        dy = (((cur->unkA - 0xA) << 8) / 30) << 8;
+                        dx = (((cur->x + cur->count * 13 - 0xF0) << 8) / 30) << 8;
+                        dy = (((cur->y - 0xA) << 8) / 30) << 8;
                     } else if (bj_actionGetCursor() == 2) {
                         x = 0xF00000;
                         y = 0xA0000;
                         t = 30;
-                        cur->unk0 |= 4;
-                        dx = (((cur->unk8 + cur->unk2 * 13 - 0xF0) << 8) / 30) << 8;
-                        dy = (((cur->unkA - 0xA) << 8) / 30) << 8;
+                        cur->flags |= 4;
+                        dx = (((cur->x + cur->count * 13 - 0xF0) << 8) / 30) << 8;
+                        dy = (((cur->y - 0xA) << 8) / 30) << 8;
                     } else if (bj_actionGetCursor() == 3) {
                         if (bj_handOptions(cur) & 1) {
                             bj_splitHand(&player, &split);
                             x = 0xF00000;
                             y = 0xA0000;
                             t = 30;
-                            dx = (((cur->unk8 + cur->unk2 * 13 - 0xF0) << 8) / 30) << 8;
-                            dy = (((cur->unkA - 0xA) << 8) / 30) << 8;
+                            dx = (((cur->x + cur->count * 13 - 0xF0) << 8) / 30) << 8;
+                            dy = (((cur->y - 0xA) << 8) / 30) << 8;
                             nsplit = 1;
                         }
                     }
@@ -831,9 +831,9 @@ s32 bj_main(void) {
             } else {
                 bj_dealCard(cur, &g_bjShoe);
                 t = -1;
-                if (cur->unk4 >= 22) {
+                if (cur->value >= 22) {
                     g_bjState = 7;
-                } else if (cur->unk4 == 21) {
+                } else if (cur->value == 21) {
                     if (nsplit == 1) {
                         cur = &split;
                         g_bjState = 4;
@@ -841,13 +841,13 @@ s32 bj_main(void) {
                         x = 0xF00000;
                         y = 0xA0000;
                         t = 30;
-                        dx = (((cur->unk8 + cur->unk2 * 13 - 0xF0) << 8) / 30) << 8;
-                        dy = (((cur->unkA - 0xA) << 8) / 30) << 8;
+                        dx = (((cur->x + cur->count * 13 - 0xF0) << 8) / 30) << 8;
+                        dy = (((cur->y - 0xA) << 8) / 30) << 8;
                         nsplit = 2;
                     } else {
                         g_bjState = 5;
                     }
-                } else if (cur->unk0 & 8) {
+                } else if (cur->flags & 8) {
                     if (nsplit == 1) {
                         cur = &split;
                         g_bjState = 4;
@@ -855,13 +855,13 @@ s32 bj_main(void) {
                         x = 0xF00000;
                         y = 0xA0000;
                         t = 30;
-                        dx = (((cur->unk8 + cur->unk2 * 13 - 0xF0) << 8) / 30) << 8;
-                        dy = (((cur->unkA - 0xA) << 8) / 30) << 8;
+                        dx = (((cur->x + cur->count * 13 - 0xF0) << 8) / 30) << 8;
+                        dy = (((cur->y - 0xA) << 8) / 30) << 8;
                         nsplit = 2;
                     } else {
                         g_bjState = 5;
                     }
-                } else if (cur->unk0 & 4) {
+                } else if (cur->flags & 4) {
                     if (nsplit == 1) {
                         cur = &split;
                         g_bjState = 4;
@@ -869,8 +869,8 @@ s32 bj_main(void) {
                         x = 0xF00000;
                         y = 0xA0000;
                         t = 30;
-                        dx = (((cur->unk8 + cur->unk2 * 13 - 0xF0) << 8) / 30) << 8;
-                        dy = (((cur->unkA - 0xA) << 8) / 30) << 8;
+                        dx = (((cur->x + cur->count * 13 - 0xF0) << 8) / 30) << 8;
+                        dy = (((cur->y - 0xA) << 8) / 30) << 8;
                         nsplit = 2;
                     } else {
                         g_bjState = 5;
@@ -883,20 +883,20 @@ s32 bj_main(void) {
             break;
         case 5:
             if (t == -1) {
-                if (dealer.unk4 < 17) {
+                if (dealer.value < 17) {
                     x = 0xF00000;
                     y = 0xA0000;
                     t = 30;
                     dy = 0;
-                    dx = (((dealer.unk2 * 13 - 0xD2) << 8) / 30) << 8;
-                } else if (dealer.unk0 & 2) {
+                    dx = (((dealer.count * 13 - 0xD2) << 8) / 30) << 8;
+                } else if (dealer.flags & 2) {
                     g_bjState = 7;
                 } else if (nsplit > 0) {
                     nsplit = 1;
                     g_bjState = 6;
-                } else if (player.unk4 == dealer.unk4) {
+                } else if (player.value == dealer.value) {
                     g_bjState = 10;
-                } else if (dealer.unk4 < player.unk4) {
+                } else if (dealer.value < player.value) {
                     g_bjState = 9;
                 } else {
                     g_bjState = 11;
@@ -913,7 +913,7 @@ s32 bj_main(void) {
             }
             break;
         case 7:
-            if (cur->unk4 >= 22) {
+            if (cur->value >= 22) {
                 i = 1;
                 if (nsplit == 2) {
                     i = 2;
@@ -948,13 +948,13 @@ s32 bj_main(void) {
                     x = 0xF00000;
                     y = 0xA0000;
                     t = 30;
-                    dx = (((cur->unk8 + cur->unk2 * 13 - 0xF0) << 8) / 30) << 8;
-                    dy = (((cur->unkA - 0xA) << 8) / 30) << 8;
+                    dx = (((cur->x + cur->count * 13 - 0xF0) << 8) / 30) << 8;
+                    dy = (((cur->y - 0xA) << 8) / 30) << 8;
                     nsplit = 2;
                 } else if (nsplit == 2) {
                     nsplit = 1;
                     g_bjState = 6;
-                } else if (cur->unk4 >= 22) {
+                } else if (cur->value >= 22) {
                     g_bjState = 11;
                 } else {
                     g_bjState = 9;
@@ -964,42 +964,42 @@ s32 bj_main(void) {
         case 6:
             if (t == -1) {
                 if (nsplit == 1) {
-                    if (player.unk4 >= 22) {
+                    if (player.value >= 22) {
                         res = 1;
                         snd_playSe(0x6B);
-                        g_bjBankroll -= (player.unk0 & 4) ? g_bjWager * 2 : g_bjWager;
-                    } else if (dealer.unk4 >= 22 || dealer.unk4 < player.unk4) {
+                        g_bjBankroll -= (player.flags & 4) ? g_bjWager * 2 : g_bjWager;
+                    } else if (dealer.value >= 22 || dealer.value < player.value) {
                         res = 0;
                         snd_playSe(0x6C);
-                        g_bjBankroll += (player.unk0 & 4) ? g_bjWager * 2 : g_bjWager;
+                        g_bjBankroll += (player.flags & 4) ? g_bjWager * 2 : g_bjWager;
                     } else {
                         res = 2;
-                        if (player.unk4 != dealer.unk4) {
+                        if (player.value != dealer.value) {
                             res = 1;
                             snd_playSe(0x6B);
-                            g_bjBankroll -= (player.unk0 & 4) ? g_bjWager * 2 : g_bjWager;
+                            g_bjBankroll -= (player.flags & 4) ? g_bjWager * 2 : g_bjWager;
                         }
                     }
                 } else {
-                    if (split.unk4 >= 22) {
+                    if (split.value >= 22) {
                         res = 1;
                         snd_playSe(0x6B);
-                        g_bjBankroll -= (split.unk0 & 4) ? g_bjWager * 2 : g_bjWager;
-                    } else if (dealer.unk4 >= 22 || dealer.unk4 < split.unk4) {
+                        g_bjBankroll -= (split.flags & 4) ? g_bjWager * 2 : g_bjWager;
+                    } else if (dealer.value >= 22 || dealer.value < split.value) {
                         res = 0;
                         snd_playSe(0x6C);
-                        g_bjBankroll += (split.unk0 & 4) ? g_bjWager * 2 : g_bjWager;
+                        g_bjBankroll += (split.flags & 4) ? g_bjWager * 2 : g_bjWager;
                     } else {
                         res = 2;
-                        if (split.unk4 != dealer.unk4) {
+                        if (split.value != dealer.value) {
                             res = 1;
                             snd_playSe(0x6B);
-                            g_bjBankroll -= (split.unk0 & 4) ? g_bjWager * 2 : g_bjWager;
+                            g_bjBankroll -= (split.flags & 4) ? g_bjWager * 2 : g_bjWager;
                         }
                     }
                 }
                 t = 0x94;
-                dealer.unk0 &= ~0x10;
+                dealer.flags &= ~0x10;
             } else if (t > 0) {
                 s32 a;
 
@@ -1010,7 +1010,7 @@ s32 bj_main(void) {
                 } else {
                     a = (0x94 - t) * 16;
                 }
-                bj_drawResult(res, a, 0x6C, nsplit == 1 ? player.unkA + 12 : split.unkA + 12);
+                bj_drawResult(res, a, 0x6C, nsplit == 1 ? player.y + 12 : split.y + 12);
                 t--;
             } else {
                 t = -1;
@@ -1023,7 +1023,7 @@ s32 bj_main(void) {
             break;
         case 8:
             if (t == -1) {
-                if (player.unk4 > dealer.unk4) {
+                if (player.value > dealer.value) {
                     snd_playSe(0x6C);
                     g_bjBankroll += g_bjWager + (g_bjWager >> 1);
                 } else {
@@ -1031,7 +1031,7 @@ s32 bj_main(void) {
                     g_bjBankroll -= g_bjWager;
                 }
                 t = 0x94;
-                dealer.unk0 &= ~0x10;
+                dealer.flags &= ~0x10;
             } else if (t > 0) {
                 s32 a;
 
@@ -1042,10 +1042,10 @@ s32 bj_main(void) {
                 } else {
                     a = (0x94 - t) * 16;
                 }
-                if (player.unk4 > dealer.unk4) {
-                    bj_drawResult(0, a, 0x6C, player.unkA + 12);
+                if (player.value > dealer.value) {
+                    bj_drawResult(0, a, 0x6C, player.y + 12);
                 } else {
-                    bj_drawResult(1, a, 0x6C, player.unkA + 12);
+                    bj_drawResult(1, a, 0x6C, player.y + 12);
                 }
                 t--;
             } else {
@@ -1058,10 +1058,10 @@ s32 bj_main(void) {
                 snd_playSe(0x6C);
                 {
                     s32 *pb = &g_bjBankroll;
-                    *pb = g_bjBankroll + ((player.unk0 & 4) ? g_bjWager * 2 : g_bjWager);
+                    *pb = g_bjBankroll + ((player.flags & 4) ? g_bjWager * 2 : g_bjWager);
                 }
                 t = 0x94;
-                dealer.unk0 &= ~0x10;
+                dealer.flags &= ~0x10;
             } else if (t > 0) {
                 s32 a;
 
@@ -1072,7 +1072,7 @@ s32 bj_main(void) {
                 } else {
                     a = (0x94 - t) * 16;
                 }
-                bj_drawResult(0, a, 0x6C, player.unkA + 12);
+                bj_drawResult(0, a, 0x6C, player.y + 12);
                 t--;
             } else {
                 t = -1;
@@ -1082,7 +1082,7 @@ s32 bj_main(void) {
         case 10:
             if (t == -1) {
                 t = 0x94;
-                dealer.unk0 &= ~0x10;
+                dealer.flags &= ~0x10;
             } else if (t > 0) {
                 s32 a;
 
@@ -1093,7 +1093,7 @@ s32 bj_main(void) {
                 } else {
                     a = (0x94 - t) * 16;
                 }
-                bj_drawResult(2, a, 0x6C, player.unkA + 12);
+                bj_drawResult(2, a, 0x6C, player.y + 12);
                 t--;
             } else {
                 t = -1;
@@ -1103,9 +1103,9 @@ s32 bj_main(void) {
         case 11:
             if (t == -1) {
                 snd_playSe(0x6B);
-                g_bjBankroll -= (player.unk0 & 4) ? g_bjWager * 2 : g_bjWager;
+                g_bjBankroll -= (player.flags & 4) ? g_bjWager * 2 : g_bjWager;
                 t = 0x94;
-                dealer.unk0 &= ~0x10;
+                dealer.flags &= ~0x10;
             } else if (t > 0) {
                 s32 a;
 
@@ -1116,7 +1116,7 @@ s32 bj_main(void) {
                 } else {
                     a = (0x94 - t) * 16;
                 }
-                bj_drawResult(1, a, 0x6C, player.unkA + 12);
+                bj_drawResult(1, a, 0x6C, player.y + 12);
                 t--;
             } else {
                 t = -1;
@@ -1124,7 +1124,7 @@ s32 bj_main(void) {
             }
             break;
         case 12:
-            if (g_bjShoe.unk0 & 4) {
+            if (g_bjShoe.flags & 4) {
                 t = -1;
                 g_bjState = 13;
             } else {
@@ -1154,38 +1154,38 @@ s32 bj_main(void) {
         }
         if (g_bjState >= 4) {
             bj_drawHand(&dealer, ofsX[0], ofsY[0], -1);
-            if (dealer.unk2 != 0 && g_bjState >= 5) {
-                sprintf(buf, g_bjFmt2d, dealer.unk4);
-                ui_drawSmallDigits(10, dealer.unkA + 0x20, 0x10, buf, 0);
+            if (dealer.count != 0 && g_bjState >= 5) {
+                sprintf(buf, g_bjFmt2d, dealer.value);
+                ui_drawSmallDigits(10, dealer.y + 0x20, 0x10, buf, 0);
             }
             if (nsplit == 2) {
                 bj_drawHand(&split, ofsX[2], ofsY[2], -1);
-                if (split.unk2 != 0) {
-                    sprintf(buf, g_bjFmt2d, split.unk4);
-                    ui_drawSmallDigits(10, split.unkA + 0x20, 0x10, buf, 0);
-                    if (split.unk4 != 21 && (split.unk0 & 1)) {
-                        sprintf(buf, g_bjFmt2d, split.unk6);
-                        ui_drawSmallDigits(10, split.unkA + 0x2A, 0x10, buf, 5);
+                if (split.count != 0) {
+                    sprintf(buf, g_bjFmt2d, split.value);
+                    ui_drawSmallDigits(10, split.y + 0x20, 0x10, buf, 0);
+                    if (split.value != 21 && (split.flags & 1)) {
+                        sprintf(buf, g_bjFmt2d, split.hardValue);
+                        ui_drawSmallDigits(10, split.y + 0x2A, 0x10, buf, 5);
                     }
                 }
             }
             bj_drawHand(&player, ofsX[1], ofsY[1], -1);
-            if (player.unk2 != 0) {
-                sprintf(buf, g_bjFmt2d, player.unk4);
-                ui_drawSmallDigits(10, player.unkA + 0x20, 0x10, buf, 0);
-                if (player.unk4 != 21 && (player.unk0 & 1)) {
-                    sprintf(buf, g_bjFmt2d, player.unk6);
-                    ui_drawSmallDigits(10, player.unkA + 0x2A, 0x10, buf, 5);
+            if (player.count != 0) {
+                sprintf(buf, g_bjFmt2d, player.value);
+                ui_drawSmallDigits(10, player.y + 0x20, 0x10, buf, 0);
+                if (player.value != 21 && (player.flags & 1)) {
+                    sprintf(buf, g_bjFmt2d, player.hardValue);
+                    ui_drawSmallDigits(10, player.y + 0x2A, 0x10, buf, 5);
                 }
             }
             if (nsplit == 1) {
                 bj_drawHand(&split, ofsX[2], ofsY[2], -1);
-                if (split.unk2 != 0) {
-                    sprintf(buf, g_bjFmt2d, split.unk4);
-                    ui_drawSmallDigits(10, split.unkA + 0x20, 0x10, buf, 0);
-                    if (split.unk4 != 21 && (split.unk0 & 1)) {
-                        sprintf(buf, g_bjFmt2d, split.unk6);
-                        ui_drawSmallDigits(10, split.unkA + 0x2A, 0x10, buf, 5);
+                if (split.count != 0) {
+                    sprintf(buf, g_bjFmt2d, split.value);
+                    ui_drawSmallDigits(10, split.y + 0x20, 0x10, buf, 0);
+                    if (split.value != 21 && (split.flags & 1)) {
+                        sprintf(buf, g_bjFmt2d, split.hardValue);
+                        ui_drawSmallDigits(10, split.y + 0x2A, 0x10, buf, 5);
                     }
                 }
             }
