@@ -2482,10 +2482,13 @@ s32 func_800E0168(Pool30 *);
 s32 btlfx_distance(SVECTOR *, SVECTOR *);
 s32 btlfx_randCentered(s32);
 void btlfx_randRotation(SVECTOR *);
-void func_800DFE4C(Pool30Entry *, s32, s16 *, SVECTOR *);
-void func_800DFE54(Pool30Entry *, s32, s16 *, SVECTOR *);
-void func_800DFF5C(Pool30Entry *, s32, s16 *, SVECTOR *);
-void func_800DFF64(Pool30Entry *, s32, s16 *, SVECTOR *);
+void btlfx_stepParticle(Pool30Entry *, s32, s16 *, SVECTOR *);
+void btlfx_stepParticleAltDrag(Pool30Entry *, s32, s16 *, SVECTOR *);
+void btlfx_stepParticleNoDrag(Pool30Entry *, s32, s16 *, SVECTOR *);
+void btlfx_stepParticleNoDragAlt(Pool30Entry *, s32, s16 *, SVECTOR *);
+/* Effect modules only (export slot 0x008): the modules' own particle records. */
+void btlfx_stepModuleParticle(void *, s32, SVECTOR *, SVECTOR *);
+extern u16 g_btlfxRotPhase;
 void btlfx_drawAnimQuads(u8 *, SVECTOR *, SVECTOR *, s32, s32, s32, s32);
 void btlfx_drawSprites(u8 *, SVECTOR *, SVECTOR *, s32, s32, s32, s32);
 /* effect frame table (func_800D2938) */
@@ -2878,6 +2881,9 @@ void func_800C9D1C(Unk800C9D1C *, Battle4880 *);
 s32 btl_rollAmbush(u32 *);
 void btlbg_setBrightness(s32);
 s32 btlbg_getBrightness(void);
+/* Data words inside .text (hand-written asm), stored by btlbg_setBrightness / btlbg_setOtShift. */
+extern s32 g_btlbgBrightness;
+extern s32 g_btlbgOtShift;
 UnkPair *btlui_getItemListEntry(s32);
 Battle1330 *func_800C9600(Battle11C020 *);
 u32 func_800AAEF0(u32, u16 *, u16 *, u16 **, s32 *);

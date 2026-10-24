@@ -167,7 +167,7 @@ s32 func_801E8048(s32 mode, Fx101Spark *p, Unk800F78A4 *env, Unk80100C78Entry *e
         bias[0] = 0;
         bias[1] = 0;
         pt->pad = 0x14;
-        ex->func_800E0014((Pool6CEntry *)p, 0, (SVECTOR *)bias, pt);
+        ex->btlfx_stepModuleParticle((Pool6CEntry *)p, 0, (SVECTOR *)bias, pt);
         if (p->unk16 == 0) {
             ((Fx101Bolt *)((s32 *)p->unk18 - 4))->unk0 = ((Fx101Bolt *)((s32 *)p->unk18 - 4))->unk2 = 0xB;
             ((Fx101Bolt *)((s32 *)p->unk18 - 4))->unk1 = 0;

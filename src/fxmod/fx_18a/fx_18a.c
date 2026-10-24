@@ -211,7 +211,7 @@ s32 func_801E844C(s32 mode, Fx18aSpark *e, Unk800F78A4 *env, Unk80100C78Entry *e
         zero[0] = 0;
         zero[1] = 0;
         pt->pad = 0x1A;
-        ex->func_800E0014((Pool6CEntry *)e, 0, (SVECTOR *)zero, pt);
+        ex->btlfx_stepModuleParticle((Pool6CEntry *)e, 0, (SVECTOR *)zero, pt);
         if (e->unk16 == 0) {
             TRAIL(e)->unk0 = TRAIL(e)->unk2 = 0xE;
             TRAIL(e)->unk1 = 0;

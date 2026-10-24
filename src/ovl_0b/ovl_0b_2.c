@@ -5057,15 +5057,15 @@ u32 func_800DF940(BtlUnit9C *arg0, u16 arg1, s32 arg2) {
     return arg2 + n * 2;
 }
 
-INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/ovl_0b_2", func_800DFE4C);
+INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/ovl_0b_2", btlfx_stepParticle);
 
-INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/ovl_0b_2", func_800DFE54);
+INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/ovl_0b_2", btlfx_stepParticleAltDrag);
 
-INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/ovl_0b_2", func_800DFF5C);
+INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/ovl_0b_2", btlfx_stepParticleNoDrag);
 
-INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/ovl_0b_2", func_800DFF64);
+INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/ovl_0b_2", btlfx_stepParticleNoDragAlt);
 
-INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/ovl_0b_2", func_800E0014);
+INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/ovl_0b_2", btlfx_stepModuleParticle);
 
 void func_800E00DC(s32 arg0, Pool30Entry *arg1, Pool30 *arg2) {
     s32 i = 0;
@@ -5191,7 +5191,7 @@ s32 func_800E0168(Pool30 *pool) {
         }
         switch (m->unk0) {
         case 0:
-            func_800DFE4C(e, rs, rp, &pos);
+            btlfx_stepParticle(e, rs, rp, &pos);
             if (m->unk18 != 0) {
                 e->unkC += btlfx_randCentered(m->unk1A);
                 e->unkE += btlfx_randCentered(m->unk1C);
@@ -5221,7 +5221,7 @@ s32 func_800E0168(Pool30 *pool) {
             }
             break;
         case 1:
-            func_800DFE54(e, rs, rp, &pos);
+            btlfx_stepParticleAltDrag(e, rs, rp, &pos);
             e->unk24.s.x += e->unk20;
             e->unk24.s.y += e->unk22;
             v.vx = e->unk24.s.x;
@@ -5240,14 +5240,14 @@ s32 func_800E0168(Pool30 *pool) {
             func_800CFD78((s16 *)&pos, (s16 *)&v, rs, (s16 *)&pos);
             break;
         case 2:
-            func_800DFF5C(e, rs, rp, &pos);
+            btlfx_stepParticleNoDrag(e, rs, rp, &pos);
             e->unkC += e->unkE;
             e->unk20 += e->unk22;
             e->unk24.s.x += e->unk24.s.y;
             func_800D044C(&pos, (s32)&pos, e->unk20 >> 2, &e->unk28, e->unk24.s.x >> 2, e->unkC);
             break;
         case 3:
-            func_800DFF64(e, rs, rp, &pos);
+            btlfx_stepParticleNoDragAlt(e, rs, rp, &pos);
             e->unkC += e->unk20;
             e->unkE += e->unk22;
             v.vx = e->unk24.s.y + math_sin(e->unkC);
@@ -5266,7 +5266,7 @@ s32 func_800E0168(Pool30 *pool) {
             func_800CFD78((s16 *)&pos, (s16 *)&v, rs, (s16 *)&pos);
             break;
         case 4:
-            func_800DFF5C(e, rs, rp, &pos);
+            btlfx_stepParticleNoDrag(e, rs, rp, &pos);
             e->unk24.w += e->unk22;
             e->unkC += e->unkE;
             switch (m->unkE) {
@@ -5283,7 +5283,7 @@ s32 func_800E0168(Pool30 *pool) {
             func_800D044C(&pos, (s32)&pos, e->unk24.w >> 6, &e->unk28, rs, e->unkC);
             break;
         case 5:
-            func_800DFE4C(e, rs, rp, &pos);
+            btlfx_stepParticle(e, rs, rp, &pos);
             if (m->unk18 != 0) {
                 e->unkC += btlfx_randCentered(m->unk1A);
                 e->unkE += btlfx_randCentered(m->unk1C);

@@ -10,3 +10,8 @@ hand-written (no ABI, global registers) or don't match yet. They are **not** byt
 - Where the original uses a custom register convention, the file's header comment documents it, and the C
   signature given is the one C callers should use.
 - Each body is checked against the asm by reading; where a routine was also checked in the emulator, it says so.
+- Files that compile with the PS1 compiler can be run against the original with `tools/equiv.py`
+  (`tools/docker.sh python3 tools/equiv.py src_equiv/ovl_0b/math.c --bin ovl_0b --func btlfx_distance`). It compares
+  the whole GTE register file, so register-level GTE code uses `GTE_MTC2`/`GTE_CMD`/… (`src_equiv.h`) and writes
+  the same registers with the same words as the original. `--end` covers an entry that jumps into the next
+  function's body, `--arg-mask` bounds a loop-count argument.

@@ -121,7 +121,7 @@ void func_801E7B84(void) {
                     loc[j].vz = t->unk0[j].vz - c.vz;
                 }
                 if (s->unk18 >= 8) {
-                    ex->func_800E0014((Pool6CEntry *)s, -10, (SVECTOR *)bias, &out);
+                    ex->btlfx_stepModuleParticle((Pool6CEntry *)s, -10, (SVECTOR *)bias, &out);
                     if (s->unkC.vy < 0 && s->unk0.vy < 0) {
                         s->unkC.vy = -(s->unkC.vy >> 1);
                         if (s->unkC.vy < 0x3C) {
@@ -301,7 +301,7 @@ void func_801E82D8(void) {
                 loc[j].vy = t->unk0[j].vy - c.vy;
                 loc[j].vz = t->unk0[j].vz - c.vz;
             }
-            ex->func_800E0014((Pool6CEntry *)s, -10, (SVECTOR *)bias, &out);
+            ex->btlfx_stepModuleParticle((Pool6CEntry *)s, -10, (SVECTOR *)bias, &out);
             if (s->unkC.vy < 0 && s->unk0.vy < 0) {
                 func_801E77FC(&c);
                 goto kill;

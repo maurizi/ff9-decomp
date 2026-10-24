@@ -134,7 +134,7 @@ void func_801E7ACC(void) {
             v[2].vx = (*f)[2].vx - c.vx;
             v[2].vy = (*f)[2].vy - c.vy;
             v[2].vz = (*f)[2].vz - c.vz;
-            ex->func_800E0014((Pool6CEntry *)p, 0, (SVECTOR *)zero, &out);
+            ex->btlfx_stepModuleParticle((Pool6CEntry *)p, 0, (SVECTOR *)zero, &out);
             ex->btlfx_aimAngles((s16 *)&out, (s16 *)&dir, (s16 *)&ang);
             ang.vx = 0;
             ang.vy += 0x400;

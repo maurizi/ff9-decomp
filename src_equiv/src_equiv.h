@@ -37,6 +37,21 @@
     : : "r"(r0) : "memory")
 #endif
 
+/* Register-level GTE access for routines that hand-written asm drives one register at a time (ovl_0b's battle
+ * effect emitters keep results in GTE registers between commands). `reg` is a literal register number (data
+ * registers 0-31 for MTC2/MFC2/LWC2/SWC2, control registers 0-31 for CTC2/CFC2), `op` the literal 32-bit COP2
+ * command word (e.g. 0x4A280030 = RTPT). The values written are the full 32-bit words the original moves, also
+ * where the register only keeps 16 bits (lwc2 of a word with padding, say), so that a model of the GTE that
+ * hashes the whole register file (tools/equiv.py) sees the same state. PS1 encodings; a port with a software
+ * GTE defines its own. */
+#ifndef GTE_MTC2
+#define GTE_MTC2(reg, v) __asm__ volatile("mtc2\t%0, $" #reg : : "r"((u32)(v)))
+#define GTE_CTC2(reg, v) __asm__ volatile("ctc2\t%0, $" #reg : : "r"((u32)(v)))
+#define GTE_MFC2(reg) ({ u32 _gte_v; __asm__ volatile("mfc2\t%0, $" #reg ";nop" : "=r"(_gte_v)); _gte_v; })
+#define GTE_CFC2(reg) ({ u32 _gte_v; __asm__ volatile("cfc2\t%0, $" #reg ";nop" : "=r"(_gte_v)); _gte_v; })
+#define GTE_CMD(op) __asm__ volatile(".word\t0;.word\t0;.word\t" #op)
+#endif
+
 /* The 1 KB scratchpad RAM. */
 #ifndef SCRATCHPAD
 #define SCRATCHPAD ((u8 *)0x1F800000)

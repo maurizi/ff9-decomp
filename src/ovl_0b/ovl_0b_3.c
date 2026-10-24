@@ -2284,9 +2284,11 @@ INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/ovl_0b_3", btlbg_setBrightness);
 
 INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/ovl_0b_3", btlbg_getBrightness);
 
-INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/ovl_0b_3", func_800CF588);
+INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/ovl_0b_3", g_btlbgBrightness);
 
 INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/ovl_0b_3", btlbg_setOtShift);
+
+INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/ovl_0b_3", g_btlbgOtShift);
 
 INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/ovl_0b_3", btlfx_pushTrailPoint);
 

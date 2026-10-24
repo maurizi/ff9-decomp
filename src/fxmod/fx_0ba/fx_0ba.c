@@ -1287,7 +1287,7 @@ s32 func_801EBFB8(s32 mode, Fx0baPart *p, Unk800F78A4 *env, Unk80100C78Entry *en
             c >>= 1;
         }
         ((s16 *)q)[3] = (0x16 - frame * 4) >> 1;
-        fn = ex->func_800E0014;
+        fn = ex->btlfx_stepModuleParticle;
         bias[0] = 0;
         bias[1] = 0;
         fn((Pool6CEntry *)p, 0, (SVECTOR *)bias, (SVECTOR *)q);

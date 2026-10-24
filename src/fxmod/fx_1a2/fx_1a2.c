@@ -145,7 +145,7 @@ void func_801E7D68(void) {
                     v[k].vz = t->unk0[k].vz - c.vz;
                 }
                 if (p->unk18 >= 3) {
-                    ex->func_800E0014((Pool6CEntry *)p, -3, &bias, &out);
+                    ex->btlfx_stepModuleParticle((Pool6CEntry *)p, -3, &bias, &out);
                     if (p->unkE < 0 && p->unk4 < 0) {
                         p->unkE = -(p->unkE >> 1);
                     }

@@ -44,7 +44,7 @@ s32 func_801E77EC(s32 mode, Fx0a9Part *part, Unk800F78A4 *env, Unk80100C78Entry 
         c = ex->math_cos(frame << 7);
         ((s32 *)&v)[0] = 0;
         ((s32 *)&v)[1] = 0;
-        ex->func_800E0014((Pool6CEntry *)part, 0, &v, pt);
+        ex->btlfx_stepModuleParticle((Pool6CEntry *)part, 0, &v, pt);
         if (part->unk16 == 0) {
             ((Fx0a9Bolt *)(part->unk18 - 2))->unk0 = ((Fx0a9Bolt *)(part->unk18 - 2))->unk2 = 0xA;
             ((Fx0a9Bolt *)(part->unk18 - 2))->unk1 = 0;

@@ -390,6 +390,11 @@ def main():
     ap.add_argument("--ignore", action="append", default=[],
                     help="START-END (hex) memory range whose writes aren't compared (e.g. a hand-written "
                          "routine's register save area in the scratchpad)")
+    ap.add_argument("--arg-mask", action="append", default=[], metavar="N:MASK",
+                    help="AND argument N (0-3) with MASK (hex) in every trial, e.g. 1:0xF for a loop count that "
+                         "would otherwise run into the step limit")
+    ap.add_argument("--end", help="run the original up to this address (hex) instead of the next symbol: for an "
+                                  "entry that jumps into a following function's body (shared tails)")
     ap.add_argument("--uncovered", action="store_true", help="list the original's instructions no trial ran")
     ap.add_argument("-v", action="store_true", help="print the first difference in full")
     a = ap.parse_args()
@@ -411,6 +416,8 @@ def main():
     oaddr, osize = index[func]
     # nm sizes can stop short of a function's switch cases; run up to the next function instead
     osize = max(osize, min((v for v, _ in index.values() if v > oaddr), default=oaddr + osize) - oaddr)
+    if a.end:
+        osize = int(a.end, 16) - oaddr
 
     # Only rodata + text are real; .data/.bss read as random like everything else.
     images = []
@@ -470,6 +477,9 @@ def main():
             args = [mem.base_word(0x7FF00000 + 4 * i) for i in range(4)]
             for i in range(n_args, 4):
                 args[i] = 0xA0000000 + i
+            for am in a.arg_mask:
+                i, msk = am.split(":")
+                args[int(i)] &= int(msk, 16)
             lo, hi = (oaddr, oaddr + osize) if which == "orig" else (dlo, dhi)
             cpu = Cpu(mem, lo, hi, protos, names, t, args, stops if which == "draft" else ())
             try:

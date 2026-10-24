@@ -214,7 +214,7 @@ void func_801E7E94(s32 i) {
             d2.vx = t->unk10.vx - c.vx;
             d2.vy = t->unk10.vy - c.vy;
             d2.vz = t->unk10.vz - c.vz;
-            ex->func_800E0014((Pool6CEntry *)p, 0, &zero, &a);
+            ex->btlfx_stepModuleParticle((Pool6CEntry *)p, 0, &zero, &a);
             *(s32 *)&rot = *(s32 *)&p->unk14;
             ex->func_800316D8(&rot, &m);
             ex->ScaleMatrix(&m, &sv);

@@ -58,7 +58,7 @@ void func_801E78E8(void) {
                     loc[j].vy = t->unk0[j].vy - c.vy;
                     loc[j].vz = t->unk0[j].vz - c.vz;
                 }
-                ex->func_800E0014((Pool6CEntry *)s, -8, (SVECTOR *)bias, &out);
+                ex->btlfx_stepModuleParticle((Pool6CEntry *)s, -8, (SVECTOR *)bias, &out);
                 rot.vx = s->unk14;
                 rot.vy = s->unk16;
                 rot.vz = 0;
