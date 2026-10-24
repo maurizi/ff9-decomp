@@ -152,8 +152,7 @@ extern u8 D_801F3428[];
 extern s16 D_801F893C[3][2]; /* cursor x per column */
 extern u8 D_801EE648[];
 extern s32 D_801F8918[]; /* text index per party slot */
-/* func_800355DC; this overlay's link only has the D_ name */
-void D_800355DC(void);
+void help_nullHandler(void);
 void func_801EED10(void);
 void func_801F0DDC(void);
 s32 func_801EFB8C(s32, Character *);
@@ -206,7 +205,7 @@ extern u8 D_801F4734[];
 extern u8 D_801F67D4[];
 extern u8 D_801F3478[];
 extern u8 D_801FBD84[];
-extern u8 *D_80077DF0; /* = D_80077DE8.unk8, referenced by its own name */
+extern u8 *D_80077DF0; /* = g_help.text, referenced by its own name */
 typedef struct {
     u8 pad0[4];
     u16 unk4;

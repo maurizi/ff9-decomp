@@ -19,9 +19,9 @@ void func_801EE440(void) {
     r->y = 0x26;
     r->w = 0x12C;
     r->h = 0xB6;
-    D_801F120C.unk5 = func_80035648();
-    func_80035658(0);
-    func_8003556C(func_801EFB08);
+    D_801F120C.unk5 = help_getAtCursor();
+    help_setAtCursor(0);
+    help_setHandler(func_801EFB08);
     D_801F120C.unk80[0] = (u8 *)0x801F5F00;
     D_801F120C.unk80[1] = (u8 *)0x801F9F00;
     D_801F120C.unk7C = D_801F120C.unk80[g_gameState->unk1C->unk8];
@@ -332,8 +332,8 @@ void func_801EF69C(void) {
 
 void func_801EF6CC(void) {
     D_80077E53 = D_801F120C.unk2;
-    func_80035658(D_801F120C.unk5);
-    func_8003556C(NULL);
+    help_setAtCursor(D_801F120C.unk5);
+    help_setHandler(NULL);
 }
 
 void func_801EF708(void) {
@@ -440,10 +440,10 @@ void func_801EFAF8(void) {
 void func_801EFB08(void) {
     s32 i;
 
-    D_80077DE8.unk0 = 0xD8;
-    D_80077DE8.unk2 = 0x52;
-    D_80077DE8.unk4 = 0xA;
-    D_80077DE8.unk8 = text_get(0);
+    g_help.x = 0xD8;
+    g_help.y = 0x52;
+    g_help.otz = 0xA;
+    g_help.text = text_get(0);
     for (i = 0; i < 7; i++) {
         func_8002BE44(i, D_801F11CC[i].unk0);
         func_8002BE74(i, D_801F11CC[i].unk4);

@@ -2692,7 +2692,7 @@ typedef struct {
 } Unk800AE844; /* streamed file read */
 
 extern s16 D_800F51EC;
-s32 func_8001CA70(s32);
+s32 db_getSize(s32);
 void func_80056048(s32, s32, s32);
 
 /* btl_soundCmd: sound/streamed music command handler */

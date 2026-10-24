@@ -29,7 +29,7 @@ void game_reset(void) {
     ClearImage(&r, 0, 0, 0);
     DrawSync(0);
     cd_resetState();
-    func_8001C6F8();
+    db_init();
     pad_resetState();
     D_80073690.mask = 0x19;
     D_80073690.mode = 0x100;
@@ -56,7 +56,7 @@ void game_reset(void) {
 
 void game_shutdown(void) {
     func_80055210();
-    func_8001C718();
+    db_quit();
     D_80067950++;
 }
 

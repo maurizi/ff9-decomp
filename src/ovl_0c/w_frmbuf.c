@@ -167,7 +167,7 @@ void func_800C26EC(void) {
     func_800C3954(&D_800D3FA0.unk5E0[0], &D_800D3FA0.unk5E0[1], &D_800D3FA0.unk5E0[2], t, t);
     func_800B9774();
     func_800B8664();
-    func_8001CCB4((u8)D_800D3FA0.unk5E0[0].unk30[1].unk4[0], (u8)D_800D3FA0.unk5E0[0].unk30[1].unk4[1],
+    game_setClearColor((u8)D_800D3FA0.unk5E0[0].unk30[1].unk4[0], (u8)D_800D3FA0.unk5E0[0].unk30[1].unk4[1],
                   (u8)D_800D3FA0.unk5E0[0].unk30[1].unk4[2]);
 }
 

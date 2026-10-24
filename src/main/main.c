@@ -9,7 +9,7 @@ void game_main(void) {
     game_initLibraries();
     for (;;) {
         game_reset();
-        func_8001CB08();
+        game_initState();
         func_8001D268();
         do {
             switch (g_gameState->mode) {
@@ -48,7 +48,7 @@ void game_main(void) {
             }
         } while (!(g_gameState->unk0 & 1));
         func_8001D30C();
-        func_8001CB70();
+        game_quitState();
         game_shutdown();
     }
 }
@@ -61,7 +61,7 @@ void game_loadModeOverlay(s32 mode) {
     PreloadEntry *e;
     FileEntry *f;
 
-    func_8001CFB4();
+    game_freezeScreen();
     id = files[mode] | 0x10000;
     while (cd_getState()) {
     }

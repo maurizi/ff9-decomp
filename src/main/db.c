@@ -1,13 +1,13 @@
 #include "ff9.h"
 
-void func_8001C6F8(void) {
-    func_8001C720();
+void db_init(void) {
+    db_clear();
 }
 
-void func_8001C718(void) {
+void db_quit(void) {
 }
 
-void func_8001C720(void) {
+void db_clear(void) {
     s32 i;
 
     g_dbList.unk0 = 0;
@@ -135,7 +135,7 @@ s32 db_lookup(s32 arg0, s32 mode, s32 key, s32 arg3) {
     return -1;
 }
 
-s32 func_8001CA70(s32 a) {
+s32 db_getSize(s32 a) {
     u8 *p = (u8 *)a;
     u32 *q;
     u8 *e;
@@ -163,13 +163,13 @@ s32 func_8001CA70(s32 a) {
     return (u8 *)r + (*r & 0xFFFFFF) - p;
 }
 
-void func_8001CB08(void) {
+void game_initState(void) {
     GameState *gs;
 
-    func_8001CB78();
+    game_allocState();
     gs = g_gameState;
-    func_8001CBD0();
-    func_8001CD04(0xE0);
+    game_resetState();
+    game_setScreenHeight(0xE0);
     func_8001DCB8();
     func_8001DE50();
     func_80023918();
@@ -177,10 +177,10 @@ void func_8001CB08(void) {
     gs->unk4 = g_allocTop;
 }
 
-void func_8001CB70(void) {
+void game_quitState(void) {
 }
 
-void func_8001CB78(void) {
+void game_allocState(void) {
     g_allocTop = 0x8008B000;
     g_gameState = (GameState *)0x8008B000;
     g_gameState->unkC = (DISPENV *)0x8008B044;
@@ -190,7 +190,7 @@ void func_8001CB78(void) {
     g_allocTop = 0x8008B250;
 }
 
-void func_8001CBD0(void) {
+void game_resetState(void) {
     GameState *gs = g_gameState;
     s32 i;
 
@@ -201,8 +201,8 @@ void func_8001CBD0(void) {
     gs->unkA = 0;
     gs->unk20 = -1;
     gs->unk1C = NULL;
-    func_8001CCB4(0, 0, 0);
-    func_8001CD04(0xE0);
+    game_setClearColor(0, 0, 0);
+    game_setScreenHeight(0xE0);
     gs->vsyncMode = 0;
     for (i = 14; i >= 0; i--) {
         ((DirInfo *)gs->unk14)[i].unk0 = i;
@@ -217,7 +217,7 @@ void func_8001CBD0(void) {
     }
 }
 
-void func_8001CCB4(s32 r, s32 g, s32 b) {
+void game_setClearColor(s32 r, s32 g, s32 b) {
     DRAWENV *env;
 
     env = g_gameState->unk10;
@@ -231,7 +231,7 @@ void func_8001CCB4(s32 r, s32 g, s32 b) {
     env[0].b0 = b;
 }
 
-void func_8001CD04(s32 h) {
+void game_setScreenHeight(s32 h) {
     Unk4 func_8002F9A8(void);
     Unk4 col;
     RECT r;
@@ -286,7 +286,7 @@ void func_8001CD04(s32 h) {
     }
 }
 
-void func_8001CFB4(void) {
+void game_freezeScreen(void) {
     Unk4 func_8002F9A8(void); /* ovl_0a declares it with an out-pointer */
     Unk4 col;
     s32 fade;

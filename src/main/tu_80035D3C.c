@@ -107,7 +107,7 @@ void func_8003613C(void) {
 }
 
 void func_800361A8(void) {
-    func_8003556C(0);
+    help_setHandler(0);
     D_80077E50.unk0 = 0;
 }
 
@@ -145,7 +145,7 @@ u8 func_800362B8(void) {
 }
 
 void func_800362C8(void) {
-    func_8003556C(NULL);
+    help_setHandler(NULL);
     func_8002F8E4(D_80077E58);
     func_800325E0();
 }

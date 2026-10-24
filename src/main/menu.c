@@ -44,7 +44,7 @@ void menu_doOpen(s32 a, s32 b) {
             st->unk1C->unk8E4.ovl65->unk0 |= 0x1000;
         }
         g_gameState->unk1C->unk0 |= 2;
-        func_80035430();
+        help_init();
         func_800326B0();
         func_80032980();
     }
@@ -121,7 +121,7 @@ void func_8003253C(void) {
 void func_80032574(void) {
     func_80023918();
     func_80032078();
-    func_80035430();
+    help_init();
 }
 
 void func_800325A4(void) {
@@ -131,7 +131,7 @@ void func_800325A4(void) {
     g_menu.unk24 = 0;
     g_menu.unk4 = 0;
     g_menu.unk3 = 0;
-    func_80035430();
+    help_init();
 }
 
 void func_800325E0(void) {
@@ -231,7 +231,7 @@ void func_800328E8(void) {
     if (fn != NULL) {
         fn(idx);
     }
-    func_80035490();
+    help_update();
     func_8002C1EC();
     g_menu.unk10++;
 }

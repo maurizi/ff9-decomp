@@ -254,33 +254,33 @@ void func_800CC13C(void) {
     u8 blink;
 
     blink = (D_80077E54 & 3) != 0;
-    func_80035674(D_800D5438.unk1 - 1U >= 2);
+    help_setDrawHand(D_800D5438.unk1 - 1U >= 2);
     if (!func_8002F810()) {
         if (D_800D5438.unk1 == 0 || blink) {
-            D_80077DE8.unk0 = 0xE0;
-            D_80077DE8.unk4 = 1;
-            D_80077DE8.unk2 = D_800D5438.unk0 * 0xF + 0x11;
+            g_help.x = 0xE0;
+            g_help.otz = 1;
+            g_help.y = D_800D5438.unk0 * 0xF + 0x11;
             func_800355E4();
         }
         if (D_800D5438.unk1 == 1) {
-            D_80077DE8.unk4 = 0xC;
-            D_80077DE8.unk0 = D_800D5438.unk8[0].unk4.x - 0xE;
-            D_80077DE8.unk2 = D_80077E53 * 0x2E + 0x20;
+            g_help.otz = 0xC;
+            g_help.x = D_800D5438.unk8[0].unk4.x - 0xE;
+            g_help.y = D_80077E53 * 0x2E + 0x20;
             func_800355E4();
         }
         if (D_800D5438.unk1 == 2) {
             if (D_800D5438.unk4 == 1) {
-                D_80077DE8.unk4 = 0xB;
-                D_80077DE8.unk0 = D_800D5438.unk8[0].unk4.x - 0xA;
-                D_80077DE8.unk2 = D_800D5438.unk3 * 0x2E + 0x24;
+                g_help.otz = 0xB;
+                g_help.x = D_800D5438.unk8[0].unk4.x - 0xA;
+                g_help.y = D_800D5438.unk3 * 0x2E + 0x24;
                 func_800355E4();
                 if (blink) {
                     ui_drawHand(D_800D5438.unk8[0].unk4.x - 0xE, D_800D5438.unk2 * 0x2E + 0x20, 0xC);
                 }
             } else if (D_800D5438.unk4 == 0) {
-                D_80077DE8.unk4 = 0xC;
-                D_80077DE8.unk0 = D_800D5438.unk8[0].unk4.x - 0xE;
-                D_80077DE8.unk2 = D_800D5438.unk2 * 0x2E + 0x20;
+                g_help.otz = 0xC;
+                g_help.x = D_800D5438.unk8[0].unk4.x - 0xE;
+                g_help.y = D_800D5438.unk2 * 0x2E + 0x20;
                 func_800355E4();
             }
         }
@@ -288,9 +288,9 @@ void func_800CC13C(void) {
 }
 
 void func_800CC324(void) {
-    D_80077DE8.unk8 = 0;
+    g_help.text = 0;
     if (D_800D5438.unk1 == 0) {
-        D_80077DE8.unk8 = (u8 *)func_8003631C(D_800D5438.unk0);
+        g_help.text = (u8 *)func_8003631C(D_800D5438.unk0);
     } else if (D_800D5438.unk1 == 1) {
         if (D_800D5438.unk0 + 1 == 3) {
             func_800CC5D8(D_800D5438.unk0);
@@ -299,11 +299,11 @@ void func_800CC324(void) {
             if (D_800D5438.unk0 + 1 == 4) {
                 func_800CC3E0(a);
             } else {
-                D_80077DE8.unk8 = text_get(a);
+                g_help.text = text_get(a);
             }
         }
     } else if (D_800D5438.unk1 == 2) {
-        D_80077DE8.unk8 = text_get(D_800D5438.unk4 + 0xB);
+        g_help.text = text_get(D_800D5438.unk4 + 0xB);
     }
 }
 
@@ -371,7 +371,7 @@ void func_800CC5D8(u8 arg0) {
         func_8002BE74(i, id);
         i++;
     } while (i < 5);
-    D_80077DE8.unk8 = text_get(4);
+    g_help.text = text_get(4);
 }
 
 void func_800CC6E4(void) {
@@ -388,9 +388,9 @@ void func_800CC6E4(void) {
     r.y = 8;
     r.w = 0xE8;
     r.h = g_gameState->unkC->disp.h - 0xF;
-    func_80035580(&r);
-    func_8003556C(func_800CC324);
-    func_80035674(1);
+    help_setBounds(&r);
+    help_setHandler(func_800CC324);
+    help_setDrawHand(1);
     if (g_gameState->unk1C->party[D_80077E50.unk3] == NULL) {
         D_80077E50.unk3 = party_getFirstMember();
     }
@@ -403,9 +403,9 @@ void func_800CC7C0(void) {
 }
 
 void func_800CC7F0(void) {
-    func_80035674(1);
-    func_80035580(0);
-    func_8003556C(0);
+    help_setDrawHand(1);
+    help_setBounds(0);
+    help_setHandler(0);
 }
 
 void func_800CC820(u8 arg0) {

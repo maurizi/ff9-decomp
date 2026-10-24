@@ -15,8 +15,8 @@ void func_801F7AC0(void) {
     st->unk1 = 1;
     D_801F9850.unk0 = 0;
     text_setBank(g_chocographText);
-    func_8003556C(func_801F84F0);
-    func_80035674(1);
+    help_setHandler(func_801F84F0);
+    help_setDrawHand(1);
     setRECT(&D_801F9850.unk20, 0xE4, 8, 0x50, 0x1A);
     setRECT(&D_801F9850.unk28, 8, 8, 0xD8, 0x1A);
     setRECT(&D_801F9850.unk30, 8, 0x26, 0xB7, 0x43);
@@ -185,18 +185,18 @@ void func_801F8240(void) {
 }
 
 void func_801F8404(void) {
-    func_80035674(D_801F9850.unk1 != 1);
+    help_setDrawHand(D_801F9850.unk1 != 1);
     if (!func_8002F810()) {
         if (D_801F9850.unk1 == 1 || (D_80077DC0 & 3)) {
-            D_80077DE8.unk2 = 0x11;
-            D_80077DE8.unk4 = 0x1B;
-            D_80077DE8.unk0 = D_801F9850.unk0 * 0x60 + 0x1C;
-            func_800355E4(&D_80077DE8);
+            g_help.y = 0x11;
+            g_help.otz = 0x1B;
+            g_help.x = D_801F9850.unk0 * 0x60 + 0x1C;
+            func_800355E4(&g_help);
         }
         if (D_801F9850.unk1 == 2) {
-            D_80077DE8.unk0 = 0;
-            D_80077DE8.unk4 = 0x1B;
-            D_80077DE8.unk2 = D_801F9850.unk10.cursor * 0xF + 0x74;
+            g_help.x = 0;
+            g_help.otz = 0x1B;
+            g_help.y = D_801F9850.unk10.cursor * 0xF + 0x74;
             func_800355E4();
         }
     }
@@ -205,10 +205,10 @@ void func_801F8404(void) {
 void func_801F84F0(void) {
     s32 idx;
 
-    D_80077DE8.unk8 = NULL;
-    func_80035580(0);
+    g_help.text = NULL;
+    help_setBounds(0);
     if (D_801F9850.unk1 == 1) {
-        D_80077DE8.unk8 = text_get(D_801F9850.unk0 + 3);
+        g_help.text = text_get(D_801F9850.unk0 + 3);
     } else if (D_801F9850.unk1 == 2) {
         idx = D_801F9850.unk10.unk5 + D_801F9850.unk10.cursor;
         if (D_801F9850.unk8 & (1 << idx)) {
@@ -216,7 +216,7 @@ void func_801F84F0(void) {
             if (D_801F9850.unk4 <= func_801F95E8_inline(idx)) {
                 text_append(D_801F9750, text_get(5));
             }
-            D_80077DE8.unk8 = D_801F9750;
+            g_help.text = D_801F9750;
         }
     }
 }
@@ -411,8 +411,8 @@ void func_801F8FF8(void) {
 }
 
 void func_801F904C(void) {
-    func_80035674(1);
-    func_8003556C(0);
+    help_setDrawHand(1);
+    help_setHandler(0);
     func_801F8800();
 }
 

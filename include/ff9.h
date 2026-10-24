@@ -388,7 +388,7 @@ typedef struct {
 } GameState;
 
 extern GameState *g_gameState;
-void func_8001DE50(); /* func_8001CB08 calls it without arguments */
+void func_8001DE50(); /* game_initState calls it without arguments */
 
 /* Inlined copy of func_80034A04 (support ability bit test). */
 static inline u8 func_80034A04_inline(u32 *bits, s32 b) {
@@ -973,24 +973,24 @@ s32 math_cos(s32); /* cos */
 extern SVECTOR D_80077CB0;
 extern SVECTOR D_80077CC0[2][4]; /* two screen-filling quads */
 
-/* menu cursor / help window (layout merged from main + ovl_14 + ovl_32) */
+/* Select help window (g_help, help_* functions; layout merged from main + ovl_14 + ovl_32) */
 typedef struct {
-    s16 unk0; /* x */
-    s16 unk2; /* y */
-    s32 unk4;
-    u8 *unk8; /* help text */
-    void (*unkC)(void);
-    RECT unk10;
-    u8 unk18;
-    u8 unk19;
-    u8 unk1A;
-    u8 unk1B;
-    u8 unk1C;
-    u8 unk1D;
+    s16 x; /* cursor position the window is placed beside */
+    s16 y;
+    s32 otz;
+    u8 *text; /* help text, set by the handler */
+    void (*handler)(void); /* per-menu callback run every frame while help is open */
+    RECT bounds; /* help_setBounds: the window stays inside */
+    u8 isOpen;
+    u8 opening; /* open animation running (help_toggle .. help_onOpened) */
+    u8 textShown;
+    u8 disabled; /* Select doesn't toggle help */
+    u8 atCursor; /* 0: window at x/y itself, else beside the cursor */
+    u8 drawHand;
     u8 pad1E[2];
-    Unk80035B90 unk20;
-} Unk80077DE8;
-extern Unk80077DE8 D_80077DE8;
+    Unk80035B90 anim;
+} HelpState;
+extern HelpState g_help;
 
 /* sound sequencer state (AKAO), g_akaoSeq */
 typedef struct {
@@ -1365,7 +1365,7 @@ extern s32 D_8007BC08;
 extern s32 D_8007BBF0;
 extern volatile s32 D_800809E0;
 
-void func_8001C720(void);
+void db_clear(void);
 s32 func_8001D848(void);
 s32 strncmp(char *, char *, s32);
 void game_setNextScene(u16);
@@ -1408,7 +1408,7 @@ s32 akao_command(u32);
 void func_80055D80(s32, s32);
 void func_8005ECCC(AkaoChannel *, s32);
 void func_80060938(void);
-void func_8003556C(void (*)(void));
+void help_setHandler(void (*)(void));
 
 typedef struct {
     u8 pad0[4];
@@ -1518,7 +1518,7 @@ void func_80036470(void);
 void func_80059AA8(s32, s32);
 s32 func_80021FB4(void);
 void func_80022050(void);
-void func_80035430(void);
+void help_init(void);
 void func_80023918(void);
 void func_80032078(void);
 void func_80061070(s32, s32, s32, void (*)(void));
@@ -1557,7 +1557,7 @@ void func_80027CB0(void);
 void func_8003431C(void);
 void party_initNewGame(void);
 s32 func_80055210(); /* unprototyped: main calls it with no args, ovl_65 passes a pointer */
-void func_8001C718(void);
+void db_quit(void);
 void *db_lookupRegistered(s32, s32, s32); /* mode 4: address, 5: size */
 void func_8002CD4C(RECT *, s32, s32, s32);
 void func_80032A44(void);
@@ -1824,9 +1824,9 @@ s32 OpenEvent(s32, s32, s32, void (*)(void)); /* BIOS OpenEvent */
 s32 EnableEvent(s32); /* BIOS EnableEvent */
 s32 db_register(s32, s32);
 s32 db_lookup(s32, s32, s32, s32);
-s32 func_8001CA70(s32); /* file size */
-void func_8001CCB4(s32, s32, s32);
-void func_8001CFB4(void);
+s32 db_getSize(s32); /* file size */
+void game_setClearColor(s32, s32, s32);
+void game_freezeScreen(void);
 void func_8001D8A8(s32);
 void func_8001D9CC(s32, s32, s32, s32, s32);
 s32 func_8001DAA4(s32, s32, s32, RECT *); /* copy through VRAM, returns bytes done */
@@ -1914,8 +1914,8 @@ void func_800615F8(void);
 extern u8 D_8006F40C[];
 extern Unk80080A10 *D_800831C8[24];
 void akao_setVoiceRelease(s32, s32, s32);
-void func_80035108(void);
-void func_80035680(void);
+void help_draw(void);
+void help_toggle(void);
 void func_80035B90(Unk80035B90 *);
 void func_80032A18(u8 *);
 void func_8005658C(s32 *, Unk8005EBB4 *, u32, s32);
@@ -2120,9 +2120,9 @@ void func_80033D1C(u8);
 u8 func_800349BC(s32, s32);
 u8 func_80034A30(Character *);
 u8 func_80034A04(u32 *, s32);
-void func_80035580(RECT *);
+void help_setBounds(RECT *);
 void func_800355E4(); /* unprototyped: the argument is unused and most callers pass none */
-void func_80035674(u8);
+void help_setDrawHand(u8);
 void text_setBank(const u8 *);
 u8 *text_get(s32); /* text lookup */
 #if defined(OVL_0A_H) || defined(OVL_0B_H) || defined(OVL_0C_H) || defined(OVL_65_H)
@@ -2237,7 +2237,7 @@ typedef struct {
 } Unk8006C9D4;
 extern Unk8006C9D4 D_8006C9D4[];
 s32 func_8002C1EC(void);
-void func_80035490(void);
+void help_update(void);
 
 extern s32 g_evtArgFlags;
 extern s32 D_8007B6F8;
@@ -2416,7 +2416,7 @@ u8 cd_readAsync(s32, s32, void *, void (*)(u8 *));
 void func_80036634(u8 *);
 extern void *D_8007AED0[8];
 #ifndef OVL_0B_H /* battle overlay code; ovl_0b.h has the real prototypes */
-s32 D_800BED6C(s32, s32);
+struct BtlUnit *btl_findUnitByBit(u16);
 s32 btl_getUnitById(s32, s32);
 void btl_setUnitAttr(s32, s32, s32);
 #endif
@@ -2428,7 +2428,7 @@ extern void (*D_80068668[])(s32);
 u8 func_80035B64(Unk80035B90 *, u8);
 void func_80035B74(Unk80035B90 *, void (*)());
 void func_80035B7C(Unk80035B90 *);
-void func_80035744(void);
+void help_onOpened(void);
 extern s32 D_8007B9A0;
 extern u8 *D_8007B9A4;
 extern u8 *D_8007B9A8;
@@ -2497,8 +2497,8 @@ void func_80028D08(UnkBlink *, s32, s32, s32);
 void func_80028D2C(UnkBlink *);
 void func_8002BE44(s32, u8 *);
 void func_8002BE74(s32, s32);
-u8 func_80035648(void);
-void func_80035658(u8);
+u8 help_getAtCursor(void);
+void help_setAtCursor(u8);
 void func_800361CC(s32);
 s32 func_800337D0(s32);
 s32 func_8003380C(s32);
@@ -2592,7 +2592,7 @@ CardInfo *func_80062B30(void);
 s32 func_800627BC(s32);
 extern s32 D_800704C4;
 extern s32 D_80070418;
-void func_8003563C(u8);
+void help_setDisabled(u8);
 s32 func_800281A4(s32);
 s32 func_800632B4(s32, s8 *);
 extern s32 g_padPortState[];
@@ -2609,7 +2609,7 @@ typedef struct {
     u8 unk2;
 } Unk8006BC0C;
 extern Unk8006BC0C D_8006BC0C[4];
-u8 func_8003561C(void);
+u8 help_isOpen(void);
 void ui_drawRule(s32, s32, s32, s32, s32, s32);
 void menuList_down(MenuList *, u32);
 void menuList_pageUp(MenuList *, s32);
@@ -2656,7 +2656,7 @@ typedef struct {
 void pad_update(void);
 void func_80032098(void);
 void func_80023A4C(void);
-void func_8001CD04(s32);
+void game_setScreenHeight(s32);
 s32 func_8004BC38(); /* defined K&R-style: u8 param (unused); some callers pass none */
 u8 func_80036300(s32);
 s32 func_8003631C(s32);
@@ -2770,13 +2770,13 @@ static inline void func_8004B9B8_inline(Unk8004B9B8 *p) {
 
 s32 func_80037D6C(s32);
 extern u8 *D_800CF478;
-/* help-window rect plus frame style and x offset (func_80035214) */
+/* help-window rect plus frame style and x offset (help_layout) */
 typedef struct {
     RECT unk0;
     s16 unk8; /* style */
     s16 unkA; /* x offset */
 } Unk80035214;
-void func_80035214(Unk80035214 *);
+void help_layout(Unk80035214 *);
 void func_80035C2C(s32, s32, s32, Unk80035B90 *);
 s32 func_8002FD70(s32, s32, s32);
 s32 func_8002FDE8(s32, s32, s32);
@@ -3319,8 +3319,8 @@ typedef struct {
 } TimHeader;
 
 extern u32 g_allocTop; /* bump allocator for the boot-time state block */
-void func_8001CB78(void);
-void func_8001CBD0(void);
+void game_allocState(void);
+void game_resetState(void);
 s32 cd_init(void);
 void CdSetDebug(s32);
 void _bu_init(void);
@@ -3342,7 +3342,7 @@ extern s32 D_800736A4; /* reverb mode */
 extern DRAWENV D_80073C88;
 void pad_resetState(void);
 void cd_resetState(void);
-void func_8001C6F8(void);
+void db_init(void);
 void mbg_resetState(void);
 void func_800320D8(void);
 void func_80053924(void);
@@ -3374,9 +3374,9 @@ void FlushCache(void); /* BIOS FlushCache */
 s32 EnterCriticalSection(void); /* BIOS EnterCriticalSection */
 void ExitCriticalSection(void); /* BIOS ExitCriticalSection */
 void func_8001D30C(void);
-void func_8001CB70(void);
+void game_quitState(void);
 void game_shutdown(void);
-void func_8001CFB4(void);
+void game_freezeScreen(void);
 
 /* overlay load addresses by game mode (game_loadModeOverlay). The rodata block
  * D_80010034 also holds the next word and libgpu's version string. */

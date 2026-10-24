@@ -978,3 +978,34 @@ D_80073940 g_padBuf  # [code] PadInitDirect receive buffers, one per port (pad_i
 D_80073998 g_padPortMask  # [code] per port game buttons masked out of g_padPortHeld in pad_update (battle sets 8, ovl_15 -1)
 D_800739B0 g_padActuator  # [code] PadSetAct data per port in pad_update
 D_8006815C g_padActAlign  # [code] PadSetActAlign table in pad_update
+func_8001C6F8 db_init  # [code] game_reset: clears the registered-db list (db_clear)
+func_8001C718 db_quit  # [code] empty counterpart of db_init, called from game_shutdown
+func_8001C720 db_clear  # [code] zeroes g_dbList's counts and its 16 slots
+func_8001CA70 db_getSize  # [code] checks the 0xDB magic byte, returns the end offset of the last entry's data (4 for an empty db)
+func_8001CB08 game_initState  # [code] game_main loop start: game_allocState, game_resetState, screen setup, then records g_allocTop in GameState.unk4
+func_8001CB70 game_quitState  # [code] empty counterpart of game_initState at the end of a game_main pass
+func_8001CB78 game_allocState  # [code] places g_gameState and its DISPENV/DRAWENV/dir tables at 0x8008B000 and sets g_allocTop past them
+func_8001CBD0 game_resetState  # [code] initial GameState values: mode 0, no GameData, clear colour 0, screen height 0xE0, empty dir tables
+func_8001CCB4 game_setClearColor  # [code] sets r0/g0/b0 of both DRAWENVs in GameState.unk10
+func_8001CD04 game_setScreenHeight  # [code] SetDefDispEnv/SetDefDrawEnv for both buffers at 320 x h, centred vertically, clearing VRAM below the old height
+func_8001CFB4 game_freezeScreen  # [code] before an overlay load (game_loadModeOverlay): shows the current buffer and fills the other with the fade colour while fading
+D_80077DE8 g_help  # [code] Select help window: cursor x/y, help text and a per-menu handler that sets it (help_* in tu_80035108.c; ovl_3c handlers store text_get(...) into .unk8)
+func_80035108 help_draw  # [code] draws the hand and the help text window (text_drawBlock + win_drawHelpFrame) beside the cursor in g_help
+func_80035214 help_layout  # [code] places the help window rect beside g_help's cursor, inside g_help.unk10, picking above/below and left/right
+func_80035430 help_init  # [code] clears g_help and sets the default bounds (help_setBounds(NULL))
+func_80035490 help_update  # [code] per frame: Select (g_padRepeat 0x8000000) toggles help, then runs the menu's handler and help_draw while open
+func_8003556C help_setHandler  # [code] sets g_help.unkC, the callback that fills in the help text (ovl_3c/ovl_39 menus pass their own, NULL disables)
+func_80035580 help_setBounds  # [code] g_help.unk10 = *r, or the full-screen 8,8,0x131,0xD1 for NULL; help_layout keeps the window inside it
+func_800355DC help_nullHandler  # [code] empty function passed to help_setHandler by ovl_0d/33/34/37 (help available, no text)
+func_8003561C help_isOpen  # [code] returns g_help.unk18, set/cleared by help_toggle
+func_8003562C help_isDisabled  # [code] returns g_help.unk1B; when set, Select doesn't toggle help (help_update)
+func_8003563C help_setDisabled  # [code] sets g_help.unk1B (see help_isDisabled)
+func_80035648 help_getAtCursor  # [code] returns g_help.unk1C: 0 puts the window at the cursor position itself (help_layout), else beside it with the hand
+func_80035658 help_setAtCursor  # [code] sets g_help.unk1C (see help_getAtCursor)
+func_80035664 help_getDrawHand  # [code] returns g_help.unk1D: help_draw draws the hand cursor when set
+func_80035674 help_setDrawHand  # [code] sets g_help.unk1D (see help_getDrawHand)
+func_80035680 help_toggle  # [code] opens help (sound 0x2AA, starts the open animation with help_onOpened) or closes it (sound 0x65)
+func_80035744 help_onOpened  # [code] open-animation callback set by help_toggle: marks the text visible (g_help.unk1A)
+# by hand: ovl_0d/33/34/37 C and headers used the overlay-link name D_800355DC; now help_nullHandler
+# config/xrefs.us.txt: btl_findUnitByBit = 0x800BED6C (ovl_0b), used by func_8004B7A4 instead of D_800BED6C
+# FIELDS include/ff9.h Unk80077DE8 (now HelpState): unk0=x,unk2=y,unk4=otz,unk8=text,unkC=handler,unk10=bounds,unk18=isOpen,unk19=opening,unk1A=textShown,unk1B=disabled,unk1C=atCursor,unk1D=drawHand,unk20=anim

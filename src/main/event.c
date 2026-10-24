@@ -1674,7 +1674,7 @@ s32 evt_execInstr(void) {
     case 0x6B:
         a = evt_getArg8_inline();
         b = evt_getArg8_inline();
-        func_8001CCB4(a, b, evt_getArg8_inline());
+        game_setClearColor(a, b, evt_getArg8_inline());
         return 0;
     case 0x58:
         a = evt_getArg16_inline();
@@ -3871,7 +3871,7 @@ void func_8004B7A4(Unk800219D8 *arg0, s32 arg1, s32 arg2) {
         }
         if (i < 8) {
             if (arg1 == 0x20) {
-                fn = D_800BED6C;
+                fn = (s32 (*)(s32, s32))btl_findUnitByBit;
             } else {
                 fn = btl_getUnitById;
             }

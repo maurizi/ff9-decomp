@@ -14,8 +14,8 @@ void func_801F0C18(void) {
     func_801F3038();
     func_801F2CEC();
     text_setBank(g_itemMenuText);
-    func_8003556C(D_800355DC);
-    func_80035674(1);
+    help_setHandler(help_nullHandler);
+    help_setDrawHand(1);
     func_8002EDFC(&D_801FAB78.unkC, 0xFF, 0xB, 2, 0xAD);
     func_8002EDFC(&D_801FAB78.unk1C, D_801FAB78.unkB0, 0xB, 2, 0xAD);
     setRECT(&D_801FAB78.unk2C, 8, 8, 0xE4, 0x1A);
@@ -195,41 +195,41 @@ void func_801F13F8(void) {
     off = 0;
     l = D_801F3040[D_801FAB78.unk0].unk8;
     blink = (D_80077E54 & 3) != 0;
-    func_80035674(D_801FAB78.unk1 != 1);
+    help_setDrawHand(D_801FAB78.unk1 != 1);
     if (func_8002F810() || D_801FAB78.unk1 == 0) {
         return;
     }
     if (D_801FAB78.unk1 == 1 || blink) {
-        D_80077DE8.unk0 = D_801F30AC[D_801FAB78.unk0] - 0x10;
-        D_80077DE8.unk2 = 0x10;
-        D_80077DE8.unk4 = 0x19;
+        g_help.x = D_801F30AC[D_801FAB78.unk0] - 0x10;
+        g_help.y = 0x10;
+        g_help.otz = 0x19;
         func_800355E4();
     }
     if (D_801FAB78.unk1 == 4 || (D_801FAB78.unk1 == 5 && blink)) {
-        D_80077DE8.unk0 = 0x7E;
-        D_80077DE8.unk4 = 0x12;
-        D_80077DE8.unk2 = D_801FAB78.unk5 * 15 + 0xE;
+        g_help.x = 0x7E;
+        g_help.otz = 0x12;
+        g_help.y = D_801FAB78.unk5 * 15 + 0xE;
         func_800355E4();
     }
     if (D_801FAB78.unk1 >= 2 && D_801FAB78.unk1 != 4 && (D_801FAB78.unk1 == 2 || blink)) {
         k = l->unk7 ^ ((l->unk8 >> 3) & 1);
-        D_80077DE8.unk4 = 0x19;
+        g_help.otz = 0x19;
         /* Both arms are identical (jump2 merges them after register allocation); the test keeps the
          * hi part of &D_801FAB78 and the constant 2 live, which the original's registers need. */
         if (D_801FAB78.unk0 == 2) {
-            D_80077DE8.unk0 = k * 0x96;
-            D_80077DE8.unk2 = l->cursor * 15 + 0x34;
+            g_help.x = k * 0x96;
+            g_help.y = l->cursor * 15 + 0x34;
             func_800355E4();
         } else {
-            D_80077DE8.unk0 = k * 0x96;
-            D_80077DE8.unk2 = l->cursor * 15 + 0x34;
+            g_help.x = k * 0x96;
+            g_help.y = l->cursor * 15 + 0x34;
             func_800355E4();
         }
     }
     if (D_801FAB78.unk1 == 3) {
-        D_80077DE8.unk4 = 0x12;
-        D_80077DE8.unk0 = D_801FAB78.unk3C.unk4.x - 0xA;
-        D_80077DE8.unk2 = D_801FAB78.unk3C.unk4.y + (s16)(D_801FAB78.unk2 * 43 + 0x12);
+        g_help.otz = 0x12;
+        g_help.x = D_801FAB78.unk3C.unk4.x - 0xA;
+        g_help.y = D_801FAB78.unk3C.unk4.y + (s16)(D_801FAB78.unk2 * 43 + 0x12);
         func_800355E4();
     }
     if (D_801FAB78.unk1 == 5) {
@@ -243,16 +243,16 @@ void func_801F13F8(void) {
                     }
                 }
                 u = D_801FAB78.unk6;
-                D_80077DE8.unk0 = (u & 1) * 0x96 + 2;
-                D_80077DE8.unk2 = ((u >> 1) - l->unk5) * 15 + (s16)(off + 0x32);
-                D_80077DE8.unk4 = 0x12;
+                g_help.x = (u & 1) * 0x96 + 2;
+                g_help.y = ((u >> 1) - l->unk5) * 15 + (s16)(off + 0x32);
+                g_help.otz = 0x12;
                 func_800355E4();
             }
         }
         k = l->unk7 ^ ((l->unk8 >> 3) & 1);
-        D_80077DE8.unk0 = k * 0x96;
-        D_80077DE8.unk2 = l->cursor * 15 + 0x34;
-        D_80077DE8.unk4 = 0x12;
+        g_help.x = k * 0x96;
+        g_help.y = l->cursor * 15 + 0x34;
+        g_help.otz = 0x12;
         func_800355E4();
     }
 }
@@ -333,7 +333,7 @@ s32 func_801F1A7C(void) {
             func_8002E31C(m->unk4C, 1);
             m->unk50 = 1;
             m->unk1 = 0;
-            func_8003563C(1);
+            help_setDisabled(1);
             return 1;
         }
         return 0;
@@ -349,25 +349,25 @@ void func_801F1B78(void) {
     s16 x;
     s16 y;
     s32 z;
-    Unk80077DE8 *h;
+    HelpState *h;
 
-    h = &D_80077DE8;
-    x = h->unk0;
-    y = h->unk2;
-    z = h->unk4;
-    h->unk8 = NULL;
-    h->unk0 = x;
-    h->unk2 = y;
-    h->unk4 = z;
-    func_80035580(NULL);
+    h = &g_help;
+    x = h->x;
+    y = h->y;
+    z = h->otz;
+    h->text = NULL;
+    h->x = x;
+    h->y = y;
+    h->otz = z;
+    help_setBounds(NULL);
     if (D_801FAB78.unk1 == 1) {
-        h->unk8 = text_get(D_801FAB78.unk0 + 5);
+        h->text = text_get(D_801FAB78.unk0 + 5);
     }
     if (D_801FAB78.unk1 == 2) {
         if (D_801FAB78.unk0 != 0) {
             i = func_801F2FC4(&D_801FAB78.unk1C);
             if (i < D_801FAB78.unkB0) {
-                h->unk8 = &D_801F651C[D_8006B374[D_801FAB78.unk60[i]].unk2];
+                h->text = &D_801F651C[D_8006B374[D_801FAB78.unk60[i]].unk2];
             }
             return;
         }
@@ -384,12 +384,12 @@ void func_801F1B78(void) {
             r.w = g_gameState->unkC->disp.w >> 1;
             r.h = g_gameState->unkC->disp.h;
         }
-        func_80035580(&r);
-        D_80077DE8.unk8 = text_get(8);
+        help_setBounds(&r);
+        g_help.text = text_get(8);
         return;
     } else if (D_801FAB78.unk1 == 4) {
-        func_80035580(&D_801F3150);
-        h->unk8 = text_get(D_801FAB78.unk5 + 9);
+        help_setBounds(&D_801F3150);
+        h->text = text_get(D_801FAB78.unk5 + 9);
         return;
     } else if (D_801FAB78.unk1 == 5) {
         l = D_801F3040[1].unk8;
@@ -398,7 +398,7 @@ void func_801F1B78(void) {
     }
     p = &g_gameState->unk1C->items.slots[func_801F2FC4(l)];
     if (p->unk1 != 0) {
-        h->unk8 = &D_801F3168[D_80069018[p->unk0].unk2];
+        h->text = &D_801F3168[D_80069018[p->unk0].unk2];
     }
 }
 
@@ -419,7 +419,7 @@ void func_801F1D88(void) {
                 D_801FAB78.unk54 = 0;
                 D_801FAB78.unk1 = 2;
                 func_80028128(D_801FAB78.unk56);
-                func_8003563C(0);
+                help_setDisabled(0);
             }
         }
     }
@@ -472,9 +472,9 @@ void func_801F2190(void) {
     if (g_gameState->mode == 3) {
         func_8002F55C(0x44A);
     }
-    func_8003563C(0);
-    func_80035674(1);
-    func_8003556C(NULL);
+    help_setDisabled(0);
+    help_setDrawHand(1);
+    help_setHandler(NULL);
     func_801F2F30();
 }
 
@@ -718,9 +718,9 @@ void func_801F2BC0(void) {
                 if (g_gameState->mode == 3) {
                     func_8002F55C(0x44A);
                 }
-                func_8003563C(0);
-                func_80035674(1);
-                func_8003556C(NULL);
+                help_setDisabled(0);
+                help_setDrawHand(1);
+                help_setHandler(NULL);
                 func_801F2F30();
                 func_800362C8();
             }
@@ -817,7 +817,7 @@ void func_801F2F38(s32 id) {
     D_801FAB78.unk57 = 0;
     D_801FAB78.unk58 = 0x48;
     D_801FAB78.unk58 -= func_800632B4(0x16, D_801F3064);
-    func_8003563C(1);
+    help_setDisabled(1);
 }
 
 void func_801F2FA0(void) {

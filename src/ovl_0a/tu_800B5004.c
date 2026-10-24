@@ -113,8 +113,8 @@ s32 func_800B54CC(void) {
 
 void func_800B54FC(void) {
     func_8002F9D0();
-    func_80035430();
-    func_8003556C(func_800B57C8);
+    help_init();
+    help_setHandler(func_800B57C8);
     text_setBank(D_800A717C);
 }
 
@@ -122,12 +122,12 @@ void func_800B553C(void) {
     func_8002C308(0);
     func_800B559C();
     func_800B5660();
-    func_80035490();
+    help_update();
 }
 
 void func_800B5574(void) {
-    func_80035580(NULL);
-    func_8003556C(NULL);
+    help_setBounds(NULL);
+    help_setHandler(NULL);
 }
 
 void func_800B559C(void) {
@@ -153,20 +153,20 @@ INCLUDE_RODATA("asm/us/ovl_0a/nonmatchings/tu_800B5004", D_800A7170);
 
 void func_800B5660(void) {
     s32 y;
-    Unk80077DE8 *m;
+    HelpState *m;
 
     ui_drawLabel(D_800C9D98.x + 8, D_800C9D98.y - 3, 0xA, D_800A7170, 0);
     text_drawBlock(D_800C9D98.x + 0xE, D_800C9D98.y + 0xA, 0xA, text_get(0), 0);
     text_drawBlock(D_800C9D98.x + 0x30, D_800C9D98.y + 0x2E, 0xA, text_get(1), 0);
     text_drawBlock(D_800C9D98.x + 0x30, D_800C9D98.y + 0x3D, 0xA, text_get(2), 0);
     if (!func_8002F810()) {
-        m = &D_80077DE8;
-        m->unk0 = D_800C9D98.x + 0x16;
+        m = &g_help;
+        m->x = D_800C9D98.x + 0x16;
         y = D_800C9D98.y;
         if (D_800CA058.unk3 == 0) {
-            m->unk2 = y + 0x32;
+            m->y = y + 0x32;
         } else {
-            m->unk2 = y + 0x41;
+            m->y = y + 0x41;
         }
         D_80077DEC = 9;
         func_800355E4();
@@ -185,22 +185,22 @@ void func_800B5794(void) {
 void func_800B57C8(void) {
     RECT r;
     s32 id;
-    Unk80077DE8 *m = &D_80077DE8;
+    HelpState *m = &g_help;
 
-    m->unk8 = NULL;
+    m->text = NULL;
     if (!func_8002F810()) {
         if (D_800CA058.unk3 == 0) {
-            func_80035580(NULL);
+            help_setBounds(NULL);
             id = 3;
         } else {
             r.x = 0;
-            r.y = m->unk2;
+            r.y = m->y;
             r.w = g_gameState->unkC->disp.w;
-            r.h = g_gameState->unkC->disp.h - m->unk2;
-            func_80035580(&r);
+            r.h = g_gameState->unkC->disp.h - m->y;
+            help_setBounds(&r);
             id = 4;
         }
-        m->unk8 = text_get(id);
+        m->text = text_get(id);
     }
 }
 

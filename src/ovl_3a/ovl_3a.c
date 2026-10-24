@@ -5,8 +5,8 @@ void func_801F3874(void) {
     s32 i;
 
     text_setBank(g_nameMenuText);
-    func_80035580(&D_801F4B48);
-    func_8003556C(func_801F4A9C);
+    help_setBounds(&D_801F4B48);
+    help_setHandler(func_801F4A9C);
     D_801F4BBC.unk0 = 1;
     D_801F4BBC.unk1 = 0;
     D_801F4BBC.unk2 = 0;
@@ -42,7 +42,7 @@ void func_801F3A98(void) {
             snd_playSe(0x67);
             D_801F4BBC.unk0 = 0;
             D_801F4BBC.unk1 = 3;
-            func_80035580(NULL);
+            help_setBounds(NULL);
             return;
         }
         if (g_padRepeat & BTN_L1) {
@@ -92,7 +92,7 @@ void func_801F3BBC(void) {
             return;
         }
         D_801F4BBC.unk0 = 0;
-        func_80035580(NULL);
+        help_setBounds(NULL);
         return;
     }
     if (g_padRepeat & BTN_CIRCLE) {
@@ -237,25 +237,25 @@ void func_801F459C(void) {
     u32 sub;
 
     if (D_801F4BBC.unk0 == 0) {
-        Unk80077DE8 *h;
-        D_80077DE8.unk0 = D_801F4BBC.unk134[2].x - 0xE;
-        h = &D_80077DE8;
+        HelpState *h;
+        g_help.x = D_801F4BBC.unk134[2].x - 0xE;
+        h = &g_help;
         y = D_801F4BBC.unk134[2].y + D_801F4BBC.unk1 * 16;
-        h->unk2 = D_801F4BBC.unk1 >= 2 ? y + 0x15 : y + 0xD;
+        h->y = D_801F4BBC.unk1 >= 2 ? y + 0x15 : y + 0xD;
     } else {
         r = &D_801F4BBC.unk134[4];
         if (D_801F4BBC.unk2 != 0) {
             row = D_801F4BBC.unk3 / 15;
             idx = D_801F4BBC.unk3 % 15;
-            D_80077DE8.unk2 = r->y + row * 21 + 0x26;
+            g_help.y = r->y + row * 21 + 0x26;
             col = (u8)(idx / 5);
             sub = (u8)(idx % 5);
-            D_80077DE8.unk0 = r->x + grp_x(col) + sub * 13 - 0x17;
+            g_help.x = r->x + grp_x(col) + sub * 13 - 0x17;
         } else {
             row = D_801F4BBC.unk3 / 15;
             col = D_801F4BBC.unk3 % 15;
-            D_80077DE8.unk0 = r->x + col * 14 + 0x27;
-            D_80077DE8.unk2 = r->y + row * 21 + 0x26;
+            g_help.x = r->x + col * 14 + 0x27;
+            g_help.y = r->y + row * 21 + 0x26;
         }
     }
     D_80077DEC = 3;
@@ -268,8 +268,8 @@ void func_801F4748(void) {
 }
 
 void func_801F4770(void) {
-    func_8003556C(NULL);
-    func_80035580(NULL);
+    help_setHandler(NULL);
+    help_setBounds(NULL);
     func_801F4A34();
 }
 
@@ -296,7 +296,7 @@ void func_801F47E8(void) {
     if (g_padRepeat & PAD_RIGHT) {
         snd_playSe(0x67);
         D_801F4BBC.unk0 = 1;
-        func_80035580(&D_801F4B48);
+        help_setBounds(&D_801F4B48);
     }
 }
 
@@ -339,7 +339,7 @@ s32 func_801F4A84(s32 i) {
 }
 
 void func_801F4A9C(void) {
-    D_80077DE8.unk8 = text_get(D_801F4BBC.unk0 == 0 ? D_801F4BBC.unk1 + 7 : 0xC);
+    g_help.text = text_get(D_801F4BBC.unk0 == 0 ? D_801F4BBC.unk1 + 7 : 0xC);
 }
 
 void func_801F4AE0(void) {

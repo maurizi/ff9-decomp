@@ -90,7 +90,7 @@ void func_800A72C0(void) {
 
 void func_800A73B8(void) {
     GameData *ctx = g_gameState->unk1C;
-    func_8001CCB4(0, 0, 0);
+    game_setClearColor(0, 0, 0);
     g_gameState->mode = 1;
     g_gameState->vsyncMode = 2;
     ctx->fieldId = 0;

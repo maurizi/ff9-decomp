@@ -131,7 +131,7 @@ s32 func_800AA4E8(s32 arg0) {
     g_gameState->unk1C->unk8E4.field->unkC->unk14->unk28[g_gameState->unk1C->unk8E4.field->unkC->unk14->unk40] = pack1;
     g_gameState->unk1C->unk8E4.field->unkC->unk14->unk40++;
     db_register(pack1, 0);
-    D_80067948 = pack1 + func_8001CA70(pack1);
+    D_80067948 = pack1 + db_getSize(pack1);
     return 0;
 }
 

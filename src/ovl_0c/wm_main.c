@@ -56,8 +56,8 @@ void func_800A8B14(void) {
     wm = g_gameState->unk1C->unk8E4.world;
     func_800A8D28();
     g_gameState->vsyncMode = 3;
-    func_8001CD04(0xDA);
-    func_8001CFB4();
+    game_setScreenHeight(0xDA);
+    game_freezeScreen();
     SetDispMask(1);
     g_gameState->unk1C->unk838 = (s32 (*)(s32, void *))func_800AA15C;
     g_gameState->unk1C->unk83C = func_800AB0C0;
@@ -438,7 +438,7 @@ s32 wm_loadFile(WorldMapObj *arg0) {
         }
     }
     DrawSync(0);
-    func_800AD114(a, b, func_8001CA70(b));
+    func_800AD114(a, b, db_getSize(b));
     DrawSync(0);
     b = a;
     arg0->unk34[1] = (void *)b;
@@ -447,7 +447,7 @@ s32 wm_loadFile(WorldMapObj *arg0) {
     arg0->unk1A = *q;
     q += 4;
     arg0->unk28 = (WmPalAnim *)q;
-    arg0->unk30 = (u8 *)arg0->unk34[1] + func_8001CA70((s32)arg0->unk34[1]);
+    arg0->unk30 = (u8 *)arg0->unk34[1] + db_getSize((s32)arg0->unk34[1]);
     return 0;
 }
 
@@ -1230,7 +1230,7 @@ void func_800AC424(Unk800AC424 *arg0) {
         t = db_lookup(a, 2, 0x1B0000, 0);
         if (t == -1) {
             a = db_lookup(a, 4, id, 0);
-            g_gameState->unk1C->unk87C = func_8001CA70(b);
+            g_gameState->unk1C->unk87C = db_getSize(b);
         } else {
             a = db_lookup(t, 4, id, 0);
             g_gameState->unk1C->unk87C = db_lookup(b, 2, 0x1B0001, 0) - g_gameState->unk1C->unk8C0;

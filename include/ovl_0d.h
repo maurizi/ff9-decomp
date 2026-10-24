@@ -370,9 +370,9 @@ s32 func_80062498(void);
 s32 func_800624D8(void);
 s32 func_8006251C(void);
 u8 func_8002C700(s32, s32);
-void D_800355DC(void);
+void help_nullHandler(void);
 void func_80062724();
-extern u8 *D_80077DF0; /* = D_80077DE8.unk8, referenced by its own name */
+extern u8 *D_80077DF0; /* = g_help.text, referenced by its own name */
 s32 func_80055290(void *);
 void func_800552B8(s32);
 void func_800553EC(s32, s32, s32, s32);

@@ -132,24 +132,24 @@ void func_801F3E58(void) {
 
     if (D_801F4748.unk0 == 0) {
         pos = D_801F4748.unk4[0].unk0;
-        D_80077DE8.unk4 = 4;
+        g_help.otz = 4;
         if (D_801F4748.unk4[0].unk1 == 0) {
-            D_80077DE8.unk0 = 0;
-            D_80077DE8.unk2 = pos * 0x33 + 0x20;
+            g_help.x = 0;
+            g_help.y = pos * 0x33 + 0x20;
         } else {
-            D_80077DE8.unk0 = (pos & 3) * 0x25 + 0x8C;
-            D_80077DE8.unk2 = (pos >> 2) * 0x30 + 0x86;
+            g_help.x = (pos & 3) * 0x25 + 0x8C;
+            g_help.y = (pos >> 2) * 0x30 + 0x86;
         }
         func_800355E4();
     } else if (D_801F4748.unk0 == 1) {
         pos = D_801F4748.unk4[1].unk0;
-        D_80077DE8.unk4 = 4;
+        g_help.otz = 4;
         if (D_801F4748.unk4[1].unk1 == 0) {
-            D_80077DE8.unk0 = 4;
-            D_80077DE8.unk2 = pos * 0x33 + 0x24;
+            g_help.x = 4;
+            g_help.y = pos * 0x33 + 0x24;
         } else {
-            D_80077DE8.unk0 = (pos & 3) * 0x25 + 0x90;
-            D_80077DE8.unk2 = (pos >> 2) * 0x30 + 0x8A;
+            g_help.x = (pos & 3) * 0x25 + 0x90;
+            g_help.y = (pos >> 2) * 0x30 + 0x8A;
         }
         func_800355E4();
         if (D_80077DC0 & 3) {
@@ -171,7 +171,7 @@ INCLUDE_RODATA("asm/us/ovl_3b/nonmatchings/ovl_3b", g_partyMenuText);
 
 void func_801F3FEC(void) {
     text_setBank(g_partyMenuText);
-    func_8003556C(func_801F46FC);
+    help_setHandler(func_801F46FC);
     func_80028720(D_801EDFE8, 0xD);
     D_801F4748.unk0 = 0;
     D_801F4748.unk4[1].unk0 = 0;
@@ -189,7 +189,7 @@ void func_801F405C(void) {
 }
 
 void func_801F4084(void) {
-    func_8003556C(NULL);
+    help_setHandler(NULL);
     func_8002886C();
 }
 
@@ -330,7 +330,7 @@ u8 func_801F465C(void) {
 }
 
 void func_801F46FC(void) {
-    D_80077DE8.unk8 = text_get(D_801F4748.unk0 + 0xA);
+    g_help.text = text_get(D_801F4748.unk0 + 0xA);
 }
 
 INCLUDE_RODATA("asm/us/ovl_3b/nonmatchings/ovl_3b", D_801EDFE8);

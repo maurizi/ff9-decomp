@@ -67,8 +67,7 @@ typedef struct {
     u8 unk1; /* icon */
 } ConfigPadEntry;
 extern ConfigPadEntry D_801F14FC[8];
-/* func_800355DC; this overlay's link only has the D_ name */
-void D_800355DC(void);
+void help_nullHandler(void);
 
 /* main exe: candidates for ff9.h */
 extern s32 D_80077E54; /* = D_80077E50.unk4, referenced by its own name */

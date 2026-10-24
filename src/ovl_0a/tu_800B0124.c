@@ -950,7 +950,7 @@ s32 func_800B29F8(Unk800B29F8 *arg0) {
         t = db_lookup(a, 2, 0x1B0000, 0);
         if (t == -1) {
             a = db_lookup(a, 4, id, 0);
-            g_gameState->unk1C->unk87C = func_8001CA70(b);
+            g_gameState->unk1C->unk87C = db_getSize(b);
         } else {
             a = db_lookup(t, 4, id, 0);
             g_gameState->unk1C->unk87C = db_lookup(b, 2, 0x1B0001, 0) - g_gameState->unk1C->unk8C0;
@@ -1751,7 +1751,7 @@ void func_800B4A5C(void) {
     } while (i >= 0);
     func_800AC67C((s32)p);
     func_800223CC();
-    func_8001CCB4(0, 0, 0);
+    game_setClearColor(0, 0, 0);
     do {
         ClearOTagR(g_gameState->unk1C->unk10[g_gameState->unk1C->unk8], 0x1000);
         switch (state) {

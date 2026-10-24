@@ -19,7 +19,7 @@ void func_801F4414(void) {
     func_801F830C();
     func_801F7928();
     func_801F5BE0();
-    func_8003556C(func_801F500C);
+    help_setHandler(func_801F500C);
     text_setBank(g_saveMenuText);
     D_801FB1A8.unk20 = text_get(0x16);
     D_801FB1A8.unk4[0] = 1;
@@ -191,14 +191,14 @@ void func_801F4E00(void) {
 
     if (!func_8002F810() && D_801FB1A8.unk2 == 2) {
         if (D_801FB1A8.unk1 == 1) {
-            D_80077DE8.unk0 = 0x74;
-            D_80077DE8.unk4 = 0x32;
-            D_80077DE8.unk2 = g_menu.unk2 * 0x12 + 0x6D;
+            g_help.x = 0x74;
+            g_help.otz = 0x32;
+            g_help.y = g_menu.unk2 * 0x12 + 0x6D;
             func_800355E4();
         } else if (D_801FB1A8.unk1 == 4 || (D_801FB1A8.unk1 == 5 && blink)) {
-            D_80077DE8.unk0 = 0;
-            D_80077DE8.unk4 = 0x2A;
-            D_80077DE8.unk2 = D_801FB1A8.unk24.cursor * 0x3C + 0x42;
+            g_help.x = 0;
+            g_help.otz = 0x2A;
+            g_help.y = D_801FB1A8.unk24.cursor * 0x3C + 0x42;
             func_800355E4();
         } else if (D_801FB1A8.unk1 == 3 && blink) {
             ui_drawHand(0, D_801FB1A8.unk24.cursor * 0x3C + 0x42, 0x2A);
@@ -246,21 +246,21 @@ void func_801F500C(void) {
     u8 st;
     s32 v;
 
-    D_80077DE8.unk8 = NULL;
+    g_help.text = NULL;
     if (D_801FB1A8.unk2 == 2 && D_801FB1A8.unk8 != 0) {
-        func_80035580(NULL);
+        help_setBounds(NULL);
         st = D_801FB1A8.unk1;
         if (st == 1) {
-            func_80035580(&r);
+            help_setBounds(&r);
             v = 5;
             if (D_801FB1A8.unk0 == st) {
                 v = 7;
             }
-            D_80077DE8.unk8 = text_get(v + D_80077DB2);
+            g_help.text = text_get(v + D_80077DB2);
         } else if (st == 4) {
             func_801F5114();
         } else if (st == 3) {
-            D_80077DE8.unk8 = func_801F6320();
+            g_help.text = func_801F6320();
         }
     }
 }
@@ -317,8 +317,8 @@ void func_801F5280(void) {
 void func_801F52C0(void) {
     s32 i;
 
-    func_8003563C(0);
-    func_8003556C(NULL);
+    help_setDisabled(0);
+    help_setHandler(NULL);
     func_801FAECC();
     func_801F5D00();
     func_801F7950();
@@ -487,7 +487,7 @@ void func_801F59B8(void) {
     if (D_801FB1A8.unk1 != 1 && D_801FB1A8.unk1 != 4 && D_801FB1A8.unk1 != 3) {
         hide = 1;
     }
-    func_8003563C(hide);
+    help_setDisabled(hide);
 }
 
 void func_801F5A24(void) {
@@ -666,11 +666,11 @@ void func_801F60DC(Window *w) {
         b = a & 0xFFF;
     }
     if (w->unk1C == 3) {
-        D_80077DE8.unk0 = w->unk0 + ((s32)(w->unk4 - b) >> 1) - 0x1A;
-        D_80077DE8.unk2 = w->unk2 + (s16)(w->unk6 + (s16)(D_801FBEE0.unk1 * 15 - 0x26)) + 3;
+        g_help.x = w->unk0 + ((s32)(w->unk4 - b) >> 1) - 0x1A;
+        g_help.y = w->unk2 + (s16)(w->unk6 + (s16)(D_801FBEE0.unk1 * 15 - 0x26)) + 3;
         z = w->unk18;
-        D_80077DE8.unk4 = z;
-        ui_drawHand(D_80077DE8.unk0, D_80077DE8.unk2, z - 1);
+        g_help.otz = z;
+        ui_drawHand(g_help.x, g_help.y, z - 1);
     }
 }
 

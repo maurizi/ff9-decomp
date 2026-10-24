@@ -15,6 +15,7 @@ btlseq_startDirect = 0x800CA694;
 btlseq_isBusy = 0x800CA774;
 btl_getBattleVar = 0x800BE784;
 btl_setBattleVar = 0x800BE99C;
+btl_findUnitByBit = 0x800BED6C;  /* func_8004B7A4, unit attribute 0x20 */
 /* ovl_0c functions called from main (ovl_0c is resident on the world map) */
 wm_getEncounterEntry = 0x800BBBA8;  /* evt_rollEncounter, g_evtMode 3 */
 fld_gameOver = 0x800A80A4;       /* ovl_0a (resident field overlay), mode 7 */

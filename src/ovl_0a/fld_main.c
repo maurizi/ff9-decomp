@@ -141,8 +141,8 @@ void func_800A8198(void) {
     f = g_gameState->unk1C->unk8E4.field;
     func_800A8380();
     g_gameState->vsyncMode = 2;
-    func_8001CD04(0xE0);
-    func_8001CFB4();
+    game_setScreenHeight(0xE0);
+    game_freezeScreen();
     SetDispMask(1);
     g_gameState->unk1C->unk838 = func_800AAB30;
     g_gameState->unk1C->unk83C = func_800B0124;
@@ -253,7 +253,7 @@ void func_800A85F4(s32 arg0) {
     func_800A86FC();
     o = g_gameState->unk1C->unk8E4.field->unkC;
     func_800A8724();
-    func_8001CFB4();
+    game_freezeScreen();
     func_800A87DC(o, arg0);
     func_800A879C(o, arg0);
     o->unk4 = D_80067948;
@@ -330,7 +330,7 @@ s32 func_800A87DC(FieldMapObj *arg0, s32 arg1) {
     }
     arg0->unkC = (void *)D_80067948;
     db_register(D_80067948, 0);
-    D_80067948 += func_8001CA70((s32)arg0->unkC);
+    D_80067948 += db_getSize((s32)arg0->unkC);
     return 0;
 }
 
@@ -350,11 +350,11 @@ void fld_load(s32 arg0) {
     func_800A9350();
     sc = g_gameState->unk1C->unk8E4.field->unkC->unk14;
     func_800A939C();
-    func_8001CFB4();
+    game_freezeScreen();
     g_gameState->unk0 &= ~0x30F;
     g_gameState->unk1C->unk0 |= 0x20;
     g_gameState->unk1C->unk8E4.field->unk0 |= 4;
-    func_8001CCB4(0, 0, 0);
+    game_setClearColor(0, 0, 0);
     g_padPortMask[0] &= 0xFFFF0006;
     for (i = 1; i >= 0; i--) {
         for (j = 3; j >= 0; j--) {
@@ -813,7 +813,7 @@ s32 fld_loadFile(FieldScene *sc, s32 arg1) {
         }
     }
     db_register((s32)sc->unk24, 0);
-    D_80067948 = (s32)sc->unk24 + func_8001CA70((s32)sc->unk24);
+    D_80067948 = (s32)sc->unk24 + db_getSize((s32)sc->unk24);
     return 0;
 }
 

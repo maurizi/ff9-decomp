@@ -134,8 +134,8 @@ void btl_initMode(void) {
     b = g->unk8E4.battle;
     btl_clearBattle();
     g_gameState->vsyncMode = 4;
-    func_8001CD04(0xDA);
-    func_8001CFB4();
+    game_setScreenHeight(0xDA);
+    game_freezeScreen();
     SetDispMask(1);
     g->unk838 = func_800AB810;
     g->unk83C = btl_soundCmd;
@@ -266,7 +266,7 @@ void btl_load(s32 arg0) {
     p = g_gameState->unk1C->unk8E4.battle->unk11C0;
     btl_initReturnInfo();
     g_gameState->unk0 &= ~0x30F;
-    func_8001CCB4(0, 0, 0);
+    game_setClearColor(0, 0, 0);
     g_gameState->unk1C->battleId = arg0;
     btl_loadEncounterFile((Unk800AA08C *)p, arg0);
     btl_initEncounter((Unk800AA08C *)p, arg0);
@@ -809,9 +809,9 @@ loop:
             }
             te--;
         } while (te >= tf);
-        D_80067948 = sp1C + func_8001CA70(sp1C);
+        D_80067948 = sp1C + db_getSize(sp1C);
         b->unk11C0->unk48 = (u8 *)D_80067948;
-        arg2->unkC += func_8001CA70(dst);
+        arg2->unkC += db_getSize(dst);
         *(b->unk1354->unk10 + arg2->unkA) = (void *)sp1C;
         db_register(sp1C, 0);
         arg2->unkA++;
@@ -2093,7 +2093,7 @@ void func_800AE844(Unk800AE844 *arg0) {
         base = p;
         if (f == -1) {
             p = db_lookup(p, 4, id, 0);
-            g_gameState->unk1C->unk87C = func_8001CA70(base);
+            g_gameState->unk1C->unk87C = db_getSize(base);
         } else {
             p = db_lookup(f, 4, id, 0);
             g_gameState->unk1C->unk87C = db_lookup(base, 2, 0x1B0001, 0) - g_gameState->unk1C->unk8C0;

@@ -19,7 +19,7 @@ void func_801F08F4(void) {
     text_setBank("-");
     func_801F2E60();
     func_801F2CD4();
-    func_8003556C(D_801F347C.unk3 ? func_801F22DC : 0);
+    help_setHandler(D_801F347C.unk3 ? func_801F22DC : 0);
     setRECT(&D_801F347C.unk18D0, 8, 0x26, 0x9E, 0xB6);
     setRECT(&D_801F347C.unk18D8, 0xAA, 0x26, 0x8A, 0x4E);
     setRECT(&D_801F347C.unk18E0, 0xAA, 0x76, 0x8A, 0x66);
@@ -297,16 +297,16 @@ void func_801F166C(void) {
 
     if (!func_8002F810()) {
         if (D_801F347C.unk0 == 1 || (D_801F347C.unk0 == 2 && blink)) {
-            D_80077DE8.unk4 = 0x11;
-            D_80077DE8.unk0 = D_801F347C.unk18D0.x + D_801F347C.unk2 * 15 - 20;
-            D_80077DE8.unk2 = D_801F347C.unk18D0.y + D_801F347C.unk1 * 15 + 14;
+            g_help.otz = 0x11;
+            g_help.x = D_801F347C.unk18D0.x + D_801F347C.unk2 * 15 - 20;
+            g_help.y = D_801F347C.unk18D0.y + D_801F347C.unk1 * 15 + 14;
             func_800355E4();
         }
         if (D_801F347C.unk0 == 2) {
             Window *w = D_801F347C.unk18E8;
-            D_80077DE8.unk0 = w->unk0 + 0x16;
-            D_80077DE8.unk2 = w->unk2 + (s16)(D_801F347C.unk5 * 15 + 0x32);
-            D_80077DE8.unk4 = 9;
+            g_help.x = w->unk0 + 0x16;
+            g_help.y = w->unk2 + (s16)(D_801F347C.unk5 * 15 + 0x32);
+            g_help.otz = 9;
             func_800355E4();
         }
     }
@@ -398,7 +398,7 @@ void func_801F1C88(void) {
     u8 n;
     CardMenu *m;
 
-    func_8003556C(func_800625F8() ? func_801F22DC : NULL);
+    help_setHandler(func_800625F8() ? func_801F22DC : NULL);
     for (i = 0; i < 100; i++) {
         n = func_80062560(i);
         D_801F347C.unk8[i] = n;
@@ -525,12 +525,12 @@ void func_801F22DC(void) {
     RECT r;
     u8 n;
 
-    D_80077DE8.unk8 = NULL;
-    func_80035580(NULL);
+    g_help.text = NULL;
+    help_setBounds(NULL);
     if (D_801F347C.unk0 == 1) {
         n = D_801F347C.unk8[D_801F347C.unk2 * 10 + D_801F347C.unk1];
         if (n != 0) {
-            D_80077DE8.unk8 = text_get(n >= 2 ? 0x24 : 0x23);
+            g_help.text = text_get(n >= 2 ? 0x24 : 0x23);
         }
     } else if (D_801F347C.unk0 == 2) {
         if (D_801F347C.unk5 == 1) {
@@ -538,9 +538,9 @@ void func_801F22DC(void) {
             r.y = 0x8C;
             r.w = g_gameState->unkC->disp.w;
             r.h = g_gameState->unkC->disp.h - 0x8C;
-            func_80035580(&r);
+            help_setBounds(&r);
         }
-        D_80077DE8.unk8 = text_get(D_801F347C.unk5 + 0x25);
+        g_help.text = text_get(D_801F347C.unk5 + 0x25);
     }
 }
 
@@ -559,7 +559,7 @@ void func_801F240C(void) {
         func_8002C870(0, id, D_801F347C.unk1948[i].unk0);
         func_8002C8AC(0, id, D_801F347C.unk1948[i].unk4);
     }
-    func_8003556C(NULL);
+    help_setHandler(NULL);
     func_801F2EE8();
 }
 

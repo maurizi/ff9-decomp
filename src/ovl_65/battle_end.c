@@ -39,7 +39,7 @@ void battleEnd_init(void) {
     Unk11C0 *s = g_gameState->unk1C->unk8E4.ovl65->unk11C0;
     FileEntry *e;
 
-    func_8001CFB4();
+    game_freezeScreen();
     func_80021CDC(0);
     func_801F0E30();
     func_801EF6F8();
@@ -549,7 +549,7 @@ void func_801F0DE4(s32 arg0, s32 arg1, s32 arg2, u8 *arg3, s32 arg4) {
 void func_801F0E30(void) {
     func_800239D0();
     func_8002C064(0);
-    func_8003556C(0);
+    help_setHandler(0);
     g_gameState->vsyncMode = 2;
     D_801F7A78.unkA = 0;
     D_801F7A78.unk8 = 0;
@@ -594,7 +594,7 @@ u8 rewards_update(void) {
 }
 
 void func_801F0FC4(void) {
-    func_8003556C(0);
+    help_setHandler(0);
     func_801F2E24();
     D_801F7A78.unk2 = 1;
 }
