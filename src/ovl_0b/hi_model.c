@@ -163,7 +163,7 @@ void Hi_DrawEffModel(SVECTOR *arg0, VECTOR *arg1, s32 arg2, s32 arg3) {
     btl_setModelTransform(s->unk0, arg0, arg1, arg2);
     g_btlfxEnv->prim = btl_calcBoneMatrices(s->unk0, 0, g_btlfxEnv->prim);
     s->unk0->unk10 = 0;
-    n = s->unk0->unk8->unk3;
+    n = s->unk0->unk8->meshCount;
     for (i = 0; i < n; i++) {
         btl_projectMesh(s->unk0, i);
         if (s->unk22 != 0) {
@@ -190,7 +190,7 @@ void Hi_DrawSliceEffModel(SVECTOR *arg0, VECTOR *arg1, s32 arg2, s32 arg3) {
     g_btlfxEnv->prim = btl_calcBoneMatrices(s->unk0, 0, g_btlfxEnv->prim);
     s->unk0->unk10 = 0;
     s->unk0->unk5A = arg1->vy - s->unk24;
-    n = s->unk0->unk8->unk3;
+    n = s->unk0->unk8->meshCount;
     for (i = 0; i < n; i++) {
         btlfx_projectSliceMesh(s->unk0, i);
         g_btlfxEnv->prim = func_800DE11C(s->unk0, i, g_btlfxEnv->prim);
@@ -208,7 +208,7 @@ void Hi_DrawEffModelByBone(s32 arg0, s32 arg1, s32 arg2, s32 arg3) {
         btl_scaleModelMatrix(s->unk0, (VECTOR *)arg0);
     }
     s->unk0->unk10 = 0;
-    n = s->unk0->unk8->unk3;
+    n = s->unk0->unk8->meshCount;
     for (i = 0; i < n; i++) {
         btl_projectMesh(s->unk0, i);
         if (s->unk22 != 0) {
@@ -236,7 +236,7 @@ void Hi_DrawMorphEffModel(SVECTOR *arg0, VECTOR *arg1, s32 arg2, s32 arg3, s32 a
     btl_setModelTransform(s->unk0, arg0, arg1, arg2);
     g_btlfxEnv->prim = btl_calcBoneMatrices(s->unk0, 0, g_btlfxEnv->prim);
     s->unk0->unk10 = 0;
-    n = s->unk0->unk8->unk3;
+    n = s->unk0->unk8->meshCount;
     for (i = 0; i < n; i++) {
         btlfx_projectMorphMesh(s->unk0, i, arg5);
         if (s->unk22 != 0) {
@@ -267,7 +267,7 @@ void Hi_DrawMorphModelByBone(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, s
         btl_scaleModelMatrix(s->unk0, (VECTOR *)arg0);
     }
     s->unk0->unk10 = 0;
-    n = s->unk0->unk8->unk3;
+    n = s->unk0->unk8->meshCount;
     for (i = 0; i < n; i++) {
         btlfx_projectMorphMesh(s->unk0, i, arg3);
         if (s->unk22 != 0) {
@@ -316,7 +316,7 @@ s32 Hi_DrawSummonModel(SVECTOR *arg0, VECTOR *arg1, s32 arg2, s32 arg3, s32 arg4
     g_btlfxEnv->prim = btl_calcBoneMatrices(s->unk0, f, g_btlfxEnv->prim);
     s->unk50++;
     s->unk0->unk10 = 0;
-    c = s->unk0->unk8->unk3;
+    c = s->unk0->unk8->meshCount;
     for (i = 0; i < c; i++) {
         if (!(s->unk0->unk14 & (1 << i))) {
             btl_projectMesh(s->unk0, i);
@@ -652,7 +652,7 @@ void btlfx_getEffModelMeshCount(s32 arg0) {
 }
 
 u8 btl_getMeshCount(BtlUnit9C *arg0) {
-    return arg0->unk8->unk3;
+    return arg0->unk8->meshCount;
 }
 
 void btlfx_getCasterTexInfo(BtlTexInfo *arg0, BtlTexInfo *arg1, s32 arg2) {

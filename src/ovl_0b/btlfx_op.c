@@ -1277,13 +1277,13 @@ s32 btlfx_getUnitRadius(s32 arg0) {
     u = btl_getUnit(arg0);
     f = u->unk68;
     if ((f & 1) || flag != 0) {
-        return u->model->unk8->unkA;
+        return u->model->unk8->radius;
     }
     return g_gameState->unk1C->unk8E4.battle->enemies[(f >> 1) & 0xF].unk0->unk24;
 }
 
 s32 btl_getUnitHeight(BtlUnit *arg0) {
-    return arg0->model->unk8->unk8;
+    return arg0->model->unk8->height;
 }
 
 s32 btlfx_getUnitHeight(s32 arg0) {
@@ -1503,7 +1503,7 @@ s32 btlfx_compareDepth(s32 arg0, s32 arg1) {
 }
 
 s32 func_800E7CC4(s32 arg0, s32 arg1) {
-    return (u16)(btl_getUnit(arg0)->model->unk8->unkA / 6) + arg1;
+    return (u16)(btl_getUnit(arg0)->model->unk8->radius / 6) + arg1;
 }
 
 u32 btlfx_getUnitSlot(s32 arg0) {
@@ -1701,7 +1701,7 @@ void btlfx_reapplyVanish(BtlUnit *arg0) {
 s32 btlfx_getScaledRadius(s32 arg0) {
     VECTOR v;
     btlfx_getUnitScale(arg0, &v);
-    return btl_getUnit(arg0)->model->unk8->unkA * v.vx >> 12;
+    return btl_getUnit(arg0)->model->unk8->radius * v.vx >> 12;
 }
 
 s32 func_800E84F0(s32 arg0) {
@@ -1777,8 +1777,8 @@ void btl_forEachModelVertex(BtlUnit9C8 *arg0, void (*arg1)(SVECTOR *, s32)) {
     s32 n;
     BtlMesh *m;
     BtlUnit9C8 *g = arg0;
-    for (i = 0; i < g->unk3; i++) {
-        m = &g->unk10[i];
+    for (i = 0; i < g->meshCount; i++) {
+        m = &g->meshes[i];
         n = 0;
         for (j = 0; j < g->unk2; j++) {
             for (k = 0; k < m->vertexCounts[j]; k++) {

@@ -1106,7 +1106,7 @@ void btl_drawActiveMarker(GameData *arg0, Battle *arg1, BtlUnit *arg2) {
     gte_SetRotMatrix(&arg0->unk18);
     gte_SetTransMatrix(&arg0->unk18);
     v.vx = arg2->pos[0] >> 16;
-    v.vy = (arg2->pos[1] >> 16) - arg2->model->unk8->unk8;
+    v.vy = (arg2->pos[1] >> 16) - arg2->model->unk8->height;
     v.vz = arg2->pos[2] >> 16;
     gte_ldv0(&v);
     gte_rtps();

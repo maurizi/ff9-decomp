@@ -1294,7 +1294,7 @@ u32 btl_registerModel(s32 arg0, s32 arg1) {
     btl_getModelTexInfo((e->unk4 & 0xFFFFFF) | (n << 24), (s32 **)&pa, (s32 **)&pb, (s32 **)&pc);
     /* c reused for the unk8 block (a second set keeps it a global pseudo, in v1 as in the original) */
     c = (BtlUnit9CC *)e->unk8->unk8;
-    cnt = ((BtlUnit9C8 *)c)->unk3;
+    cnt = ((BtlUnit9C8 *)c)->meshCount;
     i = 0;
     if (cnt) {
         /* Probably macro residue: a dead store (deleted by flow, no code). The block boundary it leaves

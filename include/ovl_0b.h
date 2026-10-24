@@ -117,12 +117,12 @@ typedef struct {
 typedef struct BtlUnit9C8 {
     u16 unk0; /* flags: 1 = relocated */
     u8 unk2;
-    u8 unk3; /* count of unk10 */
+    u8 meshCount; /* mesh groups (unk10) */
     u8 pad4[8 - 4];
-    u16 unk8;
-    u16 unkA;
+    u16 height; /* btl_getUnitHeight */
+    u16 radius; /* btlfx_getUnitRadius (party units) */
     s32 unkC; /* offset, relocated on load */
-    BtlMesh *unk10;
+    BtlMesh *meshes;
 } BtlUnit9C8;
 
 /* animation (btl_calcBoneMatrices) */

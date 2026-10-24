@@ -92,7 +92,7 @@ void btl_updateUnitModel(BtlUnit *u, s32 *ot) {
     if (!(u->status & (BTL_STATUS_PETRIFY | BTL_STATUS_VENOM | BTL_STATUS_STOP | BTL_STATUS_FREEZE)) && !((u->unk68 >> 21) & 1)) {
         a->unk3A++;
     }
-    n = m->unk8->unk3;
+    n = m->unk8->meshCount;
     btl_updateModelVisibility(m);
     u->model->unk0 &= ~0x20;
     for (i = 0; i < n; i++) {
@@ -109,7 +109,7 @@ void btl_updateUnitModel(BtlUnit *u, s32 *ot) {
         u->weaponModel->unk10 = 0;
         *ot = (s32)btl_calcBoneMatrices(u->weaponModel, 0, (u8 *)*ot);
         w = u->weaponModel;
-        n = w->unk8->unk3;
+        n = w->unk8->meshCount;
         btl_updateModelVisibility(w);
         u->weaponModel->unk0 &= ~0x20;
         for (i = 0; i < n; i++) {

@@ -1062,12 +1062,12 @@ void btl_setUnitBrightness(BtlUnit *arg0, u32 arg1) {
         i = 0;
         e = btlbg_getHeader();
         btl_setModelAbr(arg0->model, 0x60);
-        for (; i < arg0->model->unk8->unk3; i++) {
+        for (; i < arg0->model->unk8->meshCount; i++) {
             btl_setMeshRgb(arg0->model, i, (s32)((e->lightR * arg1) << 11) >> 16, (s32)((e->lightG * arg1) << 11) >> 16, (s32)((e->lightB * arg1) << 11) >> 16);
         }
         if (arg0->weaponModel != NULL) {
             btl_setModelAbr(arg0->weaponModel, 0x60);
-            for (i = 0; i < arg0->weaponModel->unk8->unk3; i++) {
+            for (i = 0; i < arg0->weaponModel->unk8->meshCount; i++) {
                 btl_setMeshRgb(arg0->weaponModel, i, (s32)((e->lightR * arg1) << 11) >> 16, (s32)((e->lightG * arg1) << 11) >> 16, (s32)((e->lightB * arg1) << 11) >> 16);
             }
         }
@@ -1234,7 +1234,7 @@ void btl_playUnitSound(BtlUnit *arg0, u16 arg1, u8 arg2) {
 void btl_applyBgLight(BtlUnit9C *arg0) {
     s32 i;
     BtlBgHeader *p = btlbg_getHeader();
-    for (i = 0; i < arg0->unk8->unk3; i++) {
+    for (i = 0; i < arg0->unk8->meshCount; i++) {
         btl_setMeshRgb(arg0, i & 0xFF, p->lightR, p->lightG, p->lightB);
     }
 }

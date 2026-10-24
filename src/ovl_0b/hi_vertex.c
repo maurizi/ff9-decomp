@@ -13,8 +13,8 @@ void GeoSplitVertices(BtlUnit9C *arg0, s32 arg1, s32 arg2) {
     BtlMesh *m;
     s32 i;
 
-    n = arg0->unk8->unk3;
-    m = arg0->unk8->unk10;
+    n = arg0->unk8->meshCount;
+    m = arg0->unk8->meshes;
     for (i = 0; i < n; i++) {
         if (arg1 == -1 || arg1 == i) {
             arg2 = btlfx_splitMeshVertices(arg0, i, arg2);
@@ -28,12 +28,12 @@ void GeoSplitVertices(BtlUnit9C *arg0, s32 arg1, s32 arg2) {
 
 s32 btlfx_getSplitVertexSize(BtlUnit9C *arg0, s32 arg1) {
     BtlUnit9C8 *m = arg0->unk8;
-    s32 n = m->unk3;
+    s32 n = m->meshCount;
     s32 r = 0;
     s32 i;
     for (i = 0; i < n; i++) {
         if (arg1 == -1 || arg1 == i) {
-            BtlMesh *g = &m->unk10[i];
+            BtlMesh *g = &m->meshes[i];
             r += g->nFT4 * 4;
             r += g->nFT3 * 3;
             r += g->nGT4 * 4;
@@ -54,7 +54,7 @@ void Hi_GetMdlVertexPtr(s32 arg0, u16 arg1, s32 arg2, s32 *arg3, s32 arg4) {
 }
 
 u16 btlfx_getMeshPrims(BtlUnit9C *arg0, u16 arg1, s32 arg2, s32 *arg3, s32 arg4) {
-    BtlMesh *m = &arg0->unk8->unk10[arg1];
+    BtlMesh *m = &arg0->unk8->meshes[arg1];
     if (arg4 == 0) {
         *arg3 = arg2;
         return m->nFT4;
@@ -134,7 +134,7 @@ u32 btlfx_splitMeshVertices(BtlUnit9C *arg0, u16 arg1, s32 arg2) {
     u32 k;
 
     n = 0;
-    g = &arg0->unk8->unk10[arg1];
+    g = &arg0->unk8->meshes[arg1];
     p = (u8 *)g->prims;
     src = g->vertices;
     g->vertices = (SVECTOR *)arg2;

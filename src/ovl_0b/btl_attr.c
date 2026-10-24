@@ -23,14 +23,14 @@ void btl_showMeshes(BtlUnit *arg0, u16 arg1) {
 
 void btl_hideWeapon(BtlUnit *arg0) {
     s32 i;
-    for (i = 0; i < arg0->weaponModel->unk8->unk3; i++) {
+    for (i = 0; i < arg0->weaponModel->unk8->meshCount; i++) {
         arg0->weaponModel->unk14 |= 1 << i;
     }
 }
 
 void btl_showWeapon(BtlUnit *arg0) {
     s32 i;
-    for (i = 0; i < arg0->weaponModel->unk8->unk3; i++) {
+    for (i = 0; i < arg0->weaponModel->unk8->meshCount; i++) {
         arg0->weaponModel->unk14 &= ~(1 << i);
     }
 }

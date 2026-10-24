@@ -148,7 +148,7 @@ void btl_initPartyUnit(Character *c, BtlUnit *u, u16 slot, u16 n) {
     u->magicDef = c->magicDef;
     u->magicEva = c->magicEva;
     btl_initEquipElements(c, u);
-    for (i = 0; i < u->weaponModel->unk8->unk3; i++) {
+    for (i = 0; i < u->weaponModel->unk8->meshCount; i++) {
         btl_setMeshRgb(u->weaponModel, i, 0, 0, 0);
     }
     if (u->hp * 6 < u->max->maxHp) {
@@ -274,7 +274,7 @@ void btl_resetUnit(BtlUnit *arg0, Unk8E0 *arg1) {
         arg0->model->unk50[2].unk4 |= 1;
         arg0->model->unk50[2].unkC = 0;
         arg0->model->unk50[2].unk12 = 0x1000;
-        for (i = 0; i < arg0->model->unk8->unk3; i++) {
+        for (i = 0; i < arg0->model->unk8->meshCount; i++) {
             btl_setMeshRgb(arg0->model, i, 0, 0, 0);
         }
     }

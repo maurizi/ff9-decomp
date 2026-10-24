@@ -1,7 +1,7 @@
 #include "ovl_0b.h"
 
 void btl_addMeshRgb(BtlUnit9C *arg0, u8 arg1, s16 arg2, s16 arg3, s16 arg4) {
-    BtlMesh *g = &arg0->unk8->unk10[arg1];
+    BtlMesh *g = &arg0->unk8->meshes[arg1];
     u32 *p = g->prims;
     u32 i;
     for (i = 0; i < g->nFT4; i++) {
@@ -15,7 +15,7 @@ void btl_addMeshRgb(BtlUnit9C *arg0, u8 arg1, s16 arg2, s16 arg3, s16 arg4) {
 }
 
 void btl_setMeshRgb(BtlUnit9C *arg0, u8 arg1, s16 arg2, s16 arg3, s16 arg4) {
-    BtlMesh *g = &arg0->unk8->unk10[arg1];
+    BtlMesh *g = &arg0->unk8->meshes[arg1];
     u32 *p = g->prims;
     u32 v = (arg4 << 16) | (arg3 << 8) | arg2;
     u32 i;
@@ -59,7 +59,7 @@ void btl_setModelAbr(BtlUnit9C *arg0, s32 arg1) {
     if (!(arg0->unk0 & 0x10)) {
         arg0->unk5 = arg1;
         p = (u8 *)arg0->unk10;
-        for (i = 0; i < arg0->unk8->unk3; i++) {
+        for (i = 0; i < arg0->unk8->meshCount; i++) {
             if (!(arg0->unk14 & (1 << i))) {
                 do {
                     code = getcode(p);
