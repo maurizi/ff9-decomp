@@ -532,7 +532,7 @@ void func_800355DC(void); /* empty function, passed to func_8003556C as a no-op 
 s32 func_8002BA10(u8 *);
 void func_80023A0C(void);
 void SetSprt16(SPRT_16 *);
-s32 func_80062794(s32); /* width of a number string? */
+s32 func_80062794(s32); /* text width of a card name (func_8002BA68 of func_8006276C) */
 s32 func_80062498(void);
 s32 func_800624D8(void);
 s32 func_8006251C(void);
