@@ -31,6 +31,9 @@ options:
   data_string_guesser_level: 2
   asm_jtbl_label_macro: jlabel
   ld_bss_is_noload: false
+  subalign: 4
+  ld_align_section_vram_end: false
+  ld_align_segment_vram_end: false
 
 segments:
   - name: header
@@ -44,7 +47,12 @@ segments:
     bss_size: 0x0
     subsegments:
       - [0x800, .rodata, main]
-      - [0x2FA0, c, main]   # first function (addiu sp,sp,-0x20); split into files as they are identified
+      - [0x860, .rodata, psyq_80012B68]
+      - [0xB30, .rodata, rest]
+      - [0x2FA0, c, main]
+      - [0x3368, c, psyq_80012B68]
+      - [0x71B8, c, init]
+      - [0x73B8, c, rest]
       - [0x56DE0, data]   # after last jr ra at 0x56DCC
 
   - [0x1DE800]

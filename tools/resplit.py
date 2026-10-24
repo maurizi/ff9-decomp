@@ -134,8 +134,34 @@ def slot_re(name, kinds="ASM|RODATA"):
     return re.compile(r'^INCLUDE_(?:' + kinds + r')\("[^"]+",\s*' + re.escape(name) + r"\);\n", re.M)
 
 
-def merge(old, fresh, aliases):
-    """old, fresh: {path: text}. Returns (new texts, {path: kept count}, missing list)."""
+ASM_ADDR = re.compile(r"^\s*/\* [0-9A-F]+ ([0-9A-F]{8}) ", re.M)
+
+
+def rodata_ranges(texts):
+    """[(asm dir of the binary, lo, hi)] vram ranges of the asm files the given sources INCLUDE_RODATA (read before re-splitting)."""
+    out = []
+    for text in texts:
+        for d, name in re.findall(r'^INCLUDE_RODATA\("([^"]+)",\s*(\w+)\);', text, re.M):
+            try:
+                addrs = [int(a, 16) for a in ASM_ADDR.findall(open(f"{d}/{name}.s").read())]
+            except OSError:
+                continue
+            if addrs:
+                out.append((d.split("/nonmatchings")[0], min(addrs), max(addrs)))
+    return out
+
+
+def asm_start(d, name):
+    try:
+        m = ASM_ADDR.search(open(f"{d}/{name}.s").read())
+    except OSError:
+        return None
+    return int(m.group(1), 16) if m else None
+
+
+def merge(old, fresh, aliases, old_ranges=()):
+    """old, fresh: {path: text}. old_ranges: vram ranges of the rodata the old sources INCLUDE_RODATA'd.
+    Returns (new texts, {path: kept count}, missing list)."""
     # Fresh splat output, with each old file's preamble restored.
     new = {}
     for path, text in fresh.items():
@@ -165,16 +191,24 @@ def merge(old, fresh, aliases):
         parsed[path] = out + run, absorbed, tail
 
     # Rodata the old sources no longer INCLUDE_RODATA (now emitted by C, e.g. string literals), or that
-    # a glued chunk now carries itself, must not come back as a slot.
-    RODATA_SLOT = re.compile(r'^INCLUDE_RODATA\("[^"]+",\s*(\w+)\);\n(?:\n)?', re.M)
+    # a glued chunk now carries itself, must not come back as a slot. A new symbol that starts inside
+    # rodata an old slot covered (a new subsegment boundary split that symbol) keeps its slot.
+    RODATA_SLOT = re.compile(r'^INCLUDE_RODATA\("([^"]+)",\s*(\w+)\);\n(?:\n)?', re.M)
+
+    def keep(m, had, gone):
+        d, name = m.group(1), m.group(2)
+        if name in had:
+            return name not in gone
+        a = asm_start(d, name)
+        b = d.split("/nonmatchings")[0]
+        return a is not None and any(ob == b and lo < a <= hi for ob, lo, hi in old_ranges)
     for npath in new:
         olds = same_bin(npath, old)
         if not olds:
             continue
-        had = set().union(*(set(RODATA_SLOT.findall(old[p])) for p in olds))
+        had = set(n for p in olds for _, n in RODATA_SLOT.findall(old[p]))
         gone = set().union(*(parsed[p][1] for p in olds))
-        new[npath] = RODATA_SLOT.sub(
-            lambda m: m.group(0) if m.group(1) in had and m.group(1) not in gone else "", new[npath])
+        new[npath] = RODATA_SLOT.sub(lambda m: m.group(0) if keep(m, had, gone) else "", new[npath])
 
     # Put every item back over its slot, in whichever file of the same binary it now lives (overlays at
     # the same address reuse names). Slots still INCLUDE'd keep their lead (comments above them).
@@ -214,6 +248,13 @@ def merge(old, fresh, aliases):
         if path in new:
             new[path] = new[path].rstrip("\n") + "\n" + tail
 
+    # Items that moved to another file (e.g. a C subsegment split in two) carry their INCLUDE_RODATA
+    # lines along; point them at the new file's asm directory.
+    for path in new:
+        base = os.path.splitext(os.path.basename(path))[0]
+        new[path] = re.sub(r'^(INCLUDE_(?:ASM|RODATA)\("[^"]*/nonmatchings/)[^"/]+"',
+                           lambda m: m.group(1) + base + '"', new[path], flags=re.M)
+
     # Safety net: anything that was C before must not come back as INCLUDE_ASM.
     for path, text in old.items():
         siblings = same_bin(path, new)
@@ -244,6 +285,7 @@ def main():
             continue
         old[path] = open(path).read()
         os.rename(path, path + ".bak")
+    old_ranges = rodata_ranges(old.values())
     try:
         subprocess.run(["rm", "-rf", "asm/us"], check=True)
         # The exe and overlays one by one (their output is worth reading); the many small effect
@@ -265,7 +307,7 @@ def main():
         raise
 
     fresh = {p: open(p).read() for p in glob.glob("src/**/*.c", recursive=True) if mine(p)}
-    new, kept, missing = merge(old, fresh, asm_aliases(old.values()))
+    new, kept, missing = merge(old, fresh, asm_aliases(old.values()), old_ranges)
     for path, text in new.items():
         open(path, "w").write(text)
     for path, n in sorted(kept.items()):
