@@ -24,7 +24,7 @@ void func_801EEA1C(void) {
             D_801F1558.unk1++;
         }
     }
-    help_setHandler(help_nullHandler);
+    help_setCallback(help_nullHandler);
 }
 
 void func_801EEB68(void) {
@@ -44,7 +44,7 @@ void func_801EEB68(void) {
     for (; i < sp.unk0; i++) {
         r.y = i * 0x14 + (s16)(sp.unk2 + 0x2A);
         func_801F0550(&r, 0x17, sp.unk1 + i);
-        win_drawBoxPal(&r, 0x17, 0);
+        win_drawBox(&r, 0x17, 0);
     }
     if (l->unk8 & 4) {
         a.x = 8;
@@ -186,21 +186,21 @@ void func_801EF3F8(void) {
 
     i = D_801F1558.unk3C.unk5 + D_801F1558.unk3C.cursor;
     if (!func_8002F810()) {
-        g_help.x = 0;
-        g_help.otz = 0x15;
-        g_help.y = D_801F1558.unk3C.cursor * 0x14 + 0x31;
+        g_menuHelp.x = 0;
+        g_menuHelp.otz = 0x15;
+        g_menuHelp.y = D_801F1558.unk3C.cursor * 0x14 + 0x31;
         if (D_801F1558.unk2 == 0 || (D_80077E54 & 3)) {
             func_800355E4();
         }
         if (D_801F1558.unk2 != 0 && !func_801F125C()) {
             if (i == 1) {
-                g_help.x = 0x66;
-                g_help.y = D_801F1558.unk0 * 0x11 + 0x33;
+                g_menuHelp.x = 0x66;
+                g_menuHelp.y = D_801F1558.unk0 * 0x11 + 0x33;
             } else if (i == 5) {
-                g_help.x = 0x65;
-                g_help.y = D_801F1558.unk0 * 0x11 + 0x33;
+                g_menuHelp.x = 0x65;
+                g_menuHelp.y = D_801F1558.unk0 * 0x11 + 0x33;
             }
-            g_help.otz = 0x10;
+            g_menuHelp.otz = 0x10;
             func_800355E4();
         }
     }
@@ -349,10 +349,10 @@ void func_801EFB38(void) {
     s32 i;
     s32 j;
 
-    g_help.text = NULL;
+    g_menuHelp.text = NULL;
     i = D_801F1558.unk3C.unk5 + D_801F1558.unk3C.cursor;
     if (D_801F1558.unk2 == 0) {
-        g_help.text = text_get(i + 2);
+        g_menuHelp.text = text_get(i + 2);
         for (j = 0; j < 2; j++) {
             func_8002BE44(j, text_get(D_801F13F0[i].unk1[j]));
         }
@@ -360,9 +360,9 @@ void func_801EFB38(void) {
     }
     if (!func_801F125C()) {
         if (i == 1) {
-            g_help.text = text_get(D_801F1558.unk0 + 0xF);
+            g_menuHelp.text = text_get(D_801F1558.unk0 + 0xF);
         } else if (i == 5) {
-            g_help.text = text_get(0x17);
+            g_menuHelp.text = text_get(0x17);
         }
     }
 }
@@ -461,7 +461,7 @@ void func_801F00A8(void) {
 }
 
 void func_801F00D8(void) {
-    help_setHandler(NULL);
+    help_setCallback(NULL);
 }
 
 void func_801F00F8(void) {
@@ -573,12 +573,12 @@ void func_801F049C(void) {
     for (; i < sp.unk0; i++) {
         r.y = i * 0x14 + (s16)(sp.unk2 + 0x2A);
         func_801F0550(&r, 0x17, sp.unk1 + i);
-        win_drawBoxPal(&r, 0x17, 0);
+        win_drawBox(&r, 0x17, 0);
     }
 }
 
 void func_801F0550(RECT *r, s32 otz, s32 i) {
-    ui_drawSeparator(r->x + 0x70, r->y + 1, otz, 4 - r->h);
+    ui_drawEtchedLine(r->x + 0x70, r->y + 1, otz, 4 - r->h);
     D_801F14BC[i](r, otz);
 }
 
@@ -662,8 +662,8 @@ void func_801F0BE8(void) {
 
     i = D_801F1558.unk3C.unk5 + D_801F1558.unk3C.cursor;
     if (D_801F1558.unk2 != 0) {
-        win_drawBoxPal(&D_801F1558.unk1C[0].unk4, 0x12, 2);
-        win_drawBoxPal(&D_801F1558.unk1C[1].unk4, 0x12, 2);
+        win_drawBox(&D_801F1558.unk1C[0].unk4, 0x12, 2);
+        win_drawBox(&D_801F1558.unk1C[1].unk4, 0x12, 2);
         if (i == 1) {
             func_801EF110();
             return;

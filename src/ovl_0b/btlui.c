@@ -2523,7 +2523,7 @@ void func_800F0A54(Window *arg0) {
     u8 *name;
     s32 c;
     Window *w = arg0;
-    ui_drawSeparator(arg0->unk0 + 0x6E, arg0->unk2 + 4, arg0->unk18, 9 - arg0->unk6);
+    ui_drawEtchedLine(arg0->unk0 + 0x6E, arg0->unk2 + 4, arg0->unk18, 9 - arg0->unk6);
     m = func_8002BE88();
     for (; u != NULL; u = u->unk0) {
         name = btl_getUnitName(u);

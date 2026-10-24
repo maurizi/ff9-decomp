@@ -180,7 +180,7 @@ void func_800CBB4C(s32 arg0) {
     if (!c->unk34.b.unk9) {
         x = r->x + 0x16;
     }
-    ui_drawPartyPortraitH(x, r->y + 1, 0x14, arg0, 0x2D, c->hp == 0);
+    ui_drawPortrait(x, r->y + 1, 0x14, arg0, 0x2D, c->hp == 0);
     text_drawBlock(r->x + 0x3C, r->y + 3, 0x14, c->unk0, 0);
     ui_drawStatusIcons(r->x + 0x86, r->y + 4, 0x14, c->unk38, 0);
     text_formatNumber(c->level, buf, 2, 1);
@@ -233,14 +233,14 @@ void func_800CBF18(void) {
     strcat(buf, D_800CE050);
     ui_drawSmallDigits(D_800CE04C->x + 0x13, D_800CE04C->y + 0x16, 0x13, buf, 0);
     ui_drawLabel(D_800CE04C->x + 6, D_800CE04C->y - 3, 0x13, D_800704C0, 0);
-    win_drawBoxPal(D_800CE04C, 0x14, 2);
+    win_drawBox(D_800CE04C, 0x14, 2);
 }
 
 void func_800CC050(void) {
     GameData *gd;
 
     ui_drawLabel(D_800CE054->x + 8, D_800CE054->y - 3, 0x13, D_8007046C, 0);
-    win_drawBoxPal(D_800CE054, 0x14, 2);
+    win_drawBox(D_800CE054, 0x14, 2);
     win_drawShadow(D_800CE054, 0x14, 2);
     gd = g_gameState->unk1C;
     if (gd->unk80C != NULL && *gd->unk80C != 0xFF) {
@@ -254,33 +254,33 @@ void func_800CC13C(void) {
     u8 blink;
 
     blink = (D_80077E54 & 3) != 0;
-    help_setDrawHand(D_800D5438.unk1 - 1U >= 2);
+    help_setCursorOnTop(D_800D5438.unk1 - 1U >= 2);
     if (!func_8002F810()) {
         if (D_800D5438.unk1 == 0 || blink) {
-            g_help.x = 0xE0;
-            g_help.otz = 1;
-            g_help.y = D_800D5438.unk0 * 0xF + 0x11;
+            g_menuHelp.x = 0xE0;
+            g_menuHelp.otz = 1;
+            g_menuHelp.y = D_800D5438.unk0 * 0xF + 0x11;
             func_800355E4();
         }
         if (D_800D5438.unk1 == 1) {
-            g_help.otz = 0xC;
-            g_help.x = D_800D5438.unk8[0].unk4.x - 0xE;
-            g_help.y = D_80077E53 * 0x2E + 0x20;
+            g_menuHelp.otz = 0xC;
+            g_menuHelp.x = D_800D5438.unk8[0].unk4.x - 0xE;
+            g_menuHelp.y = D_80077E53 * 0x2E + 0x20;
             func_800355E4();
         }
         if (D_800D5438.unk1 == 2) {
             if (D_800D5438.unk4 == 1) {
-                g_help.otz = 0xB;
-                g_help.x = D_800D5438.unk8[0].unk4.x - 0xA;
-                g_help.y = D_800D5438.unk3 * 0x2E + 0x24;
+                g_menuHelp.otz = 0xB;
+                g_menuHelp.x = D_800D5438.unk8[0].unk4.x - 0xA;
+                g_menuHelp.y = D_800D5438.unk3 * 0x2E + 0x24;
                 func_800355E4();
                 if (blink) {
                     ui_drawHand(D_800D5438.unk8[0].unk4.x - 0xE, D_800D5438.unk2 * 0x2E + 0x20, 0xC);
                 }
             } else if (D_800D5438.unk4 == 0) {
-                g_help.otz = 0xC;
-                g_help.x = D_800D5438.unk8[0].unk4.x - 0xE;
-                g_help.y = D_800D5438.unk2 * 0x2E + 0x20;
+                g_menuHelp.otz = 0xC;
+                g_menuHelp.x = D_800D5438.unk8[0].unk4.x - 0xE;
+                g_menuHelp.y = D_800D5438.unk2 * 0x2E + 0x20;
                 func_800355E4();
             }
         }
@@ -288,9 +288,9 @@ void func_800CC13C(void) {
 }
 
 void func_800CC324(void) {
-    g_help.text = 0;
+    g_menuHelp.text = 0;
     if (D_800D5438.unk1 == 0) {
-        g_help.text = (u8 *)func_8003631C(D_800D5438.unk0);
+        g_menuHelp.text = (u8 *)func_8003631C(D_800D5438.unk0);
     } else if (D_800D5438.unk1 == 1) {
         if (D_800D5438.unk0 + 1 == 3) {
             func_800CC5D8(D_800D5438.unk0);
@@ -299,11 +299,11 @@ void func_800CC324(void) {
             if (D_800D5438.unk0 + 1 == 4) {
                 func_800CC3E0(a);
             } else {
-                g_help.text = text_get(a);
+                g_menuHelp.text = text_get(a);
             }
         }
     } else if (D_800D5438.unk1 == 2) {
-        g_help.text = text_get(D_800D5438.unk4 + 0xB);
+        g_menuHelp.text = text_get(D_800D5438.unk4 + 0xB);
     }
 }
 
@@ -371,7 +371,7 @@ void func_800CC5D8(u8 arg0) {
         func_8002BE74(i, id);
         i++;
     } while (i < 5);
-    g_help.text = text_get(4);
+    g_menuHelp.text = text_get(4);
 }
 
 void func_800CC6E4(void) {
@@ -389,8 +389,8 @@ void func_800CC6E4(void) {
     r.w = 0xE8;
     r.h = g_gameState->unkC->disp.h - 0xF;
     help_setBounds(&r);
-    help_setHandler(func_800CC324);
-    help_setDrawHand(1);
+    help_setCallback(func_800CC324);
+    help_setCursorOnTop(1);
     if (g_gameState->unk1C->party[D_80077E50.unk3] == NULL) {
         D_80077E50.unk3 = party_getFirstMember();
     }
@@ -403,9 +403,9 @@ void func_800CC7C0(void) {
 }
 
 void func_800CC7F0(void) {
-    help_setDrawHand(1);
+    help_setCursorOnTop(1);
     help_setBounds(0);
-    help_setHandler(0);
+    help_setCallback(0);
 }
 
 void func_800CC820(u8 arg0) {
@@ -457,8 +457,8 @@ void func_800CC940(void) {
             func_800CBB4C(i);
         }
         func_800CBDF8(p, 0x14);
-        win_drawBoxPal(&r, 0x14, 0);
-        win_drawBoxPal(p, 0x14, 0);
+        win_drawBox(&r, 0x14, 0);
+        win_drawBox(p, 0x14, 0);
         win_drawShadow(p, 0x15, 0);
         i++;
     } while (i < 4);

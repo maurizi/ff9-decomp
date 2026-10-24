@@ -1293,8 +1293,8 @@ extern s32 g_vtxScreenZ[]; /* projected z per model vertex */
 s32 func_80056048(s32, s32, s32);
 extern u32 g_portraitSavedVram[]; /* VRAM save buffer */
 extern u8 D_80077E51;
-extern u8 *D_80077DF0; /* = g_help.text, referenced by its own name */
-extern s32 D_80077DEC; /* = g_help.otz, referenced by its own name */
+extern u8 *D_80077DF0; /* = g_menuHelp.text, referenced by its own name */
+extern s32 D_80077DEC; /* = g_menuHelp.otz, referenced by its own name */
 s32 func_8002B980(u8 *, s32);
 extern s32 D_80077E54; /* overlaps Unk80077E50.unk4 in ff9.h */
 void func_800C85B8(s32, s32);

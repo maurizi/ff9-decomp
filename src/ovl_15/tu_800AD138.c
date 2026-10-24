@@ -77,10 +77,10 @@ void func_800AD388(void) {
 
 void func_800AD390(void) {
     if (D_800B0FE0.unk1 != 0 && D_800B0FE0.unk2 == 0) {
-        g_help.x = D_800AE494[D_800B0FE0.unk3].x - 0x1A;
-        g_help.y = D_800AE494[D_800B0FE0.unk3].y + 3;
-        g_help.otz = 3;
-        func_800355E4(&g_help, &D_800B0FE0);
+        g_menuHelp.x = D_800AE494[D_800B0FE0.unk3].x - 0x1A;
+        g_menuHelp.y = D_800AE494[D_800B0FE0.unk3].y + 3;
+        g_menuHelp.otz = 3;
+        func_800355E4(&g_menuHelp, &D_800B0FE0);
     }
 }
 

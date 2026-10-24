@@ -29,7 +29,7 @@ void ui_drawCharStatus(s32 x, s32 y, s32 otz, Character *c) {
     ui_drawSmallDigits(x + 0x1D, y + 0x20, otz, buf, col);
 }
 
-void ui_drawCharSwitch(s32 x, s32 y, s32 otz, Unk80024428 *s) {
+void ui_drawMemberHeader(s32 x, s32 y, s32 otz, Unk80024428 *s) {
     Character *a = g_gameState->unk1C->party[s->unk2];
     Character *b = g_gameState->unk1C->party[s->unk3];
     RECT r1;
@@ -584,7 +584,7 @@ void win_drawHelpTailFill(s32 x, s32 y, s32 otz, s32 idx) {
     g_primPtr = (u8 *)(p + 1);
 }
 
-void ui_drawSeparator(s32 x, s32 y, s32 otz, s32 len) {
+void ui_drawEtchedLine(s32 x, s32 y, s32 otz, s32 len) {
     u32 col[3];
     s32 i;
     LineF2W *p;
@@ -648,29 +648,29 @@ void func_80026DCC(s32 arg0, s32 arg1, s32 otz, s32 arg3, u8 arg4) {
     g_primPtr = ui_buildItemIcon(arg0, arg1, &g_ot[otz], arg3, arg4, g_primPtr);
 }
 
-void ui_drawPartyMember(s32 arg0, s32 arg1, s32 arg2, s32 arg3) {
+void ui_drawMember(s32 arg0, s32 arg1, s32 arg2, s32 arg3) {
     Character *p = g_gameState->unk1C->party[arg3];
 
     if (p != NULL) {
         ui_drawPartyPortrait(arg0, arg1, arg2, arg3, p->hp == 0);
-        ui_drawPartyStatus(arg0 + 0x26, arg1 + 3, arg2, arg3);
+        ui_drawMemberStats(arg0 + 0x26, arg1 + 3, arg2, arg3);
     }
 }
 
-void ui_drawPartyMemberMode(s32 x, s32 y, s32 otz, s32 slot, s32 mode) {
+void ui_drawMemberSummary(s32 x, s32 y, s32 otz, s32 slot, s32 mode) {
     Character *p = g_gameState->unk1C->party[slot];
     if (p != NULL && mode >= 0) {
         if (mode < 3) {
-            ui_drawPartyPortraitH(x, y, otz, slot, 0x29, p->hp == 0);
-            ui_drawPartyStatus(x + 0x26, y, otz, slot);
+            ui_drawPortrait(x, y, otz, slot, 0x29, p->hp == 0);
+            ui_drawMemberStats(x + 0x26, y, otz, slot);
         } else if (mode < 5) {
-            ui_drawPartyPortraitH(x, y, otz, slot, 0x29, p->hp == 0);
+            ui_drawPortrait(x, y, otz, slot, 0x29, p->hp == 0);
             ui_drawCharStatuses(x + 0x26, y, otz, slot);
         }
     }
 }
 
-void ui_drawPartyStatus(s32 arg0, s32 arg1, s32 arg2, s32 arg3) {
+void ui_drawMemberStats(s32 arg0, s32 arg1, s32 arg2, s32 arg3) {
     ui_drawCharStatus(arg0, arg1, arg2, g_gameState->unk1C->party[arg3]);
 }
 
@@ -701,11 +701,11 @@ void ui_drawHand(s32 arg0, s32 arg1, s32 arg2) {
     ui_drawSprite(arg0, arg1, arg2, 1, 0);
 }
 
-void ui_drawMeter(s32 arg0, s32 arg1, s32 otz, s32 arg3, s32 arg4, u8 arg5, u8 arg6) {
-    g_primPtr = ui_buildMeter(arg0, arg1, &g_ot[otz], arg3, arg4, arg5, arg6, g_primPtr);
+void ui_drawApGauge(s32 arg0, s32 arg1, s32 otz, s32 arg3, s32 arg4, u8 arg5, u8 arg6) {
+    g_primPtr = ui_buildApGauge(arg0, arg1, &g_ot[otz], arg3, arg4, arg5, arg6, g_primPtr);
 }
 
-u8 *ui_buildMeter(s32 x, s32 y, u32 *ot, s32 cur, s32 max, u8 show, u8 flag, u8 *pkt) {
+u8 *ui_buildApGauge(s32 x, s32 y, u32 *ot, s32 cur, s32 max, u8 show, u8 flag, u8 *pkt) {
     u8 buf[16];
     s32 tmp[2];
     s32 w;
@@ -877,7 +877,7 @@ void ui_drawCharStatuses(s32 x, s32 y, s32 otz, s32 slot) {
     r.y = y + 0x18;
     r.w = 0x60;
     r.h = 0x12;
-    win_drawBoxPal(&r, otz, 0);
+    win_drawBox(&r, otz, 0);
 }
 
 u8 *ui_buildDigits(s32 x, s32 y, u32 *ot, u8 *s, s32 unused, SprtWords *p) {
@@ -1066,7 +1066,7 @@ s32 keyItem_isSeen(s32 id) {
     return (g_gameState->unk1C->unk774.unk0[id >> 2] >> ((id & 3) * 2 + 1)) & 1;
 }
 
-void ui_drawPortrait(s32 x, s32 y, s32 otz, s32 id, s32 h, u8 flag) {
+void ui_drawPortraitId(s32 x, s32 y, s32 otz, s32 id, s32 h, u8 flag) {
     u16 clut = GetClut(0, id + 0x1F3);
     s32 u;
     s32 v;
@@ -1096,7 +1096,7 @@ void ui_drawPortrait(s32 x, s32 y, s32 otz, s32 id, s32 h, u8 flag) {
     }
 }
 
-void ui_drawPartyPortraitH(s32 x, s32 y, s32 otz, s32 slot, s32 h, u8 flag) {
+void ui_drawPortrait(s32 x, s32 y, s32 otz, s32 slot, s32 h, u8 flag) {
     s16 h0;
     s32 cx;
     s32 cy;
@@ -1229,8 +1229,8 @@ void ui_getPortraitRects(s32 arg0, RECT *clut, RECT *img) {
     img->h = 0x2E;
 }
 
-void ui_drawPortraitFull(s32 arg0, s32 arg1, s32 arg2, s32 arg3, u8 arg4) {
-    ui_drawPortrait(arg0, arg1, arg2, arg3, 0x2E, arg4);
+void ui_drawPortraitIdFull(s32 arg0, s32 arg1, s32 arg2, s32 arg3, u8 arg4) {
+    ui_drawPortraitId(arg0, arg1, arg2, arg3, 0x2E, arg4);
 }
 
 void ui_getPartyPortraitRects(s32 arg0, RECT *a, RECT *b, RECT *c) {
@@ -1258,7 +1258,7 @@ void ui_getPartyPortraitRects(s32 arg0, RECT *a, RECT *b, RECT *c) {
 }
 
 void ui_drawPartyPortrait(s32 arg0, s32 arg1, s32 arg2, s32 arg3, u8 arg4) {
-    ui_drawPartyPortraitH(arg0, arg1, arg2, arg3, 0x2E, arg4);
+    ui_drawPortrait(arg0, arg1, arg2, arg3, 0x2E, arg4);
 }
 
 void ui_loadPartyPortraits(u8 *buf) {

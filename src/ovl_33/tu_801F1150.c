@@ -12,8 +12,8 @@ void func_801F1150(void) {
     D_801FC840.unk2 = 0;
     D_801FC840.unk260 = 0;
     text_setBank(D_801EE648);
-    help_setHandler(help_nullHandler);
-    help_setDrawHand(1);
+    help_setCallback(help_nullHandler);
+    help_setCursorOnTop(1);
     setRECT(&D_801FC840.unk14, 8, 8, 0xE4, 0x1A);
     setRECT(&D_801FC840.unk1C, 8, 0x26, 0x8C, 0xB6);
     setRECT(&D_801FC840.unk24, 0x94, 0x26, 0xA0, 0x62);
@@ -120,10 +120,10 @@ void func_801F15E0(void) {
 
     r = &D_801FC840.unk1C;
     c = g_gameState->unk1C->party[D_801FC840.unk3];
-    ui_drawSeparator(r->x + 3, r->y + 0x3B, 0x1E, r->w - 6);
+    ui_drawEtchedLine(r->x + 3, r->y + 0x3B, 0x1E, r->w - 6);
     ui_drawLabel(r->x + 6, r->y - 3, 0x1E, D_80070460, 0);
-    win_drawBoxPal(r, 0x1E, 1);
-    ui_drawCharSwitch(r->x + 8, r->y + 9, 0x1D, (Unk80024428 *)&D_801FC840.unk24C);
+    win_drawBox(r, 0x1E, 1);
+    ui_drawMemberHeader(r->x + 8, r->y + 9, 0x1D, (Unk80024428 *)&D_801FC840.unk24C);
     cur.unk8[0] = c->speed;
     cur.unk8[1] = c->strength;
     cur.unk8[2] = c->magic;
@@ -174,7 +174,7 @@ void func_801F189C(void) {
         return;
     }
     ui_drawLabel(r->x + 6, r->y - 3, 0x1E, D_8007043C, 0);
-    win_drawBoxPal(r, 0x1E, 2);
+    win_drawBox(r, 0x1E, 2);
     win_drawShadow(r, 0x1E, 2);
     for (i = 0, grey = 2, y8 = 8, y12 = 12, y10 = 10; i < 5; i++) {
         sel = 0;
@@ -213,8 +213,8 @@ void func_801F1A94(void) {
     r = &D_801FC840.unk2C;
     c = g_gameState->unk1C->party[D_801FC840.unk3];
     ui_drawLabel(r->x + 6, r->y - 3, 0x13, D_80070400, 0);
-    ui_drawSeparator(r->x + 3, r->y + 0x1A, 0x1E, r->w - 6);
-    win_drawBoxPal(r, 0x1E, 1);
+    ui_drawEtchedLine(r->x + 3, r->y + 0x1A, 0x1E, r->w - 6);
+    win_drawBox(r, 0x1E, 1);
     if (D_801FC840.unk1 < 2) {
         return;
     }
@@ -268,7 +268,7 @@ void func_801F1A94(void) {
                     flag = 1;
                 }
                 k = 0x26;
-                ui_drawMeter(r->x + 0x72, r->y + (y3 + k), 0x1D, func_80034584(c->unk34.b.id, ab), ap, flag, 0);
+                ui_drawApGauge(r->x + 0x72, r->y + (y3 + k), 0x1D, func_80034584(c->unk34.b.id, ab), ap, flag, 0);
             }
             text_drawBlock(r->x + 0x18, r->y + y2, 0x1D, name, ok ? 0 : 2);
             ui_drawSprite(r->x + 8, r->y + y1, 0x1D, icon, ok ^ 1);
@@ -294,7 +294,7 @@ void func_801F1F08(void) {
         w = func_8002AE7C((u8 *)D_800703FC.unk94);
         ui_drawLabel(wd->unk4.x + 6, r->y - 3, 0x14, D_800703FC.unk0[D_801F8918[m->unk2]], 0);
         ui_drawLabel(wd->unk4.x - (w - k), r->y - 3, 0x14, D_800703FC.unk94, 0);
-        win_drawListFrame(r, 0x14, 1, l);
+        win_drawListBox(r, 0x14, 1, l);
         menuList_getView(l, &view);
         win_setClip(NULL, 0x13, 1);
         for (i = 0; i < view.unk0; i++) {
@@ -370,12 +370,12 @@ void func_801F239C(void) {
     u16 k;
     HelpState *h;
 
-    help_setDrawHand(m->unk1 != 1);
+    help_setCursorOnTop(m->unk1 != 1);
     if (func_8002F810() || m->unk1 == 0) {
         return;
     }
     if (m->unk1 == 1 || (D_80077E54 & 3)) {
-        h = &g_help;
+        h = &g_menuHelp;
         x = D_801F893C[D_801FC840.unk0][0];
         h->y = m->unk14.y + 8;
         h->otz = 0x1B;
@@ -383,16 +383,16 @@ void func_801F239C(void) {
         func_800355E4();
     }
     if (D_801FC840.unk1 == 2) {
-        g_help.otz = 0x12;
-        g_help.x = D_801FC840.unk24.x - 0x10;
+        g_menuHelp.otz = 0x12;
+        g_menuHelp.x = D_801FC840.unk24.x - 0x10;
         k = D_801FC840.unk2 * 17 + 0xC;
-        g_help.y = D_801FC840.unk24.y + k;
+        g_menuHelp.y = D_801FC840.unk24.y + k;
         func_800355E4();
     } else if (D_801FC840.unk1 == 3) {
-        g_help.otz = 0x12;
-        g_help.x = D_801FC840.unk23C.unk4.x - 0xD;
+        g_menuHelp.otz = 0x12;
+        g_menuHelp.x = D_801FC840.unk23C.unk4.x - 0xD;
         k = D_801FC840.unk4.cursor * 15 + 0xA;
-        g_help.y = D_801FC840.unk23C.unk4.y + k;
+        g_menuHelp.y = D_801FC840.unk23C.unk4.y + k;
         func_800355E4();
     }
 }
@@ -531,24 +531,24 @@ void func_801F2AB4(void) {
     MenuList *l;
 
     c = g_gameState->unk1C->party[D_801FC840.unk3];
-    g_help.text = NULL;
+    g_menuHelp.text = NULL;
     if (D_801FC840.unk1 == 1) {
         buf = D_801FC740;
-        g_help.text = buf;
+        g_menuHelp.text = buf;
         func_8002BE44(0, D_801F8988);
-        func_8002BD54(g_help.text, text_get(D_801FC840.unk0 + 3));
-        text_append(g_help.text, text_get(7));
+        func_8002BD54(g_menuHelp.text, text_get(D_801FC840.unk0 + 3));
+        text_append(g_menuHelp.text, text_get(7));
     } else if (D_801FC840.unk1 == 2) {
         id = c->equip[D_801FC840.unk2];
         if (id == 0xFF) {
-            g_help.text = text_get(6);
+            g_menuHelp.text = text_get(6);
         } else {
-            g_help.text = D_801F8990 + D_80069018[id].unk2;
+            g_menuHelp.text = D_801F8990 + D_80069018[id].unk2;
         }
     } else if (D_801FC840.unk1 == 3 && (l = &D_801FC840.unk4)->unk2 != 0) {
         e = D_801FC840.unk3C + (l->unk5 + l->cursor);
         if (e->unk1 != 0) {
-            g_help.text = D_801F8990 + D_80069018[e->unk0].unk2;
+            g_menuHelp.text = D_801F8990 + D_80069018[e->unk0].unk2;
         }
     }
 }
@@ -561,9 +561,9 @@ void func_801F2C0C(void) {
 
 void func_801F2C3C(void) {
     D_80077E53 = D_801FC840.unk3;
-    win_destroyAll();
-    help_setDrawHand(1);
-    help_setHandler(NULL);
+    win_closeAllNow();
+    help_setCursorOnTop(1);
+    help_setCallback(NULL);
 }
 
 void func_801F2C78(void) {
@@ -621,7 +621,7 @@ void func_801F2E34(void) {
     s32 i;
 
     r = &D_801FC840.unk14;
-    win_drawBoxPal(r, 0x1E, 2);
+    win_drawBox(r, 0x1E, 2);
     win_drawShadow(r, 0x1E, 2);
     for (i = 0; i < 3; i++) {
         text_drawBlock(r->x + D_801F7430[i], r->y + 6, 0x1D, text_get(i), 0);

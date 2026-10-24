@@ -8,7 +8,7 @@ void win_drawAll(void) {
     for (i = 0; i < 10; w++, i++) {
         if (w->unk1C != 0 && win_isVisible(w)) {
             if (w->unk24 != 0) {
-                win_drawLabel(w);
+                win_drawTitle(w);
             }
             if (w->unk44 != NULL) {
                 w->unk44(w);
@@ -82,7 +82,7 @@ void win_drawFrame(Window *w) {
     win_drawFill(&t, w->unk18, w->unk30.unkA, w->unk30.unkB, abr);
 }
 
-void win_drawBox(RECT *r, s32 otz, s32 style, s32 abr) {
+void win_drawBoxEx(RECT *r, s32 otz, s32 style, s32 abr) {
     RECT t;
 
     switch (style) {
@@ -374,7 +374,7 @@ void win_closeAll(void) {
     }
 }
 
-void win_destroy(Window *w) {
+void win_closeNow(Window *w) {
     if (w != NULL && w->unk1C != 0) {
         if (w->unk4C != NULL) {
             w->unk4C(w);
@@ -383,7 +383,7 @@ void win_destroy(Window *w) {
     }
 }
 
-void win_destroyAll(void) {
+void win_closeAllNow(void) {
     s32 i;
     Window *w = g_windows;
     for (i = 0; i < 10; w++, i++) {
@@ -396,8 +396,8 @@ void win_destroyAll(void) {
     }
 }
 
-void win_drawBoxPal(RECT *a, s32 b, s32 c) {
-    win_drawBox(a, b, c, (g_gameState->unk24 >> 18) & 1);
+void win_drawBox(RECT *a, s32 b, s32 c) {
+    win_drawBoxEx(a, b, c, (g_gameState->unk24 >> 18) & 1);
 }
 
 void win_drawHelpFrame(RECT *r, s32 otz, s32 style, s32 xoff) {
@@ -420,7 +420,7 @@ void win_drawHelpFrame(RECT *r, s32 otz, s32 style, s32 xoff) {
     win_drawHelpFill(&t, otz);
 }
 
-void win_drawListFrame(RECT *r, s32 otz, s32 mode, MenuList *m) {
+void win_drawListBox(RECT *r, s32 otz, s32 mode, MenuList *m) {
     RECT t;
     s32 abr;
 
@@ -492,7 +492,7 @@ void win_setOnClosed(Window *arg0, void (*arg1)(Window *)) {
     arg0->unk4C = arg1;
 }
 
-void win_setLabel(Window *arg0, s32 arg1) {
+void win_setTitle(Window *arg0, s32 arg1) {
     arg0->unk20 = 6;
     arg0->unk24 = arg1;
     arg0->unk22 = -3;
@@ -528,7 +528,7 @@ void win_setList(Window *arg0, MenuList *arg1) {
     arg0->unk30 = *arg1;
 }
 
-void win_setLabelAt(Window *arg0, s32 arg1, s16 arg2, s8 arg3) {
+void win_setTitleAt(Window *arg0, s32 arg1, s16 arg2, s8 arg3) {
     arg0->unk24 = arg1;
     arg0->unk20 = arg2;
     arg0->unk22 = arg3;
@@ -570,7 +570,7 @@ u8 win_isVisible(Window *w) {
     return r;
 }
 
-void win_drawLabel(Window *w) {
+void win_drawTitle(Window *w) {
     RECT r;
     if (w->unk24 == 0) {
         return;

@@ -855,9 +855,9 @@ void msg_open(s32 msg, s32 id, WinLayout *l, s32 flags) {
             win_setOpenAnim(w->unk14, 3);
         }
         if (flags & 0x40) {
-            win_setLabel(w->unk14, (s32)D_80011EFC);
+            win_setTitle(w->unk14, (s32)D_80011EFC);
         } else if (flags & 8) {
-            win_setLabel(w->unk14, (s32)D_80011F10);
+            win_setTitle(w->unk14, (s32)D_80011F10);
         }
     }
     if (!(l->unkB & 1)) {

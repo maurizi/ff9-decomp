@@ -169,10 +169,10 @@ void func_800A8B7C(void) {
 
 void func_800A8C60(void) {
     if (func_8002F810() == 0 && D_800AB320.unk1 != 0 && D_800AB320.unk2 == 0) {
-        g_help.x = D_800AB2A8[D_800AB320.unk3].x - 0x1A;
-        g_help.y = D_800AB2A8[D_800AB320.unk3].y + 3;
-        g_help.otz = 3;
-        func_800355E4(&g_help);
+        g_menuHelp.x = D_800AB2A8[D_800AB320.unk3].x - 0x1A;
+        g_menuHelp.y = D_800AB2A8[D_800AB320.unk3].y + 3;
+        g_menuHelp.otz = 3;
+        func_800355E4(&g_menuHelp);
     }
 }
 

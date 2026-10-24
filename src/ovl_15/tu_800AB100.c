@@ -81,10 +81,10 @@ void func_800AB3CC(void) {
 
 void func_800AB3D4(void) {
     if (D_800B0F50.unk1 != 0 && D_800B0F50.unk2 == 0) {
-        g_help.x = D_800AE3DC[D_800B0F50.unk3].x - 0x1A;
-        g_help.y = D_800AE3DC[D_800B0F50.unk3].y + 3;
-        g_help.otz = 3;
-        func_800355E4(&g_help, &D_800B0F50);
+        g_menuHelp.x = D_800AE3DC[D_800B0F50.unk3].x - 0x1A;
+        g_menuHelp.y = D_800AE3DC[D_800B0F50.unk3].y + 3;
+        g_menuHelp.otz = 3;
+        func_800355E4(&g_menuHelp, &D_800B0F50);
     }
 }
 

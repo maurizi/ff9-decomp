@@ -18,7 +18,7 @@ void func_801F605C(void) {
         st->unk8[i] = src[i];
         src[i] |= 0x300;
     }
-    help_setHandler(0);
+    help_setCallback(0);
     func_801F673C();
     cd_stopMotor();
     D_801F6BBC.unk0 = r = cd_checkShellOpen();

@@ -19,9 +19,9 @@ void func_801EE440(void) {
     r->y = 0x26;
     r->w = 0x12C;
     r->h = 0xB6;
-    D_801F120C.unk5 = help_getAtCursor();
-    help_setAtCursor(0);
-    help_setHandler(func_801EFB08);
+    D_801F120C.unk5 = help_getFollow();
+    help_setFollow(0);
+    help_setCallback(func_801EFB08);
     D_801F120C.unk80[0] = (u8 *)0x801F5F00;
     D_801F120C.unk80[1] = (u8 *)0x801F9F00;
     D_801F120C.unk7C = D_801F120C.unk80[g_gameState->unk1C->unk8];
@@ -70,9 +70,9 @@ void func_801EE650(void) {
     y = w->y + 4;
     setRECT(&r, x, y, 0x5C, 0x12);
     ui_drawStones(x + 0x19, y + 0x14, 0x1E, c->stones, c->maxStones);
-    ui_drawCharSwitch(w->x + 8, w->y + 6, 0x1D, (Unk80024428 *)&D_801F120C.unk8C);
+    ui_drawMemberHeader(w->x + 8, w->y + 6, 0x1D, (Unk80024428 *)&D_801F120C.unk8C);
     ui_drawStatusIcons(r.x + 4, r.y + 4, 0x1D, c->unk38, 0);
-    win_drawBoxPal(&r, 0x1D, 0);
+    win_drawBox(&r, 0x1D, 0);
 }
 
 void func_801EE740(void) {
@@ -105,7 +105,7 @@ void func_801EE740(void) {
         D_801F120C.unk7C = func_8002920C(r.x + 0xC, r.y + y, g_ot + 25, pool.s + k, 0, D_801F120C.unk7C);
     }
     ui_drawLabel(r.x + 6, r.y - 3, 0x19, D_8007042C, 0);
-    win_drawBoxPal(&r, 0x19, 2);
+    win_drawBox(&r, 0x19, 2);
     win_drawShadow(&r, 0x19, 2);
 }
 
@@ -230,7 +230,7 @@ void func_801EF0A0(void) {
                 ui_drawLabel(r->x + 0x90, r->y - 3, z, D_800703FC.unk88, 0);
                 ui_drawLabel(r->x + 0x9A, r->y - 3, z, (s32)D_801EFC04, 0);
             }
-            win_drawBoxPal(r, z, 2);
+            win_drawBox(r, z, 2);
             win_drawShadow(r, z, 2);
         }
         base += 8;
@@ -280,9 +280,9 @@ void func_801EF258(s32 x, s32 y, s32 z, s32 i, u8 draw) {
         D_801F120C.unk7C = func_8002920C(x + 0x10, y, g_ot + z, name, 0, D_801F120C.unk7C);
     }
     if (ok) {
-        D_801F120C.unk7C = ui_buildMeter(x + 0x70, y + 3, g_ot + z, cur, max, flag, 0, D_801F120C.unk7C);
+        D_801F120C.unk7C = ui_buildApGauge(x + 0x70, y + 3, g_ot + z, cur, max, flag, 0, D_801F120C.unk7C);
     } else {
-        D_801F120C.unk7C = ui_buildMeter(x + 0x70, y + 3, g_ot + z, 1, 1, 0, 0, D_801F120C.unk7C);
+        D_801F120C.unk7C = ui_buildApGauge(x + 0x70, y + 3, g_ot + z, 1, 1, 0, 0, D_801F120C.unk7C);
     }
 }
 
@@ -332,8 +332,8 @@ void func_801EF69C(void) {
 
 void func_801EF6CC(void) {
     D_80077E53 = D_801F120C.unk2;
-    help_setAtCursor(D_801F120C.unk5);
-    help_setHandler(NULL);
+    help_setFollow(D_801F120C.unk5);
+    help_setCallback(NULL);
 }
 
 void func_801EF708(void) {
@@ -388,10 +388,10 @@ void func_801EF8A0(void) {
 void func_801EF904(void) {
     RECT *r = &D_801F120C.unk8;
 
-    ui_drawSeparator(r->x + 0x6D, r->y + 0x63, 0x1E, r->w - 0x71);
-    ui_drawSeparator(r->x + 0x6B, r->y + 0x38, 0x1E, 0x3E - r->h);
-    ui_drawSeparator(r->x + 4, r->y + 0x36, 0x1E, r->w - 9);
-    win_drawBoxPal(r, 0x1E, 2);
+    ui_drawEtchedLine(r->x + 0x6D, r->y + 0x63, 0x1E, r->w - 0x71);
+    ui_drawEtchedLine(r->x + 0x6B, r->y + 0x38, 0x1E, 0x3E - r->h);
+    ui_drawEtchedLine(r->x + 4, r->y + 0x36, 0x1E, r->w - 9);
+    win_drawBox(r, 0x1E, 2);
     win_drawShadow(r, 0x1E, 2);
 }
 
@@ -440,10 +440,10 @@ void func_801EFAF8(void) {
 void func_801EFB08(void) {
     s32 i;
 
-    g_help.x = 0xD8;
-    g_help.y = 0x52;
-    g_help.otz = 0xA;
-    g_help.text = text_get(0);
+    g_menuHelp.x = 0xD8;
+    g_menuHelp.y = 0x52;
+    g_menuHelp.otz = 0xA;
+    g_menuHelp.text = text_get(0);
     for (i = 0; i < 7; i++) {
         func_8002BE44(i, D_801F11CC[i].unk0);
         func_8002BE74(i, D_801F11CC[i].unk4);

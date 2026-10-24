@@ -102,7 +102,7 @@ void func_801F2B20(Window *);
 void func_801F2B58(Window *);
 void func_801F2D58(void);
 void keyItem_setSeen(s32); /* main exe */
-void ui_drawPartyMemberMode(s32, s32, s32, s32, s32); /* main exe */
+void ui_drawMemberSummary(s32, s32, s32, s32, s32); /* main exe */
 void func_801F187C(void);
 void func_801F24DC(void);
 void func_801F2E18(void);

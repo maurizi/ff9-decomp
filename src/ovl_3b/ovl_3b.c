@@ -80,7 +80,7 @@ void func_801F3B3C(void) {
 
     ui_drawLabel(D_801F4738.x + 8, D_801F4738.y - 3, 7, D_80070494, 0);
     for (i = 0; i < 3; i++) {
-        ui_drawSeparator(D_801F4738.x + 4, D_801F4738.y + 0x35 + i * 0x33, 7, D_801F4738.w - 9);
+        ui_drawEtchedLine(D_801F4738.x + 4, D_801F4738.y + 0x35 + i * 0x33, 7, D_801F4738.w - 9);
     }
     for (i = 0; i < 4; i++) {
         id = D_801F4748.unkA[0][i];
@@ -96,7 +96,7 @@ void func_801F3B3C(void) {
                           i >= D_801F4748.unk1 ? 2 : 0);
         }
     }
-    win_drawBoxPal(&D_801F4738, 7, 2);
+    win_drawBox(&D_801F4738, 7, 2);
     win_drawShadow(&D_801F4738, 7, 2);
 }
 
@@ -107,8 +107,8 @@ void func_801F3CF0(void) {
     s32 dy;
 
     ui_drawLabel(D_801F4740.x + 0xC, D_801F4740.y - 3, 7, D_80070460, 0);
-    ui_drawSeparator(D_801F4740.x + 4, D_801F4740.y + 0x35, 8, D_801F4740.w - 8);
-    win_drawBoxPal(&D_801F4740, 8, 1);
+    ui_drawEtchedLine(D_801F4740.x + 4, D_801F4740.y + 0x35, 8, D_801F4740.w - 8);
+    win_drawBox(&D_801F4740, 8, 1);
     win_drawShadow(&D_801F4740, 9, 1);
     id = D_801F4748.unkA[D_801F4748.unk4[D_801F4748.unk0].unk1][D_801F4748.unk4[D_801F4748.unk0].unk0];
     if (id != 0xFF) {
@@ -132,24 +132,24 @@ void func_801F3E58(void) {
 
     if (D_801F4748.unk0 == 0) {
         pos = D_801F4748.unk4[0].unk0;
-        g_help.otz = 4;
+        g_menuHelp.otz = 4;
         if (D_801F4748.unk4[0].unk1 == 0) {
-            g_help.x = 0;
-            g_help.y = pos * 0x33 + 0x20;
+            g_menuHelp.x = 0;
+            g_menuHelp.y = pos * 0x33 + 0x20;
         } else {
-            g_help.x = (pos & 3) * 0x25 + 0x8C;
-            g_help.y = (pos >> 2) * 0x30 + 0x86;
+            g_menuHelp.x = (pos & 3) * 0x25 + 0x8C;
+            g_menuHelp.y = (pos >> 2) * 0x30 + 0x86;
         }
         func_800355E4();
     } else if (D_801F4748.unk0 == 1) {
         pos = D_801F4748.unk4[1].unk0;
-        g_help.otz = 4;
+        g_menuHelp.otz = 4;
         if (D_801F4748.unk4[1].unk1 == 0) {
-            g_help.x = 4;
-            g_help.y = pos * 0x33 + 0x24;
+            g_menuHelp.x = 4;
+            g_menuHelp.y = pos * 0x33 + 0x24;
         } else {
-            g_help.x = (pos & 3) * 0x25 + 0x90;
-            g_help.y = (pos >> 2) * 0x30 + 0x8A;
+            g_menuHelp.x = (pos & 3) * 0x25 + 0x90;
+            g_menuHelp.y = (pos >> 2) * 0x30 + 0x8A;
         }
         func_800355E4();
         if (D_80077DC0 & 3) {
@@ -171,7 +171,7 @@ INCLUDE_RODATA("asm/us/ovl_3b/nonmatchings/ovl_3b", g_partyMenuText);
 
 void func_801F3FEC(void) {
     text_setBank(g_partyMenuText);
-    help_setHandler(func_801F46FC);
+    help_setCallback(func_801F46FC);
     ui_loadPortraits(D_801EDFE8, 0xD);
     D_801F4748.unk0 = 0;
     D_801F4748.unk4[1].unk0 = 0;
@@ -189,7 +189,7 @@ void func_801F405C(void) {
 }
 
 void func_801F4084(void) {
-    help_setHandler(NULL);
+    help_setCallback(NULL);
     ui_restorePortraits();
 }
 
@@ -220,14 +220,14 @@ void func_801F4150(void) {
 }
 
 void func_801F4190(void) {
-    win_drawBoxPal(&D_801F4728, 8, 2);
+    win_drawBox(&D_801F4728, 8, 2);
     win_drawShadow(&D_801F4728, 8, 2);
     text_drawBlock(D_801F4728.x + 9, D_801F4728.y + 6, 6, text_get(0), 0);
 }
 
 void func_801F4204(void) {
     ui_drawLabel(D_801F4730.x + 0xC, D_801F4730.y - 3, 8, D_80070450, 0);
-    win_drawBoxPal(&D_801F4730, 8, 1);
+    win_drawBox(&D_801F4730, 8, 1);
     win_drawShadow(&D_801F4730, 9, 1);
     text_drawBlock(D_801F4730.x + 0x12, D_801F4730.y + 6, 6, text_get(D_801F4748.unk1), 0);
 }
@@ -280,7 +280,7 @@ void func_801F43FC(s32 x, s32 y, s32 otz, s32 id, s32 h, u8 arg5) {
             icon = &D_80068E30;
             ui_drawSpriteDef(x + ((0x20 - icon->unk4) >> 1), yy, otz, icon, 0);
         }
-        ui_drawPortrait(x, y, otz, chr_getPortrait(id), h, arg5);
+        ui_drawPortraitId(x, y, otz, chr_getPortrait(id), h, arg5);
     }
 }
 
@@ -330,7 +330,7 @@ u8 func_801F465C(void) {
 }
 
 void func_801F46FC(void) {
-    g_help.text = text_get(D_801F4748.unk0 + 0xA);
+    g_menuHelp.text = text_get(D_801F4748.unk0 + 0xA);
 }
 
 INCLUDE_RODATA("asm/us/ovl_3b/nonmatchings/ovl_3b", D_801EDFE8);

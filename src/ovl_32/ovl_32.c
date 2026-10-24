@@ -15,8 +15,8 @@ void func_801F7AC0(void) {
     st->unk1 = 1;
     D_801F9850.unk0 = 0;
     text_setBank(g_chocographText);
-    help_setHandler(func_801F84F0);
-    help_setDrawHand(1);
+    help_setCallback(func_801F84F0);
+    help_setCursorOnTop(1);
     setRECT(&D_801F9850.unk20, 0xE4, 8, 0x50, 0x1A);
     setRECT(&D_801F9850.unk28, 8, 8, 0xD8, 0x1A);
     setRECT(&D_801F9850.unk30, 8, 0x26, 0xB7, 0x43);
@@ -108,7 +108,7 @@ void func_801F7EB4(void) {
     RECT *r = &D_801F9850.unk30;
     s32 sel;
 
-    win_drawBoxPal(r, 0x1D, 2);
+    win_drawBox(r, 0x1D, 2);
     win_drawShadow(r, 0x1E, 2);
     ui_drawLabel(r->x + 8, r->y - 3, 0x1C, D_800704AC, 0);
     sel = g_gameState->unk1C->unk844;
@@ -129,7 +129,7 @@ void func_801F8010(void) {
 
     ui_drawLabel(r->x + 0x10, r->y - 3, 0x1C, D_80070428, 0);
     list = &D_801F9850.unk10;
-    win_drawListFrame(r, 0x1D, 1, list);
+    win_drawListBox(r, 0x1D, 1, list);
     win_drawShadow(r, 0x1D, 1);
     menuList_getView(list, &view);
     win_setClip(NULL, 0x1C, 1);
@@ -149,7 +149,7 @@ void func_801F8130(void) {
     RECT *r = &D_801F9850.unk40;
     Ovl32State *st;
 
-    win_drawBoxPal(r, 0x1D, 2);
+    win_drawBox(r, 0x1D, 2);
     win_drawShadow(r, 0x1E, 2);
     text_drawBlock(r->x + 9, r->y + 3, 0x1C, text_get(7), 0);
     text_drawBlock(r->x + 9, r->y + 0xF, 0x1C, text_get(8), 0);
@@ -169,7 +169,7 @@ void func_801F8240(void) {
 
     id = st->unk10.unk5 + st->unk10.cursor;
     ui_drawLabel(r->x + 8, r->y - 3, 0x1C, D_80070454, 0);
-    win_drawBoxPal(r, 0x1D, 1);
+    win_drawBox(r, 0x1D, 1);
     win_drawShadow(r, 0x1E, 1);
     if (st->unk1 == 2 && (st->unk8 & (1 << id))) {
         func_801F95E8(id);
@@ -185,18 +185,18 @@ void func_801F8240(void) {
 }
 
 void func_801F8404(void) {
-    help_setDrawHand(D_801F9850.unk1 != 1);
+    help_setCursorOnTop(D_801F9850.unk1 != 1);
     if (!func_8002F810()) {
         if (D_801F9850.unk1 == 1 || (D_80077DC0 & 3)) {
-            g_help.y = 0x11;
-            g_help.otz = 0x1B;
-            g_help.x = D_801F9850.unk0 * 0x60 + 0x1C;
-            func_800355E4(&g_help);
+            g_menuHelp.y = 0x11;
+            g_menuHelp.otz = 0x1B;
+            g_menuHelp.x = D_801F9850.unk0 * 0x60 + 0x1C;
+            func_800355E4(&g_menuHelp);
         }
         if (D_801F9850.unk1 == 2) {
-            g_help.x = 0;
-            g_help.otz = 0x1B;
-            g_help.y = D_801F9850.unk10.cursor * 0xF + 0x74;
+            g_menuHelp.x = 0;
+            g_menuHelp.otz = 0x1B;
+            g_menuHelp.y = D_801F9850.unk10.cursor * 0xF + 0x74;
             func_800355E4();
         }
     }
@@ -205,10 +205,10 @@ void func_801F8404(void) {
 void func_801F84F0(void) {
     s32 idx;
 
-    g_help.text = NULL;
+    g_menuHelp.text = NULL;
     help_setBounds(0);
     if (D_801F9850.unk1 == 1) {
-        g_help.text = text_get(D_801F9850.unk0 + 3);
+        g_menuHelp.text = text_get(D_801F9850.unk0 + 3);
     } else if (D_801F9850.unk1 == 2) {
         idx = D_801F9850.unk10.unk5 + D_801F9850.unk10.cursor;
         if (D_801F9850.unk8 & (1 << idx)) {
@@ -216,7 +216,7 @@ void func_801F84F0(void) {
             if (D_801F9850.unk4 <= func_801F95E8_inline(idx)) {
                 text_append(D_801F9750, text_get(5));
             }
-            g_help.text = D_801F9750;
+            g_menuHelp.text = D_801F9750;
         }
     }
 }
@@ -411,8 +411,8 @@ void func_801F8FF8(void) {
 }
 
 void func_801F904C(void) {
-    help_setDrawHand(1);
-    help_setHandler(0);
+    help_setCursorOnTop(1);
+    help_setCallback(0);
     func_801F8800();
 }
 
@@ -447,7 +447,7 @@ void func_801F912C(void) {
 void func_801F9164(void) {
     RECT *r = &D_801F9850.unk20;
 
-    win_drawBoxPal(r, 0x1D, 2);
+    win_drawBox(r, 0x1D, 2);
     win_drawShadow(r, 0x1D, 2);
     text_drawBlock(r->x + 7, r->y + 6, 0x1C, text_get(0), 0);
 }
@@ -458,7 +458,7 @@ void func_801F91D8(void) {
     s32 x;
     u8 none = g_gameState->unk1C->unk844 == 0;
 
-    win_drawBoxPal(r, 0x1D, 2);
+    win_drawBox(r, 0x1D, 2);
     win_drawShadow(r, 0x1D, 2);
     for (i = 0, x = 0x2C; i < 2; i++, x += 0x60) {
         text_drawBlock(r->x + x, r->y + 6, 0x1C, text_get(i + 1), (D_801F96F0[i] != 0 && none) ? 2 : 0);
@@ -471,7 +471,7 @@ void func_801F92C0(void) {
     RECT *r = &D_801F9850.unk38;
 
     ui_drawLabel(r->x + 8, r->y - 3, 0x1C, D_80070424, 0);
-    win_drawBoxPal(r, 0x1D, 2);
+    win_drawBox(r, 0x1D, 2);
     win_drawShadow(r, 0x1E, 2);
     for (i = 0; i < D_801F9850.unk4; i++) {
         func_801F9518(r->x + 0xB + i * 0x13, r->y + 5, 0x1C, i, 0);

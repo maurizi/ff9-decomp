@@ -49,7 +49,7 @@ void SetLineF2(LINE_F2 *);
 extern s32 D_8007047C;
 s32 func_80028F3C(s32, s32, s32, u8, s32);
 u8 *func_8002BA90(u32 *, void *);
-extern s32 D_80077DEC; /* = g_help.otz, referenced by its own name */
+extern s32 D_80077DEC; /* = g_menuHelp.otz, referenced by its own name */
 
 /* x offset of a 5-column group in the name-entry character grid */
 static inline s32 grp_x(s32 c) {

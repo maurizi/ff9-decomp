@@ -6,7 +6,7 @@ void func_801F3874(void) {
 
     text_setBank(g_nameMenuText);
     help_setBounds(&D_801F4B48);
-    help_setHandler(func_801F4A9C);
+    help_setCallback(func_801F4A9C);
     D_801F4BBC.unk0 = 1;
     D_801F4BBC.unk1 = 0;
     D_801F4BBC.unk2 = 0;
@@ -160,15 +160,15 @@ void func_801F3FAC(void) {
     SetDrawTPage(g_primPtr, 0, 1, 0x9F);
     addPrim(&g_ot[4], g_primPtr);
     g_primPtr += 8;
-    win_drawBoxPal(D_801F4B58, 6, 0);
+    win_drawBox(D_801F4B58, 6, 0);
     win_drawShadow(D_801F4B58, 6, 0);
 }
 
 void func_801F4110(void) {
     s32 i;
 
-    ui_drawSeparator(D_801F4B5C->x + 4, D_801F4B5C->y + 0x2A, 5, D_801F4B5C->w - 9);
-    win_drawBoxPal(D_801F4B5C, 5, 2);
+    ui_drawEtchedLine(D_801F4B5C->x + 4, D_801F4B5C->y + 0x2A, 5, D_801F4B5C->w - 9);
+    win_drawBox(D_801F4B5C, 5, 2);
     win_drawShadow(D_801F4B5C, 5, 2);
     for (i = 0; i < 2; i++) {
         text_drawBlock(D_801F4B5C->x + 0xA, D_801F4B5C->y + 9 + i * 0x10, 4, text_get(i + 2),
@@ -193,8 +193,8 @@ void func_801F4238(void) {
         cursor = D_801F4BBC.unk4;
     }
     ui_drawLabel(D_801F4B64->x + 0x23, D_801F4B64->y - 4, 5, D_8007047C, 0);
-    ui_drawSeparator(D_801F4B64->x + 4, D_801F4B64->y + 0x1A, 6, D_801F4B64->w - 8);
-    win_drawBoxPal(D_801F4B64, 6, 1);
+    ui_drawEtchedLine(D_801F4B64->x + 4, D_801F4B64->y + 0x1A, 6, D_801F4B64->w - 8);
+    win_drawBox(D_801F4B64, 6, 1);
     win_drawShadow(D_801F4B64, 6, 1);
     for (i = 0; i < 7; i++) {
         if (cursor != i || (g_menu.unk10 & 4)) {
@@ -238,8 +238,8 @@ void func_801F459C(void) {
 
     if (D_801F4BBC.unk0 == 0) {
         HelpState *h;
-        g_help.x = D_801F4BBC.unk134[2].x - 0xE;
-        h = &g_help;
+        g_menuHelp.x = D_801F4BBC.unk134[2].x - 0xE;
+        h = &g_menuHelp;
         y = D_801F4BBC.unk134[2].y + D_801F4BBC.unk1 * 16;
         h->y = D_801F4BBC.unk1 >= 2 ? y + 0x15 : y + 0xD;
     } else {
@@ -247,15 +247,15 @@ void func_801F459C(void) {
         if (D_801F4BBC.unk2 != 0) {
             row = D_801F4BBC.unk3 / 15;
             idx = D_801F4BBC.unk3 % 15;
-            g_help.y = r->y + row * 21 + 0x26;
+            g_menuHelp.y = r->y + row * 21 + 0x26;
             col = (u8)(idx / 5);
             sub = (u8)(idx % 5);
-            g_help.x = r->x + grp_x(col) + sub * 13 - 0x17;
+            g_menuHelp.x = r->x + grp_x(col) + sub * 13 - 0x17;
         } else {
             row = D_801F4BBC.unk3 / 15;
             col = D_801F4BBC.unk3 % 15;
-            g_help.x = r->x + col * 14 + 0x27;
-            g_help.y = r->y + row * 21 + 0x26;
+            g_menuHelp.x = r->x + col * 14 + 0x27;
+            g_menuHelp.y = r->y + row * 21 + 0x26;
         }
     }
     D_80077DEC = 3;
@@ -268,7 +268,7 @@ void func_801F4748(void) {
 }
 
 void func_801F4770(void) {
-    help_setHandler(NULL);
+    help_setCallback(NULL);
     help_setBounds(NULL);
     func_801F4A34();
 }
@@ -301,13 +301,13 @@ void func_801F47E8(void) {
 }
 
 void func_801F48A0(void) {
-    win_drawBoxPal(D_801F4B54, 6, 2);
+    win_drawBox(D_801F4B54, 6, 2);
     win_drawShadow(D_801F4B54, 6, 2);
     text_drawBlock(D_801F4B54->x + 0xA, D_801F4B54->y + 6, 5, text_get(0), 0);
 }
 
 void func_801F490C(void) {
-    win_drawBoxPal(D_801F4B60, 7, 1);
+    win_drawBox(D_801F4B60, 7, 1);
     win_drawShadow(D_801F4B60, 7, 1);
     text_drawBlock(D_801F4B60->x + 0x3E, D_801F4B60->y + 6, 6, text_get(1), 0);
     ui_drawLabel(D_801F4B60->x + 0x23, D_801F4B60->y - 4, 6, D_80070450, 0);
@@ -339,7 +339,7 @@ s32 func_801F4A84(s32 i) {
 }
 
 void func_801F4A9C(void) {
-    g_help.text = text_get(D_801F4BBC.unk0 == 0 ? D_801F4BBC.unk1 + 7 : 0xC);
+    g_menuHelp.text = text_get(D_801F4BBC.unk0 == 0 ? D_801F4BBC.unk1 + 7 : 0xC);
 }
 
 void func_801F4AE0(void) {

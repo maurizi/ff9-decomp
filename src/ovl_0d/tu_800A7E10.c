@@ -33,14 +33,14 @@ void func_800A7E10(void) {
         p = func_800B3198(g_gameState->unk1C->unk10[g_gameState->unk1C->unk8], p, &s);
         switch (s.unk0) {
         case 2:
-            g_help.text = 0;
+            g_menuHelp.text = 0;
             func_800A932C(&s, "ENEMY CARD SELECT\n");
             func_800AFBE4(&s);
             func_800B08CC(&s);
             func_800ACFFC(&s);
             break;
         case 0:
-            help_setDrawHand(0);
+            help_setCursorOnTop(0);
             func_800AFBE4(&s);
             if (s.unk438 == 0) {
                 func_800A932C(&s, "PLAYER CARD SELECT\n");
@@ -53,94 +53,94 @@ void func_800A7E10(void) {
             break;
         case 1:
             func_800A932C(&s, "PLAYER CARD SET\n");
-            help_setDrawHand(0);
+            help_setCursorOnTop(0);
             func_800A9F10(g_gameState->unk1C->unk10[g_gameState->unk1C->unk8], p, &s);
             func_800ACFFC(&s);
             break;
         case 3:
-            g_help.text = 0;
+            g_menuHelp.text = 0;
             func_800AFCE4(g_gameState->unk1C->unk10[g_gameState->unk1C->unk8], p, &s);
             func_800A932C(&s, "RESULT\n");
             func_800AA1FC(&s);
             break;
         case 4:
-            g_help.text = 0;
+            g_menuHelp.text = 0;
             func_800A932C(&s, "INIT\n");
             func_800A9298(&s);
             break;
         case 5:
-            g_help.text = 0;
+            g_menuHelp.text = 0;
             func_800A932C(&s, "FLASH\n");
             func_800ACFFC(&s);
             func_800AC708(g_gameState->unk1C->unk10[g_gameState->unk1C->unk8], p, &s);
             break;
         case 6:
             func_800A932C(&s, "BATTLE SELECT\n");
-            help_setDrawHand(0);
+            help_setCursorOnTop(0);
             p = func_800AB574(g_gameState->unk1C->unk10[g_gameState->unk1C->unk8], p, &s);
             func_800ACFFC(&s);
             func_800ABEBC(g_gameState->unk1C->unk10[g_gameState->unk1C->unk8], p, &s);
             break;
         case 7:
-            g_help.text = 0;
+            g_menuHelp.text = 0;
             func_800A932C(&s, "BATTLE\n");
             func_800ACFFC(&s);
             func_800AC060(g_gameState->unk1C->unk10[g_gameState->unk1C->unk8], p, &s);
             break;
         case 8:
-            g_help.text = 0;
+            g_menuHelp.text = 0;
             func_800A932C(&s, "TURN\n");
             func_800ACFFC(&s);
             func_800AC6A4(&s);
             break;
         case 9:
-            g_help.text = 0;
+            g_menuHelp.text = 0;
             func_800A932C(&s, "BATTLE WIN\n");
             func_800ACFFC(&s);
             func_800AC5AC(&s);
             break;
         case 10:
-            g_help.text = 0;
+            g_menuHelp.text = 0;
             func_800A932C(&s, "BATTLE LOSE\n");
             func_800ACFFC(&s);
             func_800AC624(&s);
             break;
         case 11:
             func_800A932C(&s, "TRY AGAIN\n");
-            help_setDrawHand(1);
+            help_setCursorOnTop(1);
             func_800AA548(&s);
             func_800B3480(g_gameState->unk1C->unk10[g_gameState->unk1C->unk8], p, &s);
             break;
         case 13:
-            g_help.text = 0;
+            g_menuHelp.text = 0;
             func_800A932C(&s, "CARD_CHANGE\n");
             func_800AE084(g_gameState->unk1C->unk10[g_gameState->unk1C->unk8], p, &s);
             break;
         case 14:
-            g_help.text = 0;
+            g_menuHelp.text = 0;
             func_800A932C(&s, "CARD_MOVE\n");
             func_800AD9F8(g_gameState->unk1C->unk10[g_gameState->unk1C->unk8], p, &s);
             break;
         case 15:
-            g_help.text = 0;
+            g_menuHelp.text = 0;
             func_800A932C(&s, "FLASH2\n");
             func_800ACDA0(g_gameState->unk1C->unk10[g_gameState->unk1C->unk8], p, &s);
             break;
         case 16:
-            g_help.text = 0;
+            g_menuHelp.text = 0;
             func_800A932C(&s, "TRADE\n");
             func_800AA504(&s);
             func_800AE398(g_gameState->unk1C->unk10[g_gameState->unk1C->unk8], p, &s);
             break;
         case 17:
-            g_help.text = 0;
+            g_menuHelp.text = 0;
             func_800A932C(&s, "CHANGE2\n");
-            help_setDrawHand(1);
+            help_setCursorOnTop(1);
             func_800AE5A0(g_gameState->unk1C->unk10[g_gameState->unk1C->unk8], p, &s);
             break;
         case 18:
             func_800A932C(&s, "CHOICE\n");
-            help_setDrawHand(1);
+            help_setCursorOnTop(1);
             func_800AA790(&s);
             func_800B1A84(g_gameState->unk1C->unk10[g_gameState->unk1C->unk8], p, &s);
             func_800AEE2C(&s);
@@ -165,42 +165,42 @@ void func_800A7E10(void) {
             func_800AB0F0(&s);
             break;
         case 21:
-            g_help.text = 0;
+            g_menuHelp.text = 0;
             func_800A932C(&s, "FIELD FADE\n");
             func_800ACFFC(&s);
             break;
         case 22:
-            g_help.text = 0;
+            g_menuHelp.text = 0;
             func_800A932C(&s, "AWAY INFO\n");
             func_800B1A84(g_gameState->unk1C->unk10[g_gameState->unk1C->unk8], p, &s);
             func_800AB2E0(&s);
             break;
         case 23:
             func_800A932C(&s, "CARD AWAY\n");
-            help_setDrawHand(1);
+            help_setCursorOnTop(1);
             func_800AA790(&s);
             func_800AEE2C(&s);
             func_800B1A84(g_gameState->unk1C->unk10[g_gameState->unk1C->unk8], p, &s);
             break;
         case 24:
             func_800A932C(&s, "CARD AWAY2\n");
-            help_setDrawHand(1);
+            help_setCursorOnTop(1);
             func_800AEE2C(&s);
             func_800B1A84(g_gameState->unk1C->unk10[g_gameState->unk1C->unk8], p, &s);
             func_800AB338(&s);
             break;
         case 25:
-            g_help.text = 0;
+            g_menuHelp.text = 0;
             func_800A932C(&s, "CARD LESS5\n");
             func_800AB854(&s);
             break;
         case 26:
-            g_help.text = 0;
+            g_menuHelp.text = 0;
             func_800A932C(&s, "EXTENSION\n");
             func_800AA368(&s);
             break;
         case 27:
-            g_help.text = 0;
+            g_menuHelp.text = 0;
             func_800A932C(&s, "END FADE\n");
             if (s.unk5B8 != 0) {
                 func_800B1A84(g_gameState->unk1C->unk10[g_gameState->unk1C->unk8], p, &s);
@@ -209,37 +209,37 @@ void func_800A7E10(void) {
             func_800B35A4(&s);
             break;
         case 28:
-            g_help.text = 0;
+            g_menuHelp.text = 0;
             func_800A932C(&s, "COIN\n");
             func_800B2C5C(g_gameState->unk1C->unk10[g_gameState->unk1C->unk8], p, &s);
             func_800ACFFC(&s);
             break;
         case 29:
-            g_help.text = 0;
+            g_menuHelp.text = 0;
             func_800A932C(&s, "FLASH ARROW\n");
             func_800ACF8C(&s);
             break;
         case 30:
-            g_help.text = 0;
+            g_menuHelp.text = 0;
             func_800A932C(&s, "ENEMY THINK\n");
             func_800B07DC(g_gameState->unk1C->unk10[g_gameState->unk1C->unk8], p, &s);
             func_800AF890(&s);
             break;
         case 33:
-            g_help.text = 0;
+            g_menuHelp.text = 0;
             func_800A932C(&s, "ENEMY APEAR\n");
             func_800AF760(&s);
             func_800B026C(&s);
             break;
         case 34:
-            g_help.text = 0;
+            g_menuHelp.text = 0;
             func_800A932C(&s, "GET SELECT\n");
-            help_setDrawHand(0);
+            help_setCursorOnTop(0);
             func_800AB928(g_gameState->unk1C->unk10[g_gameState->unk1C->unk8], p, &s);
             func_800ACFFC(&s);
             break;
         default:
-            g_help.text = 0;
+            g_menuHelp.text = 0;
             func_800A932C(&s, "NO TASK\n");
             break;
         }
@@ -253,9 +253,9 @@ void func_800A7E10(void) {
         func_80032098();
         if (s.unk0 == 0x12 || s.unk0 == 0x23 || s.unk0 == 0x13 || s.unk0 == 0 || s.unk0 == 1 ||
             s.unk0 == 6 || s.unk0 == 0xB || s.unk0 == 0x22 || s.unk0 == 0x17 || s.unk0 == 0x18) {
-            help_setDisabled(0);
+            help_setLocked(0);
         } else {
-            help_setDisabled(1);
+            help_setLocked(1);
         }
         help_update();
         s.unk2E8++;
@@ -278,9 +278,9 @@ void func_800A7E10(void) {
     DrawSync(0);
     VSync(g_gameState->vsyncMode);
     SetDispMask(0);
-    help_setDrawHand(1);
-    help_setHandler(0);
-    help_setDisabled(0);
+    help_setCursorOnTop(1);
+    help_setCallback(0);
+    help_setLocked(0);
 }
 
 void func_800A8B80(void) {
@@ -341,11 +341,11 @@ void func_800A8D74(TmState *s) {
     game_initGfx();
     text_setBank(g_cardGameText);
     help_init();
-    help_setHandler(help_nullHandler);
-    g_help.text = 0;
-    g_help.x = 0x50;
-    g_help.y = 0x50;
-    g_help.otz = 4;
+    help_setCallback(help_nullHandler);
+    g_menuHelp.text = 0;
+    g_menuHelp.x = 0x50;
+    g_menuHelp.y = 0x50;
+    g_menuHelp.otz = 4;
     func_8002FA50(0xC);
     s->unk43C = 0;
     s->unk440 = 0;
@@ -709,9 +709,9 @@ void *func_800A9B2C(u32 *ot, void *p, TmState *s) {
             }
             func_800AB8F4(w);
             sp = func_800B16A4(ot, p, s, x, y, 0);
-            g_help.x = x + 2;
-            g_help.y = y + 1;
-            g_help.text = text_get(0x21);
+            g_menuHelp.x = x + 2;
+            g_menuHelp.y = y + 1;
+            g_menuHelp.text = text_get(0x21);
             text_drawBlock(0x12, 9, 0xFFA, text_get(0x1C), 0);
             setlen(sp, 4);
             sp->code = 0x64;
@@ -763,7 +763,7 @@ void *func_800A9B2C(u32 *ot, void *p, TmState *s) {
                 k = s->unk564 * 0xC - 0x78;
                 r.x -= k;
                 text_drawBlock(r.x + 8, r.y + 6, 5, (u8 *)func_8006276C(c->unk0), 0);
-                win_drawBoxPal(&r, 5, 2);
+                win_drawBox(&r, 5, 2);
             }
             if (pad & 0x20000) {
                 s->unk0 = 1;
@@ -805,12 +805,12 @@ void *func_800A9F10(u32 *ot, void *p, TmState *s) {
         y = c->unk10 + 3;
     }
     p = func_800B16A4(ot, p, s, x, y, 1);
-    g_help.x = cx - 0xD;
-    g_help.y = cy + 7;
+    g_menuHelp.x = cx - 0xD;
+    g_menuHelp.y = cy + 7;
     if (cell->unk0 == 1) {
-        g_help.text = text_get(0x22);
+        g_menuHelp.text = text_get(0x22);
     } else {
-        g_help.text = text_get(0x30);
+        g_menuHelp.text = text_get(0x30);
     }
     help_setBounds(NULL);
     if (pad & 0x10000) {
@@ -992,14 +992,14 @@ void func_800AA548(TmState *s) {
             }
         }
         if (s->unk4 == 0) {
-            g_help.x = 0x7D;
-            g_help.y = 0x6B;
-            g_help.text = text_get(0x29);
+            g_menuHelp.x = 0x7D;
+            g_menuHelp.y = 0x6B;
+            g_menuHelp.text = text_get(0x29);
             ui_drawHand(0x7D, 0x6B, 3);
         } else {
-            g_help.x = 0x7D;
-            g_help.y = 0x7B;
-            g_help.text = text_get(0x28);
+            g_menuHelp.x = 0x7D;
+            g_menuHelp.y = 0x7B;
+            g_menuHelp.text = text_get(0x28);
             ui_drawHand(0x7D, 0x7B, 3);
         }
         func_800AB8F4(0x89);
@@ -1017,12 +1017,12 @@ void func_800AA790(TmState *s) {
 
     ui_drawHand(s->unk474 * 15 + 3, s->unk478 * 15 + 0x30, 3);
     if (s->unk0 == 0x12 || s->unk0 == 0x17) {
-        g_help.x = s->unk474 * 15 + 3;
-        g_help.y = s->unk478 * 15 + 0x30;
+        g_menuHelp.x = s->unk474 * 15 + 3;
+        g_menuHelp.y = s->unk478 * 15 + 0x30;
         if (s->unk0 == 0x12) {
-            g_help.text = text_get((u32)(s->unk450 - 0x7C) >= 4 ? 0x24 : 0x32);
+            g_menuHelp.text = text_get((u32)(s->unk450 - 0x7C) >= 4 ? 0x24 : 0x32);
         } else {
-            g_help.text = text_get(0x27);
+            g_menuHelp.text = text_get(0x27);
         }
         r.x = 0xD;
         r.w = 0x9E;
@@ -1201,14 +1201,14 @@ void func_800AAEB4(TmState *s) {
             func_800B01E8(1);
         }
         if (s->unk4 == 0) {
-            g_help.x = 0x7B;
-            g_help.y = 0x6C;
-            g_help.text = text_get(0x25);
+            g_menuHelp.x = 0x7B;
+            g_menuHelp.y = 0x6C;
+            g_menuHelp.text = text_get(0x25);
             ui_drawHand(0x7B, 0x6C, 3);
         } else {
-            g_help.x = 0x7B;
-            g_help.y = 0x7B;
-            g_help.text = text_get(0x26);
+            g_menuHelp.x = 0x7B;
+            g_menuHelp.y = 0x7B;
+            g_menuHelp.text = text_get(0x26);
             ui_drawHand(0x7B, 0x7B, 3);
         }
         func_800AB8F4(0x8D);
@@ -1313,14 +1313,14 @@ void func_800AB338(TmState *s) {
             func_800B01E8(1);
         }
         if (s->unk4 == 0) {
-            g_help.x = 0xBC;
-            g_help.y = 0x4D;
-            g_help.text = text_get(0x2A);
+            g_menuHelp.x = 0xBC;
+            g_menuHelp.y = 0x4D;
+            g_menuHelp.text = text_get(0x2A);
             ui_drawHand(0xBC, 0x4D, 3);
         } else {
-            g_help.x = 0xBC;
-            g_help.y = 0x5C;
-            g_help.text = text_get(0x2B);
+            g_menuHelp.x = 0xBC;
+            g_menuHelp.y = 0x5C;
+            g_menuHelp.text = text_get(0x2B);
             ui_drawHand(0xBC, 0x5C, 3);
         }
         func_800AB8F4(0xCE);
@@ -1382,15 +1382,15 @@ void *func_800AB574(u32 *ot, void *p, TmState *s) {
     x = s->unk8 * 43;
     y = s->unkC * 52;
     p = func_800B16A4(ot, p, s, x + 0x39, y + 0xE, 0);
-    g_help.x = x + 0x3B;
-    g_help.y = y + 0xF;
-    g_help.text = text_get(0x31);
+    g_menuHelp.x = x + 0x3B;
+    g_menuHelp.y = y + 0xF;
+    g_menuHelp.text = text_get(0x31);
     cell = func_800B19D4(s, s->unk8, s->unkC);
     if (cell->unk0 == 0) {
         c = cell->unk4;
         for (i = 0; i < s->unk4AC; i++) {
             if (c == s->unk48C[i]) {
-                g_help.text = text_get(0x23);
+                g_menuHelp.text = text_get(0x23);
             }
         }
     }
@@ -1457,9 +1457,9 @@ void *func_800AB928(u32 *ot, void *p, TmState *s) {
     x = sel->unkC;
     y = sel->unk10;
     p = func_800B16A4(ot, p, s, x + 0x22, y + 5, 2);
-    g_help.x = x + 0x25;
-    g_help.y = y + 6;
-    g_help.text = text_get(0x2C);
+    g_menuHelp.x = x + 0x25;
+    g_menuHelp.y = y + 6;
+    g_menuHelp.text = text_get(0x2C);
     r.x = x + 0x2A;
     r.w = 0x12C;
     r.y = 0;
@@ -1514,7 +1514,7 @@ void *func_800AB928(u32 *ot, void *p, TmState *s) {
     r2.y = sel->unk10 - 9;
     r2.h = 0x19;
     text_drawBlock(0x5A, r2.y + 6, 3, buf, 0);
-    win_drawBoxPal(&r2, 3, 2);
+    win_drawBox(&r2, 3, 2);
     return p;
 }
 
@@ -1564,19 +1564,19 @@ void func_800ABC74(TmState *s) {
             func_800B01E8(1);
         }
         if (s->unk5B4 == 0) {
-            g_help.x = 0x7B;
-            g_help.y = 0x6C;
-            g_help.text = text_get(0x2E);
+            g_menuHelp.x = 0x7B;
+            g_menuHelp.y = 0x6C;
+            g_menuHelp.text = text_get(0x2E);
             ui_drawHand(0x7B, 0x6C, 3);
         } else {
-            g_help.x = 0x7B;
-            g_help.y = 0x7B;
-            g_help.text = text_get(0x2F);
+            g_menuHelp.x = 0x7B;
+            g_menuHelp.y = 0x7B;
+            g_menuHelp.text = text_get(0x2F);
             ui_drawHand(0x7B, 0x7B, 3);
         }
         func_800AB8F4(0x8D);
     } else {
-        g_help.text = NULL;
+        g_menuHelp.text = NULL;
     }
 }
 

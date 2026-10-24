@@ -14,8 +14,8 @@ void func_801F0C18(void) {
     func_801F3038();
     func_801F2CEC();
     text_setBank(g_itemMenuText);
-    help_setHandler(help_nullHandler);
-    help_setDrawHand(1);
+    help_setCallback(help_nullHandler);
+    help_setCursorOnTop(1);
     func_8002EDFC(&D_801FAB78.unkC, 0xFF, 0xB, 2, 0xAD);
     func_8002EDFC(&D_801FAB78.unk1C, D_801FAB78.unkB0, 0xB, 2, 0xAD);
     setRECT(&D_801FAB78.unk2C, 8, 8, 0xE4, 0x1A);
@@ -167,7 +167,7 @@ void func_801F11E4(void) {
         ui_drawLabel((D_801F30A8->x + 0x120) - w, D_801F30A8->y - 3, 0x1D, D_800703FC.unk94, 0);
     }
     menuList_getView(il->unk8, &view);
-    win_drawListFrame(D_801F30A8, 0x1D, 1, il->unk8);
+    win_drawListBox(D_801F30A8, 0x1D, 1, il->unk8);
     win_drawShadow(D_801F30A8, 0x1D, 1);
     idx = view.unk1 * 2;
     win_setClip(NULL, 0x1C, 1);
@@ -195,41 +195,41 @@ void func_801F13F8(void) {
     off = 0;
     l = D_801F3040[D_801FAB78.unk0].unk8;
     blink = (D_80077E54 & 3) != 0;
-    help_setDrawHand(D_801FAB78.unk1 != 1);
+    help_setCursorOnTop(D_801FAB78.unk1 != 1);
     if (func_8002F810() || D_801FAB78.unk1 == 0) {
         return;
     }
     if (D_801FAB78.unk1 == 1 || blink) {
-        g_help.x = D_801F30AC[D_801FAB78.unk0] - 0x10;
-        g_help.y = 0x10;
-        g_help.otz = 0x19;
+        g_menuHelp.x = D_801F30AC[D_801FAB78.unk0] - 0x10;
+        g_menuHelp.y = 0x10;
+        g_menuHelp.otz = 0x19;
         func_800355E4();
     }
     if (D_801FAB78.unk1 == 4 || (D_801FAB78.unk1 == 5 && blink)) {
-        g_help.x = 0x7E;
-        g_help.otz = 0x12;
-        g_help.y = D_801FAB78.unk5 * 15 + 0xE;
+        g_menuHelp.x = 0x7E;
+        g_menuHelp.otz = 0x12;
+        g_menuHelp.y = D_801FAB78.unk5 * 15 + 0xE;
         func_800355E4();
     }
     if (D_801FAB78.unk1 >= 2 && D_801FAB78.unk1 != 4 && (D_801FAB78.unk1 == 2 || blink)) {
         k = l->unk7 ^ ((l->unk8 >> 3) & 1);
-        g_help.otz = 0x19;
+        g_menuHelp.otz = 0x19;
         /* Both arms are identical (jump2 merges them after register allocation); the test keeps the
          * hi part of &D_801FAB78 and the constant 2 live, which the original's registers need. */
         if (D_801FAB78.unk0 == 2) {
-            g_help.x = k * 0x96;
-            g_help.y = l->cursor * 15 + 0x34;
+            g_menuHelp.x = k * 0x96;
+            g_menuHelp.y = l->cursor * 15 + 0x34;
             func_800355E4();
         } else {
-            g_help.x = k * 0x96;
-            g_help.y = l->cursor * 15 + 0x34;
+            g_menuHelp.x = k * 0x96;
+            g_menuHelp.y = l->cursor * 15 + 0x34;
             func_800355E4();
         }
     }
     if (D_801FAB78.unk1 == 3) {
-        g_help.otz = 0x12;
-        g_help.x = D_801FAB78.unk3C.unk4.x - 0xA;
-        g_help.y = D_801FAB78.unk3C.unk4.y + (s16)(D_801FAB78.unk2 * 43 + 0x12);
+        g_menuHelp.otz = 0x12;
+        g_menuHelp.x = D_801FAB78.unk3C.unk4.x - 0xA;
+        g_menuHelp.y = D_801FAB78.unk3C.unk4.y + (s16)(D_801FAB78.unk2 * 43 + 0x12);
         func_800355E4();
     }
     if (D_801FAB78.unk1 == 5) {
@@ -243,16 +243,16 @@ void func_801F13F8(void) {
                     }
                 }
                 u = D_801FAB78.unk6;
-                g_help.x = (u & 1) * 0x96 + 2;
-                g_help.y = ((u >> 1) - l->unk5) * 15 + (s16)(off + 0x32);
-                g_help.otz = 0x12;
+                g_menuHelp.x = (u & 1) * 0x96 + 2;
+                g_menuHelp.y = ((u >> 1) - l->unk5) * 15 + (s16)(off + 0x32);
+                g_menuHelp.otz = 0x12;
                 func_800355E4();
             }
         }
         k = l->unk7 ^ ((l->unk8 >> 3) & 1);
-        g_help.x = k * 0x96;
-        g_help.y = l->cursor * 15 + 0x34;
-        g_help.otz = 0x12;
+        g_menuHelp.x = k * 0x96;
+        g_menuHelp.y = l->cursor * 15 + 0x34;
+        g_menuHelp.otz = 0x12;
         func_800355E4();
     }
 }
@@ -329,11 +329,11 @@ s32 func_801F1A7C(void) {
             m->unk4C = win_openFree(&D_801F3148, 0xF, 2);
             win_setOnOpened(m->unk4C, func_801F2B20);
             win_setDrawContent(m->unk4C, func_801F2B58);
-            win_setLabel(m->unk4C, (s32)D_801F3140);
+            win_setTitle(m->unk4C, (s32)D_801F3140);
             win_setShadow(m->unk4C, 1);
             m->unk50 = 1;
             m->unk1 = 0;
-            help_setDisabled(1);
+            help_setLocked(1);
             return 1;
         }
         return 0;
@@ -351,7 +351,7 @@ void func_801F1B78(void) {
     s32 z;
     HelpState *h;
 
-    h = &g_help;
+    h = &g_menuHelp;
     x = h->x;
     y = h->y;
     z = h->otz;
@@ -385,7 +385,7 @@ void func_801F1B78(void) {
             r.h = g_gameState->unkC->disp.h;
         }
         help_setBounds(&r);
-        g_help.text = text_get(8);
+        g_menuHelp.text = text_get(8);
         return;
     } else if (D_801FAB78.unk1 == 4) {
         help_setBounds(&D_801F3150);
@@ -419,7 +419,7 @@ void func_801F1D88(void) {
                 D_801FAB78.unk54 = 0;
                 D_801FAB78.unk1 = 2;
                 keyItem_setSeen(D_801FAB78.unk56);
-                help_setDisabled(0);
+                help_setLocked(0);
             }
         }
     }
@@ -472,9 +472,9 @@ void func_801F2190(void) {
     if (g_gameState->mode == 3) {
         func_8002F55C(0x44A);
     }
-    help_setDisabled(0);
-    help_setDrawHand(1);
-    help_setHandler(NULL);
+    help_setLocked(0);
+    help_setCursorOnTop(1);
+    help_setCallback(NULL);
     func_801F2F30();
 }
 
@@ -609,7 +609,7 @@ void func_801F262C(void) {
     for (i = 0; i < 3; i++) {
         text_drawBlock(r->x + D_801F309C[i], r->y + 6, 0x1C, text_get(D_801F3098[i]), 0);
     }
-    win_drawBoxPal(r, 0x1D, 2);
+    win_drawBox(r, 0x1D, 2);
     win_drawShadow(r, 0x1D, 2);
 }
 
@@ -638,10 +638,10 @@ void func_801F27A0(void) {
     if (D_801FAB78.unk8 != 0) {
         for (i = 0; i < 4; i++) {
             if (g_gameState->unk1C->party[i] != NULL) {
-                ui_drawPartyMemberMode(r->x + 8, r->y + 6 + i * 0x2B, 0x14, i, D_801FAB78.unk4);
+                ui_drawMemberSummary(r->x + 8, r->y + 6 + i * 0x2B, 0x14, i, D_801FAB78.unk4);
             }
         }
-        win_drawBoxPal(r, 0x14, 2);
+        win_drawBox(r, 0x14, 2);
         win_drawShadow(r, 0x14, 2);
     }
 }
@@ -718,9 +718,9 @@ void func_801F2BC0(void) {
                 if (g_gameState->mode == 3) {
                     func_8002F55C(0x44A);
                 }
-                help_setDisabled(0);
-                help_setDrawHand(1);
-                help_setHandler(NULL);
+                help_setLocked(0);
+                help_setCursorOnTop(1);
+                help_setCallback(NULL);
                 func_801F2F30();
                 func_800362C8();
             }
@@ -770,7 +770,7 @@ void func_801F2D58(void) {
     win_setOnOpened(D_801FAB78.unk4C, func_801F2EBC);
     win_setOnClosed(D_801FAB78.unk4C, func_801F2ECC);
     win_setShadow(D_801FAB78.unk4C, 1);
-    win_setLabel(D_801FAB78.unk4C, D_80070408);
+    win_setTitle(D_801FAB78.unk4C, D_80070408);
     D_801FAB78.unk5 = 0;
     D_801FAB78.unk6 = l->unk7 + (l->unk5 + l->cursor) * 2;
     D_801FAB78.unk1 = 0;
@@ -817,7 +817,7 @@ void func_801F2F38(s32 id) {
     D_801FAB78.unk57 = 0;
     D_801FAB78.unk58 = 0x48;
     D_801FAB78.unk58 -= func_800632B4(0x16, D_801F3064);
-    help_setDisabled(1);
+    help_setLocked(1);
 }
 
 void func_801F2FA0(void) {

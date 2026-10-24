@@ -19,7 +19,7 @@ void func_801F08F4(void) {
     text_setBank("-");
     func_801F2E60();
     func_801F2CD4();
-    help_setHandler(D_801F347C.unk3 ? func_801F22DC : 0);
+    help_setCallback(D_801F347C.unk3 ? func_801F22DC : 0);
     setRECT(&D_801F347C.unk18D0, 8, 0x26, 0x9E, 0xB6);
     setRECT(&D_801F347C.unk18D8, 0xAA, 0x26, 0x8A, 0x4E);
     setRECT(&D_801F347C.unk18E0, 0xAA, 0x76, 0x8A, 0x66);
@@ -104,7 +104,7 @@ void func_801F0CC8(void) {
         win_setDrawContent(D_801F347C.unk18E8, func_801F2F34);
         win_setOnOpened(D_801F347C.unk18E8, func_801F2F14);
         win_setOnClosed(D_801F347C.unk18E8, func_801F2F24);
-        win_setLabel(D_801F347C.unk18E8, D_800704C4);
+        win_setTitle(D_801F347C.unk18E8, D_800704C4);
         win_setShadow(D_801F347C.unk18E8, 1);
         return;
     }
@@ -130,7 +130,7 @@ void func_801F0DB0(void) {
     a = func_800625F8();
     b = func_80062638();
     ui_drawLabel(r->x + 8, r->y - 3, 0x1E, D_8007041C, 0);
-    win_drawBoxPal(r, 0x1E, 1);
+    win_drawBox(r, 0x1E, 1);
     win_drawShadow(r, 0x1E, 1);
     s = text_get(0x27);
     w = func_8002BA68(s);
@@ -177,9 +177,9 @@ void func_801F0F9C(void) {
     }
     rank = D_801F347C.unk7;
     ui_drawLabel(r->x + 8, r->y - 3, 0x1E, D_80070460, 0);
-    win_drawBoxPal(r, 0x1E, 2);
+    win_drawBox(r, 0x1E, 2);
     win_drawShadow(r, 0x1F, 2);
-    ui_drawSeparator(r->x + 4, r->y + 0x24, 0x14, r->w - 9);
+    ui_drawEtchedLine(r->x + 4, r->y + 0x24, 0x14, r->w - 9);
     text_formatNumber(D_801F347C.unk18F0[3], buf, 4, 1);
     text_drawBlock(r->x + 0xA, r->y + 5, 0x14, text_get(0x29), 0);
     text_drawBlock(r->x + 0xA, r->y + 0x14, 0x14, text_get(rank), 0);
@@ -257,7 +257,7 @@ void func_801F12B8(s32 id) {
 
         }
     }
-    win_drawBoxPal(r, 0x1E, 2);
+    win_drawBox(r, 0x1E, 2);
     win_drawShadow(r, 0x1F, 2);
 }
 
@@ -297,16 +297,16 @@ void func_801F166C(void) {
 
     if (!func_8002F810()) {
         if (D_801F347C.unk0 == 1 || (D_801F347C.unk0 == 2 && blink)) {
-            g_help.otz = 0x11;
-            g_help.x = D_801F347C.unk18D0.x + D_801F347C.unk2 * 15 - 20;
-            g_help.y = D_801F347C.unk18D0.y + D_801F347C.unk1 * 15 + 14;
+            g_menuHelp.otz = 0x11;
+            g_menuHelp.x = D_801F347C.unk18D0.x + D_801F347C.unk2 * 15 - 20;
+            g_menuHelp.y = D_801F347C.unk18D0.y + D_801F347C.unk1 * 15 + 14;
             func_800355E4();
         }
         if (D_801F347C.unk0 == 2) {
             Window *w = D_801F347C.unk18E8;
-            g_help.x = w->unk0 + 0x16;
-            g_help.y = w->unk2 + (s16)(D_801F347C.unk5 * 15 + 0x32);
-            g_help.otz = 9;
+            g_menuHelp.x = w->unk0 + 0x16;
+            g_menuHelp.y = w->unk2 + (s16)(D_801F347C.unk5 * 15 + 0x32);
+            g_menuHelp.otz = 9;
             func_800355E4();
         }
     }
@@ -398,7 +398,7 @@ void func_801F1C88(void) {
     u8 n;
     CardMenu *m;
 
-    help_setHandler(func_800625F8() ? func_801F22DC : NULL);
+    help_setCallback(func_800625F8() ? func_801F22DC : NULL);
     for (i = 0; i < 100; i++) {
         n = func_80062560(i);
         D_801F347C.unk8[i] = n;
@@ -525,12 +525,12 @@ void func_801F22DC(void) {
     RECT r;
     u8 n;
 
-    g_help.text = NULL;
+    g_menuHelp.text = NULL;
     help_setBounds(NULL);
     if (D_801F347C.unk0 == 1) {
         n = D_801F347C.unk8[D_801F347C.unk2 * 10 + D_801F347C.unk1];
         if (n != 0) {
-            g_help.text = text_get(n >= 2 ? 0x24 : 0x23);
+            g_menuHelp.text = text_get(n >= 2 ? 0x24 : 0x23);
         }
     } else if (D_801F347C.unk0 == 2) {
         if (D_801F347C.unk5 == 1) {
@@ -540,7 +540,7 @@ void func_801F22DC(void) {
             r.h = g_gameState->unkC->disp.h - 0x8C;
             help_setBounds(&r);
         }
-        g_help.text = text_get(D_801F347C.unk5 + 0x25);
+        g_menuHelp.text = text_get(D_801F347C.unk5 + 0x25);
     }
 }
 
@@ -559,7 +559,7 @@ void func_801F240C(void) {
         pad_setRepeatDelay(0, id, D_801F347C.unk1948[i].unk0);
         pad_setRepeatInterval(0, id, D_801F347C.unk1948[i].unk4);
     }
-    help_setHandler(NULL);
+    help_setCallback(NULL);
     func_801F2EE8();
 }
 
@@ -626,7 +626,7 @@ void func_801F2664(void) {
             } while (0);
         }
     }
-    win_drawBoxPal(r, 0x1E, 2);
+    win_drawBox(r, 0x1E, 2);
     win_drawShadow(r, 0x1F, 2);
 }
 

@@ -68,7 +68,7 @@ void func_80032238(void) {
     g_gameState->unk10[1].r0 = 0;
     g_gameState->unk10[1].g0 = 0;
     g_gameState->unk10[1].b0 = 0;
-    win_destroyAll();
+    win_closeAllNow();
     g_menu.unk18 = g_padPortMask[0];
     g_padPortMask[0] = 0x4000000;
     pad_setStickAsDpad(1);
@@ -86,7 +86,7 @@ void func_80032384(void) {
     }
     g_gameState->unk1C->unk0 &= ~2;
     g_gameState->unk1C->unk0 &= ~0x1C;
-    win_destroyAll();
+    win_closeAllNow();
     g_gameState->vsyncMode = g_menu.unk14;
     g_gameState->unk10[0].r0 = g_menu.unk20;
     g_gameState->unk10[0].g0 = g_menu.unk21;

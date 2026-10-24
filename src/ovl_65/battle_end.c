@@ -190,7 +190,7 @@ void func_801EFB98(void) {
     RECT *r = &D_801F7A78.unkAC[0].unk4;
     s32 x, y;
     ui_drawLabel(r->x + 6, r->y - 3, 0xB, D_80070460, 0);
-    win_drawBoxPal(r, 0xB, 1);
+    win_drawBox(r, 0xB, 1);
     win_drawShadow(r, 0xC, 1);
     x = r->x;
     y = r->y;
@@ -240,7 +240,7 @@ void func_801EFC68(void) {
                 ui_drawSmallDigits(r->x + 0x69, r->y + 0x2A, 0xB, buf, col);
                 text_drawBlock(r->x + 0x29, r->y + 0x26, 0xB, text_get(0xC), col);
             }
-            win_drawBoxPal(r, 0xB, 0);
+            win_drawBox(r, 0xB, 0);
             win_drawShadow(r, 0xC, 0);
         }
     }
@@ -252,7 +252,7 @@ void func_801EFF50(void) {
     s32 x, y;
 
     if (D_801F7A78.unk14C[6] != 0) {
-        win_drawBoxPal(r, 0xB, 2);
+        win_drawBox(r, 0xB, 2);
         win_drawShadow(r, 0xC, 2);
         text_formatNumber(D_801F7A78.unk24.unk0, buf, 6, 1);
         x = r->x;
@@ -270,7 +270,7 @@ void func_801F0044(void) {
     s32 x, y;
 
     if (D_801F7A78.unk14C[7] != 0) {
-        win_drawBoxPal(r, 0xB, 2);
+        win_drawBox(r, 0xB, 2);
         win_drawShadow(r, 0xC, 2);
         text_formatNumber(D_801F7A78.unk24.unk4, buf, 3, 1);
         x = r->x;
@@ -292,7 +292,7 @@ void func_801F0138(void) {
         gil = 999999;
     }
     if (D_801F7A78.unk14C[8] != 0) {
-        win_drawBoxPal(r, 0xE, 2);
+        win_drawBox(r, 0xE, 2);
         win_drawShadow(r, 0xF, 2);
         text_formatNumber(gil, buf, 6, 1);
         strcat(buf, D_801F3BC0);
@@ -315,7 +315,7 @@ void func_801F0264(void) {
         gil = 9999999;
     }
     if (D_801F7A78.unk14C[9] != 0) {
-        win_drawBoxPal(r, 0xE, 2);
+        win_drawBox(r, 0xE, 2);
         win_drawShadow(r, 0xF, 2);
         text_formatNumber(gil, buf, 7, 1);
         strcat(buf, D_801F3BC4);
@@ -549,7 +549,7 @@ void func_801F0DE4(s32 arg0, s32 arg1, s32 arg2, u8 *arg3, s32 arg4) {
 void func_801F0E30(void) {
     game_initGfx();
     func_8002C064(0);
-    help_setHandler(0);
+    help_setCallback(0);
     g_gameState->vsyncMode = 2;
     D_801F7A78.unkA = 0;
     D_801F7A78.unk8 = 0;
@@ -594,7 +594,7 @@ u8 rewards_update(void) {
 }
 
 void func_801F0FC4(void) {
-    help_setHandler(0);
+    help_setCallback(0);
     func_801F2E24();
     D_801F7A78.unk2 = 1;
 }
@@ -678,7 +678,7 @@ void func_801F1228(void) {
     s32 x, y;
     RECT *r = &D_801F7A78.unkAC[1].unk4;
     ui_drawLabel(r->x + 6, r->y - 3, 0xB, D_80070450, 0);
-    win_drawBoxPal(r, 0xB, 1);
+    win_drawBox(r, 0xB, 1);
     win_drawShadow(r, 0xC, 1);
     x = r->x;
     y = r->y;
@@ -819,7 +819,7 @@ void func_801F1774(void) {
 
 void func_801F17D4(void) {
     D_801F7A78.unk2 = 1;
-    win_destroyAll();
+    win_closeAllNow();
 }
 
 void func_801F17FC(s32 arg0, s32 arg1, s32 arg2, u8 *arg3, s32 arg4) {
@@ -846,7 +846,7 @@ void func_801F1848(void) {
                         rr->h = 0x19;
                         w->unk0 = win_openFree(rr, 6, 2);
                         w->unk0->unk50 = i;
-                        win_setLabel(w->unk0, (s32)D_801F5228);
+                        win_setTitle(w->unk0, (s32)D_801F5228);
                         win_setDrawContent(w->unk0, func_801F1D94);
                         win_setOnClosed(w->unk0, func_801F2248);
                         win_setOpenAnim(w->unk0, 0);
@@ -1362,7 +1362,7 @@ u8 func_801F2E58(void) {
         win_setOnClosed(ws->unk0, (void (*)(Window *))func_801F347C);
         win_setOpenAnim(ws->unk0, 0);
         win_setShadow(ws->unk0, 1);
-        win_setLabel(ws->unk0, D_800704C8);
+        win_setTitle(ws->unk0, D_800704C8);
     }
     return !f;
 }
@@ -1404,7 +1404,7 @@ void func_801F2FE8(Window *w) {
         text_append(D_801F8238, text_get(0xB));
         text_drawBlock(r->unk0 + 0x16, r->unk2 - k, w->unk18, D_801F8238, 0);
     }
-    ui_drawSeparator(r->unk0 + 2, r->unk2 - (k3 = off - 0x61), w->unk18, r->unk4 - 5);
+    ui_drawEtchedLine(r->unk0 + 2, r->unk2 - (k3 = off - 0x61), w->unk18, r->unk4 - 5);
 }
 
 void func_801F3250(void) {

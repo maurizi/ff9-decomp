@@ -123,7 +123,7 @@ void func_801F3278(s32, s32);
 void func_801EF900(s32, s32);
 void func_801F0ED4(void);
 void func_801F0890(void);
-void ui_drawMeter(s32, s32, s32, s32, s32, u8, u8); /* main exe */
+void ui_drawApGauge(s32, s32, s32, s32, s32, u8, u8); /* main exe */
 s32 func_80034584(s32, s32); /* main exe */
 s32 func_800347D8(s32, s32); /* main exe */
 extern u8 D_8007AFD3;
@@ -169,7 +169,7 @@ extern s32 D_800704B8;
 extern s32 D_80077E54; /* = D_80077E50.unk4, referenced by its own name */
 extern s32 D_80070498;
 extern s32 D_8007042C;
-void ui_drawPartyMemberMode(s32, s32, s32, s32, s32);
+void ui_drawMemberSummary(s32, s32, s32, s32, s32);
 s32 func_80034430(s32, s32);
 void ui_drawItemIcon(s32, s32, s32, s32, u8); /* main exe */
 void func_801F32E0(Character *);
@@ -205,7 +205,7 @@ extern u8 D_801F4734[];
 extern u8 D_801F67D4[];
 extern u8 D_801F3478[];
 extern u8 D_801FBD84[];
-extern u8 *D_80077DF0; /* = g_help.text, referenced by its own name */
+extern u8 *D_80077DF0; /* = g_menuHelp.text, referenced by its own name */
 typedef struct {
     u8 pad0[4];
     u16 unk4;

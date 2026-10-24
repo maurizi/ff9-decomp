@@ -46,7 +46,7 @@ void func_800B5114(void) {
     D_800CA058.unk0 = 1;
     D_800CA058.unk3 = 0;
     g_gameState->unk1C->unk8E4.field->unk0 = 0;
-    win_destroyAll();
+    win_closeAllNow();
     D_800C9D5C[D_800CA058.unk0].unk0();
 }
 
@@ -114,7 +114,7 @@ s32 func_800B54CC(void) {
 void func_800B54FC(void) {
     func_8002F9D0();
     help_init();
-    help_setHandler(func_800B57C8);
+    help_setCallback(func_800B57C8);
     text_setBank(D_800A717C);
 }
 
@@ -127,7 +127,7 @@ void func_800B553C(void) {
 
 void func_800B5574(void) {
     help_setBounds(NULL);
-    help_setHandler(NULL);
+    help_setCallback(NULL);
 }
 
 void func_800B559C(void) {
@@ -160,7 +160,7 @@ void func_800B5660(void) {
     text_drawBlock(D_800C9D98.x + 0x30, D_800C9D98.y + 0x2E, 0xA, text_get(1), 0);
     text_drawBlock(D_800C9D98.x + 0x30, D_800C9D98.y + 0x3D, 0xA, text_get(2), 0);
     if (!func_8002F810()) {
-        m = &g_help;
+        m = &g_menuHelp;
         m->x = D_800C9D98.x + 0x16;
         y = D_800C9D98.y;
         if (D_800CA058.unk3 == 0) {
@@ -171,7 +171,7 @@ void func_800B5660(void) {
         D_80077DEC = 9;
         func_800355E4();
     }
-    win_drawBoxPal(&D_800C9D98, 0xA, 2);
+    win_drawBox(&D_800C9D98, 0xA, 2);
 }
 
 void func_800B5794(void) {
@@ -185,7 +185,7 @@ void func_800B5794(void) {
 void func_800B57C8(void) {
     RECT r;
     s32 id;
-    HelpState *m = &g_help;
+    HelpState *m = &g_menuHelp;
 
     m->text = NULL;
     if (!func_8002F810()) {

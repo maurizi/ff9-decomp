@@ -640,9 +640,9 @@ void win_drawHelpFill(RECT *, s32);
 void win_drawHelpTailFill(s32, s32, s32, s32);
 void win_drawTailEdge(s16, s16, s32, s32, u8, u8);
 u8 *ui_buildItemIcon(s32, s32, u32 *, s32, u8, u8 *);
-void ui_drawPartyStatus(s32, s32, s32, s32);
+void ui_drawMemberStats(s32, s32, s32, s32);
 void ui_drawCharStatuses(s32, s32, s32, s32);
-u8 *ui_buildMeter(s32, s32, u32 *, s32, s32, u8, u8, u8 *);
+u8 *ui_buildApGauge(s32, s32, u32 *, s32, s32, u8, u8, u8 *);
 s32 ui_drawSprite(s32, s32, s32, s32, u8);
 void ui_drawPartyPortrait(s32, s32, s32, s32, u8);
 
@@ -650,9 +650,9 @@ void text_formatNumber(s32, u8 *, s32, u8);
 void item_clearAll(void);
 void keyItem_clearAll(void);
 s32 item_add(s32, s32);
+void ui_drawPortraitId(s32, s32, s32, s32, s32, u8);
+extern s32 g_portraitCount; /* number of portraits (ui_drawPortraitId) */
 void ui_drawPortrait(s32, s32, s32, s32, s32, u8);
-extern s32 g_portraitCount; /* number of portraits (ui_drawPortrait) */
-void ui_drawPartyPortraitH(s32, s32, s32, s32, s32, u8);
 void ui_getPartyPortraitRects(s32, RECT *, RECT *, RECT *);
 void ui_loadPartyPortrait(u8 *, s32);
 s32 func_80028DB0(s32, s32, s32);
@@ -965,24 +965,24 @@ s32 math_cos(s32); /* cos */
 extern SVECTOR D_80077CB0;
 extern SVECTOR D_80077CC0[2][4]; /* two screen-filling quads */
 
-/* Select help window (g_help, help_* functions; layout merged from main + ovl_14 + ovl_32) */
+/* Select help window (g_menuHelp, help_* functions; layout merged from main + ovl_14 + ovl_32) */
 typedef struct {
-    s16 x; /* cursor position the window is placed beside */
+    s16 x; /* hand cursor position; the help box is placed beside it */
     s16 y;
-    s32 otz;
+    s32 otz; /* hand OT index */
     u8 *text; /* help text, set by the handler */
-    void (*handler)(void); /* per-menu callback run every frame while help is open */
+    void (*callback)(void); /* per-menu function run every frame while help is open: sets text */
     RECT bounds; /* help_setBounds: the window stays inside */
     u8 isOpen;
-    u8 opening; /* open animation running (help_toggle .. help_onOpened) */
+    u8 opening; /* open animation running (help_toggle .. help_onIconAnimDone) */
     u8 textShown;
-    u8 disabled; /* Select doesn't toggle help */
-    u8 atCursor; /* 0: window at x/y itself, else beside the cursor */
-    u8 drawHand;
+    u8 locked; /* Select doesn't toggle help */
+    u8 follow; /* 0: help box at x/y itself, else beside the hand */
+    u8 cursorOnTop; /* hand drawn above the help box */
     u8 pad1E[2];
-    Unk80035B90 anim;
+    Unk80035B90 iconAnim; /* moogle icon (sprAnim_*) */
 } HelpState;
-extern HelpState g_help;
+extern HelpState g_menuHelp;
 
 /* sound sequencer state (AKAO), g_akaoSeq */
 typedef struct {
@@ -1400,7 +1400,7 @@ s32 akao_command(u32);
 void func_80055D80(s32, s32);
 void func_8005ECCC(AkaoChannel *, s32);
 void func_80060938(void);
-void help_setHandler(void (*)(void));
+void help_setCallback(void (*)(void));
 
 typedef struct {
     u8 pad0[4];
@@ -1551,7 +1551,7 @@ void party_initNewGame(void);
 s32 func_80055210(); /* unprototyped: main calls it with no args, ovl_65 passes a pointer */
 void db_quit(void);
 void *db_lookupRegistered(s32, s32, s32); /* mode 4: address, 5: size */
-void win_drawBox(RECT *, s32, s32, s32);
+void win_drawBoxEx(RECT *, s32, s32, s32);
 void func_80032A44(void);
 Unk800367D0 *func_800367D0(s32, s32, s32, s32);
 s32 CdSyncCallback(void (*)(u8, u8 *));
@@ -2072,15 +2072,15 @@ static inline void win_close_inline(Window *w) {
 }
 
 void win_close(Window *);
-void win_destroy(Window *);
-void win_destroyAll(void);
-void win_drawBoxPal(RECT *, s32, s32);
-void win_drawListFrame(RECT *, s32, s32, MenuList *);
+void win_closeNow(Window *);
+void win_closeAllNow(void);
+void win_drawBox(RECT *, s32, s32);
+void win_drawListBox(RECT *, s32, s32, MenuList *);
 void win_setOnOpened(Window *, void (*)(Window *));
 void win_setDrawContent(Window *, void (*)(Window *));
 void win_setDrawOverlay(Window *, void (*)(Window *));
 void win_setOnClosed(Window *, void (*)(Window *));
-void win_setLabel(Window *, s32);
+void win_setTitle(Window *, s32);
 void win_setShadow(Window *, u8);
 void win_setOpenFrames(Window *, s16);
 void SystemError(s32, s32);
@@ -2115,7 +2115,7 @@ u8 func_80034A30(Character *);
 u8 func_80034A04(u32 *, s32);
 void help_setBounds(RECT *);
 void func_800355E4(); /* unprototyped: the argument is unused and most callers pass none */
-void help_setDrawHand(u8);
+void help_setCursorOnTop(u8);
 void text_setBank(const u8 *);
 u8 *text_get(s32); /* text lookup */
 #if defined(OVL_0A_H) || defined(OVL_0B_H) || defined(OVL_0C_H) || defined(OVL_65_H)
@@ -2421,7 +2421,7 @@ extern void (*g_cdStateHandlers[])(s32);
 u8 func_80035B64(Unk80035B90 *, u8);
 void func_80035B74(Unk80035B90 *, void (*)());
 void func_80035B7C(Unk80035B90 *);
-void help_onOpened(void);
+void help_onIconAnimDone(void);
 extern s32 D_8007B9A0;
 extern u8 *D_8007B9A4;
 extern u8 *D_8007B9A8;
@@ -2490,12 +2490,12 @@ void func_80028D08(UnkBlink *, s32, s32, s32);
 void func_80028D2C(UnkBlink *);
 void func_8002BE44(s32, u8 *);
 void func_8002BE74(s32, s32);
-u8 help_getAtCursor(void);
-void help_setAtCursor(u8);
+u8 help_getFollow(void);
+void help_setFollow(u8);
 void func_800361CC(s32);
 s32 func_800337D0(s32);
 s32 func_8003380C(s32);
-void ui_drawSeparator(s32, s32, s32, s32);
+void ui_drawEtchedLine(s32, s32, s32, s32);
 typedef struct {
     u8 unk0; /* ability id, 0 = none */
     u8 unk1; /* ap needed? */
@@ -2541,7 +2541,7 @@ typedef struct {
     u8 unk3; /* second party slot */
     s32 unk4; /* slide step */
 } Unk80024428;
-void ui_drawCharSwitch(s32, s32, s32, Unk80024428 *);
+void ui_drawMemberHeader(s32, s32, s32, Unk80024428 *);
 void ui_drawStatusIcons(s32, s32, s32, u8, s32); /* arg4 unused, callers pass 0 */
 void ui_drawStones(s32, s32, s32, s32, s32);
 void chr_setDefaultName(u8 *, s32); /* default name by id */
@@ -2585,7 +2585,7 @@ CardInfo *func_80062B30(void);
 s32 func_800627BC(s32);
 extern s32 D_800704C4;
 extern s32 D_80070418;
-void help_setDisabled(u8);
+void help_setLocked(u8);
 s32 keyItem_has(s32);
 s32 func_800632B4(s32, s8 *);
 extern s32 g_padPortState[];
@@ -2854,7 +2854,7 @@ extern Unk800689B0 D_800689B0[];
 extern Unk800689B0 g_winTailSprites[];
 u8 win_isVisible(Window *);
 void win_drawFrame(Window *);
-void win_drawLabel(Window *);
+void win_drawTitle(Window *);
 /* sprite cell of a frame animation (func_800357E0) */
 typedef struct {
     u8 unk0; /* u */
