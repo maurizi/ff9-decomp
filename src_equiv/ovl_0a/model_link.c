@@ -11,6 +11,9 @@
  *         packet buffer).
  * group:  +0x00 offset of the second buffer's packets (used when GameData.unk8 != 0), +0x02..+0x10 counts of the
  *         eight primitive types below, +0x13 OT bias, +0x1C polygon data (all types back to back, in order).
+ *
+ * Checked against the asm by reading only: tools/equiv.py can't exercise it from random states (the counts are
+ * random u16s, so the original either faults on an unaligned pointer or runs into the step limit).
  */
 #include "ovl_0a.h"
 

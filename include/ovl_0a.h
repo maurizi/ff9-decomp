@@ -1118,7 +1118,7 @@ void func_800B1D9C(s32);
 s32 func_800AA074(FieldScene *, s16);
 s32 func_800AA0A8(FieldScene *, s16);
 void func_800B1E04(FieldScene *, s16);
-s32 func_800AD944(s32, s32, s32);
+s32 fld_movieCommand(s32, s32, s32);
 s32 func_800A8588(void);
 s32 func_800C6EEC();
 void func_80054A28(void *);
@@ -1313,8 +1313,8 @@ void func_80023A0C(void);
 void func_800223CC(void);
 void func_80031264(void *, void *); /* rotation (SVECTOR) -> bone matrix */
 
-/* field state for func_800AD944 command 3: 0x11, 1 or 0x10/0 */
-static inline s32 func_800AD944_state(void) {
+/* field state for fld_movieCommand command 3: 0x11, 1 or 0x10/0 */
+static inline s32 fld_movieCommand_state(void) {
     s8 v;
 
     if (g_gameState->unkB != 0xFF) {
@@ -1412,7 +1412,7 @@ s32 mbg_getGeomOffset(s32 *, s32 *); /* ovl_64 */
 void func_800AD488(FieldObjEnt *, FieldObjSlot *, MATRIX *);
 
 
-/* field movie playback (func_800ADB74) */
+/* field movie playback (fld_movieUpdate) */
 typedef struct {
     u32 tag;
     u32 code[5];

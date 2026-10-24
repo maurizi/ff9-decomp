@@ -10009,10 +10009,10 @@ s32 func_80037D6C(s32 op) {
         r = D_8007AE30;
         break;
     case 14:
-        r = func_800AD944(4, 0, 0);
+        r = fld_movieCommand(4, 0, 0);
         break;
     case 15:
-        r = func_800AD944(3, 0, 0);
+        r = fld_movieCommand(3, 0, 0);
         break;
     case 16:
         r = g_gameState->unk1C->unk568;
@@ -12130,7 +12130,7 @@ s32 evt_execInstr(void) {
     case 0x28:
         a = evt_getArg8_inline();
         b = evt_getArg16_inline();
-        func_800AD944(a, b, evt_getArg8_inline());
+        fld_movieCommand(a, b, evt_getArg8_inline());
         return 0;
     case 0xB7:
         if (g_evtMode == 3) {

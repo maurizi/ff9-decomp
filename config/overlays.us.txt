@@ -18,4 +18,4 @@
 3c 801EDF00 6100  A8EC    # menu: ? (mostly graphics data)
 3e 801EDF00 815C  8C60    # menu: ? (mostly graphics data)
 65 801EDF00 1384  5C88    # menu: battle rewards ("EXP Received")
-64 80198700 9A0   4CFC    # debug FMV player ("\TEST\FMV990.STR")
+64 80198700 9A0   4CFC    # movie player (MBG_init/mbg_play; loaded by field ovl_0a, opening ovl_14, ending ovl_15)
