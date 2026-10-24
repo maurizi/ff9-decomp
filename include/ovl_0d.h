@@ -42,14 +42,14 @@ typedef struct {
     s32 unk8;
     s32 unkC;
     TmCard *unk10;
-} TmUnk350;
+} TmFlip;
 
 typedef struct {
     s32 unk0;
     s32 unk4;
     s32 unk8;
     s32 unkC;
-} TmUnk2F0;
+} TmBlock;
 
 typedef struct {
     s32 unk0; /* x */
@@ -78,94 +78,100 @@ typedef struct {
     u8 unk1;
 } TmLevel; /* opponent level table, loaded at 0x80104000 */
 
+/* Card stats as kept in the card stock (main's Unk6) */
 typedef struct {
-    s32 unk0; /* state */
-    s32 unk4;
-    s32 unk8;
-    s32 unkC;
-    TmCard unk10[10]; /* 0-4 player hand, 5-9 enemy hand */
-    TmCell unk268[4][4]; /* board [y][x] */
-    s32 unk2E8; /* frame counter in the current state */
-    u8 unk2EC; /* brightness */
+    u8 id;
+    u8 arrows;
+    u8 power;
+    u8 type;
+    u8 pdef;
+    u8 mdef;
+} TmCardStats;
+
+/* Game state, a local of tm_mainLoop passed to every handler. */
+typedef struct {
+    s32 task;     /* TM_TASK_*, the handler tm_mainLoop runs this frame */
+    s32 cursor;   /* hand card index (PLAYER CARD SELECT), else the Yes (0) / No (1) choice */
+    s32 boardX;   /* board cursor (PLAYER CARD SET, BATTLE SELECT) */
+    s32 boardY;
+    TmCard cards[10]; /* 0-4 player hand, 5-9 enemy hand */
+    TmCell board[4][4]; /* [y][x] */
+    s32 timer;    /* frames in the current task, reset by most task changes */
+    u8 brightness;
     u8 pad2ED[3];
-    TmUnk2F0 unk2F0[6];
-    TmUnk350 unk350[10];
-    s32 unk418;
-    s32 unk41C;
-    s32 unk420;
-    s32 unk424;
-    s32 unk428;
-    s32 unk42C;
-    s32 unk430;
-    s32 unk434;
-    s32 unk438;
-    s32 unk43C; /* wins */
-    s32 unk440; /* losses */
-    s32 unk444; /* draws */
-    s32 unk448;
-    s32 unk44C;
-    s32 unk450;
+    TmBlock blocks[6];
+    TmFlip flips[10];
+    s32 phase;    /* sub-step of the current task or animation */
+    s32 flipOwner; /* owner the flipped cards get */
+    s32 flashNext; /* task after the flash, -1 = tm_checkBattles again */
+    s32 srcX;     /* square of the card just placed (the attacker) */
+    s32 srcY;
+    s32 dstX;     /* square of the card it battles */
+    s32 dstY;
+    s32 turn;     /* 0 player, 1 enemy ("TURN PLAYER" / "TURN ENEMY") */
+    s32 autoPlay; /* "PLAYER AUTO SELECT" instead of "PLAYER CARD SELECT" */
+    s32 wins;
+    s32 losses;
+    s32 draws;
+    s32 deck;     /* opponent's deck, index into g_tmDecks */
+    s32 aiLevel;  /* opponent's AI level 0-3 (tm_enemySelect) */
+    s32 opponent; /* opponent id from GameData.unk8B2, index into g_tmOpponents */
     s32 unk454;
-    Window *unk458;
-    s32 unk45C;
-    s32 unk460;
-    s32 unk464;
-    s32 unk468;
-    s32 unk46C;
-    TmCard *unk470;
-    s32 unk474;
-    s32 unk478;
-    s32 unk47C;
-    s32 unk480; /* cursor animation frame */
-    Window *unk484;
-    s32 unk488;
-    TmCard *unk48C[8];
-    s32 unk4AC;
-    TmCard *unk4B0;
-    s32 unk4B4;
-    Window *unk4B8;
+    Window *msgWin; /* confirm / rematch / trade window */
+    s32 result;   /* TM_RESULT_* */
+    s32 moveFrames; /* length of the card move animations */
+    s32 showScore;  /* tm_drawScore */
+    s32 showBoard;  /* tm_drawBoard */
+    s32 showBlocks; /* tm_drawBlocks */
+    TmCard *tradeCard; /* card changing hands (CARD_CHANGE, CHANGE2) */
+    s32 stockCol; /* stock grid cursor, card id = col * 10 + row */
+    s32 stockRow;
+    s32 handCount; /* cards picked from the stock into the hand */
+    s32 animFrame; /* cursor animation frame */
+    Window *quitWin;
+    s32 savedFrame; /* animFrame of the hand cursor kept while placing */
+    TmCard *targets[8]; /* cards the placed card can battle (BATTLE SELECT) */
+    s32 numTargets;
+    TmCard *attacker;
+    s32 copyIdx;  /* which copy of the card under the stock cursor */
+    Window *infoWin; /* over-100 / discard / draw windows */
     s32 unk4BC;
     s32 unk4C0;
-    Window *unk4C4;
-    s32 unk4C8[9];
-    s32 unk4EC;
-    s32 unk4F0;
-    s32 unk4F4;
-    s32 unk4F8;
-    s32 unk4FC;
-    s32 unk500;
-    s32 unk504;
-    TmCard *unk508;
-    u8 unk50C;
+    Window *less5Win;
+    s32 arrowOdds[9]; /* percent chance of a card having 0-8 arrows (tm_makeCard) */
+    s32 oddsRow;  /* arrowOdds entry edited in STAGE SELECT */
+    s32 comboTimer; /* frames left of the combo label (tm_drawCombo) */
+    s32 comboX;
+    s32 comboY;
+    s32 comboShown; /* number the combo label shows */
+    s32 comboCount;
+    s32 flashMode; /* TM_FLIP_* of the current flash */
+    TmCard *comboCard; /* card whose arrows blink in the combo flash */
+    u8 comboDirs; /* arrow bits of the combo */
     u8 pad50D[0x510 - 0x50D];
-    u8 unk510;
-    u8 unk511;
-    u8 unk512;
-    u8 unk513;
-    u8 unk514;
-    u8 unk515;
+    TmCardStats lostCard; /* card the enemy won last game, dealt back at lostSlot */
     u8 pad516[0x54C - 0x516];
-    s32 unk54C;
-    s32 unk550;
+    s32 hasLostCard;
+    s32 lostSlot;
     s32 unk554;
-    u8 unk558[12];
-    s32 unk564;
-    s32 unk568;
-    s32 unk56C;
-    s32 unk570;
-    s32 unk574;
-    s32 unk578;
-    s32 unk57C;
+    u8 savedConfig[12]; /* func_8002C700 values restored on exit */
+    s32 nameSlide;  /* R1 card name slide-out (PLAYER CARD SELECT) */
+    s32 scrollTimer; /* L1/R1 copy scroll animation in the stock */
+    s32 blockIdx;   /* block appearing now (ENEMY APEAR) */
+    s32 numBlocks;
+    s32 atkShown;   /* battle values tm_drawBattleValues shows */
+    s32 defShown;
+    s32 valuesTimer; /* frames left of the battle values */
     u8 pad580[0x590 - 0x580];
-    s32 unk590[5];
-    s32 unk5A4;
-    s32 unk5A8;
-    s32 unk5AC;
-    s32 unk5B0;
-    s32 unk5B4;
-    s32 unk5B8;
-    s32 unk5BC;
-    s32 unk5C0;
+    s32 landed[5];  /* enemy card has dropped in (ENEMY APEAR), plays its sound once */
+    s32 thinkDelay; /* ENEMY THINK frames */
+    s32 blockTimer;
+    s32 blocksDone;
+    s32 getCursor;  /* GET SELECT cursor over the captured enemy cards */
+    s32 quitChoice; /* GAME QUIT Yes (0) / No (1) */
+    s32 quitting;   /* game quit from the stock, hand cards were returned */
+    s32 atkRoll;    /* battle rolls, the loser is the side with the lower one */
+    s32 defRoll;
     s32 unk5C4;
     RECT unk5C8;
 } TmState;
