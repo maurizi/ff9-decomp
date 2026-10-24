@@ -784,9 +784,12 @@ typedef struct {
     u8 unkF;
     union {
         s32 w; /* cleared as a word */
-        u8 b[4]; /* b[2]: done (also D_800FEC52) */
+        u8 b[4]; /* b[2]: done */
     } unk10;
-    u8 pad14[0x18 - 0x14];
+    s8 motionDone; /* unit ops: the motion op waited for has ended (btlfx_stepPlayMotionWait) */
+    s8 moveDone; /* unit ops: the move op has arrived (btlfx_opRunHome, btlfx_opJumpForward, ...) */
+    s8 turnDone; /* unit ops: the turn op has finished (btlfx_opFaceTarget, btlfx_opFaceHome) */
+    s8 unk17; /* unit ops 0x79-0x7B */
     u8 *unk18; /* script pointer, 3-byte commands */
     s32 unk1C;
     u8 unk20;
@@ -1396,7 +1399,6 @@ typedef struct Unk800DA1B8 {
 
 extern s32 D_800FEC38;
 extern u8 *D_800FEC3C;
-extern s8 D_800FEC57;
 extern s16 D_80100D8C;
 extern u16 D_800F7460[];
 
@@ -1949,7 +1951,6 @@ typedef struct Unk800CEE74 {
     u8 unk10[1]; /* data */
 } Unk800CEE74;
 
-extern s8 D_800FEC55;
 
 typedef struct {
     u16 unk0; /* sound id, 0 = free */
@@ -1970,7 +1971,6 @@ void btl_initCmdQueue(struct Battle *);
 void func_800B0FC0(struct Battle *);
 void func_800C972C(void);
 s16 btl_loadModelsStep(s32);
-extern s8 D_800FEC54;
 
 extern char g_btlfxErrorMsg[];
 
@@ -2590,7 +2590,6 @@ Pool6CEntry *func_800E3CEC(s32, s32);
 void func_800E94C4(void);
 void func_800E49D0(s32, s32);
 s32 func_800E774C(s32, s16 *, s16 *);
-extern u8 D_800FEC52; /* g_btlfxState.unk10.b[2] */
 
 /* func_800E4634 work area */
 typedef struct {
@@ -3275,7 +3274,6 @@ typedef struct {
     s16 unk8[3];
 } Unk800D8124;
 
-extern s8 D_800FEC56;
 s32 btlfx_stepJumpForward(Unk800D7C9C *, s32, s32 *);
 s32 btlfx_stepFaceTarget(Unk800D805C *, s32, s32 *);
 s32 btlfx_stepFaceHome(Unk800D8124 *, s32, s32 *);
@@ -4211,8 +4209,6 @@ typedef struct {
 Pool6CEntry *func_800E4A3C_def(s32, s32, Unk800E4A3CArgs) __asm__("func_800E4A3C");
 void func_800E8C84(s32);
 void func_800E8D14(void);
-extern u8 D_800FEC53; /* g_btlfxState.unk10.b[3] */
-extern s32 D_800FEC5C; /* g_btlfxState.unk1C */
 
 
 /* btlfx_runScript: battle event script */

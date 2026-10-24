@@ -172,7 +172,7 @@ s32 func_800E4634(s32 arg0, Unk800E4634 *c, Unk800E4634Arg2 *arg2, s32 *arg3, s3
             }
         }
         func_800E94C4();
-        D_800FEC52 = 0;
+        g_btlfxState.unk10.b[2] = 0;
         {
             s32 j;
             for (j = 3; j >= 0; j--) {
@@ -184,7 +184,7 @@ s32 func_800E4634(s32 arg0, Unk800E4634 *c, Unk800E4634Arg2 *arg2, s32 *arg3, s3
     t = *arg3;
     if (c->unk4 == 0xFFFF) {
         if (--c->unk0 < 0) {
-            D_800FEC52 = 1;
+            g_btlfxState.unk10.b[2] = 1;
             return 1;
         }
     } else if (c->unk4 != 0) {
@@ -415,7 +415,7 @@ s32 btlfx_opCast(s32 arg0, Unk800E4C88 *arg1, Unk800F78A4 *arg2, s32 *arg3, s32 
             arg1->unk24 = NULL;
         }
         if (t == 0) {
-            k = ((u32)D_800FEC5C & 0x300) >> 8;
+            k = ((u32)g_btlfxState.unk1C & 0x300) >> 8;
             if (k != 3) {
                 func_800E60A4(k, arg1->unk0 == 1 ? 0xC : 0x14);
             }
@@ -464,19 +464,19 @@ s32 btlfx_opCast(s32 arg0, Unk800E4C88 *arg1, Unk800F78A4 *arg2, s32 *arg3, s32 
                 return 1;
             }
         } else if (arg1->unk5 == 0) {
-            if (t % btlfx_getMotionLength(arg1->unk2) == 0 && t > 0 && arg1->unk6 >= 27 && D_800FEC52 != 0) {
+            if (t % btlfx_getMotionLength(arg1->unk2) == 0 && t > 0 && arg1->unk6 >= 27 && g_btlfxState.unk10.b[2] != 0) {
                 btlfx_playUnitMotion(arg1->unk2, 0x1C);
                 t = -1;
                 arg1->unk1 = 3;
             }
         } else if (arg1->unk5 == 1) {
-            if (D_800FEC52 != 0 && arg1->unk6 >= 27) {
+            if (g_btlfxState.unk10.b[2] != 0 && arg1->unk6 >= 27) {
                 arg1->unk1 = 3;
             set_t:
                 t = -1;
             }
         } else if (arg1->unk5 == 3) {
-            if (D_800FEC52 != 0) {
+            if (g_btlfxState.unk10.b[2] != 0) {
                 arg1->unk1 = 0;
                 goto set_t;
             }
@@ -511,10 +511,10 @@ s32 btlfx_opCast(s32 arg0, Unk800E4C88 *arg1, Unk800F78A4 *arg2, s32 *arg3, s32 
                     func_800E3D54(arg1->unk24);
                 }
             }
-            D_800FEC53 = 1;
+            g_btlfxState.unk10.b[3] = 1;
             func_800E4C54();
         } else {
-            D_800FEC53 = 1;
+            g_btlfxState.unk10.b[3] = 1;
             if (arg1->unk3 != 0xFF) {
                 btlfx_getUnitPos(arg1->unk3, v);
                 func_800E436C(arg1->unk2, v, (s32)arg1->unk1C, t, 0);
@@ -532,7 +532,7 @@ s32 btlfx_opCast(s32 arg0, Unk800E4C88 *arg1, Unk800F78A4 *arg2, s32 *arg3, s32 
                 btlfx_playUnitMotion(arg1->unk2, 9);
             }
             func_800E4C04(arg1->unk2, 2, 0);
-            D_800FEC53 = 1;
+            g_btlfxState.unk10.b[3] = 1;
             func_800E4C54();
             return 1;
         }
