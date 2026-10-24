@@ -1,4 +1,4 @@
-/* Draft of fx_0fb_1 fx_0fb_1_op80. Status: 181 lines, 75 ignoring registers (build/w/nd.py, which now masks all |imm| >= 10000 data offsets). Cases 3-6 use fx_17a op80's final variable roles (src/fxmod/fx_17a); mode 0/1 are if/else-if branches with one return 0 (as fx_17a); further splits found by build/w/pgreedy.py + gen_regions.py. */
+/* Draft of fx_0fb_1 fx_0fb_1_op80. Status: 173 lines, 81 ignoring registers (build/w/nd.py, which now masks all |imm| >= 10000 data offsets). Cases 3-6 use fx_17a op80's final variable roles (src/fxmod/fx_17a); mode 0/1 are if/else-if branches with one return 0 (as fx_17a); further splits found by build/w/pgreedy.py + gen_regions.py. */
 #include "fxmod/fx_0fb_1.h"
 
 typedef struct {
@@ -96,6 +96,7 @@ s32 fx_0fb_1_op80(s32 mode, Fx0fb1Op80Work *work, Unk800F78A4 *env, Unk80100C78E
     s32 zz1;
     s32 zz2;
     s32 zz3;
+    s32 zz4;
 
     if (mode == 0) {
         init->unk0 = 0xE8;
@@ -213,7 +214,7 @@ s32 fx_0fb_1_op80(s32 mode, Fx0fb1Op80Work *work, Unk800F78A4 *env, Unk80100C78E
             work->unk54.vz = work->unkC.vz;
             work->unk54.vy += 0xB84;
             work->unk54.vz -= 0x1708;
-            for (i = 0, zz1 = 0; i < 0x19; i += 1 + (zz1 & 1)) {
+            for (i = 0, zz4 = 0; i < 0x19; i += 1 + (zz4 & 1)) {
                 q = ex->btlfx_poolSpawn((s16 *)entry->unk10);
                 if (q != NULL) {
                     q->unk0 = i & 1;
@@ -226,7 +227,7 @@ s32 fx_0fb_1_op80(s32 mode, Fx0fb1Op80Work *work, Unk800F78A4 *env, Unk80100C78E
                     q->unkC.vx -= D_801F0868[i * 2 + 1] * 2;
                     q->unkA = ex->btlfx_randCentered(0x800) + 0x1000;
                 }
-                zz1++;
+                zz4++;
             }
             env->unk2C->unk0[3].vx = work->unkC.vx;
             env->unk2C->unk0[3].vy = work->unkC.vy;
@@ -287,10 +288,10 @@ s32 fx_0fb_1_op80(s32 mode, Fx0fb1Op80Work *work, Unk800F78A4 *env, Unk80100C78E
             work->unk28.vz = 0x1000;
             work->unk54.vx = work->unkC.vx;
             work->unk14.vz = work->unkC.vz - 0x2555;
-            work->unk14.vy = work->unkC.vy;
             work->unk54.vy = work->unkC.vy;
             work->unk54.vz = work->unkC.vz;
             work->unk14.vx = work->unkC.vx;
+            work->unk14.vy = work->unkC.vy;
             work->unk1C.vz = work->unkC.vz - 0x2800;
             work->unk1C.vy = work->unkC.vy + 0x14C0;
             work->unk14.vy += 0xCAC;
@@ -645,14 +646,14 @@ s32 fx_0fb_1_op80(s32 mode, Fx0fb1Op80Work *work, Unk800F78A4 *env, Unk80100C78E
         }
         if (frame >= 0x39) {
             x2 = (frame - 0x38) << 12;
-            k = x2 >> 7;
-            if (k >= 0x100) {
-                k = 0xFF;
+            zz3 = x2 >> 7;
+            if (zz3 >= 0x100) {
+                zz3 = 0xFF;
             }
             rot2.vz = 0x20;
             sc2.vy = sc2.vx = (x2 >> 5) + 0x1000;
             sc2.vz = 0x1000;
-            col2.r = col2.g = col2.b = k;
+            col2.r = col2.g = col2.b = zz3;
             rot2.vx = 0;
             rot2.vy = 0;
             ex->func_800E6764(2, 0xA0, 0x70, 0x4D, 0x37, 4, 4, 2, 2, &rot2, &sc2, &col2, 1, 0);
