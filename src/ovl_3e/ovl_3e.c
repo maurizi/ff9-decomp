@@ -1,35 +1,35 @@
 #include "ovl_3e.h"
 
-void func_801F605C(void) {
+void menu_disc_init(void) {
     s32 *src;
-    Ovl3eState *st;
+    DiscSwap *st;
     s32 i;
     u8 r;
     u8 state;
 
     src = D_80073998;
-    st = &D_801F6BBC;
+    st = &g_menuDisc;
     st->unk2 = 0;
-    st->unk10 = 0;
+    st->timer = 0;
     g_menu.unk9 = 0;
-    st->unk4 = (g_menu.unkC >> 14) & 3;
-    st->unk6 = (u16)g_menu.unkC & 0x3FFF;
+    st->disc = DISC_REQ_DISC(g_menu.unkC);
+    st->nextLocation = DISC_REQ_LOCATION(g_menu.unkC);
     for (i = 0; i < 2; i++) {
-        st->unk8[i] = src[i];
+        st->savedFlags[i] = src[i];
         src[i] |= 0x300;
     }
     func_8003556C(0);
-    func_801F673C();
+    menu_disc_loadImages();
     cd_stopMotor();
-    D_801F6BBC.unk0 = r = cd_checkShellOpen();
-    state = 1;
+    g_menuDisc.shellOpen = r = cd_checkShellOpen();
+    state = DISC_ST_LID_CLOSED;
     if (r) {
-        state = 2;
+        state = DISC_ST_LID_OPEN;
     }
-    D_801F6BBC.unk1 = state;
+    g_menuDisc.state = state;
 }
 
-void func_801F6124(void) {
+void menu_disc_drawPicture(void) {
     SprtWords *p;
     s32 i;
     RECT unused[2];
@@ -38,18 +38,18 @@ void func_801F6124(void) {
         setlen(g_primPtr, 4);
         p = (SprtWords *)g_primPtr;
         p->rgbc = 0x64808080;
-        p->xy = i * 160;
-        p->uvclut = (i * 160) & 0x3F;
+        p->xy = i * DISC_PICTURE_W;
+        p->uvclut = (i * DISC_PICTURE_W) & 0x3F;
         p->wh = 0xE000A0;
         g_primPtr = (u8 *)(p + 1);
         addPrim(&g_ot[6], p);
-        SetDrawTPage(g_primPtr, 1, 1, (((i * 160) >> 6) + 0x10) | 0x100);
+        SetDrawTPage(g_primPtr, 1, 1, (((i * DISC_PICTURE_W) >> 6) + 0x10) | 0x100);
         addPrim(&g_ot[6], g_primPtr);
         g_primPtr += 8;
     }
 }
 
-void func_801F6254(void) {
+void menu_disc_drawError(void) {
     SprtWords *p;
     u32 clut = GetClut(0, 0x1FF) << 16;
 
@@ -66,7 +66,7 @@ void func_801F6254(void) {
     g_primPtr += 8;
 }
 
-u8 func_801F6368(void) {
+u8 menu_disc_check(void) {
     CdlLOC loc;
     u8 result[8];
     s32 mask;
@@ -74,55 +74,55 @@ u8 func_801F6368(void) {
     s32 ret;
     s32 type;
 
-    mask = 1 << D_801F6BBC.unk4;
-    CdControlB(1, NULL, result);
+    mask = 1 << g_menuDisc.disc;
+    CdControlB(CdlNop, NULL, result);
     i = 0;
-    if (result[0] & 0x10) {
-        return 1;
+    if (result[0] & CdlStatShellOpen) {
+        return DISC_CHECK_SHELL_OPEN;
     }
-    CdControlB(7, NULL, NULL);
+    CdControlB(CdlStandby, NULL, NULL);
     do {
         VSync(0);
         if (i >= 600) {
-            return 2;
+            return DISC_CHECK_NO_DISC;
         }
-        CdControlB(1, NULL, result);
+        CdControlB(CdlNop, NULL, result);
         i++;
-    } while (!(result[0] & 2));
+    } while (!(result[0] & CdlStatStandby));
 
     ret = CdDiskReady(0);
     switch (ret) {
-    case 5:
-        return 3;
-    case 2:
+    case CdlDiskError:
+        return DISC_CHECK_OTHER_FORMAT;
+    case CdlComplete:
         break;
-    case 0x10:
-        return 1;
+    case CdlStatShellOpen:
+        return DISC_CHECK_SHELL_OPEN;
     default:
-        return 4;
+        return DISC_CHECK_ERROR;
     }
     type = CdGetDiskType();
     switch (type) {
-    case 1:
-        return 3;
-    case 0:
-        return 2;
-    case 2:
+    case CdlOtherFormat:
+        return DISC_CHECK_OTHER_FORMAT;
+    case CdlStatNoDisk:
+        return DISC_CHECK_NO_DISC;
+    case CdlCdromFormat:
         break;
-    case 0x10:
-        return 1;
+    case CdlStatShellOpen:
+        return DISC_CHECK_SHELL_OPEN;
     default:
-        return 4;
+        return DISC_CHECK_ERROR;
     }
     CdIntToPos(5, &loc);
-    CdControlB(0x15, (u8 *)&loc, result);
-    if (result[0] & 1) {
-        return 4;
+    CdControlB(CdlSeekL, (u8 *)&loc, result);
+    if (result[0] & CdlStatError) {
+        return DISC_CHECK_ERROR;
     }
     if (result[1] & 0x40) {
-        return 4;
+        return DISC_CHECK_ERROR;
     }
-    CdControlB(0xE, (u8 *)0x80, result);
+    CdControlB(CdlSetmode, (u8 *)CdlModeSpeed, result);
     VSync(3);
     for (i = 0; i < 10; i++) {
         func_8001DCB8();
@@ -132,158 +132,158 @@ u8 func_801F6368(void) {
     }
     if (g_gameState->unkB == 0xFF || !(g_gameState->unkB & mask)) {
         cd_stopMotor();
-        return 6;
+        return DISC_CHECK_WRONG_DISC;
     }
     snd_playSe(0x4ED);
-    return 7;
+    return DISC_CHECK_OK;
 }
 
-void func_801F65A4(void) {
-    func_801F6654();
-    func_801F66AC();
-    func_801F66F4();
+void menu_disc_update(void) {
+    menu_disc_input();
+    menu_disc_draw();
+    menu_disc_poll();
 }
 
-void func_801F65D4(void) {
+void menu_disc_exit(void) {
     s32 *dst;
-    Ovl3eState *st;
+    DiscSwap *st;
     s32 i;
 
-    if (D_801F6BBC.unk6 != 15000) {
-        evt_setNextLocation(D_801F6BBC.unk6);
+    if (g_menuDisc.nextLocation != DISC_NO_LOCATION) {
+        evt_setNextLocation(g_menuDisc.nextLocation);
     }
     dst = D_80073998;
-    st = &D_801F6BBC;
+    st = &g_menuDisc;
     g_gameState->unk0 |= 0x100000;
     for (i = 0; i < 2; i++) {
-        dst[i] = st->unk8[i];
+        dst[i] = st->savedFlags[i];
     }
 }
 
-void func_801F6654(void) {
+void menu_disc_input(void) {
     void (*f)(void);
 
     if (!func_8002F810()) {
-        f = D_801F6B60[D_801F6BBC.unk1];
+        f = g_menuDiscInputFuncs[g_menuDisc.state];
         if (f != NULL) {
             f();
         }
     }
 }
 
-void func_801F66AC(void) {
-    void (*f)(void) = D_801F6B74[D_801F6BBC.unk1];
+void menu_disc_draw(void) {
+    void (*f)(void) = g_menuDiscDrawFuncs[g_menuDisc.state];
 
     if (f != NULL) {
         f();
     }
 }
 
-void func_801F66F4(void) {
-    void (*f)(void) = D_801F6B88[D_801F6BBC.unk1];
+void menu_disc_poll(void) {
+    void (*f)(void) = g_menuDiscPollFuncs[g_menuDisc.state];
 
     if (f != NULL) {
         f();
     }
 }
 
-void func_801F673C(void) {
+void menu_disc_loadImages(void) {
     u32 *buf = (u32 *)0x801CDF00;
     s32 size;
-    u32 *clut = D_801EDF0C;
+    u32 *clut = g_menuDiscClut;
     s32 i;
     s32 sector;
 
-    sector = g_gameState->unk20 + file_find(1, D_801F6BAC[D_801F6BBC.unk4 & 3])->unk4;
-    size = 0x11800;
+    sector = g_gameState->unk20 + file_find(1, g_menuDiscPictureFiles[g_menuDisc.disc & 3])->unk4;
+    size = DISC_PICTURE_HALF_BYTES;
     for (i = 0; i < 2; i++) {
         cd_readSync(sector, size, buf);
-        func_801F682C(buf, i);
-        sector += 0x23;
+        menu_disc_loadPictureHalf(buf, i);
+        sector += DISC_PICTURE_HALF_SECTORS;
     }
-    LoadImage(&D_801F6B9C, clut);
+    LoadImage(&g_menuDiscClutRect, clut);
     DrawSync(0);
-    LoadImage(&D_801F6BA4, clut + 0x80);
+    LoadImage(&g_menuDiscErrorRect, clut + 0x80);
     DrawSync(0);
 }
 
-void func_801F682C(u32 *p, s32 i) {
-    RECT r = D_801EDF04;
+void menu_disc_loadPictureHalf(u32 *p, s32 i) {
+    RECT r = g_menuDiscPictureRect;
 
-    r.x += i * 0xA0;
+    r.x += i * DISC_PICTURE_W;
     LoadImage(&r, p);
     DrawSync(0);
 }
 
-void func_801F689C(void) {
+void menu_disc_inputLidClosed(void) {
     if (g_padRepeat & BTN_CROSS) {
-        snd_playSe(0x67);
-        func_801F6A3C();
+        snd_playSe(SE_CURSOR);
+        menu_disc_startCheck();
     }
 }
 
-void func_801F68D8(void) {
+void menu_disc_inputLidOpen(void) {
     if (g_padRepeat & BTN_CROSS) {
-        snd_playSe(0x67);
-        func_801F6A3C();
+        snd_playSe(SE_CURSOR);
+        menu_disc_startCheck();
     }
 }
 
-void func_801F6914(void) {
+void menu_disc_inputError(void) {
     if (g_padRepeat & BTN_CROSS) {
-        snd_playSe(0x67);
-        D_801F6BBC.unk1 = 4;
+        snd_playSe(SE_CURSOR);
+        g_menuDisc.state = DISC_ST_ERROR_CLOSE;
         func_8002FAAC(0x18);
-        func_8002F8A8(func_801F6AF0);
+        func_8002F8A8(menu_disc_closeError);
     }
 }
 
-void func_801F6968(void) {
+void menu_disc_pollLidClosed(void) {
     u8 r;
 
-    D_801F6BBC.unk0 = r = cd_checkShellOpen();
+    g_menuDisc.shellOpen = r = cd_checkShellOpen();
     if (r) {
-        D_801F6BBC.unk1 = 2;
+        g_menuDisc.state = DISC_ST_LID_OPEN;
     }
 }
 
-void func_801F69A4(void) {
+void menu_disc_pollLidOpen(void) {
     u8 r;
 
-    D_801F6BBC.unk0 = r = cd_checkShellOpen();
+    g_menuDisc.shellOpen = r = cd_checkShellOpen();
     if (!r) {
-        snd_playSe(0x67);
-        func_801F6A3C();
+        snd_playSe(SE_CURSOR);
+        menu_disc_startCheck();
     }
 }
 
-void func_801F69E8(void) {
-    if (++D_801F6BBC.unk10 >= 180) {
-        D_801F6BBC.unk1 = 4;
+void menu_disc_pollError(void) {
+    if (++g_menuDisc.timer >= DISC_ERROR_FRAMES) {
+        g_menuDisc.state = DISC_ST_ERROR_CLOSE;
         func_8002FAAC(0x18);
-        func_8002F8A8(func_801F6AF0);
+        func_8002F8A8(menu_disc_closeError);
     }
 }
 
-void func_801F6A3C(void) {
-    D_801F6BBC.unk2 = 0;
-    D_801F6BBC.unk1 = 0;
+void menu_disc_startCheck(void) {
+    g_menuDisc.unk2 = 0;
+    g_menuDisc.state = DISC_ST_BUSY;
     func_8002FAAC(0x18);
-    func_8002F8A8(func_801F6A78);
+    func_8002F8A8(menu_disc_doCheck);
 }
 
-void func_801F6A78(void) {
+void menu_disc_doCheck(void) {
     u8 r;
 
-    D_801F6BBC.unk3 = r = func_801F6368();
-    D_801F6BBC.unk10 = 0;
+    g_menuDisc.checkResult = r = menu_disc_check();
+    g_menuDisc.timer = 0;
     switch (r) {
-    case 1:
+    case DISC_CHECK_SHELL_OPEN:
     default:
-        D_801F6BBC.unk1 = 3;
+        g_menuDisc.state = DISC_ST_ERROR;
         func_8002FA50(0x18);
         break;
-    case 7:
+    case DISC_CHECK_OK:
         func_80032640(0);
         func_80032634(0);
         func_800325E0();
@@ -291,16 +291,16 @@ void func_801F6A78(void) {
     }
 }
 
-void func_801F6AF0(void) {
-    D_801F6BBC.unk1 = 0;
+void menu_disc_closeError(void) {
+    g_menuDisc.state = DISC_ST_BUSY;
     func_8002FA50(0x18);
-    func_8002F8A8(func_801F6B24);
+    func_8002F8A8(menu_disc_resetState);
 }
 
-void func_801F6B24(void) {
-    D_801F6BBC.unk1 = cd_checkShellOpen() ? 2 : 1;
+void menu_disc_resetState(void) {
+    g_menuDisc.state = cd_checkShellOpen() ? DISC_ST_LID_OPEN : DISC_ST_LID_CLOSED;
 }
 
-INCLUDE_RODATA("asm/us/ovl_3e/nonmatchings/ovl_3e", D_801EDF04);
+INCLUDE_RODATA("asm/us/ovl_3e/nonmatchings/ovl_3e", g_menuDiscPictureRect);
 
-INCLUDE_RODATA("asm/us/ovl_3e/nonmatchings/ovl_3e", D_801EDF0C);
+INCLUDE_RODATA("asm/us/ovl_3e/nonmatchings/ovl_3e", g_menuDiscClut);
