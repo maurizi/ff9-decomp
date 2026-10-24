@@ -14,7 +14,7 @@ void btl_initParty(Battle *arg0) {
         c = g_gameState->unk1C->party[i];
         if (c != NULL) {
             u = &arg0->units[n];
-            u->modelId = D_800F5200[(c->unk34.w >> 4) & 0x1F];
+            u->modelId = g_btlCharModelIds[(c->unk34.w >> 4) & 0x1F];
             func_800BBF30(p->unk4, u->modelId);
             btl_initPartyUnit(c, u, i, n);
             n++;

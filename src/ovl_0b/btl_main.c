@@ -1325,7 +1325,7 @@ s32 btl_getPartyModelId(s32 arg0, s32 arg1) {
     if (!(arg1 & 0x20)) {
         u = btl_getUnitBySlot(arg0);
         if (u != NULL) {
-            m = ((s16)u->modelId != D_800F5200[(u->flags & 1) ? (g_gameState->unk1C->characters[(u->flags >> 1) & 0xF].unk34.w >> 4) & 0x1F : 0x13]) << 4;
+            m = ((s16)u->modelId != g_btlCharModelIds[(u->flags & 1) ? (g_gameState->unk1C->characters[(u->flags >> 1) & 0xF].unk34.w >> 4) & 0x1F : 0x13]) << 4;
         }
     }
     idx = g_gameState->unk1C->party[arg0]->unk34.w >> 4;
@@ -1335,7 +1335,7 @@ s32 btl_getPartyModelId(s32 arg0, s32 arg1) {
             idx += 0x13;
         }
     }
-    return D_800F5200[idx] | 0x20000;
+    return g_btlCharModelIds[idx] | 0x20000;
 }
 
 s32 btl_getWeaponModelHeader(s32 arg0) {
@@ -2130,7 +2130,7 @@ void btl_beginFrame(void) {
     ClearOTagR(g_gameState->unk1C->unk10[g_gameState->unk1C->unk8] - 8, 0x1010);
     ClearOTagR((u32 *)g_gameState->unk1C->unk8E4.battle->unk11C0->unk2C[g_gameState->unk1C->unk8], 0x100);
     ClearOTagR(func_8002FBC0(g_gameState->unk1C->unk8), 1);
-    ClearOTagR((u32 *)func_800F4FB4(g_gameState->unk1C->unk8), 1);
+    ClearOTagR((u32 *)btl_getBannerOt(g_gameState->unk1C->unk8), 1);
     setlen(&D_800FDEB8[g_gameState->unk1C->unk8].unk0, 2);
     ((u32 *)&D_800FDEB8[g_gameState->unk1C->unk8].unk0)[1] = 0xE6000000;
     ((u32 *)&D_800FDEB8[g_gameState->unk1C->unk8].unk0)[2] = 0;
@@ -2140,7 +2140,7 @@ void btl_beginFrame(void) {
     ((u32 *)&D_800FDEB8[g_gameState->unk1C->unk8].unkC)[2] = 0;
     addPrim((u32 *)g_gameState->unk1C->unk8E4.battle->unk11C0->unk2C[g_gameState->unk1C->unk8], &D_800FDEB8[g_gameState->unk1C->unk8].unkC);
     addPrim(g_gameState->unk1C->unk10[g_gameState->unk1C->unk8], func_8002FBC0(g_gameState->unk1C->unk8));
-    addPrim(g_gameState->unk1C->unk10[g_gameState->unk1C->unk8], func_800F4FB4(g_gameState->unk1C->unk8));
+    addPrim(g_gameState->unk1C->unk10[g_gameState->unk1C->unk8], btl_getBannerOt(g_gameState->unk1C->unk8));
     btlui_resetVsyncCount();
 }
 

@@ -669,9 +669,9 @@ s32 btl_checkCmdUsable(Battle *arg0, BtlCmd *arg1) {
     case BTL_CMD_TRANCE:
         if (u->status & BTL_STATUS_TRANCE) {
             btl_showMessage(6);
-            u->modelId = D_800F5200[(u->flags & 1) ? g_gameState->unk1C->characters[(u->flags >> 1) & 0xF].unk34.b.unk4 + 0x13 : 0x26];
+            u->modelId = g_btlCharModelIds[(u->flags & 1) ? g_gameState->unk1C->characters[(u->flags >> 1) & 0xF].unk34.b.unk4 + 0x13 : 0x26];
         } else {
-            u->modelId = D_800F5200[(u->flags & 1) ? (g_gameState->unk1C->characters[(u->flags >> 1) & 0xF].unk34.w >> 4) & 0x1F : 0x13];
+            u->modelId = g_btlCharModelIds[(u->flags & 1) ? (g_gameState->unk1C->characters[(u->flags >> 1) & 0xF].unk34.w >> 4) & 0x1F : 0x13];
         }
         break;
     case BTL_CMD_KO:

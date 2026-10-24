@@ -370,28 +370,28 @@ void func_800DC508(void) {
 }
 
 void btlfx_halt(char *arg0) {
-    D_80100E30.unkE8 = &D_80100E30.unk0[1];
-    D_80100E30.unk0[0].unk70 = 0;
-    D_80100E30.unk0[1].unk70 = 1;
-    SetDefDrawEnv(&D_80100E30.unk0[0].unk0, 0, 0, 320, 240);
-    SetDefDrawEnv(&D_80100E30.unk0[1].unk0, 0, 240, 320, 240);
-    SetDefDispEnv(&D_80100E30.unk0[0].unk5C, 0, 240, 320, 240);
-    SetDefDispEnv(&D_80100E30.unk0[1].unk5C, 0, 0, 320, 240);
-    D_80100E30.unk0[1].unk0.isbg = 1;
-    D_80100E30.unk0[0].unk0.isbg = 1;
-    setRGB0(&D_80100E30.unk0[0].unk0, 0, 0, 0);
-    setRGB0(&D_80100E30.unk0[1].unk0, 0, 0, 0);
+    g_btlfxHaltBufs.unkE8 = &g_btlfxHaltBufs.unk0[1];
+    g_btlfxHaltBufs.unk0[0].unk70 = 0;
+    g_btlfxHaltBufs.unk0[1].unk70 = 1;
+    SetDefDrawEnv(&g_btlfxHaltBufs.unk0[0].unk0, 0, 0, 320, 240);
+    SetDefDrawEnv(&g_btlfxHaltBufs.unk0[1].unk0, 0, 240, 320, 240);
+    SetDefDispEnv(&g_btlfxHaltBufs.unk0[0].unk5C, 0, 240, 320, 240);
+    SetDefDispEnv(&g_btlfxHaltBufs.unk0[1].unk5C, 0, 0, 320, 240);
+    g_btlfxHaltBufs.unk0[1].unk0.isbg = 1;
+    g_btlfxHaltBufs.unk0[0].unk0.isbg = 1;
+    setRGB0(&g_btlfxHaltBufs.unk0[0].unk0, 0, 0, 0);
+    setRGB0(&g_btlfxHaltBufs.unk0[1].unk0, 0, 0, 0);
     EnterCriticalSection();
     VSyncCallback(NULL);
     DrawSyncCallback(NULL);
     ExitCriticalSection();
     SetDispMask(1);
     while (1) {
-        D_80100E30.unkE8 = (D_80100E30.unkE8 == &D_80100E30.unk0[0]) ? &D_80100E30.unk0[1] : &D_80100E30.unk0[0];
+        g_btlfxHaltBufs.unkE8 = (g_btlfxHaltBufs.unkE8 == &g_btlfxHaltBufs.unk0[0]) ? &g_btlfxHaltBufs.unk0[1] : &g_btlfxHaltBufs.unk0[0];
         DrawSync(0);
         VSync(0);
-        PutDispEnv(&D_80100E30.unkE8->unk5C);
-        PutDrawEnv(&D_80100E30.unkE8->unk0);
+        PutDispEnv(&g_btlfxHaltBufs.unkE8->unk5C);
+        PutDrawEnv(&g_btlfxHaltBufs.unkE8->unk0);
     }
 }
 

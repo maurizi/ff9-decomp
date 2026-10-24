@@ -712,7 +712,7 @@ void btl_showCmdName(BtlCmd *arg0) {
         break;
     }
     if (s != NULL) {
-        func_800F4F44((s32)s, 1);
+        btl_setBannerAt((s32)s, 1);
     }
 }
 

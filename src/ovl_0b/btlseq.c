@@ -460,12 +460,12 @@ s32 btlseq_opShowName(BtlScript *arg0, BtlUnit *arg1) {
     b = g_gameState->unk1C->unk8E4.battle;
     txt = b->unk11C0->unk14;
     if (idx & 0x80) {
-        func_800F4F44((s32)(txt + arg0->unk4->unk8->nameOfs), 1);
+        btl_setBannerAt((s32)(txt + arg0->unk4->unk8->nameOfs), 1);
     } else {
         idx += b->enemies[(arg1->flags >> 1) & 0xF].unk0->unk28;
         ofs = ((u16 *)txt)[idx * 2 + 2] + 4;
         if (pc[0] == 0x21) {
-            func_800F4F44((s32)(txt + ofs), 3);
+            btl_setBannerAt((s32)(txt + ofs), 3);
         } else {
             btl_setBanner((s32)(txt + ofs), 3);
         }

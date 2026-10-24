@@ -13,14 +13,14 @@ void btlcam_init(void) {
 
 void btlcam_beginEffect(void) {
     bzero(&g_btlCamScript, 0x64);
-    bcopy(g_btlfxEnv->targets, &D_800FE368, 0x4C);
+    bcopy(g_btlfxEnv->targets, &g_btlCamTargets, 0x4C);
     g_btlCamera.unk5C = 0;
     g_btlCamera.unk53 = btlfx_rand() & 1;
     if (g_btlfxEnv->unk0->unk1C & 4) {
-        btlcam_getUnitAnchors(D_800FE368.unk44, g_btlCamScript.unk50);
+        btlcam_getUnitAnchors(g_btlCamTargets.unk44, g_btlCamScript.unk50);
     }
-    btlcam_getUnitAnchors(D_800FE368.unk0, g_btlCamScript.casterAnchors);
-    btlcam_getUnitAnchors(D_800FE368.unk4, g_btlCamScript.targetAnchors);
+    btlcam_getUnitAnchors(g_btlCamTargets.unk0, g_btlCamScript.casterAnchors);
+    btlcam_getUnitAnchors(g_btlCamTargets.unk4, g_btlCamScript.targetAnchors);
 }
 
 void btlcam_playScene(s32 arg0) {
@@ -28,7 +28,7 @@ void btlcam_playScene(s32 arg0) {
     g_btlCamera.unk52 = 0;
     g_btlCamera.unk5C = 0;
     bzero(&g_btlCamScript, 0x64);
-    bzero(&D_800FE368, 0x4C);
+    bzero(&g_btlCamTargets, 0x4C);
     btlcam_loadScript(arg0);
     if (g_btlCamera.unkCC != 0) {
         btlcam_getUnitAnchors(g_btlCamera.unkCC, g_btlCamScript.casterAnchors);
@@ -154,7 +154,7 @@ void btlcam_loadScript(s32 arg) {
                 g_btlCamera.unkA8 = g_gameState->unk1C->unk8E4.battle->unk131C;
                 break;
             case 2:
-                w = D_800FE368.unk4;
+                w = g_btlCamTargets.unk4;
                 n = 0;
                 r = n;
                 if (w != NULL) {
@@ -436,7 +436,7 @@ void func_800C3F78(Unk800C412C *arg0, Unk800C3F78 *arg1) {
         if (k != 1 && k != 5) {
             goto other;
         }
-        u = (k == 1) ? D_800FE368.unk0 : D_800FE368.unk4;
+        u = (k == 1) ? g_btlCamTargets.unk0 : g_btlCamTargets.unk4;
         if (u->flags & 1) {
             idx = ((g_gameState->unk1C->characters[(u->flags >> 1) & 0xF].unk34.w >> 4) & 0x1F) +
                   (arg1->unk2_14 - 1) * 19;
@@ -738,7 +738,7 @@ s32 func_800C4E84(s32 arg0, s16 *arg1, s16 *arg2, s32 *arg3) {
     s = g_btlCamScript.casterAnchors;
     u = NULL;
     if (n == 1) {
-        u = D_800FE368.unk0;
+        u = g_btlCamTargets.unk0;
     }
     if (n == 0xA) {
         if (g_btlCamera.unkCC == NULL) {
@@ -750,7 +750,7 @@ s32 func_800C4E84(s32 arg0, s16 *arg1, s16 *arg2, s32 *arg3) {
         u = g_gameState->unk1C->unk8E4.battle->unk11C4.unk148;
     }
     if (n == 0xF) {
-        u = D_800FE368.unk44;
+        u = g_btlCamTargets.unk44;
         s = g_btlCamScript.unk50;
     }
     if (u != NULL) {
@@ -790,8 +790,8 @@ s32 func_800C4E84(s32 arg0, s16 *arg1, s16 *arg2, s32 *arg3) {
         arg1[2] = s[4];
     }
     if (n == 9) {
-        arg1[0] = D_800FE368.unk38;
-        arg1[2] = D_800FE368.unk3C;
+        arg1[0] = g_btlCamTargets.unk38;
+        arg1[2] = g_btlCamTargets.unk3C;
     }
     if (n == 0xE) {
         gs = g_gameState;

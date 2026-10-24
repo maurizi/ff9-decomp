@@ -99,7 +99,7 @@ void btlui_exit(void) {
     btlui_enable(0);
     VSyncCallback(NULL);
     btlui_restoreKeyRepeat();
-    func_800F4D20();
+    btlui_clearDfe();
     g_btluiState.unkE = 0;
 }
 
@@ -365,8 +365,8 @@ void btlui_initPartyEntries(void) {
 
 void btlui_copyTranceAbilities(Unk80104F88Entry *arg0) {
     s32 k = arg0->unk14->unk34.b.row;
-    u8 *s = D_800FDDF8[k];
-    u8 *t = D_800FDDD0[k];
+    u8 *s = g_btlCharTranceCmds[k];
+    u8 *t = g_btlCharCmds[k];
     Unk800FD56C *a;
     Unk800FD56C *b;
     s32 i;
@@ -376,11 +376,11 @@ void btlui_copyTranceAbilities(Unk80104F88Entry *arg0) {
     if ((func_80034A30(arg0->unk14) & 0xFF) && (s[2] == 1 || s[2] == 2)) {
         i = 0;
         j = s[2] - 1;
-        a = &D_800FD56C[t[j]];
-        b = &D_800FD56C[s[j]];
+        a = &g_btlCmdTable[t[j]];
+        b = &g_btlCmdTable[s[j]];
         for (; i < a->unk7; i++) {
-            x = D_800FDD10[a->unk8 + i];
-            y = D_800FDD10[b->unk8 + i];
+            x = g_btlCmdAbilities[a->unk8 + i];
+            y = g_btlCmdAbilities[b->unk8 + i];
             if (x != y) {
                 arg0->unk1C[y] = arg0->unk1C[x];
                 arg0->unk31C[y] = arg0->unk31C[x];
@@ -406,7 +406,7 @@ void func_800EA908(Unk80104F88Entry *arg0) {
 
     if (arg0->unk14->unk34.b.id == 3) {
         for (i = 0; i < m->unk7; i++) {
-            slot = D_800FDD10[m->unk8 + i];
+            slot = g_btlCmdAbilities[m->unk8 + i];
             v = func_80034430(1, D_800F8D84[i]);
             if (v >= 0) {
                 arg0->unk1C[slot] = &c->unk58[v];
@@ -422,7 +422,7 @@ void func_800EA908(Unk80104F88Entry *arg0) {
                     if (id != 0 && id < 0xC0) {
                         for (k = 0; k < m->unk7; k++) {
                             if (id == D_800F8D84[k]) {
-                                slot = D_800FDD10[m->unk8 + k];
+                                slot = g_btlCmdAbilities[m->unk8 + k];
                                 arg0->unk3DC[slot] = 1;
                             }
                         }
@@ -1147,7 +1147,7 @@ void btlui_drawCmdList(Window *arg0) {
         btlui_drawSideCmd(REG_PASSTHROUGH(arg0));
     }
     for (i = 0; i < 4; i++) {
-        t = D_800FD7AC + D_800FD56C[g_btlCmdMenu.cmdIds[i]].unk0;
+        t = g_btlCmdNames + g_btlCmdTable[g_btlCmdMenu.cmdIds[i]].unk0;
         if (g_btlCmdMenu.unk8[i] == 0) {
             text_draw(x, y, arg0->unk18, t, 2);
         } else {
@@ -1226,7 +1226,7 @@ void btlui_drawSideCmd(Window *arg0) {
 }
 
 void btlui_confirmCmd(void) {
-    Unk800FD56C *e = &D_800FD56C[g_btlCmdMenu.cmdIds[g_btlCmdMenu.cursor]];
+    Unk800FD56C *e = &g_btlCmdTable[g_btlCmdMenu.cmdIds[g_btlCmdMenu.cursor]];
     void (*f)(Unk800FD56C *);
     if (g_btlCmdMenu.unk10.unk1 == 0) {
         if (g_btlCmdMenu.unk8[g_btlCmdMenu.cursor] != 0) {
@@ -1263,13 +1263,13 @@ void btlui_buildCmdList(void) {
     g_btlCmdMenu.unkC[1] = 0;
     g_btlCmdMenu.unkC[0] = 0;
     if (f == 0) {
-        g_btlCmdMenu.cmdIds[1] = D_800FDDD0[k][0];
-        g_btlCmdMenu.cmdIds[2] = D_800FDDD0[k][1];
+        g_btlCmdMenu.cmdIds[1] = g_btlCharCmds[k][0];
+        g_btlCmdMenu.cmdIds[2] = g_btlCharCmds[k][1];
     } else {
-        g_btlCmdMenu.cmdIds[1] = D_800FDDF8[k][0];
-        g_btlCmdMenu.cmdIds[2] = D_800FDDF8[k][1];
-        if (D_800FDDF8[k][2] != 0xFF) {
-            g_btlCmdMenu.unkC[D_800FDDF8[k][2]] = 1;
+        g_btlCmdMenu.cmdIds[1] = g_btlCharTranceCmds[k][0];
+        g_btlCmdMenu.cmdIds[2] = g_btlCharTranceCmds[k][1];
+        if (g_btlCharTranceCmds[k][2] != 0xFF) {
+            g_btlCmdMenu.unkC[g_btlCharTranceCmds[k][2]] = 1;
         }
     }
     g_btlCmdMenu.unk8[1] = 1;
@@ -1526,8 +1526,8 @@ void *btlui_getCmdHelpText(void) {
     } else {
         i = g_btlCmdMenu.cmdIds[g_btlCmdMenu.cursor];
     }
-    e = &D_800FD56C[i];
-    func_8002BD54(g_btluiHelpText, e->unk2 + D_800FD8CC);
+    e = &g_btlCmdTable[i];
+    func_8002BD54(g_btluiHelpText, e->unk2 + g_btlCmdHelp);
     text_append(g_btluiHelpText, text_get(0x19));
     return g_btluiHelpText;
 }
@@ -1630,7 +1630,7 @@ void btlui_issueSideCmd(void) {
     s32 v = D_800F8E04[g_btlCmdMenu.unk10.unk1];
     g_btlCmdMenu.unit->inMenuQueue = 0;
     g_btlCmdMenu.unit->cmdIssued = 1;
-    btl_setCmd((s32)g_btlCmdMenu.unit->cmd, v, D_800FD56C[v].unk8, g_btlCmdMenu.unit->unitBit, 0);
+    btl_setCmd((s32)g_btlCmdMenu.unit->cmd, v, g_btlCmdTable[v].unk8, g_btlCmdMenu.unit->unitBit, 0);
     btlui_setMenuState(BTLUI_MENU_CLOSING);
     win_setOnClosed(g_btlUi->unk12A4[3], btlui_onSideCmdClosed);
     win_close(g_btlUi->unk12A4[3]);
@@ -1778,7 +1778,7 @@ s32 btlui_selectAbility(void) {
     Unk800EF80C s;
     MenuList *l = &g_btlUi->unk12A4[2]->unk30;
     s32 n = l->cursor + l->unk5;
-    u8 k = D_800FDD10[g_btluiList.cmd->unk8 + n];
+    u8 k = g_btlCmdAbilities[g_btluiList.cmd->unk8 + n];
     s32 r = btlui_getAbilityState(k);
     if (r != 2) {
         return 0;
@@ -1979,7 +1979,7 @@ void btlui_drawListRow(s32 arg0, s32 arg1, s32 arg2, MenuView *arg3) {
 
 void btlui_drawAbilityRow(s32 arg0, s32 arg1, s32 arg2, MenuView *arg3) {
     u8 buf[8];
-    u8 k = D_800FDD10[g_btluiList.cmd->unk8 + arg2];
+    u8 k = g_btlCmdAbilities[g_btluiList.cmd->unk8 + arg2];
     Window *w = g_btlUi->unk12A4[2];
     RECT *r = &w->unk8;
     s32 dy = w->unk6 - r->h;
@@ -2098,7 +2098,7 @@ s32 btl_getMpCost(BtlCmd8 *arg0) {
 char *btlui_getAbilityHelpText(void) {
     MenuList *l = &g_btlUi->unk12A4[2]->unk30;
     s32 n = l->cursor + l->unk5;
-    u8 k = D_800FDD10[g_btluiList.cmd->unk8 + n];
+    u8 k = g_btlCmdAbilities[g_btluiList.cmd->unk8 + n];
     if (btlui_getAbilityState(k) == 0) {
         return NULL;
     }
@@ -2332,7 +2332,7 @@ void btlui_toggleTargetAll(void) {
 }
 
 s32 btlui_isCmdUsable(void) {
-    Unk800FD56C *e = &D_800FD56C[g_btlTarget.cmdNo];
+    Unk800FD56C *e = &g_btlCmdTable[g_btlTarget.cmdNo];
     Battle16CC *b;
     u8 cost;
     if (g_btlTarget.cmdNo == BTL_CMD_SWD_MAG && (g_btlUi->unk12B7 == 0 || g_btlUi->unk12B8.h != 0)) {
@@ -2398,7 +2398,7 @@ void btlui_confirmTarget(void) {
     s32 mask = 0;
     u8 ok = 1;
     BtlUnit *u = g_gameState->unk1C->unk8E4.battle->unitList;
-    Unk800FD56C *e = &D_800FD56C[g_btlTarget.cmdNo];
+    Unk800FD56C *e = &g_btlCmdTable[g_btlTarget.cmdNo];
     Unk80104FF0 *d;
     for (; u != NULL; u = u->next) {
         if ((u->flags & 0x30000000) == 0x30000000) {
@@ -3805,7 +3805,7 @@ void btlui_initDrawBufs(void) {
     func_8002BEEC(a, a + 0x18, b, b + 0x2000);
     func_8002C064(2);
     func_8002C138(g_gameState->unk1C->unk8);
-    D_801051E0 = 0;
+    g_btluiBuf = 0;
     g_ot = g_drawBufs.unk14[0];
     g_primPtr = g_drawBufs.unkC[0];
     e = g_gameState->unk10;

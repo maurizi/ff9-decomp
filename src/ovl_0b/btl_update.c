@@ -391,5 +391,5 @@ void btl_initBattleState(void) {
     btlfx_initAll();
     btlcam_init();
     btl_clearPopups();
-    func_800F4DFC();
+    btl_initBanner();
 }

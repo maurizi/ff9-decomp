@@ -541,16 +541,16 @@ void btl_makeGreyCluts(BtlUnit *arg0) {
     u8 g;
 
     for (i = 0; i < func_80063830(arg0->modelId | 0x20000); i++) {
-        D_800FDF50.x = 0x100;
-        D_800FDF50.y = func_8001DA6C(arg0->model->texPages[i].unk2);
-        D_800FDF50.w = 0x100;
-        D_800FDF50.h = 1;
-        StoreImage(&D_800FDF50, (u32 *)D_800FDF60[i]);
+        g_btlClutRect.x = 0x100;
+        g_btlClutRect.y = func_8001DA6C(arg0->model->texPages[i].unk2);
+        g_btlClutRect.w = 0x100;
+        g_btlClutRect.h = 1;
+        StoreImage(&g_btlClutRect, (u32 *)g_btlClutBuf[i]);
         DrawSync(0);
         for (j = 0; j < 0x100; j++) {
-            c[0] = D_800FDF60[i][j] & 0x1F;
-            c[1] = (D_800FDF60[i][j] >> 5) & 0x1F;
-            c[2] = (D_800FDF60[i][j] >> 10) & 0x1F;
+            c[0] = g_btlClutBuf[i][j] & 0x1F;
+            c[1] = (g_btlClutBuf[i][j] >> 5) & 0x1F;
+            c[2] = (g_btlClutBuf[i][j] >> 10) & 0x1F;
             if (c[0] == 0 && c[1] == 0 && c[2] == 0) {
                 g = 0;
             } else {
@@ -559,16 +559,16 @@ void btl_makeGreyCluts(BtlUnit *arg0) {
                     g = 1;
                 }
             }
-            D_800FDF60[i][j] = (g << 10) + (g << 5) + g;
+            g_btlClutBuf[i][j] = (g << 10) + (g << 5) + g;
         }
-        D_800FDF50.y += 12;
-        LoadImage(&D_800FDF50, (u32 *)D_800FDF60[i]);
+        g_btlClutRect.y += 12;
+        LoadImage(&g_btlClutRect, (u32 *)g_btlClutBuf[i]);
     }
     DrawSync(0);
 }
 
 void btl_makeEnemyGreyCluts(void) {
-    u16 *p = (u16 *)D_800FE360;
+    u16 *p = (u16 *)g_btlSavedCluts;
     s32 i;
     s8 c[3];
     s8 v;
@@ -587,11 +587,11 @@ void btl_makeEnemyGreyCluts(void) {
         *p = v + ((v << 10) + (v << 5));
         p++;
     }
-    D_800FDF50.x = 0x100;
-    D_800FDF50.y = 0xDA;
-    D_800FDF50.h = 6;
-    D_800FDF50.w = 0x100;
-    LoadImage(&D_800FDF50, D_800FE360);
+    g_btlClutRect.x = 0x100;
+    g_btlClutRect.y = 0xDA;
+    g_btlClutRect.h = 6;
+    g_btlClutRect.w = 0x100;
+    LoadImage(&g_btlClutRect, g_btlSavedCluts);
 }
 
 void btl_makePartyGreyCluts(void) {
@@ -600,13 +600,13 @@ void btl_makePartyGreyCluts(void) {
     s8 c[3];
     s8 v;
     u16 *p;
-    D_800FDF50.x = 0x100;
-    D_800FDF50.y = 0xF2;
-    D_800FDF50.w = 0x100;
-    D_800FDF50.h = 1;
+    g_btlClutRect.x = 0x100;
+    g_btlClutRect.y = 0xF2;
+    g_btlClutRect.w = 0x100;
+    g_btlClutRect.h = 1;
     for (i = 2; i < 0xC; i += 3) {
         j = 0;
-        p = (u16 *)D_800FE360;
+        p = (u16 *)g_btlSavedCluts;
         for (; j < 0x100; j++) {
             c[0] = p[(i << 8) + j] & 0x1F;
             c[1] = (p[(i << 8) + j] >> 5) & 0x1F;
@@ -621,8 +621,8 @@ void btl_makePartyGreyCluts(void) {
             }
             p[(i << 8) + j] = v + ((v << 10) + (v << 5));
         }
-        D_800FDF50.y = i + 0xF2;
-        LoadImage(&D_800FDF50, (u32 *)((u16 *)D_800FE360 + (i << 8)));
+        g_btlClutRect.y = i + 0xF2;
+        LoadImage(&g_btlClutRect, (u32 *)((u16 *)g_btlSavedCluts + (i << 8)));
     }
 }
 
@@ -711,21 +711,21 @@ void btl_initDotTimer(BtlUnit *u, s32 n) {
 }
 
 void btl_saveEnemyCluts(u32 *arg0) {
-    D_800FDF50.x = 0x100;
-    D_800FDF50.y = 0xE0;
-    D_800FDF50.w = 0x100;
-    D_800FDF50.h = 6;
-    StoreImage(&D_800FDF50, arg0);
-    D_800FE360 = arg0;
+    g_btlClutRect.x = 0x100;
+    g_btlClutRect.y = 0xE0;
+    g_btlClutRect.w = 0x100;
+    g_btlClutRect.h = 6;
+    StoreImage(&g_btlClutRect, arg0);
+    g_btlSavedCluts = arg0;
 }
 
 void btl_savePartyCluts(u32 *arg0) {
-    D_800FDF50.x = 0x100;
-    D_800FDF50.y = 0xE6;
-    D_800FDF50.w = 0x100;
-    D_800FDF50.h = 0xC;
-    StoreImage(&D_800FDF50, arg0);
-    D_800FE360 = arg0;
+    g_btlClutRect.x = 0x100;
+    g_btlClutRect.y = 0xE6;
+    g_btlClutRect.w = 0x100;
+    g_btlClutRect.h = 0xC;
+    StoreImage(&g_btlClutRect, arg0);
+    g_btlSavedCluts = arg0;
 }
 
 void btl_reapplyStatusLook(BtlUnit *arg0) {

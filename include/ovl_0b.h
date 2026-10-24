@@ -179,7 +179,7 @@ typedef struct {
     Unk80100E30Buf unk0[2];
     Unk80100E30Buf *unkE8; /* current */
 } Unk80100E30;
-extern Unk80100E30 D_80100E30;
+extern Unk80100E30 g_btlfxHaltBufs;
 
 /* model animation event list (db_lookup section 2, tag 0x14) */
 typedef struct {
@@ -223,7 +223,7 @@ s32 func_800E84F0(s32);
 typedef struct {
     u8 pad0[7];
     u8 unk7; /* count */
-    s32 unk8; /* index into D_800FDD10 */
+    s32 unk8; /* index into g_btlCmdAbilities */
 } Unk800FD6E0;
 extern Unk800FD6E0 D_800FD6E0;
 extern u8 D_800F8D84[]; /* ability ids */
@@ -351,7 +351,7 @@ typedef struct {
 #define BTL_STATUS_JUMP            0x40000000 /* code: in the air (btl_checkCmdUsable) */
 #define BTL_STATUS_GRADUAL_PETRIFY 0x80000000 /* code: countdown number (btl_drawStatusCountdown) */
 
-/* BtlCmd.cmdNo. 0x00-0x2F index the command table D_800FD56C; the names are its menu texts (D_800FD7AC; the table's
+/* BtlCmd.cmdNo. 0x00-0x2F index the command table g_btlCmdTable; the names are its menu texts (g_btlCmdNames; the table's
  * own name for a repeated text gets a number). Ids from 0x30 up are queued by the battle code itself. */
 #define BTL_CMD_NONE          0x00
 #define BTL_CMD_ATTACK        0x01 /* runtime: Attack (ability 0xB0) */
@@ -388,7 +388,7 @@ typedef struct {
 #define BTL_CMD_SEIKEN2       0x21
 #define BTL_CMD_WHT_MAG3      0x22
 #define BTL_CMD_ENEMY_TURN    0x2F /* runtime: the enemy AI's command (event-script trigger 0x2F, btl_setEnemyCmd) */
-#define BTL_CMD_TABLE_COUNT   0x30 /* entries in D_800FD56C; lower ids are chosen commands, higher ones automatic */
+#define BTL_CMD_TABLE_COUNT   0x30 /* entries in g_btlCmdTable; lower ids are chosen commands, higher ones automatic */
 #define BTL_CMD_COUNTER       0x31 /* runtime: Counter queues it with Attack against the attacker (btl_tryCounter) */
 #define BTL_CMD_RETURN_MAGIC  0x32 /* code: Return Magic queues it with the spell that hit (btl_tryCounter) */
 #define BTL_CMD_AUTO_POTION   0x33 /* code: btl_tryAutoPotion queues it with the item; handled like Item */
@@ -847,7 +847,7 @@ extern Unk80100DC0 g_btlfxLoader;
 
 typedef struct {
     s32 cmdNo;
-    struct Unk80104FD4 *cmd; /* command table entry (D_800FD56C) of the list */
+    struct Unk80104FD4 *cmd; /* command table entry (g_btlCmdTable) of the list */
     s32 label; /* list window title label */
     s32 label2; /* second title label (right-aligned) */
     s16 doubleCast; /* Dbl Wht / Dbl Blk picks made (btlui_nextDoubleCast) */
@@ -931,7 +931,7 @@ typedef struct {
 extern Unk80105058 D_80105058;
 extern s32 D_80105274;
 extern u8 D_8010527C;
-extern s32 D_8010528C[];
+extern s32 g_btlBannerOt[];
 
 typedef struct {
     u16 unk0;
@@ -1908,9 +1908,9 @@ typedef struct {
 } Unk800CB090;
 
 
-extern RECT D_800FDF50;
-extern u16 D_800FDF60[][0x100]; /* CLUT rows */
-extern u32 *D_800FE360;
+extern RECT g_btlClutRect;
+extern u16 g_btlClutBuf[][0x100]; /* CLUT rows */
+extern u32 *g_btlSavedCluts;
 extern s32 D_800FE36C;
 extern s32 D_800FE490;
 
@@ -2171,19 +2171,19 @@ typedef struct {
 } Unk801051F088;
 
 typedef struct {
-    u8 unk0;
+    u8 text; /* text buffer (0xFF = none) */
     u8 pad1[0x80 - 1];
-    s32 unk80;
-    s32 unk84;
-    Unk801051F088 unk88; /* text size */
-    u8 unk8C;
-    u8 unk8D;
+    s32 timer; /* frames shown */
+    s32 duration; /* frames to show (btl_initBanner: by the message speed option) */
+    Unk801051F088 size; /* text width/height (func_8002AF70) */
+    u8 active;
+    u8 useRect; /* 1: drawn in rect (btl_setBannerAt), 0: the default top box */
     u8 pad8E[2];
-    s32 unk90;
+    s32 priority; /* a lower-priority text does not replace it (btl_setBanner) */
     u8 pad94[0x98 - 0x94];
-    u32 *unk98;
+    u32 *ot; /* ordering table (btl_getBannerOt) */
     u8 pad9C[0xA4 - 0x9C];
-    RECT unkA4;
+    RECT rect;
 } Unk801051F0;
 extern Unk801051F0 g_btlBanner;
 extern s32 D_800FDE3C[];
@@ -2247,7 +2247,7 @@ typedef struct {
     DR_TPAGE unk358[2];
 } Unk801050D8; /* 0x368, double-buffered menu primitives */
 extern Unk801050D8 *g_btluiPrims;
-extern u8 D_801051E0;
+extern u8 g_btluiBuf;
 extern u8 D_80104E94[2][0x18];
 
 typedef struct {
@@ -2330,8 +2330,8 @@ void func_800F3EDC(s32);
 void btlui_slidePanelLabels(void);
 void btlui_pulsePanelHighlight(void);
 void btlui_findHighlightRow(void);
-void func_800F4D80(u32 *, u32);
-void func_800F4FE8(s32);
+void btlui_clearOtLinked(u32 *, u32);
+void btl_setBannerText(s32);
 void btlui_saveCursor(Unk800EB518 *, s32, s32, s32);
 void btlui_onPassClosed(Window *);
 s32 btlfx_stepHitSound(u8 *, s32, s32);
@@ -2425,7 +2425,7 @@ void btlui_restoreKeyRepeat(void);
 void btlui_initPrims(void);
 void func_800F48DC(void);
 void btlui_initDrawBufs(void);
-void func_800F4D20(void);
+void btlui_clearDfe(void);
 void btl_execCmd(BtlUnit *);
 void btl_flushCmdQueue(Battle *);
 void btl_unlinkCmd(BtlCmd **, u8);
@@ -2476,7 +2476,7 @@ u8 btl_isAtbRunning(void);
 void btl_useItem(s32);
 void btlui_setAtbEnabled(u8);
 void btlui_drawListRow(s32, s32, s32, MenuView *);
-void func_800F4DFC(void);
+void btl_initBanner(void);
 s32 btl_unregisterFiles(void **, s32);
 void btl_unloadPartyModels(void);
 void btlui_exit(void);
@@ -2839,15 +2839,15 @@ void btlfx_aimAngles(s16 *, s16 *, s16 *);
 void btlfx_pointAhead(s16 *, s16 *, s32, s16 *);
 
 typedef struct {
-    u16 unk0; /* text offset into D_800FD7AC */
-    u16 unk2; /* text offset into D_800FD8CC */
+    u16 unk0; /* text offset into g_btlCmdNames */
+    u16 unk2; /* text offset into g_btlCmdHelp */
     u8 pad4[6 - 4];
     u8 unk6;
     u8 unk7;
     s32 unk8;
 } Unk800FD56C; /* 0xC */
-extern Unk800FD56C D_800FD56C[];
-extern u8 D_800FD8CC[];
+extern Unk800FD56C g_btlCmdTable[];
+extern u8 g_btlCmdHelp[];
 extern u16 D_800FD36C[];
 extern u8 D_800FB4F0[];
 extern s32 D_800F8E04[];
@@ -2970,11 +2970,11 @@ s32 btlfx_opWaitSameSide(s32, u8 *, s32, s32 *, s32 *);
 extern u8 D_80104E6A;
 extern u8 D_80104E6B;
 extern u8 D_800F8E84[];
-extern u8 D_800FDDF8[][3];
-extern u8 D_800FDDD0[][2];
+extern u8 g_btlCharTranceCmds[][3];
+extern u8 g_btlCharCmds[][2];
 extern RECT D_800A8584;
 void btl_initUnitCmds(BtlUnit *);
-extern u16 D_800F5200[];
+extern u16 g_btlCharModelIds[];
 void btl_initPartyUnit(Character *, BtlUnit *, u16, u16);
 void btl_insertUnit(BtlUnit *);
 void btl_placeParty(void);
@@ -2993,7 +2993,7 @@ void btl_projectUnitPos(BtlUnit *);
 void btlui_drawTranceLabel(s32, s32, s32, char *);
 s32 btlui_getMenuState(void);
 s32 btlui_getTargetReturnState(void);
-extern u8 D_800FD7AC[];
+extern u8 g_btlCmdNames[];
 void btlui_drawSideCmd(); /* (Window *); btlui_drawCmdList passes its own */
 s32 btlfx_isUnitKind(s32, s32);
 void btlfx_projectSliceMesh(BtlUnit9C *, u8);
@@ -3281,7 +3281,7 @@ typedef struct {
     BtlUnit *unk44;
     u8 pad48[0x4C - 0x48];
 } Unk800FE368;
-extern Unk800FE368 D_800FE368;
+extern Unk800FE368 g_btlCamTargets;
 extern u8 D_80104E76;
 void bcopy(void *, void *, s32);
 struct Battle11C020 *btl_initScene(void);
@@ -3322,7 +3322,7 @@ s32 func_80054B78(void);
 extern u8 D_800F6FB8[];
 extern u8 D_800A7C20[]; /* "/\xFF" suffix string */
 void btl_setBanner(s32, s32);
-void func_800F4F44(s32, s32);
+void btl_setBannerAt(s32, s32);
 s32 func_800F4FC8(void);
 extern u8 D_80104E77;
 void btlui_onUnitUntargetable(BtlUnit *);
@@ -3537,11 +3537,11 @@ void btlui_onListOpened(void);
 s32 btlfx_isSameSide(s32, s32);
 s32 func_800DA064(u8 *, s32, s32);
 extern u8 D_80104E70;
-extern u8 D_800FDD10[];
+extern u8 g_btlCmdAbilities[];
 extern U16Pair D_800FB1F0[];
 extern char D_800F96E4[];
 s32 btlui_getAbilityState(s32);
-s32 *func_800F4FB4(s32);
+s32 *btl_getBannerOt(s32);
 u8 *btl_buildBanner(u8 *);
 u8 *btl_drawBanner(u8 *);
 typedef struct Unk800D9134 {
@@ -3845,7 +3845,7 @@ extern DR_OFFSET D_801050E0[2];
 extern DR_AREA D_80105100[2];
 extern DR_MODE D_80105120[2];
 extern DR_STP D_80105140[2];
-extern DR_ENV D_80105160[2];
+extern DR_ENV g_btluiSavedEnv[2];
 extern RECT D_800FDE34;
 
 #define gte_lddp(r0) __asm__ volatile("mtc2\t%0, $8" : : "r"(r0))

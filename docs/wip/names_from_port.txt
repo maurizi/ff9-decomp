@@ -1422,3 +1422,27 @@ func_800DD120 btlfx_getCasterTexInfo  # [code] texture tables (tpage, clut) of a
 func_800DF670 btlfx_getSplitVertexSize  # [code] bytes GeoSplitVertices needs for one or all mesh groups (a vertex per primitive corner)
 func_800DF7A0 btlfx_getMeshPrims  # [code] address and count of the primitives of type n (FT4, FT3, GT4, GT3, G4, G3, F4, F3) in a mesh group
 func_800DF940 btlfx_splitMeshVertices  # [code] gives every primitive corner of a mesh group its own vertex copy (GeoSplitVertices)
+
+## ovl_0b: ovl_0b (cleanup pass: banner, UI frame, command tables, CLUT buffers)
+func_800F4D20 btlui_clearDfe  # [code] clears dfe in both draw environments
+func_800F4D80 btlui_clearOtLinked  # [code] ClearOTag of entry 0, then links every entry to the previous one (a reverse ordering table)
+func_800F4DFC btl_initBanner  # [code] empties g_btlBanner, default rect, duration D_800FDE3C by the message speed option (GameState.unk24 bits 11-13)
+func_800F4F44 btl_setBannerAt  # [code] btl_setBanner drawn in g_btlBanner.rect instead of the default box
+func_800F4F84 btl_setBannerRect  # [code] sets g_btlBanner.rect
+func_800F4FB4 btl_getBannerOt  # [code] the banner ordering table of a draw buffer (D_8010528C)
+func_800F4FE8 btl_setBannerText  # [code] copies the text into g_btlBanner, measures it and shows it (NULL hides it)
+D_801051E0 g_btluiBuf  # [code] UI draw buffer index, flipped by btlui_beginFrame
+D_8010528C g_btlBannerOt  # [code] one-entry banner ordering table per draw buffer (btl_getBannerOt)
+D_80105160 g_btluiSavedEnv  # [code] DR_ENV per buffer that GetDrawEnv2 fills when btlui_submitOt interrupts the GPU (BreakDraw/ContinueDraw)
+D_800FE368 g_btlCamTargets  # [code] copy of the effect unit list btlcam_beginEffect takes for the camera anchors
+D_800FD56C g_btlCmdTable  # [code] command table: name/help offsets, menu kind, ability list (btlui_buildCmdList, btl_setCmd from the menu)
+D_800FD7AC g_btlCmdNames  # [code] command names (g_btlCmdTable unk0 offsets)
+D_800FD8CC g_btlCmdHelp  # [code] command help texts (g_btlCmdTable unk2 offsets, btlui_getCmdHelpText)
+D_800FDD10 g_btlCmdAbilities  # [code] ability ids of the command ability lists (g_btlCmdTable unk8 start, unk7 count)
+D_800FDDD0 g_btlCharCmds  # [code] two commands per character (btlui_buildCmdList)
+D_800FDDF8 g_btlCharTranceCmds  # [code] the trance commands per character, third byte = the disabled row (btlui_buildCmdList)
+D_800F5200 g_btlCharModelIds  # [code] model id per character model kind; +0x13 the other model (btl_getPartyModelId, btl_initParty)
+D_800FDF50 g_btlClutRect  # [code] RECT of the CLUT rows btl_makeGreyCluts and the save/grey functions move
+D_800FDF60 g_btlClutBuf  # [code] CLUT rows read back by btl_makeGreyCluts
+D_800FE360 g_btlSavedCluts  # [code] CLUT copy taken by btl_saveEnemyCluts / btl_savePartyCluts
+D_80100E30 g_btlfxHaltBufs  # [code] two DRAWENV/DISPENV buffers of the standalone loop btlfx_halt
