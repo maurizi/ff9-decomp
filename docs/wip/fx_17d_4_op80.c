@@ -484,12 +484,12 @@ s32 fx_17d_4_op80(s32 mode, Fx17d4Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
                 k5x = 0x20;
                 if (frame < 0x1E) {
                     x6n = frame;
+                    flag = 1;
                     f3 = 0;
                     k5 = 0x1000;
                     g = 0;
                     q_c6 = 0;
                     k = 0;
-                    flag = 1;
                 } else {
                     x6n = 0x1D;
                     n5y = (frame - 0x1E) << 9;
