@@ -486,6 +486,9 @@ def main():
         if "address error" in co.events:
             skipped += 1  # the original faults (unaligned random pointer): not a state the game produces
             continue
+        if "step limit" in co.events:
+            skipped += 1  # the original didn't finish (random loop counts): the two runs stop at different points
+            continue
         paths.add(tuple(co.path[:4000]))
         covered |= co.seen
         diffs = []
@@ -507,7 +510,7 @@ def main():
             if bad <= (5 if a.v else 1):
                 print(f"trial {t}: " + "; ".join(diffs))
     print(f"{func}: {a.trials - skipped - bad}/{a.trials - skipped} trials agree"
-          + (f" ({skipped} skipped: the original faults on an unaligned address)" if skipped else "")
+          + (f" ({skipped} skipped: the original faults on an unaligned address or hits the step limit)" if skipped else "")
           + f", {len(paths)} distinct paths, "
           f"{100 * len(covered) // (osize // 4)}% of the original's instructions ran")
     if a.uncovered:
