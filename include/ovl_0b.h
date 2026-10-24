@@ -2120,10 +2120,8 @@ typedef struct Unk80104FD4 {
     u8 unk7; /* count */
     s32 unk8;
 } Unk80104FD4;
-extern Unk80104FD4 *D_80104FD4;
 extern s32 (*D_800F8E58[])(void);
 extern void (*D_800F8E48[])(s32, s32, s32, MenuView *);
-extern u8 D_80104FE8;
 
 typedef struct {
     u8 unk0;
@@ -2155,7 +2153,6 @@ typedef struct {
     BtlUnit *unk24; /* last target */
 } Unk80104FF0;
 extern Unk80104FF0 g_btlTarget;
-extern BtlUnit *D_80104FE4;
 extern u8 D_800F8EE4[];
 extern void (*D_800F8F04[])(Window *);
 

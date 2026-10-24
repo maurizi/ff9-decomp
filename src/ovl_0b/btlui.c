@@ -1856,21 +1856,21 @@ s32 btlui_selectThrow(void) {
 }
 
 s32 btlui_getAbilityState(s32 arg0) {
-    Unk80104F88Entry *e = D_80104FE4->unkB4;
+    Unk80104F88Entry *e = g_btluiList.unk14->unkB4;
     Battle16CC *a = &g_gameState->unk1C->unk8E4.battle->abilities[arg0];
 
     if (e->unk19 != 0 && e->unk3DC[arg0] == 0 && (s16)*e->unk1C[arg0] < (s16)e->unk31C[arg0]) {
         return 0;
     }
     if (a->unk8 & 2) {
-        if ((u8)btl_hasStatus(D_80104FE4, BTL_STATUS_SILENCE)) {
+        if ((u8)btl_hasStatus(g_btluiList.unk14, BTL_STATUS_SILENCE)) {
             return 1;
         }
         if ((g_gameState->unk1C->unk8E4.battle->scene.unk0 >> 9) & 1) {
             return 1;
         }
     }
-    if (btl_getMpCost((BtlCmd8 *)a) > D_80104FE4->mp) {
+    if (btl_getMpCost((BtlCmd8 *)a) > g_btluiList.unk14->mp) {
         return 1;
     }
     return 2;
@@ -1917,7 +1917,7 @@ void btlui_nextDoubleCast(void) {
 
 s32 btlui_getListHelpText(void) {
     s32 r = 0;
-    s32 (*f)(void) = D_800F8E58[D_80104FD4->unk6];
+    s32 (*f)(void) = D_800F8E58[g_btluiList.unk4->unk6];
     if (f != NULL) {
         r = f();
     }
@@ -1974,12 +1974,12 @@ void btlui_closeList(void) {
 }
 
 void btlui_drawListRow(s32 arg0, s32 arg1, s32 arg2, MenuView *arg3) {
-    D_800F8E48[D_80104FD4->unk6](arg0, arg1, arg2, arg3);
+    D_800F8E48[g_btluiList.unk4->unk6](arg0, arg1, arg2, arg3);
 }
 
 void btlui_drawAbilityRow(s32 arg0, s32 arg1, s32 arg2, MenuView *arg3) {
     u8 buf[8];
-    u8 k = D_800FDD10[D_80104FD4->unk8 + arg2];
+    u8 k = D_800FDD10[g_btluiList.unk4->unk8 + arg2];
     Window *w = g_btlUi->unk12A4[2];
     RECT *r = &w->unk8;
     s32 dy = w->unk6 - r->h;
@@ -2064,7 +2064,7 @@ void btlui_drawThrowRow(s32 arg0, s32 arg1, s32 arg2, Window *arg3) {
 s32 btlui_resolveAbility(s32 arg0) {
     s32 t;
     if (arg0 == 0x44) {
-        switch (D_80104FE4->unkB4->unk14->equip[4]) {
+        switch (g_btluiList.unk14->unkB4->unk14->equip[4]) {
         case 0xE4:
             arg0 = 0x45;
             break;
@@ -2076,7 +2076,7 @@ s32 btlui_resolveAbility(s32 arg0) {
             break;
         }
     } else if (arg0 == 0x42) {
-        t = D_80104FE4->unkB4->unk14->equip[4] == 0xDE;
+        t = g_btluiList.unk14->unkB4->unk14->equip[4] == 0xDE;
         arg0 = t + 0x42;
     }
     return arg0;
@@ -2089,7 +2089,7 @@ s32 btl_getMpCost(BtlCmd8 *arg0) {
             cost *= 4;
         }
     }
-    if (D_80104FE8 != 0) {
+    if (g_btluiList.unk18 != 0) {
         cost >>= 1;
     }
     return cost;
@@ -2098,7 +2098,7 @@ s32 btl_getMpCost(BtlCmd8 *arg0) {
 char *btlui_getAbilityHelpText(void) {
     MenuList *l = &g_btlUi->unk12A4[2]->unk30;
     s32 n = l->cursor + l->unk5;
-    u8 k = D_800FDD10[D_80104FD4->unk8 + n];
+    u8 k = D_800FDD10[g_btluiList.unk4->unk8 + n];
     if (btlui_getAbilityState(k) == 0) {
         return NULL;
     }
