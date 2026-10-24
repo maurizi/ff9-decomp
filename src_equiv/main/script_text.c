@@ -15,16 +15,16 @@
  *   $s7  r_sp    expression stack pointer (grows up; g_evtExprSp is its published copy)
  *   $s5  r_args  "argument is an expression" bits for the scheduler's own opcodes
  *
- * Pen sessions: func_800515B8 / func_80051638 load r_pen, r_code, r_pkt and r_link from globals and
- * func_80051610 / func_800515EC / func_80051600 / func_80051668 store them back. C callers (the window text
+ * Pen sessions: pen_begin / pen_beginBuffered load r_pen, r_code, r_pkt and r_link from globals and
+ * pen_end / pen_endSmall / pen_endFont / pen_endBuffered store them back. C callers (the window text
  * renderer around main.c:14100, the menus) call the primitive emitters in between.
  *
  * Verification: func_80052F24, func_80052EC0 (with func_80052EEC) and func_80052DEC were replayed against
  * 85 argument/result pairs captured in the emulator (field, walking): no differences. func_80053124 matched
  * 29 captured calls (all "outside"). Everything else is checked by reading against the asm only.
  *
- * func_80051358 (unreachable: no callers, and it expects the return address in $t1) is given a normal body.
- * Labels that are not functions (D_8005115C and func_8005116C + 0x68, glyph sinks reached only through
+ * pen_drawSmallString (unreachable: no callers, and it expects the return address in $t1) is given a normal body.
+ * Labels that are not functions (D_8005115C and pen_putSmallChar + 0x68, glyph sinks reached only through
  * func_8005179C) are static functions here.
  */
 #include <stdarg.h>
@@ -32,10 +32,10 @@
 #include "../src_equiv.h"
 
 /* ---- globals the headers don't declare yet (types from their use in this module) ---- */
-extern u32 D_8007BCB4;           /* CLUT/texture word added to glyph sprites (func_80050F4C) */
-extern u32 *D_8007BBD0;          /* second glyph table (func_80050F68) */
-extern u32 D_8007BCA0;           /* pen colour, 0xBBGGRR */
-extern u8 *D_8007BCAC;           /* packet pointer of the func_80051638 sessions */
+extern u32 D_8007BCB4;           /* CLUT/texture word added to glyph sprites (pen_setPalette) */
+extern u32 *D_8007BBD0;          /* second glyph table (pen_getGlyph) */
+extern u32 g_penColor;           /* pen colour, 0xBBGGRR */
+extern u8 *D_8007BCAC;           /* packet pointer of the pen_beginBuffered sessions */
 extern DVECTOR D_8007BC78[];     /* pen stack storage */
 extern void (*D_8007BD00)(s32);  /* glyph sink chosen by func_8005179C */
 extern s32 g_evtExprStack[];         /* expression stack storage */
@@ -87,13 +87,13 @@ static void emit_tag(u32 *p, s32 len) {
 
 /* ============================================================ glyphs and the pen */
 
-void func_80050F4C(s32 clut) {
+void pen_setPalette(s32 clut) {
     D_8007BCB4 = (u32)((clut << 7) + 0x3827) << 16;
 }
 
 /* Glyph lookup for the dialogue font. 0xFA-0xFF are lead bytes: they are remembered and 0 is returned;
  * the next byte is then looked up as (lead << 8) | byte. Returns the glyph word, 0 for none. */
-u32 func_80050F68(s32 c) {
+u32 pen_getGlyph(s32 c) {
     Unk8007BB98 *g = &D_8007BB98;
     u32 range;
     s32 d;
@@ -119,8 +119,8 @@ u32 func_80050F68(s32 c) {
 }
 
 /* Dialogue-font glyph: one sprite, then the pen advances by the glyph's width. */
-void func_80051004(s32 c) {
-    u32 g = func_80050F68(c);
+void pen_putGlyph(s32 c) {
+    u32 g = pen_getGlyph(c);
     u32 *p;
 
     if (g == 0) {
@@ -182,14 +182,14 @@ void func_80051084(s32 c) {
     glyph_debug6(c);
 }
 
-void func_80051094(s32 c) {
+void pen_drawSmallChar(s32 c) {
     glyph_debug6(c);
 }
 
-void func_800513A4(s32 mode);
+void pen_addTpage(s32 mode);
 
 /* Second debug font (CLUT 0x368C, v 0xDA): the sprite is followed by a texpage set for its 32-character row. */
-void func_8005116C(s32 c) {
+void pen_putSmallChar(s32 c) {
     u32 *p;
 
     if (c == ' ') {
@@ -204,7 +204,7 @@ void func_8005116C(s32 c) {
     p[4] = 0x60006;
     p[3] = ((c & 0x1F) * 6 + 0xDA00) | 0x368C0000;
     r_pkt += 0x14;
-    func_800513A4((c >> 5) - 1);
+    pen_addTpage((c >> 5) - 1);
 }
 
 /* D_8005115C: battle glyph sink. Tab is a fixed 24 pixels, newline 6 lines, else the second debug font. */
@@ -217,10 +217,10 @@ static void glyph_sink_battle(s32 c) {
         pen_newline(6);
         return;
     }
-    func_8005116C(c);
+    pen_putSmallChar(c);
 }
 
-/* func_8005116C + 0x68: world map glyph sink. Tab 24 pixels, newline 7 lines, else the 6x6 font. */
+/* pen_putSmallChar + 0x68: world map glyph sink. Tab 24 pixels, newline 7 lines, else the 6x6 font. */
 static void glyph_sink_world(s32 c) {
     if (c == 9) {
         r_pen += 0x18;
@@ -238,70 +238,70 @@ void func_80051274(s32 c);
 void func_80053384(s32 c);
 
 /* Pen to text cell (col, row): 6 pixels per cell, origin (10, 20); also sets the line start. */
-void func_8005127C(s32 col, s32 row) {
+void pen_setCell(s32 col, s32 row) {
     r_pen = ((u32)col | ((u32)row << 16)) * 6 + 0x14000A;
-    D_8007BC9C.w = r_pen;
+    g_penPos.w = r_pen;
     *(s16 *)&D_8007BCB0 = r_pen;
 }
 
-/* Pen x = x, keep y. (Falls into func_800512B8 in the original.) */
+/* Pen x = x, keep y. (Falls into pen_setPos in the original.) */
 void func_800512B4(s32 x) {
     r_pen = (x & 0xFFFF) | (PEN_Y(r_pen) << 16);
 }
 
-void func_800512B8(s32 x, s32 y) {
+void pen_setPos(s32 x, s32 y) {
     r_pen = (x & 0xFFFF) | ((u32)y << 16);
 }
 
 /* Move the pen by (dx, dy). */
-void func_800512C8(s32 dx, s32 dy) {
+void pen_move(s32 dx, s32 dy) {
     u32 x = (r_pen + dx) & 0xFFFF;
 
     r_pen = ((PEN_Y(r_pen) + dy) << 16) | x;
 }
 
 /* Pen colour (0xBBGGRR). */
-void func_800512E4(s32 rgb) {
+void pen_setColor(s32 rgb) {
     r_code = rgb & 0xFFFFFF;
-    D_8007BCA0 = r_code;
+    g_penColor = r_code;
     r_code |= 0x64000000;
 }
 
 /* Push / pop the pen position. */
-void func_80051300(void) {
-    *(u32 *)D_8007BC98 = r_pen;
-    D_8007BC98++;
+void pen_pushPos(void) {
+    *(u32 *)g_penStackPtr = r_pen;
+    g_penStackPtr++;
 }
 
-void func_80051380(void) {
-    D_8007BC98--;
-    r_pen = *(u32 *)D_8007BC98;
+void pen_popPos(void) {
+    g_penStackPtr--;
+    r_pen = *(u32 *)g_penStackPtr;
 }
 
 /* Print a NUL-terminated string in the second debug font, then return the pen to where it started. */
-void func_80051324(u8 *s) {
+void pen_putSmallString(u8 *s) {
     s32 c;
 
-    func_80051300();
+    pen_pushPos();
     while ((c = *s++) != 0) {
-        func_8005116C(c);
+        pen_putSmallChar(c);
     }
-    func_80051380();
+    pen_popPos();
 }
 
 /* Same with the 6x6 font. Unreachable in the original (no callers). */
-void func_80051358(u8 *s) {
+void pen_drawSmallString(u8 *s) {
     s32 c;
 
-    func_80051300();
+    pen_pushPos();
     while ((c = *s++) != 0) {
-        func_80051094(c);
+        pen_drawSmallChar(c);
     }
-    func_80051380();
+    pen_popPos();
 }
 
 /* DR_TPAGE-style draw mode word 0xE1000000 | mode. */
-void func_800513A4(s32 mode) {
+void pen_addTpage(s32 mode) {
     u32 *p = (u32 *)r_pkt;
 
     emit_tag(p, 1);
@@ -310,14 +310,14 @@ void func_800513A4(s32 mode) {
 }
 
 /* Icon from g_uiSprites[i] (8 bytes: uv/CLUT word, w, h, texpage), bracketed by texpage 0x1E and its own. */
-void func_800513CC(s32 i) {
+void pen_drawSprite(s32 i) {
     u8 *e = (u8 *)&g_uiSprites[0] + i * 8;
     u32 w0 = *(u32 *)e;
     u32 w1 = *(u32 *)(e + 4);
     u32 *p;
     u32 wd;
 
-    func_800513A4(0x1E);
+    pen_addTpage(0x1E);
     p = (u32 *)r_pkt;
     emit_tag(p, 4);
     p[1] = r_code;
@@ -327,36 +327,36 @@ void func_800513CC(s32 i) {
     p[4] = ((w1 & 0xFF00) << 8) | wd;
     r_pen += wd;
     r_pkt += 0x14;
-    func_800513A4(*(s16 *)(e + 6));
+    pen_addTpage(*(s16 *)(e + 6));
 }
 
 /* Make the last 0x14-byte primitive semi-transparent. */
-void func_80051444(void) {
+void pen_setLastSemiTrans(void) {
     r_pkt[-0x15] |= 2;
 }
 
 /* Line from the pen to pen + (dx, dy); the pen moves there. */
-void func_8005145C(s32 dx, s32 dy) {
+void pen_line(s32 dx, s32 dy) {
     u32 *p = (u32 *)r_pkt;
 
     emit_tag(p, 3);
     p[1] = (r_code & 0xFFFFFF) | 0x40000000;
     p[2] = r_pen;
-    func_800512C8(dx, dy);
+    pen_move(dx, dy);
     p[3] = r_pen;
     r_pkt += 0x10;
 }
 
 /* Rectangle outline w x h from the pen (four lines; the pen ends where it started). */
-void func_800514AC(s32 w, s32 h) {
-    func_8005145C(w, 0);
-    func_8005145C(0, h);
-    func_8005145C(-w, 0);
-    func_8005145C(0, -h);
+void pen_rect(s32 w, s32 h) {
+    pen_line(w, 0);
+    pen_line(0, h);
+    pen_line(-w, 0);
+    pen_line(0, -h);
 }
 
 /* Filled tile w x h at the pen (code 0x60 | flags), followed by texpage `mode`. */
-void func_800514E8(s32 w, s32 h, s32 flags, s32 mode) {
+void pen_tile(s32 w, s32 h, s32 flags, s32 mode) {
     u32 *p = (u32 *)r_pkt;
 
     emit_tag(p, 3);
@@ -364,11 +364,11 @@ void func_800514E8(s32 w, s32 h, s32 flags, s32 mode) {
     p[2] = r_pen;
     p[3] = (u32)w | ((u32)h << 16);
     r_pkt += 0x10;
-    func_800513A4(mode);
+    pen_addTpage(mode);
 }
 
 /* Start a 10-word textured quad (code 0x2C) at the pen; the caller fills in the rest. */
-POLY_FT4 *func_80051530(void) {
+POLY_FT4 *pen_addPolyFT4(void) {
     u32 *p = (u32 *)r_pkt;
 
     emit_tag(p, 9);
@@ -379,60 +379,60 @@ POLY_FT4 *func_80051530(void) {
 }
 
 /* Reset the pen state. */
-void func_80051568(void) {
-    D_8007BC9C.w = 0;
-    D_8007BCA8 = NULL;
-    D_8007BC98 = D_8007BC78;
-    D_8007BCA0 = 0x808080;
+void pen_init(void) {
+    g_penPos.w = 0;
+    g_penPktPtr = NULL;
+    g_penStackPtr = D_8007BC78;
+    g_penColor = 0x808080;
     D_8007BCB0 = 0xA;
     D_8007BCB4 = 0x38270000;
 }
 
-/* Begin a pen session on *D_8007BCA8 (a packet-pointer variable), linking from *D_8007BCA4. */
-void func_800515B8(void) {
-    r_pen = D_8007BC9C.w;
-    r_code = D_8007BCA0;
-    r_pkt = *D_8007BCA8;
-    r_link = *D_8007BCA4;
+/* Begin a pen session on *g_penPktPtr (a packet-pointer variable), linking from *g_penOt. */
+void pen_begin(void) {
+    r_pen = g_penPos.w;
+    r_code = g_penColor;
+    r_pkt = *g_penPktPtr;
+    r_link = *g_penOt;
     r_code |= 0x64000000;
 }
 
 /* End a session: store the packet pointer and the chain head back, remember the pen. */
-void func_80051610(void) {
-    *D_8007BCA8 = r_pkt;
-    *D_8007BCA4 = r_link;
-    D_8007BC9C.w = r_pen;
+void pen_end(void) {
+    *g_penPktPtr = r_pkt;
+    *g_penOt = r_link;
+    g_penPos.w = r_pen;
 }
 
 /* End with texpage 0x1F / 0x1E first. */
-void func_800515EC(void) {
-    func_800513A4(0x1F);
-    func_80051610();
+void pen_endSmall(void) {
+    pen_addTpage(0x1F);
+    pen_end();
 }
 
-void func_80051600(void) {
-    func_800513A4(0x1E);
-    func_80051610();
+void pen_endFont(void) {
+    pen_addTpage(0x1E);
+    pen_end();
 }
 
 /* Begin a session on D_8007BCAC (the debug print session). */
-void func_80051638(void) {
-    r_pen = D_8007BC9C.w;
-    r_code = D_8007BCA0;
+void pen_beginBuffered(void) {
+    r_pen = g_penPos.w;
+    r_code = g_penColor;
     r_pkt = D_8007BCAC;
-    r_link = *D_8007BCA4;
+    r_link = *g_penOt;
     r_code |= 0x64000000;
 }
 
 /* End it (nothing if there is no packet buffer). */
-void func_80051668(void) {
+void pen_endBuffered(void) {
     if (r_pkt == NULL) {
         return;
     }
-    func_800513A4(0x1F);
+    pen_addTpage(0x1F);
     D_8007BCAC = r_pkt;
-    *D_8007BCA4 = r_link;
-    D_8007BC9C.w = r_pen;
+    *g_penOt = r_link;
+    g_penPos.w = r_pen;
 }
 
 /* ============================================================ debug printing */
@@ -526,7 +526,7 @@ void func_80051830(void) {
 void func_80051878(s32 quiet) {
     s32 c;
 
-    func_80051638();
+    pen_beginBuffered();
     func_8005179C(quiet);
     while ((c = *r_ip++) != 0) {
         if (c == '"') {
@@ -540,7 +540,7 @@ void func_80051878(s32 quiet) {
     }
     if (quiet == 0) {
         func_80051084(0xA);
-        func_80051668();
+        pen_endBuffered();
     }
 }
 
@@ -554,7 +554,7 @@ void func_80051920(s32 quiet) {
     u32 fl;
     s32 base;
 
-    func_80051638();
+    pen_beginBuffered();
     r_ip++;
     func_8005179C(quiet);
     f = r_ip;
@@ -596,9 +596,9 @@ void func_80051920(s32 quiet) {
             } else if (c == 'c') {
                 c = *f++;
                 if (c == '8') {
-                    func_800512E4(0x505050);
+                    pen_setColor(0x505050);
                 } else {
-                    func_800512E4(0x3F3F3F | ((c & 1) << 22) | ((c & 4) << 12) | ((c & 2) << 5));
+                    pen_setColor(0x3F3F3F | ((c & 1) << 22) | ((c & 4) << 12) | ((c & 2) << 5));
                 }
             } else {
                 r_glyph(c);
@@ -608,7 +608,7 @@ void func_80051920(s32 quiet) {
         }
     }
     if (quiet == 0) {
-        func_80051668();
+        pen_endBuffered();
     }
 }
 
@@ -620,7 +620,7 @@ void func_80051B58(const char *fmt, ...) {
     const u8 *s;
 
     va_start(ap, fmt);
-    func_80051638();
+    pen_beginBuffered();
     func_8005179C(0);
     while ((c = (u8)*fmt++) != 0) {
         if (c != '%') {
@@ -653,7 +653,7 @@ void func_80051B58(const char *fmt, ...) {
             r_glyph(c);
         }
     }
-    func_80051668();
+    pen_endBuffered();
     func_8004E91C();
     va_end(ap);
 }
@@ -1239,7 +1239,7 @@ s32 func_80052870(Unk16D8 *n) {
             case 0x32:
                 r_args = *r_ip++;
                 k = func_80052834();
-                func_8005127C(k, func_80052834());
+                pen_setCell(k, func_80052834());
                 break;
             default:
                 r_ip--;
@@ -1735,6 +1735,6 @@ void func_80064C24(u8 n) {
     static const u32 c[5] = { 0x808080, 0x2020A0, 0x20A020, 0xA02020, 0 };
 
     if (n < 5) {
-        func_800512E4(c[n]);
+        pen_setColor(c[n]);
     }
 }

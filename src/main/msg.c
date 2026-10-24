@@ -79,16 +79,16 @@ void msg_beginDraw(void) {
         D_8007B9A0 = 1;
         pp = &D_8007B9A8;
         tbl = &D_8007B9B0[s->unk1C->unk8];
-        D_8007BCA8 = pp;
+        g_penPktPtr = pp;
         D_8007B9A4 = D_8007B9A8 = (u8 *)tbl;
     } else {
         D_8007B9A0 = 0x4000;
         cur = g_primPtr;
-        D_8007BCA8 = &g_primPtr;
+        g_penPktPtr = &g_primPtr;
         D_8007B9A4 = cur;
     }
     g = g_gameState->unk1C;
-    D_8007BCA4 = g->unk10[g->unk8];
+    g_penOt = g->unk10[g->unk8];
 }
 
 /* width of an embedded string, up to 0xF7 / 0xFF */
@@ -102,7 +102,7 @@ static inline s32 msg_measureLine_width(u8 *s) {
     c = *s++;
     while (c != 0xF7 && c != 0xFF) {
         do {
-            g = func_80050F68(c);
+            g = pen_getGlyph(c);
             if (g != 0) {
                 w += 1 + (g >> 28);
             }
@@ -312,12 +312,12 @@ void msg_renderText(MsgWindow *w, u8 *s) {
         c = *p++;
         switch (c) {
         case 0xF8:
-            func_800512C8(1, 0);
+            pen_move(1, 0);
             break;
         case 0xF7:
-            func_80051380();
-            func_800512C8(0, 14);
-            func_80051300();
+            pen_popPos();
+            pen_move(0, 14);
+            pen_pushPos();
             D_8007BB7C++;
             msg_renderText_skip(w->unkA, &p);
             if (p >= end) {
@@ -330,24 +330,24 @@ void msg_renderText(MsgWindow *w, u8 *s) {
             c = *p++;
             switch (c) {
             case 0x71:
-                func_800512C8(0x12, 0);
+                pen_move(0x12, 0);
                 break;
             case 0x44:
-                func_800512B4(D_8007BC98[-1].vx);
+                func_800512B4(g_penStackPtr[-1].vx);
             case 0x43:
-                func_800512C8(*p++, 0);
+                pen_move(*p++, 0);
                 break;
             case 0x49:
-                func_800512C8(0, *p++);
+                pen_move(0, *p++);
                 break;
             case 0x4A:
-                func_800512C8(0, -*p++);
+                pen_move(0, -*p++);
                 break;
             case 0x48:
                 c = *p++;
                 c |= *p++ << 8;
                 msg_measureLine(&p, &c);
-                func_800512C8((w->w - c) >> 1, 0);
+                pen_move((w->w - c) >> 1, 0);
                 break;
             case 0x20:
             case 0x21:
@@ -358,7 +358,7 @@ void msg_renderText(MsgWindow *w, u8 *s) {
             case 0x26:
             case 0x27:
             case 0x28:
-                func_80050F4C(c - 0x20);
+                pen_setPalette(c - 0x20);
                 break;
             case 0x40:
                 last = end - p == 1;
@@ -373,9 +373,9 @@ void msg_renderText(MsgWindow *w, u8 *s) {
                 break;
             case 0xE:
                 last = end - p == 1;
-                func_80050F4C(4);
+                pen_setPalette(4);
                 msg_renderText_value(w, g_msgNumbers[*p++], msg_emitItemName, last);
-                func_80050F4C(0);
+                pen_setPalette(0);
                 break;
             case 0x10:
             case 0x11:
@@ -414,9 +414,9 @@ void msg_renderText(MsgWindow *w, u8 *s) {
             case 0x37:
             case 0x38:
             case 0x39:
-                func_800512C8(0, 1);
-                func_800513CC(D_8006E67C[c - 0x30]);
-                func_800512C8(1, -1);
+                pen_move(0, 1);
+                pen_drawSprite(D_8006E67C[c - 0x30]);
+                pen_move(1, -1);
                 break;
             case 0x60:
             case 0x61:
@@ -426,7 +426,7 @@ void msg_renderText(MsgWindow *w, u8 *s) {
             case 0x65:
             case 0x66:
             case 0x67:
-                func_800512C8(0, 1);
+                pen_move(0, 1);
                 if (c < 0x62) {
                     c ^= 1;
                 }
@@ -434,54 +434,54 @@ void msg_renderText(MsgWindow *w, u8 *s) {
                 if (c < 2) {
                     c ^= 1;
                 }
-                func_800513CC(D_8006E67C[c]);
-                func_800512C8(1, -1);
+                pen_drawSprite(D_8006E67C[c]);
+                pen_move(1, -1);
                 break;
             case 0x3A:
-                func_800512C8(4, 2);
-                func_800513CC(13);
-                func_800512C8(-8, -1);
-                func_800513CC(12);
-                func_800512C8(1, -1);
+                pen_move(4, 2);
+                pen_drawSprite(13);
+                pen_move(-8, -1);
+                pen_drawSprite(12);
+                pen_move(1, -1);
                 break;
             case 0x3B:
-                func_800512C8(4, 7);
-                func_800513CC(14);
-                func_800512C8(-8, -6);
-                func_800513CC(12);
-                func_800512C8(1, -1);
+                pen_move(4, 7);
+                pen_drawSprite(14);
+                pen_move(-8, -6);
+                pen_drawSprite(12);
+                pen_move(1, -1);
                 break;
             case 0x3C:
-                func_800512C8(1, 5);
-                func_800513CC(15);
-                func_800512C8(-5, -4);
-                func_800513CC(12);
-                func_800512C8(1, -1);
+                pen_move(1, 5);
+                pen_drawSprite(15);
+                pen_move(-5, -4);
+                pen_drawSprite(12);
+                pen_move(1, -1);
                 break;
             case 0x3D:
-                func_800512C8(6, 5);
-                func_800513CC(16);
-                func_800512C8(-10, -4);
-                func_800513CC(12);
-                func_800512C8(1, -1);
+                pen_move(6, 5);
+                pen_drawSprite(16);
+                pen_move(-10, -4);
+                pen_drawSprite(12);
+                pen_move(1, -1);
                 break;
             case 0x2F:
-                func_800512C8(0, 1);
-                func_800513CC(12);
-                func_800512C8(1, -1);
+                pen_move(0, 1);
+                pen_drawSprite(12);
+                pen_move(1, -1);
                 break;
             case 0x4B:
-                func_800513CC(*p++);
+                pen_drawSprite(*p++);
                 break;
             case 0x70:
                 if ((u32)g_msgNumbers[0] & (1 << *p++)) {
-                    func_800512C8(6, 3);
-                    func_800513CC(0xB6);
+                    pen_move(6, 3);
+                    pen_drawSprite(0xB6);
                     if (VSync(-1) % 48 >= 16) {
-                        func_80051444();
+                        pen_setLastSemiTrans();
                     }
-                    func_800512C8(-24, -3);
-                    func_800513CC(0xB5);
+                    pen_move(-24, -3);
+                    pen_drawSprite(0xB5);
                 }
                 break;
             case 0x2:
@@ -498,10 +498,10 @@ void msg_renderText(MsgWindow *w, u8 *s) {
         case 0xFB:
         case 0xFC:
         case 0xFD:
-            func_80051004(c);
+            pen_putGlyph(c);
             c = *p++;
         default:
-            func_80051004(c);
+            pen_putGlyph(c);
             break;
         }
     }
@@ -682,8 +682,8 @@ void msg_drawText(MsgWindow *w) {
         e += *(u16 *)&((u32 *)e)[(g_evtMode == 2 || g_evtMode == 4) ? i : i * 2 + 1];
     }
     if (e != NULL) {
-        func_800512C8(((w->w - w->unk1C) >> 1) + 4, 2);
-        func_80051300();
+        pen_move(((w->w - w->unk1C) >> 1) + 4, 2);
+        pen_pushPos();
         if (w->textPos < w->pageStart) {
             w->textPos = w->pageStart;
         }
@@ -706,8 +706,8 @@ void msg_drawText(MsgWindow *w) {
                 msg_stepControl(w, e);
             }
         }
-        func_80051380();
-        func_80050F4C(0);
+        pen_popPos();
+        pen_setPalette(0);
     }
 }
 
@@ -1019,7 +1019,7 @@ WinLayout *msg_getLayout(s32 id, s32 *x, s32 *y, s32 *z) {
 
 void msg_setOtz(s32 a) {
     GameData *d = g_gameState->unk1C;
-    D_8007BCA4 = d->unk10[d->unk8] + a;
+    g_penOt = d->unk10[d->unk8] + a;
 }
 
 s32 msg_getPartyMemberId(s32 i) {
@@ -1288,7 +1288,7 @@ s32 msg_emitNumber(s32 v, s32 n) {
         } else {
             ch = 0xF;
         }
-        func_80051004(ch);
+        pen_putGlyph(ch);
     }
     return digits;
 }
@@ -1317,7 +1317,7 @@ s32 msg_emitString(u8 *s, s32 max) {
             max = n;
         }
         for (i = 0; i < max; i++) {
-            func_80051004(*p++);
+            pen_putGlyph(*p++);
         }
     }
     return n;
@@ -1348,7 +1348,7 @@ s32 msg_emitItemName(s32 id, s32 n) {
         n = len;
     }
     for (i = 0; i < n; i++) {
-        func_80051004(s[i]);
+        pen_putGlyph(s[i]);
     }
     return len;
 }
@@ -1367,7 +1367,7 @@ s32 msg_emitCharName(s32 arg0, s32 n) {
         n = len;
     }
     for (i = 0; i < n; i++) {
-        func_80051004(name[i]);
+        pen_putGlyph(name[i]);
     }
     return len;
 }
@@ -1401,7 +1401,7 @@ s32 msg_emitCharNameCaps(s32 ch, s32 n) {
         n = i;
     }
     for (j = 0; j < n; j++) {
-        func_80051004(buf[j]);
+        pen_putGlyph(buf[j]);
     }
     return i;
 }
@@ -1409,13 +1409,13 @@ s32 msg_emitCharNameCaps(s32 ch, s32 n) {
 void msg_drawWindowContent(Unk8004F5D4 *p) {
     GameData *g = g_gameState->unk1C;
 
-    D_8007BCA4 = g->unk10[g->unk8] + p->unk18;
-    func_800515B8();
-    func_80051300();
-    func_800512B8(p->unk0 + 2, p->unk2 + 2);
+    g_penOt = g->unk10[g->unk8] + p->unk18;
+    pen_begin();
+    pen_pushPos();
+    pen_setPos(p->unk0 + 2, p->unk2 + 2);
     msg_drawText(p->unk50);
-    func_80051380();
-    func_80051600();
+    pen_popPos();
+    pen_endFont();
 }
 
 void msg_drawChoiceCursor(Window *w) {
@@ -1424,14 +1424,14 @@ void msg_drawChoiceCursor(Window *w) {
 
     if (g_msgChoiceLine >= 0 && w->unk1C == 3 && (((Window *)w->unk50)->unk28 & 2)) {
         g = g_gameState->unk1C;
-        D_8007BCA4 = g->unk10[g->unk8] + w->unk18;
-        func_800515B8();
-        func_80051300();
+        g_penOt = g->unk10[g->unk8] + w->unk18;
+        pen_begin();
+        pen_pushPos();
         ofs = 8;
-        func_800512B8(w->unk0 - 3, w->unk2 + ((g_msgChoiceLine + g_msgChoice) * 14 + ofs));
-        func_800513CC(1);
-        func_80051380();
-        func_800515EC();
+        pen_setPos(w->unk0 - 3, w->unk2 + ((g_msgChoiceLine + g_msgChoice) * 14 + ofs));
+        pen_drawSprite(1);
+        pen_popPos();
+        pen_endSmall();
     }
 }
 
@@ -1454,18 +1454,18 @@ void msg_drawHereIcon(Unk8004AB64 *o) {
         }
         if (g_evtMode == 1 && !(g_gameState->unk1C->unk0 & GD_HIDE_ALL) && n < 58) {
             s = &D_80068790;
-            func_800515B8();
-            func_80051300();
+            pen_begin();
+            pen_pushPos();
             evt_setDrawPosAtObject(o, 0, 0);
             if (D_8007BBE8 == 57) {
-                D_8007BBE4 = D_8007BC9C.s.x < 24;
+                D_8007BBE4 = g_penPos.s.x < 24;
             }
-            pos = D_8007BC9C.w;
+            pos = g_penPos.w;
             if ((pos >> 16) < 16) {
-                func_800512B8(pos & 0xFFFF, 16);
+                pen_setPos(pos & 0xFFFF, 16);
             }
-            func_800512C8(0, -((D_8007BBE8 >> 2) % 3));
-            p = func_80051530();
+            pen_move(0, -((D_8007BBE8 >> 2) % 3));
+            p = pen_addPolyFT4();
             p->x1 = p->x3 = p->x0;
             x = p->x0;
             if (D_8007BBE4) {
@@ -1482,8 +1482,8 @@ void msg_drawHereIcon(Unk8004AB64 *o) {
             p->v2 = p->v3 = s->unk1 + s->unk5;
             p->tpage = 0x5F;
             p->clut = s->unk2;
-            func_80051380();
-            func_80051610();
+            pen_popPos();
+            pen_end();
         }
     }
 }
@@ -1502,13 +1502,13 @@ void msg_drawPlayerBubble(void) {
 
     if (c == 0x80) {
         n = D_8007BBF4 + 0x19;
-        func_80051300();
-        func_800512C8(-4, -0x10 - D_8007BC04);
-        func_800513CC(n);
-        func_80051380();
+        pen_pushPos();
+        pen_move(-4, -0x10 - D_8007BC04);
+        pen_drawSprite(n);
+        pen_popPos();
     }
-    p = func_80051530();
-    q = func_80051530();
+    p = pen_addPolyFT4();
+    q = pen_addPolyFT4();
     setSemiTrans(p, 1);
     setSemiTrans(q, 1);
     p->r0 = p->g0 = p->b0 = c;
@@ -1580,10 +1580,10 @@ void msg_updatePlayerBubble(void) {
     if (!(g_gameState->unk1C->unk0 & GD_HIDE_ALL)) {
         o = evt_getObject(g_evtState->playerUid);
         if (o != NULL && o->unk5 == 4) {
-            func_800515B8();
+            pen_begin();
             evt_setDrawPosAtObject(o, -2, 0);
             msg_drawPlayerBubble();
-            func_80051610();
+            pen_end();
         }
     }
     if (D_8007BBE0 == 0) {
@@ -1602,30 +1602,30 @@ void msg_drawAtePrompt(void) {
     if (g_gameState->unk1C->unk0 & GD_HIDE_ALL) {
         return;
     }
-    func_800515B8();
-    func_800512B8(0x10, 200);
+    pen_begin();
+    pen_setPos(0x10, 200);
     if ((D_8007BC10 & 3) != 2) {
         if ((D_8007BC14 / 44) & 1) {
-            func_800513CC(0x80);
-            func_800512C8(2, 0);
-            func_800513CC(0x81);
-            func_800512C8(2, 0);
-            func_800513CC(0x82);
+            pen_drawSprite(0x80);
+            pen_move(2, 0);
+            pen_drawSprite(0x81);
+            pen_move(2, 0);
+            pen_drawSprite(0x82);
         } else {
-            func_800512C8(-2, 0);
-            func_800513CC(0x53);
-            func_800512C8(2, 0);
-            func_800513CC(0x12);
-            func_800513CC(0x54);
+            pen_move(-2, 0);
+            pen_drawSprite(0x53);
+            pen_move(2, 0);
+            pen_drawSprite(0x12);
+            pen_drawSprite(0x54);
         }
     } else if ((D_8007BC14 / 15) & 1) {
-        func_800513CC(0x1F);
-        func_800512C8(2, 0);
-        func_800513CC(0x20);
-        func_800512C8(2, 0);
-        func_800513CC(0x21);
+        pen_drawSprite(0x1F);
+        pen_move(2, 0);
+        pen_drawSprite(0x20);
+        pen_move(2, 0);
+        pen_drawSprite(0x21);
     }
-    func_80051610();
+    pen_end();
 }
 
 void msg_startHereIcon(s32 arg0) {

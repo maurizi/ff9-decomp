@@ -1,7 +1,7 @@
 #include "ff9.h"
 
 void evt_initSystem(void) {
-    func_80051568();
+    pen_init();
     msg_resetWindows();
     msg_resetPad();
     rand_init(GetRCnt(2));

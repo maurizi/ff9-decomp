@@ -1648,7 +1648,7 @@ extern Unk80077E28 g_menuScreenSwitch;
 extern s16 g_akaoCdVolumeFadeTicks;
 extern s32 g_akaoCdVolume;
 extern s32 D_80077E58;
-extern u32 *D_8007BCA4;
+extern u32 *g_penOt;
 
 void akao_applyCdVolume(void);
 void menu_close(void);
@@ -1680,7 +1680,7 @@ typedef struct {
 } Unk80065ADC;
 
 void msg_beginDraw(void);
-void func_800512E4(s32);
+void pen_setColor(s32);
 void preload_setEntry(PreloadEntry *, s32, s32, s32, s32, s32, s32, s32);
 PreloadEntry *preload_find(s32);
 s32 preload_wait(PreloadEntry *);
@@ -2163,7 +2163,7 @@ void chr_setLevel(s32, s32, u32 *, u8);
 extern u32 D_8006CA78[];
 extern u32 g_fadeBattleOt[];
 s32 akao_loadBank(s32, s32);
-void func_80051568(void);
+void pen_init(void);
 void msg_resetWindows(void);
 void msg_resetPad(void);
 void rand_init(s32);
@@ -2578,10 +2578,10 @@ extern s32 D_8007B9A0;
 extern u8 *D_8007B9A4;
 extern u8 *D_8007B9A8;
 extern u32 D_8007B9B0[];
-extern u8 **D_8007BCA8;
-void func_80051004(s32);
+extern u8 **g_penPktPtr;
+void pen_putGlyph(s32);
 extern u8 D_8007B930[8]; /* name text being converted */
-u32 func_80050F68(s32); /* glyph info of a text code, width in the top 4 bits */
+u32 pen_getGlyph(s32); /* glyph info of a text code, width in the top 4 bits */
 s32 func_8004B120(s32);
 void msg_measureLine(u8 **, s32 *); /* add the width of a text control code */
 
@@ -3018,11 +3018,11 @@ typedef struct {
     u16 unkA; /* h */
 } Unk800357E0;
 /* debug/system text output (hand-written asm, 0x80051xxx) */
-void func_800515B8(void);
-void func_800512B8(s32, s32);
-void func_800512C8(s32, s32);
-void func_800513CC(s32);
-void func_80051610(void);
+void pen_begin(void);
+void pen_setPos(s32, s32);
+void pen_move(s32, s32);
+void pen_drawSprite(s32);
+void pen_end(void);
 extern s32 *g_evtExprSp; /* script value stack pointer */
 extern void *D_8007B700; /* script current object */
 
@@ -3051,7 +3051,7 @@ typedef struct {
 extern Unk8007BB98 D_8007BB98;
 extern s32 D_8007B964;
 void msg_renderText(MsgWindow *, u8 *); /* draw a window's text */
-extern DVECTOR *D_8007BC98; /* pen position stack (func_80051300) */
+extern DVECTOR *g_penStackPtr; /* pen position stack (pen_pushPos) */
 typedef union {
     s32 w;
     struct {
@@ -3059,7 +3059,7 @@ typedef union {
         s16 y;
     } s;
 } PenPos;
-extern PenPos D_8007BC9C; /* current pen position */
+extern PenPos g_penPos; /* current pen position */
 /* "!" balloon sprite (msg_drawHereIcon) */
 typedef struct {
     u8 unk0; /* u */
@@ -3072,7 +3072,7 @@ extern Unk80068790 D_80068790;
 extern s32 D_8007BBE4; /* balloon flipped (pen x < 24) */
 extern u8 D_8006E67C[];
 void func_800512B4(s32);
-void func_80051444(void);
+void pen_setLastSemiTrans(void);
 s32 msg_emitNumber(s32, s32);
 s32 msg_emitString(u8 *, s32);
 s32 msg_emitItemName(s32, s32);
@@ -3080,9 +3080,9 @@ s32 msg_emitCharName(s32, s32);
 s32 msg_emitCharNameCaps(s32, s32);
 void msg_advanceText(MsgWindow *, u8 *);
 void msg_stepControl(MsgWindow *, u8 *);
-void func_80051300(void);
-void func_80051380(void);
-void func_80050F4C(s32);
+void pen_pushPos(void);
+void pen_popPos(void);
+void pen_setPalette(s32);
 
 /* Inlined lookup of message i in the current offset table (g_msgTable). */
 static inline u8 *msg_drawText_msg(s32 i) {
@@ -3145,7 +3145,7 @@ s32 chr_calcMaxHp(s32, s32);
 s32 chr_calcMaxMp(s32, s32);
 s32 chr_calcMaxStones(s32, s32, u8);
 void chr_fitSupportAbilities(Character *);
-POLY_FT4 *func_80051530(void);
+POLY_FT4 *pen_addPolyFT4(void);
 typedef struct {
     u8 unk0; /* u */
     u8 unk1; /* v */
@@ -3177,7 +3177,7 @@ typedef struct {
     u8 pad1A[0x50 - 0x1A];
     MsgWindow *unk50;
 } Unk8004F5D4;
-void func_80051600(void);
+void pen_endFont(void);
 void msg_drawText(MsgWindow *);
 /* 8-byte message-table entry (g_msgTable in modes other than 4) */
 typedef struct {

@@ -101,7 +101,7 @@ math_cos = 0x8004BB7C; // type:func [runtime] cos(0) is followed by math_sin(0x4
 g_sinTable = 0x8006C1C4; // [code] 0x401 s16, 0 .. 4096 over a quarter turn (sin 45 deg = 2896)
 D_8007BBD0 = 0x8007BBD0; // second glyph table pointer, read by func_80050F68
 D_8007BCB4 = 0x8007BCB4; // glyph sprite CLUT/texture word (func_80050F4C)
-D_8007BCA0 = 0x8007BCA0; // pen colour (func_800512E4)
+g_penColor = 0x8007BCA0; // pen colour (func_800512E4)
 D_8007BCAC = 0x8007BCAC; // debug print packet pointer (func_80051638)
 D_8007BC78 = 0x8007BC78; // pen stack storage (func_80051568)
 D_8007BD00 = 0x8007BD00; // glyph sink chosen by func_8005179C
@@ -1227,3 +1227,34 @@ g_swirlParams = 0x8007BD08; // [code] swirl parameter set (D_8006F2E0[0/1] rotat
 g_swirlColumns = 0x8007BD14; // [code] the 9 column/row screen positions of the swirl mesh (swirl_buildMesh)
 g_swirlMesh = 0x8007BD18; // [code] 9x9 WarpVert grid (swirl_buildMesh)
 g_winFillSprite = 0x80068CE8; // [code] sprite descriptor of the window fill texture (win_buildFill, win_drawTailFill)
+pen_init = 0x80051568; // type:func [code] asm sprite/text emitter (registers t4 packet, t5 x/y, t6 colour, t7 OT link) resets position, stack and colour 0x808080
+pen_begin = 0x800515B8; // type:func [code] loads the emitter registers from g_penPktPtr's buffer, g_penPos, g_penColor and the OT entry g_penOt
+pen_end = 0x80051610; // type:func [code] stores the emitter registers back (packet pointer, OT link, position)
+pen_beginBuffered = 0x80051638; // type:func [code] pen_begin with the emitter's own packet buffer (D_8007BCAC)
+pen_endBuffered = 0x80051668; // type:func [code] adds the small-font tpage (0x1F) and stores the registers back into the own buffer
+pen_endFont = 0x80051600; // type:func [code] DR_TPAGE 0x1E (font page), then falls into pen_end
+pen_endSmall = 0x800515EC; // type:func [code] DR_TPAGE 0x1F (small-font page), then pen_end
+pen_addTpage = 0x800513A4; // type:func [code] DR_TPAGE packet with the given tpage
+pen_pushPos = 0x80051300; // type:func [code] pushes the pen position on the emitter stack (D_8007BC98)
+pen_popPos = 0x80051380; // type:func [code] pops the pen position
+pen_setPos = 0x800512B8; // type:func [code] t5 = x | y << 16
+pen_move = 0x800512C8; // type:func [code] adds dx/dy to the pen position
+pen_setColor = 0x800512E4; // type:func [code] colour for the following packets (g_penColor and t6, SPRT code)
+pen_setPalette = 0x80050F4C; // type:func [code] D_8007BCB4 = CLUT word for font palette a ((a << 7) + 0x3827)
+pen_getGlyph = 0x80050F68; // type:func [code] glyph info of a text code (offsets, width in the top 4 bits), 0 for none
+pen_putGlyph = 0x80051004; // type:func [code] SPRT for a font glyph at the pen position, advancing it
+pen_putSmallChar = 0x8005116C; // type:func [code] small-font character (6 px), advancing the pen
+pen_drawSmallChar = 0x80051094; // type:func [code] small-font character at the pen position
+pen_putSmallString = 0x80051324; // type:func [code] pen_putSmallChar for each byte of a 0-terminated string, keeping the start position
+pen_drawSmallString = 0x80051358; // type:func [code] pen_drawSmallChar for each byte of a 0-terminated string, keeping the start position
+pen_drawSprite = 0x800513CC; // type:func [code] UI sprite id (g_uiSprites) at the pen position, with the font tpage
+pen_addPolyFT4 = 0x80051530; // type:func [code] reserves a POLY_FT4 at the pen position with the pen colour and returns it (callers fill uv/tpage)
+pen_line = 0x8005145C; // type:func [code] LINE_F2 from the pen position by (dx, dy), moving the pen
+pen_rect = 0x800514AC; // type:func [code] four pen_lines a w x h outline
+pen_tile = 0x800514E8; // type:func [code] TILE (code 0x60 | flags) of w x h at the pen position
+pen_setLastSemiTrans = 0x80051444; // type:func [code] sets the semi-transparency bit of the packet just added
+pen_setCell = 0x8005127C; // type:func [code] pen position = text cell (col, row) * 6 + (10, 20)
+g_penPos = 0x8007BC9C; // [code] pen position x | y << 16 (pen_begin / pen_end)
+g_penOt = 0x8007BCA4; // [code] OT entry the pen links its packets into (msg_beginDraw, msg_setOtz)
+g_penPktPtr = 0x8007BCA8; // [code] address of the packet pointer the pen uses (&g_primPtr or the battle message buffer)
+g_penStackPtr = 0x8007BC98; // [code] pen_pushPos/pen_popPos stack pointer into D_8007BC78

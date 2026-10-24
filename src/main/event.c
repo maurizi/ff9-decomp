@@ -3595,9 +3595,9 @@ void evt_setDrawPosAtObject(Unk8004AB64 *o, s32 dx, s32 dy) {
     }
     p[0] = *(s16 *)&sxy;
     p[1] = sxy >> 16;
-    func_800515B8();
-    func_800512B8(p[0] + dx, p[1] + dy);
-    func_80051610();
+    pen_begin();
+    pen_setPos(p[0] + dx, p[1] + dy);
+    pen_end();
 }
 
 Unk8004AB64 *evt_getPlayer(void) {

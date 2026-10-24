@@ -1,65 +1,65 @@
 #include "ff9.h"
 
-INCLUDE_ASM("asm/us/main/nonmatchings/evt_expr_asm", func_80050F4C);
+INCLUDE_ASM("asm/us/main/nonmatchings/evt_expr_asm", pen_setPalette);
 
-INCLUDE_ASM("asm/us/main/nonmatchings/evt_expr_asm", func_80050F68);
+INCLUDE_ASM("asm/us/main/nonmatchings/evt_expr_asm", pen_getGlyph);
 
-INCLUDE_ASM("asm/us/main/nonmatchings/evt_expr_asm", func_80051004);
+INCLUDE_ASM("asm/us/main/nonmatchings/evt_expr_asm", pen_putGlyph);
 
 INCLUDE_ASM("asm/us/main/nonmatchings/evt_expr_asm", func_80051084);
 
-INCLUDE_ASM("asm/us/main/nonmatchings/evt_expr_asm", func_80051094);
+INCLUDE_ASM("asm/us/main/nonmatchings/evt_expr_asm", pen_drawSmallChar);
 
-INCLUDE_ASM("asm/us/main/nonmatchings/evt_expr_asm", func_8005116C);
+INCLUDE_ASM("asm/us/main/nonmatchings/evt_expr_asm", pen_putSmallChar);
 
 void func_80051274(void) {
 }
 
-INCLUDE_ASM("asm/us/main/nonmatchings/evt_expr_asm", func_8005127C);
+INCLUDE_ASM("asm/us/main/nonmatchings/evt_expr_asm", pen_setCell);
 
 INCLUDE_ASM("asm/us/main/nonmatchings/evt_expr_asm", func_800512B4);
 
-INCLUDE_ASM("asm/us/main/nonmatchings/evt_expr_asm", func_800512B8);
+INCLUDE_ASM("asm/us/main/nonmatchings/evt_expr_asm", pen_setPos);
 
-INCLUDE_ASM("asm/us/main/nonmatchings/evt_expr_asm", func_800512C8);
+INCLUDE_ASM("asm/us/main/nonmatchings/evt_expr_asm", pen_move);
 
-INCLUDE_ASM("asm/us/main/nonmatchings/evt_expr_asm", func_800512E4);
+INCLUDE_ASM("asm/us/main/nonmatchings/evt_expr_asm", pen_setColor);
 
-INCLUDE_ASM("asm/us/main/nonmatchings/evt_expr_asm", func_80051300);
+INCLUDE_ASM("asm/us/main/nonmatchings/evt_expr_asm", pen_pushPos);
 
-INCLUDE_ASM("asm/us/main/nonmatchings/evt_expr_asm", func_80051324);
+INCLUDE_ASM("asm/us/main/nonmatchings/evt_expr_asm", pen_putSmallString);
 
-INCLUDE_ASM("asm/us/main/nonmatchings/evt_expr_asm", func_80051358);
+INCLUDE_ASM("asm/us/main/nonmatchings/evt_expr_asm", pen_drawSmallString);
 
-INCLUDE_ASM("asm/us/main/nonmatchings/evt_expr_asm", func_80051380);
+INCLUDE_ASM("asm/us/main/nonmatchings/evt_expr_asm", pen_popPos);
 
-INCLUDE_ASM("asm/us/main/nonmatchings/evt_expr_asm", func_800513A4);
+INCLUDE_ASM("asm/us/main/nonmatchings/evt_expr_asm", pen_addTpage);
 
-INCLUDE_ASM("asm/us/main/nonmatchings/evt_expr_asm", func_800513CC);
+INCLUDE_ASM("asm/us/main/nonmatchings/evt_expr_asm", pen_drawSprite);
 
-INCLUDE_ASM("asm/us/main/nonmatchings/evt_expr_asm", func_80051444);
+INCLUDE_ASM("asm/us/main/nonmatchings/evt_expr_asm", pen_setLastSemiTrans);
 
-INCLUDE_ASM("asm/us/main/nonmatchings/evt_expr_asm", func_8005145C);
+INCLUDE_ASM("asm/us/main/nonmatchings/evt_expr_asm", pen_line);
 
-INCLUDE_ASM("asm/us/main/nonmatchings/evt_expr_asm", func_800514AC);
+INCLUDE_ASM("asm/us/main/nonmatchings/evt_expr_asm", pen_rect);
 
-INCLUDE_ASM("asm/us/main/nonmatchings/evt_expr_asm", func_800514E8);
+INCLUDE_ASM("asm/us/main/nonmatchings/evt_expr_asm", pen_tile);
 
-INCLUDE_ASM("asm/us/main/nonmatchings/evt_expr_asm", func_80051530);
+INCLUDE_ASM("asm/us/main/nonmatchings/evt_expr_asm", pen_addPolyFT4);
 
-INCLUDE_ASM("asm/us/main/nonmatchings/evt_expr_asm", func_80051568);
+INCLUDE_ASM("asm/us/main/nonmatchings/evt_expr_asm", pen_init);
 
-INCLUDE_ASM("asm/us/main/nonmatchings/evt_expr_asm", func_800515B8);
+INCLUDE_ASM("asm/us/main/nonmatchings/evt_expr_asm", pen_begin);
 
-INCLUDE_ASM("asm/us/main/nonmatchings/evt_expr_asm", func_800515EC);
+INCLUDE_ASM("asm/us/main/nonmatchings/evt_expr_asm", pen_endSmall);
 
-INCLUDE_ASM("asm/us/main/nonmatchings/evt_expr_asm", func_80051600);
+INCLUDE_ASM("asm/us/main/nonmatchings/evt_expr_asm", pen_endFont);
 
-INCLUDE_ASM("asm/us/main/nonmatchings/evt_expr_asm", func_80051610);
+INCLUDE_ASM("asm/us/main/nonmatchings/evt_expr_asm", pen_end);
 
-INCLUDE_ASM("asm/us/main/nonmatchings/evt_expr_asm", func_80051638);
+INCLUDE_ASM("asm/us/main/nonmatchings/evt_expr_asm", pen_beginBuffered);
 
-INCLUDE_ASM("asm/us/main/nonmatchings/evt_expr_asm", func_80051668);
+INCLUDE_ASM("asm/us/main/nonmatchings/evt_expr_asm", pen_endBuffered);
 
 INCLUDE_ASM("asm/us/main/nonmatchings/evt_expr_asm", func_800516A0);
 

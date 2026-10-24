@@ -1518,10 +1518,10 @@ void wm_naviDraw(void) {
             }
             if (g_worldNaviCursorDraw != 0) {
                 msg_setOtz(5);
-                func_800515B8();
-                func_800512B8((g_worldNaviCursorX >> 12) + 18, (g_worldNaviCursorY >> 12) + 6);
-                func_800513CC(1);
-                func_800515EC();
+                pen_begin();
+                pen_setPos((g_worldNaviCursorX >> 12) + 18, (g_worldNaviCursorY >> 12) + 6);
+                pen_drawSprite(1);
+                pen_endSmall();
                 msg_setOtz(2);
             }
             wm_naviDrawPlaces();

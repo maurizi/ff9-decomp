@@ -4212,3 +4212,35 @@ D_8007BD08 g_swirlParams  # [code] swirl parameter set (D_8006F2E0[0/1]: rotatio
 D_8007BD14 g_swirlColumns  # [code] the 9 column/row screen positions of the swirl mesh (swirl_buildMesh)
 D_8007BD18 g_swirlMesh  # [code] 9x9 WarpVert grid (swirl_buildMesh)
 D_80068CE8 g_winFillSprite  # [code] sprite descriptor of the window fill texture (win_buildFill, win_drawTailFill)
+func_80051568 pen_init  # [code] asm sprite/text emitter (registers t4 packet, t5 x/y, t6 colour, t7 OT link): resets position, stack and colour 0x808080
+func_800515B8 pen_begin  # [code] loads the emitter registers from g_penPktPtr's buffer, g_penPos, g_penColor and the OT entry g_penOt
+func_80051610 pen_end  # [code] stores the emitter registers back (packet pointer, OT link, position)
+func_80051638 pen_beginBuffered  # [code] pen_begin with the emitter's own packet buffer (D_8007BCAC)
+func_80051668 pen_endBuffered  # [code] adds the small-font tpage (0x1F) and stores the registers back into the own buffer
+func_80051600 pen_endFont  # [code] DR_TPAGE 0x1E (font page), then falls into pen_end
+func_800515EC pen_endSmall  # [code] DR_TPAGE 0x1F (small-font page), then pen_end
+func_800513A4 pen_addTpage  # [code] DR_TPAGE packet with the given tpage
+func_80051300 pen_pushPos  # [code] pushes the pen position on the emitter stack (D_8007BC98)
+func_80051380 pen_popPos  # [code] pops the pen position
+func_800512B8 pen_setPos  # [code] t5 = x | y << 16
+func_800512C8 pen_move  # [code] adds dx/dy to the pen position
+func_800512E4 pen_setColor  # [code] colour for the following packets (g_penColor and t6, SPRT code)
+func_80050F4C pen_setPalette  # [code] D_8007BCB4 = CLUT word for font palette a ((a << 7) + 0x3827)
+func_80050F68 pen_getGlyph  # [code] glyph info of a text code (offsets, width in the top 4 bits), 0 for none
+func_80051004 pen_putGlyph  # [code] SPRT for a font glyph at the pen position, advancing it
+func_8005116C pen_putSmallChar  # [code] small-font character (6 px), advancing the pen
+func_80051094 pen_drawSmallChar  # [code] small-font character at the pen position
+func_80051324 pen_putSmallString  # [code] pen_putSmallChar for each byte of a 0-terminated string, keeping the start position
+func_80051358 pen_drawSmallString  # [code] pen_drawSmallChar for each byte of a 0-terminated string, keeping the start position
+func_800513CC pen_drawSprite  # [code] UI sprite id (g_uiSprites) at the pen position, with the font tpage
+func_80051530 pen_addPolyFT4  # [code] reserves a POLY_FT4 at the pen position with the pen colour and returns it (callers fill uv/tpage)
+func_8005145C pen_line  # [code] LINE_F2 from the pen position by (dx, dy), moving the pen
+func_800514AC pen_rect  # [code] four pen_lines: a w x h outline
+func_800514E8 pen_tile  # [code] TILE (code 0x60 | flags) of w x h at the pen position
+func_80051444 pen_setLastSemiTrans  # [code] sets the semi-transparency bit of the packet just added
+func_8005127C pen_setCell  # [code] pen position = text cell (col, row) * 6 + (10, 20)
+D_8007BC9C g_penPos  # [code] pen position x | y << 16 (pen_begin / pen_end)
+D_8007BCA0 g_penColor  # [code] pen colour (pen_setColor)
+D_8007BCA4 g_penOt  # [code] OT entry the pen links its packets into (msg_beginDraw, msg_setOtz)
+D_8007BCA8 g_penPktPtr  # [code] address of the packet pointer the pen uses (&g_primPtr or the battle message buffer)
+D_8007BC98 g_penStackPtr  # [code] pen_pushPos/pen_popPos stack pointer into D_8007BC78
