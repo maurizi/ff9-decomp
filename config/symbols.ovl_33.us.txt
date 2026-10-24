@@ -1,0 +1,1 @@
+func_800355DC = 0x800355DC; // type:func main exe function passed to func_8003556C as a callback (splat named the address D_800355DC), drop this line once main's symbols.us.txt names it

@@ -14,7 +14,7 @@ void func_801F0C18(void) {
     func_801F3038();
     func_801F2CEC();
     text_setBank(g_itemMenuText);
-    func_8003556C(D_800355DC);
+    func_8003556C(func_800355DC);
     func_80035674(1);
     func_8002EDFC(&D_801FAB78.unkC, 0xFF, 0xB, 2, 0xAD);
     func_8002EDFC(&D_801FAB78.unk1C, D_801FAB78.unkB0, 0xB, 2, 0xAD);

@@ -1,2 +1,3 @@
 D_800A7398 = 0x800A7398; // force_not_migration:True
 g_cardGameText = 0x800B3668; // [code] the text bank this overlay passes to text_setBank
+func_800355DC = 0x800355DC; // type:func main exe function passed to func_8003556C as a callback (splat named the address D_800355DC), drop this line once main's symbols.us.txt names it

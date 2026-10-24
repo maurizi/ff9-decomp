@@ -48,7 +48,7 @@ void func_801EE7C0(void) {
     D_801FBF84.unk76B = 0;
     text_setBank(D_801EDF04);
     func_801F1148();
-    func_8003556C(D_800355DC);
+    func_8003556C(func_800355DC);
     func_80035674(1);
     setRECT(&D_801FBF84.unk28, 8, 8, 0xE4, 0x1A);
     setRECT(&D_801FBF84.unk30, 8, 0x26, 0xD0, 0x38);

@@ -362,6 +362,7 @@ void func_800AB8F4(s16);
 extern u8 D_800A74A8[];
 
 /* main exe: candidates for ff9.h */
+void func_800355DC(void); /* empty function, passed to func_8003556C as a no-op callback */
 s32 func_8002BA10(u8 *);
 void func_80023A0C(void);
 void SetSprt16(SPRT_16 *);
@@ -370,7 +371,6 @@ s32 func_80062498(void);
 s32 func_800624D8(void);
 s32 func_8006251C(void);
 u8 func_8002C700(s32, s32);
-void D_800355DC(void);
 void func_80062724();
 extern u8 *D_80077DF0; /* = D_80077DE8.unk8, referenced by its own name */
 s32 func_80055290(void *);

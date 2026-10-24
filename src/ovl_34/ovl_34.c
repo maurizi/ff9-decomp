@@ -24,7 +24,7 @@ void func_801EEA1C(void) {
             D_801F1558.unk1++;
         }
     }
-    func_8003556C(D_800355DC);
+    func_8003556C(func_800355DC);
 }
 
 void func_801EEB68(void) {

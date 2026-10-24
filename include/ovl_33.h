@@ -152,8 +152,6 @@ extern u8 D_801F3428[];
 extern s16 D_801F893C[3][2]; /* cursor x per column */
 extern u8 D_801EE648[];
 extern s32 D_801F8918[]; /* text index per party slot */
-/* func_800355DC; this overlay's link only has the D_ name */
-void D_800355DC(void);
 void func_801EED10(void);
 void func_801F0DDC(void);
 s32 func_801EFB8C(s32, Character *);
@@ -165,6 +163,7 @@ extern u8 D_801F40EC[];  /* item names */
 extern u8 D_801F6540[];  /* ability names */
 extern u16 D_801F33C8[][2]; /* cursor x per slot */
 /* main exe: candidates for ff9.h */
+void func_800355DC(void); /* empty function, passed to func_8003556C as a no-op callback */
 extern s32 D_80070400;
 extern s32 D_800704B8;
 extern s32 D_80077E54; /* = D_80077E50.unk4, referenced by its own name */

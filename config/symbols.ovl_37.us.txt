@@ -1,1 +1,2 @@
 g_itemMenuText = 0x801EDF04; // force_not_migration:True [runtime] passed to text_setBank when Item opens
+func_800355DC = 0x800355DC; // type:func main exe function passed to func_8003556C as a callback (splat named the address D_800355DC), drop this line once main's symbols.us.txt names it

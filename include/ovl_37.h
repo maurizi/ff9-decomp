@@ -54,6 +54,7 @@ extern u8 D_801F3098[3];
 extern RECT D_801F30B8;
 
 /* main exe: candidates for ff9.h */
+void func_800355DC(void); /* empty function, passed to func_8003556C as a no-op callback */
 extern s32 D_80077E54; /* = D_80077E50.unk4, referenced by its own name */
 typedef struct {
     unsigned int unk0 : 4;   /* target kind */
@@ -67,8 +68,6 @@ typedef struct {
 extern Unk8006B1F4 D_8006B1F4[];
 u8 func_800654F8(Character *, Character *, Unk8006B1F4 *, s32, s32);
 extern s32 D_80070408;
-/* func_800355DC; this overlay's link only has the D_ name */
-void D_800355DC(void);
 void func_801F3038(void);
 void func_801F2CEC(void);
 void func_801F2EDC(void);

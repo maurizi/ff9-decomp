@@ -12,7 +12,7 @@ void func_801F1150(void) {
     D_801FC840.unk2 = 0;
     D_801FC840.unk260 = 0;
     text_setBank(D_801EE648);
-    func_8003556C(D_800355DC);
+    func_8003556C(func_800355DC);
     func_80035674(1);
     setRECT(&D_801FC840.unk14, 8, 8, 0xE4, 0x1A);
     setRECT(&D_801FC840.unk1C, 8, 0x26, 0x8C, 0xB6);
