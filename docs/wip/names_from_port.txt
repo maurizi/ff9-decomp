@@ -1337,3 +1337,123 @@ D_801FC740 s_menuEquipHelpBuf  # [code] tab help text built by menuEquip_updateH
 # FIELDS include/ovl_33.h AbilityMenu (was EquipMenu, D_801FBF84): unk0=tab,unk1=state,unk2=slot,unk3=target,unk4=tabEnabled,unk8=lists,unk28=tabRect,unk30=playerRect,unk38=infoRect,unk40=commandRect,unk48=listRect,unk50=targetRect,unk58=targetWin,unk68=equipSlots,unk168=equipItems,unk668=actions,unk728=supports,unk768=targetWinOpen,unk769=actionCount,unk76A=supportCount,unk76B=animTick,unk76C=animFrame,unk76D=targetMode,unk76E=partySize,unk76F=canTargetAll,unk770=header
 # FIELDS include/ovl_33.h EquipMenu (was AbilityMenu, D_801FC840): unk0=tab,unk1=state,unk2=equipSlot,unk3=slot,unk4=list,unk14=tabRect,unk1C=infoRect,unk24=equipRect,unk2C=abilityRect,unk34=listRect,unk3C=items,unk23C=listWin,unk24C=header,unk25C=initStones,unk260=listOpen,unk261=savedState
 # FIELDS include/ovl_33.h EquipEntry renamed ActionRow: unk0=id,unk1=cmd; Unk801F6FEC renamed MenuCmd: unk0=name,unk6=kind,unk7=count,unk8=first
+
+## ovl_65: ovl_65 (battle end: rewards screen, game over)
+func_801EF5C8 battleEnd_exit  # [code] after battleEnd_main's loop - sets GameData flags, and when going back to the field (mode 0) fades the music, waits 30 vsyncs and calls func_80055210
+func_801EF6F8 battleEnd_loadDb  # [code] loads file 0x2713 (from the preload queue or the CD) to D_80067948 and db_registers it
+func_801EF814 battleEnd_unloadDb  # [code] db_unregister of the block loaded by battleEnd_loadDb
+func_801EF890 battleEnd_preloadScene  # [code] queues preload_add reads of the next scene's files (0x1000A/0x1000C, 0x2712/0x2714/0x2716, the area and field)
+func_801F0E30 rewards_init  # [code] init of menu type 7 (main's D_8006C9D4[7] = 0x801F0E30/0x801F0F04/0x801F0FC4), picks skip / screen / event by rewards_getKind
+func_801F0FC4 rewards_exit  # [code] exit of menu type 7, restores the VRAM row
+func_801F0FF4 rewards_requestClose  # [code] called by main's evt_execInstr opcode 0xE1 - starts the closing count of an event-driven rewards phase
+func_801F1004 rewards_getKind  # [code] 0 no screen, 1 rewards screen, 2 event (g_btlRewards.unkB) from GameData.unk56E
+func_801F1060 rewards_skip  # [code] kind 0 - not running, closing at once
+func_801F107C rewards_open  # [code] kind 1 - computes the rewards, sets up windows, counters, images and fades in
+func_801F114C rewards_waitEvent  # [code] kind 2 - neither running nor closing until rewards_requestClose
+func_801F11B8 rewards_updateState  # [code] runs the D_801F3B88 handler of the state, steps the windows; [runtime] docs/runtime-findings.md battle campaign 3, every frame of the victory run
+func_801F1160 rewards_draw  # [code] calls every window drawer; [runtime] docs/runtime-findings.md battle campaign 3, every frame of the victory run
+func_801F143C rewards_stateReceived  # [code] state 1 - "Received EXP and AP!" up, Cross gives the AP (rewards_giveAp) and starts the exp count; [runtime] docs/runtime-findings.md battle campaign 3 (first state of the victory run)
+func_801F14C0 rewards_stateExp  # [code] state 2 - exp and AP counting, level-up labels, learned-ability windows; Cross ends it (rewards_finishExp)
+func_801F1518 rewards_stateItems  # [code] state 3 - items and gil screen, Cross takes the items; [runtime] docs/runtime-findings.md battle campaign 3 (Items/Gil screen)
+func_801F076C rewards_stateGil  # [code] state 4 - gil counting into the party's gil, Cross finishes it, then the screen closes; [runtime] docs/runtime-findings.md battle campaign 3 (gil transfer)
+func_801F1774 rewards_onWindowsOpened  # [code] tween callback in D_801F3C4C - plays the state's sound, next state
+func_801F0978 rewards_onExpWindowsClosed  # [code] tween callback in D_801F3CDC - hides the exp screen's windows, closes the member windows, next state
+func_801F0878 rewards_finishExp  # [code] Cross in state 2 - adds the remaining exp, slides the exp windows out, shows the gil windows, fades to the items screen
+func_801F16F4 rewards_onItemsFaded  # [code] fade callback of rewards_finishExp - opens the items window and fades in
+func_801F160C rewards_takeItems  # [code] Cross in state 3 - adds the items (rewards_tryAddItems), next state, starts the gil count sound
+func_801F1688 rewards_finishGil  # [code] Cross in state 4 - adds the remaining gil at once and starts the closing wait
+func_801F17D4 rewards_onClosed  # [code] fade callback at the end - closing, all windows closed (func_8002DE60)
+func_801F0A44 rewards_findMembers  # [code] per party slot - gets exp (in g_btlRewards.expMask, alive, below the exp cap) and gets AP (can learn)
+func_801F0C0C rewards_compute  # [code] exp share, AP, gil, card (when fewer than 100 cards) and the dropped items merged into kinds
+func_801F171C rewards_isRewarded  # [code] member alive and in g_btlRewards.expMask
+func_801F04BC rewards_initWindows  # [code] sets the 10 windows from D_801F3BC8 and slides the shown ones in (D_801F3C4C)
+func_801F13B4 rewards_stepWindows  # [code] steps the shown windows' tweens (func_800631AC)
+func_801F0594 rewards_moveMemberWins  # [code] keeps each member's level/learn windows on their sliding panel
+func_801F12E0 rewards_initPrimBufs  # [code] primBufs = the two D_801F5278 buffers
+func_801F1300 rewards_clearWinSlot  # [code] zeroes a WinSlot
+func_801F1318 rewards_closeMemberWins  # [code] win_close of the members' level and learn windows
+func_801EFB98 rewards_drawInfo  # [code] INFO label window with the screen's title text (D_801F3BB8)
+func_801F1228 rewards_drawHelp  # [code] HELP label window with text 7 "Press Cross to confirm."
+func_801EFC68 rewards_drawMembers  # [code] the four member panels - portrait, level-up label, name, Lv, status icons, EXP, Next
+func_801F0394 rewards_drawPanelShade  # [code] dark TILE over the panel of a member who gets nothing
+func_801EFF50 rewards_drawExp  # [code] EXP window with the exp each member gets
+func_801F0044 rewards_drawAp  # [code] AP window
+func_801F0138 rewards_drawReceivedGil  # [code] "Received Gil" window with the gil still to transfer
+func_801F0264 rewards_drawCurrentGil  # [code] "Current Gil" window
+func_801F0D98 rewards_drawSmallText  # [code] func_80029D60 into the screen's primitive buffer
+func_801F0DE4 rewards_drawText  # [code] func_8002920C into the screen's primitive buffer
+func_801F17FC rewards_drawDigits  # [code] func_8002B644 into the screen's primitive buffer
+func_801F2490 rewards_initExp  # [code] per member - exp counter and whether it levels up, level-up labels reset
+func_801F26F8 rewards_initExpCounter  # [code] exp counter of a member - target exp (x1.5 with support ability 0xEB "Level Up"), step size
+func_801F27F0 rewards_willLevelUp  # [code] exp + gain reaches g_levelExp[level] (below level 99)
+func_801F2538 rewards_updateExp  # [code] steps the exp counters and the level-up labels
+func_801F2834 rewards_stepExp  # [code] adds this frame's exp step per member, stops the count sound when all are done
+func_801F2560 rewards_addExp  # [code] adds exp to a member (capped at 9999999) and levels up while it reaches g_levelExp
+func_801F29BC rewards_levelUp  # [code] func_80033CCC(character, level + 1) and queues a level-up label
+func_801F28F0 rewards_updateLevelUps  # [code] starts the next queued level-up label, ends finished ones
+func_801F269C rewards_showLevelUp  # [code] when the exp count is cut short - shows a pending level-up label in its hold phase
+func_801F2A4C rewards_initPopup  # [code] resets a level-up label
+func_801F2A6C rewards_startPopup  # [code] starts a level-up label rising, plays SE_LEVEL_UP
+func_801F2AAC rewards_endPopup  # [code] hides a level-up label, counts it shown
+func_801F2AC8 rewards_stepPopup  # [code] level-up label phases - rise by D_801F5230 (10 frames), hold 0x40, gap 4, done
+func_801F2264 rewards_drawLevelUp  # [code] the level-up label - two SPRTs from the image at CLUT row 511
+func_801F1FEC rewards_initLearns  # [code] per member - whether its AP gain completes an ability (rewards_willLearn)
+func_801F20A8 rewards_initApCounter  # [code] AP counter of a member - AP x2 with support ability 0xEC "Ability Up"
+func_801F1BA4 rewards_willLearn  # [code] some ability taught by the member's equipment reaches its AP need with this gain
+func_801F1560 rewards_giveAp  # [code] gives each member its whole AP gain (rewards_addAp), starts the exp count sound
+func_801F2080 rewards_updateAp  # [code] steps the AP counters and the learned-ability windows
+func_801F213C rewards_stepAp  # [code] adds this frame's AP step per member
+func_801F1A04 rewards_addAp  # [code] adds AP to the abilities of the member's equipment, queues the ones that complete (rewards_addLearned)
+func_801F21DC rewards_addLearned  # [code] queues a learned ability for the member's window and its learned list
+func_801F1848 rewards_updateLearnWins  # [code] opens each member's next "Learned" window (SE_LEARN) under its panel, closes it after 0x40 frames
+func_801F1D94 rewards_drawLearnWin  # [code] content callback of a "Learned" window - ability icon and name
+func_801F2248 rewards_onLearnWinClosed  # [code] on-closed callback of a "Learned" window - clears its WinSlot
+func_801F2BBC rewards_initGil  # [code] gil counter - x1.5 when a member has support ability 0xED "Millionaire"
+func_801F2C7C rewards_stepGil  # [code] adds this frame's gil step, stops the count sound when done
+func_801F2D08 rewards_addGil  # [code] adds gil to GameData.gil, capped at 9999999
+func_801F2D74 rewards_loadImages  # [code] saves VRAM row 511 (StoreImage) and loads the screen's CLUTs and images
+func_801F2E24 rewards_restoreVram  # [code] LoadImage of the saved VRAM row
+func_801F332C rewards_openItemsWin  # [code] opens the items window (rewards_drawItems / rewards_drawItemsLabels)
+func_801F2FE8 rewards_drawItems  # [code] content callback of the items window - received items with counts, "No item received.", the card
+func_801F33A0 rewards_drawItemsLabels  # [code] overlay callback of the items window - its two labels
+func_801F3250 rewards_resetFullWarning  # [code] D_801F8278 = 0
+func_801F3264 rewards_tryAddItems  # [code] adds the items (rewards_addItems); when some don't fit shows the warning first and adds on the next Cross; SE_ITEMS when anything was received
+func_801F2E58 rewards_addItems  # [code] item_add of each kind and card_add of the card, opens the "cannot carry more than 99" window when an item didn't fit
+func_801F3434 rewards_drawFullWarning  # [code] content callback of the warning window - text 0xA
+func_801F347C rewards_onFullWarningClosed  # [code] on-closed callback of the warning window
+func_801F3818 gameover_initDisp  # [code] two draw/display buffers with the GAME OVER picture sprites and the fade TILE
+func_801F3A20 gameover_loadImage  # [code] cd_readSync of file (1, 0xB) to the given buffer and func_8001D8A8 on it
+D_801F7A78 s_rewards  # [code] rewards screen state, RewardsMenu in include/ovl_65.h
+D_801F3B88 s_rewardsStates  # [code] handler per RewardsMenu.state
+D_801F3BA0 s_rewardsStateSe  # [code] sound played when each state ends
+D_801F3BB8 s_rewardsTitleText  # [code] title text id per screen (5 "Received EXP and AP!", 6 "Received Item(s) and Gil")
+D_801F3BC0 s_rewardsGilUnit  # [code] string appended after the received gil number
+D_801F3BC4 s_rewardsGilUnit2  # [code] string appended after the current gil number
+D_801F3BC8 s_rewardsWinInit  # [code] RECT and initially-shown flag of the 10 windows
+D_801F3C4C s_rewardsWinOpen  # [code] slide-in TweenDefs of the 10 windows
+D_801F3CDC s_rewardsWinClose  # [code] slide-out TweenDefs of the exp screen's windows
+D_801F3D4C s_rewardsActionTable  # [code] action ability table (name offset +0xE)
+D_801F494C s_rewardsActionNames  # [code] action ability names
+D_801F4F94 s_rewardsSupportNames  # [string] support ability names ("Level Up", "Ability Up", "Millionaire" at 0xEB-0xED)
+D_801F5228 s_rewardsLearnLabel  # [code] label of the learned-ability windows (func_8002E304)
+D_801F5230 s_rewardsPopupRise  # [code] y deltas of the level-up label's rise
+D_801F523C s_rewardsClutRect0  # [code] VRAM (960,494) 16x1, rewards_loadImages
+D_801F5244 s_rewardsImageRect0  # [code] VRAM (960,474) 8x20, rewards_loadImages
+D_801F524C s_rewardsClutRect1  # [code] VRAM (0,511) 256x1, saved and then loaded by rewards_loadImages
+D_801F5254 s_rewardsImageRect1  # [code] VRAM (960,432) 45x42, rewards_loadImages
+D_801F525C s_rewardsVramRestoreRect  # [code] VRAM (0,511) 256x1, rewards_restoreVram
+D_801F5264 s_rewardsItemsRect  # [code] RECT of the items window
+D_801F526C s_rewardsCardIcon  # [code] Icon drawn before the received card's name
+D_801F5278 s_rewardsPrimBufs  # [code] the two primitive buffers
+D_801F7DF8 s_rewardsVramSave  # [code] VRAM row 511 saved by rewards_loadImages
+D_801F81F8 s_rewardsLearnRect  # [code] RECT of the learned-ability window being opened
+D_801F8200 s_rewardsLearnPanel  # [code] the member panel RECT it was placed under
+D_801F8208 s_rewardsAbilityItems  # [code] per ability slot - equipped items teaching it (rewards_willLearn)
+D_801F8238 s_rewardsTextBuf  # [code] number/name text buffer of rewards_drawItems
+D_801F8278 s_rewardsFullShown  # [code] the "cannot carry more" warning is up
+D_801EE03C s_rewardsImage0  # [code] CLUT and image loaded to s_rewardsClutRect0/s_rewardsImageRect0
+D_801EE19C s_rewardsImage1  # [code] CLUT and image (the level-up label) loaded to s_rewardsClutRect1/s_rewardsImageRect1
+D_801EF260 s_gameoverClearRect  # [code] {0, 0, 320, 224}, cleared by gameover_main
+D_801EF27C s_gameoverVramRect  # [code] {0, 0, 640, 224}, cleared by gameover_initDisp
+# FIELDS include/ovl_65.h Unk801F7A78 renamed RewardsMenu: unk0=active,unk1=running,unk2=closing,unk3=gilSkipped,unk4=done,unk8=state,unk9=expMembers,unkA=screen,unkC=timer,unk10=closeFrames,unk14=getsExp,unk18=getsAp,unk1C=levelsUp,unk20=learns,unk24=rewards,unkAC=wins,unk14C=winShown,unk158=levelWins,unk1D8=learnWins,unk258=levelPopups,unk2B8=learned,unk348=fullWin,unk368=itemsWin,unk36C=frame,unk370=savedOtz,unk374=prim,unk378=primBufs
+# FIELDS include/ovl_65.h Rewards: unk0=expEach,unk4=ap,unk8=card,unkC=itemCount,unk10=items,unk1C=exp,unk4C=apGain,unk7C=gil; Counter: unk0=target,unk4=step,unk8=cur; WinSlot: unk0=win,unk4=queued,unk6=shown,unk8=delay,unkA=ids,unk1C=timer; Popup: unk0=active,unk1=phase,unk2=enabled,unk4=timer,unk14=pending,unk15=count,unk16=y; LearnList: unk10=count,unk11=ids; WinInit: unk0=rect,unk8=shown; BattleResult (ovl_65's view of ovl_0b g_btlRewards): unk0=gil,unk4=exp,unk8=ap,unkA=expMask,unkC=items,unk1C=card

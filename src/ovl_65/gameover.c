@@ -1,18 +1,18 @@
 #include "ovl_65.h"
 
-INCLUDE_RODATA("asm/us/ovl_65/nonmatchings/gameover", D_801EF260);
+INCLUDE_RODATA("asm/us/ovl_65/nonmatchings/gameover", s_gameoverClearRect);
 
 void gameover_main(s32 arg0) {
     s16 c = 0xFF;
     u8 state = 0;
     DispBuf b[2];
-    RECT rect = D_801EF260;
+    RECT rect = s_gameoverClearRect;
     DispBuf *cur;
 
-    func_801F3818(b);
+    gameover_initDisp(b);
     cur = b;
     DrawSync(0);
-    func_801F3A20(arg0);
+    gameover_loadImage(arg0);
     while (1) {
         cur = (cur == &b[0]) ? &b[1] : &b[0];
         ClearOTag(cur->unk70, 2);
@@ -68,8 +68,8 @@ void gameover_main(s32 arg0) {
     }
 }
 
-void func_801F3818(DispBuf *b) {
-    RECT rect = D_801EF27C;
+void gameover_initDisp(DispBuf *b) {
+    RECT rect = s_gameoverVramRect;
     u32 i;
 
     ClearImage(&rect, 0, 0, 0);
@@ -100,7 +100,7 @@ void func_801F3818(DispBuf *b) {
     }
 }
 
-void func_801F3A20(s32 arg0) {
+void gameover_loadImage(s32 arg0) {
     FileEntry *e = file_find(1, 0xB);
 
     cd_readSync(g_gameState->unk20 + e->unk4, (e->unkC - e->unk4) << 11, arg0);
@@ -124,12 +124,12 @@ s32 battleEnd_update(void) {
                 g->unk56E = 1;
             }
             func_800F4E68();
-            func_801F0FC4();
+            rewards_exit();
             return 1;
         }
         func_8004BC38();
         return 0;
-    case 6:
+    case BATTLE_END_GAME_OVER:
         if (func_800240E8()) {
             func_800240B0(0);
         }
@@ -140,4 +140,4 @@ s32 battleEnd_update(void) {
     return 0;
 }
 
-INCLUDE_RODATA("asm/us/ovl_65/nonmatchings/gameover", D_801EF27C);
+INCLUDE_RODATA("asm/us/ovl_65/nonmatchings/gameover", s_gameoverVramRect);
