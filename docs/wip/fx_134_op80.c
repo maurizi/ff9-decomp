@@ -1,4 +1,4 @@
-/* Pass 4: 896 aligned mismatches, frame size matches. Variables split per case (build/s/split17.py) and at each
+/* Pass 4: 783 aligned mismatches, frame size matches. Variables split per case (build/s/split17.py) and at each
  * top-level re-assignment (build/s/phase.py) and at nested assignments
  * whose value stays in their block (build/s/webs.py); case 3's first angle is t >> 2 of t = (frame << 12) / 24 in a
  * block-local variable (a3x): with it the case-3 block has eight call-crossing locals, the 0x1000 constant lands
@@ -29,6 +29,7 @@ extern BtlModel D_801ECB64[];
 extern u8 D_801ED1A4[];
 
 s32 fx_134_op80(s32 mode, Fx134Work *work, Unk800F78A4 *env, Unk80100C78Entry *entry, EffInit *init) {
+    s32 a0b;
     s32 a_c4_w1;
     s32 k_c4_w2;
     s32 k_c4_w3;
@@ -46,6 +47,7 @@ s32 fx_134_op80(s32 mode, Fx134Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
     Fx134Orb *o_c4;
     Fx134Orb *o_c8;
     s32 a3x;
+    s32 d1;
     s32 a_c0;
     s32 b_c0;
     s32 k_c0;
@@ -166,13 +168,13 @@ s32 fx_134_op80(s32 mode, Fx134Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
                     k_c0 = 0x1000;
                 }
                 if (k_c0 != 0) {
-                    ex->func_800D1BC4(0xFF8, (u8 *)ex->btlfx_getFileData(entry->unk8, 3), a_c0 = (t >> 7) + 0xA0, b_c0, 0, 1, k_c0);
+                    ex->func_800D1BC4(0xFF8, (u8 *)ex->btlfx_getFileData(entry->unk8, 3), a0b = (t >> 7) + 0xA0, b_c0, 0, 1, k_c0);
                     k_c0 += ex->btlfx_randCentered(0x18);
                     if (k_c0 < 0) {
                         k_c0 = 0;
                     }
-                    ex->func_800D1BC4(0xFF8, (u8 *)ex->btlfx_getFileData(entry->unk8, 4), a_c0, b_c0, 0, 1, k_c0);
-                    ex->func_800D1BC4(0xFF8, (u8 *)ex->btlfx_getFileData(entry->unk8, 0x1F), a_c0, b_c0 + 0x60, 0, 1, k_c0);
+                    ex->func_800D1BC4(0xFF8, (u8 *)ex->btlfx_getFileData(entry->unk8, 4), a0b, b_c0, 0, 1, k_c0);
+                    ex->func_800D1BC4(0xFF8, (u8 *)ex->btlfx_getFileData(entry->unk8, 0x1F), a0b, b_c0 + 0x60, 0, 1, k_c0);
                 }
                 if (frame == 0x18) {
                     work->unk80 = ex->func_800E3CEC(ex->btlfx_getFileData(entry->unk8, 5), (s32)&work->unk8);
@@ -209,8 +211,9 @@ s32 fx_134_op80(s32 mode, Fx134Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
 
                 t = frame << 6;
                 BTLFX_COPY_SVEC(&work->unk18, &work->unk8);
-                work->unk18.vy += 0x400 + ((0x1000 - t) >> 1);
-                s = (0x1000 - t) >> 4;
+                d1 = 0x1000 - t;
+                work->unk18.vy += 0x400 + (d1 >> 1);
+                s = d1 >> 4;
                 env->unk2C->unk0[3].vx = work->unk18.vx;
                 env->unk2C->unk0[3].vy = work->unk18.vy;
                 env->unk2C->unk0[3].vz = work->unk18.vz;
@@ -234,15 +237,16 @@ s32 fx_134_op80(s32 mode, Fx134Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
                 o_c1 = ex->btlfx_poolSpawn((s16 *)entry->unk10);
                 if (o_c1 != NULL) {
                     i_c1 = frame & 3;
-                    k_c1 = (frame * 0x140 + (i_c1 << 5) - 0x20) % 3072 + 0x600;
+                    k_c1 = frame * 0x140 + (i_c1 << 5) - 0x20;
+                    k_c1 = k_c1 % 3072 + 0x600;
                     a1b = D_801EC880[i_c1] + 0x300;
                     o_c1->unkC.vx = work->unk8.vx + ((ex->math_cos(k_c1) * n_c1) >> 12);
                     o_c1->unkC.vz = work->unk8.vz + ((ex->math_sin(k_c1) * n_c1) >> 12);
-                    o_c1->unkC.vy = work->unk8.vy - 0x1400 + (((frame + 4) % 6) << 11);
+                    o_c1->unkC.vy = work->unk8.vy + ((((frame + 4) % 6) << 11) - 0x1400);
                     ex->btlfx_aimAngles((s16 *)&o_c1->unkC, (s16 *)&work->unk8, (s16 *)&ang);
                     ex->func_800CFCA8(&ang, a1b, (s32)&o_c1->unk4);
-                    o_c1->unk4.pad = i_c1;
                     o_c1->unk0 = frame & 1;
+                    o_c1->unk4.pad = i_c1;
                 }
                 D_801EF97C = (t >> 8) + 0x116;
                 if (frame == 0x3E) {
@@ -301,11 +305,12 @@ s32 fx_134_op80(s32 mode, Fx134Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
                 scale.vz = 0x1000;
                 b_c2 = (((t >> 1) + 0x800) >> 5) - 0x80;
                 pos.vx = work->unk24.vx;
-                pos.vy = work->unk24.vy + 0xC00;
+                pos.vy = work->unk24.vy;
+                pos.vz = work->unk24.vz;
+                pos.vy += 0xC00;
                 rot.vx = -0x400;
                 rot.vy = 0;
                 rot.vz = frame << 5;
-                pos.vz = work->unk24.vz;
                 for (i_c2 = 0; i_c2 < 4; i_c2++) {
                     scale.vx = scale.vy = (a_c2 * ((ex->math_sin((i_c2 << 11) / 3) >> 1) + 0x800)) >> 12;
                     ex->Hi_DrawEffModel(&rot, (VECTOR *)&pos, (s32)&scale, work->unk70);
