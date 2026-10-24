@@ -843,7 +843,7 @@ void wm_setActorFog(Unk8004AB64 *arg0, s32 arg1) {
 s32 wm_drawActorModel(Unk8004AB64 *arg0, SVECTOR *arg1) {
     WmActorType *c;
     WmObjSlot *s;
-    Unk800C95C8 *m;
+    ModelObj *m;
     WmAnimHdr *h;
     SVECTOR r2;
     SVECTOR r;
@@ -860,27 +860,27 @@ s32 wm_drawActorModel(Unk8004AB64 *arg0, SVECTOR *arg1) {
     r.vy = s->unkC->pos.rotY;
     r.vz = s->unkC->unk24;
     r2 = r;
-    func_800316D8(&r2, &m->unk24);
-    m->unk24.t[0] = arg1->vx;
-    m->unk24.t[1] = arg1->vy;
-    m->unk24.t[2] = arg1->vz;
+    func_800316D8(&r2, &m->worldMatrix);
+    m->worldMatrix.t[0] = arg1->vx;
+    m->worldMatrix.t[1] = arg1->vy;
+    m->worldMatrix.t[2] = arg1->vz;
     wm_applyScale(m);
-    m->unkC = h = db_lookupRegistered(4, s->unkC->unk36 | 0x30000, 0);
+    m->anim = h = db_lookupRegistered(4, s->unkC->unk36 | 0x30000, 0);
     if (h != NULL) {
         if (IS_OFFSET(h->unkC)) {
             t = h->unk10;
             h->unkC = (s32)h + h->unkC;
             if (t != 0) {
-                h->unk10 = (s32)m->unkC + t;
+                h->unk10 = (s32)m->anim + t;
             }
         }
         wm_calcBoneMatrices(m, s->unkC->unk3A);
         if (arg0->unk11 != 0xE) {
-            n = m->unk8->unk3;
+            n = m->model->unk3;
             if (c->unk0 != 0 && c->rideOffset > 0) {
-                m->unk5A = arg1->vy - c->rideOffset + 100;
-                if (m->unk1C != NULL) {
-                    m->unk5A = m->unk1C->unk5A;
+                m->clipY = arg1->vy - c->rideOffset + 100;
+                if (m->parent != NULL) {
+                    m->clipY = m->parent->clipY;
                 }
                 for (i = 0; i < n; i++) {
                     wm_projectMeshClipY(m, i);

@@ -1,24 +1,24 @@
 #include "ovl_0a.h"
 
 void fld_requestDiscChange(s32 arg0, s16 arg1) {
-    g_fieldDiscChange.unk1 = 1 << arg0;
-    g_fieldDiscChange.unk2 = arg0;
-    g_fieldDiscChange.unk4 = arg1;
+    g_fieldDiscChange.discMask = 1 << arg0;
+    g_fieldDiscChange.disc = arg0;
+    g_fieldDiscChange.arg = arg1;
     g_fieldDiscChange.unk6 = -1;
     g_gameState->unk1C->unk8E4.field->unk0 |= 0x100000;
     g_gameState->unk0 |= 8;
 }
 
 u8 fld_getDiscChangeDisc(void) {
-    return g_fieldDiscChange.unk2;
+    return g_fieldDiscChange.disc;
 }
 
 u8 fld_getDiscChangeMask(void) {
-    return g_fieldDiscChange.unk1;
+    return g_fieldDiscChange.discMask;
 }
 
 s16 fld_getDiscChangeArg(void) {
-    return g_fieldDiscChange.unk4;
+    return g_fieldDiscChange.arg;
 }
 
 s16 func_800B5094(void) {
@@ -27,7 +27,7 @@ s16 func_800B5094(void) {
 
 void fld_runDiscChange(void) {
     fld_discChangeEnter();
-    while (g_fieldDiscChange.unk0 != 4) {
+    while (g_fieldDiscChange.mode != 4) {
         fld_discChangeBeginFrame();
         fld_discChangeUpdate();
         fld_discChangeEndFrame();
@@ -40,14 +40,14 @@ void fld_discChangeEnter(void) {
 
     DrawSync(0);
     for (i = 0; i < 2; i++) {
-        g_fieldDiscChange.unk8[i] = D_80073998[i];
+        g_fieldDiscChange.savedFlags[i] = D_80073998[i];
         D_80073998[i] = 0x04000300;
     }
-    g_fieldDiscChange.unk0 = 1;
-    g_fieldDiscChange.unk3 = 0;
+    g_fieldDiscChange.mode = 1;
+    g_fieldDiscChange.cursor = 0;
     g_gameState->unk1C->unk8E4.field->unk0 = 0;
     func_8002DE60();
-    g_fieldDiscChangeModes[g_fieldDiscChange.unk0].unk0();
+    g_fieldDiscChangeModes[g_fieldDiscChange.mode].enter();
 }
 
 /* leave the current field mode */
@@ -55,12 +55,12 @@ void fld_discChangeLeave(void) {
     FieldMap *f;
     s32 i;
 
-    if (g_fieldDiscChangeModes[g_fieldDiscChange.unk0].unk8 != NULL) {
-        g_fieldDiscChangeModes[g_fieldDiscChange.unk0].unk8();
+    if (g_fieldDiscChangeModes[g_fieldDiscChange.mode].leave != NULL) {
+        g_fieldDiscChangeModes[g_fieldDiscChange.mode].leave();
     }
     DrawSync(0);
     for (i = 0; i < 2; i++) {
-        D_80073998[i] = g_fieldDiscChange.unk8[i];
+        D_80073998[i] = g_fieldDiscChange.savedFlags[i];
     }
     f = g_gameState->unk1C->unk8E4.field;
     f->unk0 |= 0x10000;
@@ -76,8 +76,8 @@ void fld_discChangeBeginFrame(void) {
 }
 
 void fld_discChangeUpdate(void) {
-    if (g_fieldDiscChangeModes[g_fieldDiscChange.unk0].unk4 != NULL) {
-        g_fieldDiscChangeModes[g_fieldDiscChange.unk0].unk4(g_fieldDiscChange.unk0);
+    if (g_fieldDiscChangeModes[g_fieldDiscChange.mode].update != NULL) {
+        g_fieldDiscChangeModes[g_fieldDiscChange.mode].update(g_fieldDiscChange.mode);
     }
 }
 
@@ -96,13 +96,13 @@ void fld_discChangeEndFrame(void) {
 }
 
 void fld_discChangeSetMode(s32 arg0) {
-    if (arg0 != g_fieldDiscChange.unk0) {
-        if (g_fieldDiscChangeModes[g_fieldDiscChange.unk0].unk8 != NULL) {
-            g_fieldDiscChangeModes[g_fieldDiscChange.unk0].unk8();
+    if (arg0 != g_fieldDiscChange.mode) {
+        if (g_fieldDiscChangeModes[g_fieldDiscChange.mode].leave != NULL) {
+            g_fieldDiscChangeModes[g_fieldDiscChange.mode].leave();
         }
-        g_fieldDiscChange.unk0 = arg0;
-        if (g_fieldDiscChangeModes[g_fieldDiscChange.unk0].unk0 != NULL) {
-            g_fieldDiscChangeModes[g_fieldDiscChange.unk0].unk0();
+        g_fieldDiscChange.mode = arg0;
+        if (g_fieldDiscChangeModes[g_fieldDiscChange.mode].enter != NULL) {
+            g_fieldDiscChangeModes[g_fieldDiscChange.mode].enter();
         }
     }
 }
@@ -134,11 +134,11 @@ void fld_discPromptInput(void) {
     if (!func_8002F810()) {
         if (g_padRepeat & (PAD_UP | PAD_DOWN)) {
             snd_playSe(0x67);
-            g_fieldDiscChange.unk3 ^= 1;
+            g_fieldDiscChange.cursor ^= 1;
         } else if (g_padRepeat & BTN_CIRCLE) {
-            if (g_fieldDiscChange.unk3 == 0) {
+            if (g_fieldDiscChange.cursor == 0) {
                 snd_playSe(0x67);
-                g_fieldDiscChange.unk3 = 1;
+                g_fieldDiscChange.cursor = 1;
             }
         } else if (g_padRepeat & BTN_CROSS) {
             snd_playSe(0x67);
@@ -163,7 +163,7 @@ void fld_discPromptDraw(void) {
         m = &D_80077DE8;
         m->unk0 = g_fieldDiscChangeRect.x + 0x16;
         y = g_fieldDiscChangeRect.y;
-        if (g_fieldDiscChange.unk3 == 0) {
+        if (g_fieldDiscChange.cursor == 0) {
             m->unk2 = y + 0x32;
         } else {
             m->unk2 = y + 0x41;
@@ -175,7 +175,7 @@ void fld_discPromptDraw(void) {
 }
 
 void fld_discPromptSelect(void) {
-    if (g_fieldDiscChange.unk3 == 0) {
+    if (g_fieldDiscChange.cursor == 0) {
         fld_discChangeSetMode(2);
     } else {
         fld_discChangeSetMode(3);
@@ -189,7 +189,7 @@ void fld_discPromptHelp(void) {
 
     m->unk8 = NULL;
     if (!func_8002F810()) {
-        if (g_fieldDiscChange.unk3 == 0) {
+        if (g_fieldDiscChange.cursor == 0) {
             func_80035580(NULL);
             id = 3;
         } else {
@@ -221,7 +221,7 @@ void fld_discChangeBackToPrompt(void) {
 }
 
 void fld_discChangeOpenMenu8(void) {
-    menu_open(8, ((g_fieldDiscChange.unk2 & 3) << 14) | g_fieldDiscChange.unk4);
+    menu_open(8, ((g_fieldDiscChange.disc & 3) << 14) | g_fieldDiscChange.arg);
     func_80032628(fld_discChangeFinish);
     func_80032634(0);
 }

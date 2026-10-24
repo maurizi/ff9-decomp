@@ -36,7 +36,7 @@ static const PrimKind kinds[8] = {
     { 0x10, 0, 0x0C, 0x0B, 0x14, 4, { 0x08, 0x0C, 0x10 } },        /* flat triangle */
 };
 
-void wm_drawMesh(Unk800C95C8 *model, u8 group) {
+void wm_drawMesh(ModelObj *model, u8 group) {
     u8 *m = (u8 *)model;
     u8 *grp = *(u8 **)(*(u8 **)(m + 8) + 0x10) + group * 0x28;
     u8 *pkt = *(u8 **)(*(u8 **)(m + 0x44) + group * 12 + 4);

@@ -426,49 +426,49 @@ typedef struct WmAnimHdr {
     s32 unk10;   /* -> WmAnimKey[], low rotation bits, two frames per byte */
 } WmAnimHdr;
 
-typedef struct Unk800C95C8 {
+typedef struct ModelObj {
     u16 unk0; /* flags; 0x10: behind the camera */
     u8 pad2[2];
     u8 unk4; /* bone in the parent */
     u8 pad5[3];
-    WmModel *unk8;
-    struct WmAnimHdr *unkC;
-    u8 *unk10; /* primitive buffer */
-    s32 unk14;
-    WmTexInfo *unk18;
-    struct Unk800C95C8 *unk1C; /* parent */
-    u8 *unk20;
-    MATRIX unk24; /* t: position */
-    WmModelOut *unk44;
+    WmModel *model;
+    struct WmAnimHdr *anim;
+    u8 *packets; /* primitive buffer */
+    s32 hiddenGroups;
+    WmTexInfo *texInfo;
+    struct ModelObj *parent; /* parent */
+    u8 *boneMatrices;
+    MATRIX worldMatrix; /* t: position */
+    WmModelOut *groupOut;
     u8 pad48[0x50 - 0x48];
     s32 unk50;
-    u16 unk54; /* scale */
-    u16 unk56;
-    u16 unk58;
-    u16 unk5A;
+    u16 scaleX; /* scale */
+    u16 scaleY;
+    u16 scaleZ;
+    u16 clipY;
     s32 unk5C;
     s32 unk60;
     u8 pad64[0x74 - 0x64];
     u16 unk74;
     u16 unk76;
     u16 unk78;
-} Unk800C95C8;
+} ModelObj;
 
 /* model slot (func_8001E350) */
 typedef struct {
     s32 unk0; /* flags: 1 = loaded */
     s32 unk4; /* file id */
-    Unk800C95C8 *unk8;
+    ModelObj *unk8;
     Unk8004AB64 *unkC;
 } WmObjSlot;
 s32 func_8004AB64(Unk8004AB64 *);
-void wm_drawMesh(Unk800C95C8 *, u8);
-void wm_projectMesh(Unk800C95C8 *, u8);
-void wm_applyScale(Unk800C95C8 *);
-void wm_calcBoneMatrices(Unk800C95C8 *, u16);
+void wm_drawMesh(ModelObj *, u8);
+void wm_projectMesh(ModelObj *, u8);
+void wm_applyScale(ModelObj *);
+void wm_calcBoneMatrices(ModelObj *, u16);
 void wm_drawShadow(WmObjEnt *, s32, s32, s32); /* draw a shadow */
-void wm_projectMeshClipY(Unk800C95C8 *, u8);
-void wm_drawMeshClipY(Unk800C95C8 *, u8);
+void wm_projectMeshClipY(ModelObj *, u8);
+void wm_drawMeshClipY(ModelObj *, u8);
 u8 *func_800634A8(s32);
 u8 *func_800634D8(s32);
 

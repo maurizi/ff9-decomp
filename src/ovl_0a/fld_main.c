@@ -372,7 +372,7 @@ void fld_load(s32 arg0) {
     func_800A9814(sc, arg0);
     fld_setupBackground(sc, arg0);
     func_800A9954(sc, arg0);
-    func_800AA01C(&g_gameState->unk1C->unk8E4.field->unkC->unk14->unk50, &g_gameState->unk1C->unk8E4.field->unkC->unk14->unk52);
+    func_800AA01C(&g_gameState->unk1C->unk8E4.field->unkC->unk14->shadowTexX, &g_gameState->unk1C->unk8E4.field->unkC->unk14->shadowTexY);
     fld_initPreload();
     fld_startAudio();
     fld_soundCommand(0x900, -1, 0, 0, 0);
@@ -397,13 +397,13 @@ void fld_load(s32 arg0) {
         func_8001E3A4(&g_gameState->unk1C->unk8E0[i]);
         g_gameState->unk1C->unk8E0[i].unk8 = &g_gameState->unk1C->unk8DC[i];
     }
-    sc->unk2C = (FieldObjPlace *)D_80067948;
+    sc->shadows = (FieldObjPlace *)D_80067948;
     D_80067948 = fld_initShadows(D_80067948, g_gameState->unk1C->unk38 + 9,
-                               g_gameState->unk1C->unk8E4.field->unkC->unk14->unk50,
-                               g_gameState->unk1C->unk8E4.field->unkC->unk14->unk52);
+                               g_gameState->unk1C->unk8E4.field->unkC->unk14->shadowTexX,
+                               g_gameState->unk1C->unk8E4.field->unkC->unk14->shadowTexY);
     fld_loadSoundBanks(sc, arg0);
     fld_resumeResidentSfx();
-    sc->unk20 = D_80067948;
+    sc->heapTop = D_80067948;
     sc->unk4 = D_80067948;
     func_8004A8A4();
     D_80073998[0] |= 0x40000;
@@ -500,11 +500,11 @@ void fld_allocScene(void) {
     FieldScene *sc;
 
     g_gameState->unk1C->unk8E4.field->unkC->unk14 = sc = (FieldScene *)D_80067948;
-    sc->unk28 = sc->unk6C;
+    sc->modelBundles = sc->unk6C;
     D_80067948 += 0x90;
-    sc->unk54 = (FieldActorInfo *)D_80067948;
+    sc->actorInfo = (FieldActorInfo *)D_80067948;
     D_80067948 += 0x1E0;
-    sc->unk58 = (FieldTrig *)D_80067948;
+    sc->animSfx = (FieldAnimSfx *)D_80067948;
     D_80067948 += 0xC0;
 }
 
@@ -513,7 +513,7 @@ void fld_initScene(void) {
     s32 i;
     FieldActorInfo *info;
     u8 *base;
-    FieldTrig *t;
+    FieldAnimSfx *t;
     u8 *c;
     u8 *c2;
 
@@ -526,19 +526,19 @@ void fld_initScene(void) {
     sc->bg = NULL;
     sc->walkmesh = NULL;
     base = D_80067944 + 0x106700;
-    sc->unk30 = 0;
-    sc->unk10 = NULL;
-    sc->unk2C = NULL;
-    sc->unk20 = 0;
-    sc->unk42 = 0;
-    sc->unk43 = 0;
-    sc->unk44 = 0;
-    sc->unk48 = 0;
-    sc->unk49 = 0;
-    sc->unk1C = NULL;
-    sc->unk34 = base;
+    sc->otBias = 0;
+    sc->sprites = NULL;
+    sc->shadows = NULL;
+    sc->heapTop = 0;
+    sc->movieState = 0;
+    sc->movieRgb24 = 0;
+    sc->movieFile = 0;
+    sc->movieList = 0;
+    sc->movieEntry = 0;
+    sc->lights = NULL;
+    sc->movieWork = base;
     for (i = 23; i >= 0; i--) {
-        info = &sc->unk54[i];
+        info = &sc->actorInfo[i];
         info->unk0 = 0;
         info->unk4 = -1;
         info->unk5 = 0;
@@ -557,37 +557,37 @@ void fld_initScene(void) {
         info->unkC.c[3] = 0;
         info->unk10 = NULL;
     }
-    sc->unk38 = 0xA0;
-    sc->unk3A = 0x70;
-    sc->unk3C = 0xFFFF;
+    sc->encounterScreenX = 0xA0;
+    sc->encounterScreenY = 0x70;
+    sc->battleMusic = 0xFFFF;
     sc->unk3E = 0xFFFF;
-    sc->unk41 = 0;
-    sc->unk9 = 0;
+    sc->encounterStep = 0;
+    sc->encounterMusicStep = 0;
     sc->unk5C = 0x7F;
     sc->unk5D = 0x7F;
     sc->unk5F = 0;
-    sc->unk52 = 0;
-    sc->unk50 = 0;
+    sc->shadowTexY = 0;
+    sc->shadowTexX = 0;
     sc->fieldFile = NULL;
     for (i = 0; i < 9; i++) {
-        sc->unk28[i] = 0;
+        sc->modelBundles[i] = 0;
     }
     sc->nextId = -1;
-    sc->unk40 = 0;
+    sc->modelBundleCount = 0;
     sc->exitReason = FLD_EXIT_FIELD;
-    sc->unk4B = 0;
+    sc->animSfxCount = 0;
     for (i = 15; i >= 0; i--) {
-        t = &sc->unk58[i];
+        t = &sc->animSfx[i];
         t->unk0 = 0xFF;
-        t->unk1 = 0;
+        t->randomPitch = 0;
         t->unk2 = 0xFFFF;
-        t->unk4 = 0xFFFF;
-        t->unk6 = -1;
-        t->unk8[1] = 0xFFFF;
-        t->unk8[0] = 0xFFFF;
+        t->anim = 0xFFFF;
+        t->frame = -1;
+        t->sound[1] = 0xFFFF;
+        t->sound[0] = 0xFFFF;
     }
-    sc->unk5E = 0;
-    sc->unk60 = 0;
+    sc->soundBankSlot = 0;
+    sc->modelQueueCount = 0;
     sc->unk62 = 0;
     sc->unk64 = 0;
     for (i = 0; i >= 0; i--) {
@@ -695,7 +695,7 @@ s32 fld_setupBackground(FieldScene *arg0, s32 arg1) {
 }
 
 s32 func_800A9954(FieldScene *arg0) {
-    arg0->unk1C = db_lookupRegistered(4, (u16)fld_getBgKey(arg0) | 0x1F0000, 0);
+    arg0->lights = db_lookupRegistered(4, (u16)fld_getBgKey(arg0) | 0x1F0000, 0);
     return 0;
 }
 
@@ -719,11 +719,11 @@ s32 fld_loadModelBundlesInCdOrder(void) {
     s32 min;
     s32 v;
 
-    if (g_gameState->unk1C->unk8E4.field->unkC->unk14->unk60 != 0) {
+    if (g_gameState->unk1C->unk8E4.field->unkC->unk14->modelQueueCount != 0) {
         while (1) {
             best = -1;
             min = 0x7FFFFFFF;
-            for (i = g_gameState->unk1C->unk8E4.field->unkC->unk14->unk60 - 1; i >= 0; i--) {
+            for (i = g_gameState->unk1C->unk8E4.field->unkC->unk14->modelQueueCount - 1; i >= 0; i--) {
                 if (g_fieldModelQueue[i] != -1) {
                     v = file_find(0xA, g_fieldModelQueue[i])->unk4;
                     if (v < min) {

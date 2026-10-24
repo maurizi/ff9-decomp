@@ -22,44 +22,44 @@ typedef struct Unk800AB0B0 {
     Unk800AB0B0Entry unk4[1];
 } Unk800AB0B0;
 
-/* 0x24-byte entries at Unk800AFCBC.unk8 (fld_spriteCommand sets them) */
+/* 0x24-byte entries at FieldSpriteSet.unk8 (fld_spriteCommand sets them) */
 typedef struct {
     u32 unk0_0 : 4; /* flags */
     u32 unk0_4 : 4;
     s32 unk1 : 8;
-    s32 unk2 : 8;
-    u32 unk3 : 8;
+    s32 parent : 8;
+    u32 bone : 8;
     s16 unk4;
-    u8 unk6;
+    u8 speed;
     u8 unk7;
-    s16 unk8[3]; /* position */
-    s16 unkE;
-    s16 unk10[3]; /* rotation */
-    s16 unk16;
-    void *unk18;
-    s16 unk1C[3]; /* offset */
-    s16 unk22;
-} FieldEnt; /* 0x24 */
+    s16 pos[3]; /* position */
+    s16 frameEnd;
+    s16 rot[3]; /* rotation */
+    s16 frame;
+    void *sprite;
+    s16 offset[3]; /* offset */
+    s16 otOffset;
+} FieldSprite; /* 0x24 */
 
 /* initialised by fld_initSprites */
-typedef struct Unk800AFCBC {
+typedef struct FieldSpriteSet {
     u16 unk0;
     u8 unk2;
     u8 unk3; /* count of 0x24-byte entries at unk8 */
     u16 *unk4; /* 16 entries, follows this header */
-    FieldEnt *unk8;
+    FieldSprite *unk8;
     u8 *unkC[2]; /* primitive buffers, per draw buffer */
-} Unk800AFCBC; /* 0x14, followed by the buffers it points to */
+} FieldSpriteSet; /* 0x14, followed by the buffers it points to */
 
 /* trigger table entry (fld_removeAnimSfx) */
-typedef struct FieldTrig {
+typedef struct FieldAnimSfx {
     u8 unk0; /* object uid; low 2 bits also select a channel */
-    u8 unk1;
+    u8 randomPitch;
     u16 unk2;
-    u16 unk4;
-    s16 unk6;
-    u16 unk8[2];
-} FieldTrig; /* 0xC */
+    u16 anim;
+    s16 frame;
+    u16 sound[2];
+} FieldAnimSfx; /* 0xC */
 
 /* script object (fld_removeAnimSfx) */
 typedef struct {
@@ -82,7 +82,7 @@ typedef struct {
 typedef struct {
     u32 unk0; /* flags */
     s32 unk4; /* light id */
-    void *unk8; /* model (Unk800C95C8) */
+    void *unk8; /* model (ModelObj) */
     FieldEvtObj *unkC;
 } FieldEvtCtx;
 
@@ -91,43 +91,43 @@ typedef struct {
     u32 unk0; /* flags */
     s32 unk4; /* end of the load area */
     u8 unk8;
-    s8 unk9;
+    s8 encounterMusicStep;
     s16 nextId; /* current field, then the destination set by game_setNextScene */
     void *eventScript; /* db item 0x5xxxx (fld_findEventScript), passed to evt_init */
-    struct Unk800AFCBC *unk10;
+    struct FieldSpriteSet *sprites;
     struct Unk800C9DB4 *bg; /* background (fld_setupBackground) */
     void *walkmesh; /* the background's 0xB0000 link (fld_setupBackground) */
-    void *unk1C; /* file 0x1Fxxxx */
-    s32 unk20;
+    void *lights; /* light data, file 0x1Fxxxx (fld_applyLights) */
+    s32 heapTop;
     void *fieldFile; /* container registered by fld_loadFile */
-    s32 *unk28; /* = unk6C, unk40 entries */
-    struct FieldObjPlace *unk2C; /* object placements */
-    s16 unk30; /* sound depth bias */
+    s32 *modelBundles; /* = unk6C, modelBundleCount entries (fld_loadModelBundle) */
+    struct FieldObjPlace *shadows; /* shadow entries (fld_initShadows, fld_drawShadow) */
+    s16 otBias; /* added to projected depths before indexing the OT (camera unk30, fldbg_setCamera) */
     u8 pad32[0x34 - 0x32];
-    u8 *unk34;
-    s16 unk38;
-    s16 unk3A;
-    u16 unk3C;
+    u8 *movieWork;
+    s16 encounterScreenX;
+    s16 encounterScreenY;
+    u16 battleMusic;
     u16 unk3E;
-    u8 unk40;
-    s8 unk41;
-    s8 unk42;
-    u8 unk43;
-    s32 unk44;
-    u8 unk48;
-    u8 unk49;
+    u8 modelBundleCount;
+    s8 encounterStep;
+    s8 movieState;
+    u8 movieRgb24;
+    s32 movieFile;
+    u8 movieList;
+    u8 movieEntry;
     u8 exitReason; /* FLD_EXIT_*, set by fld_main, dispatched by fld_exit */
-    u8 unk4B; /* unk58 entry count */
+    u8 animSfxCount; /* animSfx entry count */
     void *unk4C; /* file 0x1Exxxx */
-    s16 unk50;
-    s16 unk52;
-    struct FieldActorInfo *unk54; /* = unk90 */
-    struct FieldTrig *unk58; /* = unk270 */
+    s16 shadowTexX;
+    s16 shadowTexY;
+    struct FieldActorInfo *actorInfo; /* = unk90 */
+    struct FieldAnimSfx *animSfx; /* = unk270 */
     u8 unk5C;
     u8 unk5D;
-    u8 unk5E;
+    u8 soundBankSlot;
     u8 unk5F;
-    u8 unk60; /* g_fieldModelQueue count */
+    u8 modelQueueCount; /* g_fieldModelQueue count */
     u8 unk61[1];
     s16 unk62;
     s32 unk64;
@@ -194,20 +194,20 @@ typedef struct {
 } Unk800C9DCC;
 
 typedef struct {
-    u8 unk0;
-    u8 unk1;
-    u8 unk2;
-    u8 unk3;
-    s16 unk4;
+    u8 mode;
+    u8 discMask;
+    u8 disc;
+    u8 cursor;
+    s16 arg;
     s16 unk6;
-    s32 unk8[2]; /* saved D_80073998 */
-} Unk800CA058;
+    s32 savedFlags[2]; /* saved D_80073998 */
+} FieldDiscChange;
 
 typedef struct {
-    void (*unk0)(void); /* enter */
-    void (*unk4)(u8);   /* update */
-    void (*unk8)(void); /* leave */
-} Unk800C9D5C; /* 0xC */
+    void (*enter)(void); /* enter */
+    void (*update)(u8);   /* update */
+    void (*leave)(void); /* leave */
+} FieldDiscMode; /* 0xC */
 
 typedef struct {
     u16 unk0;
@@ -798,7 +798,7 @@ typedef union {
     s32 w[2];
 } SVECTOR4;
 
-/* animation file (Unk800C95C8.unkC) */
+/* animation file (ModelObj.unkC) */
 typedef struct {
     u8 pad0[4];
     s16 unk4[3]; /* root position: constant, or offset of s16[frame] */
@@ -807,35 +807,35 @@ typedef struct {
     WmAnimKey *unk10; /* low rotation bits, packed two frames per byte */
 } WmAnim;
 
-typedef struct Unk800C95C8 {
+typedef struct ModelObj {
     u16 unk0; /* flags; 0x10: behind the camera */
     u8 pad2[2];
     u8 unk4; /* bone in the parent */
     u8 pad5[3];
-    WmModel *unk8;
-    WmModel *unkC; /* file 0x3xxxx */
-    u8 *unk10; /* primitive buffer */
-    s32 unk14;
-    WmTexInfo *unk18;
-    struct Unk800C95C8 *unk1C; /* parent */
-    u8 *unk20;
-    MATRIX unk24; /* t: position */
-    WmModelOut *unk44;
-    s16 unk48[3]; /* look-at target (fldmdl_calcBoneMatricesLookAt) */
+    WmModel *model;
+    WmModel *anim; /* file 0x3xxxx */
+    u8 *packets; /* primitive buffer */
+    s32 hiddenGroups;
+    WmTexInfo *texInfo;
+    struct ModelObj *parent; /* parent */
+    u8 *boneMatrices;
+    MATRIX worldMatrix; /* t: position */
+    WmModelOut *groupOut;
+    s16 lookAtTarget[3]; /* look-at target (fldmdl_calcBoneMatricesLookAt) */
     u8 pad4E[2];
-    struct Unk800AB0B0 *unk50; /* file 0x19xxxx */
-    u16 unk54; /* scale */
-    u16 unk56;
-    u16 unk58;
-    s16 unk5A; /* screen y limit (fldmdl_projectMeshClipY) */
+    struct Unk800AB0B0 *texAnims; /* file 0x19xxxx */
+    u16 scaleX; /* scale */
+    u16 scaleY;
+    u16 scaleZ;
+    s16 clipY; /* screen y limit (fldmdl_projectMeshClipY) */
     s32 unk5C;
-    struct Unk800C95C8 *unk60; /* mirrored model (fldmdl_reflectModel) */
-    SVECTOR4 unk64; /* mirror plane normal */
-    SVECTOR4 unk6C; /* point on the mirror plane */
+    struct ModelObj *mirrorSrc; /* mirrored model (fldmdl_reflectModel) */
+    SVECTOR4 mirrorNormal; /* mirror plane normal */
+    SVECTOR4 mirrorPoint; /* point on the mirror plane */
     s16 unk74; /* offset from the parent bone */
     s16 unk76;
     s16 unk78;
-} Unk800C95C8;
+} ModelObj;
 
 typedef union {
     u32 w;
@@ -846,7 +846,7 @@ typedef union {
 typedef struct FieldActorExt {
     u32 unk0; /* flags */
     s32 unk4; /* model file id */
-    Unk800C95C8 *unk8; /* = unk14 */
+    ModelObj *unk8; /* = unk14 */
     FieldEvtObj *unkC; /* = unkAC */
     s32 unk10;
     u8 unk14[0xAC - 0x14]; /* mirrored model */
@@ -942,7 +942,7 @@ extern u32 g_fieldTempOt;
 extern FieldPausePkt g_fieldPauseSprite;
 extern TILE g_fieldPauseDim;
 
-/* 3D sprite data (FieldEnt.unk18) */
+/* 3D sprite data (FieldSprite.unk18) */
 typedef struct {
     u16 unk0; /* frame count | 0x8000 */
     u16 unk2; /* tpage */
@@ -1034,7 +1034,7 @@ FieldLight *fld_findFloorLight(Unk800B3254 *, FieldEvtCtx *, s16 *);
 typedef struct {
     s32 unk0; /* flags: 1 = loaded */
     s32 unk4; /* file id */
-    Unk800C95C8 *unk8;
+    ModelObj *unk8;
     void *unkC; /* actor */
 } FieldObjSlot;
 
@@ -1148,7 +1148,7 @@ void menuMain_setEquipHelp(u8);
 /* ---- overlay data ---- */
 extern u8 g_fieldDiscChangeText[]; /* text */
 extern s32 g_fieldPreloadCursor;
-extern Unk800C9D5C g_fieldDiscChangeModes[];
+extern FieldDiscMode g_fieldDiscChangeModes[];
 extern Unk800C9DA4 g_fieldBgCtx;
 extern Unk800C9DB4 *g_fieldBgData;
 extern u8 D_800CA108; /* background sprite x extent */
@@ -1165,7 +1165,7 @@ extern s32 g_fieldPreloadRequests[8];
 extern s32 g_fieldPreloadExcludes[8];
 extern u8 g_fieldPreloadRequestCount; /* g_fieldPreloadRequests count */
 extern u8 g_fieldPreloadExcludeCount; /* g_fieldPreloadExcludes count */
-extern Unk800CA058 g_fieldDiscChange;
+extern FieldDiscChange g_fieldDiscChange;
 extern Unk800CA068 g_fieldBgState;
 extern s16 D_800CAA98[];
 extern s16 D_800CAAB8[];
@@ -1253,9 +1253,9 @@ extern BgiTriangle *D_800C9E00; /* = g_fieldBgi.unk10, referenced by its own nam
 s32 bgi_initAnim(u32);
 s32 bgi_resetFloorMoves(void);
 s32 fld_readAreaFile(FieldMapObj *, s32);
-void fldmdl_drawMesh(Unk800C95C8 *, u8);
-void fldmdl_projectMeshClipY(Unk800C95C8 *, u8);
-void fldmdl_drawMeshClipY(Unk800C95C8 *, u8);
+void fldmdl_drawMesh(ModelObj *, u8);
+void fldmdl_projectMeshClipY(ModelObj *, u8);
+void fldmdl_drawMeshClipY(ModelObj *, u8);
 
 /* run on a 12-byte frame at the top of the scratchpad (0x1F8003FC) and switch back */
 #define SetSpadStack12(addr) \
@@ -1295,7 +1295,7 @@ static inline s32 fld_movieCommand_state(void) {
     s8 v;
 
     if (g_gameState->unkB != 0xFF) {
-        v = g_gameState->unk1C->unk8E4.field->unkC->unk14->unk42;
+        v = g_gameState->unk1C->unk8E4.field->unkC->unk14->movieState;
         if (v != 0x11) {
             goto other;
         }
@@ -1353,14 +1353,14 @@ s32 fldbg_applyGeomOffset(void);
 
 /* field object drawing (fld_drawModels) */
 s32 bgi_getActorTilt(s32, s16 *, u16 *);
-void fldmdl_applyScale(Unk800C95C8 *);
-void fldmdl_calcBoneMatrices(Unk800C95C8 *, u16);
-s32 fld_isModelTexAnimActive(Unk800C95C8 *);
+void fldmdl_applyScale(ModelObj *);
+void fldmdl_calcBoneMatrices(ModelObj *, u16);
+s32 fld_isModelTexAnimActive(ModelObj *);
 void fldmdl_updateTexAnims(BgAnimHdr *);
 void fld_applyLights(FieldEvtCtx **, s32);
 void fld_playAnimSfx(FieldEvtCtx **, s32);
 void fld_applyModelCommands(FieldEvtCtx **, s32);
-void fldmdl_calcBoneMatricesLookAt(Unk800C95C8 *, s32);
+void fldmdl_calcBoneMatricesLookAt(ModelObj *, s32);
 void fld_drawShadow(struct FieldObjPlace *, s32);
 s32 mbg_getGeomOffset(s32 *, s32 *); /* ovl_64 */
 
@@ -1381,8 +1381,8 @@ s32 mbg_getGeomOffset(s32 *, s32 *); /* ovl_64 */
 /* fld_drawShadow: link shadow quad q at its deepest corner */
 #define FIELD_SHADOW_ADD(k, q) \
     k = (k >> 2) + bias; \
-    if (-g_gameState->unk1C->unk8E4.field->unkC->unk14->unk30 < k \
-        && k < 0x1000 - g_gameState->unk1C->unk8E4.field->unkC->unk14->unk30) { \
+    if (-g_gameState->unk1C->unk8E4.field->unkC->unk14->otBias < k \
+        && k < 0x1000 - g_gameState->unk1C->unk8E4.field->unkC->unk14->otBias) { \
         addPrim(&g_gameState->unk1C->unk10[g_gameState->unk1C->unk8][k], e->unk8[g_gameState->unk1C->unk8][q]); \
     }
 
@@ -1525,6 +1525,6 @@ typedef struct {
 
 s32 fld_initShadows(s32, s32, s32, s32); /* returns func_80062E3C's result (the next free address) */
 
-FieldTrig *fld_addAnimSfx(FieldEvtCtx *, s32, s32); /* returns the new entry */
+FieldAnimSfx *fld_addAnimSfx(FieldEvtCtx *, s32, s32); /* returns the new entry */
 
 #endif

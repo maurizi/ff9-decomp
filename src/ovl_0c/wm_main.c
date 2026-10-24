@@ -571,19 +571,19 @@ u32 wm_loadActorModel(s32 arg0, Unk8004AB64 *arg1) {
         g_gameState->unk1C->unk39++;
     }
     o->unk4 = arg0;
-    o->unk8->unk8 = db_lookupRegistered(4, arg0, 0);
-    if ((o->unk8->unkC = db_lookupRegistered(4, wm_findDefaultAnim(o->unk4), 0)) != NULL) {
-        h = o->unk8->unkC;
+    o->unk8->model = db_lookupRegistered(4, arg0, 0);
+    if ((o->unk8->anim = db_lookupRegistered(4, wm_findDefaultAnim(o->unk4), 0)) != NULL) {
+        h = o->unk8->anim;
         if (IS_OFFSET(h->unkC)) {
             t = h->unk10;
             h->unkC = (s32)h + h->unkC;
             if (t != 0) {
-                h->unk10 = (s32)o->unk8->unkC + t;
+                h->unk10 = (s32)o->unk8->anim + t;
             }
         }
     }
     o->unkC = arg1;
-    m = o->unk8->unk8;
+    m = o->unk8->model;
     g = m->unk10;
     n = 0;
     if (IS_OFFSET(g)) {
@@ -593,7 +593,7 @@ u32 wm_loadActorModel(s32 arg0, Unk8004AB64 *arg1) {
         n += g[i].unk0;
     }
     n *= 2;
-    n += (o->unk8->unk8->unk2 << 5) + o->unk8->unk8->unk3 * 12;
+    n += (o->unk8->model->unk2 << 5) + o->unk8->model->unk3 * 12;
     wm_initModel(o->unk8, g_gameState->unk1C->unk8E4.world->unk8->primCursor);
     wm_buildPackets(o->unk8, func_800634A8(o->unk4), func_800634D8(o->unk4));
     g_gameState->unk1C->unk8E4.world->unk8->primCursor += n;
@@ -737,7 +737,7 @@ void wm_calcShadowMatrix(WmObjEnt *arg0, WmObjSlot *arg1, MATRIX *arg2, s32 arg3
 
     /* word-wise copy of the joint matrix */
     d = (s32 *)&m;
-    s = (s32 *)&((MATRIX *)arg1->unk8->unk20)[arg4];
+    s = (s32 *)&((MATRIX *)arg1->unk8->boneMatrices)[arg4];
     d[0] = s[0];
     d[1] = s[1];
     d[2] = s[2];
@@ -778,9 +778,9 @@ void wm_calcShadowMatrix(WmObjEnt *arg0, WmObjSlot *arg1, MATRIX *arg2, s32 arg3
     arg2->m[0][2] = fwd.vx * arg0->unk2 >> 12;
     arg2->m[1][2] = fwd.vy * arg0->unk2 >> 12;
     arg2->m[2][2] = fwd.vz * arg0->unk2 >> 12;
-    arg2->t[0] = ((side.vx * arg0->unk4_12 + fwd.vx * arg0->unk4_22) >> 12) + ((MATRIX *)arg1->unk8->unk20)[arg4].t[0];
+    arg2->t[0] = ((side.vx * arg0->unk4_12 + fwd.vx * arg0->unk4_22) >> 12) + ((MATRIX *)arg1->unk8->boneMatrices)[arg4].t[0];
     arg2->t[1] = ((side.vy * arg0->unk4_12 + fwd.vy * arg0->unk4_22) >> 12) + arg3;
-    arg2->t[2] = ((side.vz * arg0->unk4_12 + fwd.vz * arg0->unk4_22) >> 12) + ((MATRIX *)arg1->unk8->unk20)[arg4].t[2];
+    arg2->t[2] = ((side.vz * arg0->unk4_12 + fwd.vz * arg0->unk4_22) >> 12) + ((MATRIX *)arg1->unk8->boneMatrices)[arg4].t[2];
 }
 
 /* world map music/sound request handler (GameData.unk83C); unk851 drives the streamed music load */
@@ -1297,9 +1297,9 @@ void wm_startBattleTransition(void) {
     o->swirlFrames = 0;
     a = func_8004AE00();
     if (a != NULL && (s = (WmObjSlot *)func_8001E350(a->unk3B)) != NULL) {
-        v.vx = ((MATRIX *)s->unk8->unk20)[1].t[0];
-        v.vy = ((MATRIX *)s->unk8->unk20)[1].t[1];
-        v.vz = ((MATRIX *)s->unk8->unk20)[1].t[2];
+        v.vx = ((MATRIX *)s->unk8->boneMatrices)[1].t[0];
+        v.vy = ((MATRIX *)s->unk8->boneMatrices)[1].t[1];
+        v.vz = ((MATRIX *)s->unk8->boneMatrices)[1].t[2];
         gte_SetRotMatrix(&g_gameState->unk1C->unk18);
         gte_SetTransMatrix(&g_gameState->unk1C->unk18);
         gte_ldv0(&v);

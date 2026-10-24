@@ -405,7 +405,7 @@ s32 fld_soundCommand(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4) {
         case 7:
             SCENE->unk0 &= ~0x10;
             if (arg2 == 4) {
-                SCENE->unk5E = arg3;
+                SCENE->soundBankSlot = arg3;
                 SCENE->unk0 |= 0x10;
             }
             g_fieldMusicRequest = kind;
@@ -450,7 +450,7 @@ state:
         if (!(g->unk8E4.field->unkC->unk14->unk0 & 0x10) && g->unk852 != 0x84) {
             func_80055DF4();
         }
-        g_gameState->unk1C->unk8C0 = SCENE->unk20 ? SCENE->unk20 : D_80067948;
+        g_gameState->unk1C->unk8C0 = SCENE->heapTop ? SCENE->heapTop : D_80067948;
         g_gameState->unk1C->unk878 = 0x156F00 - (g_gameState->unk1C->unk8C0 - (s32)D_80067944);
         if (!(g_gameState->unk1C->unk8E4.field->unk0 & 4)) {
             g_gameState->unk1C->unk878 -= 0x3000;
@@ -536,7 +536,7 @@ void fld_getSoundPanVolume(s16 arg0, s16 arg1, s16 arg2, u8 *arg4, u8 *arg5) {
     gte_rtps();
     gte_stsxy(&sxy);
     gte_stsz(&z);
-    z = z / 4 + g_gameState->unk1C->unk8E4.field->unkC->unk14->unk30;
+    z = z / 4 + g_gameState->unk1C->unk8E4.field->unkC->unk14->otBias;
     if (z < 0) {
         z = 0;
     } else if (z >= 0x1000) {
@@ -632,19 +632,19 @@ void fld_playAnimSfx(FieldEvtCtx **arg0, s32 arg1) {
     u16 c;
     u8 vol;
     u8 pan;
-    FieldTrig *base;
+    FieldAnimSfx *base;
     u8 n;
     s32 i;
     s32 j;
     FieldEvtCtx *ctx;
-    FieldTrig *t;
+    FieldAnimSfx *t;
     s32 r;
     s32 ch;
     s32 snd;
     s32 v;
 
-    base = g_gameState->unk1C->unk8E4.field->unkC->unk14->unk58;
-    n = g_gameState->unk1C->unk8E4.field->unkC->unk14->unk4B;
+    base = g_gameState->unk1C->unk8E4.field->unkC->unk14->animSfx;
+    n = g_gameState->unk1C->unk8E4.field->unkC->unk14->animSfxCount;
     for (i = arg1 - 1; i >= 0; i--) {
         ctx = arg0[i];
         if (ctx == NULL || (ctx->unk0 & 0x40)) {
@@ -652,7 +652,7 @@ void fld_playAnimSfx(FieldEvtCtx **arg0, s32 arg1) {
         }
         for (j = n - 1; j >= 0; j--) {
             t = &base[j];
-            if (t->unk0 == ctx->unkC->unk3B && t->unk4 == ctx->unkC->unk36 && t->unk6 == ctx->unkC->unk3A) {
+            if (t->unk0 == ctx->unkC->unk3B && t->anim == ctx->unkC->unk36 && t->frame == ctx->unkC->unk3A) {
                 r = 0;
                 a = 0;
                 b = 0;
@@ -666,8 +666,8 @@ void fld_playAnimSfx(FieldEvtCtx **arg0, s32 arg1) {
                 }
                 ch = t->unk0 & 3;
                 ch = (0x10000 << ch) & 0xF0000;
-                snd = t->unk8[(c >> 4) & 1] | 0x80000;
-                if (t->unk1 != 0) {
+                snd = t->sound[(c >> 4) & 1] | 0x80000;
+                if (t->randomPitch != 0) {
                     if (g_randPtr >= g_randTableEnd) {
                         rand_refill();
                     }
@@ -685,13 +685,13 @@ void fld_playAnimSfx(FieldEvtCtx **arg0, s32 arg1) {
 }
 
 /* find the trigger matching the object, id and value (searching backwards) */
-FieldTrig *fld_findAnimSfx(FieldEvtCtx *arg0, u16 arg1, s16 arg2) {
+FieldAnimSfx *fld_findAnimSfx(FieldEvtCtx *arg0, u16 arg1, s16 arg2) {
     FieldScene *sc = g_gameState->unk1C->unk8E4.field->unkC->unk14;
-    FieldTrig *base = sc->unk58;
-    FieldTrig *e = &base[sc->unk4B] - 1;
+    FieldAnimSfx *base = sc->animSfx;
+    FieldAnimSfx *e = &base[sc->animSfxCount] - 1;
 
     do {
-        if (e->unk0 == arg0->unkC->unk3B && e->unk4 == arg1 && e->unk6 == arg2) {
+        if (e->unk0 == arg0->unkC->unk3B && e->anim == arg1 && e->frame == arg2) {
             return e;
         }
         e--;
@@ -699,40 +699,40 @@ FieldTrig *fld_findAnimSfx(FieldEvtCtx *arg0, u16 arg1, s16 arg2) {
     return NULL;
 }
 
-FieldTrig *fld_addAnimSfx(FieldEvtCtx *arg0, s32 arg1, s32 arg2) {
+FieldAnimSfx *fld_addAnimSfx(FieldEvtCtx *arg0, s32 arg1, s32 arg2) {
     FieldScene *sc = g_gameState->unk1C->unk8E4.field->unkC->unk14;
-    u8 i = sc->unk4B;
-    FieldTrig *e;
+    u8 i = sc->animSfxCount;
+    FieldAnimSfx *e;
     u16 id;
     s32 n;
 
     n = i + 1;
-    sc->unk4B = n;
-    e = &sc->unk58[i];
+    sc->animSfxCount = n;
+    e = &sc->animSfx[i];
     e->unk0 = arg0->unkC->unk3B;
     id = arg0->unkC->unk34;
-    e->unk4 = arg1;
+    e->anim = arg1;
     do {
-        e->unk6 = arg2;
+        e->frame = arg2;
     } while (0);
     e->unk2 = id;
     return e;
 }
 
 s32 fld_removeAnimSfx(FieldEvtCtx *arg0, u16 arg1, s16 arg2) {
-    FieldTrig *base;
-    FieldTrig *last;
-    FieldTrig *e;
+    FieldAnimSfx *base;
+    FieldAnimSfx *last;
+    FieldAnimSfx *e;
 
-    base = g_gameState->unk1C->unk8E4.field->unkC->unk14->unk58;
-    e = &base[g_gameState->unk1C->unk8E4.field->unkC->unk14->unk4B] - 1;
+    base = g_gameState->unk1C->unk8E4.field->unkC->unk14->animSfx;
+    e = &base[g_gameState->unk1C->unk8E4.field->unkC->unk14->animSfxCount] - 1;
     last = e;
     do {
-        if (e->unk0 == arg0->unkC->unk3B && e->unk4 == arg1 && e->unk6 == arg2) {
+        if (e->unk0 == arg0->unkC->unk3B && e->anim == arg1 && e->frame == arg2) {
             if (e != last) {
                 *e = *last;
             }
-            g_gameState->unk1C->unk8E4.field->unkC->unk14->unk4B--;
+            g_gameState->unk1C->unk8E4.field->unkC->unk14->animSfxCount--;
         }
         e--;
     } while (e >= base);
@@ -763,7 +763,7 @@ void fld_findBattleMusic(void) {
     s32 w;
 
     o = g_gameState->unk1C->unk8E4.field->unkC->unk14;
-    o->unk3C = g_gameState->unk1C->unk81C[0];
+    o->battleMusic = g_gameState->unk1C->unk81C[0];
     key = (u16)o->nextId;
     g_gameState->unk1C->unk8E4.field->unkC->unk14->unk3E = g_gameState->unk1C->unk820[0];
     base = g_gameState->unk1C->depTable->unk4;
@@ -772,7 +772,7 @@ void fld_findBattleMusic(void) {
     for (i = 0; i < g_gameState->unk1C->depTable->unk2; i++) {
         id = base[i].unkC;
         if (base[i].unk0 == w && ((id >> 16) & 0xFF) == 7) {
-            g_gameState->unk1C->unk8E4.field->unkC->unk14->unk3C = id;
+            g_gameState->unk1C->unk8E4.field->unkC->unk14->battleMusic = id;
             for (j = 0; j < g_gameState->unk1C->depTable->unk2; j++) {
                 w = base[j].unkC;
                 v = base[j].unk0;
@@ -966,7 +966,7 @@ s32 fld_soundBankReadCallback(Unk800B29F8 *arg0) {
     if ((id & 0xFFFF) != 0x84) {
         sc = gd->unk8E4.field->unkC->unk14;
         if (sc->unk0 & 0x10) {
-            r = func_80056048(a, sc->unk5E, 0);
+            r = func_80056048(a, sc->soundBankSlot, 0);
         } else {
             r = func_80055E14(a, n, 0);
         }
@@ -1028,13 +1028,13 @@ void fld_applyLights(FieldEvtCtx **arg0, s32 arg1) {
     FieldActorInfo *inf2;
 
     sc = g_gameState->unk1C->unk8E4.field->unkC->unk14;
-    lt = sc->unk1C;
+    lt = sc->lights;
     if (lt == NULL || fld_getLightColorTable(lt) == NULL) {
         return;
     }
     amb = NULL;
     dir = NULL;
-    infos = sc->unk54;
+    infos = sc->actorInfo;
     def = (Unk800B3294 *)fld_findLightColor(lt, -1);
     fld_findGlobalLights(lt, &amb, &dir);
     for (i = arg1 - 1; i >= 0; i--) {
@@ -1086,9 +1086,9 @@ void fld_applyLights(FieldEvtCtx **arg0, s32 arg1) {
                 dy += amb->unk3;
             }
             dx *= 8;
-            g_gameState->unk1C->unk8E4.field->unkC->unk14->unk2C[c->unkC->unk3B].unk0.unk0 = dx;
-            g_gameState->unk1C->unk8E4.field->unkC->unk14->unk2C[c->unkC->unk3B].unk0.unk1 = dy * 14;
-            g_gameState->unk1C->unk8E4.field->unkC->unk14->unk2C[c->unkC->unk3B].unk0.unk2 = dy * 12;
+            g_gameState->unk1C->unk8E4.field->unkC->unk14->shadows[c->unkC->unk3B].unk0.unk0 = dx;
+            g_gameState->unk1C->unk8E4.field->unkC->unk14->shadows[c->unkC->unk3B].unk0.unk1 = dy * 14;
+            g_gameState->unk1C->unk8E4.field->unkC->unk14->shadows[c->unkC->unk3B].unk0.unk2 = dy * 12;
         }
         info->unk4 = floor;
         info->unk0 = (info->unk0 & ~4) | shade;
@@ -1101,7 +1101,7 @@ void fld_applyLights(FieldEvtCtx **arg0, s32 arg1) {
         inf2 = &infos[c->unkC->unk3B];
         k = inf2->unk8.w;
         if (k >> 24 != 0) {
-            for (j = ((Unk800C95C8 *)c->unk8)->unk8->unk3 - 1; j >= 0; j--) {
+            for (j = ((ModelObj *)c->unk8)->model->unk3 - 1; j >= 0; j--) {
                 fldmdl_setGroupRgb(c->unk8, j & 0xFF, (s16)(k & 0xFF), (s16)((k >> 8) & 0xFF), ((u32)k >> 16) & 0xFF);
             }
             inf2->unk8.w = inf2->unkC.w;
@@ -1113,7 +1113,7 @@ void fld_applyLights(FieldEvtCtx **arg0, s32 arg1) {
 /* set the object's light colour */
 s32 fld_setSlotColor(FieldEvtCtx *arg0, s32 arg1, s32 arg2, s32 arg3) {
     u32 f = arg0->unk0;
-    FieldActorInfo *info = &g_gameState->unk1C->unk8E4.field->unkC->unk14->unk54[arg0->unkC->unk3B];
+    FieldActorInfo *info = &g_gameState->unk1C->unk8E4.field->unkC->unk14->actorInfo[arg0->unkC->unk3B];
     u32 col;
 
     if (!(f & 0x800)) {
@@ -1215,17 +1215,17 @@ s32 func_800B3444(s32 arg0, s32 arg1, s32 arg2) {
     if (arg0 == 0 && arg1 == 0) {
         if (arg2 != 0) {
             if (!(g_gameState->unk1C->unk8E4.field->unkC->unk14->unk0 & 0x100)) {
-                start = g_gameState->unk1C->unk8E4.field->unkC->unk14->unk20;
+                start = g_gameState->unk1C->unk8E4.field->unkC->unk14->heapTop;
                 if (start == 0) {
                     start = D_80067948;
                 }
                 if (func_800221C0(start, 0x5000) != 0) {
                     func_80022390(func_8002208C()->unk4);
                 }
-                if (g_gameState->unk1C->unk8E4.field->unkC->unk14->unk20 != 0) {
-                    start = g_gameState->unk1C->unk8E4.field->unkC->unk14->unk20;
-                    g_gameState->unk1C->unk8E4.field->unkC->unk14->unk20 = func_80050BE0(start);
-                    size = g_gameState->unk1C->unk8E4.field->unkC->unk14->unk20 - start;
+                if (g_gameState->unk1C->unk8E4.field->unkC->unk14->heapTop != 0) {
+                    start = g_gameState->unk1C->unk8E4.field->unkC->unk14->heapTop;
+                    g_gameState->unk1C->unk8E4.field->unkC->unk14->heapTop = func_80050BE0(start);
+                    size = g_gameState->unk1C->unk8E4.field->unkC->unk14->heapTop - start;
                 } else {
                     start = D_80067948;
                     end = func_80050BE0(start);
@@ -1684,7 +1684,7 @@ s32 fld_preloadHook(void) {
         if (func_80021FB4() <= 0) {
             func_800223CC();
             if (!(g_gameState->unk1C->unk8E4.field->unkC->unk14->unk0 & 0x100000)) {
-                fld_setPreloadCursor(g_gameState->unk1C->unk8E4.field->unkC->unk14->unk20);
+                fld_setPreloadCursor(g_gameState->unk1C->unk8E4.field->unkC->unk14->heapTop);
                 fld_queueFieldPreloads();
                 g_gameState->unk1C->unk8E4.field->unkC->unk14->unk0 |= 0x100000;
             }
@@ -1696,7 +1696,7 @@ s32 fld_preloadHook(void) {
         return 0;
     }
     if (s->unk0 & 0x10000) {
-        fld_setPreloadCursor(s->unk20);
+        fld_setPreloadCursor(s->heapTop);
         fld_queueFieldPreloads();
         g_gameState->unk1C->unk8E4.field->unkC->unk14->unk0 |= 0x100000;
     }
@@ -1723,7 +1723,7 @@ void fld_showSplashImage(void) {
     n = 0;
     state = 0;
     i = 1;
-    p = g_gameState->unk1C->unk8E4.field->unkC->unk14->unk20;
+    p = g_gameState->unk1C->unk8E4.field->unkC->unk14->heapTop;
     do {
         {
             /* dead struct initializer: it emits only a CLOBBER of q, which sched2 places in one of
