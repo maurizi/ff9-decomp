@@ -6,7 +6,7 @@
  * different things in different overlays, so they live here, not in ff9.h. */
 #include "ff9.h"
 
-/* Shop hub state (D_801FC2D0). */
+/* Shop hub state (s_shop). */
 typedef struct {
     u8 unk0; /* shop kind */
     u8 unk1; /* cursor */
@@ -21,11 +21,11 @@ typedef struct {
     s8 unk18[8]; /* party member indices */
     s32 unk20;   /* OT layer */
 } ShopHub;
-extern ShopHub D_801FC2D0;
+extern ShopHub s_shop;
 
-/* Buy menu (D_801FC2F8). */
+/* Buy menu (s_shopBuy). */
 typedef struct {
-    u8 unk0; /* state, index into D_801FC044 */
+    u8 unk0; /* state, index into s_shopBuyInputFuncs */
     u8 unk1; /* item count */
     u8 unk2; /* quantity */
     u8 unk3; /* max quantity */
@@ -39,7 +39,7 @@ typedef struct {
     Window *unk38;
     u8 *unk3C; /* item list */
 } ShopBuy;
-extern ShopBuy D_801FC2F8;
+extern ShopBuy s_shopBuy;
 
 typedef struct {
     u16 unk0; /* price */
@@ -47,11 +47,11 @@ typedef struct {
     u8 unk4;  /* result */
     u8 unk5;  /* shop mask */
 } SynthRecipe;
-extern SynthRecipe D_801FC0FC[64];
+extern SynthRecipe s_shopRecipes[64];
 
-/* Synthesis menu (D_801FC338). */
+/* Synthesis menu (s_shopSynth). */
 typedef struct {
-    u8 unk0; /* state, index into D_801FC09C */
+    u8 unk0; /* state, index into s_shopSynthInputFuncs */
     u8 unk1;
     u8 unk2; /* quantity */
     u8 unk3; /* max quantity */
@@ -66,11 +66,11 @@ typedef struct {
     SynthRecipe unk3C[32];
     u8 padFC[4];
 } ShopSynth;
-extern ShopSynth D_801FC338;
+extern ShopSynth s_shopSynth;
 
-/* Sell menu (D_801FC438). */
+/* Sell menu (s_shopSell). */
 typedef struct {
-    u8 unk0; /* state, index into D_801FC27C */
+    u8 unk0; /* state, index into s_shopSellInputFuncs */
     u8 unk1; /* quantity */
     u8 unk2; /* max quantity */
     u8 pad3;
@@ -79,7 +79,7 @@ typedef struct {
     RECT unk1C[2];
     Window *unk2C[2];
 } ShopSell;
-extern ShopSell D_801FC438;
+extern ShopSell s_shopSell;
 
 typedef struct {
     s32 unk0; /* OT layer */
@@ -87,77 +87,77 @@ typedef struct {
     s32 unk8;
     s32 unkC; /* text index into D_800703FC */
 } ShopWinDef;
-extern ShopWinDef D_801FC2B0[2];
-void func_801F86D0(Window *);
-void func_801F86FC(Window *);
+extern ShopWinDef s_shopSellWindows[2];
+void shopSell_onQuantityOpened(Window *);
+void shopSell_onQuantityClosed(Window *);
 
-extern void (*D_801FC044[])(void);
-extern void (*D_801FC09C[])(void);
-extern void (*D_801FC27C[])(void);
+extern void (*s_shopBuyInputFuncs[])(void);
+extern void (*s_shopSynthInputFuncs[])(void);
+extern void (*s_shopSellInputFuncs[])(void);
 /* item names: data, splat starts .data at 0xA8F0 instead of 0xA8EC */
-extern u8 D_801F87EC[];
+extern u8 s_shopItemHelp[];
 
 /* {init, update, exit} per shop kind and option */
-extern void (*D_801FBBA0[][3][3])(void);
-extern RECT D_801FBC0C;
-extern RECT D_801FBC14;
-extern RECT D_801FBC1C;
-extern u8 D_801FBC24[];
-extern RECT D_801FBC28;
-extern u8 D_801FBC30[];
-extern RECT D_801FBC34;
-extern RECT D_801FBC3C;
-extern u8 D_801FBC44[][0x20]; /* item list per shop, 0xFF = none */
-extern u8 D_801F36FC[];
-extern u8 D_801F3C9C[];
-extern u8 D_801FC098[]; /* gil suffix */
-extern u8 D_801FC0F8[]; /* gil suffix */
-extern RECT *D_801FC288;
-extern u8 D_801FC28C[]; /* gil suffix */
-void func_801F84D8(void);
+extern void (*s_shopModes[][3][3])(void);
+extern RECT s_shopTitleRect;
+extern RECT s_shopMessageRect;
+extern RECT s_shopMenuRect;
+extern u8 s_shopMenuText[];
+extern RECT s_shopHelpRect;
+extern u8 s_shopMenuHelpText[];
+extern RECT s_shopIconClutRect;
+extern RECT s_shopIconRect;
+extern u8 s_shopItems[][0x20]; /* item list per shop, 0xFF = none */
+extern u8 s_shopIconImage[];
+extern u8 g_shopText[];
+extern u8 s_shopBuyQuantityGil[]; /* gil suffix */
+extern u8 s_shopSynthQuantityGil[]; /* gil suffix */
+extern RECT *s_shopSellListRectPtr;
+extern u8 s_shopSellQuantityGil[]; /* gil suffix */
+void shopSell_drawScrollRows(void);
 typedef struct {
     RECT r[7];
 } RectTbl7;
-extern RectTbl7 D_801EDF04; /* icon source rects */
-extern u8 D_801EDF3C[];
+extern RectTbl7 s_shopIcons; /* icon source rects */
+extern u8 s_shopImage[];
 
-extern u8 D_801F3E98[];
+extern u8 g_shopBuyText[];
 /* main exe: candidates for ff9.h */
 s32 func_80028014(s32); /* equip slot of an item, -1 = not equipment */
 s32 func_80028954(s32); /* main.c defines it returning u8; used unmasked */
 typedef struct {
     u8 v[5];
 } Equip5; /* Character.unk39 copied as a whole */
-extern s32 D_801FC070[2]; /* buy: text ids, weapon / armor */
-extern u8 D_801FC078[5];  /* buy: icon per equip slot */
-extern u16 D_801FC080[];  /* buy: equip mask per character kind */
-extern s32 D_801F3FF8;    /* buy: "--" shown for accessories */
-extern s32 D_801FC0D0[2]; /* synth: as D_801FC070 */
-extern u8 D_801FC0D8[5];
-extern u16 D_801FC0E0[];
-extern s32 D_801F3FFC;
+extern s32 s_shopBuyPartyLabel[2]; /* buy: text ids, weapon / armor */
+extern u8 s_shopBuyStatIcon[5];  /* buy: icon per equip slot */
+extern u16 s_shopBuyEquipMask[];  /* buy: equip mask per character kind */
+extern s32 s_shopBuyNoStat;    /* buy: "--" shown for accessories */
+extern s32 s_shopSynthPartyLabel[2]; /* synth: as s_shopBuyPartyLabel */
+extern u8 s_shopSynthStatIcon[5];
+extern u16 s_shopSynthEquipMask[];
+extern s32 s_shopSynthNoStat;
 s32 item_getCount(s32); /* main.c defines it returning u8 */
 s32 func_80027F94(s32);
-extern s32 D_801FC050[3]; /* row y offsets */
-extern u8 D_801FC05C[4];
-extern u8 D_801FC060[]; /* gil suffix */
-extern s32 D_801FC064[3]; /* row label text ids */
-extern s32 D_801FC0A8[4];
-extern u8 D_801FC0B8[4];
-extern u8 D_801FC0BC[]; /* gil suffix */
-extern s32 D_801FC0C0[4];
-extern s32 D_801FC290[3]; /* sell: row y offsets */
-extern u8 D_801FC29C[4];
-extern u8 D_801FC2A0[]; /* gil suffix */
-extern s32 D_801FC2A4[3]; /* sell: row label text ids */
+extern s32 s_shopBuyInfoRowY[3]; /* row y offsets */
+extern u8 s_shopBuyInfoRowAlways[4];
+extern u8 s_shopBuyInfoGil[]; /* gil suffix */
+extern s32 s_shopBuyInfoRowText[3]; /* row label text ids */
+extern s32 s_shopSynthInfoRowY[4];
+extern u8 s_shopSynthInfoRowAlways[4];
+extern u8 s_shopSynthInfoGil[]; /* gil suffix */
+extern s32 s_shopSynthInfoRowText[4];
+extern s32 s_shopSellInfoRowY[3]; /* sell: row y offsets */
+extern u8 s_shopSellInfoRowAlways[4];
+extern u8 s_shopSellInfoGil[]; /* gil suffix */
+extern s32 s_shopSellInfoRowText[3]; /* sell: row label text ids */
 void ui_drawItemIcon(s32, s32, s32, s32, u8);
-extern u8 D_801F3F08[];
-extern u8 D_801F3F88[];
-void func_801F7250(void);
-void func_801F5EEC(void);
-void func_801F76C8(void);
-void func_801F8728(void);
-s32 func_801F42A8(s32, u8 *);
+extern u8 g_shopSynthText[];
+extern u8 g_shopSellText[];
+void shopSynth_loadRecipes(void);
+void shopBuy_updateHelp(void);
+void shopSynth_updateHelp(void);
+void shopSell_updateHelp(void);
+s32 shop_sumArmorStat(s32, u8 *);
 typedef struct {
     u8 unk0;
     u8 unk1;
@@ -166,64 +166,64 @@ typedef struct {
 } Unk8006D328; /* equipment stat bonuses, from item 0x58 */
 extern Unk8006D328 D_8006D328[];
 
-void func_801F4000(void);
-void func_801F40AC(void);
-void func_801F4198(void);
-void func_801F442C(s32);
-void func_801F4748(void);
-void func_801F47C8(void);
+void shop_drawMessage(void);
+void shop_inputMenu(void);
+void shop_drawMenu(void);
+void shop_setHelp(s32);
+void shop_drawTitle(void);
+void shop_drawMenuAll(void);
 void func_801F47F0(void);
-void func_801F47F8(void);
-void func_801F4854(void);
-s32 func_801F48F4(s32);
-void func_801F4960(void);
-void func_801F49C4(void);
-void func_801F4A14(void);
-void func_801F4A44(void);
-s32 func_801F4A90(s32);
-void func_801F4AC0(void);
-void func_801F4B38(void);
-void func_801F4E1C(void);
-void func_801F506C(void);
-void func_801F51B8(void);
-void func_801F56E4(void);
-s32 func_801F59A8(s32);
-void func_801F5A1C(void);
-void func_801F5A74(void);
-void func_801F57C8(void);
-void func_801F5BCC(s32, s32, s32, MenuView *);
-void func_801F5D14(void);
-void func_801F5B64(void);
-void func_801F551C(Window *);
-void func_801F5D40(Window *);
-void func_801F5D6C(Window *);
+void shop_drawMenuCursor(void);
+void shop_onModeLeft(void);
+s32 shop_countEntries(s32);
+void shop_selectMenu(void);
+void shop_updateHelp(void);
+void shop_close(void);
+void shop_loadImages(void);
+s32 shop_getKind(s32);
+void shop_enterMode(void);
+void shop_onModeEntered(void);
+void shopBuy_drawInfo(void);
+void shopBuy_drawList(void);
+void shopBuy_drawParty(void);
+void shopBuy_drawCursor(void);
+s32 shop_isEquipmentShop(s32);
+void shopBuy_input(void);
+void shopBuy_draw(void);
+void shopBuy_openQuantity(void);
+void shopBuy_drawRow(s32, s32, s32, MenuView *);
+void shopBuy_closeQuantity(void);
+void shopBuy_drawScrollRows(void);
+void shopBuy_drawQuantityWindow(Window *);
+void shopBuy_onQuantityOpened(Window *);
+void shopBuy_onQuantityClosed(Window *);
 extern s32 D_800704A4;
-void func_801F7614(void);
-void func_801F8680(void);
-void func_801F7528(void);
-void func_801F625C(void);
-void func_801F65C8(void);
-void func_801F6714(void);
-void func_801F6C50(void);
-void func_801F6D34(s32, s32, s32, MenuView *);
-void func_801F6F00(void);
-void func_801F6A7C(Window *);
-void func_801F75BC(void);
-void func_801F75E8(void);
+void shopSynth_confirm(void);
+void shopSell_closeQuantity(void);
+void shopSynth_drawScrollRows(void);
+void shopSynth_drawInfo(void);
+void shopSynth_drawList(void);
+void shopSynth_drawParty(void);
+void shopSynth_drawCursor(void);
+void shopSynth_drawRow(s32, s32, s32, MenuView *);
+void shopSynth_openQuantity(void);
+void shopSynth_drawQuantityWindow(Window *);
+void shopSynth_onQuantityOpened(void);
+void shopSynth_onQuantityClosed(void);
 #define MIN(a, b) ((a) < (b) ? (a) : (b))
-void func_801F73E0(void);
-void func_801F7438(void);
-void func_801F7470(void);
-void func_801F7590(void);
-void func_801F79FC(void);
-void func_801F7FE0(void);
-void func_801F80D0(void);
-void func_801F837C(void);
-void func_801F83D4(void);
-void func_801F83FC(void);
-void func_801F856C(s32, s32, s32, MenuView *);
-s32 func_801F4458(void);
-void func_801F43F8(void);
-void func_801F5AAC(void);
+void shopSynth_input(void);
+void shopSynth_draw(void);
+void shopSynth_updateList(void);
+void shopSynth_closeQuantity(void);
+void shopSell_drawList(void);
+void shopSell_drawCursor(void);
+void shopSell_openQuantity(void);
+void shopSell_input(void);
+void shopSell_draw(void);
+void shopSell_updateList(void);
+void shopSell_drawRow(s32, s32, s32, MenuView *);
+s32 shop_getId(void);
+void shop_leaveMode(void);
+void shopBuy_updateList(void);
 
 #endif
