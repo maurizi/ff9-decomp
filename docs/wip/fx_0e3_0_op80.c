@@ -1,5 +1,5 @@
 /* Draft of fx_0e3_0 fx_0e3_0_op80.
- * Status (pass 3, build/w/cmp.py): 10 mismatched rows counting registers (was 936)
+ * Status (pass 3, build/w/cmp.py): 2 mismatched rows counting registers (was 936)
  * and stack offsets; frame size matches (400), same length (2501). ex/work now get s2/s3 like the original:
  * the multi-role variables were split by role (build/w/greedy.py with split2.py; the _bNNN names are those splits).
  * Pass 3 levers: modes 0/1 fall through to one `return 0` (if/else chain; `if (done) return 1;` before
@@ -537,9 +537,9 @@ s32 fx_0e3_0_op80(s32 mode, Fx0e30Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
         work->unk90.vx += 0x2000;
         d = t >> 2;
         {
-            s32 cz = (ex->math_cos(d) * 0x3E) >> 12;
+            s32 cz = ex->math_cos(d);
             s16 vz = work->unk88.vz - 8;
-            work->unk88.vz = vz - cz;
+            work->unk88.vz = vz - ((cz * 0x3E) >> 12);
         }
         work->unk10.vy -= (ex->math_cos(d) << 8) >> 12;
         ex->Hi_DrawSummonModel(&work->unk28, (VECTOR *)&work->unk10, (s32)&work->unk1C, SUMMON(env)->unk60, 0);
