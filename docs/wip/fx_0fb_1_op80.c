@@ -1,4 +1,4 @@
-/* Draft of fx_0fb_1 fx_0fb_1_op80. Status: 38 lines, 18 ignoring registers (build/w/nd.py, which now masks all |imm| >= 10000 data offsets). Cases 3-6 use fx_17a op80's final variable roles (src/fxmod/fx_17a); mode 0/1 are if/else-if branches with one return 0 (as fx_17a); further splits found by build/w/pgreedy.py + gen_regions.py. */
+/* Draft of fx_0fb_1 fx_0fb_1_op80. Status: 31 lines, 18 ignoring registers (build/w/nd.py, which now masks all |imm| >= 10000 data offsets). Cases 3-6 use fx_17a op80's final variable roles (src/fxmod/fx_17a); mode 0/1 are if/else-if branches with one return 0 (as fx_17a); further splits found by build/w/pgreedy.py + gen_regions.py. */
 #include "fxmod/fx_0fb_1.h"
 
 typedef struct {
@@ -529,16 +529,17 @@ s32 fx_0fb_1_op80(s32 mode, Fx0fb1Op80Work *work, Unk800F78A4 *env, Unk80100C78E
         t = frame << 6;
         env->unk28 = 0x100;
         f5 = t >> 2;
-        b = ex->math_cos(f5);
+        ph = ex->math_cos(f5);
         a = ex->math_sin(f5) + 0xC00;
         ex->func_800D23D8((u8 *)ex->btlfx_getFileData(entry->unk8, 8), &work->unkC, NULL, a, frame, 1, 0xB86);
         ex->func_800D23D8((u8 *)ex->btlfx_getFileData(entry->unk8, 8), &work->unkC, NULL, a / 2, frame, 1, -1);
-        ex->func_800D23D8((u8 *)ex->btlfx_getFileData(entry->unk8, 6), &work->unkC, NULL, (a * 2) / 3, frame, 1, b);
+        ex->func_800D23D8((u8 *)ex->btlfx_getFileData(entry->unk8, 6), &work->unkC, NULL, (a * 2) / 3, frame, 1, ph);
         a = ex->math_sin(f5) * 2 + 0x3000;
         ex->func_800D23D8((u8 *)ex->btlfx_getFileData(entry->unk8, 0x1A), &work->unkC, NULL, a, 0, 1, -1);
         env->unk28 = 0;
         if (frame < 0x20) {
-            f4 = (frame << 12) >> 7;
+            f4 = frame << 12;
+            f4 >>= 7;
             a = (ex->math_sin(f4) * 3) >> 1;
             n = ex->math_cos(f4);
             dir.vx = 0x200;
