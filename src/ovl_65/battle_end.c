@@ -89,7 +89,7 @@ void battleEnd_exit(void) {
 }
 
 s32 func_801EF6D8(void) {
-    func_800E9DBC();
+    btlui_loadPortraits();
     return 0;
 }
 

@@ -1045,3 +1045,4 @@ btlui_showListHeader = 0x800F3D3C; // type:func [code] slides panel labels 1-3 o
 btlui_hideListHeader = 0x800F3DE0; // type:func [code] slides the panel labels back, remembering the menu state to return to
 btlui_onPanelLabelsOut = 0x800F4140; // type:func [code] slide done hook hides labels 1-3, BTLUI_MENU_TARGET
 btlui_onListLabelOut = 0x800F4180; // type:func [code] slide done hook hides label 4, back to the remembered menu state
+btlui_loadPortraits = 0x800E9DBC; // type:func [code] looks up registered db kind 4 id 0x1E and loads the party portraits from it (ui_loadPartyPortraits), clears the party-changed flag

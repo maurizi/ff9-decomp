@@ -250,3 +250,7 @@ s_menuSaveIconMinute = 0x801F4244; // [code] card file icon when the play time i
 s_menuSaveIconHour = 0x801F42E4; // [code] card file icon when the play time is a whole hour (menuSave_buildCardHeader)
 s_menuSaveProductCode = 0x801F43A8; // [string] "BASLUS-01251", the card file name prefix (menuSave_getFilePrefix)
 s_menuSaveTitleTemplate = 0x801F43B8; // [code] SJIS card file title "FF9/FILE00/0000/" (menuSave_buildCardHeader)
+fld_getDiscChangeDisc = 0x800B5064; // type:func [code] ovl_0a function at this address (ovl_0a is loaded alongside this overlay)
+fld_getDiscChangeFieldId = 0x800B5084; // type:func [code] ovl_0a function at this address (ovl_0a is loaded alongside this overlay)
+fld_getDiscChangeMask = 0x800B5074; // type:func [code] ovl_0a function at this address (ovl_0a is loaded alongside this overlay)
+fld_getDiscChangeAreaId = 0x800B5094; // type:func [code] ovl_0a function at this address (ovl_0a is loaded alongside this overlay)

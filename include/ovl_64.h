@@ -315,7 +315,7 @@ typedef struct {
     u8 padA[0x18 - 0xA];
     u16 unk18;
 } Ovl64Field; /* field overlay object touched when the movie switches modes */
-extern Ovl64Field D_800C9EF0;
+extern Ovl64Field g_fieldFlagQueue;
 
 /* GameData.unk8E4 in field mode, as far as the movie player reads it */
 typedef struct {

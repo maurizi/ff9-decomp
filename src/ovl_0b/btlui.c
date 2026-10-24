@@ -71,7 +71,7 @@ void func_800E9D84(void) {
     }
 }
 
-void func_800E9DBC(void) {
+void btlui_loadPortraits(void) {
     void *p = db_lookupRegistered(4, 0x1E, 0);
     if (p != NULL) {
         ui_loadPartyPortraits(p);

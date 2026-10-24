@@ -85,3 +85,6 @@ g_mbgSectorLogFrame = 0x801A07F0; // [code] frame number of each logged sector r
 g_mbgSectorLogSlot = 0x801A06F0; // [code] ring slot of each logged sector read
 g_mbgSlotRumble = 0x8019F7D0; // [code] per ring slot - the frame's pad vibration (MbgRumble), copied to the actuator bytes D_800739B0 by mbg_readFrame
 g_mbgStartCameraId = 0x8019F278; // [code] id (Ovl64FrameInfo.id) of the first frame's camera, saved with g_mbgStartCamera by mbg_readFrame and returned by mbg_getStartCamera
+fldbg_setCamera = 0x800C0BCC; // type:func [code] ovl_0a function at this address (ovl_0a is loaded alongside this overlay)
+fldbg_getCamera = 0x800C1B5C; // type:func [code] ovl_0a function at this address (ovl_0a is loaded alongside this overlay)
+g_fieldFlagQueue = 0x800C9EF0; // [code] ovl_0a data at this address (ovl_0a is loaded alongside this overlay), ovl_64 uses its own Ovl64Field view

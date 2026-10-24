@@ -8,7 +8,7 @@
 
 /* other overlays (battle, 0x800A7000+ / 0x800E....) */
 void btl_soundCmd(s32, s32, s32, s32, s32);
-void func_800E9DBC(void);
+void btlui_loadPortraits(void);
 void func_800F4E68(void);
 
 /* main exe: candidates for ff9.h */

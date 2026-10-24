@@ -151,7 +151,7 @@ typedef struct {
 #define FLD_SCN_BANK_SLOT 0x10 /* fld_soundBankReadCallback uploads to soundBankSlot */
 #define FLD_SCN_OBJFX_ALLOC 0x100 /* func_800B3444 allocated the main func_80050BE0 node buffer */
 #define FLD_SCN_OBJFX_ON 0x200 /* func_800B3684 runs main func_80050AAC each frame */
-#define FLD_SCN_MOVIE_DISPMASK 0x1000 /* fld_movieUpdate set D_80073998 bit 0x04000000 */
+#define FLD_SCN_MOVIE_DISPMASK 0x1000 /* fld_movieUpdate set g_padPortMask bit 0x04000000 */
 #define FLD_SCN_ACTORS_READY 0x10000 /* set by fld_setupActorModel; fld_preloadHook starts queuing */
 #define FLD_SCN_PRELOADS_QUEUED 0x100000 /* fld_preloadHook queued fld_queueFieldPreloads */
 #define FLD_SCN_PRELOAD_REQUESTED 0x200000 /* fld_preloadRequest accepted a request */

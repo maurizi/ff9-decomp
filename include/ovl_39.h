@@ -271,8 +271,8 @@ typedef struct {
 } CardData; /* Tetra Master card list, g_cards (card_getInventory) */
 
 /* other overlay */
-u16 func_800B5084(void);
-u16 func_800B5094(void);
+u16 fld_getDiscChangeFieldId(void);
+u16 fld_getDiscChangeAreaId(void);
 
 typedef struct {
     EventVars vars; /* g_evtGlobalVars */
@@ -526,8 +526,8 @@ typedef union { s32 w; u16 h; } Crc16;
 #define SE_CANCEL 0x65
 #endif
 Unk8004AB64 *evt_getPlayer(void);
-u8 func_800B5074(void); /* other overlay */
-u8 func_800B5064(void); /* other overlay */
+u8 fld_getDiscChangeMask(void); /* other overlay */
+u8 fld_getDiscChangeDisc(void); /* other overlay */
 void config_apply(void);
 /* Window labels: entries of main's label string table g_winLabelStrings (ASCII), e.g. D_80070440 "ERROR",
  * D_8007048C "NOTICE", D_80070450 "HELP" (declared in ff9.h) */

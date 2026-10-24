@@ -682,7 +682,7 @@ INCLUDE_RODATA("asm/us/ovl_0c/nonmatchings/w_frame", D_800A7A0C);
 
 INCLUDE_RODATA("asm/us/ovl_0c/nonmatchings/w_frame", D_800A7A40);
 
-s32 func_800B8124(void) {
+s32 wm_canCallChocobo(void) {
     s32 n = g_worldPlayer->unk11;
     if (n < 3 && n != 0) {
         switch ((u8)g_worldActorTypeInfo[n].cellAttr >> 2) {

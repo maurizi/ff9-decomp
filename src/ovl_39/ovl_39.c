@@ -1848,7 +1848,7 @@ void menuSave_buildHeader(SaveBuf *buf) {
         n = o->unk3B;
     }
     if (s_menuSave.mode == SAVE_MODE_NEXT_DISC) {
-        h->discs = func_800B5074();
+        h->discs = fld_getDiscChangeMask();
     } else {
         h->discs = g_gameState->disc;
     }
@@ -1882,7 +1882,7 @@ void menuSave_getLocation(u8 *dst) {
     u8 *s;
 
     if (s_menuSave.mode == SAVE_MODE_NEXT_DISC) {
-        name = text_get(func_800B5064() + SAVE_TEXT_DISC_START);
+        name = text_get(fld_getDiscChangeDisc() + SAVE_TEXT_DISC_START);
     } else {
         name = g_gameState->unk1C->unk80C;
     }
@@ -2134,8 +2134,8 @@ void menuSave_packState(SaveState *h) {
         h->reserved2[i] = 0;
     }
     if (s_menuSave.mode == SAVE_MODE_NEXT_DISC) {
-        h->fieldId = func_800B5084();
-        h->unk22 = func_800B5094();
+        h->fieldId = fld_getDiscChangeFieldId();
+        h->unk22 = fld_getDiscChangeAreaId();
     } else {
         h->fieldId = gd->fieldId;
         h->unk22 = gd->unk3A;

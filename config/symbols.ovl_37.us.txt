@@ -66,3 +66,5 @@ s_menuItemKeyDesc = 0x801F79F8; // [code] key item descriptions (D_8006B374.unk6
 s_menuItemScrollClip = 0x801FA958; // [code] clip RECT of the rows scrolling in (func_8002F40C)
 s_menuItemSortBuf = 0x801FA968; // [code] inventory sort buffer (menuItem_sortAuto)
 s_menuItemSortTmp = 0x801FAB68; // [code] swap temp of menuItem_sortAuto
+wm_canCallChocobo = 0x800B8124; // type:func [code] ovl_0c function at this address (ovl_0c is loaded alongside this overlay)
+wm_callChocobo = 0x800B81A0; // type:func [code] ovl_0c function at this address (ovl_0c is loaded alongside this overlay)

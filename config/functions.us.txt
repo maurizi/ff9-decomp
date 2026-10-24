@@ -2742,7 +2742,7 @@ ovl_0b btlui_vsync 0x148 0x800e9a74
 ovl_0b btlui_frameUpdate 0x174 0x800e9bbc
 ovl_0b btlui_init 0x54 0x800e9d30
 ovl_0b func_800E9D84 0x38 0x800e9d84
-ovl_0b func_800E9DBC 0x40 0x800e9dbc
+ovl_0b btlui_loadPortraits 0x40 0x800e9dbc
 ovl_0b btlui_resetVsyncCount 0x14 0x800e9dfc
 ovl_0b btlui_reset 0x70 0x800e9e10
 ovl_0b btlui_exit 0x44 0x800e9e80
@@ -3131,7 +3131,7 @@ ovl_0c w_frameMapDestructor 0x44 0x800b8024
 ovl_0c w_frameSystemDestructor 0xa0 0x800b8068
 ovl_0c wm_getModelCacheBottom 0xc 0x800b8108
 ovl_0c wm_getChunkBuffer 0x10 0x800b8114
-ovl_0c func_800B8124 0x7c 0x800b8124
+ovl_0c wm_canCallChocobo 0x7c 0x800b8124
 ovl_0c wm_callChocobo 0x20 0x800b81a0
 ovl_0c wm_lerp 0x30 0x800b81c0
 ovl_0c wm_lerpS8 0x3c 0x800b81f0

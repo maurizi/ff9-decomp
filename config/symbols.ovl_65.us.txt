@@ -123,3 +123,4 @@ s_rewardsImage0 = 0x801EE03C; // [code] CLUT and image loaded to s_rewardsClutRe
 s_rewardsImage1 = 0x801EE19C; // [code] CLUT and image (the level-up label) loaded to s_rewardsClutRect1/s_rewardsImageRect1
 s_gameoverClearRect = 0x801EF260; // [code] {0, 0, 320, 224}, cleared by gameover_main
 s_gameoverVramRect = 0x801EF27C; // [code] {0, 0, 640, 224}, cleared by gameover_initDisp
+btlui_loadPortraits = 0x800E9DBC; // type:func [code] ovl_0b function at this address (ovl_0b is loaded alongside this overlay)

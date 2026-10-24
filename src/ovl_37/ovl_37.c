@@ -323,9 +323,9 @@ s32 menuItem_callChocobo(void) {
     ItemMenu *m = &s_menuItem;
 
     if (g_gameState->mode == 3 && g_evtGlobalVars.b[0xBF] != 0 && g_evtGlobalVars.b[0xB5] == 0) {
-        if (func_800B8124()) {
+        if (wm_canCallChocobo()) {
             g_evtGlobalVars.b[0xB5] = 1;
-            func_800B81A0();
+            wm_callChocobo();
             m->popup = win_openFree(&s_menuItemKwehRect, 0xF, 2);
             win_setOnOpened(m->popup, menuItem_onKwehOpened);
             win_setDrawContent(m->popup, menuItem_drawKweh);

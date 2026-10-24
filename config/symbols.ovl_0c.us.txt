@@ -608,3 +608,4 @@ s_menuMainStatusNormal = 0x800CE088; // [string] half-width kana "normal", token
 s_menuMainStatusAbnormal = 0x800CE090; // [string] half-width kana "abnormal", token 7 when Character.unk38 != 0
 g_worldFormStoryThresholds = 0x800CD060; // [code] u16[11] story-counter thresholds, wm_applyStoryForms picks the status index of g_worldFormStatusTable from the first one <= the counter
 g_worldCameraEaseShift = 0x800CCB04; // [code] g_worldCameraEaseDiv = |dy| >> it in wm_cameraFollow
+wm_canCallChocobo = 0x800B8124; // type:func [code] returns 1 when the player stands on a chocobo-callable cell type (3/18/21/22/28) of actor types 1-2, checked before wm_callChocobo by ovl_37 menuItem_callChocobo

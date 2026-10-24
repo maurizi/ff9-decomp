@@ -124,8 +124,8 @@ extern u8 s_menuItemKeyHelp[]; /* key item help text */
 s32 menuItem_getSlot(MenuList *);
 
 /* other overlay */
-s8 func_800B8124(void);
-void func_800B81A0(void);
+s8 wm_canCallChocobo(void);
+void wm_callChocobo(void);
 
 extern ItemSlot s_menuItemSortBuf[0x100]; /* inventory sort buffer */
 extern ItemSlot s_menuItemSortTmp; /* swap temp for the inventory sort */
