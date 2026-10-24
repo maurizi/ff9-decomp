@@ -18,10 +18,10 @@
 
 /* ---- overlay ---- */
 
-/* ChocographMenu.mode: index into g_menuChocographInputFuncs */
-enum { CHOCO_MODE_NONE, CHOCO_MODE_COMMAND, CHOCO_MODE_LIST };
-/* ChocographMenu.cmdCursor */
-enum { CHOCO_CMD_SELECT, CHOCO_CMD_CANCEL };
+/* ChocographMenu.mode: index into s_menuChocographInputFuncs */
+enum { CHOCO_MODE_NONE, CHOCO_MODE_TABS, CHOCO_MODE_LIST };
+/* ChocographMenu.tab */
+enum { CHOCO_TAB_SELECT, CHOCO_TAB_CANCEL };
 
 #define CHOCOGRAPH_COUNT 24
 #define CHOCO_LIST_ROWS  7 /* visible list rows (func_8002EDFC) */
@@ -30,12 +30,12 @@ enum { CHOCO_CMD_SELECT, CHOCO_CMD_CANCEL };
 /* Event variable bytes (g_evtGlobalVars.b) */
 #define CHOCO_VAR_FOUND   0xB8 /* 3 bytes: bit per chocograph whose treasure was found */
 #define CHOCO_VAR_OWNED   0xBB /* 3 bytes: bit per chocograph owned */
-#define CHOCO_VAR_ABILITY 0xBF /* chocobo ability level, compared with g_menuChocographRequiredAbility */
+#define CHOCO_VAR_ABILITY 0xBF /* chocobo ability level, compared with s_menuChocographRequiredAbility */
 
 /* g_chocographText ids */
 #define CHOCO_TEXT_TITLE      0    /* "Chocograph" */
-#define CHOCO_TEXT_SELECT     1    /* "Select", then 2 "Cancel" (+ command) */
-#define CHOCO_TEXT_HELP_CMD   3    /* help of the commands (+ command) */
+#define CHOCO_TEXT_SELECT     1    /* "Select", then 2 "Cancel" (+ tab) */
+#define CHOCO_TEXT_HELP_TAB   3    /* help of the tabs (+ tab) */
 #define CHOCO_TEXT_INADEQUATE 5    /* "Inadequate ability, kupo!" appended to the hint */
 #define CHOCO_TEXT_INVENTORY  7    /* "Inventory" */
 #define CHOCO_TEXT_FOUND      8    /* "Loc. Found" */
@@ -44,13 +44,13 @@ enum { CHOCO_CMD_SELECT, CHOCO_CMD_CANCEL };
 #define CHOCO_TEXT_HINT       0x22 /* + id: moogle hints, shown as help */
 #define CHOCO_TEXT_CLUE       0x3A /* + id: clue text in the info window */
 
-/* g_menuChocographIcons entries (menuChocograph_drawIcon) */
+/* s_menuChocographIcons entries (menuChocograph_drawIcon) */
 #define CHOCO_ICON_LOCKED     0xB /* ability level not reached */
 #define CHOCO_ICON_CHOCOGRAPH 0xC /* not found; +1 found; +2 / +3 the same when the ability is too low */
 
-/* Chocograph menu state (g_menuChocograph). */
+/* Chocograph menu state (s_menuChocograph). */
 typedef struct {
-    u8 cmdCursor;  /* CHOCO_CMD_* */
+    u8 tab;  /* CHOCO_CMD_* */
     u8 mode;       /* CHOCO_MODE_* */
     u8 ownedCount;
     u8 foundCount;
@@ -60,46 +60,46 @@ typedef struct {
     u32 found;     /* bit per chocograph: CHOCO_VAR_FOUND */
     MenuList list;
     RECT titleRect;    /* menuChocograph_drawTitle */
-    RECT cmdRect;      /* menuChocograph_drawCommands */
+    RECT tabRect;      /* menuChocograph_drawTabs */
     RECT selectedRect; /* menuChocograph_drawSelected */
-    RECT abilityRect;  /* menuChocograph_drawAbility */
+    RECT abilityRect;  /* menuChocograph_drawAbilities */
     RECT countRect;    /* menuChocograph_drawCounts */
     RECT listRect;     /* menuChocograph_drawList */
-    RECT infoRect;     /* menuChocograph_drawInfo */
+    RECT infoRect;     /* menuChocograph_drawHint */
     u8 textBuf[0x2000]; /* two 0x1000 halves, picked by frame parity, for func_8002920C */
     u8 *textPtr;
 } ChocographMenu;
-extern ChocographMenu g_menuChocograph;
+extern ChocographMenu s_menuChocograph;
 
-extern void (*g_menuChocographInputFuncs[])(void);
-extern u8 g_menuChocographHelpBuf[]; /* help text buffer */
-extern RECT g_menuChocographIconClutRect;
-extern RECT g_menuChocographIconRect;
-extern RECT g_menuChocographFrameClutRect;
-extern RECT g_menuChocographFrameRect;
+extern void (*s_menuChocographInputFuncs[])(void);
+extern u8 s_menuChocographHelpBuf[]; /* help text buffer */
+extern RECT s_menuChocographIconClutRect;
+extern RECT s_menuChocographIconRect;
+extern RECT s_menuChocographFrameClutRect;
+extern RECT s_menuChocographFrameRect;
 
 /* chocograph picture: 16-colour CLUT + 4bpp image, 24 of them in .rodata */
 typedef struct {
     u8 clut[0x80];    /* 64 16-bit entries (0, 0x1E8 + i) */
     u8 pixels[0x498]; /* 21x28 halfwords */
 } Ovl32Image;
-extern Ovl32Image g_menuChocographPictures[];
-extern u8 g_menuChocographIconImage[];
-extern u8 g_menuChocographFrameImage[];
-extern u8 g_menuChocographCmdNeedsSel[];
-extern u8 g_menuChocographRequiredAbility[];
+extern Ovl32Image s_menuChocographPictures[];
+extern u8 s_menuChocographIconImage[];
+extern u8 s_menuChocographFrameImage[];
+extern u8 s_menuChocographTabNeedsSel[];
+extern u8 s_menuChocographRequiredAbility[];
 typedef struct {
     RECT r[16]; /* Icon entries (8 bytes each), copied as RECTs */
 } IconTable;
-extern IconTable g_menuChocographIcons;
+extern IconTable s_menuChocographIcons;
 
-void menuChocograph_setHelpText(void);
-void menuChocograph_loadState(void);
+void menuChocograph_updateHelp(void);
+void menuChocograph_readFlags(void);
 void menuChocograph_loadImages(void);
 void menuChocograph_drawSelected(void);
 void menuChocograph_drawList(void);
 void menuChocograph_drawCounts(void);
-void menuChocograph_drawInfo(void);
+void menuChocograph_drawHint(void);
 void menuChocograph_drawCursor(void);
 void menuChocograph_restoreVram(void);
 void menuChocograph_drawPicture(s32, s32, s32, s32, u8);
@@ -108,15 +108,15 @@ void menuChocograph_input(void);
 void menuChocograph_draw(void);
 void menuChocograph_updateList(void);
 void menuChocograph_drawTitle(void);
-void menuChocograph_drawCommands(void);
-void menuChocograph_drawAbility(void);
-void menuChocograph_drawListScroll(void);
-void menuChocograph_drawListItem(s32, s32, s32, MenuView *);
+void menuChocograph_drawTabs(void);
+void menuChocograph_drawAbilities(void);
+void menuChocograph_drawScrollRows(void);
+void menuChocograph_drawRow(s32, s32, s32, MenuView *);
 void menuChocograph_drawIcon(s32, s32, s32, s32, u8);
 s32 menuChocograph_getRequiredAbility(s32);
 /* inlined copy of menuChocograph_getRequiredAbility */
 static inline s32 menuChocograph_getRequiredAbility_inline(s32 id) {
-    return g_menuChocographRequiredAbility[id];
+    return s_menuChocographRequiredAbility[id];
 }
 void menuChocograph_scrollTo(s32);
 void func_801F9660(void);
@@ -149,7 +149,7 @@ typedef struct {
     u8 w;
     u8 h;
 } FrameRect; /* window frame piece: position, uv, size */
-extern FrameRect g_menuChocographFramePieces[4]; /* frame pieces drawn by menuChocograph_drawFrame */
-extern u8 g_menuChocographFrameShadowPieces[2]; /* pieces that get a shadow */
+extern FrameRect s_menuChocographFramePieces[4]; /* frame pieces drawn by menuChocograph_drawFrame */
+extern u8 s_menuChocographFrameShadowPieces[2]; /* pieces that get a shadow */
 
 #endif
