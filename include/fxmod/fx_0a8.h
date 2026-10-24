@@ -20,7 +20,7 @@ typedef struct {
     s32 unk14;
     Pool6CEntry *unk18;
     s32 unk1C;
-    SVECTOR unk20; /* position: env->unkC->unk38..3C */
+    SVECTOR unk20; /* position: env->targets->centerX..Z */
 } Fx0a8Work81;
 
 extern Unk800F78A4 *D_801E7B68;

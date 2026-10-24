@@ -21,17 +21,17 @@ s32 fx_00e_op80(s32 mode, Fx00eWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
         work->unk18[1] = work->unk8.vy;
         work->unk18[2] = work->unk8.vz;
         ex->btlfx_initEffModels(D_801E7A88, 2);
-        work->unk24 = ex->Hi_RegisterTexEffModel((BtlUnit9C8 *)ex->btlfx_getFileData(entry->unk8, 4), 0x138, 0xFFFF, 0, 0x80);
-        p = ex->func_800E3CEC(ex->btlfx_getFileData(entry->unk8, 0xA), (s32)&work->unk8);
+        work->unk24 = ex->Hi_RegisterTexEffModel((BtlUnit9C8 *)ex->btlfx_getFileData(entry->file, 4), 0x138, 0xFFFF, 0, 0x80);
+        p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0xA), (s32)&work->unk8);
         if (p != NULL) {
             p->unk22 = ex->func_800E7CC4(0, 0x20);
         }
-        p = ex->func_800E3CEC(ex->btlfx_getFileData(entry->unk8, 0xB), (s32)&work->unk8);
+        p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0xB), (s32)&work->unk8);
         if (p != NULL) {
             p->unk22 = ex->func_800E7CC4(0, 0x20);
         }
     } else {
-        frame = entry->unk0;
+        frame = entry->frame;
         if (work->unk0 == 0) {
             a = (frame << 7) >> 1;
             rot.vx = 0;
@@ -54,7 +54,7 @@ s32 fx_00e_op80(s32 mode, Fx00eWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
                 return 1;
             }
         }
-        ex->btlfx_drawBackdrop((BtlBgLayers *)ex->btlfx_getFileData(entry->unk8, 3), work->unk4);
+        ex->btlfx_drawBackdrop((BtlBgLayers *)ex->btlfx_getFileData(entry->file, 3), work->unk4);
         work->unk4++;
     }
     return 0;

@@ -3251,6 +3251,575 @@ D_801EDF0C s_discChangeClut  # [code] 256-entry clut followed by the 194x168 pan
 # (ovl_37 menuItem_callChocobo, from tu_800654F8.c) and func_801F0FF4 (ovl_65 rewards_requestClose, from event.c
 # opcode 0xE1); both want a line in config/xrefs.us.txt.
 
+## ovl_0b cleanup/naming pass
+# Names from the ovl_0b cleanup pass (code evidence, 2026-10-24). Each "## bin" sub-section is rename.py input.
+# Struct fields are listed as FIELDS lines at the end of the section (tools/rename_fields.py).
+
+## ovl_0b: ovl_0b (cleanup pass: battle UI, btlui.c)
+func_800E9BBC btlui_frameUpdate  # [code] btlui_vsync runs it once per battle frame (D_80104E68.unkF, set by btlui_waitFrame): help, panel, target positions, window reaping
+func_800E9EC4 btlui_waitFrame  # [code] from btl_endFrame: DrawSync, then VSync until vsyncMode-1 vblanks have passed since btlui_resetVsyncCount, marks the frame done for btlui_vsync
+func_800E9DFC btlui_resetVsyncCount  # [code] clears the vsync counter btlui_vsync increments (from btl_beginFrame)
+func_800E9E80 btlui_exit  # [code] disables the UI, removes the VSync callback btlui_init installed, restores the key-repeat settings
+func_800E9F3C btlui_enable  # [code] 1 requests the UI on (applied by btlui_applyEnable at the next frame), 0 turns it off
+func_800EA550 btlui_applyEnable  # [code] turns a pending btlui_enable(1) into the active flag, enables ATB, rebuilds the panel and item lists
+func_800E9FF4 btlui_isEnabled  # [code] returns the active flag btlui_enable/btlui_applyEnable set
+func_800E9F68 btlui_setAtbEnabled  # [code] sets the flag btl_isAtbRunning tests; 0 also closes the menu and the help window
+func_800EA004 btlui_isTargetSelect  # [code] menuState == BTLUI_MENU_TARGET
+func_800EA0F8 btl_useReservedItem  # [code] un-reserves the item and removes one from the inventory (btlui_unreserveItem + btlui_removeItem)
+func_800EA124 btl_unreserveItem  # [code] wrapper of btlui_unreserveItem
+func_800EA144 btl_reserveItem  # [code] wrapper of btlui_reserveItem (btl_tryAutoPotion reserves the potion it queues)
+func_800EA164 btl_useItem  # [code] removes one of the item; un-reserves it when that was the last one
+func_800EA1B0 btl_addItem  # [code] wrapper of btlui_addItem (formulas that give an item)
+func_800EA1F8 btlui_drawOTagEnv  # [code] DrawOTagEnv with the UI's busy flag set around it (btl_endFrame)
+func_800EA230 btlui_drawOTag  # [code] DrawOTag with the UI's busy flag set around it
+func_800EA400 btlui_input  # [code] while ATB runs: help toggle (btlui_helpInput) and btlui_menuInput
+func_800EA498 btlui_update  # [code] btlui_updateMenu, panel update, win_updateAll, help slide
+func_800EA650 btlui_initPartyEntries  # [code] links each party unit to its g_btlUi entry (BtlUnit.unkB4) and builds its ability list
+func_800EA7B8 btlui_copyTranceAbilities  # [code] copies the ability slots of the normal command list to the trance command list's positions (D_800FDDD0 / D_800FDDF8 per character)
+func_800EAC88 btlui_checkSwdMagPartner  # [code] sets g_btlUi->unk12B7 when character 1 is in the party and unk12B8 when it or character 3 can't take part; btlui_buildCmdList hides/greys Swd Mag (0x1F) with them
+func_800EAD94 btlui_popMenuUnit  # [code] takes the next unit off the menu queue that can still act
+func_800EAE8C btlui_pruneMenuQueue  # [code] drops units that can no longer act from the menu queue, one entry per unit
+func_800EB05C btlui_initMenu  # [code] allocates g_btlUi, ambush ATB freeze, party entries, empty menu queue, window pointers
+func_800EB238 btlui_updateAtbFreeze  # [code] for the first 75 ticks the ambushed side's ATB stays still (g_btlUi->unk12B6 = btlui_getFrozenSide), then nobody's
+func_800EB9E0 btlui_getFrozenSide  # [code] from the ambush kind (scene.unk0 & 3): 0 back attack -> 1 (party), 1 first strike -> 0 (enemies), else 2 (none); btl_updateAtb skips that side
+func_800EB2A4 btlui_getMenuState  # [code] returns g_btlUi->menuState
+func_800EB2E0 btlui_clearMenuQueue  # [code] zeroes the menu queue counters
+func_800EB2FC btlui_flushMenuQueue  # [code] clears inMenuQueue on every queued unit, then empties the queue
+func_800EB358 btlui_queueMenuUnit  # [code] appends a unit whose ATB filled to the 4-entry menu queue (btl_updateAtb)
+func_800EB3A0 btlui_resetMenuQueue  # [code] empties the queue and clears inMenuQueue on every party unit
+func_800EB410 btlui_closeMenu  # [code] releases the menu unit, sets BTLUI_MENU_CLOSING and closes the windows
+func_800EB46C btlui_closeWindows  # [code] closes all menu windows (and the battle list window)
+func_800EB518 btlui_saveCursor  # [code] remembers the command cursor (arg1 0) or the list cursor/scroll for that command (Unk800EB518)
+func_800EB54C btlui_clearCursor  # [code] zeroes a Unk800EB518 cursor memory
+func_800EB590 btlui_getQueuedUnit  # [code] g_btlUi->unk12C8[i]
+func_800EB5AC btlui_clearAbilityLists  # [code] zeroes the three 0xC0-entry ability tables of every party entry
+func_800EB600 btlui_buildAbilityList  # [code] learned abilities, equipment abilities, trance copies, the character-3 extra list
+func_800EB63C btlui_addLearnedAbilities  # [code] per ability id: the character's AP counter and the AP needed (func_80034430 slot)
+func_800EB6FC btlui_addEquipAbilities  # [code] marks the abilities of the five equipped items (D_80069018 unkC[3])
+func_800EB7B0 btlui_canOpenMenu  # [code] unit alive, able to act and allowed by the menu mask D_800FDF3A
+func_800EB81C btlui_applyTargetable  # [code] BtlUnit.unkB2 2/3 clear/set the targetable bits (unk68 16 and 28) and update the target cursor
+func_800EBA10 btlui_onCmdWindowClosed  # [code] window close callback: BTLUI_MENU_NONE
+func_800EBB34 btlui_initHelp  # [code] clears the help state D_80104F90, allocates its 0x100-byte text buffer D_80104FA0
+func_800EBB78 btlui_helpInput  # [code] the Select bit 0x08000000 toggles the help window (btlui_toggleHelp)
+func_800EBBB4 btlui_updateHelpSlide  # [code] counts the help window's 7-frame slide-in, then redraws the panel (func_800F3ECC(0))
+func_800EBC30 btlui_checkHelpClose  # [code] closes the help window when the panel shows no entries or a close was requested
+func_800EBCB4 btlui_isHelpOpen  # [code] D_80104F90.unk0
+func_800EBCC4 btlui_toggleHelp  # [code] opens (sound 0x2AA, slide in) or requests closing (sound 0x65) the help window
+func_800EBD58 btlui_closeHelp  # [code] requests closing the help window
+func_800EBEFC btlui_removeItem  # [code] item_remove one; when none are left drops it from the item list (>= 0xE0) and the throw list (weapons with flag 4)
+func_800EC008 btlui_initItemLists  # [code] allocates D_80104FA8 (0x2E0), clears the reservations, builds both lists
+func_800EC048 btlui_buildItemLists  # [code] btlui_buildItemList + btlui_buildThrowList
+func_800EC070 btlui_addItem  # [code] item_add-type call func_80027D84(id, 1), then adds the id to the item or throw list when missing
+func_800EC130 btlui_getThrowListEntry  # [code] D_80104FA8->unk80[i] (throwable weapons; btlui_getItemListEntry is the item list)
+func_800EC14C btlui_reserveItem  # [code] ++ the per-item reservation count btlui_getItemReserved reads
+func_800EC170 btlui_unreserveItem  # [code] -- the reservation count
+func_800EC1B0 btlui_buildItemList  # [code] inventory slots with items >= 0xE0 (battle items), up to 31
+func_800EC258 btlui_buildThrowList  # [code] inventory weapons (< 0x58) with D_8006E0E8 flag 4 (throwable), up to 0x58
+func_800EC334 btlui_addItemListEntry  # [code] puts item_findSlot(id) in the first free item-list entry
+func_800EC3C0 btlui_addThrowListEntry  # [code] same for the throw list
+func_800EC44C btlui_findItemListEntry  # [code] item-list index of an item id, 0xFF if absent
+func_800EC49C btlui_findThrowListEntry  # [code] throw-list index of an item id, 0xFF if absent
+func_800EC4EC btlui_openCmdMenu  # [code] opens the command window (window 3) for g_btlUi->cmdUnit with btlui_drawCmdList/Overlay, sound 0x414
+func_800EC928 btlui_drawSideCmd  # [code] draws the Defend/Change box sliding out of the command window (text D_800F8DE4[side], frame btlui_drawSideFrame)
+func_800ECA50 btlui_confirmCmd  # [code] Cross in the command menu: runs D_800F8DF0[kind] for the command, or the side command (Defend/Change)
+func_800ECB5C btlui_buildCmdList  # [code] Attack, the character's two commands (trance set D_800FDDF8 in trance), Item; hides/greys Swd Mag
+func_800ED02C btlui_drawSideFrame  # [code] the side-command box: three sprites, texture window, fill
+func_800ED3F8 btlui_drawTranceLabel  # [code] the TRANCE label drawn over a pulsing gradient with mask-bit tricks
+func_800ED7C0 btlui_drawPulseGradient  # [code] POLY_G4 whose colours pulse between two pairs of c[] with the frame counter
+func_800EDAD4 btlui_cmdInput  # [code] BTLUI_MENU_CMD input handler (D_800F8D94[1]): Triangle pass, Cross confirm, up/down, left/right side commands
+func_800EDB68 btlui_updateCmdMenu  # [code] BTLUI_MENU_CMD update handler (D_800F8DA8[1]): rebuilds the command list
+func_800EDC3C btlui_onCmdMenuOpened  # [code] window opened callback: BTLUI_MENU_CMD; switches input to the character's controller port (two-controller option, func_8002C584)
+func_800EDCA0 btlui_cmdCursorUp  # [code] cursor up, skipping empty slots, sound 0x67
+func_800EDD1C btlui_cmdCursorDown  # [code] cursor down, skipping empty slots
+func_800EDD9C btlui_cmdSideInput  # [code] left/right held: slide the side command out, else back
+func_800EDDF8 btlui_passTurn  # [code] Triangle: closes the command window and requeues the unit (btlui_onPassClosed)
+func_800EDE6C btlui_selectDirectCmd  # [code] command kind 0 (D_800F8DF0[0]): goes straight to target selection with the command's ability
+func_800EDF34 btlui_openAbilityList  # [code] command kind 1: btlui_openList with the ability-list labels
+func_800EDF90 btlui_openItemList  # [code] command kind 2: btlui_openList with the item labels
+func_800EDFEC btlui_openThrowList  # [code] command kind 3: btlui_openList with the throw labels
+func_800EE048 btlui_issueSideCmd  # [code] issues Defend (right) or Change (left) (D_800F8E04 = {0, 4, 7}) and closes the window
+func_800EE0FC btlui_onSideCmdClosed  # [code] window closed callback after btlui_issueSideCmd
+func_800EE120 btlui_onPassClosed  # [code] window closed callback after btlui_passTurn: requeues the unit
+func_800EE154 btlui_slideLeft  # [code] left: slides the Change box out (5 steps)
+func_800EE24C btlui_slideRight  # [code] right: slides the Defend box out
+func_800EE31C btlui_slideBack  # [code] neither held: slides the side box back in
+func_800EE37C btlui_openList  # [code] opens the ability/item list window (window 2) for the chosen command, restoring the remembered cursor
+func_800EE680 btlui_selectAbility  # [code] list confirm for abilities: usable ones go to target selection
+func_800EE7F8 btlui_selectItem  # [code] list confirm for items: one left after reservations goes to target selection
+func_800EE938 btlui_selectThrow  # [code] list confirm for throwable weapons
+func_800EED30 btlui_updateList  # [code] BTLUI_MENU_LIST update handler: closes the list when the command became unusable (Swd Mag partner, trance change)
+func_800EEDD4 btlui_nextDoubleCast  # [code] counts the first pick of Dbl Wht / Dbl Blk (D_80104FD0.unk10)
+func_800EEDF0 btlui_getListHelpText  # [code] help text of the list entry under the cursor (D_800F8E58[kind])
+func_800EEE3C btlui_listConfirm  # [code] Cross in the list: D_800F8E38[kind] select, sound 0x67 or 0x66
+func_800EEFA8 btlui_drawListScroll  # [code] draws the rows of the list's scrolling view
+func_800EF00C btlui_onListOpened  # [code] window opened callback: BTLUI_MENU_LIST
+func_800EF044 btlui_closeList  # [code] closes the list window, back to the command menu (btlui_onListClosed)
+func_800EF094 btlui_drawListRow  # [code] D_800F8E48[kind] row drawer (btlui_drawAbilityRow, btlui_drawItemRow, btlui_drawThrowRow)
+func_800EF390 btlui_drawThrowRow  # [code] weapon name and count left after reservations
+func_800EF4D8 btlui_resolveAbility  # [code] Carbuncle 0x44 -> 0x45-0x47 and Fenrir 0x42 -> 0x43 by the equipped accessory
+func_800EF5E0 btlui_getAbilityHelpText  # [code] help text of the ability under the list cursor (D_800F96E4 + D_800FB1F0[k])
+func_800EF674 btlui_getItemHelpText  # [code] help text of the item under the list cursor (D_800FB4F0 + D_800FD36C[id])
+func_800EF724 btlui_getThrowHelpText  # [code] same for the throw list
+func_800EF7D4 btlui_onListClosed  # [code] window closed callback: back to BTLUI_MENU_CMD
+func_800EF80C btlui_startTargetSelect  # [code] fills g_btlTarget from the chosen command/ability and sets the default targets
+func_800EFA10 btlui_setDefaultTargets  # [code] marks the default targets (unk68 bit 29) for the target type (all, self, D_800F8E68 side/all)
+func_800EFB3C btlui_cycleTarget  # [code] moves the single target cursor to the previous/next targetable unit of its side
+func_800EFD1C btlui_switchTargetSide  # [code] moves the cursor to the other side when the target type allows it
+func_800EFF14 btlui_toggleTargetAll  # [code] L1/R1: toggles between one target and the whole side
+func_800F028C btlui_refreshTargets  # [code] retargets when the cursor unit died or vanished
+func_800F0620 btlui_confirmDoubleCast  # [code] Dbl Wht / Dbl Blk: the first pick is stored, the second issues both (delayedCmd and cmd)
+func_800F0A54 btlui_drawTargetList  # [code] target-name window: enemy names left, party names right, colored by state
+func_800F0BE0 btlui_drawTargetListOverlay  # [code] target-name window labels and hand cursors
+func_800F0F60 btlui_getTargetHelpText  # [code] "<verb> <name>" / "all" help text for the current targets
+func_800F1150 btlui_onUnitTargetable  # [code] a unit became targetable while all-targeting: redo the default targets
+func_800F11A4 btlui_onUnitUntargetable  # [code] a targeted unit left: unmark it and redo the default targets
+func_800F1300 btlui_updateTarget  # [code] BTLUI_MENU_TARGET update handler (D_800F8DA8[3]): cancels when the command became unusable
+func_800F1370 btlui_getTargetWindow  # [code] g_btlUi->unk12A4[0]
+func_800F13BC btlui_getTargetReturnState  # [code] g_btlTarget.unk0, the menu state btlui_cancelTarget returns to
+func_800F13CC btlui_countTargeted  # [code] units with unk68 bit 29 (target cursor)
+func_800F142C btlui_clearTargeted  # [code] clears unk68 bit 29 on every unit
+func_800F1484 btlui_collectCursorPositions  # [code] screen positions of the targetable on-screen units into D_80105020 for btlui_drawTargetCursors
+func_800F1548 btlui_getCursorPositions  # [code] &D_80105020
+func_800F160C btlui_targetPrev  # [code] btlui_cycleTarget(0), sound 0x67
+func_800F1640 btlui_targetNext  # [code] btlui_cycleTarget(1)
+func_800F1674 btlui_targetEnemySide  # [code] btlui_switchTargetSide(0)
+func_800F16A8 btlui_targetPartySide  # [code] btlui_switchTargetSide(1)
+func_800F16DC btlui_targetFirst  # [code] marks the first (or every) targetable unit of a side
+func_800F1790 btlui_targetDefault  # [code] like btlui_targetFirst, preferring a KO unit (revive) or the caster itself
+func_800F18F0 btlui_findKoUnit  # [code] first targetable KO unit of a side
+func_800F1970 btlui_openTargetWindow  # [code] opens the target-name window (window 0)
+func_800F1A20 btlui_closeTargetWindow  # [code] closes the target-name window, state to restore in g_btlTarget.unk12
+func_800F1A8C btlui_onTargetWindowOpened  # [code] window opened callback: dims the list/command windows, sets the saved state
+func_800F1AF8 btlui_onTargetWindowClosed  # [code] window closed callback: undims, restores the saved state
+func_800F1B78 btlui_getTargeting  # [code] BtlCmd targeting value: 2 for target types 9-11, else 1 when several units are marked
+func_800F1BFC btlui_drawListCursors  # [code] hand sprites next to the targeted party rows of the battle list window
+func_800F1E84 btlui_drawHpList  # [code] party HP / max HP rows (battle list window page)
+func_800F1FBC btlui_drawMpList  # [code] party MP / max MP rows
+func_800F2118 btlui_drawStatusList  # [code] up to 9 status icons per party unit (D_800F8F18, 16 entries)
+func_800F224C btlui_drawStatusList2  # [code] status icons at fixed columns (D_800F8F98, 8 entries)
+func_800F27CC btlui_openListWindow  # [code] opens the battle list window (window 1) below the panel with page arg (D_800F8F04 drawers)
+func_800F2890 btlui_closeListWindow  # [code] closes the battle list window
+func_800F28F0 btlui_resizeListWindow  # [code] resizes the battle list window to the current entry count
+func_800F29A4 btlui_isListWindowOpen  # [code] D_80105058.unk0
+func_800F2A0C btlui_initHeap  # [code] UI bump allocator over GameData.unk7E0 (0x8000 bytes)
+func_800F2A60 btlui_alloc  # [code] bump allocation, rounded up to 4 bytes
+func_800F2AAC btlui_updatePanel  # [code] party panel rows: units, can-act, slot, ATB speed (2 slow/stop, 3 haste), trance gauge kind
+func_800F316C btlui_updateGauges  # [code] steps the animated HP/MP readouts (Unk80104F88Gauge) toward the units' values
+func_800F3C08 btlui_initPanel  # [code] allocates D_80105078 (0x8C), builds the panel rows and header labels
+func_800F3D0C btlui_updatePanelAnims  # [code] header label slides, gauge readouts, highlight pulse
+func_800F3E60 btlui_refreshPanel  # [code] btlui_updatePanel and the highlighted row
+func_800F3EA4 btlui_getPanel  # [code] returns D_80105078
+func_800F3EB4 btlui_isPanelShown  # [code] D_80105078->unk0
+func_800F3ECC btlui_showPanel  # [code] sets D_80105078->unk0
+func_800F3F10 btlui_slidePanelLabels  # [code] moves the panel header labels by their slide records (Unk800F3F10), calling the done hook
+func_800F3FDC btlui_pulsePanelHighlight  # [code] triangle wave 0..0x1F from the frame counter into D_80105078->unk54
+func_800F4010 btlui_resetGauges  # [code] snaps a row's HP/MP readouts to the unit's values
+func_800F40D0 btlui_alignPanelLabel  # [code] right-aligns a header label (kind 1) by its text width
+func_800F412C btlui_startLabelSlide  # [code] starts a header-label slide record
+func_800F42F0 btlui_findHighlightRow  # [code] panel row of the menu unit
+func_800F4384 btlui_drawPortIcons  # [code] two-controller option (GameState.unk24 bit 5): draws the controller-port icons by the active port into their own OT
+func_800F4630 btlui_saveKeyRepeat  # [code] saves both ports' 0x17 key-repeat enables (main func_8002C700) and sets the battle ones
+func_800F4700 btlui_restoreKeyRepeat  # [code] restores the key-repeat enables btlui_saveKeyRepeat saved
+func_800F4884 btlui_initPrims  # [code] allocates D_801050D8 (0x368) and builds the fixed sprites per draw buffer
+func_800F48E4 btlui_initDrawBufs  # [code] allocates the UI primitive/OT buffers (func_8002BEEC), sets g_ot/g_primPtr, stores both display origins in D_801051E8
+D_80104E68 g_btluiState  # [code] UI frame state: active flags, vsync counter (unk1C), frame-done flag (unkF), ATB enable (unk2) (btlui_vsync, btlui_enable, btl_isAtbRunning)
+D_80104F90 g_btluiHelp  # [code] help window state (btlui_toggleHelp, btlui_drawHelpWindow)
+D_80104FA0 g_btluiHelpText  # [code] 0x100-byte help text buffer (btlui_initHelp, btlui_getCmdHelpText)
+D_80104FA8 g_btluiItems  # [code] battle item and throw lists plus reservations (btlui_initItemLists)
+D_80104FD0 g_btluiList  # [code] state of the open ability/item list (btlui_openList)
+D_80105020 g_btluiCursors  # [code] target-cursor screen positions (btlui_collectCursorPositions)
+D_80105060 g_btluiHeap  # [code] UI bump allocator (btlui_initHeap, btlui_alloc)
+D_80105078 g_btluiPanel  # [code] party panel state (btlui_initPanel)
+D_801050D8 g_btluiPrims  # [code] fixed UI sprites per draw buffer (btlui_initPrims)
+D_801051E8 g_btluiDispOrigin  # [code] display x/y per draw buffer (btlui_initDrawBufs), added to DR_MOVE rects
+D_800F8D94 g_btluiMenuInput  # [code] per-menuState input handlers (btlui_menuInput)
+D_800F8DA8 g_btluiMenuUpdate  # [code] per-menuState update handlers (btlui_updateMenu)
+D_800F8DC4 g_btluiMenuHelp  # [code] per-menuState help-text getters (btlui_updateHelpText)
+func_800F47D8 btlui_anyOnSecondPort  # [code] two-controller option: 1 when a party member is assigned to port 2 (GameState.unk24 bits 20+)
+
+
+## ovl_0b: ovl_0b (cleanup pass: battle flow and loaders, btl_main.c)
+func_800A882C btl_updatePause  # [string] "Disc Cover Open": pauses the battle (sound, CD) and draws the pause sprite 0xEB or the disc-cover message; resumes when the request clears (btl_main, after btlui_isPauseRequested)
+func_800A8BF4 btl_checkDiscCover  # [code] sets/clears Battle.flags 0x20 (disc cover open) from the CD lid state (func_800230A0, cd_getState) and requests the pause screen
+func_800EA30C btlui_isPauseRequested  # [code] the pause request btlui_readPad sets on Start (g_padRepeat 8) while the UI is up
+func_800EA338 btlui_setPauseRequest  # [code] sets/clears the pause request (btl_updatePause, btl_checkDiscCover)
+func_800A91EC btl_unloadCommonData  # [code] db_unregister of the common battle data btl_loadCommonData registered (from btl_exitMode)
+func_800A9BE4 btl_reloadPartyStep  # [code] state machine: sounds, weapon models, party models (btl_load*Step), then rebinds each party unit's model, motions and weapon; Battle.flags |= 4 when done (runtime: during summons, via func_800AB410)
+func_800AA24C btl_loadSoundsStep  # [code] CD state machine over the battle's sound files (kind 0xB): hands each file's 0x90000 block to the AKAO bank loaders (func_80055D80 / func_80056048)
+func_800AA504 btl_loadEnemyModelsStep  # [code] CD state machine over the dependency table's model entries (type 2, files 0x20000 | id), nearest sector first; uploads their textures, Battle.flags |= 2 when done
+func_800AA958 btl_loadWeaponModelsStep  # [code] CD state machine over the party's weapon models (D_8006E0E8[equip[0]].unk2, file kind 8), registered in Battle.unk1354->unk20[slot]
+func_800AABC4 btl_loadPartyModelsStep  # [code] CD state machine over the party models (btl_getPartyModelId, file kind 0xA), registered in Battle.unk1354->unk30[slot]
+func_800AAEF0 btl_findNearestFile  # [code] of a list of file ids, the one with the lowest disc sector (file_find, else the dependency table) and its size; it marks which to read next
+func_800AB07C btl_uploadModelTextures  # [code] uploads a model file's texture blocks (0x40000) to its slot's VRAM column and rewrites the tpage/clut words
+func_800AB26C btl_unregisterFiles  # [code] db_unregister and clear arr[0..n]
+func_800AB2C8 btl_findBackgroundId  # [code] dependency-table entry of kind 0xC (the background, btl_setupBackground)
+func_800AB324 btl_getDepSectors  # [code] sector and length of a dependency-table key
+func_800AB38C btl_getLinkedDepSectors  # [code] btl_getDepSectors of the key's link (unkC)
+func_800AB410 btl_reloadParty  # [code] btl_reloadPartyStep(0x207), 0x8207 restarts it; runtime 48-57 calls per summon (docs/runtime-findings.md "Summons")
+func_800AB43C btl_unloadPartyModels  # [code] unregisters the weapon and party model files, clears Battle.flags 4
+func_800AB4FC btl_unloadEnemyModels  # [code] unregisters the enemy model files, clears Battle.flags 2
+func_800AB580 btl_loadModelsStep  # [code] sounds, enemy models, weapons, party models in turn (each btl_load*Step), then Battle.flags |= 4; btl_updateIntro polls it
+func_800AB6F0 btl_findWeaponModel  # [code] block 4/id inside the slot's weapon file (btl_initWeapon)
+func_800AB758 btl_getWeaponTexInfo  # [code] the three texture tables (tpage, clut, rect) of the slot's weapon file (block 0x120000)
+func_800AB810 btl_registerModel  # [code] GameData.unk838 hook: fills a model slot (mesh, animation, textures, texture animations) for a model id, returns the slot
+func_800ABA10 btl_getPartyModelId  # [code] the party slot's model file id: D_800F5200 by character model, +0x13 for the other (trance) model
+func_800ABB60 btl_getWeaponModelHeader  # [code] block 0x20000 of the slot's weapon file
+func_800ABBC4 btl_swapPartyModelStep  # [code] reloads one party member's model (CD, textures, motions) and rebinds the unit (runtime: trance, via func_800AB3E4)
+func_800AC244 btl_getAnimFileId  # [code] animation file id (0x30000 | entry[1]) for a model id
+func_800AC280 btl_getModelTexInfo  # [code] texture tables of a model id; copied to the work heap for slots >= 9
+func_800AE47C btl_getWeaponSound  # [code] sound id (0x80000 | n entry) in the party slot's weapon file: 0 swing (btlfx_playSwingSound), 1 by btl_status.c
+func_800AE570 btl_getSoundFileSectors  # [code] sector (and size) of a sound file: dependency entry for kind 7, else file kind 11
+func_800AE764 btl_getDepLink  # [code] link field (unkC) of a dependency-table key
+func_800AE844 btl_onSoundRead  # [code] CD read callback of btl_soundCmd's sound-bank reads: passes the received part to func_80055E14 / func_80056048
+func_800AF1D0 btl_preloadExit  # [code] once GameData.unk56F & 0x40 (battle ending): preloads file 0x10065 to 0x801EDF00 and 0x2713 into the battle buffer
+
+## ovl_0b: ovl_0b (cleanup pass: camera script, effect op arguments)
+D_800FE488 g_btlCamScript  # [code] camera-script player: script pointer, frame, sway, shake and zoom tweens (btlcam_step, btlcam_applySway, btlcam_applyShake)
+D_80100D88 g_btlfxOpArgs  # [code] four bytes set by unit ops 0x50/0x51 (btlfx_opSetParamsA/B) and read as extra arguments by the following unit ops
+
+## ovl_0b: ovl_0b (cleanup pass: commands, status, models, popups, setup, background rain)
+func_800B0E04 btl_applyHitSupports  # [code] after an enemy hit (btl_gainTrance): support bit unkC4[1] 0x100000 restores half max HP at low HP, 0x800000 gains the attack's MP cost
+func_800B0FC0 btl_initTargetCursor  # [code] tpage and colours of the four target-cursor faces per draw buffer (Battle.cursorPrims)
+func_800B44A0 btl_clearBounceMasks  # [code] zeroes BtlUnit.unk1C[4], the Reflect bounce masks btl_applyReflect fills and btl_applyCalcResult counts
+func_800B96AC btl_checkSwdMagUsable  # [code] enough MP and a character-kind-2 party member able to act, else message 0xF
+func_800B9B64 btl_initUndeadHitRate  # [code] for Zombie or undead (enemy flag 0x10) targets: status hit rate and magic evade like btl_initStatusHitRate; 0 then
+func_800BA078 btl_setMultiplierFromPower  # [code] BtlCalc multiplier = ability power
+func_800BAF70 btl_calcEnemySteal  # [string] removes the item named by the ability (btl_useItem) with message 0x1F "<item> was stolen!", or 0xA "Couldn't steal anything." when the party has none
+func_800C0544 btl_makeGreyCluts  # [code] StoreImage each CLUT row of the unit's model, averages r/g/b to grey, LoadImage 12 rows lower (btl_addStatus, petrify); docs/runtime-findings.md had it low-medium
+func_800C072C btl_makeEnemyGreyCluts  # [code] greys the enemy CLUT copy btl_saveEnemyCluts took and loads it at y 0xDA (btl_updateIntro once enemy models are loaded)
+func_800C0840 btl_makePartyGreyCluts  # [code] greys every third party CLUT row of btl_savePartyCluts' copy into y 0xF2.. (btl_updateIntro once party models are loaded)
+func_800C0C7C btl_saveEnemyCluts  # [code] StoreImage of the 6 CLUT rows at (0x100, 0xE0)
+func_800C0CD0 btl_savePartyCluts  # [code] StoreImage of the 12 CLUT rows at (0x100, 0xE6)
+func_800C0A3C btl_initDoomCount  # [code] BtlUnit.unk66 = (60 - spirit) * 8 * status 27 (Doom) timer scale
+func_800C0D24 btl_reapplyStatusLook  # [code] stone CLUT or status colour again, background light on model and weapon (btlfx_restorePartyLooks)
+func_800C1DEC btl_findBodyUnit  # [code] the enemy whose record flag 0x100 marks it as the model owner; units with unk68 bit 23 have no model of their own and use its
+func_800C2344 btl_applyBgLight  # [code] sets every mesh group's colour to the background header's light colour (btlbg_getHeader unkC-E)
+func_800BD5A0 btl_setKoMotion  # [code] KO motion (motions[4]) and pose; with Auto-Life queues BTL_CMD_AUTO_LIFE and returns 0, else 1
+func_800BD698 btl_loadPartyMotions  # [code] the 0x22 motion addresses of a character kind into Battle.partyMotions[n] (db 0x30000 | D_800F524C) and points BtlUnit.motions there
+func_800BD8C0 btl_copyStats  # [code] copies hp, mp, atb (and the byte at 7) between two Character/BtlUnit stat blocks (btl_initPartyUnit)
+func_800BDA60 btl_toggleRow  # [code] Change: moves the unit 0x190 forward/back in z (home too) and flips the row bits 8-9 of unk68
+func_800BB974 btl_initEnemyState  # [code] per enemy: level, ATB, motion data relocation, home position from the model or the placement, random motion frame
+func_800AF578 btl_updateUnits  # [code] non-combat phases: unit models, KO, entrance/victory motions, scene draw; returns 1 when all units are idle
+func_800C23C8 btl_setShadowSize  # [code] BtlUnit.unkBF/unkC0 = width / 14, depth / 12 and the unit's shadow record (Battle11C028) size; BTL_ATTR_SCALE scales them
+func_800CBF90 btl_clearPopups  # [code] empties the 16-entry popup ring (Battle.popups)
+func_800CC278 btl_newPopup  # [code] takes the next popup ring entry for a unit, at its base bone
+func_800CC444 btl_packDigits  # [code] decimal digits of n (< 9999) one per nibble, digit count in bits 16+
+func_800CC818 btl_drawNumberPopup  # [code] D_800F6A7C[0/1]: HP/MP number popup with its bounce animation (D_800F6A28/38)
+func_800CC9C8 btl_drawTextPopup  # [code] D_800F6A7C[2]: Miss/Guard/Critical glyph popup (D_800F6A54)
+func_800CCAF0 btl_clampPopup  # [code] keeps a popup inside the screen, with the y offset fixed on its first frame
+func_800CCBC0 btl_drawPopupDigits  # [code] one SPRT per packed digit (btl_packDigits)
+func_800CCD00 btl_drawPopupGlyph  # [code] one SPRT for a glyph record
+func_800C67BC btl_buildMeshPrims  # [code] projects a model mesh group and links its F/G/FT/GT primitives into the OT by depth
+func_800C7730 btl_applyModelTextures  # [code] writes the tpage/clut words of a model's textured primitives from its texture tables (btl_registerModel, btl_initWeapon)
+func_800C7B84 btl_applyModelScale  # [code] with model flag 2 scales the model matrix by unk54/56/58 (BTL_ATTR_SCALE)
+func_800C7CC8 btl_updateModelVisibility  # [code] model flag 0x10 = off screen, from the projected position or the parent model (unk1C)
+func_800C8A3C btl_fillModelRgb  # [code] sets the colour of every primitive of the visible mesh groups (btl_setUnitFade)
+func_800C8BE0 btl_addMeshRgb  # [code] adds r/g/b (clamped, btl_addRgbClamped) to a mesh group's FT4/FT3 colours
+func_800C8D18 btl_setMeshRgb  # [code] sets a mesh group's FT4/FT3 colours
+func_800C9040 btl_updateTexAnims  # [code] steps a model's texture animations: MoveImage per frame, random pause, row scrolling for flag 4 (ff9-ds F11)
+func_800C9374 btl_relocTexAnims  # [code] turns a texture-animation set's offsets into pointers and adds the slot's VRAM offsets
+func_800C94B8 btl_initScene  # [code] scene tables of the encounter, enemy group (btl_pickEnemyGroup), camera choice Battle.unk131C
+func_800C9600 btl_pickEnemyGroup  # [code] weighted random enemy group of the encounter, or the forced GameData.unk848
+func_800C9794 btl_setupEnemies  # [code] ambush roll, enemy type records, enemy abilities, placed enemy units (btl_initEnemyUnit, btl_setEnemyStats)
+func_800C9A28 btl_placeParty  # [code] party units in a row 0x278 apart, rows and facing by the ambush kind, Float height, shadow size
+func_800C9D1C btl_initEnemyType  # [code] copies an encounter enemy record into its Battle.enemyTypes entry (stats, motions, rewards)
+func_800CA28C btl_copyAbility  # [code] *dst = *src for a 16-byte ability record
+func_800CA2B0 btl_getSceneData  # [code] entry n of the scene's self-relative offset table (scene.unk10): camera scenes, per-enemy data
+func_800CA2E4 btl_getEnemyModelId  # [code] model id of placement n of the enemy group, -1 for parts without a model
+func_800CA378 btl_getEntranceSound  # [code] sound of the first enemy type (scene record unk62), played when combat starts (btl_update)
+func_800CEBAC btlbg_startRain  # [code] D_800F7274 = 0x1F streaks for btlbg_drawRain
+func_800CEBBC btlbg_stopRain  # [code] D_800F7274 = 0
+func_800CEBC8 btlbg_drawRain  # [code] D_800F7274 random vertical LINE_G2 streaks in blue-grey around the camera, semi-transparent
+D_800F7274 g_btlbgRainCount  # [code] number of streaks btlbg_drawRain draws (btlbg_startRain / btlbg_stopRain)
+
+## ovl_0b: ovl_0b (cleanup pass: effect system helpers, btlfx_op.c; btlfx_mod.h members and src/fxmod renamed by hand)
+func_800E4098 btlfx_initCommonData  # [code] loads the common effect data (file 0x2BF) through btlfx_reloadCommonData and its CLUT rows, sets the common offset table
+D_80104DF8 g_btlfxCommonTable  # [code] self-relative offset table of the common effect data (btlfx_initCommonData, btlfx_getCommonData)
+func_800E454C btlfx_getCommonData  # [code] address of entry n of the common effect data (g_btlfxCommonTable)
+func_800E4218 btlfx_stepBack  # [code] against an enemy side moves the unit 400 back from home while playing motion 0x1D; 1 when done
+func_800E4568 btlfx_opSetResArgsA  # [code] resident op 0x20 (g_btlfxResidentOps): two argument bytes into D_80104DF0 for the following ops
+func_800E45A0 btlfx_opSetResArgsB  # [code] resident op 0x26: two more argument bytes into D_80104DF0
+func_800E56DC btlfx_opSetResArgsC  # [code] resident op 0x22: two argument bytes into D_80104DF4
+D_80104DF0 g_btlfxResArgs  # [code] argument bytes of resident ops 0x20/0x26 (btlfx_opSetResArgsA/B), read by op 0x21
+D_80104DF4 g_btlfxResArgs2  # [code] argument bytes of resident op 0x22 (btlfx_opSetResArgsC), read by op 0x21
+func_800E60A4 btlfx_startFadeBackground  # [code] spawns resident op 0x2A (btlfx_opFadeBackground) towards level D_800F8D0C[n] (0x80 for n < 0)
+func_800E6244 btlfx_startFadeUnits  # [code] spawns resident op 0x24 (btlfx_opFadeUnits)
+func_800E639C btlfx_opPlaySound  # [code] resident op 0x2D: plays a sound of the effect file at a unit (btlfx_playFileSound)
+func_800E63E4 btlfx_startScreenFade  # [code] spawns resident op 0x2E (btlfx_opScreenFade)
+func_800E6410 btlfx_opScreenFade  # [code] resident op 0x2E: black or white full-screen tint (btlfx_drawScreenTint) for n frames
+func_800E651C btlfx_sampleGradient  # [code] colour at x along a run-length gradient (Grad), interpolated with LoadAverageCol
+func_800E702C btlfx_initEnv  # [code] effect environment for the frame: OT, disp/draw env, view matrix of the current buffer
+func_800E7298 btl_isModelPart  # [code] (unk68 & 0x800001) == 0x800000: an enemy part without its own model (btl_findBodyUnit has it)
+func_800E7370 btl_getUnitHeight  # [code] model header unk8; btl_getUnitBodyPos lifts party units by it (half for the chest)
+func_800E738C btlfx_getUnitHeight  # [code] btl_getUnitHeight of an effect unit index
+func_800E73B4 btl_getBaseBonePos  # [code] position of the unit's base bone (BtlUnit.unk7C)
+func_800E748C btl_getUnitPos  # [code] ground position: the base bone for model parts and enemies, else BtlUnit.pos
+func_800E753C btl_getUnitBodyPos  # [code] arg 0 chest / 1 head height on top of btl_getUnitPos (party), an enemy's bone otherwise
+func_800E774C btlfx_getBouncePos  # [code] body position and rotation of the n-th bounced unit; 1 when there is none
+func_800E78B4 btlfx_turnUnitToward  # [code] turns a unit toward a point over frames (btlfx_aimAngles, btlfx_turnToward)
+func_800E7ACC btlfx_setUnitScale  # [code] model scale, flag 2 off at 1.0 (counterpart of btlfx_getUnitScale)
+func_800E7C54 btlfx_compareDepth  # [code] which of two units is nearer along the camera's view (z order flipped by the camera yaw)
+func_800E7D18 btlfx_getUnitSlot  # [code] (unk68 >> 5) & 7, the unit's slot id
+func_800E7D3C btlfx_getWeaponPos  # [code] arg 0: the weapon bone (Character.unk21), else the weapon tip offset (weapon record) through that bone
+func_800E806C btlfx_fadeUnitById  # [code] -1 hides / -2 shows all meshes, else btlfx_fadeUnit
+func_800E80CC btlfx_setUnitLight  # [code] lit models (flag bits 0x30 = 0x20): colour offset level - 0x80 (btl_setModelRgb)
+func_800E8274 btlfx_clearUnitStatus  # [code] enemies lose all statuses but KO/low HP/Stop/death immunity, party units all
+func_800E82CC btlfx_nextUnitPos  # [code] iterator over targetable units' body positions; -2 at the end
+func_800E8498 btlfx_getScaledRadius  # [code] model radius times the unit's x scale
+func_800E865C btlfx_isUnitKind  # [code] unit's character kind (0x13 for enemies) == D_800F8D70[n]
+func_800E871C btlfx_swapModelData  # [code] saves a model file's data behind a 0x1234 marker, or restores it from there
+func_800E8854 btl_forEachModelVertex  # [code] calls fn(vertex, index) for every vertex of every mesh group of a model
+func_800E8AD0 btlfx_countVisibleParty  # [code] party units without the hidden bit 22 (runtime: per frame during summons)
+func_800E8D14 btlfx_showCasterCmdName  # [code] btl_showCmdName(curCmd) when the caster is a party unit
+func_800E8D60 btlfx_isResultDeferred  # [code] enemy caster with unit arguments and effect flag 0x8000: btlfx_execCmd / btlfx_showPopups do nothing
+func_800E8F50 btlfx_registerEffectModel  # [code] 'so' (0x6F73) model header: Hi_RegisterTexListModel for textured lists, else Hi_RegisterGouEffModel
+func_800E9000 btlfx_registerSummonModel  # [code] 'so' header into a summon model record, then Hi_RegisterSummonModel (g_btlfxLoader.unk54/unk60)
+func_800E9124 btlfx_getFirstTarget  # [code] effect unit 0, or 8 when the spell was reflected
+func_800E9168 btlfx_updateCameraEnable  # [code] D_800F8D74 = effect cameras allowed: effect flag 8, else not with the camera option off (GameState.unk24 bit 4), a Mini/Vanish caster or the scene's no-camera flags
+D_800F8D74 g_btlfxCameraOn  # [code] effect cameras allowed (btlfx_updateCameraEnable); btlfx_opPlayCamera and btlfx_playCmdCamera test it
+func_800E9290 btlfx_playCmdCamera  # [code] the cast camera for the command: common entries D_800F8D78 by trance/kind, scene data 3/4, or the enemy type's camera (runtime: once or twice per spell)
+func_800E94C4 btlfx_playBounceCamera  # [code] camera for a Reflect bounce (D_800F8D80 / D_800F8D81 by side)
+func_800E954C btlfx_initSounds  # [code] clears the 6 effect sound slots (D_80104E30)
+func_800E9578 btlfx_updateSounds  # [code] frees finished effect sounds and re-pans the playing ones at their unit
+func_800E9638 btlfx_allocSound  # [code] free effect sound slot (or the oldest), its voice bit; stops a voice still playing there
+func_800E970C btlfx_stopAllSounds  # [code] func_8005546C(0, 0x3F): the six effect voices
+func_800E9730 btlfx_findSound  # [code] D_80104E34 entry of a voice bit
+func_800E9884 btlfx_stopSound  # [code] stops a voice and frees its D_80104E34 entry
+func_800E9930 btlfx_playFileSound  # [code] sound n of an effect file (btlfx_getFileData) on a free slot, panned at a unit
+func_800E99B0 btlfx_replaceSound  # [code] btlfx_stopSound then btlfx_playFileSound
+func_800E9A00 btlfx_playCommonSound  # [code] common-data sound n (btlfx_getCommonData) on a free slot, panned at a unit
+
+## ovl_0b: ovl_0b (cleanup pass: battle background state, effect screen helpers; btlfx_mod.h members and src/fxmod renamed by hand)
+D_800FE514 g_btlbgHeader  # [code] the background's header (btlbg_init, btlbg_getHeader)
+D_800FE504 g_btlbgScrolls  # [code] texture-scroll entries of the background (BtlBgScroll, btlbg_draw)
+D_800FE518 g_btlbgScrollCount  # [code] header unkA: number of g_btlbgScrolls entries
+D_800FE4F4 g_btlbgTexAnims  # [code] the background's texture animations (btl_updateTexAnims from btlbg_draw)
+D_800FE508 g_btlbgTexAnimCount  # [code] header unk2: texture animations, all started by btlbg_init
+D_800FE50C g_btlbgId  # [code] header unk0, the background id btlbg_draw switches on for its moving groups (0x44, 0x70, 0x6E, 0xA8, 0xAB, 7)
+D_800FE510 g_btlbgSkySpeed  # [code] header unk4: added to g_btlbgSkyAngle every frame
+D_800FE4F0 g_btlbgSkyAngle  # [code] y rotation (>> 3) of the records of kind 8 (btlbg_draw)
+D_800FE4F8 g_btlbgSkyOwnProj  # [code] header unk6 != 0: kind-8 records drawn with their own translation and projection 0x200
+D_800FE51C g_btlbgLayerMask  # [code] record kinds btlbg_draw draws: 8 sky, 4, 2, 1 = kind 0 (btlbg_setLayerMask)
+D_800FE520 g_btlbgFrame  # [code] btlbg_draw calls
+D_800F7270 g_btlbgScrollPaused  # [code] nonzero stops the texture scrolls (btlbg_pauseScroll)
+func_800CEE84 btlbg_pauseScroll  # [code] sets g_btlbgScrollPaused
+func_800CEE90 btlbg_getId  # [code] returns g_btlbgId
+func_800CEEA0 btlbg_addSkySpeed  # [code] g_btlbgSkySpeed += n
+func_800CEEB8 btlbg_getSkySpeed  # [code] returns g_btlbgSkySpeed
+func_800CEEC8 btlbg_setLayerMask  # [code] sets g_btlbgLayerMask (0xF all; btlfx_drawBgOffscreen draws only kind 2)
+func_800E49D0 btlfx_playSoundSet  # [code] plays the three common-data sounds D_800F8CF4[n] at a unit
+func_800E4C04 btlfx_setPartyTexAnim  # [code] btlfx_setUnitTexAnim for party units only
+func_800E8B28 btlfx_setUnitTexAnim  # [code] starts (0, entry 0/1), stops (1) or starts entry 2 (2) of the unit model's texture animations
+func_800E6624 btlfx_drawScrollMove  # [code] two DR_MOVEs copying a w x h rect to (x, y) rotated by n rows (wrap-around scroll)
+func_800E6764 btlfx_drawScreenGrid  # [code] grid of FT4s textured from the display buffer, rotated/scaled, a callback may move each vertex (screen warps)
+func_800E6C58 btlfx_pushViewRotation  # [code] saves the view matrix (D_80104E10) and replaces it by a rotation at the projection distance
+func_800E6D58 btlfx_popViewMatrix  # [code] restores the view matrix btlfx_pushViewRotation saved
+D_80104E10 g_btlfxSavedView  # [code] view matrix saved by btlfx_pushViewRotation
+func_800E6DB8 btlfx_pushGeomScreen  # [code] saves the projection distance (D_80104E00) and sets a new one
+func_800E6DF4 btlfx_popGeomScreen  # [code] restores the projection distance btlfx_pushGeomScreen saved
+D_80104E00 g_btlfxSavedGeomScreen  # [code] projection distance saved by btlfx_pushGeomScreen
+func_800E6E1C btlfx_drawBgOffscreen  # [code] renders the battle background (layer 2, no rain) into an offscreen rect with its own draw environment
+
+## ovl_0b: ovl_0b (cleanup pass: effect unit ops 0x57-0x7B and helpers; btlfx_mod.h members renamed by hand)
+func_800D7578 btlfx_opUnitSound  # [code] unit op 0x57 (g_btlfxUnitOps): btlfx_stepUnitSound with the unit and sound choice
+func_800D8D08 btlfx_stepUnitSound  # [code] sound 0x456 (choice 0) or 0xAC0 (1) at the unit (btl_playUnitSound)
+func_800D89E8 btlfx_holdMotion  # [code] sets unk68 bit 21, which stops btl_updateUnitModel advancing the motion frame; returns the old bit
+func_800D8A20 btlfx_setMotionHeld  # [code] sets/clears unk68 bit 21 (motion frame frozen)
+func_800D76DC btlfx_opPlayMotionHold  # [code] unit op 0x5C: btlfx_stepPlayMotionHold, hold count from g_btlfxOpArgs
+func_800D8E10 btlfx_stepPlayMotionHold  # [code] plays a motion and freezes it (btlfx_holdMotion) n frames before its end
+func_800D85F8 btlfx_setFileMotion  # [code] party unit: motion n of the effect file (btlfx_getFileData) as its motion
+func_800D7948 btlfx_opFileMotion  # [code] unit op 0x63: btlfx_stepFileMotion
+func_800D905C btlfx_stepFileMotion  # [code] btlfx_setFileMotion
+func_800D79BC btlfx_opFileMotionWait  # [code] unit op 0x64: btlfx_stepFileMotionWait
+func_800D908C btlfx_stepFileMotionWait  # [code] btlfx_setFileMotion, then waits for its length (g_btlfxState.motionDone)
+func_800D7A38 btlfx_opReleaseMotion  # [code] unit op 0x65: btlfx_stepReleaseMotion
+func_800D9110 btlfx_stepReleaseMotion  # [code] btlfx_setMotionHeld(unit, 0)
+func_800D7A94 btlfx_opMoveToUnit  # [code] unit op 0x69: btlfx_stepMoveToUnit
+func_800D9134 btlfx_stepMoveToUnit  # [code] arcs a unit to another unit's position, or for a party destination 1000 in front of its home
+func_800D7E14 btlfx_opMoveToPoint  # [code] unit op 0x6E: btlfx_stepMoveToPoint, frames from g_btlfxOpArgs
+func_800D960C btlfx_stepMoveToPoint  # [code] arcs a unit to (0, 0, -0x100), its home or the targets' centre
+func_800D7EA0 btlfx_opMoveTowardTarget  # [code] unit op 0x6F: btlfx_stepMoveTowardTarget
+func_800D974C btlfx_stepMoveTowardTarget  # [code] arcs a unit a tenth-based fraction of the way to its strike position (btlfx_getStrikePos)
+func_800D81EC btlfx_opTurnUnit  # [code] unit op 0x73: btlfx_stepTurnUnit
+func_800D9F5C btlfx_stepTurnUnit  # [code] btlfx_turnUnit
+func_800D8270 btlfx_opWaitKindTime  # [code] unit op 0x79: waits the character-kind timing btlfx_getKindTiming (g_btlfxState.unk17)
+func_800D9F88 btlfx_stepWaitKindTime  # [code] done after btlfx_getKindTiming(unit, n) frames
+func_800D8368 btlfx_opWaitOtherSide  # [code] unit op 0x7A: waits n frames when the two units are on different sides
+func_800D9FD8 btlfx_stepWaitOtherSide  # [code] done after n frames (g_btlfxState.unk17)
+func_800D8414 btlfx_opWaitSameSide  # [code] unit op 0x7B: waits n frames when the two units are on the same side
+func_800DA004 btlfx_stepWaitSameSide  # [code] done after n frames (g_btlfxState.unk17)
+func_800DA06C btlfx_getKindTiming  # [code] D_800F73A0[n][the unit's character kind]
+func_800DA0B8 btlfx_getWeaponScript  # [code] effect sub-script id of the unit's weapon (btlfx_stepCallWeaponScript)
+func_800D8B20 btlfx_getUnitKind  # [code] the party unit's character kind (Character.unk34.b.unk4)
+
+## ovl_0b: ovl_0b (cleanup pass: effect math and draw wrappers, btlfx.c; btlfx_mod.h members and src/fxmod renamed by hand)
+func_800CFC2C btlfx_rangeProgress  # [code] x inside [start, start + len]: *out = (x - start) * scale / len (reversed for a negative direction), returns 1
+func_800CFCA8 btlfx_rotateOffset  # [code] rotates an offset of length n by the given angles (no translation) through btlfx_transformPoint
+func_800CFD78 btlfx_pointAhead  # [code] the point n units from pos along the given angles (btlfx_transformPoint with the angles' matrix)
+func_800CFE88 btlfx_matrixPointAhead  # [code] the point n units ahead through a given matrix
+func_800CFF40 btlfx_matrixAngles  # [code] angles of a matrix's forward axis (btlfx_aimAngles of its transformed unit vector)
+func_800D0130 btlfx_setWorldTrans  # [code] transforms a world point by the view matrix and makes it the GTE translation
+func_800D01D4 btlfx_setRotScale  # [code] rotation (and scale) matrix from angles, optionally composed with the current rotation and set as light matrix
+func_800D0940 btlfx_resetMaskBit  # [code] draws a lone DR_STP (mask bit off) at once
+func_800D0B18 btlfx_drawRippleGrid  # [code] grid of POLY_G4 0x38 whose rows ripple with a sine wave (docs/runtime-findings.md: Doomsday, Leviathan, Phoenix, Madeen)
+func_800D198C btlfx_drawSprite  # [code] SPRT 0x64/0x66 frame of a sprite set at a projected point, OT bucket from its depth (btlfx_emitScreenSprites)
+func_800D1BC4 btlfx_drawSpriteAtOt  # [code] the same at a screen position with an explicit OT index
+func_800D23D8 btlfx_drawRings  # [code] ring grid of textured FT4s (btlfx_emitRingQuads) or Gouraud G4s (btlfx_emitRingGouraud), frame and scale per call
+func_800D2938 btlfx_drawFan  # [code] textured FT4 fan (func_800D57D0) or Gouraud G3 fan (func_800D59D0) plus DR_MODE (ff9-ds F13)
+func_800D3A6C btlfx_ease  # [code] 0x1000 * t / n linear (0), 1 - cos (1) or sin (2) of the quarter turn
+func_800D3B6C btlfx_drawSpriteLine  # [code] sprites at fixed fractions along a screen segment from a projected point to a moving end, fading in (btlfx_drawSpriteAtOt)
+
+## ovl_0b: ovl_0b (cleanup pass: effect particles and emitters, btlfx_heap.c; btlfx_mod.h members and src/fxmod renamed by hand)
+func_800E00DC btlfx_initParticles  # [code] particle pool (Pool30, 0x30-byte entries) over a buffer, all free
+func_800E0168 btlfx_updateParticles  # [code] steps and draws the live particles of a pool (btlfx_drawParticles, btlfx_drawSprite, btlfx_drawTrail by element kind)
+func_800E14D8 btlfx_initEmitters  # [code] emitter pool (Pool6C, 0x6C-byte entries), all free
+func_800E1534 btlfx_spawnEmitter  # [code] takes a free emitter, binds it to an effect element file (relocating its element offsets)
+func_800E1708 btlfx_moveEmitter  # [code] moves an emitter's anchor and shifts its live particles by the same amount
+func_800E1810 btlfx_killEmitter  # [code] sends the emitter's particles to their last frame and marks it dying (-1)
+func_800E1874 btlfx_updateEmitters  # [code] steps the emitters' element animations and frees finished ones
+func_800E1F90 btlfx_allocParticle  # [code] first free particle of a pool, NULL when full
+func_800E2000 btlfx_runEmitters  # [code] lets every live emitter spawn its particles for the frame
+func_800E3C58 btlfx_initParticleSystem  # [code] the effect particle pool (0x3000 bytes at D_801014B8) and emitter pool (0x920 bytes)
+func_800E3C98 btlfx_updateParticleSystem  # [code] btlfx_runEmitters, btlfx_updateParticles, btlfx_updateEmitters on the effect pools
+func_800E3CEC btlfx_startEmitter  # [code] btlfx_spawnEmitter on the effect pools
+func_800E3D20 btlfx_moveEmitterTo  # [code] btlfx_moveEmitter on the effect pools when the emitter exists
+func_800E3D54 btlfx_stopEmitter  # [code] btlfx_killEmitter on the effect pools when the emitter exists
+func_800E3D80 btlfx_initAll  # [code] btlfx_initCommonData, then btlfx_resetAll
+func_800E3E08 btlfx_copyDisplayToDraw  # [code] ten DR_MOVEs copy the displayed frame into the draw buffer (frozen background for an effect)
+D_801044B8 g_btlfxParticles  # [code] effect particle pool (btlfx_initParticleSystem)
+D_801044C8 g_btlfxEmitters  # [code] effect emitter pool (btlfx_initParticleSystem)
+D_801014B8 g_btlfxParticleBuf  # [code] 0x3000-byte buffer of g_btlfxParticles
+
+## ovl_0b: ovl_0b (cleanup pass: effect loader helpers, bones, mesh vertices; btlfx_mod.h members and src/fxmod renamed by hand)
+func_800DA4C4 btlfx_takeWork  # [code] takes n bytes from the effect work area (g_btlfxLoader.unk58/unk5C), returns the old pointer
+func_800DA5C4 btlfx_loadNextBlock  # [code] restarts g_btlfxLoader at state 3 for the next block into the other buffer (runtime: Ark, Bahamut, Madeen)
+func_800DA634 btlfx_loadSoundBank  # [code] starts the effect sound bank upload (main func_800562E0) unless a load is running
+func_800DA6B4 btlfx_waitSoundBank  # [code] 1 until btlfx_loadSoundBank's upload is done, then func_80056388(0x80, n)
+func_800DA71C btlfx_markCommonVram  # [code] sets g_btlfxState.unk1C bit 0 when a rect falls inside the common effect VRAM pages (0x300-0x380, 0x100-0x200)
+func_800DA790 btlfx_uploadTextures  # [code] LoadImage of 64x128 texture blocks to the loader's VRAM rects
+func_800DA898 btlfx_pollDrawSync  # [code] state 2: when DrawSync(1) reports idle, state 1 and FlushCache
+func_800DA8EC btlfx_drawSyncStep  # [code] 0 -> 2 (wait), 1 -> 0 and returns 1 (btlfx_pollDrawSync finished)
+D_800F750C g_btlfxDrawSyncState  # [code] btlfx_drawSyncStep / btlfx_pollDrawSync state
+func_800DC9D0 btl_getBonePos  # [code] position of bone n of a model
+func_800DCA18 btl_getBoneMatrix  # [code] matrix of bone n of a model
+func_800DC818 btlfx_getUnitBonePos  # [code] btl_getBonePos of an effect unit's model (Hi_GetSummonBonePos does the same for summon models)
+func_800DC858 btlfx_getUnitArgBonePos  # [code] btlfx_getUnitBonePos with the bone from the effect's argument bytes (targets->unk25)
+func_800DC8AC btlfx_getUnitBoneMatrix  # [code] btl_getBoneMatrix of an effect unit's model
+func_800DC8EC btlfx_getUnitArgBoneMatrix  # [code] btlfx_getUnitBoneMatrix with the bone from the effect's argument bytes
+func_800DD0B0 btlfx_getUnitMeshCount  # [code] btl_getMeshCount of an effect unit's model
+func_800DD0DC btlfx_getEffModelMeshCount  # [code] btl_getMeshCount of a registered effect model
+func_800DD10C btl_getMeshCount  # [code] model header unk3, its mesh group count
+func_800DD120 btlfx_getCasterTexInfo  # [code] texture tables (tpage, clut) of a model id in the caster's model set
+func_800DF670 btlfx_getSplitVertexSize  # [code] bytes GeoSplitVertices needs for one or all mesh groups (a vertex per primitive corner)
+func_800DF7A0 btlfx_getMeshPrims  # [code] address and count of the primitives of type n (FT4, FT3, GT4, GT3, G4, G3, F4, F3) in a mesh group
+func_800DF940 btlfx_splitMeshVertices  # [code] gives every primitive corner of a mesh group its own vertex copy (GeoSplitVertices)
+
+## ovl_0b: ovl_0b (cleanup pass: banner, UI frame, command tables, CLUT buffers)
+func_800F4D20 btlui_clearDfe  # [code] clears dfe in both draw environments
+func_800F4D80 btlui_clearOtLinked  # [code] ClearOTag of entry 0, then links every entry to the previous one (a reverse ordering table)
+func_800F4DFC btl_initBanner  # [code] empties g_btlBanner, default rect, duration D_800FDE3C by the message speed option (GameState.unk24 bits 11-13)
+func_800F4F44 btl_setBannerAt  # [code] btl_setBanner drawn in g_btlBanner.rect instead of the default box
+func_800F4F84 btl_setBannerRect  # [code] sets g_btlBanner.rect
+func_800F4FB4 btl_getBannerOt  # [code] the banner ordering table of a draw buffer (D_8010528C)
+func_800F4FE8 btl_setBannerText  # [code] copies the text into g_btlBanner, measures it and shows it (NULL hides it)
+D_801051E0 g_btluiBuf  # [code] UI draw buffer index, flipped by btlui_beginFrame
+D_8010528C g_btlBannerOt  # [code] one-entry banner ordering table per draw buffer (btl_getBannerOt)
+D_80105160 g_btluiSavedEnv  # [code] DR_ENV per buffer that GetDrawEnv2 fills when btlui_submitOt interrupts the GPU (BreakDraw/ContinueDraw)
+D_800FE368 g_btlCamTargets  # [code] copy of the effect unit list btlcam_beginEffect takes for the camera anchors
+D_800FD56C g_btlCmdTable  # [code] command table: name/help offsets, menu kind, ability list (btlui_buildCmdList, btl_setCmd from the menu)
+D_800FD7AC g_btlCmdNames  # [code] command names (g_btlCmdTable unk0 offsets)
+D_800FD8CC g_btlCmdHelp  # [code] command help texts (g_btlCmdTable unk2 offsets, btlui_getCmdHelpText)
+D_800FDD10 g_btlCmdAbilities  # [code] ability ids of the command ability lists (g_btlCmdTable unk8 start, unk7 count)
+D_800FDDD0 g_btlCharCmds  # [code] two commands per character (btlui_buildCmdList)
+D_800FDDF8 g_btlCharTranceCmds  # [code] the trance commands per character, third byte = the disabled row (btlui_buildCmdList)
+D_800F5200 g_btlCharModelIds  # [code] model id per character model kind; +0x13 the other model (btl_getPartyModelId, btl_initParty)
+D_800FDF50 g_btlClutRect  # [code] RECT of the CLUT rows btl_makeGreyCluts and the save/grey functions move
+D_800FDF60 g_btlClutBuf  # [code] CLUT rows read back by btl_makeGreyCluts
+D_800FE360 g_btlSavedCluts  # [code] CLUT copy taken by btl_saveEnemyCluts / btl_savePartyCluts
+D_80100E30 g_btlfxHaltBufs  # [code] two DRAWENV/DISPENV buffers of the standalone loop btlfx_halt
+
+## ovl_0b: ovl_0b (cleanup pass: runtime-findings entries left at low-medium, applied from code)
+func_800CB594 btlseq_opReleaseEffect  # [code] op 0A: sets the effect flag the effect script's control op 8 waits on for enemy casters (g_btlfxEnv->unk0->unkF); runtime-findings had it low-medium
+func_800CB808 btlseq_opSetStance  # [code] op 11: sets/clears the unit's flag bit 18, which picks the idle motion pair (motions[0/1]); runtime-findings had it low-medium
+func_800D2DBC btlfx_drawBackdropSprite  # [code] one SPRT or GT4 backdrop frame at x, y with its texture mode (btlfx_drawBackdrop); runtime-findings had it low-medium
+
+## ovl_0b: ovl_0b (cleanup pass: camera paths, cached UI strips, list header)
+func_800C3F78 btlcam_setPathKey  # [code] shifts a camera path (eye or target, g_btlCamera.unk68[]) to its next key and fills it from a script command, character-specific offsets from D_800F5758
+func_800C412C btlcam_setPathTiming  # [code] frame counts and mode bytes of a camera path from a script command
+func_800C416C btlcam_evalPath  # [code] point of a camera path at its current frame (linear, cubic through the control points, or a unit anchor)
+func_800C36D0 btlcam_finishPaths  # [code] snaps paths still moving (modes 2-3) to their end and stops them
+func_800C5890 btlcam_getAnchorUnit  # [code] anchor kinds 5/9: the first effect target, 0xD/0xE: the battle sequence's target
+func_800ECCA8 btlui_initCachedCmdIcons  # [code] four 14x16 SPRTs reading the screen strip btlui_cacheCmdIcons saved at VRAM (0x3C0, 0x1E0)
+func_800ECDB8 btlui_cacheCmdIcons  # [code] DR_MOVEs four 16-pixel rows of the displayed command window to VRAM (0x3C0, 0x1E0)
+func_800ECF0C btlui_drawCachedCmdIcons  # [code] draws btlui_initCachedCmdIcons' SPRTs while the command window opens/closes
+func_800F2374 btlui_cacheHeader  # [code] DR_MOVEs the panel header strip of the displayed frame to VRAM (0x3C0, 0x1F8/0x1FC)
+func_800F2560 btlui_drawCachedHeader  # [code] draws the cached header strip (SPRTs from btlui_initCachedHeader) at the panel's y
+func_800F2684 btlui_initCachedHeader  # [code] the two SPRTs and tpage of the cached header strip, per draw buffer
+func_800F2C74 btlui_initHighlightPrim  # [code] semi-transparent POLY_G4 (yellow fading) behind the highlighted panel row, per draw buffer
+func_800F2DC0 btlui_initNamePrims  # [code] the four 84x12 name SPRTs of the panel rows, per draw buffer (btlui_drawPanelName)
+func_800F2ED0 btlui_initCachedRows  # [code] two SPRTs per panel row reading the HP/MP columns btlui_cacheRows saved
+func_800F386C btlui_cacheRows  # [code] DR_MOVEs the panel's HP and MP columns of the displayed frame to VRAM (0x3C0/0x3E0, 0x1B0)
+func_800F3A8C btlui_drawCachedRows  # [code] draws the cached HP/MP column SPRTs per panel row
+func_800F3EDC btlui_initPanelPrims  # [code] btlui_initHighlightPrim, btlui_initNamePrims, btlui_initCachedRows for a draw buffer
+func_800F29B4 btlui_drawListWindow  # [code] the battle list window's page drawer D_800F8F04[page]
+func_800F3D3C btlui_showListHeader  # [code] slides panel labels 1-3 out and label 4 (the page title D_800F9070[page]) in for the list window
+func_800F3DE0 btlui_hideListHeader  # [code] slides the panel labels back, remembering the menu state to return to
+func_800F4140 btlui_onPanelLabelsOut  # [code] slide done hook: hides labels 1-3, BTLUI_MENU_TARGET
+func_800F4180 btlui_onListLabelOut  # [code] slide done hook: hides label 4, back to the remembered menu state
+
+# FIELDS (ovl_0b cleanup pass; applied with tools/rename_fields.py, src/fxmod uses included)
+# include/ovl_0b.h BtlUnit: unk38=autoStatus,unk0=next,unk4=cmd,unk8=autoCmd,unkC=koCmd,unk10=delayedCmd,unk14=tranceCmd,unk18=reviveCmd,unk2E=atbSpeed,unk30=speed,unk31=strength,unk32=magic,unk33=spirit,unk6C=defense,unk6D=evade,unk6E=magicDef,unk6F=magicEva,unk70=elemGuard,unk71=elemAbsorb,unk72=elemHalf,unk73=elemWeak,unk74=weapon,unk78=trance,unk79=elemBoost,unk7A=level,unk7E=popupFlags,unk80=hpChange,unk82=mpChange,unk84=modelId,unk86=rot,unk8C=pos,unk9C=model,unkA4=motions,unkA8=weaponModel,unkAC=hiddenMeshes,unkB0=unitBit,unkB3=cmdIssued,unkB8=screenX,unkBA=screenY,unkBC=onScreen,unkC4=support,unkC8=tickHeal,unkCA=tickDamage,unkCC=tickMpDamage,unkCE=tickFlags,unkCF=inMenuQueue
+# include/ovl_0b.h BtlUnit: unk1C=bounceMasks,unkBF=shadowW,unkC0=shadowD
+# include/ovl_0b.h BtlUnit: unk40=dotTimers,unk46=statusTimers,unk66=countdownStep,unk68=flags,unk7C=baseBone,unk7D=koState,unk98=home,unkA0=obj,unkAE=vanishMeshes,unkB4=menu
+# include/ovl_0b.h Battle: unk0=flags,unk8=partyMotions,unk228=weaponModels,unk488=enemies,unk4E8=enemyTypes,unk5D8=enemyAbilities,unk6F8=unitList,unkD7C=tick,unkD80=phase,unkD81=subPhase,unkD82=exitTimer,unkD84=fleeBrightness,unkD85=loadFlags,unkD86=partyBrightness,unkD87=enemyBrightness,unkD90=cmdSlots,unk1060=escapeCmd,unk108C=cursorPrims,unk116C=fxTargets,unk11B8=cmdFlags,unk11BA=cmdPhase,unk11BB=eidolonAbility,unk11BC=eidolonTimer,unk132C=scene,unk1358=popups,unk1534=dataSector,unk154C=statusInfo,unk22CC=statusSets
+# include/ovl_0b.h Battle: unk1354=files
+# include/ovl_0b.h BtlCmd8 (ability record): unk0_0=targetType,unk0_8=effect,unk4=formula,unk5=power,unk6=element,unk7=rate,unk8=flags,unk9=statusSet,unkC=altEffect
+# include/ovl_0b.h BtlCalc: unk0=caster,unk4=target,unk8=cmd,unkC=statusRate,unkE=power,unk10=defense,unk12=evade,unk14=multiplier,unk16=hitRate,unk18=flags,unk1A=casterResult,unk1B=targetResult,unk1C=casterHpChange,unk1E=targetHpChange,unk20=casterMpChange,unk22=targetMpChange
+# include/ovl_0b.h BtlCalc8: unk8=ability,unkC=targets,unkE=cmdNo,unkF=subNo,unk10=flags
+# include/ovl_0b.h BtlCmd: unk0=next,unk4=caster,unk0_0=targeting,unk0_4=automatic,unk0_5=covered,unk0_6=dodged,unk0_7=reflect,unk0_10=shortSummon
+# include/ovl_0b.h BtlFiles (was Battle1354): unk0=data,unk10=enemyModels,unk20=weaponFiles,unk30=partyModels
+# include/ovl_0b.h Unk800FE488 (g_btlCamScript): unk0=pc,unk4=frame,unk10=sway,unk14=swayPhase,unk1C=shakeAxes,unk20=shakeFrames,unk24=shakeLeft,unk28=shakeFrom,unk2C=shakeTo,unk30=zoomFrames,unk34=zoomLeft,unk38=zoomTarget,unk3C=zoomFrom,unk40=zoomTo,unk46=casterAnchors,unk5A=targetAnchors
+# include/ovl_0b.h Unk800FE488: unk50=partnerAnchors
+# include/ovl_0b.h Unk80104FF0 (g_btlTarget): unk0=returnState,unk1=cmdNo,unk2=targetType,unk6=targetAll,unkA=side,unkB=allowKo,unkC=windowOpen,unkD=halfMp,unk10=doubleCast,unk13=firstCmdNo,unk14=firstTargeting,unk18=firstSubNo,unk1A=subNo,unk1C=firstTargets,unk20=unit
+# include/ovl_0b.h Unk80104FD0 (g_btluiList): unk0=cmdNo,unk4=cmd,unk8=label,unkC=label2,unk10=doubleCast,unk12=label2Width,unk14=unit,unk18=halfMp,unk19=trance
+# include/ovl_0b.h BtlPopup (was Battle1358): unk0=unit,unk8=x,unkA=y,unkC=z,unkE=frame,unk18=clut
+# include/ovl_0b.h BtlPopupRing (was Battle1358Ring): unk0=entries,unk1C0=last,unk1C2=tick,unk1D4=hiddenMask
+# include/ovl_0b.h BtlShadow (was Battle11C028): unk0_0=shade,unk0_8=width,unk0_20=depth
+# include/ovl_0b.h Unk800F78A4 (g_btlfxEnv): unkC=targets,unk10=exports,unk14=viewMatrix,unk18=dispEnv,unk1C=drawEnv,unk20=ot,unk24=prim,unk2C=camera
+# include/ovl_0b.h Unk800F78A4: unk0=state,unk4=loader
+# include/ovl_0b.h BtlUnitList: unk0=caster,unk4=targets,unk24=targetCount,unk27=bounceCount,unk28=bounced,unk38=centerX,unk3A=centerY,unk3C=centerZ,unk40=kind,unk44=partner
+# include/ovl_0b.h Unk800FE3B8 (g_btlCamera): unk0=points,unk50=yaw,unk54=eye,unk5E=projDist,unk60=baseProjDist
+# include/ovl_0b.h BtlBgHeader (was Unk800CEE74): unk0=id,unk2=texAnimCount,unk4=skySpeed,unk6=skyOwnProj,unk8=lastGroup,unkA=scrollCount,unkC=lightR,unkD=lightG,unkE=lightB,unkF=shadowShade
+# include/ovl_0b.h BtlMesh: unk2=nFT4,unk4=nFT3,unk6=nGT4,unk8=nGT3,unkA=nG4,unkC=nG3,unkE=nF4,unk10=nF3,unk14=vertexCounts,unk18=vertices,unk1C=prims
+# include/ovl_0b.h BtlMesh: unk20=uvs,unk24=colors
+# include/ovl_0b.h BtlUnit9C8 (model header): unk3=meshCount,unk8=height,unkA=radius,unk10=meshes
+# include/ovl_0b.h BtlUnit9C (model): unk4=parentBone,unk5=abr,unk8=header,unkC=motion,unk10=prims,unk14=hiddenMeshes,unk18=texPages,unk1C=parent,unk20=bones,unk24=matrix,unk50=texAnims,unk54=scaleX,unk56=scaleY,unk58=scaleZ,unk5C=morph
+# include/ovl_0b.h BtlUnit9C: unk0=flags
+# include/ovl_0b.h BtlUnitA0 (unit object): unk14=x,unk18=y,unk1C=z,unk20=rotX,unk22=rotY,unk24=rotZ,unk3A=frame
+# include/ovl_0b.h BtlUnit98 (home): unk0=pos
+# include/ovl_0b.h Unk801051F0 (g_btlBanner): unk0=text,unk80=timer,unk84=duration,unk88=size,unk8C=active,unk8D=useRect,unk90=priority,unk98=ot,unkA4=rect
+# include/ovl_0b.h BtlEnemyType (was Battle4880): unk0=nameOfs,unk2=category,unk3=level,unk4=max,unkC=motions,unk24=radius,unk26=confuseAbility,unk27=eatAbility,unk28=firstAbility,unk29=bones,unk2C=camera,unk30=deathCry,unk44=exp,unk46=gil,unk4C=card
+# include/ovl_0b.h BtlEnemyType: unk48=drops
+# include/ovl_0b.h BtlEnemy (was Battle488): unk0=type,unk4=flags,unk8=steal,unkC=home
+# include/ovl_0b.h BtlStatusInfo (was Battle154C): unk1=tickScale,unk2=timerScale,unk8=prevents
+# include/ovl_0b.h BtlUnit34 (status view): unk0=statusImmune,unk4=autoStatus,unk8=status,unkC=venomTimer,unkE=poisonTimer,unk10=regenTimer,unk12=statusTimers,unk2E=jumpTimer
+# include/ovl_0b.h Unk800FE368 (g_btlCamTargets): unk0=caster,unk4=target,unk38=centerX,unk3C=centerZ,unk44=partner
+# include/ovl_0b.h Unk800F78A40 (g_btlfxState view): unk0=phase,unk2=effectId,unk8=file,unkF=seqRelease,unk1C=flags,unk20=retry
+# include/ovl_0b.h Unk800FEC40 (g_btlfxState): unk2=effectId,unk8=file,unkE=cameraPick,unkF=seqRelease,unk18=pc,unk1C=flags,unk20=retry
+# include/ovl_0b.h Unk800FEC40: unk0=phase,unkA=cameras,pad14=motionDone/moveDone/turnDone/unk17
+# include/ovl_0b.h Unk80100C78Entry (effect task): unk0=frame,unk4=state,unk8=file,unkC=work,unk10=pool,unk14=handler
+# include/ovl_0b.h Battle: unk11C4=seq
+# include/ovl_0b.h Battle11C4 (Battle.seq): unk0=anims,unk4=seqFlags,unk8=seqs,unk68=slots,unk148=camCaster,unk14C=camTarget,unk150=camCenterX,unk152=camCenterY,unk154=camCenterZ
+# include/ovl_0b.h BtlScript: unk0=flags,unk4=cmd,unk8=pc,unkC=prevPc,unk10=opFrame,unk12=waitLeft,unk14=frame,unk16=seqFlags,unk17=soundDelay,unk18=sound,unk1B=soundVol,unk1C=turnFrom,unk1E=turnBy,unk20=turnFrame,unk21=turnFrames,unk22=fxId,unk24=fxArg,unk25=fxDelay,unk26=fadeFrames,unk27=fadeLeft,unk28=work
+# include/ovl_0b.h BtlScript4: unk4=caster,unk8=ability,unkC=targets
+# include/ovl_0b.h BtlPopupRing: unk1C4=scanUnit
+# include/ovl_0b.h Unk80104F88Entry: unk0=gauges,unk10=unit,unk14=chr,unk18=slot,unk19=learns,unk1A=defaultSet,unk1B=port,unk1C=apCounters,unk31C=apNeeded,unk3DC=fromEquip,unk49C=cursor
+# include/ovl_0b.h Unk80104F88 (g_btlUi): unk0=entries,unk12A4=windows,unk12B6=frozenSide,unk12B7=swdMagPartner,unk12B8=swdMagBlocked,unk12BC=ambush,unk12C0=tick,unk12C4=queueCount,unk12C5=queueHead,unk12C8=queue
+# include/ovl_0b.h Unk80105078 (g_btluiPanel): unk0=shown,unk2=highlightRow,unk4=labels,unk54=pulse,unk58=returnState,unk5C=rowCount,unk60=y,unk64=menuUnit,unk68=units,unk78=rowColor,unk7C=cantAct,unk80=slot,unk84=atbKind,unk88=tranceKind
+# include/ovl_0b.h Unk800F412C (panel label): unk0=text,unk2=align,unk4=visible,unk6=frame,unk8=x,unkA=y,unkC=slide
+# include/ovl_0b.h Unk800F3F10 (label slide): unk0=dx,unk2=dy,unk4=frames,unk8=onDone
+# include/ovl_0b.h Battle: unk11C0=work
+# include/ovl_0b.h Battle11C0 (Battle.work): unk4=returnId,unk6=returnMode,unkC=loadBuf,unk14=texts,unk18=bgHeader,unk1C=bgData,unk20=encounter,unk24=sceneTables,unk28=shadows,unk2C=ot,unk34=prims,unk3C=weaponBufs,unk40=bgTexAnims,unk44=heapStart,unk48=heap
 ## main: main cleanup/naming pass
 func_80016A28 game_reset  # [code] start of every game_main loop pass: clears VRAM, resets CD, db, pad (pad_resetState), SPU reverb, then the subsystems' inits
 func_80016B6C game_shutdown  # [code] end of a game_main loop pass (GameState.unk0 bit 0): stops sound and db, counts D_80067950

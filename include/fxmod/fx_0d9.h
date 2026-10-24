@@ -7,7 +7,7 @@
 typedef struct {
     s32 unk0; /* state */
     s32 unk4; /* frame counter */
-    SVECTOR unk8; /* func_800E7D3C(0x10, 1) */
+    SVECTOR unk8; /* btlfx_getWeaponPos(0x10, 1) */
 } Fx0d9Work84;
 
 /* lightning strip: a header for btlfx_drawTrail and the points (pad = width); as Fx018Strip */

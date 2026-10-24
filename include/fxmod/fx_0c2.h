@@ -18,7 +18,7 @@ typedef struct {
     SVECTOR unk1C; /* target body position */
     SVECTOR unk24; /* target rotation */
     SVECTOR unk2C; /* unkC moved 0x12C along unk14 */
-    SVECTOR unk34; /* func_800DC818(0x10, 0x17) */
+    SVECTOR unk34; /* btlfx_getUnitBonePos(0x10, 0x17) */
     SVECTOR unk3C; /* copy of unk44 */
     SVECTOR unk44; /* angles from unk34 to unk1C */
     s32 unk4C; /* target unit */
@@ -26,7 +26,7 @@ typedef struct {
 
 typedef struct {
     SVECTOR unk0; /* rotation step total */
-    SVECTOR unk8; /* position: env->unkC->unk38..3C */
+    SVECTOR unk8; /* position: env->targets->centerX..Z */
 } Fx0c2Work82;
 
 typedef struct {

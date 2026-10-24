@@ -15,7 +15,7 @@ s32 fx_10d_op80(s32 mode, Fx10dWork80 *work, Unk800F78A4 *env, Unk80100C78Entry 
         ex->btlfx_initEffModels(D_801E7BA4, 2);
         ex->btlfx_getUnitBodyPos(0x10, 0, (s16 *)&work->unk0);
         ex->btlfx_getUnitBodyPos(0, 0, (s16 *)&work->unk8);
-        ex->func_800DC818(0x10, 0x17, (u16 *)&work->unk10);
+        ex->btlfx_getUnitBonePos(0x10, 0x17, (u16 *)&work->unk10);
         ex->btlfx_aimAngles((s16 *)&work->unk8, (s16 *)&work->unk10, (s16 *)&work->unk18);
         work->unk30.vx = 0x1800;
         work->unk30.vy = 0x1800;
@@ -23,10 +23,10 @@ s32 fx_10d_op80(s32 mode, Fx10dWork80 *work, Unk800F78A4 *env, Unk80100C78Entry 
         work->unk20.vx = work->unk10.vx;
         work->unk20.vy = work->unk10.vy;
         work->unk20.vz = work->unk10.vz;
-        work->unk88 = ex->func_800E8F50((Unk800E8F50 *)ex->btlfx_getFileData(entry->unk8, 1), 1);
-        work->unk8A = ex->Hi_RegisterTexEffModel((BtlUnit9C8 *)ex->btlfx_getFileData(entry->unk8, 0xC), 0x97, 0x3D40, 0, 0);
+        work->unk88 = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, 1), 1);
+        work->unk8A = ex->Hi_RegisterTexEffModel((BtlUnit9C8 *)ex->btlfx_getFileData(entry->file, 0xC), 0x97, 0x3D40, 0, 0);
     } else {
-        frame = entry->unk0;
+        frame = entry->frame;
         if (frame < 0xA) {
             t = frame << 9;
             ex->btlfx_lerpVec((s16 *)&work->unk0, (s16 *)&work->unk8, t, (s16 *)&pos);
@@ -78,12 +78,12 @@ s32 fx_10d_op81(s32 mode, Fx10dWork81 *work, Unk800F78A4 *env, Unk80100C78Entry 
     } else if (mode == 1) {
         D_801E7B94 = env;
         ex->btlfx_getUnitBodyPos(0, 0, (s16 *)&work->unk4);
-        work->unk0 = ex->func_800E3CEC(ex->btlfx_getFileData(entry->unk8, 5), (s32)&work->unk4);
+        work->unk0 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 5), (s32)&work->unk4);
         if (work->unk0 != NULL) {
             work->unk0->unk22 = ex->func_800E7CC4(0, 0x80);
         }
     } else {
-        return entry->unk0 >= 0x1E;
+        return entry->frame >= 0x1E;
     }
     return 0;
 }

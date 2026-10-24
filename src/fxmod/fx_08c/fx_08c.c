@@ -13,29 +13,29 @@ s32 fx_08c_op80(s32 mode, Fx08cWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
         *arg4 = 0x28;
     } else if (mode == 1) {
         work->unk0 = 0;
-        work->unk10.vx = env->unkC->unk38;
-        work->unk10.vy = env->unkC->unk3A;
-        work->unk10.vz = env->unkC->unk3C;
-        work->unk8.vx = env->unkC->unk38;
-        work->unk8.vy = env->unkC->unk3A;
-        work->unk8.vz = env->unkC->unk3C;
+        work->unk10.vx = env->targets->centerX;
+        work->unk10.vy = env->targets->centerY;
+        work->unk10.vz = env->targets->centerZ;
+        work->unk8.vx = env->targets->centerX;
+        work->unk8.vy = env->targets->centerY;
+        work->unk8.vz = env->targets->centerZ;
         work->unk10.vy -= 0x100;
         work->unk18[0] = work->unk8.vx;
         work->unk18[1] = work->unk8.vy;
         work->unk18[2] = work->unk8.vz;
         D_801E7AA8 = env;
         ex->btlfx_initEffModels(D_801E7AB8, 2);
-        work->unk24 = ex->Hi_RegisterTexEffModel((BtlUnit9C8 *)ex->btlfx_getFileData(entry->unk8, 3), 0x138, 0xFFFF, 0, 0x80);
-        p = ex->func_800E3CEC(ex->btlfx_getFileData(entry->unk8, 8), (s32)&work->unk8);
+        work->unk24 = ex->Hi_RegisterTexEffModel((BtlUnit9C8 *)ex->btlfx_getFileData(entry->file, 3), 0x138, 0xFFFF, 0, 0x80);
+        p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 8), (s32)&work->unk8);
         if (p != NULL) {
             p->unk22 = 0x80;
         }
-        p = ex->func_800E3CEC(ex->btlfx_getFileData(entry->unk8, 0xB), (s32)&work->unk8);
+        p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0xB), (s32)&work->unk8);
         if (p != NULL) {
             p->unk22 = 0x80;
         }
     } else {
-        frame = entry->unk0;
+        frame = entry->frame;
         switch (work->unk0) {
         case 0:
             a = (frame << 7) >> 1;
@@ -59,7 +59,7 @@ s32 fx_08c_op80(s32 mode, Fx08cWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
             }
             break;
         }
-        ex->btlfx_drawBackdrop((BtlBgLayers *)ex->btlfx_getFileData(entry->unk8, 1), work->unk4);
+        ex->btlfx_drawBackdrop((BtlBgLayers *)ex->btlfx_getFileData(entry->file, 1), work->unk4);
         work->unk4++;
     }
     return 0;

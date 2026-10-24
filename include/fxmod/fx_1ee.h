@@ -71,7 +71,7 @@ extern SVECTOR D_801EAFD4;
 extern SVECTOR D_801EAFE4[];
 extern Fx1eeSpark D_801EB004[12][4];
 
-#define SUMMON(env) ((Fx1eeSummon *)(env)->unk4)
+#define SUMMON(env) ((Fx1eeSummon *)(env)->loader)
 
 /* copied */
 extern Unk800F78A4 *D_801E9104;

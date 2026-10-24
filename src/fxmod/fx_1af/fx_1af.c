@@ -35,34 +35,34 @@ s32 fx_1af_op80(s32 mode, Fx1afWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
         work->unk38.vy = work->unk28.vy;
         work->unk38.vz = work->unk28.vz;
     } else {
-        frame = entry->unk0;
+        frame = entry->frame;
         switch (work->unk0) {
         case 0:
             if (frame > 0) {
                 work->unk0 = 1;
-                entry->unk0 = -1;
-                ex->func_800E806C(0x10, 0);
+                entry->frame = -1;
+                ex->btlfx_fadeUnitById(0x10, 0);
                 ex->func_800E87C4(0x50);
                 ex->btlfx_initEffModels(D_801E7F58, 5);
                 for (i = 0; i < 5; i++) {
-                    work->unk40[i] = ex->func_800E8F50((Unk800E8F50 *)ex->btlfx_getFileData(entry->unk8, D_801E7EF4[i]), 0);
+                    work->unk40[i] = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, D_801E7EF4[i]), 0);
                 }
-                ex->btlfx_drawScreenTint((u32 *)(env->unk20 + 2), 1, 0x80, 0x80, 0xAA);
+                ex->btlfx_drawScreenTint((u32 *)(env->ot + 2), 1, 0x80, 0x80, 0xAA);
             }
             break;
         case 1:
             t = (frame << 12) / 180;
             if (frame == 0) {
-                ex->btlfx_drawScreenTint((u32 *)(env->unk20 + 2), 1, 0x40, 0x40, 0x55);
+                ex->btlfx_drawScreenTint((u32 *)(env->ot + 2), 1, 0x40, 0x40, 0x55);
             }
             if (frame == 1) {
-                ex->btlfx_drawScreenTint((u32 *)(env->unk20 + 2), 1, 0x2A, 0x2A, 0x38);
+                ex->btlfx_drawScreenTint((u32 *)(env->ot + 2), 1, 0x2A, 0x2A, 0x38);
             }
             if (frame == 0x14) {
-                ex->btlfx_drawScreenTint((u32 *)(env->unk20 + 2), 1, 0x2A, 0x2A, 0x38);
+                ex->btlfx_drawScreenTint((u32 *)(env->ot + 2), 1, 0x2A, 0x2A, 0x38);
             }
             if (frame == 0x28) {
-                ex->btlfx_drawScreenTint((u32 *)(env->unk20 + 2), 1, 0x2A, 0x2A, 0x38);
+                ex->btlfx_drawScreenTint((u32 *)(env->ot + 2), 1, 0x2A, 0x2A, 0x38);
             }
             if (frame >= 0) {
                 y = t;
@@ -92,49 +92,49 @@ s32 fx_1af_op80(s32 mode, Fx1afWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
                 }
             }
             if (frame == 0xA) {
-                p = ex->func_800E3CEC(ex->btlfx_getFileData(entry->unk8, 2), (s32)&work->unk28);
+                p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 2), (s32)&work->unk28);
                 if (p != NULL) {
                     p->unk22 = 0x140;
                 }
-                p = ex->func_800E3CEC(ex->btlfx_getFileData(entry->unk8, 3), (s32)&work->unk28);
+                p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 3), (s32)&work->unk28);
                 if (p != NULL) {
                     p->unk22 = 0x140;
                 }
-                p = ex->func_800E3CEC(ex->btlfx_getFileData(entry->unk8, 4), (s32)&work->unk28);
+                p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 4), (s32)&work->unk28);
                 if (p != NULL) {
                     p->unk22 = 0x140;
                 }
-                p = ex->func_800E3CEC(ex->btlfx_getFileData(entry->unk8, 0xA), (s32)&work->unk38);
+                p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0xA), (s32)&work->unk38);
                 if (p != NULL) {
                     p->unk22 = 0x140;
                 }
             }
             if (frame == 0x1E) {
-                p = ex->func_800E3CEC(ex->btlfx_getFileData(entry->unk8, 5), (s32)&work->unk28);
+                p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 5), (s32)&work->unk28);
                 if (p != NULL) {
                     p->unk22 = 0x140;
                 }
-                p = ex->func_800E3CEC(ex->btlfx_getFileData(entry->unk8, 6), (s32)&work->unk28);
+                p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 6), (s32)&work->unk28);
                 if (p != NULL) {
                     p->unk22 = 0x140;
                 }
             }
             if (frame == 0x45) {
-                p = ex->func_800E3CEC(ex->btlfx_getFileData(entry->unk8, 7), (s32)&work->unk28);
+                p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 7), (s32)&work->unk28);
                 if (p != NULL) {
                     p->unk22 = 0x140;
                 }
-                p = ex->func_800E3CEC(ex->btlfx_getFileData(entry->unk8, 8), (s32)&work->unk28);
+                p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 8), (s32)&work->unk28);
                 if (p != NULL) {
                     p->unk22 = 0x140;
                 }
-                p = ex->func_800E3CEC(ex->btlfx_getFileData(entry->unk8, 9), (s32)&work->unk28);
+                p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 9), (s32)&work->unk28);
                 if (p != NULL) {
                     p->unk22 = 0x140;
                 }
             }
             if (frame == 0x4B) {
-                p = ex->func_800E3CEC(ex->btlfx_getFileData(entry->unk8, 0xD), (s32)&work->unk28);
+                p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0xD), (s32)&work->unk28);
                 if (p != NULL) {
                     p->unk14 = (s32)D_801E8348;
                     p->unk12 = 0x2C;
@@ -160,7 +160,7 @@ s32 fx_1af_op83(s32 mode, void *work, Unk800F78A4 *env, Unk80100C78Entry *entry,
         *arg4 = 0;
     } else if (mode == 1) {
         D_801E7F48 = env;
-        ex->func_800E8274(0x10);
+        ex->btlfx_clearUnitStatus(0x10);
     } else {
         return 1;
     }
@@ -176,9 +176,9 @@ s32 fx_1af_op87(s32 mode, void *work, Unk800F78A4 *env, Unk80100C78Entry *entry,
     } else if (mode == 1) {
         D_801E7F48 = env;
         ex->btlfx_getUnitPos(0x10, (s16 *)&v);
-        env->unk2C->unk0[3].vx = v.vx;
-        env->unk2C->unk0[3].vy = v.vy;
-        env->unk2C->unk0[3].vz = v.vz;
+        env->camera->points[3].vx = v.vx;
+        env->camera->points[3].vy = v.vy;
+        env->camera->points[3].vz = v.vz;
         return 1;
     } else {
         return 0;

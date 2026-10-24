@@ -7,16 +7,16 @@ s32 fx_0f9_op80(s32 mode, SVECTOR *work, Unk800F78A4 *env, Unk80100C78Entry *ent
     if (mode == 0) {
         *arg4 = 8;
     } else if (mode == 1) {
-        work->vx = env->unkC->unk38;
+        work->vx = env->targets->centerX;
         work->vy = 0;
-        work->vz = env->unkC->unk3C;
+        work->vz = env->targets->centerZ;
         D_801E7820 = env;
-        p = ex->func_800E3CEC(ex->btlfx_getFileData(entry->unk8, 1), (s32)work);
+        p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 1), (s32)work);
         if (p != NULL) {
             p->unk22 = ex->func_800E7CC4(0x10, 0x80);
         }
     } else {
-        return entry->unk0 >= 0x40;
+        return entry->frame >= 0x40;
     }
     return 0;
 }

@@ -69,7 +69,7 @@ typedef struct {
     s32 unk60; /* summon model */
 } Fx17d4Summon;
 
-#define SUMMON(env) ((Fx17d4Summon *)(env)->unk4)
+#define SUMMON(env) ((Fx17d4Summon *)(env)->loader)
 
 extern SVECTOR D_801E971C;
 extern s32 D_801E989C[];

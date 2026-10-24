@@ -17,19 +17,19 @@ s32 fx_0ce_op80(s32 mode, Fx0ceWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
         ex->btlfx_getUnitBodyPos(0, 0, (s16 *)&work->unk8);
         ex->btlfx_getUnitPos(0, (s16 *)&work->unk10);
         work->unk8.vy -= 0x80;
-        ex->func_800DC858(0x10, 0, (u16 *)&work->unk18);
+        ex->btlfx_getUnitArgBonePos(0x10, 0, (u16 *)&work->unk18);
         ex->btlfx_aimAngles((s16 *)&work->unk18, (s16 *)&work->unk8, (s16 *)&work->unk24);
         ex->btlfx_initEffModels(D_801E7D30, 1);
-        work->unk20 = ex->func_800E8F50((Unk800E8F50 *)ex->btlfx_getFileData(entry->unk8, 7), 1);
-        p = ex->func_800E3CEC(ex->btlfx_getFileData(entry->unk8, 2), (s32)&work->unk18);
+        work->unk20 = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, 7), 1);
+        p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 2), (s32)&work->unk18);
         if (p != NULL) {
             p->unk22 = ex->func_800E7CC4(0x10, 0x10);
         }
-        p = ex->func_800E3CEC(ex->btlfx_getFileData(entry->unk8, 0xB), (s32)&work->unk18);
+        p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0xB), (s32)&work->unk18);
         if (p != NULL) {
             p->unk22 = ex->func_800E7CC4(0x10, 0x10);
         }
-        work->unk2C = ex->func_800E3CEC(ex->btlfx_getFileData(entry->unk8, 1), (s32)&work->unk18);
+        work->unk2C = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 1), (s32)&work->unk18);
         if (work->unk2C != NULL) {
             work->unk2C->unk22 = ex->func_800E7CC4(0x10, 0x10);
         }
@@ -40,13 +40,13 @@ s32 fx_0ce_op80(s32 mode, Fx0ceWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
         }
         work->unk0 = work->unk4 = 0;
     } else {
-        frame = entry->unk0;
+        frame = entry->frame;
         switch (work->unk0) {
         case 0:
             if (frame >= 6) {
                 work->unk0 = 1;
-                entry->unk0 = -1;
-                p = ex->func_800E3CEC(ex->btlfx_getFileData(entry->unk8, 0xC), (s32)&work->unk10);
+                entry->frame = -1;
+                p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0xC), (s32)&work->unk10);
                 if (p != NULL) {
                     p->unk22 = ex->func_800E7CC4(0x10, 0x10);
                 }

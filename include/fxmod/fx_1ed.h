@@ -58,7 +58,7 @@ extern Fx1edTrail D_801EA680[2];
 
 s32 func_801E792C(s32 curve, s32 n, s32 t, s32 from, s32 to);
 
-#define SUMMON(env) ((Fx1edSummon *)(env)->unk4)
+#define SUMMON(env) ((Fx1edSummon *)(env)->loader)
 
 /* copied */
 extern Unk800F78A4 *D_801E8910;

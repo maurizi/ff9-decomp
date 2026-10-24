@@ -58,7 +58,7 @@ extern Fx1efTrail D_801EA90C[2];
 
 s32 func_801E792C(s32 curve, s32 n, s32 t, s32 from, s32 to);
 
-#define SUMMON(env) ((Fx1efSummon *)(env)->unk4)
+#define SUMMON(env) ((Fx1efSummon *)(env)->loader)
 extern s32 D_801EAA64[2]; /* fade timers */
 extern SVECTOR D_801EAA6C[4]; /* unit body positions */
 extern s32 D_801EAA8C[4][0x1FE];

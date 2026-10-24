@@ -17,7 +17,7 @@ s32 fx_08e_op80(s32 mode, Fx08eWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
         work->unk50.vy = work->unk58.vy;
         work->unk50.vz = work->unk58.vz;
         work->unk50.vy -= 0x1C2;
-        work->unk0 = ex->func_800E3CEC(ex->btlfx_getFileData(entry->unk8, 6), (s32)&work->unk58);
+        work->unk0 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 6), (s32)&work->unk58);
         work->unk1C.vx = 0;
         work->unk1C.vy = 0;
         work->unk1C.vz = 0;
@@ -28,15 +28,15 @@ s32 fx_08e_op80(s32 mode, Fx08eWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
         work->unk24.vy = work->unk58.vy;
         work->unk24.vz = work->unk58.vz;
         ex->btlfx_initEffModels(D_801E7E30, 2);
-        work->unk68 = ex->Hi_RegisterTexEffModel((BtlUnit9C8 *)ex->btlfx_getFileData(entry->unk8, 0xE), 0x1B, 0x3D09, 0, 0);
-        work->unk6A = ex->Hi_RegisterTexEffModel((BtlUnit9C8 *)ex->btlfx_getFileData(entry->unk8, 0xF), 0x1B, 0x3D09, 0, 0);
+        work->unk68 = ex->Hi_RegisterTexEffModel((BtlUnit9C8 *)ex->btlfx_getFileData(entry->file, 0xE), 0x1B, 0x3D09, 0, 0);
+        work->unk6A = ex->Hi_RegisterTexEffModel((BtlUnit9C8 *)ex->btlfx_getFileData(entry->file, 0xF), 0x1B, 0x3D09, 0, 0);
         work->unk64 = work->unk60 = -1;
     } else {
-        frame = entry->unk0;
+        frame = entry->frame;
         switch (frame) {
         case 6:
-            work->unk4 = ex->func_800E3CEC(ex->btlfx_getFileData(entry->unk8, 7), (s32)&work->unk58);
-            work->unk8 = ex->func_800E3CEC(ex->btlfx_getFileData(entry->unk8, 5), (s32)&work->unk58);
+            work->unk4 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 7), (s32)&work->unk58);
+            work->unk8 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 5), (s32)&work->unk58);
             if (work->unk4 != NULL) {
                 work->unk4->unk14 = (s32)D_801E7FC0;
                 work->unk4->unk12 = 9;
@@ -44,15 +44,15 @@ s32 fx_08e_op80(s32 mode, Fx08eWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
             }
             break;
         case 22:
-            work->unkC = ex->func_800E3CEC(ex->btlfx_getFileData(entry->unk8, 3), (s32)&work->unk58);
-            work->unk18 = ex->func_800E3CEC(ex->btlfx_getFileData(entry->unk8, 0x10), (s32)&work->unk58);
+            work->unkC = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 3), (s32)&work->unk58);
+            work->unk18 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0x10), (s32)&work->unk58);
             work->unk60 = 0x12;
             break;
         case 28:
-            work->unk10 = ex->func_800E3CEC(ex->btlfx_getFileData(entry->unk8, 1), (s32)&work->unk50);
+            work->unk10 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 1), (s32)&work->unk50);
             break;
         case 42:
-            work->unk14 = ex->func_800E3CEC(ex->btlfx_getFileData(entry->unk8, 0xD), (s32)&work->unk48);
+            work->unk14 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0xD), (s32)&work->unk48);
             break;
         case 36:
             work->unk64 = 0x18;

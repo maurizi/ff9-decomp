@@ -14,7 +14,7 @@ typedef struct {
     SVECTOR unk18; /* unit 0x10 body position */
     SVECTOR unk20; /* caster body position */
     SVECTOR unk28; /* caster position */
-    SVECTOR unk30; /* func_800DC858(0x10, 0) */
+    SVECTOR unk30; /* btlfx_getUnitArgBonePos(0x10, 0) */
     SVECTOR unk38; /* unk30 moved 0x12C along unk48 */
     SVECTOR unk40; /* unk30 moved 0xC8 along unk48 */
     SVECTOR unk48; /* angles from unk30 to unk20 */

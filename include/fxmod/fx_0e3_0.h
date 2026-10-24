@@ -104,6 +104,6 @@ extern Fx0e30Arc D_801EB0E8[];
 extern Fx0e30Bolt D_801EB388[];
 extern BtlModel D_801EB6A8[];
 
-#define SUMMON(env) ((Fx0e30Summon *)(env)->unk4)
+#define SUMMON(env) ((Fx0e30Summon *)(env)->loader)
 
 #endif

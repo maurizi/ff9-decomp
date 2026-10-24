@@ -4,7 +4,7 @@
 /* Battle effect modules (FF9.IMG dir 13, loaded at 0x801E7700 / 0x801EC700; docs/ff9img.md).
  * A module is its own binary and calls nothing directly. It reaches ovl_0b through the export table
  * g_btlfxModuleExports (ovl_0b 0x800F7510), whose address the effect environment carries
- * (g_btlfxEnv->unk10; env is an argument of every op handler). BtlfxExports is that table: one member per
+ * (g_btlfxEnv->exports; env is an argument of every op handler). BtlfxExports is that table: one member per
  * entry, named after the ovl_0b / main function it points to, with the parameter types of its definition.
  *
  * The modules' own view of the table differs from ovl_0b's definitions in two ways, both needed to match:
@@ -44,13 +44,13 @@ typedef struct BtlfxExports {
     s32 (*Hi_DrawEffModel)(SVECTOR *, VECTOR *, s32, s32); /* 0x060 */
     s32 (*Hi_DrawSummonModel)(SVECTOR *, VECTOR *, s32, s32, s32); /* 0x064 */
     s32 (*Hi_SetSummonMotion)(BtlUnit9CC *, s32); /* 0x068 */
-    s32 (*func_800E8854)(BtlUnit9C8 *, void (*)(SVECTOR *, s32)); /* 0x06C */
+    s32 (*btl_forEachModelVertex)(BtlUnit9C8 *, void (*)(SVECTOR *, s32)); /* 0x06C */
     s32 (*btlfx_initEffModels)(BtlModel *, s32); /* 0x070 */
     s32 (*btlfx_initSummonModels)(BtlModel *, s32); /* 0x074 */
     s32 (*btlfx_clearEffModels)(void); /* 0x078 */
     s32 (*btlfx_clearSummonModels)(void); /* 0x07C */
-    s32 (*func_800DC818)(s32, s32, u16 *); /* 0x080 */
-    s32 (*func_800DC858)(s32, s32, u16 *); /* 0x084 */
+    s32 (*btlfx_getUnitBonePos)(s32, s32, u16 *); /* 0x080 */
+    s32 (*btlfx_getUnitArgBonePos)(s32, s32, u16 *); /* 0x084 */
     s32 (*btlfx_setUnitMotion)(s32, s32); /* 0x088 */
     s32 (*btlfx_getUnitMotion)(s32, s32); /* 0x08C */
     s32 (*func_800D8C9C)(void); /* 0x090 */
@@ -71,12 +71,12 @@ typedef struct BtlfxExports {
     s32 (*btlfx_distance)(SVECTOR *, SVECTOR *); /* 0x0CC */
     s32 (*btlfx_randRotation)(SVECTOR *); /* 0x0D0 */
     s32 (*btlfx_aimAngles)(s16 *, s16 *, s16 *); /* 0x0D4 */
-    s32 (*func_800CFCA8)(SVECTOR *, s32, s32); /* 0x0D8 */
-    s32 (*func_800CFD78)(s16 *, s16 *, s32, s16 *); /* 0x0DC */
+    s32 (*btlfx_rotateOffset)(SVECTOR *, s32, s32); /* 0x0D8 */
+    s32 (*btlfx_pointAhead)(s16 *, s16 *, s32, s16 *); /* 0x0DC */
     s32 (*btlfx_angleDiff)(s32, s32, s32 *); /* 0x0E0 */
     s32 (*btlfx_turnToward)(s16 *, s16 *, s32); /* 0x0E4 */
-    s32 (*func_800D0130)(SVECTOR *, MATRIX *); /* 0x0E8 */
-    s32 (*func_800D01D4)(SVECTOR *, VECTOR *, MATRIX *, s32); /* 0x0EC */
+    s32 (*btlfx_setWorldTrans)(SVECTOR *, MATRIX *); /* 0x0E8 */
+    s32 (*btlfx_setRotScale)(SVECTOR *, VECTOR *, MATRIX *, s32); /* 0x0EC */
     s32 (*func_800D044C)(SVECTOR *, s32, s32, XY32 *, s32, s32); /* 0x0F0 */
     s32 (*func_800D0580)(s16 *, XY32 *, s32); /* 0x0F4 */
     s32 (*func_800D0674)(SVECTOR *, SVECTOR *, SVECTOR *, s32, s32, s32 *); /* 0x0F8 */
@@ -87,25 +87,25 @@ typedef struct BtlfxExports {
     s32 (*btlfx_drawTrailFlat)(s32, s32, s32, s32, s32, s32, s32, s32, s32, u32 *, u32 *, s32); /* 0x10C */
     s32 (*btlfx_drawTrail)(u8 *, s32, s32 *, s32, s32, s32, s32, u8 *, s32); /* 0x110 */
     s32 (*btlfx_drawParticles)(u8 *, SVECTOR *, SVECTOR *, s32, s32, s32, s32, s32, s32); /* 0x114 */
-    s32 (*func_800D198C)(u8 *, SVECTOR *, s32, s32, s32); /* 0x118 */
-    s32 (*func_800D1BC4)(u32, u8 *, s32, s32, s32, s32, s32); /* 0x11C */
+    s32 (*btlfx_drawSprite)(u8 *, SVECTOR *, s32, s32, s32); /* 0x118 */
+    s32 (*btlfx_drawSpriteAtOt)(u32, u8 *, s32, s32, s32, s32, s32); /* 0x11C */
     s32 (*btlfx_drawAnimQuads)(u8 *, SVECTOR *, SVECTOR *, s32, s32, s32, s32); /* 0x120 */
     s32 (*btlfx_drawSprites)(u8 *, SVECTOR *, SVECTOR *, s32, s32, s32, s32); /* 0x124 */
-    s32 (*func_800D23D8)(u8 *, SVECTOR *, SVECTOR *, s32, s32, s32, s32); /* 0x128 */
-    s32 (*func_800D2938)(Unk800D2938 *, SVECTOR *, SVECTOR *, s32, s32, s32, s32); /* 0x12C */
-    s32 (*func_800D2DBC)(u8 *, s32, s32, s32, s32, s32); /* 0x130 */
+    s32 (*btlfx_drawRings)(u8 *, SVECTOR *, SVECTOR *, s32, s32, s32, s32); /* 0x128 */
+    s32 (*btlfx_drawFan)(Unk800D2938 *, SVECTOR *, SVECTOR *, s32, s32, s32, s32); /* 0x12C */
+    s32 (*btlfx_drawBackdropSprite)(u8 *, s32, s32, s32, s32, s32); /* 0x130 */
     s32 (*btlfx_drawBackdrop)(BtlBgLayers *, s32); /* 0x134 */
-    s32 (*func_800D3B6C)(u8 *, SVECTOR *, s32, s32); /* 0x138 */
-    s32 (*func_800E00DC)(s32, Pool30Entry *, Pool30 *); /* 0x13C */
+    s32 (*btlfx_drawSpriteLine)(u8 *, SVECTOR *, s32, s32); /* 0x138 */
+    s32 (*btlfx_initParticles)(s32, Pool30Entry *, Pool30 *); /* 0x13C */
     s32 (*func_800E0134)(Pool30Entry *, Pool6CEntry *); /* 0x140 */
-    s32 (*func_800E0168)(Pool30 *); /* 0x144 */
-    s32 (*func_800E14D8)(u32, Pool6C *); /* 0x148 */
-    Pool6CEntry * (*func_800E1534)(Pool30 *, Pool6C *, u8 *, s32); /* 0x14C */
-    s32 (*func_800E1708)(Pool30 *, s32, s32); /* 0x150 */
-    s32 (*func_800E1810)(Pool30 *, Pool6CEntry *); /* 0x154 */
-    s32 (*func_800E1874)(Pool30 *, Pool6C *); /* 0x158 */
-    Pool30Entry * (*func_800E1F90)(Pool30 *); /* 0x15C */
-    s32 (*func_800E2000)(Pool30 *, Pool6C *); /* 0x160 */
+    s32 (*btlfx_updateParticles)(Pool30 *); /* 0x144 */
+    s32 (*btlfx_initEmitters)(u32, Pool6C *); /* 0x148 */
+    Pool6CEntry * (*btlfx_spawnEmitter)(Pool30 *, Pool6C *, u8 *, s32); /* 0x14C */
+    s32 (*btlfx_moveEmitter)(Pool30 *, s32, s32); /* 0x150 */
+    s32 (*btlfx_killEmitter)(Pool30 *, Pool6CEntry *); /* 0x154 */
+    s32 (*btlfx_updateEmitters)(Pool30 *, Pool6C *); /* 0x158 */
+    Pool30Entry * (*btlfx_allocParticle)(Pool30 *); /* 0x15C */
+    s32 (*btlfx_runEmitters)(Pool30 *, Pool6C *); /* 0x160 */
     s32 (*func_800E2F84)(Pool30 *, Pool30Entry *, SVECTOR *, SVECTOR *); /* 0x164 */
     s32 (*btlfx_initTasks)(void); /* 0x168 */
     s32 (*btlfx_allocTaskMem)(Unk80100C78Entry *, s32); /* 0x16C */
@@ -118,12 +118,12 @@ typedef struct BtlfxExports {
     s32 (*btlfx_poolUpdate)(Unk800DA1B8 *); /* 0x188 */
     s32 (*btlfx_findFileSlot)(s32); /* 0x18C */
     s32 (*Hi_SetSummonMotFrame)(s32, s32); /* 0x190 */
-    s32 (*func_800E6D58)(void); /* 0x194 */
+    s32 (*btlfx_popViewMatrix)(void); /* 0x194 */
     s32 (*btlfx_getFileData)(s32, s32); /* 0x198 */
     s32 (*btlfx_getFileDataSize)(s32, s32); /* 0x19C */
     s32 (*func_800DA4E8)(void); /* 0x1A0 */
     s32 (*btlfx_loadFile)(s32); /* 0x1A4 */
-    s32 (*func_800DA5C4)(void); /* 0x1A8 */
+    s32 (*btlfx_loadNextBlock)(void); /* 0x1A8 */
     s32 (*btlfx_updateLoader)(void); /* 0x1AC */
     s32 (*btlfx_reset)(void); /* 0x1B0 */
     s32 (*btlfx_start)(s32); /* 0x1B4 */
@@ -132,54 +132,54 @@ typedef struct BtlfxExports {
     s32 (*btlfx_heapAlloc)(Heap *, s32); /* 0x1C0 */
     s32 (*btlfx_heapWrapIfFull)(Heap *, s32); /* 0x1C4 */
     s32 (*btlfx_heapFree)(void *); /* 0x1C8 */
-    s32 (*func_800E3C58)(void); /* 0x1CC */
-    s32 (*func_800E3C98)(void); /* 0x1D0 */
-    Pool6CEntry * (*func_800E3CEC)(s32, s32); /* 0x1D4 */
-    s32 (*func_800E3D20)(s32, s32); /* 0x1D8 */
-    s32 (*func_800E3D54)(Pool6CEntry *); /* 0x1DC */
+    s32 (*btlfx_initParticleSystem)(void); /* 0x1CC */
+    s32 (*btlfx_updateParticleSystem)(void); /* 0x1D0 */
+    Pool6CEntry * (*btlfx_startEmitter)(s32, s32); /* 0x1D4 */
+    s32 (*btlfx_moveEmitterTo)(s32, s32); /* 0x1D8 */
+    s32 (*btlfx_stopEmitter)(Pool6CEntry *); /* 0x1DC */
     s32 (*btlfx_setTargets)(BtlUnitList *); /* 0x1E0 */
-    s32 (*func_800E6DF4)(void); /* 0x1E4 */
-    s32 (*func_800E6DB8)(s32); /* 0x1E8 */
+    s32 (*btlfx_popGeomScreen)(void); /* 0x1E4 */
+    s32 (*btlfx_pushGeomScreen)(s32); /* 0x1E8 */
     s32 (*btlfx_clearTargets)(void); /* 0x1EC */
     s32 (*btlfx_getUnitRadius)(s32); /* 0x1F0 */
-    s32 (*func_800E738C)(s32); /* 0x1F4 */
+    s32 (*btlfx_getUnitHeight)(s32); /* 0x1F4 */
     s32 (*btlfx_getUnitHomePos)(s32, s16 *); /* 0x1F8 */
     s32 (*btlfx_getUnitPos)(s32, s16 *); /* 0x1FC */
     s32 (*btlfx_getUnitBodyPos)(s32, s32, s16 *); /* 0x200 */
     s32 (*btlfx_setUnitPos)(s32, s16 *); /* 0x204 */
-    s32 (*func_800E82CC)(s32, s16 *, BtlUnit **, s32 *); /* 0x208 */
+    s32 (*btlfx_nextUnitPos)(s32, s16 *, BtlUnit **, s32 *); /* 0x208 */
     s32 (*btlfx_getUnitRot)(s32, s16 *); /* 0x20C */
     s32 (*btlfx_isEnemyUnit)(s32); /* 0x210 */
-    s32 (*func_800E78B4)(s32, s16 *, s16 *, s32, s32, s32, s32); /* 0x214 */
+    s32 (*btlfx_turnUnitToward)(s32, s16 *, s16 *, s32, s32, s32, s32); /* 0x214 */
     s32 (*btlfx_getStrikePos)(s32, s32, s16 *); /* 0x218 */
-    s32 (*func_800E7C54)(s32, s32); /* 0x21C */
+    s32 (*btlfx_compareDepth)(s32, s32); /* 0x21C */
     s32 (*func_800E7CC4)(s32, s32); /* 0x220 */
     s32 (*btlfx_fadeUnitGroup)(u32, s32); /* 0x224 */
     s32 (*btlfx_execCmd)(s32); /* 0x228 */
     s32 (*btlfx_addPrimAbr)(s32, s32, void *, s32); /* 0x22C */
     s32 (*btlfx_showPopups)(s32); /* 0x230 */
     s32 (*btlfx_addPrim)(u32, s32, void *); /* 0x234 */
-    s32 (*func_800E651C)(u8 *, CVECTOR *, s32); /* 0x238 */
+    s32 (*btlfx_sampleGradient)(u8 *, CVECTOR *, s32); /* 0x238 */
     s32 (*btlfx_linkPrimAbr)(u32, u32 *, void *, s32); /* 0x23C */
-    s32 (*func_800E6624)(s32, s32, s32, s32, s32, s32, s32); /* 0x240 */
+    s32 (*btlfx_drawScrollMove)(s32, s32, s32, s32, s32, s32, s32); /* 0x240 */
     s32 (*Hi_DrawMorphModelByBone)(s32, s32, s32, s32, s32, s32); /* 0x244 */
-    void (*func_800E6764)(u32, s32, s32, s32, s32, s32, s32, s32, s32, SVECTOR *, VECTOR *, CVECTOR *, s32,
+    void (*btlfx_drawScreenGrid)(u32, s32, s32, s32, s32, s32, s32, s32, s32, SVECTOR *, VECTOR *, CVECTOR *, s32,
                           void (*)(SVECTOR *)); /* 0x248 (arg 13: per-vertex callback in the module) */
     s32 (*Hi_ModifySummonModelAbr)(s32, s32); /* 0x24C */
-    s32 (*func_800E6C58)(SVECTOR *); /* 0x250 */
+    s32 (*btlfx_pushViewRotation)(SVECTOR *); /* 0x250 */
     s32 (*Hi_GetSummonBonePos)(s32, s32, u16 *); /* 0x254 */
-    s32 (*func_800DA4C4)(s32); /* 0x258 */
+    s32 (*btlfx_takeWork)(s32); /* 0x258 */
     s32 (*Hi_FreeEffModel)(s32); /* 0x25C */
     s32 (*btlfx_setWeaponVisible)(s32, s32); /* 0x260 */
-    s32 (*func_800D0B18)(s32, s32, s32, s32, s32, s32, CVECTOR *, s32, s32, s32, s32); /* 0x264 */
+    s32 (*btlfx_drawRippleGrid)(s32, s32, s32, s32, s32, s32, CVECTOR *, s32, s32, s32, s32); /* 0x264 */
     s32 (*Hi_ModifyEffModelAbr)(s32, s32); /* 0x268 */
     s32 (*Hi_ModifyEffModelRGB)(s32, s32, s32, s32); /* 0x26C */
     s32 (*btlfx_turnUnit)(s32, s32); /* 0x270 */
     s32 (*Hi_ShowSummonModelMesh)(s32, s32); /* 0x274 */
     s32 (*Hi_HideSummonModelMesh)(s32, s32); /* 0x278 */
     MATRIX * (*MulRotMatrix)(MATRIX *); /* 0x27C */
-    s32 (*func_800D8A20)(s32, s32); /* 0x280 */
-    u32 (*func_800D89E8)(s32); /* 0x284 */
+    s32 (*btlfx_setMotionHeld)(s32, s32); /* 0x280 */
+    u32 (*btlfx_holdMotion)(s32); /* 0x284 */
     s32 (*Hi_DrawEffModelByBone)(s32, s32, s32, s32); /* 0x288 */
     s32 (*Hi_DrawMorphEffModel)(SVECTOR *, VECTOR *, s32, s32, s32, s32); /* 0x28C */
     s32 (*Hi_GetSummonBoneMatrix)(s32, s32, BtlBone *); /* 0x290 */
@@ -187,27 +187,27 @@ typedef struct BtlfxExports {
     int (*MoveImage)(RECT *, int, int); /* 0x298 */
     s32 (*func_800DF938)(void); /* 0x29C */
     s32 (*btlfx_getUnitScale)(s32, VECTOR *); /* 0x2A0 */
-    s32 (*func_800E7ACC)(s32, s32 *); /* 0x2A4 */
+    s32 (*btlfx_setUnitScale)(s32, s32 *); /* 0x2A4 */
     s32 (*btlfx_setUnitRot)(s32, s16 *); /* 0x2A8 */
     s32 (*Hi_RegisterTexPtrModel)(BtlUnit9C8 *, s16 *, s16 *); /* 0x2AC */
-    s32 (*func_800CFE88)(MATRIX *, s32, s32); /* 0x2B0 */
-    s32 (*func_800CFF40)(MATRIX *, s16 *); /* 0x2B4 */
-    s32 (*func_800E7D3C)(s32, s32, s16 *); /* 0x2B8 */
-    s32 (*func_800E806C)(s32, s32); /* 0x2BC */
-    s32 (*func_800E8B28)(s32, s32, s32); /* 0x2C0 */
-    s32 (*func_800DC8AC)(s32, s32, BtlBone *); /* 0x2C4 */
-    s32 (*func_800DC8EC)(s32, s32, BtlBone *); /* 0x2C8 */
-    s32 (*func_800E63E4)(s32, s32); /* 0x2CC */
+    s32 (*btlfx_matrixPointAhead)(MATRIX *, s32, s32); /* 0x2B0 */
+    s32 (*btlfx_matrixAngles)(MATRIX *, s16 *); /* 0x2B4 */
+    s32 (*btlfx_getWeaponPos)(s32, s32, s16 *); /* 0x2B8 */
+    s32 (*btlfx_fadeUnitById)(s32, s32); /* 0x2BC */
+    s32 (*btlfx_setUnitTexAnim)(s32, s32, s32); /* 0x2C0 */
+    s32 (*btlfx_getUnitBoneMatrix)(s32, s32, BtlBone *); /* 0x2C4 */
+    s32 (*btlfx_getUnitArgBoneMatrix)(s32, s32, BtlBone *); /* 0x2C8 */
+    s32 (*btlfx_startScreenFade)(s32, s32); /* 0x2CC */
     s32 (*func_800E98C8)(s32, s32); /* 0x2D0 */
     s32 (*func_800E98F8)(s32); /* 0x2D4 */
-    s32 (*func_800E9930)(s32, s32, s32); /* 0x2D8 */
+    s32 (*btlfx_playFileSound)(s32, s32, s32); /* 0x2D8 */
     s32 (*func_800E8554)(s32, s32); /* 0x2DC */
-    s32 * (*func_800E871C)(s32, s32 *); /* 0x2E0 */
+    s32 * (*btlfx_swapModelData)(s32, s32 *); /* 0x2E0 */
     s32 (*Hi_SetEffModelOffset)(s32, s32); /* 0x2E4 */
-    s32 (*func_800E80CC)(s32, s32); /* 0x2E8 */
+    s32 (*btlfx_setUnitLight)(s32, s32); /* 0x2E8 */
     s32 (*btlfx_setUnitVisible)(s32, s32); /* 0x2EC */
     s32 (*func_800E8980)(s32); /* 0x2F0 */
-    s32 (*func_800E6E1C)(s32, s32, s32, s32, u32 *, s32, s32, s32); /* 0x2F4 */
+    s32 (*btlfx_drawBgOffscreen)(s32, s32, s32, s32, u32 *, s32, s32, s32); /* 0x2F4 */
     BtlUnit * (*btl_getUnit)(s32); /* 0x2F8 */
     s32 (*Hi_GetSplitMdlVertex)(s32, s32); /* 0x2FC */
     s32 (*func_800DF928)(void); /* 0x300 */
@@ -215,28 +215,28 @@ typedef struct BtlfxExports {
     s32 (*func_800DF920)(void); /* 0x308 */
     s32 (*func_800DF930)(void); /* 0x30C */
     s32 (*Hi_GetMdlVertexPtr)(s32, s32, s32, s32 *, s32); /* 0x310 */
-    s32 (*func_800DD0B0)(s32); /* 0x314 */
-    s32 (*func_800DD0DC)(s32); /* 0x318 */
+    s32 (*btlfx_getUnitMeshCount)(s32); /* 0x314 */
+    s32 (*btlfx_getEffModelMeshCount)(s32); /* 0x318 */
     s32 (*Hi_DrawSliceEffModel)(SVECTOR *, VECTOR *, s32, s32); /* 0x31C */
     s32 (*Hi_SetEffModelSlice)(s32, s32); /* 0x320 */
     s32 (*btlfx_callScript)(s32); /* 0x324 */
     s32 (*btlfx_getMotionLength)(s32); /* 0x328 */
     s32 (*btlfx_isUnitActive)(s32); /* 0x32C */
-    s32 (*func_800CFC2C)(s32, s32, s32, s32, s32, s32 *); /* 0x330 */
-    s32 (*func_800E60A4)(s32, s32); /* 0x334 */
-    s32 (*func_800E8F50)(Unk800E8F50 *, s32); /* 0x338 */
-    s32 (*func_800E865C)(s32, s32); /* 0x33C */
-    s32 (*func_800E9000)(Unk800E9000 *, s32 *, s32, Unk80100DC054 *); /* 0x340 */
-    s32 (*func_800DA898)(void); /* 0x344 */
-    s32 (*func_800E99B0)(s32, s32, s32, s32); /* 0x348 */
+    s32 (*btlfx_rangeProgress)(s32, s32, s32, s32, s32, s32 *); /* 0x330 */
+    s32 (*btlfx_startFadeBackground)(s32, s32); /* 0x334 */
+    s32 (*btlfx_registerEffectModel)(Unk800E8F50 *, s32); /* 0x338 */
+    s32 (*btlfx_isUnitKind)(s32, s32); /* 0x33C */
+    s32 (*btlfx_registerSummonModel)(Unk800E9000 *, s32 *, s32, Unk80100DC054 *); /* 0x340 */
+    s32 (*btlfx_pollDrawSync)(void); /* 0x344 */
+    s32 (*btlfx_replaceSound)(s32, s32, s32, s32); /* 0x348 */
     s32 (*func_800E83EC)(void); /* 0x34C */
-    s32 (*func_800E9884)(s32); /* 0x350 */
-    s32 (*func_800E8274)(s32); /* 0x354 */
+    s32 (*btlfx_stopSound)(s32); /* 0x350 */
+    s32 (*btlfx_clearUnitStatus)(s32); /* 0x354 */
     s32 (*func_800E87C4)(s32); /* 0x358 */
-    s32 (*func_800DD120)(BtlTexInfo *, BtlTexInfo *, s32); /* 0x35C */
+    s32 (*btlfx_getCasterTexInfo)(BtlTexInfo *, BtlTexInfo *, s32); /* 0x35C */
 } BtlfxExports; /* followed in ovl_0b by the g_btlfxEnv block (D_800F7870) */
 
-#define BTLFX_EXPORTS(env) ((BtlfxExports *)(env)->unk10)
+#define BTLFX_EXPORTS(env) ((BtlfxExports *)(env)->exports)
 
 /* Modules copy SVECTORs as two words (lw/sw pairs, not a halfword struct copy). */
 #define BTLFX_COPY_SVEC(dst, src) \

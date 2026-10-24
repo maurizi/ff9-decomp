@@ -12,10 +12,10 @@ typedef struct {
     SVECTOR unk10; /* unit 0x10 body position */
     SVECTOR unk18; /* unit 0x10 rotation */
     SVECTOR unk20; /* caster position */
-    SVECTOR unk28; /* func_800DC858(0x10, 0), moved 0xC8 along unk18 */
+    SVECTOR unk28; /* btlfx_getUnitArgBonePos(0x10, 0), moved 0xC8 along unk18 */
     SVECTOR unk30; /* unk20 raised by 0x1C2 */
     SVECTOR unk38; /* unk20 raised by 0xC8 */
-    SVECTOR unk40; /* angles from env->unk2C->unk54 to unk28 */
+    SVECTOR unk40; /* angles from env->camera->unk54 to unk28 */
 } Fx092Work;
 
 extern Unk800F78A4 *D_801E7A1C;

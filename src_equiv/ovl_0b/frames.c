@@ -1,4 +1,4 @@
-/* ovl_0b effect frame emitters of func_800D2938 (0x800D57D0-0x800D5C30), hand-written asm in the original:
+/* ovl_0b effect frame emitters of btlfx_drawFan (0x800D57D0-0x800D5C30), hand-written asm in the original:
  * btlfx_emitFrameQuad (one textured POLY_FT4), btlfx_emitFrameFan (a fan of three POLY_G3 and a DR_MODE) and
  * btlfx_linkFrameTri, btlfx_emitFrameFan's OT-link helper.
  *

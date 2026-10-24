@@ -8,7 +8,7 @@ s32 btlfx_align4(s32 arg0) {
     return v;
 }
 
-s32 func_800CFC2C(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, s32 *arg5) {
+s32 btlfx_rangeProgress(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, s32 *arg5) {
     if (arg0 >= arg1 && arg1 + arg2 >= arg0) {
         *arg5 = (arg0 - arg1) * arg4 / arg2;
         if (arg3 < 0) {
@@ -19,18 +19,18 @@ s32 func_800CFC2C(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, s32 *arg5) {
     return 0;
 }
 
-void func_800CFCA8(SVECTOR *arg0, s32 arg1, s32 arg2) {
+void btlfx_rotateOffset(SVECTOR *arg0, s32 arg1, s32 arg2) {
     RotMatrix33 m;
 
     math_rotMatrixYXZ(arg0, &m);
     gte_SetRotMatrix(&m);
     gte_ldtr0();
     btlfx_transformPoint(arg1, 0, arg2);
-    gte_SetRotMatrix(g_btlfxEnv->unk14);
-    gte_SetTransMatrix(g_btlfxEnv->unk14);
+    gte_SetRotMatrix(g_btlfxEnv->viewMatrix);
+    gte_SetTransMatrix(g_btlfxEnv->viewMatrix);
 }
 
-void func_800CFD78(s16 *arg0, s16 *arg1, s32 arg2, s16 *arg3) {
+void btlfx_pointAhead(s16 *arg0, s16 *arg1, s32 arg2, s16 *arg3) {
     MATRIX m;
 
     math_rotMatrixYXZ(arg1, &m);
@@ -40,19 +40,19 @@ void func_800CFD78(s16 *arg0, s16 *arg1, s32 arg2, s16 *arg3) {
     m.t[2] = arg0[2];
     gte_SetTransMatrix(&m);
     btlfx_transformPoint(arg2, 0, (s32)arg3);
-    gte_SetRotMatrix(g_btlfxEnv->unk14);
-    gte_SetTransMatrix(g_btlfxEnv->unk14);
+    gte_SetRotMatrix(g_btlfxEnv->viewMatrix);
+    gte_SetTransMatrix(g_btlfxEnv->viewMatrix);
 }
 
-void func_800CFE88(MATRIX *arg0, s32 arg1, s32 arg2) {
+void btlfx_matrixPointAhead(MATRIX *arg0, s32 arg1, s32 arg2) {
     gte_SetRotMatrix(arg0);
     gte_SetTransMatrix(arg0);
     btlfx_transformPoint(arg1, 0, arg2);
-    gte_SetRotMatrix(g_btlfxEnv->unk14);
-    gte_SetTransMatrix(g_btlfxEnv->unk14);
+    gte_SetRotMatrix(g_btlfxEnv->viewMatrix);
+    gte_SetTransMatrix(g_btlfxEnv->viewMatrix);
 }
 
-void func_800CFF40(MATRIX *arg0, s16 *arg1) {
+void btlfx_matrixAngles(MATRIX *arg0, s16 *arg1) {
     s16 a[4];
     s32 b[2];
 
@@ -62,8 +62,8 @@ void func_800CFF40(MATRIX *arg0, s16 *arg1) {
     b[0] = 0;
     btlfx_transformPoint(0x1000, 0, (s32)a);
     btlfx_aimAngles((s16 *)b, a, arg1);
-    gte_SetRotMatrix(g_btlfxEnv->unk14);
-    gte_SetTransMatrix(g_btlfxEnv->unk14);
+    gte_SetRotMatrix(g_btlfxEnv->viewMatrix);
+    gte_SetTransMatrix(g_btlfxEnv->viewMatrix);
 }
 
 s32 btlfx_angleDiff(s32 arg0, s32 arg1, s32 *arg2) {
@@ -107,11 +107,11 @@ void btlfx_turnToward(s16 *arg0, s16 *arg1, s32 arg2) {
     sp10 = v;
 }
 
-void func_800D0130(SVECTOR *arg0, MATRIX *arg1) {
+void btlfx_setWorldTrans(SVECTOR *arg0, MATRIX *arg1) {
     MATRIX m;
 
-    gte_SetRotMatrix(g_btlfxEnv->unk14);
-    gte_SetTransMatrix(g_btlfxEnv->unk14);
+    gte_SetRotMatrix(g_btlfxEnv->viewMatrix);
+    gte_SetTransMatrix(g_btlfxEnv->viewMatrix);
     gte_ldv0(arg0);
     gte_rtv0tr();
     if (arg1 == NULL) {
@@ -121,7 +121,7 @@ void func_800D0130(SVECTOR *arg0, MATRIX *arg1) {
     gte_SetTransMatrix(arg1);
 }
 
-void func_800D01D4(SVECTOR *arg0, VECTOR *arg1, MATRIX *arg2, s32 arg3) {
+void btlfx_setRotScale(SVECTOR *arg0, VECTOR *arg1, MATRIX *arg2, s32 arg3) {
     MATRIX m;
     RotMatrix33 l;
 
@@ -166,8 +166,8 @@ void func_800D044C(SVECTOR *arg0, s32 arg1, s32 arg2, XY32 *arg3, s32 arg4, s32 
     m.t[2] = arg0->vz;
     gte_SetTransMatrix(&m);
     btlfx_transformPoint(arg2, arg4, arg1);
-    gte_SetRotMatrix(g_btlfxEnv->unk14);
-    gte_SetTransMatrix(g_btlfxEnv->unk14);
+    gte_SetRotMatrix(g_btlfxEnv->viewMatrix);
+    gte_SetTransMatrix(g_btlfxEnv->viewMatrix);
 }
 
 void func_800D0580(s16 *arg0, XY32 *arg1, s32 arg2) {
@@ -188,8 +188,8 @@ void func_800D0580(s16 *arg0, XY32 *arg1, s32 arg2) {
     b[0] = 0;
     btlfx_transformPoint(0, 0x1000, (s32)a);
     btlfx_aimAngles((s16 *)b, a, arg0);
-    gte_SetRotMatrix(g_btlfxEnv->unk14);
-    gte_SetTransMatrix(g_btlfxEnv->unk14);
+    gte_SetRotMatrix(g_btlfxEnv->viewMatrix);
+    gte_SetTransMatrix(g_btlfxEnv->viewMatrix);
 }
 
 void func_800D0674(SVECTOR *arg0, SVECTOR *arg1, SVECTOR *arg2, s32 arg3, s32 arg4, s32 *arg5) {
@@ -209,8 +209,8 @@ void func_800D0674(SVECTOR *arg0, SVECTOR *arg1, SVECTOR *arg2, s32 arg3, s32 ar
     gte_SetRotMatrix(&m);
     gte_ldtr0();
     *arg5 = btlfx_transformPolar(&v, arg3, arg4);
-    gte_SetRotMatrix(g_btlfxEnv->unk14);
-    gte_SetTransMatrix(g_btlfxEnv->unk14);
+    gte_SetRotMatrix(g_btlfxEnv->viewMatrix);
+    gte_SetTransMatrix(g_btlfxEnv->viewMatrix);
 }
 
 /* adds prim to ot with the given code/len word; tpage != 0xFF also adds a DR_TPAGE (semi-trans mode) */
@@ -219,8 +219,8 @@ void btlfx_linkPrimAbr(u32 code, u32 *ot, void *prim, s32 tpage) {
 
     addPrimLenIn(ot, prim, code);
     if (tpage != 0xFF) {
-        p = (DR_TPAGE *)g_btlfxEnv->unk24;
-        g_btlfxEnv->unk24 = (u8 *)(p + 1);
+        p = (DR_TPAGE *)g_btlfxEnv->prim;
+        g_btlfxEnv->prim = (u8 *)(p + 1);
         p->code[0] = ((tpage & 3) << 5) | 0xE1000200;
         addPrimLenIn(ot, p, 0x1000000);
     }
@@ -229,35 +229,35 @@ void btlfx_linkPrimAbr(u32 code, u32 *ot, void *prim, s32 tpage) {
 void btlfx_addPrim(u32 arg0, s32 arg1, void *arg2) {
     s32 z = (arg1 - g_btlfxEnv->unk28) >> 2;
     if ((u32)z < 0x1000) {
-        addPrimLen(&g_btlfxEnv->unk20[z], arg2, arg0);
+        addPrimLen(&g_btlfxEnv->ot[z], arg2, arg0);
     }
 }
 
 void btlfx_addPrimAbr(s32 arg0, s32 arg1, void *arg2, s32 arg3) {
     u32 i = (arg1 - g_btlfxEnv->unk28) >> 2;
     if (i < 0x1000) {
-        ((void (*)())btlfx_linkPrimAbr)(arg0, &g_btlfxEnv->unk20[i], arg2, arg3);
+        ((void (*)())btlfx_linkPrimAbr)(arg0, &g_btlfxEnv->ot[i], arg2, arg3);
     }
 }
 
 DR_TPAGE *btlfx_allocDrMode(s32 arg0, s32 arg1) {
-    DR_TPAGE *p = (DR_TPAGE *)g_btlfxEnv->unk24;
-    g_btlfxEnv->unk24 = (u8 *)(p + 1);
+    DR_TPAGE *p = (DR_TPAGE *)g_btlfxEnv->prim;
+    g_btlfxEnv->prim = (u8 *)(p + 1);
     p->code[0] = arg0 | ((arg1 & 3) << 5) | 0xE1000200;
     return p;
 }
 
-void func_800D0940(void) {
+void btlfx_resetMaskBit(void) {
     s32 n;
     Unk800D0940 *p;
     u32 *ot;
-    if (g_btlfxEnv->unk24 != NULL) {
+    if (g_btlfxEnv->prim != NULL) {
         D_800F7278 = n = 1;
-        p = (Unk800D0940 *)g_btlfxEnv->unk24;
+        p = (Unk800D0940 *)g_btlfxEnv->prim;
         ot = &p->unkC;
-        g_btlfxEnv->unk24 = (u8 *)(p + 1);
+        g_btlfxEnv->prim = (u8 *)(p + 1);
         setlen(p, 2);
-        p->unk4 = 0xE6000000;
+        p->unk4 = GPU_STP(0, 0);
         p->unk8 = 0;
         ClearOTag(ot, n);
         addPrim(ot, p);
@@ -271,8 +271,8 @@ void func_800D0940(void) {
 void btlfx_drawScreenTint(u32 *arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4) {
     TILE *t;
     s32 i;
-    t = (TILE *)g_btlfxEnv->unk24;
-    g_btlfxEnv->unk24 = (u8 *)(t + 8);
+    t = (TILE *)g_btlfxEnv->prim;
+    g_btlfxEnv->prim = (u8 *)(t + 8);
     for (i = 0; i < 8; i++, t++) {
         t->code = arg1 == 0xFF ? 0x60 : 0x62;
         t->w = 0x50;
@@ -287,7 +287,7 @@ void btlfx_drawScreenTint(u32 *arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4) {
 }
 
 /* Draws a grid of gouraud quads whose rows ripple with a sine wave. */
-void func_800D0B18(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, s32 arg5, CVECTOR *arg6, s32 arg7, s32 arg8,
+void btlfx_drawRippleGrid(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, s32 arg5, CVECTOR *arg6, s32 arg7, s32 arg8,
                    s32 arg9, s32 arg10) {
     POLY_G4 *p;
     CVECTOR *ca;
@@ -298,8 +298,8 @@ void func_800D0B18(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, s32 arg5, C
 
     ca = arg6;
     r = 0;
-    p = (POLY_G4 *)g_btlfxEnv->unk24;
-    g_btlfxEnv->unk24 = (u8 *)(p + arg2 * arg3);
+    p = (POLY_G4 *)g_btlfxEnv->prim;
+    g_btlfxEnv->prim = (u8 *)(p + arg2 * arg3);
     y = arg1;
     if (arg3 > 0) {
         do {
@@ -340,8 +340,8 @@ void btlfx_drawTrail3D(s32 arg0, s32 *arg1, s32 n, s32 arg3, s32 arg4, s32 arg5,
         p = 0x1000;
     }
     gte_DpqColorFar_nst(c1, p);
-    prim = g_btlfxEnv->unk24;
-    g_btlfxEnv->unk24 = prim + n * 0x34;
+    prim = g_btlfxEnv->prim;
+    g_btlfxEnv->prim = prim + n * 0x34;
     gte_strgb(&c.unkC);
     gte_DpqColorFar_nst(c2, p);
     c.unk26 = (arg4 + arg6) << 8;
@@ -350,8 +350,8 @@ void btlfx_drawTrail3D(s32 arg0, s32 *arg1, s32 n, s32 arg3, s32 arg4, s32 arg5,
     c.unk18 = (((tp & 3) << 5) | arg7) << 16;
     c.unk1C = arg8 << 16;
     c.unkC.b[3] = (tp == 0xFF) ? 0x3C : 0x3E;
-    gte_SetRotMatrix(g_btlfxEnv->unk14);
-    gte_SetTransMatrix(g_btlfxEnv->unk14);
+    gte_SetRotMatrix(g_btlfxEnv->viewMatrix);
+    gte_SetTransMatrix(g_btlfxEnv->viewMatrix);
     if (n != 0) {
         inv = 0x1000 / n;
         c.unk20 = inv;
@@ -363,7 +363,7 @@ void btlfx_drawTrail3D(s32 arg0, s32 *arg1, s32 n, s32 arg3, s32 arg4, s32 arg5,
         c.unk16 = arg5;
         c.unk0 = g_btlfxEnv->unk28;
         c.unk2C = inv;
-        btlfx_emitTrailRibbon3D(n, &c, prim, g_btlfxEnv->unk20);
+        btlfx_emitTrailRibbon3D(n, &c, prim, g_btlfxEnv->ot);
     }
 }
 
@@ -381,26 +381,26 @@ void btlfx_drawTrailFlat(s32 arg0, s32 n, s32 arg2, s32 arg3, s32 arg4, s32 arg5
     gte_strgb(&c.unkC);
     gte_DpqColorFar_nst(c2, p);
     if (arg6 >= 0) {
-        prim = g_btlfxEnv->unk24;
-        g_btlfxEnv->unk24 = prim + n * 0x34;
+        prim = g_btlfxEnv->prim;
+        g_btlfxEnv->prim = prim + n * 0x34;
         c.unk26 = (arg3 + arg5) << 8;
         c.unk24 = arg3 << 8;
-        s = math_sin(-g_btlfxEnv->unk2C->unk50 + 0x400);
-        c.unk28 = (s & 0xFFFF) | (math_cos(-g_btlfxEnv->unk2C->unk50 + 0x400) << 16);
+        s = math_sin(-g_btlfxEnv->camera->yaw + 0x400);
+        c.unk28 = (s & 0xFFFF) | (math_cos(-g_btlfxEnv->camera->yaw + 0x400) << 16);
         c.unkC.b[3] = (tp != 0xFF) ? 0x3E : 0x3C;
         c.unk18 = (((tp & 3) << 5) | arg6) << 16;
         c.unk1C = arg7 << 16;
         c.unk14 = arg2;
         c.unk16 = arg4;
     } else {
-        prim = g_btlfxEnv->unk24;
-        g_btlfxEnv->unk24 = prim + n * 0x1C;
+        prim = g_btlfxEnv->prim;
+        g_btlfxEnv->prim = prim + n * 0x1C;
         c.unk28 = (tp & 3) << 5;
         c.unkC.b[3] = (tp == 0xFF) ? 0x50 : 0x52;
     }
     gte_strgb(&c.unk10);
-    gte_SetRotMatrix(g_btlfxEnv->unk14);
-    gte_SetTransMatrix(g_btlfxEnv->unk14);
+    gte_SetRotMatrix(g_btlfxEnv->viewMatrix);
+    gte_SetTransMatrix(g_btlfxEnv->viewMatrix);
     if (n != 0) {
         inv = 0x1000 / n;
         c.unk4 = arg0;
@@ -408,9 +408,9 @@ void btlfx_drawTrailFlat(s32 arg0, s32 n, s32 arg2, s32 arg3, s32 arg4, s32 arg5
         c.unk8 = inv;
         c.unk0 = g_btlfxEnv->unk28;
         if (arg6 >= 0) {
-            btlfx_emitTrailRibbonFlat(n, &c, prim, g_btlfxEnv->unk20);
+            btlfx_emitTrailRibbonFlat(n, &c, prim, g_btlfxEnv->ot);
         } else {
-            btlfx_emitTrailLines(n, &c, prim, g_btlfxEnv->unk20);
+            btlfx_emitTrailLines(n, &c, prim, g_btlfxEnv->ot);
         }
     }
 }
@@ -425,8 +425,8 @@ void btlfx_drawTrailScreen(s32 arg0, s32 n, s32 arg2, s32 arg3, s32 arg4, s32 ar
         p = 0x1000;
     }
     gte_DpqColorFar_nst(c1, p);
-    prim = g_btlfxEnv->unk24;
-    g_btlfxEnv->unk24 = prim + n * 0x34;
+    prim = g_btlfxEnv->prim;
+    g_btlfxEnv->prim = prim + n * 0x34;
     gte_strgb(&c.unkC);
     gte_DpqColorFar_nst(c2, p);
     c.unk26 = (arg3 + arg5) << 8;
@@ -435,8 +435,8 @@ void btlfx_drawTrailScreen(s32 arg0, s32 n, s32 arg2, s32 arg3, s32 arg4, s32 ar
     c.unk1C = arg7 << 16;
     c.unkC.b[3] = (tp == 0xFF) ? 0x3C : 0x3E;
     gte_strgb(&c.unk10);
-    gte_SetRotMatrix(g_btlfxEnv->unk14);
-    gte_SetTransMatrix(g_btlfxEnv->unk14);
+    gte_SetRotMatrix(g_btlfxEnv->viewMatrix);
+    gte_SetTransMatrix(g_btlfxEnv->viewMatrix);
     if (n != 0) {
         inv = 0x1000 / n;
         c.unk4 = arg0;
@@ -445,7 +445,7 @@ void btlfx_drawTrailScreen(s32 arg0, s32 n, s32 arg2, s32 arg3, s32 arg4, s32 ar
         c.unk20 = inv;
         c.unk8 = inv;
         c.unk0 = g_btlfxEnv->unk28;
-        btlfx_emitTrailRibbonScreen(n, &c, prim, g_btlfxEnv->unk20);
+        btlfx_emitTrailRibbonScreen(n, &c, prim, g_btlfxEnv->ot);
     }
 }
 
@@ -567,11 +567,11 @@ void btlfx_drawParticles(u8 *arg0, SVECTOR *arg1, SVECTOR *arg2, s32 arg3, s32 a
     }
     arg0 += off;
     c.unk14 &= 0x3FFF;
-    gte_SetRotMatrix(g_btlfxEnv->unk14);
-    gte_SetTransMatrix(g_btlfxEnv->unk14);
+    gte_SetRotMatrix(g_btlfxEnv->viewMatrix);
+    gte_SetTransMatrix(g_btlfxEnv->viewMatrix);
     gte_ldv0(arg1);
-    prim = g_btlfxEnv->unk24;
-    g_btlfxEnv->unk24 = prim + c.unk14 * 40;
+    prim = g_btlfxEnv->prim;
+    g_btlfxEnv->prim = prim + c.unk14 * 40;
     gte_rtv0tr_nn();
     math_rotMatrixYXZ(arg2, &m);
     ScaleMatrix(&m, &s);
@@ -586,10 +586,10 @@ void btlfx_drawParticles(u8 *arg0, SVECTOR *arg1, SVECTOR *arg2, s32 arg3, s32 a
     c.unk4 = arg7;
     c.unk8 = arg8;
     c.unk18 = g_btlfxEnv->unk28;
-    btlfx_emitParticles(arg0, &c, prim, g_btlfxEnv->unk20);
+    btlfx_emitParticles(arg0, &c, prim, g_btlfxEnv->ot);
 }
 
-void func_800D198C(u8 *arg0, SVECTOR *arg1, s32 arg2, s32 arg3, s32 arg4) {
+void btlfx_drawSprite(u8 *arg0, SVECTOR *arg1, s32 arg2, s32 arg3, s32 arg4) {
     DVECTOR sxy;
     Unk800D1BC4Ctx c;
     s32 z;
@@ -625,28 +625,28 @@ void func_800D198C(u8 *arg0, SVECTOR *arg1, s32 arg2, s32 arg3, s32 arg4) {
     if (c.unk14 & 0x4000) {
         off += 4;
     }
-    gte_SetRotMatrix(g_btlfxEnv->unk14);
-    gte_SetTransMatrix(g_btlfxEnv->unk14);
+    gte_SetRotMatrix(g_btlfxEnv->viewMatrix);
+    gte_SetTransMatrix(g_btlfxEnv->viewMatrix);
     gte_ldv0(arg1);
     arg0 += off;
     c.unk14 &= 0x3FFF;
     gte_rtps_nn();
-    prim = g_btlfxEnv->unk24;
-    g_btlfxEnv->unk24 = prim + c.unk14 * 20;
+    prim = g_btlfxEnv->prim;
+    g_btlfxEnv->prim = prim + c.unk14 * 20;
     gte_stsxy(&sxy);
     gte_stszotz(&z);
     c.unk0 |= (arg3 == 0xFF) ? 0x64000000 : 0x66000000;
     c.unkC = (arg3 & 3) << 5;
     c.unk4 = sxy.vx;
     c.unk8 = sxy.vy;
-    c.unk18 = g_btlfxEnv->unk24;
+    c.unk18 = g_btlfxEnv->prim;
     z = (z - g_btlfxEnv->unk28) >> 2;
     if ((u32)z < 0x1000) {
-        g_btlfxEnv->unk24 = btlfx_emitScreenSprites(arg0, &c, prim, &g_btlfxEnv->unk20[z]);
+        g_btlfxEnv->prim = btlfx_emitScreenSprites(arg0, &c, prim, &g_btlfxEnv->ot[z]);
     }
 }
 
-void func_800D1BC4(u32 arg0, u8 *arg1, s32 arg2, s32 arg3, s32 arg4, s32 arg5, s32 arg6) {
+void btlfx_drawSpriteAtOt(u32 arg0, u8 *arg1, s32 arg2, s32 arg3, s32 arg4, s32 arg5, s32 arg6) {
     Unk800D1BC4Ctx c;
     u8 *prim;
     u8 *d;
@@ -685,15 +685,15 @@ void func_800D1BC4(u32 arg0, u8 *arg1, s32 arg2, s32 arg3, s32 arg4, s32 arg5, s
     }
     arg1 += off;
     c.unk14 &= 0x3FFF;
-    prim = g_btlfxEnv->unk24;
-    g_btlfxEnv->unk24 = prim + c.unk14 * 20;
+    prim = g_btlfxEnv->prim;
+    g_btlfxEnv->prim = prim + c.unk14 * 20;
     c.unk0 |= (arg5 == 0xFF) ? 0x64000000 : 0x66000000;
     c.unkC = (arg5 & 3) << 5;
     c.unk4 = arg2;
     c.unk8 = arg3;
-    c.unk18 = g_btlfxEnv->unk24;
+    c.unk18 = g_btlfxEnv->prim;
     if (arg0 < 0x1000) {
-        g_btlfxEnv->unk24 = btlfx_emitScreenSprites(arg1, &c, prim, &g_btlfxEnv->unk20[arg0]);
+        g_btlfxEnv->prim = btlfx_emitScreenSprites(arg1, &c, prim, &g_btlfxEnv->ot[arg0]);
     }
 }
 
@@ -734,11 +734,11 @@ void btlfx_drawAnimQuads(u8 *arg0, SVECTOR *arg1, SVECTOR *arg2, s32 arg3, s32 a
     n = *(u16 *)((u8 *)h->unk8 + off);
     c.unk1C = arg0[n++];
     arg0 += n;
-    gte_SetRotMatrix(g_btlfxEnv->unk14);
-    gte_SetTransMatrix(g_btlfxEnv->unk14);
+    gte_SetRotMatrix(g_btlfxEnv->viewMatrix);
+    gte_SetTransMatrix(g_btlfxEnv->viewMatrix);
     gte_ldv0(arg1);
-    prim = g_btlfxEnv->unk24;
-    g_btlfxEnv->unk24 = prim + c.unk1C * 40;
+    prim = g_btlfxEnv->prim;
+    g_btlfxEnv->prim = prim + c.unk1C * 40;
     gte_rtv0tr_nn();
     math_rotMatrixYXZ(arg2, &m);
     if (arg3 >= 0) {
@@ -757,7 +757,7 @@ void btlfx_drawAnimQuads(u8 *arg0, SVECTOR *arg1, SVECTOR *arg2, s32 arg3, s32 a
     c.unk18 = arg6;
     c.unk20 = g_btlfxEnv->unk28;
     if (c.unk1C != 0) {
-        btlfx_emitAnimQuads(arg0, &c, prim, g_btlfxEnv->unk20);
+        btlfx_emitAnimQuads(arg0, &c, prim, g_btlfxEnv->ot);
     }
 }
 
@@ -803,8 +803,8 @@ void btlfx_drawSprites(u8 *arg0, SVECTOR *arg1, SVECTOR *arg2, s32 arg3, s32 arg
     n = *(u16 *)((u8 *)h->unk8 + off);
     c.unk1C = arg0[n++];
     arg0 += n;
-    gte_SetRotMatrix(g_btlfxEnv->unk14);
-    gte_SetTransMatrix(g_btlfxEnv->unk14);
+    gte_SetRotMatrix(g_btlfxEnv->viewMatrix);
+    gte_SetTransMatrix(g_btlfxEnv->viewMatrix);
     gte_ldv0(arg1);
     if (mode == 0) {
         size = 0xC;
@@ -819,8 +819,8 @@ void btlfx_drawSprites(u8 *arg0, SVECTOR *arg1, SVECTOR *arg2, s32 arg3, s32 arg
         size = 0x14;
         z = 0x64;
     }
-    prim = g_btlfxEnv->unk24;
-    g_btlfxEnv->unk24 = prim + size * c.unk1C;
+    prim = g_btlfxEnv->prim;
+    g_btlfxEnv->prim = prim + size * c.unk1C;
     gte_rtv0tr_nn();
     math_rotMatrixYXZ(arg2, &m);
     if (arg3 >= 0) {
@@ -846,17 +846,17 @@ void btlfx_drawSprites(u8 *arg0, SVECTOR *arg1, SVECTOR *arg2, s32 arg3, s32 arg
     z = (z - g_btlfxEnv->unk28) >> 2;
     if ((u32)z < 0x1000 && c.unk1C != 0) {
         if (size == 0x14) {
-            btlfx_emitSprites(arg0, &c, prim, &g_btlfxEnv->unk20[z]);
+            btlfx_emitSprites(arg0, &c, prim, &g_btlfxEnv->ot[z]);
         } else if (size == 0xC) {
-            btlfx_emitDots(arg0, &c, prim, &g_btlfxEnv->unk20[z]);
+            btlfx_emitDots(arg0, &c, prim, &g_btlfxEnv->ot[z]);
         } else {
-            btlfx_emitFixedSprites(arg0, &c, prim, &g_btlfxEnv->unk20[z]);
+            btlfx_emitFixedSprites(arg0, &c, prim, &g_btlfxEnv->ot[z]);
         }
-        addPrimLenIn(&g_btlfxEnv->unk20[z], tp, 0x1000000);
+        addPrimLenIn(&g_btlfxEnv->ot[z], tp, 0x1000000);
     }
 }
 
-void func_800D23D8(u8 *arg0, SVECTOR *arg1, SVECTOR *arg2, s32 arg3, s32 arg4, s32 arg5, s32 arg6) {
+void btlfx_drawRings(u8 *arg0, SVECTOR *arg1, SVECTOR *arg2, s32 arg3, s32 arg4, s32 arg5, s32 arg6) {
     VECTOR s;
     union {
         SVECTOR v;
@@ -914,8 +914,8 @@ void func_800D23D8(u8 *arg0, SVECTOR *arg1, SVECTOR *arg2, s32 arg3, s32 arg4, s
         }
         s.vx = s.vy = arg3;
     }
-    gte_SetRotMatrix(g_btlfxEnv->unk14);
-    gte_SetTransMatrix(g_btlfxEnv->unk14);
+    gte_SetRotMatrix(g_btlfxEnv->viewMatrix);
+    gte_SetTransMatrix(g_btlfxEnv->viewMatrix);
     gte_ldv0(arg1);
     nf = s1[1];
     f = 0;
@@ -952,13 +952,13 @@ void func_800D23D8(u8 *arg0, SVECTOR *arg1, SVECTOR *arg2, s32 arg3, s32 arg4, s
         c.unkC = c.unk8 + 2;
         c.unk10 = c.unkC + cnt + 1;
         c.unk20 = t[arg4];
-        prim = g_btlfxEnv->unk24;
-        g_btlfxEnv->unk24 = prim + w * cnt * 40;
+        prim = g_btlfxEnv->prim;
+        g_btlfxEnv->prim = prim + w * cnt * 40;
         ((u8 *)&c.unk0)[3] = (arg5 != 0xFF) ? 0x2E : 0x2C;
         c.unk24 = cnt;
         c.unk1C = w;
         c.unk18 = g_btlfxEnv->unk28;
-        btlfx_emitRingQuads(k, &c, prim, g_btlfxEnv->unk20);
+        btlfx_emitRingQuads(k, &c, prim, g_btlfxEnv->ot);
         break;
     case 2:
         m2 = s1[0] ? 2 : 1;
@@ -974,20 +974,20 @@ void func_800D23D8(u8 *arg0, SVECTOR *arg1, SVECTOR *arg2, s32 arg3, s32 arg4, s
         d.unk8 = (u32 *)s1 + (nf * m2 * (cnt + 1) + 1);
         d.unkC = d.unk8 + 1;
         d.unk10 = (u16 *)d.unkC + cnt + 1;
-        prim = g_btlfxEnv->unk24;
-        g_btlfxEnv->unk24 = prim + w * cnt * 44;
+        prim = g_btlfxEnv->prim;
+        g_btlfxEnv->prim = prim + w * cnt * 44;
         d.unk0 = (arg5 != 0xFF) ? 0x3A000000 : 0x38000000;
         d.unk4 = arg6;
         d.unk24 = cnt;
         d.unk28 = (arg5 & 3) << 5;
         d.unk1C = w;
         d.unk18 = g_btlfxEnv->unk28;
-        btlfx_emitRingGouraud(m2, &d, prim, g_btlfxEnv->unk20);
+        btlfx_emitRingGouraud(m2, &d, prim, g_btlfxEnv->ot);
         break;
     }
 }
 
-void func_800D2938(Unk800D2938 *arg0, SVECTOR *arg1, SVECTOR *arg2, s32 arg3, s32 arg4, s32 arg5, s32 arg6) {
+void btlfx_drawFan(Unk800D2938 *arg0, SVECTOR *arg1, SVECTOR *arg2, s32 arg3, s32 arg4, s32 arg5, s32 arg6) {
     VECTOR s;
     union {
         SVECTOR v;
@@ -1039,8 +1039,8 @@ void func_800D2938(Unk800D2938 *arg0, SVECTOR *arg1, SVECTOR *arg2, s32 arg3, s3
         gte_gpf12();
         gte_stir(&s);
     }
-    gte_SetRotMatrix(g_btlfxEnv->unk14);
-    gte_SetTransMatrix(g_btlfxEnv->unk14);
+    gte_SetRotMatrix(g_btlfxEnv->viewMatrix);
+    gte_SetTransMatrix(g_btlfxEnv->viewMatrix);
     gte_ldv0(arg1);
     gte_rtv0tr();
     math_rotMatrixYXZ(arg2, &m);
@@ -1060,9 +1060,9 @@ void func_800D2938(Unk800D2938 *arg0, SVECTOR *arg1, SVECTOR *arg2, s32 arg3, s3
         c1.unk0 = (arg5 != 0xFF) ? 0x2E000000 : 0x2C000000;
         c1.unk8 = arg6;
         c1.unk4 = g_btlfxEnv->unk28;
-        prim = g_btlfxEnv->unk24;
-        g_btlfxEnv->unk24 = prim + 0x28;
-        btlfx_emitFrameQuad((u8 *)arg0, &c1, prim, g_btlfxEnv->unk20);
+        prim = g_btlfxEnv->prim;
+        g_btlfxEnv->prim = prim + 0x28;
+        btlfx_emitFrameQuad((u8 *)arg0, &c1, prim, g_btlfxEnv->ot);
     } else {
         c2.unkC = (arg5 & 3) << 5;
         c2.unk14 = t;
@@ -1070,9 +1070,9 @@ void func_800D2938(Unk800D2938 *arg0, SVECTOR *arg1, SVECTOR *arg2, s32 arg3, s3
         c2.unk0 = (arg5 != 0xFF) ? 0x32000000 : 0x30000000;
         c2.unk8 = arg6;
         c2.unk4 = g_btlfxEnv->unk28;
-        prim = g_btlfxEnv->unk24;
-        g_btlfxEnv->unk24 = prim + 0x5C;
-        btlfx_emitFrameFan((u8 *)arg0, &c2, prim, g_btlfxEnv->unk20);
+        prim = g_btlfxEnv->prim;
+        g_btlfxEnv->prim = prim + 0x5C;
+        btlfx_emitFrameFan((u8 *)arg0, &c2, prim, g_btlfxEnv->ot);
     }
 }
 
@@ -1090,8 +1090,8 @@ s32 arg10, arg11;
     s32 c;
     u16 tp;
 
-    p = (POLY_FT4 *)g_btlfxEnv->unk24;
-    g_btlfxEnv->unk24 = (u8 *)(p + 1);
+    p = (POLY_FT4 *)g_btlfxEnv->prim;
+    g_btlfxEnv->prim = (u8 *)(p + 1);
     p->code = (arg0->unk8 != 0xFF) ? 0x2E : 0x2C;
     p->clut = arg0->unk4;
     if (arg0->unk8 != 0xFF) {
@@ -1128,7 +1128,7 @@ s32 arg10, arg11;
     btlfx_addPrim(0x09000000, 0xFFE, p);
 }
 
-void func_800D2DBC(u8 *arg0, s32 x, s32 y, s32 frame, s32 tp, s32 p) {
+void btlfx_drawBackdropSprite(u8 *arg0, s32 x, s32 y, s32 frame, s32 tp, s32 p) {
     struct {
         u16 rg;
         u8 b;
@@ -1170,9 +1170,9 @@ void func_800D2DBC(u8 *arg0, s32 x, s32 y, s32 frame, s32 tp, s32 p) {
     wv = h->unk7 - 1;
     num = arg0[n++];
     arg0 += n;
-    prim = g_btlfxEnv->unk24;
+    prim = g_btlfxEnv->prim;
     mode = (u32 *)(prim + num * 20);
-    g_btlfxEnv->unk24 = (u8 *)(mode + 2);
+    g_btlfxEnv->prim = (u8 *)(mode + 2);
     mode[1] = tpage | 0xE1000000 | ((tp & 3) << 5);
     ctab = (u8 *)(pal + f + 1);
     col.code = (tp != 0xFF) ? 0x66 : 0x64;
@@ -1223,30 +1223,30 @@ void btlfx_drawBackdrop(BtlBgLayers *arg0, s32 arg1) {
     struct BtlBgWaveP *wv3;
     struct BtlBgFadeP *fd;
 
-    da = (DR_AREA *)g_btlfxEnv->unk24;
+    da = (DR_AREA *)g_btlfxEnv->prim;
     n = arg0->unk0;
     w = arg0->unk2;
     h = arg0->unk3;
     x = arg0->unk4;
     y = arg0->unk6;
-    g_btlfxEnv->unk24 = (u8 *)(da + 2);
+    g_btlfxEnv->prim = (u8 *)(da + 2);
     r.x = x;
     r.y = y;
     r.w = w;
     r.h = h;
     SetDrawArea(da, &r);
-    ((XY32 *)&r)[0].w = ((XY32 *)&g_btlfxEnv->unk1C->clip)[0].w;
-    ((XY32 *)&r)[1].w = ((XY32 *)&g_btlfxEnv->unk1C->clip)[1].w;
+    ((XY32 *)&r)[0].w = ((XY32 *)&g_btlfxEnv->drawEnv->clip)[0].w;
+    ((XY32 *)&r)[1].w = ((XY32 *)&g_btlfxEnv->drawEnv->clip)[1].w;
     SetDrawArea(&da[1], &r);
     i = 0;
-    dofs = (DR_OFFSET *)g_btlfxEnv->unk24;
-    g_btlfxEnv->unk24 = (u8 *)(dofs + 2);
+    dofs = (DR_OFFSET *)g_btlfxEnv->prim;
+    g_btlfxEnv->prim = (u8 *)(dofs + 2);
     ofs[0] = x;
     ofs[1] = y;
     SetDrawOffset(dofs, ofs);
-    SetDrawOffset(&dofs[1], g_btlfxEnv->unk1C->ofs);
-    tp = (DR_TPAGE *)g_btlfxEnv->unk24;
-    g_btlfxEnv->unk24 = (u8 *)(tp + 2);
+    SetDrawOffset(&dofs[1], g_btlfxEnv->drawEnv->ofs);
+    tp = (DR_TPAGE *)g_btlfxEnv->prim;
+    g_btlfxEnv->prim = (u8 *)(tp + 2);
     tp[0].code[0] = 0xE1000000;
     tp[1].code[0] = 0xE1000200;
     btlfx_addPrim(0x01000000, 0xFFE, &tp[1]);
@@ -1256,7 +1256,7 @@ void btlfx_drawBackdrop(BtlBgLayers *arg0, s32 arg1) {
     for (; i < n; i++) {
         L = (BtlBgLayer *)((u8 *)arg0 + offs[i]);
         if (L->unkC != 0) {
-            func_800E651C((u8 *)arg0 + L->unkC, &col, arg1 % L->unkA);
+            btlfx_sampleGradient((u8 *)arg0 + L->unkC, &col, arg1 % L->unkA);
         } else {
             *(s32 *)&col = 0x808080;
         }
@@ -1322,7 +1322,7 @@ void btlfx_drawBackdrop(BtlBgLayers *arg0, s32 arg1) {
                     f = 0x1000;
                 }
                 if (fd->unk0 != 0) {
-                    func_800D2DBC((u8 *)arg0 + fd->unk0 + 4, fd->unk8, fd->unkA, e, L->unk8, f);
+                    btlfx_drawBackdropSprite((u8 *)arg0 + fd->unk0 + 4, fd->unk8, fd->unkA, e, L->unk8, f);
                 }
             }
             break;
@@ -1353,8 +1353,8 @@ void btlfx_drawBackdrop(BtlBgLayers *arg0, s32 arg1) {
             break;
         }
     }
-    t = (TILE *)g_btlfxEnv->unk24;
-    g_btlfxEnv->unk24 = (u8 *)(t + 1);
+    t = (TILE *)g_btlfxEnv->prim;
+    g_btlfxEnv->prim = (u8 *)(t + 1);
     *(s32 *)&t->r0 = 0;
     t->code = 0x60;
     t->y0 = 0;
@@ -1367,7 +1367,7 @@ void btlfx_drawBackdrop(BtlBgLayers *arg0, s32 arg1) {
     btlfx_addPrim(0x02000000, 0xFFE, dofs);
 }
 
-s32 func_800D3A6C(s32 arg0, s32 arg1, s32 arg2) {
+s32 btlfx_ease(s32 arg0, s32 arg1, s32 arg2) {
     s32 r = 0;
     switch (arg2) {
     case 0:
@@ -1383,7 +1383,7 @@ s32 func_800D3A6C(s32 arg0, s32 arg1, s32 arg2) {
     return r;
 }
 
-void func_800D3B6C(u8 *arg0, SVECTOR *arg1, s32 arg2, s32 arg3) {
+void btlfx_drawSpriteLine(u8 *arg0, SVECTOR *arg1, s32 arg2, s32 arg3) {
     s16 p[2];
     s16 q[2];
     s16 sxy[2];
@@ -1396,8 +1396,8 @@ void func_800D3B6C(u8 *arg0, SVECTOR *arg1, s32 arg2, s32 arg3) {
     Unk800D3B6CEntry *e;
     Unk800D3B6C *h;
 
-    gte_SetRotMatrix(g_btlfxEnv->unk14);
-    gte_SetTransMatrix(g_btlfxEnv->unk14);
+    gte_SetRotMatrix(g_btlfxEnv->viewMatrix);
+    gte_SetTransMatrix(g_btlfxEnv->viewMatrix);
     gte_ldv0(arg1);
     h = (Unk800D3B6C *)arg0;
     e = h->unk18;
@@ -1415,12 +1415,12 @@ void func_800D3B6C(u8 *arg0, SVECTOR *arg1, s32 arg2, s32 arg3) {
                 } else {
                     v = arg3;
                 }
-                func_800D1BC4(8, (u8 *)h + e->unk0, q[0], q[1], arg2, 1, v);
+                btlfx_drawSpriteAtOt(8, (u8 *)h + e->unk0, q[0], q[1], arg2, 1, v);
             }
         }
     } else {
-        r = h->unk10 + (((h->unk12 - h->unk10) * func_800D3A6C(arg2, h->unk0, h->unk6)) >> 12);
-        a = h->unk14 + (((h->unk16 - h->unk14) * func_800D3A6C(arg2, h->unk0, h->unk7)) >> 12);
+        r = h->unk10 + (((h->unk12 - h->unk10) * btlfx_ease(arg2, h->unk0, h->unk6)) >> 12);
+        a = h->unk14 + (((h->unk16 - h->unk14) * btlfx_ease(arg2, h->unk0, h->unk7)) >> 12);
         p[0] = sxy[0] + ((math_cos(r) * a) >> 12);
         p[1] = sxy[1] + ((math_sin(r) * a) >> 12);
         for (i = 0; i < h->unk2; i++, e++) {
@@ -1432,7 +1432,7 @@ void func_800D3B6C(u8 *arg0, SVECTOR *arg1, s32 arg2, s32 arg3) {
                 } else {
                     v = arg3;
                 }
-                func_800D1BC4(8, (u8 *)h + e->unk0, q[0], q[1], arg2, 1, v);
+                btlfx_drawSpriteAtOt(8, (u8 *)h + e->unk0, q[0], q[1], arg2, 1, v);
             }
         }
     }

@@ -49,7 +49,7 @@ typedef struct {
     SVECTOR unk4[21];
 } Fx0b1Trail; /* 0xAC */
 
-#define SUMMON0B1(env) ((Fx0b1Summon *)(env)->unk4)
+#define SUMMON0B1(env) ((Fx0b1Summon *)(env)->loader)
 
 extern SVECTOR D_801E8D04;
 extern VECTOR D_801E8D0C;

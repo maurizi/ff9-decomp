@@ -7,10 +7,10 @@ s32 fx_192_op80(s32 mode, u16 *work, Unk800F78A4 *env, Unk80100C78Entry *entry, 
         *arg4 = 8;
     } else if (mode == 1) {
         D_801E7800 = env;
-        ex->func_800DC818(0x10, 0, work);
-        ex->func_800E3CEC(ex->btlfx_getFileData(entry->unk8, 1), (s32)work);
+        ex->btlfx_getUnitBonePos(0x10, 0, work);
+        ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 1), (s32)work);
     } else {
-        return entry->unk0 >= 0x40;
+        return entry->frame >= 0x40;
     }
     return 0;
 }

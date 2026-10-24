@@ -11,26 +11,26 @@ s32 fx_02a_op80(s32 mode, Fx02aWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
         D_801E791C = env;
         work->unk0 = 0;
         ex->btlfx_getUnitBodyPos(0, 0, (s16 *)&work->unk4);
-        p = ex->func_800E3CEC(ex->btlfx_getFileData(entry->unk8, 3), (s32)&work->unk4);
+        p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 3), (s32)&work->unk4);
         if (p != NULL) {
             p->unk22 = ex->func_800E7CC4(0, 0x40);
         }
         work->unkC = 0;
     } else {
-        frame = entry->unk0;
+        frame = entry->frame;
         if (work->unk0 == 0) {
             if (frame == 8) {
-                p = ex->func_800E3CEC(ex->btlfx_getFileData(entry->unk8, 1), (s32)&work->unk4);
+                p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 1), (s32)&work->unk4);
                 if (p != NULL) {
                     p->unk22 = ex->func_800E7CC4(0, 0x40);
                 }
-                p = ex->func_800E3CEC(ex->btlfx_getFileData(entry->unk8, 0xA), (s32)&work->unk4);
+                p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0xA), (s32)&work->unk4);
                 if (p != NULL) {
                     p->unk22 = ex->func_800E7CC4(0, 0x40);
                 }
             }
             if (frame >= 8) {
-                ex->btlfx_drawBackdrop((BtlBgLayers *)ex->btlfx_getFileData(entry->unk8, 4), frame);
+                ex->btlfx_drawBackdrop((BtlBgLayers *)ex->btlfx_getFileData(entry->file, 4), frame);
             }
             if (frame >= 0x28) {
                 return 1;

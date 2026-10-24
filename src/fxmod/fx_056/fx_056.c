@@ -11,16 +11,16 @@ s32 fx_056_op80(s32 mode, Fx056Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
 
         work->unk10 = n;
         D_801E79A8 = env;
-        if (n >= env->unkC->unk24) {
+        if (n >= env->targets->targetCount) {
             func_801E794C(env, 7, 1);
             return 1;
         }
         func_801E794C(env, 7, 0);
-        ex->func_800E9930(1, entry->unk8, -1);
-        ex->func_800E9930(5, entry->unk8, -1);
-        ex->func_800E9930(7, entry->unk8, -1);
+        ex->btlfx_playFileSound(1, entry->file, -1);
+        ex->btlfx_playFileSound(5, entry->file, -1);
+        ex->btlfx_playFileSound(7, entry->file, -1);
         ex->btlfx_getUnitPos(work->unk10, (s16 *)&work->unk8);
-        work->unk0 = ex->func_800E3CEC(ex->btlfx_getFileData(entry->unk8, 8), (s32)&work->unk8);
+        work->unk0 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 8), (s32)&work->unk8);
         if (work->unk0 != NULL) {
             work->unk0->unk14 = (s32)D_801E79B8[work->unk10];
             work->unk0->unk12 = 0xA;
@@ -30,9 +30,9 @@ s32 fx_056_op80(s32 mode, Fx056Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
             work->unk0->unk22 = ex->func_800E7CC4(work->unk10, 0x20);
         }
     } else {
-        frame = entry->unk0;
+        frame = entry->frame;
         if (frame == 0xF) {
-            work->unk4 = ex->func_800E3CEC(ex->btlfx_getFileData(entry->unk8, 6), (s32)&work->unk8);
+            work->unk4 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 6), (s32)&work->unk8);
             if (work->unk4 != NULL) {
                 work->unk4->unk22 = ex->func_800E7CC4(work->unk10, 0x20);
             }
@@ -46,7 +46,7 @@ s32 fx_056_op80(s32 mode, Fx056Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
 }
 
 void func_801E794C(Unk800F78A4 *env, s32 i, s32 v) {
-    *((u8 *)env->unk0 + i + 0x10) = v;
+    *((u8 *)env->state + i + 0x10) = v;
 }
 
 INCLUDE_RODATA("asm/us/fx_056/nonmatchings/fx_056", fx_056_headerPtr);

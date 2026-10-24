@@ -10,9 +10,9 @@ s32 fx_0f2_op80(s32 mode, Fx0f2Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
     } else if (mode == 1) {
         D_801E7B80 = env;
         ex->btlfx_initEffModels(D_801E7B90, 1);
-        work->unk38.vx = env->unkC->unk38;
-        work->unk38.vy = env->unkC->unk3A;
-        work->unk38.vz = env->unkC->unk3C;
+        work->unk38.vx = env->targets->centerX;
+        work->unk38.vy = env->targets->centerY;
+        work->unk38.vz = env->targets->centerZ;
         if (ex->btlfx_isEnemyUnit(0)) {
             work->unk50 = 1;
         } else {
@@ -38,21 +38,21 @@ s32 fx_0f2_op80(s32 mode, Fx0f2Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
         work->unk20.vx = 0xAAA;
         work->unk20.vy = 0xAAA;
         work->unk20.vz = 0xAAA;
-        work->unk58 = ex->Hi_RegisterTexEffModel((BtlUnit9C8 *)ex->btlfx_getFileData(entry->unk8, 2), 0x11A, 0, 0, 0x80);
+        work->unk58 = ex->Hi_RegisterTexEffModel((BtlUnit9C8 *)ex->btlfx_getFileData(entry->file, 2), 0x11A, 0, 0, 0x80);
         work->unk40.vx = work->unk10.vx;
         work->unk40.vy = work->unk10.vy;
         work->unk40.vz = work->unk10.vz;
-        work->unk0 = ex->func_800E3CEC(ex->btlfx_getFileData(entry->unk8, 8), (s32)&work->unk38);
+        work->unk0 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 8), (s32)&work->unk38);
         work->unk54 = -1;
         work->unk56 = -1;
     } else {
-        frame = entry->unk0;
+        frame = entry->frame;
         switch (frame) {
         case 0x11:
             work->unk48.vx = work->unk10.vx;
             work->unk48.vy = work->unk10.vy;
             work->unk48.vz = work->unk10.vz;
-            work->unk4 = ex->func_800E3CEC(ex->btlfx_getFileData(entry->unk8, 9), (s32)&work->unk48);
+            work->unk4 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 9), (s32)&work->unk48);
             work->unk54 = 3;
             break;
         case 0x15:
@@ -76,7 +76,7 @@ s32 fx_0f2_op80(s32 mode, Fx0f2Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
             }
             work->unk10.vz += work->unk34;
             work->unk20.vz += 0x100;
-            ex->btlfx_drawBackdrop((BtlBgLayers *)ex->btlfx_getFileData(entry->unk8, 3), t);
+            ex->btlfx_drawBackdrop((BtlBgLayers *)ex->btlfx_getFileData(entry->file, 3), t);
         }
         if (frame >= 0x3C) {
             ex->btlfx_clearEffModels();

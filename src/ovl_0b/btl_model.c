@@ -1,29 +1,29 @@
 #include "ovl_0b.h"
 
-void func_800C8BE0(BtlUnit9C *arg0, u8 arg1, s16 arg2, s16 arg3, s16 arg4) {
-    BtlMesh *g = &arg0->unk8->unk10[arg1];
-    u32 *p = g->unk1C;
+void btl_addMeshRgb(BtlUnit9C *arg0, u8 arg1, s16 arg2, s16 arg3, s16 arg4) {
+    BtlMesh *g = &arg0->header->meshes[arg1];
+    u32 *p = g->prims;
     u32 i;
-    for (i = 0; i < g->unk2; i++) {
+    for (i = 0; i < g->nFT4; i++) {
         p[4] = btl_addRgbClamped(p[4], arg2, arg3, arg4);
         p += 6;
     }
-    for (i = 0; i < g->unk4; i++) {
+    for (i = 0; i < g->nFT3; i++) {
         p[2] = btl_addRgbClamped(p[2], arg2, arg3, arg4);
         p += 5;
     }
 }
 
-void func_800C8D18(BtlUnit9C *arg0, u8 arg1, s16 arg2, s16 arg3, s16 arg4) {
-    BtlMesh *g = &arg0->unk8->unk10[arg1];
-    u32 *p = g->unk1C;
+void btl_setMeshRgb(BtlUnit9C *arg0, u8 arg1, s16 arg2, s16 arg3, s16 arg4) {
+    BtlMesh *g = &arg0->header->meshes[arg1];
+    u32 *p = g->prims;
     u32 v = (arg4 << 16) | (arg3 << 8) | arg2;
     u32 i;
-    for (i = 0; i < g->unk2; i++) {
+    for (i = 0; i < g->nFT4; i++) {
         p[4] = (p[4] & 0xFF000000) | v;
         p += 6;
     }
-    for (i = 0; i < g->unk4; i++) {
+    for (i = 0; i < g->nFT3; i++) {
         p[2] = (p[2] & 0xFF000000) | v;
         p += 5;
     }
@@ -56,11 +56,11 @@ void btl_setModelAbr(BtlUnit9C *arg0, s32 arg1) {
     u8 *p;
     u32 i;
     u8 code;
-    if (!(arg0->unk0 & 0x10)) {
-        arg0->unk5 = arg1;
-        p = (u8 *)arg0->unk10;
-        for (i = 0; i < arg0->unk8->unk3; i++) {
-            if (!(arg0->unk14 & (1 << i))) {
+    if (!(arg0->flags & 0x10)) {
+        arg0->abr = arg1;
+        p = (u8 *)arg0->prims;
+        for (i = 0; i < arg0->header->meshCount; i++) {
+            if (!(arg0->hiddenMeshes & (1 << i))) {
                 do {
                     code = getcode(p);
                     if (code == 0xFF) {
@@ -113,7 +113,7 @@ void btl_setModelAbr(BtlUnit9C *arg0, s32 arg1) {
     }
 }
 
-void func_800C9040(TexAnimSet *arg0) {
+void btl_updateTexAnims(TexAnimSet *arg0) {
     RECT r;
     u32 i;
     u32 j;
@@ -183,7 +183,7 @@ void func_800C9040(TexAnimSet *arg0) {
     }
 }
 
-void func_800C9374(TexAnimSet *set, u16 (*ofs)[4]) {
+void btl_relocTexAnims(TexAnimSet *set, u16 (*ofs)[4]) {
     u32 i;
     u32 j;
     u32 k;
@@ -228,19 +228,19 @@ void func_800C9374(TexAnimSet *set, u16 (*ofs)[4]) {
     }
 }
 
-Battle11C020 *func_800C94B8(void) {
+Battle11C020 *btl_initScene(void) {
     Battle *b;
-    Battle11C020 *s = g_gameState->unk1C->unk8E4.battle->unk11C0->unk20;
-    u16 *t = g_gameState->unk1C->unk8E4.battle->unk11C0->unk24;
+    Battle11C020 *s = g_gameState->unk1C->unk8E4.battle->work->encounter;
+    u16 *t = g_gameState->unk1C->unk8E4.battle->work->sceneTables;
     s32 r;
-    Battle132C *sc = &g_gameState->unk1C->unk8E4.battle->unk132C;
+    Battle132C *sc = &g_gameState->unk1C->unk8E4.battle->scene;
     u8 n;
     u8 m;
 
     sc->unkC = (u16 *)((u8 *)t + t[0]);
     sc->unk10 = (s16 *)((u8 *)t + t[1]);
-    sc->unk4 = func_800C9600(g_gameState->unk1C->unk8E4.battle->unk11C0->unk20);
-    sc->unk8 = (Battle1334 *)&g_gameState->unk1C->unk8E4.battle->unk11C0->unk20->unk8[s->unk1];
+    sc->unk4 = btl_pickEnemyGroup(g_gameState->unk1C->unk8E4.battle->work->encounter);
+    sc->unk8 = (Battle1334 *)&g_gameState->unk1C->unk8E4.battle->work->encounter->unk8[s->unk1];
     n = sc->unk4->unk2;
     b = g_gameState->unk1C->unk8E4.battle;
     if (n >= 3) {
@@ -256,7 +256,7 @@ Battle11C020 *func_800C94B8(void) {
     return s;
 }
 
-Battle1330 *func_800C9600(Battle11C020 *arg0) {
+Battle1330 *btl_pickEnemyGroup(Battle11C020 *arg0) {
     Battle1330 *e;
     u16 r;
     u16 sum;
@@ -288,11 +288,11 @@ Battle1330 *func_800C9600(Battle11C020 *arg0) {
 
 void func_800C972C(void) {
     Battle *b = g_gameState->unk1C->unk8E4.battle;
-    b->unk132C.unk0 = (b->unk11C0->unk20->unk4 ^ 0x30) * 4;
-    D_800FDF38 = g_gameState->unk1C->unk8E4.battle->unk132C.unk4->unk4;
+    b->scene.unk0 = (b->work->encounter->unk4 ^ 0x30) * 4;
+    D_800FDF38 = g_gameState->unk1C->unk8E4.battle->scene.unk4->unk4;
 }
 
-void func_800C9794(void) {
+void btl_setupEnemies(void) {
     Battle *b;
     Battle1330 *grp;
     Battle11C020 *hdr;
@@ -301,7 +301,7 @@ void func_800C9794(void) {
     u8 n;
     Unk800C9D1C *recs;
     Unk800C9D1C *rec;
-    Battle4880 *en;
+    BtlEnemyType *en;
     U16Pair *ofs;
     BtlCmd8 *src;
     u32 *flags;
@@ -311,47 +311,47 @@ void func_800C9794(void) {
     Battle1330 *grp2;
 
     b = g_gameState->unk1C->unk8E4.battle;
-    flags = &b->unk132C.unk0;
-    grp = b->unk132C.unk4;
-    hdr = b->unk11C0->unk20;
-    b->unk132C.unk0 = (b->unk132C.unk0 & ~3) | (btl_rollAmbush(flags) & 3);
+    flags = &b->scene.unk0;
+    grp = b->scene.unk4;
+    hdr = b->work->encounter;
+    b->scene.unk0 = (b->scene.unk0 & ~3) | (btl_rollAmbush(flags) & 3);
     i = 0;
     n = hdr->unk2 + hdr->unk3;
     grp2 = hdr->unk8;
     recs = (Unk800C9D1C *)(grp2 + hdr->unk1);
     rec = recs;
-    en = g_gameState->unk1C->unk8E4.battle->unk4E8;
-    ofs = (U16Pair *)(g_gameState->unk1C->unk8E4.battle->unk11C0->unk14 + 4);
+    en = g_gameState->unk1C->unk8E4.battle->enemyTypes;
+    ofs = (U16Pair *)(g_gameState->unk1C->unk8E4.battle->work->texts + 4);
     src = (BtlCmd8 *)&recs[hdr->unk2];
     for (; i < hdr->unk2; i++) {
-        func_800C9D1C(rec, en);
-        en->unk2C = func_800CA2B0(i + 5);
-        en->unk0 = ofs->unk0 + 4;
+        btl_initEnemyType(rec, en);
+        en->camera = btl_getSceneData(i + 5);
+        en->nameOfs = ofs->unk0 + 4;
         ofs++;
-        en->unk28 = n;
+        en->firstAbility = n;
         n += rec->unk4F;
         en++;
         rec++;
     }
-    dst = g_gameState->unk1C->unk8E4.battle->unk5D8;
+    dst = g_gameState->unk1C->unk8E4.battle->enemyAbilities;
     for (i = 0, cmd = src; i < hdr->unk3; i++, cmd++) {
-        func_800CA28C(cmd, dst);
+        btl_copyAbility(cmd, dst);
         dst->nameOfs = ofs->unk0 + 4;
         ofs++;
         dst++;
     }
-    u = g_gameState->unk1C->unk8E4.battle->unk6F8;
+    u = g_gameState->unk1C->unk8E4.battle->unitList;
     for (i = 0; i < grp->unk1; i++) {
         if (u == NULL) {
             break;
         }
         btl_initEnemyUnit(&grp->unk8[i], u, (s32 *)flags, i);
         ((void (*)(Unk800C9D1C *, BtlUnit *, s32))btl_setEnemyStats)(&recs[grp->unk8[i].unk0], u, i);
-        u = u->unk0;
+        u = u->next;
     }
 }
 
-void func_800C9A28(void) {
+void btl_placeParty(void) {
     s16 n;
     s16 i;
     Battle *b;
@@ -371,7 +371,7 @@ void func_800C9A28(void) {
 
     n = 0;
     b = g_gameState->unk1C->unk8E4.battle;
-    flags = &b->unk132C.unk0;
+    flags = &b->scene.unk0;
     for (i = 0; i < 4; i++) {
         if (g_gameState->unk1C->party[i] != NULL) {
             n++;
@@ -380,78 +380,78 @@ void func_800C9A28(void) {
     x = (n - 1) * 0x13C;
     i = 0;
     rot = ((*flags & 3) != 0) << 11;
-    u = g_gameState->unk1C->unk8E4.battle->unk6F8;
+    u = g_gameState->unk1C->unk8E4.battle->unitList;
     for (; i < n; i++) {
-        if (!(u->unk68 & 1)) {
+        if (!(u->flags & 1)) {
             return;
         }
-        m = u->unk68 & ~0x300;
-        m |= (g_gameState->unk1C->characters[(u->unk68 >> 1) & 0xF].unk34.w >> 1) & 0x100;
-        u->unk68 = m;
+        m = u->flags & ~0x300;
+        m |= (g_gameState->unk1C->characters[(u->flags >> 1) & 0xF].unk34.w >> 1) & 0x100;
+        u->flags = m;
         if (!(*flags & 3)) {
-            u->unk68 = (u->unk68 & ~0x300) | ((((u->unk68 >> 8) & 3) ^ 1) << 8);
+            u->flags = (u->flags & ~0x300) | ((((u->flags >> 8) & 3) ^ 1) << 8);
         }
-        u->unk8C[0] = u->unk98->unk0[0] = u->unkA0->unk14 = x << 16;
-        p98 = u->unk98;
-        pa0 = u->unkA0;
+        u->pos[0] = u->home->pos[0] = u->obj->x = x << 16;
+        p98 = u->home;
+        pa0 = u->obj;
         if ((u8)btl_hasStatus(u, BTL_STATUS_FLOAT)) {
             v = 0xFF380000;
         } else {
             v = 0;
         }
-        u->unk8C[1] = p98->unk0[1] = pa0->unk18 = v;
-        q98 = u->unk98;
-        qa0 = u->unkA0;
+        u->pos[1] = p98->pos[1] = pa0->y = v;
+        q98 = u->home;
+        qa0 = u->obj;
         w = 0xF9E80000;
-        if (!((u->unk68 >> 8) & 3)) {
+        if (!((u->flags >> 8) & 3)) {
             w = 0xF8580000;
         }
-        u->unk8C[2] = q98->unk0[2] = qa0->unk1C = w;
-        u->unkA0->unk20 = 0;
-        u->unk86[0] = 0;
-        u->unkA0->unk22 = rot;
-        u->unk86[1] = rot;
-        u->unkA0->unk24 = 0;
-        u->unk86[2] = 0;
+        u->pos[2] = q98->pos[2] = qa0->z = w;
+        u->obj->rotX = 0;
+        u->rot[0] = 0;
+        u->obj->rotY = rot;
+        u->rot[1] = rot;
+        u->obj->rotZ = 0;
+        u->rot[2] = 0;
         tbl = D_800F57F0;
-        e = &tbl[g_gameState->unk1C->characters[(u->unk68 >> 1) & 0xF].unk34.b.unk4];
+        e = &tbl[g_gameState->unk1C->characters[(u->flags >> 1) & 0xF].unk34.b.unk4];
         u->unkBD = e->unk0;
         u->unkBE = e->unk1;
-        func_800C23C8(u, e->unk2, e->unk3);
+        btl_setShadowSize(u, e->unk2, e->unk3);
         x -= 0x278;
-        g_gameState->unk1C->unk8E4.battle->unk11C0->unk28[(u->unk68 >> 1) & 0xF].unk4_22 = e->unk4;
-        u = u->unk0;
+        g_gameState->unk1C->unk8E4.battle->work->shadows[(u->flags >> 1) & 0xF].unk4_22 = e->unk4;
+        u = u->next;
     }
 }
 
-void func_800C9D1C(Unk800C9D1C *arg0, Battle4880 *arg1) {
+void btl_initEnemyType(Unk800C9D1C *arg0, BtlEnemyType *arg1) {
     s16 i;
     BtlUnit9CC *h;
-    arg1->unk24 = arg0->unk1C;
-    arg1->unk2 = arg0->unk41;
-    arg1->unk3 = arg0->unk40;
-    arg1->unk27 = arg0->unk47;
-    arg1->unk4.maxHp = arg0->unkC;
-    arg1->unk4.maxMp = arg0->unkE;
-    arg1->unk44 = arg0->unk10;
-    arg1->unk46 = arg0->unk12;
-    arg1->unk4C = arg0->unk69;
-    arg1->unk48.w = arg0->unk14;
+    arg1->radius = arg0->unk1C;
+    arg1->category = arg0->unk41;
+    arg1->level = arg0->unk40;
+    arg1->eatAbility = arg0->unk47;
+    arg1->max.maxHp = arg0->unkC;
+    arg1->max.maxMp = arg0->unkE;
+    arg1->exp = arg0->unk10;
+    arg1->gil = arg0->unk12;
+    arg1->card = arg0->unk69;
+    arg1->drops.w = arg0->unk14;
     for (i = 0; i < 6; i++) {
         h = db_lookupRegistered(4, arg0->unk20[i] | 0x30000, 0);
-        arg1->unkC[i] = h;
+        arg1->motions[i] = h;
         if (IS_OFFSET(h->unkC)) {
             h->unkC = (s32)h + h->unkC;
             if (h->unk10 != 0) {
-                h->unk10 = (s32)arg1->unkC[i] + h->unk10;
+                h->unk10 = (s32)arg1->motions[i] + h->unk10;
             }
         }
     }
     for (i = 0; i < 3; i++) {
-        arg1->unk29[i] = arg0->unk48[i];
+        arg1->bones[i] = arg0->unk48[i];
     }
-    arg1->unk30 = arg0->unk4C;
-    arg1->unk26 = arg0->unk4E;
+    arg1->deathCry = arg0->unk4C;
+    arg1->confuseAbility = arg0->unk4E;
     for (i = 0; i < 6; i++) {
         arg1->unk32[i] = arg0->unk50[i];
         arg1->unk38[i] = arg0->unk56[i];
@@ -461,85 +461,85 @@ void func_800C9D1C(Unk800C9D1C *arg0, Battle4880 *arg1) {
 
 void btl_initEnemyUnit(Unk800C9EE0 *arg0, BtlUnit *arg1, s32 *arg2, s32 arg3) {
     Battle *b = g_gameState->unk1C->unk8E4.battle;
-    Battle488 *s = &b->unk488[(arg1->unk68 >> 1) & 0xF];
-    Battle4880 *e;
+    BtlEnemy *s = &b->enemies[(arg1->flags >> 1) & 0xF];
+    BtlEnemyType *e;
     s16 r;
-    s->unk0 = &b->unk4E8[arg0->unk0];
-    arg1->unk68 = (((arg1->unk68 & ~0x10000000) | ((arg0->unk1 & 1) << 28)) & ~0x300) | 0x200;
-    e = &g_gameState->unk1C->unk8E4.battle->unk4E8[arg0->unk0];
-    arg1->max = &e->unk4;
-    arg1->hp = e->unk4.maxHp;
+    s->type = &b->enemyTypes[arg0->unk0];
+    arg1->flags = (((arg1->flags & ~0x10000000) | ((arg0->unk1 & 1) << 28)) & ~0x300) | 0x200;
+    e = &g_gameState->unk1C->unk8E4.battle->enemyTypes[arg0->unk0];
+    arg1->max = &e->max;
+    arg1->hp = e->max.maxHp;
     arg1->mp = arg1->max->maxMp;
-    s->unk4 = (s->unk4 & ~0x100) | ((arg0->unk1 << 7) & 0x100);
-    if (!((s->unk4 >> 9) & 1)) {
-        arg1->unk8C[0] = arg1->unk98->unk0[0] = arg1->unkA0->unk14 = arg0->unk4 << 16;
-        arg1->unk8C[1] = arg1->unk98->unk0[1] = arg1->unkA0->unk18 = arg0->unk6 << 16;
-        arg1->unk8C[2] = arg1->unk98->unk0[2] = arg1->unkA0->unk1C = arg0->unk8 << 16;
-        arg1->unkA0->unk20 = 0;
-        arg1->unk86[0] = 0;
-        arg1->unkA0->unk24 = 0;
-        arg1->unk86[2] = 0;
+    s->flags = (s->flags & ~0x100) | ((arg0->unk1 << 7) & 0x100);
+    if (!((s->flags >> 9) & 1)) {
+        arg1->pos[0] = arg1->home->pos[0] = arg1->obj->x = arg0->unk4 << 16;
+        arg1->pos[1] = arg1->home->pos[1] = arg1->obj->y = arg0->unk6 << 16;
+        arg1->pos[2] = arg1->home->pos[2] = arg1->obj->z = arg0->unk8 << 16;
+        arg1->obj->rotX = 0;
+        arg1->rot[0] = 0;
+        arg1->obj->rotZ = 0;
+        arg1->rot[2] = 0;
         r = (arg0->unkA + D_800F5850[*arg2 & 3]) & 0xFFF;
-        arg1->unkA0->unk22 = r;
-        arg1->unk86[1] = r;
+        arg1->obj->rotY = r;
+        arg1->rot[1] = r;
     }
-    arg1->unkA4 = (s32 *)s->unk0->unkC;
-    arg1->unk9C->unkC = s->unk0->unkC[0];
+    arg1->motions = (s32 *)s->type->motions;
+    arg1->model->motion = s->type->motions[0];
 }
 
 void btl_setEnemyStats(Unk800C9D1C *arg0, BtlUnit *arg1) {
-    Battle488 *s;
-    Battle11C028 *t;
+    BtlEnemy *s;
+    BtlShadow *t;
 
     arg1->statusImmune = arg0->unk0;
-    arg1->unk38 = arg0->unk4;
+    arg1->autoStatus = arg0->unk4;
     arg1->status = arg0->unk8;
     arg1->hp = arg0->unkC;
     arg1->mp = arg0->unkE;
-    arg1->unk6C = arg0->unk43[0];
-    arg1->unk6D = arg0->unk43[1];
-    arg1->unk6E = arg0->unk43[2];
-    arg1->unk6F = arg0->unk43[3];
-    arg1->unk30 = arg0->unk34[0];
-    arg1->unk31 = arg0->unk34[1];
-    arg1->unk32 = arg0->unk34[2];
-    arg1->unk33 = arg0->unk34[3];
-    *(s32 *)&arg1->unk70 = arg0->unk3C;
-    *(s32 *)&arg1->unkAC = arg0->unk2C;
-    arg1->unk7C = arg0->unk4B;
-    s = &g_gameState->unk1C->unk8E4.battle->unk488[(arg1->unk68 >> 1) & 0xF];
-    s->unk8.w = arg0->unk18;
-    s->unk4 = (s->unk4 & ~0x40) | ((arg0->unk30 & 1) << 6);
-    s->unk4 = (s->unk4 & ~0x80) | ((arg0->unk30 << 6) & 0x80);
-    func_800C23C8(arg1, arg0->unk64, arg0->unk66);
+    arg1->defense = arg0->unk43[0];
+    arg1->evade = arg0->unk43[1];
+    arg1->magicDef = arg0->unk43[2];
+    arg1->magicEva = arg0->unk43[3];
+    arg1->speed = arg0->unk34[0];
+    arg1->strength = arg0->unk34[1];
+    arg1->magic = arg0->unk34[2];
+    arg1->spirit = arg0->unk34[3];
+    *(s32 *)&arg1->elemGuard = arg0->unk3C;
+    *(s32 *)&arg1->hiddenMeshes = arg0->unk2C;
+    arg1->baseBone = arg0->unk4B;
+    s = &g_gameState->unk1C->unk8E4.battle->enemies[(arg1->flags >> 1) & 0xF];
+    s->steal.w = arg0->unk18;
+    s->flags = (s->flags & ~0x40) | ((arg0->unk30 & 1) << 6);
+    s->flags = (s->flags & ~0x80) | ((arg0->unk30 << 6) & 0x80);
+    btl_setShadowSize(arg1, arg0->unk64, arg0->unk66);
     arg1->unkBD = arg0->unk68;
     arg1->unkBE = arg0->unk6E;
-    t = &g_gameState->unk1C->unk8E4.battle->unk11C0->unk28[((arg1->unk68 >> 1) & 0xF) + 9];
+    t = &g_gameState->unk1C->unk8E4.battle->work->shadows[((arg1->flags >> 1) & 0xF) + 9];
     t->unk4_12 = arg0->unk6A;
     t->unk4_22 = arg0->unk6C;
 }
 
-void func_800CA28C(BtlCmd8 *arg0, BtlCmd8 *arg1) {
+void btl_copyAbility(BtlCmd8 *arg0, BtlCmd8 *arg1) {
     *arg1 = *arg0;
 }
 
-s32 func_800CA2B0(s32 arg0) {
-    s16 *t = g_gameState->unk1C->unk8E4.battle->unk132C.unk10;
+s32 btl_getSceneData(s32 arg0) {
+    s16 *t = g_gameState->unk1C->unk8E4.battle->scene.unk10;
     return (s32)t + t[arg0];
 }
 
-s16 func_800CA2E4(s16 arg0) {
-    Unk800C9EE0 *e = &g_gameState->unk1C->unk8E4.battle->unk132C.unk4->unk8[arg0];
+s16 btl_getEnemyModelId(s16 arg0) {
+    Unk800C9EE0 *e = &g_gameState->unk1C->unk8E4.battle->scene.unk4->unk8[arg0];
     s32 r;
     if (arg0 > 0 && (e->unk1 & 2)) {
         r = -1;
     } else {
-        r = g_gameState->unk1C->unk8E4.battle->unk132C.unk8[e->unk0].unk1E;
+        r = g_gameState->unk1C->unk8E4.battle->scene.unk8[e->unk0].unk1E;
     }
     return r;
 }
 
-u16 func_800CA378(void) {
+u16 btl_getEntranceSound(void) {
     Battle *b = g_gameState->unk1C->unk8E4.battle;
-    return b->unk132C.unk8[b->unk132C.unk4->unk8[0].unk0].unk62;
+    return b->scene.unk8[b->scene.unk4->unk8[0].unk0].unk62;
 }

@@ -6,16 +6,16 @@ s32 fx_19e_op80(s32 mode, Fx19eWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
     if (mode == 0) {
         *arg4 = 0xC;
     } else if (mode == 1) {
-        work->unk4.vx = env->unkC->unk38;
-        work->unk4.vy = env->unkC->unk3A;
-        work->unk4.vz = env->unkC->unk3C;
+        work->unk4.vx = env->targets->centerX;
+        work->unk4.vy = env->targets->centerY;
+        work->unk4.vz = env->targets->centerZ;
         D_801E7EC8 = env;
-        work->unk0 = ex->func_800E3CEC(ex->btlfx_getFileData(entry->unk8, 1), (s32)&work->unk4);
+        work->unk0 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 1), (s32)&work->unk4);
         if (work->unk0 != NULL) {
             work->unk0->unk22 = 0x80;
         }
     } else {
-        return entry->unk0 >= 0x28;
+        return entry->frame >= 0x28;
     }
     return 0;
 }
@@ -28,14 +28,14 @@ s32 fx_19e_op81(s32 mode, Fx19eWork81 *work, Unk800F78A4 *env, Unk80100C78Entry 
     } else if (mode == 1) {
         D_801E7EC8 = env;
         ex->btlfx_getUnitBodyPos(0x10, 0, (s16 *)&work->unk0);
-        work->unk18.vx = env->unkC->unk38;
-        work->unk18.vy = env->unkC->unk3A;
-        work->unk18.vz = env->unkC->unk3C;
+        work->unk18.vx = env->targets->centerX;
+        work->unk18.vy = env->targets->centerY;
+        work->unk18.vz = env->targets->centerZ;
         ex->btlfx_aimAngles((s16 *)&work->unk0, (s16 *)&work->unk18, (s16 *)&work->unk8);
         work->unk8.vy += 0x800;
-        ex->func_800CFD78((s16 *)&work->unk18, (s16 *)&work->unk8, 0x514, (s16 *)&work->unk10);
+        ex->btlfx_pointAhead((s16 *)&work->unk18, (s16 *)&work->unk8, 0x514, (s16 *)&work->unk10);
     } else {
-        s32 frame = entry->unk0;
+        s32 frame = entry->frame;
         return func_801E7990(0x10, &work->unk10, frame, 7, 0, &work->unk20) != 0;
     }
     return 0;

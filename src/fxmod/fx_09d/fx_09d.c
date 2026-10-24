@@ -8,18 +8,18 @@ s32 fx_09d_op80(s32 mode, Fx09dWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
     if (mode == 0) {
         *arg4 = 8;
     } else if (mode == 1) {
-        work->unk0.vx = env->unkC->unk38;
+        work->unk0.vx = env->targets->centerX;
         work->unk0.vy = -0x190;
-        work->unk0.vz = env->unkC->unk3C;
+        work->unk0.vz = env->targets->centerZ;
         D_801E7880 = env;
-        p = ex->func_800E3CEC(ex->btlfx_getFileData(entry->unk8, 8), (s32)&work->unk0);
+        p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 8), (s32)&work->unk0);
         if (p != NULL) {
             p->unk22 = ex->func_800E7CC4(0, 0x80);
         }
     } else {
-        frame = entry->unk0;
+        frame = entry->frame;
         if (frame == 0x18) {
-            p = ex->func_800E3CEC(ex->btlfx_getFileData(entry->unk8, 7), (s32)&work->unk0);
+            p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 7), (s32)&work->unk0);
             if (p != NULL) {
                 p->unk22 = ex->func_800E7CC4(0, 0x80);
             }
