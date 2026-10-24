@@ -1983,9 +1983,9 @@ void menuScreen_drawCommands(void);
 void menuScreen_updateOpen(void);
 void func_80060D1C(s32, s32, s32, s32);
 void func_80060ED8(s32, s32, void (*)(void));
-s32 func_800C44F4(u32); /* field overlay (ovl_0a) */
-s32 func_800C0F08(void); /* field overlay (ovl_0a) */
-s32 func_800C0FB0(void); /* field overlay (ovl_0a) */
+s32 bgi_updateActor(u32); /* field overlay (ovl_0a) */
+s32 fldbg_applyGeomOffset(void); /* field overlay (ovl_0a) */
+s32 fldbg_resetGeomOffset(void); /* field overlay (ovl_0a) */
 extern CdRequest g_cdReadRequest;
 s32 func_8005EB40(s32 *, s32, s32, s32);
 s32 CdMode(void);
@@ -2278,7 +2278,7 @@ extern s32 D_8007AEA8;
 extern s32 D_8007AEAC; /* the player moved this frame */
 extern s32 D_8007AEB0;
 extern s32 D_8007AEB4;
-extern u8 D_800CCE54; /* world map (ovl_0c) data */
+extern u8 g_worldPlayerStepped; /* world map (ovl_0c) data */
 void evt_movePlayer(Unk8004AB64 *);
 void evt_updateLookAt(Unk8004AB64 *);
 void evt_checkPlayerAction(Unk8004AB64 *);
@@ -2291,7 +2291,7 @@ s32 func_8002170C(Unk8004AB64 *);
 s32 evt_rollEncounter(Unk8004AB64 *);
 #if !defined(OVL_0A_H) /* field overlay functions; ovl_0a has the definitions */
 s32 func_800B3444(s32, s32, s32);
-/* world-map model state (func_800C748C) */
+/* field walkmesh actor entry returned by ovl_0a bgi_getActor (ovl_0a calls it BgiActor) */
 typedef struct {
     s16 unk0;
     u8 pad2[6];
@@ -2299,9 +2299,9 @@ typedef struct {
     u8 pad9;
     u16 unkA;
 } Unk800C748C;
-void *func_800C748C(s32);
-s32 func_800C75B4(s32, s32 *);
-s32 func_800C7720(s32);
+void *bgi_getActor(s32);
+s32 bgi_getActorRadius(s32, s32 *);
+s32 bgi_revertActor(s32);
 #endif
 Window *msg_getWindow(s32);
 void evt_followBalloon(Unk8004AB64 *, Window *);
@@ -3462,7 +3462,7 @@ s32 chr_cureStatusMask(Character *, s32);
 u8 fieldCalc_apply(MainCalc *);
 u8 fieldCalc_checkAlive(MainCalc *);
 u8 fieldCalc_checkDead(MainCalc *);
-s32 func_801F1A7C(void); /* ovl_37 */
+s32 menuItem_callChocobo(void); /* ovl_37 */
 void exit(s32); /* BIOS B0 call */
 
 void chr_addHp(Character *, s32);
@@ -3588,74 +3588,74 @@ typedef struct {
 /* mode entry points in overlays, linked through config/xrefs.us.txt */
 void btl_entry(void);
 void battleEnd_main(void);
-void func_800AFAC0(s32, s32, s32, s32, s32);
-void func_800B1A20(s16, s16, s16, u8 *arg4, u8 *arg5);
-s32 func_800B2CC0(s32, s32, s32, s32);
-void func_800B5004(s32, s16);
+void fld_spriteCommand(s32, s32, s32, s32, s32);
+void fld_getSoundPanVolume(s16, s16, s16, u8 *arg4, u8 *arg5);
+s32 fld_setObjectColor(s32, s32, s32, s32);
+void fld_requestDiscChange(s32, s16);
 void w_frameSetParameter(u32, s32); /* ovl_0c */
 void fld_gameOver(void); /* ovl_0a */
-s32 func_800C02D0(s32, s16, s16, s8, u8, u8, u8);
-s32 func_800C0BCC(s32);
-s32 func_800C0DB0(s16, s16, s16);
-s32 func_800C0DF4(s16, s16, u16, s32);
-s32 func_800C0E6C(u16 *arg0, u16 *arg1);
-s32 func_800C0E94(s32, s32, s32);
-s32 func_800C1024(s16);
-s32 func_800C104C(void);
-s32 func_800C1100(void);
-s32 func_800C119C(s32, s16, s16, s16, s16);
-s32 func_800C11C8(s32, s32, s32);
-s32 func_800C11E8(s32, s16, s16, s16);
-s32 func_800C1368(s32, u8, u8, u8);
-s32 func_800C142C(s32, s32);
-s32 func_800C147C(s32, s32, s32, s32);
-s32 func_800C14DC(s32, s32);
-s32 func_800C152C(s32, s32, s32, s32, s32);
-s32 func_800C15BC(s32, s32, s32, s32);
-s32 func_800C1614(s32, s32, s32);
-s32 func_800C1668(s32, s32);
-s32 func_800C16B0(s32, s32);
-s32 func_800C16F4(s32, s32);
-s32 func_800C17AC(s32, s32);
-s32 func_800C17F0(s32, s32);
-s32 func_800C1868(s32, s32, s32);
-s32 func_800C18A0(s32, s32);
-s32 func_800C18D4(s32, u32, u32);
-s32 func_800C196C(s32, s32);
-s32 func_800C1A8C(s32, s16, s16, s16, s16);
-s32 func_800C47E4(s32, s32);
-s32 func_800C6408(u32, u32);
-s32 func_800C7464(u8);
-s32 func_800C778C(s32, s32);
-s32 func_800C7AF8(u32, u32);
-s32 func_800C7B68(u32, s32);
-s32 func_800C7BC4(u32, s16);
-s32 func_800C7C04(u32, s32);
-s32 func_800C7C70(u32, u32, s32);
-s32 func_800C7CDC(u32, s32);
-s32 func_800C7DF0(u32, s32);
-s32 func_800C7F34(s32, s32);
-s32 func_800C7F7C(s32, s32);
-s32 func_800C7FBC(s32, s32);
-s32 func_800C8010(s32, s32);
-s32 func_800C8044(s32, s32);
-s32 func_800C8068(s32, s16);
-s32 func_800C808C(s32, s32);
-s32 func_800C80B0(s32, s16, s16);
-s32 func_800C80E4(s32, s32);
+s32 fldbg_addFollowOverlay(s32, s16, s16, s8, u8, u8, u8);
+s32 fldbg_setCamera(s32);
+s32 fldbg_moveOrigin(s16, s16, s16);
+s32 fldbg_scrollTo(s16, s16, u16, s32);
+s32 fldbg_getScroll(u16 *arg0, u16 *arg1);
+s32 fldbg_setFollow(s32, s32, s32);
+s32 fldbg_setFollowHeight(s16);
+s32 fldbg_disableScrollLimits(void);
+s32 fldbg_enableScrollLimits(void);
+s32 fldbg_setViewport(s32, s16, s16, s16, s16);
+s32 fldbg_setViewportScrollRate(s32, s32, s32);
+s32 fldbg_moveOverlay(s32, s16, s16, s16);
+s32 fldbg_setOverlayColor(s32, u8, u8, u8);
+s32 fldbg_showOverlay(s32, s32);
+s32 fldbg_setOverlayLoop(s32, s32, s32, s32);
+s32 fldbg_setOverlayFlag1(s32, s32);
+s32 fldbg_setOverlaySkewLoop(s32, s32, s32, s32, s32);
+s32 fldbg_setOverlayParallax(s32, s32, s32, s32);
+s32 fldbg_setOverlayPos(s32, s32, s32);
+s32 fldbg_setOverlayViewport(s32, s32);
+s32 fldbg_setAnimFrame(s32, s32);
+s32 fldbg_showAnimFrame(s32, s32);
+s32 fldbg_playAnim(s32, s32);
+s32 fldbg_setAnimSpeed(s32, s32);
+s32 fldbg_setAnimStepDelay(s32, s32, s32);
+s32 fldbg_setAnimFlags(s32, s32);
+s32 fldbg_playAnimRange(s32, u32, u32);
+s32 fldbg_resetAnim(s32, s32);
+s32 fldbg_setScrollLimits(s32, s16, s16, s16, s16);
+s32 bgi_setFloorActive(s32, s32);
+s32 bgi_showAnimFrame(u32, u32);
+s32 bgi_setMaskFilter(u8);
+s32 bgi_setTriangleActive(s32, s32);
+s32 bgi_setAnimFrame(u32, u32);
+s32 bgi_setAnimPlaying(u32, s32);
+s32 bgi_setAnimRate(u32, s16);
+s32 bgi_setAnimFrameValues(u32, s32);
+s32 bgi_setAnimFrameValue(u32, u32, s32);
+s32 bgi_setAnimMode(u32, s32);
+s32 bgi_resetAnim(u32, s32);
+s32 bgi_startFloorMove(s32, s32);
+s32 bgi_stopFloorMove(s32, s32);
+s32 bgi_setFloorMovePlaying(s32, s32);
+s32 bgi_setFloorMoveMode(s32, s32);
+s32 bgi_setFloorMoveFloor(s32, s32);
+s32 bgi_setFloorMoveSpeed(s32, s16);
+s32 bgi_setFloorMoveCurve(s32, s32);
+s32 bgi_setFloorMoveRange(s32, s16, s16);
+s32 bgi_setFloorMoveAxis(s32, s32);
 void btl_setBanner(s32, s32);
-void func_801F0FF4(void);
-s32 func_800AA3F4(s32); /* uid; queues the actor's model */
-s32 func_800C3E18(s32, s32);
-s32 func_800C7570(s32, u16);
+void rewards_requestClose(void);
+s32 fld_queueModelBundle(s32); /* uid; queues the actor's model */
+s32 bgi_setActorActive(s32, s32);
+s32 bgi_setActorRadius(s32, u16);
 void btl_setEnemyCmd(s32, s32, s32, s32);
 void btlseq_startDirect(s32, s32, u16);
 void btl_setBattleVar(s32, s32);
-s32 func_800ABA98(s32, s32, s32, s32, s32);
+s32 fld_modelCommand(s32, s32, s32, s32, s32);
 s32 fld_movieCommand(s32, s32, s32);
-VECTOR *func_800AE750(void);
-VECTOR *func_800AE744(void);
-void func_800C7D30(s32, s32, s32);
+VECTOR *wm_getCameraEye(void);
+VECTOR *wm_getCameraTarget(void);
+void bgi_playAnimRange(s32, s32, s32);
 #endif
 
 extern u8 *g_evtInstrStart;
@@ -3928,7 +3928,7 @@ static inline void evt_execInstr_newactor(s32 uid, s32 b) {
     p->unkF |= 4;
     switch (g_evtMode) {
     case 1:
-        func_800AA3F4(uid);
+        fld_queueModelBundle(uid);
         break;
     case 2:
         D_8007AED0[D_8007AE04++] = p;
@@ -4060,8 +4060,8 @@ extern s32 D_80080A30[16]; /* AKAO header copy */
 extern u32 D_80083230; /* = D_80083228.unk8 */
 
 /* ovl_0a functions called from the main script interpreter */
-s32 func_800C76E8(s32, u16 *, u16 *);
-s32 func_800C7EE8(u32, s32 *);
+s32 bgi_getActorTriangle(s32, u16 *, u16 *);
+s32 bgi_getAnimFrame(u32, s32 *);
 
 /* party member index -> character slot (9.. map to 5..) */
 static inline s32 func_80037ACC_chr(s32 i) {
@@ -4075,7 +4075,7 @@ static inline s32 func_80037ACC_chr(s32 i) {
 extern s32 D_8007AE20;
 void *evt_findNearestObject(Unk8004AB64 *, s32, s32 *); /* nearest object of a kind */
 extern s32 D_8007AEC4;
-s32 func_800C1B5C(u8 *);
+s32 fldbg_getCamera(u8 *);
 s32 btlseq_isBusy(void);
 s32 w_frameGetParameter(s32); /* ovl_0c */
 s32 btl_getBattleVar(s32);

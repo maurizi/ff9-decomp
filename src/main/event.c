@@ -14,14 +14,14 @@ s32 evt_getSysVar(s32 op) {
         r = *g_randPtr++;
         break;
     case 1:
-        func_800C1B5C(buf);
+        fldbg_getCamera(buf);
         r = buf[0];
         break;
     case 2:
         r = g_evtState->controlEnabled;
         break;
     case 3:
-        r = func_800B0124(0xC00, -1, 0, 0, 0);
+        r = fld_soundCommand(0xC00, -1, 0, 0, 0);
         break;
     case 4:
         r = D_8007AE20;
@@ -970,7 +970,7 @@ s32 evt_execInstr(void) {
         if (D_8007B704->unk5 == 4) {
             a = evt_getArg8_inline();
             if (g_evtMode == 1 && po->unk34 != 0xFFFF) {
-                func_800C7570(po->unk3B, (a << 2) & 0xFFFC);
+                bgi_setActorRadius(po->unk3B, (a << 2) & 0xFFFC);
             }
             po->unk3C = evt_getArg8_inline();
             po->unk3D = evt_getArg8_inline();
@@ -999,13 +999,13 @@ s32 evt_execInstr(void) {
         b = evt_getArg16_inline();
         c = g_evtMode == 1 && po->unk34 != 0xFFFF;
         if (c) {
-            func_800C3E18(po->unk3B, 0);
+            bgi_setActorActive(po->unk3B, 0);
         }
         po->pos.vx = po->unk40.vx = a;
         po->pos.vy = po->unk40.vy = -0x8000;
         po->pos.vz = po->unk40.vz = b;
         if (c) {
-            func_800C3E18(po->unk3B, 1);
+            bgi_setActorActive(po->unk3B, 1);
         }
         if (po->unk5 == 4) {
             po->unk78 = 0x7FFFFFFF;
@@ -1022,7 +1022,7 @@ s32 evt_execInstr(void) {
         c = evt_getArg16_inline();
         d = g_evtMode == 1 && po->unk34 != 0xFFFF;
         if (d) {
-            func_800C3E18(po->unk3B, 0);
+            bgi_setActorActive(po->unk3B, 0);
         }
         po->pos.vx = po->unk40.vx = a;
         po->pos.vy = po->unk40.vy = b;
@@ -1265,7 +1265,7 @@ s32 evt_execInstr(void) {
         actor->unkA8 = actor->pos.vz;
         actor->unk5D = ((actor->unk61 - actor->unk60) << 4) / a;
         if (g_evtMode == 1 && po->unk34 != 0xFFFF) {
-            func_800C3E18(po->unk3B, 0);
+            bgi_setActorActive(po->unk3B, 0);
         }
         return 0;
     case 0xDC:
@@ -1644,7 +1644,7 @@ s32 evt_execInstr(void) {
         }
         return 0;
     case 0xE1:
-        func_801F0FF4();
+        rewards_requestClose();
         D_8007B718 = 1;
         return 0;
     case 0xDE:
@@ -1679,65 +1679,65 @@ s32 evt_execInstr(void) {
     case 0x58:
         a = evt_getArg16_inline();
         b = evt_getArg16_inline();
-        func_800C0DB0(a, b, evt_getArg16_inline());
+        fldbg_moveOrigin(a, b, evt_getArg16_inline());
         return 0;
     case 0x6F:
         a = evt_getArg16_inline();
         b = evt_getArg16_inline();
         c = evt_getArg8_inline();
-        func_800C0DF4(a, b, c, evt_getArg8_inline());
+        fldbg_scrollTo(a, b, c, evt_getArg8_inline());
         return 0;
     case 0x70:
         a = evt_getArg8_inline();
-        func_800C0038(a, evt_getArg8_inline());
+        fldbg_scrollToPlayer(a, evt_getArg8_inline());
         return 0;
     case 0x71:
         a = evt_getArg8_inline();
         b = evt_getArg8_inline();
-        func_800C0E94(a, b, evt_getArg8_inline());
+        fldbg_setFollow(a, b, evt_getArg8_inline());
         return 0;
     case 0x72:
         a = evt_getArg16_inline();
-        func_800C1024(a);
+        fldbg_setFollowHeight(a);
         return 0;
     case 0x73:
-        func_800C1100();
+        fldbg_enableScrollLimits();
         return 0;
     case 0x74:
-        func_800C104C();
+        fldbg_disableScrollLimits();
         return 0;
     case 0x59:
         a = evt_getArg8_inline();
         b = evt_getArg8_inline();
         c = evt_getArg8_inline();
-        func_800C1368(a, b, c, evt_getArg8_inline());
+        fldbg_setOverlayColor(a, b, c, evt_getArg8_inline());
         return 0;
     case 0x5A:
         a = evt_getArg8_inline();
         b = evt_getArg16_inline();
         c = evt_getArg16_inline();
-        func_800C11E8(a, b, c, evt_getArg16_inline());
+        fldbg_moveOverlay(a, b, c, evt_getArg16_inline());
         return 0;
     case 0x5B:
         a = evt_getArg8_inline();
-        func_800C142C(a, evt_getArg8_inline());
+        fldbg_showOverlay(a, evt_getArg8_inline());
         return 0;
     case 0x5C:
         a = evt_getArg8_inline();
         b = evt_getArg8_inline();
         c = evt_getArg16_inline();
-        func_800C147C(a, b, c, evt_getArg16_inline());
+        fldbg_setOverlayLoop(a, b, c, evt_getArg16_inline());
         return 0;
     case 0x5D:
         a = evt_getArg8_inline();
         b = evt_getArg8_inline();
         c = evt_getArg16_inline();
-        func_800C15BC(a, b, c, evt_getArg16_inline());
+        fldbg_setOverlayParallax(a, b, c, evt_getArg16_inline());
         return 0;
     case 0x5E:
         a = evt_getArg8_inline();
         b = evt_getArg16_inline();
-        func_800C1614(a, b, evt_getArg16_inline());
+        fldbg_setOverlayPos(a, b, evt_getArg16_inline());
         return 0;
     case 0x92:
         a = evt_getArg8_inline();
@@ -1747,102 +1747,102 @@ s32 evt_execInstr(void) {
         {
             s32 g = evt_getArg8_inline();
             e = evt_getArg8_inline();
-            func_800C02D0(a, b, c, f, g, e, evt_getArg8_inline());
+            fldbg_addFollowOverlay(a, b, c, f, g, e, evt_getArg8_inline());
         }
         return 0;
     case 0xE6:
         a = evt_getArg8_inline();
-        func_800C14DC(a, evt_getArg8_inline());
+        fldbg_setOverlayFlag1(a, evt_getArg8_inline());
         return 0;
     case 0x5F:
         a = evt_getArg8_inline();
-        func_800C16B0(a, evt_getArg8_inline());
+        fldbg_setAnimFrame(a, evt_getArg8_inline());
         return 0;
     case 0x60:
         a = evt_getArg8_inline();
-        func_800C17AC(a, evt_getArg8_inline());
+        fldbg_playAnim(a, evt_getArg8_inline());
         return 0;
     case 0x61:
         a = evt_getArg8_inline();
-        func_800C17F0(a, evt_getArg16_inline());
+        fldbg_setAnimSpeed(a, evt_getArg16_inline());
         return 0;
     case 0x63:
         a = evt_getArg8_inline();
         b = evt_getArg8_inline();
-        func_800C1868(a, b, evt_getArg8_inline());
+        fldbg_setAnimStepDelay(a, b, evt_getArg8_inline());
         return 0;
     case 0x64:
         a = evt_getArg8_inline();
-        func_800C18A0(a, evt_getArg8_inline());
+        fldbg_setAnimFlags(a, evt_getArg8_inline());
         return 0;
     case 0x65:
         a = evt_getArg8_inline();
         b = evt_getArg8_inline();
-        func_800C18D4(a, b, evt_getArg8_inline());
+        fldbg_playAnimRange(a, b, evt_getArg8_inline());
         return 0;
     case 0xCA:
         a = evt_getArg8_inline();
-        func_800C196C(a, evt_getArg8_inline());
+        fldbg_resetAnim(a, evt_getArg8_inline());
         return 0;
     case 0xE7:
         a = evt_getArg8_inline();
-        func_800C16F4(a, evt_getArg8_inline());
+        fldbg_showAnimFrame(a, evt_getArg8_inline());
         return 0;
     case 0x9A:
         a = evt_getArg16_inline();
-        func_800C778C(a, evt_getArg8_inline());
+        bgi_setTriangleActive(a, evt_getArg8_inline());
         return 0;
     case 0xCB:
         a = evt_getArg8_inline();
-        func_800C47E4(a, evt_getArg8_inline());
+        bgi_setFloorActive(a, evt_getArg8_inline());
         return 0;
     case 0xA8:
         a = evt_getArg8_inline();
         if (po->unk34 != 0xFFFF) {
-            func_800C3E18(po->unk3B, a);
+            bgi_setActorActive(po->unk3B, a);
         }
         return 0;
     case 0x27:
         a = evt_getArg8_inline();
-        func_800C7464(a);
+        bgi_setMaskFilter(a);
         return 0;
     case 0x1E:
         a = evt_getArg8_inline();
         b = evt_getArg16_inline();
         c = evt_getArg16_inline();
         d = evt_getArg16_inline();
-        func_800C1A8C(a, b, c, d, evt_getArg16_inline());
+        fldbg_setScrollLimits(a, b, c, d, evt_getArg16_inline());
         return 0;
     case 0xC3:
         a = evt_getArg8_inline();
-        func_800C1668(a, evt_getArg8_inline());
+        fldbg_setOverlayViewport(a, evt_getArg8_inline());
         return 0;
     case 0xC9:
         a = evt_getArg8_inline();
         b = evt_getArg16_inline();
         c = evt_getArg16_inline();
         d = evt_getArg16_inline();
-        func_800C119C(a, b, c, d, evt_getArg16_inline());
+        fldbg_setViewport(a, b, c, d, evt_getArg16_inline());
         return 0;
     case 0xED:
         a = evt_getArg8_inline();
         b = evt_getArg16_inline();
-        func_800C11C8(a, b, evt_getArg16_inline());
+        fldbg_setViewportScrollRate(a, b, evt_getArg16_inline());
         return 0;
     case 0xE4:
         a = evt_getArg8_inline();
         b = evt_getArg8_inline();
         c = evt_getArg16_inline();
         d = evt_getArg16_inline();
-        func_800C152C(a, b, c, d, evt_getArg8_inline());
+        fldbg_setOverlaySkewLoop(a, b, c, d, evt_getArg8_inline());
         return 0;
     case 0x7E:
         a = evt_getArg8_inline();
-        func_800C0BCC(a);
+        fldbg_setCamera(a);
         return 0;
     case 0xEA: {
         s16 x, z;
-        func_800C0E6C(&x, &z);
+        fldbg_getScroll(&x, &z);
         D_8007AE2C = x;
         D_8007AE30 = z;
         return 0;
@@ -1851,7 +1851,7 @@ s32 evt_execInstr(void) {
         obj = evt_getObjectArg();
         a = evt_getArg8_inline();
         b = evt_getArg8_inline();
-        if (func_800B2CC0(obj->unk3B, a, b, evt_getArg8_inline())) {
+        if (fld_setObjectColor(obj->unk3B, a, b, evt_getArg8_inline())) {
             g_evtCurObj->unk0 = g_evtInstrStart;
             D_8007B6F8 = 1;
             return 1;
@@ -1861,7 +1861,7 @@ s32 evt_execInstr(void) {
         a = evt_getArg8_inline();
         b = evt_getArg16_inline();
         c = evt_getArg16_inline();
-        func_800ABA98(po->unk3B, a, b, c, evt_getArg16_inline());
+        fld_modelCommand(po->unk3B, a, b, c, evt_getArg16_inline());
         return 0;
     case 0x3A:
         o = evt_getObjectArg();
@@ -1929,7 +1929,7 @@ s32 evt_execInstr(void) {
         u8 vol, pan;
         a = evt_getArg16_inline();
         b = evt_getArg16_inline();
-        func_800B1A20(a, b, evt_getArg16_inline(), &vol, &pan);
+        fld_getSoundPanVolume(a, b, evt_getArg16_inline(), &vol, &pan);
         D_8007AE38 = vol;
         D_8007AE3C = (pan * evt_getArg8_inline()) >> 7;
         if (D_8007AE3C >= 0x80) {
@@ -1940,7 +1940,7 @@ s32 evt_execInstr(void) {
     case 0x8A: {
         u8 vol, pan;
         po = evt_getObjectArg();
-        func_800B1A20(po->pos.vx, po->pos.vy, po->pos.vz, &vol, &pan);
+        fld_getSoundPanVolume(po->pos.vx, po->pos.vy, po->pos.vz, &vol, &pan);
         D_8007AE38 = vol;
         D_8007AE3C = (pan * evt_getArg8_inline()) >> 7;
         if (D_8007AE3C >= 0x80) {
@@ -1953,14 +1953,14 @@ s32 evt_execInstr(void) {
         b = evt_getArg8_inline();
         c = evt_getArg16_inline();
         d = evt_getArg16_inline();
-        func_800AFAC0(a, b, c, d, evt_getArg16_inline());
+        fld_spriteCommand(a, b, c, d, evt_getArg16_inline());
         return 0;
     case 0xDA:
         a = evt_getArg8_inline();
         b = evt_getArg8_inline();
         c = evt_getArg8_inline();
         d = evt_getArg16_inline();
-        func_800AFAC0(a, b, c, d, evt_getArg16_inline());
+        fld_spriteCommand(a, b, c, d, evt_getArg16_inline());
         return 0;
     case 0x75:
         a = evt_getArg8_inline();
@@ -1969,7 +1969,7 @@ s32 evt_execInstr(void) {
         return 1;
     case 0xAC:
         a = evt_getArg16_inline();
-        func_800B5004((a >> 14) & 3, a & 0x3FFF);
+        fld_requestDiscChange((a >> 14) & 3, a & 0x3FFF);
         return 1;
     case 0xAA:
         g_padPortMask[0] &= ~0x40000;
@@ -2184,7 +2184,7 @@ s32 evt_execInstr(void) {
         return 0;
     case 0xB7:
         if (g_evtMode == 3) {
-            VECTOR *v = func_800AE750();
+            VECTOR *v = wm_getCameraEye();
             actor->pos.vx = v->vx;
             actor->pos.vy = v->vy;
             actor->pos.vz = v->vz;
@@ -2193,7 +2193,7 @@ s32 evt_execInstr(void) {
         return 0;
     case 0xB8:
         if (g_evtMode == 3) {
-            VECTOR *v = func_800AE744();
+            VECTOR *v = wm_getCameraTarget();
             actor->pos.vx = v->vx;
             actor->pos.vy = v->vy;
             actor->pos.vz = v->vz;
@@ -2245,78 +2245,78 @@ s32 evt_execInstr(void) {
         switch (op) {
         case 0xFF00:
             a = evt_getArg8_inline();
-            func_800C7F34(a, evt_getArg8_inline());
+            bgi_startFloorMove(a, evt_getArg8_inline());
             return 0;
         case 0xFF01:
             a = evt_getArg8_inline();
-            func_800C7F7C(a, evt_getArg8_inline());
+            bgi_stopFloorMove(a, evt_getArg8_inline());
             return 0;
         case 0xFF02:
             a = evt_getArg8_inline();
-            func_800C7FBC(a, evt_getArg8_inline());
+            bgi_setFloorMovePlaying(a, evt_getArg8_inline());
             return 0;
         case 0xFF03:
             a = evt_getArg8_inline();
-            func_800C8010(a, evt_getArg8_inline());
+            bgi_setFloorMoveMode(a, evt_getArg8_inline());
             return 0;
         case 0xFF04:
             a = evt_getArg8_inline();
-            func_800C8044(a, evt_getArg8_inline());
+            bgi_setFloorMoveFloor(a, evt_getArg8_inline());
             return 0;
         case 0xFF05:
             a = evt_getArg8_inline();
-            func_800C8068(a, evt_getArg16_inline());
+            bgi_setFloorMoveSpeed(a, evt_getArg16_inline());
             return 0;
         case 0xFF06:
             a = evt_getArg8_inline();
-            func_800C808C(a, evt_getArg8_inline());
+            bgi_setFloorMoveCurve(a, evt_getArg8_inline());
             return 0;
         case 0xFF07:
             a = evt_getArg8_inline();
             b = evt_getArg16_inline();
-            func_800C80B0(a, b, evt_getArg16_inline());
+            bgi_setFloorMoveRange(a, b, evt_getArg16_inline());
             return 0;
         case 0xFF08:
             a = evt_getArg8_inline();
-            func_800C80E4(a, evt_getArg8_inline());
+            bgi_setFloorMoveAxis(a, evt_getArg8_inline());
             return 0;
         case 0xFF09:
             a = evt_getArg8_inline();
-            func_800C7AF8(a, evt_getArg8_inline());
+            bgi_setAnimFrame(a, evt_getArg8_inline());
             return 0;
         case 0xFF0A:
             a = evt_getArg8_inline();
-            func_800C6408(a, evt_getArg8_inline());
+            bgi_showAnimFrame(a, evt_getArg8_inline());
             return 0;
         case 0xFF0B:
             a = evt_getArg8_inline();
-            func_800C7B68(a, evt_getArg8_inline());
+            bgi_setAnimPlaying(a, evt_getArg8_inline());
             return 0;
         case 0xFF0C:
             a = evt_getArg8_inline();
-            func_800C7CDC(a, evt_getArg8_inline());
+            bgi_setAnimMode(a, evt_getArg8_inline());
             return 0;
         case 0xFF0D:
             a = evt_getArg8_inline();
-            func_800C7BC4(a, evt_getArg16_inline());
+            bgi_setAnimRate(a, evt_getArg16_inline());
             return 0;
         case 0xFF0E:
             a = evt_getArg8_inline();
-            func_800C7C04(a, evt_getArg8_inline());
+            bgi_setAnimFrameValues(a, evt_getArg8_inline());
             return 0;
         case 0xFF0F:
             a = evt_getArg8_inline();
             b = evt_getArg8_inline();
-            func_800C7C70(a, b, evt_getArg8_inline());
+            bgi_setAnimFrameValue(a, b, evt_getArg8_inline());
             return 0;
         case 0xFF10:
             a = evt_getArg8_inline();
             b = evt_getArg8_inline();
-            func_800C7D30(a, b, evt_getArg8_inline());
+            bgi_playAnimRange(a, b, evt_getArg8_inline());
             return 0;
         case 0xFF11:
             a = evt_getArg8_inline();
-            func_800C7DF0(a, evt_getArg8_inline());
+            bgi_resetAnim(a, evt_getArg8_inline());
             return 0;
         }
         return 0;
@@ -2905,7 +2905,7 @@ s32 evt_updateObjects(void) {
                         o->unk40.vz = o->pos.vz;
                         evt_movePlayer(o);
                     } else if (g_evtMode == 3) {
-                        D_8007AEAC = D_800CCE54;
+                        D_8007AEAC = g_worldPlayerStepped;
                         evt_checkPlayerAction(o);
                         t1 = evt_findNearestObject(o, 0, &dist);
                         if (t1 != NULL && dist <= 0 &&
@@ -2949,7 +2949,7 @@ s32 evt_updateObjects(void) {
     D_8007AEBC = NULL;
     D_8007AEB8 = NULL;
     if (g_evtMode == 1) {
-        func_800C1B5C(&b);
+        fldbg_getCamera(&b);
         D_8007AEC8 = b != D_8007AEC0;
         D_8007AEC0 = b;
     }
@@ -2969,7 +2969,7 @@ s32 evt_updateObjects(void) {
                     f = func_8002170C(p);
                     if ((p->unk7 != g_evtState->playerUid || D_8007AEB0 >= 0) && (f & 1) &&
                         (t = evt_findNearestObject(p, 0, NULL)) != NULL) {
-                        func_800C7720(p->unk3B);
+                        bgi_revertActor(p->unk3B);
                         if (t->unkF & 0x10) {
                             D_8007AEB0 = 0;
                         }
@@ -2985,13 +2985,13 @@ s32 evt_updateObjects(void) {
                     }
                 } else if (g_evtMode == 3) {
                     if (p->unk50 & 0x40) {
-                        VECTOR *v = func_800AE750();
+                        VECTOR *v = wm_getCameraEye();
                         v->vx = p->pos.vx;
                         v->vy = p->pos.vy;
                         D_8007AEB8 = p;
                         v->vz = p->pos.vz;
                     } else if (p->unk50 & 0x80) {
-                        VECTOR *v = func_800AE744();
+                        VECTOR *v = wm_getCameraTarget();
                         v->vx = p->pos.vx;
                         v->vy = p->pos.vy;
                         D_8007AEBC = p;
@@ -3074,8 +3074,8 @@ s32 evt_updateObjects(void) {
             for (m = g_evtState->unk16D8; m != NULL; m = m->unk0) {
                 p = m->unk4;
                 if (p->unk5 == 4 && p->unk34 != 0xFFFF) {
-                    q = func_800C748C(p->unk3B);
-                    func_800C75B4(p->unk3B, &h);
+                    q = bgi_getActor(p->unk3B);
+                    bgi_getActorRadius(p->unk3B, &h);
                     p->unk26 = h / 4;
                     if (q != NULL) {
                         p->pos.vx = p->unk40.vx;
@@ -3422,7 +3422,7 @@ void evt_init(u8 *data) {
                 o->unk0 += d;
             }
             if (o->unk5 == 4 && g_evtMode == 1) {
-                func_800AA3F4(o->unk6);
+                fld_queueModelBundle(o->unk6);
             }
         }
         evt_callObjectFunc(evt_getObject_inline(0), 0, 10, 0);
@@ -3454,8 +3454,8 @@ void evt_createModels(void) {
             if (o->unk5 == 4 && o->unk34 != 0xFFFF) {
                 o->unk3B = evt_createModel(o);
                 if (g_evtMode == 1) {
-                    q = (s16 *)func_800C748C(o->unk3B);
-                    func_800C7570(o->unk3B, o->unk26 * 4);
+                    q = (s16 *)bgi_getActor(o->unk3B);
+                    bgi_setActorRadius(o->unk3B, o->unk26 * 4);
                     if (q != NULL) {
                         q[4] = q[2] = o->unk2E;
                         q[5] = q[3] = o->unk28;
@@ -3582,7 +3582,7 @@ void evt_setDrawPosAtObject(Unk8004AB64 *o, s32 dx, s32 dy) {
     v.vy = o->pos.vy + ((o->unk32 * (s8)o->unk2F) >> 6) - 50;
     v.vz = o->pos.vz;
     if (g_evtMode == 1) {
-        func_800C0F08();
+        fldbg_applyGeomOffset();
     }
     gd = g_gameState->unk1C;
     gte_SetRotMatrix(&gd->unk18);
@@ -3591,7 +3591,7 @@ void evt_setDrawPosAtObject(Unk8004AB64 *o, s32 dx, s32 dy) {
     gte_rtps();
     gte_stsxy((s32 *)&sxy);
     if (g_evtMode == 1) {
-        func_800C0FB0();
+        fldbg_resetGeomOffset();
     }
     p[0] = *(s16 *)&sxy;
     p[1] = sxy >> 16;
@@ -3914,7 +3914,7 @@ void evt_projectToScreen(SVECTOR *v, s32 *x, s32 *y) {
 
     if (x != NULL && y != NULL) {
         if (g_evtMode == 1) {
-            func_800C0F08();
+            fldbg_applyGeomOffset();
         }
         gd = g_gameState->unk1C;
         gte_SetRotMatrix(&gd->unk18);
@@ -3923,7 +3923,7 @@ void evt_projectToScreen(SVECTOR *v, s32 *x, s32 *y) {
         gte_rtps();
         gte_stsxy(&s);
         if (g_evtMode == 1) {
-            func_800C0FB0();
+            fldbg_resetGeomOffset();
         }
         *x = s.vx;
         *y = s.vy;

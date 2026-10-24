@@ -549,7 +549,7 @@ s32 func_80037ACC(s32 op) {
         }
         break;
     case 0x65:
-        func_800C7EE8(evt_popResult(), &r);
+        bgi_getAnimFrame(evt_popResult(), &r);
         break;
     case 0x52:
         gd = g_gameState->unk1C;
@@ -571,7 +571,7 @@ s32 func_80037ACC(s32 op) {
         px = -1;
         o = (Unk8004AB64 *)evt_popResult();
         if (o != NULL && o->unk5 == 4) {
-            func_800C76E8(o->unk3B, (u16 *)&px, (u16 *)&py);
+            bgi_getActorTriangle(o->unk3B, (u16 *)&px, (u16 *)&py);
         }
         r = px;
         break;
@@ -579,7 +579,7 @@ s32 func_80037ACC(s32 op) {
         py = -1;
         o = (Unk8004AB64 *)evt_popResult();
         if (o != NULL && o->unk5 == 4) {
-            func_800C76E8(o->unk3B, (u16 *)&px, (u16 *)&py);
+            bgi_getActorTriangle(o->unk3B, (u16 *)&px, (u16 *)&py);
         }
         r = py;
         break;

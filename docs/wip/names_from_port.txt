@@ -4124,3 +4124,4 @@ func_800540E8 swirl_drawFlash  # [code] four semi-transparent POLY_G3 fans from 
 func_80054294 swirl_buildMesh  # [code] 9x9 grid around (x, y) rotated and scaled by the transition's angle/zoom (WarpVert mesh)
 func_80054650 swirl_drawMesh  # [code] POLY_FT4 per mesh cell texturing the current frame buffer
 D_8007BD28 g_swirlFrame  # [code] frame counter of swirl_update (0..0x78)
+# xrefs: main references to overlay functions/data now use the overlays' names (config/xrefs.us.txt; build/xrefs_apply.py), e.g. fld_entry, wm_entry, opening_main, ending_main, tm_main, fldbg_*, bgi_*, fld_soundCommand, menuMainField_setCursor (ovl_0a 0x800C9510), menuMainWorld_setCursor (ovl_0c 0x800CC820), g_worldPlayerStepped

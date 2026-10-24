@@ -15,11 +15,11 @@ void game_main(void) {
             switch (g_gameState->mode) {
             case 0:
                 game_loadModeOverlay(0);
-                func_800A7088();
+                opening_main();
                 break;
             case 1:
                 game_loadModeOverlay(1);
-                func_800A7A48();
+                fld_entry();
                 break;
             case 2:
                 game_loadModeOverlay(2);
@@ -31,11 +31,11 @@ void game_main(void) {
                 break;
             case 3:
                 game_loadModeOverlay(3);
-                func_800A8860();
+                wm_entry();
                 break;
             case 9:
                 game_loadModeOverlay(9);
-                func_800A752C();
+                tm_main();
                 break;
             case 7:
                 game_loadModeOverlay(7);
@@ -43,7 +43,7 @@ void game_main(void) {
                 break;
             case 4:
                 game_loadModeOverlay(4);
-                func_800A713C();
+                ending_main();
                 break;
             }
         } while (!(g_gameState->unk0 & 1));

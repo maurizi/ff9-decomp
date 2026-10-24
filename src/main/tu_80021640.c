@@ -36,7 +36,7 @@ s32 func_8002170C(Unk8004AB64 *p) {
     ret0:
         return 0;
     }
-    return func_800C44F4(p->unk3B);
+    return bgi_updateActor(p->unk3B);
 }
 
 void mbg_resetState(void) {

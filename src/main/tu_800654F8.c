@@ -67,7 +67,7 @@ u8 item_useOnMember(Character *a, Character *t, MainCalcCmd *cmd, u8 kind, s32 e
     case 62:
     case 73:
         if (((cmd->unk0 >> 8) & 0x1FF) == 0x121) {
-            return func_801F1A7C();
+            return menuItem_callChocobo();
         }
         fieldCalc_cureStatus(&c);
         break;

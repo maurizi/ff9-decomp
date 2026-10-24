@@ -230,9 +230,9 @@ void menuScreen_onSwitchFaded(void) {
     g_menuScreen.unk2 = D_80077E28.unk7;
     D_80077E28.unk1C[g_menuScreen.unk2].unk0();
     if (g_gameState->mode != 3) {
-        func_800C9510(g_menuScreen.unk2 - 1);
+        menuMainField_setCursor(g_menuScreen.unk2 - 1);
     } else {
-        func_800CC820(g_menuScreen.unk2 - 1);
+        menuMainWorld_setCursor(g_menuScreen.unk2 - 1);
     }
     fade_in(12);
     fade_setOnDone(NULL);

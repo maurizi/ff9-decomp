@@ -1831,12 +1831,12 @@ s32 func_80050AAC(void) {
     }
     n = D_8007BC20.unk4;
     if (n != 0) {
-        func_800C0F08();
+        fldbg_applyGeomOffset();
         gd = g_gameState->unk1C;
         gte_SetRotMatrix(&gd->unk18);
         gte_SetTransMatrix(&gd->unk18);
         r = (u8 *)func_80053498(n, gd->unk8, gd->unk10[gd->unk8] + 3, (s32)r);
-        func_800C0FB0();
+        fldbg_resetGeomOffset();
     }
     return (s32)r;
 }
