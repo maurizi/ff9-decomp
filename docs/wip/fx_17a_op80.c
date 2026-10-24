@@ -1,4 +1,4 @@
-/* Draft of fx_17a fx_17a_op80. Status: 104 lines, 3 ignoring registers (build/w/nd.py): the particle spawn computes (rand & 0x1FF) + 0x180 before li a0,512 (original: li a0 first, +0x180 in the delay slot), then register allocation. Levers so far: loop increments in the for header in the original order (a and n, i and f4, k and j), copy-then-zero component order, t >> 2 inline as call arguments, a separate tint temp, (s16)(vx - 0x100) against reassociation, function-scope a for the 0x19-frame fade. */
+/* Draft of fx_17a fx_17a_op80. Status: 105 lines, 0 ignoring registers (build/w/nd.py). The particle spawn needs fresh block-local e (angle) and d (radius): set once, so sched1 boosts d's addiu next to the call, and both are local-alloc'd (s1/s0 in the original). Remaining: global register allocation in cases 3-5. Earlier levers: loop increments in the for header in the original order (a and n, i and f4, k and j), copy-then-zero component order, t >> 2 inline as call arguments, a separate tint temp, (s16)(vx - 0x100) against reassociation, function-scope a for the 0x19-frame fade. */
 #include "fxmod/fx_17a.h"
 
 typedef struct {
@@ -410,13 +410,15 @@ s32 fx_17a_op80(s32 mode, Fx17aWork80 *work, Unk800F78A4 *env, Unk80100C78Entry 
                 for (i = 0; i < 3; i++) {
                     q = ex->btlfx_poolSpawn((s16 *)entry->unk10);
                     if (q != NULL) {
+                        s32 d;
+                        s32 e;
                         q->unk0 = 4;
                         BTLFX_COPY_SVEC(&q->unkC, &work->unkC);
-                        a = ex->btlfx_rand();
-                        c = (ex->btlfx_rand() & 0x1FF) + 0x180;
+                        e = ex->btlfx_rand();
+                        d = (ex->btlfx_rand() & 0x1FF) + 0x180;
                         q->unkC.vx = (s16)(q->unkC.vx - 0x100) + ex->btlfx_randCentered(0x200);
-                        q->unkC.vy += (ex->math_cos(a) * c) >> 12;
-                        q->unkC.vz += (ex->math_sin(a) * c) >> 12;
+                        q->unkC.vy += (ex->math_cos(e) * d) >> 12;
+                        q->unkC.vz += (ex->math_sin(e) * d) >> 12;
                         q->unkA = ex->btlfx_rand() % 70;
                         q->unk4 = (ex->btlfx_rand() & 0xFFF) + 0x1000;
                     }
