@@ -19,6 +19,11 @@ Register allocation, scheduling and stack layout don't show up; a real differenc
 a missing store, a swapped argument) usually does within a few trials. A clean result is evidence, not
 proof: paths the random states never reach aren't tested (the tool prints how much of the original ran).
 
+Environment knobs: EQUIV_STEPS (step limit; the draft gets 4x), EQUIV_MOD=lo-hi:mod[,...] (random words in that
+address range are taken modulo mod), EQUIV_SAVE_AREA=addr (preset s0-s7 to the unwritten words there, for routines
+that save registers in the scratchpad), EQUIV_GTE=1 (on a mismatch, show the first GTE command whose registers
+differ), EQUIV_DUMP=1 (list differing memory words).
+
 Known false positive: an index that random memory makes far out of range into a local array (a stack
 table copied from rodata, say) reads different garbage in each version, because their frames differ.
 Check a reported difference's addresses before calling the draft wrong.
@@ -38,7 +43,7 @@ import ccprobe  # noqa: E402
 DRAFT_BASE = 0x80600000  # outside RAM, but in the same 256 MB jal region
 STACK_TOP = 0x801FFF00
 RA_SENTINEL = 0x80FFFFF0
-MAX_STEPS = 400000
+MAX_STEPS = int(os.environ.get("EQUIV_STEPS", "400000"))
 MASK = 0xFFFFFFFF
 
 
@@ -121,6 +126,11 @@ class Mem:
                 for lane in range(4):
                     b = (h >> (8 + 10 * lane)) & 0x3FF
                     v |= (0 if b % 3 == 0 else (b >> 2) % 8 if b % 3 == 1 else b >> 2) << (8 * lane)
+            for spec in filter(None, os.environ.get("EQUIV_MOD", "").split(",")):
+                rng, mod = spec.split(":")
+                lo_, hi_ = (int(x, 16) for x in rng.split("-"))
+                if lo_ <= a < hi_:
+                    v = (h >> 13) % int(mod, 16)
             self.cache[a] = v
         return v
 
@@ -171,6 +181,9 @@ class Cpu:
         for i in range(1, 32):
             self.r[i] = 0xD0000000 + i * 0x100
         self.r[4:8] = args
+        if os.environ.get("EQUIV_SAVE_AREA"):  # s0-s7 = what the scratchpad save area holds unwritten
+            for i in range(8):
+                self.r[16 + i] = mem.base_word(int(os.environ["EQUIV_SAVE_AREA"], 16) + 4 * i)
         self.r[29] = STACK_TOP
         self.r[31] = RA_SENTINEL
         self.r[30] = 0x5E5E0030
@@ -179,11 +192,13 @@ class Cpu:
         for i in range(64):
             self.g[i] = int.from_bytes(hashlib.blake2b(struct.pack("<II", seed, 0x6E000 + i), digest_size=4).digest(), "little")
         self.calls = []
+        self.gtelog = []
         self.events = []
         self.path = []
         self.seen = set()
 
     def gte_cmd(self, word):
+        self.gtelog.append((word, tuple(self.g)))
         h = hashlib.shake_256(struct.pack("<I64I", word, *self.g)).digest(128)
         for i, reg in enumerate(sorted(GTE_OUT)):
             self.g[reg] = struct.unpack_from("<I", h, i * 4)[0]
@@ -219,7 +234,7 @@ class Cpu:
         delay = None
         while True:
             steps += 1
-            if steps > MAX_STEPS:
+            if steps > MAX_STEPS * (1 if self.lo < 0x80600000 else 4):
                 self.events.append("step limit")
                 return
             if pc == RA_SENTINEL:
@@ -549,7 +564,19 @@ def main():
         if diffs:
             bad += 1
             if bad <= (5 if a.v else 1):
-                print(f"trial {t}: " + "; ".join(diffs))
+                print(f"trial {t}: args {[hex(x) for x in args]} " + "; ".join(diffs))
+                if os.environ.get("EQUIV_GTE"):
+                    lo_, ld_ = co.gtelog, cd.gtelog
+                    for i in range(min(len(lo_), len(ld_))):
+                        if lo_[i] != ld_[i]:
+                            print(f"    gte cmd #{i}: orig {lo_[i][0]:08X} draft {ld_[i][0]:08X}; regs differ:",
+                                  " ".join(f"{j}:{lo_[i][1][j]:08X}/{ld_[i][1][j]:08X}" for j in range(64) if lo_[i][1][j] != ld_[i][1][j]))
+                            break
+                    else:
+                        print(f"    gte logs agree for {min(len(lo_), len(ld_))} cmds (orig {len(lo_)}, draft {len(ld_)})")
+                if os.environ.get("EQUIV_DUMP"):
+                    ks = sorted(k for k in set(wo) | set(wd) if wo.get(k) != wd.get(k))
+                    print("   ", " ".join(f"{k:08X}:{wo.get(k)}/{wd.get(k)}" for k in ks[:40]))
     print(f"{func}: {a.trials - skipped - bad}/{a.trials - skipped} trials agree"
           + (f" ({skipped} skipped: the original faults on an unaligned address or hits the step limit)" if skipped else "")
           + f", {len(paths)} distinct paths, "
