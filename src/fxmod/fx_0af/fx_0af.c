@@ -11,7 +11,7 @@ s32 fx_0af_op80(s32 mode, Fx0afWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
         work->unk0 = 0;
         D_801E798C = env;
         ex->btlfx_getUnitBodyPos(0, 0, (s16 *)&work->unk10);
-        ex->func_800DC858(0x10, 0, (u16 *)&work->unk8);
+        ex->btlfx_getUnitArgBonePos(0x10, 0, (u16 *)&work->unk8);
         ex->btlfx_aimAngles((s16 *)&work->unk8, (s16 *)&work->unk10, (s16 *)&work->unk18);
         work->unk4 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->unk8, 5), (s32)&work->unk8);
         if (work->unk4 != NULL) {

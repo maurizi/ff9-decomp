@@ -36,7 +36,7 @@ s32 fx_039_op81(s32 mode, Fx039Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
             return 1;
         }
         if (ex->btlfx_isEnemyUnit(0x10)) {
-            ex->func_800DC858(0x10, 0, (u16 *)&work->unk8);
+            ex->btlfx_getUnitArgBonePos(0x10, 0, (u16 *)&work->unk8);
         } else {
             ex->btlfx_getUnitBodyPos(0x10, 0, (s16 *)&work->unk8);
         }

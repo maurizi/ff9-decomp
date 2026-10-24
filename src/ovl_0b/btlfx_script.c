@@ -259,7 +259,7 @@ void btlfx_runScript(void) {
                     d->unk10.b[a] = b;
                     break;
                 case 3:
-                    func_800DA5C4();
+                    btlfx_loadNextBlock();
                     break;
                 case 4:
                     if (g_btlfxEnv->unk4->unkE < a) {
@@ -303,13 +303,13 @@ void btlfx_runScript(void) {
                     }
                     break;
                 case 9:
-                    if (func_800DA6B4(a, b)) {
+                    if (btlfx_waitSoundBank(a, b)) {
                         cont = 0;
                         btlfx_retryOp();
                     }
                     break;
                 case 10:
-                    if (func_800DA634(0)) {
+                    if (btlfx_loadSoundBank(0)) {
                         cont = 0;
                         btlfx_retryOp();
                     }

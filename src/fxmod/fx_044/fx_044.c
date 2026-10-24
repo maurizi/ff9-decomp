@@ -9,7 +9,7 @@ s32 fx_044_op80(s32 mode, Fx044Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
     } else if (mode == 1) {
         D_801E7A64 = env;
         ex->btlfx_getUnitBodyPos(0, 0, (s16 *)&work->unk8);
-        ex->func_800DC858(0x10, 0, (u16 *)&work->unk10);
+        ex->btlfx_getUnitArgBonePos(0x10, 0, (u16 *)&work->unk10);
         work->unk0 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->unk8, 1), (s32)&work->unk10);
         work->unk4 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->unk8, 2), (s32)&work->unk10);
         ex->btlfx_aimAngles((s16 *)&work->unk10, (s16 *)&work->unk8, (s16 *)&work->unk18);

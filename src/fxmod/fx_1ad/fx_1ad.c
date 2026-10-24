@@ -11,8 +11,8 @@ s32 func_801E7704(Pool30Entry *e, Pool6CEntry *owner, SVECTOR *pos, s32 arg3, s3
     SVECTOR b;
     SVECTOR c;
 
-    ex->func_800DC818(0x10, D_801E7CD8[row][i + 1], (u16 *)&a);
-    ex->func_800DC818(0x10, D_801E7CD8[row][i + 2], (u16 *)&b);
+    ex->btlfx_getUnitBonePos(0x10, D_801E7CD8[row][i + 1], (u16 *)&a);
+    ex->btlfx_getUnitBonePos(0x10, D_801E7CD8[row][i + 2], (u16 *)&b);
     ex->btlfx_lerpVec((s16 *)&a, (s16 *)&b, frac, (s16 *)&c);
     pos->vx = c.vx;
     pos->vy = c.vy;
@@ -50,7 +50,7 @@ s32 fx_1ad_op80(s32 mode, Fx1adWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
         work->unk24 = (s16)ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->unk8, 2), 1);
     } else {
         frame = entry->unk0;
-        ex->func_800DC818(0x10, 0xF, (u16 *)&work->unk8);
+        ex->btlfx_getUnitBonePos(0x10, 0xF, (u16 *)&work->unk8);
         pos.vx = work->unk8.vx;
         pos.vy = work->unk8.vy;
         pos.vz = work->unk8.vz;
@@ -85,7 +85,7 @@ s32 fx_1ad_op80(s32 mode, Fx1adWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
                 c = ex->math_cos((frame * 0x52 + 0x200) & 0x3FE);
                 scale.vz = 0x1800;
                 scale.vx = scale.vy = c / 3 + 0x1800;
-                ex->func_800DC8AC(0x10, 0x10, (BtlBone *)&m);
+                ex->btlfx_getUnitBoneMatrix(0x10, 0x10, (BtlBone *)&m);
                 ex->btlfx_matrixAngles(&m, (s16 *)&rot);
                 ex->Hi_DrawEffModel(&rot, &pos, (s32)&scale, work->unk24);
                 ex->Hi_ModifyEffModelRGB(work->unk24, (ex->math_sin(t >> 1) >> 5) - 0x80,

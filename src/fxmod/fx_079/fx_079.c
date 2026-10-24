@@ -87,7 +87,7 @@ s32 fx_079_op80(s32 mode, Fx079Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
         work->unk94.vz = D_801E8984.vz = D_801E8964.vz;
     } else {
         frame = entry->unk0;
-        ex->func_800DC818(0x10, 0x17, (u16 *)&D_801E895C);
+        ex->btlfx_getUnitBonePos(0x10, 0x17, (u16 *)&D_801E895C);
         switch (frame) {
         case 0:
             work->unk0[9] = 1;

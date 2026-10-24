@@ -5,7 +5,7 @@ void func_801E7744(u16 model, s32 idx, s32 t, u16 *verts, Fx096Vec3 *centers) {
     s32 i;
     s32 j;
 
-    n = BTLFX_EXPORTS(D_801E831C)->func_800DD0DC(model);
+    n = BTLFX_EXPORTS(D_801E831C)->btlfx_getEffModelMeshCount(model);
     for (j = 0; j < n; j++) {
         for (i = 0; i < 8; i++) {
             func_801E7840(i, D_801EB2CC[idx][i], t, (SVECTOR *)D_801EB28C[idx][i], centers);
@@ -76,7 +76,7 @@ void func_801E7A74(u16 model, s32 idx, u16 *verts, Fx096Vec3 *centers) {
     s32 j;
 
     ex->Hi_SplitMdlVertex(model, -1, (s32)verts);
-    n = ex->func_800DD0DC(model);
+    n = ex->btlfx_getEffModelMeshCount(model);
     for (j = 0; j < n; j++) {
         for (i = 0; i < 8; i++) {
             c = ex->Hi_GetMdlVertexPtr(model, j, (s32)verts, &D_801EB28C[idx][i], i);

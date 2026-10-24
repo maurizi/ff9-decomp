@@ -28,7 +28,7 @@ s32 fx_11e_op80(s32 mode, Fx11eWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
             ex->btlfx_initEffModels(D_801E7FE0, 8);
             D_801E7F84 = mode;
         }
-        ex->func_800DC858(0x10, 0, (u16 *)&work->unk50);
+        ex->btlfx_getUnitArgBonePos(0x10, 0, (u16 *)&work->unk50);
         ex->btlfx_getUnitBodyPos(work->unk58, 0, &work->unk48.vx);
         work->unk4.vx = 0;
         work->unk4.vy = 0;

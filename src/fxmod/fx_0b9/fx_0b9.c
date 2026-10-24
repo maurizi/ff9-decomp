@@ -23,7 +23,7 @@ s32 fx_0b9_op80(s32 mode, Fx0b9Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             }
             break;
         case 0x28:
-            ex->func_800DC858(0x10, 0, (u16 *)&work->unk10);
+            ex->btlfx_getUnitArgBonePos(0x10, 0, (u16 *)&work->unk10);
             D_801E7B9C.vx = work->unk10.vx;
             D_801E7B9C.vy = work->unk10.vy;
             D_801E7B9C.vz = work->unk10.vz;
@@ -37,7 +37,7 @@ s32 fx_0b9_op80(s32 mode, Fx0b9Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             break;
         }
         if (frame >= 0xA) {
-            ex->func_800DC858(0x10, 0, (u16 *)&work->unk18);
+            ex->btlfx_getUnitArgBonePos(0x10, 0, (u16 *)&work->unk18);
             if (work->unk0 != NULL) {
                 if (work->unk0->unk30 == -1) {
                     work->unk0 = NULL;

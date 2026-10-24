@@ -14,7 +14,7 @@ s32 fx_03b_op80(s32 mode, Fx03bWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
         work->unk18.vz = work->unk10.vz;
         work->unk18.vy -= 0xB4;
         ex->btlfx_getUnitBodyPos(0, 1, (s16 *)&work->unk20);
-        ex->func_800DC858(0x10, 0, (u16 *)&work->unk28);
+        ex->btlfx_getUnitArgBonePos(0x10, 0, (u16 *)&work->unk28);
         work->unk0 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->unk8, 1), (s32)&work->unk28);
         if (work->unk0 != NULL) {
             work->unk0->unk22 = ex->func_800E7CC4(0, 0x80);

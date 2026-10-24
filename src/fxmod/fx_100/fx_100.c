@@ -14,7 +14,7 @@ s32 fx_100_op80(s32 mode, Fx100Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
         frame = entry->unk0;
         switch (frame) {
         case 4:
-            ex->func_800DC818(0x10, 0x22, (u16 *)&work->unk24);
+            ex->btlfx_getUnitBonePos(0x10, 0x22, (u16 *)&work->unk24);
             work->unk24.vy = 0;
             work->unk0 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->unk8, 1), (s32)&work->unk24);
             if (work->unk0 != NULL) {
@@ -66,7 +66,7 @@ s32 fx_100_op81(s32 mode, Fx100Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
         frame = entry->unk0;
         switch (frame) {
         case 0:
-            ex->func_800DC8AC(0x10, 0x11, (BtlBone *)&m);
+            ex->btlfx_getUnitBoneMatrix(0x10, 0x11, (BtlBone *)&m);
             ex->btlfx_matrixPointAhead(&m, 0, (s32)&work->unk14);
             work->unk0 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->unk8, 6), (s32)&work->unk14);
             if (work->unk0 != NULL) {

@@ -105,7 +105,7 @@ void btlui_exit(void) {
 
 void btlui_waitFrame(void) {
     DrawSync(0);
-    func_800DA898();
+    btlfx_pollDrawSync();
     if (g_btluiState.unk1C < (u32)(g_gameState->vsyncMode - 1)) {
         VSync(g_gameState->vsyncMode - 1);
     }

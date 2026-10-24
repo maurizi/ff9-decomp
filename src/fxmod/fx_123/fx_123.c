@@ -117,7 +117,7 @@ s32 fx_123_op80(s32 mode, Fx123Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
     if (frame >= 0 && frame < 0x12) {
         b = D_801E8F64;
         for (i = 0; i < 6; i++, b++) {
-            ex->func_800DC8AC(0x10, b->unk0, &m);
+            ex->btlfx_getUnitBoneMatrix(0x10, b->unk0, &m);
             ex->btlfx_matrixPointAhead((MATRIX *)&m, b->unk2, (s32)&work->unk5C[i]);
             if (work->unk0[i] != NULL && work->unk0[i]->unk30 == -1) {
                 work->unk0[i] = NULL;
@@ -128,7 +128,7 @@ s32 fx_123_op80(s32 mode, Fx123Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
     if (frame >= 0x14 && frame < 0x26) {
         b = D_801E8F64;
         for (i = 0; i < 6; i++, b++) {
-            ex->func_800DC8AC(0x10, b->unk0, &m);
+            ex->btlfx_getUnitBoneMatrix(0x10, b->unk0, &m);
             ex->btlfx_matrixPointAhead((MATRIX *)&m, b->unk2, (s32)&work->unk5C[i]);
             if (work->unk18[i] != NULL && work->unk18[i]->unk30 == -1) {
                 work->unk18[i] = NULL;
@@ -139,7 +139,7 @@ s32 fx_123_op80(s32 mode, Fx123Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
     if (frame >= 0x1E && frame < 0x37) {
         b = D_801E8F64;
         for (i = 0; i < 6; i++, b++) {
-            ex->func_800DC8AC(0x10, b->unk0, &m);
+            ex->btlfx_getUnitBoneMatrix(0x10, b->unk0, &m);
             ex->btlfx_matrixPointAhead((MATRIX *)&m, b->unk2, (s32)&work->unk5C[i]);
             if (work->unk30[i] != NULL && work->unk30[i]->unk30 == -1) {
                 work->unk30[i] = NULL;

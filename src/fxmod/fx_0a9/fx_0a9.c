@@ -127,12 +127,12 @@ s32 fx_0a9_op83(s32 mode, Fx0a9Work83 *work, Unk800F78A4 *env, Unk80100C78Entry 
     } else if (mode == 1) {
         D_801E7F58 = env;
         ex->btlfx_getUnitBodyPos(0, 0, (s16 *)&work->unk0);
-        ex->func_800DC858(0x10, 0, (u16 *)&work->unk8);
+        ex->btlfx_getUnitArgBonePos(0x10, 0, (u16 *)&work->unk8);
         func_801E79C8();
         return 0;
     } else {
         frame = entry->unk0;
-        ex->func_800DC858(0x10, 0, (u16 *)&work->unk8);
+        ex->btlfx_getUnitArgBonePos(0x10, 0, (u16 *)&work->unk8);
         if (frame < 0x18) {
             for (i = 0; i < 2; i++) {
                 BTLFX_COPY_SVEC(&v, &work->unk0);

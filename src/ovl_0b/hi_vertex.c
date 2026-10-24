@@ -5,7 +5,7 @@ void Hi_SplitMdlVertex(s32 arg0, s32 arg1, s32 arg2) {
 }
 
 s32 Hi_GetSplitMdlVertex(s32 arg0, s32 arg1) {
-    return func_800DF670(btlfx_getEffModel(arg0, "Hi_GetSplitMdlVertex()\nid:%d cannot use!")->unk0, arg1);
+    return btlfx_getSplitVertexSize(btlfx_getEffModel(arg0, "Hi_GetSplitMdlVertex()\nid:%d cannot use!")->unk0, arg1);
 }
 
 void GeoSplitVertices(BtlUnit9C *arg0, s32 arg1, s32 arg2) {
@@ -17,7 +17,7 @@ void GeoSplitVertices(BtlUnit9C *arg0, s32 arg1, s32 arg2) {
     m = arg0->unk8->unk10;
     for (i = 0; i < n; i++) {
         if (arg1 == -1 || arg1 == i) {
-            arg2 = func_800DF940(arg0, i, arg2);
+            arg2 = btlfx_splitMeshVertices(arg0, i, arg2);
             if (m->unk14[i] >= 0x322) {
                 printf("warning:GeoSplitVertices() overflow vertex buffer!(%d)\n", m->unk14[i]);
                 m->unk14[i] = 0x321;
@@ -26,7 +26,7 @@ void GeoSplitVertices(BtlUnit9C *arg0, s32 arg1, s32 arg2) {
     }
 }
 
-s32 func_800DF670(BtlUnit9C *arg0, s32 arg1) {
+s32 btlfx_getSplitVertexSize(BtlUnit9C *arg0, s32 arg1) {
     BtlUnit9C8 *m = arg0->unk8;
     s32 n = m->unk3;
     s32 r = 0;
@@ -47,13 +47,13 @@ s32 func_800DF670(BtlUnit9C *arg0, s32 arg1) {
     return r * 8;
 }
 
-/* Void in the original; effect modules read $v0 after it (export 0x310): func_800DF7A0's u16 result.
+/* Void in the original; effect modules read $v0 after it (export 0x310): btlfx_getMeshPrims's u16 result.
    Ports must return it (docs/effect-modules.md). */
 void Hi_GetMdlVertexPtr(s32 arg0, u16 arg1, s32 arg2, s32 *arg3, s32 arg4) {
-    func_800DF7A0(btlfx_getEffModel(arg0, D_800A825C)->unk0, arg1, arg2, arg3, arg4);
+    btlfx_getMeshPrims(btlfx_getEffModel(arg0, D_800A825C)->unk0, arg1, arg2, arg3, arg4);
 }
 
-u16 func_800DF7A0(BtlUnit9C *arg0, u16 arg1, s32 arg2, s32 *arg3, s32 arg4) {
+u16 btlfx_getMeshPrims(BtlUnit9C *arg0, u16 arg1, s32 arg2, s32 *arg3, s32 arg4) {
     BtlMesh *m = &arg0->unk8->unk10[arg1];
     if (arg4 == 0) {
         *arg3 = arg2;
@@ -125,7 +125,7 @@ void func_800DF938(void) {
         p += (stride);                                              \
     }
 
-u32 func_800DF940(BtlUnit9C *arg0, u16 arg1, s32 arg2) {
+u32 btlfx_splitMeshVertices(BtlUnit9C *arg0, u16 arg1, s32 arg2) {
     u16 n;
     BtlMesh *g;
     u8 *p;

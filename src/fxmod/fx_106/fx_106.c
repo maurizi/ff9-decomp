@@ -27,7 +27,7 @@ s32 fx_106_op80(s32 mode, Fx106Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
         D_801E9408.vx = work->unk10.vx;
         D_801E9408.vy = work->unk10.vy;
         D_801E9408.vz = work->unk10.vz;
-        ex->func_800DC858(0x10, 0, (u16 *)&work->unk18);
+        ex->btlfx_getUnitArgBonePos(0x10, 0, (u16 *)&work->unk18);
         ex->btlfx_pointAhead((s16 *)&work->unk18, (s16 *)&work->unk8, 0, (s16 *)&work->unk20);
         D_801E9400.vx = work->unk20.vx;
         D_801E9400.vy = work->unk20.vy;

@@ -64,7 +64,7 @@ s32 fx_09b_op80(s32 mode, Fx09bWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
         } else {
             work->unk64.vy -= ex->btlfx_rand() % 100;
         }
-        ex->func_800DC858(0x10, 0, (u16 *)&work->unk3C);
+        ex->btlfx_getUnitArgBonePos(0x10, 0, (u16 *)&work->unk3C);
         work->unk5C.vx = work->unk3C.vx;
         work->unk5C.vy = work->unk3C.vy;
         work->unk5C.vz = work->unk3C.vz;

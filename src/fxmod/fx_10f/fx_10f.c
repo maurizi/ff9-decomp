@@ -15,7 +15,7 @@ s32 fx_10f_op80(s32 mode, Fx10fWork80 *work, Unk800F78A4 *env, Unk80100C78Entry 
         ex->btlfx_initEffModels(D_801E7BBC, 2);
         ex->btlfx_getUnitBodyPos(0x10, 0, (s16 *)&work->unk0);
         ex->btlfx_getUnitBodyPos(0, 0, (s16 *)&work->unk8);
-        ex->func_800DC818(0x10, 0x17, (u16 *)&work->unk10);
+        ex->btlfx_getUnitBonePos(0x10, 0x17, (u16 *)&work->unk10);
         ex->btlfx_aimAngles((s16 *)&work->unk10, (s16 *)&work->unk8, (s16 *)&work->unk18);
         work->unk30.vx = 0x1000;
         work->unk30.vy = 0x1000;

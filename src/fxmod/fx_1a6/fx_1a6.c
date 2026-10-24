@@ -47,7 +47,7 @@ s32 fx_1a6_op80(s32 mode, Fx1a6Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
         ex->btlfx_playFileSound(7, entry->unk8, -1);
         ex->btlfx_getUnitBodyPos(0x10, 0, (s16 *)&work->unk10);
         ex->btlfx_getUnitBodyPos(0, 0, (s16 *)&work->unk18);
-        ex->func_800DC858(0x10, 0, (u16 *)&work->unk20);
+        ex->btlfx_getUnitArgBonePos(0x10, 0, (u16 *)&work->unk20);
         if (ex->btlfx_rand() & 1) {
             work->unk18.vx += 0x32 + (s32)ex->btlfx_rand % 200;
         } else {

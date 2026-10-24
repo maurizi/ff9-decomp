@@ -469,20 +469,20 @@ void btlfx_clearSummonModels(void) {
     }
 }
 
-void func_800DC818(s32 arg0, s32 arg1, u16 *arg2) {
-    func_800DC9D0(btl_getUnit(arg0)->model, arg1, arg2);
+void btlfx_getUnitBonePos(s32 arg0, s32 arg1, u16 *arg2) {
+    btl_getBonePos(btl_getUnit(arg0)->model, arg1, arg2);
 }
 
-void func_800DC858(s32 arg0, s32 arg1, u16 *arg2) {
-    func_800DC9D0(btl_getUnit(arg0)->model, g_btlfxEnv->targets->unk25[arg1], arg2);
+void btlfx_getUnitArgBonePos(s32 arg0, s32 arg1, u16 *arg2) {
+    btl_getBonePos(btl_getUnit(arg0)->model, g_btlfxEnv->targets->unk25[arg1], arg2);
 }
 
-void func_800DC8AC(s32 arg0, s32 arg1, BtlBone *arg2) {
-    func_800DCA18(btl_getUnit(arg0)->model, arg1, arg2);
+void btlfx_getUnitBoneMatrix(s32 arg0, s32 arg1, BtlBone *arg2) {
+    btl_getBoneMatrix(btl_getUnit(arg0)->model, arg1, arg2);
 }
 
-void func_800DC8EC(s32 arg0, s32 arg1, BtlBone *arg2) {
-    func_800DCA18(btl_getUnit(arg0)->model, g_btlfxEnv->targets->unk25[arg1], arg2);
+void btlfx_getUnitArgBoneMatrix(s32 arg0, s32 arg1, BtlBone *arg2) {
+    btl_getBoneMatrix(btl_getUnit(arg0)->model, g_btlfxEnv->targets->unk25[arg1], arg2);
 }
 
 INCLUDE_RODATA("asm/us/ovl_0b/nonmatchings/hi_model", D_800A7F34);
@@ -492,20 +492,20 @@ INCLUDE_RODATA("asm/us/ovl_0b/nonmatchings/hi_model", D_800A7F60);
 INCLUDE_RODATA("asm/us/ovl_0b/nonmatchings/hi_model", D_800A7F78);
 
 void Hi_GetSummonBonePos(s32 arg0, s32 arg1, u16 *arg2) {
-    func_800DC9D0(btlfx_getSummonModel(arg0, "Hi_GetSummonBonePos()\nid:%d cannot use!")->unk0, arg1, arg2);
+    btl_getBonePos(btlfx_getSummonModel(arg0, "Hi_GetSummonBonePos()\nid:%d cannot use!")->unk0, arg1, arg2);
 }
 
 void Hi_GetSummonBoneMatrix(s32 arg0, s32 arg1, BtlBone *arg2) {
-    func_800DCA18(btlfx_getSummonModel(arg0, "Hi_GetSummonBoneMatrix()\nid:%d cannot use!")->unk0, arg1, arg2);
+    btl_getBoneMatrix(btlfx_getSummonModel(arg0, "Hi_GetSummonBoneMatrix()\nid:%d cannot use!")->unk0, arg1, arg2);
 }
 
-void func_800DC9D0(BtlUnit9C *arg0, s32 arg1, u16 *arg2) {
+void btl_getBonePos(BtlUnit9C *arg0, s32 arg1, u16 *arg2) {
     arg2[0] = arg0->unk20[arg1].unk14;
     arg2[1] = arg0->unk20[arg1].unk18;
     arg2[2] = arg0->unk20[arg1].unk1C;
 }
 
-void func_800DCA18(BtlUnit9C *arg0, s32 arg1, BtlBone *arg2) {
+void btl_getBoneMatrix(BtlUnit9C *arg0, s32 arg1, BtlBone *arg2) {
     *arg2 = arg0->unk20[arg1];
 }
 
@@ -641,21 +641,21 @@ Unk8010141C *btlfx_getSummonModel(s32 arg0, char *arg1) {
     return p;
 }
 
-void func_800DD0B0(s32 arg0) {
-    func_800DD10C(btl_getUnit(arg0)->model);
+void btlfx_getUnitMeshCount(s32 arg0) {
+    btl_getMeshCount(btl_getUnit(arg0)->model);
 }
 
-/* Void in the original; effect modules read $v0 after it (export 0x318): func_800DD10C's u8 result.
+/* Void in the original; effect modules read $v0 after it (export 0x318): btl_getMeshCount's u8 result.
    Ports must return it (docs/effect-modules.md). */
-void func_800DD0DC(s32 arg0) {
-    func_800DD10C(btlfx_getEffModel(arg0, D_800A81A8)->unk0);
+void btlfx_getEffModelMeshCount(s32 arg0) {
+    btl_getMeshCount(btlfx_getEffModel(arg0, D_800A81A8)->unk0);
 }
 
-u8 func_800DD10C(BtlUnit9C *arg0) {
+u8 btl_getMeshCount(BtlUnit9C *arg0) {
     return arg0->unk8->unk3;
 }
 
-void func_800DD120(BtlTexInfo *arg0, BtlTexInfo *arg1, s32 arg2) {
+void btlfx_getCasterTexInfo(BtlTexInfo *arg0, BtlTexInfo *arg1, s32 arg2) {
     s32 k;
     BtlTexInfo *a;
     BtlTexInfo *b;

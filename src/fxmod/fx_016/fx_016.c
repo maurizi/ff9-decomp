@@ -142,7 +142,7 @@ s32 fx_016_op81(s32 mode, Fx016Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
         for (i = 0; i < work->unk40; i++) {
             ex->btlfx_getUnitHomePos(i, (s16 *)&work->unk0[i]);
             work->unk44 = ((-0x140 - (ex->btlfx_rand() & 0x1F)) * D_801E89A8) >> 12;
-            ex->func_800DC818(i, 0, (u16 *)&v);
+            ex->btlfx_getUnitBonePos(i, 0, (u16 *)&v);
             work->unk48[i] = -v.vy;
         }
     } else {

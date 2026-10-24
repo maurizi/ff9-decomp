@@ -13,11 +13,11 @@ s32 fx_0f0_op80(s32 mode, Fx0f0Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
         frame = entry->unk0;
         switch (frame) {
         case 0:
-            ex->func_800DC858(0x10, 0, (u16 *)&work->unk1C);
+            ex->btlfx_getUnitArgBonePos(0x10, 0, (u16 *)&work->unk1C);
             work->unk0 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->unk8, 1), (s32)&work->unk1C);
             break;
         case 0x26:
-            ex->func_800DC858(0x10, 0, (u16 *)&work->unk24);
+            ex->btlfx_getUnitArgBonePos(0x10, 0, (u16 *)&work->unk24);
             work->unk4 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->unk8, 6), (s32)&work->unk24);
             work->unk8 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->unk8, 7), (s32)&work->unk24);
             work->unkC = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->unk8, 5), (s32)&work->unk24);

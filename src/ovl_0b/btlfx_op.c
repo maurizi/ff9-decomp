@@ -1520,9 +1520,9 @@ void btlfx_getWeaponPos(s32 arg0, s32 arg1, s16 *arg2) {
     u = btl_getUnit(arg0);
     bone = (g_gameState->unk1C->characters + ((u->unk68 >> 1) & 0xF))->unk21;
     if (arg1 == 0) {
-        func_800DC818(arg0, bone, (u16 *)arg2);
+        btlfx_getUnitBonePos(arg0, bone, (u16 *)arg2);
     } else {
-        func_800DC8AC(arg0, bone, (BtlBone *)&m);
+        btlfx_getUnitBoneMatrix(arg0, bone, (BtlBone *)&m);
         gte_SetRotMatrix(&m);
         gte_SetTransMatrix(&m);
         func_800BC1E0((Unk800BC1E0 *)u->weapon, (s16 *)&v);

@@ -60,8 +60,8 @@ s32 fx_112_op80(s32 mode, Fx112Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
             }
         } else if (frame >= 5) {
             t = ((frame - 4) << 12) / 28;
-            ex->func_800DC818(0x10, 9, (u16 *)&u.s0.a);
-            ex->func_800DC818(0x10, 0x1C, (u16 *)&u.s0.b);
+            ex->btlfx_getUnitBonePos(0x10, 9, (u16 *)&u.s0.a);
+            ex->btlfx_getUnitBonePos(0x10, 0x1C, (u16 *)&u.s0.b);
             ex->btlfx_aimAngles((s16 *)&u.s0.a, (s16 *)&u.s0.b, (s16 *)&u.s0.rot);
             u.s0.rot.vy += 0x800;
             u.s0.pos.vx = (u.s0.a.vx + u.s0.b.vx) >> 1;
@@ -80,7 +80,7 @@ s32 fx_112_op80(s32 mode, Fx112Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
     case 1:
         t = (frame << 12) / 9;
         ex->btlfx_getUnitPos(0x10, (s16 *)&u.s1.pos);
-        ex->func_800DC818(0x10, 0x1C, (u16 *)&u.s1.bone);
+        ex->btlfx_getUnitBonePos(0x10, 0x1C, (u16 *)&u.s1.bone);
         ex->btlfx_lerpVec((s16 *)&u.s1.bone, (s16 *)&u.s1.pos, t, (s16 *)&u.s1.v);
         s = ex->math_sin((t * 0x992) >> 12);
         u.s1.rot.vx = -frame << 8;
@@ -97,7 +97,7 @@ s32 fx_112_op80(s32 mode, Fx112Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
         }
         break;
     case 2:
-        ex->func_800DC818(0x10, 4, (u16 *)&work->unk48);
+        ex->btlfx_getUnitBonePos(0x10, 4, (u16 *)&work->unk48);
         k = frame / 5;
         if (frame == k * 5) {
             q = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->unk8, 2), (s32)&work->unk48);
@@ -124,8 +124,8 @@ s32 fx_112_op80(s32 mode, Fx112Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
         }
         break;
     case 4:
-        ex->func_800DC818(0x10, 4, (u16 *)&work->unk48);
-        ex->func_800DC8AC(0x10, 4, &u.s4.m);
+        ex->btlfx_getUnitBonePos(0x10, 4, (u16 *)&work->unk48);
+        ex->btlfx_getUnitBoneMatrix(0x10, 4, &u.s4.m);
         ex->btlfx_matrixAngles((MATRIX *)&u.s4.m, (s16 *)&u.s4.rot);
         if (work->unk50 != NULL) {
             work->unk50->unk5C.vx = u.s4.rot.vx;

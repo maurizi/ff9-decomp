@@ -1398,3 +1398,27 @@ func_800E3E08 btlfx_copyDisplayToDraw  # [code] ten DR_MOVEs copy the displayed 
 D_801044B8 g_btlfxParticles  # [code] effect particle pool (btlfx_initParticleSystem)
 D_801044C8 g_btlfxEmitters  # [code] effect emitter pool (btlfx_initParticleSystem)
 D_801014B8 g_btlfxParticleBuf  # [code] 0x3000-byte buffer of g_btlfxParticles
+
+## ovl_0b: ovl_0b (cleanup pass: effect loader helpers, bones, mesh vertices; btlfx_mod.h members and src/fxmod renamed by hand)
+func_800DA4C4 btlfx_takeWork  # [code] takes n bytes from the effect work area (g_btlfxLoader.unk58/unk5C), returns the old pointer
+func_800DA5C4 btlfx_loadNextBlock  # [code] restarts g_btlfxLoader at state 3 for the next block into the other buffer (runtime: Ark, Bahamut, Madeen)
+func_800DA634 btlfx_loadSoundBank  # [code] starts the effect sound bank upload (main func_800562E0) unless a load is running
+func_800DA6B4 btlfx_waitSoundBank  # [code] 1 until btlfx_loadSoundBank's upload is done, then func_80056388(0x80, n)
+func_800DA71C btlfx_markCommonVram  # [code] sets g_btlfxState.unk1C bit 0 when a rect falls inside the common effect VRAM pages (0x300-0x380, 0x100-0x200)
+func_800DA790 btlfx_uploadTextures  # [code] LoadImage of 64x128 texture blocks to the loader's VRAM rects
+func_800DA898 btlfx_pollDrawSync  # [code] state 2: when DrawSync(1) reports idle, state 1 and FlushCache
+func_800DA8EC btlfx_drawSyncStep  # [code] 0 -> 2 (wait), 1 -> 0 and returns 1 (btlfx_pollDrawSync finished)
+D_800F750C g_btlfxDrawSyncState  # [code] btlfx_drawSyncStep / btlfx_pollDrawSync state
+func_800DC9D0 btl_getBonePos  # [code] position of bone n of a model
+func_800DCA18 btl_getBoneMatrix  # [code] matrix of bone n of a model
+func_800DC818 btlfx_getUnitBonePos  # [code] btl_getBonePos of an effect unit's model (Hi_GetSummonBonePos does the same for summon models)
+func_800DC858 btlfx_getUnitArgBonePos  # [code] btlfx_getUnitBonePos with the bone from the effect's argument bytes (targets->unk25)
+func_800DC8AC btlfx_getUnitBoneMatrix  # [code] btl_getBoneMatrix of an effect unit's model
+func_800DC8EC btlfx_getUnitArgBoneMatrix  # [code] btlfx_getUnitBoneMatrix with the bone from the effect's argument bytes
+func_800DD0B0 btlfx_getUnitMeshCount  # [code] btl_getMeshCount of an effect unit's model
+func_800DD0DC btlfx_getEffModelMeshCount  # [code] btl_getMeshCount of a registered effect model
+func_800DD10C btl_getMeshCount  # [code] model header unk3, its mesh group count
+func_800DD120 btlfx_getCasterTexInfo  # [code] texture tables (tpage, clut) of a model id in the caster's model set
+func_800DF670 btlfx_getSplitVertexSize  # [code] bytes GeoSplitVertices needs for one or all mesh groups (a vertex per primitive corner)
+func_800DF7A0 btlfx_getMeshPrims  # [code] address and count of the primitives of type n (FT4, FT3, GT4, GT3, G4, G3, F4, F3) in a mesh group
+func_800DF940 btlfx_splitMeshVertices  # [code] gives every primitive corner of a mesh group its own vertex copy (GeoSplitVertices)

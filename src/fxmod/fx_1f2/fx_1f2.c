@@ -106,8 +106,8 @@ s32 fx_1f2_op80(s32 mode, Fx1f2Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
             ex->btlfx_getUnitPos(i, (s16 *)&D_801EA670[i]);
             D_801EA670[i].vy = 0;
         }
-        ex->func_800DC818(0x10, 5, (u16 *)&work->unk110[0]);
-        ex->func_800DC818(0x10, 9, (u16 *)&work->unk110[1]);
+        ex->btlfx_getUnitBonePos(0x10, 5, (u16 *)&work->unk110[0]);
+        ex->btlfx_getUnitBonePos(0x10, 9, (u16 *)&work->unk110[1]);
         work->unk120.vx = work->unk110[0].vx;
         work->unk120.vz = work->unk110[0].vz - 0x200;
         work->unk120.vy = (work->unk110[0].vy + work->unk110[1].vy) >> 1;
@@ -602,13 +602,13 @@ s32 fx_1f2_op80(s32 mode, Fx1f2Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
                     if (D_801EA690[i].unk4C != 0) {
                         if (--D_801EA690[i].unk4C < 8) {
                             if (i & 1) {
-                                ex->func_800DC8AC(0x10, 5, (BtlBone *)&m);
+                                ex->btlfx_getUnitBoneMatrix(0x10, 5, (BtlBone *)&m);
                                 m.t[0] = work->unk110[0].vx;
                                 m.t[1] = work->unk110[0].vy;
                                 m.t[2] = work->unk110[0].vz;
                                 dz = 0x200;
                             } else {
-                                ex->func_800DC8AC(0x10, 9, (BtlBone *)&m);
+                                ex->btlfx_getUnitBoneMatrix(0x10, 9, (BtlBone *)&m);
                                 m.t[0] = work->unk110[1].vx;
                                 m.t[1] = work->unk110[1].vy;
                                 m.t[2] = work->unk110[1].vz;

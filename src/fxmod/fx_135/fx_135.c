@@ -12,7 +12,7 @@ s32 fx_135_op80(s32 mode, Fx135Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
         work->unk8.vz = env->targets->centerZ;
         work->unk8.vy -= 0xC8;
         D_801E7918 = env;
-        ex->func_800DC858(0x10, 0, (u16 *)&work->unk10);
+        ex->btlfx_getUnitArgBonePos(0x10, 0, (u16 *)&work->unk10);
         ex->btlfx_aimAngles((s16 *)&work->unk10, (s16 *)&work->unk8, (s16 *)&work->unk18);
         work->unk0 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->unk8, 7), (s32)&work->unk10);
     } else {

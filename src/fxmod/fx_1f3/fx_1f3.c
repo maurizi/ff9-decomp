@@ -133,7 +133,7 @@ s32 fx_1f3_op80(s32 mode, Fx1f3Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             work->unk0[9] = 0x20;
             break;
         case 0x22:
-            ex->func_800DC818(0x10, 0x2E, (u16 *)&work->unk64);
+            ex->btlfx_getUnitBonePos(0x10, 0x2E, (u16 *)&work->unk64);
             work->unk40[0] = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->unk8, 0xE), (s32)&work->unk64);
             if (work->unk40[0] != NULL) {
                 work->unk40[0]->unk22 = 0x200;
@@ -312,14 +312,14 @@ s32 fx_1f3_op80(s32 mode, Fx1f3Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             if (work->unk0[7] >= 9) {
                 for (i = 0; i < 8; i++) {
                     if (D_801EC4F0[i].unk12C == 0) {
-                        ex->func_800DC8AC(0x10, D_801EC4F0[i].unk130, (BtlBone *)&D_801EC4F0[i]);
+                        ex->btlfx_getUnitBoneMatrix(0x10, D_801EC4F0[i].unk130, (BtlBone *)&D_801EC4F0[i]);
                         D_801EC4F0[i].unk12C = 8;
                         break;
                     }
                 }
                 for (i = 8; i < 16; i++) {
                     if (D_801EC4F0[i].unk12C == 0) {
-                        ex->func_800DC8AC(0x10, D_801EC4F0[i].unk130, (BtlBone *)&D_801EC4F0[i]);
+                        ex->btlfx_getUnitBoneMatrix(0x10, D_801EC4F0[i].unk130, (BtlBone *)&D_801EC4F0[i]);
                         D_801EC4F0[i].unk12C = 8;
                         break;
                     }
@@ -328,7 +328,7 @@ s32 fx_1f3_op80(s32 mode, Fx1f3Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             for (i = 0; i < 16; i++) {
                 if (D_801EC4F0[i].unk12C != 0) {
                     D_801EC4F0[i].unk12C--;
-                    ex->func_800DC818(0x10, D_801EC4F0[i].unk130, (u16 *)&v);
+                    ex->btlfx_getUnitBonePos(0x10, D_801EC4F0[i].unk130, (u16 *)&v);
                     D_801EC4F0[i].unk0.t[0] = v.vx;
                     D_801EC4F0[i].unk0.t[1] = v.vy;
                     D_801EC4F0[i].unk0.t[2] = v.vz;

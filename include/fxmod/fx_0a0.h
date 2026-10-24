@@ -14,7 +14,7 @@ typedef struct {
 
 typedef struct {
     s32 unk0; /* state */
-    SVECTOR unk4; /* func_800DC858(0x10, 0) */
+    SVECTOR unk4; /* btlfx_getUnitArgBonePos(0x10, 0) */
     SVECTOR unkC;
     SVECTOR unk14; /* caster body position */
     Pool6CEntry *unk1C;

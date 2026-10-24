@@ -67,12 +67,12 @@ s32 fx_1f7_op80(s32 mode, Fx1f7Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
                     if (--tr->unk114 < 0) {
                         for (k = 0; k < 16; k++) {
                             if (k != 0) {
-                                ex->func_800DC818(0x10, D_801E7EB0[i][k], (u16 *)&a);
+                                ex->btlfx_getUnitBonePos(0x10, D_801E7EB0[i][k], (u16 *)&a);
                             } else {
-                                ex->func_800DC8AC(0x10, D_801E7EB0[i][0], (BtlBone *)&m);
+                                ex->btlfx_getUnitBoneMatrix(0x10, D_801E7EB0[i][0], (BtlBone *)&m);
                                 ex->btlfx_matrixPointAhead(&m, 0x400, (s32)&a);
                             }
-                            ex->func_800DC818(0x10, D_801E7EB0[i][k + 1], (u16 *)&b);
+                            ex->btlfx_getUnitBonePos(0x10, D_801E7EB0[i][k + 1], (u16 *)&b);
                             for (j = 0; j < 4; j++) {
                                 ex->btlfx_lerpVec((s16 *)&a, (s16 *)&b, j << 10, (s16 *)&D_801E80D8[k * 4 + j]);
                             }
@@ -118,8 +118,8 @@ s32 fx_1f7_op80(s32 mode, Fx1f7Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
         if (work->unk4 != 0) {
             for (i = 0; i < 2; i++) {
                 for (k2 = 0; k2 < 6; k2++) {
-                    ex->func_800DC818(0x10, D_801E8048[i][k2], (u16 *)&m);
-                    ex->func_800DC818(0x10, D_801E8048[i][k2 + 1], (u16 *)&((SVECTOR *)&m)[1]);
+                    ex->btlfx_getUnitBonePos(0x10, D_801E8048[i][k2], (u16 *)&m);
+                    ex->btlfx_getUnitBonePos(0x10, D_801E8048[i][k2 + 1], (u16 *)&((SVECTOR *)&m)[1]);
                     for (j = 0; j < 4; j++) {
                         ex->btlfx_lerpVec((s16 *)&m, (s16 *)&((SVECTOR *)&m)[1], j << 10,
                                           (s16 *)&D_801E82D8[i * 24 + k2 * 4 + j]);

@@ -302,11 +302,11 @@ s32 fx_12b_op80(s32 mode, Fx12bWork80 *work, Unk800F78A4 *env, Unk80100C78Entry 
         }
         for (q = D_801E97BC, r = D_801E9894, j = 0; j < 6; j++, q++, r++) {
             if (frame == q->unk18) {
-                ex->func_800DC8AC(0x10, q->unk1A, (BtlBone *)&m1);
+                ex->btlfx_getUnitBoneMatrix(0x10, q->unk1A, (BtlBone *)&m1);
                 ex->btlfx_matrixPointAhead(&m1, q->unk1C, (s32)&D_801EF7F4[j]);
             }
             if (frame == r->unk18) {
-                ex->func_800DC8AC(0x10, r->unk1A, (BtlBone *)&m2);
+                ex->btlfx_getUnitBoneMatrix(0x10, r->unk1A, (BtlBone *)&m2);
                 ex->btlfx_matrixPointAhead(&m2, r->unk1C, (s32)&D_801EF824[j]);
             }
             if (frame >= q->unk18) {
@@ -434,11 +434,11 @@ s32 fx_12b_op81(s32 mode, Fx12bWork81 *work, Unk800F78A4 *env, Unk80100C78Entry 
         }
         for (j = 0, r = D_801E9A20, q = D_801E996C; j < 5; j++, q++, r++) {
             if (frame == q->unk18) {
-                ex->func_800DC8AC(0x10, q->unk1A, (BtlBone *)&m1);
+                ex->btlfx_getUnitBoneMatrix(0x10, q->unk1A, (BtlBone *)&m1);
                 ex->btlfx_matrixPointAhead(&m1, q->unk1C, (s32)&D_801EF7F4[j]);
             }
             if (frame == r->unk18) {
-                ex->func_800DC8AC(0x10, r->unk1A, (BtlBone *)&m2);
+                ex->btlfx_getUnitBoneMatrix(0x10, r->unk1A, (BtlBone *)&m2);
                 ex->btlfx_matrixPointAhead(&m2, r->unk1C, (s32)&D_801EF824[j]);
             }
             if (frame >= q->unk18) {

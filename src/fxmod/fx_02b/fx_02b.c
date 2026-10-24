@@ -24,9 +24,9 @@ s32 fx_02b_op80(s32 mode, Fx02bWork80 *work, Unk800F78A4 *env, Unk80100C78Entry 
         work->unk34.vz = work->unk14.vz;
         ex->btlfx_pointAhead((s16 *)&work->unk14, (s16 *)&work->unk1C, 0x7D0, (s16 *)&work->unk34);
         work->unk34.vy = -0xC8;
-        ex->func_800DC8AC(0x10, 0x1F, (BtlBone *)&u.m);
+        ex->btlfx_getUnitBoneMatrix(0x10, 0x1F, (BtlBone *)&u.m);
         ex->btlfx_matrixPointAhead(&u.m, 0x0, (s32)&work->unk24);
-        ex->func_800DC8AC(0x10, 0x2D, (BtlBone *)&m2);
+        ex->btlfx_getUnitBoneMatrix(0x10, 0x2D, (BtlBone *)&m2);
         ex->btlfx_matrixPointAhead(&m2, 0x0, (s32)&work->unk2C);
         work->unk0 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->unk8, 1), (s32)&work->unk24);
         work->unk4 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->unk8, 2), (s32)&work->unk2C);

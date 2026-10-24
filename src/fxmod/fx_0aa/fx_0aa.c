@@ -30,8 +30,8 @@ s32 fx_0aa_op80(s32 mode, Fx0aaWork80 *work, Unk800F78A4 *env, Unk80100C78Entry 
     } else {
         frame = entry->unk0;
         if (frame == 4) {
-            ex->func_800DC818(0x10, 0x12, (u16 *)&work->unk10);
-            ex->func_800DC818(0x10, 0x2B, (u16 *)&work->unk18);
+            ex->btlfx_getUnitBonePos(0x10, 0x12, (u16 *)&work->unk10);
+            ex->btlfx_getUnitBonePos(0x10, 0x2B, (u16 *)&work->unk18);
             work->unk0 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->unk8, 1), (s32)&work->unk10);
             work->unk4 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->unk8, 2), (s32)&work->unk18);
             work->unk8 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->unk8, 3), (s32)&D_801E90A8);

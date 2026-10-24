@@ -15,7 +15,7 @@ s32 fx_0ac_op80(s32 mode, Fx0acWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
         frame = entry->unk0;
         switch (frame) {
         case 2:
-            ex->func_800DC8EC(0x10, 0, &bone);
+            ex->btlfx_getUnitArgBoneMatrix(0x10, 0, &bone);
             ex->btlfx_matrixPointAhead((MATRIX *)&bone, -0x32, (s32)&work->unk20);
             work->unk20.vy -= 0x96;
             work->unk0 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->unk8, 1), (s32)&work->unk20);

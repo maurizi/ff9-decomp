@@ -81,7 +81,7 @@ s32 fx_0a0_op80(s32 mode, Fx0a0Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
         work->unk0 = 0;
         D_801E8870 = 0x1000;
         D_801E886C = entry;
-        ex->func_800DC858(0x10, 0, (u16 *)&work->unk4);
+        ex->btlfx_getUnitArgBonePos(0x10, 0, (u16 *)&work->unk4);
         BTLFX_COPY_SVEC(&D_801E8864, &work->unk4);
         BTLFX_COPY_SVEC(&work->unkC, &work->unk4);
         ex->btlfx_getUnitBodyPos(0, 0, (s16 *)&work->unk14);
@@ -101,7 +101,7 @@ s32 fx_0a0_op80(s32 mode, Fx0a0Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
         }
     } else {
         frame = entry->unk0;
-        ex->func_800DC858(0x10, 0, (u16 *)&work->unk4);
+        ex->btlfx_getUnitArgBonePos(0x10, 0, (u16 *)&work->unk4);
         BTLFX_COPY_SVEC(&D_801E8864, &work->unk4);
         switch (work->unk0) {
         case 0:

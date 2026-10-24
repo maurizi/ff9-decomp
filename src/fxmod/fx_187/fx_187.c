@@ -21,12 +21,12 @@ s32 fx_187_op80(s32 mode, Fx187Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
         BTLFX_COPY_SVEC(&work->unk3C, &work->unk14);
         work->unk34.vx -= 0x300;
         work->unk3C.vx += 0x300;
-        ex->func_800DC818(0x10, D_801E7DB8[0], (u16 *)&work->unk24);
-        ex->func_800DC818(0x10, D_801E7DB8[1], (u16 *)&work->unk2C);
+        ex->btlfx_getUnitBonePos(0x10, D_801E7DB8[0], (u16 *)&work->unk24);
+        ex->btlfx_getUnitBonePos(0x10, D_801E7DB8[1], (u16 *)&work->unk2C);
     } else {
         frame = entry->unk0;
-        ex->func_800DC818(0x10, D_801E7DB8[0], (u16 *)&work->unk24);
-        ex->func_800DC818(0x10, D_801E7DB8[1], (u16 *)&work->unk2C);
+        ex->btlfx_getUnitBonePos(0x10, D_801E7DB8[0], (u16 *)&work->unk24);
+        ex->btlfx_getUnitBonePos(0x10, D_801E7DB8[1], (u16 *)&work->unk2C);
         switch (work->unk0) {
         case 0:
             if (frame == 0) {

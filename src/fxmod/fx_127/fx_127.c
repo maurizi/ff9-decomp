@@ -48,7 +48,7 @@ s32 fx_127_op80(s32 mode, Fx127Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
         ex->btlfx_getUnitPos(0, (s16 *)&work->unk3C);
     } else {
         frame = entry->unk0;
-        ex->func_800DC8AC(0x10, 0x3C, (BtlBone *)&m1);
+        ex->btlfx_getUnitBoneMatrix(0x10, 0x3C, (BtlBone *)&m1);
         ex->btlfx_matrixPointAhead(&m1, 0, (s32)&work->unk44);
         ex->btlfx_aimAngles((s16 *)&work->unk44, (s16 *)&work->unk34, (s16 *)&work->unk74);
         switch (frame) {
@@ -77,9 +77,9 @@ s32 fx_127_op80(s32 mode, Fx127Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             D_801E8310.vx = work->unk5C.vx;
             D_801E8310.vy = work->unk5C.vy;
             D_801E8310.vz = work->unk5C.vz;
-            ex->func_800DC8AC(0x10, 0x3C, (BtlBone *)&m2);
+            ex->btlfx_getUnitBoneMatrix(0x10, 0x3C, (BtlBone *)&m2);
             ex->btlfx_matrixPointAhead(&m2, 0, (s32)&work->unk64);
-            ex->func_800DC8AC(0x10, 0x3C, (BtlBone *)&m3);
+            ex->btlfx_getUnitBoneMatrix(0x10, 0x3C, (BtlBone *)&m3);
             ex->btlfx_matrixPointAhead(&m3, 0, (s32)&D_801E82F8);
             D_801E8300.vx = work->unk34.vx;
             D_801E8300.vy = work->unk34.vy;

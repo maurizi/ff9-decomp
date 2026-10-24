@@ -11,7 +11,7 @@ s32 fx_0a7_op80(s32 mode, Fx0a7Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
         ex->btlfx_getUnitBodyPos(0x10, 0, (s16 *)&work->unk18);
         ex->btlfx_getUnitBodyPos(0, 0, (s16 *)&work->unk20);
         ex->btlfx_getUnitPos(0, (s16 *)&work->unk28);
-        ex->func_800DC858(0x10, 0, (u16 *)&work->unk30);
+        ex->btlfx_getUnitArgBonePos(0x10, 0, (u16 *)&work->unk30);
         ex->btlfx_aimAngles((s16 *)&work->unk30, (s16 *)&work->unk20, (s16 *)&work->unk48);
         ex->btlfx_aimAngles((s16 *)&work->unk20, (s16 *)&work->unk30, (s16 *)&work->unk50);
         ex->btlfx_pointAhead((s16 *)&work->unk30, (s16 *)&work->unk48, 0x12C, (s16 *)&work->unk38);

@@ -10,8 +10,8 @@ s32 fx_126_op80(s32 mode, Fx126Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
         *arg4 = 0xAC;
     } else if (mode == 1) {
         D_801E80DC = env;
-        ex->func_800DC818(0x10, 0x30, (u16 *)&work->unk60);
-        ex->func_800DC818(0x10, 8, (u16 *)&work->unk58);
+        ex->btlfx_getUnitBonePos(0x10, 0x30, (u16 *)&work->unk60);
+        ex->btlfx_getUnitBonePos(0x10, 8, (u16 *)&work->unk58);
         ex->btlfx_initEffModels(D_801E80EC, 2);
         work->unk0 = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->unk8, 7), 0xFF);
         work->unk4 = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->unk8, 7), 0xFF);

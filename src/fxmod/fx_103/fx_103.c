@@ -17,8 +17,8 @@ s32 fx_103_op80(s32 mode, Fx103Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
         work->unk30.vy = 0;
         work->unk30.vz = env->targets->centerZ;
         D_801E7A48 = env;
-        ex->func_800DC858(0x10, 0, (u16 *)&work->unk10);
-        ex->func_800DC858(0x10, 1, (u16 *)&work->unk18);
+        ex->btlfx_getUnitArgBonePos(0x10, 0, (u16 *)&work->unk10);
+        ex->btlfx_getUnitArgBonePos(0x10, 1, (u16 *)&work->unk18);
         ex->btlfx_aimAngles((s16 *)&work->unk10, (s16 *)&work->unk0, (s16 *)&work->unk20);
         ex->btlfx_aimAngles((s16 *)&work->unk18, (s16 *)&work->unk8, (s16 *)&work->unk28);
         work->unk28.vx = -0x200;

@@ -43,7 +43,7 @@ s32 fx_084_op80(s32 mode, Fx084Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
         if (ex->btlfx_isEnemyUnit(0x10) == 0) {
             ex->btlfx_getUnitBodyPos(0x10, 1, (s16 *)&work->unkC);
         } else {
-            ex->func_800DC858(0x10, 0, (u16 *)&work->unkC);
+            ex->btlfx_getUnitArgBonePos(0x10, 0, (u16 *)&work->unkC);
         }
         BTLFX_COPY_SVEC(&D_801E7BA0, &work->unkC);
         switch (work->unk0) {

@@ -15,14 +15,14 @@ s32 fx_0a1_op80(s32 mode, Fx0a1Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
         D_801E7C60 = env;
         ex->btlfx_getUnitBodyPos(0, 0, (s16 *)&work->unk8);
         ex->btlfx_getUnitPos(0, (s16 *)&work->unk10);
-        ex->func_800DC858(0x10, 0, (u16 *)&work->unk18);
+        ex->btlfx_getUnitArgBonePos(0x10, 0, (u16 *)&work->unk18);
         ex->btlfx_aimAngles((s16 *)&work->unk8, (s16 *)&work->unk18, (s16 *)&work->unk28);
     } else {
         frame = entry->unk0;
         switch (work->unk0) {
         case 0:
             t = (frame << 12) / 10;
-            ex->func_800DC858(0x10, 0, (u16 *)&work->unk20);
+            ex->btlfx_getUnitArgBonePos(0x10, 0, (u16 *)&work->unk20);
             if (frame == 0) {
                 p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->unk8, 0xF), (s32)&work->unk20);
                 if (p != NULL) {

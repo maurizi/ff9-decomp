@@ -304,12 +304,12 @@ s32 fx_1a2_op80(s32 mode, Fx1a2Work80 *w, Unk800F78A4 *env, Unk80100C78Entry *en
     switch (w->unk0) {
     case 0:
         t = (frame << 12) / 93;
-        ex->func_800DC818(0x10, 0x10, (u16 *)&a);
-        ex->func_800DC8AC(0x10, 0x10, (BtlBone *)&m1);
+        ex->btlfx_getUnitBonePos(0x10, 0x10, (u16 *)&a);
+        ex->btlfx_getUnitBoneMatrix(0x10, 0x10, (BtlBone *)&m1);
         ex->btlfx_matrixPointAhead(&m1, 0x10E, (s32)&b);
-        ex->func_800DC8AC(0x10, 0x10, (BtlBone *)&m2);
+        ex->btlfx_getUnitBoneMatrix(0x10, 0x10, (BtlBone *)&m2);
         ex->btlfx_matrixPointAhead(&m2, 0x147, (s32)&c);
-        ex->func_800DC8AC(0x10, 0x10, (BtlBone *)&m3);
+        ex->btlfx_getUnitBoneMatrix(0x10, 0x10, (BtlBone *)&m3);
         ex->btlfx_matrixPointAhead(&m3, 0x155, (s32)&d);
         if (frame == 0) {
             func_801E7718(&a, &b, 0x407, &D_801E97F0, &D_801E97F4, 0, D_801EC1B4, 1);

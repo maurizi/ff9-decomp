@@ -45,7 +45,7 @@ s32 fx_12c_op80(s32 mode, Fx12cWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
             D_801E7F08[i].unk30 = -(ex->btlfx_rand() & 7);
         }
         D_801E8110 = 0;
-        ex->func_800DC858(0x10, 0, (u16 *)env->camera);
+        ex->btlfx_getUnitArgBonePos(0x10, 0, (u16 *)env->camera);
         env->camera->points[0].vy = 0;
     } else {
         frame = entry->unk0;
@@ -54,7 +54,7 @@ s32 fx_12c_op80(s32 mode, Fx12cWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
             ex->btlfx_drawBgOffscreen(0x1C0, 0x100, 0x100, 0x100, D_801E88E8, 0, -0x550, -0x1000);
             break;
         case 1:
-            ex->func_800DC858(0x10, 0, (u16 *)&work->unk28);
+            ex->btlfx_getUnitArgBonePos(0x10, 0, (u16 *)&work->unk28);
             work->unk28.vy = 0;
             p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->unk8, 0x11), (s32)&work->unk28);
             if (p != NULL) {

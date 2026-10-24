@@ -10,7 +10,7 @@ typedef struct {
     Pool6CEntry *unk8;
     SVECTOR unkC; /* unit 0x10 body position */
     SVECTOR unk14; /* caster body position */
-    SVECTOR unk1C; /* func_800DC818(0x10, 0x17) */
+    SVECTOR unk1C; /* btlfx_getUnitBonePos(0x10, 0x17) */
     u8 pad24[0x2C - 0x24];
     SVECTOR unk2C; /* angles from unkC to unk14 */
 } Fx087Work;

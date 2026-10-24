@@ -19,7 +19,7 @@ s32 fx_092_op80(s32 mode, Fx092Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
         work->unk38.vz = work->unk20.vz;
         work->unk30.vy -= 0x1C2;
         work->unk38.vy -= 0xC8;
-        ex->func_800DC858(0x10, 0, (u16 *)&work->unk28);
+        ex->btlfx_getUnitArgBonePos(0x10, 0, (u16 *)&work->unk28);
         ex->btlfx_pointAhead((s16 *)&work->unk28, (s16 *)&work->unk18, 0xC8, (s16 *)&work->unk28);
         env->camera->points[0].vx = work->unk28.vx;
         env->camera->points[0].vy = work->unk28.vy;

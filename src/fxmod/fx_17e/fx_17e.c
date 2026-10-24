@@ -49,14 +49,14 @@ s32 fx_17e_op80(s32 mode, Fx17eWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
         }
         if (work->unk40[0] != 0) {
             work->unk40[0]--;
-            ex->func_800DC818(0x10, 5, (u16 *)&work->unk30);
+            ex->btlfx_getUnitBonePos(0x10, 5, (u16 *)&work->unk30);
             work->unk18.vx = work->unk30.vx;
             work->unk18.vy = work->unk30.vy - 0x64;
             work->unk18.vz = work->unk30.vz;
         }
         if (work->unk40[1] != 0) {
             work->unk40[1]--;
-            ex->func_800DC818(0x10, 0xC, (u16 *)&work->unk30);
+            ex->btlfx_getUnitBonePos(0x10, 0xC, (u16 *)&work->unk30);
             work->unk18.vx = work->unk30.vx;
             work->unk18.vy = work->unk30.vy;
             work->unk18.vz = work->unk30.vz;

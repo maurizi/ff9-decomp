@@ -13,7 +13,7 @@ typedef struct {
     SVECTOR unk14; /* model rotation */
     VECTOR unk1C; /* model position */
     VECTOR unk2C; /* model scale */
-    SVECTOR unk3C; /* func_800DC858(0x10, 0) */
+    SVECTOR unk3C; /* btlfx_getUnitArgBonePos(0x10, 0) */
     SVECTOR unk44; /* unk64 moved -0xC8 along the angles from unk3C */
     SVECTOR unk4C; /* unk64 on the ground */
     SVECTOR unk54; /* caster body position */

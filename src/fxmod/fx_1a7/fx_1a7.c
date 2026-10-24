@@ -130,10 +130,10 @@ s32 fx_1a7_op80(s32 mode, Fx1a7Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
         }
     } else {
         frame = entry->unk0;
-        ex->func_800DC8AC(0x10, 0x1C, (BtlBone *)&m);
+        ex->btlfx_getUnitBoneMatrix(0x10, 0x1C, (BtlBone *)&m);
         ex->btlfx_matrixPointAhead(&m, 0x190, (s32)&work->unk34);
         if (frame == 0x32) {
-            ex->func_800DC8AC(0x10, 0x1C, (BtlBone *)&m2);
+            ex->btlfx_getUnitBoneMatrix(0x10, 0x1C, (BtlBone *)&m2);
             ex->btlfx_matrixPointAhead(&m2, 0xC8, (s32)&D_801EA5C0);
             D_801EA5C0.vy -= 0xC8;
         }

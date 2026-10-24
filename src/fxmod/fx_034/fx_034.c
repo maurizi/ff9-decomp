@@ -4,7 +4,7 @@ void func_801E7744(s32 model, s32 scale, u8 *buf) {
     s32 n;
     s32 j = 0;
 
-    n = BTLFX_EXPORTS(D_801E82A0)->func_800DD0DC(model & 0xFFFF);
+    n = BTLFX_EXPORTS(D_801E82A0)->btlfx_getEffModelMeshCount(model & 0xFFFF);
     for (; j < n; j++) {
         for (model = 0; model < 8; model++) {
             func_801E7810(model, D_801E82D0[model], scale, D_801E82B0[model]);
@@ -76,7 +76,7 @@ void func_801E7A00(s32 model, u8 *buf) {
     j = 0;
     m = mdl & 0xFFFF;
     ex->Hi_SplitMdlVertex(m, -1, (s32)buf);
-    n = ex->func_800DD0DC(m);
+    n = ex->btlfx_getEffModelMeshCount(m);
     for (; j < n; j++) {
         for (i = 0; i < 8; i++) {
             D_801E82D0[i] = ex->Hi_GetMdlVertexPtr(mdl & 0xFFFF, j, (s32)buf, (s32 *)&D_801E82B0[i], i);
@@ -139,7 +139,7 @@ s32 fx_034_op80(s32 mode, Fx034Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
         ex->btlfx_getUnitBodyPos(0x10, 0, (s16 *)&work->unk34);
         ex->btlfx_getUnitRot(0x10, (s16 *)&work->unk3C);
         ex->btlfx_getUnitPos(0, (s16 *)&work->unk44);
-        ex->func_800DC858(0x10, 0, (u16 *)&work->unk4C);
+        ex->btlfx_getUnitArgBonePos(0x10, 0, (u16 *)&work->unk4C);
         work->unk0 = (Pool6CEntry *)ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->unk8, 3), (s32)&work->unk4C);
         if (work->unk0 != NULL) {
             work->unk0->unk14 = (s32)D_801EA040;

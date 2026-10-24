@@ -20,8 +20,8 @@ s32 func_801E77A4(VECTOR *out, SVECTOR *pos, Fx11dPathKey *key, s32 frame, s32 n
     SVECTOR b;
     SVECTOR c;
 
-    ex->func_800DC818(0x10, key->unk0, (u16 *)&a);
-    ex->func_800DC818(0x10, key->unk2, (u16 *)&b);
+    ex->btlfx_getUnitBonePos(0x10, key->unk0, (u16 *)&a);
+    ex->btlfx_getUnitBonePos(0x10, key->unk2, (u16 *)&b);
     ex->btlfx_lerpVec((s16 *)&a, (s16 *)&b, key->unk4, (s16 *)&c);
     c.vz -= 0x32;
     pos->vx = c.vx;
@@ -96,11 +96,11 @@ s32 fx_11d_op80(s32 mode, Fx11dWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
         }
         switch (frame) {
         case 0:
-            ex->func_800DC818(0x10, 0x37, (u16 *)&work->unk24);
+            ex->btlfx_getUnitBonePos(0x10, 0x37, (u16 *)&work->unk24);
             work->unk14 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->unk8, 1), (s32)&work->unk24);
             break;
         case 0x1E:
-            ex->func_800DC818(0x10, 0, (u16 *)&work->unk2C);
+            ex->btlfx_getUnitBonePos(0x10, 0, (u16 *)&work->unk2C);
             work->unk2C.vy -= 0xC8;
             work->unk18 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->unk8, 0xD), (s32)&work->unk2C);
             if (work->unk18 != NULL) {
