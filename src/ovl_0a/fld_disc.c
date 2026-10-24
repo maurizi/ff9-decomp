@@ -149,7 +149,7 @@ void fld_discPromptInput(void) {
 }
 
 /* DISC CHANGE label */
-INCLUDE_RODATA("asm/us/ovl_0a/nonmatchings/tu_800B5004", g_fieldDiscChangeLabel);
+INCLUDE_RODATA("asm/us/ovl_0a/nonmatchings/fld_disc", g_fieldDiscChangeLabel);
 
 void fld_discPromptDraw(void) {
     s32 y;
@@ -236,4 +236,4 @@ void fld_discChangeFinish(void) {
     fld_discChangeSetMode(4);
 }
 
-INCLUDE_RODATA("asm/us/ovl_0a/nonmatchings/tu_800B5004", g_fieldDiscChangeText);
+INCLUDE_RODATA("asm/us/ovl_0a/nonmatchings/fld_disc", g_fieldDiscChangeText);

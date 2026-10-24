@@ -1,4 +1,4 @@
-#include "ovl_0c.h"
+#include "ovl_0a.h"
 
 void menuMain_initPanels(void) {
     u8 *s;
@@ -321,13 +321,13 @@ void menuMain_setExpHelp(s32 arg0) {
         func_8002BE44(0, c->unk0);
         text_formatNumber(c->exp, s_menuMainExpText, 7, 1);
         text_formatNumber(next - c->exp, s_menuMainNextText, 7, 1);
-        func_8002BE44(1, D_800CE06C);
+        func_8002BE44(1, D_800C9EC0);
         func_8002BE44(2, s_menuMainExpText);
-        func_8002BE44(3, D_800CE070);
-        func_8002BE44(4, D_800CE078);
+        func_8002BE44(3, D_800C9EC4);
+        func_8002BE44(4, D_800C9ECC);
         func_8002BE44(5, s_menuMainNextText);
-        func_8002BE44(6, D_800CE080);
-        func_8002BE44(7, c->unk38 != 0 ? D_800CE090 : D_800CE088);
+        func_8002BE44(6, D_800C9ED4);
+        func_8002BE44(7, c->unk38 != 0 ? D_800C9EE4 : D_800C9EDC);
         D_80077DF0 = text_get(5);
     }
 }
@@ -404,8 +404,8 @@ void menuMain_update(void) {
 
 void menuMain_exit(void) {
     func_80035674(1);
-    func_80035580(0);
-    func_8003556C(0);
+    func_80035580(NULL);
+    func_8003556C(NULL);
 }
 
 void menuMain_setCursor(u8 arg0) {
@@ -464,4 +464,107 @@ void menuMain_drawParty(void) {
     } while (i < 4);
 }
 
-INCLUDE_RODATA("asm/us/ovl_0c/nonmatchings/tu_800CB434", s_menuMainText);
+s32 fld_getSpriteFrameCount(u16 *arg0) {
+    return *arg0 & 0x7FFF;
+}
+
+u8 *fld_drawSprite3D(u8 *arg0, FieldSprHdr *h, SVECTOR *pos, SVECTOR *rot, s32 scale, s32 frame, s32 abr, s32 arg7,
+                  u32 *arg8) {
+    VECTOR s;
+    SVECTOR zero;
+    MATRIX m;
+    FieldSprArgs c;
+    u16 *p;
+    u8 *b;
+    s32 n;
+    s32 f;
+    u16 *o;
+
+    if (rot == NULL) {
+        rot = &zero;
+        ((s32 *)&zero)[0] = 0;
+        ((s32 *)&zero)[1] = 0;
+    }
+    n = h->unk0 & 0x7FFF;
+    f = frame;
+    if (f >= n) {
+        f = frame % n;
+    }
+    o = &h->unk8[f];
+    n = n * 2 + 8;
+    b = (u8 *)h + n;
+    p = (u16 *)b;
+    f = *p++;
+    c.unk0 = p;
+    c.unk4 = (u8 *)(p + f + 1);
+    c.unk10 = h->unk2 | ((abr & 3) << 5);
+    c.unk14 = h->unk4;
+    c.unkC = (h->unk6 - 1) * 2;
+    c.unk8 = (h->unk7 - 1) * 2;
+    n = *o;
+    c.unk1C = ((u8 *)h)[n++];
+    h = (FieldSprHdr *)((u8 *)h + n);
+    gte_SetRotMatrix(&g_gameState->unk1C->unk18);
+    gte_SetTransMatrix(&g_gameState->unk1C->unk18);
+    gte_ldv0(pos);
+    gte_rtv0tr();
+    func_800316D8(rot, &m);
+    if (scale >= 0) {
+        s.vx = s.vy = s.vz = scale;
+        ScaleMatrix(&m, &s);
+    }
+    gte_stlvnl(m.t);
+    if (rot->pad != 0) {
+        MulRotMatrix(&m);
+    }
+    gte_SetRotMatrix(&m);
+    gte_SetTransMatrix(&m);
+    c.unk20 = (abr == 0xFF) ? 0x2C : 0x2E;
+    c.unk18 = arg7;
+    return fld_emitSprite3D((u8 *)h, &c, arg0, arg8);
+}
+
+/* upload the images and palettes of a texture file to VRAM */
+void fld_loadImagePack(s32 *arg0) {
+    RECT r;
+    RECT *q;
+    u16 *p;
+    u8 *data;
+    s32 n;
+    s32 i;
+    s32 sz;
+    s32 m;
+    s32 ofs;
+
+    ofs = arg0[0];
+    q = (RECT *)((u8 *)arg0 + ofs);
+    ofs = arg0[1];
+    i = 0;
+    p = (u16 *)((u8 *)arg0 + ofs);
+    ofs = *(s32 *)q;
+    n = arg0[2];
+    data = (u8 *)arg0 + ofs;
+    for (; i < n; i++) {
+        r.x = p[0];
+        r.y = p[1];
+        r.w = p[2];
+        r.h = p[3];
+        sz = r.w * r.h * 2;
+        p += 4;
+        LoadImage(&r, (u32 *)p);
+        p = (u16 *)((u8 *)p + sz);
+    }
+    m = ((s32 *)q)[1];
+    q++;
+    for (i = 0; i < m; i++) {
+        r.x = q->x;
+        r.y = q->y;
+        r.w = q->w;
+        r.h = q->h;
+        LoadImage(&r, (u32 *)data);
+        q++;
+        data += r.w * r.h * 2;
+    }
+}
+
+INCLUDE_RODATA("asm/us/ovl_0a/nonmatchings/menu_main", s_menuMainText);

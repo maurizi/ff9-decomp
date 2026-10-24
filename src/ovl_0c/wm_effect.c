@@ -57,7 +57,7 @@ void func_800C4A5C(void) {
     D_800D53CC = 0;
 }
 
-INCLUDE_RODATA("asm/us/ovl_0c/nonmatchings/tu_800C4A5C", D_800A849C);
+INCLUDE_RODATA("asm/us/ovl_0c/nonmatchings/wm_effect", D_800A849C);
 
 void func_800C4DD8(void) {
     WmNode *o;
@@ -405,9 +405,9 @@ void func_800C5A48(u8 arg0) {
     SetBackColor(D_800D3FA0.unk5E0[0].unk20.c[0], D_800D3FA0.unk5E0[0].unk20.c[2], D_800D3FA0.unk5E0[0].unk20.c[4]);
 }
 
-INCLUDE_RODATA("asm/us/ovl_0c/nonmatchings/tu_800C4A5C", D_800A8588);
+INCLUDE_RODATA("asm/us/ovl_0c/nonmatchings/wm_effect", D_800A8588);
 
-INCLUDE_RODATA("asm/us/ovl_0c/nonmatchings/tu_800C4A5C", D_800A8598);
+INCLUDE_RODATA("asm/us/ovl_0c/nonmatchings/wm_effect", D_800A8598);
 
 void func_800C69F4(s32 arg0) {
     WmEmitter *e;
@@ -592,4 +592,4 @@ void func_800C7050(WmNode *arg0) {
     D_800D4848.unk8 = arg0;
 }
 
-INCLUDE_RODATA("asm/us/ovl_0c/nonmatchings/tu_800C4A5C", D_800A8644);
+INCLUDE_RODATA("asm/us/ovl_0c/nonmatchings/wm_effect", D_800A8644);

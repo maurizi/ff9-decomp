@@ -189,13 +189,13 @@ Parities: 2/19 → 4, 50/62/64 → 0, 80 → 4. Asm: 0x800B5958, 0x800C1DC4-0x80
 | fld_main.c | 800A7A48-800AA3F4 | 38 | parity 4 (`fld_main`, `fld_exit`); `fld_load`, `fld_depFind*`; end in the 19→50 window, cut at the fewest crossing calls — weak position |
 | fld_movie.c | 800AA3F4-800B0124 | 42 | parity 0 (`fld_movie*`); end in the 64→80 window — weak position |
 | tu_800B0124.c | 800B0124-800B5004 | 47 | parity 4; end: data cut 0x800B3ACC-0x800B5004 and a single crossing call — medium |
-| tu_800B5004.c | 800B5004-800B5958 | 28 | rodata 800A7170-800A71F4 owned out of order by 0x800B5660/0x800B54FC; end strong (asm) |
+| fld_disc.c | 800B5004-800B5958 | 28 | disc-change screen (event opcode 0xAC, "DISC CHANGE"); rodata 800A7170-800A71F4 owned out of order by 0x800B5660/0x800B54FC; end strong (asm) |
 | fld_asm_800B5958.c | 800B5958-800B61A4 | 1 | strong: hand-written asm |
 | tu_800B61A4.c | 800B61A4-800C1DC4 | 92 | strong edges; internal cuts possible (no calls cross 0x800BA190-0x800BD130; data cuts at 0x800BDC44, 0x800C1A4C) but not placed |
 | fld_asm_800C1DC4.c | 800C1DC4-800C1E14 | 4 | strong: hand-written asm |
-| tu_800C1E14.c | 800C1E14-800C4B30 | 19 | strong start; end: data cut 0x800C3E18-0x800C4B30 — weak position |
+| bgi_move.c | 800C1E14-800C4B30 | 19 | walkmesh actor movement/collision (`bgi_*`); strong start; end: data cut 0x800C3E18-0x800C4B30 — weak position |
 | bgi.c | 800C4B30-800C8124 | 58 | `bgi_dumpText` and its debug strings (rodata 800A71F4-800A7860); end: no call crosses, data cut — medium |
-| tu_800C8124.c | 800C8124-800C9AB8 | 27 | rodata 800A7860-800A7A48; end strong (asm) |
+| menu_main.c | 800C8124-800C9AB8 | 27 | main-menu command screen (`menuMain_*`, runtime) and the 3D-sprite helpers; rodata 800A7860-800A7A48; end strong (asm) |
 | fld_asm_800C9AB8.c | 800C9AB8-800C9CCC | 1 | strong: hand-written asm |
 
 ## ovl_0c (world map): 14 files
@@ -215,11 +215,11 @@ call graph cut between them.
 | w_readtx.c | 800C1DA4-800C2230 | 7 | `w_readtx*`; end medium |
 | w_frmbuf.c | 800C2230-800C3EAC | 13 | `w_frmbuf*`; end: parity flip 169→237 and fewest crossing calls at `w_musicUpdate` — medium |
 | w_music.c | 800C3EAC-800C4A5C | 17 | parity 4 (`w_musicGetID`, `w_musicRequestSend`); end medium (data cut 0x800C497C-0x800C4A5C) |
-| tu_800C4A5C.c | 800C4A5C-800C709C | 8 | parity 4; end strong (asm) |
+| wm_effect.c | 800C4A5C-800C709C | 8 | effect sprites (`wm_*Effect*`); parity 4; end strong (asm) |
 | wm_asm_800C709C.c | 800C709C-800C7914 | 1 | strong: hand-written asm |
-| tu_800C7914.c | 800C7914-800CB1EC | 12 | strong edges |
+| wm_model.c | 800C7914-800CB1EC | 12 | model code shared with ovl_0a (`wm_projectMesh` ..); strong edges |
 | wm_asm_800CB1EC.c | 800CB1EC-800CB434 | 1 | strong: hand-written asm |
-| tu_800CB434.c | 800CB434-800CCA10 | 24 | strong start; rodata 800A8678-800A8860 |
+| menu_main.c | 800CB434-800CCA10 | 24 | copy of ovl_0a menu_main.c (`menuMain_*`); strong start; rodata 800A8678-800A8860 |
 
 In each of the three overlays the first word of `.rodata` (the overlay id) is an object of its own
 (`[0x0, rodata]` in the yaml).
