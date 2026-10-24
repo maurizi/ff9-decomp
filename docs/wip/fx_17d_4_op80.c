@@ -113,6 +113,7 @@ s32 fx_17d_4_op80(s32 mode, Fx17d4Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
     s32 g;
     s32 flag;
     s32 f3;
+    s32 n5y;
     s32 n5x;
     s32 k5x;
     s32 fk;
@@ -431,10 +432,10 @@ s32 fx_17d_4_op80(s32 mode, Fx17d4Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
             c_1 = ex->math_cos(t_c5 >> 1) >> 1;
             g5 = ex->math_cos(t_c5 >> 2) >> 1;
             k5x = (ex->math_cos(c_1) * g5) >> 12;
-            n5x = (ex->math_sin(c_1) * g5) >> 12;
+            n5y = (ex->math_sin(c_1) * g5) >> 12;
             a.vx = work->unk8.vx + k5x;
             a.vy = work->unk8.vy;
-            a.vz = work->unk8.vz + n5x;
+            a.vz = work->unk8.vz + n5y;
             b.vx = a.vx;
             b.vy = work->unk8.vy - 0x1000;
             b.vz = a.vz;
@@ -489,26 +490,26 @@ s32 fx_17d_4_op80(s32 mode, Fx17d4Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
                     flag = 1;
                     f3 = 0;
                 } else {
-                    n5x = (frame - 0x1E) << 9;
+                    n5y = (frame - 0x1E) << 9;
                     k5x = 0x27;
                     k5 = 0x1000;
                     g = 0;
                     x6n = 0x1D;
                     f3 = (frame - 0x1E) * 3;
                     q_c6 = 0x1000;
-                    if (n5x >= 0x800) {
-                        k = (n5x - 0x800) * 2;
+                    if (n5y >= 0x800) {
+                        k = (n5y - 0x800) * 2;
                     } else {
                         k = 0;
                     }
-                    ex->btlfx_drawScreenTint((u32 *)(env->unk20 + 2), 1, ((0x1000 - n5x) * 0x64) >> 12, 0, 0);
+                    ex->btlfx_drawScreenTint((u32 *)(env->unk20 + 2), 1, ((0x1000 - n5y) * 0x64) >> 12, 0, 0);
                 }
             } else {
                 g = 1;
                 x6n = 0x1D;
-                i_c3 = ((frame - 0x26) << 12) / 13;
-                k5x = (i_c3 >> 3) + 0x40;
-                k5 = 0x1000 - i_c3 * 2 / 3;
+                n5y = ((frame - 0x26) << 12) / 13;
+                k5x = (n5y >> 3) + 0x40;
+                k5 = 0x1000 - n5y * 2 / 3;
                 f3 = 0x15;
                 k = k5;
                 q_c6 = k;
