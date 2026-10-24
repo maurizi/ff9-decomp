@@ -2,8 +2,11 @@
 
 Square compiled the boot exe and every overlay from many C files (and a few hand-written asm
 files), linked with PsyQ's `psylink`. This page records the translation-unit (TU) boundaries
-recovered from the binaries and how `src/` is split along them. Done so far: `main`, `ovl_0a`,
-`ovl_0b`, `ovl_0c`. The other overlays are still one C file each.
+recovered from the binaries and how `src/` is split along them. All 20 binaries have been
+analysed. Split into several files: `main`, `ovl_0a`, `ovl_0b`, `ovl_0c`, `ovl_0d`, `ovl_14`,
+`ovl_15`, `ovl_33`, `ovl_64`, `ovl_65`. Kept as one C file, because the evidence shows a single
+game TU or supports no cut: `ovl_32`, `ovl_34`, `ovl_36`, `ovl_37`, `ovl_38`, `ovl_39`,
+`ovl_3a`, `ovl_3b`, `ovl_3c`, `ovl_3e` (see "The other overlays: one TU each").
 
 ## How the boundaries were found
 
@@ -11,7 +14,7 @@ None of these leave padding in `.text`: psylink packed every object's sections a
 gcc 2.8.1 aligns functions to 4, so there is no zero word at any function boundary (checked for
 all four binaries). The evidence instead comes from:
 
-1. **Library placement (main only, strong).** PsyQ library objects (signature-identified,
+1. **Library placement (main and ovl_64, strong).** PsyQ library objects (signature-identified,
    `config/symbols.psyq.us.txt`) are interleaved with game code because psylink pulls a library
    module in right after the first object that references it. Every run of library code is
    therefore its own object, and the object ending just before it is the TU that contains the
@@ -41,13 +44,25 @@ all four binaries). The evidence instead comes from:
    `chr_`, `btlfx_`, `btlui_`…) and Square's own names from strings (`Hi_*`, `w_frame*`,
    `w_memoryman*`, `w_readtx*`, `w_frmbuf*`, `w_music*`, `w_movement*`).
 8. **Compiler flags.** ovl_0b 0x800C2DF4-0x800C58E4 is `-O1` (`btlcam_o1.c`).
+9. **Copies of the same helpers (medium).** The overlays carry several byte-identical copies
+   of small helpers that reference the same symbols, e.g. the "clear this frame's OT" function
+   (`ClearOTagR(g_gameState->unk1C->unk10[unk8], 0x1000)`, 4 copies in ovl_14, 3 in ovl_15).
+   One file can't define two functions that are the same `static` helper, so the copies sit in
+   different TUs. Copy-pasted code inside one file is possible too, so this counts only when the
+   copies fall into separate call clusters. When the order of tables or data ties the copies
+   together, it doesn't count (ovl_3c). The same run of functions in two overlays (module "W" in
+   ovl_14 and ovl_15) is one source file linked into both.
+10. **Overlay header word.** The first `.rodata` word of every overlay except ovl_64 (the
+    overlay id) is an object of its own (`[0x0, rodata]`). ovl_34, ovl_39 and ovl_3a prove it:
+    their jump tables are at address mod 8 = 4, which a single C object only produces when its
+    rodata starts at offset 4.
 
 **Check that the split is right:** with the TU split, the binaries now build without the
 `.align 3 -> .align 2` rewrite and without the 16 hand-placed `.word 0` / `.align 3` rodata
 padding statements the merged files needed (Makefile `TU_SPLIT`). gcc's own jump-table
 alignment inside each object, with objects linked at 4 (`subalign: 4`), reproduces every
-original padding word in main, ovl_0a, ovl_0b and ovl_0c. A TU that started at the wrong
-rodata parity would misplace its jump tables and fail `make verify`.
+original padding word, in all 20 binaries (`TU_SPLIT` now lists every one). A TU that started
+at the wrong rodata parity would misplace its jump tables and fail `make verify`.
 
 Strength in the tables: **strong** = library/asm object edge, `NOCUT` constraint, or
 jump-table parity plus rodata ownership; **medium** = a data-order cut in a narrow window,
@@ -57,8 +72,10 @@ Files named `tu_XXXXXXXX.c` (start address) have no evidence-backed subsystem na
 runs are `psyq_XXXXXXXX.c`, hand-written asm `*_asm.c`; both stay `INCLUDE_ASM` and are not
 decompiled.
 
-The analysis scripts were throwaway (build/tu/an.py in the worktree that did this). The
-reasoning above is enough to redo any of it.
+The analysis scripts were throwaway (build/tu/an.py in the worktrees that did this: a full
+asm split of each binary into build/tu/out using copies of the yamls, then per-function
+references, jump-table parity, the rodata/data/bss order check for every candidate cut, crossing
+calls and duplicate functions). The reasoning above is enough to redo any of it.
 
 ## main (SLUS_012.51): 81 files
 
@@ -207,10 +224,107 @@ call graph cut between them.
 In each of the three overlays the first word of `.rodata` (the overlay id) is an object of its own
 (`[0x0, rodata]` in the yaml).
 
+## ovl_0d (Tetra Master): 2 files
+
+| file | range | funcs | evidence |
+|---|---|---|---|
+| tu_800A752C.c | 800A752C-800A7E10 | 10 | rodata 800A7004-800A7050 (two jump tables of `func_800A78EC`, parity 4); defines `D_800B365C`, its `.data`, which psylink put at the start of `.data`, right after `.text` (yaml `[0xC65C, .data, tu_800A752C]`); end strong: parity flip between the adjacent functions 0x800A78EC (4) and 0x800A7E10 (0) |
+| tu_800A7E10.c | 800A7E10-800B365C | 122 | parity 0: rodata 800A7050-800A752C, the task-state debug names ("ENEMY CARD SELECT", "PLAYER CARD SELECT"…) and the jump table of the dispatcher `func_800A7E10`; at least 15 calls (up to 100) cross every internal cut the data order allows, so there is no candidate |
+
+## ovl_14 (opening / logo sequencer): 8 files
+
+Parities: f0 → 4, f14 → 0, f70 → 4 (f = function index). Exact copies of the OT-clear helper
+at f1, f72, f78 and f83, and of `func_800AA9D8` at f79/f84, put those functions in four
+different TUs.
+
+| file | range | funcs | evidence |
+|---|---|---|---|
+| tu_800A7088.c | 800A7088-800A7578 | 5 | parity 4 (rodata 800A7004-800A7020, jump table of the main loop `func_800A7088`); like ovl_15's first file it starts with main, OT clear and frame swap (`func_800A72C0` = ovl_15 `func_800A7280`); end weak (fewest crossing calls before the parity-0 TU) |
+| tu_800A7578.c | 800A7578-800A7FF0 | 12 | parity 0 (rodata 800A7020-800A706C, two jump tables of `func_800A799C`); end medium (module W) |
+| tu_800A7FF0.c | 800A7FF0-800A833C | 11 | module W: the same 11 functions as ovl_15 tu_800ACE1C.c (6 byte-identical modulo relocations, the rest close in size), with its own state struct `D_800AB308` (+0/+3 fields) — medium |
+| tu_800A833C.c | 800A833C-800A8574 | 15 | state callbacks (`D_800AB310`, `D_800AB318`); edges set by the modules on both sides — weak |
+| tu_800A8574.c | 800A8574-800A9220 | 27 | a window module like ovl_15's X/Y/Z (state struct `D_800AB320`; `func_800A859C` is its open function) — medium start; end strong (parity) |
+| tu_800A9220.c | 800A9220-800A9E14 | 5 | parity 4 (rodata 800A706C-800A7088); OT-clear copy 0x800A9B14; end medium (0x800A9E14 and its callees form the next cluster) |
+| tu_800A9E14.c | 800A9E14-800AAADC | 5 | OT-clear copy 0x800AA994, `func_800AA9D8` — medium |
+| tu_800AAADC.c | 800AAADC-800AB230 | 7 | OT-clear copy 0x800AB09C, `func_800AB0E0` (copy of `func_800AA9D8`) — medium |
+
+## ovl_15 (ending + blackjack): 8 files
+
+Parities: f0 → 4, f20/f43 → 0, f88 → 4. The OT-clear copies (f1, f5, f41) and the pair
+`func_800AAFFC` / `func_800AC494` separate their files. The three window modules X, Y and Z
+come from one template. Each has its own state struct and byte-identical helpers:
+0x800AB160/0x800AD194/0x800AD4AC, 0x800AB198/0x800AD1CC/0x800AD4E4 (`func_8002C4B0(0)`),
+0x800AB34C/0x800AD308, 0x800AB37C/0x800AD338/0x800AD624 and 0x800AB39C/0x800AD358.
+
+| file | range | funcs | evidence |
+|---|---|---|---|
+| tu_800A713C.c | 800A713C-800A7378 | 3 | parity 4 (rodata 800A7004-800A7018, jump table of `func_800A713C`); main, OT clear, frame swap; end medium (0x800A7378 calls 0x800A766C-0x800A7A84, which hold the second OT-clear copy) |
+| tu_800A7378.c | 800A7378-800AB100 | 22 | parity 0 (rodata 800A7018-800A7088: strings and the jump table of the blackjack loop `func_800A9488`); the data order forbids every cut from 0x800A8528 to 0x800AAD24; end medium (module X) |
+| tu_800AB100.c | 800AB100-800AB490 | 13 | window module X, state `D_800B0F50` — medium |
+| tu_800AB490.c | 800AB490-800ACE1C | 10 | parity 0 (rodata 800A7088-800A70D4, two jump tables of `func_800AC598`); third OT-clear copy, `func_800AC494` — medium |
+| tu_800ACE1C.c | 800ACE1C-800AD138 | 11 | module W (see ovl_14), state `D_800B0FD8` — medium |
+| tu_800AD138.c | 800AD138-800AD44C | 13 | window module Y, state `D_800B0FE0` — medium |
+| tu_800AD44C.c | 800AD44C-800AD7DC | 16 | window module Z, state `D_800B0FF0` — medium |
+| tu_800AD7DC.c | 800AD7DC-800AE0E0 | 8 | parity 4 (rodata 800A70D4-800A713C); one call crosses its start — strong |
+
+## ovl_33 (equip / abilities menu): 2 files
+
+| file | range | funcs | evidence |
+|---|---|---|---|
+| tu_801EE7C0.c | 801EE7C0-801F1150 | 41 | rodata 801EDF04-801EE644; end medium: no call crosses 0x801F1150, and the rodata, data and bss order each allow the cut with items on both sides (the window is 0x801F0FA4-0x801F1150) |
+| tu_801F1150.c | 801F1150-801F33A8 | 32 | rodata 801EE644-801EE7C0; each half has its own screen-init triple (0x801F05FC / 0x801F2C0C, the same shape) |
+
+## ovl_64 (movie player): 5 files
+
+| file | range | funcs | evidence |
+|---|---|---|---|
+| mbg.c | 801990A0-8019AE44 | 24 | rodata 80198700-80199050 (movie path table, the `MBG_init()` warning, "Using scratchpad"); `MBG_init`, `mbg_play`, `mbg_update`…; end strong (asm) |
+| mbg_vlc_asm.c | 8019AE44-8019B7C4 | 6 | strong: hand-written asm (`mbg_vlc*`, `mbg_applyMask`; config/library_funcs.us.txt) |
+| mbg_stream.c | 8019B7C4-8019CD60 | 24 | strong edges (asm before, library after); `mbg_stream*` |
+| psyq_8019CD60.c | 8019CD60-8019D3F0 | 16 | strong: libpress LIBPRESS.OBJ. Its PsyQ 4.6/4.7 signature is 0x690 bytes long and covers `DecDCTReset` .. `DecDCToutCallback`, the `MDEC_*` internals and `func_8019D36C`; `func_8019D354` (its `text_5F4`) is decompiled C here. Rodata 80199050-801990A0 (MDEC strings) |
+| psyq_8019D3F0.c | 8019D3F0-8019D3FC | 1 | strong: libpress DCT002.OBJ, i.e. `DecDCTBufSize` (`lhu v0,0(a0); jr ra; nop`, the 12-byte PsyQ 4.6/4.7 signature), exactly where LIBPRESS.OBJ ends |
+
+The two bytes `A3 25` at 8019904E (inside `D_8019903C`) are the pad between mbg.c's rodata
+and LIBPRESS.OBJ's, garbage left by the linker. ovl_64 has no overlay header word.
+`func_8019D354` and `func_8019D3F0` are library code but are still counted as game functions,
+because they aren't in `config/symbols.psyq.ovl_64.us.txt`. Listing them there (as
+`DecDCTBufSize` for the second) would drop 2 functions from the game totals.
+
+## ovl_65 (battle end / game over): 2 files
+
+| file | range | funcs | evidence |
+|---|---|---|---|
+| battle_end.c | 801EF284-801F3488 | 87 | rodata 801EDF04-801EF260 (`g_rewardsText`, two tables of `func_801F2D74`); `battleEnd_main`, `battleEnd_init`, `rewards_update` |
+| gameover.c | 801F3488-801F3B88 | 4 | strong: the jump table at 801EF268 has parity 0 while the binary's C rodata starts at parity 4, so an object starts at 801EF260 (`D_801EF260`, the only item edge that fits). The data order forbids every cut from 0x801F2E24 to 0x801F347C, which leaves exactly `gameover_main`. Holds `gameover_main` and `battleEnd_update` |
+
+## The other overlays: one TU each
+
+None of these has a jump-table parity flip, library or asm code, a zero-crossing cut with data
+on both sides, or helper copies in separate call clusters, so each keeps `ovl_XX.c`. With the
+header word as its own object they build without the alignment rewrite, so their jump tables
+(if any) agree with a single TU starting at offset 4.
+
+| binary | funcs | evidence |
+|---|---|---|
+| ovl_32 (Chocograph) | 29 | no jump tables; the only data-allowed cuts with ≤ 3 crossing calls (before 0x801F9660 and 0x801F9668) have data on one side only |
+| ovl_34 (config) | 53 | one jump table (parity 4, `func_801EF50C`). 4 functions are byte-identical to ovl_39 ones (0x801EFC20 = 0x801F7FD4, 0x801F02CC/0x801F0380/0x801F043C = 0x801F8C34/0x801F8CE8/0x801F8BD4), but in a different order, so they are shared code, not a shared object |
+| ovl_36 (card ranks) | 43 | no jump tables; the copies 0x801F23DC/0x801F2548 are a function and its own callee |
+| ovl_37 (items) | 47 | no jump tables, no candidate |
+| ovl_38 (status) | 24 | no jump tables; the data-allowed cuts at 0x801EFAF8/0x801EFB08 would only split off the last 2 functions, which the first calls |
+| ovl_39 (save / load) | 187 | two jump tables, both parity 4. It holds no library code: no PsyQ signature matches, and the libcard calls go to main's `_card_*`. The memory-card wrappers 0x801FA0C8-0x801FAF74 (all the `_card_*` callers, the "bu00:" strings, the last .data/.bss items) could be a file of their own. The data order allows a cut anywhere in 0x801F94D0-0x801FA21C, but 34+ calls cross each position and nothing else marks one, so it isn't split |
+| ovl_3a (name entry) | 20 | one jump table, parity 4 |
+| ovl_3b (party select) | 20 | no candidate |
+| ovl_3c | 90 | the screen-module copies (0x801F4C68.. / 0x801F60A8.., more at 0x801F832C..) look like separate files, but the rodata tables are ordered by user 0x801F4B48, 0x801F5F88, 0x801F7770, 0x801F51B8, 0x801F6714, interleaving the copies, and the data/bss order forbids nearly every cut: one TU |
+| ovl_3e | 21 | no jump tables; the copies (0x801F66AC/0x801F66F4, 0x801F689C/0x801F68D8) are adjacent |
+
 ## What was not split, and why
 
-- **`.data` stays one asm file per binary.** No C defines data yet, so the data split would only
-  move `.s` files; the data ranges above are evidence, not subsegments.
+- **`.data` stays one asm file per binary.** Only one C file defines data (ovl_0d's
+  `D_800B365C`, given a `.data` subsegment of its own). Otherwise a data split would only move
+  `.s` files, so the data ranges above are evidence, not subsegments.
+- **Cuts placed by call clusters only.** ovl_14's first cut (0x800A7578) and the start of its
+  tu_800A833C.c are positioned by call clusters alone. In ovl_15, 0x800A7378-0x800A7ABC could be
+  a file of its own (the data allows a cut before 0x800A7ABC), but nothing else marks it.
 - **btl_mesh.c (ovl_0b 0x800C58E4-0x800C8BE0)** mixes two hand-written asm functions with C.
   CLAUDE.md notes 0x800C7730-0x800C8BE0 may use other compiler flags. It probably holds 3-4
   objects, but with no rodata or flag evidence for the cuts it stays one file.
@@ -229,14 +343,21 @@ In each of the three overlays the first word of `.rodata` (the overlay id) is an
 
 - `config/slus_012.51.yaml`: `subalign: 4`, `ld_align_section_vram_end: false`,
   `ld_align_segment_vram_end: false` (as the overlays have), 81 C subsegments + 24 `.rodata`.
-- `Makefile`: `TU_SPLIT := src/main src/ovl_0a src/ovl_0b src/ovl_0c` skips the `.align 3 → 2`
-  rewrite for those directories. The 16 rodata padding `__asm__` statements are gone. `ccprobe`
-  and `permute` still rewrite the alignment; it doesn't matter for single functions.
+- `Makefile`: `TU_SPLIT := src/main $(foreach o,$(OVLS),src/ovl_$(o))` skips the `.align 3 → 2`
+  rewrite for every binary (only the effect modules still get it). The 16 rodata padding
+  `__asm__` statements are gone (the other overlays had none). `ccprobe` and `permute` still
+  rewrite the alignment; it doesn't matter for single functions.
+- Overlay yamls: `[0x0, rodata]` header word in all but ovl_64; C and `.rodata` subsegments
+  for the files above; ovl_0d's `[0xC65C, .data, tu_800A752C]`.
 - `tools/resplit.py`: (1) INCLUDE lines that move to another file get that file's asm path;
   (2) a rodata symbol that a new subsegment boundary splits off an old INCLUDE_RODATA keeps
   its slot (it used to be dropped as "now emitted by C"); (3) an INCLUDE_RODATA line only
-  travels with the item below it when both end up in the same file. New files get splat's
-  `#include "common.h"` preamble; replace it with `ff9.h` / `ovl_XX.h`.
+  travels with the item below it when both end up in the same file; (4) a new file that takes
+  over the first item of an old file that disappeared gets that file's whole preamble (without
+  this, ovl_0d's `D_800B365C` definition was silently lost), and the other new files get the
+  `#include` lines of their binary's old files instead of splat's `#include "common.h"`. When a
+  removed file's preamble held more than includes and can't be carried over, it prints a
+  warning. Re-running it on the pre-split single files reproduces the committed split exactly.
 - `tools/integrate.py`: the default target is now `src/main` (a directory). Each function goes
   to whichever C file of the binary has its `INCLUDE_ASM`. `--into` takes a directory or a file.
 - Unchanged, already glob `src/<bin>/*.c`: `progress.py`, `rename.py`, `void_returns.py`,
@@ -247,6 +368,10 @@ In each of the three overlays the first word of `.rodata` (the overlay id) is an
 The port globs `src/<bin>/*.c` (`src_of` in its Makefile), so it picks up the new files. These
 need updating there:
 
+- `config/patches.txt` line 177 names `src/ovl_65/ovl_65.c`. Its pattern
+  (`DrawOTagEnv(cur->unk70, &cur->draw);`, ×1) is now in `src/ovl_65/gameover.c`. No other
+  port file names a file of ovl_0d/14/15/33/64, whose `ovl_XX.c` files are gone. The single-TU
+  overlays keep `ovl_XX.c`.
 - `config/patches.txt` names files that no longer exist (`src/main/main.c`,
   `src/ovl_0a/ovl_0a.c`, `src/ovl_0b/ovl_0b{,_2,_3,_o1}.c`, `src/ovl_0c/ovl_0c.c`). Where each
   pattern is now (line numbers of patches.txt as of 2026-10-24; a pattern found in several files lists
