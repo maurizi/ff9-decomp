@@ -448,11 +448,11 @@ s32 fx_17d_4_op80(s32 mode, Fx17d4Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
             b2.vy = work->unk8.vy - 0x1000;
             b2.vz = a2.vz;
             env->unk28 = 0x10;
-            x_c6 = (frame << 12) / 51;
-            c_6 = 0x1000 - x_c6;
+            r_c2 = (frame << 12) / 51;
+            c_6 = 0x1000 - r_c2;
             ex->func_800D23D8((u8 *)ex->btlfx_getFileData(entry->unk8, 3), &a2, NULL, 0xAAA, 0, 1, c_6);
             func_801E7720((u8 *)ex->btlfx_getFileData(entry->unk8, 0x20), &a2, &b2, frame, c_6, 1,
-                          (x_c6 >> 7) + 0x20);
+                          (r_c2 >> 7) + 0x20);
             env->unk28 = 0;
             rot2.vx = 0x400;
             rot2.vz = 0;
@@ -479,7 +479,7 @@ s32 fx_17d_4_op80(s32 mode, Fx17d4Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
                     g = 0;
                     q_c6 = 0;
                     k = 0;
-                    x_c6 = frame;
+                    r_c2 = frame;
                     flag = 1;
                     f3 = 0;
                 } else {
@@ -488,7 +488,7 @@ s32 fx_17d_4_op80(s32 mode, Fx17d4Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
                     w13_c6 = 0x1000;
                     g = 0;
                     q_c6 = 0x1000;
-                    x_c6 = 0x1D;
+                    r_c2 = 0x1D;
                     f3 = (frame - 0x1E) * 3;
                     if (q6b >= 0x800) {
                         k = (q6b - 0x800) * 2;
@@ -499,7 +499,7 @@ s32 fx_17d_4_op80(s32 mode, Fx17d4Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
                 }
             } else {
                 g = 1;
-                x_c6 = 0x1D;
+                r_c2 = 0x1D;
                 r_c6 = ((frame - 0x26) << 12) / 13;
                 o_3_c6 = (r_c6 >> 3) + 0x40;
                 f3 = 0x15;
@@ -507,7 +507,7 @@ s32 fx_17d_4_op80(s32 mode, Fx17d4Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
                 k = w13_c6;
                 q_c6 = k;
             }
-            func_801E77DC(entry, &D_801E971C, x_c6, o_3_c6, w13_c6, g, flag);
+            func_801E77DC(entry, &D_801E971C, r_c2, o_3_c6, w13_c6, g, flag);
             if (q_c6 != 0) {
                 func_801E7B8C(entry, &D_801E971C, f3, q_c6);
                 func_801E7EB4(entry, &D_801E971C, k);
