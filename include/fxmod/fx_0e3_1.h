@@ -41,4 +41,84 @@ typedef struct {
 void func_801ECFE4(SVECTOR *pos, SVECTOR *rot, VECTOR *scale, s32 r0, s32 r1, s32 w0, s32 w1, s32 c, s32 tpage,
                    s32 clut, s32 u, s32 v, s32 ang, s32 dy, s32 abr, s32 dang);
 
+typedef struct {
+    s32 vx;
+    s32 vy;
+    s32 vz;
+} Fx0e31Vec3;
+
+typedef struct {
+    u32 unk0; /* state */
+    s32 unk4; /* frame counter */
+    SVECTOR unk8; /* centre */
+    Fx0e31Vec3 unk10; /* summon position */
+    Fx0e31Vec3 unk1C; /* summon scale */
+    SVECTOR unk28; /* summon rotation */
+    SVECTOR unk30; /* hand position */
+    SVECTOR unk38;
+    SVECTOR unk40; /* camera target */
+    SVECTOR unk48;
+    u8 pad50[8];
+    SVECTOR unk58; /* hand rotation */
+    Pool6CEntry *unk60;
+    Pool6CEntry *unk64;
+    Pool6CEntry *unk68;
+    s32 unk6C;
+    Pool6CEntry *unk70;
+    Pool6CEntry *unk74;
+    s16 unk78;
+    s16 unk7A;
+    s32 unk7C; /* model */
+    SVECTOR unk80;
+    Fx0e31Vec3 unk88;
+    Fx0e31Vec3 unk94;
+    s32 unkA0; /* model */
+    Fx0e31Vec3 unkA4;
+    Fx0e31Vec3 unkB0;
+    SVECTOR unkBC;
+    s32 unkC4; /* models */
+    s32 unkC8;
+    s32 unkCC;
+    s32 unkD0;
+    s32 unkD4;
+    s32 unkD8;
+    s32 unkDC;
+    s32 unkE0;
+} Fx0e31Work80; /* 0xE4 */
+
+typedef struct {
+    u8 unk0;
+    u8 unk1;
+    u8 unk2;
+    u8 unk3;
+    SVECTOR unk4[13];
+} Fx0e31Bolt13; /* 0x6C */
+
+typedef struct {
+    u8 unk0;
+    u8 unk1;
+    u8 unk2;
+    u8 unk3;
+    SVECTOR unk4[5];
+} Fx0e31Bolt5; /* 0x2C */
+
+typedef struct {
+    u8 pad0[0x198];
+    BtlUnit9CC *unk198;
+    BtlUnit9CC *unk19C;
+} Fx0e31SummonData;
+
+typedef struct {
+    u8 pad0[0x54];
+    Fx0e31SummonData *unk54;
+    u8 pad58[8];
+    s32 unk60; /* summon model */
+} Fx0e31Summon;
+
+#define SUMMON(env) ((Fx0e31Summon *)(env)->unk4)
+
+extern SVECTOR D_801F09B4;
+extern Fx0e31Bolt13 D_801F0A14[];
+extern Fx0e31Bolt D_801F0D14[3];
+
 #endif
