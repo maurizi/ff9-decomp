@@ -1,4 +1,4 @@
-/* Draft of fx_0fb_1 fx_0fb_1_op80. Status: 128 lines, 74 ignoring registers (build/w/nd.py, which now masks all |imm| >= 10000 data offsets). Cases 3-6 use fx_17a op80's final variable roles (src/fxmod/fx_17a); mode 0/1 are if/else-if branches with one return 0 (as fx_17a); further splits found by build/w/pgreedy.py + gen_regions.py. */
+/* Draft of fx_0fb_1 fx_0fb_1_op80. Status: 106 lines, 60 ignoring registers (build/w/nd.py, which now masks all |imm| >= 10000 data offsets). Cases 3-6 use fx_17a op80's final variable roles (src/fxmod/fx_17a); mode 0/1 are if/else-if branches with one return 0 (as fx_17a); further splits found by build/w/pgreedy.py + gen_regions.py. */
 #include "fxmod/fx_0fb_1.h"
 
 typedef struct {
@@ -220,13 +220,15 @@ s32 fx_0fb_1_op80(s32 mode, Fx0fb1Op80Work *work, Unk800F78A4 *env, Unk80100C78E
             for (i = 0, zz4 = 0; i < 0x19; i += 1 + (zz4 & 1)) {
                 zz7 = ex->btlfx_poolSpawn((s16 *)entry->unk10);
                 if (zz7 != NULL) {
+                    s32 kk;
+
                     zz7->unk0 = i & 1;
                     zz7->unkC.vx = work->unkC.vx;
                     zz7->unkC.vy = work->unkC.vy;
                     zz7->unkC.vz = work->unkC.vz;
-                    zz3 = (i + 1) % 7;
-                    zz7->unkC.vy -= D_801F0868[i * 2] * 2 - zz3 * 0x140;
-                    zz7->unkC.vz -= (zz3 << 10) + ex->btlfx_randCentered(0x200);
+                    kk = i + 1;
+                    zz7->unkC.vy -= D_801F0868[i * 2] * 2 - (kk %= 7) * 0x140;
+                    zz7->unkC.vz -= (kk << 10) + ex->btlfx_randCentered(0x200);
                     zz7->unkC.vx -= D_801F0868[i * 2 + 1] * 2;
                     zz7->unkA = ex->btlfx_randCentered(0x800) + 0x1000;
                 }
