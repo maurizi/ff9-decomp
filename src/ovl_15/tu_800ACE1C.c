@@ -84,7 +84,7 @@ u8 func_800AD0C4(s32 arg0, s32 arg1) {
 
 s32 func_800AD0DC(void) {
 
-    if (func_8002F810() == 0) {
+    if (fade_isBusy() == 0) {
         return (u32)(D_800B0FD8.unk0 - 1) < 3;
     }
     return 0;

@@ -541,7 +541,7 @@ extern Unk800686E8 D_800686E8;
 extern Unk800686E8 D_800686D0[];
 extern Unk800686E8 D_800687E0[]; /* digit glyphs */
 
-/* 12-tick toggle timer (func_80028CF8/D08/D2C) */
+/* 12-tick toggle timer (ui_initMemberSwitch/D08/D2C) */
 typedef struct {
     u8 unk0; /* active */
     u8 unk1;
@@ -750,7 +750,7 @@ extern u8 D_80077DB2;
 extern s32 D_800704C8;
 extern s32 D_8007041C;
 extern u8 D_80077DE0;
-extern struct Unk8007B9C0 *D_8007BB78;
+extern struct Unk8007B9C0 *g_msgFocus;
 extern s32 D_800834C8;
 extern s32 D_8006798C;
 extern u16 g_padFlags;
@@ -906,7 +906,7 @@ typedef struct {
     s32 unk10;
 } VoiceParams;
 
-/* frame animation (func_80035B90) */
+/* frame animation (sprAnim_update) */
 typedef struct {
     u16 unk0; /* cell list index */
     u8 unk2; /* ticks */
@@ -956,7 +956,7 @@ typedef struct {
     u8 pad27;
     Unk4 unk28;
 } Unk80077C78;
-extern Unk80077C78 D_80077C78;
+extern Unk80077C78 g_fade;
 u32 *func_8002FBC0(s32);
 #if !defined(OVL_0C_H) /* ovl_0c declares its own typed view */
 void func_80030AF4(void *, void *); /* rotation -> matrix */
@@ -1163,7 +1163,7 @@ typedef struct Unk8004AB64 {
     u8 unk93;
     s16 unk94;
     s16 unk96;
-    struct Unk8004AB64 *unk98; /* object collided with (func_800475D8) */
+    struct Unk8004AB64 *unk98; /* object collided with (evt_movePlayer) */
     s32 unk9C;
     struct Unk8004AB64 *unkA0;
     u16 unkA4;
@@ -1233,8 +1233,8 @@ extern s32 D_8007AEC0;
 extern s32 g_evtEncounterPending;
 void func_80050044(void);
 
-/* Inlined copy of func_8004B040 (find object by id). */
-static inline Unk8004AB64 *func_8004B040_inline(s32 id) {
+/* Inlined copy of evt_getObject (find object by id). */
+static inline Unk8004AB64 *evt_getObject_inline(s32 id) {
     Unk16D8 *n;
     for (n = g_evtState->unk16D8; n != NULL; n = n->unk0) {
         if (n->unk4->unk7 == id) {
@@ -1346,7 +1346,7 @@ typedef struct {
     s32 unk4; /* frame counter */
     s32 unk8;
 } Unk80077E50;
-extern Unk80077E50 D_80077E50;
+extern Unk80077E50 g_menuScreen;
 extern u8 D_80077E53;
 extern s32 g_evtLastEncounter;
 extern u8 D_8007954E;
@@ -1365,10 +1365,10 @@ void config_reset(void);
 void win_runFrame(void);
 void timer_resetAll(void);
 void timer_update(void);
-void func_8002FA50(s32);
-void func_8002FAAC(s32);
-void func_8002FB08(s32);
-void func_8002FB64(s32);
+void fade_in(s32);
+void fade_out(s32);
+void fade_inAdditive(s32);
+void fade_outAdditive(s32);
 void func_80030770(u8 *);
 s32 func_8002F5A0(void (*)(void));
 MATRIX *func_80030B34(SVECTOR *, MATRIX *, s32);
@@ -1389,9 +1389,9 @@ extern s16 g_sinTable[];
     if ((mk) & 0x800) {                               \
         out = -out;                                   \
     }
-void func_8002FC38(void);
-void func_8002F6C8(void);
-void func_8002FC8C(s32, s32, s32, s32);
+void fade_init(void);
+void fade_update(void);
+void fade_start(s32, s32, s32, s32);
 void func_80032658(void);
 void menu_doOpen(s32, s32);
 void akao_init(void);
@@ -1476,7 +1476,7 @@ typedef struct {
     s16 unk4;
     Unk6 unk6[105];
 } Unk80083248;
-extern Unk80083248 D_80083248;
+extern Unk80083248 g_cards;
 
 typedef struct Unk8007B9C0 {
     struct Unk8007B9C0 *unk0; /* parent */
@@ -1501,12 +1501,12 @@ typedef struct Unk8007B9C0 {
     u8 unk2A;
     u8 unk2B;
 } Unk8007B9C0;
-extern Unk8007B9C0 D_8007B9C0[];
+extern Unk8007B9C0 g_msgWindows[];
 
 extern u8 D_80077E2F;
 extern s16 D_80077E30; /* = D_80077E28.unk8 */
 
-void func_80036470(void);
+void menuScreen_loadOverlay(void);
 void func_80059AA8(s32, s32);
 s32 preload_poll(void);
 void preload_clearBusy(void);
@@ -1623,7 +1623,7 @@ extern u32 *D_8007BCA4;
 void akao_applyCdVolume(void);
 void func_800325E0(void);
 void game_initTimer(void);
-s32 func_8002F8E4(s32);
+s32 fade_setOtz(s32);
 
 /* one auto-repeat channel: pad_updateRepeat ORs its buttons into g_padRepeat after delay, then every interval frames */
 typedef struct {
@@ -1673,9 +1673,9 @@ typedef struct {
 } Unk80021698;
 
 extern s32 D_8007B960;
-extern s32 D_8007B958;
-extern s32 D_8007B95C;
-extern s32 D_8007B96C;
+extern s32 g_msgChoice;
+extern s32 g_msgChoiceCount;
+extern s32 g_msgChoiceCancel;
 extern s32 D_8007B974;
 extern s32 D_8007BB94;
 
@@ -1895,12 +1895,12 @@ typedef struct {
 } Unk8006D548;
 extern Unk8006D548 D_8006D548[];
 void func_80033BD0(u32);
-void func_8004EA30(Unk8007B9C0 *);
-Unk8007B9C0 *func_8004EA3C(void);
-extern s32 D_8007B968;
-extern s32 D_8007B970;
+void msg_setFocus(Unk8007B9C0 *);
+Unk8007B9C0 *msg_getFocus(void);
+extern s32 g_msgChoiceLine;
+extern s32 g_msgChoiceWindow;
 extern Unk4 D_8007B99C;
-extern Unk4 D_80011A6C; /* rodata constant, used by func_8004D2C0 */
+extern Unk4 D_80011A6C; /* rodata constant, used by msg_advanceText */
 
 
 void func_800615F8(void);
@@ -1909,7 +1909,7 @@ extern Unk80080A10 *D_800831C8[24];
 void akao_setVoiceRelease(s32, s32, s32);
 void help_draw(void);
 void help_toggle(void);
-void func_80035B90(Unk80035B90 *);
+void sprAnim_update(Unk80035B90 *);
 void func_80032A18(u8 *);
 void func_8005658C(s32 *, Unk8005EBB4 *, u32, s32);
 s32 func_80056750(s32 *, s32, s32, u32);
@@ -1938,7 +1938,7 @@ extern RECT D_8006BC38;
 void func_80061C1C(void);
 void akao_setVoicePitch(s32, s32);
 void akao_setVoiceVolume(s32, u32, u32, s32);
-u8 func_8002F800(void);
+u8 fade_isActive(void);
 void func_80032238(void);
 u16 pad_getFlags(void);
 void pad_setFlags(u16, s32);
@@ -1947,8 +1947,8 @@ void pad_setAnalogThresholds(Unk4 *);
 extern u8 g_padSavedStickFlag;
 extern Unk4 g_padSavedThresholds;
 extern Unk4 g_padStickDpadThresholds;
-void func_80035E40(void);
-void func_80035F94(void);
+void menuScreen_drawCommands(void);
+void menuScreen_updateOpen(void);
 void func_80060D1C(s32, s32, s32, s32);
 void func_80060ED8(s32, s32, void (*)(void));
 s32 func_800C44F4(u32); /* field overlay (ovl_0a) */
@@ -1962,7 +1962,7 @@ u8 timer_isEnabled(void);
 void timer_draw(void);
 void game_tickClock(void);
 extern Unk80035B90Data D_80010E48;
-void func_80035B24(Unk80035B90 *, Unk80035B90Data *);
+void sprAnim_init(Unk80035B90 *, Unk80035B90Data *);
 s32 func_800565DC(s32 *);
 extern u16 *D_800809DC;
 extern u16 *D_800809E4;
@@ -1977,7 +1977,7 @@ void func_800616F8(s32, s32, s32, s32);
 s32 preload_isBusy(PreloadEntry *);
 u8 func_8002F8BC(); /* called with an argument it ignores */
 extern void (*D_8006CA64[])(void);
-extern s32 D_8006CA40[];
+extern s32 g_menuTypeOvl[];
 void func_80032708(void);
 void func_80032798(void);
 typedef struct {
@@ -2019,7 +2019,7 @@ void func_8004AC80(void);
 extern u16 D_8007AE12;
 void func_80032384(void);
 void func_800326B0(void);
-void func_80036560(void);
+void menuScreen_onSwitchFaded(void);
 CdReadCtx *cdRead_init(void *, s32, s32, void *, s32, s32, void (*)(CdReadCtx *));
 s32 cdRead_update(void *);
 void preload_init(); /* takes no args, but ovl_0b passes one */
@@ -2097,10 +2097,10 @@ void func_8002F40C(MenuList *, RECT *, RECT *);
 void snd_playSe(s32);
 void func_8002F514(s32);
 void func_8002F55C(s32);
-u8 func_8002F810(void);
-s32 func_8002F8A8(void (*)(void));
+u8 fade_isBusy(void);
+s32 fade_setOnDone(void (*)(void));
 u16 func_8002F93C(u16);
-void func_8002F9D0(void);
+void fade_inDefault(void);
 void func_800320B8(s32, s32, s32, s32);
 void menu_open(s32, s32);
 void func_8003253C(void);
@@ -2114,7 +2114,7 @@ u8 func_800349BC(s32, s32);
 u8 func_80034A30(Character *);
 u8 func_80034A04(u32 *, s32);
 void help_setBounds(RECT *);
-void func_800355E4(); /* unprototyped: the argument is unused and most callers pass none */
+void help_drawCursor(); /* unprototyped: the argument is unused and most callers pass none */
 void help_setCursorOnTop(u8);
 void text_setBank(const u8 *);
 u8 *text_get(s32); /* text lookup */
@@ -2124,7 +2124,7 @@ void evt_init(s32); /* the overlays pass the script data as an integer */
 void evt_init(u8 *); /* start the field script system on a script data block */
 #endif
 void func_8004BBF0(void);
-void func_8004BFB0(void);
+void msg_init(void);
 void evt_clearGlobalVars(void);
 void func_8005392C(void);
 s32 func_800551F0(void);
@@ -2134,17 +2134,17 @@ s32 func_80055DF4(void);
 s32 func_80055E14(s32 *, u32, s32);
 s32 CloseEvent(s32);
 s32 DisableEvent(s32);
-void func_80062344(void);
+void card_initAll(void);
 void func_8006237C(void);
-s32 func_80062420(u8, u8, u8, u8, u8, u8);
-s32 func_8006238C(s32);
-s32 func_800625F8(void);
-s32 func_80062638(void);
+s32 card_addWithStats(u8, u8, u8, u8, u8, u8);
+s32 card_add(s32);
+s32 card_countAll(void);
+s32 card_countKinds(void);
 s32 rand(void);
-s32 func_8006276C(s32); /* number to string */
-void func_800624A8(void);
-void func_800624E8(void);
-void func_8006252C(void);
+s32 card_getName(s32); /* number to string */
+void card_addWin(void);
+void card_addLoss(void);
+void card_addDraw(void);
 void func_80062750(s32);
 FileEntry *dep_find(FileTable *, s32);
 void strcat(u8 *, u8 *);
@@ -2179,11 +2179,11 @@ typedef struct {
 } Unk8; /* 8 bytes, byte-aligned (copied with lwl/lwr) */
 extern Unk8 g_cdResult; /* last CD status/result bytes */
 
-s32 func_800384D0(Unk8004AB64 *, s32, s32, s32);
+s32 evt_callObjectFunc(Unk8004AB64 *, s32, s32, s32);
 extern s32 D_8007AE34;
 extern CdlATV D_8007F718;
 void func_8005A284(); /* (Unk80080A10 *, AkaoChannel *) */
-void func_80062830(Unk6 *, u8);
+void card_rollStats(Unk6 *, u8);
 extern s32 D_8006FB40[];
 
 typedef struct {
@@ -2228,7 +2228,7 @@ typedef struct {
     void (*unk4)(u8);
     s32 unk8;
 } Unk8006C9D4;
-extern Unk8006C9D4 D_8006C9D4[];
+extern Unk8006C9D4 g_menuTypes[];
 s32 win_resetClock(void);
 void help_update(void);
 
@@ -2239,20 +2239,20 @@ void evt_evalExpr(void);
 s32 evt_popResult(void);
 void func_80052D70(s32);
 extern s32 D_8007B718;
-void func_8004E7FC(void);
-void func_8004883C(void);
-s32 func_80048F54(void); /* per-frame field object update */
+void msg_update(void);
+void evt_updateIdleTimer(void);
+s32 evt_updateObjects(void); /* per-frame field object update */
 extern s32 D_8007AEA8;
 extern s32 D_8007AEAC; /* the player moved this frame */
 extern s32 D_8007AEB0;
 extern s32 D_8007AEB4;
 extern u8 D_800CCE54; /* world map (ovl_0c) data */
-void func_800475D8(Unk8004AB64 *);
+void evt_movePlayer(Unk8004AB64 *);
 void func_80047E1C(Unk8004AB64 *);
-void func_80048A5C(Unk8004AB64 *);
+void evt_checkPlayerAction(Unk8004AB64 *);
 void func_80048E80(void);
 void func_80049C14(Unk8004AB64 *);
-void func_8004F74C(Unk8004AB64 *);
+void msg_drawHereIcon(Unk8004AB64 *);
 s32 func_80052870(Unk16D8 *);
 s32 func_80052EC0(s32, s32, s32);
 s32 func_8002170C(Unk8004AB64 *);
@@ -2271,7 +2271,7 @@ void *func_800C748C(s32);
 s32 func_800C75B4(s32, s32 *);
 s32 func_800C7720(s32);
 #endif
-Window *func_8004ED94(s32);
+Window *msg_getWindow(s32);
 void func_80039444(Unk8004AB64 *, Window *);
 s32 func_800531D0(Unk8004AB64 *, Unk8004AB64 *, s32);
 void func_800530A8(SVECTOR *, s32, s32);
@@ -2279,10 +2279,10 @@ void func_8004FBD8(void);
 void func_8004FE0C(void);
 
 u16 btl_getUnitMask(u32); /* ovl_0b code */
-void func_800363BC(void);
-void func_80036444(void);
-void func_80036528(void);
-void func_8002F9F0(void);
+void menuScreen_startTitleAnim(void);
+void menuScreen_requestOverlay(void);
+void menuScreen_onOpenFaded(void);
+void fade_outDefault(void);
 
 void cd_startRequest(CdRequest *);
 u8 cd_submit(CdRequest *);
@@ -2347,7 +2347,7 @@ static inline Unk8004AB64 *func_8004B4C4_inline(s32 id) {
     } else if ((u32)(id - 0xFB) < 4) {
         id = g_evtState->unk16E4[id - 0xFB];
     }
-    return func_8004B040_inline(id);
+    return evt_getObject_inline(id);
 }
 extern s32 D_8007B710;
 extern s32 D_8007BBC8;
@@ -2400,13 +2400,13 @@ typedef struct {
     u8 pad4[4];
 } Unk8006D128; /* support abilities, indexed by id - 0xC0 */
 extern Unk8006D128 D_8006D128[];
-void func_8003493C(s32, s32, u8);
-extern s32 D_8006E510[];
+void chr_setSupportAbility(s32, s32, u8);
+extern s32 g_menuScreenOvl[];
 extern RECT D_8006E508;
-extern Unk80077E28Entry D_8006E530[];
-extern Unk80077E28Entry D_8006E5B0[];
+extern Unk80077E28Entry g_menuScreensField[];
+extern Unk80077E28Entry g_menuScreensWorld[];
 u8 cd_readAsync(s32, s32, void *, void (*)(u8 *));
-void func_80036634(u8 *);
+void menuScreen_onOverlayRead(u8 *);
 extern void *D_8007AED0[8];
 #ifndef OVL_0B_H /* battle overlay code; ovl_0b.h has the real prototypes */
 struct BtlUnit *btl_findUnitByBit(u16);
@@ -2418,9 +2418,9 @@ void cd_onSyncQueued(u8);
 extern void (*g_cdStateHandlers[])(s32);
 
 /* ---- main batch 4 ---- */
-u8 func_80035B64(Unk80035B90 *, u8);
-void func_80035B74(Unk80035B90 *, void (*)());
-void func_80035B7C(Unk80035B90 *);
+u8 sprAnim_setPlaying(Unk80035B90 *, u8);
+void sprAnim_setOnDone(Unk80035B90 *, void (*)());
+void sprAnim_reset(Unk80035B90 *);
 void help_onIconAnimDone(void);
 extern s32 D_8007B9A0;
 extern u8 *D_8007B9A4;
@@ -2431,7 +2431,7 @@ void func_80051004(s32);
 extern u8 D_8007B930[8]; /* name text being converted */
 u32 func_80050F68(s32); /* glyph info of a text code, width in the top 4 bits */
 s32 func_8004B120(s32);
-void func_8004C2C0(u8 **, s32 *); /* add the width of a text control code */
+void msg_measureLine(u8 **, s32 *); /* add the width of a text control code */
 
 typedef struct {
     u8 *unk0; /* stream read pointer */
@@ -2485,14 +2485,14 @@ extern u8 g_randTableEnd[];
 void rand_refill(void);
 
 /* ---- hoisted for menu overlays ---- */
-void func_80028CF8(UnkBlink *, s32, void (*)(void));
-void func_80028D08(UnkBlink *, s32, s32, s32);
-void func_80028D2C(UnkBlink *);
+void ui_initMemberSwitch(UnkBlink *, s32, void (*)(void));
+void ui_startMemberSwitch(UnkBlink *, s32, s32, s32);
+void ui_updateMemberSwitch(UnkBlink *);
 void func_8002BE44(s32, u8 *);
 void func_8002BE74(s32, s32);
 u8 help_getFollow(void);
 void help_setFollow(u8);
-void func_800361CC(s32);
+void menuScreen_open(s32);
 s32 func_800337D0(s32);
 s32 func_8003380C(s32);
 void ui_drawEtchedLine(s32, s32, s32, s32);
@@ -2570,9 +2570,9 @@ void ui_drawHand(s32, s32, s32);
 void pad_setRepeatDelay(s32, s32, s32);
 void pad_setRepeatInterval(s32, s32, s32);
 s32 cd_getState(void);
-s32 func_80062560(); /* defined K&R-style: u8 param, callers pass ints unmasked */
-Unk6 *func_800625A0(s32, s32);
-s32 func_800626D0(s32, s32);
+s32 card_countOf(); /* defined K&R-style: u8 param, callers pass ints unmasked */
+Unk6 *card_find(s32, s32);
+s32 card_remove(s32, s32);
 typedef struct {
     u8 unk0; /* power (x2) */
     u8 unk1; /* type */
@@ -2581,8 +2581,8 @@ typedef struct {
     u8 unk4; /* collector points */
 } CardInfo; /* 5 bytes */
 extern CardInfo D_800121C8[]; /* card table */
-CardInfo *func_80062B30(void);
-s32 func_800627BC(s32);
+CardInfo *card_getInfoTable(void);
+s32 card_getRarity(s32);
 extern s32 D_800704C4;
 extern s32 D_80070418;
 void help_setLocked(u8);
@@ -2611,7 +2611,7 @@ void menuList_up(MenuList *, u32);
 extern u32 g_padHeld; /* buttons held */
 extern s32 D_80070430;
 extern u8 D_8007AF02;
-void func_8003384C(Character *);
+void chr_updateStats(Character *);
 s32 func_80033280(s32, s32, u8 *);
 void ui_loadPortraits(void *, s32);
 void func_8002C1E4(void);
@@ -2620,7 +2620,7 @@ s32 close(s32);
 s32 _card_load(s32);
 s32 write(s32, s32, s32);
 s32 read(s32, s32, s32);
-void *func_80062824(void);
+void *card_getInventory(void);
 extern s32 D_80070440;
 extern s32 D_8007048C;
 void party_setMember(s32, s32);
@@ -2651,9 +2651,9 @@ void func_80032098(void);
 void game_updateTimer(void);
 void game_setScreenHeight(s32);
 s32 func_8004BC38(); /* defined K&R-style: u8 param (unused); some callers pass none */
-u8 func_80036300(s32);
-s32 func_8003631C(s32);
-void func_800362C8(void);
+u8 menuScreen_needsMember(s32);
+s32 menuScreen_getCommandHelp(s32);
+void menuScreen_close(void);
 s32 func_80054F80(void);
 s32 func_80050AAC(void);
 void func_8005546C(s32, s32);
@@ -2670,7 +2670,7 @@ typedef struct {
     s16 unk6; /* description offset */
 } Unk8006B374;
 extern Unk8006B374 D_8006B374[];
-Unk16D8 *func_8004AE9C(void);
+Unk16D8 *evt_getObjectList(void);
 extern s32 D_8007046C;
 void SetBackColor(s32, s32, s32);
 void SetFarColor(s32, s32, s32);
@@ -2681,15 +2681,15 @@ extern u8 D_8007393A; /* pad analog stick */
 extern u8 D_8007393B;
 void printf(const char *, ...);
 
-/* Inlined body of func_8004E958 for one entry (close and unlink). */
-static inline void func_8004E958_inline(Unk8007B9C0 *p) {
+/* Inlined body of msg_closeAll for one entry (close and unlink). */
+static inline void msg_closeAll_inline(Unk8007B9C0 *p) {
     Unk8007B9C0 *q;
     if (p != NULL && p->unk8 != 0) {
         p->unk8 = 0;
-        if (func_8004EA3C() == p) {
-            func_8004EA30(p->unk0);
+        if (msg_getFocus() == p) {
+            msg_setFocus(p->unk0);
         }
-        for (q = D_8007B9C0; q < D_8007B9C0 + 10; q++) {
+        for (q = g_msgWindows; q < g_msgWindows + 10; q++) {
             if (q->unk8 != 0 && q->unk0 == p) {
                 q->unk0 = NULL;
             }
@@ -2703,10 +2703,10 @@ static inline void func_8004EEA0_inline(Unk8007B9C0 *p) {
         if (p->unk14 != NULL) {
             win_close(p->unk14);
         }
-        if (D_8007B968 >= 0 && D_8007B970 == p->unkA) {
+        if (g_msgChoiceLine >= 0 && g_msgChoiceWindow == p->unkA) {
             pad_setAnalogThresholds(&D_8007B99C);
         }
-        func_8004E958_inline(p);
+        msg_closeAll_inline(p);
     }
 }
 extern s32 D_8007B990;
@@ -2761,7 +2761,7 @@ static inline void func_8004B9B8_inline(Unk8004B9B8 *p) {
     p->unkF &= 0x7F;
 }
 
-s32 func_80037D6C(s32);
+s32 evt_getSysVar(s32);
 extern u8 *D_800CF478;
 /* help-window rect plus frame style and x offset (help_layout) */
 typedef struct {
@@ -2770,7 +2770,7 @@ typedef struct {
     s16 unkA; /* x offset */
 } Unk80035214;
 void help_layout(Unk80035214 *);
-void func_80035C2C(s32, s32, s32, Unk80035B90 *);
+void sprAnim_draw(s32, s32, s32, Unk80035B90 *);
 s32 func_8002FD70(s32, s32, s32);
 s32 func_8002FDE8(s32, s32, s32);
 typedef struct {
@@ -2855,7 +2855,7 @@ extern Unk800689B0 g_winTailSprites[];
 u8 win_isVisible(Window *);
 void win_drawFrame(Window *);
 void win_drawTitle(Window *);
-/* sprite cell of a frame animation (func_800357E0) */
+/* sprite cell of a frame animation (sprAnim_drawCell) */
 typedef struct {
     u8 unk0; /* u */
     u8 unk1; /* v */
@@ -2898,7 +2898,7 @@ typedef struct {
 } Unk8007BB98;
 extern Unk8007BB98 D_8007BB98;
 extern s32 D_8007B964;
-void func_8004C8C4(Unk8007B9C0 *, u8 *); /* draw a window's text */
+void msg_renderText(Unk8007B9C0 *, u8 *); /* draw a window's text */
 extern DVECTOR *D_8007BC98; /* pen position stack (func_80051300) */
 typedef union {
     s32 w;
@@ -2908,7 +2908,7 @@ typedef union {
     } s;
 } PenPos;
 extern PenPos D_8007BC9C; /* current pen position */
-/* "!" balloon sprite (func_8004F74C) */
+/* "!" balloon sprite (msg_drawHereIcon) */
 typedef struct {
     u8 unk0; /* u */
     u8 unk1; /* v */
@@ -2926,14 +2926,14 @@ s32 func_8004F1F0(u8 *, s32);
 s32 func_8004F2B4(s32, s32);
 s32 func_8004F3E8(s32, s32);
 s32 func_8004F4A4(s32, s32);
-void func_8004D2C0(Unk8007B9C0 *, u8 *);
+void msg_advanceText(Unk8007B9C0 *, u8 *);
 void func_8004D69C(Unk8007B9C0 *, u8 *);
 void func_80051300(void);
 void func_80051380(void);
 void func_80050F4C(s32);
 
 /* Inlined lookup of message i in the current offset table (D_8007B954). */
-static inline u8 *func_8004D940_msg(s32 i) {
+static inline u8 *msg_drawText_msg(s32 i) {
     u8 *e = NULL;
     u16 *t;
 
@@ -3008,11 +3008,11 @@ extern s32 D_8007AEC8;
 extern u8 D_8006E6D8[];
 extern u8 D_8006E690[];
 extern u8 D_8006E6F0[];
-Unk8004AB64 *func_8004B040(s32);
+Unk8004AB64 *evt_getObject(s32);
 void func_8004ACA4(Unk8004AB64 *, s32, s32);
 void func_8004F9A0(void);
 /* zero the first three bytes (r, g, b) of a 4-byte colour */
-static inline void func_8002FC38_clear3(u8 *p) {
+static inline void fade_init_clear3(u8 *p) {
     p[0] = 0;
     p[1] = 0;
     p[2] = 0;
@@ -3026,7 +3026,7 @@ typedef struct {
     Unk8007B9C0 *unk50;
 } Unk8004F5D4;
 void func_80051600(void);
-void func_8004D940(Unk8007B9C0 *);
+void msg_drawText(Unk8007B9C0 *);
 /* 8-byte message-table entry (D_8007B954 in modes other than 4) */
 typedef struct {
     u32 unk0;
@@ -3094,14 +3094,14 @@ extern u8 D_8006BCFC[]; /* window style -> colour */
 typedef struct {
     u8 unk0[8];
 } Bytes8;
-extern Bytes8 D_800121C0; /* card arrow bits (func_80062830) */
+extern Bytes8 D_800121C0; /* card arrow bits (card_rollStats) */
 typedef struct {
     u8 unk0[5];
 } Bytes5;
 typedef struct {
     u32 unk0[2];
 } Words2;
-/* stat calculation input (func_80032E84) */
+/* stat calculation input (chr_calcEquipStats) */
 typedef struct {
     Bytes8 unk0; /* = Character.unk2C..unk33 */
     Words2 unk8; /* = Character.unk88 */
@@ -3109,7 +3109,7 @@ typedef struct {
     u16 unk12;
     Bytes5 unk14; /* equipment */
 } Unk80032E84In;
-/* stat calculation output (func_80032E84) */
+/* stat calculation output (chr_calcEquipStats) */
 typedef struct {
     u16 unk0; /* hp */
     u16 unk2; /* mp */
@@ -3118,10 +3118,10 @@ typedef struct {
     u8 unk8[4]; /* stats */
     u16 unkC[5]; /* attack, defences */
 } Unk80032E84Out;
-Unk80032E84Out *func_80032E84(Unk80032E84In *, Unk80032E84Out *);
+Unk80032E84Out *chr_calcEquipStats(Unk80032E84In *, Unk80032E84Out *);
 
-/* Inlined copy of func_8003384C (recompute a character's stats). */
-static inline void func_8003384C_inline(Character *c) {
+/* Inlined copy of chr_updateStats (recompute a character's stats). */
+static inline void chr_updateStats_inline(Character *c) {
     Unk80032E84In in;
     Unk80032E84Out out;
 
@@ -3130,7 +3130,7 @@ static inline void func_8003384C_inline(Character *c) {
     in.unk12 = c->mp;
     in.unk8 = *(Words2 *)c->unk88;
     in.unk14 = *(Bytes5 *)c->equip;
-    func_80032E84(&in, &out);
+    chr_calcEquipStats(&in, &out);
     c->speed = out.unk8[0];
     c->strength = out.unk8[1];
     c->magic = out.unk8[2];
@@ -3149,7 +3149,7 @@ extern s32 D_8007BBD4;
 extern u32 *D_8007BBCC;
 extern s32 D_8007B94C;
 void win_closeAll(void);
-void func_8004E16C(void);
+void msg_resetChoices(void);
 extern u8 *D_8007ADF8; /* script data */
 /* 8-byte entry of the field script directory at D_8007ADF8 */
 typedef struct {
@@ -3470,7 +3470,7 @@ extern u8 D_80077878[2][0x200]; /* fade packet buffers, one per draw buffer */
 
 typedef void (*FadeFn)(Unk80077C78 *);
 
-/* frame animation cells (func_80035C2C) */
+/* frame animation cells (sprAnim_draw) */
 typedef struct {
     s16 unk0; /* cell count */
     s16 unk2; /* byte offset of the first cell in unk10 */
@@ -3479,14 +3479,14 @@ typedef struct {
 typedef struct {
     Unk800357E0 unk0;
     u8 padC[0x10 - 0xC];
-    u16 unk10; /* x scale, 4096 = 1.0 (func_8003595C) */
+    u16 unk10; /* x scale, 4096 = 1.0 (sprAnim_drawScaledCell) */
     u16 unk12; /* y scale */
 } AnimCell;
 
-void func_8003595C(s32, s32, s32, Unk80035B90 *, AnimCell *);
+void sprAnim_drawScaledCell(s32, s32, s32, Unk80035B90 *, AnimCell *);
 
 
-/* dialog window layout (func_8004E248 / func_80039660) */
+/* dialog window layout (msg_getLayout / func_80039660) */
 typedef struct {
     s16 unk0; /* x */
     s16 unk2; /* w */
@@ -3498,11 +3498,11 @@ typedef struct {
     u8 unkB;  /* bit 0: don't make it the current window */
 } WinLayout;
 extern s32 D_8007BB90;
-s32 func_8004DAD0(Unk8007B9C0 *, s32);
-void func_8004F5D4(Unk8004F5D4 *);
-void func_8004F660(Window *);
+s32 msg_input(Unk8007B9C0 *, s32);
+void msg_drawWindowContent(Unk8004F5D4 *);
+void msg_drawChoiceCursor(Window *);
 
-WinLayout *func_8004E248(s32, s32 *, s32 *, s32 *);
+WinLayout *msg_getLayout(s32, s32 *, s32 *, s32 *);
 extern WinLayout D_8007B940;
 void func_80038FD8(Unk8004AB64 *, WinLayout *, s32, s32);
 extern s32 D_8007AE5C;
@@ -3606,7 +3606,7 @@ void func_800C7D30(s32, s32, s32);
 extern u8 *g_evtInstrStart;
 extern s32 D_8007AE04;
 Unk8004AB64 *func_80038150(void);
-void func_80038278(Unk8004AB64 *);
+void evt_returnFromFunc(Unk8004AB64 *);
 s32 func_800500A8(Unk8004AB64 *, s32);
 s32 func_80050410(Unk8004AB64 *, s32);
 s32 func_80050744(Unk8004AB64 *, s32);
@@ -3664,8 +3664,8 @@ void func_8004EA4C(s32);
 void func_8004E924(void);
 void win_closeAll(void);
 void func_8004ED3C(void);
-void *func_8004F058(s32);
-s32 func_80038990(s32, s32, s32, s32);
+void *msg_getText(s32);
+s32 evt_moveObjectTo(s32, s32, s32, s32);
 void func_8004B9B8(Unk8004B9B8 *);
 
 /* Inlined helper: start the animation set up in unk60/unk61/unk62. */
@@ -3751,7 +3751,7 @@ extern Unk8007AE40 g_evtEncounterTable;
 extern u8 D_8006E658[];
 void evt_setNextBattle(u16);
 void func_80021680();
-void func_8004FF98(s32);
+void msg_startHereIcon(s32);
 void func_80052D0C(u8 **);
 Unk16D8 *func_80036978(Unk8004AB64 *);
 Unk8004AB64 *func_80036650(s32);
@@ -3763,10 +3763,10 @@ extern s32 D_8007AE38;
 extern s32 D_8007AE3C;
 void func_80050068(s32);
 void func_80050080(s32);
-void func_8004A9E8(void);
+void evt_onMenuOpen(void);
 void keyItem_add(s32);
 void keyItem_remove(s32);
-s32 func_8006238C(s32);
+s32 card_add(s32);
 void func_80033C0C(u32);
 
 /* Inlined copy of func_8004B914 (24-bit script argument). */
@@ -4016,9 +4016,9 @@ static inline s32 func_80037ACC_chr(s32 i) {
     return i;
 }
 
-/* func_80037D6C (script system variables) */
+/* evt_getSysVar (script system variables) */
 extern s32 D_8007AE20;
-void *func_80038618(Unk8004AB64 *, s32, s32 *); /* nearest object of a kind */
+void *evt_findNearestObject(Unk8004AB64 *, s32, s32 *); /* nearest object of a kind */
 extern s32 D_8007AEC4;
 s32 func_800C1B5C(u8 *);
 s32 btlseq_isBusy(void);
@@ -4072,8 +4072,8 @@ static inline u16 evt_rollEncounter_pick(void) {
 }
 #endif
 
-/* start an object's idle animation (func_8004883C) */
-static inline void func_8004883C_idle(Unk8004AB64 *q) {
+/* start an object's idle animation (evt_updateIdleTimer) */
+static inline void evt_updateIdleTimer_idle(Unk8004AB64 *q) {
     q->unk60 = 0;
     q->unk61 = 0xFF;
     evt_execInstr_anim(q, q->unk74);

@@ -140,7 +140,7 @@ void func_801F3E58(void) {
             g_menuHelp.x = (pos & 3) * 0x25 + 0x8C;
             g_menuHelp.y = (pos >> 2) * 0x30 + 0x86;
         }
-        func_800355E4();
+        help_drawCursor();
     } else if (D_801F4748.unk0 == 1) {
         pos = D_801F4748.unk4[1].unk0;
         g_menuHelp.otz = 4;
@@ -151,7 +151,7 @@ void func_801F3E58(void) {
             g_menuHelp.x = (pos & 3) * 0x25 + 0x90;
             g_menuHelp.y = (pos >> 2) * 0x30 + 0x8A;
         }
-        func_800355E4();
+        help_drawCursor();
         if (D_80077DC0 & 3) {
             pos = D_801F4748.unk4[0].unk0;
             if (D_801F4748.unk4[0].unk1 == 0) {
@@ -194,7 +194,7 @@ void func_801F4084(void) {
 }
 
 void func_801F40AC(void) {
-    if (!func_8002F810()) {
+    if (!fade_isBusy()) {
         if (g_padPressed & BTN_CIRCLE) {
             func_801F42A4();
             return;

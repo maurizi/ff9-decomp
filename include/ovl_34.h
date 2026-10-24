@@ -70,7 +70,7 @@ extern ConfigPadEntry D_801F14FC[8];
 void help_nullHandler(void);
 
 /* main exe: candidates for ff9.h */
-extern s32 D_80077E54; /* = D_80077E50.unk4, referenced by its own name */
+extern s32 D_80077E54; /* = g_menuScreen.unk4, referenced by its own name */
 
 typedef struct {
     u8 unk0;    /* title text id */

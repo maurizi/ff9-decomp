@@ -42,8 +42,8 @@ void func_801EE7C0(void) {
     D_801FBF84.unk2 = 0xFF;
     D_801FBF84.unk1 = 1;
     D_801FBF84.unk0 = 0;
-    func_80028CF8(&D_801FBF84.unk770, D_80077E50.unk3, func_801F0ED4);
-    func_801EF900(D_80077E50.unk3, 0);
+    ui_initMemberSwitch(&D_801FBF84.unk770, g_menuScreen.unk3, func_801F0ED4);
+    func_801EF900(g_menuScreen.unk3, 0);
     D_801FBF84.unk76C = 0;
     D_801FBF84.unk76B = 0;
     text_setBank(D_801EDF04);
@@ -87,7 +87,7 @@ void func_801EE978(void) {
         }
     }
     if (D_801FBF84.unk770.unk0 != 0) {
-        func_80028D2C(&D_801FBF84.unk770);
+        ui_updateMemberSwitch(&D_801FBF84.unk770);
     }
 }
 
@@ -97,10 +97,10 @@ void func_801EEA50(void) {
 
     if (g_padRepeat & BTN_CIRCLE) {
         snd_playSe(0x65);
-        func_800361CC(0);
+        menuScreen_open(0);
     } else if (g_padRepeat & BTN_SQUARE) {
         snd_playSe(0x67);
-        func_80036270(3);
+        menuScreen_switch(3);
     } else if (g_padRepeat & PAD_LEFT) {
         snd_playSe(0x67);
         D_801FBF84.unk0 = D_801FBF84.unk0 != 0 ? D_801FBF84.unk0 - 1 : 1;
@@ -181,11 +181,11 @@ void func_801EED10(void) {
     l = &D_801FBF84.unk8[D_801FBF84.unk0];
     it = &D_801F34EC[D_801FBF84.unk668[(l->unk5 + l->cursor) * 2 + l->unk7].unk0];
     if (!(D_801FBF84.unk3 >> 7)) {
-        ok = func_800654F8(c, g_gameState->unk1C->party[D_801FBF84.unk3], it, it->unk4, 0);
+        ok = item_useOnMember(c, g_gameState->unk1C->party[D_801FBF84.unk3], it, it->unk4, 0);
     } else {
         for (i = 0; i < 4; i++) {
             if (g_gameState->unk1C->party[i] != NULL) {
-                ok |= func_800654F8(c, g_gameState->unk1C->party[i], it, it->unk4, 1);
+                ok |= item_useOnMember(c, g_gameState->unk1C->party[i], it, it->unk4, 1);
             }
         }
     }
@@ -356,7 +356,7 @@ void func_801EF644(void) {
     done = 0;
     blink = (D_80077E54 & 3) != 0;
     help_setCursorOnTop(D_801FBF84.unk1 != 1);
-    if (func_8002F810()) {
+    if (fade_isBusy()) {
         return;
     }
     if (D_801FBF84.unk1 == 1 || D_801FBF84.unk1 == 5 || blink) {
@@ -368,7 +368,7 @@ void func_801EF644(void) {
         ry = r->y + 8;
         h1->otz = 0x17;
         h1->y = ry;
-        func_800355E4();
+        help_drawCursor();
     }
     if (D_801FBF84.unk1 == 2 || (D_801FBF84.unk1 == 3 && blink)) {
         HelpState *h2;
@@ -381,7 +381,7 @@ void func_801EF644(void) {
         k = l->cursor * 15 + 10;
         h2->otz = 0x17;
         h2->y = D_801FBF84.unk48.y + k;
-        func_800355E4();
+        help_drawCursor();
     }
     if (D_801FBF84.unk1 == 3) {
         r = &D_801FBF84.unk58.unk4;
@@ -407,7 +407,7 @@ void func_801EF644(void) {
             ry = r->y;
             h3->otz = 0x12;
             h3->y = ry + k;
-            func_800355E4();
+            help_drawCursor();
         }
     }
 }
@@ -429,7 +429,7 @@ void func_801EF900(s32 slot, s32 arg1) {
     m = &D_801FBF84;
     nItems = 0;
     nAbils = 0;
-    func_80028D08(b, m->unk2, slot, arg1);
+    ui_startMemberSwitch(b, m->unk2, slot, arg1);
     if (arg1 != 0) {
         m->unk1 = 5;
     }
@@ -558,14 +558,14 @@ void func_801EFE2C(void) {
         sup = &D_8006D128[id - 0xC0];
         st = func_801F0CC4_inline(id, c);
         if (st >= 3) {
-            func_8003493C(c->unk34.b.id, id, st == 3);
+            chr_setSupportAbility(c->unk34.b.id, id, st == 3);
             ap = c->stones;
             if (st == 3) {
                 c->stones = ap - sup->unk1;
             } else {
                 c->stones = ap + sup->unk1;
             }
-            func_8003384C(c);
+            chr_updateStats(c);
             snd_playSe(0x6B);
             return;
         }
@@ -693,7 +693,7 @@ void func_801F062C(void) {
 void func_801F0664(void) {
     void (*fn)(void);
 
-    if (!func_8002F810()) {
+    if (!fade_isBusy()) {
         fn = D_801F33A8[D_801FBF84.unk1];
         if (fn != NULL) {
             fn();

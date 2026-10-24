@@ -1,6 +1,6 @@
 #include "ff9.h"
 
-void func_800357E0(s32 x, s32 y, s32 otz, s32 unused, Unk800357E0 *d) {
+void sprAnim_drawCell(s32 x, s32 y, s32 otz, s32 unused, Unk800357E0 *d) {
     u32 t = d->unk4;
     SprtWords *s;
 
@@ -17,7 +17,7 @@ void func_800357E0(s32 x, s32 y, s32 otz, s32 unused, Unk800357E0 *d) {
     g_primPtr += 8;
 }
 
-void func_8003595C(s32 x, s32 y, s32 otz, Unk80035B90 *unused, AnimCell *c) {
+void sprAnim_drawScaledCell(s32 x, s32 y, s32 otz, Unk80035B90 *unused, AnimCell *c) {
     u32 t;
     s32 sw;
     u32 tp;
@@ -45,7 +45,7 @@ void func_8003595C(s32 x, s32 y, s32 otz, Unk80035B90 *unused, AnimCell *c) {
     g_primPtr = (u8 *)(p + 1);
 }
 
-void func_80035B24(Unk80035B90 *a, Unk80035B90Data *d) {
+void sprAnim_init(Unk80035B90 *a, Unk80035B90Data *d) {
     a->unk4 = d;
     a->unk8 = d->unk4;
     a->unkC = &a->unk8[a->unk4->unk0];
@@ -57,24 +57,24 @@ void func_80035B24(Unk80035B90 *a, Unk80035B90Data *d) {
     a->unk3 = d->unk0;
 }
 
-u8 func_80035B64(Unk80035B90 *a, u8 b) {
+u8 sprAnim_setPlaying(Unk80035B90 *a, u8 b) {
     u8 old = a->unk0;
     a->unk0 = b;
     return old;
 }
 
-void func_80035B74(Unk80035B90 *a, void (*b)()) {
+void sprAnim_setOnDone(Unk80035B90 *a, void (*b)()) {
     a->unk14 = b;
 }
 
-void func_80035B7C(Unk80035B90 *a) {
+void sprAnim_reset(Unk80035B90 *a) {
     a->unk0 = 0;
     a->unk1 = 0;
     a->unk2 = 0;
     a->unk14 = 0;
 }
 
-void func_80035B90(Unk80035B90 *arg0) {
+void sprAnim_update(Unk80035B90 *arg0) {
     Unk80035B90Frame *f = &arg0->unk8[arg0->unk1];
 
     if (arg0->unk0 != 0) {
@@ -90,7 +90,7 @@ void func_80035B90(Unk80035B90 *arg0) {
     }
 }
 
-void func_80035C2C(s32 x, s32 y, s32 otz, Unk80035B90 *a) {
+void sprAnim_draw(s32 x, s32 y, s32 otz, Unk80035B90 *a) {
     s32 i;
     Unk80035B90Frame *f = &a->unk8[a->unk1];
     AnimCellList *cl = &((AnimCellList *)a->unkC)[f->unk0];
@@ -98,9 +98,9 @@ void func_80035C2C(s32 x, s32 y, s32 otz, Unk80035B90 *a) {
 
     for (i = 0; i < cl->unk0; i++) {
         if (!((c->unk0.unk4 >> 26) & 1)) {
-            func_800357E0(x + f->unk4, y + f->unk6, otz, (s32)a, &c->unk0);
+            sprAnim_drawCell(x + f->unk4, y + f->unk6, otz, (s32)a, &c->unk0);
         } else {
-            func_8003595C(x + f->unk4, y + f->unk6, otz, a, c);
+            sprAnim_drawScaledCell(x + f->unk4, y + f->unk6, otz, a, c);
         }
         c++;
     }

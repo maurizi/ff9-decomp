@@ -1,6 +1,6 @@
 #include "ff9.h"
 
-u8 func_800654F8(Character *a, Character *t, MainCalcCmd *cmd, u8 kind, s32 e) {
+u8 item_useOnMember(Character *a, Character *t, MainCalcCmd *cmd, u8 kind, s32 e) {
     MainCalc c;
 
     c.unk0 = a;

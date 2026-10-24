@@ -1,6 +1,6 @@
 #include "ff9.h"
 
-s32 func_80037D6C(s32 op) {
+s32 evt_getSysVar(s32 op) {
     s32 r;
     u8 buf[8];
     Unk8004AB64 *o;
@@ -28,7 +28,7 @@ s32 func_80037D6C(s32 op) {
         break;
     case 5:
         id = ((u8 *)&((u32 *)g_evtCurObj + g_evtCurObj->unk9)[g_evtCurObj->unkA])[-1];
-        o = func_8004B040_inline(id);
+        o = evt_getObject_inline(id);
         r = -1;
         if (o != NULL) {
             r = o->unk6 - (D_8007ADFC - 9);
@@ -74,7 +74,7 @@ s32 func_80037D6C(s32 op) {
         r = func_8006275C();
         break;
     case 19:
-        r = func_800625F8();
+        r = card_countAll();
         break;
     case 20:
         r = game_getPlayTimeSeconds();
@@ -131,7 +131,7 @@ Unk8004AB64 *func_80038150(void) {
 }
 
 /* Find the entry point for `key` in script `idx`. */
-static inline u8 *func_800384D0_find(s32 idx, s32 key) {
+static inline u8 *evt_callObjectFunc_find(s32 idx, s32 key) {
     u8 *h = D_8007ADF8 + *(u16 *)(D_8007ADF8 + idx * 8);
     s32 n = *(u16 *)h >> 8;
     u16 *p = (u16 *)(h + 2);
@@ -146,7 +146,7 @@ static inline u8 *func_800384D0_find(s32 idx, s32 key) {
     return n != 0 ? h + (*p + 2) : NULL;
 }
 
-void func_80038278(Unk8004AB64 *o) {
+void evt_returnFromFunc(Unk8004AB64 *o) {
     s32 v;
     Unk16D8 *n;
     Unk16D8 *m;
@@ -201,14 +201,14 @@ void func_80038278(Unk8004AB64 *o) {
         }
     } else if (o->unkE == 2) {
         o->unkE = 1;
-        o->unk0 = func_800384D0_find(o->unk6, 1);
+        o->unk0 = evt_callObjectFunc_find(o->unk6, 1);
         o->unk4 = 7;
     } else {
         o->unk0 = NULL;
     }
 }
 
-s32 func_800384D0(Unk8004AB64 *o, s32 lv, s32 key, s32 save) {
+s32 evt_callObjectFunc(Unk8004AB64 *o, s32 lv, s32 key, s32 save) {
     u8 *e = NULL;
     u32 *slot;
     u16 w;
@@ -216,7 +216,7 @@ s32 func_800384D0(Unk8004AB64 *o, s32 lv, s32 key, s32 save) {
     u32 x;
 
     if (o != NULL && lv < o->unk4) {
-        e = func_800384D0_find(o->unk6, key);
+        e = evt_callObjectFunc_find(o->unk6, key);
         if (e != NULL) {
             slot = &((u32 *)o + o->unk9)[o->unkA];
             slot[0] = o->unk0 - g_evtState->unk16F0;
@@ -243,7 +243,7 @@ s32 func_800384D0(Unk8004AB64 *o, s32 lv, s32 key, s32 save) {
     return e != NULL;
 }
 
-void *func_80038618(Unk8004AB64 *o, s32 flags, s32 *dist) {
+void *evt_findNearestObject(Unk8004AB64 *o, s32 flags, s32 *dist) {
     Unk8004AB64 *best = NULL;
     s32 bestd = 0;
     s32 x, y, z;
@@ -297,7 +297,7 @@ void *func_80038618(Unk8004AB64 *o, s32 flags, s32 *dist) {
         if (q == o || (a && b)) {
             continue;
         }
-        if ((flags & 6) && func_800384D0_find(q->unk6, back ? 3 : 2) == NULL) {
+        if ((flags & 6) && evt_callObjectFunc_find(q->unk6, back ? 3 : 2) == NULL) {
             continue;
         }
         if (q->unk5 != 4) {
@@ -357,7 +357,7 @@ void *func_80038618(Unk8004AB64 *o, s32 flags, s32 *dist) {
     return best;
 }
 
-s32 func_80038990(s32 x, s32 y, s32 z, s32 flags) {
+s32 evt_moveObjectTo(s32 x, s32 y, s32 z, s32 flags) {
     Unk8004AB64 *p;
     s32 dz;
     s32 dx;
@@ -436,7 +436,7 @@ s32 func_80038990(s32 x, s32 y, s32 z, s32 flags) {
     p->pos.vx += v[0];
     p->pos.vy += v[1];
     p->pos.vz += v[2];
-    hit = func_80038618(p, 0, &dist);
+    hit = evt_findNearestObject(p, 0, &dist);
     if (hit != 0 && dist <= 0) {
         p->pos.vx -= v[0];
         p->pos.vy -= v[1];
@@ -587,7 +587,7 @@ void func_80038FD8(Unk8004AB64 *obj, WinLayout *w, s32 dir, s32 fixed) {
         } else {
             id = g_evtState->playerUid;
         }
-        other = func_8004B040_inline(id);
+        other = evt_getObject_inline(id);
         if (other != NULL) {
             func_80038FD8_pos(other, &ox, &oy);
             below = sy < oy;
@@ -686,7 +686,7 @@ void func_80039444(Unk8004AB64 *obj, Window *w) {
 }
 
 WinLayout *func_80039660(Unk8004AB64 *obj, s32 id, s32 flags) {
-    WinLayout *w = func_8004E248(id, &D_8007AE5C, &D_8007AE60, &D_8007AE64);
+    WinLayout *w = msg_getLayout(id, &D_8007AE5C, &D_8007AE60, &D_8007AE64);
     s32 ww;
     s32 wh;
 
@@ -882,14 +882,14 @@ s32 evt_execInstr(void) {
         return 0;
     case 0x10:
         a = evt_getArg8_inline();
-        func_800384D0(func_80038150(), a, *g_evtCurObj->unk0++, 0);
+        evt_callObjectFunc(func_80038150(), a, *g_evtCurObj->unk0++, 0);
         return 0;
     case 0x12:
         a = evt_getArg8_inline();
         obj = func_80038150();
         c = *g_evtCurObj->unk0++;
         if (obj != NULL && a < obj->unk4) {
-            func_800384D0(obj, a, c, 0);
+            evt_callObjectFunc(obj, a, c, 0);
             return 0;
         }
         g_evtCurObj->unk0 = g_evtInstrStart;
@@ -900,7 +900,7 @@ s32 evt_execInstr(void) {
         obj = func_80038150();
         c = *g_evtCurObj->unk0++;
         if (obj != NULL && a < obj->unk4) {
-            func_800384D0(obj, a, c, 1);
+            evt_callObjectFunc(obj, a, c, 1);
         } else {
             g_evtCurObj->unk0 = g_evtInstrStart;
             D_8007B6F8 = 1;
@@ -908,12 +908,12 @@ s32 evt_execInstr(void) {
         return 1;
     case 0x16:
         a = evt_getArg8_inline();
-        func_800384D0(func_8004B040_inline(CUR_UID()), a, *g_evtCurObj->unk0++, 0);
+        evt_callObjectFunc(evt_getObject_inline(CUR_UID()), a, *g_evtCurObj->unk0++, 0);
         return 0;
     case 0x18:
         a = evt_getArg8_inline();
-        if (func_8004B040_inline(CUR_UID()) != NULL && a < func_8004B040_inline(CUR_UID())->unk4) {
-            func_800384D0(func_8004B040_inline(CUR_UID()), a, *g_evtCurObj->unk0++, 0);
+        if (evt_getObject_inline(CUR_UID()) != NULL && a < evt_getObject_inline(CUR_UID())->unk4) {
+            evt_callObjectFunc(evt_getObject_inline(CUR_UID()), a, *g_evtCurObj->unk0++, 0);
             return 0;
         }
         g_evtCurObj->unk0 = g_evtInstrStart;
@@ -921,8 +921,8 @@ s32 evt_execInstr(void) {
         return 1;
     case 0x1A:
         a = evt_getArg8_inline();
-        if (func_8004B040_inline(CUR_UID()) != NULL && a < func_8004B040_inline(CUR_UID())->unk4) {
-            func_800384D0(func_8004B040_inline(CUR_UID()), a, *g_evtCurObj->unk0++, 1);
+        if (evt_getObject_inline(CUR_UID()) != NULL && a < evt_getObject_inline(CUR_UID())->unk4) {
+            evt_callObjectFunc(evt_getObject_inline(CUR_UID()), a, *g_evtCurObj->unk0++, 1);
         } else {
             g_evtCurObj->unk0 = g_evtInstrStart;
             D_8007B6F8 = 1;
@@ -933,7 +933,7 @@ s32 evt_execInstr(void) {
         if (obj != NULL) {
             obj->unkA = 0;
             obj->unkE = 2;
-            func_80038278(obj);
+            evt_returnFromFunc(obj);
         }
         return obj == g_evtCurObj;
     case 0x93:
@@ -1153,7 +1153,7 @@ s32 evt_execInstr(void) {
         func_8004ED3C();
         return 0;
     case 0xD0:
-        btl_setBanner((s32)func_8004F058(evt_getArg16_inline()), 3);
+        btl_setBanner((s32)msg_getText(evt_getArg16_inline()), 3);
         return 0;
     case 0x25:
         actor->unk63 = 0xFF;
@@ -1166,28 +1166,28 @@ s32 evt_execInstr(void) {
         return 0;
     case 0x23:
         a = evt_getArg16_inline();
-        if (func_80038990(a, 0, evt_getArg16_inline(), 0)) {
+        if (evt_moveObjectTo(a, 0, evt_getArg16_inline(), 0)) {
             g_evtCurObj->unk0 = g_evtInstrStart;
             D_8007B6F8 = 1;
         }
         return 1;
     case 0xA5:
         a = evt_getArg16_inline();
-        if (func_80038990(a, 0, evt_getArg16_inline(), 1)) {
+        if (evt_moveObjectTo(a, 0, evt_getArg16_inline(), 1)) {
             g_evtCurObj->unk0 = g_evtInstrStart;
             D_8007B6F8 = 1;
         }
         return 1;
     case 0x24:
         po = func_80038150();
-        if (func_80038990(po->pos.vx, po->pos.vy, po->pos.vz, (s32)po)) {
+        if (evt_moveObjectTo(po->pos.vx, po->pos.vy, po->pos.vz, (s32)po)) {
             g_evtCurObj->unk0 = g_evtInstrStart;
             D_8007B6F8 = 1;
         }
         D_8007B6F8 = 1;
         return 1;
     case 0xA0:
-        if (func_80038990(D_8007AE24, 0, D_8007AE28, 0)) {
+        if (evt_moveObjectTo(D_8007AE24, 0, D_8007AE28, 0)) {
             g_evtCurObj->unk0 = g_evtInstrStart;
             D_8007B6F8 = 1;
         }
@@ -1196,7 +1196,7 @@ s32 evt_execInstr(void) {
         a = evt_getArg16_inline();
         b = evt_getArg16_inline();
         c = evt_getArg16_inline();
-        if (func_80038990(a, b, c, 2)) {
+        if (evt_moveObjectTo(a, b, c, 2)) {
             g_evtCurObj->unk0 = g_evtInstrStart;
             D_8007B6F8 = 1;
         }
@@ -1205,7 +1205,7 @@ s32 evt_execInstr(void) {
         a = evt_getArg16_inline();
         b = evt_getArg16_inline();
         c = evt_getArg16_inline();
-        if (func_80038990(a, b, c, 3)) {
+        if (evt_moveObjectTo(a, b, c, 3)) {
             g_evtCurObj->unk0 = g_evtInstrStart;
             D_8007B6F8 = 1;
         }
@@ -1292,7 +1292,7 @@ s32 evt_execInstr(void) {
         return 0;
     }
     case 0xA4:
-        po = func_8004B040_inline(g_evtState->playerUid);
+        po = evt_getObject_inline(g_evtState->playerUid);
         if (po != NULL) {
             Unk80039C38Pt *p = ((Unk80039C38Quad *)D_8007B704)->unk18;
             s32 dx = p[1].unk0 - p[0].unk0;
@@ -1314,7 +1314,7 @@ s32 evt_execInstr(void) {
         }
         return 0;
     case 0x9E:
-        po = func_8004B040_inline(g_evtState->playerUid);
+        po = evt_getObject_inline(g_evtState->playerUid);
         if (po != NULL) {
             s32 *sp = (s32 *)po + po->unk9 + po->unkA;
             Unk16D8 *nn;
@@ -1397,14 +1397,14 @@ s32 evt_execInstr(void) {
         return 0;
     case 0x2D:
         g_evtState->unk16EC = 0;
-        func_8004FF98(0);
+        msg_startHereIcon(0);
         D_8007B710 = 0;
         D_8007BBC8 = 0;
         return 0;
     case 0x2E: {
         Unk8007AECC *e;
         g_evtState->unk16EC = 1;
-        func_8004FF98(1);
+        msg_startHereIcon(1);
         e = g_evtState;
         if (e->unk1700 >= 0) {
             if (g_randPtr >= g_randTableEnd) {
@@ -1586,7 +1586,7 @@ s32 evt_execInstr(void) {
     case 0x43: {
         Unk8004AB64 *o;
         a = g_evtCurObj->unk7 + 0x40;
-        o = func_8004B040_inline(a);
+        o = evt_getObject_inline(a);
         if (o != NULL) {
             func_80036978(o);
         }
@@ -1594,14 +1594,14 @@ s32 evt_execInstr(void) {
         return 0;
     }
     case 0x44:
-        if (func_8004B040_inline(g_evtCurObj->unk7 + 0x40) != NULL) {
+        if (evt_getObject_inline(g_evtCurObj->unk7 + 0x40) != NULL) {
             g_evtCurObj->unk0 = g_evtInstrStart;
             D_8007B6F8 = 1;
             return 1;
         }
         return 0;
     case 0x45: {
-        Unk8004AB64 *o = func_8004B040_inline(g_evtCurObj->unk7 + 0x40);
+        Unk8004AB64 *o = evt_getObject_inline(g_evtCurObj->unk7 + 0x40);
         if (o != NULL) {
             func_80036978(o);
         }
@@ -1650,7 +1650,7 @@ s32 evt_execInstr(void) {
     case 0xDE:
         a = evt_execInstr_chr(evt_getArg8_inline());
         if ((u32)a < 9) {
-            u8 *src = func_8004F058(evt_getArg16_inline());
+            u8 *src = msg_getText(evt_getArg16_inline());
             u8 *dst = g_gameState->unk1C->characters[a].unk0;
             u8 *end = dst + 9;
             while (dst < end) {
@@ -1886,7 +1886,7 @@ s32 evt_execInstr(void) {
         func_80050080(evt_getArg8_inline());
         return 0;
     case 0xEF:
-        func_8004FF98(evt_getArg8_inline());
+        msg_startHereIcon(evt_getArg8_inline());
         return 0;
     case 0x90:
         g_evtState->unk1700 = -1;
@@ -1965,7 +1965,7 @@ s32 evt_execInstr(void) {
     case 0x75:
         a = evt_getArg8_inline();
         menu_open(a, evt_getArg8_inline());
-        func_8004A9E8();
+        evt_onMenuOpen();
         return 1;
     case 0xAC:
         a = evt_getArg16_inline();
@@ -1986,7 +1986,7 @@ s32 evt_execInstr(void) {
             keyItem_add(a - 0x100);
         } else {
             while (--b != -1) {
-                func_8006238C(a - 0x200);
+                card_add(a - 0x200);
             }
         }
         return 0;
@@ -2136,7 +2136,7 @@ s32 evt_execInstr(void) {
         }
         return 0;
     case 0xB0: {
-        u8 *src = func_8004F058(evt_getArg16_inline());
+        u8 *src = msg_getText(evt_getArg16_inline());
         u8 *dst = D_8007AE90;
         u8 *end = dst + 0xF;
         while (dst < end) {
@@ -2165,7 +2165,7 @@ s32 evt_execInstr(void) {
         func_8002F93C(((0x80 - evt_getArg8_inline()) << 4) & 0xFFF0);
         c = evt_getArg8_inline();
         d = evt_getArg8_inline();
-        func_8002F8E4(1);
+        fade_setOtz(1);
         func_800320B8(((a >> 2) & 1) + 1, (a >> 1) & 1, b, c | (d << 8) | (evt_getArg8_inline() << 16));
         return 0;
     case 0xA9:
@@ -2333,7 +2333,7 @@ s32 evt_execInstr(void) {
     }
 }
 
-void func_800475D8(Unk8004AB64 *obj) {
+void evt_movePlayer(Unk8004AB64 *obj) {
     SVECTOR v;
     u8 dz[4];
     s32 dist;
@@ -2353,7 +2353,7 @@ void func_800475D8(Unk8004AB64 *obj) {
     dir = 0x8000;
     analog = 0;
     memset(&v, 0, 8);
-    pad = func_8004E8D4();
+    pad = msg_getPadHeld();
     if (((g_padBuf[0].unk0 >> 12) & 0xF) == 7) {
         x = g_padAnalog[0].unk0[2];
         y = g_padAnalog[0].unk0[3];
@@ -2436,7 +2436,7 @@ void func_800475D8(Unk8004AB64 *obj) {
         func_800530A8(&v, 0, dir);
         obj->pos.vx += v.vx;
         obj->pos.vz += v.vz;
-        o = func_80038618(obj, 0, &dist);
+        o = evt_findNearestObject(obj, 0, &dist);
         D_8007AEB4 = ((o->unkF >> 4) ^ 1) & 1;
         if (D_8007AEB4 == 0) {
             D_8007AEB0 = 0;
@@ -2454,7 +2454,7 @@ void func_800475D8(Unk8004AB64 *obj) {
                 func_800530A8(&v, 0, 0x400);
                 obj->pos.vx += v.vx;
                 obj->pos.vz += v.vz;
-                if (func_80038618(obj, 0, &dist) != NULL && dist <= 0) {
+                if (evt_findNearestObject(obj, 0, &dist) != NULL && dist <= 0) {
                     obj->pos.vx -= v.vx;
                     obj->pos.vz -= v.vz;
                 }
@@ -2707,7 +2707,7 @@ void func_80047E1C(Unk8004AB64 *o) {
     }
 }
 
-void func_8004883C(void) {
+void evt_updateIdleTimer(void) {
     Unk8007AECC *e = g_evtState;
     Unk8004AB64 *p;
     Unk8004AB64 *o;
@@ -2720,7 +2720,7 @@ void func_8004883C(void) {
     if (e->unk1700 != 0) {
         return;
     }
-    o = func_8004B040_inline(e->playerUid);
+    o = evt_getObject_inline(e->playerUid);
     if (o == NULL || o->unk5 != 4) {
         return;
     }
@@ -2736,7 +2736,7 @@ void func_8004883C(void) {
         e2->unk1700 = (*g_randPtr++ + 0xC8) * 2;
     }
     if (p->unk74 != 0 && !(p->unk62 & 0x84)) {
-        func_8004883C_idle(p);
+        evt_updateIdleTimer_idle(p);
         if (p->unk7 == g_evtState->playerUid) {
             D_8007B710++;
         }
@@ -2746,7 +2746,7 @@ void func_8004883C(void) {
 
 /* Nearest kind-3 object whose script has entry `key` and that func_80053124
  * accepts for p's position. */
-static inline Unk8004AB64 *func_80048A5C_find(Unk8004AB64 *p, s32 key) {
+static inline Unk8004AB64 *evt_checkPlayerAction_find(Unk8004AB64 *p, s32 key) {
     Unk8004AB64 *found = NULL;
     s32 x = p->pos.vx;
     Unk16D8 *n = g_evtState->unk16D8;
@@ -2755,7 +2755,7 @@ static inline Unk8004AB64 *func_80048A5C_find(Unk8004AB64 *p, s32 key) {
 
     for (; n != NULL; n = n->unk0) {
         o = n->unk4;
-        if (o->unk5 == 3 && func_800384D0_find(o->unk6, key) != NULL && func_80053124(o, x, z)) {
+        if (o->unk5 == 3 && evt_callObjectFunc_find(o->unk6, key) != NULL && func_80053124(o, x, z)) {
             found = o;
             break;
         }
@@ -2763,47 +2763,47 @@ static inline Unk8004AB64 *func_80048A5C_find(Unk8004AB64 *p, s32 key) {
     return found;
 }
 
-void func_80048A5C(Unk8004AB64 *p) {
+void evt_checkPlayerAction(Unk8004AB64 *p) {
     s32 btn;
     s32 t;
     Unk8004AB64 *o;
 
-    t = func_8004E8EC();
+    t = msg_getPadPressed();
     btn = t & (g_evtMode == 1 ? 0xA0000 : 0x20000);
-    if (btn && (o = func_80038618(p, 4, NULL)) != NULL) {
+    if (btn && (o = evt_findNearestObject(p, 4, NULL)) != NULL) {
         D_8007AE20 = func_800531D0(p, o, p->pos.rotY);
         if ((u32)(D_8007AE20 + 0x3FF) < 0x7FF) {
             p->unk93 = o->unk7;
-            if (btn == 0x80000 && func_800384D0(o, 1, 8, 0)) {
+            if (btn == 0x80000 && evt_callObjectFunc(o, 1, 8, 0)) {
                 return;
             }
-            if (func_800384D0(o, 1, 3, 0)) {
+            if (evt_callObjectFunc(o, 1, 3, 0)) {
                 return;
             }
         }
         o = NULL;
     } else {
-        o = func_80038618(p, 2, NULL);
+        o = evt_findNearestObject(p, 2, NULL);
     }
     if (o != NULL) {
-        func_800384D0(o, 1, 2, 0);
+        evt_callObjectFunc(o, 1, 2, 0);
     }
     if (btn) {
-        o = func_80048A5C_find(p, 3);
+        o = evt_checkPlayerAction_find(p, 3);
         if (o != NULL) {
-            if (btn == 0x80000 && func_800384D0(o, 1, 8, 0)) {
+            if (btn == 0x80000 && evt_callObjectFunc(o, 1, 8, 0)) {
                 return;
             }
-            func_800384D0(o, 1, 3, 0);
+            evt_callObjectFunc(o, 1, 3, 0);
             o = NULL;
         } else {
-            o = func_80048A5C_find(p, 2);
+            o = evt_checkPlayerAction_find(p, 2);
         }
     } else {
-        o = func_80048A5C_find(p, 2);
+        o = evt_checkPlayerAction_find(p, 2);
     }
     if (o != NULL) {
-        func_800384D0(o, 1, 2, 0);
+        evt_callObjectFunc(o, 1, 2, 0);
     }
 }
 
@@ -2838,7 +2838,7 @@ void func_80048E80(void) {
 }
 
 /* turn towards unk52 by unk82 per frame (unk6C 0x7FFE / 0x7FFF: direction) */
-static inline void func_80048F54_turn(Unk8004AB64 *p) {
+static inline void evt_updateObjects_turn(Unk8004AB64 *p) {
     s32 a;
 
     if ((s16)p->unk6C == 0x7FFE) {
@@ -2861,13 +2861,13 @@ static inline void func_80048F54_turn(Unk8004AB64 *p) {
 }
 
 /* remember the position at the start of the frame */
-static inline void func_80048F54_save(Unk8004AB64 *p) {
+static inline void evt_updateObjects_save(Unk8004AB64 *p) {
     p->unk40.vx = p->pos.vx;
     p->unk40.vy = p->pos.vy;
     p->unk40.vz = p->pos.vz;
 }
 
-s32 func_80048F54(void) {
+s32 evt_updateObjects(void) {
     Unk16D8 *n;
     Unk8004AB64 *o;
     Unk8004AB64 *p;
@@ -2903,11 +2903,11 @@ s32 func_80048F54(void) {
                         o->unk40.vx = o->pos.vx;
                         o->unk40.vy = o->pos.vy;
                         o->unk40.vz = o->pos.vz;
-                        func_800475D8(o);
+                        evt_movePlayer(o);
                     } else if (g_evtMode == 3) {
                         D_8007AEAC = D_800CCE54;
-                        func_80048A5C(o);
-                        t1 = func_80038618(o, 0, &dist);
+                        evt_checkPlayerAction(o);
+                        t1 = evt_findNearestObject(o, 0, &dist);
                         if (t1 != NULL && dist <= 0 &&
                             (u32)(func_800531D0(o, t1, func_80052F24(o->pos.vx - o->unk40.vx, o->pos.vz - o->unk40.vz)) + 0x400) <= 0x800) {
                             o->pos.vx = o->unk40.vx;
@@ -2922,10 +2922,10 @@ s32 func_80048F54(void) {
                         }
                     }
                 } else {
-                    func_80048F54_save(o);
+                    evt_updateObjects_save(o);
                 }
             } else {
-                func_80048F54_save(z);
+                evt_updateObjects_save(z);
             }
             if (o->unkE == 1 && !world) {
                 func_80049C14(o);
@@ -2956,7 +2956,7 @@ s32 func_80048F54(void) {
     if (world) {
         for (n = g_evtState->unk16D8; n != NULL; n = n->unk0) {
             o = n->unk4;
-            if (o->unkB == 2 && func_800384D0(o, 3, 5, 0)) {
+            if (o->unkB == 2 && evt_callObjectFunc(o, 3, 5, 0)) {
                 o->unkB = 1;
             }
         }
@@ -2968,7 +2968,7 @@ s32 func_80048F54(void) {
                 if (g_evtMode == 1) {
                     f = func_8002170C(p);
                     if ((p->unk7 != g_evtState->playerUid || D_8007AEB0 >= 0) && (f & 1) &&
-                        (t = func_80038618(p, 0, NULL)) != NULL) {
+                        (t = evt_findNearestObject(p, 0, NULL)) != NULL) {
                         func_800C7720(p->unk3B);
                         if (t->unkF & 0x10) {
                             D_8007AEB0 = 0;
@@ -2978,9 +2978,9 @@ s32 func_80048F54(void) {
                         }
                     }
                     if (o->unk7 == g_evtState->playerUid) {
-                        func_8004F74C(p);
+                        msg_drawHereIcon(p);
                         if (g_evtState->unk16EC != 0) {
-                            func_80048A5C(p);
+                            evt_checkPlayerAction(p);
                         }
                     }
                 } else if (g_evtMode == 3) {
@@ -2999,7 +2999,7 @@ s32 func_80048F54(void) {
                     }
                 }
                 if (p->unk3E != 0xFF) {
-                    w = func_8004ED94(p->unk3E);
+                    w = msg_getWindow(p->unk3E);
                     if (w != NULL) {
                         func_80039444(p, w);
                     } else {
@@ -3018,14 +3018,14 @@ s32 func_80048F54(void) {
                 }
                 if (g_evtMode == 1) {
                     if (p->unkF & 0x80) {
-                        func_80048F54_turn(p);
+                        evt_updateObjects_turn(p);
                     }
                     if (p->unk34 != 0xFFFF) {
                         func_80047E1C(p);
                     }
                 }
                 if (g_evtMode == 3 && (p->unkF & 0x80)) {
-                    func_80048F54_turn(p);
+                    evt_updateObjects_turn(p);
                 }
                 if (moved) {
                     if ((p->unk62 & 0x86) == 0 || (p->unk62 & 0x86) == 0x82) {
@@ -3374,7 +3374,7 @@ void evt_init(u8 *data) {
     g_evtState->unk16EC = 0;
     g_evtState->playerUid = 0;
     g_evtState->unk1700 = 0;
-    func_8004FF98(0);
+    msg_startHereIcon(0);
     D_8007B6FC = 0;
     g_evtState->unk16F8 = 0;
     D_8007AE68 = NULL;
@@ -3425,7 +3425,7 @@ void evt_init(u8 *data) {
                 func_800AA3F4(o->unk6);
             }
         }
-        func_800384D0(func_8004B040_inline(0), 0, 10, 0);
+        evt_callObjectFunc(evt_getObject_inline(0), 0, 10, 0);
         for (l = g_evtState->unk16D8; l != NULL; l = l->unk0) {
             o = l->unk4;
             if (o->unk7 != 0) {
@@ -3434,7 +3434,7 @@ void evt_init(u8 *data) {
             }
         }
     } else {
-        func_80048F54();
+        evt_updateObjects();
     }
     g_evtState->unk16F0 = data;
     g_evtState->unk16EE = g_evtMode;
@@ -3468,14 +3468,14 @@ void func_8004A8A4(void) {
     }
 }
 
-void func_8004A9E8(void) {
+void evt_onMenuOpen(void) {
     u8 *s;
     s32 n;
-    func_8004E958();
-    func_8004FF98(0);
+    msg_closeAll();
+    msg_startHereIcon(0);
     if (g_evtMode == 3) {
         s = D_800CF478;
-        n = (func_80037D6C(0xC0) * 2) & 0x7F;
+        n = (evt_getSysVar(0xC0) * 2) & 0x7F;
         while (n != 0) {
             while (*s++ != 0) {
             }
@@ -3485,7 +3485,7 @@ void func_8004A9E8(void) {
         while (*s++ != 0) {
         }
         g_gameState->unk1C->unk810 = s;
-        func_800384D0(func_8004B040_inline(0), 1, 4, 0);
+        evt_callObjectFunc(evt_getObject_inline(0), 1, 4, 0);
     }
 }
 
@@ -3558,7 +3558,7 @@ s32 evt_battleTrigger(s32 op, s32 bits, s32 v, s32 w) {
                 break;
             }
             D_8007AE34 = w;
-            r = func_800384D0(o, a, b, 0);
+            r = evt_callObjectFunc(o, a, b, 0);
         }
     }
     return r;
@@ -3600,12 +3600,12 @@ void func_8004ACA4(Unk8004AB64 *o, s32 dx, s32 dy) {
     func_80051610();
 }
 
-Unk8004AB64 *func_8004AE00(void) {
+Unk8004AB64 *evt_getPlayer(void) {
     Unk8004AB64 *p = NULL;
     Unk8004AB64 *r;
 
     if (g_evtState != NULL) {
-        p = func_8004B040_inline(g_evtState->playerUid);
+        p = evt_getObject_inline(g_evtState->playerUid);
     }
     if (p != NULL && p->unk5 == 4) {
         r = p;
@@ -3615,11 +3615,11 @@ Unk8004AB64 *func_8004AE00(void) {
     return r;
 }
 
-s32 func_8004AE84(void) {
+s32 evt_isControlEnabled(void) {
     return g_evtState->unk16EC;
 }
 
-Unk16D8 *func_8004AE9C(void) {
+Unk16D8 *evt_getObjectList(void) {
     Unk8007AECC *p = g_evtState;
     Unk16D8 *r = NULL;
     if (p != NULL) {
@@ -3681,12 +3681,12 @@ s32 func_8004AFF0(Unk8004AB64 *p) {
     return 0;
 }
 
-Unk8004AB64 *func_8004B040(s32 id) {
-    return func_8004B040_inline(id);
+Unk8004AB64 *evt_getObject(s32 id) {
+    return evt_getObject_inline(id);
 }
 
 s32 func_8004B098(s32 id) {
-    Unk8004AB64 *p = func_8004B040_inline(id);
+    Unk8004AB64 *p = evt_getObject_inline(id);
     s32 r;
 
     if (p != NULL) {
@@ -3712,7 +3712,7 @@ s32 func_8004B120(s32 i) {
 }
 
 void func_8004B158(s32 a, s32 b, s32 c) {
-    func_800384D0(func_8004B040_inline(0), 1, 0x8000 | ((b << 8) & 0x3F00) | ((a << 2) & 0xFC) | (c & 3), 0);
+    evt_callObjectFunc(evt_getObject_inline(0), 1, 0x8000 | ((b << 8) & 0x3F00) | ((a << 2) & 0xFC) | (c & 3), 0);
 }
 
 s32 func_8004B1EC(void) {
@@ -3815,7 +3815,7 @@ s32 func_8004B5CC(void) {
 
 INCLUDE_RODATA("asm/us/main/nonmatchings/event", D_80011A44);
 
-s32 func_8004B68C(Unk8004AB64 *o, s32 prop) {
+s32 evt_getObjectProp(Unk8004AB64 *o, s32 prop) {
     s32 r;
     s32 i;
     void *u;

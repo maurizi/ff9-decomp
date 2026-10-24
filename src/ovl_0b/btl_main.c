@@ -407,7 +407,7 @@ s32 btl_initEncounter(Unk800AA08C *arg0, s32 arg1) {
     arg0->unk14 = (s32)db_lookupRegistered(4, (s32)db_lookupRegistered(9, id, 0x60000), 0);
     func_800C94B8();
     evt_init(arg0->unk10);
-    func_8004BFB0();
+    msg_init();
     return 0;
 }
 

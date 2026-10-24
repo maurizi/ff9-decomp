@@ -308,7 +308,7 @@ s32 func_800AB110(FieldObjSlot **arg0) {
     u16 *p;
 
     n = 0;
-    for (e = func_8004AE9C(); e != NULL; e = e->unk0) {
+    for (e = evt_getObjectList(); e != NULL; e = e->unk0) {
         a = e->unk4;
         if (a->unkE == 1 && (a->unkF & 1) && a->unk5 == 4) {
             s = (FieldObjSlot *)func_8001E350(a->unk3B);
@@ -317,7 +317,7 @@ s32 func_800AB110(FieldObjSlot **arg0) {
             }
         }
     }
-    for (e = func_8004AE9C(); e != NULL; e = e->unk0) {
+    for (e = evt_getObjectList(); e != NULL; e = e->unk0) {
         a = e->unk4;
         if (a->unkE == 1 && (a->unkF & 1) && a->unk5 == 4) {
             s = (FieldObjSlot *)func_8001E350(a->unk3B);
@@ -1425,7 +1425,7 @@ void func_800AED6C(void) {
         D_8007BD30 = D_80067944 + 0x153F00;
         func_800AC5F0();
         g_gameState->unk1C->unk8E4.field->unkC->unk14->unk20 = D_80067948;
-        a = func_8004AE00();
+        a = evt_getPlayer();
         if (a != NULL) {
             func_800C0F08();
             v.vx = a->pos.vx;
@@ -1554,7 +1554,7 @@ void func_800AF740(void) {
         ClearOTag(&D_800C9F98, 1);
         ui_buildSprite((320 - D_800686D0[235].unk4) / 2, (224 - D_800686D0[235].unk5) / 2, &D_800C9F98, 0xEB, 0, &tmp, &D_800C9FA0);
         bright = 0;
-        if (func_8002F800() || func_8002F810()) {
+        if (fade_isActive() || fade_isBusy()) {
             bright = 1;
         }
         v = func_8002F864();

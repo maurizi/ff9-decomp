@@ -1,13 +1,13 @@
 #include "ff9.h"
 
-void func_80062344(void) {
+void card_initAll(void) {
     s32 v = 0xFF;
     s32 i;
-    D_80083248.unk0 = 0;
-    D_80083248.unk2 = 0;
-    D_80083248.unk4 = 0;
+    g_cards.unk0 = 0;
+    g_cards.unk2 = 0;
+    g_cards.unk4 = 0;
     for (i = 0x68; i >= 0; i--) {
-        D_80083248.unk6[i].unk0 = v;
+        g_cards.unk6[i].unk0 = v;
     }
 }
 
@@ -15,87 +15,87 @@ void func_8006237C(void) {
     D_800834C8 = 1;
 }
 
-s32 func_8006238C(s32 a) {
+s32 card_add(s32 a) {
     s32 i;
 
-    if (func_800625F8() >= 100) {
+    if (card_countAll() >= 100) {
         return -1;
     }
     for (i = 0; i < 100; i++) {
-        if (D_80083248.unk6[i].unk0 == 0xFF) {
-            func_80062830(&D_80083248.unk6[i], a);
-            return func_80062560(a) == 1;
+        if (g_cards.unk6[i].unk0 == 0xFF) {
+            card_rollStats(&g_cards.unk6[i], a);
+            return card_countOf(a) == 1;
         }
     }
     return -1;
 }
 
-s32 func_80062420(u8 id, u8 a, u8 b, u8 c, u8 d, u8 e) {
+s32 card_addWithStats(u8 id, u8 a, u8 b, u8 c, u8 d, u8 e) {
     s32 i;
     for (i = 0; i < 0x69; i++) {
-        if (D_80083248.unk6[i].unk0 == 0xFF) {
-            D_80083248.unk6[i].unk0 = id;
-            D_80083248.unk6[i].unk1 = a;
-            D_80083248.unk6[i].unk2 = b;
-            D_80083248.unk6[i].unk3 = c;
-            D_80083248.unk6[i].unk4 = d;
-            D_80083248.unk6[i].unk5 = e;
-            return func_80062560(id) == 1;
+        if (g_cards.unk6[i].unk0 == 0xFF) {
+            g_cards.unk6[i].unk0 = id;
+            g_cards.unk6[i].unk1 = a;
+            g_cards.unk6[i].unk2 = b;
+            g_cards.unk6[i].unk3 = c;
+            g_cards.unk6[i].unk4 = d;
+            g_cards.unk6[i].unk5 = e;
+            return card_countOf(id) == 1;
         }
     }
     return -1;
 }
 
-s16 func_80062498(void) {
-    return D_80083248.unk0;
+s16 card_getWins(void) {
+    return g_cards.unk0;
 }
 
-void func_800624A8(void) {
-    if (++D_80083248.unk0 == 10000) {
-        D_80083248.unk0 = 9999;
+void card_addWin(void) {
+    if (++g_cards.unk0 == 10000) {
+        g_cards.unk0 = 9999;
     }
 }
 
-s16 func_800624D8(void) {
-    return D_80083248.unk2;
+s16 card_getLosses(void) {
+    return g_cards.unk2;
 }
 
-void func_800624E8(void) {
-    if (++D_80083248.unk2 == 10000) {
-        D_80083248.unk2 = 9999;
+void card_addLoss(void) {
+    if (++g_cards.unk2 == 10000) {
+        g_cards.unk2 = 9999;
     }
 }
 
-s16 func_8006251C(void) {
-    return D_80083248.unk4;
+s16 card_getDraws(void) {
+    return g_cards.unk4;
 }
 
-void func_8006252C(void) {
-    if (++D_80083248.unk4 == 10000) {
-        D_80083248.unk4 = 9999;
+void card_addDraw(void) {
+    if (++g_cards.unk4 == 10000) {
+        g_cards.unk4 = 9999;
     }
 }
 
-s32 func_80062560(a)
+s32 card_countOf(a)
     u8 a;
 {
     s32 n = 0;
     s32 i;
     for (i = 0; i < 0x69; i++) {
-        if (D_80083248.unk6[i].unk0 == a) {
+        if (g_cards.unk6[i].unk0 == a) {
             n++;
         }
     }
     return n;
 }
 
-Unk6 *func_800625A0(s32 id, s32 n) {
+Unk6 *card_find(s32 id, s32 n) {
     s32 k = 0;
     s32 i;
     for (i = 0; i < 0x69; i++) {
-        if (D_80083248.unk6[i].unk0 == (u8)id) {
+        if (g_cards.unk6[i].unk0 == (u8)id) {
             if (n == k) {
-                return &D_80083248.unk6[i];
+                return &g_cards.unk6[i];
             }
             k++;
         }
@@ -103,18 +103,18 @@ Unk6 *func_800625A0(s32 id, s32 n) {
     return (Unk6 *)-1;
 }
 
-s32 func_800625F8(void) {
+s32 card_countAll(void) {
     s32 n = 0;
     s32 i;
     for (i = 0; i < 0x69; i++) {
-        if (D_80083248.unk6[i].unk0 != 0xFF) {
+        if (g_cards.unk6[i].unk0 != 0xFF) {
             n++;
         }
     }
     return n;
 }
 
-s32 func_80062638(void) {
+s32 card_countKinds(void) {
     u8 cnt[100];
     u8 *p;
     s32 i;
@@ -126,8 +126,8 @@ s32 func_80062638(void) {
         *p-- = 0;
     }
     for (i = 0; i < 0x69; i++) {
-        if (D_80083248.unk6[i].unk0 != 0xFF) {
-            cnt[D_80083248.unk6[i].unk0]++;
+        if (g_cards.unk6[i].unk0 != 0xFF) {
+            cnt[g_cards.unk6[i].unk0]++;
         }
     }
     n = 0;
@@ -139,13 +139,13 @@ s32 func_80062638(void) {
     return n;
 }
 
-s32 func_800626D0(s32 id, s32 n) {
+s32 card_remove(s32 id, s32 n) {
     s32 k = 0;
     s32 i;
     for (i = 0; i < 0x69; i++) {
-        if (D_80083248.unk6[i].unk0 == (u8)id) {
+        if (g_cards.unk6[i].unk0 == (u8)id) {
             if (k == n) {
-                D_80083248.unk6[i].unk0 = 0xFF;
+                g_cards.unk6[i].unk0 = 0xFF;
                 return 0;
             }
             k++;
@@ -154,11 +154,11 @@ s32 func_800626D0(s32 id, s32 n) {
     return -1;
 }
 
-void func_80062724(void) {
+void card_clearAll(void) {
     s32 v = 0xFF;
     s32 i;
     for (i = 0x68; i >= 0; i--) {
-        D_80083248.unk6[i].unk0 = v;
+        g_cards.unk6[i].unk0 = v;
     }
 }
 
@@ -170,15 +170,15 @@ s32 func_8006275C(void) {
     return D_800834C8;
 }
 
-s32 func_8006276C(s32 a) {
+s32 card_getName(s32 a) {
     return text_getFrom(D_8006FD60, a);
 }
 
-s32 func_80062794(s32 a) {
-    return func_8002BA68(func_8006276C(a));
+s32 card_getNameWidth(s32 a) {
+    return func_8002BA68(card_getName(a));
 }
 
-s32 func_800627BC(s32 x) {
+s32 card_getRarity(s32 x) {
     if (x < 0x38) {
         return 0;
     }
@@ -200,11 +200,11 @@ s32 func_800627BC(s32 x) {
     return 6;
 }
 
-void *func_80062824(void) {
-    return &D_80083248;
+void *card_getInventory(void) {
+    return &g_cards;
 }
 
-void func_80062830(Unk6 *card, u8 id) {
+void card_rollStats(Unk6 *card, u8 id) {
     Bytes8 bits;
     u8 v;
     s32 r;
@@ -272,7 +272,7 @@ void func_80062830(Unk6 *card, u8 id) {
     }
 }
 
-CardInfo *func_80062B30(void) {
+CardInfo *card_getInfoTable(void) {
     return D_800121C8;
 }
 

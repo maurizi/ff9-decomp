@@ -27,7 +27,7 @@ void func_801F0C18(void) {
 void func_801F0D18(void) {
     if (g_padRepeat & BTN_CIRCLE) {
         snd_playSe(0x65);
-        func_800361CC(0);
+        menuScreen_open(0);
         return;
     }
     if (g_padRepeat & BTN_CROSS) {
@@ -196,20 +196,20 @@ void func_801F13F8(void) {
     l = D_801F3040[D_801FAB78.unk0].unk8;
     blink = (D_80077E54 & 3) != 0;
     help_setCursorOnTop(D_801FAB78.unk1 != 1);
-    if (func_8002F810() || D_801FAB78.unk1 == 0) {
+    if (fade_isBusy() || D_801FAB78.unk1 == 0) {
         return;
     }
     if (D_801FAB78.unk1 == 1 || blink) {
         g_menuHelp.x = D_801F30AC[D_801FAB78.unk0] - 0x10;
         g_menuHelp.y = 0x10;
         g_menuHelp.otz = 0x19;
-        func_800355E4();
+        help_drawCursor();
     }
     if (D_801FAB78.unk1 == 4 || (D_801FAB78.unk1 == 5 && blink)) {
         g_menuHelp.x = 0x7E;
         g_menuHelp.otz = 0x12;
         g_menuHelp.y = D_801FAB78.unk5 * 15 + 0xE;
-        func_800355E4();
+        help_drawCursor();
     }
     if (D_801FAB78.unk1 >= 2 && D_801FAB78.unk1 != 4 && (D_801FAB78.unk1 == 2 || blink)) {
         k = l->unk7 ^ ((l->unk8 >> 3) & 1);
@@ -219,18 +219,18 @@ void func_801F13F8(void) {
         if (D_801FAB78.unk0 == 2) {
             g_menuHelp.x = k * 0x96;
             g_menuHelp.y = l->cursor * 15 + 0x34;
-            func_800355E4();
+            help_drawCursor();
         } else {
             g_menuHelp.x = k * 0x96;
             g_menuHelp.y = l->cursor * 15 + 0x34;
-            func_800355E4();
+            help_drawCursor();
         }
     }
     if (D_801FAB78.unk1 == 3) {
         g_menuHelp.otz = 0x12;
         g_menuHelp.x = D_801FAB78.unk3C.unk4.x - 0xA;
         g_menuHelp.y = D_801FAB78.unk3C.unk4.y + (s16)(D_801FAB78.unk2 * 43 + 0x12);
-        func_800355E4();
+        help_drawCursor();
     }
     if (D_801FAB78.unk1 == 5) {
         if (D_801FAB78.unk7 == 1 && blink && !(l->unk8 & 4)) {
@@ -246,14 +246,14 @@ void func_801F13F8(void) {
                 g_menuHelp.x = (u & 1) * 0x96 + 2;
                 g_menuHelp.y = ((u >> 1) - l->unk5) * 15 + (s16)(off + 0x32);
                 g_menuHelp.otz = 0x12;
-                func_800355E4();
+                help_drawCursor();
             }
         }
         k = l->unk7 ^ ((l->unk8 >> 3) & 1);
         g_menuHelp.x = k * 0x96;
         g_menuHelp.y = l->cursor * 15 + 0x34;
         g_menuHelp.otz = 0x12;
-        func_800355E4();
+        help_drawCursor();
     }
 }
 
@@ -481,7 +481,7 @@ void func_801F2190(void) {
 void func_801F21E8(void) {
     void (*fn)(void);
 
-    if (!func_8002F810()) {
+    if (!fade_isBusy()) {
         fn = D_801F307C[D_801FAB78.unk1];
         if (fn != NULL) {
             fn();
@@ -593,7 +593,7 @@ void func_801F2590(s32 id) {
     i = id - 0xE0;
     e = &D_8006B1F4[i];
     c = g_gameState->unk1C->party[D_801FAB78.unk2];
-    if (func_800654F8(c, c, e, e->unk4, 0)) {
+    if (item_useOnMember(c, c, e, e->unk4, 0)) {
         snd_playSe(0x6A);
         item_remove(id, 1);
     } else {
@@ -722,7 +722,7 @@ void func_801F2BC0(void) {
                 help_setCursorOnTop(1);
                 help_setCallback(NULL);
                 func_801F2F30();
-                func_800362C8();
+                menuScreen_close();
             }
         }
     }

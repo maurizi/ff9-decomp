@@ -21,9 +21,9 @@ void func_800B69B4(void) {
 
     D_800CF47D = 1;
     if (g_evtGlobalVars.b[0x65] & 1) {
-        func_8002FB64(1);
+        fade_outAdditive(1);
     } else {
-        func_8002FAAC(1);
+        fade_out(1);
     }
     D_800CF430 = g_evtGlobalVars.h;
     if ((u16)g_evtGlobalVars.h[0] >= 0x2B52) {
@@ -88,7 +88,7 @@ s32 func_800B6BC4(void) {
             D_800CF454 = 3;
             g_gameState->unk1C->unk0 |= 2;
             menu_open(0, 0);
-            func_8004A9E8();
+            evt_onMenuOpen();
         }
     }
     if (!(g_gameState->unk1C->unk0 & 0x1C)) {
@@ -179,8 +179,8 @@ void func_800B7098(void) {
     case 0:
         g_gameState->vsyncMode = 0;
         func_800B83FC();
-        if (func_8004AE00() != NULL) {
-            D_800CE3DC = func_8004AE00();
+        if (evt_getPlayer() != NULL) {
+            D_800CE3DC = evt_getPlayer();
         }
         break;
     case 1:

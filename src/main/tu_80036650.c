@@ -73,7 +73,7 @@ Unk8004AB64 *func_800367D0(s32 idx, s32 id, s32 a2, s32 a3) {
     if (id == 0) {
         id = idx;
     }
-    o = func_8004B040(id);
+    o = evt_getObject(id);
     if (o != NULL) {
         func_80036978(o);
     }
@@ -545,7 +545,7 @@ s32 func_80037ACC(s32 op) {
         } else if (x < 0x200) {
             r = (u8)keyItem_has(x - 0x100);
         } else {
-            r = func_80062560(x - 0x200);
+            r = card_countOf(x - 0x200);
         }
         break;
     case 0x65:

@@ -33,7 +33,7 @@ u8 func_800AD504(void) {
 }
 
 void func_800AD514(void) {
-    if (func_8002F810() == 0 && D_800B0FF0.unk1 != 0 && D_800B0FF0.unk2 == 0) {
+    if (fade_isBusy() == 0 && D_800B0FF0.unk1 != 0 && D_800B0FF0.unk2 == 0) {
         if (g_padRepeat & PAD_UP) {
             snd_playSe(0x67);
             D_800B0FF0.unk3 = D_800B0FF0.unk3 != 0 ? D_800B0FF0.unk3 - 1 : 3;
@@ -59,8 +59,8 @@ void func_800AD624(void) {
 
 void func_800AD644(void) {
     snd_playSe(0x67);
-    func_8002FAAC(0x10);
-    func_8002F8A8(func_800AD75C);
+    fade_out(0x10);
+    fade_setOnDone(func_800AD75C);
 }
 
 void func_800AD678(void) {
@@ -73,11 +73,11 @@ void func_800AD688(void) {
 }
 
 void func_800AD690(void) {
-    if (func_8002F810() == 0 && D_800B0FF0.unk1 != 0 && D_800B0FF0.unk2 == 0) {
+    if (fade_isBusy() == 0 && D_800B0FF0.unk1 != 0 && D_800B0FF0.unk2 == 0) {
         g_menuHelp.x = D_800AE498[D_800B0FF0.unk3].x - 0x1A;
         g_menuHelp.y = D_800AE498[D_800B0FF0.unk3].y + 3;
         g_menuHelp.otz = 3;
-        func_800355E4(&g_menuHelp, &D_800B0FF0);
+        help_drawCursor(&g_menuHelp, &D_800B0FF0);
     }
 }
 
@@ -103,5 +103,5 @@ void func_800AD77C(void) {
     D_800B0FF0.unk1 = 1;
     D_800B0FF0.unk2 = 0;
     D_800B0FF0.unk8 = 0;
-    func_8002FA50(0x20);
+    fade_in(0x20);
 }

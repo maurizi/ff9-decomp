@@ -29,8 +29,8 @@ void func_801F1150(void) {
         d->unk25C[0] = lv;
     }
     func_80063118(&D_801FC840.unk23C, 0, 1);
-    func_801F3278(D_80077E50.unk3, 0);
-    func_80028CF8(&D_801FC840.unk24C, D_80077E50.unk3, func_801F3264);
+    func_801F3278(g_menuScreen.unk3, 0);
+    ui_initMemberSwitch(&D_801FC840.unk24C, g_menuScreen.unk3, func_801F3264);
 }
 
 void func_801F12C8(void) {
@@ -39,10 +39,10 @@ void func_801F12C8(void) {
 
     if (g_padRepeat & BTN_CIRCLE) {
         snd_playSe(0x65);
-        func_800361CC(0);
+        menuScreen_open(0);
     } else if (g_padRepeat & BTN_SQUARE) {
         snd_playSe(0x67);
-        func_80036270(2);
+        menuScreen_switch(2);
     } else if (g_padRepeat & PAD_LEFT) {
         snd_playSe(0x67);
         D_801FC840.unk0 = D_801FC840.unk0 != 0 ? D_801FC840.unk0 - 1 : 2;
@@ -140,7 +140,7 @@ void func_801F15E0(void) {
         in.unk14 = *(Bytes5 *)c->equip;
         in.unk8 = *(Words2 *)c->unk88;
         in.unk14.unk0[D_801FC840.unk2] = (D_801FC840.unk3C + (D_801FC840.unk4.cursor + D_801FC840.unk4.unk5))->id;
-        func_80032E84(&in, &out);
+        chr_calcEquipStats(&in, &out);
         func_801F20A0(&cur, &out);
         return;
     } else if (*(u16 *)&D_801FC840 == 0x202 && D_801FC840.unk2 != 0) {
@@ -150,7 +150,7 @@ void func_801F15E0(void) {
         in.unk14 = *(Bytes5 *)c->equip;
         in.unk8 = *(Words2 *)c->unk88;
         in.unk14.unk0[D_801FC840.unk2] = 0xFF;
-        func_80032E84(&in, &out);
+        chr_calcEquipStats(&in, &out);
         func_801F20A0(&cur, &out);
         return;
     }
@@ -371,7 +371,7 @@ void func_801F239C(void) {
     HelpState *h;
 
     help_setCursorOnTop(m->unk1 != 1);
-    if (func_8002F810() || m->unk1 == 0) {
+    if (fade_isBusy() || m->unk1 == 0) {
         return;
     }
     if (m->unk1 == 1 || (D_80077E54 & 3)) {
@@ -380,20 +380,20 @@ void func_801F239C(void) {
         h->y = m->unk14.y + 8;
         h->otz = 0x1B;
         h->x = m->unk14.x + x - 0x18;
-        func_800355E4();
+        help_drawCursor();
     }
     if (D_801FC840.unk1 == 2) {
         g_menuHelp.otz = 0x12;
         g_menuHelp.x = D_801FC840.unk24.x - 0x10;
         k = D_801FC840.unk2 * 17 + 0xC;
         g_menuHelp.y = D_801FC840.unk24.y + k;
-        func_800355E4();
+        help_drawCursor();
     } else if (D_801FC840.unk1 == 3) {
         g_menuHelp.otz = 0x12;
         g_menuHelp.x = D_801FC840.unk23C.unk4.x - 0xD;
         k = D_801FC840.unk4.cursor * 15 + 0xA;
         g_menuHelp.y = D_801FC840.unk23C.unk4.y + k;
-        func_800355E4();
+        help_drawCursor();
     }
 }
 
@@ -468,7 +468,7 @@ void func_801F26C4(Character *c) {
         for (i = 0; i < 0x30; i++, a++) {
             if (a->unk0 >= 0xC0 && func_800349BC(c->unk34.b.id, a->unk0)) {
                 if (D_801FC700[a->unk0 - 0xC0] == 0 && c->unk58[i] < a->unk1) {
-                    func_8003493C(c->unk34.b.id, a->unk0, 0);
+                    chr_setSupportAbility(c->unk34.b.id, a->unk0, 0);
                     if (c->maxStones - c->stones >= D_8006D128[a->unk0 - 0xC0].unk1) {
                         c->stones += D_8006D128[a->unk0 - 0xC0].unk1;
                     } else {
@@ -569,7 +569,7 @@ void func_801F2C3C(void) {
 void func_801F2C78(void) {
     void (*fn)(void);
 
-    if (!func_8002F810()) {
+    if (!fade_isBusy()) {
         fn = D_801F7420[D_801FC840.unk1];
         if (fn != NULL) {
             fn();
@@ -597,7 +597,7 @@ void func_801F2D18(void) {
         func_800631AC(&D_801FC840.unk23C);
     }
     if (D_801FC840.unk24C.unk0 != 0) {
-        func_80028D2C(&D_801FC840.unk24C);
+        ui_updateMemberSwitch(&D_801FC840.unk24C);
     }
 }
 
@@ -740,7 +740,7 @@ void func_801F3264(void) {
 void func_801F3278(s32 slot, s32 dir) {
     u8 s;
 
-    func_80028D08(&D_801FC840.unk24C, D_801FC840.unk3, slot, dir);
+    ui_startMemberSwitch(&D_801FC840.unk24C, D_801FC840.unk3, slot, dir);
     if (dir != 0) {
         s = D_801FC840.unk1;
         D_801FC840.unk1 = 0;
@@ -751,7 +751,7 @@ void func_801F3278(s32 slot, s32 dir) {
 
 void func_801F32E0(Character *c) {
     func_801F26C4(c);
-    func_8003384C(c);
+    chr_updateStats(c);
     c->unk34.b.unk4 = func_80033280(c->unk34.b.id, (c->unkA >> 4) & 1, c->equip);
 }
 

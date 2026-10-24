@@ -1298,13 +1298,13 @@ void ui_savePartyPortrait(u8 *buf, s32 arg1) {
     DrawSync(0);
 }
 
-void func_80028CF8(UnkBlink *b, s32 arg1, void (*cb)(void)) {
+void ui_initMemberSwitch(UnkBlink *b, s32 arg1, void (*cb)(void)) {
     b->unk0 = 0;
     b->unk2 = arg1;
     b->unk8 = cb;
 }
 
-void func_80028D08(UnkBlink *b, s32 arg1, s32 arg2, s32 arg3) {
+void ui_startMemberSwitch(UnkBlink *b, s32 arg1, s32 arg2, s32 arg3) {
     b->unk1 = arg3;
     b->unk4 = 0;
     if (arg3 != 0) {
@@ -1314,7 +1314,7 @@ void func_80028D08(UnkBlink *b, s32 arg1, s32 arg2, s32 arg3) {
     }
 }
 
-void func_80028D2C(UnkBlink *b) {
+void ui_updateMemberSwitch(UnkBlink *b) {
     void (*cb)(void);
 
     if (b->unk0 != 0) {

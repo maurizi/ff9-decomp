@@ -14,7 +14,7 @@ void help_draw(void) {
         if (g_menuHelp.cursorOnTop != 0) {
             ui_drawHand(g_menuHelp.x, g_menuHelp.y, otz);
         }
-        func_80035C2C(g_menuHelp.x + 5, g_menuHelp.y + 2, otz, &g_menuHelp.iconAnim);
+        sprAnim_draw(g_menuHelp.x + 5, g_menuHelp.y + 2, otz, &g_menuHelp.iconAnim);
     }
     func_8003573C();
     if (g_menuHelp.textShown != 0) {
@@ -98,22 +98,22 @@ void help_init(void) {
     g_menuHelp.follow = 1;
     g_menuHelp.cursorOnTop = 1;
     help_setBounds(NULL);
-    func_80035B24(&g_menuHelp.iconAnim, &D_80010E48);
+    sprAnim_init(&g_menuHelp.iconAnim, &D_80010E48);
 }
 
 void help_update(void) {
     HelpState *p;
-    if (g_menuHelp.locked == 0 && func_8002F810() == 0 && (g_padRepeat & 0x8000000)) {
+    if (g_menuHelp.locked == 0 && fade_isBusy() == 0 && (g_padRepeat & 0x8000000)) {
         help_toggle();
     }
     p = &g_menuHelp;
-    if (p->isOpen != 0 && func_8002F810() == 0 && p->callback != NULL) {
+    if (p->isOpen != 0 && fade_isBusy() == 0 && p->callback != NULL) {
         p->callback();
         if (p->text != NULL && *p->text != 0xFF) {
             help_draw();
         }
     }
-    func_80035B90(&g_menuHelp.iconAnim);
+    sprAnim_update(&g_menuHelp.iconAnim);
 }
 
 void func_80035564(void) {
@@ -138,7 +138,7 @@ void help_setBounds(RECT *r) {
 void help_nullHandler(void) {
 }
 
-void func_800355E4(HelpState *unused) {
+void help_drawCursor(HelpState *unused) {
     ui_drawSprite(g_menuHelp.x, g_menuHelp.y, g_menuHelp.otz, 1, 0);
 }
 
@@ -177,14 +177,14 @@ void help_toggle(void) {
             g_menuHelp.isOpen = 1;
             g_menuHelp.opening = 1;
             g_menuHelp.textShown = 0;
-            func_80035B7C(&g_menuHelp.iconAnim);
-            func_80035B74(&g_menuHelp.iconAnim, help_onIconAnimDone);
-            func_80035B64(&g_menuHelp.iconAnim, 1);
+            sprAnim_reset(&g_menuHelp.iconAnim);
+            sprAnim_setOnDone(&g_menuHelp.iconAnim, help_onIconAnimDone);
+            sprAnim_setPlaying(&g_menuHelp.iconAnim, 1);
         } else {
             snd_playSe(0x65);
             g_menuHelp.isOpen = 0;
             g_menuHelp.textShown = 0;
-            func_80035B64(&g_menuHelp.iconAnim, 0);
+            sprAnim_setPlaying(&g_menuHelp.iconAnim, 0);
         }
     }
 }

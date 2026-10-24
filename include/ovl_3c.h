@@ -15,7 +15,7 @@ typedef struct {
     u8 unk4; /* sub-menu has been used */
     u8 pad5[3];
     s32 unk8;  /* shop id (D_80077DBC) */
-    s32 unkC;  /* saved func_8002F8E4 mode */
+    s32 unkC;  /* saved fade_setOtz mode */
     u8 *unk10; /* title text */
     s32 unk14; /* party member count */
     s8 unk18[8]; /* party member indices */

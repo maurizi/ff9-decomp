@@ -15,7 +15,7 @@ void btl_startBattle(void) {
     func_8004C204();
     func_8004BC38();
     func_800AB580(1);
-    func_8002FA50(0x20);
+    fade_in(0x20);
     btlcam_playScene(func_800CA2B0(0));
     b->unkD80 = 2;
 }

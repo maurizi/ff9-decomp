@@ -157,9 +157,9 @@ u32 func_801F30C8(void);
 
 extern u8 D_801EDF04[];
 /* main exe: candidates for ff9.h */
-s32 func_80062498(void); /* collector points */
-s32 func_800624D8(void);
-s32 func_8006251C(void);
+s32 card_getWins(void); /* collector points */
+s32 card_getLosses(void);
+s32 card_getDraws(void);
 /* defined as returning u16 in main.c, but called here without masking */
 s32 pad_getRepeatDelay(s32, s32);
 s32 pad_getRepeatInterval(s32, s32);

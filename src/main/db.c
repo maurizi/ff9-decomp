@@ -240,7 +240,7 @@ void game_setScreenHeight(s32 h) {
     DRAWENV *draw;
 
     fade = 0;
-    if (func_8002F800() || func_8002F810()) {
+    if (fade_isActive() || fade_isBusy()) {
         fade = 1;
     }
     busy = func_8002F864();
@@ -297,7 +297,7 @@ void game_freezeScreen(void) {
         PutDispEnv(&g_gameState->unkC[g_gameState->unk1C->unk8]);
         fade = 0;
         memmove(&D_80073C88, &g_gameState->unk10[g_gameState->unk1C->unk8 ^ 1], sizeof(DRAWENV));
-        if (func_8002F800() || func_8002F810()) {
+        if (fade_isActive() || fade_isBusy()) {
             fade = 1;
         }
         busy = func_8002F864();

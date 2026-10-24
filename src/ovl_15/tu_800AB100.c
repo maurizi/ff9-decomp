@@ -84,7 +84,7 @@ void func_800AB3D4(void) {
         g_menuHelp.x = D_800AE3DC[D_800B0F50.unk3].x - 0x1A;
         g_menuHelp.y = D_800AE3DC[D_800B0F50.unk3].y + 3;
         g_menuHelp.otz = 3;
-        func_800355E4(&g_menuHelp, &D_800B0F50);
+        help_drawCursor(&g_menuHelp, &D_800B0F50);
     }
 }
 

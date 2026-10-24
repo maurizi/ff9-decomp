@@ -44,15 +44,15 @@ extern u8 D_8006E700[];          /* "divide by zero"-style message printed by th
 extern u16 D_8006EAD0[];         /* atan table, 0x401 entries, 0 .. 0x200 (45 degrees) */
 
 /* ---- callees without prototypes in the headers ---- */
-s32 func_8004B68C(Unk8004AB64 *o, s32 prop);
+s32 evt_getObjectProp(Unk8004AB64 *o, s32 prop);
 u16 func_8004B404(s32 arg0);
 Unk8004AB64 *func_8004B4C4(s32 id);
 void func_8004B7A4(Unk800219D8 *arg0, s32 arg1, s32 arg2);
 void func_8004B4A8(s32 i, s16 v);
 s32 func_80037ACC(s32 op);
-u32 func_8004E8EC(void);
-u32 func_8004E904(void);
-u32 func_8004E8D4(void);
+u32 msg_getPadPressed(void);
+u32 msg_getPadReleased(void);
+u32 msg_getPadHeld(void);
 s32 func_8004B85C(s32 slot);
 s32 func_800378C4(s32 slot);
 s32 func_800372A4(s32 op);
@@ -664,9 +664,9 @@ void func_80051B58(const char *fmt, ...) {
  * the space and bits 3-5 (bits 29-31) the width:
  *   space 0: global variables (g_evtGlobalVars)       space 1: the event context's map variables
  *   space 2/3: the current object's locals (g_evtObjVars)
- *   space 4: (uid << 8) | index on another object (func_8004B4C4 + func_8004B68C), read-only
+ *   space 4: (uid << 8) | index on another object (func_8004B4C4 + evt_getObjectProp), read-only
  *   space 5: system variable `index` (func_8004B404 / func_8004B4A8)
- *   space 6: property `index` of D_8007B700 (func_8004B68C / func_8004B7A4)
+ *   space 6: property `index` of D_8007B700 (evt_getObjectProp / func_8004B7A4)
  *   space 7: an immediate (26-bit, sign-extended)
  *   width (spaces 0-3): 0/1 bit, 2/3 24-bit signed, 4 s8, 5 u8, 6 s16, 7 u16
  */
@@ -705,12 +705,12 @@ s32 evt_popValue(void) {
             if (tag & 1) {
                 return (s32)(t << 6) >> 6;
             }
-            return func_8004B68C((Unk8004AB64 *)D_8007B700, (s32)(t << 6) >> 6);
+            return evt_getObjectProp((Unk8004AB64 *)D_8007B700, (s32)(t << 6) >> 6);
         }
         if (tag & 1) {
             return func_8004B404(t & 0xFF);
         }
-        return func_8004B68C(func_8004B4C4((t >> 8) & 0xFF), t & 0xFF);
+        return evt_getObjectProp(func_8004B4C4((t >> 8) & 0xFF), t & 0xFF);
     }
     if (tag & 2) {
         return evt_readVar(g_evtObjVars, t & 0xFFFF, tag);
@@ -967,15 +967,15 @@ void evt_runExpr(void) {
             evt_popAssign(v);
             break;
         case 0x4F:
-            t = func_8004E8EC();
+            t = msg_getPadPressed();
             v = (evt_popValue() & t) != 0;
             break;
         case 0x58:
-            t = func_8004E904();
+            t = msg_getPadReleased();
             v = (evt_popValue() & t) != 0;
             break;
         case 0x59:
-            t = func_8004E8D4();
+            t = msg_getPadHeld();
             v = (evt_popValue() & t) != 0;
             break;
         case 0x50:
@@ -1054,7 +1054,7 @@ void evt_runExpr(void) {
             push(*r_ip++ | 0x14000000);
             continue;
         case 0x7A: /* pushes the masked value but keeps the full one as the previous result */
-            v = func_80037D6C(*r_ip++);
+            v = evt_getSysVar(*r_ip++);
             push((v & 0x3FFFFFF) | 0x1C000000);
             continue;
         case 0x7D: /* 16-bit immediate */
@@ -1095,7 +1095,7 @@ s32 func_80052834(void) {
 
 /* Run every object in the list `n` (ObjList-style nodes {next, obj}) until each yields. Returns 0, or the
  * status that stopped the run: 3, 4, 5, 7, 8, or 6 (also saved in D_8007B6FC with the node). Opcodes handled
- * here: 1 jump, 2 jump if false, 3 jump if true, 4 func_80038278, 5 expression, 6 / 0xB / 0xD switches,
+ * here: 1 jump, 2 jump if false, 3 jump if true, 4 evt_returnFromFunc, 5 expression, 6 / 0xB / 0xD switches,
  * 0x1C, 0x22 wait, 0x30/0x6C print, 0x31/0x6D printf, 0x32 print position. Everything else (including all
  * opcodes >= 0x6E) goes to evt_execInstr. */
 s32 func_80052870(Unk16D8 *n) {
@@ -1140,7 +1140,7 @@ s32 func_80052870(Unk16D8 *n) {
         }
         g_evtCurObj = o;
         g_evtObjVars = (u8 *)o + o->unk8 * 4;
-        D_8007B704 = o->unk5 == 1 ? func_8004B040(o->unk7 - 0x40) : o;
+        D_8007B704 = o->unk5 == 1 ? evt_getObject(o->unk7 - 0x40) : o;
         if (g_evtMode == 2) {
             func_8004BB30(o);
         }
@@ -1170,7 +1170,7 @@ s32 func_80052870(Unk16D8 *n) {
                 }
                 break;
             case 0x04:
-                func_80038278(o);
+                evt_returnFromFunc(o);
                 goto status; /* the instruction pointer is not stored back */
             case 0x05:
                 evt_runExpr();

@@ -132,21 +132,21 @@ void func_800AD738(void) {
                 if (abs(D_800CE108[0] - x) < 16) {
                     D_800CE0EC = 0;
                 } else {
-                    D_800CE108[0] += (func_8004AE00()->pos.vx - D_800CE108[0]) / 8;
+                    D_800CE108[0] += (evt_getPlayer()->pos.vx - D_800CE108[0]) / 8;
                 }
             }
             if (D_800CE0ED == 1) {
                 if (abs(D_800CE108[1] - y) < 16) {
                     D_800CE0ED = 0;
                 } else {
-                    D_800CE108[1] += (func_8004AE00()->pos.vy - D_800CE108[1] + D_800CE1C4) / 8;
+                    D_800CE108[1] += (evt_getPlayer()->pos.vy - D_800CE108[1] + D_800CE1C4) / 8;
                 }
             }
             if (D_800CE0EE == 1) {
                 if (abs(D_800CE108[2] - z) < 16) {
                     D_800CE0EE = 0;
                 } else {
-                    D_800CE108[2] += (func_8004AE00()->pos.vz - D_800CE108[2]) / 8;
+                    D_800CE108[2] += (evt_getPlayer()->pos.vz - D_800CE108[2]) / 8;
                 }
             }
             if (D_800CE0EC == 0) {
@@ -350,7 +350,7 @@ void func_800AD738(void) {
             func_8002FA10();
             g_evtGlobalVars.b[0x65] &= ~1;
         } else {
-            func_8002F9D0();
+            fade_inDefault();
         }
         break;
     }
@@ -617,7 +617,7 @@ void func_800AEC74(void) {
     e = g_gameState->unk1C->unk8E4.world->unk8->unk28;
     pal = w_framePackGetPtr(D_800CF428, 1);
     func_800B36AC();
-    for (n = func_8004AE9C(); n != NULL; n = n->unk0) {
+    for (n = evt_getObjectList(); n != NULL; n = n->unk0) {
         a = n->unk4;
         if (a->unkE == 1 && (a->unkF & 1) && a->unk5 == 4) {
             if ((a->unk11 >= 3 && a->unk11 < 8)) {
@@ -676,7 +676,7 @@ void func_800AEF10(void) {
     Unk16D8 *n;
     Unk8004AB64 *a;
 
-    for (n = func_8004AE9C(); n != NULL; n = n->unk0) {
+    for (n = evt_getObjectList(); n != NULL; n = n->unk0) {
         if (n->unk4->unk5 == 4) {
             a = n->unk4;
             switch (a->unk11) {
@@ -701,7 +701,7 @@ void func_800AEF10(void) {
                 D_800CE3D0 = a;
                 break;
             }
-            if (a == func_8004AE00()) {
+            if (a == evt_getPlayer()) {
                 if (g_gameState->unkA == 1 && g_gameState->unk1C->unk892 == 0) {
                     if (D_800CE3C8->unk10 != 0) {
                         D_800CE0F0->unkE = 0x800;
@@ -735,7 +735,7 @@ void func_800AF08C(void) {
     VectorNormalS((VECTOR *)D_800CE1D0, &n);
     base = (-ratan2(n.vz, n.vx) + 0x400) % 4096;
     func_80064CDC(10, 100);
-    for (e = func_8004AE9C(); e != NULL; e = e->unk0) {
+    for (e = evt_getObjectList(); e != NULL; e = e->unk0) {
         act = e->unk4;
         if (act->unk5 == 4 && act->unkE == 1 && (act->unkF & 1) && (u8)func_800BBE24((VECTOR *)&act->pos, &a, &b, &z)) {
             f = 1;
@@ -996,13 +996,13 @@ void func_800AFCE0(void) {
     D_800CE3C0 = 0;
     D_800CE278 = 0;
     D_800CE3E0 = 0;
-    if (func_8004AE00() != NULL) {
-        D_800CE3DC = func_8004AE00();
+    if (evt_getPlayer() != NULL) {
+        D_800CE3DC = evt_getPlayer();
         D_800CE3DC->unk40.vx = D_800CE3DC->pos.vx;
         D_800CE3DC->unk40.vy = D_800CE3DC->pos.vy;
         D_800CE3DC->unk40.vz = D_800CE3DC->pos.vz;
     }
-    for (e = func_8004AE9C(); e != NULL; e = e->unk0) {
+    for (e = evt_getObjectList(); e != NULL; e = e->unk0) {
         act = e->unk4;
         cc = &D_800CCCC0[act->unk11];
         if (act->unk5 == 4 && act->unkE == 1 && (act->unkF & 1)) {
@@ -1014,7 +1014,7 @@ void func_800AFCE0(void) {
                 D_800CE270 = act;
                 break;
             }
-            if (act == D_800CE3DC && func_8004AE84() != 0) {
+            if (act == D_800CE3DC && evt_isControlEnabled() != 0) {
                 func_800B0378(cc);
             } else {
                 cc = &D_800CCCC0[act->unk11];
@@ -1077,7 +1077,7 @@ void func_800AFCE0(void) {
             }
         }
     }
-    if (func_8004AE00() != NULL) {
+    if (evt_getPlayer() != NULL) {
         if (D_800CE3E0 == 0 || D_800CE3C0 < 300) {
             if (D_800CE100 > 0) {
                 D_800CE100 -= 10;
@@ -2039,7 +2039,7 @@ void func_800B30C0(void) {
     s32 tmp;
     u16 h;
 
-    n = func_8004AE9C();
+    n = evt_getObjectList();
     if (n != NULL) {
         do {
             o = n->unk4;
@@ -2084,8 +2084,8 @@ void w_movementChangeSP2(void) {
     func_800C48F4(D_800CE3C8->unkC);
     D_800CE3C4 = g_evtGlobalVars.b[0xBE];
     D_800CE3C8 = &D_800CCB70[D_800CE3C4];
-    if (func_8004AE00() != NULL) {
-        D_800CE3DC = func_8004AE00();
+    if (evt_getPlayer() != NULL) {
+        D_800CE3DC = evt_getPlayer();
     }
     D_800CE1F2 = D_800CE3C8->unk8 == 0;
     func_800AFCE0();

@@ -4,7 +4,7 @@ void func_801F4414(void) {
     s32 i;
 
     D_801FB1A8.unk0 = g_menu.unkC;
-    D_801FB1A8.unk14 = func_8002F8E4(7);
+    D_801FB1A8.unk14 = fade_setOtz(7);
     D_801FB1A8.unk1 = 1;
     D_801FB1A8.unk2 = 2;
     D_801FB1A8.unk7 = 0;
@@ -54,7 +54,7 @@ void func_801F4664(void) {
             func_801F53B0();
             return;
         }
-        func_800361CC(0);
+        menuScreen_open(0);
         return;
     }
     if (g_padRepeat & PAD_UP) {
@@ -189,17 +189,17 @@ void func_801F4B18(RECT *r, s32 z, s32 i) {
 void func_801F4E00(void) {
     u8 blink = (g_menu.unk10 & 3) != 0;
 
-    if (!func_8002F810() && D_801FB1A8.unk2 == 2) {
+    if (!fade_isBusy() && D_801FB1A8.unk2 == 2) {
         if (D_801FB1A8.unk1 == 1) {
             g_menuHelp.x = 0x74;
             g_menuHelp.otz = 0x32;
             g_menuHelp.y = g_menu.unk2 * 0x12 + 0x6D;
-            func_800355E4();
+            help_drawCursor();
         } else if (D_801FB1A8.unk1 == 4 || (D_801FB1A8.unk1 == 5 && blink)) {
             g_menuHelp.x = 0;
             g_menuHelp.otz = 0x2A;
             g_menuHelp.y = D_801FB1A8.unk24.cursor * 0x3C + 0x42;
-            func_800355E4();
+            help_drawCursor();
         } else if (D_801FB1A8.unk1 == 3 && blink) {
             ui_drawHand(0, D_801FB1A8.unk24.cursor * 0x3C + 0x42, 0x2A);
         }
@@ -346,12 +346,12 @@ u8 func_801F5340(s32 slot, u8 any) {
 }
 
 void func_801F5384(void) {
-    func_8002F9F0();
-    func_8002F8A8(func_801F5A24);
+    fade_outDefault();
+    fade_setOnDone(func_801F5A24);
 }
 
 void func_801F53B0(void) {
-    func_8002F8E4(D_801FB1A8.unk14);
+    fade_setOtz(D_801FB1A8.unk14);
     func_800325E0();
 }
 
@@ -373,7 +373,7 @@ void func_801F5460(void) {
 }
 
 void func_801F54C8(void) {
-    if (!func_8002F810()) {
+    if (!fade_isBusy()) {
         switch (D_801FB1A8.unk2) {
         case 1:
             func_801F7718();
@@ -493,7 +493,7 @@ void func_801F59B8(void) {
 void func_801F5A24(void) {
     D_801FB1A8.unk1 = 1;
     D_801FB1A8.unk20 = text_get(0x16);
-    func_8002F9D0();
+    fade_inDefault();
 }
 
 void func_801F5A60(void) {
@@ -910,8 +910,8 @@ void func_801F6A84(void) {
         D_801FB1A8.unk24.cursor = D_801FB1A8.unk34[D_801FB1A8.unk10].unk44;
         D_801FB1A8.unk24.unk5 = D_801FB1A8.unk10 - D_801FB1A8.unk24.cursor;
     }
-    func_8002F9D0();
-    func_8002F8A8(func_801F70E4);
+    fade_inDefault();
+    fade_setOnDone(func_801F70E4);
 }
 
 void func_801F6B48(void) {
@@ -1088,8 +1088,8 @@ void func_801F7084(void) {
     func_801F6B48();
     if (!func_801F77E4()) {
         D_801FB1A8.unk2 = 0;
-        func_8002F9F0();
-        func_8002F8A8(func_801F6A84);
+        fade_outDefault();
+        fade_setOnDone(func_801F6A84);
         snd_playSe(0x414);
     }
 }
@@ -1281,8 +1281,8 @@ void func_801F7840(Window *w) {
     D_801FC358.unk0 = 0;
     if (D_801FB038[D_801FB1A8.unk1] != 0) {
         D_801FB1A8.unk2 = 0;
-        func_8002F9F0();
-        func_8002F8A8(func_801F78CC);
+        fade_outDefault();
+        fade_setOnDone(func_801F78CC);
         return;
     }
     D_801FB1A8.unk20 = text_get(0x16);
@@ -1293,8 +1293,8 @@ void func_801F78CC(void) {
     D_801FB1A8.unk20 = text_get(0x16);
     D_801FB1A8.unk1 = 1;
     D_801FB1A8.unk2 = 2;
-    func_8002F9D0();
-    func_8002F8A8(func_801F7918);
+    fade_inDefault();
+    fade_setOnDone(func_801F7918);
 }
 
 void func_801F7918(void) {
@@ -1654,7 +1654,7 @@ void func_801F8610(void) {
         D_801FB1A8.unk7 = mode;
         snd_playSe(0x4ED);
         if (g_menu.unk1 == 0) {
-            func_800361CC(0);
+            menuScreen_open(0);
             return;
         }
         func_801F53B0();
@@ -1834,7 +1834,7 @@ void func_801F8DA4(u8 *buf) {
     t = game_getPlayTime();
     func_801F9120(buf, t);
     n = 0;
-    o = func_8004AE00();
+    o = evt_getPlayer();
     if (o != NULL) {
         n = o->unk3B;
     }
@@ -2170,11 +2170,11 @@ void func_801F9C58(CardData *d, CardData *s) {
 }
 
 void func_801F9CE8(void *p) {
-    func_801F9C58(p, func_80062824());
+    func_801F9C58(p, card_getInventory());
 }
 
 void func_801F9D18(void *p) {
-    func_801F9C58(func_80062824(), p);
+    func_801F9C58(card_getInventory(), p);
 }
 
 void func_801F9D48(SaveEvents *d) {

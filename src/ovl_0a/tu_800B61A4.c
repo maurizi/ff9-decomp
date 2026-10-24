@@ -2772,7 +2772,7 @@ s32 func_800BDC44(void) {
         if (mode == 5) {
             a = (Unk8004AB64 *)g_gameState->unk1C->unk8E0[g_gameState->unk1C->unk8E4.field->unk8].unkC;
         } else if (mode == 1) {
-            a = func_8004AE00();
+            a = evt_getPlayer();
         } else {
             a = NULL;
         }
@@ -3334,7 +3334,7 @@ s32 func_800BF660(void) {
     if (mode == 5) {
         a = (Unk8004AB64 *)g_gameState->unk1C->unk8E0[g_gameState->unk1C->unk8E4.field->unk8].unkC;
     } else if (mode == 1) {
-        a = func_8004AE00();
+        a = evt_getPlayer();
     } else {
         a = NULL;
     }
@@ -3627,7 +3627,7 @@ s32 func_800C0038(s32 arg0, s32 arg1) {
     } else {
         a = NULL;
         if (mode == 1) {
-            a = func_8004AE00();
+            a = evt_getPlayer();
         }
     }
     bg = D_800C9DB4;

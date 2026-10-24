@@ -32,7 +32,7 @@ void fld_main(s32 arg0) {
                 !(g_padPortHeld[0] & 0x04FA0009)) {
                 g_gameState->unk1C->unk0 |= 2;
                 menu_open(0, 0);
-                func_8004A9E8();
+                evt_onMenuOpen();
             }
             if (!(g_gameState->unk1C->unk0 & 2)) {
                 switch (func_8004BC38()) {
@@ -382,7 +382,7 @@ void fld_load(s32 arg0) {
     func_800A9AAC();
     while (func_800B0124(0xC00, -1, 0, 0, 0) != 0) {
     }
-    func_8004BFB0();
+    msg_init();
     g_gameState->unk1C->unk38 = func_8004AAF0(0);
     g_gameState->unk1C->unk8DC = (Unk8D4 *)D_80067948;
     g_gameState->unk1C->unk8E0 = (Unk8E0 *)(g_gameState->unk1C->unk8DC + g_gameState->unk1C->unk38);

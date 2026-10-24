@@ -51,7 +51,7 @@ s32 btl_update(void) {
     case 6:
         func_800AF578(g, b);
         if (b->unkD81 == 1) {
-            func_8002FAAC(0x20);
+            fade_out(0x20);
             b->unkD81++;
         } else if (b->unkD81 == 2) {
             if (b->unkD82++ > 0x20) {
@@ -65,7 +65,7 @@ s32 btl_update(void) {
             g->unk56F |= 0x40;
             if (b->unkD81 == 0) {
                 if (g->unk56E != 5) {
-                    func_8002FAAC(0x20);
+                    fade_out(0x20);
                 }
                 b->unkD81++;
             } else if (b->unkD81 == 1) {

@@ -37,7 +37,7 @@ void func_801F3874(void) {
 }
 
 void func_801F3A98(void) {
-    if (!func_8002F810()) {
+    if (!fade_isBusy()) {
         if (g_padRepeat & 8) {
             snd_playSe(0x67);
             D_801F4BBC.unk0 = 0;
@@ -259,7 +259,7 @@ void func_801F459C(void) {
         }
     }
     D_80077DEC = 3;
-    func_800355E4();
+    help_drawCursor();
 }
 
 void func_801F4748(void) {

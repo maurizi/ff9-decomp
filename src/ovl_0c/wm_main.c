@@ -249,7 +249,7 @@ void func_800A924C(s32 arg0) {
     evt_init(obj->unk10);
     while (func_800AB0C0(0xC00, 0, 0, 0, 0) != 0) {
     }
-    func_8004BFB0();
+    msg_init();
     g_gameState->unk1C->unk38 = func_8004AAF0(0);
     g_gameState->unk1C->unk8DC = (Unk8D4 *)(obj + 1);
     g_gameState->unk1C->unk8E0 = (Unk8E0 *)&g_gameState->unk1C->unk8DC[g_gameState->unk1C->unk38];
@@ -1295,7 +1295,7 @@ void func_800AC7D4(void) {
     D_8007BD30 = func_800B8114();
     o = g_gameState->unk1C->unk8E4.world->unk8;
     o->unk19 = 0;
-    a = func_8004AE00();
+    a = evt_getPlayer();
     if (a != NULL && (s = (WmObjSlot *)func_8001E350(a->unk3B)) != NULL) {
         v.vx = ((MATRIX *)s->unk8->unk20)[1].t[0];
         v.vy = ((MATRIX *)s->unk8->unk20)[1].t[1];

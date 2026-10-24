@@ -48,7 +48,7 @@ void battleEnd_init(void) {
     if (s->unk10 != 0 && g_btlRewards.unkB != 0) {
         evt_init(s->unk10);
         if (s->unk14 != 0) {
-            func_8004BFB0();
+            msg_init();
         }
     }
     if (g_gameState->unk1C->unk56F & 1) {
@@ -408,7 +408,7 @@ void func_801F076C(void) {
     if (D_801F7A78.unk3 == 0) {
         func_801F2C7C();
         func_801F325C();
-        if (!func_8002F810() && (g_padRepeat & BTN_CROSS)) {
+        if (!fade_isBusy() && (g_padRepeat & BTN_CROSS)) {
             func_801F1688();
         }
     } else if (++D_801F7A78.unkC >= 24) {
@@ -417,12 +417,12 @@ void func_801F076C(void) {
             snd_playSe(se);
         }
         D_801F7A78.unk8++;
-        func_8002F8E4(D_801F7A78.unk370);
+        fade_setOtz(D_801F7A78.unk370);
         if (D_80077DB5 != 0) {
             func_800325E0();
         } else {
-            func_8002FAAC(0x10);
-            func_8002F8A8(func_801F17D4);
+            fade_out(0x10);
+            fade_setOnDone(func_801F17D4);
         }
     }
 }
@@ -445,9 +445,9 @@ void func_801F0878(void) {
     D_801F7A78.unkA = 1;
     D_801F7A78.unk14C[9] = 1;
     D_801F7A78.unk14C[8] = 1;
-    D_801F7A78.unk370 = func_8002F8E4(0xC);
-    func_8002FAAC(4);
-    func_8002F8A8(func_801F16F4);
+    D_801F7A78.unk370 = fade_setOtz(0xC);
+    fade_out(4);
+    fade_setOnDone(func_801F16F4);
 }
 
 void func_801F0978(void) {
@@ -514,7 +514,7 @@ void func_801F0C0C(void) {
     rw->unkC = 0;
     rw->unk4 = g_btlRewards.unk8;
     rw->unk7C.unk0 = g_btlRewards.unk0;
-    rw->unk8 = (func_800625F8() < 100) ? g_btlRewards.unk1C : 0xFF;
+    rw->unk8 = (card_countAll() < 100) ? g_btlRewards.unk1C : 0xFF;
     for (i = 0; i < 16; i++) {
         found = 0;
         if (g_btlRewards.unkC[i] == 0xFF) {
@@ -644,7 +644,7 @@ void func_801F107C(void) {
     func_801F2BBC();
     func_801F04BC();
     g_gameState->vsyncMode = 0;
-    func_8002F9D0();
+    fade_inDefault();
 }
 
 void func_801F114C(void) {
@@ -725,7 +725,7 @@ void func_801F13B4(void) {
 void func_801F143C(void) {
     s32 se;
 
-    if (!func_8002F810() && (g_padRepeat & BTN_CROSS)) {
+    if (!fade_isBusy() && (g_padRepeat & BTN_CROSS)) {
         se = D_801F3BA0[D_801F7A78.unk8];
         if (se != 0) {
             snd_playSe(se);
@@ -738,13 +738,13 @@ void func_801F143C(void) {
 void func_801F14C0(void) {
     func_801F2538();
     func_801F2080();
-    if (!func_8002F810() && (g_padRepeat & BTN_CROSS)) {
+    if (!fade_isBusy() && (g_padRepeat & BTN_CROSS)) {
         func_801F0878();
     }
 }
 
 void func_801F1518(void) {
-    if (!func_8002F810() && (g_padRepeat & BTN_CROSS)) {
+    if (!fade_isBusy() && (g_padRepeat & BTN_CROSS)) {
         func_801F160C();
     }
 }
@@ -798,7 +798,7 @@ void func_801F1688(void) {
 
 void func_801F16F4(void) {
     func_801F332C();
-    func_8002FA50(0xC);
+    fade_in(0xC);
 }
 
 u8 func_801F171C(Character *arg0, s32 arg1) {
@@ -1348,7 +1348,7 @@ u8 func_801F2E58(void) {
     }
     f = full;
     if (rw->unk8 != 0xFF) {
-        func_8006238C(rw->unk8);
+        card_add(rw->unk8);
     }
     if (f) {
         k = 0x10;
@@ -1400,7 +1400,7 @@ void func_801F2FE8(Window *w) {
     if (rw->unk8 != 0xFF) {
         k = off - 0x66;
         ui_drawSpriteDef(r->unk0 + 8, r->unk2 - k, w->unk18, &D_801F526C, 0);
-        func_8002BD54(D_801F8238, (u8 *)func_8006276C(rw->unk8));
+        func_8002BD54(D_801F8238, (u8 *)card_getName(rw->unk8));
         text_append(D_801F8238, text_get(0xB));
         text_drawBlock(r->unk0 + 0x16, r->unk2 - k, w->unk18, D_801F8238, 0);
     }

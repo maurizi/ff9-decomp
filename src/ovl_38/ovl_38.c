@@ -12,8 +12,8 @@ void func_801EE440(void) {
         D_801F120C.unk10[i] = 0;
     }
     text_setBank(g_statusMenuText);
-    func_80028CF8(&D_801F120C.unk8C, D_80077E50.unk3, func_801EFAF8);
-    func_801EF568(D_80077E50.unk3, 0);
+    ui_initMemberSwitch(&D_801F120C.unk8C, g_menuScreen.unk3, func_801EFAF8);
+    func_801EF568(g_menuScreen.unk3, 0);
     r = &D_801F120C.unk8;
     r->x = 8;
     r->y = 0x26;
@@ -33,7 +33,7 @@ void func_801EE568(void) {
 
     if (g_padRepeat & BTN_CIRCLE) {
         snd_playSe(0x65);
-        func_800361CC(0);
+        menuScreen_open(0);
         return;
     }
     if (g_padRepeat & BTN_CROSS) {
@@ -307,7 +307,7 @@ void func_801EF568(s32 slot, s32 dir) {
     s32 i;
 
     c = g_gameState->unk1C->party[slot];
-    func_80028D08(&D_801F120C.unk8C, D_801F120C.unk2, slot, dir);
+    ui_startMemberSwitch(&D_801F120C.unk8C, D_801F120C.unk2, slot, dir);
     if (dir != 0) {
         D_801F120C.unk0 = 3;
     }
@@ -339,7 +339,7 @@ void func_801EF6CC(void) {
 void func_801EF708(void) {
     void (*fn)(void);
 
-    if (!func_8002F810()) {
+    if (!fade_isBusy()) {
         fn = D_801EFBA4[D_801F120C.unk0];
         if (fn != NULL) {
             fn();
@@ -370,7 +370,7 @@ void func_801EF80C(void) {
             func_800631AC(&D_801F120C.unk1C[i]);
         }
     }
-    func_80028D2C(&D_801F120C.unk8C);
+    ui_updateMemberSwitch(&D_801F120C.unk8C);
 }
 
 void func_801EF8A0(void) {
@@ -396,7 +396,7 @@ void func_801EF904(void) {
 }
 
 void func_801EF9B4(void) {
-    func_8002F810();
+    fade_isBusy();
 }
 
 void func_801EF9D4(void) {

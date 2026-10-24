@@ -93,7 +93,7 @@ typedef struct {
     u8 pad9[3];
     u32 unkC;  /* highest save counter */
     s32 unk10; /* slot holding it */
-    s32 unk14; /* saved func_8002F8E4 mode */
+    s32 unk14; /* saved fade_setOtz mode */
     s32 unk18[2]; /* saved g_padPortMask[] */
     u8 *unk20; /* help text */
     MenuList unk24; /* slot list */
@@ -228,7 +228,7 @@ typedef struct {
     Unk6 unk6[0x69];
     u16 unk27C;
     u16 unk27E;
-} CardData; /* Tetra Master cards (func_80062824) */
+} CardData; /* Tetra Master cards (card_getInventory) */
 
 /* other overlay */
 u16 func_800B5084(void);
@@ -296,7 +296,7 @@ typedef struct {
 } Unk801F6D24;
 
 /* main exe: candidates for ff9.h */
-Unk8004AB64 *func_8004AE00(void);
+Unk8004AB64 *evt_getPlayer(void);
 u8 func_800B5074(void); /* other overlay */
 void func_801F9120(u8 *, s32);
 s32 func_801F9688(void);

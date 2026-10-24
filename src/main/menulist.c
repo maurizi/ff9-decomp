@@ -269,7 +269,7 @@ void func_8002F55C(s32 a) {
 }
 
 s32 func_8002F5A0(void (*fn)(void)) {
-    Unk80077C78 *p = &D_80077C78;
+    Unk80077C78 *p = &g_fade;
     s32 d = p->unk8 - p->unkC;
     Unk4 c1;
     Unk4 c2;
@@ -280,17 +280,17 @@ s32 func_8002F5A0(void (*fn)(void)) {
     c1 = p->unk20;
     c2 = *(Unk4 *)&p->unk24;
     func_8002F93C(p->unkA ^ 0x800);
-    func_8002FC8C(D_80077C78.unk0, p->unk1, 0, c2.unk0[0] | (c2.unk0[1] << 8) | (c2.unk0[2] << 16));
-    func_8002FC8C(D_80077C78.unk0, p->unk1, p->unk8, c1.unk0[0] | (c1.unk0[1] << 8) | (c1.unk0[2] << 16));
-    D_8006BD28[D_80077C78.unk0](p, d);
+    fade_start(g_fade.unk0, p->unk1, 0, c2.unk0[0] | (c2.unk0[1] << 8) | (c2.unk0[2] << 16));
+    fade_start(g_fade.unk0, p->unk1, p->unk8, c1.unk0[0] | (c1.unk0[1] << 8) | (c1.unk0[2] << 16));
+    D_8006BD28[g_fade.unk0](p, d);
     p->unk10 = (s32)fn;
     p->unkC += d;
     return 1;
 }
 
-void func_8002F6C8(void) {
+void fade_update(void) {
     u8 *buf = D_80077878[0];
-    Unk80077C78 *f = &D_80077C78;
+    Unk80077C78 *f = &g_fade;
     FadeFn fn;
 
     if (g_gameState->unk1C->unk8 != 0) {
@@ -303,18 +303,18 @@ void func_8002F6C8(void) {
             fn(f);
         }
     }
-    if (*(u32 *)&D_80077C78 & 0xFFFF0000) {
-        fn = (FadeFn)D_8006BD04[D_80077C78.unk0].unk8;
+    if (*(u32 *)&g_fade & 0xFFFF0000) {
+        fn = (FadeFn)D_8006BD04[g_fade.unk0].unk8;
         if (fn != NULL) {
-            fn(&D_80077C78);
+            fn(&g_fade);
         }
     }
-    if (D_80077C78.unk2 != 0) {
-        if (++D_80077C78.unkC >= (u32)D_80077C78.unk8) {
-            D_80077C78.unk2 = 0;
-            fn = (FadeFn)D_80077C78.unk10;
+    if (g_fade.unk2 != 0) {
+        if (++g_fade.unkC >= (u32)g_fade.unk8) {
+            g_fade.unk2 = 0;
+            fn = (FadeFn)g_fade.unk10;
             if (fn != NULL) {
-                fn(&D_80077C78);
+                fn(&g_fade);
             }
         }
     }

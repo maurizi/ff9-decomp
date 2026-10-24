@@ -358,7 +358,7 @@ void func_80031ED8(Unk80077C78 *p) {
     if (p->unk1 == 0) {
         tp = 0x20;
     }
-    t = (TILE *)D_80077C78.unk18;
+    t = (TILE *)g_fade.unk18;
     SetTile(t);
     t->r0 = D_80077D68.unk30.unk0;
     t->g0 = D_80077D68.unk30.unk4;
@@ -369,9 +369,9 @@ void func_80031ED8(Unk80077C78 *p) {
     t->h = g_gameState->unkC->disp.h;
     SetSemiTrans(t, 1);
     addPrim(ot, t);
-    D_80077C78.unk18 += sizeof(TILE);
-    dr = D_80077C78.unk18;
+    g_fade.unk18 += sizeof(TILE);
+    dr = g_fade.unk18;
     SetDrawTPage(dr, 0, 1, tp);
     addPrim(ot, dr);
-    D_80077C78.unk18 += sizeof(DR_TPAGE);
+    g_fade.unk18 += sizeof(DR_TPAGE);
 }

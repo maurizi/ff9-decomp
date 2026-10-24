@@ -98,7 +98,7 @@ extern u8 D_801F3458[];
 extern u8 D_801FC740[]; /* help text buffer */
 extern u8 D_801F8988[]; /* "ABILITY" */
 extern u8 D_801F8990[]; /* item help texts */
-u8 func_800654F8(Character *, Character *, Unk801F34EC *, s32, s32);
+u8 item_useOnMember(Character *, Character *, Unk801F34EC *, s32, s32);
 extern u8 D_801F3468[];
 extern RECT D_801F3484;
 extern RECT D_801F348C;
@@ -144,7 +144,7 @@ void func_801F301C(void);
 void func_801F31B0(void);
 void func_801F2894(void);
 void func_801F24EC(void);
-void func_80036270(s32); /* main exe */
+void menuScreen_switch(s32); /* main exe */
 extern u8 D_801EDF04[];
 s32 func_801F0E64(s32);
 extern u8 D_801F3418[];
@@ -166,7 +166,7 @@ extern u16 D_801F33C8[][2]; /* cursor x per slot */
 /* main exe: candidates for ff9.h */
 extern s32 D_80070400;
 extern s32 D_800704B8;
-extern s32 D_80077E54; /* = D_80077E50.unk4, referenced by its own name */
+extern s32 D_80077E54; /* = g_menuScreen.unk4, referenced by its own name */
 extern s32 D_80070498;
 extern s32 D_8007042C;
 void ui_drawMemberSummary(s32, s32, s32, s32, s32);

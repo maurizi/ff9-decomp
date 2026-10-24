@@ -1120,7 +1120,7 @@ extern u8 D_80077E51;
 extern u8 *D_80077DF0;
 s32 func_8002B980(u8 *, s32);
 extern s32 D_80077E54; /* overlaps Unk80077E50.unk4 in ff9.h */
-Unk8004AB64 *func_8004AE00(void);
+Unk8004AB64 *evt_getPlayer(void);
 void func_8004B20C(s32);
 
 /* run on the scratchpad stack (top of the 1 KB scratchpad) */

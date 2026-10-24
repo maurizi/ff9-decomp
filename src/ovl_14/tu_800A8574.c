@@ -49,7 +49,7 @@ void func_800A8694(void) {
 }
 
 void func_800A86D8(void) {
-    if (func_8002F810() == 0) {
+    if (fade_isBusy() == 0) {
         if (D_800AB320.unk1 != 0 && D_800AB320.unk2 == 0) {
             if (g_padRepeat & PAD_UP) {
                 snd_playSe(0x67);
@@ -132,8 +132,8 @@ void func_800A8A0C(void) {
         return;
     }
     snd_playSe(D_800AB320.unk3 == 0 ? 0xC18 : 0x67);
-    func_8002FAAC(0x10);
-    func_8002F8A8(func_800A8FBC);
+    fade_out(0x10);
+    fade_setOnDone(func_800A8FBC);
 }
 
 void func_800A8A8C(void) {
@@ -168,11 +168,11 @@ void func_800A8B7C(void) {
 }
 
 void func_800A8C60(void) {
-    if (func_8002F810() == 0 && D_800AB320.unk1 != 0 && D_800AB320.unk2 == 0) {
+    if (fade_isBusy() == 0 && D_800AB320.unk1 != 0 && D_800AB320.unk2 == 0) {
         g_menuHelp.x = D_800AB2A8[D_800AB320.unk3].x - 0x1A;
         g_menuHelp.y = D_800AB2A8[D_800AB320.unk3].y + 3;
         g_menuHelp.otz = 3;
-        func_800355E4(&g_menuHelp);
+        help_drawCursor(&g_menuHelp);
     }
 }
 
@@ -273,7 +273,7 @@ void func_800A8FDC(void) {
         D_800AB320.unk1 = 1;
         D_800AB320.unk2 = 0;
         D_800AB320.unkC = 0;
-        func_8002FA50(0x20);
+        fade_in(0x20);
     }
 }
 

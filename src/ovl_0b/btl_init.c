@@ -9,7 +9,7 @@ void btl_initParty(Battle *arg0) {
     s32 k;
 
     i = n = 0;
-    p = func_8004AE9C()->unk0;
+    p = evt_getObjectList()->unk0;
     for (; i < 4; i++) {
         c = g_gameState->unk1C->party[i];
         if (c != NULL) {

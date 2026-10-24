@@ -28,7 +28,7 @@ s32 func_800A9220(void) {
                 D_800AB2CC = 1;
                 D_800AB3C8 = 3;
                 D_800AB2C4 |= 0x80;
-                func_8002FAAC(1);
+                fade_out(1);
             }
             break;
         case 1:

@@ -163,7 +163,7 @@ void func_801F65D4(void) {
 void func_801F6654(void) {
     void (*f)(void);
 
-    if (!func_8002F810()) {
+    if (!fade_isBusy()) {
         f = D_801F6B60[D_801F6BBC.unk1];
         if (f != NULL) {
             f();
@@ -233,8 +233,8 @@ void func_801F6914(void) {
     if (g_padRepeat & BTN_CROSS) {
         snd_playSe(0x67);
         D_801F6BBC.unk1 = 4;
-        func_8002FAAC(0x18);
-        func_8002F8A8(func_801F6AF0);
+        fade_out(0x18);
+        fade_setOnDone(func_801F6AF0);
     }
 }
 
@@ -260,16 +260,16 @@ void func_801F69A4(void) {
 void func_801F69E8(void) {
     if (++D_801F6BBC.unk10 >= 180) {
         D_801F6BBC.unk1 = 4;
-        func_8002FAAC(0x18);
-        func_8002F8A8(func_801F6AF0);
+        fade_out(0x18);
+        fade_setOnDone(func_801F6AF0);
     }
 }
 
 void func_801F6A3C(void) {
     D_801F6BBC.unk2 = 0;
     D_801F6BBC.unk1 = 0;
-    func_8002FAAC(0x18);
-    func_8002F8A8(func_801F6A78);
+    fade_out(0x18);
+    fade_setOnDone(func_801F6A78);
 }
 
 void func_801F6A78(void) {
@@ -281,7 +281,7 @@ void func_801F6A78(void) {
     case 1:
     default:
         D_801F6BBC.unk1 = 3;
-        func_8002FA50(0x18);
+        fade_in(0x18);
         break;
     case 7:
         func_80032640(0);
@@ -293,8 +293,8 @@ void func_801F6A78(void) {
 
 void func_801F6AF0(void) {
     D_801F6BBC.unk1 = 0;
-    func_8002FA50(0x18);
-    func_8002F8A8(func_801F6B24);
+    fade_in(0x18);
+    fade_setOnDone(func_801F6B24);
 }
 
 void func_801F6B24(void) {

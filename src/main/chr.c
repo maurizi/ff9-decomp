@@ -55,7 +55,7 @@ void chr_setLevel(s32 ch, s32 lv, u32 *heal, u8 f) {
         c->mp = c->maxMp;
         c->stones = c->maxStones;
     }
-    func_8003384C(c);
+    chr_updateStats(c);
     if (f) {
         c->hp = (hp < c->maxHp) ? hp : c->maxHp;
         c->mp = (mp < c->maxMp) ? mp : c->maxMp;
@@ -65,7 +65,7 @@ void chr_setLevel(s32 ch, s32 lv, u32 *heal, u8 f) {
     }
 }
 
-Unk80032E84Out *func_80032E84(Unk80032E84In *in, Unk80032E84Out *out) {
+Unk80032E84Out *chr_calcEquipStats(Unk80032E84In *in, Unk80032E84Out *out) {
     s32 i;
     u8 *a;
     u8 *e;
@@ -246,7 +246,7 @@ void func_800333B0(s32 ch, u8 avg, s32 eq) {
     chr_setLevel(ch, lv, NULL, 0);
     return;
 calc:
-    func_8003384C_inline(c);
+    chr_updateStats_inline(c);
 }
 
 void party_initNewGame(void) {
@@ -300,7 +300,7 @@ s32 func_8003380C(s32 i) {
     return i;
 }
 
-void func_8003384C(Character *c) {
+void chr_updateStats(Character *c) {
     Unk80032E84In in;
     Unk80032E84Out out;
 
@@ -309,7 +309,7 @@ void func_8003384C(Character *c) {
     in.unk12 = c->mp;
     in.unk8 = *(Words2 *)c->unk88;
     in.unk14 = *(Bytes5 *)c->equip;
-    func_80032E84(&in, &out);
+    chr_calcEquipStats(&in, &out);
     c->speed = out.unk8[0];
     c->strength = out.unk8[1];
     c->magic = out.unk8[2];
@@ -509,7 +509,7 @@ void func_80033DCC(Character *c) {
             if (c->stones >= e->unk1) {
                 c->stones -= e->unk1;
             } else {
-                func_8003493C(id, i + 0xC0, 0);
+                chr_setSupportAbility(id, i + 0xC0, 0);
             }
         }
         i++;
@@ -663,7 +663,7 @@ s32 func_800348C0(s32 ch) {
     return sum;
 }
 
-void func_8003493C(s32 ch, s32 id, u8 on) {
+void chr_setSupportAbility(s32 ch, s32 id, u8 on) {
     u32 *bits = g_gameState->unk1C->characters[ch].unk88;
     id -= 0xC0;
     if (on) {

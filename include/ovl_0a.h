@@ -1307,7 +1307,7 @@ void gameover_main(void *); /* overlay 0x65 (loaded at 0x801F0000) */
 void mbg_setRgb24(s32); /* overlay loaded at 0x80198000 */
 s32 mbg_getFrame(void);
 void func_80032100(void);
-Unk8004AB64 *func_8004AE00(void);
+Unk8004AB64 *evt_getPlayer(void);
 u32 func_8004AB64(void *); /* actor -> model slot */
 void game_updateWindows(void);
 void preload_reset(void);

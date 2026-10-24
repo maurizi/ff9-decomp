@@ -990,10 +990,10 @@ func_8001CCB4 game_setClearColor  # [code] sets r0/g0/b0 of both DRAWENVs in Gam
 func_8001CD04 game_setScreenHeight  # [code] SetDefDispEnv/SetDefDrawEnv for both buffers at 320 x h, centred vertically, clearing VRAM below the old height
 func_8001CFB4 game_freezeScreen  # [code] before an overlay load (game_loadModeOverlay): shows the current buffer and fills the other with the fade colour while fading
 D_80077DE8 g_menuHelp  # [runtime] docs/runtime-findings.md field/menu campaign, every menu screen writes the hand position here; Select help window state (HelpState)
-func_80035108 help_draw  # [code] draws the hand and the help text window (text_drawBlock + win_drawHelpFrame) beside the cursor in g_help
-func_80035214 help_layout  # [code] places the help window rect beside g_help's cursor, inside g_help.unk10, picking above/below and left/right
-func_80035430 help_init  # [code] clears g_help and sets the default bounds (help_setBounds(NULL))
-func_80035490 help_update  # [code] per frame: Select (g_padRepeat 0x8000000) toggles help, then runs the menu's handler and help_draw while open
+func_80035108 help_draw  # [runtime] docs/runtime-findings.md field/menu campaign m_help only - moogle icon, text, frame (text_drawBlock + win_drawHelpFrame)
+func_80035214 help_layout  # [runtime] docs/runtime-findings.md field/menu campaign m_help only - places the box next to the hand inside g_menuHelp.bounds
+func_80035430 help_init  # [runtime] docs/runtime-findings.md field/menu campaign, once per menu open; clears g_menuHelp, default bounds
+func_80035490 help_update  # [runtime] docs/runtime-findings.md field/menu campaign, every menu frame; Select (g_padRepeat 0x8000000) toggles the help, then the callback and help_draw while open
 func_8003556C help_setCallback  # [code] sets g_menuHelp.callback, the per-menu function that fills in the help text (runtime field/menu campaign name)
 func_80035580 help_setBounds  # [code] g_help.unk10 = *r, or the full-screen 8,8,0x131,0xD1 for NULL; help_layout keeps the window inside it
 func_800355DC help_nullHandler  # [code] empty function passed to help_setHandler by ovl_0d/33/34/37 (help available, no text)
@@ -1004,7 +1004,7 @@ func_80035648 help_getFollow  # [code] g_menuHelp.follow - 0 puts the help box a
 func_80035658 help_setFollow  # [code] sets g_menuHelp.follow (runtime field/menu campaign name)
 func_80035664 help_getCursorOnTop  # [code] g_menuHelp.cursorOnTop - help_draw draws the hand above the help box (runtime field/menu campaign name)
 func_80035674 help_setCursorOnTop  # [code] sets g_menuHelp.cursorOnTop (runtime field/menu campaign name)
-func_80035680 help_toggle  # [code] opens help (sound 0x2AA, starts the open animation with help_onOpened) or closes it (sound 0x65)
+func_80035680 help_toggle  # [runtime] docs/runtime-findings.md field/menu campaign m_help, once on Select (sound 0x2AA open, 0x65 close)
 func_80035744 help_onIconAnimDone  # [runtime] docs/runtime-findings.md field/menu campaign, m_help - the moogle icon animation's done callback shows the text
 # by hand: ovl_0d/33/34/37 C and headers used the overlay-link name D_800355DC; now help_nullHandler
 # config/xrefs.us.txt: btl_findUnitByBit = 0x800BED6C (ovl_0b), used by func_8004B7A4 instead of D_800BED6C
@@ -1225,3 +1225,127 @@ D_80076F78 g_portraits  # [code] {data, count} of the portraits uploaded by ui_l
 D_80076F7C g_portraitCount  # [code] g_portraits.count under its own symbol: ui_drawPortrait draws ids below it
 D_80076F80 g_portraitSavedVram  # [code] VRAM saved by ui_loadPortraits, put back by ui_restorePortraits
 # FIELDS include/ff9.h HelpState (second pass, field/menu campaign names): handler=callback,disabled=locked,atCursor=follow,drawHand=cursorOnTop,anim=iconAnim
+D_80077E50 g_menuScreen  # [runtime] docs/runtime-findings.md field/menu campaign, {active, slideIn, screen, member, frame} read at menu_main/items/status/card
+D_8006E510 g_menuScreenOvl  # [runtime] docs/runtime-findings.md field/menu campaign, overlay per main-menu screen (main, Item, Ability, Equip, Status, Order, Card, Config)
+D_8006E530 g_menuScreensField  # [runtime] docs/runtime-findings.md field/menu campaign, {init, update, exit, needsMember} per main-menu screen
+D_8006E5B0 g_menuScreensWorld  # [runtime] docs/runtime-findings.md field/menu campaign, world-map copy of g_menuScreensField (picked when GameState.mode == 3)
+D_8006CA40 g_menuTypeOvl  # [runtime] docs/runtime-findings.md field/menu campaign, overlay per menu_open type (name entry 3a, shop 3c, party 3b, save 39, chocograph 32, disc change 3e)
+D_8006C9D4 g_menuTypes  # [runtime] docs/runtime-findings.md field/menu campaign, {init, update, exit} per menu_open type
+func_80035D3C menuScreen_init  # [runtime] docs/runtime-findings.md field/menu campaign, init of menu type 0, once in f_menu
+func_8003613C menuScreen_update  # [runtime] docs/runtime-findings.md field/menu campaign, type-0 update every frame in all m_* runs
+func_800361A8 menuScreen_exit  # [runtime] docs/runtime-findings.md field/menu campaign, type-0 exit (m_close)
+func_80035E40 menuScreen_drawCommands  # [runtime] docs/runtime-findings.md field/menu campaign, ablation - the Item..Config window goes
+func_800361CC menuScreen_open  # [runtime] docs/runtime-findings.md field/menu campaign, once per screen entered - fade out, load the overlay, the screen's init
+func_80036270 menuScreen_switch  # [runtime] docs/runtime-findings.md field/menu campaign, Square on the Ability screen called it with 3 and Equip came up without an overlay load
+func_80036560 menuScreen_onSwitchFaded  # [runtime] docs/runtime-findings.md field/menu campaign, fade callback after menuScreen_switch - old exit, new init, fade in
+func_80035F94 menuScreen_updateOpen  # [code] docs/runtime-findings.md field/menu campaign (medium), waits for the title animation and overlay read, then the new screen's init
+func_80036470 menuScreen_loadOverlay  # [runtime] docs/runtime-findings.md field/menu campaign, cd_readAsync of g_menuScreenOvl[screen] to 0x801EDF00, once per open
+func_80036444 menuScreen_requestOverlay  # [code] docs/runtime-findings.md field/menu campaign (medium), menuScreen_loadOverlay when the screen has an overlay
+func_80036634 menuScreen_onOverlayRead  # [runtime] docs/runtime-findings.md field/menu campaign, read callback, once per open
+func_80036528 menuScreen_onOpenFaded  # [runtime] docs/runtime-findings.md field/menu campaign, fade callback set by menuScreen_open, once per open
+func_800362C8 menuScreen_close  # [runtime] docs/runtime-findings.md field/menu campaign, Circle on the command list (m_close)
+func_80036300 menuScreen_needsMember  # [runtime] docs/runtime-findings.md field/menu campaign, screen table flag +0xC (Ability, Equip, Status)
+func_8003631C menuScreen_getCommandHelp  # [runtime] docs/runtime-findings.md field/menu campaign, help text of command i (m_help)
+func_800362B8 menuScreen_getCurrent  # [code] docs/runtime-findings.md field/menu campaign (medium), returns g_menuScreen.screen
+func_800363BC menuScreen_startTitleAnim  # [code] docs/runtime-findings.md field/menu campaign (medium), command window shrinks to the title box while a screen opens
+func_800360B0 menuScreen_stepTitleScroll  # [code] docs/runtime-findings.md field/menu campaign (medium), title animation step
+func_80036344 menuScreen_stepTitleResize  # [runtime] docs/runtime-findings.md field/menu campaign (medium), 12 calls per open, h 0x74 to 0x1A
+func_800355E4 help_drawCursor  # [runtime] docs/runtime-findings.md field/menu campaign, sprite 1 (the hand) at g_menuHelp x/y/otz; skipping it removes each screen's hand
+func_80035C2C sprAnim_draw  # [runtime] docs/runtime-findings.md field/menu campaign (medium), m_help one per help frame - the moogle icon
+func_800357E0 sprAnim_drawCell  # [code] docs/runtime-findings.md field/menu campaign (medium), SPRT of one animation cell
+func_8003595C sprAnim_drawScaledCell  # [code] docs/runtime-findings.md field/menu campaign (medium), POLY_FT4 of one scaled cell
+func_80035B90 sprAnim_update  # [runtime] docs/runtime-findings.md field/menu campaign (medium), every menu frame
+func_80035B24 sprAnim_init  # [code] docs/runtime-findings.md field/menu campaign (medium)
+func_80035B64 sprAnim_setPlaying  # [runtime] docs/runtime-findings.md field/menu campaign (medium), once when help opens
+func_80035B74 sprAnim_setOnDone  # [runtime] docs/runtime-findings.md field/menu campaign (medium), once when help opens
+func_80035B7C sprAnim_reset  # [runtime] docs/runtime-findings.md field/menu campaign (medium), once when help opens
+D_80077C78 g_fade  # [runtime] docs/runtime-findings.md field/menu campaign, read every 2 frames during the menu-open fade (active, frames, frame, onDone, colours)
+func_8002FC8C fade_start  # [runtime] docs/runtime-findings.md field/menu campaign, (type, subtract, frames, color)
+func_8002FAAC fade_out  # [runtime] docs/runtime-findings.md field/menu campaign, (frames) 0 to 0xFFFFFF, the menu-open darkening
+func_8002FA50 fade_in  # [runtime] docs/runtime-findings.md field/menu campaign, (frames) 0xFFFFFF to 0 as the menu appears
+func_8002F9F0 fade_outDefault  # [runtime] docs/runtime-findings.md field/menu campaign, fade_out(12)
+func_8002F9D0 fade_inDefault  # [runtime] docs/runtime-findings.md field/menu campaign, fade_in(16)
+func_8002FB64 fade_outAdditive  # [code] docs/runtime-findings.md field/menu campaign (medium), fade_out with flag 0
+func_8002FB08 fade_inAdditive  # [code] docs/runtime-findings.md field/menu campaign (medium), fade_in with flag 0
+func_8002F8A8 fade_setOnDone  # [runtime] docs/runtime-findings.md field/menu campaign, callback run when the fade ends
+func_8002F810 fade_isBusy  # [runtime] docs/runtime-findings.md field/menu campaign, every menu input handler returns while it is set
+func_8002F8E4 fade_setOtz  # [runtime] docs/runtime-findings.md field/menu campaign, returns the old value; screens set 3, the shop 7
+func_8002F904 fade_getOtz  # [runtime] docs/runtime-findings.md field/menu campaign
+func_8002F6C8 fade_update  # [runtime] docs/runtime-findings.md field/menu campaign, every frame in field and menus; calls onDone at the end (traces from +0x110)
+func_8002F7E8 fade_setActive  # [code] docs/runtime-findings.md field/menu campaign (medium)
+func_8002F800 fade_isActive  # [code] docs/runtime-findings.md field/menu campaign (medium)
+func_8002FC38 fade_init  # [code] docs/runtime-findings.md field/menu campaign (medium)
+func_80028D08 ui_startMemberSwitch  # [runtime] docs/runtime-findings.md field/menu campaign, R1 on the status screen called it with (hdr, 0, 1, 2) and the header slid to Vivi
+func_80028CF8 ui_initMemberSwitch  # [runtime] docs/runtime-findings.md field/menu campaign, once per screen init
+func_80028D2C ui_updateMemberSwitch  # [runtime] docs/runtime-findings.md field/menu campaign, every frame (12-frame switch, then the callback)
+func_80032E84 chr_calcEquipStats  # [runtime] docs/runtime-findings.md field/menu campaign (medium), 53 calls while the Equip list is open, feeds the stat comparison
+func_8003384C chr_updateStats  # [runtime] docs/runtime-findings.md field/menu campaign (medium), once per equip change
+func_800654F8 item_useOnMember  # [runtime] docs/runtime-findings.md field/menu campaign, Potion on Zidane HP 100 to 200; field abilities go through it too
+func_8003493C chr_setSupportAbility  # [runtime] docs/runtime-findings.md field/menu campaign, (charId, abilityId, on) - stones 37 to 42 and Character+0x88 bit cleared (ab_sup)
+D_80083248 g_cards  # [runtime] docs/runtime-findings.md field/menu campaign, wins/losses/draws then 0x69 cards of 6 bytes (menu_card)
+func_80062498 card_getWins  # [runtime] docs/runtime-findings.md field/menu campaign, printed in the INFO window
+func_800624D8 card_getLosses  # [runtime] docs/runtime-findings.md field/menu campaign, printed in the INFO window
+func_8006251C card_getDraws  # [runtime] docs/runtime-findings.md field/menu campaign, printed in the INFO window
+func_800624A8 card_addWin  # [code] docs/runtime-findings.md field/menu campaign (medium), +1 capped at 9999
+func_800624E8 card_addLoss  # [code] docs/runtime-findings.md field/menu campaign (medium), +1 capped at 9999
+func_8006252C card_addDraw  # [code] docs/runtime-findings.md field/menu campaign (medium), +1 capped at 9999
+func_800625F8 card_countAll  # [runtime] docs/runtime-findings.md field/menu campaign, 23 = Stock
+func_80062638 card_countKinds  # [runtime] docs/runtime-findings.md field/menu campaign, 11 = Type
+func_80062560 card_countOf  # [runtime] docs/runtime-findings.md field/menu campaign, (id) 4 for Goblin
+func_800625A0 card_find  # [code] docs/runtime-findings.md field/menu campaign (medium-high), (id, n) n-th copy
+func_800626D0 card_remove  # [code] docs/runtime-findings.md field/menu campaign (medium-high), (id, n), called by the Discard confirmation
+func_8006276C card_getName  # [code] docs/runtime-findings.md field/menu campaign (medium-high)
+func_80062794 card_getNameWidth  # [code] docs/runtime-findings.md field/menu campaign (medium-high)
+func_8006238C card_add  # [code] docs/runtime-findings.md field/menu campaign (medium), (id) random stats, -1 when 100 cards
+func_80062420 card_addWithStats  # [code] docs/runtime-findings.md field/menu campaign (medium)
+func_80062830 card_rollStats  # [code] docs/runtime-findings.md field/menu campaign (medium)
+func_80062344 card_initAll  # [code] docs/runtime-findings.md field/menu campaign (medium)
+func_80062724 card_clearAll  # [code] docs/runtime-findings.md field/menu campaign (medium)
+func_80062B30 card_getInfoTable  # [code] docs/runtime-findings.md field/menu campaign (medium)
+func_80062824 card_getInventory  # [code] docs/runtime-findings.md field/menu campaign (medium)
+func_800627BC card_getRarity  # [code] docs/runtime-findings.md field/menu campaign (medium), id to 0..6, the grid icon class
+D_8007B958 g_msgChoice  # [runtime] docs/runtime-findings.md field/menu campaign, MOGNET window cursor 0..3 after each Down
+D_8007B95C g_msgChoiceCount  # [runtime] docs/runtime-findings.md field/menu campaign, 4 in the MOGNET window
+D_8007B968 g_msgChoiceLine  # [runtime] docs/runtime-findings.md field/menu campaign, first choice line in the text
+D_8007B96C g_msgChoiceCancel  # [runtime] docs/runtime-findings.md field/menu campaign, Cancel = choice 3
+D_8007B970 g_msgChoiceWindow  # [runtime] docs/runtime-findings.md field/menu campaign, window id of the choice
+D_8007B9C0 g_msgWindows  # [code] docs/runtime-findings.md field/menu campaign (medium), 10 message windows
+D_8007BB78 g_msgFocus  # [code] docs/runtime-findings.md field/menu campaign (medium), top window
+func_8004F5D4 msg_drawWindowContent  # [runtime] docs/runtime-findings.md field/menu campaign, Window content callback set by msg_open; ablation removes the text
+func_8004D940 msg_drawText  # [runtime] docs/runtime-findings.md field/menu campaign, ablation - the text goes
+func_8004C8C4 msg_renderText  # [runtime] docs/runtime-findings.md field/menu campaign, ablation - the text goes
+func_8004D2C0 msg_advanceText  # [runtime] docs/runtime-findings.md field/menu campaign, stubbed after opening no character ever appears
+func_8004F660 msg_drawChoiceCursor  # [runtime] docs/runtime-findings.md field/menu campaign (medium-high), Window overlay callback; stubbed no hand
+func_8004DAD0 msg_input  # [runtime] docs/runtime-findings.md field/menu campaign (medium-high), Up/Down move g_msgChoice with sound 0x67, Cross confirms
+func_8004E248 msg_getLayout  # [runtime] docs/runtime-findings.md field/menu campaign, parses the message's leading 0xF9 codes (size, choices, position)
+func_8004C2C0 msg_measureLine  # [runtime] docs/runtime-findings.md field/menu campaign (medium), from msg_getLayout, a line's width
+func_8004E7FC msg_update  # [code] docs/runtime-findings.md field/menu campaign (medium), every field frame - pad edges to the focused window's input callback
+func_8004C0E8 msg_readPad  # [code] docs/runtime-findings.md field/menu campaign (medium)
+func_8004E8D4 msg_getPadHeld  # [code] docs/runtime-findings.md field/menu campaign (medium)
+func_8004E8EC msg_getPadPressed  # [code] docs/runtime-findings.md field/menu campaign (medium)
+func_8004E904 msg_getPadReleased  # [code] docs/runtime-findings.md field/menu campaign (medium)
+func_8004E958 msg_closeAll  # [runtime] docs/runtime-findings.md field/menu campaign (medium), menu open - once, from evt
+func_8004BFB0 msg_init  # [code] docs/runtime-findings.md field/menu campaign (medium), resets the windows and picks the text bank per mode
+func_8004E16C msg_resetChoices  # [code] docs/runtime-findings.md field/menu campaign (medium)
+func_8004EFB0 msg_getEntry  # [code] docs/runtime-findings.md field/menu campaign (medium), (id, *size)
+func_8004F058 msg_getText  # [code] docs/runtime-findings.md field/menu campaign (medium)
+func_8004ED94 msg_getWindow  # [code] docs/runtime-findings.md field/menu campaign (medium)
+func_8004EA3C msg_getFocus  # [code] docs/runtime-findings.md field/menu campaign (medium)
+func_8004EA30 msg_setFocus  # [code] docs/runtime-findings.md field/menu campaign (medium)
+func_8004FF98 msg_startHereIcon  # [code] docs/runtime-findings.md field/menu campaign (medium), (reason; 0 = stop), gated by Config HERE Icon and controlEnabled
+func_8004F74C msg_drawHereIcon  # [code] docs/runtime-findings.md field/menu campaign (medium), the arrow over the player
+func_80048A5C evt_checkPlayerAction  # [runtime] docs/runtime-findings.md field/menu campaign, every field frame; on Cross finds the object in front and calls its talk function (3)
+func_80038618 evt_findNearestObject  # [runtime] docs/runtime-findings.md field/menu campaign, (o, flags, *dist) flags 4 = in front, talk range; 0 = collision
+func_800384D0 evt_callObjectFunc  # [runtime] docs/runtime-findings.md field/menu campaign, (o, level, func, save) runs script function func of object o (moogle func 3 on talk)
+func_80038278 evt_returnFromFunc  # [runtime] docs/runtime-findings.md field/menu campaign (medium), pops the object's call stack when a function ends
+func_80037D6C evt_getSysVar  # [runtime] docs/runtime-findings.md field/menu campaign, system variables of the expression evaluator (0 random, 2 controlEnabled, 6 gil, 20 play time, 24 battle id)
+func_800475D8 evt_movePlayer  # [runtime] docs/runtime-findings.md field/menu campaign, pad to player direction/speed; Config Movement picks run (60) or walk (30), Circle inverts
+func_80038990 evt_moveObjectTo  # [code] docs/runtime-findings.md field/menu campaign (medium), (x, y, z, flags) script walk toward a point with collision
+func_80048F54 evt_updateObjects  # [runtime] docs/runtime-findings.md field/menu campaign (medium), all objects each frame
+func_8004883C evt_updateIdleTimer  # [runtime] docs/runtime-findings.md field/menu campaign (medium), random idle animation timer of the player
+func_8004AE00 evt_getPlayer  # [runtime] docs/runtime-findings.md field/menu campaign (medium-high), the object whose uid is playerUid (Zidane in Dali)
+func_8004AE84 evt_isControlEnabled  # [code] docs/runtime-findings.md field/menu campaign (medium-high), g_evtState controlEnabled
+func_8004AE9C evt_getObjectList  # [code] docs/runtime-findings.md field/menu campaign (medium-high)
+func_8004B040 evt_getObject  # [code] docs/runtime-findings.md field/menu campaign (medium-high), (uid)
+func_8004A9E8 evt_onMenuOpen  # [runtime] docs/runtime-findings.md field/menu campaign (medium-high), called by fld_main right after menu_open; closes message windows
+func_8004B68C evt_getObjectProp  # [code] docs/runtime-findings.md field/menu campaign (medium), (o, prop) 0-2 position, 3 direction, 4 flags, 5 uid

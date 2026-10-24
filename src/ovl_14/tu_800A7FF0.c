@@ -83,7 +83,7 @@ u8 func_800A8298(s32 arg0, s32 arg1) {
 }
 
 s32 func_800A82B0(void) {
-    if (func_8002F810() != 0) {
+    if (fade_isBusy() != 0) {
         return 0;
     }
     return D_800AB308.unk0 == 1;

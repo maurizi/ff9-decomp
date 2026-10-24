@@ -254,7 +254,7 @@ void func_800BB07C(void) {
             D_800CE108[2] += rand() % d - d / 2;
         }
     }
-    if (D_800D32F8[1] < 0x22 && func_8004AE84() != 0 && ((flags & 0xFC) >> 2) == 0x17 && m - 1 < 7U) {
+    if (D_800D32F8[1] < 0x22 && evt_isControlEnabled() != 0 && ((flags & 0xFC) >> 2) == 0x17 && m - 1 < 7U) {
         D_800CE3DC->pos.vz += (0x22 - D_800D32F8[1]) * 8;
         if (D_800CE3DC->pos.vx == D_800CE3DC->unk40.vx && D_800CE3DC->pos.vz == D_800CE3DC->unk40.vz) {
             D_800CE3DC->unk40.vx++;

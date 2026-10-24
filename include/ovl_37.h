@@ -54,7 +54,7 @@ extern u8 D_801F3098[3];
 extern RECT D_801F30B8;
 
 /* main exe: candidates for ff9.h */
-extern s32 D_80077E54; /* = D_80077E50.unk4, referenced by its own name */
+extern s32 D_80077E54; /* = g_menuScreen.unk4, referenced by its own name */
 typedef struct {
     unsigned int unk0 : 4;   /* target kind */
     unsigned int unk0_4 : 1;
@@ -65,7 +65,7 @@ typedef struct {
     s32 unk8;
 } Unk8006B1F4; /* 0xC, items 0xE0.. (also in ovl_0b.h) */
 extern Unk8006B1F4 D_8006B1F4[];
-u8 func_800654F8(Character *, Character *, Unk8006B1F4 *, s32, s32);
+u8 item_useOnMember(Character *, Character *, Unk8006B1F4 *, s32, s32);
 extern s32 D_80070408;
 void help_nullHandler(void);
 void func_801F3038(void);

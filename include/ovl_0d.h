@@ -365,13 +365,13 @@ extern u8 D_800A74A8[];
 s32 func_8002BA10(u8 *);
 void game_updateWindows(void);
 void SetSprt16(SPRT_16 *);
-s32 func_80062794(s32); /* width of a number string? */
-s32 func_80062498(void);
-s32 func_800624D8(void);
-s32 func_8006251C(void);
+s32 card_getNameWidth(s32); /* width of a number string? */
+s32 card_getWins(void);
+s32 card_getLosses(void);
+s32 card_getDraws(void);
 u8 pad_isRepeatEnabled(s32, s32);
 void help_nullHandler(void);
-void func_80062724();
+void card_clearAll();
 extern u8 *D_80077DF0; /* = g_menuHelp.text, referenced by its own name */
 s32 func_80055290(void *);
 void func_800552B8(s32);

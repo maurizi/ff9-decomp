@@ -6,7 +6,7 @@ void func_800A7578(void) {
     func_8005392C();
     func_8003253C();
     func_800AB1E4();
-    func_80062344();
+    card_initAll();
     func_800A75C8();
 }
 

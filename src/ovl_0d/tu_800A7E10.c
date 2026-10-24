@@ -346,7 +346,7 @@ void func_800A8D74(TmState *s) {
     g_menuHelp.x = 0x50;
     g_menuHelp.y = 0x50;
     g_menuHelp.otz = 4;
-    func_8002FA50(0xC);
+    fade_in(0xC);
     s->unk43C = 0;
     s->unk440 = 0;
     s->unk444 = 0;
@@ -397,7 +397,7 @@ void func_800A8D74(TmState *s) {
     s->unk4C8[7] = 2;
     s->unk4C8[8] = 1;
     s->unk4EC = 0;
-    if (func_800625F8() < 5) {
+    if (card_countAll() < 5) {
         for (i = 0; i < 8; i++) {
             func_800AF1F4(s, rand() % 100);
         }
@@ -753,16 +753,16 @@ void *func_800A9B2C(u32 *ot, void *p, TmState *s) {
                 s->unk564--;
             }
             if (s->unk564 > 0) {
-                r.w = func_80062794(c->unk0) + 0x10;
+                r.w = card_getNameWidth(c->unk0) + 0x10;
                 r.x = 0x11A - r.w / 2;
                 if (r.x + r.w >= 0x140) {
-                    r.x = 0x130 - func_80062794(c->unk0);
+                    r.x = 0x130 - card_getNameWidth(c->unk0);
                 }
                 r.y = ry;
                 r.h = 0x19;
                 k = s->unk564 * 0xC - 0x78;
                 r.x -= k;
-                text_drawBlock(r.x + 8, r.y + 6, 5, (u8 *)func_8006276C(c->unk0), 0);
+                text_drawBlock(r.x + 8, r.y + 6, 5, (u8 *)card_getName(c->unk0), 0);
                 win_drawBox(&r, 5, 2);
             }
             if (pad & 0x20000) {
@@ -950,7 +950,7 @@ void func_800AA548(TmState *s) {
         if (pad & 0x20000) {
             win_close(s->unk458);
             if (s->unk4 == 0) {
-                if (func_800625F8() < 5) {
+                if (card_countAll() < 5) {
                     r.w = func_8002BA68(text_get(0x1A)) + 0x12;
                     r.x = 0xA0 - r.w / 2;
                     r.y = 0x5B;
@@ -1031,7 +1031,7 @@ void func_800AA790(TmState *s) {
         help_setBounds(&r);
     }
     pad = g_padRepeat;
-    n = func_80062560(func_800AF268(s));
+    n = card_countOf(func_800AF268(s));
     if (s->unk568 != 0) {
         pad = 0;
         if (--s->unk568 == 0 && s->unk418 == 0) {
@@ -1099,16 +1099,16 @@ void func_800AA790(TmState *s) {
             if (s->unk47C != 0) {
                 s->unk47C--;
                 c = &s->unk10[s->unk47C];
-                func_80062420(c->unk0, c->unk1, c->unk2, c->unk3, c->unk4, c->unk5);
+                card_addWithStats(c->unk0, c->unk1, c->unk2, c->unk3, c->unk4, c->unk5);
                 func_800B01E8(3);
             }
         } else if (pad & 0x20000) {
             if (s->unk438 != 0) {
-                func_80062724();
+                card_clearAll();
                 s->unk474 = rand() % 10;
                 s->unk478 = rand() % 10;
                 s->unk4B4 = 0;
-                if (func_80062560(func_800AF268(s)) == 0) {
+                if (card_countOf(func_800AF268(s)) == 0) {
                     func_800AF1F4(s, func_800AF268(s));
                     func_800AF1F4(s, func_800AF268(s));
                     func_800AF1F4(s, func_800AF268(s));
@@ -1118,7 +1118,7 @@ void func_800AA790(TmState *s) {
                     func_800AF1F4(s, func_800AF268(s));
                 }
             }
-            d = func_800625A0(func_800AF268(s), s->unk4B4);
+            d = card_find(func_800AF268(s), s->unk4B4);
             if (d != (Unk6 *)-1) {
                 c = &s->unk10[s->unk47C];
                 c->unk0 = d->unk0;
@@ -1127,7 +1127,7 @@ void func_800AA790(TmState *s) {
                 c->unk4 = d->unk4;
                 c->unk5 = d->unk5;
                 c->unk1 = d->unk1;
-                func_800626D0(func_800AF268(s), s->unk4B4);
+                card_remove(func_800AF268(s), s->unk4B4);
                 s->unk4B4 = 0;
                 func_800B01E8(5);
                 if (++s->unk47C == 5) {
@@ -1145,7 +1145,7 @@ void func_800AA790(TmState *s) {
                 }
             }
         }
-    } else if ((pad & 0x20000) && func_80062560(func_800AF268(s)) != 0) {
+    } else if ((pad & 0x20000) && card_countOf(func_800AF268(s)) != 0) {
         D_80077DF0 = 0;
         r.w = func_8002BA68(text_get(0x18)) + 0x12;
         r.x = 0xB9;
@@ -1175,7 +1175,7 @@ void func_800AAEB4(TmState *s) {
                 s->unk0 = 0x12;
                 s->unk47C = 4;
                 c = &s->unk10[4];
-                func_80062420(c->unk0, c->unk1, c->unk2, c->unk3, c->unk4, c->unk5);
+                card_addWithStats(c->unk0, c->unk1, c->unk2, c->unk3, c->unk4, c->unk5);
             }
             win_close(s->unk458);
             func_800B01E8(1);
@@ -1278,8 +1278,8 @@ void func_800AB338(TmState *s) {
         pad = g_padRepeat;
         if (pad & 0x20000) {
             if (s->unk4 == 0) {
-                func_800626D0(func_800AF268(s), s->unk4B4);
-                if (func_800625F8() > 100) {
+                card_remove(func_800AF268(s), s->unk4B4);
+                if (card_countAll() > 100) {
                     s->unk4B4 = 0;
                     s->unk0 = 0x17;
                 } else {
@@ -1497,7 +1497,7 @@ void *func_800AB928(u32 *ot, void *p, TmState *s) {
     cards = s->unk10;
     for (i = 0; i < 10; i++) {
         if (i >= 5 && func_800AE908(s, s->unk5B0) == &cards[i]) {
-            n = func_80062560(cards[i].unk0);
+            n = card_countOf(cards[i].unk0);
             for (j = 0; j < 5; j++) {
                 if (cards[i].unk0 == cards[j].unk0) {
                     n++;
@@ -1550,7 +1550,7 @@ void func_800ABC74(TmState *s) {
             if (s->unk5B4 == 0) {
                 for (i = 0; i < s->unk47C; i++) {
                     c = &s->unk10[i];
-                    func_80062420(c->unk0, c->unk1, c->unk2, c->unk3,
+                    card_addWithStats(c->unk0, c->unk1, c->unk2, c->unk3,
                                   c->unk4, c->unk5);
                 }
                 s->unk47C = 0;
@@ -2488,7 +2488,7 @@ void func_800ADE5C(TmState *s) {
         }
     }
     if (found == 0) {
-        if (func_800625F8() > 100) {
+        if (card_countAll() > 100) {
             r.w = func_8002BA68(text_get(0x16)) + 0x12;
             r.x = 0xA0 - r.w / 2;
             r.y = 0x5B;
@@ -2541,7 +2541,7 @@ void *func_800AE084(u32 *ot, void *p, TmState *s) {
         return p;
     }
     if (s->unk45C == 0) {
-        D_800B3CDC = func_80062420(c->unk0, c->unk1, c->unk2, c->unk3, c->unk4, c->unk5);
+        D_800B3CDC = card_addWithStats(c->unk0, c->unk1, c->unk2, c->unk3, c->unk4, c->unk5);
     } else {
         s->unk510 = c->unk0;
         s->unk512 = c->unk2;
@@ -2551,7 +2551,7 @@ void *func_800AE084(u32 *ot, void *p, TmState *s) {
         s->unk515 = c->unk5;
         s->unk54C = 1;
         D_800B3CDC = 0;
-        if (func_80062560(c->unk0) == 0) {
+        if (card_countOf(c->unk0) == 0) {
             found = NULL;
             cards = s->unk10;
             for (i = 0; i < 5; i++) {
@@ -2569,7 +2569,7 @@ void *func_800AE084(u32 *ot, void *p, TmState *s) {
     c->unk10 = 0x55;
     D_800B3CE0 = n;
     D_800B3CD8 = id = c->unk0;
-    func_8002BD54(buf, (u8 *)func_8006276C(id));
+    func_8002BD54(buf, (u8 *)card_getName(id));
     if (D_800B3CE0 == 0) {
         text_append(buf, text_get(3));
     } else {
@@ -2634,7 +2634,7 @@ void func_800AE494(Window *w) {
     } else {
         func_8002BD54(buf, text_get(4));
     }
-    text_append(buf, (u8 *)func_8006276C(D_800B3CD8));
+    text_append(buf, (u8 *)card_getName(D_800B3CD8));
     text_append(buf, text_get(7));
     text_drawBlock(0x9F - func_8002BA68((s32)buf) / 2, v->unk2 + 6, w->unk18, buf, 0);
 }
@@ -2990,7 +2990,7 @@ void func_800AEE2C(TmState *s) {
     i = 5;
     if (s->unk47C != i && s->unk0 != 0x1B) {
         c0 = (TmCard *)func_800AF268(s);
-        n = func_80062560((s32)c0);
+        n = card_countOf((s32)c0);
         if (n != 0) {
             c0 = (TmCard *)func_800AF268(s);
             text_formatNumber((s32)c0 + 1, buf, -1, 3);
@@ -3020,7 +3020,7 @@ void func_800AEE2C(TmState *s) {
                         dx = 0;
                     }
                 }
-                d = func_800625A0(func_800AF268(s), k);
+                d = card_find(func_800AF268(s), k);
                 c->unkC = 0xC2 + i * 4 + dx;
                 c->unk10 = i + 0x81;
                 c->unk30 = i + 0x28;
@@ -3044,8 +3044,8 @@ void func_800AEE2C(TmState *s) {
                     k = 0;
                 }
             }
-            i = func_80062794(func_800AF268(s));
-            text_drawBlock(0xD9 - i / 2, 0xC7, 0xFFA, (u8 *)func_8006276C(func_800AF268(s)), 0);
+            i = card_getNameWidth(func_800AF268(s));
+            text_drawBlock(0xD9 - i / 2, 0xC7, 0xFFA, (u8 *)card_getName(func_800AF268(s)), 0);
         }
     } else {
         s->unk10[5].unk34 = 0;
@@ -3057,7 +3057,7 @@ void func_800AF100(TmState *arg0) {
     TmCard *c = arg0->unk10;
     for (i = 0; i < 5; i++) {
         if (c[i].unk14 == 0) {
-            func_80062420(c[i].unk0, c[i].unk1, c[i].unk2, c[i].unk3, c[i].unk4, c[i].unk5);
+            card_addWithStats(c[i].unk0, c[i].unk1, c[i].unk2, c[i].unk3, c[i].unk4, c[i].unk5);
         }
     }
 }
@@ -3069,15 +3069,15 @@ void func_800AF170(TmState *arg0) {
         if (arg0->unk45C == 0) {
             func_800AF388(arg0, &c[i]);
         }
-        func_80062420(c[i].unk0, c[i].unk1, c[i].unk2, c[i].unk3, c[i].unk4, c[i].unk5);
+        card_addWithStats(c[i].unk0, c[i].unk1, c[i].unk2, c[i].unk3, c[i].unk4, c[i].unk5);
     }
 }
 
 void func_800AF1F4(TmState *arg0, u8 arg1) {
     TmCard c;
-    if (func_800625F8() < 0x64) {
+    if (card_countAll() < 0x64) {
         func_800AF3E8(arg0, &c, arg1, 1);
-        func_80062420(arg1, c.unk1, c.unk2, c.unk3, c.unk4, c.unk5);
+        card_addWithStats(arg1, c.unk1, c.unk2, c.unk3, c.unk4, c.unk5);
     }
 }
 
@@ -3322,19 +3322,19 @@ void func_800AFBE4(TmState *s) {
         b = func_800AE94C(s, 1);
         if (a > b) {
             func_80062750(0);
-            func_800624A8();
+            card_addWin();
             s->unk45C = 0;
             s->unk43C++;
         }
         if (a < b) {
             func_80062750(1);
-            func_800624E8();
+            card_addLoss();
             s->unk45C = 1;
             s->unk440++;
         }
         if (a == b) {
             func_80062750(2);
-            func_8006252C();
+            card_addDraw();
             s->unk45C = 2;
             s->unk444++;
         }
@@ -4252,7 +4252,7 @@ void *func_800B1A84(u32 *ot, SPRT *p, TmState *s) {
     p = (SPRT *)((DR_TPAGE *)p + 1);
 
     for (i = 0; i < 100; i++) {
-        m = n = func_80062560(i);
+        m = n = card_countOf(i);
         if (n != 1) {
             c = m % 10;
             if (c != 0 || n >= 10) {
@@ -4312,7 +4312,7 @@ void *func_800B1A84(u32 *ot, SPRT *p, TmState *s) {
             ((SPRT_16 *)p)->u0 = 0;
             ((SPRT_16 *)p)->v0 = 0xE0;
         } else {
-            k = func_800627BC(i);
+            k = card_getRarity(i);
             if (n >= 2) {
                 k += 7;
             }
@@ -4415,13 +4415,13 @@ void *func_800B1A84(u32 *ot, SPRT *p, TmState *s) {
     if ((u32)(s->unk0 - 0x12) < 2 || s->unk0 == 0x23 || s->unk0 == 0x1B) {
 
         ui_drawSmallDigits(0xBC, 0x42, 0xFFA, "WIN", 7);
-        text_formatNumber(func_80062498(), buf, 4, 1);
+        text_formatNumber(card_getWins(), buf, 4, 1);
         ui_drawSmallDigits(0xDC, 0x42, 0xFFA, buf, 0);
         ui_drawSmallDigits(0xBC, 0x4C, 0xFFA, "LOSE", 7);
-        text_formatNumber(func_800624D8(), buf, 4, 1);
+        text_formatNumber(card_getLosses(), buf, 4, 1);
         ui_drawSmallDigits(0xDC, 0x4C, 0xFFA, buf, 0);
         ui_drawSmallDigits(0xBC, 0x56, 0xFFA, "DRAW", 7);
-        text_formatNumber(func_8006251C(), buf, 4, 1);
+        text_formatNumber(card_getDraws(), buf, 4, 1);
         ui_drawSmallDigits(0xDC, 0x56, 0xFFA, buf, 0);
 
         setlen(p, 3);
@@ -4540,25 +4540,25 @@ void *func_800B1A84(u32 *ot, SPRT *p, TmState *s) {
         AddPrim(ot + 0xFFA, p);
         p = (SPRT *)((DR_TPAGE *)p + 1);
     }
-    if (s->unk47C != 5 && s->unk0 != 0x16 && func_80062560(func_800AF268(s)) >= 2) {
+    if (s->unk47C != 5 && s->unk0 != 0x16 && card_countOf(func_800AF268(s)) >= 2) {
         text_formatNumber(s->unk4B4 + 1, buf, 3, 1);
         ui_drawSmallDigits(0xBF, 0xBA, 0xFFA, buf, 0);
         ui_drawSmallDigits(0xD4, 0xBA, 0xFFA, D_800A74A8, 0);
-        text_formatNumber(func_80062560(func_800AF268(s)), buf, -1, 1);
+        text_formatNumber(card_countOf(func_800AF268(s)), buf, -1, 1);
         ui_drawSmallDigits(0xDB, 0xBA, 0xFFA, buf, 0);
         text_drawBlock(0xB5, 0xB6, 0xFFA, text_get(0x1E), 0);
         text_drawBlock(0xF1, 0xB6, 0xFFA, text_get(0x1C), 0);
     }
     if (s->unk47C == 0) {
-        D_800B3CF4 = func_80062638();
-        D_800B3CF0 = func_800625F8();
+        D_800B3CF4 = card_countKinds();
+        D_800B3CF0 = card_countAll();
     }
     return p;
 }
 
 void func_800B295C(TmState *arg0) {
-    D_800B3CF4 = func_80062638();
-    D_800B3CF0 = func_800625F8();
+    D_800B3CF4 = card_countKinds();
+    D_800B3CF0 = card_countAll();
     arg0->unk0 = 0x12;
 }
 
