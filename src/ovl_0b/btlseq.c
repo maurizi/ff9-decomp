@@ -4,19 +4,19 @@ void btlseq_init(void) {
     Battle *b = g_gameState->unk1C->unk8E4.battle;
     u16 i = 0;
     u16 *h = b->scene.unkC;
-    Battle11C4 *t = &b->unk11C4;
+    Battle11C4 *t = &b->seq;
     u16 *p = h + 2;
     u32 *q;
     BtlUnit9CC *m;
     u16 n = h[0];
     for (; i < n; i++) {
-        t->unk8[i] = (s32)h + *p++;
+        t->seqs[i] = (s32)h + *p++;
     }
     for (; i < 0x12; i++) {
-        t->unk8[i] = 0;
+        t->seqs[i] = 0;
     }
     q = (u32 *)p;
-    t->unk0 = (BtlUnit9CC **)q;
+    t->anims = (BtlUnit9CC **)q;
     n = h[1];
     for (i = 0; i < n; i++, q++) {
         m = db_lookupRegistered(4, (*q & 0xFFFF) | 0x30000, 0);
@@ -28,9 +28,9 @@ void btlseq_init(void) {
             }
         }
     }
-    t->unk4 = (u8 *)q;
+    t->seqFlags = (u8 *)q;
     {
-        Battle122C *c = t->unk68;
+        Battle122C *c = t->slots;
         for (i = 4; i-- != 0;) {
             c->unk4 = 0;
             c++;
@@ -39,7 +39,7 @@ void btlseq_init(void) {
 }
 
 void btl_startEnemySeq(BtlCmd *arg0) {
-    if (g_gameState->unk1C->unk8E4.battle->unk11C4.unk8[arg0->subNo] != 0 && btlseq_start(arg0) != NULL) {
+    if (g_gameState->unk1C->unk8E4.battle->seq.seqs[arg0->subNo] != 0 && btlseq_start(arg0) != NULL) {
         BtlUnit *u = arg0->caster;
         if (!(u->flags & 1)) {
             u->rot[1] = 0;
@@ -48,7 +48,7 @@ void btl_startEnemySeq(BtlCmd *arg0) {
 }
 
 Battle122C *btlseq_start(BtlCmd *arg0) {
-    Battle122C *e = g_gameState->unk1C->unk8E4.battle->unk11C4.unk68;
+    Battle122C *e = g_gameState->unk1C->unk8E4.battle->seq.slots;
     GameState *g;
     s16 i;
     for (i = 0; i < 4; i++, e++) {
@@ -62,12 +62,12 @@ Battle122C *btlseq_start(BtlCmd *arg0) {
     g = g_gameState;
     e->unk0 = 0;
     e->unk4 = arg0;
-    e->unk8 = g->unk1C->unk8E4.battle->unk11C4.unk8[arg0->subNo];
+    e->unk8 = g->unk1C->unk8E4.battle->seq.seqs[arg0->subNo];
     e->unkC = 0;
     e->unk10 = 0;
     e->unk12 = 0;
     e->unk14 = 0;
-    e->unk16 = g->unk1C->unk8E4.battle->unk11C4.unk4[arg0->subNo];
+    e->unk16 = g->unk1C->unk8E4.battle->seq.seqFlags[arg0->subNo];
     e->unk17 = 0;
     e->unk21 = 0;
     e->unk25 = 0;
@@ -83,7 +83,7 @@ void btlseq_startDirect(u16 mask, s16 arg1, u16 id) {
     Battle122C *e;
 
     b = g_gameState->unk1C->unk8E4.battle;
-    if (b->unk11C4.unk8[id] == 0) {
+    if (b->seq.seqs[id] == 0) {
         return;
     }
     for (u = b->unitList; u != NULL; u = u->next) {
@@ -108,7 +108,7 @@ void btlseq_startDirect(u16 mask, s16 arg1, u16 id) {
 
 s32 btlseq_isBusy(void) {
     s16 i;
-    Battle122C *p = g_gameState->unk1C->unk8E4.battle->unk11C4.unk68;
+    Battle122C *p = g_gameState->unk1C->unk8E4.battle->seq.slots;
     for (i = 0; i < 4; i++, p++) {
         if (p->unk4 != 0) {
             return 1;
@@ -119,7 +119,7 @@ s32 btlseq_isBusy(void) {
 
 void btlseq_update(void) {
     s16 i = 3;
-    BtlScript *s = (BtlScript *)g_gameState->unk1C->unk8E4.battle->unk11C4.unk68;
+    BtlScript *s = (BtlScript *)g_gameState->unk1C->unk8E4.battle->seq.slots;
     BtlUnit *u;
     u8 op;
     s16 v[4];
@@ -366,7 +366,7 @@ s32 btlseq_opPlayAnim(BtlScript *arg0, BtlUnit *arg1) {
         arg1->model->motion = g_gameState->unk1C->unk8E4.battle->enemies[(f >> 1) & 0xF].type->motions[(f >> 18) & 1];
     } else {
         idx = arg0->unk16 + p[1];
-        arg1->model->motion = g_gameState->unk1C->unk8E4.battle->unk11C4.unk0[idx];
+        arg1->model->motion = g_gameState->unk1C->unk8E4.battle->seq.anims[idx];
     }
     arg1->obj->frame = 0;
     arg0->unk14 = 0;
@@ -488,7 +488,7 @@ s32 btlseq_opSetCamera(BtlScript *arg0) {
 
 s32 btlseq_opPlayCamera(BtlScript *arg0, BtlUnit *arg1) {
     Battle *b = g_gameState->unk1C->unk8E4.battle;
-    Battle11C4 *s = &b->unk11C4;
+    Battle11C4 *s = &b->seq;
     BtlUnit *u;
     u32 f;
     s32 r;
@@ -514,10 +514,10 @@ s32 btlseq_opPlayCamera(BtlScript *arg0, BtlUnit *arg1) {
             goto end;
         }
     }
-    btlseq_getTargetCenter(arg0->unk4->unkC, &s->unk150, &s->unk154);
-    s->unk152 = 0;
-    s->unk148 = arg1;
-    s->unk14C = (s32)btlseq_findUnit(arg0->unk4->unkC);
+    btlseq_getTargetCenter(arg0->unk4->unkC, &s->camCenterX, &s->camCenterZ);
+    s->camCenterY = 0;
+    s->camCaster = arg1;
+    s->camTarget = (s32)btlseq_findUnit(arg0->unk4->unkC);
     g_gameState->unk1C->unk8E4.battle->unk131C = arg0->unk8[1];
     btlcam_playSeq(g_gameState->unk1C->unk8E4.battle->enemies[(arg1->flags >> 1) & 0xF].type->camera);
 end:

@@ -1085,15 +1085,15 @@ typedef struct {
 } Battle122C; /* 0x38 */
 
 typedef struct Battle11C4 {
-    BtlUnit9CC **unk0; /* animations */
-    u8 *unk4;
-    s32 unk8[24]; /* model data */
-    Battle122C unk68[4];
-    struct BtlUnit *unk148;
-    s32 unk14C;
-    u16 unk150;
-    s16 unk152;
-    u16 unk154;
+    BtlUnit9CC **anims; /* animations the sequences play (btlseq_init) */
+    u8 *seqFlags; /* one byte per sequence, copied to the slot (btlseq_start) */
+    s32 seqs[24]; /* sequence code by enemy ability id, 0 = none (btlseq_init) */
+    Battle122C slots[4]; /* the four running sequences (btlseq_update) */
+    struct BtlUnit *camCaster; /* unit the sequence camera follows (btlseq_opPlayCamera) */
+    s32 camTarget; /* BtlUnit *: first target for the sequence camera */
+    u16 camCenterX; /* targets' centre for the sequence camera (btlseq_getTargetCenter) */
+    s16 camCenterY;
+    u16 camCenterZ;
     u8 pad156[0x158 - 0x156];
 } Battle11C4; /* 0x158 */
 
@@ -1348,7 +1348,7 @@ typedef struct Battle {
     s16 eidolonTimer; /* counts down by atbSpeed until BTL_CMD_TRANCE_EIDOLON */
     u16 unk11BE;
     struct Battle11C0 *unk11C0;
-    struct Battle11C4 unk11C4;
+    struct Battle11C4 seq; /* enemy battle sequences (btlseq_*) */
     u8 unk131C;
     u8 pad131D[0x132C - 0x131D];
     Battle132C scene;

@@ -49,8 +49,8 @@ void btlcam_play(s32 arg0) {
 void btlcam_playSeq(s32 arg0) {
     bzero(&g_btlCamScript, 0x64);
     g_btlCamera.unk53 = btlfx_rand() & 1;
-    btlcam_getUnitAnchors(g_gameState->unk1C->unk8E4.battle->unk11C4.unk148, g_btlCamScript.casterAnchors);
-    btlcam_getUnitAnchors((BtlUnit *)g_gameState->unk1C->unk8E4.battle->unk11C4.unk14C, g_btlCamScript.targetAnchors);
+    btlcam_getUnitAnchors(g_gameState->unk1C->unk8E4.battle->seq.camCaster, g_btlCamScript.casterAnchors);
+    btlcam_getUnitAnchors((BtlUnit *)g_gameState->unk1C->unk8E4.battle->seq.camTarget, g_btlCamScript.targetAnchors);
     btlcam_play(arg0);
     g_btlCamera.unkB9 = 2;
     g_btlCamera.unk5C = 0;
@@ -747,7 +747,7 @@ s32 func_800C4E84(s32 arg0, s16 *arg1, s16 *arg2, s32 *arg3) {
         u = g_btlCamera.unkCC;
     }
     if (n == 0xC) {
-        u = g_gameState->unk1C->unk8E4.battle->unk11C4.unk148;
+        u = g_gameState->unk1C->unk8E4.battle->seq.camCaster;
     }
     if (n == 0xF) {
         u = g_btlCamTargets.partner;
@@ -795,8 +795,8 @@ s32 func_800C4E84(s32 arg0, s16 *arg1, s16 *arg2, s32 *arg3) {
     }
     if (n == 0xE) {
         gs = g_gameState;
-        arg1[0] = gs->unk1C->unk8E4.battle->unk11C4.unk150;
-        arg1[2] = gs->unk1C->unk8E4.battle->unk11C4.unk154;
+        arg1[0] = gs->unk1C->unk8E4.battle->seq.camCenterX;
+        arg1[2] = gs->unk1C->unk8E4.battle->seq.camCenterZ;
     }
     *arg3 = u->model->header->radius;
     arg1[1] = 0;
@@ -933,7 +933,7 @@ s32 btlcam_getAnchorUnit(s32 arg0) {
         ret = (s32)g_btlCamTargets.target;
     }
     if ((u32)(arg0 - 0xD) < 2) {
-        ret = g_gameState->unk1C->unk8E4.battle->unk11C4.unk14C;
+        ret = g_gameState->unk1C->unk8E4.battle->seq.camTarget;
     }
     return ret;
 }
