@@ -508,7 +508,7 @@ s32 btl_reloadPartyStep(s32 arg0) {
                 continue;
             }
             id = btl_getPartyModelId(i, arg0 & ~0x10);
-            e->unk8->unk8 = db_lookupRegistered(4, id, 0);
+            e->unk8->header = db_lookupRegistered(4, id, 0);
             k = (id & 0xFFFFFF) | (cid << 24);
             pa = (s32 *)func_800634A8(k);
             pb = (s32 *)func_800634D8(k);
@@ -520,33 +520,33 @@ s32 btl_reloadPartyStep(s32 arg0) {
             } else {
                 v = 0;
             }
-            e->unk8->unk50 = (BtlUnit9C50 *)v;
+            e->unk8->texAnims = (BtlUnit9C50 *)v;
             if (v != 0) {
-                btl_relocTexAnims((TexAnimSet *)e->unk8->unk50, (u16 (*)[4])pc);
+                btl_relocTexAnims((TexAnimSet *)e->unk8->texAnims, (u16 (*)[4])pc);
             }
             btl_loadPartyMotions(u, g_gameState->unk1C->party[i]->unk34.b.unk4, u - g_gameState->unk1C->unk8E4.battle->units);
             if (u->status & BTL_STATUS_KO) {
                 if (u != g_gameState->unk1C->unk8E4.battle->curCmd->caster) {
-                    u->model->unkC = (BtlUnit9CC *)u->motions[4];
+                    u->model->motion = (BtlUnit9CC *)u->motions[4];
                 } else {
                     goto use9;
                 }
             } else if (u == g_gameState->unk1C->unk8E4.battle->curCmd->caster || ((u->unk68 >> 19) & 1)) {
             use9:
-                u->model->unkC = (BtlUnit9CC *)u->motions[9];
+                u->model->motion = (BtlUnit9CC *)u->motions[9];
             } else {
-                u->model->unkC = (BtlUnit9CC *)u->motions[(u->unk68 >> 18) & 1];
+                u->model->motion = (BtlUnit9CC *)u->motions[(u->unk68 >> 18) & 1];
             }
             e->unkC->unk3A = 0;
             m = u->weaponModel;
-            save = m->unk4;
+            save = m->parentBone;
             id2 = ((Unk8006E0E8 *)u->weapon)->unk2 | 0x20000;
-            m->unk8 = (BtlUnit9C8 *)btl_getWeaponModelHeader(i);
+            m->header = (BtlUnit9C8 *)btl_getWeaponModelHeader(i);
             btl_getWeaponTexInfo(id2, i, &pa, &pb, &pc);
             btl_applyModelTextures(m, (s16 *)pa, (s16 *)pb);
-            m->unkC = 0;
-            m->unk1C = e->unk8;
-            m->unk4 = save;
+            m->motion = 0;
+            m->parent = e->unk8;
+            m->parentBone = save;
         }
     done:
         g_gameState->unk1C->unk8E4.battle->flags |= 4;
@@ -1282,18 +1282,18 @@ u32 btl_registerModel(s32 arg0, s32 arg1) {
     }
     e->unk4 = arg0;
     e->unkC = arg1;
-    e->unk8->unk8 = (BtlUnit9C8 *)db_lookupRegistered(4, e->unk4, 0);
-    e->unk8->unkC = (BtlUnit9CC *)db_lookupRegistered(4, btl_getAnimFileId(e->unk4), 0);
-    c = e->unk8->unkC;
+    e->unk8->header = (BtlUnit9C8 *)db_lookupRegistered(4, e->unk4, 0);
+    e->unk8->motion = (BtlUnit9CC *)db_lookupRegistered(4, btl_getAnimFileId(e->unk4), 0);
+    c = e->unk8->motion;
     if (IS_OFFSET(c->unkC)) {
         c->unkC = (s32)c + c->unkC;
         if (c->unk10 != 0) {
-            c->unk10 = (s32)e->unk8->unkC + c->unk10;
+            c->unk10 = (s32)e->unk8->motion + c->unk10;
         }
     }
     btl_getModelTexInfo((e->unk4 & 0xFFFFFF) | (n << 24), (s32 **)&pa, (s32 **)&pb, (s32 **)&pc);
     /* c reused for the unk8 block (a second set keeps it a global pseudo, in v1 as in the original) */
-    c = (BtlUnit9CC *)e->unk8->unk8;
+    c = (BtlUnit9CC *)e->unk8->header;
     cnt = ((BtlUnit9C8 *)c)->meshCount;
     i = 0;
     if (cnt) {
@@ -1306,8 +1306,8 @@ u32 btl_registerModel(s32 arg0, s32 arg1) {
     btl_applyModelTextures(e->unk8, pa, pb);
     p = (s32)db_lookupRegistered(9, e->unk4, 0x190000);
     if (p != -1) {
-        e->unk8->unk50 = (BtlUnit9C50 *)db_lookupRegistered(4, p, 0);
-        btl_relocTexAnims(e->unk8->unk50, pc);
+        e->unk8->texAnims = (BtlUnit9C50 *)db_lookupRegistered(4, p, 0);
+        btl_relocTexAnims(e->unk8->texAnims, pc);
     }
     e->unk0 |= 1;
     return n;
@@ -1461,7 +1461,7 @@ s32 btl_swapPartyModelStep(s32 arg0, s32 arg1) {
         u = btl_getUnitBySlot(arg0);
         if (u != NULL) {
             id2 = btl_getPartyModelId(arg0, arg1 & ~0x10);
-            ent->unk8->unk8 = db_lookupRegistered(4, id2, 0);
+            ent->unk8->header = db_lookupRegistered(4, id2, 0);
             k = (id2 & 0xFFFFFF) | (cid << 24);
             pa = func_800634A8(k);
             pb = func_800634D8(k);
@@ -1473,19 +1473,19 @@ s32 btl_swapPartyModelStep(s32 arg0, s32 arg1) {
             } else {
                 anim = 0;
             }
-            ent->unk8->unk50 = (BtlUnit9C50 *)anim;
+            ent->unk8->texAnims = (BtlUnit9C50 *)anim;
             if (anim != 0) {
-                btl_relocTexAnims((TexAnimSet *)ent->unk8->unk50, (u16 (*)[4])pc);
+                btl_relocTexAnims((TexAnimSet *)ent->unk8->texAnims, (u16 (*)[4])pc);
             }
             btl_loadPartyMotions(u, g_gameState->unk1C->party[arg0]->unk34.b.unk4,
                           u - g_gameState->unk1C->unk8E4.battle->units);
             if (u->status & BTL_STATUS_KO) {
-                u->model->unkC = (BtlUnit9CC *)u->motions[4];
+                u->model->motion = (BtlUnit9CC *)u->motions[4];
             } else {
-                u->model->unkC = (BtlUnit9CC *)u->motions[(u->unk68 >> 18) & 1];
+                u->model->motion = (BtlUnit9CC *)u->motions[(u->unk68 >> 18) & 1];
             }
             ent->unkC->unk3A = 0;
-            u->weaponModel->unk1C = ent->unk8;
+            u->weaponModel->parent = ent->unk8;
         }
         *state = 0;
         break;
@@ -1662,7 +1662,7 @@ void btl_calcShadowMatrix(Unk800AD4E4 *arg0, BtlObj *arg1, MATRIX *arg2, s32 arg
     s32 *p1;
 
     if (arg4 == arg5) {
-        COPY_MATRIX(&m, &((MATRIX *)arg1->unk8->unk20)[arg4]);
+        COPY_MATRIX(&m, &((MATRIX *)arg1->unk8->bones)[arg4]);
         m.t[2] = 0;
         m.t[1] = 0;
         m.t[0] = 0;
@@ -1680,8 +1680,8 @@ void btl_calcShadowMatrix(Unk800AD4E4 *arg0, BtlObj *arg1, MATRIX *arg2, s32 arg
         n.vy = -n.vy;
         n.vz = -n.vz;
     } else {
-        p0 = ((MATRIX *)arg1->unk8->unk20)[arg4].t;
-        p1 = ((MATRIX *)arg1->unk8->unk20)[arg5].t;
+        p0 = ((MATRIX *)arg1->unk8->bones)[arg4].t;
+        p1 = ((MATRIX *)arg1->unk8->bones)[arg5].t;
         d.vx = p1[0] - p0[0];
         d.vy = p1[1] - p0[1];
         d.vz = p1[2] - p0[2];
@@ -1711,10 +1711,10 @@ void btl_calcShadowMatrix(Unk800AD4E4 *arg0, BtlObj *arg1, MATRIX *arg2, s32 arg
     arg2->m[1][2] = (n.vy * arg0->unk0_20) >> 12;
     arg2->m[2][2] = (n.vz * arg0->unk0_20) >> 12;
     arg2->t[0] = (((r.vx << 1) * arg0->unk4_12 + (n.vx << 1) * arg0->unk4_22) >> 12) +
-                 ((MATRIX *)arg1->unk8->unk20)[arg4].t[0];
+                 ((MATRIX *)arg1->unk8->bones)[arg4].t[0];
     arg2->t[1] = (((r.vy << 1) * arg0->unk4_12 + (n.vy << 1) * arg0->unk4_22) >> 12) + arg3;
     arg2->t[2] = (((r.vz << 1) * arg0->unk4_12 + (n.vz << 1) * arg0->unk4_22) >> 12) +
-                 ((MATRIX *)arg1->unk8->unk20)[arg4].t[2];
+                 ((MATRIX *)arg1->unk8->bones)[arg4].t[2];
 }
 
 s32 btl_soundCmd(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4) {

@@ -45,34 +45,34 @@ void btl_updateUnitModel(BtlUnit *u, s32 *ot) {
         u->rot[0] = v->rot[0];
         u->rot[1] = v->rot[1];
         u->rot[2] = v->rot[2];
-        u->unk98->unk0[0] = u->model->unk20[u->unk7C].unk14 << 16;
+        u->unk98->unk0[0] = u->model->bones[u->unk7C].unk14 << 16;
         u->unk98->unk0[1] = 0;
-        u->unk98->unk0[2] = u->model->unk20[u->unk7C].unk1C << 16;
+        u->unk98->unk0[2] = u->model->bones[u->unk7C].unk1C << 16;
         u->pos[0] = u->unk98->unk0[0];
         u->pos[1] = u->unk98->unk0[1];
         u->pos[2] = u->unk98->unk0[2];
         return;
     }
-    if ((u->unk68 & 1) && (s32)m->unkC == u->motions[17]) {
+    if ((u->unk68 & 1) && (s32)m->motion == u->motions[17]) {
         memset(&rot, 0, 8);
         rot.vx = u->rot[0];
         rot.vy = 0x800;
         rot.vz = u->rot[2];
         tmp = rot;
-        func_80031244(&tmp, &m->unk24);
+        func_80031244(&tmp, &m->matrix);
     } else {
         memset(&rot, 0, 8);
         rot.vx = u->rot[0];
         rot.vy = u->rot[1];
         rot.vz = u->rot[2];
         tmp = rot;
-        func_80031244(&tmp, &m->unk24);
+        func_80031244(&tmp, &m->matrix);
     }
-    m->unk24.t[0] = u->pos[0] >> 16;
-    m->unk24.t[1] = u->pos[1] >> 16;
-    m->unk24.t[2] = u->pos[2] >> 16;
-    m->unk10 = 0;
-    if (a->unk3A >= m->unkC->unk2) {
+    m->matrix.t[0] = u->pos[0] >> 16;
+    m->matrix.t[1] = u->pos[1] >> 16;
+    m->matrix.t[2] = u->pos[2] >> 16;
+    m->prims = 0;
+    if (a->unk3A >= m->motion->unk2) {
         if (!(u8)btl_setIdleMotion(u)) {
             u->unkA0->unk3A = 0;
         } else if (u->status & (BTL_STATUS_PETRIFY | BTL_STATUS_VENOM | BTL_STATUS_STOP | BTL_STATUS_FREEZE)) {
@@ -80,43 +80,43 @@ void btl_updateUnitModel(BtlUnit *u, s32 *ot) {
         }
     }
     btl_applyModelScale(m);
-    p = m->unkC;
+    p = m->motion;
     if (IS_OFFSET(p->unkC)) {
         t = p->unk10;
         p->unkC = (s32)p + p->unkC;
         if (t != 0) {
-            p->unk10 = (s32)m->unkC + t;
+            p->unk10 = (s32)m->motion + t;
         }
     }
     *ot = (s32)btl_calcBoneMatrices(m, a->unk3A, (u8 *)*ot);
     if (!(u->status & (BTL_STATUS_PETRIFY | BTL_STATUS_VENOM | BTL_STATUS_STOP | BTL_STATUS_FREEZE)) && !((u->unk68 >> 21) & 1)) {
         a->unk3A++;
     }
-    n = m->unk8->meshCount;
+    n = m->header->meshCount;
     btl_updateModelVisibility(m);
-    u->model->unk0 &= ~0x20;
+    u->model->flags &= ~0x20;
     for (i = 0; i < n; i++) {
-        if (!(m->unk14 & (1 << i))) {
+        if (!(m->hiddenMeshes & (1 << i))) {
             btl_projectMesh(m, i);
             *ot = (s32)btl_drawMesh(m, i, (u8 *)*ot);
-            u->model->unk0 |= 0x20;
+            u->model->flags |= 0x20;
         }
     }
     if (!(u->status & BTL_STATUS_JUMP)) {
-        btl_updateTexAnims((TexAnimSet *)m->unk50);
+        btl_updateTexAnims((TexAnimSet *)m->texAnims);
     }
     if (u->weaponModel != NULL) {
-        u->weaponModel->unk10 = 0;
+        u->weaponModel->prims = 0;
         *ot = (s32)btl_calcBoneMatrices(u->weaponModel, 0, (u8 *)*ot);
         w = u->weaponModel;
-        n = w->unk8->meshCount;
+        n = w->header->meshCount;
         btl_updateModelVisibility(w);
-        u->weaponModel->unk0 &= ~0x20;
+        u->weaponModel->flags &= ~0x20;
         for (i = 0; i < n; i++) {
-            if (!(u->weaponModel->unk14 & (1 << i))) {
+            if (!(u->weaponModel->hiddenMeshes & (1 << i))) {
                 btl_projectMesh(u->weaponModel, i);
                 *ot = (s32)btl_drawMesh(u->weaponModel, i, (u8 *)*ot);
-                u->weaponModel->unk0 |= 0x20;
+                u->weaponModel->flags |= 0x20;
             }
         }
     }
@@ -146,9 +146,9 @@ s32 btl_setIdleMotion(BtlUnit *u) {
 
     if (u->status & BTL_STATUS_KO) {
         if ((u->unk68 & 0x20001) == 1 && u != cmd->caster && u->unk7D == 0) {
-            cur = (s32)u->model->unkC;
+            cur = (s32)u->model->motion;
             if (cur != u->motions[4] && cur != u->motions[9]) {
-                u->model->unkC = (BtlUnit9CC *)u->motions[(u->unk68 >> 18) & 1];
+                u->model->motion = (BtlUnit9CC *)u->motions[(u->unk68 >> 18) & 1];
             }
         }
         return 0;
@@ -159,39 +159,39 @@ s32 btl_setIdleMotion(BtlUnit *u) {
     }
     {
         if (u == cmd->caster && (u32)(cmd->cmdNo - 0x37) >= 7) {
-            cur = (s32)u->model->unkC;
+            cur = (s32)u->model->motion;
             if (cur == u->motions[10] || cur == u->motions[11]) {
-                u->model->unkC = (BtlUnit9CC *)u->motions[9];
+                u->model->motion = (BtlUnit9CC *)u->motions[9];
             }
             return 0;
         }
         if (u->unk68 & 1) {
             if (!(u->unk68 & 0x06000000)) {
                 if ((b->escapeHeld != 0 || (b->cmdFlags & 1)) && !(u->status & (BTL_STATUS_PETRIFY | BTL_STATUS_VENOM | BTL_STATUS_ZOMBIE | BTL_STATUS_KO | BTL_STATUS_STOP | BTL_STATUS_SLEEP | BTL_STATUS_FREEZE | BTL_STATUS_JUMP))) {
-                    u->model->unkC = (BtlUnit9CC *)u->motions[17];
+                    u->model->motion = (BtlUnit9CC *)u->motions[17];
                 } else if (u->status & BTL_STATUS_DEFEND) {
-                    u->model->unkC = (BtlUnit9CC *)u->motions[13];
+                    u->model->motion = (BtlUnit9CC *)u->motions[13];
                 } else if ((u->unk68 >> 19) & 1) {
-                    if ((s32)u->model->unkC == u->motions[(u->unk68 >> 18) & 1]) {
-                        u->model->unkC = (BtlUnit9CC *)u->motions[((u->unk68 >> 18) & 1) + 10];
+                    if ((s32)u->model->motion == u->motions[(u->unk68 >> 18) & 1]) {
+                        u->model->motion = (BtlUnit9CC *)u->motions[((u->unk68 >> 18) & 1) + 10];
                     } else {
-                        u->model->unkC = (BtlUnit9CC *)u->motions[9];
+                        u->model->motion = (BtlUnit9CC *)u->motions[9];
                     }
                 } else {
                     m = u->model;
                     a = u->motions;
-                    cur = (s32)m->unkC;
+                    cur = (s32)m->motion;
                     if (cur == a[0] && (u->status & (BTL_STATUS_VENOM | BTL_STATUS_LOW_HP | BTL_STATUS_POISON | BTL_STATUS_SLEEP))) {
-                        m->unkC = (BtlUnit9CC *)a[7];
+                        m->motion = (BtlUnit9CC *)a[7];
                     } else if ((cur == a[1] || cur == a[6]) && !(u->status & (BTL_STATUS_VENOM | BTL_STATUS_LOW_HP | BTL_STATUS_POISON | BTL_STATUS_SLEEP))) {
-                        m->unkC = (BtlUnit9CC *)a[5];
+                        m->motion = (BtlUnit9CC *)a[5];
                     } else {
-                        u->model->unkC = (BtlUnit9CC *)u->motions[(u->unk68 >> 18) & 1];
+                        u->model->motion = (BtlUnit9CC *)u->motions[(u->unk68 >> 18) & 1];
                     }
                 }
             }
         } else {
-            u->model->unkC = (BtlUnit9CC *)u->motions[(u->unk68 >> 18) & 1];
+            u->model->motion = (BtlUnit9CC *)u->motions[(u->unk68 >> 18) & 1];
         }
         u->unkA0->unk3A = 0;
         return 1;
@@ -206,18 +206,18 @@ void btl_startHitMotion(BtlUnit *arg0) {
     f = arg0->unk68;
     if (f & 1) {
         if ((g_gameState->unk1C->unk8E4.battle->curCmd->ability->unkB & 0x81) == 0x81) {
-            arg0->model->unkC = (BtlUnit9CC *)arg0->motions[3];
+            arg0->model->motion = (BtlUnit9CC *)arg0->motions[3];
         } else {
-            arg0->model->unkC = (BtlUnit9CC *)arg0->motions[2];
+            arg0->model->motion = (BtlUnit9CC *)arg0->motions[2];
         }
     } else if (arg0->hp == 0 && (u8)(g_gameState->unk1C->unk8E4.battle->enemies + ((f >> 1) & 0xF))->unk4 >> 7) {
-        arg0->model->unkC = (BtlUnit9CC *)arg0->motions[3];
+        arg0->model->motion = (BtlUnit9CC *)arg0->motions[3];
         btl_playDeathCry(arg0, g_gameState->unk1C->unk8E4.battle->enemies[(arg0->unk68 >> 1) & 0xF].unk0->unk30);
     } else {
         if ((arg0->unk68 >> 23) & 1) {
             arg0 = btl_findBodyUnit();
         }
-        arg0->model->unkC = (BtlUnit9CC *)arg0->motions[((arg0->unk68 >> 18) & 1) + 2];
+        arg0->model->motion = (BtlUnit9CC *)arg0->motions[((arg0->unk68 >> 18) & 1) + 2];
     }
     arg0->unk68 |= 0x20000;
     arg0->unkA0->unk3A = 0;
@@ -226,13 +226,13 @@ void btl_startHitMotion(BtlUnit *arg0) {
 void btl_endPartyHitMotion(BtlUnit *arg0) {
     BtlUnit9C *m = arg0->model;
     s32 *a = arg0->motions;
-    s32 c = (s32)m->unkC;
+    s32 c = (s32)m->motion;
     if (c == a[2]) {
         if (arg0->status & BTL_STATUS_KO) {
             arg0->unk7D = 1;
             arg0->unk68 &= ~0x20000;
         } else if ((arg0->unk68 >> 19) & 1) {
-            m->unkC = (BtlUnit9CC *)a[10];
+            m->motion = (BtlUnit9CC *)a[10];
         } else {
             arg0->unk68 &= ~0x20000;
         }
@@ -240,17 +240,17 @@ void btl_endPartyHitMotion(BtlUnit *arg0) {
         if (arg0->status & BTL_STATUS_KO) {
             arg0->unk7D = 5;
             arg0->unk68 &= ~0x20000;
-            arg0->model->unkC = (BtlUnit9CC *)arg0->motions[4];
+            arg0->model->motion = (BtlUnit9CC *)arg0->motions[4];
         } else {
-            m->unkC = (BtlUnit9CC *)a[6];
+            m->motion = (BtlUnit9CC *)a[6];
         }
     } else if (c == a[6]) {
         if ((arg0->unk68 >> 19) & 1) {
-            m->unkC = (BtlUnit9CC *)a[11];
+            m->motion = (BtlUnit9CC *)a[11];
         } else if (arg0->status & (BTL_STATUS_VENOM | BTL_STATUS_LOW_HP | BTL_STATUS_POISON | BTL_STATUS_SLEEP)) {
             arg0->unk68 &= ~0x20000;
         } else {
-            m->unkC = (BtlUnit9CC *)a[5];
+            m->motion = (BtlUnit9CC *)a[5];
         }
     } else {
         arg0->unk68 &= ~0x20000;
@@ -265,8 +265,8 @@ void btl_endEnemyHitMotion(BtlUnit *arg0) {
     if (arg0->status & BTL_STATUS_KO) {
         m = arg0->model;
         a = arg0->motions;
-        if ((s32)m->unkC == a[3] && ((u8)(g_gameState->unk1C->unk8E4.battle->enemies + ((arg0->unk68 >> 1) & 0xF))->unk4 >> 7)) {
-            m->unkC = (BtlUnit9CC *)a[4];
+        if ((s32)m->motion == a[3] && ((u8)(g_gameState->unk1C->unk8E4.battle->enemies + ((arg0->unk68 >> 1) & 0xF))->unk4 >> 7)) {
+            m->motion = (BtlUnit9CC *)a[4];
             arg0->unkA0->unk3A--;
             arg0->unk7D = 3;
             arg0->unk68 |= 0x200000;
@@ -276,7 +276,7 @@ void btl_endEnemyHitMotion(BtlUnit *arg0) {
             arg0->unk7D = 1;
             return;
         }
-        arg0->model->unkC = (BtlUnit9CC *)arg0->motions[(arg0->unk68 >> 18) & 1];
+        arg0->model->motion = (BtlUnit9CC *)arg0->motions[(arg0->unk68 >> 18) & 1];
     }
 }
 
@@ -293,7 +293,7 @@ void btl_updateKo(BtlUnit *u) {
         switch (u->unk7D) {
         case 1:
             if (!((u->unk68 >> 23) & 1)) {
-                u->model->unkC = (BtlUnit9CC *)u->motions[4 + ((u->unk68 >> 18) & 1)];
+                u->model->motion = (BtlUnit9CC *)u->motions[4 + ((u->unk68 >> 18) & 1)];
                 u->unkA0->unk3A = 0;
                 u->unk7D++;
             } else {
@@ -302,7 +302,7 @@ void btl_updateKo(BtlUnit *u) {
             btl_playDeathCry(u, e->unk0->unk30);
             return;
         case 2:
-            if (u->unkA0->unk3A >= u->model->unkC->unk2 - 1) {
+            if (u->unkA0->unk3A >= u->model->motion->unk2 - 1) {
                 u->unk68 |= 0x200000;
                 u->unk7D++;
             }
@@ -342,34 +342,34 @@ void btl_updateKo(BtlUnit *u) {
         switch (u->unk7D) {
         case 1:
             m = u->model;
-            if ((s32)m->unkC == u->motions[9]) {
-                m->unkC = (BtlUnit9CC *)u->motions[32];
+            if ((s32)m->motion == u->motions[9]) {
+                m->motion = (BtlUnit9CC *)u->motions[32];
                 u->unkA0->unk3A = 0;
                 return;
             }
-            if ((s32)m->unkC == u->motions[32] && u->unkA0->unk3A < m->unkC->unk2) {
+            if ((s32)m->motion == u->motions[32] && u->unkA0->unk3A < m->motion->unk2) {
                 break;
             }
             u->unk7D = 2;
         case 2:
             if ((f = (u->unk68 >> 18) & 1) == 1) {
-                u->model->unkC = (BtlUnit9CC *)u->motions[8];
+                u->model->motion = (BtlUnit9CC *)u->motions[8];
                 u->unk7D = 4;
             } else {
-                u->model->unkC = (BtlUnit9CC *)u->motions[7];
+                u->model->motion = (BtlUnit9CC *)u->motions[7];
                 u->unk7D = 3;
             }
             u->unkA0->unk3A = 0;
             return;
         case 3:
-            if (u->unkA0->unk3A >= u->model->unkC->unk2) {
-                u->model->unkC = (BtlUnit9CC *)u->motions[8];
+            if (u->unkA0->unk3A >= u->model->motion->unk2) {
+                u->model->motion = (BtlUnit9CC *)u->motions[8];
                 u->unkA0->unk3A = 0;
                 u->unk7D++;
             }
             break;
         case 4:
-            if (u->unkA0->unk3A < u->model->unkC->unk2) {
+            if (u->unkA0->unk3A < u->model->motion->unk2) {
                 break;
             }
         case 5:
@@ -394,7 +394,7 @@ s32 btl_waitHitMotions(BtlCmd *arg0) {
     for (u = g_gameState->unk1C->unk8E4.battle->unitList; u != 0; u = u->next) {
         if ((u->unk68 >> 17) & 1) {
             r = 0;
-            if (u->unkA0->unk3A >= u->model->unkC->unk2) {
+            if (u->unkA0->unk3A >= u->model->motion->unk2) {
                 u->pos[2] = u->unk98->unk0[2];
                 if (u->unk68 & 1) {
                     btl_endPartyHitMotion(u);

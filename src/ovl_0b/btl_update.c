@@ -96,14 +96,14 @@ s32 btl_updateUnits(GameData *arg0, Battle *arg1) {
                 n = u->model;
                 g = u->unk68 & ~0x200000;
                 u->unk68 = g;
-                if (u->unkA0->unk3A >= n->unkC->unk2) {
+                if (u->unkA0->unk3A >= n->motion->unk2) {
                     if (!(u->status & BTL_STATUS_KO)) {
-                        n->unkC = (BtlUnit9CC *)u->motions[(g >> 18) & 1];
+                        n->motion = (BtlUnit9CC *)u->motions[(g >> 18) & 1];
                     }
                     u->unkA0->unk3A = 0;
                 }
                 if (!(u->status & BTL_STATUS_PETRIFY)) {
-                    if ((s32)u->model->unkC != u->motions[(u->unk68 >> 18) & 1] && (s32)u->model->unkC != u->motions[4]) {
+                    if ((s32)u->model->motion != u->motions[(u->unk68 >> 18) & 1] && (s32)u->model->motion != u->motions[4]) {
                         r = 0;
                     }
                 }
@@ -111,8 +111,8 @@ s32 btl_updateUnits(GameData *arg0, Battle *arg1) {
                 f = u->unk68;
                 if ((f & 1) && !(u->status & (BTL_STATUS_PETRIFY | BTL_STATUS_VENOM | BTL_STATUS_KO | BTL_STATUS_STOP)) && ((arg1->scene.unk0 >> 6) & 1) && (g_gameState->unk1C->characters + ((f >> 1) & 0xF))->unk34.b.unkA) {
                     m = u->model;
-                    if (u->unkA0->unk3A >= m->unkC->unk2) {
-                        m->unkC = (BtlUnit9CC *)u->motions[19];
+                    if (u->unkA0->unk3A >= m->motion->unk2) {
+                        m->motion = (BtlUnit9CC *)u->motions[19];
                         u->unkA0->unk3A = 0;
                     }
                 }
@@ -145,12 +145,12 @@ void btl_victory(GameData *arg0, Battle *arg1) {
             switch (arg1->subPhase) {
             case 0:
                 btl_updateHpStatus(u);
-                if ((!(u->unk68 & 1) && !(u->status & (BTL_STATUS_PETRIFY | BTL_STATUS_VENOM | BTL_STATUS_STOP))) || ((u->unk68 & 1) && (u->status & BTL_STATUS_KO) && u->model->unkC != (BtlUnit9CC *)u->motions[4])) {
+                if ((!(u->unk68 & 1) && !(u->status & (BTL_STATUS_PETRIFY | BTL_STATUS_VENOM | BTL_STATUS_STOP))) || ((u->unk68 & 1) && (u->status & BTL_STATUS_KO) && u->model->motion != (BtlUnit9CC *)u->motions[4])) {
                     done = 0;
                 }
                 break;
             case 1:
-                if ((u->unk68 & 1) && u->model->unkC != (BtlUnit9CC *)u->motions[4] && !(u->status & (BTL_STATUS_PETRIFY | BTL_STATUS_VENOM | BTL_STATUS_STOP))) {
+                if ((u->unk68 & 1) && u->model->motion != (BtlUnit9CC *)u->motions[4] && !(u->status & (BTL_STATUS_PETRIFY | BTL_STATUS_VENOM | BTL_STATUS_STOP))) {
                     done = 0;
                 }
                 break;
@@ -170,8 +170,8 @@ void btl_victory(GameData *arg0, Battle *arg1) {
                         done = 0;
                     }
                 } else if (!(u->status & (BTL_STATUS_PETRIFY | BTL_STATUS_VENOM | BTL_STATUS_STOP | BTL_STATUS_FREEZE))) {
-                    if (u->model->unkC != (BtlUnit9CC *)u->motions[0] &&
-                        u->model->unkC != (BtlUnit9CC *)u->motions[1]) {
+                    if (u->model->motion != (BtlUnit9CC *)u->motions[0] &&
+                        u->model->motion != (BtlUnit9CC *)u->motions[1]) {
                         done = 0;
                     }
                 }
@@ -181,7 +181,7 @@ void btl_victory(GameData *arg0, Battle *arg1) {
                     if (u->unk7D == 0) {
                         u->unk7D = 1;
                     }
-                    if (u->model->unkC != (BtlUnit9CC *)u->motions[4]) {
+                    if (u->model->motion != (BtlUnit9CC *)u->motions[4]) {
                         done = 0;
                     } else if (btl_isCmdQueued(u, BTL_CMD_AUTO_LIFE) != 0) {
                         done = 0;
@@ -230,9 +230,9 @@ void btl_victory(GameData *arg0, Battle *arg1) {
                                 u->unk68 = (u->unk68 & ~0x40000) | ((btl_hasStatus(u, (BTL_STATUS_VENOM | BTL_STATUS_LOW_HP | BTL_STATUS_POISON | BTL_STATUS_SLEEP)) & 1) << 18);
                                 u->unk68 &= ~0x80000;
                                 if (((g_gameState->unk1C->characters + ((u->unk68 >> 1) & 0xF))->unk34.w >> 10) & 1) {
-                                    u->model->unkC = (BtlUnit9CC *)u->motions[0x12];
+                                    u->model->motion = (BtlUnit9CC *)u->motions[0x12];
                                 } else {
-                                    u->model->unkC = (BtlUnit9CC *)u->motions[(u->unk68 >> 18) & 1];
+                                    u->model->motion = (BtlUnit9CC *)u->motions[(u->unk68 >> 18) & 1];
                                 }
                                 u->unkA0->unk3A = 0;
                             } else {

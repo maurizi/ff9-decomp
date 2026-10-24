@@ -1079,7 +1079,7 @@ void btlfx_setUnitMotion(s32 arg0, s32 arg1) {
         BtlUnit *u = btl_getUnit(arg0);
         BtlUnit9C *m = u->model;
         if (m != NULL) {
-            m->unkC = (BtlUnit9CC *)arg1;
+            m->motion = (BtlUnit9CC *)arg1;
             u->unkA0->unk3A = 0;
         }
     }
@@ -1091,14 +1091,14 @@ s32 btlfx_getUnitMotion(s32 arg0, s32 arg1) {
 
 void btlfx_setMotionFrame(s32 arg0, s32 arg1) {
     BtlUnit *u = btl_getUnit(arg0);
-    if (arg1 >= u->model->unkC->unk2) {
-        arg1 = u->model->unkC->unk2;
+    if (arg1 >= u->model->motion->unk2) {
+        arg1 = u->model->motion->unk2;
     }
     u->unkA0->unk3A = arg1;
 }
 
 s32 btlfx_getMotionLength(s32 arg0) {
-    return btl_getUnit(arg0)->model->unkC->unk2;
+    return btl_getUnit(arg0)->model->motion->unk2;
 }
 
 u8 btlfx_getMotionFrame(s32 arg0) {

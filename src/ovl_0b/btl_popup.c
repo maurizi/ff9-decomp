@@ -86,7 +86,7 @@ BtlPopup *btl_newPopup(BtlUnit *u) {
     p->unit = u;
     p->frame = 0;
     p->unk10.w = 0;
-    bone = &u->model->unk20[u->unk7C];
+    bone = &u->model->bones[u->unk7C];
     p->x = bone->unk14;
     p->y = bone->unk18 - 4;
     p->z = bone->unk1C;
@@ -219,7 +219,7 @@ void btl_drawNumberPopup(BtlPopup *arg0, Unk800CCD00 *arg1) {
         anim = D_800F6A28;
     }
     c = anim[arg0->frame];
-    if (!(arg0->unit->model->unk0 & 0x10)) {
+    if (!(arg0->unit->model->flags & 0x10)) {
         n = arg0->unk14.w;
         arg1->unk8 = (c & 0x80) ? 0x03000000 : 0x01000000;
         arg1->unk14 = arg0->clut;
@@ -254,7 +254,7 @@ void btl_drawTextPopup(BtlPopup *arg0, Unk800CCD00 *arg1) {
 
     anim = arg0->unk14.p->unk0;
     c = anim[arg0->frame];
-    if (!(arg0->unit->model->unk0 & 0x10)) {
+    if (!(arg0->unit->model->flags & 0x10)) {
         arg1->unk8 = (c & 0x80) ? 0x03000000 : 0x01000000;
         arg1->unk14 = arg0->clut;
         g = &D_800686D0[arg0->unk14.p->unk4];
@@ -353,7 +353,7 @@ void btl_drawStatusIcons(Unk800CCD00 *arg0) {
     rot.vz = 0;
     rot.pad = 1;
     for (u = g_gameState->unk1C->unk8E4.battle->unitList; u != NULL; u = u->next) {
-        if (((u->unk68 >> 22) & 1) || (u->model->unk0 & 0x10)) {
+        if (((u->unk68 >> 22) & 1) || (u->model->flags & 0x10)) {
             continue;
         }
         if (r->hiddenMask & u->unitBit) {
@@ -363,7 +363,7 @@ void btl_drawStatusIcons(Unk800CCD00 *arg0) {
         if ((st & BTL_STATUS_KO) || !(st & (BTL_STATUS_VENOM | BTL_STATUS_SILENCE | BTL_STATUS_BLIND | BTL_STATUS_TROUBLE | BTL_STATUS_BERSERK | BTL_STATUS_POISON | BTL_STATUS_SLEEP | BTL_STATUS_HASTE | BTL_STATUS_SLOW | BTL_STATUS_HEAT | BTL_STATUS_FREEZE | BTL_STATUS_REFLECT))) {
             continue;
         }
-        if ((u->unk68 & 1) && u->model->unkC == (BtlUnit9CC *)u->motions[0x11]) {
+        if ((u->unk68 & 1) && u->model->motion == (BtlUnit9CC *)u->motions[0x11]) {
             continue;
         }
         sn = math_sin(u->rot[1]);
@@ -388,11 +388,11 @@ void btl_drawStatusIcons(Unk800CCD00 *arg0) {
             z0 = (tz[k] << 24) >> 20;
             y = y0;
             z = z0;
-            if (mdl->unk0 & 2) {
-                y = (u32)(y0 * mdl->unk56) >> 12;
-                z = (u32)(z0 * mdl->unk58) >> 12;
+            if (mdl->flags & 2) {
+                y = (u32)(y0 * mdl->scaleY) >> 12;
+                z = (u32)(z0 * mdl->scaleZ) >> 12;
             }
-            b = &mdl->unk20[bone[k]];
+            b = &mdl->bones[bone[k]];
             pos.vx = b->unk14 + (((s16)z * sn) >> 12);
             pos.vz = b->unk1C + (((s16)z * cs) >> 12);
             pos.vy = b->unk18 + y;
@@ -431,7 +431,7 @@ void btl_drawStatusCountdown(Unk800CCD00 *arg0) {
     u32 n;
 
     for (u = g_gameState->unk1C->unk8E4.battle->unitList; u != NULL; u = u->next) {
-        if (((u->unk68 >> 22) & 1) || (u->model->unk0 & 0x10)) {
+        if (((u->unk68 >> 22) & 1) || (u->model->flags & 0x10)) {
             continue;
         }
         if (g_gameState->unk1C->unk8E4.battle->popups.hiddenMask & u->unitBit) {
@@ -450,10 +450,10 @@ void btl_drawStatusCountdown(Unk800CCD00 *arg0) {
             y = (s8)m->unk38[5];
         }
         mdl = u->model;
-        if (mdl->unk0 & 2) {
-            y = (u32)(y * mdl->unk56) >> 12;
+        if (mdl->flags & 2) {
+            y = (u32)(y * mdl->scaleY) >> 12;
         }
-        b = &mdl->unk20[bone];
+        b = &mdl->bones[bone];
         v.vx = b->unk14;
         v.vy = b->unk18 + (y << 4);
         v.vz = b->unk1C;

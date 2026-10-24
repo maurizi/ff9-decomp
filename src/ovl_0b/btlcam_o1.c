@@ -158,7 +158,7 @@ void btlcam_loadScript(s32 arg) {
                 n = 0;
                 r = n;
                 if (w != NULL) {
-                    m = w->model->unk8;
+                    m = w->model->header;
                     r = m->height;
                     n = m->radius;
                 }
@@ -798,7 +798,7 @@ s32 func_800C4E84(s32 arg0, s16 *arg1, s16 *arg2, s32 *arg3) {
         arg1[0] = gs->unk1C->unk8E4.battle->unk11C4.unk150;
         arg1[2] = gs->unk1C->unk8E4.battle->unk11C4.unk154;
     }
-    *arg3 = u->model->unk8->radius;
+    *arg3 = u->model->header->radius;
     arg1[1] = 0;
     if (n != 0xB) {
         arg0 &= 0xC0;
@@ -913,14 +913,14 @@ void btlcam_applyTargetView(SVECTOR *arg0, SVECTOR *arg1) {
 void btlcam_getUnitAnchors(BtlUnit *arg0, s16 *arg1) {
     s32 i;
     if (arg0->unk68 & 1) {
-        s32 h = arg0->model->unk8->height;
+        s32 h = arg0->model->header->height;
         s16 y = arg0->pos[1] >> 16;
         arg1[0] = y - (h >> 2);
         arg1[1] = y - (h >> 1);
         arg1[2] = y - (h - (h >> 2));
     } else {
         for (i = 0; i < 3; i++) {
-            arg1[i] = arg0->model->unk20[g_gameState->unk1C->unk8E4.battle->enemies[(arg0->unk68 >> 1) & 0xF].unk0->unk29[i]].unk18;
+            arg1[i] = arg0->model->bones[g_gameState->unk1C->unk8E4.battle->enemies[(arg0->unk68 >> 1) & 0xF].unk0->unk29[i]].unk18;
         }
     }
     arg1[3] = arg0->pos[0] >> 16;

@@ -1,7 +1,7 @@
 #include "ovl_0b.h"
 
 void btl_addMeshRgb(BtlUnit9C *arg0, u8 arg1, s16 arg2, s16 arg3, s16 arg4) {
-    BtlMesh *g = &arg0->unk8->meshes[arg1];
+    BtlMesh *g = &arg0->header->meshes[arg1];
     u32 *p = g->prims;
     u32 i;
     for (i = 0; i < g->nFT4; i++) {
@@ -15,7 +15,7 @@ void btl_addMeshRgb(BtlUnit9C *arg0, u8 arg1, s16 arg2, s16 arg3, s16 arg4) {
 }
 
 void btl_setMeshRgb(BtlUnit9C *arg0, u8 arg1, s16 arg2, s16 arg3, s16 arg4) {
-    BtlMesh *g = &arg0->unk8->meshes[arg1];
+    BtlMesh *g = &arg0->header->meshes[arg1];
     u32 *p = g->prims;
     u32 v = (arg4 << 16) | (arg3 << 8) | arg2;
     u32 i;
@@ -56,11 +56,11 @@ void btl_setModelAbr(BtlUnit9C *arg0, s32 arg1) {
     u8 *p;
     u32 i;
     u8 code;
-    if (!(arg0->unk0 & 0x10)) {
-        arg0->unk5 = arg1;
-        p = (u8 *)arg0->unk10;
-        for (i = 0; i < arg0->unk8->meshCount; i++) {
-            if (!(arg0->unk14 & (1 << i))) {
+    if (!(arg0->flags & 0x10)) {
+        arg0->abr = arg1;
+        p = (u8 *)arg0->prims;
+        for (i = 0; i < arg0->header->meshCount; i++) {
+            if (!(arg0->hiddenMeshes & (1 << i))) {
                 do {
                     code = getcode(p);
                     if (code == 0xFF) {
@@ -484,7 +484,7 @@ void btl_initEnemyUnit(Unk800C9EE0 *arg0, BtlUnit *arg1, s32 *arg2, s32 arg3) {
         arg1->rot[1] = r;
     }
     arg1->motions = (s32 *)s->unk0->unkC;
-    arg1->model->unkC = s->unk0->unkC[0];
+    arg1->model->motion = s->unk0->unkC[0];
 }
 
 void btl_setEnemyStats(Unk800C9D1C *arg0, BtlUnit *arg1) {

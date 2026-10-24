@@ -261,27 +261,27 @@ typedef union {
 } BtlPrim;
 
 typedef struct BtlUnit9C {
-    u16 unk0; /* flags */
+    u16 flags; /* 2 scaled (scaleX-Z, btl_applyModelScale), 0x10 off screen (btl_updateModelVisibility) */
     u8 pad2[4 - 2];
-    u8 unk4;
-    u8 unk5;
+    u8 parentBone; /* weapon models: the bone of the parent model they follow (Character.unk21, btl_initWeapon) */
+    u8 abr; /* semi-transparency mode (btl_setModelAbr) */
     u8 pad6[8 - 6];
-    BtlUnit9C8 *unk8;
-    BtlUnit9CC *unkC;
-    s32 unk10;
-    u32 unk14;
-    BtlUnit9C18 *unk18;
-    struct BtlUnit9C *unk1C;
-    BtlBone *unk20;
-    MATRIX unk24;
+    BtlUnit9C8 *header;
+    BtlUnit9CC *motion; /* playing motion (BtlUnit.motions entries) */
+    s32 prims; /* built primitive packets (btl_setModelAbr walks them) */
+    u32 hiddenMeshes; /* mesh-group bits not drawn (btl_hideMeshes) */
+    BtlUnit9C18 *texPages;
+    struct BtlUnit9C *parent; /* parent model (weapon models: the unit model) */
+    BtlBone *bones; /* bone matrices (btl_calcBoneMatrices) */
+    MATRIX matrix; /* model matrix */
     s32 unk44;
     u8 pad48[0x50 - 0x48];
-    BtlUnit9C50 *unk50;
-    s16 unk54;
-    s16 unk56;
-    s16 unk58;
+    BtlUnit9C50 *texAnims; /* texture animations (btl_updateTexAnims) */
+    s16 scaleX; /* with flag 2 (btl_applyModelScale) */
+    s16 scaleY;
+    s16 scaleZ;
     s16 unk5A;
-    BtlUnit9C8 *unk5C; /* morph target */
+    BtlUnit9C8 *morph; /* morph target */
     void *unk60;
     u8 pad64[0x74 - 0x64];
     s16 unk74;

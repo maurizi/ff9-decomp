@@ -18,13 +18,13 @@ void btl_projectMesh(BtlUnit9C *arg0, u8 arg1) {
     s16 *c1;
     s16 *c2;
 
-    g = &arg0->unk8->meshes[arg1];
+    g = &arg0->header->meshes[arg1];
     gte_SetGeomScreen(g_gameState->unk1C->unkA);
     sxy = g_vtxScreenXY;
     sz = g_vtxScreenZ;
     k = 0;
-    cnt = arg0->unk8->unk2;
-    bone = (MATRIX *)arg0->unk20;
+    cnt = arg0->header->unk2;
+    bone = (MATRIX *)arg0->bones;
     for (i = 0; i < cnt; bone++) {
         n = g->vertexCounts[i++];
         if (n != 0) {
@@ -100,17 +100,17 @@ u8 *btl_buildMeshPrims(BtlUnit9C *arg0, u8 arg1, u8 *prim) {
     WmSrcF3 *sF3;
     POLY_F3 *pF3;
 
-    if (arg0->unk0 & 0x10) {
+    if (arg0->flags & 0x10) {
         return prim;
     }
-    g = &arg0->unk8->meshes[arg1];
+    g = &arg0->header->meshes[arg1];
     sFT4 = (WmSrcFT4 *)g->prims;
     uv = g->uvs;
     col = g->colors;
-    if (arg0->unk10 == 0) {
-        arg0->unk10 = (s32)prim;
+    if (arg0->prims == 0) {
+        arg0->prims = (s32)prim;
     }
-    tex = (u32 *)arg0->unk18;
+    tex = (u32 *)arg0->texPages;
     ot = g_gameState->unk1C->unk10[g_gameState->unk1C->unk8];
     ot -= g->unk13;
 
@@ -520,24 +520,24 @@ void btl_applyModelTextures(BtlUnit9C *arg0, s16 *arg1, s16 *arg2) {
     s32 du;
     s32 dv;
 
-    arg0->unk54 = 0x1000;
-    arg0->unk56 = 0x1000;
-    arg0->unk58 = 0x1000;
-    arg0->unk0 |= 2;
-    h = arg0->unk8;
-    arg0->unk18 = (BtlUnit9C18 *)arg1;
-    arg0->unk1C = NULL;
+    arg0->scaleX = 0x1000;
+    arg0->scaleY = 0x1000;
+    arg0->scaleZ = 0x1000;
+    arg0->flags |= 2;
+    h = arg0->header;
+    arg0->texPages = (BtlUnit9C18 *)arg1;
+    arg0->parent = NULL;
     arg0->unk60 = NULL;
-    arg0->unk5C = NULL;
+    arg0->morph = NULL;
     arg0->unk44 = 0;
-    arg0->unk20 = NULL;
-    arg0->unk10 = 0;
-    arg0->unk50 = NULL;
+    arg0->bones = NULL;
+    arg0->prims = 0;
+    arg0->texAnims = NULL;
     arg0->unk74 = 0;
     arg0->unk76 = 0;
     arg0->unk78 = 0;
-    arg0->unk14 = 0;
-    arg0->unk0 = 0;
+    arg0->hiddenMeshes = 0;
+    arg0->flags = 0;
     if (!(h->unk0 & 1)) {
         h->unk0 |= 1;
         m = h->meshes = (BtlMesh *)((u8 *)h + (s32)h->meshes);
@@ -621,26 +621,26 @@ void btl_applyModelScale(BtlUnit9C *arg0) {
     } s;
     s16 x;
 
-    if (arg0->unk0 & 2) {
-        x = arg0->unk54;
+    if (arg0->flags & 2) {
+        x = arg0->scaleX;
         s.w[0] = 0x1000;
         s.w[1] = 0;
         s.w[2] = 0x1000;
         s.w[3] = 0;
         s.w[4] = 0x1000;
         s.m.m[0][0] = x;
-        gte_SetRotMatrix(&arg0->unk24);
+        gte_SetRotMatrix(&arg0->matrix);
         gte_ldclmv(&s.m);
         gte_rtir();
-        s.m.m[1][1] = arg0->unk56;
-        gte_stclmv(&arg0->unk24);
+        s.m.m[1][1] = arg0->scaleY;
+        gte_stclmv(&arg0->matrix);
         gte_ldclmv((s16 *)&s.m + 1);
         gte_rtir();
-        s.m.m[2][2] = arg0->unk58;
-        gte_stclmv((s16 *)&arg0->unk24 + 1);
+        s.m.m[2][2] = arg0->scaleZ;
+        gte_stclmv((s16 *)&arg0->matrix + 1);
         gte_ldclmv((s16 *)&s.m + 2);
         gte_rtir();
-        gte_stclmv((s16 *)&arg0->unk24 + 2);
+        gte_stclmv((s16 *)&arg0->matrix + 2);
     }
 }
 
@@ -648,21 +648,21 @@ void btl_updateModelVisibility(BtlUnit9C *arg0) {
     SVECTOR v;
     s32 z;
 
-    arg0->unk0 &= ~0x10;
-    if (arg0->unk1C != NULL) {
-        arg0->unk0 |= arg0->unk1C->unk0 & 0x10;
+    arg0->flags &= ~0x10;
+    if (arg0->parent != NULL) {
+        arg0->flags |= arg0->parent->flags & 0x10;
         return;
     }
-    v.vx = arg0->unk24.t[0];
-    v.vy = arg0->unk24.t[1];
-    v.vz = arg0->unk24.t[2];
+    v.vx = arg0->matrix.t[0];
+    v.vy = arg0->matrix.t[1];
+    v.vz = arg0->matrix.t[2];
     gte_SetRotMatrix(&g_gameState->unk1C->unk18);
     gte_SetTransMatrix(&g_gameState->unk1C->unk18);
     gte_ldv0(&v);
     gte_rtps();
     gte_stsz(&z);
     if (z == 0) {
-        arg0->unk0 |= 0x10;
+        arg0->flags |= 0x10;
     }
 }
 
@@ -673,12 +673,12 @@ void btl_setModelRgb(BtlUnit9C *arg0, s32 r, s32 g, s32 b) {
     BtlPrim *p;
     u8 code;
 
-    if (!(arg0->unk0 & 0x10)) {
+    if (!(arg0->flags & 0x10)) {
     i = 0;
-    p = (BtlPrim *)arg0->unk10;
-    if (arg0->unk8->meshCount != 0) {
+    p = (BtlPrim *)arg0->prims;
+    if (arg0->header->meshCount != 0) {
     do {
-        if (!(arg0->unk14 & (1 << i))) {
+        if (!(arg0->hiddenMeshes & (1 << i))) {
         do {
             code = p->tag.code;
             if (code == 0xFF || code == 0xE1) {
@@ -739,7 +739,7 @@ void btl_setModelRgb(BtlUnit9C *arg0, s32 r, s32 g, s32 b) {
             }
         } while (code != 0xFF);
         }
-    } while (++i < arg0->unk8->meshCount);
+    } while (++i < arg0->header->meshCount);
     }
     }
 }
@@ -751,12 +751,12 @@ void btl_fillModelRgb(BtlUnit9C *arg0, s32 r, s32 g, s32 b) {
     u8 code;
 
     i = 0;
-    if (!(arg0->unk0 & 0x10)) {
+    if (!(arg0->flags & 0x10)) {
     col = (b << 16) | ((g << 16) >> 8) | (s16)r;
-    p = (BtlPrim *)arg0->unk10;
-    if (arg0->unk8->meshCount != 0) {
+    p = (BtlPrim *)arg0->prims;
+    if (arg0->header->meshCount != 0) {
     do {
-        if (!(arg0->unk14 & (1 << i))) {
+        if (!(arg0->hiddenMeshes & (1 << i))) {
         do {
             code = p->tag.code;
             if (code == 0xFF || code == 0xE1) {
@@ -817,7 +817,7 @@ void btl_fillModelRgb(BtlUnit9C *arg0, s32 r, s32 g, s32 b) {
             }
         } while (code != 0xFF);
         }
-    } while (++i < arg0->unk8->meshCount);
+    } while (++i < arg0->header->meshCount);
     }
     }
 }

@@ -1277,13 +1277,13 @@ s32 btlfx_getUnitRadius(s32 arg0) {
     u = btl_getUnit(arg0);
     f = u->unk68;
     if ((f & 1) || flag != 0) {
-        return u->model->unk8->radius;
+        return u->model->header->radius;
     }
     return g_gameState->unk1C->unk8E4.battle->enemies[(f >> 1) & 0xF].unk0->unk24;
 }
 
 s32 btl_getUnitHeight(BtlUnit *arg0) {
-    return arg0->model->unk8->height;
+    return arg0->model->header->height;
 }
 
 s32 btlfx_getUnitHeight(s32 arg0) {
@@ -1291,7 +1291,7 @@ s32 btlfx_getUnitHeight(s32 arg0) {
 }
 
 void btl_getBaseBonePos(BtlUnit *arg0, u16 *arg1) {
-    BtlBone *b = &arg0->model->unk20[arg0->unk7C];
+    BtlBone *b = &arg0->model->bones[arg0->unk7C];
     arg1[0] = b->unk14;
     arg1[1] = b->unk18;
     arg1[2] = b->unk1C;
@@ -1344,7 +1344,7 @@ void btl_getUnitBodyPos(BtlUnit *arg0, s32 arg1, s16 *arg2) {
     } else {
         btl_getBaseBonePos(arg0, (u16 *)arg2);
         if (arg1 == 1) {
-            arg2[1] = arg0->model->unk20[g_gameState->unk1C->unk8E4.battle->enemies[(arg0->unk68 >> 1) & 0xF].unk0->unk29[2]].unk18;
+            arg2[1] = arg0->model->bones[g_gameState->unk1C->unk8E4.battle->enemies[(arg0->unk68 >> 1) & 0xF].unk0->unk29[2]].unk18;
         }
     }
 }
@@ -1450,14 +1450,14 @@ void btlfx_turnUnitToward(s32 arg0, s16 *arg1, s16 *arg2, s32 arg3, s32 arg4, s3
 void btlfx_getUnitScale(s32 arg0, VECTOR *arg1) {
     BtlUnit *u = btl_getUnit(arg0);
     BtlUnit9C *m = u->model;
-    if (!(m->unk0 & 2)) {
+    if (!(m->flags & 2)) {
         arg1->vz = 0x1000;
         arg1->vy = 0x1000;
         arg1->vx = 0x1000;
     } else {
-        arg1->vx = m->unk54;
-        arg1->vy = u->model->unk56;
-        arg1->vz = u->model->unk58;
+        arg1->vx = m->scaleX;
+        arg1->vy = u->model->scaleY;
+        arg1->vz = u->model->scaleZ;
     }
 }
 
@@ -1465,12 +1465,12 @@ void btlfx_setUnitScale(s32 arg0, s32 *arg1) {
     BtlUnit *u = btl_getUnit(arg0);
     if (btl_isModelPart(u) == 0) {
         if (arg1[0] == 0x1000 && arg1[1] == arg1[0] && arg1[2] == arg1[1]) {
-            u->model->unk0 &= ~2;
+            u->model->flags &= ~2;
         } else {
-            u->model->unk0 |= 2;
-            u->model->unk54 = arg1[0];
-            u->model->unk56 = arg1[1];
-            u->model->unk58 = arg1[2];
+            u->model->flags |= 2;
+            u->model->scaleX = arg1[0];
+            u->model->scaleY = arg1[1];
+            u->model->scaleZ = arg1[2];
         }
     }
 }
@@ -1503,7 +1503,7 @@ s32 btlfx_compareDepth(s32 arg0, s32 arg1) {
 }
 
 s32 func_800E7CC4(s32 arg0, s32 arg1) {
-    return (u16)(btl_getUnit(arg0)->model->unk8->radius / 6) + arg1;
+    return (u16)(btl_getUnit(arg0)->model->header->radius / 6) + arg1;
 }
 
 u32 btlfx_getUnitSlot(s32 arg0) {
@@ -1685,10 +1685,10 @@ void func_800E83EC(void) {
 
 void btlfx_reapplyMini(BtlUnit *arg0) {
     if (arg0->status & BTL_STATUS_MINI) {
-        arg0->model->unk0 |= 2;
-        arg0->model->unk54 = 0x800;
-        arg0->model->unk56 = 0x800;
-        arg0->model->unk58 = 0x800;
+        arg0->model->flags |= 2;
+        arg0->model->scaleX = 0x800;
+        arg0->model->scaleY = 0x800;
+        arg0->model->scaleZ = 0x800;
     }
 }
 
@@ -1701,7 +1701,7 @@ void btlfx_reapplyVanish(BtlUnit *arg0) {
 s32 btlfx_getScaledRadius(s32 arg0) {
     VECTOR v;
     btlfx_getUnitScale(arg0, &v);
-    return btl_getUnit(arg0)->model->unk8->radius * v.vx >> 12;
+    return btl_getUnit(arg0)->model->header->radius * v.vx >> 12;
 }
 
 s32 func_800E84F0(s32 arg0) {
@@ -1717,11 +1717,11 @@ s32 func_800E8554(s32 arg0, s32 arg1) {
     BtlUnit *u = btl_getUnit(arg1);
     if (arg0 == 0) {
         if ((u8)btl_hasStatus(u, BTL_STATUS_KO)) {
-            u->model->unkC = (BtlUnit9CC *)u->motions[4];
+            u->model->motion = (BtlUnit9CC *)u->motions[4];
         } else if ((u->unk68 >> 19) & 1) {
-            u->model->unkC = (BtlUnit9CC *)u->motions[9];
+            u->model->motion = (BtlUnit9CC *)u->motions[9];
         } else {
-            u->model->unkC = (BtlUnit9CC *)u->motions[(u->unk68 >> 18) & 1];
+            u->model->motion = (BtlUnit9CC *)u->motions[(u->unk68 >> 18) & 1];
         }
     } else if ((u8)btl_hasStatus(u, BTL_STATUS_KO) || ((u->unk68 >> 1) & 0xF) == 4) {
         func_800E8554(0, 0x10);
@@ -1833,17 +1833,17 @@ void btlfx_setUnitTexAnim(s32 arg0, s32 arg1, s32 arg2) {
 
     switch (arg1) {
     case 0:
-        ((BtlUnit9C50Arr *)u->model->unk50)->e[arg2 ? 1 : 0].unk4 |= 3;
-        ((BtlUnit9C50Arr *)u->model->unk50)->e[arg2 ? 1 : 0].unkC = 0;
-        ((BtlUnit9C50Arr *)u->model->unk50)->e[arg2 ? 1 : 0].unk12 = 0x1000;
+        ((BtlUnit9C50Arr *)u->model->texAnims)->e[arg2 ? 1 : 0].unk4 |= 3;
+        ((BtlUnit9C50Arr *)u->model->texAnims)->e[arg2 ? 1 : 0].unkC = 0;
+        ((BtlUnit9C50Arr *)u->model->texAnims)->e[arg2 ? 1 : 0].unk12 = 0x1000;
         break;
     case 1:
-        ((BtlUnit9C50Arr *)u->model->unk50)->e[2].unk4 &= ~3;
+        ((BtlUnit9C50Arr *)u->model->texAnims)->e[2].unk4 &= ~3;
         break;
     case 2:
-        ((BtlUnit9C50Arr *)u->model->unk50)->e[2].unk4 |= 1;
-        ((BtlUnit9C50Arr *)u->model->unk50)->e[2].unkC = 0;
-        ((BtlUnit9C50Arr *)u->model->unk50)->e[2].unk12 = 0x1000;
+        ((BtlUnit9C50Arr *)u->model->texAnims)->e[2].unk4 |= 1;
+        ((BtlUnit9C50Arr *)u->model->texAnims)->e[2].unkC = 0;
+        ((BtlUnit9C50Arr *)u->model->texAnims)->e[2].unk12 = 0x1000;
         break;
     }
 }

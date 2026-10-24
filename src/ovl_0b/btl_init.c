@@ -148,7 +148,7 @@ void btl_initPartyUnit(Character *c, BtlUnit *u, u16 slot, u16 n) {
     u->magicDef = c->magicDef;
     u->magicEva = c->magicEva;
     btl_initEquipElements(c, u);
-    for (i = 0; i < u->weaponModel->unk8->meshCount; i++) {
+    for (i = 0; i < u->weaponModel->header->meshCount; i++) {
         btl_setMeshRgb(u->weaponModel, i, 0, 0, 0);
     }
     if (u->hp * 6 < u->max->maxHp) {
@@ -166,7 +166,7 @@ void btl_initPartyUnit(Character *c, BtlUnit *u, u16 slot, u16 n) {
         return;
     }
     u->unk68 = (u->unk68 & ~0x40000) | ((btl_hasStatus(u, (BTL_STATUS_VENOM | BTL_STATUS_LOW_HP | BTL_STATUS_POISON | BTL_STATUS_SLEEP)) & 1) << 18);
-    u->model->unkC = (BtlUnit9CC *)u->motions[(u->unk68 >> 18) & 1];
+    u->model->motion = (BtlUnit9CC *)u->motions[(u->unk68 >> 18) & 1];
     u->unkA0->unk3A = 0;
 }
 
@@ -205,22 +205,22 @@ u32 *btl_initEnemyState(Battle *arg0, u32 *arg1) {
                 r.vy = u->rot[1];
                 r.vz = u->rot[2];
                 r2 = r;
-                func_80031244(&r2, &u->model->unk24);
-                u->model->unk24.t[0] = u->unkA0->unk14 >> 16;
-                u->model->unk24.t[1] = u->unkA0->unk18 >> 16;
-                u->model->unk24.t[2] = u->unkA0->unk1C >> 16;
-                cc = u->model->unkC;
+                func_80031244(&r2, &u->model->matrix);
+                u->model->matrix.t[0] = u->unkA0->unk14 >> 16;
+                u->model->matrix.t[1] = u->unkA0->unk18 >> 16;
+                u->model->matrix.t[2] = u->unkA0->unk1C >> 16;
+                cc = u->model->motion;
                 if (IS_OFFSET(cc->unkC)) {
                     t = cc->unk10;
                     cc->unkC = (s32)cc + cc->unkC;
                     if (t != 0) {
-                        cc->unk10 = (s32)u->model->unkC + t;
+                        cc->unk10 = (s32)u->model->motion + t;
                     }
                 }
                 arg1 = (u32 *)btl_calcBoneMatrices(u->model, 0, (u8 *)arg1);
-                u->unk98->unk0[0] = u->model->unk20[u->unk7C].unk14 << 16;
+                u->unk98->unk0[0] = u->model->bones[u->unk7C].unk14 << 16;
                 u->unk98->unk0[1] = 0;
-                u->unk98->unk0[2] = u->model->unk20[u->unk7C].unk1C << 16;
+                u->unk98->unk0[2] = u->model->bones[u->unk7C].unk1C << 16;
             } else {
                 u->unk98->unk0[0] = u->unkA0->unk14;
                 u->unk98->unk0[1] = u->unkA0->unk18;
@@ -229,7 +229,7 @@ u32 *btl_initEnemyState(Battle *arg0, u32 *arg1) {
                 if (g_randPtr >= g_randTableEnd) {
                     rand_refill();
                 }
-                a0->unk3A = *g_randPtr++ % u->model->unkC->unk2;
+                a0->unk3A = *g_randPtr++ % u->model->motion->unk2;
             }
         }
     }
@@ -271,10 +271,10 @@ void btl_resetUnit(BtlUnit *arg0, Unk8E0 *arg1) {
     } else {
         arg0->model = arg1->unk8;
         arg0->unkA0 = arg1->unkC;
-        arg0->model->unk50[2].unk4 |= 1;
-        arg0->model->unk50[2].unkC = 0;
-        arg0->model->unk50[2].unk12 = 0x1000;
-        for (i = 0; i < arg0->model->unk8->meshCount; i++) {
+        arg0->model->texAnims[2].unk4 |= 1;
+        arg0->model->texAnims[2].unkC = 0;
+        arg0->model->texAnims[2].unk12 = 0x1000;
+        for (i = 0; i < arg0->model->header->meshCount; i++) {
             btl_setMeshRgb(arg0->model, i, 0, 0, 0);
         }
     }
@@ -293,11 +293,11 @@ void btl_initWeapon(Character *arg0, BtlUnit *arg1) {
     s32 id;
     arg1->weapon = (u8 *)&D_8006E0E8[arg0->equip[0]];
     id = ((Unk8006E0E8 *)arg1->weapon)->unk2 | 0x20000;
-    arg1->weaponModel->unk8 = (BtlUnit9C8 *)btl_findWeaponModel(id, (u8)arg1->unk68 >> 5);
+    arg1->weaponModel->header = (BtlUnit9C8 *)btl_findWeaponModel(id, (u8)arg1->unk68 >> 5);
     btl_getWeaponTexInfo(id, (u8)arg1->unk68 >> 5, &a, &b, &c);
     btl_applyModelTextures(arg1->weaponModel, (s16 *)a, (s16 *)b);
     btl_applyBgLight(arg1->weaponModel);
-    arg1->weaponModel->unkC = 0;
+    arg1->weaponModel->motion = 0;
     switch (arg0->unk34.b.unk4) {
     case 0:
         arg0->unk21 = 0xD;
@@ -341,6 +341,6 @@ void btl_initWeapon(Character *arg0, BtlUnit *arg1) {
         arg0->unk21 = 0x10;
         break;
     }
-    arg1->weaponModel->unk1C = arg1->model;
-    arg1->weaponModel->unk4 = arg0->unk21;
+    arg1->weaponModel->parent = arg1->model;
+    arg1->weaponModel->parentBone = arg0->unk21;
 }

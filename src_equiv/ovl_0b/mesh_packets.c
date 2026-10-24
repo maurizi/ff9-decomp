@@ -77,19 +77,19 @@ static void meshLinkMode(u8 *ot, u32 z, u8 *mode, u8 *p, u32 len) {
 static u8 *meshEmit(BtlUnit9C *m, u32 meshIdx, u8 *out, s32 otOfs, s32 offsetVariant) {
     u32 *xyTab = (u32 *)g_vtxScreenXY;
     u32 *zTab = (u32 *)g_vtxScreenZ;
-    u32 *tex = (u32 *)m->unk18;
+    u32 *tex = (u32 *)m->texPages;
     BtlMesh *mesh;
     u8 *src, *uv, *col, *ot, *mode;
     s32 n;
     u32 i0, i1, i2, i3, xy0, xy1, xy2, xy3, z, f, c, page, hi, lo, w0, w1;
 
-    if (m->unk0 & 0x10) {
+    if (m->flags & 0x10) {
         goto end;
     }
-    if (m->unk10 == 0) {
-        m->unk10 = (s32)out;
+    if (m->prims == 0) {
+        m->prims = (s32)out;
     }
-    mesh = &m->unk8->unk10[meshIdx];
+    mesh = &m->header->meshes[meshIdx];
     ot = (u8 *)g_gameState->unk1C->unk10[g_gameState->unk1C->unk8] - mesh->unk13 * 4;
     if (offsetVariant) {
         ot += otOfs * 4;

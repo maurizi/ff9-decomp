@@ -38,17 +38,17 @@ u8 *func_800DE11C(BtlUnit9C *arg0, u8 arg1, u8 *prim) {
     WmSrcF3 *sF3;
     POLY_F3 *pF3;
 
-    if (arg0->unk0 & 0x10) {
+    if (arg0->flags & 0x10) {
         return prim;
     }
-    g = &arg0->unk8->meshes[arg1];
+    g = &arg0->header->meshes[arg1];
     src = (u8 *)g->prims;
     uv = g->uvs;
     col = g->colors;
-    if (arg0->unk10 == 0) {
-        arg0->unk10 = (s32)prim;
+    if (arg0->prims == 0) {
+        arg0->prims = (s32)prim;
     }
-    tex = (u32 *)arg0->unk18;
+    tex = (u32 *)arg0->texPages;
     ot = g_gameState->unk1C->unk10[g_gameState->unk1C->unk8];
 
     n = g->nFT4;

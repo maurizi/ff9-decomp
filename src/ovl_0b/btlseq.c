@@ -178,8 +178,8 @@ void btlseq_update(void) {
 
 s32 btlseq_opEnd(BtlScript *arg0, BtlUnit *arg1) {
     BtlUnit9C *m = arg1->model;
-    if (!((arg0->unk0 >> 2) & 1) && arg0->unk14 != 0 && arg1->unkA0->unk3A >= m->unkC->unk2) {
-        m->unkC = (BtlUnit9CC *)arg1->motions[(arg1->unk68 >> 18) & 1];
+    if (!((arg0->unk0 >> 2) & 1) && arg0->unk14 != 0 && arg1->unkA0->unk3A >= m->motion->unk2) {
+        m->motion = (BtlUnit9CC *)arg1->motions[(arg1->unk68 >> 18) & 1];
         arg1->unkA0->unk3A = 0;
         arg0->unk0 |= 4;
     }
@@ -363,10 +363,10 @@ s32 btlseq_opPlayAnim(BtlScript *arg0, BtlUnit *arg1) {
     s32 idx;
     if (p[1] == 0xFF) {
         f = arg1->unk68;
-        arg1->model->unkC = g_gameState->unk1C->unk8E4.battle->enemies[(f >> 1) & 0xF].unk0->unkC[(f >> 18) & 1];
+        arg1->model->motion = g_gameState->unk1C->unk8E4.battle->enemies[(f >> 1) & 0xF].unk0->unkC[(f >> 18) & 1];
     } else {
         idx = arg0->unk16 + p[1];
-        arg1->model->unkC = g_gameState->unk1C->unk8E4.battle->unk11C4.unk0[idx];
+        arg1->model->motion = g_gameState->unk1C->unk8E4.battle->unk11C4.unk0[idx];
     }
     arg1->unkA0->unk3A = 0;
     arg0->unk14 = 0;
@@ -403,7 +403,7 @@ s32 btlseq_opEffect(BtlScript *arg0) {
 s32 btlseq_opWaitAnim(BtlScript *arg0, BtlUnit *arg1) {
     BtlUnit9C *m = arg1->model;
     BtlUnitA0 *a = arg1->unkA0;
-    if (arg0->unk14 != 0 && (a->unk3A >= m->unkC->unk2 || (arg1->status & (BTL_STATUS_VENOM | BTL_STATUS_STOP | BTL_STATUS_FREEZE)))) {
+    if (arg0->unk14 != 0 && (a->unk3A >= m->motion->unk2 || (arg1->status & (BTL_STATUS_VENOM | BTL_STATUS_STOP | BTL_STATUS_FREEZE)))) {
         g_btlfxEnv->camera->unk52 = 0;
         arg0->unk8 += 1;
         return 1;
@@ -577,7 +577,7 @@ s32 btlseq_opTurn(BtlScript *arg0, BtlUnit *arg1) {
 
 void btlseq_opScale(BtlScript *arg0, BtlUnit *arg1) {
     s16 *p = arg0->unk28;
-    s16 a = arg1->model->unk54;
+    s16 a = arg1->model->scaleX;
     s16 v;
     s16 r;
     p[0] = a;
@@ -597,7 +597,7 @@ s32 btlseq_stepScale(BtlScript *arg0, BtlUnit *arg1) {
     u16 v = arg0->unk28[0] + p[1] * arg0->unk10 / p[2];
     btl_setUnitAttr((s32)arg1, BTL_ATTR_SCALE, v);
     if (v == 0x1000) {
-        arg1->model->unk0 &= ~2;
+        arg1->model->flags &= ~2;
     }
     if (arg0->unk10 >= p[2]) {
         arg0->unk8 += 4;
@@ -608,11 +608,11 @@ s32 btlseq_stepScale(BtlScript *arg0, BtlUnit *arg1) {
 
 s32 btlseq_opPlayTexAnim(BtlScript *arg0, BtlUnit *arg1) {
     BtlUnit9C50 *g;
-    BtlUnit9C50 *e = &arg1->model->unk50[arg0->unk8[1]];
+    BtlUnit9C50 *e = &arg1->model->texAnims[arg0->unk8[1]];
     e->unk4 |= 1;
-    g = &arg1->model->unk50[arg0->unk8[1]];
+    g = &arg1->model->texAnims[arg0->unk8[1]];
     g->unkC = 0;
-    e = &arg1->model->unk50[arg0->unk8[1]];
+    e = &arg1->model->texAnims[arg0->unk8[1]];
     e->unk12 = 0x1000;
     arg0->unk8 += 2;
     return 1;
@@ -620,11 +620,11 @@ s32 btlseq_opPlayTexAnim(BtlScript *arg0, BtlUnit *arg1) {
 
 s32 btlseq_opLoopTexAnim(BtlScript *arg0, BtlUnit *arg1) {
     BtlUnit9C50 *g;
-    BtlUnit9C50 *e = &arg1->model->unk50[arg0->unk8[1]];
+    BtlUnit9C50 *e = &arg1->model->texAnims[arg0->unk8[1]];
     e->unk4 |= 3;
-    g = &arg1->model->unk50[arg0->unk8[1]];
+    g = &arg1->model->texAnims[arg0->unk8[1]];
     g->unkC = 0;
-    e = &arg1->model->unk50[arg0->unk8[1]];
+    e = &arg1->model->texAnims[arg0->unk8[1]];
     e->unk12 = 0x1000;
     arg0->unk8 += 2;
     return 1;
@@ -634,7 +634,7 @@ s32 btlseq_opStopTexAnim(BtlScript *arg0, BtlUnit *arg1) {
     u8 i = arg0->unk8[1];
     BtlUnit9C *m = arg1->model;
     BtlUnit9C50 *e;
-    (*(e = m->unk50 + i)).unk4 &= 0xFC;
+    (*(e = m->texAnims + i)).unk4 &= 0xFC;
     arg0->unk8 += 2;
     return 1;
 }

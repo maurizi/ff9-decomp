@@ -109,9 +109,9 @@ u32 btl_addStatus(BtlUnit *u, u32 f) {
             btl_checkSideDefeated(u);
         }
     case 17:
-        if ((u->unk68 & 1) && (s32)u->model->unkC != u->motions[1] &&
+        if ((u->unk68 & 1) && (s32)u->model->motion != u->motions[1] &&
             g_gameState->unk1C->unk8E4.battle->curCmd->caster != u) {
-            u->model->unkC = (BtlUnit9CC *)u->motions[1];
+            u->model->motion = (BtlUnit9CC *)u->motions[1];
             u->unkA0->unk3A = 0;
         }
         break;
@@ -169,14 +169,14 @@ u32 btl_addStatus(BtlUnit *u, u32 f) {
     case 28:
         s->unk8 ^= f;
         if (u->status & BTL_STATUS_MINI) {
-            u->model->unk0 |= 2;
-            u->model->unk54 = 0x800;
-            u->model->unk56 = 0x800;
-            u->model->unk58 = 0x800;
+            u->model->flags |= 2;
+            u->model->scaleX = 0x800;
+            u->model->scaleY = 0x800;
+            u->model->scaleZ = 0x800;
             g_gameState->unk1C->unk8E4.battle->unk11C0->unk28[btl_getModelSlot(u)].width = (u->shadowW >> 1) * 14;
             g_gameState->unk1C->unk8E4.battle->unk11C0->unk28[btl_getModelSlot(u)].depth = (u->shadowD >> 1) * 12;
         } else {
-            u->model->unk0 &= ~2;
+            u->model->flags &= ~2;
             g_gameState->unk1C->unk8E4.battle->unk11C0->unk28[btl_getModelSlot(u)].width = u->shadowW * 14;
             g_gameState->unk1C->unk8E4.battle->unk11C0->unk28[btl_getModelSlot(u)].depth = u->shadowD * 12;
         }
@@ -244,11 +244,11 @@ s32 btl_removeStatus(BtlUnit *u, u32 f) {
         u->unk68 &= ~0x80000;
         u->unk68 &= ~0x100000;
         u->unk68 &= ~0x200000;
-        if ((s32)m->unkC == a4[4] || (s32)m->unkC == a4[8]) {
-            m->unk50[2].unk4 |= 1;
-            u->model->unk50[2].unkC = 0;
-            u->model->unk50[2].unk12 = 0x1000;
-            u->model->unkC = (BtlUnit9CC *)u->motions[6];
+        if ((s32)m->motion == a4[4] || (s32)m->motion == a4[8]) {
+            m->texAnims[2].unk4 |= 1;
+            u->model->texAnims[2].unkC = 0;
+            u->model->texAnims[2].unk12 = 0x1000;
+            u->model->motion = (BtlUnit9CC *)u->motions[6];
             u->unkA0->unk3A = 0;
         }
         c = g_gameState->unk1C->unk8E4.battle->curCmd;
@@ -277,7 +277,7 @@ s32 btl_removeStatus(BtlUnit *u, u32 f) {
             u->pos[0] = u->unk98->unk0[0];
             u->pos[1] = u->unk98->unk0[1];
             u->pos[2] = u->unk98->unk0[2];
-            u->model->unkC = (BtlUnit9CC *)u->motions[(u->unk68 >> 18) & 1];
+            u->model->motion = (BtlUnit9CC *)u->motions[(u->unk68 >> 18) & 1];
             u->unkA0->unk3A = 0;
         }
         btl_setCmd(u->tranceCmd, BTL_CMD_TRANCE, 0, u->unitBit, 0);
@@ -294,7 +294,7 @@ s32 btl_removeStatus(BtlUnit *u, u32 f) {
         btl_showMeshes(u, u->unkAE);
         break;
     case 0x10000000:
-        u->model->unk0 &= ~2;
+        u->model->flags &= ~2;
         g_gameState->unk1C->unk8E4.battle->unk11C0->unk28[btl_getModelSlot(u)].width = u->shadowW * 14;
         g_gameState->unk1C->unk8E4.battle->unk11C0->unk28[btl_getModelSlot(u)].depth = u->shadowD * 12;
         break;
@@ -385,8 +385,8 @@ void btl_updateUnitStatus(BtlUnit *arg0) {
         }
     }
     if ((arg0->status & BTL_STATUS_CONFUSE) && arg0 != g_gameState->unk1C->unk8E4.battle->curCmd->caster) {
-        if (arg0->model->unkC == (BtlUnit9CC *)arg0->motions[0] || arg0->model->unkC == (BtlUnit9CC *)arg0->motions[1] ||
-            ((arg0->unk68 & 1) && arg0->model->unkC == (BtlUnit9CC *)arg0->motions[9])) {
+        if (arg0->model->motion == (BtlUnit9CC *)arg0->motions[0] || arg0->model->motion == (BtlUnit9CC *)arg0->motions[1] ||
+            ((arg0->unk68 & 1) && arg0->model->motion == (BtlUnit9CC *)arg0->motions[9])) {
             arg0->rot[1] += 0x80;
         }
     }
@@ -526,10 +526,10 @@ void btl_setStoneClut(BtlUnit *arg0, s32 arg1) {
     }
     i = 0;
     if (arg0->unk68 & 1) {
-        arg0->weaponModel->unk18->unk2 = ((d + func_8001DA6C(arg0->weaponModel->unk18->unk2)) << 6) | 0x10;
+        arg0->weaponModel->texPages->unk2 = ((d + func_8001DA6C(arg0->weaponModel->texPages->unk2)) << 6) | 0x10;
     }
     while (i < func_80063830(arg0->modelId | 0x20000)) {
-        arg0->model->unk18[i].unk2 = ((d + func_8001DA6C(arg0->model->unk18[i].unk2)) << 6) | 0x10;
+        arg0->model->texPages[i].unk2 = ((d + func_8001DA6C(arg0->model->texPages[i].unk2)) << 6) | 0x10;
         i++;
     }
 }
@@ -542,7 +542,7 @@ void btl_makeGreyCluts(BtlUnit *arg0) {
 
     for (i = 0; i < func_80063830(arg0->modelId | 0x20000); i++) {
         D_800FDF50.x = 0x100;
-        D_800FDF50.y = func_8001DA6C(arg0->model->unk18[i].unk2);
+        D_800FDF50.y = func_8001DA6C(arg0->model->texPages[i].unk2);
         D_800FDF50.w = 0x100;
         D_800FDF50.h = 1;
         StoreImage(&D_800FDF50, (u32 *)D_800FDF60[i]);
@@ -1062,12 +1062,12 @@ void btl_setUnitBrightness(BtlUnit *arg0, u32 arg1) {
         i = 0;
         e = btlbg_getHeader();
         btl_setModelAbr(arg0->model, 0x60);
-        for (; i < arg0->model->unk8->meshCount; i++) {
+        for (; i < arg0->model->header->meshCount; i++) {
             btl_setMeshRgb(arg0->model, i, (s32)((e->lightR * arg1) << 11) >> 16, (s32)((e->lightG * arg1) << 11) >> 16, (s32)((e->lightB * arg1) << 11) >> 16);
         }
         if (arg0->weaponModel != NULL) {
             btl_setModelAbr(arg0->weaponModel, 0x60);
-            for (i = 0; i < arg0->weaponModel->unk8->meshCount; i++) {
+            for (i = 0; i < arg0->weaponModel->header->meshCount; i++) {
                 btl_setMeshRgb(arg0->weaponModel, i, (s32)((e->lightR * arg1) << 11) >> 16, (s32)((e->lightG * arg1) << 11) >> 16, (s32)((e->lightB * arg1) << 11) >> 16);
             }
         }
@@ -1234,7 +1234,7 @@ void btl_playUnitSound(BtlUnit *arg0, u16 arg1, u8 arg2) {
 void btl_applyBgLight(BtlUnit9C *arg0) {
     s32 i;
     BtlBgHeader *p = btlbg_getHeader();
-    for (i = 0; i < arg0->unk8->meshCount; i++) {
+    for (i = 0; i < arg0->header->meshCount; i++) {
         btl_setMeshRgb(arg0, i & 0xFF, p->lightR, p->lightG, p->lightB);
     }
 }

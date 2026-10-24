@@ -38,7 +38,7 @@ void btl_updateCombat(GameData *arg0, Battle *arg1) {
         if (!((u->unk68 >> 22) & 1)) {
             btl_updateUnitModel(u, &sp10);
         }
-        if (btlui_getActiveUnit() == u && (arg1->cmdFlags & 2) && !(u->model->unk0 & 0x10)) {
+        if (btlui_getActiveUnit() == u && (arg1->cmdFlags & 2) && !(u->model->flags & 0x10)) {
             btl_drawActiveMarker(arg0, arg1, u);
         }
         btl_updateHpStatus(u);
@@ -125,7 +125,7 @@ u16 btl_findCover(s32 arg0) {
     best->pos[0] = t->pos[0];
     best->pos[2] = t->pos[2];
     t->pos[2] += 0xFE700000;
-    best->model->unkC = (BtlUnit9CC *)best->motions[15];
+    best->model->motion = (BtlUnit9CC *)best->motions[15];
     best->unk68 |= 0x2000000;
     return best->unitBit;
 }
@@ -342,15 +342,15 @@ void btl_setCmd(BtlCmd *arg0, u32 arg1, s32 arg2, s32 arg3, s32 arg4) {
         if (g_gameState->unk1C->unk8E4.battle->curCmd != u->tranceCmd) {
             m = u->model;
             a = u->motions;
-            c = m->unkC;
+            c = m->motion;
             if (c == (BtlUnit9CC *)a[0]) {
-                m->unkC = (BtlUnit9CC *)a[10];
+                m->motion = (BtlUnit9CC *)a[10];
                 u->unkA0->unk3A = 0;
             } else if (c == (BtlUnit9CC *)a[1]) {
-                m->unkC = (BtlUnit9CC *)a[11];
+                m->motion = (BtlUnit9CC *)a[11];
                 u->unkA0->unk3A = 0;
             } else if (c == (BtlUnit9CC *)a[13] && arg1 < 0x30) {
-                m->unkC = (BtlUnit9CC *)a[14];
+                m->motion = (BtlUnit9CC *)a[14];
                 u->unkA0->unk3A = 0;
             }
         }
@@ -439,13 +439,13 @@ void btl_processCmdQueue(Battle *b) {
         if (k < 0x37) {
             w = cmd->caster;
             if ((u32)(k - 0x31) < 4) {
-                w->model->unkC = (BtlUnit9CC *)w->motions[9];
+                w->model->motion = (BtlUnit9CC *)w->motions[9];
                 w->unkA0->unk3A = 0;
             }
-            if ((w->unk68 & 1) && (s32)w->model->unkC != w->motions[9] && (s32)w->model->unkC != w->motions[17] &&
+            if ((w->unk68 & 1) && (s32)w->model->motion != w->motions[9] && (s32)w->model->motion != w->motions[17] &&
                 !(w->status & BTL_STATUS_JUMP)) {
-                if ((s32)w->model->unkC == w->motions[(w->unk68 >> 18) & 1] && !((w->unk68 >> 19) & 1)) {
-                    w->model->unkC = (BtlUnit9CC *)w->motions[9];
+                if ((s32)w->model->motion == w->motions[(w->unk68 >> 18) & 1] && !((w->unk68 >> 19) & 1)) {
+                    w->model->motion = (BtlUnit9CC *)w->motions[9];
                     w->unkA0->unk3A = 0;
                 }
                 return;
@@ -467,14 +467,14 @@ void btl_processCmdQueue(Battle *b) {
     case 0:
         if (!(u8)btl_checkCmdUsable(b, cmd) || !(u8)btl_validateTargets(b, cmd) || !(u8)btl_payMpCost(cmd)) {
             btl_releaseItem(cmd);
-            if (u != NULL && (u->unk68 & 1) && (s32)u->model->unkC == u->motions[9]) {
-                u->model->unkC = (BtlUnit9CC *)u->motions[32];
+            if (u != NULL && (u->unk68 & 1) && (s32)u->model->motion == u->motions[9]) {
+                u->model->motion = (BtlUnit9CC *)u->motions[32];
             }
             b->cmdPhase = 3;
             break;
         }
-        if (u != NULL && (s32)u->model->unkC != u->motions[9] && cmd->cmdNo < 0x2F) {
-            u->model->unkC = (BtlUnit9CC *)u->motions[9];
+        if (u != NULL && (s32)u->model->motion != u->motions[9] && cmd->cmdNo < 0x2F) {
+            u->model->motion = (BtlUnit9CC *)u->motions[9];
             u->unkA0->unk3A = 0;
         }
         b->cmdPhase++;
@@ -641,8 +641,8 @@ s32 btl_checkCmdUsable(Battle *arg0, BtlCmd *arg1) {
         }
         for (t = arg0->unitList; t != NULL; t = t->next) {
             if ((t->unk68 & 1) && !(t->status & (BTL_STATUS_PETRIFY | BTL_STATUS_VENOM | BTL_STATUS_ZOMBIE | BTL_STATUS_KO | BTL_STATUS_STOP | BTL_STATUS_SLEEP | BTL_STATUS_FREEZE | BTL_STATUS_JUMP)) && t->hp != 0) {
-                if (t->model->unkC != (BtlUnit9CC *)t->motions[0x11]) {
-                    t->model->unkC = (BtlUnit9CC *)t->motions[0x11];
+                if (t->model->motion != (BtlUnit9CC *)t->motions[0x11]) {
+                    t->model->motion = (BtlUnit9CC *)t->motions[0x11];
                     t->unkA0->unk3A = 0;
                 }
                 arg0->phase = BTL_PHASE_END;
@@ -678,7 +678,7 @@ s32 btl_checkCmdUsable(Battle *arg0, BtlCmd *arg1) {
         btl_checkPartyDisabled(u);
         if (u->unk7D == 0) {
             if (u->unk68 & 1) {
-                if (u->model->unkC == (BtlUnit9CC *)u->motions[4]) {
+                if (u->model->motion == (BtlUnit9CC *)u->motions[4]) {
                     u->unk7D = 5;
                     return 0;
                 }
@@ -782,27 +782,27 @@ void btl_updatePartyCmd(BtlCmd *arg0) {
     if (arg0->cmdNo == BTL_CMD_DEFEND) {
         m = u->model;
         a = u->motions;
-        if (m->unkC == (BtlUnit9CC *)a[12]) {
-            if (u->unkA0->unk3A < m->unkC->unk2) {
+        if (m->motion == (BtlUnit9CC *)a[12]) {
+            if (u->unkA0->unk3A < m->motion->unk2) {
                 return;
             }
-            m->unkC = (BtlUnit9CC *)a[13];
+            m->motion = (BtlUnit9CC *)a[13];
             u->unkA0->unk3A = 0;
         }
     } else if (arg0->cmdNo == BTL_CMD_CHANGE) {
         m = u->model;
         a = u->motions;
-        if (m->unkC == (BtlUnit9CC *)a[9]) {
-            if (u->unkA0->unk3A < m->unkC->unk2) {
+        if (m->motion == (BtlUnit9CC *)a[9]) {
+            if (u->unkA0->unk3A < m->motion->unk2) {
                 return;
             }
-            m->unkC = (BtlUnit9CC *)a[29 + ((u->unk68 >> 8) & 3)];
+            m->motion = (BtlUnit9CC *)a[29 + ((u->unk68 >> 8) & 3)];
             u->unkA0->unk3A = 0;
         }
         a2 = u->motions;
         m2 = u->model;
         k = (u->unk68 >> 8) & 3;
-        c = m2->unkC;
+        c = m2->motion;
         if (c == (BtlUnit9CC *)a2[29 + k]) {
             n = c->unk2;
             f = u->unkA0->unk3A;
@@ -816,7 +816,7 @@ void btl_updatePartyCmd(BtlCmd *arg0) {
                 return;
             }
             btl_execCmd(u);
-            u->model->unkC = (BtlUnit9CC *)u->motions[32];
+            u->model->motion = (BtlUnit9CC *)u->motions[32];
             u->unkA0->unk3A = 0;
             return;
         }
@@ -824,7 +824,7 @@ void btl_updatePartyCmd(BtlCmd *arg0) {
             if (u->unkA0->unk3A < c->unk2) {
                 return;
             }
-            m2->unkC = (BtlUnit9CC *)a2[0];
+            m2->motion = (BtlUnit9CC *)a2[0];
             u->unkA0->unk3A = 0;
         }
     }
@@ -966,8 +966,8 @@ void btl_flushCmdQueue(Battle *arg0) {
             if (c->cmdNo < BTL_CMD_TABLE_COUNT && u != NULL && !(u->status & BTL_STATUS_KO)) {
                 m = u->model;
                 u->cmdIssued = 0;
-                if ((s32)m->unkC == u->motions[9] && ((id = (u->unk68 >> 1) & 0xF) != 6 || b->curCmd->cmdNo != BTL_CMD_DBL_WHT) && (id != 1 || (b->curCmd->cmdNo != BTL_CMD_SWD_MAG && b->curCmd->cmdNo != BTL_CMD_DBL_BLK))) {
-                    m->unkC = (BtlUnit9CC *)u->motions[32];
+                if ((s32)m->motion == u->motions[9] && ((id = (u->unk68 >> 1) & 0xF) != 6 || b->curCmd->cmdNo != BTL_CMD_DBL_WHT) && (id != 1 || (b->curCmd->cmdNo != BTL_CMD_SWD_MAG && b->curCmd->cmdNo != BTL_CMD_DBL_BLK))) {
+                    m->motion = (BtlUnit9CC *)u->motions[32];
                     u->unkA0->unk3A = 0;
                     u->unk68 &= ~0x80000;
                 }
@@ -995,8 +995,8 @@ void btl_clearCmdQueue(Battle *arg0) {
             if (c->cmdNo < BTL_CMD_TABLE_COUNT && u != NULL && !(u->status & BTL_STATUS_KO)) {
                 m = u->model;
                 u->cmdIssued = 0;
-                if ((s32)m->unkC == u->motions[9] && ((id = (u->unk68 >> 1) & 0xF) != 6 || b->curCmd->cmdNo != BTL_CMD_DBL_WHT) && (id != 1 || (b->curCmd->cmdNo != BTL_CMD_SWD_MAG && b->curCmd->cmdNo != BTL_CMD_DBL_BLK))) {
-                    m->unkC = (BtlUnit9CC *)u->motions[32];
+                if ((s32)m->motion == u->motions[9] && ((id = (u->unk68 >> 1) & 0xF) != 6 || b->curCmd->cmdNo != BTL_CMD_DBL_WHT) && (id != 1 || (b->curCmd->cmdNo != BTL_CMD_SWD_MAG && b->curCmd->cmdNo != BTL_CMD_DBL_BLK))) {
+                    m->motion = (BtlUnit9CC *)u->motions[32];
                     u->unkA0->unk3A = 0;
                     u->unk68 &= ~0x80000;
                 }
@@ -1106,7 +1106,7 @@ void btl_drawActiveMarker(GameData *arg0, Battle *arg1, BtlUnit *arg2) {
     gte_SetRotMatrix(&arg0->unk18);
     gte_SetTransMatrix(&arg0->unk18);
     v.vx = arg2->pos[0] >> 16;
-    v.vy = (arg2->pos[1] >> 16) - arg2->model->unk8->height;
+    v.vy = (arg2->pos[1] >> 16) - arg2->model->header->height;
     v.vz = arg2->pos[2] >> 16;
     gte_ldv0(&v);
     gte_rtps();
@@ -1186,7 +1186,7 @@ void btl_onCmdEffectDone(void) {
         return;
     }
     u = c->caster;
-    if (!(u->status & BTL_STATUS_AUTO_LIFE) || c->cmdNo != BTL_CMD_KO || (s32)u->model->unkC == u->motions[4]) {
+    if (!(u->status & BTL_STATUS_AUTO_LIFE) || c->cmdNo != BTL_CMD_KO || (s32)u->model->motion == u->motions[4]) {
         b->cmdPhase = 4;
     }
 }
@@ -1327,7 +1327,7 @@ void btl_projectUnitPos(BtlUnit *arg0) {
     if (!((arg0->unk68 >> 22) & 1)) {
         gte_SetRotMatrix(&g_gameState->unk1C->unk18);
         gte_SetTransMatrix(&g_gameState->unk1C->unk18);
-        b = &arg0->model->unk20[arg0->unk7C];
+        b = &arg0->model->bones[arg0->unk7C];
         v.vx = b->unk14;
         v.vy = b->unk18;
         v.vz = b->unk1C;
@@ -2664,7 +2664,7 @@ void btl_applyCalcResult(BtlCalc *c) {
         t->popupFlags |= 0x20;
         if (c->flags & 2) {
             if (t->unk68 & 1) {
-                t->model->unkC = (BtlUnit9CC *)t->motions[16];
+                t->model->motion = (BtlUnit9CC *)t->motions[16];
                 t->unkA0->unk3A = 0;
                 t->rot[1] = t->unkA0->unk22 = (t->unk68 & 1) * 0x800;
             } else if (!((t->unk68 >> 23) & 1)) {
@@ -3076,8 +3076,8 @@ void btl_setTargetHp(BtlCalc *arg0) {
         btl_playDeathCry(u, g_gameState->unk1C->unk8E4.battle->enemies[(u->unk68 >> 1) & 0xF].unk0->unk30);
     }
     m = u->model;
-    if ((s32)m->unkC != u->motions[(u->unk68 >> 18) & 1] && (!(u->unk68 & 1) || (s32)m->unkC != u->motions[9]) && u != g_gameState->unk1C->unk8E4.battle->curCmd->caster) {
-        m->unkC = (BtlUnit9CC *)u->motions[(u->unk68 >> 18) & 1];
+    if ((s32)m->motion != u->motions[(u->unk68 >> 18) & 1] && (!(u->unk68 & 1) || (s32)m->motion != u->motions[9]) && u != g_gameState->unk1C->unk8E4.battle->curCmd->caster) {
+        m->motion = (BtlUnit9CC *)u->motions[(u->unk68 >> 18) & 1];
         u->unkA0->unk3A = 0;
     }
 }
@@ -3143,8 +3143,8 @@ u8 btl_checkFrozenShatter(BtlCalc *arg0) {
         btl_playDeathCry(u, g_gameState->unk1C->unk8E4.battle->enemies[(u->unk68 >> 1) & 0xF].unk0->unk30);
     }
     m = u->model;
-    if ((s32)m->unkC != u->motions[(u->unk68 >> 18) & 1] && (!(u->unk68 & 1) || (s32)m->unkC != u->motions[9]) && u != g_gameState->unk1C->unk8E4.battle->curCmd->caster) {
-        m->unkC = (BtlUnit9CC *)u->motions[(u->unk68 >> 18) & 1];
+    if ((s32)m->motion != u->motions[(u->unk68 >> 18) & 1] && (!(u->unk68 & 1) || (s32)m->motion != u->motions[9]) && u != g_gameState->unk1C->unk8E4.battle->curCmd->caster) {
+        m->motion = (BtlUnit9CC *)u->motions[(u->unk68 >> 18) & 1];
         u->unkA0->unk3A = 0;
     }
     btl_showMessage(0x13);
@@ -3203,8 +3203,8 @@ void btl_killUnit(BtlUnit *arg0) {
         btl_playDeathCry(arg0, g_gameState->unk1C->unk8E4.battle->enemies[(arg0->unk68 >> 1) & 0xF].unk0->unk30);
     }
     m = arg0->model;
-    if ((s32)m->unkC != arg0->motions[(arg0->unk68 >> 18) & 1] && (!(arg0->unk68 & 1) || (s32)m->unkC != arg0->motions[9]) && arg0 != g_gameState->unk1C->unk8E4.battle->curCmd->caster) {
-        m->unkC = (BtlUnit9CC *)arg0->motions[(arg0->unk68 >> 18) & 1];
+    if ((s32)m->motion != arg0->motions[(arg0->unk68 >> 18) & 1] && (!(arg0->unk68 & 1) || (s32)m->motion != arg0->motions[9]) && arg0 != g_gameState->unk1C->unk8E4.battle->curCmd->caster) {
+        m->motion = (BtlUnit9CC *)arg0->motions[(arg0->unk68 >> 18) & 1];
         arg0->unkA0->unk3A = 0;
     }
 }

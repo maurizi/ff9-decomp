@@ -137,13 +137,13 @@ void btl_startCmdEffect(BtlCmd *cmd) {
         break;
     case BTL_CMD_DEFEND:
         btl_showCmdName(cmd);
-        u->model->unkC = (BtlUnit9CC *)u->motions[12];
+        u->model->motion = (BtlUnit9CC *)u->motions[12];
         u->unkA0->unk3A = 0;
         btl_execCmd(u);
         return;
     case BTL_CMD_CHANGE:
         btl_showCmdName(cmd);
-        u->model->unkC = (BtlUnit9CC *)u->motions[9];
+        u->model->motion = (BtlUnit9CC *)u->motions[9];
         return;
     case BTL_CMD_ITEM:
     case BTL_CMD_AUTO_POTION:
