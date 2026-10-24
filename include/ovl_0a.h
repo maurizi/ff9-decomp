@@ -173,7 +173,7 @@ typedef struct FieldMap {
     u8 unk24[0x2C];
 } FieldMap;
 
-/* 0x28-byte entries at D_800C9DF4 */
+/* walkmesh actor entry (g_fieldBgi.actors, 0x28 bytes) */
 typedef struct BgiActor {
     s16 flags;
     s16 unk2;
@@ -187,7 +187,7 @@ typedef struct BgiActor {
     Unk8004AB64 *actor;
 } BgiActor;
 
-/* 0xC-byte entries at D_800C9DCC */
+/* 0xC-byte entries at g_fieldBgCtxEntries */
 typedef struct {
     u8 unk0;
     u8 pad1[0xB];
@@ -592,7 +592,7 @@ typedef struct {
     u16 unk20[2][4];
 } Unk800C9EF0;
 
-/* text windows (same layout as ovl_0c's D_800D5438) */
+/* text windows (same layout in ovl_0c) */
 typedef struct {
     u8 cursor;
     u8 state; /* index into s_menuMainInput */
@@ -1053,7 +1053,7 @@ typedef struct {
     u16 unk2;
 } TexAnimRelocPos;
 
-/* streamed sound bank request (fld_soundBankReadCallback, as ovl_0c func_800AC424) */
+/* streamed sound bank request (fld_soundBankReadCallback, as ovl_0c wm_streamSoundChunk) */
 typedef struct {
     u8 pad0[8];
     s32 unk8; /* address */
@@ -1108,7 +1108,7 @@ void menuMain_drawTimeGil(void);
 void menuMain_drawLocation(void);
 void menuMain_drawCursor(void);
 void menuMain_drawParty(void);
-/* party/menu windows shared with ovl_0c (func_800CB434 .. func_800CC940) */
+/* party/menu windows shared with ovl_0c (ovl_0c has its own copy of menu_main.c) */
 void menuMain_initPanels(void);
 void menuMain_swapPortraits(s32, s32);
 void menuMain_updateHelp(void);
@@ -1123,11 +1123,11 @@ extern FieldDiscMode g_fieldDiscChangeModes[];
 extern FieldBgCtx g_fieldBgCtx;
 extern BgFile *g_fieldBgData;
 extern u8 D_800CA108; /* background sprite x extent */
-extern s32 D_800C9DD0;
+extern s32 g_fieldBgCtxWork;
 extern u16 D_800C9DDE;
 extern u16 D_800C9DE0;
 extern BgiContext g_fieldBgi;
-extern Unk800C9DCC *D_800C9DCC;
+extern Unk800C9DCC *g_fieldBgCtxEntries;
 extern s32 g_fieldModelQueue[16];
 extern s8 g_fieldSoundBankSlots[5];
 extern s32 g_fieldSoundBankIds[5];
@@ -1217,10 +1217,10 @@ s32 bgi_placeActor(s32, s16, s16, s16);
 s32 bgi_moveActor(BgiActor *);
 s32 bgi_slide(BgiActor *, BgiTriangle **, s16 *, SVECTOR *, s16, s16, s32, s32);
 s32 bgi_applyPushes(BgiActor *, SVECTOR *, BgiTriangle **, s16 *);
-s32 func_800C1DC4(s32, s32); /* 16.16 multiply */
+s32 fld_fixMul(s32, s32); /* 16.16 multiply */
 s32 fldbg_drawOverlay(BgOverlay *, u8 *); /* adds a background layer's tiles to the OT */
 s32 fldbg_followPlayer(void); /* camera follow */
-extern BgiTriangle *D_800C9E00; /* = g_fieldBgi.unk10, referenced by its own name */
+extern BgiTriangle *g_fieldBgiTriangles; /* = g_fieldBgi.unk10, referenced by its own name */
 s32 bgi_initAnim(u32);
 s32 bgi_resetFloorMoves(void);
 s32 fld_readAreaFile(FieldMapObj *, s32);
@@ -1451,7 +1451,7 @@ static inline void bgi_slide_push(SVECTOR *pos, s16 *org, s32 *fx, s32 *fz) {
 /* music/sound request handler (fld_soundCommand) */
 extern s8 g_fieldMusicRequest;
 extern s32 g_fieldSoundLoadId;
-extern u8 D_800C9D52;
+extern u8 g_fieldSoundLoadKind;
 extern s32 g_fieldSoundLoadSector;
 s32 fld_soundBankReadCallback(Unk800B29F8 *arg0);
 /* main exe: candidates for ff9.h */

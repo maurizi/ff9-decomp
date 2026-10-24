@@ -1,6 +1,6 @@
 #include "ovl_0a.h"
 
-/* field music/sound request handler (GameData.unk83C); field version of ovl_0c func_800AB0C0 */
+/* field music/sound request handler (GameData.unk83C); field version of ovl_0c wm_soundCommand */
 s32 fld_soundCommand(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4) {
     GameData *g;
     s32 kind;
@@ -475,7 +475,7 @@ state:
                 d = d / 2048 * 2048;
                 func_8002177C(g_gameState->unk1C->unk854, g_fieldSoundLoadSector, g_gameState->unk1C->unk854[0].unk4, (void *)g_gameState->unk1C->unk8C0,
                               g_gameState->unk1C->unk854[0].unkC + g_gameState->unk1C->unk854[0].unk10, d, fld_soundBankReadCallback);
-            } else if (D_800C9D52 == 7) {
+            } else if (g_fieldSoundLoadKind == 7) {
                 if (g_fieldMusicRequest != 9) {
                     g_gameState->unk1C->unk826[0] = 0x7F;
                 }

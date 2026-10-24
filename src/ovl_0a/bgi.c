@@ -612,8 +612,8 @@ s32 bgi_transferActorPos(BgiHeader *b, BgiActor *a, BgiTriangle *n0, BgiTriangle
     k = n1->normal;
     if (k >= 0) {
         pl = &g_fieldBgi.normals[k];
-        c = func_800C1DC4(pl->nx, a->actor->pos.vx << 16);
-        a->actor->pos.vy = func_800C1DC4(n1->d - c - func_800C1DC4(pl->nz, a->actor->pos.vz << 16), pl->invNy) >> 16;
+        c = fld_fixMul(pl->nx, a->actor->pos.vx << 16);
+        a->actor->pos.vy = fld_fixMul(n1->d - c - fld_fixMul(pl->nz, a->actor->pos.vz << 16), pl->invNy) >> 16;
         a->actor->pos.vy += (s16)g_fieldBgi.floors[n1->floor].curPos[1] - g_fieldBgi.floors[n1->floor].orgPos[1];
     } else {
         BgiFloor *t3;

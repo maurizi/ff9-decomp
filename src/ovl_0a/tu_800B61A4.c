@@ -3222,9 +3222,9 @@ s32 fldbg_updateScroll(void) {
             v = dx;
             if (s != 0x10000) {
                 if (s < 0) {
-                    v = (o->unkC << 16) - func_800C1DC4(v, -s);
+                    v = (o->unkC << 16) - fld_fixMul(v, -s);
                 } else {
-                    v = (o->unkC << 16) + func_800C1DC4(v, s);
+                    v = (o->unkC << 16) + fld_fixMul(v, s);
                 }
                 o->unkC = v >> 16;
                 o->unk20 = (v >> 8) & 0xFF;
@@ -3233,9 +3233,9 @@ s32 fldbg_updateScroll(void) {
             v = oy << 16;
             if (s != 0x10000) {
                 if (s < 0) {
-                    v = (o->unkE << 16) - func_800C1DC4(v, -s);
+                    v = (o->unkE << 16) - fld_fixMul(v, -s);
                 } else {
-                    v = (o->unkE << 16) + func_800C1DC4(v, s);
+                    v = (o->unkE << 16) + fld_fixMul(v, s);
                 }
                 o->unkE = v >> 16;
                 o->unk22 = (v >> 8) & 0xFF;
@@ -3250,9 +3250,9 @@ s32 fldbg_updateScroll(void) {
             v = (s16)ox << 16;
             if (s != 0x10000) {
                 if (s < 0) {
-                    v = (o->unkC << 16) - func_800C1DC4(v, -s);
+                    v = (o->unkC << 16) - fld_fixMul(v, -s);
                 } else {
-                    v = (o->unkC << 16) + func_800C1DC4(v, s);
+                    v = (o->unkC << 16) + fld_fixMul(v, s);
                 }
                 o->unkC = v >> 16;
                 o->unk20 = (v >> 8) & 0xFF;
@@ -3261,11 +3261,11 @@ s32 fldbg_updateScroll(void) {
             v = oy << 16;
             if (s != 0x10000) {
                 if (s < 0) {
-                    v = (o->unkE << 16) - func_800C1DC4(v, -s);
+                    v = (o->unkE << 16) - fld_fixMul(v, -s);
                     o->unkE = v >> 16;
                     o->unk22 = (v >> 8) & 0xFF;
                 } else {
-                    v = (o->unkE << 16) + func_800C1DC4(v, s);
+                    v = (o->unkE << 16) + fld_fixMul(v, s);
                     o->unkE = v >> 16;
                     o->unk22 = (v >> 8) & 0xFF;
                 }
@@ -3439,9 +3439,9 @@ s32 fldbg_followPlayer(void) {
         v = dx << 16;
         if (s != 0x10000) {
             if (s < 0) {
-                v = (o->unkC << 16) - func_800C1DC4(v, -s);
+                v = (o->unkC << 16) - fld_fixMul(v, -s);
             } else {
-                v = (o->unkC << 16) + func_800C1DC4(v, s);
+                v = (o->unkC << 16) + fld_fixMul(v, s);
             }
             o->unkC = v >> 16;
             o->unk20 = (v >> 8) & 0xFF;
@@ -3450,9 +3450,9 @@ s32 fldbg_followPlayer(void) {
         v = dy << 16;
         if (s != 0x10000) {
             if (s < 0) {
-                v = (o->unkE << 16) - func_800C1DC4(v, -s);
+                v = (o->unkE << 16) - fld_fixMul(v, -s);
             } else {
-                v = (o->unkE << 16) + func_800C1DC4(v, s);
+                v = (o->unkE << 16) + fld_fixMul(v, s);
             }
             o->unkE = v >> 16;
             o->unk22 = (v >> 8) & 0xFF;
@@ -3467,9 +3467,9 @@ s32 fldbg_followPlayer(void) {
         v = dx << 16;
         if (s != 0x10000) {
             if (s < 0) {
-                v = (o->unkC << 16) - func_800C1DC4(v, -s);
+                v = (o->unkC << 16) - fld_fixMul(v, -s);
             } else {
-                v = (o->unkC << 16) + func_800C1DC4(v, s);
+                v = (o->unkC << 16) + fld_fixMul(v, s);
             }
             o->unkC = v >> 16;
             o->unk20 = (v >> 8) & 0xFF;
@@ -3478,11 +3478,11 @@ s32 fldbg_followPlayer(void) {
         v = dy << 16;
         if (s != 0x10000) {
             if (s < 0) {
-                v = (o->unkE << 16) - func_800C1DC4(v, -s);
+                v = (o->unkE << 16) - fld_fixMul(v, -s);
                 o->unkE = v >> 16;
                 o->unk22 = (v >> 8) & 0xFF;
             } else {
-                v = (o->unkE << 16) + func_800C1DC4(v, s);
+                v = (o->unkE << 16) + fld_fixMul(v, s);
                 o->unkE = v >> 16;
                 o->unk22 = (v >> 8) & 0xFF;
             }
@@ -4346,12 +4346,12 @@ s32 fldbg_resetAnim(s32 arg0, s32 arg1) {
 }
 
 s32 func_800C1A4C(s32 arg0, u8 *arg1) {
-    *arg1 = D_800C9DCC[arg0].unk0;
+    *arg1 = g_fieldBgCtxEntries[arg0].unk0;
     return 1;
 }
 
 s32 func_800C1A78(s32 arg0) {
-    return D_800C9DD0 + (arg0 << 9);
+    return g_fieldBgCtxWork + (arg0 << 9);
 }
 
 /* set the camera scroll limits */

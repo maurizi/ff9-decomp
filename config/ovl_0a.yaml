@@ -55,7 +55,7 @@ segments:
       - [0xE004, c, fld_disc]
       - [0xE958, c, fld_asm_800B5958]
       - [0xF1A4, c, tu_800B61A4]
-      - [0x1ADC4, c, fld_asm_800C1DC4]
+      - [0x1ADC4, c, fld_fixed_asm]
       - [0x1AE14, c, bgi_move]
       - [0x1DB30, c, bgi]
       - [0x21124, c, menu_main]

@@ -371,8 +371,8 @@ void fld_load(s32 arg0) {
     fld_findEventScript(sc, arg0);
     func_800A9814(sc, arg0);
     fld_setupBackground(sc, arg0);
-    func_800A9954(sc, arg0);
-    func_800AA01C(&g_gameState->unk1C->unk8E4.field->unkC->unk14->shadowTexX, &g_gameState->unk1C->unk8E4.field->unkC->unk14->shadowTexY);
+    fld_findLights(sc, arg0);
+    fld_getShadowTexPos(&g_gameState->unk1C->unk8E4.field->unkC->unk14->shadowTexX, &g_gameState->unk1C->unk8E4.field->unkC->unk14->shadowTexY);
     fld_initPreload();
     fld_startAudio();
     fld_soundCommand(0x900, -1, 0, 0, 0);
@@ -694,7 +694,7 @@ s32 fld_setupBackground(FieldScene *arg0, s32 arg1) {
     return 0;
 }
 
-s32 func_800A9954(FieldScene *arg0) {
+s32 fld_findLights(FieldScene *arg0) {
     arg0->lights = db_lookupRegistered(4, (u16)fld_getBgKey(arg0) | 0x1F0000, 0);
     return 0;
 }
@@ -817,7 +817,7 @@ s32 fld_loadFile(FieldScene *sc, s32 arg1) {
     return 0;
 }
 
-s32 func_800AA01C(u16 *arg0, u16 *arg1) {
+s32 fld_getShadowTexPos(u16 *arg0, u16 *arg1) {
     Unk800AA01C *p = db_lookupRegistered(4, 0x1C0000, 0);
 
     *arg0 = p->unk30;

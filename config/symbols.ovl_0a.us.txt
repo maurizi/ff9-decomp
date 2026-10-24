@@ -389,3 +389,13 @@ fld_getSpriteFrameCount = 0x800C9700; // type:func [code] FieldSprHdr.unk0 & 0x7
 fld_drawSprite3D = 0x800C970C; // type:func [code] draws frame (frame % count) of a FieldSprHdr at pos/rot/scale, sets the GTE matrices, emits it with fld_emitSprite3D (fld_drawSprites)
 fld_loadImagePack = 0x800C9968; // type:func [code] LoadImage of every image (RECT + pixels) and every CLUT rect of a 0x17 pack (fld_loadFile), ovl_0c twin wm_loadImagePack
 fld_emitSprite3D = 0x800C9AB8; // type:func [code] hand-written asm that builds the sprite primitives from FieldSprArgs for fld_drawSprite3D
+fld_fixMul = 0x800C1DC4; // type:func [code] hand-written asm - bits 16..47 of the 64-bit product (16.16 multiply), used by the walkmesh and background code
+fld_fixDiv = 0x800C1DE0; // type:func [code] hand-written asm - (a / (b >> 8)) << 8, a 16.16 division (src_equiv/ovl_0a/fixed.c)
+fld_fixRound = 0x800C1DF4; // type:func [code] hand-written asm - (a + 0x8000) >> 16, rounds 16.16 to an integer
+fld_fixRound8 = 0x800C1E04; // type:func [code] hand-written asm - (a + 0x8000) >> 8
+fld_getShadowTexPos = 0x800AA01C; // type:func [code] reads the shadow texture position (header unk30/unk32 of db item 0x1C0000) into FieldScene.shadowTexX/Y, used by fld_drawShadow/fld_initShadows (fld_load)
+fld_findLights = 0x800A9954; // type:func [code] FieldScene.lights = db item 0x1F0000 | background key (fld_getBgKey), the light data fld_applyLights reads (fld_load)
+g_fieldBgCtxEntries = 0x800C9DCC; // [code] label of g_fieldBgCtx.entries (the effect entry list, fldbg_initEffectList)
+g_fieldBgCtxWork = 0x800C9DD0; // [code] label of g_fieldBgCtx.work (work buffer set by fldbg_setWorkBuffer)
+g_fieldBgiTriangles = 0x800C9E00; // [code] label of g_fieldBgi.triangles, read under its own name by bgi_moveActor
+g_fieldSoundLoadKind = 0x800C9D52; // [code] byte 2 of g_fieldSoundLoadId, the kind of the file fld_soundCommand is loading (7 music, 9 sound bank)

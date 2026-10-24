@@ -153,13 +153,13 @@ s32 bgi_projectOnPlane(VECTOR *arg0, SVECTOR *arg1, s32 arg2, VECTOR *arg3) {
     arg3->vy = 0;
     arg3->vz = arg1->vx;
     if (arg0->vy >= 0) {
-        v.vx = func_800C1DC4(arg0->vy, a.vz);
-        v.vy = func_800C1DC4(arg0->vz, a.vx) - func_800C1DC4(arg0->vx, a.vz);
-        v.vz = -func_800C1DC4(arg0->vy, a.vx);
+        v.vx = fld_fixMul(arg0->vy, a.vz);
+        v.vy = fld_fixMul(arg0->vz, a.vx) - fld_fixMul(arg0->vx, a.vz);
+        v.vz = -fld_fixMul(arg0->vy, a.vx);
     } else {
-        v.vx = -func_800C1DC4(arg0->vy, a.vz);
-        v.vy = func_800C1DC4(arg0->vx, a.vz) - func_800C1DC4(arg0->vz, a.vx);
-        v.vz = func_800C1DC4(arg0->vy, a.vx);
+        v.vx = -fld_fixMul(arg0->vy, a.vz);
+        v.vy = fld_fixMul(arg0->vx, a.vz) - fld_fixMul(arg0->vz, a.vx);
+        v.vz = fld_fixMul(arg0->vy, a.vx);
     }
     v.vx = (v.vx + 0x8000) & 0xFFFF0000;
     v.vy = (v.vy + 0x8000) & 0xFFFF0000;
@@ -570,7 +570,7 @@ s32 bgi_moveActor(BgiActor *arg0) {
         } else {
             arg0->triangle = save;
             if (save >= 0) {
-                arg0->floor = D_800C9E00[save].floor;
+                arg0->floor = g_fieldBgiTriangles[save].floor;
             } else {
                 arg0->floor = -1;
             }
@@ -595,8 +595,8 @@ s32 bgi_moveActor(BgiActor *arg0) {
     if (node->normal >= 0) {
         pl = &g_fieldBgi.normals[node->normal];
         if ((u32)(pl->ny + 0x50F4) > 0xA1E8) {
-            a = func_800C1DC4(pl->nx, arg0->actor->pos.vx << 16);
-            arg0->actor->pos.vy = func_800C1DC4(node->d - a - func_800C1DC4(pl->nz, arg0->actor->pos.vz << 16), pl->invNy) >> 16;
+            a = fld_fixMul(pl->nx, arg0->actor->pos.vx << 16);
+            arg0->actor->pos.vy = fld_fixMul(node->d - a - fld_fixMul(pl->nz, arg0->actor->pos.vz << 16), pl->invNy) >> 16;
             arg0->actor->pos.vy += (s16)g_fieldBgi.floors[node->floor].curPos[1] - g_fieldBgi.floors[node->floor].orgPos[1];
         } else {
             arg0->actor->pos.vy = cur.vy;
@@ -608,7 +608,7 @@ s32 bgi_moveActor(BgiActor *arg0) {
     }
     arg0->lastTriangle = save;
     if (save >= 0) {
-        arg0->lastFloor = D_800C9E00[save].floor;
+        arg0->lastFloor = g_fieldBgiTriangles[save].floor;
     } else {
         arg0->lastFloor = -1;
     }
@@ -743,8 +743,8 @@ s32 bgi_placeActor(s32 arg0, s16 arg1, s16 arg2, s16 arg3) {
                     v.vy = pos.vy;
                     v.vz = pos.vz;
                     pl = &g_fieldBgi.normals[k];
-                    t = func_800C1DC4(pl->nx, v.vx << 16);
-                    v.vy = func_800C1DC4(n->d - t - func_800C1DC4(pl->nz, v.vz << 16), pl->invNy) >> 16;
+                    t = fld_fixMul(pl->nx, v.vx << 16);
+                    v.vy = fld_fixMul(n->d - t - fld_fixMul(pl->nz, v.vz << 16), pl->invNy) >> 16;
                     v.vy += (s16)g_fieldBgi.floors[n->floor].curPos[1] - g_fieldBgi.floors[n->floor].orgPos[1];
                     pos.vy = v.vy;
                 } else {
@@ -872,8 +872,8 @@ s16 bgi_findTriangleBelow(s16 arg0, s16 arg1, s16 arg2, s16 *arg3, BgiTriangle *
                 v.vy = p.vy;
                 v.vz = p.vz;
                 pl = &g_fieldBgi.normals[k];
-                a = func_800C1DC4(pl->nx, v.vx << 16);
-                v.vy = func_800C1DC4(n->d - a - func_800C1DC4(pl->nz, v.vz << 16), pl->invNy) >> 16;
+                a = fld_fixMul(pl->nx, v.vx << 16);
+                v.vy = fld_fixMul(n->d - a - fld_fixMul(pl->nz, v.vz << 16), pl->invNy) >> 16;
                 v.vy += (s16)g_fieldBgi.floors[n->floor].curPos[1] - g_fieldBgi.floors[n->floor].orgPos[1];
                 p.vy = v.vy;
             } else {
@@ -945,8 +945,8 @@ plane:
     v.vy = p.vy;
     v.vz = p.vz;
     pl = &g_fieldBgi.normals[k];
-    a = func_800C1DC4(pl->nx, v.vx << 16);
-    v.vy = func_800C1DC4(n->d - a - func_800C1DC4(pl->nz, v.vz << 16), pl->invNy) >> 16;
+    a = fld_fixMul(pl->nx, v.vx << 16);
+    v.vy = fld_fixMul(n->d - a - fld_fixMul(pl->nz, v.vz << 16), pl->invNy) >> 16;
     v.vy += (s16)g_fieldBgi.floors[n->floor].curPos[1] - g_fieldBgi.floors[n->floor].orgPos[1];
     p.vy = v.vy;
     return p.vy;
