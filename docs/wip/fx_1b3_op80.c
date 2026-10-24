@@ -1,4 +1,4 @@
-/* Draft of fx_1b3 fx_1b3_op80 (Fx1b3Split/Fx1b3Blast in include/fxmod/fx_1b3.h). Status: 60 lines, 22 ignoring registers (build/w/nd.py). The frame matches with the tex/clut lists, trail points and flash locals sharing three function-scope buffers (v, w, sc), as the original stack offsets show. Hi_RegisterTexListModel is called with three arguments (a3 left over), see REGTEX. The frame switch is sparse (a compare tree, bodies in ascending case order). */
+/* Draft of fx_1b3 fx_1b3_op80 (Fx1b3Split/Fx1b3Blast in include/fxmod/fx_1b3.h). Status: 52 lines, 14 ignoring registers (build/w/nd.py). The frame matches with the tex/clut lists, trail points and flash locals sharing three function-scope buffers (v, w, sc), as the original stack offsets show. Hi_RegisterTexListModel is called with three arguments (a3 left over), see REGTEX. The frame switch is sparse (a compare tree, bodies in ascending case order). */
 #include "fxmod/fx_1b3.h"
 
 typedef struct {
@@ -814,8 +814,8 @@ s32 fx_1b3_op80(s32 mode, Fx1b3Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
                 D_801EB0D4.unk0 = 4;
                 D_801EB0D4.unkC = 0x100;
                 D_801EB0D4.unk6 = 0x331;
-                D_801EB0D4.unk8 = 0;
                 D_801EB0D4.unk4 = 0x2BC - (0x22 - work->unk0[9]) * 0x100;
+                D_801EB0D4.unk8 = 0;
                 func_801EA7E4(&D_801EB5E4[0]);
                 func_801EA7E4(&D_801EB5E4[1]);
             }
