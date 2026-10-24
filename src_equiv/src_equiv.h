@@ -28,6 +28,28 @@
 #ifndef gte_dpcs
 #define gte_dpcs() __asm__ volatile(GTE_NOPS ".word\t0x4A780010")
 #endif
+/* INTPL (sf=1): MAC = IR + (FC - IR) * IR0, i.e. IR moved toward the far colour FC by IR0 / 4096. */
+#ifndef gte_intpl
+#define gte_intpl() __asm__ volatile(GTE_NOPS ".word\t0x4A980011")
+#endif
+/* IR1 alone, MAC1 alone, and the red far-colour component RFC (control register 21). */
+#ifndef gte_ldir1
+#define gte_ldir1(v) __asm__ volatile("mtc2\t%0, $9" : : "r"(v))
+#endif
+#ifndef gte_stmac1
+#define gte_stmac1(r) __asm__ volatile("mfc2\t%0, $25" : "=r"(r))
+#endif
+#ifndef gte_ldrfc
+#define gte_ldrfc(v) __asm__ volatile("ctc2\t%0, $21" : : "r"(v))
+#endif
+#ifndef gte_strfc
+#define gte_strfc(r) __asm__ volatile("cfc2\t%0, $21" : "=r"(r))
+#endif
+/* NCLIP result (MAC0) to a register. */
+#ifndef gte_stopz_r
+#define gte_stopz_r(r) __asm__ volatile("mfc2\t%0, $24" : "=r"(r))
+#endif
+
 /* RGB FIFO (RGB0-RGB2) to three words at r0. */
 #ifndef gte_strgb3
 #define gte_strgb3(r0) __asm__ volatile( \

@@ -233,7 +233,7 @@ main func_800661E0 libcard: memory card sector write/verify with checksum retrie
 ovl_0c func_800B3844 hand-written asm (agent report)
 ovl_0c func_800B3998 hand-written asm (agent report)
 ovl_0c func_800B3A80 hand-written asm (agent report)
-ovl_0c func_800B3FEC hand-written asm (agent report)
+ovl_0c func_800B3FEC hand-written asm (mesh face emitter, $s0-$s7 saved to scratchpad, $k1 clobbered; C in src_equiv/ovl_0c/world_faces.c)
 ovl_0c func_800B4270 hand-written asm (agent report)
 ovl_0c func_800B4720 hand-written asm (agent report)
 ovl_0c func_800B4BDC hand-written asm (agent report)
