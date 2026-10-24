@@ -228,8 +228,8 @@ In each of the three overlays the first word of `.rodata` (the overlay id) is an
 
 | file | range | funcs | evidence |
 |---|---|---|---|
-| tu_800A752C.c | 800A752C-800A7E10 | 10 | rodata 800A7004-800A7050 (two jump tables of `func_800A78EC`, parity 4); defines `D_800B365C`, its `.data`, which psylink put at the start of `.data`, right after `.text` (yaml `[0xC65C, .data, tu_800A752C]`); end strong: parity flip between the adjacent functions 0x800A78EC (4) and 0x800A7E10 (0) |
-| tu_800A7E10.c | 800A7E10-800B365C | 122 | parity 0: rodata 800A7050-800A752C, the task-state debug names ("ENEMY CARD SELECT", "PLAYER CARD SELECT"…) and the jump table of the dispatcher `func_800A7E10`; at least 15 calls (up to 100) cross every internal cut the data order allows, so there is no candidate |
+| tm_main.c | 800A752C-800A7E10 | 10 | rodata 800A7004-800A7050 (two jump tables of `func_800A78EC`, parity 4); defines `D_800B365C`, its `.data`, which psylink put at the start of `.data`, right after `.text` (yaml `[0xC65C, .data, tm_main]`); end strong: parity flip between the adjacent functions 0x800A78EC (4) and 0x800A7E10 (0) |
+| tm_game.c | 800A7E10-800B365C | 122 | parity 0: rodata 800A7050-800A752C, the task-state debug names ("ENEMY CARD SELECT", "PLAYER CARD SELECT"…) and the jump table of the dispatcher `func_800A7E10`; at least 15 calls (up to 100) cross every internal cut the data order allows, so there is no candidate |
 
 ## ovl_14 (opening / logo sequencer): 8 files
 
@@ -239,14 +239,14 @@ different TUs.
 
 | file | range | funcs | evidence |
 |---|---|---|---|
-| tu_800A7088.c | 800A7088-800A7578 | 5 | parity 4 (rodata 800A7004-800A7020, jump table of the main loop `func_800A7088`); like ovl_15's first file it starts with main, OT clear and frame swap (`func_800A72C0` = ovl_15 `func_800A7280`); end weak (fewest crossing calls before the parity-0 TU) |
-| tu_800A7578.c | 800A7578-800A7FF0 | 12 | parity 0 (rodata 800A7020-800A706C, two jump tables of `func_800A799C`); end medium (module W) |
-| tu_800A7FF0.c | 800A7FF0-800A833C | 11 | module W: the same 11 functions as ovl_15 tu_800ACE1C.c (6 byte-identical modulo relocations, the rest close in size), with its own state struct `D_800AB308` (+0/+3 fields) — medium |
-| tu_800A833C.c | 800A833C-800A8574 | 15 | state callbacks (`D_800AB310`, `D_800AB318`); edges set by the modules on both sides — weak |
-| tu_800A8574.c | 800A8574-800A9220 | 27 | a window module like ovl_15's X/Y/Z (state struct `D_800AB320`; `func_800A859C` is its open function) — medium start; end strong (parity) |
-| tu_800A9220.c | 800A9220-800A9E14 | 5 | parity 4 (rodata 800A706C-800A7088); OT-clear copy 0x800A9B14; end medium (0x800A9E14 and its callees form the next cluster) |
-| tu_800A9E14.c | 800A9E14-800AAADC | 5 | OT-clear copy 0x800AA994, `func_800AA9D8` — medium |
-| tu_800AAADC.c | 800AAADC-800AB230 | 7 | OT-clear copy 0x800AB09C, `func_800AB0E0` (copy of `func_800AA9D8`) — medium |
+| opening.c | 800A7088-800A7578 | 5 | parity 4 (rodata 800A7004-800A7020, jump table of the main loop `func_800A7088`); like ovl_15's first file it starts with main, OT clear and frame swap (`func_800A72C0` = ovl_15 `func_800A7280`); end weak (fewest crossing calls before the parity-0 TU) |
+| opening_setup.c | 800A7578-800A7FF0 | 12 | parity 0 (rodata 800A7020-800A706C, two jump tables of `func_800A799C`); end medium (module W) |
+| scene.c | 800A7FF0-800A833C | 11 | module W: the same 11 functions as ovl_15's scene.c (6 byte-identical modulo relocations, the rest close in size), with its own state struct `D_800AB308` (+0/+3 fields) — medium |
+| opening_scenes.c | 800A833C-800A8574 | 15 | state callbacks (`D_800AB310`, `D_800AB318`); edges set by the modules on both sides — weak |
+| title_menu.c | 800A8574-800A9220 | 27 | a window module like ovl_15's X/Y/Z (state struct `D_800AB320`; `func_800A859C` is its open function) — medium start; end strong (parity) |
+| opening_movie.c | 800A9220-800A9E14 | 5 | parity 4 (rodata 800A706C-800A7088); OT-clear copy 0x800A9B14; end medium (0x800A9E14 and its callees form the next cluster) |
+| opening_attract.c | 800A9E14-800AAADC | 5 | OT-clear copy 0x800AA994, `func_800AA9D8` — medium |
+| opening_boot.c | 800AAADC-800AB230 | 7 | OT-clear copy 0x800AB09C, `func_800AB0E0` (copy of `func_800AA9D8`) — medium |
 
 ## ovl_15 (ending + blackjack): 8 files
 
@@ -258,14 +258,14 @@ come from one template. Each has its own state struct and byte-identical helpers
 
 | file | range | funcs | evidence |
 |---|---|---|---|
-| tu_800A713C.c | 800A713C-800A7378 | 3 | parity 4 (rodata 800A7004-800A7018, jump table of `func_800A713C`); main, OT clear, frame swap; end medium (0x800A7378 calls 0x800A766C-0x800A7A84, which hold the second OT-clear copy) |
-| tu_800A7378.c | 800A7378-800AB100 | 22 | parity 0 (rodata 800A7018-800A7088: strings and the jump table of the blackjack loop `func_800A9488`); the data order forbids every cut from 0x800A8528 to 0x800AAD24; end medium (module X) |
-| tu_800AB100.c | 800AB100-800AB490 | 13 | window module X, state `D_800B0F50` — medium |
-| tu_800AB490.c | 800AB490-800ACE1C | 10 | parity 0 (rodata 800A7088-800A70D4, two jump tables of `func_800AC598`); third OT-clear copy, `func_800AC494` — medium |
-| tu_800ACE1C.c | 800ACE1C-800AD138 | 11 | module W (see ovl_14), state `D_800B0FD8` — medium |
-| tu_800AD138.c | 800AD138-800AD44C | 13 | window module Y, state `D_800B0FE0` — medium |
-| tu_800AD44C.c | 800AD44C-800AD7DC | 16 | window module Z, state `D_800B0FF0` — medium |
-| tu_800AD7DC.c | 800AD7DC-800AE0E0 | 8 | parity 4 (rodata 800A70D4-800A713C); one call crosses its start — strong |
+| ending.c | 800A713C-800A7378 | 3 | parity 4 (rodata 800A7004-800A7018, jump table of `func_800A713C`); main, OT clear, frame swap; end medium (0x800A7378 calls 0x800A766C-0x800A7A84, which hold the second OT-clear copy) |
+| blackjack.c | 800A7378-800AB100 | 22 | parity 0 (rodata 800A7018-800A7088: strings and the jump table of the blackjack loop `func_800A9488`); the data order forbids every cut from 0x800A8528 to 0x800AAD24; end medium (module X) |
+| bj_action.c | 800AB100-800AB490 | 13 | window module X, state `D_800B0F50` — medium |
+| the_end.c | 800AB490-800ACE1C | 10 | parity 0 (rodata 800A7088-800A70D4, two jump tables of `func_800AC598`); third OT-clear copy, `func_800AC494` — medium |
+| scene.c | 800ACE1C-800AD138 | 11 | module W (see ovl_14), state `D_800B0FD8` — medium |
+| bj_wager.c | 800AD138-800AD44C | 13 | window module Y, state `D_800B0FE0` — medium |
+| ending_menu.c | 800AD44C-800AD7DC | 16 | window module Z, state `D_800B0FF0` — medium |
+| ending_messages.c | 800AD7DC-800AE0E0 | 8 | parity 4 (rodata 800A70D4-800A713C); one call crosses its start — strong |
 
 ## ovl_33 (equip / abilities menu): 2 files
 
@@ -323,7 +323,7 @@ header word as its own object they build without the alignment rewrite, so their
   `D_800B365C`, given a `.data` subsegment of its own). Otherwise a data split would only move
   `.s` files, so the data ranges above are evidence, not subsegments.
 - **Cuts placed by call clusters only.** ovl_14's first cut (0x800A7578) and the start of its
-  tu_800A833C.c are positioned by call clusters alone. In ovl_15, 0x800A7378-0x800A7ABC could be
+  opening_scenes.c are positioned by call clusters alone. In ovl_15, 0x800A7378-0x800A7ABC could be
   a file of its own (the data allows a cut before 0x800A7ABC), but nothing else marks it.
 - **btl_mesh.c (ovl_0b 0x800C58E4-0x800C8BE0)** mixes two hand-written asm functions with C.
   CLAUDE.md notes 0x800C7730-0x800C8BE0 may use other compiler flags. It probably holds 3-4
@@ -348,7 +348,7 @@ header word as its own object they build without the alignment rewrite, so their
   `__asm__` statements are gone (the other overlays had none). `ccprobe` and `permute` still
   rewrite the alignment; it doesn't matter for single functions.
 - Overlay yamls: `[0x0, rodata]` header word in all but ovl_64; C and `.rodata` subsegments
-  for the files above; ovl_0d's `[0xC65C, .data, tu_800A752C]`.
+  for the files above; ovl_0d's `[0xC65C, .data, tm_main]`.
 - `tools/resplit.py`: (1) INCLUDE lines that move to another file get that file's asm path;
   (2) a rodata symbol that a new subsegment boundary splits off an old INCLUDE_RODATA keeps
   its slot (it used to be dropped as "now emitted by C"); (3) an INCLUDE_RODATA line only
