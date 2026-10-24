@@ -1,6 +1,6 @@
 #include "ovl_0b.h"
 
-INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/ovl_0b_4", btl_drawMesh);
+INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/btl_mesh", btl_drawMesh);
 
 void btl_projectMesh(BtlUnit9C *arg0, u8 arg1) {
     MATRIX m;
@@ -666,7 +666,7 @@ void func_800C7CC8(BtlUnit9C *arg0) {
     }
 }
 
-INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/ovl_0b_4", btl_calcBoneMatrices);
+INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/btl_mesh", btl_calcBoneMatrices);
 
 void btl_setModelRgb(BtlUnit9C *arg0, s32 r, s32 g, s32 b) {
     u32 i;
