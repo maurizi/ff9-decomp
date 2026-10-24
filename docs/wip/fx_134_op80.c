@@ -1,4 +1,4 @@
-/* Pass 4: 500 aligned mismatches, frame size matches. Variables split per case (build/s/split17.py) and at each
+/* Pass 4: 462 aligned mismatches, frame size matches. Variables split per case (build/s/split17.py) and at each
  * top-level re-assignment (build/s/phase.py) and at nested assignments
  * whose value stays in their block (build/s/webs.py); case 3's first angle is t >> 2 of t = (frame << 12) / 24 in a
  * block-local variable (a3x): with it the case-3 block has eight call-crossing locals, the 0x1000 constant lands
@@ -674,19 +674,18 @@ s32 fx_134_op80(s32 mode, Fx134Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
                 t = (frame << 12) / 56;
                 c = ((t << 5) >> 12) + 0x8D;
                 ex->btlfx_drawScreenTint((u32 *)(env->unk20 + 2), 1, (t * 0x58) >> 12, 0, 0);
-                s = 0x80;
-                BTLFX_COPY_SVEC(&work->unk18, &work->unk8);
-
                 a1_c6 = t >> 2;
+                BTLFX_COPY_SVEC(&work->unk18, &work->unk8);
+                work->unk18.vy -= 0x400 + (ex->math_sin(a1_c6) >> 1);
+                s = 0x80;
                 yo = 0;
-                work->unk18.vy = work->unk18.vy - 0x400 - (ex->math_sin(a1_c6) >> 1);
                 xo = 0;
                 env->unk2C->unk0[3].vx = work->unk18.vx;
                 env->unk2C->unk0[3].vy = work->unk18.vy;
                 env->unk2C->unk0[3].vz = work->unk18.vz;
                 work->unk3C.vz += 8;
-                work->unk24.vz += 0x4D;
                 work->unk24.vy += 0x9B;
+                work->unk24.vz += 0x4D;
                 ex->Hi_DrawEffModel(&work->unk3C, (VECTOR *)&work->unk24, (s32)&work->unk30, work->unk64);
                 ex->btlfx_drawBackdrop((BtlBgLayers *)ex->btlfx_getFileData(entry->unk8, 0x31), work->unk4);
                 work->unk44.vx = work->unk44.vy = 0x3800;
