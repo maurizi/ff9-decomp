@@ -1,19 +1,19 @@
 #include "ovl_0b.h"
 
-void btlbg_init(Unk800CEE74 *arg0, BtlUnit9C50 *arg1) {
+void btlbg_init(BtlBgHeader *arg0, BtlUnit9C50 *arg1) {
     s32 unused[4];
     s32 i;
     g_btlbgHeader = arg0;
     g_btlbgScrolls = (BtlBgScroll *)arg0->unk10;
-    g_btlbgId = arg0->unk0;
+    g_btlbgId = arg0->id;
     btlbg_setOtShift(0);
     g_btlbgSkyOwnProj = 0;
-    if (g_btlbgHeader->unk6 != 0) {
+    if (g_btlbgHeader->skyOwnProj != 0) {
         g_btlbgSkyOwnProj = 1;
     }
-    g_btlbgSkySpeed = g_btlbgHeader->unk4;
+    g_btlbgSkySpeed = g_btlbgHeader->skySpeed;
     g_btlbgTexAnims = arg1;
-    g_btlbgTexAnimCount = g_btlbgHeader->unk2;
+    g_btlbgTexAnimCount = g_btlbgHeader->texAnimCount;
     if (g_btlbgTexAnimCount != 0) {
         btl_relocTexAnims((TexAnimSet *)arg1, NULL);
         for (i = 0; i < g_btlbgTexAnimCount; i++) {
@@ -26,7 +26,7 @@ void btlbg_init(Unk800CEE74 *arg0, BtlUnit9C50 *arg1) {
             e->unk12 = 0x1000;
         }
     }
-    g_btlbgScrollCount = g_btlbgHeader->unkA;
+    g_btlbgScrollCount = g_btlbgHeader->scrollCount;
     btlbg_setLayerMask(0xF);
     g_btlbgSkyAngle = 0;
     g_btlbgRainCount = g_gameState->unk1C->unk570;
@@ -144,13 +144,13 @@ u8 *btlbg_draw(MATRIX *arg0, s32 arg1, s32 arg2, u32 *arg3, s32 arg4) {
                 break;
             }
         }
-        if (k == g_btlbgHeader->unk8) {
+        if (k == g_btlbgHeader->lastGroup) {
             return out;
         }
         k++;
         grp = (BtlBgGroup *)((u8 *)grp + grp->unk0);
         flag = 0;
-        switch (g_btlbgHeader->unk0) {
+        switch (g_btlbgHeader->id) {
         case 0x44:
             a = math_sin((VSync(-1) * 26) & 0xFFE);
             sv.vx = 0x429;
@@ -312,7 +312,7 @@ u8 *btlbg_drawRain(u8 *arg0, u32 *arg1, MATRIX *arg2) {
     return arg0;
 }
 
-Unk800CEE74 *btlbg_getHeader(void) {
+BtlBgHeader *btlbg_getHeader(void) {
     return g_btlbgHeader;
 }
 

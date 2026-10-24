@@ -393,7 +393,7 @@ void btl_updateUnitStatus(BtlUnit *arg0) {
 }
 
 void btl_updateUnitTint(BtlUnit *arg0) {
-    Unk800CEE74 *e;
+    BtlBgHeader *e;
     u8 *p;
     s32 t;
     u32 n;
@@ -423,13 +423,13 @@ void btl_updateUnitTint(BtlUnit *arg0) {
                     v = (arg0->status & BTL_STATUS_PROTECT) < 0x800000;
                 }
                 if (v) {
-                    r = e->unkC - 0x40;
-                    g = e->unkD + 0x18;
-                    b = e->unkE + 0x48;
+                    r = e->lightR - 0x40;
+                    g = e->lightG + 0x18;
+                    b = e->lightB + 0x48;
                 } else {
-                    r = e->unkC + 0x28;
-                    g = e->unkD + 0x28;
-                    b = e->unkE - 0x50;
+                    r = e->lightR + 0x28;
+                    g = e->lightG + 0x28;
+                    b = e->lightB - 0x50;
                 }
                 if ((u8)m < 8) {
                     v = m;
@@ -444,9 +444,9 @@ void btl_updateUnitTint(BtlUnit *arg0) {
                     { 0xC0, 0x68, 0x90 }, { 0xD0, 0x70, 0x78 }, { 0xC8, 0xD8, 0x68 }, { 0xD0, 0xB8, 0x68 },
                 };
                 p = tbl[(arg0->unk68 >> 1) & 0xF];
-                r = e->unkC + (p[0] - 0x80);
-                g = e->unkD + (p[1] - 0x80);
-                b = e->unkE + (p[2] - 0x80);
+                r = e->lightR + (p[0] - 0x80);
+                g = e->lightG + (p[1] - 0x80);
+                b = e->lightB + (p[2] - 0x80);
                 w = g_gameState->unk1C->unk8E4.battle->tick & 0xF;
                 if (w >= 8) {
                     w = 16 - w;
@@ -475,12 +475,12 @@ end:
 void btl_updateStatusColor(BtlUnit *arg0) {
     s16 a[3];
     s16 b[3];
-    Unk800CEE74 *e = btlbg_getHeader();
+    BtlBgHeader *e = btlbg_getHeader();
     s32 i;
     s32 v;
-    b[0] = e->unkC;
-    b[1] = e->unkD;
-    b[2] = e->unkE;
+    b[0] = e->lightR;
+    b[1] = e->lightG;
+    b[2] = e->lightB;
     if (arg0->status & BTL_STATUS_ZOMBIE) {
         a[0] = 0x30;
         a[1] = 0x48;
@@ -1055,7 +1055,7 @@ void btl_tryEscape(u8 arg0) {
 
 void btl_setUnitBrightness(BtlUnit *arg0, u32 arg1) {
     s32 i;
-    Unk800CEE74 *e;
+    BtlBgHeader *e;
     s32 k;
     u32 f;
     if (arg1 < 0x20) {
@@ -1063,12 +1063,12 @@ void btl_setUnitBrightness(BtlUnit *arg0, u32 arg1) {
         e = btlbg_getHeader();
         btl_setModelAbr(arg0->model, 0x60);
         for (; i < arg0->model->unk8->unk3; i++) {
-            btl_setMeshRgb(arg0->model, i, (s32)((e->unkC * arg1) << 11) >> 16, (s32)((e->unkD * arg1) << 11) >> 16, (s32)((e->unkE * arg1) << 11) >> 16);
+            btl_setMeshRgb(arg0->model, i, (s32)((e->lightR * arg1) << 11) >> 16, (s32)((e->lightG * arg1) << 11) >> 16, (s32)((e->lightB * arg1) << 11) >> 16);
         }
         if (arg0->weaponModel != NULL) {
             btl_setModelAbr(arg0->weaponModel, 0x60);
             for (i = 0; i < arg0->weaponModel->unk8->unk3; i++) {
-                btl_setMeshRgb(arg0->weaponModel, i, (s32)((e->unkC * arg1) << 11) >> 16, (s32)((e->unkD * arg1) << 11) >> 16, (s32)((e->unkE * arg1) << 11) >> 16);
+                btl_setMeshRgb(arg0->weaponModel, i, (s32)((e->lightR * arg1) << 11) >> 16, (s32)((e->lightG * arg1) << 11) >> 16, (s32)((e->lightB * arg1) << 11) >> 16);
             }
         }
         f = arg0->unk68;
@@ -1077,7 +1077,7 @@ void btl_setUnitBrightness(BtlUnit *arg0, u32 arg1) {
         if (!(f & 1)) {
             k += 9;
         }
-        g_gameState->unk1C->unk8E4.battle->unk11C0->unk28[k].shade = (s32)(btlbg_getHeader()->unkF * arg1) >> 5;
+        g_gameState->unk1C->unk8E4.battle->unk11C0->unk28[k].shade = (s32)(btlbg_getHeader()->shadowShade * arg1) >> 5;
     }
 }
 
@@ -1233,9 +1233,9 @@ void btl_playUnitSound(BtlUnit *arg0, u16 arg1, u8 arg2) {
 
 void btl_applyBgLight(BtlUnit9C *arg0) {
     s32 i;
-    Unk800CEE74 *p = btlbg_getHeader();
+    BtlBgHeader *p = btlbg_getHeader();
     for (i = 0; i < arg0->unk8->unk3; i++) {
-        btl_setMeshRgb(arg0, i & 0xFF, p->unkC, p->unkD, p->unkE);
+        btl_setMeshRgb(arg0, i & 0xFF, p->lightR, p->lightG, p->lightB);
     }
 }
 

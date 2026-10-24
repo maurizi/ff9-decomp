@@ -462,7 +462,7 @@ void btl_setUnitAttr(BtlUnit *arg0, s32 arg1, u32 arg2) {
         if (arg2 != 0 && g_gameState->unk1C->unk8E4.battle->phase == BTL_PHASE_INTRO) {
             btl_applyBgLight(arg0->model);
             k = btl_getModelSlot(arg0);
-            g_gameState->unk1C->unk8E4.battle->unk11C0->unk28[k].shade = btlbg_getHeader()->unkF;
+            g_gameState->unk1C->unk8E4.battle->unk11C0->unk28[k].shade = btlbg_getHeader()->shadowShade;
         }
         break;
     case 0x36:

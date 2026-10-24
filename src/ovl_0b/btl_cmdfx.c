@@ -15,9 +15,9 @@ void btl_setShadowSize(BtlUnit *arg0, s32 arg1, u32 arg2) {
 }
 
 void btl_setUnitFade(BtlUnit *arg0, s32 arg1) {
-    Unk800CEE74 *p = btlbg_getHeader();
+    BtlBgHeader *p = btlbg_getHeader();
     btl_setModelAbr(arg0->model, 0x60);
-    btl_fillModelRgb(arg0->model, (p->unkC * arg1) << 11 >> 16, (p->unkD * arg1) << 11 >> 16, (p->unkE * arg1) << 11 >> 16);
+    btl_fillModelRgb(arg0->model, (p->lightR * arg1) << 11 >> 16, (p->lightG * arg1) << 11 >> 16, (p->lightB * arg1) << 11 >> 16);
     if (arg1 == 0) {
         arg0->unk68 |= 0x400000;
     }

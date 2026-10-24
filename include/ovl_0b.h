@@ -865,7 +865,7 @@ extern MATRIX D_800F8D50;
 void btlbg_setLayerMask(s32);
 extern s32 g_btlbgId;
 extern s32 g_btlbgSkySpeed;
-extern struct Unk800CEE74 *g_btlbgHeader;
+extern struct BtlBgHeader *g_btlbgHeader;
 extern s32 g_btlbgLayerMask;
 extern s32 g_btlbgSkyAngle;
 extern struct BtlUnit9C50 *g_btlbgTexAnims;
@@ -1119,7 +1119,7 @@ typedef struct Battle11C0 {
     s32 *unkC; /* offset table, entries relative to its start */
     s32 unk10;
     u8 *unk14;
-    struct Unk800CEE74 *unk18;
+    struct BtlBgHeader *unk18;
     s32 unk1C;
     Battle11C020 *unk20;
     u16 *unk24; /* two offsets: model file table, offset table */
@@ -1935,19 +1935,19 @@ typedef struct Unk800D7E14 {
     s16 unk8[4];
 } Unk800D7E14;
 
-typedef struct Unk800CEE74 {
-    s16 unk0;
-    s16 unk2; /* count of g_btlbgTexAnims entries */
-    s16 unk4;
-    s16 unk6;
-    s16 unk8; /* last group index */
-    s16 unkA;
-    u8 unkC;
-    u8 unkD;
-    u8 unkE;
-    u8 unkF;
+typedef struct BtlBgHeader {
+    s16 id; /* background id (g_btlbgId) */
+    s16 texAnimCount; /* count of g_btlbgTexAnims entries */
+    s16 skySpeed;
+    s16 skyOwnProj;
+    s16 lastGroup; /* last group index */
+    s16 scrollCount;
+    u8 lightR; /* light colour the units take (btl_applyBgLight, btl_setUnitFade) */
+    u8 lightG;
+    u8 lightB;
+    u8 shadowShade; /* shadow grey level (BtlShadow.shade) */
     u8 unk10[1]; /* data */
-} Unk800CEE74;
+} BtlBgHeader;
 
 
 typedef struct {
@@ -1964,7 +1964,7 @@ extern Unk80104E30 D_80104E30;
 
 extern u8 D_800FDF3A;
 extern u8 D_800FDF3B;
-void btlbg_init(struct Unk800CEE74 *, BtlUnit9C50 *);
+void btlbg_init(struct BtlBgHeader *, BtlUnit9C50 *);
 void btl_initCmdQueue(struct Battle *);
 void btl_initTargetCursor(struct Battle *);
 void func_800C972C(void);
@@ -2485,7 +2485,7 @@ void btl_setStoneClut(BtlUnit *, s32);
 void btl_applyBgLight(BtlUnit9C *);
 void btl_setMeshRgb(BtlUnit9C *, u8, s16, s16, s16);
 Battle122C *btlseq_start(BtlCmd *);
-struct Unk800CEE74 *btlbg_getHeader(void);
+struct BtlBgHeader *btlbg_getHeader(void);
 s32 btlfx_stepPlayMotionWait(struct Unk800D8EA4 *, s32, s32 *);
 s32 func_800D8E10(struct Unk800D8EA4 *, s32, s32 *);
 s32 func_800D8EA4(struct Unk800D8EA4 *, s32, s32 *);
