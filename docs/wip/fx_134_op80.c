@@ -22,9 +22,6 @@ extern BtlModel D_801ECB64[];
 extern u8 D_801ED1A4[];
 
 s32 fx_134_op80(s32 mode, Fx134Work *work, Unk800F78A4 *env, Unk80100C78Entry *entry, EffInit *init) {
-    s32 b_c0_p2;
-    s32 k_c0_p2;
-    s32 k_c0_p3;
     s32 a_c3_p2;
     s32 k_c3_p2;
     s32 i_c3_p2;
@@ -140,7 +137,7 @@ s32 fx_134_op80(s32 mode, Fx134Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
                     env->unk2C->unk0[3].vz = work->unk18.vz;
                     b_c0 = (ex->math_sin(a_c0) >> 3) - 0x200;
                 } else {
-                    b_c0_p2 = 0;
+                    b_c0 = 0;
                 }
                 v.vx = ex->btlfx_randCentered(0x44C) + 0x400;
                 v.vy = 0;
@@ -153,18 +150,18 @@ s32 fx_134_op80(s32 mode, Fx134Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
                 if (frame < 8) {
                     k_c0 = 0;
                 } else if (frame < 0xC) {
-                    k_c0_p2 = (frame - 8) << 10;
+                    k_c0 = (frame - 8) << 10;
                 } else {
-                    k_c0_p3 = 0x1000;
+                    k_c0 = 0x1000;
                 }
-                if (k_c0_p3 != 0) {
-                    ex->func_800D1BC4(0xFF8, (u8 *)ex->btlfx_getFileData(entry->unk8, 3), a_c0 = (t >> 7) + 0xA0, b_c0_p2, 0, 1, k_c0_p3);
-                    k_c0_p3 += ex->btlfx_randCentered(0x18);
-                    if (k_c0_p3 < 0) {
-                        k_c0_p3 = 0;
+                if (k_c0 != 0) {
+                    ex->func_800D1BC4(0xFF8, (u8 *)ex->btlfx_getFileData(entry->unk8, 3), a_c0 = (t >> 7) + 0xA0, b_c0, 0, 1, k_c0);
+                    k_c0 += ex->btlfx_randCentered(0x18);
+                    if (k_c0 < 0) {
+                        k_c0 = 0;
                     }
-                    ex->func_800D1BC4(0xFF8, (u8 *)ex->btlfx_getFileData(entry->unk8, 4), a_c0, b_c0_p2, 0, 1, k_c0_p3);
-                    ex->func_800D1BC4(0xFF8, (u8 *)ex->btlfx_getFileData(entry->unk8, 0x1F), a_c0, b_c0_p2 + 0x60, 0, 1, k_c0_p3);
+                    ex->func_800D1BC4(0xFF8, (u8 *)ex->btlfx_getFileData(entry->unk8, 4), a_c0, b_c0, 0, 1, k_c0);
+                    ex->func_800D1BC4(0xFF8, (u8 *)ex->btlfx_getFileData(entry->unk8, 0x1F), a_c0, b_c0 + 0x60, 0, 1, k_c0);
                 }
                 if (frame == 0x18) {
                     work->unk80 = ex->func_800E3CEC(ex->btlfx_getFileData(entry->unk8, 5), (s32)&work->unk8);
