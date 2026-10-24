@@ -6,58 +6,58 @@ void opening_main(void) {
     n = 0;
     opening_init();
     scene_init();
-    g_openingState = D_80067950 == 0 ? 6 : 0;
-    while (g_openingState < 7) {
+    g_openingState = D_80067950 == 0 ? OPENING_BOOT : OPENING_MOVIE;
+    while (g_openingState < OPENING_DONE) {
         switch (g_openingState) {
-        case 0:
+        case OPENING_MOVIE:
             if (opening_movieThenTitle() != 0) {
-                g_openingState = 7;
+                g_openingState = OPENING_DONE;
             } else {
-                g_openingState = 1;
+                g_openingState = OPENING_ATTRACT1;
             }
             break;
-        case 1:
+        case OPENING_ATTRACT1:
             if (opening_attract(0) != 0) {
-                g_openingState = 7;
-            } else if (g_gameState->unkB != 0xFF && (g_gameState->unkB & 1)) {
-                n = 180;
-                g_openingState = 2;
+                g_openingState = OPENING_DONE;
+            } else if (g_gameState->unkB != DISC_NONE && (g_gameState->unkB & DISC_1)) {
+                n = OPENING_PAUSE_FRAMES;
+                g_openingState = OPENING_PAUSE1;
             } else {
-                g_openingState = 4;
+                g_openingState = OPENING_ATTRACT2;
             }
             break;
-        case 2:
+        case OPENING_PAUSE1:
             VSync(0);
             if (--n == 0) {
-                g_openingState = 3;
+                g_openingState = OPENING_MOVIE2;
             }
             break;
-        case 3:
+        case OPENING_MOVIE2:
             if (opening_movieThenTitle() == 0) {
-                g_openingState = 4;
+                g_openingState = OPENING_ATTRACT2;
             } else {
-                g_openingState = 7;
+                g_openingState = OPENING_DONE;
             }
             break;
-        case 4:
+        case OPENING_ATTRACT2:
             if (opening_attract(1) != 0) {
-                g_openingState = 7;
-            } else if (g_gameState->unkB != 0xFF && (g_gameState->unkB & 1)) {
-                n = 180;
-                g_openingState = 5;
+                g_openingState = OPENING_DONE;
+            } else if (g_gameState->unkB != DISC_NONE && (g_gameState->unkB & DISC_1)) {
+                n = OPENING_PAUSE_FRAMES;
+                g_openingState = OPENING_PAUSE2;
             } else {
-                g_openingState = 1;
+                g_openingState = OPENING_ATTRACT1;
             }
             break;
-        case 5:
+        case OPENING_PAUSE2:
             VSync(0);
             if (--n == 0) {
-                g_openingState = 0;
+                g_openingState = OPENING_MOVIE;
             }
             break;
-        case 6:
+        case OPENING_BOOT:
             opening_bootScreen();
-            g_openingState = 0;
+            g_openingState = OPENING_MOVIE;
             break;
         }
     }

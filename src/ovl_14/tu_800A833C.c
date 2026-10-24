@@ -14,7 +14,7 @@ void func_800A8370(void) {
 }
 
 void opening_discOnClose(void) {
-    scene_set(4);
+    scene_set(SCENE_START);
 }
 
 void func_800A8398(void) {
@@ -26,12 +26,12 @@ void opening_startEnter(void) {
 
 void opening_startUpdate(void) {
     if (++g_startFrames >= 2) {
-        scene_set(5);
+        scene_set(SCENE_END);
     }
 }
 
 void opening_startLeave(void) {
-    if (opening_titleGetCursor() == 0) {
+    if (opening_titleGetCursor() == TITLE_NEW_GAME) {
         opening_initNewGame();
         g_gameState->mode = 1;
         g_gameState->unk1C->fieldId = 0x46;
@@ -70,16 +70,16 @@ void opening_loadDone(void) {
     if (func_801F5330()) {
         opening_resetGameData();
         r = scene_checkDisc();
-        if (r != 0xFF) {
-            menu_open(8, ((r & 3) << 14) | 0x3A98);
-            mode = 3;
+        if (r != DISC_NONE) {
+            menu_open(MENU_DISC, ((r & 3) << 14) | 0x3A98);
+            mode = SCENE_DISC;
         } else {
             func_80032634(0);
-            mode = 4;
+            mode = SCENE_START;
         }
     } else {
         scene_setFadeScreen(1);
-        mode = 1;
+        mode = SCENE_TITLE;
     }
     scene_set(mode);
 }

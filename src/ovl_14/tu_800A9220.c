@@ -14,30 +14,30 @@ s32 opening_movieThenTitle(void) {
         opening_movieClearOt();
         pad_update();
         switch (g_movieState) {
-        case 0:
-            if (g_gameState->unkB != 0xFF && (g_gameState->unkB & 1)) {
+        case MOVIE_ST_START:
+            if (g_gameState->unkB != DISC_NONE && (g_gameState->unkB & DISC_1)) {
                 g_movieSkipped = 0;
                 g_movieFlags = 1;
-                g_movieState = 1;
+                g_movieState = MOVIE_ST_OPEN;
                 func_8002F884();
             } else {
                 if (!(g_gameState->unk1C->unk0 & 0x20000000)) {
-                    opening_soundCmd(0, 0x7003A, 0, 0, 0);
-                    opening_soundCmd(0xC401, 0x7003A, 0x5A, 0, 0x7F);
+                    opening_soundCmd(0, TITLE_MUSIC, 0, 0, 0);
+                    opening_soundCmd(0xC401, TITLE_MUSIC, 0x5A, 0, 0x7F);
                 }
                 g_movieSkipped = 1;
-                g_movieState = 3;
-                g_movieFlags |= 0x80;
+                g_movieState = MOVIE_ST_END;
+                g_movieFlags |= MOVIE_DONE;
                 func_8002FAAC(1);
             }
             break;
-        case 1:
+        case MOVIE_ST_OPEN:
             i = 1;
             if (g_gameState->unk1C->unk8 != 0) {
                 i = 2;
             }
-            g_movieFlagQueue[0][i - 1] = 7;
-            g_movieFlagQueue[0][i] = 0x10;
+            g_movieFlagQueue[0][i - 1] = MOVIE_NO_SCENES | MOVIE_NO_FADE | MOVIE_NO_OT;
+            g_movieFlagQueue[0][i] = MOVIE_PLAYING;
             g_gameState->vsyncMode = 4;
             DrawSync(0);
             MBG_init(1, &buf);
@@ -45,42 +45,42 @@ s32 opening_movieThenTitle(void) {
             mbg_setEndCallback(opening_movieOnEnd);
             g_movieLastFrame = g_mbgFrame;
             mbg_play(1, 0);
-            g_movieState = 2;
+            g_movieState = MOVIE_ST_PLAY;
             break;
-        case 2:
-            if ((g_movieFlags & 0x10) && (func_80012AD4() & 2)) {
+        case MOVIE_ST_PLAY:
+            if ((g_movieFlags & MOVIE_PLAYING) && (func_80012AD4() & 2)) {
                 r = mbg_update(0);
                 end = mbg_getLastFrame();
                 if (r != 0) {
                     DrawOTag(g_gameState->unk1C->unk10[g_gameState->unk1C->unk8 ^ 1] + 0xFFF);
-                } else if (timer == -1 && g_gameState->unk1C->unk8 == 0 && !(g_movieFlags & 0x20)) {
+                } else if (timer == -1 && g_gameState->unk1C->unk8 == 0 && !(g_movieFlags & MOVIE_SKIPPING)) {
                     g_gameState->unkC[g_gameState->unk1C->unk8].disp.x = 0x1E0;
                 }
-                if ((g_mbgFrame >= end || g_movieLastFrame >= g_mbgFrame || timer == 0) && !(g_movieFlags & 0x40)) {
+                if ((g_mbgFrame >= end || g_movieLastFrame >= g_mbgFrame || timer == 0) && !(g_movieFlags & MOVIE_ENDED)) {
                     if (timer == 0) {
                         mbg_stop();
                         func_80023018();
                         if (!(g_gameState->unk1C->unk0 & 0x20000000)) {
-                            opening_soundCmd(0, 0x7003A, 0, 0, 0);
-                            opening_soundCmd(0xC401, 0x7003A, 0x5A, 0, 0x7F);
+                            opening_soundCmd(0, TITLE_MUSIC, 0, 0, 0);
+                            opening_soundCmd(0xC401, TITLE_MUSIC, 0x5A, 0, 0x7F);
                         }
                     }
                     if (g_movieLastFrame >= g_mbgFrame) {
-                        g_movieFlags &= ~7;
+                        g_movieFlags &= ~(MOVIE_NO_SCENES | MOVIE_NO_FADE | MOVIE_NO_OT);
                         if (g_gameState->unk1C->unk8 == 0) {
                             g_gameState->unkC[g_gameState->unk1C->unk8].disp.x = 0x1E0;
                         }
                         printf("Fr: %d\n", g_movieLastFrame);
                     } else {
-                        g_movieFlagQueue[1][0] = 7;
+                        g_movieFlagQueue[1][0] = MOVIE_NO_SCENES | MOVIE_NO_FADE | MOVIE_NO_OT;
                     }
-                    g_movieFlags |= 0x40;
+                    g_movieFlags |= MOVIE_ENDED;
                 }
-                if (!(g_movieFlags & 0x100) && g_mbgFrame > 0) {
-                    opening_soundCmd(0, 0x7003A, 0, 0, 0);
-                    g_movieFlags |= 0x100;
+                if (!(g_movieFlags & MOVIE_MUSIC) && g_mbgFrame > 0) {
+                    opening_soundCmd(0, TITLE_MUSIC, 0, 0, 0);
+                    g_movieFlags |= MOVIE_MUSIC;
                 }
-                if (!(g_movieFlags & 0x20) && (g_padPortPressed[0] & (PAD_START | PAD_CROSS)) && g_mbgFrame < end) {
+                if (!(g_movieFlags & MOVIE_SKIPPING) && (g_padPortPressed[0] & (PAD_START | PAD_CROSS)) && g_mbgFrame < end) {
                     g_movieSkipped = 1;
                     mbg_setRgb24(0);
                     g_movieFlagQueue[1][g_gameState->unk1C->unk8 != 0 ? 1 : 2] = 2;
@@ -88,54 +88,54 @@ s32 opening_movieThenTitle(void) {
                     func_800320B8(1, 1, 0, 0);
                     func_800320B8(1, 1, timer, 0xFFFFFF);
                     D_80073998[0] = -1;
-                    g_movieFlags |= 0x20;
+                    g_movieFlags |= MOVIE_SKIPPING;
                 }
                 g_movieLastFrame = g_mbgFrame;
-                if (!(g_movieFlags & 2) && timer != -1) {
+                if (!(g_movieFlags & MOVIE_NO_FADE) && timer != -1) {
                     timer--;
                 }
             }
             break;
-        case 3:
-            if ((g_movieFlags & 0x80) && cd_getState() == 0) {
+        case MOVIE_ST_END:
+            if ((g_movieFlags & MOVIE_DONE) && cd_getState() == 0) {
                 g_gameState->vsyncMode = 0;
                 g_gameState->unkC[0].disp.x = 0x140;
-                timer = 0x4EC;
+                timer = TITLE_IDLE_FRAMES;
                 g_gameState->unkC[1].disp.x = 0;
                 D_80073998[0] = 0;
                 scene_setFadeScreen(g_movieSkipped);
-                scene_set(1);
-                g_movieState = 4;
+                scene_set(SCENE_TITLE);
+                g_movieState = MOVIE_ST_TITLE;
             }
             break;
-        case 4:
-            if (!(g_movieFlags & 0x1000) && (u8)scene_isTitleIdle() && timer < 0x5B) {
+        case MOVIE_ST_TITLE:
+            if (!(g_movieFlags & MOVIE_IDLE_FADE) && (u8)scene_isTitleIdle() && timer < TITLE_IDLE_FADE + 1) {
                 func_800320B8(1, 1, 0, 0);
-                func_800320B8(1, 1, 0x5A, 0xFFFFFF);
-                g_movieFlags |= 0x1000;
+                func_800320B8(1, 1, TITLE_IDLE_FADE, 0xFFFFFF);
+                g_movieFlags |= MOVIE_IDLE_FADE;
             }
-            if (timer == 0 && g_movieState != 6) {
-                g_movieState = 5;
+            if (timer == 0 && g_movieState != MOVIE_ST_STARTED) {
+                g_movieState = MOVIE_ST_TIMEOUT;
             }
-            if ((g_movieFlags & 0x1000) || (u8)scene_isTitleIdle()) {
+            if ((g_movieFlags & MOVIE_IDLE_FADE) || (u8)scene_isTitleIdle()) {
                 timer--;
             }
             break;
         }
-        if (!(g_movieFlags & 1)) {
+        if (!(g_movieFlags & MOVIE_NO_SCENES)) {
             scene_update();
-            if (scene_get() == 5) {
-                g_movieState = 6;
+            if (scene_get() == SCENE_END) {
+                g_movieState = MOVIE_ST_STARTED;
             }
             func_80032100();
             func_80023A0C();
         }
-        if (!(g_movieFlags & 2)) {
+        if (!(g_movieFlags & MOVIE_NO_FADE)) {
             func_80032098();
         }
         opening_movieSwap();
-    } while ((u32)g_movieState < 5);
-    return g_movieState == 6;
+    } while ((u32)g_movieState < MOVIE_ST_TIMEOUT);
+    return g_movieState == MOVIE_ST_STARTED;
 }
 
 s32 opening_movieInit(void) {
@@ -152,15 +152,15 @@ s32 opening_movieInit(void) {
     EnterCriticalSection();
     FlushCache();
     ExitCriticalSection();
-    if (g_gameState->unkB != 0xFF && (g_gameState->unkB & 1)) {
-        h = cd_findFile(*D_8019DC68);
+    if (g_gameState->unkB != DISC_NONE && (g_gameState->unkB & DISC_1)) {
+        h = cd_findFile(g_mbgMovieLists[1].movies[0].path);
         func_80022ED4(h);
         while (cd_getState() != 0) {
         }
         mbg_streamSetBaseSector(h);
     }
     func_800320B8(1, 1, 0, 0xFFFFFF);
-    g_movieState = 0;
+    g_movieState = MOVIE_ST_START;
     g_movieFlags = 0;
     for (i = 1; i >= 0; i--) {
         for (j = 3; j >= 0; j--) {
@@ -169,7 +169,7 @@ s32 opening_movieInit(void) {
     }
     g_movieFrame = 0;
     scene_setFadeScreen(0);
-    scene_set(1);
+    scene_set(SCENE_TITLE);
     D_80073998[0] = 0;
     return 0;
 }
@@ -196,7 +196,7 @@ void opening_movieSwap(void) {
     VSync(g_gameState->vsyncMode);
     ResetGraph(1);
     PutDispEnv(&g_gameState->unkC[g_gameState->unk1C->unk8]);
-    if (g_movieFlags & 4) {
+    if (g_movieFlags & MOVIE_NO_OT) {
         PutDrawEnv(&g_gameState->unk10[g_gameState->unk1C->unk8]);
     } else {
         g = g_gameState->unk1C;
@@ -218,6 +218,6 @@ void opening_movieSwap(void) {
 void opening_movieOnEnd(void) {
     mbg_shutdown();
     cd_cancel();
-    g_movieFlags |= 0x80;
-    g_movieState = 3;
+    g_movieFlags |= MOVIE_DONE;
+    g_movieState = MOVIE_ST_END;
 }

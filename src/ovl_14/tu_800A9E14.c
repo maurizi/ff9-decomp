@@ -16,21 +16,21 @@ s32 opening_attract(s32 arg0) {
         opening_attractClearOt();
         pad_update();
         switch (g_attractState) {
-        case 0:
+        case ATTRACT_ST_START:
             i = 0;
             timer = -1;
-            g_attractState = 1;
+            g_attractState = ATTRACT_ST_IMAGES;
             g_attractSkipped = 1;
             break;
-        case 1:
-            if (i < 4) {
-                k = arg0 * 4 + i;
+        case ATTRACT_ST_IMAGES:
+            if (i < ATTRACT_IMAGES) {
+                k = arg0 * ATTRACT_IMAGES + i;
                 id = g_attractImages[k] | 0x40000;
                 if (timer == -1) {
                     tim = (s32)db_lookupRegistered(4, id, 0);
                     func_8001D9CC(tim, 0, 0xE0, 0x280, 0);
                     func_8001D8A8(tim);
-                    timer = 0x3A2;
+                    timer = ATTRACT_FRAMES;
                     func_800320B8(1, 1, 0xF0, 0);
                 } else if (timer != 0) {
                     pad = g_padPortPressed[0];
@@ -64,72 +64,72 @@ s32 opening_attract(s32 arg0) {
                     addPrim(&g_gameState->unk1C->unk10[g_gameState->unk1C->unk8][8], (g_attractSprites[g_gameState->unk1C->unk8] + 1));
                     setDrawTPage(g_attractTpages[g_gameState->unk1C->unk8] + 1, 1, 1, 0x10D);
                     addPrim(&g_gameState->unk1C->unk10[g_gameState->unk1C->unk8][8], (g_attractTpages[g_gameState->unk1C->unk8] + 1));
-                    pad &= 0x4008;
+                    pad &= PAD_CROSS | PAD_START;
                     btn = pad;
-                    if (!(g_attractFlags.bits & 1) || btn) {
+                    if (!(g_attractFlags.bits & ATTRACT_FADING) || btn) {
                         if (btn) {
                             if (timer >= 0x1F) {
                                 timer = 0x1E;
                             }
                             g_attractSkipped = 1;
                             D_80073998[0] = -1;
-                            g_attractFlags.bits |= 0x100;
+                            g_attractFlags.bits |= ATTRACT_SKIP;
                         }
-                        if (!(g_attractFlags.bits & 1) && timer < 0xF1) {
+                        if (!(g_attractFlags.bits & ATTRACT_FADING) && timer < 0xF1) {
                             func_800320B8(1, 1, timer, 0xFFFFFF);
-                            g_attractFlags.bits |= 1;
+                            g_attractFlags.bits |= ATTRACT_FADING;
                         }
                     }
                     timer--;
                 } else {
                     timer = -1;
-                    g_attractFlags.bits &= ~1;
-                    if (g_attractFlags.bits & 0x100) {
-                        i = 4;
+                    g_attractFlags.bits &= ~ATTRACT_FADING;
+                    if (g_attractFlags.bits & ATTRACT_SKIP) {
+                        i = ATTRACT_IMAGES;
                     } else {
                         i++;
                     }
                 }
             } else {
-                timer = 0x4EC;
+                timer = TITLE_IDLE_FRAMES;
                 D_80073998[0] = 0;
                 scene_setFadeScreen(g_attractSkipped);
-                scene_set(1);
-                g_attractState = 2;
+                scene_set(SCENE_TITLE);
+                g_attractState = ATTRACT_ST_TITLE;
             }
             break;
-        case 2:
+        case ATTRACT_ST_TITLE:
             scene_update();
-            if (scene_get() == 5) {
-                g_attractState = 4;
+            if (scene_get() == SCENE_END) {
+                g_attractState = ATTRACT_ST_STARTED;
             }
             func_80032100();
             func_80023A0C();
-            if (!(g_attractFlags.bits & 0x10) && (u8)scene_isTitleIdle() && timer < 0x5B) {
-                func_800320B8(1, 1, 0x5A, 0xFFFFFF);
-                if (g_gameState->unkB != 0xFF && (g_gameState->unkB & 1)) {
-                    opening_soundCmd(0x8301, 0x7003A, 0x5A, 0, 0);
+            if (!(g_attractFlags.bits & ATTRACT_IDLE_FADE) && (u8)scene_isTitleIdle() && timer < TITLE_IDLE_FADE + 1) {
+                func_800320B8(1, 1, TITLE_IDLE_FADE, 0xFFFFFF);
+                if (g_gameState->unkB != DISC_NONE && (g_gameState->unkB & DISC_1)) {
+                    opening_soundCmd(0x8301, TITLE_MUSIC, 0x5A, 0, 0);
                 }
-                g_attractFlags.bits |= 0x10;
+                g_attractFlags.bits |= ATTRACT_IDLE_FADE;
             }
             if (timer == 0) {
-                if (g_attractState != 4) {
-                    g_attractState = 3;
+                if (g_attractState != ATTRACT_ST_STARTED) {
+                    g_attractState = ATTRACT_ST_TIMEOUT;
                 }
-                if (g_gameState->unkB != 0xFF && (g_gameState->unkB & 1)) {
-                    opening_soundCmd(0x100, 0x7003A, 0, 0, 0);
+                if (g_gameState->unkB != DISC_NONE && (g_gameState->unkB & DISC_1)) {
+                    opening_soundCmd(0x100, TITLE_MUSIC, 0, 0, 0);
                 }
             }
-            if ((g_attractFlags.bits & 0x10) || (u8)scene_isTitleIdle()) {
+            if ((g_attractFlags.bits & ATTRACT_IDLE_FADE) || (u8)scene_isTitleIdle()) {
                 timer--;
             }
             break;
         }
         func_80032098();
         opening_attractSwap();
-    } while ((u32)g_attractState < 3);
+    } while ((u32)g_attractState < ATTRACT_ST_TIMEOUT);
     opening_attractFree(arg0);
-    return g_attractState == 4;
+    return g_attractState == ATTRACT_ST_STARTED;
 }
 
 s32 opening_attractInit(s32 idx) {
@@ -146,7 +146,7 @@ s32 opening_attractInit(s32 idx) {
     g_attractData = buf;
     db_register((s32)buf, 0);
     func_800320B8(1, 1, 0, 0xFFFFFF);
-    g_attractState = 0;
+    g_attractState = ATTRACT_ST_START;
     g_attractFlags.bits = 0;
     D_80073998[0] = 0;
     return 0;

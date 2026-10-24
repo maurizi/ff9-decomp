@@ -82,7 +82,17 @@ s32 mbg_update(s32);
 void mbg_setRgb24(s32);
 void mbg_setEndCallback(void (*)(void));
 s32 mbg_getLastFrame(void);
-extern char **D_8019DC68;
+/* movie table (ovl_64's g_mbgMovieLists): list 1 is the disc 1 movies, its entry 0 the opening movie */
+typedef struct {
+    char *path; /* movie file name */
+    s32 pad4[4];
+} MbgMovie; /* 0x14 bytes */
+typedef struct {
+    s16 count;
+    s16 pad2;
+    MbgMovie *movies;
+} MbgMovieList;
+extern MbgMovieList g_mbgMovieLists[];
 
 void mbg_shutdown(void);
 void mbg_stop(void);
@@ -104,6 +114,11 @@ enum {
     OPENING_DONE      /* the title started a game */
 };
 #define OPENING_PAUSE_FRAMES 180
+
+/* db ids (db_lookupRegistered) of the music the title plays through opening_soundCmd, and of its sound bank
+ * (opening_loadMusic); opening_soundCmd records the bank's low half (0x122) with the music */
+#define TITLE_MUSIC      0x7003A
+#define TITLE_MUSIC_BANK 0x90122
 
 /* Module W ("scene" table, the same source as ovl_15's): one SceneMode per scene id. */
 typedef struct {
@@ -187,6 +202,24 @@ extern TitleMenu g_titleMenu;
 #define MOVIE_DONE      0x80   /* go to the title (opening_movieOnEnd, or no movie) */
 #define MOVIE_MUSIC     0x100  /* title music started */
 #define MOVIE_IDLE_FADE 0x1000 /* the title's idle timeout started its fade-out */
+/* g_movieState: opening_movieThenTitle */
+enum {
+    MOVIE_ST_START,   /* plays the movie with disc 1 in, else straight to MOVIE_ST_END */
+    MOVIE_ST_OPEN,    /* MBG_init, mbg_play */
+    MOVIE_ST_PLAY,
+    MOVIE_ST_END,     /* waits for MOVIE_DONE and the CD, then enters the title */
+    MOVIE_ST_TITLE,   /* runs the scenes until the idle timeout or SCENE_END */
+    MOVIE_ST_TIMEOUT, /* returns 0 */
+    MOVIE_ST_STARTED  /* returns 1 */
+};
+/* g_attractState: opening_attract */
+enum {
+    ATTRACT_ST_START,
+    ATTRACT_ST_IMAGES, /* the ATTRACT_IMAGES images of the set */
+    ATTRACT_ST_TITLE,
+    ATTRACT_ST_TIMEOUT, /* returns 0 */
+    ATTRACT_ST_STARTED  /* returns 1 */
+};
 #define TITLE_IDLE_FRAMES 0x4EC /* frames on the title before the attract loop goes on */
 #define TITLE_IDLE_FADE   0x5A  /* fade-out at the end of those */
 

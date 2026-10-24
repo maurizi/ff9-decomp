@@ -90,10 +90,10 @@ void opening_loadMusic(void) {
     s32 a;
     s32 b;
 
-    a = (s32)db_lookupRegistered(4, 0x7003A, 0);
-    memmove(g_gameState->unk1C->unk814, (void *)a, (s32)db_lookupRegistered(5, 0x7003A, 0));
-    a = (s32)db_lookupRegistered(4, 0x90122, 0);
-    b = (s32)db_lookupRegistered(5, 0x90122, 0);
+    a = (s32)db_lookupRegistered(4, TITLE_MUSIC, 0);
+    memmove(g_gameState->unk1C->unk814, (void *)a, (s32)db_lookupRegistered(5, TITLE_MUSIC, 0));
+    a = (s32)db_lookupRegistered(4, TITLE_MUSIC_BANK, 0);
+    b = (s32)db_lookupRegistered(5, TITLE_MUSIC_BANK, 0);
     func_80055DF4();
     func_80055E14(a, b, 1);
 }

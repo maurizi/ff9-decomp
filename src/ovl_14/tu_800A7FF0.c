@@ -9,7 +9,7 @@ void scene_init(void) {
     g_scene.cur = 0;
     g_scene.unk2 = 0;
     g_scene.fadeScreen = 0;
-    for (; i < 6; i++, m++) {
+    for (; i < SCENE_COUNT; i++, m++) {
         if (m->init != NULL) {
             m->init();
         }
@@ -55,12 +55,12 @@ s32 scene_checkDisc(void) {
     prev = g_gameState->unkB;
     do {
         func_8001DCB8();
-    } while (g_gameState->unkB == 0xFF && ++i < 10);
+    } while (g_gameState->unkB == DISC_NONE && ++i < 10);
     func_80033D1C(1);
     if (scene_isDiscGone(prev, g_gameState->unkB)) {
         return scene_discIndex(prev);
     }
-    return 0xFF;
+    return DISC_NONE;
 }
 
 s32 scene_discIndex(s32 arg0) {
@@ -86,12 +86,12 @@ s32 scene_isTitleIdle(void) {
     if (func_8002F810() != 0) {
         return 0;
     }
-    return g_scene.cur == 1;
+    return g_scene.cur == SCENE_TITLE;
 }
 
 void scene_setFadeScreen(s32 arg0) {
     g_scene.fadeScreen = arg0;
-    if (scene_get() == 1) {
+    if (scene_get() == SCENE_TITLE) {
         opening_titleRefresh();
     }
 }

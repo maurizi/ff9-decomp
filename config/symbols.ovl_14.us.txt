@@ -116,3 +116,4 @@ g_attractTpages = 0x800AB420; // [code] their DR_TPAGEs
 g_attractState = 0x800AB440; // [code] state of opening_attract
 g_bootScreenSprite = 0x800AB448; // [code] sprite of the boot screen, per buffer
 g_bootScreenTpage = 0x800AB470; // [code] its DR_TPAGE
+g_mbgMovieLists = 0x8019DC5C; // [code] ovl_64 movie list table at this address (ovl_64 is loaded alongside this overlay)
