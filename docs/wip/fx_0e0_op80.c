@@ -1,12 +1,13 @@
-/* Draft of fx_0e0 fx_0e0_op80. Status: 268 aligned mismatches (112 ignoring registers and spill offsets); equivalent
- * by construction, untested in the emulator. One temporary per case block fixed most of the global allocation (932
- * rows before); since then: one t for the frame-derived angle of cases 6, 7, 8 and 10 (the original keeps it in s6;
- * case 10 tints with 0xF5 - ((t * 0xF5) >> 12), t = frame << 8), and several adjacent statement swaps (the order of
- * two read-modify-writes of work fields is the reverse of what the scheduler output suggests).
- * Open: the original keeps the background x offset (xo, spill slot 0x7C) as a variable whose per-case `xo = 0` stores
- * survive; here CSE deletes them and combine folds xo to 0, which shifts the spill slots. The 0x248 call's col/rot
- * share stack space with case 6's position (union Fx0e0Tmp). The model-position setup in mode 1 keeps two stores per
- * field in the original (flow deletes the first here). */
+/* Draft of fx_0e0 fx_0e0_op80. Status: 234 aligned mismatches (92 ignoring registers and spill offsets); equivalent
+ * by construction, untested in the emulator. Pass 3 fixes: a dead-store-only if/else after the col/scl/xo = 0 inits
+ * ends cse's block, so the per-case `xo = 0` stores survive (spill slot 0x7C as in the original); mode 1 stores all
+ * three unk24 copies before the two `-=` (flow then keeps both stores and reload_cse turns the re-reads into the
+ * original's register copies); case 8's spark loop counter is r1, not i (the original keeps case 6's counter in s3
+ * and case 8's in s1, so they are different variables; frame size now matches); variable roles searched
+ * (build/w/roles.py in the pass-3 worktree) and adjacent statement swaps. Open: case 6's counter i is spilled here
+ * (s3 in the original; local-alloc gives s3/s4 to case 6 block-locals first), case 6/7 statement order.
+ * Earlier: one temporary per case block; one t for the frame-derived angle of cases 6, 7, 8 and 10; the 0x248 call's
+ * col/rot share stack space with case 6's position (union Fx0e0Tmp). */
 #include "fxmod/fx_0e0.h"
 
 typedef struct {
@@ -119,10 +120,10 @@ s32 fx_0e0_op80(s32 mode, Fx0e0Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
         BTLFX_COPY_SVEC(&work->unk8, &D_801EA8B0);
         D_801EA8B0.vz -= 0x400;
         work->unk30.vy = work->unk30.vx = 0x2800;
-        work->unk24.vy = work->unk8.vy;
-        work->unk24.vy -= 0x3800;
         work->unk24.vx = work->unk8.vx;
+        work->unk24.vy = work->unk8.vy;
         work->unk24.vz = work->unk8.vz;
+        work->unk24.vy -= 0x3800;
         work->unk24.vz -= 0x1C00;
         work->unk30.vz = 0x1800;
         work->unk10.vx = work->unk24.vx;
@@ -134,6 +135,13 @@ s32 fx_0e0_op80(s32 mode, Fx0e0Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
         col = 0;
         scl = 0;
         xo = 0;
+        if (mode) {
+            a1 = 1;
+            a2 = 1;
+        } else {
+            a1 = 2;
+            a2 = 2;
+        }
         frame = entry->unk0;
         switch (work->unk0) {
         case 6:
@@ -143,8 +151,8 @@ s32 fx_0e0_op80(s32 mode, Fx0e0Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             a1 = t >> 2;
             BTLFX_COPY_SVEC(&work->unk18, &work->unk8);
             work->unk18.vy -= 0x400 + (ex->math_sin(a1) >> 1);
-            scl = 0x80;
             xo = 0;
+            scl = 0x80;
             env->unk2C->unk0[3].vx = work->unk18.vx;
             env->unk2C->unk0[3].vy = work->unk18.vy;
             env->unk2C->unk0[3].vz = work->unk18.vz;
@@ -181,10 +189,10 @@ s32 fx_0e0_op80(s32 mode, Fx0e0Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             work->unk24.vz += 0x8FC;
             i = 0;
             if (frame > 0x32) {
-                r1 = (frame - 0x32) << 8;
-                a2 = r1 >> 2;
+                a = (frame - 0x32) << 8;
+                a2 = a >> 2;
                 sc.vx = sc.vy = (ex->math_sin(a2) * 5) / 2 + 0x400;
-                sc.vz = r1 + 0x1800;
+                sc.vz = a + 0x1800;
                 rot.vx = -0x400;
                 rot.vy = 0;
                 u.v.vx = D_801EA8B0.vx;
@@ -201,8 +209,8 @@ s32 fx_0e0_op80(s32 mode, Fx0e0Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
                     rot.vz += 0x400;
                     u.v.vy += 0x20;
                 } while (i <= 0);
-                sc.vx = sc.vz = (ex->math_sin(r1 >> 2) * 5) / 2 + 0x1000;
-                sc.vy = ((r1 * 0x300) >> 12) + 0x800;
+                sc.vx = sc.vz = (ex->math_sin(a >> 2) * 5) / 2 + 0x1000;
+                sc.vy = ((a * 0x300) >> 12) + 0x800;
                 rot.vx = 0;
                 rot.vy = frame * 0x8D;
                 rot.vz = 0;
@@ -210,7 +218,7 @@ s32 fx_0e0_op80(s32 mode, Fx0e0Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
                 u.v.vy = D_801EA8B0.vy;
                 u.v.vz = D_801EA8B0.vz;
                 ex->Hi_DrawEffModel(&rot, &u.v, (s32)&sc, work->unk74);
-                a3 = r1 >> 1;
+                a3 = a >> 1;
                 ex->Hi_ModifyEffModelRGB(work->unk74, (ex->math_sin(a3) >> 5) - 0x80, (ex->math_sin(a3) >> 5) - 0x80,
                                          (ex->math_sin(a3) >> 5) - 0x80);
                 i = 0;
@@ -302,7 +310,7 @@ s32 fx_0e0_op80(s32 mode, Fx0e0Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             }
             break;
         case 8:
-            t = frame << 7;
+            a2 = frame << 7;
             col = 0xBC;
             scl = 0x200;
             xo = 0;
@@ -313,11 +321,11 @@ s32 fx_0e0_op80(s32 mode, Fx0e0Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
                                          ((frame - 0x1A) << 7) / 6);
             }
             if (frame >= 0xA) {
-                for (i = 0; i < 3; i++) {
+                for (r1 = 0; r1 < 3; r1++) {
                     sp = ex->btlfx_poolSpawn((s16 *)entry->unk10);
                     if (sp != NULL) {
-                        sp->unkE = 0x6A4 - ((0x1000 - t) >> 1);
-                        sp->unkC = work->unk18.vx - ((t >> 4) + 0x1800) + ex->btlfx_randCentered(0x200);
+                        sp->unkE = 0x6A4 - ((0x1000 - a2) >> 1);
+                        sp->unkC = work->unk18.vx - ((a2 >> 4) + 0x1800) + ex->btlfx_randCentered(0x200);
                         sp->unk10 = work->unk18.vz + ex->btlfx_randCentered(0x1C00);
                         sp->unk4 = ex->btlfx_randCentered(0x100);
                         sp->unk6 = -0x140 - (ex->btlfx_rand() & 0xFF);
