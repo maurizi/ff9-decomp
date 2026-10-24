@@ -25,7 +25,7 @@
  * sparks block and the unk58 block's i * 0x150 to sp+0xCC (tr = &D_801EBB90[i] gives that but grows the frame by 8);
  * the original's reload register is t8 (all of t0-t7 used somewhere), ours t3); the mode-1 spark init's
  * i * 0x150 copy (s6 there, spilled here). *
- * Pass 28 update: 67 aligned mismatches, 11 ignoring registers (of which 4 are symbol-addend artefacts:
+ * Pass 28 update: 55 aligned mismatches, 11 ignoring registers (7 real) (of which 4 are symbol-addend artefacts:
  * D_801EA278/D_801EA2D8/D_801EA3E8 = base + 8). Levers: the unk58 block's SVECTOR at sp+0x90 is
  * ((SVECTOR *)out)[1] (vx 0x90, vz 0x94); variables shared between distant blocks become long global pseudos
  * that take callee-saved registers, so block-specific copies (unk4C's dz/dx instead of c/a, the ring loop's lo,
@@ -43,8 +43,9 @@
  * Open there: loop.c hoists the pad constant 0x80 out of the outer loop (the original only out of the
  * inner one): move_movables' test threshold * savings * lifetime >= insn_count passes here (threshold 22,
  * 2 * 296 insns); the original apparently has one more early move or a longer loop.
- * Open elsewhere: the ring/twin-model products are LO pseudos reloaded through t8 in the original (here
- * reload evicts them from LO into v1); unk58's 8 is a variable (k8) set before
+ * The ring and twin-model loops use different variables for the cos product: a product pseudo in LO stays
+ * there through reload only if it belongs to one basic block whose block needed no MD spill (spill_hard_reg),
+ * so a shared variable got evicted to v1 (the original reloads it from LO through t8). unk58's 8 is a variable (k8) set before
  * the loop: a long global pseudo, spilled and rematerialized through t8 as in the original. */
 #include "fxmod/fx_1f2.h"
 
@@ -170,6 +171,7 @@ s32 fx_1f2_op80(s32 mode, Fx1f2Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
     s32 lo_m1s;
     s32 a_m1s;
     s32 lo_r0;
+    s32 lo_md;
     Fx1f2Model *md_r28;
     Fx1f2Trail *tr_sp;
     s32 lo_sp;
@@ -482,10 +484,10 @@ s32 fx_1f2_op80(s32 mode, Fx1f2Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
             }
             for (i = 0; i < 2; i++) {
                 md = &D_801EA410[i];
-                lo_r0 = ex->math_cos(md->unk8.vz) * md->unk4;
+                lo_md = ex->math_cos(md->unk8.vz) * md->unk4;
                 md->unk10.vx = 0;
                 md->unk10.vz = 0;
-                md->unk10.vy = lo_r0 >> 12;
+                md->unk10.vy = lo_md >> 12;
                 ex->Hi_DrawEffModel(&D_801EA410[i].unk8, &D_801EA410[i].unk10, (s32)&D_801EA410[i].unk20, md->unk0);
                 md->unk4 -= 4;
             }
