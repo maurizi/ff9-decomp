@@ -190,28 +190,28 @@ s32 func_80057534(u32 code) {
 }
 
 void akao_keyOn(u32 x) {
-    SPU_REG16(0x1F801D88) = x;
-    SPU_REG16(0x1F801D8A) = x >> 16;
+    SPU_REG16(SPU_KEY_ON_LO) = x;
+    SPU_REG16(SPU_KEY_ON_HI) = x >> 16;
 }
 
 void akao_keyOff(s32 x) {
-    SPU_REG16(0x1F801D8C) = x;
-    SPU_REG16(0x1F801D8E) = (u32)x >> 16;
+    SPU_REG16(SPU_KEY_OFF_LO) = x;
+    SPU_REG16(SPU_KEY_OFF_HI) = (u32)x >> 16;
 }
 
 void akao_setReverbVoices(u32 x) {
-    SPU_REG16(0x1F801D98) = x;
-    SPU_REG16(0x1F801D9A) = x >> 16;
+    SPU_REG16(SPU_REVERB_ON_LO) = x;
+    SPU_REG16(SPU_REVERB_ON_HI) = x >> 16;
 }
 
 void akao_setNoiseVoices(u32 x) {
-    SPU_REG16(0x1F801D94) = x;
-    SPU_REG16(0x1F801D96) = x >> 16;
+    SPU_REG16(SPU_NOISE_ON_LO) = x;
+    SPU_REG16(SPU_NOISE_ON_HI) = x >> 16;
 }
 
 void akao_setPitchModVoices(u32 x) {
-    SPU_REG16(0x1F801D90) = x;
-    SPU_REG16(0x1F801D92) = x >> 16;
+    SPU_REG16(SPU_PITCH_MOD_LO) = x;
+    SPU_REG16(SPU_PITCH_MOD_HI) = x >> 16;
 }
 
 void akao_setVoiceVolume(s32 v, u32 l, u32 r, s32 vol) {
@@ -221,8 +221,8 @@ void akao_setVoiceVolume(s32 v, u32 l, u32 r, s32 vol) {
         l >>= 7;
         r >>= 7;
     }
-    ((SpuVoiceReg *)0x1F801C00)[v].volL = l & 0x7FFF;
-    ((SpuVoiceReg *)0x1F801C00)[v].volR = r & 0x7FFF;
+    ((SpuVoiceReg *)SPU_VOICE_BASE)[v].volL = l & 0x7FFF;
+    ((SpuVoiceReg *)SPU_VOICE_BASE)[v].volR = r & 0x7FFF;
 }
 
 void akao_setVoicePitch(s32 v, s32 x) {
@@ -271,7 +271,7 @@ void akao_writeVoice(s32 v, AkaoVoiceRegs *p, s32 vol) {
     s32 b;
 
     p->dirty = 0;
-    r = (u16 *)(0x1F801C00 + v * 16);
+    r = (u16 *)(SPU_VOICE_BASE + v * 16);
     if (vol == 0) {
         a = p->volL;
         b = p->volR;

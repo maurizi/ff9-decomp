@@ -52,7 +52,7 @@ void func_800A882C(void) {
     if (!(f & 0x1000)) {
         if (!(gd->unk0 & 0x100) || (f & 0x20)) {
             gd->unk0 |= 0x100;
-            func_8005562C(0);
+            akao_sendCmd99(0);
             game_resumeClock(1);
             for (i = 1; i >= 0; i--) {
                 g_padActuator[i].unk1 = 0;
@@ -97,7 +97,7 @@ void func_800A882C(void) {
         return;
     }
     game_resumeClock(0);
-    func_80055698(0);
+    akao_sendCmd98(0);
     g_padPortMask[0] &= ~8;
     func_800EA34C();
     g_gameState->unk1C->unk0 &= ~0x20;
@@ -211,8 +211,8 @@ s32 func_800A8F8C(void) {
         s32 id = D_800F51E8[i] | 0x90000;
         s32 a = (s32)db_lookupRegistered(4, id, 0);
         s32 b = (s32)db_lookupRegistered(5, id, 0);
-        func_80055DF4();
-        func_80055E14(a, b, 1);
+        akao_beginBankUpload();
+        akao_uploadBank(a, b, 1);
     }
     return 0;
 }
@@ -660,19 +660,19 @@ loop:
         st->unk0 = 7;
         goto loop;
     case 6:
-        if (func_80055DCC() != 0) {
+        if (akao_getSpuTransferState() != 0) {
             break;
         }
         h = db_lookup((s32)cd->unk8, 2, 0x90000, 0);
         if (arg2->unk4 == -1) {
-            func_80055D80(h, 0);
+            akao_loadBankRetry(h, 0);
         } else {
             func_80056048(h, arg2->unk4 & 3, 0);
         }
         st->unk0 = 5;
         goto loop;
     case 7:
-        if (func_80055DCC() != 0) {
+        if (akao_getSpuTransferState() != 0) {
             break;
         }
         st->unk0 = 0;
@@ -1774,7 +1774,7 @@ s32 btl_soundCmd(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4) {
                 g_gameState->unk1C->unk824[0] = akao_playMusic(g_gameState->unk1C->unk814);
                 gb = g_gameState->unk1C;
                 if (!(gb->unk0 & 0x20000000)) {
-                    func_80055A34(gb->unk824[0], 0x1E, 0, gb->unk826[0]);
+                    akao_fadeMusicVolumeFrom(gb->unk824[0], 0x1E, 0, gb->unk826[0]);
                 }
                 g_gameState->unk1C->unk0 |= 0x30000000;
             }
@@ -1789,35 +1789,35 @@ s32 btl_soundCmd(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4) {
             if ((arg0 & 0x3F) != 1) {
                 break;
             }
-            func_800559C8(g_gameState->unk1C->unk824[0], arg2);
+            akao_setMusicVolume(g_gameState->unk1C->unk824[0], arg2);
             g_gameState->unk1C->unk826[0] = arg2;
             return 0;
         case 3:
             if ((arg0 & 0x3F) != 1) {
                 break;
             }
-            func_800559FC(g_gameState->unk1C->unk824[0], arg2, arg3);
+            akao_fadeMusicVolume(g_gameState->unk1C->unk824[0], arg2, arg3);
             func_800AE9C8(arg3, arg2);
             return 0;
         case 4:
             if ((arg0 & 0x3F) != 1) {
                 break;
             }
-            func_80055A34(g_gameState->unk1C->unk824[0], arg2, arg3, arg4);
+            akao_fadeMusicVolumeFrom(g_gameState->unk1C->unk824[0], arg2, arg3, arg4);
             func_800AE9C8(arg4, arg2);
             return 0;
         case 6:
             if ((arg0 & 0x3F) != 1) {
                 break;
             }
-            func_800559FC(0, arg2, arg3);
+            akao_fadeMusicVolume(0, arg2, arg3);
             func_800AE9C8(arg3, arg2);
             return 0;
         case 10:
             if ((arg0 & 0x3F) != 6) {
                 break;
             }
-            func_80055604(arg1);
+            akao_sendCmd92(arg1);
             return 0;
         case 12:
             goto stream;
@@ -1841,40 +1841,40 @@ s32 btl_soundCmd(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4) {
         case 2:
             switch (arg0 & 0x3F) {
             case 1:
-                func_80055764(h, arg2, arg3);
+                akao_setSeVolume(h, arg2, arg3);
                 return 0;
             case 5:
-                func_80055850(h, arg2, arg3);
+                akao_sendCmdA2(h, arg2, arg3);
                 return 0;
             }
             return -1;
         case 3:
             switch (arg0 & 0x3F) {
             case 1:
-                func_800557A8(h, arg2, arg3, arg4);
+                akao_fadeSeVolume(h, arg2, arg3, arg4);
                 return 0;
             case 5:
-                func_80055894(h, arg2, arg3, arg4);
+                akao_sendCmdA3(h, arg2, arg3, arg4);
                 return 0;
             }
             return -1;
         case 5:
             switch (arg0 & 0x3F) {
             case 1:
-                func_80055704(arg2);
+                akao_setAllSeVolume(arg2);
                 return 0;
             case 5:
-                func_800557F0(arg2);
+                akao_sendCmdAA(arg2);
                 return 0;
             }
             return -1;
         case 6:
             switch (arg0 & 0x3F) {
             case 1:
-                func_80055730(arg2, arg3);
+                akao_fadeAllSeVolume(arg2, arg3);
                 return -1;
             case 5:
-                func_8005581C(arg2, arg3);
+                akao_sendCmdAB(arg2, arg3);
                 return -1;
             }
             return -1;
@@ -1922,14 +1922,14 @@ stream:
         }
         D_800F51F4 = func_800AE570(D_800F51F0, &size);
         if (D_800F51EC == -1) {
-            func_80055DF4();
+            akao_beginBankUpload();
         }
         ge = g_gameState->unk1C;
         cdRead_init(ge->unk854, D_800F51F4, size, (void *)ge->unk8C0, 0, g_gameState->unk1C->unk878, func_800AE844);
         g_gameState->unk1C->unk851 = 3;
         break;
     case 3:
-        if (cdRead_update(gd->unk854) == 0 && func_80055DCC() == 0) {
+        if (cdRead_update(gd->unk854) == 0 && akao_getSpuTransferState() == 0) {
             gf = g_gameState->unk1C;
             if (gf->unk854[0].unkC + gf->unk854[0].unk10 < gf->unk87C) {
                 gf->unk8C0 = (s32)gf->unk854[0].unk8;
@@ -2105,7 +2105,7 @@ void func_800AE844(Unk800AE844 *arg0) {
     }
     n = arg0->unk8 + n - p;
     if (D_800F51EC == -1) {
-        func_80055E14(p, n, 0);
+        akao_uploadBank(p, n, 0);
     } else {
         func_80056048(p, D_800F51EC, 0);
     }

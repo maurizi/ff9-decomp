@@ -1441,7 +1441,7 @@ s32 mbg_getLastFrame(void);
 s32 cd_findFile(char *);
 void file_getTimRects(void *, RECT **, RECT **); /* TIM: clut rect, image rect */
 u8 cd_seekStreamAsync(s32);
-void func_80056248(s32);
+void akao_sendCmdE4(s32);
 
 /* field setup (func_800AED6C) */
 void func_800AC5F0(void);
@@ -1450,9 +1450,9 @@ void func_800B1C4C(void);
 /* main exe: candidates for ff9.h */
 extern s32 D_8007BD28;
 extern u8 *D_8007BD30;
-void func_800559FC(s32, s32, s32);
-void func_800557A8(void *, s32, s32, s32);
-void func_800559C8(s32, s32);
+void akao_fadeMusicVolume(s32, s32, s32);
+void akao_fadeSeVolume(void *, s32, s32, s32);
+void akao_setMusicVolume(s32, s32);
 void preload_setVramRect(PreloadEntry *, s16, s16, s16, s16);
 u8 func_80053A10(s32, s32);
 
@@ -1512,31 +1512,31 @@ void akao_stopMusic(s32);
 void akao_saveMusic(void);
 s32 akao_playMusicCount(void *, s32);
 void akao_playSe(s32, s32, s32, s32);
-void func_80055604(s32);
-void func_80055704(s32);
-void func_80055730(s32, s32);
-void func_80055764(s32, s32, s32);
-void func_800557F0(s32);
-void func_8005581C(s32, s32);
-void func_80055850(s32, s32, s32);
-void func_80055894(s32, s32, s32, s32);
-void func_800558DC(s32);
-void func_80055908(s32, s32);
-void func_8005593C(s32, s32, s32);
-void func_80055980(s32, s32, s32, s32);
-void func_80055A34(s32, s32, s32, s32);
-void func_80055B6C(s32);
-void func_80055B98(s32, s32);
-void func_80055BCC(s32, s32, s32);
-void func_80055C08(s32);
-void func_80055C34(s32, s32);
-void func_80055C68(s32, s32, s32);
-void func_80055CA4(s32);
-void func_80055CD0(s32, s32);
-void func_80055D04(s32, s32, s32);
-s32 func_80055DCC(void);
-void func_800561C4(s32, s32, s32);
-void func_800562B0(s32);
+void akao_sendCmd92(s32);
+void akao_setAllSeVolume(s32);
+void akao_fadeAllSeVolume(s32, s32);
+void akao_setSeVolume(s32, s32, s32);
+void akao_sendCmdAA(s32);
+void akao_sendCmdAB(s32, s32);
+void akao_sendCmdA2(s32, s32, s32);
+void akao_sendCmdA3(s32, s32, s32, s32);
+void akao_sendCmdAC(s32);
+void akao_sendCmdAD(s32, s32);
+void akao_sendCmdA4(s32, s32, s32);
+void akao_sendCmdA5(s32, s32, s32, s32);
+void akao_fadeMusicVolumeFrom(s32, s32, s32, s32);
+void akao_sendCmdD0(s32);
+void akao_sendCmdD1(s32, s32);
+void akao_sendCmdD2(s32, s32, s32);
+void akao_sendCmdD4(s32);
+void akao_sendCmdD5(s32, s32);
+void akao_sendCmdD6(s32, s32, s32);
+void akao_sendCmdD8(s32);
+void akao_sendCmdD9(s32, s32);
+void akao_sendCmdDA(s32, s32, s32);
+s32 akao_getSpuTransferState(void);
+void akao_sendCmdE0(s32, s32, s32);
+void akao_sendCmdE6(s32);
 
 /* GameData.unk828/unk82C as an array (the slot index needs `base + slot*4`) until ff9.h has it */
 typedef struct {

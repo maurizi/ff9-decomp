@@ -1746,3 +1746,63 @@ func_800554D4 akao_getActiveSe  # [code] OR of the ids (AkaoChannel.unk28) of th
 func_8005553C akao_isSePlaying  # [code] 1 when an active sound-effect channel has this id
 func_800599D4 akao_stopSeq  # [code] stops a sequence's channels (akao_cmdStopMusic/StopMusicNow)
 func_80059AA8 akao_stopSeChannels  # [code] stops the sound-effect channels matching a mask or one channel id (akao_cmdStopSe)
+func_800555DC akao_sendCmd90  # [code] fills g_akaoArgs and runs akao_command(0x90)
+func_80055604 akao_sendCmd92  # [code] fills g_akaoArgs and runs akao_command(0x92)
+func_80055704 akao_setAllSeVolume  # [code] fills g_akaoArgs and runs akao_command(0xA8)
+func_80055730 akao_fadeAllSeVolume  # [code] fills g_akaoArgs and runs akao_command(0xA9)
+func_80055764 akao_setSeVolume  # [code] fills g_akaoArgs and runs akao_command(0xA0)
+func_800557A8 akao_fadeSeVolume  # [code] fills g_akaoArgs and runs akao_command(0xA1)
+func_800557F0 akao_sendCmdAA  # [code] fills g_akaoArgs and runs akao_command(0xAA)
+func_8005581C akao_sendCmdAB  # [code] fills g_akaoArgs and runs akao_command(0xAB)
+func_80055850 akao_sendCmdA2  # [code] fills g_akaoArgs and runs akao_command(0xA2)
+func_80055894 akao_sendCmdA3  # [code] fills g_akaoArgs and runs akao_command(0xA3)
+func_800558DC akao_sendCmdAC  # [code] fills g_akaoArgs and runs akao_command(0xAC)
+func_80055908 akao_sendCmdAD  # [code] fills g_akaoArgs and runs akao_command(0xAD)
+func_8005593C akao_sendCmdA4  # [code] fills g_akaoArgs and runs akao_command(0xA4)
+func_80055980 akao_sendCmdA5  # [code] fills g_akaoArgs and runs akao_command(0xA5)
+func_800559C8 akao_setMusicVolume  # [code] fills g_akaoArgs and runs akao_command(0xC0)
+func_800559FC akao_fadeMusicVolume  # [code] fills g_akaoArgs and runs akao_command(0xC1)
+func_80055A34 akao_fadeMusicVolumeFrom  # [code] fills g_akaoArgs and runs akao_command(0xC2)
+func_80055A74 akao_sendCmdC4  # [code] fills g_akaoArgs and runs akao_command(0xC4)
+func_80055AA8 akao_sendCmdC5  # [code] fills g_akaoArgs and runs akao_command(0xC5)
+func_80055B6C akao_sendCmdD0  # [code] fills g_akaoArgs and runs akao_command(0xD0)
+func_80055B98 akao_sendCmdD1  # [code] fills g_akaoArgs and runs akao_command(0xD1)
+func_80055BCC akao_sendCmdD2  # [code] fills g_akaoArgs and runs akao_command(0xD2)
+func_80055C08 akao_sendCmdD4  # [code] fills g_akaoArgs and runs akao_command(0xD4)
+func_80055C34 akao_sendCmdD5  # [code] fills g_akaoArgs and runs akao_command(0xD5)
+func_80055C68 akao_sendCmdD6  # [code] fills g_akaoArgs and runs akao_command(0xD6)
+func_80055CA4 akao_sendCmdD8  # [code] fills g_akaoArgs and runs akao_command(0xD8)
+func_80055CD0 akao_sendCmdD9  # [code] fills g_akaoArgs and runs akao_command(0xD9)
+func_80055D04 akao_sendCmdDA  # [code] fills g_akaoArgs and runs akao_command(0xDA)
+func_80055D40 akao_stopMusicNow  # [code] fills g_akaoArgs and runs akao_command(0xF0)
+func_80055D60 akao_stopAllSe  # [code] fills g_akaoArgs and runs akao_command(0xF1)
+func_80056228 akao_sendCmdE2  # [code] fills g_akaoArgs and runs akao_command(0xE2)
+func_80056248 akao_sendCmdE4  # [code] fills g_akaoArgs and runs akao_command(0xE4)
+func_80056278 akao_sendCmdE5  # [code] fills g_akaoArgs and runs akao_command(0xE5)
+func_800562B0 akao_sendCmdE6  # [code] fills g_akaoArgs and runs akao_command(0xE6)
+func_80056388 akao_sendCmdED  # [code] fills g_akaoArgs and runs akao_command(0xED)
+func_8005562C akao_sendCmd99  # [code] akao_command 0x99/0x9B/0x9D/0x9F for x = 0/1/2/3
+func_80055698 akao_sendCmd98  # [code] akao_command 0x98/0x9A/0x9C/0x9E for x = 0/1/2/3
+func_80055230 akao_setSeTables  # [code] after the header check, points D_800809DC/D_800809E4/D_80083148/D_800809E8 at the tables of an SE data block
+func_80055DCC akao_readCounter  # [code] reads D_800809E0 until two reads agree (updated from the tick interrupt)
+func_80055DF4 akao_beginBankUpload  # [code] arms akao_uploadBank (D_80083158 bit 0), clears its state
+func_80055E14 akao_uploadBank  # [code] streams an "AKAO" bank in parts: header, instrument table to D_8007F970, sample data to SPU RAM (game_loadCommonAkao)
+func_80056130 akao_setCdMix  # [code] CdMix with the CD volume (stereo, or both sides mixed when D_8008315C bit 1)
+func_800561C4 akao_sendCmdE0  # [code] checks the AKAO header, then akao_command(0xE0) with the data pointer
+func_800563C0 akao_sendCmdEC  # [code] checks the AKAO header, then akao_command(0xEC) with the data and an SPU address (0x59100 / 0x4F100)
+func_80056448 akao_sendCmdE8  # [code] akao_command(0xE8) when b != 0
+func_800562E0 akao_uploadSeBank  # [code] checks the AKAO header, uploads its sample data to SPU 0x59100 (or 0x4F100) and keeps a copy of the header in D_8007F720
+func_8005658C akao_relocInstruments  # [code] copies n 16-byte instrument entries, adding the SPU base address to the start/loop words
+func_800565DC akao_checkHeader  # [code] 0 when the block starts with "AKAO"
+func_800565F0 akao_onSpuTransferDone  # [code] SPU transfer callback: clears D_800809E0
+func_80056614 akao_beginSpuTransfer  # [code] D_800809E0 = 1 and installs akao_onSpuTransferDone
+func_80056644 akao_spuWrite  # [code] akao_beginSpuTransfer + SpuWrite
+func_80056694 akao_spuRead  # [code] akao_beginSpuTransfer + SpuRead
+func_800566D0 akao_waitSpuTransfer  # [code] spins while D_800809E0 == 1 (double read)
+func_80056700 akao_loadBank  # [code] header check, then akao_loadBankAt with the bank's own slot and SPU address
+func_80056750 akao_loadBankAt  # [code] uploads an AKAO bank's samples to SPU addr and its relocated instruments to D_8007F970[slot]
+func_80055D80 akao_loadBankRetry  # [code] repeats akao_loadBank while it returns 1
+D_800809E0 g_akaoSpuBusy  # [code] 1 while an SPU transfer runs (akao_beginSpuTransfer/akao_onSpuTransferDone), -1 after a bad bank
+func_8005936C akao_shiftInstrumentUp  # [code] flag 0x20: instruments 0x20-0x7F of a channel move to the bank 0x20000 higher in SPU RAM (index + 0x30)
+func_800593C0 akao_shiftInstrumentDown  # [code] the reverse of akao_shiftInstrumentUp
+# ff9.h: SPU register address constants (SPU_MAIN_VOL_L .. SPU_CD_VOL_R, SPU_VOICE_BASE) used in akao*.c

@@ -132,8 +132,8 @@ s32 game_loadCommonAkao(void) {
     s32 addr = (s32)db_lookupRegistered(4, 0x90084, 0);
     s32 size = (s32)db_lookupRegistered(5, 0x90084, 0);
 
-    func_80055DF4();
-    func_80055E14(addr, size, 1);
+    akao_beginBankUpload();
+    akao_uploadBank(addr, size, 1);
     return 0;
 }
 

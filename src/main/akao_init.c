@@ -1,6 +1,6 @@
 #include "ff9.h"
 
-void func_8005658C(s32 *src, Unk8005EBB4 *dst, u32 base, s32 n) {
+void akao_relocInstruments(s32 *src, Unk8005EBB4 *dst, u32 base, s32 n) {
     s32 *d = (s32 *)dst;
 
     do {
@@ -13,65 +13,65 @@ void func_8005658C(s32 *src, Unk8005EBB4 *dst, u32 base, s32 n) {
     } while (--n != 0);
 }
 
-s32 func_800565DC(s32 *a) {
+s32 akao_checkHeader(s32 *a) {
     return *a - 0x4F414B41; /* "AKAO" */
 }
 
-void func_800565F0(void) {
+void akao_onSpuTransferDone(void) {
     SpuSetTransferCallback(NULL);
-    D_800809E0 = 0;
+    g_akaoSpuBusy = 0;
 }
 
-void func_80056614(void) {
-    D_800809E0 = 1;
-    SpuSetTransferCallback(func_800565F0);
+void akao_beginSpuTransfer(void) {
+    g_akaoSpuBusy = 1;
+    SpuSetTransferCallback(akao_onSpuTransferDone);
 }
 
-void func_80056644(void *a, s32 b) {
-    D_800809E0 = 1;
-    SpuSetTransferCallback(func_800565F0);
+void akao_spuWrite(void *a, s32 b) {
+    g_akaoSpuBusy = 1;
+    SpuSetTransferCallback(akao_onSpuTransferDone);
     SpuWrite(a, b);
 }
 
-s32 func_80056694(s32 a, s32 b) {
-    func_80056614();
+s32 akao_spuRead(s32 a, s32 b) {
+    akao_beginSpuTransfer();
     return SpuRead(a, b);
 }
 
-void func_800566D0(void) {
+void akao_waitSpuTransfer(void) {
     s32 a[2];
     do {
         do {
-            a[0] = D_800809E0;
-            a[1] = D_800809E0;
+            a[0] = g_akaoSpuBusy;
+            a[1] = g_akaoSpuBusy;
         } while (a[0] != a[1]);
     } while (a[0] == 1);
 }
 
-s32 func_80056700(s32 bank, s32 wait) {
-    if (func_800565DC((s32 *)bank) != 0) {
+s32 akao_loadBank(s32 bank, s32 wait) {
+    if (akao_checkHeader((s32 *)bank) != 0) {
         return -1;
     }
-    func_80056750((s32 *)bank, wait, ((s32 *)bank)[6], ((s32 *)bank)[4]);
+    akao_loadBankAt((s32 *)bank, wait, ((s32 *)bank)[6], ((s32 *)bank)[4]);
     return 0;
 }
 
-s32 func_80056750(s32 *buf, s32 wait, s32 slot, u32 addr) {
+s32 akao_loadBankAt(s32 *buf, s32 wait, s32 slot, u32 addr) {
     s32 *h;
 
-    func_800566D0();
+    akao_waitSpuTransfer();
     h = buf;
     if (h[0] == 0x4F414B41) {
         SpuSetTransferStartAddr(addr);
         buf += 16;
-        func_80056644(buf + h[7] * 4, h[5]);
-        func_8005658C(buf, &D_8007F970[slot], addr, h[7]);
+        akao_spuWrite(buf + h[7] * 4, h[5]);
+        akao_relocInstruments(buf, &D_8007F970[slot], addr, h[7]);
         if (wait != 0) {
-            func_800566D0();
+            akao_waitSpuTransfer();
         }
         return 0;
     }
-    D_800809E0 = -1;
+    g_akaoSpuBusy = -1;
     return -1;
 }
 
@@ -83,7 +83,7 @@ void akao_initState(void) {
     s32 v;
 
     g_akaoSeq = &g_akaoMainSeq;
-    cnt = (u16 *)0x1F801DAA;
+    cnt = (u16 *)SPU_CTRL;
     v = 0x18;
     D_8007F790 = NULL;
     D_800809EC = g_akaoChannels;
@@ -130,10 +130,10 @@ void akao_initState(void) {
     g_akaoMainSeq.unk72 = 0;
     g_akaoMainSeq.unk70 = 0;
     g_akaoMainSeq.unk78 = 0;
-    *(u16 *)0x1F801D80 = 0x3FFF;
-    *(u16 *)0x1F801D82 = 0x3FFF;
-    *(u16 *)0x1F801DB0 = 0x7FFF;
-    *(u16 *)0x1F801DB2 = 0x7FFF;
+    SPU_REG16(SPU_MAIN_VOL_L) = 0x3FFF;
+    SPU_REG16(SPU_MAIN_VOL_R) = 0x3FFF;
+    SPU_REG16(SPU_CD_VOL_L) = 0x7FFF;
+    SPU_REG16(SPU_CD_VOL_R) = 0x7FFF;
     D_800809B8 = 0;
     D_80080AC4 = 0;
     D_800831C4 = 0;
@@ -203,8 +203,8 @@ void akao_init(void) {
     SpuInitMalloc(4, D_80080990);
     SpuSetTransferMode(0);
     SpuSetTransferStartAddr(0x1010);
-    func_80056644(D_8006F334, 0x40);
-    func_800566D0();
+    akao_spuWrite(D_8006F334, 0x40);
+    akao_waitSpuTransfer();
     akao_initState();
     SpuSetIRQ(0);
     SpuSetIRQCallback(NULL);
@@ -219,9 +219,9 @@ void akao_init(void) {
 }
 
 void akao_quit(void) {
-    if (D_800809E0 == 1) {
-        func_80056644(D_8006F334, 0x40);
-        func_800566D0();
+    if (g_akaoSpuBusy == 1) {
+        akao_spuWrite(D_8006F334, 0x40);
+        akao_waitSpuTransfer();
     }
     while (StopRCnt(0xF2000002) == 0) {
     }

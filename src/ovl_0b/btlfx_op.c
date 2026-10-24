@@ -2077,7 +2077,7 @@ void func_800E9578(void) {
                 e->unk0 = 0;
             } else {
                 n++;
-                func_80055850(0, e->unk0, btl_soundPan(e->unk4));
+                akao_sendCmdA2(0, e->unk0, btl_soundPan(e->unk4));
                 e->unk2++;
             }
         }

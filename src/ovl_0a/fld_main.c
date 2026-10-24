@@ -457,19 +457,19 @@ void fld_exit(void) {
             func_800B0124(0x800, g_gameState->unk1C->unk81C[0], 0, 0, 0);
         }
         func_800B1C4C();
-        func_80056228();
+        akao_sendCmdE2();
         g_gameState->mode = 9;
         g_gameState->unkA = 1;
         break;
     case 7:
         akao_stopSe(-1, 0);
-        func_80056228();
+        akao_sendCmdE2();
         g_gameState->mode = 7;
         g_gameState->unkA = 1;
         break;
     case 4:
         akao_stopSe(-1, 0);
-        func_80056228();
+        akao_sendCmdE2();
         g_gameState->mode = 4;
         g_gameState->unkA = 1;
         break;
@@ -707,8 +707,8 @@ void func_800A9998(void) {
         g_gameState->unk1C->unk0 &= ~0x400000;
     }
     if (g_gameState->unk1C->unk8E4.field->unk20 != -1) {
-        func_80055DF4();
-        func_80055E14((s32)D_80067944 + 0x146F00, g_gameState->unk1C->unk8E4.field->unk20, 1);
+        akao_beginBankUpload();
+        akao_uploadBank((s32)D_80067944 + 0x146F00, g_gameState->unk1C->unk8E4.field->unk20, 1);
         g_gameState->unk1C->unk8E4.field->unk20 = -1;
     }
 }

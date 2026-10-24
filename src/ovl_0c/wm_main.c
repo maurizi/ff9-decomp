@@ -140,8 +140,8 @@ s32 func_800A8D78(void) {
             DrawSync(0);
             g_gameState->unk1C->unk8E4.world->unk10 = size;
         } else {
-            func_80055DF4();
-            func_80055E14((s32)addr, size, 1);
+            akao_beginBankUpload();
+            akao_uploadBank((s32)addr, size, 1);
         }
     }
     return 0;
@@ -407,8 +407,8 @@ void func_800A9B54(void) {
     }
     if (g_gameState->unk1C->unk8E4.world->unk10 != -1) {
         dst = D_80067944 + 0x91800;
-        func_80055DF4();
-        func_80055E14((s32)dst, g_gameState->unk1C->unk8E4.world->unk10, 1);
+        akao_beginBankUpload();
+        akao_uploadBank((s32)dst, g_gameState->unk1C->unk8E4.world->unk10, 1);
         g_gameState->unk1C->unk8E4.world->unk10 = -1;
     }
 }
@@ -834,7 +834,7 @@ s32 func_800AB0C0(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4) {
                 g_gameState->unk1C->unk826[1] = 0x7F;
                 g_gameState->unk1C->unk824[1] = akao_playMusic((void *)g_gameState->unk1C->unk818);
                 if (!(g_gameState->unk1C->unk0 & 0x80000000)) {
-                    func_80055A34(g_gameState->unk1C->unk824[1], 0x1E, 0, g_gameState->unk1C->unk826[1]);
+                    akao_fadeMusicVolumeFrom(g_gameState->unk1C->unk824[1], 0x1E, 0, g_gameState->unk1C->unk826[1]);
                 }
                 g_gameState->unk1C->unk0 |= 0xC0000000;
                 goto done;
@@ -865,7 +865,7 @@ s32 func_800AB0C0(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4) {
         start:
             g_gameState->unk1C->unk824[0] = akao_playMusic(g_gameState->unk1C->unk814);
             if (!(g_gameState->unk1C->unk0 & 0x20000000)) {
-                func_80055A34(g_gameState->unk1C->unk824[0], 0x1E, 0, g_gameState->unk1C->unk826[0]);
+                akao_fadeMusicVolumeFrom(g_gameState->unk1C->unk824[0], 0x1E, 0, g_gameState->unk1C->unk826[0]);
             }
             g_gameState->unk1C->unk0 |= 0x30000000;
         done:
@@ -896,42 +896,42 @@ s32 func_800AB0C0(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4) {
             if ((arg0 & 0x3F) != 1) {
                 break;
             }
-            func_800559C8(g_gameState->unk1C->unk824[0], arg2);
+            akao_setMusicVolume(g_gameState->unk1C->unk824[0], arg2);
             g_gameState->unk1C->unk826[0] = arg2;
             return 0;
         case 3:
             if ((arg0 & 0x3F) != 1) {
                 break;
             }
-            func_800559FC(g_gameState->unk1C->unk824[0], arg2, arg3);
+            akao_fadeMusicVolume(g_gameState->unk1C->unk824[0], arg2, arg3);
             func_800AC21C(arg3, arg2);
             return 0;
         case 4:
             if ((arg0 & 0x3F) != 1) {
                 break;
             }
-            func_80055A34(g_gameState->unk1C->unk824[0], arg2, arg3, arg4);
+            akao_fadeMusicVolumeFrom(g_gameState->unk1C->unk824[0], arg2, arg3, arg4);
             func_800AC21C(arg4, arg2);
             return 0;
         case 6:
             if ((arg0 & 0x3F) != 1) {
                 break;
             }
-            func_800559FC(0, arg2, arg3);
+            akao_fadeMusicVolume(0, arg2, arg3);
             func_800AC21C(arg3, arg2);
             return 0;
         case 11:
             if ((arg0 & 0x3F) != 1) {
                 break;
             }
-            func_80055A34(0, arg2, arg3, arg4);
+            akao_fadeMusicVolumeFrom(0, arg2, arg3, arg4);
             func_800AC21C(arg4, arg2);
             return 0;
         case 10:
             if ((arg0 & 0x3F) != 6) {
                 break;
             }
-            func_80055604(arg1);
+            akao_sendCmd92(arg1);
             return 0;
         }
         return -1;
@@ -953,52 +953,52 @@ s32 func_800AB0C0(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4) {
         case 2:
             switch (arg0 & 0x3F) {
             case 1:
-                func_80055764(h, arg2, arg3);
+                akao_setSeVolume(h, arg2, arg3);
                 return 0;
             case 5:
-                func_80055850(h, arg2, arg3);
+                akao_sendCmdA2(h, arg2, arg3);
                 return 0;
             case 3:
-                func_8005593C(h, arg2, arg3);
+                akao_sendCmdA4(h, arg2, arg3);
                 return 0;
             }
             return -1;
         case 3:
             switch (arg0 & 0x3F) {
             case 1:
-                func_800557A8(h, arg2, arg3, arg4);
+                akao_fadeSeVolume(h, arg2, arg3, arg4);
                 return 0;
             case 5:
-                func_80055894(h, arg2, arg3, arg4);
+                akao_sendCmdA3(h, arg2, arg3, arg4);
                 return 0;
             case 3:
-                func_80055980(h, arg2, arg3, arg4);
+                akao_sendCmdA5(h, arg2, arg3, arg4);
                 return 0;
             }
             return -1;
         case 5:
             switch (arg0 & 0x3F) {
             case 1:
-                func_80055704(arg2);
+                akao_setAllSeVolume(arg2);
                 return 0;
             case 5:
-                func_800557F0(arg2);
+                akao_sendCmdAA(arg2);
                 return 0;
             case 3:
-                func_800558DC(arg2);
+                akao_sendCmdAC(arg2);
                 return 0;
             }
             return -1;
         case 6:
             switch (arg0 & 0x3F) {
             case 1:
-                func_80055730(arg2, arg3);
+                akao_fadeAllSeVolume(arg2, arg3);
                 return -1;
             case 5:
-                func_8005581C(arg2, arg3);
+                akao_sendCmdAB(arg2, arg3);
                 return -1;
             case 3:
-                func_80055908(arg2, arg3);
+                akao_sendCmdAD(arg2, arg3);
                 return -1;
             }
             return -1;
@@ -1045,7 +1045,7 @@ state:
             g_gameState->unk1C->unk852 = D_800CCA10;
         }
         D_800CCA18 = func_800AC29C(D_800CCA10, &sz);
-        func_80055DF4();
+        akao_beginBankUpload();
         if (!(g_gameState->unk1C->unk8E4.world->unk0 & 0x400)) {
             g_gameState->unk1C->unk8C0 = (s32)(D_80067944 + 0x35000);
             g_gameState->unk1C->unk878 = -1;
@@ -1062,7 +1062,7 @@ state:
         g_gameState->unk1C->unk851 = 3;
         break;
     case 3:
-        if (cdRead_update(g_gameState->unk1C->unk854) == 0 && func_80055DCC() == 0) {
+        if (cdRead_update(g_gameState->unk1C->unk854) == 0 && akao_getSpuTransferState() == 0) {
             if (g_gameState->unk1C->unk854[0].unkC + g_gameState->unk1C->unk854[0].unk10 < g_gameState->unk1C->unk87C) {
                 g_gameState->unk1C->unk8C0 = (s32)g_gameState->unk1C->unk854[0].unk8;
                 d = 0x10000 + func_800B8108() - g_gameState->unk1C->unk8C0;
@@ -1240,7 +1240,7 @@ void func_800AC424(Unk800AC424 *arg0) {
     if (arg0->unk10 < n) {
         n = arg0->unk10;
     }
-    func_80055E14(a, arg0->unk8 + n - a, 0);
+    akao_uploadBank(a, arg0->unk8 + n - a, 0);
     arg0->unk8 = a;
 }
 
@@ -1317,7 +1317,7 @@ void func_800AC7D4(void) {
     func_800ACE24();
     if (g_gameState->unk1C->unk81C[0] != g_gameState->unk1C->unk8E4.world->unk8->unk26 &&
         (g_gameState->unk1C->unk0 & 0x20000000)) {
-        func_800559FC(0, 0xF, 0);
+        akao_fadeMusicVolume(0, 0xF, 0);
     }
     g_gameState->unk1C->unk8E4.world->unk8->unk18 = 5;
     func_800AB0C0(0xD000, 0x27C, 0, 0x80, 0x7F);
@@ -1367,7 +1367,7 @@ void func_800ACAFC(void) {
         if (func_800AB0C0(0xC00, 0, 0, 0, 0) == 0) {
             cd_seekAsync(g_gameState->unk20 + file_find(0, 0x1000B)->unk4, 0);
             func_800AB0C0(0, g_gameState->unk1C->unk8E4.world->unk8->unk26, 0, 0, 0);
-            func_800559C8(0, 0x7F);
+            akao_setMusicVolume(0, 0x7F);
             g_gameState->unk1C->unk8E4.world->unk8->unk18 = -2;
         }
     } else if (o->unk18 == -2 && (o->unk0 & 1)) {
@@ -1405,7 +1405,7 @@ void func_800ACEEC(void) {
 
     g_gameState->unk1C->unk0 ^= 0x100;
     if (g_gameState->unk1C->unk0 & 0x100) {
-        func_8005562C(0);
+        akao_sendCmd99(0);
         game_resumeClock(1);
         for (i = 1; i >= 0; i--) {
             g_padActuator[i].unk1 = 0;
@@ -1427,7 +1427,7 @@ void func_800ACEEC(void) {
         g_gameState->unk1C->unk0 |= 0x20;
     } else {
         game_resumeClock(0);
-        func_80055698(0);
+        akao_sendCmd98(0);
         g_gameState->unk1C->unk0 &= ~0x20;
     }
 }

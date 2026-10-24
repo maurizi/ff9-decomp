@@ -198,7 +198,7 @@ s32 func_800DA634(s32 arg0) {
             return 1;
         }
     }
-    func_800562E0(g_gameState->unk1C->unk8E4.battle->unk11C0->unkC, 0);
+    akao_uploadSeBank(g_gameState->unk1C->unk8E4.battle->unk11C0->unkC, 0);
     g_btlfxLoader.unk67 = 1;
     g_btlfxLoader.unk66 = 1;
     return 0;
@@ -206,9 +206,9 @@ s32 func_800DA634(s32 arg0) {
 
 s32 func_800DA6B4(s32 arg0, s32 arg1) {
     if (g_btlfxLoader.unk66 != 0) {
-        if (func_80055DCC() == 0) {
+        if (akao_getSpuTransferState() == 0) {
             g_btlfxLoader.unk66 = 0;
-            func_80056388(0x80, arg1);
+            akao_sendCmdED(0x80, arg1);
             return 0;
         }
     }
@@ -596,7 +596,7 @@ x = *p++ << 11; rd += x; d->unk20 = (u8 *)0x801F1700 + x; dst = (u8 *)0x801F1700
                 }
                 break;
             case 5:
-                if (func_80055DCC() == 0) {
+                if (akao_getSpuTransferState() == 0) {
                     d->unkC = 4;
                     cont = 1;
                 }

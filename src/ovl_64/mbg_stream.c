@@ -233,7 +233,7 @@ s32 mbg_streamStart(s32 unused, u32 arg1, s32 arg2, void (*arg3)(void), s32 arg4
     g_mbgStreamBusy = 0;
     CdSetDebug(0);
     cd_readStreamAsync(g_mbgStream.sector, mbg_streamReadyCallback);
-    func_80056448((s32)g_mbgStream.unk90, g_mbgStream.unk7C << 11);
+    akao_sendCmdE8((s32)g_mbgStream.unk90, g_mbgStream.unk7C << 11);
     return 0;
 }
 

@@ -34,7 +34,7 @@ u8 *btlfx_runFrame(u8 *out) {
     if (g_btlfxEnv->unk0->unk20 == 0) {
         if (D_800F78AC != 0) {
             D_800F78AC = 0;
-            func_80055698(2);
+            akao_sendCmd98(2);
         }
         btlfx_updateTasks(); /* caller's stack */
         func_800E3C98();     /* scratchpad stack */

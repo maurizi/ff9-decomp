@@ -400,7 +400,7 @@ s32 mbg_update(s32 arg0) {
     }
     if (mbg_streamPushAudio() == 0) {
         if (st->unk34++ == st->unk38) {
-            func_80056278(st->unk3C, st->unk40);
+            akao_sendCmdE5(st->unk3C, st->unk40);
         }
     }
     st = &g_mbgPlayer;
@@ -623,7 +623,7 @@ s32 mbg_setPause(s32 arg0) {
 }
 
 s32 mbg_stop(void) {
-    func_80056228();
+    akao_sendCmdE2();
     mbg_streamStop();
     g_padActuator[0].unk0 = 0;
     g_padActuator[0].unk1 = 0;

@@ -1218,8 +1218,8 @@ void fld_movieUpdate(void) {
                 g_padPortMask[0] |= 0x04000000;
             }
             g_gameState->vsyncMode = 4;
-            func_80056248(0);
-            func_80056228();
+            akao_sendCmdE4(0);
+            akao_sendCmdE2();
             DrawSync(0);
             MBG_init(1, &g_gameState->unk1C->unk8E4.field->unkC->unk14->unk34);
             mbg_setRgb24(g_gameState->unk1C->unk8E4.field->unkC->unk14->unk43);
@@ -1241,7 +1241,7 @@ void fld_movieUpdate(void) {
             if (!(D_800C9D44 & 0x20) && (u32)t < 99999) {
                 d = t - g_mbgFrame;
                 if (d < 4) {
-                    func_80056278(d * 4, 0);
+                    akao_sendCmdE5(d * 4, 0);
                     D_800C9D44 |= 0x20;
                 }
             }
@@ -1447,20 +1447,20 @@ void func_800AED6C(void) {
         func_800B238C();
         if (g_gameState->unk1C->unk81C[0] != g_gameState->unk1C->unk8E4.field->unkC->unk14->unk3C
             && (g_gameState->unk1C->unk0 & 0x20000000)) {
-            func_800559FC(0, 0xF, 0);
+            akao_fadeMusicVolume(0, 0xF, 0);
             g_gameState->unk1C->unk8E4.field->unkC->unk14->unk9 = 7;
         }
         if (g_gameState->unk1C->unk830[0] != 0xFFFF && (g_gameState->unk1C->unk0 & 0x02000000)) {
-            func_800557A8(g_gameState->unk1C->unk828, 0x100000, 0xF, 0);
+            akao_fadeSeVolume(g_gameState->unk1C->unk828, 0x100000, 0xF, 0);
         }
         if (g_gameState->unk1C->unk830[1] != 0xFFFF && (g_gameState->unk1C->unk0 & 0x08000000)) {
-            func_800557A8(g_gameState->unk1C->unk82C, 0x200000, 0xF, 0);
+            akao_fadeSeVolume(g_gameState->unk1C->unk82C, 0x200000, 0xF, 0);
         }
         for (i = 1; i >= 0; i--) {
             g_padActuator[i].unk1 = 0;
             g_padActuator[i].unk0 = 0;
         }
-        func_80056228();
+        akao_sendCmdE2();
         g_gameState->unk1C->unk8E4.field->unkC->unk14->unk41++;
     } else {
         if (!(g_gameState->unk1C->unk8E4.field->unkC->unk14->unk0 & 2)) {
@@ -1518,7 +1518,7 @@ void func_800AED6C(void) {
             if (g_gameState->unk1C->unk8E4.field->unkC->unk14->unk3C != 0xFFFF
                 && !(g_gameState->unk1C->unk0 & 0x20000000)) {
                 func_800B0124(0, g_gameState->unk1C->unk8E4.field->unkC->unk14->unk3C, 0, 0, 0);
-                func_800559C8(0, 0x7F);
+                akao_setMusicVolume(0, 0x7F);
             }
             g_gameState->unk1C->unk8E4.field->unkC->unk14->unk9 = -3;
         }
@@ -1545,7 +1545,7 @@ void func_800AF740(void) {
 
     g_gameState->unk1C->unk0 ^= 0x100;
     if (g_gameState->unk1C->unk0 & 0x100) {
-        func_8005562C(0);
+        akao_sendCmd99(0);
         game_resumeClock(1);
         for (i = 1; i >= 0; i--) {
             g_padActuator[i].unk1 = 0;
@@ -1589,7 +1589,7 @@ void func_800AF740(void) {
         g_gameState->unk1C->unk0 |= 0x20;
     } else {
         game_resumeClock(0);
-        func_80055698(0);
+        akao_sendCmd98(0);
         g_gameState->unk1C->unk0 &= ~0x20;
     }
 }

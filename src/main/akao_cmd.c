@@ -504,7 +504,7 @@ void func_8005A320(s32 addr, s32 restore) {
             c->unk96 += 2;
             c->unk98 += 2;
             c->voiceDirty |= 0x1FF93;
-            func_8005936C(g_akaoSeq->unk0, c);
+            akao_shiftInstrumentUp(g_akaoSeq->unk0, c);
         } else {
             c->unk96 = 4;
             c->unk98 = 2;
@@ -578,7 +578,7 @@ void akao_cmdSaveMusic(void) {
         func_8005CE04(g_akaoSeq, &D_8007F8F0, 0x7C);
         func_8005CE04(g_akaoChannels, D_80080AC8, 0x2680);
         for (i = 0, c = D_80080AC8; i < 0x20; i++, c++) {
-            func_800593C0(D_8007F8F0.unk0, c);
+            akao_shiftInstrumentDown(D_8007F8F0.unk0, c);
         }
     }
 }
@@ -1472,7 +1472,7 @@ s32 akao_command(u32 cmd) {
     case 0x14:
     case 0x19:
     case 0x1A:
-        if (func_800565DC((s32 *)g_akaoArgs.unk0) == 0) {
+        if (akao_checkHeader((s32 *)g_akaoArgs.unk0) == 0) {
         seq = (AkaoSeqHeader *)g_akaoArgs.unk0;
         if (g_akaoSeq->unk6A != seq->unk4 || (D_8007F790 != NULL && D_8007F790->unk6A != g_akaoSeq->unk6A)) {
             if (cmd != 0x19) {

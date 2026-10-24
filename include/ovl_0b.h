@@ -2193,8 +2193,8 @@ typedef struct {
 extern Unk8006B1F4 D_8006B1F4[];
 void SetGeomScreen(s32);
 s32 ReadGeomScreen(void);
-s32 func_80055DCC(void);
-void func_80056388(s32, s32);
+s32 akao_getSpuTransferState(void);
+void akao_sendCmdED(s32, s32);
 s8 evt_createModel(Unk8004AB64 *);
 
 /* ovl_0b functions */
@@ -2707,17 +2707,17 @@ extern s8 D_800F51F8;
 /* main exe: candidates for ff9.h */
 void akao_stopMusic(s32);
 s32 akao_playMusic(void *);
-void func_800559C8(s32, s32);
-void func_800559FC(s32, s32, s32);
-void func_80055A34(s32, s32, s32, s32);
-void func_80055604(s32);
-void func_80055764(s32, s32, s32);
-void func_800557A8(s32, s32, s32, s32);
-void func_80055894(s32, s32, s32, s32);
-void func_80055704(s32);
-void func_800557F0(s32);
-void func_80055730(s32, s32);
-void func_8005581C(s32, s32);
+void akao_setMusicVolume(s32, s32);
+void akao_fadeMusicVolume(s32, s32, s32);
+void akao_fadeMusicVolumeFrom(s32, s32, s32, s32);
+void akao_sendCmd92(s32);
+void akao_setSeVolume(s32, s32, s32);
+void akao_fadeSeVolume(s32, s32, s32, s32);
+void akao_sendCmdA3(s32, s32, s32, s32);
+void akao_setAllSeVolume(s32);
+void akao_sendCmdAA(s32);
+void akao_fadeAllSeVolume(s32, s32);
+void akao_sendCmdAB(s32, s32);
 
 s32 func_800AB07C(Unk800AA958 *, Unk800AA958Req *, s32, s32);
 s32 func_800ABA10(s32, s32);
@@ -3119,7 +3119,7 @@ void btl_finishCmd(Battle *);
 void btl_drawScene(GameData *, Battle *, s32);
 
 s32 akao_isSePlaying(s32);
-void func_80055850(s32, s32, s32);
+void akao_sendCmdA2(s32, s32, s32);
 s32 chr_findAbilitySlot(s32, s32);
 void func_800F3D3C(s32);
 void func_800F1BFC(Window *);
@@ -3199,7 +3199,7 @@ typedef struct {
 
 extern s32 D_800F78AC;
 void SetDrawMove(DR_MOVE *p, RECT *rect, int x, int y);
-void func_8005562C(s32);
+void akao_sendCmd99(s32);
 void func_800D0940(void);
 /* the frame update btlfx_runFrame runs (src_equiv/ovl_0b/effect_frame.c) */
 void func_800E702C(void);
@@ -3473,7 +3473,7 @@ void func_800F2890(s32);
 void func_800EBA10(Window *);
 
 /* main exe: candidates for ff9.h */
-void func_800562E0(s32 *, s32);
+void akao_uploadSeBank(s32 *, s32);
 void text_draw(s32, s32, s32, u8 *, s32);
 void win_closeAll(void);
 s32 chr_getDefaultSet(Character *);
@@ -3852,7 +3852,7 @@ extern DR_TPAGE D_800FDEA8;
 extern DR_STP D_800FDF24;
 extern u8 D_800FDE60[];
 void game_resumeClock(s32);
-void func_80055698(s32);
+void akao_sendCmd98(s32);
 void func_800EA34C(void);
 
 s32 func_800AA958(s32, Unk800AA958 *);

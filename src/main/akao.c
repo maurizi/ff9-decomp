@@ -2,8 +2,8 @@
 
 void akao_applyCdVolume(void) {
     s32 v = g_akaoCdVolumeHi;
-    SPU_REG16(0x1F801DB0) = v;
-    SPU_REG16(0x1F801DB2) = v;
+    SPU_REG16(SPU_CD_VOL_L) = v;
+    SPU_REG16(SPU_CD_VOL_R) = v;
 }
 
 void func_8005CE04(u32 *src, u32 *dst, u32 n) {
@@ -1830,7 +1830,7 @@ void func_80060AE0(s32 addr, s32 vol, s32 flag) {
     akao_keyOff(mask);
     SpuSetTransferMode(0);
     SpuSetTransferStartAddr(0x1100);
-    D_800809E0 = 1;
+    g_akaoSpuBusy = 1;
     D_80083168.unk4 = (D_80083168.unk8 & 2) ? (s32)(D_80083168.unk0 + h->unk14) : 0;
     if (D_80083168.unk8 & 1) {
         D_80083168.unk1C = (D_80083168.unk8 & 2) ? D_80083168.unk14 - (h->unk14 >> 1) : 0;
@@ -1888,7 +1888,7 @@ void func_80060D1C(s32 v, s32 mode, s32 a, s32 b) {
 void func_80060ED8(s32 a, s32 b, void (*cb)(void)) {
     if (D_80083168.unkC != 0) {
         SpuSetTransferCallback(NULL);
-        D_800809E0 = 0;
+        g_akaoSpuBusy = 0;
         if (D_80083168.unk14 > 0x1000) {
             D_80083168.unk14 -= 0x1000;
             D_80083168.unk0 += a;
@@ -1921,7 +1921,7 @@ void func_80061070(s32 a, s32 b, s32 n, void (*cb)(void)) {
         return;
     }
     SpuSetTransferStartAddr(a);
-    func_80056614();
+    akao_beginSpuTransfer();
     SpuWrite(D_80083168.unk0, n);
     SpuSetIRQ(0);
     if (D_80083168.unk14 > 0x800) {
@@ -2050,7 +2050,7 @@ void func_80061624(void) {
     u32 irq;
     if (D_80083168.unk14 > 0x2000) {
         SpuSetTransferStartAddr(D_80083168.unk2C + 0x2000);
-        func_80056644(D_80083168.unk0, D_80083168.unk14 - 0x2000);
+        akao_spuWrite(D_80083168.unk0, D_80083168.unk14 - 0x2000);
         irq = D_80083168.unk2C + 0x1FF8;
     } else {
         irq = D_80083168.unk2C + (D_80083168.unk14 >> 1) + 8;
@@ -2089,7 +2089,7 @@ void func_800616F8(s32 arg0, s32 b, s32 addr, s32 loop) {
         d->unk2C = addr;
         SpuSetTransferMode(0);
         SpuSetTransferStartAddr(addr);
-        D_800809E0 = 1;
+        g_akaoSpuBusy = 1;
         SpuSetTransferCallback(func_80061624);
         n = d->unk14;
         if (n > 0x2000) {
@@ -2206,7 +2206,7 @@ void func_80061C1C(void) {
     if (h->unk28 != 0 && D_80083168.unk48 == 0) {
         vol = D_80083168.unk40;
         D_80083168.unk40 = 0;
-        func_80056278(h->unk28, vol >> 8);
+        akao_sendCmdE5(h->unk28, vol >> 8);
     }
     d = &D_80083168;
     D_80083168.unk0 = (u8 *)d->unk2C;
@@ -2221,7 +2221,7 @@ void func_80061C1C(void) {
     d->unk58 = h->unk1C;
     SpuSetTransferMode(0);
     SpuSetTransferStartAddr(0x1100);
-    D_800809E0 = 1;
+    g_akaoSpuBusy = 1;
     SpuSetTransferCallback(func_80061EE4);
     if (d->unk8 & 0x400) {
         SpuWrite(D_80083168.unk0 + 0xD0, 0x4000);
@@ -2244,7 +2244,7 @@ void func_80061C1C(void) {
 void func_80061E1C(s32 a, s32 b, void (*cb)(void)) {
     if (D_80083168.unkC != 0) {
         SpuSetTransferCallback(NULL);
-        D_800809E0 = 0;
+        g_akaoSpuBusy = 0;
         if (D_80083168.unk14 >= 0xE61) {
             D_80083168.unk0 += a;
             SpuSetIRQCallback(cb);
@@ -2285,7 +2285,7 @@ s32 func_80061FBC(s32 a, s32 b, s32 n, void (*cb)(void)) {
         if (h->unk0 == 0x4F414B41) {
             SpuSetIRQ(0);
             SpuSetTransferStartAddr(a);
-            func_80056614();
+            akao_beginSpuTransfer();
             func_80061BC8(&D_80083168.unk34);
             SpuWrite(D_80083168.unk0 + 0xD0, n - 0xD0);
             D_80083168.unk20 = h->unk4;

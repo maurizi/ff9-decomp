@@ -1512,6 +1512,6 @@ void func_800E3E08(void) {
     } while (i < 0x140);
     if (D_800F78AC == 0) {
         D_800F78AC = 1;
-        func_8005562C(2);
+        akao_sendCmd99(2);
     }
 }

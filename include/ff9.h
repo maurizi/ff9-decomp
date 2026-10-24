@@ -1383,7 +1383,7 @@ extern s32 g_msgNumbers[8];
 extern u8 *D_8007BC0C; /* help-arrow animation script */
 extern s32 D_8007BC08;
 extern s32 D_8007BBF0;
-extern volatile s32 D_800809E0;
+extern volatile s32 g_akaoSpuBusy;
 
 void db_clear(void);
 s32 game_unloadCommonDb(void);
@@ -1425,7 +1425,7 @@ void menu_doOpen(s32, s32);
 void akao_init(void);
 void akao_quit(void);
 s32 akao_command(u32);
-void func_80055D80(s32, s32);
+void akao_loadBankRetry(s32, s32);
 void akao_opEnd(AkaoChannel *, s32);
 void func_80060938(void);
 void help_setCallback(void (*)(void));
@@ -1548,7 +1548,7 @@ void func_800611BC(void);
 void func_800611EC(void);
 void func_8006121C(void);
 void func_8006124C(void);
-void func_800565F0(void);
+void akao_onSpuTransferDone(void);
 
 typedef struct {
     s16 unk0;
@@ -1710,7 +1710,7 @@ extern s32 D_8007B974;
 extern s32 D_8007BB94;
 
 s32 SpuRead(s32, s32);
-void func_80056614(void);
+void akao_beginSpuTransfer(void);
 void akao_opAE(AkaoChannel *, s32);
 void akao_opAF(AkaoChannel *, s32);
 u8 cd_syncAsync(void (*)(u8 *));
@@ -1943,8 +1943,8 @@ void help_draw(void);
 void help_toggle(void);
 void sprAnim_update(Unk80035B90 *);
 void menu_onPortraitsRead(u8 *);
-void func_8005658C(s32 *, Unk8005EBB4 *, u32, s32);
-s32 func_80056750(s32 *, s32, s32, u32);
+void akao_relocInstruments(s32 *, Unk8005EBB4 *, u32, s32);
+s32 akao_loadBankAt(s32 *, s32, s32, u32);
 typedef struct {
     s32 unk0[4];
 } Unk80010CD0;
@@ -1963,7 +1963,7 @@ extern u8 D_8006CACC[];
 void menu_onOverlayRead(u8 *);
 extern AkaoChannel D_80080AC8[];
 void func_8005CE04(); /* (u32 *src, u32 *dst, u32 size): word copy */
-u16 func_800593C0(u32, AkaoChannel *);
+u16 akao_shiftInstrumentDown(u32, AkaoChannel *);
 s32 text_initNameImage(s32);
 void text_renderPartyName(s32);
 extern RECT D_8006BC38;
@@ -1995,7 +1995,7 @@ void timer_draw(void);
 void game_tickClock(void);
 extern Unk80035B90Data D_80010E48;
 void sprAnim_init(Unk80035B90 *, Unk80035B90Data *);
-s32 func_800565DC(s32 *);
+s32 akao_checkHeader(s32 *);
 extern u16 *D_800809DC;
 extern u16 *D_800809E4;
 extern u16 *D_80083148;
@@ -2042,7 +2042,7 @@ s32 func_80053764(s32, u8, u32 *, s32);
 void chr_setLevel(s32, s32, u32 *, u8);
 extern u32 D_8006CA78[];
 extern u32 g_fadeBattleOt[];
-s32 func_80056700(s32, s32);
+s32 akao_loadBank(s32, s32);
 void func_80051568(void);
 void msg_resetWindows(void);
 void msg_resetPad(void);
@@ -2160,10 +2160,10 @@ void msg_init(void);
 void evt_clearGlobalVars(void);
 void func_8005392C(void);
 s32 snd_init(void);
-void func_80055D40(void);
-void func_80055D60(void);
-s32 func_80055DF4(void);
-s32 func_80055E14(s32 *, u32, s32);
+void akao_stopMusicNow(void);
+void akao_stopAllSe(void);
+s32 akao_beginBankUpload(void);
+s32 akao_uploadBank(s32 *, u32, s32);
 s32 CloseEvent(s32);
 s32 DisableEvent(s32);
 void card_initAll(void);
@@ -2323,8 +2323,8 @@ void cd_onDataReady(u8, u8 *);
 s32 func_8005DD54(s32, s32);
 s32 func_8005EC8C(s32, s32);
 void func_8005EBE8(AkaoChannel *, s32);
-void func_80056644(void *, s32);
-void func_800566D0(void);
+void akao_spuWrite(void *, s32);
+void akao_waitSpuTransfer(void);
 void akao_initState(void);
 s32 akao_tick(void); /* root counter 2 callback; returns the ticks this tick took */
 extern u8 D_80080990[];
@@ -2689,7 +2689,7 @@ void menuScreen_close(void);
 s32 func_80054F80(void);
 s32 func_80050AAC(void);
 void akao_stopSe(s32, s32);
-void func_80056228(void);
+void akao_sendCmdE2(void);
 s32 game_getPlayTime(void);
 s32 text_formatTime(s32, u8 *, s32);
 extern s32 D_800704C0;
@@ -3084,9 +3084,26 @@ typedef struct {
     u16 adsrVol;
     u16 loopAddr; /* loop address */
 } SpuVoiceReg;
-#define SPU_VOICE_REG(v, r) (*(u16 *)(0x1F801C00 + (r) + (v) * 16))
-#define SPU_VOICE_REG8(v, r) (*(u8 *)(0x1F801C00 + (r) + (v) * 16))
+#define SPU_VOICE_REG(v, r) (*(u16 *)(SPU_VOICE_BASE + (r) + (v) * 16))
+#define SPU_VOICE_REG8(v, r) (*(u8 *)(SPU_VOICE_BASE + (r) + (v) * 16))
 #define SPU_REG16(a) (*(u16 *)(a))
+/* SPU registers (psx-spx names) */
+#define SPU_VOICE_BASE 0x1F801C00 /* 24 voices x 16 bytes (SpuVoiceReg) */
+#define SPU_MAIN_VOL_L 0x1F801D80
+#define SPU_MAIN_VOL_R 0x1F801D82
+#define SPU_KEY_ON_LO 0x1F801D88
+#define SPU_KEY_ON_HI 0x1F801D8A
+#define SPU_KEY_OFF_LO 0x1F801D8C
+#define SPU_KEY_OFF_HI 0x1F801D8E
+#define SPU_PITCH_MOD_LO 0x1F801D90
+#define SPU_PITCH_MOD_HI 0x1F801D92
+#define SPU_NOISE_ON_LO 0x1F801D94
+#define SPU_NOISE_ON_HI 0x1F801D96
+#define SPU_REVERB_ON_LO 0x1F801D98
+#define SPU_REVERB_ON_HI 0x1F801D9A
+#define SPU_CTRL 0x1F801DAA
+#define SPU_CD_VOL_L 0x1F801DB0
+#define SPU_CD_VOL_R 0x1F801DB2
 extern s16 g_akaoCdVolumeHi;
 extern s32 g_akaoCdVolumeStep;
 s32 func_8005715C(s32);
@@ -4028,10 +4045,10 @@ typedef struct {
     s32 unk28;
 } StreamHeader;
 
-void func_80056278(s32 a, s32 b);
+void akao_sendCmdE5(s32 a, s32 b);
 void func_80061EE4(void);
 
-/* AKAO sample stream state, func_80055E14 */
+/* AKAO sample stream state, akao_uploadBank */
 typedef struct {
     Unk8005EBB4 *unk0; /* destination of the next sample-info copy */
     u32 unk4;          /* SPU transfer address */
