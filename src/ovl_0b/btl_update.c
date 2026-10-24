@@ -32,9 +32,9 @@ s32 btl_update(void) {
             }
             n = b->scene.unk0 & 3;
             if (n == 0) {
-                btl_showMessage(2);
+                btl_showMessage(BTL_MSG_BACK_ATTACK);
             } else if (n == 1) {
-                btl_showMessage(1);
+                btl_showMessage(BTL_MSG_PREEMPTIVE);
             }
         }
         break;
@@ -288,7 +288,7 @@ void btl_victory(GameData *arg0, Battle *arg1) {
                     exp = arg0->gil;
                     arg0->gil = 0;
                 }
-                btl_showMessage(0x1E, exp);
+                btl_showMessage(BTL_MSG_DROPPED_GIL, exp);
             } else if ((u8)btl_partyHasSupport(1, 0x4000) != 0) {
                 g_btlRewards.unk1D = 1;
                 g_btlRewards.unk0 = exp / 10;

@@ -561,7 +561,7 @@ s32 btl_checkCmdUsable(Battle *arg0, BtlCmd *arg1) {
             goto fail;
         }
         if (arg1->cmdNo == BTL_CMD_AUTO_POTION) {
-            btl_showMessage(9);
+            btl_showMessage(BTL_MSG_AUTO_POTION);
         }
         return 1;
     case BTL_CMD_SUMMON:
@@ -624,13 +624,13 @@ s32 btl_checkCmdUsable(Battle *arg0, BtlCmd *arg1) {
             }
         }
         if (arg1->cmdNo == BTL_CMD_COUNTER) {
-            btl_showMessage(7);
+            btl_showMessage(BTL_MSG_COUNTER);
         }
         return 1;
     case BTL_CMD_RETURN_MAGIC:
         t = btl_getUnitById(arg1->targets);
         if (t != NULL && ((t->flags >> 28) & 1) && !(t->status & BTL_STATUS_KO)) {
-            btl_showMessage(8);
+            btl_showMessage(BTL_MSG_RETURN_MAGIC);
             return 1;
         }
     ret0:
@@ -668,7 +668,7 @@ s32 btl_checkCmdUsable(Battle *arg0, BtlCmd *arg1) {
         break;
     case BTL_CMD_TRANCE:
         if (u->status & BTL_STATUS_TRANCE) {
-            btl_showMessage(6);
+            btl_showMessage(BTL_MSG_TRANCE);
             u->modelId = g_btlCharModelIds[(u->flags & 1) ? g_gameState->unk1C->characters[(u->flags >> 1) & 0xF].unk34.b.unk4 + 0x13 : 0x26];
         } else {
             u->modelId = g_btlCharModelIds[(u->flags & 1) ? (g_gameState->unk1C->characters[(u->flags >> 1) & 0xF].unk34.w >> 4) & 0x1F : 0x13];
@@ -1361,7 +1361,7 @@ s32 btl_payMpCost(BtlCmd *arg0) {
     if (btl_consumeMp(arg0->caster, mp) & 0xFF) {
         return 1;
     }
-    btl_showMessage(0x16);
+    btl_showMessage(BTL_MSG_NOT_ENOUGH_MP);
     return 0;
 }
 
@@ -2064,7 +2064,7 @@ void btl_calcCmd(BtlUnit *caster, BtlUnit *target, BtlCmd *cmd, s32 type) {
         target->elemGuard &= ~cmd->ability->element;
         target->elemAbsorb &= ~cmd->ability->element;
         target->elemHalf &= ~cmd->ability->element;
-        btl_showMessage(0xE, btl_getElementName(cmd->ability->element));
+        btl_showMessage(BTL_MSG_WEAK_AGAINST, btl_getElementName(cmd->ability->element));
         break;
     case 0x34:
         if (item_getCount(cmd->ability->power) != 0) {
@@ -2146,7 +2146,7 @@ void btl_calcCmd(BtlUnit *caster, BtlUnit *target, BtlCmd *cmd, s32 type) {
                 }
             }
             if (!d) {
-                btl_showMessage(0xB);
+                btl_showMessage(BTL_MSG_NOTHING_TO_STEAL);
                 break;
             }
             if (!(caster->support[1] & 0x40000000)) {
@@ -2157,7 +2157,7 @@ void btl_calcCmd(BtlUnit *caster, BtlUnit *target, BtlCmd *cmd, s32 type) {
                 v = ((*g_randPtr << 8) | *g_randPtr) % c.hitRate < ((*g_randPtr << 8) | *g_randPtr) % c.evade;
                 g_randPtr++;
                 if (v) {
-                    btl_showMessage(0xA);
+                    btl_showMessage(BTL_MSG_STEAL_FAILED);
                     break;
                 }
             }
@@ -2214,7 +2214,7 @@ void btl_calcCmd(BtlUnit *caster, BtlUnit *target, BtlCmd *cmd, s32 type) {
                 }
             }
             if (c.flags == 0) {
-                btl_showMessage(0x1A);
+                btl_showMessage(BTL_MSG_CHARGE_FAILED);
             }
             return;
         }
@@ -2222,7 +2222,7 @@ void btl_calcCmd(BtlUnit *caster, BtlUnit *target, BtlCmd *cmd, s32 type) {
         if (btl_hasEnemyFlag(target, 0x20) != 0) {
             if (btl_checkTargetAlive(&c)) {
                 btl_killUnit(target);
-                btl_showMessage(0x19);
+                btl_showMessage(BTL_MSG_TOO_SOFT);
             }
         } else {
             btl_cureItemStatus(&c);
@@ -2247,19 +2247,19 @@ void btl_calcCmd(BtlUnit *caster, BtlUnit *target, BtlCmd *cmd, s32 type) {
             u8 i;
             if (btl_missIfDeathImmune(&c) && btl_checkTargetAlive(&c) && btl_hasEnemyFlag(target, 1) == 0) {
                 if (target->max->maxHp / cmd->ability->power < target->hp) {
-                    btl_showMessage(0x10);
+                    btl_showMessage(BTL_MSG_CANT_EAT_YET);
                 } else {
                     i = g_gameState->unk1C->unk8E4.battle->enemies[(target->flags >> 1) & 0xF].unk0->unk27;
                     btl_killUnit(target);
                     if (i != 0 && !func_80034070((caster->flags >> 1) & 0xF, i)) {
                         func_80034220((caster->flags >> 1) & 0xF, i);
-                        btl_showMessage(0x11, btl_getAbilityName(i));
+                        btl_showMessage(BTL_MSG_LEARNED, btl_getAbilityName(i));
                     } else {
-                        btl_showMessage(0x12);
+                        btl_showMessage(BTL_MSG_TASTE_BAD);
                     }
                 }
             } else {
-                btl_showMessage(0x1D);
+                btl_showMessage(BTL_MSG_CANT_EAT);
             }
             break;
         }
@@ -2370,7 +2370,7 @@ void btl_calcCmd(BtlUnit *caster, BtlUnit *target, BtlCmd *cmd, s32 type) {
         c.targetMpChange = target->max->maxMp >> 1;
         RAND_REFILL2();
         if (D_8006B1F4[cmd->subNo - 0xE0].unk7 < RAND16() % 100) {
-            btl_showMessage(0xD);
+            btl_showMessage(BTL_MSG_SNAKE_BITE);
             btl_addStatuses(target, D_8006B1F4[cmd->subNo - 0xE0].unk8);
         }
         break;
@@ -2568,9 +2568,9 @@ void btl_calcCmd(BtlUnit *caster, BtlUnit *target, BtlCmd *cmd, s32 type) {
     case 0x65:
         btl_initHitRates(&c);
         if (btl_rollHit(&c)) {
-            btl_calcUseItem(&c);
+            btl_calcEnemySteal(&c);
         } else {
-            btl_showMessage(0xA);
+            btl_showMessage(BTL_MSG_STEAL_FAILED);
         }
         break;
     case 0x66:
@@ -2580,7 +2580,7 @@ void btl_calcCmd(BtlUnit *caster, BtlUnit *target, BtlCmd *cmd, s32 type) {
         btl_applyTargetStatusMod(&c);
         btl_applyRowMod(&c);
         btl_finishMagicDamage(&c);
-        btl_calcUseItem(&c);
+        btl_calcEnemySteal(&c);
         break;
     case 0x68:
         c.targetResult |= 1;
@@ -2780,7 +2780,7 @@ void btl_calcSteal(BtlCalc *arg0, Unk800B7F20 *arg1, s32 arg2) {
             g->unk56A++;
         }
         btl_addItem(id);
-        btl_showMessage(0xC, btl_getItemName(id));
+        btl_showMessage(BTL_MSG_STOLE, btl_getItemName(id));
         if (arg0->caster->support[1] & 0x20000000) {
             arg0->targetResult |= 1;
             if (g_randPtr >= g_randTableEnd) {
@@ -2806,7 +2806,7 @@ void btl_calcSteal(BtlCalc *arg0, Unk800B7F20 *arg1, s32 arg2) {
             }
         }
     } else {
-        btl_showMessage(0xA);
+        btl_showMessage(BTL_MSG_STEAL_FAILED);
     }
 }
 
@@ -3147,7 +3147,7 @@ u8 btl_checkFrozenShatter(BtlCalc *arg0) {
         m->motion = (BtlUnit9CC *)u->motions[(u->flags >> 18) & 1];
         u->obj->frame = 0;
     }
-    btl_showMessage(0x13);
+    btl_showMessage(BTL_MSG_IMPACT_CRUSHES);
     return 0;
 }
 
@@ -3191,7 +3191,7 @@ s32 btl_checkSwdMagUsable(BtlUnit *arg0, s16 arg1) {
             }
         }
     }
-    btl_showMessage(0xF);
+    btl_showMessage(BTL_MSG_COMBINATION_FAILED);
     return 0;
 }
 
@@ -3702,12 +3702,12 @@ void btl_markTrouble(BtlCalc *arg0) {
     }
 }
 
-void btl_calcUseItem(BtlCalc *arg0) {
+void btl_calcEnemySteal(BtlCalc *arg0) {
     s16 id = arg0->cmd->ability->rate;
     if (item_getCount(id) == 0) {
-        btl_showMessage(10);
+        btl_showMessage(BTL_MSG_STEAL_FAILED);
     } else {
         btl_useItem(id);
-        btl_showMessage(0x1F, btl_getItemName(id));
+        btl_showMessage(BTL_MSG_WAS_STOLEN, btl_getItemName(id));
     }
 }

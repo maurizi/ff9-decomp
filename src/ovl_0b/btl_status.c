@@ -823,7 +823,7 @@ void btl_checkSideDefeated(BtlUnit *arg0) {
             }
         }
         b->subPhase = 1;
-        btl_showMessage(5);
+        btl_showMessage(BTL_MSG_ANNIHILATED);
     }
     btlui_setAtbEnabled(0);
     b->phase = BTL_PHASE_END;
@@ -1046,7 +1046,7 @@ void btl_tryEscape(u8 arg0) {
     Battle *b = g_gameState->unk1C->unk8E4.battle;
     if (!(b->cmdFlags & 1)) {
         if ((u8)b->scene.unk0 >> 7 == 0) {
-            btl_showMessage(4);
+            btl_showMessage(BTL_MSG_CANT_ESCAPE);
         } else if (arg0 && (btl_isAtbRunning() & 0xFF)) {
             btl_calcCmd(0, 0, 0, 0x38);
         }

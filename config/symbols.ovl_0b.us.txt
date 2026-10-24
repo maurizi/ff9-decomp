@@ -781,7 +781,7 @@ btl_clearBounceMasks = 0x800B44A0; // type:func [code] zeroes BtlUnit.unk1C[4], 
 btl_checkSwdMagUsable = 0x800B96AC; // type:func [code] enough MP and a character-kind-2 party member able to act, else message 0xF
 btl_initUndeadHitRate = 0x800B9B64; // type:func [code] for Zombie or undead (enemy flag 0x10) targets status hit rate and magic evade like btl_initStatusHitRate, 0 then
 btl_setMultiplierFromPower = 0x800BA078; // type:func [code] BtlCalc multiplier = ability power
-btl_calcUseItem = 0x800BAF70; // type:func [code] uses the item named by the ability's rate byte (btl_useItem, message 0x1F with its name) or message 10 when there is none
+btl_calcEnemySteal = 0x800BAF70; // type:func [string] removes the item named by the ability (btl_useItem) with message 0x1F "<item> was stolen!", or message 0xA "Couldn't steal anything." when the party has none
 btl_makeGreyCluts = 0x800C0544; // type:func [code] StoreImage each CLUT row of the unit's model, averages r/g/b to grey, LoadImage 12 rows lower (btl_addStatus, petrify), docs/runtime-findings.md had it low-medium
 btl_makeEnemyGreyCluts = 0x800C072C; // type:func [code] greys the enemy CLUT copy btl_saveEnemyCluts took and loads it at y 0xDA (btl_updateIntro once enemy models are loaded)
 btl_makePartyGreyCluts = 0x800C0840; // type:func [code] greys every third party CLUT row of btl_savePartyCluts' copy into y 0xF2.. (btl_updateIntro once party models are loaded)

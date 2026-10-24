@@ -428,6 +428,38 @@ typedef struct {
 #define BTL_PHASE_EXIT_DEFEAT 7 /* code: from a defeat (GameData.unk56E = 3) */
 #define BTL_PHASE_EXIT_OTHER  8 /* code: from an escape or a script-ended battle */
 
+/* btl_showMessage ids: entry id + 8 of the message table D_800F6CB4 (its first 8 entries are the element names);
+ * the names are the US texts */
+#define BTL_MSG_PREEMPTIVE         0x01 /* "Preemptive strike!" */
+#define BTL_MSG_BACK_ATTACK        0x02 /* "Back attack!" */
+#define BTL_MSG_CANT_ESCAPE        0x04 /* "Can't escape!" */
+#define BTL_MSG_ANNIHILATED        0x05 /* "Annihilated..." */
+#define BTL_MSG_TRANCE             0x06 /* "Trance!" */
+#define BTL_MSG_COUNTER            0x07 /* "Counterattack!" */
+#define BTL_MSG_RETURN_MAGIC       0x08 /* "Return magic!" */
+#define BTL_MSG_AUTO_POTION        0x09 /* "Auto-Potion!" */
+#define BTL_MSG_STEAL_FAILED       0x0A /* "Couldn't steal anything." */
+#define BTL_MSG_NOTHING_TO_STEAL   0x0B /* "Doesn't have anything." */
+#define BTL_MSG_STOLE              0x0C /* "Stole <item>!" */
+#define BTL_MSG_SNAKE_BITE         0x0D /* "Bitten by Silence/Darkness/Poison Snake!" */
+#define BTL_MSG_WEAK_AGAINST       0x0E /* "Became weak against <element>!" */
+#define BTL_MSG_COMBINATION_FAILED 0x0F /* "Combination failed!" */
+#define BTL_MSG_CANT_EAT_YET       0x10 /* "I no can eat until it weaker!" */
+#define BTL_MSG_LEARNED            0x11 /* "Learned <ability>!" */
+#define BTL_MSG_TASTE_BAD          0x12 /* "Taste bad!" */
+#define BTL_MSG_IMPACT_CRUSHES     0x13 /* "Impact crushes the enemy!" */
+#define BTL_MSG_NOT_ENOUGH_GIL     0x14 /* "Not enough Gil!" */
+#define BTL_MSG_CANT_CAST          0x15 /* "Can't cast!" */
+#define BTL_MSG_NOT_ENOUGH_MP      0x16 /* "Not enough MP!" */
+#define BTL_MSG_CANT_REACH         0x17 /* "Can't reach!" */
+#define BTL_MSG_NOT_ENOUGH_ITEMS   0x18 /* "Not enough items!" */
+#define BTL_MSG_TOO_SOFT           0x19 /* "Became too soft to live..." */
+#define BTL_MSG_CHARGE_FAILED      0x1A /* "Charge failed!" */
+#define BTL_MSG_CANT_CONCENTRATE   0x1B /* "Command failed! <name> can't concentrate!" */
+#define BTL_MSG_CANT_EAT           0x1D /* "I no can eat!" */
+#define BTL_MSG_DROPPED_GIL        0x1E /* "Dropped <n> Gil!" */
+#define BTL_MSG_WAS_STOLEN         0x1F /* "<item> was stolen!" */
+
 /* g_btlUi->menuState: index of the per-state handler tables g_btluiMenuInput (input), g_btluiMenuUpdate, g_btluiMenuHelp */
 #define BTLUI_MENU_NONE    0 /* runtime: no menu */
 #define BTLUI_MENU_CMD     1 /* runtime: command menu */
@@ -3158,7 +3190,7 @@ void btl_cureItemStatus(BtlCalc *);
 void btl_payMpAttack(BtlCalc *);
 u8 btl_canFlee(BtlCalc *);
 void btl_markTrouble(BtlCalc *);
-void btl_calcUseItem(BtlCalc *);
+void btl_calcEnemySteal(BtlCalc *);
 void btl_toggleRow(BtlUnit *);
 s32 btl_getElementName(u8);
 void btl_startScan(s32);

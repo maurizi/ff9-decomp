@@ -2109,7 +2109,7 @@ ovl_0b btl_cureItemStatus 0x70 0x800badd4
 ovl_0b btl_payMpAttack 0x64 0x800bae44
 ovl_0b btl_canFlee 0x94 0x800baea8
 ovl_0b btl_markTrouble 0x34 0x800baf3c
-ovl_0b btl_calcUseItem 0x7c 0x800baf70
+ovl_0b btl_calcEnemySteal 0x7c 0x800baf70
 ovl_0b btl_initParty 0x208 0x800bafec
 ovl_0b btl_initEnemies 0x2ac 0x800bb1f4
 ovl_0b btl_initPartyUnit 0x4d4 0x800bb4a0
