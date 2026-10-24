@@ -1,6 +1,6 @@
 /* Draft of fx_0e3_0 fx_0e3_0_op80.
- * Status (pass 3, build/w/cmp.py): 38 mismatched rows ignoring registers and stack offsets (was 312), 217 counting
- * registers (was 936); frame size matches (400), 2498 vs 2501 instructions. ex/work now get s2/s3 like the original:
+ * Status (pass 3, build/w/cmp.py): 16 mismatched rows ignoring registers and stack offsets (was 312), 190 counting
+ * registers (was 936); frame size matches (400), same length as the original (2501). ex/work now get s2/s3 like the original:
  * the multi-role variables were split by role (build/w/greedy.py with split2.py; the _bNNN names are those splits).
  * Pass 3 levers: modes 0/1 fall through to one `return 0` (if/else chain; `if (done) return 1;` before
  * work->unk4++); unk70.vz copied right after vx/vy; nbolt = 1 after the summon draw call (cse no longer folds the
@@ -701,8 +701,8 @@ s32 fx_0e3_0_op80(s32 mode, Fx0e30Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
             b = ex->math_sin(a_b664) * 4 + 0x800;
             d = (y_b657 >> 5) - 0x80;
             for (i_b671 = 0; i_b671 < 9; i_b671++) {
-                pos2.vy -= 0x11F;
                 sc2.vx = sc2.vz = ((ex->math_sin((i_b671 << 11) >> 3) + 0x800) * b) >> 12;
+                pos2.vy -= 0x11F;
                 ex->Hi_DrawEffModel(&rot2, &pos2, (s32)&sc2, work->unk58);
                 ex->Hi_ModifyEffModelRGB(work->unk58, d, d, d);
                 rot2.vy += 0x366;
@@ -711,7 +711,7 @@ s32 fx_0e3_0_op80(s32 mode, Fx0e30Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
         if (frame >= 0x18) {
             s32 amp;
 
-            a = ((frame - 0x18) << 12) / 164;
+            a = (((frame - 0x18) << 12) / 41) >> 2;
             y_b680 = ex->math_sin(a) * 2;
             from.vx = work->unk10.vx;
             from.vy = work->unk10.vy;
@@ -729,10 +729,11 @@ s32 fx_0e3_0_op80(s32 mode, Fx0e30Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
             }
         }
         if (frame >= 0x1C) {
-            x = frame - 0x1C;
-            y = (ex->math_cos((x << 12) / 148) * 0x57) >> 12;
+            s32 xq = frame - 0x1C;
+            xq = (xq << 12) / 37;
+            y = (ex->math_cos(xq >> 2) * 0x57) >> 12;
             col.r = col.g = col.b = y;
-            sc3.vx = sc3.vy = 0x1200 - (x << 12) / 296;
+            sc3.vx = sc3.vy = 0x1200 - (xq >> 3);
             sc3.vz = 0x1000;
             rot3.vx = 0;
             rot3.vy = 0;
