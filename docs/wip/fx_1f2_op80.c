@@ -25,7 +25,7 @@
  * sparks block and the unk58 block's i * 0x150 to sp+0xCC (tr = &D_801EBB90[i] gives that but grows the frame by 8);
  * the original's reload register is t8 (all of t0-t7 used somewhere), ours t3); the mode-1 spark init's
  * i * 0x150 copy (s6 there, spilled here). *
- * Pass 28 update: 55 aligned mismatches, 11 ignoring registers (7 real) (of which 4 are symbol-addend artefacts:
+ * Pass 28 update: 52 aligned mismatches, 12 ignoring registers (8 real, all in the unk4C block) (of which 4 are symbol-addend artefacts:
  * D_801EA278/D_801EA2D8/D_801EA3E8 = base + 8). Levers: the unk58 block's SVECTOR at sp+0x90 is
  * ((SVECTOR *)out)[1] (vx 0x90, vz 0x94); variables shared between distant blocks become long global pseudos
  * that take callee-saved registers, so block-specific copies (unk4C's dz/dx instead of c/a, the ring loop's lo,
@@ -40,9 +40,11 @@
  * choice selects only the getFileData call (one drawTrail per path; with four calls loop.c hoists the
  * 0x1000 argument: its savings decide move_movables' threshold test) and every access is D_801EA690[i]
  * (the tr/off/base registers are loop.c givs) except sv = tr->unk4 and the pad path's tr->unk4C store.
- * Open there: loop.c hoists the pad constant 0x80 out of the outer loop (the original only out of the
- * inner one): move_movables' test threshold * savings * lifetime >= insn_count passes here (threshold 22,
- * 2 * 296 insns); the original apparently has one more early move or a longer loop.
+ * With two whole drawTrail calls per path (savings 4 for the 0x1000 movable) and D_801EA690[i] forms the
+ * loop has 364 insns, so loop.c moves neither 0x1000/1 nor the pad 0x80 out of the outer loop
+ * (move_movables: threshold * savings * lifetime >= insn_count, threshold 29 - 3 per move), as in the
+ * original. Open: the GTE path's header stores and sv come from one register v1 = off + base in the
+ * original (sv = v1 + 4); here the stores use the tr giv and sv = off + (D_801EA690 + 4) (a hoisted symbol).
  * The ring and twin-model loops use different variables for the cos product: a product pseudo in LO stays
  * there through reload only if it belongs to one basic block whose block needed no MD spill (spill_hard_reg),
  * so a shared variable got evicted to v1 (the original reloads it from LO through t8). unk58's 8 is a variable (k8) set before
@@ -718,9 +720,9 @@ s32 fx_1f2_op80(s32 mode, Fx1f2Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
                             gte_SetRotMatrix(&m);
                             gte_SetTransMatrix(&m);
                             n = 9;
-                            sv = tr->unk4;
                             D_801EA690[i].unk0 = D_801EA690[i].unk2 = 8;
                             D_801EA690[i].unk1 = 0;
+                            sv = D_801EA690[i].unk4;
                             for (j = 0, dx = 0; j < n; dx += 0x60, j++) {
                                 ((SVECTOR *)out)->vx = D_801EA690[i].unk50[j].vx + dx - 0x180;
                                 ((SVECTOR *)out)->vz = D_801EA690[i].unk50[j].vz + dz;
@@ -740,11 +742,10 @@ s32 fx_1f2_op80(s32 mode, Fx1f2Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
                             }
                             alpha_u4c = 0x800;
                             if (i & 1) {
-                                fd = ex->btlfx_getFileData(entry->unk8, 0xC);
+                                ex->btlfx_drawTrail((u8 *)ex->btlfx_getFileData(entry->unk8, 0xC), 0, NULL, frame, 0x1000, alpha_u4c, 1, (u8 *)&D_801EA690[i], 0);
                             } else {
-                                fd = ex->btlfx_getFileData(entry->unk8, 6);
+                                ex->btlfx_drawTrail((u8 *)ex->btlfx_getFileData(entry->unk8, 6), 0, NULL, frame, 0x1000, alpha_u4c, 1, (u8 *)&D_801EA690[i], 0);
                             }
-                            ex->btlfx_drawTrail((u8 *)fd, 0, NULL, frame, 0x1000, alpha_u4c, 1, (u8 *)&D_801EA690[i], 0);
                         }
                     } else {
                         D_801EA690[i].unk4C = (ex->btlfx_rand() & 3) + 8;
@@ -761,7 +762,7 @@ s32 fx_1f2_op80(s32 mode, Fx1f2Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
                     n = 9;
                     sv = tr->unk4;
                     a = D_801EA690[i].unk4C;
-                    tr->unk4C = D_801EA690[i].unk50[a].pad;
+                    D_801EA690[i].unk4C = D_801EA690[i].unk50[a].pad;
                     D_801EA690[i].unk0 = D_801EA690[i].unk2 = 8;
                     D_801EA690[i].unk1 = 0;
                     for (j = 0; j < n; j++) {
@@ -775,11 +776,10 @@ s32 fx_1f2_op80(s32 mode, Fx1f2Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
                     env->unk28 = 0x80;
                     alpha_u4cn = 0xFFF;
                     if (i & 1) {
-                        fd = ex->btlfx_getFileData(entry->unk8, 0xC);
+                        ex->btlfx_drawTrail((u8 *)ex->btlfx_getFileData(entry->unk8, 0xC), 0, NULL, frame, 0x1000, alpha_u4cn, 1, (u8 *)&D_801EA690[i], 0);
                     } else {
-                        fd = ex->btlfx_getFileData(entry->unk8, 6);
+                        ex->btlfx_drawTrail((u8 *)ex->btlfx_getFileData(entry->unk8, 6), 0, NULL, frame, 0x1000, alpha_u4cn, 1, (u8 *)&D_801EA690[i], 0);
                     }
-                    ex->btlfx_drawTrail((u8 *)fd, 0, NULL, frame, 0x1000, alpha_u4cn, 1, (u8 *)&D_801EA690[i], 0);
                     env->unk28 = 0;
                 }
             }
