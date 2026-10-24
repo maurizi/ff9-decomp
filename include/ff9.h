@@ -922,7 +922,7 @@ typedef struct {
     u8 unk7;
 } AkaoRegion;
 
-/* voice setup parameters for func_80059E10 */
+/* voice setup parameters for akao_startSeChannel */
 typedef struct {
     s32 unk0;
     s32 unk4;
@@ -1336,7 +1336,7 @@ extern Unk4 g_padAnalogThresholds;
 extern u8 D_800739B8[];
 extern Unk80080A10 *g_akaoSubSeq;
 extern Unk80080A10 g_akaoSavedSeq;
-/* AKAO sequence file header (func_8005A320) */
+/* AKAO sequence file header (akao_resumeSeq) */
 typedef struct {
     u8 pad0[4];
     u16 unk4; /* sequence id */
@@ -1354,8 +1354,8 @@ typedef struct {
     u8 pad38[0x40 - 0x38];
     u16 unk40[1]; /* per-channel offsets from the entry itself */
 } AkaoSeqHeader;
-void func_8005A320(s32, s32);
-void func_8005963C(s32, s32);
+void akao_resumeSeq(s32, s32);
+void akao_startSeq(s32, s32);
 extern s16 D_8007F95A;
 extern s32 D_8007F8DC;
 extern s32 D_8008322C;
@@ -1484,7 +1484,7 @@ typedef struct {
     s32 unk10;
     s32 unk14;
 } Unk80080AA0;
-void func_8005A014(); /* (VoiceParams *, u8 *, u8 *, s32); callers pass Unk80080AA0 * */
+void akao_startSe(); /* (VoiceParams *, u8 *, u8 *, s32); callers pass Unk80080AA0 * */
 extern Unk80080AA0 g_akaoArgs;
 extern Unk80080AA0 g_akaoCommandBlock; /* command block passed to the handlers */
 extern void (*g_akaoCommandHandlers[])(Unk80080AA0 *); /* sound command handlers */
@@ -2120,7 +2120,7 @@ extern u16 *D_800809DC;
 extern u16 *D_800809E4;
 extern u16 *D_80083148;
 s32 func_8005A5FC(s32);
-void func_8005A20C(u8 **, u8 **, s32);
+void akao_getSeData(u8 **, u8 **, s32);
 void akao_keyOn(u32);
 extern u8 *D_800809E8;
 extern s32 D_800809C0[];
@@ -2334,7 +2334,7 @@ extern Unk8 g_cdResult; /* last CD status/result bytes */
 s32 evt_callObjectFunc(Unk8004AB64 *, s32, s32, s32);
 extern s32 D_8007AE34;
 extern CdlATV g_akaoCdAtv;
-void func_8005A284(); /* (Unk80080A10 *, AkaoChannel *) */
+void akao_markSeqDirty(); /* (Unk80080A10 *, AkaoChannel *) */
 void card_rollStats(Unk6 *, u8);
 extern s32 g_akaoLfoWaves[];
 

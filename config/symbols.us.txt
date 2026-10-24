@@ -1362,3 +1362,13 @@ akao_streamRefillMonoA = 0x800611BC; // type:func [code] akao_streamRefill of th
 akao_streamRefillMonoB = 0x800611EC; // type:func [code] akao_streamRefill of the second mono half
 akao_streamRefillStereoA = 0x8006121C; // type:func [code] akao_streamRefill of the first stereo half
 akao_streamRefillStereoB = 0x8006124C; // type:func [code] akao_streamRefill of the second stereo half
+akao_resetChannel = 0x80059548; // type:func [code] default channel state (volume 0x6E00, pan, all effects off) at a data pointer, program 0
+akao_getVoiceMask = 0x800595F0; // type:func [code] SPU voice bits of the channels in a channel mask
+akao_startSeq = 0x8005963C; // type:func [code] starts a sequence at addr header masks, tables, then each active channel at its offset with default parameters
+akao_startSeChannel = 0x80059E10; // type:func [code] sets up one sound-effect channel from VoiceParams (id, flags, pitch, volume) and its data, marks it active
+akao_releaseVoice = 0x80059FB8; // type:func [code] detaches a SPU voice from the channels of g_akaoSeq that use it
+akao_startSe = 0x8005A014; // type:func [code] starts a sound effect's one or two channel streams (a, b) on free sound-effect channels
+akao_getSeData = 0x8005A20C; // type:func [code] the two channel data pointers of sound effect idx (D_800809DC offsets into D_800809E8, 0xFFFF = none)
+akao_markSeqDirty = 0x8005A284; // type:func [code] marks the voice registers of a sequence's active channels for rewrite (after volume/pan changes)
+akao_markSeDirty = 0x8005A2CC; // type:func [code] marks the voice registers of the active sound-effect channels for rewrite
+akao_resumeSeq = 0x8005A320; // type:func [code] restores the sequence saved in g_akaoSavedSeq for addr (akao_cmdPlayMusic with the same id)

@@ -103,7 +103,7 @@ void akao_tickSe(void) {
             g_akaoSeq->unk58--;
             v = g_akaoSeq->unk50 + g_akaoSeq->unk54;
             if ((v & 0x7F0000) != (g_akaoSeq->unk50 & 0x7F0000)) {
-                func_8005A284(g_akaoSeq, g_akaoChannels);
+                akao_markSeqDirty(g_akaoSeq, g_akaoChannels);
             }
             g_akaoSeq->unk50 = v;
         }
@@ -111,7 +111,7 @@ void akao_tickSe(void) {
             g_akaoSeq->unk64--;
             v = g_akaoSeq->unk5C + g_akaoSeq->unk60;
             if ((v & 0x7F0000) != (g_akaoSeq->unk5C & 0x7F0000)) {
-                func_8005A284(g_akaoSeq, g_akaoChannels);
+                akao_markSeqDirty(g_akaoSeq, g_akaoChannels);
             }
             g_akaoSeq->unk5C = v;
         }
@@ -121,7 +121,7 @@ void akao_tickSe(void) {
             g_akaoSubSeq->unk58--;
             v = g_akaoSubSeq->unk50 + g_akaoSubSeq->unk54;
             if ((v & 0x7F0000) != (g_akaoSubSeq->unk50 & 0x7F0000)) {
-                func_8005A284(g_akaoSubSeq, g_akaoSubChannels);
+                akao_markSeqDirty(g_akaoSubSeq, g_akaoSubChannels);
             }
             g_akaoSubSeq->unk50 = v;
         }
@@ -129,7 +129,7 @@ void akao_tickSe(void) {
             g_akaoSubSeq->unk58--;
             v = g_akaoSubSeq->unk5C + g_akaoSubSeq->unk60;
             if ((v & 0x7F0000) != (g_akaoSubSeq->unk5C & 0x7F0000)) {
-                func_8005A284(g_akaoSubSeq, g_akaoSubChannels);
+                akao_markSeqDirty(g_akaoSubSeq, g_akaoSubChannels);
             }
             g_akaoSubSeq->unk5C = v;
         }
@@ -268,7 +268,7 @@ void func_8005D628(Unk80080A10 *arg0, AkaoChannel *arg1) {
         }
         t = D_80080A18.unk0 + D_80080A18.unk4;
         if ((t & 0xFFFF0000) != (D_80080A18.unk0 & 0xFFFF0000)) {
-            func_8005A284(arg0, arg1, arg0);
+            akao_markSeqDirty(arg0, arg1, arg0);
         }
         D_80080A18.unk0 = t;
     }
@@ -1721,7 +1721,7 @@ void akao_opFE0B(AkaoChannel *c) {
     D_800809F0.unk4 = 0;
     D_800809F0.unk8 = c->unkBE >> 8;
     D_800809F0.unkC = c->unk78 >> 23;
-    func_8005A014(&D_800809F0, a, b, 0);
+    akao_startSe(&D_800809F0, a, b, 0);
     c->unk0 += 4;
 }
 
