@@ -25,7 +25,7 @@
  * sparks block and the unk58 block's i * 0x150 to sp+0xCC (tr = &D_801EBB90[i] gives that but grows the frame by 8);
  * the original's reload register is t8 (all of t0-t7 used somewhere), ours t3); the mode-1 spark init's
  * i * 0x150 copy (s6 there, spilled here). *
- * Pass 28 update: 89 aligned mismatches, 23 ignoring registers (of which 4 are symbol-addend artefacts:
+ * Pass 28 update: 78 aligned mismatches, 16 ignoring registers (of which 4 are symbol-addend artefacts:
  * D_801EA278/D_801EA2D8/D_801EA3E8 = base + 8). Levers: the unk58 block's SVECTOR at sp+0x90 is
  * ((SVECTOR *)out)[1] (vx 0x90, vz 0x94); variables shared between distant blocks become long global pseudos
  * that take callee-saved registers, so block-specific copies (unk4C's dz/dx instead of c/a, the ring loop's lo,
@@ -36,7 +36,10 @@
  * conflicts keep it off a1: the original copies v0 into a1); the sparks loop is tr = &D_801EA690[i] inside
  * the body and its x range uses j * 0x2400 (all givs); the unk4C pad path reads the next index before the
  * header stores; dx += 0x60 before j++; unk58 stores unkD0[j].vy before the j++ of a plain for loop; and
- * the else branch ends in its own return 0 (the original jumps to the shared epilogue). */
+ * the else branch ends in its own return 0 (the original jumps to the shared epilogue). unk4C: the (i & 1)
+ * choice selects only the getFileData call (one drawTrail per path; with four calls loop.c hoists the
+ * 0x1000 argument: its savings decide move_movables' threshold test) and every access is D_801EA690[i]
+ * (the tr/off/base registers are loop.c givs). */
 #include "fxmod/fx_1f2.h"
 
 typedef struct {
@@ -157,6 +160,7 @@ s32 fx_1f2_op80(s32 mode, Fx1f2Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
     s32 alpha;
     s32 n;
     s32 tint;
+    s32 fd;
     s32 j_m1s;
     s32 lo_m1s;
     s32 a_m1s;
@@ -685,10 +689,9 @@ s32 fx_1f2_op80(s32 mode, Fx1f2Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
                 s32 dz;
                 s32 dx;
 
-                tr = &D_801EA690[i];
                 if (i >= 8) {
-                    if (tr->unk4C != 0) {
-                        if (--tr->unk4C < 8) {
+                    if (D_801EA690[i].unk4C != 0) {
+                        if (--D_801EA690[i].unk4C < 8) {
                             if (i & 1) {
                                 ex->func_800DC8AC(0x10, 5, (BtlBone *)&m);
                                 m.t[0] = work->unk110[0].vx;
@@ -705,7 +708,7 @@ s32 fx_1f2_op80(s32 mode, Fx1f2Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
                             gte_SetRotMatrix(&m);
                             gte_SetTransMatrix(&m);
                             n = 9;
-                            sv = tr->unk4;
+                            sv = D_801EA690[i].unk4;
                             D_801EA690[i].unk0 = D_801EA690[i].unk2 = 8;
                             D_801EA690[i].unk1 = 0;
                             for (j = 0, dx = 0; j < n; dx += 0x60, j++) {
@@ -727,15 +730,14 @@ s32 fx_1f2_op80(s32 mode, Fx1f2Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
                             }
                             alpha_u4c = 0x800;
                             if (i & 1) {
-                                ex->btlfx_drawTrail((u8 *)ex->btlfx_getFileData(entry->unk8, 0xC), 0, NULL, frame, 0x1000,
-                                                    alpha_u4c, 1, (u8 *)tr, 0);
+                                fd = ex->btlfx_getFileData(entry->unk8, 0xC);
                             } else {
-                                ex->btlfx_drawTrail((u8 *)ex->btlfx_getFileData(entry->unk8, 6), 0, NULL, frame, 0x1000,
-                                                    alpha_u4c, 1, (u8 *)tr, 0);
+                                fd = ex->btlfx_getFileData(entry->unk8, 6);
                             }
+                            ex->btlfx_drawTrail((u8 *)fd, 0, NULL, frame, 0x1000, alpha_u4c, 1, (u8 *)&D_801EA690[i], 0);
                         }
                     } else {
-                        tr->unk4C = (ex->btlfx_rand() & 3) + 8;
+                        D_801EA690[i].unk4C = (ex->btlfx_rand() & 3) + 8;
                         for (j_u4ce = 0; j_u4ce < 9; j_u4ce++) {
                             D_801EA690[i].unk50[j_u4ce].vx = 0;
                             D_801EA690[i].unk50[j_u4ce].vy = 0;
@@ -747,11 +749,11 @@ s32 fx_1f2_op80(s32 mode, Fx1f2Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
                     }
                 } else {
                     n = 9;
-                    sv = tr->unk4;
-                    a = tr->unk4C;
-                    tr->unk4C = D_801EA690[i].unk50[a].pad;
-                    tr->unk0 = tr->unk2 = 8;
-                    tr->unk1 = 0;
+                    sv = D_801EA690[i].unk4;
+                    a = D_801EA690[i].unk4C;
+                    D_801EA690[i].unk4C = D_801EA690[i].unk50[a].pad;
+                    D_801EA690[i].unk0 = D_801EA690[i].unk2 = 8;
+                    D_801EA690[i].unk1 = 0;
                     for (j = 0; j < n; j++) {
                         sv->vx = D_801EA690[i].unk50[a].vx;
                         sv->vy = D_801EA690[i].unk50[a].vy;
@@ -763,12 +765,11 @@ s32 fx_1f2_op80(s32 mode, Fx1f2Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
                     env->unk28 = 0x80;
                     alpha_u4cn = 0xFFF;
                     if (i & 1) {
-                        ex->btlfx_drawTrail((u8 *)ex->btlfx_getFileData(entry->unk8, 0xC), 0, NULL, frame, 0x1000, alpha_u4cn,
-                                            1, (u8 *)tr, 0);
+                        fd = ex->btlfx_getFileData(entry->unk8, 0xC);
                     } else {
-                        ex->btlfx_drawTrail((u8 *)ex->btlfx_getFileData(entry->unk8, 6), 0, NULL, frame, 0x1000, alpha_u4cn,
-                                            1, (u8 *)tr, 0);
+                        fd = ex->btlfx_getFileData(entry->unk8, 6);
                     }
+                    ex->btlfx_drawTrail((u8 *)fd, 0, NULL, frame, 0x1000, alpha_u4cn, 1, (u8 *)&D_801EA690[i], 0);
                     env->unk28 = 0;
                 }
             }
