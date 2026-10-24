@@ -1,4 +1,4 @@
-/* Draft of fx_0fb_1 fx_0fb_1_op80. Status: 166 lines, 74 ignoring registers (build/w/nd.py, which now masks all |imm| >= 10000 data offsets). Cases 3-6 use fx_17a op80's final variable roles (src/fxmod/fx_17a); mode 0/1 are if/else-if branches with one return 0 (as fx_17a); further splits found by build/w/pgreedy.py + gen_regions.py. */
+/* Draft of fx_0fb_1 fx_0fb_1_op80. Status: 156 lines, 72 ignoring registers (build/w/nd.py, which now masks all |imm| >= 10000 data offsets). Cases 3-6 use fx_17a op80's final variable roles (src/fxmod/fx_17a); mode 0/1 are if/else-if branches with one return 0 (as fx_17a); further splits found by build/w/pgreedy.py + gen_regions.py. */
 #include "fxmod/fx_0fb_1.h"
 
 typedef struct {
@@ -97,6 +97,8 @@ s32 fx_0fb_1_op80(s32 mode, Fx0fb1Op80Work *work, Unk800F78A4 *env, Unk80100C78E
     s32 zz2;
     s32 zz3;
     s32 zz4;
+    s32 zz5;
+    s32 zz6;
 
     if (mode == 0) {
         init->unk0 = 0xE8;
@@ -304,9 +306,9 @@ s32 fx_0fb_1_op80(s32 mode, Fx0fb1Op80Work *work, Unk800F78A4 *env, Unk80100C78E
     case 2:
         t = (frame << 12) / 24;
         c = t >> 2;
-        b = ex->math_cos(c);
+        zz5 = ex->math_cos(c);
         env->unk2C->unk0[3].vx = work->unkC.vx;
-        s = b;
+        s = zz5;
         env->unk2C->unk0[3].vy = work->unkC.vy;
         glow = (t * 0xAA) >> 12;
         env->unk2C->unk0[3].vz = work->unkC.vz;
@@ -327,20 +329,20 @@ s32 fx_0fb_1_op80(s32 mode, Fx0fb1Op80Work *work, Unk800F78A4 *env, Unk80100C78E
         work->unk6C.vz += 0x400;
         ex->Hi_DrawEffModel(&work->unk6C, (VECTOR *)&work->unk54, (s32)&work->unk60, work->unkB0);
         work->unk6C.vz -= 0x400;
-        b = ex->math_sin(c) + 0x2000;
-        ex->func_800D23D8((u8 *)ex->btlfx_getFileData(entry->unk8, 8), &work->unkC, NULL, b, frame, 1, -1);
+        zz5 = ex->math_sin(c) + 0x2000;
+        ex->func_800D23D8((u8 *)ex->btlfx_getFileData(entry->unk8, 8), &work->unkC, NULL, zz5, frame, 1, -1);
         if (frame < 4) {
-            s32 b = 0xFF - ((frame * 0xFF) >> 2);
-            ex->btlfx_drawScreenTint((u32 *)(env->unk20 + 1), 1, b, b, b);
+            s32 zz5 = 0xFF - ((frame * 0xFF) >> 2);
+            ex->btlfx_drawScreenTint((u32 *)(env->unk20 + 1), 1, zz5, zz5, zz5);
         }
         if (frame >= 0x18) {
             work->unk0 = 3;
             D_801F0D30 = 1;
             entry->unk0 = -1;
-            for (f4 = 0; f4 < 4; f4++) {
-                work->unkC4[f4].vx = 0x800 - f4 * 0x180;
-                work->unkC4[f4].vy = f4 * 0xC0;
-                work->unkC4[f4].vz = f4 * 0x60;
+            for (zz6 = 0; zz6 < 4; zz6++) {
+                work->unkC4[zz6].vx = 0x800 - zz6 * 0x180;
+                work->unkC4[zz6].vy = zz6 * 0xC0;
+                work->unkC4[zz6].vz = zz6 * 0x60;
             }
         }
         break;
