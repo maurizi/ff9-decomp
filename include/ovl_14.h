@@ -159,12 +159,12 @@ extern u8 g_loadMenuClosed;
 typedef struct {
     s16 x;
     s16 y;
-} Ovl14Pos;
-extern Ovl14Pos g_titleImage10Pos;
-extern Ovl14Pos g_titleImage13Pos;
-extern Ovl14Pos g_titleNewGamePos;
-extern Ovl14Pos g_titleContinuePos;
-extern Ovl14Pos g_titleCursorPos[3];
+} ScreenPos;
+extern ScreenPos g_titleImage10Pos;
+extern ScreenPos g_titleImage13Pos;
+extern ScreenPos g_titleNewGamePos;
+extern ScreenPos g_titleContinuePos;
+extern ScreenPos g_titleCursorPos[3];
 
 /* g_titleMenu.cursor */
 enum { TITLE_NEW_GAME, TITLE_CONTINUE };
@@ -279,8 +279,8 @@ extern u32 g_attractState;
 #define ATTRACT_SKIP      0x100 /* Start/Cross: skip the remaining images */
 typedef struct {
     u16 bits; /* ATTRACT_* */
-} Ovl14Flags; /* a struct member in the original: loads of it are not moved above OT stores */
-extern Ovl14Flags g_attractFlags;
+} AttractFlags; /* a struct member in the original: loads of it are not moved above OT stores */
+extern AttractFlags g_attractFlags;
 
 void opening_initNewGame(void);
 void opening_resetGameData(void);

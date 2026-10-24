@@ -262,10 +262,10 @@ enum {
 typedef struct {
     s16 x;
     s16 y;
-} Ovl15Pos;
-extern Ovl15Pos g_bjActionCursorPos[4];
-extern Ovl15Pos g_bjWagerCursorPos[1];
-extern Ovl15Pos g_endingMenuCursorPos[4];
+} ScreenPos;
+extern ScreenPos g_bjActionCursorPos[4];
+extern ScreenPos g_bjWagerCursorPos[1];
+extern ScreenPos g_endingMenuCursorPos[4];
 extern void *g_endingData;
 
 extern s8 g_endingSoundPending; /* sound request kind, -1 = none */
