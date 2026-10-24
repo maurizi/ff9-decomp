@@ -298,7 +298,7 @@ s32 fx_0e0_op80(s32 mode, Fx0e0Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             work->unk24.vy += 0x1388;
             work->unk24.vz += 0x9C4;
             env->unk28 = 0x898;
-            ex->func_800D23D8((u8 *)ex->btlfx_getFileData(entry->unk8, 0x1A), &D_801EA8B0, NULL, frame * 0x300 + 0x1000,
+            ex->func_800D23D8((u8 *)ex->btlfx_getFileData(entry->unk8, 0x1A), &D_801EA8B0, NULL, t * 3 + 0x1000,
                               frame, 1, ex->math_sin(t >> 2));
             ex->func_800D23D8((u8 *)ex->btlfx_getFileData(entry->unk8, 0x1B), &D_801EA8B0, NULL, t * 2 + 0x4000, frame, 1,
                               ex->math_sin(t >> 2));
@@ -315,7 +315,7 @@ s32 fx_0e0_op80(s32 mode, Fx0e0Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             }
             break;
         case 8:
-            a2 = frame << 7;
+            t = frame << 7;
             col = 0xBC;
             scl = 0x200;
             xo = 0;
@@ -329,8 +329,8 @@ s32 fx_0e0_op80(s32 mode, Fx0e0Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
                 for (r1 = 0; r1 < 3; r1++) {
                     sp = ex->btlfx_poolSpawn((s16 *)entry->unk10);
                     if (sp != NULL) {
-                        sp->unkE = 0x6A4 - ((0x1000 - a2) >> 1);
-                        sp->unkC = work->unk18.vx - ((a2 >> 4) + 0x1800) + ex->btlfx_randCentered(0x200);
+                        sp->unkC = work->unk18.vx - ((t >> 4) + 0x1800) + ex->btlfx_randCentered(0x200);
+                        sp->unkE = 0x6A4 - ((0x1000 - t) >> 1);
                         sp->unk10 = work->unk18.vz + ex->btlfx_randCentered(0x1C00);
                         sp->unk4 = ex->btlfx_randCentered(0x100);
                         sp->unk6 = -0x140 - (ex->btlfx_rand() & 0xFF);
@@ -339,7 +339,7 @@ s32 fx_0e0_op80(s32 mode, Fx0e0Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
                         sp->unk16 = ex->btlfx_rand();
                         sp->unk18 = ex->btlfx_rand();
                         sp->unk0 = 3;
-                        sp->unkA = ((frame << 7) / 5) + ((ex->btlfx_rand() & 0x3FF) + 0x80);
+                        sp->unkA = t / 5 + (ex->btlfx_rand() & 0x3FF) + 0x80;
                     }
                 }
             }
