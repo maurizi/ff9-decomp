@@ -353,14 +353,14 @@ typedef struct {
 
 /* text windows (menuMain_setCursor .. menuMain_updatePanels) */
 typedef struct {
-    u8 unk0;
-    u8 unk1; /* index into s_menuMainInput */
-    u8 unk2; /* party slots being swapped */
-    u8 unk3;
-    u8 unk4;
+    u8 cursor;
+    u8 state; /* index into s_menuMainInput */
+    u8 orderCursor; /* party slots being swapped */
+    u8 orderTarget;
+    u8 orderPicked;
     u8 pad5[3];
-    WinDef unk8[6];
-} Unk800D5438;
+    WinDef panels[6];
+} MenuMain;
 
 /* map cell (4 bytes) */
 typedef struct {
@@ -887,7 +887,7 @@ extern s32 D_800D481C;
 extern s32 D_800D4820;
 extern s32 D_800D4824;
 extern s32 D_800D4828;
-extern Unk800D5438 s_menuMain;
+extern MenuMain s_menuMain;
 extern u8 D_800CF46C;
 extern char D_800A7CCC[];
 extern s16 D_800CCB28[][9];

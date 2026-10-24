@@ -623,14 +623,14 @@ typedef struct {
 
 /* text windows (same layout as ovl_0c's D_800D5438) */
 typedef struct {
-    u8 unk0;
-    u8 unk1; /* index into s_menuMainInput */
-    u8 unk2;
-    u8 unk3;
-    u8 unk4;
+    u8 cursor;
+    u8 state; /* index into s_menuMainInput */
+    u8 orderCursor;
+    u8 orderTarget;
+    u8 orderPicked;
     u8 pad5[3];
-    WinDef unk8[6];
-} Unk800CB188;
+    WinDef panels[6];
+} MenuMain;
 
 /* file 0x12xxxx lookup table (fld_getModelAnimId) */
 typedef struct {
@@ -1170,7 +1170,7 @@ extern Unk800CA068 g_fieldBgState;
 extern s16 D_800CAA98[];
 extern s16 D_800CAAB8[];
 extern BgiFloorMove g_fieldBgiFloorMoves[];
-extern Unk800CB188 s_menuMain;
+extern MenuMain s_menuMain;
 extern void (*s_menuMainInput[])(void);
 extern Unk800C9EF0 g_fieldFlagQueue;
 extern u16 g_fieldMovieFlags;

@@ -19,14 +19,14 @@ void menuMain_initPanels(void) {
     s_menuMainPanelRects[5].w = w;
     s_menuMainPanelRects[5].x = 0x134 - w;
     for (i = 0; i < 6; i++) {
-        s_menuMain.unk8[i].unk4 = s_menuMainPanelRects[i];
-        func_80063118(&s_menuMain.unk8[i], NULL, 0);
+        s_menuMain.panels[i].unk4 = s_menuMainPanelRects[i];
+        func_80063118(&s_menuMain.panels[i], NULL, 0);
     }
     if (D_80077E51 != 0) {
-        func_80063118(&s_menuMain.unk8[0], &s_menuMainSlideIn[0], 1);
-        func_80063118(&s_menuMain.unk8[1], &s_menuMainSlideIn[1], 1);
-        func_80063118(&s_menuMain.unk8[2], &s_menuMainSlideIn[2], 1);
-        func_80063118(&s_menuMain.unk8[3], &s_menuMainSlideIn[3], 1);
+        func_80063118(&s_menuMain.panels[0], &s_menuMainSlideIn[0], 1);
+        func_80063118(&s_menuMain.panels[1], &s_menuMainSlideIn[1], 1);
+        func_80063118(&s_menuMain.panels[2], &s_menuMainSlideIn[2], 1);
+        func_80063118(&s_menuMain.panels[3], &s_menuMainSlideIn[3], 1);
     }
 }
 
@@ -38,10 +38,10 @@ void menuMain_inputCommand(void) {
         menuMain_selectCommand();
     } else if (g_padRepeat & PAD_UP) {
         snd_playSe(0x67);
-        s_menuMain.unk0 = s_menuMain.unk0 != 0 ? s_menuMain.unk0 - 1 : 6;
+        s_menuMain.cursor = s_menuMain.cursor != 0 ? s_menuMain.cursor - 1 : 6;
     } else if (g_padRepeat & PAD_DOWN) {
         snd_playSe(0x67);
-        s_menuMain.unk0 = s_menuMain.unk0 < 6 ? s_menuMain.unk0 + 1 : 0;
+        s_menuMain.cursor = s_menuMain.cursor < 6 ? s_menuMain.cursor + 1 : 0;
     }
 }
 
@@ -52,11 +52,11 @@ void menuMain_inputMember(void) {
 
     if (g_padRepeat & BTN_CIRCLE) {
         snd_playSe(0x65);
-        s_menuMain.unk1 = 0;
+        s_menuMain.state = 0;
         return;
     } else if (g_padRepeat & BTN_CROSS) {
         snd_playSe(0x67);
-        func_800361CC(s_menuMain.unk0 + 1);
+        func_800361CC(s_menuMain.cursor + 1);
         return;
     } else if (g_padRepeat & PAD_UP) {
         m = &D_80077E50;
@@ -79,35 +79,35 @@ void menuMain_inputMember(void) {
 void menuMain_inputOrder(void) {
     if (g_padRepeat & BTN_CIRCLE) {
         snd_playSe(0x65);
-        if (s_menuMain.unk4 == 0) {
-            s_menuMain.unk1 = 0;
+        if (s_menuMain.orderPicked == 0) {
+            s_menuMain.state = 0;
         } else {
-            s_menuMain.unk4 = 0;
+            s_menuMain.orderPicked = 0;
         }
     } else if (g_padRepeat & PAD_UP) {
         snd_playSe(0x67);
-        if (s_menuMain.unk4 == 0) {
-            s_menuMain.unk2 = s_menuMain.unk2 != 0 ? s_menuMain.unk2 - 1 : 3;
+        if (s_menuMain.orderPicked == 0) {
+            s_menuMain.orderCursor = s_menuMain.orderCursor != 0 ? s_menuMain.orderCursor - 1 : 3;
         } else {
-            s_menuMain.unk3 = s_menuMain.unk3 != 0 ? s_menuMain.unk3 - 1 : 3;
+            s_menuMain.orderTarget = s_menuMain.orderTarget != 0 ? s_menuMain.orderTarget - 1 : 3;
         }
     } else if (g_padRepeat & PAD_DOWN) {
         snd_playSe(0x67);
-        if (s_menuMain.unk4 == 0) {
-            s_menuMain.unk2 = s_menuMain.unk2 < 3 ? s_menuMain.unk2 + 1 : 0;
+        if (s_menuMain.orderPicked == 0) {
+            s_menuMain.orderCursor = s_menuMain.orderCursor < 3 ? s_menuMain.orderCursor + 1 : 0;
         } else {
-            s_menuMain.unk3 = s_menuMain.unk3 < 3 ? s_menuMain.unk3 + 1 : 0;
+            s_menuMain.orderTarget = s_menuMain.orderTarget < 3 ? s_menuMain.orderTarget + 1 : 0;
         }
     } else if (g_padRepeat & BTN_CROSS) {
-        if (s_menuMain.unk4 == 0) {
+        if (s_menuMain.orderPicked == 0) {
             snd_playSe(0x67);
-            s_menuMain.unk4 = 1;
-            s_menuMain.unk3 = s_menuMain.unk2;
+            s_menuMain.orderPicked = 1;
+            s_menuMain.orderTarget = s_menuMain.orderCursor;
         } else {
             snd_playSe(0x67);
-            menuMain_reorder(s_menuMain.unk2, s_menuMain.unk3);
-            s_menuMain.unk4 = 0;
-            s_menuMain.unk2 = s_menuMain.unk3;
+            menuMain_reorder(s_menuMain.orderCursor, s_menuMain.orderTarget);
+            s_menuMain.orderPicked = 0;
+            s_menuMain.orderCursor = s_menuMain.orderTarget;
         }
     }
 }
@@ -122,9 +122,9 @@ void menuMain_reorder(s32 arg0, s32 arg1) {
             c->unk34.b.unk9 ^= 1;
         }
     } else {
-        t = g_gameState->unk1C->party[s_menuMain.unk2];
-        g_gameState->unk1C->party[s_menuMain.unk2] = g_gameState->unk1C->party[s_menuMain.unk3];
-        g_gameState->unk1C->party[s_menuMain.unk3] = t;
+        t = g_gameState->unk1C->party[s_menuMain.orderCursor];
+        g_gameState->unk1C->party[s_menuMain.orderCursor] = g_gameState->unk1C->party[s_menuMain.orderTarget];
+        g_gameState->unk1C->party[s_menuMain.orderTarget] = t;
         menuMain_swapPortraits(arg0, arg1);
         if (g_gameState->unk1C->party[D_80077E50.unk3] == NULL) {
             D_80077E50.unk3 = party_getFirstMember();
@@ -175,7 +175,7 @@ void menuMain_drawMember(s32 arg0) {
     s16 maxmp;
 
     c = g_gameState->unk1C->party[arg0];
-    r = &s_menuMain.unk8[arg0].unk4;
+    r = &s_menuMain.panels[arg0].unk4;
     x = r->x + 8;
     if (!c->unk34.b.unk9) {
         x = r->x + 0x16;
@@ -254,33 +254,33 @@ void menuMain_drawCursor(void) {
     u8 blink;
 
     blink = (D_80077E54 & 3) != 0;
-    func_80035674(s_menuMain.unk1 - 1U >= 2);
+    func_80035674(s_menuMain.state - 1U >= 2);
     if (!func_8002F810()) {
-        if (s_menuMain.unk1 == 0 || blink) {
+        if (s_menuMain.state == 0 || blink) {
             D_80077DE8.unk0 = 0xE0;
             D_80077DE8.unk4 = 1;
-            D_80077DE8.unk2 = s_menuMain.unk0 * 0xF + 0x11;
+            D_80077DE8.unk2 = s_menuMain.cursor * 0xF + 0x11;
             func_800355E4();
         }
-        if (s_menuMain.unk1 == 1) {
+        if (s_menuMain.state == 1) {
             D_80077DE8.unk4 = 0xC;
-            D_80077DE8.unk0 = s_menuMain.unk8[0].unk4.x - 0xE;
+            D_80077DE8.unk0 = s_menuMain.panels[0].unk4.x - 0xE;
             D_80077DE8.unk2 = D_80077E53 * 0x2E + 0x20;
             func_800355E4();
         }
-        if (s_menuMain.unk1 == 2) {
-            if (s_menuMain.unk4 == 1) {
+        if (s_menuMain.state == 2) {
+            if (s_menuMain.orderPicked == 1) {
                 D_80077DE8.unk4 = 0xB;
-                D_80077DE8.unk0 = s_menuMain.unk8[0].unk4.x - 0xA;
-                D_80077DE8.unk2 = s_menuMain.unk3 * 0x2E + 0x24;
+                D_80077DE8.unk0 = s_menuMain.panels[0].unk4.x - 0xA;
+                D_80077DE8.unk2 = s_menuMain.orderTarget * 0x2E + 0x24;
                 func_800355E4();
                 if (blink) {
-                    ui_drawHand(s_menuMain.unk8[0].unk4.x - 0xE, s_menuMain.unk2 * 0x2E + 0x20, 0xC);
+                    ui_drawHand(s_menuMain.panels[0].unk4.x - 0xE, s_menuMain.orderCursor * 0x2E + 0x20, 0xC);
                 }
-            } else if (s_menuMain.unk4 == 0) {
+            } else if (s_menuMain.orderPicked == 0) {
                 D_80077DE8.unk4 = 0xC;
-                D_80077DE8.unk0 = s_menuMain.unk8[0].unk4.x - 0xE;
-                D_80077DE8.unk2 = s_menuMain.unk2 * 0x2E + 0x20;
+                D_80077DE8.unk0 = s_menuMain.panels[0].unk4.x - 0xE;
+                D_80077DE8.unk2 = s_menuMain.orderCursor * 0x2E + 0x20;
                 func_800355E4();
             }
         }
@@ -289,21 +289,21 @@ void menuMain_drawCursor(void) {
 
 void menuMain_updateHelp(void) {
     D_80077DE8.unk8 = 0;
-    if (s_menuMain.unk1 == 0) {
-        D_80077DE8.unk8 = (u8 *)func_8003631C(s_menuMain.unk0);
-    } else if (s_menuMain.unk1 == 1) {
-        if (s_menuMain.unk0 + 1 == 3) {
-            menuMain_setEquipHelp(s_menuMain.unk0);
+    if (s_menuMain.state == 0) {
+        D_80077DE8.unk8 = (u8 *)func_8003631C(s_menuMain.cursor);
+    } else if (s_menuMain.state == 1) {
+        if (s_menuMain.cursor + 1 == 3) {
+            menuMain_setEquipHelp(s_menuMain.cursor);
         } else {
-            s32 a = s_menuMain.unk0 + 2;
-            if (s_menuMain.unk0 + 1 == 4) {
+            s32 a = s_menuMain.cursor + 2;
+            if (s_menuMain.cursor + 1 == 4) {
                 menuMain_setExpHelp(a);
             } else {
                 D_80077DE8.unk8 = text_get(a);
             }
         }
-    } else if (s_menuMain.unk1 == 2) {
-        D_80077DE8.unk8 = text_get(s_menuMain.unk4 + 0xB);
+    } else if (s_menuMain.state == 2) {
+        D_80077DE8.unk8 = text_get(s_menuMain.orderPicked + 0xB);
     }
 }
 
@@ -333,15 +333,15 @@ void menuMain_setExpHelp(s32 arg0) {
 }
 
 void menuMain_selectCommand(void) {
-    if (s_menuMain.unk0 + 1 != 5) {
-        if (func_80036300(s_menuMain.unk0 + 1) == 0) {
-            func_800361CC(s_menuMain.unk0 + 1);
+    if (s_menuMain.cursor + 1 != 5) {
+        if (func_80036300(s_menuMain.cursor + 1) == 0) {
+            func_800361CC(s_menuMain.cursor + 1);
         } else {
-            s_menuMain.unk1 = 1;
+            s_menuMain.state = 1;
         }
     } else {
-        s_menuMain.unk1 = 2;
-        s_menuMain.unk4 = 0;
+        s_menuMain.state = 2;
+        s_menuMain.orderPicked = 0;
     }
     snd_playSe(0x67);
 }
@@ -378,10 +378,10 @@ void menuMain_init(void) {
     RECT r;
 
     if (D_80077E50.unk1 != 0) {
-        s_menuMain.unk0 = 0;
-        s_menuMain.unk2 = 0;
+        s_menuMain.cursor = 0;
+        s_menuMain.orderCursor = 0;
     }
-    s_menuMain.unk1 = 0;
+    s_menuMain.state = 0;
     text_setBank(s_menuMainText);
     menuMain_initPanels();
     r.x = 8;
@@ -409,13 +409,13 @@ void menuMain_exit(void) {
 }
 
 void menuMain_setCursor(u8 arg0) {
-    s_menuMain.unk0 = arg0;
+    s_menuMain.cursor = arg0;
 }
 
 void menuMain_input(void) {
     if (D_80077E50.unk1 == 0 && func_8002F810() == 0) {
-        if (s_menuMainInput[s_menuMain.unk1] != NULL) {
-            s_menuMainInput[s_menuMain.unk1]();
+        if (s_menuMainInput[s_menuMain.state] != NULL) {
+            s_menuMainInput[s_menuMain.state]();
         }
     }
 }
@@ -432,8 +432,8 @@ void menuMain_updatePanels(void) {
 
     if (D_80077E50.unk1 != 0) {
         for (i = 0; i < 6; i++) {
-            if (s_menuMain.unk8[i].unkC != 0) {
-                func_800631AC(&s_menuMain.unk8[i]);
+            if (s_menuMain.panels[i].unkC != 0) {
+                func_800631AC(&s_menuMain.panels[i]);
             }
         }
     }
@@ -447,7 +447,7 @@ void menuMain_drawParty(void) {
 
     i = 0;
     do {
-        p = &s_menuMain.unk8[i].unk4;
+        p = &s_menuMain.panels[i].unk4;
         r.x = p->x + 0x82;
         y = p->y;
         r.w = 0x72;
