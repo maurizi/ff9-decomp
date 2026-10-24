@@ -1,6 +1,6 @@
 /* Draft of fx_0e3_0 fx_0e3_0_op80.
- * Status (pass 3, build/w/cmp.py): 16 mismatched rows ignoring registers and stack offsets (was 312), 190 counting
- * registers (was 936); frame size matches (400), same length as the original (2501). ex/work now get s2/s3 like the original:
+ * Status (pass 3, build/w/cmp.py): 12 mismatched rows ignoring registers and stack offsets (was 312), 63 counting
+ * registers (was 936); frame size matches (400), 2499 vs 2501 instructions. ex/work now get s2/s3 like the original:
  * the multi-role variables were split by role (build/w/greedy.py with split2.py; the _bNNN names are those splits).
  * Pass 3 levers: modes 0/1 fall through to one `return 0` (if/else chain; `if (done) return 1;` before
  * work->unk4++); unk70.vz copied right after vx/vy; nbolt = 1 after the summon draw call (cse no longer folds the
@@ -92,25 +92,32 @@ s32 fx_0e3_0_op80(s32 mode, Fx0e30Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
     s32 nbolt;
     s32 done;
     s32 i;
+    s32 i_b727;
     s32 i_b526;
     s32 i_b635;
     s32 i_b671;
     s32 i_b648;
     s32 i_b138;
     s32 j;
+    s32 j_b725;
     s32 k;
     s32 a;
+    s32 a_b224;
     s32 a_b664;
     s32 b;
+    s32 b_b182;
     s32 c;
     s32 c_r365;
     s32 c_r136;
     s32 c_r136_b161;
     s32 c_r277;
     s32 d;
+    s32 d_b341;
+    s32 d_b799;
     s32 d_b695;
     s32 r;
     s32 x;
+    s32 x_b167;
     s32 x_b388;
     s32 y;
     s32 y_b158;
@@ -181,7 +188,7 @@ s32 fx_0e3_0_op80(s32 mode, Fx0e30Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
             }
             r = frame - 0x18;
             i_b138 = (r << 12) / 45;
-            b = (ex->math_sin(((i_b138 >> 1) * 3) / 2) >> 3) + 0x800;
+            b_b182 = (ex->math_sin(((i_b138 >> 1) * 3) / 2) >> 3) + 0x800;
             c_r136_b161 = (((0x1000 - i_b138) * 0x4B0) >> 12) + 0x18;
             if (i_b138 < 0xC00) {
                 d = 0x1800;
@@ -191,11 +198,11 @@ s32 fx_0e3_0_op80(s32 mode, Fx0e30Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
                 y_b158 = ex->math_sin(d) * 3 + 0x1000;
                 d = 0x1800 - d * 4;
             }
-            work->unk10.vx = work->unk8.vx + ((ex->math_cos(b) * c_r136_b161) >> 12);
+            work->unk10.vx = work->unk8.vx + ((ex->math_cos(b_b182) * c_r136_b161) >> 12);
             work->unk10.vy = work->unk8.vy + y_b158;
-            work->unk10.vz = work->unk8.vz + ((ex->math_sin(b) * c_r136_b161) >> 12);
+            work->unk10.vz = work->unk8.vz + ((ex->math_sin(b_b182) * c_r136_b161) >> 12);
             work->unk28.vx = 0x400;
-            work->unk28.vy = -b * 2 + 0xC00;
+            work->unk28.vy = -b_b182 * 2 + 0xC00;
             work->unk1C.vx = work->unk1C.vy = work->unk1C.vz = d;
             ex->Hi_DrawSummonModel(&work->unk28, (VECTOR *)&work->unk10, (s32)&work->unk1C, SUMMON(env)->unk60, 1);
             nbolt = 1;
@@ -207,14 +214,14 @@ s32 fx_0e3_0_op80(s32 mode, Fx0e30Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
                 trail = 0x1000;
             }
         }
-        x = frame * 0xF5;
+        x_b167 = frame * 0xF5;
         c_r136 = frame << 5;
         pos.vx = work->unk8.vx;
         pos.vz = work->unk8.vz;
         rot.vz = 0;
         rot.vx = 0;
-        for (f1 = 0; f1 < 9; f1++, x += 0x1C7, c_r136 += 0x1FF) {
-            i_b138 = x;
+        for (f1 = 0; f1 < 9; f1++, x_b167 += 0x1C7, c_r136 += 0x1FF) {
+            i_b138 = x_b167;
             n = 2;
             while (i_b138 >= 0x1000 && n > 0) {
                 i_b138 -= 0x1000;
@@ -230,8 +237,8 @@ s32 fx_0e3_0_op80(s32 mode, Fx0e30Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
                 d = 0x1000 - ex->math_cos(d);
                 sc.vx = sc.vy = sc.vz = ((i_b138 >> 1) + 0x800) / 2;
                 ex->Hi_DrawEffModel(&rot, &pos, (s32)&sc, work->unk64);
-                a = ((d + 0x200) >> 5) - 0x80;
-                ex->Hi_ModifyEffModelRGB(work->unk64, a, a, a);
+                a_b224 = ((d + 0x200) >> 5) - 0x80;
+                ex->Hi_ModifyEffModelRGB(work->unk64, a_b224, a_b224, a_b224);
             }
         }
         if (((frame & 1) && frame < 0x23) || frame >= 0x23) {
@@ -333,9 +340,9 @@ s32 fx_0e3_0_op80(s32 mode, Fx0e30Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
         work->unk30.vy = work->unk10.vy;
         work->unk30.vz = work->unk10.vz;
         if (frame < 0x10) {
-            d = (frame << 10) >> 4;
-            work->unk30.vy = -ex->math_sin(d);
-            work->unk30.vx = ex->math_sin(d) >> 2;
+            d_b341 = (frame << 10) >> 4;
+            work->unk30.vy = -ex->math_sin(d_b341);
+            work->unk30.vx = ex->math_sin(d_b341) >> 2;
         } else {
             work->unk30.vy = -0x1000;
             work->unk30.vx = 0x400;
@@ -722,9 +729,9 @@ s32 fx_0e3_0_op80(s32 mode, Fx0e30Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
             from.vy -= y_b680;
             to.vy += y_b680;
             amp = (ex->math_sin(a) >> 1) + 0x180;
-            for (i = 0, j = -1, k = work->unk4 * 0x9B - 0x400; i < 2; i++, j += 2, k += 0x400) {
+            for (i_b727 = 0, j_b725 = -1, k = work->unk4 * 0x9B - 0x400; i_b727 < 2; i_b727++, j_b725 += 2, k += 0x400) {
                 d_b695 = ex->math_cos(a) + ex->btlfx_randCentered(0x400);
-                func_801E7D40(entry, (s32)&mid, &D_801EB388[i], &from, &to, amp, k * j,
+                func_801E7D40(entry, (s32)&mid, &D_801EB388[i_b727], &from, &to, amp, k * j_b725,
                               ((ex->math_cos(a) >> 5) + 0x100) >> 1, 0, d_b695);
             }
         }
@@ -797,11 +804,11 @@ s32 fx_0e3_0_op80(s32 mode, Fx0e30Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
         D_801EB370 = 0x180;
         D_801EB374 = 0x80;
         D_801EB378 = 0xA0;
-        d = work->unk4 << 8;
+        d_b799 = work->unk4 << 8;
         for (i = 0; i < nbolt; i++) {
             ex->Hi_GetSummonBonePos(SUMMON(env)->unk60, ex->btlfx_rand() % 92, (u16 *)&ba);
             ex->Hi_GetSummonBonePos(SUMMON(env)->unk60, ex->btlfx_rand() % 92, (u16 *)&bb);
-            func_801E7B40(entry, (Fx0e30Bolt *)&D_801EB0E8[i], &ba, &bb, 0x20, 0x40, d, 0x100, 0,
+            func_801E7B40(entry, (Fx0e30Bolt *)&D_801EB0E8[i], &ba, &bb, 0x20, 0x40, d_b799, 0x100, 0,
                           ex->btlfx_randCentered(0x400) + 0x800);
         }
     }
