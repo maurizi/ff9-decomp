@@ -1,4 +1,4 @@
-/* Draft of fx_1b3 fx_1b3_op80 (Fx1b3Split/Fx1b3Blast in include/fxmod/fx_1b3.h). Status: 50 lines, 14 ignoring registers (build/w/nd.py). The frame matches with the tex/clut lists, trail points and flash locals sharing three function-scope buffers (v, w, sc), as the original stack offsets show. Hi_RegisterTexListModel is called with three arguments (a3 left over), see REGTEX. The frame switch is sparse (a compare tree, bodies in ascending case order). */
+/* Draft of fx_1b3 fx_1b3_op80 (Fx1b3Split/Fx1b3Blast in include/fxmod/fx_1b3.h). Status: 46 lines, 10 ignoring registers (build/w/nd.py). The frame matches with the tex/clut lists, trail points and flash locals sharing three function-scope buffers (v, w, sc), as the original stack offsets show. Hi_RegisterTexListModel is called with three arguments (a3 left over), see REGTEX. The frame switch is sparse (a compare tree, bodies in ascending case order). */
 #include "fxmod/fx_1b3.h"
 
 typedef struct {
@@ -122,8 +122,8 @@ s32 fx_1b3_op80(s32 mode, Fx1b3Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
         ex->btlfx_getUnitBodyPos(0x10, 0, (s16 *)&work->unk100);
         ex->btlfx_getUnitPos(0x10, (s16 *)&work->unk108);
         ((BtlTexInfo *)v)->unk0[0][0] = 0x8A;
-        ((BtlTexInfo *)v)->unk0[0][1] = 0x3800;
         ((BtlTexInfo *)v)->unk0[1][0] = 0x8C;
+        ((BtlTexInfo *)v)->unk0[0][1] = 0x3800;
         ((BtlTexInfo *)v)->unk0[1][1] = 0x3840;
         ((BtlTexInfo *)w)->unk0[0][0] = 0;
         ((BtlTexInfo *)w)->unk0[1][0] = 0;
