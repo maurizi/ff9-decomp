@@ -98,6 +98,7 @@ s32 fx_0e0_op80(s32 mode, Fx0e0Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
     s32 i;
     s32 r;
     s32 d;
+    s32 state;
     s32 n;
     s32 one;
 
@@ -134,6 +135,8 @@ s32 fx_0e0_op80(s32 mode, Fx0e0Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
         ex->btlfx_aimAngles((s16 *)&work->unk8, (s16 *)&work->unk10, (s16 *)&work->unk3C);
         BTLFX_COPY_SVEC(&work->unk50, &work->unk3C);
     } else {
+        state = work->unk0;
+        frame = entry->unk0;
         col = 0;
         scl = 0;
         xo = 0;
@@ -144,8 +147,7 @@ s32 fx_0e0_op80(s32 mode, Fx0e0Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             a1 = 2;
             a2 = 2;
         }
-        frame = entry->unk0;
-        switch (work->unk0) {
+        switch (state) {
         case 6:
             t = (frame << 12) / 66;
             col = ((t << 5) >> 12) + 0x8D;
@@ -339,7 +341,7 @@ s32 fx_0e0_op80(s32 mode, Fx0e0Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
                         sp->unk16 = ex->btlfx_rand();
                         sp->unk18 = ex->btlfx_rand();
                         sp->unk0 = 3;
-                        sp->unkA = t / 5 + (ex->btlfx_rand() & 0x3FF) + 0x80;
+                        sp->unkA = t / 5 + (s16)((ex->btlfx_rand() & 0x3FF) + 0x80);
                     }
                 }
             }
