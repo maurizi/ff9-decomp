@@ -134,7 +134,7 @@ void wm_applyEncounterEvents(void) {
     s32 j;
     u16 (*row)[12];
     s32 mask;
-    Unk800CF450 *tbl;
+    WmEncounter *tbl;
     u16 v;
 
     i = 0;
@@ -147,7 +147,7 @@ void wm_applyEncounterEvents(void) {
             do {
                 v = (*row)[j];
                 if (v != 0xFFFF) {
-                    tbl[v - 1].unk6 = tbl[v - 1].unk4;
+                    tbl[v - 1].battle[3] = tbl[v - 1].battle[2];
                 }
                 j++;
             } while (j < 12);
@@ -213,7 +213,7 @@ void wm_updateMap(void) {
     s32 v;
 
     m = g_worldPlayer->unk11;
-    flags = g_worldActorTypeInfo[m].unk8;
+    flags = g_worldActorTypeInfo[m].cellAttr;
     if (g_worldMusicStarted != 0) {
         wm_updateChunks();
         wm_updateVisibleBlocks();
@@ -393,7 +393,7 @@ void wm_applyStoryForms(void) {
 }
 
 /* pick the encounter table entry for the player's area, zone and fog */
-Unk800CF450 *wm_getEncounterEntry(void) {
+WmEncounter *wm_getEncounterEntry(void) {
     u8 zone;
     s32 area;
     s32 lo;
@@ -403,24 +403,24 @@ Unk800CF450 *wm_getEncounterEntry(void) {
     s32 f;
     s32 add;
 
-    area = WM_ATTR_AREA(g_worldActorTypeInfo[g_worldPlayer->unk11].unk8);
+    area = WM_ATTR_AREA(g_worldActorTypeInfo[g_worldPlayer->unk11].cellAttr);
     zone = g_worldAreaZone[area];
     lo = g_worldEncounterZoneStart[zone];
     hi = g_worldEncounterZoneStart[zone + 1];
     if (g_worldMapDebugFlags & WM_DEBUG_ENCOUNTER) {
         printf("- Encount Information -\n");
-        printf("Now Area :%d\n", WM_ATTR_AREA(g_worldActorTypeInfo[g_worldPlayer->unk11].unk8));
+        printf("Now Area :%d\n", WM_ATTR_AREA(g_worldActorTypeInfo[g_worldPlayer->unk11].cellAttr));
         printf("Now Zone :%d\n", zone);
         printf("Now Fog  :%d\n", g_worldFog);
-        printf("Topograph:%d\n", (u8)g_worldActorTypeInfo[g_worldPlayer->unk11].unk8 >> 2);
+        printf("Topograph:%d\n", (u8)g_worldActorTypeInfo[g_worldPlayer->unk11].cellAttr >> 2);
     }
     for (i = lo; i < hi; i++) {
-        t = g_worldEncounterTable[i].unk8 >> 2;
-        f = g_worldEncounterTable[i].unk9 & 1;
+        t = g_worldEncounterTable[i].topoPattern >> 2;
+        f = g_worldEncounterTable[i].zoneFog & 1;
         if (g_worldMapDebugFlags & WM_DEBUG_ENCOUNTER) {
             printf("Matching:%d  ( T:%d / F:%d )\n", i, t, f);
         }
-        if (t == (u8)g_worldActorTypeInfo[g_worldPlayer->unk11].unk8 >> 2 && f == g_worldFog) {
+        if (t == (u8)g_worldActorTypeInfo[g_worldPlayer->unk11].cellAttr >> 2 && f == g_worldFog) {
             if (g_worldMapDebugFlags & WM_DEBUG_ENCOUNTER) {
                 printf("Hit %d encount data\n", i);
             }
@@ -567,30 +567,30 @@ void wm_chunkListInit(void) {
 
     g_worldChunkListDirty = 0;
     g_worldChunkSlots[0].unk0 = &g_worldChunkHead;
-    g_worldChunkSlots[0].unkE = 0;
+    g_worldChunkSlots[0].state = 0;
     g_worldChunkSlots[0].unk4 = &g_worldChunkSlots[1];
-    g_worldChunkSlots[0].unkC = -1;
-    g_worldChunkSlots[0].unkF = 0;
+    g_worldChunkSlots[0].chunkId = -1;
+    g_worldChunkSlots[0].generation = 0;
     g_worldChunkSlots[0].unk8 = (WmTexPack *)g_worldChunkBuffer;
     for (i = 1; i < 31; i++) {
         g_worldChunkSlots[i].unk0 = &g_worldChunkSlots[i - 1];
         g_worldChunkSlots[i].unk4 = &g_worldChunkSlots[i + 1];
         g_worldChunkSlots[i].unk8 = NULL;
-        g_worldChunkSlots[i].unkE = 0;
-        g_worldChunkSlots[i].unkC = -1;
-        g_worldChunkSlots[i].unkF = 0;
+        g_worldChunkSlots[i].state = 0;
+        g_worldChunkSlots[i].chunkId = -1;
+        g_worldChunkSlots[i].generation = 0;
     }
     for (i = 1; i < 16; i++) {
         g_worldChunkSlots[i].unk8 = (WmTexPack *)(g_worldChunkBuffer + i * 0x4800);
-        g_worldChunkSlots[i].unkF = 0;
+        g_worldChunkSlots[i].generation = 0;
     }
     i = 31;
     g_worldChunkSlots[i].unk0 = &g_worldChunkSlots[i - 1];
     g_worldChunkSlots[i].unk4 = &g_worldChunkTail;
-    g_worldChunkSlots[i].unkC = -1;
+    g_worldChunkSlots[i].chunkId = -1;
     g_worldChunkSlots[i].unk8 = NULL;
-    g_worldChunkSlots[i].unkE = 0;
-    g_worldChunkSlots[i].unkF = 0;
+    g_worldChunkSlots[i].state = 0;
+    g_worldChunkSlots[i].generation = 0;
     g_worldChunkHead.unk0 = NULL;
     g_worldChunkHead.unk4 = &g_worldChunkSlots[0];
     g_worldChunkTail.unk4 = &g_worldChunkSlots[16];
@@ -645,8 +645,8 @@ void wm_requestChunks(s32 arg0) {
     s32 i;
     s32 j;
     s32 k;
-    Unk800D335C *p;
-    Unk800D335C *h;
+    WmChunkSlot *p;
+    WmChunkSlot *h;
     u8 c;
 
     n = 0;
@@ -657,8 +657,8 @@ void wm_requestChunks(s32 arg0) {
             wm_posToChunk(x + (i << 14), z - (j << 14), &id);
             p = h->unk4;
             for (k = 0; k < 16; k++, p = p->unk4) {
-                if (p->unkC == id) {
-                    c = g_worldChunkFlags[p->unkC];
+                if (p->chunkId == id) {
+                    c = g_worldChunkFlags[p->chunkId];
                     if (c & 0x3F) {
                         w_readtxRequest(c);
                     }
@@ -695,14 +695,14 @@ void wm_requestChunks(s32 arg0) {
 
 /* request texture pack arg0: reuse a free or matching slot and move it behind the loaded ones */
 s32 wm_chunkRequest(s16 arg0) {
-    Unk800D335C *prev;
-    Unk800D335C *p;
+    WmChunkSlot *prev;
+    WmChunkSlot *p;
     u32 n;
 
     n = 0;
     prev = &g_worldChunkHead;
-    while (prev->unk4->unkE == 1) {
-        if (prev->unk4->unkC == arg0) {
+    while (prev->unk4->state == 1) {
+        if (prev->unk4->chunkId == arg0) {
             return 0;
         }
         prev = prev->unk4;
@@ -710,9 +710,9 @@ s32 wm_chunkRequest(s16 arg0) {
     }
     p = prev->unk4;
     do {
-        if (p->unkC == -1) {
+        if (p->chunkId == -1) {
             if (n >= 16) {
-                p->unkC = arg0;
+                p->chunkId = arg0;
                 p->unk0->unk4 = p->unk4;
                 p->unk4->unk0 = p->unk0;
                 p->unk4 = prev->unk4;
@@ -721,12 +721,12 @@ s32 wm_chunkRequest(s16 arg0) {
                 prev->unk4->unk0 = p;
                 prev->unk4 = p;
             } else {
-                p->unkC = arg0;
-                p->unkE = 0;
+                p->chunkId = arg0;
+                p->state = 0;
             }
             break;
         }
-        if (p->unkC == arg0) {
+        if (p->chunkId == arg0) {
             p->unk0->unk4 = p->unk4;
             p->unk4->unk0 = p->unk0;
             p->unk4 = prev->unk4;
@@ -739,7 +739,7 @@ s32 wm_chunkRequest(s16 arg0) {
         n++;
     } while (p != &g_worldChunkTail);
     if (p != &g_worldChunkTail) {
-        p->unkF = D_800D3338;
+        p->generation = D_800D3338;
     }
     return n != 32;
 }
@@ -747,14 +747,14 @@ s32 wm_chunkRequest(s16 arg0) {
 void wm_readChunks(void) {
     WmCell a;
     WmCell b;
-    Unk800D335C *n;
+    WmChunkSlot *n;
     u8 *cell;
     s32 id;
     s16 id2;
     s32 i;
     s32 r;
     s32 base;
-    Unk800D335C *h;
+    WmChunkSlot *h;
 
     if (g_worldCdUser == WM_CD_FREE) {
         wm_findChunkRun(D_800D33F8, &D_800D3320[D_800CD094], &D_800D3490[D_800CD094]);
@@ -764,8 +764,8 @@ void wm_readChunks(void) {
         for (i = 0; i < D_800D3320[D_800CD094]; i++) {
             n = D_800D33F8[i];
             h = &g_worldChunkHead;
-            id2 = n->unkC;
-            id = n->unkC;
+            id2 = n->chunkId;
+            id = n->chunkId;
             n->unk0->unk4 = n->unk4;
             n->unk4->unk0 = n->unk0;
             n->unk4 = h->unk4;
@@ -773,7 +773,7 @@ void wm_readChunks(void) {
             cell = &g_worldChunkFlags[id];
             h->unk4->unk0 = n;
             h->unk4 = n;
-            n->unkE = 1;
+            n->state = 1;
             if (D_800D3490[D_800CD094] == 1) {
                 wm_getChunkEntry(id, 0, &a);
                 wm_getChunkEntry(id, 1, &b);
@@ -834,10 +834,10 @@ void wm_readChunks(void) {
             }
         }
         if (D_800D3490[D_800CD094] == 1) {
-            wm_getChunkEntry(D_800D33F8[0]->unkC, 0, &a);
+            wm_getChunkEntry(D_800D33F8[0]->chunkId, 0, &a);
             base = D_800CF5A4;
         } else {
-            wm_getChunkEntryT(D_800D33F8[0]->unkC, 0, &a);
+            wm_getChunkEntryT(D_800D33F8[0]->chunkId, 0, &a);
             base = D_800CF5A8;
         }
         D_800D3728 = 0;
@@ -858,15 +858,15 @@ end:
     }
 }
 
-u8 wm_findChunkRun(Unk800D335C **out, s32 *count, s32 *dir) {
-    Unk800D335C *h[10];
-    Unk800D335C *v[10];
+u8 wm_findChunkRun(WmChunkSlot **out, s32 *count, s32 *dir) {
+    WmChunkSlot *h[10];
+    WmChunkSlot *v[10];
     s32 hhi;
     s32 hlo;
     s32 vhi;
     s32 vlo;
     s32 i;
-    Unk800D335C *p;
+    WmChunkSlot *p;
 
     hhi = 4;
     hlo = 4;
@@ -875,24 +875,24 @@ u8 wm_findChunkRun(Unk800D335C **out, s32 *count, s32 *dir) {
     vhi = 4;
     vlo = 4;
     for (p = g_worldChunkHead.unk4; p->unk8 != NULL; p = p->unk4) {
-        if (p->unkE == 0 && p->unkC != -1 && p->unkF == D_800CD098) {
+        if (p->state == 0 && p->chunkId != -1 && p->generation == D_800CD098) {
             h[hlo] = p;
             h[hhi] = p;
             v[vlo] = p;
             v[vhi] = p;
             for (i = 0; i < 4; i++) {
                 for (p = g_worldChunkHead.unk4; p->unk8 != NULL; p = p->unk4) {
-                    if (p->unkE == 0) {
-                        if (h[hlo]->unkC - 1 == p->unkC) {
+                    if (p->state == 0) {
+                        if (h[hlo]->chunkId - 1 == p->chunkId) {
                             h[--hlo] = p;
                         }
-                        if (h[hhi]->unkC + 1 == p->unkC) {
+                        if (h[hhi]->chunkId + 1 == p->chunkId) {
                             h[++hhi] = p;
                         }
-                        if (v[vlo]->unkC - 24 == p->unkC) {
+                        if (v[vlo]->chunkId - 24 == p->chunkId) {
                             v[--vlo] = p;
                         }
-                        if (v[vhi]->unkC + 24 == p->unkC) {
+                        if (v[vhi]->chunkId + 24 == p->chunkId) {
                             v[++vhi] = p;
                         }
                     }
@@ -922,9 +922,9 @@ void wm_chunksLoaded(void) {
     u8 st;
 
     for (i = 0; i < D_800D3320[D_800CD094]; i++) {
-        st = D_800D33F8[i]->unkE;
+        st = D_800D33F8[i]->state;
         if (st == 1) {
-            D_800D33F8[i]->unkE = 2;
+            D_800D33F8[i]->state = 2;
             if (D_800D3740[i] != NULL) {
                 wm_relocatePack(D_800D3740[i]);
             }
@@ -958,8 +958,8 @@ void func_800BD5A8(void) {
 }
 
 void wm_chunkListCompact(void) {
-    Unk800D335C *a;
-    Unk800D335C *b;
+    WmChunkSlot *a;
+    WmChunkSlot *b;
     u32 i;
 
     if (g_worldChunkListDirty != 0) {
@@ -978,8 +978,8 @@ void wm_chunkListCompact(void) {
             }
             a->unk8 = b->unk8;
             b->unk8 = 0;
-            b->unkC = -1;
-            b->unkE = 0;
+            b->chunkId = -1;
+            b->state = 0;
             b = b->unk4;
         }
     }
@@ -1144,10 +1144,10 @@ void wm_updateVisibleBlocks(void) {
                 hit = 0;
                 if (m.t[2] >= -0x1D4B) {
                     k = (wm_getCameraViewState() == 0) * 2;
-                    if (g_worldMoveModeInfo->unk0 == 1) {
+                    if (g_worldMoveModeInfo->controlType == 1) {
                         k += 4;
                     }
-                    if (g_worldMoveModeInfo->unk0 == 2) {
+                    if (g_worldMoveModeInfo->controlType == 2) {
                         k += 8;
                     }
                     verts = e->unk4;
@@ -1287,7 +1287,7 @@ s32 wm_blockListRequest(s16 arg0) {
 
 void wm_blockListResolve(void) {
     Unk800D375C *n;
-    Unk800D335C *p;
+    WmChunkSlot *p;
     u32 i;
     u32 j;
     s32 id;
@@ -1303,8 +1303,8 @@ void wm_blockListResolve(void) {
         n->unk12 = 0;
         p = g_worldChunkHead.unk4;
         for (j = 0; j < 16; j++, p = p->unk4) {
-            if (id == p->unkC) {
-                if (p->unkE == 2) {
+            if (id == p->chunkId) {
+                if (p->state == 2) {
                     n->unk12 = 2;
                     wm_cellToPos(n->unk10, &n->unkC->unk0[0], &n->unkC->unk0[2]);
                     n->unkC->unk0[1] = 0;
@@ -1334,14 +1334,14 @@ void wm_blockListResolve(void) {
 s32 wm_getCellBlock(s16 arg0, u8 *arg1) {
     s32 id;
     s32 i;
-    Unk800D335C *p;
+    WmChunkSlot *p;
     s16 m;
     s32 k;
 
     p = g_worldChunkHead.unk4;
     wm_cellToChunk(arg0, &id);
     for (i = 0; i < 16; i++, p = p->unk4) {
-        if (id == p->unkC && p->unkE == 2) {
+        if (id == p->chunkId && p->state == 2) {
             if (arg1 != NULL) {
                 *arg1 = 0;
             }
@@ -1787,8 +1787,8 @@ void wm_naviDrawFullMap(void) {
     }
     p++;
     g_worldPrimPtr = (s32)p;
-    a = 0xF00 - g_worldCamera->unkC;
-    b = 0x1100 - g_worldCamera->unkC;
+    a = 0xF00 - g_worldCamera->yaw;
+    b = 0x1100 - g_worldCamera->yaw;
     if (a < 0) {
         a += 0x1000;
     }
@@ -1904,8 +1904,8 @@ void wm_naviDrawMiniMap(void) {
     addPrim(&ot[10], p);
     p++;
     g_worldPrimPtr = (s32)p;
-    a = 0xF00 - g_worldCamera->unkC;
-    b = 0x1100 - g_worldCamera->unkC;
+    a = 0xF00 - g_worldCamera->yaw;
+    b = 0x1100 - g_worldCamera->yaw;
     if (a < 0) {
         a += 0x1000;
     }
@@ -2177,15 +2177,15 @@ void wm_readtxInit(void) {
 
     g_worldReadtxSlots[0].unk0 = &g_worldReadtxHead;
     g_worldReadtxSlots[0].unk4 = &g_worldReadtxSlots[1];
-    g_worldReadtxSlots[0].unkE = 0;
-    g_worldReadtxSlots[0].unkC = -1;
+    g_worldReadtxSlots[0].extracted = 0;
+    g_worldReadtxSlots[0].texId = -1;
     g_worldReadtxSlots[0].unk8 = g_worldTexBuffers[0];
     for (i = 1; i < 5; i++) {
         g_worldReadtxSlots[i].unk0 = &g_worldReadtxSlots[i - 1];
         g_worldReadtxSlots[i].unk4 = &g_worldReadtxSlots[i + 1];
         g_worldReadtxSlots[i].unk8 = NULL;
-        g_worldReadtxSlots[i].unkE = 0;
-        g_worldReadtxSlots[i].unkC = -1;
+        g_worldReadtxSlots[i].extracted = 0;
+        g_worldReadtxSlots[i].texId = -1;
     }
     for (i = 1; i < 3; i++) {
         g_worldReadtxSlots[i].unk8 = g_worldTexBuffers[i];
@@ -2193,9 +2193,9 @@ void wm_readtxInit(void) {
     i = 5;
     g_worldReadtxSlots[i].unk0 = &g_worldReadtxSlots[i - 1];
     g_worldReadtxSlots[i].unk4 = &g_worldReadtxTail;
-    g_worldReadtxSlots[i].unkC = -1;
+    g_worldReadtxSlots[i].texId = -1;
     g_worldReadtxSlots[i].unk8 = NULL;
-    g_worldReadtxSlots[i].unkE = 0;
+    g_worldReadtxSlots[i].extracted = 0;
     g_worldReadtxHead.unk0 = NULL;
     g_worldReadtxHead.unk4 = &g_worldReadtxSlots[0];
     g_worldReadtxTail.unk4 = &g_worldReadtxSlots[3];

@@ -5,14 +5,14 @@ const char D_800A80E0[] = "==== ERROR ===== / %s";
 const char D_800A80F8[] = "-- w_framebufRequest Error --\n";
 
 s32 w_frmbufRequest(s16 arg0) {
-    WmLNode *p;
+    WmFrmbufSlot *p;
     u32 i;
 
     if (arg0 & 0x3F) {
         p = g_worldFrmbufHead.unk4;
         i = 0;
         while (1) {
-            if (p->unk8 == arg0) {
+            if (p->texId == arg0) {
                 p->unk0->unk4 = p->unk4;
                 p->unk4->unk0 = p->unk0;
                 p->unk4 = g_worldFrmbufHead.unk4;
@@ -21,14 +21,14 @@ s32 w_frmbufRequest(s16 arg0) {
                 g_worldFrmbufHead.unk4 = p;
                 break;
             }
-            if (p->unk8 == -1) {
+            if (p->texId == -1) {
                 g_worldFrmbufReqCount++;
                 if (g_worldFrmbufReqCount >= 3) {
                     sprintf(g_worldMapErrorMsg, D_800A80BC, g_worldFrmbufReqCount, 2);
                     printf(D_800A80E0, g_worldMapErrorMsg);
                     g_worldMapError = 1;
                 }
-                p->unk8 = arg0;
+                p->texId = arg0;
                 p->unk0->unk4 = p->unk4;
                 p->unk4->unk0 = p->unk0;
                 p->unk4 = g_worldFrmbufHead.unk4;
@@ -53,8 +53,8 @@ s32 w_frmbufRequest(s16 arg0) {
 }
 
 void wm_frmbufCompact(void) {
-    WmLNode *p;
-    WmLNode *q;
+    WmFrmbufSlot *p;
+    WmFrmbufSlot *q;
     u32 i;
 
     g_worldFrmbufReqCount = 0;
@@ -68,29 +68,29 @@ void wm_frmbufCompact(void) {
             i++;
         } while (i < 2);
         for (;;) {
-            while ((p != &g_worldFrmbufTail) & (p->unkA == 0)) {
-                if (((u8)p->unkA == 0) & (p->unk8 != -1)) {
-                    p->unk8 = -1;
+            while ((p != &g_worldFrmbufTail) & (p->vramArea == 0)) {
+                if (((u8)p->vramArea == 0) & (p->texId != -1)) {
+                    p->texId = -1;
                 }
                 p = p->unk4;
             }
             if (p == &g_worldFrmbufTail) {
                 break;
             }
-            while (q->unkA != 0) {
+            while (q->vramArea != 0) {
                 q = q->unk4;
             }
-            q->unkA = p->unkA;
-            p->unkA = 0;
-            p->unkB = 0;
-            p->unk8 = -1;
+            q->vramArea = p->vramArea;
+            p->vramArea = 0;
+            p->transferred = 0;
+            p->texId = -1;
             p = p->unk4;
         }
     }
 }
 
 void wm_frmbufTransfer(void) {
-    WmLNode *p;
+    WmFrmbufSlot *p;
     u32 n;
     u32 i;
     s32 r;
@@ -104,14 +104,14 @@ void wm_frmbufTransfer(void) {
     n = 0;
     p = g_worldFrmbufHead.unk4;
     for (i = 0; i < 2; i++, p = p->unk4) {
-        if (p->unk8 != -1 && p->unkA != 0 && p->unkB == 0) {
-            r = wm_readtxFind(p->unk8, 1);
+        if (p->texId != -1 && p->vramArea != 0 && p->transferred == 0) {
+            r = wm_readtxFind(p->texId, 1);
             if (r != 0) {
                 D_800D3F78[n].unk0 = r;
-                D_800D3F78[n].unk5 = p->unkA;
-                D_800D3F78[n].unk4 = p->unk8 & 0x3F;
+                D_800D3F78[n].unk5 = p->vramArea;
+                D_800D3F78[n].unk4 = p->texId & 0x3F;
                 n++;
-                p->unkB = 1;
+                p->transferred = 1;
             }
         }
     }
@@ -179,7 +179,7 @@ void wm_weatherAuto(void) {
         wm_setWeather(id, wm_getStoryFog() & 0xFF, 0x80);
     }
     if (g_evtGlobalVars.b[0x66] == 0 && g_worldReadyFrameCount == 10) {
-        switch (WM_ATTR_AREA(g_worldActorTypeInfo[g_worldPlayer->unk11].unk8)) {
+        switch (WM_ATTR_AREA(g_worldActorTypeInfo[g_worldPlayer->unk11].cellAttr)) {
         case 9:
         case 12:
         case 13:

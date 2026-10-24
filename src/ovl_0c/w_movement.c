@@ -15,17 +15,17 @@ void wm_initCamera(void) {
     g_worldCameraRoll = 0;
     D_800CE1E1 = 0;
     if (g_gameState->unkA == 1 && g_gameState->unk1C->unk890 == 0) {
-        g_worldCamera->unk2 = 0;
-        g_worldCamera->unk4 = 0;
-        g_worldCamera->unk8 = 0;
-        g_worldCamera->unkC = 0;
+        g_worldCamera->viewBlend = 0;
+        g_worldCamera->viewBlendSpeed = 0;
+        g_worldCamera->viewForceNormal = 0;
+        g_worldCamera->yaw = 0;
         g_worldCameraFlags->unk11 = 0;
     }
-    if (g_worldCamera->unk4 < 0) {
-        g_worldCamera->unk2 = 0;
+    if (g_worldCamera->viewBlendSpeed < 0) {
+        g_worldCamera->viewBlend = 0;
     }
-    if (g_worldCamera->unk4 > 0) {
-        g_worldCamera->unk2 = 0x1000;
+    if (g_worldCamera->viewBlendSpeed > 0) {
+        g_worldCamera->viewBlend = 0x1000;
     }
     g_worldCameraBlend = 0;
     g_worldCameraBlendSpeed = 0;
@@ -48,15 +48,15 @@ void wm_updateCamera(void) {
         wm_updateCameraPreset();
     }
     g_gameState->unk1C->unkA = g_worldCameraParams.unk0[0];
-    g_worldCamera->unkC &= 0xFFF;
+    g_worldCamera->yaw &= 0xFFF;
     g_worldCameraTargetHeight = g_worldCameraParams.unk0[4];
     if ((u8)g_worldMoveMode == 8 || (u8)g_worldMoveMode == 9) {
         t = g_worldPlayer->pos.vy + 0x1518;
         g_worldCameraTargetHeight = g_worldCameraParams.unk0[4] - (t > 0 ? t >> 3 : t / 6);
     }
-    g_worldCameraEyeOffset.vx = math_sin(g_worldCamera->unkC) * (g_worldCameraParams.unk0[1] * g_worldCameraDistScale / 4096) >> 12;
+    g_worldCameraEyeOffset.vx = math_sin(g_worldCamera->yaw) * (g_worldCameraParams.unk0[1] * g_worldCameraDistScale / 4096) >> 12;
     g_worldCameraEyeOffset.vy = g_worldCameraParams.unk0[2];
-    g_worldCameraEyeOffset.vz = math_cos(g_worldCamera->unkC) * (g_worldCameraParams.unk0[1] * g_worldCameraDistScale / 4096) >> 12;
+    g_worldCameraEyeOffset.vz = math_cos(g_worldCamera->yaw) * (g_worldCameraParams.unk0[1] * g_worldCameraDistScale / 4096) >> 12;
     if (g_worldCameraHold == 0) {
         wm_cameraFollow();
     }
@@ -65,7 +65,7 @@ void wm_updateCamera(void) {
     D_800CE190.vz = g_worldCameraEye[2] - g_worldCameraTarget[2];
     memset(&r, 0, 8);
     r.vz = g_worldCameraRoll;
-    r.vy = g_worldCamera->unkC;
+    r.vy = g_worldCamera->yaw;
     func_80030AF4(&r, &m);
     m.t[0] = 0;
     m.t[1] = 0;
@@ -91,8 +91,8 @@ void wm_updateCamera(void) {
     g_worldCameraDir[0] = math_cos(a);
     g_worldCameraDir[2] = math_sin(a);
     VectorNormal((VECTOR *)g_worldCameraDir, (VECTOR *)g_worldCameraDir);
-    if (*g_worldStoryCounterPtr < 0x137E && WM_ATTR_AREA(g_worldActorTypeInfo[g_worldPlayer->unk11].unk8) == 0xC) {
-        g_worldCamera->unk8 = 1;
+    if (*g_worldStoryCounterPtr < 0x137E && WM_ATTR_AREA(g_worldActorTypeInfo[g_worldPlayer->unk11].cellAttr) == 0xC) {
+        g_worldCamera->viewForceNormal = 1;
     }
 }
 
@@ -173,7 +173,7 @@ void wm_cameraFollow(void) {
                 D_800CCAFC = 0x100;
             }
             if (dir != 0) {
-                switch (g_worldMoveModeInfo->unk0) {
+                switch (g_worldMoveModeInfo->controlType) {
                 case 1:
                 case 2:
                     switch (dir) {
@@ -249,7 +249,7 @@ void wm_cameraFollow(void) {
             wm_wrapPos(&v.vx, &v.vz);
             wm_getGroundHeight(&v, &cell, &t, &g_worldCameraPolyCache[0], (u16 *)&h);
         }
-        if (g_worldMoveModeInfo->unk0 == 1) {
+        if (g_worldMoveModeInfo->controlType == 1) {
             if (h < -0x2134) {
                 h = -0x2134;
             }
@@ -264,12 +264,12 @@ void wm_cameraFollow(void) {
             if (D_800CE25D != 0) {
                 k = 2;
             }
-            if (g_worldCamera->unk2 != 0 && g_worldCamera->unk2 != 0x1000) {
+            if (g_worldCamera->viewBlend != 0 && g_worldCamera->viewBlend != 0x1000) {
                 k = 3;
             }
             y2 = g_worldCameraParams.unk0[3] + h;
         }
-        if (g_worldMoveModeInfo->unk0 == 1 && y2 > -0x1194) {
+        if (g_worldMoveModeInfo->controlType == 1 && y2 > -0x1194) {
             y2 = -0x1194;
         }
         d = y2 - g_worldCameraEye[1];
@@ -286,7 +286,7 @@ void wm_cameraFollow(void) {
             D_800CCAFC = D_800CCB0C;
         }
         if (dir != 0) {
-            switch (g_worldMoveModeInfo->unk0) {
+            switch (g_worldMoveModeInfo->controlType) {
             case 1:
             case 2:
                 switch (dir) {
@@ -367,30 +367,30 @@ void wm_updateCameraPreset(void) {
     Unk800CE1E8 tmp;
 
     k = g_worldAreaCameraGroup[w_frameGetParameter(0xC0)];
-    m = g_worldMoveModeInfo->unk11;
+    m = g_worldMoveModeInfo->cameraRow;
     if (g_worldCameraGroupOverride != -1) {
         k = g_worldCameraGroupOverride;
     }
-    if (g_worldCamera->unk8 != 0) {
-        g_worldCamera->unk4 = -0x80;
+    if (g_worldCamera->viewForceNormal != 0) {
+        g_worldCamera->viewBlendSpeed = -0x80;
     }
-    g_worldCamera->unk2 += g_worldCamera->unk4;
-    if (g_worldCamera->unk2 <= 0) {
-        g_worldCamera->unk2 = 0;
-        g_worldCamera->unk4 = 0;
-        g_worldCamera->unk8 = 0;
+    g_worldCamera->viewBlend += g_worldCamera->viewBlendSpeed;
+    if (g_worldCamera->viewBlend <= 0) {
+        g_worldCamera->viewBlend = 0;
+        g_worldCamera->viewBlendSpeed = 0;
+        g_worldCamera->viewForceNormal = 0;
     }
-    if (g_worldCamera->unk2 >= 0x1000) {
-        g_worldCamera->unk2 = 0x1000;
-        g_worldCamera->unk4 = 0;
-        g_worldCamera->unk8 = 0;
+    if (g_worldCamera->viewBlend >= 0x1000) {
+        g_worldCamera->viewBlend = 0x1000;
+        g_worldCamera->viewBlendSpeed = 0;
+        g_worldCamera->viewForceNormal = 0;
     }
     if (g_worldCameraBlendSpeed != 0) {
         g_worldCameraBlend += g_worldCameraBlendSpeed;
         if (g_worldCameraBlend > 0x1000) {
             g_worldCameraBlend = 0x1000;
         }
-        wm_calcCameraPreset(-g_worldPlayer->pos.vy, g_worldCameraBlendRow, k, g_worldCamera->unk2, &tmp);
+        wm_calcCameraPreset(-g_worldPlayer->pos.vy, g_worldCameraBlendRow, k, g_worldCamera->viewBlend, &tmp);
         g_worldCameraParams.unk0[0] = wm_lerpShift(g_worldCameraParamsFrom.unk0[0], tmp.unk0[0], g_worldCameraBlend, 9);
         g_worldCameraParams.unk0[1] = wm_lerpShift(g_worldCameraParamsFrom.unk0[1], tmp.unk0[1], g_worldCameraBlend, 0xF);
         g_worldCameraParams.unk0[2] = wm_lerpShift(g_worldCameraParamsFrom.unk0[2], tmp.unk0[2], g_worldCameraBlend, 0xE);
@@ -400,7 +400,7 @@ void wm_updateCameraPreset(void) {
             g_worldCameraBlendSpeed = 0;
         }
     } else {
-        wm_calcCameraPreset(-g_worldPlayer->pos.vy, m, k, math_sin(g_worldCamera->unk2 / 4), &g_worldCameraParams);
+        wm_calcCameraPreset(-g_worldPlayer->pos.vy, m, k, math_sin(g_worldCamera->viewBlend / 4), &g_worldCameraParams);
     }
 }
 
@@ -430,19 +430,19 @@ void wm_calcCameraPreset(s32 arg0, s32 arg1, s32 arg2, s32 arg3, Unk800CE1E8 *ar
 void wm_toggleCameraView(void) {
     u8 r;
 
-    if (g_worldCamera->unk8 == 0
-        && (*g_worldStoryCounterPtr >= 0x137E || WM_ATTR_AREA(g_worldActorTypeInfo[g_worldPlayer->unk11].unk8) != 0xC)) {
+    if (g_worldCamera->viewForceNormal == 0
+        && (*g_worldStoryCounterPtr >= 0x137E || WM_ATTR_AREA(g_worldActorTypeInfo[g_worldPlayer->unk11].cellAttr) != 0xC)) {
         r = 0;
-        if (g_worldCamera->unk2 == 0) {
+        if (g_worldCamera->viewBlend == 0) {
             r = 1;
-            g_worldCamera->unk4 = 0x100;
+            g_worldCamera->viewBlendSpeed = 0x100;
         }
-        if (g_worldCamera->unk2 == 0x1000) {
+        if (g_worldCamera->viewBlend == 0x1000) {
             r = 1;
-            g_worldCamera->unk4 = -0x100;
+            g_worldCamera->viewBlendSpeed = -0x100;
         }
         if (r == 0) {
-            g_worldCamera->unk4 = -g_worldCamera->unk4;
+            g_worldCamera->viewBlendSpeed = -g_worldCamera->viewBlendSpeed;
         }
     }
 }
@@ -472,7 +472,7 @@ void wm_blendCameraPreset(s16 arg0, s16 arg1) {
 }
 
 s32 wm_getCameraViewState() {
-    s16 v = g_worldCamera->unk2;
+    s16 v = g_worldCamera->viewBlend;
 
     if (v == 0) {
         return 0;
@@ -587,16 +587,16 @@ void wm_initMovement(void) {
         }
     }
     for (i = 0; i < 22; i++) {
-        g_worldActorTypeInfo[i].unk8 = 0;
-        g_worldActorTypeInfo[i].unkC = 0;
-        g_worldActorTypeInfo[i].unkE = 0;
+        g_worldActorTypeInfo[i].cellAttr = 0;
+        g_worldActorTypeInfo[i].rideOffset = 0;
+        g_worldActorTypeInfo[i].floorY = 0;
     }
     if (g_worldDataSet == WM_DATASET_DISC4) {
-        g_worldMoveModes[9].unkB = 3;
-        g_worldMoveModes[0].unkB = 3;
+        g_worldMoveModes[9].music = 3;
+        g_worldMoveModes[0].music = 3;
     } else {
-        g_worldMoveModes[9].unkB = 2;
-        g_worldMoveModes[0].unkB = 0;
+        g_worldMoveModes[9].music = 2;
+        g_worldMoveModes[0].music = 0;
     }
 }
 
@@ -703,12 +703,12 @@ void wm_findVehicles(void) {
             }
             if (a == func_8004AE00()) {
                 if (g_gameState->unkA == 1 && g_gameState->unk1C->unk892 == 0) {
-                    if (g_worldMoveModeInfo->unk10 != 0) {
-                        g_worldCamera->unkE = 0x800;
+                    if (g_worldMoveModeInfo->cameraInFront != 0) {
+                        g_worldCamera->yawOffset = 0x800;
                     } else {
-                        g_worldCamera->unkE = 0;
+                        g_worldCamera->yawOffset = 0;
                     }
-                    g_worldCamera->unkC = a->pos.rotY + g_worldCamera->unkE;
+                    g_worldCamera->yaw = a->pos.rotY + g_worldCamera->yawOffset;
                 }
                 g_worldPlayerHeading = a->pos.rotY;
             }
@@ -776,7 +776,7 @@ void wm_drawActors(void) {
                         f = 0;
                     }
                 }
-                if (g_worldActorTypeInfo[act->unk11].unkC < 4 && f) {
+                if (g_worldActorTypeInfo[act->unk11].rideOffset < 4 && f) {
                     wm_drawActorShadow(act, &s, b.vz);
                 }
             }
@@ -841,7 +841,7 @@ void wm_setActorFog(Unk8004AB64 *arg0, s32 arg1) {
 }
 
 s32 wm_drawActorModel(Unk8004AB64 *arg0, SVECTOR *arg1) {
-    Unk800CCCC0 *c;
+    WmActorType *c;
     WmObjSlot *s;
     Unk800C95C8 *m;
     WmAnimHdr *h;
@@ -877,8 +877,8 @@ s32 wm_drawActorModel(Unk8004AB64 *arg0, SVECTOR *arg1) {
         wm_calcBoneMatrices(m, s->unkC->unk3A);
         if (arg0->unk11 != 0xE) {
             n = m->unk8->unk3;
-            if (c->unk0 != 0 && c->unkC > 0) {
-                m->unk5A = arg1->vy - c->unkC + 100;
+            if (c->unk0 != 0 && c->rideOffset > 0) {
+                m->unk5A = arg1->vy - c->rideOffset + 100;
                 if (m->unk1C != NULL) {
                     m->unk5A = m->unk1C->unk5A;
                 }
@@ -901,7 +901,7 @@ s32 wm_drawActorModel(Unk8004AB64 *arg0, SVECTOR *arg1) {
 
 /* shadow under world map object arg0 at arg1; arg2 = distance from the camera */
 void wm_drawActorShadow(Unk8004AB64 *arg0, SVECTOR *arg1, s32 arg2) {
-    Unk800CCCC0 *c;
+    WmActorType *c;
     s32 k;
     s32 d;
     s32 sx;
@@ -915,17 +915,17 @@ void wm_drawActorShadow(Unk8004AB64 *arg0, SVECTOR *arg1, s32 arg2) {
     k = arg0->unk3B;
     sx = 0x1000;
     if (arg0->unk11 != 0xE) {
-        d = c->unkE - arg0->pos.vy;
+        d = c->floorY - arg0->pos.vy;
         arg1->vy += d;
         arg1->vy -= d / 8;
         sz = sx - d / 2;
         sx -= d / 4;
-        D_800CF442 = -c->unk1 * 4 - (s8)c->unk7;
-        if (c->unk1 == 0) {
+        D_800CF442 = -c->shadowWidth * 4 - (s8)c->unk7;
+        if (c->shadowWidth == 0) {
             return;
         }
-        sx = (c->unk1 * sx) >> 11;
-        sz = (c->unk2 * sz) >> 12;
+        sx = (c->shadowWidth * sx) >> 11;
+        sz = (c->shadowDepth * sz) >> 12;
         f = (0x8000 - arg2) >> 3;
         f *= D_800D45DC;
         f >>= 12;
@@ -943,12 +943,12 @@ void wm_drawActorShadow(Unk8004AB64 *arg0, SVECTOR *arg1, s32 arg2) {
         if (sz < 0) {
             sz = 0;
         }
-        g_gameState->unk1C->unk8E4.world->unk8->unk1C[k].unk1 = sx * 14;
-        g_gameState->unk1C->unk8E4.world->unk8->unk1C[k].unk2 = sx * 12;
-        g_gameState->unk1C->unk8E4.world->unk8->unk1C[k].unk0 = sz;
+        g_gameState->unk1C->unk8E4.world->unk8->shadows[k].unk1 = sx * 14;
+        g_gameState->unk1C->unk8E4.world->unk8->shadows[k].unk2 = sx * 12;
+        g_gameState->unk1C->unk8E4.world->unk8->shadows[k].unk0 = sz;
         ot = g_gameState->unk1C->unk10[g_gameState->unk1C->unk8];
         g_gameState->unk1C->unk10[g_gameState->unk1C->unk8] = ot + D_800CF442;
-        wm_drawShadow(g_gameState->unk1C->unk8E4.world->unk8->unk1C, k, arg1->vy, c->unk6);
+        wm_drawShadow(g_gameState->unk1C->unk8E4.world->unk8->shadows, k, arg1->vy, c->shadowJoint);
         g_gameState->unk1C->unk10[g_gameState->unk1C->unk8] = ot;
     } else {
         s = 0x7D0;
@@ -964,7 +964,7 @@ void wm_drawActorShadow(Unk8004AB64 *arg0, SVECTOR *arg1, s32 arg2) {
         if (f >= 0x1000) {
             f = 0xFFF;
         }
-        a = (c->unk2 * s) >> 12;
+        a = (c->shadowDepth * s) >> 12;
         a *= f;
         a >>= 12;
         if (a >= 0x100) {
@@ -973,13 +973,13 @@ void wm_drawActorShadow(Unk8004AB64 *arg0, SVECTOR *arg1, s32 arg2) {
         if (a < 0) {
             a = 0;
         }
-        g_gameState->unk1C->unk8E4.world->unk8->unk1C[k].unk1 = 0x302;
-        g_gameState->unk1C->unk8E4.world->unk8->unk1C[k].unk2 = 0x294;
-        g_gameState->unk1C->unk8E4.world->unk8->unk1C[k].unk0 = a;
+        g_gameState->unk1C->unk8E4.world->unk8->shadows[k].unk1 = 0x302;
+        g_gameState->unk1C->unk8E4.world->unk8->shadows[k].unk2 = 0x294;
+        g_gameState->unk1C->unk8E4.world->unk8->shadows[k].unk0 = a;
         ot = g_gameState->unk1C->unk10[g_gameState->unk1C->unk8];
         D_800CF442 = -0x46;
         g_gameState->unk1C->unk10[g_gameState->unk1C->unk8] -= 0x46;
-        wm_drawShadow(g_gameState->unk1C->unk8E4.world->unk8->unk1C, k, arg1->vy, c->unk6);
+        wm_drawShadow(g_gameState->unk1C->unk8E4.world->unk8->shadows, k, arg1->vy, c->shadowJoint);
         g_gameState->unk1C->unk10[g_gameState->unk1C->unk8] = ot;
     }
 }
@@ -990,7 +990,7 @@ void wm_updateActors(void) {
     s32 cell;
     Unk16D8 *e;
     Unk8004AB64 *act;
-    Unk800CCCC0 *cc;
+    WmActorType *cc;
 
     g_worldPlayerStepped = 0;
     g_worldPlayerSpeed = 0;
@@ -1008,7 +1008,7 @@ void wm_updateActors(void) {
         if (act->unk5 == 4 && act->unkE == 1 && (act->unkF & 1)) {
             switch (act->unk11) {
             case 7:
-                cc->unk3 = g_worldMoveMode == 6;
+                cc->flying = g_worldMoveMode == 6;
                 break;
             case 11:
                 D_800CE270 = act;
@@ -1018,17 +1018,17 @@ void wm_updateActors(void) {
                 wm_movePlayer(cc);
             } else {
                 cc = &g_worldActorTypeInfo[act->unk11];
-                wm_getGroundHeight((VECTOR *)&act->pos, &cc->unk8, &tmp, &g_worldPolyCache[cc->unk5], (u16 *)&h);
+                wm_getGroundHeight((VECTOR *)&act->pos, &cc->cellAttr, &tmp, &g_worldPolyCache[cc->polyCache], (u16 *)&h);
                 if (act->unk11 == 8) {
                     h = 0;
                 }
-                cc->unkE = h;
+                cc->floorY = h;
             }
             wm_updateActorHeight(act);
         }
     }
     func_80064C24(0);
-    switch (g_worldMoveModeInfo->unk0) {
+    switch (g_worldMoveModeInfo->controlType) {
     case 0:
     case 3:
         if (g_worldMapLoaded != 0) {
@@ -1041,7 +1041,7 @@ void wm_updateActors(void) {
         break;
     }
     if ((u8)g_worldMoveMode >= 1 && (u8)g_worldMoveMode <= 6) {
-        g_worldActorTypeInfo[1].unkC = g_worldActorTypeInfo[g_worldPlayer->unk11].unkC;
+        g_worldActorTypeInfo[1].rideOffset = g_worldActorTypeInfo[g_worldPlayer->unk11].rideOffset;
     }
     if (g_worldMountActor != NULL) {
         if (g_worldMountActor->unk24 < 0) {
@@ -1055,7 +1055,7 @@ void wm_updateActors(void) {
         }
     }
     if (g_worldVehicleActor != NULL) {
-        if (g_worldMoveModeInfo->unk0 != 1) {
+        if (g_worldMoveModeInfo->controlType != 1) {
             if (g_worldVehicleActor->unk24 < 14) {
                 g_worldVehicleActor->unk24 += 10;
             }
@@ -1093,9 +1093,9 @@ void wm_updateActors(void) {
             }
         }
         cc = &g_worldActorTypeInfo[g_worldPlayer->unk11];
-        if ((cc->unk8 & 0xC000) && D_800CCE4D != 0) {
+        if ((cc->cellAttr & 0xC000) && D_800CCE4D != 0) {
             wm_posToCell(g_worldPlayer->pos.vx, g_worldPlayer->pos.vz, &cell);
-            func_8004B158(cell % g_worldCellsW, cell / g_worldCellsW, (cc->unk8 & 0xC000) >> 14);
+            func_8004B158(cell % g_worldCellsW, cell / g_worldCellsW, (cc->cellAttr & 0xC000) >> 14);
         }
     }
 }
@@ -1103,49 +1103,49 @@ void wm_updateActors(void) {
 void wm_updateActorHeight(Unk8004AB64 *arg0) {
     u8 flat;
     s32 h;
-    Unk800CCCC0 *c;
+    WmActorType *c;
     s32 y;
     s16 d;
 
     if (g_worldMapLoaded != 0) {
         c = &g_worldActorTypeInfo[arg0->unk11];
-        if (c->unk5 != 0xA) {
-            h = wm_getTerrainHeightOffset(c->unk0, c->unk8, &flat);
-            if (c->unk3 == 0) {
+        if (c->polyCache != 0xA) {
+            h = wm_getTerrainHeightOffset(c->unk0, c->cellAttr, &flat);
+            if (c->flying == 0) {
                 if (c->unk0 != 0) {
                     if (c->unk4 == 7) {
-                        c->unkC = 0x118;
+                        c->rideOffset = 0x118;
                     } else if (flat != 0 || h == 0) {
-                        c->unkC = h;
+                        c->rideOffset = h;
                     } else {
-                        if (c->unkC < h - 0x15) {
-                            c->unkC += 0x14;
+                        if (c->rideOffset < h - 0x15) {
+                            c->rideOffset += 0x14;
                         }
-                        if (c->unkC > h + 0x15) {
-                            c->unkC -= 0x14;
+                        if (c->rideOffset > h + 0x15) {
+                            c->rideOffset -= 0x14;
                         }
                     }
                 }
-                arg0->pos.vy = c->unkE + c->unkC;
+                arg0->pos.vy = c->floorY + c->rideOffset;
             } else {
-                y = c->unkE + h;
+                y = c->floorY + h;
                 if (y < arg0->pos.vy) {
                     arg0->pos.vy = y;
                 }
                 if (g_worldCameraHold == 0 && g_worldPlayer->pos.vy < -0x2A30 && g_worldCameraLookupFix == 0) {
                     g_worldPlayer->pos.vy = -0x2A30;
                 }
-                d = arg0->pos.vy - c->unkE;
-                c->unkC = d;
+                d = arg0->pos.vy - c->floorY;
+                c->rideOffset = d;
                 if (d < 0) {
-                    c->unkC = 0;
+                    c->rideOffset = 0;
                 }
             }
         }
     }
 }
 
-void wm_movePlayer(Unk800CCCC0 *cc) {
+void wm_movePlayer(WmActorType *cc) {
     ActorPos p;
     ActorPos q;
     u32 cell;
@@ -1163,7 +1163,7 @@ void wm_movePlayer(Unk800CCCC0 *cc) {
     s32 m;
     s32 off, lim, y, zz, wz, r1, r2;
 
-    if (g_worldMoveModeInfo->unkD != 0 && g_worldPlayerPosChanged != 0 && w_frameGetParameter(0xC1) != 0x34 && g_worldTitleId == -1) {
+    if (g_worldMoveModeInfo->countsSteps != 0 && g_worldPlayerPosChanged != 0 && w_frameGetParameter(0xC1) != 0x34 && g_worldTitleId == -1) {
         g_worldPlayerStepped = D_800CCE55;
     }
     if (D_800CCE4A == 0 && g_worldNaviMode != 2 && g_worldMusicState == WM_MUSIC_READY && g_worldMapLoaded != 0 && D_800CE1E0 == 0) {
@@ -1174,7 +1174,7 @@ void wm_movePlayer(Unk800CCCC0 *cc) {
         spd /= 2;
     }
     g_worldUsePolyCache = 1;
-    if (g_worldMoveModeInfo->unk8 == 0) {
+    if (g_worldMoveModeInfo->airborne == 0) {
         saved = g_worldMoveMode;
         if (D_800CCF6C != 0) {
             g_worldMoveMode = 10;
@@ -1207,8 +1207,8 @@ void wm_movePlayer(Unk800CCCC0 *cc) {
                 q = g_worldPlayer->pos;
                 if (wm_tryStep((VECTOR *)&q, j, g_worldMoveMode, k, &cell, &h)) {
                     g_worldPlayer->pos = q;
-                    cc->unk8 = cell;
-                    cc->unkE = q.vy;
+                    cc->cellAttr = cell;
+                    cc->floorY = q.vy;
                     D_800CE208 = h;
                     break;
                 }
@@ -1231,8 +1231,8 @@ void wm_movePlayer(Unk800CCCC0 *cc) {
             } else {
                 g_worldPlayer->pos.vy += g_worldPlayerClimbSpeed;
             }
-            cc->unk8 = cell2;
-            cc->unkE = q.vy;
+            cc->cellAttr = cell2;
+            cc->floorY = q.vy;
             D_800CE208 = h2;
         }
         off = 0x1C20;
@@ -1327,7 +1327,7 @@ u8 wm_tryStep(VECTOR *arg0, s32 arg1, s32 arg2, s32 arg3, u32 *arg4, s32 *arg5) 
     VECTOR v;
     u32 cell;
     s32 h;
-    Unk800CE3C8 *mode;
+    WmMoveMode *mode;
     Unk800CE288 *c;
     u8 ok;
     s32 k;
@@ -1337,13 +1337,13 @@ u8 wm_tryStep(VECTOR *arg0, s32 arg1, s32 arg2, s32 arg3, u32 *arg4, s32 *arg5) 
     u8 x;
     u8 y;
 
-    k = g_worldActorTypeInfo[g_worldPlayer->unk11].unk5;
+    k = g_worldActorTypeInfo[g_worldPlayer->unk11].polyCache;
     mode = &g_worldMoveModes[arg2];
     v = *arg0;
     c = &g_worldPolyCache[k];
     v.vx += math_sin(g_worldPlayerHeading + (ang = arg1 + 0x800)) * arg3 >> 12;
     v.vz += math_cos(g_worldPlayerHeading + ang) * arg3 >> 12;
-    if ((u8)g_worldActorTypeInfo[g_worldPlayer->unk11].unk8 >> 2 == 0x34 && g_worldMoveModeInfo->unk0 != 1) {
+    if ((u8)g_worldActorTypeInfo[g_worldPlayer->unk11].cellAttr >> 2 == 0x34 && g_worldMoveModeInfo->controlType != 1) {
         wm_getGroundHeight(&v, &cell, &h, NULL, (u16 *)&v.vy);
     } else {
         wm_getGroundHeight(&v, &cell, &h, c, (u16 *)&v.vy);
@@ -1351,11 +1351,11 @@ u8 wm_tryStep(VECTOR *arg0, s32 arg1, s32 arg2, s32 arg3, u32 *arg4, s32 *arg5) 
     if (h >= 0) {
         ok = wm_testCellType(mode->unk14, cell);
         if (ok) {
-            if (mode->unk1 != 0) {
+            if (mode->checkTransitions != 0) {
                 a = wm_testCellType(g_worldWaterCellTypes, cell);
                 b = wm_testCellType(D_800CCB18, cell);
-                x = wm_testCellType(g_worldWaterCellTypes, g_worldActorTypeInfo[g_worldPlayer->unk11].unk8);
-                y = wm_testCellType(D_800CCB18, g_worldActorTypeInfo[g_worldPlayer->unk11].unk8);
+                x = wm_testCellType(g_worldWaterCellTypes, g_worldActorTypeInfo[g_worldPlayer->unk11].cellAttr);
+                y = wm_testCellType(D_800CCB18, g_worldActorTypeInfo[g_worldPlayer->unk11].cellAttr);
                 if (b & x) {
                     ok = 0;
                 }
@@ -1397,7 +1397,7 @@ u8 wm_findGetoffPos(ActorPos *out) {
 
     memset(&v, 0, sizeof(v));
     ok = 0;
-    if (D_800D32FC < 0x16 && ((u8)g_worldActorTypeInfo[g_worldPlayer->unk11].unk8 >> 2) == 0x17) {
+    if (D_800D32FC < 0x16 && ((u8)g_worldActorTypeInfo[g_worldPlayer->unk11].cellAttr >> 2) == 0x17) {
         return 0;
     }
     D_800CE209 = 0;
@@ -1447,7 +1447,7 @@ u8 wm_findGetoffPos(ActorPos *out) {
                 continue;
             }
             for (j = 1; j < 9; j++) {
-                t = g_worldMoveModeInfo->unkE * j / 8;
+                t = g_worldMoveModeInfo->getoffDist * j / 8;
                 v = g_worldPlayer->pos;
                 r &= wm_tryStep((VECTOR *)&v, d[i], 0, t, &cell, 0);
             }
@@ -1516,8 +1516,8 @@ u8 wm_findGetoffPos(ActorPos *out) {
 
 void w_movementChange(void) {
     s8 old;
-    Unk800CE3C8 *p;
-    Unk800CE3C8 *prev;
+    WmMoveMode *p;
+    WmMoveMode *prev;
 
     func_8004B20C(0);
     g_worldSpeedSmooth = 0;
@@ -1528,20 +1528,20 @@ void w_movementChange(void) {
     g_worldMoveMode = g_evtGlobalVars.b[0xBE];
     g_worldMoveModeInfo = p = &g_worldMoveModes[g_worldMoveMode];
     if (old == 7) {
-        wm_seStop(prev->unkC);
+        wm_seStop(prev->loopSe);
     }
-    if (p->unkC != 0) {
-        wm_sePlay(p->unkC, 0);
+    if (p->loopSe != 0) {
+        wm_sePlay(p->loopSe, 0);
         if (g_worldMoveMode != 7) {
-            wm_seFadeVolume(p->unkC, 0x3C, 0x3F);
+            wm_seFadeVolume(p->loopSe, 0x3C, 0x3F);
         }
         if ((u8)(g_worldMoveMode - 8) < 2) {
             wm_sePlay(0x26, 0);
         }
-        g_worldCamera->unk8 = 1;
+        g_worldCamera->viewForceNormal = 1;
     }
-    if (prev == NULL || prev->unkB != p->unkB) {
-        w_musicRequestSend(p->unkB);
+    if (prev == NULL || prev->music != p->music) {
+        w_musicRequestSend(p->music);
     }
     if (g_worldMoveMode == 0 && (u8)(old - 1) < 6) {
         g_worldPlayerHeading = (g_worldMountActor->pos.rotY + 0x400) & 0xFFF;
@@ -1549,12 +1549,12 @@ void w_movementChange(void) {
     if ((u8)(g_worldMoveMode - 1) < 6 && old == 0) {
         g_worldPlayerHeading = g_worldMountActor->pos.rotY & 0xFFF;
     }
-    if (g_worldMoveModes[old].unk8 == g_worldMoveModes[g_worldMoveMode].unk8) {
-        wm_blendCameraPreset(p->unk11, 0x200);
+    if (g_worldMoveModes[old].airborne == g_worldMoveModes[g_worldMoveMode].airborne) {
+        wm_blendCameraPreset(p->cameraRow, 0x200);
     } else {
-        wm_blendCameraPreset(p->unk11, 0x40);
+        wm_blendCameraPreset(p->cameraRow, 0x40);
     }
-    g_worldCameraFourProbes = g_worldMoveModeInfo->unk8 == 0;
+    g_worldCameraFourProbes = g_worldMoveModeInfo->airborne == 0;
     wm_updateActors();
     if (g_worldMapDebugFlags & WM_DEBUG_MOVEMENT) {
         printf("w_movementChange : %d -> %d\n", old, g_worldMoveMode);
@@ -1590,24 +1590,24 @@ void wm_controlWalk(void) {
     if (wm_getPadHeld() & 0x100000) {
         D_800CE25D = 1;
         g_worldCameraTurnedByHand = 1;
-        g_worldCamera->unkC -= 0x20;
+        g_worldCamera->yaw -= 0x20;
     }
     if (wm_getPadHeld() & 0x200000) {
         D_800CE25D = 1;
         g_worldCameraTurnedByHand = 1;
-        g_worldCamera->unkC += 0x20;
+        g_worldCamera->yaw += 0x20;
     }
-    g_worldCamera->unkC &= 0xFFF;
+    g_worldCamera->yaw &= 0xFFF;
     if (mv != 0 || D_800CE25D != 0) {
         g_worldCamera->unk0 = math_sin(ang);
         if (mv != 0) {
             g_worldCameraTurnedByHand = 0;
             if ((u32)(ang - 0x600) <= 0x400) {
-                g_worldCamera->unkE = 0x800;
+                g_worldCamera->yawOffset = 0x800;
             } else {
-                g_worldCamera->unkE = 0;
+                g_worldCamera->yawOffset = 0;
             }
-            g_worldPlayerHeading = (g_worldCamera->unkC + ang) & 0xFFF;
+            g_worldPlayerHeading = (g_worldCamera->yaw + ang) & 0xFFF;
             g_worldPlayerSpeed = mv * g_worldMoveModeInfo->unk2 >> 12;
         }
     }
@@ -1624,19 +1624,19 @@ void wm_controlWalk(void) {
         g_worldPlayer->pos.rotY = (g_worldPlayer->pos.rotY + a / 3) & 0xFFF;
     }
     if (g_worldPlayerPosChanged != 0 && mv != 0) {
-        if (wm_testCellType_inline(g_worldWaterCellTypes, (u8)g_worldActorTypeInfo[g_worldPlayer->unk11].unk8 >> 2)) {
+        if (wm_testCellType_inline(g_worldWaterCellTypes, (u8)g_worldActorTypeInfo[g_worldPlayer->unk11].cellAttr >> 2)) {
             wm_spawnEffect(g_worldPlayer->pos.vx, -100, g_worldPlayer->pos.vz, 22, 24000);
         }
         if (!(g_worldFrameCount & 3)) {
-            k = (u8)g_worldActorTypeInfo[g_worldPlayer->unk11].unk8 >> 2;
+            k = (u8)g_worldActorTypeInfo[g_worldPlayer->unk11].cellAttr >> 2;
             if (k == 0x1E || k == 0x22 || k == 0x23) {
                 wm_spawnEffect(g_worldPlayer->pos.vx, g_worldPlayer->pos.vy, g_worldPlayer->pos.vz, 7, 0x900);
             }
-            if (((u8)g_worldActorTypeInfo[g_worldPlayer->unk11].unk8 >> 2) == 0x29) {
+            if (((u8)g_worldActorTypeInfo[g_worldPlayer->unk11].cellAttr >> 2) == 0x29) {
                 wm_spawnEffect(g_worldPlayer->pos.vx, g_worldPlayer->pos.vy, g_worldPlayer->pos.vz, 27, 0x2000);
             }
         }
-        if (!(g_worldFrameCount & 1) && (u32)(((u8)g_worldActorTypeInfo[g_worldPlayer->unk11].unk8 >> 2) - 0x24) < 3) {
+        if (!(g_worldFrameCount & 1) && (u32)(((u8)g_worldActorTypeInfo[g_worldPlayer->unk11].cellAttr >> 2) - 0x24) < 3) {
             if (g_randPtr >= g_randTableEnd) {
                 rand_refill();
             }
@@ -1668,7 +1668,7 @@ void wm_controlSteer(void) {
     s32 vol;
     s32 a;
     s32 ang;
-    Unk800CE3C8 *m;
+    WmMoveMode *m;
     s32 dx;
     s32 dz;
 
@@ -1684,19 +1684,19 @@ void wm_controlSteer(void) {
     if (lx < 0 && lx < ly) {
         ly = lx;
     }
-    a = g_worldMoveModeInfo->unk4 * rx >> 7;
+    a = g_worldMoveModeInfo->turnSpeed * rx >> 7;
     g_worldCameraTurnedByHand = 0;
     g_worldPlayerTurn = a;
     if (wm_getPadHeld() & 0x100000) {
         g_worldCameraTurnedByHand = 1;
-        g_worldCamera->unkC -= 0x20;
+        g_worldCamera->yaw -= 0x20;
     }
     if (wm_getPadHeld() & 0x200000) {
         g_worldCameraTurnedByHand = 1;
-        g_worldCamera->unkC += 0x20;
+        g_worldCamera->yaw += 0x20;
     }
-    g_worldCamera->unkE = 0;
-    g_worldCamera->unkC &= 0xFFF;
+    g_worldCamera->yawOffset = 0;
+    g_worldCamera->yaw &= 0xFFF;
     m = g_worldMoveModeInfo;
     v = g_worldSpeedSmooth + (m->unk2 * ly / D_800CCE20 - g_worldSpeedSmooth) / D_800CCE24;
     g_worldSpeedSmooth = v;
@@ -1706,7 +1706,7 @@ void wm_controlSteer(void) {
     if (vol >= 0x80) {
         vol = 0x7F;
     }
-    wm_seFadeVolume(m->unkC, 0x3C, vol);
+    wm_seFadeVolume(m->loopSe, 0x3C, vol);
     g_worldPlayerHeading = g_worldPlayer->pos.rotY = (g_worldPlayer->pos.rotY + g_worldPlayerTurn) & 0xFFF;
     if (ABS(g_worldPlayerSpeed) > 80 && g_worldPlayerPosChanged != 0) {
         ang = (g_worldPlayerSpeed <= 0) << 11;
@@ -1777,18 +1777,18 @@ void wm_controlFly(void) {
     } else {
         if (btn & 0x200000) {
             g_worldCameraTurnedByHand = 1;
-            g_worldCamera->unkC += 0x10;
+            g_worldCamera->yaw += 0x10;
         }
         if (btn & 0x100000) {
             g_worldCameraTurnedByHand = 1;
-            g_worldCamera->unkC -= 0x10;
+            g_worldCamera->yaw -= 0x10;
         }
     }
-    g_worldCamera->unkE = 0;
+    g_worldCamera->yawOffset = 0;
     a = g_worldMoveModeInfo->unk2 * z / D_800CCE20;
-    g_worldPlayerTurn = g_worldMoveModeInfo->unk4 * x >> 7;
+    g_worldPlayerTurn = g_worldMoveModeInfo->turnSpeed * x >> 7;
     q = D_800CCE24;
-    b = g_worldMoveModeInfo->unk5 * y / D_800CCE20;
+    b = g_worldMoveModeInfo->climbSpeed * y / D_800CCE20;
     a = (a - g_worldSpeedSmooth) / q;
     b = (b - g_worldClimbSmooth) / q;
     sa = g_worldSpeedSmooth + a;
@@ -1867,11 +1867,11 @@ void wm_controlFly(void) {
     if (g_worldPlayerSpeed == 0) {
         g_worldCameraRoll += ox / 8;
     }
-    if ((s8)g_worldMoveModeInfo->unk6 < g_worldCameraRoll) {
-        g_worldCameraRoll = (s8)g_worldMoveModeInfo->unk6;
+    if ((s8)g_worldMoveModeInfo->maxRoll < g_worldCameraRoll) {
+        g_worldCameraRoll = (s8)g_worldMoveModeInfo->maxRoll;
     }
-    if (g_worldCameraRoll < -(s8)g_worldMoveModeInfo->unk6) {
-        g_worldCameraRoll = -(s8)g_worldMoveModeInfo->unk6;
+    if (g_worldCameraRoll < -(s8)g_worldMoveModeInfo->maxRoll) {
+        g_worldCameraRoll = -(s8)g_worldMoveModeInfo->maxRoll;
     }
     if (g_worldPlayerTurn > 0 && -(ox * 2) < g_worldPlayer->unk24) {
         g_worldPlayer->unk24 -= ox / 4;
@@ -1879,14 +1879,14 @@ void wm_controlFly(void) {
     if (g_worldPlayerTurn < 0 && g_worldPlayer->unk24 < -(ox * 2)) {
         g_worldPlayer->unk24 -= ox / 4;
     }
-    if (g_worldPlayer->unk24 > (s8)g_worldMoveModeInfo->unk6 * 2) {
-        g_worldPlayer->unk24 = (s8)g_worldMoveModeInfo->unk6 * 2;
+    if (g_worldPlayer->unk24 > (s8)g_worldMoveModeInfo->maxRoll * 2) {
+        g_worldPlayer->unk24 = (s8)g_worldMoveModeInfo->maxRoll * 2;
     }
-    if (g_worldPlayer->unk24 < -(s8)g_worldMoveModeInfo->unk6 * 2) {
-        g_worldPlayer->unk24 = -(s8)g_worldMoveModeInfo->unk6 * 2;
+    if (g_worldPlayer->unk24 < -(s8)g_worldMoveModeInfo->maxRoll * 2) {
+        g_worldPlayer->unk24 = -(s8)g_worldMoveModeInfo->maxRoll * 2;
     }
     if (g_worldFrameCount & 1) {
-        t = (u8)g_worldActorTypeInfo[g_worldPlayer->unk11].unk8 >> 2;
+        t = (u8)g_worldActorTypeInfo[g_worldPlayer->unk11].cellAttr >> 2;
         f = wm_testCellType_inline2(g_worldWaterCellTypes, t);
         switch (g_worldPlayer->unk11) {
         case 9:
@@ -1939,7 +1939,7 @@ void wm_cameraAutoTurnWalk(void) {
     s32 t;
     s32 q;
 
-    a = (g_worldCamera->unkC + g_worldCamera->unkE) & 0xFFF;
+    a = (g_worldCamera->yaw + g_worldCamera->yawOffset) & 0xFFF;
     cam = g_worldPlayerHeading & 0xFFF;
     if (a - cam >= 0x800) {
         a -= 0x1000;
@@ -1970,9 +1970,9 @@ void wm_cameraAutoTurnWalk(void) {
         }
         t = (((0x800 - abs(d)) * D_800CCE2C >> 12) + 0x800) * (2 * g_worldCameraTurnGain);
         q = (d * 256 / D_800CCE30) * (t / 4096);
-        g_worldCamera->unkC += q / 4096;
+        g_worldCamera->yaw += q / 4096;
     }
-    g_worldCamera->unkC &= 0xFFF;
+    g_worldCamera->yaw &= 0xFFF;
 }
 
 void wm_cameraAutoTurnVehicle(void) {
@@ -1981,12 +1981,12 @@ void wm_cameraAutoTurnVehicle(void) {
     s32 q;
     s32 cur;
 
-    a = g_worldCamera->unkC;
+    a = g_worldCamera->yaw;
     if (a - g_worldPlayer->pos.rotY > 0x800) {
-        g_worldCamera->unkC = a - 0x1000;
+        g_worldCamera->yaw = a - 0x1000;
     }
-    if (g_worldCamera->unkC - g_worldPlayer->pos.rotY < -0x800) {
-        g_worldCamera->unkC += 0x1000;
+    if (g_worldCamera->yaw - g_worldPlayer->pos.rotY < -0x800) {
+        g_worldCamera->yaw += 0x1000;
     }
     if (a < 0) {
         a += 0x1000;
@@ -2011,7 +2011,7 @@ void wm_cameraAutoTurnVehicle(void) {
         }
         q = a % 4096 / step;
         if (q != 0) {
-            g_worldCamera->unkC += q;
+            g_worldCamera->yaw += q;
         } else if (step >= 2) {
             do {
                 step /= 2;
@@ -2020,11 +2020,11 @@ void wm_cameraAutoTurnVehicle(void) {
                 }
                 q = a % 4096 / step;
             } while (q == 0);
-            g_worldCamera->unkC += q;
+            g_worldCamera->yaw += q;
         } else {
-            g_worldCamera->unkC = g_worldPlayer->pos.rotY;
+            g_worldCamera->yaw = g_worldPlayer->pos.rotY;
         }
-        g_worldCamera->unkC &= 0xFFF;
+        g_worldCamera->yaw &= 0xFFF;
         if (ABS(a) < 100) {
             g_worldCameraRecenter = 0;
         }
@@ -2034,7 +2034,7 @@ void wm_cameraAutoTurnVehicle(void) {
 void wm_snapActorsToFloor(void) {
     Unk16D8 *n;
     Unk8004AB64 *o;
-    Unk800CCCC0 *c;
+    WmActorType *c;
     ActorPos pos;
     s32 tmp;
     u16 h;
@@ -2046,9 +2046,9 @@ void wm_snapActorsToFloor(void) {
             if (o->unk5 == 4) {
                 pos = o->pos;
                 c = &g_worldActorTypeInfo[o->unk11];
-                wm_getGroundHeight((VECTOR *)&pos, &c->unk8, &tmp, NULL, &h);
-                c->unkE = h;
-                c->unkC = wm_getTerrainHeightOffset(c->unk0, c->unk8, 0);
+                wm_getGroundHeight((VECTOR *)&pos, &c->cellAttr, &tmp, NULL, &h);
+                c->floorY = h;
+                c->rideOffset = wm_getTerrainHeightOffset(c->unk0, c->cellAttr, 0);
                 wm_updateActorHeight(o);
                 o->unk40 = o->pos;
             }
@@ -2059,17 +2059,17 @@ void wm_snapActorsToFloor(void) {
 
 void w_movementChangeSP1(void) {
     s8 old;
-    Unk800CE3C8 *p;
+    WmMoveMode *p;
 
     wm_autoPilotOff();
     g_worldSpeedSmooth = 0;
     g_worldClimbSmooth = 0;
     old = g_worldMoveMode;
     p = &g_worldMoveModes[0];
-    wm_seFadeVolume(g_worldMoveModeInfo->unkC, 0x7F, 0);
+    wm_seFadeVolume(g_worldMoveModeInfo->loopSe, 0x7F, 0);
     wm_seFadeVolume(0x26, 0x7F, 0);
-    w_musicRequestSend(p->unkB);
-    wm_blendCameraPreset(p->unk11, 0x40);
+    w_musicRequestSend(p->music);
+    wm_blendCameraPreset(p->cameraRow, 0x40);
     if (g_worldMapDebugFlags & WM_DEBUG_MOVEMENT) {
         printf("w_movementChange SP1 : %d -> %d\n", old, 0);
     }
@@ -2081,13 +2081,13 @@ const char D_800A7164[0x1C] = "w_movementChange SP2\n";
 void w_movementChangeSP2(void) {
     func_8004B20C(0);
     wm_seStop(0x26);
-    wm_seStop(g_worldMoveModeInfo->unkC);
+    wm_seStop(g_worldMoveModeInfo->loopSe);
     g_worldMoveMode = g_evtGlobalVars.b[0xBE];
     g_worldMoveModeInfo = &g_worldMoveModes[g_worldMoveMode];
     if (func_8004AE00() != NULL) {
         g_worldPlayer = func_8004AE00();
     }
-    g_worldCameraFourProbes = g_worldMoveModeInfo->unk8 == 0;
+    g_worldCameraFourProbes = g_worldMoveModeInfo->airborne == 0;
     wm_updateActors();
     if (g_worldMapDebugFlags & WM_DEBUG_MOVEMENT) {
         printf(D_800A7164);
@@ -2256,7 +2256,7 @@ s32 wm_getTerrainHeightOffset(s32 arg0, u32 arg1, u8 *arg2) {
 }
 
 void wm_controlPlayer(void) {
-    switch (g_worldMoveModeInfo->unk0) {
+    switch (g_worldMoveModeInfo->controlType) {
     case 0:
         wm_controlWalk();
         break;
@@ -2267,7 +2267,7 @@ void wm_controlPlayer(void) {
         wm_controlFly();
         break;
     }
-    if (g_worldMoveModeInfo->unk9 != 0 && (wm_getPadPressed() & 0x800000)) {
+    if (g_worldMoveModeInfo->canToggleView != 0 && (wm_getPadPressed() & 0x800000)) {
         wm_toggleCameraView();
     }
     if (wm_getPadPressed() & 0x400000) {

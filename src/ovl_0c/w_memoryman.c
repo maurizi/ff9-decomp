@@ -270,7 +270,7 @@ void wm_animCluts(void) {
     s8 d = -1;
     u8 on = 0;
     s32 e = 0;
-    WmLNode *n;
+    WmFrmbufSlot *n;
 
     if (D_800D1FD0 != 0) {
         if (D_800D30CB == 0) {
@@ -286,16 +286,16 @@ void wm_animCluts(void) {
         }
     }
     n = g_worldFrmbufHead.unk4;
-    if ((n->unk8 & 0x3F) == 4) {
+    if ((n->texId & 0x3F) == 4) {
         on = 1;
-        if (n->unkA == 2) {
+        if (n->vramArea == 2) {
             e = 8;
         }
     }
     n = n->unk4;
-    if ((n->unk8 & 0x3F) == 4) {
+    if ((n->texId & 0x3F) == 4) {
         on = 1;
-        if (n->unkA == 2) {
+        if (n->vramArea == 2) {
             e = 8;
         }
     }

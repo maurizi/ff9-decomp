@@ -167,18 +167,18 @@ typedef struct {
     s32 unk0;
     void *unk4;
     u8 unk8[4];
-    s16 unkC;
-    s16 unkE;
-    void *unk10; /* file 0x5xxxx */
-    void *unk14; /* file 0x6xxxx */
-    s8 unk18;
-    s8 unk19;
+    s16 swirlX;
+    s16 swirlY;
+    void *mapScript; /* file 0x5xxxx */
+    void *areaData; /* file 0x6xxxx */
+    s8 battleStep;
+    s8 swirlFrames;
     u8 unk1A;
-    u8 unk1B;
-    WmObjEnt *unk1C;
-    s32 unk20;
-    s16 unk24; /* map id */
-    u16 unk26;
+    u8 exitReason;
+    WmObjEnt *shadows;
+    s32 primCursor;
+    s16 sceneId; /* map id */
+    u16 battleMusic;
     struct WmPalAnim *unk28; /* count: unk1A */
     u8 *unk2C;
     u8 *unk30;
@@ -191,8 +191,8 @@ typedef struct WorldMap {
     u32 unk0; /* flags: 0x100 0x200 0x400 0x800 skip per-frame updates */
     u8 *unk4; /* end of the load area */
     WorldMapObj *unk8; /* = &unk48 */
-    void *unkC; /* allocation, freed by wm_freeWorldData */
-    s32 unk10;
+    void *worldData; /* allocation, freed by wm_freeWorldData */
+    s32 parkedSoundSize;
     u8 unk14[0x34];
     WorldMapObj unk48;
 } WorldMap; /* 0x94 */
@@ -220,37 +220,37 @@ typedef struct WmNode {
 } WmNode; /* 0x28 */
 
 /* frame pack slot list: g_worldReadtxHead (head) -> g_worldReadtxSlots[6] -> g_worldReadtxTail (tail) */
-typedef struct Unk800D3EAC {
-    struct Unk800D3EAC *unk0; /* prev */
-    struct Unk800D3EAC *unk4; /* next */
+typedef struct WmReadtxSlot {
+    struct WmReadtxSlot *unk0; /* prev */
+    struct WmReadtxSlot *unk4; /* next */
     s32 *unk8; /* frame pack */
-    s16 unkC; /* low 6 bits: id; -1: none */
-    u8 unkE;
+    s16 texId; /* low 6 bits: id; -1: none */
+    u8 extracted;
     u8 padF;
-} Unk800D3EAC; /* 0x10 */
+} WmReadtxSlot; /* 0x10 */
 
 typedef struct {
     s16 unk0;
-    s16 unk2;
-    s32 unk4;
-    s32 unk8;
-    u16 unkC; /* camera angle */
-    u16 unkE;
-} Unk800CE0F0;
+    s16 viewBlend;
+    s32 viewBlendSpeed;
+    s32 viewForceNormal;
+    u16 yaw; /* camera angle */
+    u16 yawOffset;
+} WmCameraState;
 
 typedef struct {
     u8 unk0;
-    u8 unk1;
-    u8 unk2;
-    u8 unk3;
+    u8 shadowWidth;
+    u8 shadowDepth;
+    u8 flying;
     u8 unk4;
-    u8 unk5;
-    u8 unk6;
+    u8 polyCache;
+    u8 shadowJoint;
     u8 unk7;
-    u32 unk8;
-    s16 unkC;
-    s16 unkE;
-} Unk800CCCC0; /* 0x10 */
+    u32 cellAttr;
+    s16 rideOffset;
+    s16 floorY;
+} WmActorType; /* 0x10 */
 
 typedef struct {
     s16 unk0[5];
@@ -258,34 +258,34 @@ typedef struct {
 
 /* movement mode table entry (g_worldMoveModes[], current one at g_worldMoveModeInfo) */
 typedef struct {
-    u8 unk0; /* mode */
-    u8 unk1;
+    u8 controlType; /* mode */
+    u8 checkTransitions;
     s16 unk2; /* speed */
-    u8 unk4; /* turn speed */
-    u8 unk5;
-    s8 unk6;
+    u8 turnSpeed; /* turn speed */
+    u8 climbSpeed;
+    s8 maxRoll;
     u8 pad7;
-    u8 unk8;
-    u8 unk9;
+    u8 airborne;
+    u8 canToggleView;
     u8 unkA;
-    u8 unkB;
-    u8 unkC;
-    u8 unkD;
-    s16 unkE;
-    u8 unk10;
-    u8 unk11;
+    u8 music;
+    u8 loopSe;
+    u8 countsSteps;
+    s16 getoffDist;
+    u8 cameraInFront;
+    u8 cameraRow;
     u8 pad12[2];
     u32 unk14[2]; /* allowed cell types (bit mask) */
-} Unk800CE3C8; /* 0x1C */
+} WmMoveMode; /* 0x1C */
 
 /* doubly linked node (wm_frmbufInit) */
-typedef struct WmLNode {
-    struct WmLNode *unk0; /* prev */
-    struct WmLNode *unk4; /* next */
-    s16 unk8;
-    s8 unkA;
-    u8 unkB;
-} WmLNode; /* 0xC */
+typedef struct WmFrmbufSlot {
+    struct WmFrmbufSlot *unk0; /* prev */
+    struct WmFrmbufSlot *unk4; /* next */
+    s16 texId;
+    s8 vramArea;
+    u8 transferred;
+} WmFrmbufSlot; /* 0xC */
 
 /* model object (same layout in ovl_0a, ovl_0b and ovl_0c) */
 
@@ -513,9 +513,9 @@ typedef struct {
 /* filled by w_musicGetID */
 typedef struct {
     s32 unk0; /* volume mask */
-    s32 unk4; /* count */
-    s32 unk8[3]; /* sound ids */
-} Unk800C3FE4;
+    s32 count; /* count */
+    s32 seIds[3]; /* sound ids */
+} WmSeIds;
 
 typedef struct {
     s32 unk0[4];
@@ -576,16 +576,16 @@ typedef struct WmTexPack {
     WmTexEnt *unk8[4];
 } WmTexPack;
 
-typedef struct Unk800D335C {
-    struct Unk800D335C *unk0; /* prev */
-    struct Unk800D335C *unk4; /* next */
+typedef struct WmChunkSlot {
+    struct WmChunkSlot *unk0; /* prev */
+    struct WmChunkSlot *unk4; /* next */
     struct WmTexPack *unk8;
-    s16 unkC;
-    u8 unkE;
-    u8 unkF;
+    s16 chunkId;
+    u8 state;
+    u8 generation;
     u8 unk10;
     u8 pad11[3];
-} Unk800D335C; /* 0x14 */
+} WmChunkSlot; /* 0x14 */
 
 /* colour + 2 values (8 bytes) */
 typedef struct {
@@ -744,7 +744,7 @@ void menuMain_setExpHelp(s32);
 void menuMain_setEquipHelp(u8);
 s32 wm_getPadHeld(void);
 s32 wm_getPadPressed(void);
-s32 w_musicGetID(s32, Unk800C3FE4 *);
+s32 w_musicGetID(s32, WmSeIds *);
 s32 w_frameExtruct(s32 *);
 void func_800B3A80(s32);
 s32 func_800B3FEC(s32, s32, s32);
@@ -843,9 +843,9 @@ extern MATRIX D_800CF520;
 extern MATRIX D_800CF540;
 extern u8 g_worldMapLoaded;
 extern u8 s_menuMainText[]; /* text */
-extern Unk800CCCC0 g_worldActorTypeInfo[];
+extern WmActorType g_worldActorTypeInfo[];
 extern Unk8004AB64 *g_worldPlayer; /* player actor */
-extern Unk800CE3C8 *g_worldMoveModeInfo;
+extern WmMoveMode *g_worldMoveModeInfo;
 extern s32 g_worldWidth; /* map width (wraps) */
 extern s32 g_worldDepth; /* map height (wraps) */
 extern RECT D_800A71E0;
@@ -897,9 +897,9 @@ extern s32 g_worldBlockListDirty;
 extern Unk800D375C g_worldBlockNodes[40];
 extern Unk800D3AB8 D_800D3AB8[20];
 extern Unk800D375C g_worldBlockTail; /* list tail */
-extern Unk800D335C g_worldChunkTail;
-extern Unk800D335C g_worldChunkHead;
-extern Unk800D335C g_worldChunkSlots[32];
+extern WmChunkSlot g_worldChunkTail;
+extern WmChunkSlot g_worldChunkHead;
+extern WmChunkSlot g_worldChunkSlots[32];
 extern s32 g_worldChunkCenter;
 extern s32 g_worldChunksLoadedCount;
 extern s32 g_worldChunkListDirty;
@@ -908,7 +908,7 @@ extern char D_800A71F4[]; /* "w_frameMapDestructor:\n" */
 extern char D_800A7A40[]; /* "w_framePackGetPtr : attempt to get %d element with %d max\n" */
 extern void (*s_menuMainInput[])(void);
 extern u8 g_worldSongMusicIds[];
-extern Unk800CE0F0 *g_worldCamera;
+extern WmCameraState *g_worldCamera;
 extern s8 g_worldMoveMode;
 extern s32 g_worldHeapUsed;
 extern s32 g_worldHeapDepth;
@@ -945,9 +945,9 @@ extern u8 g_worldAutoPilot;
 extern u8 g_worldAutoPilotSavedAutoTurn;
 extern s32 g_worldAutoPilotDist;
 extern s32 g_worldAutoPilotDest;
-extern Unk800D3EAC g_worldReadtxTail;
-extern Unk800D3EAC g_worldReadtxHead;
-extern Unk800D3EAC g_worldReadtxSlots[6];
+extern WmReadtxSlot g_worldReadtxTail;
+extern WmReadtxSlot g_worldReadtxHead;
+extern WmReadtxSlot g_worldReadtxSlots[6];
 extern s32 g_worldReadtxReqCount;
 extern s32 g_worldReadtxDirty;
 extern s8 g_worldMapError;
@@ -1026,7 +1026,7 @@ extern MenuMain s_menuMain;
 extern u8 g_worldState;
 extern char D_800A7CCC[];
 extern s16 g_worldTerrainHeightOffsets[][9];
-extern Unk800CE3C8 g_worldMoveModes[];
+extern WmMoveMode g_worldMoveModes[];
 extern s16 g_worldClimbSmooth;
 extern s16 g_worldSpeedSmooth;
 extern s32 g_worldHeapStack[];
@@ -1047,10 +1047,10 @@ extern s32 g_worldNaviPrevMode;
 extern s8 g_worldTitlePhase;
 extern u8 g_worldNaviPlace;
 extern s32 g_worldFrmbufReqCount;
-extern WmLNode g_worldFrmbufTail;
-extern WmLNode g_worldFrmbufHead;
+extern WmFrmbufSlot g_worldFrmbufTail;
+extern WmFrmbufSlot g_worldFrmbufHead;
 extern s32 g_worldFrmbufDirty;
-extern WmLNode g_worldFrmbufSlots[4];
+extern WmFrmbufSlot g_worldFrmbufSlots[4];
 
 /* scrolling texture strips (wm_scrollTextures) */
 typedef struct {
@@ -1061,13 +1061,12 @@ typedef struct {
     u16 unk8; /* speed (8.8) */
 } Unk800CFEA0; /* 0xA */
 
+/* random-encounter table entry (g_worldEncounterTable, docs/encounters.md) */
 typedef struct {
-    u8 pad0[4];
-    u16 unk4;
-    u16 unk6;
-    u8 unk8; /* topograph << 2 */
-    u8 unk9; /* bit 0: fog */
-} Unk800CF450; /* 0xA */
+    u16 battle[4];
+    u8 topoPattern; /* topography << 2 | slot pattern */
+    u8 zoneFog; /* zone << 1 | fog */
+} WmEncounter; /* 0xA */
 
 extern u16 D_800CFE88[8];
 extern Unk800CFEA0 g_worldTexScrolls[8];
@@ -1076,7 +1075,7 @@ extern u16 D_800CFF02;
 extern void *D_800CE3F4;
 extern s8 D_800CFE98[2];
 extern s8 D_800CCFAC[];
-extern Unk800CF450 *g_worldEncounterTable;
+extern WmEncounter *g_worldEncounterTable;
 extern u16 (*g_worldEncounterEventRows)[12];
 extern s32 g_worldAmbientSeDist[3];
 extern u8 g_worldAmbientSeOn[3];
@@ -1203,7 +1202,7 @@ extern u8 g_worldCameraHold;
 extern u8 g_worldCameraLookupFix;
 extern s32 D_800CD094;
 extern s32 D_800D3320[];
-extern Unk800D335C *D_800D33F8[];
+extern WmChunkSlot *D_800D33F8[];
 extern WmPack *D_800D3740[];
 extern s32 *D_800D3310[];
 extern s32 D_800CF580[5];
@@ -1454,7 +1453,7 @@ extern s32 D_800CF5A8;
 extern char D_800A7F94[];
 extern SVECTOR D_800A849C; /* rotation used by wm_drawEffects */
 s32 wm_readtxFind(s32, s32);
-u8 wm_findChunkRun(Unk800D335C **, s32 *, s32 *);
+u8 wm_findChunkRun(WmChunkSlot **, s32 *, s32 *);
 void wm_getChunkEntry(s32, s32, WmCell *);
 void wm_getChunkEntryT(s32, s32, WmCell *);
 void wm_chunksLoaded(void);

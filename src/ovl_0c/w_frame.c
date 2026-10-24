@@ -142,7 +142,7 @@ s32 wm_frameMain(void) {
     func_80019160(0x8000, busy);
     switch (g_worldEventResult) {
     case WM_EVT_BATTLE:
-        if ((u8)g_worldActorTypeInfo[g_worldPlayer->unk11].unk8 >> 2 == 0x34) {
+        if ((u8)g_worldActorTypeInfo[g_worldPlayer->unk11].cellAttr >> 2 == 0x34) {
             g_worldEventResult = 0;
         }
         g_gameState->unk1C->unk571 = func_800B8548();
@@ -509,7 +509,7 @@ s32 w_frameGetParameter(s32 arg0) {
     u8 ret;
     s32 k;
 
-    v = g_worldActorTypeInfo[g_worldPlayer->unk11].unk8;
+    v = g_worldActorTypeInfo[g_worldPlayer->unk11].cellAttr;
     if ((g_worldMapDebugFlags & WM_DEBUG_REQUEST) && arg0 == WM_PARAM_CD_BUSY) {
         printf("Event:CDAccessWait\n");
     }
@@ -520,9 +520,9 @@ s32 w_frameGetParameter(s32 arg0) {
         return WM_ATTR_TOPOGRAPHY(v);
     case 0xC2:
         if (g_worldMoveMode == 6) {
-            return g_worldActorTypeInfo[g_worldPlayer->unk11].unkE + 400;
+            return g_worldActorTypeInfo[g_worldPlayer->unk11].floorY + 400;
         }
-        return g_worldActorTypeInfo[g_worldPlayer->unk11].unkE + g_worldActorTypeInfo[g_worldPlayer->unk11].unkC;
+        return g_worldActorTypeInfo[g_worldPlayer->unk11].floorY + g_worldActorTypeInfo[g_worldPlayer->unk11].rideOffset;
     case WM_PARAM_REQ0:
         return g_worldReqParams[0];
     case WM_PARAM_REQ1:
@@ -532,7 +532,7 @@ s32 w_frameGetParameter(s32 arg0) {
     case 0xC6:
         return g_gameState->unk1C->unk844;
     case WM_PARAM_CAMERA_YAW:
-        return g_worldCamera->unkC >> 4;
+        return g_worldCamera->yaw >> 4;
     case WM_PARAM_CD_BUSY:
         return g_worldCdUser | (g_worldMusicState != WM_MUSIC_READY);
     case WM_PARAM_PLAYER_X:
@@ -685,7 +685,7 @@ INCLUDE_RODATA("asm/us/ovl_0c/nonmatchings/w_frame", D_800A7A40);
 s32 func_800B8124(void) {
     s32 n = g_worldPlayer->unk11;
     if (n < 3 && n != 0) {
-        switch ((u8)g_worldActorTypeInfo[n].unk8 >> 2) {
+        switch ((u8)g_worldActorTypeInfo[n].cellAttr >> 2) {
         case 3:
         case 18:
         case 21:

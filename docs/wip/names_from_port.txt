@@ -1741,3 +1741,4 @@ D_800CD084 g_worldAmbientSeZ  # [code] z of the 3 sources
 D_800CD090 g_worldAmbientSe  # [code] world SE numbers of the 3 sources (wm_sePlay/SetVolume/Stop)
 D_800D32F8 g_worldAmbientSeDist  # [code] player distance to each source (wm_updateMap)
 D_800D330C g_worldAmbientSeOn  # [code] 1 while source i's SE plays (within 0x3F)
+# FIELD ovl_0c types: Unk800CE3C8 WmMoveMode, Unk800CE0F0 WmCameraState, Unk800CCCC0 WmActorType, Unk800CF450 WmEncounter (u16 battle[4], topoPattern, zoneFog), Unk800C3FE4 WmSeIds, Unk800D335C WmChunkSlot, Unk800D3EAC WmReadtxSlot, WmLNode WmFrmbufSlot; members of those plus WorldMap (worldData, parkedSoundSize) and WorldMapObj (swirlX/Y, mapScript, areaData, battleStep, swirlFrames, exitReason, shadows, primCursor, sceneId, battleMusic)
