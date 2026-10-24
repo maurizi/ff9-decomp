@@ -112,6 +112,8 @@ s32 fx_17d_4_op80(s32 mode, Fx17d4Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
     s32 g;
     s32 flag;
     s32 f3;
+    s32 s6a;
+    s32 c6a;
     s32 k5;
     s32 n5;
     s32 w3;
@@ -298,9 +300,8 @@ s32 fx_17d_4_op80(s32 mode, Fx17d4Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
             rot.vz = 0;
             sc.vx = sc.vz = x_c3 / 3 + 0x800;
             ex->Hi_DrawEffModel(&rot, (VECTOR *)&pos, (s32)&sc, work->unk6C);
-            x_c3 = x_c3 >> 2;
-            ex->Hi_ModifyEffModelRGB(work->unk6C, (ex->math_cos(x_c3) >> 5) - 0x80, (ex->math_cos(x_c3) >> 5) - 0x80,
-                                     (ex->math_cos(x_c3) >> 5) - 0x80);
+            ex->Hi_ModifyEffModelRGB(work->unk6C, (ex->math_cos(x_c3 >> 2) >> 5) - 0x80, (ex->math_cos(x_c3 >> 2) >> 5) - 0x80,
+                                     (ex->math_cos(x_c3 >> 2) >> 5) - 0x80);
             if (frame < 0x28) {
                 q_c3 = (frame << 12) / 40;
                 sc.vy = q_c3 / 3 + 0x1000;
@@ -439,10 +440,12 @@ s32 fx_17d_4_op80(s32 mode, Fx17d4Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
             }
             break;
         case 6:
-            a2.vx = b2.vx = work->unk8.vx;
+            a2.vx = work->unk8.vx;
             a2.vy = work->unk8.vy;
-            a2.vz = b2.vz = work->unk8.vz;
+            a2.vz = work->unk8.vz;
+            b2.vx = a2.vx;
             b2.vy = work->unk8.vy - 0x1000;
+            b2.vz = a2.vz;
             env->unk28 = 0x10;
             x_c6 = (frame << 12) / 51;
             c_6 = 0x1000 - x_c6;
@@ -456,8 +459,9 @@ s32 fx_17d_4_op80(s32 mode, Fx17d4Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
             rot2.pad = 1;
             if (frame < 0x10) {
                 q4_c6 = (frame << 12) >> 6;
-                ex->func_800D23D8((u8 *)ex->btlfx_getFileData(entry->unk8, 5), &a2, &rot2, ex->math_sin(q4_c6) * 5, 0, 1,
-                                  ex->math_cos(q4_c6));
+                s6a = ex->math_sin(q4_c6) * 5;
+                c6a = ex->math_cos(q4_c6);
+                ex->func_800D23D8((u8 *)ex->btlfx_getFileData(entry->unk8, 5), &a2, &rot2, s6a, 0, 1, c6a);
             }
             if (frame >= 0x1E) {
                 k = (frame - 0x1E) << 9;
