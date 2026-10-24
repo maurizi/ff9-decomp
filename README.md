@@ -24,7 +24,7 @@ tools/docker.sh make verify
 
 All 3840 game functions (100% of game code bytes) are decompiled to matching C, and all 20 binaries
 are fully decompiled. The 380 battle effect modules loaded from FF9.IMG (`docs/effect-modules.md`) are a second body of game
-code: 1420 of their 1421 functions match (99.0% of their bytes), and 379 modules are complete. PsyQ SDK library code is identified by signature and left as assembly.
+code: all 1421 of their functions match too, so every module rebuilds byte-identically from C. PsyQ SDK library code is identified by signature and left as assembly.
 
 `make progress` prints the current per-binary numbers, and `docs/progress.csv` records them over time.
 

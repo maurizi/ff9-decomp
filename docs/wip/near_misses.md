@@ -3,6 +3,24 @@
 Functions agents got close on but couldn't finish. Drafts for main are in the main checkout's
 build/drafts/main/ (gitignored; v*.c). Append as agents report.
 
+## Effect modules (fx_*): all 1421 functions matched
+Levers beyond the ones above, from the module passes (details in each function's "Matching notes" comment):
+- loop.c records a giv only for a register set exactly once in the loop (n_times_set == 1); assign a pointer in
+  both paths to keep it out of strength reduction (fx_1f2). move_movables' threshold starts at 29 and drops 3 per
+  move: lengthen a loop (e.g. `x + j * 0x60` instead of a `+= 0x60` counter) to keep constants inside it.
+- A dead division puts its magic-constant load in its own block, and a later real division reuses it (fx_0e3_1).
+- Dead `struct { s32 x; } q = { frame };` locals give the original's unused spill words (an initializer of 0 does
+  not: a constant gets no slot). Spill and local slots follow declaration order; wrapping a switch or case body in
+  its own { } frees its address-taken slots (preserve_temp_slots) for later blocks.
+- Block-local copies create copy preferences for s-registers (`q = m >> 2` in a block local-alloc puts in s2 gives
+  m an s2 preference; fx_016). A dead parameter reused as a temp gets its argument register by preference.
+- Chained stores `a = b = x` store b first; plain x, y, z copy order keeps duplicate stores that a global read
+  separates.
+- For one wrongly ordered basic block, hill-climb statement order in a cut-down toy function containing only that
+  block's code (much faster per compile than the full function; fx_0fb_1).
+- Twins: many op handlers are near-copies across modules (other file ids, constants); tools/fxmod_dups.py and
+  tools/fxmod_propagate.py handle exact copies, an opcode-similarity search finds near ones.
+
 ## Passes 26-27: the last 10 matched (main 800475D8, 8002E718, akao_initState, 8004DAD0; ovl_0b 800DA138; ovl_0a 800C0038, 800B4A5C, 800BD130, 800C07D8, 800C65CC)
 All game code now matches. Levers that closed them (each commented in the source):
 - A conditional whose body is only dead stores keeps the tested variable live through flow and adds refs, then
