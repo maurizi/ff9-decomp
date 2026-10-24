@@ -34,20 +34,20 @@ u8 bj_wagerGetCursor(void) {
 void bj_wagerInput(void) {
     if (g_bjWagerMenu.shown != 0 && g_bjWagerMenu.fadingIn == 0) {
         if (g_padRepeat & PAD_RIGHT) {
-            g_bjWager += 10;
+            g_bjWager += BJ_MIN_BET;
             if (g_bjBankroll < g_bjWager) {
-                g_bjWager = g_bjBankroll / 10 * 10;
+                g_bjWager = g_bjBankroll / BJ_MIN_BET * BJ_MIN_BET;
             }
-            if (g_bjWager > 1000) {
-                g_bjWager = 1000;
+            if (g_bjWager > BJ_MAX_BET) {
+                g_bjWager = BJ_MAX_BET;
             }
-            snd_playSe(0x67);
+            snd_playSe(SE_CURSOR);
         } else if (g_padRepeat & PAD_LEFT) {
-            g_bjWager -= 10;
-            if (g_bjWager < 10) {
-                g_bjWager = 10;
+            g_bjWager -= BJ_MIN_BET;
+            if (g_bjWager < BJ_MIN_BET) {
+                g_bjWager = BJ_MIN_BET;
             }
-            snd_playSe(0x67);
+            snd_playSe(SE_CURSOR);
         } else if (g_padRepeat & BTN_CROSS) {
             bj_wagerDecide();
         }
@@ -65,8 +65,8 @@ void bj_wagerTick(void) {
 }
 
 void bj_wagerDecide(void) {
-    snd_playSe(0x67);
-    scene_set(4);
+    snd_playSe(SE_CURSOR);
+    scene_set(SCENE_CHOSEN);
 }
 
 void func_800AD380(void) {
@@ -86,7 +86,7 @@ void bj_wagerDrawCursor(void) {
 
 void bj_wagerStepFadeIn(void) {
     g_bjWagerMenu.fadeFrames++;
-    if (g_bjWagerMenu.fadeFrames > 48) {
+    if (g_bjWagerMenu.fadeFrames > SCENE_MENU_FADE_FRAMES) {
         g_bjWagerMenu.fadeFrames = 0;
         g_bjWagerMenu.fadingIn = 0;
     }

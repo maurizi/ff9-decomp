@@ -7,7 +7,7 @@ void ending_main(void) {
     while (g_endingState < ENDING_DONE) {
         switch (g_endingState) {
         case ENDING_MOVIE:
-            ending_playMovie(4, 0x12);
+            ending_playMovie(ENDING_MOVIE_LIST, ENDING_FMV059);
             g_endingState = ENDING_THE_END;
             break;
         case ENDING_MESSAGES:
@@ -15,7 +15,7 @@ void ending_main(void) {
             g_endingState = ENDING_MOVIE2;
             break;
         case ENDING_MOVIE2:
-            ending_playMovie(4, 0x13);
+            ending_playMovie(ENDING_MOVIE_LIST, ENDING_FMV060);
             g_endingState = ENDING_THE_END;
             break;
         case ENDING_THE_END:

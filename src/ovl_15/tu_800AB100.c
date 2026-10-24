@@ -35,21 +35,21 @@ u8 bj_actionGetCursor(void) {
 void bj_actionInput(void) {
     if (g_bjAction.shown != 0 && g_bjAction.fadingIn == 0) {
         if (g_padRepeat & PAD_UP) {
-            snd_playSe(0x67);
-            g_bjAction.cursor = g_bjAction.cursor != 0 ? g_bjAction.cursor - 1 : 3;
-            if (g_bjCanSplit == 0 && g_bjAction.cursor == 3) {
+            snd_playSe(SE_CURSOR);
+            g_bjAction.cursor = g_bjAction.cursor != 0 ? g_bjAction.cursor - 1 : BJ_SPLIT;
+            if (g_bjCanSplit == 0 && g_bjAction.cursor == BJ_SPLIT) {
                 g_bjAction.cursor--;
             }
-            if (g_bjCanDouble == 0 && g_bjAction.cursor == 2) {
+            if (g_bjCanDouble == 0 && g_bjAction.cursor == BJ_DOUBLE) {
                 g_bjAction.cursor--;
             }
         } else if (g_padRepeat & PAD_DOWN) {
-            snd_playSe(0x67);
-            g_bjAction.cursor = g_bjAction.cursor < 3 ? g_bjAction.cursor + 1 : 0;
-            if (g_bjCanDouble == 0 && g_bjAction.cursor == 2) {
+            snd_playSe(SE_CURSOR);
+            g_bjAction.cursor = g_bjAction.cursor < BJ_SPLIT ? g_bjAction.cursor + 1 : BJ_STAND;
+            if (g_bjCanDouble == 0 && g_bjAction.cursor == BJ_DOUBLE) {
                 g_bjAction.cursor++;
             }
-            if (g_bjCanSplit == 0 && g_bjAction.cursor == 3) {
+            if (g_bjCanSplit == 0 && g_bjAction.cursor == BJ_SPLIT) {
                 g_bjAction.cursor = 0;
             }
         } else if (g_padRepeat & BTN_CROSS) {
@@ -69,8 +69,8 @@ void bj_actionTick(void) {
 }
 
 void bj_actionDecide(void) {
-    snd_playSe(0x67);
-    scene_set(4);
+    snd_playSe(SE_CURSOR);
+    scene_set(SCENE_CHOSEN);
 }
 
 void func_800AB3C4(void) {
@@ -90,7 +90,7 @@ void bj_actionDrawCursor(void) {
 
 void bj_actionStepFadeIn(void) {
     g_bjAction.fadeFrames++;
-    if (g_bjAction.fadeFrames > 48) {
+    if (g_bjAction.fadeFrames > SCENE_MENU_FADE_FRAMES) {
         g_bjAction.fadeFrames = 0;
         g_bjAction.fadingIn = 0;
     }

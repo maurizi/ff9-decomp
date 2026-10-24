@@ -9,7 +9,7 @@ void scene_init(void) {
     g_scene.cur = 0;
     g_scene.unk2 = 0;
     g_scene.fadeScreen = 0;
-    for (; i < 5; i++, m++) {
+    for (; i < SCENE_COUNT; i++, m++) {
         if (m->init != NULL) {
             m->init();
         }
@@ -55,12 +55,12 @@ s32 scene_checkDisc(void) {
 
     do {
         func_8001DCB8();
-    } while (g_gameState->unkB == 0xFF && ++i < 10);
+    } while (g_gameState->unkB == DISC_NONE && ++i < 10);
     func_80033D1C(1);
     if (scene_isDiscGone(pad, g_gameState->unkB)) {
         return scene_discIndex(pad);
     }
-    return 0xFF;
+    return DISC_NONE;
 }
 
 s32 scene_discIndex(s32 arg0) {

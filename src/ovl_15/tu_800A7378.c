@@ -14,12 +14,12 @@ s32 ending_playMovie(s32 arg0, s32 arg1) {
         pad_update();
         switch (g_movieState) {
         case MOVIE_ST_START:
-            if (g_gameState->unkB != 0xFF && (g_gameState->unkB & 8)) {
-                g_movieFlags = 1;
+            if (g_gameState->unkB != DISC_NONE && (g_gameState->unkB & DISC_4)) {
+                g_movieFlags = MOVIE_NO_SCENES;
                 g_movieState = MOVIE_ST_OPEN;
             } else {
                 g_movieState = MOVIE_ST_END;
-                g_movieFlags |= 0x80;
+                g_movieFlags |= MOVIE_DONE;
             }
             break;
         case MOVIE_ST_OPEN:
@@ -27,8 +27,8 @@ s32 ending_playMovie(s32 arg0, s32 arg1) {
             if (g_gameState->unk1C->unk8 != 0) {
                 i = 2;
             }
-            g_movieFlagQueue[0][i - 1] = 7;
-            g_movieFlagQueue[0][i] = 0x10;
+            g_movieFlagQueue[0][i - 1] = MOVIE_NO_SCENES | MOVIE_NO_FADE | MOVIE_NO_OT;
+            g_movieFlagQueue[0][i] = MOVIE_PLAYING;
             g_gameState->vsyncMode = 4;
             DrawSync(0);
             MBG_init(1, &buf);
@@ -38,7 +38,7 @@ s32 ending_playMovie(s32 arg0, s32 arg1) {
             g_movieState = MOVIE_ST_PLAY;
             break;
         case MOVIE_ST_PLAY:
-            if ((g_movieFlags & 0x10) && (func_80012AD4() & 2)) {
+            if ((g_movieFlags & MOVIE_PLAYING) && (func_80012AD4() & 2)) {
                 r = mbg_update(0);
                 mbg_getLastFrame();
                 if (r != 0) {
@@ -49,7 +49,7 @@ s32 ending_playMovie(s32 arg0, s32 arg1) {
             }
             break;
         case MOVIE_ST_END:
-            if (g_movieFlags & 0x80) {
+            if (g_movieFlags & MOVIE_DONE) {
                 g_gameState->vsyncMode = 0;
                 timer = 900;
                 g_gameState->unkC[0].disp.x = 0x140;
@@ -59,7 +59,7 @@ s32 ending_playMovie(s32 arg0, s32 arg1) {
             }
             break;
         }
-        if (!(g_movieFlags & 2)) {
+        if (!(g_movieFlags & MOVIE_NO_FADE)) {
             func_80032098();
         }
         ending_movieSwap();
@@ -82,7 +82,7 @@ s32 ending_movieInit(s32 arg0, s32 arg1) {
     EnterCriticalSection();
     FlushCache();
     ExitCriticalSection();
-    if (g_gameState->unkB != 0xFF && (g_gameState->unkB & 8)) {
+    if (g_gameState->unkB != DISC_NONE && (g_gameState->unkB & DISC_4)) {
         h = cd_findFile(g_mbgMovieLists[arg0].movies[arg1].path);
         func_80022ED4(h);
         while (cd_getState() != 0) {
@@ -120,7 +120,7 @@ void ending_movieSwap(void) {
     VSync(g_gameState->vsyncMode);
     ResetGraph(1);
     PutDispEnv(&g_gameState->unkC[g_gameState->unk1C->unk8]);
-    if (g_movieFlags & 4) {
+    if (g_movieFlags & MOVIE_NO_OT) {
         PutDrawEnv(&g_gameState->unk10[g_gameState->unk1C->unk8]);
     } else {
         ctx = g_gameState->unk1C;
@@ -142,7 +142,7 @@ void ending_movieSwap(void) {
 
 void ending_movieOnEnd(void) {
     mbg_shutdown();
-    g_movieFlags |= 0x80;
+    g_movieFlags |= MOVIE_DONE;
     g_movieState = MOVIE_ST_END;
 }
 
@@ -446,12 +446,12 @@ s32 bj_shoeInit(BjShoe *shoe) {
     s32 i;
     s32 j;
 
-    for (i = 0; i < 6; i++) {
-        for (j = 0; j < 52; j++) {
-            shoe->cards[i * 52 + j] = j;
+    for (i = 0; i < BJ_DECKS; i++) {
+        for (j = 0; j < BJ_DECK_SIZE; j++) {
+            shoe->cards[i * BJ_DECK_SIZE + j] = j;
         }
     }
-    shoe->flags = 1;
+    shoe->flags = BJ_SHOE_FRESH;
     shoe->next = 0;
     return 0;
 }
@@ -463,8 +463,8 @@ s32 bj_shoeShuffle(BjShoe *shoe) {
     s32 j;
     u8 t;
 
-    for (pass = 0; pass < 5; pass++) {
-        for (i = 0, n = 312; n > 0; n--, i++) {
+    for (pass = 0; pass < BJ_SHUFFLE_PASSES; pass++) {
+        for (i = 0, n = BJ_SHOE_SIZE; n > 0; n--, i++) {
             if (g_randPtr >= g_randTableEnd) {
                 rand_refill();
             }
@@ -474,7 +474,7 @@ s32 bj_shoeShuffle(BjShoe *shoe) {
             shoe->cards[i + j] = t;
         }
     }
-    shoe->flags = (shoe->flags & ~1) | 2;
+    shoe->flags = (shoe->flags & ~BJ_SHOE_FRESH) | BJ_SHOE_SHUFFLED;
     return 0;
 }
 
@@ -484,29 +484,29 @@ s32 bj_dealCard(BjHand *hand, BjShoe *shoe) {
 
     hand->cards[hand->count++] = card;
     rank = card / 4;
-    if (rank < 9) {
+    if (rank < BJ_RANK_JACK) {
         hand->value += rank + 2;
         hand->hardValue += rank + 2;
-    } else if (rank == 12) {
-        hand->value += 11;
-        hand->hardValue += 1;
-        hand->flags |= 1;
+    } else if (rank == BJ_RANK_ACE) {
+        hand->value += BJ_ACE_VALUE;
+        hand->hardValue += BJ_ACE_LOW;
+        hand->flags |= BJ_HAND_SOFT;
     } else {
-        hand->value += 10;
-        hand->hardValue += 10;
+        hand->value += BJ_TEN_VALUE;
+        hand->hardValue += BJ_TEN_VALUE;
     }
-    if (hand->value >= 22) {
-        if (hand->flags & 1) {
-            hand->value -= 10;
+    if (hand->value >= BJ_BUST) {
+        if (hand->flags & BJ_HAND_SOFT) {
+            hand->value -= BJ_ACE_VALUE - BJ_ACE_LOW;
             if (hand->hardValue >= hand->value) {
-                hand->flags &= ~1;
+                hand->flags &= ~BJ_HAND_SOFT;
             }
         } else {
-            hand->flags |= 2;
+            hand->flags |= BJ_HAND_BUST;
         }
     }
-    if (shoe->next >= 249) {
-        shoe->flags |= 4;
+    if (shoe->next >= BJ_CUT_CARD) {
+        shoe->flags |= BJ_SHOE_CUT;
     }
     return 0;
 }
@@ -520,7 +520,7 @@ s32 bj_handInit(BjHand *hand, s16 x, s16 y) {
     hand->hardValue = 0;
     hand->x = x;
     hand->y = y;
-    for (i = 21; i >= 0; i--) {
+    for (i = BJ_HAND_MAX - 1; i >= 0; i--) {
         hand->cards[i] = 0;
     }
     return 0;
@@ -531,24 +531,24 @@ s32 bj_splitHand(BjHand *a, BjHand *b) {
     u16 v;
 
     a->count = 1;
-    a->x = 0x1E;
-    a->y = 0x8C;
-    bj_handInit(b, 0x1E, 0x60);
+    a->x = BJ_HAND_X;
+    a->y = BJ_SPLIT1_Y;
+    bj_handInit(b, BJ_HAND_X, BJ_SPLIT2_Y);
     b->count = 1;
     b->cards[0] = a->cards[1];
     r = (u32)a->cards[1] >> 2;
-    if (r < 9) {
+    if (r < BJ_RANK_JACK) {
         v = r + 2;
-    } else if (r == 12) {
-        a->value = 11;
-        a->hardValue = 1;
-        a->flags |= 9;
-        b->value = 11;
-        b->hardValue = 1;
-        b->flags |= 9;
+    } else if (r == BJ_RANK_ACE) {
+        a->value = BJ_ACE_VALUE;
+        a->hardValue = BJ_ACE_LOW;
+        a->flags |= BJ_HAND_SPLIT_ACES | BJ_HAND_SOFT;
+        b->value = BJ_ACE_VALUE;
+        b->hardValue = BJ_ACE_LOW;
+        b->flags |= BJ_HAND_SPLIT_ACES | BJ_HAND_SOFT;
         goto end;
     } else {
-        v = 10;
+        v = BJ_TEN_VALUE;
     }
     a->value = v;
     a->hardValue = v;
@@ -562,9 +562,9 @@ s32 bj_handOptions(BjHand *hand) {
     s32 ret = 0;
 
     if (hand->count == 2) {
-        ret = 2;
+        ret = BJ_CAN_DOUBLE;
         if ((u32)hand->cards[0] >> 2 == (u32)hand->cards[1] >> 2) {
-            ret = 3;
+            ret = BJ_CAN_DOUBLE | BJ_CAN_SPLIT;
         }
     }
     return ret;
@@ -589,23 +589,23 @@ s32 bj_drawHand(BjHand *hand, s32 dx, s32 dy, s32 count) {
         }
     }
     first = 1;
-    x = hand->x + dx + n * 13;
+    x = hand->x + dx + n * BJ_CARD_STEP;
     y = hand->y + dy;
     for (i = n; i >= 0; i--) {
         card = hand->cards[i];
-        if (first && (hand->flags & 0x10) && n == 1) {
+        if (first && (hand->flags & BJ_HAND_HOLE) && n == 1) {
             bj_drawCardBack(x, y);
             first = 0;
         } else {
             bj_drawCard(card / 4, card % 4, x, y);
         }
-        x -= 13;
+        x -= BJ_CARD_STEP;
     }
     return 0;
 }
 
 s32 bj_isBlackjack(BjHand *h) {
-    if (h->value == 0x15 && h->count == 2) {
+    if (h->value == BJ_BLACKJACK && h->count == 2) {
         return 1;
     }
     return 0;
@@ -653,15 +653,15 @@ s32 bj_main(void) {
     t = -1;
     cnt = 0;
     bj_init();
-    g_bjWager = 10;
-    bj_handInit(&player, 0x1E, 0x78);
-    bj_handInit(&dealer, 0x1E, 0xA);
-    res = 0;
+    g_bjWager = BJ_MIN_BET;
+    bj_handInit(&player, BJ_HAND_X, BJ_PLAYER_Y);
+    bj_handInit(&dealer, BJ_HAND_X, BJ_DEALER_Y);
+    res = BJ_RESULT_WIN;
     i = 0;
     cur = &player;
     nsplit = 0;
-    x = 0xF0;
-    y = 0xA;
+    x = BJ_SHOE_X;
+    y = BJ_SHOE_Y;
     dx = 0x10000;
     dy = 0x10000;
     p1 = cur;
@@ -684,38 +684,38 @@ s32 bj_main(void) {
                 i = 0;
             } else if (t != 0) {
                 c = g_bjShoe.cards[i];
-                bj_drawCard(c >> 2, c & 3, 0xF0, 0xA);
+                bj_drawCard(c >> 2, c & 3, BJ_SHOE_X, BJ_SHOE_Y);
                 i += 4;
                 t--;
             } else {
                 t = -1;
                 g_bjState = BJ_ST_BET;
-                scene_set(2);
+                scene_set(SCENE_BJ_WAGER);
             }
             break;
         case BJ_ST_BET:
-            bj_handInit(&player, 0x1E, 0x78);
-            bj_handInit(&dealer, 0x1E, 0xA);
+            bj_handInit(&player, BJ_HAND_X, BJ_PLAYER_Y);
+            bj_handInit(&dealer, BJ_HAND_X, BJ_DEALER_Y);
             scene_update();
-            if (scene_get() == 4) {
+            if (scene_get() == SCENE_CHOSEN) {
                 t = -1;
                 g_bjState = BJ_ST_DEAL;
             }
             break;
         case BJ_ST_DEAL:
             if (t == -1) {
-                dealer.flags |= 0x10;
+                dealer.flags |= BJ_HAND_HOLE;
                 bj_dealCard(p1, &g_bjShoe);
                 bj_dealCard(&dealer, &g_bjShoe);
                 bj_dealCard(p1, &g_bjShoe);
                 bj_dealCard(&dealer, &g_bjShoe);
                 cur = p1;
                 i = 0;
-                x = 0xF00000;
-                y = 0xA0000;
+                x = BJ_SHOE_X << 16;
+                y = BJ_SHOE_Y << 16;
                 t = 0x78;
-                dx = (((player.x - 0xF0) << 8) / 30) << 8;
-                dy = (((player.y - 0xA) << 8) / 30) << 8;
+                dx = (((player.x - BJ_SHOE_X) << 8) / BJ_DEAL_FRAMES) << 8;
+                dy = (((player.y - BJ_SHOE_Y) << 8) / BJ_DEAL_FRAMES) << 8;
             } else if (t > 0) {
                 bj_drawCardBack(x >> 16, y >> 16);
                 bj_drawHand(&dealer, 0, 0, i >= 2);
@@ -730,21 +730,21 @@ s32 bj_main(void) {
                 bj_drawHand(p1, 0, 0, a);
                 x += dx;
                 y += dy;
-                if ((t - 1) % 30 == 0 && ++i < 4) {
-                    x = 0xF00000;
-                    y = 0xA0000;
+                if ((t - 1) % BJ_DEAL_FRAMES == 0 && ++i < 4) {
+                    x = BJ_SHOE_X << 16;
+                    y = BJ_SHOE_Y << 16;
                     switch (i) {
                     case 1:
-                        dx = (((dealer.x - 0xF0) << 8) / 30) << 8;
-                        dy = (((dealer.y - 0xA) << 8) / 30) << 8;
+                        dx = (((dealer.x - BJ_SHOE_X) << 8) / BJ_DEAL_FRAMES) << 8;
+                        dy = (((dealer.y - BJ_SHOE_Y) << 8) / BJ_DEAL_FRAMES) << 8;
                         break;
                     case 2:
-                        dx = (((player.x - 0xE3) << 8) / 30) << 8;
-                        dy = (((player.y - 0xA) << 8) / 30) << 8;
+                        dx = (((player.x - 0xE3) << 8) / BJ_DEAL_FRAMES) << 8;
+                        dy = (((player.y - BJ_SHOE_Y) << 8) / BJ_DEAL_FRAMES) << 8;
                         break;
                     case 3:
-                        dx = (((dealer.x - 0xE3) << 8) / 30) << 8;
-                        dy = (((dealer.y - 0xA) << 8) / 30) << 8;
+                        dx = (((dealer.x - 0xE3) << 8) / BJ_DEAL_FRAMES) << 8;
+                        dy = (((dealer.y - BJ_SHOE_Y) << 8) / BJ_DEAL_FRAMES) << 8;
                         break;
                     }
                 }
@@ -767,58 +767,58 @@ s32 bj_main(void) {
             } else {
                 t = -1;
                 g_bjState = BJ_ST_PLAYER;
-                scene_set(3);
+                scene_set(SCENE_BJ_ACTION);
             }
             break;
         case BJ_ST_PLAYER:
             r = bj_handOptions(cur);
             g_bjCanDouble = 0;
             g_bjCanSplit = 0;
-            if ((r & 2) && g_bjBankroll >= g_bjWager * 2) {
+            if ((r & BJ_CAN_DOUBLE) && g_bjBankroll >= g_bjWager * 2) {
                 g_bjCanDouble = 1;
             }
-            if ((r & 1) && nsplit == 0 && g_bjBankroll >= g_bjWager * 2) {
+            if ((r & BJ_CAN_SPLIT) && nsplit == 0 && g_bjBankroll >= g_bjWager * 2) {
                 g_bjCanSplit = 1;
             }
             if (t == -1) {
                 scene_update();
-                if (scene_get() == 4) {
-                    if (bj_actionGetCursor() == 0) {
+                if (scene_get() == SCENE_CHOSEN) {
+                    if (bj_actionGetCursor() == BJ_STAND) {
                         if (nsplit == 1) {
                             cur = &split;
                             g_bjState = BJ_ST_PLAYER;
-                            scene_set(3);
-                            x = 0xF00000;
-                            y = 0xA0000;
-                            t = 30;
-                            dx = (((cur->x + cur->count * 13 - 0xF0) << 8) / 30) << 8;
-                            dy = (((cur->y - 0xA) << 8) / 30) << 8;
+                            scene_set(SCENE_BJ_ACTION);
+                            x = BJ_SHOE_X << 16;
+                            y = BJ_SHOE_Y << 16;
+                            t = BJ_DEAL_FRAMES;
+                            dx = (((cur->x + cur->count * BJ_CARD_STEP - BJ_SHOE_X) << 8) / BJ_DEAL_FRAMES) << 8;
+                            dy = (((cur->y - BJ_SHOE_Y) << 8) / BJ_DEAL_FRAMES) << 8;
                             nsplit = 2;
                         } else {
                             g_bjState = BJ_ST_DEALER;
-                            dealer.flags &= ~0x10;
+                            dealer.flags &= ~BJ_HAND_HOLE;
                         }
-                    } else if (bj_actionGetCursor() == 1) {
-                        x = 0xF00000;
-                        y = 0xA0000;
-                        t = 30;
-                        dx = (((cur->x + cur->count * 13 - 0xF0) << 8) / 30) << 8;
-                        dy = (((cur->y - 0xA) << 8) / 30) << 8;
-                    } else if (bj_actionGetCursor() == 2) {
-                        x = 0xF00000;
-                        y = 0xA0000;
-                        t = 30;
-                        cur->flags |= 4;
-                        dx = (((cur->x + cur->count * 13 - 0xF0) << 8) / 30) << 8;
-                        dy = (((cur->y - 0xA) << 8) / 30) << 8;
-                    } else if (bj_actionGetCursor() == 3) {
-                        if (bj_handOptions(cur) & 1) {
+                    } else if (bj_actionGetCursor() == BJ_HIT) {
+                        x = BJ_SHOE_X << 16;
+                        y = BJ_SHOE_Y << 16;
+                        t = BJ_DEAL_FRAMES;
+                        dx = (((cur->x + cur->count * BJ_CARD_STEP - BJ_SHOE_X) << 8) / BJ_DEAL_FRAMES) << 8;
+                        dy = (((cur->y - BJ_SHOE_Y) << 8) / BJ_DEAL_FRAMES) << 8;
+                    } else if (bj_actionGetCursor() == BJ_DOUBLE) {
+                        x = BJ_SHOE_X << 16;
+                        y = BJ_SHOE_Y << 16;
+                        t = BJ_DEAL_FRAMES;
+                        cur->flags |= BJ_HAND_DOUBLED;
+                        dx = (((cur->x + cur->count * BJ_CARD_STEP - BJ_SHOE_X) << 8) / BJ_DEAL_FRAMES) << 8;
+                        dy = (((cur->y - BJ_SHOE_Y) << 8) / BJ_DEAL_FRAMES) << 8;
+                    } else if (bj_actionGetCursor() == BJ_SPLIT) {
+                        if (bj_handOptions(cur) & BJ_CAN_SPLIT) {
                             bj_splitHand(&player, &split);
-                            x = 0xF00000;
-                            y = 0xA0000;
-                            t = 30;
-                            dx = (((cur->x + cur->count * 13 - 0xF0) << 8) / 30) << 8;
-                            dy = (((cur->y - 0xA) << 8) / 30) << 8;
+                            x = BJ_SHOE_X << 16;
+                            y = BJ_SHOE_Y << 16;
+                            t = BJ_DEAL_FRAMES;
+                            dx = (((cur->x + cur->count * BJ_CARD_STEP - BJ_SHOE_X) << 8) / BJ_DEAL_FRAMES) << 8;
+                            dy = (((cur->y - BJ_SHOE_Y) << 8) / BJ_DEAL_FRAMES) << 8;
                             nsplit = 1;
                         }
                     }
@@ -831,65 +831,65 @@ s32 bj_main(void) {
             } else {
                 bj_dealCard(cur, &g_bjShoe);
                 t = -1;
-                if (cur->value >= 22) {
+                if (cur->value >= BJ_BUST) {
                     g_bjState = BJ_ST_BUST;
-                } else if (cur->value == 21) {
+                } else if (cur->value == BJ_BLACKJACK) {
                     if (nsplit == 1) {
                         cur = &split;
                         g_bjState = BJ_ST_PLAYER;
-                        scene_set(3);
-                        x = 0xF00000;
-                        y = 0xA0000;
-                        t = 30;
-                        dx = (((cur->x + cur->count * 13 - 0xF0) << 8) / 30) << 8;
-                        dy = (((cur->y - 0xA) << 8) / 30) << 8;
+                        scene_set(SCENE_BJ_ACTION);
+                        x = BJ_SHOE_X << 16;
+                        y = BJ_SHOE_Y << 16;
+                        t = BJ_DEAL_FRAMES;
+                        dx = (((cur->x + cur->count * BJ_CARD_STEP - BJ_SHOE_X) << 8) / BJ_DEAL_FRAMES) << 8;
+                        dy = (((cur->y - BJ_SHOE_Y) << 8) / BJ_DEAL_FRAMES) << 8;
                         nsplit = 2;
                     } else {
                         g_bjState = BJ_ST_DEALER;
                     }
-                } else if (cur->flags & 8) {
+                } else if (cur->flags & BJ_HAND_SPLIT_ACES) {
                     if (nsplit == 1) {
                         cur = &split;
                         g_bjState = BJ_ST_PLAYER;
-                        scene_set(3);
-                        x = 0xF00000;
-                        y = 0xA0000;
-                        t = 30;
-                        dx = (((cur->x + cur->count * 13 - 0xF0) << 8) / 30) << 8;
-                        dy = (((cur->y - 0xA) << 8) / 30) << 8;
+                        scene_set(SCENE_BJ_ACTION);
+                        x = BJ_SHOE_X << 16;
+                        y = BJ_SHOE_Y << 16;
+                        t = BJ_DEAL_FRAMES;
+                        dx = (((cur->x + cur->count * BJ_CARD_STEP - BJ_SHOE_X) << 8) / BJ_DEAL_FRAMES) << 8;
+                        dy = (((cur->y - BJ_SHOE_Y) << 8) / BJ_DEAL_FRAMES) << 8;
                         nsplit = 2;
                     } else {
                         g_bjState = BJ_ST_DEALER;
                     }
-                } else if (cur->flags & 4) {
+                } else if (cur->flags & BJ_HAND_DOUBLED) {
                     if (nsplit == 1) {
                         cur = &split;
                         g_bjState = BJ_ST_PLAYER;
-                        scene_set(3);
-                        x = 0xF00000;
-                        y = 0xA0000;
-                        t = 30;
-                        dx = (((cur->x + cur->count * 13 - 0xF0) << 8) / 30) << 8;
-                        dy = (((cur->y - 0xA) << 8) / 30) << 8;
+                        scene_set(SCENE_BJ_ACTION);
+                        x = BJ_SHOE_X << 16;
+                        y = BJ_SHOE_Y << 16;
+                        t = BJ_DEAL_FRAMES;
+                        dx = (((cur->x + cur->count * BJ_CARD_STEP - BJ_SHOE_X) << 8) / BJ_DEAL_FRAMES) << 8;
+                        dy = (((cur->y - BJ_SHOE_Y) << 8) / BJ_DEAL_FRAMES) << 8;
                         nsplit = 2;
                     } else {
                         g_bjState = BJ_ST_DEALER;
                     }
                 } else {
                     g_bjState = BJ_ST_PLAYER;
-                    scene_set(3);
+                    scene_set(SCENE_BJ_ACTION);
                 }
             }
             break;
         case BJ_ST_DEALER:
             if (t == -1) {
-                if (dealer.value < 17) {
-                    x = 0xF00000;
-                    y = 0xA0000;
-                    t = 30;
+                if (dealer.value < BJ_DEALER_STAND) {
+                    x = BJ_SHOE_X << 16;
+                    y = BJ_SHOE_Y << 16;
+                    t = BJ_DEAL_FRAMES;
                     dy = 0;
-                    dx = (((dealer.count * 13 - 0xD2) << 8) / 30) << 8;
-                } else if (dealer.flags & 2) {
+                    dx = (((dealer.count * BJ_CARD_STEP - 0xD2) << 8) / BJ_DEAL_FRAMES) << 8;
+                } else if (dealer.flags & BJ_HAND_BUST) {
                     g_bjState = BJ_ST_BUST;
                 } else if (nsplit > 0) {
                     nsplit = 1;
@@ -913,7 +913,7 @@ s32 bj_main(void) {
             }
             break;
         case BJ_ST_BUST:
-            if (cur->value >= 22) {
+            if (cur->value >= BJ_BUST) {
                 i = 1;
                 if (nsplit == 2) {
                     i = 2;
@@ -922,7 +922,7 @@ s32 bj_main(void) {
                 i = 0;
             }
             if (t == -1) {
-                t = 10;
+                t = BJ_SHAKE_FRAMES;
                 ofsX[i] = RND3();
                 ofsY[i] = RND3();
             } else if (t > 0) {
@@ -944,17 +944,17 @@ s32 bj_main(void) {
                 if (nsplit == 1) {
                     cur = &split;
                     g_bjState = BJ_ST_PLAYER;
-                    scene_set(3);
-                    x = 0xF00000;
-                    y = 0xA0000;
-                    t = 30;
-                    dx = (((cur->x + cur->count * 13 - 0xF0) << 8) / 30) << 8;
-                    dy = (((cur->y - 0xA) << 8) / 30) << 8;
+                    scene_set(SCENE_BJ_ACTION);
+                    x = BJ_SHOE_X << 16;
+                    y = BJ_SHOE_Y << 16;
+                    t = BJ_DEAL_FRAMES;
+                    dx = (((cur->x + cur->count * BJ_CARD_STEP - BJ_SHOE_X) << 8) / BJ_DEAL_FRAMES) << 8;
+                    dy = (((cur->y - BJ_SHOE_Y) << 8) / BJ_DEAL_FRAMES) << 8;
                     nsplit = 2;
                 } else if (nsplit == 2) {
                     nsplit = 1;
                     g_bjState = BJ_ST_SETTLE_SPLIT;
-                } else if (cur->value >= 22) {
+                } else if (cur->value >= BJ_BUST) {
                     g_bjState = BJ_ST_LOSE;
                 } else {
                     g_bjState = BJ_ST_WIN;
@@ -964,42 +964,42 @@ s32 bj_main(void) {
         case BJ_ST_SETTLE_SPLIT:
             if (t == -1) {
                 if (nsplit == 1) {
-                    if (player.value >= 22) {
-                        res = 1;
-                        snd_playSe(0x6B);
-                        g_bjBankroll -= (player.flags & 4) ? g_bjWager * 2 : g_bjWager;
-                    } else if (dealer.value >= 22 || dealer.value < player.value) {
-                        res = 0;
-                        snd_playSe(0x6C);
-                        g_bjBankroll += (player.flags & 4) ? g_bjWager * 2 : g_bjWager;
+                    if (player.value >= BJ_BUST) {
+                        res = BJ_RESULT_LOSE;
+                        snd_playSe(BJ_SE_LOSE);
+                        g_bjBankroll -= (player.flags & BJ_HAND_DOUBLED) ? g_bjWager * 2 : g_bjWager;
+                    } else if (dealer.value >= BJ_BUST || dealer.value < player.value) {
+                        res = BJ_RESULT_WIN;
+                        snd_playSe(BJ_SE_WIN);
+                        g_bjBankroll += (player.flags & BJ_HAND_DOUBLED) ? g_bjWager * 2 : g_bjWager;
                     } else {
-                        res = 2;
+                        res = BJ_RESULT_PUSH;
                         if (player.value != dealer.value) {
-                            res = 1;
-                            snd_playSe(0x6B);
-                            g_bjBankroll -= (player.flags & 4) ? g_bjWager * 2 : g_bjWager;
+                            res = BJ_RESULT_LOSE;
+                            snd_playSe(BJ_SE_LOSE);
+                            g_bjBankroll -= (player.flags & BJ_HAND_DOUBLED) ? g_bjWager * 2 : g_bjWager;
                         }
                     }
                 } else {
-                    if (split.value >= 22) {
-                        res = 1;
-                        snd_playSe(0x6B);
-                        g_bjBankroll -= (split.flags & 4) ? g_bjWager * 2 : g_bjWager;
-                    } else if (dealer.value >= 22 || dealer.value < split.value) {
-                        res = 0;
-                        snd_playSe(0x6C);
-                        g_bjBankroll += (split.flags & 4) ? g_bjWager * 2 : g_bjWager;
+                    if (split.value >= BJ_BUST) {
+                        res = BJ_RESULT_LOSE;
+                        snd_playSe(BJ_SE_LOSE);
+                        g_bjBankroll -= (split.flags & BJ_HAND_DOUBLED) ? g_bjWager * 2 : g_bjWager;
+                    } else if (dealer.value >= BJ_BUST || dealer.value < split.value) {
+                        res = BJ_RESULT_WIN;
+                        snd_playSe(BJ_SE_WIN);
+                        g_bjBankroll += (split.flags & BJ_HAND_DOUBLED) ? g_bjWager * 2 : g_bjWager;
                     } else {
-                        res = 2;
+                        res = BJ_RESULT_PUSH;
                         if (split.value != dealer.value) {
-                            res = 1;
-                            snd_playSe(0x6B);
-                            g_bjBankroll -= (split.flags & 4) ? g_bjWager * 2 : g_bjWager;
+                            res = BJ_RESULT_LOSE;
+                            snd_playSe(BJ_SE_LOSE);
+                            g_bjBankroll -= (split.flags & BJ_HAND_DOUBLED) ? g_bjWager * 2 : g_bjWager;
                         }
                     }
                 }
-                t = 0x94;
-                dealer.flags &= ~0x10;
+                t = BJ_RESULT_FRAMES;
+                dealer.flags &= ~BJ_HAND_HOLE;
             } else if (t > 0) {
                 s32 a;
 
@@ -1008,7 +1008,7 @@ s32 bj_main(void) {
                 } else if (t < 0x85) {
                     a = 0xFF;
                 } else {
-                    a = (0x94 - t) * 16;
+                    a = (BJ_RESULT_FRAMES - t) * 16;
                 }
                 bj_drawResult(res, a, 0x6C, nsplit == 1 ? player.y + 12 : split.y + 12);
                 t--;
@@ -1024,14 +1024,14 @@ s32 bj_main(void) {
         case BJ_ST_BLACKJACK:
             if (t == -1) {
                 if (player.value > dealer.value) {
-                    snd_playSe(0x6C);
+                    snd_playSe(BJ_SE_WIN);
                     g_bjBankroll += g_bjWager + (g_bjWager >> 1);
                 } else {
-                    snd_playSe(0x6B);
+                    snd_playSe(BJ_SE_LOSE);
                     g_bjBankroll -= g_bjWager;
                 }
-                t = 0x94;
-                dealer.flags &= ~0x10;
+                t = BJ_RESULT_FRAMES;
+                dealer.flags &= ~BJ_HAND_HOLE;
             } else if (t > 0) {
                 s32 a;
 
@@ -1040,12 +1040,12 @@ s32 bj_main(void) {
                 } else if (t < 0x85) {
                     a = 0xFF;
                 } else {
-                    a = (0x94 - t) * 16;
+                    a = (BJ_RESULT_FRAMES - t) * 16;
                 }
                 if (player.value > dealer.value) {
-                    bj_drawResult(0, a, 0x6C, player.y + 12);
+                    bj_drawResult(BJ_RESULT_WIN, a, 0x6C, player.y + 12);
                 } else {
-                    bj_drawResult(1, a, 0x6C, player.y + 12);
+                    bj_drawResult(BJ_RESULT_LOSE, a, 0x6C, player.y + 12);
                 }
                 t--;
             } else {
@@ -1055,13 +1055,13 @@ s32 bj_main(void) {
             break;
         case BJ_ST_WIN:
             if (t == -1) {
-                snd_playSe(0x6C);
+                snd_playSe(BJ_SE_WIN);
                 {
                     s32 *pb = &g_bjBankroll;
-                    *pb = g_bjBankroll + ((player.flags & 4) ? g_bjWager * 2 : g_bjWager);
+                    *pb = g_bjBankroll + ((player.flags & BJ_HAND_DOUBLED) ? g_bjWager * 2 : g_bjWager);
                 }
-                t = 0x94;
-                dealer.flags &= ~0x10;
+                t = BJ_RESULT_FRAMES;
+                dealer.flags &= ~BJ_HAND_HOLE;
             } else if (t > 0) {
                 s32 a;
 
@@ -1070,9 +1070,9 @@ s32 bj_main(void) {
                 } else if (t < 0x85) {
                     a = 0xFF;
                 } else {
-                    a = (0x94 - t) * 16;
+                    a = (BJ_RESULT_FRAMES - t) * 16;
                 }
-                bj_drawResult(0, a, 0x6C, player.y + 12);
+                bj_drawResult(BJ_RESULT_WIN, a, 0x6C, player.y + 12);
                 t--;
             } else {
                 t = -1;
@@ -1081,8 +1081,8 @@ s32 bj_main(void) {
             break;
         case BJ_ST_PUSH:
             if (t == -1) {
-                t = 0x94;
-                dealer.flags &= ~0x10;
+                t = BJ_RESULT_FRAMES;
+                dealer.flags &= ~BJ_HAND_HOLE;
             } else if (t > 0) {
                 s32 a;
 
@@ -1091,9 +1091,9 @@ s32 bj_main(void) {
                 } else if (t < 0x85) {
                     a = 0xFF;
                 } else {
-                    a = (0x94 - t) * 16;
+                    a = (BJ_RESULT_FRAMES - t) * 16;
                 }
-                bj_drawResult(2, a, 0x6C, player.y + 12);
+                bj_drawResult(BJ_RESULT_PUSH, a, 0x6C, player.y + 12);
                 t--;
             } else {
                 t = -1;
@@ -1102,10 +1102,10 @@ s32 bj_main(void) {
             break;
         case BJ_ST_LOSE:
             if (t == -1) {
-                snd_playSe(0x6B);
-                g_bjBankroll -= (player.flags & 4) ? g_bjWager * 2 : g_bjWager;
-                t = 0x94;
-                dealer.flags &= ~0x10;
+                snd_playSe(BJ_SE_LOSE);
+                g_bjBankroll -= (player.flags & BJ_HAND_DOUBLED) ? g_bjWager * 2 : g_bjWager;
+                t = BJ_RESULT_FRAMES;
+                dealer.flags &= ~BJ_HAND_HOLE;
             } else if (t > 0) {
                 s32 a;
 
@@ -1114,9 +1114,9 @@ s32 bj_main(void) {
                 } else if (t < 0x85) {
                     a = 0xFF;
                 } else {
-                    a = (0x94 - t) * 16;
+                    a = (BJ_RESULT_FRAMES - t) * 16;
                 }
-                bj_drawResult(1, a, 0x6C, player.y + 12);
+                bj_drawResult(BJ_RESULT_LOSE, a, 0x6C, player.y + 12);
                 t--;
             } else {
                 t = -1;
@@ -1124,25 +1124,25 @@ s32 bj_main(void) {
             }
             break;
         case BJ_ST_NEXT:
-            if (g_bjShoe.flags & 4) {
+            if (g_bjShoe.flags & BJ_SHOE_CUT) {
                 t = -1;
                 g_bjState = BJ_ST_END;
             } else {
                 nsplit = 0;
                 if (g_bjWager > g_bjBankroll) {
-                    g_bjWager = g_bjBankroll / 10 * 10;
+                    g_bjWager = g_bjBankroll / BJ_MIN_BET * BJ_MIN_BET;
                 }
                 t = -1;
                 g_bjState = BJ_ST_BET;
-                scene_set(2);
+                scene_set(SCENE_BJ_WAGER);
             }
             break;
         case BJ_ST_END:
             if (t == -1) {
                 func_800320B8(1, 1, 0x3C, 0xFFFFFF);
                 t = 0x3C;
-                if (g_bjBankroll < 10) {
-                    g_bjBankroll = 1000;
+                if (g_bjBankroll < BJ_MIN_BET) {
+                    g_bjBankroll = BJ_BANKROLL;
                 }
             } else if (t > 0) {
                 t--;
@@ -1163,7 +1163,7 @@ s32 bj_main(void) {
                 if (split.count != 0) {
                     sprintf(buf, g_bjFmt2d, split.value);
                     ui_drawSmallDigits(10, split.y + 0x20, 0x10, buf, 0);
-                    if (split.value != 21 && (split.flags & 1)) {
+                    if (split.value != BJ_BLACKJACK && (split.flags & BJ_HAND_SOFT)) {
                         sprintf(buf, g_bjFmt2d, split.hardValue);
                         ui_drawSmallDigits(10, split.y + 0x2A, 0x10, buf, 5);
                     }
@@ -1173,7 +1173,7 @@ s32 bj_main(void) {
             if (player.count != 0) {
                 sprintf(buf, g_bjFmt2d, player.value);
                 ui_drawSmallDigits(10, player.y + 0x20, 0x10, buf, 0);
-                if (player.value != 21 && (player.flags & 1)) {
+                if (player.value != BJ_BLACKJACK && (player.flags & BJ_HAND_SOFT)) {
                     sprintf(buf, g_bjFmt2d, player.hardValue);
                     ui_drawSmallDigits(10, player.y + 0x2A, 0x10, buf, 5);
                 }
@@ -1183,14 +1183,14 @@ s32 bj_main(void) {
                 if (split.count != 0) {
                     sprintf(buf, g_bjFmt2d, split.value);
                     ui_drawSmallDigits(10, split.y + 0x20, 0x10, buf, 0);
-                    if (split.value != 21 && (split.flags & 1)) {
+                    if (split.value != BJ_BLACKJACK && (split.flags & BJ_HAND_SOFT)) {
                         sprintf(buf, g_bjFmt2d, split.hardValue);
                         ui_drawSmallDigits(10, split.y + 0x2A, 0x10, buf, 5);
                     }
                 }
             }
         }
-        bj_drawShoe(0xF0, 0xA);
+        bj_drawShoe(BJ_SHOE_X, BJ_SHOE_Y);
         addPrim(g_gameState->unk1C->unk10[g_gameState->unk1C->unk8] + 10, &g_bjTpage);
         sprintf(buf, g_bjStrBankroll);
         ui_drawSmallDigits(0x10C - (func_8002B9B8(buf) >> 1), 0x58, 0x10, buf, 4);
@@ -1213,11 +1213,11 @@ s32 bj_main(void) {
             cnt--;
         }
         if (g_bjState < BJ_ST_DONE) {
-            if (g_bjBankroll < 10) {
+            if (g_bjBankroll < BJ_MIN_BET) {
                 t = -1;
                 g_bjState = BJ_ST_END;
             }
-            if (g_padPortPressed[0] & 8) {
+            if (g_padPortPressed[0] & PAD_START) {
                 t = -1;
                 g_bjState = BJ_ST_END;
             }
@@ -1258,8 +1258,8 @@ s32 bj_init(void) {
     setlen(&g_bjTpage, 1);
     g_bjTpage.code = 0xE1000697;
     if (!(g_gameState->unk1C->unk0 & 0x20000000)) {
-        ending_soundCmd(0, 0x7009C, 0, 0, 0);
-        ending_soundCmd(0xC401, 0x7009C, 0x5A, 0, 0x7F);
+        ending_soundCmd(0, ENDING_MUSIC, 0, 0, 0);
+        ending_soundCmd(0xC401, ENDING_MUSIC, 0x5A, 0, 0x7F);
     }
     func_800320B8(1, 1, 0, 0xFFFFFF);
     g_bjState = BJ_ST_START;

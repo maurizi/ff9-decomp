@@ -35,10 +35,10 @@ u8 ending_menuGetCursor(void) {
 void ending_menuInput(void) {
     if (func_8002F810() == 0 && g_endingMenu.shown != 0 && g_endingMenu.fadingIn == 0) {
         if (g_padRepeat & PAD_UP) {
-            snd_playSe(0x67);
+            snd_playSe(SE_CURSOR);
             g_endingMenu.cursor = g_endingMenu.cursor != 0 ? g_endingMenu.cursor - 1 : 3;
         } else if (g_padRepeat & PAD_DOWN) {
-            snd_playSe(0x67);
+            snd_playSe(SE_CURSOR);
             g_endingMenu.cursor = g_endingMenu.cursor < 3 ? g_endingMenu.cursor + 1 : 0;
         } else if (g_padRepeat & BTN_CROSS) {
             ending_menuDecide();
@@ -58,7 +58,7 @@ void ending_menuTick(void) {
 }
 
 void ending_menuDecide(void) {
-    snd_playSe(0x67);
+    snd_playSe(SE_CURSOR);
     func_8002FAAC(0x10);
     func_8002F8A8(ending_menuOnFadeOut);
 }
@@ -83,14 +83,14 @@ void ending_menuDrawCursor(void) {
 
 void ending_menuStepFadeIn(void) {
     g_endingMenu.fadeFrames++;
-    if (g_endingMenu.fadeFrames > 48) {
+    if (g_endingMenu.fadeFrames > SCENE_MENU_FADE_FRAMES) {
         g_endingMenu.fadeFrames = 0;
         g_endingMenu.fadingIn = 0;
     }
 }
 
 void ending_menuOnFadeOut(void) {
-    scene_set(4);
+    scene_set(SCENE_CHOSEN);
 }
 
 void ending_menuStartFadeIn(void) {

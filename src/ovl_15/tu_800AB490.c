@@ -94,16 +94,16 @@ s32 ending_theEnd(void) {
             }
             break;
         }
-        if (g_endingCodePos == 0x10) {
-            if (g_padPortHeld[0] & 8) {
+        if (g_endingCodePos == ENDING_CODE_LEN) {
+            if (g_padPortHeld[0] & PAD_START) {
                 timer = -1;
                 g_theEndState = THEEND_ST_FADE;
-                snd_playSe(0xC18);
+                snd_playSe(SE_GAME_START);
                 D_80073998[0] = -1;
             }
         } else if (g_padPortPressed[0] & g_endingSecretCode[g_endingCodePos]) {
-            if (++g_endingCodePos == 0x10) {
-                snd_playSe(0x67);
+            if (++g_endingCodePos == ENDING_CODE_LEN) {
+                snd_playSe(SE_CURSOR);
             }
         } else if (g_padPortPressed[0] != 0) {
             wait = 5;
@@ -126,8 +126,8 @@ s32 ending_theEndInit(void) {
     func_8001D9CC(p, 0, 0xE0, 0x280, 0);
     func_8001D8A8(p);
     func_800552B8(0);
-    ending_soundCmd(0, 0x7009C, 0, 0, 0);
-    ending_soundCmd(0xC401, 0x7009C, 0x5A, 0, 0x7F);
+    ending_soundCmd(0, ENDING_MUSIC, 0, 0, 0);
+    ending_soundCmd(0xC401, ENDING_MUSIC, 0x5A, 0, 0x7F);
     func_800320B8(1, 1, 0, 0xFFFFFF);
     g_theEndState = THEEND_ST_START;
     D_800AE430 = 0;
@@ -329,12 +329,12 @@ void ending_exit(void) {
 
     SetDispMask(0);
     if (g_gameState->unk1C->unk0 & 0x20000000) {
-        ending_soundCmd(0x8301, 0x7009C, 0x5A, 0, 0);
+        ending_soundCmd(0x8301, ENDING_MUSIC, 0x5A, 0, 0);
         for (i = 0x59; i >= 0; i--) {
             VSync(0);
         }
     }
-    ending_soundCmd(0x100, 0x7009C, 0, 0, 0);
+    ending_soundCmd(0x100, ENDING_MUSIC, 0, 0, 0);
     db_unregister(g_endingData);
     g_endingData = NULL;
 }
@@ -344,10 +344,10 @@ void ending_loadMusic(void) {
     s32 b;
 
     func_800552B8(0);
-    a = (s32)db_lookupRegistered(4, 0x7009C, 0);
-    memmove(g_gameState->unk1C->unk814, (void *)a, (s32)db_lookupRegistered(5, 0x7009C, 0));
-    a = (s32)db_lookupRegistered(4, 0x901F3, 0);
-    b = (s32)db_lookupRegistered(5, 0x901F3, 0);
+    a = (s32)db_lookupRegistered(4, ENDING_MUSIC, 0);
+    memmove(g_gameState->unk1C->unk814, (void *)a, (s32)db_lookupRegistered(5, ENDING_MUSIC, 0));
+    a = (s32)db_lookupRegistered(4, ENDING_MUSIC_BANK, 0);
+    b = (s32)db_lookupRegistered(5, ENDING_MUSIC_BANK, 0);
     func_80055DF4();
     func_80055E14(a, b, 1);
 }

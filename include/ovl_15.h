@@ -228,6 +228,13 @@ enum { BJ_RESULT_WIN, BJ_RESULT_LOSE, BJ_RESULT_PUSH };
 #define BJ_SHOE_X 0xF0
 #define BJ_SHOE_Y 0xA
 #define BJ_DEAL_FRAMES 30 /* frames a dealt card flies */
+#define BJ_CARD_STEP 13 /* x step between the cards of a hand */
+#define BJ_HAND_X    0x1E
+#define BJ_PLAYER_Y  0x78
+#define BJ_DEALER_Y  0xA
+#define BJ_SPLIT1_Y  0x8C /* the player hand after a split */
+#define BJ_SPLIT2_Y  0x60 /* the split hand */
+#define BJ_SHAKE_FRAMES 10 /* BJ_ST_BUST shakes the hand this long */
 #define BJ_RESULT_FRAMES 0x94
 
 /* g_bjState: bj_main */
