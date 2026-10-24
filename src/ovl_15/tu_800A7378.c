@@ -13,16 +13,16 @@ s32 ending_playMovie(s32 arg0, s32 arg1) {
         ending_movieClearOt();
         pad_update();
         switch (g_movieState) {
-        case 0:
+        case MOVIE_ST_START:
             if (g_gameState->unkB != 0xFF && (g_gameState->unkB & 8)) {
                 g_movieFlags = 1;
-                g_movieState = 1;
+                g_movieState = MOVIE_ST_OPEN;
             } else {
-                g_movieState = 3;
+                g_movieState = MOVIE_ST_END;
                 g_movieFlags |= 0x80;
             }
             break;
-        case 1:
+        case MOVIE_ST_OPEN:
             i = 1;
             if (g_gameState->unk1C->unk8 != 0) {
                 i = 2;
@@ -35,9 +35,9 @@ s32 ending_playMovie(s32 arg0, s32 arg1) {
             mbg_setRgb24(1);
             mbg_setEndCallback(ending_movieOnEnd);
             mbg_play(arg0, arg1);
-            g_movieState = 2;
+            g_movieState = MOVIE_ST_PLAY;
             break;
-        case 2:
+        case MOVIE_ST_PLAY:
             if ((g_movieFlags & 0x10) && (func_80012AD4() & 2)) {
                 r = mbg_update(0);
                 mbg_getLastFrame();
@@ -48,12 +48,12 @@ s32 ending_playMovie(s32 arg0, s32 arg1) {
                 }
             }
             break;
-        case 3:
+        case MOVIE_ST_END:
             if (g_movieFlags & 0x80) {
                 g_gameState->vsyncMode = 0;
                 timer = 900;
                 g_gameState->unkC[0].disp.x = 0x140;
-                g_movieState = 4;
+                g_movieState = MOVIE_ST_DONE;
                 g_gameState->unkC[1].disp.x = 0;
                 D_80073998[0] = 0;
             }
@@ -63,7 +63,7 @@ s32 ending_playMovie(s32 arg0, s32 arg1) {
             func_80032098();
         }
         ending_movieSwap();
-    } while (g_movieState < 4);
+    } while (g_movieState < MOVIE_ST_DONE);
     return 0;
 }
 
@@ -90,7 +90,7 @@ s32 ending_movieInit(s32 arg0, s32 arg1) {
         mbg_streamSetBaseSector(h);
     }
     func_800320B8(1, 1, 0x78, 0xFFFFFF);
-    g_movieState = 0;
+    g_movieState = MOVIE_ST_START;
     g_movieFlags = 0;
     for (i = 1; i >= 0; i--) {
         for (j = 3; j >= 0; j--) {
@@ -143,7 +143,7 @@ void ending_movieSwap(void) {
 void ending_movieOnEnd(void) {
     mbg_shutdown();
     g_movieFlags |= 0x80;
-    g_movieState = 3;
+    g_movieState = MOVIE_ST_END;
 }
 
 s32 bj_drawResult(s32 kind, s32 c, s32 x, s32 y) {
@@ -671,11 +671,11 @@ s32 bj_main(void) {
         bj_clearOt();
         pad_update();
         switch (g_bjState) {
-        case 0:
+        case BJ_ST_START:
             t = -1;
-            g_bjState = 1;
+            g_bjState = BJ_ST_SHUFFLE;
             break;
-        case 1:
+        case BJ_ST_SHUFFLE:
             if (t == -1) {
                 t = 0x4E;
                 bj_shoeInit(&g_bjShoe);
@@ -689,20 +689,20 @@ s32 bj_main(void) {
                 t--;
             } else {
                 t = -1;
-                g_bjState = 2;
+                g_bjState = BJ_ST_BET;
                 scene_set(2);
             }
             break;
-        case 2:
+        case BJ_ST_BET:
             bj_handInit(&player, 0x1E, 0x78);
             bj_handInit(&dealer, 0x1E, 0xA);
             scene_update();
             if (scene_get() == 4) {
                 t = -1;
-                g_bjState = 3;
+                g_bjState = BJ_ST_DEAL;
             }
             break;
-        case 3:
+        case BJ_ST_DEAL:
             if (t == -1) {
                 dealer.flags |= 0x10;
                 bj_dealCard(p1, &g_bjShoe);
@@ -752,25 +752,25 @@ s32 bj_main(void) {
             } else if (bj_isBlackjack(p1)) {
                 if (bj_isBlackjack(&dealer)) {
                     t = -1;
-                    g_bjState = 10;
+                    g_bjState = BJ_ST_PUSH;
                 } else {
                     t = -1;
-                    g_bjState = 8;
+                    g_bjState = BJ_ST_BLACKJACK;
                 }
             } else if (bj_isBlackjack(&dealer)) {
                 t = -1;
                 if (bj_isBlackjack(p1)) {
-                    g_bjState = 10;
+                    g_bjState = BJ_ST_PUSH;
                 } else {
-                    g_bjState = 8;
+                    g_bjState = BJ_ST_BLACKJACK;
                 }
             } else {
                 t = -1;
-                g_bjState = 4;
+                g_bjState = BJ_ST_PLAYER;
                 scene_set(3);
             }
             break;
-        case 4:
+        case BJ_ST_PLAYER:
             r = bj_handOptions(cur);
             g_bjCanDouble = 0;
             g_bjCanSplit = 0;
@@ -786,7 +786,7 @@ s32 bj_main(void) {
                     if (bj_actionGetCursor() == 0) {
                         if (nsplit == 1) {
                             cur = &split;
-                            g_bjState = 4;
+                            g_bjState = BJ_ST_PLAYER;
                             scene_set(3);
                             x = 0xF00000;
                             y = 0xA0000;
@@ -795,7 +795,7 @@ s32 bj_main(void) {
                             dy = (((cur->y - 0xA) << 8) / 30) << 8;
                             nsplit = 2;
                         } else {
-                            g_bjState = 5;
+                            g_bjState = BJ_ST_DEALER;
                             dealer.flags &= ~0x10;
                         }
                     } else if (bj_actionGetCursor() == 1) {
@@ -832,11 +832,11 @@ s32 bj_main(void) {
                 bj_dealCard(cur, &g_bjShoe);
                 t = -1;
                 if (cur->value >= 22) {
-                    g_bjState = 7;
+                    g_bjState = BJ_ST_BUST;
                 } else if (cur->value == 21) {
                     if (nsplit == 1) {
                         cur = &split;
-                        g_bjState = 4;
+                        g_bjState = BJ_ST_PLAYER;
                         scene_set(3);
                         x = 0xF00000;
                         y = 0xA0000;
@@ -845,12 +845,12 @@ s32 bj_main(void) {
                         dy = (((cur->y - 0xA) << 8) / 30) << 8;
                         nsplit = 2;
                     } else {
-                        g_bjState = 5;
+                        g_bjState = BJ_ST_DEALER;
                     }
                 } else if (cur->flags & 8) {
                     if (nsplit == 1) {
                         cur = &split;
-                        g_bjState = 4;
+                        g_bjState = BJ_ST_PLAYER;
                         scene_set(3);
                         x = 0xF00000;
                         y = 0xA0000;
@@ -859,12 +859,12 @@ s32 bj_main(void) {
                         dy = (((cur->y - 0xA) << 8) / 30) << 8;
                         nsplit = 2;
                     } else {
-                        g_bjState = 5;
+                        g_bjState = BJ_ST_DEALER;
                     }
                 } else if (cur->flags & 4) {
                     if (nsplit == 1) {
                         cur = &split;
-                        g_bjState = 4;
+                        g_bjState = BJ_ST_PLAYER;
                         scene_set(3);
                         x = 0xF00000;
                         y = 0xA0000;
@@ -873,15 +873,15 @@ s32 bj_main(void) {
                         dy = (((cur->y - 0xA) << 8) / 30) << 8;
                         nsplit = 2;
                     } else {
-                        g_bjState = 5;
+                        g_bjState = BJ_ST_DEALER;
                     }
                 } else {
-                    g_bjState = 4;
+                    g_bjState = BJ_ST_PLAYER;
                     scene_set(3);
                 }
             }
             break;
-        case 5:
+        case BJ_ST_DEALER:
             if (t == -1) {
                 if (dealer.value < 17) {
                     x = 0xF00000;
@@ -890,16 +890,16 @@ s32 bj_main(void) {
                     dy = 0;
                     dx = (((dealer.count * 13 - 0xD2) << 8) / 30) << 8;
                 } else if (dealer.flags & 2) {
-                    g_bjState = 7;
+                    g_bjState = BJ_ST_BUST;
                 } else if (nsplit > 0) {
                     nsplit = 1;
-                    g_bjState = 6;
+                    g_bjState = BJ_ST_SETTLE_SPLIT;
                 } else if (player.value == dealer.value) {
-                    g_bjState = 10;
+                    g_bjState = BJ_ST_PUSH;
                 } else if (dealer.value < player.value) {
-                    g_bjState = 9;
+                    g_bjState = BJ_ST_WIN;
                 } else {
-                    g_bjState = 11;
+                    g_bjState = BJ_ST_LOSE;
                 }
             } else if (t > 0) {
                 bj_drawCardBack(x >> 16, y >> 16);
@@ -908,11 +908,11 @@ s32 bj_main(void) {
                 t--;
             } else {
                 t = -1;
-                g_bjState = 5;
+                g_bjState = BJ_ST_DEALER;
                 bj_dealCard(&dealer, &g_bjShoe);
             }
             break;
-        case 7:
+        case BJ_ST_BUST:
             if (cur->value >= 22) {
                 i = 1;
                 if (nsplit == 2) {
@@ -943,7 +943,7 @@ s32 bj_main(void) {
                 ofsY[0] = ofsY[1] = ofsY[2] = 0;
                 if (nsplit == 1) {
                     cur = &split;
-                    g_bjState = 4;
+                    g_bjState = BJ_ST_PLAYER;
                     scene_set(3);
                     x = 0xF00000;
                     y = 0xA0000;
@@ -953,15 +953,15 @@ s32 bj_main(void) {
                     nsplit = 2;
                 } else if (nsplit == 2) {
                     nsplit = 1;
-                    g_bjState = 6;
+                    g_bjState = BJ_ST_SETTLE_SPLIT;
                 } else if (cur->value >= 22) {
-                    g_bjState = 11;
+                    g_bjState = BJ_ST_LOSE;
                 } else {
-                    g_bjState = 9;
+                    g_bjState = BJ_ST_WIN;
                 }
             }
             break;
-        case 6:
+        case BJ_ST_SETTLE_SPLIT:
             if (t == -1) {
                 if (nsplit == 1) {
                     if (player.value >= 22) {
@@ -1017,11 +1017,11 @@ s32 bj_main(void) {
                 if (nsplit == 1) {
                     nsplit = 2;
                 } else {
-                    g_bjState = 12;
+                    g_bjState = BJ_ST_NEXT;
                 }
             }
             break;
-        case 8:
+        case BJ_ST_BLACKJACK:
             if (t == -1) {
                 if (player.value > dealer.value) {
                     snd_playSe(0x6C);
@@ -1050,10 +1050,10 @@ s32 bj_main(void) {
                 t--;
             } else {
                 t = -1;
-                g_bjState = 12;
+                g_bjState = BJ_ST_NEXT;
             }
             break;
-        case 9:
+        case BJ_ST_WIN:
             if (t == -1) {
                 snd_playSe(0x6C);
                 {
@@ -1076,10 +1076,10 @@ s32 bj_main(void) {
                 t--;
             } else {
                 t = -1;
-                g_bjState = 12;
+                g_bjState = BJ_ST_NEXT;
             }
             break;
-        case 10:
+        case BJ_ST_PUSH:
             if (t == -1) {
                 t = 0x94;
                 dealer.flags &= ~0x10;
@@ -1097,10 +1097,10 @@ s32 bj_main(void) {
                 t--;
             } else {
                 t = -1;
-                g_bjState = 12;
+                g_bjState = BJ_ST_NEXT;
             }
             break;
-        case 11:
+        case BJ_ST_LOSE:
             if (t == -1) {
                 snd_playSe(0x6B);
                 g_bjBankroll -= (player.flags & 4) ? g_bjWager * 2 : g_bjWager;
@@ -1120,24 +1120,24 @@ s32 bj_main(void) {
                 t--;
             } else {
                 t = -1;
-                g_bjState = 12;
+                g_bjState = BJ_ST_NEXT;
             }
             break;
-        case 12:
+        case BJ_ST_NEXT:
             if (g_bjShoe.flags & 4) {
                 t = -1;
-                g_bjState = 13;
+                g_bjState = BJ_ST_END;
             } else {
                 nsplit = 0;
                 if (g_bjWager > g_bjBankroll) {
                     g_bjWager = g_bjBankroll / 10 * 10;
                 }
                 t = -1;
-                g_bjState = 2;
+                g_bjState = BJ_ST_BET;
                 scene_set(2);
             }
             break;
-        case 13:
+        case BJ_ST_END:
             if (t == -1) {
                 func_800320B8(1, 1, 0x3C, 0xFFFFFF);
                 t = 0x3C;
@@ -1148,13 +1148,13 @@ s32 bj_main(void) {
                 t--;
             } else {
                 t = -1;
-                g_bjState = 14;
+                g_bjState = BJ_ST_DONE;
             }
             break;
         }
-        if (g_bjState >= 4) {
+        if (g_bjState >= BJ_ST_PLAYER) {
             bj_drawHand(&dealer, ofsX[0], ofsY[0], -1);
-            if (dealer.count != 0 && g_bjState >= 5) {
+            if (dealer.count != 0 && g_bjState >= BJ_ST_DEALER) {
                 sprintf(buf, g_bjFmt2d, dealer.value);
                 ui_drawSmallDigits(10, dealer.y + 0x20, 0x10, buf, 0);
             }
@@ -1212,19 +1212,19 @@ s32 bj_main(void) {
         if (cnt > 0) {
             cnt--;
         }
-        if (g_bjState < 14) {
+        if (g_bjState < BJ_ST_DONE) {
             if (g_bjBankroll < 10) {
                 t = -1;
-                g_bjState = 13;
+                g_bjState = BJ_ST_END;
             }
             if (g_padPortPressed[0] & 8) {
                 t = -1;
-                g_bjState = 13;
+                g_bjState = BJ_ST_END;
             }
         }
         func_80032098();
         bj_swapBuffers();
-    } while (g_bjState < 14);
+    } while (g_bjState < BJ_ST_DONE);
     bj_exit();
     return 0;
 }
@@ -1262,7 +1262,7 @@ s32 bj_init(void) {
         ending_soundCmd(0xC401, 0x7009C, 0x5A, 0, 0x7F);
     }
     func_800320B8(1, 1, 0, 0xFFFFFF);
-    g_bjState = 0;
+    g_bjState = BJ_ST_START;
     D_80073998[0] = 0;
     return 0;
 }

@@ -3,31 +3,31 @@
 void ending_main(void) {
     ending_init();
     scene_init();
-    g_endingState = 0;
-    while (g_endingState < 5) {
+    g_endingState = ENDING_MOVIE;
+    while (g_endingState < ENDING_DONE) {
         switch (g_endingState) {
-        case 0:
+        case ENDING_MOVIE:
             ending_playMovie(4, 0x12);
-            g_endingState = 3;
+            g_endingState = ENDING_THE_END;
             break;
-        case 1:
+        case ENDING_MESSAGES:
             ending_messages();
-            g_endingState = 2;
+            g_endingState = ENDING_MOVIE2;
             break;
-        case 2:
+        case ENDING_MOVIE2:
             ending_playMovie(4, 0x13);
-            g_endingState = 3;
+            g_endingState = ENDING_THE_END;
             break;
-        case 3:
+        case ENDING_THE_END:
             if (ending_theEnd() == 1) {
-                g_endingState = 4;
+                g_endingState = ENDING_BLACKJACK;
             } else {
-                g_endingState = 3;
+                g_endingState = ENDING_THE_END;
             }
             break;
-        case 4:
+        case ENDING_BLACKJACK:
             bj_main();
-            g_endingState = 3;
+            g_endingState = ENDING_THE_END;
             break;
         }
     }

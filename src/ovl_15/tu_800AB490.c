@@ -13,11 +13,11 @@ s32 ending_theEnd(void) {
         ending_theEndClearOt();
         pad_update();
         switch (g_theEndState) {
-        case 0:
+        case THEEND_ST_START:
             timer = -1;
-            g_theEndState = 1;
+            g_theEndState = THEEND_ST_SHOW;
             break;
-        case 1:
+        case THEEND_ST_SHOW:
             if (timer == -1) {
                 func_800320B8(1, 1, 0, 0xFFFFFF);
                 timer = 0x21C;
@@ -55,7 +55,7 @@ s32 ending_theEnd(void) {
                 addPrim(&g_gameState->unk1C->unk10[g_gameState->unk1C->unk8][8], (g_theEndTpages[g_gameState->unk1C->unk8] + 1));
             }
             break;
-        case 2:
+        case THEEND_ST_FADE:
             setlen(&g_theEndSprites[g_gameState->unk1C->unk8][0], 4);
             g_theEndSprites[g_gameState->unk1C->unk8][0].code = 0x64;
             g_theEndSprites[g_gameState->unk1C->unk8][0].r0 = 0x80;
@@ -90,14 +90,14 @@ s32 ending_theEnd(void) {
                 timer = 0x5A;
                 func_800320B8(1, 1, timer, 0xFFFFFF);
             } else if (--timer == 0) {
-                g_theEndState = 4;
+                g_theEndState = THEEND_ST_BLACKJACK;
             }
             break;
         }
         if (g_endingCodePos == 0x10) {
             if (g_padPortHeld[0] & 8) {
                 timer = -1;
-                g_theEndState = 2;
+                g_theEndState = THEEND_ST_FADE;
                 snd_playSe(0xC18);
                 D_80073998[0] = -1;
             }
@@ -115,9 +115,9 @@ s32 ending_theEnd(void) {
         }
         func_80032098();
         ending_theEndSwap();
-    } while ((u32)g_theEndState < 3);
+    } while ((u32)g_theEndState < THEEND_ST_UNUSED);
     ending_theEndExit();
-    return g_theEndState != 3;
+    return g_theEndState != THEEND_ST_UNUSED;
 }
 
 s32 ending_theEndInit(void) {
@@ -129,7 +129,7 @@ s32 ending_theEndInit(void) {
     ending_soundCmd(0, 0x7009C, 0, 0, 0);
     ending_soundCmd(0xC401, 0x7009C, 0x5A, 0, 0x7F);
     func_800320B8(1, 1, 0, 0xFFFFFF);
-    g_theEndState = 0;
+    g_theEndState = THEEND_ST_START;
     D_800AE430 = 0;
     D_80073998[0] = 0;
     return 0;

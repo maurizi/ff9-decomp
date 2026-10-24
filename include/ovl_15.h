@@ -102,8 +102,16 @@ enum {
 };
 #define ENDING_CODE_LEN 16 /* buttons in g_endingSecretCode */
 
-/* g_messagesState: ending_messages shows pages 1-4 with a pause (5) after each */
-enum { MESSAGES_ST_START, MESSAGES_ST_PAUSE = 5, MESSAGES_ST_DONE };
+/* g_messagesState: ending_messages shows its pages with a pause after each */
+enum {
+    MESSAGES_ST_START,
+    MESSAGES_ST_PAGE1, /* message 0 */
+    MESSAGES_ST_PAGE2, /* messages 1 and 2 */
+    MESSAGES_ST_PAGE3, /* message 3 */
+    MESSAGES_ST_PAGE4, /* messages 4 and 5, then MESSAGES_ST_DONE */
+    MESSAGES_ST_PAUSE, /* then the next page */
+    MESSAGES_ST_DONE
+};
 
 /* Module W ("scene" table, the same source as ovl_14's): one SceneMode per scene id. */
 typedef struct {

@@ -14,12 +14,12 @@ s32 ending_messages(void) {
         ending_messagesClearOt();
         pad_update();
         switch (g_messagesState) {
-        case 0:
+        case MESSAGES_ST_START:
             page = 1;
             t = -1;
-            g_messagesState = 1;
+            g_messagesState = MESSAGES_ST_PAGE1;
             break;
-        case 1:
+        case MESSAGES_ST_PAGE1:
             if (t == -1) {
                 t = 0xA0;
                 func_800320B8(1, 1, 0x14, 0);
@@ -34,10 +34,10 @@ s32 ending_messages(void) {
                 t--;
             } else {
                 t = -1;
-                g_messagesState = 5;
+                g_messagesState = MESSAGES_ST_PAUSE;
             }
             break;
-        case 2:
+        case MESSAGES_ST_PAGE2:
             if (t == -1) {
                 t = 0xDC;
                 func_800320B8(1, 1, 0x14, 0);
@@ -57,10 +57,10 @@ s32 ending_messages(void) {
                 t--;
             } else {
                 t = -1;
-                g_messagesState = 5;
+                g_messagesState = MESSAGES_ST_PAUSE;
             }
             break;
-        case 3:
+        case MESSAGES_ST_PAGE3:
             if (t == -1) {
                 t = 0xA0;
                 func_800320B8(1, 1, 0x14, 0);
@@ -75,10 +75,10 @@ s32 ending_messages(void) {
                 t--;
             } else {
                 t = -1;
-                g_messagesState = 5;
+                g_messagesState = MESSAGES_ST_PAUSE;
             }
             break;
-        case 4:
+        case MESSAGES_ST_PAGE4:
             if (t == -1) {
                 t = 0x118;
                 func_800320B8(1, 1, 0x14, 0);
@@ -98,10 +98,10 @@ s32 ending_messages(void) {
                 t--;
             } else {
                 t = -1;
-                g_messagesState = 6;
+                g_messagesState = MESSAGES_ST_DONE;
             }
             break;
-        case 5:
+        case MESSAGES_ST_PAUSE:
             if (t == -1) {
                 t = 0x3C;
             } else if (t != 0) {
@@ -115,14 +115,14 @@ s32 ending_messages(void) {
         }
         func_80032098();
         ending_messagesSwap();
-    } while (g_messagesState < 6);
+    } while (g_messagesState < MESSAGES_ST_DONE);
     return 0;
 }
 
 s32 ending_messagesInit(void) {
     g_gameState->vsyncMode = 0;
     func_800320B8(1, 1, 0, 0xFFFFFF);
-    g_messagesState = 0;
+    g_messagesState = MESSAGES_ST_START;
     D_800AE4A8 = 0;
     g_messagesFrame = 0;
     D_80073998[0] = 0;
