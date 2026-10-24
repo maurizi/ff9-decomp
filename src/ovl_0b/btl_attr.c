@@ -580,7 +580,7 @@ s32 btl_getBattleVar(s32 arg0) {
         if (b->curCmd != NULL && b->curCmd->unk4 != NULL) {
             r = 0;
             if (!(b->curCmd->unk4->support[1] & 1)) {
-                r = b->curCmd->ability->unk6;
+                r = b->curCmd->ability->element;
             }
         }
         break;

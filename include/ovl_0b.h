@@ -541,32 +541,33 @@ typedef struct BtlUnit {
 } BtlUnit; /* 0xD0 */
 
 /* ability/command calculation context */
+/* BtlCmd seen by the formulas (btl_calcCmd's sub = the BtlCmd; flags = BtlCmd.unk10.w) */
 typedef struct BtlCalc8 {
     u8 pad0[8];
-    u8 *unk8;
-    u16 unkC;
-    u8 unkE;
-    u8 unkF;
-    u32 unk10;
+    struct BtlCmd8 *ability;
+    u16 targets;
+    u8 cmdNo;
+    u8 subNo;
+    u32 flags;
 } BtlCalc8;
 
 typedef struct BtlCalc {
-    BtlUnit *unk0; /* caster */
-    BtlUnit *unk4; /* target */
-    BtlCalc8 *unk8;
-    s16 unkC;
-    s16 unkE;
-    s16 unk10;
-    s16 unk12;
-    s16 unk14;
-    s16 unk16;
-    u16 unk18; /* result flags */
-    u8 unk1A;
-    u8 unk1B;
-    s16 unk1C; /* caster hp change */
-    s16 unk1E; /* target hp change */
-    s16 unk20; /* caster mp change */
-    s16 unk22; /* target mp change */
+    BtlUnit *caster; /* caster */
+    BtlUnit *target; /* target */
+    BtlCalc8 *cmd;
+    s16 statusRate; /* weapon add-status chance (weapon[7]) */
+    s16 power; /* base power (weapon or ability) */
+    s16 defense; /* target defense */
+    s16 evade; /* target evade % */
+    s16 multiplier;
+    s16 hitRate; /* hit % */
+    u16 flags; /* 1 miss, 2 dodged, 8 absorbed, 0x40 guard, 0x80 hit without damage, 0x100 add the weapon status */
+    u8 casterResult; /* caster popup flags (BtlUnit.popupFlags) */
+    u8 targetResult; /* target popup flags: 1 hp, 2 heal, 4 critical, 8 mp, 0x10 mp heal */
+    s16 casterHpChange; /* caster hp change */
+    s16 targetHpChange; /* target hp change */
+    s16 casterMpChange; /* caster mp change */
+    s16 targetMpChange; /* target mp change */
 } BtlCalc;
 
 /* battle script interpreter context */
@@ -1058,19 +1059,19 @@ typedef struct Battle11C020 {
 
 /* battle command (queued action) */
 typedef struct BtlCmd8 {
-    u32 unk0_0 : 4;
+    u32 targetType : 4; /* target type; 6-12 make enemy commands multi-target (btl_setEnemyCmd), 3-5 spread casts (btl_halveForSpread) */
     u32 unk0_4 : 4;
-    u32 unk0_8 : 9;
+    u32 effect : 9; /* effect id (btl_startCmdEffect -> btl_playCmdEffect) */
     u32 unk0_17 : 15;
-    u8 unk4;
-    u8 unk5;
-    u8 unk6;
-    u8 unk7;
-    u8 unk8;
-    u8 unk9;
+    u8 formula; /* btl_calcCmd formula */
+    u8 power; /* power, or the formula's parameter (an item id, a divisor) */
+    u8 element; /* element bits */
+    u8 rate; /* hit/status rate */
+    u8 flags; /* 1 reflectable, 2 needs a voice (Silence blocks it), 8 Counter answers it, 0x80 Return Magic answers it */
+    u8 statusSet; /* index into Battle.statusSets */
     u8 mpCost; /* runtime: Fire 6, Fira 12, Sleep 10 as the spell list shows */
     u8 unkB;
-    u16 unkC;
+    u16 altEffect; /* effect played for short summons, Seiken and single-target casts (btl_startCmdEffect) */
     u16 nameOfs; /* name text offset (runtime: Fire 161, Fira 166, Firaga 171, Sleep 178 - steps = name lengths + 1) */
 } BtlCmd8;
 
@@ -4280,7 +4281,7 @@ extern u8 D_8007AF01;
 
 /* the command's caster can't act (status 8 with flag 2): prints message 0x15 */
 static inline u8 btl_checkCmdUsable_can(BtlCmd *arg1) {
-    if ((arg1->unk4->status & BTL_STATUS_SILENCE) && (arg1->ability->unk8 & 2)) {
+    if ((arg1->unk4->status & BTL_STATUS_SILENCE) && (arg1->ability->flags & 2)) {
         btl_showMessage(0x15);
         return 0;
     }
