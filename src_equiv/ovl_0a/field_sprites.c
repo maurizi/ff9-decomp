@@ -6,10 +6,16 @@
  * colour from the 4-byte table a->unk4. If a->unk18 >= 0 the colour is scaled by unk18 / 4096 (GPF; the
  * result's low byte per channel is kept, as in the original). a->unk10 / unk14 are the texpage / CLUT and
  * a->unk20 the command byte. Each quad goes into ot[SZ3 >> 2].
- * If MAC0 is 0 after the RTPT, drawing stops there (that quad is left unlinked). Returns the next packet. */
+ * If MAC0 is 0 after the RTPT, drawing stops there (that quad is left unlinked). Returns the next packet.
+ * Like the original, the two tables are read from `a` once, VZ (and the SVECTOR pad half) is 0, and the colour
+ * is read before the fourth vertex's SXY is stored, so it also agrees when the packet buffer overlaps the inputs.
+ * tools/equiv.py: 126/126 trials agree once trials where the original runs into the step limit are skipped (with a
+ * random count it loops for millions of quads, and the two runs are cut off at different points). */
 #include "ovl_0a.h"
 
 u8 *func_800C9AB8(u8 *src, FieldSprArgs *a, u8 *pkt, u32 *ot) {
+    u16 *uvTab = a->unk0;
+    u8 *colTab = a->unk4;
     s32 hw = a->unk8;
     s32 hh = a->unkC;
     u32 tpage = (u32)a->unk10 << 16;
@@ -32,15 +38,15 @@ u8 *func_800C9AB8(u8 *src, FieldSprArgs *a, u8 *pkt, u32 *ot) {
         p = (u32 *)pkt;
         x = (s8)src[0] * 4;
         y = (s8)src[1] * 4;
-        v[0].vx = x - hw; v[0].vy = y - hh; v[0].vz = 0;
-        v[1].vx = x + hw; v[1].vy = y - hh; v[1].vz = 0;
-        v[2].vx = x - hw; v[2].vy = y + hh; v[2].vz = 0;
-        v[3].vx = x + hw; v[3].vy = y + hh; v[3].vz = 0;
+        v[0].vx = x - hw; v[0].vy = y - hh; v[0].vz = 0; v[0].pad = 0;
+        v[1].vx = x + hw; v[1].vy = y - hh; v[1].vz = 0; v[1].pad = 0;
+        v[2].vx = x - hw; v[2].vy = y + hh; v[2].vz = 0; v[2].pad = 0;
+        v[3].vx = x + hw; v[3].vy = y + hh; v[3].vz = 0; v[3].pad = 0;
         gte_ldv3(&v[0], &v[1], &v[2]);
         gte_rtpt();
         k = src[2];
         src += 3;
-        uv = a->unk0[k & 0xF];
+        uv = uvTab[k & 0xF];
         u = uv & 0xFF;
         vv = uv >> 8;
         ur = u + ((u32)hw >> 1);
@@ -57,9 +63,9 @@ u8 *func_800C9AB8(u8 *src, FieldSprArgs *a, u8 *pkt, u32 *ot) {
         gte_stsz(&sz3);
         gte_ldv0(&v[3]);
         gte_rtps();
-        gte_stsxy(&p[8]);
-        ce = a->unk4 + (k >> 4) * 4;
+        ce = colTab + (k >> 4) * 4;
         c = *(u16 *)ce | ((u32)ce[2] << 16);
+        gte_stsxy(&p[8]);
         if (mod >= 0) {
             gte_ldir0123(mod, c & 0xFF, (c >> 8) & 0xFF, (c >> 16) & 0xFF);
             gte_gpf12();

@@ -18,5 +18,6 @@ btl_setBattleVar = 0x800BE99C;
 /* ovl_0c functions called from main (ovl_0c is resident on the world map) */
 wm_getEncounterEntry = 0x800BBBA8;  /* evt_rollEncounter, g_evtMode 3 */
 fld_gameOver = 0x800A80A4;       /* ovl_0a (resident field overlay), mode 7 */
+fld_movieCommand = 0x800AD944;   /* ovl_0a, event-script opcode 0x28 and script variables 14/15 */
 w_frameSetParameter = 0x800B73F8; /* ovl_0c, event-script opcode 0xC4 (world map) */
 w_frameGetParameter = 0x800B7A14; /* ovl_0c, event-script variable reads >= 0xC0 (world map) */

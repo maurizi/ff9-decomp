@@ -29,7 +29,7 @@ void fld_main(s32 arg0) {
             func_800AF740();
         }
         if (!(g_gameState->unk1C->unk0 & 0x100)) {
-            func_800ADB74();
+            fld_movieUpdate();
             if (!(g_gameState->unk1C->unk0 & 1) && (g_padPortPressed & BTN_TRIANGLE) && (g_padPortHeld[0] & 0x400F0) &&
                 !(g_padPortHeld[0] & 0x04FA0009)) {
                 g_gameState->unk1C->unk0 |= 2;
@@ -2061,10 +2061,10 @@ void func_800AD488(FieldObjEnt *arg0, FieldObjSlot *arg1, MATRIX *arg2) {
 }
 
 /* field request dispatcher */
-s32 func_800AD944(s32 arg0, s32 arg1, s32 arg2) {
+s32 fld_movieCommand(s32 arg0, s32 arg1, s32 arg2) {
     switch (arg0 & 0xF) {
     case 0:
-        func_800ADA7C((arg1 >> 8) & 0xFF, arg1 & 0xFF, arg2);
+        fld_movieStart((arg1 >> 8) & 0xFF, arg1 & 0xFF, arg2);
         return 0;
     case 1:
         func_800AE4F8();
@@ -2073,7 +2073,7 @@ s32 func_800AD944(s32 arg0, s32 arg1, s32 arg2) {
         D_800C9D44 |= 1;
         break;
     case 3:
-        return func_800AD944_state();
+        return fld_movieCommand_state();
     case 4:
         return mbg_getFrame();
     case 5:
@@ -2084,7 +2084,7 @@ s32 func_800AD944(s32 arg0, s32 arg1, s32 arg2) {
     return 0;
 }
 
-void func_800ADA7C(s8 arg0, s8 arg1, s8 arg2) {
+void fld_movieStart(s8 arg0, s8 arg1, s8 arg2) {
     D_800C9D44 = 0;
     g_gameState->unk1C->unk8E4.field->unkC->unk14->unk48 = arg0;
     g_gameState->unk1C->unk8E4.field->unkC->unk14->unk49 = arg1;
@@ -2095,7 +2095,7 @@ void func_800ADA7C(s8 arg0, s8 arg1, s8 arg2) {
     g_gameState->unk1C->unk8E4.field->unkC->unk14->unk42 = 1;
 }
 
-void func_800ADB74(void) {
+void fld_movieUpdate(void) {
     s32 b;
     s32 done;
     s32 t;
@@ -2252,15 +2252,15 @@ s32 func_800AE68C(void) {
 }
 
 void func_800AE710(u16 arg0, s32 arg1) {
-    func_800AD944(0, arg0, arg1);
+    fld_movieCommand(0, arg0, arg1);
 }
 
 void func_800AE738(void) {
-    func_800AD944(2, 0, 0);
+    fld_movieCommand(2, 0, 0);
 }
 
 void func_800AE760(void) {
-    func_800AD944(1, 0, 0);
+    fld_movieCommand(1, 0, 0);
 }
 
 void func_800AE788(void) {

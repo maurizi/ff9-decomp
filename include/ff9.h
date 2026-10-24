@@ -1408,7 +1408,6 @@ s32 akao_command(u32);
 void func_80055D80(s32, s32);
 void func_8005ECCC(AkaoChannel *, s32);
 void func_80060938(void);
-void func_80014E20(s32, s32, s32, s32);
 void func_8003556C(void (*)(void));
 
 typedef struct {
@@ -3605,7 +3604,7 @@ void btl_setEnemyCmd(s32, s32, s32, s32);
 void btlseq_startDirect(s32, s32, u16);
 void btl_setBattleVar(s32, s32);
 s32 func_800ABA98(s32, s32, s32, s32, s32);
-s32 func_800AD944(s32, s32, s32);
+s32 fld_movieCommand(s32, s32, s32);
 VECTOR *func_800AE750(void);
 VECTOR *func_800AE744(void);
 void func_800C7D30(s32, s32, s32);

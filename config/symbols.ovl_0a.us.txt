@@ -21,3 +21,6 @@ fld_depFindBackground = 0x800AA194; // type:func [code] resolves an entry's link
 fld_depFindField = 0x800AA290; // type:func [code] dependency-table entry 0x50000|id -> field/world file sector/length (fld_exit cases 1 and 3)
 fld_depFindArea = 0x800AA330; // type:func [code] resolves a field entry's link (its 0x06 area bundle) in the dependency table (fld_exit cases 1 and 3)
 gameover_main = 0x801F3488; // type:func [runtime] ovl_65 function at this address (ovl_65 is loaded alongside this overlay for mode 7)
+fld_movieCommand = 0x800AD944; // type:func [code] event-script opcode 0x28 (main) passes (mode, list<<8|entry, rgb24), mode 0 starts a movie (fld_movieStart), 4 returns mbg_getFrame, 5 mbg_setRgb24, main's script variables 14/15 read modes 4/3
+fld_movieStart = 0x800ADA7C; // type:func [code] stores the movie list/entry/rgb24 for fld_movieUpdate and sets its state to 1
+fld_movieUpdate = 0x800ADB74; // type:func [code] per-frame field movie state machine called from fld_main - loads ovl_64 (file 0x64) to 0x80198700, MBG_init/mbg_play/mbg_update, shutdown at the end

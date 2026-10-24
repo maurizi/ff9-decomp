@@ -1640,9 +1640,9 @@ ovl_0a func_800AC67C 0x44 0x800ac67c
 ovl_0a func_800AC6C0 0xd8c 0x800ac6c0
 ovl_0a func_800AD44C 0x3c 0x800ad44c
 ovl_0a func_800AD488 0x4bc 0x800ad488
-ovl_0a func_800AD944 0x138 0x800ad944
-ovl_0a func_800ADA7C 0xf8 0x800ada7c
-ovl_0a func_800ADB74 0x984 0x800adb74
+ovl_0a fld_movieCommand 0x138 0x800ad944
+ovl_0a fld_movieStart 0xf8 0x800ada7c
+ovl_0a fld_movieUpdate 0x984 0x800adb74
 ovl_0a func_800AE4F8 0xdc 0x800ae4f8
 ovl_0a func_800AE5D4 0xb8 0x800ae5d4
 ovl_0a func_800AE68C 0x84 0x800ae68c

@@ -48,7 +48,7 @@ Load addresses were found by voting internal `jal` targets against function prol
 
 - **0x800A7000** (main overlay area; the exe's 1.3 MB zero-filled region starts here): 0x0A field, 0x0B battle, 0x0C world map, 0x0D Tetra Master, 0x14 opening/logos, 0x15 Blackjack.
 - **0x801EDF00** (small slot ending below the stack): 0x32-0x3E, 0x65. Their strings use FF9's text encoding (letters are ASCII - 0x31).
-- **0x80198700**: 0x64, a debug FMV player that links PsyQ libpress.
+- **0x80198700**: 0x64, the movie (FMV/MBG) player, which links PsyQ libpress. Field, opening and ending code load it there and call it (`docs/library-audit.md`). Its first string, `\TEST\FMV990.STR`, is a dead entry of an unused test list.
 
 Each overlay is laid out like the exe: `.rodata`, `.text`, `.data`, packed with 4-byte alignment (splat `subalign: 4`, no section-end alignment). Overlay 0x0B embeds a u16 table inside `.text` at 0x28A80 (splat `textbin`) and is split into two C files there.
 
