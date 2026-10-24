@@ -14,7 +14,7 @@ s32 ending_playMovie(s32 arg0, s32 arg1) {
         pad_update();
         switch (g_movieState) {
         case MOVIE_ST_START:
-            if (g_gameState->unkB != DISC_NONE && (g_gameState->unkB & DISC_4)) {
+            if (g_gameState->disc != DISC_NONE && (g_gameState->disc & DISC_4)) {
                 g_movieFlags = MOVIE_NO_SCENES;
                 g_movieState = MOVIE_ST_OPEN;
             } else {
@@ -44,7 +44,7 @@ s32 ending_playMovie(s32 arg0, s32 arg1) {
                 if (r != 0) {
                     DrawOTag(g_gameState->unk1C->unk10[g_gameState->unk1C->unk8 ^ 1] + 0xFFF);
                 } else if (timer == -1 && g_gameState->unk1C->unk8 == 0) {
-                    g_gameState->unkC[g_gameState->unk1C->unk8].disp.x = 0x1E0;
+                    g_gameState->dispEnv[g_gameState->unk1C->unk8].disp.x = 0x1E0;
                 }
             }
             break;
@@ -52,9 +52,9 @@ s32 ending_playMovie(s32 arg0, s32 arg1) {
             if (g_movieFlags & MOVIE_DONE) {
                 g_gameState->vsyncMode = 0;
                 timer = 900;
-                g_gameState->unkC[0].disp.x = 0x140;
+                g_gameState->dispEnv[0].disp.x = 0x140;
                 g_movieState = MOVIE_ST_DONE;
-                g_gameState->unkC[1].disp.x = 0;
+                g_gameState->dispEnv[1].disp.x = 0;
                 g_padPortMask[0] = 0;
             }
             break;
@@ -82,7 +82,7 @@ s32 ending_movieInit(s32 arg0, s32 arg1) {
     EnterCriticalSection();
     FlushCache();
     ExitCriticalSection();
-    if (g_gameState->unkB != DISC_NONE && (g_gameState->unkB & DISC_4)) {
+    if (g_gameState->disc != DISC_NONE && (g_gameState->disc & DISC_4)) {
         h = cd_findFile(g_mbgMovieLists[arg0].movies[arg1].path);
         cd_seekStreamAsync(h);
         while (cd_getState() != 0) {
@@ -119,13 +119,13 @@ void ending_movieSwap(void) {
     }
     VSync(g_gameState->vsyncMode);
     ResetGraph(1);
-    PutDispEnv(&g_gameState->unkC[g_gameState->unk1C->unk8]);
+    PutDispEnv(&g_gameState->dispEnv[g_gameState->unk1C->unk8]);
     if (g_movieFlags & MOVIE_NO_OT) {
-        PutDrawEnv(&g_gameState->unk10[g_gameState->unk1C->unk8]);
+        PutDrawEnv(&g_gameState->drawEnv[g_gameState->unk1C->unk8]);
     } else {
         ctx = g_gameState->unk1C;
         k = ctx->unk8;
-        DrawOTagEnv(ctx->unk10[k] + 0xFFF, &g_gameState->unk10[k]);
+        DrawOTagEnv(ctx->unk10[k] + 0xFFF, &g_gameState->drawEnv[k]);
     }
     g_gameState->unk1C->unk8 ^= 1;
     gfx_setBuffer(g_gameState->unk1C->unk8);
@@ -1286,10 +1286,10 @@ void bj_swapBuffers(void) {
     g_gameState->vsyncMode = 0;
     VSync(g_gameState->vsyncMode);
     ResetGraph(1);
-    PutDispEnv(&g_gameState->unkC[g_gameState->unk1C->unk8]);
+    PutDispEnv(&g_gameState->dispEnv[g_gameState->unk1C->unk8]);
     ctx = g_gameState->unk1C;
     i = ctx->unk8;
-    DrawOTagEnv(ctx->unk10[i] + 0xFFF, &g_gameState->unk10[i]);
+    DrawOTagEnv(ctx->unk10[i] + 0xFFF, &g_gameState->drawEnv[i]);
     g_gameState->unk1C->unk8 ^= 1;
     gfx_setBuffer(g_gameState->unk1C->unk8);
 }

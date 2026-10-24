@@ -25,10 +25,10 @@ void battleEnd_main(void) {
         DrawSync(0);
         VSync(g_gameState->vsyncMode);
         ResetGraph(1);
-        PutDispEnv(&g_gameState->unkC[g_gameState->unk1C->unk8]);
+        PutDispEnv(&g_gameState->dispEnv[g_gameState->unk1C->unk8]);
         ctx = g_gameState->unk1C;
         i = ctx->unk8;
-        DrawOTagEnv(ctx->unk10[i] + 0xFFF, &g_gameState->unk10[i]);
+        DrawOTagEnv(ctx->unk10[i] + 0xFFF, &g_gameState->drawEnv[i]);
         g_gameState->unk1C->unk8 ^= 1;
         gfx_setBuffer(g_gameState->unk1C->unk8);
     } while (g_gameState->mode == 8);
@@ -136,7 +136,7 @@ void battleEnd_preloadScene(void) {
     b = g_gameState->unk1C->unk8E4.ovl65->unk11C0;
     preload_init();
     g_gameState->unk1C->unk8BC = NULL;
-    if (g_gameState->unk1C->unk56E == 6) {
+    if (g_gameState->unk1C->battleEndKind == 6) {
         return;
     }
     id = 0x1000C;
@@ -604,7 +604,7 @@ void rewards_requestClose(void) {
 }
 
 s32 rewards_getKind(void) {
-    u8 mode = g_gameState->unk1C->unk56E;
+    u8 mode = g_gameState->unk1C->battleEndKind;
     s32 ret = 0;
 
     if (mode == 4) {
@@ -1446,11 +1446,11 @@ void rewards_openItemsWin(void) {
 }
 
 void rewards_drawItemsLabels(Window *w) {
-    s32 n = ui_measureLabel((u8 *)D_800703FC.unk94);
+    s32 n = ui_measureLabel((u8 *)g_winLabelStrings.unk94);
     s32 k = 0x97;
 
-    ui_drawLabel(w->unk0 + 8, w->unk2 - 3, w->unk18 - 1, D_800703FC.unk68, 0);
-    ui_drawLabel(w->unk0 - (n - k), w->unk2 - 3, w->unk18 - 1, D_800703FC.unk94, 0);
+    ui_drawLabel(w->unk0 + 8, w->unk2 - 3, w->unk18 - 1, g_winLabelStrings.unk68, 0);
+    ui_drawLabel(w->unk0 - (n - k), w->unk2 - 3, w->unk18 - 1, g_winLabelStrings.unk94, 0);
 }
 
 void rewards_drawFullWarning(Window *arg0) {

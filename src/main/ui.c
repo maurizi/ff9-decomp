@@ -175,7 +175,7 @@ void ui_drawBackground(void) {
     RECT tw;
     PolyG4Words *p;
 
-    w = g_gameState->unkC->disp.w;
+    w = g_gameState->dispEnv->disp.w;
     setlen(g_primPtr, 8);
     p = (PolyG4Words *)g_primPtr;
     p->rgbc0 = GPU_CODE(GPU_POLY_G4 | GPU_ABE);

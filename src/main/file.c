@@ -114,8 +114,8 @@ s32 file_copyViaVram(s32 dst, s32 src, s32 size, RECT *rc) {
                 r->w = rc->w;
                 r->h = rc->h;
             } else {
-                r->x = g_gameState->unk10[g_gameState->unk1C->unk8].clip.x;
-                r->y = g_gameState->unk10[g_gameState->unk1C->unk8].clip.y;
+                r->x = g_gameState->drawEnv[g_gameState->unk1C->unk8].clip.x;
+                r->y = g_gameState->drawEnv[g_gameState->unk1C->unk8].clip.y;
                 r->w = 320;
                 r->h = 218;
             }
@@ -147,17 +147,17 @@ void file_initImg(void) {
     s32 i;
     Ff9ImgHeader *hdr;
 
-    g_gameState->unkB = 0xFF;
+    g_gameState->disc = 0xFF;
     for (i = 0; i < ARRAY_COUNT(names); i++) {
         if (CdSearchFile(&fp, names[i])) {
-            g_gameState->unkB = 1 << (i % 4);
+            g_gameState->disc = 1 << (i % 4);
             break;
         }
     }
-    if (g_gameState->unkB != 0xFF) {
+    if (g_gameState->disc != 0xFF) {
         while (cd_getState()) {
         }
-        while ((g_gameState->unk20 = cd_findFile("\\FF9.IMG;1")) == -1) {
+        while ((g_gameState->imgSector = cd_findFile("\\FF9.IMG;1")) == -1) {
             while (cd_getState()) {
             }
         }
@@ -166,11 +166,11 @@ void file_initImg(void) {
         while (cd_getState()) {
         }
         hdr = (Ff9ImgHeader *)((u8 *)g_gameState - 0x1800);
-        cd_readAsync(g_gameState->unk20, 0x800, hdr, NULL);
+        cd_readAsync(g_gameState->imgSector, 0x800, hdr, NULL);
         while (cd_getState()) {
         }
-        g_gameState->unk30 = hdr->unk8;
-        memmove(g_gameState->unk14, hdr->unk10, g_gameState->unk30 * sizeof(DirInfo));
+        g_gameState->dirCount = hdr->unk8;
+        memmove(g_gameState->dirs, hdr->unk10, g_gameState->dirCount * sizeof(DirInfo));
     }
 }
 
@@ -198,14 +198,14 @@ void file_loadDirTables(void) {
     }
     cnt = 0;
     buf = D_80067944 + 0x14C700;
-    size = (((DirInfo *)gs->unk14)[13].unk8 << 11) + ((DirInfo *)gs->unk14)[13].unk4 * 2;
-    base = ((DirInfo *)gs->unk14)[0].unk8;
+    size = (((DirInfo *)gs->dirs)[13].unk8 << 11) + ((DirInfo *)gs->dirs)[13].unk4 * 2;
+    base = ((DirInfo *)gs->dirs)[0].unk8;
     t = size & 0x800;
     if (t != 0) {
         size += 0x800 - t;
     }
 
-    cd_readAsync(gs->unk20, size, buf, NULL);
+    cd_readAsync(gs->imgSector, size, buf, NULL);
     while (cd_getState() != 0) {
     }
     dir = (DirInfo *)(buf + 0x10);
@@ -217,23 +217,23 @@ void file_loadDirTables(void) {
        original passes a copy of buf in s0 to the first two memmoves) */
     data = buf + (base << 11) - (base << 11);
     top = (u8 *)g_gameState - size;
-    gs->unk18[0] = top;
-    memmove(gs->unk18[0], data, size);
+    gs->dirTables[0] = top;
+    memmove(gs->dirTables[0], data, size);
 
     size = (dir[1].unk4 + 1) * 8;
     top -= size;
-    gs->unk18[1] = top;
-    memmove(gs->unk18[1], data + ((dir[1].unk8 - base) << 11), size);
+    gs->dirTables[1] = top;
+    memmove(gs->dirTables[1], data + ((dir[1].unk8 - base) << 11), size);
 
     size = (dir[10].unk4 + 1) * 8;
     top -= size;
-    gs->unk18[10] = top;
-    memmove(gs->unk18[10], buf + ((dir[10].unk8 - base) << 11), size);
+    gs->dirTables[10] = top;
+    memmove(gs->dirTables[10], buf + ((dir[10].unk8 - base) << 11), size);
 
     size = (dir[8].unk4 + 1) * 8;
     top -= size;
-    gs->unk18[8] = top;
-    memmove(gs->unk18[8], buf + ((((DirInfo *)gs->unk14)[8].unk8 - base) << 11), size);
+    gs->dirTables[8] = top;
+    memmove(gs->dirTables[8], buf + ((((DirInfo *)gs->dirs)[8].unk8 - base) << 11), size);
 
     list8 = buf + ((dir[8].unk8 - base) << 11);
     s = (Unk8001DE50 *)(list8 + dir[8].unk4 * 8) - 1;
@@ -255,9 +255,9 @@ void file_loadDirTables(void) {
     } while ((u8 *)s >= list8);
     size = cnt * 0x10;
     top -= size;
-    gs->unk18[11] = top;
+    gs->dirTables[11] = top;
     s = (Unk8001DE50 *)(list8 + dir[8].unk4 * 8) - 1;
-    dst = gs->unk18[11];
+    dst = gs->dirTables[11];
     do {
         key2 = s->unk2;
         e = (Unk8001DE50 *)(list11 + dir[11].unk4 * 8) - 1;
@@ -275,30 +275,30 @@ void file_loadDirTables(void) {
         } while ((u8 *)e >= list11);
         s--;
     } while ((u8 *)s >= list8);
-    ((DirInfo *)gs->unk14)[11].unk4 = cnt * 2;
+    ((DirInfo *)gs->dirs)[11].unk4 = cnt * 2;
 
     size = (dir[12].unk4 + 1) * 8;
     top -= size;
-    gs->unk18[12] = top;
-    memmove(gs->unk18[12], buf + ((dir[12].unk8 - base) << 11), size);
+    gs->dirTables[12] = top;
+    memmove(gs->dirTables[12], buf + ((dir[12].unk8 - base) << 11), size);
 
     size = dir[13].unk4 * 2;
     top -= size;
-    gs->unk18[13] = top;
-    memmove(gs->unk18[13], buf + ((dir[13].unk8 - base) << 11), size);
+    gs->dirTables[13] = top;
+    memmove(gs->dirTables[13], buf + ((dir[13].unk8 - base) << 11), size);
     gs->unk0 &= ~GS_RELOAD_FILE_TABLES;
 }
 
 FileEntry *file_find(s32 a, s32 id) {
-    FileDirEntry *d = (FileDirEntry *)g_gameState->unk14 + a;
+    FileDirEntry *d = (FileDirEntry *)g_gameState->dirs + a;
     FileIdEntry *base;
     FileIdEntry *e;
 
     if (d->unk0 == 3) {
-        return (FileEntry *)((u16 *)g_gameState->unk18[13] + id);
+        return (FileEntry *)((u16 *)g_gameState->dirTables[13] + id);
     }
     id &= 0xFFFF;
-    base = g_gameState->unk18[a];
+    base = g_gameState->dirTables[a];
     e = base + d->unk4 - 1;
 loop:
     if (e->unk0 == id) {

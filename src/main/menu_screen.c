@@ -210,7 +210,7 @@ void menuScreen_loadOverlay(void) {
         D_80077E28.unk3 = 1;
         D_80077E28.unk10 = id;
         f = file_find(0, id);
-        if (cd_readAsync(g_gameState->unk20 + f->unk4, (f->unkC - f->unk4) << 11, (void *)0x801EDF00, menuScreen_onOverlayRead)) {
+        if (cd_readAsync(g_gameState->imgSector + f->unk4, (f->unkC - f->unk4) << 11, (void *)0x801EDF00, menuScreen_onOverlayRead)) {
             D_80077E28.unk4 = 1;
             D_80077E28.unk3 = 0;
         }

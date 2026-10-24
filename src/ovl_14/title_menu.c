@@ -80,7 +80,7 @@ void opening_titleLoadImages(void) {
     FileEntry *e;
 
     e = file_find(1, 0x3C);
-    cd_readSync(g_gameState->unk20 + e->unk4, (e->unkC - e->unk4) << 11, TITLE_PACK_BUF, e->unk4);
+    cd_readSync(g_gameState->imgSector + e->unk4, (e->unkC - e->unk4) << 11, TITLE_PACK_BUF, e->unk4);
     opening_titleLoadTims((s32 *)TITLE_PACK_BUF);
 }
 
@@ -299,7 +299,7 @@ void opening_titleConfirm(void) {
 
     switch (g_titleMenu.cursor) {
     case TITLE_NEW_GAME:
-        g_gameState->unkB = DISC_1;
+        g_gameState->disc = DISC_1;
         r = scene_checkDisc();
         if (r != DISC_NONE) {
             menu_open(MENU_DISC, ((r & 3) << 14) | 0x3A98);

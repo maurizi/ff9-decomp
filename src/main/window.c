@@ -297,7 +297,7 @@ void win_setClip(RECT *r, s32 otz, s32 style) {
     RECT *clip;
     s8 *o;
 
-    clip = &g_gameState->unkC[g_drawBufs.cur ^ 1].disp;
+    clip = &g_gameState->dispEnv[g_drawBufs.cur ^ 1].disp;
     offs = D_80010CE0;
     p = (DR_AREA *)g_primPtr;
     o = offs.unk0[style];

@@ -89,8 +89,8 @@ void fld_discChangeEndFrame(void) {
     DrawSync(0);
     VSync(0);
     ResetGraph(1);
-    PutDispEnv(&g_gameState->unkC[g_gameState->unk1C->unk8]);
-    DrawOTagEnv(&g_gameState->unk1C->unk10[g_gameState->unk1C->unk8][0xFFF], &g_gameState->unk10[g_gameState->unk1C->unk8]);
+    PutDispEnv(&g_gameState->dispEnv[g_gameState->unk1C->unk8]);
+    DrawOTagEnv(&g_gameState->unk1C->unk10[g_gameState->unk1C->unk8][0xFFF], &g_gameState->drawEnv[g_gameState->unk1C->unk8]);
     g_gameState->unk1C->unk8 ^= 1;
     gfx_setBuffer(g_gameState->unk1C->unk8);
 }
@@ -195,8 +195,8 @@ void fld_discPromptHelp(void) {
         } else {
             r.x = 0;
             r.y = m->y;
-            r.w = g_gameState->unkC->disp.w;
-            r.h = g_gameState->unkC->disp.h - m->y;
+            r.w = g_gameState->dispEnv->disp.w;
+            r.h = g_gameState->dispEnv->disp.h - m->y;
             help_setBounds(&r);
             id = 4;
         }

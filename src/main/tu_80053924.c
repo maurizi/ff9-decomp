@@ -8,7 +8,7 @@ void func_8005392C(void) {
     d->unk568 = 0;
     d->unk56A = 0;
     d->unk56C = 0;
-    d->unk56E = 0;
+    d->battleEndKind = 0;
     d->unk56F = 0;
     d->unk570 = 0;
     d->unk571 = 0;
@@ -67,7 +67,7 @@ s32 swirl_update(s16 arg0, s16 arg1) {
         if (g_swirlFrame == 0) {
             gs = g_gameState;
             gs->unk1C->unk0 &= ~0x20;
-            *(u32 *)&gs->unk10[0].isbg = *(u32 *)&gs->unk10[1].isbg = 1;
+            *(u32 *)&gs->drawEnv[0].isbg = *(u32 *)&gs->drawEnv[1].isbg = 1;
             D_8007BD1E = 0;
             D_8007BD1C = D_8007BD08->unkA;
             D_8007BD20 = a = D_8007BD08->unk0;
@@ -83,16 +83,16 @@ s32 swirl_update(s16 arg0, s16 arg1) {
             x += x < 160 ? 1 : -1;
         }
         if (g_swirlFrame & 2) {
-            y += y < g_gameState->unk10->clip.h / 2 ? 1 : -1;
+            y += y < g_gameState->drawEnv->clip.h / 2 ? 1 : -1;
         }
         if (D_8007BD2C) {
             c = math_sin(g_swirlFrame * 8);
             x += c * (160 - x) / 4096;
-            y += c * (g_gameState->unk10->clip.h / 2 - y) / 4096;
+            y += c * (g_gameState->drawEnv->clip.h / 2 - y) / 4096;
         }
         D_8007BD10 = swirl_buildMesh(D_8007BD10, x, y);
         i = g_gameState->unk1C->unk8;
-        SetDrawMove(D_8007BD10, &g_gameState->unkC[i].disp, g_gameState->unk10[i].clip.x, g_gameState->unk10[i].clip.y);
+        SetDrawMove(D_8007BD10, &g_gameState->dispEnv[i].disp, g_gameState->drawEnv[i].clip.x, g_gameState->drawEnv[i].clip.y);
         addPrim(D_8007BD0C, D_8007BD10);
         D_8007BD10 += 8;
         swirl_drawMesh();
@@ -120,7 +120,7 @@ s32 swirl_update(s16 arg0, s16 arg1) {
         addPrim(D_8007BD0C, D_8007BD10);
         D_8007BD10 += 4;
     }
-    SetDrawEnv((DR_ENV *)D_8007BD10, &g_gameState->unk10[g_gameState->unk1C->unk8]);
+    SetDrawEnv((DR_ENV *)D_8007BD10, &g_gameState->drawEnv[g_gameState->unk1C->unk8]);
     addPrim(D_8007BD0C, D_8007BD10);
     D_8007BD10 += 16;
     setlen(D_8007BD10, 2);
@@ -144,7 +144,7 @@ s32 swirl_update(s16 arg0, s16 arg1) {
         D_8007BD10[0] = 0x03000000;
         D_8007BD10[1] = GPU_CODE(GPU_TILE | GPU_ABE);
         D_8007BD10[2] = 0;
-        D_8007BD10[3] = (g_gameState->unk10->clip.h << 16) | 0x140;
+        D_8007BD10[3] = (g_gameState->drawEnv->clip.h << 16) | 0x140;
         DrawPrim(D_8007BD10);
         D_8007BD10 += 4;
         setlen(D_8007BD10, 2);
@@ -174,9 +174,9 @@ void swirl_drawFlash(s32 x, s32 y) {
     for (i = 0; i < 4; i++) {
         p[0] = 0x06000000;
         p[1] = ((c1 << 16) | (c1 << 8) | c1) | GPU_CODE(GPU_POLY_G3 | GPU_ABE);
-        p[2] = ((D_8006F310[i] * g_gameState->unk10->clip.h) << 16) | ((D_8006F308[i] * 320) & 0xFFFF);
+        p[2] = ((D_8006F310[i] * g_gameState->drawEnv->clip.h) << 16) | ((D_8006F308[i] * 320) & 0xFFFF);
         p[3] = (c1 << 16) | (c1 << 8) | c1;
-        p[4] = ((D_8006F310[i + 1] * g_gameState->unk10->clip.h) << 16) | ((D_8006F308[i + 1] * 320) & 0xFFFF);
+        p[4] = ((D_8006F310[i + 1] * g_gameState->drawEnv->clip.h) << 16) | ((D_8006F308[i + 1] * 320) & 0xFFFF);
         p[5] = g2;
         p[6] = (y << 16) | (x & 0xFFFF);
         setaddr(p - 7, p);
@@ -205,8 +205,8 @@ u32 *swirl_buildMesh(u32 *buf, s32 x, s32 y) {
     D_8007BD14 = (DVECTOR *)buf;
     D_8007BD18 = (WarpVert *)((u8 *)buf + 0x24);
     buf = (u32 *)((u8 *)buf + 0x2AC);
-    dx = g_gameState->unkC->disp.w - x;
-    dy = g_gameState->unkC->disp.h - y;
+    dx = g_gameState->dispEnv->disp.w - x;
+    dy = g_gameState->dispEnv->disp.h - y;
     for (i = 0; i < 5; i++) {
         xs[4 - i] = x - (x * i) / 4;
         xs[4 + i] = x + (dx * i) / 4;
@@ -274,7 +274,7 @@ void swirl_drawMesh(void) {
     p += 10;
     for (i = 0; i < 8; i++) {
         v = &D_8007BD18[i * 9];
-        tp = ((((D_8007BD14[i].vx + g_gameState->unkC[g_gameState->unk1C->unk8].disp.x) & 0x3FF) >> 6) | 0x100) << 16;
+        tp = ((((D_8007BD14[i].vx + g_gameState->dispEnv[g_gameState->unk1C->unk8].disp.x) & 0x3FF) >> 6) | 0x100) << 16;
         u0 = D_8007BD14[i].vx & 0x3F;
         u1 = u0 + (D_8007BD14[i + 1].vx - D_8007BD14[i].vx) - 1;
         for (j = 0; j < 8; j++) {

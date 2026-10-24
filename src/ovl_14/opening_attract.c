@@ -107,7 +107,7 @@ s32 opening_attract(s32 arg0) {
             game_updateWindows();
             if (!(g_attractFlags.bits & ATTRACT_IDLE_FADE) && (u8)scene_isTitleIdle() && timer < TITLE_IDLE_FADE + 1) {
                 game_startFade(1, 1, TITLE_IDLE_FADE, 0xFFFFFF);
-                if (g_gameState->unkB != DISC_NONE && (g_gameState->unkB & DISC_1)) {
+                if (g_gameState->disc != DISC_NONE && (g_gameState->disc & DISC_1)) {
                     opening_soundCmd(0x8301, TITLE_MUSIC, 0x5A, 0, 0);
                 }
                 g_attractFlags.bits |= ATTRACT_IDLE_FADE;
@@ -116,7 +116,7 @@ s32 opening_attract(s32 arg0) {
                 if (g_attractState != ATTRACT_ST_STARTED) {
                     g_attractState = ATTRACT_ST_TIMEOUT;
                 }
-                if (g_gameState->unkB != DISC_NONE && (g_gameState->unkB & DISC_1)) {
+                if (g_gameState->disc != DISC_NONE && (g_gameState->disc & DISC_1)) {
                     opening_soundCmd(0x100, TITLE_MUSIC, 0, 0, 0);
                 }
             }
@@ -171,10 +171,10 @@ void opening_attractSwap(void) {
     g_gameState->vsyncMode = 0;
     VSync(g_gameState->vsyncMode);
     ResetGraph(1);
-    PutDispEnv(&g_gameState->unkC[g_gameState->unk1C->unk8]);
+    PutDispEnv(&g_gameState->dispEnv[g_gameState->unk1C->unk8]);
     ctx = g_gameState->unk1C;
     i = ctx->unk8;
-    DrawOTagEnv(ctx->unk10[i] + 0xFFF, &g_gameState->unk10[i]);
+    DrawOTagEnv(ctx->unk10[i] + 0xFFF, &g_gameState->drawEnv[i]);
     g_gameState->unk1C->unk8 ^= 1;
     gfx_setBuffer(g_gameState->unk1C->unk8);
 }

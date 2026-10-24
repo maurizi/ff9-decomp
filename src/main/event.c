@@ -101,7 +101,7 @@ s32 evt_getSysVar(s32 op) {
         r = g_evtMode == 4;
         break;
     case 27:
-        r = g_gameState->unk1C->unk56E;
+        r = g_gameState->unk1C->battleEndKind;
         break;
     case 28:
         r = (D_8007AE34 >> 8) & 0xFF;

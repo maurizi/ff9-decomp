@@ -303,10 +303,10 @@ void menuAbility_drawList(void) {
     RECT *r = &s_menuAbility.listRect;
 
     l = &s_menuAbility.lists[s_menuAbility.tab];
-    ui_drawLabel(r->x + 0xE, r->y - 3, 0x1C, D_800703FC.unk4, 0);
-    ui_drawLabel(r->x + 0xA4, r->y - 3, 0x1C, D_800703FC.unk4, 0);
-    ui_drawLabel(r->x + 0x7C, r->y - 3, 0x1C, D_800703FC.unk7C, 0);
-    ui_drawLabel(r->x + 0x112, r->y - 3, 0x1C, D_800703FC.unk7C, 0);
+    ui_drawLabel(r->x + 0xE, r->y - 3, 0x1C, g_winLabelStrings.unk4, 0);
+    ui_drawLabel(r->x + 0xA4, r->y - 3, 0x1C, g_winLabelStrings.unk4, 0);
+    ui_drawLabel(r->x + 0x7C, r->y - 3, 0x1C, g_winLabelStrings.unk7C, 0);
+    ui_drawLabel(r->x + 0x112, r->y - 3, 0x1C, g_winLabelStrings.unk7C, 0);
     win_drawListBox(r, 0x1D, 1, l);
     if (l->count != 0) {
         menuList_getView(l, &view);
@@ -618,8 +618,8 @@ void menuAbility_updateHelp(void) {
         }
         r.x = 0;
         r.y = 0x5E;
-        r.w = g_gameState->unkC->disp.w;
-        r.h = g_gameState->unkC->disp.h - 0x5E;
+        r.w = g_gameState->dispEnv->disp.w;
+        r.h = g_gameState->dispEnv->disp.h - 0x5E;
         help_setBounds(&r);
         i = menuAbility_getSlot(l);
         if (s_menuAbility.tab == ABILITY_TAB_ACTION) {
@@ -638,13 +638,13 @@ void menuAbility_updateHelp(void) {
         if (menuAbility_getSlot(l) & 1) {
             r.x = 0xC;
             r.y = 0;
-            r.w = g_gameState->unkC->disp.w;
-            r.h = g_gameState->unkC->disp.h;
+            r.w = g_gameState->dispEnv->disp.w;
+            r.h = g_gameState->dispEnv->disp.h;
         } else {
             r.x = 0;
             r.y = 0;
-            r.w = g_gameState->unkC->disp.w >> 1;
-            r.h = g_gameState->unkC->disp.h;
+            r.w = g_gameState->dispEnv->disp.w >> 1;
+            r.h = g_gameState->dispEnv->disp.h;
         }
         help_setBounds(&r);
         D_80077DF0 = text_get(s_menuAbility.canTargetAll == 0 ? ABILITY_TEXT_SELECT_CHAR : ABILITY_TEXT_SELECT_CHAR_ALL);

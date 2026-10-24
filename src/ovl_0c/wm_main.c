@@ -132,8 +132,8 @@ s32 wm_loadSoundBanks(void) {
         size = (u32)db_lookupRegistered(5, id, 0);
         if (ids[i] == 0x17B) {
             r = &D_800CE0B8[D_800CCA1C];
-            r->x = g_gameState->unk10[g_gameState->unk1C->unk8].clip.x;
-            r->y = g_gameState->unk10[g_gameState->unk1C->unk8].clip.y;
+            r->x = g_gameState->drawEnv[g_gameState->unk1C->unk8].clip.x;
+            r->y = g_gameState->drawEnv[g_gameState->unk1C->unk8].clip.y;
             r->h = 218;
             r->w = size / 2 / r->h + 1;
             LoadImage(r, addr);
@@ -390,8 +390,8 @@ void wm_fetchParkedSound(void) {
     if (gd->unk8E4.world->parkedSoundSize != -1) {
         r = &D_800CE0B8[D_800CCA1C];
         h = 0xDA;
-        r->x = g_gameState->unk10[gd->unk8].clip.x;
-        r->y = g_gameState->unk10[g_gameState->unk1C->unk8].clip.y;
+        r->x = g_gameState->drawEnv[gd->unk8].clip.x;
+        r->y = g_gameState->drawEnv[g_gameState->unk1C->unk8].clip.y;
         dst = (u32 *)(D_80067944 + 0x91800);
         r->h = h;
         r->w = ((u32)g_gameState->unk1C->unk8E4.world->parkedSoundSize >> 1) / h + 1;
@@ -1270,11 +1270,11 @@ void wm_endFrame(void) {
     }
     VSync(g_gameState->vsyncMode);
     ResetGraph(1);
-    PutDispEnv(&g_gameState->unkC[g_gameState->unk1C->unk8]);
+    PutDispEnv(&g_gameState->dispEnv[g_gameState->unk1C->unk8]);
     gd = g_gameState->unk1C;
     if (!(gd->unk0 & 0x100)) {
         if (gd->unk8E4.world->unk0 & 0x400) {
-            DrawOTagEnv(gd->unk10[gd->unk8] + 0xFFF, &g_gameState->unk10[gd->unk8]);
+            DrawOTagEnv(gd->unk10[gd->unk8] + 0xFFF, &g_gameState->drawEnv[gd->unk8]);
         } else {
             DrawOTag(gd->unk10[gd->unk8]);
         }
@@ -1353,19 +1353,19 @@ void wm_updateBattleTransition(void) {
         o->battleStep--;
     } else if (o->battleStep == 0) {
         if (o->battleMusic != 0xFFFF && o->battleMusic != gd->unk81C[0]) {
-            cd_seekAsync(g_gameState->unk20 + wm_findSoundFile(o->battleMusic | 0x70000, &size, gs), 0);
+            cd_seekAsync(g_gameState->imgSector + wm_findSoundFile(o->battleMusic | 0x70000, &size, gs), 0);
             if (g_gameState->unk1C->unk0 & 0x20000000) {
                 wm_soundCommand(0x800, g_gameState->unk1C->unk81C[0], 0, 0, 0);
             }
             wm_soundCommand(0x700, g_gameState->unk1C->unk8E4.world->unk8->battleMusic, 0, 0, 0);
             g_gameState->unk1C->unk8E4.world->unk8->battleStep = -1;
         } else {
-            cd_seekAsync(g_gameState->unk20 + file_find(0, 0x1000B)->unk4, 0);
+            cd_seekAsync(g_gameState->imgSector + file_find(0, 0x1000B)->unk4, 0);
             g_gameState->unk1C->unk8E4.world->unk8->battleStep = -2;
         }
     } else if (o->battleStep == -1) {
         if (wm_soundCommand(WM_SND_GET_STATE, 0, 0, 0, 0) == 0) {
-            cd_seekAsync(g_gameState->unk20 + file_find(0, 0x1000B)->unk4, 0);
+            cd_seekAsync(g_gameState->imgSector + file_find(0, 0x1000B)->unk4, 0);
             wm_soundCommand(0, g_gameState->unk1C->unk8E4.world->unk8->battleMusic, 0, 0, 0);
             akao_setMusicVolume(0, 0x7F);
             g_gameState->unk1C->unk8E4.world->unk8->battleStep = -2;

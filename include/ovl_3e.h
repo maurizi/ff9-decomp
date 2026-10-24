@@ -46,7 +46,7 @@ enum {
     DISC_CHECK_NO_DISC,        /* motor didn't spin up in 600 frames, or CdGetDiskType says no disc */
     DISC_CHECK_OTHER_FORMAT,   /* CdDiskReady error or not a CD-ROM */
     DISC_CHECK_ERROR,
-    DISC_CHECK_WRONG_DISC = 6, /* g_gameState->unkB doesn't have the wanted disc's bit */
+    DISC_CHECK_WRONG_DISC = 6, /* g_gameState->disc doesn't have the wanted disc's bit */
     DISC_CHECK_OK              /* the wanted disc */
 };
 

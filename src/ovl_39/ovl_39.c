@@ -635,8 +635,8 @@ void menuSave_openConfirm(s32 id, s32 yes, s32 no) {
     s_menuSaveConfirm.noHelp = no;
     r.w = w;
     r.h = h;
-    r.x = (g_gameState->unkC->disp.w - w) >> 1;
-    r.y = (g_gameState->unkC->disp.h - h) >> 1;
+    r.x = (g_gameState->dispEnv->disp.w - w) >> 1;
+    r.y = (g_gameState->dispEnv->disp.h - h) >> 1;
     s_menuSaveConfirm.win = win_openFree(&r, 0x19, 2);
     win_setOnOpened(s_menuSaveConfirm.win, menuSave_onConfirmOpened);
     win_setOnClosed(s_menuSaveConfirm.win, menuSave_onConfirmClosed);
@@ -1231,8 +1231,8 @@ void menuSave_openMessage(s32 id, s32 title) {
         h = (sz >> 12) * 15 + 0x10;
         r.w = w;
         r.h = h;
-        r.x = (g_gameState->unkC->disp.w - w) >> 1;
-        r.y = (g_gameState->unkC->disp.h - h) >> 1;
+        r.x = (g_gameState->dispEnv->disp.w - w) >> 1;
+        r.y = (g_gameState->dispEnv->disp.h - h) >> 1;
         m->win = win_openFree(&r, 0xF, 2);
         win_setDrawContent(m->win, menuSave_drawMessage);
         win_setOnOpened(m->win, menuSave_onMessageOpened);
@@ -1350,7 +1350,7 @@ u8 menuSave_startAccess(s32 mode) {
     win_setOnOpened(s_menuSaveAccess.win, menuSave_onAccessOpened);
     win_setOnClosed(s_menuSaveAccess.win, menuSave_onAccessClosed);
     win_setShadow(s_menuSaveAccess.win, 1);
-    win_setTitle(s_menuSaveAccess.win, D_800703FC.unk0[s_menuSaveAccessTitles[mode]]);
+    win_setTitle(s_menuSaveAccess.win, g_winLabelStrings.unk0[s_menuSaveAccessTitles[mode]]);
     return 1;
 }
 
@@ -1850,7 +1850,7 @@ void menuSave_buildHeader(SaveBuf *buf) {
     if (s_menuSave.mode == SAVE_MODE_NEXT_DISC) {
         h->discs = func_800B5074();
     } else {
-        h->discs = g_gameState->unkB;
+        h->discs = g_gameState->disc;
     }
     h->discs = menuSave_getDiscBit();
     h->version = SAVE_VERSION;
@@ -2055,7 +2055,7 @@ u8 menuSave_applyLoaded(void) {
     menuSave_initCrcTable();
     if (SAVE_BUF->crc == menuSave_crc16((u8 *)SAVE_BUF, SAVE_CRC_LEN)) {
         h = &SAVE_BUF->hdr;
-        g_gameState->unkB = h->discs;
+        g_gameState->disc = h->discs;
         game_setPlayTime(h->playTime);
         menuSave_unpackState(&SAVE_BUF->data.state);
         menuSave_unpackEvents(&SAVE_BUF->data.events);
@@ -2214,13 +2214,13 @@ void menuSave_unpackItems(SaveItems *s) {
 }
 
 void menuSave_packMisc(SaveMisc *p) {
-    p->unk0 = g_gameState->unk1C->unk844;
+    p->unk0 = g_gameState->unk1C->chocograph;
     p->unk4 = g_gameState->unk1C->unk880;
     p->unk14 = g_gameState->unk1C->unk892;
 }
 
 void menuSave_unpackMisc(SaveMisc *p) {
-    g_gameState->unk1C->unk844 = p->unk0;
+    g_gameState->unk1C->chocograph = p->unk0;
     g_gameState->unk1C->unk880 = p->unk4;
     g_gameState->unk1C->unk892 = p->unk14;
 }

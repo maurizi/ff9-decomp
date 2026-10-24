@@ -128,7 +128,7 @@ typedef struct {
     s32 style; /* win_openFree 3rd argument */
     void (*draw)(Window *);
     s32 otz;
-    s32 label; /* index into D_800703FC */
+    s32 label; /* index into g_winLabelStrings */
 } ShopWinDef;
 extern ShopWinDef s_shopSellWindows[2];
 void shopSell_onQuantityOpened(Window *);
@@ -213,7 +213,7 @@ typedef struct {
     u8 unk2;
     u8 unk3;
 } Unk8006D328; /* equipment stat bonuses, from item 0x58 */
-extern Unk8006D328 D_8006D328[];
+extern Unk8006D328 g_armorStatBonus[];
 
 void shop_drawMessage(void);
 void shop_inputMenu(void);

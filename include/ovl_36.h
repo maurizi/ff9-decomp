@@ -260,7 +260,7 @@ static inline void menuCard_updateImageLoad_read(CardCache *c) {
         s_menuCard.cache.reading = 1;
         x = c->loading;
         s_menuCard.loadingId = x;
-        cd_readAsync(g_gameState->unk20 + s_menuCard.imageFile->unk4 + x, 0x800, s_menuCard.sectorBuf, NULL);
+        cd_readAsync(g_gameState->imgSector + s_menuCard.imageFile->unk4 + x, 0x800, s_menuCard.sectorBuf, NULL);
     }
 }
 

@@ -19,7 +19,7 @@ void opening_main(void) {
         case OPENING_ATTRACT1:
             if (opening_attract(0) != 0) {
                 g_openingState = OPENING_DONE;
-            } else if (g_gameState->unkB != DISC_NONE && (g_gameState->unkB & DISC_1)) {
+            } else if (g_gameState->disc != DISC_NONE && (g_gameState->disc & DISC_1)) {
                 n = OPENING_PAUSE_FRAMES;
                 g_openingState = OPENING_PAUSE1;
             } else {
@@ -42,7 +42,7 @@ void opening_main(void) {
         case OPENING_ATTRACT2:
             if (opening_attract(1) != 0) {
                 g_openingState = OPENING_DONE;
-            } else if (g_gameState->unkB != DISC_NONE && (g_gameState->unkB & DISC_1)) {
+            } else if (g_gameState->disc != DISC_NONE && (g_gameState->disc & DISC_1)) {
                 n = OPENING_PAUSE_FRAMES;
                 g_openingState = OPENING_PAUSE2;
             } else {
@@ -80,10 +80,10 @@ void opening_swapBuffers(void) {
     DrawSync(0);
     VSync(g_gameState->vsyncMode);
     ResetGraph(1);
-    PutDispEnv(&g_gameState->unkC[g_gameState->unk1C->unk8]);
+    PutDispEnv(&g_gameState->dispEnv[g_gameState->unk1C->unk8]);
     ctx = g_gameState->unk1C;
     i = ctx->unk8;
-    DrawOTagEnv(ctx->unk10[i] + 0xFFF, &g_gameState->unk10[i]);
+    DrawOTagEnv(ctx->unk10[i] + 0xFFF, &g_gameState->drawEnv[i]);
     g_gameState->unk1C->unk8 ^= 1;
     gfx_setBuffer(g_gameState->unk1C->unk8);
 }
@@ -112,7 +112,7 @@ void opening_findSceneSectors(void) {
 
     if (mode == 1 || mode == 3) {
         id = -1;
-        f = gs->unk14;
+        f = gs->dirs;
         base = f->unk8;
         area = D_80067944 + ((base << 11) + 0x14C700);
         if (mode == 1) {
@@ -136,8 +136,8 @@ void opening_findSceneSectors(void) {
                 break;
             }
         }
-        start = area + ((gs->unk14->unk28 - base) << 11);
-        e = (SceneDirEntry *)start + gs->unk14->unk24 - 1;
+        start = area + ((gs->dirs->unk28 - base) << 11);
+        e = (SceneDirEntry *)start + gs->dirs->unk24 - 1;
         for (;;) {
             if (e->id == id) {
                 ctx->sceneSector[0] = e->sector;

@@ -1253,7 +1253,7 @@ void fld_movieUpdate(void) {
                         &g_fieldMovieMaskPkt[g_gameState->unk1C->unk8 ^ 1]);
                 DrawOTag(g_gameState->unk1C->unk10[g_gameState->unk1C->unk8 ^ 1]);
             } else if (g_gameState->unk1C->unk8E4.field->unkC->unk14->movieRgb24 != 0 && g_gameState->unk1C->unk8 == 0) {
-                g_gameState->unkC[g_gameState->unk1C->unk8].disp.x = 0x1E0;
+                g_gameState->dispEnv[g_gameState->unk1C->unk8].disp.x = 0x1E0;
             }
             if ((g_mbgFrame >= t || g_fieldMovieLastFrame >= g_mbgFrame) && !(g_fieldMovieFlags & 0x100)) {
                 if (g_fieldMovieLastFrame >= g_mbgFrame) {
@@ -1261,7 +1261,7 @@ void fld_movieUpdate(void) {
                     g_gameState->unk1C->unk0 &= ~0x1D;
                     g_gameState->unk1C->unk8E4.field->unk0 &= ~0xE01;
                     if (g_gameState->unk1C->unk8E4.field->unkC->unk14->movieRgb24 != 0 && g_gameState->unk1C->unk8 == 0) {
-                        g_gameState->unkC[g_gameState->unk1C->unk8].disp.x = 0x1E0;
+                        g_gameState->dispEnv[g_gameState->unk1C->unk8].disp.x = 0x1E0;
                     }
                     printf("Fr: %d\n", g_fieldMovieLastFrame);
                 } else {
@@ -1301,8 +1301,8 @@ void fld_movieFinish(void) {
     g_fieldMovieFlags &= 0xFE00;
     f->unk0 &= ~0x1E01;
     g_gameState->vsyncMode = 2;
-    g_gameState->unkC[0].disp.x = 0x140;
-    g_gameState->unkC[1].disp.x = 0;
+    g_gameState->dispEnv[0].disp.x = 0x140;
+    g_gameState->dispEnv[1].disp.x = 0;
     fld_soundCommand(0x6201, -1, g_gameState->unk1C->unk8E4.field->unkC->unk14->unk5C, 0, 0);
 }
 
@@ -1365,15 +1365,15 @@ void fld_endFrame(void) {
         g_fieldMovieFlags &= ~8;
     }
     if (!(g_gameState->unk1C->unk8E4.field->unk0 & 0x20)) {
-        PutDispEnv(&g_gameState->unkC[g_gameState->unk1C->unk8]);
+        PutDispEnv(&g_gameState->dispEnv[g_gameState->unk1C->unk8]);
     }
     if (!(g_gameState->unk1C->unk0 & 0x100)) {
         f = g_gameState->unk1C->unk8E4.field->unk0;
         if (!(f & 0x40)) {
             if (f & 0x400) {
-                PutDrawEnv(&g_gameState->unk10[g_gameState->unk1C->unk8]);
+                PutDrawEnv(&g_gameState->drawEnv[g_gameState->unk1C->unk8]);
             } else if (f & 4) {
-                DrawOTagEnv(&g_gameState->unk1C->unk10[g_gameState->unk1C->unk8][0xFFF], &g_gameState->unk10[g_gameState->unk1C->unk8]);
+                DrawOTagEnv(&g_gameState->unk1C->unk10[g_gameState->unk1C->unk8][0xFFF], &g_gameState->drawEnv[g_gameState->unk1C->unk8]);
             } else {
                 DrawOTag(g_gameState->unk1C->unk10[g_gameState->unk1C->unk8]);
             }

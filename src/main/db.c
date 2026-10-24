@@ -174,7 +174,7 @@ void game_initState(void) {
     file_loadDirTables();
     config_init();
     game_initTimer();
-    gs->unk4 = g_allocTop;
+    gs->allocTop = g_allocTop;
 }
 
 void game_quitState(void) {
@@ -183,10 +183,10 @@ void game_quitState(void) {
 void game_allocState(void) {
     g_allocTop = 0x8008B000;
     g_gameState = (GameState *)0x8008B000;
-    g_gameState->unkC = (DISPENV *)0x8008B044;
-    g_gameState->unk10 = (DRAWENV *)0x8008B06C;
-    g_gameState->unk14 = (GameStateUnk14 *)0x8008B124;
-    g_gameState->unk18 = (void *)0x8008B214;
+    g_gameState->dispEnv = (DISPENV *)0x8008B044;
+    g_gameState->drawEnv = (DRAWENV *)0x8008B06C;
+    g_gameState->dirs = (GameStateUnk14 *)0x8008B124;
+    g_gameState->dirTables = (void *)0x8008B214;
     g_allocTop = 0x8008B250;
 }
 
@@ -195,23 +195,23 @@ void game_resetState(void) {
     s32 i;
 
     gs->unk0 = GS_RELOAD_FILE_TABLES;
-    gs->unkB = 0xFF;
-    gs->unk4 = 0;
+    gs->disc = 0xFF;
+    gs->allocTop = 0;
     gs->mode = 0;
     gs->unkA = 0;
-    gs->unk20 = -1;
+    gs->imgSector = -1;
     gs->unk1C = NULL;
     game_setClearColor(0, 0, 0);
     game_setScreenHeight(0xE0);
     gs->vsyncMode = 0;
     for (i = 14; i >= 0; i--) {
-        ((DirInfo *)gs->unk14)[i].unk0 = i;
-        ((DirInfo *)gs->unk14)[i].unk4 = 0;
-        ((DirInfo *)gs->unk14)[i].unk8 = 0;
-        ((DirInfo *)gs->unk14)[i].unkC = 0;
-        gs->unk18[i] = NULL;
+        ((DirInfo *)gs->dirs)[i].unk0 = i;
+        ((DirInfo *)gs->dirs)[i].unk4 = 0;
+        ((DirInfo *)gs->dirs)[i].unk8 = 0;
+        ((DirInfo *)gs->dirs)[i].unkC = 0;
+        gs->dirTables[i] = NULL;
     }
-    gs->unk30 = 0;
+    gs->dirCount = 0;
     for (i = 0; (u32)i < 15; i++) {
         gs->unk34[i] = 0;
     }
@@ -220,13 +220,13 @@ void game_resetState(void) {
 void game_setClearColor(s32 r, s32 g, s32 b) {
     DRAWENV *env;
 
-    env = g_gameState->unk10;
+    env = g_gameState->drawEnv;
     env[1].r0 = r;
     env[0].r0 = r;
-    env = g_gameState->unk10;
+    env = g_gameState->drawEnv;
     env[1].g0 = g;
     env[0].g0 = g;
-    env = g_gameState->unk10;
+    env = g_gameState->drawEnv;
     env[1].b0 = b;
     env[0].b0 = b;
 }
@@ -251,38 +251,38 @@ void game_setScreenHeight(s32 h) {
         col.unk0[2] = 0xFF - col.unk0[2];
     }
     if (!fade) {
-        col.unk0[0] = g_gameState->unk10->r0;
-        col.unk0[1] = g_gameState->unk10->g0;
-        col.unk0[2] = g_gameState->unk10->b0;
+        col.unk0[0] = g_gameState->drawEnv->r0;
+        col.unk0[1] = g_gameState->drawEnv->g0;
+        col.unk0[2] = g_gameState->drawEnv->b0;
     }
-    if (g_gameState->unkC->disp.h < h) {
+    if (g_gameState->dispEnv->disp.h < h) {
         r.x = 0;
-        r.y = g_gameState->unkC->disp.h;
+        r.y = g_gameState->dispEnv->disp.h;
         r.w = 0x280;
-        r.h = h - g_gameState->unkC->disp.h;
+        r.h = h - g_gameState->dispEnv->disp.h;
         ClearImage(&r, col.unk0[0], col.unk0[1], col.unk0[2]);
         DrawSync(0);
     }
-    SetDefDispEnv(&g_gameState->unkC[0], 0x140, 0, 0x140, h);
-    SetDefDispEnv(&g_gameState->unkC[1], 0, 0, 0x140, h);
-    g_gameState->unkC[0].isinter = g_gameState->unkC[1].isinter = 0;
-    g_gameState->unkC[0].screen.x = g_gameState->unkC[1].screen.x = 0;
-    g_gameState->unkC[0].screen.y = g_gameState->unkC[1].screen.y = (0xF0 - h) / 2;
-    g_gameState->unkC[0].screen.h = g_gameState->unkC[1].screen.h = h;
-    SetDefDrawEnv(&g_gameState->unk10[0], 0, 0, 0x140, h);
-    SetDefDrawEnv(&g_gameState->unk10[1], 0x140, 0, 0x140, h);
-    draw = g_gameState->unk10;
+    SetDefDispEnv(&g_gameState->dispEnv[0], 0x140, 0, 0x140, h);
+    SetDefDispEnv(&g_gameState->dispEnv[1], 0, 0, 0x140, h);
+    g_gameState->dispEnv[0].isinter = g_gameState->dispEnv[1].isinter = 0;
+    g_gameState->dispEnv[0].screen.x = g_gameState->dispEnv[1].screen.x = 0;
+    g_gameState->dispEnv[0].screen.y = g_gameState->dispEnv[1].screen.y = (0xF0 - h) / 2;
+    g_gameState->dispEnv[0].screen.h = g_gameState->dispEnv[1].screen.h = h;
+    SetDefDrawEnv(&g_gameState->drawEnv[0], 0, 0, 0x140, h);
+    SetDefDrawEnv(&g_gameState->drawEnv[1], 0x140, 0, 0x140, h);
+    draw = g_gameState->drawEnv;
     draw[1].dfe = 1;
     draw[0].dfe = 1;
-    draw = g_gameState->unk10;
+    draw = g_gameState->drawEnv;
     draw[1].dtd = 1;
     draw[0].dtd = 1;
-    draw = g_gameState->unk10;
+    draw = g_gameState->drawEnv;
     draw[1].isbg = 1;
     draw[0].isbg = 1;
     VSync(0);
     if (g_gameState->unk1C != NULL) {
-        PutDispEnv(&g_gameState->unkC[g_gameState->unk1C->unk8]);
+        PutDispEnv(&g_gameState->dispEnv[g_gameState->unk1C->unk8]);
     }
 }
 
@@ -294,9 +294,9 @@ void game_freezeScreen(void) {
 
     if (g_gameState->unk1C != NULL) {
         VSync(0);
-        PutDispEnv(&g_gameState->unkC[g_gameState->unk1C->unk8]);
+        PutDispEnv(&g_gameState->dispEnv[g_gameState->unk1C->unk8]);
         fade = 0;
-        memmove(&D_80073C88, &g_gameState->unk10[g_gameState->unk1C->unk8 ^ 1], sizeof(DRAWENV));
+        memmove(&D_80073C88, &g_gameState->drawEnv[g_gameState->unk1C->unk8 ^ 1], sizeof(DRAWENV));
         if (fade_isActive() || fade_isBusy()) {
             fade = 1;
         }

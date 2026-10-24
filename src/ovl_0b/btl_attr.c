@@ -627,13 +627,13 @@ void btl_setBattleVar(s32 arg0, s32 arg1) {
         break;
     case 33:
         if (b->unkD80 == 1) {
-            g_gameState->unk1C->unk56E = arg1;
+            g_gameState->unk1C->battleEndKind = arg1;
             if (arg1 == 1 && ((b->unk132C.unk0 >> 6) & 1)) {
                 b->unkD80 = 5;
                 b->unkD81 = 4;
             } else {
-                if (g_gameState->unk1C->unk56E == 1) {
-                    g_gameState->unk1C->unk56E = 2;
+                if (g_gameState->unk1C->battleEndKind == 1) {
+                    g_gameState->unk1C->battleEndKind = 2;
                 }
                 b->unkD80 = 8;
                 b->unkD81 = 0;
@@ -644,7 +644,7 @@ void btl_setBattleVar(s32 arg0, s32 arg1) {
         if (b->unkD80 == 1) {
             b->unkD80 = 7;
             b->unkD81 = 0;
-            g_gameState->unk1C->unk56E = 3;
+            g_gameState->unk1C->battleEndKind = 3;
         }
         break;
     case 35:

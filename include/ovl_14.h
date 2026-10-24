@@ -37,7 +37,7 @@ typedef struct {
 #define SE_CANCEL 0x65
 #endif
 #define SE_GAME_START 0xC18 /* New Game on the title, and the ending's secret code */
-/* g_gameState->unkB: one bit per disc of the game found in the drive (bit 0 = disc 1), 0xFF = no disc read.
+/* g_gameState->disc: one bit per disc of the game found in the drive (bit 0 = disc 1), 0xFF = no disc read.
  * The opening plays its movie only with disc 1 in (bit 0), the ending only with disc 4 (bit 3), and New Game
  * sets it to disc 1 before scene_checkDisc asks for the disc that was in before. */
 #define DISC_NONE 0xFF

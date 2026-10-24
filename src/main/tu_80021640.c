@@ -76,7 +76,7 @@ s32 cdRead_update(void *arg0) {
                 n = p->unk10;
             }
             if (n != 0) {
-                cd_readAsync(g_gameState->unk20 + p->unk0 + p->unkC / 2048, n, p->unk8, NULL);
+                cd_readAsync(g_gameState->imgSector + p->unk0 + p->unkC / 2048, n, p->unk8, NULL);
             }
             p->unk10 = n;
             p->unk1C = 3;

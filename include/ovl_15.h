@@ -15,7 +15,7 @@
 #define SE_CANCEL 0x65
 #endif
 #define SE_GAME_START 0xC18 /* the secret code accepted (ovl_14: New Game on the title) */
-/* g_gameState->unkB: one bit per disc of the game found in the drive (bit 0 = disc 1), 0xFF = no disc read.
+/* g_gameState->disc: one bit per disc of the game found in the drive (bit 0 = disc 1), 0xFF = no disc read.
  * The ending plays its movie only with disc 4 in (see ovl_14.h). */
 #define DISC_NONE 0xFF
 #define DISC_1    1

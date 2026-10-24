@@ -25,7 +25,7 @@ s32 btlfx_reloadCommonData(s32 arg0) {
     u32 *p = (u32 *)0x801E7700;
     if (arg0 == 0) {
         FileEntry *e = file_find(1, 0x2BF);
-        cd_readAsync(g_gameState->unk20 + e->unk4, (e->unkC - e->unk4) << 11, (void *)0x801E7700, 0);
+        cd_readAsync(g_gameState->imgSector + e->unk4, (e->unkC - e->unk4) << 11, (void *)0x801E7700, 0);
     } else if (cd_getState() == 0) {
         func_800D0940();
         r.w = 0x40;
@@ -1217,8 +1217,8 @@ void func_800E702C(void) {
     g_btlfxEnv->unk28 = 0;
     gd = g_gameState->unk1C;
     g_btlfxEnv->unk20 = (s32 *)gd->unk10[gd->unk8];
-    g_btlfxEnv->unk18 = &g_gameState->unkC[g_gameState->unk1C->unk8];
-    g_btlfxEnv->unk1C = &g_gameState->unk10[g_gameState->unk1C->unk8];
+    g_btlfxEnv->unk18 = &g_gameState->dispEnv[g_gameState->unk1C->unk8];
+    g_btlfxEnv->unk1C = &g_gameState->drawEnv[g_gameState->unk1C->unk8];
     g_btlfxEnv->unk14 = &g_gameState->unk1C->unk18;
 }
 
@@ -1227,8 +1227,8 @@ void btlfx_beginPrims(u8 *arg0, s32 *arg1) {
     GameState *g = g_gameState;
     p->unk28 = 0;
     p->unk20 = arg1;
-    p->unk18 = &g->unkC[g->unk1C->unk8];
-    p->unk1C = &g->unk10[g->unk1C->unk8];
+    p->unk18 = &g->dispEnv[g->unk1C->unk8];
+    p->unk1C = &g->drawEnv[g->unk1C->unk8];
     p->unk14 = &g->unk1C->unk18;
     p->unk24 = arg0;
 }

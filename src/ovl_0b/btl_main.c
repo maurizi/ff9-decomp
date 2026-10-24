@@ -144,7 +144,7 @@ void btl_initMode(void) {
     g->unk39 = 0;
     g->unk38 = 0;
     g->unk84C = 0;
-    b->unk1534 = g_gameState->unk20 + g_gameState->unk14->unkDC;
+    b->unk1534 = g_gameState->imgSector + g_gameState->dirs->unkDC;
     btl_loadCommonData();
     func_800A8F10();
     func_800A8F18();
@@ -779,7 +779,7 @@ loop:
             req->unk4 = (s32)b->unk11C0->unk48;
             req->unk8 = (bf->unk8 - bf->unkC) << 11;
             req->unkC = arg2->unkC;
-            cd_readChunks(g_gameState->unk20 + best, req, 2, 0);
+            cd_readChunks(g_gameState->imgSector + best, req, 2, 0);
             arg2->unk2 = 6;
             st->unk0 = 1;
         } else {
@@ -883,7 +883,7 @@ loop:
                 req->unk4 = arg1->unk24;
                 req->unk8 = (sz << 11) - 0x1000;
                 req->unkC = b->unk153C[i];
-                cd_readChunks(g_gameState->unk20 + n, req, 2, 0);
+                cd_readChunks(g_gameState->imgSector + n, req, 2, 0);
                 arg1->unk2 = 7;
                 st->unk0 = 1;
             } else {
@@ -989,7 +989,7 @@ loop:
             req->unk0 = f->unk2 << 11;
             req->unk4 = arg1->unk24;
             req->unk8 = (sz - f->unk2) << 11;
-            cd_readChunks(g_gameState->unk20 + n, req, 2, 0);
+            cd_readChunks(g_gameState->imgSector + n, req, 2, 0);
             arg1->unk2 = 7;
             st->unk0 = 2;
         } else {
@@ -1408,7 +1408,7 @@ s32 func_800ABBC4(s32 arg0, s32 arg1) {
         break;
     case 3:
         f = (FileEntry16 *)file_find(0xA, func_800ABA10(arg0, arg1 & ~0x10));
-        src = g_gameState->unk20 + f->unk4;
+        src = g_gameState->imgSector + f->unk4;
         sz = f->unkC - f->unk4;
         req->unk0 = f->unk2 << 11;
         req->unk4 = st->unk24;
@@ -2159,7 +2159,7 @@ void btl_endFrame(void) {
     addPrim(&((u32 *)g_gameState->unk1C->unk8E4.battle->unk11C0->unk2C[g_gameState->unk1C->unk8])[0xFF], &D_800FDED0[g_gameState->unk1C->unk8].unkC);
     func_800EA290();
     if (!(g_gameState->unk1C->unk0 & 0x100) && !(g_gameState->unk1C->unk8E4.ovl65->unk0 & 0x200)) {
-        func_800EA1F8(&((u32 *)g_gameState->unk1C->unk8E4.battle->unk11C0->unk2C[g_gameState->unk1C->unk8])[0xFF], &g_gameState->unk10[g_gameState->unk1C->unk8]);
+        func_800EA1F8(&((u32 *)g_gameState->unk1C->unk8E4.battle->unk11C0->unk2C[g_gameState->unk1C->unk8])[0xFF], &g_gameState->drawEnv[g_gameState->unk1C->unk8]);
         DrawOTag(&g_gameState->unk1C->unk10[g_gameState->unk1C->unk8][0xFFF]);
     }
     if (!(g_gameState->unk1C->unk0 & 0x20)) {

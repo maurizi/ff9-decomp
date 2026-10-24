@@ -64,7 +64,7 @@ s32 btl_update(void) {
         if ((u8)func_800AF578(g, b)) {
             g->unk56F |= 0x40;
             if (b->unkD81 == 0) {
-                if (g->unk56E != 5) {
+                if (g->battleEndKind != 5) {
                     fade_out(0x20);
                 }
                 b->unkD81++;
@@ -216,7 +216,7 @@ void btl_victory(GameData *arg0, Battle *arg1) {
         case 0:
         case 4:
             arg0->unk56F |= 0x40;
-            arg0->unk56E = 1;
+            arg0->battleEndKind = 1;
             if ((arg1->unk132C.unk0 >> 6) & 1) {
                 if ((u8)btl_playVictoryMusic(arg0, 0x1E, 5) == 0) {
                     break;
@@ -248,7 +248,7 @@ void btl_victory(GameData *arg0, Battle *arg1) {
             arg1->unkD80 = 6;
             break;
         case 1:
-            arg0->unk56E = 3;
+            arg0->battleEndKind = 3;
             arg1->unkD80 = 7;
             break;
         case 2:
@@ -277,7 +277,7 @@ void btl_victory(GameData *arg0, Battle *arg1) {
             if ((arg1->unk132C.unk0 & 0x4040) == 0x4000) {
                 arg0->unk56F |= 8;
             }
-            arg0->unk56E = 4;
+            arg0->battleEndKind = 4;
             arg1->unkD80 = 8;
             btl_clearRewards();
             if (arg0->unk56F & 4) {
@@ -386,7 +386,7 @@ void btl_initBattleState(void) {
         v = 8;
     }
     gd->characters[3].unk34.w = (gd->characters[3].unk34.w & ~0x1F0) | (v << 4);
-    g_gameState->unk1C->unk56E = 0;
+    g_gameState->unk1C->battleEndKind = 0;
     btl_initState();
     func_800E3D80();
     btlcam_init();

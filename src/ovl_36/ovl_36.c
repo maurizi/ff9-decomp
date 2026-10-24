@@ -536,8 +536,8 @@ void menuCard_updateHelp(void) {
         if (s_menuCard.discardCursor == CARD_DISCARD_NO) {
             r.x = 0;
             r.y = 0x8C;
-            r.w = g_gameState->unkC->disp.w;
-            r.h = g_gameState->unkC->disp.h - 0x8C;
+            r.w = g_gameState->dispEnv->disp.w;
+            r.h = g_gameState->dispEnv->disp.h - 0x8C;
             help_setBounds(&r);
         }
         g_menuHelp.text = text_get(s_menuCard.discardCursor + CARD_TEXT_HELP_DISCARD);

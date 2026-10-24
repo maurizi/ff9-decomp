@@ -276,7 +276,7 @@ typedef struct {
     s16 unk568;
     s16 unk56A;
     s16 unk56C;
-    u8 unk56E;
+    u8 battleEndKind; /* 6 = game over (ovl_65 battle_end; event system variable 27) */
     u8 unk56F;
     u8 unk570;
     u8 unk571;
@@ -313,7 +313,7 @@ typedef struct {
     s32 (*unk83C)(s32, s32, s32, s32, s32);
     u16 unk840;
     u16 unk842;
-    s32 unk844; /* selected chocograph (1-based, 0 = none) */
+    s32 chocograph; /* selected chocograph 1-24, 0 = none (runtime field/menu campaign) */
     s8 unk848;
     u8 unk849[1];
     u16 unk84A;
@@ -369,21 +369,21 @@ typedef struct {
 
 typedef struct {
     u32 unk0; /* flags */
-    u32 unk4; /* allocator top after boot (g_allocTop) */
+    u32 allocTop; /* allocator top after boot (g_allocTop, game_initState) */
     u8 mode; /* runtime: 0 title, 1 field (and its menus) */
     u8 vsyncMode; /* VSync mode */
     u8 unkA;
-    u8 unkB;          /* disc / pad connection bits, 0xFF = none */
-    DISPENV *unkC;    /* [2] */
-    DRAWENV *unk10;   /* [2] */
-    GameStateUnk14 *unk14;
-    void **unk18; /* file tables, indexed like unk14 */
+    u8 disc;          /* disc bit (1 << disc - 1) of the SLUS file file_initImg found, 0xFF = none */
+    DISPENV *dispEnv;    /* [2] */
+    DRAWENV *drawEnv;   /* [2] */
+    GameStateUnk14 *dirs; /* FF9.IMG directory records (file_initImg) */
+    void **dirTables; /* file tables per directory (file_loadDirTables) */
     GameData *unk1C;
-    s32 unk20; /* base CD sector added to file start sectors */
+    s32 imgSector; /* FF9.IMG's first sector, added to file start sectors (file_initImg) */
     u32 config; /* Config screen settings, viewed bit by bit as GameConfig (with padMap) */
     u32 padMap; /* custom pad mapping, 4 bits per action */
     u32 playTime; /* frames at 60/s, shown as h:mm:ss in the menu (runtime) */
-    s32 unk30;
+    s32 dirCount; /* FF9.IMG directories (file_initImg) */
     u8 unk34[15];
 } GameState;
 
@@ -1735,7 +1735,7 @@ typedef struct {
     s32 unkC; /* end sector / next id */
 } FileEntry;
 
-/* g_gameState->unk14[i]: per-directory header (file_find) */
+/* g_gameState->dirs[i]: per-directory header (file_find) */
 typedef struct {
     s32 unk0; /* 3 = flat u16 table at unk18[13] */
     s32 unk4; /* entry count */
@@ -1743,7 +1743,7 @@ typedef struct {
     s32 unkC;
 } FileDirEntry;
 
-/* g_gameState->unk18[i]: 8-byte {id, sector} entries searched by file_find */
+/* g_gameState->dirTables[i]: 8-byte {id, sector} entries searched by file_find */
 typedef struct {
     u16 unk0; /* id */
     u16 unk2;
@@ -1799,7 +1799,7 @@ typedef struct {
     u8 padA8[0xC0 - 0xA8];
     s32 unkC0;
 } Unk800703FC; /* text table? */
-extern Unk800703FC D_800703FC;
+extern Unk800703FC g_winLabelStrings;
 
 extern u8 *D_80067944; /* end of load area */
 extern s32 D_80067948;

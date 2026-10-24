@@ -365,8 +365,8 @@ void fadeFlat_draw(FadeState *p) {
     t->b0 = g_fadeFlat.unk30.unk8;
     t->y0 = 0;
     t->x0 = 0;
-    t->w = g_gameState->unkC->disp.w;
-    t->h = g_gameState->unkC->disp.h;
+    t->w = g_gameState->dispEnv->disp.w;
+    t->h = g_gameState->dispEnv->disp.h;
     SetSemiTrans(t, 1);
     addPrim(ot, t);
     g_fade.pkt += sizeof(TILE);

@@ -529,7 +529,7 @@ Unk8004AB64 *evt_getPlayer(void);
 u8 func_800B5074(void); /* other overlay */
 u8 func_800B5064(void); /* other overlay */
 void config_apply(void);
-/* Window labels: entries of main's label string table D_800703FC (ASCII), e.g. D_80070440 "ERROR",
+/* Window labels: entries of main's label string table g_winLabelStrings (ASCII), e.g. D_80070440 "ERROR",
  * D_8007048C "NOTICE", D_80070450 "HELP" (declared in ff9.h) */
 extern s32 D_80070420; /* "CHECK" */
 extern s32 D_80070444; /* "FILE" */
@@ -588,7 +588,7 @@ extern void (*s_menuSaveCheckSteps[])(void);
 extern u8 s_menuSaveCheckRetries[]; /* tries allowed per CARD_RES_* */
 extern u8 s_menuSaveResetAfterMsg[]; /* per SAVE_ST_* */
 extern u8 s_menuSavePortraitIds[]; /* portrait per chr_getPortrait result */
-extern s32 s_menuSaveAccessTitles[]; /* D_800703FC index per ACCESS_* */
+extern s32 s_menuSaveAccessTitles[]; /* g_winLabelStrings index per ACCESS_* */
 extern RECT s_menuSaveGaugeTexWindow;
 extern u32 s_menuSaveGaugeColors[3];
 extern u8 s_menuSaveHelpBuf[];

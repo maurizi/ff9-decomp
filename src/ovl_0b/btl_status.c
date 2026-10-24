@@ -981,9 +981,9 @@ void btl_checkEnemiesKO(void) {
 
 s32 btl_saveParty(Battle *arg0) {
     GameData *gd = g_gameState->unk1C;
-    u8 v = gd->unk56E;
+    u8 v = gd->battleEndKind;
     if ((v == 3 || v == 6) && !((arg0->unk132C.unk0 >> 4) & 1)) {
-        gd->unk56E = 6;
+        gd->battleEndKind = 6;
     } else {
         BtlUnit *u = g_gameState->unk1C->unk8E4.battle->unk6F8;
         while (u != NULL) {

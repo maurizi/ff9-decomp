@@ -363,10 +363,10 @@ void fadeWipe_draw(FadeState *arg0) {
         tpage = 32;
     }
     ReadGeomOffset(&ofx, &ofy);
-    SetGeomOffset(g_gameState->unkC->disp.w >> 1, g_gameState->unkC->disp.h >> 1);
+    SetGeomOffset(g_gameState->dispEnv->disp.w >> 1, g_gameState->dispEnv->disp.h >> 1);
     gte_ReadGeomScreen_r(h);
-    hw = g_gameState->unkC->disp.w >> 1;
-    hh = g_gameState->unkC->disp.h >> 1;
+    hw = g_gameState->dispEnv->disp.w >> 1;
+    hh = g_gameState->dispEnv->disp.h >> 1;
     PushMatrix();
     D_80077CB0.vx = 0;
     D_80077CB0.vy = 0;

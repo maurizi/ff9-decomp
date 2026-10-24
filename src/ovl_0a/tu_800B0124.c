@@ -1796,8 +1796,8 @@ void fld_showSplashImage(void) {
         g_gameState->vsyncMode = 2;
         VSync(g_gameState->vsyncMode);
         ResetGraph(1);
-        PutDispEnv(&g_gameState->unkC[g_gameState->unk1C->unk8]);
-        DrawOTagEnv(g_gameState->unk1C->unk10[g_gameState->unk1C->unk8] + 0xFFF, &g_gameState->unk10[g_gameState->unk1C->unk8]);
+        PutDispEnv(&g_gameState->dispEnv[g_gameState->unk1C->unk8]);
+        DrawOTagEnv(g_gameState->unk1C->unk10[g_gameState->unk1C->unk8] + 0xFFF, &g_gameState->drawEnv[g_gameState->unk1C->unk8]);
         g_gameState->unk1C->unk8 ^= 1;
     } while (state < 4);
 }

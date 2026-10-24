@@ -153,8 +153,8 @@ void menuConfig_drawPadMap(void) {
     RECT *r2;
     s32 i = 0;
 
-    ui_drawLabel(r->x + 0xB, r->y - 3, 0x11, D_800703FC.unk84, 0);
-    ui_drawLabel(r->x + 0x2D, r->y - 3, 0x11, D_800703FC.unk8C, 0);
+    ui_drawLabel(r->x + 0xB, r->y - 3, 0x11, g_winLabelStrings.unk84, 0);
+    ui_drawLabel(r->x + 0x2D, r->y - 3, 0x11, g_winLabelStrings.unk8C, 0);
     r2 = &s_menuConfig.wins[1].unk4;
     text_drawBlock(r2->x + 0x2A, r2->y + 8, 0x11, text_get(CONFIG_TEXT_PAD_EXIT), 0);
     for (; i < CONFIG_PAD_SLOTS; i++) {

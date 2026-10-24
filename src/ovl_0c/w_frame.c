@@ -530,7 +530,7 @@ s32 w_frameGetParameter(s32 arg0) {
     case WM_PARAM_REQ2:
         return D_800CF490;
     case 0xC6:
-        return g_gameState->unk1C->unk844;
+        return g_gameState->unk1C->chocograph;
     case WM_PARAM_CAMERA_YAW:
         return g_worldCamera->yaw >> 4;
     case WM_PARAM_CD_BUSY:
@@ -869,17 +869,17 @@ void wm_initDiscImage(void) {
             D_800CF580[i] = D_800CCF84[i];
         }
         printf("Read CD Image [Disc-1]\n");
-        g_worldImageSectors[0] = file_find(0xC, 0x3F3)->unk4 + g_gameState->unk20;
-        g_worldImageSectors[3] = file_find(0xC, 0x3FD)->unk4 + g_gameState->unk20;
-        g_worldImageSectors[4] = file_find(0xC, 0x407)->unk4 + g_gameState->unk20;
+        g_worldImageSectors[0] = file_find(0xC, 0x3F3)->unk4 + g_gameState->imgSector;
+        g_worldImageSectors[3] = file_find(0xC, 0x3FD)->unk4 + g_gameState->imgSector;
+        g_worldImageSectors[4] = file_find(0xC, 0x407)->unk4 + g_gameState->imgSector;
     } else {
         for (i = 0; i < 5; i++) {
             D_800CF580[i] = D_800CCF98[i];
         }
         printf("Read CD Image [Disc-4]\n");
-        g_worldImageSectors[0] = file_find(0xC, 0x3F6)->unk4 + g_gameState->unk20;
-        g_worldImageSectors[3] = file_find(0xC, 0x400)->unk4 + g_gameState->unk20;
-        g_worldImageSectors[4] = file_find(0xC, 0x40A)->unk4 + g_gameState->unk20;
+        g_worldImageSectors[0] = file_find(0xC, 0x3F6)->unk4 + g_gameState->imgSector;
+        g_worldImageSectors[3] = file_find(0xC, 0x400)->unk4 + g_gameState->imgSector;
+        g_worldImageSectors[4] = file_find(0xC, 0x40A)->unk4 + g_gameState->imgSector;
     }
     if (g_worldMapDebugFlags & WM_DEBUG_MEMORY) {
         printf(D_800A7BB8, g_worldImageSectors[0]);

@@ -1152,3 +1152,5 @@ swirl_drawFlash = 0x800540E8; // type:func [code] four semi-transparent POLY_G3 
 swirl_buildMesh = 0x80054294; // type:func [code] 9x9 grid around (x, y) rotated and scaled by the transition's angle/zoom (WarpVert mesh)
 swirl_drawMesh = 0x80054650; // type:func [code] POLY_FT4 per mesh cell texturing the current frame buffer
 g_swirlFrame = 0x8007BD28; // [code] frame counter of swirl_update (0..0x78)
+g_winLabelStrings = 0x800703FC; // [code] window title strings ("PARTY", "INFO", "HELP", "ERROR", ...) shown by ui_buildLabel (overlay naming pass)
+g_armorStatBonus = 0x8006D328; // [code] armor stat bonus table (overlay naming pass, ovl_33/ovl_3c)

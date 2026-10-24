@@ -191,9 +191,9 @@ s32 preload_startRead(void) {
             return -1;
         }
         if (p->unk2 == 0) {
-            r = cd_readAsync(g_gameState->unk20 + e->unk18, e->unk1C, (void *)e->unk8, preload_onReadDone);
+            r = cd_readAsync(g_gameState->imgSector + e->unk18, e->unk1C, (void *)e->unk8, preload_onReadDone);
         } else if (p->unk2 == 1) {
-            r = cd_seekAsync(g_gameState->unk20 + e->unk18, preload_onReadDone);
+            r = cd_seekAsync(g_gameState->imgSector + e->unk18, preload_onReadDone);
         } else {
             goto done;
         }

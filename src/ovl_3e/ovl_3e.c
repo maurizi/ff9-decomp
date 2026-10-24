@@ -126,11 +126,11 @@ u8 discChange_checkDisc(void) {
     VSync(3);
     for (i = 0; i < 10; i++) {
         file_initImg();
-        if (g_gameState->unkB != 0xFF) {
+        if (g_gameState->disc != 0xFF) {
             break;
         }
     }
-    if (g_gameState->unkB == 0xFF || !(g_gameState->unkB & mask)) {
+    if (g_gameState->disc == 0xFF || !(g_gameState->disc & mask)) {
         cd_stopMotor();
         return DISC_CHECK_WRONG_DISC;
     }
@@ -194,7 +194,7 @@ void discChange_loadPicture(void) {
     s32 i;
     s32 sector;
 
-    sector = g_gameState->unk20 + file_find(1, s_discChangePictureFiles[s_discChange.disc & 3])->unk4;
+    sector = g_gameState->imgSector + file_find(1, s_discChangePictureFiles[s_discChange.disc & 3])->unk4;
     size = DISC_PICTURE_HALF_BYTES;
     for (i = 0; i < 2; i++) {
         cd_readSync(sector, size, buf);

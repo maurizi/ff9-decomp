@@ -159,12 +159,12 @@ void menuItem_drawList(void) {
     s32 idx;
 
     il = &s_menuItemTabs[s_menuItem.tab];
-    ui_drawLabel(s_menuItemListRect->x + 0xE, s_menuItemListRect->y - 3, 0x1D, D_800703FC.unk68, 0);
-    ui_drawLabel(s_menuItemListRect->x + 0xA4, s_menuItemListRect->y - 3, 0x1D, D_800703FC.unk68, 0);
+    ui_drawLabel(s_menuItemListRect->x + 0xE, s_menuItemListRect->y - 3, 0x1D, g_winLabelStrings.unk68, 0);
+    ui_drawLabel(s_menuItemListRect->x + 0xA4, s_menuItemListRect->y - 3, 0x1D, g_winLabelStrings.unk68, 0);
     if (s_menuItem.tab != ITEM_TAB_KEY) {
-        w = ui_measureLabel((u8 *)D_800703FC.unk94);
-        ui_drawLabel((s_menuItemListRect->x + 0x8A) - w, s_menuItemListRect->y - 3, 0x1D, D_800703FC.unk94, 0);
-        ui_drawLabel((s_menuItemListRect->x + 0x120) - w, s_menuItemListRect->y - 3, 0x1D, D_800703FC.unk94, 0);
+        w = ui_measureLabel((u8 *)g_winLabelStrings.unk94);
+        ui_drawLabel((s_menuItemListRect->x + 0x8A) - w, s_menuItemListRect->y - 3, 0x1D, g_winLabelStrings.unk94, 0);
+        ui_drawLabel((s_menuItemListRect->x + 0x120) - w, s_menuItemListRect->y - 3, 0x1D, g_winLabelStrings.unk94, 0);
     }
     menuList_getView(il->list, &view);
     win_drawListBox(s_menuItemListRect, 0x1D, 1, il->list);
@@ -376,13 +376,13 @@ void menuItem_updateHelp(void) {
         if (menuItem_getSlot(&s_menuItem.itemList) & 1) {
             r.x = 0xC;
             r.y = 0;
-            r.w = g_gameState->unkC->disp.w;
-            r.h = g_gameState->unkC->disp.h;
+            r.w = g_gameState->dispEnv->disp.w;
+            r.h = g_gameState->dispEnv->disp.h;
         } else {
             r.x = 0;
             r.y = 0;
-            r.w = g_gameState->unkC->disp.w >> 1;
-            r.h = g_gameState->unkC->disp.h;
+            r.w = g_gameState->dispEnv->disp.w >> 1;
+            r.h = g_gameState->dispEnv->disp.h;
         }
         help_setBounds(&r);
         g_menuHelp.text = text_get(ITEM_TEXT_SELECT_CHAR);

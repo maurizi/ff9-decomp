@@ -233,7 +233,7 @@ void func_800EA290(void) {
     if (D_80104E68.unk6 == 0) {
         GameData *gd = g_gameState->unk1C;
         if (!(gd->unk8E4.battle->unk0 & 0x100)) {
-            PutDispEnv(&g_gameState->unkC[gd->unk8]);
+            PutDispEnv(&g_gameState->dispEnv[gd->unk8]);
         }
     }
 }
@@ -329,7 +329,7 @@ void func_800EA5C4(void) {
     if (D_80104E68.unkF != 0 && D_80104E68.unk6 != 0) {
         GameData *gd = g_gameState->unk1C;
         if (!(gd->unk8E4.battle->unk0 & 0x100)) {
-            PutDispEnv(&g_gameState->unkC[gd->unk8]);
+            PutDispEnv(&g_gameState->dispEnv[gd->unk8]);
         }
     }
 }
@@ -1178,7 +1178,7 @@ void btlui_drawCmdOverlay(Window *arg0) {
         win_setClip(NULL, arg0->unk18, 4);
     }
     if (g_btlCmdMenu.unit != NULL && !(btl_hasStatus(g_btlCmdMenu.unit, BTL_STATUS_TRANCE) & 0xFF)) {
-        ui_drawLabel(arg0->unk0 + 6, r->y - 3, arg0->unk18, D_800703FC.unk30, arg0->unk1E ? 0 : 2);
+        ui_drawLabel(arg0->unk0 + 6, r->y - 3, arg0->unk18, g_winLabelStrings.unk30, arg0->unk1E ? 0 : 2);
     } else if (arg0->unk1E != 0) {
         func_800ED3F8(arg0->unk0 + 6, r->y - 3, arg0->unk18, D_800A857C);
     } else {
@@ -1601,8 +1601,8 @@ void func_800EDF34(s32 arg0) {
     v.unk0 = g_btlCmdMenu.cmdIds[g_btlCmdMenu.cursor];
     v.unk4 = arg0;
     v.unk2 = g_btlCmdMenu.unk1;
-    v.unk8 = D_800703FC.unk4;
-    v.unkC = D_800703FC.unk7C;
+    v.unk8 = g_winLabelStrings.unk4;
+    v.unkC = g_winLabelStrings.unk7C;
     func_800EE37C(&v);
 }
 
@@ -1611,8 +1611,8 @@ void func_800EDF90(s32 arg0) {
     v.unk0 = g_btlCmdMenu.cmdIds[g_btlCmdMenu.cursor];
     v.unk4 = arg0;
     v.unk2 = g_btlCmdMenu.unk1;
-    v.unk8 = D_800703FC.unk68;
-    v.unkC = D_800703FC.unk94;
+    v.unk8 = g_winLabelStrings.unk68;
+    v.unkC = g_winLabelStrings.unk94;
     func_800EE37C(&v);
 }
 
@@ -1621,8 +1621,8 @@ void func_800EDFEC(s32 arg0) {
     v.unk0 = g_btlCmdMenu.cmdIds[g_btlCmdMenu.cursor];
     v.unk4 = arg0;
     v.unk2 = g_btlCmdMenu.unk1;
-    v.unk8 = D_800703FC.unkC0;
-    v.unkC = D_800703FC.unk94;
+    v.unk8 = g_winLabelStrings.unkC0;
+    v.unkC = g_winLabelStrings.unk94;
     func_800EE37C(&v);
 }
 
@@ -2564,8 +2564,8 @@ void func_800F0BE0(Window *arg0) {
     if (arg0->unk1C != 3) {
         win_setClip(NULL, arg0->unk18, 4);
     }
-    ui_drawLabel(w->unk0 + 8, r->y - 3, arg0->unk18, D_800703FC.unk3C, 0);
-    ui_drawLabel(w->unk0 + 0x76, r->y - 3, arg0->unk18, D_800703FC.unkA0, 0);
+    ui_drawLabel(w->unk0 + 8, r->y - 3, arg0->unk18, g_winLabelStrings.unk3C, 0);
+    ui_drawLabel(w->unk0 + 0x76, r->y - 3, arg0->unk18, g_winLabelStrings.unkA0, 0);
     if (arg0->unk1C != 3) {
         rc.x = r->x;
         rc.y = r->y - 3;
@@ -3406,14 +3406,14 @@ void btlui_drawPanelHeader(void) {
     ui_drawRule(0x8E, D_80105078->unk60, 8, 1, 0xA9, (g_gameState->config >> 18) & 1);
     r.x = 0x8E;
     r.y = D_80105078->unk60 - 3;
-    r.w = g_gameState->unkC->disp.w - 0x8E;
+    r.w = g_gameState->dispEnv->disp.w - 0x8E;
     r.h = 7;
     win_setClip(NULL, 7, 4);
     e = D_80105078->unk4;
     for (i = 0; i < 5; e++, i++) {
         if (e->unk4 != 0) {
             ui_drawLabel((s16)e->unk8, D_80105078->unk60 + (s16)e->unkA, 7,
-                          ((s32 *)&D_800703FC)[e->unk0], 0);
+                          ((s32 *)&g_winLabelStrings)[e->unk0], 0);
         }
     }
     win_setClip(&r, 7, 4);
@@ -3627,7 +3627,7 @@ void btlui_updatePanelRowColor(s32 arg0) {
 
 void func_800F40D0(Unk800F412C *arg0) {
     if (arg0->unk2 == 1) {
-        arg0->unk8 -= ui_measureLabel(((u8 **)&D_800703FC)[arg0->unk0]);
+        arg0->unk8 -= ui_measureLabel(((u8 **)&g_winLabelStrings)[arg0->unk0]);
     }
 }
 
@@ -3808,13 +3808,13 @@ void func_800F48E4(void) {
     D_801051E0 = 0;
     g_ot = g_drawBufs.ots[0];
     g_primPtr = g_drawBufs.prims[0];
-    e = g_gameState->unk10;
+    e = g_gameState->drawEnv;
     e[1].dfe = 1;
     e[0].dfe = 1;
-    D_801051E8[0][0] = g_gameState->unkC[0].disp.x;
-    D_801051E8[0][1] = g_gameState->unkC[0].disp.y;
-    D_801051E8[1][0] = g_gameState->unkC[1].disp.x;
-    D_801051E8[1][1] = g_gameState->unkC[1].disp.y;
+    D_801051E8[0][0] = g_gameState->dispEnv[0].disp.x;
+    D_801051E8[0][1] = g_gameState->dispEnv[0].disp.y;
+    D_801051E8[1][0] = g_gameState->dispEnv[1].disp.x;
+    D_801051E8[1][1] = g_gameState->dispEnv[1].disp.y;
     ClearOTagR(g_drawBufs.ots[0], 0x18);
     ClearOTagR(g_drawBufs.ots[1], 0x18);
     DrawSync(0);

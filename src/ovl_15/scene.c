@@ -51,13 +51,13 @@ void scene_set(s32 arg0) {
 
 s32 scene_checkDisc(void) {
     u32 i = 0;
-    s32 pad = g_gameState->unkB;
+    s32 pad = g_gameState->disc;
 
     do {
         file_initImg();
-    } while (g_gameState->unkB == DISC_NONE && ++i < 10);
+    } while (g_gameState->disc == DISC_NONE && ++i < 10);
     party_setChanged(1);
-    if (scene_isDiscGone(pad, g_gameState->unkB)) {
+    if (scene_isDiscGone(pad, g_gameState->disc)) {
         return scene_discIndex(pad);
     }
     return DISC_NONE;

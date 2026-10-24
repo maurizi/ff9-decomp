@@ -82,8 +82,8 @@ void wm_setupWorldData(void) {
     }
     wm_loadTimPack((s32 *)f[4], 0, 0, 0, 0);
     wm_loadTimPack((s32 *)f[1], 0, 0, 0, 0);
-    if (g_gameState->unk1C->unk844 != 0) {
-        wm_loadTim((u32 *)f[3], g_gameState->unk1C->unk844 - 1, 0x318, 0xB0, 0x280, 0xF6, 2);
+    if (g_gameState->unk1C->chocograph != 0) {
+        wm_loadTim((u32 *)f[3], g_gameState->unk1C->chocograph - 1, 0x318, 0xB0, 0x280, 0xF6, 2);
     }
     if (*g_worldStoryCounterPtr >= 0x1766) {
         g_worldNaviPage = 1;
@@ -1496,7 +1496,7 @@ void wm_naviDraw(void) {
             wm_naviDrawMarker(x, z, 1, 1, c0, c2, 0x40, 0xC8, 0x82, 1);
         }
         wm_naviDrawMiniMap();
-        if (g_gameState->unk1C->unk844 != 0) {
+        if (g_gameState->unk1C->chocograph != 0) {
             func_800C16C0();
         }
         break;

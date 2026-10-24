@@ -291,9 +291,9 @@ void menuEquip_drawList(void) {
     s32 i;
 
     if (m->listOpen != 0) {
-        w = ui_measureLabel((u8 *)D_800703FC.unk94);
-        ui_drawLabel(wd->unk4.x + 6, r->y - 3, 0x14, D_800703FC.unk0[s_menuEquipSlotLabel[m->equipSlot]], 0);
-        ui_drawLabel(wd->unk4.x - (w - k), r->y - 3, 0x14, D_800703FC.unk94, 0);
+        w = ui_measureLabel((u8 *)g_winLabelStrings.unk94);
+        ui_drawLabel(wd->unk4.x + 6, r->y - 3, 0x14, g_winLabelStrings.unk0[s_menuEquipSlotLabel[m->equipSlot]], 0);
+        ui_drawLabel(wd->unk4.x - (w - k), r->y - 3, 0x14, g_winLabelStrings.unk94, 0);
         win_drawListBox(r, 0x14, 1, l);
         menuList_getView(l, &view);
         win_setClip(NULL, 0x13, 1);

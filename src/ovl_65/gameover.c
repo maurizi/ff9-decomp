@@ -103,7 +103,7 @@ void gameover_initDisp(DispBuf *b) {
 void gameover_loadImage(s32 arg0) {
     FileEntry *e = file_find(1, 0xB);
 
-    cd_readSync(g_gameState->unk20 + e->unk4, (e->unkC - e->unk4) << 11, arg0);
+    cd_readSync(g_gameState->imgSector + e->unk4, (e->unkC - e->unk4) << 11, arg0);
     file_loadTim(arg0);
 }
 
@@ -112,7 +112,7 @@ s32 battleEnd_update(void) {
 
     g = g_gameState->unk1C;
     msg_beginDraw();
-    switch (g->unk56E) {
+    switch (g->battleEndKind) {
     case 1:
     case 2:
     case 3:
@@ -120,8 +120,8 @@ s32 battleEnd_update(void) {
     case 5:
     case 7:
         if (!rewards_update()) {
-            if (g->unk56E == 2) {
-                g->unk56E = 1;
+            if (g->battleEndKind == 2) {
+                g->battleEndKind = 1;
             }
             func_800F4E68();
             rewards_exit();

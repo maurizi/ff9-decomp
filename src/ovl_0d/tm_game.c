@@ -294,7 +294,7 @@ void tm_endFrame(TmState *s) {
         g_gameState->unk0 |= 1;
         s->task = TM_TASK_EXIT;
     }
-    if (&g_gameState->unk10[g_gameState->unk1C->unk8].dfe != NULL) {
+    if (&g_gameState->drawEnv[g_gameState->unk1C->unk8].dfe != NULL) {
         DrawSync(0);
         VSync(g_gameState->vsyncMode);
     } else {
@@ -302,8 +302,8 @@ void tm_endFrame(TmState *s) {
         VSync(g_gameState->vsyncMode);
         ResetGraph(1);
     }
-    PutDispEnv(&g_gameState->unkC[g_gameState->unk1C->unk8]);
-    PutDrawEnv(&g_gameState->unk10[g_gameState->unk1C->unk8]);
+    PutDispEnv(&g_gameState->dispEnv[g_gameState->unk1C->unk8]);
+    PutDrawEnv(&g_gameState->drawEnv[g_gameState->unk1C->unk8]);
     ctx = g_gameState->unk1C;
     DrawOTag(ctx->unk10[ctx->unk8] + 0xFFF);
     g_gameState->unk1C->unk8 ^= 1;
@@ -437,7 +437,7 @@ void tm_loadImageFile(void) {
     if (f == NULL) {
         SystemError(0x46, 0x3E6);
     }
-    cd_readSync(g_gameState->unk20 + f->unk4, (f->unkC - f->unk4) << 11, (void *)TM_IMAGE_FILE);
+    cd_readSync(g_gameState->imgSector + f->unk4, (f->unkC - f->unk4) << 11, (void *)TM_IMAGE_FILE);
 }
 
 u8 *tm_getFileEntry(s32 i) {

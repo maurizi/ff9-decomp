@@ -387,7 +387,7 @@ void menuMain_init(void) {
     r.x = 8;
     r.y = 8;
     r.w = 0xE8;
-    r.h = g_gameState->unkC->disp.h - 0xF;
+    r.h = g_gameState->dispEnv->disp.h - 0xF;
     help_setBounds(&r);
     help_setCallback(menuMain_updateHelp);
     help_setCursorOnTop(1);

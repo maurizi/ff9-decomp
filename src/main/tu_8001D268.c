@@ -3,11 +3,11 @@
 void game_initData(void) {
     GameData *gd;
 
-    g_allocTop = g_gameState->unk4;
+    g_allocTop = g_gameState->allocTop;
     game_allocData();
     gd = g_gameState->unk1C;
     game_resetData();
-    PutDispEnv(&g_gameState->unkC[gd->unk8]);
+    PutDispEnv(&g_gameState->dispEnv[gd->unk8]);
     preload_init();
     game_loadCommonDb();
     game_loadCommonAkao();
@@ -71,7 +71,7 @@ void game_resetData(void) {
     gd->unk84C = NULL;
     gd->unk80C = NULL;
     gd->unk810 = NULL;
-    gd->unk844 = 0;
+    gd->chocograph = 0;
     gd->unk851 = 0;
     gd->unk8C4 = 0;
     gd->unk852 = 0xFFFF;

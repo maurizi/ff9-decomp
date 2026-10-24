@@ -12,7 +12,7 @@ void btlui_submitOt(void) {
     tw = &D_800FDE34;
     ((u32 *)&D_80105120[D_801051E0])[2] = get_tw(tw);
     SetDrawOffset(&D_801050E0[D_801051E0], D_801051E8[g_drawBufs.cur ^ 1]);
-    SetDrawArea(&D_80105100[D_801051E0], &g_gameState->unkC[g_drawBufs.cur ^ 1].disp);
+    SetDrawArea(&D_80105100[D_801051E0], &g_gameState->dispEnv[g_drawBufs.cur ^ 1].disp);
     addPrim(&g_ot[0x17], &D_80105140[D_801051E0]);
     addPrim(&g_ot[0x17], &D_80105120[D_801051E0]);
     addPrim(&g_ot[0x17], &D_801050E0[D_801051E0]);
@@ -33,7 +33,7 @@ void btlui_submitOt(void) {
 }
 
 void func_800F4D20(void) {
-    DRAWENV *env = g_gameState->unk10;
+    DRAWENV *env = g_gameState->drawEnv;
     env[1].dfe = 0;
     env[0].dfe = 0;
 }

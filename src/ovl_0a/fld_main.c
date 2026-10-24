@@ -619,7 +619,7 @@ void fld_refindSectors(void) {
     if (f->unk0 & 0x10000) {
         gs2 = gs;
         gd2 = gd;
-        g = gs2->unk14;
+        g = gs2->dirs;
         t = g->unk8;
         base = D_80067944 + ((t << 11) + 0x14C700);
         start = (FieldDirEnt *)(base + ((g->unk48 - t) << 11));
@@ -634,8 +634,8 @@ void fld_refindSectors(void) {
             }
             e--;
         } while (e >= start);
-        start = (FieldDirEnt *)(base + ((gs2->unk14->unk28 - t) << 11));
-        e = &start[gs2->unk14->unk24] - 1;
+        start = (FieldDirEnt *)(base + ((gs2->dirs->unk28 - t) << 11));
+        e = &start[gs2->dirs->unk24] - 1;
         do {
             if (e->unk0 == id) {
                 gd2->sceneSector[0] = e->unk4;
@@ -647,8 +647,8 @@ void fld_refindSectors(void) {
         g_gameState->unk1C->unk8E4.field->unkC->unk10 = id;
         g_gameState->unk1C->unk8A8 = -1;
         g_gameState->unk1C->unk84A = 0xFFFF;
-        start = (FieldDirEnt *)(base + ((gs2->unk14->unk98 - t) << 11));
-        e = &start[gs2->unk14->unk94] - 1;
+        start = (FieldDirEnt *)(base + ((gs2->dirs->unk98 - t) << 11));
+        e = &start[gs2->dirs->unk94] - 1;
         do {
             if (e->unk0 == g_gameState->unk1C->unk81C[0]) {
                 g_gameState->unk1C->unk8A8 = e->unk4;

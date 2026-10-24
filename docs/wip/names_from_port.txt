@@ -4131,3 +4131,7 @@ D_8007BD28 g_swirlFrame  # [code] frame counter of swirl_update (0..0x78)
 # LEVEL_MAX, EXP_MAX, GIL_MAX, ABILITY_MAX, ABILITY_SUPPORT_FIRST, SUPPORT_COUNT, MENU_SCREEN_*, WM_PARAM_*;
 # psyq.h: setSprt, setSprt16, _get_mask. Used in main.c, db.c, file.c, menu.c, msg.c, menulist.c, help.c, event.c,
 # pad.c, tu_8001D268.c, tu_80021640.c, tu_8002BEEC.c, tu_80053924.c.
+D_800703FC g_winLabelStrings  # [code] window title strings ("PARTY", "INFO", "HELP", "ERROR", ...) shown by ui_buildLabel (overlay naming pass)
+D_8006D328 g_armorStatBonus  # [code] armor stat bonus table (overlay naming pass, ovl_33/ovl_3c)
+# FIELDS include/ff9.h GameState: unk4=allocTop,unkB=disc,unkC=dispEnv,unk10=drawEnv,unk14=dirs,unk18=dirTables,unk20=imgSector,unk30=dirCount (unk1C left: 2700+ uses across all overlays)
+# FIELDS include/ff9.h GameData: unk56E=battleEndKind,unk844=chocograph

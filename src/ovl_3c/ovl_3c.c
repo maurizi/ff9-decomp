@@ -57,7 +57,7 @@ s32 shop_sumArmorStat(s32 stat, u8 *equip) {
         if (equip[i] != ITEM_NONE) {
             if (equip[i] < 0xE0) {
                 j = equip[i] - 0x58;
-                b = &D_8006D328[j];
+                b = &g_armorStatBonus[j];
                 sum[0] += b->unk0;
                 sum[1] += b->unk1;
                 sum[2] += b->unk2;
@@ -334,9 +334,9 @@ void shopBuy_drawList(void) {
     MenuList *list;
     RECT *r = &s_shopBuy.listRect;
 
-    w = ui_measureLabel((u8 *)D_800703FC.unkA4);
-    ui_drawLabel(r->x + 0xE, r->y - 3, 0x23, D_800703FC.unk68, 0);
-    ui_drawLabel((r->x + 0xA6) - w, r->y - 3, 0x23, D_800703FC.unkA4, 0);
+    w = ui_measureLabel((u8 *)g_winLabelStrings.unkA4);
+    ui_drawLabel(r->x + 0xE, r->y - 3, 0x23, g_winLabelStrings.unk68, 0);
+    ui_drawLabel((r->x + 0xA6) - w, r->y - 3, 0x23, g_winLabelStrings.unkA4, 0);
     list = &s_shopBuy.list;
     win_drawListBox(r, 0x23, 1, list);
     menuList_getView(list, &view);
@@ -380,7 +380,7 @@ void shopBuy_drawParty(void) {
         return;
     }
     armor = kind > 0;
-    ui_drawLabel(r->x + 6, r->y - 3, 0x1D, ((u8 **)&D_800703FC)[s_shopBuyPartyLabel[armor]], 0);
+    ui_drawLabel(r->x + 6, r->y - 3, 0x1D, ((u8 **)&g_winLabelStrings)[s_shopBuyPartyLabel[armor]], 0);
     for (i = 0; i < s_shop.memberCount; i++) {
         x = 0xF + i * 0x24;
         c = &g_gameState->unk1C->characters[(u8)s_shop.members[i]];
@@ -767,9 +767,9 @@ void shopSynth_drawList(void) {
     MenuList *list;
     RECT *r = &s_shopSynth.listRect;
 
-    w = ui_measureLabel((u8 *)D_800703FC.unkA4);
-    ui_drawLabel(r->x + 0xE, r->y - 3, 0x23, D_800703FC.unk68, 0);
-    ui_drawLabel((r->x + 0xA6) - w, r->y - 3, 0x23, D_800703FC.unkA4, 0);
+    w = ui_measureLabel((u8 *)g_winLabelStrings.unkA4);
+    ui_drawLabel(r->x + 0xE, r->y - 3, 0x23, g_winLabelStrings.unk68, 0);
+    ui_drawLabel((r->x + 0xA6) - w, r->y - 3, 0x23, g_winLabelStrings.unkA4, 0);
     list = &s_shopSynth.list;
     win_drawListBox(r, 0x23, 1, list);
     menuList_getView(list, &view);
@@ -813,7 +813,7 @@ void shopSynth_drawParty(void) {
         return;
     }
     armor = kind > 0;
-    ui_drawLabel(r->x + 6, r->y - 3, 0x1D, ((u8 **)&D_800703FC)[s_shopSynthPartyLabel[armor]], 0);
+    ui_drawLabel(r->x + 6, r->y - 3, 0x1D, ((u8 **)&g_winLabelStrings)[s_shopSynthPartyLabel[armor]], 0);
     for (i = 0; i < s_shop.memberCount; i++) {
         x = 0xF + i * 0x24;
         c = &g_gameState->unk1C->characters[(u8)s_shop.members[i]];
@@ -1177,11 +1177,11 @@ void shopSell_drawList(void) {
     s32 idx;
     MenuList *list = &s_shopSell.list;
 
-    ui_drawLabel(s_shopSellListRectPtr->x + 0xE, s_shopSellListRectPtr->y - 3, 0x23, D_800703FC.unk68, 0);
-    ui_drawLabel(s_shopSellListRectPtr->x + 0xA4, s_shopSellListRectPtr->y - 3, 0x23, D_800703FC.unk68, 0);
-    w = ui_measureLabel((u8 *)D_800703FC.unk94);
-    ui_drawLabel((s_shopSellListRectPtr->x + 0x8A) - w, s_shopSellListRectPtr->y - 3, 0x23, D_800703FC.unk94, 0);
-    ui_drawLabel((s_shopSellListRectPtr->x + 0x120) - w, s_shopSellListRectPtr->y - 3, 0x23, D_800703FC.unk94, 0);
+    ui_drawLabel(s_shopSellListRectPtr->x + 0xE, s_shopSellListRectPtr->y - 3, 0x23, g_winLabelStrings.unk68, 0);
+    ui_drawLabel(s_shopSellListRectPtr->x + 0xA4, s_shopSellListRectPtr->y - 3, 0x23, g_winLabelStrings.unk68, 0);
+    w = ui_measureLabel((u8 *)g_winLabelStrings.unk94);
+    ui_drawLabel((s_shopSellListRectPtr->x + 0x8A) - w, s_shopSellListRectPtr->y - 3, 0x23, g_winLabelStrings.unk94, 0);
+    ui_drawLabel((s_shopSellListRectPtr->x + 0x120) - w, s_shopSellListRectPtr->y - 3, 0x23, g_winLabelStrings.unk94, 0);
     menuList_getView(list, &view);
     win_drawListBox(s_shopSellListRectPtr, 0x23, 1, list);
     idx = view.unk1 * 2;
@@ -1288,7 +1288,7 @@ void shopSell_openQuantity(void) {
             win_setOnClosed(s_shopSell.wins[i], shopSell_onQuantityClosed);
             win_setOpenAnim(s_shopSell.wins[i], 0);
             win_setShadow(s_shopSell.wins[i], 1);
-            win_setTitle(s_shopSell.wins[i], D_800703FC.unk0[s_shopSellWindows[i].label]);
+            win_setTitle(s_shopSell.wins[i], g_winLabelStrings.unk0[s_shopSellWindows[i].label]);
         }
         snd_playSe(SE_CURSOR);
     } else {

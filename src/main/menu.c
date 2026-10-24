@@ -59,15 +59,15 @@ void menu_onFadedOut(void) {
     g->unk1C->unk0 |= GD_HIDE_ALL;
     g_menu.savedVsyncMode = g->vsyncMode;
     g->vsyncMode = 0;
-    g_menu.savedR = g_gameState->unk10[0].r0;
-    g_menu.savedG = g_gameState->unk10[0].g0;
-    g_menu.savedB = g_gameState->unk10[0].b0;
-    g_gameState->unk10[0].r0 = 0;
-    g_gameState->unk10[0].g0 = 0;
-    g_gameState->unk10[0].b0 = 0;
-    g_gameState->unk10[1].r0 = 0;
-    g_gameState->unk10[1].g0 = 0;
-    g_gameState->unk10[1].b0 = 0;
+    g_menu.savedR = g_gameState->drawEnv[0].r0;
+    g_menu.savedG = g_gameState->drawEnv[0].g0;
+    g_menu.savedB = g_gameState->drawEnv[0].b0;
+    g_gameState->drawEnv[0].r0 = 0;
+    g_gameState->drawEnv[0].g0 = 0;
+    g_gameState->drawEnv[0].b0 = 0;
+    g_gameState->drawEnv[1].r0 = 0;
+    g_gameState->drawEnv[1].g0 = 0;
+    g_gameState->drawEnv[1].b0 = 0;
     win_closeAllNow();
     g_menu.savedPadMask = g_padPortMask[0];
     g_padPortMask[0] = BTN_START;
@@ -88,12 +88,12 @@ void menu_finish(void) {
     g_gameState->unk1C->unk0 &= ~GD_HIDE_ALL;
     win_closeAllNow();
     g_gameState->vsyncMode = g_menu.savedVsyncMode;
-    g_gameState->unk10[0].r0 = g_menu.savedR;
-    g_gameState->unk10[0].g0 = g_menu.savedG;
-    g_gameState->unk10[0].b0 = g_menu.savedB;
-    g_gameState->unk10[1].r0 = g_menu.savedR;
-    g_gameState->unk10[1].g0 = g_menu.savedG;
-    g_gameState->unk10[1].b0 = g_menu.savedB;
+    g_gameState->drawEnv[0].r0 = g_menu.savedR;
+    g_gameState->drawEnv[0].g0 = g_menu.savedG;
+    g_gameState->drawEnv[0].b0 = g_menu.savedB;
+    g_gameState->drawEnv[1].r0 = g_menu.savedR;
+    g_gameState->drawEnv[1].g0 = g_menu.savedG;
+    g_gameState->drawEnv[1].b0 = g_menu.savedB;
     g_menu.state = 0;
     g_menu.open = 0;
     fn = (void (*)(u8))g_menuTypes[g_menu.type].unk8;
@@ -183,7 +183,7 @@ void menu_readOverlay(void) {
         g_menu.state = 2;
         g_menu.reading = 1;
         f = file_find(0, g_menuTypeOvl[g_menu.type]);
-        cd_readAsync(f->unk4 + g_gameState->unk20, (f->unkC - f->unk4) << 11, (void *)0x801EDF00, menu_onOverlayRead);
+        cd_readAsync(f->unk4 + g_gameState->imgSector, (f->unkC - f->unk4) << 11, (void *)0x801EDF00, menu_onOverlayRead);
 
     }
 }
@@ -198,7 +198,7 @@ void menu_readPortraits(void) {
         } else if (busy == 0 || g_gameState->mode != 3) {
             g_menu.reading = 1;
             f = file_find(1, 30);
-            if (cd_readAsync(g_gameState->unk20 + f->unk4, (f->unkC - f->unk4) << 11, (void *)0x801EDF00,
+            if (cd_readAsync(g_gameState->imgSector + f->unk4, (f->unkC - f->unk4) << 11, (void *)0x801EDF00,
                               menu_onPortraitsRead)) {
                 g_menu.state = 2;
             }
