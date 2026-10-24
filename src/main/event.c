@@ -1233,7 +1233,7 @@ s32 evt_execInstr(void) {
         }
         return 0;
     case 0x9D:
-        ((Unk8E0 *)func_8001E350(actor->unk3B))->unk0 &= ~0x10;
+        ((Unk8E0 *)game_getModel(actor->unk3B))->unk0 &= ~0x10;
         actor->unk61 = 0xFF;
         actor->unk62 = 0;
         actor->unk60 = actor->unk91 + 1;
@@ -1251,7 +1251,7 @@ s32 evt_execInstr(void) {
             a = 8;
         }
         actor->unk50 |= 8;
-        ((Unk8E0 *)func_8001E350(actor->unk3B))->unk0 |= 0x10;
+        ((Unk8E0 *)game_getModel(actor->unk3B))->unk0 |= 0x10;
         actor->unk60 = actor->unk90;
         actor->unk61 = actor->unk91;
         evt_execInstr_anim(actor, actor->unk76);
@@ -1492,11 +1492,11 @@ s32 evt_execInstr(void) {
         }
         return 0;
     case 0xCC: {
-        ((Unk8E0 *)func_8001E350(po->unk3B))->unk0 |= evt_getArg16_inline();
+        ((Unk8E0 *)game_getModel(po->unk3B))->unk0 |= evt_getArg16_inline();
         return 0;
     }
     case 0xCD: {
-        ((Unk8E0 *)func_8001E350(po->unk3B))->unk0 &= ~evt_getArg16_inline();
+        ((Unk8E0 *)game_getModel(po->unk3B))->unk0 &= ~evt_getArg16_inline();
         return 0;
     }
     case 0x4E:
@@ -1588,9 +1588,9 @@ s32 evt_execInstr(void) {
         a = g_evtCurObj->unk7 + 0x40;
         o = evt_getObject_inline(a);
         if (o != NULL) {
-            func_80036978(o);
+            evt_deleteObject(o);
         }
-        func_800367D0(evt_getArg8_inline(), a, 0x14, 0)->unk5 = 1;
+        evt_createObject(evt_getArg8_inline(), a, 0x14, 0)->unk5 = 1;
         return 0;
     }
     case 0x44:
@@ -1603,7 +1603,7 @@ s32 evt_execInstr(void) {
     case 0x45: {
         Unk8004AB64 *o = evt_getObject_inline(g_evtCurObj->unk7 + 0x40);
         if (o != NULL) {
-            func_80036978(o);
+            evt_deleteObject(o);
         }
         return 0;
     }
@@ -2208,30 +2208,30 @@ s32 evt_execInstr(void) {
         evt_clearGlobalVars();
         return 0;
     case 0xF6:
-        func_80054FB8(evt_getArg8_inline());
+        vib_play(evt_getArg8_inline());
         return 0;
     case 0xF7:
-        func_80054FE0(evt_getArg8_inline());
+        vib_setPlaying(evt_getArg8_inline());
         return 0;
     case 0xF8:
         a = evt_getArg8_inline();
         b = evt_getArg8_inline();
-        func_80054E88(a, b, evt_getArg8_inline());
+        vib_selectTrack(a, b, evt_getArg8_inline());
         return 0;
     case 0xF9:
         a = evt_getArg8_inline();
         b = evt_getArg8_inline();
-        func_80055060(a, b, evt_getArg8_inline());
+        vib_setTrackEnabled(a, b, evt_getArg8_inline());
         return 0;
     case 0xFA:
-        func_800550C0(evt_getArg16_inline());
+        vib_setRate(evt_getArg16_inline());
         return 0;
     case 0xFB:
-        func_800550D0(evt_getArg8_inline());
+        vib_setLoopMode(evt_getArg8_inline());
         return 0;
     case 0xFC:
         a = evt_getArg8_inline();
-        func_800550F0(a, evt_getArg8_inline());
+        vib_setRange(a, evt_getArg8_inline());
         return 0;
     case 0xFD:
         a = evt_getArg8_inline();
@@ -2617,7 +2617,7 @@ void evt_updateLookAt(Unk8004AB64 *o) {
     s32 ok;
 
     save = 0;
-    mdl = (Unk80047B90 *)((Unk8E0 *)func_8001E350(o->unk3B))->unk8;
+    mdl = (Unk80047B90 *)((Unk8E0 *)game_getModel(o->unk3B))->unk8;
     tgt = NULL;
     if ((o->unk50 & 4) && D_8007AE68 != NULL && D_8007AE68 != o &&
         func_80052E48(o->pos.vx - D_8007AE68->pos.vx, o->pos.vz - D_8007AE68->pos.vz, 0) >= 1000) {
@@ -3120,7 +3120,7 @@ void evt_onAnimEnd(Unk8004B9B8 *p) {
         }
         if (p->unk50 & 8) {
             p->unk50 &= ~8;
-            q = (u32 *)func_8001E350(p->unk3B);
+            q = (u32 *)game_getModel(p->unk3B);
             *q &= ~0x10;
             p->unk60 = 0;
             p->unk61 = 0xFF;
@@ -3673,7 +3673,7 @@ s32 func_8004AFF0(Unk8004AB64 *p) {
         if (p->unk34 == 0xFFFF) {
             return 0;
         }
-        q = (s32 *)func_8001E350(p->unk3B);
+        q = (s32 *)game_getModel(p->unk3B);
         if (q != NULL) {
             return q[2];
         }
@@ -3765,7 +3765,7 @@ void evt_initObjectList(void) {
 }
 
 void func_8004B3D0(s32 a, s32 b) {
-    Unk800367D0 *p = func_800367D0(a, b, 0x38, 0x10);
+    Unk800367D0 *p = evt_createObject(a, b, 0x38, 0x10);
     p->unk5 = 3;
     p->unkF = 1;
 }

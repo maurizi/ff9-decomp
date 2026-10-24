@@ -1,6 +1,6 @@
 #include "ff9.h"
 
-void func_8004BBF0(void) {
+void evt_initSystem(void) {
     func_80051568();
     msg_resetWindows();
     msg_resetPad();
@@ -8,7 +8,7 @@ void func_8004BBF0(void) {
     evt_reset();
 }
 
-s32 func_8004BC38(a)
+s32 evt_update(a)
 u8 a;
 {
     s32 r = 0;

@@ -999,7 +999,7 @@ s32 fld_isMusicFading(void) {
 }
 
 void fld_setObjectColor(s32 arg0, s32 arg1, s32 arg2, s32 arg3) {
-    fld_setSlotColor((FieldEvtCtx *)func_8001E350(arg0), arg1, arg2, arg3);
+    fld_setSlotColor((FieldEvtCtx *)game_getModel(arg0), arg1, arg2, arg3);
 }
 
 /* apply the field lights to the object colours */

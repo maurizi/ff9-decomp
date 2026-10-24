@@ -46,7 +46,7 @@ typedef struct {
 } StatusMenu;
 extern StatusMenu s_menuStatus;
 
-/* window slide animation for func_80063118: main's TweenDef, but with a signed delay (unk0), which is what
+/* window slide animation for tween_start: main's TweenDef, but with a signed delay (unk0), which is what
  * matches menuStatus_closeAbilityPages */
 typedef struct {
     s16 delay;  /* start delay */

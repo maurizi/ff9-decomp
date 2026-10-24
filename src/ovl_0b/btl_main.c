@@ -304,7 +304,7 @@ void btl_cleanup(void) {
     s = g_gameState->unk1C->unk8E4.battle->unk11C0;
     DrawSync(0);
     func_800E9E80();
-    func_80054F80();
+    vib_clear();
     func_800AB43C();
     func_800AB26C(&g_gameState->unk1C->unk8E4.battle->unk1354->unk10[0], 2);
     func_800AB26C(&g_gameState->unk1C->unk8E4.battle->unk1354->unk0[3], 0);
@@ -1274,10 +1274,10 @@ u32 func_800AB810(s32 arg0, s32 arg1) {
     r = func_8004AB64(arg1);
     if (r < 9) {
         n = r;
-        e = (Unk8E0Ld *)func_8001E350(r);
+        e = (Unk8E0Ld *)game_getModel(r);
     } else {
         n = g_gameState->unk1C->unk39 + 9;
-        e = (Unk8E0Ld *)func_8001E350(n);
+        e = (Unk8E0Ld *)game_getModel(n);
         g_gameState->unk1C->unk39++;
     }
     e->unk4 = arg0;
@@ -1494,7 +1494,7 @@ s32 func_800ABBC4(s32 arg0, s32 arg1) {
 }
 
 s32 func_800AC244(s32 arg0) {
-    u16 *p = func_800633E4(arg0);
+    u16 *p = db_findModelInfo(arg0);
     if (p != NULL) {
         return p[1] | 0x30000;
     }
@@ -1506,7 +1506,7 @@ s32 func_800AC280(u32 arg0, s32 **arg1, s32 **arg2, s32 **arg3) {
     u8 *dst;
     s32 n;
 
-    h = (Unk800AB758 *)func_800633E4(arg0);
+    h = (Unk800AB758 *)db_findModelInfo(arg0);
     *arg1 = (s32 *)((u8 *)h + h->unk4);
     *arg2 = *arg1 + h->unk7;
     *arg3 = *arg2 + h->unk7;
@@ -1533,7 +1533,7 @@ u8 *btl_drawShadow(Battle11C028 *arg0, s32 arg1, s32 arg2, s32 arg3, u8 *prim) {
     s32 tv;
 
     e = &arg0[arg1];
-    o = (BtlObj *)func_8001E350(arg1);
+    o = (BtlObj *)game_getModel(arg1);
     if (o->unk0 & 0x10) {
         return prim;
     }

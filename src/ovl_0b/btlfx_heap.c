@@ -1490,7 +1490,7 @@ void btlfx_resetAll(void) {
     func_800E954C();
     btlfx_clearEffModels();
     btlfx_clearSummonModels();
-    func_80054F80();
+    vib_clear();
 }
 
 void func_800E3E08(void) {

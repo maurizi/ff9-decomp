@@ -1,6 +1,6 @@
 #include "ff9.h"
 
-u16 *func_800633E4(s32 id) {
+u16 *db_findModelInfo(s32 id) {
     s32 i;
     s32 j;
     u8 *blk;
@@ -24,17 +24,17 @@ u16 *func_800633E4(s32 id) {
 }
 
 u8 *func_800634A8(s32 a) {
-    u16 *p = func_800633E4(a);
+    u16 *p = db_findModelInfo(a);
     return (u8 *)p + (((u32 *)p)[1] & 0xFFFFFF);
 }
 
 u8 *func_800634D8(s32 a) {
-    u8 *p = (u8 *)func_800633E4(a);
+    u8 *p = (u8 *)db_findModelInfo(a);
     return p + (((u32 *)p)[1] & 0xFFFFFF) + p[7] * 4;
 }
 
 u8 *func_80063514(s32 a) {
-    DbEntry12 *p = (DbEntry12 *)func_800633E4(a);
+    DbEntry12 *p = (DbEntry12 *)db_findModelInfo(a);
     s32 n = p->unk7;
     u8 *q = (u8 *)p + p->unk4;
     return (long long)n * 8 + q;

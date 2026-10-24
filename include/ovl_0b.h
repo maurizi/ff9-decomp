@@ -3075,7 +3075,7 @@ u8 *btl_drawShadow(Battle11C028 *, s32, s32, s32, u8 *);
 void btl_checkEnemiesKO(); /* defined as (void); callers pass the unit */
 void btl_startEnemySeq(BtlCmd *);
 void btlbg_setOtShift(s32);
-void func_80063640(DR_TPAGE *, u16);
+void gfx_initTpagePolyF3(DR_TPAGE *, u16);
 void func_800C9374(TexAnimSet *, u16 (*)[4]);
 void func_800B0E04(BtlUnit *, u8 *);
 void func_800EEDD4(void);
@@ -3212,7 +3212,7 @@ void func_800E9578(void);
 extern s32 g_btlfxRandSeed;
 extern s32 g_btlfxSavedSp;
 /* main exe: candidates for ff9.h */
-s32 func_80054B78(void);
+s32 vib_update(void);
 extern u8 D_800F6FB8[];
 extern u8 D_800A7C20[]; /* "/\xFF" suffix string */
 void btl_setBanner(s32, s32);
@@ -3266,7 +3266,7 @@ void func_800EA1F8(u32 *, DRAWENV *);
 void btl_cleanup(void);
 s32 func_800AC280(u32, s32 **, s32 **, s32 **);
 u32 func_8004AB64(s32);
-/* object slot returned by func_8001E350 in battle */
+/* object slot returned by game_getModel in battle */
 typedef struct {
     u32 unk0; /* flags */
     s32 unk4; /* model id */
@@ -4147,7 +4147,7 @@ s32 func_800E8AD0(void);
 void btlfx_initSummonModels(BtlModel *, s32);
 typedef void (*Unk800DA92CFn)(s32, Unk800F78A4 *, s32);
 /* main exe: candidates for ff9.h */
-void func_80054A28(void *);
+void vib_init(void *);
 
 
 /* GTE loads used by func_800E6764 */

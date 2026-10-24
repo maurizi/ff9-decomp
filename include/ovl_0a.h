@@ -1018,7 +1018,7 @@ s32 bgi_linkFrameNeighbors(BgiHeader *, BgiAnim *, BgiKeyframe *);
 FieldLight *fld_findGlobalLights(Unk800B3254 *, FieldLight **, FieldLight **);
 FieldLight *fld_findFloorLight(Unk800B3254 *, FieldEvtCtx *, s16 *);
 
-/* object model slot (func_8001E350) */
+/* object model slot (game_getModel) */
 typedef struct {
     s32 unk0; /* flags: 1 = loaded */
     s32 unk4; /* file id */
@@ -1086,13 +1086,13 @@ void fld_stopSceneSfx(FieldScene *, s16);
 s32 fld_movieCommand(s32, s32, s32);
 s32 fld_freeCommon(void);
 s32 bgi_stepFloorMove();
-void func_80054A28(void *);
+void vib_init(void *);
 s32 fld_soundCommand(s32, s32, s32, s32, s32);
 void fld_getSoundPanVolume(s16, s16, s16, u8 *, u8 *);
 s32 fld_preloadRequest(s32, s32);
 s32 fld_preloadHook(void);
 void fld_clearPreloadLists(void);
-s32 func_8001E350(s32);
+s32 game_getModel(s32);
 s32 fld_setSlotColor(FieldEvtCtx *, s32, s32, s32);
 void fld_discChangeFinish(void);
 void fld_invalidateModelCache(s32);
@@ -1193,7 +1193,7 @@ extern u8 *s_menuMainEquipLabels[5];
 extern u8 s_menuMainText[]; /* text */
 extern RECT g_fieldDiscChangeRect;
 
-/* text window contents passed to func_80063118 (as in ovl_38) */
+/* text window contents passed to tween_start (as in ovl_38) */
 typedef struct {
     s16 unk0;
     s16 unk2;

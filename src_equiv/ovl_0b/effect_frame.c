@@ -1,7 +1,7 @@
 /* ovl_0b btlfx_runFrame (0x800E3EEC), hand-written asm in the original: the battle-effect frame update
  * btl_drawScene calls with its packet pointer.
  *
- * Register convention: standard C ABI, except that it runs btlfx_updateLoader, func_800E3C98, func_80054B78
+ * Register convention: standard C ABI, except that it runs btlfx_updateLoader, func_800E3C98, vib_update
  * and func_800E9578 on a stack at the top of the scratchpad (0x1F8003F8), saving $sp in g_btlfxSavedSp, and
  * btlfx_updateTasks back on the caller's stack. The C below leaves the stack alone (a port has no 1 KB
  * scratchpad stack to switch to) and so never writes g_btlfxSavedSp.
@@ -38,7 +38,7 @@ u8 *btlfx_runFrame(u8 *out) {
         }
         btlfx_updateTasks(); /* caller's stack */
         func_800E3C98();     /* scratchpad stack */
-        func_80054B78();
+        vib_update();
     } else {
         func_800E3E08();
         g_btlfxEnv->unk2C->unk5D = 1;

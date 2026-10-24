@@ -454,7 +454,7 @@ typedef struct ModelObj {
     u16 unk78;
 } ModelObj;
 
-/* model slot (func_8001E350) */
+/* model slot (game_getModel) */
 typedef struct {
     s32 unk0; /* flags: 1 = loaded */
     s32 unk4; /* file id */
@@ -1110,7 +1110,7 @@ typedef struct {
     RECT unk8[1];
 } Unk800CB09CClut;
 
-/* text window contents passed to func_80063118 (as in ovl_38) */
+/* text window contents passed to tween_start (as in ovl_38) */
 typedef struct {
     s16 unk0;
     s16 unk2;

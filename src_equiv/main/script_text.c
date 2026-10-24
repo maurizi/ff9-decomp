@@ -49,17 +49,17 @@ u16 func_8004B404(s32 arg0);
 Unk8004AB64 *func_8004B4C4(s32 id);
 void evt_setObjectProp(Unk800219D8 *arg0, s32 arg1, s32 arg2);
 void func_8004B4A8(s32 i, s16 v);
-s32 func_80037ACC(s32 op);
+s32 evt_exprSpecial(s32 op);
 u32 msg_getPadPressed(void);
 u32 msg_getPadReleased(void);
 u32 msg_getPadHeld(void);
 s32 func_8004B85C(s32 slot);
-s32 func_800378C4(s32 slot);
-s32 func_800372A4(s32 op);
+s32 evt_joinParty(s32 slot);
+s32 evt_exprUnitCompare(s32 op);
 s32 evt_popRandomBit(void);
-s32 func_80036CCC(s32 op);
+s32 evt_exprUnitAssign(s32 op);
 s32 evt_popBitCount(void);
-s32 func_80037738(void);
+s32 evt_exprUnitFirst(void);
 s16 msg_isOpen(s32 i);
 void func_8004BB30(void *p);
 void math_rotMatrixZYX(void *a, void *b);
@@ -1027,21 +1027,21 @@ void evt_runExpr(void) {
             v = func_8004B85C(evt_popValue());
             break;
         case 0x6D:
-            v = func_800378C4(evt_popValue());
+            v = evt_joinParty(evt_popValue());
             break;
         case 0x1C: case 0x1D: case 0x1E: case 0x1F: case 0x22: case 0x23:
         case 0x54: case 0x55: case 0x56: case 0x57:
-            SYNCED(func_800372A4(op));
+            SYNCED(evt_exprUnitCompare(op));
             break;
         case 0x2D: case 0x36: case 0x37: case 0x38: case 0x39: case 0x3A: case 0x3B: case 0x3C:
         case 0x40: case 0x41: case 0x42:
-            SYNCED(func_80036CCC(op));
+            SYNCED(evt_exprUnitAssign(op));
             break;
         case 0x2A:
             SYNCED(evt_popBitCount());
             break;
         case 0x2B:
-            SYNCED(func_80037738());
+            SYNCED(evt_exprUnitFirst());
             break;
         case 0x4D:
             SYNCED(evt_popRandomBit());
@@ -1069,7 +1069,7 @@ void evt_runExpr(void) {
             g_evtExprSp = r_sp;
             return;
         default:
-            SYNCED(func_80037ACC(op));
+            SYNCED(evt_exprSpecial(op));
             break;
         }
         v = IMM(v);
@@ -1208,11 +1208,11 @@ s32 func_80052870(Unk16D8 *n) {
                 if (k != 0xFF) {
                     Unk8004AB64 *t = func_8004B4C4(k);
                     if (t != o) {
-                        func_80036978(t);
+                        evt_deleteObject(t);
                         break;
                     }
                 }
-                n = func_80036978(o);
+                n = evt_deleteObject(o);
                 st = 2;
                 break;
             case 0x22: /* wait: frames, then the object sleeps */

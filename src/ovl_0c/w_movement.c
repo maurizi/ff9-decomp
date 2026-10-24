@@ -853,7 +853,7 @@ s32 wm_drawActorModel(Unk8004AB64 *arg0, SVECTOR *arg1) {
     s32 i;
 
     c = &g_worldActorTypeInfo[arg0->unk11];
-    s = (WmObjSlot *)func_8001E350(arg0->unk3B);
+    s = (WmObjSlot *)game_getModel(arg0->unk3B);
     m = s->unk8;
     memset(&r, 0, 8);
     r.vx = s->unkC->pos.unk20;

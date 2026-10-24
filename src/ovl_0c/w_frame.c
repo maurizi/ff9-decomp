@@ -750,7 +750,7 @@ void wm_runEvents(void) {
     g_worldTimeEvents = VSync(1);
     m = g_worldState;
     if ((m == 0 || m == 2) && !(g_gameState->unk1C->unk0 & 2) && (m == 0 || m == 2)) {
-        g_worldEventResult = func_8004BC38(m);
+        g_worldEventResult = evt_update(m);
     }
     g_worldTimeEvents = VSync(1) - g_worldTimeEvents;
 }

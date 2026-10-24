@@ -57,7 +57,7 @@ void menuAbility_init(void) {
     setRECT(&s_menuAbility.listRect, 8, 0x5E, 0x12C, 0x80);
     setRECT(&s_menuAbility.targetRect, 0, 0x26, 0x90, 0xB6);
     s_menuAbility.targetWinOpen = 0;
-    func_80063118(&s_menuAbility.targetWin, 0, 0);
+    tween_start(&s_menuAbility.targetWin, 0, 0);
     menuAbility_loadImages();
     s_menuAbility.partySize = 0;
     for (i = 0; i < 4; i++) {
@@ -78,7 +78,7 @@ void menuAbility_updateAnims(void) {
         menuList_update(&s_menuAbility.lists[s_menuAbility.tab]);
     }
     if (m->targetWin.unkC != 0) {
-        func_800631AC(&m->targetWin);
+        tween_step(&m->targetWin);
     }
     if (++m->animTick >= 7) {
         m->animTick = 0;
@@ -526,10 +526,10 @@ void menuAbility_selectAction(void) {
                 s_menuAbility.targetWin.unk4 = s_menuAbility.targetRect;
                 if (ls->col == 0) {
                     s_menuAbility.targetWin.unk4.x = 0xA4;
-                    func_80063118(&s_menuAbility.targetWin, &s_menuAbilityTargetOpenL, 1);
+                    tween_start(&s_menuAbility.targetWin, &s_menuAbilityTargetOpenL, 1);
                 } else {
                     s_menuAbility.targetWin.unk4.x = 8;
-                    func_80063118(&s_menuAbility.targetWin, &s_menuAbilityTargetOpenR, 1);
+                    tween_start(&s_menuAbility.targetWin, &s_menuAbilityTargetOpenR, 1);
                 }
                 s_menuAbility.targetWinOpen = 1;
                 s_menuAbility.target = party_getFirstMember();
@@ -881,7 +881,7 @@ u32 menuAbility_getSupportState(s32 id, Character *c) {
 void menuAbility_closeTarget(void) {
     MenuList *l = &s_menuAbility.lists[s_menuAbility.tab];
 
-    func_80063118(&s_menuAbility.targetWin, l->col == 0 ? &s_menuAbilityTargetCloseR : &s_menuAbilityTargetCloseL, 0);
+    tween_start(&s_menuAbility.targetWin, l->col == 0 ? &s_menuAbilityTargetCloseR : &s_menuAbilityTargetCloseL, 0);
     s_menuAbility.state = ABILITY_STATE_WAIT;
 }
 

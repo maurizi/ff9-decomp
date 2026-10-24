@@ -1228,7 +1228,7 @@ typedef struct Unk16D8 {
 
 typedef struct {
     u8 unk0[0x50]; /* cleared by evt_init */
-    u32 unk50[0x500]; /* object pool (func_80036650) */
+    u32 unk50[0x500]; /* object pool (evt_allocObject) */
     Unk8007AECCNode unk1450[32];
     Unk8007AECCNode *unk15D0; /* active list */
     Unk8007AECCNode *unk15D4; /* free list */
@@ -1444,7 +1444,7 @@ typedef struct {
     s32 unk8;
     Unk8007BD44 *unkC;
 } Unk8007BD38;
-extern Unk8007BD38 D_8007BD38;
+extern Unk8007BD38 g_vib;
 u8 func_800EA27C(void); /* ovl_0b */
 
 typedef struct {
@@ -1563,7 +1563,7 @@ typedef struct {
 } Unk80073940; /* 0x24-byte entries */
 extern Unk80073940 g_padBuf[];
 
-typedef Unk8004AB64 Unk800367D0; /* func_800367D0 creates a script object */
+typedef Unk8004AB64 Unk800367D0; /* evt_createObject creates a script object */
 
 typedef struct {
     u8 pad0[0x12];
@@ -1574,7 +1574,7 @@ extern s16 D_80067950;
 extern u32 D_80077DB4;
 extern u8 D_8006CAB8[][2];
 
-u16 *func_800633E4(s32);
+u16 *db_findModelInfo(s32);
 void item_initNew(void);
 void func_8003431C(void);
 void party_initNewGame(void);
@@ -1583,7 +1583,7 @@ void db_quit(void);
 void *db_lookupRegistered(s32, s32, s32); /* mode 4: address, 5: size */
 void win_drawBoxEx(RECT *, s32, s32, s32);
 void menu_start(void);
-Unk800367D0 *func_800367D0(s32, s32, s32, s32);
+Unk800367D0 *evt_createObject(s32, s32, s32, s32);
 s32 CdSyncCallback(void (*)(u8, u8 *));
 void CdFlush(void);
 
@@ -2275,7 +2275,7 @@ void evt_init(s32); /* the overlays pass the script data as an integer */
 #else
 void evt_init(u8 *); /* start the field script system on a script data block */
 #endif
-void func_8004BBF0(void);
+void evt_initSystem(void);
 void msg_init(void);
 void evt_clearGlobalVars(void);
 void func_8005392C(void);
@@ -2300,7 +2300,7 @@ void card_addDraw(void);
 void func_80062750(s32);
 FileEntry *dep_find(FileTable *, s32);
 void strcat(u8 *, u8 *);
-/* per-frame offset animation of a window (func_80063118 / func_800631AC) */
+/* per-frame offset animation of a window (tween_start / tween_step) */
 typedef struct TweenDef {
     u16 unk0; /* start delay */
     s16 unk2; /* frame count */
@@ -2309,17 +2309,17 @@ typedef struct TweenDef {
     void (*unkC)(struct TweenDef *); /* called when done */
 } TweenDef;
 
-/* text window (func_80063118 / func_800631AC) */
+/* text window (tween_start / tween_step) */
 typedef struct {
     s16 unk0; /* start delay */
     s16 unk2; /* frame */
     RECT unk4;
     TweenDef *unkC; /* running animation, NULL when idle */
 } WinDef; /* 0x10 */
-void func_80063118(void *, void *, s32);
-void func_80063580(DR_TPAGE *, s32);
-void func_800635E0(DR_TPAGE *, s32);
-void func_800651D8(void);
+void tween_start(void *, void *, s32);
+void gfx_initTpageSprt(DR_TPAGE *, s32);
+void gfx_initTpageTile(DR_TPAGE *, s32);
+void game_newGame(void);
 s32 TestEvent(s32);
 void _card_info(s32);
 void _card_wait(s32);
@@ -2739,7 +2739,7 @@ extern s32 D_800704C4;
 extern s32 D_80070418;
 void help_setLocked(u8);
 s32 keyItem_has(s32);
-s32 func_800632B4(s32, s8 *);
+s32 tween_sumDeltas(s32, s8 *);
 extern s32 g_padPortState[];
 u8 *ui_buildSprite(s32, s32, u32 *, s32, u8, s32 *, void *);
 u8 *text_buildPlain(s32, s32, u32 *, Character *, s32 *, u8 *);
@@ -2802,11 +2802,11 @@ void pad_update(void);
 void game_updateFade(void);
 void game_updateTimer(void);
 void game_setScreenHeight(s32);
-s32 func_8004BC38(); /* defined K&R-style: u8 param (unused); some callers pass none */
+s32 evt_update(); /* defined K&R-style: u8 param (unused); some callers pass none */
 u8 menuScreen_needsMember(s32);
 s32 menuScreen_getCommandHelp(s32);
 void menuScreen_close(void);
-s32 func_80054F80(void);
+s32 vib_clear(void);
 s32 func_80050AAC(void);
 void akao_stopSe(s32, s32);
 void akao_sendCmdE2(void);
@@ -2896,7 +2896,7 @@ typedef struct {
     u8 unk7C[4];
 } Unk8004B9B8;
 s32 evt_getAnimFrameCount();
-s32 func_8001E350(s32);
+s32 game_getModel(s32);
 
 /* Inlined copy of func_8004B9B8. */
 static inline void func_8004B9B8_inline(Unk8004B9B8 *p) {
@@ -3588,7 +3588,7 @@ void exit(s32); /* BIOS B0 call */
 void chr_addHp(Character *, s32);
 void chr_addMp(Character *, s32);
 
-/* 12-byte entry of a type-0x12 resource table (func_800633E4) */
+/* 12-byte entry of a type-0x12 resource table (db_findModelInfo) */
 typedef struct {
     u16 unk0; /* id */
     u16 unk2;
@@ -3685,7 +3685,7 @@ extern s32 D_8007AE60;
 extern s32 D_8007AE64;
 
 
-s32 func_800631AC(WinDef *);
+s32 tween_step(WinDef *);
 
 /* AKAO sequence header (akao_cmdPlaySeBank) */
 typedef struct {
@@ -3905,7 +3905,7 @@ static inline Unk8004AFF0 *func_8004AFF0_inline(Unk8004AB64 *p) {
         if (p->unk34 == 0xFFFF) {
             return NULL;
         }
-        q = (Unk8E0 *)func_8001E350(p->unk3B);
+        q = (Unk8E0 *)game_getModel(p->unk3B);
         if (q != NULL) {
             return (Unk8004AFF0 *)q->unk8;
         }
@@ -3928,8 +3928,8 @@ void evt_setNextBattle(u16);
 void func_80021680();
 void msg_startHereIcon(s32);
 void func_80052D0C(u8 **);
-Unk16D8 *func_80036978(Unk8004AB64 *);
-Unk8004AB64 *func_80036650(s32);
+Unk16D8 *evt_deleteObject(Unk8004AB64 *);
+Unk8004AB64 *evt_allocObject(s32);
 void evt_onAnimEnd(Unk8004B9B8 *);
 
 extern s32 D_8007AE2C;
@@ -3973,13 +3973,13 @@ void timer_setSeconds(s32);
 void timer_enable(u8);
 void timer_setRunning(u8);
 void evt_projectToScreen(SVECTOR *, s32 *, s32 *);
-s32 func_80054FB8(s32);
-s32 func_80054FE0(s32);
-s32 func_80054E88(s32, s32, s32);
-s32 func_80055060(s32, s32, s32);
-s32 func_800550C0(s16);
-s32 func_800550D0(s32);
-s32 func_800550F0(s32, s32);
+s32 vib_play(s32);
+s32 vib_setPlaying(s32);
+s32 vib_selectTrack(s32, s32, s32);
+s32 vib_setTrackEnabled(s32, s32, s32);
+s32 vib_setRate(s16);
+s32 vib_setLoopMode(s32);
+s32 vib_setRange(s32, s32);
 extern u8 D_8007AE90[];
 extern u8 *D_8007AE8C;
 
@@ -4014,11 +4014,11 @@ static inline void evt_execInstr_party(void) {
 }
 
 static inline void func_8004B3A8_inline(s32 a, s32 b) {
-    func_800367D0(a, b, 0x14, 0x10)->unk5 = 2;
+    evt_createObject(a, b, 0x14, 0x10)->unk5 = 2;
 }
 
 static inline void func_8004B3D0_inline(s32 a, s32 b) {
-    Unk800367D0 *p = func_800367D0(a, b, 0x38, 0x10);
+    Unk800367D0 *p = evt_createObject(a, b, 0x38, 0x10);
     p->unk5 = 3;
     p->unkF = 1;
 }
@@ -4026,7 +4026,7 @@ static inline void func_8004B3D0_inline(s32 a, s32 b) {
 static inline void evt_execInstr_newactor(s32 uid, s32 b) {
     Unk8004AB64 *p;
 
-    p = (Unk8004AB64 *)func_800367D0(uid, b, 0xAC, 0x10);
+    p = (Unk8004AB64 *)evt_createObject(uid, b, 0xAC, 0x10);
     p->unk3C = 0x10;
     p->unk3D = 0x10;
     p->unk34 = 0xFFFF;
@@ -4098,8 +4098,8 @@ static inline s32 config_applyPadMapping_remap(s32 k) {
 }
 
 
-/* Inlined max helper of func_80054A28 (keeps the running maximum in memory). */
-static inline void func_80054A28_max(u32 *m, u32 v) {
+/* Inlined max helper of vib_init (keeps the running maximum in memory). */
+static inline void vib_init_max(u32 *m, u32 v) {
     if (*m < v) {
         *m = v;
     }
@@ -4184,7 +4184,7 @@ s32 bgi_getActorTriangle(s32, u16 *, u16 *);
 s32 bgi_getAnimFrame(u32, s32 *);
 
 /* party member index -> character slot (9.. map to 5..) */
-static inline s32 func_80037ACC_chr(s32 i) {
+static inline s32 evt_exprSpecial_chr(s32 i) {
     if (i >= 9) {
         i -= 4;
     }

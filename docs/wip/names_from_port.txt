@@ -4135,3 +4135,45 @@ D_800703FC g_winLabelStrings  # [code] window title strings ("PARTY", "INFO", "H
 D_8006D328 g_armorStatBonus  # [code] armor stat bonus table (overlay naming pass, ovl_33/ovl_3c)
 # FIELDS include/ff9.h GameState: unk4=allocTop,unkB=disc,unkC=dispEnv,unk10=drawEnv,unk14=dirs,unk18=dirTables,unk20=imgSector,unk30=dirCount (unk1C left: 2700+ uses across all overlays)
 # FIELDS include/ff9.h GameData: unk56E=battleEndKind,unk844=chocograph
+D_8007BD38 g_vib  # [code] pad vibration player state: flags, start/end frame, rate, 8.8 position, pattern data (vib_*)
+func_80054A28 vib_init  # [code] sets the vibration pattern data (tracks of per-frame motor bytes), its length, selects track 0 for both motors and stops the actuators
+func_80054B78 vib_update  # [code] per frame: sums the selected tracks' bytes into g_padActuator (unless config vibration is off), advances and loops / ping-pongs the position
+func_80054E88 vib_selectTrack  # [code] selects (or deselects) one track for motor col, restarting at the start frame
+func_80054F80 vib_clear  # [code] stops the actuators and clears g_vib
+func_80054FB8 vib_play  # [code] starts playing from frame a
+func_80054FE0 vib_setPlaying  # [code] resumes (restarting when outside the range) or stops and silences the motors
+func_80055060 vib_setTrackEnabled  # [code] sets/clears a track's enable bit for motor b
+func_800550C0 vib_setRate  # [code] position step per frame (8.8)
+func_800550D0 vib_setLoopMode  # [code] flags 0x08 (loop) / 0x10 (ping-pong) of g_vib
+func_800550F0 vib_setRange  # [code] start/end frame (negative keeps the old value)
+func_80055110 vib_getFlags  # [code] g_vib flags
+func_80055128 vib_isTrackEnabled  # [code] track a's enable bit for motor b
+func_8005517C vib_getData  # [code] the pattern data pointer
+func_80055194 vib_getRange  # [code] start/end frame
+func_800551BC vib_getRate  # [code] the position step
+func_800551D4 vib_getFrame  # [code] the current frame
+func_80036650 evt_allocObject  # [code] allocates n words from the object memory (g_evtState.unk50, 0x500 words) in its sorted block list
+func_800367D0 evt_createObject  # [code] replaces object id, allocates and clears it, links it into the object list, points it at its script's entry 0
+func_80036978 evt_deleteObject  # [code] unlinks an object, frees its block and clears playerUid if it was the player
+func_80036AAC evt_exprUnitIncDec  # [code] expression ops 8-11 (pre/post ++/--) on each battle object selected by a mask
+func_80036CCC evt_exprUnitAssign  # [code] assignment ops (=, *=, /=, %=, +=, -=, <<=, >>=, &=, ^=, |=) on each selected battle object
+func_80036FFC evt_exprUnitSelect  # [code] ops 0xF (not), 0x4B (max), 0x4C (min) over the selected battle objects, the result as a bit mask
+func_800372A4 evt_exprUnitCompare  # [code] comparisons over the selected battle objects, one result bit each
+func_80037528 evt_exprUnitLogic  # [code] truth bits of the selected battle objects, combined by &, ^, | with the next value
+func_80037738 evt_exprUnitFirst  # [code] the value for the first battle object selected by the mask
+func_800378C4 evt_joinParty  # [code] puts a character into the first free party slot unless already there or the party is full
+func_80037ACC evt_exprSpecial  # [code] expression ops on battle objects and game state: item/key item/card counts (0x64), HP/MP (0x52/53/6E/6F), walkmesh triangle (0x70/71)
+func_80063580 gfx_initTpageSprt  # [code] DR_TPAGE + SPRT merged into one packet (MargePrim)
+func_800635E0 gfx_initTpageTile  # [code] DR_TPAGE + TILE merged into one packet
+func_80063640 gfx_initTpagePolyF3  # [code] DR_TPAGE + POLY_F3 merged into one packet
+func_800636A0 gfx_initTpagePolyF4  # [code] DR_TPAGE + POLY_F4 merged into one packet
+func_80063700 gfx_initTpagePolyG3  # [code] DR_TPAGE + POLY_G3 merged into one packet
+func_80063760 gfx_initTpagePolyG4  # [code] DR_TPAGE + POLY_G4 merged into one packet
+func_800633E4 db_findModelInfo  # [code] searches the DB_MODEL_INFO (0x120000) tables of all registered dbs for model id
+func_80063118 tween_start  # [code] starts a TweenDef on a WinDef: delay, optionally rewinding the offset by the summed deltas (ff9-ds tools/test_window_tween.py)
+func_800631AC tween_step  # [code] per frame: waits the delay, then adds the next x/y deltas; at the end runs the done hook and returns 1
+func_800632B4 tween_sumDeltas  # [code] sum of n s8 deltas
+func_800651D8 game_newGame  # [code] item_initNew, party_initNewGame (new game data)
+func_8004BBF0 evt_initSystem  # [code] game_reset: message windows, pad, rand_init(GetRCnt(2)), evt_reset
+func_8004BC38 evt_update  # [code] per frame unless D_8007B718: msg_update, idle timer, evt_updateObjects, bubble, ATE prompt; returns the objects' result
+func_8001E350 game_getModel  # [code] GameData model slot i (unk8D8 for i < 9, else unk8E0); objects keep the index in unk3B (evt_createModel)

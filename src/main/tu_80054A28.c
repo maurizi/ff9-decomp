@@ -1,6 +1,6 @@
 #include "ff9.h"
 
-s32 func_80054A28(Unk8007BD44 *t) {
+s32 vib_init(Unk8007BD44 *t) {
     u32 max;
     u32 *pm = &max;
     u16 *r;
@@ -8,25 +8,25 @@ s32 func_80054A28(Unk8007BD44 *t) {
     s32 j;
     Unk8007BD44 *c;
 
-    D_8007BD38.unk0 = 1;
-    D_8007BD38.unk6 = 0x100;
-    D_8007BD38.unk8 = 0;
-    D_8007BD38.unkC = t;
-    D_8007BD38.unk2 = 0;
+    g_vib.unk0 = 1;
+    g_vib.unk6 = 0x100;
+    g_vib.unk8 = 0;
+    g_vib.unkC = t;
+    g_vib.unk2 = 0;
     *pm = 0;
     r = (u16 *)((u8 *)t + t->unk6);
     for (i = 0; i < t->unk4; r += 6, i++) {
-        func_80054A28_max(pm, r[2]);
-        func_80054A28_max(pm, r[3]);
+        vib_init_max(pm, r[2]);
+        vib_init_max(pm, r[3]);
     }
-    D_8007BD38.unk4 = max - 1;
-    c = D_8007BD38.unkC;
+    g_vib.unk4 = max - 1;
+    c = g_vib.unkC;
     for (j = 0; j < c->unk4; j++) {
-        func_80054E88(j, 0, 0);
-        func_80054E88(j, 1, 0);
+        vib_selectTrack(j, 0, 0);
+        vib_selectTrack(j, 1, 0);
     }
-    func_80054E88(0, 0, 1);
-    func_80054E88(0, 1, 1);
+    vib_selectTrack(0, 0, 1);
+    vib_selectTrack(0, 1, 1);
     g_padActuator[0].unk0 = 0;
     g_padActuator[0].unk1 = 0;
     g_padActuator[1].unk0 = 0;
@@ -34,7 +34,7 @@ s32 func_80054A28(Unk8007BD44 *t) {
     return 0;
 }
 
-s32 func_80054B78(void) {
+s32 vib_update(void) {
     Unk8007BD44 *t;
     u16 *r;
     s32 pos;
@@ -43,21 +43,21 @@ s32 func_80054B78(void) {
     s32 b;
     u16 f;
 
-    if (!(D_8007BD38.unk0 & 1)) {
+    if (!(g_vib.unk0 & 1)) {
         return 3;
     }
-    if (D_8007BD38.unkC == NULL) {
+    if (g_vib.unkC == NULL) {
         return 1;
     }
-    t = D_8007BD38.unkC;
-    if (!(D_8007BD38.unk0 & 2) || !(D_8007BD38.unk0 & 0xC)) {
+    t = g_vib.unkC;
+    if (!(g_vib.unk0 & 2) || !(g_vib.unk0 & 0xC)) {
         return 0;
     }
     b = 0;
     i = 0;
     a = 0;
     r = (u16 *)((u8 *)t + t->unk6);
-    pos = D_8007BD38.unk8 >> 8;
+    pos = g_vib.unk8 >> 8;
     for (; i < t->unk4; r += 6, i++) {
         if ((r[0] & 1) && r[2] >= pos) {
             a += *((u8 *)t + r[4] + pos);
@@ -80,108 +80,108 @@ s32 func_80054B78(void) {
             g_padActuator[1].unk1 = a;
         }
     }
-    D_8007BD38.unk8 += D_8007BD38.unk6;
-    if (D_8007BD38.unk4 < (D_8007BD38.unk8 >> 8)) {
-        if (D_8007BD38.unk0 & 0x10) {
-            D_8007BD38.unk8 = D_8007BD38.unk4 << 8;
-            func_800550C0(-D_8007BD38.unk6);
+    g_vib.unk8 += g_vib.unk6;
+    if (g_vib.unk4 < (g_vib.unk8 >> 8)) {
+        if (g_vib.unk0 & 0x10) {
+            g_vib.unk8 = g_vib.unk4 << 8;
+            vib_setRate(-g_vib.unk6);
         } else {
-            D_8007BD38.unk8 = D_8007BD38.unk2 << 8;
+            g_vib.unk8 = g_vib.unk2 << 8;
         }
-        f = D_8007BD38.unk0;
-        D_8007BD38.unk0 = f & ~4;
+        f = g_vib.unk0;
+        g_vib.unk0 = f & ~4;
         if (!(f & 8)) {
             g_padActuator[0].unk0 = 0;
             g_padActuator[0].unk1 = 0;
             g_padActuator[1].unk0 = 0;
             g_padActuator[1].unk1 = 0;
-            D_8007BD38.unk0 = f & ~6;
+            g_vib.unk0 = f & ~6;
         }
     }
-    if ((D_8007BD38.unk8 >> 8) < D_8007BD38.unk2) {
-        if (D_8007BD38.unk0 & 0x10) {
-            D_8007BD38.unk8 = D_8007BD38.unk2 << 8;
-            func_800550C0(-D_8007BD38.unk6);
+    if ((g_vib.unk8 >> 8) < g_vib.unk2) {
+        if (g_vib.unk0 & 0x10) {
+            g_vib.unk8 = g_vib.unk2 << 8;
+            vib_setRate(-g_vib.unk6);
         } else {
-            D_8007BD38.unk8 = D_8007BD38.unk4 << 8;
+            g_vib.unk8 = g_vib.unk4 << 8;
         }
-        f = D_8007BD38.unk0;
-        D_8007BD38.unk0 = f & ~4;
+        f = g_vib.unk0;
+        g_vib.unk0 = f & ~4;
         if (!(f & 8)) {
             g_padActuator[0].unk0 = 0;
             g_padActuator[0].unk1 = 0;
             g_padActuator[1].unk0 = 0;
             g_padActuator[1].unk1 = 0;
-            D_8007BD38.unk0 = f & ~6;
+            g_vib.unk0 = f & ~6;
         }
     }
     return 0;
 }
 
-s32 func_80054E88(s32 row, s32 col, s32 sel) {
+s32 vib_selectTrack(s32 row, s32 col, s32 sel) {
     Unk8007BD44Row *r;
     s32 i;
 
-    r = (Unk8007BD44Row *)((u8 *)D_8007BD38.unkC + D_8007BD38.unkC->unk6);
-    for (i = 0; i < D_8007BD38.unkC->unk4; r++, i++) {
+    r = (Unk8007BD44Row *)((u8 *)g_vib.unkC + g_vib.unkC->unk6);
+    for (i = 0; i < g_vib.unkC->unk4; r++, i++) {
         r->unk0[col] &= ~1;
     }
-    r = (Unk8007BD44Row *)((u8 *)D_8007BD38.unkC + D_8007BD38.unkC->unk6) + row;
+    r = (Unk8007BD44Row *)((u8 *)g_vib.unkC + g_vib.unkC->unk6) + row;
     if (sel) {
         r->unk0[col] |= 1;
         g_padActuator[0].unk0 = 0;
         g_padActuator[0].unk1 = 0;
         g_padActuator[1].unk0 = 0;
         g_padActuator[1].unk1 = 0;
-        D_8007BD38.unk0 &= ~6;
-        D_8007BD38.unk8 = D_8007BD38.unk2 << 8;
+        g_vib.unk0 &= ~6;
+        g_vib.unk8 = g_vib.unk2 << 8;
     } else {
         r->unk0[col] &= ~1;
     }
     return 0;
 }
 
-s32 func_80054F80(void) {
+s32 vib_clear(void) {
     g_padActuator[0].unk0 = 0;
     g_padActuator[0].unk1 = 0;
     g_padActuator[1].unk0 = 0;
     g_padActuator[1].unk1 = 0;
-    D_8007BD38.unk0 = 0;
-    D_8007BD38.unk2 = 0;
-    D_8007BD38.unk4 = 0;
-    D_8007BD38.unkC = 0;
+    g_vib.unk0 = 0;
+    g_vib.unk2 = 0;
+    g_vib.unk4 = 0;
+    g_vib.unkC = 0;
     return 0;
 }
 
-s32 func_80054FB8(s32 a) {
-    D_8007BD38.unk2 = a;
-    D_8007BD38.unk8 = a << 8;
-    D_8007BD38.unk0 |= 6;
+s32 vib_play(s32 a) {
+    g_vib.unk2 = a;
+    g_vib.unk8 = a << 8;
+    g_vib.unk0 |= 6;
     return 0;
 }
 
-s32 func_80054FE0(s32 on) {
+s32 vib_setPlaying(s32 on) {
     s32 v;
     if (on) {
-        D_8007BD38.unk0 |= 6;
-        v = D_8007BD38.unk8 >> 8;
-        if (v < D_8007BD38.unk2 || D_8007BD38.unk4 < v) {
-            D_8007BD38.unk8 = D_8007BD38.unk2 << 8;
+        g_vib.unk0 |= 6;
+        v = g_vib.unk8 >> 8;
+        if (v < g_vib.unk2 || g_vib.unk4 < v) {
+            g_vib.unk8 = g_vib.unk2 << 8;
         }
     } else {
         g_padActuator[0].unk0 = 0;
         g_padActuator[0].unk1 = 0;
         g_padActuator[1].unk0 = 0;
         g_padActuator[1].unk1 = 0;
-        D_8007BD38.unk0 &= ~6;
+        g_vib.unk0 &= ~6;
     }
     return 0;
 }
 
-s32 func_80055060(s32 a, s32 b, s32 on) {
+s32 vib_setTrackEnabled(s32 a, s32 b, s32 on) {
     Unk8007BD44Row *e;
 
-    e = (Unk8007BD44Row *)((u8 *)D_8007BD38.unkC + D_8007BD38.unkC->unk6) + a;
+    e = (Unk8007BD44Row *)((u8 *)g_vib.unkC + g_vib.unkC->unk6) + a;
     if (on) {
         e->unk0[b] |= 1;
     } else {
@@ -190,33 +190,33 @@ s32 func_80055060(s32 a, s32 b, s32 on) {
     return 0;
 }
 
-s32 func_800550C0(s16 a) {
-    D_8007BD38.unk6 = a;
+s32 vib_setRate(s16 a) {
+    g_vib.unk6 = a;
     return 0;
 }
 
-s32 func_800550D0(s32 a) {
-    D_8007BD38.unk0 = (D_8007BD38.unk0 & ~0x18) | (a & 0x18);
+s32 vib_setLoopMode(s32 a) {
+    g_vib.unk0 = (g_vib.unk0 & ~0x18) | (a & 0x18);
     return 0;
 }
 
-s32 func_800550F0(s32 a, s32 b) {
+s32 vib_setRange(s32 a, s32 b) {
     if (a >= 0) {
-        D_8007BD38.unk2 = a;
+        g_vib.unk2 = a;
     }
     if (b >= 0) {
-        D_8007BD38.unk4 = b;
+        g_vib.unk4 = b;
     }
     return 0;
 }
 
-s32 func_80055110(s32 *a) {
-    *a = D_8007BD38.unk0;
+s32 vib_getFlags(s32 *a) {
+    *a = g_vib.unk0;
     return 0;
 }
 
-s32 func_80055128(s32 a, s32 b, s32 *out) {
-    Unk8007BD44 *h = D_8007BD38.unkC;
+s32 vib_isTrackEnabled(s32 a, s32 b, s32 *out) {
+    Unk8007BD44 *h = g_vib.unkC;
     u16 *p = (u16 *)((u8 *)h + h->unk6) + a * 6 + b;
     if (*p & 1) {
         *out = 1;
@@ -226,23 +226,23 @@ s32 func_80055128(s32 a, s32 b, s32 *out) {
     return 0;
 }
 
-s32 func_8005517C(Unk8007BD44 **a) {
-    *a = D_8007BD38.unkC;
+s32 vib_getData(Unk8007BD44 **a) {
+    *a = g_vib.unkC;
     return 0;
 }
 
-s32 func_80055194(s32 *a, s32 *b) {
-    *a = D_8007BD38.unk2;
-    *b = D_8007BD38.unk4;
+s32 vib_getRange(s32 *a, s32 *b) {
+    *a = g_vib.unk2;
+    *b = g_vib.unk4;
     return 0;
 }
 
-s32 func_800551BC(s16 *a) {
-    *a = D_8007BD38.unk6;
+s32 vib_getRate(s16 *a) {
+    *a = g_vib.unk6;
     return 0;
 }
 
-s32 func_800551D4(s32 *a) {
-    *a = D_8007BD38.unk8 >> 8;
+s32 vib_getFrame(s32 *a) {
+    *a = g_vib.unk8 >> 8;
     return 0;
 }

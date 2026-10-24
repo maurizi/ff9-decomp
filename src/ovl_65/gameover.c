@@ -82,17 +82,17 @@ void gameover_initDisp(DispBuf *b) {
         b[i].draw.isbg = 1;
         b[i].disp.isinter = 0;
         setRECT(&b[i].disp.screen, 0, 8, 256, 224);
-        func_80063580(&b[i].picTpage0, GetTPage(2, 0, 0, 256));
+        gfx_initTpageSprt(&b[i].picTpage0, GetTPage(2, 0, 0, 256));
         setXY0(&b[i].pic0, 0, 0);
         setUV0(&b[i].pic0, 0, 0);
         setWH(&b[i].pic0, 256, 224);
         setRGB0(&b[i].pic0, 0x80, 0x80, 0x80);
-        func_80063580(&b[i].picTpage1, GetTPage(2, 0, 256, 256));
+        gfx_initTpageSprt(&b[i].picTpage1, GetTPage(2, 0, 256, 256));
         setXY0(&b[i].pic1, 256, 0);
         setUV0(&b[i].pic1, 0, 0);
         setWH(&b[i].pic1, 64, 224);
         setRGB0(&b[i].pic1, 0x80, 0x80, 0x80);
-        func_800635E0(&b[i].fadeTpage, GetTPage(0, 2, 0, 0));
+        gfx_initTpageTile(&b[i].fadeTpage, GetTPage(0, 2, 0, 0));
         setXY0(&b[i].fade, 0, 0);
         setWH(&b[i].fade, 320, 224);
         setRGB0(&b[i].fade, 0, 0, 0);
@@ -127,7 +127,7 @@ s32 battleEnd_update(void) {
             rewards_exit();
             return 1;
         }
-        func_8004BC38();
+        evt_update();
         return 0;
     case BATTLE_END_GAME_OVER:
         if (timer_isEnabled()) {

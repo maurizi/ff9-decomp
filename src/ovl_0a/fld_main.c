@@ -35,7 +35,7 @@ void fld_main(s32 arg0) {
                 evt_onMenuOpen();
             }
             if (!(g_gameState->unk1C->unk0 & 2)) {
-                switch (func_8004BC38()) {
+                switch (evt_update()) {
                 case 3:
                     g_gameState->unk1C->unk8E4.field->unkC->unk14->exitReason = FLD_EXIT_BATTLE;
                     fld_startEncounter();
@@ -81,7 +81,7 @@ void fld_main(s32 arg0) {
                 bgi_updateFloorMoves();
             }
             if (!(g_gameState->unk1C->unk8E4.field->unk0 & 0x10)) {
-                func_80054B78();
+                vib_update();
             }
             if (!(g_gameState->unk1C->unk0 & 0x10)) {
                 fld_drawSprites();
@@ -672,7 +672,7 @@ s32 func_800A9814(FieldScene *arg0, u16 arg1) {
 
     arg0->unk4C = p;
     if (p != NULL) {
-        func_80054A28(p);
+        vib_init(p);
     }
     return 0;
 }
@@ -832,7 +832,7 @@ s32 fld_freeFieldFile(FieldScene *arg0, s16 arg1) {
 }
 
 s32 func_800AA0A8(FieldScene *arg0, s16 arg1) {
-    func_80054F80();
+    vib_clear();
     return 0;
 }
 

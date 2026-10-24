@@ -166,10 +166,10 @@ s32 fld_setupActorModel(s32 arg0, void *arg1) {
     r = func_8004AB64(arg1);
     if (r < 9) {
         slot = r;
-        s = (FieldObjSlot *)func_8001E350(r);
+        s = (FieldObjSlot *)game_getModel(r);
     } else {
         slot = g_gameState->unk1C->unk39 + 9;
-        s = (FieldObjSlot *)func_8001E350(slot);
+        s = (FieldObjSlot *)game_getModel(slot);
         g_gameState->unk1C->unk39++;
     }
     arg0 = fld_remapModelId(arg0);
@@ -311,7 +311,7 @@ s32 fld_collectVisibleModels(FieldObjSlot **arg0) {
     for (e = evt_getObjectList(); e != NULL; e = e->unk0) {
         a = e->unk4;
         if (a->unkE == 1 && (a->unkF & 1) && a->unk5 == 4) {
-            s = (FieldObjSlot *)func_8001E350(a->unk3B);
+            s = (FieldObjSlot *)game_getModel(a->unk3B);
             if (s->unk8->parent == NULL) {
                 arg0[n++] = s;
             }
@@ -320,7 +320,7 @@ s32 fld_collectVisibleModels(FieldObjSlot **arg0) {
     for (e = evt_getObjectList(); e != NULL; e = e->unk0) {
         a = e->unk4;
         if (a->unkE == 1 && (a->unkF & 1) && a->unk5 == 4) {
-            s = (FieldObjSlot *)func_8001E350(a->unk3B);
+            s = (FieldObjSlot *)game_getModel(a->unk3B);
             p = s->unk8->parent;
             if (p != NULL) {
                 for (i = 0; i < n; i++) {
@@ -534,7 +534,7 @@ s32 fld_modelCommand(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4) {
     FieldAnimSfx *t;
 
     info = &g_gameState->unk1C->unk8E4.field->unkC->unk14->actorInfo[arg0];
-    c = (FieldEvtCtx *)func_8001E350(arg0);
+    c = (FieldEvtCtx *)game_getModel(arg0);
     switch (arg1) {
     case 0:
         if ((u8)arg2 == 0xFF) {
@@ -899,7 +899,7 @@ void fld_drawShadow(FieldObjPlace *arg0, s32 arg1) {
     s32 v1;
 
     e = &arg0[arg1];
-    s = (FieldObjSlot *)func_8001E350(arg1);
+    s = (FieldObjSlot *)game_getModel(arg1);
     bias = 0;
     if (s->unk0 & 0x10) {
         return;
@@ -1703,7 +1703,7 @@ void fld_drawSprites(void) {
         e = &h->unk8[i];
         if (e->sprite != NULL && (e->unk0_0 & 1)) {
             if ((s8)e->parent != -1) {
-                t = ((MATRIX *)((FieldObjSlot *)func_8001E350((s8)e->parent))->unk8->boneMatrices)[e->bone].t;
+                t = ((MATRIX *)((FieldObjSlot *)game_getModel((s8)e->parent))->unk8->boneMatrices)[e->bone].t;
                 e->pos[0] = t[0] + e->offset[0];
                 e->pos[1] = t[1] + e->offset[1];
                 e->pos[2] = t[2] + e->offset[2];

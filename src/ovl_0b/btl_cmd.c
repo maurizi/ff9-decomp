@@ -13,7 +13,7 @@ void btl_startBattle(void) {
     func_800C972C();
     g_btlRewards.unkB = (b->unk132C.unk0 >> 13) & 1;
     msg_beginDraw();
-    func_8004BC38();
+    evt_update();
     func_800AB580(1);
     fade_in(0x20);
     btlcam_playScene(func_800CA2B0(0));
@@ -240,7 +240,7 @@ void func_800B0FC0(Battle *arg0) {
     s32 c;
     for (i = 0; i < 2; i++) {
         for (j = 0; j < 4; j++) {
-            func_80063640(&arg0->unk108C[i].unk0[j].unk0, GetTPage(0, 1, 0, 0));
+            gfx_initTpagePolyF3(&arg0->unk108C[i].unk0[j].unk0, GetTPage(0, 1, 0, 0));
             if (j < 3) {
                 c = 0xBC - j * 0x3C;
             } else {

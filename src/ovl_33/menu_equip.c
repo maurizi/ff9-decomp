@@ -28,7 +28,7 @@ void menuEquip_init(void) {
         }
         d->initStones[0] = lv;
     }
-    func_80063118(&s_menuEquip.listWin, 0, 1);
+    tween_start(&s_menuEquip.listWin, 0, 1);
     menuEquip_setMember(g_menuScreen.unk3, 0);
     ui_initMemberSwitch(&s_menuEquip.header, g_menuScreen.unk3, menuEquip_onMemberSwitched);
 }
@@ -594,7 +594,7 @@ void menuEquip_updateAnims(void) {
         menuList_update(&s_menuEquip.list);
     }
     if (s_menuEquip.listWin.unkC != 0) {
-        func_800631AC(&s_menuEquip.listWin);
+        tween_step(&s_menuEquip.listWin);
     }
     if (s_menuEquip.header.unk0 != 0) {
         ui_updateMemberSwitch(&s_menuEquip.header);
@@ -661,14 +661,14 @@ void menuEquip_openList(void) {
     w->unk4 = s_menuEquip.listRect;
     s_menuEquip.listOpen = 1;
     s_menuEquip.state = EQUIP_STATE_BUSY;
-    func_80063118(w, &s_menuEquipListOpen, 1);
+    tween_start(w, &s_menuEquipListOpen, 1);
 }
 
 void menuEquip_closeList(void) {
     WinDef *w = &s_menuEquip.listWin;
 
     s_menuEquip.state = EQUIP_STATE_BUSY;
-    func_80063118(w, &s_menuEquipListClose, 0);
+    tween_start(w, &s_menuEquipListClose, 0);
 }
 
 void menuEquip_onListOpened(void) {

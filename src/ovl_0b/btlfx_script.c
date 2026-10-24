@@ -241,7 +241,7 @@ void btlfx_runScript(void) {
                             func_800E3C58();
                             func_800E970C();
                             func_800E954C();
-                            func_80054F80();
+                            vib_clear();
                         }
                     }
                     break;
@@ -371,15 +371,15 @@ void btlfx_runScript(void) {
                 case 15:
                     if (b == 0) {
                         btlfx_copyWords(D_800FE530, (s32 *)btlfx_getFileData(d->unk8, a), 0x708);
-                        func_80054A28(D_800FE530);
-                        func_80054E88(0, 0, 1);
-                        func_80054E88(0, 1, 1);
+                        vib_init(D_800FE530);
+                        vib_selectTrack(0, 0, 1);
+                        vib_selectTrack(0, 1, 1);
                     } else {
-                        func_80054FE0(0);
-                        func_80054E88(1, 0, 1);
-                        func_80054E88(1, 1, 1);
+                        vib_setPlaying(0);
+                        vib_selectTrack(1, 0, 1);
+                        vib_selectTrack(1, 1, 1);
                     }
-                    func_80054FB8(1);
+                    vib_play(1);
                     break;
                 case 20:
                     break;

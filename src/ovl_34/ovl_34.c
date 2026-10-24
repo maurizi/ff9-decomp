@@ -92,7 +92,7 @@ void menuConfig_inputPadMap(void) {
         if (g_padRepeat & PAD_START) {
             snd_playSe(SE_CANCEL);
             for (i = 0; i < 2; i++) {
-                func_80063118(&s_menuConfig.wins[i], &s_menuConfigPadMapClose, 0);
+                tween_start(&s_menuConfig.wins[i], &s_menuConfigPadMapClose, 0);
             }
             config_apply();
             return;
@@ -124,7 +124,7 @@ void menuConfig_inputBattleControl(void) {
         if (g_padRepeat & BTN_CIRCLE) {
             snd_playSe(SE_CANCEL);
             for (i = 0; i < 2; i++) {
-                func_80063118(&s_menuConfig.wins[i], &s_menuConfigBattleControlClose, 0);
+                tween_start(&s_menuConfig.wins[i], &s_menuConfigBattleControlClose, 0);
             }
             return;
         }
@@ -317,7 +317,7 @@ void menuConfig_openSubWindow(void) {
         s_menuConfig.editing = 1;
         for (j = 0; j < 2; j++) {
             s_menuConfig.wins[j].unk4 = s_menuConfigSubRects[j];
-            func_80063118(&s_menuConfig.wins[j], &s_menuConfigSubOpen, 1);
+            tween_start(&s_menuConfig.wins[j], &s_menuConfigSubOpen, 1);
         }
         snd_playSe(SE_CURSOR);
     }
@@ -734,10 +734,10 @@ void menuConfig_drawText(s32 x, s32 y, s32 otz, s32 text, s32 color) {
 
 void menuConfig_stepWindows(void) {
     if (s_menuConfig.wins[0].unkC != 0) {
-        func_800631AC(&s_menuConfig.wins[0]);
+        tween_step(&s_menuConfig.wins[0]);
     }
     if (s_menuConfig.wins[1].unkC != 0) {
-        func_800631AC(&s_menuConfig.wins[1]);
+        tween_step(&s_menuConfig.wins[1]);
     }
 }
 

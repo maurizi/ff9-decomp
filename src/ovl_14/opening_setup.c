@@ -1,7 +1,7 @@
 #include "ovl_14.h"
 
 void opening_initNewGame(void) {
-    func_800651D8();
+    game_newGame();
     evt_clearGlobalVars();
     func_8005392C();
     menu_initNewGame();
@@ -12,7 +12,7 @@ void opening_initNewGame(void) {
 
 void opening_resetGameData(void) {
     opening_resetFieldState();
-    func_8004BBF0();
+    evt_initSystem();
     func_800AB200();
     func_8006237C();
 }

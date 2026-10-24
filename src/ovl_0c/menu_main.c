@@ -20,13 +20,13 @@ void menuMain_initPanels(void) {
     s_menuMainPanelRects[5].x = 0x134 - w;
     for (i = 0; i < 6; i++) {
         s_menuMain.panels[i].unk4 = s_menuMainPanelRects[i];
-        func_80063118(&s_menuMain.panels[i], NULL, 0);
+        tween_start(&s_menuMain.panels[i], NULL, 0);
     }
     if (D_80077E51 != 0) {
-        func_80063118(&s_menuMain.panels[0], &s_menuMainSlideIn[0], 1);
-        func_80063118(&s_menuMain.panels[1], &s_menuMainSlideIn[1], 1);
-        func_80063118(&s_menuMain.panels[2], &s_menuMainSlideIn[2], 1);
-        func_80063118(&s_menuMain.panels[3], &s_menuMainSlideIn[3], 1);
+        tween_start(&s_menuMain.panels[0], &s_menuMainSlideIn[0], 1);
+        tween_start(&s_menuMain.panels[1], &s_menuMainSlideIn[1], 1);
+        tween_start(&s_menuMain.panels[2], &s_menuMainSlideIn[2], 1);
+        tween_start(&s_menuMain.panels[3], &s_menuMainSlideIn[3], 1);
     }
 }
 
@@ -433,7 +433,7 @@ void menuMain_updatePanels(void) {
     if (g_menuScreen.unk1 != 0) {
         for (i = 0; i < 6; i++) {
             if (s_menuMain.panels[i].unkC != 0) {
-                func_800631AC(&s_menuMain.panels[i]);
+                tween_step(&s_menuMain.panels[i]);
             }
         }
     }

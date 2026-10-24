@@ -47,7 +47,7 @@ void game_reset(void) {
     for (i = 0; i < 90; i++) {
         VSync(0);
     }
-    func_8004BBF0();
+    evt_initSystem();
     func_80053924();
     menu_init();
     game_initFade();

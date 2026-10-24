@@ -299,7 +299,7 @@ void menuStatus_openAbilityPage(void) {
     s_menuStatus.pageOpen[s_menuStatus.pagesOpen] = 1;
     s_menuStatus.pageOnTop[s_menuStatus.pagesOpen] = 1;
     w->unk4 = s_menuStatusPageRects[s_menuStatus.pagesOpen];
-    func_80063118(w, &s_menuStatusPageOpenTween, 1);
+    tween_start(w, &s_menuStatusPageOpenTween, 1);
 }
 
 void menuStatus_setMember(s32 slot, s32 dir) {
@@ -367,7 +367,7 @@ void menuStatus_updateAnims(void) {
 
     for (i = 0; i < 6; i++) {
         if (s_menuStatus.pageOpen[i] != 0 && s_menuStatus.pageWins[i].unkC != 0) {
-            func_800631AC(&s_menuStatus.pageWins[i]);
+            tween_step(&s_menuStatus.pageWins[i]);
         }
     }
     ui_updateMemberSwitch(&s_menuStatus.header);
@@ -407,7 +407,7 @@ void menuStatus_closeAbilityPages(void) {
         for (i = 0; i < s_menuStatus.pagesOpen; i++) {
             if (s_menuStatus.pageOpen[i] != 0) {
                 s_menuStatusPageCloseTweens[i].delay = s_menuStatus.pagesOpen - 1 - i;
-                func_80063118(&s_menuStatus.pageWins[i], &s_menuStatusPageCloseTweens[i], 0);
+                tween_start(&s_menuStatus.pageWins[i], &s_menuStatusPageCloseTweens[i], 0);
             }
         }
         snd_playSe(SE_PAGE);

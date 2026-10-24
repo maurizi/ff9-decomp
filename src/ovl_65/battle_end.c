@@ -350,9 +350,9 @@ void rewards_initWindows(void) {
         s_rewards.winShown[i] = s_rewardsWinInit[i].shown;
         s_rewards.wins[i].unk4 = s_rewardsWinInit[i].rect;
         if (s_rewardsWinInit[i].shown != 0) {
-            func_80063118(&s_rewards.wins[i], s_rewardsWinOpen[i], 1);
+            tween_start(&s_rewards.wins[i], s_rewardsWinOpen[i], 1);
         } else {
-            func_80063118(&s_rewards.wins[i], NULL, 0);
+            tween_start(&s_rewards.wins[i], NULL, 0);
         }
     }
 }
@@ -440,7 +440,7 @@ void rewards_finishExp(void) {
     func_8002F55C(SE_EXP_COUNT);
     snd_playSe(SE_CURSOR);
     for (i = 0; i < 7; i++) {
-        func_80063118(&s_rewards.wins[2 + i], &s_rewardsWinClose[i], 0);
+        tween_start(&s_rewards.wins[2 + i], &s_rewardsWinClose[i], 0);
     }
     s_rewards.screen = 1;
     s_rewards.winShown[9] = 1;
@@ -717,7 +717,7 @@ void rewards_stepWindows(void) {
 
     for (i = 0; i < 10; i++) {
         if (s_rewards.winShown[i] != 0 && s_rewards.wins[i].unkC != 0) {
-            func_800631AC(&s_rewards.wins[i]);
+            tween_step(&s_rewards.wins[i]);
         }
     }
 }

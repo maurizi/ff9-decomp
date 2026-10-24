@@ -76,7 +76,7 @@ s32 btl_update(void) {
         }
         break;
     }
-    func_8004BC38();
+    evt_update();
     b->unkD7C++;
     return 0;
 }

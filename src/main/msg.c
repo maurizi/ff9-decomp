@@ -1671,10 +1671,10 @@ s32 evt_modelOpField(Unk8004AB64 *o, s32 op) {
 
     switch (op) {
     case 0x7F:
-        *(u32 *)func_8001E350(o->unk3B) &= ~0x10;
+        *(u32 *)game_getModel(o->unk3B) &= ~0x10;
         return 0;
     case 0x80:
-        *(u32 *)func_8001E350(o->unk3B) |= 0x10;
+        *(u32 *)game_getModel(o->unk3B) |= 0x10;
         return 0;
     case 0x81:
         a = evt_getArg8();
@@ -1690,13 +1690,13 @@ s32 evt_modelOpField(Unk8004AB64 *o, s32 op) {
         return 0;
     case 0x83:
         a = evt_getArg8();
-        p = (u32 *)func_8001E350(o->unk3B);
+        p = (u32 *)game_getModel(o->unk3B);
         gs = g_gameState;
         *p |= 0x20;
         gs->unk1C->unk8E4.ovl65->unkC->unk14->unk2C[o->unk3B].unk4_0 = a * 16;
         return 0;
     case 0x84:
-        *(u32 *)func_8001E350(o->unk3B) &= ~0x20;
+        *(u32 *)game_getModel(o->unk3B) &= ~0x20;
         return 0;
     case 0x85:
         g_gameState->unk1C->unk8E4.ovl65->unkC->unk14->unk2C[o->unk3B].unk0_0 = evt_getArg8();
@@ -1721,10 +1721,10 @@ s32 evt_modelOpBattle(Unk8004AB64 *o, s32 op) {
 
     switch (op) {
     case 0x7F:
-        *(u32 *)func_8001E350(o->unk3B) &= ~0x10;
+        *(u32 *)game_getModel(o->unk3B) &= ~0x10;
         return 0;
     case 0x80:
-        *(u32 *)func_8001E350(o->unk3B) |= 0x10;
+        *(u32 *)game_getModel(o->unk3B) |= 0x10;
         return 0;
     case 0x81:
         a = evt_getArg8();
@@ -1740,13 +1740,13 @@ s32 evt_modelOpBattle(Unk8004AB64 *o, s32 op) {
         return 0;
     case 0x83:
         a = evt_getArg8();
-        p = (u32 *)func_8001E350(o->unk3B);
+        p = (u32 *)game_getModel(o->unk3B);
         gs = g_gameState;
         *p |= 0x20;
         gs->unk1C->unk8E4.ovl65->unk11C0->unk28[o->unk3B].unk4_0 = a * 16;
         return 0;
     case 0x84:
-        *(u32 *)func_8001E350(o->unk3B) &= ~0x20;
+        *(u32 *)game_getModel(o->unk3B) &= ~0x20;
         return 0;
     case 0x85:
         g_gameState->unk1C->unk8E4.ovl65->unk11C0->unk28[o->unk3B].unk0_0 = evt_getArg8();
@@ -1770,10 +1770,10 @@ s32 evt_modelOpWorld(Unk8004AB64 *o, s32 op) {
 
     switch (op) {
     case 0x7F:
-        *(u32 *)func_8001E350(o->unk3B) &= ~0x10;
+        *(u32 *)game_getModel(o->unk3B) &= ~0x10;
         return 0;
     case 0x80:
-        *(u32 *)func_8001E350(o->unk3B) |= 0x10;
+        *(u32 *)game_getModel(o->unk3B) |= 0x10;
         return 0;
     case 0x81:
         a = evt_getArg8();
@@ -1789,13 +1789,13 @@ s32 evt_modelOpWorld(Unk8004AB64 *o, s32 op) {
         return 0;
     case 0x83:
         a = evt_getArg8();
-        p = (u32 *)func_8001E350(o->unk3B);
+        p = (u32 *)game_getModel(o->unk3B);
         gs = g_gameState;
         *p |= 0x20;
         ((Unk11C0Slot *)gs->unk1C->unk8E4.ovl65->unk8->unk1C)[o->unk3B].unk4_0 = a * 16;
         return 0;
     case 0x84:
-        *(u32 *)func_8001E350(o->unk3B) &= ~0x20;
+        *(u32 *)game_getModel(o->unk3B) &= ~0x20;
         return 0;
     case 0x85:
         ((Unk11C0Slot *)g_gameState->unk1C->unk8E4.ovl65->unk8->unk1C)[o->unk3B].unk0_0 = evt_getArg8();

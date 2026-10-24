@@ -20,7 +20,7 @@ void menuItem_init(void) {
     menuList_init(&s_menuItem.keyList, s_menuItem.keyCount, 0xB, 2, 0xAD);
     setRECT(&s_menuItem.cmdRect, 8, 8, 0xE4, 0x1A);
     setRECT(&s_menuItem.listRect, 8, 0x2A, 0x12C, 0xAD);
-    func_80063118(&s_menuItem.charWin, 0, 0);
+    tween_start(&s_menuItem.charWin, 0, 0);
     menuItem_loadImages();
 }
 
@@ -268,7 +268,7 @@ void menuItem_openTarget(void) {
     r->y = 0x26;
     r->w = 0x90;
     r->h = 0xB6;
-    func_80063118(&s_menuItem.charWin, s_menuItemTargetOpen[k], 1);
+    tween_start(&s_menuItem.charWin, s_menuItemTargetOpen[k], 1);
     gs = g_gameState;
     m = &s_menuItem;
     m->slot = 0;
@@ -501,7 +501,7 @@ void menuItem_updateAnims(void) {
     menuItem_updateHelp();
     menuItem_updateKeyItemAnim();
     menuItem_stepKweh();
-    func_800631AC(&s_menuItem.charWin);
+    tween_step(&s_menuItem.charWin);
     menuList_update(&s_menuItem.itemList);
     menuList_update(&s_menuItem.keyList);
 }
@@ -734,7 +734,7 @@ void menuItem_closeTarget(void) {
 
     it = s_menuItemTabs;
     m = &s_menuItem;
-    func_80063118(&m->charWin, s_menuItemTargetClose[it[s_menuItem.tab].list->col & 1], 0);
+    tween_start(&m->charWin, s_menuItemTargetClose[it[s_menuItem.tab].list->col & 1], 0);
     m->state = ITEM_STATE_BUSY;
 }
 
@@ -816,7 +816,7 @@ void menuItem_showKeyItem(s32 id) {
     s_menuItem.state = ITEM_STATE_BUSY;
     s_menuItem.keyViewStep = 0;
     s_menuItem.keyViewX = 0x48;
-    s_menuItem.keyViewX -= func_800632B4(0x16, s_menuItemKeyItemSlide);
+    s_menuItem.keyViewX -= tween_sumDeltas(0x16, s_menuItemKeyItemSlide);
     help_setLocked(1);
 }
 

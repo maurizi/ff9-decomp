@@ -325,7 +325,7 @@ void game_setNextScene(u16 arg0) {
     }
 }
 
-s32 func_8001E350(s32 arg0) {
+s32 game_getModel(s32 arg0) {
     if (arg0 < 9) {
         return (s32)&g_gameState->unk1C->unk8D8[arg0];
     }

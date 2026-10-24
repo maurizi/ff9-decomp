@@ -1,6 +1,6 @@
 #include "ff9.h"
 
-Unk8004AB64 *func_80036650(s32 n) {
+Unk8004AB64 *evt_allocObject(s32 n) {
     Unk8007AECCNode *cur = g_evtState->unk15D0;
     Unk8007AECCNode *nn = NULL;
     Unk8007AECCNode *next;
@@ -62,7 +62,7 @@ Unk8004AB64 *func_80036650(s32 n) {
     return NULL;
 }
 
-Unk8004AB64 *func_800367D0(s32 idx, s32 id, s32 a2, s32 a3) {
+Unk8004AB64 *evt_createObject(s32 idx, s32 id, s32 a2, s32 a3) {
     Unk8004AB64 *o;
     Unk16D8 *n;
     Unk8007AECC *d;
@@ -75,11 +75,11 @@ Unk8004AB64 *func_800367D0(s32 idx, s32 id, s32 a2, s32 a3) {
     }
     o = evt_getObject(id);
     if (o != NULL) {
-        func_80036978(o);
+        evt_deleteObject(o);
     }
     nw = (a2 + 3) >> 2;
     nv = (((ScriptEntry *)D_8007ADF8)[idx].unk4 + 3) >> 2;
-    o = func_80036650(nw + nv + a3);
+    o = evt_allocObject(nw + nv + a3);
     end = (u32 *)o + nw + nv;
     for (p = (u32 *)o; p < end; p++) {
         *p = 0;
@@ -126,7 +126,7 @@ Unk8004AB64 *func_800367D0(s32 idx, s32 id, s32 a2, s32 a3) {
     return o;
 }
 
-Unk16D8 *func_80036978(Unk8004AB64 *obj) {
+Unk16D8 *evt_deleteObject(Unk8004AB64 *obj) {
     Unk16D8 *n;
     Unk16D8 *prev;
     Unk16D8 *next = NULL;
@@ -158,7 +158,7 @@ Unk16D8 *func_80036978(Unk8004AB64 *obj) {
     return next;
 }
 
-s32 func_80036AAC(s32 op) {
+s32 evt_exprUnitIncDec(s32 op) {
     s32 r = 0;
     s32 w = g_evtExprSp[-2];
     s32 mask;
@@ -204,7 +204,7 @@ s32 func_80036AAC(s32 op) {
     return r;
 }
 
-s32 func_80036CCC(s32 op) {
+s32 evt_exprUnitAssign(s32 op) {
     s32 r = 0;
     s32 w = g_evtExprSp[-3];
     s32 mask;
@@ -284,7 +284,7 @@ s32 func_80036CCC(s32 op) {
     return r;
 }
 
-s32 func_80036FFC(s32 op) {
+s32 evt_exprUnitSelect(s32 op) {
     s32 r = 0;
     s32 idx = r;
     s32 w = g_evtExprSp[-2];
@@ -350,7 +350,7 @@ s32 func_80036FFC(s32 op) {
     return r;
 }
 
-s32 func_800372A4(s32 op) {
+s32 evt_exprUnitCompare(s32 op) {
     s32 r = 0;
     s32 c = r;
     s32 w = g_evtExprSp[-3];
@@ -411,7 +411,7 @@ s32 func_800372A4(s32 op) {
     return r;
 }
 
-s32 func_80037528(s32 op) {
+s32 evt_exprUnitLogic(s32 op) {
     s32 r = 0;
     s32 w = g_evtExprSp[-2];
     s32 mask;
@@ -454,7 +454,7 @@ s32 func_80037528(s32 op) {
     return r;
 }
 
-s32 func_80037738(void) {
+s32 evt_exprUnitFirst(void) {
     s32 r = 0;
     s32 w = g_evtExprSp[-2];
     s32 mask;
@@ -486,7 +486,7 @@ s32 func_80037738(void) {
     return r;
 }
 
-s32 func_800378C4(s32 slot) {
+s32 evt_joinParty(s32 slot) {
     s32 i;
     s32 r;
 
@@ -512,7 +512,7 @@ s32 func_800378C4(s32 slot) {
     return r;
 }
 
-s32 func_80037ACC(s32 op) {
+s32 evt_exprSpecial(s32 op) {
     s32 r = 0;
     s16 px;
     s16 py;
@@ -525,18 +525,18 @@ s32 func_80037ACC(s32 op) {
     case 0x9:
     case 0xA:
     case 0xB:
-        r = func_80036AAC(op);
+        r = evt_exprUnitIncDec(op);
         break;
     case 0xF:
     case 0x4B:
     case 0x4C:
-        r = func_80036FFC(op);
+        r = evt_exprUnitSelect(op);
         break;
     case 0x2E:
     case 0x43:
     case 0x44:
     case 0x45:
-        r = func_80037528(op);
+        r = evt_exprUnitLogic(op);
         break;
     case 0x64:
         x = evt_popResult();
@@ -553,19 +553,19 @@ s32 func_80037ACC(s32 op) {
         break;
     case 0x52:
         gd = g_gameState->unk1C;
-        r = gd->characters[func_80037ACC_chr(evt_popResult())].hp;
+        r = gd->characters[evt_exprSpecial_chr(evt_popResult())].hp;
         break;
     case 0x53:
         gd = g_gameState->unk1C;
-        r = gd->characters[func_80037ACC_chr(evt_popResult())].maxHp;
+        r = gd->characters[evt_exprSpecial_chr(evt_popResult())].maxHp;
         break;
     case 0x6E:
         gd = g_gameState->unk1C;
-        r = gd->characters[func_80037ACC_chr(evt_popResult())].mp;
+        r = gd->characters[evt_exprSpecial_chr(evt_popResult())].mp;
         break;
     case 0x6F:
         gd = g_gameState->unk1C;
-        r = gd->characters[func_80037ACC_chr(evt_popResult())].maxMp;
+        r = gd->characters[evt_exprSpecial_chr(evt_popResult())].maxMp;
         break;
     case 0x70:
         px = -1;

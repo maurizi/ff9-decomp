@@ -564,10 +564,10 @@ u32 wm_loadActorModel(s32 arg0, Unk8004AB64 *arg1) {
     t = func_8004AB64(arg1);
     if ((u32)t < 9) {
         id = t;
-        o = (WmObjSlot *)func_8001E350(t);
+        o = (WmObjSlot *)game_getModel(t);
     } else {
         id = g_gameState->unk1C->unk39 + 9;
-        o = (WmObjSlot *)func_8001E350(id);
+        o = (WmObjSlot *)game_getModel(id);
         g_gameState->unk1C->unk39++;
     }
     o->unk4 = arg0;
@@ -626,7 +626,7 @@ void wm_drawShadow(WmObjEnt *arg0, s32 arg1, s32 arg2, s32 arg3) {
     s32 k;
 
     e = &arg0[arg1];
-    s = (WmObjSlot *)func_8001E350(arg1);
+    s = (WmObjSlot *)game_getModel(arg1);
     if (s->unk0 & 0x10) {
         return;
     }
@@ -1296,7 +1296,7 @@ void wm_startBattleTransition(void) {
     o = g_gameState->unk1C->unk8E4.world->unk8;
     o->swirlFrames = 0;
     a = evt_getPlayer();
-    if (a != NULL && (s = (WmObjSlot *)func_8001E350(a->unk3B)) != NULL) {
+    if (a != NULL && (s = (WmObjSlot *)game_getModel(a->unk3B)) != NULL) {
         v.vx = ((MATRIX *)s->unk8->boneMatrices)[1].t[0];
         v.vy = ((MATRIX *)s->unk8->boneMatrices)[1].t[1];
         v.vz = ((MATRIX *)s->unk8->boneMatrices)[1].t[2];
