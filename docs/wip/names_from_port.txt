@@ -4329,3 +4329,24 @@ D_80068F94 g_winShadowLineOffsets  # [code] second-line offsets of win_drawLineB
 D_80068F20 g_winLineColors  # [code] line colours per window palette (win_drawLineBorder, win_drawDivider, ui_drawEtchedLine)
 D_8006F440 g_akaoLfoTableData  # [code] 256-entry wave of akao_lfoTable
 D_800831A8 g_akaoSeVolume  # [code] sound effect volume
+func_80052EEC math_isqrt  # [code] asm: integer square root by 2-bit steps
+func_80052EC0 math_length3  # [code] asm: GTE sqr of (x, y, z), summed, then math_isqrt (evt_relaxLookAt distances)
+func_80052DEC math_distSq2  # [code] asm: x*x + z*z with overflow checks (evt_updateLookAt compares it with 2000 squared)
+func_80052E48 math_dist2  # [code] asm: square root of x*x + z*z with overflow checks
+func_80052F24 math_atan2  # [code] asm: angle 0-0xFFF of (dx, dz) through the table at 0x8006EAD0 (head tracking, evt_angleToObject)
+func_800531D0 evt_angleToObject  # [code] asm: math_atan2 from object a to object b minus angle c, as a signed 12-bit angle
+func_80053124 evt_isInRegion  # [code] asm: GTE point-in-polygon test of (x, z) against an object's region (evt_checkPlayerAction)
+func_80052D70 evt_assignResult  # [code] asm: evt_popAssign with the expression stack pointer kept (per-unit ops store into each unit)
+func_80060938 akao_streamStop  # [code] SPU IRQ off, keys off the stream's two voices and parks their loop addresses at 0x1030
+func_80060A08 akao_allocStreamVoices  # [code] first pair of free sound-effect voices from the top, stopping effects (flag 0x40000000) until one frees up
+func_80060A98 akao_streamUploadSecond  # [code] mono stream: uploads the second 0x800-byte half to SPU 0x2100, then akao_streamStartMono
+func_80060AE0 akao_streamStart  # [code] starts streaming a sample block (header + data): voices, loop info, first SPU upload with the start callback
+func_80060D1C akao_streamSetVoice  # [code] volume (mono/left/right/centre or panned), pitch, start/loop address and envelope of a stream voice
+func_80060ED8 akao_streamKeyOn  # [code] after the first upload: keys the stream voices on with the SPU IRQ at the half-buffer address and the refill callback
+func_80060FA8 akao_streamStartMono  # [code] transfer callback: both voices on one 0x1100/0x2100 buffer pair, then akao_streamKeyOn
+func_8006100C akao_streamStartStereo  # [code] transfer callback: left and right voices on separate buffers, then akao_streamKeyOn
+func_80061070 akao_streamRefill  # [code] SPU IRQ handler body: uploads the next part into the half just played and re-arms the IRQ (loops or stops at the end)
+func_800611BC akao_streamRefillMonoA  # [code] akao_streamRefill of the first mono half (alternates with akao_streamRefillMonoB)
+func_800611EC akao_streamRefillMonoB  # [code] akao_streamRefill of the second mono half
+func_8006121C akao_streamRefillStereoA  # [code] akao_streamRefill of the first stereo half
+func_8006124C akao_streamRefillStereoB  # [code] akao_streamRefill of the second stereo half

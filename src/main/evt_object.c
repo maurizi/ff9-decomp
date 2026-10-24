@@ -178,22 +178,22 @@ s32 evt_exprUnitIncDec(s32 op) {
             case 8:
                 r = evt_popResult();
                 g_evtExprSp++;
-                func_80052D70(r + 1);
+                evt_assignResult(r + 1);
                 break;
             case 9:
                 r = evt_popResult();
                 g_evtExprSp++;
-                func_80052D70(r - 1);
+                evt_assignResult(r - 1);
                 break;
             case 10:
                 r = evt_popResult() + 1;
                 g_evtExprSp++;
-                func_80052D70(r);
+                evt_assignResult(r);
                 break;
             case 11:
                 r = evt_popResult() - 1;
                 g_evtExprSp++;
-                func_80052D70(r);
+                evt_assignResult(r);
                 break;
             }
             g_evtExprSp++;
@@ -275,7 +275,7 @@ s32 evt_exprUnitAssign(s32 op) {
                 g_evtExprSp++;
                 break;
             }
-            func_80052D70(r);
+            evt_assignResult(r);
             g_evtExprSp++;
         }
         mask >>= 1;
@@ -450,7 +450,7 @@ s32 evt_exprUnitLogic(s32 op) {
         g_evtExprSp++;
         break;
     }
-    func_80052D70(r);
+    evt_assignResult(r);
     return r;
 }
 

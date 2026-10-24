@@ -1211,9 +1211,9 @@ typedef struct {
 void evt_onAnimLimit(Unk8004AB64 *);
 s32 func_80047AB8(Unk8004AB64 *, s32);
 void evt_relaxLookAt(Unk8004AB64 *, Unk80047B90 *);
-s32 func_80052DEC(s32, s32, s32); /* distance */
-s32 func_80052EEC(s32);
-s32 func_80052E48(s32, s32, s32);
+s32 math_distSq2(s32, s32, s32); /* distance */
+s32 math_isqrt(s32);
+s32 math_dist2(s32, s32, s32);
 
 typedef struct Unk8007AECCNode {
     Unk8004AB64 *unk0; /* key = start of the block in unk50 */
@@ -1427,7 +1427,7 @@ void akao_quit(void);
 s32 akao_command(u32);
 void akao_loadBankRetry(s32, s32);
 void akao_opEnd(AkaoChannel *, s32);
-void func_80060938(void);
+void akao_streamStop(void);
 void help_setCallback(void (*)(void));
 
 typedef struct {
@@ -1543,11 +1543,11 @@ void preload_clearBusy(void);
 void help_init(void);
 void config_init(void);
 void game_initFade(void);
-void func_80061070(s32, s32, s32, void (*)(void));
-void func_800611BC(void);
-void func_800611EC(void);
-void func_8006121C(void);
-void func_8006124C(void);
+void akao_streamRefill(s32, s32, s32, void (*)(void));
+void akao_streamRefillMonoA(void);
+void akao_streamRefillMonoB(void);
+void akao_streamRefillStereoA(void);
+void akao_streamRefillStereoB(void);
 void akao_onSpuTransferDone(void);
 
 typedef struct {
@@ -2101,8 +2101,8 @@ extern Unk4 g_padSavedThresholds;
 extern Unk4 g_padStickDpadThresholds;
 void menuScreen_drawCommands(void);
 void menuScreen_updateOpen(void);
-void func_80060D1C(s32, s32, s32, s32);
-void func_80060ED8(s32, s32, void (*)(void));
+void akao_streamSetVoice(s32, s32, s32, s32);
+void akao_streamKeyOn(s32, s32, void (*)(void));
 s32 bgi_updateActor(u32); /* field overlay (ovl_0a) */
 s32 fldbg_applyGeomOffset(void); /* field overlay (ovl_0a) */
 s32 fldbg_resetGeomOffset(void); /* field overlay (ovl_0a) */
@@ -2389,7 +2389,7 @@ extern s32 g_evtArgRead;
 extern struct Unk8004AB64 *g_evtCurObj; /* current script object */
 void evt_evalExpr(void);
 s32 evt_popResult(void);
-void func_80052D70(s32);
+void evt_assignResult(s32);
 extern s32 D_8007B718;
 void msg_update(void);
 void evt_updateIdleTimer(void);
@@ -2406,7 +2406,7 @@ void evt_updateBattleObjects(void);
 void evt_stepAnim(Unk8004AB64 *);
 void msg_drawHereIcon(Unk8004AB64 *);
 s32 func_80052870(Unk16D8 *);
-s32 func_80052EC0(s32, s32, s32);
+s32 math_length3(s32, s32, s32);
 s32 func_8002170C(Unk8004AB64 *);
 s32 evt_rollEncounter(Unk8004AB64 *);
 #if !defined(OVL_0A_H) /* field overlay functions; ovl_0a has the definitions */
@@ -2425,7 +2425,7 @@ s32 bgi_revertActor(s32);
 #endif
 Window *msg_getWindow(s32);
 void evt_followBalloon(Unk8004AB64 *, Window *);
-s32 func_800531D0(Unk8004AB64 *, Unk8004AB64 *, s32);
+s32 evt_angleToObject(Unk8004AB64 *, Unk8004AB64 *, s32);
 void func_800530A8(SVECTOR *, s32, s32);
 void msg_updatePlayerBubble(void);
 void msg_drawAtePrompt(void);
@@ -2610,11 +2610,11 @@ typedef struct {
     s32 unk58;
 } Unk80083168;
 u32 SpuWrite(u8 *, u32);
-void func_80060FA8(void);
+void akao_streamStartMono(void);
 void akao_stopSeq(Unk80080A10 *, AkaoChannel *, s32);
 void SpuGetReverbModeType(s32 *); /* libspu SpuGetReverbModeType */
 void func_800618C0(s32, s32);
-void func_80060AE0(s32, s32, s32);
+void akao_streamStart(s32, s32, s32);
 extern Unk80083168 g_akaoStream;
 s32 func_80061BC8(); /* K&R: callers pass one or two arguments */
 s32 func_80061FBC(s32, s32, s32, void (*)(void));
@@ -3131,10 +3131,10 @@ typedef struct {
     u8 pad24[0x40 - 0x24];
     u8 unk40[1]; /* sample data */
 } AkaoStream;
-s32 func_80060A08(void);
+s32 akao_allocStreamVoices(void);
 void func_80061624(void);
-void func_8006100C(void);
-void func_80060A98(void);
+void akao_streamStartStereo(void);
+void akao_streamUploadSecond(void);
 u8 *text_buildGlyph(s32, s32, u32 *, u32, s32, s32 *, SprtWords *);
 void win_drawTail(Window *);
 s32 chr_calcBaseSpeed(s32, s32, u8);
@@ -3793,7 +3793,7 @@ extern s32 D_8007BBD8;
 extern s32 g_msgLine; /* message counter */
 extern u8 D_8006E688[]; /* text speed per config setting */
 void evt_turnObject(Unk8004AB64 *, s32, s32, s32);
-s32 func_80052F24(s32, s32);
+s32 math_atan2(s32, s32);
 void msg_setNumber(u32, s32);
 void msg_setChoiceMask(s32, s32);
 void msg_keepWindowsOnInit(void);

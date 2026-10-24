@@ -326,16 +326,16 @@ void *evt_findNearestObject(Unk8004AB64 *o, s32 flags, s32 *dist) {
             }
         }
         if (p->unk2D != 0) {
-            s = math_cos(func_800531D0(p, o, p->pos.rotY));
-            rr = (rr * func_80052EEC(((s * s) >> 4) * p->unk2D + 0x1000000)) >> 12;
+            s = math_cos(evt_angleToObject(p, o, p->pos.rotY));
+            rr = (rr * math_isqrt(((s * s) >> 4) * p->unk2D + 0x1000000)) >> 12;
         }
         rr += r;
         if (flags & 6) {
             rr += 0x3C + p->unk5C;
         }
-        d = func_80052DEC(dx, dz, rr);
+        d = math_distSq2(dx, dz, rr);
         if (back) {
-            s = func_800531D0(o, p, o->pos.rotY);
+            s = evt_angleToObject(o, p, o->pos.rotY);
             if (s < 0) {
                 s = -s;
             }
@@ -380,7 +380,7 @@ s32 evt_moveObjectTo(s32 x, s32 y, s32 z, s32 flags) {
     if (p->unk50 & 0x20) {
         ry = p->pos.rotY & 0xFFF;
     } else {
-        ry = func_80052F24(dx, dz);
+        ry = math_atan2(dx, dz);
         if (!(flags & 1)) {
             cur = p->pos.rotY & 0xFFF;
             d = ry - cur;
@@ -408,7 +408,7 @@ s32 evt_moveObjectTo(s32 x, s32 y, s32 z, s32 flags) {
     }
     if (flags & 2) {
         dy = y - p->pos.vy;
-        rx = func_80052F24(-dy, -func_80052EC0(dx, 0, dz)) & 0xFFF;
+        rx = math_atan2(-dy, -math_length3(dx, 0, dz)) & 0xFFF;
         cur = p->unk30 & 0xFFF;
         d = rx - cur;
         if (d < -0x800) {
@@ -452,7 +452,7 @@ s32 evt_moveObjectTo(s32 x, s32 y, s32 z, s32 flags) {
             r = 1;
         }
     }
-    dist = func_80052E48(dx, dy, dz);
+    dist = math_dist2(dx, dy, dz);
     if (dist < speed * speed || ((p->unk50 & 0x10) && p->unk78 < dist)) {
         r = 0;
     }
@@ -1073,14 +1073,14 @@ s32 evt_execInstr(void) {
         a = evt_getArg16_inline() - actor->pos.vx;
         b = evt_getArg16_inline() - actor->pos.vz;
         if (a | b) {
-            evt_turnObject(actor, func_80052F24(a, b), 1, actor->unk73);
+            evt_turnObject(actor, math_atan2(a, b), 1, actor->unk73);
         }
         return 0;
     case 0x51:
         obj = evt_getObjectArg();
         a = evt_getArg8_inline();
         if (obj != NULL) {
-            evt_turnObject(actor, func_80052F24(obj->pos.vx - actor->pos.vx, obj->pos.vz - actor->pos.vz), 1, a);
+            evt_turnObject(actor, math_atan2(obj->pos.vx - actor->pos.vx, obj->pos.vz - actor->pos.vz), 1, a);
         }
         return 0;
     case 0xBC:
@@ -2372,7 +2372,7 @@ void evt_movePlayer(Unk8004AB64 *obj) {
         x -= 0x80;
         if (analog) {
             y = 0x80 - y;
-            dir = func_80052F24(x, y);
+            dir = math_atan2(x, y);
             x *= x;
             m = y * y;
             if (m < x) {
@@ -2444,7 +2444,7 @@ void evt_movePlayer(Unk8004AB64 *obj) {
         if (o != NULL && dist <= 0 && D_8007AEB0 >= 0) {
             obj->unk98 = o;
             obj->unk9C = dist;
-            c = func_800531D0(obj, o, dir);
+            c = evt_angleToObject(obj, o, dir);
             if ((u32)(c + 0x400) <= 0x800) {
                 obj->pos.vx -= v.vx;
                 obj->pos.vz -= v.vz;
@@ -2531,7 +2531,7 @@ void evt_relaxLookAt(Unk8004AB64 *o, Unk80047B90 *m) {
     s32 d;
 
     evt_updateLookAt_ahead(o, o->pos.rotY, &out);
-    d = func_80052EC0(out.vx - o->unk84, out.vy - o->unk86, out.vz - o->unk88);
+    d = math_length3(out.vx - o->unk84, out.vy - o->unk86, out.vz - o->unk88);
     if (d < 100) {
         d = 100;
         o->unk50 &= 0xF8FF;
@@ -2549,7 +2549,7 @@ void evt_relaxLookAt(Unk8004AB64 *o, Unk80047B90 *m) {
 static inline void evt_updateLookAt_approach(Unk8004AB64 *o, Unk80047B90 *mdl, VECTOR *t) {
     s32 d;
 
-    d = func_80052EC0(t->vx - o->unk84, t->vy - o->unk86, t->vz - o->unk88);
+    d = math_length3(t->vx - o->unk84, t->vy - o->unk86, t->vz - o->unk88);
     if (d < 100) {
         d = 100;
     }
@@ -2568,7 +2568,7 @@ static inline s32 evt_updateLookAt_infront(Unk8004AB64 *o) {
     s32 d;
 
     if (!(o->unk50 & 0x400)) {
-        d = (func_80052F24(o->unk84 - o->pos.vx, o->unk88 - o->pos.vz) - o->pos.rotY) & 0xFFF;
+        d = (math_atan2(o->unk84 - o->pos.vx, o->unk88 - o->pos.vz) - o->pos.rotY) & 0xFFF;
         if (d > 0x800) {
             d -= 0x1000;
         }
@@ -2586,7 +2586,7 @@ static inline s32 evt_updateLookAt_infront2(Unk8004AB64 *o, s32 *pa) {
     s32 d;
 
     if (!(o->unk50 & 0x400)) {
-        a = func_80052F24(o->unk84 - o->pos.vx, o->unk88 - o->pos.vz);
+        a = math_atan2(o->unk84 - o->pos.vx, o->unk88 - o->pos.vz);
         d = (a - o->pos.rotY) & 0xFFF;
         if (d > 0x800) {
             d -= 0x1000;
@@ -2620,7 +2620,7 @@ void evt_updateLookAt(Unk8004AB64 *o) {
     mdl = (Unk80047B90 *)((Unk8E0 *)game_getModel(o->unk3B))->unk8;
     tgt = NULL;
     if ((o->unk50 & 4) && g_evtLookTarget != NULL && g_evtLookTarget != o &&
-        func_80052E48(o->pos.vx - g_evtLookTarget->pos.vx, o->pos.vz - g_evtLookTarget->pos.vz, 0) >= 1000) {
+        math_dist2(o->pos.vx - g_evtLookTarget->pos.vx, o->pos.vz - g_evtLookTarget->pos.vz, 0) >= 1000) {
         tgt = g_evtLookTarget;
         o->unk50 |= 0x200;
     }
@@ -2640,9 +2640,9 @@ void evt_updateLookAt(Unk8004AB64 *o) {
                 q = n->unk4;
                 if (q != o && q->unk5 == 4 && (u32)(q->pos.vy - y + 399) < 799 && (q->unk50 & 2) &&
                     (mask & q->unk6A)) {
-                    d = func_80052DEC(q->pos.vx - x, q->pos.vz - z, 0);
+                    d = math_distSq2(q->pos.vx - x, q->pos.vz - z, 0);
                     if (d >= 1000) {
-                        a = func_800531D0(o, q, o->pos.rotY);
+                        a = evt_angleToObject(o, q, o->pos.rotY);
                         d -= 4000000;
                         if (a < 0) {
                             a = -a;
@@ -2675,7 +2675,7 @@ void evt_updateLookAt(Unk8004AB64 *o) {
                     t.vx = tgt->pos.vx;
                     t.vy = tgt->pos.vy;
                     t.vz = tgt->pos.vz;
-                    ang = func_80052F24(t.vx - o->pos.vx, t.vz - o->pos.vz);
+                    ang = math_atan2(t.vx - o->pos.vx, t.vz - o->pos.vz);
                     d = (ang - o->pos.rotY) & 0xFFF;
                     if (d > 0x800) {
                         d -= 0x1000;
@@ -2744,7 +2744,7 @@ void evt_updateIdleTimer(void) {
     }
 }
 
-/* Nearest kind-3 object whose script has entry `key` and that func_80053124
+/* Nearest kind-3 object whose script has entry `key` and that evt_isInRegion
  * accepts for p's position. */
 static inline Unk8004AB64 *evt_checkPlayerAction_find(Unk8004AB64 *p, s32 key) {
     Unk8004AB64 *found = NULL;
@@ -2755,7 +2755,7 @@ static inline Unk8004AB64 *evt_checkPlayerAction_find(Unk8004AB64 *p, s32 key) {
 
     for (; n != NULL; n = n->unk0) {
         o = n->unk4;
-        if (o->unk5 == 3 && evt_callObjectFunc_find(o->unk6, key) != NULL && func_80053124(o, x, z)) {
+        if (o->unk5 == 3 && evt_callObjectFunc_find(o->unk6, key) != NULL && evt_isInRegion(o, x, z)) {
             found = o;
             break;
         }
@@ -2771,7 +2771,7 @@ void evt_checkPlayerAction(Unk8004AB64 *p) {
     t = msg_getPadPressed();
     btn = t & (g_evtMode == 1 ? (BTN_CROSS | BTN_SQUARE) : BTN_CROSS);
     if (btn && (o = evt_findNearestObject(p, 4, NULL)) != NULL) {
-        D_8007AE20 = func_800531D0(p, o, p->pos.rotY);
+        D_8007AE20 = evt_angleToObject(p, o, p->pos.rotY);
         if ((u32)(D_8007AE20 + 0x3FF) < 0x7FF) {
             p->unk93 = o->unk7;
             if (btn == BTN_SQUARE && evt_callObjectFunc(o, 1, 8, 0)) {
@@ -2909,7 +2909,7 @@ s32 evt_updateObjects(void) {
                         evt_checkPlayerAction(o);
                         t1 = evt_findNearestObject(o, 0, &dist);
                         if (t1 != NULL && dist <= 0 &&
-                            (u32)(func_800531D0(o, t1, func_80052F24(o->pos.vx - o->unk40.vx, o->pos.vz - o->unk40.vz)) + 0x400) <= 0x800) {
+                            (u32)(evt_angleToObject(o, t1, math_atan2(o->pos.vx - o->unk40.vx, o->pos.vz - o->unk40.vz)) + 0x400) <= 0x800) {
                             o->pos.vx = o->unk40.vx;
                             o->pos.vy = o->unk40.vy;
                             o->pos.vz = o->unk40.vz;
@@ -3045,7 +3045,7 @@ s32 evt_updateObjects(void) {
                     }
                 }
                 if (moved && o->unk7 == g_evtState->playerUid && g_evtPlayerMoved != 0) {
-                    g_evtEncounterDist += func_80052EC0(dx, dy, dz);
+                    g_evtEncounterDist += math_length3(dx, dy, dz);
                     if (evt_rollEncounter(p)) {
                         g_evtEncounterPending = 1;
                     }

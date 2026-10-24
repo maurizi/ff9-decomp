@@ -19,8 +19,8 @@
  * pen_end / pen_endSmall / pen_endFont / pen_endBuffered store them back. C callers (the window text
  * renderer around main.c:14100, the menus) call the primitive emitters in between.
  *
- * Verification: func_80052F24, func_80052EC0 (with func_80052EEC) and func_80052DEC were replayed against
- * 85 argument/result pairs captured in the emulator (field, walking): no differences. func_80053124 matched
+ * Verification: math_atan2, math_length3 (with math_isqrt) and math_distSq2 were replayed against
+ * 85 argument/result pairs captured in the emulator (field, walking): no differences. evt_isInRegion matched
  * 29 captured calls (all "outside"). Everything else is checked by reading against the asm only.
  *
  * pen_drawSmallString (unreachable: no callers, and it expects the return address in $t1) is given a normal body.
@@ -996,9 +996,9 @@ void evt_runExpr(void) {
             v = evt_popValue();
             o = D_8007B704;
             if (op == 0x5D) {
-                v = (s32)((u32)func_80052F24(v - o->pos.vx, t - o->pos.vz) << 20) >> 24;
+                v = (s32)((u32)math_atan2(v - o->pos.vx, t - o->pos.vz) << 20) >> 24;
             } else {
-                v = func_80052EC0(v - o->pos.vx, 0, t - o->pos.vz);
+                v = math_length3(v - o->pos.vx, 0, t - o->pos.vz);
             }
             break;
         case 0x60: /* angle / distance from the current object to the object at address v */
@@ -1007,9 +1007,9 @@ void evt_runExpr(void) {
             q = (Unk8004AB64 *)SCRIPT_PTR_RESTORE(evt_popValue());
             o = D_8007B704;
             if (op == 0x60) {
-                v = (s32)((u32)func_80052F24(q->pos.vx - o->pos.vx, q->pos.vz - o->pos.vz) << 20) >> 24;
+                v = (s32)((u32)math_atan2(q->pos.vx - o->pos.vx, q->pos.vz - o->pos.vz) << 20) >> 24;
             } else {
-                v = func_80052EC0(q->pos.vx - o->pos.vx, 0, q->pos.vz - o->pos.vz);
+                v = math_length3(q->pos.vx - o->pos.vx, 0, q->pos.vz - o->pos.vz);
             }
             break;
         case 0x5F:
@@ -1017,7 +1017,7 @@ void evt_runExpr(void) {
             break;
         case 0x66:
             t = evt_popValue();
-            v = func_80052F24(evt_popValue(), t) >> 4;
+            v = math_atan2(evt_popValue(), t) >> 4;
             break;
         case 0x6A:
             t = evt_popValue();
@@ -1313,7 +1313,7 @@ s32 evt_popResult(void) {
 }
 
 /* Pop a reference from the published stack and store v in it. */
-void func_80052D70(s32 v) {
+void evt_assignResult(s32 v) {
     s32 *save = r_sp;
 
     r_sp = g_evtExprSp;
@@ -1338,7 +1338,7 @@ void evt_evalExpr(void) {
 /* ============================================================ geometry */
 
 /* x*x + y*y - z*z, or 0x7FFFFFFF if x*x, y*y or their sum overflows. */
-s32 func_80052DEC(s32 x, s32 y, s32 z) {
+s32 math_distSq2(s32 x, s32 y, s32 z) {
     long long a = (long long)x * x;
     long long b = (long long)y * y;
     s32 s;
@@ -1357,7 +1357,7 @@ s32 func_80052DEC(s32 x, s32 y, s32 z) {
 }
 
 /* x*x + y*y + z*z, 0x7FFFFFFF on overflow. */
-s32 func_80052E48(s32 x, s32 y, s32 z) {
+s32 math_dist2(s32 x, s32 y, s32 z) {
     long long a = (long long)x * x;
     long long b = (long long)y * y;
     long long c = (long long)z * z;
@@ -1384,7 +1384,7 @@ s32 func_80052E48(s32 x, s32 y, s32 z) {
 }
 
 /* Integer square root (bit by bit, rounding down). */
-s32 func_80052EEC(s32 v) {
+s32 math_isqrt(s32 v) {
     s32 r = 0;
     s32 sh;
     s32 b;
@@ -1401,17 +1401,17 @@ s32 func_80052EEC(s32 v) {
 }
 
 /* Length of (x, y, z): each component is taken as 16 bits (the GTE IR registers), squared with SQR, and
- * the sum (wrapping) goes to func_80052EEC. */
-s32 func_80052EC0(s32 x, s32 y, s32 z) {
+ * the sum (wrapping) goes to math_isqrt. */
+s32 math_length3(s32 x, s32 y, s32 z) {
     s32 a = (s16)x;
     s32 b = (s16)y;
     s32 c = (s16)z;
 
-    return func_80052EEC((s32)((u32)(a * a) + (u32)(b * b) + (u32)(c * c)));
+    return math_isqrt((s32)((u32)(a * a) + (u32)(b * b) + (u32)(c * c)));
 }
 
 /* Angle of (dx, dz) in 4096 units, from the u16 table D_8006EAD0 (one octant). 0 for (0, 0). */
-s32 func_80052F24(s32 dx, s32 dz) {
+s32 math_atan2(s32 dx, s32 dz) {
     s32 q;
 
     if ((dx | dz) == 0) {
@@ -1480,7 +1480,7 @@ void func_8005309C(SVECTOR *v, s32 rx, s32 ry, s32 len) {
  * For each edge the GTE OP gives (edge.z * (x - v.x) - edge.x * (z - v.z)); inside means all >= 0 or all <= 0.
  * Returns 1 if inside (on an edge counts). The original computes the cross products with the GTE (OP), which
  * leaves R11, R12, R22, R23 and R33 of the rotation matrix overwritten; this version doesn't touch the GTE. */
-s32 func_80053124(u8 *p, s32 x, s32 z) {
+s32 evt_isInRegion(u8 *p, s32 x, s32 z) {
     s32 n = *(s32 *)(p + 0x14);
     u32 *v = (u32 *)(p + 0x18);
     s32 pos = 1;
@@ -1509,8 +1509,8 @@ s32 func_80053124(u8 *p, s32 x, s32 z) {
 }
 
 /* Signed difference (-0x800..0x7FF) between angle `ang` and the direction from a to b. */
-s32 func_800531D0(Unk8004AB64 *a, Unk8004AB64 *b, s32 ang) {
-    s32 d = func_80052F24(b->pos.vx - a->pos.vx, b->pos.vz - a->pos.vz);
+s32 evt_angleToObject(Unk8004AB64 *a, Unk8004AB64 *b, s32 ang) {
+    s32 d = math_atan2(b->pos.vx - a->pos.vx, b->pos.vz - a->pos.vz);
 
     return (s32)((u32)(ang - d) << 20) >> 20;
 }

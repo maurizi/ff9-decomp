@@ -95,24 +95,24 @@ INCLUDE_ASM("asm/us/main/nonmatchings/evt_expr_asm", func_80052D0C);
 
 INCLUDE_ASM("asm/us/main/nonmatchings/evt_expr_asm", evt_popResult);
 
-INCLUDE_ASM("asm/us/main/nonmatchings/evt_expr_asm", func_80052D70);
+INCLUDE_ASM("asm/us/main/nonmatchings/evt_expr_asm", evt_assignResult);
 
 INCLUDE_ASM("asm/us/main/nonmatchings/evt_expr_asm", evt_evalExpr);
 
-INCLUDE_ASM("asm/us/main/nonmatchings/evt_expr_asm", func_80052DEC);
+INCLUDE_ASM("asm/us/main/nonmatchings/evt_expr_asm", math_distSq2);
 
-INCLUDE_ASM("asm/us/main/nonmatchings/evt_expr_asm", func_80052E48);
+INCLUDE_ASM("asm/us/main/nonmatchings/evt_expr_asm", math_dist2);
 
-INCLUDE_ASM("asm/us/main/nonmatchings/evt_expr_asm", func_80052EC0);
+INCLUDE_ASM("asm/us/main/nonmatchings/evt_expr_asm", math_length3);
 
-INCLUDE_ASM("asm/us/main/nonmatchings/evt_expr_asm", func_80052EEC);
+INCLUDE_ASM("asm/us/main/nonmatchings/evt_expr_asm", math_isqrt);
 
-INCLUDE_ASM("asm/us/main/nonmatchings/evt_expr_asm", func_80052F24);
+INCLUDE_ASM("asm/us/main/nonmatchings/evt_expr_asm", math_atan2);
 
 INCLUDE_ASM("asm/us/main/nonmatchings/evt_expr_asm", func_8005309C);
 
 INCLUDE_ASM("asm/us/main/nonmatchings/evt_expr_asm", func_800530A8);
 
-INCLUDE_ASM("asm/us/main/nonmatchings/evt_expr_asm", func_80053124);
+INCLUDE_ASM("asm/us/main/nonmatchings/evt_expr_asm", evt_isInRegion);
 
-INCLUDE_ASM("asm/us/main/nonmatchings/evt_expr_asm", func_800531D0);
+INCLUDE_ASM("asm/us/main/nonmatchings/evt_expr_asm", evt_angleToObject);
