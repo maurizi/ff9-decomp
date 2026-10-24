@@ -878,7 +878,7 @@ void func_800AA1FC(TmState *s) {
             if ((u32)(s->unk450 - 0x7C) < 4) {
                 r.x = 0x59;
                 r.w = 0x8F;
-                r.w = func_8002BA68(text_get(0x19)) + 0x12;
+                r.w = text_measureWidth(text_get(0x19)) + 0x12;
                 r.x = 0xA0 - r.w / 2;
                 r.y = 0x59;
                 r.h = 0x2B;
@@ -951,7 +951,7 @@ void func_800AA548(TmState *s) {
             win_close(s->unk458);
             if (s->unk4 == 0) {
                 if (card_countAll() < 5) {
-                    r.w = func_8002BA68(text_get(0x1A)) + 0x12;
+                    r.w = text_measureWidth(text_get(0x1A)) + 0x12;
                     r.x = 0xA0 - r.w / 2;
                     r.y = 0x5B;
                     r.h = 0x2B;
@@ -1082,7 +1082,7 @@ void func_800AA790(TmState *s) {
     if (s->unk0 == 0x12) {
         if (((pad & 0x10000) && s->unk47C == 0) || (pad & 0x80000)) {
             if (s->unk450 != 0x7C) if (s->unk450 != 0x7D) if (s->unk450 != 0x7E) if (s->unk450 != 0x7F) {
-                r.w = func_8002BA68(text_get(0x2D)) + 0x12;
+                r.w = text_measureWidth(text_get(0x2D)) + 0x12;
                 r.x = 0xA0 - r.w / 2;
                 r.y = 0x54;
                 r.h = 0x38;
@@ -1132,7 +1132,7 @@ void func_800AA790(TmState *s) {
                 func_800B01E8(5);
                 if (++s->unk47C == 5) {
                     D_80077DF0 = 0;
-                    r.w = func_8002BA68(text_get(6)) + 0x12;
+                    r.w = text_measureWidth(text_get(6)) + 0x12;
                     r.x = 0xA0 - r.w / 2;
                     r.y = 0x53;
                     r.h = 0x3A;
@@ -1147,7 +1147,7 @@ void func_800AA790(TmState *s) {
         }
     } else if ((pad & 0x20000) && card_countOf(func_800AF268(s)) != 0) {
         D_80077DF0 = 0;
-        r.w = func_8002BA68(text_get(0x18)) + 0x12;
+        r.w = text_measureWidth(text_get(0x18)) + 0x12;
         r.x = 0xB9;
         r.h = 0x38;
         r.y = 0x35;
@@ -1506,10 +1506,10 @@ void *func_800AB928(u32 *ot, void *p, TmState *s) {
         }
     }
     text_formatNumber(n, num, -1, 0);
-    func_8002BD54(buf, text_get(0x33));
+    text_copy(buf, text_get(0x33));
     text_append(buf, num);
     text_append(buf, text_get(0x34));
-    r2.w = func_8002BA68((s32)buf) + 0x10;
+    r2.w = text_measureWidth((s32)buf) + 0x10;
     r2.x = 0x52;
     r2.y = sel->unk10 - 9;
     r2.h = 0x19;
@@ -2489,7 +2489,7 @@ void func_800ADE5C(TmState *s) {
     }
     if (found == 0) {
         if (card_countAll() > 100) {
-            r.w = func_8002BA68(text_get(0x16)) + 0x12;
+            r.w = text_measureWidth(text_get(0x16)) + 0x12;
             r.x = 0xA0 - r.w / 2;
             r.y = 0x5B;
             r.h = 0x2A;
@@ -2569,14 +2569,14 @@ void *func_800AE084(u32 *ot, void *p, TmState *s) {
     c->unk10 = 0x55;
     D_800B3CE0 = n;
     D_800B3CD8 = id = c->unk0;
-    func_8002BD54(buf, (u8 *)card_getName(id));
+    text_copy(buf, (u8 *)card_getName(id));
     if (D_800B3CE0 == 0) {
         text_append(buf, text_get(3));
     } else {
         text_append(buf, text_get(4));
     }
     text_append(buf, text_get(7));
-    w = func_8002BA68(buf) + 0x10;
+    w = text_measureWidth(buf) + 0x10;
     r.x = 0xA0 - w / 2;
     r.y = 0x96;
     r.w = w;
@@ -2630,13 +2630,13 @@ void func_800AE494(Window *w) {
 
     v = w;
     if (D_800B3CE0 == 0) {
-        func_8002BD54(buf, text_get(3));
+        text_copy(buf, text_get(3));
     } else {
-        func_8002BD54(buf, text_get(4));
+        text_copy(buf, text_get(4));
     }
     text_append(buf, (u8 *)card_getName(D_800B3CD8));
     text_append(buf, text_get(7));
-    text_drawBlock(0x9F - func_8002BA68((s32)buf) / 2, v->unk2 + 6, w->unk18, buf, 0);
+    text_drawBlock(0x9F - text_measureWidth((s32)buf) / 2, v->unk2 + 6, w->unk18, buf, 0);
 }
 
 void func_800AE54C(TmState *arg0) {
@@ -2994,7 +2994,7 @@ void func_800AEE2C(TmState *s) {
         if (n != 0) {
             c0 = (TmCard *)func_800AF268(s);
             text_formatNumber((s32)c0 + 1, buf, -1, 3);
-            i = func_8002BA10(buf) + 0xE;
+            i = text_measureDigits(buf) + 0xE;
             w = i / 2;
             ui_drawSmallDigits(0xD8 - w, 0x78, 0xFFA, D_800A7398, 0);
             ui_drawDigits(0xE6 - w, 0x76, 0xFFA, buf, 0);
@@ -4861,7 +4861,7 @@ void func_800B3488(TmState *arg0) {
     RECT r;
 
     if ((u32)(arg0->unk450 - 0x7C) >= 4) {
-        r.w = func_8002BA68((s32)text_get(2)) + 0x12;
+        r.w = text_measureWidth((s32)text_get(2)) + 0x12;
         r.x = 0xA0 - r.w / 2;
         r.y = 0x54;
         r.h = 0x39;

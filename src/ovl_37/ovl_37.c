@@ -71,14 +71,14 @@ void func_801F0E10(void) {
             }
         } else if (g_padRepeat & PAD_UP) {
             cur = D_801FAB78.unk2;
-            next = func_800337D0(cur);
+            next = party_getPrevMember(cur);
             if (cur != next) {
                 D_801FAB78.unk2 = next;
                 snd_playSe(0x67);
             }
         } else if (g_padRepeat & PAD_DOWN) {
             cur = D_801FAB78.unk2;
-            next = func_8003380C(cur);
+            next = party_getNextMember(cur);
             if (cur != next) {
                 D_801FAB78.unk2 = next;
                 snd_playSe(0x67);
@@ -162,7 +162,7 @@ void func_801F11E4(void) {
     ui_drawLabel(D_801F30A8->x + 0xE, D_801F30A8->y - 3, 0x1D, D_800703FC.unk68, 0);
     ui_drawLabel(D_801F30A8->x + 0xA4, D_801F30A8->y - 3, 0x1D, D_800703FC.unk68, 0);
     if (D_801FAB78.unk0 != 2) {
-        w = func_8002AE7C((u8 *)D_800703FC.unk94);
+        w = ui_measureLabel((u8 *)D_800703FC.unk94);
         ui_drawLabel((D_801F30A8->x + 0x8A) - w, D_801F30A8->y - 3, 0x1D, D_800703FC.unk94, 0);
         ui_drawLabel((D_801F30A8->x + 0x120) - w, D_801F30A8->y - 3, 0x1D, D_800703FC.unk94, 0);
     }
@@ -433,7 +433,7 @@ void func_801F1E88(void) {
     if (m->unk54 != 0) {
         x = m->unk58;
         name = D_8006ADAC + D_8006B374[m->unk56].unk0;
-        text_drawBlock(x + ((0xB0 - func_8002BA68((s32)name)) >> 1), 0x50, 0x14, name, 8);
+        text_drawBlock(x + ((0xB0 - text_measureWidth((s32)name)) >> 1), 0x50, 0x14, name, 8);
         text_drawBlock(x + 0xD, 0x66, 0x14, D_801F79F8 + D_8006B374[m->unk56].unk6, 8);
         setlen(g_primPtr, 4);
         ((SprtWords *)g_primPtr)->rgbc = 0x64808080;
@@ -685,7 +685,7 @@ void func_801F29D0(s32 col, s32 row, s32 i, MenuView *v) {
         y = row * 0xF + (v->unk2 + k);
         name = D_8006ADAC + t->unk0;
         if (!got) {
-            w = x + func_8002BA68((s32)name);
+            w = x + text_measureWidth((s32)name);
             ui_drawSprite(w + 5, y + 2, 0x1C, 0xB6, blink);
             ui_drawSprite(w - 1, y - 1, 0x1C, 0xB5, 0);
         }
@@ -703,7 +703,7 @@ void func_801F2B58(Window *w) {
     u8 *s;
 
     s = text_get(0xB);
-    text_drawBlock(w->unk0 + ((w->unk4 - func_8002BA68((s32)s)) >> 1), w->unk2 + 6, w->unk18, s, 0);
+    text_drawBlock(w->unk0 + ((w->unk4 - text_measureWidth((s32)s)) >> 1), w->unk2 + 6, w->unk18, s, 0);
 }
 
 void func_801F2BC0(void) {

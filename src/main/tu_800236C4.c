@@ -49,7 +49,7 @@ void config_init(void) {
     config_reset();
 }
 
-/* K&R: func_8002BE10 calls it without an argument */
+/* K&R: text_getButtonSprite calls it without an argument */
 s32 config_remapButton(arg0)
 s32 arg0;
 {

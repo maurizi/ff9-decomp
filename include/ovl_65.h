@@ -215,7 +215,7 @@ static inline void WinSlot_clear(WinSlot *s) {
 }
 
 extern u8 D_801F8208[0x30]; /* per ability slot: equipped items teaching it */
-s32 func_80034430(s32, s32); /* main exe */
+s32 chr_findAbilitySlot(s32, s32); /* main exe */
 
 void func_801EF28C(void);
 void func_801F3818(DispBuf *);

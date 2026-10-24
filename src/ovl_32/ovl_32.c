@@ -175,7 +175,7 @@ void func_801F8240(void) {
         func_801F95E8(id);
         func_801F88F4(r->x + 0xC, r->y + 0xC, 0x1C, id, 0);
         func_801F8AB0(r->x + 8, r->y + 8, 0x1C, 0);
-        st->unk2058 = func_8002920C(r->x + 0xC, r->y + 0x31, &g_ot[0x1C], text_get(id + 0x3A), 0, st->unk2058);
+        st->unk2058 = text_buildBlock(r->x + 0xC, r->y + 0x31, &g_ot[0x1C], text_get(id + 0x3A), 0, st->unk2058);
         text_drawBlock(r->x + 0x42, r->y + 6, 0x1C, text_get(9), 0);
         n = func_801F95E8(id);
         for (i = 0; i <= n; i++) {
@@ -212,7 +212,7 @@ void func_801F84F0(void) {
     } else if (D_801F9850.unk1 == 2) {
         idx = D_801F9850.unk10.top + D_801F9850.unk10.cursor;
         if (D_801F9850.unk8 & (1 << idx)) {
-            func_8002BD54(D_801F9750, text_get(idx + 0x22));
+            text_copy(D_801F9750, text_get(idx + 0x22));
             if (D_801F9850.unk4 <= func_801F95E8_inline(idx)) {
                 text_append(D_801F9750, text_get(5));
             }

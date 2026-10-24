@@ -12,7 +12,7 @@ void func_800C8124(void) {
     } else {
         s = text_get(1);
     }
-    w = func_8002B980(s, 0) + 0x10;
+    w = text_measureStyle(s, 0) + 0x10;
     if (w < 0x44) {
         w = 0x44;
     }
@@ -61,11 +61,11 @@ void func_800C8354(void) {
     } else if (g_padRepeat & PAD_UP) {
         m = &g_menuScreen;
         old = m->unk3;
-        new = func_800337D0(old);
+        new = party_getPrevMember(old);
     } else if (g_padRepeat & PAD_DOWN) {
         m = &g_menuScreen;
         old = m->unk3;
-        new = func_8003380C(old);
+        new = party_getNextMember(old);
     } else {
         return;
     }
@@ -228,7 +228,7 @@ void func_800C8C08(void) {
     v = game_getPlayTime();
     ui_drawSprite(D_800C9EA0->x + 6, D_800C9EA0->y + 8, 0x13, 0xB1, 0);
     ui_drawSprite(D_800C9EA0->x + 6, D_800C9EA0->y + 0x15, 0x13, 0xB2, 0);
-    ui_drawSmallDigits(D_800C9EA0->x + 0x13, D_800C9EA0->y + 9, 0x13, buf, func_8002AA04(v, buf, 1));
+    ui_drawSmallDigits(D_800C9EA0->x + 0x13, D_800C9EA0->y + 9, 0x13, buf, text_formatTime(v, buf, 1));
     text_formatNumber(g_gameState->unk1C->gil, buf, 7, 1);
     strcat(buf, D_800C9EA4);
     ui_drawSmallDigits(D_800C9EA0->x + 0x13, D_800C9EA0->y + 0x16, 0x13, buf, 0);
@@ -318,16 +318,16 @@ void func_800C90D0(s32 arg0) {
         } else {
             next = g_levelExp[c->level];
         }
-        func_8002BE44(0, c->unk0);
+        text_setStringArg(0, c->unk0);
         text_formatNumber(c->exp, D_800CB168, 7, 1);
         text_formatNumber(next - c->exp, D_800CB178, 7, 1);
-        func_8002BE44(1, D_800C9EC0);
-        func_8002BE44(2, D_800CB168);
-        func_8002BE44(3, D_800C9EC4);
-        func_8002BE44(4, D_800C9ECC);
-        func_8002BE44(5, D_800CB178);
-        func_8002BE44(6, D_800C9ED4);
-        func_8002BE44(7, c->status != 0 ? D_800C9EE4 : D_800C9EDC);
+        text_setStringArg(1, D_800C9EC0);
+        text_setStringArg(2, D_800CB168);
+        text_setStringArg(3, D_800C9EC4);
+        text_setStringArg(4, D_800C9ECC);
+        text_setStringArg(5, D_800CB178);
+        text_setStringArg(6, D_800C9ED4);
+        text_setStringArg(7, c->status != 0 ? D_800C9EE4 : D_800C9EDC);
         D_80077DF0 = text_get(5);
     }
 }
@@ -360,15 +360,15 @@ void func_800C92C8(u8 arg0) {
     j = 5;
     c = g_gameState->unk1C->party[D_80077E53];
     do {
-        func_8002BE44(i, D_800C9EAC[i]);
+        text_setStringArg(i, D_800C9EAC[i]);
         id = c->equip[i];
         if (id != 0xFF) {
-            func_8002BE44(j, D_8006A218 + D_80069018[id].unk0);
+            text_setStringArg(j, D_8006A218 + D_80069018[id].unk0);
         } else {
-            func_8002BE44(j, text_get(0xD));
+            text_setStringArg(j, text_get(0xD));
         }
         j++;
-        func_8002BE74(i, id);
+        text_setIconArg(i, id);
         i++;
     } while (i < 5);
     g_menuHelp.text = text_get(4);

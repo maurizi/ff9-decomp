@@ -127,7 +127,7 @@ typedef struct {
     u8 equip[5]; /* item ids: weapon, head, arm, body, accessory (0xFF = none); runtime: Zidane 3 115 90 152 255 with no accessory */
     u16 unk3E[5]; /* stat bonuses from equipment */
     u8 pad48[0x58 - 0x48];
-    u8 unk58[0x30]; /* learned AP per ability slot; cleared by func_800343C0 */
+    u8 ap[0x30]; /* AP per ability slot of the character's D_8006CB28 row (chr_getAp, chr_clearAp) */
     u32 supportAbilities[2]; /* equipped: bit (id - 0xC0) (runtime, chr_setSupportAbility) */
 } Character; /* 0x90 */
 
@@ -390,8 +390,8 @@ typedef struct {
 extern GameState *g_gameState;
 void file_loadDirTables(); /* game_initState calls it without arguments */
 
-/* Inlined copy of func_80034A04 (support ability bit test). */
-static inline u8 func_80034A04_inline(u32 *bits, s32 b) {
+/* Inlined copy of chr_testSupportBit (support ability bit test). */
+static inline u8 chr_testSupportBit_inline(u32 *bits, s32 b) {
     b -= 0xC0;
     return (bits[b >> 5] & (1 << (b & 0x1F))) != 0;
 }
@@ -527,8 +527,8 @@ typedef struct {
     u32 code;
 } DrTpageWords;
 
-extern u16 D_8006BBA0[];
-extern u32 D_8006BBB4[]; /* per-style clut row offset for func_8002B644 */
+extern u16 g_textPalettes[];
+extern u32 D_8006BBB4[]; /* per-style clut row offset for text_buildDigits */
 
 /* sprite descriptor: uv/clut word, size, tpage (D_800686E8) */
 typedef struct {
@@ -581,25 +581,25 @@ typedef struct {
 } MenuState;
 extern MenuState g_menu;
 
-extern s32 D_80077140;
-extern s32 D_80077144;
-extern u8 D_80010BD0[]; /* font glyph start/width nibbles, func_80028DB0 */
+extern s32 g_nameGlyphs;
+extern s32 g_nameImage;
+extern u8 D_80010BD0[]; /* font glyph start/width nibbles, text_renderNameGlyph */
 extern void (*g_winShadowFuncs[])(RECT *, s32);
-extern s32 (*D_8006BBEC[])(u8 *); /* text width of a value, per format */
+extern s32 (*g_textMeasureFuncs[])(u8 *); /* text width of a value, per format */
 extern u8 D_8006A20E;
-s32 func_8002A730(s32);
-s32 func_8002BEA4(s32, s32);
+s32 text_getCodeWidth(s32);
+s32 text_measureNumber(s32, s32);
 #if !defined(OVL_0A_H) && !defined(OVL_0C_H)
-s32 func_8002B980(u8 *, s32);
+s32 text_measureStyle(u8 *, s32);
 #endif
 extern s32 D_8006BBFC[];
-extern s32 D_8006BC18[];
-extern u8 D_80077080[];
+extern s32 g_buttonSprites[];
+extern u8 g_textNumberBuf[];
 extern u8 *D_800770A8;
-extern s32 D_800770AC;
-extern u8 *D_800770B0[]; /* menu strings (func_8002BE44) */
-extern s32 D_800770F0[];
-extern u8 D_80077130[];
+extern s32 g_textColor;
+extern u8 *g_textStringArgs[]; /* menu strings (text_setStringArg) */
+extern s32 g_textNumberArgs[];
+extern u8 g_textIconArgs[];
 extern s32 g_winLastVsync;
 
 typedef struct {
@@ -655,24 +655,51 @@ extern s32 g_portraitCount; /* number of portraits (ui_drawPortraitId) */
 void ui_drawPortrait(s32, s32, s32, s32, s32, u8);
 void ui_getPartyPortraitRects(s32, RECT *, RECT *, RECT *);
 void ui_loadPartyPortrait(u8 *, s32);
-s32 func_80028DB0(s32, s32, s32);
+s32 text_renderNameGlyph(s32, s32, s32);
 u8 *ui_buildLabel(s32, s32, u32 *, s32, s32, u8 *);
-u8 *func_80029D60(s32, s32, u32 *, u8 *, s32, u8 *);
-u8 *func_8002B644(s32, s32, u32 *, u8 *, s32, void *);
+u8 *text_buildSmall(s32, s32, u32 *, u8 *, s32, u8 *);
+u8 *text_buildDigits(s32, s32, u32 *, u8 *, s32, void *);
 void ui_drawDigits(s32, s32, s32, u8 *, s32);
-u8 *func_8002920C(s32, s32, u32 *, u8 *, s32, u8 *);
+u8 *text_buildBlock(s32, s32, u32 *, u8 *, s32, u8 *);
 typedef struct {
     s16 w;
     s16 h;
 } TextSize;
 #if defined(OVL_0B_H) /* ovl_0b passes its own buffer types */
-void func_8002AF70(void *, s32);
+void text_measure(void *, s32);
 #else
-TextSize func_8002AF70(u8 *); /* measure a text string */
+TextSize text_measure(u8 *); /* measure a text string */
 #endif
 s32 config_remapButton(); /* (s32 index); unprototyped, as the original's callers pass ints unconverted */
 void win_drawAll(void);
 void win_updateAll(void);
+
+/* Text encoding (font codes, 0xFF-terminated). Control codes as text_buildBlock/text_measure handle them;
+ * 0xF9 is followed by one escape byte (TEXT_X_ADD/TEXT_X_SET/TEXT_Y_* and the argument codes take one more). */
+#define TEXT_END 0xFF
+#define TEXT_NEWLINE 0xF7 /* x back to the start, y += 15 */
+#define TEXT_ESC 0xF9
+/* escape bytes after TEXT_ESC */
+#define TEXT_CHAR_NAME 0x10 /* + character 0-7 */
+#define TEXT_PARTY_NAME 0x18 /* + party slot 0-3 */
+#define TEXT_COLOR 0x20 /* + palette 0-9 (g_textColor) */
+#define TEXT_MSG_NUMBER 0x40 /* + index: number from the message system (D_8007BBA8) */
+#define TEXT_X_ADD 0x43 /* + s8 */
+#define TEXT_X_SET 0x44 /* + x from the line start */
+#define TEXT_Y_DOWN 0x49 /* + pixels */
+#define TEXT_Y_UP 0x4A /* + pixels */
+#define TEXT_SPRITE 0x4B /* + sprite id */
+#define TEXT_ITEM_ICON 0x4C /* + item id */
+#define TEXT_ARG_SPRITE 0x4D /* + arg index (g_textIconArgs) */
+#define TEXT_ARG_ITEM_ICON 0x4E /* + arg index (g_textIconArgs) */
+#define TEXT_ARG_NUMBER 0x68 /* + arg index (g_textNumberArgs), font */
+#define TEXT_ARG_STRING 0x69 /* + arg index (g_textStringArgs), font */
+#define TEXT_ARG_NUMBER_SMALL 0x6A
+#define TEXT_ARG_STRING_SMALL 0x6B
+#define TEXT_ARG_NUMBER_DIGITS 0x6C
+#define TEXT_ARG_STRING_DIGITS 0x6D
+#define TEXT_ARG_NUMBER_LABEL 0x6E
+#define TEXT_ARG_STRING_LABEL 0x6F
 
 /* ---- 0x54-byte objects, 10 at g_windows (win_reapClosed..8002E3F0) ---- */
 
@@ -749,7 +776,7 @@ extern u8 g_menuFadeOutOnClose;
 extern u8 D_80077DB2;
 extern s32 D_800704C8;
 extern s32 D_8007041C;
-extern u8 D_80077DE0;
+extern u8 g_partyChanged;
 extern struct Unk8007B9C0 *g_msgFocus;
 extern s32 D_800834C8;
 extern s32 D_8006798C;
@@ -1442,10 +1469,10 @@ void config_applyPadMapping(void);
 void menu_reset(void);
 void func_8003264C(void);
 s32 text_getFrom(u8 *, s32);
-s32 func_8002BA68(s32);
+s32 text_measureWidth(s32);
 void akao_setOutputMode(s32);
-void func_800343C0(s32);
-void func_80034404(s32);
+void chr_clearAp(s32);
+void chr_clearSupport(s32);
 void bzero(void *, s32);
 
 /* argument block for sound command akao_command */
@@ -1872,8 +1899,8 @@ typedef struct {
 extern Unk80068F48 g_winTailShapes[];
 void akao_setVoiceAttack(s32, s32, s32);
 void akao_setVoiceSustain(s32, s32, s32);
-s32 func_80033964(u32);
-s32 func_8003502C(u8 *, s32);
+s32 chr_getClass(u32);
+s32 chr_sumEquipBonus(u8 *, s32);
 typedef struct {
     u8 unk0;
     u8 unk1;
@@ -1895,7 +1922,7 @@ typedef struct {
     u8 pad9[0xC - 9];
 } Unk8006D548;
 extern Unk8006D548 D_8006D548[];
-void func_80033BD0(u32);
+void chr_setRecruited(u32);
 void msg_setFocus(Unk8007B9C0 *);
 Unk8007B9C0 *msg_getFocus(void);
 extern s32 g_msgChoiceLine;
@@ -1933,8 +1960,8 @@ void menu_onOverlayRead(u8 *);
 extern AkaoChannel D_80080AC8[];
 void func_8005CE04(); /* (u32 *src, u32 *dst, u32 size): word copy */
 u16 func_800593C0(u32, AkaoChannel *);
-s32 func_8002B43C(s32);
-void func_8002B47C(s32);
+s32 text_initNameImage(s32);
+void text_renderPartyName(s32);
 extern RECT D_8006BC38;
 void func_80061C1C(void);
 void akao_setVoicePitch(s32, s32);
@@ -2038,9 +2065,9 @@ void ui_drawBackground(void);
 void win_drawShadow(RECT *, s32, s32);
 s32 ui_drawSpriteDef(s32, s32, s32, void *, u8);
 u8 *text_append(u8 *, u8 *);
-s32 func_8002AE7C(u8 *);
-s32 func_8002B9B8(u8 *s);
-s32 func_8002BA10(u8 *s);
+s32 ui_measureLabel(u8 *);
+s32 text_measureSmall(u8 *s);
+s32 text_measureDigits(u8 *s);
 typedef struct {
     u8 pad0[4];
     u8 unk4; /* advance width */
@@ -2053,7 +2080,7 @@ extern Glyph8 D_80068DC8; /* _ */
 void ui_drawLabel(s32, s32, s32, s32, s32);
 void ui_drawSmallDigits(s32, s32, s32, u8 *, s32);
 void text_drawBlock(s32, s32, s32, u8 *, s32);
-u8 *func_8002BD54(u8 *, u8 *);
+u8 *text_copy(u8 *, u8 *);
 void func_8002C064(s32);
 void gfx_setBuffer(s32);
 void pad_updateRepeat(s32);
@@ -2109,11 +2136,11 @@ void menu_initForMode(void);
 void menu_setOnClose(void (*)(void));
 void menu_setFadeInOnClose(u8);
 void menu_setFadeOutOnClose(u8);
-s32 func_80033CCC(s32, s32);
-void func_80033D1C(u8);
-u8 func_800349BC(s32, s32);
+s32 chr_levelUp(s32, s32);
+void party_setChanged(u8);
+u8 chr_hasSupportAbility(s32, s32);
 u8 func_80034A30(Character *);
-u8 func_80034A04(u32 *, s32);
+u8 chr_testSupportBit(u32 *, s32);
 void help_setBounds(RECT *);
 void help_drawCursor(); /* unprototyped: the argument is unused and most callers pass none */
 void help_setCursorOnTop(u8);
@@ -2477,7 +2504,7 @@ void func_800621D4(void);
 s32 preload_isUsed(PreloadEntry *);
 PreloadEntry *preload_getCurrent(void);
 void ui_loadPartyPortraits(u8 *);
-u8 func_80033D28(void);
+u8 party_hasChanged(void);
 void FlushCache(void);
 extern u8 *g_randPtr;
 extern u8 g_randTable[]; /* random byte table */
@@ -2489,13 +2516,13 @@ void rand_refill(void);
 void ui_initMemberSwitch(UnkBlink *, s32, void (*)(void));
 void ui_startMemberSwitch(UnkBlink *, s32, s32, s32);
 void ui_updateMemberSwitch(UnkBlink *);
-void func_8002BE44(s32, u8 *);
-void func_8002BE74(s32, s32);
+void text_setStringArg(s32, u8 *);
+void text_setIconArg(s32, s32);
 u8 help_getFollow(void);
 void help_setFollow(u8);
 void menuScreen_open(s32);
-s32 func_800337D0(s32);
-s32 func_8003380C(s32);
+s32 party_getPrevMember(s32);
+s32 party_getNextMember(s32);
 void ui_drawEtchedLine(s32, s32, s32, s32);
 typedef struct {
     u8 unk0; /* ability id, 0 = none */
@@ -2503,8 +2530,8 @@ typedef struct {
 } AbilityEntry;
 extern AbilityEntry D_8006CB28[16][0x30]; /* rows indexed by Character.unk34.b.row */
 
-/* Inlined copy of func_80034430 (ability slot of a character). */
-static inline s32 func_80034430_inline(s32 ch, s32 id) {
+/* Inlined copy of chr_findAbilitySlot (ability slot of a character). */
+static inline s32 chr_findAbilitySlot_inline(s32 ch, s32 id) {
     s32 row;
     s32 i;
     if (ch >= 9) {
@@ -2546,7 +2573,7 @@ void ui_drawMemberHeader(s32, s32, s32, Unk80024428 *);
 void ui_drawStatusIcons(s32, s32, s32, u8, s32); /* arg4 unused, callers pass 0 */
 void ui_drawStones(s32, s32, s32, s32, s32);
 void chr_setDefaultName(u8 *, s32); /* default name by id */
-s32 func_8002BCC0(u8 *); /* strlen */
+s32 text_getLength(u8 *); /* strlen */
 extern u32 g_menuArg; /* = g_menu.arg, read on its own by ovl_3a */
 extern u32 g_padPressed; /* buttons that went down this frame */
 void ui_restorePortraits(void);
@@ -2591,11 +2618,11 @@ s32 keyItem_has(s32);
 s32 func_800632B4(s32, s8 *);
 extern s32 g_padPortState[];
 u8 *ui_buildSprite(s32, s32, u32 *, s32, u8, s32 *, void *);
-u8 *func_8002995C(s32, s32, u32 *, Character *, s32 *, u8 *);
-u8 *func_8002B890(s32, s32, u32 *, u32, u8, s32 *, u8 *);
-u8 *func_80029FE4(s32, s32, u32 *, s32, s32 *, u8 *); /* draw a text control icon */
+u8 *text_buildPlain(s32, s32, u32 *, Character *, s32 *, u8 *);
+u8 *text_buildDpad(s32, s32, u32 *, u32, u8, s32 *, u8 *);
+u8 *text_buildCode(s32, s32, u32 *, s32, s32 *, u8 *); /* draw a text control icon */
 #if !defined(OVL_3A_H)
-u8 *func_8002BA90(u32 *, DrTpageWords *);
+u8 *text_buildFontTpage(u32 *, DrTpageWords *);
 #endif
 typedef struct {
     u8 unk0;
@@ -2613,7 +2640,7 @@ extern u32 g_padHeld; /* buttons held */
 extern s32 D_80070430;
 extern u8 D_8007AF02;
 void chr_updateStats(Character *);
-s32 func_80033280(s32, s32, u8 *);
+s32 chr_calcAppearance(s32, s32, u8 *);
 void ui_loadPortraits(void *, s32);
 void func_8002C1E4(void);
 s32 nextfile(s32);
@@ -2660,7 +2687,7 @@ s32 func_80050AAC(void);
 void func_8005546C(s32, s32);
 void func_80056228(void);
 s32 game_getPlayTime(void);
-s32 func_8002AA04(s32, u8 *, s32);
+s32 text_formatTime(s32, u8 *, s32);
 extern s32 D_800704C0;
 extern u8 D_8006A218[]; /* item names */
 extern u8 D_8006ADAC[]; /* key item names */
@@ -2946,17 +2973,17 @@ static inline u8 *msg_drawText_msg(s32 i) {
     return e;
 }
 /* AP learned by a character for ability id, -1 if not learnable (inlined helper). */
-static inline s32 func_80034430_ap_inline(s32 ch, s32 id) {
-    s32 i = func_80034430_inline(ch, id);
+static inline s32 chr_findAbilitySlot_ap_inline(s32 ch, s32 id) {
+    s32 i = chr_findAbilitySlot_inline(ch, id);
     if (i < 0) {
         return -1;
     }
-    return g_gameState->unk1C->characters[ch].unk58[i];
+    return g_gameState->unk1C->characters[ch].ap[i];
 }
 
-/* AP needed to master ability id (inlined form of func_800347D8). */
-static inline s32 func_800347D8_inline(s32 ch, s32 id) {
-    s32 i = func_80034430_inline(ch, id);
+/* AP needed to master ability id (inlined form of chr_getApNeeded). */
+static inline s32 chr_getApNeeded_inline(s32 ch, s32 id) {
+    s32 i = chr_findAbilitySlot_inline(ch, id);
     Character *c = g_gameState->unk1C->characters + ch;
     if (i < 0) {
         return 0;
@@ -2984,7 +3011,7 @@ s32 func_80060A08(void);
 void func_80061624(void);
 void func_8006100C(void);
 void func_80060A98(void);
-u8 *func_8002B7B0(s32, s32, u32 *, u32, s32, s32 *, SprtWords *);
+u8 *text_buildGlyph(s32, s32, u32 *, u32, s32, s32 *, SprtWords *);
 void win_drawTail(Window *);
 s32 chr_calcBaseSpeed(s32, s32, u8);
 s32 chr_calcBaseStrength(s32, s32, u8);
@@ -2993,7 +3020,7 @@ s32 chr_calcBaseSpirit(s32, s32, u8);
 s32 chr_calcMaxHp(s32, s32);
 s32 chr_calcMaxMp(s32, s32);
 s32 chr_calcMaxStones(s32, s32, u8);
-void func_80033DCC(Character *);
+void chr_fitSupportAbilities(Character *);
 POLY_FT4 *func_80051530(void);
 typedef struct {
     u8 unk0; /* u */
@@ -3161,8 +3188,8 @@ typedef struct {
     u8 pad6[2];
 } ScriptEntry;
 
-u8 func_80033A50(u32);
-void func_80034394(s32);
+u8 chr_getClassFlags(u32);
+void chr_clearAbilities(s32);
 s32 chr_getDefaultSet(Character *);
 void chr_setDefaultEquip(u8 *, s32);
 typedef struct {
@@ -3432,7 +3459,7 @@ typedef struct {
 extern TimHeader D_800834D0;
 extern s32 D_8007BCB0;
 
-void func_8002BBE8(s32, u8 *, s32);
+void text_formatInt(s32, u8 *, s32);
 
 /* Inlined copy of text_formatNumber (number to fixed-width text). */
 static inline void text_formatNumber_inline(s32 n, u8 *buf, s32 width, u8 ascii) {
@@ -3451,7 +3478,7 @@ static inline void text_formatNumber_inline(s32 n, u8 *buf, s32 width, u8 ascii)
         fill = 0xF;
     }
     if (width < 0) {
-        func_8002BBE8(n, buf, ascii);
+        text_formatInt(n, buf, ascii);
         return;
     }
     memset(buf, fill, width);
@@ -3774,7 +3801,7 @@ void evt_onMenuOpen(void);
 void keyItem_add(s32);
 void keyItem_remove(s32);
 s32 card_add(s32);
-void func_80033C0C(u32);
+void chr_clearRecruited(u32);
 
 /* Inlined copy of func_8004B914 (24-bit script argument). */
 static inline s32 func_8004B914_inline(void) {
@@ -3797,9 +3824,9 @@ static inline s32 func_8004B914_inline(void) {
 extern u8 D_8006E630[];
 extern u8 D_8006E63C[];
 s32 func_8004E7A4(s32);
-void func_800333B0(s32, u8, s32);
-s32 func_8003470C(s32, s32);
-s32 func_80034220(s32, s32);
+void chr_join(s32, u8, s32);
+s32 chr_resetAp(s32, s32);
+s32 chr_learnAbility(s32, s32);
 s32 func_80053960(Unk800539FC *, s32);
 void timer_setSeconds(s32);
 void timer_enable(u8);

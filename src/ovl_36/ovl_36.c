@@ -133,12 +133,12 @@ void func_801F0DB0(void) {
     win_drawBox(r, 0x1E, 1);
     win_drawShadow(r, 0x1E, 1);
     s = text_get(0x27);
-    w = func_8002BA68(s);
+    w = text_measureWidth(s);
     text_formatNumber(a, buf, 3, 1);
     text_drawBlock(r->x + 8, r->y + 0xA2, 0x14, s, 0);
     ui_drawDigits(r->x + (w + k), r->y + 0xA4, 0x14, buf, 0);
     s = text_get(0x28);
-    w = func_8002BA68(s);
+    w = text_measureWidth(s);
     text_formatNumber(b, buf, 3, 1);
     ui_drawDigits(r->x + 0x80, r->y + 0xA4, 0x14, buf, 0);
     text_drawBlock(r->x - (w - k2), r->y + 0xA2, 0x14, s, 0);
@@ -231,8 +231,8 @@ void func_801F12B8(s32 id) {
             text_formatNumber(cnt, buf + 4, -1, 1);
             buf[3] = '/';
             ui_drawSmallDigits(r->x + 0x2B, r->y + 0x43, 0x14, buf, 0);
-            a = func_8002BE10(4);
-            b = func_8002BE10(5);
+            a = text_getButtonSprite(4);
+            b = text_getButtonSprite(5);
             ui_drawSprite(r->x + 0x1E, r->y + 0x41, 0x14, a, 0);
             ui_drawSprite(r->x + 0x5E, r->y + 0x41, 0x14, b, 0);
         }

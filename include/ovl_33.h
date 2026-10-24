@@ -124,8 +124,8 @@ void func_801EF900(s32, s32);
 void func_801F0ED4(void);
 void func_801F0890(void);
 void ui_drawApGauge(s32, s32, s32, s32, s32, u8, u8); /* main exe */
-s32 func_80034584(s32, s32); /* main exe */
-s32 func_800347D8(s32, s32); /* main exe */
+s32 chr_getAp(s32, s32); /* main exe */
+s32 chr_getApNeeded(s32, s32); /* main exe */
 extern u8 D_8007AFD3;
 u8 func_801F0C10(s32, Character *);
 void func_801F1048(void);
@@ -170,7 +170,7 @@ extern s32 D_80077E54; /* = g_menuScreen.unk4, referenced by its own name */
 extern s32 D_80070498;
 extern s32 D_8007042C;
 void ui_drawMemberSummary(s32, s32, s32, s32, s32);
-s32 func_80034430(s32, s32);
+s32 chr_findAbilitySlot(s32, s32);
 void ui_drawItemIcon(s32, s32, s32, s32, u8); /* main exe */
 void func_801F32E0(Character *);
 void func_801F30D8(void);

@@ -175,7 +175,7 @@ s32 card_getName(s32 a) {
 }
 
 s32 card_getNameWidth(s32 a) {
-    return func_8002BA68(card_getName(a));
+    return text_measureWidth(card_getName(a));
 }
 
 s32 card_getRarity(s32 x) {

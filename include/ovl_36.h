@@ -165,7 +165,7 @@ s32 pad_getRepeatDelay(s32, s32);
 s32 pad_getRepeatInterval(s32, s32);
 /* text width; the call result passes through an inline return value */
 static inline s32 func_801F0F9C_width(u8 *s) {
-    return func_8002BA68((s32)s);
+    return text_measureWidth((s32)s);
 }
 
 /* Inlined copy of func_801F2D88 (show a cached card picture), as expanded in func_801F1778. The

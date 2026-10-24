@@ -92,7 +92,7 @@ void func_801F3B3C(void) {
                 t = i + 5;
             }
             s = text_get(t);
-            text_drawBlock(D_801F4738.x + ((0x8D - func_8002BA68((s32)s)) >> 1), D_801F4738.y + 0x15 + i * 0x33, 6, s,
+            text_drawBlock(D_801F4738.x + ((0x8D - text_measureWidth((s32)s)) >> 1), D_801F4738.y + 0x15 + i * 0x33, 6, s,
                           i >= D_801F4748.unk1 ? 2 : 0);
         }
     }

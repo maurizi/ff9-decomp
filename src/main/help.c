@@ -36,7 +36,7 @@ void help_layout(Unk80035214 *w) {
     s32 d2;
     s32 t;
 
-    sz = func_8002AF70(m->text);
+    sz = text_measure(m->text);
     w->unk0.w = sz.w + 12;
     w->unk0.h = sz.h + 12;
     if (w->unk0.w >= c->w) {

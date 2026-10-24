@@ -56,7 +56,7 @@ s32 func_800A81B8(void) {
     do {
         file_initImg();
     } while (g_gameState->unkB == 0xFF && ++i < 10);
-    func_80033D1C(1);
+    party_setChanged(1);
     if (func_800A8298(prev, g_gameState->unkB)) {
         return func_800A8260(prev);
     }

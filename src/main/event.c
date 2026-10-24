@@ -2013,11 +2013,11 @@ s32 evt_execInstr(void) {
         a = evt_getArg16_inline();
         a |= (a >> 4) & 0xE0;
         for (i = 0; i < 9; i++) {
-            func_80033C0C(i);
+            chr_clearRecruited(i);
         }
         for (i = 0; i < 9; i++) {
             if (a & 1) {
-                func_80033BD0(i);
+                chr_setRecruited(i);
             }
             a >>= 1;
         }
@@ -2036,7 +2036,7 @@ s32 evt_execInstr(void) {
             if (d != 0xFF) {
                 ch->unk34.w = (ch->unk34.w & 0xFFFE0FFF) | ((d & 0x1F) << 12);
             }
-            func_800333B0(a, b & 0xFF, c);
+            chr_join(a, b & 0xFF, c);
         } else {
             evt_getArg8_inline();
             evt_getArg8_inline();
@@ -2114,11 +2114,11 @@ s32 evt_execInstr(void) {
         return 0;
     case 0xF3:
         a = evt_execInstr_chr(evt_getArg8_inline());
-        func_8003470C(a, evt_getArg8_inline());
+        chr_resetAp(a, evt_getArg8_inline());
         return 0;
     case 0xF4:
         a = evt_execInstr_chr(evt_getArg8_inline());
-        func_80034220(a, evt_getArg8_inline());
+        chr_learnAbility(a, evt_getArg8_inline());
         return 0;
     case 0xD9:
         a = evt_execInstr_chr(evt_getArg8_inline());

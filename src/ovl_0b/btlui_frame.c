@@ -125,10 +125,10 @@ void func_800F4FE8(s32 arg0) {
         g_btlBanner.unk8C = 0;
         g_btlBanner.unk90 = 0;
     } else {
-        func_8002BD54(&g_btlBanner.unk0, (u8 *)arg0);
+        text_copy(&g_btlBanner.unk0, (u8 *)arg0);
         g_btlBanner.unk8C = 1;
         g_btlBanner.unk80 = 0;
-        func_8002AF70(&v.unk0, (s32)&g_btlBanner);
+        text_measure(&v.unk0, (s32)&g_btlBanner);
         g_btlBanner.unk88 = v;
     }
 }
@@ -146,7 +146,7 @@ u8 *btl_buildBanner(u8 *arg0) {
             t->h = g_btlBanner.unk88.unk2 + 6;
             r = t;
         }
-        arg0 = btl_buildBannerFrame(func_8002920C(r->x + ((r->w - g_btlBanner.unk88.unk0) >> 1), r->y + 3,
+        arg0 = btl_buildBannerFrame(text_buildBlock(r->x + ((r->w - g_btlBanner.unk88.unk0) >> 1), r->y + 3,
                                            g_btlBanner.unk98, &g_btlBanner.unk0, 0, arg0),
                              r);
     }

@@ -19,7 +19,7 @@ void func_801EEA1C(void) {
     m->unk1 = 0;
     for (i = 0; i < 9; i++) {
         if (g_gameState->unk1C->characters[i].unk34.b.unkB) {
-            D_801F1558.unk8[D_801F1558.unk1] = func_80033964(g_gameState->unk1C->characters[i].unk34.b.row);
+            D_801F1558.unk8[D_801F1558.unk1] = chr_getClass(g_gameState->unk1C->characters[i].unk34.b.row);
             D_801F1558.unk11[D_801F1558.unk1] = i;
             D_801F1558.unk1++;
         }
@@ -354,7 +354,7 @@ void func_801EFB38(void) {
     if (D_801F1558.unk2 == 0) {
         g_menuHelp.text = text_get(i + 2);
         for (j = 0; j < 2; j++) {
-            func_8002BE44(j, text_get(D_801F13F0[i].unk1[j]));
+            text_setStringArg(j, text_get(D_801F13F0[i].unk1[j]));
         }
         return;
     }
@@ -704,7 +704,7 @@ void func_801F0DD8(RECT *r, s32 otz, s32 v, s32 n, s32 item) {
     x = r->x;
     y = r->y + 6;
     cur = D_801F1558.unk3C.top + D_801F1558.unk3C.cursor;
-    w = func_8002BA68(text_get(D_801F14F0));
+    w = text_measureWidth(text_get(D_801F14F0));
     if (item == cur && D_801F1558.unk4 != 0) {
         if (D_801F1558.unk4 == 1) {
             pos += D_801F1558.unk5 * step;
@@ -718,7 +718,7 @@ void func_801F0DD8(RECT *r, s32 otz, s32 v, s32 n, s32 item) {
 }
 
 void func_801F0F48(s32 x, s32 y, s32 otz, u8 *s, s32 arg4) {
-    D_801F1558.unk4C = func_80029D60(x, y, &g_ot[otz], s, arg4, D_801F1558.unk4C);
+    D_801F1558.unk4C = text_buildSmall(x, y, &g_ot[otz], s, arg4, D_801F1558.unk4C);
 }
 
 void func_801F0F94(s32 x, s32 y, s32 otz, s32 n, u8 arg4) {
@@ -728,7 +728,7 @@ void func_801F0F94(s32 x, s32 y, s32 otz, s32 n, u8 arg4) {
 }
 
 void func_801F0FE8(s32 x, s32 y, s32 otz, s32 text, s32 color) {
-    D_801F1558.unk4C = func_8002920C(x, y - 4, &g_ot[otz], text_get(text & 0xFF), color, D_801F1558.unk4C);
+    D_801F1558.unk4C = text_buildBlock(x, y - 4, &g_ot[otz], text_get(text & 0xFF), color, D_801F1558.unk4C);
 }
 
 void func_801F1074(void) {

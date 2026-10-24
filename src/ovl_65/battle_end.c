@@ -194,7 +194,7 @@ void func_801EFB98(void) {
     win_drawShadow(r, 0xC, 1);
     x = r->x;
     y = r->y;
-    D_801F7A78.unk374 = func_8002920C(x + 0x13, y + 6, g_ot + 10,
+    D_801F7A78.unk374 = text_buildBlock(x + 0x13, y + 6, g_ot + 10,
                                       text_get(D_801F3BB8[D_801F7A78.unkA]), 0, D_801F7A78.unk374);
 }
 
@@ -222,11 +222,11 @@ void func_801EFC68(void) {
                 }
                 ui_drawPartyPortrait(r->x + 4, r->y + 4, 0xB, i, dim);
                 func_801F2264(r->x + 0x24, r->y + 0x12, 0xB, &D_801F7A78.unk258[i]);
-                D_801F7A78.unk374 = func_8002920C(r->x + 0x29, r->y + 4, g_ot + 0xB, c->unk0, col, D_801F7A78.unk374);
+                D_801F7A78.unk374 = text_buildBlock(r->x + 0x29, r->y + 4, g_ot + 0xB, c->unk0, col, D_801F7A78.unk374);
                 text_formatNumber(c->level, buf, 2, 1);
                 ui_drawSprite(r->x + 0x72, r->y + 7, 0xB, 0xB4, dim);
                 p = buf;
-                D_801F7A78.unk374 = func_8002B644(r->x + 0x84, r->y + 5, g_ot + 0xB, p, col, D_801F7A78.unk374);
+                D_801F7A78.unk374 = text_buildDigits(r->x + 0x84, r->y + 5, g_ot + 0xB, p, col, D_801F7A78.unk374);
                 ui_drawStatusIcons(r->x + 0x28, r->y + 0x13, 0xB, c->status, dim);
                 text_drawBlock(r->x + 0x29, r->y + 0x1C, 0xB, text_get(0), col);
                 text_formatNumber(c->exp, p, 7, 1);
@@ -257,9 +257,9 @@ void func_801EFF50(void) {
         text_formatNumber(D_801F7A78.unk24.unk0, buf, 6, 1);
         x = r->x;
         y = r->y;
-        D_801F7A78.unk374 = func_8002920C(x + 0xC, y + 5, g_ot + 10,
+        D_801F7A78.unk374 = text_buildBlock(x + 0xC, y + 5, g_ot + 10,
                                           text_get(0), 0, D_801F7A78.unk374);
-        D_801F7A78.unk374 = func_80029D60(r->x + 0x5A, r->y + 9, g_ot + 10,
+        D_801F7A78.unk374 = text_buildSmall(r->x + 0x5A, r->y + 9, g_ot + 10,
                                           buf, 0, D_801F7A78.unk374);
     }
 }
@@ -275,9 +275,9 @@ void func_801F0044(void) {
         text_formatNumber(D_801F7A78.unk24.unk4, buf, 3, 1);
         x = r->x;
         y = r->y;
-        D_801F7A78.unk374 = func_8002920C(x + 0xC, y + 5, g_ot + 10,
+        D_801F7A78.unk374 = text_buildBlock(x + 0xC, y + 5, g_ot + 10,
                                           text_get(1), 0, D_801F7A78.unk374);
-        D_801F7A78.unk374 = func_80029D60(r->x + 0x6F, r->y + 9, g_ot + 10,
+        D_801F7A78.unk374 = text_buildSmall(r->x + 0x6F, r->y + 9, g_ot + 10,
                                           buf, 0, D_801F7A78.unk374);
     }
 }
@@ -298,9 +298,9 @@ void func_801F0138(void) {
         strcat(buf, D_801F3BC0);
         x = r->x;
         y = r->y;
-        D_801F7A78.unk374 = func_8002920C(x + 0xC, y + 5, g_ot + 13,
+        D_801F7A78.unk374 = text_buildBlock(x + 0xC, y + 5, g_ot + 13,
                                           text_get(0xD), 0, D_801F7A78.unk374);
-        D_801F7A78.unk374 = func_80029D60(r->x + 0x54, r->y + 9, g_ot + 13,
+        D_801F7A78.unk374 = text_buildSmall(r->x + 0x54, r->y + 9, g_ot + 13,
                                           buf, 0, D_801F7A78.unk374);
     }
 }
@@ -321,9 +321,9 @@ void func_801F0264(void) {
         strcat(buf, D_801F3BC4);
         x = r->x;
         y = r->y;
-        D_801F7A78.unk374 = func_8002920C(x + 0xC, y + 5, g_ot + 13,
+        D_801F7A78.unk374 = text_buildBlock(x + 0xC, y + 5, g_ot + 13,
                                           text_get(0xE), 0, D_801F7A78.unk374);
-        D_801F7A78.unk374 = func_80029D60(r->x + 0x4D, r->y + 9, g_ot + 13,
+        D_801F7A78.unk374 = text_buildSmall(r->x + 0x4D, r->y + 9, g_ot + 13,
                                           buf, 0, D_801F7A78.unk374);
     }
 }
@@ -539,11 +539,11 @@ void func_801F0C0C(void) {
 }
 
 void func_801F0D98(s32 arg0, s32 arg1, s32 arg2, u8 *arg3, s32 arg4) {
-    D_801F7A78.unk374 = func_80029D60(arg0, arg1, g_ot + arg2, arg3, arg4, D_801F7A78.unk374);
+    D_801F7A78.unk374 = text_buildSmall(arg0, arg1, g_ot + arg2, arg3, arg4, D_801F7A78.unk374);
 }
 
 void func_801F0DE4(s32 arg0, s32 arg1, s32 arg2, u8 *arg3, s32 arg4) {
-    D_801F7A78.unk374 = func_8002920C(arg0, arg1, g_ot + arg2, arg3, arg4, D_801F7A78.unk374);
+    D_801F7A78.unk374 = text_buildBlock(arg0, arg1, g_ot + arg2, arg3, arg4, D_801F7A78.unk374);
 }
 
 void func_801F0E30(void) {
@@ -682,7 +682,7 @@ void func_801F1228(void) {
     win_drawShadow(r, 0xC, 1);
     x = r->x;
     y = r->y;
-    D_801F7A78.unk374 = func_8002920C(x + 0x13, y + 6, g_ot + 10,
+    D_801F7A78.unk374 = text_buildBlock(x + 0x13, y + 6, g_ot + 10,
                                       text_get(7), 0, D_801F7A78.unk374);
 }
 
@@ -823,7 +823,7 @@ void func_801F17D4(void) {
 }
 
 void func_801F17FC(s32 arg0, s32 arg1, s32 arg2, u8 *arg3, s32 arg4) {
-    D_801F7A78.unk374 = func_8002B644(arg0, arg1, g_ot + arg2, arg3, arg4, D_801F7A78.unk374);
+    D_801F7A78.unk374 = text_buildDigits(arg0, arg1, g_ot + arg2, arg3, arg4, D_801F7A78.unk374);
 }
 
 void func_801F1848(void) {
@@ -884,16 +884,16 @@ void func_801F1A04(s32 arg0, u32 arg1) {
                 e = &D_80069018[c->equip[i]];
                 for (j = 0; j < 3; j++) {
                     if (e->unkC[j] != 0) {
-                        k = func_80034430(c->unk34.b.id, e->unkC[j]);
+                        k = chr_findAbilitySlot(c->unk34.b.id, e->unkC[j]);
                         if (k >= 0) {
                             need = D_8006CB28[c->unk34.b.row][k].unk1;
-                            have = c->unk58[k];
+                            have = c->ap[k];
                             if (have < need) {
                                 if (arg1 >= need - have) {
-                                    c->unk58[k] = need;
+                                    c->ap[k] = need;
                                     func_801F21DC(arg0, e->unkC[j]);
                                 } else {
-                                    c->unk58[k] = have + arg1;
+                                    c->ap[k] = have + arg1;
                                 }
                             }
                         }
@@ -923,9 +923,9 @@ u8 func_801F1BA4(Character *c, s32 arg1) {
             e = &D_80069018[eq[i]];
             for (j = 0; j < 3; j++) {
                 if (e->unkC[j] != 0) {
-                    k = func_80034430(ch & 0xFF, e->unkC[j]);
+                    k = chr_findAbilitySlot(ch & 0xFF, e->unkC[j]);
                     if (k >= 0) {
-                        have = c->unk58[k];
+                        have = c->ap[k];
                         if (have < D_8006CB28[c->unk34.b.row][k].unk1) {
                             D_801F8208[k]++;
                         }
@@ -936,7 +936,7 @@ u8 func_801F1BA4(Character *c, s32 arg1) {
     }
     for (i = 0; i < 0x30; i++) {
         if (D_801F8208[i] != 0) {
-            have = c->unk58[i];
+            have = c->ap[i];
             if (D_801F8208[i] * arg1 >= D_8006CB28[c->unk34.b.row][i].unk1 - have) {
                 ret = 1;
                 break;
@@ -964,7 +964,7 @@ void func_801F1D94(Window *w) {
         ui_drawSprite(w->unk0 + 6, w->unk2 + 7, w->unk18, 0xBC, 0);
     } else {
         name = D_801F4F94 + D_8006D128[id - 0xC0].unk2;
-        if (func_80034A04(g_gameState->unk1C->party[slot]->supportAbilities, id)) {
+        if (chr_testSupportBit(g_gameState->unk1C->party[slot]->supportAbilities, id)) {
             icon = 0xBD;
         } else {
             icon = 0xF4;
@@ -1005,7 +1005,7 @@ s32 func_801F20A8(s32 i) {
     u32 ap = D_801F7A78.unk24.unk4;
     Counter *c = &D_801F7A78.unk24.unk4C[i];
 
-    if (func_800349BC(g_gameState->unk1C->party[i]->unk34.b.id, 0xEC)) {
+    if (chr_hasSupportAbility(g_gameState->unk1C->party[i]->unk34.b.id, 0xEC)) {
         c->unk0 = ap * 2;
     } else {
         c->unk0 = ap;
@@ -1137,7 +1137,7 @@ u32 func_801F26F8(s32 arg0) {
     u32 step;
 
     c->unk0 = exp;
-    if (func_800349BC(m->unk34.b.id, 0xEB)) {
+    if (chr_hasSupportAbility(m->unk34.b.id, 0xEB)) {
         c->unk0 += exp >> 1;
     }
     if (exp < 16) {
@@ -1203,7 +1203,7 @@ void func_801F28F0(void) {
 void func_801F29BC(s32 arg0) {
     Character *m = g_gameState->unk1C->party[arg0];
 
-    func_80033CCC(m->unk34.b.id, m->level + 1);
+    chr_levelUp(m->unk34.b.id, m->level + 1);
     D_801F7A78.unk158[arg0].unk4++;
     D_801F7A78.unk258[arg0].unk14++;
 }
@@ -1270,7 +1270,7 @@ void func_801F2BBC(void) {
 
     for (i = 0; i < 4; i++) {
         m = g_gameState->unk1C->party[i];
-        if (m != NULL && func_800349BC(m->unk34.b.id, 0xED)) {
+        if (m != NULL && chr_hasSupportAbility(m->unk34.b.id, 0xED)) {
             found = 1;
         }
     }
@@ -1352,7 +1352,7 @@ u8 func_801F2E58(void) {
     }
     if (f) {
         k = 0x10;
-        ts = func_8002AF70(text_get(0xA));
+        ts = text_measure(text_get(0xA));
         rr.x = D_801F7A78.unk368->unk0 + ((D_801F7A78.unk368->unk4 - k - ts.w) >> 1);
         rr.y = D_801F7A78.unk368->unk2 + ((D_801F7A78.unk368->unk6 - k - ts.h) >> 1);
         rr.w = ts.w + 0x10;
@@ -1400,7 +1400,7 @@ void func_801F2FE8(Window *w) {
     if (rw->unk8 != 0xFF) {
         k = off - 0x66;
         ui_drawSpriteDef(r->unk0 + 8, r->unk2 - k, w->unk18, &D_801F526C, 0);
-        func_8002BD54(D_801F8238, (u8 *)card_getName(rw->unk8));
+        text_copy(D_801F8238, (u8 *)card_getName(rw->unk8));
         text_append(D_801F8238, text_get(0xB));
         text_drawBlock(r->unk0 + 0x16, r->unk2 - k, w->unk18, D_801F8238, 0);
     }
@@ -1446,7 +1446,7 @@ void func_801F332C(void) {
 }
 
 void func_801F33A0(Window *w) {
-    s32 n = func_8002AE7C((u8 *)D_800703FC.unk94);
+    s32 n = ui_measureLabel((u8 *)D_800703FC.unk94);
     s32 k = 0x97;
 
     ui_drawLabel(w->unk0 + 8, w->unk2 - 3, w->unk18 - 1, D_800703FC.unk68, 0);

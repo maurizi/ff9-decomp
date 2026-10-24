@@ -521,14 +521,14 @@ void btl_showMessage(u32 arg0, ...) {
                 dst--;
                 v = va_arg(ap, s32);
                 if (v != 0) {
-                    func_8002BD54(dst, (u8 *)v);
+                    text_copy(dst, (u8 *)v);
                     goto adv;
                 }
             } else if (c == special[1]) {
                 dst--;
-                func_8002BBE8(va_arg(ap, s32), dst, 0);
+                text_formatInt(va_arg(ap, s32), dst, 0);
             adv:
-                dst += func_8002BCC0(dst);
+                dst += text_getLength(dst);
             }
             c = *dst++ = *src++;
         }
@@ -581,20 +581,20 @@ void btl_updateScan(void) {
     c = g_gameState->unk1C->unk8E4.battle;
     switch (c->unk1358.unk1C8.b[2]) {
     case 0:
-        func_8002BD54(buf, btl_getUnitName(s));
+        text_copy(buf, btl_getUnitName(s));
         text_append(buf, (u8 *)text_getFrom(D_800F6FB8, 10));
-        func_8002BBE8(s->unk7A, buf + func_8002BCC0(buf), 0);
+        text_formatInt(s->unk7A, buf + text_getLength(buf), 0);
         g_gameState->unk1C->unk8E4.battle->unk1358.unk1C8.b[2] = 1;
         break;
     case 1:
-        func_8002BD54(buf, (u8 *)text_getFrom(D_800F6FB8, 11));
-        func_8002BBE8(s->hp, buf + func_8002BCC0(buf), 0);
+        text_copy(buf, (u8 *)text_getFrom(D_800F6FB8, 11));
+        text_formatInt(s->hp, buf + text_getLength(buf), 0);
         text_append(buf, (u8 *)text_getFrom(D_800F6FB8, 13));
-        func_8002BBE8(s->max->maxHp, buf + func_8002BCC0(buf), 0);
+        text_formatInt(s->max->maxHp, buf + text_getLength(buf), 0);
         text_append(buf, (u8 *)text_getFrom(D_800F6FB8, 12));
-        func_8002BBE8(s->mp, buf + func_8002BCC0(buf), 0);
+        text_formatInt(s->mp, buf + text_getLength(buf), 0);
         text_append(buf, (u8 *)text_getFrom(D_800F6FB8, 13));
-        func_8002BBE8(s->max->maxMp, buf + func_8002BCC0(buf), 0);
+        text_formatInt(s->max->maxMp, buf + text_getLength(buf), 0);
         g_gameState->unk1C->unk8E4.battle->unk1358.unk1C8.b[1] = 0;
         g_gameState->unk1C->unk8E4.battle->unk1358.unk1C8.b[2] = 2;
         break;
@@ -603,7 +603,7 @@ void btl_updateScan(void) {
             mask = c->unk488[(s->unk68 >> 1) & 0xF].unk0->unk2;
             while ((j = g_gameState->unk1C->unk8E4.battle->unk1358.unk1C8.b[1]++) < 8) {
                 if ((mask >> j) & 1) {
-                    func_8002BD54(buf, (u8 *)text_getFrom(D_800F6FB8, j));
+                    text_copy(buf, (u8 *)text_getFrom(D_800F6FB8, j));
                     goto show;
                 }
             }
@@ -614,7 +614,7 @@ void btl_updateScan(void) {
         mask = s->unk73 & ~s->unk70;
         while ((k = g_gameState->unk1C->unk8E4.battle->unk1358.unk1C8.b[1]++) < 8) {
             if ((mask >> k) & 1) {
-                func_8002BD54(buf, (u8 *)text_getFrom(D_800F6FB8, k + 14));
+                text_copy(buf, (u8 *)text_getFrom(D_800F6FB8, k + 14));
                 goto show;
             }
         }
@@ -659,7 +659,7 @@ void btl_updateDetect(void) {
         id = g_gameState->unk1C->unk8E4.battle->unk1358.unk1CC->unk8.b[3 - i];
         if (id != 0xFF) {
             g_gameState->unk1C->unk8E4.battle->unk1358.unk1D0 = func_800F4FC8() - 1;
-            func_8002BD54(buf, (u8 *)text_getFrom(D_800F6FB8, 8));
+            text_copy(buf, (u8 *)text_getFrom(D_800F6FB8, 8));
             text_append(buf, btl_getItemName(id));
             text_append(buf, D_800A7C20);
             s = buf;
@@ -697,7 +697,7 @@ void btl_showCmdName(BtlCmd *arg0) {
                 break;
             case 0xFE:
                 s = buf;
-                func_8002BD54(s, btl_getAbilityName(arg0->subNo));
+                text_copy(s, btl_getAbilityName(arg0->subNo));
                 text_append(s, (u8 *)text_getFrom(D_800F71E4, 0));
                 break;
             default:

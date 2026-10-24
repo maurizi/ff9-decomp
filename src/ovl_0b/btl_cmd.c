@@ -2251,8 +2251,8 @@ void btl_calcCmd(BtlUnit *caster, BtlUnit *target, BtlCmd *cmd, s32 type) {
                 } else {
                     i = g_gameState->unk1C->unk8E4.battle->unk488[(target->unk68 >> 1) & 0xF].unk0->unk27;
                     btl_killUnit(target);
-                    if (i != 0 && !func_80034070((caster->unk68 >> 1) & 0xF, i)) {
-                        func_80034220((caster->unk68 >> 1) & 0xF, i);
+                    if (i != 0 && !chr_isAbilityLearned((caster->unk68 >> 1) & 0xF, i)) {
+                        chr_learnAbility((caster->unk68 >> 1) & 0xF, i);
                         btl_showMessage(0x11, btl_getAbilityName(i));
                     } else {
                         btl_showMessage(0x12);

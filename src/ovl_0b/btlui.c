@@ -67,7 +67,7 @@ void btlui_init(void) {
 void func_800E9D84(void) {
     void *p = db_lookupRegistered(4, 0x14, 0);
     if (p != NULL) {
-        func_8002C158(p);
+        text_uploadPartyNames(p);
     }
 }
 
@@ -75,7 +75,7 @@ void func_800E9DBC(void) {
     void *p = db_lookupRegistered(4, 0x1E, 0);
     if (p != NULL) {
         ui_loadPartyPortraits(p);
-        func_80033D1C(0);
+        party_setChanged(0);
     }
 }
 
@@ -347,7 +347,7 @@ void func_800EA650(void) {
         e->unk18 = f;
         e->unk14 = &g_gameState->unk1C->characters[(u->unk68 >> 1) & 0xF];
         e->unk19 = func_80034A30(e->unk14);
-        e->unk1A = func_800339F4(e->unk14->unk34.b.id, (e->unk14->unkA >> 4) & 1);
+        e->unk1A = chr_getAppearanceType(e->unk14->unk34.b.id, (e->unk14->unkA >> 4) & 1);
         if ((g_gameState->config >> 5) & 1) {
             f = ((s32)(g_gameState->config >> 20) >> e->unk1A) & 1;
         } else {
@@ -407,9 +407,9 @@ void func_800EA908(Unk80104F88Entry *arg0) {
     if (arg0->unk14->unk34.b.id == 3) {
         for (i = 0; i < m->unk7; i++) {
             slot = D_800FDD10[m->unk8 + i];
-            v = func_80034430(1, D_800F8D84[i]);
+            v = chr_findAbilitySlot(1, D_800F8D84[i]);
             if (v >= 0) {
-                arg0->unk1C[slot] = &c->unk58[v];
+                arg0->unk1C[slot] = &c->ap[v];
                 arg0->unk31C[slot] = ab[v].unk1;
             }
         }
@@ -758,9 +758,9 @@ void func_800EB63C(Unk80104F88Entry *arg0) {
         i = 0;
         row = D_8006CB28[c->unk34.b.row];
         for (; i < 0xC0; i++) {
-            v = func_80034430(c->unk34.b.id, i);
+            v = chr_findAbilitySlot(c->unk34.b.id, i);
             if (v >= 0) {
-                arg0->unk1C[i] = &c->unk58[v];
+                arg0->unk1C[i] = &c->ap[v];
                 arg0->unk31C[i] = row[v].unk1;
             }
         }
@@ -862,9 +862,9 @@ void btlui_drawHelpWindow(void) {
         btlui_updateHelpText();
         if (D_80104F90.unk4 != 0) {
             win_setClip(NULL, 2, 3);
-            m = func_8002BE88();
+            m = text_getColor();
             text_drawBlock(r.x + 6, r.y + 10, 2, D_80104F90.unk4, 8);
-            func_8002BE98(m);
+            text_setColor(m);
             win_setClip(&r, 2, 3);
         }
         win_drawHelpFrame(&r, 2, 4, 0);
@@ -1403,7 +1403,7 @@ void func_800ED3F8(s32 x, s32 y, s32 otz, char *str) {
     u32 tp;
     u32 stp;
 
-    w = func_8002AE7C(D_800F8E18);
+    w = ui_measureLabel(D_800F8E18);
     wh = w | 0x70000;
     setlen(g_primPtr, 3);
     ((TileWords *)g_primPtr)->rgbc = 0x62000000;
@@ -1527,7 +1527,7 @@ void *btlui_getCmdHelpText(void) {
         i = g_btlCmdMenu.cmdIds[g_btlCmdMenu.cursor];
     }
     e = &D_800FD56C[i];
-    func_8002BD54(D_80104FA0, e->unk2 + D_800FD8CC);
+    text_copy(D_80104FA0, e->unk2 + D_800FD8CC);
     text_append(D_80104FA0, text_get(0x19));
     return D_80104FA0;
 }
@@ -1730,8 +1730,8 @@ void func_800EE37C(Unk800EE37C *arg0) {
     D_80104FD0.unkC = arg0->unkC;
     D_80104FD0.unk19 = arg0->unk2;
     D_80104FD0.unk10 = 0;
-    D_80104FD0.unk12 = (arg0->unkC != 0) ? func_8002AE7C((u8 *)arg0->unkC) : 0;
-    D_80104FD0.unk18 = func_800349BC((D_80104FD0.unk14->unk68 >> 1) & 0xF, 0xE2);
+    D_80104FD0.unk12 = (arg0->unkC != 0) ? ui_measureLabel((u8 *)arg0->unkC) : 0;
+    D_80104FD0.unk18 = chr_hasSupportAbility((D_80104FD0.unk14->unk68 >> 1) & 0xF, 0xE2);
     n = D_80104FD0.unk4->unk7;
     menuList_init(&l, n, (n < 5) ? n : 4, 1, 0x44);
     f = (g_gameState->config >> 2) & 1;
@@ -2154,7 +2154,7 @@ void func_800EF80C(Unk800EF80C *arg0) {
     g_btlTarget.unk10 = arg0->unk8;
     g_btlTarget.unk6 = D_800F8E84[g_btlTarget.unk2];
     g_btlTarget.unkC = 0;
-    g_btlTarget.unkD = func_800349BC((g_btlTarget.unk20->unk68 >> 1) & 0xF, 0xE2);
+    g_btlTarget.unkD = chr_hasSupportAbility((g_btlTarget.unk20->unk68 >> 1) & 0xF, 0xE2);
     g_btlTarget.unkE = arg0->unk9;
     g_btlTarget.unk7 = (u32)(arg0->unk2 - 6) < 3;
     g_btlTarget.unk8 = arg0->unk2 == 0 || arg0->unk2 == 3 || arg0->unk2 == 9 || arg0->unk2 == 6;
@@ -2524,7 +2524,7 @@ void func_800F0A54(Window *arg0) {
     s32 c;
     Window *w = arg0;
     ui_drawEtchedLine(arg0->unk0 + 0x6E, arg0->unk2 + 4, arg0->unk18, 9 - arg0->unk6);
-    m = func_8002BE88();
+    m = text_getColor();
     for (; u != NULL; u = u->unk0) {
         name = btl_getUnitName(u);
         f = u->unk68;
@@ -2544,7 +2544,7 @@ void func_800F0A54(Window *arg0) {
             }
         }
     }
-    func_8002BE98(m);
+    text_setColor(m);
 }
 
 void func_800F0BE0(Window *arg0) {
@@ -2633,7 +2633,7 @@ void *func_800F0F60(void) {
         if (t == NULL) {
             return NULL;
         }
-        func_8002BD54(D_80104FA0, text_get(D_80104FF2 + 5));
+        text_copy(D_80104FA0, text_get(D_80104FF2 + 5));
         text_append(D_80104FA0, btl_getUnitName(t));
     } else if ((u8)(g_btlTarget.unk2 - 3) < 3) {
         n = 0;
@@ -2648,13 +2648,13 @@ void *func_800F0F60(void) {
             if (t == NULL) {
                 return NULL;
             }
-            func_8002BD54(D_80104FA0, text_get(k + 0x13));
+            text_copy(D_80104FA0, text_get(k + 0x13));
             text_append(D_80104FA0, btl_getUnitName(t));
         } else {
-            func_8002BD54(D_80104FA0, text_get(k + 0x16));
+            text_copy(D_80104FA0, text_get(k + 0x16));
         }
     } else {
-        func_8002BD54(D_80104FA0, text_get(g_btlTarget.unk2 + 5));
+        text_copy(D_80104FA0, text_get(g_btlTarget.unk2 + 5));
     }
     text_append(D_80104FA0, text_get(0x1A));
     return D_80104FA0;
@@ -3627,7 +3627,7 @@ void btlui_updatePanelRowColor(s32 arg0) {
 
 void func_800F40D0(Unk800F412C *arg0) {
     if (arg0->unk2 == 1) {
-        arg0->unk8 -= func_8002AE7C(((u8 **)&D_800703FC)[arg0->unk0]);
+        arg0->unk8 -= ui_measureLabel(((u8 **)&D_800703FC)[arg0->unk0]);
     }
 }
 

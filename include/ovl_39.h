@@ -334,7 +334,7 @@ void func_801F573C(void);
 void func_801F8BD4(MenuList *, RECT *, RECT *);
 extern s32 D_80070444;
 extern u8 D_801FB0A8[]; /* help text buffer */
-void func_8002BE5C(s32, s32); /* main exe */
+void text_setNumberArg(s32, s32); /* main exe */
 extern u8 *D_80077DF0; /* = g_menuHelp.text, referenced by its own name */
 extern void (*D_801FAFE8[])(RECT *, s32, s32); /* slot drawer per state */
 typedef struct {

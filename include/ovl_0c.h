@@ -1118,7 +1118,7 @@ s32 func_80050D38(s32);
 extern u32 g_portraitSavedVram[]; /* VRAM save buffer */
 extern u8 D_80077E51;
 extern u8 *D_80077DF0;
-s32 func_8002B980(u8 *, s32);
+s32 text_measureStyle(u8 *, s32);
 extern s32 D_80077E54; /* overlaps Unk80077E50.unk4 in ff9.h */
 Unk8004AB64 *evt_getPlayer(void);
 void func_8004B20C(s32);

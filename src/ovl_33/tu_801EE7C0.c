@@ -10,16 +10,16 @@ static inline s32 func_801F0CC4_inline(s32 id, Character *c) {
     if (id < 0xC0) {
         return 0;
     }
-    if (func_80034A04(c->supportAbilities, id)) {
+    if (chr_testSupportBit(c->supportAbilities, id)) {
         return 4;
     }
     if (D_801FBF84.unk68[id] == 0) {
-        slot = func_80034430(c->unk34.b.id, id);
+        slot = chr_findAbilitySlot(c->unk34.b.id, id);
         if (slot < 0) {
             return 0;
         }
         if (func_80034A30(c)) {
-            ap = c->unk58[slot];
+            ap = c->ap[slot];
             need = D_8006CB28[c->unk34.b.row][slot].unk1;
             if (ap == 0) {
                 return 0;
@@ -109,14 +109,14 @@ void func_801EEA50(void) {
         D_801FBF84.unk0 = D_801FBF84.unk0 == 0 ? D_801FBF84.unk0 + 1 : 0;
     } else if (g_padRepeat & BTN_R1) {
         slot = D_801FBF84.unk2;
-        next = func_8003380C(slot);
+        next = party_getNextMember(slot);
         if (slot != next) {
             func_801EF900(next, 2);
             snd_playSe(0x417);
         }
     } else if (g_padRepeat & BTN_L1) {
         slot = D_801FBF84.unk2;
-        next = func_800337D0(slot);
+        next = party_getPrevMember(slot);
         if (slot != next) {
             func_801EF900(next, 1);
             snd_playSe(0x417);
@@ -143,7 +143,7 @@ void func_801EEBE0(void) {
     if (g_padRepeat & PAD_UP) {
         if (!(D_801FBF84.unk3 & 0x80)) {
             cur = D_801FBF84.unk3;
-            next = func_800337D0(cur);
+            next = party_getPrevMember(cur);
             if (cur != next) {
                 D_801FBF84.unk3 = next;
                 snd_playSe(0x67);
@@ -152,7 +152,7 @@ void func_801EEBE0(void) {
     } else if (g_padRepeat & PAD_DOWN) {
         if (!(D_801FBF84.unk3 & 0x80)) {
             cur = D_801FBF84.unk3;
-            next = func_8003380C(cur);
+            next = party_getNextMember(cur);
             if (cur != next) {
                 D_801FBF84.unk3 = next;
                 snd_playSe(0x67);
@@ -257,7 +257,7 @@ void func_801EEFDC(void) {
         return;
     }
     if (func_80034A30(c)) {
-        ui_drawApGauge(r->x + 0x2D, r->y + 0xC, 0x1C, func_80034584(c->unk34.b.id, id), func_800347D8(c->unk34.b.id, id), flag, 0);
+        ui_drawApGauge(r->x + 0x2D, r->y + 0xC, 0x1C, chr_getAp(c->unk34.b.id, id), chr_getApNeeded(c->unk34.b.id, id), flag, 0);
     }
     if (D_801FBF84.unk68[id] != 0) {
         x = r->x;
@@ -481,12 +481,12 @@ s32 func_801EFB8C(s32 id, Character *c) {
 
     info = &D_801F34EC[id];
     if (D_801FBF84.unk68[id] == 0) {
-        slot = func_80034430(c->unk34.b.id, id);
+        slot = chr_findAbilitySlot(c->unk34.b.id, id);
         if (slot < 0) {
             return 0;
         }
         if (func_80034A30(c)) {
-            ap = c->unk58[slot];
+            ap = c->ap[slot];
             need = D_8006CB28[c->unk34.b.row][slot].unk1;
             if (ap == 0) {
                 return 0;
@@ -589,8 +589,8 @@ void func_801F0024(void) {
     if (D_801FBF84.unk1 == 1 || D_801FBF84.unk1 == 5) {
         buf = D_801FBD84;
         g_menuHelp.text = buf;
-        func_8002BE44(0, D_801F3478);
-        func_8002BD54(buf, text_get(D_801FBF84.unk0 + 2));
+        text_setStringArg(0, D_801F3478);
+        text_copy(buf, text_get(D_801FBF84.unk0 + 2));
         if (D_801FBF84.unk0 == 0) {
             if (D_8007AFD3) {
                 t = 6;
@@ -852,16 +852,16 @@ u32 func_801F0CC4(s32 id, Character *c) {
     if (id < 0xC0) {
         return 0;
     }
-    if (func_80034A04(c->supportAbilities, id)) {
+    if (chr_testSupportBit(c->supportAbilities, id)) {
         return 4;
     }
     if (D_801FBF84.unk68[id] == 0) {
-        slot = func_80034430(c->unk34.b.id, id);
+        slot = chr_findAbilitySlot(c->unk34.b.id, id);
         if (slot < 0) {
             return 0;
         }
         if (func_80034A30(c)) {
-            ap = c->unk58[slot];
+            ap = c->ap[slot];
             need = D_8006CB28[c->unk34.b.row][slot].unk1;
             if (ap == 0) {
                 return 0;

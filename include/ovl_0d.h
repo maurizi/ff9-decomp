@@ -362,7 +362,7 @@ void func_800AB8F4(s16);
 extern u8 D_800A74A8[];
 
 /* main exe: candidates for ff9.h */
-s32 func_8002BA10(u8 *);
+s32 text_measureDigits(u8 *);
 void game_updateWindows(void);
 void SetSprt16(SPRT_16 *);
 s32 card_getNameWidth(s32); /* width of a number string? */

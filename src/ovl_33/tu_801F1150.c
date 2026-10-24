@@ -51,14 +51,14 @@ void func_801F12C8(void) {
         D_801FC840.unk0 = D_801FC840.unk0 >= 2 ? 0 : D_801FC840.unk0 + 1;
     } else if (g_padRepeat & BTN_R1) {
         slot = D_801FC840.unk3;
-        next = func_8003380C(slot);
+        next = party_getNextMember(slot);
         if (slot != next) {
             func_801F3278(next, 2);
             snd_playSe(0x417);
         }
     } else if (g_padRepeat & BTN_L1) {
         slot = D_801FC840.unk3;
-        next = func_800337D0(slot);
+        next = party_getPrevMember(slot);
         if (slot != next) {
             func_801F3278(next, 1);
             snd_playSe(0x417);
@@ -88,14 +88,14 @@ void func_801F1454(void) {
         D_801FC840.unk2 = D_801FC840.unk2 >= 4 ? 0 : D_801FC840.unk2 + 1;
     } else if (g_padRepeat & BTN_R1) {
         slot = D_801FC840.unk3;
-        next = func_8003380C(slot);
+        next = party_getNextMember(slot);
         if (slot != next) {
             snd_playSe(0x417);
             func_801F3278(next, 2);
         }
     } else if (g_padRepeat & BTN_L1) {
         slot = D_801FC840.unk3;
-        next = func_800337D0(slot);
+        next = party_getPrevMember(slot);
         if (slot != next) {
             snd_playSe(0x417);
             func_801F3278(next, 1);
@@ -244,12 +244,12 @@ void func_801F1A94(void) {
             name = D_801F8684 + D_8006D128[ab - 0xC0].unk2;
         }
         if (func_80034A30(c)) {
-            ok = func_80034430(c->unk34.b.id, ab) >= 0;
-            ap = func_800347D8(c->unk34.b.id, ab);
+            ok = chr_findAbilitySlot(c->unk34.b.id, ab) >= 0;
+            ap = chr_getApNeeded(c->unk34.b.id, ab);
             if (ok) {
                 if (ab < 0xC0) {
                     icon = 0xBC;
-                } else if (func_80034A04(c->supportAbilities, ab)) {
+                } else if (chr_testSupportBit(c->supportAbilities, ab)) {
                     icon = 0xBD;
                 } else {
                     icon = 0xF4;
@@ -268,7 +268,7 @@ void func_801F1A94(void) {
                     flag = 1;
                 }
                 k = 0x26;
-                ui_drawApGauge(r->x + 0x72, r->y + (y3 + k), 0x1D, func_80034584(c->unk34.b.id, ab), ap, flag, 0);
+                ui_drawApGauge(r->x + 0x72, r->y + (y3 + k), 0x1D, chr_getAp(c->unk34.b.id, ab), ap, flag, 0);
             }
             text_drawBlock(r->x + 0x18, r->y + y2, 0x1D, name, ok ? 0 : 2);
             ui_drawSprite(r->x + 8, r->y + y1, 0x1D, icon, ok ^ 1);
@@ -291,7 +291,7 @@ void func_801F1F08(void) {
     s32 i;
 
     if (m->unk260 != 0) {
-        w = func_8002AE7C((u8 *)D_800703FC.unk94);
+        w = ui_measureLabel((u8 *)D_800703FC.unk94);
         ui_drawLabel(wd->unk4.x + 6, r->y - 3, 0x14, D_800703FC.unk0[D_801F8918[m->unk2]], 0);
         ui_drawLabel(wd->unk4.x - (w - k), r->y - 3, 0x14, D_800703FC.unk94, 0);
         win_drawListBox(r, 0x14, 1, l);
@@ -466,8 +466,8 @@ void func_801F26C4(Character *c) {
         }
         a = D_8006CB28[c->unk34.b.row];
         for (i = 0; i < 0x30; i++, a++) {
-            if (a->unk0 >= 0xC0 && func_800349BC(c->unk34.b.id, a->unk0)) {
-                if (D_801FC700[a->unk0 - 0xC0] == 0 && c->unk58[i] < a->unk1) {
+            if (a->unk0 >= 0xC0 && chr_hasSupportAbility(c->unk34.b.id, a->unk0)) {
+                if (D_801FC700[a->unk0 - 0xC0] == 0 && c->ap[i] < a->unk1) {
                     chr_setSupportAbility(c->unk34.b.id, a->unk0, 0);
                     if (c->maxStones - c->stones >= D_8006D128[a->unk0 - 0xC0].unk1) {
                         c->stones += D_8006D128[a->unk0 - 0xC0].unk1;
@@ -535,8 +535,8 @@ void func_801F2AB4(void) {
     if (D_801FC840.unk1 == 1) {
         buf = D_801FC740;
         g_menuHelp.text = buf;
-        func_8002BE44(0, D_801F8988);
-        func_8002BD54(g_menuHelp.text, text_get(D_801FC840.unk0 + 3));
+        text_setStringArg(0, D_801F8988);
+        text_copy(g_menuHelp.text, text_get(D_801FC840.unk0 + 3));
         text_append(g_menuHelp.text, text_get(7));
     } else if (D_801FC840.unk1 == 2) {
         id = c->equip[D_801FC840.unk2];
@@ -752,7 +752,7 @@ void func_801F3278(s32 slot, s32 dir) {
 void func_801F32E0(Character *c) {
     func_801F26C4(c);
     chr_updateStats(c);
-    c->unk34.b.unk4 = func_80033280(c->unk34.b.id, (c->unkA >> 4) & 1, c->equip);
+    c->unk34.b.unk4 = chr_calcAppearance(c->unk34.b.id, (c->unkA >> 4) & 1, c->equip);
 }
 
 void func_801F3344(s32 x, s32 y, s32 z, u8 id, s32 color) {

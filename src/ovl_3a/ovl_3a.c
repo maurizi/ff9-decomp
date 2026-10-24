@@ -22,9 +22,9 @@ void func_801F3874(void) {
     if (D_801F4BBC.unk24) {
         chr_setDefaultName(D_801F4BBC.unk7, D_801F4BBC.unk12C);
     } else {
-        func_8002BD54(D_801F4BBC.unk7, g_gameState->unk1C->characters[D_801F4BBC.unk130].unk0);
+        text_copy(D_801F4BBC.unk7, g_gameState->unk1C->characters[D_801F4BBC.unk130].unk0);
     }
-    D_801F4BBC.unk4 = func_8002BCC0(D_801F4BBC.unk7);
+    D_801F4BBC.unk4 = text_getLength(D_801F4BBC.unk7);
     for (i = 0; i < 2; i++) {
         D_801F4BBC.unk1C[i] = text_get(i + 0xD);
     }
@@ -131,7 +131,7 @@ void func_801F3D9C(void) {
             break;
         case 4:
             snd_playSe(0x67);
-            D_801F4BBC.unk4 = func_8002BCC0(D_801F4BBC.unk11);
+            D_801F4BBC.unk4 = text_getLength(D_801F4BBC.unk11);
             memset((s32)D_801F4BBC.unk7, 0xFF, 8);
             memcpy(D_801F4BBC.unk7, D_801F4BBC.unk11, D_801F4BBC.unk4);
             break;
@@ -216,16 +216,16 @@ void func_801F4238(void) {
         }
     }
     for (i = 0; i < D_801F4BBC.unk4; i++) {
-        func_80028F3C(D_801F4B64->x + 0x3F + i * 16, D_801F4B64->y + 7, 5, D_801F4BBC.unk7[i], 0);
+        text_drawChar(D_801F4B64->x + 0x3F + i * 16, D_801F4B64->y + 7, 5, D_801F4BBC.unk7[i], 0);
     }
     for (i = 0; i < (u8)(D_801F4BBC.unk5[D_801F4BBC.unk2] / 15); i++) {
         for (j = 0; j < 15; j++) {
-            func_80028F3C(D_801F4B64->x + 0x3E + j * 14, D_801F4B64->y + 0x22 + i * 21, 5,
+            text_drawChar(D_801F4B64->x + 0x3E + j * 14, D_801F4B64->y + 0x22 + i * 21, 5,
                           D_801F4BBC.unk1C[D_801F4BBC.unk2][k], 0);
             k++;
         }
     }
-    g_primPtr = func_8002BA90(&g_ot[5], g_primPtr);
+    g_primPtr = text_buildFontTpage(&g_ot[5], g_primPtr);
 }
 
 void func_801F459C(void) {

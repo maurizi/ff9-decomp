@@ -334,7 +334,7 @@ void func_801F506C(void) {
     MenuList *list;
     RECT *r = &D_801FC2F8.unk10;
 
-    w = func_8002AE7C((u8 *)D_800703FC.unkA4);
+    w = ui_measureLabel((u8 *)D_800703FC.unkA4);
     ui_drawLabel(r->x + 0xE, r->y - 3, 0x23, D_800703FC.unk68, 0);
     ui_drawLabel((r->x + 0xA6) - w, r->y - 3, 0x23, D_800703FC.unkA4, 0);
     list = &D_801FC2F8.unk28;
@@ -767,7 +767,7 @@ void func_801F65C8(void) {
     MenuList *list;
     RECT *r = &D_801FC338.unk10;
 
-    w = func_8002AE7C((u8 *)D_800703FC.unkA4);
+    w = ui_measureLabel((u8 *)D_800703FC.unkA4);
     ui_drawLabel(r->x + 0xE, r->y - 3, 0x23, D_800703FC.unk68, 0);
     ui_drawLabel((r->x + 0xA6) - w, r->y - 3, 0x23, D_800703FC.unkA4, 0);
     list = &D_801FC338.unk28;
@@ -1179,7 +1179,7 @@ void func_801F79FC(void) {
 
     ui_drawLabel(D_801FC288->x + 0xE, D_801FC288->y - 3, 0x23, D_800703FC.unk68, 0);
     ui_drawLabel(D_801FC288->x + 0xA4, D_801FC288->y - 3, 0x23, D_800703FC.unk68, 0);
-    w = func_8002AE7C((u8 *)D_800703FC.unk94);
+    w = ui_measureLabel((u8 *)D_800703FC.unk94);
     ui_drawLabel((D_801FC288->x + 0x8A) - w, D_801FC288->y - 3, 0x23, D_800703FC.unk94, 0);
     ui_drawLabel((D_801FC288->x + 0x120) - w, D_801FC288->y - 3, 0x23, D_800703FC.unk94, 0);
     menuList_getView(list, &view);

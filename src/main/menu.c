@@ -193,7 +193,7 @@ void menu_readPortraits(void) {
     FileEntry *f;
 
     if (g_menu.type == 0) {
-        if (func_80033D28() == 0) {
+        if (party_hasChanged() == 0) {
             g_menu.state = 2;
         } else if (busy == 0 || g_gameState->mode != 3) {
             g_menu.reading = 1;
@@ -275,9 +275,9 @@ void menu_start(void) {
     FlushCache();
     ExitCriticalSection();
     g_menu.state = 3;
-    if (g_menu.type == 0 && func_80033D28()) {
+    if (g_menu.type == 0 && party_hasChanged()) {
         ui_loadPartyPortraits((u8 *)0x801EDF00);
-        func_80033D1C(0);
+        party_setChanged(0);
     }
     fade_in(0x10);
     fn = g_menuTypes[g_menu.type].unk0;

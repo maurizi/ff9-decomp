@@ -35,7 +35,7 @@ void func_801F4414(void) {
 
 void func_801F4538(void) {
     u8 *s = text_get(g_menu.unk2 + 3);
-    s32 w = func_8002BA68((s32)s);
+    s32 w = text_measureWidth((s32)s);
 
     text_drawBlock(D_801FAF84.x + ((D_801FAF84.w - w) >> 1), D_801FAF84.y + 2, 5, s, (func_801F5340(g_menu.unk2, 1) == 0) * 2);
     if (D_801FB1A8.unk20 != NULL) {
@@ -173,7 +173,7 @@ void func_801F4B18(RECT *r, s32 z, s32 i) {
     ui_drawDigits(r->x + 0xA2, r->y + 0x15, z, buf, 0);
     ui_drawSprite(r->x + 0xD8, r->y + 9, z, 0xB1, 0);
     ui_drawSprite(r->x + 0xD8, r->y + 0x16, z, 0xB2, 0);
-    ui_drawSmallDigits(r->x + 0xE4, r->y + 0xA, z, buf, func_8002AA04(s->unk50, buf, 0));
+    ui_drawSmallDigits(r->x + 0xE4, r->y + 0xA, z, buf, text_formatTime(s->unk50, buf, 0));
     text_formatNumber(s->unk54, buf, 7, 1);
     buf[7] = 0xA4;
     buf[8] = 0;
@@ -293,8 +293,8 @@ void func_801F5114(void) {
         }
         for (i = 0; i < n; i++) {
             if (m[i].unk0 != 0) {
-                func_8002BE44(i, m[i].unk2);
-                func_8002BE5C(i, m[i].unkC);
+                text_setStringArg(i, m[i].unk2);
+                text_setNumberArg(i, m[i].unkC);
                 text_append(D_801FB0A8, text_get(i + 0xD));
                 if (i < n - 1) {
                     text_append(D_801FB0A8, text_get(0x11));
@@ -1201,7 +1201,7 @@ void func_801F7510(Window *w) {
 void func_801F7560(Window *w) {
     u8 *s = text_get(0x2C);
 
-    text_drawBlock(w->unk0 + ((w->unk4 - func_8002BA68((s32)s)) >> 1), w->unk2 + 8, w->unk18, s, 0);
+    text_drawBlock(w->unk0 + ((w->unk4 - text_measureWidth((s32)s)) >> 1), w->unk2 + 8, w->unk18, s, 0);
 }
 
 void func_801F75C8(s32 id, s32 title) {
@@ -1880,13 +1880,13 @@ void func_801F9024(u8 *dst) {
     if (name == NULL) {
         s = text_get(0x20);
         memset(dst, 0xFF, 0x1C);
-        memcpy(dst, s, func_8002BCC0(s));
+        memcpy(dst, s, text_getLength(s));
     } else {
         memset(D_801FC3B8, 0xFF, 0x26);
-        memcpy(D_801FC3B8, name, func_8002BCC0(name));
+        memcpy(D_801FC3B8, name, text_getLength(name));
         D_801FC3B8[0x1B] = 0xFF;
         memset(dst, 0xFF, 0x1C);
-        memcpy(dst, D_801FC3B8, func_8002BCC0(D_801FC3B8));
+        memcpy(dst, D_801FC3B8, text_getLength(D_801FC3B8));
     }
 }
 

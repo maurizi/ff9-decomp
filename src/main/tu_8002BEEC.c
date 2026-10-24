@@ -71,12 +71,12 @@ void gfx_setTarget(u32 *a, u8 *b) {
     g_primPtr = b;
 }
 
-void func_8002C158(s32 a) {
-    s32 buf = func_8002B43C(a);
+void text_uploadPartyNames(s32 a) {
+    s32 buf = text_initNameImage(a);
     s32 i;
     for (i = 0; i < 4; i++) {
         if (g_gameState->unk1C->party[i] != NULL) {
-            func_8002B47C(i);
+            text_renderPartyName(i);
         }
     }
     LoadImage(&D_8006BC38, (u32 *)buf);

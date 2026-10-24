@@ -1445,3 +1445,78 @@ D_80077DD4 g_menuOnClose  # [code] g_menu.unk24 under its own symbol (menu_setOn
 # FIELDS include/ff9.h FadeState: unk3=covered,unk4=eased,unk5=prevType,unkA=angle
 # FIELDS include/ff9.h MenuList: unk0=count,unk2=rows,unk3=visibleRows,unk4=cols,unk5=top,unk7=col,unk8=scroll,unk9=scrollPos,unkB=fillV,unkC=pageTop,unkD=height,unkE=pageStep
 # FIELDS include/ff9.h MenuState (g_menu): unk0=state,unk1=type,unk5=open,unk6=reading,unk7=fadingOut,unk9=drawBackground,unkA=fadeInOnClose,unkB=fadeOutOnClose,unkC=arg,unk10=frame,unk14=savedVsyncMode,unk18=savedPadMask,unk20=savedR,unk21=savedG,unk22=savedB,unk24=onClose
+func_80033280 chr_calcAppearance  # [code] CharBits.unk4 (portrait/model variant, chr_getPortrait) from the character's D_8006CAA4 type, its equipment kind and the story counter (g_evtGlobalVars.h[0])
+func_800333B0 chr_join  # [code] optional equipment set, appearance, then level = average of the other recruited characters (CharBits.unkB)
+func_800337D0 party_getPrevMember  # [code] previous non-empty party slot, wrapping
+func_8003380C party_getNextMember  # [code] next non-empty party slot, wrapping
+func_80033964 chr_getClass  # [code] ability-table row (CharBits.row 0-19) -> stat class 0-11 for D_8006DD88 (chr_calcBase*)
+func_800339F4 chr_getAppearanceType  # [code] D_8006CAA4[type][flag], the table chr_calcAppearance switches on
+func_80033A50 chr_getClassFlags  # [code] D_8006CACC[chr_getClass(row)] -> Character.unkA (chr_init)
+func_80033BD0 chr_setRecruited  # [code] sets CharBits.unkB (party_setMember, party_initNewGame); chr_join and item_countEquipped count characters with it
+func_80033C0C chr_clearRecruited  # [code] clears CharBits.unkB
+func_80033CCC chr_levelUp  # [code] chr_setLevel with growth on (equipment bonuses accumulate, HP/MP kept), returns the old level
+func_80033D1C party_setChanged  # [code] D_80077DE0; party_setMember sets it, menu_readPortraits/menu_start reload the party portraits when set
+func_80033D28 party_hasChanged  # [code] D_80077DE0
+D_80077DE0 g_partyChanged  # [code] party_setChanged/party_hasChanged
+func_80033DCC chr_fitSupportAbilities  # [code] after the max stones dropped: unequips support abilities that no longer fit
+func_80033E84 chr_addAp  # [code] adds AP to an ability's slot in Character.unk58, capped at chr_getApNeeded; returns the gain
+func_80034070 chr_isAbilityLearned  # [code] AP >= the ability's AP needed
+func_80034220 chr_learnAbility  # [code] sets an ability's AP to the amount needed
+func_80034324 chr_clearAllAp  # [code] chr_clearAp for all 9 characters
+func_8003435C chr_clearAllSupport  # [code] chr_clearSupport for all 9 characters
+func_80034394 chr_clearAbilities  # [code] chr_clearAp and chr_clearSupport (chr_init)
+func_800343C0 chr_clearAp  # [code] zeroes Character.unk58 (48 ability AP slots)
+func_80034404 chr_clearSupport  # [code] zeroes Character.supportAbilities
+func_80034430 chr_findAbilitySlot  # [code] slot of ability id in the character's D_8006CB28 row, -1 if absent
+func_800344C0 chr_getApPtr  # [code] &Character.unk58[slot of id]
+func_80034584 chr_getAp  # [code] AP of ability id, -1 if the character can't learn it
+func_80034648 chr_setAp  # [code] sets AP of ability id, returns the old value
+func_8003470C chr_resetAp  # [code] chr_setAp(ch, id, 0)
+func_800347D8 chr_getApNeeded  # [code] D_8006CB28[row][slot].unk1, the AP to learn ability id
+func_800348C0 chr_countSupportStones  # [code] sum of the stone costs (D_8006D128) of the equipped support abilities
+func_800349BC chr_hasSupportAbility  # [code] support ability bit of a character
+func_80034A04 chr_testSupportBit  # [code] bit (id - 0xC0) of a support-ability bit array
+func_8003502C chr_sumEquipBonus  # [code] sum of one stat bonus (D_8006D548) over the 5 equipped items
+func_80028DB0 text_renderNameGlyph  # [code] ORs a 2bpp glyph (g_nameGlyphs) into the 4bpp name image (g_nameImage, 0x54 bytes per row) at x
+func_8002B43C text_initNameImage  # [code] glyph source = buf, image = buf + 0x4000 (cleared)
+func_8002B47C text_renderPartyName  # [code] renders party slot's name (up to 7 chars) into the name image
+func_8002C158 text_uploadPartyNames  # [code] renders the four party names and LoadImages them (D_8006BC38)
+D_80077140 g_nameGlyphs  # [code] text_initNameImage / text_renderNameGlyph
+D_80077144 g_nameImage  # [code] text_initNameImage / text_renderNameGlyph
+func_80028F3C text_drawChar  # [code] one font glyph SPRT (GameData.unk7D4 glyph table), centred in 10 px
+func_8002920C text_buildBlock  # [code] text with control codes (0xF9 escapes, 0xF7 newline): colours, icons, names, arguments (text_drawBlock)
+func_8002995C text_buildPlain  # [code] a 0xFF-terminated string (a name) without control codes, two-byte and kanji codes included; returns its width
+func_80029D60 text_buildSmall  # [code] 8x8 SPRT_8 font for ASCII and kana (0x40 toggles kana) (ui_drawSmallDigits)
+func_80029FE4 text_buildCode  # [code] one 0xF9 code: colour 0x20-0x29, button icons, d-pad icons, character / party member names
+func_8002A730 text_getCodeWidth  # [code] width of text_buildCode's output for a code
+func_8002AA04 text_formatTime  # [code] frames -> "hh:mm:ss" (blinking colons), returns the hundreds-of-hours sprite
+func_8002AE7C ui_measureLabel  # [code] width of a ui_buildLabel string
+func_8002AF70 text_measure  # [code] width and height of text with control codes (TextSize)
+func_8002B644 text_buildDigits  # [code] 8x10 digit font string ('/' too), dim when style 2 (ui_drawDigits)
+func_8002B7B0 text_buildGlyph  # [code] SPRT for one font glyph word (offset, width, uv), returns the advance
+func_8002B890 text_buildDpad  # [code] d-pad icon (sprite 0xC) with the directions in mask highlighted
+func_8002B980 text_measureStyle  # [code] g_textMeasureFuncs[idx](s)
+D_8006BBEC g_textMeasureFuncs  # [code] width functions of the argument styles (plain, small, label, digits) used by text_measure
+func_8002B9B8 text_measureSmall  # [code] 7 px per text_buildSmall character (kana toggles excluded)
+func_8002BA10 text_measureDigits  # [code] 7 px per text_buildDigits character
+func_8002BA68 text_measureWidth  # [code] text_measure(s).w
+func_8002BA90 text_buildFontTpage  # [code] DR_TPAGE for the font page (get_mode(1, 1, 0x1E))
+func_8002BBE8 text_formatInt  # [code] signed number without padding, ASCII or font codes (0xFF-terminated)
+func_8002BCC0 text_getLength  # [code] bytes of a 0xFF-terminated text, skipping code arguments
+func_8002BD54 text_copy  # [code] copies a 0xFF-terminated text with its code arguments
+func_8002BE10 text_getButtonSprite  # [code] D_8006BC18[config_remapButton(i)]: the button icon for game button i
+D_8006BC18 g_buttonSprites  # [code] text_getButtonSprite
+func_8002BE44 text_setStringArg  # [code] D_800770B0[i] = string, shown by codes 0x69/0x6B/0x6D/0x6F
+func_8002BE5C text_setNumberArg  # [code] D_800770F0[i] = number, shown by codes 0x68/0x6A/0x6C/0x6E
+func_8002BE74 text_setIconArg  # [code] D_80077130[i] = sprite/item id, shown by codes 0x4D/0x4E
+func_8002BE88 text_getColor  # [code] D_800770AC, the current text palette (codes 0x20-0x29)
+func_8002BE98 text_setColor  # [code] D_800770AC
+func_8002BEA4 text_measureNumber  # [code] width of a number in a style (digits x D_8006BBFC[style])
+D_800770B0 g_textStringArgs  # [code] text_setStringArg
+D_800770F0 g_textNumberArgs  # [code] text_setNumberArg
+D_80077130 g_textIconArgs  # [code] text_setIconArg
+D_800770AC g_textColor  # [code] text_getColor/text_setColor, the palette index of text_buildGlyph
+D_80077080 g_textNumberBuf  # [code] text_buildBlock formats number arguments into it
+D_8006BBA0 g_textPalettes  # [code] CLUT per text colour (text_buildGlyph)
+# FIELDS include/ff9.h Character: unk58=ap
+# ff9.h: TEXT_* text control codes (TEXT_END/NEWLINE/ESC and the escape bytes) used in src/main/text.c

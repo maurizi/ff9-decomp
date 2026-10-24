@@ -2155,7 +2155,7 @@ extern Unk800689B0 D_80068E78[3];
 s32 win_getPalClut(s32);
 void SetTexWindow(void *, RECT *); /* PsyQ */
 void win_reapClosed(void);
-u8 func_800339F4(s32, u8);
+u8 chr_getAppearanceType(s32, u8);
 void ui_drawItemIcon(s32, s32, s32, s32, u8);
 extern u32 D_800686D8;
 void math_rotMatrixYXZ(void *, void *);
@@ -2177,7 +2177,7 @@ typedef struct {
 } Unk8006E0E8; /* 0xC */
 extern Unk8006E0E8 D_8006E0E8[];
 void VSyncCallback(void (*)(void));
-void func_8002C158(void *);
+void text_uploadPartyNames(void *);
 void func_800553EC(s32, s32, s32, s32);
 s32 item_getCount(s32); /* main.c defines it returning u8 */
 typedef struct {
@@ -2350,7 +2350,7 @@ typedef struct {
     TextTblEnt unk4[1];
 } TextTbl; /* message table (D_800F6CB4) */
 
-void func_8002BBE8(s32, u8 *, s32);
+void text_formatInt(s32, u8 *, s32);
 
 u8 *btl_getItemName(u8);
 typedef struct {
@@ -3065,7 +3065,7 @@ u8 *btl_getAbilityName(s32);
 #define RAND16() ((*g_randPtr << 8) | *g_randPtr++)
 
 /* main exe: candidates for ff9.h */
-u8 func_80034070(s32, s32);
+u8 chr_isAbilityLearned(s32, s32);
 void btl_damageHp(BtlUnit *, s32, u8);
 void btl_healHp(BtlUnit *, s32);
 void btl_damageMp(BtlUnit *, s32);
@@ -3100,8 +3100,8 @@ extern s32 D_800F8DE4[];
 Window *func_800F1370(void);
 void btlui_getHelpRect(RECT *, RECT *);
 void btlui_updateHelpText(void);
-s32 func_8002BE88(void);
-void func_8002BE98(s32);
+s32 text_getColor(void);
+void text_setColor(s32);
 void gfx_setBufferIndex(u8);
 void win_drawHelpFrame(RECT *, s32, s32, s32);
 extern RECT D_800F8DBC;
@@ -3120,7 +3120,7 @@ void btl_drawScene(GameData *, Battle *, s32);
 
 s32 func_8005553C(s32);
 void func_80055850(s32, s32, s32);
-s32 func_80034430(s32, s32);
+s32 chr_findAbilitySlot(s32, s32);
 void func_800F3D3C(s32);
 void func_800F1BFC(Window *);
 s32 btlfx_angleDiff(s32, s32, s32 *);
