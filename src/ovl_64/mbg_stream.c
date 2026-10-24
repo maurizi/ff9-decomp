@@ -154,14 +154,14 @@ void mbg_streamOnAudioSector(void) {
         }
         if (s->unk5C < 0) {
             if (((u32)s->unk5C >> 8 & 0xFF) >= 0x80) {
-                D_8019F7D0[g_mbgStream.unk68].unk0 = 1;
+                g_mbgSlotRumble[g_mbgStream.unk68].on = 1;
             } else {
-                D_8019F7D0[g_mbgStream.unk68].unk0 = 0;
+                g_mbgSlotRumble[g_mbgStream.unk68].on = 0;
             }
-            D_8019F7D0[g_mbgStream.unk68].unk1 = s->unk5C;
+            g_mbgSlotRumble[g_mbgStream.unk68].level = s->unk5C;
         } else {
-            D_8019F7D0[g_mbgStream.unk68].unk0 = 0;
-            D_8019F7D0[g_mbgStream.unk68].unk1 = 0;
+            g_mbgSlotRumble[g_mbgStream.unk68].on = 0;
+            g_mbgSlotRumble[g_mbgStream.unk68].level = 0;
         }
         if (g_mbgStream.unk4 != NULL) {
             g_mbgStream.unk4(g_mbgStream.unk90 + ((g_mbgStream.unk80 - 1) << 11),
@@ -213,7 +213,7 @@ s32 mbg_streamStart(s32 unused, u32 arg1, s32 arg2, void (*arg3)(void), s32 arg4
     if (arg1 >= 2) {
         g_mbgStream.unk40 += (arg1 - 1) * g_mbgStream.frameSectors;
     }
-    D_8019DE0C = 0;
+    g_mbgSectorLogCount = 0;
     g_mbgStream.channel = -1;
     g_mbgStream.unk38 = arg1;
     g_mbgStream.lastFrame = arg2;
@@ -237,7 +237,7 @@ s32 mbg_streamStart(s32 unused, u32 arg1, s32 arg2, void (*arg3)(void), s32 arg4
     return 0;
 }
 
-s32 mbg_streamGetFrame(u8 **data, Ovl64RingHdr **hdr, Ovl64FrameInfo **arg2, Ovl64Pair **arg3, Ovl64Flag **arg4) {
+s32 mbg_streamGetFrame(u8 **data, Ovl64RingHdr **hdr, Ovl64FrameInfo **arg2, Ovl64Pair **arg3, MbgRumble **arg4) {
     Ovl64RingHdr *h = &g_mbgStream.unk74[g_mbgStream.readSlot];
 
     if (!(h->unk0 & 0x8000)) {
@@ -255,7 +255,7 @@ s32 mbg_streamGetFrame(u8 **data, Ovl64RingHdr **hdr, Ovl64FrameInfo **arg2, Ovl
         *arg2 = NULL;
         *arg3 = NULL;
     }
-    *arg4 = &D_8019F7D0[g_mbgStream.readSlot];
+    *arg4 = &g_mbgSlotRumble[g_mbgStream.readSlot];
     if (g_mbgStream.readSlot == 0) {
         g_mbgStream.readSlot = g_mbgStream.slotCount;
     }
@@ -300,7 +300,7 @@ void mbg_streamReadyCallback(u8 status, u8 *result) {
         func_80023018();
     }
     g_mbgStreamBusy = 1;
-    D_8019DE0C = 0;
+    g_mbgSectorLogCount = 0;
     if (g_mbgStream.unk4C < 2) {
         CdGetSector(g_mbgStream.unk90 + (g_mbgStream.unk80 << 11), 0x200);
         g_cdLoad.bytesRead += 0x800;
@@ -322,9 +322,9 @@ void mbg_streamReadyCallback(u8 status, u8 *result) {
                 }
                 addr = g_mbgStream.unk78 + sect * 0x8F4;
                 addr -= 0x20;
-                D_801A07F0[D_8019DE0C] = g_mbgStream.frame;
-                D_801A06F0[D_8019DE0C] = prev;
-                D_8019DE0C++;
+                g_mbgSectorLogFrame[g_mbgSectorLogCount] = g_mbgStream.frame;
+                g_mbgSectorLogSlot[g_mbgSectorLogCount] = prev;
+                g_mbgSectorLogCount++;
                 CdGetSector(addr, 0x245);
                 g_cdLoad.bytesRead += 0x800;
                 func_80023018();

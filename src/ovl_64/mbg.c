@@ -6,7 +6,7 @@ u8 *mbg_readFrame(Ovl64Out *out) {
     Ovl64RingHdr *hdr;
     Ovl64FrameInfo *info;
     Ovl64Pair *pair;
-    Ovl64Flag *flag;
+    MbgRumble *flag;
     s32 tries;
     s32 ret;
     s8 hi;
@@ -62,8 +62,8 @@ u8 *mbg_readFrame(Ovl64Out *out) {
         }
     }
     if (flag != NULL && (!((Ovl64Cfg *)&g_gameState->unk24)->b7 || g_gameState->mode == 5)) {
-        D_800739B0[0].unk0 = flag->unk0;
-        D_800739B0[0].unk1 = flag->unk1;
+        D_800739B0[0].unk0 = flag->on;
+        D_800739B0[0].unk1 = flag->level;
     }
     if (pair != NULL && pair->unk0 != 0) {
         bcopy((void *)pair->unk4, &g_mbgMaskData[g_gameState->unk1C->unk8 ^ 1], pair->unk0);
@@ -350,7 +350,7 @@ s32 mbg_play(u32 movie, s32 idx) {
     g_mbgMaskCursor.unk8 = 0;
     g_mbgMaskCursor.unkC = 0;
     if (st->vlcTable == NULL) {
-        printf(D_8019903C);
+        printf(g_mbgScratchpadMsg);
     }
     mbg_vlcBuildTable(st->vlcTable);
     g_mbgPaused = 0;
@@ -742,4 +742,4 @@ s32 mbg_getGeomOffset(s32 *arg0, s32 *arg1) {
     return 1;
 }
 
-INCLUDE_RODATA("asm/us/ovl_64/nonmatchings/mbg", D_8019903C);
+INCLUDE_RODATA("asm/us/ovl_64/nonmatchings/mbg", g_mbgScratchpadMsg);

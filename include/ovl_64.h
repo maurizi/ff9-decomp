@@ -181,10 +181,12 @@ typedef struct {
     u32 unk60;
 } Ovl64StreamSect;
 
+/* per ring slot: the pad vibration of the frame (frame header +0x5C), copied to the actuator bytes D_800739B0
+ * (which ovl_34's vibration test also writes) while the frame shows */
 typedef struct {
-    u8 unk0;
-    u8 unk1;
-} Ovl64Flag;
+    u8 on;    /* header byte 1 >= 0x80 */
+    u8 level;
+} MbgRumble;
 
 typedef struct {
     u8 unk0;
@@ -224,7 +226,7 @@ typedef struct {
     u32 unk8C;
     u8 *unk90;
 } Ovl64Stream;
-extern s32 D_8019DE0C;
+extern s32 g_mbgSectorLogCount;
 extern Ovl64Stream g_mbgStream;
 
 /* mbg_drawStreamDebug: CD ring debug view, one colour per 8 sectors and a POLY_F4 per sector */
@@ -243,7 +245,7 @@ typedef struct {
 } Ovl64Pair;
 extern Ovl64FrameInfo g_mbgSlotCameras[];
 extern Ovl64Pair g_mbgSlotMasks[16];
-extern Ovl64Flag D_8019F7D0[];
+extern MbgRumble g_mbgSlotRumble[];
 
 void mbg_streamReadyCallback(u8, u8 *); /* CdReadyCallback */
 void mbg_streamOnVideoSector(void);
@@ -343,7 +345,7 @@ typedef struct {
 
 
 /* used by mbg_play */
-extern char D_8019903C[];
+extern char g_mbgScratchpadMsg[];
 s32 mbg_setRgb24(s32);
 void mbg_vlcBuildTable(void *);
 void mbg_vlcDecode(u8 *, u32 *, void *);
@@ -362,8 +364,8 @@ void mbg_mdecOutCallback(void);
 /* mbg_streamReadyCallback: the two cross-jumped timeout blocks (one inline, called twice) */
 void func_80022F64(s32); /* main exe */
 s32 DecDCToutSync(s32);
-extern s32 D_801A07F0[];
-extern s32 D_801A06F0[];
+extern s32 g_mbgSectorLogFrame[];
+extern s32 g_mbgSectorLogSlot[];
 static inline void mbg_streamReadyCallback_retry(void) {
     s32 limit;
 

@@ -2136,3 +2136,11 @@ D_800A703C g_bjStrHit  # [string] "Hit" label in bj_main
 D_800A7040 g_bjStrDouble  # [string] "Double" label in bj_main
 D_800A7048 g_bjStrSplit  # [string] "Split" label in bj_main
 # FIELDS include/ovl_15.h Ovl15Hand->BjHand: unk0=flags,unk2=count,unk4=value,unk6=hardValue,unk8=x,unkA=y,unkC=cards; Ovl15Shoe->BjShoe: unk0=flags,unk2=next,unk4=cards; Ovl15Mode->SceneMode: unk0=init,unk4=enter,unk8=update,unkC=leave; Ovl15ModeState->SceneState: unk0=cur,unk3=fadeScreen; Ovl15Screen->SceneMenu: unk1=shown,unk2=fadingIn,unk3=cursor,unk8=fadeFrames; Ovl15Pip->BjPip; Ovl15Pos->ScreenPos; Unk8019DC5C->MbgMovieList: unk0=count,unk4=movies; Unk8019DC5CSub->MbgMovie: unk0=path
+
+## ovl_64: ovl_64 (movie player, remaining globals)
+D_8019903C g_mbgScratchpadMsg  # [string] "Using scratchpad\n", printed by mbg_play when the VLC table is on the scratchpad
+D_8019DE0C g_mbgSectorLogCount  # [code] entries in g_mbgSectorLogFrame/g_mbgSectorLogSlot, reset per movie, counted per video sector read (mbg_streamOnVideoSector)
+D_801A07F0 g_mbgSectorLogFrame  # [code] frame number of each logged sector read
+D_801A06F0 g_mbgSectorLogSlot  # [code] ring slot of each logged sector read
+D_8019F7D0 g_mbgSlotRumble  # [code] per ring slot - the frame's pad vibration (MbgRumble), copied to the actuator bytes D_800739B0 by mbg_readFrame
+# FIELDS include/ovl_64.h Ovl64Flag renamed MbgRumble: unk0=on,unk1=level
