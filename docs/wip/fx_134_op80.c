@@ -1,4 +1,4 @@
-/* Pass 4: 295 aligned mismatches, frame size matches. Variables split per case (build/s/split17.py) and at each
+/* Pass 4: 196 aligned mismatches, frame size matches. Variables split per case (build/s/split17.py) and at each
  * top-level re-assignment (build/s/phase.py) and at nested assignments
  * whose value stays in their block (build/s/webs.py); case 3's first angle is t >> 2 of t = (frame << 12) / 24 in a
  * block-local variable (a3x): with it the case-3 block has eight call-crossing locals, the 0x1000 constant lands
@@ -649,8 +649,8 @@ s32 fx_134_op80(s32 mode, Fx134Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
                     work->unk24.vx = work->unk8.vx;
                     work->unk24.vy = work->unk8.vy;
                     work->unk24.vz = work->unk8.vz;
-                    work->unk24.vz -= 0x1C00;
                     work->unk24.vy -= 0x3800;
+                    work->unk24.vz -= 0x1C00;
                     work->unk30.vz = 0x1800;
                     work->unk10.vx = work->unk24.vx;
                     work->unk10.vy = work->unk24.vy;
@@ -779,15 +779,15 @@ s32 fx_134_op80(s32 mode, Fx134Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
             }
             break;
         case 7:
-            c = 0xAD;
             yo = 0;
             xo = 0;
             t = frame << 8;
             a_c7 = t >> 2;
+            c = 0xAD;
             s = a_c7 + 0x80;
             D_801EC894[1].r = (ex->math_sin(a_c7) * 0xFF) >> 12;
             D_801EC894[1].g = (ex->math_sin(a_c7) * 0xFF) >> 12;
-            D_801EC894[1].b = ex->math_sin(a_c7) >> 6;
+            D_801EC894[1].b = (u32)ex->math_sin(a_c7) >> 6;
             ex->btlfx_drawScreenTint((u32 *)(env->unk20 + 2), 1, 0x58, 0, 0);
             ex->func_800D0B18((s32)(env->unk20 + 0xFF0), 0x28, 2, 2, 0xC8, 0xFF, D_801EC894, 0, 0, 0, 0);
             if (frame > 8) {
@@ -803,8 +803,8 @@ s32 fx_134_op80(s32 mode, Fx134Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
             work->unk44.vx = work->unk44.vy = 0x3800;
             work->unk44.vz = 0x2000;
             work->unk24.vy -= 0x578;
-            work->unk50.vz += 8;
             work->unk24.vz += 0x2BC;
+            work->unk50.vz += 8;
             ex->Hi_DrawEffModel(&work->unk50, (VECTOR *)&work->unk24, (s32)&work->unk44, work->unk68);
             ex->Hi_ModifyEffModelRGB(work->unk68, (ex->math_cos(t >> 2) >> 6) - 0x80, (ex->math_cos(t >> 2) >> 6) - 0x80,
                                      (ex->math_cos(t >> 2) >> 6) - 0x80);
@@ -812,13 +812,13 @@ s32 fx_134_op80(s32 mode, Fx134Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
             ex->Hi_DrawEffModel(&work->unk50, (VECTOR *)&work->unk24, (s32)&work->unk44, work->unk68);
             ex->Hi_ModifyEffModelRGB(work->unk68, (ex->math_cos(t >> 2) >> 6) - 0x80, (ex->math_cos(t >> 2) >> 6) - 0x80,
                                      (ex->math_cos(t >> 2) >> 6) - 0x80);
-            work->unk44.vz = 0x3000;
             work->unk44.vx = work->unk44.vy = 0x2000;
             work->unk50.vz += 0x200;
-            work->unk24.vz -= 0x2BC;
-            work->unk24.vz -= 0x9C4;
             work->unk24.vy += 0x578;
+            work->unk24.vz -= 0x2BC;
+            work->unk44.vz = 0x3000;
             work->unk24.vy -= 0x1388;
+            work->unk24.vz -= 0x9C4;
             ex->Hi_DrawEffModel(&work->unk50, (VECTOR *)&work->unk24, (s32)&work->unk44, work->unk6C);
             ex->Hi_ModifyEffModelRGB(work->unk6C, (ex->math_cos(t >> 2) >> 5) - 0x80, (ex->math_cos(t >> 2) >> 5) - 0x80,
                                      (ex->math_cos(t >> 2) >> 5) - 0x80);
