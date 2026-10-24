@@ -72,4 +72,13 @@ extern s32 D_801EF980;
 s32 func_801E8658(s32 mode, Fx134Orb *it, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 frame, Unk800DA1B8 *pool,
                   Fx134Work *parent);
 
+extern SVECTOR D_801EC860; /* caster position */
+extern CVECTOR D_801EC878[];
+extern s16 D_801EC880[4];
+extern CVECTOR D_801EC888[];
+extern CVECTOR D_801EC894[2];
+extern Fx134Bolt D_801EC8F4[];
+extern BtlModel D_801ECB64[];
+extern u8 D_801ED1A4[];
+
 #endif
