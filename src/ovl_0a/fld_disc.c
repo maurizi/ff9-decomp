@@ -5,7 +5,7 @@ void fld_requestDiscChange(s32 arg0, s16 arg1) {
     g_fieldDiscChange.disc = arg0;
     g_fieldDiscChange.fieldId = arg1;
     g_fieldDiscChange.areaId = -1;
-    g_gameState->unk1C->unk8E4.field->flags |= 0x100000;
+    g_gameState->unk1C->unk8E4.field->flags |= FLD_MAP_DISC_CHANGE;
     g_gameState->unk0 |= 8;
 }
 
@@ -63,7 +63,7 @@ void fld_discChangeLeave(void) {
         D_80073998[i] = g_fieldDiscChange.savedFlags[i];
     }
     f = g_gameState->unk1C->unk8E4.field;
-    f->flags |= 0x10000;
+    f->flags |= FLD_MAP_REFIND_SECTORS;
     func_8001DE50((GameState *)f);
     fld_refindSectors();
 }

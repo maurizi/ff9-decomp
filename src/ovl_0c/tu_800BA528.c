@@ -1686,8 +1686,8 @@ void wm_naviDrawMarker(s32 arg0, s32 arg1, s32 arg2, s32 arg3, CVECTOR arg4, CVE
         setUV4((POLY_FT4 *)g_worldPrimPtr, 0, 0xFA, 4, 0xFA, 0, 0xFE, 4, 0xFE);
         setRGB0((POLY_FT4 *)g_worldPrimPtr, c.r, c.g, c.b);
         setPolyFT4((POLY_FT4 *)g_worldPrimPtr);
-        ((POLY_FT4 *)g_worldPrimPtr)->tpage = 0x2B;
-        ((POLY_FT4 *)g_worldPrimPtr)->clut = 0x3FEC;
+        ((POLY_FT4 *)g_worldPrimPtr)->tpage = getTPage(0, 1, 704, 0);
+        ((POLY_FT4 *)g_worldPrimPtr)->clut = getClut(704, 255);
         setSemiTrans((POLY_FT4 *)g_worldPrimPtr, 1);
         addPrim(&ot[10], (POLY_FT4 *)g_worldPrimPtr);
         g_worldPrimPtr += sizeof(POLY_FT4);
@@ -1695,8 +1695,8 @@ void wm_naviDrawMarker(s32 arg0, s32 arg1, s32 arg2, s32 arg3, CVECTOR arg4, CVE
         setUV4((POLY_FT4 *)g_worldPrimPtr, 0, 0xFA, 4, 0xFA, 0, 0xFE, 4, 0xFE);
         setRGB0((POLY_FT4 *)g_worldPrimPtr, 0x60, 0x60, 0x60);
         setPolyFT4((POLY_FT4 *)g_worldPrimPtr);
-        ((POLY_FT4 *)g_worldPrimPtr)->tpage = 0x4B;
-        ((POLY_FT4 *)g_worldPrimPtr)->clut = 0x3FEC;
+        ((POLY_FT4 *)g_worldPrimPtr)->tpage = getTPage(0, 2, 704, 0);
+        ((POLY_FT4 *)g_worldPrimPtr)->clut = getClut(704, 255);
         setSemiTrans((POLY_FT4 *)g_worldPrimPtr, 1);
         addPrim(&ot[10], (POLY_FT4 *)g_worldPrimPtr);
         g_worldPrimPtr += sizeof(POLY_FT4);
@@ -1707,7 +1707,7 @@ void wm_naviDrawMarker(s32 arg0, s32 arg1, s32 arg2, s32 arg3, CVECTOR arg4, CVE
     setXY4((POLY_FT4 *)g_worldPrimPtr, x0_, y0_, x1_, y0_, x0_, y1_, x1_, y1_);              \
     setUV4((POLY_FT4 *)g_worldPrimPtr, u0_, v0_, u1_, v0_, u0_, v1_, u1_, v1_);              \
     setRGB0((POLY_FT4 *)g_worldPrimPtr, g_worldNaviTileR, g_worldNaviTileG, g_worldNaviTileB);                 \
-    ((POLY_FT4 *)g_worldPrimPtr)->tpage = 0xA;                                                \
+    ((POLY_FT4 *)g_worldPrimPtr)->tpage = getTPage(0, 0, 640, 0);                                                \
     ((POLY_FT4 *)g_worldPrimPtr)->clut = cl;                                                  \
     setPolyFT4((POLY_FT4 *)g_worldPrimPtr);                                                   \
     addPrim(&ot[10], (POLY_FT4 *)g_worldPrimPtr);                                             \
@@ -1950,8 +1950,8 @@ void wm_naviDrawMiniMap(void) {
     setXY4((POLY_FT4 *)g_worldPrimPtr, 200, 130, 296, 130, 200, 210, 296, 210);
     setUV4((POLY_FT4 *)g_worldPrimPtr, 0, 0x80, 0x5F, 0x80, 0, 0xCF, 0x5F, 0xCF);
     setRGB0((POLY_FT4 *)g_worldPrimPtr, 0x80, 0x80, 0x80);
-    ((POLY_FT4 *)g_worldPrimPtr)->tpage = 0xC;
-    ((POLY_FT4 *)g_worldPrimPtr)->clut = 0x3C69;
+    ((POLY_FT4 *)g_worldPrimPtr)->tpage = getTPage(0, 0, 768, 0);
+    ((POLY_FT4 *)g_worldPrimPtr)->clut = getClut(656, 241);
     setPolyFT4((POLY_FT4 *)g_worldPrimPtr);
     setSemiTrans((POLY_FT4 *)g_worldPrimPtr, 1);
     addPrim(&ot[10], (POLY_FT4 *)g_worldPrimPtr);
@@ -2008,10 +2008,9 @@ void wm_drawTitle(void) {
             setXY4(g_worldTitlePrim, 0x20, 0x32, 0x11F, 0x32, 0x20, 0x51, 0x11F, 0x51);
             setUV4(g_worldTitlePrim, 0, 0x40, 0xFF, 0x40, 0, 0x5F, 0xFF, 0x5F);
         }
-        g_worldTitlePrim->tpage = 0x2C;
-        g_worldTitlePrim->clut = 0x3D28;
-        setlen(g_worldTitlePrim, 9);
-        setcode(g_worldTitlePrim, 0x2C);
+        g_worldTitlePrim->tpage = getTPage(0, 1, 768, 0);
+        g_worldTitlePrim->clut = getClut(640, 244);
+        setPolyFT4(g_worldTitlePrim);
         setSemiTrans(g_worldTitlePrim, 1);
         addPrim(&ot[10], g_worldTitlePrim);
         g_worldTitlePrim++;
@@ -2023,10 +2022,9 @@ void wm_drawTitle(void) {
             setXY4(g_worldTitlePrim, 0x20, 0x32, 0x11F, 0x32, 0x20, 0x51, 0x11F, 0x51);
             setUV4(g_worldTitlePrim, 0, 0x60, 0xFF, 0x60, 0, 0x7F, 0xFF, 0x7F);
         }
-        g_worldTitlePrim->tpage = 0x4C;
-        g_worldTitlePrim->clut = 0x3D28;
-        setlen(g_worldTitlePrim, 9);
-        setcode(g_worldTitlePrim, 0x2C);
+        g_worldTitlePrim->tpage = getTPage(0, 2, 768, 0);
+        g_worldTitlePrim->clut = getClut(640, 244);
+        setPolyFT4(g_worldTitlePrim);
         setSemiTrans(g_worldTitlePrim, 1);
         p = g_worldTitlePrim;
         setaddr(p, getaddr(&ot[10]));
@@ -2108,10 +2106,9 @@ void func_800C16C0(void) {
     ((POLY_FT4 *)g_worldPrimPtr)->r0 = 0x80;
     ((POLY_FT4 *)g_worldPrimPtr)->g0 = 0x80;
     ((POLY_FT4 *)g_worldPrimPtr)->b0 = 0x80;
-    ((POLY_FT4 *)g_worldPrimPtr)->tpage = 0x8C;
-    ((POLY_FT4 *)g_worldPrimPtr)->clut = 0x3DA8;
-    setlen(g_worldPrimPtr, 9);
-    ((POLY_FT4 *)g_worldPrimPtr)->code = 0x2C;
+    ((POLY_FT4 *)g_worldPrimPtr)->tpage = getTPage(1, 0, 768, 0);
+    ((POLY_FT4 *)g_worldPrimPtr)->clut = getClut(640, 246);
+    setPolyFT4((POLY_FT4 *)g_worldPrimPtr);
     addPrim(&ot[10], g_worldPrimPtr);
     g_worldPrimPtr += sizeof(POLY_FT4);
     wm_naviDrawFrame(0xF5, 0x5C, 9, 0);
@@ -2142,7 +2139,7 @@ void wm_naviDrawFrame(s32 arg0, s32 arg1) {
         }
         setUVWH(p, g_worldNaviFrameParts[i].u, g_worldNaviFrameParts[i].v, g_worldNaviFrameParts[i].w, g_worldNaviFrameParts[i].h);
         setRGB0(p, 0x80, 0x80, 0x80);
-        p->tpage = 0xC;
+        p->tpage = getTPage(0, 0, 768, 0);
         p->clut = clut;
         addPrim(&ot[10], p);
         p++;

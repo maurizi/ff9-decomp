@@ -65,7 +65,7 @@ s32 fld_soundCommand(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4) {
                     g_gameState->unk1C->unk0 |= 0x200000;
                 }
                 g_gameState->unk1C->unk0 &= 0xCFFFFFFF;
-                SCENE->flags &= ~0x10;
+                SCENE->flags &= ~FLD_SCN_BANK_SLOT;
                 g_gameState->unk1C->unk820[0] = t;
                 g_fieldSoundLoadId = id;
                 g_gameState->unk1C->unk81C[0] = arg1;
@@ -403,10 +403,10 @@ s32 fld_soundCommand(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4) {
         id = (arg1 & 0xFFFF) | 0x90000;
         switch (kind) {
         case 7:
-            SCENE->flags &= ~0x10;
+            SCENE->flags &= ~FLD_SCN_BANK_SLOT;
             if (arg2 == 4) {
                 SCENE->soundBankSlot = arg3;
-                SCENE->flags |= 0x10;
+                SCENE->flags |= FLD_SCN_BANK_SLOT;
             }
             g_fieldMusicRequest = kind;
             g_fieldSoundLoadId = id;
@@ -447,7 +447,7 @@ state:
             }
         }
         g = g_gameState->unk1C;
-        if (!(g->unk8E4.field->area->scene->flags & 0x10) && g->unk852 != 0x84) {
+        if (!(g->unk8E4.field->area->scene->flags & FLD_SCN_BANK_SLOT) && g->unk852 != 0x84) {
             func_80055DF4();
         }
         g_gameState->unk1C->unk8C0 = SCENE->heapTop ? SCENE->heapTop : D_80067948;
@@ -647,7 +647,7 @@ void fld_playAnimSfx(FieldEvtCtx **arg0, s32 arg1) {
     n = g_gameState->unk1C->unk8E4.field->area->scene->animSfxCount;
     for (i = arg1 - 1; i >= 0; i--) {
         ctx = arg0[i];
-        if (ctx == NULL || (ctx->flags & 0x40)) {
+        if (ctx == NULL || (ctx->flags & FLD_OBJ_NO_ANIM_SFX)) {
             continue;
         }
         for (j = n - 1; j >= 0; j--) {
@@ -1045,13 +1045,13 @@ void fld_applyLights(FieldEvtCtx **arg0, s32 arg1) {
         }
         info = &infos[c->obj->uid];
         l = (Unk800B3294 *)fld_findLightColor(lt, c->modelId);
-        shade = c->flags & 4;
+        shade = c->flags & FLD_OBJ_DIR_LIGHT;
         fl = fld_findFloorLight(lt, c, &floor);
-        if ((u8)info->litFloor != (u8)floor || shade != (info->flags & 4) || !(c->flags & 0x100)) {
+        if ((u8)info->litFloor != (u8)floor || shade != (info->flags & 4) || !(c->flags & FLD_OBJ_LIT)) {
             chg = 1;
         }
         if (chg) {
-            if (!(c->flags & 0x400)) {
+            if (!(c->flags & FLD_OBJ_COLOR_SET)) {
                 b = 0;
                 if (l != NULL) {
                     a = l->unk4;
@@ -1069,7 +1069,7 @@ void fld_applyLights(FieldEvtCtx **arg0, s32 arg1) {
                     | ((((a & 0xFF0000) + (b & 0xFF0000)) * 8) & 0xFF0000) | 0x01000000;
                 info->nextColor.w = col;
                 info->color.w = col;
-                c->flags |= 0x100;
+                c->flags |= FLD_OBJ_LIT;
             }
             if (l != NULL) {
                 dx = l->shadowShade;
@@ -1214,7 +1214,7 @@ s32 func_800B3444(s32 arg0, s32 arg1, s32 arg2) {
 
     if (arg0 == 0 && arg1 == 0) {
         if (arg2 != 0) {
-            if (!(g_gameState->unk1C->unk8E4.field->area->scene->flags & 0x100)) {
+            if (!(g_gameState->unk1C->unk8E4.field->area->scene->flags & FLD_SCN_OBJFX_ALLOC)) {
                 start = g_gameState->unk1C->unk8E4.field->area->scene->heapTop;
                 if (start == 0) {
                     start = D_80067948;
@@ -1234,18 +1234,18 @@ s32 func_800B3444(s32 arg0, s32 arg1, s32 arg2) {
                 }
                 fld_trimModelCache();
                 func_80022280(start, size);
-                g_gameState->unk1C->unk8E4.field->area->scene->flags |= 0x100;
+                g_gameState->unk1C->unk8E4.field->area->scene->flags |= FLD_SCN_OBJFX_ALLOC;
             }
-            g_gameState->unk1C->unk8E4.field->area->scene->flags |= 0x200;
+            g_gameState->unk1C->unk8E4.field->area->scene->flags |= FLD_SCN_OBJFX_ON;
         } else {
-            g_gameState->unk1C->unk8E4.field->area->scene->flags &= ~0x200;
+            g_gameState->unk1C->unk8E4.field->area->scene->flags &= ~FLD_SCN_OBJFX_ON;
         }
     }
     return 0;
 }
 
 void func_800B3684(void) {
-    if (g_gameState->unk1C->unk8E4.field->area->scene->flags & 0x200) {
+    if (g_gameState->unk1C->unk8E4.field->area->scene->flags & FLD_SCN_OBJFX_ON) {
         func_80050AAC();
     }
 }
@@ -1286,7 +1286,7 @@ s32 fld_preloadRequest(s32 arg0, s32 arg1) {
         } else {
             fld_addPreloadRequest(0x1000B);
         }
-        if (!(g_gameState->unk1C->unk8E4.field->area->scene->flags & 0x100000)) {
+        if (!(g_gameState->unk1C->unk8E4.field->area->scene->flags & FLD_SCN_PRELOADS_QUEUED)) {
             goto done;
         }
         p = func_80021E20();
@@ -1331,7 +1331,7 @@ s32 fld_preloadRequest(s32 arg0, s32 arg1) {
             x = 0x1000B;
         }
         fld_addPreloadExclude(x);
-        if (!(g_gameState->unk1C->unk8E4.field->area->scene->flags & 0x100000)) {
+        if (!(g_gameState->unk1C->unk8E4.field->area->scene->flags & FLD_SCN_PRELOADS_QUEUED)) {
             goto done;
         }
         e = func_80021E20();
@@ -1341,12 +1341,12 @@ s32 fld_preloadRequest(s32 arg0, s32 arg1) {
         q = preload_find(id);
         if (!flag && (q == NULL || q->unk2 != 0)) {
         clear:
-            g_gameState->unk1C->unk8E4.field->area->scene->flags &= ~0x100000;
+            g_gameState->unk1C->unk8E4.field->area->scene->flags &= ~FLD_SCN_PRELOADS_QUEUED;
         }
     set:
-        g_gameState->unk1C->unk8E4.field->area->scene->flags |= 0x800000;
+        g_gameState->unk1C->unk8E4.field->area->scene->flags |= FLD_SCN_PRELOAD_RESTART;
     done:
-        g_gameState->unk1C->unk8E4.field->area->scene->flags |= 0x200000;
+        g_gameState->unk1C->unk8E4.field->area->scene->flags |= FLD_SCN_PRELOAD_REQUESTED;
         return 0;
     }
 }
@@ -1683,12 +1683,12 @@ s32 fld_preloadHook(void) {
     if (s->flags & 0x800000) {
         if (func_80021FB4() <= 0) {
             func_800223CC();
-            if (!(g_gameState->unk1C->unk8E4.field->area->scene->flags & 0x100000)) {
+            if (!(g_gameState->unk1C->unk8E4.field->area->scene->flags & FLD_SCN_PRELOADS_QUEUED)) {
                 fld_setPreloadCursor(g_gameState->unk1C->unk8E4.field->area->scene->heapTop);
                 fld_queueFieldPreloads();
-                g_gameState->unk1C->unk8E4.field->area->scene->flags |= 0x100000;
+                g_gameState->unk1C->unk8E4.field->area->scene->flags |= FLD_SCN_PRELOADS_QUEUED;
             }
-            g_gameState->unk1C->unk8E4.field->area->scene->flags &= ~0x800000;
+            g_gameState->unk1C->unk8E4.field->area->scene->flags &= ~FLD_SCN_PRELOAD_RESTART;
         }
         return 1;
     }
@@ -1698,7 +1698,7 @@ s32 fld_preloadHook(void) {
     if (s->flags & 0x10000) {
         fld_setPreloadCursor(s->heapTop);
         fld_queueFieldPreloads();
-        g_gameState->unk1C->unk8E4.field->area->scene->flags |= 0x100000;
+        g_gameState->unk1C->unk8E4.field->area->scene->flags |= FLD_SCN_PRELOADS_QUEUED;
     }
     return 0;
 }
@@ -1733,8 +1733,7 @@ void fld_showSplashImage(void) {
         }
         spr[i] = (SPRT *)p;
         p += sizeof(SPRT);
-        setlen(spr[i], 4);
-        setcode(spr[i], 0x64);
+        setSprt(spr[i]);
         setRGB0(spr[i], 0x80, 0x80, 0x80);
         spr[i]->x0 = (0x140 - img->w * 4) >> 1;
         spr[i]->y0 = (0xE0 - img->h) / 2;
@@ -1745,8 +1744,7 @@ void fld_showSplashImage(void) {
         spr[i]->clut = getClut(clut->x, clut->y);
         tp[i] = (DR_TPAGE *)p;
         p += sizeof(DR_TPAGE);
-        setlen(tp[i], 1);
-        tp[i]->code[0] = _get_mode(1, 1, getTPage(0, 0, img->x, img->y));
+        setDrawTPage(tp[i], 1, 1, getTPage(0, 0, img->x, img->y));
         i--;
     } while (i >= 0);
     fld_invalidateModelCache((s32)p);

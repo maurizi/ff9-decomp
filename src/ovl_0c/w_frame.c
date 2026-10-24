@@ -187,7 +187,7 @@ void wm_updateLogic(void) {
     case 2:
         if (g_worldNaviMode != 2) {
             g_gameState->vsyncMode = 3;
-            g_gameState->unk1C->unk8E4.world->flags &= ~0x1000;
+            g_gameState->unk1C->unk8E4.world->flags &= ~WM_MAP_NAVI_SCREEN;
             SetSpadStack(0x1F8003FC);
             wm_updateActors();
             ResetSpadStack();
@@ -202,7 +202,7 @@ void wm_updateLogic(void) {
             ResetSpadStack();
         } else {
             g_gameState->vsyncMode = 0;
-            g_gameState->unk1C->unk8E4.world->flags |= 0x1000;
+            g_gameState->unk1C->unk8E4.world->flags |= WM_MAP_NAVI_SCREEN;
             wm_seFadeVolume(0x26, 0x14, 0);
             wm_runEvents();
             wm_naviUpdate();

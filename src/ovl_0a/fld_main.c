@@ -67,7 +67,7 @@ void fld_main(s32 arg0) {
             }
             if (g_gameState->unk0 & 0x100000) {
                 g_gameState->unk0 |= 8;
-                g_gameState->unk1C->unk8E4.field->flags |= 0x10000;
+                g_gameState->unk1C->unk8E4.field->flags |= FLD_MAP_REFIND_SECTORS;
                 break;
             }
             if (!(g_gameState->unk1C->unk0 & 8)) {
@@ -76,7 +76,7 @@ void fld_main(s32 arg0) {
             if (!(g_gameState->unk1C->unk0 & 4)) {
                 fld_drawModels();
             }
-            if (!(g_gameState->unk1C->unk8E4.field->flags & 8)) {
+            if (!(g_gameState->unk1C->unk8E4.field->flags & FLD_MAP_NO_BGI_ANIM)) {
                 bgi_updateAnims();
                 bgi_updateFloorMoves();
             }
@@ -89,7 +89,7 @@ void fld_main(s32 arg0) {
             if (!(g_gameState->unk1C->unk0 & 8)) {
                 func_800B3684();
             }
-            if (!(g_gameState->unk1C->unk8E4.field->flags & 1)) {
+            if (!(g_gameState->unk1C->unk8E4.field->flags & FLD_MAP_NO_WINDOWS)) {
                 func_80023A0C();
             }
             if (!(g_gameState->unk1C->unk8E4.field->flags & 0x800)) {
@@ -101,7 +101,7 @@ void fld_main(s32 arg0) {
             if (!(g_gameState->unk1C->unk8E4.field->flags & 0x80)) {
                 func_80023A4C();
             }
-            if (!(g_gameState->unk1C->unk8E4.field->flags & 0x1000)) {
+            if (!(g_gameState->unk1C->unk8E4.field->flags & FLD_MAP_NO_PRELOAD)) {
                 preload_update();
             }
         }
@@ -474,7 +474,7 @@ void fld_exit(void) {
         g_gameState->unkA = 1;
         break;
     case FLD_EXIT_FIELD:
-        if (g_gameState->unk1C->unk8E4.field->flags & 0x10000) {
+        if (g_gameState->unk1C->unk8E4.field->flags & FLD_MAP_REFIND_SECTORS) {
             id = (s16)g_gameState->unk1C->unk8E4.field->area->areaId;
         } else {
             id = fld_depFindArea(fld_depFindField(sc->nextId, &g_gameState->unk1C->sceneSector[1], &g_gameState->unk1C->sceneSectors[1]),
@@ -483,7 +483,7 @@ void fld_exit(void) {
         if (id != (g_gameState->unk1C->unk3A | 0x60000)) {
             g_gameState->unk0 |= 4;
         }
-        g_gameState->unk1C->unk8E4.field->flags &= ~0x10000;
+        g_gameState->unk1C->unk8E4.field->flags &= ~FLD_MAP_REFIND_SECTORS;
         g_gameState->unk1C->unk8E4.field->area->areaId = id;
         g_gameState->unk1C->unk8E4.field->prevFieldId = g_gameState->unk1C->fieldId;
         g_gameState->unk1C->fieldId = sc->nextId;

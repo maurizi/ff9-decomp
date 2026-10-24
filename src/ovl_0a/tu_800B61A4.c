@@ -710,9 +710,9 @@ void fldmdl_cullBehindCamera(ModelObj *arg0) {
     SVECTOR v;
     s32 sz;
 
-    arg0->flags &= ~0x10;
+    arg0->flags &= ~MDL_BEHIND_CAMERA;
     if (arg0->parent != NULL) {
-        arg0->flags |= arg0->parent->flags & 0x10;
+        arg0->flags |= arg0->parent->flags & MDL_BEHIND_CAMERA;
     } else {
         v.vx = arg0->worldMatrix.t[0];
         v.vy = arg0->worldMatrix.t[1];
@@ -723,7 +723,7 @@ void fldmdl_cullBehindCamera(ModelObj *arg0) {
         gte_rtps();
         gte_stsz(&sz);
         if (sz == 0) {
-            arg0->flags |= 0x10;
+            arg0->flags |= MDL_BEHIND_CAMERA;
         }
     }
 }
@@ -933,7 +933,7 @@ void fldmdl_addGroupRgb(ModelObj *arg0, u8 arg1, s16 arg2, s16 arg3, s16 arg4) {
     u32 j;
     u32 k;
 
-    if (arg0->flags & 0x10) {
+    if (arg0->flags & MDL_BEHIND_CAMERA) {
         return;
     }
     g = &arg0->model->groups[arg1];
@@ -992,7 +992,7 @@ void fldmdl_addGroupRgbCur(ModelObj *arg0, u8 arg1, s16 arg2, s16 arg3, s16 arg4
     u8 *p;
     u32 j;
 
-    if (arg0->flags & 0x10) {
+    if (arg0->flags & MDL_BEHIND_CAMERA) {
         return;
     }
     g = &arg0->model->groups[arg1];
@@ -1053,7 +1053,7 @@ void fldmdl_tintGroup(ModelObj *arg0, u8 arg1, s16 arg2, s16 arg3, s16 arg4) {
     u32 k;
     u8 c;
 
-    if (arg0->flags & 0x10) {
+    if (arg0->flags & MDL_BEHIND_CAMERA) {
         return;
     }
     g = &arg0->model->groups[arg1];
@@ -1162,7 +1162,7 @@ void fldmdl_tintGroupCur(ModelObj *arg0, u8 arg1, s16 arg2, s16 arg3, s16 arg4) 
     u32 j;
     u8 c;
 
-    if (arg0->flags & 0x10) {
+    if (arg0->flags & MDL_BEHIND_CAMERA) {
         return;
     }
     g = &arg0->model->groups[arg1];
@@ -1282,7 +1282,7 @@ void fldmdl_setGroupRgb(ModelObj *arg0, u8 arg1, s16 arg2, s16 arg3, s16 arg4) {
     u8 *p;
     u32 j;
 
-    if (arg0->flags & 0x10) {
+    if (arg0->flags & MDL_BEHIND_CAMERA) {
         return;
     }
     g = &arg0->model->groups[arg1];
@@ -1356,7 +1356,7 @@ void fldmdl_setSemiTrans(ModelObj *arg0, u16 arg1) {
     WmModelGroup *g;
     u8 *s;
 
-    if (arg0->flags & 0x10) {
+    if (arg0->flags & MDL_BEHIND_CAMERA) {
         return;
     }
     for (i = 0; i < arg0->model->groupCount; i++) {
@@ -1367,37 +1367,37 @@ void fldmdl_setSemiTrans(ModelObj *arg0, u16 arg1) {
             p += g->packetSize;
         }
         for (j = 0; j < g->ft4Count; j++) {
-            if ((((WmSrcFT4 *)s)->flags & 1) || arg1 != 0) {
-                ((POLY_FT4 *)p)->code |= 2;
+            if ((((WmSrcFT4 *)s)->flags & WMSRC_SEMITRANS) || arg1 != 0) {
+                setSemiTrans((POLY_FT4 *)p, 1);
             } else {
-                ((POLY_FT4 *)p)->code &= ~2;
+                setSemiTrans((POLY_FT4 *)p, 0);
             }
             p += sizeof(POLY_FT4);
             s += sizeof(WmSrcFT4);
         }
         for (j = 0; j < g->ft3Count; j++) {
-            if ((((WmSrcFT3 *)s)->flags & 1) || arg1 != 0) {
-                ((POLY_FT3 *)p)->code |= 2;
+            if ((((WmSrcFT3 *)s)->flags & WMSRC_SEMITRANS) || arg1 != 0) {
+                setSemiTrans((POLY_FT3 *)p, 1);
             } else {
-                ((POLY_FT3 *)p)->code &= ~2;
+                setSemiTrans((POLY_FT3 *)p, 0);
             }
             s += sizeof(WmSrcFT3);
             p += sizeof(POLY_FT3);
         }
         for (j = 0; j < g->gt4Count; j++) {
-            if ((((WmSrcGT4 *)s)->flags & 1) || arg1 != 0) {
-                ((POLY_GT4 *)p)->code |= 2;
+            if ((((WmSrcGT4 *)s)->flags & WMSRC_SEMITRANS) || arg1 != 0) {
+                setSemiTrans((POLY_GT4 *)p, 1);
             } else {
-                ((POLY_GT4 *)p)->code &= ~2;
+                setSemiTrans((POLY_GT4 *)p, 0);
             }
             s += sizeof(WmSrcGT4);
             p += sizeof(POLY_GT4);
         }
         for (j = 0; j < g->gt3Count; j++) {
-            if ((((WmSrcGT3 *)s)->flags & 1) || arg1 != 0) {
-                ((POLY_GT3 *)p)->code |= 2;
+            if ((((WmSrcGT3 *)s)->flags & WMSRC_SEMITRANS) || arg1 != 0) {
+                setSemiTrans((POLY_GT3 *)p, 1);
             } else {
-                ((POLY_GT3 *)p)->code &= ~2;
+                setSemiTrans((POLY_GT3 *)p, 0);
             }
             s += sizeof(WmSrcGT3);
             p += sizeof(POLY_GT3);
@@ -1411,7 +1411,7 @@ void fldmdl_setAbr(ModelObj *arg0, u16 arg1) {
     u8 *p;
     WmModelGroup *g;
 
-    if (arg0->flags & 0x10) {
+    if (arg0->flags & MDL_BEHIND_CAMERA) {
         return;
     }
     for (i = 0; i < arg0->model->groupCount; i++) {
@@ -1713,7 +1713,7 @@ void fldmdl_updateTexAnims(TexAnimSet *arg0) {
     }
     for (i = 0; i < arg0->count; i++) {
         a = &arg0->anims[i];
-        if (!(a->flags & 1)) {
+        if (!(a->flags & TEXANIM_ACTIVE)) {
             continue;
         }
         if (a->frameCount != 0) {
@@ -1748,12 +1748,12 @@ void fldmdl_updateTexAnims(TexAnimSet *arg0) {
                 r8 = *g_randPtr++;
                 v = (a->delayRange + 1) * ((r8 << 8) | r8);
                 a->pos = -((a->delayBase + v / 0x10000) << 12);
-            } else if (a->flags & 2) {
-                a->flags &= ~3;
+            } else if (a->flags & TEXANIM_ONESHOT) {
+                a->flags &= ~(TEXANIM_ACTIVE | TEXANIM_ONESHOT);
             } else {
                 a->pos = 0;
             }
-        } else if (a->flags & 4) {
+        } else if (a->flags & TEXANIM_SCROLL) {
             pos = a->pos;
             f = pos >> 12;
             for (j = 0; j < a->rectCount; j++) {
@@ -2529,8 +2529,7 @@ s32 fldbg_buildOverlaySprites(BgOverlay *arg0, BgSprt *arg1, BgSprt **arg2) {
     for (; buf < 2; buf++) {
         for (i = 0; i < n; i++) {
             BgSprt *sp = &arg1[i];
-            setlen(&sp->unk8, 3);
-            sp->unk8.code = 0x7C;
+            setSprt16(&sp->unk8);
             sp->unk8.r0 = 0x80;
             sp->unk8.g0 = 0x80;
             sp->unk8.b0 = 0x80;
@@ -2539,9 +2538,9 @@ s32 fldbg_buildOverlaySprites(BgOverlay *arg0, BgSprt *arg1, BgSprt **arg2) {
             sp->unk8.u0 = tile[i].u;
             sp->unk8.v0 = tile[i].v;
             if (tile[i].trans) {
-                sp->unk8.code |= 2;
+                setSemiTrans(&sp->unk8, 1);
             } else {
-                sp->unk8.code &= ~2;
+                setSemiTrans(&sp->unk8, 0);
             }
             sp->unk8.clut = GetClut(tile[i].clutX << 4, tile[i].clutY);
             if (tile[i].tp == 0) {
@@ -2576,7 +2575,7 @@ s32 fldbg_initEffectList(void) {
     g_fieldBgCtx.entryCount = 0;
     g_fieldBgCtx.entries = (BgEntry *)g_fieldBgCtx.work;
     for (; i < n; i++) {
-        if (trk[i].flags & 0x40) {
+        if (trk[i].flags & FLDBG_OVL_ANIMATED) {
             g_fieldBgCtx.entries[g_fieldBgCtx.entryCount].type = 0x10;
             g_fieldBgCtx.entries[g_fieldBgCtx.entryCount].overlay = i;
             g_fieldBgCtx.entries[g_fieldBgCtx.entryCount].dataOffset = 0;
@@ -2612,7 +2611,7 @@ s32 fldbg_updateOverlayAnims(void) {
     for (; i < n; i++) {
         p = &paths[i];
         pos = p->pos;
-        if ((p->flags & 2) && (p->flags & 0x14) && p->cameraId == g_fieldBgState.cameraId) {
+        if ((p->flags & FLDBG_ANIM_ACTIVE) && (p->flags & (FLDBG_ANIM_LOOP | FLDBG_ANIM_PLAY_ONCE)) && p->cameraId == g_fieldBgState.cameraId) {
             st = (BgAnimStep *)((u8 *)d + p->stepOffset);
             cnt = p->stepCount;
             for (j = 0; j < cnt; j++) {
@@ -2622,7 +2621,7 @@ s32 fldbg_updateOverlayAnims(void) {
             if (st[pos >> 8].delay < 0) {
                 st[pos >> 8].delay = 0;
                 p->delayCounter = 0;
-                p->flags &= ~4;
+                p->flags &= ~FLDBG_ANIM_PLAY_ONCE;
                 return 1;
             }
             p->delayCounter++;
@@ -2633,14 +2632,14 @@ s32 fldbg_updateOverlayAnims(void) {
             p->pos = pos + p->unk8;
             v = p->pos >> 8;
             if (v >= p->stepCount) {
-                if (p->flags & 0x20) {
+                if (p->flags & FLDBG_ANIM_PINGPONG) {
                     p->pos = (p->stepCount - 1) << 8;
                     fldbg_setAnimSpeed(i, -p->unk8);
                 } else {
                     p->pos = 0;
                 }
             } else if (v < 0) {
-                if (p->flags & 0x20) {
+                if (p->flags & FLDBG_ANIM_PINGPONG) {
                     p->pos = 0;
                     fldbg_setAnimSpeed(i, -p->unk8);
                 } else {
@@ -2649,7 +2648,7 @@ s32 fldbg_updateOverlayAnims(void) {
             } else {
                 continue;
             }
-            p->flags &= ~4;
+            p->flags &= ~FLDBG_ANIM_PLAY_ONCE;
         }
     }
     return 1;
@@ -2905,13 +2904,13 @@ s32 fldbg_drawOverlay(BgOverlay *o, u8 *arg1) {
     y = o->y + h->screenY;
     z = h->baseDepth + o->depth;
     pos = (BgPos *)((u8 *)h + o->posOffset);
-    if (o->flags & 4) {
+    if (o->flags & FLDBG_OVL_LOOP) {
         s16 tx;
         s16 ty;
         s16 d;
         s16 k;
 
-        if (o->flags & 1) {
+        if (o->flags & FLDBG_OVL_SCREEN) {
             ox = g_fieldBgState.viewportPos[o->viewport][0];
             oy = g_fieldBgState.viewportPos[o->viewport][1];
         } else {
@@ -2937,7 +2936,7 @@ s32 fldbg_drawOverlay(BgOverlay *o, u8 *arg1) {
             y = (y - ((s16)wy - o->height)) % o->height + (wy - o->height);
         }
         for (i = 0; i < n; i++) {
-            if (o->flags & 1) {
+            if (o->flags & FLDBG_OVL_SCREEN) {
                 tx = x + pos[i].x;
                 if (o->scrollX != 0) {
                     if (tx + 16 >= o->width) {
@@ -3008,13 +3007,13 @@ s32 fldbg_drawOverlay(BgOverlay *o, u8 *arg1) {
             }
             addPrim(ot + d, &spr[i]);
         }
-    } else if (o->flags & 0x80) {
+    } else if (o->flags & FLDBG_OVL_SKEW_LOOP) {
         s16 tx;
         s16 ty;
         s16 d;
         s16 k;
 
-        if (o->flags & 1) {
+        if (o->flags & FLDBG_OVL_SCREEN) {
             ox = g_fieldBgState.viewportPos[o->viewport][0];
             oy = g_fieldBgState.viewportPos[o->viewport][1];
         } else {
@@ -3115,7 +3114,7 @@ s32 fldbg_updateOverlayScroll(BgFile *arg0) {
     objs = (BgOverlay *)((u8 *)arg0 + arg0->overlayOffset);
     for (i = 0; i < n; i++) {
         o = &objs[i];
-        if (o->flags & 4) {
+        if (o->flags & FLDBG_OVL_LOOP) {
             if (o->scrollX != 0 && o->scrollX != 0x7FFF) {
                 v = (o->x << 8) | (o->fracX & 0xFF);
                 v = v + o->scrollX;
@@ -3129,7 +3128,7 @@ s32 fldbg_updateOverlayScroll(BgFile *arg0) {
                 o->y = (v >> 8) % o->height;
             }
         }
-        if (o->flags & 0x80) {
+        if (o->flags & FLDBG_OVL_SKEW_LOOP) {
             if (o->skewVertical) {
                 if (o->scrollY != 0x7FFF) {
                     v = (o->y << 8) | (o->fracY & 0xFF);
@@ -3144,7 +3143,7 @@ s32 fldbg_updateOverlayScroll(BgFile *arg0) {
                 o->x = (v >> 8) % o->width;
             }
         }
-        if (o->flags & 8) {
+        if (o->flags & FLDBG_OVL_PARALLAX) {
             v = (o->baseX << 8) + ((s16)g_fieldBgState.scroll.unk0 - g_fieldBgState.parallaxOriginX) * o->scrollX;
             o->x = v >> 8;
             o->fracX = v & 0xFF;
@@ -3153,8 +3152,8 @@ s32 fldbg_updateOverlayScroll(BgFile *arg0) {
             o->fracY = v & 0xFF;
         }
     }
-    if (g_fieldBgState.flags & 0x80) {
-        g_fieldBgState.flags &= ~0x80;
+    if (g_fieldBgState.flags & FLDBG_CAMERA_CHANGED) {
+        g_fieldBgState.flags &= ~FLDBG_CAMERA_CHANGED;
         g_fieldBgState.cameraScroll.unk0 = g_fieldBgState.scroll.unk0;
         g_fieldBgState.cameraScroll.unk2 = g_fieldBgState.scroll.unk2;
     }
@@ -3210,7 +3209,7 @@ s32 fldbg_updateScroll(void) {
         oy = g_fieldBgState.scroll.unk2 - oy;
         o = (BgOverlay *)((u8 *)h + h->overlayOffset);
         for (i = 0; i < h->overlayCount; o++, i++) {
-            if (o->flags & 4) {
+            if (o->flags & FLDBG_OVL_LOOP) {
                 if (o->scrollX != 0) {
                     o->x += ox;
                 }
@@ -3240,7 +3239,7 @@ s32 fldbg_updateScroll(void) {
                 o->y = v >> 16;
                 o->fracY = (v >> 8) & 0xFF;
             }
-            } else if (o->flags & 0x80) {
+            } else if (o->flags & FLDBG_OVL_SKEW_LOOP) {
                 if (o->skewVertical) {
                     o->y += oy;
                 } else {
@@ -3361,7 +3360,7 @@ s32 fldbg_followPlayer(void) {
     gte_SetGeomOffset(ofx, ofy);
     x = sxy.v.vx;
     y = sxy.w >> 16;
-    if (g_fieldBgState.flags & 0x80) {
+    if (g_fieldBgState.flags & FLDBG_CAMERA_CHANGED) {
         g_fieldBgState.playerScreenX = x;
         g_fieldBgState.playerScreenY = y;
     }
@@ -3428,7 +3427,7 @@ s32 fldbg_followPlayer(void) {
     }
     o = (BgOverlay *)((u8 *)h + h->overlayOffset);
     for (i = 0; i < h->overlayCount; o++, i++) {
-        if (o->flags & 4) {
+        if (o->flags & FLDBG_OVL_LOOP) {
             if (o->scrollX != 0) {
                 o->x += dx;
             }
@@ -3457,7 +3456,7 @@ s32 fldbg_followPlayer(void) {
             o->y = v >> 16;
             o->fracY = (v >> 8) & 0xFF;
         }
-        } else if (o->flags & 0x80) {
+        } else if (o->flags & FLDBG_OVL_SKEW_LOOP) {
             if (o->skewVertical) {
                 o->y += dy;
             } else {
@@ -3897,7 +3896,7 @@ s32 fldbg_setCamera(s32 arg0) {
     h->unk2A = c->scrollMaxX;
     h->unk2E = c->scrollMaxY;
     g_fieldBgState.cameraId = arg0;
-    g_fieldBgState.flags |= 0x80;
+    g_fieldBgState.flags |= FLDBG_CAMERA_CHANGED;
     g_gameState->unk1C->unk8E4.field->area->scene->otBias = c->otBias;
     return 1;
 }
@@ -4159,9 +4158,9 @@ s32 fldbg_setOverlayLoop(s32 arg0, s32 arg1, s16 arg2, s16 arg3) {
     BgOverlay *o = fldbg_overlayPtr(arg0);
 
     if (arg1 != 0) {
-        o->flags |= 4;
+        o->flags |= FLDBG_OVL_LOOP;
     } else {
-        o->flags &= ~4;
+        o->flags &= ~FLDBG_OVL_LOOP;
     }
     o->scrollX = arg2;
     o->fracX = 0;
@@ -4187,9 +4186,9 @@ s32 fldbg_setOverlaySkewLoop(s32 arg0, s32 arg1, s16 arg2, s16 arg3, s32 arg4) {
     BgOverlay *o = fldbg_overlayPtr(arg0);
 
     if (arg1 != 0) {
-        o->flags |= 0x80;
+        o->flags |= FLDBG_OVL_SKEW_LOOP;
     } else {
-        o->flags &= ~0x80;
+        o->flags &= ~FLDBG_OVL_SKEW_LOOP;
     }
     if (arg4 != 0) {
         o->scrollX = arg3;
@@ -4209,9 +4208,9 @@ s32 fldbg_setOverlayParallax(s32 arg0, s32 arg1, s16 arg2, s16 arg3) {
     BgOverlay *o = fldbg_overlayPtr(arg0);
 
     if (arg1 != 0) {
-        o->flags |= 8;
+        o->flags |= FLDBG_OVL_PARALLAX;
     } else {
-        o->flags &= ~8;
+        o->flags &= ~FLDBG_OVL_PARALLAX;
     }
     o->scrollX = arg2;
     o->scrollY = arg3;
@@ -4225,7 +4224,7 @@ s32 fldbg_setOverlayPos(s32 arg0, s16 arg1, s16 arg2) {
     o->baseX = arg1;
     o->y = arg2;
     o->baseY = arg2;
-    g_fieldBgState.flags |= 0x80;
+    g_fieldBgState.flags |= FLDBG_CAMERA_CHANGED;
     return 1;
 }
 
@@ -4240,7 +4239,7 @@ s32 fldbg_setAnimFrame(s32 arg0, s32 arg1) {
     BgOverlayAnim *p = fldbg_overlayAnimPtr(arg0);
 
     p->delayCounter = 0;
-    p->flags |= 2;
+    p->flags |= FLDBG_ANIM_ACTIVE;
     p->pos = arg1 << 8;
     return 1;
 }
@@ -4302,7 +4301,7 @@ s32 fldbg_setAnimStepDelay(s32 arg0, s32 arg1, u8 arg2) {
 }
 
 s32 fldbg_setAnimFlags(s32 arg0, s32 arg1) {
-    fldbg_overlayAnimPtr(arg0)->flags |= arg1 & 0x30;
+    fldbg_overlayAnimPtr(arg0)->flags |= arg1 & (FLDBG_ANIM_LOOP | FLDBG_ANIM_PINGPONG);
     return 1;
 }
 
@@ -4312,7 +4311,7 @@ s32 fldbg_playAnimRange(s32 arg0, u32 arg1, u32 arg2) {
     BgAnimStep *st = (BgAnimStep *)((u8 *)b + p->stepOffset);
 
     p->delayCounter = 0;
-    p->flags |= 6;
+    p->flags |= (FLDBG_ANIM_ACTIVE | FLDBG_ANIM_PLAY_ONCE);
     p->pos = arg1 << 8;
     st[arg2].delay = -1;
     if ((p->unk8 > 0 && arg2 < arg1) || (p->unk8 < 0 && arg1 < arg2)) {

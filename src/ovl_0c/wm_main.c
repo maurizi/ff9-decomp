@@ -18,7 +18,7 @@ void wm_main(s32 arg0) {
             wm_togglePause();
         }
         if (!(g_gameState->unk1C->unk0 & 0x100)) {
-            if (!(g_gameState->unk1C->unk8E4.world->flags & 0x100)) {
+            if (!(g_gameState->unk1C->unk8E4.world->flags & WM_MAP_NO_FRAME)) {
                 switch (wm_frameMain()) {
                 case WM_EVT_BATTLE:
                     g_gameState->unk1C->unk8E4.world->obj->exitReason = WM_EXIT_BATTLE;
@@ -36,7 +36,7 @@ void wm_main(s32 arg0) {
             if (!(g_gameState->unk1C->unk8E4.world->flags & 0x200)) {
                 func_80032098();
             }
-            if (!(g_gameState->unk1C->unk8E4.world->flags & 0x400)) {
+            if (!(g_gameState->unk1C->unk8E4.world->flags & WM_MAP_NO_TRANSITION)) {
                 wm_updateBattleTransition();
             }
             if (!(g_gameState->unk1C->unk8E4.world->flags & 0x800)) {
@@ -66,7 +66,7 @@ void wm_init(void) {
     gd = g_gameState->unk1C;
     gd->unk39 = 0;
     gd->unk38 = 0;
-    wm->flags |= 1;
+    wm->flags |= WM_MAP_LOADING;
     wm_loadWorldData();
     wm_afterLoadWorldData();
     wm_loadSoundBanks();
@@ -236,7 +236,7 @@ void wm_load(s32 arg0) {
     obj = g_gameState->unk1C->unk8E4.world->obj;
     wm_resetMapObj();
     g_gameState->unk0 &= ~0x3001;
-    g_gameState->unk1C->unk8E4.world->flags |= 0x400;
+    g_gameState->unk1C->unk8E4.world->flags |= WM_MAP_NO_TRANSITION;
     g_gameState->unk1C->unk7DC = arg0;
     obj->sceneId = arg0;
     wm_fetchParkedSound();
@@ -271,7 +271,7 @@ void wm_load(s32 arg0) {
     func_8004A8A4();
     wm_finishLoad();
     preload_init();
-    g_gameState->unk1C->unk8E4.world->flags &= ~1;
+    g_gameState->unk1C->unk8E4.world->flags &= ~WM_MAP_LOADING;
 }
 
 void wm_exit(void) {
@@ -1046,10 +1046,10 @@ state:
         }
         g_worldMusicSector = wm_findSoundFile(g_worldMusicReqId, &sz);
         func_80055DF4();
-        if (!(g_gameState->unk1C->unk8E4.world->flags & 0x400)) {
+        if (!(g_gameState->unk1C->unk8E4.world->flags & WM_MAP_NO_TRANSITION)) {
             g_gameState->unk1C->unk8C0 = (s32)(D_80067944 + 0x35000);
             g_gameState->unk1C->unk878 = -1;
-        } else if (g_gameState->unk1C->unk8E4.world->flags & 1) {
+        } else if (g_gameState->unk1C->unk8E4.world->flags & WM_MAP_LOADING) {
             g_gameState->unk1C->unk8C0 = (s32)(D_80067944 + 0x91800);
             g_gameState->unk1C->unk878 = 0x48000;
         } else {
@@ -1261,9 +1261,9 @@ void wm_endFrame(void) {
     DrawSync(0);
     gs = g_gameState;
     f = gs->unk1C->unk8E4.world->flags;
-    if (!(f & 0x400)) {
+    if (!(f & WM_MAP_NO_TRANSITION)) {
         gs->vsyncMode = 2;
-    } else if ((f & 0x1000) || (gs->unk1C->unk0 & 0x1C) == 0x1C) {
+    } else if ((f & WM_MAP_NAVI_SCREEN) || (gs->unk1C->unk0 & 0x1C) == 0x1C) {
         gs->vsyncMode = 0;
     } else {
         gs->vsyncMode = 3;
@@ -1273,7 +1273,7 @@ void wm_endFrame(void) {
     PutDispEnv(&g_gameState->unkC[g_gameState->unk1C->unk8]);
     gd = g_gameState->unk1C;
     if (!(gd->unk0 & 0x100)) {
-        if (gd->unk8E4.world->flags & 0x400) {
+        if (gd->unk8E4.world->flags & WM_MAP_NO_TRANSITION) {
             DrawOTagEnv(gd->unk10[gd->unk8] + 0xFFF, &g_gameState->unk10[gd->unk8]);
         } else {
             DrawOTag(gd->unk10[gd->unk8]);
@@ -1312,7 +1312,7 @@ void wm_startBattleTransition(void) {
             g_gameState->unk1C->unk8E4.world->obj->swirlY = 109;
         }
     }
-    g_gameState->unk1C->unk8E4.world->flags &= ~0x400;
+    g_gameState->unk1C->unk8E4.world->flags &= ~WM_MAP_NO_TRANSITION;
     wm_saveDepTable();
     wm_findBattleMusic();
     if (g_gameState->unk1C->unk81C[0] != g_gameState->unk1C->unk8E4.world->obj->battleMusic &&
@@ -1420,7 +1420,7 @@ void wm_togglePause(void) {
         setWH(&g_worldPauseTile, 320, 218);
         setlen(&g_worldPauseTpage, 1);
         a = getaddr(&g_worldPauseOT);
-        g_worldPauseTpage.code[0] = 0xE1000240;
+        g_worldPauseTpage.code[0] = _get_mode(0, 1, getTPage(0, 2, 0, 0));
         setaddr(&g_worldPauseTile, a), setaddr(&g_worldPauseOT, &g_worldPauseTile);
         addPrim(&g_worldPauseOT, &g_worldPauseTpage);
         DrawOTag(&g_worldPauseOT);
@@ -1440,7 +1440,7 @@ void wm_copyViaVram(s32 arg0, s32 arg1, s32 arg2) {
     RECT r;
     RECT *rp = NULL;
 
-    if (!(g_gameState->unk1C->unk8E4.world->flags & 0x400)) {
+    if (!(g_gameState->unk1C->unk8E4.world->flags & WM_MAP_NO_TRANSITION)) {
         rp = &r;
         r.x = 0x280;
         r.w = 0x140;

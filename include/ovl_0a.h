@@ -85,6 +85,15 @@ typedef struct {
     void *model; /* model (ModelObj) */
     FieldEvtObj *obj;
 } FieldEvtCtx;
+/* FieldEvtCtx.flags / FieldObjSlot.flags */
+#define FLD_OBJ_TILT 0x2 /* fld_drawModels tilts the model to the floor (bgi_getActorTilt) */
+#define FLD_OBJ_DIR_LIGHT 0x4 /* fld_applyLights uses the directional light */
+#define FLD_OBJ_SHADOW_FIXED 0x20 /* fld_calcShadowMatrix uses the FieldObjEnt placement (event ops 0x83/0x84) */
+#define FLD_OBJ_NO_ANIM_SFX 0x40 /* fld_playAnimSfx skips the object */
+#define FLD_OBJ_LIT 0x100 /* light colour applied (fld_applyLights) */
+#define FLD_OBJ_COLOR_SET 0x400 /* fld_setSlotColor; fld_applyLights keeps it */
+#define FLD_OBJ_SEMITRANS 0x10000 /* fld_modelCommand 0, applied by fld_applyModelCommands */
+#define FLD_OBJ_CLIP_Y 0x100000 /* fld_modelCommand 4: fld_drawModels uses the ClipY mesh functions */
 
 /* 0x330-byte block, FieldMapObj.unk14 (allocated by fld_allocScene) */
 typedef struct {
@@ -136,6 +145,17 @@ typedef struct {
     u8 unk90[0x270 - 0x90];
     u8 unk270[0x330 - 0x270];
 } FieldScene;
+/* FieldScene.flags */
+#define FLD_SCN_ENCOUNTER_DONE 0x1 /* encounter screen effect (func_80053A10) finished */
+#define FLD_SCN_ENCOUNTER_LOADED 0x2 /* fld_updateEncounter uploaded file 0x1000B and played its SEs */
+#define FLD_SCN_BANK_SLOT 0x10 /* fld_soundBankReadCallback uploads to soundBankSlot */
+#define FLD_SCN_OBJFX_ALLOC 0x100 /* func_800B3444 allocated the main func_80050BE0 node buffer */
+#define FLD_SCN_OBJFX_ON 0x200 /* func_800B3684 runs main func_80050AAC each frame */
+#define FLD_SCN_MOVIE_DISPMASK 0x1000 /* fld_movieUpdate set D_80073998 bit 0x04000000 */
+#define FLD_SCN_ACTORS_READY 0x10000 /* set by fld_setupActorModel; fld_preloadHook starts queuing */
+#define FLD_SCN_PRELOADS_QUEUED 0x100000 /* fld_preloadHook queued fld_queueFieldPreloads */
+#define FLD_SCN_PRELOAD_REQUESTED 0x200000 /* fld_preloadRequest accepted a request */
+#define FLD_SCN_PRELOAD_RESTART 0x800000 /* fld_preloadHook re-queues once the queue drains */
 
 /* FieldScene.exitReason: why the field loop ended (fld_main sets it from the event system's result, fld_exit
  * switches on it and sets GameState.mode to the same number; docs/encounters.md, docs/runtime-findings.md) */
@@ -172,6 +192,16 @@ typedef struct FieldMap {
     s32 soundBankSize;
     u8 unk24[0x2C];
 } FieldMap;
+/* FieldMap.flags (g_fieldFlagQueue.mapFlags queues changes one frame ahead) */
+#define FLD_MAP_NO_WINDOWS 0x1 /* fld_main skips func_80023A0C (win_updateAll/win_drawAll) */
+#define FLD_MAP_NO_BGI_ANIM 0x8 /* fld_main skips bgi_updateAnims/bgi_updateFloorMoves */
+#define FLD_MAP_NO_DISPENV 0x20 /* fld_endFrame skips PutDispEnv */
+#define FLD_MAP_NO_DRAW 0x40 /* fld_endFrame skips the OT draw */
+#define FLD_MAP_SHADOW_MASK 0x200 /* fld_drawShadow wraps the shadow quads in mask-bit packets */
+#define FLD_MAP_CLEAR_ONLY 0x400 /* fld_endFrame only does PutDrawEnv */
+#define FLD_MAP_NO_PRELOAD 0x1000 /* fld_main skips preload_update (fld_movieStart, main menu_doOpen) */
+#define FLD_MAP_REFIND_SECTORS 0x10000 /* fld_exit keeps the area id, fld_refindSectors rescans the directory */
+#define FLD_MAP_DISC_CHANGE 0x100000 /* fld_requestDiscChange, fld_isDiscChangePending */
 
 /* walkmesh flag bits (bgi_dumpText "Flags"; code in bgi.c / bgi_move.c) */
 #define BGI_FLAG_ACTIVE 0x1 /* triangle/floor walkable, actor entry or animation active */
@@ -272,6 +302,8 @@ typedef struct {
     s16 viewportRateX[4];
     s16 viewportRateY[4];
 } FieldBgState;
+/* FieldBgState.flags */
+#define FLDBG_CAMERA_CHANGED 0x80 /* fldbg_setCamera/fldbg_setOverlayPos; fldbg_updateOverlayScroll clears it */
 
 /* field background file (g_fieldBgData = g_fieldBgCtx.unk10, fld_setupBackground): the header holds
  * offsets (from the file start) of its overlay-animation, overlay and camera tables */
@@ -312,6 +344,11 @@ typedef struct {
     s16 delayCounter;
     s32 stepOffset; /* offset: BgAnimStep[] */
 } BgOverlayAnim; /* 0x10 */
+/* BgOverlayAnim.flags */
+#define FLDBG_ANIM_ACTIVE 0x2 /* fldbg_updateOverlayAnims runs it */
+#define FLDBG_ANIM_PLAY_ONCE 0x4 /* cleared when the end is reached */
+#define FLDBG_ANIM_LOOP 0x10 /* fldbg_setAnimFlags: keeps running after the wrap */
+#define FLDBG_ANIM_PINGPONG 0x20 /* reverses at either end */
 
 /* background sprite: DR_TPAGE followed by a SPRT_16 (0x18 bytes) */
 typedef struct {
@@ -369,6 +406,12 @@ typedef struct {
     BgSprt *sprites;
     u8 pad34[4];
 } BgOverlay; /* 0x38 */
+/* BgOverlay.flags */
+#define FLDBG_OVL_SCREEN 0x1 /* fldbg_drawOverlay: placed in its viewport without scroll compensation */
+#define FLDBG_OVL_LOOP 0x4 /* fldbg_setOverlayLoop: wraps by width/height, auto-scrolls */
+#define FLDBG_OVL_PARALLAX 0x8 /* fldbg_setOverlayParallax */
+#define FLDBG_OVL_ANIMATED 0x40 /* fldbg_initEffectList adds an effect entry */
+#define FLDBG_OVL_SKEW_LOOP 0x80 /* fldbg_setOverlaySkewLoop */
 
 /* BgOverlay's unk24/unk25/unk25_1 bitfield word as a plain u32 (fldbg_buildOverlaySprites masks it by hand) */
 typedef struct {
@@ -824,6 +867,11 @@ typedef struct ModelObj {
     s16 attachY;
     s16 attachZ;
 } ModelObj;
+/* ModelObj.flags */
+#define MDL_BEHIND_CAMERA 0x10 /* fldmdl_cullBehindCamera: origin SZ 0 or parent behind; colour/abr helpers skip it */
+/* WmSrc*.flags */
+#define WMSRC_SEMITRANS 0x1 /* fldmdl_buildPackets, fldmdl_setSemiTrans */
+#define WMSRC_DOUBLE_SIDED 0x2 /* fldmdl_drawMeshC skips the nclip test */
 
 typedef union {
     u32 w;
@@ -877,6 +925,10 @@ typedef struct {
     u16 lastFrame; /* last frame */
     TexAnimRect *rects;
 } TexAnim; /* 0x14 */
+/* TexAnim.flags (fldmdl_updateTexAnims) */
+#define TEXANIM_ACTIVE 0x1
+#define TEXANIM_ONESHOT 0x2 /* cleared with TEXANIM_ACTIVE at the end */
+#define TEXANIM_SCROLL 0x4 /* vertical scroll mode, frameCount 0 */
 
 typedef struct {
     u16 count; /* count */
@@ -1514,5 +1566,142 @@ typedef struct {
 s32 fld_initShadows(s32, s32, s32, s32); /* returns func_80062E3C's result (the next free address) */
 
 FieldAnimSfx *fld_addAnimSfx(FieldEvtCtx *, s32, s32); /* returns the new entry */
+
+/* main exe: candidates for ff9.h (constants; [code] evidence in docs/wip/names_from_port.txt, ovl_0a/0c pass 2) */
+#ifndef BTN_START
+#define BTN_START 0x04000000 /* main func_80023784 maps it to physical Start; fld_main/wm_main pause on it */
+#endif
+#ifndef PAD_SOFT_RESET
+#define PAD_SOFT_RESET (PAD_SELECT | PAD_START | PAD_L2 | PAD_R2 | PAD_L1 | PAD_R1) /* fld/wm_endFrame set GS_RESET when all held on either port */
+#endif
+#ifndef PAD_ID_ANALOG
+#define PAD_ID_ANALOG 7 /* controller id nibble of a DualShock in analog mode (pad_update reads the sticks) */
+#endif
+#ifndef setSprt
+#define setSprt(p) setlen(p, 4), setcode(p, 0x64) /* libgpu */
+#endif
+#ifndef setSprt16
+#define setSprt16(p) setlen(p, 3), setcode(p, 0x7C) /* libgpu */
+#endif
+#ifndef _get_mask
+#define _get_mask(set, chk) (0xE6000000 | ((chk) ? 2 : 0) | ((set) ? 1 : 0)) /* GP0(E6h) mask-bit setting word */
+#endif
+#ifndef GS_RESET
+#define GS_RESET 0x1 /* GameState.unk0: main loop runs until set; fld/wm_endFrame set it on PAD_SOFT_RESET */
+#endif
+#ifndef GS_FLD_LEAVE
+#define GS_FLD_LEAVE 0x2 /* fld_entry loop ends (battle, world, Tetra Master, game over) */
+#endif
+#ifndef GS_FLD_NEW_AREA
+#define GS_FLD_NEW_AREA 0x4 /* fld_runArea loop ends: next field is in another area */
+#endif
+#ifndef GS_FLD_NEW_FIELD
+#define GS_FLD_NEW_FIELD 0x8 /* fld_main loop ends: next field in the same area, disc change */
+#endif
+#ifndef GS_WM_LEAVE
+#define GS_WM_LEAVE 0x1000 /* wm_entry loop ends */
+#endif
+#ifndef GS_WM_NEW_MAP
+#define GS_WM_NEW_MAP 0x2000 /* wm_main loop ends without leaving wm_entry */
+#endif
+#ifndef GS_RELOAD_FILE_TABLES
+#define GS_RELOAD_FILE_TABLES 0x100000 /* main file.c reloads gs->unk18[] then clears it; fld_main leaves the field */
+#endif
+#ifndef GD_MENU_DISABLED
+#define GD_MENU_DISABLED 0x1 /* GameData.unk0: main menu_doOpen refuses to open */
+#endif
+#ifndef GD_MENU_OPEN
+#define GD_MENU_OPEN 0x2 /* menu open; events (func_8004BC38) skipped */
+#endif
+#ifndef GD_HIDE_MODELS
+#define GD_HIDE_MODELS 0x4 /* fld_main skips fld_drawModels */
+#endif
+#ifndef GD_HIDE_BG
+#define GD_HIDE_BG 0x8 /* fld_main skips fldbg_draw */
+#endif
+#ifndef GD_HIDE_SPRITES
+#define GD_HIDE_SPRITES 0x10 /* fld_main skips fld_drawSprites */
+#endif
+#ifndef GD_HIDE_ALL
+#define GD_HIDE_ALL (GD_HIDE_MODELS | GD_HIDE_BG | GD_HIDE_SPRITES) /* menu screen up (main func_80032238) */
+#endif
+#ifndef GD_NO_FLIP
+#define GD_NO_FLIP 0x20 /* fld/wm_endFrame skip the buffer swap */
+#endif
+#ifndef GD_PAUSED
+#define GD_PAUSED 0x100 /* fld_togglePause/wm_togglePause */
+#endif
+#ifndef GD_MUSIC_STOP_PENDING
+#define GD_MUSIC_STOP_PENDING 0x200000 /* old song stopped after the fade */
+#endif
+#ifndef GD_SFX0_PLAYING
+#define GD_SFX0_PLAYING 0x02000000 /* resident SE slot 0 playing (slot n: << n * 2) */
+#endif
+#ifndef GD_SFX1_PLAYING
+#define GD_SFX1_PLAYING 0x08000000 /* resident SE slot 1 playing */
+#endif
+#ifndef GD_MUSIC_LOADED
+#define GD_MUSIC_LOADED 0x10000000 /* sequence unpacked */
+#endif
+#ifndef GD_MUSIC_PLAYING
+#define GD_MUSIC_PLAYING 0x20000000 /* music started */
+#endif
+#ifndef GD_MUSIC2_LOADED
+#define GD_MUSIC2_LOADED 0x40000000 /* second music slot (wm_soundCommand song 100) */
+#endif
+#ifndef GD_MUSIC2_PLAYING
+#define GD_MUSIC2_PLAYING 0x80000000 /* second music slot playing */
+#endif
+#ifndef DB_ANIM
+#define DB_ANIM 0x30000 /* db key kind (kind << 16 | id): model animation */
+#endif
+#ifndef DB_TIM
+#define DB_TIM 0x40000 /* TIM images */
+#endif
+#ifndef DB_FIELD
+#define DB_FIELD 0x50000 /* field / world file and its event script */
+#endif
+#ifndef DB_AREA
+#define DB_AREA 0x60000 /* area bundle */
+#endif
+#ifndef DB_MUSIC
+#define DB_MUSIC 0x70000 /* music sequence */
+#endif
+#ifndef DB_SE
+#define DB_SE 0x80000 /* sound effect */
+#endif
+#ifndef DB_SOUND_BANK
+#define DB_SOUND_BANK 0x90000 /* sound bank */
+#endif
+#ifndef DB_BG
+#define DB_BG 0xA0000 /* field background */
+#endif
+#ifndef DB_WALKMESH
+#define DB_WALKMESH 0xB0000 /* walkmesh linked to the background */
+#endif
+#ifndef DB_BATTLE
+#define DB_BATTLE 0x110000 /* encounter bundle */
+#endif
+#ifndef DB_MODEL_INFO
+#define DB_MODEL_INFO 0x120000 /* per-model table */
+#endif
+#ifndef DB_DEP_TABLE
+#define DB_DEP_TABLE 0x140000 /* dependency table */
+#endif
+#ifndef DB_SPRITE
+#define DB_SPRITE 0x160000 /* 3D sprite */
+#endif
+#ifndef DB_IMAGE_PACK
+#define DB_IMAGE_PACK 0x170000 /* image pack (fld_loadImagePack) */
+#endif
+#ifndef DB_TEX_ANIM
+#define DB_TEX_ANIM 0x190000 /* texture animations */
+#endif
+#ifndef DB_PACK
+#define DB_PACK 0x1B0000 /* nested container inside field/world files */
+#endif
+#ifndef DB_LIGHTS
+#define DB_LIGHTS 0x1F0000 /* field lights */
+#endif
 
 #endif

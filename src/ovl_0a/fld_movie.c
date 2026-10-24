@@ -221,7 +221,7 @@ s32 fld_setupActorModel(s32 arg0, void *arg1) {
         }
         bgi_setActorActive(slot, 1);
     }
-    g_gameState->unk1C->unk8E4.field->area->scene->flags |= 0x10000;
+    g_gameState->unk1C->unk8E4.field->area->scene->flags |= FLD_SCN_ACTORS_READY;
     s->flags |= 1;
     return slot;
 }
@@ -393,7 +393,7 @@ void fld_drawModels(void) {
         if (c != NULL) {
             m = c->model;
             o = c->obj;
-            if ((c->flags & 2) && bgi_getActorTilt(o->uid, &ax, &az)) {
+            if ((c->flags & FLD_OBJ_TILT) && bgi_getActorTilt(o->uid, &ax, &az)) {
                 rot.vx = ax;
                 rot.vy = o->rotY;
                 rot.vz = az;
@@ -460,7 +460,7 @@ void fld_drawModels(void) {
         c = list[i];
         if (c != NULL) {
             m = c->model;
-            f = c->flags & 0x100000;
+            f = c->flags & FLD_OBJ_CLIP_Y;
             lim = m->model->groupCount;
             SetSpadStack12(0x1F8003FC);
             if (f) {
@@ -538,21 +538,21 @@ s32 fld_modelCommand(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4) {
     switch (arg1) {
     case 0:
         if ((u8)arg2 == 0xFF) {
-            c->flags &= ~0x10000;
+            c->flags &= ~FLD_OBJ_SEMITRANS;
         } else {
             if (arg2 != (s8)info->abr) {
                 c->flags |= 0x40000;
             }
-            c->flags |= 0x10000;
+            c->flags |= FLD_OBJ_SEMITRANS;
         }
         info->abr = arg2;
         break;
     case 4:
         if (arg2 != 0) {
             ((ModelObj *)c->model)->clipY = arg3;
-            c->flags |= 0x100000;
+            c->flags |= FLD_OBJ_CLIP_Y;
         } else {
-            c->flags &= ~0x100000;
+            c->flags &= ~FLD_OBJ_CLIP_Y;
         }
         break;
     case 8:
@@ -685,7 +685,7 @@ void fld_applyModelCommands(FieldEvtCtx **arg0, s32 arg1) {
         }
         upd = 0;
         info = &g_gameState->unk1C->unk8E4.field->area->scene->actorInfo[c->obj->uid];
-        vis = c->flags & 0x10000;
+        vis = c->flags & FLD_OBJ_SEMITRANS;
         chg = (info->flags & 0x10000) ^ vis;
         f4 = c->flags & 0x40000;
         f2 = c->flags & 0x20000;
@@ -693,7 +693,7 @@ void fld_applyModelCommands(FieldEvtCtx **arg0, s32 arg1) {
             upd = 1;
         }
         if (upd) {
-            if (c->flags & 0x10000) {
+            if (c->flags & FLD_OBJ_SEMITRANS) {
                 fldmdl_setSemiTrans(c->model, 1);
             } else {
                 fldmdl_setSemiTrans(c->model, 0);
@@ -917,22 +917,21 @@ void fld_drawShadow(FieldObjPlace *arg0, s32 arg1) {
     v0 = (s16)(g_gameState->unk1C->unk8E4.field->area->scene->shadowTexY % 256);
     for (i = 0; i < 4; i++) {
         mask = NULL;
-        if (g_gameState->unk1C->unk8E4.field->flags & 0x200) {
+        if (g_gameState->unk1C->unk8E4.field->flags & FLD_MAP_SHADOW_MASK) {
             mask = e->prims[g_gameState->unk1C->unk8][i];
             setlen(mask, 2);
-            mask[1] = 0xE6000002;
+            mask[1] = _get_mask(0, 1);
             mask[2] = 0;
             p[i] = (POLY_FT4 *)(mask + 3);
         } else {
             p[i] = e->prims[g_gameState->unk1C->unk8][i];
         }
-        setlen(p[i], 9);
-        setcode(p[i], 0x2C);
+        setPolyFT4(p[i]);
         setSemiTrans(p[i], 1);
         setRGB0(p[i], e->params.shade, e->params.shade, e->params.shade);
         p[i]->tpage = getTPage(1, 2, g_gameState->unk1C->unk8E4.field->area->scene->shadowTexX,
                                g_gameState->unk1C->unk8E4.field->area->scene->shadowTexY);
-        p[i]->clut = 0x3FD0;
+        p[i]->clut = getClut(256, 255);
         switch (i) {
         case 0:
             setUV4(p[0], u0, v0, u0 + 31, v0, u0, v0 + 31, u0 + 31, v0 + 31);
@@ -947,10 +946,10 @@ void fld_drawShadow(FieldObjPlace *arg0, s32 arg1) {
             setUV4(p[3], u0 + 31, v0 + 31, u0, v0 + 31, u0 + 31, v0, u0, v0);
             break;
         }
-        if (g_gameState->unk1C->unk8E4.field->flags & 0x200) {
+        if (g_gameState->unk1C->unk8E4.field->flags & FLD_MAP_SHADOW_MASK) {
             mk = (u32 *)(p[i] + 1);
             setlen(mk, 2);
-            mk[1] = 0xE6000002;
+            mk[1] = _get_mask(0, 1);
             mk[2] = 0;
             MargePrim(p[i], mk);
             MargePrim(mask, p[i]);
@@ -1058,7 +1057,7 @@ void fld_calcShadowMatrix(FieldObjEnt *arg0, FieldObjSlot *arg1, MATRIX *arg2) {
     s32 c;
     s32 sn;
 
-    if (arg1->flags & 0x20) {
+    if (arg1->flags & FLD_OBJ_SHADOW_FIXED) {
         c = math_cos(arg0->angle);
         sn = math_sin(arg0->angle);
         arg2->m[0][0] = c * arg0->scaleX >> 12;
@@ -1154,7 +1153,7 @@ void fld_movieStart(s8 arg0, s8 arg1, s8 arg2) {
     g_gameState->unk1C->unk8E4.field->area->scene->movieRgb24 = arg2;
     fld_clearModelCache();
     func_800223CC();
-    g_gameState->unk1C->unk8E4.field->flags |= 0x1000;
+    g_gameState->unk1C->unk8E4.field->flags |= FLD_MAP_NO_PRELOAD;
     g_gameState->unk1C->unk8E4.field->area->scene->movieState = 1;
 }
 
@@ -1214,7 +1213,7 @@ void fld_movieUpdate(void) {
             g_fieldFlagQueue.movieFlags[1][b] = 0x40;
             g_fieldFlagQueue.movieFlags[0][b] = 2;
             if (!(D_80073998[0] & 0x04000000)) {
-                g_gameState->unk1C->unk8E4.field->area->scene->flags |= 0x1000;
+                g_gameState->unk1C->unk8E4.field->area->scene->flags |= FLD_SCN_MOVIE_DISPMASK;
                 D_80073998[0] |= 0x04000000;
             }
             g_gameState->vsyncMode = 4;
@@ -1247,7 +1246,7 @@ void fld_movieUpdate(void) {
             }
             if (done != 0) {
                 setlen(&g_fieldMovieMaskPkt[g_gameState->unk1C->unk8 ^ 1], 2);
-                g_fieldMovieMaskPkt[g_gameState->unk1C->unk8 ^ 1].code[0] = 0xE6000002;
+                g_fieldMovieMaskPkt[g_gameState->unk1C->unk8 ^ 1].code[0] = _get_mask(0, 1);
                 g_fieldMovieMaskPkt[g_gameState->unk1C->unk8 ^ 1].code[1] = 0;
                 addPrim(g_gameState->unk1C->unk10[g_gameState->unk1C->unk8 ^ 1],
                         &g_fieldMovieMaskPkt[g_gameState->unk1C->unk8 ^ 1]);
@@ -1283,9 +1282,9 @@ void fld_movieUpdate(void) {
 }
 
 void fld_movieStop(void) {
-    if (g_gameState->unk1C->unk8E4.field->area->scene->flags & 0x1000) {
+    if (g_gameState->unk1C->unk8E4.field->area->scene->flags & FLD_SCN_MOVIE_DISPMASK) {
         D_80073998[0] &= ~0x04000000;
-        g_gameState->unk1C->unk8E4.field->area->scene->flags &= ~0x1000;
+        g_gameState->unk1C->unk8E4.field->area->scene->flags &= ~FLD_SCN_MOVIE_DISPMASK;
     }
     mbg_shutdown();
     cd_cancel();
@@ -1327,10 +1326,10 @@ void fld_movieRequestStop(void) {
 }
 
 void fld_beginFrame(void) {
-    if (g_gameState->unk1C->unk8E4.field->flags & 0x200) {
+    if (g_gameState->unk1C->unk8E4.field->flags & FLD_MAP_SHADOW_MASK) {
         ClearOTag(g_gameState->unk1C->unk10[g_gameState->unk1C->unk8], 0x1000);
         setlen(&g_fieldMaskPkt[g_gameState->unk1C->unk8 ^ 1], 2);
-        g_fieldMaskPkt[g_gameState->unk1C->unk8 ^ 1].code[0] = 0xE6000000;
+        g_fieldMaskPkt[g_gameState->unk1C->unk8 ^ 1].code[0] = _get_mask(0, 0);
         g_fieldMaskPkt[g_gameState->unk1C->unk8 ^ 1].code[1] = 0;
         addPrim(&g_gameState->unk1C->unk10[g_gameState->unk1C->unk8 ^ 1][0xFFF], &g_fieldMaskPkt[g_gameState->unk1C->unk8 ^ 1]);
     } else {
@@ -1364,13 +1363,13 @@ void fld_endFrame(void) {
         ExitCriticalSection();
         g_fieldMovieFlags &= ~8;
     }
-    if (!(g_gameState->unk1C->unk8E4.field->flags & 0x20)) {
+    if (!(g_gameState->unk1C->unk8E4.field->flags & FLD_MAP_NO_DISPENV)) {
         PutDispEnv(&g_gameState->unkC[g_gameState->unk1C->unk8]);
     }
     if (!(g_gameState->unk1C->unk0 & 0x100)) {
         f = g_gameState->unk1C->unk8E4.field->flags;
-        if (!(f & 0x40)) {
-            if (f & 0x400) {
+        if (!(f & FLD_MAP_NO_DRAW)) {
+            if (f & FLD_MAP_CLEAR_ONLY) {
                 PutDrawEnv(&g_gameState->unk10[g_gameState->unk1C->unk8]);
             } else if (f & 4) {
                 DrawOTagEnv(&g_gameState->unk1C->unk10[g_gameState->unk1C->unk8][0xFFF], &g_gameState->unk10[g_gameState->unk1C->unk8]);
@@ -1463,12 +1462,12 @@ void fld_updateEncounter(void) {
         func_80056228();
         g_gameState->unk1C->unk8E4.field->area->scene->encounterStep++;
     } else {
-        if (!(g_gameState->unk1C->unk8E4.field->area->scene->flags & 2)) {
+        if (!(g_gameState->unk1C->unk8E4.field->area->scene->flags & FLD_SCN_ENCOUNTER_LOADED)) {
             if (func_800220E8(0x1000B) != 0) {
                 e = preload_find(0x1000B);
                 ClearOTag(&g_fieldTempOt, 1);
                 setlen(&g_fieldMaskPkt[g_gameState->unk1C->unk8 ^ 1], 2);
-                g_fieldMaskPkt[g_gameState->unk1C->unk8 ^ 1].code[0] = 0xE6000000;
+                g_fieldMaskPkt[g_gameState->unk1C->unk8 ^ 1].code[0] = _get_mask(0, 0);
                 g_fieldMaskPkt[g_gameState->unk1C->unk8 ^ 1].code[1] = 0;
                 addPrim(&g_fieldTempOt, &g_fieldMaskPkt[g_gameState->unk1C->unk8]);
                 DrawOTag(&g_fieldTempOt);
@@ -1489,12 +1488,12 @@ void fld_updateEncounter(void) {
             fld_soundCommand(0xD000, 0x27C, 0, 0x80, 0x7F);
             fld_soundCommand(0xD000, 0x27B, 0, 0x80, 0x7F);
             fld_soundCommand(0xD000, 0x27A, 0, 0x80, 0x7F);
-            g_gameState->unk1C->unk8E4.field->area->scene->flags |= 2;
+            g_gameState->unk1C->unk8E4.field->area->scene->flags |= FLD_SCN_ENCOUNTER_LOADED;
         }
-        if (!(g_gameState->unk1C->unk8E4.field->area->scene->flags & 1)
+        if (!(g_gameState->unk1C->unk8E4.field->area->scene->flags & FLD_SCN_ENCOUNTER_DONE)
             && func_80053A10(g_gameState->unk1C->unk8E4.field->area->scene->encounterScreenX,
                              g_gameState->unk1C->unk8E4.field->area->scene->encounterScreenY)) {
-            g_gameState->unk1C->unk8E4.field->area->scene->flags |= 1;
+            g_gameState->unk1C->unk8E4.field->area->scene->flags |= FLD_SCN_ENCOUNTER_DONE;
         }
         if (g_gameState->unk1C->unk8E4.field->area->scene->encounterMusicStep > 0) {
             g_gameState->unk1C->unk8E4.field->area->scene->encounterMusicStep--;
@@ -1523,7 +1522,7 @@ void fld_updateEncounter(void) {
             g_gameState->unk1C->unk8E4.field->area->scene->encounterMusicStep = -3;
         }
     }
-    if ((g_gameState->unk1C->unk8E4.field->area->scene->flags & 1)
+    if ((g_gameState->unk1C->unk8E4.field->area->scene->flags & FLD_SCN_ENCOUNTER_DONE)
         && g_gameState->unk1C->unk8E4.field->area->scene->encounterMusicStep == -3) {
         g_gameState->unk1C->unk0 &= ~0x7F;
         g_gameState->unk1C->unk8E4.field->flags &= ~0x1919;
@@ -1568,7 +1567,7 @@ void fld_togglePause(void) {
                 func_8002F9A8(c);
             }
             if (c[0] >= 200 && c[1] >= 200 && c[2] >= 200) {
-                g_fieldPauseSprite.unk0.code |= 2;
+                setSemiTrans(&g_fieldPauseSprite.unk0, 1);
                 sp = &g_fieldPauseSprite.unk0;
                 sp++;
                 SetDrawTPage(sp, 1, 1,
@@ -1582,7 +1581,7 @@ void fld_togglePause(void) {
         setXY0(&g_fieldPauseDim, 0, 0);
         setlen(&g_fieldPauseTPage, 1);
         a = getaddr(&g_fieldTempOt);
-        g_fieldPauseTPage.code[0] = 0xE1000240;
+        g_fieldPauseTPage.code[0] = _get_mode(0, 1, getTPage(0, 2, 0, 0));
         setaddr(&g_fieldPauseDim, a), setaddr(&g_fieldTempOt, &g_fieldPauseDim);
         addPrim(&g_fieldTempOt, &g_fieldPauseTPage);
         DrawOTag(&g_fieldTempOt);

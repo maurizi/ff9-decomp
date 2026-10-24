@@ -714,9 +714,9 @@ void wm_cullBehindCamera(ModelObj *arg0) {
     SVECTOR v;
     s32 sz;
 
-    arg0->flags &= ~0x10;
+    arg0->flags &= ~MDL_BEHIND_CAMERA;
     if (arg0->parent != NULL) {
-        arg0->flags |= arg0->parent->flags & 0x10;
+        arg0->flags |= arg0->parent->flags & MDL_BEHIND_CAMERA;
     } else {
         v.vx = arg0->worldMatrix.t[0];
         v.vy = arg0->worldMatrix.t[1];
@@ -727,7 +727,7 @@ void wm_cullBehindCamera(ModelObj *arg0) {
         gte_rtps();
         gte_stsz(&sz);
         if (sz == 0) {
-            arg0->flags |= 0x10;
+            arg0->flags |= MDL_BEHIND_CAMERA;
         }
     }
 }
