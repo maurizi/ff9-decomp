@@ -25,7 +25,7 @@
  * sparks block and the unk58 block's i * 0x150 to sp+0xCC (tr = &D_801EBB90[i] gives that but grows the frame by 8);
  * the original's reload register is t8 (all of t0-t7 used somewhere), ours t3); the mode-1 spark init's
  * i * 0x150 copy (s6 there, spilled here). *
- * Pass 28 update: 78 aligned mismatches, 16 ignoring registers (of which 4 are symbol-addend artefacts:
+ * Pass 28 update: 77 aligned mismatches, 11 ignoring registers (of which 4 are symbol-addend artefacts:
  * D_801EA278/D_801EA2D8/D_801EA3E8 = base + 8). Levers: the unk58 block's SVECTOR at sp+0x90 is
  * ((SVECTOR *)out)[1] (vx 0x90, vz 0x94); variables shared between distant blocks become long global pseudos
  * that take callee-saved registers, so block-specific copies (unk4C's dz/dx instead of c/a, the ring loop's lo,
@@ -39,7 +39,12 @@
  * the else branch ends in its own return 0 (the original jumps to the shared epilogue). unk4C: the (i & 1)
  * choice selects only the getFileData call (one drawTrail per path; with four calls loop.c hoists the
  * 0x1000 argument: its savings decide move_movables' threshold test) and every access is D_801EA690[i]
- * (the tr/off/base registers are loop.c givs). */
+ * (the tr/off/base registers are loop.c givs) except sv = tr->unk4 and the pad path's tr->unk4C store.
+ * Open there: loop.c hoists the pad constant 0x80 out of the outer loop (the original only out of the
+ * inner one): move_movables' test threshold * savings * lifetime >= insn_count passes here (threshold 22,
+ * 2 * 296 insns); the original apparently has one more early move or a longer loop.
+ * Open elsewhere: the ring/twin-model products are LO pseudos reloaded through t8 in the original (here
+ * reload evicts them from LO into v1); unk58's constant 8 is a spilled hoisted pseudo in the original. */
 #include "fxmod/fx_1f2.h"
 
 typedef struct {
@@ -689,6 +694,7 @@ s32 fx_1f2_op80(s32 mode, Fx1f2Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
                 s32 dz;
                 s32 dx;
 
+                tr = &D_801EA690[i];
                 if (i >= 8) {
                     if (D_801EA690[i].unk4C != 0) {
                         if (--D_801EA690[i].unk4C < 8) {
@@ -708,7 +714,7 @@ s32 fx_1f2_op80(s32 mode, Fx1f2Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
                             gte_SetRotMatrix(&m);
                             gte_SetTransMatrix(&m);
                             n = 9;
-                            sv = D_801EA690[i].unk4;
+                            sv = tr->unk4;
                             D_801EA690[i].unk0 = D_801EA690[i].unk2 = 8;
                             D_801EA690[i].unk1 = 0;
                             for (j = 0, dx = 0; j < n; dx += 0x60, j++) {
@@ -749,9 +755,9 @@ s32 fx_1f2_op80(s32 mode, Fx1f2Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
                     }
                 } else {
                     n = 9;
-                    sv = D_801EA690[i].unk4;
+                    sv = tr->unk4;
                     a = D_801EA690[i].unk4C;
-                    D_801EA690[i].unk4C = D_801EA690[i].unk50[a].pad;
+                    tr->unk4C = D_801EA690[i].unk50[a].pad;
                     D_801EA690[i].unk0 = D_801EA690[i].unk2 = 8;
                     D_801EA690[i].unk1 = 0;
                     for (j = 0; j < n; j++) {
