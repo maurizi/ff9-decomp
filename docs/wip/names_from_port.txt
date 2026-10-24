@@ -1446,3 +1446,8 @@ D_800FDF50 g_btlClutRect  # [code] RECT of the CLUT rows btl_makeGreyCluts and t
 D_800FDF60 g_btlClutBuf  # [code] CLUT rows read back by btl_makeGreyCluts
 D_800FE360 g_btlSavedCluts  # [code] CLUT copy taken by btl_saveEnemyCluts / btl_savePartyCluts
 D_80100E30 g_btlfxHaltBufs  # [code] two DRAWENV/DISPENV buffers of the standalone loop btlfx_halt
+
+## ovl_0b: ovl_0b (cleanup pass: runtime-findings entries left at low-medium, applied from code)
+func_800CB594 btlseq_opReleaseEffect  # [code] op 0A: sets the effect flag the effect script's control op 8 waits on for enemy casters (g_btlfxEnv->unk0->unkF); runtime-findings had it low-medium
+func_800CB808 btlseq_opSetStance  # [code] op 11: sets/clears the unit's flag bit 18, which picks the idle motion pair (motions[0/1]); runtime-findings had it low-medium
+func_800D2DBC btlfx_drawBackdropSprite  # [code] one SPRT or GT4 backdrop frame at x, y with its texture mode (btlfx_drawBackdrop); runtime-findings had it low-medium
