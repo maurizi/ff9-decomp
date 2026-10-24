@@ -111,6 +111,7 @@ s32 fx_17d_4_op80(s32 mode, Fx17d4Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
     s32 g;
     s32 flag;
     s32 f3;
+    s32 w3;
 
     if (mode == 0) {
         *arg4 = 0x84;
@@ -139,11 +140,11 @@ s32 fx_17d_4_op80(s32 mode, Fx17d4Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
         work->unk34.vz = 0;
         work->unk3C.vy = 0x1000;
         work->unk28.vy += 0x800;
-        work->unk28.vx = work->unk48.vx;
-        work->unk28.vz = work->unk48.vz;
         work->unk20.vx = work->unk48.vx;
         work->unk20.vy = work->unk48.vy;
         work->unk20.vz = work->unk48.vz;
+        work->unk28.vx = work->unk48.vx;
+        work->unk28.vz = work->unk48.vz;
         env->unk2C->unk0[3].vx = work->unk20.vx;
         env->unk2C->unk0[3].vy = work->unk20.vy;
         env->unk2C->unk0[3].vz = work->unk20.vz;
@@ -300,6 +301,7 @@ s32 fx_17d_4_op80(s32 mode, Fx17d4Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
             if (frame < 0x28) {
                 q_c3 = (frame << 12) / 40;
                 sc.vy = q_c3 / 3 + 0x1000;
+                w3 = q_c3 + 0x1000;
                 pos.vx = work->unk48.vx;
                 pos.vy = work->unk48.vy;
                 o_3_c6 = ((0x1000 - q_c3) >> 5) - 0x80;
@@ -309,7 +311,7 @@ s32 fx_17d_4_op80(s32 mode, Fx17d4Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
 
                     rot.vx = 0;
                     rot.vz = 0;
-                    sc.vx = sc.vz = ((q_c3 + 0x1000) * (i_c3 + 2)) / 5;
+                    sc.vx = sc.vz = (w3 * (i_c3 + 2)) / 5;
                     sc.vy = sc.vy * 2 / 3;
                     y = frame * t_c3;
                     rot.vy = y;
