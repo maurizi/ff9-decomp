@@ -24,7 +24,7 @@ enum { NAME_MENU_ALPHABET, NAME_MENU_SYMBOL, NAME_MENU_DELETE, NAME_MENU_CONFIRM
 #define NAME_TEXT_GRID_HELP 0xC /* button help while in the grid */
 #define NAME_TEXT_CHARSET   0xD /* the grid characters: alphabet, then symbols */
 
-/* Name entry state (g_menuName). */
+/* Name entry state (s_menuName). */
 typedef struct {
     u8 focus;          /* NAME_FOCUS_* */
     u8 menuCursor;     /* NAME_MENU_* */
@@ -37,27 +37,27 @@ typedef struct {
     u8 *charSets[2];   /* NAME_TEXT_CHARSET strings */
     u8 startDefault;   /* menu argument < 12: the name starts as the default name, else as the current one */
     u8 pad25[3];
-    u8 savedClut[0x104]; /* CLUT row saved by menu_name_loadPortrait (StoreImage), restored on exit */
+    u8 savedClut[0x104]; /* CLUT row saved by menuName_loadPortrait (StoreImage), restored on exit */
     s32 nameId;        /* chr_setDefaultName id */
     s32 charIdx;       /* character record index */
     RECT windows[5];   /* title, portrait, side menu, help, name + grid */
 } NameEntry;
-extern NameEntry g_menuName;
+extern NameEntry s_menuName;
 
-extern RECT g_menuNameHelpRect;
-extern u8 g_menuNameGridSize[2];
-extern RECT *g_menuNameTitleWin; /* window pointers into g_menuName.windows */
-extern RECT *g_menuNamePortraitWin;
-extern RECT *g_menuNameMenuWin;
-extern RECT *g_menuNameHelpWin;
-extern RECT *g_menuNameEntryWin;
-extern RECT g_menuNameClutRect;
-extern RECT g_menuNamePortraitRect;
-extern RECT g_menuNameClutRestoreRect;
-extern s32 g_menuNameIds[12];
-extern u8 g_menuNameCharIdx[12];
+extern RECT s_menuNameHelpBounds;
+extern u8 s_menuNameGridSize[2];
+extern RECT *s_menuNameTitleWin; /* window pointers into s_menuName.windows */
+extern RECT *s_menuNamePortraitWin;
+extern RECT *s_menuNameCommandWin;
+extern RECT *s_menuNameHelpWin;
+extern RECT *s_menuNameNameWin;
+extern RECT s_menuNameClutRect;
+extern RECT s_menuNamePortraitRect;
+extern RECT s_menuNameClutRestoreRect;
+extern s32 s_menuNameIds[12];
+extern u8 s_menuNameCharIdx[12];
 extern u8 g_nameMenuText[];
-extern u8 g_menuNamePortraits[][0x6C0];
+extern u8 s_menuNamePortraits[][0x6C0];
 
 /* main exe: candidates for ff9.h */
 /* Menu sounds for snd_playSe: main's menuList_up/down play SE_CURSOR on a move, menus play it on a pick too,
@@ -78,23 +78,23 @@ static inline s32 grp_x(s32 c) {
     return c * 72 + 0x3E;
 }
 
-void menu_name_init(void);
-void menu_name_input(void);
-void menu_name_moveInGrid(void);
-void menu_name_select(void);
-void menu_name_drawPortrait(void);
-void menu_name_drawMenu(void);
-void menu_name_drawEntry(void);
-void menu_name_drawCursor(void);
-void menu_name_draw(void);
-void menu_name_moveInMenu(void);
-void menu_name_drawTitle(void);
-void menu_name_drawHelp(void);
-void menu_name_loadPortrait(s32);
-void menu_name_restoreClut(void);
-s32 menu_name_getNameId(s32);
-s32 menu_name_getCharIdx(s32);
-void menu_name_setHelpText(void);
-void menu_name_clampCursor(void);
+void menuName_init(void);
+void menuName_input(void);
+void menuName_inputGrid(void);
+void menuName_confirm(void);
+void menuName_drawPortrait(void);
+void menuName_drawCommands(void);
+void menuName_drawNameWindow(void);
+void menuName_drawCursor(void);
+void menuName_draw(void);
+void menuName_inputCommands(void);
+void menuName_drawTitle(void);
+void menuName_drawHelp(void);
+void menuName_loadPortrait(s32);
+void menuName_restoreClut(void);
+s32 menuName_getNameId(s32);
+s32 menuName_getCharIdx(s32);
+void menuName_updateHelp(void);
+void menuName_clampCursor(void);
 
 #endif

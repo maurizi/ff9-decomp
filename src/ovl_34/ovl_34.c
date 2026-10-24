@@ -1,12 +1,12 @@
 #include "ovl_34.h"
 
-void menu_config_init(void) {
+void menuConfig_init(void) {
     ConfigMenu *m;
     s32 i;
 
     text_setBank(g_configMenuText);
-    func_8002EDFC(&g_menuConfig.list, CONFIG_ROW_COUNT, 9, 1, 0xB4);
-    m = &g_menuConfig;
+    func_8002EDFC(&s_menuConfig.list, CONFIG_ROW_COUNT, 9, 1, 0xB4);
+    m = &s_menuConfig;
     m->subCursor = 0;
     m->editing = 0;
     m->rumbleTest = 0;
@@ -19,23 +19,23 @@ void menu_config_init(void) {
     m->charCount = 0;
     for (i = 0; i < 9; i++) {
         if (g_gameState->unk1C->characters[i].unk34.b.unkB) {
-            g_menuConfig.charPortBit[g_menuConfig.charCount] = func_80033964(g_gameState->unk1C->characters[i].unk34.b.row);
-            g_menuConfig.charIdx[g_menuConfig.charCount] = i;
-            g_menuConfig.charCount++;
+            s_menuConfig.charPortBit[s_menuConfig.charCount] = func_80033964(g_gameState->unk1C->characters[i].unk34.b.row);
+            s_menuConfig.charIdx[s_menuConfig.charCount] = i;
+            s_menuConfig.charCount++;
         }
     }
     func_8003556C(func_800355DC);
 }
 
-void menu_config_drawList(void) {
+void menuConfig_drawRows(void) {
     ScrollPos sp;
     RECT r;
     RECT a, b;
     s32 i;
-    MenuList *l = &g_menuConfig.list;
+    MenuList *l = &s_menuConfig.list;
 
     win_setClip(NULL, 0x17, 4);
-    menu_config_getListView(l, &sp);
+    menuConfig_getListView(l, &sp);
     i = 0;
     r.x = 8;
     r.w = 0x12C;
@@ -43,7 +43,7 @@ void menu_config_drawList(void) {
     r.h = 0x14;
     for (; i < sp.rows; i++) {
         r.y = i * 0x14 + (s16)(sp.y + 0x2A);
-        menu_config_drawRow(&r, 0x17, sp.first + i);
+        menuConfig_drawRow(&r, 0x17, sp.first + i);
         func_8002DEE4(&r, 0x17, 0);
     }
     if (l->unk8 & 4) {
@@ -51,17 +51,17 @@ void menu_config_drawList(void) {
         a.y = 0x2A;
         a.w = 0x12C;
         a.h = 0xA8C;
-        menu_config_getScrollClip(l, &a, &b);
+        menuConfig_getScrollClip(l, &a, &b);
         win_setClip(&b, 0x17, 4);
-        menu_config_drawListScroll();
+        menuConfig_drawScrollRows();
     }
     r.y = 0x2A;
     r.h = 0xB4;
     win_setClip(&r, 0x17, 4);
 }
 
-void menu_config_inputList(void) {
-    ConfigMenu *m = &g_menuConfig;
+void menuConfig_inputList(void) {
+    ConfigMenu *m = &s_menuConfig;
     s32 dir;
 
     if (m->sliderDir == 0 && m->list.unk8 == 0) {
@@ -71,134 +71,134 @@ void menu_config_inputList(void) {
             return;
         }
         if (g_padRepeat & BTN_CROSS) {
-            menu_config_openCustom();
+            menuConfig_openSubWindow();
             return;
         }
         menuList_down(&m->list, g_padRepeat);
         menuList_up(&m->list, g_padRepeat);
-        menu_config_listPageDown(&m->list, g_padRepeat);
-        menu_config_listPageUp(&m->list, g_padRepeat);
+        menuConfig_pageDown(&m->list, g_padRepeat);
+        menuConfig_pageUp(&m->list, g_padRepeat);
         dir = 0;
         if ((g_padRepeat & PAD_LEFT) || (dir = 1, g_padRepeat & PAD_RIGHT)) {
-            menu_config_setOption(dir);
+            menuConfig_setOption(dir);
         }
     }
 }
 
-void menu_config_inputPad(void) {
+void menuConfig_inputPadMap(void) {
     s32 i;
 
-    if (!menu_config_isWindowMoving()) {
+    if (!menuConfig_isWindowMoving()) {
         if (g_padRepeat & PAD_START) {
             snd_playSe(SE_CANCEL);
             for (i = 0; i < 2; i++) {
-                func_80063118(&g_menuConfig.wins[i], &g_menuConfigPadClose, 0);
+                func_80063118(&s_menuConfig.wins[i], &s_menuConfigPadMapClose, 0);
             }
             func_8002397C();
             return;
         }
         if (g_padRepeat & PAD_UP) {
             snd_playSe(SE_CURSOR);
-            g_menuConfig.subCursor = g_menuConfig.subCursor != 0 ? g_menuConfig.subCursor - 1 : CONFIG_PAD_SLOTS - 1;
+            s_menuConfig.subCursor = s_menuConfig.subCursor != 0 ? s_menuConfig.subCursor - 1 : CONFIG_PAD_SLOTS - 1;
             return;
         }
         if (g_padRepeat & PAD_DOWN) {
             snd_playSe(SE_CURSOR);
-            g_menuConfig.subCursor = g_menuConfig.subCursor >= CONFIG_PAD_SLOTS - 1 ? 0 : g_menuConfig.subCursor + 1;
+            s_menuConfig.subCursor = s_menuConfig.subCursor >= CONFIG_PAD_SLOTS - 1 ? 0 : s_menuConfig.subCursor + 1;
             return;
         }
         for (i = 0; i < CONFIG_PAD_SLOTS; i++) {
-            if (g_padPressed & g_menuConfigPadBits[i]) {
+            if (g_padPressed & s_menuConfigPadBits[i]) {
                 snd_playSe(SE_CURSOR);
-                menu_config_setPadButton(g_menuConfig.subCursor, i);
+                menuConfig_setPadButton(s_menuConfig.subCursor, i);
                 return;
             }
         }
     }
 }
 
-void menu_config_inputPort(void) {
+void menuConfig_inputBattleControl(void) {
     s32 i;
 
-    if (!menu_config_isWindowMoving()) {
+    if (!menuConfig_isWindowMoving()) {
         if (g_padRepeat & BTN_CIRCLE) {
             snd_playSe(SE_CANCEL);
             for (i = 0; i < 2; i++) {
-                func_80063118(&g_menuConfig.wins[i], &g_menuConfigPortClose, 0);
+                func_80063118(&s_menuConfig.wins[i], &s_menuConfigBattleControlClose, 0);
             }
             return;
         }
-        if ((g_padRepeat & PAD_LEFT) && (((s32)(g_gameState->unk24 >> CFG_SHIFT_CHAR_PORT) >> g_menuConfig.charPortBit[g_menuConfig.subCursor]) & 1)) {
+        if ((g_padRepeat & PAD_LEFT) && (((s32)(g_gameState->unk24 >> CFG_SHIFT_CHAR_PORT) >> s_menuConfig.charPortBit[s_menuConfig.subCursor]) & 1)) {
             snd_playSe(SE_CURSOR);
-            g_gameState->unk24 = (g_gameState->unk24 & ((1 << CFG_SHIFT_CHAR_PORT) - 1)) | (((g_gameState->unk24 >> CFG_SHIFT_CHAR_PORT) & ~(1 << g_menuConfig.charPortBit[g_menuConfig.subCursor])) << CFG_SHIFT_CHAR_PORT);
+            g_gameState->unk24 = (g_gameState->unk24 & ((1 << CFG_SHIFT_CHAR_PORT) - 1)) | (((g_gameState->unk24 >> CFG_SHIFT_CHAR_PORT) & ~(1 << s_menuConfig.charPortBit[s_menuConfig.subCursor])) << CFG_SHIFT_CHAR_PORT);
             return;
         }
-        if ((g_padRepeat & PAD_RIGHT) && !(((s32)(g_gameState->unk24 >> CFG_SHIFT_CHAR_PORT) >> g_menuConfig.charPortBit[g_menuConfig.subCursor]) & 1)) {
+        if ((g_padRepeat & PAD_RIGHT) && !(((s32)(g_gameState->unk24 >> CFG_SHIFT_CHAR_PORT) >> s_menuConfig.charPortBit[s_menuConfig.subCursor]) & 1)) {
             snd_playSe(SE_CURSOR);
-            g_gameState->unk24 = (g_gameState->unk24 & ((1 << CFG_SHIFT_CHAR_PORT) - 1)) | (((g_gameState->unk24 >> CFG_SHIFT_CHAR_PORT) | (1 << g_menuConfig.charPortBit[g_menuConfig.subCursor])) << CFG_SHIFT_CHAR_PORT);
+            g_gameState->unk24 = (g_gameState->unk24 & ((1 << CFG_SHIFT_CHAR_PORT) - 1)) | (((g_gameState->unk24 >> CFG_SHIFT_CHAR_PORT) | (1 << s_menuConfig.charPortBit[s_menuConfig.subCursor])) << CFG_SHIFT_CHAR_PORT);
             return;
         }
         if (g_padRepeat & PAD_UP) {
             snd_playSe(SE_CURSOR);
-            g_menuConfig.subCursor = g_menuConfig.subCursor != 0 ? g_menuConfig.subCursor - 1 : g_menuConfig.charCount - 1;
+            s_menuConfig.subCursor = s_menuConfig.subCursor != 0 ? s_menuConfig.subCursor - 1 : s_menuConfig.charCount - 1;
         } else if (g_padRepeat & PAD_DOWN) {
             snd_playSe(SE_CURSOR);
-            g_menuConfig.subCursor = g_menuConfig.subCursor >= g_menuConfig.charCount - 1 ? 0 : g_menuConfig.subCursor + 1;
+            s_menuConfig.subCursor = s_menuConfig.subCursor >= s_menuConfig.charCount - 1 ? 0 : s_menuConfig.subCursor + 1;
         }
     }
 }
 
-void menu_config_drawPad(void) {
-    RECT *r = &g_menuConfig.wins[0].unk4;
+void menuConfig_drawPadMap(void) {
+    RECT *r = &s_menuConfig.wins[0].unk4;
     RECT *r2;
     s32 i = 0;
 
     ui_drawLabel(r->x + 0xB, r->y - 3, 0x11, D_800703FC.unk84, 0);
     ui_drawLabel(r->x + 0x2D, r->y - 3, 0x11, D_800703FC.unk8C, 0);
-    r2 = &g_menuConfig.wins[1].unk4;
+    r2 = &s_menuConfig.wins[1].unk4;
     text_drawBlock(r2->x + 0x2A, r2->y + 8, 0x11, text_get(CONFIG_TEXT_PAD_EXIT), 0);
     for (; i < CONFIG_PAD_SLOTS; i++) {
-        ui_drawSprite(r->x + 0x10, r->y + 0xB + i * 0x11, 0x11, g_menuConfigPadActions[(g_gameState->unk28 >> (i * 4)) & 7].icon, 0);
-        menu_config_drawSmallText(r->x + 0x27, r->y + 0xE + i * 0x11, 0x11, D_801F14F8, 0);
-        ui_drawSprite(r->x + 0x3A, r->y + 0xB + i * 0x11, 0x11, g_menuConfigPadActions[i].icon, 0);
-        menu_config_drawText(r->x + 0x54, r->y + 0xC + i * 0x11, 0x11, g_menuConfigPadActions[i].text, 0);
+        ui_drawSprite(r->x + 0x10, r->y + 0xB + i * 0x11, 0x11, s_menuConfigPadActions[(g_gameState->unk28 >> (i * 4)) & 7].icon, 0);
+        menuConfig_drawSmallText(r->x + 0x27, r->y + 0xE + i * 0x11, 0x11, D_801F14F8, 0);
+        ui_drawSprite(r->x + 0x3A, r->y + 0xB + i * 0x11, 0x11, s_menuConfigPadActions[i].icon, 0);
+        menuConfig_drawText(r->x + 0x54, r->y + 0xC + i * 0x11, 0x11, s_menuConfigPadActions[i].text, 0);
     }
 }
 
-void menu_config_drawPort(void) {
-    RECT *r = &g_menuConfig.wins[0].unk4;
+void menuConfig_drawBattleControl(void) {
+    RECT *r = &s_menuConfig.wins[0].unk4;
     RECT *r2;
     s32 i;
     u8 on;
 
-    r2 = &g_menuConfig.wins[1].unk4;
+    r2 = &s_menuConfig.wins[1].unk4;
     text_drawBlock(r2->x + 0x2A, r2->y + 8, 0x11, text_get(CONFIG_TEXT_PORT_EXIT), 0);
-    for (i = 0; i < g_menuConfig.charCount; i++) {
-        on = ((s32)(g_gameState->unk24 >> CFG_SHIFT_CHAR_PORT) >> g_menuConfig.charPortBit[i]) & 1;
-        text_drawBlock(r->x + 0xE, r->y + 0xA + i * 0x11, 0x11, g_gameState->unk1C->characters[g_menuConfig.charIdx[i]].unk0, 0);
-        menu_config_drawIcon(r->x + 0x60, r->y + 0xA + i * 0x11, 0x11, 0xF8, on);
-        menu_config_drawIcon(r->x + 0x92, r->y + 0xA + i * 0x11, 0x11, 0x100, on == 0);
+    for (i = 0; i < s_menuConfig.charCount; i++) {
+        on = ((s32)(g_gameState->unk24 >> CFG_SHIFT_CHAR_PORT) >> s_menuConfig.charPortBit[i]) & 1;
+        text_drawBlock(r->x + 0xE, r->y + 0xA + i * 0x11, 0x11, g_gameState->unk1C->characters[s_menuConfig.charIdx[i]].unk0, 0);
+        menuConfig_drawIcon(r->x + 0x60, r->y + 0xA + i * 0x11, 0x11, 0xF8, on);
+        menuConfig_drawIcon(r->x + 0x92, r->y + 0xA + i * 0x11, 0x11, 0x100, on == 0);
     }
 }
 
-void menu_config_drawHand(void) {
+void menuConfig_drawCursor(void) {
     s32 i;
 
-    i = g_menuConfig.list.unk5 + g_menuConfig.list.cursor;
+    i = s_menuConfig.list.unk5 + s_menuConfig.list.cursor;
     if (!func_8002F810()) {
         D_80077DE8.unk0 = 0;
         D_80077DE8.unk4 = 0x15;
-        D_80077DE8.unk2 = g_menuConfig.list.cursor * 0x14 + 0x31;
-        if (g_menuConfig.editing == 0 || (D_80077E54 & 3)) {
+        D_80077DE8.unk2 = s_menuConfig.list.cursor * 0x14 + 0x31;
+        if (s_menuConfig.editing == 0 || (D_80077E54 & 3)) {
             func_800355E4();
         }
-        if (g_menuConfig.editing != 0 && !menu_config_isWindowMoving()) {
+        if (s_menuConfig.editing != 0 && !menuConfig_isWindowMoving()) {
             if (i == CONFIG_ROW_CONTROLLER) {
                 D_80077DE8.unk0 = 0x66;
-                D_80077DE8.unk2 = g_menuConfig.subCursor * 0x11 + 0x33;
+                D_80077DE8.unk2 = s_menuConfig.subCursor * 0x11 + 0x33;
             } else if (i == CONFIG_ROW_BTL_CONTROL) {
                 D_80077DE8.unk0 = 0x65;
-                D_80077DE8.unk2 = g_menuConfig.subCursor * 0x11 + 0x33;
+                D_80077DE8.unk2 = s_menuConfig.subCursor * 0x11 + 0x33;
             }
             D_80077DE8.unk4 = 0x10;
             func_800355E4();
@@ -206,84 +206,84 @@ void menu_config_drawHand(void) {
     }
 }
 
-void menu_config_setOption(u8 v) {
+void menuConfig_setOption(u8 v) {
     u8 changed = 0;
 
-    switch (g_menuConfig.list.unk5 + g_menuConfig.list.cursor) {
+    switch (s_menuConfig.list.unk5 + s_menuConfig.list.cursor) {
     case CONFIG_ROW_SOUND:
-        if (CFG.sound != v) {
+        if (CFG.soundMono != v) {
             changed = 1;
         }
-        CFG.sound = v;
+        CFG.soundMono = v;
         break;
     case CONFIG_ROW_CONTROLLER:
-        if (CFG.controller != v) {
+        if (CFG.padCustom != v) {
             changed = 1;
         }
-        CFG.controller = v;
+        CFG.padCustom = v;
         break;
     case CONFIG_ROW_CURSOR:
-        if (CFG.cursor != v) {
+        if (CFG.cursorMemory != v) {
             changed = 1;
         }
-        CFG.cursor = v;
+        CFG.cursorMemory = v;
         break;
     case CONFIG_ROW_ATB:
-        if (CFG.atb != v) {
+        if (CFG.atbWait != v) {
             changed = 1;
         }
-        CFG.atb = v;
+        CFG.atbWait = v;
         break;
     case CONFIG_ROW_CAMERA:
-        if (CFG.camera != v) {
+        if (CFG.battleCameraFixed != v) {
             changed = 1;
         }
-        CFG.camera = v;
+        CFG.battleCameraFixed = v;
         break;
     case CONFIG_ROW_BTL_CONTROL:
-        if (CFG.btlControl != v) {
+        if (CFG.battleControlCustom != v) {
             changed = 1;
         }
-        CFG.btlControl = v;
+        CFG.battleControlCustom = v;
         break;
     case CONFIG_ROW_MOVEMENT:
-        if (CFG.movement != v) {
+        if (CFG.movementRun != v) {
             changed = 1;
         }
-        CFG.movement = v;
+        CFG.movementRun = v;
         break;
     case CONFIG_ROW_HERE_ICON:
-        if (CFG.hereIcon != v) {
+        if (CFG.hereIconOff != v) {
             changed = 1;
         }
-        CFG.hereIcon = v;
+        CFG.hereIconOff = v;
         break;
     case CONFIG_ROW_WINDOW_COLOR:
-        if (CFG.windowColor != v) {
+        if (CFG.windowClassic != v) {
             changed = 1;
         }
-        CFG.windowColor = v;
+        CFG.windowClassic = v;
         break;
     case CONFIG_ROW_TARGET_WINDOW:
-        if (CFG.targetWindow != v) {
+        if (CFG.targetWindowAlways != v) {
             changed = 1;
         }
-        CFG.targetWindow = v;
+        CFG.targetWindowAlways = v;
         break;
     case CONFIG_ROW_BTL_SPEED:
-        if (v != 0 ? (s32)CFG.btlSpeed < CFG_BTL_SPEED_MAX : CFG.btlSpeed != 0) {
-            g_menuConfig.sliderDir = v != 0 ? CONFIG_SLIDE_RIGHT : CONFIG_SLIDE_LEFT;
+        if (v != 0 ? (s32)CFG.battleSpeed < CFG_BTL_SPEED_MAX : CFG.battleSpeed != 0) {
+            s_menuConfig.sliderDir = v != 0 ? CONFIG_SLIDE_RIGHT : CONFIG_SLIDE_LEFT;
             changed = 1;
         }
         break;
     case CONFIG_ROW_MSG_SPEED:
-        if (v != 0 ? (s32)CFG.msgSpeed < CFG_MSG_SPEED_MAX : CFG.msgSpeed != 0) {
-            g_menuConfig.sliderDir = v != 0 ? CONFIG_SLIDE_RIGHT : CONFIG_SLIDE_LEFT;
+        if (v != 0 ? (s32)CFG.messageSpeed < CFG_MSG_SPEED_MAX : CFG.messageSpeed != 0) {
+            s_menuConfig.sliderDir = v != 0 ? CONFIG_SLIDE_RIGHT : CONFIG_SLIDE_LEFT;
             changed = 1;
         }
         break;
     case CONFIG_ROW_VIBRATION:
-        if (!menu_config_hasVibration()) {
+        if (!menuConfig_hasVibration()) {
             snd_playSe(SE_BUZZER);
             return;
         }
@@ -291,9 +291,9 @@ void menu_config_setOption(u8 v) {
             changed = 1;
             CFG.vibration = v;
             if (v == 0) {
-                g_menuConfig.rumbleTest = changed;
-                g_menuConfig.rumbleTicks = 0;
-                menu_config_setRumble(1);
+                s_menuConfig.rumbleTest = changed;
+                s_menuConfig.rumbleTicks = 0;
+                menuConfig_setRumble(1);
             }
         }
         break;
@@ -304,37 +304,37 @@ void menu_config_setOption(u8 v) {
     }
 }
 
-void menu_config_openCustom(void) {
+void menuConfig_openSubWindow(void) {
     s32 on;
     s32 i;
     s32 j;
 
-    i = g_menuConfig.list.unk5 + g_menuConfig.list.cursor;
+    i = s_menuConfig.list.unk5 + s_menuConfig.list.cursor;
     on = 1;
     if ((i == on && ((g_gameState->unk24 >> i) & on) == on) ||
         (i == CONFIG_ROW_BTL_CONTROL && ((g_gameState->unk24 >> CFG_BIT_BTL_CONTROL) & 1) == on)) {
-        g_menuConfig.subCursor = 0;
-        g_menuConfig.editing = 1;
+        s_menuConfig.subCursor = 0;
+        s_menuConfig.editing = 1;
         for (j = 0; j < 2; j++) {
-            g_menuConfig.wins[j].unk4 = g_menuConfigCustomRects[j];
-            func_80063118(&g_menuConfig.wins[j], &g_menuConfigCustomOpen, 1);
+            s_menuConfig.wins[j].unk4 = s_menuConfigSubRects[j];
+            func_80063118(&s_menuConfig.wins[j], &s_menuConfigSubOpen, 1);
         }
         snd_playSe(SE_CURSOR);
     }
 }
 
-void menu_config_stepSlider(void) {
+void menuConfig_stepSlider(void) {
     s32 i;
     s32 d;
 
-    if (g_menuConfig.sliderDir != 0 && ++g_menuConfig.sliderTicks >= 5) {
-        i = g_menuConfig.list.unk5 + g_menuConfig.list.cursor;
+    if (s_menuConfig.sliderDir != 0 && ++s_menuConfig.sliderTicks >= 5) {
+        i = s_menuConfig.list.unk5 + s_menuConfig.list.cursor;
         d = 0xFF;
-        if (g_menuConfig.sliderDir == CONFIG_SLIDE_RIGHT) {
+        if (s_menuConfig.sliderDir == CONFIG_SLIDE_RIGHT) {
             d = 1;
         }
-        g_menuConfig.sliderTicks = 0;
-        g_menuConfig.sliderDir = 0;
+        s_menuConfig.sliderTicks = 0;
+        s_menuConfig.sliderDir = 0;
         switch (i) {
         case CONFIG_ROW_BTL_SPEED:
             g_gameState->unk24 = (g_gameState->unk24 & ~(7 << CFG_SHIFT_BTL_SPEED)) | (((d + ((g_gameState->unk24 >> CFG_SHIFT_BTL_SPEED) & 7)) & 7) << CFG_SHIFT_BTL_SPEED);
@@ -346,29 +346,29 @@ void menu_config_stepSlider(void) {
     }
 }
 
-void menu_config_setHelpText(void) {
+void menuConfig_updateHelp(void) {
     s32 i;
     s32 j;
 
     D_80077DE8.unk8 = NULL;
-    i = g_menuConfig.list.unk5 + g_menuConfig.list.cursor;
-    if (g_menuConfig.editing == 0) {
+    i = s_menuConfig.list.unk5 + s_menuConfig.list.cursor;
+    if (s_menuConfig.editing == 0) {
         D_80077DE8.unk8 = text_get(i + CONFIG_TEXT_ROW_HELP);
         for (j = 0; j < 2; j++) {
-            func_8002BE44(j, text_get(g_menuConfigRowText[i].unk1[j]));
+            func_8002BE44(j, text_get(s_menuConfigRowText[i].unk1[j]));
         }
         return;
     }
-    if (!menu_config_isWindowMoving()) {
+    if (!menuConfig_isWindowMoving()) {
         if (i == CONFIG_ROW_CONTROLLER) {
-            D_80077DE8.unk8 = text_get(g_menuConfig.subCursor + CONFIG_TEXT_PAD_HELP);
+            D_80077DE8.unk8 = text_get(s_menuConfig.subCursor + CONFIG_TEXT_PAD_HELP);
         } else if (i == CONFIG_ROW_BTL_CONTROL) {
             D_80077DE8.unk8 = text_get(CONFIG_TEXT_PORT_HELP);
         }
     }
 }
 
-void menu_config_drawGauge(s32 x, s32 y, s32 otz, s32 pos, s32 w) {
+void menuConfig_drawSlider(s32 x, s32 y, s32 otz, s32 pos, s32 w) {
     GaugeIcon *ic;
     GaugeIcon *mid;
     GaugeIcon *ec;
@@ -388,7 +388,7 @@ void menu_config_drawGauge(s32 x, s32 y, s32 otz, s32 pos, s32 w) {
             s32 yy = (y + k) << 16;
             setlen(g_primPtr, 3);
             l = (LineWords *)g_primPtr;
-            l->rgbc = g_menuConfigGaugeColors[i];
+            l->rgbc = s_menuConfigSliderColors[i];
             l->xy0 = (x + 4) | yy;
             l->xy1 = (pos + x + 3) | yy;
             addPrim(&g_ot[otz], l);
@@ -397,7 +397,7 @@ void menu_config_drawGauge(s32 x, s32 y, s32 otz, s32 pos, s32 w) {
     }
     func_80027710(x, y, otz, ic, 0);
     func_80027710(x + width - ec->unk4, y, otz, ec, 0);
-    SetTexWindow(g_primPtr, &g_menuConfigGaugeTexWindow);
+    SetTexWindow(g_primPtr, &s_menuConfigSliderTexWindow);
     addPrim(&g_ot[otz], g_primPtr);
     g_primPtr += 0xC;
     setlen(g_primPtr, 4);
@@ -420,7 +420,7 @@ void menu_config_drawGauge(s32 x, s32 y, s32 otz, s32 pos, s32 w) {
     g_primPtr += 8;
 }
 
-ScrollPos *menu_config_getListView(MenuList *l, ScrollPos *p) {
+ScrollPos *menuConfig_getListView(MenuList *l, ScrollPos *p) {
     s32 q;
     s32 f;
     s32 d;
@@ -455,60 +455,60 @@ ScrollPos *menu_config_getListView(MenuList *l, ScrollPos *p) {
     return p;
 }
 
-void menu_config_update(void) {
-    menu_config_input();
-    menu_config_draw();
-    menu_config_animate();
+void menuConfig_update(void) {
+    menuConfig_input();
+    menuConfig_draw();
+    menuConfig_updateAnims();
 }
 
-void menu_config_exit(void) {
+void menuConfig_exit(void) {
     func_8003556C(NULL);
 }
 
-void menu_config_input(void) {
+void menuConfig_input(void) {
     s32 i;
     void (*fn)(void);
 
-    i = g_menuConfig.list.unk5 + g_menuConfig.list.cursor;
+    i = s_menuConfig.list.unk5 + s_menuConfig.list.cursor;
     if (!func_8002F810()) {
-        if (g_menuConfig.editing == 0) {
-            menu_config_inputList();
+        if (s_menuConfig.editing == 0) {
+            menuConfig_inputList();
             return;
         }
-        fn = g_menuConfigCustomInputFns[i];
+        fn = s_menuConfigSubInput[i];
         if (fn != NULL) {
             fn();
         }
     }
 }
 
-void menu_config_draw(void) {
+void menuConfig_draw(void) {
     s32 k = 0x2000;
 
-    g_menuConfig.primFree = g_menuConfig.primBufs[g_gameState->unk1C->unk8 ^ 1] - (g_menuConfig.prim - k);
-    g_menuConfig.prim = g_menuConfig.primBufs[g_gameState->unk1C->unk8];
+    s_menuConfig.primFree = s_menuConfig.primBufs[g_gameState->unk1C->unk8 ^ 1] - (s_menuConfig.prim - k);
+    s_menuConfig.prim = s_menuConfig.primBufs[g_gameState->unk1C->unk8];
     ui_drawLabel(0x10, 0x23, 0x16, D_80070430, 0);
     ui_drawRule(8, 0x26, 0x16, 0, 0x12C, (g_gameState->unk24 >> CFG_BIT_WINDOW_COLOR) & 1);
-    menu_config_drawList();
-    menu_config_drawCustom();
-    menu_config_drawScrollArrows();
-    menu_config_drawHand();
+    menuConfig_drawRows();
+    menuConfig_drawSubWindows();
+    menuConfig_drawScrollArrows();
+    menuConfig_drawCursor();
 }
 
-void menu_config_animate(void) {
+void menuConfig_updateAnims(void) {
     if (func_8003561C()) {
-        menu_config_setHelpText();
+        menuConfig_updateHelp();
     }
-    if (g_menuConfig.editing == 0) {
-        menu_config_stepSlider();
+    if (s_menuConfig.editing == 0) {
+        menuConfig_stepSlider();
     } else {
-        menu_config_stepWindows();
+        menuConfig_stepWindows();
     }
-    menu_config_stepScroll();
-    menu_config_stepRumble();
+    menuConfig_stepScroll();
+    menuConfig_stepRumble();
 }
 
-void menu_config_listPageUp(MenuList *l, u32 pad) {
+void menuConfig_pageUp(MenuList *l, u32 pad) {
     s32 h;
     s32 top;
 
@@ -526,7 +526,7 @@ void menu_config_listPageUp(MenuList *l, u32 pad) {
     }
 }
 
-void menu_config_listPageDown(MenuList *l, u32 pad) {
+void menuConfig_pageDown(MenuList *l, u32 pad) {
     s32 h;
     s32 page;
     s32 top;
@@ -548,7 +548,7 @@ void menu_config_listPageDown(MenuList *l, u32 pad) {
     }
 }
 
-void menu_config_getScrollClip(MenuList *m, RECT *src, RECT *dst) {
+void menuConfig_getScrollClip(MenuList *m, RECT *src, RECT *dst) {
     dst->x = src->x;
     dst->w = src->w;
     if (m->unk8 & 2) {
@@ -559,13 +559,13 @@ void menu_config_getScrollClip(MenuList *m, RECT *src, RECT *dst) {
     dst->h = src->h - m->unk9;
 }
 
-void menu_config_drawListScroll(void) {
+void menuConfig_drawScrollRows(void) {
     ScrollPos sp;
     RECT r;
     s32 i;
     s32 y;
 
-    menu_config_getScrollView(&g_menuConfig.list, &sp);
+    menuConfig_getScrollView(&s_menuConfig.list, &sp);
     i = 0;
     r.x = 8;
     r.w = 0x12C;
@@ -573,127 +573,127 @@ void menu_config_drawListScroll(void) {
     r.h = 0x14;
     for (; i < sp.rows; i++) {
         r.y = i * 0x14 + (s16)(sp.y + 0x2A);
-        menu_config_drawRow(&r, 0x17, sp.first + i);
+        menuConfig_drawRow(&r, 0x17, sp.first + i);
         func_8002DEE4(&r, 0x17, 0);
     }
 }
 
-void menu_config_drawRow(RECT *r, s32 otz, s32 i) {
+void menuConfig_drawRow(RECT *r, s32 otz, s32 i) {
     func_800269F4(r->x + 0x70, r->y + 1, otz, 4 - r->h);
-    g_menuConfigRowDrawFns[i](r, otz);
+    s_menuConfigRowDraw[i](r, otz);
 }
 
-void menu_config_drawSound(RECT *r, s32 otz) {
-    menu_config_drawText(r->x + 0xF, r->y + 6, otz, g_menuConfigRowText[CONFIG_ROW_SOUND].unk0, 0);
-    menu_config_drawChoice(r, otz, (g_gameState->unk24 >> CFG_BIT_SOUND) & 1, CONFIG_ROW_SOUND);
+void menuConfig_drawSoundRow(RECT *r, s32 otz) {
+    menuConfig_drawText(r->x + 0xF, r->y + 6, otz, s_menuConfigRowText[CONFIG_ROW_SOUND].unk0, 0);
+    menuConfig_drawChoice(r, otz, (g_gameState->unk24 >> CFG_BIT_SOUND) & 1, CONFIG_ROW_SOUND);
 }
 
-void menu_config_drawController(RECT *r, s32 otz) {
-    menu_config_drawText(r->x + 0xF, r->y + 6, otz, g_menuConfigRowText[CONFIG_ROW_CONTROLLER].unk0, 0);
-    menu_config_drawChoice(r, otz, (g_gameState->unk24 >> CFG_BIT_CONTROLLER) & 1, CONFIG_ROW_CONTROLLER);
+void menuConfig_drawControllerRow(RECT *r, s32 otz) {
+    menuConfig_drawText(r->x + 0xF, r->y + 6, otz, s_menuConfigRowText[CONFIG_ROW_CONTROLLER].unk0, 0);
+    menuConfig_drawChoice(r, otz, (g_gameState->unk24 >> CFG_BIT_CONTROLLER) & 1, CONFIG_ROW_CONTROLLER);
 }
 
-void menu_config_drawCursor(RECT *r, s32 otz) {
-    menu_config_drawText(r->x + 0xF, r->y + 6, otz, g_menuConfigRowText[CONFIG_ROW_CURSOR].unk0, 0);
-    menu_config_drawChoice(r, otz, (g_gameState->unk24 >> CFG_BIT_CURSOR) & 1, CONFIG_ROW_CURSOR);
+void menuConfig_drawCursorRow(RECT *r, s32 otz) {
+    menuConfig_drawText(r->x + 0xF, r->y + 6, otz, s_menuConfigRowText[CONFIG_ROW_CURSOR].unk0, 0);
+    menuConfig_drawChoice(r, otz, (g_gameState->unk24 >> CFG_BIT_CURSOR) & 1, CONFIG_ROW_CURSOR);
 }
 
-void menu_config_drawAtb(RECT *r, s32 otz) {
-    menu_config_drawText(r->x + 0xF, r->y + 6, otz, g_menuConfigRowText[CONFIG_ROW_ATB].unk0, 0);
-    menu_config_drawChoice(r, otz, (g_gameState->unk24 >> CFG_BIT_ATB) & 1, CONFIG_ROW_ATB);
+void menuConfig_drawAtbRow(RECT *r, s32 otz) {
+    menuConfig_drawText(r->x + 0xF, r->y + 6, otz, s_menuConfigRowText[CONFIG_ROW_ATB].unk0, 0);
+    menuConfig_drawChoice(r, otz, (g_gameState->unk24 >> CFG_BIT_ATB) & 1, CONFIG_ROW_ATB);
 }
 
-void menu_config_drawCamera(RECT *r, s32 otz) {
-    menu_config_drawText(r->x + 0xF, r->y + 6, otz, g_menuConfigRowText[CONFIG_ROW_CAMERA].unk0, 0);
-    menu_config_drawChoice(r, otz, (g_gameState->unk24 >> CFG_BIT_CAMERA) & 1, CONFIG_ROW_CAMERA);
+void menuConfig_drawCameraRow(RECT *r, s32 otz) {
+    menuConfig_drawText(r->x + 0xF, r->y + 6, otz, s_menuConfigRowText[CONFIG_ROW_CAMERA].unk0, 0);
+    menuConfig_drawChoice(r, otz, (g_gameState->unk24 >> CFG_BIT_CAMERA) & 1, CONFIG_ROW_CAMERA);
 }
 
-void menu_config_drawBtlControl(RECT *r, s32 otz) {
-    menu_config_drawText(r->x + 0xF, r->y + 6, otz, g_menuConfigRowText[CONFIG_ROW_BTL_CONTROL].unk0, 0);
-    menu_config_drawChoice(r, otz, (g_gameState->unk24 >> CFG_BIT_BTL_CONTROL) & 1, CONFIG_ROW_BTL_CONTROL);
+void menuConfig_drawBattleControlRow(RECT *r, s32 otz) {
+    menuConfig_drawText(r->x + 0xF, r->y + 6, otz, s_menuConfigRowText[CONFIG_ROW_BTL_CONTROL].unk0, 0);
+    menuConfig_drawChoice(r, otz, (g_gameState->unk24 >> CFG_BIT_BTL_CONTROL) & 1, CONFIG_ROW_BTL_CONTROL);
 }
 
-void menu_config_drawMovement(RECT *r, s32 otz) {
-    menu_config_drawText(r->x + 0xF, r->y + 6, otz, g_menuConfigRowText[CONFIG_ROW_MOVEMENT].unk0, 0);
-    menu_config_drawChoice(r, otz, (g_gameState->unk24 >> CFG_BIT_MOVEMENT) & 1, CONFIG_ROW_MOVEMENT);
+void menuConfig_drawMovementRow(RECT *r, s32 otz) {
+    menuConfig_drawText(r->x + 0xF, r->y + 6, otz, s_menuConfigRowText[CONFIG_ROW_MOVEMENT].unk0, 0);
+    menuConfig_drawChoice(r, otz, (g_gameState->unk24 >> CFG_BIT_MOVEMENT) & 1, CONFIG_ROW_MOVEMENT);
 }
 
-void menu_config_drawBtlSpeed(RECT *r, s32 otz) {
-    menu_config_drawText(r->x + 0xF, r->y + 6, otz, g_menuConfigRowText[CONFIG_ROW_BTL_SPEED].unk0, 0);
-    menu_config_drawSlider(r, otz, (g_gameState->unk24 >> CFG_SHIFT_BTL_SPEED) & 7, CFG_BTL_SPEED_MAX, CONFIG_ROW_BTL_SPEED);
+void menuConfig_drawBattleSpeedRow(RECT *r, s32 otz) {
+    menuConfig_drawText(r->x + 0xF, r->y + 6, otz, s_menuConfigRowText[CONFIG_ROW_BTL_SPEED].unk0, 0);
+    menuConfig_drawSliderRow(r, otz, (g_gameState->unk24 >> CFG_SHIFT_BTL_SPEED) & 7, CFG_BTL_SPEED_MAX, CONFIG_ROW_BTL_SPEED);
 }
 
-void menu_config_drawMsgSpeed(RECT *r, s32 otz) {
-    menu_config_drawText(r->x + 0xF, r->y + 6, otz, g_menuConfigRowText[CONFIG_ROW_MSG_SPEED].unk0, 0);
-    menu_config_drawSlider(r, otz, (g_gameState->unk24 >> CFG_SHIFT_MSG_SPEED) & 7, CFG_MSG_SPEED_MAX, CONFIG_ROW_MSG_SPEED);
+void menuConfig_drawMessageSpeedRow(RECT *r, s32 otz) {
+    menuConfig_drawText(r->x + 0xF, r->y + 6, otz, s_menuConfigRowText[CONFIG_ROW_MSG_SPEED].unk0, 0);
+    menuConfig_drawSliderRow(r, otz, (g_gameState->unk24 >> CFG_SHIFT_MSG_SPEED) & 7, CFG_MSG_SPEED_MAX, CONFIG_ROW_MSG_SPEED);
 }
 
-void menu_config_drawHereIcon(RECT *r, s32 otz) {
-    menu_config_drawText(r->x + 0xF, r->y + 6, otz, g_menuConfigRowText[CONFIG_ROW_HERE_ICON].unk0, 0);
-    menu_config_drawChoice(r, otz, (g_gameState->unk24 >> CFG_BIT_HERE_ICON) & 1, CONFIG_ROW_HERE_ICON);
+void menuConfig_drawHereIconRow(RECT *r, s32 otz) {
+    menuConfig_drawText(r->x + 0xF, r->y + 6, otz, s_menuConfigRowText[CONFIG_ROW_HERE_ICON].unk0, 0);
+    menuConfig_drawChoice(r, otz, (g_gameState->unk24 >> CFG_BIT_HERE_ICON) & 1, CONFIG_ROW_HERE_ICON);
 }
 
-void menu_config_drawWindowColor(RECT *r, s32 otz) {
-    menu_config_drawText(r->x + 0xF, r->y + 6, otz, g_menuConfigRowText[CONFIG_ROW_WINDOW_COLOR].unk0, 0);
-    menu_config_drawChoice(r, otz, (g_gameState->unk24 >> CFG_BIT_WINDOW_COLOR) & 1, CONFIG_ROW_WINDOW_COLOR);
+void menuConfig_drawWindowColorRow(RECT *r, s32 otz) {
+    menuConfig_drawText(r->x + 0xF, r->y + 6, otz, s_menuConfigRowText[CONFIG_ROW_WINDOW_COLOR].unk0, 0);
+    menuConfig_drawChoice(r, otz, (g_gameState->unk24 >> CFG_BIT_WINDOW_COLOR) & 1, CONFIG_ROW_WINDOW_COLOR);
 }
 
-void menu_config_drawTargetWindow(RECT *r, s32 otz) {
-    menu_config_drawText(r->x + 0xF, r->y + 6, otz, g_menuConfigRowText[CONFIG_ROW_TARGET_WINDOW].unk0, 0);
-    menu_config_drawChoice(r, otz, (g_gameState->unk24 >> CFG_BIT_TARGET_WINDOW) & 1, CONFIG_ROW_TARGET_WINDOW);
+void menuConfig_drawTargetWindowRow(RECT *r, s32 otz) {
+    menuConfig_drawText(r->x + 0xF, r->y + 6, otz, s_menuConfigRowText[CONFIG_ROW_TARGET_WINDOW].unk0, 0);
+    menuConfig_drawChoice(r, otz, (g_gameState->unk24 >> CFG_BIT_TARGET_WINDOW) & 1, CONFIG_ROW_TARGET_WINDOW);
 }
 
-void menu_config_drawVibration(RECT *r, s32 otz) {
+void menuConfig_drawVibrationRow(RECT *r, s32 otz) {
     s32 c;
     u32 sel;
 
-    if (menu_config_hasVibration()) {
+    if (menuConfig_hasVibration()) {
         c = 0;
         sel = (u8)g_gameState->unk24;
         sel >>= CFG_BIT_VIBRATION;
     } else {
         sel = c = 2;
     }
-    menu_config_drawText(r->x + 0xF, r->y + 6, otz, g_menuConfigRowText[CONFIG_ROW_VIBRATION].unk0, c);
-    menu_config_drawChoice(r, otz, sel, CONFIG_ROW_VIBRATION);
+    menuConfig_drawText(r->x + 0xF, r->y + 6, otz, s_menuConfigRowText[CONFIG_ROW_VIBRATION].unk0, c);
+    menuConfig_drawChoice(r, otz, sel, CONFIG_ROW_VIBRATION);
 }
 
-void menu_config_drawCustom(void) {
+void menuConfig_drawSubWindows(void) {
     s32 i;
 
-    i = g_menuConfig.list.unk5 + g_menuConfig.list.cursor;
-    if (g_menuConfig.editing != 0) {
-        func_8002DEE4(&g_menuConfig.wins[0].unk4, 0x12, 2);
-        func_8002DEE4(&g_menuConfig.wins[1].unk4, 0x12, 2);
+    i = s_menuConfig.list.unk5 + s_menuConfig.list.cursor;
+    if (s_menuConfig.editing != 0) {
+        func_8002DEE4(&s_menuConfig.wins[0].unk4, 0x12, 2);
+        func_8002DEE4(&s_menuConfig.wins[1].unk4, 0x12, 2);
         if (i == CONFIG_ROW_CONTROLLER) {
-            menu_config_drawPad();
+            menuConfig_drawPadMap();
             return;
         }
         if (i == CONFIG_ROW_BTL_CONTROL) {
-            menu_config_drawPort();
+            menuConfig_drawBattleControl();
         }
     }
 }
 
-void menu_config_drawScrollArrows(void) {
+void menuConfig_drawScrollArrows(void) {
     MenuList *l;
     s32 blink;
 
-    l = &g_menuConfig.list;
+    l = &s_menuConfig.list;
     blink = (((u32)D_80077DC0 >> 4) ^ 1) & 1;
     ui_drawSprite(0x12E, 0x2C, 0x14, 0xB8, l->unk5 != 0 ? blink : 1);
     ui_drawSprite(0x12E, 0xCF, 0x14, 0xB9, l->unk5 < l->unk2 - l->unk3 ? blink : 1);
 }
 
-void menu_config_drawChoice(RECT *r, s32 otz, s32 sel, s32 item) {
+void menuConfig_drawChoice(RECT *r, s32 otz, s32 sel, s32 item) {
     s32 i;
 
     for (i = 0; i < 2; i++) {
-        menu_config_drawText(r->x + 0x90 + i * 0x5A, r->y + 6, otz, g_menuConfigRowText[item].unk1[i], sel != i ? 2 : 0);
+        menuConfig_drawText(r->x + 0x90 + i * 0x5A, r->y + 6, otz, s_menuConfigRowText[item].unk1[i], sel != i ? 2 : 0);
     }
 }
 
-void menu_config_drawSlider(RECT *r, s32 otz, s32 v, s32 n, s32 item) {
+void menuConfig_drawSliderRow(RECT *r, s32 otz, s32 v, s32 n, s32 item) {
     s32 step = 0x12 / n;
     s32 x;
     s32 y;
@@ -704,45 +704,45 @@ void menu_config_drawSlider(RECT *r, s32 otz, s32 v, s32 n, s32 item) {
     pos = v * step * 5;
     x = r->x;
     y = r->y + 6;
-    cur = g_menuConfig.list.unk5 + g_menuConfig.list.cursor;
-    w = func_8002BA68(text_get(g_menuConfigSlowText));
-    if (item == cur && g_menuConfig.sliderDir != 0) {
-        if (g_menuConfig.sliderDir == CONFIG_SLIDE_RIGHT) {
-            pos += g_menuConfig.sliderTicks * step;
+    cur = s_menuConfig.list.unk5 + s_menuConfig.list.cursor;
+    w = func_8002BA68(text_get(s_menuConfigSlowText));
+    if (item == cur && s_menuConfig.sliderDir != 0) {
+        if (s_menuConfig.sliderDir == CONFIG_SLIDE_RIGHT) {
+            pos += s_menuConfig.sliderTicks * step;
         } else {
-            pos += -g_menuConfig.sliderTicks * step;
+            pos += -s_menuConfig.sliderTicks * step;
         }
     }
-    menu_config_drawText(x - w + 0x9C, y, otz, (u8)g_menuConfigSlowText, 0);
-    menu_config_drawText(x + 0x103, y, otz, (u8)g_menuConfigFastText, 0);
-    menu_config_drawGauge(x + 0x9E, y, otz, pos, 0x5A);
+    menuConfig_drawText(x - w + 0x9C, y, otz, (u8)s_menuConfigSlowText, 0);
+    menuConfig_drawText(x + 0x103, y, otz, (u8)s_menuConfigFastText, 0);
+    menuConfig_drawSlider(x + 0x9E, y, otz, pos, 0x5A);
 }
 
-void menu_config_drawSmallText(s32 x, s32 y, s32 otz, u8 *s, s32 arg4) {
-    g_menuConfig.prim = func_80029D60(x, y, &g_ot[otz], s, arg4, g_menuConfig.prim);
+void menuConfig_drawSmallText(s32 x, s32 y, s32 otz, u8 *s, s32 arg4) {
+    s_menuConfig.prim = func_80029D60(x, y, &g_ot[otz], s, arg4, s_menuConfig.prim);
 }
 
-void menu_config_drawIcon(s32 x, s32 y, s32 otz, s32 n, u8 arg4) {
+void menuConfig_drawIcon(s32 x, s32 y, s32 otz, s32 n, u8 arg4) {
     s32 buf[2];
 
-    g_menuConfig.prim = func_80027834(x, y, &g_ot[otz], n, arg4, buf, g_menuConfig.prim);
+    s_menuConfig.prim = func_80027834(x, y, &g_ot[otz], n, arg4, buf, s_menuConfig.prim);
 }
 
-void menu_config_drawText(s32 x, s32 y, s32 otz, s32 text, s32 color) {
-    g_menuConfig.prim = func_8002920C(x, y - 4, &g_ot[otz], text_get(text & 0xFF), color, g_menuConfig.prim);
+void menuConfig_drawText(s32 x, s32 y, s32 otz, s32 text, s32 color) {
+    s_menuConfig.prim = func_8002920C(x, y - 4, &g_ot[otz], text_get(text & 0xFF), color, s_menuConfig.prim);
 }
 
-void menu_config_stepWindows(void) {
-    if (g_menuConfig.wins[0].unkC != 0) {
-        func_800631AC(&g_menuConfig.wins[0]);
+void menuConfig_stepWindows(void) {
+    if (s_menuConfig.wins[0].unkC != 0) {
+        func_800631AC(&s_menuConfig.wins[0]);
     }
-    if (g_menuConfig.wins[1].unkC != 0) {
-        func_800631AC(&g_menuConfig.wins[1]);
+    if (s_menuConfig.wins[1].unkC != 0) {
+        func_800631AC(&s_menuConfig.wins[1]);
     }
 }
 
-void menu_config_stepScroll(void) {
-    MenuList *l = &g_menuConfig.list;
+void menuConfig_stepScroll(void) {
+    MenuList *l = &s_menuConfig.list;
     s32 v;
     s32 dec;
 
@@ -772,17 +772,17 @@ void menu_config_stepScroll(void) {
     }
 }
 
-void menu_config_stepRumble(void) {
-    if (g_menuConfig.rumbleTest != 0) {
-        if (++g_menuConfig.rumbleTicks >= 9) {
-            g_menuConfig.rumbleTest = 0;
-            g_menuConfig.rumbleTicks = 0;
-            menu_config_setRumble(0);
+void menuConfig_stepRumble(void) {
+    if (s_menuConfig.rumbleTest != 0) {
+        if (++s_menuConfig.rumbleTicks >= 9) {
+            s_menuConfig.rumbleTest = 0;
+            s_menuConfig.rumbleTicks = 0;
+            menuConfig_setRumble(0);
         }
     }
 }
 
-void menu_config_setPadButton(s32 slot, s32 v) {
+void menuConfig_setPadButton(s32 slot, s32 v) {
     s32 i;
     s32 j;
     u32 w;
@@ -801,15 +801,15 @@ found:
     g_gameState->unk28 = (((w & ~(7 << (slot * 4))) | (v << (slot * 4))) & ~(7 << (j * 4))) | (old << (j * 4));
 }
 
-void menu_config_closeCustom(void) {
-    g_menuConfig.editing = 0;
+void menuConfig_closeSubWindow(void) {
+    s_menuConfig.editing = 0;
 }
 
-u8 menu_config_isWindowMoving(void) {
-    return g_menuConfig.wins[0].unkC != 0;
+u8 menuConfig_isWindowMoving(void) {
+    return s_menuConfig.wins[0].unkC != 0;
 }
 
-u8 menu_config_hasVibration(void) {
+u8 menuConfig_hasVibration(void) {
     s32 i;
 
     for (i = 0; i < 2; i++) {
@@ -823,7 +823,7 @@ u8 menu_config_hasVibration(void) {
     return 0;
 }
 
-void menu_config_setRumble(u8 on) {
+void menuConfig_setRumble(u8 on) {
     s32 i;
 
     if (on) {
@@ -839,7 +839,7 @@ void menu_config_setRumble(u8 on) {
     }
 }
 
-ScrollPos *menu_config_getScrollView(MenuList *l, ScrollPos *p) {
+ScrollPos *menuConfig_getScrollView(MenuList *l, ScrollPos *p) {
     s32 v;
 
     if (l->unk8 & 2) {
@@ -855,6 +855,6 @@ ScrollPos *menu_config_getScrollView(MenuList *l, ScrollPos *p) {
     return p;
 }
 
-/* Defined last: its .rodata follows menu_config_setOption's jump table. */
+/* Defined last: its .rodata follows menuConfig_setOption's jump table. */
 /* menu text block */
 INCLUDE_RODATA("asm/us/ovl_34/nonmatchings/ovl_34", g_configMenuText);

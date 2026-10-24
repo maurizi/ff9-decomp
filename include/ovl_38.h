@@ -6,7 +6,7 @@
  * live here, not in ff9.h. */
 #include "ff9.h"
 
-/* StatusMenu.state: which input handler g_menuStatusInputFns runs */
+/* StatusMenu.state: which input handler s_menuStatusInput runs */
 enum {
     STATUS_STATE_BUSY,  /* no input: a window is moving */
     STATUS_STATE_MAIN,  /* stats page: Circle, Cross, L1/R1 */
@@ -21,14 +21,14 @@ enum {
 
 /* g_statusMenuText ids */
 #define STATUS_TEXT_HELP   0   /* help: the status ailments */
-                               /* 2-10: stat labels (g_menuStatusBaseStatText, g_menuStatusBattleStatText) */
+                               /* 2-10: stat labels (s_menuStatusBaseStatText, s_menuStatusBattleStatText) */
 #define STATUS_TEXT_TRANCE 0xB
 #define STATUS_TEXT_EXP    0xC
 #define STATUS_TEXT_NEXT   0xD
 
-/* Status menu state (g_menuStatus). */
+/* Status menu state (s_menuStatus). */
 typedef struct {
-    u8 state;        /* STATUS_STATE_*, index into g_menuStatusInputFns */
+    u8 state;        /* STATUS_STATE_*, index into s_menuStatusInput */
     u8 pagesOpen;    /* ability page windows opened so far */
     u8 slot;         /* party slot shown */
     u8 pageCount;    /* ability pages of this character */
@@ -44,10 +44,10 @@ typedef struct {
     s32 primFree;    /* bytes left in last frame's buffer */
     UnkBlink header; /* character name/level header (func_80028CF8, slides on L1/R1) */
 } StatusMenu;
-extern StatusMenu g_menuStatus;
+extern StatusMenu s_menuStatus;
 
 /* window slide animation for func_80063118: main's TweenDef, but with a signed delay (unk0), which is what
- * matches menu_status_closePages */
+ * matches menuStatus_closeAbilityPages */
 typedef struct {
     s16 unk0; /* start delay */
     s16 unk2; /* frame count */
@@ -55,9 +55,9 @@ typedef struct {
     s8 *unk8; /* y deltas */
     void (*unkC)(void); /* called when done */
 } TextTween;
-extern TextTween g_menuStatusPageCloseTweens[8]; /* page close, delay set per page */
-extern RECT g_menuStatusPageRects[];      /* page window positions */
-extern TextTween g_menuStatusPageOpenTween;    /* page open, then menu_status_onPageOpened */
+extern TextTween s_menuStatusPageCloseTweens[8]; /* page close, delay set per page */
+extern RECT s_menuStatusPageRects[];      /* page window positions */
+extern TextTween s_menuStatusPageOpenTween;    /* page open, then menuStatus_onPageOpened */
 
 typedef struct {
     u8 *unk0;
@@ -66,24 +66,24 @@ typedef struct {
 extern Unk801F11CC D_801F11CC[7];
 extern u8 D_801F1204[];
 extern u8 g_statusMenuText[];
-extern void (*g_menuStatusInputFns[])(void);
+extern void (*s_menuStatusInput[])(void);
 
 typedef struct {
     u8 pad0[0xB];
     u8 unkB; /* bit 1 tested */
     u8 padC[2];
-    u16 unkE; /* name offset into g_menuStatusActionNames */
+    u16 unkE; /* name offset into s_menuStatusActionNames */
 } ActiveAbility; /* 0x10 */
-extern ActiveAbility g_menuStatusActionAbilities[];
-extern u8 g_menuStatusActionNames[];
-extern u8 g_menuStatusSupportNames[];
-extern u8 g_menuStatusPageLabel[];
+extern ActiveAbility s_menuStatusActionAbilities[];
+extern u8 s_menuStatusActionNames[];
+extern u8 s_menuStatusSupportNames[];
+extern u8 s_menuStatusPageLabel[];
 
 /* status page tables in .data */
-extern u8 g_menuStatusCmds[4];       /* [1], [2] patched per character */
-extern u8 g_menuStatusCharCmds[][2];     /* by ability table row */
-extern s32 g_menuStatusBaseStatText[4];      /* text ids */
-extern s32 g_menuStatusBattleStatText[5];      /* text ids */
+extern u8 s_menuStatusCmds[4];       /* [1], [2] patched per character */
+extern u8 s_menuStatusCharCmds[][2];     /* by ability table row */
+extern s32 s_menuStatusBaseStatText[4];      /* text ids */
+extern s32 s_menuStatusBattleStatText[5];      /* text ids */
 
 /* local copy of the battle command table (built on the stack from .rodata) */
 typedef struct {
@@ -98,8 +98,8 @@ typedef struct {
 typedef struct {
     u8 s[0x11E];
 } StatusPool; /* battle command names */
-extern StatusTable g_menuStatusCmdTable;
-extern StatusPool g_menuStatusCmdNames;
+extern StatusTable s_menuStatusCmdTable;
+extern StatusPool s_menuStatusCmdNames;
 
 /* main exe: candidates for ff9.h */
 /* Menu sounds for snd_playSe: main's menuList_up/down play SE_CURSOR on a move, menus play it on a pick too,
@@ -126,25 +126,25 @@ typedef struct {
 } Unk8006E0E8; /* weapon stats, 0xC (also in ovl_0b.h) */
 extern Unk8006E0E8 D_8006E0E8[];
 
-void menu_status_inputMain(void);
-void menu_status_drawHeader(void);
-void menu_status_drawCommands(void);
-void menu_status_drawStats(void);
-void menu_status_drawExp(void);
-void menu_status_drawEquip(void);
-void menu_status_drawPages(void);
-void menu_status_drawAbility(s32, s32, s32, s32, u8);
-void menu_status_openPage(void);
-void menu_status_setChar(s32, s32);
-void menu_status_input(void);
-void menu_status_draw(void);
-void menu_status_animate(void);
-void menu_status_inputPages(void);
-void menu_status_drawFrame(void);
+void menuStatus_inputMain(void);
+void menuStatus_drawHeader(void);
+void menuStatus_drawCommands(void);
+void menuStatus_drawStats(void);
+void menuStatus_drawExp(void);
+void menuStatus_drawEquipment(void);
+void menuStatus_drawAbilityPages(void);
+void menuStatus_drawAbilityRow(s32, s32, s32, s32, u8);
+void menuStatus_openAbilityPage(void);
+void menuStatus_setMember(s32, s32);
+void menuStatus_input(void);
+void menuStatus_draw(void);
+void menuStatus_updateAnims(void);
+void menuStatus_inputAbilities(void);
+void menuStatus_drawFrame(void);
 void func_801EF9B4(void);
-void menu_status_closePages(void);
-void menu_status_onHeaderReady(void);
-void menu_status_setHelpText(void);
+void menuStatus_closeAbilityPages(void);
+void menuStatus_onMemberSwitched(void);
+void menuStatus_updateHelp(void);
 
 extern const u8 D_801EE264[]; /* name strings */
 

@@ -6,7 +6,7 @@
  * live here, not in ff9.h. */
 #include "ff9.h"
 
-/* config rows (list index), in the order of their titles (text 24-36) and g_menuConfigRowText */
+/* config rows (list index), in the order of their titles (text 24-36) and s_menuConfigRowText */
 enum {
     CONFIG_ROW_SOUND,         /* Stereo / Mono */
     CONFIG_ROW_CONTROLLER,    /* Normal / Custom (button mapping window) */
@@ -24,7 +24,7 @@ enum {
     CONFIG_ROW_COUNT
 };
 
-#define CONFIG_PAD_SLOTS 8 /* actions in the button mapping window (g_menuConfigPadActions) */
+#define CONFIG_PAD_SLOTS 8 /* actions in the button mapping window (s_menuConfigPadActions) */
 
 enum { CONFIG_SLIDE_NONE, CONFIG_SLIDE_RIGHT, CONFIG_SLIDE_LEFT }; /* ConfigMenu.sliderDir */
 
@@ -36,7 +36,7 @@ enum { CONFIG_SLIDE_NONE, CONFIG_SLIDE_RIGHT, CONFIG_SLIDE_LEFT }; /* ConfigMenu
 #define CONFIG_TEXT_PORT_HELP  0x17 /* "Character controls can be assigned to Controller port 1 or 2..." */
                                     /* 24-36: row titles, 37-55: option names, 56-63: button actions */
 
-/* Config menu state (g_menuConfig). */
+/* Config menu state (s_menuConfig). */
 typedef struct {
     u8 subCursor;      /* row in the custom window */
     u8 charCount;      /* characters listed in the controller port window */
@@ -56,17 +56,17 @@ typedef struct {
     s32 primFree;      /* bytes left in last frame's buffer */
 } ConfigMenu;
 
-/* visible rows of the item list (menu_config_getScrollView) */
+/* visible rows of the item list (menuConfig_getScrollView) */
 typedef struct {
     u8 rows;  /* row count */
     u8 first; /* first item */
     s16 y;    /* y offset */
 } ScrollPos;
-extern ConfigMenu g_menuConfig;
+extern ConfigMenu s_menuConfig;
 extern const u8 g_configMenuText[]; /* menu text block */
 
 /* GameState.unk24: the config word (main exe: candidates for ff9.h). Bit positions shown by the config rows
- * that read and write them (menu_config_setOption, the row drawers). */
+ * that read and write them (menuConfig_setOption, the row drawers). */
 #define CFG_BIT_SOUND         0  /* 1 = mono */
 #define CFG_BIT_CONTROLLER    1  /* 1 = custom button mapping (GameState.unk28) */
 #define CFG_BIT_CURSOR        2  /* 1 = memory */
@@ -84,38 +84,38 @@ extern const u8 g_configMenuText[]; /* menu text block */
 #define CFG_BTL_SPEED_MAX     2
 #define CFG_MSG_SPEED_MAX     6
 
-/* the same word, written through bitfields by menu_config_setOption */
+/* the same word, written through bitfields by menuConfig_setOption */
 typedef struct {
-    u32 sound : 1;
-    u32 controller : 1;
-    u32 cursor : 1;
-    u32 atb : 1;
-    u32 camera : 1;
-    u32 btlControl : 1;
-    u32 movement : 1;
+    u32 soundMono : 1;
+    u32 padCustom : 1;
+    u32 cursorMemory : 1;
+    u32 atbWait : 1;
+    u32 battleCameraFixed : 1;
+    u32 battleControlCustom : 1;
+    u32 movementRun : 1;
     u32 vibration : 1;
-    u32 btlSpeed : 3;
+    u32 battleSpeed : 3;
     u32 b11 : 3;
-    u32 msgSpeed : 3;
-    u32 hereIcon : 1;
-    u32 windowColor : 1;
-    u32 targetWindow : 1;
+    u32 messageSpeed : 3;
+    u32 hereIconOff : 1;
+    u32 windowClassic : 1;
+    u32 targetWindowAlways : 1;
     u32 charPort : 12;
 } ConfigBits;
 #define CFG (*(ConfigBits *)&g_gameState->unk24)
-extern RECT g_menuConfigCustomRects[2]; /* option window rects */
-extern TweenDef g_menuConfigCustomOpen; /* custom windows slide in */
-extern TweenDef g_menuConfigPadClose; /* button mapping window slides out, then menu_config_closeCustom */
-extern TweenDef g_menuConfigPortClose; /* port window slides out, then menu_config_closeCustom */
-extern s32 g_menuConfigPadBits[CONFIG_PAD_SLOTS]; /* pad bit per button mapping slot: Cross, Circle, Triangle, Square, L1, R1, L2, R2 */
-extern s32 g_menuConfigSlowText; /* text id "Slow" (slider left label) */
-extern s32 g_menuConfigFastText; /* text id "Fast" (slider right label) */
+extern RECT s_menuConfigSubRects[2]; /* option window rects */
+extern TweenDef s_menuConfigSubOpen; /* custom windows slide in */
+extern TweenDef s_menuConfigPadMapClose; /* button mapping window slides out, then menuConfig_closeSubWindow */
+extern TweenDef s_menuConfigBattleControlClose; /* port window slides out, then menuConfig_closeSubWindow */
+extern s32 s_menuConfigPadBits[CONFIG_PAD_SLOTS]; /* pad bit per button mapping slot: Cross, Circle, Triangle, Square, L1, R1, L2, R2 */
+extern s32 s_menuConfigSlowText; /* text id "Slow" (slider left label) */
+extern s32 s_menuConfigFastText; /* text id "Fast" (slider right label) */
 extern u8 D_801F14F8[];
 typedef struct {
     u8 text; /* action name text id */
     u8 icon; /* button sprite */
 } ConfigPadEntry;
-extern ConfigPadEntry g_menuConfigPadActions[CONFIG_PAD_SLOTS];
+extern ConfigPadEntry s_menuConfigPadActions[CONFIG_PAD_SLOTS];
 
 /* main exe: candidates for ff9.h */
 /* Menu sounds for snd_playSe: main's menuList_up/down play SE_CURSOR on a move, menus play it on a pick too,
@@ -132,46 +132,46 @@ typedef struct {
     u8 unk0;    /* title text id */
     u8 unk1[3]; /* option text ids */
 } ConfigText;
-extern ConfigText g_menuConfigRowText[CONFIG_ROW_COUNT];
-extern void (*g_menuConfigCustomInputFns[])(void);
-extern void (*g_menuConfigRowDrawFns[CONFIG_ROW_COUNT])(RECT *, s32);
+extern ConfigText s_menuConfigRowText[CONFIG_ROW_COUNT];
+extern void (*s_menuConfigSubInput[])(void);
+extern void (*s_menuConfigRowDraw[CONFIG_ROW_COUNT])(RECT *, s32);
 
-void menu_config_inputList(void);
-void menu_config_inputPad(void);
-void menu_config_inputPort(void);
-void menu_config_drawPad(void);
-void menu_config_drawPort(void);
-void menu_config_stepSlider(void);
-void menu_config_setHelpText(void);
-void menu_config_input(void);
-void menu_config_draw(void);
-void menu_config_animate(void);
-void menu_config_drawList(void);
-void menu_config_drawHand(void);
-void menu_config_setOption(u8);
-void menu_config_openCustom(void);
-void menu_config_drawGauge(s32, s32, s32, s32, s32);
-void menu_config_listPageUp(MenuList *, u32);
-void menu_config_listPageDown(MenuList *, u32);
-void menu_config_drawRow(RECT *, s32, s32);
-void menu_config_drawCustom(void);
-void menu_config_drawScrollArrows(void);
-void menu_config_drawChoice(RECT *, s32, s32, s32);
-void menu_config_drawSlider(RECT *, s32, s32, s32, s32);
-void menu_config_drawText(s32, s32, s32, s32, s32);
-void menu_config_stepWindows(void);
-void menu_config_stepScroll(void);
-void menu_config_stepRumble(void);
-u8 menu_config_hasVibration(void);
-void menu_config_setRumble(u8);
-ScrollPos *menu_config_getScrollView(MenuList *, ScrollPos *);
-ScrollPos *menu_config_getListView(MenuList *, ScrollPos *);
-void menu_config_getScrollClip(MenuList *, RECT *, RECT *);
-void menu_config_drawListScroll(void);
-void menu_config_drawSmallText(s32, s32, s32, u8 *, s32);
-void menu_config_drawIcon(s32, s32, s32, s32, u8);
-void menu_config_setPadButton(s32, s32);
-u8 menu_config_isWindowMoving(void);
+void menuConfig_inputList(void);
+void menuConfig_inputPadMap(void);
+void menuConfig_inputBattleControl(void);
+void menuConfig_drawPadMap(void);
+void menuConfig_drawBattleControl(void);
+void menuConfig_stepSlider(void);
+void menuConfig_updateHelp(void);
+void menuConfig_input(void);
+void menuConfig_draw(void);
+void menuConfig_updateAnims(void);
+void menuConfig_drawRows(void);
+void menuConfig_drawCursor(void);
+void menuConfig_setOption(u8);
+void menuConfig_openSubWindow(void);
+void menuConfig_drawSlider(s32, s32, s32, s32, s32);
+void menuConfig_pageUp(MenuList *, u32);
+void menuConfig_pageDown(MenuList *, u32);
+void menuConfig_drawRow(RECT *, s32, s32);
+void menuConfig_drawSubWindows(void);
+void menuConfig_drawScrollArrows(void);
+void menuConfig_drawChoice(RECT *, s32, s32, s32);
+void menuConfig_drawSliderRow(RECT *, s32, s32, s32, s32);
+void menuConfig_drawText(s32, s32, s32, s32, s32);
+void menuConfig_stepWindows(void);
+void menuConfig_stepScroll(void);
+void menuConfig_stepRumble(void);
+u8 menuConfig_hasVibration(void);
+void menuConfig_setRumble(u8);
+ScrollPos *menuConfig_getScrollView(MenuList *, ScrollPos *);
+ScrollPos *menuConfig_getListView(MenuList *, ScrollPos *);
+void menuConfig_getScrollClip(MenuList *, RECT *, RECT *);
+void menuConfig_drawScrollRows(void);
+void menuConfig_drawSmallText(s32, s32, s32, u8 *, s32);
+void menuConfig_drawIcon(s32, s32, s32, s32, u8);
+void menuConfig_setPadButton(s32, s32);
+u8 menuConfig_isWindowMoving(void);
 
 /* main exe: candidates for ff9.h */
 /* Menu sounds for snd_playSe: main's menuList_up/down play SE_CURSOR on a move, menus play it on a pick too,
@@ -200,8 +200,8 @@ typedef struct {
     u32 xy0;
     u32 xy1;
 } LineWords;
-extern u32 g_menuConfigGaugeColors[3]; /* gauge line colours */
-extern RECT g_menuConfigGaugeTexWindow; /* gauge texture window */
+extern u32 s_menuConfigSliderColors[3]; /* gauge line colours */
+extern RECT s_menuConfigSliderTexWindow; /* gauge texture window */
 
 
 #endif

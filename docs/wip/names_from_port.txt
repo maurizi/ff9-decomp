@@ -967,248 +967,248 @@ D_800D32E4 g_worldEncounterEventRows  # [code] world data pack entry 4: rows of 
 # their headers, with a func_800355DC line in each overlay's symbols file until main names it.
 
 ## ovl_3b: ovl_3b (party select menu)
-func_801F3FEC menu_party_init  # [code] menu 3 (file 0x3B in main's D_8006CA40) entry 0 of main's D_8006C9D4 table; sets the text bank and loads g_menu.unkC as the PartyRequest
-func_801F405C menu_party_update  # [code] menu 3 entry 1 of main's D_8006C9D4 (per frame), calls input then draw
-func_801F4084 menu_party_exit  # [code] menu 3 entry 2 of main's D_8006C9D4, clears the help callback
-func_801F40AC menu_party_input  # [code] Circle -> menu_party_back, Cross -> menu_party_select, else moves the cursor of its row
-func_801F4150 menu_party_draw  # [code] draws the title, help, PARTY and INFO windows and the cursors
-func_801F37A8 menu_party_moveInParty  # [code] Up/Down within the party column, Right goes over to the reserve grid
-func_801F38D8 menu_party_moveInReserve  # [code] Up/Down/Left/Right in the 4x2 reserve grid, Left from column 0 goes back to the party
-func_801F3A60 menu_party_select  # [code] Cross: first press picks a slot ("Move from this slot?"), second swaps it with the target slot
-func_801F42A4 menu_party_back  # [code] Circle: leaves swap mode, or writes the party with party_setMember and closes the menu (func_800325E0) when menu_party_isValid
-func_801F3B3C menu_party_drawParty  # [code] "PARTY" label window, the 4 members or "Character N"/"Unused" text
-func_801F3CF0 menu_party_drawInfo  # [code] "INFO" label window, the slot under the cursor and the reserve portraits
-func_801F3E58 menu_party_drawCursor  # [code] hand at the active cursor, blinking hand at the picked slot in swap mode
-func_801F4190 menu_party_drawTitle  # [code] window with text 0 "Form Party"
-func_801F4204 menu_party_drawHelp  # [code] "HELP" label window with text[size] "Select N member(s)."
-func_801F4360 menu_party_drawMember  # [code] portrait (menu_party_drawPortrait) plus func_8002423C for the character
-func_801F43FC menu_party_drawPortrait  # [code] character portrait (func_80028204) with status icons for Character.unk38 bits and hp 0
-func_801F457C menu_party_loadRequest  # [code] copies a PartyRequest (size, party, reserve, fixed) into g_menuParty
-func_801F4614 menu_party_isFixed  # [code] fixed flag of the character under cursor[i]; a fixed one can't be swapped out of the party
-func_801F465C menu_party_isValid  # [code] party has size members and at least one with hp and no Character.unk38 & 3
-func_801F46FC menu_party_setHelpText  # [code] help-text callback (func_8003556C): text 0xA + mode, "Move from this slot?" / "To which slot?"
-D_801F4748 g_menuParty  # [code] party select state, see PartySelect in include/ovl_3b.h
-D_801F4728 g_menuPartyTitleRect  # [code] RECT of the title window (menu_party_drawTitle)
-D_801F4730 g_menuPartyHelpRect  # [code] RECT of the HELP window (menu_party_drawHelp)
-D_801F4738 g_menuPartyListRect  # [code] RECT of the PARTY window (menu_party_drawParty)
-D_801F4740 g_menuPartyInfoRect  # [code] RECT of the INFO window (menu_party_drawInfo)
-D_801EDFE8 g_menuPartyImage  # [code] image data passed to func_80028720 by menu_party_init
+func_801F3FEC menuParty_init  # [code] menu 3 (file 0x3B in main's D_8006CA40) entry 0 of main's D_8006C9D4 table; sets the text bank and loads g_menu.unkC as the PartyRequest
+func_801F405C menuParty_update  # [code] menu 3 entry 1 of main's D_8006C9D4 (per frame), calls input then draw
+func_801F4084 menuParty_exit  # [code] menu 3 entry 2 of main's D_8006C9D4, clears the help callback
+func_801F40AC menuParty_input  # [code] Circle -> menuParty_confirm, Cross -> menuParty_pick, else moves the cursor of its row
+func_801F4150 menuParty_draw  # [code] draws the title, help, PARTY and INFO windows and the cursors
+func_801F37A8 menuParty_inputParty  # [code] Up/Down within the party column, Right goes over to the reserve grid
+func_801F38D8 menuParty_inputReserve  # [code] Up/Down/Left/Right in the 4x2 reserve grid, Left from column 0 goes back to the party
+func_801F3A60 menuParty_pick  # [code] Cross: first press picks a slot ("Move from this slot?"), second swaps it with the target slot
+func_801F42A4 menuParty_confirm  # [code] Circle: leaves swap mode, or writes the party with party_setMember and closes the menu (func_800325E0) when menuParty_isValid
+func_801F3B3C menuParty_drawParty  # [code] "PARTY" label window, the 4 members or "Character N"/"Unused" text
+func_801F3CF0 menuParty_drawInfo  # [code] "INFO" label window, the slot under the cursor and the reserve portraits
+func_801F3E58 menuParty_drawCursor  # [code] hand at the active cursor, blinking hand at the picked slot in swap mode
+func_801F4190 menuParty_drawTitle  # [code] window with text 0 "Form Party"
+func_801F4204 menuParty_drawHelp  # [code] "HELP" label window with text[size] "Select N member(s)."
+func_801F4360 menuParty_drawMember  # [code] portrait (menuParty_drawPortrait) plus func_8002423C for the character
+func_801F43FC menuParty_drawPortrait  # [code] character portrait (func_80028204) with status icons for Character.unk38 bits and hp 0
+func_801F457C menuParty_loadRequest  # [code] copies a PartyRequest (size, party, reserve, fixed) into s_menuParty
+func_801F4614 menuParty_isFixed  # [code] fixed flag of the character under cursor[i]; a fixed one can't be swapped out of the party
+func_801F465C menuParty_isValid  # [code] party has size members and at least one with hp and no Character.unk38 & 3
+func_801F46FC menuParty_updateHelp  # [code] help-text callback (func_8003556C): text 0xA + mode, "Move from this slot?" / "To which slot?"
+D_801F4748 s_menuParty  # [code] party select state, see PartySelect in include/ovl_3b.h
+D_801F4728 s_menuPartyTitleRect  # [code] RECT of the title window (menuParty_drawTitle)
+D_801F4730 s_menuPartyHelpRect  # [code] RECT of the HELP window (menuParty_drawHelp)
+D_801F4738 s_menuPartyListRect  # [code] RECT of the PARTY window (menuParty_drawParty)
+D_801F4740 s_menuPartyInfoRect  # [code] RECT of the INFO window (menuParty_drawInfo)
+D_801EDFE8 s_menuPartyImage  # [code] image data passed to func_80028720 by menuParty_init
 # FIELDS include/ovl_3b.h PartyRequest: unk0=size,unk4=party,unk8=reserve,unk10=fixed; Cursor: unk0=idx,unk1=row; PartySelect: unk0=mode,unk1=size,unk4=cursor,unk8=partyIdx,unk9=reserveIdx,unkA=slots,unk1A=fixed
 
 ## ovl_3a: ovl_3a (name entry menu)
-func_801F3874 menu_name_init  # [code] menu 1 (file 0x3A in main's D_8006CA40) entry 0 of main's D_8006C9D4; sets the text bank, the name being edited and the windows
-func_801F4748 menu_name_update  # [code] menu 1 entry 1 of main's D_8006C9D4 (per frame), input then draw
-func_801F4770 menu_name_exit  # [code] menu 1 entry 2 of main's D_8006C9D4, clears the help callbacks and restores the CLUT row
-func_801F3A98 menu_name_input  # [code] Start jumps to Confirm, L1/R1 switch the character set, Cross selects, else moves in the side menu or the grid
-func_801F3BBC menu_name_moveInGrid  # [code] Up/Down/Right/Left in the 15-column character grid (Left from column 0 goes to the side menu), Circle deletes the last letter
-func_801F3D9C menu_name_select  # [code] Cross - side menu rows Alphabet/Symbol/Delete/Confirm/Default (Confirm copies the name into the character record and closes), or enters the grid character
-func_801F47E8 menu_name_moveInMenu  # [code] Up/Down in the 5-row side menu (wraps), Right goes to the grid
-func_801F47A0 menu_name_draw  # [code] calls the title, portrait, side menu, help, name/grid and cursor drawers
-func_801F48A0 menu_name_drawTitle  # [code] window with text 0 "Name"
-func_801F3FAC menu_name_drawPortrait  # [code] SPRT of the character portrait (CLUT row loaded by menu_name_loadPortrait) in the portrait window
-func_801F4110 menu_name_drawMenu  # [code] side menu window - "Alphabet"/"Symbol" (current one highlighted) and "Delete"/"Confirm"/"Default"
-func_801F490C menu_name_drawHelp  # [code] "HELP" label window with text 1 "Pick a name."
-func_801F4238 menu_name_drawEntry  # [code] the name with blinking underlines and the character grid of the current set
-func_801F459C menu_name_drawCursor  # [code] places the hand (D_80077DE8) at the side-menu row or the grid character
-func_801F49A0 menu_name_loadPortrait  # [code] saves the CLUT row (StoreImage) and loads the character's portrait CLUT and pixels from g_menuNamePortraits
-func_801F4A34 menu_name_restoreClut  # [code] LoadImage of the CLUT row saved by menu_name_loadPortrait
-func_801F4A68 menu_name_getNameId  # [code] menu argument -> chr_setDefaultName id (g_menuNameIds)
-func_801F4A84 menu_name_getCharIdx  # [code] name id -> character record index (g_menuNameCharIdx)
-func_801F4A9C menu_name_setHelpText  # [code] help-text callback (func_8003556C) - side-menu row help, or the grid's button help
-func_801F4AE0 menu_name_clampCursor  # [code] after switching to the smaller symbol grid, moves the grid cursor into its last row
-D_801F4BBC g_menuName  # [code] name entry state, NameEntry in include/ovl_3a.h
-D_801F4B48 g_menuNameHelpRect  # [code] help window RECT set with func_80035580 while the grid has focus (NULL = default otherwise)
-D_801F4B50 g_menuNameGridSize  # [code] characters per set (60, 30), copied to NameEntry.gridSize
-D_801F4B54 g_menuNameTitleWin  # [code] -> windows[0], menu_name_drawTitle
-D_801F4B58 g_menuNamePortraitWin  # [code] -> windows[1], menu_name_drawPortrait
-D_801F4B5C g_menuNameMenuWin  # [code] -> windows[2], menu_name_drawMenu
-D_801F4B60 g_menuNameHelpWin  # [code] -> windows[3], menu_name_drawHelp
-D_801F4B64 g_menuNameEntryWin  # [code] -> windows[4], menu_name_drawEntry
-D_801F4B68 g_menuNameClutRect  # [code] VRAM (0,256) 128x1, saved then loaded with the portrait CLUT by menu_name_loadPortrait
-D_801F4B70 g_menuNamePortraitRect  # [code] VRAM (960,432) 16x46, the portrait pixels
-D_801F4B78 g_menuNameClutRestoreRect  # [code] same CLUT row, restored by menu_name_restoreClut
-D_801F4B80 g_menuNameIds  # [code] menu argument -> name id table (menu_name_getNameId)
-D_801F4BB0 g_menuNameCharIdx  # [code] name id -> character index table (menu_name_getCharIdx)
-D_801EE0B4 g_menuNamePortraits  # [code] 0x6C0-byte portrait images (CLUT + pixels) by func_80028954 index, menu_name_loadPortrait
+func_801F3874 menuName_init  # [code] menu 1 (file 0x3A in main's D_8006CA40) entry 0 of main's D_8006C9D4; sets the text bank, the name being edited and the windows
+func_801F4748 menuName_update  # [code] menu 1 entry 1 of main's D_8006C9D4 (per frame), input then draw
+func_801F4770 menuName_exit  # [code] menu 1 entry 2 of main's D_8006C9D4, clears the help callbacks and restores the CLUT row
+func_801F3A98 menuName_input  # [code] Start jumps to Confirm, L1/R1 switch the character set, Cross selects, else moves in the side menu or the grid
+func_801F3BBC menuName_inputGrid  # [code] Up/Down/Right/Left in the 15-column character grid (Left from column 0 goes to the side menu), Circle deletes the last letter
+func_801F3D9C menuName_confirm  # [code] Cross - side menu rows Alphabet/Symbol/Delete/Confirm/Default (Confirm copies the name into the character record and closes), or enters the grid character
+func_801F47E8 menuName_inputCommands  # [code] Up/Down in the 5-row side menu (wraps), Right goes to the grid
+func_801F47A0 menuName_draw  # [code] calls the title, portrait, side menu, help, name/grid and cursor drawers
+func_801F48A0 menuName_drawTitle  # [code] window with text 0 "Name"
+func_801F3FAC menuName_drawPortrait  # [code] SPRT of the character portrait (CLUT row loaded by menuName_loadPortrait) in the portrait window
+func_801F4110 menuName_drawCommands  # [code] side menu window - "Alphabet"/"Symbol" (current one highlighted) and "Delete"/"Confirm"/"Default"
+func_801F490C menuName_drawHelp  # [code] "HELP" label window with text 1 "Pick a name."
+func_801F4238 menuName_drawNameWindow  # [code] the name with blinking underlines and the character grid of the current set
+func_801F459C menuName_drawCursor  # [code] places the hand (D_80077DE8) at the side-menu row or the grid character
+func_801F49A0 menuName_loadPortrait  # [code] saves the CLUT row (StoreImage) and loads the character's portrait CLUT and pixels from s_menuNamePortraits
+func_801F4A34 menuName_restoreClut  # [code] LoadImage of the CLUT row saved by menuName_loadPortrait
+func_801F4A68 menuName_getNameId  # [code] menu argument -> chr_setDefaultName id (s_menuNameIds)
+func_801F4A84 menuName_getCharIdx  # [code] name id -> character record index (s_menuNameCharIdx)
+func_801F4A9C menuName_updateHelp  # [code] help-text callback (func_8003556C) - side-menu row help, or the grid's button help
+func_801F4AE0 menuName_clampCursor  # [code] after switching to the smaller symbol grid, moves the grid cursor into its last row
+D_801F4BBC s_menuName  # [code] name entry state, NameEntry in include/ovl_3a.h
+D_801F4B48 s_menuNameHelpBounds  # [code] help window RECT set with func_80035580 while the grid has focus (NULL = default otherwise)
+D_801F4B50 s_menuNameGridSize  # [code] characters per set (60, 30), copied to NameEntry.gridSize
+D_801F4B54 s_menuNameTitleWin  # [code] -> windows[0], menuName_drawTitle
+D_801F4B58 s_menuNamePortraitWin  # [code] -> windows[1], menuName_drawPortrait
+D_801F4B5C s_menuNameCommandWin  # [code] -> windows[2], menuName_drawCommands
+D_801F4B60 s_menuNameHelpWin  # [code] -> windows[3], menuName_drawHelp
+D_801F4B64 s_menuNameNameWin  # [code] -> windows[4], menuName_drawNameWindow
+D_801F4B68 s_menuNameClutRect  # [code] VRAM (0,256) 128x1, saved then loaded with the portrait CLUT by menuName_loadPortrait
+D_801F4B70 s_menuNamePortraitRect  # [code] VRAM (960,432) 16x46, the portrait pixels
+D_801F4B78 s_menuNameClutRestoreRect  # [code] same CLUT row, restored by menuName_restoreClut
+D_801F4B80 s_menuNameIds  # [code] menu argument -> name id table (menuName_getNameId)
+D_801F4BB0 s_menuNameCharIdx  # [code] name id -> character index table (menuName_getCharIdx)
+D_801EE0B4 s_menuNamePortraits  # [code] 0x6C0-byte portrait images (CLUT + pixels) by func_80028954 index, menuName_loadPortrait
 # FIELDS include/ovl_3a.h NameEntry: unk0=focus,unk1=menuCursor,unk2=charSet,unk3=gridCursor,unk4=len,unk5=gridSize,unk7=name,unk11=defaultName,unk1C=charSets,unk24=startDefault,unk28=savedClut,unk12C=nameId,unk130=charIdx,unk134=windows
 
 ## ovl_38: ovl_38 (status menu)
-func_801EE440 menu_status_init  # [code] main-menu entry Status (file 0x38 in main's D_8006E510) init of main's D_8006E530/D_8006E5B0 tables; text bank, first character, window, primitive buffers
-func_801EF69C menu_status_update  # [code] Status entry update of main's D_8006E530 (per frame), input, draw, animate
-func_801EF6CC menu_status_exit  # [code] Status entry exit of main's D_8006E530, stores the shown party slot in D_80077E53, restores the help flag
-func_801EF708 menu_status_input  # [code] runs the D_801EFBA4 input handler of the current state
-func_801EE568 menu_status_inputMain  # [code] state 1 - Circle back to the main menu (func_800361CC(0)), Cross opens the ability pages, R1/L1 next/previous character
-func_801EF8A0 menu_status_inputPages  # [code] state 2 - Circle closes the ability pages, Cross opens the next one
-func_801EF760 menu_status_draw  # [code] swaps the primitive buffers and calls every window drawer
-func_801EF80C menu_status_animate  # [code] steps the page windows' slide animations (func_800631AC) and the character header
-func_801EF904 menu_status_drawFrame  # [code] the main window with its divider lines
-func_801EE650 menu_status_drawHeader  # [code] character header, magic-stone gauge (Character.stones/maxStones) and status icons
-func_801EE740 menu_status_drawCommands  # [code] the four battle commands of the character (names from the copied command table) under label D_8007042C
-func_801EE9E8 menu_status_drawStats  # [code] Speed/Strength/Magic/Spirit and Attack/Defense/Evade/Magic Def/Magic Eva labels and values
-func_801EED18 menu_status_drawExp  # [code] Trance gauge (when D_8007AF00 is set), EXP and Next (g_levelExp)
-func_801EEF00 menu_status_drawEquip  # [code] the five equipment slots - slot icon, item icon and item name
-func_801EF0A0 menu_status_drawPages  # [code] the open ability page windows, 8 rows each, with the page number on the top one
-func_801EF258 menu_status_drawAbility  # [code] one ability row - icon, name (action table or D_8006D128 support) and AP gauge (func_80027170)
-func_801EF494 menu_status_openPage  # [code] Cross - slides in the next ability page window (D_801F1134, then func_801EFA80), or closes them all after the last
-func_801EF9D4 menu_status_closePages  # [code] slides out the open page windows (D_801F114C, the last one calls func_801EFABC)
-func_801EFA80 menu_status_onPageOpened  # [code] tween callback of D_801F1134 - state 2, the previous page loses its top flag, pagesOpen++
-func_801EFABC menu_status_onPagesClosed  # [code] tween callback of D_801F114C[0] - state 1, clears the page flags
-func_801EFAF8 menu_status_onHeaderReady  # [code] callback given to func_80028CF8 - state 1 once the character header is in place
-func_801EF568 menu_status_setChar  # [code] shows party slot (func_80028D08 slides the header in direction dir) and counts its learnable abilities and pages
-func_801EFB08 menu_status_setHelpText  # [code] help-text callback (func_8003556C) - text 0 (status ailments) and its string/value arguments
-D_801F120C g_menuStatus  # [code] status menu state, StatusMenu in include/ovl_38.h
-D_801EFBA4 g_menuStatusInputFns  # [code] input handler per StatusMenu.state (NULL, inputMain, inputPages, NULL)
-D_801EFBB4 g_menuStatusCmds  # [code] the four command ids drawn by menu_status_drawCommands (Attack, two per character, Item)
-D_801EFBB8 g_menuStatusCharCmds  # [code] the two character-specific command ids per command set (Character.unk34.b.row)
-D_801EFBE0 g_menuStatusBaseStatText  # [code] text ids of Speed, Strength, Magic, Spirit
-D_801EFBF0 g_menuStatusBattleStatText  # [code] text ids of Attack, Defense, Evade, Magic Def, Magic Eva
-D_801EFC08 g_menuStatusActionAbilities  # [code] action ability table read by menu_status_drawAbility for ids below 0xC0
-D_801F0808 g_menuStatusActionNames  # [code] action ability name pool (g_menuStatusActionAbilities.unkE offsets)
-D_801F0E50 g_menuStatusSupportNames  # [code] support ability name pool (D_8006D128.unk2 offsets)
-D_801EFC04 g_menuStatusPageLabel  # [code] page number label, its digit patched to '1'+page by menu_status_drawPages
-D_801F10E4 g_menuStatusPageRects  # [code] page window positions, copied into pageWins by menu_status_openPage
-D_801F1134 g_menuStatusPageOpenTween  # [code] page window slide-in, callback menu_status_onPageOpened
-D_801F114C g_menuStatusPageCloseTweens  # [code] page window slide-outs, the first with callback menu_status_onPagesClosed
-D_801EDF04 g_menuStatusCmdTable  # [code] battle command table (name offset first), copied to the stack by menu_status_drawCommands
-D_801EE144 g_menuStatusCmdNames  # [code] battle command names ("Attack", "Steal", "Jump"...) indexed by g_menuStatusCmdTable
+func_801EE440 menuStatus_init  # [code] main-menu entry Status (file 0x38 in main's D_8006E510) init of main's D_8006E530/D_8006E5B0 tables; text bank, first character, window, primitive buffers
+func_801EF69C menuStatus_update  # [code] Status entry update of main's D_8006E530 (per frame), input, draw, animate
+func_801EF6CC menuStatus_exit  # [code] Status entry exit of main's D_8006E530, stores the shown party slot in D_80077E53, restores the help flag
+func_801EF708 menuStatus_input  # [code] runs the D_801EFBA4 input handler of the current state
+func_801EE568 menuStatus_inputMain  # [code] state 1 - Circle back to the main menu (func_800361CC(0)), Cross opens the ability pages, R1/L1 next/previous character
+func_801EF8A0 menuStatus_inputAbilities  # [code] state 2 - Circle closes the ability pages, Cross opens the next one
+func_801EF760 menuStatus_draw  # [code] swaps the primitive buffers and calls every window drawer
+func_801EF80C menuStatus_updateAnims  # [code] steps the page windows' slide animations (func_800631AC) and the character header
+func_801EF904 menuStatus_drawFrame  # [code] the main window with its divider lines
+func_801EE650 menuStatus_drawHeader  # [code] character header, magic-stone gauge (Character.stones/maxStones) and status icons
+func_801EE740 menuStatus_drawCommands  # [code] the four battle commands of the character (names from the copied command table) under label D_8007042C
+func_801EE9E8 menuStatus_drawStats  # [code] Speed/Strength/Magic/Spirit and Attack/Defense/Evade/Magic Def/Magic Eva labels and values
+func_801EED18 menuStatus_drawExp  # [code] Trance gauge (when D_8007AF00 is set), EXP and Next (g_levelExp)
+func_801EEF00 menuStatus_drawEquipment  # [code] the five equipment slots - slot icon, item icon and item name
+func_801EF0A0 menuStatus_drawAbilityPages  # [code] the open ability page windows, 8 rows each, with the page number on the top one
+func_801EF258 menuStatus_drawAbilityRow  # [code] one ability row - icon, name (action table or D_8006D128 support) and AP gauge (func_80027170)
+func_801EF494 menuStatus_openAbilityPage  # [code] Cross - slides in the next ability page window (D_801F1134, then func_801EFA80), or closes them all after the last
+func_801EF9D4 menuStatus_closeAbilityPages  # [code] slides out the open page windows (D_801F114C, the last one calls func_801EFABC)
+func_801EFA80 menuStatus_onPageOpened  # [code] tween callback of D_801F1134 - state 2, the previous page loses its top flag, pagesOpen++
+func_801EFABC menuStatus_onPagesClosed  # [code] tween callback of D_801F114C[0] - state 1, clears the page flags
+func_801EFAF8 menuStatus_onMemberSwitched  # [code] callback given to func_80028CF8 - state 1 once the character header is in place
+func_801EF568 menuStatus_setMember  # [code] shows party slot (func_80028D08 slides the header in direction dir) and counts its learnable abilities and pages
+func_801EFB08 menuStatus_updateHelp  # [code] help-text callback (func_8003556C) - text 0 (status ailments) and its string/value arguments
+D_801F120C s_menuStatus  # [code] status menu state, StatusMenu in include/ovl_38.h
+D_801EFBA4 s_menuStatusInput  # [code] input handler per StatusMenu.state (NULL, inputMain, inputPages, NULL)
+D_801EFBB4 s_menuStatusCmds  # [code] the four command ids drawn by menuStatus_drawCommands (Attack, two per character, Item)
+D_801EFBB8 s_menuStatusCharCmds  # [code] the two character-specific command ids per command set (Character.unk34.b.row)
+D_801EFBE0 s_menuStatusBaseStatText  # [code] text ids of Speed, Strength, Magic, Spirit
+D_801EFBF0 s_menuStatusBattleStatText  # [code] text ids of Attack, Defense, Evade, Magic Def, Magic Eva
+D_801EFC08 s_menuStatusActionAbilities  # [code] action ability table read by menuStatus_drawAbilityRow for ids below 0xC0
+D_801F0808 s_menuStatusActionNames  # [code] action ability name pool (s_menuStatusActionAbilities.unkE offsets)
+D_801F0E50 s_menuStatusSupportNames  # [code] support ability name pool (D_8006D128.unk2 offsets)
+D_801EFC04 s_menuStatusPageLabel  # [code] page number label, its digit patched to '1'+page by menuStatus_drawAbilityPages
+D_801F10E4 s_menuStatusPageRects  # [code] page window positions, copied into pageWins by menuStatus_openAbilityPage
+D_801F1134 s_menuStatusPageOpenTween  # [code] page window slide-in, callback menuStatus_onPageOpened
+D_801F114C s_menuStatusPageCloseTweens  # [code] page window slide-outs, the first with callback menuStatus_onPagesClosed
+D_801EDF04 s_menuStatusCmdTable  # [code] battle command table (name offset first), copied to the stack by menuStatus_drawCommands
+D_801EE144 s_menuStatusCmdNames  # [code] battle command names ("Attack", "Steal", "Jump"...) indexed by s_menuStatusCmdTable
 # FIELDS include/ovl_38.h StatusMenu: unk0=state,unk1=pagesOpen,unk2=slot,unk3=pageCount,unk4=abilityCount,unk5=savedHelp,unk8=win,unk10=pageOpen,unk16=pageOnTop,unk1C=pageWins,unk7C=prim,unk80=primBufs,unk88=primFree,unk8C=header; TextWin renamed TextTween
 
 ## ovl_34: ovl_34 (config menu)
-func_801EEA1C menu_config_init  # [code] main-menu entry Config (file 0x34 in main's D_8006E510) init of main's D_8006E530/D_8006E5B0; text bank, the 13-row list, primitive buffers, the controller-port character rows
-func_801F00A8 menu_config_update  # [code] Config entry update of main's D_8006E530 (per frame), input, draw, animate
-func_801F00D8 menu_config_exit  # [code] Config entry exit of main's D_8006E530, clears the help callback
-func_801F00F8 menu_config_input  # [code] list input, or the custom window's handler from g_menuConfigCustomInputFns
-func_801EECB4 menu_config_inputList  # [code] Circle back to the main menu (func_800361CC(0)), Cross opens a custom window, list up/down/page, Left/Right set the row's option
-func_801EED9C menu_config_inputPad  # [code] button mapping window - Start closes it (func_8002397C), Up/Down pick an action, a button press assigns that button
-func_801EEEF8 menu_config_inputPort  # [code] controller port window - Circle closes it, Left/Right set the character's port bit in the config word, Up/Down pick a character
-func_801EF938 menu_config_openCustom  # [code] Cross on Controller or Battle Control set to Custom - slides in the two custom windows
-func_801F1250 menu_config_closeCustom  # [code] tween callback of the custom windows' slide-out - editing = 0
-func_801EF50C menu_config_setOption  # [code] Left/Right on a row - writes the config word bitfield (sliders start a knob move), checks vibration support, plays SE_CURSOR and calls func_8002397C when changed
-func_801EFA54 menu_config_stepSlider  # [code] after 5 frames of knob movement adds +/-1 to the battle speed or message speed field
-func_801F0184 menu_config_draw  # [code] swaps the primitive buffers, draws the label and rule, the list, custom windows, scroll arrows and cursor
-func_801F025C menu_config_animate  # [code] help text, slider or window tweens, list scroll and the vibration test
-func_801EEB68 menu_config_drawList  # [code] the visible rows (menu_config_drawRow), plus the incoming ones during a page scroll
-func_801F049C menu_config_drawListScroll  # [code] rows scrolling in during a page scroll (menu_config_getScrollView)
-func_801F0550 menu_config_drawRow  # [code] divider and the row's drawer from g_menuConfigRowDrawFns
-func_801F05D0 menu_config_drawSound  # [code] row 0 Sound - Stereo/Mono from config bit 0
-func_801F0640 menu_config_drawController  # [code] row 1 Controller - Normal/Custom from config bit 1
-func_801F06B4 menu_config_drawCursor  # [code] row 2 Cursor - Initial/Memory from config bit 2
-func_801F0728 menu_config_drawAtb  # [code] row 3 ATB - Active/Wait from config bit 3
-func_801F079C menu_config_drawCamera  # [code] row 4 Battle Camera - Auto/Fixed from config bit 4
-func_801F0810 menu_config_drawBtlControl  # [code] row 5 Battle Control - Normal/Custom from config bit 5
-func_801F0884 menu_config_drawMovement  # [code] row 6 Movement - Walk/Run from config bit 6
-func_801F08F8 menu_config_drawBtlSpeed  # [code] row 7 Battle Speed slider (config bits 8-10)
-func_801F0974 menu_config_drawMsgSpeed  # [code] row 8 Field Message slider (config bits 14-16)
-func_801F09F0 menu_config_drawHereIcon  # [code] row 9 HERE Icon - ON/OFF from config bit 17
-func_801F0A64 menu_config_drawWindowColor  # [code] row 10 Window Color - Normal/Classic from config bit 18
-func_801F0AD8 menu_config_drawTargetWindow  # [code] row 11 Target Window - Auto/Always from config bit 19
-func_801F0B4C menu_config_drawVibration  # [code] row 12 Vibration - ON/OFF from config bit 7, greyed out without a vibration pad
-func_801F0D20 menu_config_drawChoice  # [code] the row's two option names, the unselected one greyed
-func_801F0DD8 menu_config_drawSlider  # [code] Slow/Fast labels and the gauge with the knob at value (plus the moving offset)
-func_801EFC20 menu_config_drawGauge  # [code] slider gauge - end caps, DR_TWIN-repeated middle and 3 LINE_F2 fill lines (same code as ovl_39 0x801F7FD4)
-func_801EF110 menu_config_drawPad  # [code] button mapping window - per action the mapped button, arrow, button and action name (GameState.unk28 nibbles)
-func_801EF2B4 menu_config_drawPort  # [code] controller port window - character names and port 1/port 2 icons
-func_801F0BE8 menu_config_drawCustom  # [code] frames of the two custom windows and the button mapping or port window
-func_801EF3F8 menu_config_drawHand  # [code] the hand at the list row, and at the custom window row while editing (blinking list hand)
-func_801F0C78 menu_config_drawScrollArrows  # [code] up/down arrow sprites 0xB8/0xB9, blinking while there is more to scroll
-func_801F0F48 menu_config_drawSmallText  # [code] func_80029D60 into the menu's primitive buffer
-func_801F0F94 menu_config_drawIcon  # [code] func_80027834 icon into the menu's primitive buffer
-func_801F0FE8 menu_config_drawText  # [code] text id via func_8002920C into the menu's primitive buffer
-func_801EFB38 menu_config_setHelpText  # [code] help-text callback - row help with its option names, or the custom window's help
-func_801EFF58 menu_config_getListView  # [code] visible rows/first row/y offset of the list, with scroll animation (like main's menuList_getView)
-func_801F1334 menu_config_getScrollView  # [code] rows scrolling in during a page scroll
-func_801F02CC menu_config_listPageUp  # [code] BTN_L1 - starts a page scroll up (flag 7), same code as ovl_39 0x801F8C34
-func_801F0380 menu_config_listPageDown  # [code] BTN_R1 - starts a page scroll down (flag 5), same code as ovl_39 0x801F8CE8
-func_801F043C menu_config_getScrollClip  # [code] clip RECT shifted by the list's scroll offset, same code as ovl_39 0x801F8BD4
-func_801F1074 menu_config_stepWindows  # [code] steps the custom windows' tweens (func_800631AC)
-func_801F10C8 menu_config_stepScroll  # [code] advances the list's row scroll (4 px) or page scroll (9 px)
-func_801F1168 menu_config_stepRumble  # [code] ends the vibration test after 9 frames (menu_config_setRumble(0))
-func_801F11C4 menu_config_setPadButton  # [code] maps button v to action slot, swapping with the slot that had it (GameState.unk28 nibbles)
-func_801F125C menu_config_isWindowMoving  # [code] custom window tween still running
-func_801F126C menu_config_hasVibration  # [code] a pad of type 7 (analog) or in state 6 is connected
-func_801F12D0 menu_config_setRumble  # [code] sets both pads' actuator bytes (D_800739B0) on or off
-D_801F1558 g_menuConfig  # [code] config menu state, ConfigMenu in include/ovl_34.h
-D_801F13F0 g_menuConfigRowText  # [code] per row - title and option text ids
-D_801F1424 g_menuConfigCustomInputFns  # [code] input handler per row while a custom window is open (rows 1 and 5)
-D_801F14BC g_menuConfigRowDrawFns  # [code] row drawers called by menu_config_drawRow
-D_801F1474 g_menuConfigPadBits  # [code] pad bit per button mapping slot
-D_801F14FC g_menuConfigPadActions  # [code] action text id and button sprite per mapping slot
-D_801F14F0 g_menuConfigSlowText  # [code] text id of the slider's left label "Slow"
-D_801F14F4 g_menuConfigFastText  # [code] text id of the slider's right label "Fast"
-D_801F1524 g_menuConfigCustomOpen  # [code] slide-in TweenDef of the custom windows (menu_config_openCustom)
-D_801F1534 g_menuConfigCustomRects  # [code] the custom windows' RECTs
-D_801F1464 g_menuConfigPadClose  # [code] slide-out TweenDef of the button mapping window, then menu_config_closeCustom
-D_801F14AC g_menuConfigPortClose  # [code] slide-out TweenDef of the port window, then menu_config_closeCustom
-D_801F1544 g_menuConfigGaugeTexWindow  # [code] texture window of the gauge (menu_config_drawGauge)
-D_801F154C g_menuConfigGaugeColors  # [code] colours of the gauge's 3 fill lines
-# FIELDS include/ovl_34.h ConfigMenu: unk0=subCursor,unk1=charCount,unk2=editing,unk3=rumbleTest,unk4=sliderDir,unk5=sliderTicks,unk6=rumbleTicks,unk8=charPortBit,unk11=charIdx,unk1C=wins,unk3C=list,unk4C=prim,unk50=primBufs,unk58=primFree; ScrollPos: unk0=rows,unk1=first,unk2=y; ConfigPadEntry: unk0=text,unk1=icon; ConfigBits: b0=sound,b1=controller,b2=cursor,b3=atb,b4=camera,b5=btlControl,b6=movement,b7=vibration,b8=btlSpeed,b14=msgSpeed,b17=hereIcon,b18=windowColor,b19=targetWindow,b20=charPort
+func_801EEA1C menuConfig_init  # [code] main-menu entry Config (file 0x34 in main's D_8006E510) init of main's D_8006E530/D_8006E5B0; text bank, the 13-row list, primitive buffers, the controller-port character rows
+func_801F00A8 menuConfig_update  # [code] Config entry update of main's D_8006E530 (per frame), input, draw, animate
+func_801F00D8 menuConfig_exit  # [code] Config entry exit of main's D_8006E530, clears the help callback
+func_801F00F8 menuConfig_input  # [code] list input, or the custom window's handler from s_menuConfigSubInput
+func_801EECB4 menuConfig_inputList  # [code] Circle back to the main menu (func_800361CC(0)), Cross opens a custom window, list up/down/page, Left/Right set the row's option
+func_801EED9C menuConfig_inputPadMap  # [code] button mapping window - Start closes it (func_8002397C), Up/Down pick an action, a button press assigns that button
+func_801EEEF8 menuConfig_inputBattleControl  # [code] controller port window - Circle closes it, Left/Right set the character's port bit in the config word, Up/Down pick a character
+func_801EF938 menuConfig_openSubWindow  # [code] Cross on Controller or Battle Control set to Custom - slides in the two custom windows
+func_801F1250 menuConfig_closeSubWindow  # [code] tween callback of the custom windows' slide-out - editing = 0
+func_801EF50C menuConfig_setOption  # [code] Left/Right on a row - writes the config word bitfield (sliders start a knob move), checks vibration support, plays SE_CURSOR and calls func_8002397C when changed
+func_801EFA54 menuConfig_stepSlider  # [code] after 5 frames of knob movement adds +/-1 to the battle speed or message speed field
+func_801F0184 menuConfig_draw  # [code] swaps the primitive buffers, draws the label and rule, the list, custom windows, scroll arrows and cursor
+func_801F025C menuConfig_updateAnims  # [code] help text, slider or window tweens, list scroll and the vibration test
+func_801EEB68 menuConfig_drawRows  # [code] the visible rows (menuConfig_drawRow), plus the incoming ones during a page scroll
+func_801F049C menuConfig_drawScrollRows  # [code] rows scrolling in during a page scroll (menuConfig_getScrollView)
+func_801F0550 menuConfig_drawRow  # [code] divider and the row's drawer from s_menuConfigRowDraw
+func_801F05D0 menuConfig_drawSoundRow  # [code] row 0 Sound - Stereo/Mono from config bit 0
+func_801F0640 menuConfig_drawControllerRow  # [code] row 1 Controller - Normal/Custom from config bit 1
+func_801F06B4 menuConfig_drawCursorRow  # [code] row 2 Cursor - Initial/Memory from config bit 2
+func_801F0728 menuConfig_drawAtbRow  # [code] row 3 ATB - Active/Wait from config bit 3
+func_801F079C menuConfig_drawCameraRow  # [code] row 4 Battle Camera - Auto/Fixed from config bit 4
+func_801F0810 menuConfig_drawBattleControlRow  # [code] row 5 Battle Control - Normal/Custom from config bit 5
+func_801F0884 menuConfig_drawMovementRow  # [code] row 6 Movement - Walk/Run from config bit 6
+func_801F08F8 menuConfig_drawBattleSpeedRow  # [code] row 7 Battle Speed slider (config bits 8-10)
+func_801F0974 menuConfig_drawMessageSpeedRow  # [code] row 8 Field Message slider (config bits 14-16)
+func_801F09F0 menuConfig_drawHereIconRow  # [code] row 9 HERE Icon - ON/OFF from config bit 17
+func_801F0A64 menuConfig_drawWindowColorRow  # [code] row 10 Window Color - Normal/Classic from config bit 18
+func_801F0AD8 menuConfig_drawTargetWindowRow  # [code] row 11 Target Window - Auto/Always from config bit 19
+func_801F0B4C menuConfig_drawVibrationRow  # [code] row 12 Vibration - ON/OFF from config bit 7, greyed out without a vibration pad
+func_801F0D20 menuConfig_drawChoice  # [code] the row's two option names, the unselected one greyed
+func_801F0DD8 menuConfig_drawSliderRow  # [code] Slow/Fast labels and the gauge with the knob at value (plus the moving offset)
+func_801EFC20 menuConfig_drawSlider  # [code] slider gauge - end caps, DR_TWIN-repeated middle and 3 LINE_F2 fill lines (same code as ovl_39 0x801F7FD4)
+func_801EF110 menuConfig_drawPadMap  # [code] button mapping window - per action the mapped button, arrow, button and action name (GameState.unk28 nibbles)
+func_801EF2B4 menuConfig_drawBattleControl  # [code] controller port window - character names and port 1/port 2 icons
+func_801F0BE8 menuConfig_drawSubWindows  # [code] frames of the two custom windows and the button mapping or port window
+func_801EF3F8 menuConfig_drawCursor  # [code] the hand at the list row, and at the custom window row while editing (blinking list hand)
+func_801F0C78 menuConfig_drawScrollArrows  # [code] up/down arrow sprites 0xB8/0xB9, blinking while there is more to scroll
+func_801F0F48 menuConfig_drawSmallText  # [code] func_80029D60 into the menu's primitive buffer
+func_801F0F94 menuConfig_drawIcon  # [code] func_80027834 icon into the menu's primitive buffer
+func_801F0FE8 menuConfig_drawText  # [code] text id via func_8002920C into the menu's primitive buffer
+func_801EFB38 menuConfig_updateHelp  # [code] help-text callback - row help with its option names, or the custom window's help
+func_801EFF58 menuConfig_getListView  # [code] visible rows/first row/y offset of the list, with scroll animation (like main's menuList_getView)
+func_801F1334 menuConfig_getScrollView  # [code] rows scrolling in during a page scroll
+func_801F02CC menuConfig_pageUp  # [code] BTN_L1 - starts a page scroll up (flag 7), same code as ovl_39 0x801F8C34
+func_801F0380 menuConfig_pageDown  # [code] BTN_R1 - starts a page scroll down (flag 5), same code as ovl_39 0x801F8CE8
+func_801F043C menuConfig_getScrollClip  # [code] clip RECT shifted by the list's scroll offset, same code as ovl_39 0x801F8BD4
+func_801F1074 menuConfig_stepWindows  # [code] steps the custom windows' tweens (func_800631AC)
+func_801F10C8 menuConfig_stepScroll  # [code] advances the list's row scroll (4 px) or page scroll (9 px)
+func_801F1168 menuConfig_stepRumble  # [code] ends the vibration test after 9 frames (menuConfig_setRumble(0))
+func_801F11C4 menuConfig_setPadButton  # [code] maps button v to action slot, swapping with the slot that had it (GameState.unk28 nibbles)
+func_801F125C menuConfig_isWindowMoving  # [code] custom window tween still running
+func_801F126C menuConfig_hasVibration  # [code] a pad of type 7 (analog) or in state 6 is connected
+func_801F12D0 menuConfig_setRumble  # [code] sets both pads' actuator bytes (D_800739B0) on or off
+D_801F1558 s_menuConfig  # [code] config menu state, ConfigMenu in include/ovl_34.h
+D_801F13F0 s_menuConfigRowText  # [code] per row - title and option text ids
+D_801F1424 s_menuConfigSubInput  # [code] input handler per row while a custom window is open (rows 1 and 5)
+D_801F14BC s_menuConfigRowDraw  # [code] row drawers called by menuConfig_drawRow
+D_801F1474 s_menuConfigPadBits  # [code] pad bit per button mapping slot
+D_801F14FC s_menuConfigPadActions  # [code] action text id and button sprite per mapping slot
+D_801F14F0 s_menuConfigSlowText  # [code] text id of the slider's left label "Slow"
+D_801F14F4 s_menuConfigFastText  # [code] text id of the slider's right label "Fast"
+D_801F1524 s_menuConfigSubOpen  # [code] slide-in TweenDef of the custom windows (menuConfig_openSubWindow)
+D_801F1534 s_menuConfigSubRects  # [code] the custom windows' RECTs
+D_801F1464 s_menuConfigPadMapClose  # [code] slide-out TweenDef of the button mapping window, then menuConfig_closeSubWindow
+D_801F14AC s_menuConfigBattleControlClose  # [code] slide-out TweenDef of the port window, then menuConfig_closeSubWindow
+D_801F1544 s_menuConfigSliderTexWindow  # [code] texture window of the gauge (menuConfig_drawSlider)
+D_801F154C s_menuConfigSliderColors  # [code] colours of the gauge's 3 fill lines
+# FIELDS include/ovl_34.h ConfigMenu: unk0=subCursor,unk1=charCount,unk2=editing,unk3=rumbleTest,unk4=sliderDir,unk5=sliderTicks,unk6=rumbleTicks,unk8=charPortBit,unk11=charIdx,unk1C=wins,unk3C=list,unk4C=prim,unk50=primBufs,unk58=primFree; ScrollPos: unk0=rows,unk1=first,unk2=y; ConfigPadEntry: unk0=text,unk1=icon; ConfigBits: b0=soundMono,b1=padCustom,b2=cursorMemory,b3=atbWait,b4=battleCameraFixed,b5=battleControlCustom,b6=movementRun,b7=vibration,b8=battleSpeed,b14=messageSpeed,b17=hereIconOff,b18=windowClassic,b19=targetWindowAlways,b20=charPort
 
 ## ovl_37: ovl_37 (items menu)
-func_801F0C18 menu_items_init  # [code] main-menu entry Item (file 0x37 in main's D_8006E510) init of main's D_8006E530/D_8006E5B0; text bank, key item list, the two lists, windows, key item picture
-func_801F2160 menu_items_update  # [code] Item entry update of main's D_8006E530 (per frame), input, draw, animate
-func_801F2190 menu_items_exit  # [code] Item entry exit of main's D_8006E530
-func_801F21E8 menu_items_input  # [code] runs the D_801F307C handler of the current state
-func_801F0D18 menu_items_inputCmd  # [code] state 1 - Circle back to the main menu, Cross enters the list (Arrange opens the Auto/Manual window), Left/Right pick Use/Arrange/Key
-func_801F22C8 menu_items_inputList  # [code] state 2 - Circle back to the top row, Cross selects the entry (menu_items_select), list movement
-func_801F0E10 menu_items_inputTarget  # [code] state 3 - Circle closes the character window, Cross uses the item on the character, Up/Down pick a party member
-func_801F23C4 menu_items_inputArrange  # [code] state 4 - Auto sorts the inventory (menu_items_sort), Manual enters state 5, Circle closes the window
-func_801F0F50 menu_items_inputManual  # [code] state 5 - Cross picks a slot, then swaps it with the next one picked; Circle back to the Auto/Manual window
-func_801F2488 menu_items_inputKeyView  # [code] state 6 - Circle or Cross closes the key item view
-func_801F24DC menu_items_select  # [code] calls the current list's select function on the entry under the cursor
-func_801F10C4 menu_items_selectItem  # [code] select function of the item list - usable items (D_80069018.unkF bit 0) are used at once or open the character window
-func_801F253C menu_items_selectKeyItem  # [code] select function of the key item list - opens the key item view
-func_801F2590 menu_items_useItem  # [code] applies the item to the party member (func_800654F8), SE_USE_ITEM and item_remove on success
-func_801F1778 menu_items_openTarget  # [code] slides the character window in on the side away from the cursor and picks the first party member
-func_801F2C58 menu_items_closeTarget  # [code] slides the character window out (D_801F3120)
-func_801F2CC4 menu_items_onTargetOpened  # [code] tween callback of the character window slide-in (D_801F30E0) - state 3
-func_801F2CD4 menu_items_onTargetClosed  # [code] tween callback of the slide-out (D_801F3120) - state 2, window hidden
-func_801F187C menu_items_sort  # [code] Auto arrange - packs the inventory and sorts it by D_80069018.unk10 then id
-func_801F2CEC menu_items_initKeyItems  # [code] collects the key item ids the party has (func_800281A4) into keyItems/keyCount
-func_801F2D58 menu_items_openArrange  # [code] opens the Auto/Manual window (win_* callbacks below)
-func_801F2E18 menu_items_closeArrange  # [code] win_close of the Auto/Manual window
-func_801F2E40 menu_items_drawArrange  # [code] content callback of the Auto/Manual window - text 3 "Auto", 4 "Manual"
-func_801F2EBC menu_items_onArrangeOpened  # [code] on-opened callback of the Auto/Manual window - state 4
-func_801F2ECC menu_items_onArrangeClosed  # [code] on-closed callback of the Auto/Manual window - state 1
-func_801F2F38 menu_items_openKeyView  # [code] starts the key item view sliding in (keyViewPhase 1), state 0
-func_801F2FA0 menu_items_closeKeyView  # [code] starts the key item view sliding out (keyViewPhase 3)
-func_801F1D88 menu_items_stepKeyView  # [code] moves the key item view by the D_801F3064 deltas, state 6 when in, state 2 when out
-func_801F1E88 menu_items_drawKeyView  # [code] key item name, description and its picture sprites
-func_801F2240 menu_items_draw  # [code] calls the top row, list, character window, key item view and cursor drawers
-func_801F2280 menu_items_animate  # [code] help text, key item view, "Kweeeh!" timer, character window tween and list scrolling
-func_801F262C menu_items_drawCmds  # [code] top row window - "Use", "Arrange", "Key"
-func_801F11E4 menu_items_drawList  # [code] list window - labels, visible rows (the list's drawRow) and the rows scrolling in
-func_801F26E0 menu_items_drawListScroll  # [code] rows scrolling in during a page scroll (func_8002F344)
-func_801F2870 menu_items_drawItemRow  # [code] drawRow of the item list - name, icon and count, greyed when not usable
-func_801F29D0 menu_items_drawKeyRow  # [code] drawRow of the key item list - name, blinking new marker when func_800281D0 is clear
-func_801F27A0 menu_items_drawTargets  # [code] character window - the party members (func_80026EA0)
-func_801F13F8 menu_items_drawCursor  # [code] the hands for the top row, Auto/Manual, the list (two columns), the character window and the manual swap slot
-func_801F1B78 menu_items_setHelpText  # [code] help text per state - top row help, item or key item description, "Select character.", Auto/Manual help
-func_801F2FC4 menu_items_getCursorIndex  # [code] entry index under the list cursor (two per row), allowing for a running scroll
-func_801F2EDC menu_items_loadImages  # [code] LoadImage of D_801EDFD8 (key item view CLUT and picture)
-func_801F1A7C menu_items_callChocobo  # [code] called by main's item formula (func_800654F8, cmd 0x121) - on the world map with event var 0xBF set and 0xB5 clear it calls ovl_0c func_800B8124/func_800B81A0, sets 0xB5 and shows text 0xB "Kweeeh!"
-func_801F2B20 menu_items_onKwehOpened  # [code] on-opened callback of the "Kweeeh!" window - func_8002F514(0x44A) on the world map
-func_801F2B58 menu_items_drawKweh  # [code] content callback of the "Kweeeh!" window - centred text 0xB
-func_801F2BC0 menu_items_stepKweh  # [code] after 0x60 frames of the "Kweeeh!" window closes the whole menu (func_800362C8)
-D_801FAB78 g_menuItems  # [code] items menu state, ItemMenu in include/ovl_37.h
-D_801F3040 g_menuItemsLists  # [code] per top-row command - select function, row drawer and MenuList
-D_801F307C g_menuItemsInputFns  # [code] input handler per ItemMenu.state
-D_801F3064 g_menuItemsKeyViewSlide  # [code] x deltas of the key item view slide (22 in, 8 out)
-D_801F30E0 g_menuItemsTargetOpen  # [code] character window slide-in tweens, by side
-D_801F3120 g_menuItemsTargetClose  # [code] character window slide-out tweens, by side
-D_801F3098 g_menuItemsCmdText  # [code] text ids of the top row
-D_801F309C g_menuItemsCmdX  # [code] x of each top-row name
-D_801F30AC g_menuItemsCmdCursorX  # [code] hand x per top-row entry
-D_801F30A8 g_menuItemsListRect  # [code] -> ItemMenu.listRect
-D_801F30B8 g_menuItemsArrangeRect  # [code] RECT of the Auto/Manual window
-D_801F3148 g_menuItemsKwehRect  # [code] RECT of the "Kweeeh!" window
-D_801F3150 g_menuItemsArrangeHelpArea  # [code] help area while the Auto/Manual window is up (func_80035580)
-D_801F3158 g_menuItemsKeyClutRect  # [code] VRAM (960,432) 16x2, CLUT of the key item picture
-D_801F3160 g_menuItemsKeyImageRect  # [code] VRAM (896,384) 44x128, the key item picture
-D_801EDFD8 g_menuItemsKeyImage  # [code] key item picture CLUT and pixels (menu_items_loadImages)
-D_801F3168 g_menuItemsHelp  # [code] item help strings (D_80069018.unk2 offsets)
-D_801F651C g_menuItemsKeyHelp  # [code] key item help strings (D_8006B374.unk2 offsets)
-D_801F79F8 g_menuItemsKeyDesc  # [code] key item descriptions (D_8006B374.unk6 offsets)
-D_801FA958 g_menuItemsScrollClip  # [code] clip RECT of the rows scrolling in (func_8002F40C)
-D_801FA968 g_menuItemsSortBuf  # [code] inventory sort buffer (menu_items_sort)
-D_801FAB68 g_menuItemsSortTmp  # [code] swap temp of menu_items_sort
-# FIELDS include/ovl_37.h ItemMenu: unk0=cmd,unk1=state,unk2=slot,unk3=targetKind,unk4=targetMode,unk5=arrangeCursor,unk6=swapFrom,unk7=swapPicked,unk8=charWinOpen,unkC=itemList,unk1C=keyList,unk2C=cmdRect,unk34=listRect,unk3C=charWin,unk4C=popup,unk50=popupTimer,unk54=keyView,unk55=keyViewPhase,unk56=keyViewId,unk57=keyViewStep,unk58=keyViewX,unk60=keyItems,unkB0=keyCount; ItemList: unk0=select,unk4=drawRow,unk8=list
+func_801F0C18 menuItem_init  # [code] main-menu entry Item (file 0x37 in main's D_8006E510) init of main's D_8006E530/D_8006E5B0; text bank, key item list, the two lists, windows, key item picture
+func_801F2160 menuItem_update  # [code] Item entry update of main's D_8006E530 (per frame), input, draw, animate
+func_801F2190 menuItem_exit  # [code] Item entry exit of main's D_8006E530
+func_801F21E8 menuItem_input  # [code] runs the D_801F307C handler of the current state
+func_801F0D18 menuItem_inputTabs  # [code] state 1 - Circle back to the main menu, Cross enters the list (Arrange opens the Auto/Manual window), Left/Right pick Use/Arrange/Key
+func_801F22C8 menuItem_inputList  # [code] state 2 - Circle back to the top row, Cross selects the entry (menuItem_selectRow), list movement
+func_801F0E10 menuItem_inputTarget  # [code] state 3 - Circle closes the character window, Cross uses the item on the character, Up/Down pick a party member
+func_801F23C4 menuItem_inputArrange  # [code] state 4 - Auto sorts the inventory (menuItem_sortAuto), Manual enters state 5, Circle closes the window
+func_801F0F50 menuItem_inputManualArrange  # [code] state 5 - Cross picks a slot, then swaps it with the next one picked; Circle back to the Auto/Manual window
+func_801F2488 menuItem_inputKeyItem  # [code] state 6 - Circle or Cross closes the key item view
+func_801F24DC menuItem_selectRow  # [code] calls the current list's select function on the entry under the cursor
+func_801F10C4 menuItem_selectItem  # [code] select function of the item list - usable items (D_80069018.unkF bit 0) are used at once or open the character window
+func_801F253C menuItem_selectKeyItem  # [code] select function of the key item list - opens the key item view
+func_801F2590 menuItem_useOnTarget  # [code] applies the item to the party member (func_800654F8), SE_USE_ITEM and item_remove on success
+func_801F1778 menuItem_openTarget  # [code] slides the character window in on the side away from the cursor and picks the first party member
+func_801F2C58 menuItem_closeTarget  # [code] slides the character window out (D_801F3120)
+func_801F2CC4 menuItem_onTargetOpened  # [code] tween callback of the character window slide-in (D_801F30E0) - state 3
+func_801F2CD4 menuItem_onTargetClosed  # [code] tween callback of the slide-out (D_801F3120) - state 2, window hidden
+func_801F187C menuItem_sortAuto  # [code] Auto arrange - packs the inventory and sorts it by D_80069018.unk10 then id
+func_801F2CEC menuItem_collectKeyItems  # [code] collects the key item ids the party has (func_800281A4) into keyItems/keyCount
+func_801F2D58 menuItem_openArrange  # [code] opens the Auto/Manual window (win_* callbacks below)
+func_801F2E18 menuItem_closeArrange  # [code] win_close of the Auto/Manual window
+func_801F2E40 menuItem_drawArrangeWindow  # [code] content callback of the Auto/Manual window - text 3 "Auto", 4 "Manual"
+func_801F2EBC menuItem_onArrangeOpened  # [code] on-opened callback of the Auto/Manual window - state 4
+func_801F2ECC menuItem_onArrangeClosed  # [code] on-closed callback of the Auto/Manual window - state 1
+func_801F2F38 menuItem_showKeyItem  # [code] starts the key item view sliding in (keyViewPhase 1), state 0
+func_801F2FA0 menuItem_hideKeyItem  # [code] starts the key item view sliding out (keyViewPhase 3)
+func_801F1D88 menuItem_updateKeyItemAnim  # [code] moves the key item view by the D_801F3064 deltas, state 6 when in, state 2 when out
+func_801F1E88 menuItem_drawKeyItem  # [code] key item name, description and its picture sprites
+func_801F2240 menuItem_draw  # [code] calls the top row, list, character window, key item view and cursor drawers
+func_801F2280 menuItem_updateAnims  # [code] help text, key item view, "Kweeeh!" timer, character window tween and list scrolling
+func_801F262C menuItem_drawTabs  # [code] top row window - "Use", "Arrange", "Key"
+func_801F11E4 menuItem_drawList  # [code] list window - labels, visible rows (the list's drawRow) and the rows scrolling in
+func_801F26E0 menuItem_drawScrollRows  # [code] rows scrolling in during a page scroll (func_8002F344)
+func_801F2870 menuItem_drawRow  # [code] drawRow of the item list - name, icon and count, greyed when not usable
+func_801F29D0 menuItem_drawKeyRow  # [code] drawRow of the key item list - name, blinking new marker when func_800281D0 is clear
+func_801F27A0 menuItem_drawTargetWindow  # [code] character window - the party members (func_80026EA0)
+func_801F13F8 menuItem_drawCursor  # [code] the hands for the top row, Auto/Manual, the list (two columns), the character window and the manual swap slot
+func_801F1B78 menuItem_updateHelp  # [code] help text per state - top row help, item or key item description, "Select character.", Auto/Manual help
+func_801F2FC4 menuItem_getSlot  # [code] entry index under the list cursor (two per row), allowing for a running scroll
+func_801F2EDC menuItem_loadImages  # [code] LoadImage of D_801EDFD8 (key item view CLUT and picture)
+func_801F1A7C menuItem_callChocobo  # [code] called by main's item formula (func_800654F8, cmd 0x121) - on the world map with event var 0xBF set and 0xB5 clear it calls ovl_0c func_800B8124/func_800B81A0, sets 0xB5 and shows text 0xB "Kweeeh!"
+func_801F2B20 menuItem_onKwehOpened  # [code] on-opened callback of the "Kweeeh!" window - func_8002F514(0x44A) on the world map
+func_801F2B58 menuItem_drawKweh  # [code] content callback of the "Kweeeh!" window - centred text 0xB
+func_801F2BC0 menuItem_stepKweh  # [code] after 0x60 frames of the "Kweeeh!" window closes the whole menu (func_800362C8)
+D_801FAB78 s_menuItem  # [code] items menu state, ItemMenu in include/ovl_37.h
+D_801F3040 s_menuItemTabs  # [code] per top-row command - select function, row drawer and MenuList
+D_801F307C s_menuItemInput  # [code] input handler per ItemMenu.state
+D_801F3064 s_menuItemKeyItemSlide  # [code] x deltas of the key item view slide (22 in, 8 out)
+D_801F30E0 s_menuItemTargetOpen  # [code] character window slide-in tweens, by side
+D_801F3120 s_menuItemTargetClose  # [code] character window slide-out tweens, by side
+D_801F3098 s_menuItemTabText  # [code] text ids of the top row
+D_801F309C s_menuItemTabX  # [code] x of each top-row name
+D_801F30AC s_menuItemTabCursorX  # [code] hand x per top-row entry
+D_801F30A8 s_menuItemListRect  # [code] -> ItemMenu.listRect
+D_801F30B8 s_menuItemArrangeRect  # [code] RECT of the Auto/Manual window
+D_801F3148 s_menuItemKwehRect  # [code] RECT of the "Kweeeh!" window
+D_801F3150 s_menuItemArrangeHelpBounds  # [code] help area while the Auto/Manual window is up (func_80035580)
+D_801F3158 s_menuItemKeyClutRect  # [code] VRAM (960,432) 16x2, CLUT of the key item picture
+D_801F3160 s_menuItemKeyImageRect  # [code] VRAM (896,384) 44x128, the key item picture
+D_801EDFD8 s_menuItemKeyImage  # [code] key item picture CLUT and pixels (menuItem_loadImages)
+D_801F3168 s_menuItemHelp  # [code] item help strings (D_80069018.unk2 offsets)
+D_801F651C s_menuItemKeyHelp  # [code] key item help strings (D_8006B374.unk2 offsets)
+D_801F79F8 s_menuItemKeyDesc  # [code] key item descriptions (D_8006B374.unk6 offsets)
+D_801FA958 s_menuItemScrollClip  # [code] clip RECT of the rows scrolling in (func_8002F40C)
+D_801FA968 s_menuItemSortBuf  # [code] inventory sort buffer (menuItem_sortAuto)
+D_801FAB68 s_menuItemSortTmp  # [code] swap temp of menuItem_sortAuto
+# FIELDS include/ovl_37.h ItemMenu: unk0=tab,unk1=state,unk2=slot,unk3=targetKind,unk4=targetMode,unk5=arrangeCursor,unk6=swapFrom,unk7=swapPicked,unk8=charWinOpen,unkC=itemList,unk1C=keyList,unk2C=cmdRect,unk34=listRect,unk3C=charWin,unk4C=popup,unk50=popupTimer,unk54=keyView,unk55=keyViewPhase,unk56=keyViewId,unk57=keyViewStep,unk58=keyViewX,unk60=keyItems,unkB0=keyCount; ItemList: unk0=select,unk4=drawRow,unk8=list
