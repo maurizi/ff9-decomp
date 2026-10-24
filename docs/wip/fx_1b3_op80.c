@@ -1,4 +1,4 @@
-/* Draft of fx_1b3 fx_1b3_op80 (Fx1b3Split/Fx1b3Blast in include/fxmod/fx_1b3.h). Status: 46 lines, 10 ignoring registers (build/w/nd.py). The frame matches with the tex/clut lists, trail points and flash locals sharing three function-scope buffers (v, w, sc), as the original stack offsets show. Hi_RegisterTexListModel is called with three arguments (a3 left over), see REGTEX. The frame switch is sparse (a compare tree, bodies in ascending case order). */
+/* Draft of fx_1b3 fx_1b3_op80 (Fx1b3Split/Fx1b3Blast in include/fxmod/fx_1b3.h). Status: 27 lines, 10 ignoring registers, all in the draw loop (two unk4 givs in the original: vx off tr+4, vy/vz/pad off tr+10) (build/w/nd.py). The frame matches with the tex/clut lists, trail points and flash locals sharing three function-scope buffers (v, w, sc), as the original stack offsets show. Hi_RegisterTexListModel is called with three arguments (a3 left over), see REGTEX. The frame switch is sparse (a compare tree, bodies in ascending case order). */
 #include "fxmod/fx_1b3.h"
 
 typedef struct {
@@ -590,8 +590,7 @@ s32 fx_1b3_op80(s32 mode, Fx1b3Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             return 1;
         }
         for (i = 0; i < 32; i++) {
-            p = work->unk80[i];
-            if (p != NULL && p->unk30 == -1) {
+            if (work->unk80[i] != NULL && work->unk80[i]->unk30 == -1) {
                 work->unk80[i] = NULL;
             }
         }
@@ -734,11 +733,13 @@ s32 fx_1b3_op80(s32 mode, Fx1b3Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
                 if (tr->unk4C != 0) {
                     tr->unk4C--;
                     if (tr->unk4C < 4) {
+                        s32 n;
+
                         tr->unk2 = 8;
                         tr->unk0 = 8;
                         tr->unk1 = 0;
-                        c = 9;
-                        for (j = 0; j < c; j++) {
+                        n = 9;
+                        for (j = 0; j < n; j++) {
                             D_801EB0C4[i].unk50[j].vx += D_801EB0C4[i].unk98[j].vx;
                             D_801EB0C4[i].unk50[j].vy += D_801EB0C4[i].unk98[j].vy;
                             D_801EB0C4[i].unk50[j].vz += D_801EB0C4[i].unk98[j].vz;
