@@ -1,6 +1,6 @@
 /* Draft of fx_0e3_0 fx_0e3_0_op80.
- * Status (pass 3, build/w/cmp.py): 98 mismatched rows ignoring registers and stack offsets (was 312), 297 counting
- * registers (was 936); frame size matches (400), 2499 vs 2501 instructions. ex/work now get s2/s3 like the original:
+ * Status (pass 3, build/w/cmp.py): 89 mismatched rows ignoring registers and stack offsets (was 312), 274 counting
+ * registers (was 936); frame size matches (400), 2498 vs 2501 instructions. ex/work now get s2/s3 like the original:
  * the multi-role variables were split by role (build/w/greedy.py with split2.py; the _bNNN names are those splits).
  * Pass 3 levers: modes 0/1 fall through to one `return 0` (if/else chain; `if (done) return 1;` before
  * work->unk4++); unk70.vz copied right after vx/vy; nbolt = 1 after the summon draw call (cse no longer folds the
@@ -320,19 +320,15 @@ s32 fx_0e3_0_op80(s32 mode, Fx0e30Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
             work->unk10.vz = work->unk8.vz - cz;
         }
         if (t < 0xC00) {
-            n = t >> 3;
-            e = 0x400;
+            work->unk28.vx = 0x400 - (t >> 3);
         } else {
-            n = ((t - 0xC00) * 0x1F4) >> 10;
-            e = 0x28C;
+            work->unk28.vx = 0x28C - (((t - 0xC00) * 0x1F4) >> 10);
         }
-        work->unk28.vx = e - n;
         work->unk28.vy = 0;
         work->unk1C.vx = work->unk1C.vy = work->unk1C.vz = (c_r277 + 0x1800) * 2;
         ex->Hi_DrawSummonModel(&work->unk28, (VECTOR *)&work->unk10, (s32)&work->unk1C, SUMMON(env)->unk60, 1);
-        d = t >> 2;
-        ex->Hi_ModifySummonModelRGB(SUMMON(env)->unk60, (ex->math_sin(d) >> 5) - 0x80, (ex->math_sin(d) >> 5) - 0x80,
-                                    (ex->math_sin(d) >> 5) - 0x80);
+        ex->Hi_ModifySummonModelRGB(SUMMON(env)->unk60, (ex->math_sin(t >> 2) >> 5) - 0x80, (ex->math_sin(t >> 2) >> 5) - 0x80,
+                                    (ex->math_sin(t >> 2) >> 5) - 0x80);
         work->unk30.vx = work->unk10.vx;
         work->unk30.vy = work->unk10.vy;
         work->unk30.vz = work->unk10.vz;
