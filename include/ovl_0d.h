@@ -173,8 +173,8 @@ typedef struct {
 typedef struct {
     u8 v[8];
 } TmDirMask; /* card arrow bit for each direction */
-extern TmDirMask D_800A73B4; /* single-bit masks, one per arrow */
-extern TmDirMask D_800A73BC;
+extern TmDirMask g_tmArrowBits; /* single-bit masks, one per arrow */
+extern TmDirMask g_tmBackArrowBits;
 
 typedef struct {
     s32 unk0; /* x */
@@ -188,7 +188,7 @@ typedef struct {
 typedef struct {
     TmArrow v[8];
 } TmArrowTbl; /* arrow sprite for each direction */
-extern TmArrowTbl D_800A73C4;
+extern TmArrowTbl g_tmArrowSprites;
 
 typedef struct {
     s32 unk0; /* x */
@@ -200,7 +200,7 @@ typedef struct {
 typedef struct {
     TmCoinFrame v[8];
 } TmCoinFrames; /* coin toss animation frames */
-extern TmCoinFrames D_800A74AC;
+extern TmCoinFrames g_tmCoinFrames;
 
 typedef struct {
     u32 unk0; /* id */
@@ -219,147 +219,147 @@ typedef struct {
     u32 data[1];
 } TmTimImage; /* TIM pixel block */
 
-extern s32 D_800B365C;
+extern s32 g_tmDataFile;
 extern s8 D_800B3664; /* sound request kind, -1 = none */
 extern u8 g_cardGameText[];
-extern s32 D_800B3660;
-extern s32 D_800B3C8C[];
-extern s32 D_800B3CD0;
-extern s32 D_800B3CD8;
-extern s32 D_800B3CDC;
-extern s32 D_800B3CE0;
-extern TmCell D_800B3CE8; /* returned for out-of-range board squares */
-extern s32 D_800B3CF0;
-extern s32 D_800B3CF4;
+extern s32 g_tmDataCopy;
+extern s32 g_tmSeIds[];
+extern s32 g_tmWindowOpening;
+extern s32 g_tmTradeCardId;
+extern s32 g_tmTradeBadge;
+extern s32 g_tmTradeLost;
+extern TmCell g_tmOffBoardCell; /* returned for out-of-range board squares */
+extern s32 g_tmStockCount;
+extern s32 g_tmStockTypes;
 
-s32 func_800A7634(void);
-s32 func_800A76F8(void);
-s32 func_800A7764(void);
-s32 func_800A7818(void);
-s32 func_800A7884(void);
-s32 func_800A78B8(void);
-u8 *func_800A93A0(s32);
-void func_800ABEC4(TmState *);
-void func_800AF2CC(TmState *, TmCard *, s32);
-void func_800AF388(TmState *, TmCard *);
-void func_800AF3E8(TmState *, TmCard *, s32, s32);
-void func_800B0618(TmState *);
-s32 func_800B0EB8(TmState *, s32, s32, s32, TmCard *);
-TmCard *func_800AEE08(TmState *, s32, s32);
-void func_800AE6EC(TmState *, s32);
-void func_800ADE5C(TmState *);
-void func_800AD974(TmState *);
-void func_800AF170(TmState *);
-void func_800AF100(TmState *);
-void func_800AF288(TmState *);
-void func_800B3488(TmState *);
-void func_800AA3C0(Window *);
-void func_800ADFFC(Window *);
-void func_800AB0A8(Window *);
-void *func_800B16A4(u32 *, void *, TmState *, s32, s32, s32);
-void *func_800B33CC(u32 *, SPRT *, s32, s32, s32);
-s32 func_800B1110(TmState *, s32, s32, s32, s32, s32);
-void func_800B35F8(TmState *);
-void func_800A755C(void);
-void func_800A75E0(void);
-s32 func_800A78EC(s32, s32, s32, s32, s32);
-void func_800A7E10(void);
-void func_800AB8C8(void);
-void func_800AB8E8(s32);
-void func_800AE54C(TmState *);
-void func_800B01E8(s32);
-TmCell *func_800B19D4(TmState *, s32, s32);
-TmCard *func_800B12F0(TmState *, TmPos *, s32, s32);
-void func_800AEBB4(TmState *);
-void func_800B13C0(TmPos *, s32);
-s32 func_800AE830(TmState *, s32);
-s32 func_800AE878(TmState *, s32);
-s32 func_800AE8D0(TmState *);
-TmCard *func_800AE908(TmState *, s32);
-void func_800ACFC8(TmState *);
-s32 func_800AE998(TmState *, s32);
-s32 func_800ADE14(TmState *, s32);
-s32 func_800AE94C(TmState *, s32);
-TmCard *func_800AE9D0(TmState *, s32, s32);
-void func_800AEA24(TmState *);
-void func_800B1A24(TmState *);
-void func_800B295C(TmState *);
-void func_800B29DC(TmState *);
-void func_800AB89C(Window *);
-void func_800B355C(Window *);
-SPRT *func_800AFB60(void *, SPRT *, s32, s32, s32, s32, s32);
-void func_800AE494(Window *);
+s32 tm_loadSoundBlocks(void);
+s32 tm_loadMusic(void);
+s32 tm_loadDataFile(void);
+s32 tm_copyDataFile(void);
+s32 tm_freeDataFile(void);
+s32 tm_freeDataCopy(void);
+u8 *tm_getFileEntry(s32);
+void tm_checkBattles(TmState *);
+void tm_levelUpStat(TmState *, TmCard *, s32);
+void tm_levelUpRandom(TmState *, TmCard *);
+void tm_makeCard(TmState *, TmCard *, s32, s32);
+void tm_placeBlocks(TmState *);
+s32 tm_evalPlacement(TmState *, s32, s32, s32, TmCard *);
+TmCard *tm_getCardAt(TmState *, s32, s32);
+void tm_stackHands(TmState *, s32);
+void tm_nextTrade(TmState *);
+void tm_startCardMove(TmState *);
+void tm_returnHand(TmState *);
+void tm_returnKept(TmState *);
+void tm_hideCards(TmState *);
+void tm_askRematch(TmState *);
+void tm_drawDrawWin(Window *);
+void tm_drawOver100Win(Window *);
+void tm_drawLess5Win(Window *);
+void *tm_drawCursor(u32 *, void *, TmState *, s32, s32, s32);
+void *tm_drawBigDigit(u32 *, SPRT *, s32, s32, s32);
+s32 tm_setFlips(TmState *, s32, s32, s32, s32, s32);
+void tm_startEndFade(TmState *);
+void tm_init(void);
+void tm_exit(void);
+s32 tm_soundCmd(s32, s32, s32, s32, s32);
+void tm_mainLoop(void);
+void tm_onWindowOpened(void);
+void tm_setWindowOpening(s32);
+void tm_endTrade(TmState *);
+void tm_playSe(s32);
+TmCell *tm_getCell(TmState *, s32, s32);
+TmCard *tm_getDefender(TmState *, TmPos *, s32, s32);
+void tm_dealEnemyHand(TmState *);
+void tm_stepDir(TmPos *, s32);
+s32 tm_countInHand(TmState *, s32);
+s32 tm_countPlayerHand(TmState *, s32);
+s32 tm_countCaptured(TmState *);
+TmCard *tm_getCaptured(TmState *, s32);
+void tm_clearFlips(TmState *);
+s32 tm_countOwned(TmState *, s32);
+s32 tm_countKept(TmState *, s32);
+s32 tm_countOnBoard(TmState *, s32);
+TmCard *tm_getHandCard(TmState *, s32, s32);
+void tm_initHands(TmState *);
+void tm_initBoard(TmState *);
+void tm_openStock(TmState *);
+void tm_resetStockCursor(TmState *);
+void tm_waitWindow(Window *);
+void tm_drawRematchWin(Window *);
+SPRT *tm_drawStatGlyph(void *, SPRT *, s32, s32, s32, s32, s32);
+void tm_drawTradeWin(Window *);
 
-/* Main loop (func_800A7E10) and its per-state handlers. */
-void func_800A8B80(void);
-void func_800A8BC4(TmState *);
-void func_800A8D74(TmState *);
-void func_800A932C(TmState *, char *); /* debug print, stubbed */
+/* Main loop (tm_mainLoop) and its per-state handlers. */
+void tm_clearOt(void);
+void tm_endFrame(TmState *);
+void tm_setup(TmState *);
+void tm_debugPrint(TmState *, char *); /* debug print, stubbed */
 void func_800A9B0C(TmState *);
-void func_800A9298(TmState *);
-void func_800A9334(void);
-void func_800A93C8(u8 *, s32, s32);
-void func_800A986C(TmTim *, s32, s32, s32, s32);
-void *func_800A993C(u32 *, SPRT *, TmState *);
-void *func_800A9424(u32 *, SPRT_16 *, TmState *);
-void *func_800A96B0(u32 *, SPRT_16 *, TmState *);
-void *func_800A9B2C(u32 *, void *, TmState *);
-void *func_800A9F10(u32 *, void *, TmState *);
-void *func_800AB574(u32 *, void *, TmState *);
-void *func_800AB928(u32 *, void *, TmState *);
+void tm_taskInit(TmState *);
+void tm_loadImageFile(void);
+void tm_copyFileEntry(u8 *, s32, s32);
+void tm_loadTim(TmTim *, s32, s32, s32, s32);
+void *tm_drawScore(u32 *, SPRT *, TmState *);
+void *tm_drawBackground(u32 *, SPRT_16 *, TmState *);
+void *tm_drawBoard(u32 *, SPRT_16 *, TmState *);
+void *tm_taskPlayerSelect(u32 *, void *, TmState *);
+void *tm_taskPlayerSet(u32 *, void *, TmState *);
+void *tm_taskBattleSelect(u32 *, void *, TmState *);
+void *tm_taskGetSelect(u32 *, void *, TmState *);
 void *func_800ABEBC(u32 *, void *, TmState *);
-void *func_800AC060(u32 *, void *, TmState *);
-void *func_800AC708(u32 *, TILE *, TmState *);
-void *func_800ACDA0(u32 *, TILE *, TmState *);
-void *func_800AD400(u32 *, void *, TmState *);
-void *func_800AD9F8(u32 *, void *, TmState *);
-void *func_800AE084(u32 *, void *, TmState *);
-void *func_800AE398(u32 *, SPRT *, TmState *);
-void *func_800AE5A0(u32 *, void *, TmState *);
-void *func_800AFCE4(u32 *, SPRT *, TmState *);
-void *func_800B030C(u32 *, void *, TmState *);
-void *func_800B07DC(u32 *, void *, TmState *);
-void *func_800B1A84(u32 *, SPRT *, TmState *);
-void *func_800AF95C(u32 *, SPRT *, TmState *, TmCard *, u8);
-void *func_800B14AC(u32 *, SPRT_16 *, TmState *, s32, s32, u8, s32, u8, s32);
-void *func_800B29F0(u32 *, void *, TmState *, TmCard *, u8, s32);
-void *func_800B2C5C(u32 *, SPRT *, TmState *);
-void *func_800B2F60(u32 *, SPRT *, TmState *);
-void *func_800B3198(u32 *, void *, TmState *);
+void *tm_taskBattle(u32 *, void *, TmState *);
+void *tm_drawFlash(u32 *, TILE *, TmState *);
+void *tm_drawFlash2(u32 *, TILE *, TmState *);
+void *tm_drawCards(u32 *, void *, TmState *);
+void *tm_taskCardMove(u32 *, void *, TmState *);
+void *tm_taskCardChange(u32 *, void *, TmState *);
+void *tm_drawTradeBadge(u32 *, SPRT *, TmState *);
+void *tm_taskChange2(u32 *, void *, TmState *);
+void *tm_drawResult(u32 *, SPRT *, TmState *);
+void *tm_drawBlocks(u32 *, void *, TmState *);
+void *tm_taskEnemyThink(u32 *, void *, TmState *);
+void *tm_drawStock(u32 *, SPRT *, TmState *);
+void *tm_drawCardStats(u32 *, SPRT *, TmState *, TmCard *, u8);
+void *tm_drawArrows(u32 *, SPRT_16 *, TmState *, s32, s32, u8, s32, u8, s32);
+void *tm_drawCardFace(u32 *, void *, TmState *, TmCard *, u8, s32);
+void *tm_taskCoin(u32 *, SPRT *, TmState *);
+void *tm_drawCombo(u32 *, SPRT *, TmState *);
+void *tm_drawBattleValues(u32 *, void *, TmState *);
 void *func_800B3480(u32 *, void *, TmState *);
-void func_800AA1FC(TmState *);
-void func_800AA368(TmState *);
-void func_800AA408(TmState *);
-void func_800AA504(TmState *);
-void func_800AA548(TmState *);
-void func_800AA790(TmState *);
-void func_800AAEB4(TmState *);
-void func_800AB0F0(TmState *);
-void func_800AB2E0(TmState *);
-void func_800AB338(TmState *);
-void func_800AB854(TmState *);
-void func_800ABC74(TmState *);
-void func_800AC5AC(TmState *);
-void func_800AC624(TmState *);
-void func_800AC6A4(TmState *);
-void func_800ACF8C(TmState *);
-void func_800ACFFC(TmState *);
-void func_800AEE2C(TmState *);
-void func_800AF760(TmState *);
-void func_800AF890(TmState *);
-void func_800AFBE4(TmState *);
-void func_800B026C(TmState *);
-void func_800B08CC(TmState *);
-void func_800B35A4(TmState *);
+void tm_taskResult(TmState *);
+void tm_taskExtension(TmState *);
+void tm_autoPlace(TmState *);
+void tm_taskTrade(TmState *);
+void tm_taskTryAgain(TmState *);
+void tm_stockInput(TmState *);
+void tm_taskChoice2(TmState *);
+void tm_taskStageSelect(TmState *);
+void tm_taskAwayInfo(TmState *);
+void tm_taskCardAway2(TmState *);
+void tm_taskCardLess5(TmState *);
+void tm_taskGameQuit(TmState *);
+void tm_taskBattleWin(TmState *);
+void tm_taskBattleLose(TmState *);
+void tm_taskTurn(TmState *);
+void tm_taskFlashArrow(TmState *);
+void tm_layoutCards(TmState *);
+void tm_showStockCard(TmState *);
+void tm_taskEnemyAppear(TmState *);
+void tm_animEnemyThink(TmState *);
+void tm_checkGameEnd(TmState *);
+void tm_revealBlocks(TmState *);
+void tm_enemySelect(TmState *);
+void tm_taskEndFade(TmState *);
 
-void func_800AC4C8(s32, TmPos *, TmCard *, TmCard *);
-TmCard *func_800B1010(TmState *, s32, s32, TmCard *);
-void func_800AB060(Window *);
-void func_800AB52C(Window *);
-void func_800ABE74(Window *);
-s32 func_800AF268(TmState *);
-void func_800AB8F4(s16);
-extern u8 D_800A74A8[];
+void tm_getBattleValues(s32, TmPos *, TmCard *, TmCard *);
+TmCard *tm_findDefender(TmState *, s32, s32, TmCard *);
+void tm_drawConfirmWin(Window *);
+void tm_drawDiscardWin(Window *);
+void tm_drawQuitWin(Window *);
+s32 tm_getStockCursorId(TmState *);
+void tm_setHelpArea(s16);
+extern u8 g_tmSlash[];
 
 /* main exe: candidates for ff9.h */
 void func_800355DC(void); /* empty function, passed to func_8003556C as a no-op callback */
@@ -389,7 +389,7 @@ void func_800559FC(s32, s32, s32);
 void func_80055A34(s32, s32, s32, s32);
 
 
-/* Capture flash bar pieces (func_800AC708), one per direction. */
+/* Capture flash bar pieces (tm_drawFlash), one per direction. */
 typedef struct {
     s32 unk0; /* 0: horizontal bar, 1: corner, 2: vertical bar */
     s32 unk4;
@@ -403,8 +403,8 @@ typedef struct {
 typedef struct {
     TmFlash v[8];
 } TmFlashTbl;
-extern TmFlashTbl D_800A72B8; /* INCLUDE_RODATA */
+extern TmFlashTbl g_tmFlashBars; /* INCLUDE_RODATA */
 
-extern char D_800A7398[]; /* "NO" label (INCLUDE_RODATA) */
+extern char g_tmNoLabel[]; /* "NO" label (INCLUDE_RODATA) */
 
 #endif

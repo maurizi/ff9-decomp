@@ -1,40 +1,40 @@
 #include "ovl_0d.h"
 
 /* This file's .data: linked right after .text (config/ovl_0d.yaml). */
-s32 D_800B365C = 0;
+s32 g_tmDataFile = 0;
 
-void func_800A752C(void) {
-    func_800A755C();
-    func_800A7E10();
-    func_800A75E0();
+void tm_main(void) {
+    tm_init();
+    tm_mainLoop();
+    tm_exit();
 }
 
-void func_800A755C(void) {
-    D_800B365C = 0;
-    D_800B3660 = 0;
-    g_gameState->unk1C->unk83C = func_800A78EC;
+void tm_init(void) {
+    g_tmDataFile = 0;
+    g_tmDataCopy = 0;
+    g_gameState->unk1C->unk83C = tm_soundCmd;
     preload_init();
-    func_800A7764();
-    func_800A7634();
-    func_800A76F8();
-    func_800A78EC(0, 0x42, 0, 0, 0);
-    func_800A7818();
-    func_800A7884();
+    tm_loadDataFile();
+    tm_loadSoundBlocks();
+    tm_loadMusic();
+    tm_soundCmd(0, 0x42, 0, 0, 0);
+    tm_copyDataFile();
+    tm_freeDataFile();
 }
 
-void func_800A75E0(void) {
-    func_800A78B8();
-    func_800A78EC(0x100, 0x42, 0, 0, 0);
+void tm_exit(void) {
+    tm_freeDataCopy();
+    tm_soundCmd(0x100, 0x42, 0, 0, 0);
     g_gameState->unkA = 9;
     g_gameState->mode = 1;
 }
 
-s32 func_800A7634(void) {
+s32 tm_loadSoundBlocks(void) {
     s32 i;
     s32 h;
     s32 a, b;
-    for (i = db_lookup(D_800B365C, 1, 0x90000, 0) - 1; i >= 0; i--) {
-        h = db_lookup(D_800B365C, 3, (i & 0xFFFF) | 0x90000, 0);
+    for (i = db_lookup(g_tmDataFile, 1, 0x90000, 0) - 1; i >= 0; i--) {
+        h = db_lookup(g_tmDataFile, 3, (i & 0xFFFF) | 0x90000, 0);
         a = (s32)db_lookupRegistered(4, h, 0);
         b = (s32)db_lookupRegistered(5, h, 0);
         func_80055DF4();
@@ -43,44 +43,44 @@ s32 func_800A7634(void) {
     return 0;
 }
 
-s32 func_800A76F8(void) {
+s32 tm_loadMusic(void) {
     s32 p = (s32)db_lookupRegistered(4, 0x70042, 0);
     memmove(g_gameState->unk1C->unk814, (void *)p, (s32)db_lookupRegistered(5, 0x70042, 0));
     return 0;
 }
 
-s32 func_800A7764(void) {
+s32 tm_loadDataFile(void) {
     s32 dst = (s32)(D_80067944 + 0x57800);
     FileEntry *f = file_find(1, 0x2715);
     func_8002177C(g_gameState->unk1C->unk854, f->unk4, (f->unkC - f->unk4) << 11, (void *)dst, 0, -1, 0);
     while (func_800217C4(g_gameState->unk1C->unk854) != 0) {
     }
-    D_800B365C = dst;
+    g_tmDataFile = dst;
     db_register(dst, 0);
     return 0;
 }
 
-s32 func_800A7818(void) {
-    s32 end = db_lookup(D_800B365C, 0, 0x70000, 0);
-    D_800B3660 = (s32)(D_80067944 + 0x141000);
-    memmove((void *)D_800B3660, (void *)D_800B365C, end - D_800B365C);
-    db_register(D_800B3660, 0);
+s32 tm_copyDataFile(void) {
+    s32 end = db_lookup(g_tmDataFile, 0, 0x70000, 0);
+    g_tmDataCopy = (s32)(D_80067944 + 0x141000);
+    memmove((void *)g_tmDataCopy, (void *)g_tmDataFile, end - g_tmDataFile);
+    db_register(g_tmDataCopy, 0);
     return 0;
 }
 
-s32 func_800A7884(void) {
-    db_unregister((void *)D_800B365C);
-    D_800B365C = 0;
+s32 tm_freeDataFile(void) {
+    db_unregister((void *)g_tmDataFile);
+    g_tmDataFile = 0;
     return 0;
 }
 
-s32 func_800A78B8(void) {
-    db_unregister((void *)D_800B3660);
-    D_800B3660 = 0;
+s32 tm_freeDataCopy(void) {
+    db_unregister((void *)g_tmDataCopy);
+    g_tmDataCopy = 0;
     return 0;
 }
 
-s32 func_800A78EC(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4) {
+s32 tm_soundCmd(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4) {
     GameData *g;
     s32 kind;
     s32 h;
