@@ -123,12 +123,12 @@ typedef struct {
     u8 baseMagic;
     u8 baseSpirit;
     CharBits unk34;
-    u8 unk38;    /* status; 0x45 = dead/stone/... (can't gain exp) */
+    u8 status;   /* persistent status bits shown by ui_drawStatusIcons (runtime); 0x45 = dead/stone/... (can't gain exp) */
     u8 equip[5]; /* item ids: weapon, head, arm, body, accessory (0xFF = none); runtime: Zidane 3 115 90 152 255 with no accessory */
     u16 unk3E[5]; /* stat bonuses from equipment */
     u8 pad48[0x58 - 0x48];
     u8 unk58[0x30]; /* learned AP per ability slot; cleared by func_800343C0 */
-    u32 unk88[2]; /* support abilities equipped: bit (id - 0xC0) */
+    u32 supportAbilities[2]; /* equipped: bit (id - 0xC0) (runtime, chr_setSupportAbility) */
 } Character; /* 0x90 */
 
 /* GameData.unk8E0 entry */
@@ -380,8 +380,8 @@ typedef struct {
     void **unk18; /* file tables, indexed like unk14 */
     GameData *unk1C;
     s32 unk20; /* base CD sector added to file start sectors */
-    u32 unk24;
-    u32 unk28; /* 4-bit fields */
+    u32 config; /* Config screen settings, viewed bit by bit as GameConfig (with padMap) */
+    u32 padMap; /* custom pad mapping, 4 bits per action */
     u32 playTime; /* frames at 60/s, shown as h:mm:ss in the menu (runtime) */
     s32 unk30;
     u8 unk34[15];
@@ -934,29 +934,30 @@ typedef struct Unk80035B90 {
 } Unk80035B90;
 
 
+/* screen fade (g_fade, fade_*): runtime field/menu campaign, docs/runtime-findings.md */
 typedef struct {
-    u8 unk0;
-    u8 unk1;
-    u8 unk2;
-    u8 unk3;
+    u8 type; /* fade_start type, picks the g_fadeTypes handlers */
+    u8 subtract; /* 1: subtractive (darkening) blend */
+    u8 active;
+    u8 unk3; /* set while the colour of func_8002F964 is non-zero */
     u8 unk4;
     u8 unk5;
     u8 pad6[0x8 - 6];
-    s16 unk8;
+    s16 frames; /* length */
     s16 unkA;
-    s32 unkC;
-    s32 unk10;
+    s32 frame; /* counts up to frames, then onDone runs */
+    s32 onDone;
     u8 pad14[0x18 - 0x14];
-    u8 *unk18; /* packet buffer cursor */
-    s32 unk1C;
-    Unk4 unk20;
-    u8 unk24;
-    u8 unk25;
-    u8 unk26;
+    u8 *pkt; /* packet buffer cursor */
+    s32 otz;
+    Unk4 startColor;
+    u8 endR;
+    u8 endG;
+    u8 endB;
     u8 pad27;
-    Unk4 unk28;
-} Unk80077C78;
-extern Unk80077C78 g_fade;
+    Unk4 color; /* current colour */
+} FadeState;
+extern FadeState g_fade;
 u32 *func_8002FBC0(s32);
 #if !defined(OVL_0C_H) /* ovl_0c declares its own typed view */
 void func_80030AF4(void *, void *); /* rotation -> matrix */
@@ -1211,7 +1212,7 @@ typedef struct {
     u8 unk16E4[4]; /* party member object ids */
     s16 unk16E8; /* analog / d-pad camera direction offsets */
     s16 unk16EA;
-    u8 unk16EC;
+    u8 controlEnabled; /* runtime: 1 while the player walks, 0 during a dialog (field/menu campaign) */
     u8 playerUid; /* runtime: uid of the object the pad moves (Zidane, 19, in the Dali inn) */
     u8 unk16EE; /* field mode the state was saved in */
     u8 unk16EF;
@@ -3085,7 +3086,7 @@ typedef struct Unk8007AED0 {
     u8 unkE;
 } Unk8007AED0;
 typedef struct {
-    void (*unk0)(Unk80077C78 *);
+    void (*unk0)(FadeState *);
     s32 unk4;
     s32 unk8;
 } Unk8006BD04;
@@ -3128,7 +3129,7 @@ static inline void chr_updateStats_inline(Character *c) {
     in.unk0 = *(Bytes8 *)&c->unk2C;
     in.unk10 = c->hp;
     in.unk12 = c->mp;
-    in.unk8 = *(Words2 *)c->unk88;
+    in.unk8 = *(Words2 *)c->supportAbilities;
     in.unk14 = *(Bytes5 *)c->equip;
     chr_calcEquipStats(&in, &out);
     c->speed = out.unk8[0];
@@ -3144,7 +3145,7 @@ static inline void chr_updateStats_inline(Character *c) {
     c->maxHp = out.unk4;
     c->maxMp = out.unk6;
 }
-extern void (*D_8006BD28[])(Unk80077C78 *, s32);
+extern void (*D_8006BD28[])(FadeState *, s32);
 extern s32 D_8007BBD4;
 extern u32 *D_8007BBCC;
 extern s32 D_8007B94C;
@@ -3242,21 +3243,27 @@ extern RECT D_80068F40;
 void func_80058F34(AkaoChannel *, u32 *, u32, u32);
 /* ---- main: boot, system setup, TIM helpers ---- */
 
-/* GameState.unk24/unk28 viewed as a pair: the config menu's settings (saved by ovl_39) */
+/* GameState.config bits (ovl_34 rows, runtime field/menu campaign) that GameConfig can't name */
+#define CONFIG_HERE_ICON_OFF (1 << 17)
+#define CONFIG_WINDOW_CLASSIC (1 << 18)
+#define CONFIG_TARGET_WINDOW_ALWAYS (1 << 19)
+#define CONFIG_WINDOW_COLOR() ((g_gameState->config >> 18) & 1) /* the window palette (pal/abr) of all window drawing */
+
+/* GameState.config/padMap viewed as a pair: the config menu's settings (saved by ovl_39) */
 typedef struct {
-    u32 unk0_0 : 1;
-    u32 unk0_1 : 1; /* buttonMap is used (config_remapButton) */
-    u32 unk0_2 : 1;
-    u32 unk0_3 : 1;
-    u32 unk0_4 : 1;
-    u32 unk0_5 : 1;
-    u32 unk0_6 : 1;
-    u32 unk0_7 : 1;
-    u32 unk0_8 : 3;
+    u32 soundMono : 1; /* Config rows (runtime field/menu campaign, ovl_34): Sound */
+    u32 padCustom : 1; /* Controller: Custom (buttonMap is used, config_remapButton) */
+    u32 cursorMemory : 1;
+    u32 atbWait : 1;
+    u32 battleCameraFixed : 1;
+    u32 battleControlCustom : 1;
+    u32 movementRun : 1;
+    u32 vibration : 1;
+    u32 battleSpeed : 3;
     u32 unk0_11 : 3;
-    u32 unk0_14 : 3;
-    u32 unk0_17 : 15;
-    u32 buttonMap; /* 8 x 4 bits: game button i -> pad button */
+    u32 messageSpeed : 3;
+    u32 unk0_17 : 15; /* bit 17 HERE Icon off, 18 Window Color classic, 19 Target Window always (CONFIG_*) */
+    u32 buttonMap; /* 8 x 4 bits: game button i -> pad button (GameState.padMap) */
 } GameConfig;
 
 /* GameState.unk14 viewed as its 15 directory records */
@@ -3468,7 +3475,7 @@ extern s32 D_8006BBD4[];
 
 extern u8 D_80077878[2][0x200]; /* fade packet buffers, one per draw buffer */
 
-typedef void (*FadeFn)(Unk80077C78 *);
+typedef void (*FadeFn)(FadeState *);
 
 /* frame animation cells (sprAnim_draw) */
 typedef struct {
@@ -3915,7 +3922,7 @@ static inline s32 config_applyPadMapping_custom(u32 *c) {
     return (c[0] >> 1) & 1;
 }
 static inline s32 config_applyPadMapping_remap(s32 k) {
-    u32 *c = &g_gameState->unk24;
+    u32 *c = &g_gameState->config;
     if (config_applyPadMapping_custom(c) == 1) {
         return (c[1] >> (k * 4)) & 0xF;
     }

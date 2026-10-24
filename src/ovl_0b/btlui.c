@@ -160,7 +160,7 @@ u8 btl_isAtbRunning(void) {
     if (D_80104E68.unk2 == 0) {
         return 0;
     }
-    f = (g_gameState->unk24 >> 3) & 1;
+    f = (g_gameState->config >> 3) & 1;
     if (f != 1) {
         return 1;
     }
@@ -261,7 +261,7 @@ void func_800EA378(void) {
         r = 1;
     } else {
         do {
-            f = (g->unk24 >> 19) & 1;
+            f = (g->config >> 19) & 1;
             if (f == 1) {
                 r = 1;
             }
@@ -348,8 +348,8 @@ void func_800EA650(void) {
         e->unk14 = &g_gameState->unk1C->characters[(u->unk68 >> 1) & 0xF];
         e->unk19 = func_80034A30(e->unk14);
         e->unk1A = func_800339F4(e->unk14->unk34.b.id, (e->unk14->unkA >> 4) & 1);
-        if ((g_gameState->unk24 >> 5) & 1) {
-            f = ((s32)(g_gameState->unk24 >> 20) >> e->unk1A) & 1;
+        if ((g_gameState->config >> 5) & 1) {
+            f = ((s32)(g_gameState->config >> 20) >> e->unk1A) & 1;
         } else {
             f = 0;
         }
@@ -1118,7 +1118,7 @@ void func_800EC4EC(void) {
 
     p = &g_btlCmdMenu.unk10;
     e = g_btlUi->cmdUnit->unkB4;
-    if (!((g_gameState->unk24 >> 2) & 1)) {
+    if (!((g_gameState->config >> 2) & 1)) {
         g_btlCmdMenu.cursor = 0;
     } else {
         g_btlCmdMenu.cursor = e->unk49C.unk0;
@@ -1393,7 +1393,7 @@ void func_800ED02C(RECT *r, s32 otz) {
     r2.y = r->y + 1;
     r2.w = r->w - 3;
     r2.h = r->h - 3;
-    win_drawFill(&r2, otz, 0, 0, (g_gameState->unk24 >> 18) & 1);
+    win_drawFill(&r2, otz, 0, 0, (g_gameState->config >> 18) & 1);
 }
 
 void func_800ED3F8(s32 x, s32 y, s32 otz, char *str) {
@@ -1734,7 +1734,7 @@ void func_800EE37C(Unk800EE37C *arg0) {
     D_80104FD0.unk18 = func_800349BC((D_80104FD0.unk14->unk68 >> 1) & 0xF, 0xE2);
     n = D_80104FD0.unk4->unk7;
     func_8002EDFC(&l, n, (n < 5) ? n : 4, 1, 0x44);
-    f = (g_gameState->unk24 >> 2) & 1;
+    f = (g_gameState->config >> 2) & 1;
     if (f == 1) {
         e = D_80104FD0.unk14->unkB4;
         c = &e->unk49C;
@@ -2692,8 +2692,8 @@ void btlui_targetInput(void) {
     }
     if (g_padRepeat & BTN_L2) {
         snd_playSe(0x67);
-        v = g_gameState->unk24;
-        g_gameState->unk24 = (v & ~0x80000) | ((((v >> 19) & 1) ^ 1) << 19);
+        v = g_gameState->config;
+        g_gameState->config = (v & ~0x80000) | ((((v >> 19) & 1) ^ 1) << 19);
         return;
     }
     btlui_targetMove();
@@ -3403,7 +3403,7 @@ void btlui_drawPanelHeader(void) {
     s32 i;
     Unk800F412C *e;
 
-    ui_drawRule(0x8E, D_80105078->unk60, 8, 1, 0xA9, (g_gameState->unk24 >> 18) & 1);
+    ui_drawRule(0x8E, D_80105078->unk60, 8, 1, 0xA9, (g_gameState->config >> 18) & 1);
     r.x = 0x8E;
     r.y = D_80105078->unk60 - 3;
     r.w = g_gameState->unkC->disp.w - 0x8E;
@@ -3689,7 +3689,7 @@ void func_800F4384(void) {
     s32 f;
 
     if (!(g->unk0 & 0x100) && !(g->unk8E4.battle->unk0 & 0x20) && D_80104E68.unk0 != 0 &&
-        (f = (g_gameState->unk24 >> 5) & 1) == 1) {
+        (f = (g_gameState->config >> 5) & 1) == 1) {
         ClearOTag(&D_801050D4, 1);
         if (D_80104E68.unk18 & 0x20) {
             if (D_80104E68.unk15 == 0) {
@@ -3769,7 +3769,7 @@ void btlui_readPad(void) {
 
 u8 func_800F47D8(void) {
     s32 i;
-    s32 f = (g_gameState->unk24 >> 5) & 1;
+    s32 f = (g_gameState->config >> 5) & 1;
     if (f != 1) {
         return 0;
     }
@@ -3778,7 +3778,7 @@ u8 func_800F47D8(void) {
         if (c == 0) {
             continue;
         }
-        if (((s32)(g_gameState->unk24 >> 20) >> chr_getDefaultSet(c)) & 1) {
+        if (((s32)(g_gameState->config >> 20) >> chr_getDefaultSet(c)) & 1) {
             return 1;
         }
     }

@@ -15,16 +15,16 @@ void func_8005392C(void) {
 }
 
 s32 func_80053960(Unk800539FC *a, s32 b) {
-    if (a->unk38 & b) {
-        a->unk38 &= ~b;
+    if (a->status & b) {
+        a->status &= ~b;
         return 2;
     }
     return 1;
 }
 
 static inline s32 func_80053960_inline(Unk800539FC *a, s32 b) {
-    if (a->unk38 & b) {
-        a->unk38 &= ~b;
+    if (a->status & b) {
+        a->status &= ~b;
         return 2;
     }
     return 1;
@@ -46,7 +46,7 @@ s32 func_8005398C(Character *a, s32 mask) {
 }
 
 u8 func_800539FC(Character *a, s32 b) {
-    return (a->unk38 & b) != 0;
+    return (a->status & b) != 0;
 }
 
 s32 func_80053A10(s16 arg0, s16 arg1) {

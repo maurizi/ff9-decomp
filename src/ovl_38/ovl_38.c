@@ -71,7 +71,7 @@ void func_801EE650(void) {
     setRECT(&r, x, y, 0x5C, 0x12);
     ui_drawStones(x + 0x19, y + 0x14, 0x1E, c->stones, c->maxStones);
     ui_drawMemberHeader(w->x + 8, w->y + 6, 0x1D, (Unk80024428 *)&D_801F120C.unk8C);
-    ui_drawStatusIcons(r.x + 4, r.y + 4, 0x1D, c->unk38, 0);
+    ui_drawStatusIcons(r.x + 4, r.y + 4, 0x1D, c->status, 0);
     win_drawBox(&r, 0x1D, 0);
 }
 
@@ -268,7 +268,7 @@ void func_801EF258(s32 x, s32 y, s32 z, s32 i, u8 draw) {
     } else {
         sup = &D_8006D128[id - 0xC0];
         name = D_801F0E50 + sup->unk2;
-        if (func_80034A04(c->unk88, id)) {
+        if (func_80034A04(c->supportAbilities, id)) {
             icon = 0xBD;
         } else {
             icon = 0xF4;

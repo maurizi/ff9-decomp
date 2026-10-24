@@ -61,7 +61,7 @@ u8 *mbg_readFrame(Ovl64Out *out) {
             g_gameState->unk1C->unkA = info->unk0;
         }
     }
-    if (flag != NULL && (!((Ovl64Cfg *)&g_gameState->unk24)->b7 || g_gameState->mode == 5)) {
+    if (flag != NULL && (!((Ovl64Cfg *)&g_gameState->config)->b7 || g_gameState->mode == 5)) {
         g_padActuator[0].unk0 = flag->unk0;
         g_padActuator[0].unk1 = flag->unk1;
     }

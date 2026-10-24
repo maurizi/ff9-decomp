@@ -62,7 +62,7 @@ void func_800F4DFC(void) {
     g_btlBanner.unk8C = 0;
     g_btlBanner.unk80 = 0;
     g_btlBanner.unk0 = 0xFF;
-    v = D_800FDE3C[(g_gameState->unk24 >> 11) & 7];
+    v = D_800FDE3C[(g_gameState->config >> 11) & 7];
     r = &g_btlBanner.unkA4;
     r->x = 0x60;
     r->y = 8;
@@ -155,10 +155,10 @@ u8 *btl_buildBanner(u8 *arg0) {
 
 u8 *btl_buildBannerFrame(u8 *arg0, RECT *arg1) {
     RECT r;
-    u8 *v = win_buildBorder((s32)arg1, g_btlBanner.unk98, 1, 0, 1, (g_gameState->unk24 >> 18) & 1, arg0);
+    u8 *v = win_buildBorder((s32)arg1, g_btlBanner.unk98, 1, 0, 1, (g_gameState->config >> 18) & 1, arg0);
     r.x = arg1->x + 2;
     r.y = arg1->y + 2;
     r.w = arg1->w - 3;
     r.h = arg1->h - 3;
-    return win_buildFill((s32)&r, g_btlBanner.unk98, 0, 0, (g_gameState->unk24 >> 18) & 1, v);
+    return win_buildFill((s32)&r, g_btlBanner.unk98, 0, 0, (g_gameState->config >> 18) & 1, v);
 }

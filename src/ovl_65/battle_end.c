@@ -227,7 +227,7 @@ void func_801EFC68(void) {
                 ui_drawSprite(r->x + 0x72, r->y + 7, 0xB, 0xB4, dim);
                 p = buf;
                 D_801F7A78.unk374 = func_8002B644(r->x + 0x84, r->y + 5, g_ot + 0xB, p, col, D_801F7A78.unk374);
-                ui_drawStatusIcons(r->x + 0x28, r->y + 0x13, 0xB, c->unk38, dim);
+                ui_drawStatusIcons(r->x + 0x28, r->y + 0x13, 0xB, c->status, dim);
                 text_drawBlock(r->x + 0x29, r->y + 0x1C, 0xB, text_get(0), col);
                 text_formatNumber(c->exp, p, 7, 1);
                 ui_drawSmallDigits(r->x + 0x62, r->y + 0x20, 0xB, p, col);
@@ -964,7 +964,7 @@ void func_801F1D94(Window *w) {
         ui_drawSprite(w->unk0 + 6, w->unk2 + 7, w->unk18, 0xBC, 0);
     } else {
         name = D_801F4F94 + D_8006D128[id - 0xC0].unk2;
-        if (func_80034A04(g_gameState->unk1C->party[slot]->unk88, id)) {
+        if (func_80034A04(g_gameState->unk1C->party[slot]->supportAbilities, id)) {
             icon = 0xBD;
         } else {
             icon = 0xF4;

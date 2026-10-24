@@ -98,7 +98,7 @@ void func_801F4840(void) {
 
     func_801F573C();
     ui_drawLabel(0xE, 0x23, 0x2C, D_80070444, 0);
-    ui_drawRule(8, 0x26, 0x2C, 1, 0x12C, (g_gameState->unk24 >> 18) & 1);
+    ui_drawRule(8, 0x26, 0x2C, 1, 0x12C, (g_gameState->config >> 18) & 1);
     r.x = 8;
     r.y = 0;
     r.w = 0x12C;
@@ -139,7 +139,7 @@ void func_801F49C4(RECT *r, s32 otz, s32 slot) {
     if (D_801FB1A8.unk34[slot].unk1A == 4) {
         v = D_801FB1A8.unk34[slot].unk48;
     } else {
-        v = g_gameState->unk24 >> 18;
+        v = g_gameState->config >> 18;
         v &= 1;
     }
     win_drawBoxEx(r, 0x2D, 0, v);
@@ -1848,7 +1848,7 @@ void func_801F8DA4(u8 *buf) {
     h->unk5 = g_gameState->unk1C->characters[n].level;
     h->unk2C = t;
     h->unk30 = g_gameState->unk1C->gil;
-    h->unk74 = (g_gameState->unk24 >> 18) & 1;
+    h->unk74 = (g_gameState->config >> 18) & 1;
     h->unk78 = ++D_801FB1A8.unkC;
     h->unk7C = D_801FB1A8.unk24.cursor;
     h->unk6 = *(SaveName *)g_gameState->unk1C->characters[n].unk0;
@@ -2190,13 +2190,13 @@ void func_801F9DF8(SaveEvents *s) {
 void func_801F9EA8(SaveItems *s) {
     s->unk0 = g_gameState->unk1C->items;
     s->unk200 = g_gameState->unk1C->unk774;
-    s->unk240 = *(GameConfig *)&g_gameState->unk24;
+    s->unk240 = *(GameConfig *)&g_gameState->config;
 }
 
 void func_801F9F5C(SaveItems *s) {
     g_gameState->unk1C->items = s->unk0;
     g_gameState->unk1C->unk774 = s->unk200;
-    *(GameConfig *)&g_gameState->unk24 = s->unk240;
+    *(GameConfig *)&g_gameState->config = s->unk240;
     config_apply();
 }
 

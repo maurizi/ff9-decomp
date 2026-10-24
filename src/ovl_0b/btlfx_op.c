@@ -1984,7 +1984,7 @@ void func_800E9168(void) {
     } else {
         a = btl_getUnit(0x10);
         b = btl_getUnit(0);
-        f = (g_gameState->unk24 >> 4) & 1;
+        f = (g_gameState->config >> 4) & 1;
         if (f == 1 || (u8)btl_hasStatus(a, BTL_STATUS_MINI) || (u8)btl_hasStatus(a, BTL_STATUS_VANISH)) {
             r = 0;
         } else {

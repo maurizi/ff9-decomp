@@ -55,7 +55,7 @@ void ui_drawMemberHeader(s32 x, s32 y, s32 otz, Unk80024428 *s) {
         r2.y = y - 2;
         r2.w = 0x24;
         r2.h = 0x32;
-        win_drawLineBorder(&r2, otz, 0, (g_gameState->unk24 >> 18) & 1);
+        win_drawLineBorder(&r2, otz, 0, CONFIG_WINDOW_COLOR());
         ui_drawPartyPortrait(px, y, otz, s->unk3, b->hp == 0);
         win_setClip(&r1, otz, 4);
         ui_drawCharStatus(x + 0x26, y + 3, otz, g_gameState->unk1C->party[s->unk3]);
@@ -512,7 +512,7 @@ void win_drawTailEdge(s16 x, s16 y, s32 otz, s32 idx, u8 flag, u8 mode) {
     DrTpageWords *t;
 
     if (!mode) {
-        clut = (g->unk2 - ((g_gameState->unk24 >> 18) & 1) * 0xC0) << 16;
+        clut = (g->unk2 - CONFIG_WINDOW_COLOR() * 0xC0) << 16;
     } else {
         clut = 0x3EA40000;
     }
@@ -536,7 +536,7 @@ void win_drawTailFill(s32 x, s32 y, s32 otz, s32 shape, s32 u, s32 v) {
     Unk80068F48 *o;
     u16 clut;
 
-    clut = D_80068CE8.unk2 - ((g_gameState->unk24 >> 18) & 1) * 0xC0;
+    clut = D_80068CE8.unk2 - CONFIG_WINDOW_COLOR() * 0xC0;
     tw.x = D_80068CE8.unk0;
     tw.y = D_80068CE8.unk1;
     tw.w = D_80068CE8.unk4;
@@ -589,9 +589,9 @@ void ui_drawEtchedLine(s32 x, s32 y, s32 otz, s32 len) {
     s32 i;
     LineF2W *p;
 
-    col[0] = D_80068F20[(g_gameState->unk24 >> 18) & 1][1];
+    col[0] = D_80068F20[CONFIG_WINDOW_COLOR()][1];
     col[1] = GPU_RGBC(GPU_LINE_F2, 0x403838);
-    col[2] = D_80068F20[(g_gameState->unk24 >> 18) & 1][0];
+    col[2] = D_80068F20[CONFIG_WINDOW_COLOR()][0];
 
     for (i = 0; i < 3; i++) {
         p = (LineF2W *)g_primPtr;
@@ -759,7 +759,7 @@ void ui_drawStones(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4) {
 }
 
 u16 win_getPalClut(s32 arg0) {
-    return arg0 - ((g_gameState->unk24 >> 18) & 1) * 0xC0;
+    return arg0 - CONFIG_WINDOW_COLOR() * 0xC0;
 }
 
 u16 win_getClut(s32 arg0, s32 arg1) {
@@ -872,7 +872,7 @@ void ui_drawCharStatuses(s32 x, s32 y, s32 otz, s32 slot) {
     text_drawBlock(x, y, otz, c->unk0, 0);
     ui_drawSmallDigits(x + 0x26, y + 0xE, otz, buf, 0);
     ui_drawSprite(x, y + 0xE, otz, 0xB4, 0);
-    ui_drawStatusIcons(x, y + 0x1C, otz, c->unk38, 0);
+    ui_drawStatusIcons(x, y + 0x1C, otz, c->status, 0);
     r.x = x - 4;
     r.y = y + 0x18;
     r.w = 0x60;

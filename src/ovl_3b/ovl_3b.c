@@ -266,12 +266,12 @@ void func_801F43FC(s32 x, s32 y, s32 otz, s32 id, s32 h, u8 arg5) {
     yy = base - 8;
     if (id != 0xFF) {
         c = &g_gameState->unk1C->characters[id];
-        if (c->unk38 & 2) {
+        if (c->status & 2) {
             icon = &D_800687C0;
             ui_drawSpriteDef(x + ((0x20 - icon->unk4) >> 1), yy, otz, icon, 0);
             yy = base - 0xF;
         }
-        if (c->unk38 & 1) {
+        if (c->status & 1) {
             icon = &D_80068E38;
             ui_drawSpriteDef(x + ((0x20 - icon->unk4) >> 1), yy, otz, icon, 0);
             yy -= 7;
@@ -321,7 +321,7 @@ u8 func_801F465C(void) {
         id = D_801F4748.unkA[0][i];
         if (id != 0xFF) {
             n++;
-            if (g_gameState->unk1C->characters[id].hp != 0 && !(g_gameState->unk1C->characters[id].unk38 & 3)) {
+            if (g_gameState->unk1C->characters[id].hp != 0 && !(g_gameState->unk1C->characters[id].status & 3)) {
                 alive++;
             }
         }

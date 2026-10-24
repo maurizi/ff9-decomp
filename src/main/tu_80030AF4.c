@@ -286,38 +286,38 @@ MATRIX *func_80031718(SVECTOR *r, MATRIX *m, s32 mode) {
     return m;
 }
 
-void func_80031B6C(Unk80077C78 *p) {
+void func_80031B6C(FadeState *p) {
     s32 n;
-    if (p->unk8 == 0) {
-        p->unk8 = 16;
+    if (p->frames == 0) {
+        p->frames = 16;
     }
-    D_80077D68.unk24.unk0 = D_80077D68.unk0 = p->unk28.unk0[0];
-    D_80077D68.unk24.unk4 = D_80077D68.unk4 = p->unk28.unk0[1];
-    D_80077D68.unk24.unk8 = D_80077D68.unk8 = p->unk28.unk0[2];
-    D_80077D68.unkC = p->unk24;
-    D_80077D68.unk10 = p->unk25;
-    D_80077D68.unk14 = p->unk26;
+    D_80077D68.unk24.unk0 = D_80077D68.unk0 = p->color.unk0[0];
+    D_80077D68.unk24.unk4 = D_80077D68.unk4 = p->color.unk0[1];
+    D_80077D68.unk24.unk8 = D_80077D68.unk8 = p->color.unk0[2];
+    D_80077D68.unkC = p->endR;
+    D_80077D68.unk10 = p->endG;
+    D_80077D68.unk14 = p->endB;
     D_80077D68.unk3C = D_80077D68.unkC - D_80077D68.unk0;
     D_80077D68.unk40 = D_80077D68.unk10 - D_80077D68.unk4;
     D_80077D68.unk44 = D_80077D68.unk14 - D_80077D68.unk8;
-    n = p->unk8 - 1;
+    n = p->frames - 1;
     if (n <= 0) {
         n = 1;
     }
     D_80077D68.unk18 = func_8002FD98(D_80077D68.unk3C, n);
-    n = p->unk8 - 1;
+    n = p->frames - 1;
     if (n <= 0) {
         n = 1;
     }
     D_80077D68.unk1C = func_8002FD98(D_80077D68.unk40, n);
-    n = p->unk8 - 1;
+    n = p->frames - 1;
     if (n <= 0) {
         n = 1;
     }
     D_80077D68.unk20 = func_8002FD98(D_80077D68.unk44, n);
 }
 
-void func_80031C88(Unk80077C78 *p) {
+void func_80031C88(FadeState *p) {
     D_80077D68.unk24.unk0 = func_8002FD70(D_80077D68.unk24.unk0, D_80077D68.unk18, D_80077D68.unkC);
     D_80077D68.unk24.unk4 = func_8002FD70(D_80077D68.unk24.unk4, D_80077D68.unk1C, D_80077D68.unk10);
     D_80077D68.unk24.unk8 = func_8002FD70(D_80077D68.unk24.unk8, D_80077D68.unk20, D_80077D68.unk14);
@@ -328,12 +328,12 @@ void func_80031C88(Unk80077C78 *p) {
     } else {
         D_80077D68.unk30 = D_80077D68.unk24;
     }
-    p->unk28.unk0[0] = D_80077D68.unk30.unk0;
-    p->unk28.unk0[1] = D_80077D68.unk30.unk4;
-    p->unk28.unk0[2] = D_80077D68.unk30.unk8;
+    p->color.unk0[0] = D_80077D68.unk30.unk0;
+    p->color.unk0[1] = D_80077D68.unk30.unk4;
+    p->color.unk0[2] = D_80077D68.unk30.unk8;
 }
 
-void func_80031D98(Unk80077C78 *p, s32 n) {
+void func_80031D98(FadeState *p, s32 n) {
     D_80077D68.unk24.unk0 = func_8002FD70(D_80077D68.unk24.unk0, D_80077D68.unk18 * n, D_80077D68.unkC);
     D_80077D68.unk24.unk4 = func_8002FD70(D_80077D68.unk24.unk4, D_80077D68.unk1C * n, D_80077D68.unk10);
     D_80077D68.unk24.unk8 = func_8002FD70(D_80077D68.unk24.unk8, D_80077D68.unk20 * n, D_80077D68.unk14);
@@ -344,21 +344,21 @@ void func_80031D98(Unk80077C78 *p, s32 n) {
     } else {
         D_80077D68.unk30 = D_80077D68.unk24;
     }
-    p->unk28.unk0[0] = D_80077D68.unk30.unk0;
-    p->unk28.unk0[1] = D_80077D68.unk30.unk4;
-    p->unk28.unk0[2] = D_80077D68.unk30.unk8;
+    p->color.unk0[0] = D_80077D68.unk30.unk0;
+    p->color.unk0[1] = D_80077D68.unk30.unk4;
+    p->color.unk0[2] = D_80077D68.unk30.unk8;
 }
 
-void func_80031ED8(Unk80077C78 *p) {
+void func_80031ED8(FadeState *p) {
     u32 *ot = func_8002FBC0(g_gameState->unk1C->unk8);
     s32 tp = 0x40;
     TILE *t;
     u8 *dr;
 
-    if (p->unk1 == 0) {
+    if (p->subtract == 0) {
         tp = 0x20;
     }
-    t = (TILE *)g_fade.unk18;
+    t = (TILE *)g_fade.pkt;
     SetTile(t);
     t->r0 = D_80077D68.unk30.unk0;
     t->g0 = D_80077D68.unk30.unk4;
@@ -369,9 +369,9 @@ void func_80031ED8(Unk80077C78 *p) {
     t->h = g_gameState->unkC->disp.h;
     SetSemiTrans(t, 1);
     addPrim(ot, t);
-    g_fade.unk18 += sizeof(TILE);
-    dr = g_fade.unk18;
+    g_fade.pkt += sizeof(TILE);
+    dr = g_fade.pkt;
     SetDrawTPage(dr, 0, 1, tp);
     addPrim(ot, dr);
-    g_fade.unk18 += sizeof(DR_TPAGE);
+    g_fade.pkt += sizeof(DR_TPAGE);
 }

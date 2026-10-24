@@ -10,7 +10,7 @@ void chr_init(s32 ch) {
     tbl = D_8006CA78;
     init = tbl + ch;
     c->unk34.w = *init;
-    c->unk38 = 0;
+    c->status = 0;
     c->unkA = func_80033A50(c->unk34.b.row);
     memset(c->unk3E, 0, 10);
     func_80034394(ch);
@@ -307,7 +307,7 @@ void chr_updateStats(Character *c) {
     in.unk0 = *(Bytes8 *)&c->unk2C;
     in.unk10 = c->hp;
     in.unk12 = c->mp;
-    in.unk8 = *(Words2 *)c->unk88;
+    in.unk8 = *(Words2 *)c->supportAbilities;
     in.unk14 = *(Bytes5 *)c->equip;
     chr_calcEquipStats(&in, &out);
     c->speed = out.unk8[0];
@@ -591,8 +591,8 @@ void func_800343C0(s32 ch) {
 
 void func_80034404(s32 i) {
     Character *c = &g_gameState->unk1C->characters[i];
-    c->unk88[1] = 0;
-    c->unk88[0] = 0;
+    c->supportAbilities[1] = 0;
+    c->supportAbilities[0] = 0;
 }
 
 s32 func_80034430(s32 ch, s32 id) {
@@ -654,7 +654,7 @@ u8 func_800347D8(s32 ch, s32 id) {
 s32 func_800348C0(s32 ch) {
     s32 sum = 0;
     s32 i;
-    u32 *bits = g_gameState->unk1C->characters[ch].unk88;
+    u32 *bits = g_gameState->unk1C->characters[ch].supportAbilities;
     for (i = 0; i < 0x40; i++) {
         if (bits[i >> 5] & (1 << (i & 0x1F))) {
             sum += D_8006D128[i].unk1;
@@ -664,7 +664,7 @@ s32 func_800348C0(s32 ch) {
 }
 
 void chr_setSupportAbility(s32 ch, s32 id, u8 on) {
-    u32 *bits = g_gameState->unk1C->characters[ch].unk88;
+    u32 *bits = g_gameState->unk1C->characters[ch].supportAbilities;
     id -= 0xC0;
     if (on) {
         bits[id >> 5] |= 1 << (id & 0x1F);
@@ -674,7 +674,7 @@ void chr_setSupportAbility(s32 ch, s32 id, u8 on) {
 }
 
 u8 func_800349BC(s32 ch, s32 id) {
-    return func_80034A04_inline(g_gameState->unk1C->characters[ch].unk88, id);
+    return func_80034A04_inline(g_gameState->unk1C->characters[ch].supportAbilities, id);
 }
 
 u8 func_80034A04(u32 *bits, s32 b) {

@@ -1005,7 +1005,7 @@ void btl_saveCharacter(BtlUnit *arg0, s32 arg1) {
     }
     func_800BD8C0((Unk800BD8C0 *)&c->hp, (Unk800BD8C0 *)&arg0->hp);
     if ((arg0->unkC4[1] & 0x8000) && arg1 == 0) {
-        c->unk38 = 0;
+        c->status = 0;
         return;
     }
     if (arg0->hp == 0) {

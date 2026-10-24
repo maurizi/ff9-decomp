@@ -182,7 +182,7 @@ void func_800C883C(s32 arg0) {
     }
     ui_drawPortrait(x, r->y + 1, 0x14, arg0, 0x2D, c->hp == 0);
     text_drawBlock(r->x + 0x3C, r->y + 3, 0x14, c->unk0, 0);
-    ui_drawStatusIcons(r->x + 0x86, r->y + 4, 0x14, c->unk38, 0);
+    ui_drawStatusIcons(r->x + 0x86, r->y + 4, 0x14, c->status, 0);
     text_formatNumber(c->level, buf, 2, 1);
     ui_drawSprite(r->x + 0x3C, r->y + 0x12, 0x14, 0xB4, 0);
     ui_drawSmallDigits(r->x + 0x60, r->y + 0x12, 0x14, buf, 0);
@@ -327,7 +327,7 @@ void func_800C90D0(s32 arg0) {
         func_8002BE44(4, D_800C9ECC);
         func_8002BE44(5, D_800CB178);
         func_8002BE44(6, D_800C9ED4);
-        func_8002BE44(7, c->unk38 != 0 ? D_800C9EE4 : D_800C9EDC);
+        func_8002BE44(7, c->status != 0 ? D_800C9EE4 : D_800C9EDC);
         D_80077DF0 = text_get(5);
     }
 }

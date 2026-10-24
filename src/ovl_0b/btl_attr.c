@@ -103,7 +103,7 @@ void func_800BD8C0(Unk800BD8C0 *arg0, Unk800BD8C0 *arg1) {
 void btl_resetAtbSpeed(Unk800BD8F0 *arg0) {
     s32 v;
     arg0->unk2E = 10;
-    v = (g_gameState->unk24 >> 8) & 7;
+    v = (g_gameState->config >> 8) & 7;
     if (v == 0) {
         arg0->unk2E = 8;
     } else if (v == 2) {

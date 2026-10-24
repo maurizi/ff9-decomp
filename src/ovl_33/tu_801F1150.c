@@ -138,7 +138,7 @@ void func_801F15E0(void) {
         in.unk10 = c->hp;
         in.unk12 = c->mp;
         in.unk14 = *(Bytes5 *)c->equip;
-        in.unk8 = *(Words2 *)c->unk88;
+        in.unk8 = *(Words2 *)c->supportAbilities;
         in.unk14.unk0[D_801FC840.unk2] = (D_801FC840.unk3C + (D_801FC840.unk4.cursor + D_801FC840.unk4.unk5))->id;
         chr_calcEquipStats(&in, &out);
         func_801F20A0(&cur, &out);
@@ -148,7 +148,7 @@ void func_801F15E0(void) {
         in.unk10 = c->hp;
         in.unk12 = c->mp;
         in.unk14 = *(Bytes5 *)c->equip;
-        in.unk8 = *(Words2 *)c->unk88;
+        in.unk8 = *(Words2 *)c->supportAbilities;
         in.unk14.unk0[D_801FC840.unk2] = 0xFF;
         chr_calcEquipStats(&in, &out);
         func_801F20A0(&cur, &out);
@@ -249,7 +249,7 @@ void func_801F1A94(void) {
             if (ok) {
                 if (ab < 0xC0) {
                     icon = 0xBC;
-                } else if (func_80034A04(c->unk88, ab)) {
+                } else if (func_80034A04(c->supportAbilities, ab)) {
                     icon = 0xBD;
                 } else {
                     icon = 0xF4;

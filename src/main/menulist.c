@@ -269,50 +269,50 @@ void func_8002F55C(s32 a) {
 }
 
 s32 func_8002F5A0(void (*fn)(void)) {
-    Unk80077C78 *p = &g_fade;
-    s32 d = p->unk8 - p->unkC;
+    FadeState *p = &g_fade;
+    s32 d = p->frames - p->frame;
     Unk4 c1;
     Unk4 c2;
 
-    if (p->unk2 == 0) {
+    if (p->active == 0) {
         return 0;
     }
-    c1 = p->unk20;
-    c2 = *(Unk4 *)&p->unk24;
+    c1 = p->startColor;
+    c2 = *(Unk4 *)&p->endR;
     func_8002F93C(p->unkA ^ 0x800);
-    fade_start(g_fade.unk0, p->unk1, 0, c2.unk0[0] | (c2.unk0[1] << 8) | (c2.unk0[2] << 16));
-    fade_start(g_fade.unk0, p->unk1, p->unk8, c1.unk0[0] | (c1.unk0[1] << 8) | (c1.unk0[2] << 16));
-    D_8006BD28[g_fade.unk0](p, d);
-    p->unk10 = (s32)fn;
-    p->unkC += d;
+    fade_start(g_fade.type, p->subtract, 0, c2.unk0[0] | (c2.unk0[1] << 8) | (c2.unk0[2] << 16));
+    fade_start(g_fade.type, p->subtract, p->frames, c1.unk0[0] | (c1.unk0[1] << 8) | (c1.unk0[2] << 16));
+    D_8006BD28[g_fade.type](p, d);
+    p->onDone = (s32)fn;
+    p->frame += d;
     return 1;
 }
 
 void fade_update(void) {
     u8 *buf = D_80077878[0];
-    Unk80077C78 *f = &g_fade;
+    FadeState *f = &g_fade;
     FadeFn fn;
 
     if (g_gameState->unk1C->unk8 != 0) {
         buf = D_80077878[1];
     }
-    f->unk18 = buf;
-    if (f->unk2 != 0) {
-        fn = (FadeFn)D_8006BD04[f->unk0].unk4;
+    f->pkt = buf;
+    if (f->active != 0) {
+        fn = (FadeFn)D_8006BD04[f->type].unk4;
         if (fn != NULL) {
             fn(f);
         }
     }
     if (*(u32 *)&g_fade & 0xFFFF0000) {
-        fn = (FadeFn)D_8006BD04[g_fade.unk0].unk8;
+        fn = (FadeFn)D_8006BD04[g_fade.type].unk8;
         if (fn != NULL) {
             fn(&g_fade);
         }
     }
-    if (g_fade.unk2 != 0) {
-        if (++g_fade.unkC >= (u32)g_fade.unk8) {
-            g_fade.unk2 = 0;
-            fn = (FadeFn)g_fade.unk10;
+    if (g_fade.active != 0) {
+        if (++g_fade.frame >= (u32)g_fade.frames) {
+            g_fade.active = 0;
+            fn = (FadeFn)g_fade.onDone;
             if (fn != NULL) {
                 fn(&g_fade);
             }

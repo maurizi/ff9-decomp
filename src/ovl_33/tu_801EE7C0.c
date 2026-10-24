@@ -10,7 +10,7 @@ static inline s32 func_801F0CC4_inline(s32 id, Character *c) {
     if (id < 0xC0) {
         return 0;
     }
-    if (func_80034A04(c->unk88, id)) {
+    if (func_80034A04(c->supportAbilities, id)) {
         return 4;
     }
     if (D_801FBF84.unk68[id] == 0) {
@@ -213,7 +213,7 @@ void func_801EEEA8(void) {
     box.h = 0x12;
     box.x = r->x + 0x72;
     box.y = r->y + 4;
-    ui_drawStatusIcons(box.x + 3, box.y + 4, 0x1D, c->unk38, 0);
+    ui_drawStatusIcons(box.x + 3, box.y + 4, 0x1D, c->status, 0);
     win_drawBox(&box, 0x1D, 0);
     if (D_801FBF84.unk0 == 1) {
         ui_drawStones(box.x + 0x19, box.y + 0x14, 0x1D, c->stones, c->maxStones);
@@ -467,7 +467,7 @@ void func_801EF900(s32 slot, s32 arg1) {
             }
         }
     }
-    D_801FBF84.unk4[0] = c->hp != 0 && !(c->unk38 & 9) && nItems != 0 && D_8007AFD3 == 0;
+    D_801FBF84.unk4[0] = c->hp != 0 && !(c->status & 9) && nItems != 0 && D_8007AFD3 == 0;
     D_801FBF84.unk4[1] = func_80034A30(c);
     func_801F1048();
     func_801F0410();
@@ -496,7 +496,7 @@ s32 func_801EFB8C(s32 id, Character *c) {
             }
         }
     }
-    if (c->unk38 & 9) {
+    if (c->status & 9) {
         return 2;
     }
     if (!(info->unkB & 1)) {
@@ -812,7 +812,7 @@ void func_801F0AB8(s32 x, s32 y, s32 i, Character *c) {
         if (st == 4) {
             func_801F0F38(x + 8, y, 0x1C, D_801FBF84.unk76C);
         }
-        if (!((g_gameState->unk24 >> 18) & 1)) {
+        if (!((g_gameState->config >> 18) & 1)) {
             func_801F0F38(x + 8, y, 0x1C, st >= 3 ? 9 : 10);
         } else {
             func_801F0F38(x + 8, y, 0x1C, st >= 3 ? 7 : 8);
@@ -852,7 +852,7 @@ u32 func_801F0CC4(s32 id, Character *c) {
     if (id < 0xC0) {
         return 0;
     }
-    if (func_80034A04(c->unk88, id)) {
+    if (func_80034A04(c->supportAbilities, id)) {
         return 4;
     }
     if (D_801FBF84.unk68[id] == 0) {

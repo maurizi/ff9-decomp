@@ -430,7 +430,7 @@ void msg_renderText(Unk8007B9C0 *w, u8 *s) {
                 if (c < 0x62) {
                     c ^= 1;
                 }
-                c = (g_gameState->unk24 >> 1) & 1 ? (g_gameState->unk28 >> (c * 4)) & 0xF : c & 0xF;
+                c = (g_gameState->config >> 1) & 1 ? (g_gameState->padMap >> (c * 4)) & 0xF : c & 0xF;
                 if (c < 2) {
                     c ^= 1;
                 }
@@ -546,7 +546,7 @@ void msg_advanceText(Unk8007B9C0 *w, u8 *e) {
                 w->unk29 = *p++;
                 break;
             case 0x42:
-                w->unk29 = D_8006E688[(g_gameState->unk24 >> 14) & 7];
+                w->unk29 = D_8006E688[(g_gameState->config >> 14) & 7];
                 break;
             case 0xC:
                 w->unk28 |= 4;
@@ -821,7 +821,7 @@ void msg_open(s32 msg, s32 id, WinLayout *l, s32 flags) {
     w->unk26 = 0;
     w->unkA = id;
     w->unk1E = msg;
-    w->unk29 = D_8006E688[(g_gameState->unk24 >> 14) & 7];
+    w->unk29 = D_8006E688[(g_gameState->config >> 14) & 7];
     w->unk22 = 0;
     w->unk24 = 8;
     w->unk2A = 0;
@@ -1443,7 +1443,7 @@ void msg_drawHereIcon(Unk8004AB64 *o) {
     s32 x;
     s32 nx;
 
-    if (g_evtState->unk16EC != 0 && (msg_getPadPressed() & 1)) {
+    if (g_evtState->controlEnabled != 0 && (msg_getPadPressed() & 1)) {
         D_8007BBE8 = 60;
         D_8007BBE0 = 1;
     }
@@ -1636,9 +1636,9 @@ void msg_startHereIcon(s32 arg0) {
         D_8007BBE8 = 0;
         return;
     }
-    mode = (g_gameState->unk24 >> 17) & 1;
+    mode = (g_gameState->config >> 17) & 1;
     mode = mode == 0;
-    if (arg0 >= 3 || (g_evtState->unk16EC != 0 &&
+    if (arg0 >= 3 || (g_evtState->controlEnabled != 0 &&
                       (mode >= 2 || (mode == 1 && (arg0 == 2 || D_8007BBC8 >= 3 || D_8007B710 != 0))))) {
         D_8007BBE8 = 60;
     }

@@ -179,7 +179,7 @@ s32 btl_partyHasSupport(s32 arg0, u32 arg1) {
     s32 i;
     GameData *gd = g_gameState->unk1C;
     for (i = 0; i < 4; i++) {
-        if (gd->party[i]->unk88[arg0] & arg1) {
+        if (gd->party[i]->supportAbilities[arg0] & arg1) {
             return 1;
         }
     }

@@ -173,7 +173,7 @@ void func_80065B14(MainCalc *c) {
     Character *t = c->unk4;
     s32 v = t->maxHp * (t->spirit + c->unk8->unk5);
 
-    if (c->unk0->unk88[1] & 2) {
+    if (c->unk0->supportAbilities[1] & 2) {
         v /= 50;
     } else {
         v /= 100;

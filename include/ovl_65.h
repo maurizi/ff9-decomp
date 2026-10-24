@@ -167,7 +167,7 @@ static inline u8 func_801F_alive(Character *c) {
     if (c->hp == 0) {
         return 0;
     }
-    if (c->unk38 & 0x45) {
+    if (c->status & 0x45) {
         return 0;
     }
     return 1;

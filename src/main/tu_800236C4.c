@@ -1,20 +1,20 @@
 #include "ff9.h"
 
 void config_reset(void) {
-    GameConfig *p = (GameConfig *)&g_gameState->unk24;
+    GameConfig *p = (GameConfig *)&g_gameState->config;
     s32 i;
 
-    p->unk0_0 = 0;
-    p->unk0_1 = 0;
-    p->unk0_2 = 0;
-    p->unk0_3 = 1;
-    p->unk0_4 = 0;
-    p->unk0_5 = 0;
-    p->unk0_6 = 0;
-    p->unk0_7 = 1;
-    p->unk0_8 = 1;
+    p->soundMono = 0;
+    p->padCustom = 0;
+    p->cursorMemory = 0;
+    p->atbWait = 1;
+    p->battleCameraFixed = 0;
+    p->battleControlCustom = 0;
+    p->movementRun = 0;
+    p->vibration = 1;
+    p->battleSpeed = 1;
     p->unk0_11 = 3;
-    p->unk0_14 = 3;
+    p->messageSpeed = 3;
     p->unk0_17 = 0;
     p->buttonMap = 0;
     for (i = 0; i < 8; i++) {
@@ -53,9 +53,9 @@ void config_init(void) {
 s32 config_remapButton(arg0)
 s32 arg0;
 {
-    GameConfig *p = (GameConfig *)&g_gameState->unk24;
+    GameConfig *p = (GameConfig *)&g_gameState->config;
 
-    if (p->unk0_1 != 1) {
+    if (p->padCustom != 1) {
         return arg0;
     }
     return (p->buttonMap >> (arg0 * 4)) & 0xF;
@@ -67,7 +67,7 @@ void config_apply(void) {
 }
 
 void config_applySound(void) {
-    akao_setOutputMode(g_gameState->unk24 & 1);
+    akao_setOutputMode(g_gameState->config & 1);
 }
 
 void game_initGfx(void) {
@@ -145,7 +145,7 @@ void timer_draw(void) {
     if (colon) {
         pkt = ui_buildSprite(g_timerRect.x + 0x19, 8, ot, 0xEA, t->running == 0, &w, pkt);
     }
-    pkt = win_buildBorder(&g_timerRect, ot, 1, 1, 1, (g_gameState->unk24 >> 18) & 1, pkt);
+    pkt = win_buildBorder(&g_timerRect, ot, 1, 1, 1, CONFIG_WINDOW_COLOR(), pkt);
     setlen(pkt, 3);
     ((TileWords *)pkt)->rgbc = GPU_CODE(GPU_TILE | GPU_ABE);
     ((TileWords *)pkt)->xy = ((g_timerRect.x + 2) & 0xFFFF) | ((g_timerRect.y + 2) << 16);

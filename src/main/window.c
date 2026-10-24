@@ -35,7 +35,7 @@ void win_drawFrame(Window *w) {
     s32 abr;
     RECT t;
 
-    abr = g_gameState->unk24 >> 18;
+    abr = g_gameState->config >> 18;
     abr &= 1;
 
     if (w->unk1A == 2) {
@@ -397,7 +397,7 @@ void win_closeAllNow(void) {
 }
 
 void win_drawBox(RECT *a, s32 b, s32 c) {
-    win_drawBoxEx(a, b, c, (g_gameState->unk24 >> 18) & 1);
+    win_drawBoxEx(a, b, c, CONFIG_WINDOW_COLOR());
 }
 
 void win_drawHelpFrame(RECT *r, s32 otz, s32 style, s32 xoff) {
@@ -412,7 +412,7 @@ void win_drawHelpFrame(RECT *r, s32 otz, s32 style, s32 xoff) {
         win_drawHelpTailEdge(r->x + xoff, y, otz, style, 0);
         win_drawHelpTailFill(r->x + xoff, y, otz, style);
     }
-    win_drawHelpBorder(r, otz, 1, 0, (g_gameState->unk24 >> 18) & 1);
+    win_drawHelpBorder(r, otz, 1, 0, CONFIG_WINDOW_COLOR());
     t.x = r->x + 2;
     t.y = r->y + 2;
     t.w = r->w - 4;
@@ -424,7 +424,7 @@ void win_drawListBox(RECT *r, s32 otz, s32 mode, MenuList *m) {
     RECT t;
     s32 abr;
 
-    abr = g_gameState->unk24 >> 18;
+    abr = g_gameState->config >> 18;
     abr &= 1;
 
     if (mode == 1) {
@@ -535,7 +535,7 @@ void win_setTitleAt(Window *arg0, s32 arg1, s16 arg2, s8 arg3) {
 }
 
 void win_drawFillPal(RECT *a, s32 b) {
-    win_drawFill(a, b, 0, 0, (g_gameState->unk24 >> 18) & 1);
+    win_drawFill(a, b, 0, 0, CONFIG_WINDOW_COLOR());
 }
 
 Window *win_get(s32 i) {

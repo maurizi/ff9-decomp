@@ -72,7 +72,7 @@ s32 func_80054B78(void) {
     if (b >= 0x80) {
         b = 1;
     }
-    if (!((g_gameState->unk24 & 0xFF) >> 7) || g_gameState->mode == 5) {
+    if (!((g_gameState->config & 0xFF) >> 7) || g_gameState->mode == 5) {
         g_padActuator[0].unk0 = b;
         g_padActuator[0].unk1 = a;
         if (g_gameState->mode == 2 && func_800EA27C()) {

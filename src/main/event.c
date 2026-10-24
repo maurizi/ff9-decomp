@@ -18,7 +18,7 @@ s32 evt_getSysVar(s32 op) {
         r = buf[0];
         break;
     case 2:
-        r = g_evtState->unk16EC;
+        r = g_evtState->controlEnabled;
         break;
     case 3:
         r = func_800B0124(0xC00, -1, 0, 0, 0);
@@ -474,7 +474,7 @@ s32 evt_moveObjectTo(s32 x, s32 y, s32 z, s32 flags) {
 s32 evt_rollEncounter(Unk8004AB64 *p) {
     s32 id = 0;
 
-    if (g_evtState->unk16EC != 0 && g_evtEncounterDist > 0x3C0) {
+    if (g_evtState->controlEnabled != 0 && g_evtEncounterDist > 0x3C0) {
         g_evtEncounterDist = 0;
         g_evtEncounterChance += g_evtState->unk16EF;
         if (evt_rollEncounter_rand() < (g_evtEncounterChance >> 3)) {
@@ -1324,7 +1324,7 @@ s32 evt_execInstr(void) {
             po->unkD = 0;
             po->unkA += 2;
             po->unk0 = D_8006E658;
-            g_evtState->unk16EC = 0;
+            g_evtState->controlEnabled = 0;
             for (nn = g_evtState->unk16D8; nn != NULL; nn = nn->unk0) {
                 nn->unk4->unkF |= 6;
             }
@@ -1396,14 +1396,14 @@ s32 evt_execInstr(void) {
         g_evtState->playerUid = g_evtCurObj->unk7;
         return 0;
     case 0x2D:
-        g_evtState->unk16EC = 0;
+        g_evtState->controlEnabled = 0;
         msg_startHereIcon(0);
         D_8007B710 = 0;
         D_8007BBC8 = 0;
         return 0;
     case 0x2E: {
         Unk8007AECC *e;
-        g_evtState->unk16EC = 1;
+        g_evtState->controlEnabled = 1;
         msg_startHereIcon(1);
         e = g_evtState;
         if (e->unk1700 >= 0) {
@@ -2382,7 +2382,7 @@ void evt_movePlayer(Unk8004AB64 *obj) {
         }
     }
     if (!analog) {
-        run = ((GameConfig *)&g_gameState->unk24)->unk0_6;
+        run = ((GameConfig *)&g_gameState->config)->movementRun;
         if ((pad & 0x10000) ? (run ^ 1) != 0 : run != 0) {
             speed = 60;
         }
@@ -2713,7 +2713,7 @@ void evt_updateIdleTimer(void) {
     Unk8004AB64 *o;
     Unk8007AECC *e2;
 
-    if (e == NULL || e->unk16EC == 0) {
+    if (e == NULL || e->controlEnabled == 0) {
         return;
     }
     e->unk1700 -= e->unk1700 > 0;
@@ -2898,7 +2898,7 @@ s32 evt_updateObjects(void) {
         if (o->unk5 == 4) {
             z = o;
             if (o->unk7 == g_evtState->playerUid && o->unkE == 1) {
-                if (g_evtState->unk16EC != 0) {
+                if (g_evtState->controlEnabled != 0) {
                     if (g_evtMode == 1) {
                         o->unk40.vx = o->pos.vx;
                         o->unk40.vy = o->pos.vy;
@@ -2979,7 +2979,7 @@ s32 evt_updateObjects(void) {
                     }
                     if (o->unk7 == g_evtState->playerUid) {
                         msg_drawHereIcon(p);
-                        if (g_evtState->unk16EC != 0) {
+                        if (g_evtState->controlEnabled != 0) {
                             evt_checkPlayerAction(p);
                         }
                     }
@@ -3371,7 +3371,7 @@ void evt_init(u8 *data) {
     for (i = 0; i < 0x50; i++) {
         g_evtState->unk0[i] = 0;
     }
-    g_evtState->unk16EC = 0;
+    g_evtState->controlEnabled = 0;
     g_evtState->playerUid = 0;
     g_evtState->unk1700 = 0;
     msg_startHereIcon(0);
@@ -3616,7 +3616,7 @@ Unk8004AB64 *evt_getPlayer(void) {
 }
 
 s32 evt_isControlEnabled(void) {
-    return g_evtState->unk16EC;
+    return g_evtState->controlEnabled;
 }
 
 Unk16D8 *evt_getObjectList(void) {

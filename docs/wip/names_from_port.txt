@@ -1349,3 +1349,10 @@ func_8004AE9C evt_getObjectList  # [code] docs/runtime-findings.md field/menu ca
 func_8004B040 evt_getObject  # [code] docs/runtime-findings.md field/menu campaign (medium-high), (uid)
 func_8004A9E8 evt_onMenuOpen  # [runtime] docs/runtime-findings.md field/menu campaign (medium-high), called by fld_main right after menu_open; closes message windows
 func_8004B68C evt_getObjectProp  # [code] docs/runtime-findings.md field/menu campaign (medium), (o, prop) 0-2 position, 3 direction, 4 flags, 5 uid
+# Types renamed: Unk80077C78 -> FadeState
+# FIELDS include/ff9.h FadeState (g_fade): unk0=type,unk1=subtract,unk2=active,unk8=frames,unkC=frame,unk10=onDone,unk18=pkt,unk1C=otz,unk20=startColor,unk24=endR,unk25=endG,unk26=endB,unk28=color
+# FIELDS include/ff9.h Character: unk38=status,unk88=supportAbilities
+# FIELDS include/ff9.h Unk8007AECC (g_evtState): unk16EC=controlEnabled
+# FIELDS include/ff9.h GameState: unk24=config,unk28=padMap (include/ovl_34.h CFG macro now reads g_gameState->config)
+# FIELDS include/ff9.h GameConfig: unk0_0=soundMono,unk0_1=padCustom,unk0_2=cursorMemory,unk0_3=atbWait,unk0_4=battleCameraFixed,unk0_5=battleControlCustom,unk0_6=movementRun,unk0_7=vibration,unk0_8=battleSpeed,unk0_14=messageSpeed
+# ff9.h: CONFIG_HERE_ICON_OFF/CONFIG_WINDOW_CLASSIC/CONFIG_TARGET_WINDOW_ALWAYS, CONFIG_WINDOW_COLOR() used in src/main

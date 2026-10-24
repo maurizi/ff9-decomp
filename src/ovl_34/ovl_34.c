@@ -128,14 +128,14 @@ void func_801EEEF8(void) {
             }
             return;
         }
-        if ((g_padRepeat & PAD_LEFT) && (((s32)(g_gameState->unk24 >> 20) >> D_801F1558.unk8[D_801F1558.unk0]) & 1)) {
+        if ((g_padRepeat & PAD_LEFT) && (((s32)(g_gameState->config >> 20) >> D_801F1558.unk8[D_801F1558.unk0]) & 1)) {
             snd_playSe(0x67);
-            g_gameState->unk24 = (g_gameState->unk24 & 0xFFFFF) | (((g_gameState->unk24 >> 20) & ~(1 << D_801F1558.unk8[D_801F1558.unk0])) << 20);
+            g_gameState->config = (g_gameState->config & 0xFFFFF) | (((g_gameState->config >> 20) & ~(1 << D_801F1558.unk8[D_801F1558.unk0])) << 20);
             return;
         }
-        if ((g_padRepeat & PAD_RIGHT) && !(((s32)(g_gameState->unk24 >> 20) >> D_801F1558.unk8[D_801F1558.unk0]) & 1)) {
+        if ((g_padRepeat & PAD_RIGHT) && !(((s32)(g_gameState->config >> 20) >> D_801F1558.unk8[D_801F1558.unk0]) & 1)) {
             snd_playSe(0x67);
-            g_gameState->unk24 = (g_gameState->unk24 & 0xFFFFF) | (((g_gameState->unk24 >> 20) | (1 << D_801F1558.unk8[D_801F1558.unk0])) << 20);
+            g_gameState->config = (g_gameState->config & 0xFFFFF) | (((g_gameState->config >> 20) | (1 << D_801F1558.unk8[D_801F1558.unk0])) << 20);
             return;
         }
         if (g_padRepeat & PAD_UP) {
@@ -158,7 +158,7 @@ void func_801EF110(void) {
     r2 = &D_801F1558.unk1C[1].unk4;
     text_drawBlock(r2->x + 0x2A, r2->y + 8, 0x11, text_get(0), 0);
     for (; i < 8; i++) {
-        ui_drawSprite(r->x + 0x10, r->y + 0xB + i * 0x11, 0x11, D_801F14FC[(g_gameState->unk28 >> (i * 4)) & 7].unk1, 0);
+        ui_drawSprite(r->x + 0x10, r->y + 0xB + i * 0x11, 0x11, D_801F14FC[(g_gameState->padMap >> (i * 4)) & 7].unk1, 0);
         func_801F0F48(r->x + 0x27, r->y + 0xE + i * 0x11, 0x11, D_801F14F8, 0);
         ui_drawSprite(r->x + 0x3A, r->y + 0xB + i * 0x11, 0x11, D_801F14FC[i].unk1, 0);
         func_801F0FE8(r->x + 0x54, r->y + 0xC + i * 0x11, 0x11, D_801F14FC[i].unk0, 0);
@@ -174,7 +174,7 @@ void func_801EF2B4(void) {
     r2 = &D_801F1558.unk1C[1].unk4;
     text_drawBlock(r2->x + 0x2A, r2->y + 8, 0x11, text_get(1), 0);
     for (i = 0; i < D_801F1558.unk1; i++) {
-        on = ((s32)(g_gameState->unk24 >> 20) >> D_801F1558.unk8[i]) & 1;
+        on = ((s32)(g_gameState->config >> 20) >> D_801F1558.unk8[i]) & 1;
         text_drawBlock(r->x + 0xE, r->y + 0xA + i * 0x11, 0x11, g_gameState->unk1C->characters[D_801F1558.unk11[i]].unk0, 0);
         func_801F0F94(r->x + 0x60, r->y + 0xA + i * 0x11, 0x11, 0xF8, on);
         func_801F0F94(r->x + 0x92, r->y + 0xA + i * 0x11, 0x11, 0x100, on == 0);
@@ -311,7 +311,7 @@ void func_801EF938(void) {
 
     i = D_801F1558.unk3C.unk5 + D_801F1558.unk3C.cursor;
     on = 1;
-    if ((i == on && ((g_gameState->unk24 >> i) & on) == on) || (i == 5 && ((g_gameState->unk24 >> 5) & 1) == on)) {
+    if ((i == on && ((g_gameState->config >> i) & on) == on) || (i == 5 && ((g_gameState->config >> 5) & 1) == on)) {
         D_801F1558.unk0 = 0;
         D_801F1558.unk2 = 1;
         for (j = 0; j < 2; j++) {
@@ -336,10 +336,10 @@ void func_801EFA54(void) {
         D_801F1558.unk4 = 0;
         switch (i) {
         case 7:
-            g_gameState->unk24 = (g_gameState->unk24 & ~0x700) | (((d + ((g_gameState->unk24 >> 8) & 7)) & 7) << 8);
+            g_gameState->config = (g_gameState->config & ~0x700) | (((d + ((g_gameState->config >> 8) & 7)) & 7) << 8);
             break;
         case 8:
-            g_gameState->unk24 = (g_gameState->unk24 & ~0x1C000) | (((d + ((g_gameState->unk24 >> 14) & 7)) & 7) << 14);
+            g_gameState->config = (g_gameState->config & ~0x1C000) | (((d + ((g_gameState->config >> 14) & 7)) & 7) << 14);
             break;
         }
     }
@@ -487,7 +487,7 @@ void func_801F0184(void) {
     D_801F1558.unk58 = D_801F1558.unk50[g_gameState->unk1C->unk8 ^ 1] - (D_801F1558.unk4C - k);
     D_801F1558.unk4C = D_801F1558.unk50[g_gameState->unk1C->unk8];
     ui_drawLabel(0x10, 0x23, 0x16, D_80070430, 0);
-    ui_drawRule(8, 0x26, 0x16, 0, 0x12C, (g_gameState->unk24 >> 18) & 1);
+    ui_drawRule(8, 0x26, 0x16, 0, 0x12C, (g_gameState->config >> 18) & 1);
     func_801EEB68();
     func_801F0BE8();
     func_801F0C78();
@@ -584,62 +584,62 @@ void func_801F0550(RECT *r, s32 otz, s32 i) {
 
 void func_801F05D0(RECT *r, s32 otz) {
     func_801F0FE8(r->x + 0xF, r->y + 6, otz, D_801F13F0[0].unk0, 0);
-    func_801F0D20(r, otz, g_gameState->unk24 & 1, 0);
+    func_801F0D20(r, otz, g_gameState->config & 1, 0);
 }
 
 void func_801F0640(RECT *r, s32 otz) {
     func_801F0FE8(r->x + 0xF, r->y + 6, otz, D_801F13F0[1].unk0, 0);
-    func_801F0D20(r, otz, (g_gameState->unk24 >> 1) & 1, 1);
+    func_801F0D20(r, otz, (g_gameState->config >> 1) & 1, 1);
 }
 
 void func_801F06B4(RECT *r, s32 otz) {
     func_801F0FE8(r->x + 0xF, r->y + 6, otz, D_801F13F0[2].unk0, 0);
-    func_801F0D20(r, otz, (g_gameState->unk24 >> 2) & 1, 2);
+    func_801F0D20(r, otz, (g_gameState->config >> 2) & 1, 2);
 }
 
 void func_801F0728(RECT *r, s32 otz) {
     func_801F0FE8(r->x + 0xF, r->y + 6, otz, D_801F13F0[3].unk0, 0);
-    func_801F0D20(r, otz, (g_gameState->unk24 >> 3) & 1, 3);
+    func_801F0D20(r, otz, (g_gameState->config >> 3) & 1, 3);
 }
 
 void func_801F079C(RECT *r, s32 otz) {
     func_801F0FE8(r->x + 0xF, r->y + 6, otz, D_801F13F0[4].unk0, 0);
-    func_801F0D20(r, otz, (g_gameState->unk24 >> 4) & 1, 4);
+    func_801F0D20(r, otz, (g_gameState->config >> 4) & 1, 4);
 }
 
 void func_801F0810(RECT *r, s32 otz) {
     func_801F0FE8(r->x + 0xF, r->y + 6, otz, D_801F13F0[5].unk0, 0);
-    func_801F0D20(r, otz, (g_gameState->unk24 >> 5) & 1, 5);
+    func_801F0D20(r, otz, (g_gameState->config >> 5) & 1, 5);
 }
 
 void func_801F0884(RECT *r, s32 otz) {
     func_801F0FE8(r->x + 0xF, r->y + 6, otz, D_801F13F0[6].unk0, 0);
-    func_801F0D20(r, otz, (g_gameState->unk24 >> 6) & 1, 6);
+    func_801F0D20(r, otz, (g_gameState->config >> 6) & 1, 6);
 }
 
 void func_801F08F8(RECT *r, s32 otz) {
     func_801F0FE8(r->x + 0xF, r->y + 6, otz, D_801F13F0[7].unk0, 0);
-    func_801F0DD8(r, otz, (g_gameState->unk24 >> 8) & 7, 2, 7);
+    func_801F0DD8(r, otz, (g_gameState->config >> 8) & 7, 2, 7);
 }
 
 void func_801F0974(RECT *r, s32 otz) {
     func_801F0FE8(r->x + 0xF, r->y + 6, otz, D_801F13F0[8].unk0, 0);
-    func_801F0DD8(r, otz, (g_gameState->unk24 >> 14) & 7, 6, 8);
+    func_801F0DD8(r, otz, (g_gameState->config >> 14) & 7, 6, 8);
 }
 
 void func_801F09F0(RECT *r, s32 otz) {
     func_801F0FE8(r->x + 0xF, r->y + 6, otz, D_801F13F0[9].unk0, 0);
-    func_801F0D20(r, otz, (g_gameState->unk24 >> 17) & 1, 9);
+    func_801F0D20(r, otz, (g_gameState->config >> 17) & 1, 9);
 }
 
 void func_801F0A64(RECT *r, s32 otz) {
     func_801F0FE8(r->x + 0xF, r->y + 6, otz, D_801F13F0[10].unk0, 0);
-    func_801F0D20(r, otz, (g_gameState->unk24 >> 18) & 1, 10);
+    func_801F0D20(r, otz, (g_gameState->config >> 18) & 1, 10);
 }
 
 void func_801F0AD8(RECT *r, s32 otz) {
     func_801F0FE8(r->x + 0xF, r->y + 6, otz, D_801F13F0[11].unk0, 0);
-    func_801F0D20(r, otz, (g_gameState->unk24 >> 19) & 1, 11);
+    func_801F0D20(r, otz, (g_gameState->config >> 19) & 1, 11);
 }
 
 void func_801F0B4C(RECT *r, s32 otz) {
@@ -648,7 +648,7 @@ void func_801F0B4C(RECT *r, s32 otz) {
 
     if (func_801F126C()) {
         c = 0;
-        sel = (u8)g_gameState->unk24;
+        sel = (u8)g_gameState->config;
         sel >>= 7;
     } else {
         sel = c = 2;
@@ -788,16 +788,16 @@ void func_801F11C4(s32 slot, s32 v) {
     u32 old;
 
     for (i = 0; i < 8; i++) {
-        if (v == ((g_gameState->unk28 >> (i * 4)) & 7)) {
+        if (v == ((g_gameState->padMap >> (i * 4)) & 7)) {
             j = i;
             goto found;
         }
     }
     j = 0;
 found:
-    w = g_gameState->unk28;
+    w = g_gameState->padMap;
     old = (w >> (slot * 4)) & 7;
-    g_gameState->unk28 = (((w & ~(7 << (slot * 4))) | (v << (slot * 4))) & ~(7 << (j * 4))) | (old << (j * 4));
+    g_gameState->padMap = (((w & ~(7 << (slot * 4))) | (v << (slot * 4))) & ~(7 << (j * 4))) | (old << (j * 4));
 }
 
 void func_801F1250(void) {

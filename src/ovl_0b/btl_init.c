@@ -113,7 +113,7 @@ void btl_initPartyUnit(Character *c, BtlUnit *u, u16 slot, u16 n) {
         u->unk78 = c->trance;
     }
     u->unk7C = 0;
-    u->unkC4 = c->unk88;
+    u->unkC4 = c->supportAbilities;
     u->unk30 = c->speed;
     u->unk31 = c->strength;
     u->unk32 = c->magic;
@@ -154,8 +154,8 @@ void btl_initPartyUnit(Character *c, BtlUnit *u, u16 slot, u16 n) {
     if (u->hp * 6 < u->max->maxHp) {
         u->status |= BTL_STATUS_LOW_HP;
     }
-    btl_addStatuses(u, c->unk38 & 0xFE);
-    if (c->unk38 & 1) {
+    btl_addStatuses(u, c->status & 0xFE);
+    if (c->status & 1) {
         btl_addStatus(u, BTL_STATUS_PETRIFY);
     }
     btl_applyAutoAbilities(u);
