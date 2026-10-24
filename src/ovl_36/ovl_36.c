@@ -1,7 +1,5 @@
 #include "ovl_36.h"
 
-INCLUDE_RODATA("asm/us/ovl_36/nonmatchings/ovl_36", D_801EDF00);
-
 INCLUDE_RODATA("asm/us/ovl_36/nonmatchings/ovl_36", D_801EDF04);
 
 INCLUDE_RODATA("asm/us/ovl_36/nonmatchings/ovl_36", D_801EDF08);

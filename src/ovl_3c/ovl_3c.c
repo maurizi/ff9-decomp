@@ -1451,8 +1451,6 @@ void func_801F8728(void) {
     h->unk8 = text;
 }
 
-INCLUDE_RODATA("asm/us/ovl_3c/nonmatchings/ovl_3c", D_801EDF00);
-
 INCLUDE_RODATA("asm/us/ovl_3c/nonmatchings/ovl_3c", D_801EDF04);
 
 INCLUDE_RODATA("asm/us/ovl_3c/nonmatchings/ovl_3c", D_801EDF3C);

@@ -100,8 +100,9 @@ $(BUILD_DIR)/%.s.o: %.s
 
 # Binaries whose C is split along the original translation units (docs/source-files.md): each
 # object's .rodata is linked at 4-byte alignment (subalign: 4) like psylink did, so gcc's own
-# 8-alignment of jump tables reproduces the original padding words.
-TU_SPLIT := src/main src/ovl_0a src/ovl_0b src/ovl_0c
+# 8-alignment of jump tables reproduces the original padding words. That is now every binary
+# (single-TU overlays included); only the effect modules still get the rewrite below.
+TU_SPLIT := src/main $(foreach o,$(OVLS),src/ovl_$(o))
 
 # Some original source files were built with -O1: name them *_o1.c (splat subsegment name).
 $(BUILD_DIR)/%_o1.c.o: CC_FLAGS := -O1 -G0
@@ -112,7 +113,7 @@ $(BUILD_DIR)/%.c.o: %.c $(wildcard include/*.h)
 	$(CPP) $(CPP_FLAGS) $< -o $(@:.o=.i)
 	$(CC1) -quiet $(CC_FLAGS) $(@:.o=.i) -o $(@:.o=.cc1.s)
 	@# gcc 8-aligns jump tables (.align 3); originals were separate objects packed at 4, so
-	@# within our merged per-binary C files that alignment lands differently. Use 4.
+	@# in a C file that merges several of them that alignment lands differently. Use 4 there.
 	@# Binaries split into their original translation units keep .align 3 (TU_SPLIT).
 	$(if $(filter $(TU_SPLIT),$(patsubst %/,%,$(dir $<))),,sed -i 's/^\t\.align\t3$$/\t.align\t2/' $(@:.o=.cc1.s))
 	$(MASPSX) --aspsx-version=$(ASPSX_VERSION) --expand-div --run-assembler $(ASFLAGS) -o $@ < $(@:.o=.cc1.s)

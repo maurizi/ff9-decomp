@@ -1,7 +1,5 @@
 #include "ovl_34.h"
 
-INCLUDE_RODATA("asm/us/ovl_34/nonmatchings/ovl_34", D_801EDF00);
-
 void func_801EEA1C(void) {
     ConfigMenu *m;
     s32 i;

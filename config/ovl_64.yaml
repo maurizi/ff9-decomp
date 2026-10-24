@@ -43,8 +43,13 @@ segments:
     vram: 0x80198700
     bss_size: 0x0
     subsegments:
-      - [0x0, .rodata, ovl_64]
-      - [0x9A0, c, ovl_64]
+      - [0x0, .rodata, mbg]
+      - [0x950, .rodata, psyq_8019CD60]
+      - [0x9A0, c, mbg]
+      - [0x2744, c, mbg_vlc_asm]
+      - [0x30C4, c, mbg_stream]
+      - [0x4660, c, psyq_8019CD60]
+      - [0x4CF0, c, psyq_8019D3F0]
       - [0x4CFC, data]
 
   - [0x8800]

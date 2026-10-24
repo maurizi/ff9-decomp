@@ -104,8 +104,6 @@ void func_801F3BBC(void) {
     }
 }
 
-INCLUDE_RODATA("asm/us/ovl_3a/nonmatchings/ovl_3a", D_801EDF00);
-
 void func_801F3D9C(void) {
     if (D_801F4BBC.unk0 == 0) {
         switch (D_801F4BBC.unk1) {

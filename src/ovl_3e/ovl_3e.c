@@ -301,8 +301,6 @@ void func_801F6B24(void) {
     D_801F6BBC.unk1 = cd_checkShellOpen() ? 2 : 1;
 }
 
-INCLUDE_RODATA("asm/us/ovl_3e/nonmatchings/ovl_3e", D_801EDF00);
-
 INCLUDE_RODATA("asm/us/ovl_3e/nonmatchings/ovl_3e", D_801EDF04);
 
 INCLUDE_RODATA("asm/us/ovl_3e/nonmatchings/ovl_3e", D_801EDF0C);

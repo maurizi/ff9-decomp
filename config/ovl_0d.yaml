@@ -42,8 +42,12 @@ segments:
     vram: 0x800A7000
     bss_size: 0x0
     subsegments:
-      - [0x0, .rodata, ovl_0d]
-      - [0x52C, c, ovl_0d]
+      - [0x0, rodata]   # overlay header word (overlay id), an object of its own
+      - [0x4, .rodata, tu_800A752C]
+      - [0x50, .rodata, tu_800A7E10]
+      - [0x52C, c, tu_800A752C]
+      - [0xE10, c, tu_800A7E10]
+      - [0xC65C, .data, tu_800A752C]
       - [0xC660, data]
 
   - [0xD000]

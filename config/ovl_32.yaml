@@ -42,7 +42,8 @@ segments:
     vram: 0x801EDF00
     bss_size: 0x0
     subsegments:
-      - [0x0, .rodata, ovl_32]
+      - [0x0, rodata]   # overlay header word (overlay id), an object of its own
+      - [0x4, .rodata, ovl_32]
       - [0x9BC0, c, ovl_32]
       - [0xB7E4, data]
 

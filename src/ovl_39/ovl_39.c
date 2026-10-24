@@ -123,8 +123,6 @@ void func_801F4840(void) {
     win_setClip(&r, 0x2D, 4);
 }
 
-INCLUDE_RODATA("asm/us/ovl_39/nonmatchings/ovl_39", D_801EDF00);
-
 void func_801F49C4(RECT *r, s32 otz, s32 slot) {
     char name[8];
     void (*fn)(RECT *, s32, s32);

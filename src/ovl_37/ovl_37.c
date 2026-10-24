@@ -1,7 +1,5 @@
 #include "ovl_37.h"
 
-INCLUDE_RODATA("asm/us/ovl_37/nonmatchings/ovl_37", D_801EDF00);
-
 INCLUDE_RODATA("asm/us/ovl_37/nonmatchings/ovl_37", g_itemMenuText);
 
 void func_801F0C18(void) {

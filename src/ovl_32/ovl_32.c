@@ -1,7 +1,5 @@
 #include "ovl_32.h"
 
-INCLUDE_RODATA("asm/us/ovl_32/nonmatchings/ovl_32", D_801EDF00);
-
 INCLUDE_RODATA("asm/us/ovl_32/nonmatchings/ovl_32", D_801EDF04);
 
 /* text bank for this menu (count + {offset, info} table, then strings) */

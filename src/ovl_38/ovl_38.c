@@ -182,8 +182,6 @@ void func_801EED18(void) {
     ui_drawSmallDigits(r->x + 0xB3, r->y + 0x57, 0x1D, buf, 0);
 }
 
-INCLUDE_RODATA("asm/us/ovl_38/nonmatchings/ovl_38", D_801EDF00);
-
 INCLUDE_RODATA("asm/us/ovl_38/nonmatchings/ovl_38", D_801EDF04);
 
 INCLUDE_RODATA("asm/us/ovl_38/nonmatchings/ovl_38", D_801EE144);
