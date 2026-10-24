@@ -351,10 +351,10 @@ typedef struct {
     WmPackEntry *unk8[1];
 } WmPack;
 
-/* text windows (func_800CC820 .. func_800CC8C8) */
+/* text windows (menuMain_setCursor .. menuMain_updatePanels) */
 typedef struct {
     u8 unk0;
-    u8 unk1; /* index into D_800CDFC0 */
+    u8 unk1; /* index into s_menuMainInput */
     u8 unk2; /* party slots being swapped */
     u8 unk3;
     u8 unk4;
@@ -551,7 +551,7 @@ s32 wm_depFindBackground(s32, s32 *, s32 *);
 s32 wm_depFindField(s16, s32 *, s32 *);
 s32 wm_depFindArea(s32, s32 *, s32 *);
 void w_frameMapDestructor(void);
-void func_800CB9D8(s32, s32);
+void menuMain_swapPortraits(s32, s32);
 void wm_blockVertsFog(void *);
 s32 wm_blockFacesFog(void *, s32, s32);
 void wm_blockVertsFar(void *);
@@ -564,7 +564,7 @@ void w_musicRequestSend(u32);
 void func_800C4850(s32, u16, u8);
 void func_800AE784(s16, s16);
 void func_800B3638(void);
-void func_800CC54C(void);
+void menuMain_selectCommand(void);
 void func_800C48F4(s32);
 void func_800C4718(s32, u8);
 void func_800C47B0(s32, u8);
@@ -577,13 +577,13 @@ void wm_modelVerts(s32);
 void wm_modelVertsFlat(s32);
 s32 wm_modelFaces(s32, s32, s32);
 s32 wm_modelFacesFog(s32, s32, s32);
-void func_800CBB4C(s32);
-void func_800CBDF8(RECT *, s32);
+void menuMain_drawMember(s32);
+void menuMain_drawPortraitShade(RECT *, s32);
 void func_800B17B4(void);
 void func_800B1CD0(void);
 void func_800B20B8(void);
-void func_800CB434(void);
-void func_800CC324(void);
+void menuMain_initPanels(void);
+void menuMain_updateHelp(void);
 void func_800B69AC(void);
 void w_memorymanDestructor(void);
 void func_800BC0A0(void);
@@ -605,8 +605,8 @@ typedef struct {
 } WmTim;
 
 void func_800B8DC0(u32 *, s32, s32, s32, s32, s32, s8);
-void func_800CC3E0(s32);
-void func_800CC5D8(u8);
+void menuMain_setExpHelp(s32);
+void menuMain_setEquipHelp(u8);
 s32 func_800B8498(void);
 s32 func_800B84C0(void);
 s32 w_musicGetID(s32, Unk800C3FE4 *);
@@ -663,24 +663,24 @@ void func_800C2048(void);
 void func_800C2134(void);
 void func_800C26E4(void);
 s32 func_800C497C(u16);
-void func_800CBF18(void);
-void func_800CC050(void);
-void func_800CC13C(void);
-void func_800CC82C(void);
-void func_800CC890(void);
-void func_800CC8C8(void);
-void func_800CC940(void);
+void menuMain_drawTimeGil(void);
+void menuMain_drawLocation(void);
+void menuMain_drawCursor(void);
+void menuMain_input(void);
+void menuMain_draw(void);
+void menuMain_updatePanels(void);
+void menuMain_drawParty(void);
 
 /* ---- overlay data ---- */
-extern RECT *D_800CE04C;
-extern u8 D_800CE050[];
+extern RECT *s_menuMainTimeGilRect;
+extern u8 s_menuMainGilSuffix[];
 extern u8 g_worldFog;
 extern u8 D_800CCE4D;
 extern Unk800D2FF8 *D_800D27F0;
-extern u8 *D_800CE058[5];
+extern u8 *s_menuMainEquipLabels[5];
 extern char D_800A79D0[];
 extern char D_800A7A0C[];
-extern RECT *D_800CE054;
+extern RECT *s_menuMainLocationRect;
 extern s16 D_800CE188;
 extern s16 D_800CE1A8;
 extern s16 D_800CE1C0;
@@ -707,7 +707,7 @@ extern MATRIX D_800CF4C0;
 extern MATRIX D_800CF520;
 extern MATRIX D_800CF540;
 extern u8 D_800D33F4;
-extern u8 g_worldMapText[]; /* text */
+extern u8 s_menuMainText[]; /* text */
 extern Unk800CCCC0 D_800CCCC0[];
 extern Unk8004AB64 *D_800CE3DC; /* player actor */
 extern Unk800CE3C8 *D_800CE3C8;
@@ -771,7 +771,7 @@ extern s32 D_800D33F0;
 extern Unk800D3FA0 D_800D3FA0;
 extern char D_800A71F4[]; /* "w_frameMapDestructor:\n" */
 extern char D_800A7A40[]; /* "w_framePackGetPtr : attempt to get %d element with %d max\n" */
-extern void (*D_800CDFC0[])(void);
+extern void (*s_menuMainInput[])(void);
 extern u8 D_800CDF30[];
 extern Unk800CE0F0 *D_800CE0F0;
 extern s8 D_800CE3C4;
@@ -887,7 +887,7 @@ extern s32 D_800D481C;
 extern s32 D_800D4820;
 extern s32 D_800D4824;
 extern s32 D_800D4828;
-extern Unk800D5438 D_800D5438;
+extern Unk800D5438 s_menuMain;
 extern u8 D_800CF46C;
 extern char D_800A7CCC[];
 extern s16 D_800CCB28[][9];
@@ -959,7 +959,7 @@ extern u8 D_800CF454;
 void func_800B94F8(s32, s32, s32);
 void func_800BD57C(void);
 void func_800BD674(void);
-void func_800CB8C8(s32, s32);
+void menuMain_reorder(s32, s32);
 void func_800C465C(u16);
 void func_800C46D8(u16);
 
@@ -985,10 +985,10 @@ typedef struct {
     void (*unkC)(void);
 } TextWin;
 
-extern RECT D_800CDFCC[6];
-extern TextWin D_800CE00C[4];
-extern u8 D_800D5418[16];
-extern u8 D_800D5428[16];
+extern RECT s_menuMainPanelRects[6];
+extern TextWin s_menuMainSlideIn[4];
+extern u8 s_menuMainExpText[16];
+extern u8 s_menuMainNextText[16];
 extern u8 D_800CE06C[];
 extern u8 D_800CE070[];
 extern u8 D_800CE078[];

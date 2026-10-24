@@ -796,7 +796,7 @@ s32 fld_loadFile(FieldScene *sc, s32 arg1) {
         for (i = db_lookup(id, 1, 0x170000, 0) - 1; i >= 0; i--) {
             k = db_lookup(id, 2, (u16)i | 0x170000, 0);
             if (k != -1) {
-                func_800C9968((s32 *)k);
+                fld_loadImagePack((s32 *)k);
             }
         }
         DrawSync(0);

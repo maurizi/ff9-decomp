@@ -1608,7 +1608,7 @@ void fld_spriteCommand(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4) {
             fld_resetSprite(e);
             e->unk1 = arg2;
             e->unk18 = db_lookupRegistered(4, (arg2 & 0xFFFF) | 0x160000, 0);
-            e->unkE = func_800C9700(e->unk18) * 16;
+            e->unkE = fld_getSpriteFrameCount(e->unk18) * 16;
         } else {
             e->unk18 = NULL;
         }
@@ -1712,7 +1712,7 @@ void fld_drawSprites(void) {
             rot.vy = e->unk10[1];
             rot.vz = e->unk10[2];
             rot.pad = 0;
-            prim = func_800C970C(prim, e->unk18, e->unk8, &rot, e->unk4, e->unk16 >> 4, e->unk0_4 < 4 ? e->unk0_4 : 0xFF, e->unk7 << 4, &ot[e->unk22]);
+            prim = fld_drawSprite3D(prim, e->unk18, e->unk8, &rot, e->unk4, e->unk16 >> 4, e->unk0_4 < 4 ? e->unk0_4 : 0xFF, e->unk7 << 4, &ot[e->unk22]);
             e->unk16 += (s8)e->unk6;
             if (e->unk16 >= e->unkE) {
                 e->unk16 = 0;

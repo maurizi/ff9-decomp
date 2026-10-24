@@ -624,7 +624,7 @@ typedef struct {
 /* text windows (same layout as ovl_0c's D_800D5438) */
 typedef struct {
     u8 unk0;
-    u8 unk1; /* index into D_800C9E14 */
+    u8 unk1; /* index into s_menuMainInput */
     u8 unk2;
     u8 unk3;
     u8 unk4;
@@ -952,7 +952,7 @@ typedef struct {
     u16 unk8[1]; /* frame offsets, then the u16-counted table */
 } FieldSprHdr;
 
-/* parameter block for func_800C9AB8 */
+/* parameter block for fld_emitSprite3D */
 typedef struct {
     u16 *unk0;
     u8 *unk4;
@@ -965,8 +965,8 @@ typedef struct {
     s32 unk20;
 } FieldSprArgs;
 
-u8 *func_800C970C(u8 *, FieldSprHdr *, SVECTOR *, SVECTOR *, s32, s32, s32, s32, u32 *);
-u8 *func_800C9AB8(u8 *, FieldSprArgs *, u8 *, u32 *);
+u8 *fld_drawSprite3D(u8 *, FieldSprHdr *, SVECTOR *, SVECTOR *, s32, s32, s32, s32, u32 *);
+u8 *fld_emitSprite3D(u8 *, FieldSprArgs *, u8 *, u32 *);
 void func_800316D8(SVECTOR *, MATRIX *);
 
 /* object placement (fld_calcShadowMatrix) */
@@ -1127,23 +1127,23 @@ s32 fld_freeAreaFile(FieldMapObj *, s16);
 void fld_discChangeSetMode(s32);
 s32 *fld_findPreloadRequest(s32);
 s32 *fld_findPreloadExclude(s32);
-void func_800C951C(void);
-void func_800C95B8(void);
-void func_800C9580(void);
+void menuMain_input(void);
+void menuMain_updatePanels(void);
+void menuMain_draw(void);
 void fld_discPromptInput(void);
 void fld_discPromptDraw(void);
 void fld_discChangeBackToPrompt(void);
-void func_800C8C08(void);
-void func_800C8D40(void);
-void func_800C8E2C(void);
-void func_800C9630(void);
+void menuMain_drawTimeGil(void);
+void menuMain_drawLocation(void);
+void menuMain_drawCursor(void);
+void menuMain_drawParty(void);
 /* party/menu windows shared with ovl_0c (func_800CB434 .. func_800CC940) */
-void func_800C8124(void);
-void func_800C86C8(s32, s32);
-void func_800C9014(void);
-void func_800C90D0(s32);
-void func_800C923C(void);
-void func_800C92C8(u8);
+void menuMain_initPanels(void);
+void menuMain_swapPortraits(s32, s32);
+void menuMain_updateHelp(void);
+void menuMain_setExpHelp(s32);
+void menuMain_selectCommand(void);
+void menuMain_setEquipHelp(u8);
 
 /* ---- overlay data ---- */
 extern u8 g_fieldDiscChangeText[]; /* text */
@@ -1170,8 +1170,8 @@ extern Unk800CA068 g_fieldBgState;
 extern s16 D_800CAA98[];
 extern s16 D_800CAAB8[];
 extern BgiFloorMove g_fieldBgiFloorMoves[];
-extern Unk800CB188 D_800CB188;
-extern void (*D_800C9E14[])(void);
+extern Unk800CB188 s_menuMain;
+extern void (*s_menuMainInput[])(void);
 extern Unk800C9EF0 g_fieldFlagQueue;
 extern u16 g_fieldMovieFlags;
 extern s16 g_fieldBgiPushCount;
@@ -1198,11 +1198,11 @@ s32 func_800221C0(s32, s32);
 void func_80022280(s32, s32);
 s32 func_80050BE0(s32);
 
-extern RECT *D_800C9EA0;
-extern u8 D_800C9EA4[];
-extern RECT *D_800C9EA8;
-extern u8 *D_800C9EAC[5];
-extern u8 D_800A7860[]; /* text */
+extern RECT *s_menuMainTimeGilRect;
+extern u8 s_menuMainGilSuffix[];
+extern RECT *s_menuMainLocationRect;
+extern u8 *s_menuMainEquipLabels[5];
+extern u8 s_menuMainText[]; /* text */
 extern RECT g_fieldDiscChangeRect;
 
 /* text window contents passed to func_80063118 (as in ovl_38) */
@@ -1214,10 +1214,10 @@ typedef struct {
     void (*unkC)(void);
 } TextWin;
 
-extern RECT D_800C9E20[6];
-extern TextWin D_800C9E60[4];
-extern u8 D_800CB168[16];
-extern u8 D_800CB178[16];
+extern RECT s_menuMainPanelRects[6];
+extern TextWin s_menuMainSlideIn[4];
+extern u8 s_menuMainExpText[16];
+extern u8 s_menuMainNextText[16];
 extern u8 D_800C9EC0[];
 extern u8 D_800C9EC4[];
 extern u8 D_800C9ECC[];
@@ -1274,11 +1274,11 @@ extern u8 *D_80077DF0; /* = D_80077DE8.unk8, referenced by its own name */
 extern s32 D_80077DEC; /* = D_80077DE8.unk4, referenced by its own name */
 s32 func_8002B980(u8 *, s32);
 extern s32 D_80077E54; /* overlaps Unk80077E50.unk4 in ff9.h */
-void func_800C85B8(s32, s32);
+void menuMain_reorder(s32, s32);
 void fld_discPromptSelect(void);
 s32 fld_setupActorModel(s32, void *);
-void func_800C883C(s32);
-void func_800C8AE8(RECT *, s32);
+void menuMain_drawMember(s32);
+void menuMain_drawPortraitShade(RECT *, s32);
 extern s32 g_mbgFrame;
 void gameover_main(void *); /* overlay 0x65 (loaded at 0x801F0000) */
 void mbg_setRgb24(s32); /* overlay loaded at 0x80198000 */
