@@ -118,7 +118,7 @@ s32 func_801E7704(s32 mode, Fx038Item *it, Unk800F78A4 *env, Unk80100C78Entry *e
         d.vx = 0x400;
         d.vz = 0;
         d.vy = 0;
-        ex->func_800D23D8((u8 *)ex->btlfx_getFileData(entry->unk8, 0xD), &it->unk4, &d, ex->math_sin(q) + 0xAAA, 8, 1, k);
+        ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->unk8, 0xD), &it->unk4, &d, ex->math_sin(q) + 0xAAA, 8, 1, k);
         if (frame < 12) {
             s32 r;
 

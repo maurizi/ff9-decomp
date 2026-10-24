@@ -35,7 +35,7 @@ s32 fx_0d5_op80(s32 mode, Fx0d5Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
                 rot.vz = 0;
                 rot.vy = 0;
                 rot.pad = 1;
-                ex->func_800D23D8((u8 *)ex->btlfx_getFileData(entry->unk8, 0xD), &work->unk4, &rot, s * 2 / 3, 0xC, 1,
+                ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->unk8, 0xD), &work->unk4, &rot, s * 2 / 3, 0xC, 1,
                                   ex->math_sin(t >> 1));
             }
             if (frame == 5) {
@@ -141,8 +141,8 @@ s32 fx_0d5_op84(s32 mode, Fx0d5Work84 *work, Unk800F78A4 *env, Unk80100C78Entry 
         rot.vz = ry;
         rot.pad = 0;
         env->unk28 = 0x80;
-        ex->func_800D23D8((u8 *)ex->btlfx_getFileData(entry->unk8, 0xE), &work->unk8, NULL, b / 3, 0, 1, a / 2);
-        ex->func_800D23D8((u8 *)ex->btlfx_getFileData(entry->unk8, 0xF), &work->unk8, &rot, c / 2, 0, 1, a * 2 / 3);
+        ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->unk8, 0xE), &work->unk8, NULL, b / 3, 0, 1, a / 2);
+        ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->unk8, 0xF), &work->unk8, &rot, c / 2, 0, 1, a * 2 / 3);
         env->unk28 = 0;
         work->unk4++;
     }

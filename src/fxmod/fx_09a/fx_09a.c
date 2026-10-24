@@ -147,7 +147,7 @@ s32 fx_09a_op80(s32 mode, Fx09aWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
             } else {
                 work->unk1C.vy = 0x800;
             }
-            ex->func_800CFCA8(&work->unk1C, ex->btlfx_getUnitRadius(work->unk8) + 0x78, (s32)&a);
+            ex->btlfx_rotateOffset(&work->unk1C, ex->btlfx_getUnitRadius(work->unk8) + 0x78, (s32)&a);
             work->unk24.vx = work->unk14.vx + a.vx;
             work->unk24.vy = work->unk14.vy + a.vy;
             work->unk24.vz = work->unk14.vz + a.vz;
@@ -157,14 +157,14 @@ s32 fx_09a_op80(s32 mode, Fx09aWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
             env->camera->points[0].vx = b.vx;
             env->camera->points[0].vy = b.vy;
             env->camera->points[0].vz = b.vz;
-            ex->func_800CFCA8(&work->unk1C, -0xD2, (s32)&a);
+            ex->btlfx_rotateOffset(&work->unk1C, -0xD2, (s32)&a);
             b.vx = work->unk24.vx + a.vx;
             b.vy = work->unk24.vy + a.vy - 0x140;
             b.vz = work->unk24.vz + a.vz;
             env->camera->points[1].vx = b.vx;
             env->camera->points[1].vy = b.vy;
             env->camera->points[1].vz = b.vz;
-            ex->func_800CFCA8(&work->unk1C, -ex->btlfx_getUnitRadius(0), (s32)&a);
+            ex->btlfx_rotateOffset(&work->unk1C, -ex->btlfx_getUnitRadius(0), (s32)&a);
             b.vx = work->unk14.vx + a.vx;
             b.vy = a.vy - 0x140;
             b.vz = work->unk14.vz + a.vz;

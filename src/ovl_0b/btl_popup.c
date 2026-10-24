@@ -398,7 +398,7 @@ void btl_drawStatusIcons(Unk800CCD00 *arg0) {
             pos.vy = b->unk18 + y;
             if (e->unkE != 0) {
                 f = (u16)r->tick;
-                func_800D198C(e->unk8, &pos, f % (*(u16 *)e->unk8 & 0x7FFF), e->unkD, -1);
+                btlfx_drawSprite(e->unk8, &pos, f % (*(u16 *)e->unk8 & 0x7FFF), e->unkD, -1);
             } else {
                 if ((rot.pad = e->unkF) != 0) {
                     rot.vy = (u->rot[1] + 0xC00) & 0xFFF;

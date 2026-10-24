@@ -199,10 +199,10 @@ s32 fx_186_op80(s32 mode, Fx186Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
                     rot2.vz = 0;
                     rot2.pad = 1;
                     a = (frame - 8) << 9;
-                    ex->func_800D23D8((u8 *)ex->btlfx_getFileData(entry->unk8, 0x1E), &work->unk8, &rot2,
+                    ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->unk8, 0x1E), &work->unk8, &rot2,
                                       ex->math_sin(a >> 2), 0,
                                       1, ex->math_sin(a >> 2));
-                    ex->func_800D23D8((u8 *)ex->btlfx_getFileData(entry->unk8, 0x1F), &work->unk8, &rot2,
+                    ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->unk8, 0x1F), &work->unk8, &rot2,
                                       ex->math_sin(a >> 2) >> 1, 0, 1, ex->math_sin(a >> 2));
                 }
                 if (frame >= 0x10) {
@@ -297,7 +297,7 @@ s32 fx_186_op80(s32 mode, Fx186Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
                     rot2.vy = 0;
                     rot2.vz = 0;
                     env->unk28 = 0x100;
-                    ex->func_800D23D8((u8 *)ex->btlfx_getFileData(entry->unk8, 0x1F), &work->unk8, &rot2,
+                    ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->unk8, 0x1F), &work->unk8, &rot2,
                                       (ex->math_sin((frame << 8) >> 2) >> 1) + 0x800, 0, 1,
                                       ex->math_cos((frame << 8) >> 2));
                     env->unk28 = 0;
@@ -447,7 +447,7 @@ s32 fx_186_op81(s32 mode, Fx186Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
             rot.pad = 1;
             t = (frame << 12) / 7;
             for (i = 0; i < work->unk104; i++) {
-                ex->func_800D23D8((u8 *)ex->btlfx_getFileData(entry->unk8, 0xF), &work->unk4[i], &rot, 0x1000, frame, 1,
+                ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->unk8, 0xF), &work->unk4[i], &rot, 0x1000, frame, 1,
                                   ex->math_cos(t >> 2));
             }
             if (frame >= 7) {

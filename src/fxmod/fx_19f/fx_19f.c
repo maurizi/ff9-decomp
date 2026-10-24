@@ -188,13 +188,13 @@ s32 fx_19f_op81(s32 mode, Fx19fWork81 *work, Unk800F78A4 *env, Unk80100C78Entry 
             if (frame >= 7) {
                 SVECTOR rot;
 
-                ex->func_800CFC2C(frame, 7, 8, 0, 0x1000, &spE8);
+                ex->btlfx_rangeProgress(frame, 7, 8, 0, 0x1000, &spE8);
                 env->unk28 = -0x80;
                 rot.vx = 0x400;
                 rot.vy = 0;
                 rot.vz = frame * 0x18;
                 rot.pad = 1;
-                ex->func_800D23D8((u8 *)ex->btlfx_getFileData(entry->unk8, 0x23), &work->unk8, &rot,
+                ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->unk8, 0x23), &work->unk8, &rot,
                                   ex->math_sin(spE8 >> 2), 0, 1, ex->math_cos(spE8 >> 2));
                 env->unk28 = 0;
                 c6 = ex->math_cos(spE8 >> 2) >> 1;
@@ -328,13 +328,13 @@ s32 fx_19f_op81(s32 mode, Fx19fWork81 *work, Unk800F78A4 *env, Unk80100C78Entry 
                 rot.vx = rot.vy = 0x200;
                 rot.vz = frame * 0x2C;
                 rot.pad = 0;
-                ex->func_800D23D8((u8 *)ex->btlfx_getFileData(entry->unk8, 0x1F), &work->unk10, &rot,
+                ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->unk8, 0x1F), &work->unk10, &rot,
                                   ex->btlfx_randCentered(0x1000) + 0x4000, 0, 1, 0x1000);
                 env->unk28 = 0;
             }
             if (frame >= 20) {
                 c7 = ((frame - 20) << 12) / 23;
-                ex->func_800D23D8((u8 *)ex->btlfx_getFileData(entry->unk8, 0x1D), &work->unk10, NULL, (c7 >> 2) + 0x2800, 0, 1,
+                ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->unk8, 0x1D), &work->unk10, NULL, (c7 >> 2) + 0x2800, 0, 1,
                                   ex->math_sin(c7 >> 1));
             }
             if (frame == 20) {
@@ -537,7 +537,7 @@ s32 fx_19f_op81(s32 mode, Fx19fWork81 *work, Unk800F78A4 *env, Unk80100C78Entry 
                 FX19F_W(b, 0) = FX19F_W(a, 0);
                 FX19F_W(b, 1) = FX19F_W(a, 1);
                 work->unk60.vx -= 0x400;
-                ex->func_800CFD78((s16 *)&a, (s16 *)&work->unk60, 0x5DC, (s16 *)&a);
+                ex->btlfx_pointAhead((s16 *)&a, (s16 *)&work->unk60, 0x5DC, (s16 *)&a);
                 work->unk60.vx += 0x400;
                 func_801E7894(entry, &D_801EAA58, &a, &b, g, n3, 0xF0, work->unk4 & 7, f, 0x40);
             }
@@ -889,8 +889,8 @@ s32 fx_19f_op83(s32 mode, Fx19fWork83 *work, Unk800F78A4 *env, Fx19fInst *inst, 
                     if (b2 != NULL) {
                         dist = D_801EA9B4;
                         ex->btlfx_randRotation(&q);
-                        ex->func_800CFD78((s16 *)&d, (s16 *)&q, 0x180, (s16 *)&c);
-                        ex->func_800CFD78((s16 *)&d, (s16 *)&q, dist + 0x180, (s16 *)&d);
+                        ex->btlfx_pointAhead((s16 *)&d, (s16 *)&q, 0x180, (s16 *)&c);
+                        ex->btlfx_pointAhead((s16 *)&d, (s16 *)&q, dist + 0x180, (s16 *)&d);
                         ((s32 *)&b2->unk0)[0] = FX19F_W(c, 0);
                         ((s32 *)&b2->unk0)[1] = FX19F_W(c, 1);
                         ((s32 *)&b2->unk8)[0] = FX19F_W(d, 0);
@@ -915,8 +915,8 @@ s32 fx_19f_op83(s32 mode, Fx19fWork83 *work, Unk800F78A4 *env, Fx19fInst *inst, 
                         if (b2 != NULL) {
                             dist = D_801EA9B4;
                             ex->btlfx_randRotation(&q);
-                            ex->func_800CFD78((s16 *)&d, (s16 *)&q, 0x180, (s16 *)&c);
-                            ex->func_800CFD78((s16 *)&d, (s16 *)&q, dist + 0x180, (s16 *)&d);
+                            ex->btlfx_pointAhead((s16 *)&d, (s16 *)&q, 0x180, (s16 *)&c);
+                            ex->btlfx_pointAhead((s16 *)&d, (s16 *)&q, dist + 0x180, (s16 *)&d);
                             ((s32 *)&b2->unk0)[0] = FX19F_W(c, 0);
                             ((s32 *)&b2->unk0)[1] = FX19F_W(c, 1);
                             ((s32 *)&b2->unk8)[0] = FX19F_W(d, 0);

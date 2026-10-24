@@ -22,12 +22,12 @@ s32 fx_01d_op80(s32 mode, Fx01dWork80 *work, Unk800F78A4 *env, Unk80100C78Entry 
         work->unk34.vx = work->unk14.vx;
         work->unk34.vy = work->unk14.vy;
         work->unk34.vz = work->unk14.vz;
-        ex->func_800CFD78((s16 *)&work->unk14, (s16 *)&work->unk1C, 0x5DC, (s16 *)&work->unk34);
+        ex->btlfx_pointAhead((s16 *)&work->unk14, (s16 *)&work->unk1C, 0x5DC, (s16 *)&work->unk34);
         work->unk34.vy = -0xC8;
         ex->func_800DC8AC(0x10, 7, (BtlBone *)&u.m);
-        ex->func_800CFE88(&u.m, 0x190, (s32)&work->unk24);
+        ex->btlfx_matrixPointAhead(&u.m, 0x190, (s32)&work->unk24);
         ex->func_800DC8AC(0x10, 0xF, (BtlBone *)&m2);
-        ex->func_800CFE88(&m2, 0x190, (s32)&work->unk2C);
+        ex->btlfx_matrixPointAhead(&m2, 0x190, (s32)&work->unk2C);
         work->unk0 = ex->func_800E3CEC(ex->btlfx_getFileData(entry->unk8, 2), (s32)&work->unk24);
         work->unk4 = ex->func_800E3CEC(ex->btlfx_getFileData(entry->unk8, 1), (s32)&work->unk2C);
         if (work->unk0 != NULL) {

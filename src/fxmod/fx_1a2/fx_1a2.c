@@ -199,7 +199,7 @@ s32 func_801E804C(s32 mode, Fx1a2Rock *o, Unk800F78A4 *env, s32 arg3, s32 frame,
     switch (o->unk8) {
     case 0:
         t = frame << 9;
-        ex->func_800CFD78((s16 *)&o->unkC, (s16 *)&o->unk14, (o->unk1C << 5) >> 12, (s16 *)&o->unkC);
+        ex->btlfx_pointAhead((s16 *)&o->unkC, (s16 *)&o->unk14, (o->unk1C << 5) >> 12, (s16 *)&o->unkC);
         pos.vx = o->unkC.vx;
         pos.vy = o->unkC.vy;
         pos.vz = o->unkC.vz;
@@ -306,11 +306,11 @@ s32 fx_1a2_op80(s32 mode, Fx1a2Work80 *w, Unk800F78A4 *env, Unk80100C78Entry *en
         t = (frame << 12) / 93;
         ex->func_800DC818(0x10, 0x10, (u16 *)&a);
         ex->func_800DC8AC(0x10, 0x10, (BtlBone *)&m1);
-        ex->func_800CFE88(&m1, 0x10E, (s32)&b);
+        ex->btlfx_matrixPointAhead(&m1, 0x10E, (s32)&b);
         ex->func_800DC8AC(0x10, 0x10, (BtlBone *)&m2);
-        ex->func_800CFE88(&m2, 0x147, (s32)&c);
+        ex->btlfx_matrixPointAhead(&m2, 0x147, (s32)&c);
         ex->func_800DC8AC(0x10, 0x10, (BtlBone *)&m3);
-        ex->func_800CFE88(&m3, 0x155, (s32)&d);
+        ex->btlfx_matrixPointAhead(&m3, 0x155, (s32)&d);
         if (frame == 0) {
             func_801E7718(&a, &b, 0x407, &D_801E97F0, &D_801E97F4, 0, D_801EC1B4, 1);
             func_801E7718(&b, &c, 0x407, &D_801E97F4, &D_801E97F8, 0, D_801EC3B4, 1);
@@ -320,12 +320,12 @@ s32 fx_1a2_op80(s32 mode, Fx1a2Work80 *w, Unk800F78A4 *env, Unk80100C78Entry *en
         func_801E7718(&b, &c, 0x1F, &D_801E97F4, &D_801E97F8, 0x1000, D_801EC3B4, 1);
         func_801E7718(&c, &d, 0x1F, &D_801E97F8, &D_801E97F0, 0x1000, D_801EC5B4, 1);
         env->unk28 = 0x20;
-        ex->func_800D23D8((u8 *)ex->btlfx_getFileData(entry->unk8, 0x13), &c, NULL, 0x400, 0, 1, ex->math_sin(t >> 2) >> 1);
+        ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->unk8, 0x13), &c, NULL, 0x400, 0, 1, ex->math_sin(t >> 2) >> 1);
         e.pad = 0;
         e.vy = 0;
         e.vx = 0;
         e.vz = frame << 4;
-        ex->func_800D23D8((u8 *)ex->btlfx_getFileData(entry->unk8, 0x12), &c, &e, 0x800, 0, 1, ex->math_sin(t >> 2));
+        ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->unk8, 0x12), &c, &e, 0x800, 0, 1, ex->math_sin(t >> 2));
         env->unk28 = 0;
         ((s32 *)&w->unk18)[0] = ((s32 *)&c)[0];
         ((s32 *)&w->unk18)[1] = ((s32 *)&c)[1];

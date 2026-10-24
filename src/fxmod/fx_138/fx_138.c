@@ -115,9 +115,9 @@ s32 fx_138_op80(s32 mode, Fx138Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
         work->unk90 = 0;
         work->unk92 = -1;
         work->unk94 = 0;
-        ex->func_800CFD78(&D_801E8E60.vx, &work->unk78.vx, 0x4FD, &env->camera->points[0].vx);
-        ex->func_800CFD78(&D_801E8E60.vx, &work->unk78.vx, 0x87F, &env->camera->points[1].vx);
-        ex->func_800CFD78(&D_801E8E60.vx, &work->unk78.vx, 0xCFF, &env->camera->points[2].vx);
+        ex->btlfx_pointAhead(&D_801E8E60.vx, &work->unk78.vx, 0x4FD, &env->camera->points[0].vx);
+        ex->btlfx_pointAhead(&D_801E8E60.vx, &work->unk78.vx, 0x87F, &env->camera->points[1].vx);
+        ex->btlfx_pointAhead(&D_801E8E60.vx, &work->unk78.vx, 0xCFF, &env->camera->points[2].vx);
     } else {
         frame = entry->unk0;
         if (frame == 1) {
@@ -193,7 +193,7 @@ s32 fx_138_op81(s32 mode, Fx138Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
             break;
         }
         if (frame >= 0 && frame < 0xD) {
-            ex->func_800D3B6C((u8 *)ex->btlfx_getFileData(entry->unk8, 0xE), &work->unk28, work->unk30, work->unk32);
+            ex->btlfx_drawSpriteLine((u8 *)ex->btlfx_getFileData(entry->unk8, 0xE), &work->unk28, work->unk30, work->unk32);
             if (frame >= 5) {
                 work->unk32 -= 0x200;
             }

@@ -305,7 +305,7 @@ s32 fx_17d_0_op80(s32 mode, Fx17d0Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
             abr = 1;
             a = ((0x1000 - ex->math_sin(q)) >> 5) + 0xA0;
             b = 0x6E - ((0x1000 - ((0x1000 - ex->math_cos(h)) >> 1)) >> 3);
-            ex->func_800D1BC4(0xC00, (u8 *)ex->btlfx_getFileData(entry->unk8, 0x1D), a, b, 0, 0xFF, t);
+            ex->btlfx_drawSpriteAtOt(0xC00, (u8 *)ex->btlfx_getFileData(entry->unk8, 0x1D), a, b, 0, 0xFF, t);
             c = 0x60 - sx;
             if (frame >= 0x50) {
                 work->unk0 = code;
@@ -375,7 +375,7 @@ s32 fx_17d_0_op80(s32 mode, Fx17d0Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
             func_801E7D18(entry, &work->unk10, frame % 10, (s32)work->unk5C, work->unk86, b);
             if (frame < 0x58) {
                 e = (frame >> 2) + 0x6E;
-                ex->func_800D1BC4(0xC00, (u8 *)ex->btlfx_getFileData(entry->unk8, 0x1D), 0xA0, e, 0, 0xFF, alpha);
+                ex->btlfx_drawSpriteAtOt(0xC00, (u8 *)ex->btlfx_getFileData(entry->unk8, 0x1D), 0xA0, e, 0, 0xFF, alpha);
             }
             code = 1;
             abr = 1;

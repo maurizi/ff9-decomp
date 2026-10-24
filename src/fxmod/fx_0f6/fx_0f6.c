@@ -27,7 +27,7 @@ s32 fx_0f6_op80(s32 mode, Fx0f6Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
         p = D_801E7984;
         for (i = 0; i < 4; i++, p++, q++) {
             if (p->unk2 == 0 && frame >= p->unk4 && frame < p->unk6) {
-                ex->func_800D3B6C((u8 *)ex->btlfx_getFileData(entry->unk8, q->unk0), &work->unk10, p->unk8,
+                ex->btlfx_drawSpriteLine((u8 *)ex->btlfx_getFileData(entry->unk8, q->unk0), &work->unk10, p->unk8,
                                   p->unkA);
                 p->unkA -= 0x1000 / (p->unk6 - p->unk4);
                 if (frame == p->unk6 - 1) {

@@ -124,7 +124,7 @@ s32 fx_1ac_op80(s32 mode, Fx1acWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
 
             work->unk0[3]--;
             ex->func_800DC8AC(0x10, 4, (BtlBone *)&m);
-            ex->func_800CFF40(&m, (s16 *)&a);
+            ex->btlfx_matrixAngles(&m, (s16 *)&a);
             if (work->unk4C[0] != NULL) {
                 work->unk4C[0]->unk5C.vx = a.vx;
                 work->unk4C[0]->unk5C.vy = a.vy;
@@ -138,7 +138,7 @@ s32 fx_1ac_op80(s32 mode, Fx1acWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
 
             work->unk0[4]--;
             ex->func_800DC8AC(0x10, 4, (BtlBone *)&m);
-            ex->func_800CFF40(&m, (s16 *)&a);
+            ex->btlfx_matrixAngles(&m, (s16 *)&a);
             if (work->unk4C[1] != NULL) {
                 work->unk4C[1]->unk5C.vx = a.vx;
                 work->unk4C[1]->unk5C.vy = a.vy;
@@ -152,7 +152,7 @@ s32 fx_1ac_op80(s32 mode, Fx1acWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
 
             work->unk0[5]--;
             ex->func_800DC8AC(0x10, 4, (BtlBone *)&m);
-            ex->func_800CFF40(&m, (s16 *)&a);
+            ex->btlfx_matrixAngles(&m, (s16 *)&a);
             if (work->unk4C[2] != NULL) {
                 work->unk4C[2]->unk5C.vx = a.vx;
                 work->unk4C[2]->unk5C.vy = a.vy;
@@ -166,7 +166,7 @@ s32 fx_1ac_op80(s32 mode, Fx1acWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
 
             work->unk0[6]--;
             ex->func_800DC8AC(0x10, 4, (BtlBone *)&m);
-            ex->func_800CFF40(&m, (s16 *)&a);
+            ex->btlfx_matrixAngles(&m, (s16 *)&a);
             if (work->unk4C[3] != NULL) {
                 work->unk4C[3]->unk5C.vx = a.vx;
                 work->unk4C[3]->unk5C.vy = a.vy;

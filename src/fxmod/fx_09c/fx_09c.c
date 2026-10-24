@@ -32,7 +32,7 @@ s32 fx_09c_op80(s32 mode, Fx09cWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
         }
         if (frame == 0xA) {
             ex->func_800DC8AC(0x10, 0x11, &bone);
-            ex->func_800CFE88((MATRIX *)&bone, 0x800, (s32)&a);
+            ex->btlfx_matrixPointAhead((MATRIX *)&bone, 0x800, (s32)&a);
             ex->func_800DC818(0x10, 0x11, (u16 *)&b);
             ex->btlfx_aimAngles((s16 *)&a, (s16 *)&b, (s16 *)&work->unk34);
             work->unk34.vy -= 0xB4;

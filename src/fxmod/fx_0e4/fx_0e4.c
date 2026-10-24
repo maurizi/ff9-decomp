@@ -24,7 +24,7 @@ s32 fx_0e4_op80(s32 mode, Fx0e4Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
         work->unk10.vx = work->unk34.vx;
         work->unk10.vy = work->unk34.vy;
         work->unk10.vz = work->unk34.vz;
-        ex->func_800CFD78((s16 *)&work->unk34, (s16 *)&work->unk3C, ex->btlfx_getUnitRadius(0) + 0x190, (s16 *)&pos);
+        ex->btlfx_pointAhead((s16 *)&work->unk34, (s16 *)&work->unk3C, ex->btlfx_getUnitRadius(0) + 0x190, (s16 *)&pos);
         work->unk10.vx = pos.vx;
         work->unk10.vy = pos.vy;
         work->unk10.vz = pos.vz;
@@ -69,7 +69,7 @@ s32 fx_0e4_op80(s32 mode, Fx0e4Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
                 n = 0x1000;
             }
             work->unk5C = n;
-            ex->func_800D23D8((u8 *)ex->btlfx_getFileData(entry->unk8, 6), &work->unk4C, &work->unk54, work->unk5C,
+            ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->unk8, 6), &work->unk4C, &work->unk54, work->unk5C,
                               f, 2, work->unk5E);
             switch (work->unk64) {
             case 0:

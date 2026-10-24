@@ -29,7 +29,7 @@ s32 func_801E7704(s32 mode, Fx188Elem *e, Unk800F78A4 *env, Unk80100C78Entry *en
         t = (t * D_801E86CC) >> 12;
         ex->btlfx_aimAngles((s16 *)&e->unkC, (s16 *)&e->unk20, (s16 *)&ang);
         ex->btlfx_turnToward((s16 *)&ang, (s16 *)&e->unk14, e->unk8);
-        ex->func_800CFD78((s16 *)&e->unkC, (s16 *)&e->unk14, e->unk4, (s16 *)&e->unkC);
+        ex->btlfx_pointAhead((s16 *)&e->unkC, (s16 *)&e->unk14, e->unk4, (s16 *)&e->unkC);
         ex->btlfx_drawParticles((u8 *)ex->btlfx_getFileData(entry->unk8, 0xE), &e->unkC, 0, t + 0x800, frame, 1, -1, 0, 0);
         ex->btlfx_drawParticles((u8 *)ex->btlfx_getFileData(entry->unk8, 3), &e->unkC, 0, t + 0x800, frame, 2, -1, 0, 0);
         if (e->unk1C != NULL && e->unk1C->unk30 == -1) {
@@ -113,7 +113,7 @@ s32 fx_188_op80(s32 mode, Fx188Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
             v.vy = 0;
             v.pad = 1;
             env->unk28 = 0x20;
-            ex->func_800D23D8((u8 *)ex->btlfx_getFileData(entry->unk8, 0x14), &work->unk4, &v, s, 0, 1, t);
+            ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->unk8, 0x14), &work->unk4, &v, s, 0, 1, t);
             env->unk28 = 0;
             ex->btlfx_drawBackdrop((BtlBgLayers *)ex->btlfx_getFileData(entry->unk8, 0xF), frame);
             if (frame >= 0x10) {

@@ -2619,7 +2619,7 @@ void btlfx_stepModuleParticle(void *, s32, SVECTOR *, SVECTOR *);
 extern u16 g_btlfxRotPhase;
 void btlfx_drawAnimQuads(u8 *, SVECTOR *, SVECTOR *, s32, s32, s32, s32);
 void btlfx_drawSprites(u8 *, SVECTOR *, SVECTOR *, s32, s32, s32, s32);
-/* effect frame table (func_800D2938) */
+/* effect frame table (btlfx_drawFan) */
 typedef struct {
     u16 unk0; /* frame count */
     s16 unk2;
@@ -2653,7 +2653,7 @@ void btlfx_emitFrameQuad(u8 *, Unk800D57D0Ctx *, u8 *, s32 *);
 void btlfx_emitFrameFan(u8 *, Unk800D59D0Ctx *, u8 *, s32 *);
 /* asm convention: packet $a2, OT $a3, SZ $t2, z base $t4 (src_equiv/ovl_0b/frames.c) */
 void btlfx_linkFrameTri(u8 *, s32 *, u32, s32);
-void func_800D2938(Unk800D2938 *, SVECTOR *, SVECTOR *, s32, s32, s32, s32);
+void btlfx_drawFan(Unk800D2938 *, SVECTOR *, SVECTOR *, s32, s32, s32, s32);
 void func_800E2F84(Pool30 *, Pool30Entry *, SVECTOR *, SVECTOR *);
 extern s32 D_801014B0; /* saved g_btlfxEnv->unk28 */
 /* main exe: candidates for ff9.h */
@@ -2836,7 +2836,7 @@ void btlfx_lerpVec(s16 *, s16 *, s32, s16 *);
 u16 Hi_RegisterTexListModel(BtlUnit9C8 *, BtlTexInfo *, s16 *, s32);
 u16 Hi_RegisterGouEffModel(BtlUnit9C8 *);
 void btlfx_aimAngles(s16 *, s16 *, s16 *);
-void func_800CFD78(s16 *, s16 *, s32, s16 *);
+void btlfx_pointAhead(s16 *, s16 *, s32, s16 *);
 
 typedef struct {
     u16 unk0; /* text offset into D_800FD7AC */
@@ -2896,7 +2896,7 @@ typedef struct {
     u8 *unk8; /* sprite data */
     u8 unkC;  /* attach point index */
     u8 unkD;  /* semi-trans mode */
-    u8 unkE;  /* flat (func_800D198C) */
+    u8 unkE;  /* flat (btlfx_drawSprite) */
     u8 unkF;  /* turns with the unit */
 } Unk800F6A88;
 
@@ -2917,7 +2917,7 @@ extern Unk800F6CA4 D_800F6CA4[];
 
 void btlfx_beginPrims(u8 *, s32 *);
 u8 *btlfx_endPrims(void);
-void func_800D198C(u8 *, SVECTOR *, s32, s32, s32);
+void btlfx_drawSprite(u8 *, SVECTOR *, s32, s32, s32);
 void btl_updateScan(void);
 void btl_updateDetect(void);
 extern u8 D_800F6A28[];
@@ -3306,7 +3306,7 @@ typedef struct {
 extern s32 D_800F78AC;
 void SetDrawMove(DR_MOVE *p, RECT *rect, int x, int y);
 void func_8005562C(s32);
-void func_800D0940(void);
+void btlfx_resetMaskBit(void);
 /* the frame update btlfx_runFrame runs (src_equiv/ovl_0b/effect_frame.c) */
 void btlfx_initEnv(void);
 void btlfx_runScript(void);
@@ -3704,7 +3704,7 @@ void LoadAverageShort12(SVECTOR *, SVECTOR *, s32, s32, SVECTOR *);
     : : "r"(rgb), "r"(p) : "$14")
 #define gte_strgb(r0) __asm__ volatile("swc2\t$22, 0(%0)" : : "r"(r0) : "memory")
 
-/* func_800D3B6C: sprites placed along a path */
+/* btlfx_drawSpriteLine: sprites placed along a path */
 typedef struct {
     s32 unk0; /* offset of the sprite data */
     s16 unk4;
@@ -4075,7 +4075,7 @@ void func_8001DA78(void *, s32);
 extern s32 g_vtxScreenXY[]; /* projected screen xy per model vertex */
 extern s32 g_vtxScreenZ[]; /* projected z per model vertex */
 
-/* func_800D23D8: multi-frame sprite sheets */
+/* btlfx_drawRings: multi-frame sprite sheets */
 #define gte_zero_vz012() __asm__ volatile( \
     "mtc2\t$0, $1;" \
     "mtc2\t$0, $3;" \

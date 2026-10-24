@@ -68,10 +68,10 @@ s32 fx_0f7_op80(s32 mode, Fx0f7Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
                         a = (p->unkC * work->unk0) >> 3;
                     }
                     if (p->unk4 == 0) {
-                        ex->func_800D1BC4(p->unk8, (u8 *)ex->btlfx_getFileData(entry->unk8, 5), p->unk10, p->unk14, 0,
+                        ex->btlfx_drawSpriteAtOt(p->unk8, (u8 *)ex->btlfx_getFileData(entry->unk8, 5), p->unk10, p->unk14, 0,
                                           1, a);
                     } else {
-                        ex->func_800D1BC4(p->unk8, (u8 *)ex->btlfx_getFileData(entry->unk8, 0xC), p->unk10, p->unk14,
+                        ex->btlfx_drawSpriteAtOt(p->unk8, (u8 *)ex->btlfx_getFileData(entry->unk8, 0xC), p->unk10, p->unk14,
                                           0, 1, a);
                     }
                 } else {

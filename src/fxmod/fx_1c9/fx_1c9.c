@@ -13,7 +13,7 @@ s32 fx_1c9_op80(s32 mode, Fx1c9Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
     } else {
         frame = entry->unk0;
         env->unk28 = 0x80;
-        ex->func_800D198C((u8 *)ex->btlfx_getFileData(entry->unk8, 2), &work->unk4, frame, 1, -1);
+        ex->btlfx_drawSprite((u8 *)ex->btlfx_getFileData(entry->unk8, 2), &work->unk4, frame, 1, -1);
         if (frame == 3) {
             work->unk0 = ex->func_800E3CEC(ex->btlfx_getFileData(entry->unk8, 1), (s32)&work->unk4);
             if (work->unk0 != NULL) {

@@ -637,9 +637,9 @@ s32 fx_105_op80(s32 mode, Fx105Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
         if (work->unk4 != 0) {
             work->unk4--;
             ex->Hi_GetSummonBoneMatrix(SUMMON105(env)->unk60, 0x27, &bone1);
-            ex->func_800CFE88((MATRIX *)&bone1, 0x80, (s32)&work->unk10C);
+            ex->btlfx_matrixPointAhead((MATRIX *)&bone1, 0x80, (s32)&work->unk10C);
             ex->Hi_GetSummonBoneMatrix(SUMMON105(env)->unk60, 0x27, &bone2);
-            ex->func_800CFE88((MATRIX *)&bone2, 0x384, (s32)&work->unk114);
+            ex->btlfx_matrixPointAhead((MATRIX *)&bone2, 0x384, (s32)&work->unk114);
             s4 = 0x1000;
             if (work->unk4 < 4) {
                 s4 = work->unk4 << 10;
@@ -715,7 +715,7 @@ s32 fx_105_op80(s32 mode, Fx105Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
                     a = (ex->btlfx_rand() & 0x3FF) + 0x800;
                 }
                 D_801EB998[i].unk10 = ex->btlfx_rand() & 0x1F;
-                ex->func_800D1BC4(0xFF8, (u8 *)ex->btlfx_getFileData(entry->unk8, 0x10), D_801EB998[i].unk0, D_801EB998[i].unk4, 0, 1, a);
+                ex->btlfx_drawSpriteAtOt(0xFF8, (u8 *)ex->btlfx_getFileData(entry->unk8, 0x10), D_801EB998[i].unk0, D_801EB998[i].unk4, 0, 1, a);
                 if (work->unk30 < 0x28) {
                     D_801EB998[i].unk0 -= D_801EB998[i].unk8;
                     if (D_801EB998[i].unk0 < 0) {

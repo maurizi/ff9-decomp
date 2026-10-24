@@ -213,7 +213,7 @@ s32 fx_0d6_op80(s32 mode, Fx0d6Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             bri = ex->math_cos(t >> 2);
             env->unk28 = 0x200;
             scl = t / 3 + 0x555;
-            ex->func_800D23D8((u8 *)ex->btlfx_getFileData(entry->unk8, 0xD), &work->unk8, NULL, 0x1000, 0, 1,
+            ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->unk8, 0xD), &work->unk8, NULL, 0x1000, 0, 1,
                               ex->math_cos(t >> 2));
             env->unk28 = 0;
             if (frame >= 8) {
@@ -262,11 +262,11 @@ s32 fx_0d6_op80(s32 mode, Fx0d6Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
                 scl = g / 2 + 0x800;
                 pos2.vz = work->unk8.vz;
                 pos2.vy -= 0x400;
-                ex->func_800D23D8((u8 *)ex->btlfx_getFileData(entry->unk8, 0x11), &pos2, &rot, ex->math_sin(w) * 3 / 2 + 0x1000,
+                ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->unk8, 0x11), &pos2, &rot, ex->math_sin(w) * 3 / 2 + 0x1000,
                                   0, 1, ex->math_cos(w));
             }
             env->unk28 = 0x200;
-            ex->func_800D23D8((u8 *)ex->btlfx_getFileData(entry->unk8, 0xD), &work->unk8, NULL,
+            ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->unk8, 0xD), &work->unk8, NULL,
                               ex->math_cos(t >> 2) / 2 * 2 + 0x2000, 0, 1, ex->math_cos(t >> 2));
             env->unk28 = 0;
             if (f29) {
@@ -395,7 +395,7 @@ s32 fx_0d6_op80(s32 mode, Fx0d6Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
                         p3.vx += ex->btlfx_randCentered(0x140);
                         p3.vy += ex->btlfx_randCentered(0x100);
                         p3.vz += ex->btlfx_randCentered(0x140);
-                        ex->func_800D23D8((u8 *)ex->btlfx_getFileData(entry->unk8, 0xF), &p3, NULL, 0x7000, 0, 1, dc);
+                        ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->unk8, 0xF), &p3, NULL, 0x7000, 0, 1, dc);
                         cnt++;
                         env->unk28 = 0;
                     }
@@ -495,8 +495,8 @@ s32 fx_0d6_op84(s32 mode, Fx0d6Work84 *work, Unk800F78A4 *env, Unk80100C78Entry 
         rot.vz = ry;
         rot.pad = 0;
         env->unk28 = 0x80;
-        ex->func_800D23D8((u8 *)ex->btlfx_getFileData(entry->unk8, 0x18), &work->unk8, NULL, b / 3, 0, 1, a / 2);
-        ex->func_800D23D8((u8 *)ex->btlfx_getFileData(entry->unk8, 0x19), &work->unk8, &rot, c, 0, 1, a * 2 / 3);
+        ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->unk8, 0x18), &work->unk8, NULL, b / 3, 0, 1, a / 2);
+        ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->unk8, 0x19), &work->unk8, &rot, c, 0, 1, a * 2 / 3);
         env->unk28 = 0;
         work->unk4++;
     }

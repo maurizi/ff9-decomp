@@ -475,7 +475,7 @@ s32 fx_0e3_1_op80(s32 mode, Fx0e31Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
             t = (frame << 12) / 35;
             ex->Hi_DrawSummonModel(&work->unk28, (VECTOR *)&work->unk10, (s32)&work->unk1C, SUMMON(env)->unk60, 1);
             ex->Hi_GetSummonBoneMatrix(SUMMON(env)->unk60, 0x3D, (BtlBone *)&m);
-            ex->func_800CFE88(&m, 0x40, (s32)&work->unk40);
+            ex->btlfx_matrixPointAhead(&m, 0x40, (s32)&work->unk40);
             work->unk40.vy += 0x1000 - ex->math_sin(t >> 2);
             env->camera->points[3].vx = work->unk40.vx;
             env->camera->points[3].vy = work->unk40.vy;
@@ -498,9 +498,9 @@ s32 fx_0e3_1_op80(s32 mode, Fx0e31Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
             work->unk80.vz += 8;
             ex->Hi_DrawSummonModel(&work->unk28, (VECTOR *)&work->unk10, (s32)&work->unk1C, SUMMON(env)->unk60, 0);
             ex->Hi_GetSummonBoneMatrix(SUMMON(env)->unk60, 0x3D, (BtlBone *)&m2);
-            ex->func_800CFE88(&m2, 0x5C, (s32)&work->unk30);
+            ex->btlfx_matrixPointAhead(&m2, 0x5C, (s32)&work->unk30);
             ex->Hi_GetSummonBoneMatrix(SUMMON(env)->unk60, 0x3D, (BtlBone *)&m3);
-            ex->func_800CFF40(&m3, &work->unk58.vx);
+            ex->btlfx_matrixAngles(&m3, &work->unk58.vx);
             work->unk58.vx -= 0x800;
             if (frame >= 0x10) {
                 s32 u4 = work->unk4;
@@ -522,7 +522,7 @@ s32 fx_0e3_1_op80(s32 mode, Fx0e31Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
                 }
             }
             ex->Hi_GetSummonBoneMatrix(SUMMON(env)->unk60, 0x3D, (BtlBone *)&m4);
-            ex->func_800CFE88(&m4, 0x40, (s32)&work->unk40);
+            ex->btlfx_matrixPointAhead(&m4, 0x40, (s32)&work->unk40);
             env->camera->points[3].vx = work->unk40.vx;
             env->camera->points[3].vy = work->unk40.vy;
             env->camera->points[3].vz = work->unk40.vz;
@@ -544,16 +544,16 @@ s32 fx_0e3_1_op80(s32 mode, Fx0e31Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
             t_s2 = ((frame << 12) / 48) >> 2;
             x1 = (ex->math_sin(t_s2) >> 1) + 0x800;
             q1 = ex->math_sin(t_s2);
-            ex->func_800D23D8((u8 *)ex->btlfx_getFileData(entry->unk8, 0xB), &work->unk30, NULL, x1 >> 1, 0, 1, q1);
+            ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->unk8, 0xB), &work->unk30, NULL, x1 >> 1, 0, 1, q1);
             if (frame >= 0x2B) {
                 tB = (((frame - 0x2B) << 12) / 5) >> 2;
                 q2 = ex->math_sin(tB) / 3;
-                ex->func_800D23D8((u8 *)ex->btlfx_getFileData(entry->unk8, 0x1F), &work->unk30, NULL, q2, 0, 1, 0x1000);
-                ex->func_800D3B6C((u8 *)ex->btlfx_getFileData(entry->unk8, 7), &work->unk30, 0xB, ex->math_sin(tB));
+                ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->unk8, 0x1F), &work->unk30, NULL, q2, 0, 1, 0x1000);
+                ex->btlfx_drawSpriteLine((u8 *)ex->btlfx_getFileData(entry->unk8, 7), &work->unk30, 0xB, ex->math_sin(tB));
             }
             if (frame >= 0x10) {
                 k2 = ex->math_sin(((frame - 0x10) << 7) >> 2);
-                ex->func_800D23D8((u8 *)ex->btlfx_getFileData(entry->unk8, 0x1A), &work->unk30, NULL, k2, 0, 1, k2);
+                ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->unk8, 0x1A), &work->unk30, NULL, k2, 0, 1, k2);
             }
             if (frame == 0x26) {
                 Pool6CEntry *p26 = ex->func_800E3CEC(ex->btlfx_getFileData(entry->unk8, 0x1D), (s32)&work->unk30);
@@ -576,7 +576,7 @@ s32 fx_0e3_1_op80(s32 mode, Fx0e31Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
                 { s32 q4b;
                 q3 = (ex->math_cos(tC) * 3) >> 1;
                 q4b = ex->math_sin(tC);
-                ex->func_800D23D8((u8 *)ex->btlfx_getFileData(entry->unk8, 0x12), &work->unk30, &work->unkBC, q3, 0, 1, q4b); }
+                ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->unk8, 0x12), &work->unk30, &work->unkBC, q3, 0, 1, q4b); }
             }
             if (frame >= 0x30) {
                 work->unk0 = 2;
@@ -598,21 +598,21 @@ s32 fx_0e3_1_op80(s32 mode, Fx0e31Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
             }
             if (frame == 0) {
                 ex->Hi_GetSummonBoneMatrix(SUMMON(env)->unk60, 0x3D, (BtlBone *)&m5);
-                ex->func_800CFE88(&m5, 0x80, (s32)&work->unk40);
+                ex->btlfx_matrixPointAhead(&m5, 0x80, (s32)&work->unk40);
                 ex->Hi_GetSummonBoneMatrix(SUMMON(env)->unk60, 0x3D, (BtlBone *)&m6);
-                ex->func_800CFF40(&m6, &work->unkBC.vx);
+                ex->btlfx_matrixAngles(&m6, &work->unkBC.vx);
             }
             if (frame < 0x12) {
                 ex->Hi_GetSummonBoneMatrix(SUMMON(env)->unk60, 0x3D, (BtlBone *)&m5);
-                ex->func_800CFE88(&m5, 0x5C, (s32)&work->unk30);
+                ex->btlfx_matrixPointAhead(&m5, 0x5C, (s32)&work->unk30);
                 ex->Hi_GetSummonBoneMatrix(SUMMON(env)->unk60, 0x3D, (BtlBone *)&m6);
-                ex->func_800CFE88(&m6, 0x80, (s32)&work->unk40);
+                ex->btlfx_matrixPointAhead(&m6, 0x80, (s32)&work->unk40);
             } else {
                 if (frame == 0x12) {
                     ex->Hi_GetSummonBoneMatrix(SUMMON(env)->unk60, 0x3D, (BtlBone *)&u1.m);
-                    ex->func_800CFE88(&u1.m, 0x80, (s32)&work->unk48);
+                    ex->btlfx_matrixPointAhead(&u1.m, 0x80, (s32)&work->unk48);
                 }
-                ex->func_800CFD78(&work->unk48.vx, &work->unkBC.vx,
+                ex->btlfx_pointAhead(&work->unk48.vx, &work->unkBC.vx,
                                   -((ex->math_sin(((frame - 0xE) << 10) / 14) * 3) / 2), &work->unk40.vx);
             }
             env->camera->points[3].vx = work->unk40.vx;
@@ -643,7 +643,7 @@ s32 fx_0e3_1_op80(s32 mode, Fx0e31Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
                                          ((ex->math_cos(k3) - 0x800) >> 5) - 0x80, ((ex->math_cos(k3) - 0x800) >> 5) - 0x80);
             }
             BTLFX_COPY_SVEC(&u1.v.a1, &work->unk30);
-            ex->func_800CFD78(&u1.v.a1.vx, &work->unkBC.vx, -(t + 0x1000), &b1.vx);
+            ex->btlfx_pointAhead(&u1.v.a1.vx, &work->unkBC.vx, -(t + 0x1000), &b1.vx);
             for (kk = 0, ang3 = -work->unk4 << 7; kk < 3; kk++, ang3 += 0x554) {
                 g1 = ex->btlfx_randCentered(0x400) + 0xC00;
                 func_801ECAF8(entry, &D_801F0D14[kk], &u1.v.a1, &b1, 0x7C, 0x200, ang3, 0xC0, 0, g1, 0x1D);
@@ -664,7 +664,7 @@ s32 fx_0e3_1_op80(s32 mode, Fx0e31Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
                 s2.vz = 0;
                 s2.vx = s2.vy = yb * 2 + 0x900;
                 r2.vz = (frame << 5) + 0x400;
-                ex->func_800CFD78(&work->unk30.vx, &work->unkBC.vx, -0x80, &p2.vx);
+                ex->btlfx_pointAhead(&work->unk30.vx, &work->unkBC.vx, -0x80, &p2.vx);
                 y12 = (x2 >> 5) - 0x80;
                 v2.vx = p2.vx;
                 v2.vy = p2.vy;
@@ -680,20 +680,20 @@ s32 fx_0e3_1_op80(s32 mode, Fx0e31Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
             if (frame < 0x10 && frame != 1) {
                 x4 = (ex->math_cos(t >> 2) >> 2) + 0x555;
                 y1 = ex->math_cos((frame << 8) >> 2);
-                ex->func_800D23D8((u8 *)ex->btlfx_getFileData(entry->unk8, 0x1F), &work->unk30, NULL, x4, 0, 1, y1);
+                ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->unk8, 0x1F), &work->unk30, NULL, x4, 0, 1, y1);
                 work->unkBC.pad = 1;
-                ex->func_800D23D8((u8 *)ex->btlfx_getFileData(entry->unk8, 0x14), &work->unk30, &work->unkBC, 0x1000,
+                ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->unk8, 0x14), &work->unk30, &work->unkBC, 0x1000,
                                   frame, 1, y1);
                 ex->btlfx_drawSprites((u8 *)ex->btlfx_getFileData(entry->unk8, 0x18), &work->unk30, &work->unkBC, 0x2000,
                                       frame, 1, y1);
-                ex->func_800D3B6C((u8 *)ex->btlfx_getFileData(entry->unk8, 7), &work->unk30, frame - 1, y1);
+                ex->btlfx_drawSpriteLine((u8 *)ex->btlfx_getFileData(entry->unk8, 7), &work->unk30, frame - 1, y1);
             }
             if (frame < 0x11) {
                 x5 = (ex->math_cos(t >> 2) >> 2) + 0x800;
             } else {
                 x5 = 0x800;
             }
-            ex->func_800D23D8((u8 *)ex->btlfx_getFileData(entry->unk8, 0x1C), &work->unk30, NULL, (x5 * 3) >> 1, 0, 1,
+            ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->unk8, 0x1C), &work->unk30, NULL, (x5 * 3) >> 1, 0, 1,
                               0x1000);
             shake = t;
             k5 = t >> 2;
@@ -701,7 +701,7 @@ s32 fx_0e3_1_op80(s32 mode, Fx0e31Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
             {
                 s32 qa;
                 qa = ex->math_cos(k5);
-                ex->func_800D23D8((u8 *)ex->btlfx_getFileData(entry->unk8, 0x1A), &work->unk30, NULL, x7, 0, 1, qa);
+                ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->unk8, 0x1A), &work->unk30, NULL, x7, 0, 1, qa);
             }
             env->unk28 = 0;
             if (frame >= 0x1C) {
@@ -737,7 +737,7 @@ s32 fx_0e3_1_op80(s32 mode, Fx0e31Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
             func_801ED708((VECTOR *)&work->unkA4, &work->unkBC);
             ex->Hi_DrawEffModel(&work->unkBC, (VECTOR *)&work->unkA4, (s32)&work->unkB0, work->unkA0);
             BTLFX_COPY_SVEC(&a2, &work->unk30);
-            ex->func_800CFD78(&a2.vx, &work->unkBC.vx, -0x2800, &b2.vx);
+            ex->btlfx_pointAhead(&a2.vx, &work->unkBC.vx, -0x2800, &b2.vx);
             for (k2k = 0, ang2 = -work->unk4 << 7; k2k < 3; k2k++, ang2 += 0x554) {
                 g2 = ex->btlfx_randCentered(0x400) + 0xC00;
                 func_801ECAF8(entry, &D_801F0D14[k2k], &a2, &b2, 0x400, 0x528, ang2, 0xC0, 0, g2, 0x84);
@@ -837,7 +837,7 @@ s32 fx_0e3_1_op80(s32 mode, Fx0e31Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
             r4.vz = 0;
             ex->btlfx_drawScreenGrid(3, 0xA0, 0x70, 0x50, 0x38, 4, 4, 2, 2, &r4, &s4, &c3, 1, NULL);
             BTLFX_COPY_SVEC(&a4, &work->unk30);
-            ex->func_800CFD78(&a4.vx, &work->unkBC.vx, t - 0x2800, &b4.vx);
+            ex->btlfx_pointAhead(&a4.vx, &work->unkBC.vx, t - 0x2800, &b4.vx);
             w2 = (t >> 2) + 0x400;
             for (i4 = 0, ang4 = work->unk4 << 8; i4 < 3; i4++, ang4 += 0x554) {
                 func_801ECAF8(entry, &D_801F0D14[i4], &a4, &b4, w2, w2, ang4, 0xC0, 0, ex->btlfx_randCentered(0x400) + 0xC00,
@@ -847,12 +847,12 @@ s32 fx_0e3_1_op80(s32 mode, Fx0e31Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
             k8 = t >> 2;
             x10 = (ex->math_sin(k8) * 2) + 0x1000;
             y3 = (ex->math_cos(k8) >> 1) + 0x800;
-            ex->func_800D23D8((u8 *)ex->btlfx_getFileData(entry->unk8, 0x1C), &work->unk30, NULL, x10, 0, 1, y3);
+            ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->unk8, 0x1C), &work->unk30, NULL, x10, 0, 1, y3);
             x11 = (ex->math_sin(k8) * 3) + 0x1000;
             {
                 s32 qb;
                 qb = ex->math_cos(k8);
-                ex->func_800D23D8((u8 *)ex->btlfx_getFileData(entry->unk8, 0x1A), &work->unk30, NULL, x11, 0, 1, qb);
+                ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->unk8, 0x1A), &work->unk30, NULL, x11, 0, 1, qb);
             }
             if (frame >= 4) {
                 k7 = frame - 4;
@@ -861,7 +861,7 @@ s32 fx_0e3_1_op80(s32 mode, Fx0e31Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
                     r5.vy = 0;
                     r5.vz = 0;
                     r5.pad = 1;
-                    ex->func_800D23D8((u8 *)ex->btlfx_getFileData(entry->unk8, 0x14), &work->unk30, &r5, 0x4000, k7, 1,
+                    ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->unk8, 0x14), &work->unk30, &r5, 0x4000, k7, 1,
                                       0x1000);
                 }
             }
@@ -1083,10 +1083,10 @@ s32 fx_0e3_1_op80(s32 mode, Fx0e31Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
             k14 = t >> 2;
             x19 = ex->math_cos(k14) + 0x1800;
             y13 = ((ex->math_cos(k14) * 3) >> 2) + 0x400;
-            ex->func_800D23D8((u8 *)ex->btlfx_getFileData(entry->unk8, 0x1C), &work->unk30, NULL, x19, 0, 1, y13);
+            ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->unk8, 0x1C), &work->unk30, NULL, x19, 0, 1, y13);
             x19 = 0x5000 - t * 2;
             y13 = ex->math_cos(k14);
-            ex->func_800D23D8((u8 *)ex->btlfx_getFileData(entry->unk8, 0x1B), &work->unk30, &r9, x19, 0, 1, y13);
+            ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->unk8, 0x1B), &work->unk30, &r9, x19, 0, 1, y13);
             env->unk28 = 0;
             ex->btlfx_drawBackdrop((BtlBgLayers *)ex->btlfx_getFileData(entry->unk8, 0x16), frame);
             ex->btlfx_drawScrollMove(work->unk4 * 8, 0x340, 0x100, 0x20, 0xC0, 0x360, 0x100);

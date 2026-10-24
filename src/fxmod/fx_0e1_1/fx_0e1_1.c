@@ -43,7 +43,7 @@ s32 fx_0e1_1_op80(s32 mode, Fx0e11Work *work, Unk800F78A4 *env, Unk80100C78Entry
             if (frame < 0x14) {
                 c = ex->math_cos((frame << 10) / 20);
                 env->unk28 = 0x80;
-                ex->func_800D3B6C((u8 *)ex->btlfx_getFileData(entry->unk8, 5), &work->unk8, frame, c);
+                ex->btlfx_drawSpriteLine((u8 *)ex->btlfx_getFileData(entry->unk8, 5), &work->unk8, frame, c);
                 env->unk28 = 0;
             }
             ex->btlfx_drawBackdrop((BtlBgLayers *)ex->btlfx_getFileData(entry->unk8, 3), frame);
@@ -104,7 +104,7 @@ s32 fx_0e1_1_op80(s32 mode, Fx0e11Work *work, Unk800F78A4 *env, Unk80100C78Entry
                                          0xFF - (frame * 255) / 24);
             }
             if (frame < 0x20) {
-                ex->func_800D0B18((s32)&env->ot[2], -frame * 2, 4, 1, 0x78, 1, &D_801ECD80, 0x18, work->unk4 << 8, 0x100, 0);
+                ex->btlfx_drawRippleGrid((s32)&env->ot[2], -frame * 2, 4, 1, 0x78, 1, &D_801ECD80, 0x18, work->unk4 << 8, 0x100, 0);
             }
             if (work->unk2C->unk30 == -1) {
                 work->unk3C = 0;

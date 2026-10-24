@@ -184,7 +184,7 @@ s32 func_801E7E48(Pool30Entry *e, Pool6CEntry *owner, SVECTOR *pos, s32 arg3, s3
         o->unk8 = ex->btlfx_randCentered(0x20) + 0x40;
         o->unkA = ex->btlfx_randCentered(0x20) + 0x190;
     }
-    ex->func_800CFD78((s16 *)&D_801EC714, (s16 *)&o->unk0, (ex->math_sin(((frame << 12) / frames) >> 2) * 0xBB8) >> 12,
+    ex->btlfx_pointAhead((s16 *)&D_801EC714, (s16 *)&o->unk0, (ex->math_sin(((frame << 12) / frames) >> 2) * 0xBB8) >> 12,
                       (s16 *)&v);
     o->unk0.vx += o->unk8;
     o->unk0.vy += o->unkA;
@@ -257,14 +257,14 @@ s32 fx_1b0_op80(s32 mode, Fx1b0Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
                 v.pad = 1;
                 v.vx = ex->math_cos(t >> 2);
                 for (i = 0; i < 4; i++) {
-                    ex->func_800D23D8((u8 *)ex->btlfx_getFileData(entry->unk8, 0x11), &work->unk28, &v, 0x4000, 0, 1,
+                    ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->unk8, 0x11), &work->unk28, &v, 0x4000, 0, 1,
                                       ex->math_sin(t >> 1));
                     v.vx += 0x200;
                 }
                 v.vx = 0;
                 v.vy = ex->math_cos(t >> 2);
                 for (i = 0; i < 4; i++) {
-                    ex->func_800D23D8((u8 *)ex->btlfx_getFileData(entry->unk8, 0x11), &work->unk28, &v, 0x4000, 0, 1,
+                    ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->unk8, 0x11), &work->unk28, &v, 0x4000, 0, 1,
                                       ex->math_sin(t >> 1));
                     v.vy += 0x200;
                 }

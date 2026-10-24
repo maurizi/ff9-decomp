@@ -36,7 +36,7 @@ s32 fx_17f_op80(s32 mode, Fx17fWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
             ex->btlfx_setUnitRot(0x11, (s16 *)&work->unk14);
             ex->btlfx_setUnitScale(0x11, work->unk0);
             ex->btlfx_aimAngles((s16 *)&work->unkC, (s16 *)&work->unk20, (s16 *)&ang);
-            ex->func_800CFD78((s16 *)&work->unkC, (s16 *)&ang, -0x104, (s16 *)&work->unkC);
+            ex->btlfx_pointAhead((s16 *)&work->unkC, (s16 *)&ang, -0x104, (s16 *)&work->unkC);
             ex->btlfx_setUnitPos(0x11, (s16 *)&work->unkC);
         }
         work->unk20.vx = (work->unk20.vx + work->unkC.vx) / 2;

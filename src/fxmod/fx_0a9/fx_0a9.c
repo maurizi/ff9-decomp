@@ -143,7 +143,7 @@ s32 fx_0a9_op83(s32 mode, Fx0a9Work83 *work, Unk800F78A4 *env, Unk80100C78Entry 
             }
         }
         env->unk28 = 0x40;
-        ex->func_800D23D8((u8 *)ex->btlfx_getFileData(entry->unk8, 6), &work->unk8, NULL,
+        ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->unk8, 6), &work->unk8, NULL,
                           ex->math_sin((frame << 11) / 24) * 2 / 3, 0, 1, 0x1000 - ((frame & 1) << 11));
         env->unk28 = 0;
         if (frame >= 0x18) {

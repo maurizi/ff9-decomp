@@ -113,7 +113,7 @@ s32 func_801E7CEC(s32 mode, Fx003Bolt *it, Unk800F78A4 *env, Unk80100C78Entry *e
                     it->unk1C->unk22 = ex->func_800E7CC4(0, 0x40);
                 }
                 env->unk28 = ex->func_800E7CC4(0, 0x46);
-                ex->func_800D23D8((u8 *)ex->btlfx_getFileData(entry->unk8, 0xB), &it->unk0, NULL, 0x1400, 4, 1, 0x1000);
+                ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->unk8, 0xB), &it->unk0, NULL, 0x1400, 4, 1, 0x1000);
                 env->unk28 = 0;
                 ex->btlfx_drawScreenTint((u32 *)(env->ot + 1), 1, 0, 7, 0x20);
             }

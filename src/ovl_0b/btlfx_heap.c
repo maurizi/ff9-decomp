@@ -168,7 +168,7 @@ s32 func_800E0168(Pool30 *pool) {
                 rs = e->unk28.s.x - ((e->unk28.s.x * t) >> 12);
                 break;
             }
-            func_800CFD78((s16 *)&pos, (s16 *)&v, rs, (s16 *)&pos);
+            btlfx_pointAhead((s16 *)&pos, (s16 *)&v, rs, (s16 *)&pos);
             break;
         case 2:
             btlfx_stepParticleNoDrag(e, rs, rp, &pos);
@@ -194,7 +194,7 @@ s32 func_800E0168(Pool30 *pool) {
                 rs = e->unk10 - ((e->unk10 * t) >> 12);
                 break;
             }
-            func_800CFD78((s16 *)&pos, (s16 *)&v, rs, (s16 *)&pos);
+            btlfx_pointAhead((s16 *)&pos, (s16 *)&v, rs, (s16 *)&pos);
             break;
         case 4:
             btlfx_stepParticleNoDrag(e, rs, rp, &pos);
@@ -224,7 +224,7 @@ s32 func_800E0168(Pool30 *pool) {
             btlfx_aimAngles((s16 *)&pos, (s16 *)owner->unk2C, (s16 *)&v);
             v.vx += m->unk20;
             v.vy += m->unk22;
-            func_800CFD78(&e->unkC, (s16 *)&v, rs, &e->unkC);
+            btlfx_pointAhead(&e->unkC, (s16 *)&v, rs, &e->unkC);
             break;
         case 0xFF:
             if (m->unk8(e, owner, &pos, func_800E0134(e, owner), frame, frames) != 0) {
@@ -272,7 +272,7 @@ s32 func_800E0168(Pool30 *pool) {
             case 5:
                 func_800D0674(&pos, owner->unk64, owner->unk68, (s32)&alpha, (s32)&cnt, &scale);
                 if (cnt <= range) {
-                    func_800CFCA8(owner->unk68, 0x1000, (s32)&v);
+                    btlfx_rotateOffset(owner->unk68, 0x1000, (s32)&v);
                 }
                 break;
             case 6:
@@ -421,7 +421,7 @@ s32 func_800E0168(Pool30 *pool) {
                     btlfx_drawParticles((u8 *)mode, &pos, vp, scale, e->unk1D, cnt, alpha, 0, 0);
                     break;
                 case 1:
-                    func_800D198C((u8 *)mode, &pos, e->unk1D, cnt, alpha);
+                    btlfx_drawSprite((u8 *)mode, &pos, e->unk1D, cnt, alpha);
                     break;
                 case 2:
                     btlfx_drawAnimQuads((u8 *)mode, &pos, vp, scale, e->unk1D, cnt, alpha);
@@ -436,10 +436,10 @@ s32 func_800E0168(Pool30 *pool) {
                     btlfx_drawTrail((u8 *)mode, (s32)&pos, NULL, e->unk1D, scale, alpha, cnt, (u8 *)func_800E0134(e, owner), 2);
                     break;
                 case 6:
-                    func_800D23D8((u8 *)mode, &pos, vp, scale, e->unk1D, cnt, alpha);
+                    btlfx_drawRings((u8 *)mode, &pos, vp, scale, e->unk1D, cnt, alpha);
                     break;
                 case 7:
-                    func_800D2938((Unk800D2938 *)mode, &pos, vp, scale, e->unk1D, cnt, alpha);
+                    btlfx_drawFan((Unk800D2938 *)mode, &pos, vp, scale, e->unk1D, cnt, alpha);
                     break;
                 case 8:
                     btlfx_drawTrail((u8 *)mode, (s32)&pos, NULL, e->unk1D, scale, alpha, cnt, (u8 *)func_800E0134(e, owner), 0);
@@ -941,7 +941,7 @@ void func_800E2000(Pool30 *pool, Pool6C *list) {
                         rot.vx += 0x800;
                     }
                 }
-                func_800CFCA8(&rot, acc, (s32)&off);
+                btlfx_rotateOffset(&rot, acc, (s32)&off);
                 LoadAverageCol((u8 *)&((EffTailSpawn *)e->unk24)->unk44, (u8 *)&((EffTailSpawn *)e->unk24)->unk48.c, 0x1000 - t, t, (u8 *)&col);
                 off.vx = (off.vx * col.r) >> 7;
                 off.vy = (off.vy * col.g) >> 7;
@@ -952,7 +952,7 @@ void func_800E2000(Pool30 *pool, Pool6C *list) {
                 rot.vx = 0;
                 rot.vy = btlfx_rand();
                 rot.vz = 0;
-                func_800CFCA8(&rot, btlfx_randRange(e->unk3C, e->unk3E), (s32)&off);
+                btlfx_rotateOffset(&rot, btlfx_randRange(e->unk3C, e->unk3E), (s32)&off);
                 off.vy = btlfx_randRange(e->unk40, e->unk42);
                 if (((EffTailSpawn *)e->unk24)->unk4C == 1) {
                     rot.vx = 0x400;
@@ -1083,7 +1083,7 @@ void func_800E2000(Pool30 *pool, Pool6C *list) {
             case 1: {
                 EffEmit *mot = (EffEmit *)e->unk0;
                 acc = e->unkA;
-                func_800CFCA8(&rot, acc + btlfx_randCentered(mot->unk24), (s32)&p->unkC);
+                btlfx_rotateOffset(&rot, acc + btlfx_randCentered(mot->unk24), (s32)&p->unkC);
                 acc = mot->unk10 + btlfx_randCentered(mot->unk12);
                 if (acc < 0) {
                     acc = 0;
@@ -1141,7 +1141,7 @@ void func_800E2000(Pool30 *pool, Pool6C *list) {
             case 5: {
                 EffEmit *mot = (EffEmit *)e->unk0;
                 acc = e->unk8;
-                func_800CFCA8(&rot, acc + btlfx_randCentered(mot->unkC), (s32)&p->unkC);
+                btlfx_rotateOffset(&rot, acc + btlfx_randCentered(mot->unkC), (s32)&p->unkC);
                 acc = mot->unkE + btlfx_randCentered(mot->unk10);
                 if (acc < 0) {
                     acc = 0;
@@ -1278,7 +1278,7 @@ void func_800E2F84(Pool30 *pool, Pool30Entry *e, SVECTOR *pos, SVECTOR *rot) {
                 gte_ldsv(sub->unk34);
                 gte_gpl12();
                 gte_stsv(&dir);
-                func_800CFCA8(&ang, btlfx_randRange(dir.vx, dir.vy), (s32)&off);
+                btlfx_rotateOffset(&ang, btlfx_randRange(dir.vx, dir.vy), (s32)&off);
                 p->unk0.vx = (off.vx + pos->vx) << 12;
                 p->unk0.vy = (off.vy + pos->vy) << 12;
                 p->unk0.vz = (off.vz + pos->vz) << 12;
@@ -1324,7 +1324,7 @@ void func_800E2F84(Pool30 *pool, Pool30Entry *e, SVECTOR *pos, SVECTOR *rot) {
                     {
                     EffEmit *mot = (EffEmit *)owner->unk4;
                     r = btlfx_lerp(mot->unk20, mot->unk22, t);
-                    func_800CFCA8(&ang, r + btlfx_randCentered(mot->unk24), (s32)&p->unkC);
+                    btlfx_rotateOffset(&ang, r + btlfx_randCentered(mot->unk24), (s32)&p->unkC);
                     r = mot->unk10 + btlfx_randCentered(mot->unk12);
                     if (r < 0) {
                         r = 0;
@@ -1386,7 +1386,7 @@ void func_800E2F84(Pool30 *pool, Pool30Entry *e, SVECTOR *pos, SVECTOR *rot) {
                     {
                     EffEmit *mot = (EffEmit *)owner->unk4;
                     r = btlfx_lerp(mot->unk8, mot->unkA, t);
-                    func_800CFCA8(&ang, r + btlfx_randCentered(mot->unkC), (s32)&p->unkC);
+                    btlfx_rotateOffset(&ang, r + btlfx_randCentered(mot->unkC), (s32)&p->unkC);
                     r = mot->unkE + btlfx_randCentered(mot->unk10);
                     if (r < 0) {
                         r = 0;

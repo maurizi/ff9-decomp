@@ -24,7 +24,7 @@ s32 fx_008_op80(s32 mode, Fx008Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
         frame = entry->unk0;
         t = frame - 0x18;
         if (t >= 0 && t < 0x10) {
-            ex->func_800D3B6C((u8 *)ex->btlfx_getFileData(entry->unk8, 3), &work->unkC, work->unk14, work->unk16);
+            ex->btlfx_drawSpriteLine((u8 *)ex->btlfx_getFileData(entry->unk8, 3), &work->unkC, work->unk14, work->unk16);
             if (t >= 4) {
                 work->unk16 -= 0x155;
             }

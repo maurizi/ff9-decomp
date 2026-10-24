@@ -223,10 +223,10 @@ s32 fx_17d_1_op80(s32 mode, Fx17d1Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
                 }
             }
             if (frame >= 5) {
-                ex->func_800CFC2C(frame, 4, 0x14, 0, 0x1000, &k);
+                ex->btlfx_rangeProgress(frame, 4, 0x14, 0, 0x1000, &k);
                 env->unk28 = 0x100;
                 work->unk10.vz += 0x258;
-                ex->func_800D23D8((u8 *)ex->btlfx_getFileData(entry->unk8, 5), &work->unk10, NULL, 0x1000, 0, 1, k);
+                ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->unk8, 5), &work->unk10, NULL, 0x1000, 0, 1, k);
                 work->unk10.vz -= 0x258;
                 env->unk28 = 0;
             }
@@ -275,7 +275,7 @@ s32 fx_17d_1_op80(s32 mode, Fx17d1Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
             work->unk10.vy = work->unk28.vy;
             work->unk10.vz = work->unk28.vz;
             env->unk28 = 0x100;
-            ex->func_800D23D8((u8 *)ex->btlfx_getFileData(entry->unk8, 5), &work->unk10, NULL, 0x1000, 0, 1, -1);
+            ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->unk8, 5), &work->unk10, NULL, 0x1000, 0, 1, -1);
             env->unk28 = 0;
             if (work->unk70 != NULL) {
                 if (work->unk70->unk30 == -1) {

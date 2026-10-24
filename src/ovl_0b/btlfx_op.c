@@ -27,7 +27,7 @@ s32 btlfx_reloadCommonData(s32 arg0) {
         FileEntry *e = file_find(1, 0x2BF);
         cd_readAsync(g_gameState->unk20 + e->unk4, (e->unkC - e->unk4) << 11, (void *)0x801E7700, 0);
     } else if (cd_getState() == 0) {
-        func_800D0940();
+        btlfx_resetMaskBit();
         r.w = 0x40;
         r.h = 0x80;
         for (i = 0; i < 4; i++) {
@@ -56,7 +56,7 @@ s32 btlfx_stepBack(s32 arg0, s32 arg1, s32 arg2) {
     }
     if (btlfx_isEnemyUnit(arg1) != 0) {
         btlfx_getUnitRot(arg0, (s16 *)d);
-        func_800CFD78((s16 *)c, (s16 *)d, 400, (s16 *)b);
+        btlfx_pointAhead((s16 *)c, (s16 *)d, 400, (s16 *)b);
         if (arg2 == 0) {
             btlfx_playUnitMotion(arg0, 0x1D);
         }
@@ -732,7 +732,7 @@ s32 func_800E57B0(s32 arg0, Unk800E57B0 *arg1, Unk800F78A4 *arg2, s32 *arg3, s32
             }
             goto next;
         case 3:
-            func_800D23D8(arg1->unk10, &arg1->unk1C, &rot, arg1->unk4, arg1->unk14, 1, math_cos((arg1->unk14 << 10) / arg1->unkE));
+            btlfx_drawRings(arg1->unk10, &arg1->unk1C, &rot, arg1->unk4, arg1->unk14, 1, math_cos((arg1->unk14 << 10) / arg1->unkE));
             break;
         default:
             arg2->unk28 = 0;
@@ -1483,7 +1483,7 @@ void btlfx_getStrikePos(s32 arg0, s32 arg1, s16 *arg2) {
         btlfx_getUnitPos(arg0, sp10);
         btlfx_getUnitPos(arg1, sp18);
         btlfx_aimAngles(sp18, sp10, sp20);
-        func_800CFD78(sp18, sp20, btlfx_getUnitRadius(arg1), arg2);
+        btlfx_pointAhead(sp18, sp20, btlfx_getUnitRadius(arg1), arg2);
     } else {
         btlfx_getUnitPos(arg0, arg2);
     }

@@ -335,7 +335,7 @@ s32 fx_026_op80(s32 mode, Fx026Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             s = s * 9 >> 3;
         }
         env->unk28 = 0x40;
-        ex->func_800D23D8((u8 *)ex->btlfx_getFileData(entry->unk8, 0xA0), &work->unk30, 0, s, 0, 1, k);
+        ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->unk8, 0xA0), &work->unk30, 0, s, 0, 1, k);
         env->unk28 = 0;
     }
     work->unk4++;

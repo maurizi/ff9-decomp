@@ -56,7 +56,7 @@ s32 func_801E7704(s32 mode, Fx0ccPart *part, Unk800F78A4 *env, Unk80100C78Entry 
             ex->btlfx_drawParticles((u8 *)ex->btlfx_getFileData(entry->unk8, 3), &pos, NULL, 0x3000, frame, 1, -1, 0, 0);
             if (frame < 0x10) {
                 env->unk28 = 0x64;
-                ex->func_800D23D8((u8 *)ex->btlfx_getFileData(entry->unk8, 2), &pos, NULL, -1, frame, 1, -1);
+                ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->unk8, 2), &pos, NULL, -1, frame, 1, -1);
                 env->unk28 = 0;
                 ex->btlfx_drawParticles((u8 *)ex->btlfx_getFileData(entry->unk8, 0xC), &part->unk4, &rot, 0x1000, frame, 1,
                                   -1, 0, 0);

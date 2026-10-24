@@ -88,15 +88,15 @@ s32 func_801E7704(s32 mode, Fx0dbItem *it, Unk800F78A4 *env, Unk80100C78Entry *e
         scale.vz = it->unk3C;
         fade = ex->math_cos(a);
         k = ex->math_cos(a) >> 7;
-        ex->func_800CFCA8(r, k, (s32)&d);
+        ex->btlfx_rotateOffset(r, k, (s32)&d);
         it->unkC[0].vx -= d.vx;
         it->unkC[0].vy -= d.vy - (it->unk8 - 6);
         it->unkC[0].vz -= d.vz;
-        ex->func_800CFCA8(r, k * 2, (s32)&d);
+        ex->btlfx_rotateOffset(r, k * 2, (s32)&d);
         it->unkC[1].vx -= d.vx;
         it->unkC[1].vy -= d.vy - (it->unk8 - 6) * 4;
         it->unkC[1].vz -= d.vz;
-        ex->func_800CFCA8(r, k * 2 + k, (s32)&d);
+        ex->btlfx_rotateOffset(r, k * 2 + k, (s32)&d);
         r = &it->unk30;
         it->unkC[2].vx -= d.vx;
         it->unkC[2].vy -= d.vy - (it->unk8 - 6) * 8;
@@ -222,7 +222,7 @@ s32 fx_0db_op80(s32 mode, Fx0dbWork80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             if (part != NULL) {
                 part->unk0 = work->unk26;
                 work->unk26++;
-                ex->func_800CFD78((s16 *)&work->unk14, (s16 *)&D_801E88B4[part->unk0], -0x10, (s16 *)&v);
+                ex->btlfx_pointAhead((s16 *)&work->unk14, (s16 *)&D_801E88B4[part->unk0], -0x10, (s16 *)&v);
                 part->unkC[0].vx = v.vx;
                 part->unkC[0].vy = v.vy;
                 part->unkC[0].vz = v.vz;
@@ -349,8 +349,8 @@ s32 fx_0db_op84(s32 mode, Fx0dbWork84 *work, Unk800F78A4 *env, Unk80100C78Entry 
         rot.vz = ry;
         rot.pad = 0;
         env->unk28 = 0x80;
-        ex->func_800D23D8((u8 *)ex->btlfx_getFileData(entry->unk8, 0x1B), &work->unk8, NULL, b / 3, 0, 1, a / 2);
-        ex->func_800D23D8((u8 *)ex->btlfx_getFileData(entry->unk8, 0x1A), &work->unk8, &rot, c / 2, 0, 1, a * 2 / 3);
+        ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->unk8, 0x1B), &work->unk8, NULL, b / 3, 0, 1, a / 2);
+        ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->unk8, 0x1A), &work->unk8, &rot, c / 2, 0, 1, a * 2 / 3);
         env->unk28 = 0;
         work->unk4++;
     }

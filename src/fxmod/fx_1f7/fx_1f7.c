@@ -70,7 +70,7 @@ s32 fx_1f7_op80(s32 mode, Fx1f7Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
                                 ex->func_800DC818(0x10, D_801E7EB0[i][k], (u16 *)&a);
                             } else {
                                 ex->func_800DC8AC(0x10, D_801E7EB0[i][0], (BtlBone *)&m);
-                                ex->func_800CFE88(&m, 0x400, (s32)&a);
+                                ex->btlfx_matrixPointAhead(&m, 0x400, (s32)&a);
                             }
                             ex->func_800DC818(0x10, D_801E7EB0[i][k + 1], (u16 *)&b);
                             for (j = 0; j < 4; j++) {

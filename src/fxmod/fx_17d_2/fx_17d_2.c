@@ -124,13 +124,13 @@ s32 fx_17d_2_op80(s32 mode, Fx17d2Work *work, Unk800F78A4 *env, Unk80100C78Entry
             s3.vx = s3.vy = s3.vz = t / 5 + 0x333;
             ex->Hi_DrawEffModel(&work->unk40, (VECTOR *)work->unk28, (s32)&s3, work->unk70);
             env->unk28 = 0x100;
-            ex->func_800D23D8((u8 *)ex->btlfx_getFileData(entry->unk8, 1), &work->unk10, NULL, 0xAAA, 0, 1, -1);
+            ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->unk8, 1), &work->unk10, NULL, 0xAAA, 0, 1, -1);
             env->unk28 = 0;
             ex->btlfx_drawScrollMove(frame * 10, 0x180, 0x100, 0x40, 0x80, 0x180, 0x180);
             ex->btlfx_drawScrollMove(frame * 7, 0x240, 0x100, 0x40, 0x80, 0x280, 0x100);
-            ex->func_800D1BC4(0xC00, (u8 *)ex->btlfx_getFileData(entry->unk8, 8), frame / 3 + 0x10E, 0x40 - frame / 3,
+            ex->btlfx_drawSpriteAtOt(0xC00, (u8 *)ex->btlfx_getFileData(entry->unk8, 8), frame / 3 + 0x10E, 0x40 - frame / 3,
                               0, 0xFF, -1);
-            ex->func_800D1BC4(0xE00, (u8 *)ex->btlfx_getFileData(entry->unk8, 9), frame / 3 + 0xA0, 0x70 - frame / 3,
+            ex->btlfx_drawSpriteAtOt(0xE00, (u8 *)ex->btlfx_getFileData(entry->unk8, 9), frame / 3 + 0xA0, 0x70 - frame / 3,
                               0, 0xFF, 0x1000 - t / 2);
             col.r = col.g = col.b = 0x84;
             sc.vy = sc.vx = (frame >> 1) + 0x1000;

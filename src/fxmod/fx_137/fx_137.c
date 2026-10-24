@@ -36,7 +36,7 @@ s32 fx_137_op80(s32 mode, Fx137Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
             ex->func_800DC858(0x10, 0, (u16 *)&work->unk8);
         }
         ex->func_800DC8AC(0x10, env->targets->unk25[0], (BtlBone *)&m);
-        ex->func_800CFE88(&m, 0x1000, (s32)&pos);
+        ex->btlfx_matrixPointAhead(&m, 0x1000, (s32)&pos);
         ex->btlfx_aimAngles((s16 *)&work->unk10, (s16 *)&pos, (s16 *)&work->unk0);
         ex->btlfx_aimAngles((s16 *)&work->unk10, (s16 *)&work->unk18, (s16 *)&rot);
         work->unk0.vx = rot.vx;

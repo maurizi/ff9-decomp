@@ -67,7 +67,7 @@ s32 fx_100_op81(s32 mode, Fx100Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
         switch (frame) {
         case 0:
             ex->func_800DC8AC(0x10, 0x11, (BtlBone *)&m);
-            ex->func_800CFE88(&m, 0, (s32)&work->unk14);
+            ex->btlfx_matrixPointAhead(&m, 0, (s32)&work->unk14);
             work->unk0 = ex->func_800E3CEC(ex->btlfx_getFileData(entry->unk8, 6), (s32)&work->unk14);
             if (work->unk0 != NULL) {
                 work->unk0->unk14 = (s32)D_801E827C;

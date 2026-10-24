@@ -59,7 +59,7 @@ s32 fx_0ea_op80(s32 mode, Fx0eaWork80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             }
         }
         if (frame >= 0x1E && frame < 0x2B) {
-            ex->func_800D3B6C((u8 *)ex->btlfx_getFileData(entry->unk8, 9), &work->unk10, work->unk18, work->unk1A);
+            ex->btlfx_drawSpriteLine((u8 *)ex->btlfx_getFileData(entry->unk8, 9), &work->unk10, work->unk18, work->unk1A);
             if (frame - 0x1E >= 5) {
                 work->unk1A -= 0x200;
             }

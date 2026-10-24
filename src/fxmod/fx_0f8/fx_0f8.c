@@ -56,7 +56,7 @@ s32 fx_0f8_op81(s32 mode, Fx0f8Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
             rot.vx = 0;
             rot.vy = i << 10;
             rot.vz = 0;
-            ex->func_800CFD78((s16 *)&work->unk28, (s16 *)&rot, ex->btlfx_rand() % 400 + 0x578, (s16 *)&work->unk30[i]);
+            ex->btlfx_pointAhead((s16 *)&work->unk28, (s16 *)&rot, ex->btlfx_rand() % 400 + 0x578, (s16 *)&work->unk30[i]);
         }
     } else {
         frame = entry->unk0;

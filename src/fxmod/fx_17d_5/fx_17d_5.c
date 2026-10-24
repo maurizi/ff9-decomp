@@ -53,7 +53,7 @@ s32 func_801EC704(s32 mode, Fx17d5Spark *w, Unk800F78A4 *env, Unk80100C78Entry *
             a = w->unk6 * 0x9B + (frame << 7);
             w->unk10 += (ex->math_sin(a + w->unk12) * k) >> 12;
             w->unk12 -= (ex->math_cos(a - w->unk10) * k) >> 12;
-            ex->func_800CFD78((s16 *)p, &w->unk10, w->unk2, (s16 *)p);
+            ex->btlfx_pointAhead((s16 *)p, &w->unk10, w->unk2, (s16 *)p);
             ex->btlfx_drawTrail((u8 *)ex->btlfx_getFileData(entry->unk8, 5), (s32)p, NULL, 0, k * 16 + 0x140, 0x1000, 1,
                                 w->unk18, 0);
             if (parent->unk0 > 0) {
@@ -70,7 +70,7 @@ s32 func_801EC704(s32 mode, Fx17d5Spark *w, Unk800F78A4 *env, Unk80100C78Entry *
             a = w->unk6 * 0x9B + frame * 24;
             w->unk10 += (ex->math_sin(a + w->unk12) * k) >> 12;
             w->unk12 -= (ex->math_cos(a - w->unk10) * k) >> 12;
-            ex->func_800CFD78((s16 *)p, &w->unk10, w->unk2, (s16 *)p);
+            ex->btlfx_pointAhead((s16 *)p, &w->unk10, w->unk2, (s16 *)p);
             env->unk28 = 0xFF;
             ex->btlfx_drawTrail((u8 *)ex->btlfx_getFileData(entry->unk8, 5), (s32)p, NULL, 0, w->unk22 - frame * 0x23A,
                                 0x1000, 1, w->unk18, 0);
@@ -121,7 +121,7 @@ s32 func_801EC704(s32 mode, Fx17d5Spark *w, Unk800F78A4 *env, Unk80100C78Entry *
         }
         env->unk28 = 0x140;
         if (w->unk10 != 0) {
-            ex->func_800D23D8((u8 *)ex->btlfx_getFileData(entry->unk8, 4), &w->unk8, NULL, 0x1000, frame, 1, 0xAAA);
+            ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->unk8, 4), &w->unk8, NULL, 0x1000, frame, 1, 0xAAA);
             env->unk28 = 0;
         } else {
             ex->btlfx_drawParticles((u8 *)ex->btlfx_getFileData(entry->unk8, 8), &w->unk8, NULL, 0x1000, frame, 1, 0xC00,
@@ -162,7 +162,7 @@ s32 func_801EC704(s32 mode, Fx17d5Spark *w, Unk800F78A4 *env, Unk80100C78Entry *
             }
         }
         env->unk28 = 0x400;
-        ex->func_800D23D8((u8 *)ex->btlfx_getFileData(entry->unk8, 4), &w->unk8, NULL, 0x1800, frame, 1, 0x1000);
+        ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->unk8, 4), &w->unk8, NULL, 0x1800, frame, 1, 0x1000);
         env->unk28 = 0;
         ang.vz = 0;
         ang.vx = 0;
@@ -289,7 +289,7 @@ s32 fx_17d_5_op80(s32 mode, Fx17d5Work80 *w, Unk800F78A4 *env, Unk80100C78Entry 
             if ((u32)u < 0x10) {
                 d = (u8 *)ex->btlfx_getFileData(entry->unk8, 0xD);
                 u <<= 12;
-                ex->func_800D3B6C(d, &w->unkC, u >> 12, ex->math_cos(u >> 6));
+                ex->btlfx_drawSpriteLine(d, &w->unkC, u >> 12, ex->math_cos(u >> 6));
             }
             if (frame >= 0x1F && frame < 0x27) {
                 m = 0xFF - (((frame - 0x1F) * 0xFF) >> 3);
@@ -424,7 +424,7 @@ s32 fx_17d_5_op80(s32 mode, Fx17d5Work80 *w, Unk800F78A4 *env, Unk80100C78Entry 
                 rot.vz = 0;
                 rot.vy = 0;
                 rot.pad = 1;
-                ex->func_800D23D8((u8 *)ex->btlfx_getFileData(entry->unk8, 0xB), &D_801EE4DC, &rot, 0x5000, 0, 1, -1);
+                ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->unk8, 0xB), &D_801EE4DC, &rot, 0x5000, 0, 1, -1);
             }
             if (frame >= 0x20) {
                 w->unk0 = 3;
@@ -511,7 +511,7 @@ s32 fx_17d_5_op80(s32 mode, Fx17d5Work80 *w, Unk800F78A4 *env, Unk80100C78Entry 
                 rot.vz = 0;
                 rot.vy = 0;
                 rot.pad = 1;
-                ex->func_800D23D8((u8 *)ex->btlfx_getFileData(entry->unk8, 0xB), &D_801EE4DC, &rot, 0x5000, 0, 1, c);
+                ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->unk8, 0xB), &D_801EE4DC, &rot, 0x5000, 0, 1, c);
             }
             ex->btlfx_drawScrollMove(frame * 29, 0x200, 0x100, 0x40, 0x80, 0x200, 0x180);
             if (frame >= 0x38) {

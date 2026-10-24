@@ -97,7 +97,7 @@ void btlfx_swapVramPages(s32 arg0, u32 *arg1, s32 arg2) {
     }
     r.w = 0x40;
     r.h = 0x80;
-    func_800D0940();
+    btlfx_resetMaskBit();
     for (i = 0; i < 4; i++) {
         if (bit & arg2) {
             p -= 0x2000;
@@ -147,7 +147,7 @@ void btlfx_runScript(void) {
         r.y = 0x140;
         r.w = 0x40;
         r.h = 0x10;
-        func_800D0940();
+        btlfx_resetMaskBit();
         StoreImage(&r, (u32 *)0x801E7700);
         D_800FEC38 = 0;
         d->unk0 = 1;
@@ -164,7 +164,7 @@ void btlfx_runScript(void) {
             r.y = 0x150;
             r.w = 0x40;
             r.h = 0xB0;
-            func_800D0940();
+            btlfx_resetMaskBit();
             StoreImage(&r, (u32 *)0x801E7700);
             d->unk0 = 2;
             d->unk1C &= ~8;
@@ -1376,7 +1376,7 @@ s32 btlfx_stepMoveToUnit(Unk800D9134 *p, s32 arg1, s32 *arg2) {
     }
     btlfx_getUnitHomePos(p->unk1, b);
     btlfx_getUnitRot(p->unk1, c);
-    func_800CFD78(b, c, 1000, a);
+    btlfx_pointAhead(b, c, 1000, a);
     btlfx_setUnitPos(p->unk0, a);
     g_btlfxState.moveDone = 1;
     return 1;
@@ -1427,8 +1427,8 @@ s32 func_800D9350(Unk800D7C9C *arg0, s32 arg1, s32 *arg2) {
         } else {
             b[1] = a[1];
         }
-        func_800CFD78(b, c, arg0->unk4, a);
-        func_800CFD78(b, c, arg0->unk6, arg0->unk14);
+        btlfx_pointAhead(b, c, arg0->unk4, a);
+        btlfx_pointAhead(b, c, arg0->unk6, arg0->unk14);
         btlfx_setUnitPos(arg0->unk0, a);
         m = arg0->unk8;
         if (m == 1) {
@@ -1451,7 +1451,7 @@ s32 btlfx_stepJumpForward(Unk800D7C9C *arg0, s32 arg1, s32 *arg2) {
     if (v == 0) {
         btlfx_getUnitPos(arg0->unk0, a);
         btlfx_getUnitRot(arg0->unk0, b);
-        func_800CFD78(a, b, arg0->unk4, arg0->unk14);
+        btlfx_pointAhead(a, b, arg0->unk4, arg0->unk14);
         if (arg0->unk3 != 0) {
             btlfx_playUnitMotion(arg0->unk0, 0x1D);
         }
@@ -1536,7 +1536,7 @@ s32 btlfx_stepMoveTowardTarget(Unk800D7C9C *arg0, s32 arg1, s32 *arg2) {
             b[1] = a[1];
         }
         btlfx_aimAngles(b, a, c);
-        func_800CFD78(b, c, arg0->unk4, arg0->unk14);
+        btlfx_pointAhead(b, c, arg0->unk4, arg0->unk14);
         arg0->unk14[0] -= a[0];
         arg0->unk14[1] -= a[1];
         arg0->unk14[2] -= a[2];
@@ -1580,7 +1580,7 @@ s32 btlfx_stepRunToTarget(Unk800D7C9C *arg0, s32 arg1, s32 *arg2) {
             b[1] = a[1];
         }
         btlfx_aimAngles(b, a, c);
-        func_800CFD78(b, c, arg0->unk4, arg0->unk14);
+        btlfx_pointAhead(b, c, arg0->unk4, arg0->unk14);
         m = arg0->unk8;
         if (m == 1) {
             btlfx_setUnitPos(arg0->unk0, arg0->unk14);

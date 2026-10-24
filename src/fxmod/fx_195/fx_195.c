@@ -402,7 +402,7 @@ s32 fx_195_op80(s32 mode, Fx195Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             rot2.vz = 0;
             ex->btlfx_drawScreenGrid(3, 0xA0, 0x70, 0x50, 0x38, 4, 4, 2, 2, &rot2, &sc2, &col, 1, NULL);
             BTLFX_COPY_SVEC(&v1, &work->unk10);
-            ex->func_800CFD78((s16 *)&v1, (s16 *)&work->unk78, t - 0x2800, (s16 *)&v2);
+            ex->btlfx_pointAhead((s16 *)&v1, (s16 *)&work->unk78, t - 0x2800, (s16 *)&v2);
             r = (t >> 2) + 0x400;
             for (i = 0, ang = work->unk4 << 8; i < 3; i++, ang += 0x554) {
                 func_801E78A4(entry, &D_801EAB08[i], &v1, &v2, r, r, ang, 0xC0, 0, ex->btlfx_randCentered(0x400) + 0xC00,
@@ -411,16 +411,16 @@ s32 fx_195_op80(s32 mode, Fx195Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             env->unk28 = 0x200;
             w1_200 = (ex->math_sin(t >> 2) << 1) + 0x1000;
             w2_202 = (ex->math_cos(t >> 2) >> 1) + 0x800;
-            ex->func_800D23D8((u8 *)ex->btlfx_getFileData(entry->unk8, 9), &work->unk10, NULL, w1_200, 0, 1, w2_202);
+            ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->unk8, 9), &work->unk10, NULL, w1_200, 0, 1, w2_202);
             w2 = ex->math_sin(t >> 2) * 3 + 0x1000;
             w1 = ex->math_cos(t >> 2);
-            ex->func_800D23D8((u8 *)ex->btlfx_getFileData(entry->unk8, 8), &work->unk10, NULL, w2, 0, 1, w1);
+            ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->unk8, 8), &work->unk10, NULL, w2, 0, 1, w1);
             if (frame >= 4 && (k = frame - 4) < 10) {
                 r3.vx = 0x400;
                 r3.vy = 0;
                 r3.vz = 0;
                 r3.pad = 1;
-                ex->func_800D23D8((u8 *)ex->btlfx_getFileData(entry->unk8, 0xA), &work->unk10, &r3, 0x4000, k, 1, 0x1000);
+                ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->unk8, 0xA), &work->unk10, &r3, 0x4000, k, 1, 0x1000);
             }
             env->unk28 = 0;
             if (frame >= 14) {
@@ -694,10 +694,10 @@ s32 fx_195_op80(s32 mode, Fx195Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             a = t >> 2;
             p1 = ex->math_cos(a) + 0x1800;
             p2 = ((ex->math_cos(a) * 3) >> 2) + 0x400;
-            ex->func_800D23D8((u8 *)ex->btlfx_getFileData(entry->unk8, 9), &work->unk10, NULL, p1, 0, 1, p2);
+            ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->unk8, 9), &work->unk10, NULL, p1, 0, 1, p2);
             p1 = 0x5000 - (t << 1);
             p2 = ex->math_cos(a);
-            ex->func_800D23D8((u8 *)ex->btlfx_getFileData(entry->unk8, 2), &work->unk10, &rotG, p1, 0, 1, p2);
+            ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->unk8, 2), &work->unk10, &rotG, p1, 0, 1, p2);
             env->unk28 = 0;
             ex->btlfx_drawBackdrop((BtlBgLayers *)ex->btlfx_getFileData(entry->unk8, 7), frame);
             ex->btlfx_drawScrollMove(work->unk4 * 5, 0x200, 0x100, 0x20, 0xC0, 0x220, 0x100);

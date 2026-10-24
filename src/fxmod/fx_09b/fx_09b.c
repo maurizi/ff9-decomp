@@ -100,7 +100,7 @@ s32 fx_09b_op80(s32 mode, Fx09bWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
         switch (frame) {
         case 2:
             ex->btlfx_aimAngles((s16 *)&work->unk3C, (s16 *)&work->unk64, (s16 *)&ang);
-            ex->func_800CFD78((s16 *)&work->unk64, (s16 *)&ang, -0xC8, (s16 *)&work->unk44);
+            ex->btlfx_pointAhead((s16 *)&work->unk64, (s16 *)&ang, -0xC8, (s16 *)&work->unk44);
             work->unkC = ex->func_800E3CEC(ex->btlfx_getFileData(entry->unk8, 4), (s32)&work->unk44);
             if (work->unkC != NULL) {
                 work->unkC->unk22 = ex->func_800E7CC4(0, 0x80);

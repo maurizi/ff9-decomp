@@ -60,8 +60,8 @@ s32 fx_1a6_op80(s32 mode, Fx1a6Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
         }
         ex->btlfx_aimAngles((s16 *)&work->unk20, (s16 *)&work->unk18, (s16 *)&work->unk38);
         ex->btlfx_aimAngles((s16 *)&work->unk18, (s16 *)&work->unk20, (s16 *)&work->unk40);
-        ex->func_800CFD78((s16 *)&work->unk20, (s16 *)&work->unk38, 0x12C, (s16 *)&work->unk28);
-        ex->func_800CFD78((s16 *)&work->unk20, (s16 *)&work->unk38, 0xC8, (s16 *)&D_801EDD28[work->unk48]);
+        ex->btlfx_pointAhead((s16 *)&work->unk20, (s16 *)&work->unk38, 0x12C, (s16 *)&work->unk28);
+        ex->btlfx_pointAhead((s16 *)&work->unk20, (s16 *)&work->unk38, 0xC8, (s16 *)&D_801EDD28[work->unk48]);
         D_801EDD48[work->unk48].vx = work->unk18.vx;
         D_801EDD48[work->unk48].vy = work->unk18.vy;
         D_801EDD48[work->unk48].vz = work->unk18.vz;

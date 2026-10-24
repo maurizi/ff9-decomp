@@ -438,7 +438,7 @@ s32 fx_196_op85(s32 mode, Fx196Work85 *work, Unk800F78A4 *env, Unk80100C78Entry 
                 u = ((frame - 0x2B) << 10) / 38;
                 ex->math_cos(u);
                 ex->math_cos(u);
-                ex->func_800D0B18((s32)&env->ot[2], -0x20, 0x10, 3, 0x50, 1, D_801E90FC, 0x18, frame << 8, 0x186,
+                ex->btlfx_drawRippleGrid((s32)&env->ot[2], -0x20, 0x10, 3, 0x50, 1, D_801E90FC, 0x18, frame << 8, 0x186,
                                   0x100);
                 if (frame == 0x2B) {
                     ex->btlfx_drawScreenTint((u32 *)&env->ot[2], 0, 0x20, 0xAA, 0xFF);

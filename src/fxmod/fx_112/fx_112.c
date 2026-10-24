@@ -126,7 +126,7 @@ s32 fx_112_op80(s32 mode, Fx112Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
     case 4:
         ex->func_800DC818(0x10, 4, (u16 *)&work->unk48);
         ex->func_800DC8AC(0x10, 4, &u.s4.m);
-        ex->func_800CFF40((MATRIX *)&u.s4.m, (s16 *)&u.s4.rot);
+        ex->btlfx_matrixAngles((MATRIX *)&u.s4.m, (s16 *)&u.s4.rot);
         if (work->unk50 != NULL) {
             work->unk50->unk5C.vx = u.s4.rot.vx;
             work->unk50->unk5C.vy = u.s4.rot.vy;

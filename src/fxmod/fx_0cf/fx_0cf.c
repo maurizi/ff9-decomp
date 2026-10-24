@@ -34,7 +34,7 @@ s32 fx_0cf_op81(s32 mode, Fx0cfWork81 *work, Unk800F78A4 *env, Unk80100C78Entry 
         work->unk18.vz = env->targets->centerZ;
         ex->btlfx_aimAngles((s16 *)&work->unk0, (s16 *)&work->unk18, (s16 *)&work->unk8);
         work->unk8.vy += 0x800;
-        ex->func_800CFD78((s16 *)&work->unk18, (s16 *)&work->unk8, 0x320, (s16 *)&work->unk10);
+        ex->btlfx_pointAhead((s16 *)&work->unk18, (s16 *)&work->unk8, 0x320, (s16 *)&work->unk10);
     } else {
         frame = entry->unk0;
         return func_801E7990(0x10, &work->unk10, frame, 0xC, 0, &work->unk20) != 0;

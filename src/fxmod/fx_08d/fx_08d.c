@@ -30,7 +30,7 @@ s32 fx_08d_op80(s32 mode, Fx08dWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
             work->unk8 = ex->func_800E3CEC(ex->btlfx_getFileData(entry->unk8, 8), (s32)&work->unkC);
         }
         if (frame >= 0x25 && frame < 0x31) {
-            ex->func_800D3B6C((u8 *)ex->btlfx_getFileData(entry->unk8, 7), &work->unkC, work->unk1C, work->unk1E);
+            ex->btlfx_drawSpriteLine((u8 *)ex->btlfx_getFileData(entry->unk8, 7), &work->unkC, work->unk1C, work->unk1E);
             if (frame - 0x25 < 6) {
                 work->unk1E += 0x333;
             } else if (work->unk1E >= 0x249) {

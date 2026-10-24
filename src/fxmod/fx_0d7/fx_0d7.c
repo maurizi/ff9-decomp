@@ -113,7 +113,7 @@ s32 func_801E7CEC(s32 mode, Fx0d7Bolt *it, Unk800F78A4 *env, Unk80100C78Entry *e
                     it->unk1C->unk22 = ex->func_800E7CC4(0, 0x40);
                 }
                 env->unk28 = ex->func_800E7CC4(0, 0x46);
-                ex->func_800D23D8((u8 *)ex->btlfx_getFileData(entry->unk8, 8), &it->unk0, NULL, 0x1400, 4, 1, 0x1000);
+                ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->unk8, 8), &it->unk0, NULL, 0x1400, 4, 1, 0x1000);
                 env->unk28 = 0;
                 ex->btlfx_drawScreenTint((u32 *)(env->ot + 1), 1, 0, 7, 0x20);
             }
@@ -285,8 +285,8 @@ s32 fx_0d7_op84(s32 mode, Fx0d7Work84 *work, Unk800F78A4 *env, Unk80100C78Entry 
         rot.vz = ry;
         rot.pad = 0;
         env->unk28 = 0x80;
-        ex->func_800D23D8((u8 *)ex->btlfx_getFileData(entry->unk8, 0xF), &work->unk8, NULL, b / 3, 0, 1, a / 2);
-        ex->func_800D23D8((u8 *)ex->btlfx_getFileData(entry->unk8, 0x10), &work->unk8, &rot, c / 2, 0, 1, a * 2 / 3);
+        ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->unk8, 0xF), &work->unk8, NULL, b / 3, 0, 1, a / 2);
+        ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->unk8, 0x10), &work->unk8, &rot, c / 2, 0, 1, a * 2 / 3);
         env->unk28 = 0;
         work->unk4++;
     }

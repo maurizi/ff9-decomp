@@ -24,7 +24,7 @@ s32 fx_0c1_op80(s32 mode, Fx0c1Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
         ex->btlfx_getUnitRot(0x10, (s16 *)&work->unk18);
         ex->btlfx_getUnitBodyPos(0, 0, (s16 *)&work->unk20);
         ex->func_800DC8AC(0x10, 0x17, &bone);
-        ex->func_800CFE88((MATRIX *)&bone, 0x64, (s32)&work->unk28);
+        ex->btlfx_matrixPointAhead((MATRIX *)&bone, 0x64, (s32)&work->unk28);
         work->unk0 = ex->func_800E3CEC(ex->btlfx_getFileData(entry->unk8, 7), (s32)&work->unk28);
         if (work->unk0 != NULL) {
             work->unk0->unk22 = ex->func_800E7CC4(0x10, 0x20);
@@ -37,9 +37,9 @@ s32 fx_0c1_op80(s32 mode, Fx0c1Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
             D_801E7C20.vy = work->unk38.vy;
             D_801E7C20.vz = work->unk38.vz;
             ex->btlfx_getUnitRot(0x10, (s16 *)&work->unk18);
-            ex->func_800CFD78((s16 *)&work->unk10, (s16 *)&work->unk18, 0x12C, (s16 *)&work->unk30);
+            ex->btlfx_pointAhead((s16 *)&work->unk10, (s16 *)&work->unk18, 0x12C, (s16 *)&work->unk30);
             ex->btlfx_aimAngles((s16 *)&work->unk10, (s16 *)&work->unk20, (s16 *)&bone);
-            ex->func_800CFD78((s16 *)&work->unk20, (s16 *)&bone, 0, (s16 *)&D_801E7C28);
+            ex->btlfx_pointAhead((s16 *)&work->unk20, (s16 *)&bone, 0, (s16 *)&D_801E7C28);
             work->unk4 = ex->func_800E3CEC(ex->btlfx_getFileData(entry->unk8, 0xB), (s32)&work->unk30);
             work->unk8 = ex->func_800E3CEC(ex->btlfx_getFileData(entry->unk8, 0xC), (s32)&D_801E7C30);
             if (work->unk8 != NULL) {

@@ -10,9 +10,9 @@ s32 fx_104_op80(s32 mode, Fx104Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
     } else if (mode == 1) {
         D_801E79F4 = env;
         ex->func_800DC8AC(0x10, 0x12, (BtlBone *)&m1);
-        ex->func_800CFE88(&m1, 0xC8, (s32)&work->unk8);
+        ex->btlfx_matrixPointAhead(&m1, 0xC8, (s32)&work->unk8);
         ex->func_800DC8AC(0x10, 0x12, (BtlBone *)&m2);
-        ex->func_800CFE88(&m2, 0x320, (s32)&work->unk10);
+        ex->btlfx_matrixPointAhead(&m2, 0x320, (s32)&work->unk10);
         work->unk0 = ex->func_800E3CEC(ex->btlfx_getFileData(entry->unk8, 1), (s32)&work->unk8);
         if (work->unk0 != NULL) {
             work->unk0->unk22 = ex->func_800E7CC4(0x10, 0x80);

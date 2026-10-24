@@ -378,18 +378,18 @@ s32 fx_0ec_op80(s32 mode, Fx0ecWork80 *work, Unk800F78A4 *env, Unk80100C78Entry 
         } else {
             work->unk10.vy = 0x800;
         }
-        ex->func_800CFD78((s16 *)&work->unk8, (s16 *)&work->unk10, r, (s16 *)&work->unk18);
+        ex->btlfx_pointAhead((s16 *)&work->unk8, (s16 *)&work->unk10, r, (s16 *)&work->unk18);
         if (ex->btlfx_isEnemyUnit(0) != 0 && work->unk18.vz < -0x200) {
             work->unk18.vz = -0x200;
         }
-        ex->func_800CFCA8(&work->unk10, -0xD2, (s32)&rot);
+        ex->btlfx_rotateOffset(&work->unk10, -0xD2, (s32)&rot);
         sv.vx = work->unk18.vx + rot.vx;
         sv.vy = work->unk18.vy + rot.vy - 0x140;
         sv.vz = work->unk18.vz + rot.vz;
         env->camera->points[1].vx = sv.vx;
         env->camera->points[1].vy = sv.vy;
         env->camera->points[1].vz = sv.vz;
-        ex->func_800CFCA8(&work->unk10, -ex->btlfx_getUnitRadius(0), (s32)&rot);
+        ex->btlfx_rotateOffset(&work->unk10, -ex->btlfx_getUnitRadius(0), (s32)&rot);
         sv.vx = work->unk8.vx + rot.vx;
         sv.vy = work->unk8.vy + rot.vy - 0x140;
         sv.vz = work->unk8.vz + rot.vz;

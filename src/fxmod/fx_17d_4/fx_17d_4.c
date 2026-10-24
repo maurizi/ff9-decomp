@@ -482,7 +482,7 @@ s32 fx_17d_4_op80(s32 mode, Fx17d4Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
             if (frame < 8) {
                 w13_c6 = frame << 9;
             }
-            ex->func_800D23D8((u8 *)ex->btlfx_getFileData(entry->unk8, 3), &work->unk10, NULL, 0x1000, 0, 1, w13_c6);
+            ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->unk8, 3), &work->unk10, NULL, 0x1000, 0, 1, w13_c6);
             if (frame >= 6) {
                 c_5 = ((frame - 6) << 12) / 14;
             } else {
@@ -521,7 +521,7 @@ s32 fx_17d_4_op80(s32 mode, Fx17d4Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
             b.vx = a.vx;
             b.vy = work->unk8.vy - 0x1000;
             b.vz = a.vz;
-            ex->func_800D23D8((u8 *)ex->btlfx_getFileData(entry->unk8, 3), &a, NULL, 0xAAA, 0, 1, t_c5);
+            ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->unk8, 3), &a, NULL, 0xAAA, 0, 1, t_c5);
             func_801E7720((u8 *)ex->btlfx_getFileData(entry->unk8, 0x20), &a, &b, frame, t_c5, 1, 0x20);
             env->unk28 = 0;
             if (frame >= 0x18) {
@@ -539,7 +539,7 @@ s32 fx_17d_4_op80(s32 mode, Fx17d4Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
             env->unk28 = 0x10;
             r_c2 = (frame << 12) / 51;
             c_6 = 0x1000 - r_c2;
-            ex->func_800D23D8((u8 *)ex->btlfx_getFileData(entry->unk8, 3), &a2, NULL, 0xAAA, 0, 1, c_6);
+            ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->unk8, 3), &a2, NULL, 0xAAA, 0, 1, c_6);
             func_801E7720((u8 *)ex->btlfx_getFileData(entry->unk8, 0x20), &a2, &b2, frame, c_6, 1,
                           (r_c2 >> 7) + 0x20);
             env->unk28 = 0;
@@ -551,14 +551,14 @@ s32 fx_17d_4_op80(s32 mode, Fx17d4Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
                 q4_c6 = (frame << 12) >> 6;
                 s6a = ex->math_sin(q4_c6) * 5;
                 c6a = ex->math_cos(q4_c6);
-                ex->func_800D23D8((u8 *)ex->btlfx_getFileData(entry->unk8, 5), &a2, &rot2, s6a, 0, 1, c6a);
+                ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->unk8, 5), &a2, &rot2, s6a, 0, 1, c6a);
             }
             if (frame >= 0x1E) {
                 k = (frame - 0x1E) << 9;
                 if (k > 0x1000) {
                     k = 0x1000;
                 }
-                ex->func_800D23D8((u8 *)ex->btlfx_getFileData(entry->unk8, 5), &a2, &rot2, 0x5000, 0, 1, k);
+                ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->unk8, 5), &a2, &rot2, 0x5000, 0, 1, k);
             }
             flag = 0;
             if (frame < 0x26) {

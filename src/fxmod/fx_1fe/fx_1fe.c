@@ -256,7 +256,7 @@ s32 fx_1fe_op81(s32 mode, Fx1feWork81 *work, Unk800F78A4 *env, Unk80100C78Entry 
                 ex->btlfx_drawScrollMove(1000 - r, 0x280, 0x100, 0x20, 0x80, 0x2A0, 0x100);
                 ex->math_cos(f1);
                 ex->math_cos(f1 * 2);
-                ex->func_800D0B18((s32)(env->ot + 2), 0x42, 0x10, 3, 0x3C, 1, &D_801E8908, 0x18, frame * 400, 0x186, 0x100);
+                ex->btlfx_drawRippleGrid((s32)(env->ot + 2), 0x42, 0x10, 3, 0x3C, 1, &D_801E8908, 0x18, frame * 400, 0x186, 0x100);
             }
             if ((u32)(frame - 7) < 0x14) {
                 s32 u;

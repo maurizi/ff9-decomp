@@ -386,7 +386,7 @@ s32 fx_0e3_0_op80(s32 mode, Fx0e30Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
             BTLFX_COPY_SVEC(&v0, &work->unk8);
             v0.vy -= 0x800;
             env->unk28 = 0x80;
-            ex->func_800D23D8((u8 *)ex->btlfx_getFileData(entry->unk8, 0xC), &v0, NULL, 0x1800, 0, 1, ex->math_cos(t >> 2));
+            ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->unk8, 0xC), &v0, NULL, 0x1800, 0, 1, ex->math_cos(t >> 2));
             env->unk28 = 0;
         }
         if (frame >= 0x45) {
@@ -656,7 +656,7 @@ s32 fx_0e3_0_op80(s32 mode, Fx0e30Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
         for (i4 = 0; i4 < 2; i4++) {
             ex->Hi_GetSummonBonePos(SUMMON(env)->unk60, D_801EA7F0[i4], (u16 *)&v0);
             ex->Hi_GetSummonBoneMatrix(SUMMON(env)->unk60, D_801EA7F0[i4], (BtlBone *)&m);
-            ex->func_800CFE88(&m, 0x398, (s32)&v1);
+            ex->btlfx_matrixPointAhead(&m, 0x398, (s32)&v1);
             func_801E7B40(entry, (Fx0e30Bolt *)&D_801EB0E8[i4], &v0, &v1, amp4, amp4, ang, 0x200, 0,
                           ex->btlfx_randCentered(0x400) + 0xC00);
         }
@@ -725,9 +725,9 @@ s32 fx_0e3_0_op80(s32 mode, Fx0e30Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
             }
         }
         ex->Hi_GetSummonBoneMatrix(SUMMON(env)->unk60, 0x3D, (BtlBone *)&ba);
-        ex->func_800CFE88((MATRIX *)&ba, 0x18, (s32)&work->unk38);
+        ex->btlfx_matrixPointAhead((MATRIX *)&ba, 0x18, (s32)&work->unk38);
         ex->Hi_GetSummonBoneMatrix(SUMMON(env)->unk60, 0x3D, (BtlBone *)&rot2);
-        ex->func_800CFF40((MATRIX *)&rot2, (s16 *)&v0);
+        ex->btlfx_matrixAngles((MATRIX *)&rot2, (s16 *)&v0);
         if (frame == 0xC) {
             work->unk4C = ex->func_800E3CEC(ex->btlfx_getFileData(entry->unk8, 0xA), (s32)&work->unk38);
             if (work->unk4C != NULL) {
@@ -766,7 +766,7 @@ s32 fx_0e3_0_op80(s32 mode, Fx0e30Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
             for (i5a = 0; i5a < 2; i5a++) {
                 ex->Hi_GetSummonBonePos(SUMMON(env)->unk60, D_801EA7F0[i5a], (u16 *)&ba);
                 ex->Hi_GetSummonBoneMatrix(SUMMON(env)->unk60, D_801EA7F0[i5a], (BtlBone *)&bm);
-                ex->func_800CFE88(&bm, 0x398, (s32)&bb);
+                ex->btlfx_matrixPointAhead(&bm, 0x398, (s32)&bb);
                 func_801E7B40(entry, (Fx0e30Bolt *)&D_801EB0E8[i5a], &ba, &bb, amp5, amp5, ang, 0x200, 0,
                               ex->btlfx_randCentered(0x400) + 0xC00);
             }
@@ -885,15 +885,15 @@ s32 fx_0e3_0_op80(s32 mode, Fx0e30Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
         }
         for (j = 0; j < 4; j++) {
             ex->Hi_GetSummonBoneMatrix(SUMMON(env)->unk60, D_801EA800[j].unk0, (BtlBone *)&m);
-            ex->func_800CFE88(&m, (D_801EA800[j + 4].unk0 * work->unk1C.vy) >> 12, (s32)&v0);
+            ex->btlfx_matrixPointAhead(&m, (D_801EA800[j + 4].unk0 * work->unk1C.vy) >> 12, (s32)&v0);
             ex->Hi_GetSummonBoneMatrix(SUMMON(env)->unk60, D_801EA800[j].unk2, (BtlBone *)&m2);
-            ex->func_800CFE88(&m2, (D_801EA800[j + 4].unk2 * work->unk1C.vy) >> 12, (s32)&v1);
+            ex->btlfx_matrixPointAhead(&m2, (D_801EA800[j + 4].unk2 * work->unk1C.vy) >> 12, (s32)&v1);
             func_801E7730(&v0, &v1, 0xE, 0x9D, 0x3D40, 0, 0x80, 0x40, 0x80, trail >> 5, D_801EA878[j], 1,
                           10000 - work->unk4);
         }
         for (j = 0; j < 4; j++) {
             ex->Hi_GetSummonBoneMatrix(SUMMON(env)->unk60, D_801EA7F0[j], (BtlBone *)&m3);
-            ex->func_800CFE88(&m3, (D_801EA7F0[j + 4] * work->unk1C.vy) >> 12, (s32)&v0);
+            ex->btlfx_matrixPointAhead(&m3, (D_801EA7F0[j + 4] * work->unk1C.vy) >> 12, (s32)&v0);
             ex->btlfx_drawTrail((u8 *)ex->btlfx_getFileData(entry->unk8, 1), (s32)&v0, 0, 0, 0x2000, trail, 1,
                                 D_801EAC38[j], 0);
         }

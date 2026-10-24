@@ -88,15 +88,15 @@ s32 func_801E7704(s32 mode, Fx04dItem *it, Unk800F78A4 *env, Unk80100C78Entry *e
         scale.vz = it->unk3C;
         fade = ex->math_cos(a);
         k = ex->math_cos(a) >> 7;
-        ex->func_800CFCA8(r, k, (s32)&d);
+        ex->btlfx_rotateOffset(r, k, (s32)&d);
         it->unkC[0].vx -= d.vx;
         it->unkC[0].vy -= d.vy - (it->unk8 - 6);
         it->unkC[0].vz -= d.vz;
-        ex->func_800CFCA8(r, k * 2, (s32)&d);
+        ex->btlfx_rotateOffset(r, k * 2, (s32)&d);
         it->unkC[1].vx -= d.vx;
         it->unkC[1].vy -= d.vy - (it->unk8 - 6) * 4;
         it->unkC[1].vz -= d.vz;
-        ex->func_800CFCA8(r, k * 2 + k, (s32)&d);
+        ex->btlfx_rotateOffset(r, k * 2 + k, (s32)&d);
         r = &it->unk30;
         it->unkC[2].vx -= d.vx;
         it->unkC[2].vy -= d.vy - (it->unk8 - 6) * 8;
@@ -223,7 +223,7 @@ s32 fx_04d_op80(s32 mode, Fx04dWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
         if (it != NULL) {
             it->unk0 = work->unk2A;
             work->unk2A++;
-            ex->func_800CFD78((s16 *)&work->unk18, (s16 *)&D_801E8578[it->unk0], -0x10, (s16 *)&d);
+            ex->btlfx_pointAhead((s16 *)&work->unk18, (s16 *)&D_801E8578[it->unk0], -0x10, (s16 *)&d);
             it->unkC[0].vx = d.vx;
             it->unkC[0].vy = d.vy;
             it->unkC[0].vz = d.vz;

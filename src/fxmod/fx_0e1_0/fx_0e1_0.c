@@ -534,7 +534,7 @@ s32 fx_0e1_0_op80(s32 mode, Fx0e10Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
 
                 env->unk28 = 0xF5;
                 ex->Hi_GetSummonBonePos(((Fx0e10Summon *)env->unk4)->unk60, 0, (u16 *)&work->unk34);
-                ex->func_800D23D8((u8 *)ex->btlfx_getFileData(entry->unk8, 5), &work->unk34, NULL, 0x1000, 0, 1,
+                ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->unk8, 5), &work->unk34, NULL, 0x1000, 0, 1,
                                   d);
                 env->unk28 = 0;
             }

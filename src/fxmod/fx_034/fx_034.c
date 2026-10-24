@@ -154,7 +154,7 @@ s32 fx_034_op80(s32 mode, Fx034Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
         a.vy = work->unk54.vy;
         a.vz = work->unk54.vz;
         a.vy += 0x800;
-        ex->func_800CFD78((s16 *)&work->unk44, (s16 *)&a, 0x320, (s16 *)&p);
+        ex->btlfx_pointAhead((s16 *)&work->unk44, (s16 *)&a, 0x320, (s16 *)&p);
         ex->btlfx_aimAngles((s16 *)&work->unk34, (s16 *)&p, (s16 *)&work->unk5C);
         work->unk5C.vy += 0x800;
         work->unk64.vx = p.vx;

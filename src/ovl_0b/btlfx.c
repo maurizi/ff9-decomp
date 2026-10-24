@@ -8,7 +8,7 @@ s32 btlfx_align4(s32 arg0) {
     return v;
 }
 
-s32 func_800CFC2C(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, s32 *arg5) {
+s32 btlfx_rangeProgress(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, s32 *arg5) {
     if (arg0 >= arg1 && arg1 + arg2 >= arg0) {
         *arg5 = (arg0 - arg1) * arg4 / arg2;
         if (arg3 < 0) {
@@ -19,7 +19,7 @@ s32 func_800CFC2C(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, s32 *arg5) {
     return 0;
 }
 
-void func_800CFCA8(SVECTOR *arg0, s32 arg1, s32 arg2) {
+void btlfx_rotateOffset(SVECTOR *arg0, s32 arg1, s32 arg2) {
     RotMatrix33 m;
 
     func_800316D8(arg0, &m);
@@ -30,7 +30,7 @@ void func_800CFCA8(SVECTOR *arg0, s32 arg1, s32 arg2) {
     gte_SetTransMatrix(g_btlfxEnv->viewMatrix);
 }
 
-void func_800CFD78(s16 *arg0, s16 *arg1, s32 arg2, s16 *arg3) {
+void btlfx_pointAhead(s16 *arg0, s16 *arg1, s32 arg2, s16 *arg3) {
     MATRIX m;
 
     func_800316D8(arg1, &m);
@@ -44,7 +44,7 @@ void func_800CFD78(s16 *arg0, s16 *arg1, s32 arg2, s16 *arg3) {
     gte_SetTransMatrix(g_btlfxEnv->viewMatrix);
 }
 
-void func_800CFE88(MATRIX *arg0, s32 arg1, s32 arg2) {
+void btlfx_matrixPointAhead(MATRIX *arg0, s32 arg1, s32 arg2) {
     gte_SetRotMatrix(arg0);
     gte_SetTransMatrix(arg0);
     btlfx_transformPoint(arg1, 0, arg2);
@@ -52,7 +52,7 @@ void func_800CFE88(MATRIX *arg0, s32 arg1, s32 arg2) {
     gte_SetTransMatrix(g_btlfxEnv->viewMatrix);
 }
 
-void func_800CFF40(MATRIX *arg0, s16 *arg1) {
+void btlfx_matrixAngles(MATRIX *arg0, s16 *arg1) {
     s16 a[4];
     s32 b[2];
 
@@ -107,7 +107,7 @@ void btlfx_turnToward(s16 *arg0, s16 *arg1, s32 arg2) {
     sp10 = v;
 }
 
-void func_800D0130(SVECTOR *arg0, MATRIX *arg1) {
+void btlfx_setWorldTrans(SVECTOR *arg0, MATRIX *arg1) {
     MATRIX m;
 
     gte_SetRotMatrix(g_btlfxEnv->viewMatrix);
@@ -121,7 +121,7 @@ void func_800D0130(SVECTOR *arg0, MATRIX *arg1) {
     gte_SetTransMatrix(arg1);
 }
 
-void func_800D01D4(SVECTOR *arg0, VECTOR *arg1, MATRIX *arg2, s32 arg3) {
+void btlfx_setRotScale(SVECTOR *arg0, VECTOR *arg1, MATRIX *arg2, s32 arg3) {
     MATRIX m;
     RotMatrix33 l;
 
@@ -247,7 +247,7 @@ DR_TPAGE *btlfx_allocDrMode(s32 arg0, s32 arg1) {
     return p;
 }
 
-void func_800D0940(void) {
+void btlfx_resetMaskBit(void) {
     s32 n;
     Unk800D0940 *p;
     u32 *ot;
@@ -287,7 +287,7 @@ void btlfx_drawScreenTint(u32 *arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4) {
 }
 
 /* Draws a grid of gouraud quads whose rows ripple with a sine wave. */
-void func_800D0B18(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, s32 arg5, CVECTOR *arg6, s32 arg7, s32 arg8,
+void btlfx_drawRippleGrid(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, s32 arg5, CVECTOR *arg6, s32 arg7, s32 arg8,
                    s32 arg9, s32 arg10) {
     POLY_G4 *p;
     CVECTOR *ca;
@@ -589,7 +589,7 @@ void btlfx_drawParticles(u8 *arg0, SVECTOR *arg1, SVECTOR *arg2, s32 arg3, s32 a
     btlfx_emitParticles(arg0, &c, prim, g_btlfxEnv->ot);
 }
 
-void func_800D198C(u8 *arg0, SVECTOR *arg1, s32 arg2, s32 arg3, s32 arg4) {
+void btlfx_drawSprite(u8 *arg0, SVECTOR *arg1, s32 arg2, s32 arg3, s32 arg4) {
     DVECTOR sxy;
     Unk800D1BC4Ctx c;
     s32 z;
@@ -646,7 +646,7 @@ void func_800D198C(u8 *arg0, SVECTOR *arg1, s32 arg2, s32 arg3, s32 arg4) {
     }
 }
 
-void func_800D1BC4(u32 arg0, u8 *arg1, s32 arg2, s32 arg3, s32 arg4, s32 arg5, s32 arg6) {
+void btlfx_drawSpriteAtOt(u32 arg0, u8 *arg1, s32 arg2, s32 arg3, s32 arg4, s32 arg5, s32 arg6) {
     Unk800D1BC4Ctx c;
     u8 *prim;
     u8 *d;
@@ -856,7 +856,7 @@ void btlfx_drawSprites(u8 *arg0, SVECTOR *arg1, SVECTOR *arg2, s32 arg3, s32 arg
     }
 }
 
-void func_800D23D8(u8 *arg0, SVECTOR *arg1, SVECTOR *arg2, s32 arg3, s32 arg4, s32 arg5, s32 arg6) {
+void btlfx_drawRings(u8 *arg0, SVECTOR *arg1, SVECTOR *arg2, s32 arg3, s32 arg4, s32 arg5, s32 arg6) {
     VECTOR s;
     union {
         SVECTOR v;
@@ -987,7 +987,7 @@ void func_800D23D8(u8 *arg0, SVECTOR *arg1, SVECTOR *arg2, s32 arg3, s32 arg4, s
     }
 }
 
-void func_800D2938(Unk800D2938 *arg0, SVECTOR *arg1, SVECTOR *arg2, s32 arg3, s32 arg4, s32 arg5, s32 arg6) {
+void btlfx_drawFan(Unk800D2938 *arg0, SVECTOR *arg1, SVECTOR *arg2, s32 arg3, s32 arg4, s32 arg5, s32 arg6) {
     VECTOR s;
     union {
         SVECTOR v;
@@ -1367,7 +1367,7 @@ void btlfx_drawBackdrop(BtlBgLayers *arg0, s32 arg1) {
     btlfx_addPrim(0x02000000, 0xFFE, dofs);
 }
 
-s32 func_800D3A6C(s32 arg0, s32 arg1, s32 arg2) {
+s32 btlfx_ease(s32 arg0, s32 arg1, s32 arg2) {
     s32 r = 0;
     switch (arg2) {
     case 0:
@@ -1383,7 +1383,7 @@ s32 func_800D3A6C(s32 arg0, s32 arg1, s32 arg2) {
     return r;
 }
 
-void func_800D3B6C(u8 *arg0, SVECTOR *arg1, s32 arg2, s32 arg3) {
+void btlfx_drawSpriteLine(u8 *arg0, SVECTOR *arg1, s32 arg2, s32 arg3) {
     s16 p[2];
     s16 q[2];
     s16 sxy[2];
@@ -1415,12 +1415,12 @@ void func_800D3B6C(u8 *arg0, SVECTOR *arg1, s32 arg2, s32 arg3) {
                 } else {
                     v = arg3;
                 }
-                func_800D1BC4(8, (u8 *)h + e->unk0, q[0], q[1], arg2, 1, v);
+                btlfx_drawSpriteAtOt(8, (u8 *)h + e->unk0, q[0], q[1], arg2, 1, v);
             }
         }
     } else {
-        r = h->unk10 + (((h->unk12 - h->unk10) * func_800D3A6C(arg2, h->unk0, h->unk6)) >> 12);
-        a = h->unk14 + (((h->unk16 - h->unk14) * func_800D3A6C(arg2, h->unk0, h->unk7)) >> 12);
+        r = h->unk10 + (((h->unk12 - h->unk10) * btlfx_ease(arg2, h->unk0, h->unk6)) >> 12);
+        a = h->unk14 + (((h->unk16 - h->unk14) * btlfx_ease(arg2, h->unk0, h->unk7)) >> 12);
         p[0] = sxy[0] + ((math_cos(r) * a) >> 12);
         p[1] = sxy[1] + ((math_sin(r) * a) >> 12);
         for (i = 0; i < h->unk2; i++, e++) {
@@ -1432,7 +1432,7 @@ void func_800D3B6C(u8 *arg0, SVECTOR *arg1, s32 arg2, s32 arg3) {
                 } else {
                     v = arg3;
                 }
-                func_800D1BC4(8, (u8 *)h + e->unk0, q[0], q[1], arg2, 1, v);
+                btlfx_drawSpriteAtOt(8, (u8 *)h + e->unk0, q[0], q[1], arg2, 1, v);
             }
         }
     }

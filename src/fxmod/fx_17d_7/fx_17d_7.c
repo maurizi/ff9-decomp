@@ -407,7 +407,7 @@ s32 fx_17d_7_op80(s32 mode, Fx17d7Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
 
                 env->unk28 = 0x100;
                 yy = ((frame - 35) << 12) / 35;
-                ex->func_800D23D8((u8 *)ex->btlfx_getFileData(entry->unk8, 0x11), &work->unk8, NULL, yy + 0xAAA, 0, 1, yy);
+                ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->unk8, 0x11), &work->unk8, NULL, yy + 0xAAA, 0, 1, yy);
                 env->unk28 = 0;
             }
             if (frame >= 58) {

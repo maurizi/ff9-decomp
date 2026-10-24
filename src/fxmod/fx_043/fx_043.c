@@ -62,7 +62,7 @@ s32 fx_043_op81(s32 mode, Fx043Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
         ex->btlfx_getUnitBodyPos(0, 0, (s16 *)&work->unk8);
         ex->btlfx_getUnitPos(0, (s16 *)&work->unk10);
         ex->btlfx_aimAngles((s16 *)&work->unk8, (s16 *)&D_801E7BD0, (s16 *)&work->unk20);
-        ex->func_800CFD78((s16 *)&work->unk8, (s16 *)&work->unk20, 0xC8, (s16 *)&work->unk18);
+        ex->btlfx_pointAhead((s16 *)&work->unk8, (s16 *)&work->unk20, 0xC8, (s16 *)&work->unk18);
         work->unk18.vy -= 0x64;
         work->unk0 = ex->func_800E3CEC(ex->btlfx_getFileData(entry->unk8, 1), (s32)&work->unk18);
         if (work->unk0 != NULL) {

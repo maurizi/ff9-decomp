@@ -123,7 +123,7 @@ s32 fx_128_op81(s32 mode, Fx128Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
         }
         work->unk98 = -1;
         work->unk9C = -1;
-        ex->func_800CFD78((s16 *)&work->unk50, (s16 *)&work->unk58, -0x1DE, (s16 *)&work->unk70);
+        ex->btlfx_pointAhead((s16 *)&work->unk50, (s16 *)&work->unk58, -0x1DE, (s16 *)&work->unk70);
         work->unk0[1] = ex->func_800E3CEC(ex->btlfx_getFileData(entry->unk8, 8), (s32)&work->unk70);
     } else {
         frame = entry->unk0;

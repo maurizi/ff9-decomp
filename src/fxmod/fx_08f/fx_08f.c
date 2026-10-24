@@ -213,11 +213,11 @@ s32 fx_08f_op80(s32 mode, Fx08fWork80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             k = (frame & 7) * 0x3C;
             x = 0x1B8 - k;
             y = 0x140 - k;
-            ex->func_800D1BC4(2, (u8 *)ex->btlfx_getFileData(entry->unk8, 0x10), x + 0x64, y + 0x78, 0, 1, t);
+            ex->btlfx_drawSpriteAtOt(2, (u8 *)ex->btlfx_getFileData(entry->unk8, 0x10), x + 0x64, y + 0x78, 0, 1, t);
             k = ((frame + 5) % 10) * 0x3C;
             x = 0x1B8 - k;
             y = 0x140 - k;
-            ex->func_800D1BC4(2, (u8 *)ex->btlfx_getFileData(entry->unk8, 0xE), x - 0x40, y + 0x78, 0, 1, t);
+            ex->btlfx_drawSpriteAtOt(2, (u8 *)ex->btlfx_getFileData(entry->unk8, 0xE), x - 0x40, y + 0x78, 0, 1, t);
             if (frame >= 0x31) {
                 ex->func_800E3D54(work->unk44);
                 work->unk1C.vx = 0;
@@ -263,7 +263,7 @@ s32 fx_08f_op80(s32 mode, Fx08fWork80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             ex->Hi_DrawEffModel(&rot, &pos, (s32)&scale, work->unk24);
             ex->Hi_DrawEffModel(&rot, &pos, (s32)&scale, work->unk28);
             env->unk28 = 0x200;
-            ex->func_800D23D8((u8 *)ex->btlfx_getFileData(entry->unk8, 1), &work->unk14, NULL, s >> 1, 0, 1, 0x1000);
+            ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->unk8, 1), &work->unk14, NULL, s >> 1, 0, 1, 0x1000);
             env->unk28 = 0;
             if (frame >= 13) {
                 w2 = ((ex->math_sin((((frame - 12) << 12) / 12) >> 2) << 6) >> 12) + 0x20;

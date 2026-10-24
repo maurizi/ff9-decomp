@@ -49,7 +49,7 @@ s32 fx_127_op80(s32 mode, Fx127Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
     } else {
         frame = entry->unk0;
         ex->func_800DC8AC(0x10, 0x3C, (BtlBone *)&m1);
-        ex->func_800CFE88(&m1, 0, (s32)&work->unk44);
+        ex->btlfx_matrixPointAhead(&m1, 0, (s32)&work->unk44);
         ex->btlfx_aimAngles((s16 *)&work->unk44, (s16 *)&work->unk34, (s16 *)&work->unk74);
         switch (frame) {
         case 0xA:
@@ -78,9 +78,9 @@ s32 fx_127_op80(s32 mode, Fx127Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             D_801E8310.vy = work->unk5C.vy;
             D_801E8310.vz = work->unk5C.vz;
             ex->func_800DC8AC(0x10, 0x3C, (BtlBone *)&m2);
-            ex->func_800CFE88(&m2, 0, (s32)&work->unk64);
+            ex->btlfx_matrixPointAhead(&m2, 0, (s32)&work->unk64);
             ex->func_800DC8AC(0x10, 0x3C, (BtlBone *)&m3);
-            ex->func_800CFE88(&m3, 0, (s32)&D_801E82F8);
+            ex->btlfx_matrixPointAhead(&m3, 0, (s32)&D_801E82F8);
             D_801E8300.vx = work->unk34.vx;
             D_801E8300.vy = work->unk34.vy;
             D_801E8300.vz = work->unk34.vz;
@@ -111,7 +111,7 @@ s32 fx_127_op80(s32 mode, Fx127Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             }
             break;
         case 0x27:
-            ex->func_800CFD78((s16 *)&work->unk34, (s16 *)&work->unk5C, -0xC8, (s16 *)&work->unk6C);
+            ex->btlfx_pointAhead((s16 *)&work->unk34, (s16 *)&work->unk5C, -0xC8, (s16 *)&work->unk6C);
             D_801E8318.vx = work->unk6C.vx;
             D_801E8318.vy = work->unk6C.vy;
             D_801E8318.vz = work->unk6C.vz;

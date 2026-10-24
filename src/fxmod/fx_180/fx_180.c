@@ -97,7 +97,7 @@ s32 fx_180_op80(s32 mode, Fx180Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
         switch (frame) {
         case 0x8:
             ex->func_800DC8AC(0x10, 0x29, (BtlBone *)&m);
-            ex->func_800CFE88(&m, 0, (s32)&work->unk3C);
+            ex->btlfx_matrixPointAhead(&m, 0, (s32)&work->unk3C);
             work->unk3C.vy += 0x64;
             work->unk3C.vz -= 0xC8;
             work->unk0[0] = ex->func_800E3CEC(ex->btlfx_getFileData(entry->unk8, 0x18), (s32)&work->unk3C);

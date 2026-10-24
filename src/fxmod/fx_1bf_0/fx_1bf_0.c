@@ -209,7 +209,7 @@ s32 fx_1bf_0_op80(s32 mode, Fx1bf0Work *work, Unk800F78A4 *env, Unk80100C78Entry
                 q.vx = p.vx;
                 q.vy = work->unk8.vy - 0x1000;
                 q.vz = p.vz;
-                ex->func_800D23D8((u8 *)ex->btlfx_getFileData(entry->unk8, 0x1C), &p, NULL, 0xAAA, 0, 1, t);
+                ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->unk8, 0x1C), &p, NULL, 0xAAA, 0, 1, t);
                 func_801E7704((u8 *)ex->btlfx_getFileData(entry->unk8, 5), &p, &q, frame, t, 1, 0x20);
             }
             env->unk28 = 0;
@@ -229,7 +229,7 @@ s32 fx_1bf_0_op80(s32 mode, Fx1bf0Work *work, Unk800F78A4 *env, Unk80100C78Entry
             env->unk28 = 0x10;
             t = (frame << 12) / 51;
             bright = 0x1000 - t;
-            ex->func_800D23D8((u8 *)ex->btlfx_getFileData(entry->unk8, 0x1C), &p2, NULL, 0xAAA, 0, 1, bright);
+            ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->unk8, 0x1C), &p2, NULL, 0xAAA, 0, 1, bright);
             func_801E7704((u8 *)ex->btlfx_getFileData(entry->unk8, 5), &p2, &q2, frame, bright, 1, (t >> 7) + 0x20);
             env->unk28 = 0;
             rot.vx = 0x400;
@@ -240,14 +240,14 @@ s32 fx_1bf_0_op80(s32 mode, Fx1bf0Work *work, Unk800F78A4 *env, Unk80100C78Entry
                 s32 x = (frame << 12) >> 6;
                 s32 y = ex->math_sin(x) * 5;
                 s32 z = ex->math_cos(x);
-                ex->func_800D23D8((u8 *)ex->btlfx_getFileData(entry->unk8, 0xA), &p2, &rot, y, 0, 1, z);
+                ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->unk8, 0xA), &p2, &rot, y, 0, 1, z);
             }
             if (frame >= 0x1E) {
                 s0 = (frame - 0x1E) << 9;
                 if (s0 > 0x1000) {
                     s0 = 0x1000;
                 }
-                ex->func_800D23D8((u8 *)ex->btlfx_getFileData(entry->unk8, 0xA), &p2, &rot, 0x5000, 0, 1, s0);
+                ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->unk8, 0xA), &p2, &rot, 0x5000, 0, 1, s0);
             }
             flag = 0;
             if (frame < 0x26) {

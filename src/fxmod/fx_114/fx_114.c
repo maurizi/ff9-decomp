@@ -838,7 +838,7 @@ s32 fx_114_op83(s32 mode, Fx114Work83 *work, Unk800F78A4 *env, Unk80100C78Entry 
                     v.vx = r->unk18.vx;
                     v.vy = r->unk18.vy;
                     v.vz = r->unk18.vz;
-                    ex->func_800CFD78((s16 *)&v, (s16 *)&r->unk8, r->unk4, (s16 *)&v);
+                    ex->btlfx_pointAhead((s16 *)&v, (s16 *)&r->unk8, r->unk4, (s16 *)&v);
                     r->unk18.vx = v.vx;
                     r->unk18.vy = v.vy;
                     r->unk18.vz = v.vz;

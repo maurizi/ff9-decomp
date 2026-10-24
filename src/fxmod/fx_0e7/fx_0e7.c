@@ -20,7 +20,7 @@ s32 fx_0e7_op80(s32 mode, Fx0e7Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
     } else {
         frame = entry->unk0;
         if (frame >= 0x23 && frame < 0x30) {
-            ex->func_800D3B6C((u8 *)ex->btlfx_getFileData(entry->unk8, 3), &work->unkC, work->unk14, work->unk16);
+            ex->btlfx_drawSpriteLine((u8 *)ex->btlfx_getFileData(entry->unk8, 3), &work->unkC, work->unk14, work->unk16);
             if (frame - 0x23 >= 5) {
                 work->unk16 -= 0x200;
             }
@@ -50,7 +50,7 @@ s32 fx_0e7_op81(s32 mode, Fx0e7Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
         ex->btlfx_initEffModels(D_801E7F64, 2);
         ex->btlfx_getUnitPos(0, (s16 *)&work->unk40);
         ex->btlfx_getUnitRot(0, (s16 *)&work->unk48);
-        ex->func_800CFD78((s16 *)&work->unk40, (s16 *)&work->unk48, ex->btlfx_getUnitRadius(0) + 0x190, (s16 *)&pos);
+        ex->btlfx_pointAhead((s16 *)&work->unk40, (s16 *)&work->unk48, ex->btlfx_getUnitRadius(0) + 0x190, (s16 *)&pos);
         work->unkC.vx = 0;
         work->unkC.vz = 0;
         work->unk14.vx = 0;

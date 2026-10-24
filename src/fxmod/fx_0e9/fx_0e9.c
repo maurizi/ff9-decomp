@@ -10,7 +10,7 @@ s32 func_801E7704(VECTOR *out, s32 arg1, SVECTOR *pos, s32 arg3, s32 frame, s32 
         rot.vx = 0;
         rot.vz = 0;
         rot.vy = D_801E7D0C.unk6 + 0x800;
-        ex->func_800CFD78((s16 *)&D_801E7D1C, (s16 *)&rot, frame * 40, (s16 *)&v);
+        ex->btlfx_pointAhead((s16 *)&D_801E7D1C, (s16 *)&rot, frame * 40, (s16 *)&v);
     } else {
         rad = D_801E7D0C.unk2 = func_801E7C5C(D_801E7D0C.unk0, 0, 0x6E - D_801E7D0C.unkA, 0x6E);
         rad += (D_801E7D0C.unkA + D_801E7D0C.unkA / 2) * ex->math_sin(D_801E7D0C.unk8) / 4096;
@@ -58,8 +58,8 @@ s32 fx_0e9_op80(s32 mode, Fx0e9Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
         ex->btlfx_getUnitPos(0x10, (s16 *)&work->unk8);
         ex->btlfx_getUnitRot(0x10, (s16 *)&work->unk10);
         ex->btlfx_getUnitPos(0, (s16 *)&work->unk18);
-        ex->func_800CFD78((s16 *)&work->unk8, (s16 *)&work->unk10, 0xC8, (s16 *)&D_801E7D1C);
-        ex->func_800CFD78((s16 *)&work->unk8, (s16 *)&work->unk10, 0x348, (s16 *)&D_801E7D24);
+        ex->btlfx_pointAhead((s16 *)&work->unk8, (s16 *)&work->unk10, 0xC8, (s16 *)&D_801E7D1C);
+        ex->btlfx_pointAhead((s16 *)&work->unk8, (s16 *)&work->unk10, 0x348, (s16 *)&D_801E7D24);
         D_801E7D2C.vx = work->unk18.vx;
         D_801E7D2C.vy = work->unk18.vy;
         D_801E7D2C.vz = work->unk18.vz;

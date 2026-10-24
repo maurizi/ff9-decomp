@@ -262,7 +262,7 @@ s32 fx_0cb_op80(s32 mode, Fx0cbWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
                     if (part != NULL) {
                         ex->btlfx_randRotation(&v);
                         if (frame != 0) {
-                            ex->func_800CFCA8(&v, r1, (s32)&off);
+                            ex->btlfx_rotateOffset(&v, r1, (s32)&off);
                         } else {
                             off.vz = 0;
                             off.vy = 0;
@@ -284,18 +284,18 @@ s32 fx_0cb_op80(s32 mode, Fx0cbWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
             c = ex->math_cos(q);
             env->unk28 = work->unk8 + 0x46;
             data = (u8 *)ex->btlfx_getFileData(entry->unk8, 5);
-            ex->func_800D23D8(data, &work->unkC, &v, ex->math_cos(q) / 3 + 0x2AA, 0, 1, c);
+            ex->btlfx_drawRings(data, &work->unkC, &v, ex->math_cos(q) / 3 + 0x2AA, 0, 1, c);
             ex->btlfx_drawBackdrop((BtlBgLayers *)ex->btlfx_getFileData(entry->unk8, 0xF), work->unk4);
             v.vx = 0x200;
             v.vy = 0x590;
             v.vz = 0x80;
             v.pad = 1;
-            ex->func_800D23D8((u8 *)ex->btlfx_getFileData(entry->unk8, 0x11), &work->unkC, &v, t / 2 + 0x555, 0, 1, c);
+            ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->unk8, 0x11), &work->unkC, &v, t / 2 + 0x555, 0, 1, c);
             v.vx = 0x600;
             v.vy = 0x990;
             v.vz = 0x80;
             v.pad = 1;
-            ex->func_800D23D8((u8 *)ex->btlfx_getFileData(entry->unk8, 0x11), &work->unkC, &v, t / 2 + 0x555, 0, 1, c);
+            ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->unk8, 0x11), &work->unkC, &v, t / 2 + 0x555, 0, 1, c);
             env->unk28 = 0;
             if (frame >= 0x32) {
                 ex->btlfx_clearEffModels();

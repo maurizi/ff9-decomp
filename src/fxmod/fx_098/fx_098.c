@@ -276,7 +276,7 @@ void func_801E7CBC(SVECTOR *pos, SVECTOR *rot, s32 scale, s32 c, s32 tpage, s32 
 }
 
 void func_801E8284(s16 *a, s16 *b, s32 i, s16 *out) {
-    BTLFX_EXPORTS(D_801E9D1C)->func_800CFD78(a, b, -(D_801E9CB8[i] * 3), out);
+    BTLFX_EXPORTS(D_801E9D1C)->btlfx_pointAhead(a, b, -(D_801E9CB8[i] * 3), out);
 }
 
 s32 func_801E82DC(s32 mode, Fx098Item *it, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 frame, s32 a5,
@@ -363,10 +363,10 @@ s32 func_801E82DC(s32 mode, Fx098Item *it, Unk800F78A4 *env, Unk80100C78Entry *e
                     s32 a = (frame << 10) / 12;
                     s32 b;
 
-                    ex->func_800CFD78((s16 *)&v38, (s16 *)&rot, 0x41A, (s16 *)&v40);
+                    ex->btlfx_pointAhead((s16 *)&v38, (s16 *)&rot, 0x41A, (s16 *)&v40);
                     d = ex->btlfx_getFileData(entry->unk8, 0x24);
                     b = (ex->math_sin(a) * 0x1800) >> 12;
-                    ex->func_800D23D8((u8 *)d, &v40, &rot, b, 0, 1, ex->math_cos(a) * 2 / 3);
+                    ex->btlfx_drawRings((u8 *)d, &v40, &rot, b, 0, 1, ex->math_cos(a) * 2 / 3);
                 }
             }
             n = 6;
@@ -398,7 +398,7 @@ s32 func_801E82DC(s32 mode, Fx098Item *it, Unk800F78A4 *env, Unk80100C78Entry *e
                         t = -(((ex->btlfx_rand() & 0xF) + d - k * 0x29) * 16);
                         BTLFX_COPY_SVEC(&v58, p);
                         v58.vx += 0x80;
-                        ex->func_800CFCA8(&v58, t, (s32)&q->unk18);
+                        ex->btlfx_rotateOffset(&v58, t, (s32)&q->unk18);
                         q->unk18.vx += ex->btlfx_randCentered(0x200);
                         q->unk18.vy += ex->btlfx_randCentered(0x200);
                         q->unk18.vz += ex->btlfx_randCentered(0x200);
@@ -540,7 +540,7 @@ s32 fx_098_op80(s32 mode, Fx098Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             c = t;
             rot.pad = 1;
             f = (u8 *)ex->btlfx_getFileData(entry->unk8, 0x24);
-            ex->func_800D23D8(f, &work->unk58, &rot, ((((ex->math_sin(a) * 0x2400) >> 12) + 0x1800) * 3) >> 2, 0, 1,
+            ex->btlfx_drawRings(f, &work->unk58, &rot, ((((ex->math_sin(a) * 0x2400) >> 12) + 0x1800) * 3) >> 2, 0, 1,
                               ex->math_cos(a));
             if (frame >= 10) {
                 work->unk0 = 2;
@@ -698,7 +698,7 @@ s32 fx_098_op80(s32 mode, Fx098Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
                         ch->unk28 = ex->btlfx_randCentered(0x5C);
                         ch->unk2A = ex->btlfx_randCentered(0x80);
                         rnd = (ex->btlfx_rand() & 0xF) + 0x5C;
-                        ex->func_800CFCA8(&rot, -((rnd - j * 8) << 4), (s32)&ch->unk18.vx);
+                        ex->btlfx_rotateOffset(&rot, -((rnd - j * 8) << 4), (s32)&ch->unk18.vx);
                         ch->unk18.vx += ex->btlfx_randCentered(0x3E0);
                         ch->unk18.vz += ex->btlfx_randCentered(0x3E0);
                     }
@@ -745,13 +745,13 @@ s32 fx_098_op80(s32 mode, Fx098Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             r.vy = 0;
             r.vz = work->unk4 * 41;
             r.pad = 1;
-            ex->func_800D23D8((u8 *)ex->btlfx_getFileData(entry->unk8, 0x23), &work->unk58, &r, (work->unk4 << 6) + 0x1E00,
+            ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->unk8, 0x23), &work->unk58, &r, (work->unk4 << 6) + 0x1E00,
                               0, 1, c);
             r.vz = work->unk4 * 24 + 0x400;
-            ex->func_800D23D8((u8 *)ex->btlfx_getFileData(entry->unk8, 0x23), &work->unk58, &r, (work->unk4 << 6) + 0x1E00,
+            ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->unk8, 0x23), &work->unk58, &r, (work->unk4 << 6) + 0x1E00,
                               0, 1, c);
             env->unk28 = 0x127;
-            ex->func_800D23D8((u8 *)ex->btlfx_getFileData(entry->unk8, 0x1B), &work->unk58, NULL, (work->unk4 << 5) + 0x1E00,
+            ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->unk8, 0x1B), &work->unk58, NULL, (work->unk4 << 5) + 0x1E00,
                               0, 1, c);
             env->unk28 = 0;
         }

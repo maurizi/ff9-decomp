@@ -11,7 +11,7 @@ s32 fx_136_op80(s32 mode, Fx136Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
         D_801E79C8 = env;
         ex->btlfx_getUnitBodyPos(0, 0, (s16 *)&work->unk4);
         ex->func_800DC8AC(0x10, 2, (BtlBone *)&m);
-        ex->func_800CFE88(&m, 0x190, (s32)&work->unkC);
+        ex->btlfx_matrixPointAhead(&m, 0x190, (s32)&work->unkC);
         work->unk0 = ex->func_800E3CEC(ex->btlfx_getFileData(entry->unk8, 1), (s32)&work->unk4);
     } else {
         frame = entry->unk0;

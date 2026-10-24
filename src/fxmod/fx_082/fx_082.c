@@ -19,7 +19,7 @@ s32 fx_082_op80(s32 mode, Fx082Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
         ex->btlfx_getUnitBodyPos(0, 1, (s16 *)&work->unk18);
         BTLFX_COPY_SVEC(&work->unk8, &work->unk18);
         ex->btlfx_getUnitRot(0, (s16 *)&work->unk20);
-        ex->func_800CFD78((s16 *)&work->unk18, (s16 *)&work->unk20, 0x226, (s16 *)&work->unk18);
+        ex->btlfx_pointAhead((s16 *)&work->unk18, (s16 *)&work->unk20, 0x226, (s16 *)&work->unk18);
         work->unk0 = 0;
         work->unk4 = 0;
         work->unk18.vy -= 0x145;

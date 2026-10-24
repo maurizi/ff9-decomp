@@ -78,7 +78,7 @@ s32 fx_184_op82(s32 mode, Fx184Work82 *work, Unk800F78A4 *env, Unk80100C78Entry 
         work->unk20.vx = 0;
         work->unk20.vy = 0x800;
         work->unk20.vz = 0;
-        ex->func_800CFD78((s16 *)&work->unk10, (s16 *)&work->unk20, ex->btlfx_getUnitRadius(0) + 0x320, (s16 *)&work->unk18);
+        ex->btlfx_pointAhead((s16 *)&work->unk10, (s16 *)&work->unk20, ex->btlfx_getUnitRadius(0) + 0x320, (s16 *)&work->unk18);
         ex->btlfx_setUnitVisible(0x10, 1);
         work->unk30 = 0;
         work->unk34 = 6;

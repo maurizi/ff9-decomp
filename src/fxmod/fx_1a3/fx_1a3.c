@@ -31,7 +31,7 @@ s32 fx_1a3_op80(s32 mode, Fx1a3Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
         D_801E93FC.vy = work->unk10.vy;
         D_801E93FC.vz = work->unk10.vz;
         ex->func_800DC858(0x10, 0, (u16 *)&work->unk18);
-        ex->func_800CFD78((s16 *)&work->unk18, (s16 *)&work->unk8, 0x190, (s16 *)&work->unk20);
+        ex->btlfx_pointAhead((s16 *)&work->unk18, (s16 *)&work->unk8, 0x190, (s16 *)&work->unk20);
         D_801E93F4.vx = work->unk20.vx;
         D_801E93F4.vy = work->unk20.vy;
         D_801E93F4.vz = work->unk20.vz;

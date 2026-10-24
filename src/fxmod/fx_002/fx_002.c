@@ -35,7 +35,7 @@ s32 fx_002_op80(s32 mode, Fx002Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
                 v.vy = 0;
                 v.pad = 1;
                 data = ex->btlfx_getFileData(entry->unk8, 0xD);
-                ex->func_800D23D8((u8 *)data, &work->unk4, &v, s * 2 / 3, 0xC, 1, ex->math_sin(t >> 1));
+                ex->btlfx_drawRings((u8 *)data, &work->unk4, &v, s * 2 / 3, 0xC, 1, ex->math_sin(t >> 1));
             }
             if (frame == 5) {
                 p = ex->func_800E3CEC(ex->btlfx_getFileData(entry->unk8, 5), (s32)&work->unkC);

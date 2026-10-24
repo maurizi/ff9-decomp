@@ -81,7 +81,7 @@ s32 fx_0ff_op80(s32 mode, Fx0ffWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
                 rot.vx = 0;
                 rot.vy = o->unk2;
                 rot.vz = 0;
-                ex->func_800CFD78((s16 *)&work->unkAC, (s16 *)&rot, o->unk0, (s16 *)&pos);
+                ex->btlfx_pointAhead((s16 *)&work->unkAC, (s16 *)&rot, o->unk0, (s16 *)&pos);
                 (work->unk38 + j)->vx = pos.vx;
                 (work->unk38 + j)->vy = pos.vy;
                 (work->unk38 + j)->vz = pos.vz;

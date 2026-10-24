@@ -37,14 +37,14 @@ s32 fx_1e9_op80(s32 mode, Fx1e9Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
         t0 = frame << 8;
         a0 = (ex->math_sin(t0 >> 2) * 0x10FF) >> 12;
         env->unk28 = 0x7C;
-        ex->func_800D23D8((u8 *)ex->btlfx_getFileData(entry->unk8, 0xA), &work->unk14, NULL, a0, 0, 1, t0);
-        ex->func_800D23D8((u8 *)ex->btlfx_getFileData(entry->unk8, 1), &work->unk14, NULL, 0x1000, 0, 1, t0);
+        ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->unk8, 0xA), &work->unk14, NULL, a0, 0, 1, t0);
+        ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->unk8, 1), &work->unk14, NULL, 0x1000, 0, 1, t0);
         env->unk28 = 0;
         rot.vx = 0x400;
         rot.vz = 0;
         rot.vy = 0;
         rot.pad = 1;
-        ex->func_800D23D8((u8 *)ex->btlfx_getFileData(entry->unk8, 9), &work->unkC, &rot, a0, 0, 1, t0);
+        ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->unk8, 9), &work->unkC, &rot, a0, 0, 1, t0);
         scale.vx = scale.vz = 0x174;
         scale.vy = ex->math_sin(t0 >> 2) / 6;
         b = t0;
@@ -65,14 +65,14 @@ s32 fx_1e9_op80(s32 mode, Fx1e9Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
         t0 = ((n % 10) << 12) / 10;
         a1 = (ex->math_sin(t0) >> 4) + 0x10FF;
         env->unk28 = 0x7C;
-        ex->func_800D23D8((u8 *)ex->btlfx_getFileData(entry->unk8, 0xA), &work->unk14, NULL, a1, 0, 1, 0x1000);
-        ex->func_800D23D8((u8 *)ex->btlfx_getFileData(entry->unk8, 1), &work->unk14, NULL, 0x1000, 0, 1, 0x1000);
+        ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->unk8, 0xA), &work->unk14, NULL, a1, 0, 1, 0x1000);
+        ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->unk8, 1), &work->unk14, NULL, 0x1000, 0, 1, 0x1000);
         env->unk28 = 0;
         rot.vx = 0x400;
         rot.vz = 0;
         rot.vy = 0;
         rot.pad = 1;
-        ex->func_800D23D8((u8 *)ex->btlfx_getFileData(entry->unk8, 9), &work->unkC, &rot, a1, 0, 1, 0x1000);
+        ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->unk8, 9), &work->unkC, &rot, a1, 0, 1, 0x1000);
         scale.vx = scale.vz = 0x174;
         scale.vy = (ex->math_sin(t0) >> 7) + 0x2AA;
         b = 0x1000;
@@ -100,14 +100,14 @@ s32 fx_1e9_op80(s32 mode, Fx1e9Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
         c = 0x1000 - t0;
         env->unk28 = 0x7C;
         a2 = t0 + 0x10FF;
-        ex->func_800D23D8((u8 *)ex->btlfx_getFileData(entry->unk8, 0xA), &work->unk14, NULL, a2, 0, 1, c);
-        ex->func_800D23D8((u8 *)ex->btlfx_getFileData(entry->unk8, 1), &work->unk14, NULL, 0x1000, 0, 1, c);
+        ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->unk8, 0xA), &work->unk14, NULL, a2, 0, 1, c);
+        ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->unk8, 1), &work->unk14, NULL, 0x1000, 0, 1, c);
         env->unk28 = 0;
         rot.vx = 0x400;
         rot.vz = 0;
         rot.vy = 0;
         rot.pad = 1;
-        ex->func_800D23D8((u8 *)ex->btlfx_getFileData(entry->unk8, 9), &work->unkC, &rot, a2, 0, 1, c);
+        ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->unk8, 9), &work->unkC, &rot, a2, 0, 1, c);
         if (frame < 0x10) {
             t2 = (frame << 8) >> 2;
             b = ex->math_cos(t2);
@@ -193,7 +193,7 @@ void func_801E8118(Fx1e9Inst *inst, SVECTOR *origin, s32 h, SVECTOR *from, SVECT
         ex->btlfx_lerpVec((s16 *)from, (s16 *)to, t, (s16 *)&v);
         v.vx += ex->btlfx_randCentered(0x20);
         v.vy += ex->btlfx_randCentered(0x20);
-        ex->func_800CFD78((s16 *)origin, (s16 *)&v, h + ex->btlfx_randCentered(0x10) + (ex->math_sin(t >> 1) >> 5), (s16 *)pt);
+        ex->btlfx_pointAhead((s16 *)origin, (s16 *)&v, h + ex->btlfx_randCentered(0x10) + (ex->math_sin(t >> 1) >> 5), (s16 *)pt);
         e = ex->btlfx_poolSpawn(inst->unk10);
         if (e != NULL) {
             e->unk14 = D_801E88A4;

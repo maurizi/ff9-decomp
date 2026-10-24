@@ -131,10 +131,10 @@ s32 fx_1a7_op80(s32 mode, Fx1a7Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
     } else {
         frame = entry->unk0;
         ex->func_800DC8AC(0x10, 0x1C, (BtlBone *)&m);
-        ex->func_800CFE88(&m, 0x190, (s32)&work->unk34);
+        ex->btlfx_matrixPointAhead(&m, 0x190, (s32)&work->unk34);
         if (frame == 0x32) {
             ex->func_800DC8AC(0x10, 0x1C, (BtlBone *)&m2);
-            ex->func_800CFE88(&m2, 0xC8, (s32)&D_801EA5C0);
+            ex->btlfx_matrixPointAhead(&m2, 0xC8, (s32)&D_801EA5C0);
             D_801EA5C0.vy -= 0xC8;
         }
         if (frame >= 0x32) {
@@ -205,7 +205,7 @@ s32 fx_1a7_op81(s32 mode, Fx1a7Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
         }
         work->unk4 = ex->func_800E3CEC(ex->btlfx_getFileData(entry->unk8, 5), (s32)&work->unk44);
         ex->btlfx_aimAngles((s16 *)&work->unk44, (s16 *)&work->unk34, (s16 *)&work->unk4C);
-        ex->func_800CFD78((s16 *)&work->unk34, (s16 *)&work->unk4C, -0x190, (s16 *)&work->unk5C);
+        ex->btlfx_pointAhead((s16 *)&work->unk34, (s16 *)&work->unk4C, -0x190, (s16 *)&work->unk5C);
         D_801EA5D8.vx = work->unk5C.vx;
         D_801EA5D8.vy = work->unk5C.vy;
         D_801EA5D8.vz = work->unk5C.vz;

@@ -230,7 +230,7 @@ void func_800DA790(RECT *arg0, u32 *arg1, Unk800DA790 *arg2) {
     RECT *r;
     arg0->w = 0x40;
     arg0->h = 0x80;
-    func_800D0940();
+    btlfx_resetMaskBit();
     for (i = 0; i < n; i++) {
         e = arg2;
         r = e->unk44;
@@ -458,7 +458,7 @@ x = *p++ << 11; rd += x; d->unk20 = (u8 *)0x801F1700 + x; dst = (u8 *)0x801F1700
                     q = (u16 *)(dst + hdr[1]);
                     k = hdr[0];
                     cnt2 = hdr[2];
-                    func_800D0940();
+                    btlfx_resetMaskBit();
                     for (i = 0; i < cnt2; i++) {
                         r.r.x = q[0];
                         r.r.y = q[1];
@@ -501,7 +501,7 @@ x = *p++ << 11; rd += x; d->unk20 = (u8 *)0x801F1700 + x; dst = (u8 *)0x801F1700
                     r.r.y = 0xE6;
                     r.r.w = 0x100;
                     r.r.h = e->unk6;
-                    func_800D0940();
+                    btlfx_resetMaskBit();
                     LoadImage(&r.r, (u32 *)(dst + e->unk8));
                     k = e->unk4;
                     for (src = dst; cnt < k; src += 0x4000, cnt++) {
@@ -553,7 +553,7 @@ x = *p++ << 11; rd += x; d->unk20 = (u8 *)0x801F1700 + x; dst = (u8 *)0x801F1700
                     }
                     r.r.w = 0x40;
                     r.r.h = 0x80;
-                    func_800D0940();
+                    btlfx_resetMaskBit();
                     for (i = 0; i < 8; i++) {
                         if (m & d->unk17) {
                             if (i < 4) {

@@ -16,7 +16,7 @@ s32 fx_0e5_op80(s32 mode, Fx0e5Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
         work->unk38.vx = work->unk10.vx;
         work->unk38.vy = work->unk10.vy;
         work->unk38.vz = work->unk10.vz;
-        ex->func_800CFD78((s16 *)&work->unk8, (s16 *)&work->unk20, 0xC8, (s16 *)&work->unk30);
+        ex->btlfx_pointAhead((s16 *)&work->unk8, (s16 *)&work->unk20, 0xC8, (s16 *)&work->unk30);
         work->unk0 = ex->func_800E3CEC(ex->btlfx_getFileData(entry->unk8, 6), (s32)&work->unk30);
         if (work->unk0 != NULL) {
             work->unk0->unk22 = ex->func_800E7CC4(0, 0x80);
@@ -33,7 +33,7 @@ s32 fx_0e5_op80(s32 mode, Fx0e5Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
             }
         }
         if (frame >= 0xF && frame < 0x1C) {
-            ex->func_800D3B6C((u8 *)ex->btlfx_getFileData(entry->unk8, 9), &work->unk38, work->unk40, work->unk42);
+            ex->btlfx_drawSpriteLine((u8 *)ex->btlfx_getFileData(entry->unk8, 9), &work->unk38, work->unk40, work->unk42);
             if (frame - 0xF >= 5) {
                 work->unk42 -= 0x200;
             }

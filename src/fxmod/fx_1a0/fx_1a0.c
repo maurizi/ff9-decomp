@@ -80,7 +80,7 @@ s32 fx_1a0_op80(s32 mode, Fx1a0Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             b = D_801E7EF8;
             for (i = 0; i < 6; i++, b++) {
                 ex->func_800DC8AC(0x10, b->unk0, (BtlBone *)&m);
-                ex->func_800CFE88(&m, b->unk2, (s32)&work->unk18[i]);
+                ex->btlfx_matrixPointAhead(&m, b->unk2, (s32)&work->unk18[i]);
                 if (work->unk0[i] != NULL && work->unk0[i]->unk30 == -1) {
                     work->unk0[i] = NULL;
                 }

@@ -354,7 +354,7 @@ s32 fx_07e_op81(s32 mode, Fx07eWork81 *work, Unk800F78A4 *env, Unk80100C78Entry 
             env->unk28 = work->unk8;
             s = ex->math_sin(t >> 2);
             ex->btlfx_drawParticles((u8 *)ex->btlfx_getFileData(entry->unk8, 1), pos, NULL, 0x2000, 0, 1, s, 0, 0);
-            ex->func_800D23D8((u8 *)ex->btlfx_getFileData(entry->unk8, 2), pos, NULL, 0x2000, 0, 2, s);
+            ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->unk8, 2), pos, NULL, 0x2000, 0, 2, s);
             env->unk28 = 0;
             if (frame >= 12) {
                 work->unk0 = 1;
@@ -371,7 +371,7 @@ s32 fx_07e_op81(s32 mode, Fx07eWork81 *work, Unk800F78A4 *env, Unk80100C78Entry 
             D_801E8B90 = ex->math_sin(t >> 2) >> 1;
             env->unk28 = work->unk8;
             ex->btlfx_drawParticles((u8 *)ex->btlfx_getFileData(entry->unk8, 1), pos, NULL, 0x2000, 0, 1, 0x1000, 0, 0);
-            ex->func_800D23D8((u8 *)ex->btlfx_getFileData(entry->unk8, 2), pos, NULL, 0x2000, 0, 2, 0x1000);
+            ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->unk8, 2), pos, NULL, 0x2000, 0, 2, 0x1000);
             env->unk28 = 0;
             if (frame >= 16) {
                 work->unk0 = 2;
@@ -391,7 +391,7 @@ s32 fx_07e_op81(s32 mode, Fx07eWork81 *work, Unk800F78A4 *env, Unk80100C78Entry 
             c = 0x1000 - ex->math_sin(a);
             s = ex->math_cos(a);
             ex->btlfx_drawParticles((u8 *)ex->btlfx_getFileData(entry->unk8, 1), pos, NULL, c * 2, 0, 1, s, 0, 0);
-            ex->func_800D23D8((u8 *)ex->btlfx_getFileData(entry->unk8, 2), pos, NULL, c * 2, 0, 2, s);
+            ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->unk8, 2), pos, NULL, c * 2, 0, 2, s);
             env->unk28 = 0;
             if (frame >= 12) {
                 return 1;

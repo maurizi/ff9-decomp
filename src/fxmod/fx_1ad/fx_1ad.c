@@ -86,7 +86,7 @@ s32 fx_1ad_op80(s32 mode, Fx1adWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
                 scale.vz = 0x1800;
                 scale.vx = scale.vy = c / 3 + 0x1800;
                 ex->func_800DC8AC(0x10, 0x10, (BtlBone *)&m);
-                ex->func_800CFF40(&m, (s16 *)&rot);
+                ex->btlfx_matrixAngles(&m, (s16 *)&rot);
                 ex->Hi_DrawEffModel(&rot, &pos, (s32)&scale, work->unk24);
                 ex->Hi_ModifyEffModelRGB(work->unk24, (ex->math_sin(t >> 1) >> 5) - 0x80,
                                          (ex->math_sin(t >> 1) >> 5) - 0x80, (ex->math_sin(t >> 1) >> 5) - 0x80);

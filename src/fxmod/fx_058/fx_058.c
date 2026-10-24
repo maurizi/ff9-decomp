@@ -35,7 +35,7 @@ s32 func_801E7704(s32 mode, Fx058Item *it, Unk800F78A4 *env, Unk80100C78Entry *e
             ex->btlfx_aimAngles((s16 *)&it->unkC, (s16 *)&it->unk20, (s16 *)&a);
             ex->btlfx_turnToward((s16 *)&a, (s16 *)&it->unk14, it->unk8);
             a.vz = frame << 5;
-            ex->func_800CFD78((s16 *)&it->unkC, (s16 *)&it->unk14, it->unk4, (s16 *)&it->unkC);
+            ex->btlfx_pointAhead((s16 *)&it->unkC, (s16 *)&it->unk14, it->unk4, (s16 *)&it->unkC);
             pos.vx = it->unkC.vx;
             pos.vy = it->unkC.vy;
             pos.vz = it->unkC.vz;

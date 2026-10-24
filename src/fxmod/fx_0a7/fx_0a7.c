@@ -14,8 +14,8 @@ s32 fx_0a7_op80(s32 mode, Fx0a7Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
         ex->func_800DC858(0x10, 0, (u16 *)&work->unk30);
         ex->btlfx_aimAngles((s16 *)&work->unk30, (s16 *)&work->unk20, (s16 *)&work->unk48);
         ex->btlfx_aimAngles((s16 *)&work->unk20, (s16 *)&work->unk30, (s16 *)&work->unk50);
-        ex->func_800CFD78((s16 *)&work->unk30, (s16 *)&work->unk48, 0x12C, (s16 *)&work->unk38);
-        ex->func_800CFD78((s16 *)&work->unk30, (s16 *)&work->unk48, 0xC8, (s16 *)&work->unk40);
+        ex->btlfx_pointAhead((s16 *)&work->unk30, (s16 *)&work->unk48, 0x12C, (s16 *)&work->unk38);
+        ex->btlfx_pointAhead((s16 *)&work->unk30, (s16 *)&work->unk48, 0xC8, (s16 *)&work->unk40);
         work->unk0 = ex->func_800E3CEC(ex->btlfx_getFileData(entry->unk8, 6), (s32)&work->unk38);
         work->unk4 = ex->func_800E3CEC(ex->btlfx_getFileData(entry->unk8, 1), (s32)&work->unk40);
         if (work->unk0 != NULL) {

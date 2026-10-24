@@ -138,7 +138,7 @@ void func_801E7ACC(void) {
             ex->btlfx_aimAngles((s16 *)&out, (s16 *)&dir, (s16 *)&ang);
             ang.vx = 0;
             ang.vy += 0x400;
-            ex->func_800CFCA8(&ang, 0xA0, (s32)&rot);
+            ex->btlfx_rotateOffset(&ang, 0xA0, (s32)&rot);
             p->unk0 += rot.vx << 12;
             p->unk4 += rot.vy << 12;
             p->unk8 += rot.vz << 12;

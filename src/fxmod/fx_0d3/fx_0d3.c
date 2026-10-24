@@ -739,7 +739,7 @@ s32 fx_0d3_op81(s32 mode, Fx0d3Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
             a = (k_181 << 12) / 42;
             env->unk28 = 0x80;
             f = (u8 *)ex->btlfx_getFileData(entry->unk8, 7);
-            ex->func_800D3B6C(f, &work->unk8, k_181, ex->math_sin(a >> 2));
+            ex->btlfx_drawSpriteLine(f, &work->unk8, k_181, ex->math_sin(a >> 2));
             env->unk28 = 0;
         }
         ex->btlfx_drawBackdrop((BtlBgLayers *)ex->btlfx_getFileData(entry->unk8, 0x15), frame_119);
@@ -855,7 +855,7 @@ s32 fx_0d3_op81(s32 mode, Fx0d3Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
             ex->btlfx_drawScrollMove(0x3E8 - k_286, 0x280, 0x100, 0x20, 0x80, 0x2A0, 0x100);
             ex->math_cos(a_281);
             ex->math_cos(a_281 << 1);
-            ex->func_800D0B18((s32)(env->ot + 2), 0x42, 0x10, 3, 0x3C, 1, D_801EB09C, 0x18, frame_119 * 0x190, 0x186,
+            ex->btlfx_drawRippleGrid((s32)(env->ot + 2), 0x42, 0x10, 3, 0x3C, 1, D_801EB09C, 0x18, frame_119 * 0x190, 0x186,
                               0x100);
         }
         k_303 = frame_119 - 7;
@@ -927,7 +927,7 @@ s32 fx_0d3_op81(s32 mode, Fx0d3Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
         ex->Hi_DrawEffModel(&rot, &pos, (s32)&scale, work->unk58);
         ex->math_cos(t);
         ex->math_cos(t << 1);
-        ex->func_800D0B18((s32)(env->ot + 2), 0x42, 0x10, 2, 0x5A, 1, D_801EB0AC, 0x18, frame_119 * 0x140, 0x186, 0x100);
+        ex->btlfx_drawRippleGrid((s32)(env->ot + 2), 0x42, 0x10, 2, 0x5A, 1, D_801EB0AC, 0x18, frame_119 * 0x140, 0x186, 0x100);
         ex->btlfx_drawScrollMove(0x3E8 - frame_119 * 7, 0x2C0, 0x100, 0x40, 0x80, 0x2C0, 0x180);
         D_801EDF44 = 4;
         D_801EDF48 = t >> 1;
@@ -981,7 +981,7 @@ s32 fx_0d3_op81(s32 mode, Fx0d3Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
                           (void (*)(SVECTOR *))func_801E90D4);
         ex->math_cos(t);
         ex->math_cos(t << 1);
-        ex->func_800D0B18((s32)(env->ot + 2), 0x42, 0x10, 2, 0x5A, 1, D_801EB0B8, 0x1D, frame_119 << 9, 0x186, 0x100);
+        ex->btlfx_drawRippleGrid((s32)(env->ot + 2), 0x42, 0x10, 2, 0x5A, 1, D_801EB0B8, 0x1D, frame_119 << 9, 0x186, 0x100);
         if (frame_119 >= 0xE) {
             work->unk0 = 5;
             entry->unk0 = -1;
