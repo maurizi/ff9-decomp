@@ -1212,3 +1212,128 @@ D_801FA958 s_menuItemScrollClip  # [code] clip RECT of the rows scrolling in (fu
 D_801FA968 s_menuItemSortBuf  # [code] inventory sort buffer (menuItem_sortAuto)
 D_801FAB68 s_menuItemSortTmp  # [code] swap temp of menuItem_sortAuto
 # FIELDS include/ovl_37.h ItemMenu: unk0=tab,unk1=state,unk2=slot,unk3=targetKind,unk4=targetMode,unk5=arrangeCursor,unk6=swapFrom,unk7=swapPicked,unk8=charWinOpen,unkC=itemList,unk1C=keyList,unk2C=cmdRect,unk34=listRect,unk3C=charWin,unk4C=popup,unk50=popupTimer,unk54=keyView,unk55=keyViewPhase,unk56=keyViewId,unk57=keyViewStep,unk58=keyViewX,unk60=keyItems,unkB0=keyCount; ItemList: unk0=select,unk4=drawRow,unk8=list
+
+## ovl_33: ovl_33 (Ability and Equip screens)
+func_801EE7C0 menuAbility_init  # [runtime] docs/runtime-findings.md field/menu campaign, screen 2 entry of g_menuScreensField at menu_ability, high
+func_801F05FC menuAbility_update  # [runtime] docs/runtime-findings.md field/menu campaign, high
+func_801F062C menuAbility_exit  # [runtime] docs/runtime-findings.md field/menu campaign, high
+func_801F0664 menuAbility_input  # [runtime] docs/runtime-findings.md field/menu campaign, high
+func_801EEA50 menuAbility_inputTabs  # [runtime] docs/runtime-findings.md field/menu campaign m_abil, Square switches to Equip, high
+func_801F070C menuAbility_inputList  # [runtime] docs/runtime-findings.md field/menu campaign ab_sup, high
+func_801EEBE0 menuAbility_inputTarget  # [runtime] docs/runtime-findings.md field/menu campaign, medium (code)
+func_801EFE2C menuAbility_toggleSupport  # [runtime] docs/runtime-findings.md field/menu campaign ab_sup, stones 37 to 42, high
+func_801EFCB4 menuAbility_selectAction  # [runtime] docs/runtime-findings.md field/menu campaign, medium (code)
+func_801EED10 menuAbility_useOnTarget  # [runtime] docs/runtime-findings.md field/menu campaign, medium (code)
+func_801F0DDC menuAbility_closeTarget  # [runtime] docs/runtime-findings.md field/menu campaign, medium (code)
+func_801F0E3C menuAbility_onTargetOpened  # [runtime] docs/runtime-findings.md field/menu campaign, medium (code)
+func_801F0E4C menuAbility_onTargetClosed  # [runtime] docs/runtime-findings.md field/menu campaign, medium (code)
+func_801EFB8C menuAbility_getActionState  # [runtime] docs/runtime-findings.md field/menu campaign, 1584 calls in m_abil, medium-high
+func_801F0CC4 menuAbility_getSupportState  # [runtime] docs/runtime-findings.md field/menu campaign, 4 = equipped, medium-high
+func_801F1018 menuAbility_getMpCost  # [runtime] docs/runtime-findings.md field/menu campaign, medium-high
+func_801EF900 menuAbility_setMember  # [runtime] docs/runtime-findings.md field/menu campaign m_abil, medium
+func_801F0ED4 menuAbility_onMemberSwitched  # [runtime] docs/runtime-findings.md field/menu campaign, medium
+func_801F1048 menuAbility_initActionCursor  # [runtime] docs/runtime-findings.md field/menu campaign, medium
+func_801F0410 menuAbility_initSupportCursor  # [runtime] docs/runtime-findings.md field/menu campaign, medium
+func_801F0EE4 menuAbility_loadImages  # [runtime] docs/runtime-findings.md field/menu campaign, medium
+func_801F07DC menuAbility_drawTabs  # [runtime] docs/runtime-findings.md field/menu campaign ablation, high
+func_801EEEA8 menuAbility_drawPlayer  # [runtime] docs/runtime-findings.md field/menu campaign ablation, high
+func_801EEFDC menuAbility_drawInfo  # [runtime] docs/runtime-findings.md field/menu campaign ablation, high
+func_801EF270 menuAbility_drawCommand  # [runtime] docs/runtime-findings.md field/menu campaign ablation, high
+func_801EF3A8 menuAbility_drawList  # [runtime] docs/runtime-findings.md field/menu campaign ablation, high
+func_801F0934 menuAbility_drawRow  # [runtime] docs/runtime-findings.md field/menu campaign ablation, high
+func_801EF644 menuAbility_drawCursor  # [runtime] docs/runtime-findings.md field/menu campaign ablation, high
+func_801F06BC menuAbility_draw  # [runtime] docs/runtime-findings.md field/menu campaign, medium-high
+func_801F09CC menuAbility_drawActionRow  # [runtime] docs/runtime-findings.md field/menu campaign, m_abil only, medium-high
+func_801F0AB8 menuAbility_drawSupportRow  # [runtime] docs/runtime-findings.md field/menu campaign, ab_sup only, medium-high
+func_801EF560 menuAbility_drawTargetWindow  # [runtime] docs/runtime-findings.md field/menu campaign, medium-high
+func_801EE978 menuAbility_updateAnims  # [runtime] docs/runtime-findings.md field/menu campaign, medium-high
+func_801F0024 menuAbility_updateHelp  # [code] help text per state - tab help with the reason a tab is greyed, ability help, target help
+func_801F0890 menuAbility_drawScrollRows  # [code] rows scrolling in during a page scroll (func_8002F344)
+func_801F0C10 menuAbility_findCommand  # [code] which of the character's two commands (D_801F33D0) lists the action ability, index into D_801F6FEC
+func_801F0E64 menuAbility_canTargetAll  # [code] action kind 3-5 and at least two party members - the target window can toggle all
+func_801F0F38 menuAbility_drawIcon  # [code] func_80027710 of menuAbility_getIcon(i)
+func_801F0F90 menuAbility_getIcon  # [code] &D_801F3494[i]
+func_801F0FA4 menuAbility_getSlot  # [code] entry index under the list cursor, allowing for a running scroll (as ovl_37 menuItem_getSlot)
+func_801F1150 menuEquip_init  # [runtime] docs/runtime-findings.md field/menu campaign, screen 3 entry at menu_equip, high
+func_801F2C0C menuEquip_update  # [runtime] docs/runtime-findings.md field/menu campaign, high
+func_801F2C3C menuEquip_exit  # [runtime] docs/runtime-findings.md field/menu campaign, high
+func_801F2C78 menuEquip_input  # [runtime] docs/runtime-findings.md field/menu campaign, high
+func_801F12C8 menuEquip_inputTabs  # [runtime] docs/runtime-findings.md field/menu campaign m_equip, high
+func_801F1454 menuEquip_inputSlot  # [runtime] docs/runtime-findings.md field/menu campaign e_eq, high
+func_801F2DB4 menuEquip_inputList  # [runtime] docs/runtime-findings.md field/menu campaign e_eq, high
+func_801F2894 menuEquip_buildItemList  # [runtime] docs/runtime-findings.md field/menu campaign e_eq, high
+func_801F301C menuEquip_openList  # [runtime] docs/runtime-findings.md field/menu campaign e_eq, high
+func_801F30B0 menuEquip_onListOpened  # [runtime] docs/runtime-findings.md field/menu campaign e_eq, high
+func_801F30D8 menuEquip_equipSelected  # [runtime] docs/runtime-findings.md field/menu campaign e_eq, weapon 8 to 7, high
+func_801F32E0 menuEquip_applyEquip  # [runtime] docs/runtime-findings.md field/menu campaign e_eq, high
+func_801F26C4 menuEquip_dropUnlearnedSupport  # [runtime] docs/runtime-findings.md field/menu campaign e_eq, high
+func_801F307C menuEquip_closeList  # [runtime] docs/runtime-findings.md field/menu campaign e_eq, high
+func_801F30C0 menuEquip_onListClosed  # [runtime] docs/runtime-findings.md field/menu campaign e_eq, high
+func_801F24EC menuEquip_optimize  # [runtime] docs/runtime-findings.md field/menu campaign, medium (code)
+func_801F31B0 menuEquip_removeSlot  # [runtime] docs/runtime-findings.md field/menu campaign, medium (code)
+func_801F3278 menuEquip_setMember  # [runtime] docs/runtime-findings.md field/menu campaign, medium
+func_801F3264 menuEquip_onMemberSwitched  # [runtime] docs/runtime-findings.md field/menu campaign, medium
+func_801F2E34 menuEquip_drawTabs  # [runtime] docs/runtime-findings.md field/menu campaign ablation, high
+func_801F15E0 menuEquip_drawInfo  # [runtime] docs/runtime-findings.md field/menu campaign ablation, high
+func_801F1A94 menuEquip_drawAbilities  # [runtime] docs/runtime-findings.md field/menu campaign ablation, high
+func_801F1F08 menuEquip_drawList  # [runtime] docs/runtime-findings.md field/menu campaign ablation, high
+func_801F239C menuEquip_drawCursor  # [runtime] docs/runtime-findings.md field/menu campaign ablation, high
+func_801F20A0 menuEquip_drawStatCompare  # [runtime] docs/runtime-findings.md field/menu campaign ablation, high
+func_801F2F3C menuEquip_drawListRow  # [runtime] docs/runtime-findings.md field/menu campaign ablation, high
+func_801F189C menuEquip_drawEquipment  # [runtime] docs/runtime-findings.md field/menu campaign, medium-high
+func_801F2CD0 menuEquip_draw  # [runtime] docs/runtime-findings.md field/menu campaign, medium
+func_801F3344 menuEquip_drawStatLabel  # [runtime] docs/runtime-findings.md field/menu campaign, medium
+func_801F2AB4 menuEquip_updateHelp  # [code] help text per state - tab help, equipped item's description or "Nothing is equipped.", list item's description
+func_801F2D18 menuEquip_updateAnims  # [code] help, list scrolling, list window tween, member header
+func_801F2ED4 menuEquip_drawScrollRows  # [code] rows scrolling in during a page scroll (func_8002F344)
+D_801FBF84 s_menuAbility  # [runtime] docs/runtime-findings.md field/menu campaign, high
+D_801FC840 s_menuEquip  # [runtime] docs/runtime-findings.md field/menu campaign, high
+D_801EDF04 g_abilityMenuText  # [code] the text bank menuAbility_init passes to text_setBank ("Use", "Equip", ...)
+D_801EE648 g_equipMenuText  # [code] the text bank menuEquip_init passes to text_setBank ("Equip", "Optimize", "Off", ...)
+D_801F33A8 s_menuAbilityInput  # [code] input handler per AbilityMenu.state
+D_801F7420 s_menuEquipInput  # [code] input handler per EquipMenu.state
+D_801F34EC s_menuAbilityActionTable  # [code] action ability table (name offset +0xE, MP +0xA, flags +0xB) of the Ability screen
+D_801F40EC s_menuAbilityActionNames  # [code] action ability names (s_menuAbilityActionTable.unkE offsets)
+D_801F4734 s_menuAbilityActionHelp  # [code] action ability help strings
+D_801F6240 s_menuAbilityActionHelpOfs  # [code] help string offsets per action ability
+D_801F6540 s_menuAbilitySupportNames  # [code] support ability names (D_8006D128.unk2 offsets)
+D_801F67D4 s_menuAbilitySupportHelp  # [code] support ability help strings (D_8006D128 +4 offsets)
+D_801F6FEC s_menuAbilityCmds  # [code] battle command table copy (name, kind, ability count, first ability)
+D_801F722C s_menuAbilityCmdNames  # [code] battle command names (MenuCmd.name offsets)
+D_801F734C s_menuAbilityCmdAbilities  # [code] ability ids listed by the commands (MenuCmd.first)
+D_801F33D0 s_menuAbilityCharCmds  # [code] the two commands of each command set (Character.unk34.b.row)
+D_801F33C0 s_menuAbilityTabX  # [code] x of each tab name
+D_801F33C8 s_menuAbilityTabCursorX  # [code] hand x per tab
+D_801F740C s_menuAbilityStateColor  # [code] text colour per ability state
+D_801F3418 s_menuAbilityTargetOpenR  # [code] target window slide-in (window on the right)
+D_801F3428 s_menuAbilityTargetOpenL  # [code] target window slide-in (window on the left)
+D_801F3458 s_menuAbilityTargetCloseR  # [code] target window slide-out
+D_801F3468 s_menuAbilityTargetCloseL  # [code] target window slide-out
+D_801F3478 s_menuAbilityHelpArg  # [code] string argument 0 of the tab help text
+D_801FBD84 s_menuAbilityHelpBuf  # [code] tab help text built by menuAbility_updateHelp
+D_801F3484 s_menuAbilityClutRect  # [code] VRAM (960,503) 16x9, menuAbility_loadImages
+D_801F348C s_menuAbilityImageRect  # [code] VRAM (960,432) 40x40, menuAbility_loadImages
+D_801EE164 s_menuAbilityImage  # [code] CLUTs and icon pixels loaded by menuAbility_loadImages
+D_801F3494 s_menuAbilityIcons  # [code] Icon table of menuAbility_getIcon (equipped-support animation, gems)
+D_801F7430 s_menuEquipTabX  # [code] x of each tab name
+D_801F893C s_menuEquipTabCursorX  # [code] hand x per tab
+D_801F743C s_menuEquipActionTable  # [code] action ability table of the Equip screen (same layout as s_menuAbilityActionTable)
+D_801F803C s_menuEquipActionNames  # [code] action ability names of the Equip screen
+D_801F8684 s_menuEquipSupportNames  # [code] support ability names of the Equip screen
+D_801F8918 s_menuEquipSlotLabel  # [code] label index (D_800703FC) of the item list title per equipment slot
+D_801F892C s_menuEquipArrow  # [code] arrow between old and new value in menuEquip_drawStatCompare
+D_801F8930 s_menuEquipBaseStatText  # [code] text ids of Speed/Strength/Magic/Spirit
+D_801F8934 s_menuEquipBattleStatText  # [code] text ids of Attack/Defense/Evade/Magic Def/Magic Eva
+D_801F8948 s_menuEquipOptSlotMask  # [code] D_80069018.unkF bit per equipment slot, menuEquip_optimize
+D_801F8950 s_menuEquipOptCharMask  # [code] D_80069018.unk6 bit per character type, menuEquip_optimize
+D_801F8968 s_menuEquipCharMask  # [code] D_80069018.unk6 bit per character type, menuEquip_buildItemList
+D_801F8980 s_menuEquipSlotMask  # [code] D_80069018.unkF bit per equipment slot, menuEquip_buildItemList
+D_801F8988 s_menuEquipHelpArg  # [code] string argument 0 of the tab help text ("ABILITY")
+D_801F8990 s_menuEquipItemHelp  # [code] item help strings (D_80069018.unk2 offsets)
+D_801FBD54 s_menuEquipListOpen  # [code] item list window slide-in
+D_801FBD74 s_menuEquipListClose  # [code] item list window slide-out
+D_801FC700 s_menuEquipTaught  # [code] per support ability, 1 = an equipped item teaches it (menuEquip_dropUnlearnedSupport)
+D_801FC740 s_menuEquipHelpBuf  # [code] tab help text built by menuEquip_updateHelp
+# FIELDS include/ovl_33.h AbilityMenu (was EquipMenu, D_801FBF84): unk0=tab,unk1=state,unk2=slot,unk3=target,unk4=tabEnabled,unk8=lists,unk28=tabRect,unk30=playerRect,unk38=infoRect,unk40=commandRect,unk48=listRect,unk50=targetRect,unk58=targetWin,unk68=equipSlots,unk168=equipItems,unk668=actions,unk728=supports,unk768=targetWinOpen,unk769=actionCount,unk76A=supportCount,unk76B=animTick,unk76C=animFrame,unk76D=targetMode,unk76E=partySize,unk76F=canTargetAll,unk770=header
+# FIELDS include/ovl_33.h EquipMenu (was AbilityMenu, D_801FC840): unk0=tab,unk1=state,unk2=equipSlot,unk3=slot,unk4=list,unk14=tabRect,unk1C=infoRect,unk24=equipRect,unk2C=abilityRect,unk34=listRect,unk3C=items,unk23C=listWin,unk24C=header,unk25C=initStones,unk260=listOpen,unk261=savedState
+# FIELDS include/ovl_33.h EquipEntry renamed ActionRow: unk0=id,unk1=cmd; Unk801F6FEC renamed MenuCmd: unk0=name,unk6=kind,unk7=count,unk8=first

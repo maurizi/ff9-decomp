@@ -1,19 +1,19 @@
 #include "ovl_33.h"
 
-/* Inlined copy of func_801F0CC4 (support ability state). */
-static inline s32 func_801F0CC4_inline(s32 id, Character *c) {
+/* Inlined copy of menuAbility_getSupportState (support ability state). */
+static inline s32 menuAbility_getSupportState_inline(s32 id, Character *c) {
     Unk8006D128 *sup;
     s32 slot;
     s32 ap;
     s32 need;
 
-    if (id < 0xC0) {
+    if (id < ABILITY_SUPPORT_FIRST) {
         return 0;
     }
     if (func_80034A04(c->unk88, id)) {
-        return 4;
+        return ABILITY_EQUIPPED;
     }
-    if (D_801FBF84.unk68[id] == 0) {
+    if (s_menuAbility.equipSlots[id] == 0) {
         slot = func_80034430(c->unk34.b.id, id);
         if (slot < 0) {
             return 0;
@@ -29,146 +29,146 @@ static inline s32 func_801F0CC4_inline(s32 id, Character *c) {
             }
         }
     }
-    sup = &D_8006D128[id - 0xC0];
+    sup = &D_8006D128[id - ABILITY_SUPPORT_FIRST];
     if (sup->unk1 > c->stones) {
-        return 2;
+        return ABILITY_GREYED;
     }
-    return 3;
+    return ABILITY_USABLE;
 }
 
-void func_801EE7C0(void) {
+void menuAbility_init(void) {
     s32 i;
 
-    D_801FBF84.unk2 = 0xFF;
-    D_801FBF84.unk1 = 1;
-    D_801FBF84.unk0 = 0;
-    func_80028CF8(&D_801FBF84.unk770, D_80077E50.unk3, func_801F0ED4);
-    func_801EF900(D_80077E50.unk3, 0);
-    D_801FBF84.unk76C = 0;
-    D_801FBF84.unk76B = 0;
-    text_setBank(D_801EDF04);
+    s_menuAbility.slot = MENU_NO_SLOT;
+    s_menuAbility.state = ABILITY_STATE_TABS;
+    s_menuAbility.tab = 0;
+    func_80028CF8(&s_menuAbility.header, D_80077E50.unk3, menuAbility_onMemberSwitched);
+    menuAbility_setMember(D_80077E50.unk3, 0);
+    s_menuAbility.animFrame = 0;
+    s_menuAbility.animTick = 0;
+    text_setBank(g_abilityMenuText);
     func_801F1148();
     func_8003556C(func_800355DC);
     func_80035674(1);
-    setRECT(&D_801FBF84.unk28, 8, 8, 0xE4, 0x1A);
-    setRECT(&D_801FBF84.unk30, 8, 0x26, 0xD0, 0x38);
-    setRECT(&D_801FBF84.unk38, 0xD8, 0x26, 0x5C, 0x38);
-    setRECT(&D_801FBF84.unk40, 0x8E, 0x40, 0x46, 0x1A);
-    setRECT(&D_801FBF84.unk48, 8, 0x5E, 0x12C, 0x80);
-    setRECT(&D_801FBF84.unk50, 0, 0x26, 0x90, 0xB6);
-    D_801FBF84.unk768 = 0;
-    func_80063118(&D_801FBF84.unk58, 0, 0);
-    func_801F0EE4();
-    D_801FBF84.unk76E = 0;
+    setRECT(&s_menuAbility.tabRect, 8, 8, 0xE4, 0x1A);
+    setRECT(&s_menuAbility.playerRect, 8, 0x26, 0xD0, 0x38);
+    setRECT(&s_menuAbility.infoRect, 0xD8, 0x26, 0x5C, 0x38);
+    setRECT(&s_menuAbility.commandRect, 0x8E, 0x40, 0x46, 0x1A);
+    setRECT(&s_menuAbility.listRect, 8, 0x5E, 0x12C, 0x80);
+    setRECT(&s_menuAbility.targetRect, 0, 0x26, 0x90, 0xB6);
+    s_menuAbility.targetWinOpen = 0;
+    func_80063118(&s_menuAbility.targetWin, 0, 0);
+    menuAbility_loadImages();
+    s_menuAbility.partySize = 0;
     for (i = 0; i < 4; i++) {
         if (g_gameState->unk1C->party[i] != NULL) {
-            D_801FBF84.unk76E++;
+            s_menuAbility.partySize++;
         }
     }
 }
 
-void func_801EE978(void) {
-    EquipMenu *m;
+void menuAbility_updateAnims(void) {
+    AbilityMenu *m;
 
     if (func_8003561C()) {
-        func_801F0024();
+        menuAbility_updateHelp();
     }
-    m = &D_801FBF84;
-    if (m->unk1 == 2) {
-        func_8002EB74(&D_801FBF84.unk8[D_801FBF84.unk0]);
+    m = &s_menuAbility;
+    if (m->state == ABILITY_STATE_LIST) {
+        func_8002EB74(&s_menuAbility.lists[s_menuAbility.tab]);
     }
-    if (m->unk58.unkC != 0) {
-        func_800631AC(&m->unk58);
+    if (m->targetWin.unkC != 0) {
+        func_800631AC(&m->targetWin);
     }
-    if (++m->unk76B >= 7) {
-        m->unk76B = 0;
-        if (++m->unk76C >= 7) {
-            m->unk76C = 0;
+    if (++m->animTick >= 7) {
+        m->animTick = 0;
+        if (++m->animFrame >= 7) {
+            m->animFrame = 0;
         }
     }
-    if (D_801FBF84.unk770.unk0 != 0) {
-        func_80028D2C(&D_801FBF84.unk770);
+    if (s_menuAbility.header.unk0 != 0) {
+        func_80028D2C(&s_menuAbility.header);
     }
 }
 
-void func_801EEA50(void) {
+void menuAbility_inputTabs(void) {
     u8 slot;
     s32 next;
 
     if (g_padRepeat & BTN_CIRCLE) {
-        snd_playSe(0x65);
+        snd_playSe(SE_CANCEL);
         func_800361CC(0);
     } else if (g_padRepeat & BTN_SQUARE) {
-        snd_playSe(0x67);
-        func_80036270(3);
+        snd_playSe(SE_CURSOR);
+        func_80036270(MENU_SCREEN_EQUIP);
     } else if (g_padRepeat & PAD_LEFT) {
-        snd_playSe(0x67);
-        D_801FBF84.unk0 = D_801FBF84.unk0 != 0 ? D_801FBF84.unk0 - 1 : 1;
+        snd_playSe(SE_CURSOR);
+        s_menuAbility.tab = s_menuAbility.tab != 0 ? s_menuAbility.tab - 1 : ABILITY_TAB_SUPPORT;
     } else if (g_padRepeat & PAD_RIGHT) {
-        snd_playSe(0x67);
-        D_801FBF84.unk0 = D_801FBF84.unk0 == 0 ? D_801FBF84.unk0 + 1 : 0;
+        snd_playSe(SE_CURSOR);
+        s_menuAbility.tab = s_menuAbility.tab == 0 ? s_menuAbility.tab + 1 : 0;
     } else if (g_padRepeat & BTN_R1) {
-        slot = D_801FBF84.unk2;
+        slot = s_menuAbility.slot;
         next = func_8003380C(slot);
         if (slot != next) {
-            func_801EF900(next, 2);
-            snd_playSe(0x417);
+            menuAbility_setMember(next, 2);
+            snd_playSe(SE_PAGE);
         }
     } else if (g_padRepeat & BTN_L1) {
-        slot = D_801FBF84.unk2;
+        slot = s_menuAbility.slot;
         next = func_800337D0(slot);
         if (slot != next) {
-            func_801EF900(next, 1);
-            snd_playSe(0x417);
+            menuAbility_setMember(next, 1);
+            snd_playSe(SE_PAGE);
         }
     } else if (g_padRepeat & BTN_CROSS) {
-        if (D_801FBF84.unk4[D_801FBF84.unk0] != 0) {
-            snd_playSe(0x67);
-            D_801FBF84.unk1 = 2;
+        if (s_menuAbility.tabEnabled[s_menuAbility.tab] != 0) {
+            snd_playSe(SE_CURSOR);
+            s_menuAbility.state = ABILITY_STATE_LIST;
         } else {
-            snd_playSe(0x66);
+            snd_playSe(SE_BUZZER);
         }
     }
 }
 
-void func_801EEBE0(void) {
+void menuAbility_inputTarget(void) {
     s32 cur;
     s32 next;
 
     if (g_padRepeat & BTN_CIRCLE) {
-        snd_playSe(0x65);
-        func_801F0DDC();
+        snd_playSe(SE_CANCEL);
+        menuAbility_closeTarget();
         return;
     }
     if (g_padRepeat & PAD_UP) {
-        if (!(D_801FBF84.unk3 & 0x80)) {
-            cur = D_801FBF84.unk3;
+        if (!(s_menuAbility.target & ABILITY_TARGET_ALL)) {
+            cur = s_menuAbility.target;
             next = func_800337D0(cur);
             if (cur != next) {
-                D_801FBF84.unk3 = next;
-                snd_playSe(0x67);
+                s_menuAbility.target = next;
+                snd_playSe(SE_CURSOR);
             }
         }
     } else if (g_padRepeat & PAD_DOWN) {
-        if (!(D_801FBF84.unk3 & 0x80)) {
-            cur = D_801FBF84.unk3;
+        if (!(s_menuAbility.target & ABILITY_TARGET_ALL)) {
+            cur = s_menuAbility.target;
             next = func_8003380C(cur);
             if (cur != next) {
-                D_801FBF84.unk3 = next;
-                snd_playSe(0x67);
+                s_menuAbility.target = next;
+                snd_playSe(SE_CURSOR);
             }
         }
     } else if (g_padRepeat & (PAD_RIGHT | PAD_LEFT | BTN_L1 | BTN_R1)) {
-        if (D_801FBF84.unk76F != 0) {
-            snd_playSe(0x67);
-            D_801FBF84.unk3 ^= 0x80;
+        if (s_menuAbility.canTargetAll != 0) {
+            snd_playSe(SE_CURSOR);
+            s_menuAbility.target ^= ABILITY_TARGET_ALL;
         }
     } else if (g_padRepeat & BTN_CROSS) {
-        func_801EED10();
+        menuAbility_useOnTarget();
     }
 }
 
-void func_801EED10(void) {
+void menuAbility_useOnTarget(void) {
     u8 ok;
     MenuList *l;
     Character *c;
@@ -177,11 +177,11 @@ void func_801EED10(void) {
     s32 cost;
 
     ok = 0;
-    c = g_gameState->unk1C->party[D_801FBF84.unk2];
-    l = &D_801FBF84.unk8[D_801FBF84.unk0];
-    it = &D_801F34EC[D_801FBF84.unk668[(l->unk5 + l->cursor) * 2 + l->unk7].unk0];
-    if (!(D_801FBF84.unk3 >> 7)) {
-        ok = func_800654F8(c, g_gameState->unk1C->party[D_801FBF84.unk3], it, it->unk4, 0);
+    c = g_gameState->unk1C->party[s_menuAbility.slot];
+    l = &s_menuAbility.lists[s_menuAbility.tab];
+    it = &s_menuAbilityActionTable[s_menuAbility.actions[(l->unk5 + l->cursor) * 2 + l->unk7].id];
+    if (!(s_menuAbility.target >> 7)) {
+        ok = func_800654F8(c, g_gameState->unk1C->party[s_menuAbility.target], it, it->unk4, 0);
     } else {
         for (i = 0; i < 4; i++) {
             if (g_gameState->unk1C->party[i] != NULL) {
@@ -190,39 +190,39 @@ void func_801EED10(void) {
         }
     }
     if (ok) {
-        snd_playSe(0x6A);
-        cost = func_801F1018(it);
+        snd_playSe(SE_USE_ITEM);
+        cost = menuAbility_getMpCost(it);
         c->mp -= cost;
         if (c->mp < cost) {
-            func_801F0DDC();
+            menuAbility_closeTarget();
         }
     } else {
-        snd_playSe(0x66);
+        snd_playSe(SE_BUZZER);
     }
 }
 
-void func_801EEEA8(void) {
+void menuAbility_drawPlayer(void) {
     RECT box;
     RECT *r;
     Character *c;
 
-    r = &D_801FBF84.unk30;
-    c = g_gameState->unk1C->party[D_801FBF84.unk2];
-    func_80024428(r->x + 8, r->y + 5, 0x1D, (Unk80024428 *)&D_801FBF84.unk770);
+    r = &s_menuAbility.playerRect;
+    c = g_gameState->unk1C->party[s_menuAbility.slot];
+    func_80024428(r->x + 8, r->y + 5, 0x1D, (Unk80024428 *)&s_menuAbility.header);
     box.w = 0x5B;
     box.h = 0x12;
     box.x = r->x + 0x72;
     box.y = r->y + 4;
     func_80026FC4(box.x + 3, box.y + 4, 0x1D, c->unk38, 0);
     func_8002DEE4(&box, 0x1D, 0);
-    if (D_801FBF84.unk0 == 1) {
+    if (s_menuAbility.tab == ABILITY_TAB_SUPPORT) {
         func_800273C0(box.x + 0x19, box.y + 0x14, 0x1D, c->stones, c->maxStones);
     }
     ui_drawLabel(r->x + 6, r->y - 3, 0x1D, D_80070498, 0);
     func_8002DEE4(r, 0x1D, 1);
 }
 
-void func_801EEFDC(void) {
+void menuAbility_drawInfo(void) {
     RECT *r;
     MenuList *l;
     Character *c;
@@ -233,24 +233,24 @@ void func_801EEFDC(void) {
     s32 i;
     s32 x;
 
-    r = &D_801FBF84.unk38;
-    c = g_gameState->unk1C->party[D_801FBF84.unk2];
-    l = &D_801FBF84.unk8[D_801FBF84.unk0];
+    r = &s_menuAbility.infoRect;
+    c = g_gameState->unk1C->party[s_menuAbility.slot];
+    l = &s_menuAbility.lists[s_menuAbility.tab];
     n = (l->unk5 + l->cursor) * 2 + l->unk7;
     ui_drawLabel(r->x + 6, r->y - 3, 0x1D, D_80070460, 0);
     func_8002DEE4(r, 0x1D, 2);
-    text_drawBlock(r->x + 8, r->y + 8, 0x1C, text_get(0x10), 0);
-    text_drawBlock(r->x + 8, r->y + 0x16, 0x1C, text_get(0x11), 0);
-    if (D_801FBF84.unk1 == 1 || D_801FBF84.unk1 == 5 || D_801FBF84.unk1 == 0 || l->unk0 == 0) {
+    text_drawBlock(r->x + 8, r->y + 8, 0x1C, text_get(ABILITY_TEXT_AP), 0);
+    text_drawBlock(r->x + 8, r->y + 0x16, 0x1C, text_get(ABILITY_TEXT_EQUIP), 0);
+    if (s_menuAbility.state == ABILITY_STATE_TABS || s_menuAbility.state == ABILITY_STATE_SWITCH || s_menuAbility.state == ABILITY_STATE_BUSY || l->unk0 == 0) {
         return;
     }
-    if (D_801FBF84.unk0 == 0) {
-        id = D_801FBF84.unk668[n].unk0;
-        ok = func_801EFB8C(id, c);
-        flag = !(D_801F34EC[id].unkB & 2);
+    if (s_menuAbility.tab == ABILITY_TAB_ACTION) {
+        id = s_menuAbility.actions[n].id;
+        ok = menuAbility_getActionState(id, c);
+        flag = !(s_menuAbilityActionTable[id].unkB & 2);
     } else {
-        id = D_801FBF84.unk728[n];
-        ok = func_801F0CC4(id, c);
+        id = s_menuAbility.supports[n];
+        ok = menuAbility_getSupportState(id, c);
         flag = 1;
     }
     if (ok == 0) {
@@ -259,33 +259,33 @@ void func_801EEFDC(void) {
     if (func_80034A30(c)) {
         func_80027110(r->x + 0x2D, r->y + 0xC, 0x1C, func_80034584(c->unk34.b.id, id), func_800347D8(c->unk34.b.id, id), flag, 0);
     }
-    if (D_801FBF84.unk68[id] != 0) {
+    if (s_menuAbility.equipSlots[id] != 0) {
         x = r->x;
         for (i = 0; i < 5; i++) {
-            if ((D_801FBF84.unk68[id] >> i) & 1) {
-                ui_drawItemIcon(x + 8, r->y + 0x24, 0x1C, D_801FBF84.unk168[id][i], 1);
+            if ((s_menuAbility.equipSlots[id] >> i) & 1) {
+                ui_drawItemIcon(x + 8, r->y + 0x24, 0x1C, s_menuAbility.equipItems[id][i], 1);
                 x += 0x10;
             }
         }
     }
 }
 
-void func_801EF270(void) {
+void menuAbility_drawCommand(void) {
     RECT *r;
-    EquipMenu *m;
+    AbilityMenu *m;
     MenuList *l;
     Character *c;
     s32 idx;
 
-    r = &D_801FBF84.unk40;
-    m = &D_801FBF84;
-    l = &D_801FBF84.unk8[D_801FBF84.unk0];
+    r = &s_menuAbility.commandRect;
+    m = &s_menuAbility;
+    l = &s_menuAbility.lists[s_menuAbility.tab];
     idx = (l->cursor + l->unk5) * 2 + l->unk7;
-    c = g_gameState->unk1C->party[m->unk2];
-    if (m->unk0 != 1) {
-        if (m->unk1 != 1 && m->unk1 != 5 && m->unk1 != 0) {
-            if (func_801EFB8C(m->unk668[idx].unk0, c) != 0) {
-                text_drawBlock(r->x + 8, r->y + 6, 0x1B, D_801F722C + D_801F6FEC[m->unk668[idx].unk1].unk0, 0);
+    c = g_gameState->unk1C->party[m->slot];
+    if (m->tab != ABILITY_TAB_SUPPORT) {
+        if (m->state != ABILITY_STATE_TABS && m->state != ABILITY_STATE_SWITCH && m->state != ABILITY_STATE_BUSY) {
+            if (menuAbility_getActionState(m->actions[idx].id, c) != 0) {
+                text_drawBlock(r->x + 8, r->y + 6, 0x1B, s_menuAbilityCmdNames + s_menuAbilityCmds[m->actions[idx].cmd].name, 0);
             }
         }
         ui_drawLabel(r->x + 6, r->y - 3, 0x1B, D_8007042C, 0);
@@ -293,16 +293,16 @@ void func_801EF270(void) {
     }
 }
 
-void func_801EF3A8(void) {
+void menuAbility_drawList(void) {
     RECT sub;
     MenuView view;
     s32 row;
     s32 col;
     s32 idx;
     MenuList *l;
-    RECT *r = &D_801FBF84.unk48;
+    RECT *r = &s_menuAbility.listRect;
 
-    l = &D_801FBF84.unk8[D_801FBF84.unk0];
+    l = &s_menuAbility.lists[s_menuAbility.tab];
     ui_drawLabel(r->x + 0xE, r->y - 3, 0x1C, D_800703FC.unk4, 0);
     ui_drawLabel(r->x + 0xA4, r->y - 3, 0x1C, D_800703FC.unk4, 0);
     ui_drawLabel(r->x + 0x7C, r->y - 3, 0x1C, D_800703FC.unk7C, 0);
@@ -314,35 +314,35 @@ void func_801EF3A8(void) {
         idx = view.unk1 * 2;
         for (row = 0; row < view.unk0; row++) {
             for (col = 0; col < 2; col++) {
-                func_801F0934(col, row, idx++, &view);
+                menuAbility_drawRow(col, row, idx++, &view);
             }
         }
         if (l->unk8 & 4) {
             func_8002F40C(l, r, &sub);
             win_setClip(&sub, 0x1C, 1);
-            func_801F0890();
+            menuAbility_drawScrollRows();
         }
         win_setClip(r, 0x1C, 1);
     }
 }
 
-void func_801EF560(void) {
-    RECT *r = &D_801FBF84.unk58.unk4;
-    EquipMenu *m = &D_801FBF84;
+void menuAbility_drawTargetWindow(void) {
+    RECT *r = &s_menuAbility.targetWin.unk4;
+    AbilityMenu *m = &s_menuAbility;
     s32 i;
 
-    if (m->unk768 != 0) {
+    if (m->targetWinOpen != 0) {
         ui_drawLabel(r->x + 8, r->y - 3, 0x14, D_800704B8, 0);
         func_8002DEE4(r, 0x14, 2);
         for (i = 0; i < 4; i++) {
             if (g_gameState->unk1C->party[i] != NULL) {
-                func_80026EA0(r->x + 8, r->y + 6 + i * 0x2B, 0x13, i, D_801FBF84.unk76D);
+                func_80026EA0(r->x + 8, r->y + 6 + i * 0x2B, 0x13, i, s_menuAbility.targetMode);
             }
         }
     }
 }
 
-void func_801EF644(void) {
+void menuAbility_drawCursor(void) {
     RECT *r;
     MenuList *l;
     Unk80077DE8 *h3;
@@ -355,37 +355,37 @@ void func_801EF644(void) {
 
     done = 0;
     blink = (D_80077E54 & 3) != 0;
-    func_80035674(D_801FBF84.unk1 != 1);
+    func_80035674(s_menuAbility.state != ABILITY_STATE_TABS);
     if (func_8002F810()) {
         return;
     }
-    if (D_801FBF84.unk1 == 1 || D_801FBF84.unk1 == 5 || blink) {
+    if (s_menuAbility.state == ABILITY_STATE_TABS || s_menuAbility.state == ABILITY_STATE_SWITCH || blink) {
         Unk80077DE8 *h1;
-        r = &D_801FBF84.unk28;
+        r = &s_menuAbility.tabRect;
         h1 = &D_80077DE8;
-        k = D_801F33C8[D_801FBF84.unk0][0] - 0x18;
+        k = s_menuAbilityTabCursorX[s_menuAbility.tab][0] - 0x18;
         D_80077DE8.unk0 = r->x + k;
         ry = r->y + 8;
         h1->unk4 = 0x17;
         h1->unk2 = ry;
         func_800355E4();
     }
-    if (D_801FBF84.unk1 == 2 || (D_801FBF84.unk1 == 3 && blink)) {
+    if (s_menuAbility.state == ABILITY_STATE_LIST || (s_menuAbility.state == ABILITY_STATE_TARGET && blink)) {
         Unk80077DE8 *h2;
-        l = &D_801FBF84.unk8[D_801FBF84.unk0];
+        l = &s_menuAbility.lists[s_menuAbility.tab];
         h2 = &D_80077DE8;
         k = l->unk7;
         k ^= (l->unk8 >> 3) & 1;
         k = k * 150 - 10;
-        D_80077DE8.unk0 = D_801FBF84.unk48.x + k;
+        D_80077DE8.unk0 = s_menuAbility.listRect.x + k;
         k = l->cursor * 15 + 10;
         h2->unk4 = 0x17;
-        h2->unk2 = D_801FBF84.unk48.y + k;
+        h2->unk2 = s_menuAbility.listRect.y + k;
         func_800355E4();
     }
-    if (D_801FBF84.unk1 == 3) {
-        r = &D_801FBF84.unk58.unk4;
-        if (D_801FBF84.unk3 & 0x80) {
+    if (s_menuAbility.state == ABILITY_STATE_TARGET) {
+        r = &s_menuAbility.targetWin.unk4;
+        if (s_menuAbility.target & ABILITY_TARGET_ALL) {
             D_80077DE8.unk4 = 0x12;
             if (blink) {
                 for (i = 0; i < 4; i++) {
@@ -401,9 +401,9 @@ void func_801EF644(void) {
                 }
             }
         } else {
-            D_80077DE8.unk0 = D_801FBF84.unk58.unk4.x - 10;
+            D_80077DE8.unk0 = s_menuAbility.targetWin.unk4.x - 10;
             h3 = &D_80077DE8;
-            k = D_801FBF84.unk3 * 0x2B + 0x12;
+            k = s_menuAbility.target * 0x2B + 0x12;
             ry = r->y;
             h3->unk4 = 0x12;
             h3->unk2 = ry + k;
@@ -412,9 +412,9 @@ void func_801EF644(void) {
     }
 }
 
-void func_801EF900(s32 slot, s32 arg1) {
-    EquipMenu *m;
-    EquipMenu *m2;
+void menuAbility_setMember(s32 slot, s32 arg1) {
+    AbilityMenu *m;
+    AbilityMenu *m2;
     UnkBlink *b;
     Character *c;
     AbilityEntry *a;
@@ -424,63 +424,63 @@ void func_801EF900(s32 slot, s32 arg1) {
     s32 nAbils;
     s32 id;
 
-    b = &D_801FBF84.unk770;
+    b = &s_menuAbility.header;
     c = g_gameState->unk1C->party[slot];
-    m = &D_801FBF84;
+    m = &s_menuAbility;
     nItems = 0;
     nAbils = 0;
-    func_80028D08(b, m->unk2, slot, arg1);
+    func_80028D08(b, m->slot, slot, arg1);
     if (arg1 != 0) {
-        m->unk1 = 5;
+        m->state = ABILITY_STATE_SWITCH;
     }
-    m->unk2 = slot;
+    m->slot = slot;
     if (c->unk34.b.row < 16) {
         m2 = m;
         slot = 0;
         a = D_8006CB28[c->unk34.b.row];
-        for (; slot < 0x30; slot++) {
+        for (; slot < ABILITY_MAX; slot++) {
             if (a->unk0 != 0) {
-                if (a->unk0 < 0xC0) {
-                    D_801FBF84.unk668[nItems].unk0 = a->unk0;
-                    D_801FBF84.unk668[nItems].unk1 = func_801F0C10(a->unk0, c);
+                if (a->unk0 < ABILITY_SUPPORT_FIRST) {
+                    s_menuAbility.actions[nItems].id = a->unk0;
+                    s_menuAbility.actions[nItems].cmd = menuAbility_findCommand(a->unk0, c);
                     nItems++;
                 } else {
-                    *(nAbils + m2->unk728) = a->unk0;
+                    *(nAbils + m2->supports) = a->unk0;
                     nAbils++;
                 }
             }
             a++;
         }
     }
-    func_8002EDFC(&D_801FBF84.unk8[0], nItems, 8, 2, 0x80);
-    func_8002EDFC(&D_801FBF84.unk8[1], nAbils, 8, 2, 0x80);
-    D_801FBF84.unk769 = nItems;
-    D_801FBF84.unk76A = nAbils;
-    memset(D_801FBF84.unk68, 0, 0x100);
+    func_8002EDFC(&s_menuAbility.lists[0], nItems, 8, 2, 0x80);
+    func_8002EDFC(&s_menuAbility.lists[1], nAbils, 8, 2, 0x80);
+    s_menuAbility.actionCount = nItems;
+    s_menuAbility.supportCount = nAbils;
+    memset(s_menuAbility.equipSlots, 0, 0x100);
     for (slot = 0; slot < 5; slot++) {
         id = c->equip[slot];
         if (id != 0xFF) {
             it = &D_80069018[id];
             for (j = 0; j < 3; j++) {
-                D_801FBF84.unk68[it->unkC[j]] |= 1 << slot;
-                D_801FBF84.unk168[it->unkC[j]][slot] = id;
+                s_menuAbility.equipSlots[it->unkC[j]] |= 1 << slot;
+                s_menuAbility.equipItems[it->unkC[j]][slot] = id;
             }
         }
     }
-    D_801FBF84.unk4[0] = c->hp != 0 && !(c->unk38 & 9) && nItems != 0 && D_8007AFD3 == 0;
-    D_801FBF84.unk4[1] = func_80034A30(c);
-    func_801F1048();
-    func_801F0410();
+    s_menuAbility.tabEnabled[0] = c->hp != 0 && !(c->unk38 & 9) && nItems != 0 && D_8007AFD3 == 0;
+    s_menuAbility.tabEnabled[1] = func_80034A30(c);
+    menuAbility_initActionCursor();
+    menuAbility_initSupportCursor();
 }
 
-s32 func_801EFB8C(s32 id, Character *c) {
+s32 menuAbility_getActionState(s32 id, Character *c) {
     Unk801F34EC *info;
     s32 slot;
     s32 ap;
     s32 need;
 
-    info = &D_801F34EC[id];
-    if (D_801FBF84.unk68[id] == 0) {
+    info = &s_menuAbilityActionTable[id];
+    if (s_menuAbility.equipSlots[id] == 0) {
         slot = func_80034430(c->unk34.b.id, id);
         if (slot < 0) {
             return 0;
@@ -497,52 +497,52 @@ s32 func_801EFB8C(s32 id, Character *c) {
         }
     }
     if (c->unk38 & 9) {
-        return 2;
+        return ABILITY_GREYED;
     }
     if (!(info->unkB & 1)) {
-        return 2;
+        return ABILITY_GREYED;
     }
-    if (func_801F1018(info) > c->mp) {
-        return 2;
+    if (menuAbility_getMpCost(info) > c->mp) {
+        return ABILITY_GREYED;
     }
-    return 3;
+    return ABILITY_USABLE;
 }
 
-void func_801EFCB4(void) {
-    MenuList *l = D_801FBF84.unk8 + D_801FBF84.unk0;
+void menuAbility_selectAction(void) {
+    MenuList *l = s_menuAbility.lists + s_menuAbility.tab;
     MenuList *ls;
-    Character *c = g_gameState->unk1C->party[D_801FBF84.unk2];
+    Character *c = g_gameState->unk1C->party[s_menuAbility.slot];
     s32 i;
     u8 id;
 
     if (l->unk2 != 0) {
         i = (l->unk5 + l->cursor) * 2 + l->unk7;
-        if (i < D_801FBF84.unk769) {
-            id = D_801FBF84.unk668[i].unk0;
-            if (func_801EFB8C(id, c) == 3) {
-                D_801FBF84.unk76D = D_801F34EC[id].unk0_5;
-                D_801FBF84.unk76F = func_801F0E64(id);
-                ls = D_801FBF84.unk8 + D_801FBF84.unk0;
-                D_801FBF84.unk58.unk4 = D_801FBF84.unk50;
+        if (i < s_menuAbility.actionCount) {
+            id = s_menuAbility.actions[i].id;
+            if (menuAbility_getActionState(id, c) == ABILITY_USABLE) {
+                s_menuAbility.targetMode = s_menuAbilityActionTable[id].unk0_5;
+                s_menuAbility.canTargetAll = menuAbility_canTargetAll(id);
+                ls = s_menuAbility.lists + s_menuAbility.tab;
+                s_menuAbility.targetWin.unk4 = s_menuAbility.targetRect;
                 if (ls->unk7 == 0) {
-                    D_801FBF84.unk58.unk4.x = 0xA4;
-                    func_80063118(&D_801FBF84.unk58, D_801F3428, 1);
+                    s_menuAbility.targetWin.unk4.x = 0xA4;
+                    func_80063118(&s_menuAbility.targetWin, &s_menuAbilityTargetOpenL, 1);
                 } else {
-                    D_801FBF84.unk58.unk4.x = 8;
-                    func_80063118(&D_801FBF84.unk58, D_801F3418, 1);
+                    s_menuAbility.targetWin.unk4.x = 8;
+                    func_80063118(&s_menuAbility.targetWin, &s_menuAbilityTargetOpenR, 1);
                 }
-                D_801FBF84.unk768 = 1;
-                D_801FBF84.unk3 = party_getFirstMember();
-                D_801FBF84.unk1 = 4;
-                snd_playSe(0x67);
+                s_menuAbility.targetWinOpen = 1;
+                s_menuAbility.target = party_getFirstMember();
+                s_menuAbility.state = ABILITY_STATE_WAIT;
+                snd_playSe(SE_CURSOR);
             } else {
-                snd_playSe(0x66);
+                snd_playSe(SE_BUZZER);
             }
         }
     }
 }
 
-void func_801EFE2C(void) {
+void menuAbility_toggleSupport(void) {
     MenuList *l;
     Character *c;
     s32 idx;
@@ -551,29 +551,29 @@ void func_801EFE2C(void) {
     Unk8006D128 *sup;
     s32 st;
 
-    l = &D_801FBF84.unk8[D_801FBF84.unk0];
-    c = g_gameState->unk1C->party[D_801FBF84.unk2];
-    if (l->unk2 != 0 && (idx = (l->unk5 + l->cursor) * 2 + l->unk7) < D_801FBF84.unk76A) {
-        id = D_801FBF84.unk728[idx];
-        sup = &D_8006D128[id - 0xC0];
-        st = func_801F0CC4_inline(id, c);
-        if (st >= 3) {
-            func_8003493C(c->unk34.b.id, id, st == 3);
+    l = &s_menuAbility.lists[s_menuAbility.tab];
+    c = g_gameState->unk1C->party[s_menuAbility.slot];
+    if (l->unk2 != 0 && (idx = (l->unk5 + l->cursor) * 2 + l->unk7) < s_menuAbility.supportCount) {
+        id = s_menuAbility.supports[idx];
+        sup = &D_8006D128[id - ABILITY_SUPPORT_FIRST];
+        st = menuAbility_getSupportState_inline(id, c);
+        if (st >= ABILITY_USABLE) {
+            func_8003493C(c->unk34.b.id, id, st == ABILITY_USABLE);
             ap = c->stones;
-            if (st == 3) {
+            if (st == ABILITY_USABLE) {
                 c->stones = ap - sup->unk1;
             } else {
                 c->stones = ap + sup->unk1;
             }
             func_8003384C(c);
-            snd_playSe(0x6B);
+            snd_playSe(SE_EQUIP);
             return;
         }
     }
-    snd_playSe(0x66);
+    snd_playSe(SE_BUZZER);
 }
 
-void func_801F0024(void) {
+void menuAbility_updateHelp(void) {
     Character *c;
     MenuList *l;
     RECT r;
@@ -582,37 +582,37 @@ void func_801F0024(void) {
     s32 t;
     u8 *buf;
 
-    l = &D_801FBF84.unk8[D_801FBF84.unk0];
-    c = g_gameState->unk1C->party[D_801FBF84.unk2];
+    l = &s_menuAbility.lists[s_menuAbility.tab];
+    c = g_gameState->unk1C->party[s_menuAbility.slot];
     D_80077DE8.unk8 = NULL;
     func_80035580(NULL);
-    if (D_801FBF84.unk1 == 1 || D_801FBF84.unk1 == 5) {
-        buf = D_801FBD84;
+    if (s_menuAbility.state == ABILITY_STATE_TABS || s_menuAbility.state == ABILITY_STATE_SWITCH) {
+        buf = s_menuAbilityHelpBuf;
         D_80077DE8.unk8 = buf;
-        func_8002BE44(0, D_801F3478);
-        func_8002BD54(buf, text_get(D_801FBF84.unk0 + 2));
-        if (D_801FBF84.unk0 == 0) {
+        func_8002BE44(0, s_menuAbilityHelpArg);
+        func_8002BD54(buf, text_get(s_menuAbility.tab + ABILITY_TEXT_TAB_HELP));
+        if (s_menuAbility.tab == ABILITY_TAB_ACTION) {
             if (D_8007AFD3) {
-                t = 6;
-            } else if (!D_801FBF84.unk769) {
-                t = 5;
+                t = ABILITY_TEXT_NOT_HERE;
+            } else if (!s_menuAbility.actionCount) {
+                t = ABILITY_TEXT_CANNOT_USE;
             } else {
-                t = 4;
+                t = ABILITY_TEXT_STATUS_BLOCKS;
             }
         } else {
             if (func_80034A30(c)) {
                 goto end;
             }
             if (c->unkA & 0x10) {
-                t = 8;
+                t = ABILITY_TEXT_CANNOT_EQUIP;
             } else {
-                t = 7;
+                t = ABILITY_TEXT_CANNOT_EQUIP_NOW;
             }
         }
         text_append(buf, text_get(t));
     end:
-        text_append(D_801FBD84, text_get(0xF));
-    } else if (D_801FBF84.unk1 == 2) {
+        text_append(s_menuAbilityHelpBuf, text_get(ABILITY_TEXT_TO_EQUIP));
+    } else if (s_menuAbility.state == ABILITY_STATE_LIST) {
         if (l->unk0 == 0) {
             return;
         }
@@ -621,21 +621,21 @@ void func_801F0024(void) {
         r.w = g_gameState->unkC->disp.w;
         r.h = g_gameState->unkC->disp.h - 0x5E;
         func_80035580(&r);
-        i = func_801F0FA4(l);
-        if (D_801FBF84.unk0 == 0) {
-            id = D_801FBF84.unk668[i].unk0;
-            if (func_801EFB8C(id, c)) {
-                D_80077DE8.unk8 = D_801F4734 + D_801F6240[id].unk0;
+        i = menuAbility_getSlot(l);
+        if (s_menuAbility.tab == ABILITY_TAB_ACTION) {
+            id = s_menuAbility.actions[i].id;
+            if (menuAbility_getActionState(id, c)) {
+                D_80077DE8.unk8 = s_menuAbilityActionHelp + s_menuAbilityActionHelpOfs[id].unk0;
             }
         } else {
-            id = D_801FBF84.unk728[i];
-            if (func_801F0CC4_inline(id, c)) {
+            id = s_menuAbility.supports[i];
+            if (menuAbility_getSupportState_inline(id, c)) {
                 u8 **d = &D_80077DF0;
-                *d = func_801F0024_suphelp(id);
+                *d = menuAbility_updateHelp_suphelp(id);
             }
         }
-    } else if (D_801FBF84.unk1 == 3) {
-        if (func_801F0FA4(l) & 1) {
+    } else if (s_menuAbility.state == ABILITY_STATE_TARGET) {
+        if (menuAbility_getSlot(l) & 1) {
             r.x = 0xC;
             r.y = 0;
             r.w = g_gameState->unkC->disp.w;
@@ -647,11 +647,11 @@ void func_801F0024(void) {
             r.h = g_gameState->unkC->disp.h;
         }
         func_80035580(&r);
-        D_80077DF0 = text_get(D_801FBF84.unk76F == 0 ? 9 : 0xA);
+        D_80077DF0 = text_get(s_menuAbility.canTargetAll == 0 ? ABILITY_TEXT_SELECT_CHAR : ABILITY_TEXT_SELECT_CHAR_ALL);
     }
 }
 
-void func_801F0410(void) {
+void menuAbility_initSupportCursor(void) {
     s32 i;
     s32 sel;
     s32 row;
@@ -660,10 +660,10 @@ void func_801F0410(void) {
 
     sel = 0;
     i = 0;
-    c = g_gameState->unk1C->party[D_801FBF84.unk2];
-    l = &D_801FBF84.unk8[1];
-    for (; i < D_801FBF84.unk76A; i++) {
-        if (func_801F0CC4_inline(D_801FBF84.unk728[i], c) >= 3) {
+    c = g_gameState->unk1C->party[s_menuAbility.slot];
+    l = &s_menuAbility.lists[1];
+    for (; i < s_menuAbility.supportCount; i++) {
+        if (menuAbility_getSupportState_inline(s_menuAbility.supports[i], c) >= 3) {
             sel = i;
             break;
         }
@@ -678,54 +678,54 @@ void func_801F0410(void) {
     l->cursor = row - l->unk5;
 }
 
-void func_801F05FC(void) {
-    func_801F0664();
-    func_801F06BC();
-    func_801EE978();
+void menuAbility_update(void) {
+    menuAbility_input();
+    menuAbility_draw();
+    menuAbility_updateAnims();
 }
 
-void func_801F062C(void) {
-    D_80077E53 = D_801FBF84.unk2;
+void menuAbility_exit(void) {
+    D_80077E53 = s_menuAbility.slot;
     func_80035674(1);
     func_8003556C(NULL);
 }
 
-void func_801F0664(void) {
+void menuAbility_input(void) {
     void (*fn)(void);
 
     if (!func_8002F810()) {
-        fn = D_801F33A8[D_801FBF84.unk1];
+        fn = s_menuAbilityInput[s_menuAbility.state];
         if (fn != NULL) {
             fn();
         }
     }
 }
 
-void func_801F06BC(void) {
-    func_801F07DC();
-    func_801EEEA8();
-    func_801EEFDC();
-    func_801EF270();
-    func_801EF3A8();
-    func_801EF560();
-    func_801EF644();
+void menuAbility_draw(void) {
+    menuAbility_drawTabs();
+    menuAbility_drawPlayer();
+    menuAbility_drawInfo();
+    menuAbility_drawCommand();
+    menuAbility_drawList();
+    menuAbility_drawTargetWindow();
+    menuAbility_drawCursor();
 }
 
-void func_801F070C(void) {
+void menuAbility_inputList(void) {
     MenuList *l;
 
-    l = &D_801FBF84.unk8[D_801FBF84.unk0];
+    l = &s_menuAbility.lists[s_menuAbility.tab];
     if (l->unk8 == 0) {
         if (g_padRepeat & BTN_CIRCLE) {
-            snd_playSe(0x65);
-            D_801FBF84.unk1 = 1;
+            snd_playSe(SE_CANCEL);
+            s_menuAbility.state = ABILITY_STATE_TABS;
             return;
         }
         if (g_padRepeat & BTN_CROSS) {
-            if (D_801FBF84.unk0 == 0) {
-                func_801EFCB4();
+            if (s_menuAbility.tab == ABILITY_TAB_ACTION) {
+                menuAbility_selectAction();
             } else {
-                func_801EFE2C();
+                menuAbility_toggleSupport();
             }
             return;
         }
@@ -735,106 +735,106 @@ void func_801F070C(void) {
     }
 }
 
-void func_801F07DC(void) {
+void menuAbility_drawTabs(void) {
     RECT *r;
     s32 i;
 
-    r = &D_801FBF84.unk28;
+    r = &s_menuAbility.tabRect;
     func_8002DEE4(r, 0x1D, 2);
     for (i = 0; i < 2; i++) {
-        text_drawBlock(r->x + D_801F33C0[i], r->y + 6, 0x1C, text_get(i), D_801FBF84.unk4[i] == 0 ? 2 : 0);
+        text_drawBlock(r->x + s_menuAbilityTabX[i], r->y + 6, 0x1C, text_get(i), s_menuAbility.tabEnabled[i] == 0 ? 2 : 0);
     }
 }
 
-void func_801F0890(void) {
+void menuAbility_drawScrollRows(void) {
     MenuView v;
     s32 row;
     s32 col;
     s32 idx;
 
     row = 0;
-    func_8002F344(&D_801FBF84.unk8[D_801FBF84.unk0], &v);
+    func_8002F344(&s_menuAbility.lists[s_menuAbility.tab], &v);
     idx = v.unk1 * 2;
     for (; row < v.unk0; row++) {
         for (col = 0; col < 2; col++) {
-            func_801F0934(col, row, idx++, &v);
+            menuAbility_drawRow(col, row, idx++, &v);
         }
     }
 }
 
-void func_801F0934(s32 col, s32 row, s32 z, MenuView *v) {
-    Character *c = g_gameState->unk1C->party[D_801FBF84.unk2];
+void menuAbility_drawRow(s32 col, s32 row, s32 z, MenuView *v) {
+    Character *c = g_gameState->unk1C->party[s_menuAbility.slot];
     s32 x, y;
     s32 dx = 8;
     s32 dy = 0x5E;
 
-    x = col * 0x96 + (D_801FBF84.unk48.x + dx);
+    x = col * 0x96 + (s_menuAbility.listRect.x + dx);
     y = row * 0xF + (v->unk2 + dy);
-    if (D_801FBF84.unk0 == 0) {
-        func_801F09CC(x, y, z, c);
+    if (s_menuAbility.tab == ABILITY_TAB_ACTION) {
+        menuAbility_drawActionRow(x, y, z, c);
     } else {
-        func_801F0AB8(x, y, z, c);
+        menuAbility_drawSupportRow(x, y, z, c);
     }
 }
 
-void func_801F09CC(s32 x, s32 y, s32 idx, Character *c) {
+void menuAbility_drawActionRow(s32 x, s32 y, s32 idx, Character *c) {
     u8 buf[8];
     u8 id;
     Unk801F34EC *info;
     s32 st;
     s32 col;
 
-    id = D_801FBF84.unk668[idx].unk0;
-    info = &D_801F34EC[id];
-    st = func_801EFB8C(id, c);
+    id = s_menuAbility.actions[idx].id;
+    info = &s_menuAbilityActionTable[id];
+    st = menuAbility_getActionState(id, c);
     if (st != 0) {
-        col = D_801F740C[st];
-        text_drawBlock(x + 8, y, 0x1C, D_801F40EC + info->unkE, col);
+        col = s_menuAbilityStateColor[st];
+        text_drawBlock(x + 8, y, 0x1C, s_menuAbilityActionNames + info->unkE, col);
         if (info->unkA != 0) {
-            text_formatNumber(func_801F1018(info), buf, 3, 1);
+            text_formatNumber(menuAbility_getMpCost(info), buf, 3, 1);
             ui_drawSmallDigits(x + 0x6C, y + 4, 0x1C, buf, col);
         }
     }
 }
 
-void func_801F0AB8(s32 x, s32 y, s32 i, Character *c) {
+void menuAbility_drawSupportRow(s32 x, s32 y, s32 i, Character *c) {
     u8 buf[0x10];
     Unk8006D128 *sup;
     s32 id;
     u32 st;
     s32 col;
 
-    id = D_801FBF84.unk728[i];
-    sup = &D_8006D128[id - 0xC0];
-    st = func_801F0CC4(id, c);
+    id = s_menuAbility.supports[i];
+    sup = &D_8006D128[id - ABILITY_SUPPORT_FIRST];
+    st = menuAbility_getSupportState(id, c);
     if (st != 0) {
-        col = D_801F740C[st];
-        if (st == 4) {
-            func_801F0F38(x + 8, y, 0x1C, D_801FBF84.unk76C);
+        col = s_menuAbilityStateColor[st];
+        if (st == ABILITY_EQUIPPED) {
+            menuAbility_drawIcon(x + 8, y, 0x1C, s_menuAbility.animFrame);
         }
         if (!((g_gameState->unk24 >> 18) & 1)) {
-            func_801F0F38(x + 8, y, 0x1C, st >= 3 ? 9 : 10);
+            menuAbility_drawIcon(x + 8, y, 0x1C, st >= ABILITY_USABLE ? 9 : 10);
         } else {
-            func_801F0F38(x + 8, y, 0x1C, st >= 3 ? 7 : 8);
+            menuAbility_drawIcon(x + 8, y, 0x1C, st >= ABILITY_USABLE ? 7 : 8);
         }
-        text_drawBlock(x + 0x18, y, 0x1C, D_801F6540 + sup->unk2, col);
+        text_drawBlock(x + 0x18, y, 0x1C, s_menuAbilitySupportNames + sup->unk2, col);
         text_formatNumber(sup->unk1, buf, 3, 1);
         ui_drawSmallDigits(x + 0x6C, y + 4, 0x1C, buf, col);
     }
 }
 
-u8 func_801F0C10(s32 id, Character *c) {
+u8 menuAbility_findCommand(s32 id, Character *c) {
     s32 i;
     s32 j;
     u8 k;
-    Unk801F6FEC *e;
+    MenuCmd *e;
 
     for (i = 0; i < 2; i++) {
-        k = D_801F33D0[c->unk34.b.row][i];
-        e = &D_801F6FEC[k];
-        if (e->unk6 == 1) {
-            for (j = 0; j < e->unk7; j++) {
-                if (id == D_801F734C[e->unk8 + j]) {
+        k = s_menuAbilityCharCmds[c->unk34.b.row][i];
+        e = &s_menuAbilityCmds[k];
+        if (e->kind == MENU_CMD_ABILITIES) {
+            for (j = 0; j < e->count; j++) {
+                if (id == s_menuAbilityCmdAbilities[e->first + j]) {
                     return k;
                 }
             }
@@ -843,19 +843,19 @@ u8 func_801F0C10(s32 id, Character *c) {
     return 0;
 }
 
-u32 func_801F0CC4(s32 id, Character *c) {
+u32 menuAbility_getSupportState(s32 id, Character *c) {
     Unk8006D128 *sup;
     s32 slot;
     s32 ap;
     s32 need;
 
-    if (id < 0xC0) {
+    if (id < ABILITY_SUPPORT_FIRST) {
         return 0;
     }
     if (func_80034A04(c->unk88, id)) {
-        return 4;
+        return ABILITY_EQUIPPED;
     }
-    if (D_801FBF84.unk68[id] == 0) {
+    if (s_menuAbility.equipSlots[id] == 0) {
         slot = func_80034430(c->unk34.b.id, id);
         if (slot < 0) {
             return 0;
@@ -871,31 +871,31 @@ u32 func_801F0CC4(s32 id, Character *c) {
             }
         }
     }
-    sup = &D_8006D128[id - 0xC0];
+    sup = &D_8006D128[id - ABILITY_SUPPORT_FIRST];
     if (sup->unk1 > c->stones) {
-        return 2;
+        return ABILITY_GREYED;
     }
-    return 3;
+    return ABILITY_USABLE;
 }
 
-void func_801F0DDC(void) {
-    MenuList *l = &D_801FBF84.unk8[D_801FBF84.unk0];
+void menuAbility_closeTarget(void) {
+    MenuList *l = &s_menuAbility.lists[s_menuAbility.tab];
 
-    func_80063118(&D_801FBF84.unk58, l->unk7 == 0 ? D_801F3458 : D_801F3468, 0);
-    D_801FBF84.unk1 = 4;
+    func_80063118(&s_menuAbility.targetWin, l->unk7 == 0 ? &s_menuAbilityTargetCloseR : &s_menuAbilityTargetCloseL, 0);
+    s_menuAbility.state = ABILITY_STATE_WAIT;
 }
 
-void func_801F0E3C(void) {
-    D_801FBF84.unk1 = 3;
+void menuAbility_onTargetOpened(void) {
+    s_menuAbility.state = ABILITY_STATE_TARGET;
 }
 
-void func_801F0E4C(void) {
-    D_801FBF84.unk1 = 2;
-    D_801FBF84.unk768 = 0;
+void menuAbility_onTargetClosed(void) {
+    s_menuAbility.state = ABILITY_STATE_LIST;
+    s_menuAbility.targetWinOpen = 0;
 }
 
-s32 func_801F0E64(s32 id) {
-    s32 kind = D_801F34EC[id].unk0;
+s32 menuAbility_canTargetAll(s32 id) {
+    s32 kind = s_menuAbilityActionTable[id].unk0;
     s32 n = 0;
     s32 i;
 
@@ -910,28 +910,28 @@ s32 func_801F0E64(s32 id) {
     return (u32)(kind - 3) < 3;
 }
 
-void func_801F0ED4(void) {
-    D_801FBF84.unk1 = 1;
+void menuAbility_onMemberSwitched(void) {
+    s_menuAbility.state = ABILITY_STATE_TABS;
 }
 
-void func_801F0EE4(void) {
-    u8 *p = D_801EE164;
+void menuAbility_loadImages(void) {
+    u8 *p = s_menuAbilityImage;
 
-    LoadImage(&D_801F3484, (u32 *)p);
+    LoadImage(&s_menuAbilityClutRect, (u32 *)p);
     DrawSync(0);
-    LoadImage(&D_801F348C, (u32 *)(p + 0x120));
+    LoadImage(&s_menuAbilityImageRect, (u32 *)(p + 0x120));
     DrawSync(0);
 }
 
-void func_801F0F38(s32 x, s32 y, s32 otz, s32 i) {
-    func_80027710(x, y, otz, func_801F0F90(i), 0);
+void menuAbility_drawIcon(s32 x, s32 y, s32 otz, s32 i) {
+    func_80027710(x, y, otz, menuAbility_getIcon(i), 0);
 }
 
-Icon *func_801F0F90(s32 i) {
-    return &D_801F3494[i];
+Icon *menuAbility_getIcon(s32 i) {
+    return &s_menuAbilityIcons[i];
 }
 
-s32 func_801F0FA4(MenuList *l) {
+s32 menuAbility_getSlot(MenuList *l) {
     s32 r, t;
     s32 step;
 
@@ -947,7 +947,7 @@ s32 func_801F0FA4(MenuList *l) {
     return (l->unk5 + l->cursor) * 2 + l->unk7;
 }
 
-s32 func_801F1018(Unk801F34EC *p) {
+s32 menuAbility_getMpCost(Unk801F34EC *p) {
     s32 v;
 
     v = p->unkA;
@@ -957,7 +957,7 @@ s32 func_801F1018(Unk801F34EC *p) {
     return v;
 }
 
-void func_801F1048(void) {
+void menuAbility_initActionCursor(void) {
     Character *c;
     MenuList *l;
     s32 i;
@@ -967,10 +967,10 @@ void func_801F1048(void) {
 
     sel = 0;
     i = 0;
-    c = g_gameState->unk1C->party[D_801FBF84.unk2];
-    l = &D_801FBF84.unk8[0];
-    for (; i < D_801FBF84.unk769; i++) {
-        if (func_801EFB8C(D_801FBF84.unk668[i].unk0, c) == 3) {
+    c = g_gameState->unk1C->party[s_menuAbility.slot];
+    l = &s_menuAbility.lists[0];
+    for (; i < s_menuAbility.actionCount; i++) {
+        if (menuAbility_getActionState(s_menuAbility.actions[i].id, c) == ABILITY_USABLE) {
             sel = i;
             break;
         }
@@ -989,6 +989,6 @@ void func_801F1048(void) {
 void func_801F1148(void) {
 }
 
-INCLUDE_RODATA("asm/us/ovl_33/nonmatchings/tu_801EE7C0", D_801EDF04);
+INCLUDE_RODATA("asm/us/ovl_33/nonmatchings/tu_801EE7C0", g_abilityMenuText);
 
-INCLUDE_RODATA("asm/us/ovl_33/nonmatchings/tu_801EE7C0", D_801EE164);
+INCLUDE_RODATA("asm/us/ovl_33/nonmatchings/tu_801EE7C0", s_menuAbilityImage);
