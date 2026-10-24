@@ -29,9 +29,9 @@ s32 fx_104_op81(s32 mode, Fx104Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
     if (mode == 0) {
         *arg4 = 0x14;
     } else if (mode == 1) {
-        work->unkC.vx = env->targets->unk38;
-        work->unkC.vy = env->targets->unk3A;
-        work->unkC.vz = env->targets->unk3C;
+        work->unkC.vx = env->targets->centerX;
+        work->unkC.vy = env->targets->centerY;
+        work->unkC.vz = env->targets->centerZ;
         D_801E79F4 = env;
         work->unk0 = ex->func_800E3CEC(ex->btlfx_getFileData(entry->unk8, 3), (s32)&work->unkC);
         work->unk4 = ex->func_800E3CEC(ex->btlfx_getFileData(entry->unk8, 4), (s32)&work->unkC);

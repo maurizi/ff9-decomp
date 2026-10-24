@@ -273,7 +273,7 @@ s32 fx_105_op80(s32 mode, Fx105Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
         work->unkE0 = NULL;
         work->unk104.vx = 0;
         work->unk104.vy = 0;
-        work->unk104.vz = env->targets->unk3C;
+        work->unk104.vz = env->targets->centerZ;
         work->unk58.vx = 0;
         work->unk58.vy = -0x62C;
         work->unk58.vz = -0x186A;
@@ -438,7 +438,7 @@ s32 fx_105_op80(s32 mode, Fx105Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             break;
         case 0xFC:
             ex->Hi_SetSummonMotion(SUMMON105(env)->unk54->unk180[5], SUMMON105(env)->unk60);
-            for (i = 0; i < env->targets->unk24; i++) {
+            for (i = 0; i < env->targets->targetCount; i++) {
                 work->unk1B8[i] = ex->func_800D89E8(i);
             }
             work->unk20 = 0x30;
@@ -473,7 +473,7 @@ s32 fx_105_op80(s32 mode, Fx105Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             }
             break;
         case 0x146:
-            for (i = 0; i < env->targets->unk24; i++) {
+            for (i = 0; i < env->targets->targetCount; i++) {
                 ex->func_800D8A20(i, work->unk1B8[i]);
             }
             break;
@@ -1010,7 +1010,7 @@ void func_801EA6D4(s16 *data, s32 c, s32 c2, s32 n) {
     for (i = 0; i < 0x40; i++) {
         v.vx = *p++;
         v.vy = *p++;
-        v.vz = *p++ + env->targets->unk3C;
+        v.vz = *p++ + env->targets->centerZ;
         r.vx = *p++;
         r.vy = *p++;
         r.vz = *p++;

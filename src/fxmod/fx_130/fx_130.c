@@ -35,14 +35,14 @@ s32 fx_130_op80(s32 mode, Fx130Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
             *q-- = 0;
         }
         ex->btlfx_initEffModels(D_801E7E04, 4);
-        work->unk20.vx = env->targets->unk38;
-        work->unk20.vz = env->targets->unk3C;
+        work->unk20.vx = env->targets->centerX;
+        work->unk20.vz = env->targets->centerZ;
         work->unk20.vy = 0;
         for (i = 0; i < 4; i++) {
             D_801E8124[i].unk18 = -1;
             D_801E8124[i].unk1C = -1;
         }
-        for (i = 0; i < env->targets->unk24; i++) {
+        for (i = 0; i < env->targets->targetCount; i++) {
             ex->btlfx_getUnitPos(i, &D_801E8124[i].unk0.vx);
             ex->btlfx_getUnitRot(i, &D_801E8124[i].unk8.vx);
             ex->btlfx_getUnitRot(i, &D_801E8124[i].unk10.vx);

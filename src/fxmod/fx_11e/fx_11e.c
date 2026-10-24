@@ -16,7 +16,7 @@ s32 fx_11e_op80(s32 mode, Fx11eWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
         n = *arg4;
         work->unk58 = n;
         D_801E7FD0 = env;
-        if (n >= env->targets->unk24) {
+        if (n >= env->targets->targetCount) {
             func_801E7F70(env, 7, 1);
             return 1;
         }

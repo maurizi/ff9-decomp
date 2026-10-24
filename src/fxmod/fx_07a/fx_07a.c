@@ -72,8 +72,8 @@ s32 fx_07a_op80(s32 mode, Fx07aWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
             ex->btlfx_drawTrail((u8 *)ex->btlfx_getFileData(entry->unk8, 0xC), 0, NULL, -1, 0x1000, 0x1000, 1,
                                 (u8 *)&D_801E9BA4[i], 0);
         }
-        work->unk94.vx = D_801E9B94.vx = env->targets->unk38;
-        work->unk94.vy = D_801E9B94.vz = env->targets->unk3C;
+        work->unk94.vx = D_801E9B94.vx = env->targets->centerX;
+        work->unk94.vy = D_801E9B94.vz = env->targets->centerZ;
         work->unk94.vz = D_801E9B94.vy = -0x500;
         work->unk40[0].unk0 = ex->Hi_RegisterTexEffModel((BtlUnit9C8 *)ex->btlfx_getFileData(entry->unk8, 0xB), 0x137,
                                                          0xFFFF, 0, 0);
@@ -97,7 +97,7 @@ s32 fx_07a_op80(s32 mode, Fx07aWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
         work->unk40[2].unkC.vx = 0x66;
         work->unk40[2].unkC.vy = 0x66;
         work->unk40[2].unkC.vz = 0x66;
-        for (i = 0; i < env->targets->unk24; i++) {
+        for (i = 0; i < env->targets->targetCount; i++) {
             ex->btlfx_getUnitHomePos(i, (s16 *)&work->unkA4[i]);
             work->unkE4[i] = ex->btlfx_rand() & 7;
         }
@@ -204,7 +204,7 @@ s32 fx_07a_op80(s32 mode, Fx07aWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
         }
         if (work->unk0[6] != 0) {
             work->unk0[6]--;
-            for (i = 0; i < env->targets->unk24; i++) {
+            for (i = 0; i < env->targets->targetCount; i++) {
                 if (0x1C - work->unk0[6] >= work->unkE4[i]) {
                     pos.vx = work->unkA4[i].vx;
                     pos.vz = work->unkA4[i].vz;
@@ -216,7 +216,7 @@ s32 fx_07a_op80(s32 mode, Fx07aWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
         }
         if (work->unk0[7] != 0) {
             work->unk0[7]--;
-            for (i = 0; i < env->targets->unk24; i++) {
+            for (i = 0; i < env->targets->targetCount; i++) {
                 if (work->unk0[7] != 0) {
                     pos.vx = work->unkA4[i].vx;
                     pos.vz = work->unkA4[i].vz;

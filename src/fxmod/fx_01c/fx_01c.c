@@ -9,12 +9,12 @@ s32 fx_01c_op80(s32 mode, Fx01cWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
     } else if (mode == 1) {
         D_801E7B38 = env;
         ex->btlfx_getUnitBodyPos(0x10, 0, (s16 *)&work->unk14);
-        if (env->targets->unk24 == 1) {
+        if (env->targets->targetCount == 1) {
             ex->btlfx_getUnitBodyPos(0, 0, (s16 *)&work->unk1C);
         } else {
-            work->unk1C.vx = env->targets->unk38;
-            work->unk1C.vy = env->targets->unk3A;
-            work->unk1C.vz = env->targets->unk3C;
+            work->unk1C.vx = env->targets->centerX;
+            work->unk1C.vy = env->targets->centerY;
+            work->unk1C.vz = env->targets->centerZ;
         }
         work->unk0 = ex->func_800E3CEC(ex->btlfx_getFileData(entry->unk8, 8), (s32)&work->unk14);
         work->unk4 = ex->func_800E3CEC(ex->btlfx_getFileData(entry->unk8, 7), (s32)&work->unk14);

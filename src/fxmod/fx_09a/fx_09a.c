@@ -125,7 +125,7 @@ s32 fx_09a_op80(s32 mode, Fx09aWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
         ex->func_800E9000((Unk800E9000 *)ex->btlfx_getFileData(entry->unk8, 8), &file, 1, &D_801E8868);
         work->unk8 = -1;
         work->unkC = -1;
-        work->unk10 = env->targets->unk24;
+        work->unk10 = env->targets->targetCount;
         env->unk0->pad10[0] = 0;
     } else {
         frame = entry->unk0;

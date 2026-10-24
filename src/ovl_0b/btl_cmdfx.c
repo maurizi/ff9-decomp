@@ -34,21 +34,21 @@ void btl_playCmdEffect(BtlCmd *arg0, s32 arg1, s16 *arg2) {
 
     memset(sum, 0, 0x10);
     mask = 0;
-    b->fxTargets.unk0 = arg0->caster;
+    b->fxTargets.caster = arg0->caster;
     l = &b->fxTargets;
     if (arg2 != NULL) {
         l->unk25[0] = arg2[0];
         l->unk25[1] = arg2[1];
         l->unk42 = arg2[2];
-        l->unk40 = arg2[3];
+        l->kind = arg2[3];
     } else {
         l->unk42 = 0;
-        l->unk40 = 0;
+        l->kind = 0;
         l->unk25[1] = 0;
         l->unk25[0] = 0;
     }
-    l->unk27 = 0;
-    l->unk24 = 0;
+    l->bounceCount = 0;
+    l->targetCount = 0;
     c = arg0->caster;
     c->popupFlags = 0;
     c->mpChange = 0;
@@ -57,22 +57,22 @@ void btl_playCmdEffect(BtlCmd *arg0, s32 arg1, s16 *arg2) {
         mask = btl_applyReflect(arg0);
         e = arg0->cmdNo;
         if (e == 0xE || e == 0x33) {
-            l->unk40 = 2;
+            l->kind = 2;
         } else if (e == 0x1F) {
-            l->unk40 = 4;
+            l->kind = 4;
         } else if ((u8)(e - 0x39) < 2) {
-            l->unk40 = 1;
+            l->kind = 1;
         }
     } else if (arg0->unk10.b.reflect == 2) {
         arg0->unk10.b.reflect = 1;
         if (!(arg0->caster->unk68 & 1)) {
             arg0->unk10.b.unk0_11 = 1;
         }
-        l->unk40 = 0x11;
+        l->kind = 0x11;
     }
     for (u = g_gameState->unk1C->unk8E4.battle->unitList; u != NULL; u = u->next) {
         if (u->unitBit & (u16)arg0->targets) {
-            l->unk4[l->unk24++] = u;
+            l->targets[l->targetCount++] = u;
             u->popupFlags = 0;
             u->mpChange = 0;
             u->hpChange = 0;
@@ -80,15 +80,15 @@ void btl_playCmdEffect(BtlCmd *arg0, s32 arg1, s16 *arg2) {
             sum[2] += u->unk98->unk0[2] >> 16;
         }
         if (u->unitBit & mask) {
-            l->unk28[l->unk27++] = u;
+            l->bounced[l->bounceCount++] = u;
         }
         if (arg0->cmdNo == BTL_CMD_SWD_MAG && (u->unk68 & 1) && g_gameState->unk1C->characters[(u->unk68 >> 1) & 0xF].unk34.b.unk4 == 2) {
-            l->unk44 = u;
+            l->partner = u;
         }
     }
-    l->unk38 = sum[0] / (s8)l->unk24;
-    l->unk3A = 0;
-    l->unk3C = sum[2] / (s8)l->unk24;
+    l->centerX = sum[0] / (s8)l->targetCount;
+    l->centerY = 0;
+    l->centerZ = sum[2] / (s8)l->targetCount;
     btlfx_resetAll();
     btlfx_setTargets(l);
     btlfx_start(arg1);

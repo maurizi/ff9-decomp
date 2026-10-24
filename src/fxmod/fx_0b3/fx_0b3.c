@@ -1314,7 +1314,7 @@ s32 fx_0b3_op86(s32 mode, Fx0b3Work86 *work, Unk800F78A4 *env, Unk80100C78Entry 
         *arg4 = sizeof(Fx0b3Work86);
     } else if (mode == 1) {
         D_801ED5E0 = env;
-        work->unk40 = env->targets->unk24;
+        work->unk40 = env->targets->targetCount;
         for (i = 0; i < work->unk40; i++) {
             if (ex->btlfx_isEnemyUnit(i) != 0) {
                 ex->btlfx_getUnitHomePos(i, (s16 *)&work->unk0[i]);
@@ -1345,9 +1345,9 @@ s32 fx_0b3_op87(s32 mode, s32 *work, Unk800F78A4 *env, Unk80100C78Entry *entry, 
         D_801ED5E0 = env;
         *work = t;
         if (*work >= 10) {
-            v.vx = env->targets->unk38;
-            v.vy = env->targets->unk3A;
-            v.vz = env->targets->unk3C;
+            v.vx = env->targets->centerX;
+            v.vy = env->targets->centerY;
+            v.vz = env->targets->centerZ;
             v.vy -= 0x2BC;
             env->camera->unk0[2].vx = v.vx;
             env->camera->unk0[2].vy = v.vy;

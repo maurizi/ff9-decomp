@@ -102,7 +102,7 @@ s32 fx_045_op81(s32 mode, Fx045Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
 
         work->unkC = n;
         D_801E7D38 = env;
-        if (n >= env->targets->unk24) {
+        if (n >= env->targets->targetCount) {
             func_801E7CDC(env, 7, 1);
             return 1;
         }

@@ -72,9 +72,9 @@ s32 fx_1eb_op82(s32 mode, Fx1ebWork82 *work, Unk800F78A4 *env, Unk80100C78Entry 
     } else if (mode == 1) {
         D_801E8268 = env;
         ex->btlfx_initEffModels(D_801E8278, 6);
-        work->unk44.vx = env->targets->unk38;
-        work->unk44.vy = env->targets->unk3A;
-        work->unk44.vz = env->targets->unk3C;
+        work->unk44.vx = env->targets->centerX;
+        work->unk44.vy = env->targets->centerY;
+        work->unk44.vz = env->targets->centerZ;
         work->unk18.vx = 0;
         work->unk18.vy = 0;
         work->unk18.vz = 0;
@@ -174,7 +174,7 @@ s32 fx_1eb_op83(s32 mode, Fx1ebWork83 *work, Unk800F78A4 *env, Unk80100C78Entry 
         s32 unit = *arg4;
         work->unkC = unit;
         D_801E8268 = env;
-        if (unit >= env->targets->unk24) {
+        if (unit >= env->targets->targetCount) {
             return 1;
         }
         ex->btlfx_getUnitPos(unit, (s16 *)&work->unk4);

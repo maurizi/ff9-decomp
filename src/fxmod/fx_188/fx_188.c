@@ -65,7 +65,7 @@ s32 fx_188_op80(s32 mode, Fx188Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
         work->unk0 = 0;
         work->unk1C = 0;
         D_801E7E88 = env;
-        BTLFX_COPY_SVEC(&work->unk4, &env->targets->unk38);
+        BTLFX_COPY_SVEC(&work->unk4, &env->targets->centerX);
         work->unk4.vy -= 0x200;
         ex->btlfx_getUnitBodyPos(0x10, 0, (s16 *)&work->unkC);
         ex->btlfx_getUnitRot(0x10, (s16 *)&work->unk14);

@@ -24,10 +24,10 @@ s32 fx_085_op80(s32 mode, Fx085Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
     if (mode == 0) {
         *arg4 = sizeof(Fx085Work80);
     } else if (mode == 1) {
-        work->unk0.vx = env->targets->unk38;
-        work->unk0.vy = env->targets->unk3A;
+        work->unk0.vx = env->targets->centerX;
+        work->unk0.vy = env->targets->centerY;
         D_801E9DF4 = env;
-        work->unk0.vz = env->targets->unk3C;
+        work->unk0.vz = env->targets->centerZ;
         work->unk0.vy -= 0x200;
         BTLFX_COPY_SVEC(&work->unk8, &work->unk0);
         work->unk8.vy = 0;
@@ -389,10 +389,10 @@ s32 fx_085_op83(s32 mode, Fx085Work83 *work, Unk800F78A4 *env, Unk80100C78Entry 
         init->unk14 = (s32)func_801E8880;
         init->unk4 = 0x10;
     } else if (mode == 1) {        kind = init->unk0;
-        work->unk0.vx = env->targets->unk38;
-        work->unk0.vy = env->targets->unk3A;
+        work->unk0.vx = env->targets->centerX;
+        work->unk0.vy = env->targets->centerY;
         D_801E9DF4 = env;
-        work->unk0.vz = env->targets->unk3C;
+        work->unk0.vz = env->targets->centerZ;
         work->unk0.vy -= 0x200;
         BTLFX_COPY_SVEC(&work->unk8, &work->unk0);
         work->unk8.vy = 0;

@@ -296,10 +296,10 @@ s32 fx_1fd_op82(s32 mode, Fx1fdWork82 *work, Unk800F78A4 *env, Unk80100C78Entry 
     if (mode == 0) {
         *arg4 = 0x6C;
     } else if (mode == 1) {
-        work->unk50.vx = env->targets->unk38;
+        work->unk50.vx = env->targets->centerX;
         D_801E9E4C = env;
-        work->unk50.vy = env->targets->unk3A;
-        work->unk50.vz = env->targets->unk3C;
+        work->unk50.vy = env->targets->centerY;
+        work->unk50.vz = env->targets->centerZ;
         work->unk50.vy -= 0x3E8;
         D_801EB75C.unk1E = 0x200;
         D_801EB75C.unk18 = 0;
@@ -557,7 +557,7 @@ s32 fx_1fd_op83(s32 mode, SVECTOR *work, Unk800F78A4 *env, Unk80100C78Entry *ent
         work->vy = 0;
         work->vz = 0x4B0;
         D_801E9E4C = env;
-        for (i = 0; i < env->targets->unk24; i++, o++) {
+        for (i = 0; i < env->targets->targetCount; i++, o++) {
             ex->btlfx_getUnitPos(i, (s16 *)&o->unk0);
             ex->btlfx_getUnitRot(i, (s16 *)&o->unk8);
             ex->btlfx_aimAngles((s16 *)work, (s16 *)&o->unk0, (s16 *)&a);
@@ -570,7 +570,7 @@ s32 fx_1fd_op83(s32 mode, SVECTOR *work, Unk800F78A4 *env, Unk80100C78Entry *ent
     } else {
         frame = entry->unk0;
         if (frame >= 0 && frame <= 0x40) {
-            for (j = 0, q = D_801EBADC; j < env->targets->unk24; j++, q++) {
+            for (j = 0, q = D_801EBADC; j < env->targets->targetCount; j++, q++) {
                 a.vx = work->vx + q->unk10 * ex->math_sin(q->unk12) / 4096;
                 a.vy = q->unk0.vy - frame * 120;
                 a.vz = work->vz + q->unk10 * ex->math_cos(q->unk12) / 4096;
@@ -601,7 +601,7 @@ s32 fx_1fd_op84(s32 mode, Fx1fdWork84 *work, Unk800F78A4 *env, Unk80100C78Entry 
     } else if (mode == 1) {
         q = D_801EBADC;
         D_801E9E4C = env;
-        for (j = 0; j < env->targets->unk24; j++, q++) {
+        for (j = 0; j < env->targets->targetCount; j++, q++) {
             work->unkC0[j] = 0;
             ex->btlfx_getUnitHomePos(j, (s16 *)&work->unk40[j]);
             work->unk40[j].vy = -0xBB8;
@@ -610,7 +610,7 @@ s32 fx_1fd_op84(s32 mode, Fx1fdWork84 *work, Unk800F78A4 *env, Unk80100C78Entry 
         }
     } else {
         frame = entry->unk0;
-        for (i = 0; i < env->targets->unk24; i++) {
+        for (i = 0; i < env->targets->targetCount; i++) {
             if (work->unkC0[i] == 0 && func_801E9984(i, frame, 4, &work->unk40[i]) != 0) {
                 work->unkC0[i] = 1;
                 ex->btlfx_getUnitHomePos(i, (s16 *)&work->unk40[i]);

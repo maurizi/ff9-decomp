@@ -8,15 +8,15 @@ s32 fx_090_op80(s32 mode, Fx090Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
     if (mode == 0) {
         *arg4 = 0x74;
     } else if (mode == 1) {
-        work->unk50.vx = env->targets->unk38;
-        work->unk50.vy = env->targets->unk3A;
-        work->unk50.vz = env->targets->unk3C;
-        work->unk58.vx = env->targets->unk38;
-        work->unk58.vy = env->targets->unk3A;
-        work->unk58.vz = env->targets->unk3C;
-        work->unk60.vx = env->targets->unk38;
-        work->unk60.vy = env->targets->unk3A;
-        work->unk60.vz = env->targets->unk3C;
+        work->unk50.vx = env->targets->centerX;
+        work->unk50.vy = env->targets->centerY;
+        work->unk50.vz = env->targets->centerZ;
+        work->unk58.vx = env->targets->centerX;
+        work->unk58.vy = env->targets->centerY;
+        work->unk58.vz = env->targets->centerZ;
+        work->unk60.vx = env->targets->centerX;
+        work->unk60.vy = env->targets->centerY;
+        work->unk60.vz = env->targets->centerZ;
         work->unk58.vy -= 0x320;
         work->unk60.vy -= 0x4B0;
         D_801E7E38 = env;
@@ -33,9 +33,9 @@ s32 fx_090_op80(s32 mode, Fx090Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
         work->unk24.vx = 0;
         work->unk24.vy = 0;
         work->unk24.vz = 0;
-        work->unk2C.vx = env->targets->unk38;
-        work->unk2C.vy = env->targets->unk3A;
-        work->unk2C.vz = env->targets->unk3C;
+        work->unk2C.vx = env->targets->centerX;
+        work->unk2C.vy = env->targets->centerY;
+        work->unk2C.vz = env->targets->centerZ;
         work->unk3C.vx = 0x1000;
         work->unk3C.vy = 0x1000;
         work->unk3C.vz = 0x1000;

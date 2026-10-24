@@ -11,16 +11,16 @@ s32 fx_0a5_op80(s32 mode, Fx0a5Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
     } else if (mode == 1) {
         D_801E7A2C = env;
         ex->func_800DC858(0x10, 0, (u16 *)&work->unk8);
-        work->unk18.vx = env->targets->unk38;
-        work->unk18.vy = env->targets->unk3A;
-        work->unk18.vz = env->targets->unk3C;
-        work->unk20.vx = env->targets->unk38;
-        work->unk20.vy = env->targets->unk3A;
-        work->unk20.vz = env->targets->unk3C;
+        work->unk18.vx = env->targets->centerX;
+        work->unk18.vy = env->targets->centerY;
+        work->unk18.vz = env->targets->centerZ;
+        work->unk20.vx = env->targets->centerX;
+        work->unk20.vy = env->targets->centerY;
+        work->unk20.vz = env->targets->centerZ;
         work->unk18.vx = 0x5DC;
         work->unk20.vx = -0x5DC;
         work->unk4 = ex->func_800E3CEC(ex->btlfx_getFileData(entry->unk8, 8), (s32)&work->unk8);
-        ex->btlfx_aimAngles((s16 *)&work->unk8, &env->targets->unk38, (s16 *)&work->unk10);
+        ex->btlfx_aimAngles((s16 *)&work->unk8, &env->targets->centerX, (s16 *)&work->unk10);
     } else {
         frame = entry->unk0;
         if (frame == 0x19) {

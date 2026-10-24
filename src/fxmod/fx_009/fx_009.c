@@ -7,7 +7,7 @@ s32 fx_009_op80(s32 mode, Fx009Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
         *arg4 = 4;
     } else if (mode == 1) {
         D_801E7818 = env;
-        work->unk0 = ex->func_800E3CEC(ex->btlfx_getFileData(entry->unk8, 3), (s32)&env->targets->unk38);
+        work->unk0 = ex->func_800E3CEC(ex->btlfx_getFileData(entry->unk8, 3), (s32)&env->targets->centerX);
         if (work->unk0 != NULL) {
             work->unk0->unk14 = (s32)D_801E7828;
             work->unk0->unk12 = 0x17;

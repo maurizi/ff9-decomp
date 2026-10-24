@@ -199,7 +199,7 @@ s32 fx_0f5_op80(s32 mode, Fx0f5Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
         work->unk20 = ex->func_800E8F50((Unk800E8F50 *)ex->btlfx_getFileData(entry->unk8, 9), 1);
         work->unk0 = 0;
         work->unk4 = 0;
-        BTLFX_COPY_SVEC(&work->unk8, &env->targets->unk38);
+        BTLFX_COPY_SVEC(&work->unk8, &env->targets->centerX);
         work->unk18.vx = 0x400;
         work->unk18.vy = 0x20;
         work->unk18.vz = 0;

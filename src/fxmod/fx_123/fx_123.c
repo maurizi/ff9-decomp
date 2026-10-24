@@ -200,9 +200,9 @@ s32 fx_123_op81(s32 mode, Fx123Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
             break;
         case 19:
             for (s = D_801E8F7C, j = 0; j < 6; j++, s++) {
-                s->unk0.vx = env->targets->unk38;
+                s->unk0.vx = env->targets->centerX;
                 s->unk0.vy = work->unk9C[j].vy;
-                s->unk0.vz = env->targets->unk3C;
+                s->unk0.vz = env->targets->centerZ;
                 s->unk0.vx += ex->math_sin(s->unk20) * 350 / 4096;
                 s->unk0.vz += ex->math_cos(s->unk20) * 350 / 4096;
                 s->unk8.vx = work->unk6C[j].vx;
@@ -211,9 +211,9 @@ s32 fx_123_op81(s32 mode, Fx123Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
                 s->unk10.vx = ex->math_sin(s->unk20) * 1400 / 4096;
                 s->unk10.vy = 500;
                 s->unk10.vz = ex->math_cos(s->unk20) * 1400 / 4096;
-                s->unk10.vx += env->targets->unk38;
-                s->unk10.vy += env->targets->unk3A;
-                s->unk10.vz += env->targets->unk3C;
+                s->unk10.vx += env->targets->centerX;
+                s->unk10.vy += env->targets->centerY;
+                s->unk10.vz += env->targets->centerZ;
             }
             break;
         case 17:
@@ -327,10 +327,10 @@ s32 fx_123_op82(s32 mode, Fx123Work82 *work, Unk800F78A4 *env, Unk80100C78Entry 
     if (mode == 0) {
         *arg4 = 0x1C;
     } else if (mode == 1) {
-        work->unk14.vx = env->targets->unk38;
-        work->unk14.vy = env->targets->unk3A;
+        work->unk14.vx = env->targets->centerX;
+        work->unk14.vy = env->targets->centerY;
         D_801E90CC = env;
-        work->unk14.vz = env->targets->unk3C;
+        work->unk14.vz = env->targets->centerZ;
     } else {
         frame = entry->unk0;
         switch (frame) {

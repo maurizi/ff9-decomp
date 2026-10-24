@@ -29,7 +29,7 @@ s32 fx_1fb_op81(s32 mode, void *work, Unk800F78A4 *env, Unk80100C78Entry *entry,
         D_801E7B84[0] = 0;
         D_801E7B84[1] = 0;
         D_801E7B74 = env;
-        for (i = 0; i < env->targets->unk24; i++) {
+        for (i = 0; i < env->targets->targetCount; i++) {
             ex->btlfx_getUnitBodyPos(i, 0, (s16 *)&D_801E7B94[i]);
             p = ex->func_800E3CEC(ex->btlfx_getFileData(entry->unk8, 4), (s32)&D_801E7B94[i]);
             if (p != NULL) {
@@ -43,7 +43,7 @@ s32 fx_1fb_op81(s32 mode, void *work, Unk800F78A4 *env, Unk80100C78Entry *entry,
         frame = entry->unk0;
         switch (frame) {
         case 16:
-            for (i = 0; i < env->targets->unk24; i++) {
+            for (i = 0; i < env->targets->targetCount; i++) {
                 p = ex->func_800E3CEC(ex->btlfx_getFileData(entry->unk8, 5), (s32)&D_801E7B94[i]);
                 if (p != NULL) {
                     p->unk22 = ex->func_800E7CC4(i, 0x200);
@@ -66,13 +66,13 @@ s32 fx_1fb_op81(s32 mode, void *work, Unk800F78A4 *env, Unk80100C78Entry *entry,
         }
         if (D_801E7B84[0] != 0) {
             D_801E7B84[0]--;
-            for (i = 0; i < env->targets->unk24; i++) {
+            for (i = 0; i < env->targets->targetCount; i++) {
                 ex->func_800E806C(i, D_801E7B84[0] * 8);
             }
         }
         if (D_801E7B84[1] != 0) {
             D_801E7B84[1]--;
-            for (i = 0; i < env->targets->unk24; i++) {
+            for (i = 0; i < env->targets->targetCount; i++) {
                 ex->func_800E806C(i, 0x80 - D_801E7B84[1] * 8);
             }
         }

@@ -8,8 +8,8 @@ s32 fx_182_op80(s32 mode, SVECTOR *work, Unk800F78A4 *env, Unk80100C78Entry *ent
     if (mode == 0) {
         *arg4 = 8;
     } else if (mode == 1) {
-        work->vx = env->targets->unk38;
-        work->vz = env->targets->unk3C;
+        work->vx = env->targets->centerX;
+        work->vz = env->targets->centerZ;
         work->vy = -0x200;
         D_801E78A0 = env;
         p = ex->func_800E3CEC(ex->btlfx_getFileData(entry->unk8, 3), (s32)work);

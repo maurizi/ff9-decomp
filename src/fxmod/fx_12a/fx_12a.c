@@ -20,12 +20,12 @@ s32 fx_12a_op80(s32 mode, Fx12aWork80 *work, Unk800F78A4 *env, Unk80100C78Entry 
         work->unk28.vy += 0x64;
         work->unk20.vz -= 0x64;
         work->unk28.vz -= 0x64;
-        work->unk40.vx = env->targets->unk38;
-        work->unk40.vy = env->targets->unk3A;
-        work->unk40.vz = env->targets->unk3C;
-        work->unk48.vx = env->targets->unk38;
-        work->unk48.vy = env->targets->unk3A;
-        work->unk48.vz = env->targets->unk3C;
+        work->unk40.vx = env->targets->centerX;
+        work->unk40.vy = env->targets->centerY;
+        work->unk40.vz = env->targets->centerZ;
+        work->unk48.vx = env->targets->centerX;
+        work->unk48.vy = env->targets->centerY;
+        work->unk48.vz = env->targets->centerZ;
         work->unk40.vx = work->unk20.vx;
         work->unk48.vx = work->unk28.vx;
         work->unk40.vy -= 0x190;
@@ -108,9 +108,9 @@ s32 fx_12a_op81(s32 mode, Fx12aWork81 *work, Unk800F78A4 *env, Unk80100C78Entry 
     if (mode == 0) {
         *arg4 = 0xC;
     } else if (mode == 1) {
-        work->unk4.vx = env->targets->unk38;
-        work->unk4.vy = env->targets->unk3A;
-        work->unk4.vz = env->targets->unk3C;
+        work->unk4.vx = env->targets->centerX;
+        work->unk4.vy = env->targets->centerY;
+        work->unk4.vz = env->targets->centerZ;
         D_801E7EFC = env;
         work->unk0 = ex->func_800E3CEC(ex->btlfx_getFileData(entry->unk8, 0xB), (s32)&work->unk4);
     } else {
@@ -130,7 +130,7 @@ s32 fx_12a_op82(s32 mode, Fx12aWork82 *work, Unk800F78A4 *env, Unk80100C78Entry 
         n = *arg4;
         work->unk10 = n;
         D_801E7EFC = env;
-        if (n >= env->targets->unk24) {
+        if (n >= env->targets->targetCount) {
             func_801E7EA0(env, 7, 1);
             return 1;
         }

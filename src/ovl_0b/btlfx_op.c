@@ -234,7 +234,7 @@ s32 func_800E4634(s32 arg0, Unk800E4634 *c, Unk800E4634Arg2 *arg2, s32 *arg3, s3
 void btlfx_startCasterTask(s32 arg0) {
     s32 a = 0xFF;
     s32 b = arg0 * 16;
-    if (g_btlfxEnv->targets->unk24 == 1) {
+    if (g_btlfxEnv->targets->targetCount == 1) {
         a = 0;
     }
     btlfx_spawnTask(7, -1, a, b);
@@ -315,7 +315,7 @@ void func_800E4C04(s32 arg0, s32 arg1, s32 arg2) {
 }
 
 void func_800E4C54(void) {
-    if (g_btlfxEnv->targets->unk27 == 0) {
+    if (g_btlfxEnv->targets->bounceCount == 0) {
         D_800FEC65 = 1;
     }
 }
@@ -341,14 +341,14 @@ s32 btlfx_opCast(s32 arg0, Unk800E4C88 *arg1, Unk800F78A4 *arg2, s32 *arg3, s32 
         if (arg2->unk0->unk1C & 8) {
             func_800E8C84(0);
         }
-        if (arg2->targets->unk27 != 0 && arg1->unk3 != 0xFF) {
-            if (arg2->targets->unk27 == 1) {
+        if (arg2->targets->bounceCount != 0 && arg1->unk3 != 0xFF) {
+            if (arg2->targets->bounceCount == 1) {
                 arg1->unk3 += 8;
             } else {
                 arg1->unk3 = 0xFF;
             }
         }
-        if (arg2->targets->unk40 & 4) {
+        if (arg2->targets->kind & 4) {
             arg1->unk2 = 0x11;
             arg1->unk3 = 0x10;
         }
@@ -356,7 +356,7 @@ s32 btlfx_opCast(s32 arg0, Unk800E4C88 *arg1, Unk800F78A4 *arg2, s32 *arg3, s32 
         arg1->unk4 = ((u32)g_btlfxState.unk1C & 0x3000) >> 12;
         g_btlfxState.unk10.b[2] = 0;
         g_btlfxState.unk10.b[3] = 0;
-        a = arg2->targets->unk40 & 1;
+        a = arg2->targets->kind & 1;
         c = btlfx_isEnemyUnit(arg1->unk2);
         arg1->unk8 = 100;
         func_800E4C04(arg1->unk2, 1, 0);
@@ -372,7 +372,7 @@ s32 btlfx_opCast(s32 arg0, Unk800E4C88 *arg1, Unk800F78A4 *arg2, s32 *arg3, s32 
             } else {
                 arg1->unk24 = NULL;
             }
-        } else if (arg2->targets->unk40 & 2) {
+        } else if (arg2->targets->kind & 2) {
             arg1->unk5 = 3;
             arg1->unk1 = 2;
         } else {
@@ -430,7 +430,7 @@ s32 btlfx_opCast(s32 arg0, Unk800E4C88 *arg1, Unk800F78A4 *arg2, s32 *arg3, s32 
                 }
                 if (b == 0) {
                     arg1->unk8 = btlfx_getMotionLength(arg1->unk2);
-                    if (arg2->targets->unk40 & 1) {
+                    if (arg2->targets->kind & 1) {
                         func_800E8D14();
                     }
                 }
@@ -554,10 +554,10 @@ s32 btlfx_opReturnHome(s32 arg0, Unk800E5538 *arg1, Unk800F78A4 *arg2, s32 *arg3
     if (arg0 == 1) {
         arg1->unk1 = 0;
         arg1->unk2 = *arg4;
-        if (arg2->targets->unk40 & 4) {
+        if (arg2->targets->kind & 4) {
             arg1->unk2 = 0x11;
         }
-        if (arg2->targets->unk40 & 1) {
+        if (arg2->targets->kind & 1) {
             return 1;
         }
         if (btlfx_isEnemyUnit(arg1->unk2) != 0) {
@@ -640,8 +640,8 @@ s32 func_800E57B0(s32 arg0, Unk800E57B0 *arg1, Unk800F78A4 *arg2, s32 *arg3, s32
         if (arg1->unk1 != 0xFF) {
             btlfx_getUnitBodyPos(arg1->unk1, 0, &arg1->unk1C.vx);
         } else {
-            *(s32 *)&arg1->unk1C.vx = *(s32 *)&arg2->targets->unk38;
-            *(s32 *)&arg1->unk1C.vz = *(s32 *)&arg2->targets->unk3C;
+            *(s32 *)&arg1->unk1C.vx = *(s32 *)&arg2->targets->centerX;
+            *(s32 *)&arg1->unk1C.vz = *(s32 *)&arg2->targets->centerZ;
             arg1->unk1C.vy -= 0xC0;
         }
         switch (arg1->unk0) {
@@ -767,7 +767,7 @@ s32 btlfx_opApplyResult(s32 arg0, void *arg1, Unk800F78A4 *arg2, void *arg3, s32
         if (id == 0xFF) {
             id = -1;
         } else if (id == 0xFE) {
-            id = btlfx_rand() % g_btlfxEnv->targets->unk24;
+            id = btlfx_rand() % g_btlfxEnv->targets->targetCount;
         }
         if (a[1] == 0) {
             btlfx_execCmd(id);
@@ -1239,21 +1239,21 @@ u8 *btlfx_endPrims(void) {
 
 BtlUnit *btl_getUnit(s32 arg0) {
     if (arg0 == 0x10) {
-        return g_btlfxEnv->targets->unk0;
+        return g_btlfxEnv->targets->caster;
     }
     if (arg0 == 0x11) {
-        return g_btlfxEnv->targets->unk44;
+        return g_btlfxEnv->targets->partner;
     }
     if (arg0 < 8) {
-        if (arg0 < 0 || arg0 >= g_btlfxEnv->targets->unk24) {
+        if (arg0 < 0 || arg0 >= g_btlfxEnv->targets->targetCount) {
             SystemError(0x53, 0x136);
         }
-        return g_btlfxEnv->targets->unk4[arg0];
+        return g_btlfxEnv->targets->targets[arg0];
     }
-    if (arg0 - 8 < 0 || arg0 - 8 >= g_btlfxEnv->targets->unk27) {
+    if (arg0 - 8 < 0 || arg0 - 8 >= g_btlfxEnv->targets->bounceCount) {
         SystemError(0x53, 0x136);
     }
-    return g_btlfxEnv->targets->unk28[arg0 - 8];
+    return g_btlfxEnv->targets->bounced[arg0 - 8];
 }
 
 s32 func_800E7298(BtlUnit *arg0) {
@@ -1370,8 +1370,8 @@ void btlfx_setUnitPos(s32 arg0, s16 *arg1) {
 
 s32 func_800E774C(s32 arg0, s16 *arg1, s16 *arg2) {
     BtlUnitList *l = g_btlfxEnv->targets;
-    BtlUnit *u = l->unk28[arg0];
-    if (arg0 >= l->unk27) {
+    BtlUnit *u = l->bounced[arg0];
+    if (arg0 >= l->bounceCount) {
         return 1;
     }
     func_800E753C(u, 0, arg1);
@@ -1790,7 +1790,7 @@ void func_800E8854(BtlUnit9C8 *arg0, void (*arg1)(SVECTOR *, s32)) {
 }
 
 void func_800E8980(s32 arg0) {
-    g_btlfxEnv->targets->unk44 = btl_getUnitById(g_btlfxEnv->targets->unk25[arg0]);
+    g_btlfxEnv->targets->partner = btl_getUnitById(g_btlfxEnv->targets->unk25[arg0]);
 }
 
 void btlfx_restorePartyLooks(void) {
@@ -1881,8 +1881,8 @@ void btlfx_execCmd(s32 arg0) {
     s32 i;
     if (func_800E8D60() == 0) {
         if (arg0 == -1) {
-            for (i = 0; i < g_btlfxEnv->targets->unk24; i++) {
-                btl_execCmd(g_btlfxEnv->targets->unk4[i]);
+            for (i = 0; i < g_btlfxEnv->targets->targetCount; i++) {
+                btl_execCmd(g_btlfxEnv->targets->targets[i]);
             }
         } else {
             btl_execCmd(btl_getUnit(arg0));
@@ -1894,8 +1894,8 @@ void btlfx_showPopups(s32 arg0) {
     s32 i;
     if (func_800E8D60() == 0) {
         if (arg0 == -1) {
-            for (i = 0; i < g_btlfxEnv->targets->unk24; i++) {
-                btl_spawnPopups(g_btlfxEnv->targets->unk4[i]);
+            for (i = 0; i < g_btlfxEnv->targets->targetCount; i++) {
+                btl_spawnPopups(g_btlfxEnv->targets->targets[i]);
             }
         } else {
             btl_spawnPopups(btl_getUnit(arg0));
@@ -1967,7 +1967,7 @@ void func_800E9000(Unk800E9000 *arg0, s32 *src, s32 n, Unk80100DC054 *e) {
 }
 
 BtlUnit *func_800E9124(void) {
-    if (g_btlfxEnv->targets->unk27 == 0) {
+    if (g_btlfxEnv->targets->bounceCount == 0) {
         return btl_getUnit(0);
     }
     return btl_getUnit(8);
@@ -2010,7 +2010,7 @@ void func_800E9290(s32 arg0) {
         return;
     }
     hi = arg0 & 0xF0;
-    if (D_800F8D74 == 0 || hi == 0xF0 || (g_btlfxEnv->targets->unk40 & 2)) {
+    if (D_800F8D74 == 0 || hi == 0xF0 || (g_btlfxEnv->targets->kind & 2)) {
         return;
     }
     u = btl_getUnit(0x10);
@@ -2018,7 +2018,7 @@ void func_800E9290(s32 arg0) {
         return;
     }
     t = func_800E9124();
-    if (g_btlfxEnv->targets->unk40 & 4) {
+    if (g_btlfxEnv->targets->kind & 4) {
         msg = func_800E454C(D_800F8D78[4]);
     } else if (u->unk68 & 1) {
         if ((u8)btl_hasStatus(u, BTL_STATUS_TRANCE) == 0) {
@@ -2048,7 +2048,7 @@ void func_800E9290(s32 arg0) {
 
 void func_800E94C4(void) {
     u8 v;
-    if (D_800F8D74 != 0 && g_btlfxEnv->targets->unk27 != 0) {
+    if (D_800F8D74 != 0 && g_btlfxEnv->targets->bounceCount != 0) {
         if (btl_getUnit(8)->unk68 & 1) {
             v = D_800F8D80;
         } else {

@@ -10,7 +10,7 @@ s32 fx_1a5_op80(s32 mode, Fx1a5Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
         s32 unit = *arg4;
         work->unk10 = unit;
         D_801E7950 = env;
-        if (unit >= env->targets->unk24) {
+        if (unit >= env->targets->targetCount) {
             func_801E78F4(env, 7, 1);
             return 1;
         }

@@ -13,7 +13,7 @@ s32 fx_0b0_op80(s32 mode, Fx0b0Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
     } else if (mode == 1) {
         work->unk0 = 0;
         D_801E7CD8 = env;
-        BTLFX_COPY_SVEC(&work->unkC, &env->targets->unk38);
+        BTLFX_COPY_SVEC(&work->unkC, &env->targets->centerX);
         BTLFX_COPY_SVEC(&work->unk14, &work->unkC);
         work->unkC.vy -= 0xF0;
         BTLFX_COPY_SVEC(&work->unk2C, &work->unkC);

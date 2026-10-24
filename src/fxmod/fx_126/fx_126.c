@@ -65,8 +65,8 @@ s32 fx_126_op80(s32 mode, Fx126Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
             p->unk22 = ex->func_800E7CC4(0, 0x80);
         }
         k = 3;
-        if (k >= env->targets->unk24) {
-            k = env->targets->unk24 - 1;
+        if (k >= env->targets->targetCount) {
+            k = env->targets->targetCount - 1;
         }
         if (work->unk9C[k] == 0) {
             work->unk9C[k] = 1;
@@ -83,8 +83,8 @@ s32 fx_126_op80(s32 mode, Fx126Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
         break;
     case 10:
         k = 1;
-        if (k >= env->targets->unk24) {
-            k = env->targets->unk24 - 1;
+        if (k >= env->targets->targetCount) {
+            k = env->targets->targetCount - 1;
         }
         if (work->unk9C[k] == 0) {
             work->unk9C[k] = 1;
@@ -99,8 +99,8 @@ s32 fx_126_op80(s32 mode, Fx126Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
             }
         }
         k = 2;
-        if (k >= env->targets->unk24) {
-            k = env->targets->unk24 - 1;
+        if (k >= env->targets->targetCount) {
+            k = env->targets->targetCount - 1;
         }
         if (work->unk9C[k] == 0) {
             work->unk9C[k] = 1;

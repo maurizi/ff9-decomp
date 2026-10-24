@@ -610,21 +610,21 @@ extern BtlScriptOp g_btlseqOps[];
 void btl_setUnitFade(BtlUnit *, s32);
 
 
-/* g_btlfxEnv->unkC */
+/* effect unit list (Battle.fxTargets, g_btlfxEnv->targets); effect scripts name units by index: 0-7 targets, 8.. bounced, 0x10 caster, 0x11 partner */
 typedef struct {
-    BtlUnit *unk0;     /* id 0x10 */
-    BtlUnit *unk4[8];  /* ids 0..7 */
-    u8 unk24;          /* count of unk4 */
+    BtlUnit *caster; /* id 0x10 */
+    BtlUnit *targets[8]; /* ids 0..7 */
+    u8 targetCount;          /* count of unk4 */
     u8 unk25[2];
-    u8 unk27;          /* count of unk28 */
-    BtlUnit *unk28[4]; /* ids 8.. */
-    s16 unk38;
-    s16 unk3A;
-    s16 unk3C;
+    u8 bounceCount;          /* count of unk28 */
+    BtlUnit *bounced[4]; /* ids 8..: units a reflected spell bounces to (btl_playCmdEffect) */
+    s16 centerX; /* average target position (btl_playCmdEffect) */
+    s16 centerY;
+    s16 centerZ;
     u8 pad3E[0x40 - 0x3E];
-    u16 unk40;
+    u16 kind; /* btl_playCmdEffect: 1 Eidolon follow-up, 2 item, 4 Swd Mag, 0x11 bounce */
     u16 unk42;
-    BtlUnit *unk44;    /* id 0x11 */
+    BtlUnit *partner; /* id 0x11: the Swd Mag partner (character kind 2) */
     u8 pad48[0x4C - 0x48];
 } BtlUnitList; /* 0x4C */
 

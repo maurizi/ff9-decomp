@@ -64,8 +64,8 @@ s32 fx_1f3_op80(s32 mode, Fx1f3Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
         for (i = 15, q = &work->unk0[15]; i >= 0; i--, q--) {
             *q = 0;
         }
-        work->unk5C.vx = env->targets->unk38;
-        work->unk5C.vz = env->targets->unk3C;
+        work->unk5C.vx = env->targets->centerX;
+        work->unk5C.vz = env->targets->centerZ;
         work->unk5C.vy = -0x200;
         for (i = 0; i < 16; i++) {
             D_801EC4F0[i].unk12C = 0;
@@ -89,8 +89,8 @@ s32 fx_1f3_op80(s32 mode, Fx1f3Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             D_801EC370[i].unk4 = (ex->btlfx_rand() & 0x1FF) + 0x100;
         }
         work->unk6C = ex->func_800E8F50((Unk800E8F50 *)ex->btlfx_getFileData(entry->unk8, 1), 1);
-        work->unk70.vx = env->targets->unk38;
-        work->unk70.vz = env->targets->unk3C;
+        work->unk70.vx = env->targets->centerX;
+        work->unk70.vz = env->targets->centerZ;
         work->unk70.vy = -0x200;
         work->unk90.vx = 0;
         work->unk90.vy = 0;

@@ -22,9 +22,9 @@ s32 fx_03e_op80(s32 mode, Fx03eWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
             (s16)ex->Hi_RegisterTexEffModel((BtlUnit9C8 *)ex->btlfx_getFileData(entry->unk8, 2), 0xB8, 0x3D40, 0x80, 0x80);
         work->unk0 = 0;
         work->unk24 = 0;
-        work->unk14.vx = env->targets->unk38;
-        work->unk14.vy = env->targets->unk3A;
-        work->unk14.vz = env->targets->unk3C;
+        work->unk14.vx = env->targets->centerX;
+        work->unk14.vy = env->targets->centerY;
+        work->unk14.vz = env->targets->centerZ;
         work->unk1C.vx = work->unk14.vx;
         work->unk1C.vy = work->unk14.vy;
         work->unk1C.vz = work->unk14.vz;

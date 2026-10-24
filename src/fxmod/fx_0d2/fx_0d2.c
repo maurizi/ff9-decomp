@@ -291,7 +291,7 @@ s32 fx_0d2_op81(s32 mode, Fx0d2Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
             ex->func_800E6E1C(0x2C0, 0x100, 0x80, 0x80, D_801EF300, 0, 0x200, 0x2BC);
             break;
         case 0x2C:
-            for (i2 = 0; i2 < env->targets->unk24; i2++) {
+            for (i2 = 0; i2 < env->targets->targetCount; i2++) {
                 ex->btlfx_getUnitPos(i2, (s16 *)&D_801EFF80[i2]);
                 ex->btlfx_getUnitScale(i2, &D_801EFFC0[i2]);
             }
@@ -572,14 +572,14 @@ s32 fx_0d2_op83(s32 mode, Fx0d2Work83 *work, Unk800F78A4 *env, Unk80100C78Entry 
             sum.vx = 0;
             sum.vy = 0;
             sum.vz = 0;
-            for (q = 0; q < env->targets->unk24; q++) {
+            for (q = 0; q < env->targets->targetCount; q++) {
                 sum.vx += work->unk58[q].vx;
                 sum.vy += (&work->unk58[q])->vy;
                 sum.vz += (&work->unk58[q])->vz;
             }
-            work->unk120.vx = sum.vx / env->targets->unk24;
-            work->unk120.vy = sum.vy / env->targets->unk24;
-            work->unk120.vz = sum.vz / env->targets->unk24;
+            work->unk120.vx = sum.vx / env->targets->targetCount;
+            work->unk120.vy = sum.vy / env->targets->targetCount;
+            work->unk120.vz = sum.vz / env->targets->targetCount;
             work->unk4 = ex->func_800E3CEC(ex->btlfx_getFileData(entry->unk8, 3), (s32)&work->unk120);
             break;
         case 38:
@@ -591,7 +591,7 @@ s32 fx_0d2_op83(s32 mode, Fx0d2Work83 *work, Unk800F78A4 *env, Unk80100C78Entry 
         case 42:
             work->unk130 = 0x10;
             work->unk134 = 0;
-            for (q = 0; q < env->targets->unk24; q++) {
+            for (q = 0; q < env->targets->targetCount; q++) {
                 ex->func_800E7ACC(q, (s32 *)&D_801EFFC0[q]);
             }
             env->camera->unk0[0].vx = 0;
@@ -653,7 +653,7 @@ s32 fx_0d2_op83(s32 mode, Fx0d2Work83 *work, Unk800F78A4 *env, Unk80100C78Entry 
         if ((u32)frame < 0x1C) {
             func_801E9E88((Fx0d2Path *)&D_801EF2F0, frame, &d);
             func_801EA00C((Fx0d2Path *)&D_801EF2F8, frame, &e);
-            for (q = 0; q < env->targets->unk24; q++) {
+            for (q = 0; q < env->targets->targetCount; q++) {
                 work->unk58[q].vx = D_801EFF80[q].vx + d.vx;
                 work->unk58[q].vy = D_801EFF80[q].vy + d.vy;
                 work->unk58[q].vz = D_801EFF80[q].vz + d.vz;
@@ -703,7 +703,7 @@ s32 fx_0d2_op84(s32 mode, Fx0d2Work84 *work, Unk800F78A4 *env, Unk80100C78Entry 
         *arg4 = sizeof(Fx0d2Work84);
     } else if (mode == 1) {
         D_801ED8E0 = env;
-        for (j = 0; j < env->targets->unk24; j++) {
+        for (j = 0; j < env->targets->targetCount; j++) {
             work->unkA0[j] = 0;
             ex->btlfx_getUnitHomePos(j, (s16 *)&work->unk20[j]);
             work->unk20[j].vy = -3000;
@@ -711,7 +711,7 @@ s32 fx_0d2_op84(s32 mode, Fx0d2Work84 *work, Unk800F78A4 *env, Unk80100C78Entry 
         }
     } else {
         frame = entry->unk0;
-        for (i = 0; i < env->targets->unk24; i++) {
+        for (i = 0; i < env->targets->targetCount; i++) {
             if (work->unkA0[i] == 0 && func_801EA108(i, frame, 4, &work->unk20[i]) != 0) {
                 work->unkA0[i] = 1;
                 ex->btlfx_getUnitHomePos(i, (s16 *)&work->unk20[i]);

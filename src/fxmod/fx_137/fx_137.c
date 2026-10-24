@@ -13,11 +13,11 @@ s32 fx_137_op80(s32 mode, Fx137Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
         *arg4 = 0x24;
     } else if (mode == 1) {
         D_801E7AC0 = env;
-        for (i = 0; i < env->targets->unk24; i++) {
+        for (i = 0; i < env->targets->targetCount; i++) {
             ex->btlfx_getUnitBodyPos(i, 0, (s16 *)&D_801E7AD0[i]);
         }
-        work->unk18.vx = env->targets->unk38;
-        work->unk18.vz = env->targets->unk3C;
+        work->unk18.vx = env->targets->centerX;
+        work->unk18.vz = env->targets->centerZ;
         work->unk18.vy = 0;
         ex->func_800DC858(0x10, 0, (u16 *)&work->unk8);
         ex->btlfx_aimAngles((s16 *)&work->unk8, (s16 *)&work->unk18, (s16 *)&work->unk0);
@@ -48,7 +48,7 @@ s32 fx_137_op80(s32 mode, Fx137Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
             work->unk20->unk5C.vz = work->unk0.vz;
         }
         if (frame == 0x10) {
-            for (i = 0; i < env->targets->unk24; i++) {
+            for (i = 0; i < env->targets->targetCount; i++) {
                 p = ex->func_800E3CEC(ex->btlfx_getFileData(entry->unk8, 5), (s32)&D_801E7AD0[i]);
                 if (p != NULL) {
                     p->unk22 = ex->func_800E7CC4(i, 0x40);

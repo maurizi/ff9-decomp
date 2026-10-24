@@ -52,7 +52,7 @@ s32 fx_063_op80(s32 mode, Fx063Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
             ex->btlfx_drawTrail((u8 *)ex->btlfx_getFileData(entry->unk8, 0xD), 0, NULL, -1, 0x1000, 0x1000, 1,
                                 (u8 *)&D_801E8E40[i], 0);
         }
-        if (env->targets->unk3C < 0) {
+        if (env->targets->centerZ < 0) {
             env->camera->unk0[0].vz = work->unkB8.vz = work->unk94.vz = work->unkA4.vz = -0x30C;
         } else {
             env->camera->unk0[0].vz = work->unkB8.vz = work->unk94.vz = work->unkA4.vz = 0x30C;
@@ -60,7 +60,7 @@ s32 fx_063_op80(s32 mode, Fx063Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
         env->camera->unk0[0].vx = work->unkB8.vx = work->unk94.vx = work->unkA4.vx = 0;
         env->camera->unk0[0].vy = work->unk94.vy = work->unkA4.vy = -0x600;
         work->unkB8.vy = 0;
-        for (i = 0; i < env->targets->unk24; i++) {
+        for (i = 0; i < env->targets->targetCount; i++) {
             D_801E9870[i].unk0 = (ex->btlfx_rand() & 7) + 0x30;
             D_801E9870[i].unk4 = 0;
             D_801E9870[i].unk8 = ex->btlfx_rand() % 511 + 0x100;
@@ -170,7 +170,7 @@ s32 fx_063_op80(s32 mode, Fx063Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
             ex->Hi_DrawEffModel(&work->unkB0, &work->unkB8, (s32)&work->unkC8, work->unkAC);
         }
         if (work->unk0[7] != 0) {
-            for (i = 0; i < env->targets->unk24; i++) {
+            for (i = 0; i < env->targets->targetCount; i++) {
                 if (D_801E9870[i].unk0 != 0) {
                     if (--D_801E9870[i].unk0 != 0) {
                         D_801E9870[i].unk4 += D_801E9870[i].unk8;

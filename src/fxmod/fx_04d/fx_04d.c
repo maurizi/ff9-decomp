@@ -197,9 +197,9 @@ s32 fx_04d_op80(s32 mode, Fx04dWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
         work->unk2C = 0;
         work->unk28 = 0;
         work->unk30 = 0;
-        work->unk18.vx = env->targets->unk38;
-        work->unk18.vy = env->targets->unk3A;
-        work->unk18.vz = env->targets->unk3C;
+        work->unk18.vx = env->targets->centerX;
+        work->unk18.vy = env->targets->centerY;
+        work->unk18.vz = env->targets->centerZ;
         work->unk20.vx = work->unk18.vx;
         work->unk20.vy = work->unk18.vy;
         work->unk20.vz = work->unk18.vz;

@@ -198,9 +198,9 @@ s32 fx_049_op83(s32 mode, Fx049Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
         init->unk8 = 0x24;
         init->unk14 = (s32)func_801E7F5C;
         init->unk4 = 0xC;
-    } else if (mode == 1) {        work->unk0.vx = env->targets->unk38;
-        work->unk0.vy = env->targets->unk3A;
-        work->unk0.vz = env->targets->unk3C;
+    } else if (mode == 1) {        work->unk0.vx = env->targets->centerX;
+        work->unk0.vy = env->targets->centerY;
+        work->unk0.vz = env->targets->centerZ;
         D_801E8D88 = env;
         work->unk0.vy = 0;
         q = work->unk8 = D_801E9738;
@@ -294,7 +294,7 @@ s32 fx_049_op83(s32 mode, Fx049Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
                 p2->unk18->unk24 = (void (*)())func_801E7CEC;
             }
         }
-        if (frame >= 0x22 && frame - 0x22 < env->targets->unk24) {
+        if (frame >= 0x22 && frame - 0x22 < env->targets->targetCount) {
             ex->btlfx_getUnitBodyPos(frame - 0x22, 0, (s16 *)&b);
             it = ex->btlfx_poolSpawn((s16 *)entry->unk10);
             if (it != NULL) {

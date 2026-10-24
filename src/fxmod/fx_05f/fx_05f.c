@@ -16,9 +16,9 @@ s32 fx_05f_op80(s32 mode, Fx05fWork80 *work, Unk800F78A4 *env, Unk80100C78Entry 
         *arg4 = 0x34;
     } else if (mode == 1) {
         work->unk0 = 0;
-        work->unkC.vx = env->targets->unk38;
-        work->unkC.vy = env->targets->unk3A;
-        work->unkC.vz = env->targets->unk3C;
+        work->unkC.vx = env->targets->centerX;
+        work->unkC.vy = env->targets->centerY;
+        work->unkC.vz = env->targets->centerZ;
         D_801E8320 = env;
         work->unkC.vy = 0;
         BTLFX_COPY_SVEC(&work->unk4, &work->unkC);
@@ -140,7 +140,7 @@ s32 fx_05f_op81(s32 mode, Fx05fWork81 *work, Unk800F78A4 *env, Unk80100C78Entry 
         *arg4 = 0x68;
     } else if (mode == 1) {
         D_801E8320 = env;
-        work->unk40 = env->targets->unk24;
+        work->unk40 = env->targets->targetCount;
         for (i = 0; i < work->unk40; i++) {
             ex->btlfx_getUnitHomePos(i, (s16 *)&work->unk0[i]);
             work->unk44 = -0x190 - (ex->btlfx_rand() & 0x7F);

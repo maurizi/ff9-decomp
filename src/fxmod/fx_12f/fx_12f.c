@@ -11,8 +11,8 @@ s32 fx_12f_op80(s32 mode, Fx12fWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
     } else if (mode == 1) {
         D_801E7A54 = env;
         ex->func_800DC858(0x10, 0, (u16 *)&work->unk8);
-        work->unk18.vx = env->targets->unk38;
-        work->unk18.vz = env->targets->unk3C;
+        work->unk18.vx = env->targets->centerX;
+        work->unk18.vz = env->targets->centerZ;
         work->unk18.vy = 0;
         work->unk40 = ex->func_800E3CEC(ex->btlfx_getFileData(entry->unk8, 1), (s32)&work->unk8);
         ex->btlfx_aimAngles((s16 *)&work->unk10, (s16 *)&work->unk18, (s16 *)&work->unk0);
@@ -32,7 +32,7 @@ s32 fx_12f_op80(s32 mode, Fx12fWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
         }
         if (frame == 0x10) {
             ex->func_800E3CEC(ex->btlfx_getFileData(entry->unk8, 4), (s32)&work->unk18);
-            for (i = 0; i < env->targets->unk24; i++) {
+            for (i = 0; i < env->targets->targetCount; i++) {
                 ex->btlfx_getUnitPos(i, (s16 *)&work->unk20[i]);
                 p = ex->func_800E3CEC(ex->btlfx_getFileData(entry->unk8, 3), (s32)&work->unk20[i]);
                 if (p != NULL) {
@@ -41,7 +41,7 @@ s32 fx_12f_op80(s32 mode, Fx12fWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
             }
         }
         if (frame == 0x14) {
-            for (i = 0; i < env->targets->unk24; i++) {
+            for (i = 0; i < env->targets->targetCount; i++) {
                 p = ex->func_800E3CEC(ex->btlfx_getFileData(entry->unk8, 8), (s32)&work->unk20[i]);
                 if (p != NULL) {
                     p->unk22 = ex->func_800E7CC4(i, 0x80);

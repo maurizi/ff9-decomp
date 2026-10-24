@@ -162,10 +162,10 @@ s32 fx_048_op80(s32 mode, Fx048Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
     if (mode == 0) {
         *arg4 = 0x38;
     } else if (mode == 1) {
-        work->unk0.vx = env->targets->unk38;
+        work->unk0.vx = env->targets->centerX;
         D_801E8F3C = env;
-        work->unk0.vy = env->targets->unk3A;
-        work->unk0.vz = env->targets->unk3C;
+        work->unk0.vy = env->targets->centerY;
+        work->unk0.vz = env->targets->centerZ;
         work->unk0.vy -= 0x200;
         BTLFX_COPY_SVEC(&work->unk8, &work->unk0);
         work->unk8.vy = 0;

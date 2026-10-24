@@ -332,7 +332,7 @@ s32 fx_081_op81(s32 mode, Fx081Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
                 work->unk0 = 2;
                 entry->unk0 = -1;
                 ex->func_800E3D54(D_801EA740);
-                BTLFX_COPY_SVEC(&work->unkC, &env->targets->unk38);
+                BTLFX_COPY_SVEC(&work->unkC, &env->targets->centerX);
                 work->unkC.vy -= 0x200;
                 BTLFX_COPY_SVEC(&work->unk14, &work->unkC);
                 work->unk1C.vx = work->unkC.vx;

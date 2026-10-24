@@ -155,7 +155,7 @@ void btlfx_runScript(void) {
     case 1:
         hdr = ((u16 *)0x801E7700)[d->unk2];
         d->unk1C = hdr & 0xFFFE;
-        g_btlfxEnv->targets->unk40 &= ~8;
+        g_btlfxEnv->targets->kind &= ~8;
         if (hdr & 0xC00) {
             btlfx_swapVramPages(0, NULL, (hdr & 0xC00) >> 10);
         }
@@ -174,13 +174,13 @@ void btlfx_runScript(void) {
         d->unk21 = 0;
         func_800E9168();
         btlcam_beginEffect();
-        if (!(g_btlfxEnv->targets->unk40 & 1)) {
+        if (!(g_btlfxEnv->targets->kind & 1)) {
             func_800E9290(d->unk1C);
         }
         if (btlfx_loadFile(d->unk2) == 0) {
             k = (u8)d->unk1C >> 4;
             if (k == 1) {
-                g_btlfxEnv->targets->unk40 |= 8;
+                g_btlfxEnv->targets->kind |= 8;
             }
             btlfx_startCasterTask(k);
             d->unk18 = D_800FF068;
@@ -296,7 +296,7 @@ void btlfx_runScript(void) {
                 case 8:
                     if (btlfx_isEnemyUnit(0x10) != 0) {
                         g_btlfxState.unk23 = 1;
-                        if (!(g_btlfxEnv->targets->unk40 & 0x10) && d->unkF == 0) {
+                        if (!(g_btlfxEnv->targets->kind & 0x10) && d->unkF == 0) {
                             cont = 0;
                             d->unk18 -= 3;
                         }
@@ -1494,9 +1494,9 @@ s32 func_800D960C(Unk800D7E14 *arg0, s32 arg1, s32 arg2) {
         btlfx_getUnitHomePos(arg0->unk0, sp18);
         break;
     case 2:
-        sp18[0] = ((Unk800F78A4 *)arg1)->targets->unk38;
-        sp18[1] = ((Unk800F78A4 *)arg1)->targets->unk3A;
-        sp18[2] = ((Unk800F78A4 *)arg1)->targets->unk3C;
+        sp18[0] = ((Unk800F78A4 *)arg1)->targets->centerX;
+        sp18[1] = ((Unk800F78A4 *)arg1)->targets->centerY;
+        sp18[2] = ((Unk800F78A4 *)arg1)->targets->centerZ;
         break;
     default:
         sp18[0] = 0;
@@ -1606,9 +1606,9 @@ s32 btlfx_stepFaceTarget(Unk800D805C *arg0, s32 arg1, s32 *arg2) {
         if (v == 0) {
             btlfx_getUnitPos(arg0->unk0, pos);
             if (arg0->unk1 == 0xFF) {
-                tgt[0] = ((Unk800F78A4 *)arg1)->targets->unk38;
-                tgt[1] = ((Unk800F78A4 *)arg1)->targets->unk3A;
-                tgt[2] = ((Unk800F78A4 *)arg1)->targets->unk3C;
+                tgt[0] = ((Unk800F78A4 *)arg1)->targets->centerX;
+                tgt[1] = ((Unk800F78A4 *)arg1)->targets->centerY;
+                tgt[2] = ((Unk800F78A4 *)arg1)->targets->centerZ;
             } else {
                 btlfx_getUnitHomePos(arg0->unk1, tgt);
             }
@@ -1630,9 +1630,9 @@ s32 btlfx_stepFaceTarget(Unk800D805C *arg0, s32 arg1, s32 *arg2) {
         return 1;
     }
     if (arg0->unk1 == 0xFF) {
-        tgt[0] = ((Unk800F78A4 *)arg1)->targets->unk38;
-        tgt[1] = ((Unk800F78A4 *)arg1)->targets->unk3A;
-        tgt[2] = ((Unk800F78A4 *)arg1)->targets->unk3C;
+        tgt[0] = ((Unk800F78A4 *)arg1)->targets->centerX;
+        tgt[1] = ((Unk800F78A4 *)arg1)->targets->centerY;
+        tgt[2] = ((Unk800F78A4 *)arg1)->targets->centerZ;
     } else {
         btlfx_getUnitHomePos(arg0->unk1, tgt);
     }

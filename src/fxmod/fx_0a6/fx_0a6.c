@@ -7,12 +7,12 @@ s32 fx_0a6_op80(s32 mode, Fx0a6Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
     if (mode == 0) {
         *arg4 = 0x24;
     } else if (mode == 1) {
-        work->unk14.vx = env->targets->unk38;
-        work->unk14.vy = env->targets->unk3A;
-        work->unk14.vz = env->targets->unk3C;
-        work->unk1C.vx = env->targets->unk38;
-        work->unk1C.vy = env->targets->unk3A;
-        work->unk1C.vz = env->targets->unk3C;
+        work->unk14.vx = env->targets->centerX;
+        work->unk14.vy = env->targets->centerY;
+        work->unk14.vz = env->targets->centerZ;
+        work->unk1C.vx = env->targets->centerX;
+        work->unk1C.vy = env->targets->centerY;
+        work->unk1C.vz = env->targets->centerZ;
         work->unk14.vy -= 0xC8;
         D_801E7974 = env;
     } else {

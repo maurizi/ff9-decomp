@@ -6,9 +6,9 @@ s32 fx_1cb_op80(s32 mode, Fx1cbWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
     if (mode == 0) {
         *arg4 = 0xC;
     } else if (mode == 1) {
-        work->unk4.vx = env->targets->unk38;
-        work->unk4.vy = env->targets->unk3A;
-        work->unk4.vz = env->targets->unk3C;
+        work->unk4.vx = env->targets->centerX;
+        work->unk4.vy = env->targets->centerY;
+        work->unk4.vz = env->targets->centerZ;
         D_801E7828 = env;
         work->unk0 = ex->func_800E3CEC(ex->btlfx_getFileData(entry->unk8, 1), (s32)&work->unk4);
         if (work->unk0 != NULL) {

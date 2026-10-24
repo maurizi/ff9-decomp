@@ -102,7 +102,7 @@ s32 fx_1f2_op80(s32 mode, Fx1f2Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
             ((s32 *)work)[i] = 0;
             ((s32 *)work)[i + 0x20] = 0;
         }
-        for (i = 0; i < env->targets->unk24; i++) {
+        for (i = 0; i < env->targets->targetCount; i++) {
             ex->btlfx_getUnitPos(i, (s16 *)&D_801EA670[i]);
             D_801EA670[i].vy = 0;
         }
@@ -690,7 +690,7 @@ s32 fx_1f2_op80(s32 mode, Fx1f2Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
             work->unk58--;
             env->unk28 = 0x40;
             k8 = 8;
-            for (i = 0; i < env->targets->unk24; i++) {
+            for (i = 0; i < env->targets->targetCount; i++) {
                 tr = &D_801EBB90[i];
                 if (tr->unk4C != 0) {
                     if (--tr->unk4C < 8) {

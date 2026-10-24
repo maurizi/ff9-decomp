@@ -358,7 +358,7 @@ s32 fx_086_op80(s32 mode, Fx086Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             ex->func_800D1BC4(2, (u8 *)ex->btlfx_getFileData(entry->unk8, 0xE), px - 0x40, py + 0x78, 0, 1, s);
             if (frame >= 49) {
                 ex->func_800E3D54(work->unk44);
-                BTLFX_COPY_SVEC(&work->unk1C, &env->targets->unk38);
+                BTLFX_COPY_SVEC(&work->unk1C, &env->targets->centerX);
                 env->camera->unk0[3].vx = work->unk1C.vx;
                 env->camera->unk0[3].vy = work->unk1C.vy;
                 env->camera->unk0[3].vz = work->unk1C.vz;

@@ -353,7 +353,7 @@ s32 fx_0b1_op81(s32 mode, void *work, Unk800F78A4 *env, Unk80100C78Entry *entry,
         D_801EAA54 = 0;
         D_801E8B8C = env;
         ex->btlfx_initEffModels(D_801EAAEC, 4);
-        for (i = 0; i < env->targets->unk24; i++) {
+        for (i = 0; i < env->targets->targetCount; i++) {
             D_801EAA5C[i] = ex->Hi_RegisterTexEffModel((BtlUnit9C8 *)ex->btlfx_getFileData(entry->unk8, 0x23), 0x177,
                                                        0xFFFF, 0, 0x80);
             ex->btlfx_getUnitBodyPos(i, 0, (s16 *)&D_801EAACC[i]);
@@ -374,7 +374,7 @@ s32 fx_0b1_op81(s32 mode, void *work, Unk800F78A4 *env, Unk80100C78Entry *entry,
             do {
                 D_801EAA54 = 0x20;
             } while (0);
-            for (i = 0; i < env->targets->unk24; i++) {
+            for (i = 0; i < env->targets->targetCount; i++) {
                 ex->func_800E3CEC((s32)ex->btlfx_getFileData(entry->unk8, 0x21), (s32)&D_801EAACC[i]);
                 ex->func_800E3CEC((s32)ex->btlfx_getFileData(entry->unk8, 0x18), (s32)&D_801EAACC[i]);
             }
@@ -382,7 +382,7 @@ s32 fx_0b1_op81(s32 mode, void *work, Unk800F78A4 *env, Unk80100C78Entry *entry,
         if (D_801EAA54 != 0) {
             D_801EAA54--;
             do {
-                for (i = 0; i < env->targets->unk24; i++) {
+                for (i = 0; i < env->targets->targetCount; i++) {
                     ex->Hi_DrawEffModel(&D_801EAA6C, &D_801EAA8C[i], (s32)&D_801EAA7C, D_801EAA5C[i]);
                     if (D_801EAA54 >= 0x19) {
                         c = (0x18 - D_801EAA54) * 0x10;

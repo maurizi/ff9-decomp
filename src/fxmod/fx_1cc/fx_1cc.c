@@ -497,9 +497,9 @@ s32 fx_1cc_op80(s32 mode, Fx1ccWork80 *work, Unk800F78A4 *env, Unk80100C78Entry 
         work->unk78 = 0;
         work->unk7C = 0;
         work->unk80 = 0;
-        work->unk58.vx = env->targets->unk38;
-        work->unk58.vy = env->targets->unk3A;
-        work->unk58.vz = env->targets->unk3C;
+        work->unk58.vx = env->targets->centerX;
+        work->unk58.vy = env->targets->centerY;
+        work->unk58.vz = env->targets->centerZ;
         work->unk60.vx = work->unk58.vx;
         work->unk60.vy = work->unk58.vy;
         work->unk60.vz = work->unk58.vz;

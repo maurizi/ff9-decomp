@@ -104,7 +104,7 @@ s32 fx_1f0_op80(s32 mode, Fx1f0Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
             D_801E8558[i].unk4 = 0x80;
             D_801E8558[i].unk28 = NULL;
         }
-        for (i = 0; i < env->targets->unk24; i++) {
+        for (i = 0; i < env->targets->targetCount; i++) {
             u = &D_801E8558[i];
             u->unk28 = NULL;
             ex->func_800E806C(i, -2);
@@ -139,13 +139,13 @@ s32 fx_1f0_op80(s32 mode, Fx1f0Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
         }
         if (work->unk0[0] != 0) {
             work->unk0[0]--;
-            for (i = 0; i < env->targets->unk24; i++) {
+            for (i = 0; i < env->targets->targetCount; i++) {
                 ex->btlfx_setUnitPos(i, (s16 *)&D_801E8558[i].unk8);
             }
         }
         if (work->unk0[1] != 0) {
             work->unk0[1]--;
-            for (i = 0; i < env->targets->unk24; i++) {
+            for (i = 0; i < env->targets->targetCount; i++) {
                 if (D_801E8558[i].unk28 != NULL && D_801E8558[i].unk28->unk30 == -1) {
                     D_801E8558[i].unk28 = NULL;
                 }

@@ -23,10 +23,10 @@ s32 fx_036_op80(s32 mode, Fx036Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
     if (mode == 0) {
         *arg4 = 0x2C;
     } else if (mode == 1) {
-        D_801E7C30.vx = env->targets->unk38;
-        D_801E7C30.vy = env->targets->unk3A;
+        D_801E7C30.vx = env->targets->centerX;
+        D_801E7C30.vy = env->targets->centerY;
         D_801E7C28 = env;
-        D_801E7C30.vz = env->targets->unk3C;
+        D_801E7C30.vz = env->targets->centerZ;
     } else {
         frame = entry->unk0;
         switch (frame) {
@@ -48,8 +48,8 @@ s32 fx_036_op80(s32 mode, Fx036Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
                 work->unk10->unk24->unk0 = -1;
                 ((EffTailSpawn *)work->unk10->unk24)->unk3C = func_801E7704;
             }
-            work->unk14 = ex->func_800E3CEC(ex->btlfx_getFileData(entry->unk8, 0xB), (s32)&env->targets->unk38);
-            work->unk18 = ex->func_800E3CEC(ex->btlfx_getFileData(entry->unk8, 0xC), (s32)&env->targets->unk38);
+            work->unk14 = ex->func_800E3CEC(ex->btlfx_getFileData(entry->unk8, 0xB), (s32)&env->targets->centerX);
+            work->unk18 = ex->func_800E3CEC(ex->btlfx_getFileData(entry->unk8, 0xC), (s32)&env->targets->centerX);
             if (work->unk10 != NULL) {
                 work->unk10->unk22 = 0x100;
             }

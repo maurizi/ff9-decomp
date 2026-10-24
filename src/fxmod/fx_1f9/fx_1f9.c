@@ -25,7 +25,7 @@ s32 fx_1f9_op81(s32 mode, void *work, Unk800F78A4 *env, Unk80100C78Entry *entry,
         *arg4 = 0;
     } else if (mode == 1) {
         D_801E78E8 = env;
-        for (i = 0; i < env->targets->unk24; i++) {
+        for (i = 0; i < env->targets->targetCount; i++) {
             ex->btlfx_getUnitBodyPos(i, 0, (s16 *)&D_801E78F8[i]);
             ex->func_800E3CEC(ex->btlfx_getFileData(entry->unk8, 1), (s32)&D_801E78F8[i]);
         }

@@ -10,9 +10,9 @@ s32 fx_0f2_op80(s32 mode, Fx0f2Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
     } else if (mode == 1) {
         D_801E7B80 = env;
         ex->btlfx_initEffModels(D_801E7B90, 1);
-        work->unk38.vx = env->targets->unk38;
-        work->unk38.vy = env->targets->unk3A;
-        work->unk38.vz = env->targets->unk3C;
+        work->unk38.vx = env->targets->centerX;
+        work->unk38.vy = env->targets->centerY;
+        work->unk38.vz = env->targets->centerZ;
         if (ex->btlfx_isEnemyUnit(0)) {
             work->unk50 = 1;
         } else {

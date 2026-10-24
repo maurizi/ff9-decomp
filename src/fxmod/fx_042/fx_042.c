@@ -158,9 +158,9 @@ s32 fx_042_op83(s32 mode, Fx042Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
         init->unk4 = 0xC;
     } else {
         if (mode == 1) {
-            work->unk0.vx = env->targets->unk38;
-            work->unk0.vy = env->targets->unk3A;
-            work->unk0.vz = env->targets->unk3C;
+            work->unk0.vx = env->targets->centerX;
+            work->unk0.vy = env->targets->centerY;
+            work->unk0.vz = env->targets->centerZ;
             D_801E856C = env;
             work->unk0.vy = 0;
             q = work->unk8 = D_801E8F0C;

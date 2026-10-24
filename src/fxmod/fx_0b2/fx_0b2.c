@@ -197,8 +197,8 @@ s32 fx_0b2_op80(s32 mode, Fx0b2Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
         work->unk0 = 0;
         work->unk4 = 0;
         D_801E90A0 = env;
-        ((s32 *)&work->unk8)[0] = ((s32 *)&env->targets->unk38)[0];
-        ((s32 *)&work->unk8)[1] = ((s32 *)&env->targets->unk38)[1];
+        ((s32 *)&work->unk8)[0] = ((s32 *)&env->targets->centerX)[0];
+        ((s32 *)&work->unk8)[1] = ((s32 *)&env->targets->centerX)[1];
         work->unk18.vx = 0x400;
         work->unk18.vy = 0x20;
         work->unk18.vz = 0;

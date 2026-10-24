@@ -14,8 +14,8 @@ s32 fx_190_op80(s32 mode, Fx190Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
         ex->func_800DC818(0x10, 0x1C, (u16 *)&work->unk44);
         ex->func_800DC818(0x10, 0x2C, (u16 *)&work->unk4C);
         ex->btlfx_getUnitPos(0x10, (s16 *)&work->unk34);
-        work->unk3C.vx = env->targets->unk38;
-        work->unk3C.vz = env->targets->unk3C;
+        work->unk3C.vx = env->targets->centerX;
+        work->unk3C.vz = env->targets->centerZ;
         work->unk3C.vy = 0;
         ex->btlfx_aimAngles((s16 *)&work->unk34, (s16 *)&work->unk3C, (s16 *)&work->unk4);
         ex->btlfx_aimAngles((s16 *)&work->unk44, (s16 *)&work->unk3C, (s16 *)&work->unkC);

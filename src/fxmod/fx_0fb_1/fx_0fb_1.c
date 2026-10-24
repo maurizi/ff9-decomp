@@ -1042,7 +1042,7 @@ s32 fx_0fb_1_op81(s32 mode, Fx0fb1Work81 *work, Unk800F78A4 *env, Unk80100C78Ent
         *arg4 = 0x1A8;
     } else if (mode == 1) {
         D_801F0D2C = env;
-        work->unk1A0 = env->targets->unk24;
+        work->unk1A0 = env->targets->targetCount;
         for (i = 0; i < work->unk1A0; i++) {
             if (ex->btlfx_isEnemyUnit(i) != 0) {
                 ex->btlfx_getUnitHomePos(i, (s16 *)&work->unk60[i]);
@@ -1114,7 +1114,7 @@ s32 fx_0fb_1_op82(s32 mode, Fx0fb1Work82 *work, Unk800F78A4 *env, Unk80100C78Ent
         units = env->targets;
         n = *arg4;
         D_801F0D2C = env;
-        work->unk24 = units->unk24;
+        work->unk24 = units->targetCount;
         work->unk0 = 0;
         if (n >= work->unk24) {
             return 1;

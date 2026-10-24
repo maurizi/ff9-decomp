@@ -48,7 +48,7 @@ s32 fx_1f5_op82(s32 mode, Fx1f5Work82 *work, Unk800F78A4 *env, Unk80100C78Entry 
         s32 unit = *arg4;
         work->unkC = unit;
         D_801E79E8 = env;
-        if (unit >= env->targets->unk24) {
+        if (unit >= env->targets->targetCount) {
             return 1;
         }
         ex->btlfx_getUnitPos(unit, (s16 *)&work->unk4);

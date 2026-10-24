@@ -375,7 +375,7 @@ s32 fx_186_op81(s32 mode, Fx186Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
     } else if (mode == 1) {
         D_801E9214 = env;
         {
-            s32 n = env->targets->unk24;
+            s32 n = env->targets->targetCount;
             /* The dead conditional store splits the block, so n lives across blocks and is left to global-alloc.
              * That leaves two local qtys here, which local-alloc sorts properly (its hand-written three-qty sort
              * compares qty numbers instead of positions), giving %hi(D_801E9214) v0 and env->targets v1. */

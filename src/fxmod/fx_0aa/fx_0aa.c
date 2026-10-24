@@ -58,12 +58,12 @@ s32 fx_0aa_op80(s32 mode, Fx0aaWork80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             D_801E9090.vx = work->unk18.vx;
             D_801E9090.vy = work->unk18.vy;
             D_801E9090.vz = work->unk18.vz;
-            D_801E9098.vx = env->targets->unk38;
-            D_801E9098.vy = env->targets->unk3A;
-            D_801E9098.vz = env->targets->unk3C;
-            D_801E90A0.vx = env->targets->unk38;
-            D_801E90A0.vy = env->targets->unk3A;
-            D_801E90A0.vz = env->targets->unk3C;
+            D_801E9098.vx = env->targets->centerX;
+            D_801E9098.vy = env->targets->centerY;
+            D_801E9098.vz = env->targets->centerZ;
+            D_801E90A0.vx = env->targets->centerX;
+            D_801E90A0.vy = env->targets->centerY;
+            D_801E90A0.vz = env->targets->centerZ;
             D_801E9098.vx = D_801E9088.vx;
             D_801E90A0.vx = D_801E9090.vx;
         }
@@ -79,10 +79,10 @@ s32 fx_0aa_op81(s32 mode, Fx0aaWork81 *work, Unk800F78A4 *env, Unk80100C78Entry 
     if (mode == 0) {
         *arg4 = 0x1C;
     } else if (mode == 1) {
-        work->unk14.vx = env->targets->unk38;
-        work->unk14.vy = env->targets->unk3A;
+        work->unk14.vx = env->targets->centerX;
+        work->unk14.vy = env->targets->centerY;
         D_801E7D78 = env;
-        work->unk14.vz = env->targets->unk3C;
+        work->unk14.vz = env->targets->centerZ;
     } else {
         frame = entry->unk0;
         switch (frame) {

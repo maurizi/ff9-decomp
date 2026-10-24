@@ -73,7 +73,7 @@ s32 fx_1be_op80(s32 mode, Fx1beWork80 *w, Unk800F78A4 *env, Unk80100C78Entry *en
         D_801E95D4 = 8;
         D_801E95D8 = 8;
         D_801E95D0 = 2;
-        for (i = 0; i < env->targets->unk24; i++) {
+        for (i = 0; i < env->targets->targetCount; i++) {
             D_801E95E8[i].unk34 = ex->btlfx_rand() & 7;
             D_801E95E8[i].unk30 = 0x28;
             D_801E95E8[i].unk28.vx = ex->btlfx_randRange(-0x20, 0x20);
@@ -198,7 +198,7 @@ s32 fx_1be_op80(s32 mode, Fx1beWork80 *w, Unk800F78A4 *env, Unk80100C78Entry *en
             w->unk0[0xB] = 0x10;
             break;
         case 0x7C:
-            for (i = 0; i < env->targets->unk24; i++) {
+            for (i = 0; i < env->targets->targetCount; i++) {
                 ex->func_800E7ACC(i, (s32 *)&D_801E95E8[i].unk8);
                 ex->btlfx_setUnitRot(i, (s16 *)&D_801E95E8[i].unk0);
             }
@@ -269,7 +269,7 @@ s32 fx_1be_op80(s32 mode, Fx1beWork80 *w, Unk800F78A4 *env, Unk80100C78Entry *en
         }
         if (w->unk0[0xC] != 0) {
             w->unk0[0xC]--;
-            for (i = 0; i < env->targets->unk24; i++) {
+            for (i = 0; i < env->targets->targetCount; i++) {
                 u = &D_801E95E8[i];
                 if (u->unk34 == 0) {
                     if (u->unk30 != 0) {
@@ -313,7 +313,7 @@ s32 fx_1be_op80(s32 mode, Fx1beWork80 *w, Unk800F78A4 *env, Unk80100C78Entry *en
         }
         if (w->unk0[0x10] != 0) {
             w->unk0[0x10]--;
-            for (i = 0; i < env->targets->unk24; i++) {
+            for (i = 0; i < env->targets->targetCount; i++) {
                 ex->btlfx_getUnitHomePos(i, (s16 *)&D_801E95E8[i].unk18);
                 D_801E95E8[i].unk18.vy -= ex->math_sin(w->unk0[0x10] << 7) >> 1;
                 ex->btlfx_setUnitPos(i, (s16 *)&D_801E95E8[i].unk18);

@@ -46,9 +46,9 @@ s32 fx_180_op80(s32 mode, Fx180Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
         D_801E9258 = env;
         ex->btlfx_getUnitBodyPos(0x10, 0, (s16 *)&work->unk24);
         ex->btlfx_getUnitPos(0x10, (s16 *)&work->unk2C);
-        work->unk34.vx = env->targets->unk38;
-        work->unk34.vy = env->targets->unk3A;
-        work->unk34.vz = env->targets->unk3C;
+        work->unk34.vx = env->targets->centerX;
+        work->unk34.vy = env->targets->centerY;
+        work->unk34.vz = env->targets->centerZ;
         work->unk44.vx = work->unk24.vx;
         work->unk44.vy = work->unk24.vy;
         work->unk44.vz = work->unk24.vz;
@@ -158,9 +158,9 @@ s32 fx_180_op81(s32 mode, Fx180Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
     if (mode == 0) {
         *arg4 = 0x54;
     } else if (mode == 1) {
-        work->unk2C.vx = env->targets->unk38;
-        work->unk2C.vy = env->targets->unk3A;
-        work->unk2C.vz = env->targets->unk3C;
+        work->unk2C.vx = env->targets->centerX;
+        work->unk2C.vy = env->targets->centerY;
+        work->unk2C.vz = env->targets->centerZ;
         D_801E9258 = env;
         work->unk34.vx = work->unk2C.vx; work->unk34.vy = work->unk2C.vy; work->unk34.vz = work->unk2C.vz;
         work->unk3C.vx = work->unk2C.vx; work->unk3C.vy = work->unk2C.vy; work->unk3C.vz = work->unk2C.vz;
@@ -255,9 +255,9 @@ s32 fx_180_op82(s32 mode, Fx180Work82 *work, Unk800F78A4 *env, Unk80100C78Entry 
     } else if (mode == 1) {
         D_801E9258 = env;
         ex->btlfx_initEffModels(D_801E9268, 2);
-        work->unk4C.vx = env->targets->unk38;
-        work->unk4C.vy = env->targets->unk3A;
-        work->unk4C.vz = env->targets->unk3C;
+        work->unk4C.vx = env->targets->centerX;
+        work->unk4C.vy = env->targets->centerY;
+        work->unk4C.vz = env->targets->centerZ;
         work->unk20.vx = 0;
         work->unk20.vy = 0;
         work->unk20.vz = 0;
@@ -307,7 +307,7 @@ s32 fx_180_op82(s32 mode, Fx180Work82 *work, Unk800F78A4 *env, Unk80100C78Entry 
             }
             break;
         case 32:
-            for (i = 0; i < env->targets->unk24; i++) {
+            for (i = 0; i < env->targets->targetCount; i++) {
                 func_801E90A8(i);
             }
             break;
@@ -332,7 +332,7 @@ s32 fx_180_op82(s32 mode, Fx180Work82 *work, Unk800F78A4 *env, Unk80100C78Entry 
             }
         }
         if (frame >= 0x20) {
-            for (i = 0; i < env->targets->unk24; i++) {
+            for (i = 0; i < env->targets->targetCount; i++) {
                 if (func_801E8FD8(i) != 0) {
                     func_801E8F6C(i, 4);
                     ex->func_800D89E8(i);

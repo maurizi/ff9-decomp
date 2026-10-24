@@ -75,7 +75,7 @@ s32 fx_1fa_op81(s32 mode, void *work, Unk800F78A4 *env, Unk80100C78Entry *entry,
             }
             break;
         case 0x18:
-            for (i = 0; i < env->targets->unk24; i++) {
+            for (i = 0; i < env->targets->targetCount; i++) {
                 ex->btlfx_getUnitBodyPos(i, 0, (s16 *)&D_801E80FC[i]);
                 p = ex->func_800E3CEC(ex->btlfx_getFileData(entry->unk8, 0x14), (s32)&D_801E80FC[i]);
                 if (p != NULL) {

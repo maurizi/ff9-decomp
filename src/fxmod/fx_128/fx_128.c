@@ -91,16 +91,16 @@ s32 fx_128_op81(s32 mode, Fx128Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
         ex->btlfx_initEffModels(D_801E89E4, 7);
         ex->btlfx_getUnitPos(0x10, (s16 *)&work->unk50);
         ex->btlfx_getUnitRot(0x10, (s16 *)&work->unk58);
-        if (env->targets->unk24 == mode) {
+        if (env->targets->targetCount == mode) {
             ex->btlfx_getUnitBodyPos(0, 0, (s16 *)&work->unk60);
             ex->btlfx_getUnitPos(0, (s16 *)&work->unk68);
         } else {
-            work->unk60.vx = env->targets->unk38;
-            work->unk60.vy = env->targets->unk3A;
-            work->unk60.vz = env->targets->unk3C;
-            work->unk68.vx = env->targets->unk38;
-            work->unk68.vy = env->targets->unk3A;
-            work->unk68.vz = env->targets->unk3C;
+            work->unk60.vx = env->targets->centerX;
+            work->unk60.vy = env->targets->centerY;
+            work->unk60.vz = env->targets->centerZ;
+            work->unk68.vx = env->targets->centerX;
+            work->unk68.vy = env->targets->centerY;
+            work->unk68.vz = env->targets->centerZ;
             work->unk68.vy = 0;
         }
         work->unk24.vx = 0;
@@ -218,7 +218,7 @@ s32 fx_128_op81(s32 mode, Fx128Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
             work->unk88.vz = work->unk2C.vz;
             ex->btlfx_aimAngles((s16 *)&work->unk70, (s16 *)&work->unk60, (s16 *)&ang);
             work->unk24.vy = ang.vy;
-            if (env->targets->unk24 == 1 && k >= 0x25 && work->unk24.vx <= ang.vx) {
+            if (env->targets->targetCount == 1 && k >= 0x25 && work->unk24.vx <= ang.vx) {
                 work->unk24.vx = ang.vx;
             }
             func_801E8930(&D_801E8F94, k, &s);

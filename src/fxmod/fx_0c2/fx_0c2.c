@@ -42,7 +42,7 @@ s32 fx_0c2_op81(s32 mode, Fx0c2Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
         s32 n = *arg4;
         work->unk4C = n;
         D_801E847C = env;
-        if (n >= env->targets->unk24) {
+        if (n >= env->targets->targetCount) {
             func_801E8420(env, 7, 1);
             return 1;
         }
@@ -133,10 +133,10 @@ s32 fx_0c2_op82(s32 mode, Fx0c2Work82 *work, Unk800F78A4 *env, Unk80100C78Entry 
     if (mode == 0) {
         *arg4 = 0x10;
     } else if (mode == 1) {
-        work->unk8.vx = env->targets->unk38;
-        work->unk8.vy = env->targets->unk3A;
+        work->unk8.vx = env->targets->centerX;
+        work->unk8.vy = env->targets->centerY;
         D_801E847C = env;
-        work->unk8.vz = env->targets->unk3C;
+        work->unk8.vz = env->targets->centerZ;
     } else {
         frame = entry->unk0;
         return func_801E7EC4(0x10, frame, 0xF, &work->unk8, &work->unk0) != 0;
@@ -154,7 +154,7 @@ s32 fx_0c2_op83(s32 mode, Fx0c2Work83 *work, Unk800F78A4 *env, Unk80100C78Entry 
         s32 n = *arg4;
         work->unk10 = n;
         D_801E847C = env;
-        if (n >= env->targets->unk24) {
+        if (n >= env->targets->targetCount) {
             return 1;
         }
         ex->btlfx_getUnitPos(n, (s16 *)&work->unk8);

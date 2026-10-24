@@ -69,7 +69,7 @@ s32 fx_0b8_op80(s32 mode, Fx0b8Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
         work->unk1E4 = 8;
         work->unk1E8 = 8;
         D_801EC1B0 = 2;
-        for (i = 0; i < env->targets->unk24; i++) {
+        for (i = 0; i < env->targets->targetCount; i++) {
             D_801EC8C0[i].unk1C = ex->btlfx_randRange(0x200, 0x600);
             D_801EC8C0[i].unk1E = ex->btlfx_randRange(0x600, 0xA00);
             D_801EC8C0[i].unk20 = 0;
@@ -385,7 +385,7 @@ s32 fx_0b8_op80(s32 mode, Fx0b8Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             work->unk0[0x18] = 0x10;
             break;
         case 0x11E:
-            for (i = 0; i < env->targets->unk24; i++) {
+            for (i = 0; i < env->targets->targetCount; i++) {
                 ex->func_800E7ACC(i, (s32 *)&D_801EC8C0[i].unk8);
                 ex->btlfx_setUnitRot(i, &D_801EC8C0[i].unk0.vx);
             }
@@ -615,7 +615,7 @@ s32 fx_0b8_op80(s32 mode, Fx0b8Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
         }
         if (work->unk0[0x1B] != 0) {
             work->unk0[0x1B]--;
-            for (i = 0; i < env->targets->unk24; i++) {
+            for (i = 0; i < env->targets->targetCount; i++) {
                 r = func_801E7704(2, 0x30, work->unk0[0x1B], 0x1000, 0x200);
                 p2.vy = work->unk164.vy + ((ex->math_sin(D_801EC8C0[i].unk1C) * r) >> 12);
                 r = abs((ex->math_cos(D_801EC8C0[i].unk1C) * r) >> 12);
@@ -655,7 +655,7 @@ s32 fx_0b8_op80(s32 mode, Fx0b8Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
         }
         if (work->unk0[0x20] != 0) {
             work->unk0[0x20]--;
-            for (i = 0; i < env->targets->unk24; i++) {
+            for (i = 0; i < env->targets->targetCount; i++) {
                 ex->btlfx_getUnitHomePos(i, &D_801EC8C0[i].unk14.vx);
                 D_801EC8C0[i].unk14.vy -= ex->math_sin(work->unk0[0x20] << 7) >> 1;
                 ex->btlfx_setUnitPos(i, &D_801EC8C0[i].unk14.vx);

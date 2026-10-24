@@ -7,9 +7,9 @@ s32 fx_135_op80(s32 mode, Fx135Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
     if (mode == 0) {
         *arg4 = 0x20;
     } else if (mode == 1) {
-        work->unk8.vx = env->targets->unk38;
-        work->unk8.vy = env->targets->unk3A;
-        work->unk8.vz = env->targets->unk3C;
+        work->unk8.vx = env->targets->centerX;
+        work->unk8.vy = env->targets->centerY;
+        work->unk8.vz = env->targets->centerZ;
         work->unk8.vy -= 0xC8;
         D_801E7918 = env;
         ex->func_800DC858(0x10, 0, (u16 *)&work->unk10);

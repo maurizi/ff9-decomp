@@ -12,11 +12,11 @@ s32 fx_18d_op80(s32 mode, Fx18dWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
         work->unk0 = 0;
         D_801E7A38 = env;
         ex->btlfx_getUnitBodyPos(0, 0, (s16 *)&work->unk8);
-        work->unk8.vx = env->targets->unk38;
-        work->unk8.vz = env->targets->unk3C;
+        work->unk8.vx = env->targets->centerX;
+        work->unk8.vz = env->targets->centerZ;
         ex->btlfx_getUnitHomePos(0x10, (s16 *)&work->unk10);
-        work->unk18.vx = env->targets->unk38;
-        work->unk18.vz = env->targets->unk3C;
+        work->unk18.vx = env->targets->centerX;
+        work->unk18.vz = env->targets->centerZ;
         work->unk18.vy = 0;
         ex->btlfx_aimAngles((s16 *)&work->unk10, (s16 *)&work->unk18, (s16 *)&work->unk28);
         work->unk18.vx += (ex->math_sin(work->unk28.vy + 0x800) * 0x320) >> 12;

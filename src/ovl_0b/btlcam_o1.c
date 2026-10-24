@@ -57,7 +57,7 @@ void btlcam_playSeq(s32 arg0) {
 }
 
 void func_800C30B8(void) {
-    BtlUnit *u = g_btlfxEnv->targets->unk0;
+    BtlUnit *u = g_btlfxEnv->targets->caster;
     if (u->unk68 & 1) {
         D_800FE484 = u;
     }
