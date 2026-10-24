@@ -1,4 +1,4 @@
-/* Draft of fx_0fb_1 fx_0fb_1_op80. Status: 18 lines, 9 ignoring registers (build/w/nd.py, which now masks all |imm| >= 10000 data offsets). Cases 3-6 use fx_17a op80's final variable roles (src/fxmod/fx_17a); mode 0/1 are if/else-if branches with one return 0 (as fx_17a); further splits found by build/w/pgreedy.py + gen_regions.py. Case 3 reuses t (the original keeps it in t's spill slot), case 5's cos value is a block local declared after w (its slot comes last), and two dead `struct { s32 x; }` locals in the mode-1 block take the original's unused spill slots 196/200 (as in fx_0fb_0 op80). Left: mode-1 a0/a2 swap and second unkC.vy load, s0/s1 and s3/s6 swaps in case 5. */
+/* Draft of fx_0fb_1 fx_0fb_1_op80. Status: 11 lines, 9 ignoring registers, all in the mode-1 block (build/w/nd.py, which now masks all |imm| >= 10000 data offsets). Cases 3-6 use fx_17a op80's final variable roles (src/fxmod/fx_17a); mode 0/1 are if/else-if branches with one return 0 (as fx_17a); further splits found by build/w/pgreedy.py + gen_regions.py. Case 3 reuses t (the original keeps it in t's spill slot), case 5's cos value is a block local declared after w (its slot comes last), and two dead `struct { s32 x; }` locals in the mode-1 block take the original's unused spill slots 196/200 (as in fx_0fb_0 op80). Case 5: the tint and the 0x17 cos value use n, and 0x1000 - (frame << 7) uses r. Left: mode 1, where the original keeps a second unkC.vy load (lh a1,14(s5)) because its vx copy reuses a0 before that load (pre-sched2 order), and the a0/a2 roles of the vx/vz copies are swapped. */
 #include "fxmod/fx_0fb_1.h"
 
 typedef struct {
@@ -558,8 +558,8 @@ s32 fx_0fb_1_op80(s32 mode, Fx0fb1Op80Work *work, Unk800F78A4 *env, Unk80100C78E
         } else if (frame == 1) {
             ex->btlfx_drawScreenTint((u32 *)(env->unk20 + 1), 2, 0xFF, 0xFF, 0);
         } else if (frame < 6) {
-            zz8 = 0xFF - ((frame * 0xFF) / 6);
-            ex->btlfx_drawScreenTint((u32 *)(env->unk20 + 1), 1, zz8 >> 1, zz8 >> 1, zz8);
+            n = 0xFF - ((frame * 0xFF) / 6);
+            ex->btlfx_drawScreenTint((u32 *)(env->unk20 + 1), 1, n >> 1, n >> 1, n);
         }
         work->unk8C.vz += 0x18;
         ex->func_800E651C(D_801F0834, &col, frame);
@@ -569,11 +569,11 @@ s32 fx_0fb_1_op80(s32 mode, Fx0fb1Op80Work *work, Unk800F78A4 *env, Unk80100C78E
         ex->func_800E6624(work->unk4 * 7, 0x2C0, 0x100, 0x20, 0x80, 0x360, 0x100);
         if (frame < 0x20) {
             work->unk6C.vz += 0xC;
-            c = 0x1000 - (frame << 7);
+            r = 0x1000 - (frame << 7);
             ex->Hi_DrawEffModel(&work->unk6C, (VECTOR *)&work->unk54, (s32)&work->unk60, work->unkB8);
-            ex->Hi_ModifyEffModelRGB(work->unkB8, ((ex->math_sin(c >> 2) - 0x800) >> 5) - 0x80,
-                                     ((ex->math_sin(c >> 2) - 0x800) >> 5) - 0x80,
-                                     ((ex->math_sin(c >> 2) - 0x800) >> 5) - 0x80);
+            ex->Hi_ModifyEffModelRGB(work->unkB8, ((ex->math_sin(r >> 2) - 0x800) >> 5) - 0x80,
+                                     ((ex->math_sin(r >> 2) - 0x800) >> 5) - 0x80,
+                                     ((ex->math_sin(r >> 2) - 0x800) >> 5) - 0x80);
         }
         rot.vx = 0x980;
         rot.vy = 0x400;
@@ -629,8 +629,8 @@ s32 fx_0fb_1_op80(s32 mode, Fx0fb1Op80Work *work, Unk800F78A4 *env, Unk80100C78E
                                 (ex->math_sin(t >> 1) >> 1) + 0x800, 1, (u8 *)&D_801F0914[k], 1);
         }
         if (frame < 0x18) {
-            k = ex->math_cos((frame << 10) / 24);
-            ex->func_800D3B6C((u8 *)ex->btlfx_getFileData(entry->unk8, 0x17), &work->unkC, frame, k);
+            n = ex->math_cos((frame << 10) / 24);
+            ex->func_800D3B6C((u8 *)ex->btlfx_getFileData(entry->unk8, 0x17), &work->unkC, frame, n);
         }
         if (frame >= 8) {
             for (sp = 0; sp < 3; sp++) {
