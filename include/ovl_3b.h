@@ -8,13 +8,13 @@
 
 #define PARTY_EMPTY 0xFF /* empty slot in PartyRequest/PartySelect.slots */
 
-/* Party select request passed to menu_party_loadRequest (g_menu.unkC when the menu opens). */
+/* Party select request passed to menuParty_loadRequest (g_menu.unkC when the menu opens). */
 typedef struct {
     u8 size;      /* members to pick */
     u8 pad1[3];
     u8 party[4];  /* current party (character ids, PARTY_EMPTY = empty) */
     u8 reserve[8];
-    u8 fixed[8];  /* per character: nonzero = can't leave the party (menu_party_isFixed) */
+    u8 fixed[8];  /* per character: nonzero = can't leave the party (menuParty_isFixed) */
 } PartyRequest;
 
 enum { PARTY_ROW_PARTY, PARTY_ROW_RESERVE };
@@ -33,7 +33,7 @@ enum { PARTY_SEL_PICK, PARTY_SEL_SWAP }; /* PartySelect.mode */
 #define PARTY_TEXT_UNUSED    9   /* slot past the party size */
 #define PARTY_TEXT_MOVE_FROM 0xA /* "Move from this slot?", then 0xB "To which slot?" (+ mode) */
 
-/* Party select state (g_menuParty). */
+/* Party select state (s_menuParty). */
 typedef struct {
     u8 mode;       /* PARTY_SEL_*: picking the first slot, or the slot to swap it with */
     u8 size;       /* party size */
@@ -44,13 +44,13 @@ typedef struct {
     u8 slots[2][8]; /* [PARTY_ROW_*]: character ids, PARTY_EMPTY = empty */
     u8 fixed[8];   /* PartyRequest.fixed */
 } PartySelect;
-extern PartySelect g_menuParty;
+extern PartySelect s_menuParty;
 
 /* Window RECTs (.data) */
-extern RECT g_menuPartyTitleRect;
-extern RECT g_menuPartyHelpRect;
-extern RECT g_menuPartyListRect;
-extern RECT g_menuPartyInfoRect;
+extern RECT s_menuPartyTitleRect;
+extern RECT s_menuPartyHelpRect;
+extern RECT s_menuPartyListRect;
+extern RECT s_menuPartyInfoRect;
 
 /* main exe: candidates for ff9.h */
 /* Menu sounds for snd_playSe: main's menuList_up/down play SE_CURSOR on a move, menus play it on a pick too,
@@ -64,24 +64,24 @@ extern RECT g_menuPartyInfoRect;
  * (and ovl_3a) use the result unmasked, i.e. called it unprototyped. */
 s32 func_80028954(s32);
 
-void menu_party_moveInParty(void);
-void menu_party_moveInReserve(void);
-void menu_party_select(void);
-void menu_party_drawParty(void);
-void menu_party_drawInfo(void);
-void menu_party_drawCursor(void);
-void menu_party_input(void);
-void menu_party_draw(void);
-void menu_party_drawTitle(void);
-void menu_party_drawHelp(void);
-void menu_party_back(void);
-void menu_party_drawMember(s32, s32, s32, s32);
-void menu_party_drawPortrait(s32, s32, s32, s32, s32, u8);
-u8 menu_party_isFixed(s32);
-u8 menu_party_isValid(void);
-void menu_party_loadRequest(PartyRequest *);
-void menu_party_setHelpText(void);
-extern u8 g_menuPartyImage[]; /* image data for func_80028720 */
+void menuParty_inputParty(void);
+void menuParty_inputReserve(void);
+void menuParty_pick(void);
+void menuParty_drawParty(void);
+void menuParty_drawInfo(void);
+void menuParty_drawCursor(void);
+void menuParty_input(void);
+void menuParty_draw(void);
+void menuParty_drawTitle(void);
+void menuParty_drawHelp(void);
+void menuParty_confirm(void);
+void menuParty_drawMember(s32, s32, s32, s32);
+void menuParty_drawPortrait(s32, s32, s32, s32, s32, u8);
+u8 menuParty_isFixed(s32);
+u8 menuParty_isValid(void);
+void menuParty_loadRequest(PartyRequest *);
+void menuParty_updateHelp(void);
+extern u8 s_menuPartyImage[]; /* image data for func_80028720 */
 
 extern const u8 g_partyMenuText[]; /* text bank for this menu */
 
