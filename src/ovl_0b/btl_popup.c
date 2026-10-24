@@ -76,7 +76,7 @@ BtlPopup *btl_newPopup(BtlUnit *u) {
     BtlBone *bone;
     s16 i;
 
-    r = &g_gameState->unk1C->unk8E4.battle->popups;
+    r = &g_gameState->gameData->unk8E4.battle->popups;
     i = r->last - 1;
     if (i < 0) {
         i = 15;
@@ -156,11 +156,11 @@ u8 *btl_drawPopups(u8 *arg0) {
     u8 mask;
     Unk800F78A40 *e;
 
-    r = &g_gameState->unk1C->unk8E4.battle->popups;
+    r = &g_gameState->gameData->unk8E4.battle->popups;
     c.unk0 = (u32 *)arg0;
-    c.unk4 = &g_gameState->unk1C->unk10[g_gameState->unk1C->unk8][4];
-    gte_SetRotMatrix(&g_gameState->unk1C->unk18);
-    gte_SetTransMatrix(&g_gameState->unk1C->unk18);
+    c.unk4 = &g_gameState->gameData->unk10[g_gameState->gameData->unk8][4];
+    gte_SetRotMatrix(&g_gameState->gameData->unk18);
+    gte_SetTransMatrix(&g_gameState->gameData->unk18);
     j = r->last;
     for (i = 0; i < 16; i++) {
         p = &r->entries[j];
@@ -197,7 +197,7 @@ u8 *btl_drawPopups(u8 *arg0) {
     btl_updateScan();
     btl_updateDetect();
     mask = 0xFF;
-    for (u = g_gameState->unk1C->unk8E4.battle->unitList; u != NULL; u = u->next) {
+    for (u = g_gameState->gameData->unk8E4.battle->unitList; u != NULL; u = u->next) {
         if (!((u->flags >> 22) & 1)) {
             mask &= ~u->unitBit;
         }
@@ -346,13 +346,13 @@ void btl_drawStatusIcons(Unk800CCD00 *arg0) {
     u8 *ty;
     u8 *tz;
 
-    r = &g_gameState->unk1C->unk8E4.battle->popups;
-    btlfx_beginPrims((u8 *)arg0->unk0, g_gameState->unk1C->unk10[g_gameState->unk1C->unk8]);
+    r = &g_gameState->gameData->unk8E4.battle->popups;
+    btlfx_beginPrims((u8 *)arg0->unk0, g_gameState->gameData->unk10[g_gameState->gameData->unk8]);
     g_btlfxEnv->unk28 = 0;
     rot.vx = 0;
     rot.vz = 0;
     rot.pad = 1;
-    for (u = g_gameState->unk1C->unk8E4.battle->unitList; u != NULL; u = u->next) {
+    for (u = g_gameState->gameData->unk8E4.battle->unitList; u != NULL; u = u->next) {
         if (((u->flags >> 22) & 1) || (u->model->flags & 0x10)) {
             continue;
         }
@@ -369,11 +369,11 @@ void btl_drawStatusIcons(Unk800CCD00 *arg0) {
         sn = math_sin(u->rot[1]);
         cs = math_cos(u->rot[1]);
         if (u->flags & 1) {
-            bone = D_800F6B48[g_gameState->unk1C->characters[(u->flags >> 1) & 0xF].unk34.b.unk4];
-            ty = D_800F6BBC[g_gameState->unk1C->characters[(u->flags >> 1) & 0xF].unk34.b.unk4];
-            tz = D_800F6C30[g_gameState->unk1C->characters[(u->flags >> 1) & 0xF].unk34.b.unk4];
+            bone = D_800F6B48[g_gameState->gameData->characters[(u->flags >> 1) & 0xF].unk34.b.unk4];
+            ty = D_800F6BBC[g_gameState->gameData->characters[(u->flags >> 1) & 0xF].unk34.b.unk4];
+            tz = D_800F6C30[g_gameState->gameData->characters[(u->flags >> 1) & 0xF].unk34.b.unk4];
         } else {
-            BtlEnemyType *m = g_gameState->unk1C->unk8E4.battle->enemies[(u->flags >> 1) & 0xF].type;
+            BtlEnemyType *m = g_gameState->gameData->unk8E4.battle->enemies[(u->flags >> 1) & 0xF].type;
             bone = m->unk32;
             ty = m->unk38;
             tz = m->unk3E;
@@ -430,11 +430,11 @@ void btl_drawStatusCountdown(Unk800CCD00 *arg0) {
     s32 blink;
     u32 n;
 
-    for (u = g_gameState->unk1C->unk8E4.battle->unitList; u != NULL; u = u->next) {
+    for (u = g_gameState->gameData->unk8E4.battle->unitList; u != NULL; u = u->next) {
         if (((u->flags >> 22) & 1) || (u->model->flags & 0x10)) {
             continue;
         }
-        if (g_gameState->unk1C->unk8E4.battle->popups.hiddenMask & u->unitBit) {
+        if (g_gameState->gameData->unk8E4.battle->popups.hiddenMask & u->unitBit) {
             continue;
         }
         st = u->status;
@@ -442,10 +442,10 @@ void btl_drawStatusCountdown(Unk800CCD00 *arg0) {
             continue;
         }
         if (u->flags & 1) {
-            bone = D_800F6B48[g_gameState->unk1C->characters[(u->flags >> 1) & 0xF].unk34.b.unk4][5];
-            y = (s8)D_800F6BBC[g_gameState->unk1C->characters[(u->flags >> 1) & 0xF].unk34.b.unk4][5];
+            bone = D_800F6B48[g_gameState->gameData->characters[(u->flags >> 1) & 0xF].unk34.b.unk4][5];
+            y = (s8)D_800F6BBC[g_gameState->gameData->characters[(u->flags >> 1) & 0xF].unk34.b.unk4][5];
         } else {
-            m = g_gameState->unk1C->unk8E4.battle->enemies[(u->flags >> 1) & 0xF].type;
+            m = g_gameState->gameData->unk8E4.battle->enemies[(u->flags >> 1) & 0xF].type;
             bone = m->unk32[5];
             y = (s8)m->unk38[5];
         }
@@ -552,19 +552,19 @@ void *btl_getUnitName(BtlUnit *arg0) {
     u32 f = arg0->flags;
     Battle *b;
     if (!(f & 1)) {
-        b = g_gameState->unk1C->unk8E4.battle;
+        b = g_gameState->gameData->unk8E4.battle;
         return b->work->texts + b->enemies[(f >> 1) & 0xF].type->nameOfs;
     }
-    return &g_gameState->unk1C->characters[(f >> 1) & 0xF];
+    return &g_gameState->gameData->characters[(f >> 1) & 0xF];
 }
 
 void btl_startScan(s32 arg0) {
-    g_gameState->unk1C->unk8E4.battle->popups.scanUnit = arg0;
-    g_gameState->unk1C->unk8E4.battle->popups.unk1C8.w = 0;
+    g_gameState->gameData->unk8E4.battle->popups.scanUnit = arg0;
+    g_gameState->gameData->unk8E4.battle->popups.unk1C8.w = 0;
 }
 
 void btl_updateScan(void) {
-    Battle *b = g_gameState->unk1C->unk8E4.battle;
+    Battle *b = g_gameState->gameData->unk8E4.battle;
     BtlUnit *s = (BtlUnit *)b->popups.scanUnit;
     u8 buf[64];
     u32 k;
@@ -578,13 +578,13 @@ void btl_updateScan(void) {
     if (--b->popups.unk1C8.b[0] != 0xFF) {
         return;
     }
-    c = g_gameState->unk1C->unk8E4.battle;
+    c = g_gameState->gameData->unk8E4.battle;
     switch (c->popups.unk1C8.b[2]) {
     case 0:
         text_copy(buf, btl_getUnitName(s));
         text_append(buf, (u8 *)text_getFrom(D_800F6FB8, 10));
         text_formatInt(s->level, buf + text_getLength(buf), 0);
-        g_gameState->unk1C->unk8E4.battle->popups.unk1C8.b[2] = 1;
+        g_gameState->gameData->unk8E4.battle->popups.unk1C8.b[2] = 1;
         break;
     case 1:
         text_copy(buf, (u8 *)text_getFrom(D_800F6FB8, 11));
@@ -595,50 +595,50 @@ void btl_updateScan(void) {
         text_formatInt(s->mp, buf + text_getLength(buf), 0);
         text_append(buf, (u8 *)text_getFrom(D_800F6FB8, 13));
         text_formatInt(s->max->maxMp, buf + text_getLength(buf), 0);
-        g_gameState->unk1C->unk8E4.battle->popups.unk1C8.b[1] = 0;
-        g_gameState->unk1C->unk8E4.battle->popups.unk1C8.b[2] = 2;
+        g_gameState->gameData->unk8E4.battle->popups.unk1C8.b[1] = 0;
+        g_gameState->gameData->unk8E4.battle->popups.unk1C8.b[2] = 2;
         break;
     case 2:
         if (!(s->flags & 1)) {
             mask = c->enemies[(s->flags >> 1) & 0xF].type->category;
-            while ((j = g_gameState->unk1C->unk8E4.battle->popups.unk1C8.b[1]++) < 8) {
+            while ((j = g_gameState->gameData->unk8E4.battle->popups.unk1C8.b[1]++) < 8) {
                 if ((mask >> j) & 1) {
                     text_copy(buf, (u8 *)text_getFrom(D_800F6FB8, j));
                     goto show;
                 }
             }
         }
-        g_gameState->unk1C->unk8E4.battle->popups.unk1C8.b[1] = 0;
-        g_gameState->unk1C->unk8E4.battle->popups.unk1C8.b[2] = 3;
+        g_gameState->gameData->unk8E4.battle->popups.unk1C8.b[1] = 0;
+        g_gameState->gameData->unk8E4.battle->popups.unk1C8.b[2] = 3;
     case 3:
         mask = s->elemWeak & ~s->elemGuard;
-        while ((k = g_gameState->unk1C->unk8E4.battle->popups.unk1C8.b[1]++) < 8) {
+        while ((k = g_gameState->gameData->unk8E4.battle->popups.unk1C8.b[1]++) < 8) {
             if ((mask >> k) & 1) {
                 text_copy(buf, (u8 *)text_getFrom(D_800F6FB8, k + 14));
                 goto show;
             }
         }
     default:
-        g_gameState->unk1C->unk8E4.battle->popups.scanUnit = 0;
+        g_gameState->gameData->unk8E4.battle->popups.scanUnit = 0;
         btl_setBanner(0, 2);
         return;
     }
 show:
-    g_gameState->unk1C->unk8E4.battle->popups.unk1C8.b[0] = func_800F4FC8() - 1;
+    g_gameState->gameData->unk8E4.battle->popups.unk1C8.b[0] = func_800F4FC8() - 1;
     btl_setBanner((s32)buf, 2);
 }
 
 void btl_startDetect(BtlUnit *arg0) {
     if (!(arg0->flags & 1)) {
-        g_gameState->unk1C->unk8E4.battle->popups.unk1CC = &g_gameState->unk1C->unk8E4.battle->enemies[(arg0->flags >> 1) & 0xF];
-        if (g_gameState->unk1C->unk8E4.battle->popups.unk1CC->steal.w == -1) {
+        g_gameState->gameData->unk8E4.battle->popups.unk1CC = &g_gameState->gameData->unk8E4.battle->enemies[(arg0->flags >> 1) & 0xF];
+        if (g_gameState->gameData->unk8E4.battle->popups.unk1CC->steal.w == -1) {
             btl_setBanner(text_getFrom(D_800F6FB8, 9), 2);
-            g_gameState->unk1C->unk8E4.battle->popups.unk1D1 = 4;
-            g_gameState->unk1C->unk8E4.battle->popups.unk1D0 = func_800F4FC8() - 1;
+            g_gameState->gameData->unk8E4.battle->popups.unk1D1 = 4;
+            g_gameState->gameData->unk8E4.battle->popups.unk1D0 = func_800F4FC8() - 1;
             return;
         }
-        g_gameState->unk1C->unk8E4.battle->popups.unk1D1 = 0;
-        g_gameState->unk1C->unk8E4.battle->popups.unk1D0 = 0;
+        g_gameState->gameData->unk8E4.battle->popups.unk1D1 = 0;
+        g_gameState->gameData->unk8E4.battle->popups.unk1D0 = 0;
     }
 }
 
@@ -649,16 +649,16 @@ void btl_updateDetect(void) {
     u8 *s;
     s32 kind;
 
-    if (g_gameState->unk1C->unk8E4.battle->popups.unk1CC == NULL) {
+    if (g_gameState->gameData->unk8E4.battle->popups.unk1CC == NULL) {
         return;
     }
-    if (--g_gameState->unk1C->unk8E4.battle->popups.unk1D0 != 0xFF) {
+    if (--g_gameState->gameData->unk8E4.battle->popups.unk1D0 != 0xFF) {
         return;
     }
-    while ((i = g_gameState->unk1C->unk8E4.battle->popups.unk1D1++) < 4) {
-        id = g_gameState->unk1C->unk8E4.battle->popups.unk1CC->steal.b[3 - i];
+    while ((i = g_gameState->gameData->unk8E4.battle->popups.unk1D1++) < 4) {
+        id = g_gameState->gameData->unk8E4.battle->popups.unk1CC->steal.b[3 - i];
         if (id != 0xFF) {
-            g_gameState->unk1C->unk8E4.battle->popups.unk1D0 = func_800F4FC8() - 1;
+            g_gameState->gameData->unk8E4.battle->popups.unk1D0 = func_800F4FC8() - 1;
             text_copy(buf, (u8 *)text_getFrom(D_800F6FB8, 8));
             text_append(buf, btl_getItemName(id));
             text_append(buf, D_800A7C20);
@@ -669,7 +669,7 @@ void btl_updateDetect(void) {
     }
     s = NULL;
     kind = 1;
-    g_gameState->unk1C->unk8E4.battle->popups.unk1CC = NULL;
+    g_gameState->gameData->unk8E4.battle->popups.unk1CC = NULL;
 show:
     btl_setBanner((s32)s, kind);
 }
@@ -684,7 +684,7 @@ void btl_showCmdName(BtlCmd *arg0) {
         s = btl_getItemName(arg0->subNo);
         break;
     case BTL_CMD_RETURN_MAGIC:
-        s = g_gameState->unk1C->unk8E4.battle->work->texts + arg0->ability->nameOfs;
+        s = g_gameState->gameData->unk8E4.battle->work->texts + arg0->ability->nameOfs;
         break;
     default:
         if (arg0->subNo < 0xC0) {

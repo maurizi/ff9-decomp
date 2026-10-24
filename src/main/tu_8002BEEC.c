@@ -10,7 +10,7 @@ void gfx_init(u32 *ot0, u32 *ot1, s32 pk0, s32 pk1) {
     g_drawBufs.dispPos[0].vy = gs->dispEnv[0].disp.y;
     g_drawBufs.dispPos[1].vx = gs->dispEnv[1].disp.x;
     g_drawBufs.dispPos[1].vy = gs->dispEnv[1].disp.y;
-    g_drawBufs.cur = gs->unk1C->unk8;
+    g_drawBufs.cur = gs->gameData->unk8;
     g_primPtr = g_drawBufs.prims[g_drawBufs.cur];
     g_ot = g_drawBufs.ots[g_drawBufs.cur];
     pad_initRepeat();
@@ -75,7 +75,7 @@ void text_uploadPartyNames(s32 a) {
     s32 buf = text_initNameImage(a);
     s32 i;
     for (i = 0; i < 4; i++) {
-        if (g_gameState->unk1C->party[i] != NULL) {
+        if (g_gameState->gameData->party[i] != NULL) {
             text_renderPartyName(i);
         }
     }

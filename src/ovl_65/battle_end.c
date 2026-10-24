@@ -5,10 +5,10 @@ void battleEnd_main(void) {
     GameData *ctx;
     u8 i;
 
-    s = g_gameState->unk1C->unk8E4.ovl65->work;
+    s = g_gameState->gameData->unk8E4.ovl65->work;
     battleEnd_init();
     do {
-        ClearOTagR(g_gameState->unk1C->unk10[g_gameState->unk1C->unk8], 0x1000);
+        ClearOTagR(g_gameState->gameData->unk10[g_gameState->gameData->unk8], 0x1000);
         pad_update();
         switch (battleEnd_update()) {
         case 1:
@@ -25,18 +25,18 @@ void battleEnd_main(void) {
         DrawSync(0);
         VSync(g_gameState->vsyncMode);
         ResetGraph(1);
-        PutDispEnv(&g_gameState->dispEnv[g_gameState->unk1C->unk8]);
-        ctx = g_gameState->unk1C;
+        PutDispEnv(&g_gameState->dispEnv[g_gameState->gameData->unk8]);
+        ctx = g_gameState->gameData;
         i = ctx->unk8;
         DrawOTagEnv(ctx->unk10[i] + 0xFFF, &g_gameState->drawEnv[i]);
-        g_gameState->unk1C->unk8 ^= 1;
-        gfx_setBuffer(g_gameState->unk1C->unk8);
+        g_gameState->gameData->unk8 ^= 1;
+        gfx_setBuffer(g_gameState->gameData->unk8);
     } while (g_gameState->mode == 8);
     battleEnd_exit();
 }
 
 void battleEnd_init(void) {
-    Unk11C0 *s = g_gameState->unk1C->unk8E4.ovl65->work;
+    Unk11C0 *s = g_gameState->gameData->unk8E4.ovl65->work;
     FileEntry *e;
 
     game_freezeScreen();
@@ -51,16 +51,16 @@ void battleEnd_init(void) {
             msg_init();
         }
     }
-    if (g_gameState->unk1C->unk56F & 1) {
-        e = dep_find(g_gameState->unk1C->depTable, g_gameState->unk1C->fieldId | 0x50000);
+    if (g_gameState->gameData->unk56F & 1) {
+        e = dep_find(g_gameState->gameData->depTable, g_gameState->gameData->fieldId | 0x50000);
         if (e != NULL) {
-            g_gameState->unk1C->unk3A = e->unkC;
-            g_gameState->unk1C->sceneSector[1] = e->unk4;
-            g_gameState->unk1C->sceneSectors[1] = e->unk8;
-            e = dep_find(g_gameState->unk1C->depTable, e->unkC);
+            g_gameState->gameData->unk3A = e->unkC;
+            g_gameState->gameData->sceneSector[1] = e->unk4;
+            g_gameState->gameData->sceneSectors[1] = e->unk8;
+            e = dep_find(g_gameState->gameData->depTable, e->unkC);
             if (e != NULL) {
-                g_gameState->unk1C->sceneSector[0] = e->unk4;
-                g_gameState->unk1C->sceneSectors[0] = e->unk8;
+                g_gameState->gameData->sceneSector[0] = e->unk4;
+                g_gameState->gameData->sceneSectors[0] = e->unk8;
             }
         }
     }
@@ -68,23 +68,23 @@ void battleEnd_init(void) {
 }
 
 void battleEnd_exit(void) {
-    GameData *g = g_gameState->unk1C;
+    GameData *g = g_gameState->gameData;
     s32 i;
 
     if (!(g->unk56F & 8) && (g->unk0 & 0x20000000) && g->unk81C[0] != 0xFFFF) {
         g->unk0 |= 0x400000;
     }
-    g_gameState->unk1C->depTable = (FileTable *)-1;
+    g_gameState->gameData->depTable = (FileTable *)-1;
     if (g_gameState->mode == 0) {
         btl_soundCmd(0x8601, 0, 0x1E, 0, 0);
         for (i = 29; i >= 0; i--) {
             VSync(0);
         }
-        g = g_gameState->unk1C;
+        g = g_gameState->gameData;
         g->unk0 &= ~0x400000;
         snd_quit(g);
         g_resetCount++;
-        g_gameState->unk1C->unk0 |= 0x100000;
+        g_gameState->gameData->unk0 |= 0x100000;
     }
 }
 
@@ -104,20 +104,20 @@ s32 battleEnd_loadDb(void) {
         DrawSync(0);
     } else {
         e = file_find(1, 0x2713);
-        cdRead_init(g_gameState->unk1C->unk854, e->unk4, (e->unkC - e->unk4) << 11, (void *)D_80067948, 0, -1, 0);
-        while (cdRead_update(g_gameState->unk1C->unk854)) {
+        cdRead_init(g_gameState->gameData->unk854, e->unk4, (e->unkC - e->unk4) << 11, (void *)D_80067948, 0, -1, 0);
+        while (cdRead_update(g_gameState->gameData->unk854)) {
         }
     }
-    g_gameState->unk1C->unk8E4.ovl65->unk1354->unk4 = D_80067948;
-    db_register(g_gameState->unk1C->unk8E4.ovl65->unk1354->unk4, 0);
+    g_gameState->gameData->unk8E4.ovl65->unk1354->unk4 = D_80067948;
+    db_register(g_gameState->gameData->unk8E4.ovl65->unk1354->unk4, 0);
     return 0;
 }
 
 s32 battleEnd_unloadDb(void) {
-    Unk1354 *p = g_gameState->unk1C->unk8E4.ovl65->unk1354;
+    Unk1354 *p = g_gameState->gameData->unk8E4.ovl65->unk1354;
     if (p->unk4 != 0) {
         db_unregister((void *)p->unk4);
-        g_gameState->unk1C->unk8E4.ovl65->unk1354->unk4 = 0;
+        g_gameState->gameData->unk8E4.ovl65->unk1354->unk4 = 0;
     }
     return 0;
 }
@@ -133,10 +133,10 @@ void battleEnd_preloadScene(void) {
     s32 sector;
     s32 k;
 
-    b = g_gameState->unk1C->unk8E4.ovl65->work;
+    b = g_gameState->gameData->unk8E4.ovl65->work;
     preload_init();
-    g_gameState->unk1C->unk8BC = NULL;
-    if (g_gameState->unk1C->battleResult == 6) {
+    g_gameState->gameData->unk8BC = NULL;
+    if (g_gameState->gameData->battleResult == 6) {
         return;
     }
     id = 0x1000C;
@@ -165,20 +165,20 @@ void battleEnd_preloadScene(void) {
     if (b->unk6 != 1) {
         return;
     }
-    sector = g_gameState->unk1C->sceneSector[0];
-    id = g_gameState->unk1C->unk3A | 0x60000;
-    size = g_gameState->unk1C->sceneSectors[0] << 11;
+    sector = g_gameState->gameData->sceneSector[0];
+    id = g_gameState->gameData->unk3A | 0x60000;
+    size = g_gameState->gameData->sceneSectors[0] << 11;
     at = g_loadAreaEnd - (dst + k);
     at = at / 0x800 * 0x800;
     preload_setEntry(preload_add(), 0, id, (s32)dst, at, size, sector, size);
     dst += size;
-    sector = g_gameState->unk1C->sceneSector[1];
-    id = g_gameState->unk1C->fieldId | 0x50000;
-    size = g_gameState->unk1C->sceneSectors[1] << 11;
+    sector = g_gameState->gameData->sceneSector[1];
+    id = g_gameState->gameData->fieldId | 0x50000;
+    size = g_gameState->gameData->sceneSectors[1] << 11;
     at = g_loadAreaEnd - (dst + k);
     at = at / 0x800 * 0x800;
     preload_setEntry(preload_add(), 0, id, (s32)dst, at, size, sector, size);
-    g = g_gameState->unk1C;
+    g = g_gameState->gameData;
     if ((s16)g->fieldId == g->unk7EA && g->unk8AC != -1) {
         sector = g->unk8AC;
         id = g->unk7E8 | 0x70000;
@@ -212,7 +212,7 @@ void rewards_drawMembers(void) {
     for (i = 0; i < 4; i++) {
         if (s_rewards.winShown[i + 2] != 0) {
             r = &s_rewards.wins[i + 2].unk4;
-            c = g_gameState->unk1C->party[i];
+            c = g_gameState->gameData->party[i];
             if (c != NULL) {
                 alive = rewards_isRewarded(c, i);
                 dim = !alive;
@@ -309,7 +309,7 @@ void rewards_drawCurrentGil(void) {
     RECT *r = &s_rewards.wins[9].unk4;
     u8 buf[16];
     s32 x, y;
-    u32 gil = g_gameState->unk1C->gil;
+    u32 gil = g_gameState->gameData->gil;
 
     if (gil > GIL_MAX) {
         gil = GIL_MAX;
@@ -484,9 +484,9 @@ void rewards_findMembers(void) {
     s_rewards.expMembers = 0;
     for (; i < 4; i++) {
         if ((g_btlRewards.expMask >> i) & 1) {
-            if (g_gameState->unk1C->party[i] != NULL) {
-                s_rewards.getsExp[i] = func_801F_canExp(g_gameState->unk1C->party[i]);
-                s_rewards.getsAp[i] = func_801F_canAp(g_gameState->unk1C->party[i]);
+            if (g_gameState->gameData->party[i] != NULL) {
+                s_rewards.getsExp[i] = func_801F_canExp(g_gameState->gameData->party[i]);
+                s_rewards.getsAp[i] = func_801F_canAp(g_gameState->gameData->party[i]);
                 if (s_rewards.getsExp[i]) {
                     s_rewards.expMembers++;
                 }
@@ -604,7 +604,7 @@ void rewards_requestClose(void) {
 }
 
 s32 rewards_getKind(void) {
-    u8 mode = g_gameState->unk1C->battleResult;
+    u8 mode = g_gameState->gameData->battleResult;
     s32 ret = 0;
 
     if (mode == 4) {
@@ -876,7 +876,7 @@ void rewards_addAp(s32 arg0, u32 arg1) {
     s32 need;
     s32 have;
 
-    c = g_gameState->unk1C->party[arg0];
+    c = g_gameState->gameData->party[arg0];
     if (arg1 != 0 && func_80034A30(c)) {
         s_rewards.rewards.apGain[arg0].cur += arg1;
         for (i = 0; i < 5; i++) {
@@ -964,7 +964,7 @@ void rewards_drawLearnWin(Window *w) {
         ui_drawSprite(w->unk0 + 6, w->unk2 + 7, w->unk18, 0xBC, 0);
     } else {
         name = s_rewardsSupportNames + g_supportAbilities[id - ABILITY_SUPPORT_FIRST].unk2;
-        if (chr_testSupportBit(g_gameState->unk1C->party[slot]->supportAbilities, id)) {
+        if (chr_testSupportBit(g_gameState->gameData->party[slot]->supportAbilities, id)) {
             icon = 0xBD;
         } else {
             icon = 0xF4;
@@ -989,7 +989,7 @@ void rewards_initLearns(void) {
 
     for (i = 0; i < 4; i++) {
         if (s_rewards.getsAp[i] != 0) {
-            s_rewards.learns[i] = rewards_willLearn(g_gameState->unk1C->party[i], rewards_initApCounter(i));
+            s_rewards.learns[i] = rewards_willLearn(g_gameState->gameData->party[i], rewards_initApCounter(i));
         } else {
             s_rewards.learns[i] = 0;
         }
@@ -1005,7 +1005,7 @@ s32 rewards_initApCounter(s32 i) {
     u32 ap = s_rewards.rewards.ap;
     Counter *c = &s_rewards.rewards.apGain[i];
 
-    if (chr_hasSupportAbility(g_gameState->unk1C->party[i]->unk34.b.id, SUPPORT_ABILITY_UP)) {
+    if (chr_hasSupportAbility(g_gameState->gameData->party[i]->unk34.b.id, SUPPORT_ABILITY_UP)) {
         c->target = ap * 2;
     } else {
         c->target = ap;
@@ -1083,7 +1083,7 @@ void rewards_initExp(void) {
 
     for (i = 0; i < 4; i++) {
         if (s_rewards.getsExp[i] != 0) {
-            s_rewards.levelsUp[i] = rewards_willLevelUp(g_gameState->unk1C->party[i], rewards_initExpCounter(i));
+            s_rewards.levelsUp[i] = rewards_willLevelUp(g_gameState->gameData->party[i], rewards_initExpCounter(i));
         } else {
             s_rewards.levelsUp[i] = 0;
         }
@@ -1098,7 +1098,7 @@ void rewards_updateExp(void) {
 
 void rewards_addExp(s32 i, u32 exp) {
     u32 need;
-    Character *c = g_gameState->unk1C->party[i];
+    Character *c = g_gameState->gameData->party[i];
 
     if (exp != 0) {
         if (c->exp >= EXP_MAX) {
@@ -1132,7 +1132,7 @@ void rewards_showLevelUp(s32 arg0) {
 
 u32 rewards_initExpCounter(s32 arg0) {
     u32 exp = s_rewards.rewards.expEach;
-    Character *m = g_gameState->unk1C->party[arg0];
+    Character *m = g_gameState->gameData->party[arg0];
     Counter *c = &s_rewards.rewards.exp[arg0];
     u32 step;
 
@@ -1201,7 +1201,7 @@ void rewards_updateLevelUps(void) {
 }
 
 void rewards_levelUp(s32 arg0) {
-    Character *m = g_gameState->unk1C->party[arg0];
+    Character *m = g_gameState->gameData->party[arg0];
 
     chr_levelUp(m->unk34.b.id, m->level + 1);
     s_rewards.levelWins[arg0].queued++;
@@ -1269,7 +1269,7 @@ void rewards_initGil(void) {
     Character *m;
 
     for (i = 0; i < 4; i++) {
-        m = g_gameState->unk1C->party[i];
+        m = g_gameState->gameData->party[i];
         if (m != NULL && chr_hasSupportAbility(m->unk34.b.id, SUPPORT_MILLIONAIRE)) {
             found = 1;
         }
@@ -1299,12 +1299,12 @@ void rewards_addGil(s32 arg0) {
 
     if (arg0 != 0) {
         s_rewards.rewards.gil.cur += arg0;
-        gil = g_gameState->unk1C->gil;
+        gil = g_gameState->gameData->gil;
         if (gil + arg0 > GIL_MAX) {
             arg0 = GIL_MAX - gil;
             s_rewards.rewards.gil.cur = s_rewards.rewards.gil.target;
         }
-        g_gameState->unk1C->gil += arg0;
+        g_gameState->gameData->gil += arg0;
     }
 }
 

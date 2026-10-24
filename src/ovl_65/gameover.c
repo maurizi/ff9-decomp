@@ -110,7 +110,7 @@ void gameover_loadImage(s32 arg0) {
 s32 battleEnd_update(void) {
     GameData *g;
 
-    g = g_gameState->unk1C;
+    g = g_gameState->gameData;
     msg_beginDraw();
     switch (g->battleResult) {
     case 1:
@@ -134,7 +134,7 @@ s32 battleEnd_update(void) {
             timer_enable(0);
         }
         func_800F4E68();
-        gameover_main((s32)g_gameState->unk1C->unk8E4.ovl65->work->unk1C);
+        gameover_main((s32)g_gameState->gameData->unk8E4.ovl65->work->unk1C);
         return 2;
     }
     return 0;

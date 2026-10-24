@@ -11,11 +11,11 @@ void evt_setNextBattle(u16 a) {
 void func_80021680(a)
     s16 a;
 {
-    g_gameState->unk1C->unk8B2 = a;
+    g_gameState->gameData->unk8B2 = a;
 }
 
 s32 evt_createModel(Unk8004AB64 *a) {
-    return g_gameState->unk1C->unk838(a->unk34 | DB_MODEL, a);
+    return g_gameState->gameData->unk838(a->unk34 | DB_MODEL, a);
 }
 
 s32 evt_getAnimFrameCount(a, b)

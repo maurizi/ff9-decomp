@@ -51,7 +51,7 @@ s32 text_renderNameGlyph(s32 x, s32 hi, s32 c) {
 }
 
 s32 text_drawChar(s32 x, s32 y, s32 otz, u8 c, s32 mode) {
-    u32 *tbl = g_gameState->unk1C->unk7D4->unkC;
+    u32 *tbl = g_gameState->gameData->unk7D4->unkC;
     u32 g;
     s32 w;
     SprtWords *p;
@@ -73,7 +73,7 @@ s32 text_drawChar(s32 x, s32 y, s32 otz, u8 c, s32 mode) {
 }
 
 void text_draw(s32 x, s32 y, s32 otz, u8 *s, s32 pal) {
-    Unk7D4 *f = g_gameState->unk1C->unk7D4;
+    Unk7D4 *f = g_gameState->gameData->unk7D4;
     s32 th = f->unk4 >> 8;
     SprtWords *p = (SprtWords *)g_primPtr;
     u32 *ot = &g_ot[otz];
@@ -118,7 +118,7 @@ u8 *text_buildBlock(s32 x, s32 y, u32 *ot, u8 *s, s32 mode, u8 *pkt) {
     s32 c;
     s32 k;
 
-    font = g_gameState->unk1C->unk7D4;
+    font = g_gameState->gameData->unk7D4;
     g_textColor = mode;
     x0 = x;
     th = font->unk4 >> 8;
@@ -244,11 +244,11 @@ u8 *text_buildPlain(s32 x, s32 y, u32 *ot, Character *ch, s32 *w, u8 *pkt) {
     s32 c;
     s32 code;
 
-    font = g_gameState->unk1C->unk7D4;
+    font = g_gameState->gameData->unk7D4;
     s = ch->unk0;
     x0 = x;
     th = font->unk4 >> 8;
-    kanji = g_gameState->unk1C->unk84C;
+    kanji = g_gameState->gameData->unk84C;
     th2 = 0;
     if (kanji != NULL) {
         th2 = kanji->unk0 >> 8;
@@ -529,47 +529,47 @@ u8 *text_buildCode(s32 x, s32 y, u32 *ot, s32 code, s32 *w, u8 *pkt) {
         pkt = text_buildDpad(x, y + 2, ot, 12, 0, w, pkt);
         break;
     case TEXT_CHAR_NAME + 0:
-        pkt = text_buildPlain(x, y, ot, &g_gameState->unk1C->characters[0], w, pkt);
+        pkt = text_buildPlain(x, y, ot, &g_gameState->gameData->characters[0], w, pkt);
         break;
     case TEXT_CHAR_NAME + 1:
-        pkt = text_buildPlain(x, y, ot, &g_gameState->unk1C->characters[1], w, pkt);
+        pkt = text_buildPlain(x, y, ot, &g_gameState->gameData->characters[1], w, pkt);
         break;
     case TEXT_CHAR_NAME + 2:
-        pkt = text_buildPlain(x, y, ot, &g_gameState->unk1C->characters[2], w, pkt);
+        pkt = text_buildPlain(x, y, ot, &g_gameState->gameData->characters[2], w, pkt);
         break;
     case TEXT_CHAR_NAME + 3:
-        pkt = text_buildPlain(x, y, ot, &g_gameState->unk1C->characters[3], w, pkt);
+        pkt = text_buildPlain(x, y, ot, &g_gameState->gameData->characters[3], w, pkt);
         break;
     case TEXT_CHAR_NAME + 4:
-        pkt = text_buildPlain(x, y, ot, &g_gameState->unk1C->characters[4], w, pkt);
+        pkt = text_buildPlain(x, y, ot, &g_gameState->gameData->characters[4], w, pkt);
         break;
     case TEXT_CHAR_NAME + 5:
-        pkt = text_buildPlain(x, y, ot, &g_gameState->unk1C->characters[5], w, pkt);
+        pkt = text_buildPlain(x, y, ot, &g_gameState->gameData->characters[5], w, pkt);
         break;
     case TEXT_CHAR_NAME + 6:
-        pkt = text_buildPlain(x, y, ot, &g_gameState->unk1C->characters[6], w, pkt);
+        pkt = text_buildPlain(x, y, ot, &g_gameState->gameData->characters[6], w, pkt);
         break;
     case TEXT_CHAR_NAME + 7:
-        pkt = text_buildPlain(x, y, ot, &g_gameState->unk1C->characters[7], w, pkt);
+        pkt = text_buildPlain(x, y, ot, &g_gameState->gameData->characters[7], w, pkt);
         break;
     case TEXT_PARTY_NAME + 0:
-        if (g_gameState->unk1C->party[0] != NULL) {
-            pkt = text_buildPlain(x, y, ot, g_gameState->unk1C->party[0], w, pkt);
+        if (g_gameState->gameData->party[0] != NULL) {
+            pkt = text_buildPlain(x, y, ot, g_gameState->gameData->party[0], w, pkt);
         }
         break;
     case TEXT_PARTY_NAME + 1:
-        if (g_gameState->unk1C->party[1] != NULL) {
-            pkt = text_buildPlain(x, y, ot, g_gameState->unk1C->party[1], w, pkt);
+        if (g_gameState->gameData->party[1] != NULL) {
+            pkt = text_buildPlain(x, y, ot, g_gameState->gameData->party[1], w, pkt);
         }
         break;
     case TEXT_PARTY_NAME + 2:
-        if (g_gameState->unk1C->party[2] != NULL) {
-            pkt = text_buildPlain(x, y, ot, g_gameState->unk1C->party[2], w, pkt);
+        if (g_gameState->gameData->party[2] != NULL) {
+            pkt = text_buildPlain(x, y, ot, g_gameState->gameData->party[2], w, pkt);
         }
         break;
     case TEXT_PARTY_NAME + 3:
-        if (g_gameState->unk1C->party[3] != NULL) {
-            pkt = text_buildPlain(x, y, ot, g_gameState->unk1C->party[3], w, pkt);
+        if (g_gameState->gameData->party[3] != NULL) {
+            pkt = text_buildPlain(x, y, ot, g_gameState->gameData->party[3], w, pkt);
         }
         break;
     }
@@ -643,53 +643,53 @@ s32 text_getCodeWidth(s32 c) {
         r = g_uiSprites[12].unk4;
         break;
     case TEXT_CHAR_NAME + 0:
-        r = text_measureWidth((s32)&g_gameState->unk1C->characters[0]);
+        r = text_measureWidth((s32)&g_gameState->gameData->characters[0]);
         break;
     case TEXT_CHAR_NAME + 1:
-        r = text_measureWidth((s32)&g_gameState->unk1C->characters[1]);
+        r = text_measureWidth((s32)&g_gameState->gameData->characters[1]);
         break;
     case TEXT_CHAR_NAME + 2:
-        r = text_measureWidth((s32)&g_gameState->unk1C->characters[2]);
+        r = text_measureWidth((s32)&g_gameState->gameData->characters[2]);
         break;
     case TEXT_CHAR_NAME + 3:
-        r = text_measureWidth((s32)&g_gameState->unk1C->characters[3]);
+        r = text_measureWidth((s32)&g_gameState->gameData->characters[3]);
         break;
     case TEXT_CHAR_NAME + 4:
-        r = text_measureWidth((s32)&g_gameState->unk1C->characters[4]);
+        r = text_measureWidth((s32)&g_gameState->gameData->characters[4]);
         break;
     case TEXT_CHAR_NAME + 5:
-        r = text_measureWidth((s32)&g_gameState->unk1C->characters[5]);
+        r = text_measureWidth((s32)&g_gameState->gameData->characters[5]);
         break;
     case TEXT_CHAR_NAME + 6:
-        r = text_measureWidth((s32)&g_gameState->unk1C->characters[6]);
+        r = text_measureWidth((s32)&g_gameState->gameData->characters[6]);
         break;
     case TEXT_CHAR_NAME + 7:
-        r = text_measureWidth((s32)&g_gameState->unk1C->characters[7]);
+        r = text_measureWidth((s32)&g_gameState->gameData->characters[7]);
         break;
     case TEXT_PARTY_NAME + 0:
-        if (g_gameState->unk1C->party[0] != NULL) {
-            r = text_measureWidth((s32)g_gameState->unk1C->party[0]);
+        if (g_gameState->gameData->party[0] != NULL) {
+            r = text_measureWidth((s32)g_gameState->gameData->party[0]);
         } else {
             r = 0;
         }
         break;
     case TEXT_PARTY_NAME + 1:
-        if (g_gameState->unk1C->party[1] != NULL) {
-            r = text_measureWidth((s32)g_gameState->unk1C->party[1]);
+        if (g_gameState->gameData->party[1] != NULL) {
+            r = text_measureWidth((s32)g_gameState->gameData->party[1]);
         } else {
             r = 0;
         }
         break;
     case TEXT_PARTY_NAME + 2:
-        if (g_gameState->unk1C->party[2] != NULL) {
-            r = text_measureWidth((s32)g_gameState->unk1C->party[2]);
+        if (g_gameState->gameData->party[2] != NULL) {
+            r = text_measureWidth((s32)g_gameState->gameData->party[2]);
         } else {
             r = 0;
         }
         break;
     case TEXT_PARTY_NAME + 3:
-        if (g_gameState->unk1C->party[3] != NULL) {
-            r = text_measureWidth((s32)g_gameState->unk1C->party[3]);
+        if (g_gameState->gameData->party[3] != NULL) {
+            r = text_measureWidth((s32)g_gameState->gameData->party[3]);
         } else {
             r = 0;
         }
@@ -758,7 +758,7 @@ u8 *text_append(u8 *dst, u8 *src) {
     ret = dst;
     s = ret;
     p = s;
-    th = g_gameState->unk1C->unk7D4->unk4 >> 8;
+    th = g_gameState->gameData->unk7D4->unk4 >> 8;
     while ((c = *p) != 0xFF) {
         p++;
         if (c == 0xF9) {
@@ -771,7 +771,7 @@ u8 *text_append(u8 *dst, u8 *src) {
         }
     }
     dst += p - s;
-    th2 = g_gameState->unk1C->unk7D4->unk4 >> 8;
+    th2 = g_gameState->gameData->unk7D4->unk4 >> 8;
     while ((c2 = *src) != 0xFF) {
         *dst++ = *src++;
         if (c2 == 0xF9) {
@@ -837,8 +837,8 @@ TextSize text_measure(u8 *s) {
     memset(&r, 0, 4);
     w = 0;
     maxw = 0;
-    font = g_gameState->unk1C->unk7D4;
-    kanji = g_gameState->unk1C->unk84C;
+    font = g_gameState->gameData->unk7D4;
+    kanji = g_gameState->gameData->unk84C;
     h = 15;
     th2 = 0;
     if (s == NULL) {
@@ -946,7 +946,7 @@ void text_renderPartyName(s32 arg0) {
     s32 x = (arg0 & 1) * 0x54;
     s32 y = arg0 >> 1;
     s32 i;
-    u8 *name = g_gameState->unk1C->party[arg0]->unk0;
+    u8 *name = g_gameState->gameData->party[arg0]->unk0;
 
     for (i = 0; i < 7; i++) {
         if (*name == 0xFF) {
@@ -1154,7 +1154,7 @@ void text_formatInt(s32 v, u8 *buf, s32 ascii) {
 
 s32 text_getLength(u8 *s) {
     u8 *start = s;
-    u8 lim = g_gameState->unk1C->unk7D4->unk4 >> 8;
+    u8 lim = g_gameState->gameData->unk7D4->unk4 >> 8;
     s32 c;
 
     while ((c = *s) != TEXT_END) {
@@ -1173,7 +1173,7 @@ s32 text_getLength(u8 *s) {
 
 u8 *text_copy(u8 *dst, u8 *src) {
     u8 *start = dst;
-    u8 lim = g_gameState->unk1C->unk7D4->unk4 >> 8;
+    u8 lim = g_gameState->gameData->unk7D4->unk4 >> 8;
     s32 c;
 
     while ((c = *src) != TEXT_END) {

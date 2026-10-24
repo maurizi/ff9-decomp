@@ -3528,7 +3528,7 @@ BtlUnit *btlui_findKoUnit(u8);
 /* first unit flagged as the current target (bits 28 and 29 of BtlUnit.flags) */
 static inline BtlUnit *find_target(void) {
     BtlUnit *u;
-    for (u = g_gameState->unk1C->unk8E4.battle->unitList; u != NULL; u = u->next) {
+    for (u = g_gameState->gameData->unk8E4.battle->unitList; u != NULL; u = u->next) {
         if ((u->flags & 0x30000000) == 0x30000000) {
             return u;
         }
@@ -3662,7 +3662,7 @@ s32 chr_getDefaultSet(Character *);
 /* battle menu: unit under the target cursor (inlined by its callers) */
 static inline BtlUnit *BtlFindTargetCursor(void) {
     BtlUnit *p;
-    for (p = g_gameState->unk1C->unk8E4.battle->unitList; p != NULL; p = p->next) {
+    for (p = g_gameState->gameData->unk8E4.battle->unitList; p != NULL; p = p->next) {
         if ((p->flags & 0x30000000) == 0x30000000) {
             return p;
         }
@@ -3678,7 +3678,7 @@ static inline s32 btlui_getTargeting_inline(void) {
         return 2;
     }
     n = 0;
-    for (u = g_gameState->unk1C->unk8E4.battle->unitList; u != 0; u = u->next) {
+    for (u = g_gameState->gameData->unk8E4.battle->unitList; u != 0; u = u->next) {
         if ((u->flags & 0x30000000) == 0x30000000) {
             n++;
         }
@@ -3946,7 +3946,7 @@ extern RECT D_800FDE34;
     gte_rtps()
 
 /* btl_drawShadow: shadow quad q of entry e in the current buffer */
-#define SHADOW_QUAD(q) e->unk8[g_gameState->unk1C->unk8][q]
+#define SHADOW_QUAD(q) e->unk8[g_gameState->gameData->unk8][q]
 
 typedef struct {
     u32 unk0;
@@ -4121,7 +4121,7 @@ s32 btl_loadEnemyModelsStep(s32, s32, Unk800AA504 *);
 /* inlined into btl_loadSoundsStep: append the ids of file-table entries of the
  * given type/kind to dst, skipping duplicates */
 static inline void btl_loadSoundsStep_collect(s16 *dst, u32 type, u32 kind) {
-    FileTable *t = g_gameState->unk1C->depTable;
+    FileTable *t = g_gameState->gameData->depTable;
     FileEntryX *first = (FileEntryX *)t->unk4;
     FileEntryX *e = &first[t->unk2] - 1;
     s16 *q = dst;

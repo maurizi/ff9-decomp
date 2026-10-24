@@ -34,8 +34,8 @@ void opening_startLeave(void) {
     if (opening_titleGetCursor() == TITLE_NEW_GAME) {
         opening_initNewGame();
         g_gameState->mode = 1;
-        g_gameState->unk1C->fieldId = 0x46;
-        g_gameState->unk1C->unk3A = 2;
+        g_gameState->gameData->fieldId = 0x46;
+        g_gameState->gameData->unk3A = 2;
     }
 }
 

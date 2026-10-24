@@ -350,7 +350,7 @@ void fadeFlat_seek(FadeState *p, s32 n) {
 }
 
 void fadeFlat_draw(FadeState *p) {
-    u32 *ot = fade_getOt(g_gameState->unk1C->unk8);
+    u32 *ot = fade_getOt(g_gameState->gameData->unk8);
     s32 tp = 0x40;
     TILE *t;
     u8 *dr;

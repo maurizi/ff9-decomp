@@ -4,7 +4,7 @@ void func_80053924(void) {
 }
 
 void func_8005392C(void) {
-    GameData *d = g_gameState->unk1C;
+    GameData *d = g_gameState->gameData;
     d->unk568 = 0;
     d->unk56A = 0;
     d->unk56C = 0;
@@ -60,13 +60,13 @@ s32 swirl_update(s16 arg0, s16 arg1) {
     x = arg0;
     y = arg1;
     g_swirlParams = g_swirlVariant ? &D_8006F2E0[1] : &D_8006F2E0[0];
-    g_swirlOt = g_swirlPkt = g_swirlBuf + (g_gameState->unk1C->unk8 << 10);
+    g_swirlOt = g_swirlPkt = g_swirlBuf + (g_gameState->gameData->unk8 << 10);
     ClearOTag(g_swirlOt, 5);
     g_swirlPkt += 5;
     if (g_swirlFrame < 0x79) {
         if (g_swirlFrame == 0) {
             gs = g_gameState;
-            gs->unk1C->unk0 &= ~0x20;
+            gs->gameData->unk0 &= ~0x20;
             *(u32 *)&gs->drawEnv[0].isbg = *(u32 *)&gs->drawEnv[1].isbg = 1;
             g_swirlFlash = 0;
             g_swirlFade = g_swirlParams->unkA;
@@ -91,7 +91,7 @@ s32 swirl_update(s16 arg0, s16 arg1) {
             y += c * (g_gameState->drawEnv->clip.h / 2 - y) / 4096;
         }
         g_swirlPkt = swirl_buildMesh(g_swirlPkt, x, y);
-        i = g_gameState->unk1C->unk8;
+        i = g_gameState->gameData->unk8;
         SetDrawMove(g_swirlPkt, &g_gameState->dispEnv[i].disp, g_gameState->drawEnv[i].clip.x, g_gameState->drawEnv[i].clip.y);
         addPrim(g_swirlOt, g_swirlPkt);
         g_swirlPkt += 8;
@@ -120,7 +120,7 @@ s32 swirl_update(s16 arg0, s16 arg1) {
         addPrim(g_swirlOt, g_swirlPkt);
         g_swirlPkt += 4;
     }
-    SetDrawEnv((DR_ENV *)g_swirlPkt, &g_gameState->drawEnv[g_gameState->unk1C->unk8]);
+    SetDrawEnv((DR_ENV *)g_swirlPkt, &g_gameState->drawEnv[g_gameState->gameData->unk8]);
     addPrim(g_swirlOt, g_swirlPkt);
     g_swirlPkt += 16;
     setlen(g_swirlPkt, 2);
@@ -128,8 +128,8 @@ s32 swirl_update(s16 arg0, s16 arg1) {
     g_swirlPkt[2] = 0;
     addPrim(&g_swirlOt[3], g_swirlPkt);
     g_swirlPkt += 4;
-    setaddr(&g_swirlOt[4], getaddr(g_gameState->unk1C->unk10[g_gameState->unk1C->unk8]));
-    setaddr(g_gameState->unk1C->unk10[g_gameState->unk1C->unk8], g_swirlOt);
+    setaddr(&g_swirlOt[4], getaddr(g_gameState->gameData->unk10[g_gameState->gameData->unk8]));
+    setaddr(g_gameState->gameData->unk10[g_gameState->gameData->unk8], g_swirlOt);
     if (g_swirlFrame == 0) {
         DrawSync(0);
         setlen(g_swirlPkt, 2);
@@ -274,7 +274,7 @@ void swirl_drawMesh(void) {
     p += 10;
     for (i = 0; i < 8; i++) {
         v = &g_swirlMesh[i * 9];
-        tp = ((((g_swirlColumns[i].vx + g_gameState->dispEnv[g_gameState->unk1C->unk8].disp.x) & 0x3FF) >> 6) | 0x100) << 16;
+        tp = ((((g_swirlColumns[i].vx + g_gameState->dispEnv[g_gameState->gameData->unk8].disp.x) & 0x3FF) >> 6) | 0x100) << 16;
         u0 = g_swirlColumns[i].vx & 0x3F;
         u1 = u0 + (g_swirlColumns[i + 1].vx - g_swirlColumns[i].vx) - 1;
         for (j = 0; j < 8; j++) {

@@ -65,8 +65,8 @@ void menuItem_inputTarget(void) {
         }
         if (g_padRepeat & BTN_CROSS) {
             i = (l->top + l->cursor) * 2 + l->col;
-            menuItem_useOnTarget(g_gameState->unk1C->items.slots[i].id);
-            if (g_gameState->unk1C->items.slots[i].count == 0) {
+            menuItem_useOnTarget(g_gameState->gameData->items.slots[i].id);
+            if (g_gameState->gameData->items.slots[i].count == 0) {
                 menuItem_closeTarget();
             }
         } else if (g_padRepeat & PAD_UP) {
@@ -109,9 +109,9 @@ void menuItem_inputManualArrange(void) {
             }
             snd_playSe(SE_CURSOR);
             i = (l->cursor + l->top) * 2 + l->col;
-            tmp = g_gameState->unk1C->items.slots[s_menuItem.swapFrom];
-            g_gameState->unk1C->items.slots[s_menuItem.swapFrom] = g_gameState->unk1C->items.slots[i];
-            g_gameState->unk1C->items.slots[i] = tmp;
+            tmp = g_gameState->gameData->items.slots[s_menuItem.swapFrom];
+            g_gameState->gameData->items.slots[s_menuItem.swapFrom] = g_gameState->gameData->items.slots[i];
+            g_gameState->gameData->items.slots[i] = tmp;
             s_menuItem.swapPicked = 0;
             return;
         }
@@ -128,7 +128,7 @@ void menuItem_selectItem(s32 idx, MenuList *l) {
     u8 ok;
     s32 id;
 
-    p = &g_gameState->unk1C->items.slots[idx];
+    p = &g_gameState->gameData->items.slots[idx];
     ok = 0;
     if (p->unk1 != 0 && p->unk0 != ITEM_NONE && p->unk0 >= ITEM_FIRST_USABLE) {
         id = p->unk0;
@@ -273,7 +273,7 @@ void menuItem_openTarget(void) {
     m = &s_menuItem;
     m->slot = 0;
 loop:
-    if (gs->unk1C->party[m->slot] == NULL) {
+    if (gs->gameData->party[m->slot] == NULL) {
         if (++m->slot < 4) {
             goto loop;
         }
@@ -290,8 +290,8 @@ void menuItem_sortAuto(void) {
 
     n = 0;
     for (i = 0; i < ITEM_SLOT_COUNT; i++) {
-        if (g_gameState->unk1C->items.slots[i].count != 0 && g_gameState->unk1C->items.slots[i].id != ITEM_NONE) {
-            s_menuItemSortBuf[n++] = g_gameState->unk1C->items.slots[i];
+        if (g_gameState->gameData->items.slots[i].count != 0 && g_gameState->gameData->items.slots[i].id != ITEM_NONE) {
+            s_menuItemSortBuf[n++] = g_gameState->gameData->items.slots[i];
         }
     }
     for (i = 0; i < n - 1; i++) {
@@ -309,10 +309,10 @@ void menuItem_sortAuto(void) {
         }
     }
     for (i = 0; i < n; i++) {
-        g_gameState->unk1C->items.slots[i] = s_menuItemSortBuf[i];
+        g_gameState->gameData->items.slots[i] = s_menuItemSortBuf[i];
     }
     for (i = n; i < ITEM_SLOT_COUNT; i++) {
-        g_gameState->unk1C->items.slots[i].count = 0;
+        g_gameState->gameData->items.slots[i].count = 0;
     }
     s_menuItem.itemList.col = 0;
     s_menuItem.itemList.cursor = 0;
@@ -396,7 +396,7 @@ void menuItem_updateHelp(void) {
     } else {
         return;
     }
-    p = &g_gameState->unk1C->items.slots[menuItem_getSlot(l)];
+    p = &g_gameState->gameData->items.slots[menuItem_getSlot(l)];
     if (p->unk1 != 0) {
         h->text = &s_menuItemHelp[g_itemTable[p->unk0].unk2];
     }
@@ -592,7 +592,7 @@ void menuItem_useOnTarget(s32 id) {
 
     i = id - ITEM_FIRST_USABLE;
     e = &D_8006B1F4[i];
-    c = g_gameState->unk1C->party[s_menuItem.slot];
+    c = g_gameState->gameData->party[s_menuItem.slot];
     if (item_useOnMember(c, c, e, e->unk4, 0)) {
         snd_playSe(SE_USE_ITEM);
         item_remove(id, 1);
@@ -637,7 +637,7 @@ void menuItem_drawTargetWindow(void) {
 
     if (s_menuItem.charWinOpen != 0) {
         for (i = 0; i < 4; i++) {
-            if (g_gameState->unk1C->party[i] != NULL) {
+            if (g_gameState->gameData->party[i] != NULL) {
                 ui_drawMemberSummary(r->x + 8, r->y + 6 + i * 0x2B, 0x14, i, s_menuItem.targetMode);
             }
         }
@@ -647,7 +647,7 @@ void menuItem_drawTargetWindow(void) {
 }
 
 void menuItem_drawRow(s32 col, s32 row, s32 i, MenuView *v) {
-    UnkPair *p = &g_gameState->unk1C->items.slots[i];
+    UnkPair *p = &g_gameState->gameData->items.slots[i];
     Unk80069018 *it;
     u8 ok;
     s32 x, y, x2;

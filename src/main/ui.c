@@ -30,8 +30,8 @@ void ui_drawCharStatus(s32 x, s32 y, s32 otz, Character *c) {
 }
 
 void ui_drawMemberHeader(s32 x, s32 y, s32 otz, Unk80024428 *s) {
-    Character *a = g_gameState->unk1C->party[s->unk2];
-    Character *b = g_gameState->unk1C->party[s->unk3];
+    Character *a = g_gameState->gameData->party[s->unk2];
+    Character *b = g_gameState->gameData->party[s->unk3];
     RECT r1;
     RECT r2;
     s32 d;
@@ -58,7 +58,7 @@ void ui_drawMemberHeader(s32 x, s32 y, s32 otz, Unk80024428 *s) {
         win_drawLineBorder(&r2, otz, 0, CONFIG_WINDOW_COLOR());
         ui_drawPartyPortrait(px, y, otz, s->unk3, b->hp == 0);
         win_setClip(&r1, otz, 4);
-        ui_drawCharStatus(x + 0x26, y + 3, otz, g_gameState->unk1C->party[s->unk3]);
+        ui_drawCharStatus(x + 0x26, y + 3, otz, g_gameState->gameData->party[s->unk3]);
     } else {
         ui_drawCharStatus(x + 0x26, y + 3, otz, a);
     }
@@ -649,7 +649,7 @@ void func_80026DCC(s32 arg0, s32 arg1, s32 otz, s32 arg3, u8 arg4) {
 }
 
 void ui_drawMember(s32 arg0, s32 arg1, s32 arg2, s32 arg3) {
-    Character *p = g_gameState->unk1C->party[arg3];
+    Character *p = g_gameState->gameData->party[arg3];
 
     if (p != NULL) {
         ui_drawPartyPortrait(arg0, arg1, arg2, arg3, p->hp == 0);
@@ -658,7 +658,7 @@ void ui_drawMember(s32 arg0, s32 arg1, s32 arg2, s32 arg3) {
 }
 
 void ui_drawMemberSummary(s32 x, s32 y, s32 otz, s32 slot, s32 mode) {
-    Character *p = g_gameState->unk1C->party[slot];
+    Character *p = g_gameState->gameData->party[slot];
     if (p != NULL && mode >= 0) {
         if (mode < 3) {
             ui_drawPortrait(x, y, otz, slot, 0x29, p->hp == 0);
@@ -671,7 +671,7 @@ void ui_drawMemberSummary(s32 x, s32 y, s32 otz, s32 slot, s32 mode) {
 }
 
 void ui_drawMemberStats(s32 arg0, s32 arg1, s32 arg2, s32 arg3) {
-    ui_drawCharStatus(arg0, arg1, arg2, g_gameState->unk1C->party[arg3]);
+    ui_drawCharStatus(arg0, arg1, arg2, g_gameState->gameData->party[arg3]);
 }
 
 void ui_drawStatusIcons(s32 arg0, s32 arg1, s32 arg2, u8 arg3, s32 arg4) {
@@ -861,7 +861,7 @@ u8 *ui_buildSpriteDef(s32 x, s32 y, u32 *ot, Unk800686E8 *d, u8 flag, s32 *out, 
 }
 
 void ui_drawCharStatuses(s32 x, s32 y, s32 otz, s32 slot) {
-    Character *c = g_gameState->unk1C->party[slot];
+    Character *c = g_gameState->gameData->party[slot];
     u8 buf[16];
     RECT r;
 
@@ -935,7 +935,7 @@ void item_clearAll(void) {
     s32 i;
 
     for (i = 0; i < 0x100; i++) {
-        g_gameState->unk1C->items.slots[i].count = 0;
+        g_gameState->gameData->items.slots[i].count = 0;
     }
 }
 
@@ -943,7 +943,7 @@ void keyItem_clearAll(void) {
     s32 i;
 
     for (i = 0; i < 0x40; i++) {
-        g_gameState->unk1C->unk774.unk0[i] = 0;
+        g_gameState->gameData->unk774.unk0[i] = 0;
     }
 }
 
@@ -953,7 +953,7 @@ s32 item_add(s32 id, s32 n) {
     if (id == 0xFF) {
         return 0;
     }
-    e = g_gameState->unk1C->items.slots;
+    e = g_gameState->gameData->items.slots;
     for (i = 0; i < 0x100; e++, i++) {
         if (e->count != 0 && e->id == id) {
             if (e->count + n >= 100) {
@@ -963,7 +963,7 @@ s32 item_add(s32 id, s32 n) {
             return n;
         }
     }
-    e = g_gameState->unk1C->items.slots;
+    e = g_gameState->gameData->items.slots;
     for (i = 0; i < 0x100; i++, e++) {
         if (e->count == 0) {
             e->id = id;
@@ -976,7 +976,7 @@ s32 item_add(s32 id, s32 n) {
 
 s32 item_remove(s32 id, s32 count) {
     s32 i;
-    ItemSlot *e = g_gameState->unk1C->items.slots;
+    ItemSlot *e = g_gameState->gameData->items.slots;
 
     for (i = 0; i < 0x100; e++, i++) {
         if (e->count != 0 && e->id == id) {
@@ -992,7 +992,7 @@ s32 item_remove(s32 id, s32 count) {
 
 ItemSlot *item_findSlot(s32 id) {
     s32 i;
-    ItemSlot *e = g_gameState->unk1C->items.slots;
+    ItemSlot *e = g_gameState->gameData->items.slots;
 
     for (i = 0; i < 0x100; i++, e++) {
         if (e->count != 0 && e->id == id) {
@@ -1013,9 +1013,9 @@ s32 item_countEquipped(s32 id) {
     s32 n = 0;
 
     for (i = 0; i < 9; i++) {
-        if (g_gameState->unk1C->characters[i].unk34.b.unkB) {
+        if (g_gameState->gameData->characters[i].unk34.b.unkB) {
             for (j = 0; j < 5; j++) {
-                if (id == g_gameState->unk1C->characters[i].equip[j]) {
+                if (id == g_gameState->gameData->characters[i].equip[j]) {
                     n++;
                 }
             }
@@ -1039,31 +1039,31 @@ s32 item_getEquipSlot(s32 arg0) {
 void keyItem_add(s32 id) {
     s32 idx = id >> 2;
 
-    g_gameState->unk1C->unk774.unk0[idx] |= 1 << ((id & 3) * 2);
-    g_gameState->unk1C->unk774.unk0[idx] &= ~(1 << ((id & 3) * 2 + 1));
+    g_gameState->gameData->unk774.unk0[idx] |= 1 << ((id & 3) * 2);
+    g_gameState->gameData->unk774.unk0[idx] &= ~(1 << ((id & 3) * 2 + 1));
 }
 
 void keyItem_remove(s32 id) {
     s32 idx = id >> 2;
 
-    g_gameState->unk1C->unk774.unk0[idx] &= ~(1 << ((id & 3) * 2));
-    g_gameState->unk1C->unk774.unk0[idx] &= ~(1 << ((id & 3) * 2 + 1));
+    g_gameState->gameData->unk774.unk0[idx] &= ~(1 << ((id & 3) * 2));
+    g_gameState->gameData->unk774.unk0[idx] &= ~(1 << ((id & 3) * 2 + 1));
 }
 
 void keyItem_setSeen(s32 id) {
-    g_gameState->unk1C->unk774.unk0[id >> 2] |= 1 << ((id & 3) * 2 + 1);
+    g_gameState->gameData->unk774.unk0[id >> 2] |= 1 << ((id & 3) * 2 + 1);
 }
 
 void keyItem_clearSeen(s32 id) {
-    g_gameState->unk1C->unk774.unk0[id >> 2] &= ~(1 << ((id & 3) * 2 + 1));
+    g_gameState->gameData->unk774.unk0[id >> 2] &= ~(1 << ((id & 3) * 2 + 1));
 }
 
 s32 keyItem_has(s32 arg0) {
-    return (g_gameState->unk1C->unk774.unk0[arg0 >> 2] >> ((arg0 & 3) * 2)) & 1;
+    return (g_gameState->gameData->unk774.unk0[arg0 >> 2] >> ((arg0 & 3) * 2)) & 1;
 }
 
 s32 keyItem_isSeen(s32 id) {
-    return (g_gameState->unk1C->unk774.unk0[id >> 2] >> ((id & 3) * 2 + 1)) & 1;
+    return (g_gameState->gameData->unk774.unk0[id >> 2] >> ((id & 3) * 2 + 1)) & 1;
 }
 
 void ui_drawPortraitId(s32 x, s32 y, s32 otz, s32 id, s32 h, u8 flag) {
@@ -1208,7 +1208,7 @@ void ui_restorePortraits(void) {
 }
 
 u8 chr_getPortrait(s32 arg0) {
-    return D_8006BB8C[g_gameState->unk1C->characters[arg0].unk34.b.unk4];
+    return D_8006BB8C[g_gameState->gameData->characters[arg0].unk34.b.unk4];
 }
 
 void ui_getPortraitRects(s32 arg0, RECT *clut, RECT *img) {
@@ -1265,7 +1265,7 @@ void ui_loadPartyPortraits(u8 *buf) {
     s32 i;
 
     for (i = 0; i < 4; i++) {
-        GameData *d = g_gameState->unk1C;
+        GameData *d = g_gameState->gameData;
         Character *p = d->party[i];
 
         if (p != NULL) {

@@ -200,7 +200,7 @@ void game_resetState(void) {
     gs->mode = 0;
     gs->unkA = 0;
     gs->imgSector = -1;
-    gs->unk1C = NULL;
+    gs->gameData = NULL;
     game_setClearColor(0, 0, 0);
     game_setScreenHeight(0xE0);
     gs->vsyncMode = 0;
@@ -281,8 +281,8 @@ void game_setScreenHeight(s32 h) {
     draw[1].isbg = 1;
     draw[0].isbg = 1;
     VSync(0);
-    if (g_gameState->unk1C != NULL) {
-        PutDispEnv(&g_gameState->dispEnv[g_gameState->unk1C->unk8]);
+    if (g_gameState->gameData != NULL) {
+        PutDispEnv(&g_gameState->dispEnv[g_gameState->gameData->unk8]);
     }
 }
 
@@ -292,11 +292,11 @@ void game_freezeScreen(void) {
     s32 fade;
     s32 busy;
 
-    if (g_gameState->unk1C != NULL) {
+    if (g_gameState->gameData != NULL) {
         VSync(0);
-        PutDispEnv(&g_gameState->dispEnv[g_gameState->unk1C->unk8]);
+        PutDispEnv(&g_gameState->dispEnv[g_gameState->gameData->unk8]);
         fade = 0;
-        memmove(&g_freezeDrawEnv, &g_gameState->drawEnv[g_gameState->unk1C->unk8 ^ 1], sizeof(DRAWENV));
+        memmove(&g_freezeDrawEnv, &g_gameState->drawEnv[g_gameState->gameData->unk8 ^ 1], sizeof(DRAWENV));
         if (fade_isActive() || fade_isBusy()) {
             fade = 1;
         }

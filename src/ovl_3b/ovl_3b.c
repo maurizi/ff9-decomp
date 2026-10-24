@@ -252,7 +252,7 @@ void menuParty_confirm(void) {
 void menuParty_drawMember(s32 x, s32 y, s32 otz, s32 id) {
     if (id != PARTY_EMPTY) {
         menuParty_drawPortrait(x, y, otz, id, 0x2D, s_menuParty.fixed[id]);
-        ui_drawCharStatus(x + 0x26, y + 3, otz, &g_gameState->unk1C->characters[id]);
+        ui_drawCharStatus(x + 0x26, y + 3, otz, &g_gameState->gameData->characters[id]);
     }
 }
 
@@ -265,7 +265,7 @@ void menuParty_drawPortrait(s32 x, s32 y, s32 otz, s32 id, s32 h, u8 arg5) {
     base = y + h;
     yy = base - 8;
     if (id != PARTY_EMPTY) {
-        c = &g_gameState->unk1C->characters[id];
+        c = &g_gameState->gameData->characters[id];
         if (c->status & 2) {
             icon = &D_800687C0;
             ui_drawSpriteDef(x + ((0x20 - icon->unk4) >> 1), yy, otz, icon, 0);
@@ -321,7 +321,7 @@ u8 menuParty_isValid(void) {
         id = s_menuParty.slots[0][i];
         if (id != PARTY_EMPTY) {
             n++;
-            if (g_gameState->unk1C->characters[id].hp != 0 && !(g_gameState->unk1C->characters[id].status & 3)) {
+            if (g_gameState->gameData->characters[id].hp != 0 && !(g_gameState->gameData->characters[id].status & 3)) {
                 alive++;
             }
         }

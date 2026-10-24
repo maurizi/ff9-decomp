@@ -1,7 +1,7 @@
 #include "ff9.h"
 
 void chr_init(s32 ch) {
-    Character *c = &g_gameState->unk1C->characters[ch];
+    Character *c = &g_gameState->gameData->characters[ch];
     u32 *init;
     u32 *tbl;
     s32 r;
@@ -25,7 +25,7 @@ void chr_init(s32 ch) {
 }
 
 void chr_setLevel(s32 ch, s32 lv, u32 *heal, u8 f) {
-    Character *c = &g_gameState->unk1C->characters[ch];
+    Character *c = &g_gameState->gameData->characters[ch];
     s32 hp;
     s32 mp;
     s32 d;
@@ -203,7 +203,7 @@ s32 chr_calcAppearance(s32 kind, s32 flag, u8 *item) {
 }
 
 void chr_join(s32 ch, u8 avg, s32 eq) {
-    Character *c = &g_gameState->unk1C->characters[ch];
+    Character *c = &g_gameState->gameData->characters[ch];
     u8 *p;
     s32 i;
     s32 n;
@@ -227,9 +227,9 @@ void chr_join(s32 ch, u8 avg, s32 eq) {
     sum = 0;
     for (i = 0; i < 9; i++) {
         if (ch != i) {
-            if (g_gameState->unk1C->characters[i].unk34.b.unkB) {
+            if (g_gameState->gameData->characters[i].unk34.b.unkB) {
                 n++;
-                sum += g_gameState->unk1C->characters[i].level;
+                sum += g_gameState->gameData->characters[i].level;
             }
         }
     }
@@ -250,7 +250,7 @@ calc:
 }
 
 void party_initNewGame(void) {
-    Character **party = g_gameState->unk1C->party;
+    Character **party = g_gameState->gameData->party;
     s32 i;
     party_setChanged(0);
     memset(party, 0, 0x1C);
@@ -269,12 +269,12 @@ void party_initNewGame(void) {
     party_setMember(1, 1);
     party_setMember(2, 2);
     party_setMember(3, 3);
-    g_gameState->unk1C->gil = 500;
-    g_gameState->unk1C->firstUseFxSeen = 0;
+    g_gameState->gameData->gil = 500;
+    g_gameState->gameData->firstUseFxSeen = 0;
 }
 
 s32 party_getFirstMember(void) {
-    GameData *gd = g_gameState->unk1C;
+    GameData *gd = g_gameState->gameData;
     s32 i = 0;
     do {
     loop:
@@ -289,14 +289,14 @@ s32 party_getFirstMember(void) {
 s32 party_getPrevMember(s32 i) {
     do {
         i = i == 0 ? 3 : i - 1;
-    } while (g_gameState->unk1C->party[i] == NULL);
+    } while (g_gameState->gameData->party[i] == NULL);
     return i;
 }
 
 s32 party_getNextMember(s32 i) {
     do {
         i = i < 3 ? i + 1 : 0;
-    } while (g_gameState->unk1C->party[i] == NULL);
+    } while (g_gameState->gameData->party[i] == NULL);
     return i;
 }
 
@@ -426,35 +426,35 @@ u8 chr_getClassFlags(u32 x) {
 }
 
 void party_setMember(s32 slot, s32 ch) {
-    Character *old = g_gameState->unk1C->party[slot];
+    Character *old = g_gameState->gameData->party[slot];
     if (ch >= 9) {
         ch = -1;
     }
     if (ch < 0) {
-        g_gameState->unk1C->party[slot] = NULL;
+        g_gameState->gameData->party[slot] = NULL;
     } else {
         chr_setRecruited(ch);
-        g_gameState->unk1C->party[slot] = &g_gameState->unk1C->characters[ch];
+        g_gameState->gameData->party[slot] = &g_gameState->gameData->characters[ch];
     }
-    if (old != g_gameState->unk1C->party[slot]) {
+    if (old != g_gameState->gameData->party[slot]) {
         party_setChanged(1);
     }
 }
 
 void chr_setRecruited(u32 i) {
     if (i < 9) {
-        g_gameState->unk1C->characters[i].unk34.b.unkB = 1;
+        g_gameState->gameData->characters[i].unk34.b.unkB = 1;
     }
 }
 
 void chr_clearRecruited(u32 i) {
     if (i < 9) {
-        g_gameState->unk1C->characters[i].unk34.b.unkB = 0;
+        g_gameState->gameData->characters[i].unk34.b.unkB = 0;
     }
 }
 
 s32 chr_resetToLevel(s32 ch, s32 b, u8 flag) {
-    Character *c = &g_gameState->unk1C->characters[ch];
+    Character *c = &g_gameState->gameData->characters[ch];
     s32 lv = c->level;
     c->level = 0;
     chr_setLevel(ch, b, 0, 0);
@@ -466,7 +466,7 @@ s32 chr_resetToLevel(s32 ch, s32 b, u8 flag) {
 }
 
 s32 chr_levelUp(s32 ch, s32 b) {
-    Character *c = &g_gameState->unk1C->characters[ch];
+    Character *c = &g_gameState->gameData->characters[ch];
     s32 r = c->level;
     chr_setLevel(ch, b, 0, 1);
     return r;
@@ -525,14 +525,14 @@ s32 chr_addAp(s32 ch, s32 id, s32 add) {
     if (i < 0) {
         return 0;
     }
-    old = g_gameState->unk1C->characters[ch].ap[i];
+    old = g_gameState->gameData->characters[ch].ap[i];
     need = chr_getApNeeded_inline(ch, id);
-    if (need - g_gameState->unk1C->characters[ch].ap[i] < add) {
-        g_gameState->unk1C->characters[ch].ap[i] = need;
+    if (need - g_gameState->gameData->characters[ch].ap[i] < add) {
+        g_gameState->gameData->characters[ch].ap[i] = need;
     } else {
-        g_gameState->unk1C->characters[ch].ap[i] += add;
+        g_gameState->gameData->characters[ch].ap[i] += add;
     }
-    return g_gameState->unk1C->characters[ch].ap[i] - old;
+    return g_gameState->gameData->characters[ch].ap[i] - old;
 }
 
 s32 chr_isAbilityLearned(s32 ch, s32 id) {
@@ -547,7 +547,7 @@ s32 chr_isAbilityLearned(s32 ch, s32 id) {
 
 s32 chr_learnAbility(s32 ch, s32 id) {
     s32 i = chr_findAbilitySlot_inline(ch, id);
-    Character *c = g_gameState->unk1C->characters + ch;
+    Character *c = g_gameState->gameData->characters + ch;
     if (i < 0) {
         return 0;
     }
@@ -582,7 +582,7 @@ void chr_clearAp(s32 ch) {
     Character *c;
 
     if (ch < 8) {
-        c = &g_gameState->unk1C->characters[ch];
+        c = &g_gameState->gameData->characters[ch];
         for (i = 0; i < 0x30; i++) {
             c->ap[i] = 0;
         }
@@ -590,7 +590,7 @@ void chr_clearAp(s32 ch) {
 }
 
 void chr_clearSupport(s32 i) {
-    Character *c = &g_gameState->unk1C->characters[i];
+    Character *c = &g_gameState->gameData->characters[i];
     c->supportAbilities[1] = 0;
     c->supportAbilities[0] = 0;
 }
@@ -604,7 +604,7 @@ u8 *chr_getApPtr(s32 ch, s32 id) {
     if (i < 0) {
         return NULL;
     }
-    return &g_gameState->unk1C->characters[ch].ap[i];
+    return &g_gameState->gameData->characters[ch].ap[i];
 }
 
 s32 chr_getAp(s32 ch, s32 id) {
@@ -612,7 +612,7 @@ s32 chr_getAp(s32 ch, s32 id) {
     if (i < 0) {
         return -1;
     }
-    return g_gameState->unk1C->characters[ch].ap[i];
+    return g_gameState->gameData->characters[ch].ap[i];
 }
 
 s32 chr_setAp(s32 ch, s32 id, u8 v) {
@@ -621,8 +621,8 @@ s32 chr_setAp(s32 ch, s32 id, u8 v) {
     if (i < 0) {
         return -1;
     }
-    old = g_gameState->unk1C->characters[ch].ap[i];
-    g_gameState->unk1C->characters[ch].ap[i] = v;
+    old = g_gameState->gameData->characters[ch].ap[i];
+    g_gameState->gameData->characters[ch].ap[i] = v;
     return old;
 }
 
@@ -632,8 +632,8 @@ static inline s32 chr_setAp_inline(s32 ch, s32 id, s32 v) {
     if (i < 0) {
         return -1;
     }
-    old = g_gameState->unk1C->characters[ch].ap[i];
-    g_gameState->unk1C->characters[ch].ap[i] = v;
+    old = g_gameState->gameData->characters[ch].ap[i];
+    g_gameState->gameData->characters[ch].ap[i] = v;
     return old;
 }
 
@@ -644,7 +644,7 @@ s32 chr_resetAp(s32 ch, s32 id) {
 
 u8 chr_getApNeeded(s32 ch, s32 id) {
     s32 i = chr_findAbilitySlot_inline(ch, id);
-    Character *c = g_gameState->unk1C->characters + ch;
+    Character *c = g_gameState->gameData->characters + ch;
     if (i < 0) {
         return 0;
     }
@@ -654,7 +654,7 @@ u8 chr_getApNeeded(s32 ch, s32 id) {
 s32 chr_countSupportStones(s32 ch) {
     s32 sum = 0;
     s32 i;
-    u32 *bits = g_gameState->unk1C->characters[ch].supportAbilities;
+    u32 *bits = g_gameState->gameData->characters[ch].supportAbilities;
     for (i = 0; i < 0x40; i++) {
         if (bits[i >> 5] & (1 << (i & 0x1F))) {
             sum += g_supportAbilities[i].unk1;
@@ -664,7 +664,7 @@ s32 chr_countSupportStones(s32 ch) {
 }
 
 void chr_setSupportAbility(s32 ch, s32 id, u8 on) {
-    u32 *bits = g_gameState->unk1C->characters[ch].supportAbilities;
+    u32 *bits = g_gameState->gameData->characters[ch].supportAbilities;
     id -= 0xC0;
     if (on) {
         bits[id >> 5] |= 1 << (id & 0x1F);
@@ -674,7 +674,7 @@ void chr_setSupportAbility(s32 ch, s32 id, u8 on) {
 }
 
 u8 chr_hasSupportAbility(s32 ch, s32 id) {
-    return chr_testSupportBit_inline(g_gameState->unk1C->characters[ch].supportAbilities, id);
+    return chr_testSupportBit_inline(g_gameState->gameData->characters[ch].supportAbilities, id);
 }
 
 u8 chr_testSupportBit(u32 *bits, s32 b) {
@@ -690,7 +690,7 @@ u8 func_80034A30(Character *a) {
 }
 
 s32 chr_calcBaseSpeed(s32 ch, s32 lv, u8 add) {
-    Character *c = g_gameState->unk1C->characters + ch;
+    Character *c = g_gameState->gameData->characters + ch;
     Unk8006DD88 *e = &g_charClassStats[chr_getClass(c->unk34.b.row)];
     s32 r;
     if (add) {
@@ -704,7 +704,7 @@ s32 chr_calcBaseSpeed(s32 ch, s32 lv, u8 add) {
 }
 
 s32 chr_calcBaseStrength(s32 ch, s32 lv, u8 add) {
-    Character *c = g_gameState->unk1C->characters + ch;
+    Character *c = g_gameState->gameData->characters + ch;
     s32 k = chr_getClass(c->unk34.b.row);
     u16 *bonus = c->unk3E;
     Unk8006DD88 *e = &g_charClassStats[k];
@@ -725,7 +725,7 @@ s32 chr_calcBaseStrength(s32 ch, s32 lv, u8 add) {
 }
 
 s32 chr_calcBaseMagic(s32 ch, s32 lv, u8 add) {
-    Character *c = g_gameState->unk1C->characters + ch;
+    Character *c = g_gameState->gameData->characters + ch;
     s32 k = chr_getClass(c->unk34.b.row);
     u16 *bonus = c->unk3E;
     Unk8006DD88 *e = &g_charClassStats[k];
@@ -746,7 +746,7 @@ s32 chr_calcBaseMagic(s32 ch, s32 lv, u8 add) {
 }
 
 s32 chr_calcBaseSpirit(s32 ch, s32 lv, u8 add) {
-    Character *c = g_gameState->unk1C->characters + ch;
+    Character *c = g_gameState->gameData->characters + ch;
     s32 k = chr_getClass(c->unk34.b.row);
     u16 *bonus = c->unk3E;
     Unk8006DD88 *e = &g_charClassStats[k];
@@ -764,7 +764,7 @@ s32 chr_calcBaseSpirit(s32 ch, s32 lv, u8 add) {
 }
 
 s32 chr_calcMaxStones(s32 ch, s32 lv, u8 add) {
-    Character *c = g_gameState->unk1C->characters + ch;
+    Character *c = g_gameState->gameData->characters + ch;
     u16 *bonus = c->unk3E;
     s32 k = chr_getClass(c->unk34.b.row);
     Unk8006DD88 *e = &g_charClassStats[k];

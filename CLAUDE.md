@@ -65,4 +65,4 @@ Matching decompilation of Final Fantasy IX (PS1, NTSC-U, 4 discs). Goal: C sourc
 ## Layout facts
 - Boot exe `SLUS_012.51` (sha1 `e37e8c4d…1764`) is **byte-identical** on all 4 discs, as are the code overlays. Per-disc differences are data in other `FF9.IMG` directories.
 - Exe: vram `0x80010000`, entry `__SN_ENTRY_POINT` `0x80012B68`, gp=0. `.rodata` 0x800 → `.text` 0x2FA0 → `.data` 0x56DE0–end.
-- `g_gameState` (0x8006794C) is the main game-state pointer (`GameState` in `include/ff9.h`); `->unk1C` points to a large `GameData` block.
+- `g_gameState` (0x8006794C) is the main game-state pointer (`GameState` in `include/ff9.h`); `->gameData` points to a large `GameData` block.

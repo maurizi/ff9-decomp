@@ -44,10 +44,10 @@ void wm_systemInit(void) {
     D_800CF47E = 0;
     g_worldSuspended = 0;
     g_worldMapJump = 0;
-    g_worldBufIndex = &g_gameState->unk1C->unk8;
-    g_worldOt[0] = (s32)g_gameState->unk1C->unk10[0];
-    g_worldOt[1] = (s32)g_gameState->unk1C->unk10[1];
-    g_worldViewMatrix = &g_gameState->unk1C->unk18;
+    g_worldBufIndex = &g_gameState->gameData->unk8;
+    g_worldOt[0] = (s32)g_gameState->gameData->unk10[0];
+    g_worldOt[1] = (s32)g_gameState->gameData->unk10[1];
+    g_worldViewMatrix = &g_gameState->gameData->unk18;
     ResetGraph(1);
     wm_musicInit();
     StoreImage(&r, (u32 *)g_worldClutBuf);
@@ -80,22 +80,22 @@ s32 wm_frameMain(void) {
 
     g_worldStartup = 0;
     if (g_worldVehiclesFound != 0) {
-        g_gameState->unk1C->unk892 = 1;
+        g_gameState->gameData->unk892 = 1;
     }
     g_worldEventResult = 0;
     if (wm_getPadPressed() & BTN_TRIANGLE) {
         if (g_worldCdUser == WM_CD_FREE && g_worldMapLoaded != 0 && g_worldMusicState == WM_MUSIC_READY) {
             g_worldCdUser = WM_CD_SCRIPT;
-            g_gameState->unk1C->unk0 |= GD_MENU_OPEN;
+            g_gameState->gameData->unk0 |= GD_MENU_OPEN;
             menu_open(0, 0);
             evt_onMenuOpen();
         }
     }
-    if (!(g_gameState->unk1C->unk0 & GD_HIDE_ALL)) {
+    if (!(g_gameState->gameData->unk0 & GD_HIDE_ALL)) {
         g_worldPrimPtr = g_worldPrimBuffers[*g_worldBufIndex];
         msg_beginDraw();
         g_worldTimeLogic = VSync(1);
-        if (!(g_gameState->unk1C->unk0 & GD_MENU_OPEN)) {
+        if (!(g_gameState->gameData->unk0 & GD_MENU_OPEN)) {
             wm_updateLogic();
         }
         if (g_worldFrameCount == 4 && g_worldState == WM_STATE_START) {
@@ -128,12 +128,12 @@ s32 wm_frameMain(void) {
     } else {
         g_worldSuspended = 1;
     }
-    if (!(g_gameState->unk1C->unk0 & GD_MENU_DISABLED)) {
+    if (!(g_gameState->gameData->unk0 & GD_MENU_DISABLED)) {
         menu_update();
     }
     game_updateWindows();
     busy = g_worldEventResult != 0;
-    if (g_gameState->unk1C->unk0 & GD_HIDE_ALL) {
+    if (g_gameState->gameData->unk0 & GD_HIDE_ALL) {
         busy = 1;
     }
     if (g_worldMogChoice != 0) {
@@ -145,7 +145,7 @@ s32 wm_frameMain(void) {
         if ((u8)g_worldActorTypeInfo[g_worldPlayer->unk11].cellAttr >> 2 == 0x34) {
             g_worldEventResult = 0;
         }
-        g_gameState->unk1C->unk571 = func_800B8548();
+        g_gameState->gameData->unk571 = func_800B8548();
         cd_syncAsync(0);
         while (cd_getState() != 0) {
         }
@@ -165,7 +165,7 @@ s32 wm_frameMain(void) {
         break;
     }
     if (g_worldVehiclesFound != 0) {
-        g_gameState->unk1C->unk892 = 0;
+        g_gameState->gameData->unk892 = 0;
     }
     g_worldTimeTotal = 0;
     g_worldTimeTotal = g_worldTimeLogic;
@@ -187,7 +187,7 @@ void wm_updateLogic(void) {
     case 2:
         if (g_worldNaviMode != 2) {
             g_gameState->vsyncMode = 3;
-            g_gameState->unk1C->unk8E4.world->flags &= ~WM_MAP_NAVI_SCREEN;
+            g_gameState->gameData->unk8E4.world->flags &= ~WM_MAP_NAVI_SCREEN;
             SetSpadStack(0x1F8003FC);
             wm_updateActors();
             ResetSpadStack();
@@ -202,7 +202,7 @@ void wm_updateLogic(void) {
             ResetSpadStack();
         } else {
             g_gameState->vsyncMode = 0;
-            g_gameState->unk1C->unk8E4.world->flags |= WM_MAP_NAVI_SCREEN;
+            g_gameState->gameData->unk8E4.world->flags |= WM_MAP_NAVI_SCREEN;
             wm_seFadeVolume(0x26, 0x14, 0);
             wm_runEvents();
             wm_naviUpdate();
@@ -228,7 +228,7 @@ void wm_updateDraw(void) {
     if (mode == 2) {
         if (g_worldNaviMode != mode) {
             g_worldDebugStep = 0x64;
-            SetGeomScreen(g_gameState->unk1C->unkA);
+            SetGeomScreen(g_gameState->gameData->unkA);
             g_worldTimeActorDraw = VSync(1);
             if (D_800CCE49 < 2 && g_worldDrawActors != 0) {
                 wm_drawActors();
@@ -530,7 +530,7 @@ s32 w_frameGetParameter(s32 arg0) {
     case WM_PARAM_REQ2:
         return g_worldReqParams[2];
     case 0xC6:
-        return g_gameState->unk1C->chocograph;
+        return g_gameState->gameData->chocograph;
     case WM_PARAM_CAMERA_YAW:
         return g_worldCamera->yaw >> 4;
     case WM_PARAM_CD_BUSY:
@@ -636,7 +636,7 @@ void wm_debugAdjustScreen(void) {
 void wm_finishLoad(void) {
     RECT r = g_worldVramParkRect;
 
-    g_gameState->unk1C->unk0 &= ~0x400000;
+    g_gameState->gameData->unk0 &= ~0x400000;
     LoadImage(&r, (u32 *)g_worldClutBuf);
     DrawSync(0);
     w_movementChange();
@@ -749,7 +749,7 @@ void wm_runEvents(void) {
 
     g_worldTimeEvents = VSync(1);
     m = g_worldState;
-    if ((m == 0 || m == 2) && !(g_gameState->unk1C->unk0 & GD_MENU_OPEN) && (m == 0 || m == 2)) {
+    if ((m == 0 || m == 2) && !(g_gameState->gameData->unk0 & GD_MENU_OPEN) && (m == 0 || m == 2)) {
         g_worldEventResult = evt_update(m);
     }
     g_worldTimeEvents = VSync(1) - g_worldTimeEvents;
@@ -822,7 +822,7 @@ void wm_initLighting(void) {
     g_worldBlockFxLightMatrix.m[2][2] = 0x1000;
     SetBackColor(0, 0, 0);
     SetFarColor(0, 0, 0);
-    SetFogNearFar(5000, 30000, g_gameState->unk1C->unkA);
+    SetFogNearFar(5000, 30000, g_gameState->gameData->unkA);
     wm_updateColorMatrices();
 }
 

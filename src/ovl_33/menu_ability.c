@@ -61,7 +61,7 @@ void menuAbility_init(void) {
     menuAbility_loadImages();
     s_menuAbility.partySize = 0;
     for (i = 0; i < 4; i++) {
-        if (g_gameState->unk1C->party[i] != NULL) {
+        if (g_gameState->gameData->party[i] != NULL) {
             s_menuAbility.partySize++;
         }
     }
@@ -177,15 +177,15 @@ void menuAbility_useOnTarget(void) {
     s32 cost;
 
     ok = 0;
-    c = g_gameState->unk1C->party[s_menuAbility.slot];
+    c = g_gameState->gameData->party[s_menuAbility.slot];
     l = &s_menuAbility.lists[s_menuAbility.tab];
     it = &s_menuAbilityActionTable[s_menuAbility.actions[(l->top + l->cursor) * 2 + l->col].id];
     if (!(s_menuAbility.target >> 7)) {
-        ok = item_useOnMember(c, g_gameState->unk1C->party[s_menuAbility.target], it, it->unk4, 0);
+        ok = item_useOnMember(c, g_gameState->gameData->party[s_menuAbility.target], it, it->unk4, 0);
     } else {
         for (i = 0; i < 4; i++) {
-            if (g_gameState->unk1C->party[i] != NULL) {
-                ok |= item_useOnMember(c, g_gameState->unk1C->party[i], it, it->unk4, 1);
+            if (g_gameState->gameData->party[i] != NULL) {
+                ok |= item_useOnMember(c, g_gameState->gameData->party[i], it, it->unk4, 1);
             }
         }
     }
@@ -207,7 +207,7 @@ void menuAbility_drawPlayer(void) {
     Character *c;
 
     r = &s_menuAbility.playerRect;
-    c = g_gameState->unk1C->party[s_menuAbility.slot];
+    c = g_gameState->gameData->party[s_menuAbility.slot];
     ui_drawMemberHeader(r->x + 8, r->y + 5, 0x1D, (Unk80024428 *)&s_menuAbility.header);
     box.w = 0x5B;
     box.h = 0x12;
@@ -234,7 +234,7 @@ void menuAbility_drawInfo(void) {
     s32 x;
 
     r = &s_menuAbility.infoRect;
-    c = g_gameState->unk1C->party[s_menuAbility.slot];
+    c = g_gameState->gameData->party[s_menuAbility.slot];
     l = &s_menuAbility.lists[s_menuAbility.tab];
     n = (l->top + l->cursor) * 2 + l->col;
     ui_drawLabel(r->x + 6, r->y - 3, 0x1D, D_80070460, 0);
@@ -281,7 +281,7 @@ void menuAbility_drawCommand(void) {
     m = &s_menuAbility;
     l = &s_menuAbility.lists[s_menuAbility.tab];
     idx = (l->cursor + l->top) * 2 + l->col;
-    c = g_gameState->unk1C->party[m->slot];
+    c = g_gameState->gameData->party[m->slot];
     if (m->tab != ABILITY_TAB_SUPPORT) {
         if (m->state != ABILITY_STATE_TABS && m->state != ABILITY_STATE_SWITCH && m->state != ABILITY_STATE_BUSY) {
             if (menuAbility_getActionState(m->actions[idx].id, c) != 0) {
@@ -335,7 +335,7 @@ void menuAbility_drawTargetWindow(void) {
         ui_drawLabel(r->x + 8, r->y - 3, 0x14, D_800704B8, 0);
         win_drawBox(r, 0x14, 2);
         for (i = 0; i < 4; i++) {
-            if (g_gameState->unk1C->party[i] != NULL) {
+            if (g_gameState->gameData->party[i] != NULL) {
                 ui_drawMemberSummary(r->x + 8, r->y + 6 + i * 0x2B, 0x13, i, s_menuAbility.targetMode);
             }
         }
@@ -390,7 +390,7 @@ void menuAbility_drawCursor(void) {
             if (blink) {
                 for (i = 0; i < 4; i++) {
                     y = i * 0x2B + 0x12;
-                    if (g_gameState->unk1C->party[i] != NULL) {
+                    if (g_gameState->gameData->party[i] != NULL) {
                         ui_drawHand(r->x - 10, r->y + y, g_menuHelp.otz);
                         if (!done) {
                             g_menuHelp.x = r->x - 10;
@@ -425,7 +425,7 @@ void menuAbility_setMember(s32 slot, s32 arg1) {
     s32 id;
 
     b = &s_menuAbility.header;
-    c = g_gameState->unk1C->party[slot];
+    c = g_gameState->gameData->party[slot];
     m = &s_menuAbility;
     nItems = 0;
     nAbils = 0;
@@ -511,7 +511,7 @@ s32 menuAbility_getActionState(s32 id, Character *c) {
 void menuAbility_selectAction(void) {
     MenuList *l = s_menuAbility.lists + s_menuAbility.tab;
     MenuList *ls;
-    Character *c = g_gameState->unk1C->party[s_menuAbility.slot];
+    Character *c = g_gameState->gameData->party[s_menuAbility.slot];
     s32 i;
     u8 id;
 
@@ -552,7 +552,7 @@ void menuAbility_toggleSupport(void) {
     s32 st;
 
     l = &s_menuAbility.lists[s_menuAbility.tab];
-    c = g_gameState->unk1C->party[s_menuAbility.slot];
+    c = g_gameState->gameData->party[s_menuAbility.slot];
     if (l->rows != 0 && (idx = (l->top + l->cursor) * 2 + l->col) < s_menuAbility.supportCount) {
         id = s_menuAbility.supports[idx];
         sup = &g_supportAbilities[id - ABILITY_SUPPORT_FIRST];
@@ -583,7 +583,7 @@ void menuAbility_updateHelp(void) {
     u8 *buf;
 
     l = &s_menuAbility.lists[s_menuAbility.tab];
-    c = g_gameState->unk1C->party[s_menuAbility.slot];
+    c = g_gameState->gameData->party[s_menuAbility.slot];
     g_menuHelp.text = NULL;
     help_setBounds(NULL);
     if (s_menuAbility.state == ABILITY_STATE_TABS || s_menuAbility.state == ABILITY_STATE_SWITCH) {
@@ -660,7 +660,7 @@ void menuAbility_initSupportCursor(void) {
 
     sel = 0;
     i = 0;
-    c = g_gameState->unk1C->party[s_menuAbility.slot];
+    c = g_gameState->gameData->party[s_menuAbility.slot];
     l = &s_menuAbility.lists[1];
     for (; i < s_menuAbility.supportCount; i++) {
         if (menuAbility_getSupportState_inline(s_menuAbility.supports[i], c) >= 3) {
@@ -763,7 +763,7 @@ void menuAbility_drawScrollRows(void) {
 }
 
 void menuAbility_drawRow(s32 col, s32 row, s32 z, MenuView *v) {
-    Character *c = g_gameState->unk1C->party[s_menuAbility.slot];
+    Character *c = g_gameState->gameData->party[s_menuAbility.slot];
     s32 x, y;
     s32 dx = 8;
     s32 dy = 0x5E;
@@ -900,7 +900,7 @@ s32 menuAbility_canTargetAll(s32 id) {
     s32 i;
 
     for (i = 0; i < 4; i++) {
-        if (g_gameState->unk1C->party[i] != NULL) {
+        if (g_gameState->gameData->party[i] != NULL) {
             n++;
         }
     }
@@ -967,7 +967,7 @@ void menuAbility_initActionCursor(void) {
 
     sel = 0;
     i = 0;
-    c = g_gameState->unk1C->party[s_menuAbility.slot];
+    c = g_gameState->gameData->party[s_menuAbility.slot];
     l = &s_menuAbility.lists[0];
     for (; i < s_menuAbility.actionCount; i++) {
         if (menuAbility_getActionState(s_menuAbility.actions[i].id, c) == ABILITY_USABLE) {

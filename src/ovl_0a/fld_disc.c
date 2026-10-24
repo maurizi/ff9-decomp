@@ -5,7 +5,7 @@ void fld_requestDiscChange(s32 arg0, s16 arg1) {
     g_fieldDiscChange.disc = arg0;
     g_fieldDiscChange.fieldId = arg1;
     g_fieldDiscChange.areaId = -1;
-    g_gameState->unk1C->unk8E4.field->flags |= FLD_MAP_DISC_CHANGE;
+    g_gameState->gameData->unk8E4.field->flags |= FLD_MAP_DISC_CHANGE;
     g_gameState->unk0 |= GS_FLD_NEW_FIELD;
 }
 
@@ -45,7 +45,7 @@ void fld_discChangeEnter(void) {
     }
     g_fieldDiscChange.mode = 1;
     g_fieldDiscChange.cursor = 0;
-    g_gameState->unk1C->unk8E4.field->flags = 0;
+    g_gameState->gameData->unk8E4.field->flags = 0;
     win_closeAllNow();
     g_fieldDiscChangeModes[g_fieldDiscChange.mode].enter();
 }
@@ -62,14 +62,14 @@ void fld_discChangeLeave(void) {
     for (i = 0; i < 2; i++) {
         g_padPortMask[i] = g_fieldDiscChange.savedFlags[i];
     }
-    f = g_gameState->unk1C->unk8E4.field;
+    f = g_gameState->gameData->unk8E4.field;
     f->flags |= FLD_MAP_REFIND_SECTORS;
     file_loadDirTables((GameState *)f);
     fld_refindSectors();
 }
 
 void fld_discChangeBeginFrame(void) {
-    GameData *gd = g_gameState->unk1C;
+    GameData *gd = g_gameState->gameData;
 
     ClearOTagR(gd->unk10[gd->unk8], 0x1000);
     pad_update();
@@ -89,10 +89,10 @@ void fld_discChangeEndFrame(void) {
     DrawSync(0);
     VSync(0);
     ResetGraph(1);
-    PutDispEnv(&g_gameState->dispEnv[g_gameState->unk1C->unk8]);
-    DrawOTagEnv(&g_gameState->unk1C->unk10[g_gameState->unk1C->unk8][0xFFF], &g_gameState->drawEnv[g_gameState->unk1C->unk8]);
-    g_gameState->unk1C->unk8 ^= 1;
-    gfx_setBuffer(g_gameState->unk1C->unk8);
+    PutDispEnv(&g_gameState->dispEnv[g_gameState->gameData->unk8]);
+    DrawOTagEnv(&g_gameState->gameData->unk10[g_gameState->gameData->unk8][0xFFF], &g_gameState->drawEnv[g_gameState->gameData->unk8]);
+    g_gameState->gameData->unk8 ^= 1;
+    gfx_setBuffer(g_gameState->gameData->unk8);
 }
 
 void fld_discChangeSetMode(s32 arg0) {
@@ -108,7 +108,7 @@ void fld_discChangeSetMode(s32 arg0) {
 }
 
 s32 fld_isDiscChangePending(void) {
-    return (g_gameState->unk1C->unk8E4.field->flags >> 20) & 1;
+    return (g_gameState->gameData->unk8E4.field->flags >> 20) & 1;
 }
 
 void fld_discPromptEnter(void) {

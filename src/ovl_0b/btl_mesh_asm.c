@@ -49,7 +49,7 @@ u8 *func_800DE11C(BtlUnit9C *arg0, u8 arg1, u8 *prim) {
         arg0->prims = (s32)prim;
     }
     tex = (u32 *)arg0->texPages;
-    ot = g_gameState->unk1C->unk10[g_gameState->unk1C->unk8];
+    ot = g_gameState->gameData->unk10[g_gameState->gameData->unk8];
 
     n = g->nFT4;
     for (i = 0; i < n; src += sizeof(WmSrcFT4)) {

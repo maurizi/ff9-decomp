@@ -29,7 +29,7 @@ void btlbg_init(BtlBgHeader *arg0, BtlUnit9C50 *arg1) {
     g_btlbgScrollCount = g_btlbgHeader->scrollCount;
     btlbg_setLayerMask(0xF);
     g_btlbgSkyAngle = 0;
-    g_btlbgRainCount = g_gameState->unk1C->rainCount;
+    g_btlbgRainCount = g_gameState->gameData->rainCount;
     if (g_btlbgRainCount >= 0x1F) {
         g_btlbgRainCount = 0x1F;
     }
@@ -121,7 +121,7 @@ u8 *btlbg_draw(MATRIX *arg0, s32 arg1, s32 arg2, u32 *arg3, s32 arg4) {
                         SetTransMatrix(&m2);
                         SetGeomScreen(0x200);
                         out = btlbg_drawRecord(rec, out, (u32 *)arg4, grp);
-                        SetGeomScreen(g_gameState->unk1C->unkA);
+                        SetGeomScreen(g_gameState->gameData->unkA);
                     } else {
                         out = btlbg_drawRecord(rec, out, (u32 *)arg4, grp);
                     }
@@ -308,7 +308,7 @@ u8 *btlbg_drawRain(u8 *arg0, u32 *arg1, MATRIX *arg2) {
     AddPrim(&arg1[2], arg0);
     PopMatrix();
     arg0 += sizeof(DR_TPAGE);
-    SetGeomScreen(g_gameState->unk1C->unkA);
+    SetGeomScreen(g_gameState->gameData->unkA);
     return arg0;
 }
 

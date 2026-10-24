@@ -496,7 +496,7 @@ s32 evt_joinParty(s32 slot) {
         slot = func_8004B85C_key(slot);
         if (slot >= 0 && slot < 9) {
             for (i = 0; i < 4; i++) {
-                if (g_gameState->unk1C->party[i] == NULL) {
+                if (g_gameState->gameData->party[i] == NULL) {
                     break;
                 }
             }
@@ -552,19 +552,19 @@ s32 evt_exprSpecial(s32 op) {
         bgi_getAnimFrame(evt_popResult(), &r);
         break;
     case 0x52:
-        gd = g_gameState->unk1C;
+        gd = g_gameState->gameData;
         r = gd->characters[evt_exprSpecial_chr(evt_popResult())].hp;
         break;
     case 0x53:
-        gd = g_gameState->unk1C;
+        gd = g_gameState->gameData;
         r = gd->characters[evt_exprSpecial_chr(evt_popResult())].maxHp;
         break;
     case 0x6E:
-        gd = g_gameState->unk1C;
+        gd = g_gameState->gameData;
         r = gd->characters[evt_exprSpecial_chr(evt_popResult())].mp;
         break;
     case 0x6F:
-        gd = g_gameState->unk1C;
+        gd = g_gameState->gameData;
         r = gd->characters[evt_exprSpecial_chr(evt_popResult())].maxMp;
         break;
     case 0x70:

@@ -114,8 +114,8 @@ s32 file_copyViaVram(s32 dst, s32 src, s32 size, RECT *rc) {
                 r->w = rc->w;
                 r->h = rc->h;
             } else {
-                r->x = g_gameState->drawEnv[g_gameState->unk1C->unk8].clip.x;
-                r->y = g_gameState->drawEnv[g_gameState->unk1C->unk8].clip.y;
+                r->x = g_gameState->drawEnv[g_gameState->gameData->unk8].clip.x;
+                r->y = g_gameState->drawEnv[g_gameState->gameData->unk8].clip.y;
                 r->w = 320;
                 r->h = 218;
             }
@@ -314,22 +314,22 @@ loop:
 void game_setNextScene(u16 arg0) {
     switch (g_gameState->mode) {
     case 1:
-        g_gameState->unk1C->unk8E4.ovl65->unkC->unk14->unkA = arg0;
+        g_gameState->gameData->unk8E4.ovl65->unkC->unk14->unkA = arg0;
         break;
     case 2:
-        g_gameState->unk1C->unk8E4.ovl65->work->unk4 = arg0;
+        g_gameState->gameData->unk8E4.ovl65->work->unk4 = arg0;
         break;
     case 3:
-        g_gameState->unk1C->unk8E4.ovl65->unk8->unk24 = arg0;
+        g_gameState->gameData->unk8E4.ovl65->unk8->unk24 = arg0;
         break;
     }
 }
 
 s32 game_getModel(s32 arg0) {
     if (arg0 < 9) {
-        return (s32)&g_gameState->unk1C->unk8D8[arg0];
+        return (s32)&g_gameState->gameData->unk8D8[arg0];
     }
-    return (s32)&g_gameState->unk1C->unk8E0[arg0 - 9];
+    return (s32)&g_gameState->gameData->unk8E0[arg0 - 9];
 }
 
 void func_8001E3A4(Unk8001E3A4 *a) {

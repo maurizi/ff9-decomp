@@ -253,7 +253,7 @@ typedef struct {
     u8 unk0[0x40];
 } __attribute__((aligned(4))) ItemFlags;
 
-/* g_gameState->unk1C: looks like the save-data block */
+/* g_gameState->gameData: looks like the save-data block */
 typedef struct {
     u32 unk0; /* flags */
     u32 unk4; /* allocator top (g_allocTop) after setup */
@@ -378,7 +378,7 @@ typedef struct {
     DRAWENV *drawEnv;   /* [2] */
     GameStateUnk14 *dirs; /* FF9.IMG directory records (file_initImg) */
     void **dirTables; /* file tables per directory (file_loadDirTables) */
-    GameData *unk1C;
+    GameData *gameData; /* the game data block (g_gameState->gameData) */
     s32 imgSector; /* FF9.IMG's first sector, added to file start sectors (file_initImg) */
     u32 config; /* Config screen settings, viewed bit by bit as GameConfig (with padMap) */
     u32 padMap; /* custom pad mapping, 4 bits per action */
@@ -399,7 +399,7 @@ static inline u8 chr_testSupportBit_inline(u32 *bits, s32 b) {
 /* Inlined copy of item_findSlot (item search); the original source inlines it. */
 static inline ItemSlot *item_findSlot_inline(s32 id) {
     s32 i;
-    ItemSlot *e = g_gameState->unk1C->items.slots;
+    ItemSlot *e = g_gameState->gameData->items.slots;
 
     for (i = 0; i < 0x100; i++, e++) {
         if (e->count != 0 && e->id == id) {
@@ -2666,7 +2666,7 @@ static inline s32 chr_findAbilitySlot_inline(s32 ch, s32 id) {
     if (ch >= 9) {
         return -1;
     }
-    row = ((g_gameState->unk1C->characters + ch)->unk34.w >> 12) & 0x1F;
+    row = ((g_gameState->gameData->characters + ch)->unk34.w >> 12) & 0x1F;
     if (row >= 16) {
         return -1;
     }
@@ -3107,13 +3107,13 @@ static inline s32 chr_findAbilitySlot_ap_inline(s32 ch, s32 id) {
     if (i < 0) {
         return -1;
     }
-    return g_gameState->unk1C->characters[ch].ap[i];
+    return g_gameState->gameData->characters[ch].ap[i];
 }
 
 /* AP needed to master ability id (inlined form of chr_getApNeeded). */
 static inline s32 chr_getApNeeded_inline(s32 ch, s32 id) {
     s32 i = chr_findAbilitySlot_inline(ch, id);
-    Character *c = g_gameState->unk1C->characters + ch;
+    Character *c = g_gameState->gameData->characters + ch;
     if (i < 0) {
         return 0;
     }
@@ -4302,7 +4302,7 @@ static inline s32 func_8004B85C_find(s32 key, s32 slot) {
     s32 ge;
     s32 lt;
 
-    for (p = g_gameState->unk1C->party; p < &g_gameState->unk1C->party[4]; p++) {
+    for (p = g_gameState->gameData->party; p < &g_gameState->gameData->party[4]; p++) {
         c = *p;
         if (c == NULL) {
             continue;
@@ -4328,7 +4328,7 @@ static inline s32 func_8004B85C_find(s32 key, s32 slot) {
         }
         break;
     }
-    return p < &g_gameState->unk1C->party[4];
+    return p < &g_gameState->gameData->party[4];
 }
 
 extern const u8 D_80010DC4[]; /* default character names: count, then {offset, length} entries */

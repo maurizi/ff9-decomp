@@ -1854,20 +1854,20 @@ void menuSave_buildHeader(SaveBuf *buf) {
     }
     h->discs = menuSave_getDiscBit();
     h->version = SAVE_VERSION;
-    h->level = g_gameState->unk1C->characters[n].level;
+    h->level = g_gameState->gameData->characters[n].level;
     h->playTime = t;
-    h->gil = g_gameState->unk1C->gil;
+    h->gil = g_gameState->gameData->gil;
     h->windowColor = (g_gameState->config >> CFG_BIT_WINDOW_COLOR) & 1;
     h->counter = ++s_menuSave.newestCounter;
     h->cursor = s_menuSave.list.cursor;
-    h->name = *(SaveName *)g_gameState->unk1C->characters[n].unk0;
+    h->name = *(SaveName *)g_gameState->gameData->characters[n].unk0;
     menuSave_getLocation((u8 *)&h->location);
     for (i = 0; i < 4; i++) {
-        if (g_gameState->unk1C->party[i] != NULL) {
+        if (g_gameState->gameData->party[i] != NULL) {
             h->party[i].present = 1;
-            h->party[i].portrait = menuSave_getPortrait(g_gameState->unk1C->party[i]);
-            h->party[i].level = g_gameState->unk1C->party[i]->level;
-            *(Name10 *)h->party[i].name = *(Name10 *)g_gameState->unk1C->party[i]->unk0;
+            h->party[i].portrait = menuSave_getPortrait(g_gameState->gameData->party[i]);
+            h->party[i].level = g_gameState->gameData->party[i]->level;
+            *(Name10 *)h->party[i].name = *(Name10 *)g_gameState->gameData->party[i]->unk0;
         } else {
             h->party[i].present = 0;
             h->party[i].portrait = PORTRAIT_NONE;
@@ -1884,7 +1884,7 @@ void menuSave_getLocation(u8 *dst) {
     if (s_menuSave.mode == SAVE_MODE_NEXT_DISC) {
         name = text_get(fld_getDiscChangeDisc() + SAVE_TEXT_DISC_START);
     } else {
-        name = g_gameState->unk1C->unk80C;
+        name = g_gameState->gameData->unk80C;
     }
     if (name == NULL) {
         s = text_get(SAVE_TEXT_NO_LOCATION);
@@ -2081,7 +2081,7 @@ void menuSave_packParty(SaveParty *s) {
     GameData *gd;
     s32 i;
 
-    gd = g_gameState->unk1C;
+    gd = g_gameState->gameData;
     for (i = 0; i < SAVE_CHARACTERS; i++) {
         s->characters[i] = gd->characters[i];
     }
@@ -2104,7 +2104,7 @@ void menuSave_unpackParty(SaveParty *s) {
     GameData *gd;
     s32 i;
 
-    gd = g_gameState->unk1C;
+    gd = g_gameState->gameData;
     for (i = 0; i < SAVE_CHARACTERS; i++) {
         gd->characters[i] = s->characters[i];
     }
@@ -2127,7 +2127,7 @@ void menuSave_packState(SaveState *h) {
     GameData *gd;
     s32 i;
 
-    gd = g_gameState->unk1C;
+    gd = g_gameState->gameData;
     h->mode = g_gameState->mode;
     h->unk1 = g_gameState->unkA;
     for (i = sizeof(h->reserved2) - 1; i >= 0; i--) {
@@ -2154,7 +2154,7 @@ void menuSave_unpackState(SaveState *p) {
     GameData *gd;
 
     gs->mode = p->mode;
-    gd = gs->unk1C;
+    gd = gs->gameData;
     g_gameState->unkA = p->unk1;
     gd->fieldId = p->fieldId;
     gd->unk3A = p->unk22;
@@ -2201,28 +2201,28 @@ void menuSave_unpackEvents(SaveEvents *s) {
 }
 
 void menuSave_packItems(SaveItems *s) {
-    s->items = g_gameState->unk1C->items;
-    s->flags = g_gameState->unk1C->unk774;
+    s->items = g_gameState->gameData->items;
+    s->flags = g_gameState->gameData->unk774;
     s->unk240 = *(GameConfig *)&g_gameState->config;
 }
 
 void menuSave_unpackItems(SaveItems *s) {
-    g_gameState->unk1C->items = s->items;
-    g_gameState->unk1C->unk774 = s->flags;
+    g_gameState->gameData->items = s->items;
+    g_gameState->gameData->unk774 = s->flags;
     *(GameConfig *)&g_gameState->config = s->unk240;
     config_apply();
 }
 
 void menuSave_packMisc(SaveMisc *p) {
-    p->unk0 = g_gameState->unk1C->chocograph;
-    p->unk4 = g_gameState->unk1C->unk880;
-    p->unk14 = g_gameState->unk1C->unk892;
+    p->unk0 = g_gameState->gameData->chocograph;
+    p->unk4 = g_gameState->gameData->unk880;
+    p->unk14 = g_gameState->gameData->unk892;
 }
 
 void menuSave_unpackMisc(SaveMisc *p) {
-    g_gameState->unk1C->chocograph = p->unk0;
-    g_gameState->unk1C->unk880 = p->unk4;
-    g_gameState->unk1C->unk892 = p->unk14;
+    g_gameState->gameData->chocograph = p->unk0;
+    g_gameState->gameData->unk880 = p->unk4;
+    g_gameState->gameData->unk892 = p->unk14;
 }
 
 void menuSave_cardInit(void) {

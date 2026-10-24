@@ -5,7 +5,7 @@ void game_initData(void) {
 
     g_allocTop = g_gameState->allocTop;
     game_allocData();
-    gd = g_gameState->unk1C;
+    gd = g_gameState->gameData;
     game_resetData();
     PutDispEnv(&g_gameState->dispEnv[gd->unk8]);
     preload_init();
@@ -25,8 +25,8 @@ void game_allocData(void) {
     s32 i;
     s32 w;
 
-    g_gameState->unk1C = (GameData *)g_allocTop;
-    gd = g_gameState->unk1C;
+    g_gameState->gameData = (GameData *)g_allocTop;
+    gd = g_gameState->gameData;
     q = (u8 *)(gd + 1);
     for (i = 0; i < 2; i++) {
         gd->unk10[i] = (u32 *)(q + 0x20);
@@ -47,7 +47,7 @@ void game_allocData(void) {
 }
 
 void game_resetData(void) {
-    GameData *gd = g_gameState->unk1C;
+    GameData *gd = g_gameState->gameData;
     s32 i;
 
     gd->unkA = 0x200;
@@ -138,7 +138,7 @@ s32 game_loadCommonAkao(void) {
 }
 
 s32 game_loadCommonImages(void) {
-    GameData *gd = g_gameState->unk1C;
+    GameData *gd = g_gameState->gameData;
     u16 ids[8] = { 0, 0x2710, 0x2711, 0x2712, 0x2713, 0x2714, 0x2715, 0x2716 };
     u32 i;
     s32 addr;
@@ -157,19 +157,19 @@ s32 game_loadCommonImages(void) {
 s32 game_loadCommonDb(void) {
     FileEntry *f = file_find(1, 0x271A);
 
-    cdRead_init(g_gameState->unk1C->unk854, f->unk4, (f->unkC - f->unk4) << 11, (void *)g_allocTop, 0,
+    cdRead_init(g_gameState->gameData->unk854, f->unk4, (f->unkC - f->unk4) << 11, (void *)g_allocTop, 0,
                   -1, NULL);
-    while (cdRead_update(g_gameState->unk1C->unk854)) {
+    while (cdRead_update(g_gameState->gameData->unk854)) {
     }
-    g_gameState->unk1C->unk7D8 = (void *)g_allocTop;
-    db_register((s32)g_gameState->unk1C->unk7D8, 0);
-    g_allocTop = db_lookup((s32)g_gameState->unk1C->unk7D8, 0, DB_SOUND_BANK, 0);
+    g_gameState->gameData->unk7D8 = (void *)g_allocTop;
+    db_register((s32)g_gameState->gameData->unk7D8, 0);
+    g_allocTop = db_lookup((s32)g_gameState->gameData->unk7D8, 0, DB_SOUND_BANK, 0);
     return 0;
 }
 
 s32 game_unloadCommonDb(void) {
-    db_unregister(g_gameState->unk1C->unk7D8);
-    g_gameState->unk1C->unk7D8 = 0;
+    db_unregister(g_gameState->gameData->unk7D8);
+    g_gameState->gameData->unk7D8 = 0;
     return 0;
 }
 

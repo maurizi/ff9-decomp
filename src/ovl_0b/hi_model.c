@@ -663,7 +663,7 @@ void btlfx_getCasterTexInfo(BtlTexInfo *arg0, BtlTexInfo *arg1, s32 arg2) {
     Unk8E0 *e;
 
     i = (btl_getUnit(0x10)->flags >> 1) & 0xF;
-    e = &g_gameState->unk1C->unk8E0[i];
+    e = &g_gameState->gameData->unk8E0[i];
     k = arg2 & 0xFFFF;
     k |= 0x20000;
     k |= e->unkC->unk3B << 24;

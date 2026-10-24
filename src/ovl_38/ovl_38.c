@@ -24,7 +24,7 @@ void menuStatus_init(void) {
     help_setCallback(menuStatus_updateHelp);
     s_menuStatus.primBufs[0] = (u8 *)0x801F5F00;
     s_menuStatus.primBufs[1] = (u8 *)0x801F9F00;
-    s_menuStatus.prim = s_menuStatus.primBufs[g_gameState->unk1C->unk8];
+    s_menuStatus.prim = s_menuStatus.primBufs[g_gameState->gameData->unk8];
 }
 
 void menuStatus_inputMain(void) {
@@ -65,7 +65,7 @@ void menuStatus_drawHeader(void) {
     s16 y;
 
     w = &s_menuStatus.win;
-    c = g_gameState->unk1C->party[s_menuStatus.slot];
+    c = g_gameState->gameData->party[s_menuStatus.slot];
     x = w->x + 0x72;
     y = w->y + 4;
     setRECT(&r, x, y, 0x5C, 0x12);
@@ -88,7 +88,7 @@ void menuStatus_drawCommands(void) {
     StatusEntry *tp;
 
     w = &s_menuStatus.win;
-    c = g_gameState->unk1C->party[s_menuStatus.slot];
+    c = g_gameState->gameData->party[s_menuStatus.slot];
     t = s_menuStatusCmdTable;
     pool = s_menuStatusCmdNames;
     r.w = 0x42;
@@ -119,7 +119,7 @@ void menuStatus_drawStats(void) {
 
     m = &s_menuStatus;
     r = &m->win;
-    c = g_gameState->unk1C->party[m->slot];
+    c = g_gameState->gameData->party[m->slot];
     y = 0x3D;
     for (i = 0; i < 4; i++) {
         s_menuStatus.prim = text_buildBlock(r->x + 0xA, r->y + (i * 13 + y) - 4, g_ot + 0x1D, text_get(s_menuStatusBaseStatText[i]), 0, s_menuStatus.prim);
@@ -159,7 +159,7 @@ void menuStatus_drawExp(void) {
 
     r = &s_menuStatus.win;
     st = &s_menuStatus;
-    c = g_gameState->unk1C->party[st->slot];
+    c = g_gameState->gameData->party[st->slot];
     show = 0;
     if (D_8007AF00 != 0) {
         bit = c->unkA & 0x10;
@@ -197,7 +197,7 @@ void menuStatus_drawEquipment(void) {
     u8 buf[8];
 
     st = &s_menuStatus;
-    c = g_gameState->unk1C->party[st->slot];
+    c = g_gameState->gameData->party[st->slot];
     for (i = 0; i < 5; i++) {
         s_menuStatus.prim = ui_buildSprite(r->x + 0x74, r->y + 0x68 + i * 15 + 1, &g_ot[0x1D], i + 0xF9, 0, buf, s_menuStatus.prim);
         s_menuStatus.prim = text_buildSmall(r->x + 0x84, r->y + 0x68 + i * 15 + 3, &g_ot[0x1D], D_801EE264, 0, s_menuStatus.prim);
@@ -249,7 +249,7 @@ void menuStatus_drawAbilityRow(s32 x, s32 y, s32 z, s32 i, u8 draw) {
     ActiveAbility *a;
     Unk8006D128 *sup;
 
-    c = g_gameState->unk1C->party[s_menuStatus.slot];
+    c = g_gameState->gameData->party[s_menuStatus.slot];
     ok = func_80034A30(c);
     if (ok && c->ap[i] == 0) {
         return;
@@ -306,7 +306,7 @@ void menuStatus_setMember(s32 slot, s32 dir) {
     Character *c;
     s32 i;
 
-    c = g_gameState->unk1C->party[slot];
+    c = g_gameState->gameData->party[slot];
     ui_startMemberSwitch(&s_menuStatus.header, s_menuStatus.slot, slot, dir);
     if (dir != 0) {
         s_menuStatus.state = STATUS_STATE_WAIT;
@@ -350,8 +350,8 @@ void menuStatus_input(void) {
 void menuStatus_draw(void) {
     u8 *p = s_menuStatus.prim - 0x4000;
 
-    s_menuStatus.primFree = s_menuStatus.primBufs[g_gameState->unk1C->unk8 ^ 1] - p;
-    s_menuStatus.prim = s_menuStatus.primBufs[g_gameState->unk1C->unk8];
+    s_menuStatus.primFree = s_menuStatus.primBufs[g_gameState->gameData->unk8 ^ 1] - p;
+    s_menuStatus.prim = s_menuStatus.primBufs[g_gameState->gameData->unk8];
     menuStatus_drawFrame();
     menuStatus_drawHeader();
     menuStatus_drawCommands();

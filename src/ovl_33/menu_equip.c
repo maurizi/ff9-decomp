@@ -21,7 +21,7 @@ void menuEquip_init(void) {
     setRECT(&s_menuEquip.listRect, 0x94, 0x26, 0xA0, 0x62);
     for (i = 0; i < 4; i++) {
         lv = 0;
-        c = g_gameState->unk1C->party[i];
+        c = g_gameState->gameData->party[i];
         d = (EquipMenu *)((u8 *)&s_menuEquip + i); /* &s_menuEquip.initStones[i] would not match */
         if (c != NULL) {
             lv = c->stones;
@@ -119,7 +119,7 @@ void menuEquip_drawInfo(void) {
     Character *c;
 
     r = &s_menuEquip.infoRect;
-    c = g_gameState->unk1C->party[s_menuEquip.slot];
+    c = g_gameState->gameData->party[s_menuEquip.slot];
     ui_drawEtchedLine(r->x + 3, r->y + 0x3B, 0x1E, r->w - 6);
     ui_drawLabel(r->x + 6, r->y - 3, 0x1E, D_80070460, 0);
     win_drawBox(r, 0x1E, 1);
@@ -169,7 +169,7 @@ void menuEquip_drawEquipment(void) {
     Unk80069018 *it;
 
     r = &s_menuEquip.equipRect;
-    c = g_gameState->unk1C->party[s_menuEquip.slot];
+    c = g_gameState->gameData->party[s_menuEquip.slot];
     if (s_menuEquip.state == EQUIP_STATE_LIST) {
         return;
     }
@@ -211,7 +211,7 @@ void menuEquip_drawAbilities(void) {
     u8 flag;
 
     r = &s_menuEquip.abilityRect;
-    c = g_gameState->unk1C->party[s_menuEquip.slot];
+    c = g_gameState->gameData->party[s_menuEquip.slot];
     ui_drawLabel(r->x + 6, r->y - 3, 0x13, D_80070400, 0);
     ui_drawEtchedLine(r->x + 3, r->y + 0x1A, 0x1E, r->w - 6);
     win_drawBox(r, 0x1E, 1);
@@ -410,7 +410,7 @@ void menuEquip_optimize(void) {
 
     best = 0;
     i = 0;
-    c = g_gameState->unk1C->party[s_menuEquip.slot];
+    c = g_gameState->gameData->party[s_menuEquip.slot];
     kind = chr_getDefaultSet(c);
     for (; i < EQUIP_SLOT_COUNT; i++) {
         if (c->equip[i] != ITEM_NONE) {
@@ -418,7 +418,7 @@ void menuEquip_optimize(void) {
         } else {
             cur = -1;
         }
-        for (j = 0, max = -1, p = g_gameState->unk1C->items.slots; j < ITEM_SLOT_COUNT; j++, p++) {
+        for (j = 0, max = -1, p = g_gameState->gameData->items.slots; j < ITEM_SLOT_COUNT; j++, p++) {
             if (p->unk1 != 0) {
                 it = &g_itemTable[p->unk0];
                 if ((it->unkF & s_menuEquipOptSlotMask[i]) && (it->unk6 & s_menuEquipOptCharMask[kind])) {
@@ -494,15 +494,15 @@ void menuEquip_buildItemList(void) {
     u8 rb;
 
     n = 0;
-    mask = s_menuEquipCharMask[chr_getDefaultSet(g_gameState->unk1C->party[s_menuEquip.slot])];
+    mask = s_menuEquipCharMask[chr_getDefaultSet(g_gameState->gameData->party[s_menuEquip.slot])];
     slot = s_menuEquipSlotMask[s_menuEquip.equipSlot];
     s_menuEquip.items[0].id = ITEM_NONE;
     for (i = 0; i < ITEM_SLOT_COUNT; i++) {
 
-        if (g_gameState->unk1C->items.slots[i].count != 0) {
-            it = &g_itemTable[g_gameState->unk1C->items.slots[i].id];
+        if (g_gameState->gameData->items.slots[i].count != 0) {
+            it = &g_itemTable[g_gameState->gameData->items.slots[i].id];
             if ((it->unk6 & mask) && (it->unkF & slot)) {
-                s_menuEquip.items[n] = g_gameState->unk1C->items.slots[i];
+                s_menuEquip.items[n] = g_gameState->gameData->items.slots[i];
                 n++;
             }
         }
@@ -530,7 +530,7 @@ void menuEquip_updateHelp(void) {
     UnkPair *e;
     MenuList *l;
 
-    c = g_gameState->unk1C->party[s_menuEquip.slot];
+    c = g_gameState->gameData->party[s_menuEquip.slot];
     g_menuHelp.text = NULL;
     if (s_menuEquip.state == EQUIP_STATE_TABS) {
         buf = s_menuEquipHelpBuf;
@@ -691,7 +691,7 @@ void menuEquip_equipSelected(void) {
     gs = g_gameState;
     m = &s_menuEquip;
     l = &m->list;
-    c = gs->unk1C->party[m->slot];
+    c = gs->gameData->party[m->slot];
     old = c->equip[m->equipSlot];
     item = m->items[l->top + l->cursor].id;
     if (l->rows == 0) {
@@ -717,7 +717,7 @@ void menuEquip_removeSlot(void) {
 
     ok = 0;
     if (s_menuEquip.equipSlot != 0) {
-        c = g_gameState->unk1C->party[s_menuEquip.slot];
+        c = g_gameState->gameData->party[s_menuEquip.slot];
         old = c->equip[s_menuEquip.equipSlot];
         if (old != ITEM_NONE) {
             item_add(old, 1);

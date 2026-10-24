@@ -19,7 +19,7 @@ void btl_projectMesh(BtlUnit9C *arg0, u8 arg1) {
     s16 *c2;
 
     g = &arg0->header->meshes[arg1];
-    gte_SetGeomScreen(g_gameState->unk1C->unkA);
+    gte_SetGeomScreen(g_gameState->gameData->unkA);
     sxy = g_vtxScreenXY;
     sz = g_vtxScreenZ;
     k = 0;
@@ -28,8 +28,8 @@ void btl_projectMesh(BtlUnit9C *arg0, u8 arg1) {
     for (i = 0; i < cnt; bone++) {
         n = g->vertexCounts[i++];
         if (n != 0) {
-            gte_SetRotMatrix(&g_gameState->unk1C->unk18);
-            gte_SetTransMatrix(&g_gameState->unk1C->unk18);
+            gte_SetRotMatrix(&g_gameState->gameData->unk18);
+            gte_SetTransMatrix(&g_gameState->gameData->unk18);
             b = bone;
             gte_ldclmv(b);
             c1 = &b->m[0][1];
@@ -111,7 +111,7 @@ u8 *btl_buildMeshPrims(BtlUnit9C *arg0, u8 arg1, u8 *prim) {
         arg0->prims = (s32)prim;
     }
     tex = (u32 *)arg0->texPages;
-    ot = g_gameState->unk1C->unk10[g_gameState->unk1C->unk8];
+    ot = g_gameState->gameData->unk10[g_gameState->gameData->unk8];
     ot -= g->unk13;
 
     n = g->nFT4;
@@ -656,8 +656,8 @@ void btl_updateModelVisibility(BtlUnit9C *arg0) {
     v.vx = arg0->matrix.t[0];
     v.vy = arg0->matrix.t[1];
     v.vz = arg0->matrix.t[2];
-    gte_SetRotMatrix(&g_gameState->unk1C->unk18);
-    gte_SetTransMatrix(&g_gameState->unk1C->unk18);
+    gte_SetRotMatrix(&g_gameState->gameData->unk18);
+    gte_SetTransMatrix(&g_gameState->gameData->unk18);
     gte_ldv0(&v);
     gte_rtps();
     gte_stsz(&z);

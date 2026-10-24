@@ -10,7 +10,7 @@ s32 func_80050D38(s32 r) {
         D_8007BC50.unk24++;
     }
     if (D_8007BC50.unk4 != 0) {
-        gd = g_gameState->unk1C;
+        gd = g_gameState->gameData;
         gte_SetRotMatrix(&gd->unk18);
         gte_SetTransMatrix(&gd->unk18);
         r = func_80053764(D_8007BC50.unk4, gd->unk8, gd->unk10[gd->unk8] + 3, r);

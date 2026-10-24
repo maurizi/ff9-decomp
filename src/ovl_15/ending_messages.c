@@ -24,7 +24,7 @@ s32 ending_messages(void) {
                 t = 0xA0;
                 game_startFade(1, 1, 0x14, 0);
             } else if (t != 0) {
-                ot = g_gameState->unk1C->unk10[g_gameState->unk1C->unk8] + SCREEN_OTZ;
+                ot = g_gameState->gameData->unk10[g_gameState->gameData->unk8] + SCREEN_OTZ;
                 msg = ending_getMessage(g_endingMessages, 0);
                 x = 0xA0 - (ending_textWidth(msg) >> 1);
                 g_messagesPrim = ending_drawText(x, 0x64, ot, msg, g_messagesPrim);
@@ -42,7 +42,7 @@ s32 ending_messages(void) {
                 t = 0xDC;
                 game_startFade(1, 1, 0x14, 0);
             } else if (t != 0) {
-                ot = g_gameState->unk1C->unk10[g_gameState->unk1C->unk8] + SCREEN_OTZ;
+                ot = g_gameState->gameData->unk10[g_gameState->gameData->unk8] + SCREEN_OTZ;
                 msg = ending_getMessage(g_endingMessages, 1);
                 x = 0xA0 - (ending_textWidth(msg) >> 1);
                 g_messagesPrim = ending_drawText(x, 0x5F, ot, msg, g_messagesPrim);
@@ -65,7 +65,7 @@ s32 ending_messages(void) {
                 t = 0xA0;
                 game_startFade(1, 1, 0x14, 0);
             } else if (t != 0) {
-                ot = g_gameState->unk1C->unk10[g_gameState->unk1C->unk8] + SCREEN_OTZ;
+                ot = g_gameState->gameData->unk10[g_gameState->gameData->unk8] + SCREEN_OTZ;
                 msg = ending_getMessage(g_endingMessages, 3);
                 x = 0xA0 - (ending_textWidth(msg) >> 1);
                 g_messagesPrim = ending_drawText(x, 0x64, ot, msg, g_messagesPrim);
@@ -83,7 +83,7 @@ s32 ending_messages(void) {
                 t = 0x118;
                 game_startFade(1, 1, 0x14, 0);
             } else if (t != 0) {
-                ot = g_gameState->unk1C->unk10[g_gameState->unk1C->unk8] + SCREEN_OTZ;
+                ot = g_gameState->gameData->unk10[g_gameState->gameData->unk8] + SCREEN_OTZ;
                 msg = ending_getMessage(g_endingMessages, 4);
                 x = 0xA0 - (ending_textWidth(msg) >> 1);
                 g_messagesPrim = ending_drawText(x, 0x5F, ot, msg, g_messagesPrim);
@@ -130,9 +130,9 @@ s32 ending_messagesInit(void) {
 }
 
 void ending_messagesClearOt(void) {
-    GameData *ctx = g_gameState->unk1C;
+    GameData *ctx = g_gameState->gameData;
     ClearOTagR(ctx->unk10[ctx->unk8], 0x1000);
-    g_messagesPrim = g_messagesPrims[g_gameState->unk1C->unk8];
+    g_messagesPrim = g_messagesPrims[g_gameState->gameData->unk8];
 }
 
 void ending_messagesSwap(void) {
@@ -142,12 +142,12 @@ void ending_messagesSwap(void) {
     DrawSync(0);
     VSync(g_gameState->vsyncMode);
     ResetGraph(1);
-    PutDispEnv(&g_gameState->dispEnv[g_gameState->unk1C->unk8]);
-    ctx = g_gameState->unk1C;
+    PutDispEnv(&g_gameState->dispEnv[g_gameState->gameData->unk8]);
+    ctx = g_gameState->gameData;
     i = ctx->unk8;
     DrawOTagEnv(ctx->unk10[i] + 0xFFF, &g_gameState->drawEnv[i]);
-    g_gameState->unk1C->unk8 ^= 1;
-    gfx_setBuffer(g_gameState->unk1C->unk8);
+    g_gameState->gameData->unk8 ^= 1;
+    gfx_setBuffer(g_gameState->gameData->unk8);
     D_800AE4A8 = 0;
     g_messagesFrame++;
 }
@@ -157,7 +157,7 @@ u8 *ending_getMessage(u8 *arg0, s32 arg1) {
 }
 
 void *ending_drawText(s32 x, s32 y, u32 *ot, u8 *s, void *p) {
-    Unk7D4 *f = g_gameState->unk1C->unk7D4;
+    Unk7D4 *f = g_gameState->gameData->unk7D4;
     s32 w;
     s32 c;
     s32 hi = f->unk4 >> 8;
@@ -188,7 +188,7 @@ s32 ending_textWidth(u8 *s) {
     u32 *g;
 
     n = 0;
-    f = g_gameState->unk1C->unk7D4;
+    f = g_gameState->gameData->unk7D4;
     hi = f->unk4 >> 8;
     while ((c = *s) != 0xFF) {
         if (c >= hi) {

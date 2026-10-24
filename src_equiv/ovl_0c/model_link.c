@@ -41,7 +41,7 @@ void wm_drawMesh(ModelObj *model, u8 group) {
     u8 *grp = *(u8 **)(*(u8 **)(m + 8) + 0x10) + group * 0x28;
     u8 *pkt = *(u8 **)(*(u8 **)(m + 0x44) + group * 12 + 4);
     u8 *poly = *(u8 **)(grp + 0x1C);
-    GameData *gd = g_gameState->unk1C;
+    GameData *gd = g_gameState->gameData;
     u32 *ot = gd->unk10[gd->unk8];
     s32 k;
     s32 n;

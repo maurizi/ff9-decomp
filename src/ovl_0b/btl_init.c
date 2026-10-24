@@ -11,7 +11,7 @@ void btl_initParty(Battle *arg0) {
     i = n = 0;
     p = evt_getObjectList()->unk0;
     for (; i < 4; i++) {
-        c = g_gameState->unk1C->party[i];
+        c = g_gameState->gameData->party[i];
         if (c != NULL) {
             u = &arg0->units[n];
             u->modelId = g_btlCharModelIds[(c->unk34.w >> 4) & 0x1F];
@@ -53,7 +53,7 @@ void btl_initEnemies(Battle *arg0) {
     s16 m;
     s32 k;
 
-    for (; i < g_gameState->unk1C->unk8E4.battle->scene.unk4->unk1; i++, n++) {
+    for (; i < g_gameState->gameData->unk8E4.battle->scene.unk4->unk1; i++, n++) {
         e = &arg0->enemies[i];
         e->flags = (e->flags & ~0x3F) | 0x20;
         u = &arg0->units[n];
@@ -72,7 +72,7 @@ void btl_initEnemies(Battle *arg0) {
         u->flags = (u->flags & ~0xE0) | (((k + 4) & 7) << 5);
         u->flags &= ~0x40000000;
         u->flags = (u->flags & ~0x800000) | (((e->flags >> 9) & 1) << 23);
-        btl_resetUnit(u, &g_gameState->unk1C->unk8E0[k]);
+        btl_resetUnit(u, &g_gameState->gameData->unk8E0[k]);
         u->home = (struct BtlUnit98 *)&e->home;
         u->weaponModel = NULL;
         u->support = (u32 *)D_800F5244;
@@ -121,12 +121,12 @@ void btl_initPartyUnit(Character *c, BtlUnit *u, u16 slot, u16 n) {
     u->level = c->level;
     u->max = (BtlUnit24 *)&c->maxHp;
     btl_copyStats((Unk800BD8C0 *)&u->hp, (Unk800BD8C0 *)&c->hp);
-    btl_resetUnit(u, &g_gameState->unk1C->unk8D8[c->unk34.w & 0xF]);
+    btl_resetUnit(u, &g_gameState->gameData->unk8D8[c->unk34.w & 0xF]);
     u->vanishMeshes = 0xFFFF;
     btl_initDoomCount((Unk800C09D8 *)u);
     u->max->maxAtb = (0x3C - u->speed) * 160;
     btl_resetAtbSpeed((Unk800BD8F0 *)u);
-    k = g_gameState->unk1C->unk8E4.battle->scene.unk0 & 3;
+    k = g_gameState->gameData->unk8E4.battle->scene.unk0 & 3;
     if (k == 0) {
         u->atb = 0;
     } else if (k == 1) {
@@ -140,7 +140,7 @@ void btl_initPartyUnit(Character *c, BtlUnit *u, u16 slot, u16 n) {
         }
         u->atb = ((*g_randPtr << 8) | *g_randPtr++) % u->max->maxAtb;
     }
-    u->weaponModel = &g_gameState->unk1C->unk8E4.battle->weaponModels[n].unk0;
+    u->weaponModel = &g_gameState->gameData->unk8E4.battle->weaponModels[n].unk0;
     btl_loadPartyMotions(u, (c->unk34.w >> 4) & 0x1F, n);
     btl_initWeapon(c, u);
     u->defense = c->defense;
@@ -180,7 +180,7 @@ u32 *btl_initEnemyState(Battle *arg0, u32 *arg1) {
     s32 i;
     BtlEnemyType *p;
 
-    for (i = 0; i < g_gameState->unk1C->unk8E4.battle->scene.unk4->unk1; i++) {
+    for (i = 0; i < g_gameState->gameData->unk8E4.battle->scene.unk4->unk1; i++) {
         {
             p = arg0->enemies[i].type;
             u = &arg0->units[i + 4];
@@ -266,8 +266,8 @@ void btl_resetUnit(BtlUnit *arg0, Unk8E0 *arg1) {
     arg0->flags = f;
     arg1->unk10 = arg0;
     if ((arg0->flags >> 23) & 1) {
-        arg0->model = g_gameState->unk1C->unk8E0->unk8;
-        arg0->obj = g_gameState->unk1C->unk8E0->unkC;
+        arg0->model = g_gameState->gameData->unk8E0->unk8;
+        arg0->obj = g_gameState->gameData->unk8E0->unkC;
     } else {
         arg0->model = arg1->unk8;
         arg0->obj = arg1->unkC;

@@ -8,8 +8,8 @@ INCLUDE_RODATA("asm/us/ovl_32/nonmatchings/ovl_32", g_chocographText);
 void menuChocograph_init(void) {
     ChocographMenu *st;
 
-    if (g_gameState->unk1C->chocograph > CHOCOGRAPH_COUNT) {
-        g_gameState->unk1C->chocograph = 0;
+    if (g_gameState->gameData->chocograph > CHOCOGRAPH_COUNT) {
+        g_gameState->gameData->chocograph = 0;
     }
     st = &s_menuChocograph;
     st->mode = CHOCO_MODE_TABS;
@@ -27,10 +27,10 @@ void menuChocograph_init(void) {
     menuList_init(&s_menuChocograph.list, CHOCOGRAPH_COUNT, CHOCO_LIST_ROWS, 1, 0x71);
     menuChocograph_readFlags();
     menuChocograph_loadImages();
-    if (g_gameState->unk1C->chocograph != 0) {
-        menuChocograph_scrollTo(g_gameState->unk1C->chocograph - 1);
+    if (g_gameState->gameData->chocograph != 0) {
+        menuChocograph_scrollTo(g_gameState->gameData->chocograph - 1);
     }
-    s_menuChocograph.textPtr = s_menuChocograph.textBuf + (g_gameState->unk1C->unk8 << 12);
+    s_menuChocograph.textPtr = s_menuChocograph.textBuf + (g_gameState->gameData->unk8 << 12);
 }
 
 void menuChocograph_inputTabs(void) {
@@ -44,10 +44,10 @@ void menuChocograph_inputTabs(void) {
         if (s_menuChocograph.tab == CHOCO_TAB_SELECT) {
             s_menuChocograph.mode = CHOCO_MODE_LIST;
             snd_playSe(SE_CURSOR);
-        } else if (g_gameState->unk1C->chocograph == 0) {
+        } else if (g_gameState->gameData->chocograph == 0) {
             snd_playSe(SE_BUZZER);
         } else {
-            g_gameState->unk1C->chocograph = 0;
+            g_gameState->gameData->chocograph = 0;
             snd_playSe(SE_CONFIRM);
         }
     } else {
@@ -93,7 +93,7 @@ void menuChocograph_inputList(void) {
                 n = st->ability;
                 if (menuChocograph_getRequiredAbility(idx) < n) {
                     snd_playSe(SE_CONFIRM);
-                    g_gameState->unk1C->chocograph = l->top + l->cursor + 1;
+                    g_gameState->gameData->chocograph = l->top + l->cursor + 1;
                     return;
                 }
             }
@@ -111,11 +111,11 @@ void menuChocograph_drawSelected(void) {
     win_drawBox(r, 0x1D, 2);
     win_drawShadow(r, 0x1E, 2);
     ui_drawLabel(r->x + 8, r->y - 3, 0x1C, D_800704AC, 0);
-    sel = g_gameState->unk1C->chocograph;
+    sel = g_gameState->gameData->chocograph;
     if (sel != 0) {
         menuChocograph_drawIcon(r->x + 0x10, r->y + 0x2C, 0x1C, (s_menuChocograph.found & (1 << (sel - 1))) ? CHOCO_ICON_CHOCOGRAPH + 1 : CHOCO_ICON_CHOCOGRAPH, 0);
-        text_drawBlock(r->x + 0x21, r->y + 0x2E, 0x1C, text_get(g_gameState->unk1C->chocograph - 1 + CHOCO_TEXT_NAME), 0);
-        menuChocograph_drawPicture(r->x + 0x4C, r->y + 0xB, 0x1C, g_gameState->unk1C->chocograph - 1, 0);
+        text_drawBlock(r->x + 0x21, r->y + 0x2E, 0x1C, text_get(g_gameState->gameData->chocograph - 1 + CHOCO_TEXT_NAME), 0);
+        menuChocograph_drawPicture(r->x + 0x4C, r->y + 0xB, 0x1C, g_gameState->gameData->chocograph - 1, 0);
         menuChocograph_drawFrame(r->x + 0x48, r->y + 7, 0x1C, 0);
     }
 }
@@ -284,7 +284,7 @@ void menuChocograph_restoreVram(void) {
     s32 sel;
 
     if (g_gameState->mode == 3) {
-        sel = g_gameState->unk1C->chocograph;
+        sel = g_gameState->gameData->chocograph;
         if (sel != 0) {
             menuChocograph_getPictureRects(sel - 1, &r0, &r1);
             MoveImage(&r0, 0x280, 0xF6);
@@ -404,7 +404,7 @@ void menuChocograph_drawFrame(s32 x, s32 y, s32 otz, u8 dim) {
 }
 
 void menuChocograph_update(void) {
-    s_menuChocograph.textPtr = s_menuChocograph.textBuf + (g_gameState->unk1C->unk8 << 12);
+    s_menuChocograph.textPtr = s_menuChocograph.textBuf + (g_gameState->gameData->unk8 << 12);
     menuChocograph_input();
     menuChocograph_draw();
     menuChocograph_updateList();
@@ -456,7 +456,7 @@ void menuChocograph_drawTabs(void) {
     RECT *r = &s_menuChocograph.tabRect;
     s32 i;
     s32 x;
-    u8 none = g_gameState->unk1C->chocograph == 0;
+    u8 none = g_gameState->gameData->chocograph == 0;
 
     win_drawBox(r, 0x1D, 2);
     win_drawShadow(r, 0x1D, 2);

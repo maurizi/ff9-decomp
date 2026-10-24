@@ -46,19 +46,19 @@ u8 *mbg_readFrame(Ovl64Out *out) {
             g_mbgStartCameraId = info->id;
             g_mbgPlayer.unk6 = 0;
         } else {
-            g_gameState->unk1C->unk18.m[0][0] = info->m00;
-            g_gameState->unk1C->unk18.m[0][1] = info->m01;
-            g_gameState->unk1C->unk18.m[0][2] = info->m02;
-            g_gameState->unk1C->unk18.m[1][0] = info->m10;
-            g_gameState->unk1C->unk18.m[1][1] = info->m11;
-            g_gameState->unk1C->unk18.m[1][2] = info->m12;
-            g_gameState->unk1C->unk18.m[2][0] = info->m20;
-            g_gameState->unk1C->unk18.m[2][1] = info->m21;
-            g_gameState->unk1C->unk18.m[2][2] = info->m22;
-            g_gameState->unk1C->unk18.t[0] = info->tx;
-            g_gameState->unk1C->unk18.t[1] = info->ty;
-            g_gameState->unk1C->unk18.t[2] = info->tz;
-            g_gameState->unk1C->unkA = info->id;
+            g_gameState->gameData->unk18.m[0][0] = info->m00;
+            g_gameState->gameData->unk18.m[0][1] = info->m01;
+            g_gameState->gameData->unk18.m[0][2] = info->m02;
+            g_gameState->gameData->unk18.m[1][0] = info->m10;
+            g_gameState->gameData->unk18.m[1][1] = info->m11;
+            g_gameState->gameData->unk18.m[1][2] = info->m12;
+            g_gameState->gameData->unk18.m[2][0] = info->m20;
+            g_gameState->gameData->unk18.m[2][1] = info->m21;
+            g_gameState->gameData->unk18.m[2][2] = info->m22;
+            g_gameState->gameData->unk18.t[0] = info->tx;
+            g_gameState->gameData->unk18.t[1] = info->ty;
+            g_gameState->gameData->unk18.t[2] = info->tz;
+            g_gameState->gameData->unkA = info->id;
         }
     }
     if (rumble != NULL && (!((Ovl64Cfg *)&g_gameState->config)->vibrationOff || g_gameState->mode == 5)) {
@@ -66,10 +66,10 @@ u8 *mbg_readFrame(Ovl64Out *out) {
         g_padActuator[0].unk1 = rumble->level;
     }
     if (mask != NULL && mask->size != 0) {
-        bcopy((void *)mask->data, &g_mbgMaskData[g_gameState->unk1C->unk8 ^ 1], mask->size);
-        g_mbgMaskSize[g_gameState->unk1C->unk8 ^ 1] = mask->size;
+        bcopy((void *)mask->data, &g_mbgMaskData[g_gameState->gameData->unk8 ^ 1], mask->size);
+        g_mbgMaskSize[g_gameState->gameData->unk8 ^ 1] = mask->size;
     } else {
-        g_mbgMaskSize[g_gameState->unk1C->unk8 ^ 1] = 0;
+        g_mbgMaskSize[g_gameState->gameData->unk8 ^ 1] = 0;
     }
     if (g_mbgFrame >= g_mbgMovie->lastFrame) {
         g_mbgPlayer.ended = 1;
@@ -114,11 +114,11 @@ void mbg_mdecOutCallback(void) {
     g_mbgLoadRects[g_mbgLoadRectIdx] = g_mbgDecode.slice;
     g_mbgDecode.outIdx ^= 1;
     g_mbgDecode.slice.x += g_mbgDecode.slice.w;
-    if (g_mbgDecode.slice.x < g_mbgDecode.frameRect[g_gameState->unk1C->unk8].x + g_mbgDecode.frameRect[g_gameState->unk1C->unk8].w) {
+    if (g_mbgDecode.slice.x < g_mbgDecode.frameRect[g_gameState->gameData->unk8].x + g_mbgDecode.frameRect[g_gameState->gameData->unk8].w) {
         if (DecDCTinSync(1) == 0) {
             g_mbgDecode.frameDone = 1;
-            g_mbgDecode.slice.x = g_mbgDecode.frameRect[g_gameState->unk1C->unk8 ^ 1].x;
-            g_mbgDecode.slice.y = g_mbgDecode.frameRect[g_gameState->unk1C->unk8 ^ 1].y;
+            g_mbgDecode.slice.x = g_mbgDecode.frameRect[g_gameState->gameData->unk8 ^ 1].x;
+            g_mbgDecode.slice.y = g_mbgDecode.frameRect[g_gameState->gameData->unk8 ^ 1].y;
         }
         DecDCTout(g_mbgDecode.mdecOut[g_mbgDecode.outIdx], (g_mbgDecode.slice.w * g_mbgDecode.slice.h) >> 1);
     } else {
@@ -127,7 +127,7 @@ void mbg_mdecOutCallback(void) {
         }
         g_mbgDecode.frameDone = 1;
         if ((s8)g_mbgPlayer.unk3 == 1) {
-            if (g_mbgRgb24 == 1 && g_gameState->unk1C->unk8 == 0) {
+            if (g_mbgRgb24 == 1 && g_gameState->gameData->unk8 == 0) {
                 g_mbgRgb24 = 0;
                 g_mbgPlayer.rgb24 = 0;
                 g_mbgDecode.frameRect[0].x = 0x140;
@@ -140,16 +140,16 @@ void mbg_mdecOutCallback(void) {
                 }
                 D_8019DC97 = 2;
             }
-            if (g_mbgRgb24 == 0 && g_gameState->unk1C->unk8 == 1) {
+            if (g_mbgRgb24 == 0 && g_gameState->gameData->unk8 == 1) {
                 g_mbgPlayer.rgb24 = 1;
                 g_mbgDecode.frameRect[0].x = 0x1E0;
                 g_mbgDecode.frameRect[0].w = 0x1E0;
                 g_mbgDecode.frameRect[1].w = 0x1E0;
                 g_mbgDecode.slice.w = 0x18;
-                g_gameState->unk1C->unk0 |= 0x14;
+                g_gameState->gameData->unk0 |= 0x14;
                 g_mbgRgb24 = 1;
                 if (g_gameState->mode == 1 || g_gameState->mode == 5) {
-                    g_gameState->unk1C->unk8E4.ovl65->unk0 |= 9;
+                    g_gameState->gameData->unk8E4.ovl65->unk0 |= 9;
                 }
                 D_8019DC97 = 2;
             }
@@ -161,8 +161,8 @@ void mbg_mdecOutCallback(void) {
             g_padActuator[0].unk0 = 0;
             g_padActuator[0].unk1 = 0;
         }
-        g_mbgDecode.slice.x = g_mbgDecode.frameRect[g_gameState->unk1C->unk8 ^ 1].x;
-        g_mbgDecode.slice.y = g_mbgDecode.frameRect[g_gameState->unk1C->unk8 ^ 1].y;
+        g_mbgDecode.slice.x = g_mbgDecode.frameRect[g_gameState->gameData->unk8 ^ 1].x;
+        g_mbgDecode.slice.y = g_mbgDecode.frameRect[g_gameState->gameData->unk8 ^ 1].y;
     }
     LoadImage(&g_mbgLoadRects[g_mbgLoadRectIdx], g_mbgDecode.mdecOut[cur]);
     g_mbgLoadRectIdx = (g_mbgLoadRectIdx + 1) % 4;
@@ -336,7 +336,7 @@ s32 mbg_play(u32 movie, s32 idx) {
         ok = 0;
     } else {
         if (g_gameState->mode == 1 || g_gameState->mode == 5) {
-            mbg_streamSetBaseSector(((Ovl64Field8E4 *)g_gameState->unk1C->unk8E4.ovl65)->unkC->unk14->unk44);
+            mbg_streamSetBaseSector(((Ovl64Field8E4 *)g_gameState->gameData->unk8E4.ovl65)->unkC->unk14->unk44);
         }
         ok = mbg_streamStart(file, g_mbgMovie->startFrame, 99999, NULL, 0) == 0;
     }
@@ -372,8 +372,8 @@ static inline void func_8019_wait_frame(Ovl64Dec *dec) {
     while (dec->frameDone == 0) {
         if (--n == 0) {
             dec->frameDone = 1;
-            dec->slice.x = dec->frameRect[g_gameState->unk1C->unk8].x;
-            dec->slice.y = dec->frameRect[g_gameState->unk1C->unk8].y;
+            dec->slice.x = dec->frameRect[g_gameState->gameData->unk8].x;
+            dec->slice.y = dec->frameRect[g_gameState->gameData->unk8].y;
             DecDCTReset(1);
         }
     }
@@ -412,22 +412,22 @@ s32 mbg_update(s32 arg0) {
     mode = g_gameState->mode;
     if (mode == 1 || mode == 5) {
         fldbg_getCamera(&st->unk2);
-        st->unk28 = ((Ovl64Field8E4 *)g_gameState->unk1C->unk8E4.ovl65)->unkC->unk14->unk30;
-        ((Ovl64Field8E4 *)g_gameState->unk1C->unk8E4.ovl65)->unkC->unk14->unk30 = 0;
+        st->unk28 = ((Ovl64Field8E4 *)g_gameState->gameData->unk8E4.ovl65)->unkC->unk14->unk30;
+        ((Ovl64Field8E4 *)g_gameState->gameData->unk8E4.ovl65)->unkC->unk14->unk30 = 0;
     }
     g_mbgMaskCursor.unk0 = 0;
     g_mbgMaskCursor.unk2 = 0;
-    g_mbgMaskCursor.unk4 = g_mbgMaskSize[g_gameState->unk1C->unk8];
-    g_mbgMaskCursor.unkC = g_mbgMaskCursor.unk8 = (s32)&g_mbgMaskData[g_gameState->unk1C->unk8];
+    g_mbgMaskCursor.unk4 = g_mbgMaskSize[g_gameState->gameData->unk8];
+    g_mbgMaskCursor.unkC = g_mbgMaskCursor.unk8 = (s32)&g_mbgMaskData[g_gameState->gameData->unk8];
     if (g_mbgRgb24 == 0 && g_mbgMaskCursor.unk4 != 0) {
-        Ovl64Stp *p = &D_8019F4A8[g_gameState->unk1C->unk8];
+        Ovl64Stp *p = &D_8019F4A8[g_gameState->gameData->unk8];
         p->unk3 = 2;
         p->unk4 = 0xE6000002;
         p->unk8 = 0;
     }
     dec = &g_mbgDecode;
-    dec->slice.x = dec->frameRect[g_gameState->unk1C->unk8].x;
-    dec->slice.y = dec->frameRect[g_gameState->unk1C->unk8].y;
+    dec->slice.x = dec->frameRect[g_gameState->gameData->unk8].x;
+    dec->slice.y = dec->frameRect[g_gameState->gameData->unk8].y;
     DecDCTin(dec->mdecIn[dec->inIdx], (s8)g_mbgPlayer.rgb24);
     DecDCTout(dec->mdecOut[dec->outIdx], (dec->slice.w * dec->slice.h) >> 1);
     while (1) {
@@ -469,7 +469,7 @@ s32 mbg_update(s32 arg0) {
             func_8019_wait_frame(&g_mbgDecode);
             mode = g_gameState->mode;
             if (mode == 1 || mode == 5) {
-                ((Ovl64Field8E4 *)g_gameState->unk1C->unk8E4.ovl65)->unkC->unk14->unk30 = g_mbgPlayer.unk28;
+                ((Ovl64Field8E4 *)g_gameState->gameData->unk8E4.ovl65)->unkC->unk14->unk30 = g_mbgPlayer.unk28;
                 fldbg_setCamera((s8)g_mbgPlayer.unk2);
             }
             return 1;
@@ -487,7 +487,7 @@ s32 mbg_update(s32 arg0) {
         g_mbgPlayer.unk8 = 0;
     }
     if (arg0 != 0) {
-        env = (DISPENV *)(g_gameState->unk1C->unk8 * 20 + (s32)g_gameState->dispEnv);
+        env = (DISPENV *)(g_gameState->gameData->unk8 * 20 + (s32)g_gameState->dispEnv);
         VSync(0);
         PutDispEnv(env);
         SetDispMask(1);

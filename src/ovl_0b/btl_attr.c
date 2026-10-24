@@ -55,16 +55,16 @@ s32 btl_setKoMotion(BtlUnit *arg0) {
 void btl_loadPartyMotions(BtlUnit *arg0, s32 arg1, s32 arg2) {
     u32 i;
     for (i = 0; i < 0x22; i++) {
-        g_gameState->unk1C->unk8E4.battle->partyMotions[arg2][i] = (s32)db_lookupRegistered(4, D_800F524C[arg1][i] | 0x30000, 0);
+        g_gameState->gameData->unk8E4.battle->partyMotions[arg2][i] = (s32)db_lookupRegistered(4, D_800F524C[arg1][i] | 0x30000, 0);
     }
-    arg0->motions = g_gameState->unk1C->unk8E4.battle->partyMotions[arg2];
+    arg0->motions = g_gameState->gameData->unk8E4.battle->partyMotions[arg2];
 }
 
 void btl_spreadTroubleDamage(BtlUnit *arg0) {
     BtlUnit *u;
     s32 d;
     s32 v;
-    for (u = g_gameState->unk1C->unk8E4.battle->unitList; u != 0; u = u->next) {
+    for (u = g_gameState->gameData->unk8E4.battle->unitList; u != 0; u = u->next) {
         if ((u->flags & 1) == (arg0->flags & 1) && u != arg0 && ((u->flags >> 28) & 1)) {
             u->popupFlags = 1;
             d = arg0->hpChange >> 1;
@@ -73,7 +73,7 @@ void btl_spreadTroubleDamage(BtlUnit *arg0) {
             } else if (u->status & BTL_STATUS_PETRIFY) {
                 u->hpChange = 0;
             } else {
-                if (u != g_gameState->unk1C->unk8E4.battle->curCmd->caster) {
+                if (u != g_gameState->gameData->unk8E4.battle->curCmd->caster) {
                     v = (u->flags & 1) << 11;
                     u->obj->rotY = v;
                     u->rot[1] = v;
@@ -169,7 +169,7 @@ void btl_damageHp(BtlUnit *arg0, s32 arg1, u8 arg2) {
         arg0->hpChange = 0;
         return;
     }
-    if (arg0 != g_gameState->unk1C->unk8E4.battle->curCmd->caster) {
+    if (arg0 != g_gameState->gameData->unk8E4.battle->curCmd->caster) {
         v = (arg0->flags & 1) << 11;
         arg0->obj->rotY = v;
         arg0->rot[1] = v;
@@ -304,9 +304,9 @@ u32 btl_getUnitAttr(BtlUnit *arg0, s32 arg1) {
         break;
     case BTL_ATTR_LEVEL:
         if (arg0->flags & 1) {
-            r = (g_gameState->unk1C->characters + ((arg0->flags >> 1) & 0xF))->level;
+            r = (g_gameState->gameData->characters + ((arg0->flags >> 1) & 0xF))->level;
         } else {
-            r = g_gameState->unk1C->unk8E4.battle->enemies[(arg0->flags >> 1) & 0xF].type->level;
+            r = g_gameState->gameData->unk8E4.battle->enemies[(arg0->flags >> 1) & 0xF].type->level;
         }
         break;
     case BTL_ATTR_IMMUNE_HI:
@@ -362,14 +362,14 @@ u32 btl_getUnitAttr(BtlUnit *arg0, s32 arg1) {
         r >>= 5;
         break;
     case 0x42:
-        r = (g_gameState->unk1C->characters + ((arg0->flags >> 1) & 0xF))->unk34.w >> 4;
+        r = (g_gameState->gameData->characters + ((arg0->flags >> 1) & 0xF))->unk34.w >> 4;
         r &= 0x1F;
         break;
     case 0x43:
-        r = (g_gameState->unk1C->characters + ((arg0->flags >> 1) & 0xF))->unkA;
+        r = (g_gameState->gameData->characters + ((arg0->flags >> 1) & 0xF))->unkA;
         break;
     case 0x44:
-        r = g_gameState->unk1C->unk8E4.battle->enemies[(arg0->flags >> 1) & 0xF].type->category;
+        r = g_gameState->gameData->unk8E4.battle->enemies[(arg0->flags >> 1) & 0xF].type->category;
         break;
     case 0x45:
         r = arg0->flags >> 18;
@@ -448,7 +448,7 @@ void btl_setUnitAttr(BtlUnit *arg0, s32 arg1, u32 arg2) {
         arg0->elemWeak = arg2;
         break;
     case 0x34:
-        if (g_gameState->unk1C->unk8E4.battle->phase == BTL_PHASE_INTRO) {
+        if (g_gameState->gameData->unk8E4.battle->phase == BTL_PHASE_INTRO) {
             arg0->unkB2 = 0;
             arg0->flags &= ~0x10000000;
             arg0->flags &= ~0x10000;
@@ -459,10 +459,10 @@ void btl_setUnitAttr(BtlUnit *arg0, s32 arg1, u32 arg2) {
         break;
     case 0x35:
         arg0->flags = (arg0->flags & ~0x400000) | ((arg2 & 1) << 22);
-        if (arg2 != 0 && g_gameState->unk1C->unk8E4.battle->phase == BTL_PHASE_INTRO) {
+        if (arg2 != 0 && g_gameState->gameData->unk8E4.battle->phase == BTL_PHASE_INTRO) {
             btl_applyBgLight(arg0->model);
             k = btl_getModelSlot(arg0);
-            g_gameState->unk1C->unk8E4.battle->work->shadows[k].shade = btlbg_getHeader()->shadowShade;
+            g_gameState->gameData->unk8E4.battle->work->shadows[k].shade = btlbg_getHeader()->shadowShade;
         }
         break;
     case 0x36:
@@ -474,16 +474,16 @@ void btl_setUnitAttr(BtlUnit *arg0, s32 arg1, u32 arg2) {
         arg0->model->scaleY = arg2;
         arg0->model->scaleZ = arg2;
         k = btl_getModelSlot(arg0);
-        g_gameState->unk1C->unk8E4.battle->work->shadows[k].width = ((u32)(arg0->shadowW * arg2) >> 12) * 14;
+        g_gameState->gameData->unk8E4.battle->work->shadows[k].width = ((u32)(arg0->shadowW * arg2) >> 12) * 14;
         k = btl_getModelSlot(arg0);
-        g_gameState->unk1C->unk8E4.battle->work->shadows[k].depth = ((u32)(arg0->shadowD * arg2) >> 12) * 12;
+        g_gameState->gameData->unk8E4.battle->work->shadows[k].depth = ((u32)(arg0->shadowD * arg2) >> 12) * 12;
         break;
     case BTL_ATTR_RESET_SCALE:
         arg0->model->flags &= ~2;
         k = btl_getModelSlot(arg0);
-        g_gameState->unk1C->unk8E4.battle->work->shadows[k].width = arg0->shadowW * 14;
+        g_gameState->gameData->unk8E4.battle->work->shadows[k].width = arg0->shadowW * 14;
         k = btl_getModelSlot(arg0);
-        g_gameState->unk1C->unk8E4.battle->work->shadows[k].depth = arg0->shadowD * 12;
+        g_gameState->gameData->unk8E4.battle->work->shadows[k].depth = arg0->shadowD * 12;
         break;
     case BTL_ATTR_HIDE_MESHES:
         btl_hideMeshes(arg0, arg2);
@@ -513,7 +513,7 @@ void btl_setUnitAttr(BtlUnit *arg0, s32 arg1, u32 arg2) {
         arg0->flags = (arg0->flags & ~0x40000) | ((arg2 & 1) << 18);
         break;
     case BTL_ATTR_ADD_REWARDS:
-        btl_addEnemyRewards(g_gameState->unk1C->unk8E4.battle->enemies[(arg0->flags >> 1) & 0xF].type);
+        btl_addEnemyRewards(g_gameState->gameData->unk8E4.battle->enemies[(arg0->flags >> 1) & 0xF].type);
         break;
     case BTL_ATTR_STRENGTH:
         arg0->strength = arg2;
@@ -544,7 +544,7 @@ void btl_setUnitAttr(BtlUnit *arg0, s32 arg1, u32 arg2) {
 }
 
 s32 btl_getBattleVar(s32 arg0) {
-    Battle *b = g_gameState->unk1C->unk8E4.battle;
+    Battle *b = g_gameState->gameData->unk8E4.battle;
     s32 r = -1;
     BtlUnit *u;
     s32 k;
@@ -553,7 +553,7 @@ s32 btl_getBattleVar(s32 arg0) {
         r = b->scene.unk0 & 3;
         break;
     case BTL_GETVAR_GIL:
-        r = g_gameState->unk1C->gil;
+        r = g_gameState->gameData->gil;
         break;
     case BTL_GETVAR_PHASE:
         r = b->phase;
@@ -594,7 +594,7 @@ s32 btl_getBattleVar(s32 arg0) {
         r = 0;
         for (u = b->unitList; u != NULL; u = u->next) {
             if (u->flags & 1) {
-                k = g_gameState->unk1C->characters[(u->flags >> 1) & 0xF].unk34.b.unk4;
+                k = g_gameState->gameData->characters[(u->flags >> 1) & 0xF].unk34.b.unk4;
             } else {
                 k = 0x13;
             }
@@ -609,7 +609,7 @@ s32 btl_getBattleVar(s32 arg0) {
 }
 
 void btl_setBattleVar(s32 arg0, s32 arg1) {
-    Battle *b = g_gameState->unk1C->unk8E4.battle;
+    Battle *b = g_gameState->gameData->unk8E4.battle;
     BtlUnit *u;
     u32 f;
 
@@ -627,13 +627,13 @@ void btl_setBattleVar(s32 arg0, s32 arg1) {
         break;
     case BTL_SETVAR_END:
         if (b->phase == BTL_PHASE_SCRIPT) {
-            g_gameState->unk1C->battleResult = arg1;
+            g_gameState->gameData->battleResult = arg1;
             if (arg1 == 1 && ((b->scene.unk0 >> 6) & 1)) {
                 b->phase = BTL_PHASE_END;
                 b->subPhase = BTL_END_SCRIPT_VICTORY;
             } else {
-                if (g_gameState->unk1C->battleResult == 1) {
-                    g_gameState->unk1C->battleResult = 2;
+                if (g_gameState->gameData->battleResult == 1) {
+                    g_gameState->gameData->battleResult = 2;
                 }
                 b->phase = BTL_PHASE_EXIT_OTHER;
                 b->subPhase = 0;
@@ -644,7 +644,7 @@ void btl_setBattleVar(s32 arg0, s32 arg1) {
         if (b->phase == BTL_PHASE_SCRIPT) {
             b->phase = BTL_PHASE_EXIT_DEFEAT;
             b->subPhase = 0;
-            g_gameState->unk1C->battleResult = 3;
+            g_gameState->gameData->battleResult = 3;
         }
         break;
     case BTL_SETVAR_RESUME:
@@ -663,23 +663,23 @@ void btl_setBattleVar(s32 arg0, s32 arg1) {
         }
         break;
     case BTL_SETVAR_NEXT_LOCATION:
-        g_gameState->unk1C->unk56F |= 1;
+        g_gameState->gameData->unk56F |= 1;
         evt_setNextLocation(arg1);
         break;
     case BTL_SETVAR_ADD_GIL:
-        g_gameState->unk1C->gil += arg1;
-        if (g_gameState->unk1C->gil > 9999999) {
-            g_gameState->unk1C->gil = 9999999;
+        g_gameState->gameData->gil += arg1;
+        if (g_gameState->gameData->gil > 9999999) {
+            g_gameState->gameData->gil = 9999999;
         }
         break;
     case 39:
-        if (g_gameState->unk1C->unk56C < 9999) {
-            g_gameState->unk1C->unk56C++;
+        if (g_gameState->gameData->unk56C < 9999) {
+            g_gameState->gameData->unk56C++;
         }
         break;
     case 40:
         btl_soundCmd(0x8601, 0, 0x1E, 0, 0);
-        g_gameState->unk1C->unk56F |= 0x10;
+        g_gameState->gameData->unk56F |= 0x10;
         break;
     }
 }

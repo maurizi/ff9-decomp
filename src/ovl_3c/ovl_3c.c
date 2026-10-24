@@ -101,7 +101,7 @@ void shop_collectMembers(void) {
 
     s_shop.memberCount = 0;
     for (i = 0; i < 9; i++) {
-        if (g_gameState->unk1C->characters[i].unk34.b.unkB) {
+        if (g_gameState->gameData->characters[i].unk34.b.unkB) {
             s_shop.members[s_shop.memberCount] = i;
             if (++s_shop.memberCount >= 8) {
                 break;
@@ -317,7 +317,7 @@ void shopBuy_drawInfo(void) {
         text_drawBlock(r->x + 8, r->y + s_shopBuyInfoRowY[i] - 4, 0x1E, text_getFrom(g_shopText, s_shopBuyInfoRowText[i]),
                       (s_shopBuyInfoRowAlways[i] | equip) ? 0 : 2);
     }
-    text_formatNumber(g_gameState->unk1C->gil, buf, 7, 1);
+    text_formatNumber(g_gameState->gameData->gil, buf, 7, 1);
     strcat(buf, s_shopBuyInfoGil);
     ui_drawSmallDigits(r->x + 0x39, r->y + s_shopBuyInfoRowY[0], 0x1E, buf, 0);
     text_formatNumber(item_getCount(id), buf, 2, 1);
@@ -383,7 +383,7 @@ void shopBuy_drawParty(void) {
     ui_drawLabel(r->x + 6, r->y - 3, 0x1D, ((u8 **)&g_winLabelStrings)[s_shopBuyPartyLabel[armor]], 0);
     for (i = 0; i < s_shop.memberCount; i++) {
         x = 0xF + i * 0x24;
-        c = &g_gameState->unk1C->characters[(u8)s_shop.members[i]];
+        c = &g_gameState->gameData->characters[(u8)s_shop.members[i]];
         ok = (g_itemTable[id].unk6 & s_shopBuyEquipMask[chr_getDefaultSet(c)]) != 0;
         y = 0x9E;
         if (ok) {
@@ -468,9 +468,9 @@ void shopBuy_openQuantity(void) {
     id = m->items[l->top + l->cursor];
     it = &g_itemTable[id];
     have = item_getCount(id);
-    if (have < ITEM_MAX_COUNT && g_gameState->unk1C->gil >= it->unk4) {
+    if (have < ITEM_MAX_COUNT && g_gameState->gameData->gil >= it->unk4) {
         m->quantity = 1;
-        q = it->unk4 != 0 ? g_gameState->unk1C->gil / it->unk4 : ITEM_MAX_COUNT;
+        q = it->unk4 != 0 ? g_gameState->gameData->gil / it->unk4 : ITEM_MAX_COUNT;
         n = q;
         m2 = &s_shopBuy;
         if ((s32)n > ITEM_MAX_COUNT - have) {
@@ -582,7 +582,7 @@ void shopBuy_drawRow(s32 unused, s32 row, s32 idx, MenuView *v) {
     id = s_shopBuy.items[idx];
     it = &g_itemTable[id];
     if (item_getCount(id) < ITEM_MAX_COUNT) {
-        ok = g_gameState->unk1C->gil >= it->unk4;
+        ok = g_gameState->gameData->gil >= it->unk4;
     }
     x = 0x18;
     y = 0x26;
@@ -638,7 +638,7 @@ void shopBuy_confirm(void) {
     it = &g_itemTable[id];
     n = item_add(id, b->quantity);
     if (n != 0) {
-        g_gameState->unk1C->gil -= it->unk4 * n;
+        g_gameState->gameData->gil -= it->unk4 * n;
         shopBuy_closeQuantity();
     }
 }
@@ -737,7 +737,7 @@ void shopSynth_drawInfo(void) {
         text_drawBlock(r->x + 8, r->y + s_shopSynthInfoRowY[i] - 4, 0x1E, text_getFrom(g_shopText, s_shopSynthInfoRowText[i]),
                       (s_shopSynthInfoRowAlways[i] | equip) ? 0 : 2);
     }
-    text_formatNumber(g_gameState->unk1C->gil, buf, 7, 1);
+    text_formatNumber(g_gameState->gameData->gil, buf, 7, 1);
     strcat(buf, s_shopSynthInfoGil);
     ui_drawSmallDigits(r->x + 0x39, r->y + s_shopSynthInfoRowY[0], 0x1E, buf, 0);
     text_formatNumber(item_getCount(s->product), buf, 2, 1);
@@ -816,7 +816,7 @@ void shopSynth_drawParty(void) {
     ui_drawLabel(r->x + 6, r->y - 3, 0x1D, ((u8 **)&g_winLabelStrings)[s_shopSynthPartyLabel[armor]], 0);
     for (i = 0; i < s_shop.memberCount; i++) {
         x = 0xF + i * 0x24;
-        c = &g_gameState->unk1C->characters[(u8)s_shop.members[i]];
+        c = &g_gameState->gameData->characters[(u8)s_shop.members[i]];
         ok = (g_itemTable[s->product].unk6 & s_shopSynthEquipMask[chr_getDefaultSet(c)]) != 0;
         y = 0x9E;
         if (ok) {
@@ -906,7 +906,7 @@ void shopSynth_drawRow(s32 unused, s32 row, s32 idx, MenuView *v) {
     it = &g_itemTable[id];
     k = 1;
     if (item_getCount(id) < ITEM_MAX_COUNT) {
-        ok = g_gameState->unk1C->gil >= r->price;
+        ok = g_gameState->gameData->gil >= r->price;
     }
     x = 0x18;
     y = 0x26;
@@ -953,11 +953,11 @@ void shopSynth_openQuantity(void) {
         need = 2;
     }
     have = item_getCount(r->product);
-    if (have < ITEM_MAX_COUNT && g_gameState->unk1C->gil >= r->price &&
+    if (have < ITEM_MAX_COUNT && g_gameState->gameData->gil >= r->price &&
         (r->ingredients[0] == ITEM_NONE || item_getCount(r->ingredients[0]) >= need) &&
         (r->ingredients[1] == ITEM_NONE || item_getCount(r->ingredients[1]) >= need)) {
         s_shopSynth.quantity = 1;
-        n = r->price != 0 ? g_gameState->unk1C->gil / r->price : ITEM_MAX_COUNT;
+        n = r->price != 0 ? g_gameState->gameData->gil / r->price : ITEM_MAX_COUNT;
         m2 = &s_shopSynth;
         if ((s32)n > ITEM_MAX_COUNT - have) {
             n = ITEM_MAX_COUNT - have;
@@ -1093,7 +1093,7 @@ void shopSynth_confirm(void) {
     if (n != 0) {
         item_remove(r->ingredients[0], n);
         item_remove(r->ingredients[1], n);
-        g_gameState->unk1C->gil -= r->price * n;
+        g_gameState->gameData->gil -= r->price * n;
         shopSynth_closeQuantity();
     }
 }
@@ -1208,7 +1208,7 @@ void shopSell_drawQuantityWindow(Window *w) {
     u32 price;
 
     l = &s_shopSell.list;
-    id = (g_gameState->unk1C->items.slots + ((l->top + l->cursor) * 2 + l->col))->id;
+    id = (g_gameState->gameData->items.slots + ((l->top + l->cursor) * 2 + l->col))->id;
     it = &g_itemTable[id];
     price = it->unk4 >> 1;
     ui_drawItemIcon(w->unk0 + 8, w->unk2 + 8, w->unk18, id, 1);
@@ -1234,13 +1234,13 @@ void shopSell_drawInfoWindow(Window *w) {
 
     r = (RECT *)w;
     l = &s_shopSell.list;
-    e = &g_gameState->unk1C->items.slots[(l->top + l->cursor) * 2 + l->col];
+    e = &g_gameState->gameData->items.slots[(l->top + l->cursor) * 2 + l->col];
     equip = (g_itemTable[e->unk0].unkF & 0xF8) != 0;
     for (i = 0; i < 3; i++) {
         text_drawBlock(r->x + 0xC, r->y + s_shopSellInfoRowY[i] - 4, w->unk18, text_getFrom(g_shopText, s_shopSellInfoRowText[i]),
                       (s_shopSellInfoRowAlways[i] | equip) ? 0 : 2);
     }
-    text_formatNumber(g_gameState->unk1C->gil, buf, 7, 1);
+    text_formatNumber(g_gameState->gameData->gil, buf, 7, 1);
     strcat(buf, s_shopSellInfoGil);
     ui_drawSmallDigits(r->x + 0x39, r->y + s_shopSellInfoRowY[0], w->unk18, buf, 0);
     text_formatNumber(item_getCount(e->unk0), buf, 2, 1);
@@ -1276,7 +1276,7 @@ void shopSell_openQuantity(void) {
     UnkPair *p;
     s32 i;
 
-    p = &g_gameState->unk1C->items.slots[(l->top + l->cursor) * 2 + l->col];
+    p = &g_gameState->gameData->items.slots[(l->top + l->cursor) * 2 + l->col];
     if (p->unk1 != 0) {
         s_shopSell.quantity = 1;
         s_shopSell.maxQuantity = p->unk1;
@@ -1307,14 +1307,14 @@ void shopSell_confirm(void) {
 
     l = &s_shopSell.list;
     m = &s_shopSell;
-    id = (g_gameState->unk1C->items.slots + ((l->top + l->cursor) * 2 + l->col))->id;
+    id = (g_gameState->gameData->items.slots + ((l->top + l->cursor) * 2 + l->col))->id;
     it = &g_itemTable[id];
     price = it->unk4 >> 1;
     n = item_remove(id, s_shopSell.quantity);
     if (n != 0) {
-        g_gameState->unk1C->gil += price * n;
-        if (g_gameState->unk1C->gil > GIL_MAX) {
-            g_gameState->unk1C->gil = GIL_MAX;
+        g_gameState->gameData->gil += price * n;
+        if (g_gameState->gameData->gil > GIL_MAX) {
+            g_gameState->gameData->gil = GIL_MAX;
         }
         s_shopSell.state = SHOP_ST_NONE;
         for (i = 0; i < 2; i++) {
@@ -1390,7 +1390,7 @@ void shopSell_drawScrollRows(void) {
 }
 
 void shopSell_drawRow(s32 col, s32 row, s32 i, MenuView *v) {
-    UnkPair *p = &g_gameState->unk1C->items.slots[i];
+    UnkPair *p = &g_gameState->gameData->items.slots[i];
     Unk80069018 *it;
     s32 x, y;
     s32 k = 0x2A;
@@ -1438,7 +1438,7 @@ void shopSell_updateHelp(void) {
     if (s_shopSell.state == SHOP_ST_LIST) {
         l = &s_shopSell.list;
         idx = (l->top + l->cursor) * 2 + l->col;
-        p = &g_gameState->unk1C->items.slots[idx];
+        p = &g_gameState->gameData->items.slots[idx];
         if (p->unk1 == 0) {
             return;
         }

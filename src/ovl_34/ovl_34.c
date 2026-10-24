@@ -15,11 +15,11 @@ void menuConfig_init(void) {
     m->rumbleTicks = 0;
     m->primBufs[0] = (u8 *)0x801F9F00;
     m->primBufs[1] = (u8 *)0x801FBF00;
-    m->prim = m->primBufs[g_gameState->unk1C->unk8 ^ 1];
+    m->prim = m->primBufs[g_gameState->gameData->unk8 ^ 1];
     m->charCount = 0;
     for (i = 0; i < 9; i++) {
-        if (g_gameState->unk1C->characters[i].unk34.b.unkB) {
-            s_menuConfig.charPortBit[s_menuConfig.charCount] = chr_getClass(g_gameState->unk1C->characters[i].unk34.b.row);
+        if (g_gameState->gameData->characters[i].unk34.b.unkB) {
+            s_menuConfig.charPortBit[s_menuConfig.charCount] = chr_getClass(g_gameState->gameData->characters[i].unk34.b.row);
             s_menuConfig.charIdx[s_menuConfig.charCount] = i;
             s_menuConfig.charCount++;
         }
@@ -175,7 +175,7 @@ void menuConfig_drawBattleControl(void) {
     text_drawBlock(r2->x + 0x2A, r2->y + 8, 0x11, text_get(CONFIG_TEXT_PORT_EXIT), 0);
     for (i = 0; i < s_menuConfig.charCount; i++) {
         on = ((s32)(g_gameState->config >> CFG_SHIFT_CHAR_PORT) >> s_menuConfig.charPortBit[i]) & 1;
-        text_drawBlock(r->x + 0xE, r->y + 0xA + i * 0x11, 0x11, g_gameState->unk1C->characters[s_menuConfig.charIdx[i]].unk0, 0);
+        text_drawBlock(r->x + 0xE, r->y + 0xA + i * 0x11, 0x11, g_gameState->gameData->characters[s_menuConfig.charIdx[i]].unk0, 0);
         menuConfig_drawIcon(r->x + 0x60, r->y + 0xA + i * 0x11, 0x11, 0xF8, on);
         menuConfig_drawIcon(r->x + 0x92, r->y + 0xA + i * 0x11, 0x11, 0x100, on == 0);
     }
@@ -485,8 +485,8 @@ void menuConfig_input(void) {
 void menuConfig_draw(void) {
     s32 k = 0x2000;
 
-    s_menuConfig.primFree = s_menuConfig.primBufs[g_gameState->unk1C->unk8 ^ 1] - (s_menuConfig.prim - k);
-    s_menuConfig.prim = s_menuConfig.primBufs[g_gameState->unk1C->unk8];
+    s_menuConfig.primFree = s_menuConfig.primBufs[g_gameState->gameData->unk8 ^ 1] - (s_menuConfig.prim - k);
+    s_menuConfig.prim = s_menuConfig.primBufs[g_gameState->gameData->unk8];
     ui_drawLabel(0x10, 0x23, 0x16, D_80070430, 0);
     ui_drawRule(8, 0x26, 0x16, 0, 0x12C, (g_gameState->config >> CFG_BIT_WINDOW_COLOR) & 1);
     menuConfig_drawRows();

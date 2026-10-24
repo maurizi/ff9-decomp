@@ -12,7 +12,7 @@ void msg_init(void) {
     }
     s = g_gameState;
     D_8007BBD4 = 0;
-    f = s->unk1C->unk7D4;
+    f = s->gameData->unk7D4;
     D_8007BB98.unk0 = 0;
     D_8007BBCC = f->unkC;
     D_8007BB98.unk4 = *(s32 *)&f->unk4;
@@ -20,13 +20,13 @@ void msg_init(void) {
     D_8007BB98.unk8 = -1;
     switch (s->mode) {
     case 1:
-        g_msgTable = s->unk1C->unk8E4.ovl65->unkC->unk8;
+        g_msgTable = s->gameData->unk8E4.ovl65->unkC->unk8;
         break;
     case 3:
-        g_msgTable = (Unk8007B954 *)s->unk1C->unk8E4.ovl65->unk8->unk14;
+        g_msgTable = (Unk8007B954 *)s->gameData->unk8E4.ovl65->unk8->unk14;
         break;
     case 2:
-        g_msgTable = (Unk8007B954 *)s->unk1C->unk8E4.ovl65->work->unk14;
+        g_msgTable = (Unk8007B954 *)s->gameData->unk8E4.ovl65->work->unk14;
         break;
     }
     D_8007BBD4 = 1;
@@ -78,7 +78,7 @@ void msg_beginDraw(void) {
     if (s->mode == 2 || s->mode == 6) {
         D_8007B9A0 = 1;
         pp = &D_8007B9A8;
-        tbl = &D_8007B9B0[s->unk1C->unk8];
+        tbl = &D_8007B9B0[s->gameData->unk8];
         g_penPktPtr = pp;
         D_8007B9A4 = D_8007B9A8 = (u8 *)tbl;
     } else {
@@ -87,7 +87,7 @@ void msg_beginDraw(void) {
         g_penPktPtr = &g_primPtr;
         D_8007B9A4 = cur;
     }
-    g = g_gameState->unk1C;
+    g = g_gameState->gameData;
     g_penOt = g->unk10[g->unk8];
 }
 
@@ -115,7 +115,7 @@ static inline s32 msg_measureLine_width(u8 *s) {
 
 /* copy character ch's name into g_msgNameBuf, converting the case */
 static inline void msg_measureLine_name(s32 ch) {
-    u8 *name = g_gameState->unk1C->characters[ch].unk0;
+    u8 *name = g_gameState->gameData->characters[ch].unk0;
     s32 k;
     u32 c;
 
@@ -157,13 +157,13 @@ void msg_measureLine(u8 **pp, s32 *pw) {
             case 0x15:
             case 0x16:
             case 0x17:
-                w += msg_measureLine_width(g_gameState->unk1C->characters[c - 0x10].unk0);
+                w += msg_measureLine_width(g_gameState->gameData->characters[c - 0x10].unk0);
                 break;
             case 0x18:
             case 0x19:
             case 0x1A:
             case 0x1B:
-                w += msg_measureLine_width(g_gameState->unk1C->characters[func_8004B120(c - 0x18)].unk0);
+                w += msg_measureLine_width(g_gameState->gameData->characters[func_8004B120(c - 0x18)].unk0);
                 break;
             case 0x80:
             case 0x81:
@@ -725,7 +725,7 @@ s32 msg_input(MsgWindow *w, s32 pad) {
             if (w->unk26 == 0xFF) {
                 w->unk26 = 1;
                 if (g_msgChoiceLine >= 0) {
-                    g_gameState->unk1C->unk83C(0xD000, 0x67, 0x800000, 0x80, 0x7F);
+                    g_gameState->gameData->unk83C(0xD000, 0x67, 0x800000, 0x80, 0x7F);
                 }
                 return 1;
             }
@@ -745,19 +745,19 @@ s32 msg_input(MsgWindow *w, s32 pad) {
             } else {
                 g_msgChoice = g_msgChoiceCount - 1;
             }
-            g_gameState->unk1C->unk83C(0xD000, 0x67, 0x800000, 0x80, 0x7F);
+            g_gameState->gameData->unk83C(0xD000, 0x67, 0x800000, 0x80, 0x7F);
         } else if (pad & 0x40) {
             if (g_msgChoice < g_msgChoiceCount - 1) {
                 g_msgChoice++;
             } else {
                 g_msgChoice = 0;
             }
-            g_gameState->unk1C->unk83C(0xD000, 0x67, 0x800000, 0x80, 0x7F);
+            g_gameState->gameData->unk83C(0xD000, 0x67, 0x800000, 0x80, 0x7F);
         } else if (!(pad & 0x10000) || g_msgChoiceCancel < 0) {
             return 0;
         } else {
             g_msgChoice = g_msgChoiceCancel;
-            g_gameState->unk1C->unk83C(0xD000, 0x65, 0x800000, 0x80, 0x7F);
+            g_gameState->gameData->unk83C(0xD000, 0x65, 0x800000, 0x80, 0x7F);
         }
         return 1;
     }
@@ -1018,12 +1018,12 @@ WinLayout *msg_getLayout(s32 id, s32 *x, s32 *y, s32 *z) {
 }
 
 void msg_setOtz(s32 a) {
-    GameData *d = g_gameState->unk1C;
+    GameData *d = g_gameState->gameData;
     g_penOt = d->unk10[d->unk8] + a;
 }
 
 s32 msg_getPartyMemberId(s32 i) {
-    Character *p = g_gameState->unk1C->party[i];
+    Character *p = g_gameState->gameData->party[i];
     if (p == NULL) {
         return -1;
     }
@@ -1354,7 +1354,7 @@ s32 msg_emitItemName(s32 id, s32 n) {
 }
 
 s32 msg_emitCharName(s32 arg0, s32 n) {
-    u8 *name = g_gameState->unk1C->characters[arg0].unk0;
+    u8 *name = g_gameState->gameData->characters[arg0].unk0;
     s32 len;
     s32 i;
 
@@ -1376,7 +1376,7 @@ s32 msg_emitCharNameCaps(s32 ch, s32 n) {
     s32 i;
     s32 j;
     s32 k;
-    u8 *name = g_gameState->unk1C->characters[ch].unk0;
+    u8 *name = g_gameState->gameData->characters[ch].unk0;
     u32 c;
     u8 *buf;
 
@@ -1407,7 +1407,7 @@ s32 msg_emitCharNameCaps(s32 ch, s32 n) {
 }
 
 void msg_drawWindowContent(Unk8004F5D4 *p) {
-    GameData *g = g_gameState->unk1C;
+    GameData *g = g_gameState->gameData;
 
     g_penOt = g->unk10[g->unk8] + p->unk18;
     pen_begin();
@@ -1423,7 +1423,7 @@ void msg_drawChoiceCursor(Window *w) {
     s32 ofs;
 
     if (g_msgChoiceLine >= 0 && w->unk1C == 3 && (((Window *)w->unk50)->unk28 & 2)) {
-        g = g_gameState->unk1C;
+        g = g_gameState->gameData;
         g_penOt = g->unk10[g->unk8] + w->unk18;
         pen_begin();
         pen_pushPos();
@@ -1452,7 +1452,7 @@ void msg_drawHereIcon(Unk8004AB64 *o) {
         if (n == 0) {
             g_hereIconActive = 0;
         }
-        if (g_evtMode == 1 && !(g_gameState->unk1C->unk0 & GD_HIDE_ALL) && n < 58) {
+        if (g_evtMode == 1 && !(g_gameState->gameData->unk0 & GD_HIDE_ALL) && n < 58) {
             s = &D_80068790;
             pen_begin();
             pen_pushPos();
@@ -1577,7 +1577,7 @@ void msg_updatePlayerBubble(void) {
         g_bubbleScript += 4;
     }
     draw:
-    if (!(g_gameState->unk1C->unk0 & GD_HIDE_ALL)) {
+    if (!(g_gameState->gameData->unk0 & GD_HIDE_ALL)) {
         o = evt_getObject(g_evtState->playerUid);
         if (o != NULL && o->unk5 == 4) {
             pen_begin();
@@ -1599,7 +1599,7 @@ void msg_drawAtePrompt(void) {
         return;
     }
     g_atePromptTimer++;
-    if (g_gameState->unk1C->unk0 & GD_HIDE_ALL) {
+    if (g_gameState->gameData->unk0 & GD_HIDE_ALL) {
         return;
     }
     pen_begin();
@@ -1679,33 +1679,33 @@ s32 evt_modelOpField(Unk8004AB64 *o, s32 op) {
     case 0x81:
         a = evt_getArg8();
         b = evt_getArg8();
-        g_gameState->unk1C->unk8E4.ovl65->unkC->unk14->unk2C[o->unk3B].unk0_8 = a * 14;
-        g_gameState->unk1C->unk8E4.ovl65->unkC->unk14->unk2C[o->unk3B].unk0_20 = b * 12;
+        g_gameState->gameData->unk8E4.ovl65->unkC->unk14->unk2C[o->unk3B].unk0_8 = a * 14;
+        g_gameState->gameData->unk8E4.ovl65->unkC->unk14->unk2C[o->unk3B].unk0_20 = b * 12;
         return 0;
     case 0x82:
         a = evt_getArg16();
         b = evt_getArg16();
-        g_gameState->unk1C->unk8E4.ovl65->unkC->unk14->unk2C[o->unk3B].unk4_12 = a;
-        g_gameState->unk1C->unk8E4.ovl65->unkC->unk14->unk2C[o->unk3B].unk4_22 = b;
+        g_gameState->gameData->unk8E4.ovl65->unkC->unk14->unk2C[o->unk3B].unk4_12 = a;
+        g_gameState->gameData->unk8E4.ovl65->unkC->unk14->unk2C[o->unk3B].unk4_22 = b;
         return 0;
     case 0x83:
         a = evt_getArg8();
         p = (u32 *)game_getModel(o->unk3B);
         gs = g_gameState;
         *p |= 0x20;
-        gs->unk1C->unk8E4.ovl65->unkC->unk14->unk2C[o->unk3B].unk4_0 = a * 16;
+        gs->gameData->unk8E4.ovl65->unkC->unk14->unk2C[o->unk3B].unk4_0 = a * 16;
         return 0;
     case 0x84:
         *(u32 *)game_getModel(o->unk3B) &= ~0x20;
         return 0;
     case 0x85:
-        g_gameState->unk1C->unk8E4.ovl65->unkC->unk14->unk2C[o->unk3B].unk0_0 = evt_getArg8();
+        g_gameState->gameData->unk8E4.ovl65->unkC->unk14->unk2C[o->unk3B].unk0_0 = evt_getArg8();
         return 0;
     case 0xD8:
         func_800B3444(0, 0, 1);
         a = evt_getArg8();
         func_80050CA8(a, evt_getArg8());
-        g_gameState->unk1C->rainCount = a;
+        g_gameState->gameData->rainCount = a;
         return 0;
     default:
         return 1;
@@ -1729,32 +1729,32 @@ s32 evt_modelOpBattle(Unk8004AB64 *o, s32 op) {
     case 0x81:
         a = evt_getArg8();
         b = evt_getArg8();
-        g_gameState->unk1C->unk8E4.ovl65->work->unk28[o->unk3B].unk0_8 = a * 14;
-        g_gameState->unk1C->unk8E4.ovl65->work->unk28[o->unk3B].unk0_20 = b * 12;
+        g_gameState->gameData->unk8E4.ovl65->work->unk28[o->unk3B].unk0_8 = a * 14;
+        g_gameState->gameData->unk8E4.ovl65->work->unk28[o->unk3B].unk0_20 = b * 12;
         return 0;
     case 0x82:
         a = evt_getArg16();
         b = evt_getArg16();
-        g_gameState->unk1C->unk8E4.ovl65->work->unk28[o->unk3B].unk4_12 = a;
-        g_gameState->unk1C->unk8E4.ovl65->work->unk28[o->unk3B].unk4_22 = b;
+        g_gameState->gameData->unk8E4.ovl65->work->unk28[o->unk3B].unk4_12 = a;
+        g_gameState->gameData->unk8E4.ovl65->work->unk28[o->unk3B].unk4_22 = b;
         return 0;
     case 0x83:
         a = evt_getArg8();
         p = (u32 *)game_getModel(o->unk3B);
         gs = g_gameState;
         *p |= 0x20;
-        gs->unk1C->unk8E4.ovl65->work->unk28[o->unk3B].unk4_0 = a * 16;
+        gs->gameData->unk8E4.ovl65->work->unk28[o->unk3B].unk4_0 = a * 16;
         return 0;
     case 0x84:
         *(u32 *)game_getModel(o->unk3B) &= ~0x20;
         return 0;
     case 0x85:
-        g_gameState->unk1C->unk8E4.ovl65->work->unk28[o->unk3B].unk0_0 = evt_getArg8();
+        g_gameState->gameData->unk8E4.ovl65->work->unk28[o->unk3B].unk0_0 = evt_getArg8();
         return 0;
     case 0xD8:
         a = evt_getArg8();
         evt_getArg8();
-        g_gameState->unk1C->rainCount = a;
+        g_gameState->gameData->rainCount = a;
         return 0;
     default:
         return 1;
@@ -1778,32 +1778,32 @@ s32 evt_modelOpWorld(Unk8004AB64 *o, s32 op) {
     case 0x81:
         a = evt_getArg8();
         b = evt_getArg8();
-        ((Unk11C0Slot *)g_gameState->unk1C->unk8E4.ovl65->unk8->unk1C)[o->unk3B].unk0_8 = a * 14;
-        ((Unk11C0Slot *)g_gameState->unk1C->unk8E4.ovl65->unk8->unk1C)[o->unk3B].unk0_20 = b * 12;
+        ((Unk11C0Slot *)g_gameState->gameData->unk8E4.ovl65->unk8->unk1C)[o->unk3B].unk0_8 = a * 14;
+        ((Unk11C0Slot *)g_gameState->gameData->unk8E4.ovl65->unk8->unk1C)[o->unk3B].unk0_20 = b * 12;
         return 0;
     case 0x82:
         a = evt_getArg16();
         b = evt_getArg16();
-        ((Unk11C0Slot *)g_gameState->unk1C->unk8E4.ovl65->unk8->unk1C)[o->unk3B].unk4_12 = a;
-        ((Unk11C0Slot *)g_gameState->unk1C->unk8E4.ovl65->unk8->unk1C)[o->unk3B].unk4_22 = b;
+        ((Unk11C0Slot *)g_gameState->gameData->unk8E4.ovl65->unk8->unk1C)[o->unk3B].unk4_12 = a;
+        ((Unk11C0Slot *)g_gameState->gameData->unk8E4.ovl65->unk8->unk1C)[o->unk3B].unk4_22 = b;
         return 0;
     case 0x83:
         a = evt_getArg8();
         p = (u32 *)game_getModel(o->unk3B);
         gs = g_gameState;
         *p |= 0x20;
-        ((Unk11C0Slot *)gs->unk1C->unk8E4.ovl65->unk8->unk1C)[o->unk3B].unk4_0 = a * 16;
+        ((Unk11C0Slot *)gs->gameData->unk8E4.ovl65->unk8->unk1C)[o->unk3B].unk4_0 = a * 16;
         return 0;
     case 0x84:
         *(u32 *)game_getModel(o->unk3B) &= ~0x20;
         return 0;
     case 0x85:
-        ((Unk11C0Slot *)g_gameState->unk1C->unk8E4.ovl65->unk8->unk1C)[o->unk3B].unk0_0 = evt_getArg8();
+        ((Unk11C0Slot *)g_gameState->gameData->unk8E4.ovl65->unk8->unk1C)[o->unk3B].unk0_0 = evt_getArg8();
         return 0;
     case 0xD8:
         a = evt_getArg8();
         func_80050EFC(a, evt_getArg8());
-        g_gameState->unk1C->rainCount = a;
+        g_gameState->gameData->rainCount = a;
         return 0;
     default:
         return 1;
@@ -1820,7 +1820,7 @@ s32 func_80050AAC(void) {
     GameData *gd;
     s32 n;
 
-    if (g_gameState->unk1C->unk8 != 0) {
+    if (g_gameState->gameData->unk8 != 0) {
         r += 0x22B0;
     }
     if (D_8007BC20.unk24 < 2) {
@@ -1832,7 +1832,7 @@ s32 func_80050AAC(void) {
     n = D_8007BC20.unk4;
     if (n != 0) {
         fldbg_applyGeomOffset();
-        gd = g_gameState->unk1C;
+        gd = g_gameState->gameData;
         gte_SetRotMatrix(&gd->unk18);
         gte_SetTransMatrix(&gd->unk18);
         r = (u8 *)func_80053498(n, gd->unk8, gd->unk10[gd->unk8] + 3, (s32)r);

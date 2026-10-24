@@ -117,7 +117,7 @@ void preload_init() {
     s32 i;
     PreloadQueue *p;
 
-    p = g_gameState->unk1C->unk8C8;
+    p = g_gameState->gameData->unk8C8;
     p->state = 4;
     p->unk0 = 0;
     p->count = 0;
@@ -130,11 +130,11 @@ void preload_init() {
 }
 
 void preload_setHook(s32 a) {
-    g_gameState->unk1C->unk8C8->unk11C = a;
+    g_gameState->gameData->unk8C8->unk11C = a;
 }
 
 PreloadEntry *preload_add(void) {
-    PreloadQueue *t = g_gameState->unk1C->unk8C8;
+    PreloadQueue *t = g_gameState->gameData->unk8C8;
     PreloadEntry *e = NULL;
     if (t->count < 6) {
         e = &t->unk4[t->count];
@@ -145,7 +145,7 @@ PreloadEntry *preload_add(void) {
 }
 
 PreloadEntry *preload_next(void) {
-    PreloadQueue *p = g_gameState->unk1C->unk8C8;
+    PreloadQueue *p = g_gameState->gameData->unk8C8;
     PreloadEntry *e;
 
     while (p->cur < p->count - 1) {
@@ -160,12 +160,12 @@ PreloadEntry *preload_next(void) {
 }
 
 PreloadEntry *preload_getCurrent(void) {
-    PreloadQueue *p = g_gameState->unk1C->unk8C8;
+    PreloadQueue *p = g_gameState->gameData->unk8C8;
     return &p->unk4[p->cur];
 }
 
 PreloadEntry *preload_find(s32 id) {
-    PreloadQueue *t = g_gameState->unk1C->unk8C8;
+    PreloadQueue *t = g_gameState->gameData->unk8C8;
     s32 i;
     id &= 0xFFFFFF;
     for (i = t->count - 1; i >= 0; i--) {
@@ -178,7 +178,7 @@ PreloadEntry *preload_find(s32 id) {
 }
 
 s32 preload_startRead(void) {
-    PreloadEntry *e = &g_gameState->unk1C->unk8C8->unk4[6];
+    PreloadEntry *e = &g_gameState->gameData->unk8C8->unk4[6];
     PreloadEntry *p = preload_getCurrent();
     u8 r;
     s32 ret;
@@ -276,7 +276,7 @@ s32 preload_isReady(s32 id) {
 }
 
 s32 preload_overlaps(u32 addr, s32 size) {
-    PreloadQueue *c = g_gameState->unk1C->unk8C8;
+    PreloadQueue *c = g_gameState->gameData->unk8C8;
     s32 i;
     PreloadEntry *e;
     u32 end;
@@ -300,7 +300,7 @@ s32 preload_overlaps(u32 addr, s32 size) {
 }
 
 s32 preload_discardRange(u32 addr, s32 size) {
-    PreloadQueue *q = g_gameState->unk1C->unk8C8;
+    PreloadQueue *q = g_gameState->gameData->unk8C8;
     PreloadEntry *e;
     s32 ret = 0;
     s32 i;
@@ -328,7 +328,7 @@ void preload_remove(s32 id) {
 }
 
 void preload_reset(void) {
-    PreloadQueue *p = g_gameState->unk1C->unk8C8;
+    PreloadQueue *p = g_gameState->gameData->unk8C8;
     s32 i;
 
     for (i = p->count - 1; i >= 0; i--) {
@@ -341,7 +341,7 @@ void preload_reset(void) {
 }
 
 s32 preload_update(void) {
-    PreloadQueue *t = g_gameState->unk1C->unk8C8;
+    PreloadQueue *t = g_gameState->gameData->unk8C8;
     PreloadEntry *e;
 
     if (t->unk11C != NULL && t->unk11C(t) != 0) {
@@ -393,7 +393,7 @@ s32 preload_update(void) {
 }
 
 void preload_onReadDone(u8 *arg0) {
-    PreloadQueue *p = g_gameState->unk1C->unk8C8;
+    PreloadQueue *p = g_gameState->gameData->unk8C8;
     PreloadEntry *e;
 
     if (p != NULL) {

@@ -25,14 +25,14 @@ s32 btlfx_resolveFirstUse(s32 arg0) {
     bit = 1;
     g = g_gameState;
     for (i = 0; i < 16; i++, bit <<= 1) {
-        if (g_btlfxFirstUsePairs[i][0] == id && !(g->unk1C->firstUseFxSeen & bit)) {
+        if (g_btlfxFirstUsePairs[i][0] == id && !(g->gameData->firstUseFxSeen & bit)) {
             id = g_btlfxFirstUsePairs[i][1];
-            g->unk1C->firstUseFxSeen |= bit;
+            g->gameData->firstUseFxSeen |= bit;
             break;
         }
         if (g_btlfxFirstUsePairs[i][1] == id) {
-            if (!(g->unk1C->firstUseFxSeen & bit)) {
-                g->unk1C->firstUseFxSeen |= bit;
+            if (!(g->gameData->firstUseFxSeen & bit)) {
+                g->gameData->firstUseFxSeen |= bit;
             }
             break;
         }
@@ -58,7 +58,7 @@ s32 btlfx_start(s32 arg0) {
     g_btlfxState.unk25 = 0;
     g_btlfxState.flags = 0x8000;
     func_800C30B8();
-    g_btlfxEnv->unk30 = g_gameState->unk1C->unk8E4.battle->work->loadBuf;
+    g_btlfxEnv->unk30 = g_gameState->gameData->unk8E4.battle->work->loadBuf;
     return 0;
 }
 
@@ -90,7 +90,7 @@ void btlfx_swapVramPages(s32 arg0, u32 *arg1, s32 arg2) {
     s32 bit = 1;
     u32 *p;
     if (arg0 != 2) {
-        p = (u32 *)(g_gameState->unk1C->unk8E4.battle->unk153C[0] + 0x50000);
+        p = (u32 *)(g_gameState->gameData->unk8E4.battle->unk153C[0] + 0x50000);
     } else {
         arg2 = 1 << arg1[0x1FFF];
         p = arg1;
@@ -1179,12 +1179,12 @@ s32 btlfx_isSameUnit(s32 arg0, s32 arg1) {
 
 s32 btlfx_getUnitKind(s32 arg0) {
     s32 idx = (btl_getUnit(arg0)->flags >> 1) & 0xF;
-    return g_gameState->unk1C->characters[idx].unk34.b.unk4;
+    return g_gameState->gameData->characters[idx].unk34.b.unk4;
 }
 
 s32 btlfx_getUnitWeapon(s32 arg0) {
     s32 idx = (btl_getUnit(arg0)->flags >> 1) & 0xF;
-    return g_gameState->unk1C->characters[idx].equip[0];
+    return g_gameState->gameData->characters[idx].equip[0];
 }
 
 void btlfx_setUnitVisible(s32 arg0, s32 arg1) {

@@ -5254,3 +5254,7 @@ fld_getDiscChangeArg fld_getDiscChangeFieldId  # [code] ovl_39 func_801F9B00 sto
 # FIELDS include/ovl_0a.h WmAnimTable: unk1=count,unk4=entries
 # FIELDS include/ovl_0a.h WmAnimTableEntry: unk0=modelId,unk2=animId
 # FIELDS include/ovl_0a.h FieldSprArgs: unk0=uvs,unk4=colors,unk8=halfW,unkC=halfH,unk10=tpage,unk14=clut,unk18=fade,unk1C=quadCount,unk20=primCode
+
+## GameState.unk1C rename (coordinated)
+# FIELDS
+# include/ff9.h GameState: unk1C=gameData

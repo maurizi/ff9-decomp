@@ -1,11 +1,11 @@
 #include "ovl_0c.h"
 
 void wm_initCamera(void) {
-    void *p = &g_gameState->unk1C->unk880;
+    void *p = &g_gameState->gameData->unk880;
 
     g_worldCameraFlags = p;
     g_worldCamera = p;
-    g_gameState->unk1C->unkA = 0xDC;
+    g_gameState->gameData->unkA = 0xDC;
     SetGeomOffset(0xA0, 0x70);
     g_worldCameraUp.vx = 0;
     g_worldCameraUp.vy = -0x4E20;
@@ -14,7 +14,7 @@ void wm_initCamera(void) {
     g_worldCameraLookupFix = 0;
     g_worldCameraRoll = 0;
     D_800CE1E1 = 0;
-    if (g_gameState->unkA == 1 && g_gameState->unk1C->unk890 == 0) {
+    if (g_gameState->unkA == 1 && g_gameState->gameData->unk890 == 0) {
         g_worldCamera->viewBlend = 0;
         g_worldCamera->viewBlendSpeed = 0;
         g_worldCamera->viewForceNormal = 0;
@@ -47,7 +47,7 @@ void wm_updateCamera(void) {
     if (g_worldCameraHold == 0) {
         wm_updateCameraPreset();
     }
-    g_gameState->unk1C->unkA = g_worldCameraParams.unk0[0];
+    g_gameState->gameData->unkA = g_worldCameraParams.unk0[0];
     g_worldCamera->yaw &= 0xFFF;
     g_worldCameraTargetHeight = g_worldCameraParams.unk0[4];
     if ((u8)g_worldMoveMode == 8 || (u8)g_worldMoveMode == 9) {
@@ -614,7 +614,7 @@ void wm_setMountPalette(void) {
 
     id = 0;
     k = 0;
-    e = g_gameState->unk1C->unk8E4.world->obj->palAnims;
+    e = g_gameState->gameData->unk8E4.world->obj->palAnims;
     pal = w_framePackGetPtr(g_worldDataPack, 1);
     func_800B36AC();
     for (n = evt_getObjectList(); n != NULL; n = n->unk0) {
@@ -646,7 +646,7 @@ void wm_setMountPalette(void) {
         }
     }
     c = 0;
-    for (i = 0; i < g_gameState->unk1C->unk8E4.world->obj->palAnimCount; i++, e++) {
+    for (i = 0; i < g_gameState->gameData->unk8E4.world->obj->palAnimCount; i++, e++) {
         if (e->modelId == id) {
             dst = e->srcPal;
             switch (c) {
@@ -702,7 +702,7 @@ void wm_findVehicles(void) {
                 break;
             }
             if (a == evt_getPlayer()) {
-                if (g_gameState->unkA == 1 && g_gameState->unk1C->unk892 == 0) {
+                if (g_gameState->unkA == 1 && g_gameState->gameData->unk892 == 0) {
                     if (g_worldMoveModeInfo->cameraInFront != 0) {
                         g_worldCamera->yawOffset = 0x800;
                     } else {
@@ -714,7 +714,7 @@ void wm_findVehicles(void) {
             }
         }
     }
-    g_gameState->unk1C->unk890 = 0;
+    g_gameState->gameData->unk890 = 0;
     g_worldVehiclesFound = 1;
 }
 
@@ -798,7 +798,7 @@ void wm_setActorFog(Unk8004AB64 *arg0, s32 arg1) {
     RECT *r;
 
     id = arg0->unk34;
-    e = g_gameState->unk1C->unk8E4.world->obj->palAnims;
+    e = g_gameState->gameData->unk8E4.world->obj->palAnims;
     t = -arg0->pos.vy;
     t -= 0xC1F;
     t <<= 12;
@@ -821,7 +821,7 @@ void wm_setActorFog(Unk8004AB64 *arg0, s32 arg1) {
     if (f >= 0x1000) {
         f = 0xFFF;
     }
-    for (i = 0; i < g_gameState->unk1C->unk8E4.world->obj->palAnimCount; i++, e++) {
+    for (i = 0; i < g_gameState->gameData->unk8E4.world->obj->palAnimCount; i++, e++) {
         if (e->modelId == id) {
             r = (RECT *)g_worldPrimPtr;
             if (f < 0) {
@@ -943,13 +943,13 @@ void wm_drawActorShadow(Unk8004AB64 *arg0, SVECTOR *arg1, s32 arg2) {
         if (sz < 0) {
             sz = 0;
         }
-        g_gameState->unk1C->unk8E4.world->obj->shadows[k].scaleX = sx * 14;
-        g_gameState->unk1C->unk8E4.world->obj->shadows[k].scaleZ = sx * 12;
-        g_gameState->unk1C->unk8E4.world->obj->shadows[k].shade = sz;
-        ot = g_gameState->unk1C->unk10[g_gameState->unk1C->unk8];
-        g_gameState->unk1C->unk10[g_gameState->unk1C->unk8] = ot + g_worldOtBias;
-        wm_drawShadow(g_gameState->unk1C->unk8E4.world->obj->shadows, k, arg1->vy, c->shadowJoint);
-        g_gameState->unk1C->unk10[g_gameState->unk1C->unk8] = ot;
+        g_gameState->gameData->unk8E4.world->obj->shadows[k].scaleX = sx * 14;
+        g_gameState->gameData->unk8E4.world->obj->shadows[k].scaleZ = sx * 12;
+        g_gameState->gameData->unk8E4.world->obj->shadows[k].shade = sz;
+        ot = g_gameState->gameData->unk10[g_gameState->gameData->unk8];
+        g_gameState->gameData->unk10[g_gameState->gameData->unk8] = ot + g_worldOtBias;
+        wm_drawShadow(g_gameState->gameData->unk8E4.world->obj->shadows, k, arg1->vy, c->shadowJoint);
+        g_gameState->gameData->unk10[g_gameState->gameData->unk8] = ot;
     } else {
         s = 0x7D0;
         if (g_worldFog != 0) {
@@ -973,14 +973,14 @@ void wm_drawActorShadow(Unk8004AB64 *arg0, SVECTOR *arg1, s32 arg2) {
         if (a < 0) {
             a = 0;
         }
-        g_gameState->unk1C->unk8E4.world->obj->shadows[k].scaleX = 0x302;
-        g_gameState->unk1C->unk8E4.world->obj->shadows[k].scaleZ = 0x294;
-        g_gameState->unk1C->unk8E4.world->obj->shadows[k].shade = a;
-        ot = g_gameState->unk1C->unk10[g_gameState->unk1C->unk8];
+        g_gameState->gameData->unk8E4.world->obj->shadows[k].scaleX = 0x302;
+        g_gameState->gameData->unk8E4.world->obj->shadows[k].scaleZ = 0x294;
+        g_gameState->gameData->unk8E4.world->obj->shadows[k].shade = a;
+        ot = g_gameState->gameData->unk10[g_gameState->gameData->unk8];
         g_worldOtBias = -0x46;
-        g_gameState->unk1C->unk10[g_gameState->unk1C->unk8] -= 0x46;
-        wm_drawShadow(g_gameState->unk1C->unk8E4.world->obj->shadows, k, arg1->vy, c->shadowJoint);
-        g_gameState->unk1C->unk10[g_gameState->unk1C->unk8] = ot;
+        g_gameState->gameData->unk10[g_gameState->gameData->unk8] -= 0x46;
+        wm_drawShadow(g_gameState->gameData->unk8E4.world->obj->shadows, k, arg1->vy, c->shadowJoint);
+        g_gameState->gameData->unk10[g_gameState->gameData->unk8] = ot;
     }
 }
 
