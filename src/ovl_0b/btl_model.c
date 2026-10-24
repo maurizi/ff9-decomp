@@ -2,13 +2,13 @@
 
 void btl_addMeshRgb(BtlUnit9C *arg0, u8 arg1, s16 arg2, s16 arg3, s16 arg4) {
     BtlMesh *g = &arg0->unk8->unk10[arg1];
-    u32 *p = g->unk1C;
+    u32 *p = g->prims;
     u32 i;
-    for (i = 0; i < g->unk2; i++) {
+    for (i = 0; i < g->nFT4; i++) {
         p[4] = btl_addRgbClamped(p[4], arg2, arg3, arg4);
         p += 6;
     }
-    for (i = 0; i < g->unk4; i++) {
+    for (i = 0; i < g->nFT3; i++) {
         p[2] = btl_addRgbClamped(p[2], arg2, arg3, arg4);
         p += 5;
     }
@@ -16,14 +16,14 @@ void btl_addMeshRgb(BtlUnit9C *arg0, u8 arg1, s16 arg2, s16 arg3, s16 arg4) {
 
 void btl_setMeshRgb(BtlUnit9C *arg0, u8 arg1, s16 arg2, s16 arg3, s16 arg4) {
     BtlMesh *g = &arg0->unk8->unk10[arg1];
-    u32 *p = g->unk1C;
+    u32 *p = g->prims;
     u32 v = (arg4 << 16) | (arg3 << 8) | arg2;
     u32 i;
-    for (i = 0; i < g->unk2; i++) {
+    for (i = 0; i < g->nFT4; i++) {
         p[4] = (p[4] & 0xFF000000) | v;
         p += 6;
     }
-    for (i = 0; i < g->unk4; i++) {
+    for (i = 0; i < g->nFT3; i++) {
         p[2] = (p[2] & 0xFF000000) | v;
         p += 5;
     }

@@ -94,9 +94,9 @@ static u8 *meshEmit(BtlUnit9C *m, u32 meshIdx, u8 *out, s32 otOfs, s32 offsetVar
     if (offsetVariant) {
         ot += otOfs * 4;
     }
-    src = (u8 *)mesh->unk1C;
-    uv = (u8 *)mesh->unk20;
-    col = (u8 *)mesh->unk24;
+    src = (u8 *)mesh->prims;
+    uv = (u8 *)mesh->uvs;
+    col = (u8 *)mesh->colors;
 
 #define UV(k) H(uv, (k) * 2)
 #define COL(k) W(col, (k) * 4)
@@ -104,7 +104,7 @@ static u8 *meshEmit(BtlUnit9C *m, u32 meshIdx, u8 *out, s32 otOfs, s32 offsetVar
 #define TPAGE_LO() (offsetVariant ? page << 16 : (page | (f & 0xE0)) << 16)
 
     /* 0: FT4 */
-    for (n = mesh->unk2; n > 0; n--, src += 0x18) {
+    for (n = mesh->nFT4; n > 0; n--, src += 0x18) {
         w0 = W(src, 0);
         w1 = W(src, 4);
         i0 = w0 & 0xFFFF;
@@ -143,7 +143,7 @@ static u8 *meshEmit(BtlUnit9C *m, u32 meshIdx, u8 *out, s32 otOfs, s32 offsetVar
     }
 
     /* 1: FT3 */
-    for (n = mesh->unk4; n > 0; n--, src += 0x14) {
+    for (n = mesh->nFT3; n > 0; n--, src += 0x14) {
         w0 = W(src, 0);
         i0 = w0 & 0xFFFF;
         i1 = w0 >> 16;
@@ -177,7 +177,7 @@ static u8 *meshEmit(BtlUnit9C *m, u32 meshIdx, u8 *out, s32 otOfs, s32 offsetVar
     }
 
     /* 2: GT4 */
-    for (n = mesh->unk6; n > 0; n--, src += 0x20) {
+    for (n = mesh->nGT4; n > 0; n--, src += 0x20) {
         w0 = W(src, 0);
         w1 = W(src, 4);
         i0 = w0 & 0xFFFF;
@@ -221,7 +221,7 @@ static u8 *meshEmit(BtlUnit9C *m, u32 meshIdx, u8 *out, s32 otOfs, s32 offsetVar
     }
 
     /* 3: GT3 */
-    for (n = mesh->unk8; n > 0; n--, src += 0x18) {
+    for (n = mesh->nGT3; n > 0; n--, src += 0x18) {
         w0 = W(src, 0);
         i0 = w0 & 0xFFFF;
         i1 = w0 >> 16;
@@ -258,7 +258,7 @@ static u8 *meshEmit(BtlUnit9C *m, u32 meshIdx, u8 *out, s32 otOfs, s32 offsetVar
     }
 
     /* 4: G4 */
-    for (n = mesh->unkA; n > 0; n--, src += 0x18) {
+    for (n = mesh->nG4; n > 0; n--, src += 0x18) {
         w0 = W(src, 0);
         w1 = W(src, 4);
         i0 = w0 & 0xFFFF;
@@ -302,7 +302,7 @@ static u8 *meshEmit(BtlUnit9C *m, u32 meshIdx, u8 *out, s32 otOfs, s32 offsetVar
     }
 
     /* 5: G3 */
-    for (n = mesh->unkC; n > 0; n--, src += 0x14) {
+    for (n = mesh->nG3; n > 0; n--, src += 0x14) {
         w0 = W(src, 0);
         i0 = w0 & 0xFFFF;
         i1 = w0 >> 16;
@@ -343,7 +343,7 @@ static u8 *meshEmit(BtlUnit9C *m, u32 meshIdx, u8 *out, s32 otOfs, s32 offsetVar
     }
 
     /* 6: F4 (the color word's top byte is ored into the code, not masked) */
-    for (n = mesh->unkE; n > 0; n--, src += 0x10) {
+    for (n = mesh->nF4; n > 0; n--, src += 0x10) {
         w0 = W(src, 0);
         w1 = W(src, 4);
         i0 = w0 & 0xFFFF;
@@ -369,7 +369,7 @@ static u8 *meshEmit(BtlUnit9C *m, u32 meshIdx, u8 *out, s32 otOfs, s32 offsetVar
     }
 
     /* 7: F3 */
-    for (n = mesh->unk10; n > 0; n--, src += 0xC) {
+    for (n = mesh->nF3; n > 0; n--, src += 0xC) {
         w0 = W(src, 0);
         i0 = w0 & 0xFFFF;
         i1 = w0 >> 16;

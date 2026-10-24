@@ -18,9 +18,9 @@ void GeoSplitVertices(BtlUnit9C *arg0, s32 arg1, s32 arg2) {
     for (i = 0; i < n; i++) {
         if (arg1 == -1 || arg1 == i) {
             arg2 = btlfx_splitMeshVertices(arg0, i, arg2);
-            if (m->unk14[i] >= 0x322) {
-                printf("warning:GeoSplitVertices() overflow vertex buffer!(%d)\n", m->unk14[i]);
-                m->unk14[i] = 0x321;
+            if (m->vertexCounts[i] >= 0x322) {
+                printf("warning:GeoSplitVertices() overflow vertex buffer!(%d)\n", m->vertexCounts[i]);
+                m->vertexCounts[i] = 0x321;
             }
         }
     }
@@ -34,14 +34,14 @@ s32 btlfx_getSplitVertexSize(BtlUnit9C *arg0, s32 arg1) {
     for (i = 0; i < n; i++) {
         if (arg1 == -1 || arg1 == i) {
             BtlMesh *g = &m->unk10[i];
-            r += g->unk2 * 4;
-            r += g->unk4 * 3;
-            r += g->unk6 * 4;
-            r += g->unk8 * 3;
-            r += g->unkA * 4;
-            r += g->unkC * 3;
-            r += g->unkE * 4;
-            r += g->unk10 * 3;
+            r += g->nFT4 * 4;
+            r += g->nFT3 * 3;
+            r += g->nGT4 * 4;
+            r += g->nGT3 * 3;
+            r += g->nG4 * 4;
+            r += g->nG3 * 3;
+            r += g->nF4 * 4;
+            r += g->nF3 * 3;
         }
     }
     return r * 8;
@@ -57,42 +57,42 @@ u16 btlfx_getMeshPrims(BtlUnit9C *arg0, u16 arg1, s32 arg2, s32 *arg3, s32 arg4)
     BtlMesh *m = &arg0->unk8->unk10[arg1];
     if (arg4 == 0) {
         *arg3 = arg2;
-        return m->unk2;
+        return m->nFT4;
     }
-    arg2 += m->unk2 << 5;
+    arg2 += m->nFT4 << 5;
     if (arg4 == 1) {
         *arg3 = arg2;
-        return m->unk4;
+        return m->nFT3;
     }
-    arg2 += m->unk4 * 0x18;
+    arg2 += m->nFT3 * 0x18;
     if (arg4 == 2) {
         *arg3 = arg2;
-        return m->unk6;
+        return m->nGT4;
     }
-    arg2 += m->unk6 << 5;
+    arg2 += m->nGT4 << 5;
     if (arg4 == 3) {
         *arg3 = arg2;
-        return m->unk8;
+        return m->nGT3;
     }
-    arg2 += m->unk8 * 0x18;
+    arg2 += m->nGT3 * 0x18;
     if (arg4 == 4) {
         *arg3 = arg2;
-        return m->unkA;
+        return m->nG4;
     }
-    arg2 += m->unkA << 5;
+    arg2 += m->nG4 << 5;
     if (arg4 == 5) {
         *arg3 = arg2;
-        return m->unkC;
+        return m->nG3;
     }
-    arg2 += m->unkC * 0x18;
+    arg2 += m->nG3 * 0x18;
     if (arg4 == 6) {
         *arg3 = arg2;
-        return m->unkE;
+        return m->nF4;
     }
-    arg2 += m->unkE << 5;
+    arg2 += m->nF4 << 5;
     if (arg4 == 7) {
         *arg3 = arg2;
-        return m->unk10;
+        return m->nF3;
     }
     *arg3 = 0;
     return 0;
@@ -135,18 +135,18 @@ u32 btlfx_splitMeshVertices(BtlUnit9C *arg0, u16 arg1, s32 arg2) {
 
     n = 0;
     g = &arg0->unk8->unk10[arg1];
-    p = (u8 *)g->unk1C;
-    src = g->unk18;
-    g->unk18 = (SVECTOR *)arg2;
-    SPLIT_PRIMS(g->unk2, 0x18, 4);
-    SPLIT_PRIMS(g->unk4, 0x14, 3);
-    SPLIT_PRIMS(g->unk6, 0x20, 4);
-    SPLIT_PRIMS(g->unk8, 0x18, 3);
-    SPLIT_PRIMS(g->unkA, 0x18, 4);
-    SPLIT_PRIMS(g->unkC, 0x14, 3);
-    SPLIT_PRIMS(g->unkE, 0x10, 4);
-    SPLIT_PRIMS(g->unk10, 0xC, 3);
-    g->unk14[arg1] = n;
+    p = (u8 *)g->prims;
+    src = g->vertices;
+    g->vertices = (SVECTOR *)arg2;
+    SPLIT_PRIMS(g->nFT4, 0x18, 4);
+    SPLIT_PRIMS(g->nFT3, 0x14, 3);
+    SPLIT_PRIMS(g->nGT4, 0x20, 4);
+    SPLIT_PRIMS(g->nGT3, 0x18, 3);
+    SPLIT_PRIMS(g->nG4, 0x18, 4);
+    SPLIT_PRIMS(g->nG3, 0x14, 3);
+    SPLIT_PRIMS(g->nF4, 0x10, 4);
+    SPLIT_PRIMS(g->nF3, 0xC, 3);
+    g->vertexCounts[arg1] = n;
     return arg2 + n * 2;
 }
 

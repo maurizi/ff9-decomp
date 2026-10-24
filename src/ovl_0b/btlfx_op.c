@@ -1781,10 +1781,10 @@ void btl_forEachModelVertex(BtlUnit9C8 *arg0, void (*arg1)(SVECTOR *, s32)) {
         m = &g->unk10[i];
         n = 0;
         for (j = 0; j < g->unk2; j++) {
-            for (k = 0; k < m->unk14[j]; k++) {
-                arg1(&m->unk18[n + k], n + k);
+            for (k = 0; k < m->vertexCounts[j]; k++) {
+                arg1(&m->vertices[n + k], n + k);
             }
-            n += m->unk14[j];
+            n += m->vertexCounts[j];
         }
     }
 }

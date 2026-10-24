@@ -24,21 +24,21 @@ typedef struct BtlUnitA0 {
 /* model mesh group: primitive counts per type */
 typedef struct {
     u8 pad0[2];
-    u16 unk2;
-    u16 unk4;
-    u16 unk6;
-    u16 unk8;
-    u16 unkA;
-    u16 unkC;
-    u16 unkE;
-    u16 unk10;
+    u16 nFT4; /* primitive counts by type, in the order of the packed sources (btlfx_getMeshPrims) */
+    u16 nFT3;
+    u16 nGT4;
+    u16 nGT3;
+    u16 nG4;
+    u16 nG3;
+    u16 nF4;
+    u16 nF3;
     u8 pad12;
     s8 unk13; /* ordering table bias */
-    u16 *unk14;
-    SVECTOR *unk18;
-    u32 *unk1C; /* primitives */
-    u8 (*unk20)[2]; /* uv */
-    u8 (*unk24)[4]; /* colours */
+    u16 *vertexCounts;
+    SVECTOR *vertices;
+    u32 *prims; /* primitive sources (WmSrc*) */
+    u8 (*uvs)[2];
+    u8 (*colors)[4];
 } BtlMesh; /* 0x28 */
 
 /* primitive sources of a model mesh (same layout as WorldMap's in ovl_0a/0c) */

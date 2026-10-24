@@ -1,4 +1,4 @@
-/* ovl_0b ring-grid emitters of func_800D23D8 (0x800D4768-0x800D4D6C), hand-written asm in the original:
+/* ovl_0b ring-grid emitters of btlfx_drawRings (0x800D4768-0x800D4D6C), hand-written asm in the original:
  * btlfx_emitRingQuads (textured POLY_FT4 grid), btlfx_emitRingGouraud (Gouraud POLY_G4 grid with a DR_MODE per quad) and
  * their color-fade helper btlfx_fadeColor.
  *

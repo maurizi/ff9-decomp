@@ -42,16 +42,16 @@ u8 *func_800DE11C(BtlUnit9C *arg0, u8 arg1, u8 *prim) {
         return prim;
     }
     g = &arg0->unk8->unk10[arg1];
-    src = (u8 *)g->unk1C;
-    uv = g->unk20;
-    col = g->unk24;
+    src = (u8 *)g->prims;
+    uv = g->uvs;
+    col = g->colors;
     if (arg0->unk10 == 0) {
         arg0->unk10 = (s32)prim;
     }
     tex = (u32 *)arg0->unk18;
     ot = g_gameState->unk1C->unk10[g_gameState->unk1C->unk8];
 
-    n = g->unk2;
+    n = g->nFT4;
     for (i = 0; i < n; src += sizeof(WmSrcFT4)) {
         sFT4 = (WmSrcFT4 *)src;
         pFT4 = (POLY_FT4 *)prim;
@@ -100,7 +100,7 @@ u8 *func_800DE11C(BtlUnit9C *arg0, u8 arg1, u8 *prim) {
         prim += sizeof(POLY_FT4);
     }
 
-    n = g->unk4;
+    n = g->nFT3;
     for (i = 0; i < n; src += sizeof(WmSrcFT3)) {
         sFT3 = (WmSrcFT3 *)src;
         pFT3 = (POLY_FT3 *)prim;
@@ -146,7 +146,7 @@ u8 *func_800DE11C(BtlUnit9C *arg0, u8 arg1, u8 *prim) {
         prim += sizeof(POLY_FT3);
     }
 
-    n = g->unk6;
+    n = g->nGT4;
     for (i = 0; i < n; src += sizeof(WmSrcGT4)) {
         sGT4 = (WmSrcGT4 *)src;
         pGT4 = (POLY_GT4 *)prim;
@@ -204,7 +204,7 @@ u8 *func_800DE11C(BtlUnit9C *arg0, u8 arg1, u8 *prim) {
         prim += sizeof(POLY_GT4);
     }
 
-    n = g->unk8;
+    n = g->nGT3;
     for (i = 0; i < n; src += sizeof(WmSrcGT3)) {
         sGT3 = (WmSrcGT3 *)src;
         pGT3 = (POLY_GT3 *)prim;
@@ -256,7 +256,7 @@ u8 *func_800DE11C(BtlUnit9C *arg0, u8 arg1, u8 *prim) {
         prim += sizeof(POLY_GT3);
     }
 
-    n = g->unkA;
+    n = g->nG4;
     for (i = 0; i < n; src += sizeof(WmSrcG4)) {
         sG4 = (WmSrcG4 *)src;
         pG4 = (POLY_G4 *)prim;
@@ -301,7 +301,7 @@ u8 *func_800DE11C(BtlUnit9C *arg0, u8 arg1, u8 *prim) {
         prim += sizeof(POLY_G4);
     }
 
-    n = g->unkC;
+    n = g->nG3;
     for (i = 0; i < n; src += sizeof(WmSrcG3)) {
         sG3 = (WmSrcG3 *)src;
         pG3 = (POLY_G3 *)prim;
@@ -342,7 +342,7 @@ u8 *func_800DE11C(BtlUnit9C *arg0, u8 arg1, u8 *prim) {
         prim += sizeof(POLY_G3);
     }
 
-    n = g->unkE;
+    n = g->nF4;
     for (i = 0; i < n; src += sizeof(WmSrcF4)) {
         sF4 = (WmSrcF4 *)src;
         pF4 = (POLY_F4 *)prim;
@@ -378,7 +378,7 @@ u8 *func_800DE11C(BtlUnit9C *arg0, u8 arg1, u8 *prim) {
         prim += sizeof(POLY_F4);
     }
 
-    n = g->unk10;
+    n = g->nF3;
     for (i = 0; i < n; src += sizeof(WmSrcF3)) {
         sF3 = (WmSrcF3 *)src;
         pF3 = (POLY_F3 *)prim;

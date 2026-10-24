@@ -26,7 +26,7 @@ void btl_projectMesh(BtlUnit9C *arg0, u8 arg1) {
     cnt = arg0->unk8->unk2;
     bone = (MATRIX *)arg0->unk20;
     for (i = 0; i < cnt; bone++) {
-        n = g->unk14[i++];
+        n = g->vertexCounts[i++];
         if (n != 0) {
             gte_SetRotMatrix(&g_gameState->unk1C->unk18);
             gte_SetTransMatrix(&g_gameState->unk1C->unk18);
@@ -44,7 +44,7 @@ void btl_projectMesh(BtlUnit9C *arg0, u8 arg1) {
             gte_ldclmv(c2);
             c1 = (s16 *)b->t;
             gte_rtir_n1();
-            vtx = &g->unk18[k];
+            vtx = &g->vertices[k];
             gte_stclmv(&m.m[0][2]);
             gte_ldlv0(c1);
             k += n;
@@ -104,9 +104,9 @@ u8 *btl_buildMeshPrims(BtlUnit9C *arg0, u8 arg1, u8 *prim) {
         return prim;
     }
     g = &arg0->unk8->unk10[arg1];
-    sFT4 = (WmSrcFT4 *)g->unk1C;
-    uv = g->unk20;
-    col = g->unk24;
+    sFT4 = (WmSrcFT4 *)g->prims;
+    uv = g->uvs;
+    col = g->colors;
     if (arg0->unk10 == 0) {
         arg0->unk10 = (s32)prim;
     }
@@ -114,7 +114,7 @@ u8 *btl_buildMeshPrims(BtlUnit9C *arg0, u8 arg1, u8 *prim) {
     ot = g_gameState->unk1C->unk10[g_gameState->unk1C->unk8];
     ot -= g->unk13;
 
-    n = g->unk2;
+    n = g->nFT4;
     for (i = 0; i < n; sFT4++) {
         pFT4 = (POLY_FT4 *)prim;
         i0 = *(u32 *)&sFT4->unk0[0];
@@ -165,7 +165,7 @@ u8 *btl_buildMeshPrims(BtlUnit9C *arg0, u8 arg1, u8 *prim) {
         prim += sizeof(POLY_FT4);
     }
 
-    n = g->unk4;
+    n = g->nFT3;
     sFT3 = (WmSrcFT3 *)sFT4;
     for (i = 0; i < n; sFT3++) {
         pFT3 = (POLY_FT3 *)prim;
@@ -215,7 +215,7 @@ u8 *btl_buildMeshPrims(BtlUnit9C *arg0, u8 arg1, u8 *prim) {
         prim += sizeof(POLY_FT3);
     }
 
-    n = g->unk6;
+    n = g->nGT4;
     sGT4 = (WmSrcGT4 *)sFT3;
     for (i = 0; i < n; sGT4++) {
         pGT4 = (POLY_GT4 *)prim;
@@ -280,7 +280,7 @@ u8 *btl_buildMeshPrims(BtlUnit9C *arg0, u8 arg1, u8 *prim) {
         prim += sizeof(POLY_GT4);
     }
 
-    n = g->unk8;
+    n = g->nGT3;
     sGT3 = (WmSrcGT3 *)sGT4;
     for (i = 0; i < n; sGT3++) {
         pGT3 = (POLY_GT3 *)prim;
@@ -339,7 +339,7 @@ u8 *btl_buildMeshPrims(BtlUnit9C *arg0, u8 arg1, u8 *prim) {
         prim += sizeof(POLY_GT3);
     }
 
-    n = g->unkA;
+    n = g->nG4;
     sG4 = (WmSrcG4 *)sGT3;
     for (i = 0; i < n; sG4++) {
         pG4 = (POLY_G4 *)prim;
@@ -387,7 +387,7 @@ u8 *btl_buildMeshPrims(BtlUnit9C *arg0, u8 arg1, u8 *prim) {
         prim += sizeof(POLY_G4);
     }
 
-    n = g->unkC;
+    n = g->nG3;
     sG3 = (WmSrcG3 *)sG4;
     for (i = 0; i < n; sG3++) {
         pG3 = (POLY_G3 *)prim;
@@ -432,7 +432,7 @@ u8 *btl_buildMeshPrims(BtlUnit9C *arg0, u8 arg1, u8 *prim) {
         prim += sizeof(POLY_G3);
     }
 
-    n = g->unkE;
+    n = g->nF4;
     sF4 = (WmSrcF4 *)sG3;
     for (i = 0; i < n; sF4++) {
         pF4 = (POLY_F4 *)prim;
@@ -467,7 +467,7 @@ u8 *btl_buildMeshPrims(BtlUnit9C *arg0, u8 arg1, u8 *prim) {
         prim += sizeof(POLY_F4);
     }
 
-    n = g->unk10;
+    n = g->nF3;
     sF3 = (WmSrcF3 *)sF4;
     for (i = 0; i < n; sF3++) {
         pF3 = (POLY_F3 *)prim;
@@ -543,11 +543,11 @@ void btl_applyModelTextures(BtlUnit9C *arg0, s16 *arg1, s16 *arg2) {
         m = h->unk10 = (BtlMesh *)((u8 *)h + (s32)h->unk10);
         h->unkC = (s32)h + h->unkC;
         for (i = 0; i < h->unk3; i++, m++) {
-            m->unk14 = (u16 *)((u8 *)h + (s32)m->unk14);
-            m->unk18 = (SVECTOR *)((u8 *)h + (s32)m->unk18);
-            m->unk1C = (u32 *)((u8 *)h + (s32)m->unk1C);
-            m->unk20 = (void *)((u8 *)h + (s32)m->unk20);
-            m->unk24 = (void *)((u8 *)h + (s32)m->unk24);
+            m->vertexCounts = (u16 *)((u8 *)h + (s32)m->vertexCounts);
+            m->vertices = (SVECTOR *)((u8 *)h + (s32)m->vertices);
+            m->prims = (u32 *)((u8 *)h + (s32)m->prims);
+            m->uvs = (void *)((u8 *)h + (s32)m->uvs);
+            m->colors = (void *)((u8 *)h + (s32)m->colors);
         }
         if (arg2 != NULL) {
             for (i = 0; i < h->unk3; i++) {
@@ -556,54 +556,54 @@ void btl_applyModelTextures(BtlUnit9C *arg0, s16 *arg1, s16 *arg2) {
                     mark[k] = 0;
                 }
                 m = &h->unk10[i];
-                src = (u8 *)m->unk1C;
-                for (k = 0; k < m->unk2; k++) {
+                src = (u8 *)m->prims;
+                for (k = 0; k < m->nFT4; k++) {
                     ft4 = (WmSrcFT4 *)src;
                     du = arg2[ft4->unk13 * 2];
                     dv = arg2[ft4->unk13 * 2 + 1];
                     for (j = 0; j < 4; j++) {
                         if (mark[ft4->unk8[j]] == 0) {
-                            m->unk20[ft4->unk8[j]][0] += du;
-                            m->unk20[ft4->unk8[j]][1] += dv;
+                            m->uvs[ft4->unk8[j]][0] += du;
+                            m->uvs[ft4->unk8[j]][1] += dv;
                             mark[ft4->unk8[j]] = 1;
                         }
                     }
                     src += sizeof(WmSrcFT4);
                 }
-                for (k = 0; k < m->unk4; k++) {
+                for (k = 0; k < m->nFT3; k++) {
                     ft3 = (WmSrcFT3 *)src;
                     du = arg2[ft3->unk6 * 2];
                     dv = arg2[ft3->unk6 * 2 + 1];
                     for (j = 0; j < 3; j++) {
                         if (mark[ft3->unkC[j]] == 0) {
-                            m->unk20[ft3->unkC[j]][0] += du;
-                            m->unk20[ft3->unkC[j]][1] += dv;
+                            m->uvs[ft3->unkC[j]][0] += du;
+                            m->uvs[ft3->unkC[j]][1] += dv;
                             mark[ft3->unkC[j]] = 1;
                         }
                     }
                     src += sizeof(WmSrcFT3);
                 }
-                for (k = 0; k < m->unk6; k++) {
+                for (k = 0; k < m->nGT4; k++) {
                     gt4 = (WmSrcGT4 *)src;
                     du = arg2[gt4->unk1D * 2];
                     dv = arg2[gt4->unk1D * 2 + 1];
                     for (j = 0; j < 4; j++) {
                         if (mark[gt4->unk8[j]] == 0) {
-                            m->unk20[gt4->unk8[j]][0] += du;
-                            m->unk20[gt4->unk8[j]][1] += dv;
+                            m->uvs[gt4->unk8[j]][0] += du;
+                            m->uvs[gt4->unk8[j]][1] += dv;
                             mark[gt4->unk8[j]] = 1;
                         }
                     }
                     src += sizeof(WmSrcGT4);
                 }
-                for (k = 0; k < m->unk8; k++) {
+                for (k = 0; k < m->nGT3; k++) {
                     gt3 = (WmSrcGT3 *)src;
                     du = arg2[gt3->unk16 * 2];
                     dv = arg2[gt3->unk16 * 2 + 1];
                     for (j = 0; j < 3; j++) {
                         if (mark[gt3->unk6[j]] == 0) {
-                            m->unk20[gt3->unk6[j]][0] += du;
-                            m->unk20[gt3->unk6[j]][1] += dv;
+                            m->uvs[gt3->unk6[j]][0] += du;
+                            m->uvs[gt3->unk6[j]][1] += dv;
                             mark[gt3->unk6[j]] = 1;
                         }
                     }
