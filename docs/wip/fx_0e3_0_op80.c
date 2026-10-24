@@ -1,6 +1,6 @@
 /* Draft of fx_0e3_0 fx_0e3_0_op80.
- * Status (pass 3, build/w/cmp.py): 46 mismatched rows counting registers (was 936)
- * and stack offsets; frame size matches (400), 2500 vs 2501 instructions. ex/work now get s2/s3 like the original:
+ * Status (pass 3, build/w/cmp.py): 16 mismatched rows counting registers (was 936)
+ * and stack offsets; frame size matches (400), same length (2501). ex/work now get s2/s3 like the original:
  * the multi-role variables were split by role (build/w/greedy.py with split2.py; the _bNNN names are those splits).
  * Pass 3 levers: modes 0/1 fall through to one `return 0` (if/else chain; `if (done) return 1;` before
  * work->unk4++); unk70.vz copied right after vx/vy; nbolt = 1 after the summon draw call (cse no longer folds the
@@ -194,9 +194,9 @@ s32 fx_0e3_0_op80(s32 mode, Fx0e30Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
                 d = 0x1800;
                 y_b158 = ex->math_sin(i_b138 / 3) * 2 - 0x1000;
             } else {
-                d = i_b138 - 0xC00;
-                y_b158 = ex->math_sin(d) * 3 + 0x1000;
-                d = 0x1800 - d * 4;
+                s32 e0 = i_b138 - 0xC00;
+                y_b158 = ex->math_sin(e0) * 3 + 0x1000;
+                d = 0x1800 - e0 * 4;
             }
             work->unk10.vx = work->unk8.vx + ((ex->math_cos(b_b182) * c_r136_b161) >> 12);
             work->unk10.vy = work->unk8.vy + y_b158;
@@ -446,9 +446,9 @@ s32 fx_0e3_0_op80(s32 mode, Fx0e30Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
                 rot3.vy = 0;
                 rot3.vz = 0;
                 sc3.vz = 0x1000;
-                c_r365 = (x << 12) / 14;
-                sc3.vx = c_r365 + 0x1000;
-                sc3.vy = c_r365 / 2 + 0x1000;
+                x = (x << 12) / 14;
+                sc3.vx = x + 0x1000;
+                sc3.vy = x / 2 + 0x1000;
                 ex->func_800E6764(3, 0xA0, 0x70, 0x50, 0x38, 4, 4, 2, 2, &rot3, &sc3, &cu.c_r365, 1, 0);
             }
         }
@@ -719,9 +719,10 @@ s32 fx_0e3_0_op80(s32 mode, Fx0e30Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
         }
         if (frame >= 0x18) {
             s32 amp;
+            s32 pa;
 
-            a = (((frame - 0x18) << 12) / 41) >> 2;
-            y_b680 = ex->math_sin(a) * 2;
+            pa = (((frame - 0x18) << 12) / 41) >> 2;
+            y_b680 = ex->math_sin(pa) * 2;
             from.vx = work->unk10.vx;
             from.vy = work->unk10.vy;
             from.vz = work->unk10.vz;
@@ -730,7 +731,8 @@ s32 fx_0e3_0_op80(s32 mode, Fx0e30Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
             y_b680 = y_b680 / 3 + 0x400;
             from.vy -= y_b680;
             to.vy += y_b680;
-            amp = (ex->math_sin(a) >> 1) + 0x180;
+            amp = (ex->math_sin(pa) >> 1) + 0x180;
+            a = pa;
             for (i_b727 = 0, j_b725 = -1, k = work->unk4 * 0x9B - 0x400; i_b727 < 2; i_b727++, j_b725 += 2, k += 0x400) {
                 d_b695 = ex->math_cos(a) + ex->btlfx_randCentered(0x400);
                 func_801E7D40(entry, (s32)&mid, &D_801EB388[i_b727], &from, &to, amp, k * j_b725,
