@@ -42,6 +42,72 @@ typedef struct {
 
 extern Fx1b3Blast D_801EB0D4;
 
+typedef struct {
+    u8 unk0;
+    u8 unk1;
+    u8 unk2;
+    u8 pad3;
+    SVECTOR unk4[9]; /* drawn points */
+    s32 unk4C; /* frames left */
+    SVECTOR unk50[9]; /* points */
+    SVECTOR unk98[9]; /* point velocities */
+} Fx1b3Trail; /* 0xE0 */
+
+typedef struct {
+    s32 unk0[32]; /* timers: 0 tint, 1 flash, 2 trails, 3 trail kind, 4 sweep, 5 sweep split, 6..0xD */
+    Pool6CEntry *unk80[32];
+    SVECTOR unk100; /* body position */
+    SVECTOR unk108; /* unit position */
+    SVECTOR unk110;
+    SVECTOR unk118;
+    SVECTOR unk120;
+    SVECTOR unk128;
+    SVECTOR unk130;
+    SVECTOR unk138;
+    SVECTOR unk140;
+    SVECTOR unk148;
+    SVECTOR unk150;
+    s32 unk158; /* model */
+    SVECTOR unk15C;
+    SVECTOR unk164;
+    VECTOR unk16C;
+    VECTOR unk17C;
+    SVECTOR unk18C;
+    SVECTOR unk194;
+    VECTOR unk19C;
+    VECTOR unk1AC;
+    VECTOR unk1BC;
+    SVECTOR unk1CC;
+    VECTOR unk1D4;
+    VECTOR unk1E4;
+    SVECTOR unk1F4;
+    SVECTOR unk1FC;
+    SVECTOR unk204;
+    VECTOR unk20C;
+    VECTOR unk21C;
+    VECTOR unk22C;
+    SVECTOR unk23C;
+    VECTOR unk244;
+    VECTOR unk254;
+} Fx1b3Work80; /* 0x264 */
+
+extern s32 D_801EAFC4[];
+extern s32 D_801EB004[];
+extern s32 D_801EB018[];
+extern BtlTexInfo D_801EB084;
+extern BtlTexInfo D_801EB0A4;
+extern u8 *D_801EB0BC;
+extern Fx1b3Trail *D_801EB0C4;
+extern s32 D_801EB0C8;
+extern s32 D_801EB0CC;
+extern Fx1b3Split D_801EB0F4[9];
+extern Fx1b3Split D_801EB4A4[2];
+extern Fx1b3Split D_801EB574;
+extern Fx1b3Split D_801EB5E4[2];
+extern Fx1b3Split D_801EB6B4[3];
+extern SVECTOR D_801EB7EC;
+extern BtlModel D_801EB7F4[];
+
 void func_801EA39C(Fx1b3Split *sp);
 void func_801EA7E4(Fx1b3Split *sp);
 
