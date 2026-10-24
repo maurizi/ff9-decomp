@@ -99,7 +99,7 @@ void mbg_shutdown(void);
 void mbg_stop(void);
 
 /* ovl_39 (save / load menu, 0x801EDF00): nonzero when the load menu loaded a game */
-u8 func_801F5330(void);
+u8 menuSave_isLoaded(void);
 
 /* ---- this overlay ---- */
 

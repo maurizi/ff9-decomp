@@ -123,3 +123,4 @@ opening_discLeave = 0x800A8370; // type:func [code] g_sceneModes[3] leave (empty
 opening_startInit = 0x800A8398; // type:func [code] g_sceneModes[4] init (empty)
 opening_loadInit = 0x800A8448; // type:func [code] g_sceneModes[2] init (empty)
 opening_loadLeave = 0x800A84A8; // type:func [code] g_sceneModes[2] leave (empty)
+menuSave_isLoaded = 0x801F5330; // type:func [code] ovl_39 function (ovl_39 is loaded at 0x801EDF00 by menu type 4 while this overlay runs), see config/symbols.ovl_39.us.txt

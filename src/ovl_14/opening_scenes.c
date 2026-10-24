@@ -58,7 +58,7 @@ void opening_loadLeave(void) {
 
 void opening_loadOnClose(void) {
     g_loadMenuClosed = 1;
-    if (func_801F5330()) {
+    if (menuSave_isLoaded()) {
         func_80032634(0);
     }
 }
@@ -67,7 +67,7 @@ void opening_loadDone(void) {
     s32 mode;
     s32 r;
 
-    if (func_801F5330()) {
+    if (menuSave_isLoaded()) {
         opening_resetGameData();
         r = scene_checkDisc();
         if (r != DISC_NONE) {
