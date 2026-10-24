@@ -1356,3 +1356,4 @@ func_8004B68C evt_getObjectProp  # [code] docs/runtime-findings.md field/menu ca
 # FIELDS include/ff9.h GameState: unk24=config,unk28=padMap (include/ovl_34.h CFG macro now reads g_gameState->config)
 # FIELDS include/ff9.h GameConfig: unk0_0=soundMono,unk0_1=padCustom,unk0_2=cursorMemory,unk0_3=atbWait,unk0_4=battleCameraFixed,unk0_5=battleControlCustom,unk0_6=movementRun,unk0_7=vibration,unk0_8=battleSpeed,unk0_14=messageSpeed
 # ff9.h: CONFIG_HERE_ICON_OFF/CONFIG_WINDOW_CLASSIC/CONFIG_TARGET_WINDOW_ALWAYS, CONFIG_WINDOW_COLOR() used in src/main
+# Files renamed (src/main + config/slus_012.51.yaml subsegments): tu_8002F7E8.c -> fade.c, tu_80035108.c -> help.c, tu_80035D3C.c -> menu_screen.c, tu_80062344.c -> card.c, tu_800357E0.c -> spr_anim.c

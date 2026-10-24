@@ -95,7 +95,7 @@ segments:
       - [0x1D1B0, c, window]
       - [0x1F364, c, psyq_8002EB64]
       - [0x1F374, c, menulist]
-      - [0x1FEC8, c, fade]
+      - [0x1FFE8, c, fade]
       - [0x21024, c, psyq_80030824]
       - [0x212F4, c, tu_80030AF4]
       - [0x22858, c, psyq_80032058]

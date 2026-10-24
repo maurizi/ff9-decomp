@@ -98,13 +98,13 @@ Game TUs (start - end, function count, evidence for the start / end edges):
 | tu_8002BEEC.c | 8002BEEC-8002C9B0 | 29 | medium | weak (data allows any cut up to `win_init`; `win_` names from 0x8002C9B0) | `gfx_selectBuffer` |
 | window.c | 8002C9B0-8002EB64 | 42 | weak | strong (SystemError first caller `win_get`) | rodata 80010CD0-80010CF4 (owned out of function order by 602 and 575: one TU) |
 | menulist.c | 8002EB74-8002F7E8 | 18 | strong | medium (data cut 0x8002F6C8-0x8002F800) | `menuList_*`, `snd_playSe` |
-| tu_8002F7E8.c | 8002F7E8-80030824 | 43 | medium | strong (libgpu/libgte run first called from 0x800302D0) | |
+| fade.c | 8002F7E8-80030824 | 43 | medium | strong (libgpu/libgte run first called from 0x800302D0) | `fade_*` (was tu_8002F7E8.c). `fade_update` (0x8002F6C8) and the fade-reversal helper 0x8002F5A0 sit at the end of menulist.c; the data cut (>= 0x8002F6C8) keeps 0x8002F5A0 there, so moving the edge to 0x8002F6C8 would not gather all fade code and was not done |
 | tu_80030AF4.c | 80030AF4-80032058 | 16 | strong | strong (SetTile first caller 0x80031ED8) | |
 | menu.c | 80032078-80032B08 | 29 | strong | medium (data cut 0x80032A34-0x80032B08) | `menu_open`, `menu_doOpen` |
 | chr.c | 80032B08-80035108 | 52 | medium | medium (data cut 0x80033E84-0x80035108, no call crosses 0x80035108) | rodata 80010CF4-80010E48 = splat suggestion 0x14F4, parity 4; `chr_*`, `party_*` |
-| tu_80035108.c | 80035108-8003575C | 19 | medium | strong (hand-written text asm) | rodata 80010E48-80011078 |
-| tu_800357E0.c | 800357E0-80035D3C | 8 | strong | medium (data cut must lie in 0x800357E0-0x80035D3C) | |
-| tu_80035D3C.c | 80035D3C-80036650 | 19 | medium | medium (no call crosses 0x80036650, data cut) | rodata 80011078-800112A4 holds "path=%s" and the assert path "f:/code/dms/loc_us/ff9db.h": Square's db code |
+| help.c | 80035108-8003575C | 19 | medium | strong (hand-written text asm) | rodata 80010E48-80011078; `help_*`, `g_menuHelp` (was tu_80035108.c) |
+| spr_anim.c | 800357E0-80035D3C | 8 | strong | medium (data cut must lie in 0x800357E0-0x80035D3C) | `sprAnim_*` (was tu_800357E0.c) |
+| menu_screen.c | 80035D3C-80036650 | 19 | medium | medium (no call crosses 0x80036650, data cut) | rodata 80011078-800112A4 holds "path=%s" and the assert path "f:/code/dms/loc_us/ff9db.h": Square's db code; `menuScreen_*` (was tu_80035D3C.c) |
 | tu_80036650.c | 80036650-80037D6C | 11 | medium | medium (data cut 0x800378C4-0x80037D6C) | rodata 800112A4-80011594 |
 | event.c | 80037D6C-8004BB7C | 62 | medium | strong (math asm) | rodata 80011594-80011A6C; `evt_execInstr`, `evt_init`, `evt_getArg*` |
 | tu_8004BBF0.c | 8004BBF0-8004BC90 | 2 | strong | strong (libapi COUNTER first caller here) | |
@@ -119,7 +119,7 @@ Game TUs (start - end, function count, evidence for the start / end edges):
 | tu_8005936C.c | 8005936C-80059504 | 3 | strong | strong | |
 | akao_cmd.c | 80059548-8005CC14 | 66 | strong | strong (SpuSetReverbModeType first caller `akao_setReverbMode`) | `akao_cmd*`, `akao_command` |
 | akao.c | 8005CDE4-80062304 | 147 | strong | strong (SpuSetIRQAddr first caller 0x80060ED8) | rodata 800120C0-800121C0 = splat suggestion 0x28C0, parity 0; weak internal candidates at 0x8005FCEC and 0x80060784 (no calls cross) |
-| tu_80062344.c | 80062344-80062B3C | 24 | strong | strong | rodata 800121C0-80012578 |
+| card.c | 80062344-80062B3C | 24 | strong | strong | rodata 800121C0-80012578; `card_*` (was tu_80062344.c) |
 | dep.c | 80062E3C-800630E8 | 2 | strong | strong | `dep_find` |
 | tu_80063118.c, tu_800633E4.c, tu_80063580.c, tu_80063830.c, tu_800651D8.c | | 3, 4, 6, 1, 1 | strong | strong | small objects between library modules |
 | tu_80064BE4.c | 80064BE4-80064D78 | 6 | strong | strong | rodata 80012658-8001266C; `func_80064C24` (INCLUDE_ASM) is game code |
