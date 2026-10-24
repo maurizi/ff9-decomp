@@ -3279,7 +3279,7 @@ ovl_0c wm_drawMeshClipY 0xc28 0x800ca1d8
 ovl_0c wm_getSpriteFrameCount 0xc 0x800cae00
 ovl_0c wm_drawSprite3D 0x290 0x800cae0c
 ovl_0c wm_loadImagePack 0x150 0x800cb09c
-ovl_0c func_800CB1EC 0x248 0x800cb1ec
+ovl_0c wm_emitSprite3D 0x248 0x800cb1ec
 ovl_0c menuMain_initPanels 0x160 0x800cb434
 ovl_0c menuMain_inputCommand 0xd0 0x800cb594
 ovl_0c menuMain_inputMember 0xd8 0x800cb664

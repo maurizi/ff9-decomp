@@ -1434,9 +1434,9 @@ typedef struct {
     s32 unk20;
     s32 unk24;
     s32 unk28;
-} WmSprCtx; /* draw context passed to func_800CB1EC */
+} WmSprCtx; /* draw context passed to wm_emitSprite3D */
 
-s32 func_800CB1EC(u8 *, WmSprCtx *, s32, s32);
+s32 wm_emitSprite3D(u8 *, WmSprCtx *, s32, s32);
 s32 wm_drawSprite3D(s32, WmSprHdr *, SVECTOR *, SVECTOR *, s32, s32, s32, s32, s32, s32, s32);
 
 typedef struct {

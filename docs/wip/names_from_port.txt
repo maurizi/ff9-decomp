@@ -1755,3 +1755,4 @@ D_800C9DCC g_fieldBgCtxEntries  # [code] label of g_fieldBgCtx.entries (the effe
 D_800C9DD0 g_fieldBgCtxWork  # [code] label of g_fieldBgCtx.work (work buffer set by fldbg_setWorkBuffer)
 D_800C9E00 g_fieldBgiTriangles  # [code] label of g_fieldBgi.triangles, read under its own name by bgi_moveActor
 D_800C9D52 g_fieldSoundLoadKind  # [code] byte 2 of g_fieldSoundLoadId, the kind of the file fld_soundCommand is loading (7 music, 9 sound bank)
+func_800CB1EC wm_emitSprite3D  # [code] hand-written asm that builds the sprite primitives from WmSprCtx for wm_drawSprite3D (ovl_0a twin fld_emitSprite3D)

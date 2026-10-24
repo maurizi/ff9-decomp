@@ -1348,7 +1348,7 @@ s32 wm_drawSprite3D(s32 arg0, WmSprHdr *h, SVECTOR *pos, SVECTOR *rot, s32 scale
     c.unk28 = -D_800CF442;
     c.unk18 = arg7;
     c.unk24 = argA;
-    return func_800CB1EC((u8 *)h, &c, arg0, arg8);
+    return wm_emitSprite3D((u8 *)h, &c, arg0, arg8);
 }
 
 /* upload every image and clut of an image pack (c walks the clut RECTs in the second loop) */

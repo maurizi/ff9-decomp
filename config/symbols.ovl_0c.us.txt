@@ -446,3 +446,4 @@ g_worldAmbientSeZ = 0x800CD084; // [code] z of the 3 sources
 g_worldAmbientSe = 0x800CD090; // [code] world SE numbers of the 3 sources (wm_sePlay/SetVolume/Stop)
 g_worldAmbientSeDist = 0x800D32F8; // [code] player distance to each source (wm_updateMap)
 g_worldAmbientSeOn = 0x800D330C; // [code] 1 while source i's SE plays (within 0x3F)
+wm_emitSprite3D = 0x800CB1EC; // type:func [code] hand-written asm that builds the sprite primitives from WmSprCtx for wm_drawSprite3D (ovl_0a twin fld_emitSprite3D)
