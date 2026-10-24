@@ -110,7 +110,7 @@ s32 btlfx_findFileSlot(s32 arg0) {
 s32 btlfx_getFileData(s32 arg0, s32 arg1) {
     s32 *base;
     if (arg1 < 0x40) {
-        base = g_btlfxEnv->unk4->unk30[arg0];
+        base = g_btlfxEnv->loader->unk30[arg0];
     } else if (arg1 < 0x80) {
         base = (s32 *)0x801F1700;
         arg1 -= 0x40;
@@ -119,7 +119,7 @@ s32 btlfx_getFileData(s32 arg0, s32 arg1) {
         base = D_80100E14->unk50[0];
         arg1 &= 0x7F;
     } else {
-        base = g_gameState->unk1C->unk8E4.battle->unk11C0->unkC;
+        base = g_gameState->unk1C->unk8E4.battle->work->loadBuf;
         arg1 -= 0xC0;
     }
     return (s32)base + base[arg1];
@@ -131,7 +131,7 @@ s32 btlfx_getFileDataSize(s32 arg0, s32 arg1) {
 }
 
 /* takes arg0 bytes from the effect work area (g_btlfxLoader.unk58/unk5C), returns the old pointer */
-s32 func_800DA4C4(s32 arg0) {
+s32 btlfx_takeWork(s32 arg0) {
     Unk80100DC0 *d = &g_btlfxLoader;
     s32 p = d->unk58;
 
@@ -152,7 +152,7 @@ s32 btlfx_loadFile(s32 arg0) {
         return -1;
     }
     ofs = ((FileEntry16 *)file_find(0xD, arg0))->unk0;
-    base = g_gameState->unk1C->unk8E4.battle->unk1534;
+    base = g_gameState->unk1C->unk8E4.battle->dataSector;
     g_btlfxLoader.unk2C.w = -1;
     g_btlfxLoader.unk4 = arg0;
     g_btlfxLoader.unk8 = 0;
@@ -175,7 +175,7 @@ s32 btlfx_loadFile(s32 arg0) {
     return 0;
 }
 
-s32 func_800DA5C4(void) {
+s32 btlfx_loadNextBlock(void) {
     if (g_btlfxLoader.unkC != 0) {
         return -1;
     }
@@ -192,45 +192,45 @@ s32 func_800DA5C4(void) {
     return 0;
 }
 
-s32 func_800DA634(s32 arg0) {
+s32 btlfx_loadSoundBank(s32 arg0) {
     if (arg0 == 0) {
         if (D_80100DCC != 7 && D_80100DCC != 0) {
             return 1;
         }
     }
-    func_800562E0(g_gameState->unk1C->unk8E4.battle->unk11C0->unkC, 0);
+    akao_uploadSeBank(g_gameState->unk1C->unk8E4.battle->work->loadBuf, 0);
     g_btlfxLoader.unk67 = 1;
     g_btlfxLoader.unk66 = 1;
     return 0;
 }
 
-s32 func_800DA6B4(s32 arg0, s32 arg1) {
+s32 btlfx_waitSoundBank(s32 arg0, s32 arg1) {
     if (g_btlfxLoader.unk66 != 0) {
-        if (func_80055DCC() == 0) {
+        if (akao_getSpuTransferState() == 0) {
             g_btlfxLoader.unk66 = 0;
-            func_80056388(0x80, arg1);
+            akao_sendCmdED(0x80, arg1);
             return 0;
         }
     }
     return 1;
 }
 
-void func_800DA71C(RECT *arg0) {
+void btlfx_markCommonVram(RECT *arg0) {
     if (arg0->x >= 0x300 && arg0->x + arg0->w < 0x381) {
         if (arg0->y >= 0x100 && arg0->y + arg0->h < 0x201) {
-            g_btlfxState.unk1C |= 1;
+            g_btlfxState.flags |= 1;
         }
     }
 }
 
-void func_800DA790(RECT *arg0, u32 *arg1, Unk800DA790 *arg2) {
+void btlfx_uploadTextures(RECT *arg0, u32 *arg1, Unk800DA790 *arg2) {
     s32 i;
     s32 n = arg2->unk17;
     Unk800DA790 *e;
     RECT *r;
     arg0->w = 0x40;
     arg0->h = 0x80;
-    func_800D0940();
+    btlfx_resetMaskBit();
     for (i = 0; i < n; i++) {
         e = arg2;
         r = e->unk44;
@@ -247,30 +247,30 @@ void func_800DA790(RECT *arg0, u32 *arg1, Unk800DA790 *arg2) {
             e->unk44++;
         }
         LoadImage(arg0, arg1);
-        func_800DA71C(arg0);
+        btlfx_markCommonVram(arg0);
         arg1 += 0x1000;
     }
 }
 
-void func_800DA898(void) {
-    if (D_800F750C == 2) {
+void btlfx_pollDrawSync(void) {
+    if (g_btlfxDrawSyncState == 2) {
         EnterCriticalSection();
         if (DrawSync(1) == 0) {
-            D_800F750C = 1;
+            g_btlfxDrawSyncState = 1;
             FlushCache();
         }
         ExitCriticalSection();
     }
 }
 
-s32 func_800DA8EC(void) {
+s32 btlfx_drawSyncStep(void) {
     s32 ret = 0;
-    switch (D_800F750C) {
+    switch (g_btlfxDrawSyncState) {
     case 0:
-        D_800F750C = 2;
+        g_btlfxDrawSyncState = 2;
         break;
     case 1:
-        D_800F750C = 0;
+        g_btlfxDrawSyncState = 0;
         ret = 1;
         break;
     case 2:
@@ -341,9 +341,9 @@ p = d->unk1C; cont = 1; d->unk10 = p[0]; d->unk12 = p[1]; d->unk1C += 2; d->unkC
                 p = d->unk1C;
                 d->unk16 = ((u8 *)p)[0];
                 d->unk17 = ((u8 *)p)[1];
-                if (g_btlfxEnv->unkC->unk40 & 8) {
+                if (g_btlfxEnv->targets->kind & 8) {
                     if (d->unk16 == 4 || d->unk16 == 9) {
-                        if (func_800E8AD0() != 0) {
+                        if (btlfx_countVisibleParty() != 0) {
                             break;
                         }
                     }
@@ -382,7 +382,7 @@ x = *p++ << 11; rd += x; d->unk20 = (u8 *)0x801F1700 + x; dst = (u8 *)0x801F1700
                     break;
                 case 4:
                     d->unk50 = 1;
-                    func_800AB43C();
+                    btl_unloadPartyModels();
                     dst = (u8 *)g_gameState->unk1C->unk8E4.battle->unk153C[0];
                     d->unk54 = (Unk80100DC054 *)dst;
                     ((Unk80100DC054 *)dst)->unk4C = 0;
@@ -405,18 +405,18 @@ x = *p++ << 11; rd += x; d->unk20 = (u8 *)0x801F1700 + x; dst = (u8 *)0x801F1700
                     break;
                 case 7:
                     d->unk64 = 1;
-                    dst = (u8 *)g_gameState->unk1C->unk8E4.battle->unk11C0->unkC;
+                    dst = (u8 *)g_gameState->unk1C->unk8E4.battle->work->loadBuf;
                     break;
                 case 8:
                     d->unk68 = 1;
-                    dst = (u8 *)g_gameState->unk1C->unk8E4.battle->unk11C0->unkC;
+                    dst = (u8 *)g_gameState->unk1C->unk8E4.battle->work->loadBuf;
                     break;
                 case 9:
-                    if (g_btlfxEnv->unkC->unk40 & 8) {
-                        func_800AB43C();
+                    if (g_btlfxEnv->targets->kind & 8) {
+                        btl_unloadPartyModels();
                         dst = (u8 *)g_gameState->unk1C->unk8E4.battle->unk153C[0];
                     } else {
-                        dst = (u8 *)g_gameState->unk1C->unk8E4.battle->unk11C0->unkC;
+                        dst = (u8 *)g_gameState->unk1C->unk8E4.battle->work->loadBuf;
                     }
                     break;
                 }
@@ -432,7 +432,7 @@ x = *p++ << 11; rd += x; d->unk20 = (u8 *)0x801F1700 + x; dst = (u8 *)0x801F1700
                 if (d->unk16 == 9 && (d->unk17 & 0xF) && D_800FEC65 == 0) {
                     break;
                 }
-                if (d->unk16 == 3 && func_800DA8EC() == 0) {
+                if (d->unk16 == 3 && btlfx_drawSyncStep() == 0) {
                     break;
                 }
                 switch (d->unk16) {
@@ -458,7 +458,7 @@ x = *p++ << 11; rd += x; d->unk20 = (u8 *)0x801F1700 + x; dst = (u8 *)0x801F1700
                     q = (u16 *)(dst + hdr[1]);
                     k = hdr[0];
                     cnt2 = hdr[2];
-                    func_800D0940();
+                    btlfx_resetMaskBit();
                     for (i = 0; i < cnt2; i++) {
                         r.r.x = q[0];
                         r.r.y = q[1];
@@ -474,10 +474,10 @@ x = *p++ << 11; rd += x; d->unk20 = (u8 *)0x801F1700 + x; dst = (u8 *)0x801F1700
                     d->unk44 = (RECT *)(hdr + 2);
                     d->unk48 = 0;
                     d->unk4C = (u32 *)q;
-                    func_800DA790(&r.r, (u32 *)q, (Unk800DA790 *)d);
+                    btlfx_uploadTextures(&r.r, (u32 *)q, (Unk800DA790 *)d);
                     break;
                 case 1:
-                    func_800DA790(&r.r, d->unk4C, (Unk800DA790 *)d);
+                    btlfx_uploadTextures(&r.r, d->unk4C, (Unk800DA790 *)d);
                     break;
                 case 3:
                     dst = (u8 *)0x801E7700;
@@ -488,7 +488,7 @@ x = *p++ << 11; rd += x; d->unk20 = (u8 *)0x801F1700 + x; dst = (u8 *)0x801F1700
                     D_80100C70[d->unk8] = (EffFn *)(fh + 8);
                     fn = ((Unk800DA92CFn *)fh)[1];
                     if (fn != NULL) {
-                        fn(d->unk38, g_btlfxEnv, g_btlfxEnv->unk10);
+                        fn(d->unk38, g_btlfxEnv, g_btlfxEnv->exports);
                     }
                     d->unkE = 3;
                     d->unk2C.h[d->unk8] = d->unk1A;
@@ -501,7 +501,7 @@ x = *p++ << 11; rd += x; d->unk20 = (u8 *)0x801F1700 + x; dst = (u8 *)0x801F1700
                     r.r.y = 0xE6;
                     r.r.w = 0x100;
                     r.r.h = e->unk6;
-                    func_800D0940();
+                    btlfx_resetMaskBit();
                     LoadImage(&r.r, (u32 *)(dst + e->unk8));
                     k = e->unk4;
                     for (src = dst; cnt < k; src += 0x4000, cnt++) {
@@ -536,7 +536,7 @@ x = *p++ << 11; rd += x; d->unk20 = (u8 *)0x801F1700 + x; dst = (u8 *)0x801F1700
                     d->unk64 = 2;
                     d->unk66 = 1;
                     if (d->unk65 == 0) {
-                        func_800DA634(1);
+                        btlfx_loadSoundBank(1);
                     }
                     break;
                 case 8:
@@ -545,15 +545,15 @@ x = *p++ << 11; rd += x; d->unk20 = (u8 *)0x801F1700 + x; dst = (u8 *)0x801F1700
                 case 9:
                     m = 1;
                     d->unk53 = 1;
-                    if (g_btlfxEnv->unkC->unk40 & 8) {
-                        func_800AB43C();
+                    if (g_btlfxEnv->targets->kind & 8) {
+                        btl_unloadPartyModels();
                         base = (void *)g_gameState->unk1C->unk8E4.battle->unk153C[0];
                     } else {
-                        base = (void *)g_gameState->unk1C->unk8E4.battle->unk11C0->unkC;
+                        base = (void *)g_gameState->unk1C->unk8E4.battle->work->loadBuf;
                     }
                     r.r.w = 0x40;
                     r.r.h = 0x80;
-                    func_800D0940();
+                    btlfx_resetMaskBit();
                     for (i = 0; i < 8; i++) {
                         if (m & d->unk17) {
                             if (i < 4) {
@@ -563,7 +563,7 @@ x = *p++ << 11; rd += x; d->unk20 = (u8 *)0x801F1700 + x; dst = (u8 *)0x801F1700
                             }
                             r.r.y = ((i & 1) << 7) + 0x100;
                             LoadImage(&r.r, (u32 *)base);
-                            func_800DA71C(&r.r);
+                            btlfx_markCommonVram(&r.r);
                             base += 0x4000;
                         }
                         if (i >= 4 || (i & 1)) {
@@ -596,7 +596,7 @@ x = *p++ << 11; rd += x; d->unk20 = (u8 *)0x801F1700 + x; dst = (u8 *)0x801F1700
                 }
                 break;
             case 5:
-                if (func_80055DCC() == 0) {
+                if (akao_getSpuTransferState() == 0) {
                     d->unkC = 4;
                     cont = 1;
                 }

@@ -12,7 +12,7 @@ void func_800E9DBC(void);
 void func_800F4E68(void);
 
 /* main exe: candidates for ff9.h */
-void func_800240B0(u8);
+void timer_enable(u8);
 #ifndef SE_CURSOR
 #define SE_CURSOR 0x67
 #endif
@@ -22,7 +22,7 @@ void func_800240B0(u8);
 #define LEVEL_MAX 99
 #define EXP_MAX   9999999
 #define GIL_MAX   9999999
-#define ABILITY_SUPPORT_FIRST 0xC0 /* ability ids from here are support abilities (D_8006D128) */
+#define ABILITY_SUPPORT_FIRST 0xC0 /* ability ids from here are support abilities (g_supportAbilities) */
 /* support abilities, names from this overlay's name table (s_rewardsSupportNames) */
 #define SUPPORT_LEVEL_UP    0xEB /* "Level Up": exp x1.5 */
 #define SUPPORT_ABILITY_UP  0xEC /* "Ability Up": AP x2 */
@@ -155,7 +155,7 @@ typedef struct {
     WinSlot fullWin;  /* "You cannot carry more than 99 units" */
     Window *itemsWin; /* received items */
     s32 frame;
-    s32 savedOtz;     /* func_8002F8E4 value restored on close */
+    s32 savedOtz;     /* fade_setOtz value restored on close */
     u8 *prim;         /* next free primitive */
     u8 *primBufs[2];
 } RewardsMenu;
@@ -221,7 +221,7 @@ static inline u8 func_801F_alive(Character *c) {
     if (c->hp == 0) {
         return 0;
     }
-    if (c->unk38 & 0x45) {
+    if (c->status & 0x45) {
         return 0;
     }
     return 1;
@@ -269,7 +269,7 @@ static inline void WinSlot_clear(WinSlot *s) {
 }
 
 extern u8 s_rewardsAbilityItems[0x30]; /* per ability slot: equipped items teaching it */
-s32 func_80034430(s32, s32); /* main exe */
+s32 chr_findAbilitySlot(s32, s32); /* main exe */
 
 void func_801EF28C(void);
 void gameover_initDisp(DispBuf *);

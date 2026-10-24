@@ -22,7 +22,7 @@ enum { ITEM_TAB_USE, ITEM_TAB_ARRANGE, ITEM_TAB_KEY }; /* ItemMenu.tab */
 enum { KEY_VIEW_NONE, KEY_VIEW_OPENING, KEY_VIEW_SHOWN, KEY_VIEW_CLOSING }; /* ItemMenu.keyViewPhase */
 
 #define ITEM_SLOT_COUNT   0x100 /* GameData.items slots */
-#define KEY_ITEM_COUNT    0x50  /* key item ids (func_800281A4) */
+#define KEY_ITEM_COUNT    0x50  /* key item ids (keyItem_has) */
 #define ITEM_FIRST_USABLE 0xE0  /* items from here have a use entry in D_8006B1F4 */
 
 /* g_itemMenuText ids */
@@ -92,8 +92,8 @@ extern RECT s_menuItemArrangeRect;
 #ifndef ITEM_NONE
 #define ITEM_NONE 0xFF /* empty item id */
 #endif
-void func_800355DC(void); /* empty function, passed to func_8003556C as a no-op callback */
-extern s32 D_80077E54; /* = D_80077E50.unk4, referenced by its own name */
+void help_nullHandler(void); /* empty function, passed to help_setCallback as a no-op callback */
+extern s32 g_menuScreenFrame; /* = g_menuScreen.unk4, referenced by its own name */
 typedef struct {
     unsigned int unk0 : 4;   /* target kind */
     unsigned int unk0_4 : 1;
@@ -104,7 +104,7 @@ typedef struct {
     s32 unk8;
 } Unk8006B1F4; /* 0xC, items 0xE0.. (also in ovl_0b.h) */
 extern Unk8006B1F4 D_8006B1F4[];
-u8 func_800654F8(Character *, Character *, Unk8006B1F4 *, s32, s32);
+u8 item_useOnMember(Character *, Character *, Unk8006B1F4 *, s32, s32);
 extern s32 D_80070408;
 void func_801F3038(void);
 void menuItem_collectKeyItems(void);
@@ -134,13 +134,13 @@ void menuItem_inputTabs(void);
 void menuItem_openTarget(void);
 void menuItem_useOnTarget(s32);
 void menuItem_closeTarget(void);
-u8 func_800281D0(s32); /* main exe */
+u8 keyItem_isSeen(s32); /* main exe */
 void ui_drawItemIcon(s32, s32, s32, s32, u8); /* main exe */
 void menuItem_onKwehOpened(Window *);
 void menuItem_drawKweh(Window *);
 void menuItem_openArrange(void);
-void func_80028128(s32); /* main exe */
-void func_80026EA0(s32, s32, s32, s32, s32); /* main exe */
+void keyItem_setSeen(s32); /* main exe */
+void ui_drawMemberSummary(s32, s32, s32, s32, s32); /* main exe */
 void menuItem_sortAuto(void);
 void menuItem_selectRow(void);
 void menuItem_closeArrange(void);

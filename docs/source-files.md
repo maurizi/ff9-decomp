@@ -87,7 +87,7 @@ Game TUs (start - end, function count, evidence for the start / end edges):
 | init.c | 800169B8-80016BB8 | 3 | strong | strong (libgte/libspu/libcard first called from `game_initLibraries`) | |
 | pad.c | 80018F20-80019798 | 8 | strong | strong (libpad first called from `pad_update`) | |
 | db.c | 8001C6F8-8001D0F8 | 15 | strong | strong (memmove/SetDefDrawEnv first callers 0x8001CD04/0x8001CFB4) | rodata 80010380-800103A0 (db_lookup table, parity 0); weak internal candidate at `db_register` |
-| tu_8001D268.c | 8001D268-8001D898 | 8 | strong | strong (memset first caller 0x8001D3C4) | rodata 800103A0-800103F0 |
+| gamedata.c | 8001D268-8001D898 | 8 | strong | strong (memset first caller 0x8001D3C4) | rodata 800103A0-800103F0; `game_*Data`, common db/images/AKAO (was tu_8001D268.c) |
 | file.c | 8001D8A8-8001E3C0 | 18 | strong | strong (CdSearchFile first caller 0x8001DCB8) | rodata 800103F0-8001040C; `file_find`, `game_setNextScene` |
 | tu_80021640.c | 80021640-80021938 | 10 | strong (libcd) | weak (names; 0x80021938.. only called from the preload code) | `evt_setNextLocation`, `evt_setNextBattle`, `mbg_resetState` |
 | preload.c | 80021938-8002267C | 28 | weak | weak (`cd_*` names from 0x8002267C) | rodata 800108CC-800108F8 (jump table parity 4) |
@@ -98,32 +98,32 @@ Game TUs (start - end, function count, evidence for the start / end edges):
 | tu_8002BEEC.c | 8002BEEC-8002C9B0 | 29 | medium | weak (data allows any cut up to `win_init`; `win_` names from 0x8002C9B0) | `gfx_selectBuffer` |
 | window.c | 8002C9B0-8002EB64 | 42 | weak | strong (SystemError first caller `win_get`) | rodata 80010CD0-80010CF4 (owned out of function order by 602 and 575: one TU) |
 | menulist.c | 8002EB74-8002F7E8 | 18 | strong | medium (data cut 0x8002F6C8-0x8002F800) | `menuList_*`, `snd_playSe` |
-| tu_8002F7E8.c | 8002F7E8-80030824 | 43 | medium | strong (libgpu/libgte run first called from 0x800302D0) | |
+| fade.c | 8002F7E8-80030824 | 43 | medium | strong (libgpu/libgte run first called from 0x800302D0) | `fade_*` (was tu_8002F7E8.c). `fade_update` (0x8002F6C8) and the fade-reversal helper 0x8002F5A0 sit at the end of menulist.c; the data cut (>= 0x8002F6C8) keeps 0x8002F5A0 there, so moving the edge to 0x8002F6C8 would not gather all fade code and was not done |
 | tu_80030AF4.c | 80030AF4-80032058 | 16 | strong | strong (SetTile first caller 0x80031ED8) | |
 | menu.c | 80032078-80032B08 | 29 | strong | medium (data cut 0x80032A34-0x80032B08) | `menu_open`, `menu_doOpen` |
 | chr.c | 80032B08-80035108 | 52 | medium | medium (data cut 0x80033E84-0x80035108, no call crosses 0x80035108) | rodata 80010CF4-80010E48 = splat suggestion 0x14F4, parity 4; `chr_*`, `party_*` |
-| tu_80035108.c | 80035108-8003575C | 19 | medium | strong (hand-written text asm) | rodata 80010E48-80011078 |
-| tu_800357E0.c | 800357E0-80035D3C | 8 | strong | medium (data cut must lie in 0x800357E0-0x80035D3C) | |
-| tu_80035D3C.c | 80035D3C-80036650 | 19 | medium | medium (no call crosses 0x80036650, data cut) | rodata 80011078-800112A4 holds "path=%s" and the assert path "f:/code/dms/loc_us/ff9db.h": Square's db code |
-| tu_80036650.c | 80036650-80037D6C | 11 | medium | medium (data cut 0x800378C4-0x80037D6C) | rodata 800112A4-80011594 |
+| help.c | 80035108-8003575C | 19 | medium | strong (hand-written text asm) | rodata 80010E48-80011078; `help_*`, `g_menuHelp` (was tu_80035108.c) |
+| spr_anim.c | 800357E0-80035D3C | 8 | strong | medium (data cut must lie in 0x800357E0-0x80035D3C) | `sprAnim_*` (was tu_800357E0.c) |
+| menu_screen.c | 80035D3C-80036650 | 19 | medium | medium (no call crosses 0x80036650, data cut) | rodata 80011078-800112A4 holds "path=%s" and the assert path "f:/code/dms/loc_us/ff9db.h": Square's db code; `menuScreen_*` (was tu_80035D3C.c) |
+| evt_object.c | 80036650-80037D6C | 11 | medium | medium (data cut 0x800378C4-0x80037D6C) | rodata 800112A4-80011594; `evt_allocObject`, `evt_createObject`, per-unit expression ops (was tu_80036650.c) |
 | event.c | 80037D6C-8004BB7C | 62 | medium | strong (math asm) | rodata 80011594-80011A6C; `evt_execInstr`, `evt_init`, `evt_getArg*` |
-| tu_8004BBF0.c | 8004BBF0-8004BC90 | 2 | strong | strong (libapi COUNTER first caller here) | |
+| evt_main.c | 8004BBF0-8004BC90 | 2 | strong | strong (libapi COUNTER first caller here) | `evt_initSystem`, `evt_update` (was tu_8004BBF0.c) |
 | rand.c | 8004BE00-8004BF20 | 1 | strong | strong | `rand_init`; the asm `rand_refill` follows |
 | msg.c | 8004BFB0-80050CF8 | 60 | strong | strong (GetTPage first caller 0x80050BE0) | rodata 80011A6C-80012090; `msg_open`, `evt_clearGlobalVars`; weak internal candidate at 0x80050044 |
 | tu_80050D38.c | 80050D38-80050F4C | 3 | strong | strong | |
 | tu_80053924.c | 80053924-80054888 | 9 | strong | strong (SetDrawMove first caller 0x80053A10) | |
-| tu_80054A28.c | 80054A28-800551F0 | 16 | strong | medium (bss 0x8007BD38-0x8007BD44 used only by 0x80054A28-0x800551D4; akao state from 0x80055230) | |
+| vib.c | 80054A28-800551F0 | 16 | strong | medium (bss 0x8007BD38-0x8007BD44 used only by 0x80054A28-0x800551D4; akao state from 0x80055230) | `vib_*` pad vibration player (was tu_80054A28.c) |
 | akao_api.c | 800551F0-8005650C | 69 | medium | strong (CdMix first caller 0x80055E14) | small exported wrappers, `akao_*CdVolume*` |
 | akao_init.c | 8005658C-80056CAC | 12 | strong | strong | `akao_initState`, `akao_init`, `akao_quit` |
 | akao_voice.c | 8005715C-800592CC | 41 | strong | strong | `akao_keyOn` .. `akao_flushVoice` |
 | tu_8005936C.c | 8005936C-80059504 | 3 | strong | strong | |
 | akao_cmd.c | 80059548-8005CC14 | 66 | strong | strong (SpuSetReverbModeType first caller `akao_setReverbMode`) | `akao_cmd*`, `akao_command` |
 | akao.c | 8005CDE4-80062304 | 147 | strong | strong (SpuSetIRQAddr first caller 0x80060ED8) | rodata 800120C0-800121C0 = splat suggestion 0x28C0, parity 0; weak internal candidates at 0x8005FCEC and 0x80060784 (no calls cross) |
-| tu_80062344.c | 80062344-80062B3C | 24 | strong | strong | rodata 800121C0-80012578 |
+| card.c | 80062344-80062B3C | 24 | strong | strong | rodata 800121C0-80012578; `card_*` (was tu_80062344.c) |
 | dep.c | 80062E3C-800630E8 | 2 | strong | strong | `dep_find` |
-| tu_80063118.c, tu_800633E4.c, tu_80063580.c, tu_80063830.c, tu_800651D8.c | | 3, 4, 6, 1, 1 | strong | strong | small objects between library modules |
+| tween.c, tu_800633E4.c, gfx_prim.c, tu_80063830.c, newgame.c | | 3, 4, 6, 1, 1 | strong | strong | small objects between library modules (tween.c, gfx_prim.c, newgame.c were tu_80063118.c, tu_80063580.c, tu_800651D8.c) |
 | tu_80064BE4.c | 80064BE4-80064D78 | 6 | strong | strong | rodata 80012658-8001266C; `func_80064C24` (INCLUDE_ASM) is game code |
-| tu_800654F8.c | 800654F8-80065E60 | 20 | strong | strong | rodata 8001268C-800127A0 = splat suggestion 0x2E8C, parity 4 |
+| item_use.c | 800654F8-80065E60 | 20 | strong | strong | rodata 8001268C-800127A0 = splat suggestion 0x2E8C, parity 4; `item_useOnMember`, `fieldCalc_*` (was tu_800654F8.c) |
 
 Library and asm files (INCLUDE_ASM only, apart from a few decompiled unsigned library helpers):
 
@@ -381,7 +381,7 @@ need updating there:
 |---|---|---|
 | 8 | main.c | main.c (×1) |
 | 9 | main.c | main.c (×1) |
-| 10 | main.c | tu_8004BBF0.c (×1) |
+| 10 | main.c | evt_main.c (×1) |
 | 12 | ovl_0a.c | fld_main.c (×1) |
 | 14 | main.c | cd.c (×1) |
 | 15 | main.c | preload.c (×2) |
@@ -410,7 +410,7 @@ need updating there:
 | 54 | ovl_0b_2.c | hi_model.c (×1) |
 | 55 | ovl_0b_2.c | hi_model.c (×1) |
 | 60 | ovl_0b_2.c | btlfx_op.c (×1) |
-| 70 | main.c | tu_80036650.c (×2) |
+| 70 | main.c | evt_object.c (×2) |
 | 74 | ovl_0a.c | tu_800B61A4.c (×1) |
 | 75 | ovl_0b_3.c | btl_model.c (×1) |
 | 83 | ovl_0b_2.c | btlfx_heap.c (×16) |

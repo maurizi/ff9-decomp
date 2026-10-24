@@ -16,19 +16,19 @@ s32 fx_11e_op80(s32 mode, Fx11eWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
         n = *arg4;
         work->unk58 = n;
         D_801E7FD0 = env;
-        if (n >= env->unkC->unk24) {
+        if (n >= env->targets->targetCount) {
             func_801E7F70(env, 7, 1);
             return 1;
         }
         func_801E7F70(env, 7, 0);
-        ex->func_800E9930(7, entry->unk8, -1);
-        ex->func_800E9930(8, entry->unk8, -1);
-        ex->func_800E9930(9, entry->unk8, -1);
+        ex->btlfx_playFileSound(7, entry->file, -1);
+        ex->btlfx_playFileSound(8, entry->file, -1);
+        ex->btlfx_playFileSound(9, entry->file, -1);
         if (D_801E7F84 == 0) {
             ex->btlfx_initEffModels(D_801E7FE0, 8);
             D_801E7F84 = mode;
         }
-        ex->func_800DC858(0x10, 0, (u16 *)&work->unk50);
+        ex->btlfx_getUnitArgBonePos(0x10, 0, (u16 *)&work->unk50);
         ex->btlfx_getUnitBodyPos(work->unk58, 0, &work->unk48.vx);
         work->unk4.vx = 0;
         work->unk4.vy = 0;
@@ -39,17 +39,17 @@ s32 fx_11e_op80(s32 mode, Fx11eWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
         work->unkC.vx = work->unk48.vx;
         work->unkC.vy = work->unk48.vy;
         work->unkC.vz = work->unk48.vz;
-        work->unk5C = ex->func_800E8F50((Unk800E8F50 *)ex->btlfx_getFileData(entry->unk8, 1), 1);
-        work->unk5E = ex->func_800E8F50((Unk800E8F50 *)ex->btlfx_getFileData(entry->unk8, 2), 1);
+        work->unk5C = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, 1), 1);
+        work->unk5E = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, 2), 1);
         work->unk30 = ex->btlfx_rand() % 2;
         work->unk34 = ex->btlfx_rand() % 2;
         work->unk38 = ex->btlfx_rand() % 400 + 200;
         work->unk3C = ex->btlfx_rand() % 0x1000;
         work->unk40 = ex->btlfx_rand() % 16;
         work->unk44 = ex->btlfx_rand() % 16;
-        work->unk0 = ex->func_800E3CEC(ex->btlfx_getFileData(entry->unk8, 3), (s32)&work->unk50);
+        work->unk0 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 3), (s32)&work->unk50);
     } else {
-        frame = entry->unk0;
+        frame = entry->frame;
         if ((u32)(frame - 0x1E) < 0x28) {
             t = frame - 0x1E;
             ex->btlfx_getUnitBodyPos(work->unk58, 0, &v.vx);
@@ -124,7 +124,7 @@ s32 fx_11e_op80(s32 mode, Fx11eWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
 }
 
 void func_801E7F70(Unk800F78A4 *env, s32 i, s32 v) {
-    *((u8 *)env->unk0 + i + 0x10) = v;
+    *((u8 *)env->state + i + 0x10) = v;
 }
 
 INCLUDE_RODATA("asm/us/fx_11e/nonmatchings/fx_11e", fx_11e_headerPtr);

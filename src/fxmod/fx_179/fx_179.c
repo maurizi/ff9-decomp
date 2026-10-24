@@ -62,7 +62,7 @@ void func_801E78E8(void) {
                 rot.vx = s->unk14;
                 rot.vy = s->unk16;
                 rot.vz = 0;
-                ex->func_800316D8(&rot, &m);
+                ex->math_rotMatrixYXZ(&rot, &m);
                 ex->ScaleMatrix(&m, &sc);
                 m.t[0] = s->unk0 >> 12;
                 m.t[1] = s->unk4 >> 12;
@@ -118,13 +118,13 @@ void func_801E7B68(SVECTOR *pos, SVECTOR *rot, VECTOR *scale, s32 r0, s32 r1, s3
     s32 jn;
     s32 kn;
 
-    gte_SetRotMatrix(D_801E8A0C->unk14);
-    gte_SetTransMatrix(D_801E8A0C->unk14);
+    gte_SetRotMatrix(D_801E8A0C->viewMatrix);
+    gte_SetTransMatrix(D_801E8A0C->viewMatrix);
     gte_ldv0(pos);
-    gt4 = (POLY_GT4 *)D_801E8A0C->unk24;
+    gt4 = (POLY_GT4 *)D_801E8A0C->prim;
     *(s32 *)&c2 = 0;
     ft4 = (POLY_FT4 *)(gt4 + 2);
-    D_801E8A0C->unk24 = (u8 *)(ft4 + 14);
+    D_801E8A0C->prim = (u8 *)(ft4 + 14);
     c0.r = c0.g = c0.b = c;
     c1.r = c1.g = c1.b = c;
     c0.code = abr != 0xFF ? 0x2E : 0x2C;
@@ -132,7 +132,7 @@ void func_801E7B68(SVECTOR *pos, SVECTOR *rot, VECTOR *scale, s32 r0, s32 r1, s3
     tpage |= (abr & 3) << 5;
     c1.code = c2.code;
     gte_rtv0tr_b();
-    ex->func_800316D8(rot, &m);
+    ex->math_rotMatrixYXZ(rot, &m);
     ex->ScaleMatrix(&m, scale);
     gte_stlvnl(m.t);
     ex->MulRotMatrix(&m);
@@ -242,14 +242,14 @@ s32 fx_179_op80(s32 mode, Fx179Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
     } else if (mode == 1) {
         work->unk0 = 0;
         work->unk4 = 0;
-        work->unk10.vx = env->unkC->unk38;
-        work->unk10.vy = env->unkC->unk3A;
-        work->unk10.vz = env->unkC->unk3C;
+        work->unk10.vx = env->targets->centerX;
+        work->unk10.vy = env->targets->centerY;
+        work->unk10.vz = env->targets->centerZ;
         D_801E8A0C = env;
         ex->btlfx_initEffModels(D_801EAA9C, 1);
-        work->unk18 = ex->Hi_RegisterTexEffModel((BtlUnit9C8 *)ex->btlfx_getFileData(entry->unk8, 2), 0x9A, 0x3D40, 0, 0);
+        work->unk18 = ex->Hi_RegisterTexEffModel((BtlUnit9C8 *)ex->btlfx_getFileData(entry->file, 2), 0x9A, 0x3D40, 0, 0);
     } else {
-    frame = entry->unk0;
+    frame = entry->frame;
     switch (work->unk0) {
     case 0:
         a = (frame << 8) >> 2;
@@ -272,9 +272,9 @@ s32 fx_179_op80(s32 mode, Fx179Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
             BTLFX_COPY_SVEC(&to, &work->unk10);
             to.vy -= 0x200;
             ex->btlfx_lerpVec((s16 *)&from, (s16 *)&to, (frame << 12) / 10, (s16 *)&out);
-            env->unk2C->unk0[3].vx = out.vx;
-            env->unk2C->unk0[3].vy = out.vy;
-            env->unk2C->unk0[3].vz = out.vz;
+            env->camera->points[3].vx = out.vx;
+            env->camera->points[3].vy = out.vy;
+            env->camera->points[3].vz = out.vz;
         }
         ex->Hi_DrawEffModel(&rot, &pos, (s32)&scale, work->unk18);
         u.v.vx = u.v.vy = u.v.vz = 0xAAA;
@@ -288,43 +288,43 @@ s32 fx_179_op80(s32 mode, Fx179Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
                       -(work->unk4 * 0x180) + 0xC00, 0x2000, 1, 1);
         if (frame >= 0x10) {
             work->unk0 = 1;
-            entry->unk0 = -1;
+            entry->frame = -1;
             u.s.vx = 0;
             u.s.vy = 0;
             u.s.vz = 0;
             func_801E7704(work->unk18, &u.s);
-            p = ex->func_800E3CEC(ex->btlfx_getFileData(entry->unk8, 1), (s32)&work->unk10);
+            p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 1), (s32)&work->unk10);
             if (p != NULL) {
                 p->unk22 = 0x20;
             }
-            p = ex->func_800E3CEC(ex->btlfx_getFileData(entry->unk8, 5), (s32)&work->unk8);
+            p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 5), (s32)&work->unk8);
             if (p != NULL) {
                 p->unk14 = (s32)D_801EAB6C;
                 p->unk12 = 0xA;
                 p->unkC = 0x5C;
                 p->unk22 = 0x20;
             }
-            p = ex->func_800E3CEC(ex->btlfx_getFileData(entry->unk8, 9), (s32)&work->unk8);
+            p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 9), (s32)&work->unk8);
             if (p != NULL) {
                 p->unk22 = 0x20;
             }
-            p = ex->func_800E3CEC(ex->btlfx_getFileData(entry->unk8, 7), (s32)&work->unk8);
+            p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 7), (s32)&work->unk8);
             if (p != NULL) {
                 p->unk22 = 0x80;
             }
-            p = ex->func_800E3CEC(ex->btlfx_getFileData(entry->unk8, 0xB), (s32)&work->unk8);
+            p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0xB), (s32)&work->unk8);
             if (p != NULL) {
                 p->unk22 = 0x80;
             }
-            p = ex->func_800E3CEC(ex->btlfx_getFileData(entry->unk8, 4), (s32)&work->unk8);
+            p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 4), (s32)&work->unk8);
             if (p != NULL) {
                 p->unk22 = 0x80;
             }
-            p = ex->func_800E3CEC(ex->btlfx_getFileData(entry->unk8, 0xA), (s32)&work->unk8);
+            p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0xA), (s32)&work->unk8);
             if (p != NULL) {
                 p->unk22 = 0x80;
             }
-            p = ex->func_800E3CEC(ex->btlfx_getFileData(entry->unk8, 8), (s32)&work->unk8);
+            p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 8), (s32)&work->unk8);
             if (p != NULL) {
                 p->unk22 = 0x80;
             }
@@ -332,10 +332,10 @@ s32 fx_179_op80(s32 mode, Fx179Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
         break;
     case 1:
         if (frame == 0) {
-            ex->btlfx_drawScreenTint((u32 *)(env->unk20 + 1), 2, 100, 100, 100);
+            ex->btlfx_drawScreenTint((u32 *)(env->ot + 1), 2, 100, 100, 100);
         }
         if (frame == 1) {
-            ex->btlfx_drawScreenTint((u32 *)(env->unk20 + 1), 1, 70, 70, 70);
+            ex->btlfx_drawScreenTint((u32 *)(env->ot + 1), 1, 70, 70, 70);
         }
         rot.vx = 0;
         rot.vy = 0;

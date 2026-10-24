@@ -46,11 +46,11 @@ enum {
     DISC_CHECK_NO_DISC,        /* motor didn't spin up in 600 frames, or CdGetDiskType says no disc */
     DISC_CHECK_OTHER_FORMAT,   /* CdDiskReady error or not a CD-ROM */
     DISC_CHECK_ERROR,
-    DISC_CHECK_WRONG_DISC = 6, /* g_gameState->unkB doesn't have the wanted disc's bit */
+    DISC_CHECK_WRONG_DISC = 6, /* g_gameState->disc doesn't have the wanted disc's bit */
     DISC_CHECK_OK              /* the wanted disc */
 };
 
-/* g_menu.unkC when the menu opens: wanted disc in bits 14-15, next location in bits 0-13 */
+/* g_menu.arg when the menu opens: wanted disc in bits 14-15, next location in bits 0-13 */
 #define DISC_REQ_DISC(x)     (((x) >> 14) & 3)
 #define DISC_REQ_LOCATION(x) ((u16)(x) & 0x3FFF)
 #define DISC_NO_LOCATION     15000 /* don't call evt_setNextLocation on exit */
@@ -69,7 +69,7 @@ typedef struct {
     u8 disc;        /* wanted disc (0-3) */
     u8 pad5;
     s16 nextLocation; /* DISC_REQ_LOCATION, or DISC_NO_LOCATION */
-    s32 savedFlags[2]; /* D_80073998[0..1], restored on exit */
+    s32 savedFlags[2]; /* g_padPortMask[0..1], restored on exit */
     u32 timer;      /* frames in DISC_ST_ERROR */
 } DiscChange;
 extern DiscChange s_discChange;

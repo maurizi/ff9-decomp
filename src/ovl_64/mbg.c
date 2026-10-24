@@ -61,9 +61,9 @@ u8 *mbg_readFrame(Ovl64Out *out) {
             g_gameState->unk1C->unkA = info->id;
         }
     }
-    if (rumble != NULL && (!((Ovl64Cfg *)&g_gameState->unk24)->vibrationOff || g_gameState->mode == 5)) {
-        D_800739B0[0].unk0 = rumble->on;
-        D_800739B0[0].unk1 = rumble->level;
+    if (rumble != NULL && (!((Ovl64Cfg *)&g_gameState->config)->vibrationOff || g_gameState->mode == 5)) {
+        g_padActuator[0].unk0 = rumble->on;
+        g_padActuator[0].unk1 = rumble->level;
     }
     if (mask != NULL && mask->size != 0) {
         bcopy((void *)mask->data, &g_mbgMaskData[g_gameState->unk1C->unk8 ^ 1], mask->size);
@@ -158,8 +158,8 @@ void mbg_mdecOutCallback(void) {
             g_mbgPaused = 1;
             g_mbgPlayer.pauseReq = 0;
             mbg_streamSetPaused(1);
-            D_800739B0[0].unk0 = 0;
-            D_800739B0[0].unk1 = 0;
+            g_padActuator[0].unk0 = 0;
+            g_padActuator[0].unk1 = 0;
         }
         g_mbgDecode.slice.x = g_mbgDecode.frameRect[g_gameState->unk1C->unk8 ^ 1].x;
         g_mbgDecode.slice.y = g_mbgDecode.frameRect[g_gameState->unk1C->unk8 ^ 1].y;
@@ -400,7 +400,7 @@ s32 mbg_update(s32 arg0) {
     }
     if (mbg_streamPushAudio() == 0) {
         if (st->unk34++ == st->unk38) {
-            func_80056278(st->unk3C, st->unk40);
+            akao_sendCmdE5(st->unk3C, st->unk40);
         }
     }
     st = &g_mbgPlayer;
@@ -487,7 +487,7 @@ s32 mbg_update(s32 arg0) {
         g_mbgPlayer.unk8 = 0;
     }
     if (arg0 != 0) {
-        env = (DISPENV *)(g_gameState->unk1C->unk8 * 20 + (s32)g_gameState->unkC);
+        env = (DISPENV *)(g_gameState->unk1C->unk8 * 20 + (s32)g_gameState->dispEnv);
         VSync(0);
         PutDispEnv(env);
         SetDispMask(1);
@@ -531,15 +531,15 @@ void mbg_setDispEnv(s32 h, s32 hires, s32 i) {
     if (hires != 0) {
         w = 0x1E0;
     }
-    SetDefDispEnv(&g_gameState->unkC[i], w, 0, w, h);
+    SetDefDispEnv(&g_gameState->dispEnv[i], w, 0, w, h);
     if (hires != 0) {
-        g_gameState->unkC[i].isrgb24 = 1;
-        g_gameState->unkC[i].disp.w = g_gameState->unkC->disp.w * 2 / 3;
+        g_gameState->dispEnv[i].isrgb24 = 1;
+        g_gameState->dispEnv[i].disp.w = g_gameState->dispEnv->disp.w * 2 / 3;
     }
-    g_gameState->unkC[i].isinter = 0;
-    g_gameState->unkC[i].screen.x = 0;
-    g_gameState->unkC[i].screen.y = (0xF0 - h) >> 1;
-    g_gameState->unkC[i].screen.h = h;
+    g_gameState->dispEnv[i].isinter = 0;
+    g_gameState->dispEnv[i].screen.x = 0;
+    g_gameState->dispEnv[i].screen.y = (0xF0 - h) >> 1;
+    g_gameState->dispEnv[i].screen.h = h;
 }
 
 void mbg_setGraphEnv(s32 h, s32 hires) {
@@ -548,30 +548,30 @@ void mbg_setGraphEnv(s32 h, s32 hires) {
     if (hires != 0) {
         w = 0x1E0;
     }
-    SetDefDispEnv(&g_gameState->unkC[0], w, 0, w, h);
-    SetDefDispEnv(&g_gameState->unkC[1], 0, 0, w, h);
+    SetDefDispEnv(&g_gameState->dispEnv[0], w, 0, w, h);
+    SetDefDispEnv(&g_gameState->dispEnv[1], 0, 0, w, h);
     if (hires != 0) {
-        g_gameState->unkC[0].isrgb24 = 1;
-        g_gameState->unkC[0].disp.w = g_gameState->unkC[0].disp.w * 2 / 3;
-        g_gameState->unkC[1].isrgb24 = 1;
-        g_gameState->unkC[1].disp.w = g_gameState->unkC[1].disp.w * 2 / 3;
+        g_gameState->dispEnv[0].isrgb24 = 1;
+        g_gameState->dispEnv[0].disp.w = g_gameState->dispEnv[0].disp.w * 2 / 3;
+        g_gameState->dispEnv[1].isrgb24 = 1;
+        g_gameState->dispEnv[1].disp.w = g_gameState->dispEnv[1].disp.w * 2 / 3;
     }
-    g_gameState->unkC[0].isinter = 0;
-    g_gameState->unkC[0].screen.x = 0;
-    g_gameState->unkC[0].screen.y = (0xF0 - h) >> 1;
-    g_gameState->unkC[0].screen.h = h;
-    g_gameState->unkC[1].isinter = 0;
-    g_gameState->unkC[1].screen.x = 0;
-    g_gameState->unkC[1].screen.y = (0xF0 - h) >> 1;
-    g_gameState->unkC[1].screen.h = h;
-    SetDefDrawEnv(&g_gameState->unk10[0], 0, 0, w, h);
-    SetDefDrawEnv(&g_gameState->unk10[1], w, 0, w, h);
-    g_gameState->unk10[0].dfe = 0;
-    g_gameState->unk10[0].dtd = 1;
-    g_gameState->unk10[0].isbg = 1;
-    g_gameState->unk10[1].dfe = 0;
-    g_gameState->unk10[1].dtd = 1;
-    g_gameState->unk10[1].isbg = 1;
+    g_gameState->dispEnv[0].isinter = 0;
+    g_gameState->dispEnv[0].screen.x = 0;
+    g_gameState->dispEnv[0].screen.y = (0xF0 - h) >> 1;
+    g_gameState->dispEnv[0].screen.h = h;
+    g_gameState->dispEnv[1].isinter = 0;
+    g_gameState->dispEnv[1].screen.x = 0;
+    g_gameState->dispEnv[1].screen.y = (0xF0 - h) >> 1;
+    g_gameState->dispEnv[1].screen.h = h;
+    SetDefDrawEnv(&g_gameState->drawEnv[0], 0, 0, w, h);
+    SetDefDrawEnv(&g_gameState->drawEnv[1], w, 0, w, h);
+    g_gameState->drawEnv[0].dfe = 0;
+    g_gameState->drawEnv[0].dtd = 1;
+    g_gameState->drawEnv[0].isbg = 1;
+    g_gameState->drawEnv[1].dfe = 0;
+    g_gameState->drawEnv[1].dtd = 1;
+    g_gameState->drawEnv[1].isbg = 1;
 }
 
 s32 mbg_shutdown(void) {
@@ -623,10 +623,10 @@ s32 mbg_setPause(s32 arg0) {
 }
 
 s32 mbg_stop(void) {
-    func_80056228();
+    akao_sendCmdE2();
     mbg_streamStop();
-    D_800739B0[0].unk0 = 0;
-    D_800739B0[0].unk1 = 0;
+    g_padActuator[0].unk0 = 0;
+    g_padActuator[0].unk1 = 0;
     g_mbgState--;
     if (g_mbgPlayer.endCallback != NULL) {
         g_mbgPlayer.endCallback();

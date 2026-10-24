@@ -8,7 +8,7 @@ s32 fx_12e_op80(s32 mode, void *work, Unk800F78A4 *env, Unk80100C78Entry *entry,
     } else if (mode == 1) {
         D_801E77A8 = env;
     } else {
-        ex->func_800E806C(0, -1);
+        ex->btlfx_fadeUnitById(0, -1);
         return 1;
     }
     return 0;

@@ -28,10 +28,10 @@ s32 opening_attract(s32 arg0) {
                 id = g_attractImages[k] | 0x40000;
                 if (timer == -1) {
                     tim = (s32)db_lookupRegistered(4, id, 0);
-                    func_8001D9CC(tim, 0, 0xE0, 0x280, 0);
-                    func_8001D8A8(tim);
+                    file_setTimPos(tim, 0, 0xE0, 0x280, 0);
+                    file_loadTim(tim);
                     timer = ATTRACT_FRAMES;
-                    func_800320B8(1, 1, 0xF0, 0);
+                    game_startFade(1, 1, 0xF0, 0);
                 } else if (timer != 0) {
                     pad = g_padPortPressed[0];
                     setlen(&g_attractSprites[g_gameState->unk1C->unk8][0], 4);
@@ -72,11 +72,11 @@ s32 opening_attract(s32 arg0) {
                                 timer = 0x1E;
                             }
                             g_attractSkipped = 1;
-                            D_80073998[0] = -1;
+                            g_padPortMask[0] = -1;
                             g_attractFlags.bits |= ATTRACT_SKIP;
                         }
                         if (!(g_attractFlags.bits & ATTRACT_FADING) && timer < 0xF1) {
-                            func_800320B8(1, 1, timer, 0xFFFFFF);
+                            game_startFade(1, 1, timer, 0xFFFFFF);
                             g_attractFlags.bits |= ATTRACT_FADING;
                         }
                     }
@@ -92,7 +92,7 @@ s32 opening_attract(s32 arg0) {
                 }
             } else {
                 timer = TITLE_IDLE_FRAMES;
-                D_80073998[0] = 0;
+                g_padPortMask[0] = 0;
                 scene_setFadeScreen(g_attractSkipped);
                 scene_set(SCENE_TITLE);
                 g_attractState = ATTRACT_ST_TITLE;
@@ -103,11 +103,11 @@ s32 opening_attract(s32 arg0) {
             if (scene_get() == SCENE_END) {
                 g_attractState = ATTRACT_ST_STARTED;
             }
-            func_80032100();
-            func_80023A0C();
+            menu_update();
+            game_updateWindows();
             if (!(g_attractFlags.bits & ATTRACT_IDLE_FADE) && (u8)scene_isTitleIdle() && timer < TITLE_IDLE_FADE + 1) {
-                func_800320B8(1, 1, TITLE_IDLE_FADE, 0xFFFFFF);
-                if (g_gameState->unkB != DISC_NONE && (g_gameState->unkB & DISC_1)) {
+                game_startFade(1, 1, TITLE_IDLE_FADE, 0xFFFFFF);
+                if (g_gameState->disc != DISC_NONE && (g_gameState->disc & DISC_1)) {
                     opening_soundCmd(0x8301, TITLE_MUSIC, 0x5A, 0, 0);
                 }
                 g_attractFlags.bits |= ATTRACT_IDLE_FADE;
@@ -116,7 +116,7 @@ s32 opening_attract(s32 arg0) {
                 if (g_attractState != ATTRACT_ST_STARTED) {
                     g_attractState = ATTRACT_ST_TIMEOUT;
                 }
-                if (g_gameState->unkB != DISC_NONE && (g_gameState->unkB & DISC_1)) {
+                if (g_gameState->disc != DISC_NONE && (g_gameState->disc & DISC_1)) {
                     opening_soundCmd(0x100, TITLE_MUSIC, 0, 0, 0);
                 }
             }
@@ -125,7 +125,7 @@ s32 opening_attract(s32 arg0) {
             }
             break;
         }
-        func_80032098();
+        game_updateFade();
         opening_attractSwap();
     } while ((u32)g_attractState < ATTRACT_ST_TIMEOUT);
     opening_attractFree(arg0);
@@ -136,19 +136,19 @@ s32 opening_attractInit(s32 idx) {
     u8 *buf;
     FileEntry *e;
 
-    while (func_800217C4(g_gameState->unk1C->unk854) != 0) {
+    while (cdRead_update(g_gameState->unk1C->unk854) != 0) {
     }
     e = file_find(1, g_attractFiles[idx]);
-    func_8002177C(g_gameState->unk1C->unk854, e->unk4, (e->unkC - e->unk4) << 11, D_80067944 + 0x10000, 0, -1, 0);
-    while (func_800217C4(g_gameState->unk1C->unk854) != 0) {
+    cdRead_init(g_gameState->unk1C->unk854, e->unk4, (e->unkC - e->unk4) << 11, g_loadAreaEnd + 0x10000, 0, -1, 0);
+    while (cdRead_update(g_gameState->unk1C->unk854) != 0) {
     }
-    buf = D_80067944 + 0x10000;
+    buf = g_loadAreaEnd + 0x10000;
     g_attractData = buf;
     db_register((s32)buf, 0);
-    func_800320B8(1, 1, 0, 0xFFFFFF);
+    game_startFade(1, 1, 0, 0xFFFFFF);
     g_attractState = ATTRACT_ST_START;
     g_attractFlags.bits = 0;
-    D_80073998[0] = 0;
+    g_padPortMask[0] = 0;
     return 0;
 }
 
@@ -171,10 +171,10 @@ void opening_attractSwap(void) {
     g_gameState->vsyncMode = 0;
     VSync(g_gameState->vsyncMode);
     ResetGraph(1);
-    PutDispEnv(&g_gameState->unkC[g_gameState->unk1C->unk8]);
+    PutDispEnv(&g_gameState->dispEnv[g_gameState->unk1C->unk8]);
     ctx = g_gameState->unk1C;
     i = ctx->unk8;
-    DrawOTagEnv(ctx->unk10[i] + 0xFFF, &g_gameState->unk10[i]);
+    DrawOTagEnv(ctx->unk10[i] + 0xFFF, &g_gameState->drawEnv[i]);
     g_gameState->unk1C->unk8 ^= 1;
-    func_8002C0DC(g_gameState->unk1C->unk8);
+    gfx_setBuffer(g_gameState->unk1C->unk8);
 }

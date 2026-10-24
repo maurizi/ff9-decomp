@@ -318,7 +318,7 @@ typedef struct {
     s32 hasLostCard;
     s32 lostSlot;
     s32 unk554;
-    u8 savedRepeat[12]; /* key-repeat flags of 12 buttons (func_8002C700), restored on exit */
+    u8 savedRepeat[12]; /* key-repeat flags of 12 buttons (pad_isRepeatEnabled), restored on exit */
     s32 nameSlide;  /* R1 card name slide-out (PLAYER CARD SELECT) */
     s32 scrollTimer; /* L1/R1 copy scroll animation in the stock */
     s32 blockIdx;   /* block appearing now (ENEMY APEAR) */
@@ -532,31 +532,31 @@ void tm_setHelpArea(s16);
 extern u8 g_tmSlash[];
 
 /* main exe: candidates for ff9.h */
-void func_800355DC(void); /* empty function, passed to func_8003556C as a no-op callback */
-s32 func_8002BA10(u8 *);
-void func_80023A0C(void);
+void help_nullHandler(void); /* empty function, passed to help_setCallback as a no-op callback */
+s32 text_measureDigits(u8 *);
+void game_updateWindows(void);
 void SetSprt16(SPRT_16 *);
-s32 func_80062794(s32); /* text width of a card name (func_8002BA68 of func_8006276C) */
-s32 func_80062498(void);
-s32 func_800624D8(void);
-s32 func_8006251C(void);
-u8 func_8002C700(s32, s32);
-void func_80062724();
-extern u8 *D_80077DF0; /* = D_80077DE8.unk8, referenced by its own name */
-s32 func_80055290(void *);
-void func_800552B8(s32);
-void func_800553EC(s32, s32, s32, s32);
-void func_80055704(s32);
-void func_80055730(s32, s32);
-void func_80055764(s32, s32, s32);
-void func_800557A8(s32, s32, s32, s32);
-void func_800557F0(s32);
-void func_8005581C(s32, s32);
-void func_80055850(s32, s32, s32);
-void func_80055894(s32, s32, s32, s32);
-void func_800559C8(s32, s32);
-void func_800559FC(s32, s32, s32);
-void func_80055A34(s32, s32, s32, s32);
+s32 card_getNameWidth(s32); /* text width of a card name (text_measureWidth of card_getName) */
+s32 card_getWins(void);
+s32 card_getLosses(void);
+s32 card_getDraws(void);
+u8 pad_isRepeatEnabled(s32, s32);
+void card_clearAll();
+extern u8 *g_menuHelpText; /* = g_menuHelp.text, referenced by its own name */
+s32 akao_playMusic(void *);
+void akao_stopMusic(s32);
+void akao_playSe(s32, s32, s32, s32);
+void akao_setAllSeVolume(s32);
+void akao_fadeAllSeVolume(s32, s32);
+void akao_setSeVolume(s32, s32, s32);
+void akao_fadeSeVolume(s32, s32, s32, s32);
+void akao_sendCmdAA(s32);
+void akao_sendCmdAB(s32, s32);
+void akao_sendCmdA2(s32, s32, s32);
+void akao_sendCmdA3(s32, s32, s32, s32);
+void akao_setMusicVolume(s32, s32);
+void akao_fadeMusicVolume(s32, s32, s32);
+void akao_fadeMusicVolumeFrom(s32, s32, s32, s32);
 
 
 /* Capture flash bar pieces (tm_drawFlash), one per direction. */

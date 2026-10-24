@@ -1,6 +1,6 @@
 #include "ff9.h"
 
-void func_80063118(void *arg0, void *arg1, s32 jump) {
+void tween_start(void *arg0, void *arg1, s32 jump) {
     WinDef *w = arg0;
     TweenDef *t = arg1;
 
@@ -10,13 +10,13 @@ void func_80063118(void *arg0, void *arg1, s32 jump) {
     if (t != NULL) {
         w->unk0 = t->unk0;
         if ((u8)jump) {
-            w->unk4.x -= func_800632B4(t->unk2, t->unk4);
-            w->unk4.y -= func_800632B4(t->unk2, t->unk8);
+            w->unk4.x -= tween_sumDeltas(t->unk2, t->unk4);
+            w->unk4.y -= tween_sumDeltas(t->unk2, t->unk8);
         }
     }
 }
 
-s32 func_800631AC(WinDef *t) {
+s32 tween_step(WinDef *t) {
     if (t->unkC == NULL) {
         return 0;
     }
@@ -41,7 +41,7 @@ s32 func_800631AC(WinDef *t) {
     return 0;
 }
 
-s32 func_800632B4(s32 n, s8 *p) {
+s32 tween_sumDeltas(s32 n, s8 *p) {
     s32 sum = 0;
     s32 i;
     if (n == 0 || p == NULL) {

@@ -18,10 +18,10 @@ void cd_startRequest(CdRequest *r) {
     if (r->flags & 1) {
         g_cdLoad.state = 1;
         CdIntToPos(r->sector, &g_cdLoad.unk8);
-        cd_controlF(2, (u8 *)&g_cdLoad.unk8);
+        cd_controlF(CdlSetloc, (u8 *)&g_cdLoad.unk8);
     } else if (st != 4) {
         g_cdLoad.state = 4;
-        cd_controlF(9, NULL);
+        cd_controlF(CdlPause, NULL);
     } else {
         g_cdLoad.state = 0;
         if (g_cdLoad.cur.doneCallback != NULL) {
@@ -39,7 +39,7 @@ void cd_onDataReady(u8 intr, u8 *result) {
     if (result != NULL) {
         g_cdResult = *(Unk8 *)result;
     }
-    if (intr == 1) {
+    if (intr == CdlDataReady) {
         CdGetSector(pos, 3);
         n = CdPosToInt((CdlLOC *)pos);
         prev = g_cdLoad.unk18;
@@ -58,7 +58,7 @@ void cd_onDataReady(u8 intr, u8 *result) {
             if (g_cdLoad.sectorsLeft == 0 || g_cdLoad.hasQueued != 0) {
                 CdReadyCallback(0);
                 g_cdLoad.state = 4;
-                cd_controlF(9, 0);
+                cd_controlF(CdlPause, 0);
             }
         }
     } else {
@@ -69,7 +69,7 @@ void cd_onDataReady(u8 intr, u8 *result) {
         g_cdLoad.state = 4;
         g_cdLoad.unk3 = 1;
         g_cdLoad.unk1++;
-        cd_controlF(9, 0);
+        cd_controlF(CdlPause, 0);
     }
 }
 
@@ -107,8 +107,8 @@ s32 cd_init(void) {
     ok = v;
     if (ok) {
         CdSetDebug(0);
-        v = 0x80; /* CdlModeSpeed */
-        CdControlB(0xE, (u8 *)v, 0);
+        v = CdlModeSpeed; /* passed as the param pointer itself */
+        CdControlB(CdlSetmode, (u8 *)v, 0);
         VSync(3);
     }
     return ok;
@@ -146,13 +146,13 @@ s32 cd_cancel(void) {
         g_cdLoad.hasQueued = 0;
         g_cdLoad.unk3 = 0;
         g_cdLoad.state = 0;
-        while (CdControlB(9, NULL, buf) == 0) {
+        while (CdControlB(CdlPause, NULL, buf) == 0) {
         }
     }
     return r;
 }
 
-void func_80022B9C(void) {
+void cd_abort(void) {
     CdFlush();
     CdSyncCallback(0);
     CdReadyCallback(NULL);
@@ -160,9 +160,9 @@ void func_80022B9C(void) {
 }
 
 void cd_stopMotor(void) {
-    CdControlB(0xE, NULL, NULL);
+    CdControlB(CdlSetmode, NULL, NULL);
     VSync(3);
-    CdControlB(8, NULL, NULL);
+    CdControlB(CdlStop, NULL, NULL);
 }
 
 u8 cd_seekAsync(s32 a, void (*b)(u8 *)) {
@@ -208,7 +208,7 @@ u8 cd_readChunks(s32 sector, CdChunk *chunks, s32 n, void (*cb)(u8 *)) {
     return cd_submit(&r);
 }
 
-u8 func_80022D3C(void (*a)(u8 *)) {
+u8 cd_syncAsync(void (*a)(u8 *)) {
     CdRequest r;
     r.flags = 4;
     r.doneCallback = a;
@@ -255,7 +255,7 @@ s32 cd_readSync(s32 a, s32 b, void *c) {
     return 1;
 }
 
-s32 func_80022E70(void) {
+s32 cd_sync(void) {
     CdRequest r;
     r.flags = 4;
     r.sector = 0;
@@ -272,7 +272,7 @@ s32 func_80022E70(void) {
     return 1;
 }
 
-u8 func_80022ED4(s32 a) {
+u8 cd_seekStreamAsync(s32 a) {
     CdRequest r;
     r.flags = 9;
     r.sector = a;
@@ -284,7 +284,7 @@ u8 func_80022ED4(s32 a) {
     return cd_submit(&r);
 }
 
-u8 func_80022F1C(s32 a, void (*b)()) {
+u8 cd_readStreamAsync(s32 a, void (*b)()) {
     CdRequest r;
     r.flags = 0xB;
     r.sector = a;
@@ -296,12 +296,12 @@ u8 func_80022F1C(s32 a, void (*b)()) {
     return cd_submit(&r);
 }
 
-s32 func_80022F64(s32 a) {
+s32 cd_restartAt(s32 a) {
     if (g_cdLoad.state != 5) {
         CdReadyCallback(NULL);
         g_cdLoad.cur.sector = a;
         g_cdLoad.state = 5;
-        cd_controlF(9, NULL);
+        cd_controlF(CdlPause, NULL);
     }
     return 1;
 }
@@ -318,7 +318,7 @@ u8 func_80022FD0(void (*a)(u8 *)) {
     return cd_submit(&r);
 }
 
-s32 func_80023018(void) {
+s32 cd_pause(void) {
     if (g_cdLoad.state == 0) {
         return 1;
     }
@@ -326,17 +326,17 @@ s32 func_80023018(void) {
     g_cdLoad.unk3 = 0;
     CdReadyCallback(NULL);
     g_cdLoad.state = 4;
-    cd_controlF(9, NULL);
+    cd_controlF(CdlPause, NULL);
     return 1;
 }
 
 u8 cd_checkShellOpen(void) {
-    CdControlB(1, NULL, g_cdResult.unk0);
-    return func_800230A0();
+    CdControlB(CdlNop, NULL, g_cdResult.unk0);
+    return cd_isShellOpen();
 }
 
-s32 func_800230A0(void) {
-    return (g_cdResult.unk0[0] >> 4) & 1;
+s32 cd_isShellOpen(void) {
+    return (g_cdResult.unk0[0] >> 4) & 1; /* CdlStatShellOpen */
 }
 
 u8 cd_submit(CdRequest *r) {
@@ -370,23 +370,23 @@ void cd_onSync(u8 com, u8 *param) {
         g_cdResult = *(Unk8 *)param;
     }
     if (g_cdLoad.hasQueued != 0) {
-        func_8002325C(com);
+        cd_onSyncQueued(com);
         return;
     }
-    if (com == 5) {
-        func_80023304(5);
+    if (com == CdlDiskError) {
+        cd_onDiskError(CdlDiskError);
         return;
     }
-    if (com == 2) {
-        fn = D_80068668[g_cdLoad.state];
+    if (com == CdlComplete) {
+        fn = g_cdStateHandlers[g_cdLoad.state];
         if (fn != NULL) {
-            fn(2);
+            fn(CdlComplete);
         }
     }
 }
 
-void func_8002325C(u8 arg0) {
-    if (arg0 == 5 || arg0 == 2) {
+void cd_onSyncQueued(u8 arg0) {
+    if (arg0 == CdlDiskError || arg0 == CdlComplete) {
         if (g_cdLoad.state != 3) {
             if (g_cdLoad.cur.doneCallback != NULL) {
                 g_cdLoad.cur.doneCallback(&g_cdLoad);
@@ -395,61 +395,61 @@ void func_8002325C(u8 arg0) {
         } else if (!(g_cdLoad.cur.flags & 8)) {
             CdReadyCallback(NULL);
             g_cdLoad.state = 4;
-            cd_controlF(9, 0);
+            cd_controlF(CdlPause, 0);
         }
     }
 }
 
-void func_80023304(s32 unused) {
+void cd_onDiskError(s32 unused) {
     if (g_cdLoad.state != 3 || !(g_cdLoad.cur.flags & 8)) {
         g_cdLoad.unk3 = 1;
         g_cdLoad.unk1++;
         CdReadyCallback(NULL);
-        cd_controlF(9, NULL);
+        cd_controlF(CdlPause, NULL);
     }
 }
 
-void func_8002336C(u8 a) {
+void cd_onSetloc(u8 a) {
     u8 buf[8];
     s32 st;
     s32 k;
 
-    k = 0xA0;
+    k = CdlModeSpeed | CdlModeSize1;
     if (CdMode() != k) {
         st = 2;
         buf[0] = k;
-        k = 0xE;
+        k = CdlSetmode;
         g_cdLoad.state = st;
         cd_controlF(k, buf);
     } else {
-        func_800233CC(a);
+        cd_startTransfer(a);
     }
 }
 
-s32 func_800233CC() {
+s32 cd_startTransfer() {
     s32 arg;
 
     if (g_cdLoad.cur.flags & 2) {
         g_cdLoad.unk18 = 0;
         g_cdLoad.state = 3;
         if (g_cdLoad.cur.flags & 8) {
-            CdReadyCallback((void (*)())func_800235A0);
-            arg = 0x1B;
+            CdReadyCallback((void (*)())cd_onStreamReady);
+            arg = CdlReadS;
         } else {
             CdReadyCallback(g_cdLoad.cur.readyCallback);
-            arg = 6;
+            arg = CdlReadN;
         }
     } else {
         g_cdLoad.state = 4;
-        arg = 0x15;
+        arg = CdlSeekL;
         if (g_cdLoad.cur.flags & 8) {
-            arg = 0x16;
+            arg = CdlSeekP;
         }
     }
     cd_controlF(arg, 0);
 }
 
-void func_8002345C(void) {
+void cd_onPaused(void) {
     CdReadyCallback(NULL);
     CdSyncCallback(0);
     if (g_cdLoad.unk3 == 0) {
@@ -458,28 +458,28 @@ void func_8002345C(void) {
             g_cdLoad.cur.doneCallback(&g_cdLoad);
         }
     } else {
-        D_80076178 = g_cdLoad.cur;
-        cd_startRequest(&D_80076178);
+        g_cdRetryRequest = g_cdLoad.cur;
+        cd_startRequest(&g_cdRetryRequest);
     }
 }
 
-void func_8002350C(void) {
-    D_800761A8 = g_cdLoad.cur;
-    cd_startRequest(&D_800761A8);
+void cd_onRestart(void) {
+    g_cdRestartRequest = g_cdLoad.cur;
+    cd_startRequest(&g_cdRestartRequest);
 }
 
 void cd_controlF(u8 com, u8 *param) {
     CdControlF(com, param);
 }
 
-void func_800235A0(u8 com, u8 *param) {
+void cd_onStreamReady(u8 com, u8 *param) {
     if (param != NULL) {
         g_cdResult = *(Unk8 *)param;
     }
     if (g_cdLoad.hasQueued != 0) {
         CdReadyCallback(NULL);
         g_cdLoad.state = 4;
-        cd_controlF(9, 0);
+        cd_controlF(CdlPause, 0);
     } else {
         g_cdLoad.cur.readyCallback(com, param);
     }

@@ -49,7 +49,7 @@
 #define WM_REQ_MAP_JUMP 41 /* "Map Jump" */
 
 /* w_frameGetParameter ids: event-script expression variables >= 0xC0 on the world map
- * (main func_80037D6C's default branch) */
+ * (main evt_getSysVar's default branch) */
 #define WM_PARAM_AREA 0xC0 /* area of the cell under the player ("Now Area" in wm_getEncounterEntry) */
 #define WM_PARAM_TOPOGRAPHY 0xC1 /* topography of that cell ("Topograph") */
 #define WM_PARAM_REQ0 0xC3 /* g_worldReqParams[0..2], e.g. the WM_REQ_GET_GETOFF_POS result */
@@ -461,7 +461,7 @@ typedef struct ModelObj {
 /* ModelObj.flags */
 #define MDL_BEHIND_CAMERA 0x10 /* wm_cullBehindCamera: origin SZ 0 or parent behind */
 
-/* model slot (func_8001E350) */
+/* model slot (game_getModel) */
 typedef struct {
     s32 flags; /* flags: 1 = loaded */
     s32 modelId; /* file id */
@@ -892,8 +892,8 @@ extern s32 g_worldOt[];
 extern s32 g_worldEventResult;
 extern s32 g_worldTimeEvents;
 extern s32 g_worldTimeLogic; /* frame timing */
-extern s32 D_8007BD28;
-extern s32 D_8007BD30;
+extern s32 g_swirlFrame;
+extern s32 g_swirlBuf;
 extern s32 g_worldTimeDraw;
 extern s32 g_worldPrimUsed;
 extern s32 g_worldPrimUsedPercent;
@@ -1112,7 +1112,7 @@ typedef struct {
     RECT rects[1];
 } WmImagePackClut;
 
-/* text window contents passed to func_80063118 (as in ovl_38) */
+/* text window contents passed to tween_start (as in ovl_38) */
 typedef struct {
     s16 unk0;
     s16 unk2;
@@ -1172,9 +1172,9 @@ extern TILE g_worldPauseTile;
 extern DR_TPAGE g_worldPauseTpage;
 extern u32 g_worldPauseOT;
 extern u8 g_worldPauseSprite[];
-void func_80023F60(s32);
-void func_8005562C(s32);
-void func_80055698(s32);
+void game_resumeClock(s32);
+void akao_sendCmd99(s32);
+void akao_sendCmd98(s32);
 extern s32 g_worldFrameCount;
 extern u8 g_worldMogChoice;
 extern s16 g_worldOtBias;
@@ -1239,23 +1239,23 @@ extern u8 D_800CE1E1;
 extern u8 g_worldCameraStartPhase;
 
 /* main exe: candidates for ff9.h */
-MATRIX *func_80030EA4(SVECTOR *, MATRIX *);
+MATRIX *math_rotMatrixZXY(SVECTOR *, MATRIX *);
 void RotTrans(SVECTOR *v0, VECTOR *v1, long *flag);
 void func_80064CDC(s32, s32);
-void func_80031264(void *, void *); /* rotation (SVECTOR) -> bone matrix */
-void func_800316D8(SVECTOR *, MATRIX *); /* RotMatrix */
-void func_80030AF4(SVECTOR *, MATRIX *);
+void math_rotMatrixZYX_gte(void *, void *); /* rotation (SVECTOR) -> bone matrix */
+void math_rotMatrixYXZ(SVECTOR *, MATRIX *); /* RotMatrix */
+void math_rotMatrixXYZ(SVECTOR *, MATRIX *);
 s32 math_cos(s32); /* cos */
 s32 math_sin(s32); /* sin */
 void SetGeomScreen(u16);
 s32 func_80050D38(s32);
-extern u32 D_80076F80[]; /* VRAM save buffer */
+extern u32 g_portraitSavedVram[]; /* VRAM save buffer */
 extern u8 D_80077E51;
-extern u8 *D_80077DF0;
-s32 func_8002B980(u8 *, s32);
-extern s32 D_80077E54; /* overlaps Unk80077E50.unk4 in ff9.h */
-Unk8004AB64 *func_8004AE00(void);
-void func_8004B20C(s32);
+extern u8 *g_menuHelpText;
+s32 text_measureStyle(u8 *, s32);
+extern s32 g_menuScreenFrame; /* overlaps Unk80077E50.unk4 in ff9.h */
+Unk8004AB64 *evt_getPlayer(void);
+void evt_resetIdleTimer(s32);
 
 /* run on the scratchpad stack (top of the 1 KB scratchpad) */
 #define SetSpadStack(addr) \
@@ -1496,7 +1496,7 @@ void wm_calcShadowMatrix(WmObjEnt *, WmObjSlot *, MATRIX *, s32, s32);
 void cd_readChunks(s32, void *, s32, s32);
 s32 func_8004B1EC(void);
 s32 func_8004B1FC(void);
-void func_8002FA10(void);
+void fade_inAdditiveDefault(void);
 void OuterProduct0(VECTOR *v0, VECTOR *v1, VECTOR *v2);
 
 /* wm_getBlockHeight (walkmesh height lookup) */
@@ -1534,27 +1534,27 @@ void wm_streamSoundChunk(WmStreamReq *arg0);
 s32 wm_getModelCacheBottom(void);
 
 /* main exe: candidates for ff9.h (sound) */
-s32 func_80055290(void *);
-void func_800552B8(s32);
-void func_80055310(void);
-void func_800553EC(s32, s32, s32, s32);
-void func_80055604(s32);
-void func_80055704(s32);
-void func_80055730(s32, s32);
-void func_80055764(s32, s32, s32);
-void func_800557A8(s32, s32, s32, s32);
-void func_800557F0(s32);
-void func_8005581C(s32, s32);
-void func_80055850(s32, s32, s32);
-void func_80055894(s32, s32, s32, s32);
-void func_800558DC(s32);
-void func_80055908(s32, s32);
-void func_8005593C(s32, s32, s32);
-void func_80055980(s32, s32, s32, s32);
-void func_800559C8(s32, s32);
-void func_800559FC(s32, s32, s32);
-void func_80055A34(s32, s32, s32, s32);
-s32 func_80055DCC(void);
+s32 akao_playMusic(void *);
+void akao_stopMusic(s32);
+void akao_saveMusic(void);
+void akao_playSe(s32, s32, s32, s32);
+void akao_sendCmd92(s32);
+void akao_setAllSeVolume(s32);
+void akao_fadeAllSeVolume(s32, s32);
+void akao_setSeVolume(s32, s32, s32);
+void akao_fadeSeVolume(s32, s32, s32, s32);
+void akao_sendCmdAA(s32);
+void akao_sendCmdAB(s32, s32);
+void akao_sendCmdA2(s32, s32, s32);
+void akao_sendCmdA3(s32, s32, s32, s32);
+void akao_sendCmdAC(s32);
+void akao_sendCmdAD(s32, s32);
+void akao_sendCmdA4(s32, s32, s32);
+void akao_sendCmdA5(s32, s32, s32, s32);
+void akao_setMusicVolume(s32, s32);
+void akao_fadeMusicVolume(s32, s32, s32);
+void akao_fadeMusicVolumeFrom(s32, s32, s32, s32);
+s32 akao_getSpuTransferState(void);
 
 s32 wm_initShadowPrims(s32, s32); /* returns func_80062E3C's result (the next free address) */
 

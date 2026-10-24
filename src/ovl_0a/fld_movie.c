@@ -49,13 +49,13 @@ s32 fld_loadModelBundle(s32 arg0) {
     size = (f->unkC - f->unk4) << 11;
     c = fld_findModelCache(arg0);
     if (c->addr == 0) {
-        func_8002177C(g_gameState->unk1C->unk854, f->unk4, size,
+        cdRead_init(g_gameState->unk1C->unk854, f->unk4, size,
                       (void *)(fld_allocModelCache(arg0, size) != 0 ? c->addr : D_80067948), 0, -1, 0);
-        while (func_800217C4(g_gameState->unk1C->unk854) != 0) {
+        while (cdRead_update(g_gameState->unk1C->unk854) != 0) {
         }
     }
     if (c->addr != 0) {
-        s32 m = func_8001DAA4(D_80067948, c->addr, size, NULL);
+        s32 m = file_copyViaVram(D_80067948, c->addr, size, NULL);
         DrawSync(0);
         fld_invalidateModelCache(D_80067948 + m);
     }
@@ -91,8 +91,8 @@ s32 fld_loadModelBundle(s32 arg0) {
             uv[i * 2 + 1] = y % 256;
             ent[i].unk4 = x;
             ent[i].unk6 = y;
-            func_8001D9CC(img, cx, cy, x, y);
-            func_8001D8A8(img);
+            file_setTimPos(img, cx, cy, x, y);
+            file_loadTim(img);
         }
     }
     for (i = 0; i < hdr[7]; i++) {
@@ -123,15 +123,15 @@ s32 fld_loadModelBundle(s32 arg0) {
                     break;
                 }
             }
-            func_8001D9CC(img, cx2, cy2, x2, y2);
-            func_8001D8A8(img);
+            file_setTimPos(img, cx2, cy2, x2, y2);
+            file_loadTim(img);
         }
     }
     DrawSync(0);
     g_gameState->unk1C->unk8E4.field->area->scene->modelBundles[g_gameState->unk1C->unk8E4.field->area->scene->modelBundleCount] = pack1;
     g_gameState->unk1C->unk8E4.field->area->scene->modelBundleCount++;
     db_register(pack1, 0);
-    D_80067948 = pack1 + func_8001CA70(pack1);
+    D_80067948 = pack1 + db_getSize(pack1);
     return 0;
 }
 
@@ -166,10 +166,10 @@ s32 fld_setupActorModel(s32 arg0, void *arg1) {
     r = func_8004AB64(arg1);
     if (r < 9) {
         slot = r;
-        s = (FieldObjSlot *)func_8001E350(r);
+        s = (FieldObjSlot *)game_getModel(r);
     } else {
         slot = g_gameState->unk1C->unk39 + 9;
-        s = (FieldObjSlot *)func_8001E350(slot);
+        s = (FieldObjSlot *)game_getModel(slot);
         g_gameState->unk1C->unk39++;
     }
     arg0 = fld_remapModelId(arg0);
@@ -308,19 +308,19 @@ s32 fld_collectVisibleModels(FieldObjSlot **arg0) {
     u16 *p;
 
     n = 0;
-    for (e = func_8004AE9C(); e != NULL; e = e->unk0) {
+    for (e = evt_getObjectList(); e != NULL; e = e->unk0) {
         a = e->unk4;
         if (a->unkE == 1 && (a->unkF & 1) && a->unk5 == 4) {
-            s = (FieldObjSlot *)func_8001E350(a->unk3B);
+            s = (FieldObjSlot *)game_getModel(a->unk3B);
             if (s->model->parent == NULL) {
                 arg0[n++] = s;
             }
         }
     }
-    for (e = func_8004AE9C(); e != NULL; e = e->unk0) {
+    for (e = evt_getObjectList(); e != NULL; e = e->unk0) {
         a = e->unk4;
         if (a->unkE == 1 && (a->unkF & 1) && a->unk5 == 4) {
-            s = (FieldObjSlot *)func_8001E350(a->unk3B);
+            s = (FieldObjSlot *)game_getModel(a->unk3B);
             p = s->model->parent;
             if (p != NULL) {
                 for (i = 0; i < n; i++) {
@@ -345,7 +345,7 @@ s32 fld_collectVisibleModels(FieldObjSlot **arg0) {
                 sum += g->packetSize;
                 g++;
             }
-            if (o->packets + (sum * 2 + (o->model->boneCount * 32 + o->model->groupCount * 12)) >= D_80067944 + 0xF1700) {
+            if (o->packets + (sum * 2 + (o->model->boneCount * 32 + o->model->groupCount * 12)) >= g_loadAreaEnd + 0xF1700) {
                 arg0[i] = NULL;
             }
         }
@@ -397,12 +397,12 @@ void fld_drawModels(void) {
                 rot.vx = ax;
                 rot.vy = o->rotY;
                 rot.vz = az;
-                func_80030EA4(&rot, &m->worldMatrix);
+                math_rotMatrixZXY(&rot, &m->worldMatrix);
             } else {
                 rot.vx = o->rotX;
                 rot.vy = (o->rotY + j) & 0xFFF;
                 rot.vz = o->rotZ;
-                func_80031244(&rot, &m->worldMatrix);
+                math_rotMatrixZYX(&rot, &m->worldMatrix);
             }
             m->worldMatrix.t[0] = o->pos.vx;
             m->worldMatrix.t[1] = o->pos.vy;
@@ -534,7 +534,7 @@ s32 fld_modelCommand(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4) {
     FieldAnimSfx *t;
 
     info = &g_gameState->unk1C->unk8E4.field->area->scene->actorInfo[arg0];
-    c = (FieldEvtCtx *)func_8001E350(arg0);
+    c = (FieldEvtCtx *)game_getModel(arg0);
     switch (arg1) {
     case 0:
         if ((u8)arg2 == 0xFF) {
@@ -841,7 +841,7 @@ void fld_compactModelCache(void) {
         s = &g_fieldModelCache[bi];
         addr = top - s->size;
         if (s->addr != addr) {
-            func_8001DAA4(addr, s->addr, s->size, NULL);
+            file_copyViaVram(addr, s->addr, s->size, NULL);
             s->addr = addr;
         }
         top = addr;
@@ -899,7 +899,7 @@ void fld_drawShadow(FieldObjPlace *arg0, s32 arg1) {
     s32 v1;
 
     e = &arg0[arg1];
-    s = (FieldObjSlot *)func_8001E350(arg1);
+    s = (FieldObjSlot *)game_getModel(arg1);
     bias = 0;
     if (s->flags & 0x10) {
         return;
@@ -1152,7 +1152,7 @@ void fld_movieStart(s8 arg0, s8 arg1, s8 arg2) {
     g_gameState->unk1C->unk8E4.field->area->scene->movieEntry = arg1;
     g_gameState->unk1C->unk8E4.field->area->scene->movieRgb24 = arg2;
     fld_clearModelCache();
-    func_800223CC();
+    preload_reset();
     g_gameState->unk1C->unk8E4.field->flags |= FLD_MAP_NO_PRELOAD;
     g_gameState->unk1C->unk8E4.field->area->scene->movieState = 1;
 }
@@ -1166,16 +1166,16 @@ void fld_movieUpdate(void) {
     switch (g_gameState->unk1C->unk8E4.field->area->scene->movieState) {
     case 1:
         if (cd_getState() == 0) {
-            if (func_800217C4(g_gameState->unk1C->unk854) == 0) {
+            if (cdRead_update(g_gameState->unk1C->unk854) == 0) {
                 FileEntry *f = file_find(0, 0x64);
-                func_8002177C(g_gameState->unk1C->unk854, f->unk4, (f->unkC - f->unk4) << 11,
-                              (void *)(D_80067944 + 0xF1700), 0, 0x15000, NULL);
+                cdRead_init(g_gameState->unk1C->unk854, f->unk4, (f->unkC - f->unk4) << 11,
+                              (void *)(g_loadAreaEnd + 0xF1700), 0, 0x15000, NULL);
             }
             g_gameState->unk1C->unk8E4.field->area->scene->movieState = 2;
         }
         break;
     case 2:
-        if (func_800217C4(g_gameState->unk1C->unk854) == 0) {
+        if (cdRead_update(g_gameState->unk1C->unk854) == 0) {
             g_fieldMovieFlags |= 8;
             g_gameState->unk1C->unk8E4.field->area->scene->movieState = 3;
         }
@@ -1186,7 +1186,7 @@ void fld_movieUpdate(void) {
                 g_mbgMovieLists[g_gameState->unk1C->unk8E4.field->area->scene->movieList]
                     .unk4[g_gameState->unk1C->unk8E4.field->area->scene->movieEntry].unk0);
             if (cd_getState() == 0) {
-                func_80022ED4(g_gameState->unk1C->unk8E4.field->area->scene->movieFile);
+                cd_seekStreamAsync(g_gameState->unk1C->unk8E4.field->area->scene->movieFile);
                 g_gameState->unk1C->unk8E4.field->area->scene->movieState = 4;
             }
         }
@@ -1212,13 +1212,13 @@ void fld_movieUpdate(void) {
             g_fieldFlagQueue.movieFlags[0][b - 1] = 0x40;
             g_fieldFlagQueue.movieFlags[1][b] = 0x40;
             g_fieldFlagQueue.movieFlags[0][b] = 2;
-            if (!(D_80073998[0] & BTN_START)) {
+            if (!(g_padPortMask[0] & BTN_START)) {
                 g_gameState->unk1C->unk8E4.field->area->scene->flags |= FLD_SCN_MOVIE_DISPMASK;
-                D_80073998[0] |= BTN_START;
+                g_padPortMask[0] |= BTN_START;
             }
             g_gameState->vsyncMode = 4;
-            func_80056248(0);
-            func_80056228();
+            akao_sendCmdE4(0);
+            akao_sendCmdE2();
             DrawSync(0);
             MBG_init(1, &g_gameState->unk1C->unk8E4.field->area->scene->movieWork);
             mbg_setRgb24(g_gameState->unk1C->unk8E4.field->area->scene->movieRgb24);
@@ -1240,7 +1240,7 @@ void fld_movieUpdate(void) {
             if (!(g_fieldMovieFlags & 0x20) && (u32)t < 99999) {
                 d = t - g_mbgFrame;
                 if (d < 4) {
-                    func_80056278(d * 4, 0);
+                    akao_sendCmdE5(d * 4, 0);
                     g_fieldMovieFlags |= 0x20;
                 }
             }
@@ -1252,7 +1252,7 @@ void fld_movieUpdate(void) {
                         &g_fieldMovieMaskPkt[g_gameState->unk1C->unk8 ^ 1]);
                 DrawOTag(g_gameState->unk1C->unk10[g_gameState->unk1C->unk8 ^ 1]);
             } else if (g_gameState->unk1C->unk8E4.field->area->scene->movieRgb24 != 0 && g_gameState->unk1C->unk8 == 0) {
-                g_gameState->unkC[g_gameState->unk1C->unk8].disp.x = 0x1E0;
+                g_gameState->dispEnv[g_gameState->unk1C->unk8].disp.x = 0x1E0;
             }
             if ((g_mbgFrame >= t || g_fieldMovieLastFrame >= g_mbgFrame) && !(g_fieldMovieFlags & 0x100)) {
                 if (g_fieldMovieLastFrame >= g_mbgFrame) {
@@ -1260,7 +1260,7 @@ void fld_movieUpdate(void) {
                     g_gameState->unk1C->unk0 &= ~(GD_MENU_DISABLED | GD_HIDE_ALL);
                     g_gameState->unk1C->unk8E4.field->flags &= ~0xE01;
                     if (g_gameState->unk1C->unk8E4.field->area->scene->movieRgb24 != 0 && g_gameState->unk1C->unk8 == 0) {
-                        g_gameState->unkC[g_gameState->unk1C->unk8].disp.x = 0x1E0;
+                        g_gameState->dispEnv[g_gameState->unk1C->unk8].disp.x = 0x1E0;
                     }
                     printf("Fr: %d\n", g_fieldMovieLastFrame);
                 } else {
@@ -1283,7 +1283,7 @@ void fld_movieUpdate(void) {
 
 void fld_movieStop(void) {
     if (g_gameState->unk1C->unk8E4.field->area->scene->flags & FLD_SCN_MOVIE_DISPMASK) {
-        D_80073998[0] &= ~BTN_START;
+        g_padPortMask[0] &= ~BTN_START;
         g_gameState->unk1C->unk8E4.field->area->scene->flags &= ~FLD_SCN_MOVIE_DISPMASK;
     }
     mbg_shutdown();
@@ -1300,8 +1300,8 @@ void fld_movieFinish(void) {
     g_fieldMovieFlags &= 0xFE00;
     f->flags &= ~0x1E01;
     g_gameState->vsyncMode = 2;
-    g_gameState->unkC[0].disp.x = 0x140;
-    g_gameState->unkC[1].disp.x = 0;
+    g_gameState->dispEnv[0].disp.x = 0x140;
+    g_gameState->dispEnv[1].disp.x = 0;
     fld_soundCommand(0x6201, -1, g_gameState->unk1C->unk8E4.field->area->scene->sndVolume, 0, 0);
 }
 
@@ -1335,7 +1335,7 @@ void fld_beginFrame(void) {
     } else {
         ClearOTagR(g_gameState->unk1C->unk10[g_gameState->unk1C->unk8], 0x1000);
     }
-    func_8004C204();
+    msg_beginDraw();
 }
 
 /* end of frame: flip buffers, draw and apply the queued flag changes */
@@ -1364,15 +1364,15 @@ void fld_endFrame(void) {
         g_fieldMovieFlags &= ~8;
     }
     if (!(g_gameState->unk1C->unk8E4.field->flags & FLD_MAP_NO_DISPENV)) {
-        PutDispEnv(&g_gameState->unkC[g_gameState->unk1C->unk8]);
+        PutDispEnv(&g_gameState->dispEnv[g_gameState->unk1C->unk8]);
     }
     if (!(g_gameState->unk1C->unk0 & GD_PAUSED)) {
         f = g_gameState->unk1C->unk8E4.field->flags;
         if (!(f & FLD_MAP_NO_DRAW)) {
             if (f & FLD_MAP_CLEAR_ONLY) {
-                PutDrawEnv(&g_gameState->unk10[g_gameState->unk1C->unk8]);
+                PutDrawEnv(&g_gameState->drawEnv[g_gameState->unk1C->unk8]);
             } else if (f & 4) {
-                DrawOTagEnv(&g_gameState->unk1C->unk10[g_gameState->unk1C->unk8][0xFFF], &g_gameState->unk10[g_gameState->unk1C->unk8]);
+                DrawOTagEnv(&g_gameState->unk1C->unk10[g_gameState->unk1C->unk8][0xFFF], &g_gameState->drawEnv[g_gameState->unk1C->unk8]);
             } else {
                 DrawOTag(g_gameState->unk1C->unk10[g_gameState->unk1C->unk8]);
             }
@@ -1380,7 +1380,7 @@ void fld_endFrame(void) {
     }
     if (!(g_gameState->unk1C->unk0 & GD_NO_FLIP)) {
         g_gameState->unk1C->unk8 ^= 1;
-        func_8002C0DC(g_gameState->unk1C->unk8);
+        gfx_setBuffer(g_gameState->unk1C->unk8);
     }
     if (!(g_gameState->unk1C->unk0 & GD_PAUSED)) {
         g_gameState->unk1C->unk0 |= g_fieldFlagQueue.gameFlags[0][0];
@@ -1408,7 +1408,7 @@ void fld_startEncounter(void) {
     g_fieldFlagQueue.gameFlags[0][0] = 0x43;
     g_fieldFlagQueue.gameFlags[0][2] = 0x3C;
     g_fieldFlagQueue.mapFlags[0][2] = 0x1919;
-    D_80073998[0] |= BTN_START;
+    g_padPortMask[0] |= BTN_START;
 }
 
 void fld_updateEncounter(void) {
@@ -1420,11 +1420,11 @@ void fld_updateEncounter(void) {
     s16 w;
 
     if (g_gameState->unk1C->unk8E4.field->area->scene->encounterStep == 0) {
-        D_8007BD28 = 0;
-        D_8007BD30 = D_80067944 + 0x153F00;
+        g_swirlFrame = 0;
+        g_swirlBuf = g_loadAreaEnd + 0x153F00;
         fld_clearModelCache();
         g_gameState->unk1C->unk8E4.field->area->scene->heapTop = D_80067948;
-        a = func_8004AE00();
+        a = evt_getPlayer();
         if (a != NULL) {
             fldbg_applyGeomOffset();
             v.vx = a->pos.vx;
@@ -1446,24 +1446,24 @@ void fld_updateEncounter(void) {
         fld_findBattleMusic();
         if (g_gameState->unk1C->unk81C[0] != g_gameState->unk1C->unk8E4.field->area->scene->battleMusic
             && (g_gameState->unk1C->unk0 & GD_MUSIC_PLAYING)) {
-            func_800559FC(0, 0xF, 0);
+            akao_fadeMusicVolume(0, 0xF, 0);
             g_gameState->unk1C->unk8E4.field->area->scene->encounterMusicStep = 7;
         }
         if (g_gameState->unk1C->unk830[0] != 0xFFFF && (g_gameState->unk1C->unk0 & GD_SFX0_PLAYING)) {
-            func_800557A8(g_gameState->unk1C->unk828, 0x100000, 0xF, 0);
+            akao_fadeSeVolume(g_gameState->unk1C->unk828, 0x100000, 0xF, 0);
         }
         if (g_gameState->unk1C->unk830[1] != 0xFFFF && (g_gameState->unk1C->unk0 & GD_SFX1_PLAYING)) {
-            func_800557A8(g_gameState->unk1C->unk82C, 0x200000, 0xF, 0);
+            akao_fadeSeVolume(g_gameState->unk1C->unk82C, 0x200000, 0xF, 0);
         }
         for (i = 1; i >= 0; i--) {
-            D_800739B0[i].unk1 = 0;
-            D_800739B0[i].unk0 = 0;
+            g_padActuator[i].unk1 = 0;
+            g_padActuator[i].unk0 = 0;
         }
-        func_80056228();
+        akao_sendCmdE2();
         g_gameState->unk1C->unk8E4.field->area->scene->encounterStep++;
     } else {
         if (!(g_gameState->unk1C->unk8E4.field->area->scene->flags & FLD_SCN_ENCOUNTER_LOADED)) {
-            if (func_800220E8(0x1000B) != 0) {
+            if (preload_isReady(0x1000B) != 0) {
                 e = preload_find(0x1000B);
                 ClearOTag(&g_fieldTempOt, 1);
                 setlen(&g_fieldMaskPkt[g_gameState->unk1C->unk8 ^ 1], 2);
@@ -1480,18 +1480,18 @@ void fld_updateEncounter(void) {
                 }
                 LoadImage(&r, (u32 *)e->unk8);
                 DrawSync(0);
-                func_800219D8(e, r.x, r.y, r.w, r.h);
+                preload_setVramRect(e, r.x, r.y, r.w, r.h);
             } else {
-                func_80022390(func_8002208C()->unk4);
+                preload_remove(preload_waitCurrent()->unk4);
             }
-            func_80022280((s32)D_80067944, 0x156F00);
+            preload_discardRange((s32)g_loadAreaEnd, 0x156F00);
             fld_soundCommand(0xD000, 0x27C, 0, 0x80, 0x7F);
             fld_soundCommand(0xD000, 0x27B, 0, 0x80, 0x7F);
             fld_soundCommand(0xD000, 0x27A, 0, 0x80, 0x7F);
             g_gameState->unk1C->unk8E4.field->area->scene->flags |= FLD_SCN_ENCOUNTER_LOADED;
         }
         if (!(g_gameState->unk1C->unk8E4.field->area->scene->flags & FLD_SCN_ENCOUNTER_DONE)
-            && func_80053A10(g_gameState->unk1C->unk8E4.field->area->scene->encounterScreenX,
+            && swirl_update(g_gameState->unk1C->unk8E4.field->area->scene->encounterScreenX,
                              g_gameState->unk1C->unk8E4.field->area->scene->encounterScreenY)) {
             g_gameState->unk1C->unk8E4.field->area->scene->flags |= FLD_SCN_ENCOUNTER_DONE;
         }
@@ -1517,7 +1517,7 @@ void fld_updateEncounter(void) {
             if (g_gameState->unk1C->unk8E4.field->area->scene->battleMusic != 0xFFFF
                 && !(g_gameState->unk1C->unk0 & GD_MUSIC_PLAYING)) {
                 fld_soundCommand(0, g_gameState->unk1C->unk8E4.field->area->scene->battleMusic, 0, 0, 0);
-                func_800559C8(0, 0x7F);
+                akao_setMusicVolume(0, 0x7F);
             }
             g_gameState->unk1C->unk8E4.field->area->scene->encounterMusicStep = -3;
         }
@@ -1526,7 +1526,7 @@ void fld_updateEncounter(void) {
         && g_gameState->unk1C->unk8E4.field->area->scene->encounterMusicStep == -3) {
         g_gameState->unk1C->unk0 &= ~0x7F;
         g_gameState->unk1C->unk8E4.field->flags &= ~0x1919;
-        D_80073998[0] &= ~BTN_START;
+        g_padPortMask[0] &= ~BTN_START;
         g_gameState->unk0 |= GS_FLD_LEAVE;
     }
 }
@@ -1544,34 +1544,34 @@ void fld_togglePause(void) {
 
     g_gameState->unk1C->unk0 ^= GD_PAUSED;
     if (g_gameState->unk1C->unk0 & GD_PAUSED) {
-        func_8005562C(0);
-        func_80023F60(1);
+        akao_sendCmd99(0);
+        game_resumeClock(1);
         for (i = 1; i >= 0; i--) {
-            D_800739B0[i].unk1 = 0;
-            D_800739B0[i].unk0 = 0;
+            g_padActuator[i].unk1 = 0;
+            g_padActuator[i].unk0 = 0;
         }
         ClearOTag(&g_fieldTempOt, 1);
-        func_80027834((320 - D_800686D0[235].unk4) / 2, (224 - D_800686D0[235].unk5) / 2, &g_fieldTempOt, 0xEB, 0, &tmp, &g_fieldPauseSprite);
+        ui_buildSprite((320 - g_uiSprites[235].unk4) / 2, (224 - g_uiSprites[235].unk5) / 2, &g_fieldTempOt, 0xEB, 0, &tmp, &g_fieldPauseSprite);
         bright = 0;
-        if (func_8002F800() || func_8002F810()) {
+        if (fade_isActive() || fade_isBusy()) {
             bright = 1;
         }
-        v = func_8002F864();
+        v = fade_isSubtractive();
         if (bright && v == 0) {
-            if (func_8002F854() == 2) {
-                func_8002FC10(buf);
+            if (fade_getType() == 2) {
+                fade_getWipeColors(buf);
                 c[0] = (buf[0] + buf[4]) >> 1;
                 c[1] = (buf[1] + buf[5]) >> 1;
                 c[2] = (buf[2] + buf[6]) >> 1;
             } else {
-                func_8002F9A8(c);
+                fade_getColor(c);
             }
             if (c[0] >= 200 && c[1] >= 200 && c[2] >= 200) {
                 setSemiTrans(&g_fieldPauseSprite.unk0, 1);
                 sp = &g_fieldPauseSprite.unk0;
                 sp++;
                 SetDrawTPage(sp, 1, 1,
-                             getTPage(0, 2, func_8001DA30((s16)D_800686D0[235].unk6), func_8001DA3C((s16)D_800686D0[235].unk6)));
+                             getTPage(0, 2, tpage_getX((s16)g_uiSprites[235].unk6), tpage_getY((s16)g_uiSprites[235].unk6)));
             }
         }
         setlen(&g_fieldPauseDim, 3);
@@ -1587,8 +1587,8 @@ void fld_togglePause(void) {
         DrawOTag(&g_fieldTempOt);
         g_gameState->unk1C->unk0 |= GD_NO_FLIP;
     } else {
-        func_80023F60(0);
-        func_80055698(0);
+        game_resumeClock(0);
+        akao_sendCmd98(0);
         g_gameState->unk1C->unk0 &= ~GD_NO_FLIP;
     }
 }
@@ -1628,7 +1628,7 @@ void fld_spriteCommand(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4) {
     } else if (arg1 == 0x91) {
         e->scale = arg2;
     } else if (arg1 == 0x96) {
-        e->parent = func_8004B098(arg2);
+        e->parent = evt_getModelSlot(arg2);
         e->bone = arg3;
     } else if (arg1 == 0x9B) {
         e->unk7 = arg2;
@@ -1702,7 +1702,7 @@ void fld_drawSprites(void) {
         e = &h->entries[i];
         if (e->sprite != NULL && (e->flags & 1)) {
             if ((s8)e->parent != -1) {
-                t = ((MATRIX *)((FieldObjSlot *)func_8001E350((s8)e->parent))->model->boneMatrices)[e->bone].t;
+                t = ((MATRIX *)((FieldObjSlot *)game_getModel((s8)e->parent))->model->boneMatrices)[e->bone].t;
                 e->pos[0] = t[0] + e->offset[0];
                 e->pos[1] = t[1] + e->offset[1];
                 e->pos[2] = t[2] + e->offset[2];

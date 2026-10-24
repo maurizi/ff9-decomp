@@ -246,7 +246,7 @@ void wm_drawBlockFx(u8 arg0) {
         if (g_worldFormFlags[5] == 0 && g_worldDataSet == WM_DATASET_DISC1) {
             VECTOR scale;
 
-            func_80030AF4(&g_worldBlockFx4Rot, &m);
+            math_rotMatrixXYZ(&g_worldBlockFx4Rot, &m);
             if ((u8)wm_worldToView(&g_worldBlockFx4Pos, (VECTOR *)m.t, &v, 0)) {
                 scale = g_worldBlockFx4Scale;
                 ScaleMatrix(&m, &scale);
@@ -256,7 +256,7 @@ void wm_drawBlockFx(u8 arg0) {
                 wm_drawModel(WM_PACK0(0x3A), 0x50, 1);
                 wm_drawModel(WM_PACK0(0x35), 0x3C, 0);
                 for (j = 0; j < 3; j++) {
-                    func_80030AF4(&g_worldBlockFx4PartRots[j], &m);
+                    math_rotMatrixXYZ(&g_worldBlockFx4PartRots[j], &m);
                     wm_worldToView(&g_worldBlockFx4Pos, (VECTOR *)m.t, &v, 0);
                     CompMatrix(g_worldViewMatrix, &m, &m);
                     SetRotMatrix(&m);
@@ -267,7 +267,7 @@ void wm_drawBlockFx(u8 arg0) {
         }
         break;
     case 7:
-        func_80030AF4(&g_worldBlockFx7Rot, &m);
+        math_rotMatrixXYZ(&g_worldBlockFx7Rot, &m);
         wm_worldToView(&g_worldBlockFx7Pos, (VECTOR *)m.t, &v, 0);
         CompMatrix(g_worldViewMatrix, &m, &m);
         SetRotMatrix(&m);
@@ -295,17 +295,17 @@ void wm_drawBlockFx(u8 arg0) {
             }
             wm_worldToView(&g_worldBlockFx6Pos, (VECTOR *)m.t, &v, 0);
             CompMatrix(g_worldViewMatrix, &m, &m);
-            func_80030AF4(&g_worldBlockFx6CoreRot, &m);
+            math_rotMatrixXYZ(&g_worldBlockFx6CoreRot, &m);
             SetRotMatrix(&m);
             SetTransMatrix(&m);
             wm_drawModel(WM_PACK0(0x3F), g_worldBlockFx6CoreOtOfs, 2);
-            func_80030AF4(&g_worldBlockFx6RotA, &m);
+            math_rotMatrixXYZ(&g_worldBlockFx6RotA, &m);
             wm_worldToView(&g_worldBlockFx6Pos, (VECTOR *)m.t, &v, 0);
             CompMatrix(g_worldViewMatrix, &m, &m);
             SetRotMatrix(&m);
             SetTransMatrix(&m);
             wm_drawModel(WM_PACK0(0x3C), 0, 2);
-            func_80030AF4(&g_worldBlockFx6RotB, &m);
+            math_rotMatrixXYZ(&g_worldBlockFx6RotB, &m);
             wm_worldToView(&g_worldBlockFx6Pos, (VECTOR *)m.t, &v, 0);
             CompMatrix(g_worldViewMatrix, &m, &m);
             SetRotMatrix(&m);
@@ -339,7 +339,7 @@ void wm_drawBlockFx(u8 arg0) {
                     c = ~(g_worldBlockFx6FlashTimer[i] * 7);
                     SetBackColor(c >> 1, c >> 2, c);
                     m2.t[1] = -700;
-                    func_80030AF4(&g_worldBlockFx6FlashRot[i], &m1);
+                    math_rotMatrixXYZ(&g_worldBlockFx6FlashRot[i], &m1);
                     gte_CompMatrix(&m1, &m2, &m);
                     memset(&s, 0, sizeof(VECTOR));
                     s.vx = 0x2FA0;
@@ -384,7 +384,7 @@ void wm_drawBlockFx(u8 arg0) {
                     g_worldBlockFx6RingDist[i] += 3;
                 }
                 m2.t[2] = -g_worldBlockFx6RingDist[i];
-                func_80030EA4(&g_worldBlockFx6RingRot[i], &m1);
+                math_rotMatrixZXY(&g_worldBlockFx6RingRot[i], &m1);
                 gte_CompMatrix(&m1, &m2, &m);
                 scale = g_worldBlockFx6RingScale;
                 ScaleMatrix(&m, &scale);

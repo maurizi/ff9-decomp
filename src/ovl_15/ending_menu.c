@@ -5,8 +5,8 @@ void ending_menuInit(void) {
 }
 
 void ending_menuEnter(void) {
-    func_80032574();
-    func_8002C4B0(1);
+    menu_initForMode();
+    pad_setStickAsDpad(1);
     g_endingMenu.unk0 = 1;
     g_endingMenu.unk7 = 0;
     g_endingMenu.unk6 = 0;
@@ -18,14 +18,14 @@ void ending_menuEnter(void) {
 }
 
 void ending_menuUpdate(void) {
-    func_8002C308(0);
+    pad_updateRepeat(0);
     ending_menuInput();
     ending_menuDraw();
     ending_menuTick();
 }
 
 void ending_menuLeave(void) {
-    func_8002C4B0(0);
+    pad_setStickAsDpad(0);
 }
 
 u8 ending_menuGetCursor(void) {
@@ -33,7 +33,7 @@ u8 ending_menuGetCursor(void) {
 }
 
 void ending_menuInput(void) {
-    if (func_8002F810() == 0 && g_endingMenu.shown != 0 && g_endingMenu.fadingIn == 0) {
+    if (fade_isBusy() == 0 && g_endingMenu.shown != 0 && g_endingMenu.fadingIn == 0) {
         if (g_padRepeat & PAD_UP) {
             snd_playSe(SE_CURSOR);
             g_endingMenu.cursor = g_endingMenu.cursor != 0 ? g_endingMenu.cursor - 1 : 3;
@@ -59,8 +59,8 @@ void ending_menuTick(void) {
 
 void ending_menuDecide(void) {
     snd_playSe(SE_CURSOR);
-    func_8002FAAC(0x10);
-    func_8002F8A8(ending_menuOnFadeOut);
+    fade_out(0x10);
+    fade_setOnDone(ending_menuOnFadeOut);
 }
 
 void func_800AD678(void) {
@@ -73,11 +73,11 @@ void func_800AD688(void) {
 }
 
 void ending_menuDrawCursor(void) {
-    if (func_8002F810() == 0 && g_endingMenu.shown != 0 && g_endingMenu.fadingIn == 0) {
-        D_80077DE8.unk0 = g_endingMenuCursorPos[g_endingMenu.cursor].x - 0x1A;
-        D_80077DE8.unk2 = g_endingMenuCursorPos[g_endingMenu.cursor].y + 3;
-        D_80077DE8.unk4 = 3;
-        func_800355E4(&D_80077DE8, &g_endingMenu);
+    if (fade_isBusy() == 0 && g_endingMenu.shown != 0 && g_endingMenu.fadingIn == 0) {
+        g_menuHelp.x = g_endingMenuCursorPos[g_endingMenu.cursor].x - 0x1A;
+        g_menuHelp.y = g_endingMenuCursorPos[g_endingMenu.cursor].y + 3;
+        g_menuHelp.otz = 3;
+        help_drawCursor(&g_menuHelp, &g_endingMenu);
     }
 }
 
@@ -103,5 +103,5 @@ void ending_menuStartFadeIn(void) {
     g_endingMenu.shown = 1;
     g_endingMenu.fadingIn = 0;
     g_endingMenu.fadeFrames = 0;
-    func_8002FA50(0x20);
+    fade_in(0x20);
 }

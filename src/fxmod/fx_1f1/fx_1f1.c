@@ -36,15 +36,15 @@ s32 fx_1f1_op80(s32 mode, s32 *work, Unk800F78A4 *env, Unk80100C78Entry *entry, 
         *arg4 = 0x40;
     } else if (mode == 1) {
         D_801E7F04 = env;
-        ex->func_800E8274(0x10);
+        ex->btlfx_clearUnitStatus(0x10);
         ex->btlfx_initEffModels(D_801E8214, 8);
         for (i = 15; i >= 0; i--) {
             work[i] = 0;
         }
-        for (i = 0; i < env->unkC->unk24; i++) {
+        for (i = 0; i < env->targets->targetCount; i++) {
             u = &D_801E7F14[i];
-            u->unk18 = ex->func_800E8F50((Unk800E8F50 *)ex->btlfx_getFileData(entry->unk8, 2), 1);
-            u->unk1C = ex->func_800E8F50((Unk800E8F50 *)ex->btlfx_getFileData(entry->unk8, 4), 1);
+            u->unk18 = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, 2), 1);
+            u->unk1C = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, 4), 1);
             ex->btlfx_getUnitPos(i, (s16 *)&D_801E7F14[i].unkC);
             setVector(&D_801E7F14[i].unk20, 0, 0, 0);
             setVector(&D_801E7F14[i].unk28, 0, 0, 0);
@@ -57,13 +57,13 @@ s32 fx_1f1_op80(s32 mode, s32 *work, Unk800F78A4 *env, Unk80100C78Entry *entry, 
             u->unk0 = k;
         }
     } else {
-        frame = entry->unk0;
+        frame = entry->frame;
         if (frame == 0) {
             work[0] = 0x50;
         }
         if (work[0] != 0) {
             work[0]--;
-            for (i = 0; i < env->unkC->unk24; i++) {
+            for (i = 0; i < env->targets->targetCount; i++) {
                 u = &D_801E7F14[i];
                 if (u->unk0 == 0) {
                     if (u->unk4 != 0) {
@@ -72,13 +72,13 @@ s32 fx_1f1_op80(s32 mode, s32 *work, Unk800F78A4 *env, Unk80100C78Entry *entry, 
                             ex->btlfx_getUnitPos(i, (s16 *)&D_801E7F14[i].unkC);
                             u->unk8 = u->unkC.vy;
                             u->unkC.vy = 0;
-                            p = ex->func_800E3CEC(ex->btlfx_getFileData(entry->unk8, 5), (s32)&D_801E7F14[i].unkC);
+                            p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 5), (s32)&D_801E7F14[i].unkC);
                             if (p != NULL) {
                                 p->unk22 = ex->func_800E7CC4(i, 0x100);
                             }
-                            ex->func_800E9930(6, entry->unk8, -1);
-                            ex->func_800E9930(7, entry->unk8, -1);
-                            ex->func_800E9930(8, entry->unk8, -1);
+                            ex->btlfx_playFileSound(6, entry->file, -1);
+                            ex->btlfx_playFileSound(7, entry->file, -1);
+                            ex->btlfx_playFileSound(8, entry->file, -1);
                         }
                         /* mm holds the base so q and m are computed from it (base + 0x30, + 0x10) while its last
                          * use is the &mm[i] giv: loop.c then hoists the base without dragging + 0x10 along */
@@ -101,7 +101,7 @@ s32 fx_1f1_op80(s32 mode, s32 *work, Unk800F78A4 *env, Unk80100C78Entry *entry, 
                             c = (u->unk4 - 0x10) * 0x10;
                             ex->Hi_ModifyEffModelRGB(u->unk18, c, c, c);
                             ex->Hi_ModifyEffModelRGB(u->unk1C, c, c, c);
-                            ex->func_800E806C(i, u->unk4 * 8);
+                            ex->btlfx_fadeUnitById(i, u->unk4 * 8);
                             v.vy = u->unk50.vy = func_801E7704(1, 0x10, u->unk4, 0, -0x800);
                             v.vx = u->unk50.vx;
                             v.vz = u->unk50.vz;
@@ -110,8 +110,8 @@ s32 fx_1f1_op80(s32 mode, s32 *work, Unk800F78A4 *env, Unk80100C78Entry *entry, 
                         if (u->unk4 == 0) {
                             u->unkC.vy = 0x3000;
                             ex->btlfx_setUnitPos(i, (s16 *)&D_801E7F14[i].unkC);
-                            ex->func_800E806C(i, 0x80);
-                            ex->func_800E8274(i);
+                            ex->btlfx_fadeUnitById(i, 0x80);
+                            ex->btlfx_clearUnitStatus(i);
                         }
                         u->unk28.vy += 0x13;
                     }
@@ -120,8 +120,8 @@ s32 fx_1f1_op80(s32 mode, s32 *work, Unk800F78A4 *env, Unk80100C78Entry *entry, 
                 }
             }
         }
-        ex->func_800E6624(frame * 8, 0x1C0, 0x100, 0x20, 0x80, 0x1E0, 0x100);
-        ex->func_800E6624(frame * 4, 0x1C0, 0x180, 0x20, 0x80, 0x1E0, 0x180);
+        ex->btlfx_drawScrollMove(frame * 8, 0x1C0, 0x100, 0x20, 0x80, 0x1E0, 0x100);
+        ex->btlfx_drawScrollMove(frame * 4, 0x1C0, 0x180, 0x20, 0x80, 0x1E0, 0x180);
         return frame >= 0x50;
     }
     return 0;

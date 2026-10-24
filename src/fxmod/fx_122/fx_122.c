@@ -13,7 +13,7 @@ s32 fx_122_op80(s32 mode, Fx122Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
         *arg4 = 0x50;
     } else if (mode == 1) {
         D_801E7D44 = env;
-        env->unk2C->unk52 = 0;
+        env->camera->unk52 = 0;
         ex->btlfx_getUnitPos(0, (s16 *)&work->unk30);
         ex->btlfx_getUnitRot(0, (s16 *)&work->unk38);
         work->unk4.vx = 0;
@@ -23,7 +23,7 @@ s32 fx_122_op80(s32 mode, Fx122Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
         work->unk1C.vz = 0x2000;
         work->unk4.vy = work->unk38.vy + 0x800;
         if (ex->btlfx_isEnemyUnit(0)) {
-            id = ex->func_800E738C(0);
+            id = ex->btlfx_getUnitHeight(0);
             r = ex->btlfx_getUnitRadius(0x100);
             o = D_801E7C94;
             for (i = 0; i < 0x11; i++, o++) {
@@ -57,15 +57,15 @@ s32 fx_122_op80(s32 mode, Fx122Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
         work->unkC.vz = work->unk30.vz;
     found:
         work->unk2E = work->unkC.vy;
-        env->unk2C->unk0[0].vx = work->unkC.vx;
-        env->unk2C->unk0[0].vy = work->unkC.vy;
-        env->unk2C->unk0[0].vz = work->unkC.vz;
+        env->camera->points[0].vx = work->unkC.vx;
+        env->camera->points[0].vy = work->unkC.vy;
+        env->camera->points[0].vz = work->unkC.vz;
         work->unk48 = -1;
         work->unk4A = -1;
         ex->btlfx_initEffModels(D_801E7D54, 1);
-        work->unk4C = ex->func_800E8F50((Unk800E8F50 *)ex->btlfx_getFileData(entry->unk8, 1), 1);
+        work->unk4C = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, 1), 1);
     } else {
-        frame = entry->unk0;
+        frame = entry->frame;
         ex->Hi_DrawEffModel(&work->unk4, &work->unkC, (s32)&work->unk1C, work->unk4C);
         if (frame >= 0x19 && frame < 0x28) {
             if ((frame & 1) && (ex->btlfx_rand() & 1)) {
@@ -92,7 +92,7 @@ s32 fx_122_op80(s32 mode, Fx122Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
                 work->unk40.vy = work->unkC.vy;
                 work->unk40.vz = work->unkC.vz;
                 work->unk40.vy -= 0xC8;
-                work->unk0 = ex->func_800E3CEC(ex->btlfx_getFileData(entry->unk8, 5), (s32)&work->unk40);
+                work->unk0 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 5), (s32)&work->unk40);
                 if (work->unk0 != NULL) {
                     work->unk0->unk22 = ex->func_800E7CC4(0, 0x80);
                 }

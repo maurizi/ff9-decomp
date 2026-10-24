@@ -113,7 +113,7 @@ extern s32 D_801E9624[];
 extern SVECTOR D_801EB104;
 extern SVECTOR D_801EB10C;
 
-#define SUMMON(env) ((Fx17d6Summon *)(env)->unk4)
+#define SUMMON(env) ((Fx17d6Summon *)(env)->loader)
 
 s32 fx_17d_6_op80(s32 mode, Fx17d6Work80 *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *arg4);
 

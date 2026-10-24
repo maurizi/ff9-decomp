@@ -9,7 +9,7 @@ typedef struct {
     s32 unk4; /* frame counter */
     SVECTOR unk8; /* caster body position, raised by 0x80 */
     SVECTOR unk10; /* caster position */
-    SVECTOR unk18; /* func_800DC858(0x10, 0) */
+    SVECTOR unk18; /* btlfx_getUnitArgBonePos(0x10, 0) */
     s32 unk20; /* model */
     SVECTOR unk24; /* angles from unk18 to unk8 */
     Pool6CEntry *unk2C;

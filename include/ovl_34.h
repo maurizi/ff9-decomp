@@ -46,7 +46,7 @@ typedef struct {
     u8 sliderTicks;    /* slider move frames (5 per step) */
     u8 rumbleTicks;    /* rumble frames (9) */
     u8 unk7;
-    u8 charPortBit[9]; /* per port window row: bit of the character in the port bits (func_80033964) */
+    u8 charPortBit[9]; /* per port window row: bit of the character in the port bits (chr_getClass) */
     u8 charIdx[9];     /* per port window row: character index */
     u8 pad1A[2];
     WinDef wins[2];    /* custom windows: the list and its help line */
@@ -102,7 +102,7 @@ typedef struct {
     u32 targetWindowAlways : 1;
     u32 charPort : 12;
 } ConfigBits;
-#define CFG (*(ConfigBits *)&g_gameState->unk24)
+#define CFG (*(ConfigBits *)&g_gameState->config)
 extern RECT s_menuConfigSubRects[2]; /* option window rects */
 extern TweenDef s_menuConfigSubOpen; /* custom windows slide in */
 extern TweenDef s_menuConfigPadMapClose; /* button mapping window slides out, then menuConfig_closeSubWindow */
@@ -125,8 +125,8 @@ extern ConfigPadEntry s_menuConfigPadActions[CONFIG_PAD_SLOTS];
 #define SE_BUZZER 0x66
 #define SE_CANCEL 0x65
 #endif
-void func_800355DC(void); /* empty function, passed to func_8003556C as a no-op callback */
-extern s32 D_80077E54; /* = D_80077E50.unk4, referenced by its own name */
+void help_nullHandler(void); /* empty function, passed to help_setCallback as a no-op callback */
+extern s32 g_menuScreenFrame; /* = g_menuScreen.unk4, referenced by its own name */
 
 typedef struct {
     u8 title;      /* title text id */
@@ -181,7 +181,7 @@ u8 menuConfig_isWindowMoving(void);
 #define SE_BUZZER 0x66
 #define SE_CANCEL 0x65
 #endif
-/* slider gauge pieces drawn by func_80027710: left cap, middle (repeated via DR_TWIN), right cap */
+/* slider gauge pieces drawn by ui_drawSpriteDef: left cap, middle (repeated via DR_TWIN), right cap */
 typedef struct {
     u8 twX;  /* texture window x */
     u8 twY;  /* texture window y */

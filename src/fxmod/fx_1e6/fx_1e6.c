@@ -35,7 +35,7 @@ void func_801E7724(Fx1e6Trail *trail, s32 size, s32 start) {
         v.vx = v.vx * 6 / 10;
         v.vy = v.vy * 6 / 10;
         v.vz = v.vz * 6 / 10;
-        ex->func_800316D8(&D_801E9300, &m);
+        ex->math_rotMatrixYXZ(&D_801E9300, &m);
         gte_SetRotMatrix(&m);
         gte_ldtr0();
         gte_ldv0(&v);
@@ -66,17 +66,17 @@ s32 fx_1e6_op80(s32 mode, Fx1e6Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
         D_801E92F8.vx = work->unk4.vx;
         D_801E92F8.vy = work->unk4.vy;
         D_801E92F8.vz = work->unk4.vz;
-        func_801E8284(&D_801E84E8, (u8 *)ex->btlfx_getFileData(entry->unk8, 0xD));
+        func_801E8284(&D_801E84E8, (u8 *)ex->btlfx_getFileData(entry->file, 0xD));
         work->unkC = 0x1000;
     } else {
-        frame = entry->unk0;
-        ex->btlfx_aimAngles((s16 *)&env->unk2C->unk54, (s16 *)&work->unk4, (s16 *)&D_801E9300);
+        frame = entry->frame;
+        ex->btlfx_aimAngles((s16 *)&env->camera->eye, (s16 *)&work->unk4, (s16 *)&D_801E9300);
         if (frame < 0x20) {
             if ((s32)frame >= 0x18) {
                 work->unkC -= 0x400;
             }
             func_801E7724(&D_801E91E8, 0x10C, frame * 4);
-            ex->btlfx_drawTrail((u8 *)ex->btlfx_getFileData(entry->unk8, 0xE), 0, NULL, 0, 0x1000, work->unkC, 1, (u8 *)&D_801E91E8, 0);
+            ex->btlfx_drawTrail((u8 *)ex->btlfx_getFileData(entry->file, 0xE), 0, NULL, 0, 0x1000, work->unkC, 1, (u8 *)&D_801E91E8, 0);
         }
         return (s32)frame >= 0x3C;
     }
@@ -111,25 +111,25 @@ s32 fx_1e6_op81(s32 mode, Fx1e6Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
         work->unk24.vy = work->unk48.vy;
         work->unk24.vz = work->unk48.vz;
         work->unk24.vy = -0x3CA;
-        work->unk64 = ex->func_800E8F50((Unk800E8F50 *)ex->btlfx_getFileData(entry->unk8, 8), 1);
-        work->unk66 = ex->func_800E8F50((Unk800E8F50 *)ex->btlfx_getFileData(entry->unk8, 9), 1);
+        work->unk64 = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, 8), 1);
+        work->unk66 = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, 9), 1);
         work->unk5C = -1;
         work->unk60 = -1;
     } else {
-        frame = entry->unk0;
+        frame = entry->frame;
         switch (frame) {
         case 8:
             work->unk50.vx = work->unk48.vx;
             work->unk50.vy = work->unk48.vy;
             work->unk50.vz = work->unk48.vz;
             work->unk50.vy -= 0xFA;
-            work->unk0[0] = ex->func_800E3CEC(ex->btlfx_getFileData(entry->unk8, 1), (s32)&work->unk50);
-            work->unk0[1] = ex->func_800E3CEC(ex->btlfx_getFileData(entry->unk8, 2), (s32)&work->unk50);
-            work->unk0[2] = ex->func_800E3CEC(ex->btlfx_getFileData(entry->unk8, 3), (s32)&work->unk50);
-            work->unk0[3] = ex->func_800E3CEC(ex->btlfx_getFileData(entry->unk8, 5), (s32)&work->unk50);
-            work->unk0[4] = ex->func_800E3CEC(ex->btlfx_getFileData(entry->unk8, 6), (s32)&work->unk50);
-            work->unk0[5] = ex->func_800E3CEC(ex->btlfx_getFileData(entry->unk8, 7), (s32)&work->unk50);
-            work->unk0[6] = ex->func_800E3CEC(ex->btlfx_getFileData(entry->unk8, 4), (s32)&work->unk50);
+            work->unk0[0] = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 1), (s32)&work->unk50);
+            work->unk0[1] = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 2), (s32)&work->unk50);
+            work->unk0[2] = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 3), (s32)&work->unk50);
+            work->unk0[3] = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 5), (s32)&work->unk50);
+            work->unk0[4] = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 6), (s32)&work->unk50);
+            work->unk0[5] = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 7), (s32)&work->unk50);
+            work->unk0[6] = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 4), (s32)&work->unk50);
             if (work->unk0[0] != NULL) {
                 work->unk0[0]->unk14 = (s32)D_801E84F8;
                 work->unk0[0]->unk12 = 5;

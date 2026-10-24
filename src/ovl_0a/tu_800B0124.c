@@ -76,9 +76,9 @@ s32 fld_soundCommand(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4) {
                 goto done;
             }
         start:
-            g_gameState->unk1C->unk824[0] = func_80055290(g_gameState->unk1C->unk814);
+            g_gameState->unk1C->unk824[0] = akao_playMusic(g_gameState->unk1C->unk814);
             if (!(g_gameState->unk1C->unk0 & GD_MUSIC_PLAYING)) {
-                func_80055A34(g_gameState->unk1C->unk824[0], 0xA, 0, g_gameState->unk1C->unk826[0]);
+                akao_fadeMusicVolumeFrom(g_gameState->unk1C->unk824[0], 0xA, 0, g_gameState->unk1C->unk826[0]);
             }
             g_gameState->unk1C->unk0 |= (GD_MUSIC_LOADED | GD_MUSIC_PLAYING);
         done:
@@ -90,7 +90,7 @@ s32 fld_soundCommand(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4) {
             }
             return fld_isMusicFading() ? 6 : 0;
         case 8:
-            func_80055310();
+            akao_saveMusic();
             g_gameState->unk1C->unk7E8 = g_gameState->unk1C->unk81C[0];
             g_gameState->unk1C->unk840 = g_gameState->unk1C->unk820[0];
             g_gameState->unk1C->unk850 = g_gameState->unk1C->unk826[0];
@@ -99,12 +99,12 @@ s32 fld_soundCommand(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4) {
             g_gameState->unk1C->unk8B0 = g_gameState->unk1C->unk84A;
         case 1:
             if ((arg0 & 0x3F) == 1) {
-                func_800552B8(g_gameState->unk1C->unk824[0]);
+                akao_stopMusic(g_gameState->unk1C->unk824[0]);
                 g_gameState->unk1C->unk826[0] = 0x7F;
                 g_gameState->unk1C->unk0 &= ~GD_MUSIC_PLAYING;
                 return 0;
             }
-            func_800552B8(g_gameState->unk1C->unk824[0]);
+            akao_stopMusic(g_gameState->unk1C->unk824[0]);
             g_gameState->unk1C->unk826[0] = 0x7F;
             g_gameState->unk1C->unk0 &= ~GD_MUSIC_PLAYING;
             return 0;
@@ -116,22 +116,22 @@ s32 fld_soundCommand(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4) {
             case 1 ... 3:
                 switch (arg0 & 0x3F) {
                 case 1:
-                    func_800559C8(g_gameState->unk1C->unk824[0], arg2);
+                    akao_setMusicVolume(g_gameState->unk1C->unk824[0], arg2);
                     g_gameState->unk1C->unk826[0] = arg2;
                     return 0;
                 case 2:
-                    func_80055B6C(arg2);
+                    akao_sendCmdD0(arg2);
                     return 0;
                 case 3:
-                    func_80055C08(arg2);
+                    akao_sendCmdD4(arg2);
                     return 0;
                 case 4:
-                    func_80055CA4(arg2);
+                    akao_sendCmdD8(arg2);
                     return 0;
                 }
                 break;
             case 7:
-                g_gameState->unk1C->unk824[0] = func_800553BC(g_gameState->unk1C->unk814, arg2);
+                g_gameState->unk1C->unk824[0] = akao_playMusicCount(g_gameState->unk1C->unk814, arg2);
                 g_gameState->unk1C->unk0 |= GD_MUSIC_PLAYING;
                 return 0;
             }
@@ -139,34 +139,34 @@ s32 fld_soundCommand(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4) {
         case 3:
             switch (arg0 & 0x3F) {
             case 1:
-                func_800559FC(g_gameState->unk1C->unk824[0], arg2, arg3);
+                akao_fadeMusicVolume(g_gameState->unk1C->unk824[0], arg2, arg3);
                 fld_setMusicVolumeFade(arg3, arg2);
                 return 0;
             case 2:
-                func_80055B98(arg2, arg3);
+                akao_sendCmdD1(arg2, arg3);
                 return 0;
             case 3:
-                func_80055C34(arg2, arg3);
+                akao_sendCmdD5(arg2, arg3);
                 return 0;
             case 4:
-                func_80055CD0(arg2, arg3);
+                akao_sendCmdD9(arg2, arg3);
                 return 0;
             }
             break;
         case 4:
             switch (arg0 & 0x3F) {
             case 1:
-                func_80055A34(g_gameState->unk1C->unk824[0], arg2, arg3, arg4);
+                akao_fadeMusicVolumeFrom(g_gameState->unk1C->unk824[0], arg2, arg3, arg4);
                 fld_setMusicVolumeFade(arg4, arg2);
                 return 0;
             case 2:
-                func_80055BCC(arg2, arg3, arg4);
+                akao_sendCmdD2(arg2, arg3, arg4);
                 return 0;
             case 3:
-                func_80055C68(arg2, arg3, arg4);
+                akao_sendCmdD6(arg2, arg3, arg4);
                 return 0;
             case 4:
-                func_80055D04(arg2, arg3, arg4);
+                akao_sendCmdDA(arg2, arg3, arg4);
                 return 0;
             }
             break;
@@ -174,21 +174,21 @@ s32 fld_soundCommand(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4) {
             if ((arg0 & 0x3F) != 1) {
                 break;
             }
-            func_800559FC(0, arg2, arg3);
+            akao_fadeMusicVolume(0, arg2, arg3);
             fld_setMusicVolumeFade(arg3, arg2);
             return 0;
         case 11:
             if ((arg0 & 0x3F) != 1) {
                 break;
             }
-            func_80055A34(0, arg2, arg3, arg4);
+            akao_fadeMusicVolumeFrom(0, arg2, arg3, arg4);
             fld_setMusicVolumeFade(arg4, arg2);
             return 0;
         case 10:
             if ((arg0 & 0x3F) != 6) {
                 break;
             }
-            func_80055604(arg1);
+            akao_sendCmd92(arg1);
             return 0;
         }
         return -1;
@@ -220,7 +220,7 @@ s32 fld_soundCommand(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4) {
                 mask2 = mask >> 1;
                 if (kind == 0 && g_gameState->unk1C->unk830[slot] != arg1) {
                     if (g_gameState->unk1C->unk0 & mask) {
-                        func_8005546C(SFXH(slot), arg2);
+                        akao_stopSe(SFXH(slot), arg2);
                         g_gameState->unk1C->unk0 ^= mask | mask2;
                     }
                     memcpy((void *)SFXH(slot), db_lookupRegistered(4, id, 0), (s32)db_lookupRegistered(5, id, 0));
@@ -249,7 +249,7 @@ s32 fld_soundCommand(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4) {
             }
         case 0:
             if (!fp || !(g_gameState->unk1C->unk0 & mask)) {
-                func_800553EC(h, arg2, arg3, arg4);
+                akao_playSe(h, arg2, arg3, arg4);
             }
             if (fp) {
                 g_gameState->unk1C->unk8BA[slot] = arg3;
@@ -265,14 +265,14 @@ s32 fld_soundCommand(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4) {
         case 1:
             if ((arg0 & 0x3F) == 9 && fp) {
                 if (g_gameState->unk1C->unk0 & GD_SFX0_PLAYING) {
-                    func_8005546C((s32)g_gameState->unk1C->unk828, 0x100000);
+                    akao_stopSe((s32)g_gameState->unk1C->unk828, 0x100000);
                 }
                 if (g_gameState->unk1C->unk0 & GD_SFX1_PLAYING) {
-                    func_8005546C((s32)g_gameState->unk1C->unk82C, 0x200000);
+                    akao_stopSe((s32)g_gameState->unk1C->unk82C, 0x200000);
                 }
                 g_gameState->unk1C->unk0 &= ~(GD_SFX0_PLAYING | GD_SFX1_PLAYING);
             } else {
-                func_8005546C(h, arg2);
+                akao_stopSe(h, arg2);
                 if (fp) {
                     g_gameState->unk1C->unk0 &= ~mask;
                 }
@@ -281,19 +281,19 @@ s32 fld_soundCommand(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4) {
         case 2:
             switch (arg0 & 0x3F) {
             case 1:
-                func_80055764(h, arg2, arg3);
+                akao_setSeVolume(h, arg2, arg3);
                 if (fp) {
                     g_gameState->unk1C->unk8B8[slot] = arg3;
                 }
                 return 0;
             case 5:
-                func_80055850(h, arg2, arg3);
+                akao_sendCmdA2(h, arg2, arg3);
                 if (fp) {
                     g_gameState->unk1C->unk8BA[slot] = arg3;
                 }
                 return 0;
             case 3:
-                func_8005593C(h, arg2, arg3);
+                akao_sendCmdA4(h, arg2, arg3);
                 return 0;
             case 8:
                 return 0;
@@ -302,57 +302,57 @@ s32 fld_soundCommand(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4) {
         case 3:
             switch (arg0 & 0x3F) {
             case 1:
-                func_800557A8((void *)h, arg2, arg3, arg4);
+                akao_fadeSeVolume((void *)h, arg2, arg3, arg4);
                 if (fp) {
                     g_gameState->unk1C->unk8B8[slot] = arg4;
                 }
                 return 0;
             case 5:
-                func_80055894(h, arg2, arg3, arg4);
+                akao_sendCmdA3(h, arg2, arg3, arg4);
                 if (fp) {
                     g_gameState->unk1C->unk8BA[slot] = arg4;
                 }
                 return 0;
             case 3:
-                func_80055980(h, arg2, arg3, arg4);
+                akao_sendCmdA5(h, arg2, arg3, arg4);
                 return 0;
             }
             return -1;
         case 5:
             switch (arg0 & 0x3F) {
             case 1:
-                func_80055704(arg2);
+                akao_setAllSeVolume(arg2);
                 if (fp) {
                     g_gameState->unk1C->unk8B8[0] = g_gameState->unk1C->unk8B8[1] = arg2;
                 }
                 return 0;
             case 5:
-                func_800557F0(arg2);
+                akao_sendCmdAA(arg2);
                 if (fp) {
                     g_gameState->unk1C->unk8BA[0] = g_gameState->unk1C->unk8BA[1] = arg2;
                 }
                 return 0;
             case 3:
-                func_800558DC(arg2);
+                akao_sendCmdAC(arg2);
                 return 0;
             }
             return -1;
         case 6:
             switch (arg0 & 0x3F) {
             case 1:
-                func_80055730(arg2, arg3);
+                akao_fadeAllSeVolume(arg2, arg3);
                 if (fp) {
                     g_gameState->unk1C->unk8B8[0] = g_gameState->unk1C->unk8B8[1] = arg3;
                 }
                 return -1;
             case 5:
-                func_8005581C(arg2, arg3);
+                akao_sendCmdAB(arg2, arg3);
                 if (fp) {
                     g_gameState->unk1C->unk8BA[0] = g_gameState->unk1C->unk8BA[1] = arg3;
                 }
                 return -1;
             case 3:
-                func_80055908(arg2, arg3);
+                akao_sendCmdAD(arg2, arg3);
                 return -1;
             }
             return -1;
@@ -366,29 +366,29 @@ s32 fld_soundCommand(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4) {
             if (g_gameState->unk1C->unk851 != 0) {
                 return -1;
             }
-            func_80056248(fld_isMoviePlaying() ? SCENE->movieSndVolume : SCENE->sndVolume);
-            func_800561C4(slot, arg2, arg3);
+            akao_sendCmdE4(fld_isMoviePlaying() ? SCENE->movieSndVolume : SCENE->sndVolume);
+            akao_sendCmdE0(slot, arg2, arg3);
             SCENE->unk5F = 0;
             return 0;
         case 1:
-            func_80056228();
+            akao_sendCmdE2();
             return 0;
         case 2:
             switch (arg0 & 0x3F) {
             case 1:
                 SCENE->sndVolume = arg2;
                 if (fld_isMoviePlaying() == 0) {
-                    func_80056248(arg2);
+                    akao_sendCmdE4(arg2);
                 }
                 return 0;
             case 10:
                 SCENE->movieSndVolume = arg2;
                 if (fld_isMoviePlaying() != 0) {
-                    func_80056248(arg2);
+                    akao_sendCmdE4(arg2);
                 }
                 return 0;
             case 5:
-                func_800562B0(arg2);
+                akao_sendCmdE6(arg2);
                 return 0;
             case 12:
                 SCENE->unk5F = arg2;
@@ -424,7 +424,7 @@ state:
     case 1:
         if (fld_isMusicFading() == 0) {
             if (g_gameState->unk1C->unk0 & GD_MUSIC_STOP_PENDING) {
-                func_800552B8(g_gameState->unk1C->unk824[0]);
+                akao_stopMusic(g_gameState->unk1C->unk824[0]);
                 g_gameState->unk1C->unk0 &= ~GD_MUSIC_STOP_PENDING;
             }
             g_gameState->unk1C->unk851 = 2;
@@ -448,32 +448,32 @@ state:
         }
         g = g_gameState->unk1C;
         if (!(g->unk8E4.field->area->scene->flags & FLD_SCN_BANK_SLOT) && g->unk852 != 0x84) {
-            func_80055DF4();
+            akao_beginBankUpload();
         }
         g_gameState->unk1C->unk8C0 = SCENE->heapTop ? SCENE->heapTop : D_80067948;
-        g_gameState->unk1C->unk878 = 0x156F00 - (g_gameState->unk1C->unk8C0 - (s32)D_80067944);
+        g_gameState->unk1C->unk878 = 0x156F00 - (g_gameState->unk1C->unk8C0 - (s32)g_loadAreaEnd);
         if (!(g_gameState->unk1C->unk8E4.field->flags & 4)) {
             g_gameState->unk1C->unk878 -= 0x3000;
         }
         m = g_gameState->unk1C->unk878;
         g_gameState->unk1C->unk878 = m / 2048 * 2048;
         g_gameState->unk1C->unk87C = 0;
-        func_8002177C(g_gameState->unk1C->unk854, g_fieldSoundLoadSector, sz, (void *)g_gameState->unk1C->unk8C0, 0,
+        cdRead_init(g_gameState->unk1C->unk854, g_fieldSoundLoadSector, sz, (void *)g_gameState->unk1C->unk8C0, 0,
                       g_gameState->unk1C->unk878, fld_soundBankReadCallback);
         g_gameState->unk1C->unk851 = 3;
         break;
     case 3:
-        if (func_800217C4(g_gameState->unk1C->unk854) == 0 && func_80055DCC() == 0) {
+        if (cdRead_update(g_gameState->unk1C->unk854) == 0 && akao_getSpuTransferState() == 0) {
             fld_invalidateModelCache((s32)g_gameState->unk1C->unk854[0].unk20);
-            func_80022280((s32)g_gameState->unk1C->unk854[0].unk8, g_gameState->unk1C->unk854[0].unk10);
+            preload_discardRange((s32)g_gameState->unk1C->unk854[0].unk8, g_gameState->unk1C->unk854[0].unk10);
             if (g_gameState->unk1C->unk854[0].unkC + g_gameState->unk1C->unk854[0].unk10 < g_gameState->unk1C->unk87C) {
                 g_gameState->unk1C->unk8C0 = (s32)g_gameState->unk1C->unk854[0].unk8;
-                d = 0x156F00 - ((s32)g_gameState->unk1C->unk854[0].unk8 - (s32)D_80067944);
+                d = 0x156F00 - ((s32)g_gameState->unk1C->unk854[0].unk8 - (s32)g_loadAreaEnd);
                 if (!(g_gameState->unk1C->unk8E4.field->flags & 4)) {
                     d -= 0x3000;
                 }
                 d = d / 2048 * 2048;
-                func_8002177C(g_gameState->unk1C->unk854, g_fieldSoundLoadSector, g_gameState->unk1C->unk854[0].unk4, (void *)g_gameState->unk1C->unk8C0,
+                cdRead_init(g_gameState->unk1C->unk854, g_fieldSoundLoadSector, g_gameState->unk1C->unk854[0].unk4, (void *)g_gameState->unk1C->unk8C0,
                               g_gameState->unk1C->unk854[0].unkC + g_gameState->unk1C->unk854[0].unk10, d, fld_soundBankReadCallback);
             } else if (g_fieldSoundLoadKind == 7) {
                 if (g_fieldMusicRequest != 9) {
@@ -494,16 +494,16 @@ state:
         t = 0x6800 - n;
         g_gameState->unk1C->unk8C0 = (s32)((u8 *)g_gameState->unk1C->unk814 + n);
         t = t / 2048 * 2048;
-        func_8002177C(g_gameState->unk1C->unk854, g_fieldSoundLoadSector, g_gameState->unk1C->unk854[0].unk4, (void *)g_gameState->unk1C->unk8C0,
+        cdRead_init(g_gameState->unk1C->unk854, g_fieldSoundLoadSector, g_gameState->unk1C->unk854[0].unk4, (void *)g_gameState->unk1C->unk8C0,
                       g_gameState->unk1C->unk854[0].unkC + g_gameState->unk1C->unk854[0].unk10, t, NULL);
         g_gameState->unk1C->unk851 = 5;
         break;
     case 5:
-        if (func_800217C4(g_gameState->unk1C->unk854) == 0) {
+        if (cdRead_update(g_gameState->unk1C->unk854) == 0) {
             if (g_gameState->unk1C->unk854[0].unkC + g_gameState->unk1C->unk854[0].unk10 < g_gameState->unk1C->unk854[0].unk4) {
                 m = g_gameState->unk1C->unk854[0].unkC + g_gameState->unk1C->unk854[0].unk10 - g_gameState->unk1C->unk87C;
                 g_gameState->unk1C->unk8C0 = (s32)((u8 *)g_gameState->unk1C->unk814 + m);
-                func_8002177C(g_gameState->unk1C->unk854, g_fieldSoundLoadSector, g_gameState->unk1C->unk854[0].unk4, (void *)g_gameState->unk1C->unk8C0, m, 0x6800 - m, NULL);
+                cdRead_init(g_gameState->unk1C->unk854, g_fieldSoundLoadSector, g_gameState->unk1C->unk854[0].unk4, (void *)g_gameState->unk1C->unk8C0, m, 0x6800 - m, NULL);
             } else {
                 fld_unpackMusicSeq((s32)g_gameState->unk1C->unk814);
                 g_gameState->unk1C->unk0 |= GD_MUSIC_LOADED;
@@ -621,9 +621,9 @@ void fld_stopSceneSfx(FieldScene *arg0, s16 arg1) {
     s32 i;
 
     for (i = db_lookup(t, 1, DB_SE, 0) - 1; i >= 0; i--) {
-        func_8005546C(db_lookup(t, 2, (i & 0xFFFF) | DB_SE, 0), 0);
+        akao_stopSe(db_lookup(t, 2, (i & 0xFFFF) | DB_SE, 0), 0);
     }
-    func_80056228();
+    akao_sendCmdE2();
 }
 
 void fld_playAnimSfx(FieldEvtCtx **arg0, s32 arg1) {
@@ -950,7 +950,7 @@ s32 fld_soundBankReadCallback(Unk800B29F8 *arg0) {
         t = db_lookup(a, 2, DB_PACK, 0);
         if (t == -1) {
             a = db_lookup(a, 4, id, 0);
-            g_gameState->unk1C->unk87C = func_8001CA70(b);
+            g_gameState->unk1C->unk87C = db_getSize(b);
         } else {
             a = db_lookup(t, 4, id, 0);
             g_gameState->unk1C->unk87C = db_lookup(b, 2, (DB_PACK | 1), 0) - g_gameState->unk1C->unk8C0;
@@ -968,7 +968,7 @@ s32 fld_soundBankReadCallback(Unk800B29F8 *arg0) {
         if (sc->flags & 0x10) {
             r = func_80056048(a, sc->soundBankSlot, 0);
         } else {
-            r = func_80055E14(a, n, 0);
+            r = akao_uploadBank(a, n, 0);
         }
     }
     arg0->unk8 = a;
@@ -999,7 +999,7 @@ s32 fld_isMusicFading(void) {
 }
 
 void fld_setObjectColor(s32 arg0, s32 arg1, s32 arg2, s32 arg3) {
-    fld_setSlotColor((FieldEvtCtx *)func_8001E350(arg0), arg1, arg2, arg3);
+    fld_setSlotColor((FieldEvtCtx *)game_getModel(arg0), arg1, arg2, arg3);
 }
 
 /* apply the field lights to the object colours */
@@ -1219,8 +1219,8 @@ s32 func_800B3444(s32 arg0, s32 arg1, s32 arg2) {
                 if (start == 0) {
                     start = D_80067948;
                 }
-                if (func_800221C0(start, 0x5000) != 0) {
-                    func_80022390(func_8002208C()->unk4);
+                if (preload_overlaps(start, 0x5000) != 0) {
+                    preload_remove(preload_waitCurrent()->unk4);
                 }
                 if (g_gameState->unk1C->unk8E4.field->area->scene->heapTop != 0) {
                     start = g_gameState->unk1C->unk8E4.field->area->scene->heapTop;
@@ -1233,7 +1233,7 @@ s32 func_800B3444(s32 arg0, s32 arg1, s32 arg2) {
                     D_80067948 = end;
                 }
                 fld_trimModelCache();
-                func_80022280(start, size);
+                preload_discardRange(start, size);
                 g_gameState->unk1C->unk8E4.field->area->scene->flags |= FLD_SCN_OBJFX_ALLOC;
             }
             g_gameState->unk1C->unk8E4.field->area->scene->flags |= FLD_SCN_OBJFX_ON;
@@ -1289,9 +1289,9 @@ s32 fld_preloadRequest(s32 arg0, s32 arg1) {
         if (!(g_gameState->unk1C->unk8E4.field->area->scene->flags & FLD_SCN_PRELOADS_QUEUED)) {
             goto done;
         }
-        p = func_80021E20();
+        p = preload_getCurrent();
         if (p != NULL && p->fileId != k) {
-            func_80021C20(p);
+            preload_wait(p);
         }
         if (flag || preload_find(k) != NULL) {
             goto set;
@@ -1317,10 +1317,10 @@ s32 fld_preloadRequest(s32 arg0, s32 arg1) {
         }
         e = preload_find(id);
         if (e != NULL && e->unk2 == 0) {
-            if (func_80021A1C(e)) {
+            if (preload_isBusy(e)) {
                 return -1;
             }
-            if (!func_80021A1C(e) && (e->unk1C >> 2) < e->unkC) {
+            if (!preload_isBusy(e) && (e->unk1C >> 2) < e->unkC) {
                 return -1;
             }
         }
@@ -1334,9 +1334,9 @@ s32 fld_preloadRequest(s32 arg0, s32 arg1) {
         if (!(g_gameState->unk1C->unk8E4.field->area->scene->flags & FLD_SCN_PRELOADS_QUEUED)) {
             goto done;
         }
-        e = func_80021E20();
-        if (e != NULL && e->fileId != id && func_80021A1C(e)) {
-            func_80021C20(e);
+        e = preload_getCurrent();
+        if (e != NULL && e->fileId != id && preload_isBusy(e)) {
+            preload_wait(e);
         }
         q = preload_find(id);
         if (!flag && (q == NULL || q->unk2 != 0)) {
@@ -1354,7 +1354,7 @@ s32 fld_preloadRequest(s32 arg0, s32 arg1) {
 void fld_initPreload(void) {
     preload_init();
     g_gameState->unk1C->unk8BC = fld_preloadRequest;
-    func_80021CDC((s32)fld_preloadHook);
+    preload_setHook((s32)fld_preloadHook);
     fld_clearPreloadLists();
 }
 
@@ -1490,8 +1490,8 @@ s32 fld_preloadFile(s32 arg0, s32 arg1, s32 arg2, s32 arg3) {
         return 0;
     }
     top = fld_getModelCacheBottom(NULL);
-    if ((u32)(D_80067944 + 0x153F00) < top) {
-        top = (u32)(D_80067944 + 0x153F00);
+    if ((u32)(g_loadAreaEnd + 0x153F00) < top) {
+        top = (u32)(g_loadAreaEnd + 0x153F00);
     }
     size = top - g_fieldPreloadCursor;
     size = size / 2048 * 2048;
@@ -1502,7 +1502,7 @@ s32 fld_preloadFile(s32 arg0, s32 arg1, s32 arg2, s32 arg3) {
     if (p == NULL) {
         return 0;
     }
-    func_80021974(p, arg1, arg0, arg1 == 0 ? g_fieldPreloadCursor : 0, size, arg3, arg2, arg3);
+    preload_setEntry(p, arg1, arg0, arg1 == 0 ? g_fieldPreloadCursor : 0, size, arg3, arg2, arg3);
     g_fieldPreloadCursor += arg3;
     return (s32)p;
 }
@@ -1681,8 +1681,8 @@ s32 fld_preloadHook(void) {
     }
     s = g_gameState->unk1C->unk8E4.field->area->scene;
     if (s->flags & 0x800000) {
-        if (func_80021FB4() <= 0) {
-            func_800223CC();
+        if (preload_poll() <= 0) {
+            preload_reset();
             if (!(g_gameState->unk1C->unk8E4.field->area->scene->flags & FLD_SCN_PRELOADS_QUEUED)) {
                 fld_setPreloadCursor(g_gameState->unk1C->unk8E4.field->area->scene->heapTop);
                 fld_queueFieldPreloads();
@@ -1715,10 +1715,10 @@ void fld_showSplashImage(void) {
     u32 state;
 
     tim = (s32)db_lookupRegistered(4, 0x44E20, 0);
-    func_8001D910((void *)tim, &clut, &img);
+    file_getTimRects((void *)tim, &clut, &img);
     setRECT(img, 0, 0x100, img->w, img->h);
     setRECT(clut, 0x100, 0xE0, clut->w, clut->h);
-    func_8001D8A8(tim);
+    file_loadTim(tim);
     DrawSync(0);
     n = 0;
     state = 0;
@@ -1748,16 +1748,16 @@ void fld_showSplashImage(void) {
         i--;
     } while (i >= 0);
     fld_invalidateModelCache((s32)p);
-    func_800223CC();
-    func_8001CCB4(0, 0, 0);
+    preload_reset();
+    game_setClearColor(0, 0, 0);
     do {
         ClearOTagR(g_gameState->unk1C->unk10[g_gameState->unk1C->unk8], 0x1000);
         switch (state) {
         case 0:
             n = 0x3C;
             i = 0;
-            func_800320B8(1, 1, 0, 0xFFFFFF);
-            func_800320B8(1, 1, n, i);
+            game_startFade(1, 1, 0, 0xFFFFFF);
+            game_startFade(1, 1, n, i);
             state = 1;
             break;
         case 1:
@@ -1775,7 +1775,7 @@ void fld_showSplashImage(void) {
             } else {
                 n = 0x3C;
                 i = 0;
-                func_800320B8(1, 1, n, 0xFFFFFF);
+                game_startFade(1, 1, n, 0xFFFFFF);
                 state = 3;
             }
             break;
@@ -1789,13 +1789,13 @@ void fld_showSplashImage(void) {
         }
         addPrim((u32 *)g_gameState->unk1C->unk10[g_gameState->unk1C->unk8][8], spr[g_gameState->unk1C->unk8]);
         addPrim((u32 *)g_gameState->unk1C->unk10[g_gameState->unk1C->unk8][8], tp[g_gameState->unk1C->unk8]);
-        func_80032098();
+        game_updateFade();
         DrawSync(0);
         g_gameState->vsyncMode = 2;
         VSync(g_gameState->vsyncMode);
         ResetGraph(1);
-        PutDispEnv(&g_gameState->unkC[g_gameState->unk1C->unk8]);
-        DrawOTagEnv(g_gameState->unk1C->unk10[g_gameState->unk1C->unk8] + 0xFFF, &g_gameState->unk10[g_gameState->unk1C->unk8]);
+        PutDispEnv(&g_gameState->dispEnv[g_gameState->unk1C->unk8]);
+        DrawOTagEnv(g_gameState->unk1C->unk10[g_gameState->unk1C->unk8] + 0xFFF, &g_gameState->drawEnv[g_gameState->unk1C->unk8]);
         g_gameState->unk1C->unk8 ^= 1;
     } while (state < 4);
 }

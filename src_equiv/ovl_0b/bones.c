@@ -8,7 +8,7 @@
  * BtlUnit9C.unk20 and returns the end:
  * - Without an animation (unkC == 0): one matrix, the parent model's bone unk4 matrix (unk1C->unk20) moved
  *   by RT * (unk74, unk76, unk78), or else the model's own unk24 with the y and z columns negated.
- * - With one: per bone, a rotation decoded from the animation keys for `frame` (func_80031264 turns it into
+ * - With one: per bone, a rotation decoded from the animation keys for `frame` (math_rotMatrixZYX_gte turns it into
  *   a matrix), bone 0 gets the root translation; then bone 0 is put into the model's frame (unk24, or the
  *   parent's bone) and every other bone i into its parent's (bone table byte 3) with an offset of
  *   (0, 0, bone table s16 0) along the parent's z. With fewer than 31 bones the work is done in the
@@ -52,7 +52,7 @@ static void boneRotColumn(u8 *col) {
 
 /* Copies the parent model's bone matrix and moves it by RT * (unk74, unk76, unk78) (IR, saturated s16). */
 static void boneFromParent(BtlUnit9C *m, u8 *mat) {
-    u8 *src = (u8 *)m->unk1C->unk20 + m->unk4 * 32;
+    u8 *src = (u8 *)m->parent->bones + m->parentBone * 32;
     u32 a, b, c, d;
 
     a = W(src, 0x0);
@@ -87,15 +87,15 @@ static void boneFromParent(BtlUnit9C *m, u8 *mat) {
 #define KEY(k, bit, index) ((flags & (bit)) ? (k) : (u32)(s32)(s8)anim[(k) + (index)])
 
 u8 *btl_calcBoneMatrices(BtlUnit9C *m, s32 frame, u8 *out) {
-    u8 *anim = (u8 *)m->unkC;
+    u8 *anim = (u8 *)m->motion;
     u8 *base, *mat, *end, *keys, *nib, *bone, *parent;
-    u32 *rot = (u32 *)SCRATCHPAD;      /* SVECTOR for func_80031264 */
+    u32 *rot = (u32 *)SCRATCHPAD;      /* SVECTOR for math_rotMatrixZYX_gte */
     u32 *ofs = (u32 *)(SCRATCHPAD + 8); /* (0, 0, length) */
     u32 n, aflags, flags, k0, k1, x, y, z, w0, w1;
 
-    m->unk20 = (BtlBone *)out;
+    m->bones = (BtlBone *)out;
     if (anim == NULL) {
-        if (m->unk1C != NULL) {
+        if (m->parent != NULL) {
             boneFromParent(m, out);
         } else {
             H(out, 0x0) = H(m, 0x24);
@@ -114,7 +114,7 @@ u8 *btl_calcBoneMatrices(BtlUnit9C *m, s32 frame, u8 *out) {
         return out + 0x20;
     }
 
-    n = m->unk8->unk2;
+    n = m->header->unk2;
     base = n < 31 ? SCRATCHPAD + 0x18 : out;
     ofs[0] = 0;
     ofs[1] = 0;
@@ -169,14 +169,14 @@ u8 *btl_calcBoneMatrices(BtlUnit9C *m, s32 frame, u8 *out) {
             nib += 8;
         }
         keys += 8;
-        func_80031264(rot, mat);
+        math_rotMatrixZYX_gte(rot, mat);
         mat += 0x20;
     } while (mat < end);
 
-    if (m->unk1C != NULL) {
+    if (m->parent != NULL) {
         boneFromParent(m, base);
     } else {
-        u8 *own = (u8 *)&m->unk24;
+        u8 *own = (u8 *)&m->matrix;
 
         boneLoadRT(own);
         boneLoadTR(own);
@@ -191,7 +191,7 @@ u8 *btl_calcBoneMatrices(BtlUnit9C *m, s32 frame, u8 *out) {
         W(base, 0x1C) = GTE_MFC2(27);
     }
 
-    bone = (u8 *)m->unk8->unkC + 4;
+    bone = (u8 *)m->header->unkC + 4;
     parent = base + bone[3] * 32;
     mat = base + 0x20;
     do {
@@ -225,7 +225,7 @@ u8 *btl_calcBoneMatrices(BtlUnit9C *m, s32 frame, u8 *out) {
     } while (mat < end);
 
     if (n < 31) {
-        u8 *dst = (u8 *)m->unk20;
+        u8 *dst = (u8 *)m->bones;
         u8 *srcm = base;
         u32 a, b, c, d;
 

@@ -82,17 +82,17 @@ void gameover_initDisp(DispBuf *b) {
         b[i].draw.isbg = 1;
         b[i].disp.isinter = 0;
         setRECT(&b[i].disp.screen, 0, 8, 256, 224);
-        func_80063580(&b[i].picTpage0, GetTPage(2, 0, 0, 256));
+        gfx_initTpageSprt(&b[i].picTpage0, GetTPage(2, 0, 0, 256));
         setXY0(&b[i].pic0, 0, 0);
         setUV0(&b[i].pic0, 0, 0);
         setWH(&b[i].pic0, 256, 224);
         setRGB0(&b[i].pic0, 0x80, 0x80, 0x80);
-        func_80063580(&b[i].picTpage1, GetTPage(2, 0, 256, 256));
+        gfx_initTpageSprt(&b[i].picTpage1, GetTPage(2, 0, 256, 256));
         setXY0(&b[i].pic1, 256, 0);
         setUV0(&b[i].pic1, 0, 0);
         setWH(&b[i].pic1, 64, 224);
         setRGB0(&b[i].pic1, 0x80, 0x80, 0x80);
-        func_800635E0(&b[i].fadeTpage, GetTPage(0, 2, 0, 0));
+        gfx_initTpageTile(&b[i].fadeTpage, GetTPage(0, 2, 0, 0));
         setXY0(&b[i].fade, 0, 0);
         setWH(&b[i].fade, 320, 224);
         setRGB0(&b[i].fade, 0, 0, 0);
@@ -103,16 +103,16 @@ void gameover_initDisp(DispBuf *b) {
 void gameover_loadImage(s32 arg0) {
     FileEntry *e = file_find(1, 0xB);
 
-    cd_readSync(g_gameState->unk20 + e->unk4, (e->unkC - e->unk4) << 11, arg0);
-    func_8001D8A8(arg0);
+    cd_readSync(g_gameState->imgSector + e->unk4, (e->unkC - e->unk4) << 11, arg0);
+    file_loadTim(arg0);
 }
 
 s32 battleEnd_update(void) {
     GameData *g;
 
     g = g_gameState->unk1C;
-    func_8004C204();
-    switch (g->unk56E) {
+    msg_beginDraw();
+    switch (g->battleResult) {
     case 1:
     case 2:
     case 3:
@@ -120,21 +120,21 @@ s32 battleEnd_update(void) {
     case 5:
     case 7:
         if (!rewards_update()) {
-            if (g->unk56E == 2) {
-                g->unk56E = 1;
+            if (g->battleResult == 2) {
+                g->battleResult = 1;
             }
             func_800F4E68();
             rewards_exit();
             return 1;
         }
-        func_8004BC38();
+        evt_update();
         return 0;
     case BATTLE_END_GAME_OVER:
-        if (func_800240E8()) {
-            func_800240B0(0);
+        if (timer_isEnabled()) {
+            timer_enable(0);
         }
         func_800F4E68();
-        gameover_main((s32)g_gameState->unk1C->unk8E4.ovl65->unk11C0->unk1C);
+        gameover_main((s32)g_gameState->unk1C->unk8E4.ovl65->work->unk1C);
         return 2;
     }
     return 0;

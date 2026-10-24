@@ -10,11 +10,11 @@ s32 fx_126_op80(s32 mode, Fx126Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
         *arg4 = 0xAC;
     } else if (mode == 1) {
         D_801E80DC = env;
-        ex->func_800DC818(0x10, 0x30, (u16 *)&work->unk60);
-        ex->func_800DC818(0x10, 8, (u16 *)&work->unk58);
+        ex->btlfx_getUnitBonePos(0x10, 0x30, (u16 *)&work->unk60);
+        ex->btlfx_getUnitBonePos(0x10, 8, (u16 *)&work->unk58);
         ex->btlfx_initEffModels(D_801E80EC, 2);
-        work->unk0 = ex->func_800E8F50((Unk800E8F50 *)ex->btlfx_getFileData(entry->unk8, 7), 0xFF);
-        work->unk4 = ex->func_800E8F50((Unk800E8F50 *)ex->btlfx_getFileData(entry->unk8, 7), 0xFF);
+        work->unk0 = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, 7), 0xFF);
+        work->unk4 = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, 7), 0xFF);
         work->unk28.vy = 0x700;
         work->unk28.vz = 0x400;
         work->unk30.vy = -0x700;
@@ -37,7 +37,7 @@ s32 fx_126_op80(s32 mode, Fx126Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
             work->unk9C[k] = 0;
         }
     } else {
-    frame = entry->unk0;
+    frame = entry->frame;
     if (frame >= 1 && frame <= 0x18) {
         func_801E7D48(0x18, frame, &work->unk58, &work->unk70, &work->unk50, &work->unk68, &work->unk60, &work->unk8);
         ex->Hi_DrawEffModel(&work->unk28, &work->unk8, (s32)&work->unk38, work->unk0);
@@ -45,37 +45,37 @@ s32 fx_126_op80(s32 mode, Fx126Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
         ex->Hi_DrawEffModel(&work->unk30, &work->unk18, (s32)&work->unk38, work->unk4);
         work->unk28.vy -= 0x180;
         work->unk30.vy += 0x180;
-        env->unk2C->unk0[0].vx = work->unk8.vx;
-        env->unk2C->unk0[0].vy = work->unk8.vy;
-        env->unk2C->unk0[0].vz = work->unk8.vz;
-        env->unk2C->unk0[1].vx = work->unk18.vx;
-        env->unk2C->unk0[1].vy = work->unk18.vy;
-        env->unk2C->unk0[1].vz = work->unk18.vz;
+        env->camera->points[0].vx = work->unk8.vx;
+        env->camera->points[0].vy = work->unk8.vy;
+        env->camera->points[0].vz = work->unk8.vz;
+        env->camera->points[1].vx = work->unk18.vx;
+        env->camera->points[1].vy = work->unk18.vy;
+        env->camera->points[1].vz = work->unk18.vz;
     }
     switch (frame) {
     case 8:
         work->unk9C[0] = 1;
         ex->btlfx_getUnitBodyPos(0, 0, (s16 *)&work->unk7C[0]);
-        p = ex->func_800E3CEC(ex->btlfx_getFileData(entry->unk8, 2), (s32)&work->unk7C[0]);
+        p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 2), (s32)&work->unk7C[0]);
         if (p != NULL) {
             p->unk22 = ex->func_800E7CC4(0, 0x80);
         }
-        p = ex->func_800E3CEC(ex->btlfx_getFileData(entry->unk8, 1), (s32)&work->unk7C[0]);
+        p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 1), (s32)&work->unk7C[0]);
         if (p != NULL) {
             p->unk22 = ex->func_800E7CC4(0, 0x80);
         }
         k = 3;
-        if (k >= env->unkC->unk24) {
-            k = env->unkC->unk24 - 1;
+        if (k >= env->targets->targetCount) {
+            k = env->targets->targetCount - 1;
         }
         if (work->unk9C[k] == 0) {
             work->unk9C[k] = 1;
             ex->btlfx_getUnitBodyPos(k, 0, (s16 *)&work->unk7C[k]);
-            p = ex->func_800E3CEC(ex->btlfx_getFileData(entry->unk8, 2), (s32)&work->unk7C[k]);
+            p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 2), (s32)&work->unk7C[k]);
             if (p != NULL) {
                 p->unk22 = ex->func_800E7CC4(k, 0x80);
             }
-            p = ex->func_800E3CEC(ex->btlfx_getFileData(entry->unk8, 1), (s32)&work->unk7C[k]);
+            p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 1), (s32)&work->unk7C[k]);
             if (p != NULL) {
                 p->unk22 = ex->func_800E7CC4(k, 0x80);
             }
@@ -83,33 +83,33 @@ s32 fx_126_op80(s32 mode, Fx126Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
         break;
     case 10:
         k = 1;
-        if (k >= env->unkC->unk24) {
-            k = env->unkC->unk24 - 1;
+        if (k >= env->targets->targetCount) {
+            k = env->targets->targetCount - 1;
         }
         if (work->unk9C[k] == 0) {
             work->unk9C[k] = 1;
             ex->btlfx_getUnitBodyPos(k, 0, (s16 *)&work->unk7C[k]);
-            p = ex->func_800E3CEC(ex->btlfx_getFileData(entry->unk8, 2), (s32)&work->unk7C[k]);
+            p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 2), (s32)&work->unk7C[k]);
             if (p != NULL) {
                 p->unk22 = ex->func_800E7CC4(k, 0x80);
             }
-            p = ex->func_800E3CEC(ex->btlfx_getFileData(entry->unk8, 1), (s32)&work->unk7C[k]);
+            p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 1), (s32)&work->unk7C[k]);
             if (p != NULL) {
                 p->unk22 = ex->func_800E7CC4(k, 0x80);
             }
         }
         k = 2;
-        if (k >= env->unkC->unk24) {
-            k = env->unkC->unk24 - 1;
+        if (k >= env->targets->targetCount) {
+            k = env->targets->targetCount - 1;
         }
         if (work->unk9C[k] == 0) {
             work->unk9C[k] = 1;
             ex->btlfx_getUnitBodyPos(k, 0, (s16 *)&work->unk7C[k]);
-            p = ex->func_800E3CEC(ex->btlfx_getFileData(entry->unk8, 2), (s32)&work->unk7C[k]);
+            p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 2), (s32)&work->unk7C[k]);
             if (p != NULL) {
                 p->unk22 = ex->func_800E7CC4(k, 0x80);
             }
-            p = ex->func_800E3CEC(ex->btlfx_getFileData(entry->unk8, 1), (s32)&work->unk7C[k]);
+            p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 1), (s32)&work->unk7C[k]);
             if (p != NULL) {
                 p->unk22 = ex->func_800E7CC4(k, 0x80);
             }

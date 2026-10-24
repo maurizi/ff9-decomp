@@ -6,7 +6,7 @@ s32 ending_playMovie(s32 arg0, s32 arg1) {
     s32 i;
     s32 r;
 
-    buf = D_80067944 + 0x106700;
+    buf = g_loadAreaEnd + 0x106700;
     timer = -1;
     ending_movieInit(arg0, arg1);
     do {
@@ -14,7 +14,7 @@ s32 ending_playMovie(s32 arg0, s32 arg1) {
         pad_update();
         switch (g_movieState) {
         case MOVIE_ST_START:
-            if (g_gameState->unkB != DISC_NONE && (g_gameState->unkB & DISC_4)) {
+            if (g_gameState->disc != DISC_NONE && (g_gameState->disc & DISC_4)) {
                 g_movieFlags = MOVIE_NO_SCENES;
                 g_movieState = MOVIE_ST_OPEN;
             } else {
@@ -44,7 +44,7 @@ s32 ending_playMovie(s32 arg0, s32 arg1) {
                 if (r != 0) {
                     DrawOTag(g_gameState->unk1C->unk10[g_gameState->unk1C->unk8 ^ 1] + 0xFFF);
                 } else if (timer == -1 && g_gameState->unk1C->unk8 == 0) {
-                    g_gameState->unkC[g_gameState->unk1C->unk8].disp.x = 0x1E0;
+                    g_gameState->dispEnv[g_gameState->unk1C->unk8].disp.x = 0x1E0;
                 }
             }
             break;
@@ -52,15 +52,15 @@ s32 ending_playMovie(s32 arg0, s32 arg1) {
             if (g_movieFlags & MOVIE_DONE) {
                 g_gameState->vsyncMode = 0;
                 timer = 900;
-                g_gameState->unkC[0].disp.x = 0x140;
+                g_gameState->dispEnv[0].disp.x = 0x140;
                 g_movieState = MOVIE_ST_DONE;
-                g_gameState->unkC[1].disp.x = 0;
-                D_80073998[0] = 0;
+                g_gameState->dispEnv[1].disp.x = 0;
+                g_padPortMask[0] = 0;
             }
             break;
         }
         if (!(g_movieFlags & MOVIE_NO_FADE)) {
-            func_80032098();
+            game_updateFade();
         }
         ending_movieSwap();
     } while (g_movieState < MOVIE_ST_DONE);
@@ -73,23 +73,23 @@ s32 ending_movieInit(s32 arg0, s32 arg1) {
     s32 i;
     s32 j;
 
-    while (func_800217C4(g_gameState->unk1C->unk854) != 0) {
+    while (cdRead_update(g_gameState->unk1C->unk854) != 0) {
     }
     e = file_find(0, 0x64);
-    func_8002177C(g_gameState->unk1C->unk854, e->unk4, (e->unkC - e->unk4) << 11, D_80067944 + 0xF1700, 0, 0x15000, 0);
-    while (func_800217C4(g_gameState->unk1C->unk854) != 0) {
+    cdRead_init(g_gameState->unk1C->unk854, e->unk4, (e->unkC - e->unk4) << 11, g_loadAreaEnd + 0xF1700, 0, 0x15000, 0);
+    while (cdRead_update(g_gameState->unk1C->unk854) != 0) {
     }
     EnterCriticalSection();
     FlushCache();
     ExitCriticalSection();
-    if (g_gameState->unkB != DISC_NONE && (g_gameState->unkB & DISC_4)) {
+    if (g_gameState->disc != DISC_NONE && (g_gameState->disc & DISC_4)) {
         h = cd_findFile(g_mbgMovieLists[arg0].movies[arg1].path);
-        func_80022ED4(h);
+        cd_seekStreamAsync(h);
         while (cd_getState() != 0) {
         }
         mbg_streamSetBaseSector(h);
     }
-    func_800320B8(1, 1, 0x78, 0xFFFFFF);
+    game_startFade(1, 1, 0x78, 0xFFFFFF);
     g_movieState = MOVIE_ST_START;
     g_movieFlags = 0;
     for (i = 1; i >= 0; i--) {
@@ -98,7 +98,7 @@ s32 ending_movieInit(s32 arg0, s32 arg1) {
         }
     }
     g_movieFrame = 0;
-    D_80073998[0] = 0;
+    g_padPortMask[0] = 0;
     return 0;
 }
 
@@ -119,16 +119,16 @@ void ending_movieSwap(void) {
     }
     VSync(g_gameState->vsyncMode);
     ResetGraph(1);
-    PutDispEnv(&g_gameState->unkC[g_gameState->unk1C->unk8]);
+    PutDispEnv(&g_gameState->dispEnv[g_gameState->unk1C->unk8]);
     if (g_movieFlags & MOVIE_NO_OT) {
-        PutDrawEnv(&g_gameState->unk10[g_gameState->unk1C->unk8]);
+        PutDrawEnv(&g_gameState->drawEnv[g_gameState->unk1C->unk8]);
     } else {
         ctx = g_gameState->unk1C;
         k = ctx->unk8;
-        DrawOTagEnv(ctx->unk10[k] + 0xFFF, &g_gameState->unk10[k]);
+        DrawOTagEnv(ctx->unk10[k] + 0xFFF, &g_gameState->drawEnv[k]);
     }
     g_gameState->unk1C->unk8 ^= 1;
-    func_8002C0DC(g_gameState->unk1C->unk8);
+    gfx_setBuffer(g_gameState->unk1C->unk8);
     g_movieFlags |= g_movieFlagQueue[0][0];
     g_movieFlags &= ~g_movieFlagQueue[1][0];
     for (i = 0; i < 2; i++) {
@@ -680,7 +680,7 @@ s32 bj_main(void) {
                 t = 0x4E;
                 bj_shoeInit(&g_bjShoe);
                 bj_shoeShuffle(&g_bjShoe);
-                func_800320B8(1, 1, 0x3C, 0);
+                game_startFade(1, 1, 0x3C, 0);
                 i = 0;
             } else if (t != 0) {
                 c = g_bjShoe.cards[i];
@@ -1139,7 +1139,7 @@ s32 bj_main(void) {
             break;
         case BJ_ST_END:
             if (t == -1) {
-                func_800320B8(1, 1, 0x3C, 0xFFFFFF);
+                game_startFade(1, 1, 0x3C, 0xFFFFFF);
                 t = 0x3C;
                 if (g_bjBankroll < BJ_MIN_BET) {
                     g_bjBankroll = BJ_BANKROLL;
@@ -1193,22 +1193,22 @@ s32 bj_main(void) {
         bj_drawShoe(BJ_SHOE_X, BJ_SHOE_Y);
         addPrim(g_gameState->unk1C->unk10[g_gameState->unk1C->unk8] + BJ_OTZ, &g_bjTpage);
         sprintf(buf, g_bjStrBankroll);
-        ui_drawSmallDigits(0x10C - (func_8002B9B8(buf) >> 1), 0x58, 0x10, buf, 4);
+        ui_drawSmallDigits(0x10C - (text_measureSmall(buf) >> 1), 0x58, 0x10, buf, 4);
         sprintf(buf, g_bjFmtLong, g_bjBankroll);
-        ui_drawSmallDigits(0x10C - (func_8002B9B8(buf) >> 1), 0x64, 0x10, buf, 5);
+        ui_drawSmallDigits(0x10C - (text_measureSmall(buf) >> 1), 0x64, 0x10, buf, 5);
         sprintf(buf, g_bjStrWager);
-        ui_drawSmallDigits(0x10C - (func_8002B9B8(buf) >> 1), 0x70, 0x10, buf, 4);
+        ui_drawSmallDigits(0x10C - (text_measureSmall(buf) >> 1), 0x70, 0x10, buf, 4);
         sprintf(buf, g_bjFmtLong, g_bjWager);
-        ui_drawSmallDigits(0x10C - (func_8002B9B8(buf) >> 1), 0x7C, 0x10, buf, 0);
+        ui_drawSmallDigits(0x10C - (text_measureSmall(buf) >> 1), 0x7C, 0x10, buf, 0);
         sprintf(buf, g_bjStrStand);
-        ui_drawSmallDigits(0x10C - (func_8002B9B8(buf) >> 1), 0x90, 0x10, buf, 0);
+        ui_drawSmallDigits(0x10C - (text_measureSmall(buf) >> 1), 0x90, 0x10, buf, 0);
         sprintf(buf, g_bjStrHit);
-        ui_drawSmallDigits(0x10C - (func_8002B9B8(buf) >> 1), 0xA0, 0x10, buf, 0);
+        ui_drawSmallDigits(0x10C - (text_measureSmall(buf) >> 1), 0xA0, 0x10, buf, 0);
         sprintf(buf, g_bjStrDouble);
-        ui_drawSmallDigits(0x10C - (func_8002B9B8(buf) >> 1), 0xB0, 0x10, buf, g_bjCanDouble ? 0 : 2);
+        ui_drawSmallDigits(0x10C - (text_measureSmall(buf) >> 1), 0xB0, 0x10, buf, g_bjCanDouble ? 0 : 2);
         sprintf(buf, g_bjStrSplit);
-        ui_drawSmallDigits(0x10C - (func_8002B9B8(buf) >> 1), 0xC0, 0x10, buf, g_bjCanSplit ? 0 : 2);
-        D_800739B0[0].unk0 = 0;
+        ui_drawSmallDigits(0x10C - (text_measureSmall(buf) >> 1), 0xC0, 0x10, buf, g_bjCanSplit ? 0 : 2);
+        g_padActuator[0].unk0 = 0;
         if (cnt > 0) {
             cnt--;
         }
@@ -1222,7 +1222,7 @@ s32 bj_main(void) {
                 g_bjState = BJ_ST_END;
             }
         }
-        func_80032098();
+        game_updateFade();
         bj_swapBuffers();
     } while (g_bjState < BJ_ST_DONE);
     bj_exit();
@@ -1233,25 +1233,25 @@ s32 bj_init(void) {
     s32 p;
 
     p = (s32)db_lookupRegistered(4, 0x44F4C, 0);
-    func_8001D9CC(p, 0, 0xE4, 0x1C0, 0x180);
-    func_8001D8A8(p);
-    func_8001D9CC(p, 0, 0xE5, 0x1C0, 0x180);
-    func_8001D8A8(p);
+    file_setTimPos(p, 0, 0xE4, 0x1C0, 0x180);
+    file_loadTim(p);
+    file_setTimPos(p, 0, 0xE5, 0x1C0, 0x180);
+    file_loadTim(p);
     p = (s32)db_lookupRegistered(4, 0x44F4D, 0);
-    func_8001D9CC(p, 0, 0xE6, 0x1EC, 0x100);
-    func_8001D8A8(p);
+    file_setTimPos(p, 0, 0xE6, 0x1EC, 0x100);
+    file_loadTim(p);
     p = (s32)db_lookupRegistered(4, 0x44F4E, 0);
-    func_8001D9CC(p, 0, 0xE0, 0x1C0, 0x100);
-    func_8001D8A8(p);
+    file_setTimPos(p, 0, 0xE0, 0x1C0, 0x100);
+    file_loadTim(p);
     p = (s32)db_lookupRegistered(4, 0x44F50, 0);
-    func_8001D9CC(p, 0, 0xE1, 0x1D6, 0x100);
-    func_8001D8A8(p);
+    file_setTimPos(p, 0, 0xE1, 0x1D6, 0x100);
+    file_loadTim(p);
     p = (s32)db_lookupRegistered(4, 0x44F4F, 0);
-    func_8001D9CC(p, 0, 0xE2, 0x1C0, 0x140);
-    func_8001D8A8(p);
+    file_setTimPos(p, 0, 0xE2, 0x1C0, 0x140);
+    file_loadTim(p);
     p = (s32)db_lookupRegistered(4, 0x44F51, 0);
-    func_8001D9CC(p, 0, 0xE9, 0x280, 0x100);
-    func_8001D8A8(p);
+    file_setTimPos(p, 0, 0xE9, 0x280, 0x100);
+    file_loadTim(p);
     setRECT(&g_bjClutRect, 0x20, 0xE4, 0x10, 1);
     LoadImage(&g_bjClutRect, g_bjClut);
     DrawSync(0);
@@ -1261,9 +1261,9 @@ s32 bj_init(void) {
         ending_soundCmd(0, ENDING_MUSIC, 0, 0, 0);
         ending_soundCmd(0xC401, ENDING_MUSIC, 0x5A, 0, 0x7F);
     }
-    func_800320B8(1, 1, 0, 0xFFFFFF);
+    game_startFade(1, 1, 0, 0xFFFFFF);
     g_bjState = BJ_ST_START;
-    D_80073998[0] = 0;
+    g_padPortMask[0] = 0;
     return 0;
 }
 
@@ -1286,10 +1286,10 @@ void bj_swapBuffers(void) {
     g_gameState->vsyncMode = 0;
     VSync(g_gameState->vsyncMode);
     ResetGraph(1);
-    PutDispEnv(&g_gameState->unkC[g_gameState->unk1C->unk8]);
+    PutDispEnv(&g_gameState->dispEnv[g_gameState->unk1C->unk8]);
     ctx = g_gameState->unk1C;
     i = ctx->unk8;
-    DrawOTagEnv(ctx->unk10[i] + 0xFFF, &g_gameState->unk10[i]);
+    DrawOTagEnv(ctx->unk10[i] + 0xFFF, &g_gameState->drawEnv[i]);
     g_gameState->unk1C->unk8 ^= 1;
-    func_8002C0DC(g_gameState->unk1C->unk8);
+    gfx_setBuffer(g_gameState->unk1C->unk8);
 }

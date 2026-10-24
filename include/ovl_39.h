@@ -9,7 +9,7 @@
 
 /* ---- constants ---- */
 
-/* SaveMenu.mode, from g_menu.unkC; also the title text id (Save/Load/Save) */
+/* SaveMenu.mode, from g_menu.arg; also the title text id (Save/Load/Save) */
 enum {
     SAVE_MODE_SAVE,
     SAVE_MODE_LOAD,
@@ -268,7 +268,7 @@ typedef struct {
     Unk6 unk6[0x69];
     u16 unk27C;
     u16 unk27E;
-} CardData; /* Tetra Master card list, D_80083248 (func_80062824) */
+} CardData; /* Tetra Master card list, g_cards (card_getInventory) */
 
 /* other overlay */
 u16 func_800B5084(void);
@@ -300,7 +300,7 @@ typedef struct {
 typedef struct {
     ItemInventory items;
     ItemFlags flags; /* GameData.unk774 */
-    GameStateUnk24 unk240; /* GameState.unk24/unk28 */
+    GameConfig unk240; /* GameState.unk24/unk28 */
     u8 pad248[0x258 - 0x248];
 } SaveItems;
 
@@ -362,8 +362,8 @@ typedef struct {
     u8 pad9[3];
     u32 newestCounter; /* highest SaveFile.counter */
     s32 newestFile;    /* row holding it */
-    s32 savedFadeOtz; /* func_8002F8E4 (fade_setOtz in docs/runtime-findings.md) old value, restored by menuSave_close */
-    s32 unk18[2]; /* D_80073998[] restored by menuSave_exit */
+    s32 savedFadeOtz; /* fade_setOtz (fade_setOtz in docs/runtime-findings.md) old value, restored by menuSave_close */
+    s32 unk18[2]; /* g_padPortMask[] restored by menuSave_exit */
     u8 *help; /* help text */
     MenuList list;
     SaveFile files[SAVE_FILES];
@@ -525,24 +525,24 @@ typedef union { s32 w; u16 h; } Crc16;
 #define SE_BUZZER 0x66
 #define SE_CANCEL 0x65
 #endif
-Unk8004AB64 *func_8004AE00(void);
+Unk8004AB64 *evt_getPlayer(void);
 u8 func_800B5074(void); /* other overlay */
 u8 func_800B5064(void); /* other overlay */
-void func_8002397C(void);
-/* Window labels: entries of main's label string table D_800703FC (ASCII), e.g. D_80070440 "ERROR",
+void config_apply(void);
+/* Window labels: entries of main's label string table g_winLabelStrings (ASCII), e.g. D_80070440 "ERROR",
  * D_8007048C "NOTICE", D_80070450 "HELP" (declared in ff9.h) */
 extern s32 D_80070420; /* "CHECK" */
 extern s32 D_80070444; /* "FILE" */
-void func_8002BE5C(s32, s32);
-extern u8 *D_80077DF0; /* = D_80077DE8.unk8, referenced by its own name */
+void text_setNumberArg(s32, s32);
+extern u8 *g_menuHelpText; /* = g_menuHelp.text, referenced by its own name */
 s32 firstfile(char *, s32); /* PsyQ libapi: struct DIRENTRY *firstfile(char *, struct DIRENTRY *) */
-s32 func_80028954(s32); /* defined u8 in main; used unmasked */
+s32 chr_getPortrait(s32); /* defined u8 in main; used unmasked */
 char *strcpy(char *, const char *); /* C library (builtin) */
 s32 open(char *, s32);
 void game_setPlayTime(s32);
 extern s32 D_8007AEC4;
 void lseek(s32, s32, s32);
-/* slider gauge pieces drawn by func_80027710: left cap, middle (repeated via DR_TWIN), right cap */
+/* slider gauge pieces drawn by ui_drawSpriteDef: left cap, middle (repeated via DR_TWIN), right cap */
 typedef struct {
     u8 unk0; /* texture window x */
     u8 unk1; /* texture window y */
@@ -587,8 +587,8 @@ extern void (*s_menuSaveFileDrawers[])(RECT *, s32, s32); /* by SaveFile.state *
 extern void (*s_menuSaveCheckSteps[])(void);
 extern u8 s_menuSaveCheckRetries[]; /* tries allowed per CARD_RES_* */
 extern u8 s_menuSaveResetAfterMsg[]; /* per SAVE_ST_* */
-extern u8 s_menuSavePortraitIds[]; /* portrait per func_80028954 result */
-extern s32 s_menuSaveAccessTitles[]; /* D_800703FC index per ACCESS_* */
+extern u8 s_menuSavePortraitIds[]; /* portrait per chr_getPortrait result */
+extern s32 s_menuSaveAccessTitles[]; /* g_winLabelStrings index per ACCESS_* */
 extern RECT s_menuSaveGaugeTexWindow;
 extern u32 s_menuSaveGaugeColors[3];
 extern u8 s_menuSaveHelpBuf[];

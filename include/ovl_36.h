@@ -36,7 +36,7 @@ enum { CARD_DISCARD_YES, CARD_DISCARD_NO };
 #define CARD_SPR_HEX        0xA  /* + 0-15: stat digits */
 #define CARD_SPR_TYPE       0x1A /* + card type (P, M, X, A) */
 #define CARD_SPR_EMPTY_CELL 0x1E /* grid cell of a card not owned */
-#define CARD_SPR_CELL       0x1F /* + rarity (func_800627BC): grid cell of a single card */
+#define CARD_SPR_CELL       0x1F /* + rarity (card_getRarity): grid cell of a single card */
 #define CARD_SPR_CELL_STACK 0x26 /* + rarity: grid cell of several copies */
 #define CARD_SPR_DIGIT      0x2D /* + 0-9: copy count on a grid cell */
 #define CARD_SPR_NAME_ICON  0x37 /* before the card name in CARD INFO */
@@ -103,7 +103,7 @@ typedef struct {
     u8 state;      /* CARD_ST_*, index into s_menuCardInputFuncs */
     u8 row;        /* cursor row (0-9) */
     u8 col;        /* cursor column (0-9); card id = col * CARD_GRID_ROWS + row */
-    u8 kinds;      /* func_80062638 (count of card kinds) on init */
+    u8 kinds;      /* card_countKinds (count of card kinds) on init */
     u8 loadingId;  /* card whose image the CD read is for */
     u8 discardCursor; /* CARD_DISCARD_* */
     u8 unk6;       /* set to 0xFF on init, never read */
@@ -123,7 +123,7 @@ typedef struct {
     u8 pad193D[4];
     CardFlip flip;
     u8 pad1945[3];
-    Unk801F4DC4 saved[4]; /* func_8002C7F0 / func_8002C830 of ids 0-3, restored on exit */
+    Unk801F4DC4 saved[4]; /* pad_getRepeatDelay / pad_getRepeatInterval of ids 0-3, restored on exit */
 } CardMenu;
 extern CardMenu s_menuCard;
 void menuCard_drawCell(s32, s32, s32, s32);
@@ -213,15 +213,15 @@ extern const u8 g_cardMenuText[]; /* text bank for this menu */
 #ifndef SE_PAGE
 #define SE_PAGE 0x417   /* menuList page / L1-R1 switch */
 #endif
-s32 func_80062498(void); /* collector points */
-s32 func_800624D8(void);
-s32 func_8006251C(void);
+s32 card_getWins(void); /* collector points */
+s32 card_getLosses(void);
+s32 card_getDraws(void);
 /* defined as returning u16 in main.c, but called here without masking */
-s32 func_8002C7F0(s32, s32);
-s32 func_8002C830(s32, s32);
+s32 pad_getRepeatDelay(s32, s32);
+s32 pad_getRepeatInterval(s32, s32);
 /* text width; the call result passes through an inline return value */
 static inline s32 menuCard_drawInfo_width(u8 *s) {
-    return func_8002BA68((s32)s);
+    return text_measureWidth((s32)s);
 }
 
 /* Inlined copy of menuCard_showCachedImage (show a cached card picture), as expanded in menuCard_loadCardImage. The
@@ -260,7 +260,7 @@ static inline void menuCard_updateImageLoad_read(CardCache *c) {
         s_menuCard.cache.reading = 1;
         x = c->loading;
         s_menuCard.loadingId = x;
-        cd_readAsync(g_gameState->unk20 + s_menuCard.imageFile->unk4 + x, 0x800, s_menuCard.sectorBuf, NULL);
+        cd_readAsync(g_gameState->imgSector + s_menuCard.imageFile->unk4 + x, 0x800, s_menuCard.sectorBuf, NULL);
     }
 }
 

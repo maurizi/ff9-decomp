@@ -35,6 +35,33 @@ int abs(int); /* libc; gcc expands it inline (copy, bgez, negu) */
 #define setPolyF4(p) setlen(p, 5), setcode(p, 0x28)
 #define setPolyFT4(p) setlen(p, 9), setcode(p, 0x2C)
 #define setPolyGT4(p) setlen(p, 12), setcode(p, 0x3C)
+#define setSprt(p) setlen(p, 4), setcode(p, 0x64)
+#define setSprt16(p) setlen(p, 3), setcode(p, 0x7C)
+#define GPU_STP(set, check) (0xE6000000 | ((check) << 1) | (set)) /* GP0(E6h) as ovl_0b writes it */
+#define _get_mask(set, chk) (0xE6000000 | ((chk) ? 2 : 0) | ((set) ? 1 : 0)) /* GP0(E6h) mask-bit setting word */
+/* GP0 primitive codes: the high byte of a packet's first (colour) word, as libgpu's setPolyF3() etc. write it.
+ * GPU_ABE = semi-transparent (setSemiTrans), GPU_TGE = texture without shading (setShadeTex). */
+#define GPU_POLY_F3 0x20
+#define GPU_POLY_FT3 0x24
+#define GPU_POLY_F4 0x28
+#define GPU_POLY_FT4 0x2C
+#define GPU_POLY_G3 0x30
+#define GPU_POLY_GT3 0x34
+#define GPU_POLY_G4 0x38
+#define GPU_POLY_GT4 0x3C
+#define GPU_LINE_F2 0x40
+#define GPU_LINE_G2 0x50
+#define GPU_TILE 0x60
+#define GPU_SPRT 0x64
+#define GPU_TILE_1 0x68
+#define GPU_TILE_8 0x70
+#define GPU_SPRT_8 0x74
+#define GPU_TILE_16 0x78
+#define GPU_SPRT_16 0x7C
+#define GPU_ABE 0x02
+#define GPU_TGE 0x01
+#define GPU_CODE(c) ((c) << 24)
+#define GPU_RGBC(c, rgb) (GPU_CODE(c) | (rgb)) /* code byte + 0xBBGGRR */
 /* libgpu.h primitive-word helpers */
 #define get_mode(dfe, dtd, tpage) \
     ((0xE1000000) | ((dtd) ? 0x0200 : 0) | ((dfe) ? 0x0400 : 0) | ((tpage) & 0x9FF))
@@ -303,6 +330,25 @@ u16 GetClut(int x, int y);
 void *memmove(void *dst, const void *src, int n);
 int sprintf(char *buf, const char *fmt, ...);
 
+/* libcd.h: CdControl* commands, CdlStat* status bits, CdlMode* mode bits, sync/ready callback intr codes */
+#define CdlNop 0x01
+#define CdlSetloc 0x02
+#define CdlPlay 0x03
+#define CdlReadN 0x06
+#define CdlStandby 0x07
+#define CdlStop 0x08
+#define CdlPause 0x09
+#define CdlSetmode 0x0E
+#define CdlSeekL 0x15
+#define CdlSeekP 0x16
+#define CdlReadS 0x1B
+#define CdlStatShellOpen 0x10
+#define CdlModeSpeed 0x80
+#define CdlModeSize1 0x20
+#define CdlNoIntr 0x00
+#define CdlDataReady 0x01
+#define CdlComplete 0x02
+#define CdlDiskError 0x05
 int CdControlF(u8 com, u8 *param);
 int CD_getsector(void *madr, int size);
 int CD_getsector2(void *madr, int size);
@@ -569,7 +615,7 @@ long NormalClip(long sxy0, long sxy1, long sxy2);
 #define gte_avsz4_b() __asm__ volatile(".word\t0x4B68002E")
 #define gte_gpf12_b() __asm__ volatile(".word\t0x4B98003D")
 #define gte_gpf12_n1() __asm__ volatile(GTE_NOP1 ".word\t0x4B98003D")
-/* IR0..IR3 / IR1, IR2 from registers and MAC1..MAC3 / MAC1, MAC2 to registers (func_80031284) */
+/* IR0..IR3 / IR1, IR2 from registers and MAC1..MAC3 / MAC1, MAC2 to registers (math_buildRotMatrixZYX) */
 #define gte_ldir0123(r0, r1, r2, r3) __asm__ volatile( \
     "mtc2\t%0, $8;" \
     "mtc2\t%1, $9;" \

@@ -51,13 +51,13 @@ void scene_set(s32 arg0) {
 
 s32 scene_checkDisc(void) {
     u32 i = 0;
-    s32 pad = g_gameState->unkB;
+    s32 pad = g_gameState->disc;
 
     do {
-        func_8001DCB8();
-    } while (g_gameState->unkB == DISC_NONE && ++i < 10);
-    func_80033D1C(1);
-    if (scene_isDiscGone(pad, g_gameState->unkB)) {
+        file_initImg();
+    } while (g_gameState->disc == DISC_NONE && ++i < 10);
+    party_setChanged(1);
+    if (scene_isDiscGone(pad, g_gameState->disc)) {
         return scene_discIndex(pad);
     }
     return DISC_NONE;
@@ -84,7 +84,7 @@ u8 scene_isDiscGone(s32 arg0, s32 arg1) {
 
 s32 scene_isMenuIdle(void) {
 
-    if (func_8002F810() == 0) {
+    if (fade_isBusy() == 0) {
         return (u32)(g_scene.cur - 1) < 3;
     }
     return 0;

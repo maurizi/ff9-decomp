@@ -1,6 +1,6 @@
 #include "ff9.h"
 
-/* func_8005658C and func_80056700 turned out to be ordinary game C and are now matched in src/main/main.c. */
+/* akao_relocInstruments and akao_loadBank turned out to be ordinary game C and are now matched in src/main/main.c. */
 
 /* func_80059504 (main), filed as libspu: the number of set bits in p->unk4 (word at +4). No callers. */
 s32 func_80059504(u32 *p) {

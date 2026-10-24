@@ -9,16 +9,16 @@ s32 fx_088_op80(s32 mode, Fx088Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
     } else if (mode == 1) {
         D_801E7DA0 = env;
         ex->btlfx_getUnitBodyPos(0x10, 0, (s16 *)&work->unk8);
-        ex->func_800DC818(0x10, 0x17, (u16 *)&work->unk10);
-        work->unk0 = ex->func_800E3CEC(ex->btlfx_getFileData(entry->unk8, 7), (s32)&work->unk10);
+        ex->btlfx_getUnitBonePos(0x10, 0x17, (u16 *)&work->unk10);
+        work->unk0 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 7), (s32)&work->unk10);
         if (work->unk0 != NULL) {
             work->unk0->unk14 = (s32)D_801E7DB0;
             work->unk0->unk12 = 0x19;
             work->unk0->unkC = 0x30;
         }
-        ex->btlfx_aimAngles((s16 *)&work->unk8, &env->unkC->unk38, (s16 *)&work->unk18);
+        ex->btlfx_aimAngles((s16 *)&work->unk8, &env->targets->centerX, (s16 *)&work->unk18);
     } else {
-        frame = entry->unk0;
+        frame = entry->frame;
         if (work->unk0 != NULL) {
             if (work->unk0->unk30 == -1) {
                 work->unk0 = NULL;
@@ -30,7 +30,7 @@ s32 fx_088_op80(s32 mode, Fx088Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             }
         }
         if (frame == 0xC) {
-            work->unk4 = ex->func_800E3CEC(ex->btlfx_getFileData(entry->unk8, 8), (s32)&env->unkC->unk38);
+            work->unk4 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 8), (s32)&env->targets->centerX);
             if (work->unk4 != NULL) {
                 work->unk4->unk22 = 0x20;
             }
@@ -46,12 +46,12 @@ s32 fx_088_op81(s32 mode, Fx088Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
     if (mode == 0) {
         *arg4 = 0x10;
     } else if (mode == 1) {
-        work->unk8.vx = env->unkC->unk38;
-        work->unk8.vy = env->unkC->unk3A;
+        work->unk8.vx = env->targets->centerX;
+        work->unk8.vy = env->targets->centerY;
         D_801E7DA0 = env;
-        work->unk8.vz = env->unkC->unk3C;
+        work->unk8.vz = env->targets->centerZ;
     } else {
-        frame = entry->unk0;
+        frame = entry->frame;
         return func_801E7984(0x10, frame, 0xF, &work->unk8, &work->unk0) != 0;
     }
     return 0;

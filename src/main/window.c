@@ -8,12 +8,12 @@ void win_drawAll(void) {
     for (i = 0; i < 10; w++, i++) {
         if (w->unk1C != 0 && win_isVisible(w)) {
             if (w->unk24 != 0) {
-                func_8002E588(w);
+                win_drawTitle(w);
             }
             if (w->unk44 != NULL) {
                 w->unk44(w);
             }
-            if (w->unk1C == 3 && w->unk30.unk3 < w->unk30.unk2) {
+            if (w->unk1C == 3 && w->unk30.visibleRows < w->unk30.rows) {
                 win_drawScrollArrows(&w->unk8, w->unk18, &w->unk30);
             }
             win_setClip(NULL, w->unk18, w->unk1A);
@@ -25,7 +25,7 @@ void win_drawAll(void) {
                 win_drawFrame(w);
             }
             if (w->unk1F != 0) {
-                func_8002705C(&w->unk8, w->unk18, w->unk1A);
+                win_drawShadow(&w->unk8, w->unk18, w->unk1A);
             }
         }
     }
@@ -35,7 +35,7 @@ void win_drawFrame(Window *w) {
     s32 abr;
     RECT t;
 
-    abr = g_gameState->unk24 >> 18;
+    abr = g_gameState->config >> 18;
     abr &= 1;
 
     if (w->unk1A == 2) {
@@ -49,9 +49,9 @@ void win_drawFrame(Window *w) {
         t.h = w->unk8.h - 8;
     } else if (w->unk1A == 3) {
         if (w->unk29 != 4) {
-            func_8002E660(w);
+            win_drawTail(w);
         }
-        func_80026B84(&w->unk8, w->unk18, w->unk1E, w->unk1D, abr);
+        win_drawBalloonBorder(&w->unk8, w->unk18, w->unk1E, w->unk1D, abr);
         if (w->unk1E == 0) {
             return;
         }
@@ -66,23 +66,23 @@ void win_drawFrame(Window *w) {
             t.w = w->unk8.w;
             t.h = w->unk8.h - 4;
             ui_drawRule(w->unk8.x, w->unk8.y, w->unk18, 0, w->unk8.w, abr);
-            func_80025108(&t, w->unk18, 1, abr);
+            win_drawLineBorder(&t, w->unk18, 1, abr);
         } else {
             t = w->unk8;
-            func_80025108(&t, w->unk18, 0, abr);
+            win_drawLineBorder(&t, w->unk18, 0, abr);
         }
         if (w->unk1E == 0) {
             return;
         }
-        if (w->unk30.unk8 & 4) {
-            func_8002E7FC(&t, w->unk18, &w->unk30, abr);
+        if (w->unk30.scroll & 4) {
+            win_drawSplitFill(&t, w->unk18, &w->unk30, abr);
             return;
         }
     }
-    win_drawFill(&t, w->unk18, w->unk30.unkA, w->unk30.unkB, abr);
+    win_drawFill(&t, w->unk18, w->unk30.unkA, w->unk30.fillV, abr);
 }
 
-void func_8002CD4C(RECT *r, s32 otz, s32 style, s32 abr) {
+void win_drawBoxEx(RECT *r, s32 otz, s32 style, s32 abr) {
     RECT t;
 
     switch (style) {
@@ -100,15 +100,15 @@ void func_8002CD4C(RECT *r, s32 otz, s32 style, s32 abr) {
         t.w = r->w;
         t.h = r->h - 4;
         ui_drawRule(r->x, r->y, otz, 0, r->w - 2, abr);
-        func_80025108(&t, otz, 1, abr);
+        win_drawLineBorder(&t, otz, 1, abr);
         win_drawFill(&t, otz, 0, 0, abr);
         break;
     case 0:
-        func_80025108(r, otz, 0, abr);
+        win_drawLineBorder(r, otz, 0, abr);
         win_drawFill(r, otz, 0, 0, abr);
         break;
     case 3:
-        func_80026B84(r, otz, 1, 0, abr);
+        win_drawBalloonBorder(r, otz, 1, 0, abr);
         t.x = r->x + 2;
         t.y = r->y + 2;
         t.w = r->w - 3;
@@ -138,7 +138,7 @@ void win_setOpenAnim(Window *w, s32 mode) {
         w->unk8.x = w->unk0 + w->unk10 * (w->unk14 >> 1);
     } else if (mode == 1) {
         w->unk14 = 0;
-        w->unk30.unkB = 0;
+        w->unk30.fillV = 0;
         w->unk30.unkA = 0;
         h = w->unk6 >> 2;
         w->unk8.x = w->unk0;
@@ -152,7 +152,7 @@ void win_setOpenAnim(Window *w, s32 mode) {
     }
 }
 
-void func_8002D1AC(Window *w, s32 mode) {
+void win_setCloseAnim(Window *w, s32 mode) {
     w->unk28 = mode;
     if (mode == 0 || mode == 4) {
         w->unk14 = (w->unk4 + w->unk12 - 0x11) / w->unk12;
@@ -169,7 +169,7 @@ void func_8002D1AC(Window *w, s32 mode) {
     }
 }
 
-void func_8002D398(Window *w, s32 mode, s32 off) {
+void win_setTail(Window *w, s32 mode, s32 off) {
     RECT *r = (RECT *)w;
 
     if (w->unk1A != 4) {
@@ -212,7 +212,7 @@ void win_stepOpen(Window *w) {
             w->unk8.y = w->unk2;
         }
         w->unk30.unkA = (w->unk8.x - w->unk0) & 0x1F;
-        w->unk30.unkB = (w->unk8.y - w->unk2) & 0x1F;
+        w->unk30.fillV = (w->unk8.y - w->unk2) & 0x1F;
     } else if (w->unk28 == 1) {
         w->unk8.w += w->unk14;
         w->unk8.h += w->unk16;
@@ -222,7 +222,7 @@ void win_stepOpen(Window *w) {
         if (w->unk8.h > w->unk6) {
             w->unk8.h = w->unk6;
         }
-        w->unk30.unkB = (w->unk6 - w->unk8.h) & 0x1F;
+        w->unk30.fillV = (w->unk6 - w->unk8.h) & 0x1F;
     } else if (w->unk28 == 2) {
         s16 a = w->unk2C + w->unk2E;
         w->unk8.w += a;
@@ -244,7 +244,7 @@ void win_stepOpen(Window *w) {
             w->unk8.y = w->unk2;
         }
         w->unk30.unkA = (w->unk8.x - w->unk0) & 0x1F;
-        w->unk30.unkB = (w->unk8.y - w->unk2) & 0x1F;
+        w->unk30.fillV = (w->unk8.y - w->unk2) & 0x1F;
     }
     if (*(s32 *)&w->unk8.w == *(s32 *)&w->unk4) {
         w->unk1C = 3;
@@ -261,11 +261,11 @@ void win_stepClose(Window *w) {
         w->unk8.x += w->unk14 >> 1;
         w->unk8.y += w->unk16 >> 1;
         w->unk30.unkA = (w->unk8.x - w->unk0) & 0x1F;
-        w->unk30.unkB = (w->unk8.y - w->unk2) & 0x1F;
+        w->unk30.fillV = (w->unk8.y - w->unk2) & 0x1F;
     } else if (w->unk28 == 1) {
         w->unk8.h -= w->unk16;
         w->unk8.w -= w->unk14;
-        w->unk30.unkB = (w->unk6 - w->unk8.h) & 0x1F;
+        w->unk30.fillV = (w->unk6 - w->unk8.h) & 0x1F;
     } else if (w->unk28 == 2) {
         w->unk8.w -= w->unk2C + w->unk2E;
         w->unk8.h -= w->unk16;
@@ -274,7 +274,7 @@ void win_stepClose(Window *w) {
             w->unk8.y += w->unk16;
         }
         w->unk30.unkA = (w->unk8.x - w->unk0) & 0x1F;
-        w->unk30.unkB = (w->unk8.y - w->unk2) & 0x1F;
+        w->unk30.fillV = (w->unk8.y - w->unk2) & 0x1F;
     }
     if (w->unk8.w < 0) {
         w->unk8.w = 0;
@@ -297,13 +297,13 @@ void win_setClip(RECT *r, s32 otz, s32 style) {
     RECT *clip;
     s8 *o;
 
-    clip = &g_gameState->unkC[g_drawBufs.unk0 ^ 1].disp;
+    clip = &g_gameState->dispEnv[g_drawBufs.cur ^ 1].disp;
     offs = D_80010CE0;
     p = (DR_AREA *)g_primPtr;
     o = offs.unk0[style];
     if (r != NULL) {
-        t.x = g_drawBufs.unk1C[g_drawBufs.unk0 ^ 1].vx + (r->x + o[0]);
-        t.y = g_drawBufs.unk1C[g_drawBufs.unk0 ^ 1].vy + (r->y + o[1]);
+        t.x = g_drawBufs.dispPos[g_drawBufs.cur ^ 1].vx + (r->x + o[0]);
+        t.y = g_drawBufs.dispPos[g_drawBufs.cur ^ 1].vy + (r->y + o[1]);
         t.w = r->w + o[2];
         t.h = r->h + o[3];
         if (t.x < clip->x) {
@@ -328,7 +328,7 @@ void win_setClip(RECT *r, s32 otz, s32 style) {
     g_primPtr += sizeof(DR_AREA);
 }
 
-Window *func_8002DC54(RECT *r, s32 a, s32 b) {
+Window *win_openFree(RECT *r, s32 a, s32 b) {
     s32 i;
     Window *w = g_windows;
     Window *res;
@@ -359,7 +359,7 @@ void win_close(Window *w) {
     if (w != NULL && w->unk1C != 0 && w->unk1C != 2) {
         w->unk1C = 2;
         if (g_drawBufs.unk1 != 2) {
-            func_8002D1AC(w, w->unk28);
+            win_setCloseAnim(w, w->unk28);
         }
     }
 }
@@ -374,7 +374,7 @@ void win_closeAll(void) {
     }
 }
 
-void func_8002DE10(Window *w) {
+void win_closeNow(Window *w) {
     if (w != NULL && w->unk1C != 0) {
         if (w->unk4C != NULL) {
             w->unk4C(w);
@@ -383,7 +383,7 @@ void func_8002DE10(Window *w) {
     }
 }
 
-void func_8002DE60(void) {
+void win_closeAllNow(void) {
     s32 i;
     Window *w = g_windows;
     for (i = 0; i < 10; w++, i++) {
@@ -396,8 +396,8 @@ void func_8002DE60(void) {
     }
 }
 
-void func_8002DEE4(RECT *a, s32 b, s32 c) {
-    func_8002CD4C(a, b, c, (g_gameState->unk24 >> 18) & 1);
+void win_drawBox(RECT *a, s32 b, s32 c) {
+    win_drawBoxEx(a, b, c, CONFIG_WINDOW_COLOR());
 }
 
 void win_drawHelpFrame(RECT *r, s32 otz, s32 style, s32 xoff) {
@@ -409,10 +409,10 @@ void win_drawHelpFrame(RECT *r, s32 otz, s32 style, s32 xoff) {
         } else {
             y = r->y - 11;
         }
-        func_80027568(r->x + xoff, y, otz, style, 0);
-        func_80026900(r->x + xoff, y, otz, style);
+        win_drawHelpTailEdge(r->x + xoff, y, otz, style, 0);
+        win_drawHelpTailFill(r->x + xoff, y, otz, style);
     }
-    func_80026BDC(r, otz, 1, 0, (g_gameState->unk24 >> 18) & 1);
+    win_drawHelpBorder(r, otz, 1, 0, CONFIG_WINDOW_COLOR());
     t.x = r->x + 2;
     t.y = r->y + 2;
     t.w = r->w - 4;
@@ -420,11 +420,11 @@ void win_drawHelpFrame(RECT *r, s32 otz, s32 style, s32 xoff) {
     win_drawHelpFill(&t, otz);
 }
 
-void func_8002E040(RECT *r, s32 otz, s32 mode, MenuList *m) {
+void win_drawListBox(RECT *r, s32 otz, s32 mode, MenuList *m) {
     RECT t;
     s32 abr;
 
-    abr = g_gameState->unk24 >> 18;
+    abr = g_gameState->config >> 18;
     abr &= 1;
 
     if (mode == 1) {
@@ -434,15 +434,15 @@ void func_8002E040(RECT *r, s32 otz, s32 mode, MenuList *m) {
         t.h = r->h - 4;
         win_drawScrollArrows(r, otz, m);
         ui_drawRule(r->x, r->y, otz, 0, r->w - 2, abr);
-        func_80025108(&t, otz, 1, abr);
+        win_drawLineBorder(&t, otz, 1, abr);
     } else {
         t = *r;
-        func_80025108(&t, otz, 0, abr);
+        win_drawLineBorder(&t, otz, 0, abr);
     }
-    if (m->unk8 & 4) {
-        func_8002E7FC(&t, otz, m, abr);
+    if (m->scroll & 4) {
+        win_drawSplitFill(&t, otz, m, abr);
     } else {
-        win_drawFill(&t, otz, 0, m->unkB, abr);
+        win_drawFill(&t, otz, 0, m->fillV, abr);
     }
 }
 
@@ -452,8 +452,8 @@ void win_updateAll(void) {
     for (i = 0; i < 10; w++, i++) {
         u8 st = w->unk1C;
         if (st == 3) {
-            if (w->unk30.unk3 < w->unk30.unk2 && w->unk30.unk8 != 0) {
-                func_8002EB74(&w->unk30);
+            if (w->unk30.visibleRows < w->unk30.rows && w->unk30.scroll != 0) {
+                menuList_update(&w->unk30);
             }
         } else if (st == 1) {
             win_stepOpen(w);
@@ -492,50 +492,50 @@ void win_setOnClosed(Window *arg0, void (*arg1)(Window *)) {
     arg0->unk4C = arg1;
 }
 
-void func_8002E304(Window *arg0, s32 arg1) {
+void win_setTitle(Window *arg0, s32 arg1) {
     arg0->unk20 = 6;
     arg0->unk24 = arg1;
     arg0->unk22 = -3;
 }
 
-void func_8002E31C(Window *arg0, u8 arg1) {
+void win_setShadow(Window *arg0, u8 arg1) {
     arg0->unk1F = arg1;
 }
 
-void func_8002E324(Window *arg0, u8 arg1) {
+void win_setTranslucent(Window *arg0, u8 arg1) {
     arg0->unk1D = arg1;
 }
 
-void func_8002E32C(Window *arg0, u8 arg1) {
+void win_setVisible(Window *arg0, u8 arg1) {
     arg0->unk23 = arg1;
 }
 
-void func_8002E334(Window *arg0, s16 arg1) {
+void win_setOpenFrames(Window *arg0, s16 arg1) {
     arg0->unk10 = arg1;
     if (arg0->unk1A != 3) {
         win_setOpenAnim(arg0, arg0->unk28);
     } else {
-        func_8002D398(arg0, arg0->unk29, arg0->unk2A);
+        win_setTail(arg0, arg0->unk29, arg0->unk2A);
     }
 }
 
-void func_8002E380(Window *arg0, s16 arg1) {
+void win_setCloseFrames(Window *arg0, s16 arg1) {
     arg0->unk10 = arg1;
-    func_8002D1AC(arg0, arg0->unk28);
+    win_setCloseAnim(arg0, arg0->unk28);
 }
 
-void func_8002E3A8(Window *arg0, MenuList *arg1) {
+void win_setList(Window *arg0, MenuList *arg1) {
     arg0->unk30 = *arg1;
 }
 
-void func_8002E3F0(Window *arg0, s32 arg1, s16 arg2, s8 arg3) {
+void win_setTitleAt(Window *arg0, s32 arg1, s16 arg2, s8 arg3) {
     arg0->unk24 = arg1;
     arg0->unk20 = arg2;
     arg0->unk22 = arg3;
 }
 
-void func_8002E400(RECT *a, s32 b) {
-    win_drawFill(a, b, 0, 0, (g_gameState->unk24 >> 18) & 1);
+void win_drawFillPal(RECT *a, s32 b) {
+    win_drawFill(a, b, 0, 0, CONFIG_WINDOW_COLOR());
 }
 
 Window *win_get(s32 i) {
@@ -545,7 +545,7 @@ Window *win_get(s32 i) {
     return &g_windows[i];
 }
 
-void func_8002E490(void) {
+void win_initAll(void) {
     s32 i;
     for (i = 0; i < 10; i++) {
         g_windows[i].unk1C = 0;
@@ -570,7 +570,7 @@ u8 win_isVisible(Window *w) {
     return r;
 }
 
-void func_8002E588(Window *w) {
+void win_drawTitle(Window *w) {
     RECT r;
     if (w->unk24 == 0) {
         return;
@@ -589,7 +589,7 @@ void func_8002E588(Window *w) {
     }
 }
 
-void func_8002E660(Window *w) {
+void win_drawTail(Window *w) {
     RECT *r = &w->unk8;
     s32 y;
     if (w->unk29 >= 2) {
@@ -597,14 +597,14 @@ void func_8002E660(Window *w) {
     } else {
         y = r->y - 11;
     }
-    func_800275A4(w->unk0 + w->unk2A, y, w->unk18, w->unk29, w->unk1D);
-    func_800265B0(w->unk0 + w->unk2A, y, w->unk18, w->unk29, (w->unk30.unkA + w->unk2A) & 0x1F, w->unk30.unkB);
+    win_drawMsgTailEdge(w->unk0 + w->unk2A, y, w->unk18, w->unk29, w->unk1D);
+    win_drawTailFill(w->unk0 + w->unk2A, y, w->unk18, w->unk29, (w->unk30.unkA + w->unk2A) & 0x1F, w->unk30.fillV);
 }
 
 void win_drawScrollArrows(RECT *r, s32 otz, MenuList *m) {
-    s32 blink = ((u32)D_80077150 >> 4) & 1;
-    u8 top = m->unk5;
-    u8 more = top < m->unk2 - m->unk3;
+    s32 blink = ((u32)g_winLastVsync >> 4) & 1;
+    u8 top = m->top;
+    u8 more = top < m->rows - m->visibleRows;
     s32 z = otz;
     s32 x;
     s32 y;
@@ -620,44 +620,44 @@ void win_drawScrollArrows(RECT *r, s32 otz, MenuList *m) {
     ui_drawSprite(x, y, z, 0xB9, more ? blink : 1);
 }
 
-void func_8002E7FC(RECT *r, s32 otz, MenuList *m, s32 abr) {
+void win_drawSplitFill(RECT *r, s32 otz, MenuList *m, s32 abr) {
     RECT t;
 
-    func_8002E960(r, otz, m, abr);
+    win_drawDivider(r, otz, m, abr);
     t.x = r->x;
     t.w = r->w;
-    if (m->unk8 & 2) {
+    if (m->scroll & 2) {
         t.y = r->y;
-        t.h = m->unk9 + 1;
-        win_drawFill(&t, otz, 0, (m->unkB + (r->h - m->unk9)) & 0x1F, abr);
-        t.y = r->y + m->unk9 - 1;
-        t.h = r->h - m->unk9;
-        win_drawFill(&t, otz, 0, (m->unkB + (m->unk9 - 1)) & 0x1F, abr);
+        t.h = m->scrollPos + 1;
+        win_drawFill(&t, otz, 0, (m->fillV + (r->h - m->scrollPos)) & 0x1F, abr);
+        t.y = r->y + m->scrollPos - 1;
+        t.h = r->h - m->scrollPos;
+        win_drawFill(&t, otz, 0, (m->fillV + (m->scrollPos - 1)) & 0x1F, abr);
     } else {
         t.y = r->y;
-        t.h = r->h - m->unk9;
-        win_drawFill(&t, otz, 0, m->unkB, abr);
+        t.h = r->h - m->scrollPos;
+        win_drawFill(&t, otz, 0, m->fillV, abr);
         t.y = r->y + t.h;
-        t.h = m->unk9;
-        win_drawFill(&t, otz, 0, m->unkB, abr);
+        t.h = m->scrollPos;
+        win_drawFill(&t, otz, 0, m->fillV, abr);
     }
 }
 
-void func_8002E960(RECT *r, s32 otz, MenuList *m, s32 style) {
+void win_drawDivider(RECT *r, s32 otz, MenuList *m, s32 style) {
     LineF2Words *p;
     u32 c;
     s16 y;
 
-    c = D_80068F20[style][(m->unk8 & 2) ? 1 : 0];
+    c = g_winLineColors[style][(m->scroll & 2) ? 1 : 0];
     p = (LineF2Words *)g_primPtr;
     setlen(p, 3);
     ((LineF2Words *)g_primPtr)->rgbc = c;
     p->x0 = r->x + 2;
     p->x1 = r->x + r->w - 3;
-    if (m->unk8 & 2) {
-        y = r->y + m->unk9 + 4;
+    if (m->scroll & 2) {
+        y = r->y + m->scrollPos + 4;
     } else {
-        y = r->y + r->h - (m->unk9 + 1) - 2;
+        y = r->y + r->h - (m->scrollPos + 1) - 2;
     }
     p->y1 = y;
     p->y0 = y;
@@ -680,7 +680,7 @@ Window *win_init(RECT *r, s32 otz, s32 style, Window *w) {
     w->unk48 = 0;
     win_setOpenAnim(w, D_8006BCFC[style]);
     w->unk1F = w->unk1A == 3;
-    func_8002EDFC(&w->unk30, 0, 0, 0, r->h);
+    menuList_init(&w->unk30, 0, 0, 0, r->h);
     w->unk29 = 4;
     w->unk1E = 1;
     w->unk24 = 0;

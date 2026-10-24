@@ -39,8 +39,8 @@ void func_801E7704(SVECTOR *a, SVECTOR *b, u32 n, CVECTOR *ca, CVECTOR *cb, s32 
     buf->unk0.pad = 1;
     BTLFX_COPY_SVEC(&buf->unk8, b);
     n = i;
-    prim = (POLY_G4 *)env->unk24;
-    env->unk24 = (s32)(prim + n);
+    prim = (POLY_G4 *)env->prim;
+    env->prim = (s32)(prim + n);
     if (ca == NULL) {
         c0.r = c0.g = c0.b = 0;
     } else {
@@ -53,8 +53,8 @@ void func_801E7704(SVECTOR *a, SVECTOR *b, u32 n, CVECTOR *ca, CVECTOR *cb, s32 
         gte_DpqColorFar_nst(cb, p);
         gte_strgb(&c1);
     }
-    gte_SetRotMatrix(env->unk14);
-    gte_SetTransMatrix(env->unk14);
+    gte_SetRotMatrix(env->viewMatrix);
+    gte_SetTransMatrix(env->viewMatrix);
     c0.cd = abr != 0xFF ? 0x3A : 0x38;
     c1.cd = abr != 0xFF ? 0x3A : 0x38;
     for (i = 0; i < n; i++, buf++, prim++) {
@@ -97,8 +97,8 @@ void func_801E7B74(s32 model, s32 bone, SVECTOR *in, SVECTOR *out) {
     out->vx = m.t[0];
     out->vy = m.t[1];
     out->vz = m.t[2];
-    gte_SetRotMatrix(env->unk14);
-    gte_SetTransMatrix(env->unk14);
+    gte_SetRotMatrix(env->viewMatrix);
+    gte_SetTransMatrix(env->viewMatrix);
 }
 
 s32 fx_05e_op80(s32 mode, Fx05eWork *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *arg4) {
@@ -133,52 +133,52 @@ s32 fx_05e_op80(s32 mode, Fx05eWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
         } else {
             work->unk10.vy = 0x800;
         }
-        ex->func_800CFCA8(&work->unk10, ex->btlfx_getUnitRadius(0) + 0x78, (s32)&pos);
+        ex->btlfx_rotateOffset(&work->unk10, ex->btlfx_getUnitRadius(0) + 0x78, (s32)&pos);
         work->unk18.vx = work->unk8.vx + ((SVECTOR *)&pos)->vx;
         work->unk18.vy = work->unk8.vy + ((SVECTOR *)&pos)->vy;
         work->unk18.vz = work->unk8.vz + ((SVECTOR *)&pos)->vz;
         ex->btlfx_getUnitBodyPos(0, 0, (s16 *)&work->unk8);
         BTLFX_COPY_SVEC(&((SVECTOR *)&pos)[1], &work->unk18);
         ((SVECTOR *)&pos)[1].vy -= 0x140;
-        env->unk2C->unk0[0].vx = ((SVECTOR *)&pos)[1].vx;
-        env->unk2C->unk0[0].vy = ((SVECTOR *)&pos)[1].vy;
-        env->unk2C->unk0[0].vz = ((SVECTOR *)&pos)[1].vz;
-        ex->func_800CFCA8(&work->unk10, -0xD2, (s32)&pos);
+        env->camera->points[0].vx = ((SVECTOR *)&pos)[1].vx;
+        env->camera->points[0].vy = ((SVECTOR *)&pos)[1].vy;
+        env->camera->points[0].vz = ((SVECTOR *)&pos)[1].vz;
+        ex->btlfx_rotateOffset(&work->unk10, -0xD2, (s32)&pos);
         ((SVECTOR *)&pos)[1].vx = work->unk18.vx + ((SVECTOR *)&pos)->vx;
         ((SVECTOR *)&pos)[1].vy = work->unk18.vy + ((SVECTOR *)&pos)->vy - 0x140;
         ((SVECTOR *)&pos)[1].vz = work->unk18.vz + ((SVECTOR *)&pos)->vz;
-        env->unk2C->unk0[1].vx = ((SVECTOR *)&pos)[1].vx;
-        env->unk2C->unk0[1].vy = ((SVECTOR *)&pos)[1].vy;
-        env->unk2C->unk0[1].vz = ((SVECTOR *)&pos)[1].vz;
-        ex->func_800CFCA8(&work->unk10, -ex->btlfx_getUnitRadius(0), (s32)&pos);
+        env->camera->points[1].vx = ((SVECTOR *)&pos)[1].vx;
+        env->camera->points[1].vy = ((SVECTOR *)&pos)[1].vy;
+        env->camera->points[1].vz = ((SVECTOR *)&pos)[1].vz;
+        ex->btlfx_rotateOffset(&work->unk10, -ex->btlfx_getUnitRadius(0), (s32)&pos);
         ((SVECTOR *)&pos)[1].vx = work->unk8.vx + ((SVECTOR *)&pos)->vx;
         ((SVECTOR *)&pos)[1].vy = ((SVECTOR *)&pos)->vy - 0x140;
         ((SVECTOR *)&pos)[1].vz = work->unk8.vz + ((SVECTOR *)&pos)->vz;
-        env->unk2C->unk0[2].vx = ((SVECTOR *)&pos)[1].vx;
-        env->unk2C->unk0[2].vy = ((SVECTOR *)&pos)[1].vy;
-        env->unk2C->unk0[2].vz = ((SVECTOR *)&pos)[1].vz;
-        file = (u8 *)ex->btlfx_getFileData(entry->unk8, 2);
-        ex->func_800E9000((Unk800E9000 *)ex->btlfx_getFileData(entry->unk8, 6), (s32 *)&file, 1, &D_801E8E84);
-        ex->Hi_SetSummonMotion(((Fx05eSummon *)env->unk4)->unk54->unk180, ((Fx05eSummon *)env->unk4)->unk60);
+        env->camera->points[2].vx = ((SVECTOR *)&pos)[1].vx;
+        env->camera->points[2].vy = ((SVECTOR *)&pos)[1].vy;
+        env->camera->points[2].vz = ((SVECTOR *)&pos)[1].vz;
+        file = (u8 *)ex->btlfx_getFileData(entry->file, 2);
+        ex->btlfx_registerSummonModel((Unk800E9000 *)ex->btlfx_getFileData(entry->file, 6), (s32 *)&file, 1, &D_801E8E84);
+        ex->Hi_SetSummonMotion(((Fx05eSummon *)env->loader)->unk54->unk180, ((Fx05eSummon *)env->loader)->unk60);
         work->unk34[0] = work->unk34[1] = work->unk34[2] = 0x1000;
         work->unk2C.vx = 0;
         work->unk2C.vz = 0;
         work->unk2C.vy = work->unk10.vy;
         ex->btlfx_initEffModels(D_801E9014, 1);
-        work->unk28 = (s16)ex->func_800E8F50((Unk800E8F50 *)ex->btlfx_getFileData(entry->unk8, 0x1C), 0);
+        work->unk28 = (s16)ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, 0x1C), 0);
     } else {
         state = work->unk0;
-        frame = entry->unk0;
+        frame = entry->frame;
         amp = 0;
         switch (state) {
         case 0:
             t0 = (frame << 12) / 24;
             if (frame == 0) {
-                p = ex->func_800E3CEC(ex->btlfx_getFileData(entry->unk8, 9), (s32)&work->unk18);
+                p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 9), (s32)&work->unk18);
                 if (p != NULL) {
                     p->unk22 = 0x40;
                 }
-                p = ex->func_800E3CEC(ex->btlfx_getFileData(entry->unk8, 0x1B), (s32)&work->unk18);
+                p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0x1B), (s32)&work->unk18);
                 if (p != NULL) {
                     p->unk14 = (s32)D_801E88D4;
                     p->unk12 = 0x18;
@@ -201,20 +201,20 @@ s32 fx_05e_op80(s32 mode, Fx05eWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
             }
             if (frame >= 0x18) {
                 work->unk0 = 1;
-                entry->unk0 = -1;
+                entry->frame = -1;
             }
             break;
         case 1:
             pos.vx = work->unk18.vx;
             pos.vy = work->unk18.vy;
             pos.vz = work->unk18.vz;
-            t0 = ((Fx05eSummon *)env->unk4)->unk60;
+            t0 = ((Fx05eSummon *)env->loader)->unk60;
             ex->Hi_SetSummonMotFrame(t0, 0);
-            ex->Hi_DrawSummonModel(&work->unk2C, &pos, (s32)work->unk34, ((Fx05eSummon *)env->unk4)->unk60, 1);
+            ex->Hi_DrawSummonModel(&work->unk2C, &pos, (s32)work->unk34, ((Fx05eSummon *)env->loader)->unk60, 1);
             if (frame >= 8) {
                 work->unk0 = 2;
-                entry->unk0 = -1;
-                ex->Hi_SetSummonMotFrame(((Fx05eSummon *)env->unk4)->unk60, 0);
+                entry->frame = -1;
+                ex->Hi_SetSummonMotFrame(((Fx05eSummon *)env->loader)->unk60, 0);
             }
             break;
         case 2:
@@ -224,7 +224,7 @@ s32 fx_05e_op80(s32 mode, Fx05eWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
             pos.vx = work->unk18.vx;
             pos.vy = work->unk18.vy;
             pos.vz = work->unk18.vz;
-            ex->Hi_DrawSummonModel(&work->unk2C, &pos, (s32)work->unk34, ((Fx05eSummon *)env->unk4)->unk60, 1);
+            ex->Hi_DrawSummonModel(&work->unk2C, &pos, (s32)work->unk34, ((Fx05eSummon *)env->loader)->unk60, 1);
             if (frame == 0) {
                 amp = -1;
             } else if (frame < 0x18) {
@@ -233,44 +233,44 @@ s32 fx_05e_op80(s32 mode, Fx05eWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
                 amp = 0x1000;
             }
             if (frame == 0x20) {
-                ex->btlfx_drawScreenTint((u32 *)(env->unk20 + 2), 2, 0xFF, 0xFF, 0);
+                ex->btlfx_drawScreenTint((u32 *)(env->ot + 2), 2, 0xFF, 0xFF, 0);
             }
             if (frame == 0x1F) {
                 s32 ang;
 
-                p = ex->func_800E3CEC(ex->btlfx_getFileData(entry->unk8,
+                p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file,
                                                            *(D_801E8860 + (((ang = work->unk10.vy & 0xFFF) - 0x400U > 0x800) !=
-                                                                      ((ang = env->unk2C->unk50 & 0xFFF) - 0x400U > 0x800)))),
+                                                                      ((ang = env->camera->yaw & 0xFFF) - 0x400U > 0x800)))),
                                       (s32)&work->unk8);
                 if (p != NULL) {
                     p->unk22 = ex->func_800E7CC4(0, 0x40);
                 }
             }
             if (frame == 0x21) {
-                ex->btlfx_drawScreenTint((u32 *)(env->unk20 + 2), 1, 0xDC, 0, 0x20);
-                p = ex->func_800E3CEC(ex->btlfx_getFileData(entry->unk8, 4), (s32)&work->unk8);
+                ex->btlfx_drawScreenTint((u32 *)(env->ot + 2), 1, 0xDC, 0, 0x20);
+                p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 4), (s32)&work->unk8);
                 if (p != NULL) {
                     p->unk22 = ex->func_800E7CC4(0, 0x40);
                 }
-                p = ex->func_800E3CEC(ex->btlfx_getFileData(entry->unk8, 5), (s32)&work->unk8);
+                p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 5), (s32)&work->unk8);
                 if (p != NULL) {
                     p->unk22 = ex->func_800E7CC4(0, 0x40);
                 }
             }
             if (frame == 0x26) {
-                p = ex->func_800E3CEC(ex->btlfx_getFileData(entry->unk8, 0xC), (s32)&work->unk18);
+                p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0xC), (s32)&work->unk18);
                 if (p != NULL) {
                     p->unk14 = (s32)D_801E90E4;
                     p->unk12 = 0x18;
                     p->unkC = 0x44;
                     p->unk22 = 0x40;
                 }
-                ex->func_800E3CEC(ex->btlfx_getFileData(entry->unk8, 0x10), (s32)&work->unk18);
+                ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0x10), (s32)&work->unk18);
             }
-            ex->btlfx_drawBackdrop((BtlBgLayers *)ex->btlfx_getFileData(entry->unk8, 0xB), frame);
+            ex->btlfx_drawBackdrop((BtlBgLayers *)ex->btlfx_getFileData(entry->file, 0xB), frame);
             if (frame >= 0x29) {
                 work->unk0 = 3;
-                entry->unk0 = -1;
+                entry->frame = -1;
             }
             break;
         case 3:
@@ -280,10 +280,10 @@ s32 fx_05e_op80(s32 mode, Fx05eWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
             pos.vx = work->unk18.vx;
             pos.vy = work->unk18.vy;
             pos.vz = work->unk18.vz;
-            ex->Hi_SetSummonMotFrame(((Fx05eSummon *)env->unk4)->unk60, 0x29 - frame);
-            ex->Hi_DrawSummonModel(&work->unk2C, &pos, (s32)work->unk34, ((Fx05eSummon *)env->unk4)->unk60, 1);
+            ex->Hi_SetSummonMotFrame(((Fx05eSummon *)env->loader)->unk60, 0x29 - frame);
+            ex->Hi_DrawSummonModel(&work->unk2C, &pos, (s32)work->unk34, ((Fx05eSummon *)env->loader)->unk60, 1);
             amp = ex->math_cos(t3);
-            ex->Hi_ModifySummonModelRGB(((Fx05eSummon *)env->unk4)->unk60, (amp >> 5) - 0x80, (amp >> 5) - 0x80,
+            ex->Hi_ModifySummonModelRGB(((Fx05eSummon *)env->loader)->unk60, (amp >> 5) - 0x80, (amp >> 5) - 0x80,
                                         (amp >> 5) - 0x80);
             if (frame >= 8) {
                 work->unk0 = 3;
@@ -293,9 +293,9 @@ s32 fx_05e_op80(s32 mode, Fx05eWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
             break;
         }
         if (amp != 0) {
-            func_801E7B74(((Fx05eSummon *)env->unk4)->unk60, 9, &D_801E8874, &a);
-            func_801E7B74(((Fx05eSummon *)env->unk4)->unk60, 9, &D_801E887C, &b);
-            func_801E7B74(((Fx05eSummon *)env->unk4)->unk60, 9, &D_801E8884, &c);
+            func_801E7B74(((Fx05eSummon *)env->loader)->unk60, 9, &D_801E8874, &a);
+            func_801E7B74(((Fx05eSummon *)env->loader)->unk60, 9, &D_801E887C, &b);
+            func_801E7B74(((Fx05eSummon *)env->loader)->unk60, 9, &D_801E8884, &c);
             if (amp < 0) {
                 func_801E7704(&a, &b, 0x3F8, (CVECTOR *)&D_801E8868, (CVECTOR *)&D_801E886C, 0, D_801E9744, 1);
                 func_801E7704(&b, &c, 0x3F8, (CVECTOR *)&D_801E886C, (CVECTOR *)&D_801E8870, 0, D_801E9854, 1);

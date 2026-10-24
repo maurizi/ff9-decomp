@@ -10,9 +10,9 @@ s32 fx_1f8_op80(s32 mode, void *work, Unk800F78A4 *env, Unk80100C78Entry *entry,
         D_801E7B6C.vy = 0;
         D_801E7B6C.vz = -0x618;
         D_801E7B64 = env;
-        ex->func_800E3CEC(ex->btlfx_getFileData(entry->unk8, 2), (s32)&D_801E7B6C);
+        ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 2), (s32)&D_801E7B6C);
     } else {
-        return entry->unk0 >= 0x40;
+        return entry->frame >= 0x40;
     }
     return 0;
 }
@@ -29,8 +29,8 @@ s32 fx_1f8_op81(s32 mode, void *work, Unk800F78A4 *env, Unk80100C78Entry *entry,
         D_801E7B74[0] = 0;
         D_801E7B64 = env;
         ex->btlfx_initEffModels(D_801E7C14, 4);
-        for (i = 0; i < env->unkC->unk24; i++) {
-            D_801E7B84[i] = ex->Hi_RegisterTexEffModel((BtlUnit9C8 *)ex->btlfx_getFileData(entry->unk8, 0xC), 0x177,
+        for (i = 0; i < env->targets->targetCount; i++) {
+            D_801E7B84[i] = ex->Hi_RegisterTexEffModel((BtlUnit9C8 *)ex->btlfx_getFileData(entry->file, 0xC), 0x177,
                                                        0xFFFF, 0, 0x80);
             ex->btlfx_getUnitBodyPos(i, 0, (s16 *)&D_801E7BF4[i]);
             D_801E7BB4[i].vx = D_801E7BF4[i].vx;
@@ -45,17 +45,17 @@ s32 fx_1f8_op81(s32 mode, void *work, Unk800F78A4 *env, Unk80100C78Entry *entry,
         D_801E7BA4.vy = 0x1800;
         D_801E7BA4.vz = 0x1800;
     } else {
-        frame = entry->unk0;
+        frame = entry->frame;
         if (frame == 0) {
             D_801E7B74[0] = 0x20;
-            for (i = 0; i < env->unkC->unk24; i++) {
-                ex->func_800E3CEC(ex->btlfx_getFileData(entry->unk8, 0xA), (s32)&D_801E7BF4[i]);
-                ex->func_800E3CEC(ex->btlfx_getFileData(entry->unk8, 5), (s32)&D_801E7BF4[i]);
+            for (i = 0; i < env->targets->targetCount; i++) {
+                ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0xA), (s32)&D_801E7BF4[i]);
+                ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 5), (s32)&D_801E7BF4[i]);
             }
         }
         if (D_801E7B74[0] != 0) {
             D_801E7B74[0]--;
-            for (i = 0; i < env->unkC->unk24; i++) {
+            for (i = 0; i < env->targets->targetCount; i++) {
                 ex->Hi_DrawEffModel(&D_801E7B94, &D_801E7BB4[i], (s32)&D_801E7BA4, D_801E7B84[i]);
                 if (D_801E7B74[0] >= 0x19) {
                     c = (0x18 - D_801E7B74[0]) * 0x10;
@@ -66,7 +66,7 @@ s32 fx_1f8_op81(s32 mode, void *work, Unk800F78A4 *env, Unk80100C78Entry *entry,
                     ex->Hi_ModifyEffModelRGB(D_801E7B84[i], c, c, c);
                 }
             }
-            ex->btlfx_drawBackdrop((BtlBgLayers *)ex->btlfx_getFileData(entry->unk8, 0xB), frame);
+            ex->btlfx_drawBackdrop((BtlBgLayers *)ex->btlfx_getFileData(entry->file, 0xB), frame);
         }
         return frame >= 0x30;
     }

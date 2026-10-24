@@ -1,6 +1,6 @@
 #include "ff9.h"
 
-s32 func_80028DB0(s32 x, s32 hi, s32 c) {
+s32 text_renderNameGlyph(s32 x, s32 hi, s32 c) {
     u8 buf[16];
     u8 w;
     u8 start;
@@ -16,11 +16,11 @@ s32 func_80028DB0(s32 x, s32 hi, s32 c) {
     u8 v, o;
     u8 t;
 
-    dst = (u8 *)D_80077144;
+    dst = (u8 *)g_nameImage;
     w = D_80010BD0[c];
     start = w >> 4;
     width = (w & 0xF) + 1;
-    src = (u8 *)D_80077140 + (c << 6);
+    src = (u8 *)g_nameGlyphs + (c << 6);
     memset(buf, 0, 0x10);
     for (row = 0; row < 12; row++) {
         for (i = 0; i < 4; i++) {
@@ -50,7 +50,7 @@ s32 func_80028DB0(s32 x, s32 hi, s32 c) {
     return width + x;
 }
 
-s32 func_80028F3C(s32 x, s32 y, s32 otz, u8 c, s32 mode) {
+s32 text_drawChar(s32 x, s32 y, s32 otz, u8 c, s32 mode) {
     u32 *tbl = g_gameState->unk1C->unk7D4->unkC;
     u32 g;
     s32 w;
@@ -63,9 +63,9 @@ s32 func_80028F3C(s32 x, s32 y, s32 otz, u8 c, s32 mode) {
     setlen(g_primPtr, 4);
     w = (g >> 16) & 0xF;
     p = (SprtWords *)g_primPtr;
-    p->rgbc = 0x64808080;
+    p->rgbc = GPU_RGBC(GPU_SPRT, 0x808080);
     p->xy = (x + ((10 - w) >> 1)) | (y << 16);
-    p->uvclut = (g & 0x40FFFF) | (D_8006BBA0[mode] << 16);
+    p->uvclut = (g & 0x40FFFF) | (g_textPalettes[mode] << 16);
     p->wh = w | 0xD0000;
     addPrim(&g_ot[otz], p);
     g_primPtr = (u8 *)(p + 1);
@@ -84,7 +84,7 @@ void text_draw(s32 x, s32 y, s32 otz, u8 *s, s32 pal) {
     s32 gx;
     s32 k;
 
-    while ((c = *s) != 0xFF) {
+    while ((c = *s) != TEXT_END) {
         if (c >= th) {
             c = (c << 8) + s[1] - f->unk4 + f->unk6;
             s++;
@@ -92,25 +92,25 @@ void text_draw(s32 x, s32 y, s32 otz, u8 *s, s32 pal) {
         g = *(f->unkC + c);
         setlen(p, 4);
         k = (g >> 20) & 3;
-        p->rgbc = 0x64808080;
+        p->rgbc = GPU_RGBC(GPU_SPRT, 0x808080);
         w = g >> 28;
         spacing = 1;
         gx = x + k;
         x = x + spacing + w;
         p->xy = (gx & 0xFFFF) | (y << 16);
-        p->uvclut = (g & 0x40FFFF) + (D_8006BBA0[pal] << 16);
+        p->uvclut = (g & 0x40FFFF) + (g_textPalettes[pal] << 16);
         p->wh = ((g >> 16) & 0xF) | 0xD0000;
         addPrim(ot, p);
         p++;
         s++;
     }
     setlen(p, 1);
-    ((DrTpageWords *)p)->code = 0xE100061E;
+    ((DrTpageWords *)p)->code = get_mode(1, 1, 0x1E);
     addPrim(ot, p);
     g_primPtr = (u8 *)p + 8;
 }
 
-u8 *func_8002920C(s32 x, s32 y, u32 *ot, u8 *s, s32 mode, u8 *pkt) {
+u8 *text_buildBlock(s32 x, s32 y, u32 *ot, u8 *s, s32 mode, u8 *pkt) {
     s32 w;
     s32 x0;
     u8 th;
@@ -119,121 +119,121 @@ u8 *func_8002920C(s32 x, s32 y, u32 *ot, u8 *s, s32 mode, u8 *pkt) {
     s32 k;
 
     font = g_gameState->unk1C->unk7D4;
-    D_800770AC = mode;
+    g_textColor = mode;
     x0 = x;
     th = font->unk4 >> 8;
-    while ((c = *s) != 0xFF) {
-        if (c == 0xF9) {
+    while ((c = *s) != TEXT_END) {
+        if (c == TEXT_ESC) {
             s++;
-            if (*s == 0x43) {
+            if (*s == TEXT_X_ADD) {
                 s++;
                 x += (s8)*s;
-            } else if (*s == 0x44) {
+            } else if (*s == TEXT_X_SET) {
                 s++;
                 x = x0 + *s;
-            } else if (*s == 0x49) {
+            } else if (*s == TEXT_Y_DOWN) {
                 s++;
                 y += *s;
-            } else if (*s == 0x4A) {
+            } else if (*s == TEXT_Y_UP) {
                 s++;
                 y -= *s;
-            } else if (*s == 0x40) {
+            } else if (*s == TEXT_MSG_NUMBER) {
                 s++;
-                func_8002BBE8(D_8007BBA8[*s & 7], D_80077080, 0);
-                pkt = func_8002995C(x, y, ot, (Character *)D_80077080, &w, pkt);
+                text_formatInt(g_msgNumbers[*s & 7], g_textNumberBuf, 0);
+                pkt = text_buildPlain(x, y, ot, (Character *)g_textNumberBuf, &w, pkt);
                 x += w;
-            } else if (*s == 0x68) {
+            } else if (*s == TEXT_ARG_NUMBER) {
                 s++;
-                func_8002BBE8(D_800770F0[*s], D_80077080, 0);
-                pkt = func_8002995C(x, y, ot, (Character *)D_80077080, &w, pkt);
+                text_formatInt(g_textNumberArgs[*s], g_textNumberBuf, 0);
+                pkt = text_buildPlain(x, y, ot, (Character *)g_textNumberBuf, &w, pkt);
                 x += w;
-            } else if (*s == 0x69) {
+            } else if (*s == TEXT_ARG_STRING) {
                 s++;
-                pkt = func_8002995C(x, y, ot, (Character *)D_800770B0[*s], &w, pkt);
+                pkt = text_buildPlain(x, y, ot, (Character *)g_textStringArgs[*s], &w, pkt);
                 x += w;
-            } else if (*s == 0x6A) {
+            } else if (*s == TEXT_ARG_NUMBER_SMALL) {
                 s++;
-                func_8002BBE8(D_800770F0[*s], D_80077080, 1);
-                pkt = func_80029D60(x, y, ot, D_80077080, D_800770AC, pkt);
-                x += func_8002B9B8(D_80077080);
-            } else if (*s == 0x6B) {
+                text_formatInt(g_textNumberArgs[*s], g_textNumberBuf, 1);
+                pkt = text_buildSmall(x, y, ot, g_textNumberBuf, g_textColor, pkt);
+                x += text_measureSmall(g_textNumberBuf);
+            } else if (*s == TEXT_ARG_STRING_SMALL) {
                 s++;
-                D_800770A8 = D_800770B0[*s];
-                pkt = func_8002BA90(ot, (DrTpageWords *)pkt);
-                pkt = func_80029D60(x, y, ot, D_800770A8, D_800770AC, pkt);
-                x += func_8002B9B8(D_800770A8);
-            } else if (*s == 0x6E) {
+                g_textArgPtr = g_textStringArgs[*s];
+                pkt = text_buildFontTpage(ot, (DrTpageWords *)pkt);
+                pkt = text_buildSmall(x, y, ot, g_textArgPtr, g_textColor, pkt);
+                x += text_measureSmall(g_textArgPtr);
+            } else if (*s == TEXT_ARG_NUMBER_LABEL) {
                 s++;
-                func_8002BBE8(D_800770F0[*s], D_80077080, 1);
-                pkt = ui_buildLabel(x, y, ot, (s32)D_80077080, D_800770AC, pkt);
-                x += func_8002AE7C(D_80077080);
-            } else if (*s == 0x6F) {
+                text_formatInt(g_textNumberArgs[*s], g_textNumberBuf, 1);
+                pkt = ui_buildLabel(x, y, ot, (s32)g_textNumberBuf, g_textColor, pkt);
+                x += ui_measureLabel(g_textNumberBuf);
+            } else if (*s == TEXT_ARG_STRING_LABEL) {
                 s++;
-                D_800770A8 = D_800770B0[*s];
-                pkt = ui_buildLabel(x, y, ot, (s32)D_800770A8, D_800770AC, pkt);
-                x += func_8002AE7C(D_800770A8);
-            } else if (*s == 0x6C) {
+                g_textArgPtr = g_textStringArgs[*s];
+                pkt = ui_buildLabel(x, y, ot, (s32)g_textArgPtr, g_textColor, pkt);
+                x += ui_measureLabel(g_textArgPtr);
+            } else if (*s == TEXT_ARG_NUMBER_DIGITS) {
                 s++;
-                func_8002BBE8(D_800770F0[*s], D_80077080, 1);
-                pkt = func_8002B644(x, y, ot, D_80077080, D_800770AC, pkt);
-                x += func_8002BA10(D_80077080);
-            } else if (*s == 0x6D) {
+                text_formatInt(g_textNumberArgs[*s], g_textNumberBuf, 1);
+                pkt = text_buildDigits(x, y, ot, g_textNumberBuf, g_textColor, pkt);
+                x += text_measureDigits(g_textNumberBuf);
+            } else if (*s == TEXT_ARG_STRING_DIGITS) {
                 s++;
-                D_800770A8 = D_800770B0[*s];
-                pkt = func_8002B644(x, y, ot, D_800770A8, D_800770AC, pkt);
-                x += func_8002BA10(D_800770A8);
-            } else if (*s == 0x4B) {
-                pkt = func_8002BA90(ot, (DrTpageWords *)pkt);
-                pkt = func_80027834(x, y, ot, *++s, 0, &w, pkt);
+                g_textArgPtr = g_textStringArgs[*s];
+                pkt = text_buildDigits(x, y, ot, g_textArgPtr, g_textColor, pkt);
+                x += text_measureDigits(g_textArgPtr);
+            } else if (*s == TEXT_SPRITE) {
+                pkt = text_buildFontTpage(ot, (DrTpageWords *)pkt);
+                pkt = ui_buildSprite(x, y, ot, *++s, 0, &w, pkt);
                 x += w;
-            } else if (*s == 0x4C) {
+            } else if (*s == TEXT_ITEM_ICON) {
                 s++;
                 k = *s;
                 if (k != 0xFF) {
-                    pkt = func_8002BA90(ot, (DrTpageWords *)pkt);
-                    pkt = func_80026C7C(x, y, ot, k, 1, pkt);
-                    x += D_800686D0[D_80069018[k].unk8 + 0x5C].unk4;
+                    pkt = text_buildFontTpage(ot, (DrTpageWords *)pkt);
+                    pkt = ui_buildItemIcon(x, y, ot, k, 1, pkt);
+                    x += g_uiSprites[g_itemTable[k].unk8 + 0x5C].unk4;
                 }
-            } else if (*s == 0x4D) {
-                pkt = func_8002BA90(ot, (DrTpageWords *)pkt);
-                pkt = func_80027834(x, y, ot, D_80077130[*++s], 0, &w, pkt);
+            } else if (*s == TEXT_ARG_SPRITE) {
+                pkt = text_buildFontTpage(ot, (DrTpageWords *)pkt);
+                pkt = ui_buildSprite(x, y, ot, g_textIconArgs[*++s], 0, &w, pkt);
                 x += w;
-            } else if (*s == 0x4E) {
+            } else if (*s == TEXT_ARG_ITEM_ICON) {
                 s++;
-                k = D_80077130[*s];
+                k = g_textIconArgs[*s];
                 if (k != 0xFF) {
-                    pkt = func_8002BA90(ot, (DrTpageWords *)pkt);
-                    pkt = func_80026C7C(x, y, ot, k, 1, pkt);
-                    x += D_800686D0[D_80069018[k].unk8 + 0x5C].unk4;
+                    pkt = text_buildFontTpage(ot, (DrTpageWords *)pkt);
+                    pkt = ui_buildItemIcon(x, y, ot, k, 1, pkt);
+                    x += g_uiSprites[g_itemTable[k].unk8 + 0x5C].unk4;
                 }
             } else {
-                pkt = func_80029FE4(x, y, ot, *s, &w, pkt);
+                pkt = text_buildCode(x, y, ot, *s, &w, pkt);
                 x += w;
             }
-        } else if (c == 0xF7) {
+        } else if (c == TEXT_NEWLINE) {
             x = x0;
             y += 15;
         } else {
             if (c >= th) {
                 c = (c << 8) + s[1] - font->unk4 + font->unk6;
                 s++;
-                pkt = func_8002B7B0(x, y, ot, *(font->unkC + c), D_800770AC, &w, (SprtWords *)pkt);
+                pkt = text_buildGlyph(x, y, ot, *(font->unkC + c), g_textColor, &w, (SprtWords *)pkt);
                 x += w;
             } else {
-                pkt = func_8002B7B0(x, y, ot, *(font->unkC + c), D_800770AC, &w, (SprtWords *)pkt);
+                pkt = text_buildGlyph(x, y, ot, *(font->unkC + c), g_textColor, &w, (SprtWords *)pkt);
                 x += w;
             }
         }
         s++;
     }
     setlen(pkt, 1);
-    ((DrTpageWords *)pkt)->code = 0xE100061E;
+    ((DrTpageWords *)pkt)->code = get_mode(1, 1, 0x1E);
     addPrim(ot, pkt);
     pkt += sizeof(DrTpageWords);
     return pkt;
 }
 
-u8 *func_8002995C(s32 x, s32 y, u32 *ot, Character *ch, s32 *w, u8 *pkt) {
+u8 *text_buildPlain(s32 x, s32 y, u32 *ot, Character *ch, s32 *w, u8 *pkt) {
     s32 adv;
     s32 x0;
     u8 th;
@@ -253,27 +253,27 @@ u8 *func_8002995C(s32 x, s32 y, u32 *ot, Character *ch, s32 *w, u8 *pkt) {
     if (kanji != NULL) {
         th2 = kanji->unk0 >> 8;
     }
-    while ((c = *s) != 0xFF) {
+    while ((c = *s) != TEXT_END) {
         if (kanji != NULL && c >= th2) {
             code = (c << 8) + s[1];
             s++;
             c = code - kanji->unk0;
-            pkt = func_8002B7B0(x, y, ot, *(kanji->unkC + c), D_800770AC, &adv, (SprtWords *)pkt);
+            pkt = text_buildGlyph(x, y, ot, *(kanji->unkC + c), g_textColor, &adv, (SprtWords *)pkt);
             x += adv;
         } else if (c >= th) {
             code = (c << 8) + s[1];
             s++;
             c = code - font->unk4 + font->unk6;
-            pkt = func_8002B7B0(x, y, ot, *(font->unkC + c), D_800770AC, &adv, (SprtWords *)pkt);
+            pkt = text_buildGlyph(x, y, ot, *(font->unkC + c), g_textColor, &adv, (SprtWords *)pkt);
             x += adv;
         } else {
-            pkt = func_8002B7B0(x, y, ot, *(font->unkC + c), D_800770AC, &adv, (SprtWords *)pkt);
+            pkt = text_buildGlyph(x, y, ot, *(font->unkC + c), g_textColor, &adv, (SprtWords *)pkt);
             x += adv;
         }
         s++;
     }
     setlen(pkt, 1);
-    ((DrTpageWords *)pkt)->code = 0xE100061E;
+    ((DrTpageWords *)pkt)->code = get_mode(1, 1, 0x1E);
     addPrim(ot, pkt);
     *w = x - x0;
     return pkt + 8;
@@ -289,26 +289,26 @@ u8 *ui_buildLabel(s32 x, s32 y, u32 *ot, s32 str, s32 mode, u8 *pkt) {
     s32 c;
     s32 w;
 
-    rgbc = 0x64404040;
+    rgbc = GPU_RGBC(GPU_SPRT, 0x404040);
     if (mode == 0) {
-        rgbc = 0x64808080;
+        rgbc = GPU_RGBC(GPU_SPRT, 0x808080);
     }
-    tbl = (SpriteDesc16 *)D_800686D0;
+    tbl = (SpriteDesc16 *)g_uiSprites;
     clut = tbl[46].clut;
     if (mode == 1) {
         clut += 0x40;
-        rgbc = 0x66000000;
+        rgbc = GPU_CODE(GPU_SPRT | GPU_ABE);
     }
     if (s == NULL) {
         return (u8 *)p;
     }
     while ((c = *s) != 0) {
         if ((u32)(c - 'A') < 26) {
-            g = &((SpriteDesc16 *)D_800686D0)[*s - 8];
+            g = &((SpriteDesc16 *)g_uiSprites)[*s - 8];
         } else if ((u32)(c - 'a') < 26) {
-            g = &((SpriteDesc16 *)D_800686D0)[*s - 0x28];
+            g = &((SpriteDesc16 *)g_uiSprites)[*s - 0x28];
         } else if ((u32)(c - '0') < 10) {
-            g = &((SpriteDesc16 *)D_800686D0)[*s - 2];
+            g = &((SpriteDesc16 *)g_uiSprites)[*s - 2];
         } else if ((u8)c == '&') {
             g = (SpriteDesc16 *)&D_80068890;
         } else if ((u8)c == '.') {
@@ -332,12 +332,12 @@ u8 *ui_buildLabel(s32 x, s32 y, u32 *ot, s32 str, s32 mode, u8 *pkt) {
         x += w - 1;
     }
     setlen(p, 1);
-    ((DrTpageWords *)p)->code = 0xE100061F;
+    ((DrTpageWords *)p)->code = get_mode(1, 1, 0x1F);
     addPrim(ot, p);
     return (u8 *)p + 8;
 }
 
-u8 *func_80029D60(s32 x, s32 y, u32 *ot, u8 *s, s32 pal, u8 *pkt) {
+u8 *text_buildSmall(s32 x, s32 y, u32 *ot, u8 *s, s32 pal, u8 *pkt) {
     Sprt8Fields *p = (Sprt8Fields *)pkt;
     u8 kana = 0;
     s32 hi = 0;
@@ -388,7 +388,7 @@ u8 *func_80029D60(s32 x, s32 y, u32 *ot, u8 *s, s32 pal, u8 *pkt) {
                 u = 0;
             }
             setlen(p, 3);
-            p->rgbc = 0x74808080;
+            p->rgbc = GPU_RGBC(GPU_SPRT_8, 0x808080);
             q = p;
             if ((u8)(*s + 0x22) < 2) {
                 p->x = x - 7;
@@ -400,239 +400,239 @@ u8 *func_80029D60(s32 x, s32 y, u32 *ot, u8 *s, s32 pal, u8 *pkt) {
             }
             q->u = u;
             q->v = v - 0x80;
-            q->clut = D_8006BBA0[pal] | hi;
+            q->clut = g_textPalettes[pal] | hi;
             addPrim(ot, p);
             p++;
             s++;
         }
     }
     setlen(p, 1);
-    ((DrTpageWords *)p)->code = 0xE100061F;
+    ((DrTpageWords *)p)->code = get_mode(1, 1, 0x1F);
     hi = getaddr(ot); /* reuses hi as the tag temp */
     setaddr(p, hi), setaddr(ot, p);
     return (u8 *)p + 8;
 }
 
-u8 *func_80029FE4(s32 x, s32 y, u32 *ot, s32 code, s32 *w, u8 *pkt) {
-    pkt = func_8002BA90(ot, (DrTpageWords *)pkt);
+u8 *text_buildCode(s32 x, s32 y, u32 *ot, s32 code, s32 *w, u8 *pkt) {
+    pkt = text_buildFontTpage(ot, (DrTpageWords *)pkt);
     switch (code & 0xFF) {
-    case 0x21:
-        D_800770AC = 1;
+    case TEXT_COLOR + 1:
+        g_textColor = 1;
         *w = 0;
         break;
-    case 0x23:
-        D_800770AC = 3;
+    case TEXT_COLOR + 3:
+        g_textColor = 3;
         *w = 0;
         break;
-    case 0x26:
-        D_800770AC = 6;
+    case TEXT_COLOR + 6:
+        g_textColor = 6;
         *w = 0;
         break;
-    case 0x27:
-        D_800770AC = 7;
+    case TEXT_COLOR + 7:
+        g_textColor = 7;
         *w = 0;
         break;
-    case 0x25:
-        D_800770AC = 5;
+    case TEXT_COLOR + 5:
+        g_textColor = 5;
         *w = 0;
         break;
-    case 0x24:
-        D_800770AC = 4;
+    case TEXT_COLOR + 4:
+        g_textColor = 4;
         *w = 0;
         break;
-    case 0x20:
-        D_800770AC = 0;
+    case TEXT_COLOR + 0:
+        g_textColor = 0;
         *w = 0;
         break;
-    case 0x22:
-        D_800770AC = 2;
+    case TEXT_COLOR + 2:
+        g_textColor = 2;
         *w = 0;
         break;
-    case 0x28:
-        D_800770AC = 8;
+    case TEXT_COLOR + 8:
+        g_textColor = 8;
         *w = 0;
         break;
-    case 0x29:
-        D_800770AC = 9;
+    case TEXT_COLOR + 9:
+        g_textColor = 9;
         *w = 0;
         break;
     case 0x30:
-        pkt = func_80027834(x, y + 2, ot, 5, 0, w, pkt);
+        pkt = ui_buildSprite(x, y + 2, ot, 5, 0, w, pkt);
         break;
     case 0x31:
-        pkt = func_80027834(x, y + 2, ot, 4, 0, w, pkt);
+        pkt = ui_buildSprite(x, y + 2, ot, 4, 0, w, pkt);
         break;
     case 0x32:
-        pkt = func_80027834(x, y + 2, ot, 7, 0, w, pkt);
+        pkt = ui_buildSprite(x, y + 2, ot, 7, 0, w, pkt);
         break;
     case 0x33:
-        pkt = func_80027834(x, y + 2, ot, 6, 0, w, pkt);
+        pkt = ui_buildSprite(x, y + 2, ot, 6, 0, w, pkt);
         break;
     case 0x34:
-        pkt = func_80027834(x, y + 2, ot, 8, 0, w, pkt);
+        pkt = ui_buildSprite(x, y + 2, ot, 8, 0, w, pkt);
         break;
     case 0x35:
-        pkt = func_80027834(x, y + 2, ot, 10, 0, w, pkt);
+        pkt = ui_buildSprite(x, y + 2, ot, 10, 0, w, pkt);
         break;
     case 0x36:
-        pkt = func_80027834(x, y + 2, ot, 9, 0, w, pkt);
+        pkt = ui_buildSprite(x, y + 2, ot, 9, 0, w, pkt);
         break;
     case 0x37:
-        pkt = func_80027834(x, y + 2, ot, 11, 0, w, pkt);
+        pkt = ui_buildSprite(x, y + 2, ot, 11, 0, w, pkt);
         break;
     case 0x60:
-        pkt = func_80027834(x, y + 2, ot, func_8002BE10(1), 0, w, pkt);
+        pkt = ui_buildSprite(x, y + 2, ot, text_getButtonSprite(1), 0, w, pkt);
         break;
     case 0x61:
-        pkt = func_80027834(x, y + 2, ot, func_8002BE10(0), 0, w, pkt);
+        pkt = ui_buildSprite(x, y + 2, ot, text_getButtonSprite(0), 0, w, pkt);
         break;
     case 0x62:
-        pkt = func_80027834(x, y + 2, ot, func_8002BE10(2), 0, w, pkt);
+        pkt = ui_buildSprite(x, y + 2, ot, text_getButtonSprite(2), 0, w, pkt);
         break;
     case 0x63:
-        pkt = func_80027834(x, y + 2, ot, func_8002BE10(3), 0, w, pkt);
+        pkt = ui_buildSprite(x, y + 2, ot, text_getButtonSprite(3), 0, w, pkt);
         break;
     case 0x64:
-        pkt = func_80027834(x, y + 2, ot, func_8002BE10(4), 0, w, pkt);
+        pkt = ui_buildSprite(x, y + 2, ot, text_getButtonSprite(4), 0, w, pkt);
         break;
     case 0x65:
-        pkt = func_80027834(x, y + 2, ot, func_8002BE10(5), 0, w, pkt);
+        pkt = ui_buildSprite(x, y + 2, ot, text_getButtonSprite(5), 0, w, pkt);
         break;
     case 0x66:
-        pkt = func_80027834(x, y + 2, ot, func_8002BE10(6), 0, w, pkt);
+        pkt = ui_buildSprite(x, y + 2, ot, text_getButtonSprite(6), 0, w, pkt);
         break;
     case 0x67:
-        pkt = func_80027834(x, y + 2, ot, func_8002BE10(7), 0, w, pkt);
+        pkt = ui_buildSprite(x, y + 2, ot, text_getButtonSprite(7), 0, w, pkt);
         break;
     case 0x38:
-        pkt = func_80027834(x, y + 2, ot, 0x11, 0, w, pkt);
+        pkt = ui_buildSprite(x, y + 2, ot, 0x11, 0, w, pkt);
         break;
     case 0x39:
-        pkt = func_80027834(x, y + 2, ot, 0x12, 0, w, pkt);
+        pkt = ui_buildSprite(x, y + 2, ot, 0x12, 0, w, pkt);
         break;
     case 0x3A:
-        pkt = func_8002B890(x, y + 2, ot, 1, 0, w, pkt);
+        pkt = text_buildDpad(x, y + 2, ot, 1, 0, w, pkt);
         break;
     case 0x3B:
-        pkt = func_8002B890(x, y + 2, ot, 2, 0, w, pkt);
+        pkt = text_buildDpad(x, y + 2, ot, 2, 0, w, pkt);
         break;
     case 0x3C:
-        pkt = func_8002B890(x, y + 2, ot, 4, 0, w, pkt);
+        pkt = text_buildDpad(x, y + 2, ot, 4, 0, w, pkt);
         break;
     case 0x3D:
-        pkt = func_8002B890(x, y + 2, ot, 8, 0, w, pkt);
+        pkt = text_buildDpad(x, y + 2, ot, 8, 0, w, pkt);
         break;
     case 0x3E:
-        pkt = func_8002B890(x, y + 2, ot, 3, 0, w, pkt);
+        pkt = text_buildDpad(x, y + 2, ot, 3, 0, w, pkt);
         break;
     case 0x3F:
-        pkt = func_8002B890(x, y + 2, ot, 12, 0, w, pkt);
+        pkt = text_buildDpad(x, y + 2, ot, 12, 0, w, pkt);
         break;
-    case 0x10:
-        pkt = func_8002995C(x, y, ot, &g_gameState->unk1C->characters[0], w, pkt);
+    case TEXT_CHAR_NAME + 0:
+        pkt = text_buildPlain(x, y, ot, &g_gameState->unk1C->characters[0], w, pkt);
         break;
-    case 0x11:
-        pkt = func_8002995C(x, y, ot, &g_gameState->unk1C->characters[1], w, pkt);
+    case TEXT_CHAR_NAME + 1:
+        pkt = text_buildPlain(x, y, ot, &g_gameState->unk1C->characters[1], w, pkt);
         break;
-    case 0x12:
-        pkt = func_8002995C(x, y, ot, &g_gameState->unk1C->characters[2], w, pkt);
+    case TEXT_CHAR_NAME + 2:
+        pkt = text_buildPlain(x, y, ot, &g_gameState->unk1C->characters[2], w, pkt);
         break;
-    case 0x13:
-        pkt = func_8002995C(x, y, ot, &g_gameState->unk1C->characters[3], w, pkt);
+    case TEXT_CHAR_NAME + 3:
+        pkt = text_buildPlain(x, y, ot, &g_gameState->unk1C->characters[3], w, pkt);
         break;
-    case 0x14:
-        pkt = func_8002995C(x, y, ot, &g_gameState->unk1C->characters[4], w, pkt);
+    case TEXT_CHAR_NAME + 4:
+        pkt = text_buildPlain(x, y, ot, &g_gameState->unk1C->characters[4], w, pkt);
         break;
-    case 0x15:
-        pkt = func_8002995C(x, y, ot, &g_gameState->unk1C->characters[5], w, pkt);
+    case TEXT_CHAR_NAME + 5:
+        pkt = text_buildPlain(x, y, ot, &g_gameState->unk1C->characters[5], w, pkt);
         break;
-    case 0x16:
-        pkt = func_8002995C(x, y, ot, &g_gameState->unk1C->characters[6], w, pkt);
+    case TEXT_CHAR_NAME + 6:
+        pkt = text_buildPlain(x, y, ot, &g_gameState->unk1C->characters[6], w, pkt);
         break;
-    case 0x17:
-        pkt = func_8002995C(x, y, ot, &g_gameState->unk1C->characters[7], w, pkt);
+    case TEXT_CHAR_NAME + 7:
+        pkt = text_buildPlain(x, y, ot, &g_gameState->unk1C->characters[7], w, pkt);
         break;
-    case 0x18:
+    case TEXT_PARTY_NAME + 0:
         if (g_gameState->unk1C->party[0] != NULL) {
-            pkt = func_8002995C(x, y, ot, g_gameState->unk1C->party[0], w, pkt);
+            pkt = text_buildPlain(x, y, ot, g_gameState->unk1C->party[0], w, pkt);
         }
         break;
-    case 0x19:
+    case TEXT_PARTY_NAME + 1:
         if (g_gameState->unk1C->party[1] != NULL) {
-            pkt = func_8002995C(x, y, ot, g_gameState->unk1C->party[1], w, pkt);
+            pkt = text_buildPlain(x, y, ot, g_gameState->unk1C->party[1], w, pkt);
         }
         break;
-    case 0x1A:
+    case TEXT_PARTY_NAME + 2:
         if (g_gameState->unk1C->party[2] != NULL) {
-            pkt = func_8002995C(x, y, ot, g_gameState->unk1C->party[2], w, pkt);
+            pkt = text_buildPlain(x, y, ot, g_gameState->unk1C->party[2], w, pkt);
         }
         break;
-    case 0x1B:
+    case TEXT_PARTY_NAME + 3:
         if (g_gameState->unk1C->party[3] != NULL) {
-            pkt = func_8002995C(x, y, ot, g_gameState->unk1C->party[3], w, pkt);
+            pkt = text_buildPlain(x, y, ot, g_gameState->unk1C->party[3], w, pkt);
         }
         break;
     }
     return pkt;
 }
 
-s32 func_8002A730(s32 c) {
+s32 text_getCodeWidth(s32 c) {
     s32 r = 0;
 
     switch (c & 0xFF) {
     case 0x30:
-        r = D_800686D0[5].unk4;
+        r = g_uiSprites[5].unk4;
         break;
     case 0x31:
-        r = D_800686D0[4].unk4;
+        r = g_uiSprites[4].unk4;
         break;
     case 0x32:
-        r = D_800686D0[7].unk4;
+        r = g_uiSprites[7].unk4;
         break;
     case 0x33:
-        r = D_800686D0[6].unk4;
+        r = g_uiSprites[6].unk4;
         break;
     case 0x34:
-        r = D_800686D0[8].unk4;
+        r = g_uiSprites[8].unk4;
         break;
     case 0x35:
-        r = D_800686D0[10].unk4;
+        r = g_uiSprites[10].unk4;
         break;
     case 0x36:
-        r = D_800686D0[9].unk4;
+        r = g_uiSprites[9].unk4;
         break;
     case 0x37:
-        r = D_800686D0[11].unk4;
+        r = g_uiSprites[11].unk4;
         break;
     case 0x60:
-        r = D_800686D0[func_8002BE10(0)].unk4;
+        r = g_uiSprites[text_getButtonSprite(0)].unk4;
         break;
     case 0x61:
-        r = D_800686D0[func_8002BE10(1)].unk4;
+        r = g_uiSprites[text_getButtonSprite(1)].unk4;
         break;
     case 0x62:
-        r = D_800686D0[func_8002BE10(2)].unk4;
+        r = g_uiSprites[text_getButtonSprite(2)].unk4;
         break;
     case 0x63:
-        r = D_800686D0[func_8002BE10(3)].unk4;
+        r = g_uiSprites[text_getButtonSprite(3)].unk4;
         break;
     case 0x64:
-        r = D_800686D0[func_8002BE10(4)].unk4;
+        r = g_uiSprites[text_getButtonSprite(4)].unk4;
         break;
     case 0x65:
-        r = D_800686D0[func_8002BE10(5)].unk4;
+        r = g_uiSprites[text_getButtonSprite(5)].unk4;
         break;
     case 0x66:
-        r = D_800686D0[func_8002BE10(6)].unk4;
+        r = g_uiSprites[text_getButtonSprite(6)].unk4;
         break;
     case 0x67:
-        r = D_800686D0[func_8002BE10(7)].unk4;
+        r = g_uiSprites[text_getButtonSprite(7)].unk4;
         break;
     case 0x38:
-        r = D_800686D0[17].unk4;
+        r = g_uiSprites[17].unk4;
         break;
     case 0x39:
-        r = D_800686D0[18].unk4;
+        r = g_uiSprites[18].unk4;
         break;
     case 0x3A:
     case 0x3B:
@@ -640,56 +640,56 @@ s32 func_8002A730(s32 c) {
     case 0x3D:
     case 0x3E:
     case 0x3F:
-        r = D_800686D0[12].unk4;
+        r = g_uiSprites[12].unk4;
         break;
-    case 0x10:
-        r = func_8002BA68((s32)&g_gameState->unk1C->characters[0]);
+    case TEXT_CHAR_NAME + 0:
+        r = text_measureWidth((s32)&g_gameState->unk1C->characters[0]);
         break;
-    case 0x11:
-        r = func_8002BA68((s32)&g_gameState->unk1C->characters[1]);
+    case TEXT_CHAR_NAME + 1:
+        r = text_measureWidth((s32)&g_gameState->unk1C->characters[1]);
         break;
-    case 0x12:
-        r = func_8002BA68((s32)&g_gameState->unk1C->characters[2]);
+    case TEXT_CHAR_NAME + 2:
+        r = text_measureWidth((s32)&g_gameState->unk1C->characters[2]);
         break;
-    case 0x13:
-        r = func_8002BA68((s32)&g_gameState->unk1C->characters[3]);
+    case TEXT_CHAR_NAME + 3:
+        r = text_measureWidth((s32)&g_gameState->unk1C->characters[3]);
         break;
-    case 0x14:
-        r = func_8002BA68((s32)&g_gameState->unk1C->characters[4]);
+    case TEXT_CHAR_NAME + 4:
+        r = text_measureWidth((s32)&g_gameState->unk1C->characters[4]);
         break;
-    case 0x15:
-        r = func_8002BA68((s32)&g_gameState->unk1C->characters[5]);
+    case TEXT_CHAR_NAME + 5:
+        r = text_measureWidth((s32)&g_gameState->unk1C->characters[5]);
         break;
-    case 0x16:
-        r = func_8002BA68((s32)&g_gameState->unk1C->characters[6]);
+    case TEXT_CHAR_NAME + 6:
+        r = text_measureWidth((s32)&g_gameState->unk1C->characters[6]);
         break;
-    case 0x17:
-        r = func_8002BA68((s32)&g_gameState->unk1C->characters[7]);
+    case TEXT_CHAR_NAME + 7:
+        r = text_measureWidth((s32)&g_gameState->unk1C->characters[7]);
         break;
-    case 0x18:
+    case TEXT_PARTY_NAME + 0:
         if (g_gameState->unk1C->party[0] != NULL) {
-            r = func_8002BA68((s32)g_gameState->unk1C->party[0]);
+            r = text_measureWidth((s32)g_gameState->unk1C->party[0]);
         } else {
             r = 0;
         }
         break;
-    case 0x19:
+    case TEXT_PARTY_NAME + 1:
         if (g_gameState->unk1C->party[1] != NULL) {
-            r = func_8002BA68((s32)g_gameState->unk1C->party[1]);
+            r = text_measureWidth((s32)g_gameState->unk1C->party[1]);
         } else {
             r = 0;
         }
         break;
-    case 0x1A:
+    case TEXT_PARTY_NAME + 2:
         if (g_gameState->unk1C->party[2] != NULL) {
-            r = func_8002BA68((s32)g_gameState->unk1C->party[2]);
+            r = text_measureWidth((s32)g_gameState->unk1C->party[2]);
         } else {
             r = 0;
         }
         break;
-    case 0x1B:
+    case TEXT_PARTY_NAME + 3:
         if (g_gameState->unk1C->party[3] != NULL) {
-            r = func_8002BA68((s32)g_gameState->unk1C->party[3]);
+            r = text_measureWidth((s32)g_gameState->unk1C->party[3]);
         } else {
             r = 0;
         }
@@ -698,7 +698,7 @@ s32 func_8002A730(s32 c) {
     return r;
 }
 
-s32 func_8002AA04(s32 frames, u8 *buf, s32 blink) {
+s32 text_formatTime(s32 frames, u8 *buf, s32 blink) {
     s32 r = 0;
     s32 sec;
     s32 min;
@@ -787,7 +787,7 @@ u8 *text_append(u8 *dst, u8 *src) {
     return ret;
 }
 
-s32 func_8002AE7C(u8 *s) {
+s32 ui_measureLabel(u8 *s) {
     s32 w;
     Glyph8 *g;
     u8 c;
@@ -820,7 +820,7 @@ s32 func_8002AE7C(u8 *s) {
     return w;
 }
 
-TextSize func_8002AF70(u8 *s) {
+TextSize text_measure(u8 *s) {
     TextSize r;
     s32 w;
     s32 maxw;
@@ -848,68 +848,68 @@ TextSize func_8002AF70(u8 *s) {
     if (kanji != NULL) {
         th2 = kanji->unk0 >> 8;
     }
-    while ((c = *s) != 0xFF) {
-        if (c == 0xF9) {
+    while ((c = *s) != TEXT_END) {
+        if (c == TEXT_ESC) {
             s++;
-            if (*s == 0x43) {
+            if (*s == TEXT_X_ADD) {
                 s++;
                 w += (s8)*s;
-            } else if (*s == 0x44) {
+            } else if (*s == TEXT_X_SET) {
                 s++;
                 w = *s;
-            } else if (*s == 0x40) {
+            } else if (*s == TEXT_MSG_NUMBER) {
                 s++;
-                w += func_8002BEA4(D_8007BBA8[*s], 0);
-            } else if (*s == 0x68) {
+                w += text_measureNumber(g_msgNumbers[*s], 0);
+            } else if (*s == TEXT_ARG_NUMBER) {
                 s++;
-                w += func_8002BEA4(D_800770F0[*s], 0);
-            } else if (*s == 0x69) {
+                w += text_measureNumber(g_textNumberArgs[*s], 0);
+            } else if (*s == TEXT_ARG_STRING) {
                 s++;
-                w += D_8006BBEC[0](D_800770B0[*s]);
-            } else if (*s == 0x6A) {
+                w += g_textMeasureFuncs[0](g_textStringArgs[*s]);
+            } else if (*s == TEXT_ARG_NUMBER_SMALL) {
                 s++;
-                w += func_8002BEA4(D_800770F0[*s], 1);
-            } else if (*s == 0x6B) {
+                w += text_measureNumber(g_textNumberArgs[*s], 1);
+            } else if (*s == TEXT_ARG_STRING_SMALL) {
                 s++;
-                w += D_8006BBEC[1](D_800770B0[*s]);
-            } else if (*s == 0x6E) {
+                w += g_textMeasureFuncs[1](g_textStringArgs[*s]);
+            } else if (*s == TEXT_ARG_NUMBER_LABEL) {
                 s++;
-                w += func_8002BEA4(D_800770F0[*s], 2);
-            } else if (*s == 0x6F) {
+                w += text_measureNumber(g_textNumberArgs[*s], 2);
+            } else if (*s == TEXT_ARG_STRING_LABEL) {
                 s++;
-                w += D_8006BBEC[2](D_800770B0[*s]);
-            } else if (*s == 0x6C) {
+                w += g_textMeasureFuncs[2](g_textStringArgs[*s]);
+            } else if (*s == TEXT_ARG_NUMBER_DIGITS) {
                 s++;
-                w += func_8002BEA4(D_800770F0[*s], 3);
-            } else if (*s == 0x6D) {
+                w += text_measureNumber(g_textNumberArgs[*s], 3);
+            } else if (*s == TEXT_ARG_STRING_DIGITS) {
                 s++;
-                w += D_8006BBEC[3](D_800770B0[*s]);
-            } else if (*s == 0x4B) {
+                w += g_textMeasureFuncs[3](g_textStringArgs[*s]);
+            } else if (*s == TEXT_SPRITE) {
                 s++;
-                w += D_800686D0[*s].unk4;
-            } else if (*s == 0x4C) {
+                w += g_uiSprites[*s].unk4;
+            } else if (*s == TEXT_ITEM_ICON) {
                 s++;
                 if (*s == 0xFF) {
-                    w += D_800686D0[D_8006A20E + 0x5C].unk4;
+                    w += g_uiSprites[D_8006A20E + 0x5C].unk4;
                 }
-            } else if (*s == 0x4D) {
+            } else if (*s == TEXT_ARG_SPRITE) {
                 s++;
-                w += D_800686D0[D_80077130[*s]].unk4;
-            } else if (*s == 0x4E) {
+                w += g_uiSprites[g_textIconArgs[*s]].unk4;
+            } else if (*s == TEXT_ARG_ITEM_ICON) {
                 s++;
-                if (D_80077130[*s] == 0xFF) {
-                    w += D_800686D0[D_8006A20E + 0x5C].unk4;
+                if (g_textIconArgs[*s] == 0xFF) {
+                    w += g_uiSprites[D_8006A20E + 0x5C].unk4;
                 }
-            } else if (*s == 0x49) {
+            } else if (*s == TEXT_Y_DOWN) {
                 s++;
                 h += *s;
-            } else if (*s == 0x4A) {
+            } else if (*s == TEXT_Y_UP) {
                 s++;
                 h -= *s;
             } else {
-                w += func_8002A730(*s);
+                w += text_getCodeWidth(*s);
             }
-        } else if (c == 0xF7) {
+        } else if (c == TEXT_NEWLINE) {
             h += 15;
             if (maxw < w) {
                 maxw = w;
@@ -935,14 +935,14 @@ TextSize func_8002AF70(u8 *s) {
     return r;
 }
 
-s32 func_8002B43C(s32 arg0) {
-    D_80077140 = arg0;
-    D_80077144 = arg0 + 0x4000;
-    memset(D_80077144, 0, 0x3F0);
-    return D_80077144;
+s32 text_initNameImage(s32 arg0) {
+    g_nameGlyphs = arg0;
+    g_nameImage = arg0 + 0x4000;
+    memset(g_nameImage, 0, 0x3F0);
+    return g_nameImage;
 }
 
-void func_8002B47C(s32 arg0) {
+void text_renderPartyName(s32 arg0) {
     s32 x = (arg0 & 1) * 0x54;
     s32 y = arg0 >> 1;
     s32 i;
@@ -952,7 +952,7 @@ void func_8002B47C(s32 arg0) {
         if (*name == 0xFF) {
             break;
         }
-        x = func_80028DB0(x, y, *name++);
+        x = text_renderNameGlyph(x, y, *name++);
     }
 }
 
@@ -961,26 +961,26 @@ void ui_drawLabel(s32 arg0, s32 arg1, s32 otz, s32 arg3, s32 arg4) {
 }
 
 void ui_drawSmallDigits(s32 arg0, s32 arg1, s32 otz, u8 *arg3, s32 arg4) {
-    g_primPtr = func_80029D60(arg0, arg1, &g_ot[otz], arg3, arg4, g_primPtr);
+    g_primPtr = text_buildSmall(arg0, arg1, &g_ot[otz], arg3, arg4, g_primPtr);
 }
 
 void ui_drawDigits(s32 arg0, s32 arg1, s32 otz, u8 *arg3, s32 arg4) {
-    g_primPtr = func_8002B644(arg0, arg1, &g_ot[otz], arg3, arg4, g_primPtr);
+    g_primPtr = text_buildDigits(arg0, arg1, &g_ot[otz], arg3, arg4, g_primPtr);
 }
 
 void text_drawBlock(s32 arg0, s32 arg1, s32 otz, u8 *arg3, s32 arg4) {
-    g_primPtr = func_8002920C(arg0, arg1, &g_ot[otz], arg3, arg4, g_primPtr);
+    g_primPtr = text_buildBlock(arg0, arg1, &g_ot[otz], arg3, arg4, g_primPtr);
 }
 
-u8 *func_8002B644(s32 x, s32 y, u32 *ot, u8 *s, s32 style, void *pkt) {
+u8 *text_buildDigits(s32 x, s32 y, u32 *ot, u8 *s, s32 style, void *pkt) {
     SprtWords *p = pkt;
     DrTpageWords *t;
-    u32 rgbc = 0x64808080;
+    u32 rgbc = GPU_RGBC(GPU_SPRT, 0x808080);
     s32 c;
     s32 u;
 
     if (style == 2) {
-        rgbc = 0x66606060;
+        rgbc = GPU_RGBC(GPU_SPRT | GPU_ABE, 0x606060);
     }
     while ((c = *s) != 0) {
         if ((u8)c != ' ') {
@@ -1004,23 +1004,23 @@ u8 *func_8002B644(s32 x, s32 y, u32 *ot, u8 *s, s32 style, void *pkt) {
     }
     t = (DrTpageWords *)p;
     setlen(t, 1);
-    t->code = 0xE100061F;
+    t->code = get_mode(1, 1, 0x1F);
     addPrim(ot, t);
     return (u8 *)(t + 1);
 }
 
-u8 *func_8002B7B0(s32 x, s32 y, u32 *ot, u32 a, s32 mode, s32 *out, SprtWords *p) {
-    u32 rgbc = 0x66000000;
+u8 *text_buildGlyph(s32 x, s32 y, u32 *ot, u32 a, s32 mode, s32 *out, SprtWords *p) {
+    u32 rgbc = GPU_CODE(GPU_SPRT | GPU_ABE);
     s32 dx = (a >> 20) & 3;
     s32 h = (a >> 16) & 0xF;
     s32 n = a >> 28;
     if (mode != 1) {
-        rgbc = 0x64808080;
+        rgbc = GPU_RGBC(GPU_SPRT, 0x808080);
     }
     setlen(p, 4);
     p->xy = ((x + dx) & 0xFFFF) | (y << 16);
     p->rgbc = rgbc;
-    p->uvclut = (a & 0x40FFFF) + (D_8006BBA0[mode] << 16);
+    p->uvclut = (a & 0x40FFFF) + (g_textPalettes[mode] << 16);
     p->wh = h | 0xD0000;
     addPrim(ot, p);
     if (out != NULL) {
@@ -1029,22 +1029,22 @@ u8 *func_8002B7B0(s32 x, s32 y, u32 *ot, u32 a, s32 mode, s32 *out, SprtWords *p
     return (u8 *)(p + 1);
 }
 
-u8 *func_8002B890(s32 x, s32 y, u32 *ot, u32 mask, u8 b, s32 *c, u8 *pkt) {
+u8 *text_buildDpad(s32 x, s32 y, u32 *ot, u32 mask, u8 b, s32 *c, u8 *pkt) {
     s32 tmp[2];
     s32 i;
     for (i = 0; i < 4; i++) {
         if (mask & (1 << i)) {
-            pkt = func_80027834(x + D_8006BC0C[i].unk0, y + D_8006BC0C[i].unk1, ot, D_8006BC0C[i].unk2, b, tmp, pkt);
+            pkt = ui_buildSprite(x + D_8006BC0C[i].unk0, y + D_8006BC0C[i].unk1, ot, D_8006BC0C[i].unk2, b, tmp, pkt);
         }
     }
-    return func_80027834(x, y, ot, 0xC, b, c, pkt);
+    return ui_buildSprite(x, y, ot, 0xC, b, c, pkt);
 }
 
-s32 func_8002B980(u8 *s, s32 idx) {
-    return D_8006BBEC[idx](s);
+s32 text_measureStyle(u8 *s, s32 idx) {
+    return g_textMeasureFuncs[idx](s);
 }
 
-s32 func_8002B9B8(u8 *s) {
+s32 text_measureSmall(u8 *s) {
     s32 w = 0;
     u8 c;
 
@@ -1057,7 +1057,7 @@ s32 func_8002B9B8(u8 *s) {
     return w;
 }
 
-s32 func_8002BA10(u8 *s) {
+s32 text_measureDigits(u8 *s) {
     s32 w = 0;
     u8 c;
 
@@ -1070,13 +1070,13 @@ s32 func_8002BA10(u8 *s) {
     return w;
 }
 
-s32 func_8002BA68(s32 arg0) {
-    return func_8002AF70((u8 *)arg0).w;
+s32 text_measureWidth(s32 arg0) {
+    return text_measure((u8 *)arg0).w;
 }
 
-u8 *func_8002BA90(u32 *ot, DrTpageWords *p) {
+u8 *text_buildFontTpage(u32 *ot, DrTpageWords *p) {
     setlen(p, 1);
-    p->code = 0xE100061E;
+    p->code = get_mode(1, 1, 0x1E);
     addPrim(ot, p);
     return (u8 *)(p + 1);
 }
@@ -1097,7 +1097,7 @@ void text_formatNumber(s32 n, u8 *buf, s32 width, u8 ascii) {
         fill = 0xF;
     }
     if (width < 0) {
-        func_8002BBE8(n, buf, ascii);
+        text_formatInt(n, buf, ascii);
         return;
     }
     memset(buf, fill, width);
@@ -1118,7 +1118,7 @@ void text_formatNumber(s32 n, u8 *buf, s32 width, u8 ascii) {
     }
 }
 
-void func_8002BBE8(s32 v, u8 *buf, s32 ascii) {
+void text_formatInt(s32 v, u8 *buf, s32 ascii) {
     u8 tmp[16];
     s32 n = 0;
     s32 i;
@@ -1152,16 +1152,16 @@ void func_8002BBE8(s32 v, u8 *buf, s32 ascii) {
     *buf = term;
 }
 
-s32 func_8002BCC0(u8 *s) {
+s32 text_getLength(u8 *s) {
     u8 *start = s;
     u8 lim = g_gameState->unk1C->unk7D4->unk4 >> 8;
     s32 c;
 
-    while ((c = *s) != 0xFF) {
+    while ((c = *s) != TEXT_END) {
         s++;
-        if (c == 0xF9) {
+        if (c == TEXT_ESC) {
             s++;
-            if ((u32)(s[-2] - 0x43) < 2) {
+            if ((u32)(s[-2] - TEXT_X_ADD) < 2) {
                 s++;
             }
         } else if (c >= lim) {
@@ -1171,51 +1171,51 @@ s32 func_8002BCC0(u8 *s) {
     return s - start;
 }
 
-u8 *func_8002BD54(u8 *dst, u8 *src) {
+u8 *text_copy(u8 *dst, u8 *src) {
     u8 *start = dst;
     u8 lim = g_gameState->unk1C->unk7D4->unk4 >> 8;
     s32 c;
 
-    while ((c = *src) != 0xFF) {
+    while ((c = *src) != TEXT_END) {
         *dst++ = *src++;
-        if (c == 0xF9) {
+        if (c == TEXT_ESC) {
             *dst++ = *src++;
-            if ((u32)(src[-2] - 0x43) < 2) {
+            if ((u32)(src[-2] - TEXT_X_ADD) < 2) {
                 *dst++ = *src++;
             }
         } else if (c >= lim) {
             *dst++ = *src++;
         }
     }
-    *dst = 0xFF;
+    *dst = TEXT_END;
     return start;
 }
 
-s32 func_8002BE10(s32 arg0) {
-    return D_8006BC18[func_80023938(arg0)];
+s32 text_getButtonSprite(s32 arg0) {
+    return g_buttonSprites[config_remapButton(arg0)];
 }
 
-void func_8002BE44(s32 i, u8 *v) {
-    D_800770B0[i] = v;
+void text_setStringArg(s32 i, u8 *v) {
+    g_textStringArgs[i] = v;
 }
 
-void func_8002BE5C(s32 i, s32 v) {
-    D_800770F0[i] = v;
+void text_setNumberArg(s32 i, s32 v) {
+    g_textNumberArgs[i] = v;
 }
 
-void func_8002BE74(s32 i, s32 v) {
-    D_80077130[i] = v;
+void text_setIconArg(s32 i, s32 v) {
+    g_textIconArgs[i] = v;
 }
 
-s32 func_8002BE88(void) {
-    return D_800770AC;
+s32 text_getColor(void) {
+    return g_textColor;
 }
 
-void func_8002BE98(s32 v) {
-    D_800770AC = v;
+void text_setColor(s32 v) {
+    g_textColor = v;
 }
 
-s32 func_8002BEA4(s32 n, s32 idx) {
+s32 text_measureNumber(s32 n, s32 idx) {
     s32 r = 0;
     s32 step = D_8006BBFC[idx];
 

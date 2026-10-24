@@ -5,7 +5,7 @@
 #include "btlfx_mod.h"
 
 typedef struct {
-    SVECTOR unk0; /* func_800DC858(0x10, 0) */
+    SVECTOR unk0; /* btlfx_getUnitArgBonePos(0x10, 0) */
     SVECTOR unk8; /* unit 0x10 bone position */
     SVECTOR unk10; /* caster body position */
     SVECTOR unk18; /* caster position */

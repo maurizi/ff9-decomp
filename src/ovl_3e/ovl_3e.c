@@ -7,18 +7,18 @@ void discChange_init(void) {
     u8 r;
     u8 state;
 
-    src = D_80073998;
+    src = g_padPortMask;
     st = &s_discChange;
     st->unk2 = 0;
     st->timer = 0;
-    g_menu.unk9 = 0;
-    st->disc = DISC_REQ_DISC(g_menu.unkC);
-    st->nextLocation = DISC_REQ_LOCATION(g_menu.unkC);
+    g_menu.drawBackground = 0;
+    st->disc = DISC_REQ_DISC(g_menu.arg);
+    st->nextLocation = DISC_REQ_LOCATION(g_menu.arg);
     for (i = 0; i < 2; i++) {
         st->savedFlags[i] = src[i];
         src[i] |= 0x300;
     }
-    func_8003556C(0);
+    help_setCallback(0);
     discChange_loadPicture();
     cd_stopMotor();
     s_discChange.shellOpen = r = cd_checkShellOpen();
@@ -125,12 +125,12 @@ u8 discChange_checkDisc(void) {
     CdControlB(CdlSetmode, (u8 *)CdlModeSpeed, result);
     VSync(3);
     for (i = 0; i < 10; i++) {
-        func_8001DCB8();
-        if (g_gameState->unkB != 0xFF) {
+        file_initImg();
+        if (g_gameState->disc != 0xFF) {
             break;
         }
     }
-    if (g_gameState->unkB == 0xFF || !(g_gameState->unkB & mask)) {
+    if (g_gameState->disc == 0xFF || !(g_gameState->disc & mask)) {
         cd_stopMotor();
         return DISC_CHECK_WRONG_DISC;
     }
@@ -152,7 +152,7 @@ void discChange_exit(void) {
     if (s_discChange.nextLocation != DISC_NO_LOCATION) {
         evt_setNextLocation(s_discChange.nextLocation);
     }
-    dst = D_80073998;
+    dst = g_padPortMask;
     st = &s_discChange;
     g_gameState->unk0 |= 0x100000;
     for (i = 0; i < 2; i++) {
@@ -163,7 +163,7 @@ void discChange_exit(void) {
 void discChange_input(void) {
     void (*f)(void);
 
-    if (!func_8002F810()) {
+    if (!fade_isBusy()) {
         f = s_discChangeInputFuncs[s_discChange.state];
         if (f != NULL) {
             f();
@@ -194,7 +194,7 @@ void discChange_loadPicture(void) {
     s32 i;
     s32 sector;
 
-    sector = g_gameState->unk20 + file_find(1, s_discChangePictureFiles[s_discChange.disc & 3])->unk4;
+    sector = g_gameState->imgSector + file_find(1, s_discChangePictureFiles[s_discChange.disc & 3])->unk4;
     size = DISC_PICTURE_HALF_BYTES;
     for (i = 0; i < 2; i++) {
         cd_readSync(sector, size, buf);
@@ -233,8 +233,8 @@ void discChange_inputError(void) {
     if (g_padRepeat & BTN_CROSS) {
         snd_playSe(SE_CURSOR);
         s_discChange.state = DISC_ST_ERROR_CLOSE;
-        func_8002FAAC(0x18);
-        func_8002F8A8(discChange_closeError);
+        fade_out(0x18);
+        fade_setOnDone(discChange_closeError);
     }
 }
 
@@ -260,16 +260,16 @@ void discChange_updateLidOpen(void) {
 void discChange_updateError(void) {
     if (++s_discChange.timer >= DISC_ERROR_FRAMES) {
         s_discChange.state = DISC_ST_ERROR_CLOSE;
-        func_8002FAAC(0x18);
-        func_8002F8A8(discChange_closeError);
+        fade_out(0x18);
+        fade_setOnDone(discChange_closeError);
     }
 }
 
 void discChange_startCheck(void) {
     s_discChange.unk2 = 0;
     s_discChange.state = DISC_ST_BUSY;
-    func_8002FAAC(0x18);
-    func_8002F8A8(discChange_doCheck);
+    fade_out(0x18);
+    fade_setOnDone(discChange_doCheck);
 }
 
 void discChange_doCheck(void) {
@@ -281,20 +281,20 @@ void discChange_doCheck(void) {
     case DISC_CHECK_SHELL_OPEN:
     default:
         s_discChange.state = DISC_ST_ERROR;
-        func_8002FA50(0x18);
+        fade_in(0x18);
         break;
     case DISC_CHECK_OK:
-        func_80032640(0);
-        func_80032634(0);
-        func_800325E0();
+        menu_setFadeOutOnClose(0);
+        menu_setFadeInOnClose(0);
+        menu_close();
         break;
     }
 }
 
 void discChange_closeError(void) {
     s_discChange.state = DISC_ST_BUSY;
-    func_8002FA50(0x18);
-    func_8002F8A8(discChange_resetState);
+    fade_in(0x18);
+    fade_setOnDone(discChange_resetState);
 }
 
 void discChange_resetState(void) {

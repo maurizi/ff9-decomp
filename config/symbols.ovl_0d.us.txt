@@ -1,6 +1,5 @@
 g_tmNoLabel = 0x800A7398; // force_not_migration:True [code] "NO" before the card number in tm_showStockCard
 g_tmText = 0x800B3668; // [code] the text bank this overlay passes to text_setBank
-func_800355DC = 0x800355DC; // type:func main exe function passed to func_8003556C as a callback (splat named the address D_800355DC), drop this line once main's symbols.us.txt names it
 tm_main = 0x800A752C; // type:func [code] first function of .text, runs tm_init, tm_mainLoop, tm_exit (game mode 9 loads file 0x0D in game_loadModeOverlay's table)
 tm_init = 0x800A755C; // type:func [code] installs tm_soundCmd as the GameData.unk83C sound hook, loads the data file, sound blocks and music 0x42 and starts that music
 tm_exit = 0x800A75E0; // type:func [code] stops music 0x42 (tm_soundCmd 0x100), frees the data copy, sets GameState.unkA = 9 and mode 1

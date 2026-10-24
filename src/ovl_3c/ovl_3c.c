@@ -5,12 +5,12 @@ void shop_drawMessage(void) {
     if (s_shop.help != NULL) {
         text_drawBlock(s_shopMessageRect.x + 0xA, s_shopMessageRect.y + 6, s_shop.messageOtz, s_shop.help, 0);
     }
-    func_8002DEE4(&s_shopMessageRect, s_shop.messageOtz, 1);
-    func_8002705C(&s_shopMessageRect, s_shop.messageOtz, 1);
+    win_drawBox(&s_shopMessageRect, s_shop.messageOtz, 1);
+    win_drawShadow(&s_shopMessageRect, s_shop.messageOtz, 1);
 }
 
 void shop_inputMenu(void) {
-    if (!func_8002F810()) {
+    if (!fade_isBusy()) {
         if (g_padRepeat & BTN_CIRCLE) {
             snd_playSe(SE_CANCEL);
             shop_close();
@@ -38,8 +38,8 @@ void shop_drawMenu(void) {
     s32 y;
 
     s_shopMenuRect.h = s_shop.entryCount * 0xF + 0xB;
-    func_8002DEE4(&s_shopMenuRect, 0x23, 2);
-    func_8002705C(&s_shopMenuRect, 0x23, 2);
+    win_drawBox(&s_shopMenuRect, 0x23, 2);
+    win_drawShadow(&s_shopMenuRect, 0x23, 2);
     for (i = 0; i < s_shop.entryCount; i++) {
         text_drawBlock(s_shopMenuRect.x + 0xA, s_shopMenuRect.y + 6 + i * 0xF, 0x1E, text_get(s_shopMenuText[s_shop.kind] + i), 0);
     }
@@ -57,7 +57,7 @@ s32 shop_sumArmorStat(s32 stat, u8 *equip) {
         if (equip[i] != ITEM_NONE) {
             if (equip[i] < 0xE0) {
                 j = equip[i] - 0x58;
-                b = &D_8006D328[j];
+                b = &g_armorStatBonus[j];
                 sum[0] += b->unk0;
                 sum[1] += b->unk1;
                 sum[2] += b->unk2;
@@ -84,8 +84,8 @@ s32 shop_sumArmorStat(s32 stat, u8 *equip) {
 
 void shop_leaveMode(void) {
     s_shop.messageOtz = SHOP_OTZ_MENU;
-    func_8002F9F0();
-    func_8002F8A8(shop_onModeLeft);
+    fade_outDefault();
+    fade_setOnDone(shop_onModeLeft);
 }
 
 void shop_setHelp(s32 i) {
@@ -113,22 +113,22 @@ void shop_collectMembers(void) {
 void shop_drawStatIcon(s32 x, s32 y, s32 z, s32 icon, u8 arg4) {
     RectTbl7 rects = s_shopIcons;
 
-    func_80027710(x, y, z, &rects.r[icon], arg4);
+    ui_drawSpriteDef(x, y, z, &rects.r[icon], arg4);
 }
 
 void shop_init(void) {
-    s_shop.id = D_80077DBC;
-    s_shop.kind = shop_getKind(D_80077DBC);
+    s_shop.id = g_menuArg;
+    s_shop.kind = shop_getKind(g_menuArg);
     s_shop.cursor = 0;
     s_shop.inMode = 0;
     s_shop.entryCount = shop_countEntries(s_shop.kind);
-    s_shop.savedOtz = func_8002F8E4(SHOP_FADE_OTZ);
+    s_shop.savedOtz = fade_setOtz(SHOP_FADE_OTZ);
     s_shop.messageOtz = SHOP_OTZ_MENU;
     s_shop.visits = 0;
     shop_setHelp(SHOP_TEXT_WELCOME);
     text_setBank(g_shopText);
-    func_8003556C(shop_updateHelp);
-    func_80028720(s_shopImage, 0xD);
+    help_setCallback(shop_updateHelp);
+    ui_loadPortraits(s_shopImage, 0xD);
     shop_loadImages();
 }
 
@@ -145,13 +145,13 @@ void shop_update(void) {
 }
 
 void shop_exit(void) {
-    func_8003556C(NULL);
-    func_8002886C();
+    help_setCallback(NULL);
+    ui_restorePortraits();
 }
 
 void shop_drawTitle(void) {
-    func_8002DEE4(&s_shopTitleRect, 5, 2);
-    func_8002705C(&s_shopTitleRect, 0x28, 2);
+    win_drawBox(&s_shopTitleRect, 5, 2);
+    win_drawShadow(&s_shopTitleRect, 0x28, 2);
     text_drawBlock(s_shopTitleRect.x + 0xA, s_shopTitleRect.y + 6, 4, (u8 *)text_getFrom(g_shopText, s_shop.kind + SHOP_TEXT_TITLE), 0);
 }
 
@@ -164,19 +164,19 @@ void func_801F47F0(void) {
 }
 
 void shop_drawMenuCursor(void) {
-    if (!func_8002F810()) {
-        D_80077DE8.unk0 = 0x6E;
-        D_80077DE8.unk4 = 0x14;
-        D_80077DE8.unk2 = s_shop.cursor * 0xF + 0x6A;
-        func_800355E4();
+    if (!fade_isBusy()) {
+        g_menuHelp.x = 0x6E;
+        g_menuHelp.otz = 0x14;
+        g_menuHelp.y = s_shop.cursor * 0xF + 0x6A;
+        help_drawCursor();
     }
 }
 
 void shop_onModeLeft(void) {
     s_shop.inMode = 0;
     s_shopModes[s_shop.kind][s_shop.cursor][SHOP_MODE_EXIT]();
-    func_8002F9D0();
-    func_8003556C(shop_updateHelp);
+    fade_inDefault();
+    help_setCallback(shop_updateHelp);
     text_setBank(g_shopText);
     shop_setHelp(s_shop.visits != 0 ? SHOP_TEXT_ANYTHING_ELSE : SHOP_TEXT_WELCOME);
 }
@@ -200,18 +200,18 @@ void shop_selectMenu(void) {
         return;
     }
     s_shop.visits++;
-    func_8002F9F0();
-    func_8002F8A8(shop_enterMode);
+    fade_outDefault();
+    fade_setOnDone(shop_enterMode);
 }
 
 void shop_updateHelp(void) {
-    func_80035580(&s_shopHelpRect);
-    D_80077DE8.unk8 = text_get(s_shopMenuHelpText[s_shop.kind] + s_shop.cursor);
+    help_setBounds(&s_shopHelpRect);
+    g_menuHelp.text = text_get(s_shopMenuHelpText[s_shop.kind] + s_shop.cursor);
 }
 
 void shop_close(void) {
-    func_8002F8E4(s_shop.savedOtz);
-    func_800325E0();
+    fade_setOtz(s_shop.savedOtz);
+    menu_close();
 }
 
 void shop_loadImages(void) {
@@ -232,8 +232,8 @@ s32 shop_getKind(s32 id) {
 void shop_enterMode(void) {
     s_shop.inMode = 1;
     s_shopModes[s_shop.kind][s_shop.cursor][SHOP_MODE_INIT]();
-    func_8002F9D0();
-    func_8002F8A8(shop_onModeEntered);
+    fade_inDefault();
+    fade_setOnDone(shop_onModeEntered);
 }
 
 void shop_onModeEntered(void) {
@@ -243,15 +243,15 @@ void shop_onModeEntered(void) {
 void shopBuy_init(void) {
     s_shopBuy.state = SHOP_ST_LIST;
     shopBuy_loadList();
-    func_80035580(NULL);
-    func_8003556C(shopBuy_updateHelp);
+    help_setBounds(NULL);
+    help_setCallback(shopBuy_updateHelp);
     setRECT(&s_shopBuy.infoRect, 0xBC, 0x26, 0x78, s_shopBuy.hasEquipment ? 0x71 : 0xAD);
     setRECT(&s_shopBuy.listRect, 8, 0x26, 0xB4, s_shopBuy.hasEquipment ? 0x71 : 0xAD);
     setRECT(&s_shopBuy.partyRect, 8, 0x97, 0x12C, 0x45);
     setRECT(&s_shopBuy.quantityRect, 0x62, 0x60, 0x7C, 0x45);
     text_setBank(g_shopBuyText);
     shop_setHelp(SHOP_TEXT_BUY_WHAT);
-    func_8002EDFC(&s_shopBuy.list, s_shopBuy.count, s_shopBuy.hasEquipment ? 7 : 0xB, 1, s_shopBuy.listRect.h);
+    menuList_init(&s_shopBuy.list, s_shopBuy.count, s_shopBuy.hasEquipment ? 7 : 0xB, 1, s_shopBuy.listRect.h);
     shop_collectMembers();
 }
 
@@ -309,10 +309,10 @@ void shopBuy_drawInfo(void) {
 
     r = &s_shopBuy.infoRect;
     l = &s_shopBuy.list;
-    id = s_shopBuy.items[l->unk5 + l->cursor];
-    equip = (D_80069018[id].unkF & 0xF8) != 0;
+    id = s_shopBuy.items[l->top + l->cursor];
+    equip = (g_itemTable[id].unkF & 0xF8) != 0;
     ui_drawLabel(r->x + 6, r->y - 3, 0x1E, D_80070460, 0);
-    func_8002DEE4(r, 0x23, 1);
+    win_drawBox(r, 0x23, 1);
     for (i = 0; i < 3; i++) {
         text_drawBlock(r->x + 8, r->y + s_shopBuyInfoRowY[i] - 4, 0x1E, text_getFrom(g_shopText, s_shopBuyInfoRowText[i]),
                       (s_shopBuyInfoRowAlways[i] | equip) ? 0 : 2);
@@ -322,7 +322,7 @@ void shopBuy_drawInfo(void) {
     ui_drawSmallDigits(r->x + 0x39, r->y + s_shopBuyInfoRowY[0], 0x1E, buf, 0);
     text_formatNumber(item_getCount(id), buf, 2, 1);
     ui_drawSmallDigits(r->x + 0x5C, r->y + s_shopBuyInfoRowY[1], 0x1E, buf, 0);
-    text_formatNumber(func_80027F94(id), buf, 2, 1);
+    text_formatNumber(item_countEquipped(id), buf, 2, 1);
     ui_drawSmallDigits(r->x + 0x5C, r->y + s_shopBuyInfoRowY[2], 0x1E, buf, equip ? 0 : 2);
 }
 
@@ -334,18 +334,18 @@ void shopBuy_drawList(void) {
     MenuList *list;
     RECT *r = &s_shopBuy.listRect;
 
-    w = func_8002AE7C((u8 *)D_800703FC.unkA4);
-    ui_drawLabel(r->x + 0xE, r->y - 3, 0x23, D_800703FC.unk68, 0);
-    ui_drawLabel((r->x + 0xA6) - w, r->y - 3, 0x23, D_800703FC.unkA4, 0);
+    w = ui_measureLabel((u8 *)g_winLabelStrings.unkA4);
+    ui_drawLabel(r->x + 0xE, r->y - 3, 0x23, g_winLabelStrings.unk68, 0);
+    ui_drawLabel((r->x + 0xA6) - w, r->y - 3, 0x23, g_winLabelStrings.unkA4, 0);
     list = &s_shopBuy.list;
-    func_8002E040(r, 0x23, 1, list);
+    win_drawListBox(r, 0x23, 1, list);
     menuList_getView(list, &view);
     win_setClip(NULL, 0x1E, 1);
     for (i = 0; i < view.unk0; i++) {
         shopBuy_drawRow(0, i, view.unk1 + i, &view);
     }
-    if (list->unk8 & 4) {
-        func_8002F40C(list, r, &sub);
+    if (list->scroll & 4) {
+        menuList_getRowsRect(list, r, &sub);
         win_setClip(&sub, 0x1E, 1);
         shopBuy_drawScrollRows();
     }
@@ -370,26 +370,26 @@ void shopBuy_drawParty(void) {
 
     r = &s_shopBuy.partyRect;
     l = &s_shopBuy.list;
-    id = s_shopBuy.items[l->unk5 + l->cursor];
+    id = s_shopBuy.items[l->top + l->cursor];
     if (s_shopBuy.hasEquipment == 0) {
         return;
     }
-    func_8002DEE4(r, 0x23, 1);
-    kind = func_80028014(id);
+    win_drawBox(r, 0x23, 1);
+    kind = item_getEquipSlot(id);
     if (kind < 0) {
         return;
     }
     armor = kind > 0;
-    ui_drawLabel(r->x + 6, r->y - 3, 0x1D, ((u8 **)&D_800703FC)[s_shopBuyPartyLabel[armor]], 0);
+    ui_drawLabel(r->x + 6, r->y - 3, 0x1D, ((u8 **)&g_winLabelStrings)[s_shopBuyPartyLabel[armor]], 0);
     for (i = 0; i < s_shop.memberCount; i++) {
         x = 0xF + i * 0x24;
         c = &g_gameState->unk1C->characters[(u8)s_shop.members[i]];
-        ok = (D_80069018[id].unk6 & s_shopBuyEquipMask[chr_getDefaultSet(c)]) != 0;
+        ok = (g_itemTable[id].unk6 & s_shopBuyEquipMask[chr_getDefaultSet(c)]) != 0;
         y = 0x9E;
         if (ok) {
             if (!armor) {
-                new = D_8006E0E8[id].unk5;
-                cur = D_8006E0E8[c->equip[0]].unk5;
+                new = g_weaponTable[id].unk5;
+                cur = g_weaponTable[c->equip[0]].unk5;
             } else {
                 eq = *(Equip5 *)c->equip;
                 eq.v[kind] = id;
@@ -409,7 +409,7 @@ void shopBuy_drawParty(void) {
                 shop_drawStatIcon(x - 1, y + 0x28, 0x1E, SHOP_ICON_DOWN, 0);
             }
         }
-        func_80028204(x, y, 0x1E, func_80028954((u8)s_shop.members[i]), 0x2D, !ok);
+        ui_drawPortraitId(x, y, 0x1E, chr_getPortrait((u8)s_shop.members[i]), 0x2D, !ok);
     }
 }
 
@@ -422,11 +422,11 @@ void shopBuy_drawQuantityWindow(Window *w) {
 
     l = &s_shopBuy.list;
     b = &s_shopBuy;
-    id = b->items[l->unk5 + l->cursor];
-    it = &D_80069018[id];
+    id = b->items[l->top + l->cursor];
+    it = &g_itemTable[id];
     ui_drawItemIcon(w->unk0 + 8, w->unk2 + 8, w->unk18, id, 1);
-    text_drawBlock(w->unk0 + 0x18, w->unk2 + 8, w->unk18, D_8006A218 + it->unk0, 0);
-    func_800269F4(w->unk0 + 4, w->unk2 + 0x18, w->unk18, w->unk4 - 9);
+    text_drawBlock(w->unk0 + 0x18, w->unk2 + 8, w->unk18, g_itemNames + it->unk0, 0);
+    ui_drawEtchedLine(w->unk0 + 4, w->unk2 + 0x18, w->unk18, w->unk4 - 9);
     text_drawBlock(w->unk0 + 0xC, w->unk2 + 0x1E, w->unk18, text_getFrom(g_shopText, SHOP_TEXT_QUANTITY), 0);
     text_drawBlock(w->unk0 + 0xC, w->unk2 + 0x2E, w->unk18, text_getFrom(g_shopText, SHOP_TEXT_PRICE), 0);
     text_formatNumber(b->quantity, buf, 2, 1);
@@ -437,18 +437,18 @@ void shopBuy_drawQuantityWindow(Window *w) {
 }
 
 void shopBuy_drawCursor(void) {
-    if (!func_8002F810()) {
-        if (s_shopBuy.state == SHOP_ST_LIST || (D_80077DC0 & 3)) {
-            D_80077DE8.unk4 = 0x14;
-            D_80077DE8.unk0 = s_shopBuy.listRect.x - 8;
-            D_80077DE8.unk2 = s_shopBuy.listRect.y + (s16)(s_shopBuy.list.cursor * 0xF + 0xB);
-            func_800355E4();
+    if (!fade_isBusy()) {
+        if (s_shopBuy.state == SHOP_ST_LIST || (g_menuFrame & 3)) {
+            g_menuHelp.otz = 0x14;
+            g_menuHelp.x = s_shopBuy.listRect.x - 8;
+            g_menuHelp.y = s_shopBuy.listRect.y + (s16)(s_shopBuy.list.cursor * 0xF + 0xB);
+            help_drawCursor();
         }
         if (s_shopBuy.state == SHOP_ST_QUANTITY) {
-            D_80077DE8.unk0 = s_shopBuy.quantityWin->unk0 - 0xE;
-            D_80077DE8.unk2 = s_shopBuy.quantityWin->unk2 + 0x22;
-            D_80077DE8.unk4 = s_shopBuy.quantityWin->unk18 - 1;
-            func_800355E4();
+            g_menuHelp.x = s_shopBuy.quantityWin->unk0 - 0xE;
+            g_menuHelp.y = s_shopBuy.quantityWin->unk2 + 0x22;
+            g_menuHelp.otz = s_shopBuy.quantityWin->unk18 - 1;
+            help_drawCursor();
         }
     }
 }
@@ -465,8 +465,8 @@ void shopBuy_openQuantity(void) {
 
     l = &s_shopBuy.list;
     m = &s_shopBuy;
-    id = m->items[l->unk5 + l->cursor];
-    it = &D_80069018[id];
+    id = m->items[l->top + l->cursor];
+    it = &g_itemTable[id];
     have = item_getCount(id);
     if (have < ITEM_MAX_COUNT && g_gameState->unk1C->gil >= it->unk4) {
         m->quantity = 1;
@@ -478,12 +478,12 @@ void shopBuy_openQuantity(void) {
         }
         m2->maxQuantity = n;
         s_shopBuy.state = SHOP_ST_NONE;
-        m2->quantityWin = func_8002DC54(&m2->quantityRect, 0xA, 2);
+        m2->quantityWin = win_openFree(&m2->quantityRect, 0xA, 2);
         win_setDrawContent(s_shopBuy.quantityWin, shopBuy_drawQuantityWindow);
         win_setOnOpened(s_shopBuy.quantityWin, shopBuy_onQuantityOpened);
         win_setOnClosed(s_shopBuy.quantityWin, shopBuy_onQuantityClosed);
-        func_8002E31C(s_shopBuy.quantityWin, 1);
-        func_8002E304(s_shopBuy.quantityWin, D_800704A4);
+        win_setShadow(s_shopBuy.quantityWin, 1);
+        win_setTitle(s_shopBuy.quantityWin, D_800704A4);
         snd_playSe(SE_CURSOR);
     } else {
         snd_playSe(SE_BUZZER);
@@ -500,7 +500,7 @@ void shopBuy_update(void) {
 }
 
 void shopBuy_exit(void) {
-    func_8003556C(NULL);
+    help_setCallback(NULL);
 }
 
 s32 shop_isEquipmentShop(s32 shop) {
@@ -511,7 +511,7 @@ s32 shop_isEquipmentShop(s32 shop) {
     list = s_shopItems[shop];
     for (i = 0; i < SHOP_LIST_SIZE; i++) {
         if (list[i] != ITEM_NONE) {
-            if (!(D_80069018[list[i]].unkF & 0xF0)) {
+            if (!(g_itemTable[list[i]].unkF & 0xF0)) {
                 return 0;
             }
         }
@@ -522,7 +522,7 @@ s32 shop_isEquipmentShop(s32 shop) {
 void shopBuy_input(void) {
     void (*fn)(void);
 
-    if (!func_8002F810()) {
+    if (!fade_isBusy()) {
         fn = s_shopBuyInputFuncs[s_shopBuy.state];
         if (fn != NULL) {
             fn();
@@ -538,15 +538,15 @@ void shopBuy_draw(void) {
 }
 
 void shopBuy_updateList(void) {
-    if (s_shopBuy.list.unk8 != 0) {
-        func_8002EB74(&s_shopBuy.list);
+    if (s_shopBuy.list.scroll != 0) {
+        menuList_update(&s_shopBuy.list);
     }
 }
 
 void shopBuy_inputList(void) {
     MenuList *m = &s_shopBuy.list;
 
-    if (m->unk8 == 0) {
+    if (m->scroll == 0) {
         if (g_padRepeat & BTN_CIRCLE) {
             snd_playSe(SE_CANCEL);
             shop_leaveMode();
@@ -564,7 +564,7 @@ void shopBuy_drawScrollRows(void) {
     MenuView v;
     s32 i;
 
-    func_8002F344(&s_shopBuy.list, &v);
+    menuList_getPageView(&s_shopBuy.list, &v);
     for (i = 0; i < v.unk0; i++) {
         shopBuy_drawRow(0, i, v.unk1 + i, &v);
     }
@@ -580,7 +580,7 @@ void shopBuy_drawRow(s32 unused, s32 row, s32 idx, MenuView *v) {
 
     ok = 0;
     id = s_shopBuy.items[idx];
-    it = &D_80069018[id];
+    it = &g_itemTable[id];
     if (item_getCount(id) < ITEM_MAX_COUNT) {
         ok = g_gameState->unk1C->gil >= it->unk4;
     }
@@ -589,7 +589,7 @@ void shopBuy_drawRow(s32 unused, s32 row, s32 idx, MenuView *v) {
     y = row * 15 + (v->unk2 + y);
     text_formatNumber(it->unk4, buf, 5, 1);
     ui_drawItemIcon(x, y, 0x1E, id, ok);
-    text_drawBlock(x + 0x10, y, 0x1E, D_8006A218 + it->unk0, ok ? 0 : 2);
+    text_drawBlock(x + 0x10, y, 0x1E, g_itemNames + it->unk0, ok ? 0 : 2);
     ui_drawSmallDigits(x + 0x72, y + 4, 0x1E, buf, ok ? 0 : 2);
 }
 
@@ -618,7 +618,7 @@ void shopBuy_loadList(void) {
         if (s_shopBuy.items[i] == ITEM_NONE) {
             break;
         }
-        if (D_80069018[s_shopBuy.items[i]].unkF & 0xF8) {
+        if (g_itemTable[s_shopBuy.items[i]].unkF & 0xF8) {
             s_shopBuy.hasEquipment = 1;
         }
         s_shopBuy.count++;
@@ -634,9 +634,9 @@ void shopBuy_confirm(void) {
 
     l = &s_shopBuy.list;
     b = &s_shopBuy;
-    id = b->items[l->unk5 + l->cursor];
-    it = &D_80069018[id];
-    n = func_80027D84(id, b->quantity);
+    id = b->items[l->top + l->cursor];
+    it = &g_itemTable[id];
+    n = item_add(id, b->quantity);
     if (n != 0) {
         g_gameState->unk1C->gil -= it->unk4 * n;
         shopBuy_closeQuantity();
@@ -647,28 +647,28 @@ void shopBuy_updateHelp(void) {
     MenuList *l;
     u8 id;
 
-    D_80077DE8.unk8 = NULL;
+    g_menuHelp.text = NULL;
     l = &s_shopBuy.list;
     if (s_shopBuy.state == SHOP_ST_LIST) {
-        id = s_shopBuy.items[l->unk5 + l->cursor];
-        D_80077DE8.unk8 = s_shopItemHelp + D_80069018[id].unk2;
+        id = s_shopBuy.items[l->top + l->cursor];
+        g_menuHelp.text = s_shopItemHelp + g_itemTable[id].unk2;
     } else if (s_shopBuy.state == SHOP_ST_QUANTITY) {
-        D_80077DE8.unk8 = text_get(SHOP_BUY_TEXT_QUANTITY_HELP);
+        g_menuHelp.text = text_get(SHOP_BUY_TEXT_QUANTITY_HELP);
     }
 }
 
 void shopSynth_init(void) {
     shopSynth_loadRecipes();
     s_shopSynth.state = SHOP_ST_LIST;
-    func_80035580(NULL);
-    func_8003556C(shopSynth_updateHelp);
+    help_setBounds(NULL);
+    help_setCallback(shopSynth_updateHelp);
     setRECT(&s_shopSynth.infoRect, 0xBC, 0x26, 0x78, s_shopSynth.hasEquipment ? 0x71 : 0xAD);
     setRECT(&s_shopSynth.listRect, 8, 0x26, 0xB4, s_shopSynth.hasEquipment ? 0x71 : 0xAD);
     setRECT(&s_shopSynth.partyRect, 8, 0x97, 0x12C, 0x45);
     setRECT(&s_shopSynth.quantityRect, 0x62, 0x60, 0x7C, 0x45);
     text_setBank(g_shopSynthText);
     shop_setHelp(SHOP_TEXT_SYNTH_WHAT);
-    func_8002EDFC(&s_shopSynth.list, s_shopSynth.count, s_shopSynth.hasEquipment ? 7 : 0xB, 1, s_shopSynth.listRect.h);
+    menuList_init(&s_shopSynth.list, s_shopSynth.count, s_shopSynth.hasEquipment ? 7 : 0xB, 1, s_shopSynth.listRect.h);
     shop_collectMembers();
 }
 
@@ -728,10 +728,10 @@ void shopSynth_drawInfo(void) {
 
     r = &s_shopSynth.infoRect;
     l = &s_shopSynth.list;
-    s = &s_shopSynth.recipes[l->unk5 + l->cursor];
-    equip = (D_80069018[s->product].unkF & 0xF8) != 0;
-    func_800269F4(r->x + 2, r->y + 0x36, 0x23, r->w - 5);
-    func_8002DEE4(r, 0x23, 1);
+    s = &s_shopSynth.recipes[l->top + l->cursor];
+    equip = (g_itemTable[s->product].unkF & 0xF8) != 0;
+    ui_drawEtchedLine(r->x + 2, r->y + 0x36, 0x23, r->w - 5);
+    win_drawBox(r, 0x23, 1);
     ui_drawLabel(r->x + 6, r->y - 3, 0x1E, D_80070460, 0);
     for (i = 0; i < 4; i++) {
         text_drawBlock(r->x + 8, r->y + s_shopSynthInfoRowY[i] - 4, 0x1E, text_getFrom(g_shopText, s_shopSynthInfoRowText[i]),
@@ -742,7 +742,7 @@ void shopSynth_drawInfo(void) {
     ui_drawSmallDigits(r->x + 0x39, r->y + s_shopSynthInfoRowY[0], 0x1E, buf, 0);
     text_formatNumber(item_getCount(s->product), buf, 2, 1);
     ui_drawSmallDigits(r->x + 0x5C, r->y + s_shopSynthInfoRowY[1], 0x1E, buf, 0);
-    text_formatNumber(func_80027F94(s->product), buf, 2, 1);
+    text_formatNumber(item_countEquipped(s->product), buf, 2, 1);
     ui_drawSmallDigits(r->x + 0x5C, r->y + s_shopSynthInfoRowY[2], 0x1E, buf, equip ? 0 : 2);
     for (i = 0; i < 2; i++) {
         if (s->ingredients[i] != ITEM_NONE) {
@@ -753,7 +753,7 @@ void shopSynth_drawInfo(void) {
                 ok = have != 0;
             }
             ui_drawItemIcon(r->x + 0xC, r->y + 0x4C + i * 17, 0x1E, s->ingredients[i], ok);
-            text_drawBlock(r->x + 0x1C, r->y + 0x4D + i * 17, 0x1E, D_8006A218 + D_80069018[s->ingredients[i]].unk0,
+            text_drawBlock(r->x + 0x1C, r->y + 0x4D + i * 17, 0x1E, g_itemNames + g_itemTable[s->ingredients[i]].unk0,
                           ok ? 0 : 2);
         }
     }
@@ -767,18 +767,18 @@ void shopSynth_drawList(void) {
     MenuList *list;
     RECT *r = &s_shopSynth.listRect;
 
-    w = func_8002AE7C((u8 *)D_800703FC.unkA4);
-    ui_drawLabel(r->x + 0xE, r->y - 3, 0x23, D_800703FC.unk68, 0);
-    ui_drawLabel((r->x + 0xA6) - w, r->y - 3, 0x23, D_800703FC.unkA4, 0);
+    w = ui_measureLabel((u8 *)g_winLabelStrings.unkA4);
+    ui_drawLabel(r->x + 0xE, r->y - 3, 0x23, g_winLabelStrings.unk68, 0);
+    ui_drawLabel((r->x + 0xA6) - w, r->y - 3, 0x23, g_winLabelStrings.unkA4, 0);
     list = &s_shopSynth.list;
-    func_8002E040(r, 0x23, 1, list);
+    win_drawListBox(r, 0x23, 1, list);
     menuList_getView(list, &view);
     win_setClip(NULL, 0x1E, 1);
     for (i = 0; i < view.unk0; i++) {
         shopSynth_drawRow(0, i, view.unk1 + i, &view);
     }
-    if (list->unk8 & 4) {
-        func_8002F40C(list, r, &sub);
+    if (list->scroll & 4) {
+        menuList_getRowsRect(list, r, &sub);
         win_setClip(&sub, 0x1E, 1);
         shopSynth_drawScrollRows();
     }
@@ -803,26 +803,26 @@ void shopSynth_drawParty(void) {
 
     r = &s_shopSynth.partyRect;
     l = &s_shopSynth.list;
-    s = &s_shopSynth.recipes[l->unk5 + l->cursor];
+    s = &s_shopSynth.recipes[l->top + l->cursor];
     if (s_shopSynth.hasEquipment == 0) {
         return;
     }
-    func_8002DEE4(r, 0x23, 1);
-    kind = func_80028014(s->product);
+    win_drawBox(r, 0x23, 1);
+    kind = item_getEquipSlot(s->product);
     if (kind < 0) {
         return;
     }
     armor = kind > 0;
-    ui_drawLabel(r->x + 6, r->y - 3, 0x1D, ((u8 **)&D_800703FC)[s_shopSynthPartyLabel[armor]], 0);
+    ui_drawLabel(r->x + 6, r->y - 3, 0x1D, ((u8 **)&g_winLabelStrings)[s_shopSynthPartyLabel[armor]], 0);
     for (i = 0; i < s_shop.memberCount; i++) {
         x = 0xF + i * 0x24;
         c = &g_gameState->unk1C->characters[(u8)s_shop.members[i]];
-        ok = (D_80069018[s->product].unk6 & s_shopSynthEquipMask[chr_getDefaultSet(c)]) != 0;
+        ok = (g_itemTable[s->product].unk6 & s_shopSynthEquipMask[chr_getDefaultSet(c)]) != 0;
         y = 0x9E;
         if (ok) {
             if (!armor) {
-                new = D_8006E0E8[s->product].unk5;
-                cur = D_8006E0E8[c->equip[0]].unk5;
+                new = g_weaponTable[s->product].unk5;
+                cur = g_weaponTable[c->equip[0]].unk5;
             } else {
                 eq = *(Equip5 *)c->equip;
                 eq.v[kind] = s->product;
@@ -842,7 +842,7 @@ void shopSynth_drawParty(void) {
                 shop_drawStatIcon(x - 1, y + 0x28, 0x1E, SHOP_ICON_DOWN, 0);
             }
         }
-        func_80028204(x, y, 0x1E, func_80028954((u8)s_shop.members[i]), 0x2D, !ok);
+        ui_drawPortraitId(x, y, 0x1E, chr_getPortrait((u8)s_shop.members[i]), 0x2D, !ok);
     }
 }
 
@@ -855,12 +855,12 @@ void shopSynth_drawQuantityWindow(Window *w) {
     u8 id;
 
     l = &s_shopSynth.list;
-    r = &s_shopSynth.recipes[l->unk5 + l->cursor];
+    r = &s_shopSynth.recipes[l->top + l->cursor];
     id = r->product;
-    it = &D_80069018[id];
+    it = &g_itemTable[id];
     ui_drawItemIcon(w->unk0 + 8, w->unk2 + 8, w->unk18, id, 1);
-    text_drawBlock(w->unk0 + 0x18, w->unk2 + 8, w->unk18, D_8006A218 + it->unk0, 0);
-    func_800269F4(w->unk0 + 4, w->unk2 + 0x18, w->unk18, w->unk4 - 9);
+    text_drawBlock(w->unk0 + 0x18, w->unk2 + 8, w->unk18, g_itemNames + it->unk0, 0);
+    ui_drawEtchedLine(w->unk0 + 4, w->unk2 + 0x18, w->unk18, w->unk4 - 9);
     text_drawBlock(w->unk0 + 0xC, w->unk2 + 0x1E, w->unk18, text_getFrom(g_shopText, SHOP_TEXT_QUANTITY), 0);
     text_drawBlock(w->unk0 + 0xC, w->unk2 + 0x2E, w->unk18, text_getFrom(g_shopText, SHOP_TEXT_PRICE), 0);
     s = &s_shopSynth;
@@ -872,18 +872,18 @@ void shopSynth_drawQuantityWindow(Window *w) {
 }
 
 void shopSynth_drawCursor(void) {
-    if (!func_8002F810()) {
-        if (s_shopSynth.state == SHOP_ST_LIST || (D_80077DC0 & 3)) {
-            D_80077DE8.unk4 = 0x14;
-            D_80077DE8.unk0 = s_shopSynth.listRect.x - 8;
-            D_80077DE8.unk2 = s_shopSynth.listRect.y + (s16)(s_shopSynth.list.cursor * 0xF + 0xB);
-            func_800355E4();
+    if (!fade_isBusy()) {
+        if (s_shopSynth.state == SHOP_ST_LIST || (g_menuFrame & 3)) {
+            g_menuHelp.otz = 0x14;
+            g_menuHelp.x = s_shopSynth.listRect.x - 8;
+            g_menuHelp.y = s_shopSynth.listRect.y + (s16)(s_shopSynth.list.cursor * 0xF + 0xB);
+            help_drawCursor();
         }
         if (s_shopSynth.state == SHOP_ST_QUANTITY) {
-            D_80077DE8.unk0 = s_shopSynth.quantityWin->unk0 - 0xE;
-            D_80077DE8.unk2 = s_shopSynth.quantityWin->unk2 + 0x22;
-            D_80077DE8.unk4 = s_shopSynth.quantityWin->unk18 - 1;
-            func_800355E4();
+            g_menuHelp.x = s_shopSynth.quantityWin->unk0 - 0xE;
+            g_menuHelp.y = s_shopSynth.quantityWin->unk2 + 0x22;
+            g_menuHelp.otz = s_shopSynth.quantityWin->unk18 - 1;
+            help_drawCursor();
         }
     }
 }
@@ -903,7 +903,7 @@ void shopSynth_drawRow(s32 unused, s32 row, s32 idx, MenuView *v) {
     r = &s_shopSynth.recipes[idx];
     ok = 0;
     id = r->product;
-    it = &D_80069018[id];
+    it = &g_itemTable[id];
     k = 1;
     if (item_getCount(id) < ITEM_MAX_COUNT) {
         ok = g_gameState->unk1C->gil >= r->price;
@@ -932,7 +932,7 @@ loop:
     text_formatNumber(r->price, buf, 5, k);
     id = ok;
     ui_drawItemIcon(x, y, 0x1E, r->product, id);
-    text_drawBlock(x + 0x10, y, 0x1E, D_8006A218 + it->unk0, id ? 0 : 2);
+    text_drawBlock(x + 0x10, y, 0x1E, g_itemNames + it->unk0, id ? 0 : 2);
     ui_drawSmallDigits(x + 0x72, y + 4, 0x1E, buf, id ? 0 : 2);
 }
 
@@ -947,7 +947,7 @@ void shopSynth_openQuantity(void) {
     u32 n;
 
     l = &s_shopSynth.list;
-    r = &s_shopSynth.recipes[l->unk5 + l->cursor];
+    r = &s_shopSynth.recipes[l->top + l->cursor];
     need = 1;
     if (r->ingredients[0] == r->ingredients[1]) {
         need = 2;
@@ -972,12 +972,12 @@ void shopSynth_openQuantity(void) {
         }
         m3 = &s_shopSynth;
         s_shopSynth.state = SHOP_ST_NONE;
-        m3->quantityWin = func_8002DC54(&m3->quantityRect, 0xA, 2);
+        m3->quantityWin = win_openFree(&m3->quantityRect, 0xA, 2);
         win_setDrawContent(m3->quantityWin, shopSynth_drawQuantityWindow);
         win_setOnOpened(m3->quantityWin, shopSynth_onQuantityOpened);
         win_setOnClosed(m3->quantityWin, shopSynth_onQuantityClosed);
-        func_8002E31C(m3->quantityWin, 1);
-        func_8002E304(m3->quantityWin, D_800704A4);
+        win_setShadow(m3->quantityWin, 1);
+        win_setTitle(m3->quantityWin, D_800704A4);
         snd_playSe(SE_CURSOR);
     } else {
         snd_playSe(SE_BUZZER);
@@ -1001,7 +1001,7 @@ void shopSynth_loadRecipes(void) {
         }
     }
     for (i = 0; i < s_shopSynth.count; i++) {
-        if (D_80069018[s_shopSynth.recipes[i].product].unkF & 0xF8) {
+        if (g_itemTable[s_shopSynth.recipes[i].product].unkF & 0xF8) {
             s_shopSynth.hasEquipment = 1;
         }
     }
@@ -1014,13 +1014,13 @@ void shopSynth_update(void) {
 }
 
 void shopSynth_exit(void) {
-    func_8003556C(NULL);
+    help_setCallback(NULL);
 }
 
 void shopSynth_input(void) {
     void (*fn)(void);
 
-    if (!func_8002F810()) {
+    if (!fade_isBusy()) {
         fn = s_shopSynthInputFuncs[s_shopSynth.state];
         if (fn != NULL) {
             fn();
@@ -1036,15 +1036,15 @@ void shopSynth_draw(void) {
 }
 
 void shopSynth_updateList(void) {
-    if (s_shopSynth.list.unk8 != 0) {
-        func_8002EB74(&s_shopSynth.list);
+    if (s_shopSynth.list.scroll != 0) {
+        menuList_update(&s_shopSynth.list);
     }
 }
 
 void shopSynth_inputList(void) {
     MenuList *m = &s_shopSynth.list;
 
-    if (m->unk8 == 0) {
+    if (m->scroll == 0) {
         if (g_padRepeat & BTN_CIRCLE) {
             snd_playSe(SE_CANCEL);
             shop_leaveMode();
@@ -1062,7 +1062,7 @@ void shopSynth_drawScrollRows(void) {
     MenuView v;
     s32 i;
 
-    func_8002F344(&s_shopSynth.list, &v);
+    menuList_getPageView(&s_shopSynth.list, &v);
     for (i = 0; i < v.unk0; i++) {
         shopSynth_drawRow(0, i, v.unk1 + i, &v);
     }
@@ -1088,8 +1088,8 @@ void shopSynth_confirm(void) {
     SynthRecipe *r;
     s32 n;
 
-    r = &s_shopSynth.recipes[m->unk5 + m->cursor];
-    n = func_80027D84(r->product, s_shopSynth.quantity);
+    r = &s_shopSynth.recipes[m->top + m->cursor];
+    n = item_add(r->product, s_shopSynth.quantity);
     if (n != 0) {
         item_remove(r->ingredients[0], n);
         item_remove(r->ingredients[1], n);
@@ -1102,13 +1102,13 @@ void shopSynth_updateHelp(void) {
     MenuList *l;
     u8 id;
 
-    D_80077DE8.unk8 = NULL;
+    g_menuHelp.text = NULL;
     l = &s_shopSynth.list;
     if (s_shopSynth.state == SHOP_ST_LIST) {
-        id = s_shopSynth.recipes[l->unk5 + l->cursor].product;
-        D_80077DE8.unk8 = s_shopItemHelp + D_80069018[id].unk2;
+        id = s_shopSynth.recipes[l->top + l->cursor].product;
+        g_menuHelp.text = s_shopItemHelp + g_itemTable[id].unk2;
     } else if (s_shopSynth.state == SHOP_ST_QUANTITY) {
-        D_80077DE8.unk8 = text_get(SHOP_SYNTH_TEXT_QUANTITY_HELP);
+        g_menuHelp.text = text_get(SHOP_SYNTH_TEXT_QUANTITY_HELP);
     }
 }
 
@@ -1116,9 +1116,9 @@ void shopSell_init(void) {
     s_shopSell.state = SHOP_ST_LIST;
     text_setBank(g_shopSellText);
     shop_setHelp(SHOP_TEXT_SELL_WHAT);
-    func_80035580(NULL);
-    func_8003556C(shopSell_updateHelp);
-    func_8002EDFC(&s_shopSell.list, 0xFF, 0xB, 2, 0xAD);
+    help_setBounds(NULL);
+    help_setCallback(shopSell_updateHelp);
+    menuList_init(&s_shopSell.list, 0xFF, 0xB, 2, 0xAD);
     setRECT(&s_shopSell.listRect, 8, 0x2A, 0x12C, 0xAD);
     setRECT(&s_shopSell.winRects[0], 0x62, 0x40, 0x7C, 0x45);
     setRECT(&s_shopSell.winRects[1], 0x62, 0x87, 0x7C, 0x3E);
@@ -1177,13 +1177,13 @@ void shopSell_drawList(void) {
     s32 idx;
     MenuList *list = &s_shopSell.list;
 
-    ui_drawLabel(s_shopSellListRectPtr->x + 0xE, s_shopSellListRectPtr->y - 3, 0x23, D_800703FC.unk68, 0);
-    ui_drawLabel(s_shopSellListRectPtr->x + 0xA4, s_shopSellListRectPtr->y - 3, 0x23, D_800703FC.unk68, 0);
-    w = func_8002AE7C((u8 *)D_800703FC.unk94);
-    ui_drawLabel((s_shopSellListRectPtr->x + 0x8A) - w, s_shopSellListRectPtr->y - 3, 0x23, D_800703FC.unk94, 0);
-    ui_drawLabel((s_shopSellListRectPtr->x + 0x120) - w, s_shopSellListRectPtr->y - 3, 0x23, D_800703FC.unk94, 0);
+    ui_drawLabel(s_shopSellListRectPtr->x + 0xE, s_shopSellListRectPtr->y - 3, 0x23, g_winLabelStrings.unk68, 0);
+    ui_drawLabel(s_shopSellListRectPtr->x + 0xA4, s_shopSellListRectPtr->y - 3, 0x23, g_winLabelStrings.unk68, 0);
+    w = ui_measureLabel((u8 *)g_winLabelStrings.unk94);
+    ui_drawLabel((s_shopSellListRectPtr->x + 0x8A) - w, s_shopSellListRectPtr->y - 3, 0x23, g_winLabelStrings.unk94, 0);
+    ui_drawLabel((s_shopSellListRectPtr->x + 0x120) - w, s_shopSellListRectPtr->y - 3, 0x23, g_winLabelStrings.unk94, 0);
     menuList_getView(list, &view);
-    func_8002E040(s_shopSellListRectPtr, 0x23, 1, list);
+    win_drawListBox(s_shopSellListRectPtr, 0x23, 1, list);
     idx = view.unk1 * 2;
     win_setClip(NULL, 0x1E, 1);
     for (row = 0; row < view.unk0; row++) {
@@ -1191,8 +1191,8 @@ void shopSell_drawList(void) {
             shopSell_drawRow(col, row, idx++, &view);
         }
     }
-    if (list->unk8 & 4) {
-        func_8002F40C(list, s_shopSellListRectPtr, &sub);
+    if (list->scroll & 4) {
+        menuList_getRowsRect(list, s_shopSellListRectPtr, &sub);
         win_setClip(&sub, 0x1E, 1);
         shopSell_drawScrollRows();
     }
@@ -1208,12 +1208,12 @@ void shopSell_drawQuantityWindow(Window *w) {
     u32 price;
 
     l = &s_shopSell.list;
-    id = (g_gameState->unk1C->items.slots + ((l->unk5 + l->cursor) * 2 + l->unk7))->id;
-    it = &D_80069018[id];
+    id = (g_gameState->unk1C->items.slots + ((l->top + l->cursor) * 2 + l->col))->id;
+    it = &g_itemTable[id];
     price = it->unk4 >> 1;
     ui_drawItemIcon(w->unk0 + 8, w->unk2 + 8, w->unk18, id, 1);
-    text_drawBlock(w->unk0 + 0x18, w->unk2 + 8, w->unk18, D_8006A218 + it->unk0, 0);
-    func_800269F4(w->unk0 + 4, w->unk2 + 0x18, w->unk18, w->unk4 - 9);
+    text_drawBlock(w->unk0 + 0x18, w->unk2 + 8, w->unk18, g_itemNames + it->unk0, 0);
+    ui_drawEtchedLine(w->unk0 + 4, w->unk2 + 0x18, w->unk18, w->unk4 - 9);
     text_drawBlock(w->unk0 + 0xC, w->unk2 + 0x1E, w->unk18, text_getFrom(g_shopText, SHOP_TEXT_QUANTITY), 0);
     text_drawBlock(w->unk0 + 0xC, w->unk2 + 0x2E, w->unk18, text_getFrom(g_shopText, SHOP_TEXT_PRICE), 0);
     m = &s_shopSell;
@@ -1234,8 +1234,8 @@ void shopSell_drawInfoWindow(Window *w) {
 
     r = (RECT *)w;
     l = &s_shopSell.list;
-    e = &g_gameState->unk1C->items.slots[(l->unk5 + l->cursor) * 2 + l->unk7];
-    equip = (D_80069018[e->unk0].unkF & 0xF8) != 0;
+    e = &g_gameState->unk1C->items.slots[(l->top + l->cursor) * 2 + l->col];
+    equip = (g_itemTable[e->unk0].unkF & 0xF8) != 0;
     for (i = 0; i < 3; i++) {
         text_drawBlock(r->x + 0xC, r->y + s_shopSellInfoRowY[i] - 4, w->unk18, text_getFrom(g_shopText, s_shopSellInfoRowText[i]),
                       (s_shopSellInfoRowAlways[i] | equip) ? 0 : 2);
@@ -1246,7 +1246,7 @@ void shopSell_drawInfoWindow(Window *w) {
     text_formatNumber(item_getCount(e->unk0), buf, 2, 1);
     ui_drawSmallDigits(r->x + 0x5C, r->y + s_shopSellInfoRowY[1], w->unk18, buf, 0);
     if (equip) {
-        text_formatNumber(func_80027F94(e->unk0), buf, 2, 1);
+        text_formatNumber(item_countEquipped(e->unk0), buf, 2, 1);
         ui_drawSmallDigits(r->x + 0x5C, r->y + s_shopSellInfoRowY[2], w->unk18, buf, 0);
     }
 }
@@ -1255,18 +1255,18 @@ void shopSell_drawCursor(void) {
     MenuList *l;
 
     l = &s_shopSell.list;
-    if (!func_8002F810()) {
-        if (s_shopSell.state == SHOP_ST_LIST || (D_80077DC0 & 3)) {
-            D_80077DE8.unk4 = 0x14;
-            D_80077DE8.unk0 = l->unk7 * 0x96;
-            D_80077DE8.unk2 = l->cursor * 0xF + 0x34;
-            func_800355E4();
+    if (!fade_isBusy()) {
+        if (s_shopSell.state == SHOP_ST_LIST || (g_menuFrame & 3)) {
+            g_menuHelp.otz = 0x14;
+            g_menuHelp.x = l->col * 0x96;
+            g_menuHelp.y = l->cursor * 0xF + 0x34;
+            help_drawCursor();
         }
         if (s_shopSell.state == SHOP_ST_QUANTITY) {
-            D_80077DE8.unk0 = s_shopSell.wins[0]->unk0 - 0xE;
-            D_80077DE8.unk2 = s_shopSell.wins[0]->unk2 + 0x22;
-            D_80077DE8.unk4 = s_shopSell.wins[0]->unk18 - 1;
-            func_800355E4();
+            g_menuHelp.x = s_shopSell.wins[0]->unk0 - 0xE;
+            g_menuHelp.y = s_shopSell.wins[0]->unk2 + 0x22;
+            g_menuHelp.otz = s_shopSell.wins[0]->unk18 - 1;
+            help_drawCursor();
         }
     }
 }
@@ -1276,19 +1276,19 @@ void shopSell_openQuantity(void) {
     UnkPair *p;
     s32 i;
 
-    p = &g_gameState->unk1C->items.slots[(l->unk5 + l->cursor) * 2 + l->unk7];
+    p = &g_gameState->unk1C->items.slots[(l->top + l->cursor) * 2 + l->col];
     if (p->unk1 != 0) {
         s_shopSell.quantity = 1;
         s_shopSell.maxQuantity = p->unk1;
         s_shopSell.state = SHOP_ST_NONE;
         for (i = 0; i < 2; i++) {
-            s_shopSell.wins[i] = func_8002DC54(&s_shopSell.winRects[i], s_shopSellWindows[i].otz, s_shopSellWindows[i].style);
+            s_shopSell.wins[i] = win_openFree(&s_shopSell.winRects[i], s_shopSellWindows[i].otz, s_shopSellWindows[i].style);
             win_setDrawContent(s_shopSell.wins[i], s_shopSellWindows[i].draw);
             win_setOnOpened(s_shopSell.wins[i], shopSell_onQuantityOpened);
             win_setOnClosed(s_shopSell.wins[i], shopSell_onQuantityClosed);
             win_setOpenAnim(s_shopSell.wins[i], 0);
-            func_8002E31C(s_shopSell.wins[i], 1);
-            func_8002E304(s_shopSell.wins[i], D_800703FC.unk0[s_shopSellWindows[i].label]);
+            win_setShadow(s_shopSell.wins[i], 1);
+            win_setTitle(s_shopSell.wins[i], g_winLabelStrings.unk0[s_shopSellWindows[i].label]);
         }
         snd_playSe(SE_CURSOR);
     } else {
@@ -1307,8 +1307,8 @@ void shopSell_confirm(void) {
 
     l = &s_shopSell.list;
     m = &s_shopSell;
-    id = (g_gameState->unk1C->items.slots + ((l->unk5 + l->cursor) * 2 + l->unk7))->id;
-    it = &D_80069018[id];
+    id = (g_gameState->unk1C->items.slots + ((l->top + l->cursor) * 2 + l->col))->id;
+    it = &g_itemTable[id];
     price = it->unk4 >> 1;
     n = item_remove(id, s_shopSell.quantity);
     if (n != 0) {
@@ -1330,13 +1330,13 @@ void shopSell_update(void) {
 }
 
 void shopSell_exit(void) {
-    func_8003556C(NULL);
+    help_setCallback(NULL);
 }
 
 void shopSell_input(void) {
     void (*fn)(void);
 
-    if (!func_8002F810()) {
+    if (!fade_isBusy()) {
         fn = s_shopSellInputFuncs[s_shopSell.state];
         if (fn != NULL) {
             fn();
@@ -1350,15 +1350,15 @@ void shopSell_draw(void) {
 }
 
 void shopSell_updateList(void) {
-    if (s_shopSell.list.unk8 != 0) {
-        func_8002EB74(&s_shopSell.list);
+    if (s_shopSell.list.scroll != 0) {
+        menuList_update(&s_shopSell.list);
     }
 }
 
 void shopSell_inputList(void) {
     MenuList *m = &s_shopSell.list;
 
-    if (m->unk8 == 0) {
+    if (m->scroll == 0) {
         if (g_padRepeat & BTN_CIRCLE) {
             snd_playSe(SE_CANCEL);
             shop_leaveMode();
@@ -1369,8 +1369,8 @@ void shopSell_inputList(void) {
             return;
         }
         menuList_input(m, g_padRepeat);
-        func_8002F044(m, g_padRepeat);
-        func_8002F0EC(m, g_padRepeat);
+        menuList_left(m, g_padRepeat);
+        menuList_right(m, g_padRepeat);
     }
 }
 
@@ -1380,7 +1380,7 @@ void shopSell_drawScrollRows(void) {
     s32 col;
     s32 idx;
 
-    func_8002F344(&s_shopSell.list, &v);
+    menuList_getPageView(&s_shopSell.list, &v);
     idx = v.unk1 * 2;
     for (row = 0; row < v.unk0; row++) {
         for (col = 0; col < 2; col++) {
@@ -1397,11 +1397,11 @@ void shopSell_drawRow(s32 col, s32 row, s32 i, MenuView *v) {
     u8 buf[8];
 
     if (p->unk1 != 0) {
-        it = &D_80069018[p->unk0];
+        it = &g_itemTable[p->unk0];
         x = col * 0x96;
         y = v->unk2 + (row * 0xF + k);
         text_formatNumber(p->unk1, buf, 2, 1);
-        text_drawBlock(x + 0x28, y, 0x1E, D_8006A218 + it->unk0, 0);
+        text_drawBlock(x + 0x28, y, 0x1E, g_itemNames + it->unk0, 0);
         ui_drawItemIcon(x + 0x18, y, 0x1E, p->unk0, 1);
         ui_drawSmallDigits(x + 0x84, y + 4, 0x1E, buf, 0);
     }
@@ -1427,28 +1427,28 @@ void shopSell_onQuantityClosed(Window *w) {
 }
 
 void shopSell_updateHelp(void) {
-    Unk80077DE8 *h;
+    HelpState *h;
     MenuList *l;
     s32 idx;
     UnkPair *p;
     u8 *text;
 
-    h = &D_80077DE8;
-    h->unk8 = NULL;
+    h = &g_menuHelp;
+    h->text = NULL;
     if (s_shopSell.state == SHOP_ST_LIST) {
         l = &s_shopSell.list;
-        idx = (l->unk5 + l->cursor) * 2 + l->unk7;
+        idx = (l->top + l->cursor) * 2 + l->col;
         p = &g_gameState->unk1C->items.slots[idx];
         if (p->unk1 == 0) {
             return;
         }
-        text = s_shopItemHelp + D_80069018[p->unk0].unk2;
+        text = s_shopItemHelp + g_itemTable[p->unk0].unk2;
     } else if (s_shopSell.state == SHOP_ST_QUANTITY) {
         text = text_get(SHOP_SELL_TEXT_QUANTITY_HELP);
     } else {
         return;
     }
-    h->unk8 = text;
+    h->text = text;
 }
 
 INCLUDE_RODATA("asm/us/ovl_3c/nonmatchings/ovl_3c", s_shopIcons);

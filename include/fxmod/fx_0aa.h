@@ -9,8 +9,8 @@ typedef struct {
     Pool6CEntry *unk4;
     Pool6CEntry *unk8;
     Pool6CEntry *unkC;
-    SVECTOR unk10; /* func_800DC818(0x10, 0x12) */
-    SVECTOR unk18; /* func_800DC818(0x10, 0x2B) */
+    SVECTOR unk10; /* btlfx_getUnitBonePos(0x10, 0x12) */
+    SVECTOR unk18; /* btlfx_getUnitBonePos(0x10, 0x2B) */
 } Fx0aaWork80;
 
 typedef struct {
@@ -19,7 +19,7 @@ typedef struct {
     Pool6CEntry *unk8;
     Pool6CEntry *unkC;
     Pool6CEntry *unk10;
-    SVECTOR unk14; /* position: env->unkC->unk38..3C */
+    SVECTOR unk14; /* position: env->targets->centerX..Z */
 } Fx0aaWork81;
 
 extern Unk800F78A4 *D_801E7D78;

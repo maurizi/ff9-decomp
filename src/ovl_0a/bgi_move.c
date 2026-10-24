@@ -45,7 +45,7 @@ BgiTriangle *bgi_getPassableNeighbor(BgiActor *arg0, BgiTriangle *arg1, s32 arg2
         if (mode == 5) {
             a = (Unk8004AB64 *)g_gameState->unk1C->unk8E0[g_gameState->unk1C->unk8E4.field->playerObj].unkC;
         } else if (mode == 1) {
-            a = func_8004AE00();
+            a = evt_getPlayer();
         } else {
             a = NULL;
         }
@@ -659,7 +659,7 @@ BgiActor *bgi_findPlayerActor(s32 *arg0) {
     if (mode == 5) {
         a = (Unk8004AB64 *)g_gameState->unk1C->unk8E0[g_gameState->unk1C->unk8E4.field->playerObj].unkC;
     } else if (mode == 1) {
-        a = func_8004AE00();
+        a = evt_getPlayer();
     } else {
         a = NULL;
     }
@@ -935,7 +935,7 @@ s16 bgi_getHeight(s16 arg0, s16 arg1) {
             return ((Unk8004AB64 *)g->unk8E0[g->unk8E4.field->playerObj].unkC)->pos.vy;
         }
         if (g_gameState->mode == 1) {
-            return func_8004AE00()->pos.vy;
+            return evt_getPlayer()->pos.vy;
         }
         return 0;
     }

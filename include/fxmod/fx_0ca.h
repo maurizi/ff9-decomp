@@ -8,7 +8,7 @@ typedef struct {
     Pool6CEntry *unk0;
     Pool6CEntry *unk4;
     SVECTOR unk8; /* unk10 raised by 0x190 */
-    SVECTOR unk10; /* position: env->unkC->unk38..3C */
+    SVECTOR unk10; /* position: env->targets->centerX..Z */
 } Fx0caWork;
 
 extern Unk800F78A4 *D_801E78B8;

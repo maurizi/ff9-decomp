@@ -28,27 +28,27 @@ s32 fx_0dd_op80(s32 mode, Fx0ddWork80 *work, Unk800F78A4 *env, Unk80100C78Entry 
         work->unk30.vy = 0x1000;
         work->unk30.vz = 0x1000;
         for (i = 0; i < 6; i++) {
-            work->unk5C[i] = ex->Hi_RegisterTexEffModel((BtlUnit9C8 *)ex->btlfx_getFileData(entry->unk8, D_801E8360[i]), 0x97, 0x3D40, 0, 0);
+            work->unk5C[i] = ex->Hi_RegisterTexEffModel((BtlUnit9C8 *)ex->btlfx_getFileData(entry->file, D_801E8360[i]), 0x97, 0x3D40, 0, 0);
         }
-        func_801E8238(&D_801E90B8, (u16 *)ex->btlfx_getFileData(entry->unk8, 1));
-        func_801E8238(&D_801E90C0, (u16 *)ex->btlfx_getFileData(entry->unk8, 0x10));
-        func_801E82E8(&D_801E90C8, (u16 *)ex->btlfx_getFileData(entry->unk8, 2));
-        func_801E82E8(&D_801E90D0, (u16 *)ex->btlfx_getFileData(entry->unk8, 0xF));
+        func_801E8238(&D_801E90B8, (u16 *)ex->btlfx_getFileData(entry->file, 1));
+        func_801E8238(&D_801E90C0, (u16 *)ex->btlfx_getFileData(entry->file, 0x10));
+        func_801E82E8(&D_801E90C8, (u16 *)ex->btlfx_getFileData(entry->file, 2));
+        func_801E82E8(&D_801E90D0, (u16 *)ex->btlfx_getFileData(entry->file, 0xF));
         work->unk58 = -1;
     } else {
-        frame = entry->unk0;
+        frame = entry->frame;
         switch (frame) {
         case 0:
-            work->unk4 = ex->func_800E3CEC(ex->btlfx_getFileData(entry->unk8, 0x14), (s32)&D_801E90D8);
-            work->unk0 = ex->func_800E3CEC(ex->btlfx_getFileData(entry->unk8, 0x12), (s32)&work->unk10);
+            work->unk4 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0x14), (s32)&D_801E90D8);
+            work->unk0 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0x12), (s32)&work->unk10);
             break;
         case 0x23:
             func_801E824C(&D_801E90B8, 0x23, NULL, &work->unk4C);
             work->unk4C.vx += work->unk10.vx;
             work->unk4C.vy += work->unk10.vy;
             work->unk4C.vz += work->unk10.vz;
-            work->unk8 = ex->func_800E3CEC(ex->btlfx_getFileData(entry->unk8, 0x11), (s32)&work->unk4C);
-            work->unkC = ex->func_800E3CEC(ex->btlfx_getFileData(entry->unk8, 0x13), (s32)&work->unk4C);
+            work->unk8 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0x11), (s32)&work->unk4C);
+            work->unkC = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0x13), (s32)&work->unk4C);
             if (work->unk8 != NULL) {
                 work->unk8->unk14 = (s32)D_801E8870;
                 work->unk8->unk12 = 0x35;
@@ -140,7 +140,7 @@ s32 fx_0dd_op80(s32 mode, Fx0ddWork80 *work, Unk800F78A4 *env, Unk80100C78Entry 
                 if (work->unk4 != NULL && work->unk4->unk30 == -1) {
                     work->unk4 = NULL;
                 }
-                ex->func_800E3D20((s32)work->unk4, (s32)&work->unk44);
+                ex->btlfx_moveEmitterTo((s32)work->unk4, (s32)&work->unk44);
             }
             work->unk54++;
         }
@@ -173,8 +173,8 @@ s32 fx_0dd_op84(s32 mode, Fx0ddWork84 *work, Unk800F78A4 *env, Unk80100C78Entry 
             work->unk4 = 0;
         } else {
             r = c = b = a = 0;
-            frame = entry->unk0;
-            ex->func_800E7D3C(0x10, 1, (s16 *)&work->unk8);
+            frame = entry->frame;
+            ex->btlfx_getWeaponPos(0x10, 1, (s16 *)&work->unk8);
             switch (work->unk0) {
             case 0:
                 r = 0x200;
@@ -183,7 +183,7 @@ s32 fx_0dd_op84(s32 mode, Fx0ddWork84 *work, Unk800F78A4 *env, Unk80100C78Entry 
                 c = ((0x1000 - a) >> 1) + 0x800;
                 if (frame >= 3) {
                     work->unk0 = 1;
-                    entry->unk0 = -1;
+                    entry->frame = -1;
                 }
                 break;
             case 1:
@@ -195,7 +195,7 @@ s32 fx_0dd_op84(s32 mode, Fx0ddWork84 *work, Unk800F78A4 *env, Unk80100C78Entry 
                 b = c;
                 if (frame >= 9) {
                     work->unk0 = 2;
-                    entry->unk0 = -1;
+                    entry->frame = -1;
                 }
                 break;
             case 2:
@@ -215,8 +215,8 @@ s32 fx_0dd_op84(s32 mode, Fx0ddWork84 *work, Unk800F78A4 *env, Unk80100C78Entry 
             rot.vz = r;
             rot.pad = 0;
             env->unk28 = 0x80;
-            ex->func_800D23D8((u8 *)ex->btlfx_getFileData(entry->unk8, 0x15), &work->unk8, NULL, b / 3, 0, 1, a / 2);
-            ex->func_800D23D8((u8 *)ex->btlfx_getFileData(entry->unk8, 0x16), &work->unk8, &rot, c / 2, 0, 1, a * 2 / 3);
+            ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->file, 0x15), &work->unk8, NULL, b / 3, 0, 1, a / 2);
+            ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->file, 0x16), &work->unk8, &rot, c / 2, 0, 1, a * 2 / 3);
             env->unk28 = 0;
             work->unk4++;
         }

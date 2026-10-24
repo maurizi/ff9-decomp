@@ -21,9 +21,9 @@ void wm_systemInit(void) {
 
     g_worldStartup = 1;
     if (g_evtGlobalVars.b[0x65] & 1) {
-        func_8002FB64(1);
+        fade_outAdditive(1);
     } else {
-        func_8002FAAC(1);
+        fade_out(1);
     }
     g_worldStoryCounterPtr = g_evtGlobalVars.h;
     if ((u16)g_evtGlobalVars.h[0] >= 0x2B52) {
@@ -65,8 +65,8 @@ void wm_systemInit(void) {
     wm_initMapState();
     func_80050E34(g_worldPointFxBufPtr);
     func_80050EFC(0x24, 0x30);
-    func_800325A4();
-    D_80073998[0] |= (BTN_CIRCLE | BTN_CROSS | BTN_TRIANGLE | BTN_SQUARE);
+    menu_reset();
+    g_padPortMask[0] |= (BTN_CIRCLE | BTN_CROSS | BTN_TRIANGLE | BTN_SQUARE);
 }
 
 INCLUDE_RODATA("asm/us/ovl_0c/nonmatchings/w_frame", g_worldVramSaveRect);
@@ -88,12 +88,12 @@ s32 wm_frameMain(void) {
             g_worldCdUser = WM_CD_SCRIPT;
             g_gameState->unk1C->unk0 |= GD_MENU_OPEN;
             menu_open(0, 0);
-            func_8004A9E8();
+            evt_onMenuOpen();
         }
     }
     if (!(g_gameState->unk1C->unk0 & GD_HIDE_ALL)) {
         g_worldPrimPtr = g_worldPrimBuffers[*g_worldBufIndex];
-        func_8004C204();
+        msg_beginDraw();
         g_worldTimeLogic = VSync(1);
         if (!(g_gameState->unk1C->unk0 & GD_MENU_OPEN)) {
             wm_updateLogic();
@@ -129,9 +129,9 @@ s32 wm_frameMain(void) {
         g_worldSuspended = 1;
     }
     if (!(g_gameState->unk1C->unk0 & GD_MENU_DISABLED)) {
-        func_80032100();
+        menu_update();
     }
-    func_80023A0C();
+    game_updateWindows();
     busy = g_worldEventResult != 0;
     if (g_gameState->unk1C->unk0 & GD_HIDE_ALL) {
         busy = 1;
@@ -139,14 +139,14 @@ s32 wm_frameMain(void) {
     if (g_worldMogChoice != 0) {
         busy = 1;
     }
-    func_80019160(0x8000, busy);
+    pad_setFlags(0x8000, busy);
     switch (g_worldEventResult) {
     case WM_EVT_BATTLE:
         if ((u8)g_worldActorTypeInfo[g_worldPlayer->unk11].cellAttr >> 2 == 0x34) {
             g_worldEventResult = 0;
         }
         g_gameState->unk1C->unk571 = func_800B8548();
-        func_80022D3C(0);
+        cd_syncAsync(0);
         while (cd_getState() != 0) {
         }
         while (wm_soundCommand(WM_SND_GET_STATE, 0, 0, 0, 0) != 0) {
@@ -155,9 +155,9 @@ s32 wm_frameMain(void) {
     case WM_EVT_FIELD:
         printf("MAP JUMP\n");
         if (g_worldTitleId >= 0) {
-            D_80073998[0] &= 0xFDF7FFFF;
+            g_padPortMask[0] &= 0xFDF7FFFF;
         }
-        func_80022D3C(0);
+        cd_syncAsync(0);
         while (cd_getState() != 0) {
         }
         while (wm_soundCommand(WM_SND_GET_STATE, 0, 0, 0, 0) != 0) {
@@ -179,8 +179,8 @@ void wm_updateLogic(void) {
     case 0:
         g_gameState->vsyncMode = 0;
         wm_runEvents();
-        if (func_8004AE00() != NULL) {
-            g_worldPlayer = func_8004AE00();
+        if (evt_getPlayer() != NULL) {
+            g_worldPlayer = evt_getPlayer();
         }
         break;
     case 1:
@@ -530,7 +530,7 @@ s32 w_frameGetParameter(s32 arg0) {
     case WM_PARAM_REQ2:
         return g_worldReqParams[2];
     case 0xC6:
-        return g_gameState->unk1C->unk844;
+        return g_gameState->unk1C->chocograph;
     case WM_PARAM_CAMERA_YAW:
         return g_worldCamera->yaw >> 4;
     case WM_PARAM_CD_BUSY:
@@ -750,7 +750,7 @@ void wm_runEvents(void) {
     g_worldTimeEvents = VSync(1);
     m = g_worldState;
     if ((m == 0 || m == 2) && !(g_gameState->unk1C->unk0 & GD_MENU_OPEN) && (m == 0 || m == 2)) {
-        g_worldEventResult = func_8004BC38(m);
+        g_worldEventResult = evt_update(m);
     }
     g_worldTimeEvents = VSync(1) - g_worldTimeEvents;
 }
@@ -869,17 +869,17 @@ void wm_initDiscImage(void) {
             g_worldImageNames[i] = D_800CCF84[i];
         }
         printf("Read CD Image [Disc-1]\n");
-        g_worldImageSectors[0] = file_find(0xC, 0x3F3)->unk4 + g_gameState->unk20;
-        g_worldImageSectors[3] = file_find(0xC, 0x3FD)->unk4 + g_gameState->unk20;
-        g_worldImageSectors[4] = file_find(0xC, 0x407)->unk4 + g_gameState->unk20;
+        g_worldImageSectors[0] = file_find(0xC, 0x3F3)->unk4 + g_gameState->imgSector;
+        g_worldImageSectors[3] = file_find(0xC, 0x3FD)->unk4 + g_gameState->imgSector;
+        g_worldImageSectors[4] = file_find(0xC, 0x407)->unk4 + g_gameState->imgSector;
     } else {
         for (i = 0; i < 5; i++) {
             g_worldImageNames[i] = D_800CCF98[i];
         }
         printf("Read CD Image [Disc-4]\n");
-        g_worldImageSectors[0] = file_find(0xC, 0x3F6)->unk4 + g_gameState->unk20;
-        g_worldImageSectors[3] = file_find(0xC, 0x400)->unk4 + g_gameState->unk20;
-        g_worldImageSectors[4] = file_find(0xC, 0x40A)->unk4 + g_gameState->unk20;
+        g_worldImageSectors[0] = file_find(0xC, 0x3F6)->unk4 + g_gameState->imgSector;
+        g_worldImageSectors[3] = file_find(0xC, 0x400)->unk4 + g_gameState->imgSector;
+        g_worldImageSectors[4] = file_find(0xC, 0x40A)->unk4 + g_gameState->imgSector;
     }
     if (g_worldMapDebugFlags & WM_DEBUG_MEMORY) {
         printf(D_800A7BB8, g_worldImageSectors[0]);

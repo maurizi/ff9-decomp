@@ -26,13 +26,13 @@ extern u8 s_menuAbilityCmdNames[];
 extern u8 s_menuAbilityCmdAbilities[];
 extern u8 s_menuAbilityCharCmds[][2];
 
-/* main-menu screens (g_menuScreen.screen, func_80036270) */
+/* main-menu screens (g_menuScreen.screen, menuScreen_switch) */
 #define MENU_SCREEN_ABILITY 2
 #define MENU_SCREEN_EQUIP   3
 #define MENU_NO_SLOT        0xFF /* party slot before the first member is shown */
 
-#define ABILITY_MAX           0x30 /* entries in a character's D_8006CB28 ability row */
-#define ABILITY_SUPPORT_FIRST 0xC0 /* ability ids from here are support abilities (D_8006D128) */
+#define ABILITY_MAX           0x30 /* entries in a character's g_abilityRows ability row */
+#define ABILITY_SUPPORT_FIRST 0xC0 /* ability ids from here are support abilities (g_supportAbilities) */
 #define SUPPORT_COUNT         0x40
 #define EQUIP_SLOT_COUNT      5    /* Character.equip: weapon first (it can't be removed) */
 
@@ -95,7 +95,7 @@ typedef struct {
     u8 targetMode;    /* target mode of the action (s_menuAbilityActionTable bits 5-7) */
     u8 partySize;
     u8 canTargetAll;  /* menuAbility_canTargetAll */
-    UnkBlink header;  /* member header (func_80028CF8) */
+    UnkBlink header;  /* member header (ui_initMemberSwitch) */
 } AbilityMenu;
 extern AbilityMenu s_menuAbility;
 
@@ -130,7 +130,7 @@ typedef struct {
     RECT listRect;
     ItemSlot items[0x100]; /* items that fit the slot, best first */
     WinDef listWin;
-    UnkBlink header; /* member header (func_80028CF8) */
+    UnkBlink header; /* member header (ui_initMemberSwitch) */
     u8 pad258[0x25C - 0x258];
     u8 initStones[4]; /* party members' magic stones when the screen opened */
     u8 listOpen;
@@ -158,7 +158,7 @@ extern TweenDef s_menuAbilityTargetCloseR;
 extern u8 s_menuEquipHelpBuf[]; /* help text buffer */
 extern u8 s_menuEquipHelpArg[]; /* "ABILITY" */
 extern u8 s_menuEquipItemHelp[]; /* item help texts */
-u8 func_800654F8(Character *, Character *, Unk801F34EC *, s32, s32);
+u8 item_useOnMember(Character *, Character *, Unk801F34EC *, s32, s32);
 extern TweenDef s_menuAbilityTargetCloseL;
 extern RECT s_menuAbilityClutRect;
 extern RECT s_menuAbilityImageRect;
@@ -183,9 +183,9 @@ void menuEquip_setMember(s32, s32);
 void menuAbility_setMember(s32, s32);
 void menuAbility_onMemberSwitched(void);
 void menuAbility_drawScrollRows(void);
-void func_80027110(s32, s32, s32, s32, s32, u8, u8); /* main exe */
-s32 func_80034584(s32, s32); /* main exe */
-s32 func_800347D8(s32, s32); /* main exe */
+void ui_drawApGauge(s32, s32, s32, s32, s32, u8, u8); /* main exe */
+s32 chr_getAp(s32, s32); /* main exe */
+s32 chr_getApNeeded(s32, s32); /* main exe */
 extern u8 D_8007AFD3;
 u8 menuAbility_findCommand(s32, Character *);
 void menuAbility_initActionCursor(void);
@@ -204,7 +204,7 @@ void menuEquip_openList(void);
 void menuEquip_removeSlot(void);
 void menuEquip_buildItemList(void);
 void menuEquip_optimize(void);
-void func_80036270(s32); /* main exe */
+void menuScreen_switch(s32); /* main exe */
 extern u8 g_abilityMenuText[];
 s32 menuAbility_canTargetAll(s32);
 extern TweenDef s_menuAbilityTargetOpenR;
@@ -238,14 +238,14 @@ extern u16 s_menuAbilityTabCursorX[][2]; /* cursor x per slot */
 #define ITEM_NONE 0xFF /* empty item id / equipment slot */
 #endif
 #define ITEM_SLOT_COUNT 0x100 /* GameData.items slots */
-void func_800355DC(void); /* empty function, passed to func_8003556C as a no-op callback */
+void help_nullHandler(void); /* empty function, passed to help_setCallback as a no-op callback */
 extern s32 D_80070400;
 extern s32 D_800704B8;
-extern s32 D_80077E54; /* = D_80077E50.unk4, referenced by its own name */
+extern s32 g_menuScreenFrame; /* = g_menuScreen.unk4, referenced by its own name */
 extern s32 D_80070498;
 extern s32 D_8007042C;
-void func_80026EA0(s32, s32, s32, s32, s32);
-s32 func_80034430(s32, s32);
+void ui_drawMemberSummary(s32, s32, s32, s32, s32);
+s32 chr_findAbilitySlot(s32, s32);
 void ui_drawItemIcon(s32, s32, s32, s32, u8); /* main exe */
 void menuEquip_applyEquip(Character *);
 void menuEquip_equipSelected(void);
@@ -280,16 +280,16 @@ extern u8 s_menuAbilityActionHelp[];
 extern u8 s_menuAbilitySupportHelp[];
 extern u8 s_menuAbilityHelpArg[];
 extern u8 s_menuAbilityHelpBuf[];
-extern u8 *D_80077DF0; /* = D_80077DE8.unk8, referenced by its own name */
+extern u8 *g_menuHelpText; /* = g_menuHelp.text, referenced by its own name */
 typedef struct {
     u8 pad0[4];
     u16 unk4;
     u8 pad6[2];
-} SupportHelp; /* D_8006D128 entry: +4 = help text offset into s_menuAbilitySupportHelp */
+} SupportHelp; /* g_supportAbilities entry: +4 = help text offset into s_menuAbilitySupportHelp */
 
 /* support ability help text */
 static inline u8 *menuAbility_updateHelp_suphelp(s32 i) {
-    SupportHelp *b = (SupportHelp *)D_8006D128;
+    SupportHelp *b = (SupportHelp *)g_supportAbilities;
     i -= ABILITY_SUPPORT_FIRST;
     return s_menuAbilitySupportHelp + b[i].unk4;
 }

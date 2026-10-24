@@ -22,14 +22,14 @@ s32 ending_messages(void) {
         case MESSAGES_ST_PAGE1:
             if (t == -1) {
                 t = 0xA0;
-                func_800320B8(1, 1, 0x14, 0);
+                game_startFade(1, 1, 0x14, 0);
             } else if (t != 0) {
                 ot = g_gameState->unk1C->unk10[g_gameState->unk1C->unk8] + SCREEN_OTZ;
                 msg = ending_getMessage(g_endingMessages, 0);
                 x = 0xA0 - (ending_textWidth(msg) >> 1);
                 g_messagesPrim = ending_drawText(x, 0x64, ot, msg, g_messagesPrim);
                 if (t == 0x14) {
-                    func_800320B8(1, 1, 0x14, 0xFFFFFF);
+                    game_startFade(1, 1, 0x14, 0xFFFFFF);
                 }
                 t--;
             } else {
@@ -40,7 +40,7 @@ s32 ending_messages(void) {
         case MESSAGES_ST_PAGE2:
             if (t == -1) {
                 t = 0xDC;
-                func_800320B8(1, 1, 0x14, 0);
+                game_startFade(1, 1, 0x14, 0);
             } else if (t != 0) {
                 ot = g_gameState->unk1C->unk10[g_gameState->unk1C->unk8] + SCREEN_OTZ;
                 msg = ending_getMessage(g_endingMessages, 1);
@@ -52,7 +52,7 @@ s32 ending_messages(void) {
                     g_messagesPrim = ending_drawText(x, 0x7D, ot, msg, g_messagesPrim);
                 }
                 if (t == 0x14) {
-                    func_800320B8(1, 1, 0x14, 0xFFFFFF);
+                    game_startFade(1, 1, 0x14, 0xFFFFFF);
                 }
                 t--;
             } else {
@@ -63,14 +63,14 @@ s32 ending_messages(void) {
         case MESSAGES_ST_PAGE3:
             if (t == -1) {
                 t = 0xA0;
-                func_800320B8(1, 1, 0x14, 0);
+                game_startFade(1, 1, 0x14, 0);
             } else if (t != 0) {
                 ot = g_gameState->unk1C->unk10[g_gameState->unk1C->unk8] + SCREEN_OTZ;
                 msg = ending_getMessage(g_endingMessages, 3);
                 x = 0xA0 - (ending_textWidth(msg) >> 1);
                 g_messagesPrim = ending_drawText(x, 0x64, ot, msg, g_messagesPrim);
                 if (t == 0x14) {
-                    func_800320B8(1, 1, 0x14, 0xFFFFFF);
+                    game_startFade(1, 1, 0x14, 0xFFFFFF);
                 }
                 t--;
             } else {
@@ -81,7 +81,7 @@ s32 ending_messages(void) {
         case MESSAGES_ST_PAGE4:
             if (t == -1) {
                 t = 0x118;
-                func_800320B8(1, 1, 0x14, 0);
+                game_startFade(1, 1, 0x14, 0);
             } else if (t != 0) {
                 ot = g_gameState->unk1C->unk10[g_gameState->unk1C->unk8] + SCREEN_OTZ;
                 msg = ending_getMessage(g_endingMessages, 4);
@@ -93,7 +93,7 @@ s32 ending_messages(void) {
                     g_messagesPrim = ending_drawText(x, 0x7D, ot, msg, g_messagesPrim);
                 }
                 if (t == 0x14) {
-                    func_800320B8(1, 1, 0x14, 0xFFFFFF);
+                    game_startFade(1, 1, 0x14, 0xFFFFFF);
                 }
                 t--;
             } else {
@@ -113,7 +113,7 @@ s32 ending_messages(void) {
             }
             break;
         }
-        func_80032098();
+        game_updateFade();
         ending_messagesSwap();
     } while (g_messagesState < MESSAGES_ST_DONE);
     return 0;
@@ -121,11 +121,11 @@ s32 ending_messages(void) {
 
 s32 ending_messagesInit(void) {
     g_gameState->vsyncMode = 0;
-    func_800320B8(1, 1, 0, 0xFFFFFF);
+    game_startFade(1, 1, 0, 0xFFFFFF);
     g_messagesState = MESSAGES_ST_START;
     D_800AE4A8 = 0;
     g_messagesFrame = 0;
-    D_80073998[0] = 0;
+    g_padPortMask[0] = 0;
     return 0;
 }
 
@@ -142,12 +142,12 @@ void ending_messagesSwap(void) {
     DrawSync(0);
     VSync(g_gameState->vsyncMode);
     ResetGraph(1);
-    PutDispEnv(&g_gameState->unkC[g_gameState->unk1C->unk8]);
+    PutDispEnv(&g_gameState->dispEnv[g_gameState->unk1C->unk8]);
     ctx = g_gameState->unk1C;
     i = ctx->unk8;
-    DrawOTagEnv(ctx->unk10[i] + 0xFFF, &g_gameState->unk10[i]);
+    DrawOTagEnv(ctx->unk10[i] + 0xFFF, &g_gameState->drawEnv[i]);
     g_gameState->unk1C->unk8 ^= 1;
-    func_8002C0DC(g_gameState->unk1C->unk8);
+    gfx_setBuffer(g_gameState->unk1C->unk8);
     D_800AE4A8 = 0;
     g_messagesFrame++;
 }

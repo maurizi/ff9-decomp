@@ -17,7 +17,7 @@ s32 func_801E7704(s32 mode, Fx058Item *it, Unk800F78A4 *env, Unk80100C78Entry *e
         switch (it->unk0) {
         case 0:
             if (frame == 0) {
-                ex->btlfx_drawTrail((u8 *)ex->btlfx_getFileData(entry->unk8, 2), (s32)&it->unkC, NULL, -1, 0, 0, 0, it->unk1C,
+                ex->btlfx_drawTrail((u8 *)ex->btlfx_getFileData(entry->file, 2), (s32)&it->unkC, NULL, -1, 0, 0, 0, it->unk1C,
                                   0);
             }
             it->unk4 += 0x20;
@@ -35,7 +35,7 @@ s32 func_801E7704(s32 mode, Fx058Item *it, Unk800F78A4 *env, Unk80100C78Entry *e
             ex->btlfx_aimAngles((s16 *)&it->unkC, (s16 *)&it->unk20, (s16 *)&a);
             ex->btlfx_turnToward((s16 *)&a, (s16 *)&it->unk14, it->unk8);
             a.vz = frame << 5;
-            ex->func_800CFD78((s16 *)&it->unkC, (s16 *)&it->unk14, it->unk4, (s16 *)&it->unkC);
+            ex->btlfx_pointAhead((s16 *)&it->unkC, (s16 *)&it->unk14, it->unk4, (s16 *)&it->unkC);
             pos.vx = it->unkC.vx;
             pos.vy = it->unkC.vy;
             pos.vz = it->unkC.vz;
@@ -45,7 +45,7 @@ s32 func_801E7704(s32 mode, Fx058Item *it, Unk800F78A4 *env, Unk80100C78Entry *e
             it->unk14.vx += 0x800;
             ex->Hi_DrawEffModel(&it->unk14, &pos, (s32)&scale, work->unk24);
             it->unk14.vx -= 0x800;
-            ex->btlfx_drawTrail((u8 *)ex->btlfx_getFileData(entry->unk8, 2), (s32)&it->unkC, NULL, 0, 0x800, 0x1000, 1,
+            ex->btlfx_drawTrail((u8 *)ex->btlfx_getFileData(entry->file, 2), (s32)&it->unkC, NULL, 0, 0x800, 0x1000, 1,
                               it->unk1C, 0);
             d.vx = work->unk4.vx - it->unkC.vx;
             d.vy = work->unk4.vy - it->unkC.vy;
@@ -54,7 +54,7 @@ s32 func_801E7704(s32 mode, Fx058Item *it, Unk800F78A4 *env, Unk80100C78Entry *e
                 it->unk0 = 1;
                 ((s16 *)it)[-1] = -1;
                 if (work->unk20 & 1) {
-                    ex->btlfx_drawScreenTint((u32 *)(env->unk20 + 1), 1, 0x20, 0x10, 0);
+                    ex->btlfx_drawScreenTint((u32 *)(env->ot + 1), 1, 0x20, 0x10, 0);
                 }
             }
             break;
@@ -66,14 +66,14 @@ s32 func_801E7704(s32 mode, Fx058Item *it, Unk800F78A4 *env, Unk80100C78Entry *e
             BTLFX_COPY_SVEC(&d, &it->unkC);
             d.vy -= frame * 4;
             env->unk28 = 0x40;
-            ex->btlfx_drawParticles((u8 *)ex->btlfx_getFileData(entry->unk8, 9), &d, NULL, 0x4000, frame, 1, -1, 0, 0);
+            ex->btlfx_drawParticles((u8 *)ex->btlfx_getFileData(entry->file, 9), &d, NULL, 0x4000, frame, 1, -1, 0, 0);
             env->unk28 = 0;
             if (frame < 0x10) {
                 BTLFX_COPY_SVEC(&d, &it->unkC);
                 d.vy = 0;
-                ex->btlfx_drawParticles((u8 *)ex->btlfx_getFileData(entry->unk8, 8), &d, &a, 0x1800, frame, 1, -1, 0, 0);
+                ex->btlfx_drawParticles((u8 *)ex->btlfx_getFileData(entry->file, 8), &d, &a, 0x1800, frame, 1, -1, 0, 0);
             }
-            ex->btlfx_drawTrail((u8 *)ex->btlfx_getFileData(entry->unk8, 2), (s32)&it->unkC, NULL, 0, 0x800, 0x1000, 1,
+            ex->btlfx_drawTrail((u8 *)ex->btlfx_getFileData(entry->file, 2), (s32)&it->unkC, NULL, 0, 0x800, 0x1000, 1,
                               it->unk1C, 0);
             if (frame >= 0x18) {
                 return 1;
@@ -105,11 +105,11 @@ s32 fx_058_op80(s32 mode, Fx058Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
         ex->btlfx_getUnitRot(0x10, (s16 *)&work->unk14);
         work->unk14.vy += 0x800;
         ex->btlfx_initEffModels(D_801E7E74, 1);
-        work->unk24 = ex->func_800E8F50((Unk800E8F50 *)ex->btlfx_getFileData(entry->unk8, 0xA), 1);
+        work->unk24 = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, 0xA), 1);
     } else if (work->unk0 == 0) {
         if (work->unk1C < 0x20) {
             work->unk1C++;
-            it = ex->btlfx_poolSpawn((s16 *)entry->unk10);
+            it = ex->btlfx_poolSpawn((s16 *)entry->pool);
             if (it != NULL) {
                 BTLFX_COPY_SVEC(&it->unkC, &work->unkC);
                 it->unk20.vx = work->unk4.vx;

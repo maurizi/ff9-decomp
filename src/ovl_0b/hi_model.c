@@ -15,9 +15,9 @@ u16 Hi_RegisterSolidEffModel(BtlUnit9C8 *arg0) {
     p->unk20 = 0;
     p->unk22 = 0;
     p->unk24 = 0;
-    p->unk0->unk8 = arg0;
-    p->unk0->unkC = NULL;
-    func_800C7730(p->unk0, NULL, NULL);
+    p->unk0->header = arg0;
+    p->unk0->motion = NULL;
+    btl_applyModelTextures(p->unk0, NULL, NULL);
     return p->unk1E;
 }
 
@@ -36,9 +36,9 @@ u16 Hi_RegisterGouEffModel(BtlUnit9C8 *arg0) {
     p->unk20 = 1;
     p->unk22 = 0;
     p->unk24 = 0;
-    p->unk0->unk8 = arg0;
-    p->unk0->unkC = NULL;
-    func_800C7730(p->unk0, NULL, NULL);
+    p->unk0->header = arg0;
+    p->unk0->motion = NULL;
+    btl_applyModelTextures(p->unk0, NULL, NULL);
     return p->unk1E;
 }
 
@@ -58,13 +58,13 @@ u16 Hi_RegisterTexEffModel(BtlUnit9C8 *arg0, s16 arg1, s16 arg2, s32 arg3, s32 a
     p->unk20 = 2;
     p->unk22 = 0;
     p->unk24 = 0;
-    p->unk0->unk8 = arg0;
-    p->unk0->unkC = NULL;
+    p->unk0->header = arg0;
+    p->unk0->motion = NULL;
     p->unk4.unk0[0][0] = arg1;
     p->unk4.unk0[0][1] = arg2;
     v[0] = arg3;
     v[1] = arg4;
-    func_800C7730(p->unk0, p->unk4.unk0[0], v);
+    btl_applyModelTextures(p->unk0, p->unk4.unk0[0], v);
     return p->unk1E;
 }
 
@@ -83,10 +83,10 @@ u16 Hi_RegisterTexListModel(BtlUnit9C8 *arg0, BtlTexInfo *arg1, s16 *arg2, s32 a
     p->unk20 = 2;
     p->unk22 = 0;
     p->unk24 = 0;
-    p->unk0->unk8 = arg0;
-    p->unk0->unkC = NULL;
+    p->unk0->header = arg0;
+    p->unk0->motion = NULL;
     p->unk4 = *arg1;
-    func_800C7730(p->unk0, p->unk4.unk0[0], arg2);
+    btl_applyModelTextures(p->unk0, p->unk4.unk0[0], arg2);
     return p->unk1E;
 }
 
@@ -105,9 +105,9 @@ u16 Hi_RegisterTexPtrModel(BtlUnit9C8 *arg0, s16 *arg1, s16 *arg2) {
     p->unk20 = 2;
     p->unk22 = 0;
     p->unk24 = 0;
-    p->unk0->unk8 = arg0;
-    p->unk0->unkC = NULL;
-    func_800C7730(p->unk0, arg1, arg2);
+    p->unk0->header = arg0;
+    p->unk0->motion = NULL;
+    btl_applyModelTextures(p->unk0, arg1, arg2);
     return p->unk1E;
 }
 
@@ -129,8 +129,8 @@ s32 Hi_RegisterSummonModel(Unk80100DC054 *arg0, s16 *arg1) {
     }
     p->unk4C = 1;
     p->unk50 = 0;
-    p->unk0->unk8 = (BtlUnit9C8 *)arg0->unk3C;
-    p->unk0->unkC = (BtlUnit9CC *)arg0->unk180[0];
+    p->unk0->header = (BtlUnit9C8 *)arg0->unk3C;
+    p->unk0->motion = (BtlUnit9CC *)arg0->unk180[0];
     if (arg1 != NULL) {
         p->unk4D = 1;
     } else {
@@ -149,9 +149,9 @@ s32 Hi_RegisterSummonModel(Unk80100DC054 *arg0, s16 *arg1) {
             arg1 += 4;
         }
     }
-    func_800C7730(p->unk0, p->unk4[0], t[0]);
-    p->unk0->unk50 = arg0->unk40;
-    func_800C9374((TexAnimSet *)p->unk0->unk50, (u16 (*)[4])p->unk1C);
+    btl_applyModelTextures(p->unk0, p->unk4[0], t[0]);
+    p->unk0->texAnims = arg0->unk40;
+    btl_relocTexAnims((TexAnimSet *)p->unk0->texAnims, (u16 (*)[4])p->unk1C);
     return (u16)p->unk4E;
 }
 
@@ -161,21 +161,21 @@ void Hi_DrawEffModel(SVECTOR *arg0, VECTOR *arg1, s32 arg2, s32 arg3) {
     s32 i;
     s32 v;
     btl_setModelTransform(s->unk0, arg0, arg1, arg2);
-    g_btlfxEnv->unk24 = btl_calcBoneMatrices(s->unk0, 0, g_btlfxEnv->unk24);
-    s->unk0->unk10 = 0;
-    n = s->unk0->unk8->unk3;
+    g_btlfxEnv->prim = btl_calcBoneMatrices(s->unk0, 0, g_btlfxEnv->prim);
+    s->unk0->prims = 0;
+    n = s->unk0->header->meshCount;
     for (i = 0; i < n; i++) {
         btl_projectMesh(s->unk0, i);
         if (s->unk22 != 0) {
-            g_btlfxEnv->unk24 = btl_drawMeshOffset(s->unk0, i, g_btlfxEnv->unk24, s->unk22);
+            g_btlfxEnv->prim = btl_drawMeshOffset(s->unk0, i, g_btlfxEnv->prim, s->unk22);
         } else {
             switch ((u16)s->unk20) {
             case 0:
             case 2:
-                g_btlfxEnv->unk24 = btl_drawMesh(s->unk0, i, g_btlfxEnv->unk24);
+                g_btlfxEnv->prim = btl_drawMesh(s->unk0, i, g_btlfxEnv->prim);
                 break;
             case 1:
-                g_btlfxEnv->unk24 = btl_drawMeshOffset(s->unk0, i, g_btlfxEnv->unk24, 0);
+                g_btlfxEnv->prim = btl_drawMeshOffset(s->unk0, i, g_btlfxEnv->prim, 0);
                 break;
             }
         }
@@ -187,13 +187,13 @@ void Hi_DrawSliceEffModel(SVECTOR *arg0, VECTOR *arg1, s32 arg2, s32 arg3) {
     s32 n;
     s32 i;
     btl_setModelTransform(s->unk0, arg0, arg1, arg2);
-    g_btlfxEnv->unk24 = btl_calcBoneMatrices(s->unk0, 0, g_btlfxEnv->unk24);
-    s->unk0->unk10 = 0;
+    g_btlfxEnv->prim = btl_calcBoneMatrices(s->unk0, 0, g_btlfxEnv->prim);
+    s->unk0->prims = 0;
     s->unk0->unk5A = arg1->vy - s->unk24;
-    n = s->unk0->unk8->unk3;
+    n = s->unk0->header->meshCount;
     for (i = 0; i < n; i++) {
         btlfx_projectSliceMesh(s->unk0, i);
-        g_btlfxEnv->unk24 = func_800DE11C(s->unk0, i, g_btlfxEnv->unk24);
+        g_btlfxEnv->prim = func_800DE11C(s->unk0, i, g_btlfxEnv->prim);
     }
 }
 
@@ -202,25 +202,25 @@ void Hi_DrawEffModelByBone(s32 arg0, s32 arg1, s32 arg2, s32 arg3) {
     s32 n;
     s32 i;
     s32 v;
-    g_btlfxEnv->unk24 = btl_calcBoneMatrices(s->unk0, 0, g_btlfxEnv->unk24);
-    Hi_GetSummonBoneMatrix(arg2, arg3, (BtlBone *)&s->unk0->unk24);
+    g_btlfxEnv->prim = btl_calcBoneMatrices(s->unk0, 0, g_btlfxEnv->prim);
+    Hi_GetSummonBoneMatrix(arg2, arg3, (BtlBone *)&s->unk0->matrix);
     if (arg0 != 0) {
         btl_scaleModelMatrix(s->unk0, (VECTOR *)arg0);
     }
-    s->unk0->unk10 = 0;
-    n = s->unk0->unk8->unk3;
+    s->unk0->prims = 0;
+    n = s->unk0->header->meshCount;
     for (i = 0; i < n; i++) {
         btl_projectMesh(s->unk0, i);
         if (s->unk22 != 0) {
-            g_btlfxEnv->unk24 = btl_drawMeshOffset(s->unk0, i, g_btlfxEnv->unk24, s->unk22);
+            g_btlfxEnv->prim = btl_drawMeshOffset(s->unk0, i, g_btlfxEnv->prim, s->unk22);
         } else {
             switch ((u16)s->unk20) {
             case 0:
             case 2:
-                g_btlfxEnv->unk24 = btl_drawMesh(s->unk0, i, g_btlfxEnv->unk24);
+                g_btlfxEnv->prim = btl_drawMesh(s->unk0, i, g_btlfxEnv->prim);
                 break;
             case 1:
-                g_btlfxEnv->unk24 = btl_drawMeshOffset(s->unk0, i, g_btlfxEnv->unk24, 0);
+                g_btlfxEnv->prim = btl_drawMeshOffset(s->unk0, i, g_btlfxEnv->prim, 0);
                 break;
             }
         }
@@ -232,23 +232,23 @@ void Hi_DrawMorphEffModel(SVECTOR *arg0, VECTOR *arg1, s32 arg2, s32 arg3, s32 a
     BtlObjSlot *s = btlfx_getEffModel(arg3, str);
     s32 n;
     s32 i;
-    s->unk0->unk5C = btlfx_getEffModel(arg4, str)->unk0->unk8;
+    s->unk0->morph = btlfx_getEffModel(arg4, str)->unk0->header;
     btl_setModelTransform(s->unk0, arg0, arg1, arg2);
-    g_btlfxEnv->unk24 = btl_calcBoneMatrices(s->unk0, 0, g_btlfxEnv->unk24);
-    s->unk0->unk10 = 0;
-    n = s->unk0->unk8->unk3;
+    g_btlfxEnv->prim = btl_calcBoneMatrices(s->unk0, 0, g_btlfxEnv->prim);
+    s->unk0->prims = 0;
+    n = s->unk0->header->meshCount;
     for (i = 0; i < n; i++) {
         btlfx_projectMorphMesh(s->unk0, i, arg5);
         if (s->unk22 != 0) {
-            g_btlfxEnv->unk24 = btl_drawMeshOffset(s->unk0, i, g_btlfxEnv->unk24, s->unk22);
+            g_btlfxEnv->prim = btl_drawMeshOffset(s->unk0, i, g_btlfxEnv->prim, s->unk22);
         } else {
             switch ((u16)s->unk20) {
             case 0:
             case 2:
-                g_btlfxEnv->unk24 = btl_drawMesh(s->unk0, i, g_btlfxEnv->unk24);
+                g_btlfxEnv->prim = btl_drawMesh(s->unk0, i, g_btlfxEnv->prim);
                 break;
             case 1:
-                g_btlfxEnv->unk24 = btl_drawMeshOffset(s->unk0, i, g_btlfxEnv->unk24, 0);
+                g_btlfxEnv->prim = btl_drawMeshOffset(s->unk0, i, g_btlfxEnv->prim, 0);
                 break;
             }
         }
@@ -260,26 +260,26 @@ void Hi_DrawMorphModelByBone(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, s
     BtlObjSlot *s = btlfx_getEffModel(arg1, str);
     s32 n;
     s32 i;
-    s->unk0->unk5C = btlfx_getEffModel(arg2, str)->unk0->unk8;
-    g_btlfxEnv->unk24 = btl_calcBoneMatrices(s->unk0, 0, g_btlfxEnv->unk24);
-    Hi_GetSummonBoneMatrix(arg4, arg5, (BtlBone *)&s->unk0->unk24);
+    s->unk0->morph = btlfx_getEffModel(arg2, str)->unk0->header;
+    g_btlfxEnv->prim = btl_calcBoneMatrices(s->unk0, 0, g_btlfxEnv->prim);
+    Hi_GetSummonBoneMatrix(arg4, arg5, (BtlBone *)&s->unk0->matrix);
     if (arg0 != 0) {
         btl_scaleModelMatrix(s->unk0, (VECTOR *)arg0);
     }
-    s->unk0->unk10 = 0;
-    n = s->unk0->unk8->unk3;
+    s->unk0->prims = 0;
+    n = s->unk0->header->meshCount;
     for (i = 0; i < n; i++) {
         btlfx_projectMorphMesh(s->unk0, i, arg3);
         if (s->unk22 != 0) {
-            g_btlfxEnv->unk24 = btl_drawMeshOffset(s->unk0, i, g_btlfxEnv->unk24, s->unk22);
+            g_btlfxEnv->prim = btl_drawMeshOffset(s->unk0, i, g_btlfxEnv->prim, s->unk22);
         } else {
             switch ((u16)s->unk20) {
             case 0:
             case 2:
-                g_btlfxEnv->unk24 = btl_drawMesh(s->unk0, i, g_btlfxEnv->unk24);
+                g_btlfxEnv->prim = btl_drawMesh(s->unk0, i, g_btlfxEnv->prim);
                 break;
             case 1:
-                g_btlfxEnv->unk24 = btl_drawMeshOffset(s->unk0, i, g_btlfxEnv->unk24, 0);
+                g_btlfxEnv->prim = btl_drawMeshOffset(s->unk0, i, g_btlfxEnv->prim, 0);
                 break;
             }
         }
@@ -294,14 +294,14 @@ s32 Hi_DrawSummonModel(SVECTOR *arg0, VECTOR *arg1, s32 arg2, s32 arg3, s32 arg4
     s32 c;
     s32 i;
     btl_setModelTransform(s->unk0, arg0, arg1, arg2);
-    a = s->unk0->unkC;
+    a = s->unk0->motion;
     if (IS_OFFSET(a->unkC)) {
         a->unkC = (s32)a + a->unkC;
         if (a->unk10 != 0) {
-            a->unk10 = (s32)s->unk0->unkC + a->unk10;
+            a->unk10 = (s32)s->unk0->motion + a->unk10;
         }
     }
-    n = s->unk0->unkC->unk2;
+    n = s->unk0->motion->unk2;
     if (s->unk50 >= n) {
         if (arg4 & 1) {
             s->unk50 = 0;
@@ -310,17 +310,17 @@ s32 Hi_DrawSummonModel(SVECTOR *arg0, VECTOR *arg1, s32 arg2, s32 arg3, s32 arg4
         }
     }
     if (s->unk4D != 0) {
-        func_800C9040((TexAnimSet *)s->unk0->unk50);
+        btl_updateTexAnims((TexAnimSet *)s->unk0->texAnims);
     }
     f = s->unk50;
-    g_btlfxEnv->unk24 = btl_calcBoneMatrices(s->unk0, f, g_btlfxEnv->unk24);
+    g_btlfxEnv->prim = btl_calcBoneMatrices(s->unk0, f, g_btlfxEnv->prim);
     s->unk50++;
-    s->unk0->unk10 = 0;
-    c = s->unk0->unk8->unk3;
+    s->unk0->prims = 0;
+    c = s->unk0->header->meshCount;
     for (i = 0; i < c; i++) {
-        if (!(s->unk0->unk14 & (1 << i))) {
+        if (!(s->unk0->hiddenMeshes & (1 << i))) {
             btl_projectMesh(s->unk0, i);
-            g_btlfxEnv->unk24 = btl_drawMesh(s->unk0, i, g_btlfxEnv->unk24);
+            g_btlfxEnv->prim = btl_drawMesh(s->unk0, i, g_btlfxEnv->prim);
         }
     }
     return f;
@@ -329,12 +329,12 @@ s32 Hi_DrawSummonModel(SVECTOR *arg0, VECTOR *arg1, s32 arg2, s32 arg3, s32 arg4
 void Hi_SetSummonMotion(BtlUnit9CC *arg0, s32 arg1) {
     Unk8010141C *p = btlfx_getSummonModel(arg1, "Hi_SetSummonMotion()\nid:%d cannot use!");
     p->unk50 = 0;
-    p->unk0->unkC = arg0;
+    p->unk0->motion = arg0;
 }
 
 void Hi_SetSummonMotFrame(s32 arg0, s32 arg1) {
     Unk8010141C *p = btlfx_getSummonModel(arg0, D_800A7F34);
-    if (p->unk0->unkC->unk2 < arg1) {
+    if (p->unk0->motion->unk2 < arg1) {
         p->unk50 = 0;
     } else {
         p->unk50 = arg1;
@@ -370,28 +370,28 @@ void func_800DC508(void) {
 }
 
 void btlfx_halt(char *arg0) {
-    D_80100E30.unkE8 = &D_80100E30.unk0[1];
-    D_80100E30.unk0[0].unk70 = 0;
-    D_80100E30.unk0[1].unk70 = 1;
-    SetDefDrawEnv(&D_80100E30.unk0[0].unk0, 0, 0, 320, 240);
-    SetDefDrawEnv(&D_80100E30.unk0[1].unk0, 0, 240, 320, 240);
-    SetDefDispEnv(&D_80100E30.unk0[0].unk5C, 0, 240, 320, 240);
-    SetDefDispEnv(&D_80100E30.unk0[1].unk5C, 0, 0, 320, 240);
-    D_80100E30.unk0[1].unk0.isbg = 1;
-    D_80100E30.unk0[0].unk0.isbg = 1;
-    setRGB0(&D_80100E30.unk0[0].unk0, 0, 0, 0);
-    setRGB0(&D_80100E30.unk0[1].unk0, 0, 0, 0);
+    g_btlfxHaltBufs.unkE8 = &g_btlfxHaltBufs.unk0[1];
+    g_btlfxHaltBufs.unk0[0].unk70 = 0;
+    g_btlfxHaltBufs.unk0[1].unk70 = 1;
+    SetDefDrawEnv(&g_btlfxHaltBufs.unk0[0].unk0, 0, 0, 320, 240);
+    SetDefDrawEnv(&g_btlfxHaltBufs.unk0[1].unk0, 0, 240, 320, 240);
+    SetDefDispEnv(&g_btlfxHaltBufs.unk0[0].unk5C, 0, 240, 320, 240);
+    SetDefDispEnv(&g_btlfxHaltBufs.unk0[1].unk5C, 0, 0, 320, 240);
+    g_btlfxHaltBufs.unk0[1].unk0.isbg = 1;
+    g_btlfxHaltBufs.unk0[0].unk0.isbg = 1;
+    setRGB0(&g_btlfxHaltBufs.unk0[0].unk0, 0, 0, 0);
+    setRGB0(&g_btlfxHaltBufs.unk0[1].unk0, 0, 0, 0);
     EnterCriticalSection();
     VSyncCallback(NULL);
     DrawSyncCallback(NULL);
     ExitCriticalSection();
     SetDispMask(1);
     while (1) {
-        D_80100E30.unkE8 = (D_80100E30.unkE8 == &D_80100E30.unk0[0]) ? &D_80100E30.unk0[1] : &D_80100E30.unk0[0];
+        g_btlfxHaltBufs.unkE8 = (g_btlfxHaltBufs.unkE8 == &g_btlfxHaltBufs.unk0[0]) ? &g_btlfxHaltBufs.unk0[1] : &g_btlfxHaltBufs.unk0[0];
         DrawSync(0);
         VSync(0);
-        PutDispEnv(&D_80100E30.unkE8->unk5C);
-        PutDrawEnv(&D_80100E30.unkE8->unk0);
+        PutDispEnv(&g_btlfxHaltBufs.unkE8->unk5C);
+        PutDrawEnv(&g_btlfxHaltBufs.unkE8->unk0);
     }
 }
 
@@ -469,20 +469,20 @@ void btlfx_clearSummonModels(void) {
     }
 }
 
-void func_800DC818(s32 arg0, s32 arg1, u16 *arg2) {
-    func_800DC9D0(btl_getUnit(arg0)->unk9C, arg1, arg2);
+void btlfx_getUnitBonePos(s32 arg0, s32 arg1, u16 *arg2) {
+    btl_getBonePos(btl_getUnit(arg0)->model, arg1, arg2);
 }
 
-void func_800DC858(s32 arg0, s32 arg1, u16 *arg2) {
-    func_800DC9D0(btl_getUnit(arg0)->unk9C, g_btlfxEnv->unkC->unk25[arg1], arg2);
+void btlfx_getUnitArgBonePos(s32 arg0, s32 arg1, u16 *arg2) {
+    btl_getBonePos(btl_getUnit(arg0)->model, g_btlfxEnv->targets->unk25[arg1], arg2);
 }
 
-void func_800DC8AC(s32 arg0, s32 arg1, BtlBone *arg2) {
-    func_800DCA18(btl_getUnit(arg0)->unk9C, arg1, arg2);
+void btlfx_getUnitBoneMatrix(s32 arg0, s32 arg1, BtlBone *arg2) {
+    btl_getBoneMatrix(btl_getUnit(arg0)->model, arg1, arg2);
 }
 
-void func_800DC8EC(s32 arg0, s32 arg1, BtlBone *arg2) {
-    func_800DCA18(btl_getUnit(arg0)->unk9C, g_btlfxEnv->unkC->unk25[arg1], arg2);
+void btlfx_getUnitArgBoneMatrix(s32 arg0, s32 arg1, BtlBone *arg2) {
+    btl_getBoneMatrix(btl_getUnit(arg0)->model, g_btlfxEnv->targets->unk25[arg1], arg2);
 }
 
 INCLUDE_RODATA("asm/us/ovl_0b/nonmatchings/hi_model", D_800A7F34);
@@ -492,49 +492,49 @@ INCLUDE_RODATA("asm/us/ovl_0b/nonmatchings/hi_model", D_800A7F60);
 INCLUDE_RODATA("asm/us/ovl_0b/nonmatchings/hi_model", D_800A7F78);
 
 void Hi_GetSummonBonePos(s32 arg0, s32 arg1, u16 *arg2) {
-    func_800DC9D0(btlfx_getSummonModel(arg0, "Hi_GetSummonBonePos()\nid:%d cannot use!")->unk0, arg1, arg2);
+    btl_getBonePos(btlfx_getSummonModel(arg0, "Hi_GetSummonBonePos()\nid:%d cannot use!")->unk0, arg1, arg2);
 }
 
 void Hi_GetSummonBoneMatrix(s32 arg0, s32 arg1, BtlBone *arg2) {
-    func_800DCA18(btlfx_getSummonModel(arg0, "Hi_GetSummonBoneMatrix()\nid:%d cannot use!")->unk0, arg1, arg2);
+    btl_getBoneMatrix(btlfx_getSummonModel(arg0, "Hi_GetSummonBoneMatrix()\nid:%d cannot use!")->unk0, arg1, arg2);
 }
 
-void func_800DC9D0(BtlUnit9C *arg0, s32 arg1, u16 *arg2) {
-    arg2[0] = arg0->unk20[arg1].unk14;
-    arg2[1] = arg0->unk20[arg1].unk18;
-    arg2[2] = arg0->unk20[arg1].unk1C;
+void btl_getBonePos(BtlUnit9C *arg0, s32 arg1, u16 *arg2) {
+    arg2[0] = arg0->bones[arg1].unk14;
+    arg2[1] = arg0->bones[arg1].unk18;
+    arg2[2] = arg0->bones[arg1].unk1C;
 }
 
-void func_800DCA18(BtlUnit9C *arg0, s32 arg1, BtlBone *arg2) {
-    *arg2 = arg0->unk20[arg1];
+void btl_getBoneMatrix(BtlUnit9C *arg0, s32 arg1, BtlBone *arg2) {
+    *arg2 = arg0->bones[arg1];
 }
 
 void btl_setModelTransform(BtlUnit9C *arg0, SVECTOR *arg1, VECTOR *arg2, VECTOR *arg3) {
     SVECTOR r;
     VECTOR t;
     if (arg1 != NULL) {
-        func_800316D8(arg1, &arg0->unk24);
+        math_rotMatrixYXZ(arg1, &arg0->matrix);
     } else {
         r.vx = 0;
         r.vy = 0;
         r.vz = 0;
-        func_800316D8(&r, &arg0->unk24);
+        math_rotMatrixYXZ(&r, &arg0->matrix);
     }
     if (arg2 != NULL) {
-        TransMatrix(&arg0->unk24, arg2);
+        TransMatrix(&arg0->matrix, arg2);
     } else {
         t.vx = 0;
         t.vy = 0;
         t.vz = 0;
-        TransMatrix(&arg0->unk24, &t);
+        TransMatrix(&arg0->matrix, &t);
     }
     if (arg3 != 0) {
         btl_scaleModelMatrix(arg0, arg3);
     } else {
-        arg0->unk54 = 0x1000;
-        arg0->unk56 = 0x1000;
-        arg0->unk58 = 0x1000;
-        func_800C7B84(arg0);
+        arg0->scaleX = 0x1000;
+        arg0->scaleY = 0x1000;
+        arg0->scaleZ = 0x1000;
+        btl_applyModelScale(arg0);
     }
 }
 
@@ -559,15 +559,15 @@ void btl_scaleModelMatrix(BtlUnit9C *arg0, VECTOR *arg1) {
     d[6] = 0;
     d[7] = 0;
     m.m[2][2] = z;
-    gte_MulMatrix0(&arg0->unk24, &m, &arg0->unk24);
+    gte_MulMatrix0(&arg0->matrix, &m, &arg0->matrix);
 }
 
 void Hi_ShowSummonModelMesh(s32 arg0, s32 arg1) {
-    btlfx_getSummonModel(arg0, "Hi_ShowSummonModelMesh()\nid:%d cannot use!")->unk0->unk14 &= ~(1 << arg1);
+    btlfx_getSummonModel(arg0, "Hi_ShowSummonModelMesh()\nid:%d cannot use!")->unk0->hiddenMeshes &= ~(1 << arg1);
 }
 
 void Hi_HideSummonModelMesh(s32 arg0, s32 arg1) {
-    btlfx_getSummonModel(arg0, "Hi_HideSummonModelMesh()\nid:%d cannot use!")->unk0->unk14 |= 1 << arg1;
+    btlfx_getSummonModel(arg0, "Hi_HideSummonModelMesh()\nid:%d cannot use!")->unk0->hiddenMeshes |= 1 << arg1;
 }
 
 /* starts texture animation arg1 of summon model arg0 (arg2: also set flag 2) */
@@ -578,18 +578,18 @@ void Hi_StartSummonTexAnim(s32 arg0, s32 arg1, u8 arg2) {
     if (arg2) {
         off = arg1 * 4;
         off = (off + arg1) * 4; /* arg1 * sizeof(BtlUnit9C50) */
-        ((BtlUnit9C50 *)((u8 *)p->unk0->unk50 + off))->unk4 |= 3;
+        ((BtlUnit9C50 *)((u8 *)p->unk0->texAnims + off))->unk4 |= 3;
     } else {
         off = arg1 * 4;
         off = (off + arg1) * 4;
-        ((BtlUnit9C50 *)((u8 *)p->unk0->unk50 + off))->unk4 |= 1;
+        ((BtlUnit9C50 *)((u8 *)p->unk0->texAnims + off))->unk4 |= 1;
     }
-    ((BtlUnit9C50 *)((u8 *)p->unk0->unk50 + off))->unkC = 0;
-    ((BtlUnit9C50 *)((u8 *)p->unk0->unk50 + off))->unk12 = 0x1000;
+    ((BtlUnit9C50 *)((u8 *)p->unk0->texAnims + off))->unkC = 0;
+    ((BtlUnit9C50 *)((u8 *)p->unk0->texAnims + off))->unk12 = 0x1000;
 }
 
 void Hi_StopSummonTexAnim(s32 arg0, s32 arg1) {
-    BtlUnit9C50 *e = &btlfx_getSummonModel(arg0, "Hi_StopSummonTexAnim()\nid:%d cannot use!")->unk0->unk50[arg1];
+    BtlUnit9C50 *e = &btlfx_getSummonModel(arg0, "Hi_StopSummonTexAnim()\nid:%d cannot use!")->unk0->texAnims[arg1];
     e->unk4 &= ~3;
 }
 
@@ -641,28 +641,28 @@ Unk8010141C *btlfx_getSummonModel(s32 arg0, char *arg1) {
     return p;
 }
 
-void func_800DD0B0(s32 arg0) {
-    func_800DD10C(btl_getUnit(arg0)->unk9C);
+void btlfx_getUnitMeshCount(s32 arg0) {
+    btl_getMeshCount(btl_getUnit(arg0)->model);
 }
 
-/* Void in the original; effect modules read $v0 after it (export 0x318): func_800DD10C's u8 result.
+/* Void in the original; effect modules read $v0 after it (export 0x318): btl_getMeshCount's u8 result.
    Ports must return it (docs/effect-modules.md). */
-void func_800DD0DC(s32 arg0) {
-    func_800DD10C(btlfx_getEffModel(arg0, D_800A81A8)->unk0);
+void btlfx_getEffModelMeshCount(s32 arg0) {
+    btl_getMeshCount(btlfx_getEffModel(arg0, D_800A81A8)->unk0);
 }
 
-u8 func_800DD10C(BtlUnit9C *arg0) {
-    return arg0->unk8->unk3;
+u8 btl_getMeshCount(BtlUnit9C *arg0) {
+    return arg0->header->meshCount;
 }
 
-void func_800DD120(BtlTexInfo *arg0, BtlTexInfo *arg1, s32 arg2) {
+void btlfx_getCasterTexInfo(BtlTexInfo *arg0, BtlTexInfo *arg1, s32 arg2) {
     s32 k;
     BtlTexInfo *a;
     BtlTexInfo *b;
     u16 i;
     Unk8E0 *e;
 
-    i = (btl_getUnit(0x10)->unk68 >> 1) & 0xF;
+    i = (btl_getUnit(0x10)->flags >> 1) & 0xF;
     e = &g_gameState->unk1C->unk8E0[i];
     k = arg2 & 0xFFFF;
     k |= 0x20000;

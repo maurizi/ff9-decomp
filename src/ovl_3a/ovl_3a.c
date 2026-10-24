@@ -5,14 +5,14 @@ void menuName_init(void) {
     s32 i;
 
     text_setBank(g_nameMenuText);
-    func_80035580(&s_menuNameHelpBounds);
-    func_8003556C(menuName_updateHelp);
+    help_setBounds(&s_menuNameHelpBounds);
+    help_setCallback(menuName_updateHelp);
     s_menuName.focus = NAME_FOCUS_GRID;
     s_menuName.menuCursor = 0;
     s_menuName.charSet = 0;
     s_menuName.gridCursor = 0;
-    s_menuName.startDefault = D_80077DBC < 12;
-    s_menuName.nameId = menuName_getNameId(s_menuName.startDefault ? D_80077DBC : D_80077DBC - 12);
+    s_menuName.startDefault = g_menuArg < 12;
+    s_menuName.nameId = menuName_getNameId(s_menuName.startDefault ? g_menuArg : g_menuArg - 12);
     s_menuName.charIdx = menuName_getCharIdx(s_menuName.nameId);
     for (i = 0; i < 2; i++) {
         s_menuName.gridSize[i] = s_menuNameGridSize[i];
@@ -22,9 +22,9 @@ void menuName_init(void) {
     if (s_menuName.startDefault) {
         chr_setDefaultName(s_menuName.name, s_menuName.nameId);
     } else {
-        func_8002BD54(s_menuName.name, g_gameState->unk1C->characters[s_menuName.charIdx].unk0);
+        text_copy(s_menuName.name, g_gameState->unk1C->characters[s_menuName.charIdx].unk0);
     }
-    s_menuName.len = func_8002BCC0(s_menuName.name);
+    s_menuName.len = text_getLength(s_menuName.name);
     for (i = 0; i < 2; i++) {
         s_menuName.charSets[i] = text_get(i + NAME_TEXT_CHARSET);
     }
@@ -37,12 +37,12 @@ void menuName_init(void) {
 }
 
 void menuName_input(void) {
-    if (!func_8002F810()) {
+    if (!fade_isBusy()) {
         if (g_padRepeat & PAD_START) {
             snd_playSe(SE_CURSOR);
             s_menuName.focus = NAME_FOCUS_MENU;
             s_menuName.menuCursor = NAME_MENU_CONFIRM;
-            func_80035580(NULL);
+            help_setBounds(NULL);
             return;
         }
         if (g_padRepeat & BTN_L1) {
@@ -92,7 +92,7 @@ void menuName_inputGrid(void) {
             return;
         }
         s_menuName.focus = NAME_FOCUS_MENU;
-        func_80035580(NULL);
+        help_setBounds(NULL);
         return;
     }
     if (g_padRepeat & BTN_CIRCLE) {
@@ -124,14 +124,14 @@ void menuName_confirm(void) {
             if (s_menuName.len != 0) {
                 snd_playSe(SE_CURSOR);
                 memcpy(g_gameState->unk1C->characters[s_menuName.charIdx].unk0, s_menuName.name, NAME_MAX_LEN);
-                func_800325E0();
+                menu_close();
             } else {
                 snd_playSe(SE_BUZZER);
             }
             break;
         case NAME_MENU_DEFAULT:
             snd_playSe(SE_CURSOR);
-            s_menuName.len = func_8002BCC0(s_menuName.defaultName);
+            s_menuName.len = text_getLength(s_menuName.defaultName);
             memset((s32)s_menuName.name, 0xFF, NAME_MAX_LEN);
             memcpy(s_menuName.name, s_menuName.defaultName, s_menuName.len);
             break;
@@ -160,16 +160,16 @@ void menuName_drawPortrait(void) {
     SetDrawTPage(g_primPtr, 0, 1, 0x9F);
     addPrim(&g_ot[4], g_primPtr);
     g_primPtr += 8;
-    func_8002DEE4(s_menuNamePortraitWin, 6, 0);
-    func_8002705C(s_menuNamePortraitWin, 6, 0);
+    win_drawBox(s_menuNamePortraitWin, 6, 0);
+    win_drawShadow(s_menuNamePortraitWin, 6, 0);
 }
 
 void menuName_drawCommands(void) {
     s32 i;
 
-    func_800269F4(s_menuNameCommandWin->x + 4, s_menuNameCommandWin->y + 0x2A, 5, s_menuNameCommandWin->w - 9);
-    func_8002DEE4(s_menuNameCommandWin, 5, 2);
-    func_8002705C(s_menuNameCommandWin, 5, 2);
+    ui_drawEtchedLine(s_menuNameCommandWin->x + 4, s_menuNameCommandWin->y + 0x2A, 5, s_menuNameCommandWin->w - 9);
+    win_drawBox(s_menuNameCommandWin, 5, 2);
+    win_drawShadow(s_menuNameCommandWin, 5, 2);
     for (i = 0; i < 2; i++) {
         text_drawBlock(s_menuNameCommandWin->x + 0xA, s_menuNameCommandWin->y + 9 + i * 0x10, 4, text_get(i + NAME_TEXT_ALPHABET),
                       s_menuName.charSet == i ? 4 : 0);
@@ -193,11 +193,11 @@ void menuName_drawNameWindow(void) {
         cursor = s_menuName.len;
     }
     ui_drawLabel(s_menuNameNameWin->x + 0x23, s_menuNameNameWin->y - 4, 5, D_8007047C, 0);
-    func_800269F4(s_menuNameNameWin->x + 4, s_menuNameNameWin->y + 0x1A, 6, s_menuNameNameWin->w - 8);
-    func_8002DEE4(s_menuNameNameWin, 6, 1);
-    func_8002705C(s_menuNameNameWin, 6, 1);
+    ui_drawEtchedLine(s_menuNameNameWin->x + 4, s_menuNameNameWin->y + 0x1A, 6, s_menuNameNameWin->w - 8);
+    win_drawBox(s_menuNameNameWin, 6, 1);
+    win_drawShadow(s_menuNameNameWin, 6, 1);
     for (i = 0; i < 7; i++) {
-        if (cursor != i || (g_menu.unk10 & 4)) {
+        if (cursor != i || (g_menu.frame & 4)) {
             for (j = 0; j < 2; j++) {
                 p = (LINE_F2 *)g_primPtr;
                 SetLineF2(p);
@@ -216,16 +216,16 @@ void menuName_drawNameWindow(void) {
         }
     }
     for (i = 0; i < s_menuName.len; i++) {
-        func_80028F3C(s_menuNameNameWin->x + 0x3F + i * 16, s_menuNameNameWin->y + 7, 5, s_menuName.name[i], 0);
+        text_drawChar(s_menuNameNameWin->x + 0x3F + i * 16, s_menuNameNameWin->y + 7, 5, s_menuName.name[i], 0);
     }
     for (i = 0; i < (u8)(s_menuName.gridSize[s_menuName.charSet] / NAME_GRID_COLS); i++) {
         for (j = 0; j < NAME_GRID_COLS; j++) {
-            func_80028F3C(s_menuNameNameWin->x + 0x3E + j * 14, s_menuNameNameWin->y + 0x22 + i * 21, 5,
+            text_drawChar(s_menuNameNameWin->x + 0x3E + j * 14, s_menuNameNameWin->y + 0x22 + i * 21, 5,
                           s_menuName.charSets[s_menuName.charSet][k], 0);
             k++;
         }
     }
-    g_primPtr = func_8002BA90(&g_ot[5], g_primPtr);
+    g_primPtr = text_buildFontTpage(&g_ot[5], g_primPtr);
 }
 
 void menuName_drawCursor(void) {
@@ -237,29 +237,29 @@ void menuName_drawCursor(void) {
     u32 sub;
 
     if (s_menuName.focus == NAME_FOCUS_MENU) {
-        Unk80077DE8 *h;
-        D_80077DE8.unk0 = s_menuName.windows[2].x - 0xE;
-        h = &D_80077DE8;
+        HelpState *h;
+        g_menuHelp.x = s_menuName.windows[2].x - 0xE;
+        h = &g_menuHelp;
         y = s_menuName.windows[2].y + s_menuName.menuCursor * 16;
-        h->unk2 = s_menuName.menuCursor >= 2 ? y + 0x15 : y + 0xD;
+        h->y = s_menuName.menuCursor >= 2 ? y + 0x15 : y + 0xD;
     } else {
         r = &s_menuName.windows[4];
         if (s_menuName.charSet != 0) {
             row = s_menuName.gridCursor / NAME_GRID_COLS;
             idx = s_menuName.gridCursor % NAME_GRID_COLS;
-            D_80077DE8.unk2 = r->y + row * 21 + 0x26;
+            g_menuHelp.y = r->y + row * 21 + 0x26;
             col = (u8)(idx / 5);
             sub = (u8)(idx % 5);
-            D_80077DE8.unk0 = r->x + grp_x(col) + sub * 13 - 0x17;
+            g_menuHelp.x = r->x + grp_x(col) + sub * 13 - 0x17;
         } else {
             row = s_menuName.gridCursor / NAME_GRID_COLS;
             col = s_menuName.gridCursor % NAME_GRID_COLS;
-            D_80077DE8.unk0 = r->x + col * 14 + 0x27;
-            D_80077DE8.unk2 = r->y + row * 21 + 0x26;
+            g_menuHelp.x = r->x + col * 14 + 0x27;
+            g_menuHelp.y = r->y + row * 21 + 0x26;
         }
     }
     D_80077DEC = 3;
-    func_800355E4();
+    help_drawCursor();
 }
 
 void menuName_update(void) {
@@ -268,8 +268,8 @@ void menuName_update(void) {
 }
 
 void menuName_exit(void) {
-    func_8003556C(NULL);
-    func_80035580(NULL);
+    help_setCallback(NULL);
+    help_setBounds(NULL);
     menuName_restoreClut();
 }
 
@@ -296,19 +296,19 @@ void menuName_inputCommands(void) {
     if (g_padRepeat & PAD_RIGHT) {
         snd_playSe(SE_CURSOR);
         s_menuName.focus = NAME_FOCUS_GRID;
-        func_80035580(&s_menuNameHelpBounds);
+        help_setBounds(&s_menuNameHelpBounds);
     }
 }
 
 void menuName_drawTitle(void) {
-    func_8002DEE4(s_menuNameTitleWin, 6, 2);
-    func_8002705C(s_menuNameTitleWin, 6, 2);
+    win_drawBox(s_menuNameTitleWin, 6, 2);
+    win_drawShadow(s_menuNameTitleWin, 6, 2);
     text_drawBlock(s_menuNameTitleWin->x + 0xA, s_menuNameTitleWin->y + 6, 5, text_get(NAME_TEXT_TITLE), 0);
 }
 
 void menuName_drawHelp(void) {
-    func_8002DEE4(s_menuNameHelpWin, 7, 1);
-    func_8002705C(s_menuNameHelpWin, 7, 1);
+    win_drawBox(s_menuNameHelpWin, 7, 1);
+    win_drawShadow(s_menuNameHelpWin, 7, 1);
     text_drawBlock(s_menuNameHelpWin->x + 0x3E, s_menuNameHelpWin->y + 6, 6, text_get(NAME_TEXT_PROMPT), 0);
     ui_drawLabel(s_menuNameHelpWin->x + 0x23, s_menuNameHelpWin->y - 4, 6, D_80070450, 0);
 }
@@ -316,7 +316,7 @@ void menuName_drawHelp(void) {
 void menuName_loadPortrait(s32 chr) {
     u8 *img;
 
-    img = s_menuNamePortraits[func_80028954(chr)];
+    img = s_menuNamePortraits[chr_getPortrait(chr)];
     StoreImage(&s_menuNameClutRect, (u32 *)s_menuName.savedClut);
     DrawSync(0);
     LoadImage(&s_menuNameClutRect, (u32 *)img);
@@ -339,7 +339,7 @@ s32 menuName_getCharIdx(s32 i) {
 }
 
 void menuName_updateHelp(void) {
-    D_80077DE8.unk8 = text_get(s_menuName.focus == NAME_FOCUS_MENU ? s_menuName.menuCursor + NAME_TEXT_MENU_HELP : NAME_TEXT_GRID_HELP);
+    g_menuHelp.text = text_get(s_menuName.focus == NAME_FOCUS_MENU ? s_menuName.menuCursor + NAME_TEXT_MENU_HELP : NAME_TEXT_GRID_HELP);
 }
 
 void menuName_clampCursor(void) {

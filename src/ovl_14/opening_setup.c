@@ -1,18 +1,18 @@
 #include "ovl_14.h"
 
 void opening_initNewGame(void) {
-    func_800651D8();
+    game_newGame();
     evt_clearGlobalVars();
     func_8005392C();
-    func_8003253C();
+    menu_initNewGame();
     func_800AB1E4();
-    func_80062344();
+    card_initAll();
     opening_resetGameData();
 }
 
 void opening_resetGameData(void) {
     opening_resetFieldState();
-    func_8004BBF0();
+    evt_initSystem();
     func_800AB200();
     func_8006237C();
 }
@@ -43,13 +43,13 @@ void opening_init(void) {
     s32 i;
 
     for (i = 1; i >= 0; i--) {
-        D_800739B0[i].unk1 = 0;
-        D_800739B0[i].unk0 = 0;
+        g_padActuator[i].unk1 = 0;
+        g_padActuator[i].unk0 = 0;
     }
-    func_80055D40();
-    func_80055D60();
+    akao_stopMusicNow();
+    akao_stopAllSe();
     if (g_gameState->unk1C->unk0 & 0x100000) {
-        func_800551F0();
+        snd_init();
         opening_resetMusicSlots();
         g_gameState->unk1C->unk0 &= ~0x100000;
     }
@@ -59,7 +59,7 @@ void opening_init(void) {
     opening_loadData();
     opening_loadMusic();
     opening_freeData();
-    func_800239D0();
+    game_initGfx();
     SetDispMask(1);
 }
 
@@ -94,18 +94,18 @@ void opening_loadMusic(void) {
     memmove(g_gameState->unk1C->unk814, (void *)a, (s32)db_lookupRegistered(5, TITLE_MUSIC, 0));
     a = (s32)db_lookupRegistered(4, TITLE_MUSIC_BANK, 0);
     b = (s32)db_lookupRegistered(5, TITLE_MUSIC_BANK, 0);
-    func_80055DF4();
-    func_80055E14(a, b, 1);
+    akao_beginBankUpload();
+    akao_uploadBank(a, b, 1);
 }
 
 void opening_loadData(void) {
     u8 *buf;
     FileEntry *e;
 
-    buf = D_80067944 + 0x10000;
+    buf = g_loadAreaEnd + 0x10000;
     e = file_find(1, 0x2717);
-    func_8002177C(g_gameState->unk1C->unk854, e->unk4, (e->unkC - e->unk4) << 11, buf, 0, -1, 0);
-    while (func_800217C4(g_gameState->unk1C->unk854) != 0) {
+    cdRead_init(g_gameState->unk1C->unk854, e->unk4, (e->unkC - e->unk4) << 11, buf, 0, -1, 0);
+    while (cdRead_update(g_gameState->unk1C->unk854) != 0) {
     }
     g_openingData = buf;
     db_register((s32)buf, 0);
@@ -136,24 +136,24 @@ s32 opening_soundCmd(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4) {
             }
             if (g_gameState->unk1C->unk81C[0] != arg1) {
                 if (g_gameState->unk1C->unk0 & 0x20000000) {
-                    func_800552B8(g_gameState->unk1C->unk824[0]);
+                    akao_stopMusic(g_gameState->unk1C->unk824[0]);
                 }
                 g_gameState->unk1C->unk0 &= 0xCFFFFFFF;
                 g_gameState->unk1C->unk820[0] = 0x122;
                 g_gameState->unk1C->unk81C[0] = arg1;
                 g_gameState->unk1C->unk826[0] = 0x7F;
             }
-            g_gameState->unk1C->unk824[0] = func_80055290(g_gameState->unk1C->unk814);
+            g_gameState->unk1C->unk824[0] = akao_playMusic(g_gameState->unk1C->unk814);
             g = g_gameState->unk1C;
             if (!(g->unk0 & 0x20000000)) {
-                func_80055A34(g->unk824[0], 0xA, 0, g->unk826[0]);
+                akao_fadeMusicVolumeFrom(g->unk824[0], 0xA, 0, g->unk826[0]);
             }
             g_openingSoundPending = -1;
             g_gameState->unk1C->unk0 |= 0x30000000;
             return 0;
         case 1:
             if (g_gameState->unk1C->unk81C[0] == (u16)id) {
-                func_800552B8(g_gameState->unk1C->unk824[0]);
+                akao_stopMusic(g_gameState->unk1C->unk824[0]);
                 g_gameState->unk1C->unk826[0] = 0x7F;
                 g_gameState->unk1C->unk0 &= 0xDFFFFFFF;
             }
@@ -162,35 +162,35 @@ s32 opening_soundCmd(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4) {
             if ((arg0 & 0x3F) != 1) {
                 break;
             }
-            func_800559C8(g_gameState->unk1C->unk824[0], arg2);
+            akao_setMusicVolume(g_gameState->unk1C->unk824[0], arg2);
             g_gameState->unk1C->unk826[0] = arg2;
             return 0;
         case 3:
             if ((arg0 & 0x3F) != 1) {
                 break;
             }
-            func_800559FC(g_gameState->unk1C->unk824[0], arg2, arg3);
+            akao_fadeMusicVolume(g_gameState->unk1C->unk824[0], arg2, arg3);
             opening_setMusicVolume(arg3, arg2);
             return 0;
         case 4:
             if ((arg0 & 0x3F) != 1) {
                 break;
             }
-            func_80055A34(g_gameState->unk1C->unk824[0], arg2, arg3, arg4);
+            akao_fadeMusicVolumeFrom(g_gameState->unk1C->unk824[0], arg2, arg3, arg4);
             opening_setMusicVolume(arg4, arg2);
             return 0;
         case 6:
             if ((arg0 & 0x3F) != 1) {
                 break;
             }
-            func_800559FC(0, arg2, arg3);
+            akao_fadeMusicVolume(0, arg2, arg3);
             opening_setMusicVolume(arg3, arg2);
             return 0;
         case 11:
             if ((arg0 & 0x3F) != 1) {
                 break;
             }
-            func_80055A34(0, arg2, arg3, arg4);
+            akao_fadeMusicVolumeFrom(0, arg2, arg3, arg4);
             opening_setMusicVolume(arg4, arg2);
             return 0;
         }
@@ -203,60 +203,60 @@ s32 opening_soundCmd(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4) {
         }
         switch (kind) {
         case 0:
-            func_800553EC(h, arg2, arg3, arg4);
+            akao_playSe(h, arg2, arg3, arg4);
             return 0;
         case 1:
-            func_8005546C(h, arg2);
+            akao_stopSe(h, arg2);
             return 0;
         case 2:
             switch (arg0 & 0x3F) {
             case 1:
-                func_80055764(h, arg2, arg3);
+                akao_setSeVolume(h, arg2, arg3);
                 return 0;
             case 5:
-                func_80055850(h, arg2, arg3);
+                akao_sendCmdA2(h, arg2, arg3);
                 return 0;
             case 3:
-                func_8005593C(h, arg2, arg3);
+                akao_sendCmdA4(h, arg2, arg3);
                 return 0;
             }
             return -1;
         case 3:
             switch (arg0 & 0x3F) {
             case 1:
-                func_800557A8(h, arg2, arg3, arg4);
+                akao_fadeSeVolume(h, arg2, arg3, arg4);
                 return 0;
             case 5:
-                func_80055894(h, arg2, arg3, arg4);
+                akao_sendCmdA3(h, arg2, arg3, arg4);
                 return 0;
             case 3:
-                func_80055980(h, arg2, arg3, arg4);
+                akao_sendCmdA5(h, arg2, arg3, arg4);
                 return 0;
             }
             return -1;
         case 5:
             switch (arg0 & 0x3F) {
             case 1:
-                func_80055704(arg2);
+                akao_setAllSeVolume(arg2);
                 return 0;
             case 5:
-                func_800557F0(arg2);
+                akao_sendCmdAA(arg2);
                 return 0;
             case 3:
-                func_800558DC(arg2);
+                akao_sendCmdAC(arg2);
                 return 0;
             }
             return -1;
         case 6:
             switch (arg0 & 0x3F) {
             case 1:
-                func_80055730(arg2, arg3);
+                akao_fadeAllSeVolume(arg2, arg3);
                 return -1;
             case 5:
-                func_8005581C(arg2, arg3);
+                akao_sendCmdAB(arg2, arg3);
                 return -1;
             case 3:
-                func_80055908(arg2, arg3);
+                akao_sendCmdAD(arg2, arg3);
                 return -1;
             }
             return -1;

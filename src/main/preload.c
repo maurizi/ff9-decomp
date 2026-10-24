@@ -1,10 +1,10 @@
 #include "ff9.h"
 
-void func_80021938(PreloadEntry *e) {
-    func_80021974(e, 0, -1, 0, 0, 0, -1, -1);
+void preload_clearEntry(PreloadEntry *e) {
+    preload_setEntry(e, 0, -1, 0, 0, 0, -1, -1);
 }
 
-void func_80021974(PreloadEntry *p, s32 a, s32 b, s32 c, s32 d, s32 e, s32 f, s32 g) {
+void preload_setEntry(PreloadEntry *p, s32 a, s32 b, s32 c, s32 d, s32 e, s32 f, s32 g) {
     s32 t;
     p->unk0 = 0;
     p->unk2 = a;
@@ -22,7 +22,7 @@ void func_80021974(PreloadEntry *p, s32 a, s32 b, s32 c, s32 d, s32 e, s32 f, s3
     p->unk26 = 0;
 }
 
-void func_800219D8(Unk800219D8 *a, s16 b, s16 c, s16 d, s16 e) {
+void preload_setVramRect(Unk800219D8 *a, s16 b, s16 c, s16 d, s16 e) {
     a->unk20 = b;
     a->unk22 = c;
     a->unk24 = d;
@@ -30,7 +30,7 @@ void func_800219D8(Unk800219D8 *a, s16 b, s16 c, s16 d, s16 e) {
     a->unk26 = e;
 }
 
-s32 func_800219FC(PreloadEntry *a) {
+s32 preload_isUsed(PreloadEntry *a) {
     s32 r = 0;
     if (a != NULL) {
         r = a->fileId != -1;
@@ -38,14 +38,14 @@ s32 func_800219FC(PreloadEntry *a) {
     return r;
 }
 
-s32 func_80021A1C(PreloadEntry *a) {
+s32 preload_isBusy(PreloadEntry *a) {
     return a->unk0 & 1;
 }
 
-s32 func_80021A28(PreloadEntry *p) {
+s32 preload_isDone(PreloadEntry *p) {
     u16 f;
     if (p->unk2 == 0) {
-        return func_80021A8C(p);
+        return preload_isLoaded(p);
     }
     if (p->unk2 != 1) {
         return 0;
@@ -57,7 +57,7 @@ s32 func_80021A28(PreloadEntry *p) {
     return 0;
 }
 
-s32 func_80021A8C(PreloadEntry *p) {
+s32 preload_isLoaded(PreloadEntry *p) {
     u16 f = p->unk0;
     if ((f & 0x82) && !(f & 1) && p->unk2 == 0 && !(f & 0x20) && p->unk8 != 0) {
         return 1;
@@ -65,7 +65,7 @@ s32 func_80021A8C(PreloadEntry *p) {
     return 0;
 }
 
-s32 func_80021AE0(PreloadEntry *p) {
+s32 preload_isInVram(PreloadEntry *p) {
     u16 f = p->unk0;
     if ((f & 0x82) && !(f & 1)) {
         if ((f & 0x20) && p->unk24 != 0 && p->unk26 != 0) {
@@ -75,14 +75,14 @@ s32 func_80021AE0(PreloadEntry *p) {
     return 0;
 }
 
-PreloadEntry *func_80021B34(PreloadEntry *dst, PreloadEntry *src) {
+PreloadEntry *preload_makeChunk(PreloadEntry *dst, PreloadEntry *src) {
     s32 len;
     s32 t;
 
-    if (func_80021A8C(src)) {
-        func_80021938(dst);
+    if (preload_isLoaded(src)) {
+        preload_clearEntry(dst);
     } else {
-        func_80021938(dst);
+        preload_clearEntry(dst);
         dst->unk2 = src->unk2;
         dst->fileId = src->fileId;
         t = src->unk8;
@@ -103,10 +103,10 @@ PreloadEntry *func_80021B34(PreloadEntry *dst, PreloadEntry *src) {
     return dst;
 }
 
-s32 func_80021C20(PreloadEntry *e) {
+s32 preload_wait(PreloadEntry *e) {
     s32 r = 0;
     if (e->unk0 & 1) {
-        while (func_80022D3C(NULL) == 0) {
+        while (cd_syncAsync(NULL) == 0) {
         }
         r = 1;
     }
@@ -123,13 +123,13 @@ void preload_init() {
     p->count = 0;
     p->cur = -1;
     for (i = 5; i >= 0; i--) {
-        func_80021938(&p->unk4[i]);
+        preload_clearEntry(&p->unk4[i]);
     }
-    func_80021938(&p->unk4[6]);
+    preload_clearEntry(&p->unk4[6]);
     p->unk11C = 0;
 }
 
-void func_80021CDC(s32 a) {
+void preload_setHook(s32 a) {
     g_gameState->unk1C->unk8C8->unk11C = a;
 }
 
@@ -138,13 +138,13 @@ PreloadEntry *preload_add(void) {
     PreloadEntry *e = NULL;
     if (t->count < 6) {
         e = &t->unk4[t->count];
-        func_80021938(e);
+        preload_clearEntry(e);
         t->count++;
     }
     return e;
 }
 
-PreloadEntry *func_80021D7C(void) {
+PreloadEntry *preload_next(void) {
     PreloadQueue *p = g_gameState->unk1C->unk8C8;
     PreloadEntry *e;
 
@@ -159,7 +159,7 @@ PreloadEntry *func_80021D7C(void) {
     return NULL;
 }
 
-PreloadEntry *func_80021E20(void) {
+PreloadEntry *preload_getCurrent(void) {
     PreloadQueue *p = g_gameState->unk1C->unk8C8;
     return &p->unk4[p->cur];
 }
@@ -177,9 +177,9 @@ PreloadEntry *preload_find(s32 id) {
     return NULL;
 }
 
-s32 func_80021ED4(void) {
+s32 preload_startRead(void) {
     PreloadEntry *e = &g_gameState->unk1C->unk8C8->unk4[6];
-    PreloadEntry *p = func_80021E20();
+    PreloadEntry *p = preload_getCurrent();
     u8 r;
     s32 ret;
 
@@ -187,13 +187,13 @@ s32 func_80021ED4(void) {
         return 0;
     }
     do {
-        if (!func_800219FC(p)) {
+        if (!preload_isUsed(p)) {
             return -1;
         }
         if (p->unk2 == 0) {
-            r = cd_readAsync(g_gameState->unk20 + e->unk18, e->unk1C, (void *)e->unk8, preload_onReadDone);
+            r = cd_readAsync(g_gameState->imgSector + e->unk18, e->unk1C, (void *)e->unk8, preload_onReadDone);
         } else if (p->unk2 == 1) {
-            r = cd_seekAsync(g_gameState->unk20 + e->unk18, preload_onReadDone);
+            r = cd_seekAsync(g_gameState->imgSector + e->unk18, preload_onReadDone);
         } else {
             goto done;
         }
@@ -207,14 +207,14 @@ s32 func_80021ED4(void) {
     return ret;
 }
 
-s32 func_80021FB4(void) {
-    PreloadEntry *p = func_80021E20();
+s32 preload_poll(void) {
+    PreloadEntry *p = preload_getCurrent();
     s32 t;
 
     if (p == NULL) {
         return 0;
     }
-    if (func_800219FC(p) == 0) {
+    if (preload_isUsed(p) == 0) {
         return -1;
     }
     if (p->unk0 & 1) {
@@ -227,55 +227,55 @@ s32 func_80021FB4(void) {
     return 0;
 }
 
-void func_80022020(void) {
-    while (func_80021FB4() > 0) {
+void preload_finishRead(void) {
+    while (preload_poll() > 0) {
     }
-    func_80022050();
+    preload_clearBusy();
 }
 
-void func_80022050(void) {
-    PreloadEntry *e = func_80021E20();
+void preload_clearBusy(void) {
+    PreloadEntry *e = preload_getCurrent();
     if (e != NULL) {
         e->unk0 &= 0xFF7E;
     }
 }
 
-PreloadEntry *func_8002208C(void) {
-    PreloadEntry *p = func_80021E20();
-    if (func_800219FC(p) == 0) {
+PreloadEntry *preload_waitCurrent(void) {
+    PreloadEntry *p = preload_getCurrent();
+    if (preload_isUsed(p) == 0) {
         return NULL;
     }
-    if (func_80021A1C(p) != 0) {
-        func_80021C20(p);
+    if (preload_isBusy(p) != 0) {
+        preload_wait(p);
     }
-    while (func_80021FB4() > 0) {
+    while (preload_poll() > 0) {
     }
     return p;
 }
 
-s32 func_800220E8(s32 id) {
+s32 preload_isReady(s32 id) {
     s32 r = 0;
     PreloadEntry *p = preload_find(id);
 
     if (p != NULL) {
-        if (func_80021A1C(p)) {
-            func_80022020();
+        if (preload_isBusy(p)) {
+            preload_finishRead();
         }
-        if (func_80021AE0(p) || func_80021A8C(p)) {
+        if (preload_isInVram(p) || preload_isLoaded(p)) {
             r = 1;
         }
     } else {
-        p = func_80021E20();
-        if (p != NULL && func_800219FC(p)) {
+        p = preload_getCurrent();
+        if (p != NULL && preload_isUsed(p)) {
             if (((p->fileId >> 16) & 0xFF) == ((id >> 16) & 0xFF) && (p->fileId & 0xFFFF) != (id & 0xFFFF)) {
-                func_80021C20(p);
+                preload_wait(p);
             }
         }
     }
     return r;
 }
 
-s32 func_800221C0(u32 addr, s32 size) {
+s32 preload_overlaps(u32 addr, s32 size) {
     PreloadQueue *c = g_gameState->unk1C->unk8C8;
     s32 i;
     PreloadEntry *e;
@@ -299,7 +299,7 @@ s32 func_800221C0(u32 addr, s32 size) {
     return 0;
 }
 
-s32 func_80022280(u32 addr, s32 size) {
+s32 preload_discardRange(u32 addr, s32 size) {
     PreloadQueue *q = g_gameState->unk1C->unk8C8;
     PreloadEntry *e;
     s32 ret = 0;
@@ -310,30 +310,30 @@ s32 func_80022280(u32 addr, s32 size) {
         e = &q->unk4[i];
         if (e->fileId != -1 && (*(u32 *)&e->unk0 & 0x60) == 0x40 && e->unk8 != 0 && e->unkC != 0 &&
             e->unk8 < end && addr < e->unk8 + e->unkC) {
-            if (func_80021C20(e)) {
+            if (preload_wait(e)) {
                 ret = 1;
             }
-            func_80021938(e);
+            preload_clearEntry(e);
         }
     }
     return ret;
 }
 
-void func_80022390(s32 id) {
+void preload_remove(s32 id) {
     PreloadEntry *e = preload_find(id);
     if (e != NULL) {
-        func_80021C20(e);
-        func_80021938(e);
+        preload_wait(e);
+        preload_clearEntry(e);
     }
 }
 
-void func_800223CC(void) {
+void preload_reset(void) {
     PreloadQueue *p = g_gameState->unk1C->unk8C8;
     s32 i;
 
     for (i = p->count - 1; i >= 0; i--) {
-        func_80021C20(&p->unk4[i]);
-        func_80021938(&p->unk4[i]);
+        preload_wait(&p->unk4[i]);
+        preload_clearEntry(&p->unk4[i]);
     }
     p->state = 4;
     p->count = 0;
@@ -350,19 +350,19 @@ s32 preload_update(void) {
     for (;;) {
         switch (t->state) {
         case 4:
-            if (func_80021D7C() != NULL) {
+            if (preload_next() != NULL) {
                 t->state = 5;
             } else {
                 t->state = 0;
             }
             break;
         case 5:
-            e = func_80021E20();
-            if (func_800219FC(e) == 0 || func_80021A28(e) != 0) {
+            e = preload_getCurrent();
+            if (preload_isUsed(e) == 0 || preload_isDone(e) != 0) {
                 t->state = 4;
                 break;
             }
-            func_80021B34(&t->unk4[6], e);
+            preload_makeChunk(&t->unk4[6], e);
             t->state = 8;
             break;
         case 8:
@@ -372,17 +372,17 @@ s32 preload_update(void) {
             t->state = 9;
             return 0;
         case 9:
-            if (func_80021ED4() == -1) {
+            if (preload_startRead() == -1) {
                 t->state = 5;
                 return 0;
             }
             t->state = 10;
             return 0;
         case 10:
-            if (func_80021FB4() > 0) {
+            if (preload_poll() > 0) {
                 return 0;
             }
-            func_80022050();
+            preload_clearBusy();
             t->state = 5;
             return 0;
         case 0:
@@ -397,9 +397,9 @@ void preload_onReadDone(u8 *arg0) {
     PreloadEntry *e;
 
     if (p != NULL) {
-        e = func_80021E20();
+        e = preload_getCurrent();
         if (e != NULL) {
-            if (func_800219FC(e) && *arg0 == 0) {
+            if (preload_isUsed(e) && *arg0 == 0) {
                 PreloadEntry *x = &p->unk4[6];
                 if (e->unk2 == 0) {
                     e->unkC += x->unk1C;

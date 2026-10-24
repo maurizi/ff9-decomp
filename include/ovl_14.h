@@ -6,7 +6,7 @@
  * not in ff9.h. */
 #include "ff9.h"
 
-/* A title screen image: an 8-byte item drawn by func_80027710 (opening_titleLoadTims fills them). */
+/* A title screen image: an 8-byte item drawn by ui_drawSpriteDef (opening_titleLoadTims fills them). */
 typedef struct {
     union {
         u32 w; /* uv + clut, copied as one word */
@@ -21,7 +21,7 @@ typedef struct {
     u16 tpage;
 } TitleImage;
 
-/* 8-byte entry of the directory lists at D_80067944 + 0x14C700 (opening_findSceneSectors) */
+/* 8-byte entry of the directory lists at g_loadAreaEnd + 0x14C700 (opening_findSceneSectors) */
 typedef struct {
     u16 id;     /* field / world id, or the id the first lookup gives for the second list */
     u16 link;   /* id to look up in the second list */
@@ -37,7 +37,7 @@ typedef struct {
 #define SE_CANCEL 0x65
 #endif
 #define SE_GAME_START 0xC18 /* New Game on the title, and the ending's secret code */
-/* g_gameState->unkB: one bit per disc of the game found in the drive (bit 0 = disc 1), 0xFF = no disc read.
+/* g_gameState->disc: one bit per disc of the game found in the drive (bit 0 = disc 1), 0xFF = no disc read.
  * The opening plays its movie only with disc 1 in (bit 0), the ending only with disc 4 (bit 3), and New Game
  * sets it to disc 1 before scene_checkDisc asks for the disc that was in before. */
 #define DISC_NONE 0xFF
@@ -46,34 +46,34 @@ typedef struct {
 /* menu_open types (docs/runtime-findings.md field/menu campaign) */
 #define MENU_SAVE 4 /* save / load (ovl_39); argument 1 = title Continue */
 #define MENU_DISC 8 /* "Change to DISC" (ovl_3e); argument (disc & 3) << 14 | field id, 0x3A98 here */
-void func_8001D910(void *, RECT **, RECT **); /* TIM: clut rect, image rect */
+void file_getTimRects(void *, RECT **, RECT **); /* TIM: clut rect, image rect */
 typedef struct {
     u32 unk0;
     u32 unk4; /* flags: bpp in low bits */
 } TmTimLike; /* TIM header */
 s32 cd_findFile(char *);
 extern s32 g_mbgFrame;
-u8 func_80022ED4(s32);
-void func_80032100(void);
-void func_80023018(void);
-s32 func_80055290(void *);
-void func_800552B8(s32);
-void func_800553EC(s32, s32, s32, s32);
-void func_80055704(s32);
-void func_80055730(s32, s32);
-void func_80055764(s32, s32, s32);
-void func_800557A8(s32, s32, s32, s32);
-void func_800557F0(s32);
-void func_8005581C(s32, s32);
-void func_80055850(s32, s32, s32);
-void func_80055894(s32, s32, s32, s32);
-void func_800558DC(s32);
-void func_80055908(s32, s32);
-void func_8005593C(s32, s32, s32);
-void func_80055980(s32, s32, s32, s32);
-void func_800559C8(s32, s32);
-void func_800559FC(s32, s32, s32);
-void func_80055A34(s32, s32, s32, s32);
+u8 cd_seekStreamAsync(s32);
+void menu_update(void);
+void cd_pause(void);
+s32 akao_playMusic(void *);
+void akao_stopMusic(s32);
+void akao_playSe(s32, s32, s32, s32);
+void akao_setAllSeVolume(s32);
+void akao_fadeAllSeVolume(s32, s32);
+void akao_setSeVolume(s32, s32, s32);
+void akao_fadeSeVolume(s32, s32, s32, s32);
+void akao_sendCmdAA(s32);
+void akao_sendCmdAB(s32, s32);
+void akao_sendCmdA2(s32, s32, s32);
+void akao_sendCmdA3(s32, s32, s32, s32);
+void akao_sendCmdAC(s32);
+void akao_sendCmdAD(s32, s32);
+void akao_sendCmdA4(s32, s32, s32);
+void akao_sendCmdA5(s32, s32, s32, s32);
+void akao_setMusicVolume(s32, s32);
+void akao_fadeMusicVolume(s32, s32, s32);
+void akao_fadeMusicVolumeFrom(s32, s32, s32, s32);
 
 /* ovl_64 (FMV player) */
 void mbg_streamSetBaseSector(s32);
@@ -114,7 +114,7 @@ enum {
     OPENING_MOVIE2,
     OPENING_ATTRACT2, /* attract image set 1, then the title */
     OPENING_PAUSE2,
-    OPENING_BOOT,     /* boot screen, first boot only (D_80067950 == 0) */
+    OPENING_BOOT,     /* boot screen, first boot only (g_resetCount == 0) */
     OPENING_DONE      /* the title started a game */
 };
 #define OPENING_PAUSE_FRAMES 180
@@ -198,7 +198,7 @@ extern TitleMenu g_titleMenu;
 
 /* g_movieFlags (opening_movieThenTitle). The movie sets 7 through g_movieFlagQueue while it plays. */
 #define MOVIE_NO_SCENES 0x1    /* don't run the scenes */
-#define MOVIE_NO_FADE   0x2    /* don't run the screen fade (func_80032098) */
+#define MOVIE_NO_FADE   0x2    /* don't run the screen fade (game_updateFade) */
 #define MOVIE_NO_OT     0x4    /* opening_movieSwap only puts the draw env, the decoder draws */
 #define MOVIE_PLAYING   0x10
 #define MOVIE_SKIPPING  0x20   /* Start/Cross pressed */

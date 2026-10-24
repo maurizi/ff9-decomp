@@ -1,6 +1,6 @@
 #include "ff9.h"
 
-Unk8004AB64 *func_80036650(s32 n) {
+Unk8004AB64 *evt_allocObject(s32 n) {
     Unk8007AECCNode *cur = g_evtState->unk15D0;
     Unk8007AECCNode *nn = NULL;
     Unk8007AECCNode *next;
@@ -62,7 +62,7 @@ Unk8004AB64 *func_80036650(s32 n) {
     return NULL;
 }
 
-Unk8004AB64 *func_800367D0(s32 idx, s32 id, s32 a2, s32 a3) {
+Unk8004AB64 *evt_createObject(s32 idx, s32 id, s32 a2, s32 a3) {
     Unk8004AB64 *o;
     Unk16D8 *n;
     Unk8007AECC *d;
@@ -73,13 +73,13 @@ Unk8004AB64 *func_800367D0(s32 idx, s32 id, s32 a2, s32 a3) {
     if (id == 0) {
         id = idx;
     }
-    o = func_8004B040(id);
+    o = evt_getObject(id);
     if (o != NULL) {
-        func_80036978(o);
+        evt_deleteObject(o);
     }
     nw = (a2 + 3) >> 2;
-    nv = (((ScriptEntry *)D_8007ADF8)[idx].unk4 + 3) >> 2;
-    o = func_80036650(nw + nv + a3);
+    nv = (((ScriptEntry *)g_evtScripts)[idx].unk4 + 3) >> 2;
+    o = evt_allocObject(nw + nv + a3);
     end = (u32 *)o + nw + nv;
     for (p = (u32 *)o; p < end; p++) {
         *p = 0;
@@ -100,7 +100,7 @@ Unk8004AB64 *func_800367D0(s32 idx, s32 id, s32 a2, s32 a3) {
     o->unk7 = id;
     o->unk5 = 0;
     {
-        u8 *h = D_8007ADF8 + ((ScriptEntry *)D_8007ADF8)[idx].unk0;
+        u8 *h = g_evtScripts + ((ScriptEntry *)g_evtScripts)[idx].unk0;
         s32 c = *(u16 *)h >> 8;
         u16 *q = (u16 *)(h + 2);
 
@@ -126,7 +126,7 @@ Unk8004AB64 *func_800367D0(s32 idx, s32 id, s32 a2, s32 a3) {
     return o;
 }
 
-Unk16D8 *func_80036978(Unk8004AB64 *obj) {
+Unk16D8 *evt_deleteObject(Unk8004AB64 *obj) {
     Unk16D8 *n;
     Unk16D8 *prev;
     Unk16D8 *next = NULL;
@@ -158,7 +158,7 @@ Unk16D8 *func_80036978(Unk8004AB64 *obj) {
     return next;
 }
 
-s32 func_80036AAC(s32 op) {
+s32 evt_exprUnitIncDec(s32 op) {
     s32 r = 0;
     s32 w = g_evtExprSp[-2];
     s32 mask;
@@ -173,27 +173,27 @@ s32 func_80036AAC(s32 op) {
     }
     for (i = 0; i < 8; i++) {
         if (mask & 1) {
-            D_8007B700 = D_8007AED0[i];
+            g_evtExprObj = g_evtUnitObjects[i];
             switch (op) {
             case 8:
                 r = evt_popResult();
                 g_evtExprSp++;
-                func_80052D70(r + 1);
+                evt_assignResult(r + 1);
                 break;
             case 9:
                 r = evt_popResult();
                 g_evtExprSp++;
-                func_80052D70(r - 1);
+                evt_assignResult(r - 1);
                 break;
             case 10:
                 r = evt_popResult() + 1;
                 g_evtExprSp++;
-                func_80052D70(r);
+                evt_assignResult(r);
                 break;
             case 11:
                 r = evt_popResult() - 1;
                 g_evtExprSp++;
-                func_80052D70(r);
+                evt_assignResult(r);
                 break;
             }
             g_evtExprSp++;
@@ -204,7 +204,7 @@ s32 func_80036AAC(s32 op) {
     return r;
 }
 
-s32 func_80036CCC(s32 op) {
+s32 evt_exprUnitAssign(s32 op) {
     s32 r = 0;
     s32 w = g_evtExprSp[-3];
     s32 mask;
@@ -221,7 +221,7 @@ s32 func_80036CCC(s32 op) {
     v = evt_popResult();
     for (i = 0; i < 8; i++) {
         if (mask & 1) {
-            D_8007B700 = D_8007AED0[i];
+            g_evtExprObj = g_evtUnitObjects[i];
             switch (op) {
             case 0x2D:
                 r = v;
@@ -275,7 +275,7 @@ s32 func_80036CCC(s32 op) {
                 g_evtExprSp++;
                 break;
             }
-            func_80052D70(r);
+            evt_assignResult(r);
             g_evtExprSp++;
         }
         mask >>= 1;
@@ -284,7 +284,7 @@ s32 func_80036CCC(s32 op) {
     return r;
 }
 
-s32 func_80036FFC(s32 op) {
+s32 evt_exprUnitSelect(s32 op) {
     s32 r = 0;
     s32 idx = r;
     s32 w = g_evtExprSp[-2];
@@ -304,7 +304,7 @@ s32 func_80036FFC(s32 op) {
         for (i = 0; i < 8; i++) {
             r >>= 1;
             if (mask & 1) {
-                D_8007B700 = D_8007AED0[i];
+                g_evtExprObj = g_evtUnitObjects[i];
                 if (evt_popResult() == 0) {
                     r |= 0x80;
                 }
@@ -317,7 +317,7 @@ s32 func_80036FFC(s32 op) {
         r = -0x8000;
         for (i = 0; i < 8; i++) {
             if (mask & 1) {
-                D_8007B700 = D_8007AED0[i];
+                g_evtExprObj = g_evtUnitObjects[i];
                 x = evt_popResult();
                 g_evtExprSp++;
                 if (r < x) {
@@ -333,7 +333,7 @@ s32 func_80036FFC(s32 op) {
         r = 0x7FFF;
         for (i = 0; i < 8; i++) {
             if (mask & 1) {
-                D_8007B700 = D_8007AED0[i];
+                g_evtExprObj = g_evtUnitObjects[i];
                 x = evt_popResult();
                 g_evtExprSp++;
                 if (x < r) {
@@ -350,7 +350,7 @@ s32 func_80036FFC(s32 op) {
     return r;
 }
 
-s32 func_800372A4(s32 op) {
+s32 evt_exprUnitCompare(s32 op) {
     s32 r = 0;
     s32 c = r;
     s32 w = g_evtExprSp[-3];
@@ -369,7 +369,7 @@ s32 func_800372A4(s32 op) {
     for (i = 0; i < 8; i++) {
         r >>= 1;
         if (mask & 1) {
-            D_8007B700 = D_8007AED0[i];
+            g_evtExprObj = g_evtUnitObjects[i];
             switch (op) {
             case 0x1C:
                 c = evt_popResult() < v;
@@ -411,7 +411,7 @@ s32 func_800372A4(s32 op) {
     return r;
 }
 
-s32 func_80037528(s32 op) {
+s32 evt_exprUnitLogic(s32 op) {
     s32 r = 0;
     s32 w = g_evtExprSp[-2];
     s32 mask;
@@ -427,7 +427,7 @@ s32 func_80037528(s32 op) {
     for (i = 0; i < 8; i++) {
         r >>= 1;
         if (mask & 1) {
-            D_8007B700 = D_8007AED0[i];
+            g_evtExprObj = g_evtUnitObjects[i];
             if (evt_popResult() != 0) {
                 r |= 0x80;
             }
@@ -450,11 +450,11 @@ s32 func_80037528(s32 op) {
         g_evtExprSp++;
         break;
     }
-    func_80052D70(r);
+    evt_assignResult(r);
     return r;
 }
 
-s32 func_80037738(void) {
+s32 evt_exprUnitFirst(void) {
     s32 r = 0;
     s32 w = g_evtExprSp[-2];
     s32 mask;
@@ -477,7 +477,7 @@ s32 func_80037738(void) {
         }
     }
     if (i < 8) {
-        D_8007B700 = D_8007AED0[i];
+        g_evtExprObj = g_evtUnitObjects[i];
         r = evt_popResult();
     } else {
         g_evtExprSp--;
@@ -486,7 +486,7 @@ s32 func_80037738(void) {
     return r;
 }
 
-s32 func_800378C4(s32 slot) {
+s32 evt_joinParty(s32 slot) {
     s32 i;
     s32 r;
 
@@ -512,7 +512,7 @@ s32 func_800378C4(s32 slot) {
     return r;
 }
 
-s32 func_80037ACC(s32 op) {
+s32 evt_exprSpecial(s32 op) {
     s32 r = 0;
     s16 px;
     s16 py;
@@ -525,53 +525,53 @@ s32 func_80037ACC(s32 op) {
     case 0x9:
     case 0xA:
     case 0xB:
-        r = func_80036AAC(op);
+        r = evt_exprUnitIncDec(op);
         break;
     case 0xF:
     case 0x4B:
     case 0x4C:
-        r = func_80036FFC(op);
+        r = evt_exprUnitSelect(op);
         break;
     case 0x2E:
     case 0x43:
     case 0x44:
     case 0x45:
-        r = func_80037528(op);
+        r = evt_exprUnitLogic(op);
         break;
     case 0x64:
         x = evt_popResult();
         if (x < 0x100) {
             r = item_getCount(x);
         } else if (x < 0x200) {
-            r = (u8)func_800281A4(x - 0x100);
+            r = (u8)keyItem_has(x - 0x100);
         } else {
-            r = func_80062560(x - 0x200);
+            r = card_countOf(x - 0x200);
         }
         break;
     case 0x65:
-        func_800C7EE8(evt_popResult(), &r);
+        bgi_getAnimFrame(evt_popResult(), &r);
         break;
     case 0x52:
         gd = g_gameState->unk1C;
-        r = gd->characters[func_80037ACC_chr(evt_popResult())].hp;
+        r = gd->characters[evt_exprSpecial_chr(evt_popResult())].hp;
         break;
     case 0x53:
         gd = g_gameState->unk1C;
-        r = gd->characters[func_80037ACC_chr(evt_popResult())].maxHp;
+        r = gd->characters[evt_exprSpecial_chr(evt_popResult())].maxHp;
         break;
     case 0x6E:
         gd = g_gameState->unk1C;
-        r = gd->characters[func_80037ACC_chr(evt_popResult())].mp;
+        r = gd->characters[evt_exprSpecial_chr(evt_popResult())].mp;
         break;
     case 0x6F:
         gd = g_gameState->unk1C;
-        r = gd->characters[func_80037ACC_chr(evt_popResult())].maxMp;
+        r = gd->characters[evt_exprSpecial_chr(evt_popResult())].maxMp;
         break;
     case 0x70:
         px = -1;
         o = (Unk8004AB64 *)evt_popResult();
         if (o != NULL && o->unk5 == 4) {
-            func_800C76E8(o->unk3B, (u16 *)&px, (u16 *)&py);
+            bgi_getActorTriangle(o->unk3B, (u16 *)&px, (u16 *)&py);
         }
         r = px;
         break;
@@ -579,7 +579,7 @@ s32 func_80037ACC(s32 op) {
         py = -1;
         o = (Unk8004AB64 *)evt_popResult();
         if (o != NULL && o->unk5 == 4) {
-            func_800C76E8(o->unk3B, (u16 *)&px, (u16 *)&py);
+            bgi_getActorTriangle(o->unk3B, (u16 *)&px, (u16 *)&py);
         }
         r = py;
         break;

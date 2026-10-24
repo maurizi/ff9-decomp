@@ -167,7 +167,7 @@ void wm_weatherUpdate(void) {
     wm_blendWeather(&g_worldWeatherData.work[0], &g_worldWeatherData.work[1], &g_worldWeatherData.work[2], t, t);
     wm_updateFogParams();
     wm_updateColorMatrices();
-    func_8001CCB4((u8)g_worldWeatherData.work[0].fog[1].color[0], (u8)g_worldWeatherData.work[0].fog[1].color[1],
+    game_setClearColor((u8)g_worldWeatherData.work[0].fog[1].color[0], (u8)g_worldWeatherData.work[0].fog[1].color[1],
                   (u8)g_worldWeatherData.work[0].fog[1].color[2]);
 }
 

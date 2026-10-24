@@ -1,106 +1,106 @@
 #include "ff9.h"
 
-void func_8002EB74(MenuList *p) {
+void menuList_update(MenuList *p) {
     s32 d;
-    if (p->unk8 == 0) {
+    if (p->scroll == 0) {
         return;
     }
-    if (p->unk8 & 4) {
-        p->unk9 += p->unkE;
-        if (p->unk9 >= p->unkD - 6) {
-            s32 t = (p->unkC + p->cursor) * p->unk4;
-            p->unk8 = 0;
-            p->unk9 = 0;
-            p->unk5 = p->unkC;
-            if (t + p->unk7 >= p->unk0) {
+    if (p->scroll & 4) {
+        p->scrollPos += p->pageStep;
+        if (p->scrollPos >= p->height - 6) {
+            s32 t = (p->pageTop + p->cursor) * p->cols;
+            p->scroll = 0;
+            p->scrollPos = 0;
+            p->top = p->pageTop;
+            if (t + p->col >= p->count) {
                 p->cursor--;
             }
         }
         return;
     }
-    if (p->unk8 & 2) {
+    if (p->scroll & 2) {
         d = -3;
     } else {
         d = 3;
     }
-    p->unk9 += 3;
-    p->unkB = (p->unkB + d) & 0x1F;
-    if (p->unk9 < 15) {
+    p->scrollPos += 3;
+    p->fillV = (p->fillV + d) & 0x1F;
+    if (p->scrollPos < 15) {
         return;
     }
-    if (p->unk8 & 8) {
-        p->unk7 = (p->unk8 & 2) ? p->unk4 - 1 : 0;
+    if (p->scroll & 8) {
+        p->col = (p->scroll & 2) ? p->cols - 1 : 0;
     }
     {
-        u8 c = p->unk5;
+        u8 c = p->top;
         s32 e;
-        if (p->unk8 & 2) {
+        if (p->scroll & 2) {
             e = c - 1;
         } else {
             e = c + 1;
         }
-        p->unk5 = e;
+        p->top = e;
     }
-    p->unk8 = 0;
-    p->unk9 = 0;
+    p->scroll = 0;
+    p->scrollPos = 0;
 }
 
 MenuView *menuList_getView(MenuList *m, MenuView *v) {
     s32 d;
 
-    if (m->unk8 & 4) {
-        if (m->unk8 & 2) {
-            d = m->unkD - m->unk9;
+    if (m->scroll & 4) {
+        if (m->scroll & 2) {
+            d = m->height - m->scrollPos;
             v->unk0 = (d + 8) / 15;
-            v->unk1 = m->unk5 + (m->unk3 - v->unk0);
-            v->unk2 = (m->unk3 - v->unk0) * 15 + 6;
+            v->unk1 = m->top + (m->visibleRows - v->unk0);
+            v->unk2 = (m->visibleRows - v->unk0) * 15 + 6;
         } else {
-            d = m->unkD - m->unk9;
+            d = m->height - m->scrollPos;
             v->unk0 = (d + 8) / 15;
-            v->unk1 = m->unk5;
+            v->unk1 = m->top;
             v->unk2 = 6;
         }
-    } else if (m->unk8 & 2) {
-        v->unk0 = m->unk3 + 1;
-        v->unk1 = m->unk5 - 1;
-        v->unk2 = m->unk9 - 9;
-    } else if (m->unk8 & 1) {
-        v->unk1 = m->unk5;
-        v->unk0 = m->unk3 + 1;
-        v->unk2 = -m->unk9 + 6;
+    } else if (m->scroll & 2) {
+        v->unk0 = m->visibleRows + 1;
+        v->unk1 = m->top - 1;
+        v->unk2 = m->scrollPos - 9;
+    } else if (m->scroll & 1) {
+        v->unk1 = m->top;
+        v->unk0 = m->visibleRows + 1;
+        v->unk2 = -m->scrollPos + 6;
     } else {
-        v->unk1 = m->unk5;
-        v->unk0 = m->unk3;
+        v->unk1 = m->top;
+        v->unk0 = m->visibleRows;
         v->unk2 = 6;
     }
     return v;
 }
 
-void func_8002EDFC(MenuList *m, s32 count, s32 rows, s32 cols, s32 e) {
-    m->unk0 = count;
+void menuList_init(MenuList *m, s32 count, s32 rows, s32 cols, s32 e) {
+    m->count = count;
     if (cols != 0) {
-        m->unk2 = (count + cols - 1) / cols;
+        m->rows = (count + cols - 1) / cols;
     } else {
-        m->unk2 = 0;
+        m->rows = 0;
     }
-    m->unk4 = cols;
-    if (m->unk2 < rows) {
-        rows = m->unk2;
+    m->cols = cols;
+    if (m->rows < rows) {
+        rows = m->rows;
     }
-    m->unk3 = rows;
-    m->unk8 = 0;
-    m->unkC = 0;
-    m->unkB = 0;
+    m->visibleRows = rows;
+    m->scroll = 0;
+    m->pageTop = 0;
+    m->fillV = 0;
     m->unkA = 0;
-    m->unk9 = 0;
-    m->unk7 = 0;
+    m->scrollPos = 0;
+    m->col = 0;
     m->cursor = 0;
-    m->unk5 = 0;
-    m->unkD = e;
+    m->top = 0;
+    m->height = e;
 }
 
 void menuList_input(MenuList *m, s32 b) {
-    if (m->unk8 == 0) {
+    if (m->scroll == 0) {
         menuList_up(m, b);
         menuList_down(m, b);
         menuList_pageUp(m, b);
@@ -109,74 +109,74 @@ void menuList_input(MenuList *m, s32 b) {
 }
 
 void menuList_up(MenuList *m, u32 pad) {
-    if (pad & 0x10) {
+    if (pad & PAD_UP) {
         if (m->cursor == 0) {
-            if (m->unk5 != 0) {
-                snd_playSe(0x67);
-                m->unk8 = 2;
+            if (m->top != 0) {
+                snd_playSe(SE_CURSOR);
+                m->scroll = 2;
             }
         } else {
             m->cursor--;
-            snd_playSe(0x67);
+            snd_playSe(SE_CURSOR);
         }
     }
 }
 
 void menuList_down(MenuList *m, u32 pad) {
-    if (pad & 0x40) {
-        if ((m->unk5 + m->cursor) * m->unk4 + m->unk7 + m->unk4 < m->unk0) {
-            if (m->cursor >= m->unk3 - 1) {
-                if (m->unk5 < m->unk2 - m->unk3) {
-                    m->unk8 = 1;
-                    snd_playSe(0x67);
+    if (pad & PAD_DOWN) {
+        if ((m->top + m->cursor) * m->cols + m->col + m->cols < m->count) {
+            if (m->cursor >= m->visibleRows - 1) {
+                if (m->top < m->rows - m->visibleRows) {
+                    m->scroll = 1;
+                    snd_playSe(SE_CURSOR);
                 }
             } else {
-                snd_playSe(0x67);
+                snd_playSe(SE_CURSOR);
                 m->cursor++;
             }
-        } else if (m->cursor >= m->unk3 - 1 && m->unk5 < m->unk2 - m->unk3) {
-            m->unk8 = 9;
-            snd_playSe(0x67);
+        } else if (m->cursor >= m->visibleRows - 1 && m->top < m->rows - m->visibleRows) {
+            m->scroll = 9;
+            snd_playSe(SE_CURSOR);
         }
     }
 }
 
-void func_8002F044(MenuList *arg0, s32 arg1) {
-    arg1 &= 0x80;
+void menuList_left(MenuList *arg0, s32 arg1) {
+    arg1 &= PAD_LEFT;
     if (arg1 != 0) {
-        if (arg0->unk7 == 0) {
+        if (arg0->col == 0) {
             if (arg0->cursor != 0) {
-                arg0->unk7 = arg0->unk4 - 1;
+                arg0->col = arg0->cols - 1;
                 arg0->cursor = arg0->cursor - 1;
-                snd_playSe(0x67);
+                snd_playSe(SE_CURSOR);
                 return;
             }
-            if (arg0->unk5 != 0) {
-                snd_playSe(0x67);
-                arg0->unk8 = 0xA;
+            if (arg0->top != 0) {
+                snd_playSe(SE_CURSOR);
+                arg0->scroll = 0xA;
             }
         } else {
-            snd_playSe(0x67);
-            arg0->unk7--;
+            snd_playSe(SE_CURSOR);
+            arg0->col--;
         }
     }
 }
 
-void func_8002F0EC(MenuList *m, s32 pad) {
-    if (pad & 0x20) {
-        if ((m->unk5 + m->cursor) * m->unk4 + m->unk7 < m->unk0 - 1) {
-            if (m->unk7 >= m->unk4 - 1) {
-                if (m->cursor < m->unk3 - 1) {
-                    snd_playSe(0x67);
-                    m->unk7 = 0;
+void menuList_right(MenuList *m, s32 pad) {
+    if (pad & PAD_RIGHT) {
+        if ((m->top + m->cursor) * m->cols + m->col < m->count - 1) {
+            if (m->col >= m->cols - 1) {
+                if (m->cursor < m->visibleRows - 1) {
+                    snd_playSe(SE_CURSOR);
+                    m->col = 0;
                     m->cursor++;
-                } else if (m->unk5 < m->unk2 - m->unk3) {
-                    snd_playSe(0x67);
-                    m->unk8 = 9;
+                } else if (m->top < m->rows - m->visibleRows) {
+                    snd_playSe(SE_CURSOR);
+                    m->scroll = 9;
                 }
             } else {
-                snd_playSe(0x67);
-                m->unk7++;
+                snd_playSe(SE_CURSOR);
+                m->col++;
             }
         }
     }
@@ -186,18 +186,18 @@ void menuList_pageUp(MenuList *arg0, s32 arg1) {
     s32 t;
     s32 c;
 
-    if (!(g_padPortHeld[0] & BTN_R1) && (arg1 & 0x100000) && arg0->unk5 != 0) {
-        t = arg0->unkD - 6;
-        arg0->unk9 = t >> 2;
-        t -= arg0->unk9;
-        arg0->unk8 = 7;
-        c = arg0->unk5 - arg0->unk3;
-        arg0->unkE = (t + 14) / 15;
+    if (!(g_padPortHeld[0] & BTN_R1) && (arg1 & BTN_L1) && arg0->top != 0) {
+        t = arg0->height - 6;
+        arg0->scrollPos = t >> 2;
+        t -= arg0->scrollPos;
+        arg0->scroll = 7;
+        c = arg0->top - arg0->visibleRows;
+        arg0->pageStep = (t + 14) / 15;
         if (c < 0) {
             c = 0;
         }
-        arg0->unkC = c;
-        snd_playSe(0x417);
+        arg0->pageTop = c;
+        snd_playSe(SE_PAGE);
     }
 }
 
@@ -207,114 +207,114 @@ void menuList_pageDown(MenuList *arg0, s32 arg1) {
     s32 c;
     s32 u3;
 
-    if ((arg1 & 0x200000) && arg0->unk5 < arg0->unk2 - arg0->unk3) {
-        t = arg0->unkD - 6;
-        arg0->unk9 = t >> 2;
-        t -= arg0->unk9;
-        u3 = arg0->unk3;
-        a = arg0->unk2 - u3;
-        arg0->unk8 = 5;
-        c = arg0->unk5 + u3;
-        arg0->unkE = (t + 14) / 15;
+    if ((arg1 & BTN_R1) && arg0->top < arg0->rows - arg0->visibleRows) {
+        t = arg0->height - 6;
+        arg0->scrollPos = t >> 2;
+        t -= arg0->scrollPos;
+        u3 = arg0->visibleRows;
+        a = arg0->rows - u3;
+        arg0->scroll = 5;
+        c = arg0->top + u3;
+        arg0->pageStep = (t + 14) / 15;
         if (c < a) {
             a = c;
         }
-        arg0->unkC = a;
-        snd_playSe(0x417);
+        arg0->pageTop = a;
+        snd_playSe(SE_PAGE);
     }
 }
 
-MenuView *func_8002F344(MenuList *m, MenuView *v) {
+MenuView *menuList_getPageView(MenuList *m, MenuView *v) {
     s32 q;
-    if (m->unk8 & 2) {
-        q = (m->unk9 + 12) / 15;
+    if (m->scroll & 2) {
+        q = (m->scrollPos + 12) / 15;
         v->unk0 = q;
-        v->unk1 = m->unkC + (m->unk3 - v->unk0);
-        v->unk2 = m->unk9 - v->unk0 * 15 + 7;
+        v->unk1 = m->pageTop + (m->visibleRows - v->unk0);
+        v->unk2 = m->scrollPos - v->unk0 * 15 + 7;
     } else {
-        s32 n = m->unk9;
-        v->unk2 = m->unkD - n;
+        s32 n = m->scrollPos;
+        v->unk2 = m->height - n;
         v->unk0 = (n + 14) / 15;
-        v->unk1 = m->unkC;
+        v->unk1 = m->pageTop;
     }
     return v;
 }
 
-void func_8002F40C(MenuList *m, RECT *src, RECT *dst) {
+void menuList_getRowsRect(MenuList *m, RECT *src, RECT *dst) {
     dst->x = src->x;
     dst->w = src->w;
-    if (m->unk8 & 2) {
-        dst->y = m->unk9 + src->y + 5;
-        dst->h = src->h - (m->unk9 + 4) - 1;
+    if (m->scroll & 2) {
+        dst->y = m->scrollPos + src->y + 5;
+        dst->h = src->h - (m->scrollPos + 4) - 1;
     } else {
         dst->y = src->y;
-        dst->h = src->h - m->unk9 - 1;
+        dst->h = src->h - m->scrollPos - 1;
     }
 }
 
 void snd_playSe(s32 a) {
-    g_gameState->unk1C->unk83C(0xD000, a, 0x800000, 0x80, 0x7F);
+    g_gameState->unk1C->unk83C(SND_SE_PLAY, a, 0x800000, 0x80, 0x7F);
 }
 
 void func_8002F4D0(s32 a) {
-    g_gameState->unk1C->unk83C(0x5100, a, 0x800000, 0, 0);
+    g_gameState->unk1C->unk83C(SND_SE_STOP, a, 0x800000, 0, 0);
 }
 
 void func_8002F514(s32 a) {
-    g_gameState->unk1C->unk83C(0xD000, a, 0, 0x80, 0x7F);
+    g_gameState->unk1C->unk83C(SND_SE_PLAY, a, 0, 0x80, 0x7F);
 }
 
 void func_8002F55C(s32 a) {
-    g_gameState->unk1C->unk83C(0x5100, a, 0, 0, 0);
+    g_gameState->unk1C->unk83C(SND_SE_STOP, a, 0, 0, 0);
 }
 
-s32 func_8002F5A0(void (*fn)(void)) {
-    Unk80077C78 *p = &D_80077C78;
-    s32 d = p->unk8 - p->unkC;
+s32 fade_reverse(void (*fn)(void)) {
+    FadeState *p = &g_fade;
+    s32 d = p->frames - p->frame;
     Unk4 c1;
     Unk4 c2;
 
-    if (p->unk2 == 0) {
+    if (p->active == 0) {
         return 0;
     }
-    c1 = p->unk20;
-    c2 = *(Unk4 *)&p->unk24;
-    func_8002F93C(p->unkA ^ 0x800);
-    func_8002FC8C(D_80077C78.unk0, p->unk1, 0, c2.unk0[0] | (c2.unk0[1] << 8) | (c2.unk0[2] << 16));
-    func_8002FC8C(D_80077C78.unk0, p->unk1, p->unk8, c1.unk0[0] | (c1.unk0[1] << 8) | (c1.unk0[2] << 16));
-    D_8006BD28[D_80077C78.unk0](p, d);
-    p->unk10 = (s32)fn;
-    p->unkC += d;
+    c1 = p->startColor;
+    c2 = *(Unk4 *)&p->endR;
+    fade_setAngle(p->angle ^ 0x800);
+    fade_start(g_fade.type, p->subtract, 0, c2.unk0[0] | (c2.unk0[1] << 8) | (c2.unk0[2] << 16));
+    fade_start(g_fade.type, p->subtract, p->frames, c1.unk0[0] | (c1.unk0[1] << 8) | (c1.unk0[2] << 16));
+    g_fadeSeekFuncs[g_fade.type](p, d);
+    p->onDone = (s32)fn;
+    p->frame += d;
     return 1;
 }
 
-void func_8002F6C8(void) {
+void fade_update(void) {
     u8 *buf = D_80077878[0];
-    Unk80077C78 *f = &D_80077C78;
+    FadeState *f = &g_fade;
     FadeFn fn;
 
     if (g_gameState->unk1C->unk8 != 0) {
         buf = D_80077878[1];
     }
-    f->unk18 = buf;
-    if (f->unk2 != 0) {
-        fn = (FadeFn)D_8006BD04[f->unk0].unk4;
+    f->pkt = buf;
+    if (f->active != 0) {
+        fn = (FadeFn)g_fadeTypes[f->type].unk4;
         if (fn != NULL) {
             fn(f);
         }
     }
-    if (*(u32 *)&D_80077C78 & 0xFFFF0000) {
-        fn = (FadeFn)D_8006BD04[D_80077C78.unk0].unk8;
+    if (*(u32 *)&g_fade & 0xFFFF0000) {
+        fn = (FadeFn)g_fadeTypes[g_fade.type].unk8;
         if (fn != NULL) {
-            fn(&D_80077C78);
+            fn(&g_fade);
         }
     }
-    if (D_80077C78.unk2 != 0) {
-        if (++D_80077C78.unkC >= (u32)D_80077C78.unk8) {
-            D_80077C78.unk2 = 0;
-            fn = (FadeFn)D_80077C78.unk10;
+    if (g_fade.active != 0) {
+        if (++g_fade.frame >= (u32)g_fade.frames) {
+            g_fade.active = 0;
+            fn = (FadeFn)g_fade.onDone;
             if (fn != NULL) {
-                fn(&D_80077C78);
+                fn(&g_fade);
             }
         }
     }

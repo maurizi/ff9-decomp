@@ -10,16 +10,16 @@ s32 fx_029_op80(s32 mode, Fx029Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
     } else if (mode == 1) {
         work->unk0 = 0;
         D_801E7828 = env;
-        ((s32 *)&work->unk8)[0] = ((s32 *)&env->unkC->unk38)[0];
-        t = ((s32 *)&env->unkC->unk38)[1];
+        ((s32 *)&work->unk8)[0] = ((s32 *)&env->targets->centerX)[0];
+        t = ((s32 *)&env->targets->centerX)[1];
         work->unk8.vy -= 0xFA;
         ((s32 *)&work->unk8)[1] = t;
-        work->unk4 = ex->func_800E3CEC(ex->btlfx_getFileData(entry->unk8, 7), (s32)&work->unk8);
+        work->unk4 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 7), (s32)&work->unk8);
         if (work->unk4 != NULL) {
             work->unk4->unk22 = 0x80;
         }
     } else {
-        frame = entry->unk0;
+        frame = entry->frame;
         if (work->unk0 == 0 && frame >= 0x3C) {
             return 1;
         }

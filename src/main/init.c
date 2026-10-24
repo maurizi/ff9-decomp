@@ -14,7 +14,7 @@ void game_initLibraries(void) {
     cd_init();
 }
 
-void func_80016A28(void) {
+void game_reset(void) {
     RECT r;
     s32 i;
 
@@ -29,35 +29,35 @@ void func_80016A28(void) {
     ClearImage(&r, 0, 0, 0);
     DrawSync(0);
     cd_resetState();
-    func_8001C6F8();
-    func_80018F50();
-    D_80073690.mask = 0x19;
-    D_80073690.mode = 0x100;
-    D_80073690.depth.left = 0;
-    D_80073690.depth.right = 0;
-    D_80073690.delay = 0;
-    D_80073690.feedback = 0;
-    SpuSetReverbModeParam(&D_80073690);
-    SpuSetReverbDepth(&D_80073690);
-    SpuGetReverbModeType(&D_800736A4);
-    SpuClearReverbWorkArea(D_800736A4);
-    func_800551F0();
-    SpuGetReverbModeType(&D_800736A4);
-    SpuClearReverbWorkArea(D_800736A4);
+    db_init();
+    pad_resetState();
+    g_reverbAttr.mask = 0x19;
+    g_reverbAttr.mode = 0x100;
+    g_reverbAttr.depth.left = 0;
+    g_reverbAttr.depth.right = 0;
+    g_reverbAttr.delay = 0;
+    g_reverbAttr.feedback = 0;
+    SpuSetReverbModeParam(&g_reverbAttr);
+    SpuSetReverbDepth(&g_reverbAttr);
+    SpuGetReverbModeType(&g_reverbMode);
+    SpuClearReverbWorkArea(g_reverbMode);
+    snd_init();
+    SpuGetReverbModeType(&g_reverbMode);
+    SpuClearReverbWorkArea(g_reverbMode);
     for (i = 0; i < 90; i++) {
         VSync(0);
     }
-    func_8004BBF0();
+    evt_initSystem();
     func_80053924();
-    func_800320D8();
-    func_80032078();
+    menu_init();
+    game_initFade();
     mbg_resetState();
 }
 
-void func_80016B6C(void) {
-    func_80055210();
-    func_8001C718();
-    D_80067950++;
+void game_shutdown(void) {
+    snd_quit();
+    db_quit();
+    g_resetCount++;
 }
 
 INCLUDE_ASM("asm/us/main/nonmatchings/init", _bu_init);

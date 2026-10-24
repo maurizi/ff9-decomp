@@ -8,7 +8,7 @@
 
 #define PARTY_EMPTY 0xFF /* empty slot in PartyRequest/PartySelect.slots */
 
-/* Party select request passed to menuParty_loadRequest (g_menu.unkC when the menu opens). */
+/* Party select request passed to menuParty_loadRequest (g_menu.arg when the menu opens). */
 typedef struct {
     u8 size;      /* members to pick */
     u8 pad1[3];
@@ -62,7 +62,7 @@ extern RECT s_menuPartyInfoRect;
 #endif
 /* Defined as u8 in main, but callers here
  * (and ovl_3a) use the result unmasked, i.e. called it unprototyped. */
-s32 func_80028954(s32);
+s32 chr_getPortrait(s32);
 
 void menuParty_inputParty(void);
 void menuParty_inputReserve(void);
@@ -81,7 +81,7 @@ u8 menuParty_isFixed(s32);
 u8 menuParty_isValid(void);
 void menuParty_loadRequest(PartyRequest *);
 void menuParty_updateHelp(void);
-extern u8 s_menuPartyImage[]; /* image data for func_80028720 */
+extern u8 s_menuPartyImage[]; /* image data for ui_loadPortraits */
 
 extern const u8 g_partyMenuText[]; /* text bank for this menu */
 

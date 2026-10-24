@@ -1,4 +1,3 @@
-func_800355DC = 0x800355DC; // type:func main exe function passed to func_8003556C as a callback (splat named the address D_800355DC), drop this line once main's symbols.us.txt names it
 menuAbility_init = 0x801EE7C0; // type:func [runtime] docs/runtime-findings.md field/menu campaign, screen 2 entry of g_menuScreensField at menu_ability, high
 menuAbility_update = 0x801F05FC; // type:func [runtime] docs/runtime-findings.md field/menu campaign, high
 menuAbility_exit = 0x801F062C; // type:func [runtime] docs/runtime-findings.md field/menu campaign, high

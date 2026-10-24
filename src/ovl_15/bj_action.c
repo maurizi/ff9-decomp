@@ -5,8 +5,8 @@ void bj_actionInit(void) {
 }
 
 void bj_actionEnter(void) {
-    func_80032574();
-    func_8002C4B0(1);
+    menu_initForMode();
+    pad_setStickAsDpad(1);
     g_bjAction.cursor = 0;
     g_bjAction.unk0 = 1;
     g_bjAction.unk7 = 0;
@@ -18,14 +18,14 @@ void bj_actionEnter(void) {
 }
 
 void bj_actionUpdate(void) {
-    func_8002C308(0);
+    pad_updateRepeat(0);
     bj_actionInput();
     bj_actionDraw();
     bj_actionTick();
 }
 
 void bj_actionLeave(void) {
-    func_8002C4B0(0);
+    pad_setStickAsDpad(0);
 }
 
 u8 bj_actionGetCursor(void) {
@@ -81,10 +81,10 @@ void func_800AB3CC(void) {
 
 void bj_actionDrawCursor(void) {
     if (g_bjAction.shown != 0 && g_bjAction.fadingIn == 0) {
-        D_80077DE8.unk0 = g_bjActionCursorPos[g_bjAction.cursor].x - 0x1A;
-        D_80077DE8.unk2 = g_bjActionCursorPos[g_bjAction.cursor].y + 3;
-        D_80077DE8.unk4 = 3;
-        func_800355E4(&D_80077DE8, &g_bjAction);
+        g_menuHelp.x = g_bjActionCursorPos[g_bjAction.cursor].x - 0x1A;
+        g_menuHelp.y = g_bjActionCursorPos[g_bjAction.cursor].y + 3;
+        g_menuHelp.otz = 3;
+        help_drawCursor(&g_menuHelp, &g_bjAction);
     }
 }
 

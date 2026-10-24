@@ -47,10 +47,10 @@ void ending_swapBuffers(void) {
     DrawSync(0);
     VSync(g_gameState->vsyncMode);
     ResetGraph(1);
-    PutDispEnv(&g_gameState->unkC[g_gameState->unk1C->unk8]);
+    PutDispEnv(&g_gameState->dispEnv[g_gameState->unk1C->unk8]);
     ctx = g_gameState->unk1C;
     i = ctx->unk8;
-    DrawOTagEnv(ctx->unk10[i] + 0xFFF, &g_gameState->unk10[i]);
+    DrawOTagEnv(ctx->unk10[i] + 0xFFF, &g_gameState->drawEnv[i]);
     g_gameState->unk1C->unk8 ^= 1;
-    func_8002C0DC(g_gameState->unk1C->unk8);
+    gfx_setBuffer(g_gameState->unk1C->unk8);
 }

@@ -16,8 +16,8 @@ enum {
 
 #define STATUS_NO_SLOT      0xFF /* StatusMenu.slot before the first character is shown */
 #define STATUS_PAGE_ROWS    8    /* abilities per page window */
-#define STATUS_ABILITY_MAX  0x30 /* entries in a character's D_8006CB28 ability row */
-#define STATUS_SUPPORT_FIRST 0xC0 /* ability ids from here are support abilities (D_8006D128) */
+#define STATUS_ABILITY_MAX  0x30 /* entries in a character's g_abilityRows ability row */
+#define STATUS_SUPPORT_FIRST 0xC0 /* ability ids from here are support abilities (g_supportAbilities) */
 
 /* g_statusMenuText ids */
 #define STATUS_TEXT_HELP   0   /* help: the status ailments */
@@ -33,7 +33,7 @@ typedef struct {
     u8 slot;         /* party slot shown */
     u8 pageCount;    /* ability pages of this character */
     u8 abilityCount; /* abilities this character can learn */
-    u8 savedHelp;    /* func_80035648 value, restored on exit */
+    u8 savedHelp;    /* help_getFollow value, restored on exit */
     u8 pad6[2];
     RECT win;        /* main window */
     u8 pageOpen[6];  /* ability page window is up */
@@ -42,11 +42,11 @@ typedef struct {
     u8 *prim;        /* next free primitive */
     u8 *primBufs[2]; /* primitive buffers (0x4000 each), by frame */
     s32 primFree;    /* bytes left in last frame's buffer */
-    UnkBlink header; /* character name/level header (func_80028CF8, slides on L1/R1) */
+    UnkBlink header; /* character name/level header (ui_initMemberSwitch, slides on L1/R1) */
 } StatusMenu;
 extern StatusMenu s_menuStatus;
 
-/* window slide animation for func_80063118: main's TweenDef, but with a signed delay (unk0), which is what
+/* window slide animation for tween_start: main's TweenDef, but with a signed delay (unk0), which is what
  * matches menuStatus_closeAbilityPages */
 typedef struct {
     s16 delay;  /* start delay */
@@ -59,7 +59,7 @@ extern TextTween s_menuStatusPageCloseTweens[8]; /* page close, delay set per pa
 extern RECT s_menuStatusPageRects[];      /* page window positions */
 extern TextTween s_menuStatusPageOpenTween;    /* page open, then menuStatus_onPageOpened */
 
-/* string and value arguments of the help text's codes (func_8002BE44 / func_8002BE74) */
+/* string and value arguments of the help text's codes (text_setStringArg / text_setIconArg) */
 typedef struct {
     u8 *str;
     s32 val;
@@ -125,7 +125,7 @@ typedef struct {
     u8 unk5; /* attack power */
     u8 pad6[0xC - 6];
 } Unk8006E0E8; /* weapon stats, 0xC (also in ovl_0b.h) */
-extern Unk8006E0E8 D_8006E0E8[];
+extern Unk8006E0E8 g_weaponTable[];
 
 void menuStatus_inputMain(void);
 void menuStatus_drawHeader(void);

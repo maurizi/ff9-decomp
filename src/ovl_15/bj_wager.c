@@ -5,8 +5,8 @@ void bj_wagerInit(void) {
 }
 
 void bj_wagerEnter(void) {
-    func_80032574();
-    func_8002C4B0(1);
+    menu_initForMode();
+    pad_setStickAsDpad(1);
     g_bjWagerMenu.unk0 = 1;
     g_bjWagerMenu.unk7 = 0;
     g_bjWagerMenu.unk6 = 0;
@@ -17,14 +17,14 @@ void bj_wagerEnter(void) {
 }
 
 void bj_wagerUpdate(void) {
-    func_8002C308(0);
+    pad_updateRepeat(0);
     bj_wagerInput();
     bj_wagerDraw();
     bj_wagerTick();
 }
 
 void bj_wagerLeave(void) {
-    func_8002C4B0(0);
+    pad_setStickAsDpad(0);
 }
 
 u8 bj_wagerGetCursor(void) {
@@ -77,10 +77,10 @@ void func_800AD388(void) {
 
 void bj_wagerDrawCursor(void) {
     if (g_bjWagerMenu.shown != 0 && g_bjWagerMenu.fadingIn == 0) {
-        D_80077DE8.unk0 = g_bjWagerCursorPos[g_bjWagerMenu.cursor].x - 0x1A;
-        D_80077DE8.unk2 = g_bjWagerCursorPos[g_bjWagerMenu.cursor].y + 3;
-        D_80077DE8.unk4 = 3;
-        func_800355E4(&D_80077DE8, &g_bjWagerMenu);
+        g_menuHelp.x = g_bjWagerCursorPos[g_bjWagerMenu.cursor].x - 0x1A;
+        g_menuHelp.y = g_bjWagerCursorPos[g_bjWagerMenu.cursor].y + 3;
+        g_menuHelp.otz = 3;
+        help_drawCursor(&g_menuHelp, &g_bjWagerMenu);
     }
 }
 

@@ -3,8 +3,8 @@
 void menuSave_init(void) {
     s32 i;
 
-    s_menuSave.mode = g_menu.unkC;
-    s_menuSave.savedFadeOtz = func_8002F8E4(7);
+    s_menuSave.mode = g_menu.arg;
+    s_menuSave.savedFadeOtz = fade_setOtz(7);
     s_menuSave.state = SAVE_ST_SLOT;
     s_menuSave.phase = SAVE_PH_READY;
     s_menuSave.loaded = 0;
@@ -19,7 +19,7 @@ void menuSave_init(void) {
     menuSave_initAccess();
     menuSave_loadImage();
     menuSave_saveVram();
-    func_8003556C(menuSave_updateHelp);
+    help_setCallback(menuSave_updateHelp);
     text_setBank(g_saveMenuText);
     s_menuSave.help = text_get(SAVE_TEXT_SELECT_SLOT);
     s_menuSave.cardStatus[0] = CARD_RES_ERROR;
@@ -28,33 +28,33 @@ void menuSave_init(void) {
     menuSave_openCardEvents();
     func_801F5A60();
     for (i = 0; i < 2; i++) {
-        s_menuSave.unk18[i] = D_80073998[i];
-        D_80073998[i] |= 0x300;
+        s_menuSave.unk18[i] = g_padPortMask[i];
+        g_padPortMask[i] |= 0x300;
     }
 }
 
 void menuSave_drawHelp(void) {
     u8 *s = text_get(g_menu.unk2 + SAVE_TEXT_SLOT1);
-    s32 w = func_8002BA68((s32)s);
+    s32 w = text_measureWidth((s32)s);
 
     text_drawBlock(s_menuSaveSlotNameRect.x + ((s_menuSaveSlotNameRect.w - w) >> 1), s_menuSaveSlotNameRect.y + 2, 5, s, (menuSave_isSlotReady(g_menu.unk2, 1) == 0) * 2);
     if (s_menuSave.help != NULL) {
         text_drawBlock(s_menuSaveHelpRect.x + 0xA, s_menuSaveHelpRect.y + 6, 5, s_menuSave.help, 0);
     }
     ui_drawLabel(s_menuSaveHelpRect.x + 6, s_menuSaveHelpRect.y - 3, 5, D_80070450, 0);
-    func_8002DEE4(&s_menuSaveSlotNameRect, 5, 0);
-    func_8002DEE4(&s_menuSaveHelpRect, 5, 1);
-    func_8002705C(&s_menuSaveHelpRect, 5, 1);
+    win_drawBox(&s_menuSaveSlotNameRect, 5, 0);
+    win_drawBox(&s_menuSaveHelpRect, 5, 1);
+    win_drawShadow(&s_menuSaveHelpRect, 5, 1);
 }
 
 void menuSave_inputSlot(void) {
     if (g_padRepeat & BTN_CIRCLE) {
         snd_playSe(SE_CANCEL);
-        if (g_menu.unk1 != 0) {
+        if (g_menu.type != 0) {
             menuSave_close();
             return;
         }
-        func_800361CC(0);
+        menuScreen_open(0);
         return;
     }
     if (g_padRepeat & PAD_UP) {
@@ -76,8 +76,8 @@ void menuSave_drawSlotWindow(void) {
     u8 *str;
     u8 s;
 
-    func_8002DEE4(&s_menuSaveSlotWindowRect, 0x34, 2);
-    func_8002705C(&s_menuSaveSlotWindowRect, 0x34, 2);
+    win_drawBox(&s_menuSaveSlotWindowRect, 0x34, 2);
+    win_drawShadow(&s_menuSaveSlotWindowRect, 0x34, 2);
     for (i = 0; i < 2; i++) {
         str = text_get(i + SAVE_TEXT_SLOT1);
         ok = 0;
@@ -98,7 +98,7 @@ void menuSave_drawFileList(void) {
 
     menuSave_drawScrollArrows();
     ui_drawLabel(0xE, 0x23, 0x2C, D_80070444, 0);
-    ui_drawRule(8, 0x26, 0x2C, 1, 0x12C, (g_gameState->unk24 >> CFG_BIT_WINDOW_COLOR) & 1);
+    ui_drawRule(8, 0x26, 0x2C, 1, 0x12C, (g_gameState->config >> CFG_BIT_WINDOW_COLOR) & 1);
     r.x = SAVE_LIST_X;
     r.y = 0;
     r.w = SAVE_LIST_W;
@@ -109,7 +109,7 @@ void menuSave_drawFileList(void) {
         r.y = i * SAVE_ROW_H + (s16)(v.unk2 + SAVE_LIST_Y);
         menuSave_drawFile(&r, 0x2D, v.unk1 + i);
     }
-    if (l->unk8 & 4) {
+    if (l->scroll & 4) {
         a.x = SAVE_LIST_X;
         a.y = SAVE_LIST_Y;
         a.w = SAVE_LIST_W;
@@ -139,10 +139,10 @@ void menuSave_drawFile(RECT *r, s32 otz, s32 file) {
     if (s_menuSave.files[file].state == SAVE_FILE_USED) {
         v = s_menuSave.files[file].windowColor;
     } else {
-        v = g_gameState->unk24 >> CFG_BIT_WINDOW_COLOR;
+        v = g_gameState->config >> CFG_BIT_WINDOW_COLOR;
         v &= 1;
     }
-    func_8002CD4C(r, 0x2D, 0, v);
+    win_drawBoxEx(r, 0x2D, 0, v);
 }
 
 void menuSave_drawFileInfo(RECT *r, s32 z, s32 i) {
@@ -164,7 +164,7 @@ void menuSave_drawFileInfo(RECT *r, s32 z, s32 i) {
     ui_drawSmallDigits(r->x + 0x56, r->y + 3, z, buf, 0);
     for (j = 0; j < 4; j++) {
         if (s->party[j].portrait != PORTRAIT_NONE) {
-            func_80028204(r->x + 6 + j * 0x21, r->y + 0xD, z, s->party[j].portrait, 0x2C, 0);
+            ui_drawPortraitId(r->x + 6 + j * 0x21, r->y + 0xD, z, s->party[j].portrait, 0x2C, 0);
         }
     }
     text_formatNumber(s->level, buf, 2, 1);
@@ -173,7 +173,7 @@ void menuSave_drawFileInfo(RECT *r, s32 z, s32 i) {
     ui_drawDigits(r->x + 0xA2, r->y + 0x15, z, buf, 0);
     ui_drawSprite(r->x + 0xD8, r->y + 9, z, 0xB1, 0);
     ui_drawSprite(r->x + 0xD8, r->y + 0x16, z, 0xB2, 0);
-    ui_drawSmallDigits(r->x + 0xE4, r->y + 0xA, z, buf, func_8002AA04(s->playTime, buf, 0));
+    ui_drawSmallDigits(r->x + 0xE4, r->y + 0xA, z, buf, text_formatTime(s->playTime, buf, 0));
     text_formatNumber(s->gil, buf, 7, 1);
     buf[7] = 0xA4;
     buf[8] = 0;
@@ -183,23 +183,23 @@ void menuSave_drawFileInfo(RECT *r, s32 z, s32 i) {
     rr.w = 0x9C;
     rr.h = 0x15;
     text_drawBlock(rr.x + 8, rr.y + 3, z, (u8 *)&s->location, 0);
-    func_8002CD4C(&rr, z, 0, s->windowColor);
+    win_drawBoxEx(&rr, z, 0, s->windowColor);
 }
 
 void menuSave_drawCursor(void) {
-    u8 blink = (g_menu.unk10 & 3) != 0;
+    u8 blink = (g_menu.frame & 3) != 0;
 
-    if (!func_8002F810() && s_menuSave.phase == SAVE_PH_READY) {
+    if (!fade_isBusy() && s_menuSave.phase == SAVE_PH_READY) {
         if (s_menuSave.state == SAVE_ST_SLOT) {
-            D_80077DE8.unk0 = 0x74;
-            D_80077DE8.unk4 = 0x32;
-            D_80077DE8.unk2 = g_menu.unk2 * 0x12 + 0x6D;
-            func_800355E4();
+            g_menuHelp.x = 0x74;
+            g_menuHelp.otz = 0x32;
+            g_menuHelp.y = g_menu.unk2 * 0x12 + 0x6D;
+            help_drawCursor();
         } else if (s_menuSave.state == SAVE_ST_LIST || (s_menuSave.state == SAVE_ST_ACCESS && blink)) {
-            D_80077DE8.unk0 = 0;
-            D_80077DE8.unk4 = 0x2A;
-            D_80077DE8.unk2 = s_menuSave.list.cursor * SAVE_ROW_H + 0x42;
-            func_800355E4();
+            g_menuHelp.x = 0;
+            g_menuHelp.otz = 0x2A;
+            g_menuHelp.y = s_menuSave.list.cursor * SAVE_ROW_H + 0x42;
+            help_drawCursor();
         } else if (s_menuSave.state == SAVE_ST_CONFIRM && blink) {
             ui_drawHand(0, s_menuSave.list.cursor * SAVE_ROW_H + 0x42, 0x2A);
         }
@@ -215,28 +215,28 @@ void menuSave_updateFileList(void) {
         menuSave_showNotice(SAVE_TEXT_NO_CARD);
         return;
     }
-    if (l->unk8 != 0) {
-        if (!(l->unk8 & 4)) {
-            dec = l->unk8 & 2;
-            l->unk9 += 6;
-            if (l->unk9 >= SAVE_ROW_H) {
-                v = l->unk5;
+    if (l->scroll != 0) {
+        if (!(l->scroll & 4)) {
+            dec = l->scroll & 2;
+            l->scrollPos += 6;
+            if (l->scrollPos >= SAVE_ROW_H) {
+                v = l->top;
                 if (dec) {
                     v--;
                 } else {
                     v++;
                 }
-                l->unk5 = v;
-                l->unk8 = 0;
-                l->unk9 = 0;
+                l->top = v;
+                l->scroll = 0;
+                l->scrollPos = 0;
             }
         } else {
-            l->unk9 += 9;
-            if (l->unk9 >= SAVE_LIST_H) {
+            l->scrollPos += 9;
+            if (l->scrollPos >= SAVE_LIST_H) {
 
-                l->unk8 = 0;
-                l->unk9 = 0;
-                l->unk5 = l->unkC;
+                l->scroll = 0;
+                l->scrollPos = 0;
+                l->top = l->pageTop;
             }
         }
     }
@@ -247,22 +247,22 @@ void menuSave_updateHelp(void) {
     u8 st;
     s32 v;
 
-    D_80077DE8.unk8 = NULL;
+    g_menuHelp.text = NULL;
     if (s_menuSave.phase == SAVE_PH_READY && s_menuSave.showCursor != 0) {
-        func_80035580(NULL);
+        help_setBounds(NULL);
         st = s_menuSave.state;
         if (st == SAVE_ST_SLOT) {
-            func_80035580(&r);
+            help_setBounds(&r);
             v = SAVE_TEXT_SAVES_TO;
             /* st is SAVE_ST_SLOT == SAVE_MODE_LOAD here */
             if (s_menuSave.mode == st) {
                 v = SAVE_TEXT_LOADS_FROM;
             }
-            D_80077DE8.unk8 = text_get(v + g_menu.unk2);
+            g_menuHelp.text = text_get(v + g_menu.unk2);
         } else if (st == SAVE_ST_LIST) {
             menuSave_setFileHelp();
         } else if (st == SAVE_ST_CONFIRM) {
-            D_80077DE8.unk8 = menuSave_getConfirmHelp();
+            g_menuHelp.text = menuSave_getConfirmHelp();
         }
     }
 }
@@ -276,13 +276,13 @@ void menuSave_setFileHelp(void) {
     s32 st;
 
     l = &s_menuSave.list;
-    idx = l->unk5 + l->cursor;
+    idx = l->top + l->cursor;
     st = s_menuSave.files[idx].state;
     switch (st) {
     case SAVE_FILE_EMPTY:
     case SAVE_FILE_OTHER:
     case SAVE_FILE_CORRUPT:
-        D_80077DF0 = text_get(st + SAVE_TEXT_FILE_HELP);
+        g_menuHelpText = text_get(st + SAVE_TEXT_FILE_HELP);
         break;
     case SAVE_FILE_USED:
         s_menuSaveHelpBuf[0] = 0xFF;
@@ -295,15 +295,15 @@ void menuSave_setFileHelp(void) {
         }
         for (i = 0; i < n; i++) {
             if (m[i].present != 0) {
-                func_8002BE44(i, m[i].name);
-                func_8002BE5C(i, m[i].level);
+                text_setStringArg(i, m[i].name);
+                text_setNumberArg(i, m[i].level);
                 text_append(s_menuSaveHelpBuf, text_get(i + SAVE_TEXT_MEMBER1));
                 if (i < n - 1) {
                     text_append(s_menuSaveHelpBuf, text_get(SAVE_TEXT_NEWLINE));
                 }
             }
         }
-        D_80077DF0 = s_menuSaveHelpBuf;
+        g_menuHelpText = s_menuSaveHelpBuf;
         break;
     }
 }
@@ -319,13 +319,13 @@ void menuSave_update(void) {
 void menuSave_exit(void) {
     s32 i;
 
-    func_8003563C(0);
-    func_8003556C(NULL);
+    help_setLocked(0);
+    help_setCallback(NULL);
     menuSave_closeCardEvents();
     menuSave_restoreVram();
     menuSave_freeImage();
     for (i = 0; i < 2; i++) {
-        D_80073998[i] = s_menuSave.unk18[i];
+        g_padPortMask[i] = s_menuSave.unk18[i];
     }
 }
 
@@ -348,18 +348,18 @@ u8 menuSave_isSlotReady(s32 port, u8 allowNew) {
 }
 
 void menuSave_backToSlots(void) {
-    func_8002F9F0();
-    func_8002F8A8(menuSave_returnToSlots);
+    fade_outDefault();
+    fade_setOnDone(menuSave_returnToSlots);
 }
 
 void menuSave_close(void) {
-    func_8002F8E4(s_menuSave.savedFadeOtz);
-    func_800325E0();
+    fade_setOtz(s_menuSave.savedFadeOtz);
+    menu_close();
 }
 
 void menuSave_drawTitle(void) {
-    func_8002DEE4(&s_menuSaveTitleRect, 5, 2);
-    func_8002705C(&s_menuSaveTitleRect, 5, 2);
+    win_drawBox(&s_menuSaveTitleRect, 5, 2);
+    win_drawShadow(&s_menuSaveTitleRect, 5, 2);
     text_drawBlock(s_menuSaveTitleRect.x + 0xA, s_menuSaveTitleRect.y + 6, 4, (u8 *)text_getFrom(g_saveMenuText, s_menuSave.mode), 0);
 }
 
@@ -375,7 +375,7 @@ void menuSave_drawState(void) {
 }
 
 void menuSave_input(void) {
-    if (!func_8002F810()) {
+    if (!fade_isBusy()) {
         switch (s_menuSave.phase) {
         case SAVE_PH_MESSAGE:
             menuSave_inputMessage();
@@ -405,7 +405,7 @@ void menuSave_updateState(void) {
 void menuSave_inputFileList(void) {
     MenuList *l = &s_menuSave.list;
 
-    if (l->unk8 == 0) {
+    if (l->scroll == 0) {
         if (g_padRepeat & BTN_CIRCLE) {
             snd_playSe(SE_CANCEL);
             menuSave_backToSlots();
@@ -435,16 +435,16 @@ void menuSave_drawScrollRows(void) {
     for (i = 0; i < v.unk0; i++) {
         r.y = i * SAVE_ROW_H + (s16)(v.unk2 + SAVE_LIST_Y);
         menuSave_drawFile(&r, 0x2D, v.unk1 + i);
-        func_8002DEE4(&r, 0x2D, 0);
+        win_drawBox(&r, 0x2D, 0);
     }
 }
 
 void menuSave_drawScrollArrows(void) {
-    s32 blink = (((u32)g_menu.unk10 >> 4) ^ 1) & 1;
+    s32 blink = (((u32)g_menu.frame >> 4) ^ 1) & 1;
     MenuList *l = &s_menuSave.list;
 
-    ui_drawSprite(0x12E, 0x2C, 0x2A, 0xB8, l->unk5 != 0 ? blink : 1);
-    ui_drawSprite(0x12E, 0xCF, 0x2A, 0xB9, l->unk5 < l->unk2 - l->unk3 ? blink : 1);
+    ui_drawSprite(0x12E, 0x2C, 0x2A, 0xB8, l->top != 0 ? blink : 1);
+    ui_drawSprite(0x12E, 0xCF, 0x2A, 0xB9, l->top < l->rows - l->visibleRows ? blink : 1);
 }
 
 void menuSave_drawEmptyFile(RECT *r, s32 otz) {
@@ -470,7 +470,7 @@ void menuSave_selectSlot(void) {
 }
 
 void menuSave_selectFile(void) {
-    s32 i = s_menuSave.list.unk5 + s_menuSave.list.cursor;
+    s32 i = s_menuSave.list.top + s_menuSave.list.cursor;
 
     if (s_menuSave.mode == SAVE_MODE_LOAD) {
         menuSave_loadFile(i, i);
@@ -489,13 +489,13 @@ void menuSave_updateHelpVisibility(void) {
     if (s_menuSave.state != SAVE_ST_SLOT && s_menuSave.state != SAVE_ST_LIST && s_menuSave.state != SAVE_ST_CONFIRM) {
         hide = 1;
     }
-    func_8003563C(hide);
+    help_setLocked(hide);
 }
 
 void menuSave_returnToSlots(void) {
     s_menuSave.state = SAVE_ST_SLOT;
     s_menuSave.help = text_get(SAVE_TEXT_SELECT_SLOT);
-    func_8002F9D0();
+    fade_inDefault();
 }
 
 void func_801F5A60(void) {
@@ -635,15 +635,15 @@ void menuSave_openConfirm(s32 id, s32 yes, s32 no) {
     s_menuSaveConfirm.noHelp = no;
     r.w = w;
     r.h = h;
-    r.x = (g_gameState->unkC->disp.w - w) >> 1;
-    r.y = (g_gameState->unkC->disp.h - h) >> 1;
-    s_menuSaveConfirm.win = func_8002DC54(&r, 0x19, 2);
+    r.x = (g_gameState->dispEnv->disp.w - w) >> 1;
+    r.y = (g_gameState->dispEnv->disp.h - h) >> 1;
+    s_menuSaveConfirm.win = win_openFree(&r, 0x19, 2);
     win_setOnOpened(s_menuSaveConfirm.win, menuSave_onConfirmOpened);
     win_setOnClosed(s_menuSaveConfirm.win, menuSave_onConfirmClosed);
     win_setDrawContent(s_menuSaveConfirm.win, menuSave_drawConfirm);
     win_setDrawOverlay(s_menuSaveConfirm.win, menuSave_drawConfirmCursor);
-    func_8002E31C(s_menuSaveConfirm.win, 1);
-    func_8002E304(s_menuSaveConfirm.win, D_8007048C);
+    win_setShadow(s_menuSaveConfirm.win, 1);
+    win_setTitle(s_menuSaveConfirm.win, D_8007048C);
 }
 
 void menuSave_drawConfirm(Window *w) {
@@ -671,11 +671,11 @@ void menuSave_drawConfirmCursor(Window *w) {
         b = a & 0xFFF;
     }
     if (w->unk1C == WIN_OPEN) {
-        D_80077DE8.unk0 = w->unk0 + ((s32)(w->unk4 - b) >> 1) - 0x1A;
-        D_80077DE8.unk2 = w->unk2 + (s16)(w->unk6 + (s16)(s_menuSaveConfirm.choice * 15 - 0x26)) + 3;
+        g_menuHelp.x = w->unk0 + ((s32)(w->unk4 - b) >> 1) - 0x1A;
+        g_menuHelp.y = w->unk2 + (s16)(w->unk6 + (s16)(s_menuSaveConfirm.choice * 15 - 0x26)) + 3;
         z = w->unk18;
-        D_80077DE8.unk4 = z;
-        ui_drawHand(D_80077DE8.unk0, D_80077DE8.unk2, z - 1);
+        g_menuHelp.otz = z;
+        ui_drawHand(g_menuHelp.x, g_menuHelp.y, z - 1);
     }
 }
 
@@ -759,7 +759,7 @@ void menuSave_openCheck(void) {
     s_menuSave.newestCounter = 0;
     s_menuSaveCheck.step = CHECK_STEP_NONE;
     s_menuSaveCheck.active = 1;
-    s_menuSaveCheck.win = func_8002DC54(&s_menuSaveCheckRect, 0x1E, 2);
+    s_menuSaveCheck.win = win_openFree(&s_menuSaveCheckRect, 0x1E, 2);
     s_menuSaveCheck.fd = 0xFF;
     s_menuSaveCheck.tries = 0;
     s_menuSaveCheck.ff9Files = 0;
@@ -780,8 +780,8 @@ void menuSave_openCheck(void) {
     win_setDrawContent(s_menuSaveCheck.win, menuSave_drawCheck);
     win_setOnOpened(s_menuSaveCheck.win, menuSave_onCheckOpened);
     win_setOnClosed(s_menuSaveCheck.win, menuSave_onCheckClosed);
-    func_8002E304(s_menuSaveCheck.win, D_80070420);
-    func_8002E31C(s_menuSaveCheck.win, 1);
+    win_setTitle(s_menuSaveCheck.win, D_80070420);
+    win_setShadow(s_menuSaveCheck.win, 1);
     sl = g_menu.unk2;
     switch (s_menuSave.cardStatus[sl]) {
     case CARD_RES_NEW:
@@ -910,14 +910,14 @@ void menuSave_enterFileList(void) {
     s_menuSave.phase = SAVE_PH_READY;
     s_menuSave.state = SAVE_ST_LIST;
     s_menuSave.help = text_get(SAVE_TEXT_SELECT_BLOCK);
-    func_8002DE10(s_menuSaveCheck.win);
-    func_8002EDFC(&s_menuSave.list, SAVE_FILES, SAVE_LIST_ROWS, 1, SAVE_LIST_H);
+    win_closeNow(s_menuSaveCheck.win);
+    menuList_init(&s_menuSave.list, SAVE_FILES, SAVE_LIST_ROWS, 1, SAVE_LIST_H);
     if (s_menuSave.files[s_menuSave.newestFile].state == SAVE_FILE_USED) {
         s_menuSave.list.cursor = s_menuSave.files[s_menuSave.newestFile].cursor;
-        s_menuSave.list.unk5 = s_menuSave.newestFile - s_menuSave.list.cursor;
+        s_menuSave.list.top = s_menuSave.newestFile - s_menuSave.list.cursor;
     }
-    func_8002F9D0();
-    func_8002F8A8(menuSave_onFileListFadedIn);
+    fade_inDefault();
+    fade_setOnDone(menuSave_onFileListFadedIn);
 }
 
 void menuSave_findNewest(void) {
@@ -1094,8 +1094,8 @@ void menuSave_finishCheck(void) {
     menuSave_findNewest();
     if (!menuSave_isMessageActive()) {
         s_menuSave.phase = SAVE_PH_WAIT;
-        func_8002F9F0();
-        func_8002F8A8(menuSave_enterFileList);
+        fade_outDefault();
+        fade_setOnDone(menuSave_enterFileList);
         snd_playSe(SE_SAVE_LIST);
     }
 }
@@ -1163,11 +1163,11 @@ void menuSave_openSavedMsg(SaveMenu *m) {
         s_menuSave.phase = SAVE_PH_WAIT;
         s_menuSaveSavedMsg.timer = 0;
         s_menuSaveSavedMsgRect.y = s_menuSave.list.cursor * SAVE_ROW_H + 0x3F;
-        s_menuSaveSavedMsg.win = func_8002DC54(&s_menuSaveSavedMsgRect, 0x14, 2);
+        s_menuSaveSavedMsg.win = win_openFree(&s_menuSaveSavedMsgRect, 0x14, 2);
         win_setDrawContent(s_menuSaveSavedMsg.win, menuSave_drawSavedMsg);
         win_setOnOpened(s_menuSaveSavedMsg.win, menuSave_onSavedMsgOpened);
         win_setOnClosed(s_menuSaveSavedMsg.win, menuSave_onSavedMsgClosed);
-        func_8002E31C(s_menuSaveSavedMsg.win, 1);
+        win_setShadow(s_menuSaveSavedMsg.win, 1);
     }
 }
 
@@ -1181,7 +1181,7 @@ void menuSave_inputSavedMsg(void) {
 
 void menuSave_updateSavedMsg(void) {
     if (!menuSave_isSlotReady(g_menu.unk2, 0)) {
-        func_8002DE10(s_menuSaveSavedMsg.win);
+        win_closeNow(s_menuSaveSavedMsg.win);
         menuSave_showNotice(SAVE_TEXT_NO_CARD);
         return;
     }
@@ -1207,7 +1207,7 @@ void menuSave_onSavedMsgClosed(Window *w) {
 void menuSave_drawSavedMsg(Window *w) {
     u8 *s = text_get(SAVE_TEXT_DATA_SAVED);
 
-    text_drawBlock(w->unk0 + ((w->unk4 - func_8002BA68((s32)s)) >> 1), w->unk2 + 8, w->unk18, s, 0);
+    text_drawBlock(w->unk0 + ((w->unk4 - text_measureWidth((s32)s)) >> 1), w->unk2 + 8, w->unk18, s, 0);
 }
 
 void menuSave_openMessage(s32 id, s32 title) {
@@ -1231,14 +1231,14 @@ void menuSave_openMessage(s32 id, s32 title) {
         h = (sz >> 12) * 15 + 0x10;
         r.w = w;
         r.h = h;
-        r.x = (g_gameState->unkC->disp.w - w) >> 1;
-        r.y = (g_gameState->unkC->disp.h - h) >> 1;
-        m->win = func_8002DC54(&r, 0xF, 2);
+        r.x = (g_gameState->dispEnv->disp.w - w) >> 1;
+        r.y = (g_gameState->dispEnv->disp.h - h) >> 1;
+        m->win = win_openFree(&r, 0xF, 2);
         win_setDrawContent(m->win, menuSave_drawMessage);
         win_setOnOpened(m->win, menuSave_onMessageOpened);
         win_setOnClosed(m->win, menuSave_onMessageClosed);
-        func_8002E31C(m->win, 1);
-        func_8002E304(m->win, title);
+        win_setShadow(m->win, 1);
+        win_setTitle(m->win, title);
     }
 }
 
@@ -1287,8 +1287,8 @@ void menuSave_onMessageClosed(Window *w) {
     s_menuSaveMessage.active = 0;
     if (s_menuSaveResetAfterMsg[s_menuSave.state] != 0) {
         s_menuSave.phase = SAVE_PH_WAIT;
-        func_8002F9F0();
-        func_8002F8A8(menuSave_resetToSlots);
+        fade_outDefault();
+        fade_setOnDone(menuSave_resetToSlots);
         return;
     }
     s_menuSave.help = text_get(SAVE_TEXT_SELECT_SLOT);
@@ -1299,8 +1299,8 @@ void menuSave_resetToSlots(void) {
     s_menuSave.help = text_get(SAVE_TEXT_SELECT_SLOT);
     s_menuSave.state = SAVE_ST_SLOT;
     s_menuSave.phase = SAVE_PH_READY;
-    func_8002F9D0();
-    func_8002F8A8(menuSave_onSlotsFadedIn);
+    fade_inDefault();
+    fade_setOnDone(menuSave_onSlotsFadedIn);
 }
 
 void menuSave_onSlotsFadedIn(void) {
@@ -1308,11 +1308,11 @@ void menuSave_onSlotsFadedIn(void) {
 }
 
 void menuSave_loadImage(void) {
-    func_80028720(s_menuSaveImage, 10);
+    ui_loadPortraits(s_menuSaveImage, 10);
 }
 
 void menuSave_freeImage(void) {
-    func_8002886C();
+    ui_restorePortraits();
 }
 
 u8 menuSave_getPortrait(Character *c) {
@@ -1321,7 +1321,7 @@ u8 menuSave_getPortrait(Character *c) {
     if (c == NULL) {
         return PORTRAIT_NONE;
     }
-    m = func_80028954(c->unk34.b.id);
+    m = chr_getPortrait(c->unk34.b.id);
     if (m == 0xFF) {
         return PORTRAIT_NONE;
     }
@@ -1345,12 +1345,12 @@ u8 menuSave_startAccess(s32 mode) {
     menuSave_resetBookAnim();
     menuSave_resetReadProgress();
     menuSave_resetWriteProgress();
-    s_menuSaveAccess.win = func_8002DC54(&s_menuSaveAccessRect, 0x1E, 2);
+    s_menuSaveAccess.win = win_openFree(&s_menuSaveAccessRect, 0x1E, 2);
     win_setDrawContent(s_menuSaveAccess.win, menuSave_drawAccess);
     win_setOnOpened(s_menuSaveAccess.win, menuSave_onAccessOpened);
     win_setOnClosed(s_menuSaveAccess.win, menuSave_onAccessClosed);
-    func_8002E31C(s_menuSaveAccess.win, 1);
-    func_8002E304(s_menuSaveAccess.win, D_800703FC.unk0[s_menuSaveAccessTitles[mode]]);
+    win_setShadow(s_menuSaveAccess.win, 1);
+    win_setTitle(s_menuSaveAccess.win, g_winLabelStrings.unk0[s_menuSaveAccessTitles[mode]]);
     return 1;
 }
 
@@ -1529,8 +1529,8 @@ void menuSave_drawGauge(s32 x, s32 y, s32 otz, s32 pos, s32 w) {
             g_primPtr = (u8 *)(l + 1);
         }
     }
-    func_80027710(x, y, otz, ic, 0);
-    func_80027710(x + width - ec->unk4, y, otz, ec, 0);
+    ui_drawSpriteDef(x, y, otz, ic, 0);
+    ui_drawSpriteDef(x + width - ec->unk4, y, otz, ec, 0);
     SetTexWindow(g_primPtr, &s_menuSaveGaugeTexWindow);
     addPrim(&g_ot[otz], g_primPtr);
     g_primPtr += 0xC;
@@ -1661,8 +1661,8 @@ void menuSave_onFileIoDone(void) {
     if (menuSave_applyLoaded()) {
         s_menuSave.loaded = mode;
         snd_playSe(SE_SAVE_DONE);
-        if (g_menu.unk1 == 0) {
-            func_800361CC(0);
+        if (g_menu.type == 0) {
+            menuScreen_open(0);
             return;
         }
         menuSave_close();
@@ -1736,30 +1736,30 @@ MenuView *menuSave_getListView(MenuList *l, MenuView *v) {
     s32 d;
     u8 f;
 
-    f = l->unk8;
+    f = l->scroll;
     if (f & 4) {
         if (f & 2) {
-            d = l->unkD - l->unk9;
+            d = l->height - l->scrollPos;
             v->unk0 = (d + SAVE_ROW_H - 1) / SAVE_ROW_H;
-            v->unk1 = l->unk5 + (l->unk3 - v->unk0);
-            v->unk2 = (l->unk3 - v->unk0) * SAVE_ROW_H;
+            v->unk1 = l->top + (l->visibleRows - v->unk0);
+            v->unk2 = (l->visibleRows - v->unk0) * SAVE_ROW_H;
         } else {
-            d = l->unkD - l->unk9;
+            d = l->height - l->scrollPos;
             v->unk0 = (d + SAVE_ROW_H - 1) / SAVE_ROW_H;
-            v->unk1 = l->unk5;
+            v->unk1 = l->top;
             v->unk2 = 0;
         }
     } else if (f & 2) {
-        v->unk0 = l->unk3 + 1;
-        v->unk1 = l->unk5 - 1;
-        v->unk2 = l->unk9 - SAVE_ROW_H;
+        v->unk0 = l->visibleRows + 1;
+        v->unk1 = l->top - 1;
+        v->unk2 = l->scrollPos - SAVE_ROW_H;
     } else if (f & 1) {
-        v->unk1 = l->unk5;
-        v->unk0 = l->unk3 + 1;
-        v->unk2 = -l->unk9;
+        v->unk1 = l->top;
+        v->unk0 = l->visibleRows + 1;
+        v->unk2 = -l->scrollPos;
     } else {
-        v->unk1 = l->unk5;
-        v->unk0 = l->unk3;
+        v->unk1 = l->top;
+        v->unk0 = l->visibleRows;
         v->unk2 = 0;
     }
     return v;
@@ -1768,15 +1768,15 @@ MenuView *menuSave_getListView(MenuList *l, MenuView *v) {
 MenuView *menuSave_getScrollView(MenuList *l, MenuView *v) {
     s32 x;
 
-    if (l->unk8 & 2) {
-        v->unk0 = (l->unk9 + SAVE_ROW_H - 1) / SAVE_ROW_H;
-        v->unk1 = l->unkC + (l->unk3 - v->unk0);
-        v->unk2 = l->unk9 - v->unk0 * SAVE_ROW_H;
+    if (l->scroll & 2) {
+        v->unk0 = (l->scrollPos + SAVE_ROW_H - 1) / SAVE_ROW_H;
+        v->unk1 = l->pageTop + (l->visibleRows - v->unk0);
+        v->unk2 = l->scrollPos - v->unk0 * SAVE_ROW_H;
     } else {
-        x = l->unk9;
-        v->unk2 = l->unkD - x;
+        x = l->scrollPos;
+        v->unk2 = l->height - x;
         v->unk0 = (x + SAVE_ROW_H - 1) / SAVE_ROW_H;
-        v->unk1 = l->unkC;
+        v->unk1 = l->pageTop;
     }
     return v;
 }
@@ -1784,28 +1784,28 @@ MenuView *menuSave_getScrollView(MenuList *l, MenuView *v) {
 void menuSave_getScrollClip(MenuList *m, RECT *src, RECT *dst) {
     dst->x = src->x;
     dst->w = src->w;
-    if (m->unk8 & 2) {
-        dst->y = src->y + m->unk9;
+    if (m->scroll & 2) {
+        dst->y = src->y + m->scrollPos;
     } else {
         dst->y = src->y;
     }
-    dst->h = src->h - m->unk9;
+    dst->h = src->h - m->scrollPos;
 }
 
 void menuSave_pageUp(MenuList *l, s32 btn) {
     s32 top;
     s32 d;
 
-    if ((btn & BTN_L1) && !(g_padHeld & BTN_R1) && l->unk5 != 0) {
-        d = l->unkD;
-        l->unk9 = d >> 2;
-        l->unk8 = 7;
-        l->unkE = (d - l->unk9 + 0xE) / 15;
-        top = l->unk5 - l->unk3;
+    if ((btn & BTN_L1) && !(g_padHeld & BTN_R1) && l->top != 0) {
+        d = l->height;
+        l->scrollPos = d >> 2;
+        l->scroll = 7;
+        l->pageStep = (d - l->scrollPos + 0xE) / 15;
+        top = l->top - l->visibleRows;
         if (top < 0) {
             top = 0;
         }
-        l->unkC = top;
+        l->pageTop = top;
         snd_playSe(SE_CURSOR);
     }
 }
@@ -1816,18 +1816,18 @@ void menuSave_pageDown(MenuList *l, s32 pad) {
     s32 top;
     s32 max;
 
-    if ((pad & BTN_R1) && l->unk5 < l->unk2 - l->unk3) {
-        h = l->unkD;
-        l->unk9 = h >> 2;
-        page = l->unk3;
-        max = l->unk2 - page;
-        l->unk8 = 5;
-        top = l->unk5 + page;
-        l->unkE = (h - l->unk9 + 0xE) / 15;
+    if ((pad & BTN_R1) && l->top < l->rows - l->visibleRows) {
+        h = l->height;
+        l->scrollPos = h >> 2;
+        page = l->visibleRows;
+        max = l->rows - page;
+        l->scroll = 5;
+        top = l->top + page;
+        l->pageStep = (h - l->scrollPos + 0xE) / 15;
         if (top < max) {
             max = top;
         }
-        l->unkC = max;
+        l->pageTop = max;
         snd_playSe(SE_CURSOR);
     }
 }
@@ -1843,21 +1843,21 @@ void menuSave_buildHeader(SaveBuf *buf) {
     t = game_getPlayTime();
     menuSave_buildCardHeader(&buf->card, t);
     n = 0;
-    o = func_8004AE00();
+    o = evt_getPlayer();
     if (o != NULL) {
         n = o->unk3B;
     }
     if (s_menuSave.mode == SAVE_MODE_NEXT_DISC) {
         h->discs = func_800B5074();
     } else {
-        h->discs = g_gameState->unkB;
+        h->discs = g_gameState->disc;
     }
     h->discs = menuSave_getDiscBit();
     h->version = SAVE_VERSION;
     h->level = g_gameState->unk1C->characters[n].level;
     h->playTime = t;
     h->gil = g_gameState->unk1C->gil;
-    h->windowColor = (g_gameState->unk24 >> CFG_BIT_WINDOW_COLOR) & 1;
+    h->windowColor = (g_gameState->config >> CFG_BIT_WINDOW_COLOR) & 1;
     h->counter = ++s_menuSave.newestCounter;
     h->cursor = s_menuSave.list.cursor;
     h->name = *(SaveName *)g_gameState->unk1C->characters[n].unk0;
@@ -1889,13 +1889,13 @@ void menuSave_getLocation(u8 *dst) {
     if (name == NULL) {
         s = text_get(SAVE_TEXT_NO_LOCATION);
         memset(dst, 0xFF, sizeof(SaveLocation));
-        memcpy(dst, s, func_8002BCC0(s));
+        memcpy(dst, s, text_getLength(s));
     } else {
         memset(s_menuSaveLocationBuf, 0xFF, sizeof(s_menuSaveLocationBuf));
-        memcpy(s_menuSaveLocationBuf, name, func_8002BCC0(name));
+        memcpy(s_menuSaveLocationBuf, name, text_getLength(name));
         s_menuSaveLocationBuf[sizeof(SaveLocation) - 1] = 0xFF; /* cut to fit */
         memset(dst, 0xFF, sizeof(SaveLocation));
-        memcpy(dst, s_menuSaveLocationBuf, func_8002BCC0(s_menuSaveLocationBuf));
+        memcpy(dst, s_menuSaveLocationBuf, text_getLength(s_menuSaveLocationBuf));
     }
 }
 
@@ -2055,7 +2055,7 @@ u8 menuSave_applyLoaded(void) {
     menuSave_initCrcTable();
     if (SAVE_BUF->crc == menuSave_crc16((u8 *)SAVE_BUF, SAVE_CRC_LEN)) {
         h = &SAVE_BUF->hdr;
-        g_gameState->unkB = h->discs;
+        g_gameState->disc = h->discs;
         game_setPlayTime(h->playTime);
         menuSave_unpackState(&SAVE_BUF->data.state);
         menuSave_unpackEvents(&SAVE_BUF->data.events);
@@ -2183,11 +2183,11 @@ void menuSave_copyCards(CardData *d, CardData *s) {
 }
 
 void menuSave_packCards(void *p) {
-    menuSave_copyCards(p, func_80062824());
+    menuSave_copyCards(p, card_getInventory());
 }
 
 void menuSave_unpackCards(void *p) {
-    menuSave_copyCards(func_80062824(), p);
+    menuSave_copyCards(card_getInventory(), p);
 }
 
 void menuSave_packEvents(SaveEvents *d) {
@@ -2203,24 +2203,24 @@ void menuSave_unpackEvents(SaveEvents *s) {
 void menuSave_packItems(SaveItems *s) {
     s->items = g_gameState->unk1C->items;
     s->flags = g_gameState->unk1C->unk774;
-    s->unk240 = *(GameStateUnk24 *)&g_gameState->unk24;
+    s->unk240 = *(GameConfig *)&g_gameState->config;
 }
 
 void menuSave_unpackItems(SaveItems *s) {
     g_gameState->unk1C->items = s->items;
     g_gameState->unk1C->unk774 = s->flags;
-    *(GameStateUnk24 *)&g_gameState->unk24 = s->unk240;
-    func_8002397C();
+    *(GameConfig *)&g_gameState->config = s->unk240;
+    config_apply();
 }
 
 void menuSave_packMisc(SaveMisc *p) {
-    p->unk0 = g_gameState->unk1C->unk844;
+    p->unk0 = g_gameState->unk1C->chocograph;
     p->unk4 = g_gameState->unk1C->unk880;
     p->unk14 = g_gameState->unk1C->unk892;
 }
 
 void menuSave_unpackMisc(SaveMisc *p) {
-    g_gameState->unk1C->unk844 = p->unk0;
+    g_gameState->unk1C->chocograph = p->unk0;
     g_gameState->unk1C->unk880 = p->unk4;
     g_gameState->unk1C->unk892 = p->unk14;
 }

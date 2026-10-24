@@ -66,7 +66,7 @@ void wm_updateCamera(void) {
     memset(&r, 0, 8);
     r.vz = g_worldCameraRoll;
     r.vy = g_worldCamera->yaw;
-    func_80030AF4(&r, &m);
+    math_rotMatrixXYZ(&r, &m);
     m.t[0] = 0;
     m.t[1] = 0;
     m.t[2] = 0;
@@ -132,21 +132,21 @@ void wm_cameraFollow(void) {
                 if (abs(g_worldCameraTarget[0] - x) < 16) {
                     g_worldCameraSmoothX = 0;
                 } else {
-                    g_worldCameraTarget[0] += (func_8004AE00()->pos.vx - g_worldCameraTarget[0]) / 8;
+                    g_worldCameraTarget[0] += (evt_getPlayer()->pos.vx - g_worldCameraTarget[0]) / 8;
                 }
             }
             if (g_worldCameraSmoothY == 1) {
                 if (abs(g_worldCameraTarget[1] - y) < 16) {
                     g_worldCameraSmoothY = 0;
                 } else {
-                    g_worldCameraTarget[1] += (func_8004AE00()->pos.vy - g_worldCameraTarget[1] + g_worldCameraTargetHeight) / 8;
+                    g_worldCameraTarget[1] += (evt_getPlayer()->pos.vy - g_worldCameraTarget[1] + g_worldCameraTargetHeight) / 8;
                 }
             }
             if (g_worldCameraSmoothZ == 1) {
                 if (abs(g_worldCameraTarget[2] - z) < 16) {
                     g_worldCameraSmoothZ = 0;
                 } else {
-                    g_worldCameraTarget[2] += (func_8004AE00()->pos.vz - g_worldCameraTarget[2]) / 8;
+                    g_worldCameraTarget[2] += (evt_getPlayer()->pos.vz - g_worldCameraTarget[2]) / 8;
                 }
             }
             if (g_worldCameraSmoothX == 0) {
@@ -347,10 +347,10 @@ void wm_cameraFollow(void) {
         g_worldCameraStartPhase = 2;
         p = &g_evtGlobalVars.b[0x65];
         if (*p & 1) {
-            func_8002FA10();
+            fade_inAdditiveDefault();
             g_evtGlobalVars.b[0x65] &= ~1;
         } else {
-            func_8002F9D0();
+            fade_inDefault();
         }
         break;
     }
@@ -617,7 +617,7 @@ void wm_setMountPalette(void) {
     e = g_gameState->unk1C->unk8E4.world->obj->palAnims;
     pal = w_framePackGetPtr(g_worldDataPack, 1);
     func_800B36AC();
-    for (n = func_8004AE9C(); n != NULL; n = n->unk0) {
+    for (n = evt_getObjectList(); n != NULL; n = n->unk0) {
         a = n->unk4;
         if (a->unkE == 1 && (a->unkF & 1) && a->unk5 == 4) {
             if ((a->unk11 >= 3 && a->unk11 < 8)) {
@@ -676,7 +676,7 @@ void wm_findVehicles(void) {
     Unk16D8 *n;
     Unk8004AB64 *a;
 
-    for (n = func_8004AE9C(); n != NULL; n = n->unk0) {
+    for (n = evt_getObjectList(); n != NULL; n = n->unk0) {
         if (n->unk4->unk5 == 4) {
             a = n->unk4;
             switch (a->unk11) {
@@ -701,7 +701,7 @@ void wm_findVehicles(void) {
                 g_worldVehicleActor = a;
                 break;
             }
-            if (a == func_8004AE00()) {
+            if (a == evt_getPlayer()) {
                 if (g_gameState->unkA == 1 && g_gameState->unk1C->unk892 == 0) {
                     if (g_worldMoveModeInfo->cameraInFront != 0) {
                         g_worldCamera->yawOffset = 0x800;
@@ -735,7 +735,7 @@ void wm_drawActors(void) {
     VectorNormalS((VECTOR *)g_worldCameraDir, &n);
     base = (-ratan2(n.vz, n.vx) + 0x400) % 4096;
     func_80064CDC(10, 100);
-    for (e = func_8004AE9C(); e != NULL; e = e->unk0) {
+    for (e = evt_getObjectList(); e != NULL; e = e->unk0) {
         act = e->unk4;
         if (act->unk5 == 4 && act->unkE == 1 && (act->unkF & 1) && (u8)wm_worldToView((VECTOR *)&act->pos, &a, &b, &z)) {
             f = 1;
@@ -853,14 +853,14 @@ s32 wm_drawActorModel(Unk8004AB64 *arg0, SVECTOR *arg1) {
     s32 i;
 
     c = &g_worldActorTypeInfo[arg0->unk11];
-    s = (WmObjSlot *)func_8001E350(arg0->unk3B);
+    s = (WmObjSlot *)game_getModel(arg0->unk3B);
     m = s->obj;
     memset(&r, 0, 8);
     r.vx = s->actor->pos.unk20;
     r.vy = s->actor->pos.rotY;
     r.vz = s->actor->unk24;
     r2 = r;
-    func_800316D8(&r2, &m->worldMatrix);
+    math_rotMatrixYXZ(&r2, &m->worldMatrix);
     m->worldMatrix.t[0] = arg1->vx;
     m->worldMatrix.t[1] = arg1->vy;
     m->worldMatrix.t[2] = arg1->vz;
@@ -996,13 +996,13 @@ void wm_updateActors(void) {
     g_worldPlayerSpeed = 0;
     g_worldPlayerClimbSpeed = 0;
     g_worldPlayerTurn = 0;
-    if (func_8004AE00() != NULL) {
-        g_worldPlayer = func_8004AE00();
+    if (evt_getPlayer() != NULL) {
+        g_worldPlayer = evt_getPlayer();
         g_worldPlayer->unk40.vx = g_worldPlayer->pos.vx;
         g_worldPlayer->unk40.vy = g_worldPlayer->pos.vy;
         g_worldPlayer->unk40.vz = g_worldPlayer->pos.vz;
     }
-    for (e = func_8004AE9C(); e != NULL; e = e->unk0) {
+    for (e = evt_getObjectList(); e != NULL; e = e->unk0) {
         act = e->unk4;
         cc = &g_worldActorTypeInfo[act->unk11];
         if (act->unk5 == 4 && act->unkE == 1 && (act->unkF & 1)) {
@@ -1014,7 +1014,7 @@ void wm_updateActors(void) {
                 D_800CE270 = act;
                 break;
             }
-            if (act == g_worldPlayer && func_8004AE84() != 0) {
+            if (act == g_worldPlayer && evt_isControlEnabled() != 0) {
                 wm_movePlayer(cc);
             } else {
                 cc = &g_worldActorTypeInfo[act->unk11];
@@ -1077,7 +1077,7 @@ void wm_updateActors(void) {
             }
         }
     }
-    if (func_8004AE00() != NULL) {
+    if (evt_getPlayer() != NULL) {
         if (g_worldPlayerTurn == 0 || g_worldPlayerSpeed < 300) {
             if (g_worldCameraRoll > 0) {
                 g_worldCameraRoll -= 10;
@@ -1519,7 +1519,7 @@ void w_movementChange(void) {
     WmMoveMode *p;
     WmMoveMode *prev;
 
-    func_8004B20C(0);
+    evt_resetIdleTimer(0);
     g_worldSpeedSmooth = 0;
     g_worldClimbSmooth = 0;
     wm_autoPilotOff();
@@ -2039,7 +2039,7 @@ void wm_snapActorsToFloor(void) {
     s32 tmp;
     u16 h;
 
-    n = func_8004AE9C();
+    n = evt_getObjectList();
     if (n != NULL) {
         do {
             o = n->unk4;
@@ -2079,13 +2079,13 @@ void w_movementChangeSP1(void) {
 const char D_800A7164[0x1C] = "w_movementChange SP2\n";
 
 void w_movementChangeSP2(void) {
-    func_8004B20C(0);
+    evt_resetIdleTimer(0);
     wm_seStop(0x26);
     wm_seStop(g_worldMoveModeInfo->loopSe);
     g_worldMoveMode = g_evtGlobalVars.b[0xBE];
     g_worldMoveModeInfo = &g_worldMoveModes[g_worldMoveMode];
-    if (func_8004AE00() != NULL) {
-        g_worldPlayer = func_8004AE00();
+    if (evt_getPlayer() != NULL) {
+        g_worldPlayer = evt_getPlayer();
     }
     g_worldCameraFourProbes = g_worldMoveModeInfo->airborne == 0;
     wm_updateActors();
@@ -2111,7 +2111,7 @@ s32 wm_getLeftStickX(s32 *arg0) {
     s32 b;
 
     *arg0 = 0;
-    if (((D_80073940[0].unk0 >> 12) & 0xF) == PAD_ID_ANALOG) {
+    if (((g_padBuf[0].unk0 >> 12) & 0xF) == PAD_ID_ANALOG) {
         v = D_8007393A - 0x80;
         if (D_8007393A - 0x40U <= 0x80) {
             v = 0;
@@ -2141,7 +2141,7 @@ s32 wm_getLeftStickY(s32 *arg0) {
     s32 v;
 
     *arg0 = 0;
-    if (((D_80073940[0].unk0 >> 12) & 0xF) == PAD_ID_ANALOG) {
+    if (((g_padBuf[0].unk0 >> 12) & 0xF) == PAD_ID_ANALOG) {
         v = D_8007393B - 0x80;
         if (D_8007393B - 0x40U <= 0x80) {
             v = 0;
@@ -2170,7 +2170,7 @@ s32 wm_getRightStickY(s32 *arg0) {
     s32 v;
 
     *arg0 = 0;
-    if (((D_80073940[0].unk0 >> 12) & 0xF) == PAD_ID_ANALOG) {
+    if (((g_padBuf[0].unk0 >> 12) & 0xF) == PAD_ID_ANALOG) {
         v = 0x80 - D_80073939;
         if (v + 0x40U <= 0x80) {
             v = 0;

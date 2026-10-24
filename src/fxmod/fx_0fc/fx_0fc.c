@@ -11,11 +11,11 @@ s32 fx_0fc_op80(s32 mode, SVECTOR *work, Unk800F78A4 *env, Unk80100C78Entry *ent
         ex->btlfx_getUnitHomePos(0, (s16 *)work);
         return 0;
     } else {
-        frame = entry->unk0;
+        frame = entry->frame;
         work->vz += 0xC0;
         ex->btlfx_setUnitPos(0, (s16 *)work);
         if (frame >= 0x12) {
-            ex->func_800E806C(0, -1);
+            ex->btlfx_fadeUnitById(0, -1);
             return 1;
         }
     }

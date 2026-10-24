@@ -247,7 +247,7 @@ typedef struct {
     u8 cursor;
     s16 fieldId;
     s16 areaId;
-    s32 savedFlags[2]; /* saved D_80073998 */
+    s32 savedFlags[2]; /* saved g_padPortMask */
 } FieldDiscChange;
 
 typedef struct {
@@ -1007,7 +1007,7 @@ typedef struct {
 
 u8 *fld_drawSprite3D(u8 *, FieldSprHdr *, SVECTOR *, SVECTOR *, s32, s32, s32, s32, u32 *);
 u8 *fld_emitSprite3D(u8 *, FieldSprArgs *, u8 *, u32 *);
-void func_800316D8(SVECTOR *, MATRIX *);
+void math_rotMatrixYXZ(SVECTOR *, MATRIX *);
 
 /* object placement (fld_calcShadowMatrix) */
 typedef struct {
@@ -1070,7 +1070,7 @@ s32 bgi_linkFrameNeighbors(BgiHeader *, BgiAnim *, BgiKeyframe *);
 FieldLight *fld_findGlobalLights(Unk800B3254 *, FieldLight **, FieldLight **);
 FieldLight *fld_findFloorLight(Unk800B3254 *, FieldEvtCtx *, s16 *);
 
-/* object model slot (func_8001E350) */
+/* object model slot (game_getModel) */
 typedef struct {
     s32 flags; /* flags: 1 = loaded */
     s32 modelId; /* file id */
@@ -1138,13 +1138,13 @@ void fld_stopSceneSfx(FieldScene *, s16);
 s32 fld_movieCommand(s32, s32, s32);
 s32 fld_freeCommon(void);
 s32 bgi_stepFloorMove();
-void func_80054A28(void *);
+void vib_init(void *);
 s32 fld_soundCommand(s32, s32, s32, s32, s32);
 void fld_getSoundPanVolume(s16, s16, s16, u8 *, u8 *);
 s32 fld_preloadRequest(s32, s32);
 s32 fld_preloadHook(void);
 void fld_clearPreloadLists(void);
-s32 func_8001E350(s32);
+s32 game_getModel(s32);
 s32 fld_setSlotColor(FieldEvtCtx *, s32, s32, s32);
 void fld_discChangeFinish(void);
 void fld_invalidateModelCache(s32);
@@ -1233,9 +1233,9 @@ typedef struct {
     s32 unk0;
     s32 unk4;
 } Unk8002208C;
-Unk8002208C *func_8002208C(void);
-s32 func_800221C0(s32, s32);
-void func_80022280(s32, s32);
+Unk8002208C *preload_waitCurrent(void);
+s32 preload_overlaps(s32, s32);
+void preload_discardRange(s32, s32);
 s32 func_80050BE0(s32);
 
 extern RECT *s_menuMainTimeGilRect;
@@ -1245,7 +1245,7 @@ extern u8 *s_menuMainEquipLabels[5];
 extern u8 s_menuMainText[]; /* text */
 extern RECT g_fieldDiscChangeRect;
 
-/* text window contents passed to func_80063118 (as in ovl_38) */
+/* text window contents passed to tween_start (as in ovl_38) */
 typedef struct {
     s16 unk0;
     s16 unk2;
@@ -1303,17 +1303,17 @@ void fldmdl_drawMeshClipY(ModelObj *, u8);
 #define ResetSpadStack12() __asm__ volatile("addiu $29, $29, 12\n\tlw $29, 0($29)" : : : "memory")
 
 /* main exe: candidates for ff9.h */
-void func_80031244(SVECTOR *, MATRIX *);
-MATRIX *func_80030EA4(SVECTOR *, MATRIX *);
+void math_rotMatrixZYX(SVECTOR *, MATRIX *);
+MATRIX *math_rotMatrixZXY(SVECTOR *, MATRIX *);
 extern s32 g_vtxScreenXY[]; /* projected screen xy per model vertex */
 extern s32 g_vtxScreenZ[]; /* projected z per model vertex */
 s32 func_80056048(s32, s32, s32);
-extern u32 D_80076F80[]; /* VRAM save buffer */
+extern u32 g_portraitSavedVram[]; /* VRAM save buffer */
 extern u8 D_80077E51;
-extern u8 *D_80077DF0; /* = D_80077DE8.unk8, referenced by its own name */
-extern s32 D_80077DEC; /* = D_80077DE8.unk4, referenced by its own name */
-s32 func_8002B980(u8 *, s32);
-extern s32 D_80077E54; /* overlaps Unk80077E50.unk4 in ff9.h */
+extern u8 *g_menuHelpText; /* = g_menuHelp.text, referenced by its own name */
+extern s32 D_80077DEC; /* = g_menuHelp.otz, referenced by its own name */
+s32 text_measureStyle(u8 *, s32);
+extern s32 g_menuScreenFrame; /* overlaps Unk80077E50.unk4 in ff9.h */
 void menuMain_reorder(s32, s32);
 void fld_discPromptSelect(void);
 s32 fld_setupActorModel(s32, void *);
@@ -1323,18 +1323,18 @@ extern s32 g_mbgFrame;
 void gameover_main(void *); /* overlay 0x65 (loaded at 0x801F0000) */
 void mbg_setRgb24(s32); /* overlay loaded at 0x80198000 */
 s32 mbg_getFrame(void);
-void func_80032100(void);
-Unk8004AB64 *func_8004AE00(void);
+void menu_update(void);
+Unk8004AB64 *evt_getPlayer(void);
 u32 func_8004AB64(void *); /* actor -> model slot */
-void func_80023A0C(void);
-void func_800223CC(void);
-void func_80031264(void *, void *); /* rotation (SVECTOR) -> bone matrix */
+void game_updateWindows(void);
+void preload_reset(void);
+void math_rotMatrixZYX_gte(void *, void *); /* rotation (SVECTOR) -> bone matrix */
 
 /* field state for fld_movieCommand command 3: 0x11, 1 or 0x10/0 */
 static inline s32 fld_movieCommand_state(void) {
     s8 v;
 
-    if (g_gameState->unkB != 0xFF) {
+    if (g_gameState->disc != 0xFF) {
         v = g_gameState->unk1C->unk8E4.field->area->scene->movieState;
         if (v != 0x11) {
             goto other;
@@ -1456,22 +1456,22 @@ s32 mbg_update(s32);
 s32 mbg_getLastFrame(void);
 /* main exe: candidates for ff9.h */
 s32 cd_findFile(char *);
-void func_8001D910(void *, RECT **, RECT **); /* TIM: clut rect, image rect */
-u8 func_80022ED4(s32);
-void func_80056248(s32);
+void file_getTimRects(void *, RECT **, RECT **); /* TIM: clut rect, image rect */
+u8 cd_seekStreamAsync(s32);
+void akao_sendCmdE4(s32);
 
 /* field setup (fld_updateEncounter) */
 void fld_clearModelCache(void);
 void fld_findBattleMusic(void);
 void fld_suspendResidentSfx(void);
 /* main exe: candidates for ff9.h */
-extern s32 D_8007BD28;
-extern u8 *D_8007BD30;
-void func_800559FC(s32, s32, s32);
-void func_800557A8(void *, s32, s32, s32);
-void func_800559C8(s32, s32);
-void func_800219D8(PreloadEntry *, s16, s16, s16, s16);
-u8 func_80053A10(s32, s32);
+extern s32 g_swirlFrame;
+extern u8 *g_swirlBuf;
+void akao_fadeMusicVolume(s32, s32, s32);
+void akao_fadeSeVolume(void *, s32, s32, s32);
+void akao_setMusicVolume(s32, s32);
+void preload_setVramRect(PreloadEntry *, s16, s16, s16, s16);
+u8 swirl_update(s32, s32);
 
 /* bgi_slide (walkmesh slide along the triangle edges) */
 extern VECTOR g_fieldBgiDefaultNormal; /* normal used when a triangle has none */
@@ -1524,36 +1524,36 @@ extern u8 g_fieldSoundLoadKind;
 extern s32 g_fieldSoundLoadSector;
 s32 fld_soundBankReadCallback(Unk800B29F8 *arg0);
 /* main exe: candidates for ff9.h */
-s32 func_80055290(void *);
-void func_800552B8(s32);
-void func_80055310(void);
-s32 func_800553BC(void *, s32);
-void func_800553EC(s32, s32, s32, s32);
-void func_80055604(s32);
-void func_80055704(s32);
-void func_80055730(s32, s32);
-void func_80055764(s32, s32, s32);
-void func_800557F0(s32);
-void func_8005581C(s32, s32);
-void func_80055850(s32, s32, s32);
-void func_80055894(s32, s32, s32, s32);
-void func_800558DC(s32);
-void func_80055908(s32, s32);
-void func_8005593C(s32, s32, s32);
-void func_80055980(s32, s32, s32, s32);
-void func_80055A34(s32, s32, s32, s32);
-void func_80055B6C(s32);
-void func_80055B98(s32, s32);
-void func_80055BCC(s32, s32, s32);
-void func_80055C08(s32);
-void func_80055C34(s32, s32);
-void func_80055C68(s32, s32, s32);
-void func_80055CA4(s32);
-void func_80055CD0(s32, s32);
-void func_80055D04(s32, s32, s32);
-s32 func_80055DCC(void);
-void func_800561C4(s32, s32, s32);
-void func_800562B0(s32);
+s32 akao_playMusic(void *);
+void akao_stopMusic(s32);
+void akao_saveMusic(void);
+s32 akao_playMusicCount(void *, s32);
+void akao_playSe(s32, s32, s32, s32);
+void akao_sendCmd92(s32);
+void akao_setAllSeVolume(s32);
+void akao_fadeAllSeVolume(s32, s32);
+void akao_setSeVolume(s32, s32, s32);
+void akao_sendCmdAA(s32);
+void akao_sendCmdAB(s32, s32);
+void akao_sendCmdA2(s32, s32, s32);
+void akao_sendCmdA3(s32, s32, s32, s32);
+void akao_sendCmdAC(s32);
+void akao_sendCmdAD(s32, s32);
+void akao_sendCmdA4(s32, s32, s32);
+void akao_sendCmdA5(s32, s32, s32, s32);
+void akao_fadeMusicVolumeFrom(s32, s32, s32, s32);
+void akao_sendCmdD0(s32);
+void akao_sendCmdD1(s32, s32);
+void akao_sendCmdD2(s32, s32, s32);
+void akao_sendCmdD4(s32);
+void akao_sendCmdD5(s32, s32);
+void akao_sendCmdD6(s32, s32, s32);
+void akao_sendCmdD8(s32);
+void akao_sendCmdD9(s32, s32);
+void akao_sendCmdDA(s32, s32, s32);
+s32 akao_getSpuTransferState(void);
+void akao_sendCmdE0(s32, s32, s32);
+void akao_sendCmdE6(s32);
 
 /* GameData.unk828/unk82C as an array (the slot index needs `base + slot*4`) until ff9.h has it */
 typedef struct {

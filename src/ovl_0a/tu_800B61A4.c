@@ -823,7 +823,7 @@ void fldmdl_calcBoneMatrices(ModelObj *arg0, u16 arg1) {
             key2++;
         }
         key++;
-        func_80031264(rot, m);
+        math_rotMatrixZYX_gte(rot, m);
         m++;
     } while (m < end);
     if (arg0->parent != NULL) {
@@ -1537,7 +1537,7 @@ loop1:
         key2++;
     }
     key++;
-    func_80031264(rot, m);
+    math_rotMatrixZYX_gte(rot, m);
     m++;
     if (m < end) {
         goto loop1;
@@ -2771,7 +2771,7 @@ s32 fldbg_updateFollowOverlays(void) {
         if (mode == 5) {
             a = (Unk8004AB64 *)g_gameState->unk1C->unk8E0[g_gameState->unk1C->unk8E4.field->playerObj].unkC;
         } else if (mode == 1) {
-            a = func_8004AE00();
+            a = evt_getPlayer();
         } else {
             a = NULL;
         }
@@ -3333,7 +3333,7 @@ s32 fldbg_followPlayer(void) {
     if (mode == 5) {
         a = (Unk8004AB64 *)g_gameState->unk1C->unk8E0[g_gameState->unk1C->unk8E4.field->playerObj].unkC;
     } else if (mode == 1) {
-        a = func_8004AE00();
+        a = evt_getPlayer();
     } else {
         a = NULL;
     }
@@ -3626,7 +3626,7 @@ s32 fldbg_scrollToPlayer(s32 arg0, s32 arg1) {
     } else {
         a = NULL;
         if (mode == 1) {
-            a = func_8004AE00();
+            a = evt_getPlayer();
         }
     }
     bg = g_fieldBgData;

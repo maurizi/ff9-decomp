@@ -29,7 +29,7 @@ typedef struct {
 
 typedef struct {
     SVECTOR unk0; /* caster body position */
-    SVECTOR unk8; /* func_800DC858(0x10, 0) */
+    SVECTOR unk8; /* btlfx_getUnitArgBonePos(0x10, 0) */
 } Fx0a9Work83;
 
 extern Unk800F78A4 *D_801E7F58;

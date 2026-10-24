@@ -4,7 +4,7 @@ void opening_discInit(void) {
 }
 
 void opening_discEnter(void) {
-    func_80032628(opening_discOnClose);
+    menu_setOnClose(opening_discOnClose);
 }
 
 void opening_discUpdate(void) {
@@ -44,7 +44,7 @@ void opening_loadInit(void) {
 
 void opening_loadEnter(void) {
     g_loadMenuClosed = 0;
-    func_80032628(opening_loadOnClose);
+    menu_setOnClose(opening_loadOnClose);
 }
 
 void opening_loadUpdate(void) {
@@ -59,7 +59,7 @@ void opening_loadLeave(void) {
 void opening_loadOnClose(void) {
     g_loadMenuClosed = 1;
     if (menuSave_isLoaded()) {
-        func_80032634(0);
+        menu_setFadeInOnClose(0);
     }
 }
 
@@ -74,7 +74,7 @@ void opening_loadDone(void) {
             menu_open(MENU_DISC, ((r & 3) << 14) | 0x3A98);
             mode = SCENE_DISC;
         } else {
-            func_80032634(0);
+            menu_setFadeInOnClose(0);
             mode = SCENE_START;
         }
     } else {

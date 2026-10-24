@@ -24,7 +24,7 @@ enum { CHOCO_MODE_NONE, CHOCO_MODE_TABS, CHOCO_MODE_LIST };
 enum { CHOCO_TAB_SELECT, CHOCO_TAB_CANCEL };
 
 #define CHOCOGRAPH_COUNT 24
-#define CHOCO_LIST_ROWS  7 /* visible list rows (func_8002EDFC) */
+#define CHOCO_LIST_ROWS  7 /* visible list rows (menuList_init) */
 #define CHOCO_LAST_PAGE  (CHOCOGRAPH_COUNT - CHOCO_LIST_ROWS) /* highest list scroll top */
 
 /* Event variable bytes (g_evtGlobalVars.b) */
@@ -66,7 +66,7 @@ typedef struct {
     RECT countRect;    /* menuChocograph_drawCounts */
     RECT listRect;     /* menuChocograph_drawList */
     RECT infoRect;     /* menuChocograph_drawHint */
-    u8 textBuf[0x2000]; /* two 0x1000 halves, picked by frame parity, for func_8002920C */
+    u8 textBuf[0x2000]; /* two 0x1000 halves, picked by frame parity, for text_buildBlock */
     u8 *textPtr;
 } ChocographMenu;
 extern ChocographMenu s_menuChocograph;

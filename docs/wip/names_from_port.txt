@@ -3251,6 +3251,1705 @@ D_801EDF0C s_discChangeClut  # [code] 256-entry clut followed by the 194x168 pan
 # (ovl_37 menuItem_callChocobo, from tu_800654F8.c) and func_801F0FF4 (ovl_65 rewards_requestClose, from event.c
 # opcode 0xE1); both want a line in config/xrefs.us.txt.
 
+## ovl_0b cleanup/naming pass
+# Names from the ovl_0b cleanup pass (code evidence, 2026-10-24). Each "## bin" sub-section is rename.py input.
+# Struct fields are listed as FIELDS lines at the end of the section (tools/rename_fields.py).
+
+## ovl_0b: ovl_0b (cleanup pass: battle UI, btlui.c)
+func_800E9BBC btlui_frameUpdate  # [code] btlui_vsync runs it once per battle frame (D_80104E68.unkF, set by btlui_waitFrame): help, panel, target positions, window reaping
+func_800E9EC4 btlui_waitFrame  # [code] from btl_endFrame: DrawSync, then VSync until vsyncMode-1 vblanks have passed since btlui_resetVsyncCount, marks the frame done for btlui_vsync
+func_800E9DFC btlui_resetVsyncCount  # [code] clears the vsync counter btlui_vsync increments (from btl_beginFrame)
+func_800E9E80 btlui_exit  # [code] disables the UI, removes the VSync callback btlui_init installed, restores the key-repeat settings
+func_800E9F3C btlui_enable  # [code] 1 requests the UI on (applied by btlui_applyEnable at the next frame), 0 turns it off
+func_800EA550 btlui_applyEnable  # [code] turns a pending btlui_enable(1) into the active flag, enables ATB, rebuilds the panel and item lists
+func_800E9FF4 btlui_isEnabled  # [code] returns the active flag btlui_enable/btlui_applyEnable set
+func_800E9F68 btlui_setAtbEnabled  # [code] sets the flag btl_isAtbRunning tests; 0 also closes the menu and the help window
+func_800EA004 btlui_isTargetSelect  # [code] menuState == BTLUI_MENU_TARGET
+func_800EA0F8 btl_useReservedItem  # [code] un-reserves the item and removes one from the inventory (btlui_unreserveItem + btlui_removeItem)
+func_800EA124 btl_unreserveItem  # [code] wrapper of btlui_unreserveItem
+func_800EA144 btl_reserveItem  # [code] wrapper of btlui_reserveItem (btl_tryAutoPotion reserves the potion it queues)
+func_800EA164 btl_useItem  # [code] removes one of the item; un-reserves it when that was the last one
+func_800EA1B0 btl_addItem  # [code] wrapper of btlui_addItem (formulas that give an item)
+func_800EA1F8 btlui_drawOTagEnv  # [code] DrawOTagEnv with the UI's busy flag set around it (btl_endFrame)
+func_800EA230 btlui_drawOTag  # [code] DrawOTag with the UI's busy flag set around it
+func_800EA400 btlui_input  # [code] while ATB runs: help toggle (btlui_helpInput) and btlui_menuInput
+func_800EA498 btlui_update  # [code] btlui_updateMenu, panel update, win_updateAll, help slide
+func_800EA650 btlui_initPartyEntries  # [code] links each party unit to its g_btlUi entry (BtlUnit.unkB4) and builds its ability list
+func_800EA7B8 btlui_copyTranceAbilities  # [code] copies the ability slots of the normal command list to the trance command list's positions (D_800FDDD0 / D_800FDDF8 per character)
+func_800EAC88 btlui_checkSwdMagPartner  # [code] sets g_btlUi->unk12B7 when character 1 is in the party and unk12B8 when it or character 3 can't take part; btlui_buildCmdList hides/greys Swd Mag (0x1F) with them
+func_800EAD94 btlui_popMenuUnit  # [code] takes the next unit off the menu queue that can still act
+func_800EAE8C btlui_pruneMenuQueue  # [code] drops units that can no longer act from the menu queue, one entry per unit
+func_800EB05C btlui_initMenu  # [code] allocates g_btlUi, ambush ATB freeze, party entries, empty menu queue, window pointers
+func_800EB238 btlui_updateAtbFreeze  # [code] for the first 75 ticks the ambushed side's ATB stays still (g_btlUi->unk12B6 = btlui_getFrozenSide), then nobody's
+func_800EB9E0 btlui_getFrozenSide  # [code] from the ambush kind (scene.unk0 & 3): 0 back attack -> 1 (party), 1 first strike -> 0 (enemies), else 2 (none); btl_updateAtb skips that side
+func_800EB2A4 btlui_getMenuState  # [code] returns g_btlUi->menuState
+func_800EB2E0 btlui_clearMenuQueue  # [code] zeroes the menu queue counters
+func_800EB2FC btlui_flushMenuQueue  # [code] clears inMenuQueue on every queued unit, then empties the queue
+func_800EB358 btlui_queueMenuUnit  # [code] appends a unit whose ATB filled to the 4-entry menu queue (btl_updateAtb)
+func_800EB3A0 btlui_resetMenuQueue  # [code] empties the queue and clears inMenuQueue on every party unit
+func_800EB410 btlui_closeMenu  # [code] releases the menu unit, sets BTLUI_MENU_CLOSING and closes the windows
+func_800EB46C btlui_closeWindows  # [code] closes all menu windows (and the battle list window)
+func_800EB518 btlui_saveCursor  # [code] remembers the command cursor (arg1 0) or the list cursor/scroll for that command (Unk800EB518)
+func_800EB54C btlui_clearCursor  # [code] zeroes a Unk800EB518 cursor memory
+func_800EB590 btlui_getQueuedUnit  # [code] g_btlUi->unk12C8[i]
+func_800EB5AC btlui_clearAbilityLists  # [code] zeroes the three 0xC0-entry ability tables of every party entry
+func_800EB600 btlui_buildAbilityList  # [code] learned abilities, equipment abilities, trance copies, the character-3 extra list
+func_800EB63C btlui_addLearnedAbilities  # [code] per ability id: the character's AP counter and the AP needed (func_80034430 slot)
+func_800EB6FC btlui_addEquipAbilities  # [code] marks the abilities of the five equipped items (D_80069018 unkC[3])
+func_800EB7B0 btlui_canOpenMenu  # [code] unit alive, able to act and allowed by the menu mask D_800FDF3A
+func_800EB81C btlui_applyTargetable  # [code] BtlUnit.unkB2 2/3 clear/set the targetable bits (unk68 16 and 28) and update the target cursor
+func_800EBA10 btlui_onCmdWindowClosed  # [code] window close callback: BTLUI_MENU_NONE
+func_800EBB34 btlui_initHelp  # [code] clears the help state D_80104F90, allocates its 0x100-byte text buffer D_80104FA0
+func_800EBB78 btlui_helpInput  # [code] the Select bit 0x08000000 toggles the help window (btlui_toggleHelp)
+func_800EBBB4 btlui_updateHelpSlide  # [code] counts the help window's 7-frame slide-in, then redraws the panel (func_800F3ECC(0))
+func_800EBC30 btlui_checkHelpClose  # [code] closes the help window when the panel shows no entries or a close was requested
+func_800EBCB4 btlui_isHelpOpen  # [code] D_80104F90.unk0
+func_800EBCC4 btlui_toggleHelp  # [code] opens (sound 0x2AA, slide in) or requests closing (sound 0x65) the help window
+func_800EBD58 btlui_closeHelp  # [code] requests closing the help window
+func_800EBEFC btlui_removeItem  # [code] item_remove one; when none are left drops it from the item list (>= 0xE0) and the throw list (weapons with flag 4)
+func_800EC008 btlui_initItemLists  # [code] allocates D_80104FA8 (0x2E0), clears the reservations, builds both lists
+func_800EC048 btlui_buildItemLists  # [code] btlui_buildItemList + btlui_buildThrowList
+func_800EC070 btlui_addItem  # [code] item_add-type call func_80027D84(id, 1), then adds the id to the item or throw list when missing
+func_800EC130 btlui_getThrowListEntry  # [code] D_80104FA8->unk80[i] (throwable weapons; btlui_getItemListEntry is the item list)
+func_800EC14C btlui_reserveItem  # [code] ++ the per-item reservation count btlui_getItemReserved reads
+func_800EC170 btlui_unreserveItem  # [code] -- the reservation count
+func_800EC1B0 btlui_buildItemList  # [code] inventory slots with items >= 0xE0 (battle items), up to 31
+func_800EC258 btlui_buildThrowList  # [code] inventory weapons (< 0x58) with D_8006E0E8 flag 4 (throwable), up to 0x58
+func_800EC334 btlui_addItemListEntry  # [code] puts item_findSlot(id) in the first free item-list entry
+func_800EC3C0 btlui_addThrowListEntry  # [code] same for the throw list
+func_800EC44C btlui_findItemListEntry  # [code] item-list index of an item id, 0xFF if absent
+func_800EC49C btlui_findThrowListEntry  # [code] throw-list index of an item id, 0xFF if absent
+func_800EC4EC btlui_openCmdMenu  # [code] opens the command window (window 3) for g_btlUi->cmdUnit with btlui_drawCmdList/Overlay, sound 0x414
+func_800EC928 btlui_drawSideCmd  # [code] draws the Defend/Change box sliding out of the command window (text D_800F8DE4[side], frame btlui_drawSideFrame)
+func_800ECA50 btlui_confirmCmd  # [code] Cross in the command menu: runs D_800F8DF0[kind] for the command, or the side command (Defend/Change)
+func_800ECB5C btlui_buildCmdList  # [code] Attack, the character's two commands (trance set D_800FDDF8 in trance), Item; hides/greys Swd Mag
+func_800ED02C btlui_drawSideFrame  # [code] the side-command box: three sprites, texture window, fill
+func_800ED3F8 btlui_drawTranceLabel  # [code] the TRANCE label drawn over a pulsing gradient with mask-bit tricks
+func_800ED7C0 btlui_drawPulseGradient  # [code] POLY_G4 whose colours pulse between two pairs of c[] with the frame counter
+func_800EDAD4 btlui_cmdInput  # [code] BTLUI_MENU_CMD input handler (D_800F8D94[1]): Triangle pass, Cross confirm, up/down, left/right side commands
+func_800EDB68 btlui_updateCmdMenu  # [code] BTLUI_MENU_CMD update handler (D_800F8DA8[1]): rebuilds the command list
+func_800EDC3C btlui_onCmdMenuOpened  # [code] window opened callback: BTLUI_MENU_CMD; switches input to the character's controller port (two-controller option, func_8002C584)
+func_800EDCA0 btlui_cmdCursorUp  # [code] cursor up, skipping empty slots, sound 0x67
+func_800EDD1C btlui_cmdCursorDown  # [code] cursor down, skipping empty slots
+func_800EDD9C btlui_cmdSideInput  # [code] left/right held: slide the side command out, else back
+func_800EDDF8 btlui_passTurn  # [code] Triangle: closes the command window and requeues the unit (btlui_onPassClosed)
+func_800EDE6C btlui_selectDirectCmd  # [code] command kind 0 (D_800F8DF0[0]): goes straight to target selection with the command's ability
+func_800EDF34 btlui_openAbilityList  # [code] command kind 1: btlui_openList with the ability-list labels
+func_800EDF90 btlui_openItemList  # [code] command kind 2: btlui_openList with the item labels
+func_800EDFEC btlui_openThrowList  # [code] command kind 3: btlui_openList with the throw labels
+func_800EE048 btlui_issueSideCmd  # [code] issues Defend (right) or Change (left) (D_800F8E04 = {0, 4, 7}) and closes the window
+func_800EE0FC btlui_onSideCmdClosed  # [code] window closed callback after btlui_issueSideCmd
+func_800EE120 btlui_onPassClosed  # [code] window closed callback after btlui_passTurn: requeues the unit
+func_800EE154 btlui_slideLeft  # [code] left: slides the Change box out (5 steps)
+func_800EE24C btlui_slideRight  # [code] right: slides the Defend box out
+func_800EE31C btlui_slideBack  # [code] neither held: slides the side box back in
+func_800EE37C btlui_openList  # [code] opens the ability/item list window (window 2) for the chosen command, restoring the remembered cursor
+func_800EE680 btlui_selectAbility  # [code] list confirm for abilities: usable ones go to target selection
+func_800EE7F8 btlui_selectItem  # [code] list confirm for items: one left after reservations goes to target selection
+func_800EE938 btlui_selectThrow  # [code] list confirm for throwable weapons
+func_800EED30 btlui_updateList  # [code] BTLUI_MENU_LIST update handler: closes the list when the command became unusable (Swd Mag partner, trance change)
+func_800EEDD4 btlui_nextDoubleCast  # [code] counts the first pick of Dbl Wht / Dbl Blk (D_80104FD0.unk10)
+func_800EEDF0 btlui_getListHelpText  # [code] help text of the list entry under the cursor (D_800F8E58[kind])
+func_800EEE3C btlui_listConfirm  # [code] Cross in the list: D_800F8E38[kind] select, sound 0x67 or 0x66
+func_800EEFA8 btlui_drawListScroll  # [code] draws the rows of the list's scrolling view
+func_800EF00C btlui_onListOpened  # [code] window opened callback: BTLUI_MENU_LIST
+func_800EF044 btlui_closeList  # [code] closes the list window, back to the command menu (btlui_onListClosed)
+func_800EF094 btlui_drawListRow  # [code] D_800F8E48[kind] row drawer (btlui_drawAbilityRow, btlui_drawItemRow, btlui_drawThrowRow)
+func_800EF390 btlui_drawThrowRow  # [code] weapon name and count left after reservations
+func_800EF4D8 btlui_resolveAbility  # [code] Carbuncle 0x44 -> 0x45-0x47 and Fenrir 0x42 -> 0x43 by the equipped accessory
+func_800EF5E0 btlui_getAbilityHelpText  # [code] help text of the ability under the list cursor (D_800F96E4 + D_800FB1F0[k])
+func_800EF674 btlui_getItemHelpText  # [code] help text of the item under the list cursor (D_800FB4F0 + D_800FD36C[id])
+func_800EF724 btlui_getThrowHelpText  # [code] same for the throw list
+func_800EF7D4 btlui_onListClosed  # [code] window closed callback: back to BTLUI_MENU_CMD
+func_800EF80C btlui_startTargetSelect  # [code] fills g_btlTarget from the chosen command/ability and sets the default targets
+func_800EFA10 btlui_setDefaultTargets  # [code] marks the default targets (unk68 bit 29) for the target type (all, self, D_800F8E68 side/all)
+func_800EFB3C btlui_cycleTarget  # [code] moves the single target cursor to the previous/next targetable unit of its side
+func_800EFD1C btlui_switchTargetSide  # [code] moves the cursor to the other side when the target type allows it
+func_800EFF14 btlui_toggleTargetAll  # [code] L1/R1: toggles between one target and the whole side
+func_800F028C btlui_refreshTargets  # [code] retargets when the cursor unit died or vanished
+func_800F0620 btlui_confirmDoubleCast  # [code] Dbl Wht / Dbl Blk: the first pick is stored, the second issues both (delayedCmd and cmd)
+func_800F0A54 btlui_drawTargetList  # [code] target-name window: enemy names left, party names right, colored by state
+func_800F0BE0 btlui_drawTargetListOverlay  # [code] target-name window labels and hand cursors
+func_800F0F60 btlui_getTargetHelpText  # [code] "<verb> <name>" / "all" help text for the current targets
+func_800F1150 btlui_onUnitTargetable  # [code] a unit became targetable while all-targeting: redo the default targets
+func_800F11A4 btlui_onUnitUntargetable  # [code] a targeted unit left: unmark it and redo the default targets
+func_800F1300 btlui_updateTarget  # [code] BTLUI_MENU_TARGET update handler (D_800F8DA8[3]): cancels when the command became unusable
+func_800F1370 btlui_getTargetWindow  # [code] g_btlUi->unk12A4[0]
+func_800F13BC btlui_getTargetReturnState  # [code] g_btlTarget.unk0, the menu state btlui_cancelTarget returns to
+func_800F13CC btlui_countTargeted  # [code] units with unk68 bit 29 (target cursor)
+func_800F142C btlui_clearTargeted  # [code] clears unk68 bit 29 on every unit
+func_800F1484 btlui_collectCursorPositions  # [code] screen positions of the targetable on-screen units into D_80105020 for btlui_drawTargetCursors
+func_800F1548 btlui_getCursorPositions  # [code] &D_80105020
+func_800F160C btlui_targetPrev  # [code] btlui_cycleTarget(0), sound 0x67
+func_800F1640 btlui_targetNext  # [code] btlui_cycleTarget(1)
+func_800F1674 btlui_targetEnemySide  # [code] btlui_switchTargetSide(0)
+func_800F16A8 btlui_targetPartySide  # [code] btlui_switchTargetSide(1)
+func_800F16DC btlui_targetFirst  # [code] marks the first (or every) targetable unit of a side
+func_800F1790 btlui_targetDefault  # [code] like btlui_targetFirst, preferring a KO unit (revive) or the caster itself
+func_800F18F0 btlui_findKoUnit  # [code] first targetable KO unit of a side
+func_800F1970 btlui_openTargetWindow  # [code] opens the target-name window (window 0)
+func_800F1A20 btlui_closeTargetWindow  # [code] closes the target-name window, state to restore in g_btlTarget.unk12
+func_800F1A8C btlui_onTargetWindowOpened  # [code] window opened callback: dims the list/command windows, sets the saved state
+func_800F1AF8 btlui_onTargetWindowClosed  # [code] window closed callback: undims, restores the saved state
+func_800F1B78 btlui_getTargeting  # [code] BtlCmd targeting value: 2 for target types 9-11, else 1 when several units are marked
+func_800F1BFC btlui_drawListCursors  # [code] hand sprites next to the targeted party rows of the battle list window
+func_800F1E84 btlui_drawHpList  # [code] party HP / max HP rows (battle list window page)
+func_800F1FBC btlui_drawMpList  # [code] party MP / max MP rows
+func_800F2118 btlui_drawStatusList  # [code] up to 9 status icons per party unit (D_800F8F18, 16 entries)
+func_800F224C btlui_drawStatusList2  # [code] status icons at fixed columns (D_800F8F98, 8 entries)
+func_800F27CC btlui_openListWindow  # [code] opens the battle list window (window 1) below the panel with page arg (D_800F8F04 drawers)
+func_800F2890 btlui_closeListWindow  # [code] closes the battle list window
+func_800F28F0 btlui_resizeListWindow  # [code] resizes the battle list window to the current entry count
+func_800F29A4 btlui_isListWindowOpen  # [code] D_80105058.unk0
+func_800F2A0C btlui_initHeap  # [code] UI bump allocator over GameData.unk7E0 (0x8000 bytes)
+func_800F2A60 btlui_alloc  # [code] bump allocation, rounded up to 4 bytes
+func_800F2AAC btlui_updatePanel  # [code] party panel rows: units, can-act, slot, ATB speed (2 slow/stop, 3 haste), trance gauge kind
+func_800F316C btlui_updateGauges  # [code] steps the animated HP/MP readouts (Unk80104F88Gauge) toward the units' values
+func_800F3C08 btlui_initPanel  # [code] allocates D_80105078 (0x8C), builds the panel rows and header labels
+func_800F3D0C btlui_updatePanelAnims  # [code] header label slides, gauge readouts, highlight pulse
+func_800F3E60 btlui_refreshPanel  # [code] btlui_updatePanel and the highlighted row
+func_800F3EA4 btlui_getPanel  # [code] returns D_80105078
+func_800F3EB4 btlui_isPanelShown  # [code] D_80105078->unk0
+func_800F3ECC btlui_showPanel  # [code] sets D_80105078->unk0
+func_800F3F10 btlui_slidePanelLabels  # [code] moves the panel header labels by their slide records (Unk800F3F10), calling the done hook
+func_800F3FDC btlui_pulsePanelHighlight  # [code] triangle wave 0..0x1F from the frame counter into D_80105078->unk54
+func_800F4010 btlui_resetGauges  # [code] snaps a row's HP/MP readouts to the unit's values
+func_800F40D0 btlui_alignPanelLabel  # [code] right-aligns a header label (kind 1) by its text width
+func_800F412C btlui_startLabelSlide  # [code] starts a header-label slide record
+func_800F42F0 btlui_findHighlightRow  # [code] panel row of the menu unit
+func_800F4384 btlui_drawPortIcons  # [code] two-controller option (GameState.unk24 bit 5): draws the controller-port icons by the active port into their own OT
+func_800F4630 btlui_saveKeyRepeat  # [code] saves both ports' 0x17 key-repeat enables (main func_8002C700) and sets the battle ones
+func_800F4700 btlui_restoreKeyRepeat  # [code] restores the key-repeat enables btlui_saveKeyRepeat saved
+func_800F4884 btlui_initPrims  # [code] allocates D_801050D8 (0x368) and builds the fixed sprites per draw buffer
+func_800F48E4 btlui_initDrawBufs  # [code] allocates the UI primitive/OT buffers (func_8002BEEC), sets g_ot/g_primPtr, stores both display origins in D_801051E8
+D_80104E68 g_btluiState  # [code] UI frame state: active flags, vsync counter (unk1C), frame-done flag (unkF), ATB enable (unk2) (btlui_vsync, btlui_enable, btl_isAtbRunning)
+D_80104F90 g_btluiHelp  # [code] help window state (btlui_toggleHelp, btlui_drawHelpWindow)
+D_80104FA0 g_btluiHelpText  # [code] 0x100-byte help text buffer (btlui_initHelp, btlui_getCmdHelpText)
+D_80104FA8 g_btluiItems  # [code] battle item and throw lists plus reservations (btlui_initItemLists)
+D_80104FD0 g_btluiList  # [code] state of the open ability/item list (btlui_openList)
+D_80105020 g_btluiCursors  # [code] target-cursor screen positions (btlui_collectCursorPositions)
+D_80105060 g_btluiHeap  # [code] UI bump allocator (btlui_initHeap, btlui_alloc)
+D_80105078 g_btluiPanel  # [code] party panel state (btlui_initPanel)
+D_801050D8 g_btluiPrims  # [code] fixed UI sprites per draw buffer (btlui_initPrims)
+D_801051E8 g_btluiDispOrigin  # [code] display x/y per draw buffer (btlui_initDrawBufs), added to DR_MOVE rects
+D_800F8D94 g_btluiMenuInput  # [code] per-menuState input handlers (btlui_menuInput)
+D_800F8DA8 g_btluiMenuUpdate  # [code] per-menuState update handlers (btlui_updateMenu)
+D_800F8DC4 g_btluiMenuHelp  # [code] per-menuState help-text getters (btlui_updateHelpText)
+func_800F47D8 btlui_anyOnSecondPort  # [code] two-controller option: 1 when a party member is assigned to port 2 (GameState.unk24 bits 20+)
+
+
+## ovl_0b: ovl_0b (cleanup pass: battle flow and loaders, btl_main.c)
+func_800A882C btl_updatePause  # [string] "Disc Cover Open": pauses the battle (sound, CD) and draws the pause sprite 0xEB or the disc-cover message; resumes when the request clears (btl_main, after btlui_isPauseRequested)
+func_800A8BF4 btl_checkDiscCover  # [code] sets/clears Battle.flags 0x20 (disc cover open) from the CD lid state (func_800230A0, cd_getState) and requests the pause screen
+func_800EA30C btlui_isPauseRequested  # [code] the pause request btlui_readPad sets on Start (g_padRepeat 8) while the UI is up
+func_800EA338 btlui_setPauseRequest  # [code] sets/clears the pause request (btl_updatePause, btl_checkDiscCover)
+func_800A91EC btl_unloadCommonData  # [code] db_unregister of the common battle data btl_loadCommonData registered (from btl_exitMode)
+func_800A9BE4 btl_reloadPartyStep  # [code] state machine: sounds, weapon models, party models (btl_load*Step), then rebinds each party unit's model, motions and weapon; Battle.flags |= 4 when done (runtime: during summons, via func_800AB410)
+func_800AA24C btl_loadSoundsStep  # [code] CD state machine over the battle's sound files (kind 0xB): hands each file's 0x90000 block to the AKAO bank loaders (func_80055D80 / func_80056048)
+func_800AA504 btl_loadEnemyModelsStep  # [code] CD state machine over the dependency table's model entries (type 2, files 0x20000 | id), nearest sector first; uploads their textures, Battle.flags |= 2 when done
+func_800AA958 btl_loadWeaponModelsStep  # [code] CD state machine over the party's weapon models (D_8006E0E8[equip[0]].unk2, file kind 8), registered in Battle.unk1354->unk20[slot]
+func_800AABC4 btl_loadPartyModelsStep  # [code] CD state machine over the party models (btl_getPartyModelId, file kind 0xA), registered in Battle.unk1354->unk30[slot]
+func_800AAEF0 btl_findNearestFile  # [code] of a list of file ids, the one with the lowest disc sector (file_find, else the dependency table) and its size; it marks which to read next
+func_800AB07C btl_uploadModelTextures  # [code] uploads a model file's texture blocks (0x40000) to its slot's VRAM column and rewrites the tpage/clut words
+func_800AB26C btl_unregisterFiles  # [code] db_unregister and clear arr[0..n]
+func_800AB2C8 btl_findBackgroundId  # [code] dependency-table entry of kind 0xC (the background, btl_setupBackground)
+func_800AB324 btl_getDepSectors  # [code] sector and length of a dependency-table key
+func_800AB38C btl_getLinkedDepSectors  # [code] btl_getDepSectors of the key's link (unkC)
+func_800AB410 btl_reloadParty  # [code] btl_reloadPartyStep(0x207), 0x8207 restarts it; runtime 48-57 calls per summon (docs/runtime-findings.md "Summons")
+func_800AB43C btl_unloadPartyModels  # [code] unregisters the weapon and party model files, clears Battle.flags 4
+func_800AB4FC btl_unloadEnemyModels  # [code] unregisters the enemy model files, clears Battle.flags 2
+func_800AB580 btl_loadModelsStep  # [code] sounds, enemy models, weapons, party models in turn (each btl_load*Step), then Battle.flags |= 4; btl_updateIntro polls it
+func_800AB6F0 btl_findWeaponModel  # [code] block 4/id inside the slot's weapon file (btl_initWeapon)
+func_800AB758 btl_getWeaponTexInfo  # [code] the three texture tables (tpage, clut, rect) of the slot's weapon file (block 0x120000)
+func_800AB810 btl_registerModel  # [code] GameData.unk838 hook: fills a model slot (mesh, animation, textures, texture animations) for a model id, returns the slot
+func_800ABA10 btl_getPartyModelId  # [code] the party slot's model file id: D_800F5200 by character model, +0x13 for the other (trance) model
+func_800ABB60 btl_getWeaponModelHeader  # [code] block 0x20000 of the slot's weapon file
+func_800ABBC4 btl_swapPartyModelStep  # [code] reloads one party member's model (CD, textures, motions) and rebinds the unit (runtime: trance, via func_800AB3E4)
+func_800AC244 btl_getAnimFileId  # [code] animation file id (0x30000 | entry[1]) for a model id
+func_800AC280 btl_getModelTexInfo  # [code] texture tables of a model id; copied to the work heap for slots >= 9
+func_800AE47C btl_getWeaponSound  # [code] sound id (0x80000 | n entry) in the party slot's weapon file: 0 swing (btlfx_playSwingSound), 1 by btl_status.c
+func_800AE570 btl_getSoundFileSectors  # [code] sector (and size) of a sound file: dependency entry for kind 7, else file kind 11
+func_800AE764 btl_getDepLink  # [code] link field (unkC) of a dependency-table key
+func_800AE844 btl_onSoundRead  # [code] CD read callback of btl_soundCmd's sound-bank reads: passes the received part to func_80055E14 / func_80056048
+func_800AF1D0 btl_preloadExit  # [code] once GameData.unk56F & 0x40 (battle ending): preloads file 0x10065 to 0x801EDF00 and 0x2713 into the battle buffer
+
+## ovl_0b: ovl_0b (cleanup pass: camera script, effect op arguments)
+D_800FE488 g_btlCamScript  # [code] camera-script player: script pointer, frame, sway, shake and zoom tweens (btlcam_step, btlcam_applySway, btlcam_applyShake)
+D_80100D88 g_btlfxOpArgs  # [code] four bytes set by unit ops 0x50/0x51 (btlfx_opSetParamsA/B) and read as extra arguments by the following unit ops
+
+## ovl_0b: ovl_0b (cleanup pass: commands, status, models, popups, setup, background rain)
+func_800B0E04 btl_applyHitSupports  # [code] after an enemy hit (btl_gainTrance): support bit unkC4[1] 0x100000 restores half max HP at low HP, 0x800000 gains the attack's MP cost
+func_800B0FC0 btl_initTargetCursor  # [code] tpage and colours of the four target-cursor faces per draw buffer (Battle.cursorPrims)
+func_800B44A0 btl_clearBounceMasks  # [code] zeroes BtlUnit.unk1C[4], the Reflect bounce masks btl_applyReflect fills and btl_applyCalcResult counts
+func_800B96AC btl_checkSwdMagUsable  # [code] enough MP and a character-kind-2 party member able to act, else message 0xF
+func_800B9B64 btl_initUndeadHitRate  # [code] for Zombie or undead (enemy flag 0x10) targets: status hit rate and magic evade like btl_initStatusHitRate; 0 then
+func_800BA078 btl_setMultiplierFromPower  # [code] BtlCalc multiplier = ability power
+func_800BAF70 btl_calcEnemySteal  # [string] removes the item named by the ability (btl_useItem) with message 0x1F "<item> was stolen!", or 0xA "Couldn't steal anything." when the party has none
+func_800C0544 btl_makeGreyCluts  # [code] StoreImage each CLUT row of the unit's model, averages r/g/b to grey, LoadImage 12 rows lower (btl_addStatus, petrify); docs/runtime-findings.md had it low-medium
+func_800C072C btl_makeEnemyGreyCluts  # [code] greys the enemy CLUT copy btl_saveEnemyCluts took and loads it at y 0xDA (btl_updateIntro once enemy models are loaded)
+func_800C0840 btl_makePartyGreyCluts  # [code] greys every third party CLUT row of btl_savePartyCluts' copy into y 0xF2.. (btl_updateIntro once party models are loaded)
+func_800C0C7C btl_saveEnemyCluts  # [code] StoreImage of the 6 CLUT rows at (0x100, 0xE0)
+func_800C0CD0 btl_savePartyCluts  # [code] StoreImage of the 12 CLUT rows at (0x100, 0xE6)
+func_800C0A3C btl_initDoomCount  # [code] BtlUnit.unk66 = (60 - spirit) * 8 * status 27 (Doom) timer scale
+func_800C0D24 btl_reapplyStatusLook  # [code] stone CLUT or status colour again, background light on model and weapon (btlfx_restorePartyLooks)
+func_800C1DEC btl_findBodyUnit  # [code] the enemy whose record flag 0x100 marks it as the model owner; units with unk68 bit 23 have no model of their own and use its
+func_800C2344 btl_applyBgLight  # [code] sets every mesh group's colour to the background header's light colour (btlbg_getHeader unkC-E)
+func_800BD5A0 btl_setKoMotion  # [code] KO motion (motions[4]) and pose; with Auto-Life queues BTL_CMD_AUTO_LIFE and returns 0, else 1
+func_800BD698 btl_loadPartyMotions  # [code] the 0x22 motion addresses of a character kind into Battle.partyMotions[n] (db 0x30000 | D_800F524C) and points BtlUnit.motions there
+func_800BD8C0 btl_copyStats  # [code] copies hp, mp, atb (and the byte at 7) between two Character/BtlUnit stat blocks (btl_initPartyUnit)
+func_800BDA60 btl_toggleRow  # [code] Change: moves the unit 0x190 forward/back in z (home too) and flips the row bits 8-9 of unk68
+func_800BB974 btl_initEnemyState  # [code] per enemy: level, ATB, motion data relocation, home position from the model or the placement, random motion frame
+func_800AF578 btl_updateUnits  # [code] non-combat phases: unit models, KO, entrance/victory motions, scene draw; returns 1 when all units are idle
+func_800C23C8 btl_setShadowSize  # [code] BtlUnit.unkBF/unkC0 = width / 14, depth / 12 and the unit's shadow record (Battle11C028) size; BTL_ATTR_SCALE scales them
+func_800CBF90 btl_clearPopups  # [code] empties the 16-entry popup ring (Battle.popups)
+func_800CC278 btl_newPopup  # [code] takes the next popup ring entry for a unit, at its base bone
+func_800CC444 btl_packDigits  # [code] decimal digits of n (< 9999) one per nibble, digit count in bits 16+
+func_800CC818 btl_drawNumberPopup  # [code] D_800F6A7C[0/1]: HP/MP number popup with its bounce animation (D_800F6A28/38)
+func_800CC9C8 btl_drawTextPopup  # [code] D_800F6A7C[2]: Miss/Guard/Critical glyph popup (D_800F6A54)
+func_800CCAF0 btl_clampPopup  # [code] keeps a popup inside the screen, with the y offset fixed on its first frame
+func_800CCBC0 btl_drawPopupDigits  # [code] one SPRT per packed digit (btl_packDigits)
+func_800CCD00 btl_drawPopupGlyph  # [code] one SPRT for a glyph record
+func_800C67BC btl_buildMeshPrims  # [code] projects a model mesh group and links its F/G/FT/GT primitives into the OT by depth
+func_800C7730 btl_applyModelTextures  # [code] writes the tpage/clut words of a model's textured primitives from its texture tables (btl_registerModel, btl_initWeapon)
+func_800C7B84 btl_applyModelScale  # [code] with model flag 2 scales the model matrix by unk54/56/58 (BTL_ATTR_SCALE)
+func_800C7CC8 btl_updateModelVisibility  # [code] model flag 0x10 = off screen, from the projected position or the parent model (unk1C)
+func_800C8A3C btl_fillModelRgb  # [code] sets the colour of every primitive of the visible mesh groups (btl_setUnitFade)
+func_800C8BE0 btl_addMeshRgb  # [code] adds r/g/b (clamped, btl_addRgbClamped) to a mesh group's FT4/FT3 colours
+func_800C8D18 btl_setMeshRgb  # [code] sets a mesh group's FT4/FT3 colours
+func_800C9040 btl_updateTexAnims  # [code] steps a model's texture animations: MoveImage per frame, random pause, row scrolling for flag 4 (ff9-ds F11)
+func_800C9374 btl_relocTexAnims  # [code] turns a texture-animation set's offsets into pointers and adds the slot's VRAM offsets
+func_800C94B8 btl_initScene  # [code] scene tables of the encounter, enemy group (btl_pickEnemyGroup), camera choice Battle.unk131C
+func_800C9600 btl_pickEnemyGroup  # [code] weighted random enemy group of the encounter, or the forced GameData.unk848
+func_800C9794 btl_setupEnemies  # [code] ambush roll, enemy type records, enemy abilities, placed enemy units (btl_initEnemyUnit, btl_setEnemyStats)
+func_800C9A28 btl_placeParty  # [code] party units in a row 0x278 apart, rows and facing by the ambush kind, Float height, shadow size
+func_800C9D1C btl_initEnemyType  # [code] copies an encounter enemy record into its Battle.enemyTypes entry (stats, motions, rewards)
+func_800CA28C btl_copyAbility  # [code] *dst = *src for a 16-byte ability record
+func_800CA2B0 btl_getSceneData  # [code] entry n of the scene's self-relative offset table (scene.unk10): camera scenes, per-enemy data
+func_800CA2E4 btl_getEnemyModelId  # [code] model id of placement n of the enemy group, -1 for parts without a model
+func_800CA378 btl_getEntranceSound  # [code] sound of the first enemy type (scene record unk62), played when combat starts (btl_update)
+func_800CEBAC btlbg_startRain  # [code] D_800F7274 = 0x1F streaks for btlbg_drawRain
+func_800CEBBC btlbg_stopRain  # [code] D_800F7274 = 0
+func_800CEBC8 btlbg_drawRain  # [code] D_800F7274 random vertical LINE_G2 streaks in blue-grey around the camera, semi-transparent
+D_800F7274 g_btlbgRainCount  # [code] number of streaks btlbg_drawRain draws (btlbg_startRain / btlbg_stopRain)
+
+## ovl_0b: ovl_0b (cleanup pass: effect system helpers, btlfx_op.c; btlfx_mod.h members and src/fxmod renamed by hand)
+func_800E4098 btlfx_initCommonData  # [code] loads the common effect data (file 0x2BF) through btlfx_reloadCommonData and its CLUT rows, sets the common offset table
+D_80104DF8 g_btlfxCommonTable  # [code] self-relative offset table of the common effect data (btlfx_initCommonData, btlfx_getCommonData)
+func_800E454C btlfx_getCommonData  # [code] address of entry n of the common effect data (g_btlfxCommonTable)
+func_800E4218 btlfx_stepBack  # [code] against an enemy side moves the unit 400 back from home while playing motion 0x1D; 1 when done
+func_800E4568 btlfx_opSetResArgsA  # [code] resident op 0x20 (g_btlfxResidentOps): two argument bytes into D_80104DF0 for the following ops
+func_800E45A0 btlfx_opSetResArgsB  # [code] resident op 0x26: two more argument bytes into D_80104DF0
+func_800E56DC btlfx_opSetResArgsC  # [code] resident op 0x22: two argument bytes into D_80104DF4
+D_80104DF0 g_btlfxResArgs  # [code] argument bytes of resident ops 0x20/0x26 (btlfx_opSetResArgsA/B), read by op 0x21
+D_80104DF4 g_btlfxResArgs2  # [code] argument bytes of resident op 0x22 (btlfx_opSetResArgsC), read by op 0x21
+func_800E60A4 btlfx_startFadeBackground  # [code] spawns resident op 0x2A (btlfx_opFadeBackground) towards level D_800F8D0C[n] (0x80 for n < 0)
+func_800E6244 btlfx_startFadeUnits  # [code] spawns resident op 0x24 (btlfx_opFadeUnits)
+func_800E639C btlfx_opPlaySound  # [code] resident op 0x2D: plays a sound of the effect file at a unit (btlfx_playFileSound)
+func_800E63E4 btlfx_startScreenFade  # [code] spawns resident op 0x2E (btlfx_opScreenFade)
+func_800E6410 btlfx_opScreenFade  # [code] resident op 0x2E: black or white full-screen tint (btlfx_drawScreenTint) for n frames
+func_800E651C btlfx_sampleGradient  # [code] colour at x along a run-length gradient (Grad), interpolated with LoadAverageCol
+func_800E702C btlfx_initEnv  # [code] effect environment for the frame: OT, disp/draw env, view matrix of the current buffer
+func_800E7298 btl_isModelPart  # [code] (unk68 & 0x800001) == 0x800000: an enemy part without its own model (btl_findBodyUnit has it)
+func_800E7370 btl_getUnitHeight  # [code] model header unk8; btl_getUnitBodyPos lifts party units by it (half for the chest)
+func_800E738C btlfx_getUnitHeight  # [code] btl_getUnitHeight of an effect unit index
+func_800E73B4 btl_getBaseBonePos  # [code] position of the unit's base bone (BtlUnit.unk7C)
+func_800E748C btl_getUnitPos  # [code] ground position: the base bone for model parts and enemies, else BtlUnit.pos
+func_800E753C btl_getUnitBodyPos  # [code] arg 0 chest / 1 head height on top of btl_getUnitPos (party), an enemy's bone otherwise
+func_800E774C btlfx_getBouncePos  # [code] body position and rotation of the n-th bounced unit; 1 when there is none
+func_800E78B4 btlfx_turnUnitToward  # [code] turns a unit toward a point over frames (btlfx_aimAngles, btlfx_turnToward)
+func_800E7ACC btlfx_setUnitScale  # [code] model scale, flag 2 off at 1.0 (counterpart of btlfx_getUnitScale)
+func_800E7C54 btlfx_compareDepth  # [code] which of two units is nearer along the camera's view (z order flipped by the camera yaw)
+func_800E7D18 btlfx_getUnitSlot  # [code] (unk68 >> 5) & 7, the unit's slot id
+func_800E7D3C btlfx_getWeaponPos  # [code] arg 0: the weapon bone (Character.unk21), else the weapon tip offset (weapon record) through that bone
+func_800E806C btlfx_fadeUnitById  # [code] -1 hides / -2 shows all meshes, else btlfx_fadeUnit
+func_800E80CC btlfx_setUnitLight  # [code] lit models (flag bits 0x30 = 0x20): colour offset level - 0x80 (btl_setModelRgb)
+func_800E8274 btlfx_clearUnitStatus  # [code] enemies lose all statuses but KO/low HP/Stop/death immunity, party units all
+func_800E82CC btlfx_nextUnitPos  # [code] iterator over targetable units' body positions; -2 at the end
+func_800E8498 btlfx_getScaledRadius  # [code] model radius times the unit's x scale
+func_800E865C btlfx_isUnitKind  # [code] unit's character kind (0x13 for enemies) == D_800F8D70[n]
+func_800E871C btlfx_swapModelData  # [code] saves a model file's data behind a 0x1234 marker, or restores it from there
+func_800E8854 btl_forEachModelVertex  # [code] calls fn(vertex, index) for every vertex of every mesh group of a model
+func_800E8AD0 btlfx_countVisibleParty  # [code] party units without the hidden bit 22 (runtime: per frame during summons)
+func_800E8D14 btlfx_showCasterCmdName  # [code] btl_showCmdName(curCmd) when the caster is a party unit
+func_800E8D60 btlfx_isResultDeferred  # [code] enemy caster with unit arguments and effect flag 0x8000: btlfx_execCmd / btlfx_showPopups do nothing
+func_800E8F50 btlfx_registerEffectModel  # [code] 'so' (0x6F73) model header: Hi_RegisterTexListModel for textured lists, else Hi_RegisterGouEffModel
+func_800E9000 btlfx_registerSummonModel  # [code] 'so' header into a summon model record, then Hi_RegisterSummonModel (g_btlfxLoader.unk54/unk60)
+func_800E9124 btlfx_getFirstTarget  # [code] effect unit 0, or 8 when the spell was reflected
+func_800E9168 btlfx_updateCameraEnable  # [code] D_800F8D74 = effect cameras allowed: effect flag 8, else not with the camera option off (GameState.unk24 bit 4), a Mini/Vanish caster or the scene's no-camera flags
+D_800F8D74 g_btlfxCameraOn  # [code] effect cameras allowed (btlfx_updateCameraEnable); btlfx_opPlayCamera and btlfx_playCmdCamera test it
+func_800E9290 btlfx_playCmdCamera  # [code] the cast camera for the command: common entries D_800F8D78 by trance/kind, scene data 3/4, or the enemy type's camera (runtime: once or twice per spell)
+func_800E94C4 btlfx_playBounceCamera  # [code] camera for a Reflect bounce (D_800F8D80 / D_800F8D81 by side)
+func_800E954C btlfx_initSounds  # [code] clears the 6 effect sound slots (D_80104E30)
+func_800E9578 btlfx_updateSounds  # [code] frees finished effect sounds and re-pans the playing ones at their unit
+func_800E9638 btlfx_allocSound  # [code] free effect sound slot (or the oldest), its voice bit; stops a voice still playing there
+func_800E970C btlfx_stopAllSounds  # [code] func_8005546C(0, 0x3F): the six effect voices
+func_800E9730 btlfx_findSound  # [code] D_80104E34 entry of a voice bit
+func_800E9884 btlfx_stopSound  # [code] stops a voice and frees its D_80104E34 entry
+func_800E9930 btlfx_playFileSound  # [code] sound n of an effect file (btlfx_getFileData) on a free slot, panned at a unit
+func_800E99B0 btlfx_replaceSound  # [code] btlfx_stopSound then btlfx_playFileSound
+func_800E9A00 btlfx_playCommonSound  # [code] common-data sound n (btlfx_getCommonData) on a free slot, panned at a unit
+
+## ovl_0b: ovl_0b (cleanup pass: battle background state, effect screen helpers; btlfx_mod.h members and src/fxmod renamed by hand)
+D_800FE514 g_btlbgHeader  # [code] the background's header (btlbg_init, btlbg_getHeader)
+D_800FE504 g_btlbgScrolls  # [code] texture-scroll entries of the background (BtlBgScroll, btlbg_draw)
+D_800FE518 g_btlbgScrollCount  # [code] header unkA: number of g_btlbgScrolls entries
+D_800FE4F4 g_btlbgTexAnims  # [code] the background's texture animations (btl_updateTexAnims from btlbg_draw)
+D_800FE508 g_btlbgTexAnimCount  # [code] header unk2: texture animations, all started by btlbg_init
+D_800FE50C g_btlbgId  # [code] header unk0, the background id btlbg_draw switches on for its moving groups (0x44, 0x70, 0x6E, 0xA8, 0xAB, 7)
+D_800FE510 g_btlbgSkySpeed  # [code] header unk4: added to g_btlbgSkyAngle every frame
+D_800FE4F0 g_btlbgSkyAngle  # [code] y rotation (>> 3) of the records of kind 8 (btlbg_draw)
+D_800FE4F8 g_btlbgSkyOwnProj  # [code] header unk6 != 0: kind-8 records drawn with their own translation and projection 0x200
+D_800FE51C g_btlbgLayerMask  # [code] record kinds btlbg_draw draws: 8 sky, 4, 2, 1 = kind 0 (btlbg_setLayerMask)
+D_800FE520 g_btlbgFrame  # [code] btlbg_draw calls
+D_800F7270 g_btlbgScrollPaused  # [code] nonzero stops the texture scrolls (btlbg_pauseScroll)
+func_800CEE84 btlbg_pauseScroll  # [code] sets g_btlbgScrollPaused
+func_800CEE90 btlbg_getId  # [code] returns g_btlbgId
+func_800CEEA0 btlbg_addSkySpeed  # [code] g_btlbgSkySpeed += n
+func_800CEEB8 btlbg_getSkySpeed  # [code] returns g_btlbgSkySpeed
+func_800CEEC8 btlbg_setLayerMask  # [code] sets g_btlbgLayerMask (0xF all; btlfx_drawBgOffscreen draws only kind 2)
+func_800E49D0 btlfx_playSoundSet  # [code] plays the three common-data sounds D_800F8CF4[n] at a unit
+func_800E4C04 btlfx_setPartyTexAnim  # [code] btlfx_setUnitTexAnim for party units only
+func_800E8B28 btlfx_setUnitTexAnim  # [code] starts (0, entry 0/1), stops (1) or starts entry 2 (2) of the unit model's texture animations
+func_800E6624 btlfx_drawScrollMove  # [code] two DR_MOVEs copying a w x h rect to (x, y) rotated by n rows (wrap-around scroll)
+func_800E6764 btlfx_drawScreenGrid  # [code] grid of FT4s textured from the display buffer, rotated/scaled, a callback may move each vertex (screen warps)
+func_800E6C58 btlfx_pushViewRotation  # [code] saves the view matrix (D_80104E10) and replaces it by a rotation at the projection distance
+func_800E6D58 btlfx_popViewMatrix  # [code] restores the view matrix btlfx_pushViewRotation saved
+D_80104E10 g_btlfxSavedView  # [code] view matrix saved by btlfx_pushViewRotation
+func_800E6DB8 btlfx_pushGeomScreen  # [code] saves the projection distance (D_80104E00) and sets a new one
+func_800E6DF4 btlfx_popGeomScreen  # [code] restores the projection distance btlfx_pushGeomScreen saved
+D_80104E00 g_btlfxSavedGeomScreen  # [code] projection distance saved by btlfx_pushGeomScreen
+func_800E6E1C btlfx_drawBgOffscreen  # [code] renders the battle background (layer 2, no rain) into an offscreen rect with its own draw environment
+
+## ovl_0b: ovl_0b (cleanup pass: effect unit ops 0x57-0x7B and helpers; btlfx_mod.h members renamed by hand)
+func_800D7578 btlfx_opUnitSound  # [code] unit op 0x57 (g_btlfxUnitOps): btlfx_stepUnitSound with the unit and sound choice
+func_800D8D08 btlfx_stepUnitSound  # [code] sound 0x456 (choice 0) or 0xAC0 (1) at the unit (btl_playUnitSound)
+func_800D89E8 btlfx_holdMotion  # [code] sets unk68 bit 21, which stops btl_updateUnitModel advancing the motion frame; returns the old bit
+func_800D8A20 btlfx_setMotionHeld  # [code] sets/clears unk68 bit 21 (motion frame frozen)
+func_800D76DC btlfx_opPlayMotionHold  # [code] unit op 0x5C: btlfx_stepPlayMotionHold, hold count from g_btlfxOpArgs
+func_800D8E10 btlfx_stepPlayMotionHold  # [code] plays a motion and freezes it (btlfx_holdMotion) n frames before its end
+func_800D85F8 btlfx_setFileMotion  # [code] party unit: motion n of the effect file (btlfx_getFileData) as its motion
+func_800D7948 btlfx_opFileMotion  # [code] unit op 0x63: btlfx_stepFileMotion
+func_800D905C btlfx_stepFileMotion  # [code] btlfx_setFileMotion
+func_800D79BC btlfx_opFileMotionWait  # [code] unit op 0x64: btlfx_stepFileMotionWait
+func_800D908C btlfx_stepFileMotionWait  # [code] btlfx_setFileMotion, then waits for its length (g_btlfxState.motionDone)
+func_800D7A38 btlfx_opReleaseMotion  # [code] unit op 0x65: btlfx_stepReleaseMotion
+func_800D9110 btlfx_stepReleaseMotion  # [code] btlfx_setMotionHeld(unit, 0)
+func_800D7A94 btlfx_opMoveToUnit  # [code] unit op 0x69: btlfx_stepMoveToUnit
+func_800D9134 btlfx_stepMoveToUnit  # [code] arcs a unit to another unit's position, or for a party destination 1000 in front of its home
+func_800D7E14 btlfx_opMoveToPoint  # [code] unit op 0x6E: btlfx_stepMoveToPoint, frames from g_btlfxOpArgs
+func_800D960C btlfx_stepMoveToPoint  # [code] arcs a unit to (0, 0, -0x100), its home or the targets' centre
+func_800D7EA0 btlfx_opMoveTowardTarget  # [code] unit op 0x6F: btlfx_stepMoveTowardTarget
+func_800D974C btlfx_stepMoveTowardTarget  # [code] arcs a unit a tenth-based fraction of the way to its strike position (btlfx_getStrikePos)
+func_800D81EC btlfx_opTurnUnit  # [code] unit op 0x73: btlfx_stepTurnUnit
+func_800D9F5C btlfx_stepTurnUnit  # [code] btlfx_turnUnit
+func_800D8270 btlfx_opWaitKindTime  # [code] unit op 0x79: waits the character-kind timing btlfx_getKindTiming (g_btlfxState.unk17)
+func_800D9F88 btlfx_stepWaitKindTime  # [code] done after btlfx_getKindTiming(unit, n) frames
+func_800D8368 btlfx_opWaitOtherSide  # [code] unit op 0x7A: waits n frames when the two units are on different sides
+func_800D9FD8 btlfx_stepWaitOtherSide  # [code] done after n frames (g_btlfxState.unk17)
+func_800D8414 btlfx_opWaitSameSide  # [code] unit op 0x7B: waits n frames when the two units are on the same side
+func_800DA004 btlfx_stepWaitSameSide  # [code] done after n frames (g_btlfxState.unk17)
+func_800DA06C btlfx_getKindTiming  # [code] D_800F73A0[n][the unit's character kind]
+func_800DA0B8 btlfx_getWeaponScript  # [code] effect sub-script id of the unit's weapon (btlfx_stepCallWeaponScript)
+func_800D8B20 btlfx_getUnitKind  # [code] the party unit's character kind (Character.unk34.b.unk4)
+
+## ovl_0b: ovl_0b (cleanup pass: effect math and draw wrappers, btlfx.c; btlfx_mod.h members and src/fxmod renamed by hand)
+func_800CFC2C btlfx_rangeProgress  # [code] x inside [start, start + len]: *out = (x - start) * scale / len (reversed for a negative direction), returns 1
+func_800CFCA8 btlfx_rotateOffset  # [code] rotates an offset of length n by the given angles (no translation) through btlfx_transformPoint
+func_800CFD78 btlfx_pointAhead  # [code] the point n units from pos along the given angles (btlfx_transformPoint with the angles' matrix)
+func_800CFE88 btlfx_matrixPointAhead  # [code] the point n units ahead through a given matrix
+func_800CFF40 btlfx_matrixAngles  # [code] angles of a matrix's forward axis (btlfx_aimAngles of its transformed unit vector)
+func_800D0130 btlfx_setWorldTrans  # [code] transforms a world point by the view matrix and makes it the GTE translation
+func_800D01D4 btlfx_setRotScale  # [code] rotation (and scale) matrix from angles, optionally composed with the current rotation and set as light matrix
+func_800D0940 btlfx_resetMaskBit  # [code] draws a lone DR_STP (mask bit off) at once
+func_800D0B18 btlfx_drawRippleGrid  # [code] grid of POLY_G4 0x38 whose rows ripple with a sine wave (docs/runtime-findings.md: Doomsday, Leviathan, Phoenix, Madeen)
+func_800D198C btlfx_drawSprite  # [code] SPRT 0x64/0x66 frame of a sprite set at a projected point, OT bucket from its depth (btlfx_emitScreenSprites)
+func_800D1BC4 btlfx_drawSpriteAtOt  # [code] the same at a screen position with an explicit OT index
+func_800D23D8 btlfx_drawRings  # [code] ring grid of textured FT4s (btlfx_emitRingQuads) or Gouraud G4s (btlfx_emitRingGouraud), frame and scale per call
+func_800D2938 btlfx_drawFan  # [code] textured FT4 fan (func_800D57D0) or Gouraud G3 fan (func_800D59D0) plus DR_MODE (ff9-ds F13)
+func_800D3A6C btlfx_ease  # [code] 0x1000 * t / n linear (0), 1 - cos (1) or sin (2) of the quarter turn
+func_800D3B6C btlfx_drawSpriteLine  # [code] sprites at fixed fractions along a screen segment from a projected point to a moving end, fading in (btlfx_drawSpriteAtOt)
+
+## ovl_0b: ovl_0b (cleanup pass: effect particles and emitters, btlfx_heap.c; btlfx_mod.h members and src/fxmod renamed by hand)
+func_800E00DC btlfx_initParticles  # [code] particle pool (Pool30, 0x30-byte entries) over a buffer, all free
+func_800E0168 btlfx_updateParticles  # [code] steps and draws the live particles of a pool (btlfx_drawParticles, btlfx_drawSprite, btlfx_drawTrail by element kind)
+func_800E14D8 btlfx_initEmitters  # [code] emitter pool (Pool6C, 0x6C-byte entries), all free
+func_800E1534 btlfx_spawnEmitter  # [code] takes a free emitter, binds it to an effect element file (relocating its element offsets)
+func_800E1708 btlfx_moveEmitter  # [code] moves an emitter's anchor and shifts its live particles by the same amount
+func_800E1810 btlfx_killEmitter  # [code] sends the emitter's particles to their last frame and marks it dying (-1)
+func_800E1874 btlfx_updateEmitters  # [code] steps the emitters' element animations and frees finished ones
+func_800E1F90 btlfx_allocParticle  # [code] first free particle of a pool, NULL when full
+func_800E2000 btlfx_runEmitters  # [code] lets every live emitter spawn its particles for the frame
+func_800E3C58 btlfx_initParticleSystem  # [code] the effect particle pool (0x3000 bytes at D_801014B8) and emitter pool (0x920 bytes)
+func_800E3C98 btlfx_updateParticleSystem  # [code] btlfx_runEmitters, btlfx_updateParticles, btlfx_updateEmitters on the effect pools
+func_800E3CEC btlfx_startEmitter  # [code] btlfx_spawnEmitter on the effect pools
+func_800E3D20 btlfx_moveEmitterTo  # [code] btlfx_moveEmitter on the effect pools when the emitter exists
+func_800E3D54 btlfx_stopEmitter  # [code] btlfx_killEmitter on the effect pools when the emitter exists
+func_800E3D80 btlfx_initAll  # [code] btlfx_initCommonData, then btlfx_resetAll
+func_800E3E08 btlfx_copyDisplayToDraw  # [code] ten DR_MOVEs copy the displayed frame into the draw buffer (frozen background for an effect)
+D_801044B8 g_btlfxParticles  # [code] effect particle pool (btlfx_initParticleSystem)
+D_801044C8 g_btlfxEmitters  # [code] effect emitter pool (btlfx_initParticleSystem)
+D_801014B8 g_btlfxParticleBuf  # [code] 0x3000-byte buffer of g_btlfxParticles
+
+## ovl_0b: ovl_0b (cleanup pass: effect loader helpers, bones, mesh vertices; btlfx_mod.h members and src/fxmod renamed by hand)
+func_800DA4C4 btlfx_takeWork  # [code] takes n bytes from the effect work area (g_btlfxLoader.unk58/unk5C), returns the old pointer
+func_800DA5C4 btlfx_loadNextBlock  # [code] restarts g_btlfxLoader at state 3 for the next block into the other buffer (runtime: Ark, Bahamut, Madeen)
+func_800DA634 btlfx_loadSoundBank  # [code] starts the effect sound bank upload (main func_800562E0) unless a load is running
+func_800DA6B4 btlfx_waitSoundBank  # [code] 1 until btlfx_loadSoundBank's upload is done, then func_80056388(0x80, n)
+func_800DA71C btlfx_markCommonVram  # [code] sets g_btlfxState.unk1C bit 0 when a rect falls inside the common effect VRAM pages (0x300-0x380, 0x100-0x200)
+func_800DA790 btlfx_uploadTextures  # [code] LoadImage of 64x128 texture blocks to the loader's VRAM rects
+func_800DA898 btlfx_pollDrawSync  # [code] state 2: when DrawSync(1) reports idle, state 1 and FlushCache
+func_800DA8EC btlfx_drawSyncStep  # [code] 0 -> 2 (wait), 1 -> 0 and returns 1 (btlfx_pollDrawSync finished)
+D_800F750C g_btlfxDrawSyncState  # [code] btlfx_drawSyncStep / btlfx_pollDrawSync state
+func_800DC9D0 btl_getBonePos  # [code] position of bone n of a model
+func_800DCA18 btl_getBoneMatrix  # [code] matrix of bone n of a model
+func_800DC818 btlfx_getUnitBonePos  # [code] btl_getBonePos of an effect unit's model (Hi_GetSummonBonePos does the same for summon models)
+func_800DC858 btlfx_getUnitArgBonePos  # [code] btlfx_getUnitBonePos with the bone from the effect's argument bytes (targets->unk25)
+func_800DC8AC btlfx_getUnitBoneMatrix  # [code] btl_getBoneMatrix of an effect unit's model
+func_800DC8EC btlfx_getUnitArgBoneMatrix  # [code] btlfx_getUnitBoneMatrix with the bone from the effect's argument bytes
+func_800DD0B0 btlfx_getUnitMeshCount  # [code] btl_getMeshCount of an effect unit's model
+func_800DD0DC btlfx_getEffModelMeshCount  # [code] btl_getMeshCount of a registered effect model
+func_800DD10C btl_getMeshCount  # [code] model header unk3, its mesh group count
+func_800DD120 btlfx_getCasterTexInfo  # [code] texture tables (tpage, clut) of a model id in the caster's model set
+func_800DF670 btlfx_getSplitVertexSize  # [code] bytes GeoSplitVertices needs for one or all mesh groups (a vertex per primitive corner)
+func_800DF7A0 btlfx_getMeshPrims  # [code] address and count of the primitives of type n (FT4, FT3, GT4, GT3, G4, G3, F4, F3) in a mesh group
+func_800DF940 btlfx_splitMeshVertices  # [code] gives every primitive corner of a mesh group its own vertex copy (GeoSplitVertices)
+
+## ovl_0b: ovl_0b (cleanup pass: banner, UI frame, command tables, CLUT buffers)
+func_800F4D20 btlui_clearDfe  # [code] clears dfe in both draw environments
+func_800F4D80 btlui_clearOtLinked  # [code] ClearOTag of entry 0, then links every entry to the previous one (a reverse ordering table)
+func_800F4DFC btl_initBanner  # [code] empties g_btlBanner, default rect, duration D_800FDE3C by the message speed option (GameState.unk24 bits 11-13)
+func_800F4F44 btl_setBannerAt  # [code] btl_setBanner drawn in g_btlBanner.rect instead of the default box
+func_800F4F84 btl_setBannerRect  # [code] sets g_btlBanner.rect
+func_800F4FB4 btl_getBannerOt  # [code] the banner ordering table of a draw buffer (D_8010528C)
+func_800F4FE8 btl_setBannerText  # [code] copies the text into g_btlBanner, measures it and shows it (NULL hides it)
+D_801051E0 g_btluiBuf  # [code] UI draw buffer index, flipped by btlui_beginFrame
+D_8010528C g_btlBannerOt  # [code] one-entry banner ordering table per draw buffer (btl_getBannerOt)
+D_80105160 g_btluiSavedEnv  # [code] DR_ENV per buffer that GetDrawEnv2 fills when btlui_submitOt interrupts the GPU (BreakDraw/ContinueDraw)
+D_800FE368 g_btlCamTargets  # [code] copy of the effect unit list btlcam_beginEffect takes for the camera anchors
+D_800FD56C g_btlCmdTable  # [code] command table: name/help offsets, menu kind, ability list (btlui_buildCmdList, btl_setCmd from the menu)
+D_800FD7AC g_btlCmdNames  # [code] command names (g_btlCmdTable unk0 offsets)
+D_800FD8CC g_btlCmdHelp  # [code] command help texts (g_btlCmdTable unk2 offsets, btlui_getCmdHelpText)
+D_800FDD10 g_btlCmdAbilities  # [code] ability ids of the command ability lists (g_btlCmdTable unk8 start, unk7 count)
+D_800FDDD0 g_btlCharCmds  # [code] two commands per character (btlui_buildCmdList)
+D_800FDDF8 g_btlCharTranceCmds  # [code] the trance commands per character, third byte = the disabled row (btlui_buildCmdList)
+D_800F5200 g_btlCharModelIds  # [code] model id per character model kind; +0x13 the other model (btl_getPartyModelId, btl_initParty)
+D_800FDF50 g_btlClutRect  # [code] RECT of the CLUT rows btl_makeGreyCluts and the save/grey functions move
+D_800FDF60 g_btlClutBuf  # [code] CLUT rows read back by btl_makeGreyCluts
+D_800FE360 g_btlSavedCluts  # [code] CLUT copy taken by btl_saveEnemyCluts / btl_savePartyCluts
+D_80100E30 g_btlfxHaltBufs  # [code] two DRAWENV/DISPENV buffers of the standalone loop btlfx_halt
+
+## ovl_0b: ovl_0b (cleanup pass: runtime-findings entries left at low-medium, applied from code)
+func_800CB594 btlseq_opReleaseEffect  # [code] op 0A: sets the effect flag the effect script's control op 8 waits on for enemy casters (g_btlfxEnv->unk0->unkF); runtime-findings had it low-medium
+func_800CB808 btlseq_opSetStance  # [code] op 11: sets/clears the unit's flag bit 18, which picks the idle motion pair (motions[0/1]); runtime-findings had it low-medium
+func_800D2DBC btlfx_drawBackdropSprite  # [code] one SPRT or GT4 backdrop frame at x, y with its texture mode (btlfx_drawBackdrop); runtime-findings had it low-medium
+
+## ovl_0b: ovl_0b (cleanup pass: camera paths, cached UI strips, list header)
+func_800C3F78 btlcam_setPathKey  # [code] shifts a camera path (eye or target, g_btlCamera.unk68[]) to its next key and fills it from a script command, character-specific offsets from D_800F5758
+func_800C412C btlcam_setPathTiming  # [code] frame counts and mode bytes of a camera path from a script command
+func_800C416C btlcam_evalPath  # [code] point of a camera path at its current frame (linear, cubic through the control points, or a unit anchor)
+func_800C36D0 btlcam_finishPaths  # [code] snaps paths still moving (modes 2-3) to their end and stops them
+func_800C5890 btlcam_getAnchorUnit  # [code] anchor kinds 5/9: the first effect target, 0xD/0xE: the battle sequence's target
+func_800ECCA8 btlui_initCachedCmdIcons  # [code] four 14x16 SPRTs reading the screen strip btlui_cacheCmdIcons saved at VRAM (0x3C0, 0x1E0)
+func_800ECDB8 btlui_cacheCmdIcons  # [code] DR_MOVEs four 16-pixel rows of the displayed command window to VRAM (0x3C0, 0x1E0)
+func_800ECF0C btlui_drawCachedCmdIcons  # [code] draws btlui_initCachedCmdIcons' SPRTs while the command window opens/closes
+func_800F2374 btlui_cacheHeader  # [code] DR_MOVEs the panel header strip of the displayed frame to VRAM (0x3C0, 0x1F8/0x1FC)
+func_800F2560 btlui_drawCachedHeader  # [code] draws the cached header strip (SPRTs from btlui_initCachedHeader) at the panel's y
+func_800F2684 btlui_initCachedHeader  # [code] the two SPRTs and tpage of the cached header strip, per draw buffer
+func_800F2C74 btlui_initHighlightPrim  # [code] semi-transparent POLY_G4 (yellow fading) behind the highlighted panel row, per draw buffer
+func_800F2DC0 btlui_initNamePrims  # [code] the four 84x12 name SPRTs of the panel rows, per draw buffer (btlui_drawPanelName)
+func_800F2ED0 btlui_initCachedRows  # [code] two SPRTs per panel row reading the HP/MP columns btlui_cacheRows saved
+func_800F386C btlui_cacheRows  # [code] DR_MOVEs the panel's HP and MP columns of the displayed frame to VRAM (0x3C0/0x3E0, 0x1B0)
+func_800F3A8C btlui_drawCachedRows  # [code] draws the cached HP/MP column SPRTs per panel row
+func_800F3EDC btlui_initPanelPrims  # [code] btlui_initHighlightPrim, btlui_initNamePrims, btlui_initCachedRows for a draw buffer
+func_800F29B4 btlui_drawListWindow  # [code] the battle list window's page drawer D_800F8F04[page]
+func_800F3D3C btlui_showListHeader  # [code] slides panel labels 1-3 out and label 4 (the page title D_800F9070[page]) in for the list window
+func_800F3DE0 btlui_hideListHeader  # [code] slides the panel labels back, remembering the menu state to return to
+func_800F4140 btlui_onPanelLabelsOut  # [code] slide done hook: hides labels 1-3, BTLUI_MENU_TARGET
+func_800F4180 btlui_onListLabelOut  # [code] slide done hook: hides label 4, back to the remembered menu state
+
+# FIELDS (ovl_0b cleanup pass; applied with tools/rename_fields.py, src/fxmod uses included)
+# include/ovl_0b.h BtlUnit: unk38=autoStatus,unk0=next,unk4=cmd,unk8=autoCmd,unkC=koCmd,unk10=delayedCmd,unk14=tranceCmd,unk18=reviveCmd,unk2E=atbSpeed,unk30=speed,unk31=strength,unk32=magic,unk33=spirit,unk6C=defense,unk6D=evade,unk6E=magicDef,unk6F=magicEva,unk70=elemGuard,unk71=elemAbsorb,unk72=elemHalf,unk73=elemWeak,unk74=weapon,unk78=trance,unk79=elemBoost,unk7A=level,unk7E=popupFlags,unk80=hpChange,unk82=mpChange,unk84=modelId,unk86=rot,unk8C=pos,unk9C=model,unkA4=motions,unkA8=weaponModel,unkAC=hiddenMeshes,unkB0=unitBit,unkB3=cmdIssued,unkB8=screenX,unkBA=screenY,unkBC=onScreen,unkC4=support,unkC8=tickHeal,unkCA=tickDamage,unkCC=tickMpDamage,unkCE=tickFlags,unkCF=inMenuQueue
+# include/ovl_0b.h BtlUnit: unk1C=bounceMasks,unkBF=shadowW,unkC0=shadowD
+# include/ovl_0b.h BtlUnit: unk40=dotTimers,unk46=statusTimers,unk66=countdownStep,unk68=flags,unk7C=baseBone,unk7D=koState,unk98=home,unkA0=obj,unkAE=vanishMeshes,unkB4=menu
+# include/ovl_0b.h Battle: unk0=flags,unk8=partyMotions,unk228=weaponModels,unk488=enemies,unk4E8=enemyTypes,unk5D8=enemyAbilities,unk6F8=unitList,unkD7C=tick,unkD80=phase,unkD81=subPhase,unkD82=exitTimer,unkD84=fleeBrightness,unkD85=loadFlags,unkD86=partyBrightness,unkD87=enemyBrightness,unkD90=cmdSlots,unk1060=escapeCmd,unk108C=cursorPrims,unk116C=fxTargets,unk11B8=cmdFlags,unk11BA=cmdPhase,unk11BB=eidolonAbility,unk11BC=eidolonTimer,unk132C=scene,unk1358=popups,unk1534=dataSector,unk154C=statusInfo,unk22CC=statusSets
+# include/ovl_0b.h Battle: unk1354=files
+# include/ovl_0b.h BtlCmd8 (ability record): unk0_0=targetType,unk0_8=effect,unk4=formula,unk5=power,unk6=element,unk7=rate,unk8=flags,unk9=statusSet,unkC=altEffect
+# include/ovl_0b.h BtlCalc: unk0=caster,unk4=target,unk8=cmd,unkC=statusRate,unkE=power,unk10=defense,unk12=evade,unk14=multiplier,unk16=hitRate,unk18=flags,unk1A=casterResult,unk1B=targetResult,unk1C=casterHpChange,unk1E=targetHpChange,unk20=casterMpChange,unk22=targetMpChange
+# include/ovl_0b.h BtlCalc8: unk8=ability,unkC=targets,unkE=cmdNo,unkF=subNo,unk10=flags
+# include/ovl_0b.h BtlCmd: unk0=next,unk4=caster,unk0_0=targeting,unk0_4=automatic,unk0_5=covered,unk0_6=dodged,unk0_7=reflect,unk0_10=shortSummon
+# include/ovl_0b.h BtlFiles (was Battle1354): unk0=data,unk10=enemyModels,unk20=weaponFiles,unk30=partyModels
+# include/ovl_0b.h Unk800FE488 (g_btlCamScript): unk0=pc,unk4=frame,unk10=sway,unk14=swayPhase,unk1C=shakeAxes,unk20=shakeFrames,unk24=shakeLeft,unk28=shakeFrom,unk2C=shakeTo,unk30=zoomFrames,unk34=zoomLeft,unk38=zoomTarget,unk3C=zoomFrom,unk40=zoomTo,unk46=casterAnchors,unk5A=targetAnchors
+# include/ovl_0b.h Unk800FE488: unk50=partnerAnchors
+# include/ovl_0b.h Unk80104FF0 (g_btlTarget): unk0=returnState,unk1=cmdNo,unk2=targetType,unk6=targetAll,unkA=side,unkB=allowKo,unkC=windowOpen,unkD=halfMp,unk10=doubleCast,unk13=firstCmdNo,unk14=firstTargeting,unk18=firstSubNo,unk1A=subNo,unk1C=firstTargets,unk20=unit
+# include/ovl_0b.h Unk80104FD0 (g_btluiList): unk0=cmdNo,unk4=cmd,unk8=label,unkC=label2,unk10=doubleCast,unk12=label2Width,unk14=unit,unk18=halfMp,unk19=trance
+# include/ovl_0b.h BtlPopup (was Battle1358): unk0=unit,unk8=x,unkA=y,unkC=z,unkE=frame,unk18=clut
+# include/ovl_0b.h BtlPopupRing (was Battle1358Ring): unk0=entries,unk1C0=last,unk1C2=tick,unk1D4=hiddenMask
+# include/ovl_0b.h BtlShadow (was Battle11C028): unk0_0=shade,unk0_8=width,unk0_20=depth
+# include/ovl_0b.h Unk800F78A4 (g_btlfxEnv): unkC=targets,unk10=exports,unk14=viewMatrix,unk18=dispEnv,unk1C=drawEnv,unk20=ot,unk24=prim,unk2C=camera
+# include/ovl_0b.h Unk800F78A4: unk0=state,unk4=loader
+# include/ovl_0b.h BtlUnitList: unk0=caster,unk4=targets,unk24=targetCount,unk27=bounceCount,unk28=bounced,unk38=centerX,unk3A=centerY,unk3C=centerZ,unk40=kind,unk44=partner
+# include/ovl_0b.h Unk800FE3B8 (g_btlCamera): unk0=points,unk50=yaw,unk54=eye,unk5E=projDist,unk60=baseProjDist
+# include/ovl_0b.h BtlBgHeader (was Unk800CEE74): unk0=id,unk2=texAnimCount,unk4=skySpeed,unk6=skyOwnProj,unk8=lastGroup,unkA=scrollCount,unkC=lightR,unkD=lightG,unkE=lightB,unkF=shadowShade
+# include/ovl_0b.h BtlMesh: unk2=nFT4,unk4=nFT3,unk6=nGT4,unk8=nGT3,unkA=nG4,unkC=nG3,unkE=nF4,unk10=nF3,unk14=vertexCounts,unk18=vertices,unk1C=prims
+# include/ovl_0b.h BtlMesh: unk20=uvs,unk24=colors
+# include/ovl_0b.h BtlUnit9C8 (model header): unk3=meshCount,unk8=height,unkA=radius,unk10=meshes
+# include/ovl_0b.h BtlUnit9C (model): unk4=parentBone,unk5=abr,unk8=header,unkC=motion,unk10=prims,unk14=hiddenMeshes,unk18=texPages,unk1C=parent,unk20=bones,unk24=matrix,unk50=texAnims,unk54=scaleX,unk56=scaleY,unk58=scaleZ,unk5C=morph
+# include/ovl_0b.h BtlUnit9C: unk0=flags
+# include/ovl_0b.h BtlUnitA0 (unit object): unk14=x,unk18=y,unk1C=z,unk20=rotX,unk22=rotY,unk24=rotZ,unk3A=frame
+# include/ovl_0b.h BtlUnit98 (home): unk0=pos
+# include/ovl_0b.h Unk801051F0 (g_btlBanner): unk0=text,unk80=timer,unk84=duration,unk88=size,unk8C=active,unk8D=useRect,unk90=priority,unk98=ot,unkA4=rect
+# include/ovl_0b.h BtlEnemyType (was Battle4880): unk0=nameOfs,unk2=category,unk3=level,unk4=max,unkC=motions,unk24=radius,unk26=confuseAbility,unk27=eatAbility,unk28=firstAbility,unk29=bones,unk2C=camera,unk30=deathCry,unk44=exp,unk46=gil,unk4C=card
+# include/ovl_0b.h BtlEnemyType: unk48=drops
+# include/ovl_0b.h BtlEnemy (was Battle488): unk0=type,unk4=flags,unk8=steal,unkC=home
+# include/ovl_0b.h BtlStatusInfo (was Battle154C): unk1=tickScale,unk2=timerScale,unk8=prevents
+# include/ovl_0b.h BtlUnit34 (status view): unk0=statusImmune,unk4=autoStatus,unk8=status,unkC=venomTimer,unkE=poisonTimer,unk10=regenTimer,unk12=statusTimers,unk2E=jumpTimer
+# include/ovl_0b.h Unk800FE368 (g_btlCamTargets): unk0=caster,unk4=target,unk38=centerX,unk3C=centerZ,unk44=partner
+# include/ovl_0b.h Unk800F78A40 (g_btlfxState view): unk0=phase,unk2=effectId,unk8=file,unkF=seqRelease,unk1C=flags,unk20=retry
+# include/ovl_0b.h Unk800FEC40 (g_btlfxState): unk2=effectId,unk8=file,unkE=cameraPick,unkF=seqRelease,unk18=pc,unk1C=flags,unk20=retry
+# include/ovl_0b.h Unk800FEC40: unk0=phase,unkA=cameras,pad14=motionDone/moveDone/turnDone/unk17
+# include/ovl_0b.h Unk80100C78Entry (effect task): unk0=frame,unk4=state,unk8=file,unkC=work,unk10=pool,unk14=handler
+# include/ovl_0b.h Battle: unk11C4=seq
+# include/ovl_0b.h Battle11C4 (Battle.seq): unk0=anims,unk4=seqFlags,unk8=seqs,unk68=slots,unk148=camCaster,unk14C=camTarget,unk150=camCenterX,unk152=camCenterY,unk154=camCenterZ
+# include/ovl_0b.h BtlScript: unk0=flags,unk4=cmd,unk8=pc,unkC=prevPc,unk10=opFrame,unk12=waitLeft,unk14=frame,unk16=seqFlags,unk17=soundDelay,unk18=sound,unk1B=soundVol,unk1C=turnFrom,unk1E=turnBy,unk20=turnFrame,unk21=turnFrames,unk22=fxId,unk24=fxArg,unk25=fxDelay,unk26=fadeFrames,unk27=fadeLeft,unk28=work
+# include/ovl_0b.h BtlScript4: unk4=caster,unk8=ability,unkC=targets
+# include/ovl_0b.h BtlPopupRing: unk1C4=scanUnit
+# include/ovl_0b.h Unk80104F88Entry: unk0=gauges,unk10=unit,unk14=chr,unk18=slot,unk19=learns,unk1A=defaultSet,unk1B=port,unk1C=apCounters,unk31C=apNeeded,unk3DC=fromEquip,unk49C=cursor
+# include/ovl_0b.h Unk80104F88 (g_btlUi): unk0=entries,unk12A4=windows,unk12B6=frozenSide,unk12B7=swdMagPartner,unk12B8=swdMagBlocked,unk12BC=ambush,unk12C0=tick,unk12C4=queueCount,unk12C5=queueHead,unk12C8=queue
+# include/ovl_0b.h Unk80105078 (g_btluiPanel): unk0=shown,unk2=highlightRow,unk4=labels,unk54=pulse,unk58=returnState,unk5C=rowCount,unk60=y,unk64=menuUnit,unk68=units,unk78=rowColor,unk7C=cantAct,unk80=slot,unk84=atbKind,unk88=tranceKind
+# include/ovl_0b.h Unk800F412C (panel label): unk0=text,unk2=align,unk4=visible,unk6=frame,unk8=x,unkA=y,unkC=slide
+# include/ovl_0b.h Unk800F3F10 (label slide): unk0=dx,unk2=dy,unk4=frames,unk8=onDone
+# include/ovl_0b.h Battle: unk11C0=work
+# include/ovl_0b.h Battle11C0 (Battle.work): unk4=returnId,unk6=returnMode,unkC=loadBuf,unk14=texts,unk18=bgHeader,unk1C=bgData,unk20=encounter,unk24=sceneTables,unk28=shadows,unk2C=ot,unk34=prims,unk3C=weaponBufs,unk40=bgTexAnims,unk44=heapStart,unk48=heap
+## main: main cleanup/naming pass
+func_80016A28 game_reset  # [code] start of every game_main loop pass: clears VRAM, resets CD, db, pad (pad_resetState), SPU reverb, then the subsystems' inits
+func_80016B6C game_shutdown  # [code] end of a game_main loop pass (GameState.unk0 bit 0): stops sound and db, counts D_80067950
+func_80018F50 pad_resetState  # [code] clears every per-port pad array and installs the default button mapping through pad_setMapping
+func_80019708 pad_setMapping  # [code] D_80073730[port][bit index of b] = c: which raw controller buttons set game button b (pad_update ORs 1 << index)
+func_80019150 pad_getFlags  # [code] returns D_80073720 (pad_update's per-port init bits, 0x8000 = analog stick acts as d-pad)
+func_80019160 pad_setFlags  # [code] sets or clears bits a of D_80073720 (tu_8002BEEC toggles 0x8000)
+func_80019750 pad_getAnalogThresholds  # [code] copies D_80068158, the four stick thresholds pad_update compares the analog bytes against for the d-pad bits
+func_80019774 pad_setAnalogThresholds  # [code] sets D_80068158 (see pad_getAnalogThresholds)
+D_80073720 g_padFlags  # [code] per port (4 bits each) init/actuator state in pad_update; 0x8000 maps the analog stick to the d-pad
+D_80073730 g_padMapping  # [code] [port][game button bit] -> raw button mask, written by pad_setMapping, read by pad_update
+D_80073830 g_padHoldFrames  # [code] [port][game button bit] frames held, counted in pad_update
+D_80068158 g_padAnalogThresholds  # [code] stick thresholds {up, down, left, right} compared with the analog bytes in pad_update
+D_80073938 g_padAnalog  # [code] per port the four analog stick bytes copied from the pad buffer in pad_update
+D_80073940 g_padBuf  # [code] PadInitDirect receive buffers, one per port (pad_init)
+D_80073998 g_padPortMask  # [code] per port game buttons masked out of g_padPortHeld in pad_update (battle sets 8, ovl_15 -1)
+D_800739B0 g_padActuator  # [code] PadSetAct data per port in pad_update
+D_8006815C g_padActAlign  # [code] PadSetActAlign table in pad_update
+func_8001C6F8 db_init  # [code] game_reset: clears the registered-db list (db_clear)
+func_8001C718 db_quit  # [code] empty counterpart of db_init, called from game_shutdown
+func_8001C720 db_clear  # [code] zeroes g_dbList's counts and its 16 slots
+func_8001CA70 db_getSize  # [code] checks the 0xDB magic byte, returns the end offset of the last entry's data (4 for an empty db)
+func_8001CB08 game_initState  # [code] game_main loop start: game_allocState, game_resetState, screen setup, then records g_allocTop in GameState.unk4
+func_8001CB70 game_quitState  # [code] empty counterpart of game_initState at the end of a game_main pass
+func_8001CB78 game_allocState  # [code] places g_gameState and its DISPENV/DRAWENV/dir tables at 0x8008B000 and sets g_allocTop past them
+func_8001CBD0 game_resetState  # [code] initial GameState values: mode 0, no GameData, clear colour 0, screen height 0xE0, empty dir tables
+func_8001CCB4 game_setClearColor  # [code] sets r0/g0/b0 of both DRAWENVs in GameState.unk10
+func_8001CD04 game_setScreenHeight  # [code] SetDefDispEnv/SetDefDrawEnv for both buffers at 320 x h, centred vertically, clearing VRAM below the old height
+func_8001CFB4 game_freezeScreen  # [code] before an overlay load (game_loadModeOverlay): shows the current buffer and fills the other with the fade colour while fading
+D_80077DE8 g_menuHelp  # [runtime] docs/runtime-findings.md field/menu campaign, every menu screen writes the hand position here; Select help window state (HelpState)
+func_80035108 help_draw  # [runtime] docs/runtime-findings.md field/menu campaign m_help only - moogle icon, text, frame (text_drawBlock + win_drawHelpFrame)
+func_80035214 help_layout  # [runtime] docs/runtime-findings.md field/menu campaign m_help only - places the box next to the hand inside g_menuHelp.bounds
+func_80035430 help_init  # [runtime] docs/runtime-findings.md field/menu campaign, once per menu open; clears g_menuHelp, default bounds
+func_80035490 help_update  # [runtime] docs/runtime-findings.md field/menu campaign, every menu frame; Select (g_padRepeat 0x8000000) toggles the help, then the callback and help_draw while open
+func_8003556C help_setCallback  # [code] sets g_menuHelp.callback, the per-menu function that fills in the help text (runtime field/menu campaign name)
+func_80035580 help_setBounds  # [code] g_help.unk10 = *r, or the full-screen 8,8,0x131,0xD1 for NULL; help_layout keeps the window inside it
+func_800355DC help_nullHandler  # [code] empty function passed to help_setHandler by ovl_0d/33/34/37 (help available, no text)
+func_8003561C help_isOpen  # [code] returns g_help.unk18, set/cleared by help_toggle
+func_8003562C help_isLocked  # [code] g_menuHelp.locked; while set, Select doesn't toggle help (runtime field/menu campaign name)
+func_8003563C help_setLocked  # [code] sets g_menuHelp.locked (runtime field/menu campaign name)
+func_80035648 help_getFollow  # [code] g_menuHelp.follow - 0 puts the help box at x/y itself, else beside the hand (help_layout; runtime field/menu campaign name)
+func_80035658 help_setFollow  # [code] sets g_menuHelp.follow (runtime field/menu campaign name)
+func_80035664 help_getCursorOnTop  # [code] g_menuHelp.cursorOnTop - help_draw draws the hand above the help box (runtime field/menu campaign name)
+func_80035674 help_setCursorOnTop  # [code] sets g_menuHelp.cursorOnTop (runtime field/menu campaign name)
+func_80035680 help_toggle  # [runtime] docs/runtime-findings.md field/menu campaign m_help, once on Select (sound 0x2AA open, 0x65 close)
+func_80035744 help_onIconAnimDone  # [runtime] docs/runtime-findings.md field/menu campaign, m_help - the moogle icon animation's done callback shows the text
+# by hand: ovl_0d/33/34/37 C and headers used the overlay-link name D_800355DC; now help_nullHandler
+# config/xrefs.us.txt: btl_findUnitByBit = 0x800BED6C (ovl_0b), used by func_8004B7A4 instead of D_800BED6C
+# FIELDS include/ff9.h Unk80077DE8 (now HelpState): unk0=x,unk2=y,unk4=otz,unk8=text,unkC=handler,unk10=bounds,unk18=isOpen,unk19=opening,unk1A=textShown,unk1B=disabled,unk1C=atCursor,unk1D=drawHand,unk20=anim
+func_8001D268 game_initData  # [code] game_main loop start after game_initState: allocates and resets GameData, then loads the common db, sounds and images
+func_8001D30C game_quitData  # [code] game_main loop end: game_unloadCommonDb
+func_8001D32C game_allocData  # [code] places GameData at g_allocTop with its two OT buffers and the work areas behind it
+func_8001D3C4 game_resetData  # [code] initial GameData values (identity matrix, battle 0x235, all scene/return sectors -1, ...)
+func_8001D610 game_loadCommonAkao  # [code] passes the common db's AKAO block (type 9, id 0x84) to the AKAO loader (func_80055E14 checks the "AKAO" magic)
+func_8001D67C game_loadCommonImages  # [code] file_loadTim for the common db's images 0 and 0x2710-0x2716 (db type 4)
+func_8001D768 game_loadCommonDb  # [code] reads file 0x271A of dir 1 to g_allocTop and db_registers it as GameData.unk7D8
+func_8001D848 game_unloadCommonDb  # [code] db_unregister of GameData.unk7D8 (game_loadCommonDb)
+func_8001D8A8 file_loadTim  # [code] LoadImage of a TIM's CLUT (flag bit 3) and image blocks
+func_8001D910 file_getTimRects  # [code] returns pointers to a TIM's CLUT and image RECTs
+func_8001D960 file_getTimPos  # [code] returns a TIM's CLUT and image VRAM x/y
+func_8001D9CC file_setTimPos  # [code] overwrites a TIM's CLUT and image VRAM x/y
+func_8001DA18 tpage_getTp  # [code] (tpage >> 7) & 3: the colour-mode bits of a tpage word (inverse of getTPage)
+func_8001DA24 tpage_getAbr  # [code] (tpage >> 5) & 3: the semi-transparency bits of a tpage word
+func_8001DA30 tpage_getX  # [code] (tpage & 0xF) * 64: VRAM x of a tpage word
+func_8001DA3C tpage_getY  # [code] tpage bit 4 -> 256, bit 11 -> 512: VRAM y of a tpage word
+func_8001DA60 clut_getX  # [code] (clut & 0x3F) * 16: VRAM x of a clut word (inverse of getClut)
+func_8001DA6C clut_getY  # [code] clut >> 6: VRAM y of a clut word
+func_8001DAA4 file_copyViaVram  # [code] copies size bytes from src to dst through VRAM (LoadImage then StoreImage, in screen-sized strips); game_loadModeOverlay copies preloaded overlays with it
+func_8001DCB8 file_initImg  # [code] finds the disc's SLUS_012.xx file (sets GameState.unkB to the disc bit), FF9.IMG's sector (unk20) and copies the image's directory table to unk14
+func_8001DE50 file_loadDirTables  # [code] reads FF9.IMG's file tables for dirs 0, 1, 8, 10-13 below g_gameState and keeps the dir 11 entries dir 8 refers to
+func_80021698 evt_createModel  # [code] calls the mode's GameData.unk838 hook with db key obj.unk34 | 0x20000 (model); the result is the object's model slot unk3B (evt_execInstr, btl_init)
+func_800216D8 evt_getAnimFrameCount  # [code] second u16 of the db type-3 (animation) entry; evt_execInstr stores it as the object's animation frame count
+func_8002177C cdRead_init  # [code] fills a CdReadCtx (sector, size, dest, offset, chunk size, done callback) and sets its state to 1
+func_800217C4 cdRead_update  # [code] CdReadCtx state machine: wait for the drive, cd_readAsync the next chunk, run the done callback; returns the state
+func_80021910 cdRead_getBytesRead  # [code] g_cdLoad.bytesRead once the CdReadCtx is reading (state >= 3), else 0
+func_80021938 preload_clearEntry  # [code] preload_setEntry with an empty entry (fileId -1)
+func_80021974 preload_setEntry  # [code] fills a PreloadEntry (kind, fileId, dest, size rounded to sectors, chunk, sector, length)
+func_800219D8 preload_setVramRect  # [code] sets entry flag 0x20 and the VRAM rect at unk20 (fld_movie); game_loadModeOverlay StoreImages such entries back
+func_800219FC preload_isUsed  # [code] entry != NULL and fileId != -1
+func_80021A1C preload_isBusy  # [code] entry flag 1: a CD request for it is running (set by preload_startRead)
+func_80021A28 preload_isDone  # [code] kind 0: preload_isLoaded; kind 1 (seek): request finished without error
+func_80021A8C preload_isLoaded  # [code] kind 0 entry fully read into RAM (flag 2 or 0x80, not busy, not in VRAM, has a destination)
+func_80021AE0 preload_isInVram  # [code] finished entry with flag 0x20 and a non-empty VRAM rect (preload_setVramRect)
+func_80021B34 preload_makeChunk  # [code] builds the next read (queue slot 6) for an entry: continues at dest + bytes done, at most one chunk, whole sectors
+func_80021C20 preload_wait  # [code] if the entry is busy, spins on func_80022D3C until the CD queue drains; returns 1 if it waited
+func_80021CDC preload_setHook  # [code] sets PreloadQueue.unk11C, called first in preload_update (fld_main passes a field callback, others 0)
+func_80021D7C preload_next  # [code] advances PreloadQueue.cur to the next used entry, marks it 0x40, returns it
+func_80021E20 preload_getCurrent  # [code] &queue entries[cur]
+func_80021ED4 preload_startRead  # [code] submits the chunk in slot 6 for the current entry (cd_readAsync, or cd_seekAsync for kind 1) with preload_onReadDone
+func_80021FB4 preload_poll  # [code] > 0 while the current entry's request is running, -1 on error/unused
+func_80022020 preload_finishRead  # [code] waits for preload_poll then preload_clearBusy
+func_80022050 preload_clearBusy  # [code] clears flags 1 and 0x80 of the current entry
+func_8002208C preload_waitCurrent  # [code] waits for the current entry's request and returns the entry
+func_800220E8 preload_isReady  # [code] 1 when file id was preloaded (to RAM or VRAM), waiting for its read; game_loadModeOverlay uses it
+func_800221C0 preload_overlaps  # [code] 1 when a RAM preload entry's destination overlaps [addr, addr + size)
+func_80022280 preload_discardRange  # [code] waits for and clears every started RAM entry overlapping [addr, addr + size)
+func_80022390 preload_remove  # [code] preload_find(id), wait, clear
+func_800223CC preload_reset  # [code] waits for and clears every entry, state 4, count 0
+func_80022B9C cd_abort  # [code] CdFlush, removes both callbacks, state 0
+func_80022D3C cd_syncAsync  # [code] request flags 4: no CD command, the done callback runs once the queue drains (preload_wait spins on it)
+func_80022E70 cd_sync  # [code] cd_syncAsync without callback, then waits for cd_getState() == 0
+func_80022ED4 cd_seekStreamAsync  # [code] request flags 9 (seek with bit 8 = CdlSeekP in func_800233CC)
+func_80022F1C cd_readStreamAsync  # [code] request flags 0xB (read with bit 8 = CdlReadS, the ready callback through func_800235A0); ovl_64 movie streaming
+func_80022F64 cd_restartAt  # [code] sets the current request's sector, state 5 and pauses; the pause completion (func_8002350C) restarts the request
+func_80023018 cd_pause  # [code] drops the queued request and pauses the drive (state 4)
+func_800230A0 cd_isShellOpen  # [code] bit 4 (CdlStatShellOpen) of the last status byte in g_cdResult
+func_8002325C cd_onSyncQueued  # [code] cd_onSync while a request is queued: completes the current request and starts the queued one
+func_80023304 cd_onDiskError  # [code] cd_onSync for CdlDiskError: marks a retry (unk3), counts it, pauses
+func_8002336C cd_onSetloc  # [code] after CdlSetloc: CdlSetmode (speed, size1) unless already set, else cd_startTransfer
+func_800233CC cd_startTransfer  # [code] issues CdlReadN/CdlReadS (flag 2) or CdlSeekL/CdlSeekP for the current request
+func_8002345C cd_onPaused  # [code] after CdlPause: completes the request (done callback), or restarts it when a retry is marked
+func_8002350C cd_onRestart  # [code] restarts the current request (cd_restartAt's pause)
+func_800235A0 cd_onStreamReady  # [code] ready callback for CdlReadS requests: pauses if a request is queued, else forwards to the request's own callback
+D_80068668 g_cdStateHandlers  # [code] cd_onSync calls [g_cdLoad.state](CdlComplete) when a command completes
+D_80076178 g_cdRetryRequest  # [code] copy of the current request restarted by cd_onPaused after an error
+D_800761A8 g_cdRestartRequest  # [code] copy of the current request restarted by cd_onRestart
+# psyq.h: libcd Cdl* command/mode/status/intr constants added, used in src/main/cd.c
+func_800236C4 config_reset  # [code] default settings in GameState.unk24 (GameConfig bitfields) and the identity button map, then config_apply
+func_80023784 config_applyPadMapping  # [code] pad_setMapping for both ports from the default tables, routed through config_remapButton
+func_80023918 config_init  # [code] game_initState: config_reset
+func_80023938 config_remapButton  # [code] GameConfig.buttonMap nibble for game button i when the custom map bit is set, else i
+func_8002397C config_apply  # [code] config_applySound then config_applyPadMapping
+func_800239A4 config_applySound  # [code] passes GameConfig bit 0 (sound output mode) to akao_setOutputMode
+func_800555A8 akao_setOutputMode  # [code] AKAO command 0x81 for 1, 0x80 otherwise (handlers set the output mode word to 2 or 1); called with GameConfig bit 0 by config_applySound
+func_800239D0 game_initGfx  # [code] gfx_init with GameData's two OTs and the two packet buffers at unk7E0 (field/world/battle-end/ovl_0d/ovl_15 init)
+func_80023A0C game_updateWindows  # [code] wrapper for win_runFrame, called once per frame by the mode loops
+func_80023A2C game_initTimer  # [code] game_initState: timer_resetAll
+func_80023A4C game_updateTimer  # [code] wrapper for timer_update
+func_80023A6C timer_draw  # [code] draws the countdown timer window (hh:mm digits 0xE0+n, blinking colon 0xEA) with win_buildBorder, sliding in for 8 frames
+func_80023EB8 timer_resetAll  # [code] timer_clear, resets the packet pointer, play time 0 and the clock reference
+func_80023F00 timer_update  # [code] per frame: picks this buffer's packets, timer_draw while enabled, then game_tickClock
+func_80023F60 game_resumeClock  # [code] 1: adds the frames since the last update to the play time and the timer; 0: drops them (only restarts the reference) - battle/world/field pause and resume
+func_80024070 timer_clear  # [code] disables and stops the countdown timer, zeroes its frames
+func_800240B0 timer_enable  # [code] script opcode: shows/hides the timer, stopped, start time now
+func_800240E8 timer_isEnabled  # [code] EvtTimer.enabled; timer_update draws when set
+func_800240F8 timer_setRunning  # [code] script opcode: starts/stops the countdown (only while enabled)
+func_8002411C timer_isRunning  # [code] EvtTimer.running
+func_8002412C timer_setSeconds  # [code] script opcode: initial and remaining frames = seconds * 60
+func_8002414C timer_getSeconds  # [code] remaining frames / 60 rounded up; script variable read in evt code
+func_8002417C game_tickClock  # [code] per frame: counts the countdown timer down and adds the elapsed frames to GameState.playTime
+D_80076B60 g_clock  # [code] play-time reference VSync, the timer window packets and the countdown timer (ClockState)
+D_80076F68 g_timer  # [code] the countdown timer, g_clock.timer under its own symbol (timer_clear .. timer_getSeconds)
+D_800686C8 g_timerRect  # [code] timer window rect, x animated by timer_draw
+func_8002BEEC gfx_init  # [code] sets g_drawBufs' OTs, packet buffers and display positions, selects the current buffer, then pad_initRepeat and the window init
+func_8002BFD0 win_runFrame  # [code] win_updateAll once per elapsed VSync (at most 15), then win_drawAll
+func_8002C0DC gfx_setBuffer  # [code] gfx_selectBuffer that also stores the index in g_drawBufs.cur
+func_8002C138 gfx_setBufferIndex  # [code] g_drawBufs.cur = a
+func_8002C144 gfx_setTarget  # [code] sets g_ot and g_primPtr directly
+func_8002C1EC win_resetClock  # [code] g_drawBufs.lastVsync = VSync(-1), the reference win_runFrame counts updates from
+func_8002C210 pad_initRepeat  # [code] g_padRepeat/Pressed/Held from port 0, saves the stick thresholds, sets all 23 repeat channels of both ports from D_8006BC40
+func_8002C308 pad_updateRepeat  # [code] g_padHeld/g_padPressed from a port, g_padRepeat = pressed | the repeat channels firing (delay, then interval)
+func_8002C47C pad_isAnalog  # [code] pad buffer type nibble == 7 (analog controller)
+func_8002C4B0 pad_setStickAsDpad  # [code] 1: saves the flags and thresholds, sets g_padFlags 0x8000 with the D_8006BCF8 thresholds; 0: restores them
+func_8002C52C pad_disableRepeat  # [code] resets and disables all 23 repeat channels of a port
+func_8002C584 pad_resetRepeats  # [code] pad_resetRepeat for all channels of a port
+func_8002C5CC pad_resetRepeat  # [code] channel restarts with the current buttons counted as held (they must be released first)
+func_8002C64C pad_clearRepeats  # [code] pad_clearRepeat for all channels of a port
+func_8002C694 pad_clearRepeat  # [code] channel restarts with nothing held
+func_8002C700 pad_isRepeatEnabled  # [code] PadRepeat.enabled
+func_8002C740 pad_setRepeatEnabled  # [code] pad_resetRepeat, then PadRepeat.enabled = c
+func_8002C7F0 pad_getRepeatDelay  # [code] PadRepeat.delay
+func_8002C830 pad_getRepeatInterval  # [code] PadRepeat.interval
+func_8002C870 pad_setRepeatDelay  # [code] PadRepeat.delay = v
+func_8002C8AC pad_setRepeatInterval  # [code] PadRepeat.interval = v
+func_8002C8E8 pad_setRepeatTiming  # [code] pad_setRepeatDelay and pad_setRepeatInterval
+func_8002C934 pad_getRepeatMask  # [code] PadRepeat.mask
+func_8002C974 pad_setRepeatMask  # [code] PadRepeat.mask = v
+D_80077188 g_padRepeats  # [code] [port][23] PadRepeat channels (pad_updateRepeat)
+D_8006BC40 g_padRepeatDefs  # [code] default mask/enabled/delay/interval per channel (pad_initRepeat)
+D_80077178 g_padSavedStickFlag  # [code] g_padFlags 0x8000 saved by pad_setStickAsDpad
+D_8007717C g_padSavedThresholds  # [code] analog thresholds saved by pad_initRepeat/pad_setStickAsDpad
+D_8006BCF8 g_padStickDpadThresholds  # [code] thresholds pad_setStickAsDpad installs
+D_80077150 g_winLastVsync  # [code] g_drawBufs.lastVsync under its own symbol: win_runFrame runs one window update per VSync since it
+# Types renamed: GameStateUnk24 -> GameConfig (unk4 -> buttonMap), UnkTimer -> EvtTimer, Unk80076B60 -> ClockState,
+# Unk80076F68 dropped (D_80076F68/g_timer is an EvtTimer), Unk80077188 -> PadRepeat, Unk8006BC40 -> PadRepeatDef,
+# Unk80077148 -> DrawBufs
+# FIELDS include/ff9.h EvtTimer: unk0=enabled,unk1=running,unk4=startVsync,unk8=initial,unkC=remaining
+# FIELDS include/ff9.h ClockState: unk0=lastVsync,unk4=pkt,unk404=pktPtr,unk408=timer
+# FIELDS include/ff9.h PadRepeat: unk0=enabled,unk1=repeating,unk2=armed,unk4=prevHeld,unk8=lastVsync,unkC=mask,unk10=delay,unk12=interval
+# FIELDS include/ff9.h PadRepeatDef: unk0=mask,unk4=enabled,unk5=delay,unk6=interval
+# FIELDS include/ff9.h DrawBufs (g_drawBufs): unk0=cur,unk4=freeBytes,unk8=lastVsync,unkC=prims,unk14=ots,unk1C=dispPos
+func_8002423C ui_drawCharStatus  # [code] name, "Lv" + level, HP cur/max and MP cur/max (red below 1/6, colour 3 when KO) of a Character
+func_80024428 ui_drawMemberHeader  # [runtime] docs/runtime-findings.md field/menu campaign, ablation at menu_status - the portrait/name/Lv/HP/MP block of the status, equip and ability screens goes
+func_800245F0 win_drawShadowRect  # [code] two semi-transparent black TILEs right of and below a rect (g_winShadowFuncs[0/1])
+func_80024764 win_drawShadowSlant  # [code] two slanted semi-transparent black POLY_F4s right of and below a rect (g_winShadowFuncs[2])
+func_800249A8 win_drawShadowSlant2  # [code] smaller variant of win_drawShadowSlant (g_winShadowFuncs[3])
+func_8002705C win_drawShadow  # [code] calls g_winShadowFuncs[style](rect, otz); win_drawAll draws it for windows with the shadow flag
+D_80068F80 g_winShadowFuncs  # [code] per window style: win_drawShadowRect x2, win_drawShadowSlant, win_drawShadowSlant2, NULL
+func_80024BD8 ui_drawBackground  # [code] full-width grey gradient POLY_G4 plus a 128-line textured SPRT at the back of the OT (0xFFF); menu.c and battle_end draw it behind menus
+func_80025108 win_drawLineBorder  # [code] the double-line border of window styles 0 and 1 (LINE_F2 pairs coloured from D_80068F20[pal], first line optional)
+func_8002642C win_drawTailEdge  # [code] SPRT of a speech-balloon tail (g_winTailSprites[dir]), with the window's palette or the help window's fixed clut
+func_80027568 win_drawHelpTailEdge  # [code] win_drawTailEdge with the help window clut (win_drawHelpFrame)
+func_800275A4 win_drawMsgTailEdge  # [code] win_drawTailEdge with the configured palette (win_drawTail)
+func_800265B0 win_drawTailFill  # [code] textured POLY_FT4 filling a balloon tail shape (D_80068F48[dir]) with the window fill texture (win_drawTail)
+func_80026900 win_drawHelpTailFill  # [code] flat POLY_F4 of a tail shape in the help-window colour 0xA8B078 (win_drawHelpFrame, same colour as win_drawHelpFill)
+D_80068F48 g_winTailShapes  # [code] quad vertex offsets per tail direction (win_drawTailFill, win_drawHelpTailFill)
+D_80068D70 g_winTailSprites  # [code] sprite descriptors per tail direction (win_drawTailEdge)
+func_800269F4 ui_drawEtchedLine  # [code] three 1-pixel LINE_F2s, vertical when len < 0 (runtime field/menu campaign name)
+func_80026B84 win_drawBalloonBorder  # [code] win_buildBorder style 1, used for window style 3 (balloon with tail) and win_drawBox style 3
+func_80026BDC win_drawHelpBorder  # [code] win_buildBorder style 2 (fixed clut), used by win_drawHelpFrame
+func_80026C7C ui_buildItemIcon  # [code] item icon SPRT from D_80069018[item] (ui_drawItemIcon)
+func_80026E14 ui_drawMember  # [code] ui_drawPartyPortrait and ui_drawMemberStats of a party slot
+func_80026EA0 ui_drawMemberSummary  # [runtime] docs/runtime-findings.md field/menu campaign, ablation in the item target window - portraits and stats go
+func_80026F8C ui_drawMemberStats  # [runtime] docs/runtime-findings.md field/menu campaign, ablation - name/Lv/HP/MP go, the portraits stay
+func_80026FC4 ui_drawStatusIcons  # [code] one sprite per set bit (7 bits) of a character status byte (Character.unk38), 12 px apart
+func_80027110 ui_drawApGauge  # [code] ui_buildApGauge into g_primPtr
+func_80027170 ui_buildApGauge  # [code] the star/AP gauge of every ability row (cur/max digits or sprite 0xC0 when mastered, and a bar) (runtime field/menu campaign name)
+func_800273C0 ui_drawStones  # [code] stone sprite 0xC1 and "cur/max" magic stones (callers pass Character.stones/maxStones)
+func_80027480 win_getPalClut  # [code] clut - 0xC0 * GameConfig bit 18 (the window palette setting win_drawFrame passes as pal)
+func_800274B4 win_getClut  # [code] clut - pal * 0xC0: selects the window palette's CLUT row
+func_80027710 ui_drawSpriteDef  # [code] ui_drawSprite with a sprite descriptor instead of an id
+func_80027834 ui_buildSprite  # [code] SPRT + DR_TPAGE for sprite id (D_800686D0), half-bright semi-transparent when flag
+func_80027948 ui_buildSpriteDef  # [code] ui_buildSprite with a descriptor
+func_80027A4C ui_drawCharStatuses  # [code] name, level, ui_drawStatusIcons of Character.unk38 in a box (party slot)
+func_80027B5C ui_buildDigits  # [code] SPRTs for a string of digits, '/', '%' from D_800687E0
+func_80027CB0 item_initNew  # [code] clears items and key items, then item_add for each (id, count) pair of D_8006BB74 until 0xFF
+func_80027D18 item_clearAll  # [code] zeroes the counts of the 256 GameData item slots
+func_80027D4C keyItem_clearAll  # [code] zeroes the 64 bytes of 2-bit key-item flags in GameData.unk774
+func_80027D84 item_add  # [code] adds n of id to its slot (capped at 99) or the first empty slot; script opcode 0x48 for ids < 0x100
+func_80027F94 item_countEquipped  # [code] how many characters (flag unk34.b.unkB) have id in one of their 5 equipment slots
+func_80028014 item_getEquipSlot  # [code] first of the 5 equipment slot masks (D_8006BB84) set in the item's D_80069018 flags, -1 if none
+func_80028074 keyItem_add  # [code] script opcode 0x48 with ids 0x100-0x1FF: sets the key item's have bit, clears its seen bit
+func_800280CC keyItem_remove  # [code] script opcode 0x49 with ids 0x100-0x1FF: clears both bits
+func_80028128 keyItem_setSeen  # [code] sets the key item's second bit (ovl_37 sets it when the item is read)
+func_80028164 keyItem_clearSeen  # [code] clears the key item's second bit
+func_800281A4 keyItem_has  # [code] key item's first bit (ovl_37 lists the items that have it)
+func_800281D0 keyItem_isSeen  # [code] key item's second bit
+func_80028204 ui_drawPortraitId  # [code] portrait id (0..g_portraitCount) as a 32 x h SPRT from the VRAM loaded by ui_loadPortraits (save and shop screens)
+func_800283E0 ui_drawPortrait  # [runtime] docs/runtime-findings.md field/menu campaign, ablation at menu_main and the item target window - the portraits go; party slot portrait 32 x h
+func_80028720 ui_loadPortraits  # [code] uploads n portraits (CLUT + image, 0x6C0 bytes each), saving the VRAM they cover (D_80076F80, the data buffer)
+func_8002886C ui_restorePortraits  # [code] puts back the VRAM saved by ui_loadPortraits
+func_80028954 chr_getPortrait  # [code] D_8006BB8C[character's unk34.b.unk4]: portrait index of a character
+func_80028994 ui_getPortraitRects  # [code] CLUT row 0x1F3 + i and image rect of portrait i
+func_80028A10 ui_drawPortraitIdFull  # [code] ui_drawPortraitId with height 0x2E
+func_80028A40 ui_getPartyPortraitRects  # [code] CLUT, image and lower-image rects of party slot i's portrait (world map uses other VRAM)
+func_80028AF0 ui_drawPartyPortrait  # [code] ui_drawPartyPortraitH with height 0x2E
+func_80028B20 ui_loadPartyPortraits  # [code] ui_loadPartyPortrait for each party slot from a portrait file buffer (0x6C0 bytes per chr_getPortrait index)
+func_80028BE8 ui_loadPartyPortrait  # [code] LoadImage of a portrait's CLUT and two image parts into party slot i's VRAM
+func_80028C70 ui_savePartyPortrait  # [code] StoreImage counterpart of ui_loadPartyPortrait
+func_8002CD4C win_drawBoxEx  # [code] border and fill of window style 0-3 for a rect with a palette, without a Window object (runtime field/menu campaign name)
+func_8002DEE4 win_drawBox  # [runtime] docs/runtime-findings.md field/menu campaign, ablation at menu_main - every window frame and fill goes; win_drawBoxEx with the Window Color setting
+func_8002E400 win_drawFillPal  # [code] win_drawFill with the configured window palette
+func_8002D1AC win_setCloseAnim  # [code] close steps for anim mode from the close frame count (Window.unk12); win_close
+func_8002D398 win_setTail  # [code] style 3 balloon: tail direction and x offset; open steps for each side of the tail (anim mode 2)
+func_8002DC54 win_openFree  # [code] win_init on the first free g_windows slot, NULL when all 10 are used
+func_8002DE10 win_closeNow  # [code] frees one window at once (no close animation), running its onClosed callback (as win_closeAllNow)
+func_8002DE60 win_closeAllNow  # [code] [runtime] docs/runtime-findings.md field/menu campaign m_close - all live windows to state 0 with their onClosed callback, no close animation
+func_8002E040 win_drawListBox  # [runtime] docs/runtime-findings.md field/menu campaign, ablation at menu_items - the item list's frame, fill and scroll arrows go
+func_8002E304 win_setTitle  # [runtime] docs/runtime-findings.md field/menu campaign, msg_open passes the window labels (MOGNET) through it; title id at offset (6, -3)
+func_8002E31C win_setShadow  # [code] Window.unk1F: win_drawAll draws win_drawShadow when set
+func_8002E324 win_setTranslucent  # [code] Window.unk1D, the semi-transparency flag passed to the border and tail drawing
+func_8002E32C win_setVisible  # [code] Window.unk23; win_isVisible returns 0 when clear
+func_8002E334 win_setOpenFrames  # [code] Window.unk10 and recomputes the open steps (win_setOpenAnim / win_setTail)
+func_8002E380 win_setCloseFrames  # [code] Window.unk12 and recomputes the close steps (win_setCloseAnim)
+func_8002E3A8 win_setList  # [code] copies a MenuList into Window.unk30
+func_8002E3F0 win_setTitleAt  # [code] window title id and its x/y offset (see win_setTitle)
+func_8002E490 win_initAll  # [code] marks all 10 windows free and numbers them (gfx_init)
+func_8002E588 win_drawTitle  # [runtime] docs/runtime-findings.md field/menu campaign, ablation removes the MOGNET label of the Moogle window
+func_8002E660 win_drawTail  # [code] the tail of a style-3 balloon window (win_drawMsgTailEdge + win_drawTailFill) above or below it
+func_8002E7FC win_drawSplitFill  # [code] fill in two parts around the divider line at MenuList.unk9 (MenuList flag 4)
+func_8002E960 win_drawDivider  # [code] LINE_F2 across a window at MenuList.unk9 from the top (flag 2) or bottom
+D_80076F78 g_portraits  # [code] {data, count} of the portraits uploaded by ui_loadPortraits
+D_80076F7C g_portraitCount  # [code] g_portraits.count under its own symbol: ui_drawPortrait draws ids below it
+D_80076F80 g_portraitSavedVram  # [code] VRAM saved by ui_loadPortraits, put back by ui_restorePortraits
+# FIELDS include/ff9.h HelpState (second pass, field/menu campaign names): handler=callback,disabled=locked,atCursor=follow,drawHand=cursorOnTop,anim=iconAnim
+D_80077E50 g_menuScreen  # [runtime] docs/runtime-findings.md field/menu campaign, {active, slideIn, screen, member, frame} read at menu_main/items/status/card
+D_8006E510 g_menuScreenOvl  # [runtime] docs/runtime-findings.md field/menu campaign, overlay per main-menu screen (main, Item, Ability, Equip, Status, Order, Card, Config)
+D_8006E530 g_menuScreensField  # [runtime] docs/runtime-findings.md field/menu campaign, {init, update, exit, needsMember} per main-menu screen
+D_8006E5B0 g_menuScreensWorld  # [runtime] docs/runtime-findings.md field/menu campaign, world-map copy of g_menuScreensField (picked when GameState.mode == 3)
+D_8006CA40 g_menuTypeOvl  # [runtime] docs/runtime-findings.md field/menu campaign, overlay per menu_open type (name entry 3a, shop 3c, party 3b, save 39, chocograph 32, disc change 3e)
+D_8006C9D4 g_menuTypes  # [runtime] docs/runtime-findings.md field/menu campaign, {init, update, exit} per menu_open type
+func_80035D3C menuScreen_init  # [runtime] docs/runtime-findings.md field/menu campaign, init of menu type 0, once in f_menu
+func_8003613C menuScreen_update  # [runtime] docs/runtime-findings.md field/menu campaign, type-0 update every frame in all m_* runs
+func_800361A8 menuScreen_exit  # [runtime] docs/runtime-findings.md field/menu campaign, type-0 exit (m_close)
+func_80035E40 menuScreen_drawCommands  # [runtime] docs/runtime-findings.md field/menu campaign, ablation - the Item..Config window goes
+func_800361CC menuScreen_open  # [runtime] docs/runtime-findings.md field/menu campaign, once per screen entered - fade out, load the overlay, the screen's init
+func_80036270 menuScreen_switch  # [runtime] docs/runtime-findings.md field/menu campaign, Square on the Ability screen called it with 3 and Equip came up without an overlay load
+func_80036560 menuScreen_onSwitchFaded  # [runtime] docs/runtime-findings.md field/menu campaign, fade callback after menuScreen_switch - old exit, new init, fade in
+func_80035F94 menuScreen_updateOpen  # [code] docs/runtime-findings.md field/menu campaign (medium), waits for the title animation and overlay read, then the new screen's init
+func_80036470 menuScreen_loadOverlay  # [runtime] docs/runtime-findings.md field/menu campaign, cd_readAsync of g_menuScreenOvl[screen] to 0x801EDF00, once per open
+func_80036444 menuScreen_requestOverlay  # [code] docs/runtime-findings.md field/menu campaign (medium), menuScreen_loadOverlay when the screen has an overlay
+func_80036634 menuScreen_onOverlayRead  # [runtime] docs/runtime-findings.md field/menu campaign, read callback, once per open
+func_80036528 menuScreen_onOpenFaded  # [runtime] docs/runtime-findings.md field/menu campaign, fade callback set by menuScreen_open, once per open
+func_800362C8 menuScreen_close  # [runtime] docs/runtime-findings.md field/menu campaign, Circle on the command list (m_close)
+func_80036300 menuScreen_needsMember  # [runtime] docs/runtime-findings.md field/menu campaign, screen table flag +0xC (Ability, Equip, Status)
+func_8003631C menuScreen_getCommandHelp  # [runtime] docs/runtime-findings.md field/menu campaign, help text of command i (m_help)
+func_800362B8 menuScreen_getCurrent  # [code] docs/runtime-findings.md field/menu campaign (medium), returns g_menuScreen.screen
+func_800363BC menuScreen_startTitleAnim  # [code] docs/runtime-findings.md field/menu campaign (medium), command window shrinks to the title box while a screen opens
+func_800360B0 menuScreen_stepTitleScroll  # [code] docs/runtime-findings.md field/menu campaign (medium), title animation step
+func_80036344 menuScreen_stepTitleResize  # [runtime] docs/runtime-findings.md field/menu campaign (medium), 12 calls per open, h 0x74 to 0x1A
+func_800355E4 help_drawCursor  # [runtime] docs/runtime-findings.md field/menu campaign, sprite 1 (the hand) at g_menuHelp x/y/otz; skipping it removes each screen's hand
+func_80035C2C sprAnim_draw  # [runtime] docs/runtime-findings.md field/menu campaign (medium), m_help one per help frame - the moogle icon
+func_800357E0 sprAnim_drawCell  # [code] docs/runtime-findings.md field/menu campaign (medium), SPRT of one animation cell
+func_8003595C sprAnim_drawScaledCell  # [code] docs/runtime-findings.md field/menu campaign (medium), POLY_FT4 of one scaled cell
+func_80035B90 sprAnim_update  # [runtime] docs/runtime-findings.md field/menu campaign (medium), every menu frame
+func_80035B24 sprAnim_init  # [code] docs/runtime-findings.md field/menu campaign (medium)
+func_80035B64 sprAnim_setPlaying  # [runtime] docs/runtime-findings.md field/menu campaign (medium), once when help opens
+func_80035B74 sprAnim_setOnDone  # [runtime] docs/runtime-findings.md field/menu campaign (medium), once when help opens
+func_80035B7C sprAnim_reset  # [runtime] docs/runtime-findings.md field/menu campaign (medium), once when help opens
+D_80077C78 g_fade  # [runtime] docs/runtime-findings.md field/menu campaign, read every 2 frames during the menu-open fade (active, frames, frame, onDone, colours)
+func_8002FC8C fade_start  # [runtime] docs/runtime-findings.md field/menu campaign, (type, subtract, frames, color)
+func_8002FAAC fade_out  # [runtime] docs/runtime-findings.md field/menu campaign, (frames) 0 to 0xFFFFFF, the menu-open darkening
+func_8002FA50 fade_in  # [runtime] docs/runtime-findings.md field/menu campaign, (frames) 0xFFFFFF to 0 as the menu appears
+func_8002F9F0 fade_outDefault  # [runtime] docs/runtime-findings.md field/menu campaign, fade_out(12)
+func_8002F9D0 fade_inDefault  # [runtime] docs/runtime-findings.md field/menu campaign, fade_in(16)
+func_8002FB64 fade_outAdditive  # [code] docs/runtime-findings.md field/menu campaign (medium), fade_out with flag 0
+func_8002FB08 fade_inAdditive  # [code] docs/runtime-findings.md field/menu campaign (medium), fade_in with flag 0
+func_8002F8A8 fade_setOnDone  # [runtime] docs/runtime-findings.md field/menu campaign, callback run when the fade ends
+func_8002F810 fade_isBusy  # [runtime] docs/runtime-findings.md field/menu campaign, every menu input handler returns while it is set
+func_8002F8E4 fade_setOtz  # [runtime] docs/runtime-findings.md field/menu campaign, returns the old value; screens set 3, the shop 7
+func_8002F904 fade_getOtz  # [runtime] docs/runtime-findings.md field/menu campaign
+func_8002F6C8 fade_update  # [runtime] docs/runtime-findings.md field/menu campaign, every frame in field and menus; calls onDone at the end (traces from +0x110)
+func_8002F7E8 fade_setActive  # [code] docs/runtime-findings.md field/menu campaign (medium)
+func_8002F800 fade_isActive  # [code] docs/runtime-findings.md field/menu campaign (medium)
+func_8002FC38 fade_init  # [code] docs/runtime-findings.md field/menu campaign (medium)
+func_80028D08 ui_startMemberSwitch  # [runtime] docs/runtime-findings.md field/menu campaign, R1 on the status screen called it with (hdr, 0, 1, 2) and the header slid to Vivi
+func_80028CF8 ui_initMemberSwitch  # [runtime] docs/runtime-findings.md field/menu campaign, once per screen init
+func_80028D2C ui_updateMemberSwitch  # [runtime] docs/runtime-findings.md field/menu campaign, every frame (12-frame switch, then the callback)
+func_80032E84 chr_calcEquipStats  # [runtime] docs/runtime-findings.md field/menu campaign (medium), 53 calls while the Equip list is open, feeds the stat comparison
+func_8003384C chr_updateStats  # [runtime] docs/runtime-findings.md field/menu campaign (medium), once per equip change
+func_800654F8 item_useOnMember  # [runtime] docs/runtime-findings.md field/menu campaign, Potion on Zidane HP 100 to 200; field abilities go through it too
+func_8003493C chr_setSupportAbility  # [runtime] docs/runtime-findings.md field/menu campaign, (charId, abilityId, on) - stones 37 to 42 and Character+0x88 bit cleared (ab_sup)
+D_80083248 g_cards  # [runtime] docs/runtime-findings.md field/menu campaign, wins/losses/draws then 0x69 cards of 6 bytes (menu_card)
+func_80062498 card_getWins  # [runtime] docs/runtime-findings.md field/menu campaign, printed in the INFO window
+func_800624D8 card_getLosses  # [runtime] docs/runtime-findings.md field/menu campaign, printed in the INFO window
+func_8006251C card_getDraws  # [runtime] docs/runtime-findings.md field/menu campaign, printed in the INFO window
+func_800624A8 card_addWin  # [code] docs/runtime-findings.md field/menu campaign (medium), +1 capped at 9999
+func_800624E8 card_addLoss  # [code] docs/runtime-findings.md field/menu campaign (medium), +1 capped at 9999
+func_8006252C card_addDraw  # [code] docs/runtime-findings.md field/menu campaign (medium), +1 capped at 9999
+func_800625F8 card_countAll  # [runtime] docs/runtime-findings.md field/menu campaign, 23 = Stock
+func_80062638 card_countKinds  # [runtime] docs/runtime-findings.md field/menu campaign, 11 = Type
+func_80062560 card_countOf  # [runtime] docs/runtime-findings.md field/menu campaign, (id) 4 for Goblin
+func_800625A0 card_find  # [code] docs/runtime-findings.md field/menu campaign (medium-high), (id, n) n-th copy
+func_800626D0 card_remove  # [code] docs/runtime-findings.md field/menu campaign (medium-high), (id, n), called by the Discard confirmation
+func_8006276C card_getName  # [code] docs/runtime-findings.md field/menu campaign (medium-high)
+func_80062794 card_getNameWidth  # [code] docs/runtime-findings.md field/menu campaign (medium-high)
+func_8006238C card_add  # [code] docs/runtime-findings.md field/menu campaign (medium), (id) random stats, -1 when 100 cards
+func_80062420 card_addWithStats  # [code] docs/runtime-findings.md field/menu campaign (medium)
+func_80062830 card_rollStats  # [code] docs/runtime-findings.md field/menu campaign (medium)
+func_80062344 card_initAll  # [code] docs/runtime-findings.md field/menu campaign (medium)
+func_80062724 card_clearAll  # [code] docs/runtime-findings.md field/menu campaign (medium)
+func_80062B30 card_getInfoTable  # [code] docs/runtime-findings.md field/menu campaign (medium)
+func_80062824 card_getInventory  # [code] docs/runtime-findings.md field/menu campaign (medium)
+func_800627BC card_getRarity  # [code] docs/runtime-findings.md field/menu campaign (medium), id to 0..6, the grid icon class
+D_8007B958 g_msgChoice  # [runtime] docs/runtime-findings.md field/menu campaign, MOGNET window cursor 0..3 after each Down
+D_8007B95C g_msgChoiceCount  # [runtime] docs/runtime-findings.md field/menu campaign, 4 in the MOGNET window
+D_8007B968 g_msgChoiceLine  # [runtime] docs/runtime-findings.md field/menu campaign, first choice line in the text
+D_8007B96C g_msgChoiceCancel  # [runtime] docs/runtime-findings.md field/menu campaign, Cancel = choice 3
+D_8007B970 g_msgChoiceWindow  # [runtime] docs/runtime-findings.md field/menu campaign, window id of the choice
+D_8007B9C0 g_msgWindows  # [code] docs/runtime-findings.md field/menu campaign (medium), 10 message windows
+D_8007BB78 g_msgFocus  # [code] docs/runtime-findings.md field/menu campaign (medium), top window
+func_8004F5D4 msg_drawWindowContent  # [runtime] docs/runtime-findings.md field/menu campaign, Window content callback set by msg_open; ablation removes the text
+func_8004D940 msg_drawText  # [runtime] docs/runtime-findings.md field/menu campaign, ablation - the text goes
+func_8004C8C4 msg_renderText  # [runtime] docs/runtime-findings.md field/menu campaign, ablation - the text goes
+func_8004D2C0 msg_advanceText  # [runtime] docs/runtime-findings.md field/menu campaign, stubbed after opening no character ever appears
+func_8004F660 msg_drawChoiceCursor  # [runtime] docs/runtime-findings.md field/menu campaign (medium-high), Window overlay callback; stubbed no hand
+func_8004DAD0 msg_input  # [runtime] docs/runtime-findings.md field/menu campaign (medium-high), Up/Down move g_msgChoice with sound 0x67, Cross confirms
+func_8004E248 msg_getLayout  # [runtime] docs/runtime-findings.md field/menu campaign, parses the message's leading 0xF9 codes (size, choices, position)
+func_8004C2C0 msg_measureLine  # [runtime] docs/runtime-findings.md field/menu campaign (medium), from msg_getLayout, a line's width
+func_8004E7FC msg_update  # [code] docs/runtime-findings.md field/menu campaign (medium), every field frame - pad edges to the focused window's input callback
+func_8004C0E8 msg_readPad  # [code] docs/runtime-findings.md field/menu campaign (medium)
+func_8004E8D4 msg_getPadHeld  # [code] docs/runtime-findings.md field/menu campaign (medium)
+func_8004E8EC msg_getPadPressed  # [code] docs/runtime-findings.md field/menu campaign (medium)
+func_8004E904 msg_getPadReleased  # [code] docs/runtime-findings.md field/menu campaign (medium)
+func_8004E958 msg_closeAll  # [runtime] docs/runtime-findings.md field/menu campaign (medium), menu open - once, from evt
+func_8004BFB0 msg_init  # [code] docs/runtime-findings.md field/menu campaign (medium), resets the windows and picks the text bank per mode
+func_8004E16C msg_resetChoices  # [code] docs/runtime-findings.md field/menu campaign (medium)
+func_8004EFB0 msg_getEntry  # [code] docs/runtime-findings.md field/menu campaign (medium), (id, *size)
+func_8004F058 msg_getText  # [code] docs/runtime-findings.md field/menu campaign (medium)
+func_8004ED94 msg_getWindow  # [code] docs/runtime-findings.md field/menu campaign (medium)
+func_8004EA3C msg_getFocus  # [code] docs/runtime-findings.md field/menu campaign (medium)
+func_8004EA30 msg_setFocus  # [code] docs/runtime-findings.md field/menu campaign (medium)
+func_8004FF98 msg_startHereIcon  # [code] docs/runtime-findings.md field/menu campaign (medium), (reason; 0 = stop), gated by Config HERE Icon and controlEnabled
+func_8004F74C msg_drawHereIcon  # [code] docs/runtime-findings.md field/menu campaign (medium), the arrow over the player
+func_80048A5C evt_checkPlayerAction  # [runtime] docs/runtime-findings.md field/menu campaign, every field frame; on Cross finds the object in front and calls its talk function (3)
+func_80038618 evt_findNearestObject  # [runtime] docs/runtime-findings.md field/menu campaign, (o, flags, *dist) flags 4 = in front, talk range; 0 = collision
+func_800384D0 evt_callObjectFunc  # [runtime] docs/runtime-findings.md field/menu campaign, (o, level, func, save) runs script function func of object o (moogle func 3 on talk)
+func_80038278 evt_returnFromFunc  # [runtime] docs/runtime-findings.md field/menu campaign (medium), pops the object's call stack when a function ends
+func_80037D6C evt_getSysVar  # [runtime] docs/runtime-findings.md field/menu campaign, system variables of the expression evaluator (0 random, 2 controlEnabled, 6 gil, 20 play time, 24 battle id)
+func_800475D8 evt_movePlayer  # [runtime] docs/runtime-findings.md field/menu campaign, pad to player direction/speed; Config Movement picks run (60) or walk (30), Circle inverts
+func_80038990 evt_moveObjectTo  # [code] docs/runtime-findings.md field/menu campaign (medium), (x, y, z, flags) script walk toward a point with collision
+func_80048F54 evt_updateObjects  # [runtime] docs/runtime-findings.md field/menu campaign (medium), all objects each frame
+func_8004883C evt_updateIdleTimer  # [runtime] docs/runtime-findings.md field/menu campaign (medium), random idle animation timer of the player
+func_8004AE00 evt_getPlayer  # [runtime] docs/runtime-findings.md field/menu campaign (medium-high), the object whose uid is playerUid (Zidane in Dali)
+func_8004AE84 evt_isControlEnabled  # [code] docs/runtime-findings.md field/menu campaign (medium-high), g_evtState controlEnabled
+func_8004AE9C evt_getObjectList  # [code] docs/runtime-findings.md field/menu campaign (medium-high)
+func_8004B040 evt_getObject  # [code] docs/runtime-findings.md field/menu campaign (medium-high), (uid)
+func_8004A9E8 evt_onMenuOpen  # [runtime] docs/runtime-findings.md field/menu campaign (medium-high), called by fld_main right after menu_open; closes message windows
+func_8004B68C evt_getObjectProp  # [code] docs/runtime-findings.md field/menu campaign (medium), (o, prop) 0-2 position, 3 direction, 4 flags, 5 uid
+# Types renamed: Unk80077C78 -> FadeState
+# FIELDS include/ff9.h FadeState (g_fade): unk0=type,unk1=subtract,unk2=active,unk8=frames,unkC=frame,unk10=onDone,unk18=pkt,unk1C=otz,unk20=startColor,unk24=endR,unk25=endG,unk26=endB,unk28=color
+# FIELDS include/ff9.h Character: unk38=status,unk88=supportAbilities
+# FIELDS include/ff9.h Unk8007AECC (g_evtState): unk16EC=controlEnabled
+# FIELDS include/ff9.h GameState: unk24=config,unk28=padMap (include/ovl_34.h CFG macro now reads g_gameState->config)
+# FIELDS include/ff9.h GameConfig: unk0_0=soundMono,unk0_1=padCustom,unk0_2=cursorMemory,unk0_3=atbWait,unk0_4=battleCameraFixed,unk0_5=battleControlCustom,unk0_6=movementRun,unk0_7=vibration,unk0_8=battleSpeed,unk0_14=messageSpeed
+# ff9.h: CONFIG_HERE_ICON_OFF/CONFIG_WINDOW_CLASSIC/CONFIG_TARGET_WINDOW_ALWAYS, CONFIG_WINDOW_COLOR() used in src/main
+# Files renamed (src/main + config/slus_012.51.yaml subsegments): tu_8002F7E8.c -> fade.c, tu_80035108.c -> help.c, tu_80035D3C.c -> menu_screen.c, tu_80062344.c -> card.c, tu_800357E0.c -> spr_anim.c
+func_8002F83C fade_cancel  # [code] clears g_fade.active, unk3 and type
+func_8002F854 fade_getType  # [code] g_fade.type
+func_8002F864 fade_isSubtractive  # [code] g_fade.subtract (game_setScreenHeight inverts the clear colour for it)
+func_8002F874 fade_getFrame  # [code] g_fade.frame
+func_8002F884 fade_clear  # [code] zeroes the fade state (type, active, frame, frames, onDone)
+func_8002F8BC fade_clearEase  # [code] returns g_fade.unk4 and clears it; fade_in/fade_out call it first (unk4 selects the eased curve of fadeFlat_update)
+func_8002F8D4 fade_isEased  # [code] g_fade.unk4
+func_8002F914 fade_setCovered  # [code] sets g_fade.unk3, returns the old value (fade_isBusy is true while it is set)
+func_8002F92C fade_isCovered  # [code] g_fade.unk3
+func_8002F93C fade_setAngle  # [code] g_fade.unkA, returns the old value; the z rotation of the wipe fade's quads (fadeWipe_draw), script opcode sets it
+func_8002F954 fade_getAngle  # [code] g_fade.unkA
+func_8002F964 fade_setEndColor  # [code] g_fade end colour bytes, covered = colour != 0
+func_8002F9A8 fade_getColor  # [code] g_fade.color (game_setScreenHeight, game_freezeScreen clear with it)
+func_8002FA10 fade_inAdditiveDefault  # [code] fade_inAdditive(16)
+func_8002FA30 fade_outAdditiveDefault  # [code] fade_outAdditive(12)
+func_8002FBC0 fade_getOt  # [code] OT entry at g_fade.otz of buffer i, or D_80077CA4[i] in battle (mode 2)
+D_80077CA4 g_fadeBattleOt  # [code] per-buffer OT entries fade_getOt returns in battle; ovl_0b clears and links them
+func_8002FC10 fade_getWipeColors  # [code] fadeWipe_getColors wrapper
+func_8002FD70 fade_stepClamp  # [code] a + step, clamped at lim in the step's direction
+func_8002FD98 fade_divRoundOut  # [code] a / b rounded away from zero (per-frame colour steps)
+func_8002FDE8 fade_ease  # [code] quadratic curve a + (b - t * t / b) over the linear value (fadeFlat with g_fade.unk4)
+D_8006BD04 g_fadeTypes  # [code] {start, update, draw} per fade type, called by fade_start/fade_update: 1 flat (fadeFlat_*), 2 wipe (fadeWipe_*)
+D_8006BD28 g_fadeSeekFuncs  # [code] per fade type: advance n frames at once (fade_reverse)
+func_8002FED4 fadeWipe_start  # [code] g_fadeTypes[2].start: halves the frames between two colour ramps toward the end colour
+func_80030030 fadeWipe_update  # [code] g_fadeTypes[2].update
+func_8003015C fadeWipe_seek  # [code] g_fadeSeekFuncs[2]
+func_800302D0 fadeWipe_draw  # [code] g_fadeTypes[2].draw: two Gouraud POLY_G4 halves around the screen centre, rotated by g_fade.unkA
+func_80030770 fadeWipe_getColors  # [code] the two edge colours of the current wipe
+D_80077D00 g_fadeWipe  # [code] wipe fade state (colours, steps, half lengths)
+func_80031B6C fadeFlat_start  # [code] g_fadeTypes[1].start: per-frame colour steps from the current to the end colour
+func_80031C88 fadeFlat_update  # [code] g_fadeTypes[1].update: steps the colour (eased with g_fade.unk4)
+func_80031D98 fadeFlat_seek  # [code] g_fadeSeekFuncs[1]
+func_80031ED8 fadeFlat_draw  # [code] g_fadeTypes[1].draw: a screen-sized semi-transparent TILE (subtractive or additive)
+D_80077D68 g_fadeFlat  # [code] flat fade state (start/end colours, steps)
+func_8002F5A0 fade_reverse  # [code] restarts a running fade back toward its start colour from where it is, with a new onDone (func_80032980)
+func_80030AF4 math_rotMatrixXYZ  # [code] math_buildRotMatrixXYZ(r, m, 0): m = Rx Ry Rz (m[0][2] = sin y)
+func_80030B14 math_rotMatrixXYZ_gte  # [code] math_buildRotMatrixXYZ(r, m, 1)
+func_80030B34 math_buildRotMatrixXYZ  # [code] rotation matrix Rx Ry Rz from SVECTOR angles via g_sinTable; both mode branches are the same code
+func_80030EA4 math_rotMatrixZXY  # [code] math_buildRotMatrixZXY(r, m, 0): m = Rz Rx Ry (m[2][1] = sin x)
+func_80030EC4 math_rotMatrixZXY_gte  # [code] math_buildRotMatrixZXY(r, m, 1)
+func_80030EE4 math_buildRotMatrixZXY  # [code] rotation matrix Rz Rx Ry
+func_80031244 math_rotMatrixZYX  # [code] math_buildRotMatrixZYX(r, m, 0): m = Rz Ry Rx (m[2][0] = -sin y)
+func_80031264 math_rotMatrixZYX_gte  # [code] math_buildRotMatrixZYX(r, m, 1): the products on the GTE (gpf12)
+func_80031284 math_buildRotMatrixZYX  # [code] rotation matrix Rz Ry Rx, mode 1 multiplies on the GTE
+func_800316D8 math_rotMatrixYXZ  # [code] math_buildRotMatrixYXZ(r, m, 0): m = Ry Rx Rz (m[1][2] = -sin x)
+func_800316F8 math_rotMatrixYXZ_gte  # [code] math_buildRotMatrixYXZ(r, m, 1)
+func_80031718 math_buildRotMatrixYXZ  # [code] rotation matrix Ry Rx Rz, mode 1 multiplies on the GTE
+func_8002EB74 menuList_update  # [code] steps a MenuList's scroll / page animation (win_updateAll for open windows)
+func_8002EDFC menuList_init  # [code] (count, visible rows, columns, height): row count, clears cursor and scroll
+func_8002F044 menuList_left  # [code] PAD_LEFT: previous column, wrapping to the previous row / scrolling up
+func_8002F0EC menuList_right  # [code] PAD_RIGHT: next column, wrapping to the next row / scrolling down
+func_8002F344 menuList_getPageView  # [code] visible rows/offset while a page scroll (flag 4) runs
+func_8002F40C menuList_getRowsRect  # [code] the part of a rect below/above the scroll divider at MenuList.unk9
+func_80032078 game_initFade  # [code] fade_init wrapper (game_reset)
+func_80032098 game_updateFade  # [code] fade_update wrapper, called once per frame by the mode loops
+func_800320B8 game_startFade  # [code] fade_start wrapper used by the overlays
+func_800320D8 menu_init  # [code] game_reset: menu_reset and clears g_menu.unk2
+func_80032100 menu_update  # [code] menu_dispatch wrapper called by the field/world loops
+func_80032238 menu_onFadedOut  # [code] fade-out callback of menu_startFadeOut: saves VSync mode, clear colour and pad mask, closes all windows, stick as d-pad
+func_80032384 menu_finish  # [code] restores what menu_onFadedOut saved, runs the type's exit and g_menu.unk24, fades in when g_menu.unkA
+func_8003253C menu_initNewGame  # [code] config_init, fade, timer and menu reset
+func_80032574 menu_initForMode  # [code] config_init, fade init, help_init (ovl_14/ovl_15 mode init)
+func_800325A4 menu_reset  # [code] clears the menu state and help_init
+func_800325E0 menu_close  # [code] fades out (when g_menu.unkB) and then menu_finish, or menu_finish at once; the menu screens call it to leave
+func_80032628 menu_setOnClose  # [code] g_menu.unk24: run by menu_finish
+func_80032634 menu_setFadeInOnClose  # [code] g_menu.unkA: menu_finish fades in
+func_80032640 menu_setFadeOutOnClose  # [code] g_menu.unkB: menu_close fades out first
+func_80032658 menu_dispatch  # [code] runs g_menuStateFuncs[g_menu.unk0] while a menu is open
+D_8006CA64 g_menuStateFuncs  # [code] per menu state: 1 menu_updateLoad, 2 menu_updateWait, 3 menu_updateRun
+func_800326B0 menu_loadOverlay  # [code] menu_readOverlay for types with an overlay (g_menuTypeOvl != 0xFF), else menu_readPortraits
+func_80032708 menu_readOverlay  # [code] cd_readAsync of the type's overlay file to 0x801EDF00, state 2
+func_80032798 menu_readPortraits  # [code] type 0: reads file 30 of dir 1 (party portraits for ui_loadPartyPortraits) to 0x801EDF00 when needed
+func_8003286C menu_updateLoad  # [code] state 1: menu_loadOverlay once the CD is free (world map)
+func_800328B4 menu_updateWait  # [code] state 2: menu_start once the read and the fade-out are done
+func_800328E8 menu_updateRun  # [code] state 3: repeat pad, background, the type's update, help_update, frame counter
+func_80032980 menu_startFadeOut  # [code] menu_doOpen: fades out (or reverses the running fade) with menu_onFadedOut
+func_800329FC menu_onOverlayRead  # [code] read callback of menu_readOverlay: clears g_menu.unk6
+func_80032A18 menu_onPortraitsRead  # [code] read callback of menu_readPortraits: clears g_menu.unk6
+func_80032A44 menu_start  # [code] state 3: flushes the cache for the overlay, uploads the party portraits (type 0), fades in, runs the type's init
+D_80077DB6 g_menuReading  # [code] g_menu.unk6 under its own symbol, cleared by the read callbacks
+D_80077DBA g_menuFadeInOnClose  # [code] g_menu.unkA under its own symbol (menu_setFadeInOnClose)
+D_80077DBB g_menuFadeOutOnClose  # [code] g_menu.unkB under its own symbol (menu_setFadeOutOnClose, menu_close)
+D_80077DBC g_menuArg  # [code] g_menu.unkC under its own symbol: the menu_open argument (ovl_3a reads it)
+D_80077DD4 g_menuOnClose  # [code] g_menu.unk24 under its own symbol (menu_setOnClose)
+# Types renamed: Unk80077DB0 -> MenuState
+# FIELDS include/ff9.h FadeState: unk3=covered,unk4=eased,unk5=prevType,unkA=angle
+# FIELDS include/ff9.h MenuList: unk0=count,unk2=rows,unk3=visibleRows,unk4=cols,unk5=top,unk7=col,unk8=scroll,unk9=scrollPos,unkB=fillV,unkC=pageTop,unkD=height,unkE=pageStep
+# FIELDS include/ff9.h MenuState (g_menu): unk0=state,unk1=type,unk5=open,unk6=reading,unk7=fadingOut,unk9=drawBackground,unkA=fadeInOnClose,unkB=fadeOutOnClose,unkC=arg,unk10=frame,unk14=savedVsyncMode,unk18=savedPadMask,unk20=savedR,unk21=savedG,unk22=savedB,unk24=onClose
+func_80033280 chr_calcAppearance  # [code] CharBits.unk4 (portrait/model variant, chr_getPortrait) from the character's D_8006CAA4 type, its equipment kind and the story counter (g_evtGlobalVars.h[0])
+func_800333B0 chr_join  # [code] optional equipment set, appearance, then level = average of the other recruited characters (CharBits.unkB)
+func_800337D0 party_getPrevMember  # [code] previous non-empty party slot, wrapping
+func_8003380C party_getNextMember  # [code] next non-empty party slot, wrapping
+func_80033964 chr_getClass  # [code] ability-table row (CharBits.row 0-19) -> stat class 0-11 for D_8006DD88 (chr_calcBase*)
+func_800339F4 chr_getAppearanceType  # [code] D_8006CAA4[type][flag], the table chr_calcAppearance switches on
+func_80033A50 chr_getClassFlags  # [code] D_8006CACC[chr_getClass(row)] -> Character.unkA (chr_init)
+func_80033BD0 chr_setRecruited  # [code] sets CharBits.unkB (party_setMember, party_initNewGame); chr_join and item_countEquipped count characters with it
+func_80033C0C chr_clearRecruited  # [code] clears CharBits.unkB
+func_80033CCC chr_levelUp  # [code] chr_setLevel with growth on (equipment bonuses accumulate, HP/MP kept), returns the old level
+func_80033D1C party_setChanged  # [code] D_80077DE0; party_setMember sets it, menu_readPortraits/menu_start reload the party portraits when set
+func_80033D28 party_hasChanged  # [code] D_80077DE0
+D_80077DE0 g_partyChanged  # [code] party_setChanged/party_hasChanged
+func_80033DCC chr_fitSupportAbilities  # [code] after the max stones dropped: unequips support abilities that no longer fit
+func_80033E84 chr_addAp  # [code] adds AP to an ability's slot in Character.unk58, capped at chr_getApNeeded; returns the gain
+func_80034070 chr_isAbilityLearned  # [code] AP >= the ability's AP needed
+func_80034220 chr_learnAbility  # [code] sets an ability's AP to the amount needed
+func_80034324 chr_clearAllAp  # [code] chr_clearAp for all 9 characters
+func_8003435C chr_clearAllSupport  # [code] chr_clearSupport for all 9 characters
+func_80034394 chr_clearAbilities  # [code] chr_clearAp and chr_clearSupport (chr_init)
+func_800343C0 chr_clearAp  # [code] zeroes Character.unk58 (48 ability AP slots)
+func_80034404 chr_clearSupport  # [code] zeroes Character.supportAbilities
+func_80034430 chr_findAbilitySlot  # [code] slot of ability id in the character's D_8006CB28 row, -1 if absent
+func_800344C0 chr_getApPtr  # [code] &Character.unk58[slot of id]
+func_80034584 chr_getAp  # [code] AP of ability id, -1 if the character can't learn it
+func_80034648 chr_setAp  # [code] sets AP of ability id, returns the old value
+func_8003470C chr_resetAp  # [code] chr_setAp(ch, id, 0)
+func_800347D8 chr_getApNeeded  # [code] D_8006CB28[row][slot].unk1, the AP to learn ability id
+func_800348C0 chr_countSupportStones  # [code] sum of the stone costs (D_8006D128) of the equipped support abilities
+func_800349BC chr_hasSupportAbility  # [code] support ability bit of a character
+func_80034A04 chr_testSupportBit  # [code] bit (id - 0xC0) of a support-ability bit array
+func_8003502C chr_sumEquipBonus  # [code] sum of one stat bonus (D_8006D548) over the 5 equipped items
+func_80028DB0 text_renderNameGlyph  # [code] ORs a 2bpp glyph (g_nameGlyphs) into the 4bpp name image (g_nameImage, 0x54 bytes per row) at x
+func_8002B43C text_initNameImage  # [code] glyph source = buf, image = buf + 0x4000 (cleared)
+func_8002B47C text_renderPartyName  # [code] renders party slot's name (up to 7 chars) into the name image
+func_8002C158 text_uploadPartyNames  # [code] renders the four party names and LoadImages them (D_8006BC38)
+D_80077140 g_nameGlyphs  # [code] text_initNameImage / text_renderNameGlyph
+D_80077144 g_nameImage  # [code] text_initNameImage / text_renderNameGlyph
+func_80028F3C text_drawChar  # [code] one font glyph SPRT (GameData.unk7D4 glyph table), centred in 10 px
+func_8002920C text_buildBlock  # [code] text with control codes (0xF9 escapes, 0xF7 newline): colours, icons, names, arguments (text_drawBlock)
+func_8002995C text_buildPlain  # [code] a 0xFF-terminated string (a name) without control codes, two-byte and kanji codes included; returns its width
+func_80029D60 text_buildSmall  # [code] 8x8 SPRT_8 font for ASCII and kana (0x40 toggles kana) (ui_drawSmallDigits)
+func_80029FE4 text_buildCode  # [code] one 0xF9 code: colour 0x20-0x29, button icons, d-pad icons, character / party member names
+func_8002A730 text_getCodeWidth  # [code] width of text_buildCode's output for a code
+func_8002AA04 text_formatTime  # [code] frames -> "hh:mm:ss" (blinking colons), returns the hundreds-of-hours sprite
+func_8002AE7C ui_measureLabel  # [code] width of a ui_buildLabel string
+func_8002AF70 text_measure  # [code] width and height of text with control codes (TextSize)
+func_8002B644 text_buildDigits  # [code] 8x10 digit font string ('/' too), dim when style 2 (ui_drawDigits)
+func_8002B7B0 text_buildGlyph  # [code] SPRT for one font glyph word (offset, width, uv), returns the advance
+func_8002B890 text_buildDpad  # [code] d-pad icon (sprite 0xC) with the directions in mask highlighted
+func_8002B980 text_measureStyle  # [code] g_textMeasureFuncs[idx](s)
+D_8006BBEC g_textMeasureFuncs  # [code] width functions of the argument styles (plain, small, label, digits) used by text_measure
+func_8002B9B8 text_measureSmall  # [code] 7 px per text_buildSmall character (kana toggles excluded)
+func_8002BA10 text_measureDigits  # [code] 7 px per text_buildDigits character
+func_8002BA68 text_measureWidth  # [code] text_measure(s).w
+func_8002BA90 text_buildFontTpage  # [code] DR_TPAGE for the font page (get_mode(1, 1, 0x1E))
+func_8002BBE8 text_formatInt  # [code] signed number without padding, ASCII or font codes (0xFF-terminated)
+func_8002BCC0 text_getLength  # [code] bytes of a 0xFF-terminated text, skipping code arguments
+func_8002BD54 text_copy  # [code] copies a 0xFF-terminated text with its code arguments
+func_8002BE10 text_getButtonSprite  # [code] D_8006BC18[config_remapButton(i)]: the button icon for game button i
+D_8006BC18 g_buttonSprites  # [code] text_getButtonSprite
+func_8002BE44 text_setStringArg  # [code] D_800770B0[i] = string, shown by codes 0x69/0x6B/0x6D/0x6F
+func_8002BE5C text_setNumberArg  # [code] D_800770F0[i] = number, shown by codes 0x68/0x6A/0x6C/0x6E
+func_8002BE74 text_setIconArg  # [code] D_80077130[i] = sprite/item id, shown by codes 0x4D/0x4E
+func_8002BE88 text_getColor  # [code] D_800770AC, the current text palette (codes 0x20-0x29)
+func_8002BE98 text_setColor  # [code] D_800770AC
+func_8002BEA4 text_measureNumber  # [code] width of a number in a style (digits x D_8006BBFC[style])
+D_800770B0 g_textStringArgs  # [code] text_setStringArg
+D_800770F0 g_textNumberArgs  # [code] text_setNumberArg
+D_80077130 g_textIconArgs  # [code] text_setIconArg
+D_800770AC g_textColor  # [code] text_getColor/text_setColor, the palette index of text_buildGlyph
+D_80077080 g_textNumberBuf  # [code] text_buildBlock formats number arguments into it
+D_8006BBA0 g_textPalettes  # [code] CLUT per text colour (text_buildGlyph)
+# FIELDS include/ff9.h Character: unk58=ap
+# ff9.h: TEXT_* text control codes (TEXT_END/NEWLINE/ESC and the escape bytes) used in src/main/text.c
+func_8004C204 msg_beginDraw  # [code] picks the packet buffer (battle: its own D_8007B9B0 per buffer, else g_primPtr) and this frame's OT for the message drawing
+func_8004D69C msg_stepControl  # [code] handles the control code at a window's text position: 0xF9 0x41 skip, 0xF9 0x01 / 0xFF close, 0xF9 0x00 / 0xFE next page
+func_8004E76C msg_setOtz  # [code] D_8007BCA4 = this frame's OT + a
+func_8004E7A4 msg_getPartyMemberId  # [code] character id of party slot i, -1 if empty
+func_8004E7E0 msg_resetPad  # [code] clears msg_readPad's previous buttons and pending event
+func_8004E924 msg_resetWindows  # [code] marks all 10 g_msgWindows closed, no focus (msg_init)
+func_8004EA4C msg_close  # [code] msg_closeWindow(&g_msgWindows[i])
+func_8004EEA0 msg_closeWindow  # [code] closes a message window and its Window
+func_8004EB68 msg_getLastModal  # [code] last open message window with flag 2 (opened with flag by msg_allocWindow)
+func_8004EBC0 msg_overlapsRect  # [code] 1 when an open message window overlaps the rect
+func_8004EC74 msg_setNumber  # [code] D_8007BBA8[i] = v (i < 8), shown by text code TEXT_MSG_NUMBER
+D_8007BBA8 g_msgNumbers  # [code] msg_setNumber; text_buildBlock/text_measure show them for TEXT_MSG_NUMBER
+func_8004EC98 msg_isOpen  # [code] g_msgWindows[i].unk8
+func_8004ECC4 msg_getChoiceIndex  # [code] g_msgChoice counted through the enabled-choice mask D_8007B960: the choice's original index
+func_8004ED00 msg_setChoiceMask  # [code] D_8007B974 = enabled choices, D_8007BB94 = index of the last enabled one below n
+func_8004EDD0 msg_allocWindow  # [code] fills g_msgWindows[idx]: parent, position (centred when the rect has none), size, flag 2
+func_8004EFA0 msg_keepWindowsOnInit  # [code] D_8007B950 = 1: the next msg_init keeps the windows open
+func_8004F0C8 msg_emitNumber  # [code] up to n digits of v (leading blanks 0xF) through func_80051004, returns the digit count
+func_8004F1F0 msg_emitString  # [code] up to max characters of a text (two-byte codes counted) through func_80051004
+func_8004F2B4 msg_emitItemName  # [code] name of an item (< 0x100), key item (< 0x200) or card, up to n characters
+func_8004F3E8 msg_emitCharName  # [code] character's name, up to n characters
+func_8004F4A4 msg_emitCharNameCaps  # [code] character's name converted to capitals (D_8007B930), up to n characters
+func_8004F9A0 msg_drawPlayerBubble  # [code] the two textured quads of the bubble animation over the player (frame values from msg_updatePlayerBubble)
+func_8004FBD8 msg_updatePlayerBubble  # [code] steps the bubble animation script (D_8006E690/6D8/6F0) and draws it over the player object; runtime notes call it the "!" bubble
+func_80050044 msg_resetPlayerBubble  # [code] clears the bubble script and its triggers
+func_80050068 msg_showPlayerBubble  # [code] requests the bubble this frame (D_8007BBEC) with variant a
+func_8004FE0C msg_drawAtePrompt  # [code] blinking sprite strings at (16, 200) in modes D_8007BC10 (runtime notes: the ATE prompt), only with control enabled unless bit 4
+func_80050080 msg_setAtePrompt  # [code] D_8007BC10 = mode, restarts the blink
+func_800500A8 evt_modelOpField  # [code] event opcodes 0x7F-0x85 and 0xD8 on an object's model in the field (GameData field scene model slots)
+func_80050410 evt_modelOpBattle  # [code] the same opcodes on battle models (unk11C0)
+func_80050744 evt_modelOpWorld  # [code] the same opcodes on world-map models
+# Types renamed: Unk8007B9C0 -> MsgWindow, Unk80083248 -> CardInventory
+# FIELDS include/ff9.h MsgWindow: unk0=parent,unk4=x,unk6=y,unk8=open,unkC=onInput,unk14=window,unk18=w,unk1E=msgId,unk20=textPos,unk22=pageStart,unk27=h,unk28=flags,unk29=speed
+# FIELDS include/ff9.h CardInventory (g_cards): unk0=wins,unk2=losses,unk4=draws,unk6=cards
+func_80038150 evt_getObjectArg  # [code] the object whose uid is the next 8-bit script argument
+func_80038FD8 evt_placeBalloon  # [code] positions a message window layout beside an object's screen position (above/below, left/right), avoiding open message windows
+func_80039444 evt_followBalloon  # [code] moves an open balloon Window halfway toward its object's current screen position and its tail with it
+func_80039660 evt_getMsgLayout  # [code] [runtime] docs/runtime-findings.md field/menu campaign (the event layout helper before msg_open) - msg_getLayout plus the window position per placement code 0x50-0x5C
+func_800398D0 evt_turnObject  # [code] starts an object's turn to angle d (shortest way when wrap) with its turn animation and per-frame step
+func_80047B90 evt_relaxLookAt  # [code] moves an object's look-at point toward 500 units straight ahead (head tracking)
+func_80047E1C evt_updateLookAt  # [code] head tracking: picks the nearest object in front (or D_8007AE68) and moves the model's look-at point toward it
+func_80048E80 evt_updateBattleObjects  # [code] battle: switches the enemy objects between states 1 and 3 from btl_getUnitMask(1)
+func_800499D8 evt_onAnimEnd  # [code] an object's animation reached its end: back to the idle animation with a random speed, ends a turn
+func_80049B48 evt_onAnimLimit  # [code] animation hit its loop limit: bounce (flag 0x20), hold (0x10) or evt_onAnimEnd
+func_80049C14 evt_stepAnim  # [code] advances an object's animation frame (4-bit fraction), forward/backward/linked to another object
+func_80049ED8 evt_loadScripts  # [code] sets the script table (D_8007ADF8) and compacts the entries of characters not in the party (mask from msg_getPartyMemberId)
+func_8004A8A4 evt_createModels  # [code] once after loading (D_8007AD1E): evt_createModel for every kind-4 object, field shadow/scale setup
+func_8004AC80 evt_reset  # [code] g_evtState = NULL, clears the last encounter and load flags
+func_8004ACA4 evt_setDrawPosAtObject  # [code] projects the object's head position and sets the text/sprite draw origin there (msg bubble and HERE icon)
+func_8004B098 evt_getModelSlot  # [code] the model slot (unk3B) of object uid, -1 if it has no model
+func_8004B20C evt_resetIdleTimer  # [code] g_evtState.unk1700 = random (200..455) * 4, or * 2 when a != 0
+func_8004B378 evt_initObjectList  # [code] links the 32 object nodes at unk15D8 into the free list, empties the active list (unk16D8)
+func_8004B574 evt_popBitCount  # [code] number of set bits of the popped expression value
+func_8004B5CC evt_popRandomBit  # [code] one random set bit (of the low 8) of the popped expression value
+func_8004B7A4 evt_setObjectProp  # [code] counterpart of evt_getObjectProp: prop 2 sets unk22, others btl_setUnitAttr on the object's battle unit
+func_8004B914 evt_getArg24  # [code] 24-bit script argument (or an expression), like evt_getArg16
+func_8004BA20 evt_projectToScreen  # [code] screen x/y of a world position through GameData's camera matrix
+# ff9.h: BTN_START/BTN_SELECT (raw Start/Select game buttons); PAD_*/BTN_* used in pad.c, event.c, help.c, msg.c, menu.c, tu_800236C4.c, menulist.c
+func_8005A658 akao_cmdPlayMusic  # [code] g_akaoCommandHandlers[0x10] (akao_command)
+func_8005C0F0 akao_cmdStopMusic  # [code] g_akaoCommandHandlers[0x11] (akao_command)
+func_8005AA78 akao_cmdPlayMusicCount  # [code] g_akaoCommandHandlers[0x12] (akao_command)
+func_8005A6D4 akao_cmdPlayMusicFrom  # [code] g_akaoCommandHandlers[0x14] (akao_command)
+func_8005A7E4 akao_cmdPushMusic  # [code] g_akaoCommandHandlers[0x19] (akao_command)
+func_8005A8AC akao_cmdCrossfadeMusic  # [code] g_akaoCommandHandlers[0x1A] (akao_command)
+func_8005ABEC akao_cmdPlaySe  # [code] g_akaoCommandHandlers[0x20] (akao_command)
+func_8005ADE8 akao_cmdStopSe  # [code] g_akaoCommandHandlers[0x21] (akao_command)
+func_8005ACB4 akao_cmdPlaySeBank  # [code] g_akaoCommandHandlers[0x24] (akao_command)
+func_8005AB04 akao_cmdPlaySeDefault  # [code] g_akaoCommandHandlers[0x30] (akao_command)
+func_8005AAB8 akao_cmdPlaySeData  # [code] g_akaoCommandHandlers[0x34] (akao_command)
+func_8005A754 akao_cmdSaveMusic  # [code] g_akaoCommandHandlers[0x40] (akao_command)
+func_8005C234 akao_cmdSetOutputMode1  # [code] g_akaoCommandHandlers[0x80] (akao_command)
+func_8005C294 akao_cmdSetOutputMode2  # [code] g_akaoCommandHandlers[0x81] (akao_command)
+func_8005C2F4 akao_cmd90  # [code] g_akaoCommandHandlers[0x90] (akao_command)
+func_8005C334 akao_cmd92  # [code] g_akaoCommandHandlers[0x92] (akao_command)
+func_8005C438 akao_cmd9A  # [code] g_akaoCommandHandlers[0x9A] (akao_command)
+func_8005C348 akao_cmd9B  # [code] g_akaoCommandHandlers[0x9B] (akao_command)
+func_8005C5F0 akao_cmd9C  # [code] g_akaoCommandHandlers[0x9C] (akao_command)
+func_8005C4D4 akao_cmd9D  # [code] g_akaoCommandHandlers[0x9D] (akao_command)
+func_8005C700 akao_cmd9E  # [code] g_akaoCommandHandlers[0x9E] (akao_command)
+func_8005C684 akao_cmd9F  # [code] g_akaoCommandHandlers[0x9F] (akao_command)
+func_8005B3E4 akao_cmdSetSeVolume  # [code] g_akaoCommandHandlers[0xA0] (akao_command)
+func_8005B4CC akao_cmdFadeSeVolume  # [code] g_akaoCommandHandlers[0xA1] (akao_command)
+func_8005B790 akao_cmdA2  # [code] g_akaoCommandHandlers[0xA2] (akao_command)
+func_8005B870 akao_cmdA3  # [code] g_akaoCommandHandlers[0xA3] (akao_command)
+func_8005BB24 akao_cmdA4  # [code] g_akaoCommandHandlers[0xA4] (akao_command)
+func_8005BC04 akao_cmdA5  # [code] g_akaoCommandHandlers[0xA5] (akao_command)
+func_8005B64C akao_cmdSetAllSeVolume  # [code] g_akaoCommandHandlers[0xA8] (akao_command)
+func_8005B6C8 akao_cmdFadeAllSeVolume  # [code] g_akaoCommandHandlers[0xA9] (akao_command)
+func_8005B9E8 akao_cmdAA  # [code] g_akaoCommandHandlers[0xAA] (akao_command)
+func_8005BA60 akao_cmdAB  # [code] g_akaoCommandHandlers[0xAB] (akao_command)
+func_8005BD8C akao_cmdAC  # [code] g_akaoCommandHandlers[0xAC] (akao_command)
+func_8005BDE4 akao_cmdAD  # [code] g_akaoCommandHandlers[0xAD] (akao_command)
+func_8005AE14 akao_cmdSetMusicVolume  # [code] g_akaoCommandHandlers[0xC0] (akao_command)
+func_8005AEC8 akao_cmdFadeMusicVolume  # [code] g_akaoCommandHandlers[0xC1] (akao_command)
+func_8005B004 akao_cmdFadeMusicVolumeFrom  # [code] g_akaoCommandHandlers[0xC2] (akao_command)
+func_8005B104 akao_cmdC4  # [code] g_akaoCommandHandlers[0xC4] (akao_command)
+func_8005B1B8 akao_cmdC5  # [code] g_akaoCommandHandlers[0xC5] (akao_command)
+func_8005BEB0 akao_cmdD0  # [code] g_akaoCommandHandlers[0xD0] (akao_command)
+func_8005BECC akao_cmdD1  # [code] g_akaoCommandHandlers[0xD1] (akao_command)
+func_8005BF34 akao_cmdD2  # [code] g_akaoCommandHandlers[0xD2] (akao_command)
+func_8005BFA8 akao_cmdD4  # [code] g_akaoCommandHandlers[0xD4] (akao_command)
+func_8005BFC4 akao_cmdD5  # [code] g_akaoCommandHandlers[0xD5] (akao_command)
+func_8005C02C akao_cmdD6  # [code] g_akaoCommandHandlers[0xD6] (akao_command)
+func_8006127C akao_cmdE0  # [code] g_akaoCommandHandlers[0xE0] (akao_command)
+func_800612D0 akao_cmdE2  # [code] g_akaoCommandHandlers[0xE2] (akao_command)
+func_800612F0 akao_cmdE4  # [code] g_akaoCommandHandlers[0xE4] (akao_command)
+func_8006142C akao_cmdE5  # [code] g_akaoCommandHandlers[0xE5] (akao_command)
+func_800614AC akao_cmdE6  # [code] g_akaoCommandHandlers[0xE6] (akao_command)
+func_80062290 akao_cmdE8  # [code] g_akaoCommandHandlers[0xE8] (akao_command)
+func_80061B20 akao_cmdEC  # [code] g_akaoCommandHandlers[0xEC] (akao_command)
+func_80061B78 akao_cmdED  # [code] g_akaoCommandHandlers[0xED] (akao_command)
+func_8005C0A0 akao_cmdStopMusicNow  # [code] g_akaoCommandHandlers[0xF0] (akao_command)
+func_8005C158 akao_cmdStopAllSe  # [code] g_akaoCommandHandlers[0xF1] (akao_command)
+func_8005ECCC akao_opEnd  # [code] D_8006FB60[0x00]: handler of sequence opcode 0xA0 (func_8005E3FC)
+func_8005F370 akao_opProgram  # [code] D_8006FB60[0x01]: handler of sequence opcode 0xA1 (func_8005E3FC)
+func_800604C4 akao_opA2  # [code] D_8006FB60[0x02]: handler of sequence opcode 0xA2 (func_8005E3FC)
+func_8005F044 akao_opA3  # [code] D_8006FB60[0x03]: handler of sequence opcode 0xA3 (func_8005E3FC)
+func_8005F5CC akao_opA4  # [code] D_8006FB60[0x04]: handler of sequence opcode 0xA4 (func_8005E3FC)
+func_8005F324 akao_opOctave  # [code] D_8006FB60[0x05]: handler of sequence opcode 0xA5 (func_8005E3FC)
+func_8005F340 akao_opOctaveUp  # [code] D_8006FB60[0x06]: handler of sequence opcode 0xA6 (func_8005E3FC)
+func_8005F358 akao_opOctaveDown  # [code] D_8006FB60[0x07]: handler of sequence opcode 0xA7 (func_8005E3FC)
+func_8005F0F0 akao_opA8  # [code] D_8006FB60[0x08]: handler of sequence opcode 0xA8 (func_8005E3FC)
+func_8005F120 akao_opA9  # [code] D_8006FB60[0x09]: handler of sequence opcode 0xA9 (func_8005E3FC)
+func_8005F264 akao_opAA  # [code] D_8006FB60[0x0A]: handler of sequence opcode 0xAA (func_8005E3FC)
+func_8005F298 akao_opAB  # [code] D_8006FB60[0x0B]: handler of sequence opcode 0xAB (func_8005E3FC)
+func_8005FFAC akao_opAC  # [code] D_8006FB60[0x0C]: handler of sequence opcode 0xAC (func_8005E3FC)
+func_80060048 akao_opAD  # [code] D_8006FB60[0x0D]: handler of sequence opcode 0xAD (func_8005E3FC)
+func_8006008C akao_opAE  # [code] D_8006FB60[0x0E]: handler of sequence opcode 0xAE (func_8005E3FC)
+func_800600C0 akao_opAF  # [code] D_8006FB60[0x0F]: handler of sequence opcode 0xAF (func_8005E3FC)
+func_800605F8 akao_opB0  # [code] D_8006FB60[0x10]: handler of sequence opcode 0xB0 (func_8005E3FC)
+func_800600F0 akao_opB1  # [code] D_8006FB60[0x11]: handler of sequence opcode 0xB1 (func_8005E3FC)
+func_80060134 akao_opB2  # [code] D_8006FB60[0x12]: handler of sequence opcode 0xB2 (func_8005E3FC)
+func_8005F534 akao_opB3  # [code] D_8006FB60[0x13]: handler of sequence opcode 0xB3 (func_8005E3FC)
+func_8005F718 akao_opB4  # [code] D_8006FB60[0x14]: handler of sequence opcode 0xB4 (func_8005E3FC)
+func_8005F834 akao_opB5  # [code] D_8006FB60[0x15]: handler of sequence opcode 0xB5 (func_8005E3FC)
+func_8005F960 akao_opB6  # [code] D_8006FB60[0x16]: handler of sequence opcode 0xB6 (func_8005E3FC)
+func_80060174 akao_opB7  # [code] D_8006FB60[0x17]: handler of sequence opcode 0xB7 (func_8005E3FC)
+func_8005F984 akao_opB8  # [code] D_8006FB60[0x18]: handler of sequence opcode 0xB8 (func_8005E3FC)
+func_8005FA54 akao_opB9  # [code] D_8006FB60[0x19]: handler of sequence opcode 0xB9 (func_8005E3FC)
+func_8005FB48 akao_opBA  # [code] D_8006FB60[0x1A]: handler of sequence opcode 0xBA (func_8005E3FC)
+func_800601B8 akao_opBB  # [code] D_8006FB60[0x1B]: handler of sequence opcode 0xBB (func_8005E3FC)
+func_8005FB6C akao_opBC  # [code] D_8006FB60[0x1C]: handler of sequence opcode 0xBC (func_8005E3FC)
+func_8005FC00 akao_opBD  # [code] D_8006FB60[0x1D]: handler of sequence opcode 0xBD (func_8005E3FC)
+func_8005FCEC akao_opBE  # [code] D_8006FB60[0x1E]: handler of sequence opcode 0xBE (func_8005E3FC)
+func_80060230 akao_opBF  # [code] D_8006FB60[0x1F]: handler of sequence opcode 0xBF (func_8005E3FC)
+func_8005F57C akao_opC0  # [code] D_8006FB60[0x20]: handler of sequence opcode 0xC0 (func_8005E3FC)
+func_8005F5A0 akao_opC1  # [code] D_8006FB60[0x21]: handler of sequence opcode 0xC1 (func_8005E3FC)
+func_8005FEB4 akao_opC2  # [code] D_8006FB60[0x22]: handler of sequence opcode 0xC2 (func_8005E3FC)
+func_8005FF14 akao_opC3  # [code] D_8006FB60[0x23]: handler of sequence opcode 0xC3 (func_8005E3FC)
+func_8005FD10 akao_opC4  # [code] D_8006FB60[0x24]: handler of sequence opcode 0xC4 (func_8005E3FC)
+func_8005FD70 akao_opC5  # [code] D_8006FB60[0x25]: handler of sequence opcode 0xC5 (func_8005E3FC)
+func_8005FDD8 akao_opC6  # [code] D_8006FB60[0x26]: handler of sequence opcode 0xC6 (func_8005E3FC)
+func_8005FE4C akao_opC7  # [code] D_8006FB60[0x27]: handler of sequence opcode 0xC7 (func_8005E3FC)
+func_800602A4 akao_opC8  # [code] D_8006FB60[0x28]: handler of sequence opcode 0xC8 (func_8005E3FC)
+func_800602F4 akao_opC9  # [code] D_8006FB60[0x29]: handler of sequence opcode 0xC9 (func_8005E3FC)
+func_80060470 akao_opCA  # [code] D_8006FB60[0x2A]: handler of sequence opcode 0xCA (func_8005E3FC)
+func_8006071C akao_opCB  # [code] D_8006FB60[0x2B]: handler of sequence opcode 0xCB (func_8005E3FC)
+func_8005FF74 akao_opCC  # [code] D_8006FB60[0x2C]: handler of sequence opcode 0xCC (func_8005E3FC)
+func_8005FF80 akao_opCD  # [code] D_8006FB60[0x2D]: handler of sequence opcode 0xCD (func_8005E3FC)
+func_80060634 akao_opCE  # [code] D_8006FB60[0x2E]: handler of sequence opcode 0xCE (func_8005E3FC)
+func_80060678 akao_opCF  # [code] D_8006FB60[0x2F]: handler of sequence opcode 0xCF (func_8005E3FC)
+func_8005FF88 akao_opD0  # [code] D_8006FB60[0x30]: handler of sequence opcode 0xD0 (func_8005E3FC)
+func_8005FFA4 akao_opD1  # [code] D_8006FB60[0x31]: handler of sequence opcode 0xD1 (func_8005E3FC)
+func_800606A8 akao_opD2  # [code] D_8006FB60[0x32]: handler of sequence opcode 0xD2 (func_8005E3FC)
+func_800606EC akao_opD3  # [code] D_8006FB60[0x33]: handler of sequence opcode 0xD3 (func_8005E3FC)
+func_80060784 akao_opD4  # [code] D_8006FB60[0x34]: handler of sequence opcode 0xD4 (func_8005E3FC)
+func_80060798 akao_opD5  # [code] D_8006FB60[0x35]: handler of sequence opcode 0xD5 (func_8005E3FC)
+func_800607AC akao_opD6  # [code] D_8006FB60[0x36]: handler of sequence opcode 0xD6 (func_8005E3FC)
+func_800607C0 akao_opD7  # [code] D_8006FB60[0x37]: handler of sequence opcode 0xD7 (func_8005E3FC)
+func_8005F654 akao_opD8  # [code] D_8006FB60[0x38]: handler of sequence opcode 0xD8 (func_8005E3FC)
+func_8005F6B4 akao_opD9  # [code] D_8006FB60[0x39]: handler of sequence opcode 0xD9 (func_8005E3FC)
+func_8005F614 akao_opDA  # [code] D_8006FB60[0x3A]: handler of sequence opcode 0xDA (func_8005E3FC)
+func_8005F64C akao_opDB  # [code] D_8006FB60[0x3B]: handler of sequence opcode 0xDB (func_8005E3FC)
+func_800604EC akao_opDC  # [code] D_8006FB60[0x3C]: handler of sequence opcode 0xDC (func_8005E3FC)
+func_8005F894 akao_opDD  # [code] D_8006FB60[0x3D]: handler of sequence opcode 0xDD (func_8005E3FC)
+func_8005FA78 akao_opDE  # [code] D_8006FB60[0x3E]: handler of sequence opcode 0xDE (func_8005E3FC)
+func_8005FC20 akao_opDF  # [code] D_8006FB60[0x3F]: handler of sequence opcode 0xDF (func_8005E3FC)
+func_8006088C akao_opE0  # [code] D_8006FB60[0x40]: handler of sequence opcode 0xE0 (func_8005E3FC)
+func_800608F4 akao_opE1  # [code] D_8006FB60[0x41]: handler of sequence opcode 0xE1 (func_8005E3FC)
+func_80060910 akao_opE2  # [code] D_8006FB60[0x42]: handler of sequence opcode 0xE2 (func_8005E3FC)
+func_80060918 akao_opInvalid  # [code] fills the unused slots of the sequence opcode tables D_8006FB60/D_8006FCE0; ends the track like opcode 0xA0
+func_8005F900 akao_opE4  # [code] D_8006FB60[0x44]: handler of sequence opcode 0xE4 (func_8005E3FC)
+func_8005FAE8 akao_opE5  # [code] D_8006FB60[0x45]: handler of sequence opcode 0xE5 (func_8005E3FC)
+func_8005FC8C akao_opE6  # [code] D_8006FB60[0x46]: handler of sequence opcode 0xE6 (func_8005E3FC)
+func_8005EDA0 akao_opFETempo  # [code] D_8006FCE0[0x00]: handler of sequence opcode 0xFE 0x00 (func_8005E3FC)
+func_8005EDEC akao_opFETempoSlide  # [code] D_8006FCE0[0x01]: handler of sequence opcode 0xFE 0x01 (func_8005E3FC)
+func_8005EE8C akao_opFE02  # [code] D_8006FCE0[0x02]: handler of sequence opcode 0xFE 0x02 (func_8005E3FC)
+func_8005EED4 akao_opFE03  # [code] D_8006FCE0[0x03]: handler of sequence opcode 0xFE 0x03 (func_8005E3FC)
+func_80060534 akao_opFE04  # [code] D_8006FCE0[0x04]: handler of sequence opcode 0xFE 0x04 (func_8005E3FC)
+func_8006056C akao_opFE05  # [code] D_8006FCE0[0x05]: handler of sequence opcode 0xFE 0x05 (func_8005E3FC)
+func_8005EF7C akao_opFEJump  # [code] D_8006FCE0[0x06]: handler of sequence opcode 0xFE 0x06 (func_8005E3FC)
+func_8005EFA8 akao_opFEJumpIfGe  # [code] D_8006FCE0[0x07]: handler of sequence opcode 0xFE 0x07 (func_8005E3FC)
+func_80060388 akao_opFE08  # [code] D_8006FCE0[0x08]: handler of sequence opcode 0xFE 0x08 (func_8005E3FC)
+func_800603F4 akao_opFE09  # [code] D_8006FCE0[0x09]: handler of sequence opcode 0xFE 0x09 (func_8005E3FC)
+func_8005F418 akao_opFE0A  # [code] D_8006FCE0[0x0A]: handler of sequence opcode 0xFE 0x0A (func_8005E3FC)
+func_800607D4 akao_opFE0B  # [code] D_8006FCE0[0x0B]: handler of sequence opcode 0xFE 0x0B (func_8005E3FC)
+func_8005F000 akao_opFECall  # [code] D_8006FCE0[0x0E]: handler of sequence opcode 0xFE 0x0E (func_8005E3FC)
+func_8005F038 akao_opFEReturn  # [code] D_8006FCE0[0x0F]: handler of sequence opcode 0xFE 0x0F (func_8005E3FC)
+func_80060274 akao_opFE10  # [code] D_8006FCE0[0x10]: handler of sequence opcode 0xFE 0x10 (func_8005E3FC)
+func_80060294 akao_opFE11  # [code] D_8006FCE0[0x11]: handler of sequence opcode 0xFE 0x11 (func_8005E3FC)
+func_8005F06C akao_opFE12  # [code] D_8006FCE0[0x12]: handler of sequence opcode 0xFE 0x12 (func_8005E3FC)
+func_8005F4A0 akao_opFE14  # [code] D_8006FCE0[0x14]: handler of sequence opcode 0xFE 0x14 (func_8005E3FC)
+func_80060584 akao_opFE15  # [code] D_8006FCE0[0x15]: handler of sequence opcode 0xFE 0x15 (func_8005E3FC)
+func_800605BC akao_opFE16  # [code] D_8006FCE0[0x16]: handler of sequence opcode 0xFE 0x16 (func_8005E3FC)
+func_8005F1AC akao_opFE19  # [code] D_8006FCE0[0x19]: handler of sequence opcode 0xFE 0x19 (func_8005E3FC)
+func_8005F23C akao_opFE1A  # [code] D_8006FCE0[0x1A]: handler of sequence opcode 0xFE 0x1A (func_8005E3FC)
+func_8005F250 akao_opFE1B  # [code] D_8006FCE0[0x1B]: handler of sequence opcode 0xFE 0x1B (func_8005E3FC)
+func_800608A0 akao_opFE1C  # [code] D_8006FCE0[0x1C]: handler of sequence opcode 0xFE 0x1C (func_8005E3FC)
+func_800608B4 akao_opFE1D  # [code] D_8006FCE0[0x1D]: handler of sequence opcode 0xFE 0x1D (func_8005E3FC)
+func_800608D4 akao_opFE1E  # [code] D_8006FCE0[0x1E]: handler of sequence opcode 0xFE 0x1E (func_8005E3FC)
+func_800551F0 snd_init  # [code] game_reset: akao_init
+func_80055210 snd_quit  # [code] game_shutdown: akao_quit
+func_80055290 akao_playMusic  # [code] akao_command(0x10) (akao_cmdPlayMusic) with the sequence data
+func_800552B8 akao_stopMusic  # [code] akao_command(0x11) (akao_cmdStopMusic)
+func_800552E0 akao_playMusicFrom  # [code] akao_command(0x14) (akao_cmdPlayMusicFrom)
+func_80055310 akao_saveMusic  # [code] akao_command(0x40): copies the playing sequence and its channels to the backup slot (akao_cmdSaveMusic)
+func_80055350 akao_pushMusic  # [code] akao_command(0x19): backs the current music up and starts a new one at a volume (akao_cmdPushMusic)
+func_80055384 akao_crossfadeMusic  # [code] akao_command(0x1A): resumes the backed-up music or starts one, fading over a length (akao_cmdCrossfadeMusic)
+func_800553BC akao_playMusicCount  # [code] akao_command(0x12) (akao_cmdPlayMusicCount)
+func_800553EC akao_playSe  # [code] akao_command(0x20) with id/flags/volume, or 0x24 for an AKAO data pointer (>= 0x400)
+func_8005546C akao_stopSe  # [code] akao_command(0x21) (akao_cmdStopSe -> akao_stopSeChannels)
+func_800554A8 akao_playSeDefault  # [code] akao_command(0x30) with an id (akao_cmdPlaySeDefault)
+func_800554D4 akao_getActiveSe  # [code] OR of the ids (AkaoChannel.unk28) of the active sound-effect channels
+func_8005553C akao_isSePlaying  # [code] 1 when an active sound-effect channel has this id
+func_800599D4 akao_stopSeq  # [code] stops a sequence's channels (akao_cmdStopMusic/StopMusicNow)
+func_80059AA8 akao_stopSeChannels  # [code] stops the sound-effect channels matching a mask or one channel id (akao_cmdStopSe)
+func_800555DC akao_sendCmd90  # [code] fills g_akaoArgs and runs akao_command(0x90)
+func_80055604 akao_sendCmd92  # [code] fills g_akaoArgs and runs akao_command(0x92)
+func_80055704 akao_setAllSeVolume  # [code] fills g_akaoArgs and runs akao_command(0xA8)
+func_80055730 akao_fadeAllSeVolume  # [code] fills g_akaoArgs and runs akao_command(0xA9)
+func_80055764 akao_setSeVolume  # [code] fills g_akaoArgs and runs akao_command(0xA0)
+func_800557A8 akao_fadeSeVolume  # [code] fills g_akaoArgs and runs akao_command(0xA1)
+func_800557F0 akao_sendCmdAA  # [code] fills g_akaoArgs and runs akao_command(0xAA)
+func_8005581C akao_sendCmdAB  # [code] fills g_akaoArgs and runs akao_command(0xAB)
+func_80055850 akao_sendCmdA2  # [code] fills g_akaoArgs and runs akao_command(0xA2)
+func_80055894 akao_sendCmdA3  # [code] fills g_akaoArgs and runs akao_command(0xA3)
+func_800558DC akao_sendCmdAC  # [code] fills g_akaoArgs and runs akao_command(0xAC)
+func_80055908 akao_sendCmdAD  # [code] fills g_akaoArgs and runs akao_command(0xAD)
+func_8005593C akao_sendCmdA4  # [code] fills g_akaoArgs and runs akao_command(0xA4)
+func_80055980 akao_sendCmdA5  # [code] fills g_akaoArgs and runs akao_command(0xA5)
+func_800559C8 akao_setMusicVolume  # [code] fills g_akaoArgs and runs akao_command(0xC0)
+func_800559FC akao_fadeMusicVolume  # [code] fills g_akaoArgs and runs akao_command(0xC1)
+func_80055A34 akao_fadeMusicVolumeFrom  # [code] fills g_akaoArgs and runs akao_command(0xC2)
+func_80055A74 akao_sendCmdC4  # [code] fills g_akaoArgs and runs akao_command(0xC4)
+func_80055AA8 akao_sendCmdC5  # [code] fills g_akaoArgs and runs akao_command(0xC5)
+func_80055B6C akao_sendCmdD0  # [code] fills g_akaoArgs and runs akao_command(0xD0)
+func_80055B98 akao_sendCmdD1  # [code] fills g_akaoArgs and runs akao_command(0xD1)
+func_80055BCC akao_sendCmdD2  # [code] fills g_akaoArgs and runs akao_command(0xD2)
+func_80055C08 akao_sendCmdD4  # [code] fills g_akaoArgs and runs akao_command(0xD4)
+func_80055C34 akao_sendCmdD5  # [code] fills g_akaoArgs and runs akao_command(0xD5)
+func_80055C68 akao_sendCmdD6  # [code] fills g_akaoArgs and runs akao_command(0xD6)
+func_80055CA4 akao_sendCmdD8  # [code] fills g_akaoArgs and runs akao_command(0xD8)
+func_80055CD0 akao_sendCmdD9  # [code] fills g_akaoArgs and runs akao_command(0xD9)
+func_80055D04 akao_sendCmdDA  # [code] fills g_akaoArgs and runs akao_command(0xDA)
+func_80055D40 akao_stopMusicNow  # [code] fills g_akaoArgs and runs akao_command(0xF0)
+func_80055D60 akao_stopAllSe  # [code] fills g_akaoArgs and runs akao_command(0xF1)
+func_80056228 akao_sendCmdE2  # [code] fills g_akaoArgs and runs akao_command(0xE2)
+func_80056248 akao_sendCmdE4  # [code] fills g_akaoArgs and runs akao_command(0xE4)
+func_80056278 akao_sendCmdE5  # [code] fills g_akaoArgs and runs akao_command(0xE5)
+func_800562B0 akao_sendCmdE6  # [code] fills g_akaoArgs and runs akao_command(0xE6)
+func_80056388 akao_sendCmdED  # [code] fills g_akaoArgs and runs akao_command(0xED)
+func_8005562C akao_sendCmd99  # [code] akao_command 0x99/0x9B/0x9D/0x9F for x = 0/1/2/3
+func_80055698 akao_sendCmd98  # [code] akao_command 0x98/0x9A/0x9C/0x9E for x = 0/1/2/3
+func_80055230 akao_setSeTables  # [code] after the header check, points D_800809DC/D_800809E4/D_80083148/D_800809E8 at the tables of an SE data block
+func_80055DCC akao_readCounter  # [code] reads D_800809E0 until two reads agree (updated from the tick interrupt)
+func_80055DF4 akao_beginBankUpload  # [code] arms akao_uploadBank (D_80083158 bit 0), clears its state
+func_80055E14 akao_uploadBank  # [code] streams an "AKAO" bank in parts: header, instrument table to D_8007F970, sample data to SPU RAM (game_loadCommonAkao)
+func_80056130 akao_setCdMix  # [code] CdMix with the CD volume (stereo, or both sides mixed when D_8008315C bit 1)
+func_800561C4 akao_sendCmdE0  # [code] checks the AKAO header, then akao_command(0xE0) with the data pointer
+func_800563C0 akao_sendCmdEC  # [code] checks the AKAO header, then akao_command(0xEC) with the data and an SPU address (0x59100 / 0x4F100)
+func_80056448 akao_sendCmdE8  # [code] akao_command(0xE8) when b != 0
+func_800562E0 akao_uploadSeBank  # [code] checks the AKAO header, uploads its sample data to SPU 0x59100 (or 0x4F100) and keeps a copy of the header in D_8007F720
+func_8005658C akao_relocInstruments  # [code] copies n 16-byte instrument entries, adding the SPU base address to the start/loop words
+func_800565DC akao_checkHeader  # [code] 0 when the block starts with "AKAO"
+func_800565F0 akao_onSpuTransferDone  # [code] SPU transfer callback: clears D_800809E0
+func_80056614 akao_beginSpuTransfer  # [code] D_800809E0 = 1 and installs akao_onSpuTransferDone
+func_80056644 akao_spuWrite  # [code] akao_beginSpuTransfer + SpuWrite
+func_80056694 akao_spuRead  # [code] akao_beginSpuTransfer + SpuRead
+func_800566D0 akao_waitSpuTransfer  # [code] spins while D_800809E0 == 1 (double read)
+func_80056700 akao_loadBank  # [code] header check, then akao_loadBankAt with the bank's own slot and SPU address
+func_80056750 akao_loadBankAt  # [code] uploads an AKAO bank's samples to SPU addr and its relocated instruments to D_8007F970[slot]
+func_80055D80 akao_loadBankRetry  # [code] repeats akao_loadBank while it returns 1
+D_800809E0 g_akaoSpuBusy  # [code] 1 while an SPU transfer runs (akao_beginSpuTransfer/akao_onSpuTransferDone), -1 after a bad bank
+func_8005936C akao_shiftInstrumentUp  # [code] flag 0x20: instruments 0x20-0x7F of a channel move to the bank 0x20000 higher in SPU RAM (index + 0x30)
+func_800593C0 akao_shiftInstrumentDown  # [code] the reverse of akao_shiftInstrumentUp
+# ff9.h: SPU register address constants (SPU_MAIN_VOL_L .. SPU_CD_VOL_R, SPU_VOICE_BASE) used in akao*.c
+func_8006573C chr_payMp  # [code] subtracts the cost from Character.mp (+0x12) when it suffices, else returns 0
+func_8006576C fieldCalc_apply  # [code] end of item_useOnMember: on failure sets the result flag, else adds the HP/MP gains (chr_addHp/chr_addMp)
+func_800657F0 fieldCalc_checkAlive  # [code] fails (flag 1) when the target has status 0x41 or 0 HP
+func_80065850 fieldCalc_checkDead  # [code] fails unless the target is KO (0 HP and not status 1) - revive effects
+func_800658DC fieldCalc_setMagicHeal  # [code] base = caster magic + random (level + magic) / 8, power from the command, target magic defence (effect 10)
+func_800659D0 fieldCalc_setItemHeal  # [code] base 10, power from the command (effects 69/70)
+func_800659EC fieldCalc_casterStatusHalf  # [code] halves the base when the caster has status bit 0
+func_80065A44 fieldCalc_supportBoost  # [code] base * 1.5 when the caster's Character+0x8C bit 1 (a support ability) is set
+func_80065A80 fieldCalc_multiTargetHalf  # [code] halves the base when the command targets several members (mode 1, target type 3-5)
+func_80065ADC fieldCalc_calcHpGain  # [code] HP gain = power * base, capped at 9999
+func_80065B9C fieldCalc_calcMpGain  # [code] MP gain = power * base, capped at 9999
+func_80065B14 fieldCalc_calcReviveHp  # [code] HP = maxHp * (spirit + power) / 100 (/ 50 with a support ability), effect 13
+func_80065BD4 fieldCalc_restoreAll  # [code] HP and MP to max (effect 71)
+func_80065BFC fieldCalc_reviveRandom  # [code] HP = 1-10 at random (effect 72)
+func_80065C8C fieldCalc_restoreHalf  # [code] gains of half max HP and MP (effect 76)
+func_80065CBC fieldCalc_cureStatusType  # [code] cures the status bits of the command's status type (effect 12)
+func_80065D40 fieldCalc_cureStatus  # [code] cures the command's status mask (effects 62/73)
+func_80065D90 chr_addHp  # [code] adds HP up to maxHp unless status bit 0 is set
+func_80065DF4 chr_addMp  # [code] adds MP up to maxMp unless status bit 0 is set
+func_80053960 chr_cureStatusBit  # [code] clears a Character.status bit, 2 if it was set else 1
+func_8005398C chr_cureStatusMask  # [code] chr_cureStatusBit for every bit of mask, 2 if any was set
+func_800539FC chr_hasStatus  # [code] Character.status & mask != 0
+func_80053A10 swirl_update  # [code] the screen-warp transition field (fld_movie) and world map (wm_main) run before a battle: draws the swirled screen around (x, y), returns 1 after 0x78 frames
+func_800540E8 swirl_drawFlash  # [code] four semi-transparent POLY_G3 fans from the screen corners to (x, y), brightening over the transition
+func_80054294 swirl_buildMesh  # [code] 9x9 grid around (x, y) rotated and scaled by the transition's angle/zoom (WarpVert mesh)
+func_80054650 swirl_drawMesh  # [code] POLY_FT4 per mesh cell texturing the current frame buffer
+D_8007BD28 g_swirlFrame  # [code] frame counter of swirl_update (0..0x78)
+# xrefs: main references to overlay functions/data now use the overlays' names (config/xrefs.us.txt; build/xrefs_apply.py), e.g. fld_entry, wm_entry, opening_main, ending_main, tm_main, fldbg_*, bgi_*, fld_soundCommand, menuMainField_setCursor (ovl_0a 0x800C9510), menuMainWorld_setCursor (ovl_0c 0x800CC820), g_worldPlayerStepped
+# ff9.h constants (from the ovl_0a/0c analysis J.txt and the overlay headers): PAD_SOFT_RESET, PAD_ID_DIGITAL/ANALOG,
+# GS_* (GameState.unk0), GD_* (GameData.unk0), DB_* key kinds (incl. DB_MODEL 0x20000, DB_FONT 0xD0000), SND_* sound
+# command words (WM_SND_* values as SND_*), SE_CANCEL/BUZZER/CURSOR/PAGE, ITEM_NONE, ITEM_SLOT_COUNT, KEY_ITEM_COUNT,
+# LEVEL_MAX, EXP_MAX, GIL_MAX, ABILITY_MAX, ABILITY_SUPPORT_FIRST, SUPPORT_COUNT, MENU_SCREEN_*, WM_PARAM_*;
+# psyq.h: setSprt, setSprt16, _get_mask. Used in main.c, db.c, file.c, menu.c, msg.c, menulist.c, help.c, event.c,
+# pad.c, tu_8001D268.c, tu_80021640.c, tu_8002BEEC.c, tu_80053924.c.
+D_800703FC g_winLabelStrings  # [code] window title strings ("PARTY", "INFO", "HELP", "ERROR", ...) shown by ui_buildLabel (overlay naming pass)
+D_8006D328 g_armorStatBonus  # [code] armor stat bonus table (overlay naming pass, ovl_33/ovl_3c)
+# FIELDS include/ff9.h GameState: unk4=allocTop,unkB=disc,unkC=dispEnv,unk10=drawEnv,unk14=dirs,unk18=dirTables,unk20=imgSector,unk30=dirCount (unk1C left: 2700+ uses across all overlays)
+# FIELDS include/ff9.h GameData: unk56E=battleEndKind,unk844=chocograph
+D_8007BD38 g_vib  # [code] pad vibration player state: flags, start/end frame, rate, 8.8 position, pattern data (vib_*)
+func_80054A28 vib_init  # [code] sets the vibration pattern data (tracks of per-frame motor bytes), its length, selects track 0 for both motors and stops the actuators
+func_80054B78 vib_update  # [code] per frame: sums the selected tracks' bytes into g_padActuator (unless config vibration is off), advances and loops / ping-pongs the position
+func_80054E88 vib_selectTrack  # [code] selects (or deselects) one track for motor col, restarting at the start frame
+func_80054F80 vib_clear  # [code] stops the actuators and clears g_vib
+func_80054FB8 vib_play  # [code] starts playing from frame a
+func_80054FE0 vib_setPlaying  # [code] resumes (restarting when outside the range) or stops and silences the motors
+func_80055060 vib_setTrackEnabled  # [code] sets/clears a track's enable bit for motor b
+func_800550C0 vib_setRate  # [code] position step per frame (8.8)
+func_800550D0 vib_setLoopMode  # [code] flags 0x08 (loop) / 0x10 (ping-pong) of g_vib
+func_800550F0 vib_setRange  # [code] start/end frame (negative keeps the old value)
+func_80055110 vib_getFlags  # [code] g_vib flags
+func_80055128 vib_isTrackEnabled  # [code] track a's enable bit for motor b
+func_8005517C vib_getData  # [code] the pattern data pointer
+func_80055194 vib_getRange  # [code] start/end frame
+func_800551BC vib_getRate  # [code] the position step
+func_800551D4 vib_getFrame  # [code] the current frame
+func_80036650 evt_allocObject  # [code] allocates n words from the object memory (g_evtState.unk50, 0x500 words) in its sorted block list
+func_800367D0 evt_createObject  # [code] replaces object id, allocates and clears it, links it into the object list, points it at its script's entry 0
+func_80036978 evt_deleteObject  # [code] unlinks an object, frees its block and clears playerUid if it was the player
+func_80036AAC evt_exprUnitIncDec  # [code] expression ops 8-11 (pre/post ++/--) on each battle object selected by a mask
+func_80036CCC evt_exprUnitAssign  # [code] assignment ops (=, *=, /=, %=, +=, -=, <<=, >>=, &=, ^=, |=) on each selected battle object
+func_80036FFC evt_exprUnitSelect  # [code] ops 0xF (not), 0x4B (max), 0x4C (min) over the selected battle objects, the result as a bit mask
+func_800372A4 evt_exprUnitCompare  # [code] comparisons over the selected battle objects, one result bit each
+func_80037528 evt_exprUnitLogic  # [code] truth bits of the selected battle objects, combined by &, ^, | with the next value
+func_80037738 evt_exprUnitFirst  # [code] the value for the first battle object selected by the mask
+func_800378C4 evt_joinParty  # [code] puts a character into the first free party slot unless already there or the party is full
+func_80037ACC evt_exprSpecial  # [code] expression ops on battle objects and game state: item/key item/card counts (0x64), HP/MP (0x52/53/6E/6F), walkmesh triangle (0x70/71)
+func_80063580 gfx_initTpageSprt  # [code] DR_TPAGE + SPRT merged into one packet (MargePrim)
+func_800635E0 gfx_initTpageTile  # [code] DR_TPAGE + TILE merged into one packet
+func_80063640 gfx_initTpagePolyF3  # [code] DR_TPAGE + POLY_F3 merged into one packet
+func_800636A0 gfx_initTpagePolyF4  # [code] DR_TPAGE + POLY_F4 merged into one packet
+func_80063700 gfx_initTpagePolyG3  # [code] DR_TPAGE + POLY_G3 merged into one packet
+func_80063760 gfx_initTpagePolyG4  # [code] DR_TPAGE + POLY_G4 merged into one packet
+func_800633E4 db_findModelInfo  # [code] searches the DB_MODEL_INFO (0x120000) tables of all registered dbs for model id
+func_80063118 tween_start  # [code] starts a TweenDef on a WinDef: delay, optionally rewinding the offset by the summed deltas (ff9-ds tools/test_window_tween.py)
+func_800631AC tween_step  # [code] per frame: waits the delay, then adds the next x/y deltas; at the end runs the done hook and returns 1
+func_800632B4 tween_sumDeltas  # [code] sum of n s8 deltas
+func_800651D8 game_newGame  # [code] item_initNew, party_initNewGame (new game data)
+func_8004BBF0 evt_initSystem  # [code] game_reset: message windows, pad, rand_init(GetRCnt(2)), evt_reset
+func_8004BC38 evt_update  # [code] per frame unless D_8007B718: msg_update, idle timer, evt_updateObjects, bubble, ATE prompt; returns the objects' result
+func_8001E350 game_getModel  # [code] GameData model slot i (unk8D8 for i < 9, else unk8E0); objects keep the index in unk3B (evt_createModel)
+# Files renamed: tu_80054A28.c -> vib.c, tu_80063118.c -> tween.c, tu_80063580.c -> gfx_prim.c, tu_800651D8.c -> newgame.c, tu_8004BBF0.c -> evt_main.c
+# Files renamed: tu_800654F8.c -> item_use.c, tu_8001D268.c -> gamedata.c, tu_80036650.c -> evt_object.c
+D_80083168 g_akaoStream  # [code] SPU sample stream state: read pointer, loop start/length, bytes left, volume, pan (AKAO commands 0xE0-0xEE)
+D_80080A70 g_akaoSeState  # [code] sound-effect channel masks (active channels 0x100 << i over g_akaoSeChannels, key-off pending, ...)
+D_8007F790 g_akaoSubSeq  # [code] second running sequence: the music pushed by akao_cmdPushMusic/CrossfadeMusic keeps playing here (voice code updates it with g_akaoSeq)
+D_8007F71C g_akaoSubChannels  # [code] channels of g_akaoSubSeq
+D_8007F8F0 g_akaoSavedSeq  # [code] copy of a sequence made by akao_cmdSaveMusic/PushMusic; resumed when the same id is played again
+D_80080AC8 g_akaoSavedChannels  # [code] channel copies for g_akaoSavedSeq
+D_80083158 g_akaoFlags  # [code] driver flags (bank upload armed, output mode word, update flags)
+D_8007E3D8 g_akaoSeChannels  # [code] the 16 sound-effect channels on voices 8-23 (akao_initState)
+D_8007F970 g_akaoInstruments  # [code] instrument table filled by akao_loadBankAt/akao_uploadBank (relocated SPU addresses)
+D_80083228 g_akaoUpload  # [code] state of akao_uploadBank (destination, bytes left of the instrument table and of the samples)
+D_80080A30 g_akaoBankHeader  # [code] copy of the 0x40-byte AKAO bank header in akao_uploadBank
+D_8006F540 g_akaoPanCurve  # [code] 256-entry pan curve
+D_80069018 g_itemTable  # [code] item records (name offset, price +4, equip kind, flags) used by item_*, ui_buildItemIcon, chr_calcEquipStats
+D_800686D0 g_uiSprites  # [code] UI sprite descriptors (uv, clut, w/h, tpage) by sprite id (ui_drawSprite, ui_buildSprite)
+D_8006A218 g_itemNames  # [code] item name text, indexed by g_itemTable name offsets (msg_emitItemName)
+D_8006CB28 g_abilityRows  # [code] per character ability row: ability id and AP needed for each of the 48 slots (chr_findAbilitySlot, chr_getApNeeded)
+D_8006D128 g_supportAbilities  # [code] support ability table (stone cost +1) for ids 0xC0-0xFF (chr_countSupportStones, chr_fitSupportAbilities)
+D_8006E0E8 g_weaponTable  # [code] weapon records (attack +5) used by chr_calcEquipStats
+D_8007B6F8 g_evtArgRead  # [code] set to 1 by evt_getArg8/16/24 once an argument was read; evt_execInstr clears it per instruction
+D_8007AED0 g_evtUnitObjects  # [code] the event object of each battle unit 0-7 (evt_battleTrigger, evt_getObjectProp, per-unit expression ops)
+D_8007ADF8 g_evtScripts  # [code] script table of the loaded event data (evt_loadScripts; entry offsets per object script)
+D_8007ADFC g_evtScriptCount  # [code] number of scripts (evt_loadScripts); the last 9 are the characters'
+D_8007B954 g_msgTable  # [code] the current mode's message table {count, entries} (msg_init picks field/world/battle)
+D_8007B940 g_msgLayout  # [code] WinLayout returned by msg_getLayout
+D_80077E28 g_menuScreenSwitch  # [runtime] docs/runtime-findings.md field/menu campaign, the screen-switch state (+7 target screen, +0x14 command window rect, +0x1C screen table)
+D_80077DF0 g_menuHelpText  # [code] g_menuHelp.text under its own symbol (help callbacks in overlays write it)
+D_80067944 g_loadAreaEnd  # [code] end of the load area (file loads and preload_discardRange ranges are below it)
+D_8007BD10 g_swirlPkt  # [code] packet pointer of the swirl transition (swirl_update)
+D_8007BD0C g_swirlOt  # [code] the swirl's 5-entry OT, linked into the frame OT
+D_8007BD08 g_swirlParams  # [code] swirl parameter set (D_8006F2E0[0/1]: rotation, zoom and fade speeds)
+D_8007BD14 g_swirlColumns  # [code] the 9 column/row screen positions of the swirl mesh (swirl_buildMesh)
+D_8007BD18 g_swirlMesh  # [code] 9x9 WarpVert grid (swirl_buildMesh)
+D_80068CE8 g_winFillSprite  # [code] sprite descriptor of the window fill texture (win_buildFill, win_drawTailFill)
+func_80051568 pen_init  # [code] asm sprite/text emitter (registers t4 packet, t5 x/y, t6 colour, t7 OT link): resets position, stack and colour 0x808080
+func_800515B8 pen_begin  # [code] loads the emitter registers from g_penPktPtr's buffer, g_penPos, g_penColor and the OT entry g_penOt
+func_80051610 pen_end  # [code] stores the emitter registers back (packet pointer, OT link, position)
+func_80051638 pen_beginBuffered  # [code] pen_begin with the emitter's own packet buffer (D_8007BCAC)
+func_80051668 pen_endBuffered  # [code] adds the small-font tpage (0x1F) and stores the registers back into the own buffer
+func_80051600 pen_endFont  # [code] DR_TPAGE 0x1E (font page), then falls into pen_end
+func_800515EC pen_endSmall  # [code] DR_TPAGE 0x1F (small-font page), then pen_end
+func_800513A4 pen_addTpage  # [code] DR_TPAGE packet with the given tpage
+func_80051300 pen_pushPos  # [code] pushes the pen position on the emitter stack (D_8007BC98)
+func_80051380 pen_popPos  # [code] pops the pen position
+func_800512B8 pen_setPos  # [code] t5 = x | y << 16
+func_800512C8 pen_move  # [code] adds dx/dy to the pen position
+func_800512E4 pen_setColor  # [code] colour for the following packets (g_penColor and t6, SPRT code)
+func_80050F4C pen_setPalette  # [code] D_8007BCB4 = CLUT word for font palette a ((a << 7) + 0x3827)
+func_80050F68 pen_getGlyph  # [code] glyph info of a text code (offsets, width in the top 4 bits), 0 for none
+func_80051004 pen_putGlyph  # [code] SPRT for a font glyph at the pen position, advancing it
+func_8005116C pen_putSmallChar  # [code] small-font character (6 px), advancing the pen
+func_80051094 pen_drawSmallChar  # [code] small-font character at the pen position
+func_80051324 pen_putSmallString  # [code] pen_putSmallChar for each byte of a 0-terminated string, keeping the start position
+func_80051358 pen_drawSmallString  # [code] pen_drawSmallChar for each byte of a 0-terminated string, keeping the start position
+func_800513CC pen_drawSprite  # [code] UI sprite id (g_uiSprites) at the pen position, with the font tpage
+func_80051530 pen_addPolyFT4  # [code] reserves a POLY_FT4 at the pen position with the pen colour and returns it (callers fill uv/tpage)
+func_8005145C pen_line  # [code] LINE_F2 from the pen position by (dx, dy), moving the pen
+func_800514AC pen_rect  # [code] four pen_lines: a w x h outline
+func_800514E8 pen_tile  # [code] TILE (code 0x60 | flags) of w x h at the pen position
+func_80051444 pen_setLastSemiTrans  # [code] sets the semi-transparency bit of the packet just added
+func_8005127C pen_setCell  # [code] pen position = text cell (col, row) * 6 + (10, 20)
+D_8007BC9C g_penPos  # [code] pen position x | y << 16 (pen_begin / pen_end)
+D_8007BCA0 g_penColor  # [code] pen colour (pen_setColor)
+D_8007BCA4 g_penOt  # [code] OT entry the pen links its packets into (msg_beginDraw, msg_setOtz)
+D_8007BCA8 g_penPktPtr  # [code] address of the packet pointer the pen uses (&g_primPtr or the battle message buffer)
+D_8007BC98 g_penStackPtr  # [code] pen_pushPos/pen_popPos stack pointer into D_8007BC78
+func_8005CE04 akao_copy  # [code] word copy of n bytes, four words per step (sequence / channel state copies)
+func_8005CE8C akao_swap  # [code] swaps two word buffers of n bytes
+func_8005CF04 akao_tickSe  # [code] per tick: CD volume fade, then the active sound-effect channels (g_akaoSeChannels) through akao_execChannel
+func_8005D384 akao_tickChannels  # [code] per tick update of a sequence's channels (akao_tick: main and sub sequence)
+func_8005E3FC akao_execChannel  # [code] sequence interpreter for one channel: opcodes >= 0xA0 through D_8006FB60 / 0xFE xx through D_8006FCE0, notes below
+D_8006FB60 g_akaoOps  # [code] handlers of sequence opcodes 0xA0-0xFF (akao_execChannel)
+D_8006FCE0 g_akaoOpsFE  # [code] handlers of the 0xFE xx sequence opcodes (akao_execChannel)
+func_8005DD54 akao_remapInstrument  # [code] instruments 0x20-0x7F move up by 0x30 when flag 0x20 is set (as akao_shiftInstrumentUp)
+func_8005EBB4 akao_setChannelInstrument  # [code] start/loop address and ADSR of a channel from an instrument entry, marks the voice registers dirty
+func_8005EBE8 akao_setChannelProgram  # [code] akao_setChannelInstrument with g_akaoInstruments[i]
+func_8005EC20 akao_stopSeChannel  # [code] clears a sound-effect channel's bits in every g_akaoSeState mask and its id
+func_8005DD7C akao_applyKeySplit  # [code] picks the instrument region of a key (AkaoRegion) for a channel's note
+func_8005715C akao_isqrt  # [code] digit-by-digit integer square root (akao_lfoSine)
+func_80057488 akao_lfoSquare  # [code] D_8006FB40[0]: +-0x10000 by phase bit 8
+func_80057234 akao_lfoSine  # [code] D_8006FB40[1]: quarter waves sqrt(1 - v*v) by phase
+func_80057364 akao_lfoTriangle  # [code] D_8006FB40[2]: ramps by phase quarter
+func_80057518 akao_lfoTable  # [code] D_8006FB40[3]: D_8006F440[phase] << 8
+func_800574A0 akao_lfoSquareScaled  # [code] D_8006FB40[4]: akao_lfoSquare scaled 1/4, 1/2 or 3/4 by bits 9-10
+func_8005729C akao_lfoSineScaled  # [code] D_8006FB40[5]: akao_lfoSine scaled by bits 10-11
+func_800573CC akao_lfoTriangleScaled  # [code] D_8006FB40[6]: akao_lfoTriangle scaled by bits 10-11
+func_80057534 akao_lfoTableScaled  # [code] D_8006FB40[7]: akao_lfoTable scaled by bits 9-10
+D_8006FB40 g_akaoLfoWaves  # [code] the 8 LFO waveform functions, picked by an opcode argument & 7
+# ff9.h: AkaoBankHeader (g_akaoBankHeader retyped from s32[16]), AKAO_MAGIC; header word indexing in akao_init.c/akao_api.c converted to fields
+D_8007BC0C g_bubbleScript  # [code] animation script pointer of msg_updatePlayerBubble (D_8006E690/6D8/6F0)
+D_8007BBEC g_bubbleRequest  # [code] set by msg_showPlayerBubble this frame
+D_8007BBF0 g_bubbleRequestPrev  # [code] last frame's g_bubbleRequest (msg_updatePlayerBubble picks the start/end script on a change)
+D_8007BBF4 g_bubbleVariant  # [code] msg_showPlayerBubble's variant (picks the script and the sprite of msg_drawPlayerBubble)
+D_8007BC08 g_bubbleWait  # [code] frames left of a 0xFE wait step in the bubble script
+D_8007BC00 g_bubbleColor  # [code] bubble brightness from the script (0x80 also draws the sprite)
+D_8007BBF8 g_bubbleHalfWidth  # [code] from the bubble script (msg_drawPlayerBubble)
+D_8007BBFC g_bubbleHeight  # [code] from the bubble script
+D_8007BC04 g_bubbleLift  # [code] y offset from the bubble script
+D_8007BBE0 g_hereIconActive  # [code] HERE icon requested (msg_drawHereIcon / msg_startHereIcon)
+D_8007BBE8 g_hereIconTimer  # [code] frames left of the HERE icon (60)
+D_8007BBE4 g_hereIconFlipped  # [code] the icon points the other way when the player is near the left edge (pen x < 24)
+D_8007BC10 g_atePromptMode  # [code] msg_setAtePrompt mode (bits 0-1 style, bit 2 also without control)
+D_8007BC14 g_atePromptTimer  # [code] blink counter of msg_drawAtePrompt
+D_8007B978 g_msgPadPrev  # [code] msg_readPad's previous buttons
+D_8007B97C g_msgPadPressed  # [code] msg_readPad: newly pressed buttons (msg_getPadPressed)
+D_8007B980 g_msgPadReleased  # [code] msg_readPad: released buttons (msg_getPadReleased)
+D_8007B988 g_msgPadEvent  # [code] {type, buttons} msg_readPad passes to the focused window (1 press, 2 repeat, 4 release)
+D_8007B990 g_msgPadRepeatTimer  # [code] repeat delay counter of msg_readPad (16, then every 4)
+D_8007B960 g_msgChoiceEnabled  # [code] mask of the enabled choices (msg_getChoiceIndex)
+D_8007B964 g_msgChoiceDrawMask  # [code] copy of g_msgChoiceEnabled while msg_drawText renders
+D_8007B974 g_msgChoiceMaskReq  # [code] mask passed to msg_setChoiceMask
+D_8007BB94 g_msgChoiceDefault  # [code] msg_setChoiceMask: index of the last enabled choice
+D_8007BB7C g_msgLine  # [code] line counter of msg_renderText (0xF7 newline), compared with g_msgChoiceLine
+D_8007B950 g_msgKeepWindows  # [code] msg_keepWindowsOnInit: the next msg_init keeps the windows
+D_8007B930 g_msgNameBuf  # [code] character name converted to capitals by msg_emitCharNameCaps
+D_8007B700 g_evtExprObj  # [code] battle object the per-unit expression ops currently evaluate for (g_evtUnitObjects[i])
+D_80079630 g_evtSavedState  # [code] saved copy of the script state, restored when returning to the same field
+D_80077E60 g_evtStateData  # [code] the script state block g_evtState points at
+D_8007AEAC g_evtPlayerMoved  # [code] set when the player moved this frame
+D_8007AE68 g_evtLookTarget  # [code] object every object with look flag 4 turns its head to (evt_updateLookAt)
+D_8007AD1E g_evtModelsPending  # [code] evt_createModels runs once when set
+D_80073690 g_reverbAttr  # [code] SpuReverbAttr game_reset sets (mode 0x100, depth 0)
+D_800736A4 g_reverbMode  # [code] SpuGetReverbModeType result (game_reset clears its work area)
+D_8007F718 g_akaoCdAtv  # [code] CdlATV passed to CdMix by akao_setCdMix
+D_80073C88 g_freezeDrawEnv  # [code] DRAWENV copy game_freezeScreen puts with the fade colour
+D_8006ADAC g_keyItemNames  # [code] key item name text (msg_emitItemName ids 0x100-0x1FF)
+D_8006B374 g_keyItemTable  # [code] key item records (name offset unk0, help unk2)
+D_8006DD88 g_charClassStats  # [code] base speed/strength/magic/spirit/stones per stat class (chr_calcBase*, chr_getClass)
+D_8006DDD0 g_levelHpMp  # [code] HP and MP factors per level (chr_calcMaxHp/chr_calcMaxMp)
+D_8006D548 g_equipStatBonus  # [code] speed/strength/magic/spirit bonuses per item bonus index (chr_sumEquipBonus, chr_calcEquipStats)
+D_80067950 g_resetCount  # [code] counted by game_shutdown at the end of each game_main pass
+D_8007BD2C g_swirlVariant  # [code] picks the swirl parameter set and the zoom wobble (swirl_update)
+D_8007BD30 g_swirlBuf  # [code] packet buffers of the swirl (0x400 words per draw buffer)
+D_8007BD20 g_swirlAngle  # [code] rotation of the swirl mesh (8.4)
+D_8007BD24 g_swirlZoom  # [code] pull toward the centre (0..0x1400)
+D_8007BD1C g_swirlFade  # [code] brightness of the swirled frame
+D_8007BD1E g_swirlFlash  # [code] brightness of swirl_drawFlash
+D_80077DC0 g_menuFrame  # [code] g_menu.frame under its own symbol
+D_80077E52 g_menuScreenCur  # [code] g_menuScreen.screen under its own symbol
+D_80077E53 g_menuScreenMember  # [code] g_menuScreen.member under its own symbol
+D_80077E54 g_menuScreenFrame  # [code] g_menuScreen.frame under its own symbol
+D_800770A8 g_textArgPtr  # [code] string argument text_buildBlock is drawing (codes 0x6B/0x6D/0x6F)
+D_80077CC0 g_fadeWipeQuads  # [code] the two screen-covering quads of fadeWipe_draw
+D_80077CB0 g_fadeWipeRot  # [code] rotation (z = g_fade.angle) for fadeWipe_draw
+D_80068F40 g_noTexWindow  # [code] RECT for get_tw that disables the texture window (window drawing)
+D_80068DC0 g_uiBackgroundSprite  # [code] sprite of ui_drawBackground
+D_80068FD0 g_winRuleSprites  # [code] title bar sprites (left, right, middle) per style (ui_drawRule)
+D_80068F94 g_winShadowLineOffsets  # [code] second-line offsets of win_drawLineBorder
+D_80068F20 g_winLineColors  # [code] line colours per window palette (win_drawLineBorder, win_drawDivider, ui_drawEtchedLine)
+D_8006F440 g_akaoLfoTableData  # [code] 256-entry wave of akao_lfoTable
+D_800831A8 g_akaoSeVolume  # [code] sound effect volume
+func_80052EEC math_isqrt  # [code] asm: integer square root by 2-bit steps
+func_80052EC0 math_length3  # [code] asm: GTE sqr of (x, y, z), summed, then math_isqrt (evt_relaxLookAt distances)
+func_80052DEC math_distSq2  # [code] asm: x*x + z*z with overflow checks (evt_updateLookAt compares it with 2000 squared)
+func_80052E48 math_dist2  # [code] asm: square root of x*x + z*z with overflow checks
+func_80052F24 math_atan2  # [code] asm: angle 0-0xFFF of (dx, dz) through the table at 0x8006EAD0 (head tracking, evt_angleToObject)
+func_800531D0 evt_angleToObject  # [code] asm: math_atan2 from object a to object b minus angle c, as a signed 12-bit angle
+func_80053124 evt_isInRegion  # [code] asm: GTE point-in-polygon test of (x, z) against an object's region (evt_checkPlayerAction)
+func_80052D70 evt_assignResult  # [code] asm: evt_popAssign with the expression stack pointer kept (per-unit ops store into each unit)
+func_80060938 akao_streamStop  # [code] SPU IRQ off, keys off the stream's two voices and parks their loop addresses at 0x1030
+func_80060A08 akao_allocStreamVoices  # [code] first pair of free sound-effect voices from the top, stopping effects (flag 0x40000000) until one frees up
+func_80060A98 akao_streamUploadSecond  # [code] mono stream: uploads the second 0x800-byte half to SPU 0x2100, then akao_streamStartMono
+func_80060AE0 akao_streamStart  # [code] starts streaming a sample block (header + data): voices, loop info, first SPU upload with the start callback
+func_80060D1C akao_streamSetVoice  # [code] volume (mono/left/right/centre or panned), pitch, start/loop address and envelope of a stream voice
+func_80060ED8 akao_streamKeyOn  # [code] after the first upload: keys the stream voices on with the SPU IRQ at the half-buffer address and the refill callback
+func_80060FA8 akao_streamStartMono  # [code] transfer callback: both voices on one 0x1100/0x2100 buffer pair, then akao_streamKeyOn
+func_8006100C akao_streamStartStereo  # [code] transfer callback: left and right voices on separate buffers, then akao_streamKeyOn
+func_80061070 akao_streamRefill  # [code] SPU IRQ handler body: uploads the next part into the half just played and re-arms the IRQ (loops or stops at the end)
+func_800611BC akao_streamRefillMonoA  # [code] akao_streamRefill of the first mono half (alternates with akao_streamRefillMonoB)
+func_800611EC akao_streamRefillMonoB  # [code] akao_streamRefill of the second mono half
+func_8006121C akao_streamRefillStereoA  # [code] akao_streamRefill of the first stereo half
+func_8006124C akao_streamRefillStereoB  # [code] akao_streamRefill of the second stereo half
+func_80059548 akao_resetChannel  # [code] default channel state (volume 0x6E00, pan, all effects off) at a data pointer, program 0
+func_800595F0 akao_getVoiceMask  # [code] SPU voice bits of the channels in a channel mask
+func_8005963C akao_startSeq  # [code] starts a sequence at addr: header masks, tables, then each active channel at its offset with default parameters
+func_80059E10 akao_startSeChannel  # [code] sets up one sound-effect channel from VoiceParams (id, flags, pitch, volume) and its data, marks it active
+func_80059FB8 akao_releaseVoice  # [code] detaches a SPU voice from the channels of g_akaoSeq that use it
+func_8005A014 akao_startSe  # [code] starts a sound effect's one or two channel streams (a, b) on free sound-effect channels
+func_8005A20C akao_getSeData  # [code] the two channel data pointers of sound effect idx (D_800809DC offsets into D_800809E8, 0xFFFF = none)
+func_8005A284 akao_markSeqDirty  # [code] marks the voice registers of a sequence's active channels for rewrite (after volume/pan changes)
+func_8005A2CC akao_markSeDirty  # [code] marks the voice registers of the active sound-effect channels for rewrite
+func_8005A320 akao_resumeSeq  # [code] restores the sequence saved in g_akaoSavedSeq for addr (akao_cmdPlayMusic with the same id)
+# FIELDS include/ff9.h Unk8E4 (GameData.unk8E4.ovl65 view): unkD80=phase,unk11C0=work (ovl_0b Battle names)
+# FIELDS include/ff9.h GameData: battleEndKind=battleResult (second pass), unk570=rainCount
+# FIELDS include/ff9.h GameConfig: unk0_11=battleMsgSpeed
+# ff9.h: BTL_CMD_ENEMY_TURN/COUNTER/DEATH hoisted from ovl_0b.h (used in event.c); CFG_BIT_*/CFG_SHIFT_* hoisted from ovl_34.h (replacing CONFIG_HERE_ICON_OFF/WINDOW_CLASSIC/TARGET_WINDOW_ALWAYS); psyq.h: GPU_STP
+func_800579B4 akao_stepChannelSlides  # [code] per tick volume/pan/pitch slides of a channel (unkB8 counts down, marks the voice dirty on change)
+func_80057D80 akao_calcChannelVoice  # [code] music channel: volume x expression, LFO vibrato/tremolo through the wave function, pan and pitch into the voice registers
+func_80058118 akao_calcSeChannelVoice  # [code] the sound-effect version of akao_calcChannelVoice
+func_800584C8 akao_stealVoice  # [code] no free voice: takes the one with the lowest envelope (D_8007F798) and detaches it from its channels
+func_80058578 akao_findFreeVoice  # [code] first voice with a zero envelope (D_8007F798), 24 if none
+func_800585E0 akao_assignVoices  # [code] per tick: for each active channel of a sequence, picks a SPU voice (free or stolen) and writes its registers
+func_80058830 akao_detachVoice  # [code] removes a SPU voice from every channel of the main and sub sequences
+func_800588B0 akao_readEnvelopes  # [code] reads each voice's envelope level (SpuGetVoiceEnvelope) into D_8007F798, detaching voices that went silent
+D_8007F798 g_akaoVoiceEnv  # [code] per-SPU-voice envelope level for voice allocation (akao_readEnvelopes, akao_findFreeVoice)
+func_800589F0 akao_updateVoices  # [code] per tick: envelopes, then voices for the sub and main sequences' channels, then key-on
+D_80083174 g_akaoStreamVoices  # [code] g_akaoStream's voice mask (+0xC) under its own symbol; excluded from the effect key-on masks
+D_800809C0 g_akaoLoadedBanks  # [code] ids of the AKAO banks loaded per bank slot (func_80056048 clears duplicates)
+D_800831C8 g_akaoVoiceOwner  # [code] sequence that wrote each SPU voice last (akao_assignVoices), cleared for effect channels
+D_8008315C g_akaoOutputFlags  # [code] bit 1: mono output (stream and CD mix use one level for both sides)
+D_8006F640 g_akaoMonoGain  # [code] level factor for mono output (bit 1 of g_akaoOutputFlags)
+D_8007BB80 g_msgTextBanks  # [code] up to 4 text banks of 8 texts each that message code can insert
+
 ## ovl_0a/0c pass 2
 # Types (ovl_0c.h; WmAnimTable/WmAnimTableEntry also ovl_0a.h): WmNode -> WmEffect, Unk800D375C -> WmBlockNode,
 # Unk800D3AB8 -> WmBlockPos, WmTexEnt -> WmBlock (terrain mesh block, not a texture), WmTexPack -> WmChunkPack,

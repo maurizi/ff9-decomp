@@ -33,14 +33,14 @@ void tm_mainLoop(void) {
         p = tm_drawBattleValues(g_gameState->unk1C->unk10[g_gameState->unk1C->unk8], p, &s);
         switch (s.task) {
         case TM_TASK_ENEMY_SELECT:
-            D_80077DE8.unk8 = 0;
+            g_menuHelp.text = 0;
             tm_debugPrint(&s, "ENEMY CARD SELECT\n");
             tm_checkGameEnd(&s);
             tm_enemySelect(&s);
             tm_layoutCards(&s);
             break;
         case TM_TASK_PLAYER_SELECT:
-            func_80035674(0);
+            help_setCursorOnTop(0);
             tm_checkGameEnd(&s);
             if (s.autoPlay == 0) {
                 tm_debugPrint(&s, "PLAYER CARD SELECT\n");
@@ -53,94 +53,94 @@ void tm_mainLoop(void) {
             break;
         case TM_TASK_PLAYER_SET:
             tm_debugPrint(&s, "PLAYER CARD SET\n");
-            func_80035674(0);
+            help_setCursorOnTop(0);
             tm_taskPlayerSet(g_gameState->unk1C->unk10[g_gameState->unk1C->unk8], p, &s);
             tm_layoutCards(&s);
             break;
         case TM_TASK_RESULT:
-            D_80077DE8.unk8 = 0;
+            g_menuHelp.text = 0;
             tm_drawResult(g_gameState->unk1C->unk10[g_gameState->unk1C->unk8], p, &s);
             tm_debugPrint(&s, "RESULT\n");
             tm_taskResult(&s);
             break;
         case TM_TASK_INIT:
-            D_80077DE8.unk8 = 0;
+            g_menuHelp.text = 0;
             tm_debugPrint(&s, "INIT\n");
             tm_taskInit(&s);
             break;
         case TM_TASK_FLASH:
-            D_80077DE8.unk8 = 0;
+            g_menuHelp.text = 0;
             tm_debugPrint(&s, "FLASH\n");
             tm_layoutCards(&s);
             tm_drawFlash(g_gameState->unk1C->unk10[g_gameState->unk1C->unk8], p, &s);
             break;
         case TM_TASK_BATTLE_SELECT:
             tm_debugPrint(&s, "BATTLE SELECT\n");
-            func_80035674(0);
+            help_setCursorOnTop(0);
             p = tm_taskBattleSelect(g_gameState->unk1C->unk10[g_gameState->unk1C->unk8], p, &s);
             tm_layoutCards(&s);
             tm_drawBattleSelect(g_gameState->unk1C->unk10[g_gameState->unk1C->unk8], p, &s);
             break;
         case TM_TASK_BATTLE:
-            D_80077DE8.unk8 = 0;
+            g_menuHelp.text = 0;
             tm_debugPrint(&s, "BATTLE\n");
             tm_layoutCards(&s);
             tm_taskBattle(g_gameState->unk1C->unk10[g_gameState->unk1C->unk8], p, &s);
             break;
         case TM_TASK_TURN:
-            D_80077DE8.unk8 = 0;
+            g_menuHelp.text = 0;
             tm_debugPrint(&s, "TURN\n");
             tm_layoutCards(&s);
             tm_taskTurn(&s);
             break;
         case TM_TASK_BATTLE_WIN:
-            D_80077DE8.unk8 = 0;
+            g_menuHelp.text = 0;
             tm_debugPrint(&s, "BATTLE WIN\n");
             tm_layoutCards(&s);
             tm_taskBattleWin(&s);
             break;
         case TM_TASK_BATTLE_LOSE:
-            D_80077DE8.unk8 = 0;
+            g_menuHelp.text = 0;
             tm_debugPrint(&s, "BATTLE LOSE\n");
             tm_layoutCards(&s);
             tm_taskBattleLose(&s);
             break;
         case TM_TASK_TRY_AGAIN:
             tm_debugPrint(&s, "TRY AGAIN\n");
-            func_80035674(1);
+            help_setCursorOnTop(1);
             tm_taskTryAgain(&s);
             tm_drawTryAgain(g_gameState->unk1C->unk10[g_gameState->unk1C->unk8], p, &s);
             break;
         case TM_TASK_CARD_CHANGE:
-            D_80077DE8.unk8 = 0;
+            g_menuHelp.text = 0;
             tm_debugPrint(&s, "CARD_CHANGE\n");
             tm_taskCardChange(g_gameState->unk1C->unk10[g_gameState->unk1C->unk8], p, &s);
             break;
         case TM_TASK_CARD_MOVE:
-            D_80077DE8.unk8 = 0;
+            g_menuHelp.text = 0;
             tm_debugPrint(&s, "CARD_MOVE\n");
             tm_taskCardMove(g_gameState->unk1C->unk10[g_gameState->unk1C->unk8], p, &s);
             break;
         case TM_TASK_FLASH2:
-            D_80077DE8.unk8 = 0;
+            g_menuHelp.text = 0;
             tm_debugPrint(&s, "FLASH2\n");
             tm_drawFlash2(g_gameState->unk1C->unk10[g_gameState->unk1C->unk8], p, &s);
             break;
         case TM_TASK_TRADE:
-            D_80077DE8.unk8 = 0;
+            g_menuHelp.text = 0;
             tm_debugPrint(&s, "TRADE\n");
             tm_taskTrade(&s);
             tm_drawTradeBadge(g_gameState->unk1C->unk10[g_gameState->unk1C->unk8], p, &s);
             break;
         case TM_TASK_CHANGE2:
-            D_80077DE8.unk8 = 0;
+            g_menuHelp.text = 0;
             tm_debugPrint(&s, "CHANGE2\n");
-            func_80035674(1);
+            help_setCursorOnTop(1);
             tm_taskChange2(g_gameState->unk1C->unk10[g_gameState->unk1C->unk8], p, &s);
             break;
         case TM_TASK_CHOICE:
             tm_debugPrint(&s, "CHOICE\n");
-            func_80035674(1);
+            help_setCursorOnTop(1);
             tm_stockInput(&s);
             tm_drawStock(g_gameState->unk1C->unk10[g_gameState->unk1C->unk8], p, &s);
             tm_showStockCard(&s);
@@ -165,42 +165,42 @@ void tm_mainLoop(void) {
             tm_taskStageSelect(&s);
             break;
         case TM_TASK_FIELD_FADE:
-            D_80077DE8.unk8 = 0;
+            g_menuHelp.text = 0;
             tm_debugPrint(&s, "FIELD FADE\n");
             tm_layoutCards(&s);
             break;
         case TM_TASK_AWAY_INFO:
-            D_80077DE8.unk8 = 0;
+            g_menuHelp.text = 0;
             tm_debugPrint(&s, "AWAY INFO\n");
             tm_drawStock(g_gameState->unk1C->unk10[g_gameState->unk1C->unk8], p, &s);
             tm_taskAwayInfo(&s);
             break;
         case TM_TASK_CARD_AWAY:
             tm_debugPrint(&s, "CARD AWAY\n");
-            func_80035674(1);
+            help_setCursorOnTop(1);
             tm_stockInput(&s);
             tm_showStockCard(&s);
             tm_drawStock(g_gameState->unk1C->unk10[g_gameState->unk1C->unk8], p, &s);
             break;
         case TM_TASK_CARD_AWAY2:
             tm_debugPrint(&s, "CARD AWAY2\n");
-            func_80035674(1);
+            help_setCursorOnTop(1);
             tm_showStockCard(&s);
             tm_drawStock(g_gameState->unk1C->unk10[g_gameState->unk1C->unk8], p, &s);
             tm_taskCardAway2(&s);
             break;
         case TM_TASK_CARD_LESS5:
-            D_80077DE8.unk8 = 0;
+            g_menuHelp.text = 0;
             tm_debugPrint(&s, "CARD LESS5\n");
             tm_taskCardLess5(&s);
             break;
         case TM_TASK_EXTENSION:
-            D_80077DE8.unk8 = 0;
+            g_menuHelp.text = 0;
             tm_debugPrint(&s, "EXTENSION\n");
             tm_taskExtension(&s);
             break;
         case TM_TASK_END_FADE:
-            D_80077DE8.unk8 = 0;
+            g_menuHelp.text = 0;
             tm_debugPrint(&s, "END FADE\n");
             if (s.quitting != 0) {
                 tm_drawStock(g_gameState->unk1C->unk10[g_gameState->unk1C->unk8], p, &s);
@@ -209,37 +209,37 @@ void tm_mainLoop(void) {
             tm_taskEndFade(&s);
             break;
         case TM_TASK_COIN:
-            D_80077DE8.unk8 = 0;
+            g_menuHelp.text = 0;
             tm_debugPrint(&s, "COIN\n");
             tm_taskCoin(g_gameState->unk1C->unk10[g_gameState->unk1C->unk8], p, &s);
             tm_layoutCards(&s);
             break;
         case TM_TASK_FLASH_ARROW:
-            D_80077DE8.unk8 = 0;
+            g_menuHelp.text = 0;
             tm_debugPrint(&s, "FLASH ARROW\n");
             tm_taskFlashArrow(&s);
             break;
         case TM_TASK_ENEMY_THINK:
-            D_80077DE8.unk8 = 0;
+            g_menuHelp.text = 0;
             tm_debugPrint(&s, "ENEMY THINK\n");
             tm_taskEnemyThink(g_gameState->unk1C->unk10[g_gameState->unk1C->unk8], p, &s);
             tm_animEnemyThink(&s);
             break;
         case TM_TASK_ENEMY_APPEAR:
-            D_80077DE8.unk8 = 0;
+            g_menuHelp.text = 0;
             tm_debugPrint(&s, "ENEMY APEAR\n");
             tm_taskEnemyAppear(&s);
             tm_revealBlocks(&s);
             break;
         case TM_TASK_GET_SELECT:
-            D_80077DE8.unk8 = 0;
+            g_menuHelp.text = 0;
             tm_debugPrint(&s, "GET SELECT\n");
-            func_80035674(0);
+            help_setCursorOnTop(0);
             tm_taskGetSelect(g_gameState->unk1C->unk10[g_gameState->unk1C->unk8], p, &s);
             tm_layoutCards(&s);
             break;
         default:
-            D_80077DE8.unk8 = 0;
+            g_menuHelp.text = 0;
             tm_debugPrint(&s, "NO TASK\n");
             break;
         }
@@ -249,38 +249,38 @@ void tm_mainLoop(void) {
         if (s.turn == TM_ENEMY) {
             tm_debugPrint(&s, "TURN ENEMY\n");
         }
-        func_80023A0C();
-        func_80032098();
+        game_updateWindows();
+        game_updateFade();
         if (s.task == TM_TASK_CHOICE || s.task == TM_TASK_GAME_QUIT || s.task == TM_TASK_CHOICE2 || s.task == TM_TASK_PLAYER_SELECT || s.task == TM_TASK_PLAYER_SET ||
             s.task == TM_TASK_BATTLE_SELECT || s.task == TM_TASK_TRY_AGAIN || s.task == TM_TASK_GET_SELECT || s.task == TM_TASK_CARD_AWAY || s.task == TM_TASK_CARD_AWAY2) {
-            func_8003563C(0);
+            help_setLocked(0);
         } else {
-            func_8003563C(1);
+            help_setLocked(1);
         }
-        func_80035490();
+        help_update();
         s.timer++;
         s.animFrame++;
         rand();
         tm_endFrame(&s);
     }
-    func_8002C740(0, 0, s.savedRepeat[0]);
-    func_8002C740(0, 1, s.savedRepeat[1]);
-    func_8002C740(0, 2, s.savedRepeat[2]);
-    func_8002C740(0, 3, s.savedRepeat[3]);
-    func_8002C740(0, 8, s.savedRepeat[4]);
-    func_8002C740(0, 0xA, s.savedRepeat[6]);
-    func_8002C740(0, 9, s.savedRepeat[5]);
-    func_8002C740(0, 0xB, s.savedRepeat[7]);
-    func_8002C740(0, 4, s.savedRepeat[8]);
-    func_8002C740(0, 5, s.savedRepeat[9]);
-    func_8002C740(0, 6, s.savedRepeat[10]);
-    func_8002C740(0, 7, s.savedRepeat[11]);
+    pad_setRepeatEnabled(0, 0, s.savedRepeat[0]);
+    pad_setRepeatEnabled(0, 1, s.savedRepeat[1]);
+    pad_setRepeatEnabled(0, 2, s.savedRepeat[2]);
+    pad_setRepeatEnabled(0, 3, s.savedRepeat[3]);
+    pad_setRepeatEnabled(0, 8, s.savedRepeat[4]);
+    pad_setRepeatEnabled(0, 0xA, s.savedRepeat[6]);
+    pad_setRepeatEnabled(0, 9, s.savedRepeat[5]);
+    pad_setRepeatEnabled(0, 0xB, s.savedRepeat[7]);
+    pad_setRepeatEnabled(0, 4, s.savedRepeat[8]);
+    pad_setRepeatEnabled(0, 5, s.savedRepeat[9]);
+    pad_setRepeatEnabled(0, 6, s.savedRepeat[10]);
+    pad_setRepeatEnabled(0, 7, s.savedRepeat[11]);
     DrawSync(0);
     VSync(g_gameState->vsyncMode);
     SetDispMask(0);
-    func_80035674(1);
-    func_8003556C(0);
-    func_8003563C(0);
+    help_setCursorOnTop(1);
+    help_setCallback(0);
+    help_setLocked(0);
 }
 
 void tm_clearOt(void) {
@@ -294,7 +294,7 @@ void tm_endFrame(TmState *s) {
         g_gameState->unk0 |= 1;
         s->task = TM_TASK_EXIT;
     }
-    if (&g_gameState->unk10[g_gameState->unk1C->unk8].dfe != NULL) {
+    if (&g_gameState->drawEnv[g_gameState->unk1C->unk8].dfe != NULL) {
         DrawSync(0);
         VSync(g_gameState->vsyncMode);
     } else {
@@ -302,12 +302,12 @@ void tm_endFrame(TmState *s) {
         VSync(g_gameState->vsyncMode);
         ResetGraph(1);
     }
-    PutDispEnv(&g_gameState->unkC[g_gameState->unk1C->unk8]);
-    PutDrawEnv(&g_gameState->unk10[g_gameState->unk1C->unk8]);
+    PutDispEnv(&g_gameState->dispEnv[g_gameState->unk1C->unk8]);
+    PutDrawEnv(&g_gameState->drawEnv[g_gameState->unk1C->unk8]);
     ctx = g_gameState->unk1C;
     DrawOTag(ctx->unk10[ctx->unk8] + 0xFFF);
     g_gameState->unk1C->unk8 ^= 1;
-    func_8002C0DC(g_gameState->unk1C->unk8);
+    gfx_setBuffer(g_gameState->unk1C->unk8);
 }
 
 void tm_setup(TmState *s) {
@@ -338,15 +338,15 @@ void tm_setup(TmState *s) {
     tm_copyFileEntry((u8 *)g_tmDecks, TM_FILE_DECKS, 0x400);
     g_evtMode = 1;
     g_gameState->vsyncMode = 0;
-    func_800239D0();
+    game_initGfx();
     text_setBank(g_tmText);
-    func_80035430();
-    func_8003556C(func_800355DC);
-    D_80077DE8.unk8 = 0;
-    D_80077DE8.unk0 = 0x50;
-    D_80077DE8.unk2 = 0x50;
-    D_80077DE8.unk4 = 4;
-    func_8002FA50(0xC);
+    help_init();
+    help_setCallback(help_nullHandler);
+    g_menuHelp.text = 0;
+    g_menuHelp.x = 0x50;
+    g_menuHelp.y = 0x50;
+    g_menuHelp.otz = 4;
+    fade_in(0xC);
     s->wins = 0;
     s->losses = 0;
     s->draws = 0;
@@ -358,26 +358,26 @@ void tm_setup(TmState *s) {
     s->aiLevel = g_tmOpponents[s->opponent].aiLevel;
     s->unk454 = 1;
     tm_taskInit(s);
-    s->savedRepeat[0] = func_8002C700(0, 0);
-    s->savedRepeat[1] = func_8002C700(0, 1);
-    s->savedRepeat[2] = func_8002C700(0, 2);
-    s->savedRepeat[3] = func_8002C700(0, 3);
-    s->savedRepeat[4] = func_8002C700(0, 8);
-    s->savedRepeat[6] = func_8002C700(0, 0xA);
-    s->savedRepeat[5] = func_8002C700(0, 9);
-    s->savedRepeat[7] = func_8002C700(0, 0xB);
-    s->savedRepeat[8] = func_8002C700(0, 4);
-    s->savedRepeat[9] = func_8002C700(0, 5);
-    s->savedRepeat[10] = func_8002C700(0, 6);
-    s->savedRepeat[11] = func_8002C700(0, 7);
-    func_8002C740(0, 0, 1);
-    func_8002C740(0, 1, 1);
-    func_8002C740(0, 2, 1);
-    func_8002C740(0, 3, 1);
-    func_8002C740(0, 0x12, 1);
-    func_8002C740(0, 0x13, 1);
-    func_8002C740(0, 0xE, 0);
-    func_8002C740(0, 0xF, 0);
+    s->savedRepeat[0] = pad_isRepeatEnabled(0, 0);
+    s->savedRepeat[1] = pad_isRepeatEnabled(0, 1);
+    s->savedRepeat[2] = pad_isRepeatEnabled(0, 2);
+    s->savedRepeat[3] = pad_isRepeatEnabled(0, 3);
+    s->savedRepeat[4] = pad_isRepeatEnabled(0, 8);
+    s->savedRepeat[6] = pad_isRepeatEnabled(0, 0xA);
+    s->savedRepeat[5] = pad_isRepeatEnabled(0, 9);
+    s->savedRepeat[7] = pad_isRepeatEnabled(0, 0xB);
+    s->savedRepeat[8] = pad_isRepeatEnabled(0, 4);
+    s->savedRepeat[9] = pad_isRepeatEnabled(0, 5);
+    s->savedRepeat[10] = pad_isRepeatEnabled(0, 6);
+    s->savedRepeat[11] = pad_isRepeatEnabled(0, 7);
+    pad_setRepeatEnabled(0, 0, 1);
+    pad_setRepeatEnabled(0, 1, 1);
+    pad_setRepeatEnabled(0, 2, 1);
+    pad_setRepeatEnabled(0, 3, 1);
+    pad_setRepeatEnabled(0, 0x12, 1);
+    pad_setRepeatEnabled(0, 0x13, 1);
+    pad_setRepeatEnabled(0, 0xE, 0);
+    pad_setRepeatEnabled(0, 0xF, 0);
     s->arrowOdds[0] = 1;
     s->arrowOdds[1] = 4;
     s->arrowOdds[2] = 0x10;
@@ -397,7 +397,7 @@ void tm_setup(TmState *s) {
     s->arrowOdds[7] = 2;
     s->arrowOdds[8] = 1;
     s->oddsRow = 0;
-    if (func_800625F8() < 5) {
+    if (card_countAll() < 5) {
         for (i = 0; i < 8; i++) {
             tm_addRandomCard(s, rand() % 100);
         }
@@ -437,7 +437,7 @@ void tm_loadImageFile(void) {
     if (f == NULL) {
         SystemError(0x46, 0x3E6);
     }
-    cd_readSync(g_gameState->unk20 + f->unk4, (f->unkC - f->unk4) << 11, (void *)TM_IMAGE_FILE);
+    cd_readSync(g_gameState->imgSector + f->unk4, (f->unkC - f->unk4) << 11, (void *)TM_IMAGE_FILE);
 }
 
 u8 *tm_getFileEntry(s32 i) {
@@ -669,7 +669,7 @@ void *tm_drawScore(u32 *ot, SPRT *p, TmState *s) {
 }
 
 void tm_updatePad(TmState *s) {
-    func_8002C308(0);
+    pad_updateRepeat(0);
 }
 
 void *tm_taskPlayerSelect(u32 *ot, void *p, TmState *s) {
@@ -709,9 +709,9 @@ void *tm_taskPlayerSelect(u32 *ot, void *p, TmState *s) {
             }
             tm_setHelpArea(w);
             sp = tm_drawCursor(ot, p, s, x, y, 0);
-            D_80077DE8.unk0 = x + 2;
-            D_80077DE8.unk2 = y + 1;
-            D_80077DE8.unk8 = text_get(TM_HELP_SELECT);
+            g_menuHelp.x = x + 2;
+            g_menuHelp.y = y + 1;
+            g_menuHelp.text = text_get(TM_HELP_SELECT);
             text_drawBlock(0x12, 9, 0xFFA, text_get(TM_TEXT_ICON_R1), 0);
             setlen(sp, 4);
             sp->code = 0x64;
@@ -753,17 +753,17 @@ void *tm_taskPlayerSelect(u32 *ot, void *p, TmState *s) {
                 s->nameSlide--;
             }
             if (s->nameSlide > 0) {
-                r.w = func_80062794(c->id) + 0x10;
+                r.w = card_getNameWidth(c->id) + 0x10;
                 r.x = 0x11A - r.w / 2;
                 if (r.x + r.w >= 0x140) {
-                    r.x = 0x130 - func_80062794(c->id);
+                    r.x = 0x130 - card_getNameWidth(c->id);
                 }
                 r.y = ry;
                 r.h = 0x19;
                 k = s->nameSlide * 0xC - 0x78;
                 r.x -= k;
-                text_drawBlock(r.x + 8, r.y + 6, 5, (u8 *)func_8006276C(c->id), 0);
-                func_8002DEE4(&r, 5, 2);
+                text_drawBlock(r.x + 8, r.y + 6, 5, (u8 *)card_getName(c->id), 0);
+                win_drawBox(&r, 5, 2);
             }
             if (pad & BTN_CROSS) {
                 s->task = TM_TASK_PLAYER_SET;
@@ -805,14 +805,14 @@ void *tm_taskPlayerSet(u32 *ot, void *p, TmState *s) {
         y = c->y + 3;
     }
     p = tm_drawCursor(ot, p, s, x, y, 1);
-    D_80077DE8.unk0 = cx - 0xD;
-    D_80077DE8.unk2 = cy + 7;
+    g_menuHelp.x = cx - 0xD;
+    g_menuHelp.y = cy + 7;
     if (cell->state == TM_CELL_EMPTY) {
-        D_80077DE8.unk8 = text_get(TM_HELP_PLACE);
+        g_menuHelp.text = text_get(TM_HELP_PLACE);
     } else {
-        D_80077DE8.unk8 = text_get(TM_HELP_PLACE_BLOCKED);
+        g_menuHelp.text = text_get(TM_HELP_PLACE_BLOCKED);
     }
-    func_80035580(NULL);
+    help_setBounds(NULL);
     if (pad & BTN_CIRCLE) {
         s->nameSlide = 0;
         s->task = TM_TASK_PLAYER_SELECT;
@@ -878,13 +878,13 @@ void tm_taskResult(TmState *s) {
             if ((u32)(s->opponent - TM_OPP_FORCED) < 4) {
                 r.x = 0x59;
                 r.w = 0x8F;
-                r.w = func_8002BA68(text_get(TM_TEXT_DRAW)) + 0x12;
+                r.w = text_measureWidth(text_get(TM_TEXT_DRAW)) + 0x12;
                 r.x = 0xA0 - r.w / 2;
                 r.y = 0x59;
                 r.h = 0x2B;
-                s->infoWin = func_8002DC54(&r, 5, 2);
+                s->infoWin = win_openFree(&r, 5, 2);
                 win_setDrawContent(s->infoWin, tm_drawDrawWin);
-                func_8002E31C(s->infoWin, 1);
+                win_setShadow(s->infoWin, 1);
                 tm_waitWindow(s->infoWin);
                 s->task = TM_TASK_EXTENSION;
             } else {
@@ -950,14 +950,14 @@ void tm_taskTryAgain(TmState *s) {
         if (pad & BTN_CROSS) {
             win_close(s->msgWin);
             if (s->cursor == 0) {
-                if (func_800625F8() < 5) {
-                    r.w = func_8002BA68(text_get(TM_TEXT_LESS_5)) + 0x12;
+                if (card_countAll() < 5) {
+                    r.w = text_measureWidth(text_get(TM_TEXT_LESS_5)) + 0x12;
                     r.x = 0xA0 - r.w / 2;
                     r.y = 0x5B;
                     r.h = 0x2B;
-                    s->less5Win = func_8002DC54(&r, 6, 2);
+                    s->less5Win = win_openFree(&r, 6, 2);
                     win_setDrawContent(s->less5Win, tm_drawLess5Win);
-                    func_8002E31C(s->less5Win, 1);
+                    win_setShadow(s->less5Win, 1);
                     tm_waitWindow(s->less5Win);
                     s->task = TM_TASK_CARD_LESS5;
                     tm_playSe(TM_SE_BUZZER);
@@ -992,14 +992,14 @@ void tm_taskTryAgain(TmState *s) {
             }
         }
         if (s->cursor == 0) {
-            D_80077DE8.unk0 = 0x7D;
-            D_80077DE8.unk2 = 0x6B;
-            D_80077DE8.unk8 = text_get(TM_HELP_PLAY_AGAIN);
+            g_menuHelp.x = 0x7D;
+            g_menuHelp.y = 0x6B;
+            g_menuHelp.text = text_get(TM_HELP_PLAY_AGAIN);
             ui_drawHand(0x7D, 0x6B, 3);
         } else {
-            D_80077DE8.unk0 = 0x7D;
-            D_80077DE8.unk2 = 0x7B;
-            D_80077DE8.unk8 = text_get(TM_HELP_END_GAME);
+            g_menuHelp.x = 0x7D;
+            g_menuHelp.y = 0x7B;
+            g_menuHelp.text = text_get(TM_HELP_END_GAME);
             ui_drawHand(0x7D, 0x7B, 3);
         }
         tm_setHelpArea(0x89);
@@ -1017,21 +1017,21 @@ void tm_stockInput(TmState *s) {
 
     ui_drawHand(s->stockCol * 15 + 3, s->stockRow * 15 + 0x30, 3);
     if (s->task == TM_TASK_CHOICE || s->task == TM_TASK_CARD_AWAY) {
-        D_80077DE8.unk0 = s->stockCol * 15 + 3;
-        D_80077DE8.unk2 = s->stockRow * 15 + 0x30;
+        g_menuHelp.x = s->stockCol * 15 + 3;
+        g_menuHelp.y = s->stockRow * 15 + 0x30;
         if (s->task == TM_TASK_CHOICE) {
-            D_80077DE8.unk8 = text_get((u32)(s->opponent - TM_OPP_FORCED) >= 4 ? TM_HELP_STOCK : TM_HELP_STOCK_FORCED);
+            g_menuHelp.text = text_get((u32)(s->opponent - TM_OPP_FORCED) >= 4 ? TM_HELP_STOCK : TM_HELP_STOCK_FORCED);
         } else {
-            D_80077DE8.unk8 = text_get(TM_HELP_DISCARD_PICK);
+            g_menuHelp.text = text_get(TM_HELP_DISCARD_PICK);
         }
         r.x = 0xD;
         r.w = 0x9E;
         r.y = 0;
         r.h = 0xDE;
-        func_80035580(&r);
+        help_setBounds(&r);
     }
     pad = g_padRepeat;
-    n = func_80062560(tm_getStockCursorId(s));
+    n = card_countOf(tm_getStockCursorId(s));
     if (s->scrollTimer != 0) {
         pad = 0;
         if (--s->scrollTimer == 0 && s->phase == 0) {
@@ -1082,14 +1082,14 @@ void tm_stockInput(TmState *s) {
     if (s->task == TM_TASK_CHOICE) {
         if (((pad & BTN_CIRCLE) && s->handCount == 0) || (pad & BTN_SQUARE)) {
             if (s->opponent != TM_OPP_FORCED) if (s->opponent != TM_OPP_FORCED + 1) if (s->opponent != TM_OPP_FORCED + 2) if (s->opponent != TM_OPP_FORCED + 3) {
-                r.w = func_8002BA68(text_get(TM_TEXT_QUIT_ASK)) + 0x12;
+                r.w = text_measureWidth(text_get(TM_TEXT_QUIT_ASK)) + 0x12;
                 r.x = 0xA0 - r.w / 2;
                 r.y = 0x54;
                 r.h = 0x38;
                 s->quitChoice = 1;
-                s->quitWin = func_8002DC54(&r, 5, 2);
+                s->quitWin = win_openFree(&r, 5, 2);
                 win_setDrawContent(s->quitWin, tm_drawQuitWin);
-                func_8002E31C(s->quitWin, 1);
+                win_setShadow(s->quitWin, 1);
                 tm_waitWindow(s->quitWin);
                 s->task = TM_TASK_GAME_QUIT;
                 return;
@@ -1099,16 +1099,16 @@ void tm_stockInput(TmState *s) {
             if (s->handCount != 0) {
                 s->handCount--;
                 c = &s->cards[s->handCount];
-                func_80062420(c->id, c->arrows, c->power, c->type, c->pdef, c->mdef);
+                card_addWithStats(c->id, c->arrows, c->power, c->type, c->pdef, c->mdef);
                 tm_playSe(TM_SE_CANCEL);
             }
         } else if (pad & BTN_CROSS) {
             if (s->autoPlay != 0) {
-                func_80062724();
+                card_clearAll();
                 s->stockCol = rand() % 10;
                 s->stockRow = rand() % 10;
                 s->copyIdx = 0;
-                if (func_80062560(tm_getStockCursorId(s)) == 0) {
+                if (card_countOf(tm_getStockCursorId(s)) == 0) {
                     tm_addRandomCard(s, tm_getStockCursorId(s));
                     tm_addRandomCard(s, tm_getStockCursorId(s));
                     tm_addRandomCard(s, tm_getStockCursorId(s));
@@ -1118,7 +1118,7 @@ void tm_stockInput(TmState *s) {
                     tm_addRandomCard(s, tm_getStockCursorId(s));
                 }
             }
-            d = func_800625A0(tm_getStockCursorId(s), s->copyIdx);
+            d = card_find(tm_getStockCursorId(s), s->copyIdx);
             if (d != (Unk6 *)-1) {
                 c = &s->cards[s->handCount];
                 c->id = d->unk0;
@@ -1127,34 +1127,34 @@ void tm_stockInput(TmState *s) {
                 c->pdef = d->unk4;
                 c->mdef = d->unk5;
                 c->arrows = d->unk1;
-                func_800626D0(tm_getStockCursorId(s), s->copyIdx);
+                card_remove(tm_getStockCursorId(s), s->copyIdx);
                 s->copyIdx = 0;
                 tm_playSe(TM_SE_CARD);
                 if (++s->handCount == TM_HAND_SIZE) {
-                    D_80077DF0 = 0;
-                    r.w = func_8002BA68(text_get(TM_TEXT_CONFIRM)) + 0x12;
+                    g_menuHelpText = 0;
+                    r.w = text_measureWidth(text_get(TM_TEXT_CONFIRM)) + 0x12;
                     r.x = 0xA0 - r.w / 2;
                     r.y = 0x53;
                     r.h = 0x3A;
-                    s->msgWin = func_8002DC54(&r, 6, 2);
+                    s->msgWin = win_openFree(&r, 6, 2);
                     win_setDrawContent(s->msgWin, tm_drawConfirmWin);
-                    func_8002E31C(s->msgWin, 1);
+                    win_setShadow(s->msgWin, 1);
                     tm_waitWindow(s->msgWin);
                     s->cursor = 0;
                     s->task = TM_TASK_CHOICE2;
                 }
             }
         }
-    } else if ((pad & BTN_CROSS) && func_80062560(tm_getStockCursorId(s)) != 0) {
-        D_80077DF0 = 0;
-        r.w = func_8002BA68(text_get(TM_TEXT_DISCARD_ASK)) + 0x12;
+    } else if ((pad & BTN_CROSS) && card_countOf(tm_getStockCursorId(s)) != 0) {
+        g_menuHelpText = 0;
+        r.w = text_measureWidth(text_get(TM_TEXT_DISCARD_ASK)) + 0x12;
         r.x = 0xB9;
         r.h = 0x38;
         r.y = 0x35;
         s->cursor = 1;
-        s->infoWin = func_8002DC54(&r, 5, 2);
+        s->infoWin = win_openFree(&r, 5, 2);
         win_setDrawContent(s->infoWin, tm_drawDiscardWin);
-        func_8002E31C(s->infoWin, 1);
+        win_setShadow(s->infoWin, 1);
         tm_waitWindow(s->infoWin);
         tm_playSe(TM_SE_CURSOR);
         s->task = TM_TASK_CARD_AWAY2;
@@ -1175,7 +1175,7 @@ void tm_taskChoice2(TmState *s) {
                 s->task = TM_TASK_CHOICE;
                 s->handCount = 4;
                 c = &s->cards[4];
-                func_80062420(c->id, c->arrows, c->power, c->type, c->pdef, c->mdef);
+                card_addWithStats(c->id, c->arrows, c->power, c->type, c->pdef, c->mdef);
             }
             win_close(s->msgWin);
             tm_playSe(TM_SE_CURSOR);
@@ -1201,14 +1201,14 @@ void tm_taskChoice2(TmState *s) {
             tm_playSe(TM_SE_CURSOR);
         }
         if (s->cursor == 0) {
-            D_80077DE8.unk0 = 0x7B;
-            D_80077DE8.unk2 = 0x6C;
-            D_80077DE8.unk8 = text_get(TM_HELP_BEGIN);
+            g_menuHelp.x = 0x7B;
+            g_menuHelp.y = 0x6C;
+            g_menuHelp.text = text_get(TM_HELP_BEGIN);
             ui_drawHand(0x7B, 0x6C, 3);
         } else {
-            D_80077DE8.unk0 = 0x7B;
-            D_80077DE8.unk2 = 0x7B;
-            D_80077DE8.unk8 = text_get(TM_HELP_RESELECT);
+            g_menuHelp.x = 0x7B;
+            g_menuHelp.y = 0x7B;
+            g_menuHelp.text = text_get(TM_HELP_RESELECT);
             ui_drawHand(0x7B, 0x7B, 3);
         }
         tm_setHelpArea(0x8D);
@@ -1278,8 +1278,8 @@ void tm_taskCardAway2(TmState *s) {
         pad = g_padRepeat;
         if (pad & BTN_CROSS) {
             if (s->cursor == 0) {
-                func_800626D0(tm_getStockCursorId(s), s->copyIdx);
-                if (func_800625F8() > 100) {
+                card_remove(tm_getStockCursorId(s), s->copyIdx);
+                if (card_countAll() > 100) {
                     s->copyIdx = 0;
                     s->task = TM_TASK_CARD_AWAY;
                 } else {
@@ -1313,14 +1313,14 @@ void tm_taskCardAway2(TmState *s) {
             tm_playSe(TM_SE_CURSOR);
         }
         if (s->cursor == 0) {
-            D_80077DE8.unk0 = 0xBC;
-            D_80077DE8.unk2 = 0x4D;
-            D_80077DE8.unk8 = text_get(TM_HELP_DISCARD_YES);
+            g_menuHelp.x = 0xBC;
+            g_menuHelp.y = 0x4D;
+            g_menuHelp.text = text_get(TM_HELP_DISCARD_YES);
             ui_drawHand(0xBC, 0x4D, 3);
         } else {
-            D_80077DE8.unk0 = 0xBC;
-            D_80077DE8.unk2 = 0x5C;
-            D_80077DE8.unk8 = text_get(TM_HELP_DISCARD_NO);
+            g_menuHelp.x = 0xBC;
+            g_menuHelp.y = 0x5C;
+            g_menuHelp.text = text_get(TM_HELP_DISCARD_NO);
             ui_drawHand(0xBC, 0x5C, 3);
         }
         tm_setHelpArea(0xCE);
@@ -1382,19 +1382,19 @@ void *tm_taskBattleSelect(u32 *ot, void *p, TmState *s) {
     x = s->boardX * 43;
     y = s->boardY * 52;
     p = tm_drawCursor(ot, p, s, x + 0x39, y + 0xE, 0);
-    D_80077DE8.unk0 = x + 0x3B;
-    D_80077DE8.unk2 = y + 0xF;
-    D_80077DE8.unk8 = text_get(TM_HELP_NO_BATTLE);
+    g_menuHelp.x = x + 0x3B;
+    g_menuHelp.y = y + 0xF;
+    g_menuHelp.text = text_get(TM_HELP_NO_BATTLE);
     cell = tm_getCell(s, s->boardX, s->boardY);
     if (cell->state == TM_CELL_CARD) {
         c = cell->card;
         for (i = 0; i < s->numTargets; i++) {
             if (c == s->targets[i]) {
-                D_80077DE8.unk8 = text_get(TM_HELP_BATTLE);
+                g_menuHelp.text = text_get(TM_HELP_BATTLE);
             }
         }
     }
-    func_80035580(NULL);
+    help_setBounds(NULL);
     return p;
 }
 
@@ -1424,7 +1424,7 @@ void tm_setHelpArea(s16 arg0) {
     r.y = 0;
     r.w = arg0;
     r.h = 0xF0;
-    func_80035580(&r);
+    help_setBounds(&r);
 }
 
 void *tm_taskGetSelect(u32 *ot, void *p, TmState *s) {
@@ -1457,14 +1457,14 @@ void *tm_taskGetSelect(u32 *ot, void *p, TmState *s) {
     x = sel->x;
     y = sel->y;
     p = tm_drawCursor(ot, p, s, x + 0x22, y + 5, 2);
-    D_80077DE8.unk0 = x + 0x25;
-    D_80077DE8.unk2 = y + 6;
-    D_80077DE8.unk8 = text_get(TM_HELP_TAKE);
+    g_menuHelp.x = x + 0x25;
+    g_menuHelp.y = y + 6;
+    g_menuHelp.text = text_get(TM_HELP_TAKE);
     r.x = x + 0x2A;
     r.w = 0x12C;
     r.y = 0;
     r.h = 0xF0;
-    func_80035580(&r);
+    help_setBounds(&r);
     if (pad & BTN_CROSS) {
         if (s->hasLostCard != 0 && sel == &s->cards[s->lostSlot + 5]) {
             s->hasLostCard = 0;
@@ -1497,7 +1497,7 @@ void *tm_taskGetSelect(u32 *ot, void *p, TmState *s) {
     cards = s->cards;
     for (i = 0; i < TM_NUM_CARDS; i++) {
         if (i >= 5 && tm_getCaptured(s, s->getCursor) == &cards[i]) {
-            n = func_80062560(cards[i].id);
+            n = card_countOf(cards[i].id);
             for (j = 0; j < 5; j++) {
                 if (cards[i].id == cards[j].id) {
                     n++;
@@ -1506,15 +1506,15 @@ void *tm_taskGetSelect(u32 *ot, void *p, TmState *s) {
         }
     }
     text_formatNumber(n, num, -1, 0);
-    func_8002BD54(buf, text_get(TM_TEXT_STOCK));
+    text_copy(buf, text_get(TM_TEXT_STOCK));
     text_append(buf, num);
     text_append(buf, text_get(TM_TEXT_STOCK_END));
-    r2.w = func_8002BA68((s32)buf) + 0x10;
+    r2.w = text_measureWidth((s32)buf) + 0x10;
     r2.x = 0x52;
     r2.y = sel->y - 9;
     r2.h = 0x19;
     text_drawBlock(0x5A, r2.y + 6, 3, buf, 0);
-    func_8002DEE4(&r2, 3, 2);
+    win_drawBox(&r2, 3, 2);
     return p;
 }
 
@@ -1550,7 +1550,7 @@ void tm_taskGameQuit(TmState *s) {
             if (s->quitChoice == 0) {
                 for (i = 0; i < s->handCount; i++) {
                     c = &s->cards[i];
-                    func_80062420(c->id, c->arrows, c->power, c->type,
+                    card_addWithStats(c->id, c->arrows, c->power, c->type,
                                   c->pdef, c->mdef);
                 }
                 s->handCount = 0;
@@ -1564,19 +1564,19 @@ void tm_taskGameQuit(TmState *s) {
             tm_playSe(TM_SE_CURSOR);
         }
         if (s->quitChoice == 0) {
-            D_80077DE8.unk0 = 0x7B;
-            D_80077DE8.unk2 = 0x6C;
-            D_80077DE8.unk8 = text_get(TM_HELP_QUIT_YES);
+            g_menuHelp.x = 0x7B;
+            g_menuHelp.y = 0x6C;
+            g_menuHelp.text = text_get(TM_HELP_QUIT_YES);
             ui_drawHand(0x7B, 0x6C, 3);
         } else {
-            D_80077DE8.unk0 = 0x7B;
-            D_80077DE8.unk2 = 0x7B;
-            D_80077DE8.unk8 = text_get(TM_HELP_QUIT_NO);
+            g_menuHelp.x = 0x7B;
+            g_menuHelp.y = 0x7B;
+            g_menuHelp.text = text_get(TM_HELP_QUIT_NO);
             ui_drawHand(0x7B, 0x7B, 3);
         }
         tm_setHelpArea(0x8D);
     } else {
-        D_80077DE8.unk8 = NULL;
+        g_menuHelp.text = NULL;
     }
 }
 
@@ -2488,14 +2488,14 @@ void tm_nextTrade(TmState *s) {
         }
     }
     if (found == 0) {
-        if (func_800625F8() > 100) {
-            r.w = func_8002BA68(text_get(TM_TEXT_OVER_100)) + 0x12;
+        if (card_countAll() > 100) {
+            r.w = text_measureWidth(text_get(TM_TEXT_OVER_100)) + 0x12;
             r.x = 0xA0 - r.w / 2;
             r.y = 0x5B;
             r.h = 0x2A;
-            s->infoWin = func_8002DC54(&r, 5, 2);
+            s->infoWin = win_openFree(&r, 5, 2);
             win_setDrawContent(s->infoWin, tm_drawOver100Win);
-            func_8002E31C(s->infoWin, 1);
+            win_setShadow(s->infoWin, 1);
             tm_waitWindow(s->infoWin);
             tm_hideCards(s);
             tm_resetStockCursor(s);
@@ -2541,7 +2541,7 @@ void *tm_taskCardChange(u32 *ot, void *p, TmState *s) {
         return p;
     }
     if (s->result == TM_RESULT_WIN) {
-        g_tmTradeBadge = func_80062420(c->id, c->arrows, c->power, c->type, c->pdef, c->mdef);
+        g_tmTradeBadge = card_addWithStats(c->id, c->arrows, c->power, c->type, c->pdef, c->mdef);
     } else {
         s->lostCard.id = c->id;
         s->lostCard.power = c->power;
@@ -2551,7 +2551,7 @@ void *tm_taskCardChange(u32 *ot, void *p, TmState *s) {
         s->lostCard.mdef = c->mdef;
         s->hasLostCard = 1;
         g_tmTradeBadge = 0;
-        if (func_80062560(c->id) == 0) {
+        if (card_countOf(c->id) == 0) {
             found = NULL;
             cards = s->cards;
             for (i = 0; i < TM_HAND_SIZE; i++) {
@@ -2569,21 +2569,21 @@ void *tm_taskCardChange(u32 *ot, void *p, TmState *s) {
     c->y = 0x55;
     g_tmTradeLost = n;
     g_tmTradeCardId = id = c->id;
-    func_8002BD54(buf, (u8 *)func_8006276C(id));
+    text_copy(buf, (u8 *)card_getName(id));
     if (g_tmTradeLost == 0) {
         text_append(buf, text_get(TM_TEXT_RECEIVED));
     } else {
         text_append(buf, text_get(TM_TEXT_LOST));
     }
     text_append(buf, text_get(TM_TEXT_TRADE_END));
-    w = func_8002BA68(buf) + 0x10;
+    w = text_measureWidth(buf) + 0x10;
     r.x = 0xA0 - w / 2;
     r.y = 0x96;
     r.w = w;
     r.h = 0x1A;
-    s->msgWin = func_8002DC54(&r, 5, 2);
+    s->msgWin = win_openFree(&r, 5, 2);
     win_setDrawContent(s->msgWin, tm_drawTradeWin);
-    func_8002E31C(s->msgWin, 1);
+    win_setShadow(s->msgWin, 1);
     tm_waitWindow(s->msgWin);
     tm_playSe(s->result == TM_RESULT_WIN ? TM_SE_RECEIVED : TM_SE_LOST);
     s->task = TM_TASK_TRADE;
@@ -2630,13 +2630,13 @@ void tm_drawTradeWin(Window *w) {
 
     v = w;
     if (g_tmTradeLost == 0) {
-        func_8002BD54(buf, text_get(TM_TEXT_RECEIVED));
+        text_copy(buf, text_get(TM_TEXT_RECEIVED));
     } else {
-        func_8002BD54(buf, text_get(TM_TEXT_LOST));
+        text_copy(buf, text_get(TM_TEXT_LOST));
     }
-    text_append(buf, (u8 *)func_8006276C(g_tmTradeCardId));
+    text_append(buf, (u8 *)card_getName(g_tmTradeCardId));
     text_append(buf, text_get(TM_TEXT_TRADE_END));
-    text_drawBlock(0x9F - func_8002BA68((s32)buf) / 2, v->unk2 + 6, w->unk18, buf, 0);
+    text_drawBlock(0x9F - text_measureWidth((s32)buf) / 2, v->unk2 + 6, w->unk18, buf, 0);
 }
 
 void tm_endTrade(TmState *arg0) {
@@ -2990,11 +2990,11 @@ void tm_showStockCard(TmState *s) {
     i = 5;
     if (s->handCount != i && s->task != TM_TASK_END_FADE) {
         c0 = (TmCard *)tm_getStockCursorId(s);
-        n = func_80062560((s32)c0);
+        n = card_countOf((s32)c0);
         if (n != 0) {
             c0 = (TmCard *)tm_getStockCursorId(s);
             text_formatNumber((s32)c0 + 1, buf, -1, 3);
-            i = func_8002BA10(buf) + 0xE;
+            i = text_measureDigits(buf) + 0xE;
             w = i / 2;
             ui_drawSmallDigits(0xD8 - w, 0x78, 0xFFA, g_tmNoLabel, 0);
             ui_drawDigits(0xE6 - w, 0x76, 0xFFA, buf, 0);
@@ -3020,7 +3020,7 @@ void tm_showStockCard(TmState *s) {
                         dx = 0;
                     }
                 }
-                d = func_800625A0(tm_getStockCursorId(s), k);
+                d = card_find(tm_getStockCursorId(s), k);
                 c->x = 0xC2 + i * 4 + dx;
                 c->y = i + 0x81;
                 c->depth = i + 0x28;
@@ -3044,8 +3044,8 @@ void tm_showStockCard(TmState *s) {
                     k = 0;
                 }
             }
-            i = func_80062794(tm_getStockCursorId(s));
-            text_drawBlock(0xD9 - i / 2, 0xC7, 0xFFA, (u8 *)func_8006276C(tm_getStockCursorId(s)), 0);
+            i = card_getNameWidth(tm_getStockCursorId(s));
+            text_drawBlock(0xD9 - i / 2, 0xC7, 0xFFA, (u8 *)card_getName(tm_getStockCursorId(s)), 0);
         }
     } else {
         s->cards[5].visible = 0;
@@ -3057,7 +3057,7 @@ void tm_returnKept(TmState *arg0) {
     TmCard *c = arg0->cards;
     for (i = 0; i < TM_HAND_SIZE; i++) {
         if (c[i].owner == TM_PLAYER) {
-            func_80062420(c[i].id, c[i].arrows, c[i].power, c[i].type, c[i].pdef, c[i].mdef);
+            card_addWithStats(c[i].id, c[i].arrows, c[i].power, c[i].type, c[i].pdef, c[i].mdef);
         }
     }
 }
@@ -3069,15 +3069,15 @@ void tm_returnHand(TmState *arg0) {
         if (arg0->result == TM_RESULT_WIN) {
             tm_levelUpRandom(arg0, &c[i]);
         }
-        func_80062420(c[i].id, c[i].arrows, c[i].power, c[i].type, c[i].pdef, c[i].mdef);
+        card_addWithStats(c[i].id, c[i].arrows, c[i].power, c[i].type, c[i].pdef, c[i].mdef);
     }
 }
 
 void tm_addRandomCard(TmState *arg0, u8 arg1) {
     TmCard c;
-    if (func_800625F8() < 0x64) {
+    if (card_countAll() < 0x64) {
         tm_makeCard(arg0, &c, arg1, 1);
-        func_80062420(arg1, c.arrows, c.power, c.type, c.pdef, c.mdef);
+        card_addWithStats(arg1, c.arrows, c.power, c.type, c.pdef, c.mdef);
     }
 }
 
@@ -3322,19 +3322,19 @@ void tm_checkGameEnd(TmState *s) {
         b = tm_countOnBoard(s, TM_ENEMY);
         if (a > b) {
             func_80062750(0);
-            func_800624A8();
+            card_addWin();
             s->result = TM_RESULT_WIN;
             s->wins++;
         }
         if (a < b) {
             func_80062750(1);
-            func_800624E8();
+            card_addLoss();
             s->result = TM_RESULT_LOSE;
             s->losses++;
         }
         if (a == b) {
             func_80062750(2);
-            func_8006252C();
+            card_addDraw();
             s->result = TM_RESULT_DRAW;
             s->draws++;
         }
@@ -4252,7 +4252,7 @@ void *tm_drawStock(u32 *ot, SPRT *p, TmState *s) {
     p = (SPRT *)((DR_TPAGE *)p + 1);
 
     for (i = 0; i < 100; i++) {
-        m = n = func_80062560(i);
+        m = n = card_countOf(i);
         if (n != 1) {
             c = m % 10;
             if (c != 0 || n >= 10) {
@@ -4312,7 +4312,7 @@ void *tm_drawStock(u32 *ot, SPRT *p, TmState *s) {
             ((SPRT_16 *)p)->u0 = 0;
             ((SPRT_16 *)p)->v0 = 0xE0;
         } else {
-            k = func_800627BC(i);
+            k = card_getRarity(i);
             if (n >= 2) {
                 k += 7;
             }
@@ -4415,13 +4415,13 @@ void *tm_drawStock(u32 *ot, SPRT *p, TmState *s) {
     if ((u32)(s->task - TM_TASK_CHOICE) < 2 || s->task == TM_TASK_GAME_QUIT || s->task == TM_TASK_END_FADE) {
 
         ui_drawSmallDigits(0xBC, 0x42, 0xFFA, "WIN", 7);
-        text_formatNumber(func_80062498(), buf, 4, 1);
+        text_formatNumber(card_getWins(), buf, 4, 1);
         ui_drawSmallDigits(0xDC, 0x42, 0xFFA, buf, 0);
         ui_drawSmallDigits(0xBC, 0x4C, 0xFFA, "LOSE", 7);
-        text_formatNumber(func_800624D8(), buf, 4, 1);
+        text_formatNumber(card_getLosses(), buf, 4, 1);
         ui_drawSmallDigits(0xDC, 0x4C, 0xFFA, buf, 0);
         ui_drawSmallDigits(0xBC, 0x56, 0xFFA, "DRAW", 7);
-        text_formatNumber(func_8006251C(), buf, 4, 1);
+        text_formatNumber(card_getDraws(), buf, 4, 1);
         ui_drawSmallDigits(0xDC, 0x56, 0xFFA, buf, 0);
 
         setlen(p, 3);
@@ -4540,25 +4540,25 @@ void *tm_drawStock(u32 *ot, SPRT *p, TmState *s) {
         AddPrim(ot + 0xFFA, p);
         p = (SPRT *)((DR_TPAGE *)p + 1);
     }
-    if (s->handCount != TM_HAND_SIZE && s->task != TM_TASK_AWAY_INFO && func_80062560(tm_getStockCursorId(s)) >= 2) {
+    if (s->handCount != TM_HAND_SIZE && s->task != TM_TASK_AWAY_INFO && card_countOf(tm_getStockCursorId(s)) >= 2) {
         text_formatNumber(s->copyIdx + 1, buf, 3, 1);
         ui_drawSmallDigits(0xBF, 0xBA, 0xFFA, buf, 0);
         ui_drawSmallDigits(0xD4, 0xBA, 0xFFA, g_tmSlash, 0);
-        text_formatNumber(func_80062560(tm_getStockCursorId(s)), buf, -1, 1);
+        text_formatNumber(card_countOf(tm_getStockCursorId(s)), buf, -1, 1);
         ui_drawSmallDigits(0xDB, 0xBA, 0xFFA, buf, 0);
         text_drawBlock(0xB5, 0xB6, 0xFFA, text_get(TM_TEXT_ICON_L1), 0);
         text_drawBlock(0xF1, 0xB6, 0xFFA, text_get(TM_TEXT_ICON_R1), 0);
     }
     if (s->handCount == 0) {
-        g_tmStockTypes = func_80062638();
-        g_tmStockCount = func_800625F8();
+        g_tmStockTypes = card_countKinds();
+        g_tmStockCount = card_countAll();
     }
     return p;
 }
 
 void tm_openStock(TmState *arg0) {
-    g_tmStockTypes = func_80062638();
-    g_tmStockCount = func_800625F8();
+    g_tmStockTypes = card_countKinds();
+    g_tmStockCount = card_countAll();
     arg0->task = TM_TASK_CHOICE;
 }
 
@@ -4861,13 +4861,13 @@ void tm_askRematch(TmState *arg0) {
     RECT r;
 
     if ((u32)(arg0->opponent - TM_OPP_FORCED) >= 4) {
-        r.w = func_8002BA68((s32)text_get(TM_TEXT_REMATCH)) + 0x12;
+        r.w = text_measureWidth((s32)text_get(TM_TEXT_REMATCH)) + 0x12;
         r.x = 0xA0 - r.w / 2;
         r.y = 0x54;
         r.h = 0x39;
-        arg0->msgWin = func_8002DC54(&r, 5, 2);
+        arg0->msgWin = win_openFree(&r, 5, 2);
         win_setDrawContent(arg0->msgWin, tm_drawRematchWin);
-        func_8002E31C(arg0->msgWin, 1);
+        win_setShadow(arg0->msgWin, 1);
         tm_waitWindow(arg0->msgWin);
         arg0->cursor = 0;
         arg0->task = TM_TASK_TRY_AGAIN;
@@ -4881,7 +4881,7 @@ void tm_drawRematchWin(Window *arg0) {
 }
 
 void tm_taskEndFade(TmState *arg0) {
-    func_8002F93C((arg0->timer * 0x88) & 0xFF8);
+    fade_setAngle((arg0->timer * 0x88) & 0xFF8);
     if (arg0->timer >= 0x1F) {
         arg0->task = TM_TASK_EXIT;
     }
@@ -4889,8 +4889,8 @@ void tm_taskEndFade(TmState *arg0) {
 
 void tm_startEndFade(TmState *arg0) {
     arg0->timer = 0;
-    func_800320B8(2, 1, 0x1E, 0xFFFFFF);
-    func_8002F93C(0);
+    game_startFade(2, 1, 0x1E, 0xFFFFFF);
+    fade_setAngle(0);
     tm_soundCmd(0xC401, 0x42, 0x1E, 0x7F, 0);
     arg0->task = TM_TASK_END_FADE;
 }

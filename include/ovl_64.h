@@ -11,14 +11,14 @@ void bcopy(void *, void *, s32);
 extern s8 g_mbgRgb24;
 extern s32 g_mbgFrame;
 extern s8 g_mbgPaused;
-void func_80056228(void);
+void akao_sendCmdE2(void);
 char *strcpy(char *, const char *);
 extern s8 D_80071E30;
-void func_80022F1C(s32, void (*)());
+void cd_readStreamAsync(s32, void (*)());
 void func_80022FD0(s32);
-void func_80023018(void);
+void cd_pause(void);
 void CdSetDebug(s32);
-void func_80056448(s32, s32);
+void akao_sendCmdE8(s32, s32);
 void func_80056488(void *);
 int SetGraphDebug(int level);
 int CdPosToInt(CdlLOC *p);
@@ -170,7 +170,7 @@ typedef struct {
     u32 unk60;
 } Ovl64StreamSect;
 
-/* per ring slot: the pad vibration of the frame (frame header +0x5C), copied to the actuator bytes D_800739B0
+/* per ring slot: the pad vibration of the frame (frame header +0x5C), copied to the actuator bytes g_padActuator
  * (which ovl_34's vibration test also writes) while the frame shows */
 typedef struct {
     u8 on;    /* header byte 1 >= 0x80 */
@@ -352,7 +352,7 @@ u32 func_8019D3F0(u16 *p);
 void mbg_mdecOutCallback(void);
 
 /* mbg_streamReadyCallback: the two cross-jumped timeout blocks (one inline, called twice) */
-void func_80022F64(s32); /* main exe */
+void cd_restartAt(s32); /* main exe */
 s32 DecDCToutSync(s32);
 extern s32 g_mbgSectorLogFrame[];
 extern s32 g_mbgSectorLogSlot[];
@@ -364,10 +364,10 @@ static inline void mbg_streamReadyCallback_retry(void) {
         limit = 0x438;
     }
     if (VSync(-1) - g_mbgStream.lastReadTime < limit) {
-        func_80022F64(g_mbgStream.sector);
+        cd_restartAt(g_mbgStream.sector);
     } else {
         g_mbgStream.unk2 = 2;
-        func_80023018();
+        cd_pause();
     }
 }
 

@@ -8,8 +8,8 @@ void opening_titleInit(void) {
 void opening_titleEnter(void) {
     s32 i;
 
-    func_80032574();
-    func_8002C4B0(1);
+    menu_initForMode();
+    pad_setStickAsDpad(1);
     g_titleMenu.decided = 0;
     g_titleMenu.unk0 = 1;
     g_titleMenu.cardPolling = 0;
@@ -30,7 +30,7 @@ void opening_titleRefresh(void) {
 }
 
 void opening_titleUpdate(void) {
-    func_8002C308(0);
+    pad_updateRepeat(0);
     if (g_titleMenu.decided == 0) {
         opening_titleInput();
         opening_titleDraw();
@@ -41,7 +41,7 @@ void opening_titleUpdate(void) {
 }
 
 void opening_titleLeave(void) {
-    func_8002C4B0(0);
+    pad_setStickAsDpad(0);
     opening_titleCloseCardEvents();
     if (g_titleMenu.cursor == TITLE_CONTINUE) {
         menu_open(MENU_SAVE, 1);
@@ -49,7 +49,7 @@ void opening_titleLeave(void) {
 }
 
 void opening_titleInput(void) {
-    if (func_8002F810() == 0) {
+    if (fade_isBusy() == 0) {
         if (g_titleMenu.shown != 0 && g_titleMenu.fadingIn == 0) {
             if (g_padRepeat & PAD_UP) {
                 snd_playSe(SE_CURSOR);
@@ -80,7 +80,7 @@ void opening_titleLoadImages(void) {
     FileEntry *e;
 
     e = file_find(1, 0x3C);
-    cd_readSync(g_gameState->unk20 + e->unk4, (e->unkC - e->unk4) << 11, TITLE_PACK_BUF, e->unk4);
+    cd_readSync(g_gameState->imgSector + e->unk4, (e->unkC - e->unk4) << 11, TITLE_PACK_BUF, e->unk4);
     opening_titleLoadTims((s32 *)TITLE_PACK_BUF);
 }
 
@@ -103,8 +103,8 @@ void opening_titleLoadTims(s32 *pack) {
     p = pack + 1;
     for (i = 0; i < n; i++) {
         tim = (TmTimLike *)((u8 *)pack + p[i]);
-        func_8001D8A8((s32)tim);
-        func_8001D910(tim, &clut, &img);
+        file_loadTim((s32)tim);
+        file_getTimRects(tim, &clut, &img);
         u = img->x & 0x3F;
         mode = tim->unk4 & 3;
         sh = 2 - mode;
@@ -132,8 +132,8 @@ void opening_titleDecide(void) {
         return;
     }
     snd_playSe(g_titleMenu.cursor == TITLE_NEW_GAME ? SE_GAME_START : SE_CURSOR);
-    func_8002FAAC(0x10);
-    func_8002F8A8(opening_titleOnFadeOut);
+    fade_out(0x10);
+    fade_setOnDone(opening_titleOnFadeOut);
 }
 
 void func_800A8A8C(void) {
@@ -143,12 +143,12 @@ void opening_titleDrawBackground(void) {
     s32 i;
 
     for (i = 0; i < TITLE_BG_STRIPS; i++) {
-        func_80027710(i << 5, 0, 10, &g_titleMenu.images[i], 0);
+        ui_drawSpriteDef(i << 5, 0, 10, &g_titleMenu.images[i], 0);
     }
-    func_80027710(g_titleImage10Pos.x, g_titleImage10Pos.y, 5, &g_titleMenu.images[TITLE_IMG_10], 1);
+    ui_drawSpriteDef(g_titleImage10Pos.x, g_titleImage10Pos.y, 5, &g_titleMenu.images[TITLE_IMG_10], 1);
     if (g_titleMenu.shown != 0) {
         if (g_titleMenu.fadingIn == 0) {
-            func_80027710(g_titleImage13Pos.x, g_titleImage13Pos.y, 5, &g_titleMenu.images[TITLE_IMG_13], 0);
+            ui_drawSpriteDef(g_titleImage13Pos.x, g_titleImage13Pos.y, 5, &g_titleMenu.images[TITLE_IMG_13], 0);
         } else {
             opening_titleDrawFading(g_titleImage13Pos.x, g_titleImage13Pos.y, 5, &g_titleMenu.images[TITLE_IMG_13], 0);
         }
@@ -158,8 +158,8 @@ void opening_titleDrawBackground(void) {
 void opening_titleDrawChoices(void) {
     if (g_titleMenu.shown != 0) {
         if (g_titleMenu.fadingIn == 0) {
-            func_80027710(g_titleNewGamePos.x, g_titleNewGamePos.y, 5, &g_titleMenu.images[TITLE_IMG_NEW_GAME], 0);
-            func_80027710(g_titleContinuePos.x, g_titleContinuePos.y, 5, &g_titleMenu.images[TITLE_IMG_CONTINUE], opening_titleHasCard() == 0);
+            ui_drawSpriteDef(g_titleNewGamePos.x, g_titleNewGamePos.y, 5, &g_titleMenu.images[TITLE_IMG_NEW_GAME], 0);
+            ui_drawSpriteDef(g_titleContinuePos.x, g_titleContinuePos.y, 5, &g_titleMenu.images[TITLE_IMG_CONTINUE], opening_titleHasCard() == 0);
         } else {
             opening_titleDrawFading(g_titleNewGamePos.x, g_titleNewGamePos.y, 5, &g_titleMenu.images[TITLE_IMG_NEW_GAME], 0);
             opening_titleDrawFading(g_titleContinuePos.x, g_titleContinuePos.y, 5, &g_titleMenu.images[TITLE_IMG_CONTINUE], opening_titleHasCard() == 0);
@@ -168,11 +168,11 @@ void opening_titleDrawChoices(void) {
 }
 
 void opening_titleDrawCursor(void) {
-    if (func_8002F810() == 0 && g_titleMenu.shown != 0 && g_titleMenu.fadingIn == 0) {
-        D_80077DE8.unk0 = g_titleCursorPos[g_titleMenu.cursor].x - 0x1A;
-        D_80077DE8.unk2 = g_titleCursorPos[g_titleMenu.cursor].y + 3;
-        D_80077DE8.unk4 = 3;
-        func_800355E4(&D_80077DE8);
+    if (fade_isBusy() == 0 && g_titleMenu.shown != 0 && g_titleMenu.fadingIn == 0) {
+        g_menuHelp.x = g_titleCursorPos[g_titleMenu.cursor].x - 0x1A;
+        g_menuHelp.y = g_titleCursorPos[g_titleMenu.cursor].y + 3;
+        g_menuHelp.otz = 3;
+        help_drawCursor(&g_menuHelp);
     }
 }
 
@@ -273,7 +273,7 @@ void opening_titleStartFadeIn(void) {
         g_titleMenu.shown = 1;
         g_titleMenu.fadingIn = 0;
         g_titleMenu.fadeFrames = 0;
-        func_8002FA50(0x20);
+        fade_in(0x20);
     }
 }
 
@@ -299,7 +299,7 @@ void opening_titleConfirm(void) {
 
     switch (g_titleMenu.cursor) {
     case TITLE_NEW_GAME:
-        g_gameState->unkB = DISC_1;
+        g_gameState->disc = DISC_1;
         r = scene_checkDisc();
         if (r != DISC_NONE) {
             menu_open(MENU_DISC, ((r & 3) << 14) | 0x3A98);

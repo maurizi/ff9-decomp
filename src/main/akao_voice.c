@@ -1,6 +1,6 @@
 #include "ff9.h"
 
-s32 func_8005715C(s32 x) {
+s32 akao_isqrt(s32 x) {
     s32 n = 5;
     u32 xs = x << 8;
     u32 r = 0;
@@ -41,7 +41,7 @@ end:
     return r;
 }
 
-s32 func_80057234(u32 x) {
+s32 akao_lfoSine(u32 x) {
     s32 v = x & 0xFF;
     s32 r;
 
@@ -49,7 +49,7 @@ s32 func_80057234(u32 x) {
     if (!(x & 1)) {
         v = 0x100 - v;
     }
-    r = func_8005715C(0x10000 - v * v);
+    r = akao_isqrt(0x10000 - v * v);
     if (x & 2) {
         r = ~r;
         r++;
@@ -57,7 +57,7 @@ s32 func_80057234(u32 x) {
     return r;
 }
 
-static inline s32 func_800574A0_curve(s32 r, u32 x) {
+static inline s32 akao_lfoSquareScaled_curve(s32 r, u32 x) {
     if (x < 3) {
         switch (x) {
         case 1:
@@ -74,7 +74,7 @@ static inline s32 func_800574A0_curve(s32 r, u32 x) {
     return r;
 }
 
-s32 func_8005729C(u32 x) {
+s32 akao_lfoSineScaled(u32 x) {
     s32 v = x & 0xFF;
     s32 r;
 
@@ -82,16 +82,16 @@ s32 func_8005729C(u32 x) {
     if (!(x & 1)) {
         v = 0x100 - v;
     }
-    r = func_8005715C(0x10000 - v * v);
+    r = akao_isqrt(0x10000 - v * v);
     if (x & 2) {
         r = ~r;
         r++;
     }
     x >>= 2;
-    return func_800574A0_curve(r, x);
+    return akao_lfoSquareScaled_curve(r, x);
 }
 
-s32 func_80057364(u32 x) {
+s32 akao_lfoTriangle(u32 x) {
     s32 v = (x & 0xFF) << 8;
 
     switch ((x >> 8) & 3) {
@@ -108,7 +108,7 @@ s32 func_80057364(u32 x) {
     return v;
 }
 
-s32 func_800573CC(u32 x) {
+s32 akao_lfoTriangleScaled(u32 x) {
     s32 v = (x & 0xFF) << 8;
 
     x >>= 8;
@@ -124,10 +124,10 @@ s32 func_800573CC(u32 x) {
         break;
     }
     x >>= 2;
-    return func_800574A0_curve(v, x);
+    return akao_lfoSquareScaled_curve(v, x);
 }
 
-s32 func_80057488(s32 a) {
+s32 akao_lfoSquare(s32 a) {
     s32 r = 0x10000;
     if (a & 0x100) {
         r = 0xFFFF0000;
@@ -135,7 +135,7 @@ s32 func_80057488(s32 a) {
     return r;
 }
 
-s32 func_800574A0(u32 x) {
+s32 akao_lfoSquareScaled(u32 x) {
     s32 r = (x & 0x100) ? -0x10000 : 0x10000;
 
     x >>= 9;
@@ -155,21 +155,21 @@ s32 func_800574A0(u32 x) {
     return r;
 }
 
-static inline s32 func_80057518_inline(s32 x) {
+static inline s32 akao_lfoTable_inline(s32 x) {
     s32 i = x & 0xFF;
-    return D_8006F440[i] << 8;
+    return g_akaoLfoTableData[i] << 8;
 }
 
-s32 func_80057518(s32 x) {
-    return func_80057518_inline(x);
+s32 akao_lfoTable(s32 x) {
+    return akao_lfoTable_inline(x);
 }
 
-s32 func_80057534(u32 code) {
+s32 akao_lfoTableScaled(u32 code) {
     s32 v;
     u32 sel;
 
     v = code & 0xFF;
-    v = D_8006F440[v] << 8;
+    v = g_akaoLfoTableData[v] << 8;
 
     sel = code >> 9;
     if (sel < 3) {
@@ -190,28 +190,28 @@ s32 func_80057534(u32 code) {
 }
 
 void akao_keyOn(u32 x) {
-    SPU_REG16(0x1F801D88) = x;
-    SPU_REG16(0x1F801D8A) = x >> 16;
+    SPU_REG16(SPU_KEY_ON_LO) = x;
+    SPU_REG16(SPU_KEY_ON_HI) = x >> 16;
 }
 
 void akao_keyOff(s32 x) {
-    SPU_REG16(0x1F801D8C) = x;
-    SPU_REG16(0x1F801D8E) = (u32)x >> 16;
+    SPU_REG16(SPU_KEY_OFF_LO) = x;
+    SPU_REG16(SPU_KEY_OFF_HI) = (u32)x >> 16;
 }
 
 void akao_setReverbVoices(u32 x) {
-    SPU_REG16(0x1F801D98) = x;
-    SPU_REG16(0x1F801D9A) = x >> 16;
+    SPU_REG16(SPU_REVERB_ON_LO) = x;
+    SPU_REG16(SPU_REVERB_ON_HI) = x >> 16;
 }
 
 void akao_setNoiseVoices(u32 x) {
-    SPU_REG16(0x1F801D94) = x;
-    SPU_REG16(0x1F801D96) = x >> 16;
+    SPU_REG16(SPU_NOISE_ON_LO) = x;
+    SPU_REG16(SPU_NOISE_ON_HI) = x >> 16;
 }
 
 void akao_setPitchModVoices(u32 x) {
-    SPU_REG16(0x1F801D90) = x;
-    SPU_REG16(0x1F801D92) = x >> 16;
+    SPU_REG16(SPU_PITCH_MOD_LO) = x;
+    SPU_REG16(SPU_PITCH_MOD_HI) = x >> 16;
 }
 
 void akao_setVoiceVolume(s32 v, u32 l, u32 r, s32 vol) {
@@ -221,8 +221,8 @@ void akao_setVoiceVolume(s32 v, u32 l, u32 r, s32 vol) {
         l >>= 7;
         r >>= 7;
     }
-    ((SpuVoiceReg *)0x1F801C00)[v].volL = l & 0x7FFF;
-    ((SpuVoiceReg *)0x1F801C00)[v].volR = r & 0x7FFF;
+    ((SpuVoiceReg *)SPU_VOICE_BASE)[v].volL = l & 0x7FFF;
+    ((SpuVoiceReg *)SPU_VOICE_BASE)[v].volR = r & 0x7FFF;
 }
 
 void akao_setVoicePitch(s32 v, s32 x) {
@@ -271,7 +271,7 @@ void akao_writeVoice(s32 v, AkaoVoiceRegs *p, s32 vol) {
     s32 b;
 
     p->dirty = 0;
-    r = (u16 *)(0x1F801C00 + v * 16);
+    r = (u16 *)(SPU_VOICE_BASE + v * 16);
     if (vol == 0) {
         a = p->volL;
         b = p->volR;
@@ -337,7 +337,7 @@ void akao_flushVoice(s32 v, AkaoVoiceRegs *p) {
     }
 }
 
-void func_800579B4(AkaoChannel *c, u32 mask, s32 kind) {
+void akao_stepChannelSlides(AkaoChannel *c, u32 mask, s32 kind) {
     s32 nw;
     if ((u16)c->unkB8 != 0) {
         s32 old;
@@ -395,9 +395,9 @@ void func_800579B4(AkaoChannel *c, u32 mask, s32 kind) {
             if (kind == 0) {
                 g_akaoSeq->unk3C ^= mask;
             } else {
-                D_80080A70.unk1C ^= mask;
+                g_akaoSeState.unk1C ^= mask;
             }
-            D_80083158.unk8 |= 0x110;
+            g_akaoFlags.unk8 |= 0x110;
         }
     }
     if (c->unkF2 != 0) {
@@ -405,9 +405,9 @@ void func_800579B4(AkaoChannel *c, u32 mask, s32 kind) {
             if (kind == 0) {
                 g_akaoSeq->unk44 ^= mask;
             } else {
-                D_80080A70.unk24 ^= mask;
+                g_akaoSeState.unk24 ^= mask;
             }
-            D_80083158.unk8 |= 0x100;
+            g_akaoFlags.unk8 |= 0x100;
         }
     }
     if ((u16)c->unkD8 != 0) {
@@ -443,7 +443,7 @@ void func_800579B4(AkaoChannel *c, u32 mask, s32 kind) {
     }
 }
 
-void func_80057D80(AkaoChannel *c, u32 bit) {
+void akao_calcChannelVoice(AkaoChannel *c, u32 bit) {
     u32 f;
     s32 vol;
     s32 t;
@@ -486,11 +486,11 @@ void func_80057D80(AkaoChannel *c, u32 bit) {
         vol = (vol * (s32)(((u32)g_akaoSeq->unk50 >> 16) & 0x7F)) >> 7;
         pan = (c->unkBE >> 8) + c->unk114;
         pan = (pan + (g_akaoSeq->unk5C >> 16) - 0x40) & 0xFF;
-        if (D_8008315C & 2) {
-            c->voiceVolL = c->voiceVolR = (vol * D_8006F640) >> 15;
+        if (g_akaoOutputFlags & 2) {
+            c->voiceVolL = c->voiceVolR = (vol * g_akaoMonoGain) >> 15;
         } else {
-            c->voiceVolL = (vol * D_8006F540[pan]) >> 15;
-            c->voiceVolR = (vol * D_8006F540[pan ^ 0xFF]) >> 15;
+            c->voiceVolL = (vol * g_akaoPanCurve[pan]) >> 15;
+            c->voiceVolR = (vol * g_akaoPanCurve[pan ^ 0xFF]) >> 15;
         }
     }
     if (f & 0x10) {
@@ -521,7 +521,7 @@ void func_80057D80(AkaoChannel *c, u32 bit) {
     }
 }
 
-void func_80058118(AkaoChannel *c, u32 bit) {
+void akao_calcSeChannelVoice(AkaoChannel *c, u32 bit) {
     u32 f;
     s32 vol;
     s32 t;
@@ -569,11 +569,11 @@ void func_80058118(AkaoChannel *c, u32 bit) {
         } else {
             pan = 0x80;
         }
-        if (D_8008315C & 2) {
-            c->voiceVolL = c->voiceVolR = (vol * D_8006F640) >> 15;
+        if (g_akaoOutputFlags & 2) {
+            c->voiceVolL = c->voiceVolR = (vol * g_akaoMonoGain) >> 15;
         } else {
-            c->voiceVolL = (vol * D_8006F540[pan]) >> 15;
-            c->voiceVolR = (vol * D_8006F540[pan ^ 0xFF]) >> 15;
+            c->voiceVolL = (vol * g_akaoPanCurve[pan]) >> 15;
+            c->voiceVolR = (vol * g_akaoPanCurve[pan ^ 0xFF]) >> 15;
         }
     }
     if (f & 0x10) {
@@ -604,7 +604,7 @@ void func_80058118(AkaoChannel *c, u32 bit) {
     }
 }
 
-s32 func_800584C8(s32 arg0) {
+s32 akao_stealVoice(s32 arg0) {
     s32 i;
     s32 min;
     s32 best;
@@ -618,7 +618,7 @@ s32 func_800584C8(s32 arg0) {
     }
     min = 0x7FFF;
     best = 24;
-    e = &D_8007F798[i];
+    e = &g_akaoVoiceEnv[i];
     do {
         m = (u16)e->unk4;
         if (e->unk4 < (s16)min) {
@@ -631,18 +631,18 @@ s32 func_800584C8(s32 arg0) {
     if ((s16)min == 0x7FFF) {
         return 24;
     }
-    func_80058830(g_akaoChannels, best, min);
+    akao_detachVoice(g_akaoChannels, best, min);
     return best;
 }
 
-s32 func_80058578(s32 a) {
+s32 akao_findFreeVoice(s32 a) {
     Unk8007F798 *p;
     if (a != 0) {
         a = 0;
     } else {
         a = g_akaoSeq->unk38;
     }
-    while ((p = &D_8007F798[a])->unk4 != 0) {
+    while ((p = &g_akaoVoiceEnv[a])->unk4 != 0) {
         a++;
         if (a >= 0x18) {
             break;
@@ -651,7 +651,7 @@ s32 func_80058578(s32 a) {
     return a;
 }
 
-void func_800585E0(AkaoChannel *ch, u32 mask, u32 keep, u32 *used) {
+void akao_assignVoices(AkaoChannel *ch, u32 mask, u32 keep, u32 *used) {
     u32 bit;
     s32 i;
     u32 on;
@@ -664,7 +664,7 @@ void func_800585E0(AkaoChannel *ch, u32 mask, u32 keep, u32 *used) {
 
     do {
         if (mask & bit) {
-            func_80057D80(ch, bit);
+            akao_calcChannelVoice(ch, bit);
             if (ch->voiceDirty != 0) {
                 if (D_80080AC4 & bit) {
                     ch->voiceVolR = 0;
@@ -678,10 +678,10 @@ void func_800585E0(AkaoChannel *ch, u32 mask, u32 keep, u32 *used) {
                         ch->voice = i;
                     } else {
                         f = (g_akaoSeq->unk8 & bit) != 0;
-                        v = func_80058578(f);
+                        v = akao_findFreeVoice(f);
                         if (v == 24) {
                             g_akaoSeq->unk0 |= 2;
-                            v = func_800584C8(f);
+                            v = akao_stealVoice(f);
                         }
                         if (v == 24) {
                             ch->voice = v;
@@ -689,16 +689,16 @@ void func_800585E0(AkaoChannel *ch, u32 mask, u32 keep, u32 *used) {
                         } else {
                             *used |= 1 << v;
                             ch->voice = v;
-                            D_8007F798[v].unk4 = 0x7FFF;
+                            g_akaoVoiceEnv[v].unk4 = 0x7FFF;
                         }
                     }
                     if (ch->voice < 24) {
                         akao_writeVoice(ch->voice, (AkaoVoiceRegs *)&ch->voice, (u16)ch->voiceVolScale);
-                        D_800831C8[ch->voice] = g_akaoSeq;
-                        D_80083158.unk8 |= 0x100;
+                        g_akaoVoiceOwner[ch->voice] = g_akaoSeq;
+                        g_akaoFlags.unk8 |= 0x100;
                     }
                 } else if (ch->voice < 24) {
-                    /* identical branches (jump2 merges them), as in func_80030EE4 */
+                    /* identical branches (jump2 merges them), as in math_buildRotMatrixZXY */
                     if (mask) {
                         ((void (*)(s32, AkaoVoiceRegs *, u32))akao_flushVoice)(ch->voice, (AkaoVoiceRegs *)&ch->voice, ch->unk34);
                     } else {
@@ -715,7 +715,7 @@ void func_800585E0(AkaoChannel *ch, u32 mask, u32 keep, u32 *used) {
 }
 
 /* K&R definition: callers pass two or three arguments */
-void func_80058830(c, voice)
+void akao_detachVoice(c, voice)
     AkaoChannel *c;
     s32 voice;
 {
@@ -726,8 +726,8 @@ void func_80058830(c, voice)
         }
         c++;
     }
-    if (D_8007F790 != NULL) {
-        c = D_8007F71C;
+    if (g_akaoSubSeq != NULL) {
+        c = g_akaoSubChannels;
         for (i = 0; i < 32; i++) {
             if (voice == c->voice) {
                 c->voice = 0x18;
@@ -737,20 +737,20 @@ void func_80058830(c, voice)
     }
 }
 
-void func_800588B0(u32 extra) {
+void akao_readEnvelopes(u32 extra) {
     u32 m = (g_akaoSeq->unk4 & g_akaoSeq->unkC) | extra;
     u32 i;
     Unk8007F798 *p;
-    if (D_8007F790 != NULL) {
-        m |= D_8007F790->unk4 & D_8007F790->unkC;
+    if (g_akaoSubSeq != NULL) {
+        m |= g_akaoSubSeq->unk4 & g_akaoSubSeq->unkC;
     }
-    for (i = 0, p = D_8007F798; i < 24; i++, p++) {
+    for (i = 0, p = g_akaoVoiceEnv; i < 24; i++, p++) {
         if (m & (1 << i)) {
             p->unk4 = 0x7FFF;
         } else {
             SpuGetVoiceEnvelope(i, &p->unk4);
             if (p->unk4 == 0) {
-                func_80058830(g_akaoChannels, i);
+                akao_detachVoice(g_akaoChannels, i);
             }
         }
     }
@@ -770,7 +770,7 @@ void func_800589E0(Unk800589E0 *a) {
     a->unk50 = D_80080A24;
 }
 
-void func_800589F0(void) {
+void akao_updateVoices(void) {
     u32 keyon;
     u32 ex;
     u32 m1;
@@ -782,22 +782,22 @@ void func_800589F0(void) {
     Unk80080A10 *s;
     Unk80080A10 *t;
 
-    ex = D_80080A70.unk0 | D_80080A70.unk10 | D_80083174;
+    ex = g_akaoSeState.unk0 | g_akaoSeState.unk10 | g_akaoStreamVoices;
     keyon = 0;
     if ((g_akaoSeq->unk4 & g_akaoSeq->unk10) ||
-        (D_8007F790 != NULL && (D_8007F790->unk4 & D_8007F790->unk10))) {
-        func_800588B0(ex);
+        (g_akaoSubSeq != NULL && (g_akaoSubSeq->unk4 & g_akaoSubSeq->unk10))) {
+        akao_readEnvelopes(ex);
     }
-    if (D_8007F790 != NULL) {
-        if (D_80083158.unk4 & 0x100) {
-            ((void (*)(Unk80080A10 *, AkaoChannel *))func_80058990)(D_8007F790, D_8007F71C);
+    if (g_akaoSubSeq != NULL) {
+        if (g_akaoFlags.unk4 & 0x100) {
+            ((void (*)(Unk80080A10 *, AkaoChannel *))func_80058990)(g_akaoSubSeq, g_akaoSubChannels);
         }
-        t = D_8007F790;
+        t = g_akaoSubSeq;
         m1 = t->unk4 & t->unk14 & ~(t->unkC & ex);
         b1 = m1 & t->unkC & ~ex;
         g_akaoSeq = t;
         if (m1 & g_akaoSeq->unk8) {
-            func_800585E0(D_8007F71C, m1 & g_akaoSeq->unk8, b1, &keyon);
+            akao_assignVoices(g_akaoSubChannels, m1 & g_akaoSeq->unk8, b1, &keyon);
             g_akaoSeq->unk10 &= ~g_akaoSeq->unk8;
             m1 &= ~g_akaoSeq->unk8;
         }
@@ -806,49 +806,49 @@ void func_800589F0(void) {
         m2 = s->unk4 & s->unk14 & ~(s->unkC & (b1 | ex));
         b2 = m2 & s->unkC & ~(b1 | ex);
         if (m2 & g_akaoSeq->unk8) {
-            func_800585E0(g_akaoChannels, m2 & g_akaoSeq->unk8, b2, &keyon);
+            akao_assignVoices(g_akaoChannels, m2 & g_akaoSeq->unk8, b2, &keyon);
             g_akaoSeq->unk10 &= ~g_akaoSeq->unk8;
             m2 &= ~g_akaoSeq->unk8;
         }
         if (m1) {
-            g_akaoSeq = D_8007F790;
+            g_akaoSeq = g_akaoSubSeq;
             b1 &= ~b2;
-            func_800585E0(D_8007F71C, m1, b1, &keyon);
+            akao_assignVoices(g_akaoSubChannels, m1, b1, &keyon);
             g_akaoSeq->unk10 = 0;
             g_akaoSeq = s;
         }
         if (m2) {
-            func_800585E0(g_akaoChannels, m2, b2, &keyon);
+            akao_assignVoices(g_akaoChannels, m2, b2, &keyon);
             g_akaoSeq->unk10 = 0;
         }
-        if (D_80083158.unk4 & 0x100) {
+        if (g_akaoFlags.unk4 & 0x100) {
             if (m2) {
-                ((void (*)(Unk80080A10 *, AkaoChannel *))func_800589E0)(D_8007F790, D_8007F71C);
+                ((void (*)(Unk80080A10 *, AkaoChannel *))func_800589E0)(g_akaoSubSeq, g_akaoSubChannels);
             } else {
-                ((void (*)(Unk80080A10 *, AkaoChannel *))func_800589E0)(D_8007F790, D_8007F71C);
+                ((void (*)(Unk80080A10 *, AkaoChannel *))func_800589E0)(g_akaoSubSeq, g_akaoSubChannels);
             }
         }
     } else {
         m2 = g_akaoSeq->unk4 & g_akaoSeq->unk14 & ~(g_akaoSeq->unkC & ex);
         bit = m2 & g_akaoSeq->unkC & ~ex;
         if (m2 & g_akaoSeq->unk8) {
-            func_800585E0(g_akaoChannels, m2 & g_akaoSeq->unk8, bit, &keyon);
+            akao_assignVoices(g_akaoChannels, m2 & g_akaoSeq->unk8, bit, &keyon);
             g_akaoSeq->unk10 &= ~g_akaoSeq->unk8;
             m2 &= ~g_akaoSeq->unk8;
         }
         if (m2) {
-            func_800585E0(g_akaoChannels, m2, bit, &keyon);
+            akao_assignVoices(g_akaoChannels, m2, bit, &keyon);
             g_akaoSeq->unk10 = 0;
         }
     }
-    m2 = D_80080A70.unk0 & D_80080A70.unk8;
+    m2 = g_akaoSeState.unk0 & g_akaoSeState.unk8;
     if (m2) {
-        keyon |= D_80080A70.unk4;
+        keyon |= g_akaoSeState.unk4;
         bit = 0x100;
-        ch = D_8007E3D8;
+        ch = g_akaoSeChannels;
         for (; m2 != 0; bit <<= 1, ch++) {
             if (m2 & bit) {
-                func_80058118(ch, bit);
+                akao_calcSeChannelVoice(ch, bit);
                 if (ch->voiceDirty) {
                     ((void (*)(s32, AkaoVoiceRegs *, u32))akao_flushVoice)(ch->voice, (AkaoVoiceRegs *)&ch->voice, ch->unk34);
                 }
@@ -857,23 +857,23 @@ void func_800589F0(void) {
         }
         D_80080A74 = 0;
     }
-    m2 = D_80083158.unk8;
+    m2 = g_akaoFlags.unk8;
     if (m2 & 0x80) {
         SpuSetReverbModeDepth(g_akaoSeq->unk48 >> 12, g_akaoSeq->unk48 >> 12);
-        D_80083158.unk8 &= ~0x80;
+        g_akaoFlags.unk8 &= ~0x80;
     }
     if (m2 & 0x10) {
-        SpuSetNoiseClock(D_80080A70.unk0 ? D_80080A70.unk28 : g_akaoSeq->unk6E);
-        D_80083158.unk8 &= ~0x10;
+        SpuSetNoiseClock(g_akaoSeState.unk0 ? g_akaoSeState.unk28 : g_akaoSeq->unk6E);
+        g_akaoFlags.unk8 &= ~0x10;
     }
     if (m2 & 0x100) {
-        func_80059140((u32 *)&D_80083238[1], D_8007F790->unk3C, g_akaoSeq->unk3C, D_80080A70.unk1C);
-        func_80059140((u32 *)&D_80083238[0], D_8007F790->unk40, g_akaoSeq->unk40, D_80080A70.unk20);
-        func_80059140((u32 *)&D_80083238[2], D_8007F790->unk44, g_akaoSeq->unk44, D_80080A70.unk24);
+        func_80059140((u32 *)&D_80083238[1], g_akaoSubSeq->unk3C, g_akaoSeq->unk3C, g_akaoSeState.unk1C);
+        func_80059140((u32 *)&D_80083238[0], g_akaoSubSeq->unk40, g_akaoSeq->unk40, g_akaoSeState.unk20);
+        func_80059140((u32 *)&D_80083238[2], g_akaoSubSeq->unk44, g_akaoSeq->unk44, g_akaoSeState.unk24);
         akao_setReverbVoices(D_80083238[0]);
         akao_setNoiseVoices(D_80083238[1]);
         akao_setPitchModVoices(D_80083238[2]);
-        D_80083158.unk8 &= ~0x100;
+        g_akaoFlags.unk8 &= ~0x100;
     }
     if (keyon) {
         akao_keyOn(keyon);
@@ -904,14 +904,14 @@ void func_80058F94(void) {
 
     a = 0;
     out = 0;
-    keep = ~((D_80080A70.unk0 | D_80080A70.unk10) | D_80083174);
-    if (D_8007F790 != NULL) {
-        a = D_8007F790->unk18;
-        m = a & D_8007F790->unk8;
+    keep = ~((g_akaoSeState.unk0 | g_akaoSeState.unk10) | g_akaoStreamVoices);
+    if (g_akaoSubSeq != NULL) {
+        a = g_akaoSubSeq->unk18;
+        m = a & g_akaoSubSeq->unk8;
         if (m != 0) {
-            func_80058F34(D_8007F71C, &out, m, keep);
-            D_8007F790->unk18 &= ~D_8007F790->unk8;
-            a &= ~D_8007F790->unk8;
+            func_80058F34(g_akaoSubChannels, &out, m, keep);
+            g_akaoSubSeq->unk18 &= ~g_akaoSubSeq->unk8;
+            a &= ~g_akaoSubSeq->unk8;
         }
     }
     b = g_akaoSeq->unk18;
@@ -921,16 +921,16 @@ void func_80058F94(void) {
         g_akaoSeq->unk18 &= ~g_akaoSeq->unk8;
         b &= ~g_akaoSeq->unk8;
     }
-    if (D_8007F790 != NULL && a != 0) {
-        func_80058F34(D_8007F71C, &out, a, keep);
-        D_8007F790->unk18 = 0;
+    if (g_akaoSubSeq != NULL && a != 0) {
+        func_80058F34(g_akaoSubChannels, &out, a, keep);
+        g_akaoSubSeq->unk18 = 0;
     }
     if (b != 0) {
         func_80058F34(g_akaoChannels, &out, b, keep);
         g_akaoSeq->unk18 = 0;
     }
-    out |= D_80080A70.unkC;
-    D_80080A70.unkC = 0;
+    out |= g_akaoSeState.unkC;
+    g_akaoSeState.unkC = 0;
     if (out != 0) {
         akao_keyOff(out);
     }
@@ -943,15 +943,15 @@ void func_80059140(u32 *out, u32 m1, u32 m2, u32 extra) {
     u32 b;
     Unk80080A10 *s;
 
-    keep = ~((D_80080A70.unk0 | D_80080A70.unk10) | D_80083174);
+    keep = ~((g_akaoSeState.unk0 | g_akaoSeState.unk10) | g_akaoStreamVoices);
     a = 0;
     r = 0;
-    s = D_8007F790;
+    s = g_akaoSubSeq;
     if (s != NULL) {
         a = s->unk4 & m1;
         if (a & s->unk8) {
-            func_80058F34(D_8007F71C, &r, a & s->unk8, keep);
-            a &= ~D_8007F790->unk8;
+            func_80058F34(g_akaoSubChannels, &r, a & s->unk8, keep);
+            a &= ~g_akaoSubSeq->unk8;
         }
     }
     b = g_akaoSeq->unk4 & m2;
@@ -959,12 +959,12 @@ void func_80059140(u32 *out, u32 m1, u32 m2, u32 extra) {
         func_80058F34(g_akaoChannels, &r, b & g_akaoSeq->unk8, keep);
         b &= ~g_akaoSeq->unk8;
     }
-    if (D_8007F790 != NULL && a != 0) {
-        func_80058F34(D_8007F71C, &r, a, keep);
+    if (g_akaoSubSeq != NULL && a != 0) {
+        func_80058F34(g_akaoSubChannels, &r, a, keep);
     }
     if (b != 0) {
         func_80058F34(g_akaoChannels, &r, b, keep);
     }
     *out = r |= extra;
-    D_80083158.unk8 |= 0x100;
+    g_akaoFlags.unk8 |= 0x100;
 }

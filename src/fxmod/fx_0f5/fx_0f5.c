@@ -34,22 +34,22 @@ void func_801E7704(SVECTOR *pos, SVECTOR *rot, VECTOR *scale, s32 r0, s32 r1, s3
     s32 ft;
     s32 sn;
 
-    gte_SetRotMatrix(env->unk14);
-    gte_SetTransMatrix(env->unk14);
+    gte_SetRotMatrix(env->viewMatrix);
+    gte_SetTransMatrix(env->viewMatrix);
     gte_ldv0(pos);
-    gt4 = (POLY_GT4 *)env->unk24;
+    gt4 = (POLY_GT4 *)env->prim;
     ft4 = (POLY_FT4 *)(gt4 + 32);
-    env->unk24 = (u8 *)(ft4 + 96);
+    env->prim = (u8 *)(ft4 + 96);
     if (flicker == 0) {
         col0.r = col0.g = col0.b = c;
         col1.r = col1.g = col1.b = c;
     } else {
         D_801E8A28 &= 0x1F;
-        ex->func_800E651C(D_801E89F8, &col0, D_801E8A28);
+        ex->btlfx_sampleGradient(D_801E89F8, &col0, D_801E8A28);
         col0.r = (col0.r * c) >> 7;
         col0.g = (col0.g * c) >> 7;
         col0.b = (col0.b * c) >> 7;
-        ex->func_800E651C(D_801E89F8, &col1, D_801E8A28);
+        ex->btlfx_sampleGradient(D_801E89F8, &col1, D_801E8A28);
         D_801E8A28++;
         col1.r = (col1.r * c) >> 7;
         col1.g = (col1.g * c) >> 7;
@@ -61,7 +61,7 @@ void func_801E7704(SVECTOR *pos, SVECTOR *rot, VECTOR *scale, s32 r0, s32 r1, s3
     tpage |= (abr & 3) << 5;
     col1.cd = col2.cd;
     gte_rtv0tr_b();
-    ex->func_800316D8(rot, &m);
+    ex->math_rotMatrixYXZ(rot, &m);
     ex->ScaleMatrix(&m, scale);
     gte_stlvnl(m.t);
     ex->MulRotMatrix(&m);
@@ -196,16 +196,16 @@ s32 fx_0f5_op80(s32 mode, Fx0f5Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
     } else if (mode == 1) {
         D_801E8A74 = env;
         ex->btlfx_initEffModels(D_801E8A84, 1);
-        work->unk20 = ex->func_800E8F50((Unk800E8F50 *)ex->btlfx_getFileData(entry->unk8, 9), 1);
+        work->unk20 = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, 9), 1);
         work->unk0 = 0;
         work->unk4 = 0;
-        BTLFX_COPY_SVEC(&work->unk8, &env->unkC->unk38);
+        BTLFX_COPY_SVEC(&work->unk8, &env->targets->centerX);
         work->unk18.vx = 0x400;
         work->unk18.vy = 0x20;
         work->unk18.vz = 0;
     } else {
         r = (work->unk4 << 9) / 72;
-        frame = entry->unk0;
+        frame = entry->frame;
         a = 0x1000 - ex->math_cos((work->unk4 << 10) / 72);
         work->unk10.vx = work->unk8.vx + ((ex->math_cos(a) * r) >> 12);
         work->unk10.vz = work->unk8.vz + ((ex->math_sin(a) * r) >> 12);
@@ -234,7 +234,7 @@ s32 fx_0f5_op80(s32 mode, Fx0f5Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             ex->Hi_ModifyEffModelRGB(work->unk20, k, k, k);
             if (frame >= 12) {
                 work->unk0 = 1;
-                entry->unk0 = -1;
+                entry->frame = -1;
             }
             break;
         case 1:
@@ -253,8 +253,8 @@ s32 fx_0f5_op80(s32 mode, Fx0f5Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             ex->Hi_DrawEffModel(&rot, &pos, (s32)&scale, work->unk20);
             if (frame >= 12) {
                 work->unk0 = 2;
-                entry->unk0 = -1;
-                p = ex->func_800E3CEC(ex->btlfx_getFileData(entry->unk8, 7), (s32)&work->unk10);
+                entry->frame = -1;
+                p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 7), (s32)&work->unk10);
                 if (p != NULL) {
                     p->unk22 = 0x31;
                 }
@@ -276,7 +276,7 @@ s32 fx_0f5_op80(s32 mode, Fx0f5Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             ex->Hi_DrawEffModel(&rot, &pos, (s32)&scale, work->unk20);
             if (frame >= 0x20) {
                 work->unk0 = 3;
-                entry->unk0 = -1;
+                entry->frame = -1;
             }
             break;
         case 3:
@@ -302,9 +302,9 @@ s32 fx_0f5_op80(s32 mode, Fx0f5Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             break;
         }
         work->unk18.vz -= work->unk4 * 2 + 0x10;
-        ex->func_800E6624(10000 - work->unk4 * 12, 0x1C0, 0x100, 0x40, 0x80, 0x200, 0x100);
-        ex->func_800E6624(10000 - work->unk4 * 6, 0x1C0, 0x180, 0x20, 0x80, 0x1E0, 0x180);
-        ex->func_800E6624(work->unk4 * 8, 0x280, 0x100, 0x20, 0x80, 0x2A0, 0x100);
+        ex->btlfx_drawScrollMove(10000 - work->unk4 * 12, 0x1C0, 0x100, 0x40, 0x80, 0x200, 0x100);
+        ex->btlfx_drawScrollMove(10000 - work->unk4 * 6, 0x1C0, 0x180, 0x20, 0x80, 0x1E0, 0x180);
+        ex->btlfx_drawScrollMove(work->unk4 * 8, 0x280, 0x100, 0x20, 0x80, 0x2A0, 0x100);
         work->unk4++;
     }
     return 0;

@@ -19,19 +19,19 @@ s32 fx_113_op80(s32 mode, Fx113Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
         case 0:
             work->unk10.vx += 0x64;
             work->unk10.vy -= 0x190;
-            work->unk0 = ex->func_800E3CEC(ex->btlfx_getFileData(entry->unk8, 2), (s32)&work->unk10);
+            work->unk0 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 2), (s32)&work->unk10);
             break;
         case 1:
             work->unk10.vx -= 0x32;
             work->unk10.vy -= 0x32;
-            work->unk0 = ex->func_800E3CEC(ex->btlfx_getFileData(entry->unk8, 3), (s32)&work->unk10);
+            work->unk0 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 3), (s32)&work->unk10);
             break;
         case 2:
             work->unk10.vy -= 0xC8;
-            work->unk0 = ex->func_800E3CEC(ex->btlfx_getFileData(entry->unk8, 4), (s32)&work->unk10);
+            work->unk0 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 4), (s32)&work->unk10);
             break;
         }
-        work->unk4 = ex->func_800E3CEC(ex->btlfx_getFileData(entry->unk8, 5), (s32)&work->unk10);
+        work->unk4 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 5), (s32)&work->unk10);
         if (work->unk0 != NULL) {
             work->unk0->unk22 = ex->func_800E7CC4(0, 0x80);
         }
@@ -40,7 +40,7 @@ s32 fx_113_op80(s32 mode, Fx113Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
         }
         return 0;
     } else {
-        return entry->unk0 >= 0x28;
+        return entry->frame >= 0x28;
     }
     return 0;
 }
@@ -53,7 +53,7 @@ s32 fx_113_op81(s32 mode, Fx113Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
     } else if (mode == 1) {
         D_801E7A74 = env;
         ex->btlfx_getUnitBodyPos(0, 0, (s16 *)&work->unk4);
-        work->unk0 = ex->func_800E3CEC(ex->btlfx_getFileData(entry->unk8, 1), (s32)&work->unk4);
+        work->unk0 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 1), (s32)&work->unk4);
         if (work->unk0 != NULL) {
             work->unk0->unk14 = (s32)D_801E7A84;
             work->unk0->unk12 = 0xD;
@@ -64,7 +64,7 @@ s32 fx_113_op81(s32 mode, Fx113Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
         }
         return 0;
     } else {
-        return entry->unk0 >= 0x28;
+        return entry->frame >= 0x28;
     }
     return 0;
 }

@@ -9,16 +9,16 @@ s32 fx_02c_op80(s32 mode, Fx02cWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
     } else if (mode == 1) {
         D_801E7928 = env;
         ex->btlfx_getUnitBodyPos(0x10, 0, (s16 *)&work->unk8);
-        work->unk10.vx = env->unkC->unk38;
-        work->unk10.vy = env->unkC->unk3A;
-        work->unk10.vz = env->unkC->unk3C;
+        work->unk10.vx = env->targets->centerX;
+        work->unk10.vy = env->targets->centerY;
+        work->unk10.vz = env->targets->centerZ;
         work->unk10.vy -= 0xC8;
         ex->btlfx_aimAngles((s16 *)&work->unk8, (s16 *)&work->unk10, (s16 *)&work->unk18);
-        work->unk0 = ex->func_800E3CEC(ex->btlfx_getFileData(entry->unk8, 7), (s32)&work->unk8);
+        work->unk0 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 7), (s32)&work->unk8);
     } else {
-        frame = entry->unk0;
+        frame = entry->frame;
         if (frame == 8) {
-            work->unk4 = ex->func_800E3CEC(ex->btlfx_getFileData(entry->unk8, 8), (s32)&work->unk10);
+            work->unk4 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 8), (s32)&work->unk10);
             if (work->unk4 != NULL) {
                 work->unk4->unk22 = ex->func_800E7CC4(0, 0x80);
             }

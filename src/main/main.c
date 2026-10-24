@@ -8,18 +8,18 @@ void game_main(void) {
     __main();
     game_initLibraries();
     for (;;) {
-        func_80016A28();
-        func_8001CB08();
-        func_8001D268();
+        game_reset();
+        game_initState();
+        game_initData();
         do {
             switch (g_gameState->mode) {
             case 0:
                 game_loadModeOverlay(0);
-                func_800A7088();
+                opening_main();
                 break;
             case 1:
                 game_loadModeOverlay(1);
-                func_800A7A48();
+                fld_entry();
                 break;
             case 2:
                 game_loadModeOverlay(2);
@@ -31,11 +31,11 @@ void game_main(void) {
                 break;
             case 3:
                 game_loadModeOverlay(3);
-                func_800A8860();
+                wm_entry();
                 break;
             case 9:
                 game_loadModeOverlay(9);
-                func_800A752C();
+                tm_main();
                 break;
             case 7:
                 game_loadModeOverlay(7);
@@ -43,13 +43,13 @@ void game_main(void) {
                 break;
             case 4:
                 game_loadModeOverlay(4);
-                func_800A713C();
+                ending_main();
                 break;
             }
-        } while (!(g_gameState->unk0 & 1));
-        func_8001D30C();
-        func_8001CB70();
-        func_80016B6C();
+        } while (!(g_gameState->unk0 & GS_RESET));
+        game_quitData();
+        game_quitState();
+        game_shutdown();
     }
 }
 
@@ -61,24 +61,24 @@ void game_loadModeOverlay(s32 mode) {
     PreloadEntry *e;
     FileEntry *f;
 
-    func_8001CFB4();
+    game_freezeScreen();
     id = files[mode] | 0x10000;
     while (cd_getState()) {
     }
-    if (func_800220E8(id)) {
+    if (preload_isReady(id)) {
         e = preload_find(id);
-        if (func_80021AE0(e)) {
+        if (preload_isInVram(e)) {
             StoreImage((RECT *)&e->unk20, addrs.unk0[mode]);
         } else if ((s32)addrs.unk0[mode] != e->unk8) {
-            func_8001DAA4((s32)addrs.unk0[mode], e->unk8, e->unkC, NULL);
+            file_copyViaVram((s32)addrs.unk0[mode], e->unk8, e->unkC, NULL);
         }
         loaded = e->unkC >> 11;
-        func_80022390(id);
+        preload_remove(id);
         DrawSync(0);
     }
     f = file_find(0, id);
     if (loaded < f->unkC - f->unk4) {
-        cd_readSync(g_gameState->unk20 + f->unk4 + loaded, (f->unkC - (f->unk4 + loaded)) << 11,
+        cd_readSync(g_gameState->imgSector + f->unk4 + loaded, (f->unkC - (f->unk4 + loaded)) << 11,
                       (u8 *)addrs.unk0[mode] + (loaded << 11));
     }
     EnterCriticalSection();

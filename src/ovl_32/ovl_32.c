@@ -8,15 +8,15 @@ INCLUDE_RODATA("asm/us/ovl_32/nonmatchings/ovl_32", g_chocographText);
 void menuChocograph_init(void) {
     ChocographMenu *st;
 
-    if (g_gameState->unk1C->unk844 > CHOCOGRAPH_COUNT) {
-        g_gameState->unk1C->unk844 = 0;
+    if (g_gameState->unk1C->chocograph > CHOCOGRAPH_COUNT) {
+        g_gameState->unk1C->chocograph = 0;
     }
     st = &s_menuChocograph;
     st->mode = CHOCO_MODE_TABS;
     s_menuChocograph.tab = CHOCO_TAB_SELECT;
     text_setBank(g_chocographText);
-    func_8003556C(menuChocograph_updateHelp);
-    func_80035674(1);
+    help_setCallback(menuChocograph_updateHelp);
+    help_setCursorOnTop(1);
     setRECT(&s_menuChocograph.titleRect, 0xE4, 8, 0x50, 0x1A);
     setRECT(&s_menuChocograph.tabRect, 8, 8, 0xD8, 0x1A);
     setRECT(&s_menuChocograph.selectedRect, 8, 0x26, 0xB7, 0x43);
@@ -24,11 +24,11 @@ void menuChocograph_init(void) {
     setRECT(&s_menuChocograph.countRect, 0xBF, 0x47, 0x75, 0x22);
     setRECT(&s_menuChocograph.abilityRect, 0xBF, 0x26, 0x75, 0x21);
     setRECT(&s_menuChocograph.infoRect, 0x8E, 0x6B, 0xA6, 0x71);
-    func_8002EDFC(&s_menuChocograph.list, CHOCOGRAPH_COUNT, CHOCO_LIST_ROWS, 1, 0x71);
+    menuList_init(&s_menuChocograph.list, CHOCOGRAPH_COUNT, CHOCO_LIST_ROWS, 1, 0x71);
     menuChocograph_readFlags();
     menuChocograph_loadImages();
-    if (g_gameState->unk1C->unk844 != 0) {
-        menuChocograph_scrollTo(g_gameState->unk1C->unk844 - 1);
+    if (g_gameState->unk1C->chocograph != 0) {
+        menuChocograph_scrollTo(g_gameState->unk1C->chocograph - 1);
     }
     s_menuChocograph.textPtr = s_menuChocograph.textBuf + (g_gameState->unk1C->unk8 << 12);
 }
@@ -39,15 +39,15 @@ void menuChocograph_inputTabs(void) {
 
     if (g_padRepeat & BTN_CIRCLE) {
         snd_playSe(SE_CANCEL);
-        func_800325E0();
+        menu_close();
     } else if (g_padRepeat & BTN_CROSS) {
         if (s_menuChocograph.tab == CHOCO_TAB_SELECT) {
             s_menuChocograph.mode = CHOCO_MODE_LIST;
             snd_playSe(SE_CURSOR);
-        } else if (g_gameState->unk1C->unk844 == 0) {
+        } else if (g_gameState->unk1C->chocograph == 0) {
             snd_playSe(SE_BUZZER);
         } else {
-            g_gameState->unk1C->unk844 = 0;
+            g_gameState->unk1C->chocograph = 0;
             snd_playSe(SE_CONFIRM);
         }
     } else {
@@ -80,7 +80,7 @@ void menuChocograph_inputList(void) {
     s32 idx;
     s32 n;
 
-    if (l->unk8 == 0) {
+    if (l->scroll == 0) {
         if (g_padRepeat & BTN_CIRCLE) {
             snd_playSe(SE_CANCEL);
             s_menuChocograph.mode = CHOCO_MODE_TABS;
@@ -88,12 +88,12 @@ void menuChocograph_inputList(void) {
         }
         if (g_padRepeat & BTN_CROSS) {
             st = &s_menuChocograph;
-            idx = l->unk5 + l->cursor;
+            idx = l->top + l->cursor;
             if (st->owned & (1 << idx)) {
                 n = st->ability;
                 if (menuChocograph_getRequiredAbility(idx) < n) {
                     snd_playSe(SE_CONFIRM);
-                    g_gameState->unk1C->unk844 = l->unk5 + l->cursor + 1;
+                    g_gameState->unk1C->chocograph = l->top + l->cursor + 1;
                     return;
                 }
             }
@@ -108,14 +108,14 @@ void menuChocograph_drawSelected(void) {
     RECT *r = &s_menuChocograph.selectedRect;
     s32 sel;
 
-    func_8002DEE4(r, 0x1D, 2);
-    func_8002705C(r, 0x1E, 2);
+    win_drawBox(r, 0x1D, 2);
+    win_drawShadow(r, 0x1E, 2);
     ui_drawLabel(r->x + 8, r->y - 3, 0x1C, D_800704AC, 0);
-    sel = g_gameState->unk1C->unk844;
+    sel = g_gameState->unk1C->chocograph;
     if (sel != 0) {
         menuChocograph_drawIcon(r->x + 0x10, r->y + 0x2C, 0x1C, (s_menuChocograph.found & (1 << (sel - 1))) ? CHOCO_ICON_CHOCOGRAPH + 1 : CHOCO_ICON_CHOCOGRAPH, 0);
-        text_drawBlock(r->x + 0x21, r->y + 0x2E, 0x1C, text_get(g_gameState->unk1C->unk844 - 1 + CHOCO_TEXT_NAME), 0);
-        menuChocograph_drawPicture(r->x + 0x4C, r->y + 0xB, 0x1C, g_gameState->unk1C->unk844 - 1, 0);
+        text_drawBlock(r->x + 0x21, r->y + 0x2E, 0x1C, text_get(g_gameState->unk1C->chocograph - 1 + CHOCO_TEXT_NAME), 0);
+        menuChocograph_drawPicture(r->x + 0x4C, r->y + 0xB, 0x1C, g_gameState->unk1C->chocograph - 1, 0);
         menuChocograph_drawFrame(r->x + 0x48, r->y + 7, 0x1C, 0);
     }
 }
@@ -129,15 +129,15 @@ void menuChocograph_drawList(void) {
 
     ui_drawLabel(r->x + 0x10, r->y - 3, 0x1C, D_80070428, 0);
     list = &s_menuChocograph.list;
-    func_8002E040(r, 0x1D, 1, list);
-    func_8002705C(r, 0x1D, 1);
+    win_drawListBox(r, 0x1D, 1, list);
+    win_drawShadow(r, 0x1D, 1);
     menuList_getView(list, &view);
     win_setClip(NULL, 0x1C, 1);
     for (i = 0; i < view.unk0; i++) {
         menuChocograph_drawRow(0, i, view.unk1 + i, &view);
     }
-    if (list->unk8 & 4) {
-        func_8002F40C(list, r, &sub);
+    if (list->scroll & 4) {
+        menuList_getRowsRect(list, r, &sub);
         win_setClip(&sub, 0x1C, 1);
         menuChocograph_drawScrollRows();
     }
@@ -149,8 +149,8 @@ void menuChocograph_drawCounts(void) {
     RECT *r = &s_menuChocograph.countRect;
     ChocographMenu *st;
 
-    func_8002DEE4(r, 0x1D, 2);
-    func_8002705C(r, 0x1E, 2);
+    win_drawBox(r, 0x1D, 2);
+    win_drawShadow(r, 0x1E, 2);
     text_drawBlock(r->x + 9, r->y + 3, 0x1C, text_get(CHOCO_TEXT_INVENTORY), 0);
     text_drawBlock(r->x + 9, r->y + 0xF, 0x1C, text_get(CHOCO_TEXT_FOUND), 0);
     st = &s_menuChocograph;
@@ -167,15 +167,15 @@ void menuChocograph_drawHint(void) {
     s32 n;
     s32 i;
 
-    id = st->list.unk5 + st->list.cursor;
+    id = st->list.top + st->list.cursor;
     ui_drawLabel(r->x + 8, r->y - 3, 0x1C, D_80070454, 0);
-    func_8002DEE4(r, 0x1D, 1);
-    func_8002705C(r, 0x1E, 1);
+    win_drawBox(r, 0x1D, 1);
+    win_drawShadow(r, 0x1E, 1);
     if (st->mode == CHOCO_MODE_LIST && (st->owned & (1 << id))) {
         menuChocograph_getRequiredAbility(id);
         menuChocograph_drawPicture(r->x + 0xC, r->y + 0xC, 0x1C, id, 0);
         menuChocograph_drawFrame(r->x + 8, r->y + 8, 0x1C, 0);
-        st->textPtr = func_8002920C(r->x + 0xC, r->y + 0x31, &g_ot[0x1C], text_get(id + CHOCO_TEXT_CLUE), 0, st->textPtr);
+        st->textPtr = text_buildBlock(r->x + 0xC, r->y + 0x31, &g_ot[0x1C], text_get(id + CHOCO_TEXT_CLUE), 0, st->textPtr);
         text_drawBlock(r->x + 0x42, r->y + 6, 0x1C, text_get(CHOCO_TEXT_ABILITY), 0);
         n = menuChocograph_getRequiredAbility(id);
         for (i = 0; i <= n; i++) {
@@ -185,19 +185,19 @@ void menuChocograph_drawHint(void) {
 }
 
 void menuChocograph_drawCursor(void) {
-    func_80035674(s_menuChocograph.mode != CHOCO_MODE_TABS);
-    if (!func_8002F810()) {
-        if (s_menuChocograph.mode == CHOCO_MODE_TABS || (D_80077DC0 & 3)) {
-            D_80077DE8.unk2 = 0x11;
-            D_80077DE8.unk4 = 0x1B;
-            D_80077DE8.unk0 = s_menuChocograph.tab * 0x60 + 0x1C;
-            func_800355E4(&D_80077DE8);
+    help_setCursorOnTop(s_menuChocograph.mode != CHOCO_MODE_TABS);
+    if (!fade_isBusy()) {
+        if (s_menuChocograph.mode == CHOCO_MODE_TABS || (g_menuFrame & 3)) {
+            g_menuHelp.y = 0x11;
+            g_menuHelp.otz = 0x1B;
+            g_menuHelp.x = s_menuChocograph.tab * 0x60 + 0x1C;
+            help_drawCursor(&g_menuHelp);
         }
         if (s_menuChocograph.mode == CHOCO_MODE_LIST) {
-            D_80077DE8.unk0 = 0;
-            D_80077DE8.unk4 = 0x1B;
-            D_80077DE8.unk2 = s_menuChocograph.list.cursor * 0xF + 0x74;
-            func_800355E4();
+            g_menuHelp.x = 0;
+            g_menuHelp.otz = 0x1B;
+            g_menuHelp.y = s_menuChocograph.list.cursor * 0xF + 0x74;
+            help_drawCursor();
         }
     }
 }
@@ -205,18 +205,18 @@ void menuChocograph_drawCursor(void) {
 void menuChocograph_updateHelp(void) {
     s32 idx;
 
-    D_80077DE8.unk8 = NULL;
-    func_80035580(0);
+    g_menuHelp.text = NULL;
+    help_setBounds(0);
     if (s_menuChocograph.mode == CHOCO_MODE_TABS) {
-        D_80077DE8.unk8 = text_get(s_menuChocograph.tab + CHOCO_TEXT_HELP_TAB);
+        g_menuHelp.text = text_get(s_menuChocograph.tab + CHOCO_TEXT_HELP_TAB);
     } else if (s_menuChocograph.mode == CHOCO_MODE_LIST) {
-        idx = s_menuChocograph.list.unk5 + s_menuChocograph.list.cursor;
+        idx = s_menuChocograph.list.top + s_menuChocograph.list.cursor;
         if (s_menuChocograph.owned & (1 << idx)) {
-            func_8002BD54(s_menuChocographHelpBuf, text_get(idx + CHOCO_TEXT_HINT));
+            text_copy(s_menuChocographHelpBuf, text_get(idx + CHOCO_TEXT_HINT));
             if (s_menuChocograph.ability <= menuChocograph_getRequiredAbility_inline(idx)) {
                 text_append(s_menuChocographHelpBuf, text_get(CHOCO_TEXT_INADEQUATE));
             }
-            D_80077DE8.unk8 = s_menuChocographHelpBuf;
+            g_menuHelp.text = s_menuChocographHelpBuf;
         }
     }
 }
@@ -284,7 +284,7 @@ void menuChocograph_restoreVram(void) {
     s32 sel;
 
     if (g_gameState->mode == 3) {
-        sel = g_gameState->unk1C->unk844;
+        sel = g_gameState->unk1C->chocograph;
         if (sel != 0) {
             menuChocograph_getPictureRects(sel - 1, &r0, &r1);
             MoveImage(&r0, 0x280, 0xF6);
@@ -411,15 +411,15 @@ void menuChocograph_update(void) {
 }
 
 void menuChocograph_exit(void) {
-    func_80035674(1);
-    func_8003556C(0);
+    help_setCursorOnTop(1);
+    help_setCallback(0);
     menuChocograph_restoreVram();
 }
 
 void menuChocograph_input(void) {
     void (*f)(void);
 
-    if (!func_8002F810()) {
+    if (!fade_isBusy()) {
         f = s_menuChocographInputFuncs[s_menuChocograph.mode];
         if (f != NULL) {
             f();
@@ -440,15 +440,15 @@ void menuChocograph_draw(void) {
 
 void menuChocograph_updateList(void) {
     if (s_menuChocograph.mode == CHOCO_MODE_LIST) {
-        func_8002EB74(&s_menuChocograph.list);
+        menuList_update(&s_menuChocograph.list);
     }
 }
 
 void menuChocograph_drawTitle(void) {
     RECT *r = &s_menuChocograph.titleRect;
 
-    func_8002DEE4(r, 0x1D, 2);
-    func_8002705C(r, 0x1D, 2);
+    win_drawBox(r, 0x1D, 2);
+    win_drawShadow(r, 0x1D, 2);
     text_drawBlock(r->x + 7, r->y + 6, 0x1C, text_get(CHOCO_TEXT_TITLE), 0);
 }
 
@@ -456,10 +456,10 @@ void menuChocograph_drawTabs(void) {
     RECT *r = &s_menuChocograph.tabRect;
     s32 i;
     s32 x;
-    u8 none = g_gameState->unk1C->unk844 == 0;
+    u8 none = g_gameState->unk1C->chocograph == 0;
 
-    func_8002DEE4(r, 0x1D, 2);
-    func_8002705C(r, 0x1D, 2);
+    win_drawBox(r, 0x1D, 2);
+    win_drawShadow(r, 0x1D, 2);
     for (i = 0, x = 0x2C; i < 2; i++, x += 0x60) {
         text_drawBlock(r->x + x, r->y + 6, 0x1C, text_get(i + CHOCO_TEXT_SELECT), (s_menuChocographTabNeedsSel[i] != 0 && none) ? 2 : 0);
     }
@@ -471,8 +471,8 @@ void menuChocograph_drawAbilities(void) {
     RECT *r = &s_menuChocograph.abilityRect;
 
     ui_drawLabel(r->x + 8, r->y - 3, 0x1C, D_80070424, 0);
-    func_8002DEE4(r, 0x1D, 2);
-    func_8002705C(r, 0x1E, 2);
+    win_drawBox(r, 0x1D, 2);
+    win_drawShadow(r, 0x1E, 2);
     for (i = 0; i < s_menuChocograph.ability; i++) {
         menuChocograph_drawIcon(r->x + 0xB + i * 0x13, r->y + 5, 0x1C, i, 0);
     }
@@ -482,7 +482,7 @@ void menuChocograph_drawScrollRows(void) {
     MenuView view;
     s32 i;
 
-    func_8002F344(&s_menuChocograph.list, &view);
+    menuList_getPageView(&s_menuChocograph.list, &view);
     for (i = 0; i < view.unk0; i++) {
         menuChocograph_drawRow(0, i, view.unk1 + i, &view);
     }
@@ -514,7 +514,7 @@ void menuChocograph_drawRow(s32 col, s32 row, s32 id, MenuView *v) {
 void menuChocograph_drawIcon(s32 x, s32 y, s32 z, s32 icon, u8 arg4) {
     IconTable rects = s_menuChocographIcons;
 
-    func_80027710(x, y, z, &rects.r[icon], arg4);
+    ui_drawSpriteDef(x, y, z, &rects.r[icon], arg4);
 }
 
 s32 menuChocograph_getRequiredAbility(s32 id) {
@@ -525,11 +525,11 @@ void menuChocograph_scrollTo(s32 idx) {
     MenuList *l = &s_menuChocograph.list;
 
     if (idx > CHOCO_LAST_PAGE - 1) {
-        l->unk5 = CHOCO_LAST_PAGE;
+        l->top = CHOCO_LAST_PAGE;
         l->cursor = idx - CHOCO_LAST_PAGE;
     } else {
         l->cursor = idx % CHOCO_LIST_ROWS;
-        l->unk5 = idx - l->cursor;
+        l->top = idx - l->cursor;
     }
 }
 

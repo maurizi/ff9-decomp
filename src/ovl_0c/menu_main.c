@@ -12,7 +12,7 @@ void menuMain_initPanels(void) {
     } else {
         s = text_get(1);
     }
-    w = func_8002B980(s, 0) + 0x10;
+    w = text_measureStyle(s, 0) + 0x10;
     if (w < 0x44) {
         w = 0x44;
     }
@@ -20,20 +20,20 @@ void menuMain_initPanels(void) {
     s_menuMainPanelRects[5].x = 0x134 - w;
     for (i = 0; i < 6; i++) {
         s_menuMain.panels[i].unk4 = s_menuMainPanelRects[i];
-        func_80063118(&s_menuMain.panels[i], NULL, 0);
+        tween_start(&s_menuMain.panels[i], NULL, 0);
     }
     if (D_80077E51 != 0) {
-        func_80063118(&s_menuMain.panels[0], &s_menuMainSlideIn[0], 1);
-        func_80063118(&s_menuMain.panels[1], &s_menuMainSlideIn[1], 1);
-        func_80063118(&s_menuMain.panels[2], &s_menuMainSlideIn[2], 1);
-        func_80063118(&s_menuMain.panels[3], &s_menuMainSlideIn[3], 1);
+        tween_start(&s_menuMain.panels[0], &s_menuMainSlideIn[0], 1);
+        tween_start(&s_menuMain.panels[1], &s_menuMainSlideIn[1], 1);
+        tween_start(&s_menuMain.panels[2], &s_menuMainSlideIn[2], 1);
+        tween_start(&s_menuMain.panels[3], &s_menuMainSlideIn[3], 1);
     }
 }
 
 void menuMain_inputCommand(void) {
     if (g_padRepeat & BTN_CIRCLE) {
         snd_playSe(0x65);
-        func_800362C8();
+        menuScreen_close();
     } else if (g_padRepeat & BTN_CROSS) {
         menuMain_selectCommand();
     } else if (g_padRepeat & PAD_UP) {
@@ -56,16 +56,16 @@ void menuMain_inputMember(void) {
         return;
     } else if (g_padRepeat & BTN_CROSS) {
         snd_playSe(0x67);
-        func_800361CC(s_menuMain.cursor + 1);
+        menuScreen_open(s_menuMain.cursor + 1);
         return;
     } else if (g_padRepeat & PAD_UP) {
-        m = &D_80077E50;
+        m = &g_menuScreen;
         old = m->unk3;
-        new = func_800337D0(old);
+        new = party_getPrevMember(old);
     } else if (g_padRepeat & PAD_DOWN) {
-        m = &D_80077E50;
+        m = &g_menuScreen;
         old = m->unk3;
-        new = func_8003380C(old);
+        new = party_getNextMember(old);
     } else {
         return;
     }
@@ -126,8 +126,8 @@ void menuMain_reorder(s32 arg0, s32 arg1) {
         g_gameState->unk1C->party[s_menuMain.orderCursor] = g_gameState->unk1C->party[s_menuMain.orderTarget];
         g_gameState->unk1C->party[s_menuMain.orderTarget] = t;
         menuMain_swapPortraits(arg0, arg1);
-        if (g_gameState->unk1C->party[D_80077E50.unk3] == NULL) {
-            D_80077E50.unk3 = party_getFirstMember();
+        if (g_gameState->unk1C->party[g_menuScreen.unk3] == NULL) {
+            g_menuScreen.unk3 = party_getFirstMember();
         }
     }
 }
@@ -140,9 +140,9 @@ void menuMain_swapPortraits(s32 arg0, s32 arg1) {
     RECT b1;
     RECT b2;
 
-    func_80028A40(arg0, &a0, &a1, &a2);
-    func_80028A40(arg1, &b0, &b1, &b2);
-    StoreImage(&a0, D_80076F80);
+    ui_getPartyPortraitRects(arg0, &a0, &a1, &a2);
+    ui_getPartyPortraitRects(arg1, &b0, &b1, &b2);
+    StoreImage(&a0, g_portraitSavedVram);
     DrawSync(0);
     MoveImage(&a1, 0x3C0, 0x1B0);
     DrawSync(0);
@@ -158,7 +158,7 @@ void menuMain_swapPortraits(s32 arg0, s32 arg1) {
     a1.y = 0x1B0;
     a2.x = 0x3D0;
     a2.y = 0x1B0;
-    LoadImage(&b0, D_80076F80);
+    LoadImage(&b0, g_portraitSavedVram);
     DrawSync(0);
     MoveImage(&a1, b1.x, b1.y);
     DrawSync(0);
@@ -180,9 +180,9 @@ void menuMain_drawMember(s32 arg0) {
     if (!c->unk34.b.unk9) {
         x = r->x + 0x16;
     }
-    func_800283E0(x, r->y + 1, 0x14, arg0, 0x2D, c->hp == 0);
+    ui_drawPortrait(x, r->y + 1, 0x14, arg0, 0x2D, c->hp == 0);
     text_drawBlock(r->x + 0x3C, r->y + 3, 0x14, c->unk0, 0);
-    func_80026FC4(r->x + 0x86, r->y + 4, 0x14, c->unk38, 0);
+    ui_drawStatusIcons(r->x + 0x86, r->y + 4, 0x14, c->status, 0);
     text_formatNumber(c->level, buf, 2, 1);
     ui_drawSprite(r->x + 0x3C, r->y + 0x12, 0x14, 0xB4, 0);
     ui_drawSmallDigits(r->x + 0x60, r->y + 0x12, 0x14, buf, 0);
@@ -203,7 +203,7 @@ void menuMain_drawMember(s32 arg0) {
     color = ((s16)(maxmp / 6) >= c->mp) * 4;
     text_formatNumber(maxmp, &buf[4], -1, 1);
     ui_drawSmallDigits(r->x + 0x59, r->y + 0x24, 0x14, buf, color);
-    func_800273C0(r->x + 0x9B, r->y + 0x14, 0x14, c->stones, c->maxStones);
+    ui_drawStones(r->x + 0x9B, r->y + 0x14, 0x14, c->stones, c->maxStones);
 }
 
 void menuMain_drawPortraitShade(RECT *r, s32 otz) {
@@ -228,20 +228,20 @@ void menuMain_drawTimeGil(void) {
     v = game_getPlayTime();
     ui_drawSprite(s_menuMainTimeGilRect->x + 6, s_menuMainTimeGilRect->y + 8, 0x13, 0xB1, 0);
     ui_drawSprite(s_menuMainTimeGilRect->x + 6, s_menuMainTimeGilRect->y + 0x15, 0x13, 0xB2, 0);
-    ui_drawSmallDigits(s_menuMainTimeGilRect->x + 0x13, s_menuMainTimeGilRect->y + 9, 0x13, buf, func_8002AA04(v, buf, 1));
+    ui_drawSmallDigits(s_menuMainTimeGilRect->x + 0x13, s_menuMainTimeGilRect->y + 9, 0x13, buf, text_formatTime(v, buf, 1));
     text_formatNumber(g_gameState->unk1C->gil, buf, 7, 1);
     strcat(buf, s_menuMainGilSuffix);
     ui_drawSmallDigits(s_menuMainTimeGilRect->x + 0x13, s_menuMainTimeGilRect->y + 0x16, 0x13, buf, 0);
     ui_drawLabel(s_menuMainTimeGilRect->x + 6, s_menuMainTimeGilRect->y - 3, 0x13, D_800704C0, 0);
-    func_8002DEE4(s_menuMainTimeGilRect, 0x14, 2);
+    win_drawBox(s_menuMainTimeGilRect, 0x14, 2);
 }
 
 void menuMain_drawLocation(void) {
     GameData *gd;
 
     ui_drawLabel(s_menuMainLocationRect->x + 8, s_menuMainLocationRect->y - 3, 0x13, D_8007046C, 0);
-    func_8002DEE4(s_menuMainLocationRect, 0x14, 2);
-    func_8002705C(s_menuMainLocationRect, 0x14, 2);
+    win_drawBox(s_menuMainLocationRect, 0x14, 2);
+    win_drawShadow(s_menuMainLocationRect, 0x14, 2);
     gd = g_gameState->unk1C;
     if (gd->unk80C != NULL && *gd->unk80C != 0xFF) {
         text_drawBlock(s_menuMainLocationRect->x + 8, s_menuMainLocationRect->y + 7, 0x13, gd->unk80C, 0);
@@ -253,44 +253,44 @@ void menuMain_drawLocation(void) {
 void menuMain_drawCursor(void) {
     u8 blink;
 
-    blink = (D_80077E54 & 3) != 0;
-    func_80035674(s_menuMain.state - 1U >= 2);
-    if (!func_8002F810()) {
+    blink = (g_menuScreenFrame & 3) != 0;
+    help_setCursorOnTop(s_menuMain.state - 1U >= 2);
+    if (!fade_isBusy()) {
         if (s_menuMain.state == 0 || blink) {
-            D_80077DE8.unk0 = 0xE0;
-            D_80077DE8.unk4 = 1;
-            D_80077DE8.unk2 = s_menuMain.cursor * 0xF + 0x11;
-            func_800355E4();
+            g_menuHelp.x = 0xE0;
+            g_menuHelp.otz = 1;
+            g_menuHelp.y = s_menuMain.cursor * 0xF + 0x11;
+            help_drawCursor();
         }
         if (s_menuMain.state == 1) {
-            D_80077DE8.unk4 = 0xC;
-            D_80077DE8.unk0 = s_menuMain.panels[0].unk4.x - 0xE;
-            D_80077DE8.unk2 = D_80077E53 * 0x2E + 0x20;
-            func_800355E4();
+            g_menuHelp.otz = 0xC;
+            g_menuHelp.x = s_menuMain.panels[0].unk4.x - 0xE;
+            g_menuHelp.y = g_menuScreenMember * 0x2E + 0x20;
+            help_drawCursor();
         }
         if (s_menuMain.state == 2) {
             if (s_menuMain.orderPicked == 1) {
-                D_80077DE8.unk4 = 0xB;
-                D_80077DE8.unk0 = s_menuMain.panels[0].unk4.x - 0xA;
-                D_80077DE8.unk2 = s_menuMain.orderTarget * 0x2E + 0x24;
-                func_800355E4();
+                g_menuHelp.otz = 0xB;
+                g_menuHelp.x = s_menuMain.panels[0].unk4.x - 0xA;
+                g_menuHelp.y = s_menuMain.orderTarget * 0x2E + 0x24;
+                help_drawCursor();
                 if (blink) {
                     ui_drawHand(s_menuMain.panels[0].unk4.x - 0xE, s_menuMain.orderCursor * 0x2E + 0x20, 0xC);
                 }
             } else if (s_menuMain.orderPicked == 0) {
-                D_80077DE8.unk4 = 0xC;
-                D_80077DE8.unk0 = s_menuMain.panels[0].unk4.x - 0xE;
-                D_80077DE8.unk2 = s_menuMain.orderCursor * 0x2E + 0x20;
-                func_800355E4();
+                g_menuHelp.otz = 0xC;
+                g_menuHelp.x = s_menuMain.panels[0].unk4.x - 0xE;
+                g_menuHelp.y = s_menuMain.orderCursor * 0x2E + 0x20;
+                help_drawCursor();
             }
         }
     }
 }
 
 void menuMain_updateHelp(void) {
-    D_80077DE8.unk8 = 0;
+    g_menuHelp.text = 0;
     if (s_menuMain.state == 0) {
-        D_80077DE8.unk8 = (u8 *)func_8003631C(s_menuMain.cursor);
+        g_menuHelp.text = (u8 *)menuScreen_getCommandHelp(s_menuMain.cursor);
     } else if (s_menuMain.state == 1) {
         if (s_menuMain.cursor + 1 == 3) {
             menuMain_setEquipHelp(s_menuMain.cursor);
@@ -299,11 +299,11 @@ void menuMain_updateHelp(void) {
             if (s_menuMain.cursor + 1 == 4) {
                 menuMain_setExpHelp(a);
             } else {
-                D_80077DE8.unk8 = text_get(a);
+                g_menuHelp.text = text_get(a);
             }
         }
     } else if (s_menuMain.state == 2) {
-        D_80077DE8.unk8 = text_get(s_menuMain.orderPicked + 0xB);
+        g_menuHelp.text = text_get(s_menuMain.orderPicked + 0xB);
     }
 }
 
@@ -311,31 +311,31 @@ void menuMain_setExpHelp(s32 arg0) {
     Character *c;
     u32 next;
 
-    c = g_gameState->unk1C->party[D_80077E53];
+    c = g_gameState->unk1C->party[g_menuScreenMember];
     if (c != NULL) {
         if (c->level >= 99) {
             next = c->exp;
         } else {
             next = g_levelExp[c->level];
         }
-        func_8002BE44(0, c->unk0);
+        text_setStringArg(0, c->unk0);
         text_formatNumber(c->exp, s_menuMainExpText, 7, 1);
         text_formatNumber(next - c->exp, s_menuMainNextText, 7, 1);
-        func_8002BE44(1, s_menuMainExpLabel);
-        func_8002BE44(2, s_menuMainExpText);
-        func_8002BE44(3, s_menuMainNextLabel);
-        func_8002BE44(4, s_menuMainUntilLabel);
-        func_8002BE44(5, s_menuMainNextText);
-        func_8002BE44(6, s_menuMainStatusLabel);
-        func_8002BE44(7, c->unk38 != 0 ? s_menuMainStatusAbnormal : s_menuMainStatusNormal);
-        D_80077DF0 = text_get(5);
+        text_setStringArg(1, s_menuMainExpLabel);
+        text_setStringArg(2, s_menuMainExpText);
+        text_setStringArg(3, s_menuMainNextLabel);
+        text_setStringArg(4, s_menuMainUntilLabel);
+        text_setStringArg(5, s_menuMainNextText);
+        text_setStringArg(6, s_menuMainStatusLabel);
+        text_setStringArg(7, c->status != 0 ? s_menuMainStatusAbnormal : s_menuMainStatusNormal);
+        g_menuHelpText = text_get(5);
     }
 }
 
 void menuMain_selectCommand(void) {
     if (s_menuMain.cursor + 1 != 5) {
-        if (func_80036300(s_menuMain.cursor + 1) == 0) {
-            func_800361CC(s_menuMain.cursor + 1);
+        if (menuScreen_needsMember(s_menuMain.cursor + 1) == 0) {
+            menuScreen_open(s_menuMain.cursor + 1);
         } else {
             s_menuMain.state = 1;
         }
@@ -347,7 +347,7 @@ void menuMain_selectCommand(void) {
 }
 
 void menuMain_onSlideInDone(void) {
-    D_80077E50.unk1 = 0;
+    g_menuScreen.unk1 = 0;
 }
 
 void menuMain_setEquipHelp(u8 arg0) {
@@ -358,26 +358,26 @@ void menuMain_setEquipHelp(u8 arg0) {
 
     i = 0;
     j = 5;
-    c = g_gameState->unk1C->party[D_80077E53];
+    c = g_gameState->unk1C->party[g_menuScreenMember];
     do {
-        func_8002BE44(i, s_menuMainEquipLabels[i]);
+        text_setStringArg(i, s_menuMainEquipLabels[i]);
         id = c->equip[i];
         if (id != 0xFF) {
-            func_8002BE44(j, D_8006A218 + D_80069018[id].unk0);
+            text_setStringArg(j, g_itemNames + g_itemTable[id].unk0);
         } else {
-            func_8002BE44(j, text_get(0xD));
+            text_setStringArg(j, text_get(0xD));
         }
         j++;
-        func_8002BE74(i, id);
+        text_setIconArg(i, id);
         i++;
     } while (i < 5);
-    D_80077DE8.unk8 = text_get(4);
+    g_menuHelp.text = text_get(4);
 }
 
 void menuMain_init(void) {
     RECT r;
 
-    if (D_80077E50.unk1 != 0) {
+    if (g_menuScreen.unk1 != 0) {
         s_menuMain.cursor = 0;
         s_menuMain.orderCursor = 0;
     }
@@ -387,12 +387,12 @@ void menuMain_init(void) {
     r.x = 8;
     r.y = 8;
     r.w = 0xE8;
-    r.h = g_gameState->unkC->disp.h - 0xF;
-    func_80035580(&r);
-    func_8003556C(menuMain_updateHelp);
-    func_80035674(1);
-    if (g_gameState->unk1C->party[D_80077E50.unk3] == NULL) {
-        D_80077E50.unk3 = party_getFirstMember();
+    r.h = g_gameState->dispEnv->disp.h - 0xF;
+    help_setBounds(&r);
+    help_setCallback(menuMain_updateHelp);
+    help_setCursorOnTop(1);
+    if (g_gameState->unk1C->party[g_menuScreen.unk3] == NULL) {
+        g_menuScreen.unk3 = party_getFirstMember();
     }
 }
 
@@ -403,9 +403,9 @@ void menuMain_update(void) {
 }
 
 void menuMain_exit(void) {
-    func_80035674(1);
-    func_80035580(0);
-    func_8003556C(0);
+    help_setCursorOnTop(1);
+    help_setBounds(0);
+    help_setCallback(0);
 }
 
 void menuMain_setCursor(u8 arg0) {
@@ -413,7 +413,7 @@ void menuMain_setCursor(u8 arg0) {
 }
 
 void menuMain_input(void) {
-    if (D_80077E50.unk1 == 0 && func_8002F810() == 0) {
+    if (g_menuScreen.unk1 == 0 && fade_isBusy() == 0) {
         if (s_menuMainInput[s_menuMain.state] != NULL) {
             s_menuMainInput[s_menuMain.state]();
         }
@@ -430,10 +430,10 @@ void menuMain_draw(void) {
 void menuMain_updatePanels(void) {
     s32 i;
 
-    if (D_80077E50.unk1 != 0) {
+    if (g_menuScreen.unk1 != 0) {
         for (i = 0; i < 6; i++) {
             if (s_menuMain.panels[i].unkC != 0) {
-                func_800631AC(&s_menuMain.panels[i]);
+                tween_step(&s_menuMain.panels[i]);
             }
         }
     }
@@ -457,9 +457,9 @@ void menuMain_drawParty(void) {
             menuMain_drawMember(i);
         }
         menuMain_drawPortraitShade(p, 0x14);
-        func_8002DEE4(&r, 0x14, 0);
-        func_8002DEE4(p, 0x14, 0);
-        func_8002705C(p, 0x15, 0);
+        win_drawBox(&r, 0x14, 0);
+        win_drawBox(p, 0x14, 0);
+        win_drawShadow(p, 0x15, 0);
         i++;
     } while (i < 4);
 }

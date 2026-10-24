@@ -15,7 +15,7 @@ enum { SHOP_KIND_ITEMS, SHOP_KIND_EQUIPMENT, SHOP_KIND_SYNTH };
 enum { SHOP_MODE_INIT, SHOP_MODE_UPDATE, SHOP_MODE_EXIT }; /* s_shopModes[kind][option][] */
 #define SHOP_OTZ_MENU 5
 #define SHOP_OTZ_MODE 0x24
-#define SHOP_FADE_OTZ 7      /* func_8002F8E4 while the shop is open */
+#define SHOP_FADE_OTZ 7      /* fade_setOtz while the shop is open */
 
 /* ShopBuy/ShopSynth/ShopSell.state: index into their input tables */
 enum { SHOP_ST_NONE, SHOP_ST_LIST, SHOP_ST_QUANTITY };
@@ -47,7 +47,7 @@ enum { SHOP_ST_NONE, SHOP_ST_LIST, SHOP_ST_QUANTITY };
 /* s_shopIcons entries (shop_drawStatIcon): 0-4 per equip slot, then the comparison arrows */
 #define SHOP_ICON_UP   5
 #define SHOP_ICON_DOWN 6
-#define EQUIP_SLOT_ACCESSORY 4 /* func_80028014: 0 weapon, 1-3 armor, 4 accessory (no stat shown) */
+#define EQUIP_SLOT_ACCESSORY 4 /* item_getEquipSlot: 0 weapon, 1-3 armor, 4 accessory (no stat shown) */
 
 /* Shop state (s_shop). */
 typedef struct {
@@ -57,8 +57,8 @@ typedef struct {
     u8 inMode;     /* a mode (Buy/Sell/Synth) is running */
     u8 visits;     /* modes entered: text SHOP_TEXT_ANYTHING_ELSE instead of SHOP_TEXT_WELCOME */
     u8 pad5[3];
-    s32 id;        /* shop id (g_menu.unkC when the menu opens) */
-    s32 savedOtz;  /* func_8002F8E4 (fade otz) before the shop set its own */
+    s32 id;        /* shop id (g_menu.arg when the menu opens) */
+    s32 savedOtz;  /* fade_setOtz (fade otz) before the shop set its own */
     u8 *help;      /* message of the top window (shop_setHelp) */
     s32 memberCount;
     s8 members[8]; /* character indices for the stat comparison (shop_collectMembers) */
@@ -125,10 +125,10 @@ typedef struct {
 extern ShopSell s_shopSell;
 
 typedef struct {
-    s32 style; /* func_8002DC54 3rd argument */
+    s32 style; /* win_openFree 3rd argument */
     void (*draw)(Window *);
     s32 otz;
-    s32 label; /* index into D_800703FC */
+    s32 label; /* index into g_winLabelStrings */
 } ShopWinDef;
 extern ShopWinDef s_shopSellWindows[2];
 void shopSell_onQuantityOpened(Window *);
@@ -172,8 +172,8 @@ extern u8 g_shopBuyText[];
 #define SE_CANCEL 0x65  /* Circle backs out */
 #endif
 #define SE_SHOP 0x415   /* Cross in a shop quantity window: buy / sell / synthesize */
-s32 func_80028014(s32); /* equip slot of an item, -1 = not equipment */
-s32 func_80028954(s32); /* main.c defines it returning u8; used unmasked */
+s32 item_getEquipSlot(s32); /* equip slot of an item, -1 = not equipment */
+s32 chr_getPortrait(s32); /* main.c defines it returning u8; used unmasked */
 typedef struct {
     u8 v[5];
 } Equip5; /* Character.unk39 copied as a whole */
@@ -186,7 +186,7 @@ extern u8 s_shopSynthStatIcon[5];
 extern u16 s_shopSynthEquipMask[];
 extern s32 s_shopSynthNoStat;
 s32 item_getCount(s32); /* main.c defines it returning u8 */
-s32 func_80027F94(s32);
+s32 item_countEquipped(s32);
 extern s32 s_shopBuyInfoRowY[3]; /* row y offsets */
 extern u8 s_shopBuyInfoRowAlways[4];
 extern u8 s_shopBuyInfoGil[]; /* gil suffix */
@@ -213,7 +213,7 @@ typedef struct {
     u8 unk2;
     u8 unk3;
 } Unk8006D328; /* equipment stat bonuses, from item 0x58 */
-extern Unk8006D328 D_8006D328[];
+extern Unk8006D328 g_armorStatBonus[];
 
 void shop_drawMessage(void);
 void shop_inputMenu(void);

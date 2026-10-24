@@ -19,9 +19,9 @@ s32 fx_185_op80(s32 mode, Fx185Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
         }
         ex->btlfx_getUnitBodyPos(0x10, 0, (s16 *)&work->unk0);
         work->unk0.vy = -0x7D0;
-        work->unk8.vx = env->unkC->unk38;
-        work->unk8.vy = env->unkC->unk3A;
-        work->unk8.vz = env->unkC->unk3C;
+        work->unk8.vx = env->targets->centerX;
+        work->unk8.vy = env->targets->centerY;
+        work->unk8.vz = env->targets->centerZ;
         work->unk8.vx += ex->btlfx_randCentered(0x7D0);
         work->unk8.vz += ex->btlfx_randCentered(0x7D0);
         D_801E8764.vx = work->unk8.vx;
@@ -35,9 +35,9 @@ s32 fx_185_op80(s32 mode, Fx185Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
         work->unk18.vx = work->unk0.vx;
         work->unk18.vy = work->unk0.vy;
         work->unk18.vz = work->unk0.vz;
-        work->unk3C = ex->func_800E8F50((Unk800E8F50 *)ex->btlfx_getFileData(entry->unk8, 0xB), 1);
+        work->unk3C = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, 0xB), 1);
     } else {
-        frame = entry->unk0;
+        frame = entry->frame;
         if (frame < 6) {
             ex->btlfx_lerpVec((s16 *)&work->unk0, (s16 *)&work->unk8, frame << 10, (s16 *)&v);
             work->unk18.vx = v.vx;
@@ -66,12 +66,12 @@ s32 fx_185_op81(s32 mode, Fx185Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
         work->unk4.vy = D_801E8764.vy;
         work->unk4.vz = D_801E8764.vz;
         D_801E7AD4 = env;
-        work->unk0 = ex->func_800E3CEC(ex->btlfx_getFileData(entry->unk8, 1), (s32)&work->unk4);
+        work->unk0 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 1), (s32)&work->unk4);
         if (work->unk0 != NULL) {
             work->unk0->unk22 = ex->func_800E7CC4(0, 0x80);
         }
     } else {
-        return entry->unk0 >= 0x1E;
+        return entry->frame >= 0x1E;
     }
     return 0;
 }

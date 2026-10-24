@@ -12,17 +12,17 @@ s32 fx_1a1_op80(s32 mode, Fx1a1Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
         work->unk0 = 0;
         D_801E7A38 = env;
         ex->btlfx_getUnitBodyPos(0, 0, (s16 *)&work->unk8);
-        work->unk8.vx = env->unkC->unk38;
-        work->unk8.vz = env->unkC->unk3C;
+        work->unk8.vx = env->targets->centerX;
+        work->unk8.vz = env->targets->centerZ;
         ex->btlfx_getUnitHomePos(0x10, (s16 *)&work->unk10);
-        work->unk18.vx = env->unkC->unk38;
-        work->unk18.vz = env->unkC->unk3C;
+        work->unk18.vx = env->targets->centerX;
+        work->unk18.vz = env->targets->centerZ;
         work->unk18.vy = 0;
         ex->btlfx_aimAngles((s16 *)&work->unk10, (s16 *)&work->unk18, (s16 *)&work->unk28);
         work->unk18.vx += (ex->math_sin(work->unk28.vy + 0x800) * 0x514) >> 12;
         work->unk18.vz += (ex->math_cos(work->unk28.vy + 0x800) * 0x514) >> 12;
     } else {
-        frame = entry->unk0;
+        frame = entry->frame;
         switch (frame) {
         case 0:
             work->unk4 = 5;
@@ -36,7 +36,7 @@ s32 fx_1a1_op80(s32 mode, Fx1a1Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
             work->unk10.vz = work->unk20.vz;
             break;
         case 10:
-            p = ex->func_800E3CEC(ex->btlfx_getFileData(entry->unk8, 1), (s32)&work->unk8);
+            p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 1), (s32)&work->unk8);
             if (p != NULL) {
                 p->unk22 = ex->func_800E7CC4(0, 0x80);
             }
@@ -47,9 +47,9 @@ s32 fx_1a1_op80(s32 mode, Fx1a1Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
             ex->btlfx_lerpVec((s16 *)&work->unk18, (s16 *)&work->unk10, (0x1000 / work->unk4) * work->unk0,
                               (s16 *)&work->unk20);
             ex->btlfx_setUnitPos(0x10, (s16 *)&work->unk20);
-            env->unk2C->unk0[0].vx = work->unk20.vx;
-            env->unk2C->unk0[0].vz = work->unk20.vz;
-            env->unk2C->unk0[0].vy = 0;
+            env->camera->points[0].vx = work->unk20.vx;
+            env->camera->points[0].vz = work->unk20.vz;
+            env->camera->points[0].vy = 0;
         }
         return frame >= 0x20;
     }

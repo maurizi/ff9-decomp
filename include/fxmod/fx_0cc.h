@@ -13,7 +13,7 @@ typedef struct {
 
 typedef struct {
     s32 unk0; /* state */
-    SVECTOR unk4; /* position: env->unkC->unk38, 0, unk3C */
+    SVECTOR unk4; /* position: env->targets->centerX, 0, centerZ */
     s32 unkC; /* particles spawned */
     s32 unk10; /* model */
 } Fx0ccWork;

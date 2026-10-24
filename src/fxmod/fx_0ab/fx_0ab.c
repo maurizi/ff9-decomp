@@ -17,20 +17,20 @@ s32 fx_0ab_op80(s32 mode, Fx0abWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
         work->unk20.vz = work->unk10.vz;
         work->unk18.vy -= 0xC8;
         work->unk20.vy -= 0x190;
-        work->unk0 = ex->func_800E3CEC(ex->btlfx_getFileData(entry->unk8, 4), (s32)&work->unk10);
+        work->unk0 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 4), (s32)&work->unk10);
         if (work->unk0 != NULL) {
             work->unk0->unk14 = (s32)D_801E7928;
             work->unk0->unk12 = 0x11;
             work->unk0->unkC = 0x60;
         }
-        work->unk8 = ex->func_800E3CEC(ex->btlfx_getFileData(entry->unk8, 3), (s32)&work->unk10);
+        work->unk8 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 3), (s32)&work->unk10);
     } else {
-        frame = entry->unk0;
+        frame = entry->frame;
         if (frame == 0xC) {
-            work->unk4 = ex->func_800E3CEC(ex->btlfx_getFileData(entry->unk8, 2), (s32)&work->unk18);
+            work->unk4 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 2), (s32)&work->unk18);
         }
         if (frame == 0x10) {
-            work->unkC = ex->func_800E3CEC(ex->btlfx_getFileData(entry->unk8, 1), (s32)&work->unk20);
+            work->unkC = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 1), (s32)&work->unk20);
         }
         return frame >= 0x28;
     }

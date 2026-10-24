@@ -80,7 +80,7 @@ void menuParty_drawParty(void) {
 
     ui_drawLabel(s_menuPartyListRect.x + 8, s_menuPartyListRect.y - 3, 7, D_80070494, 0);
     for (i = 0; i < 3; i++) {
-        func_800269F4(s_menuPartyListRect.x + 4, s_menuPartyListRect.y + 0x35 + i * 0x33, 7, s_menuPartyListRect.w - 9);
+        ui_drawEtchedLine(s_menuPartyListRect.x + 4, s_menuPartyListRect.y + 0x35 + i * 0x33, 7, s_menuPartyListRect.w - 9);
     }
     for (i = 0; i < 4; i++) {
         id = s_menuParty.slots[0][i];
@@ -92,12 +92,12 @@ void menuParty_drawParty(void) {
                 t = i + PARTY_TEXT_SLOT1;
             }
             s = text_get(t);
-            text_drawBlock(s_menuPartyListRect.x + ((0x8D - func_8002BA68((s32)s)) >> 1), s_menuPartyListRect.y + 0x15 + i * 0x33, 6, s,
+            text_drawBlock(s_menuPartyListRect.x + ((0x8D - text_measureWidth((s32)s)) >> 1), s_menuPartyListRect.y + 0x15 + i * 0x33, 6, s,
                           i >= s_menuParty.size ? 2 : 0);
         }
     }
-    func_8002DEE4(&s_menuPartyListRect, 7, 2);
-    func_8002705C(&s_menuPartyListRect, 7, 2);
+    win_drawBox(&s_menuPartyListRect, 7, 2);
+    win_drawShadow(&s_menuPartyListRect, 7, 2);
 }
 
 void menuParty_drawInfo(void) {
@@ -107,9 +107,9 @@ void menuParty_drawInfo(void) {
     s32 dy;
 
     ui_drawLabel(s_menuPartyInfoRect.x + 0xC, s_menuPartyInfoRect.y - 3, 7, D_80070460, 0);
-    func_800269F4(s_menuPartyInfoRect.x + 4, s_menuPartyInfoRect.y + 0x35, 8, s_menuPartyInfoRect.w - 8);
-    func_8002DEE4(&s_menuPartyInfoRect, 8, 1);
-    func_8002705C(&s_menuPartyInfoRect, 9, 1);
+    ui_drawEtchedLine(s_menuPartyInfoRect.x + 4, s_menuPartyInfoRect.y + 0x35, 8, s_menuPartyInfoRect.w - 8);
+    win_drawBox(&s_menuPartyInfoRect, 8, 1);
+    win_drawShadow(&s_menuPartyInfoRect, 9, 1);
     id = s_menuParty.slots[s_menuParty.cursor[s_menuParty.mode].row][s_menuParty.cursor[s_menuParty.mode].idx];
     if (id != PARTY_EMPTY) {
         menuParty_drawMember(s_menuPartyInfoRect.x + 0x10, s_menuPartyInfoRect.y + 6, 6, id);
@@ -132,27 +132,27 @@ void menuParty_drawCursor(void) {
 
     if (s_menuParty.mode == PARTY_SEL_PICK) {
         pos = s_menuParty.cursor[0].idx;
-        D_80077DE8.unk4 = 4;
+        g_menuHelp.otz = 4;
         if (s_menuParty.cursor[0].row == PARTY_ROW_PARTY) {
-            D_80077DE8.unk0 = 0;
-            D_80077DE8.unk2 = pos * 0x33 + 0x20;
+            g_menuHelp.x = 0;
+            g_menuHelp.y = pos * 0x33 + 0x20;
         } else {
-            D_80077DE8.unk0 = (pos & 3) * 0x25 + 0x8C;
-            D_80077DE8.unk2 = (pos >> 2) * 0x30 + 0x86;
+            g_menuHelp.x = (pos & 3) * 0x25 + 0x8C;
+            g_menuHelp.y = (pos >> 2) * 0x30 + 0x86;
         }
-        func_800355E4();
+        help_drawCursor();
     } else if (s_menuParty.mode == PARTY_SEL_SWAP) {
         pos = s_menuParty.cursor[1].idx;
-        D_80077DE8.unk4 = 4;
+        g_menuHelp.otz = 4;
         if (s_menuParty.cursor[1].row == PARTY_ROW_PARTY) {
-            D_80077DE8.unk0 = 4;
-            D_80077DE8.unk2 = pos * 0x33 + 0x24;
+            g_menuHelp.x = 4;
+            g_menuHelp.y = pos * 0x33 + 0x24;
         } else {
-            D_80077DE8.unk0 = (pos & 3) * 0x25 + 0x90;
-            D_80077DE8.unk2 = (pos >> 2) * 0x30 + 0x8A;
+            g_menuHelp.x = (pos & 3) * 0x25 + 0x90;
+            g_menuHelp.y = (pos >> 2) * 0x30 + 0x8A;
         }
-        func_800355E4();
-        if (D_80077DC0 & 3) {
+        help_drawCursor();
+        if (g_menuFrame & 3) {
             pos = s_menuParty.cursor[0].idx;
             if (s_menuParty.cursor[0].row == PARTY_ROW_PARTY) {
                 x = 0;
@@ -171,8 +171,8 @@ INCLUDE_RODATA("asm/us/ovl_3b/nonmatchings/ovl_3b", g_partyMenuText);
 
 void menuParty_init(void) {
     text_setBank(g_partyMenuText);
-    func_8003556C(menuParty_updateHelp);
-    func_80028720(s_menuPartyImage, 0xD);
+    help_setCallback(menuParty_updateHelp);
+    ui_loadPortraits(s_menuPartyImage, 0xD);
     s_menuParty.mode = PARTY_SEL_PICK;
     s_menuParty.cursor[1].idx = 0;
     s_menuParty.cursor[0].idx = 0;
@@ -180,7 +180,7 @@ void menuParty_init(void) {
     s_menuParty.cursor[0].row = PARTY_ROW_PARTY;
     s_menuParty.reserveIdx = 0;
     s_menuParty.partyIdx = 0;
-    menuParty_loadRequest((PartyRequest *)D_80077DBC);
+    menuParty_loadRequest((PartyRequest *)g_menuArg);
 }
 
 void menuParty_update(void) {
@@ -189,12 +189,12 @@ void menuParty_update(void) {
 }
 
 void menuParty_exit(void) {
-    func_8003556C(NULL);
-    func_8002886C();
+    help_setCallback(NULL);
+    ui_restorePortraits();
 }
 
 void menuParty_input(void) {
-    if (!func_8002F810()) {
+    if (!fade_isBusy()) {
         if (g_padPressed & BTN_CIRCLE) {
             menuParty_confirm();
             return;
@@ -220,15 +220,15 @@ void menuParty_draw(void) {
 }
 
 void menuParty_drawTitle(void) {
-    func_8002DEE4(&s_menuPartyTitleRect, 8, 2);
-    func_8002705C(&s_menuPartyTitleRect, 8, 2);
+    win_drawBox(&s_menuPartyTitleRect, 8, 2);
+    win_drawShadow(&s_menuPartyTitleRect, 8, 2);
     text_drawBlock(s_menuPartyTitleRect.x + 9, s_menuPartyTitleRect.y + 6, 6, text_get(PARTY_TEXT_TITLE), 0);
 }
 
 void menuParty_drawHelp(void) {
     ui_drawLabel(s_menuPartyHelpRect.x + 0xC, s_menuPartyHelpRect.y - 3, 8, D_80070450, 0);
-    func_8002DEE4(&s_menuPartyHelpRect, 8, 1);
-    func_8002705C(&s_menuPartyHelpRect, 9, 1);
+    win_drawBox(&s_menuPartyHelpRect, 8, 1);
+    win_drawShadow(&s_menuPartyHelpRect, 9, 1);
     text_drawBlock(s_menuPartyHelpRect.x + 0x12, s_menuPartyHelpRect.y + 6, 6, text_get(s_menuParty.size), 0);
 }
 
@@ -244,7 +244,7 @@ void menuParty_confirm(void) {
         for (i = 0; i < s_menuParty.size; i++) {
             party_setMember(i, s_menuParty.slots[0][i] != PARTY_EMPTY ? s_menuParty.slots[0][i] : -1);
         }
-        func_800325E0();
+        menu_close();
         snd_playSe(SE_CURSOR);
     }
 }
@@ -252,7 +252,7 @@ void menuParty_confirm(void) {
 void menuParty_drawMember(s32 x, s32 y, s32 otz, s32 id) {
     if (id != PARTY_EMPTY) {
         menuParty_drawPortrait(x, y, otz, id, 0x2D, s_menuParty.fixed[id]);
-        func_8002423C(x + 0x26, y + 3, otz, &g_gameState->unk1C->characters[id]);
+        ui_drawCharStatus(x + 0x26, y + 3, otz, &g_gameState->unk1C->characters[id]);
     }
 }
 
@@ -266,21 +266,21 @@ void menuParty_drawPortrait(s32 x, s32 y, s32 otz, s32 id, s32 h, u8 arg5) {
     yy = base - 8;
     if (id != PARTY_EMPTY) {
         c = &g_gameState->unk1C->characters[id];
-        if (c->unk38 & 2) {
+        if (c->status & 2) {
             icon = &D_800687C0;
-            func_80027710(x + ((0x20 - icon->unk4) >> 1), yy, otz, icon, 0);
+            ui_drawSpriteDef(x + ((0x20 - icon->unk4) >> 1), yy, otz, icon, 0);
             yy = base - 0xF;
         }
-        if (c->unk38 & 1) {
+        if (c->status & 1) {
             icon = &D_80068E38;
-            func_80027710(x + ((0x20 - icon->unk4) >> 1), yy, otz, icon, 0);
+            ui_drawSpriteDef(x + ((0x20 - icon->unk4) >> 1), yy, otz, icon, 0);
             yy -= 7;
         }
         if (c->hp == 0) {
             icon = &D_80068E30;
-            func_80027710(x + ((0x20 - icon->unk4) >> 1), yy, otz, icon, 0);
+            ui_drawSpriteDef(x + ((0x20 - icon->unk4) >> 1), yy, otz, icon, 0);
         }
-        func_80028204(x, y, otz, func_80028954(id), h, arg5);
+        ui_drawPortraitId(x, y, otz, chr_getPortrait(id), h, arg5);
     }
 }
 
@@ -321,7 +321,7 @@ u8 menuParty_isValid(void) {
         id = s_menuParty.slots[0][i];
         if (id != PARTY_EMPTY) {
             n++;
-            if (g_gameState->unk1C->characters[id].hp != 0 && !(g_gameState->unk1C->characters[id].unk38 & 3)) {
+            if (g_gameState->unk1C->characters[id].hp != 0 && !(g_gameState->unk1C->characters[id].status & 3)) {
                 alive++;
             }
         }
@@ -330,7 +330,7 @@ u8 menuParty_isValid(void) {
 }
 
 void menuParty_updateHelp(void) {
-    D_80077DE8.unk8 = text_get(s_menuParty.mode + PARTY_TEXT_MOVE_FROM);
+    g_menuHelp.text = text_get(s_menuParty.mode + PARTY_TEXT_MOVE_FROM);
 }
 
 INCLUDE_RODATA("asm/us/ovl_3b/nonmatchings/ovl_3b", s_menuPartyImage);

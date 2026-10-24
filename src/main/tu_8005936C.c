@@ -1,6 +1,6 @@
 #include "ff9.h"
 
-u16 func_8005936C(u32 flags, AkaoChannel *c) {
+u16 akao_shiftInstrumentUp(u32 flags, AkaoChannel *c) {
     if ((flags & 0x20) && (u16)(c->unk9A - 0x20) < 0x60) {
         c->voiceStartAddr += 0x20000;
         c->voiceLoopAddr += 0x20000;
@@ -9,7 +9,7 @@ u16 func_8005936C(u32 flags, AkaoChannel *c) {
     return c->unk9A;
 }
 
-u16 func_800593C0(u32 flags, AkaoChannel *c) {
+u16 akao_shiftInstrumentDown(u32 flags, AkaoChannel *c) {
     if ((flags & 0x20) && (u16)(c->unk9A - 0x20) < 0x60) {
         c->voiceStartAddr -= 0x20000;
         c->voiceLoopAddr -= 0x20000;
@@ -19,7 +19,7 @@ u16 func_800593C0(u32 flags, AkaoChannel *c) {
 }
 
 void func_80059414(void) {
-    Unk80080A10 *a = D_8007F790;
+    Unk80080A10 *a = g_akaoSubSeq;
     Unk80080A10 *seq;
     u32 seq8, a8, seqC, aC;
     u32 seqBoth, aBoth;
@@ -49,7 +49,7 @@ void func_80059414(void) {
             if (mask & (1 << v)) {
                 n = 0x20;
                 bit = 1 << v;
-                ch = D_8007F71C;
+                ch = g_akaoSubChannels;
                 for (; n != 0; n--) {
                     if (ch->voice == v) {
                         ch->voice = 0x18;
@@ -60,6 +60,6 @@ void func_80059414(void) {
                 mask &= ~(1 << v);
             }
         }
-        D_80080A70.unkC |= found & ~(D_80080A70.unk0 | D_80083174);
+        g_akaoSeState.unkC |= found & ~(g_akaoSeState.unk0 | g_akaoStreamVoices);
     }
 }

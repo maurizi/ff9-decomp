@@ -15,33 +15,33 @@
 #define SE_CANCEL 0x65
 #endif
 #define SE_GAME_START 0xC18 /* the secret code accepted (ovl_14: New Game on the title) */
-/* g_gameState->unkB: one bit per disc of the game found in the drive (bit 0 = disc 1), 0xFF = no disc read.
+/* g_gameState->disc: one bit per disc of the game found in the drive (bit 0 = disc 1), 0xFF = no disc read.
  * The ending plays its movie only with disc 4 in (see ovl_14.h). */
 #define DISC_NONE 0xFF
 #define DISC_1    1
 #define DISC_4    8
-void func_800552B8(s32);
-s32 func_8002B9B8(u8 *); /* text width */
-void func_8001D9CC(s32, s32, s32, s32, s32);
+void akao_stopMusic(s32);
+s32 text_measureSmall(u8 *); /* text width */
+void file_setTimPos(s32, s32, s32, s32, s32);
 s32 cd_findFile(char *);
-void func_80022ED4(s32);
-s32 func_80055290(void *);
-void func_800553EC(s32, s32, s32, s32);
-void func_80055704(s32);
-void func_80055730(s32, s32);
-void func_80055764(s32, s32, s32);
-void func_800557A8(s32, s32, s32, s32);
-void func_800557F0(s32);
-void func_8005581C(s32, s32);
-void func_80055850(s32, s32, s32);
-void func_80055894(s32, s32, s32, s32);
-void func_800558DC(s32);
-void func_80055908(s32, s32);
-void func_8005593C(s32, s32, s32);
-void func_80055980(s32, s32, s32, s32);
-void func_800559C8(s32, s32);
-void func_800559FC(s32, s32, s32);
-void func_80055A34(s32, s32, s32, s32);
+void cd_seekStreamAsync(s32);
+s32 akao_playMusic(void *);
+void akao_playSe(s32, s32, s32, s32);
+void akao_setAllSeVolume(s32);
+void akao_fadeAllSeVolume(s32, s32);
+void akao_setSeVolume(s32, s32, s32);
+void akao_fadeSeVolume(s32, s32, s32, s32);
+void akao_sendCmdAA(s32);
+void akao_sendCmdAB(s32, s32);
+void akao_sendCmdA2(s32, s32, s32);
+void akao_sendCmdA3(s32, s32, s32, s32);
+void akao_sendCmdAC(s32);
+void akao_sendCmdAD(s32, s32);
+void akao_sendCmdA4(s32, s32, s32);
+void akao_sendCmdA5(s32, s32, s32, s32);
+void akao_setMusicVolume(s32, s32);
+void akao_fadeMusicVolume(s32, s32, s32);
+void akao_fadeMusicVolumeFrom(s32, s32, s32, s32);
 
 /* ovl_64 (FMV player, 0x80198700) */
 void MBG_init(s32, u8 **);
@@ -84,7 +84,7 @@ enum {
 
 /* g_movieFlags (ending_playMovie), the bits of ovl_14's opening movie loop */
 #define MOVIE_NO_SCENES 0x1
-#define MOVIE_NO_FADE   0x2  /* don't run the screen fade (func_80032098) */
+#define MOVIE_NO_FADE   0x2  /* don't run the screen fade (game_updateFade) */
 #define MOVIE_NO_OT     0x4  /* ending_movieSwap only puts the draw env, the decoder draws */
 #define MOVIE_PLAYING   0x10
 #define MOVIE_DONE      0x80 /* movie over (ending_movieOnEnd, or no movie) */

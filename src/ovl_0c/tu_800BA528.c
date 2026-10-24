@@ -82,8 +82,8 @@ void wm_setupWorldData(void) {
     }
     wm_loadTimPack((s32 *)f[4], 0, 0, 0, 0);
     wm_loadTimPack((s32 *)f[1], 0, 0, 0, 0);
-    if (g_gameState->unk1C->unk844 != 0) {
-        wm_loadTim((u32 *)f[3], g_gameState->unk1C->unk844 - 1, 0x318, 0xB0, 0x280, 0xF6, 2);
+    if (g_gameState->unk1C->chocograph != 0) {
+        wm_loadTim((u32 *)f[3], g_gameState->unk1C->chocograph - 1, 0x318, 0xB0, 0x280, 0xF6, 2);
     }
     if (*g_worldStoryCounterPtr >= 0x1766) {
         g_worldNaviPage = 1;
@@ -254,7 +254,7 @@ void wm_updateMap(void) {
             g_worldCameraTarget[2] += rand() % d - d / 2;
         }
     }
-    if (g_worldAmbientSeDist[1] < 0x22 && func_8004AE84() != 0 && WM_ATTR_TOPOGRAPHY(flags) == 0x17 && m - 1 < 7U) {
+    if (g_worldAmbientSeDist[1] < 0x22 && evt_isControlEnabled() != 0 && WM_ATTR_TOPOGRAPHY(flags) == 0x17 && m - 1 < 7U) {
         g_worldPlayer->pos.vz += (0x22 - g_worldAmbientSeDist[1]) * 8;
         if (g_worldPlayer->pos.vx == g_worldPlayer->unk40.vx && g_worldPlayer->pos.vz == g_worldPlayer->unk40.vz) {
             g_worldPlayer->unk40.vx++;
@@ -273,13 +273,13 @@ void wm_updateMap(void) {
                 h >>= 4;
                 func_80050EFC(h, 0x40);
                 g_worldPointFxOn = 1;
-                g_gameState->unk1C->unk570 = h >> 4;
+                g_gameState->unk1C->rainCount = h >> 4;
                 return;
             }
         }
     }
     g_worldPointFxOn = 0;
-    g_gameState->unk1C->unk570 = 0;
+    g_gameState->unk1C->rainCount = 0;
 }
 
 /* mark the map cells changed by the story progress */
@@ -937,7 +937,7 @@ void wm_chunksLoaded(void) {
                     g_worldCameraHold = 0;
                     g_worldMapLoaded = st;
                     g_worldState = WM_STATE_RUNNING;
-                    D_80073998[0] &= ~(BTN_CIRCLE | BTN_CROSS | BTN_SQUARE);
+                    g_padPortMask[0] &= ~(BTN_CIRCLE | BTN_CROSS | BTN_SQUARE);
                     wm_snapActorsToFloor();
                 }
             }
@@ -1496,7 +1496,7 @@ void wm_naviDraw(void) {
             wm_naviDrawMarker(x, z, 1, 1, c0, c2, 0x40, 0xC8, 0x82, 1);
         }
         wm_naviDrawMiniMap();
-        if (g_gameState->unk1C->unk844 != 0) {
+        if (g_gameState->unk1C->chocograph != 0) {
             func_800C16C0();
         }
         break;
@@ -1517,12 +1517,12 @@ void wm_naviDraw(void) {
                 wm_naviDrawMarker(x, z, 1, 1, c0, c1, 0x40, 0x28, 9, 1);
             }
             if (g_worldNaviCursorDraw != 0) {
-                func_8004E76C(5);
-                func_800515B8();
-                func_800512B8((g_worldNaviCursorX >> 12) + 18, (g_worldNaviCursorY >> 12) + 6);
-                func_800513CC(1);
-                func_800515EC();
-                func_8004E76C(2);
+                msg_setOtz(5);
+                pen_begin();
+                pen_setPos((g_worldNaviCursorX >> 12) + 18, (g_worldNaviCursorY >> 12) + 6);
+                pen_drawSprite(1);
+                pen_endSmall();
+                msg_setOtz(2);
             }
             wm_naviDrawPlaces();
         }
@@ -1743,7 +1743,7 @@ void wm_naviDrawFullMap(void) {
     memset(&rot0, 0, 8);
     rot0.vz = g_worldPlayer->pos.rotY - 0x400;
     rot = rot0;
-    func_80030AF4(&rot, &m);
+    math_rotMatrixXYZ(&rot, &m);
     for (i = 0; i < 4; i++) {
         ApplyMatrix(&m, &arrow.v[i], &v[i]);
     }
@@ -1880,7 +1880,7 @@ void wm_naviDrawMiniMap(void) {
     rot0.vz = g_worldPlayer->pos.rotY - 0x400;
     rot = rot0;
     c = (math_sin(g_worldFrameCount << 6) >> 7) + 0x80;
-    func_80030AF4(&rot, &m);
+    math_rotMatrixXYZ(&rot, &m);
     for (i = 0; i < 4; i++) {
         ApplyMatrix(&m, &arrow.v[i], &v[i]);
     }
@@ -1978,9 +1978,9 @@ void wm_drawTitle(void) {
         g_worldTitlePhase = 3;
     }
     if (b <= (u32)g_worldReadyFrameCount) {
-        D_80073998[0] &= ~0x02080000;
+        g_padPortMask[0] &= ~0x02080000;
     } else {
-        D_80073998[0] |= 0x02080000;
+        g_padPortMask[0] |= 0x02080000;
     }
     if (g_worldTitlePhase == 1) {
         if (g_worldTitleFade == 0) {
