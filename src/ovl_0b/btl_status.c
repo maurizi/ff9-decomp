@@ -112,7 +112,7 @@ u32 btl_addStatus(BtlUnit *u, u32 f) {
         if ((u->flags & 1) && (s32)u->model->motion != u->motions[1] &&
             g_gameState->unk1C->unk8E4.battle->curCmd->caster != u) {
             u->model->motion = (BtlUnit9CC *)u->motions[1];
-            u->obj->unk3A = 0;
+            u->obj->frame = 0;
         }
         break;
     case 6:
@@ -249,7 +249,7 @@ s32 btl_removeStatus(BtlUnit *u, u32 f) {
             u->model->texAnims[2].unkC = 0;
             u->model->texAnims[2].unk12 = 0x1000;
             u->model->motion = (BtlUnit9CC *)u->motions[6];
-            u->obj->unk3A = 0;
+            u->obj->frame = 0;
         }
         c = g_gameState->unk1C->unk8E4.battle->curCmd;
         if (c->caster != u || c->cmdNo > 0x30) {
@@ -261,7 +261,7 @@ s32 btl_removeStatus(BtlUnit *u, u32 f) {
         }
         break;
     case 0x400:
-        u->rot[1] = u->obj->unk22;
+        u->rot[1] = u->obj->rotY;
         if ((u8)btl_cancelUnitCmds(u)) {
             u->atb = 0;
             u->cmdIssued = 0;
@@ -274,11 +274,11 @@ s32 btl_removeStatus(BtlUnit *u, u32 f) {
         if (u->status & BTL_STATUS_JUMP) {
             btl_removeStatus(u, BTL_STATUS_JUMP);
             u->flags &= ~0x400000;
-            u->pos[0] = u->home->unk0[0];
-            u->pos[1] = u->home->unk0[1];
-            u->pos[2] = u->home->unk0[2];
+            u->pos[0] = u->home->pos[0];
+            u->pos[1] = u->home->pos[1];
+            u->pos[2] = u->home->pos[2];
             u->model->motion = (BtlUnit9CC *)u->motions[(u->flags >> 18) & 1];
-            u->obj->unk3A = 0;
+            u->obj->frame = 0;
         }
         btl_setCmd(u->tranceCmd, BTL_CMD_TRANCE, 0, u->unitBit, 0);
         break;
@@ -288,7 +288,7 @@ s32 btl_removeStatus(BtlUnit *u, u32 f) {
         break;
     case 0x200000:
         u->pos[1] = 0;
-        u->home->unk0[1] = 0;
+        u->home->pos[1] = 0;
         break;
     case 0x4000000:
         btl_showMeshes(u, u->vanishMeshes);
@@ -468,7 +468,7 @@ end:
     n = BtlUnitHasStatus(arg0, BTL_STATUS_FLOAT);
     if ((u8)n) {
         arg0->pos[1] = t = 0xFF380000 - math_sin((g_gameState->unk1C->unk8E4.battle->tick & 0xF) << 8) * 480;
-        arg0->home->unk0[1] = t;
+        arg0->home->pos[1] = t;
     }
 }
 

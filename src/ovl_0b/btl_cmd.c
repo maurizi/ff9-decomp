@@ -120,7 +120,7 @@ u16 btl_findCover(s32 arg0) {
         return 0;
     }
     v = (best->flags & 1) << 11;
-    best->obj->unk22 = v;
+    best->obj->rotY = v;
     best->rot[1] = v;
     best->pos[0] = t->pos[0];
     best->pos[2] = t->pos[2];
@@ -345,13 +345,13 @@ void btl_setCmd(BtlCmd *arg0, u32 arg1, s32 arg2, s32 arg3, s32 arg4) {
             c = m->motion;
             if (c == (BtlUnit9CC *)a[0]) {
                 m->motion = (BtlUnit9CC *)a[10];
-                u->obj->unk3A = 0;
+                u->obj->frame = 0;
             } else if (c == (BtlUnit9CC *)a[1]) {
                 m->motion = (BtlUnit9CC *)a[11];
-                u->obj->unk3A = 0;
+                u->obj->frame = 0;
             } else if (c == (BtlUnit9CC *)a[13] && arg1 < 0x30) {
                 m->motion = (BtlUnit9CC *)a[14];
-                u->obj->unk3A = 0;
+                u->obj->frame = 0;
             }
         }
         u->flags |= 0x80000;
@@ -440,13 +440,13 @@ void btl_processCmdQueue(Battle *b) {
             w = cmd->caster;
             if ((u32)(k - 0x31) < 4) {
                 w->model->motion = (BtlUnit9CC *)w->motions[9];
-                w->obj->unk3A = 0;
+                w->obj->frame = 0;
             }
             if ((w->flags & 1) && (s32)w->model->motion != w->motions[9] && (s32)w->model->motion != w->motions[17] &&
                 !(w->status & BTL_STATUS_JUMP)) {
                 if ((s32)w->model->motion == w->motions[(w->flags >> 18) & 1] && !((w->flags >> 19) & 1)) {
                     w->model->motion = (BtlUnit9CC *)w->motions[9];
-                    w->obj->unk3A = 0;
+                    w->obj->frame = 0;
                 }
                 return;
             }
@@ -475,7 +475,7 @@ void btl_processCmdQueue(Battle *b) {
         }
         if (u != NULL && (s32)u->model->motion != u->motions[9] && cmd->cmdNo < 0x2F) {
             u->model->motion = (BtlUnit9CC *)u->motions[9];
-            u->obj->unk3A = 0;
+            u->obj->frame = 0;
         }
         b->cmdPhase++;
         break;
@@ -518,7 +518,7 @@ s32 btl_checkCmdUsable(Battle *arg0, BtlCmd *arg1) {
     if (u != NULL) {
         if (arg1->cmdNo < 0x37) {
             v = (u->flags & 1) << 11;
-            u->obj->unk22 = v;
+            u->obj->rotY = v;
             u->rot[1] = v;
         }
         if (D_8007AF01 != 0 && (u->flags & 0x1F) == 5 && arg1->cmdNo < BTL_CMD_TABLE_COUNT) {
@@ -643,7 +643,7 @@ s32 btl_checkCmdUsable(Battle *arg0, BtlCmd *arg1) {
             if ((t->flags & 1) && !(t->status & (BTL_STATUS_PETRIFY | BTL_STATUS_VENOM | BTL_STATUS_ZOMBIE | BTL_STATUS_KO | BTL_STATUS_STOP | BTL_STATUS_SLEEP | BTL_STATUS_FREEZE | BTL_STATUS_JUMP)) && t->hp != 0) {
                 if (t->model->motion != (BtlUnit9CC *)t->motions[0x11]) {
                     t->model->motion = (BtlUnit9CC *)t->motions[0x11];
-                    t->obj->unk3A = 0;
+                    t->obj->frame = 0;
                 }
                 arg0->phase = BTL_PHASE_END;
                 arg0->subPhase = 3;
@@ -783,21 +783,21 @@ void btl_updatePartyCmd(BtlCmd *arg0) {
         m = u->model;
         a = u->motions;
         if (m->motion == (BtlUnit9CC *)a[12]) {
-            if (u->obj->unk3A < m->motion->unk2) {
+            if (u->obj->frame < m->motion->unk2) {
                 return;
             }
             m->motion = (BtlUnit9CC *)a[13];
-            u->obj->unk3A = 0;
+            u->obj->frame = 0;
         }
     } else if (arg0->cmdNo == BTL_CMD_CHANGE) {
         m = u->model;
         a = u->motions;
         if (m->motion == (BtlUnit9CC *)a[9]) {
-            if (u->obj->unk3A < m->motion->unk2) {
+            if (u->obj->frame < m->motion->unk2) {
                 return;
             }
             m->motion = (BtlUnit9CC *)a[29 + ((u->flags >> 8) & 3)];
-            u->obj->unk3A = 0;
+            u->obj->frame = 0;
         }
         a2 = u->motions;
         m2 = u->model;
@@ -805,7 +805,7 @@ void btl_updatePartyCmd(BtlCmd *arg0) {
         c = m2->motion;
         if (c == (BtlUnit9CC *)a2[29 + k]) {
             n = c->unk2;
-            f = u->obj->unk3A;
+            f = u->obj->frame;
             if (f < n) {
                 f++;
                 if (k != 0) {
@@ -817,15 +817,15 @@ void btl_updatePartyCmd(BtlCmd *arg0) {
             }
             btl_execCmd(u);
             u->model->motion = (BtlUnit9CC *)u->motions[32];
-            u->obj->unk3A = 0;
+            u->obj->frame = 0;
             return;
         }
         if (c == (BtlUnit9CC *)a2[32]) {
-            if (u->obj->unk3A < c->unk2) {
+            if (u->obj->frame < c->unk2) {
                 return;
             }
             m2->motion = (BtlUnit9CC *)a2[0];
-            u->obj->unk3A = 0;
+            u->obj->frame = 0;
         }
     }
     btl_onCmdEffectDone();
@@ -926,9 +926,9 @@ void btl_finishCmd(Battle *b) {
     if (cmd->unk10.b.covered) {
         for (u = g_gameState->unk1C->unk8E4.battle->unitList; u != NULL; u = u->next) {
             if (u->flags & 1) {
-                u->pos[0] = u->home->unk0[0];
-                u->pos[1] = u->home->unk0[1];
-                u->pos[2] = u->home->unk0[2];
+                u->pos[0] = u->home->pos[0];
+                u->pos[1] = u->home->pos[1];
+                u->pos[2] = u->home->pos[2];
                 if ((u->flags >> 25) & 1) {
                     u->flags &= ~0x2000000;
                     btl_setIdleMotion(u);
@@ -944,7 +944,7 @@ void btl_finishCmd(Battle *b) {
         } else if ((u->flags >> 23) & 1) {
             u = btl_findBodyUnit();
         }
-        u->pos[2] = u->home->unk0[2];
+        u->pos[2] = u->home->pos[2];
     }
     btl_clearCmd_inline(cmd);
     b->curCmd = NULL;
@@ -968,7 +968,7 @@ void btl_flushCmdQueue(Battle *arg0) {
                 u->cmdIssued = 0;
                 if ((s32)m->motion == u->motions[9] && ((id = (u->flags >> 1) & 0xF) != 6 || b->curCmd->cmdNo != BTL_CMD_DBL_WHT) && (id != 1 || (b->curCmd->cmdNo != BTL_CMD_SWD_MAG && b->curCmd->cmdNo != BTL_CMD_DBL_BLK))) {
                     m->motion = (BtlUnit9CC *)u->motions[32];
-                    u->obj->unk3A = 0;
+                    u->obj->frame = 0;
                     u->flags &= ~0x80000;
                 }
             }
@@ -997,7 +997,7 @@ void btl_clearCmdQueue(Battle *arg0) {
                 u->cmdIssued = 0;
                 if ((s32)m->motion == u->motions[9] && ((id = (u->flags >> 1) & 0xF) != 6 || b->curCmd->cmdNo != BTL_CMD_DBL_WHT) && (id != 1 || (b->curCmd->cmdNo != BTL_CMD_SWD_MAG && b->curCmd->cmdNo != BTL_CMD_DBL_BLK))) {
                     m->motion = (BtlUnit9CC *)u->motions[32];
-                    u->obj->unk3A = 0;
+                    u->obj->frame = 0;
                     u->flags &= ~0x80000;
                 }
             }
@@ -2109,7 +2109,7 @@ void btl_calcCmd(BtlUnit *caster, BtlUnit *target, BtlCmd *cmd, s32 type) {
             if ((target->flags & 1) || !((g_gameState->unk1C->unk8E4.battle->scene.unk0 >> 2) & 1)) {
                 v = (caster->flags & 1) << 11;
                 target->rot[1] = v;
-                target->obj->unk22 = v;
+                target->obj->rotY = v;
                 if ((target->flags & 1) && (&g_gameState->unk1C->characters[(target->flags >> 1) & 0xF])->unk34.b.unk9 != ((target->flags >> 8) & 3)) {
                     btl_toggleRow(target);
                 }
@@ -2665,8 +2665,8 @@ void btl_applyCalcResult(BtlCalc *c) {
         if (c->flags & 2) {
             if (t->flags & 1) {
                 t->model->motion = (BtlUnit9CC *)t->motions[16];
-                t->obj->unk3A = 0;
-                t->rot[1] = t->obj->unk22 = (t->flags & 1) * 0x800;
+                t->obj->frame = 0;
+                t->rot[1] = t->obj->rotY = (t->flags & 1) * 0x800;
             } else if (!((t->flags >> 23) & 1)) {
                 t->pos[2] += 0x1900000;
             } else {
@@ -3044,7 +3044,7 @@ void btl_finishPhysDamage(BtlCalc *arg0) {
         if ((u->flags & 1) && ((*u->support & 0x01000000) || g_gameState->unk1C->characters[(u->flags >> 1) & 0xF].equip[0] == 0x3C)) {
             if (!(arg0->target->status & BTL_STATUS_ZOMBIE) && btl_hasEnemyFlag(arg0->target, 0x10) == 0) {
                 t = arg0->target;
-                t->rot[1] = t->obj->unk22 = (t->flags & 1) * 0x800;
+                t->rot[1] = t->obj->rotY = (t->flags & 1) * 0x800;
                 arg0->targetResult |= 2;
             }
         }
@@ -3066,7 +3066,7 @@ void btl_setTargetHp(BtlCalc *arg0) {
         arg0->flags |= 0x80;
         arg0->target->hp = arg0->cmd->ability->power;
         t = arg0->target;
-        t->rot[1] = t->obj->unk22 = (t->flags & 1) * 0x800;
+        t->rot[1] = t->obj->rotY = (t->flags & 1) * 0x800;
         return;
     }
     u = arg0->target;
@@ -3078,7 +3078,7 @@ void btl_setTargetHp(BtlCalc *arg0) {
     m = u->model;
     if ((s32)m->motion != u->motions[(u->flags >> 18) & 1] && (!(u->flags & 1) || (s32)m->motion != u->motions[9]) && u != g_gameState->unk1C->unk8E4.battle->curCmd->caster) {
         m->motion = (BtlUnit9CC *)u->motions[(u->flags >> 18) & 1];
-        u->obj->unk3A = 0;
+        u->obj->frame = 0;
     }
 }
 
@@ -3145,7 +3145,7 @@ u8 btl_checkFrozenShatter(BtlCalc *arg0) {
     m = u->model;
     if ((s32)m->motion != u->motions[(u->flags >> 18) & 1] && (!(u->flags & 1) || (s32)m->motion != u->motions[9]) && u != g_gameState->unk1C->unk8E4.battle->curCmd->caster) {
         m->motion = (BtlUnit9CC *)u->motions[(u->flags >> 18) & 1];
-        u->obj->unk3A = 0;
+        u->obj->frame = 0;
     }
     btl_showMessage(0x13);
     return 0;
@@ -3205,7 +3205,7 @@ void btl_killUnit(BtlUnit *arg0) {
     m = arg0->model;
     if ((s32)m->motion != arg0->motions[(arg0->flags >> 18) & 1] && (!(arg0->flags & 1) || (s32)m->motion != arg0->motions[9]) && arg0 != g_gameState->unk1C->unk8E4.battle->curCmd->caster) {
         m->motion = (BtlUnit9CC *)arg0->motions[(arg0->flags >> 18) & 1];
-        arg0->obj->unk3A = 0;
+        arg0->obj->frame = 0;
     }
 }
 
@@ -3488,7 +3488,7 @@ void btl_applyRowMod(BtlCalc *arg0) {
     BtlUnit *t = arg0->target;
     BtlUnit *u;
     s32 d;
-    if (arg0->caster->obj->unk22 == t->obj->unk22 || (g_gameState->unk1C->unk8E4.battle->escapeHeld != 0 && (t->flags & 1))) {
+    if (arg0->caster->obj->rotY == t->obj->rotY || (g_gameState->unk1C->unk8E4.battle->escapeHeld != 0 && (t->flags & 1))) {
         arg0->multiplier = arg0->multiplier * 3 >> 1;
     }
     u = arg0->caster;

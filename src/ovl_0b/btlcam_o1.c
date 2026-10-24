@@ -755,9 +755,9 @@ s32 func_800C4E84(s32 arg0, s16 *arg1, s16 *arg2, s32 *arg3) {
     }
     if (u != NULL) {
         if (arg0 & 0x20) {
-            arg2[0] = u->obj->unk20;
-            arg2[1] = u->obj->unk22;
-            arg2[2] = u->obj->unk24;
+            arg2[0] = u->obj->rotX;
+            arg2[1] = u->obj->rotY;
+            arg2[2] = u->obj->rotZ;
         } else {
             arg2[0] = u->rot[0];
             arg2[1] = u->rot[1];
@@ -769,8 +769,8 @@ s32 func_800C4E84(s32 arg0, s16 *arg1, s16 *arg2, s32 *arg3) {
         if (u == NULL) {
             u = g_gameState->unk1C->unk8E4.battle->unitList;
         }
-        arg2[0] = u->obj->unk20;
-        arg2[2] = u->obj->unk24;
+        arg2[0] = u->obj->rotX;
+        arg2[2] = u->obj->rotZ;
         if (u->flags & 1) {
             arg2[1] = 0x800;
         } else {
@@ -779,8 +779,8 @@ s32 func_800C4E84(s32 arg0, s16 *arg1, s16 *arg2, s32 *arg3) {
     }
     if (!((u->flags >> 23) & 1)) {
         if (arg0 & 0x20) {
-            arg1[0] = u->home->unk0[0] >> 16;
-            arg1[2] = u->home->unk0[2] >> 16;
+            arg1[0] = u->home->pos[0] >> 16;
+            arg1[2] = u->home->pos[2] >> 16;
         } else {
             arg1[0] = u->pos[0] >> 16;
             arg1[2] = u->pos[2] >> 16;

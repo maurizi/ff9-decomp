@@ -41,7 +41,7 @@ s32 btl_setKoMotion(BtlUnit *arg0) {
     arg0->model->texAnims[0].unk4 |= 3;
     arg0->model->texAnims[0].unkC = 0;
     arg0->model->texAnims[0].unk12 = 0x1000;
-    arg0->obj->unk3A = 0;
+    arg0->obj->frame = 0;
     if (arg0->status & BTL_STATUS_AUTO_LIFE) {
         arg0->koState = 7;
         btl_setCmd(arg0->reviveCmd, BTL_CMD_AUTO_LIFE, 0, arg0->unitBit, 0);
@@ -75,7 +75,7 @@ void btl_spreadTroubleDamage(BtlUnit *arg0) {
             } else {
                 if (u != g_gameState->unk1C->unk8E4.battle->curCmd->caster) {
                     v = (u->flags & 1) << 11;
-                    u->obj->unk22 = v;
+                    u->obj->rotY = v;
                     u->rot[1] = v;
                 }
                 if (d < u->hp) {
@@ -143,8 +143,8 @@ void btl_toggleRow(BtlUnit *arg0) {
     if ((arg0->flags >> 8) & 3) {
         d = 0xFE700000;
     }
-    arg0->pos[2] = arg0->home->unk0[2] + d;
-    arg0->home->unk0[2] += d;
+    arg0->pos[2] = arg0->home->pos[2] + d;
+    arg0->home->pos[2] += d;
     f = arg0->flags;
     m = f & ~0x300;
     v = (f >> 8) & 3;
@@ -171,7 +171,7 @@ void btl_damageHp(BtlUnit *arg0, s32 arg1, u8 arg2) {
     }
     if (arg0 != g_gameState->unk1C->unk8E4.battle->curCmd->caster) {
         v = (arg0->flags & 1) << 11;
-        arg0->obj->unk22 = v;
+        arg0->obj->rotY = v;
         arg0->rot[1] = v;
     }
     if (arg1 < arg0->hp) {

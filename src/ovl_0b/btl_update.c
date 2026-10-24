@@ -96,11 +96,11 @@ s32 btl_updateUnits(GameData *arg0, Battle *arg1) {
                 n = u->model;
                 g = u->flags & ~0x200000;
                 u->flags = g;
-                if (u->obj->unk3A >= n->motion->unk2) {
+                if (u->obj->frame >= n->motion->unk2) {
                     if (!(u->status & BTL_STATUS_KO)) {
                         n->motion = (BtlUnit9CC *)u->motions[(g >> 18) & 1];
                     }
-                    u->obj->unk3A = 0;
+                    u->obj->frame = 0;
                 }
                 if (!(u->status & BTL_STATUS_PETRIFY)) {
                     if ((s32)u->model->motion != u->motions[(u->flags >> 18) & 1] && (s32)u->model->motion != u->motions[4]) {
@@ -111,9 +111,9 @@ s32 btl_updateUnits(GameData *arg0, Battle *arg1) {
                 f = u->flags;
                 if ((f & 1) && !(u->status & (BTL_STATUS_PETRIFY | BTL_STATUS_VENOM | BTL_STATUS_KO | BTL_STATUS_STOP)) && ((arg1->scene.unk0 >> 6) & 1) && (g_gameState->unk1C->characters + ((f >> 1) & 0xF))->unk34.b.unkA) {
                     m = u->model;
-                    if (u->obj->unk3A >= m->motion->unk2) {
+                    if (u->obj->frame >= m->motion->unk2) {
                         m->motion = (BtlUnit9CC *)u->motions[19];
-                        u->obj->unk3A = 0;
+                        u->obj->frame = 0;
                     }
                 }
             }
@@ -226,7 +226,7 @@ void btl_victory(GameData *arg0, Battle *arg1) {
                         btl_removeStatuses(u, (BTL_STATUS_CONFUSE | BTL_STATUS_BERSERK | BTL_STATUS_STOP | BTL_STATUS_AUTO_LIFE | BTL_STATUS_DEFEND | BTL_STATUS_POISON | BTL_STATUS_SLEEP | BTL_STATUS_REGEN | BTL_STATUS_HASTE | BTL_STATUS_SLOW | BTL_STATUS_FLOAT | BTL_STATUS_SHELL | BTL_STATUS_PROTECT | BTL_STATUS_HEAT | BTL_STATUS_FREEZE | BTL_STATUS_VANISH | BTL_STATUS_DOOM | BTL_STATUS_MINI | BTL_STATUS_REFLECT | BTL_STATUS_GRADUAL_PETRIFY));
                         if (!(u->status & (BTL_STATUS_PETRIFY | BTL_STATUS_VENOM | BTL_STATUS_KO | BTL_STATUS_STOP))) {
                             if (u->hp != 0) {
-                                u->rot[1] = u->obj->unk22 = (u->flags & 1) * 0x800;
+                                u->rot[1] = u->obj->rotY = (u->flags & 1) * 0x800;
                                 u->flags = (u->flags & ~0x40000) | ((btl_hasStatus(u, (BTL_STATUS_VENOM | BTL_STATUS_LOW_HP | BTL_STATUS_POISON | BTL_STATUS_SLEEP)) & 1) << 18);
                                 u->flags &= ~0x80000;
                                 if (((g_gameState->unk1C->characters + ((u->flags >> 1) & 0xF))->unk34.w >> 10) & 1) {
@@ -234,7 +234,7 @@ void btl_victory(GameData *arg0, Battle *arg1) {
                                 } else {
                                     u->model->motion = (BtlUnit9CC *)u->motions[(u->flags >> 18) & 1];
                                 }
-                                u->obj->unk3A = 0;
+                                u->obj->frame = 0;
                             } else {
                                 btl_addStatus(u, BTL_STATUS_KO);
                             }
@@ -261,7 +261,7 @@ void btl_victory(GameData *arg0, Battle *arg1) {
             for (u = arg1->unitList; u != NULL; u = u->next) {
                 btl_initUnitCmds(u);
                 if (!(u->flags & 1)) {
-                    u->obj->unk22 = 0;
+                    u->obj->rotY = 0;
                     u->rot[1] = 0;
                 }
             }

@@ -391,7 +391,7 @@ void btl_placeParty(void) {
         if (!(*flags & 3)) {
             u->flags = (u->flags & ~0x300) | ((((u->flags >> 8) & 3) ^ 1) << 8);
         }
-        u->pos[0] = u->home->unk0[0] = u->obj->unk14 = x << 16;
+        u->pos[0] = u->home->pos[0] = u->obj->x = x << 16;
         p98 = u->home;
         pa0 = u->obj;
         if ((u8)btl_hasStatus(u, BTL_STATUS_FLOAT)) {
@@ -399,19 +399,19 @@ void btl_placeParty(void) {
         } else {
             v = 0;
         }
-        u->pos[1] = p98->unk0[1] = pa0->unk18 = v;
+        u->pos[1] = p98->pos[1] = pa0->y = v;
         q98 = u->home;
         qa0 = u->obj;
         w = 0xF9E80000;
         if (!((u->flags >> 8) & 3)) {
             w = 0xF8580000;
         }
-        u->pos[2] = q98->unk0[2] = qa0->unk1C = w;
-        u->obj->unk20 = 0;
+        u->pos[2] = q98->pos[2] = qa0->z = w;
+        u->obj->rotX = 0;
         u->rot[0] = 0;
-        u->obj->unk22 = rot;
+        u->obj->rotY = rot;
         u->rot[1] = rot;
-        u->obj->unk24 = 0;
+        u->obj->rotZ = 0;
         u->rot[2] = 0;
         tbl = D_800F57F0;
         e = &tbl[g_gameState->unk1C->characters[(u->flags >> 1) & 0xF].unk34.b.unk4];
@@ -472,15 +472,15 @@ void btl_initEnemyUnit(Unk800C9EE0 *arg0, BtlUnit *arg1, s32 *arg2, s32 arg3) {
     arg1->mp = arg1->max->maxMp;
     s->unk4 = (s->unk4 & ~0x100) | ((arg0->unk1 << 7) & 0x100);
     if (!((s->unk4 >> 9) & 1)) {
-        arg1->pos[0] = arg1->home->unk0[0] = arg1->obj->unk14 = arg0->unk4 << 16;
-        arg1->pos[1] = arg1->home->unk0[1] = arg1->obj->unk18 = arg0->unk6 << 16;
-        arg1->pos[2] = arg1->home->unk0[2] = arg1->obj->unk1C = arg0->unk8 << 16;
-        arg1->obj->unk20 = 0;
+        arg1->pos[0] = arg1->home->pos[0] = arg1->obj->x = arg0->unk4 << 16;
+        arg1->pos[1] = arg1->home->pos[1] = arg1->obj->y = arg0->unk6 << 16;
+        arg1->pos[2] = arg1->home->pos[2] = arg1->obj->z = arg0->unk8 << 16;
+        arg1->obj->rotX = 0;
         arg1->rot[0] = 0;
-        arg1->obj->unk24 = 0;
+        arg1->obj->rotZ = 0;
         arg1->rot[2] = 0;
         r = (arg0->unkA + D_800F5850[*arg2 & 3]) & 0xFFF;
-        arg1->obj->unk22 = r;
+        arg1->obj->rotY = r;
         arg1->rot[1] = r;
     }
     arg1->motions = (s32 *)s->unk0->unkC;

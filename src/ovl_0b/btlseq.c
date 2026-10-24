@@ -178,9 +178,9 @@ void btlseq_update(void) {
 
 s32 btlseq_opEnd(BtlScript *arg0, BtlUnit *arg1) {
     BtlUnit9C *m = arg1->model;
-    if (!((arg0->unk0 >> 2) & 1) && arg0->unk14 != 0 && arg1->obj->unk3A >= m->motion->unk2) {
+    if (!((arg0->unk0 >> 2) & 1) && arg0->unk14 != 0 && arg1->obj->frame >= m->motion->unk2) {
         m->motion = (BtlUnit9CC *)arg1->motions[(arg1->flags >> 18) & 1];
-        arg1->obj->unk3A = 0;
+        arg1->obj->frame = 0;
         arg0->unk0 |= 4;
     }
     if ((arg1->status & (BTL_STATUS_VENOM | BTL_STATUS_STOP | BTL_STATUS_FREEZE)) || ((arg0->unk0 >> 2) & 1)) {
@@ -288,7 +288,7 @@ void btlseq_opMoveHome(BtlScript *arg0, BtlUnit *arg1) {
     for (i = 0; i < 3; i++) {
         s16 *q = p + i;
         q[0] = arg1->pos[i] >> 16;
-        v = arg1->home->unk0;
+        v = arg1->home->pos;
         q[3] = v[i] >> 16;
     }
 }
@@ -368,7 +368,7 @@ s32 btlseq_opPlayAnim(BtlScript *arg0, BtlUnit *arg1) {
         idx = arg0->unk16 + p[1];
         arg1->model->motion = g_gameState->unk1C->unk8E4.battle->unk11C4.unk0[idx];
     }
-    arg1->obj->unk3A = 0;
+    arg1->obj->frame = 0;
     arg0->unk14 = 0;
     arg0->unk8 += 2;
     return 1;
@@ -403,7 +403,7 @@ s32 btlseq_opEffect(BtlScript *arg0) {
 s32 btlseq_opWaitAnim(BtlScript *arg0, BtlUnit *arg1) {
     BtlUnit9C *m = arg1->model;
     BtlUnitA0 *a = arg1->obj;
-    if (arg0->unk14 != 0 && (a->unk3A >= m->motion->unk2 || (arg1->status & (BTL_STATUS_VENOM | BTL_STATUS_STOP | BTL_STATUS_FREEZE)))) {
+    if (arg0->unk14 != 0 && (a->frame >= m->motion->unk2 || (arg1->status & (BTL_STATUS_VENOM | BTL_STATUS_STOP | BTL_STATUS_FREEZE)))) {
         g_btlfxEnv->camera->unk52 = 0;
         arg0->unk8 += 1;
         return 1;
@@ -545,7 +545,7 @@ s32 btlseq_opTurn(BtlScript *arg0, BtlUnit *arg1) {
     if (a & 0x8000) {
         switch (a & 0x7FFF) {
         case 0:
-            ang = arg1->obj->unk22;
+            ang = arg1->obj->rotY;
             break;
         case 1:
             btlseq_getTargetCenter(arg0->unk4->unkC, (u16 *)&d[0], (u16 *)&d[1]);

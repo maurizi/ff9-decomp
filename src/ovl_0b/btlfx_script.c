@@ -1068,9 +1068,9 @@ void btlfx_resetUnitMotion(s32 arg0, u8 arg1) {
     BtlUnit *u = btl_getUnit(arg0);
     btlfx_setUnitMotion(arg0, u->motions[0]);
     if (arg1) {
-        u->rot[0] = u->obj->unk20;
-        u->rot[1] = u->obj->unk22;
-        u->rot[2] = u->obj->unk24;
+        u->rot[0] = u->obj->rotX;
+        u->rot[1] = u->obj->rotY;
+        u->rot[2] = u->obj->rotZ;
     }
 }
 
@@ -1080,7 +1080,7 @@ void btlfx_setUnitMotion(s32 arg0, s32 arg1) {
         BtlUnit9C *m = u->model;
         if (m != NULL) {
             m->motion = (BtlUnit9CC *)arg1;
-            u->obj->unk3A = 0;
+            u->obj->frame = 0;
         }
     }
 }
@@ -1094,7 +1094,7 @@ void btlfx_setMotionFrame(s32 arg0, s32 arg1) {
     if (arg1 >= u->model->motion->unk2) {
         arg1 = u->model->motion->unk2;
     }
-    u->obj->unk3A = arg1;
+    u->obj->frame = arg1;
 }
 
 s32 btlfx_getMotionLength(s32 arg0) {
@@ -1102,7 +1102,7 @@ s32 btlfx_getMotionLength(s32 arg0) {
 }
 
 u8 btlfx_getMotionFrame(s32 arg0) {
-    return btl_getUnit(arg0)->obj->unk3A;
+    return btl_getUnit(arg0)->obj->frame;
 }
 
 void btlfx_turnUnit(s32 arg0, s32 arg1) {
@@ -1112,7 +1112,7 @@ void btlfx_turnUnit(s32 arg0, s32 arg1) {
     s16 c[4];
     switch (arg1) {
     case 0:
-        u->rot[1] = u->obj->unk22 + 0x800;
+        u->rot[1] = u->obj->rotY + 0x800;
         break;
     case 1:
         btlfx_getUnitPos(arg0, a);
@@ -1123,9 +1123,9 @@ void btlfx_turnUnit(s32 arg0, s32 arg1) {
         btlfx_setUnitRot(arg0, c);
         break;
     case 2:
-        u->rot[0] = u->obj->unk20;
-        u->rot[1] = u->obj->unk22;
-        u->rot[2] = u->obj->unk24;
+        u->rot[0] = u->obj->rotX;
+        u->rot[1] = u->obj->rotY;
+        u->rot[2] = u->obj->rotZ;
         break;
     }
 }
@@ -1654,9 +1654,9 @@ s32 btlfx_stepFaceHome(Unk800D8124 *arg0, s32 arg1, s32 *arg2) {
     u = btl_getUnit(arg0->unk0);
     if (arg0->unk2 == 0 || btlfx_isPartyUnit(arg0->unk1) == 0) {
         if (v == 0) {
-            arg0->unk8[0] = u->obj->unk20 - u->rot[0];
-            arg0->unk8[1] = u->obj->unk22 - u->rot[1];
-            arg0->unk8[2] = u->obj->unk24 - u->rot[2];
+            arg0->unk8[0] = u->obj->rotX - u->rot[0];
+            arg0->unk8[1] = u->obj->rotY - u->rot[1];
+            arg0->unk8[2] = u->obj->rotZ - u->rot[2];
         }
         btlfx_getUnitRot(arg0->unk0, rot);
         rot[0] += arg0->unk8[0] / arg0->unk4;
@@ -1669,10 +1669,10 @@ s32 btlfx_stepFaceHome(Unk800D8124 *arg0, s32 arg1, s32 *arg2) {
         g_btlfxState.turnDone = 1;
         return 1;
     }
-    u->rot[0] = u->obj->unk20;
+    u->rot[0] = u->obj->rotX;
     a = u->obj;
-    u->rot[1] = a->unk22;
-    *(volatile s16 *)&u->rot[2] = a->unk24;
+    u->rot[1] = a->rotY;
+    *(volatile s16 *)&u->rot[2] = a->rotZ;
     return g_btlfxState.turnDone = 1;
 end:
     return 0;

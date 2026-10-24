@@ -1304,9 +1304,9 @@ void btlfx_getUnitHomePos(s32 arg0, s16 *arg1) {
         arg1[1] = u->pos[1] >> 16;
         arg1[2] = u->pos[2] >> 16;
     } else {
-        arg1[0] = u->home->unk0[0] >> 16;
-        arg1[1] = u->home->unk0[1] >> 16;
-        arg1[2] = u->home->unk0[2] >> 16;
+        arg1[0] = u->home->pos[0] >> 16;
+        arg1[1] = u->home->pos[1] >> 16;
+        arg1[2] = u->home->pos[2] >> 16;
     }
 }
 

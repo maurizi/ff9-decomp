@@ -76,8 +76,8 @@ void btl_playCmdEffect(BtlCmd *arg0, s32 arg1, s16 *arg2) {
             u->popupFlags = 0;
             u->mpChange = 0;
             u->hpChange = 0;
-            sum[0] += u->home->unk0[0] >> 16;
-            sum[2] += u->home->unk0[2] >> 16;
+            sum[0] += u->home->pos[0] >> 16;
+            sum[2] += u->home->pos[2] >> 16;
         }
         if (u->unitBit & mask) {
             l->bounced[l->bounceCount++] = u;
@@ -138,7 +138,7 @@ void btl_startCmdEffect(BtlCmd *cmd) {
     case BTL_CMD_DEFEND:
         btl_showCmdName(cmd);
         u->model->motion = (BtlUnit9CC *)u->motions[12];
-        u->obj->unk3A = 0;
+        u->obj->frame = 0;
         btl_execCmd(u);
         return;
     case BTL_CMD_CHANGE:

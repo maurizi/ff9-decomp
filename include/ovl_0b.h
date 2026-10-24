@@ -10,14 +10,14 @@
 
 typedef struct BtlUnitA0 {
     u8 pad0[0x14];
-    s32 unk14;
-    s32 unk18;
-    s32 unk1C;
-    s16 unk20;
-    s16 unk22;
-    s16 unk24;
+    s32 x; /* start position, 16.16 (also the home of party units) */
+    s32 y;
+    s32 z;
+    s16 rotX; /* start rotation */
+    s16 rotY;
+    s16 rotZ;
     u8 pad26[0x3A - 0x26];
-    u8 unk3A;
+    u8 frame; /* motion frame (btl_updateUnitModel advances it) */
     u8 unk3B;
 } BtlUnitA0;
 
@@ -298,7 +298,7 @@ typedef struct {
 } Unk8E0Ld;
 
 typedef struct BtlUnit98 {
-    s32 unk0[3];
+    s32 pos[3]; /* home position, 16.16 */
 } BtlUnit98;
 
 /* the party member's Character.maxHp/maxMp/maxAtb (runtime: BtlUnit.max == &party[i]->maxHp) */

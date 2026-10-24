@@ -159,7 +159,7 @@ void btl_initPartyUnit(Character *c, BtlUnit *u, u16 slot, u16 n) {
         btl_addStatus(u, BTL_STATUS_PETRIFY);
     }
     btl_applyAutoAbilities(u);
-    u->home = (struct BtlUnit98 *)&u->obj->unk14;
+    u->home = (struct BtlUnit98 *)&u->obj->x;
     if (u->hp == 0 && btl_addStatus(u, BTL_STATUS_KO) == 2) {
         u->koState = 5;
         btl_setKoMotion(u);
@@ -167,7 +167,7 @@ void btl_initPartyUnit(Character *c, BtlUnit *u, u16 slot, u16 n) {
     }
     u->flags = (u->flags & ~0x40000) | ((btl_hasStatus(u, (BTL_STATUS_VENOM | BTL_STATUS_LOW_HP | BTL_STATUS_POISON | BTL_STATUS_SLEEP)) & 1) << 18);
     u->model->motion = (BtlUnit9CC *)u->motions[(u->flags >> 18) & 1];
-    u->obj->unk3A = 0;
+    u->obj->frame = 0;
 }
 
 u32 *btl_initEnemyState(Battle *arg0, u32 *arg1) {
@@ -206,9 +206,9 @@ u32 *btl_initEnemyState(Battle *arg0, u32 *arg1) {
                 r.vz = u->rot[2];
                 r2 = r;
                 func_80031244(&r2, &u->model->matrix);
-                u->model->matrix.t[0] = u->obj->unk14 >> 16;
-                u->model->matrix.t[1] = u->obj->unk18 >> 16;
-                u->model->matrix.t[2] = u->obj->unk1C >> 16;
+                u->model->matrix.t[0] = u->obj->x >> 16;
+                u->model->matrix.t[1] = u->obj->y >> 16;
+                u->model->matrix.t[2] = u->obj->z >> 16;
                 cc = u->model->motion;
                 if (IS_OFFSET(cc->unkC)) {
                     t = cc->unk10;
@@ -218,18 +218,18 @@ u32 *btl_initEnemyState(Battle *arg0, u32 *arg1) {
                     }
                 }
                 arg1 = (u32 *)btl_calcBoneMatrices(u->model, 0, (u8 *)arg1);
-                u->home->unk0[0] = u->model->bones[u->baseBone].unk14 << 16;
-                u->home->unk0[1] = 0;
-                u->home->unk0[2] = u->model->bones[u->baseBone].unk1C << 16;
+                u->home->pos[0] = u->model->bones[u->baseBone].unk14 << 16;
+                u->home->pos[1] = 0;
+                u->home->pos[2] = u->model->bones[u->baseBone].unk1C << 16;
             } else {
-                u->home->unk0[0] = u->obj->unk14;
-                u->home->unk0[1] = u->obj->unk18;
-                u->home->unk0[2] = u->obj->unk1C;
+                u->home->pos[0] = u->obj->x;
+                u->home->pos[1] = u->obj->y;
+                u->home->pos[2] = u->obj->z;
                 a0 = u->obj;
                 if (g_randPtr >= g_randTableEnd) {
                     rand_refill();
                 }
-                a0->unk3A = *g_randPtr++ % u->model->motion->unk2;
+                a0->frame = *g_randPtr++ % u->model->motion->unk2;
             }
         }
     }

@@ -537,7 +537,7 @@ s32 btl_reloadPartyStep(s32 arg0) {
             } else {
                 u->model->motion = (BtlUnit9CC *)u->motions[(u->flags >> 18) & 1];
             }
-            e->unkC->unk3A = 0;
+            e->unkC->frame = 0;
             m = u->weaponModel;
             save = m->parentBone;
             id2 = ((Unk8006E0E8 *)u->weapon)->unk2 | 0x20000;
@@ -1484,7 +1484,7 @@ s32 btl_swapPartyModelStep(s32 arg0, s32 arg1) {
             } else {
                 u->model->motion = (BtlUnit9CC *)u->motions[(u->flags >> 18) & 1];
             }
-            ent->unkC->unk3A = 0;
+            ent->unkC->frame = 0;
             u->weaponModel->parent = ent->unk8;
         }
         *state = 0;
