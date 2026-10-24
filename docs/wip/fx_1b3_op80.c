@@ -1,4 +1,4 @@
-/* Draft of fx_1b3 fx_1b3_op80 (Fx1b3Split/Fx1b3Blast in include/fxmod/fx_1b3.h). Status: 99 lines, 66 ignoring registers (build/w/nd.py). The frame matches with the tex/clut lists, trail points and flash locals sharing three function-scope buffers (v, w, sc), as the original stack offsets show. Hi_RegisterTexListModel is called with three arguments (a3 left over), see REGTEX. The frame switch is sparse (a compare tree, bodies in ascending case order). */
+/* Draft of fx_1b3 fx_1b3_op80 (Fx1b3Split/Fx1b3Blast in include/fxmod/fx_1b3.h). Status: 75 lines, 47 ignoring registers (build/w/nd.py). The frame matches with the tex/clut lists, trail points and flash locals sharing three function-scope buffers (v, w, sc), as the original stack offsets show. Hi_RegisterTexListModel is called with three arguments (a3 left over), see REGTEX. The frame switch is sparse (a compare tree, bodies in ascending case order). */
 #include "fxmod/fx_1b3.h"
 
 typedef struct {
@@ -757,7 +757,7 @@ s32 fx_1b3_op80(s32 mode, Fx1b3Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
         if (work->unk0[4] != 0) {
             work->unk0[4]--;
             D_801EB0D4.unkC = 0x80;
-            D_801EB0D4.unk4 = (ex->math_sin(D_801EB0D4.unk10) * 0x341) >> 9;
+            D_801EB0D4.unk4 = (u32)(ex->math_sin(D_801EB0D4.unk10) * 0x341) >> 9;
             D_801EB0D4.unk8 = -(ex->math_cos(D_801EB0D4.unk10) * 0x1A08) >> 12;
             D_801EB0D4.unk6 = 0;
             D_801EB0D4.unk10 += D_801EB0D4.unk14;
@@ -787,9 +787,9 @@ s32 fx_1b3_op80(s32 mode, Fx1b3Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             work->unk0[7]--;
             D_801EB0D4.unk0 = 2;
             D_801EB0D4.unkC = 0x80;
+            D_801EB0D4.unk6 = 0x990 - (0x80 - work->unk0[7]) * 0x80;
             D_801EB0D4.unk4 = -0x3CF;
             D_801EB0D4.unk8 = 0;
-            D_801EB0D4.unk6 = 0x990 - ((0x80 - work->unk0[7]) << 7);
             if (D_801EB4A4[1].unk4 != 0) {
                 D_801EB4A4[1].unk4--;
                 func_801EA7E4(&D_801EB4A4[1]);
@@ -797,9 +797,9 @@ s32 fx_1b3_op80(s32 mode, Fx1b3Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             }
             D_801EB0D4.unk0 = 3;
             D_801EB0D4.unkC = 0x100;
+            D_801EB0D4.unk4 = (0x80 - work->unk0[7]) * 0x80 - 0x600;
             D_801EB0D4.unk6 = 0;
             D_801EB0D4.unk8 = 0;
-            D_801EB0D4.unk4 = ((0x80 - work->unk0[7]) << 7) - 0x600;
             if (D_801EB574.unk4 != 0) {
                 D_801EB574.unk4--;
                 func_801EA7E4(&D_801EB574);
@@ -814,7 +814,7 @@ s32 fx_1b3_op80(s32 mode, Fx1b3Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
                 D_801EB0D4.unkC = 0x100;
                 D_801EB0D4.unk6 = 0x331;
                 D_801EB0D4.unk8 = 0;
-                D_801EB0D4.unk4 = 0x2BC - ((0x22 - work->unk0[9]) << 8);
+                D_801EB0D4.unk4 = 0x2BC - (0x22 - work->unk0[9]) * 0x100;
                 func_801EA7E4(&D_801EB5E4[0]);
                 func_801EA7E4(&D_801EB5E4[1]);
             }
@@ -858,10 +858,10 @@ s32 fx_1b3_op80(s32 mode, Fx1b3Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
 
             work->unk0[11]--;
             ((CVECTOR *)&w[0])->r = ((CVECTOR *)&w[0])->g = ((CVECTOR *)&w[0])->b = work->unk0[11] * 7;
+            sc.vz = sc.vy = sc.vx = work->unk0[11] * 10 + 0x1000;
             w[1].vx = 0;
             w[1].vy = 0;
             w[1].vz = 0;
-            sc.vx = sc.vy = sc.vz = work->unk0[11] * 10 + 0x1000;
             ex->func_800E6764(3, 0xA0, 0x78, 0xA0, 0x78, 2, 2, 1, 1, &w[1], &sc, (CVECTOR *)&w[0], 1, NULL);
         }
         if (frame >= 0x61) {
