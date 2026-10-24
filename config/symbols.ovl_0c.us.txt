@@ -600,3 +600,9 @@ g_worldParkedSoundRects = 0x800CE0B8; // [code] VRAM RECT used to park sound ban
 g_worldParkedSoundRectIdx = 0x800CCA1C; // [code] index into g_worldParkedSoundRects (data 0), wm_loadSoundBanks/wm_fetchParkedSound
 g_worldPauseSprite = 0x800CE098; // [code] sprite buffer passed to func_80027834 for the pause graphic in wm_togglePause (ovl_0a twin g_fieldPauseSprite)
 g_worldFormStatusTable = 0x800CD010; // [code] [7][11] replacement-form case per form and story status index (D_800CD060 thresholds), switched on in wm_applyStoryForms
+s_menuMainExpLabel = 0x800CE06C; // [string] "EXP", token 1 of menuMain_setExpHelp (copy of ovl_0a s_menuMainExpLabel)
+s_menuMainNextLabel = 0x800CE070; // [string] half-width kana "next", token 3 of menuMain_setExpHelp
+s_menuMainUntilLabel = 0x800CE078; // [string] half-width kana "until", token 4 of menuMain_setExpHelp
+s_menuMainStatusLabel = 0x800CE080; // [string] half-width kana "status", token 6 of menuMain_setExpHelp
+s_menuMainStatusNormal = 0x800CE088; // [string] half-width kana "normal", token 7 when Character.unk38 == 0
+s_menuMainStatusAbnormal = 0x800CE090; // [string] half-width kana "abnormal", token 7 when Character.unk38 != 0

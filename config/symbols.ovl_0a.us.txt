@@ -237,7 +237,7 @@ g_fieldPreloadExcludeCount = 0x800CA051; // [code] entry count of g_fieldPreload
 fld_requestDiscChange = 0x800B5004; // type:func [code] event opcode 0xAC (disc << 14 | arg) - stores disc, 1 << disc and arg in g_fieldDiscChange, sets field flag 0x100000 and ends the field loop
 fld_getDiscChangeDisc = 0x800B5064; // type:func [code] returns g_fieldDiscChange.unk2, the disc number fld_requestDiscChange stored
 fld_getDiscChangeMask = 0x800B5074; // type:func [code] returns g_fieldDiscChange.unk1 (1 << disc)
-fld_getDiscChangeArg = 0x800B5084; // type:func [code] returns g_fieldDiscChange.unk4, the low 14 bits of the opcode 0xAC argument
+fld_getDiscChangeFieldId = 0x800B5084; // type:func [code] returns g_fieldDiscChange.unk4, the low 14 bits of the opcode 0xAC argument
 fld_runDiscChange = 0x800B50A4; // type:func [code] fld_main after the loop when fld_isDiscChangePending - enter, frame loop of mode updates until mode 4, leave
 fld_discChangeEnter = 0x800B5114; // type:func [code] saves D_80073998[0..1], mode 1, cursor 0, clears the field flags, closes windows, runs mode 1's enter
 fld_discChangeLeave = 0x800B51D0; // type:func [code] runs the mode's leave, restores D_80073998, sets field flag 0x10000 and calls fld_refindSectors (func_800A9570)
@@ -399,3 +399,15 @@ g_fieldBgCtxEntries = 0x800C9DCC; // [code] label of g_fieldBgCtx.entries (the e
 g_fieldBgCtxWork = 0x800C9DD0; // [code] label of g_fieldBgCtx.work (work buffer set by fldbg_setWorkBuffer)
 g_fieldBgiTriangles = 0x800C9E00; // [code] label of g_fieldBgi.triangles, read under its own name by bgi_moveActor
 g_fieldSoundLoadKind = 0x800C9D52; // [code] byte 2 of g_fieldSoundLoadId, the kind of the file fld_soundCommand is loading (7 music, 9 sound bank)
+fld_loadVibration = 0x800A9814; // type:func [code] fld_load - looks up the field's file 0x1Exxxx into FieldScene.unk4C and starts it with main func_80054A28 (that table drives D_800739B0, the PadSetAct actuator buffer, pad.c)
+fld_freeVibration = 0x800AA0A8; // type:func [code] fld_exit, called next to fld_freeFieldFile - only main func_80054F80, which zeroes the actuator buffer D_800739B0 and the vibration player D_8007BD38
+fld_getDiscChangeAreaId = 0x800B5094; // type:func [code] returns g_fieldDiscChange.unk6, ovl_39 func_801F9B00 saves it where it otherwise stores GameData.unk3A (area id), next to fld_getDiscChangeFieldId in place of fieldId
+fldbg_getEntryType = 0x800C1A4C; // type:func [code] *arg1 = g_fieldBgCtx.entries[arg0].unk0, the entry type (0x10 layer effect from fldbg_initEffectList, 0x80 clut fade from fldbg_startClutFade)
+fldbg_getWorkBlock = 0x800C1A78; // type:func [code] returns g_fieldBgCtx.work + arg0 * 0x200 (512-byte block arg0 of the background work buffer)
+g_fieldBgClutRows = 0x800CA108; // [code] fldbg_buildOverlaySprites keeps max(tile clutY) here as (max - 0xDF) & 0xFF, i.e. the number of palette rows used from 0xE0 up, never read elsewhere
+s_menuMainExpLabel = 0x800C9EC0; // [string] "EXP", token 1 of the exp help text built by menuMain_setExpHelp
+s_menuMainNextLabel = 0x800C9EC4; // [string] half-width kana " ツギノ" (next), token 3 of menuMain_setExpHelp
+s_menuMainUntilLabel = 0x800C9ECC; // [string] half-width kana " マデ" (until), token 4 of menuMain_setExpHelp
+s_menuMainStatusLabel = 0x800C9ED4; // [string] half-width kana "ステータス" (status), token 6 of menuMain_setExpHelp
+s_menuMainStatusNormal = 0x800C9EDC; // [string] half-width kana " セイジョウ" (normal), token 7 when Character.unk38 (status) == 0
+s_menuMainStatusAbnormal = 0x800C9EE4; // [string] half-width kana " イジョウ" (abnormal), token 7 when Character.unk38 != 0

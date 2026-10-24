@@ -17,11 +17,11 @@ u8 fld_getDiscChangeMask(void) {
     return g_fieldDiscChange.discMask;
 }
 
-s16 fld_getDiscChangeArg(void) {
+s16 fld_getDiscChangeFieldId(void) {
     return g_fieldDiscChange.arg;
 }
 
-s16 func_800B5094(void) {
+s16 fld_getDiscChangeAreaId(void) {
     return g_fieldDiscChange.unk6;
 }
 

@@ -1116,12 +1116,12 @@ extern RECT s_menuMainPanelRects[6];
 extern TextWin s_menuMainSlideIn[4];
 extern u8 s_menuMainExpText[16];
 extern u8 s_menuMainNextText[16];
-extern u8 D_800CE06C[];
-extern u8 D_800CE070[];
-extern u8 D_800CE078[];
-extern u8 D_800CE080[];
-extern u8 D_800CE088[];
-extern u8 D_800CE090[];
+extern u8 s_menuMainExpLabel[];
+extern u8 s_menuMainNextLabel[];
+extern u8 s_menuMainUntilLabel[];
+extern u8 s_menuMainStatusLabel[];
+extern u8 s_menuMainStatusNormal[];
+extern u8 s_menuMainStatusAbnormal[];
 
 /* wm_initMovement init state */
 typedef struct {

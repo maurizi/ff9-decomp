@@ -1081,7 +1081,7 @@ typedef struct {
 /* ---- overlay functions ---- */
 void fld_dropSoundBankCache(s32);
 s32 fld_freeFieldFile(FieldScene *, s16);
-s32 func_800AA0A8(FieldScene *, s16);
+s32 fld_freeVibration(FieldScene *, s16);
 void fld_stopSceneSfx(FieldScene *, s16);
 s32 fld_movieCommand(s32, s32, s32);
 s32 fld_freeCommon(void);
@@ -1139,7 +1139,7 @@ extern s32 g_fieldPreloadCursor;
 extern FieldDiscMode g_fieldDiscChangeModes[];
 extern FieldBgCtx g_fieldBgCtx;
 extern BgFile *g_fieldBgData;
-extern u8 D_800CA108; /* background sprite x extent */
+extern u8 g_fieldBgClutRows; /* background sprite x extent */
 extern s32 g_fieldBgCtxWork;
 extern u16 D_800C9DDE;
 extern u16 D_800C9DE0;
@@ -1206,12 +1206,12 @@ extern RECT s_menuMainPanelRects[6];
 extern TextWin s_menuMainSlideIn[4];
 extern u8 s_menuMainExpText[16];
 extern u8 s_menuMainNextText[16];
-extern u8 D_800C9EC0[];
-extern u8 D_800C9EC4[];
-extern u8 D_800C9ECC[];
-extern u8 D_800C9ED4[];
-extern u8 D_800C9EDC[];
-extern u8 D_800C9EE4[];
+extern u8 s_menuMainExpLabel[];
+extern u8 s_menuMainNextLabel[];
+extern u8 s_menuMainUntilLabel[];
+extern u8 s_menuMainStatusLabel[];
+extern u8 s_menuMainStatusNormal[];
+extern u8 s_menuMainStatusAbnormal[];
 
 /* 8-byte entries following Unk800B3254.unkC[unk6] */
 

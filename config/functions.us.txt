@@ -1602,7 +1602,7 @@ ovl_0a fld_allocScene 0x4c 0x800a9350
 ovl_0a fld_initScene 0x1d4 0x800a939c
 ovl_0a fld_refindSectors 0x264 0x800a9570
 ovl_0a fld_findEventScript 0x40 0x800a97d4
-ovl_0a func_800A9814 0x4c 0x800a9814
+ovl_0a fld_loadVibration 0x4c 0x800a9814
 ovl_0a fld_setupBackground 0xf4 0x800a9860
 ovl_0a fld_findLights 0x44 0x800a9954
 ovl_0a fld_startAudio 0x114 0x800a9998
@@ -1610,7 +1610,7 @@ ovl_0a fld_loadModelBundlesInCdOrder 0x130 0x800a9aac
 ovl_0a fld_loadFile 0x440 0x800a9bdc
 ovl_0a fld_getShadowTexPos 0x58 0x800aa01c
 ovl_0a fld_freeFieldFile 0x34 0x800aa074
-ovl_0a func_800AA0A8 0x20 0x800aa0a8
+ovl_0a fld_freeVibration 0x20 0x800aa0a8
 ovl_0a fld_getBgKey 0x2c 0x800aa0c8
 ovl_0a fld_depFindBattle 0xa0 0x800aa0f4
 ovl_0a fld_depFindBackground 0xfc 0x800aa194
@@ -1708,8 +1708,8 @@ ovl_0a fld_needsSplashImage 0x68 0x800b4f9c
 ovl_0a fld_requestDiscChange 0x60 0x800b5004
 ovl_0a fld_getDiscChangeDisc 0x10 0x800b5064
 ovl_0a fld_getDiscChangeMask 0x10 0x800b5074
-ovl_0a fld_getDiscChangeArg 0x10 0x800b5084
-ovl_0a func_800B5094 0x10 0x800b5094
+ovl_0a fld_getDiscChangeFieldId 0x10 0x800b5084
+ovl_0a fld_getDiscChangeAreaId 0x10 0x800b5094
 ovl_0a fld_runDiscChange 0x70 0x800b50a4
 ovl_0a fld_discChangeEnter 0xbc 0x800b5114
 ovl_0a fld_discChangeLeave 0xc0 0x800b51d0
@@ -1811,8 +1811,8 @@ ovl_0a fldbg_setAnimStepDelay 0x38 0x800c1868
 ovl_0a fldbg_setAnimFlags 0x34 0x800c18a0
 ovl_0a fldbg_playAnimRange 0x98 0x800c18d4
 ovl_0a fldbg_resetAnim 0xe0 0x800c196c
-ovl_0a func_800C1A4C 0x2c 0x800c1a4c
-ovl_0a func_800C1A78 0x14 0x800c1a78
+ovl_0a fldbg_getEntryType 0x2c 0x800c1a4c
+ovl_0a fldbg_getWorkBlock 0x14 0x800c1a78
 ovl_0a fldbg_setScrollLimits 0xd0 0x800c1a8c
 ovl_0a fldbg_getCamera 0x18 0x800c1b5c
 ovl_0a fldbg_setCameraCenter 0x40 0x800c1b74

@@ -2507,12 +2507,12 @@ s32 fldbg_buildOverlaySprites(BgOverlay *arg0, BgSprt *arg1, BgSprt **arg2) {
 
     /* Statement order and the barrier below are for the scheduler: everything above the barrier
      * forms its own group, where both global loads are ready at once and are scheduled as
-     * lui/lui/lw/lbu, so %hi(D_800CA108) gets v1. The unk25_1 mask is set up here (and applied by
+     * lui/lui/lw/lbu, so %hi(g_fieldBgClutRows) gets v1. The unk25_1 mask is set up here (and applied by
      * hand below) because its lui/ori must also sit above the barrier, and buf/the two offsets
      * are read early so their insns land where the original has them. */
     mask = 0xFFFF01FF;
     bg = g_fieldBgData;
-    u = D_800CA108;
+    u = g_fieldBgClutRows;
     posOfs = arg0->unk28;
     tileOfs = arg0->unk2C;
     buf = 0;
@@ -2559,7 +2559,7 @@ s32 fldbg_buildOverlaySprites(BgOverlay *arg0, BgSprt *arg1, BgSprt **arg2) {
         arg1 += n;
     }
     *arg2 = arg1;
-    D_800CA108 = w + 0x21;
+    g_fieldBgClutRows = w + 0x21;
     return 1;
 }
 
@@ -4345,12 +4345,12 @@ s32 fldbg_resetAnim(s32 arg0, s32 arg1) {
     return 1;
 }
 
-s32 func_800C1A4C(s32 arg0, u8 *arg1) {
+s32 fldbg_getEntryType(s32 arg0, u8 *arg1) {
     *arg1 = g_fieldBgCtxEntries[arg0].unk0;
     return 1;
 }
 
-s32 func_800C1A78(s32 arg0) {
+s32 fldbg_getWorkBlock(s32 arg0) {
     return g_fieldBgCtxWork + (arg0 << 9);
 }
 

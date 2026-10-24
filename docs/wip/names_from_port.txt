@@ -1181,7 +1181,7 @@ D_800CA051 g_fieldPreloadExcludeCount  # [code] entry count of g_fieldPreloadExc
 func_800B5004 fld_requestDiscChange  # [code] event opcode 0xAC (disc << 14 | arg) - stores disc, 1 << disc and arg in g_fieldDiscChange, sets field flag 0x100000 and ends the field loop
 func_800B5064 fld_getDiscChangeDisc  # [code] returns g_fieldDiscChange.unk2, the disc number fld_requestDiscChange stored
 func_800B5074 fld_getDiscChangeMask  # [code] returns g_fieldDiscChange.unk1 (1 << disc)
-func_800B5084 fld_getDiscChangeArg  # [code] returns g_fieldDiscChange.unk4, the low 14 bits of the opcode 0xAC argument
+func_800B5084 fld_getDiscChangeFieldId  # [code] returns g_fieldDiscChange.unk4, the low 14 bits of the opcode 0xAC argument
 func_800B50A4 fld_runDiscChange  # [code] fld_main after the loop when fld_isDiscChangePending - enter, frame loop of mode updates until mode 4, leave
 func_800B5114 fld_discChangeEnter  # [code] saves D_80073998[0..1], mode 1, cursor 0, clears the field flags, closes windows, runs mode 1's enter
 func_800B51D0 fld_discChangeLeave  # [code] runs the mode's leave, restores D_80073998, sets field flag 0x10000 and calls fld_refindSectors (func_800A9570)

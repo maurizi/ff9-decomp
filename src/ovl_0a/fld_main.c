@@ -369,7 +369,7 @@ void fld_load(s32 arg0) {
     sc->nextId = arg0;
     fld_loadFile(sc, arg0);
     fld_findEventScript(sc, arg0);
-    func_800A9814(sc, arg0);
+    fld_loadVibration(sc, arg0);
     fld_setupBackground(sc, arg0);
     fld_findLights(sc, arg0);
     fld_getShadowTexPos(&g_gameState->unk1C->unk8E4.field->unkC->unk14->shadowTexX, &g_gameState->unk1C->unk8E4.field->unkC->unk14->shadowTexY);
@@ -419,7 +419,7 @@ void fld_exit(void) {
     DrawSync(0);
     fld_stopSceneSfx(sc, g_gameState->unk1C->fieldId);
     D_80073998[0] &= 0xFFFF0006;
-    func_800AA0A8(sc, g_gameState->unk1C->fieldId);
+    fld_freeVibration(sc, g_gameState->unk1C->fieldId);
     fld_freeFieldFile(sc, g_gameState->unk1C->fieldId);
     fld_freeModelBundles();
     for (i = 0; i < 9; i++) {
@@ -667,7 +667,7 @@ s32 fld_findEventScript(FieldScene *arg0, u16 arg1) {
     return 0;
 }
 
-s32 func_800A9814(FieldScene *arg0, u16 arg1) {
+s32 fld_loadVibration(FieldScene *arg0, u16 arg1) {
     void *p = db_lookupRegistered(4, arg1 | 0x1E0000, 0);
 
     arg0->unk4C = p;
@@ -831,7 +831,7 @@ s32 fld_freeFieldFile(FieldScene *arg0, s16 arg1) {
     return 0;
 }
 
-s32 func_800AA0A8(FieldScene *arg0, s16 arg1) {
+s32 fld_freeVibration(FieldScene *arg0, s16 arg1) {
     func_80054F80();
     return 0;
 }

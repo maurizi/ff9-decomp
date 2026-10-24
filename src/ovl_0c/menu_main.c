@@ -321,13 +321,13 @@ void menuMain_setExpHelp(s32 arg0) {
         func_8002BE44(0, c->unk0);
         text_formatNumber(c->exp, s_menuMainExpText, 7, 1);
         text_formatNumber(next - c->exp, s_menuMainNextText, 7, 1);
-        func_8002BE44(1, D_800CE06C);
+        func_8002BE44(1, s_menuMainExpLabel);
         func_8002BE44(2, s_menuMainExpText);
-        func_8002BE44(3, D_800CE070);
-        func_8002BE44(4, D_800CE078);
+        func_8002BE44(3, s_menuMainNextLabel);
+        func_8002BE44(4, s_menuMainUntilLabel);
         func_8002BE44(5, s_menuMainNextText);
-        func_8002BE44(6, D_800CE080);
-        func_8002BE44(7, c->unk38 != 0 ? D_800CE090 : D_800CE088);
+        func_8002BE44(6, s_menuMainStatusLabel);
+        func_8002BE44(7, c->unk38 != 0 ? s_menuMainStatusAbnormal : s_menuMainStatusNormal);
         D_80077DF0 = text_get(5);
     }
 }
