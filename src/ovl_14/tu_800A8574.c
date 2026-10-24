@@ -8,7 +8,7 @@ void func_800A8574(void) {
 void func_800A859C(void) {
     s32 i;
 
-    func_80032574();
+    menu_initForMode();
     pad_setStickAsDpad(1);
     D_800AB320.unk8 = 0;
     D_800AB320.unk0 = 1;

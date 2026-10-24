@@ -49,8 +49,8 @@ void game_reset(void) {
     }
     func_8004BBF0();
     func_80053924();
-    func_800320D8();
-    func_80032078();
+    menu_init();
+    game_initFade();
     mbg_resetState();
 }
 

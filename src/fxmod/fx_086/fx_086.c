@@ -47,7 +47,7 @@ void func_801E7704(SVECTOR *pos, SVECTOR *rot, VECTOR *scale, s32 r0, s32 r1, s3
     tpage |= (abr & 3) << 5;
     c1.code = c2.code;
     gte_rtv0tr_b();
-    ex->func_800316D8(rot, &m);
+    ex->math_rotMatrixYXZ(rot, &m);
     ex->ScaleMatrix(&m, scale);
     gte_stlvnl(m.t);
     ex->MulRotMatrix(&m);
@@ -188,7 +188,7 @@ void func_801E7F6C(u32 *ot, s32 n, s32 h, s32 dz, void *src, SVECTOR *pt, CVECTO
     gte_SetTransMatrix(env->unk14);
     gte_ReadGeomScreen(&hsave);
     gte_SetGeomScreen(h);
-    ex->func_800316D8(src, &m);
+    ex->math_rotMatrixYXZ(src, &m);
     m.t[1] = 0;
     m.t[0] = 0;
     m.t[2] = h;

@@ -508,7 +508,7 @@ u8 *func_800C970C(u8 *arg0, FieldSprHdr *h, SVECTOR *pos, SVECTOR *rot, s32 scal
     gte_SetTransMatrix(&g_gameState->unk1C->unk18);
     gte_ldv0(pos);
     gte_rtv0tr();
-    func_800316D8(rot, &m);
+    math_rotMatrixYXZ(rot, &m);
     if (scale >= 0) {
         s.vx = s.vy = s.vz = scale;
         ScaleMatrix(&m, &s);

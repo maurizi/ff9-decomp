@@ -35,7 +35,7 @@ void func_801E7724(Fx1e6Trail *trail, s32 size, s32 start) {
         v.vx = v.vx * 6 / 10;
         v.vy = v.vy * 6 / 10;
         v.vz = v.vz * 6 / 10;
-        ex->func_800316D8(&D_801E9300, &m);
+        ex->math_rotMatrixYXZ(&D_801E9300, &m);
         gte_SetRotMatrix(&m);
         gte_ldtr0();
         gte_ldv0(&v);

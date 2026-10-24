@@ -19,9 +19,9 @@ s32 func_800AB490(void) {
             break;
         case 1:
             if (timer == -1) {
-                func_800320B8(1, 1, 0, 0xFFFFFF);
+                game_startFade(1, 1, 0, 0xFFFFFF);
                 timer = 0x21C;
-                func_800320B8(1, 1, 0xB4, 0);
+                game_startFade(1, 1, 0xB4, 0);
             } else if (timer != 0) {
                 setlen(&D_800B0F60[g_gameState->unk1C->unk8][0], 4);
                 D_800B0F60[g_gameState->unk1C->unk8][0].code = 0x64;
@@ -88,7 +88,7 @@ s32 func_800AB490(void) {
             addPrim(&g_gameState->unk1C->unk10[g_gameState->unk1C->unk8][8], (D_800B0FB0[g_gameState->unk1C->unk8] + 1));
             if (timer == -1) {
                 timer = 0x5A;
-                func_800320B8(1, 1, timer, 0xFFFFFF);
+                game_startFade(1, 1, timer, 0xFFFFFF);
             } else if (--timer == 0) {
                 D_800B0FD0 = 4;
             }
@@ -113,7 +113,7 @@ s32 func_800AB490(void) {
         if (wait > 0) {
             wait--;
         }
-        func_80032098();
+        game_updateFade();
         func_800AC494();
     } while ((u32)D_800B0FD0 < 3);
     func_800AC448();
@@ -128,7 +128,7 @@ s32 func_800AC374(void) {
     func_800552B8(0);
     func_800AC598(0, 0x7009C, 0, 0, 0);
     func_800AC598(0xC401, 0x7009C, 0x5A, 0, 0x7F);
-    func_800320B8(1, 1, 0, 0xFFFFFF);
+    game_startFade(1, 1, 0, 0xFFFFFF);
     D_800B0FD0 = 0;
     D_800AE430 = 0;
     g_padPortMask[0] = 0;

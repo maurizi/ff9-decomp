@@ -587,7 +587,7 @@ void func_801E8DF4(SVECTOR *pos, SVECTOR *rot, Fx0b3Vec3 *scale, s32 c, s32 tpag
     col4.cd = 0x3A;
     col3.cd = 0x3A;
     gte_rtv0tr_b();
-    ex->func_800316D8(rot, &m);
+    ex->math_rotMatrixYXZ(rot, &m);
     ex->ScaleMatrix(&m, (VECTOR *)scale);
     m2 = m;
     m2.t[0] = pos->vx;
@@ -928,7 +928,7 @@ void func_801E9DFC(SVECTOR *pos, SVECTOR *rot, VECTOR *scale, s32 c, s32 c2, s32
     tpage |= (abr & 3) << 5;
     col4.cd = col5.cd;
     gte_rtv0tr_b();
-    ex->func_800316D8(rot, &m);
+    ex->math_rotMatrixYXZ(rot, &m);
     ex->ScaleMatrix(&m, scale);
     m2 = m;
     m2.t[0] = pos->vx;

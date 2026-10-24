@@ -1074,7 +1074,7 @@ void func_800E6764(u32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, s32 arg5, s
     cx = arg1;
     cy = arg2;
     SetGeomOffset(arg1, arg2);
-    func_800316D8(arg9, &m);
+    math_rotMatrixYXZ(arg9, &m);
     arg10->vz = 0x1000;
     ScaleMatrix(&m, arg10);
     m.t[1] = 0;
@@ -1147,7 +1147,7 @@ void func_800E6C58(SVECTOR *arg0) {
     if (arg0 == 0) {
         arg0 = &v;
     }
-    func_800316D8(arg0, &m);
+    math_rotMatrixYXZ(arg0, &m);
     m.t[1] = 0;
     m.t[0] = 0;
     m.t[2] = ReadGeomScreen();

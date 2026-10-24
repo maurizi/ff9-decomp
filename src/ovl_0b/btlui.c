@@ -1733,12 +1733,12 @@ void func_800EE37C(Unk800EE37C *arg0) {
     D_80104FD0.unk12 = (arg0->unkC != 0) ? func_8002AE7C((u8 *)arg0->unkC) : 0;
     D_80104FD0.unk18 = func_800349BC((D_80104FD0.unk14->unk68 >> 1) & 0xF, 0xE2);
     n = D_80104FD0.unk4->unk7;
-    func_8002EDFC(&l, n, (n < 5) ? n : 4, 1, 0x44);
+    menuList_init(&l, n, (n < 5) ? n : 4, 1, 0x44);
     f = (g_gameState->config >> 2) & 1;
     if (f == 1) {
         e = D_80104FD0.unk14->unkB4;
         c = &e->unk49C;
-        l.unk5 = c->unk8[e->unk49C.unk0];
+        l.top = c->unk8[e->unk49C.unk0];
         l.cursor = c->unk4[e->unk49C.unk0];
     }
     g_btlUi->unk12A4[2] = win_open(&D_800F8E30, 8, 1, 2);
@@ -1751,11 +1751,11 @@ void func_800EE37C(Unk800EE37C *arg0) {
 void btlui_listInput(void) {
     MenuList *l = (MenuList *)&g_btlUi->unk12A4[2]->unk30;
     Window *w;
-    if (l->unk8 == 0) {
+    if (l->scroll == 0) {
         if (g_padRepeat & BTN_CIRCLE) {
             snd_playSe(0x65);
             w = g_btlUi->unk12A4[2];
-            func_800EB518(&D_80104FD0.unk14->unkB4->unk49C, 1, w->unk30.unk5, w->unk30.cursor);
+            func_800EB518(&D_80104FD0.unk14->unkB4->unk49C, 1, w->unk30.top, w->unk30.cursor);
             if (D_80104FD0.unk10 == 0) {
                 func_800EF044();
             } else {
@@ -1777,7 +1777,7 @@ void btlui_listInput(void) {
 s32 func_800EE680(void) {
     Unk800EF80C s;
     MenuList *l = &g_btlUi->unk12A4[2]->unk30;
-    s32 n = l->cursor + l->unk5;
+    s32 n = l->cursor + l->top;
     u8 k = D_800FDD10[D_80104FD0.unk4->unk8 + n];
     s32 r = btlui_getAbilityState(k);
     if (r != 2) {
@@ -1802,7 +1802,7 @@ s32 func_800EE680(void) {
 s32 func_800EE7F8(void) {
     Unk800EF80C s;
     MenuList *l = &g_btlUi->unk12A4[2]->unk30;
-    UnkPair *p = btlui_getItemListEntry(l->cursor + l->unk5);
+    UnkPair *p = btlui_getItemListEntry(l->cursor + l->top);
     u8 r = 0;
     Unk8006A774 *e = &D_8006A774[p->unk0];
     s32 n;
@@ -1831,7 +1831,7 @@ s32 func_800EE938(void) {
     Unk800EF80C s;
     MenuList *l = &g_btlUi->unk12A4[2]->unk30;
     u8 r = 0;
-    UnkPair *p = func_800EC130(l->cursor + l->unk5);
+    UnkPair *p = func_800EC130(l->cursor + l->top);
     Battle16CC *e = &g_gameState->unk1C->unk8E4.battle->abilities[D_80104FD0.unk4->unk8];
     s32 n;
 
@@ -1929,7 +1929,7 @@ void func_800EEE3C(void) {
     if ((u8)D_800F8E38[D_80104FD0.unk4->unk6]()) {
         snd_playSe(0x67);
         w = g_btlUi->unk12A4[2];
-        func_800EB518(&D_80104FD0.unk14->unkB4->unk49C, 1, w->unk30.unk5, w->unk30.cursor);
+        func_800EB518(&D_80104FD0.unk14->unkB4->unk49C, 1, w->unk30.top, w->unk30.cursor);
     } else {
         snd_playSe(0x66);
     }
@@ -1945,8 +1945,8 @@ void btlui_drawListContent(Window *arg0) {
     for (i = 0; i < v.unk0; i++) {
         func_800EF094(0, i, v.unk1 + i, &v);
     }
-    if (((MenuList *)&arg0->unk30)->unk8 & 4) {
-        func_8002F40C((MenuList *)&arg0->unk30, rc, &r);
+    if (((MenuList *)&arg0->unk30)->scroll & 4) {
+        menuList_getRowsRect((MenuList *)&arg0->unk30, rc, &r);
         win_setClip(&r, 7, 1);
         func_800EEFA8(arg0);
     }
@@ -1956,7 +1956,7 @@ void btlui_drawListContent(Window *arg0) {
 void func_800EEFA8(Window *arg0) {
     MenuView v;
     s32 i;
-    func_8002F344((MenuList *)&arg0->unk30, &v);
+    menuList_getPageView((MenuList *)&arg0->unk30, &v);
     for (i = 0; i < v.unk0; i++) {
         func_800EF094(0, i, v.unk1 + i, &v);
     }
@@ -2097,7 +2097,7 @@ s32 btl_getMpCost(BtlCmd8 *arg0) {
 
 char *func_800EF5E0(void) {
     MenuList *l = &g_btlUi->unk12A4[2]->unk30;
-    s32 n = l->cursor + l->unk5;
+    s32 n = l->cursor + l->top;
     u8 k = D_800FDD10[D_80104FD4->unk8 + n];
     if (btlui_getAbilityState(k) == 0) {
         return NULL;
@@ -2107,7 +2107,7 @@ char *func_800EF5E0(void) {
 
 u8 *func_800EF674(void) {
     Unk16 *w = &g_btlUi->unk12A4[2]->unk30;
-    UnkPair *e = btlui_getItemListEntry(w->cursor + w->unk5);
+    UnkPair *e = btlui_getItemListEntry(w->cursor + w->top);
     if (e != NULL) {
         if (e->unk1 - btlui_getItemReserved(e->unk0) >= 0) {
             if (e->unk1 != btlui_getItemReserved(e->unk0)) {
@@ -2121,7 +2121,7 @@ u8 *func_800EF674(void) {
 
 u8 *func_800EF724(void) {
     Unk16 *w = &g_btlUi->unk12A4[2]->unk30;
-    UnkPair *e = func_800EC130(w->cursor + w->unk5);
+    UnkPair *e = func_800EC130(w->cursor + w->top);
     if (e != NULL) {
         if (e->unk1 - btlui_getItemReserved(e->unk0) >= 0) {
             if (e->unk1 != btlui_getItemReserved(e->unk0)) {

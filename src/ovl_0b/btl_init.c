@@ -205,7 +205,7 @@ u32 *func_800BB974(Battle *arg0, u32 *arg1) {
                 r.vy = u->unk86[1];
                 r.vz = u->unk86[2];
                 r2 = r;
-                func_80031244(&r2, &u->unk9C->unk24);
+                math_rotMatrixZYX(&r2, &u->unk9C->unk24);
                 u->unk9C->unk24.t[0] = u->unkA0->unk14 >> 16;
                 u->unk9C->unk24.t[1] = u->unkA0->unk18 >> 16;
                 u->unk9C->unk24.t[2] = u->unkA0->unk1C >> 16;

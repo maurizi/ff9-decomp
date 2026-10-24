@@ -16,8 +16,8 @@ void func_801F0C18(void) {
     text_setBank(g_itemMenuText);
     help_setCallback(help_nullHandler);
     help_setCursorOnTop(1);
-    func_8002EDFC(&D_801FAB78.unkC, 0xFF, 0xB, 2, 0xAD);
-    func_8002EDFC(&D_801FAB78.unk1C, D_801FAB78.unkB0, 0xB, 2, 0xAD);
+    menuList_init(&D_801FAB78.unkC, 0xFF, 0xB, 2, 0xAD);
+    menuList_init(&D_801FAB78.unk1C, D_801FAB78.unkB0, 0xB, 2, 0xAD);
     setRECT(&D_801FAB78.unk2C, 8, 8, 0xE4, 0x1A);
     setRECT(&D_801FAB78.unk34, 8, 0x2A, 0x12C, 0xAD);
     func_80063118(&D_801FAB78.unk3C, 0, 0);
@@ -64,7 +64,7 @@ void func_801F0E10(void) {
             return;
         }
         if (g_padRepeat & BTN_CROSS) {
-            i = (l->unk5 + l->cursor) * 2 + l->unk7;
+            i = (l->top + l->cursor) * 2 + l->col;
             func_801F2590(g_gameState->unk1C->items.slots[i].id);
             if (g_gameState->unk1C->items.slots[i].count == 0) {
                 func_801F2C58();
@@ -93,7 +93,7 @@ void func_801F0F50(void) {
     s32 i;
     u8 j;
 
-    if (l->unk8 == 0) {
+    if (l->scroll == 0) {
         if (g_padRepeat & BTN_CIRCLE) {
             snd_playSe(0x65);
             D_801FAB78.unk1 = 4;
@@ -102,13 +102,13 @@ void func_801F0F50(void) {
         if (g_padRepeat & BTN_CROSS) {
             if (D_801FAB78.unk7 == 0) {
                 snd_playSe(0x67);
-                j = l->unk7 + (l->cursor + l->unk5) * 2;
+                j = l->col + (l->cursor + l->top) * 2;
                 D_801FAB78.unk7 = 1;
                 D_801FAB78.unk6 = j;
                 return;
             }
             snd_playSe(0x67);
-            i = (l->cursor + l->unk5) * 2 + l->unk7;
+            i = (l->cursor + l->top) * 2 + l->col;
             tmp = g_gameState->unk1C->items.slots[D_801FAB78.unk6];
             g_gameState->unk1C->items.slots[D_801FAB78.unk6] = g_gameState->unk1C->items.slots[i];
             g_gameState->unk1C->items.slots[i] = tmp;
@@ -116,8 +116,8 @@ void func_801F0F50(void) {
             return;
         }
         menuList_input(l, g_padRepeat);
-        func_8002F044(l, g_padRepeat);
-        func_8002F0EC(l, g_padRepeat);
+        menuList_left(l, g_padRepeat);
+        menuList_right(l, g_padRepeat);
     }
 }
 
@@ -176,8 +176,8 @@ void func_801F11E4(void) {
             il->unk4(col, row, idx++, &view);
         }
     }
-    if (il->unk8->unk8 & 4) {
-        func_8002F40C(il->unk8, D_801F30A8, &D_801FA958);
+    if (il->unk8->scroll & 4) {
+        menuList_getRowsRect(il->unk8, D_801F30A8, &D_801FA958);
         win_setClip(&D_801FA958, 0x1C, 1);
         func_801F26E0();
     }
@@ -212,7 +212,7 @@ void func_801F13F8(void) {
         help_drawCursor();
     }
     if (D_801FAB78.unk1 >= 2 && D_801FAB78.unk1 != 4 && (D_801FAB78.unk1 == 2 || blink)) {
-        k = l->unk7 ^ ((l->unk8 >> 3) & 1);
+        k = l->col ^ ((l->scroll >> 3) & 1);
         g_menuHelp.otz = 0x19;
         /* Both arms are identical (jump2 merges them after register allocation); the test keeps the
          * hi part of &D_801FAB78 and the constant 2 live, which the original's registers need. */
@@ -233,23 +233,23 @@ void func_801F13F8(void) {
         help_drawCursor();
     }
     if (D_801FAB78.unk1 == 5) {
-        if (D_801FAB78.unk7 == 1 && blink && !(l->unk8 & 4)) {
-            a = l->unk5;
+        if (D_801FAB78.unk7 == 1 && blink && !(l->scroll & 4)) {
+            a = l->top;
             if (D_801FAB78.unk6 >= a * 2 && D_801FAB78.unk6 < (a + 0xB) * 2) {
-                if (l->unk8 != 0) {
-                    off = l->unk9;
-                    if (!(l->unk8 & 2)) {
+                if (l->scroll != 0) {
+                    off = l->scrollPos;
+                    if (!(l->scroll & 2)) {
                         off = -off;
                     }
                 }
                 u = D_801FAB78.unk6;
                 g_menuHelp.x = (u & 1) * 0x96 + 2;
-                g_menuHelp.y = ((u >> 1) - l->unk5) * 15 + (s16)(off + 0x32);
+                g_menuHelp.y = ((u >> 1) - l->top) * 15 + (s16)(off + 0x32);
                 g_menuHelp.otz = 0x12;
                 help_drawCursor();
             }
         }
-        k = l->unk7 ^ ((l->unk8 >> 3) & 1);
+        k = l->col ^ ((l->scroll >> 3) & 1);
         g_menuHelp.x = k * 0x96;
         g_menuHelp.y = l->cursor * 15 + 0x34;
         g_menuHelp.otz = 0x12;
@@ -261,7 +261,7 @@ void func_801F1778(void) {
     ItemMenu *m;
     RECT *r;
     GameState *gs;
-    s32 k = (D_801F3040[D_801FAB78.unk0].unk8->unk7 ^ 1) & 1;
+    s32 k = (D_801F3040[D_801FAB78.unk0].unk8->col ^ 1) & 1;
 
     D_801FAB78.unk3C.unk4.x = (u8)k == 0 ? 8 : 0xA4;
     r = &D_801FAB78.unk3C.unk4;
@@ -314,9 +314,9 @@ void func_801F187C(void) {
     for (i = n; i < 0x100; i++) {
         g_gameState->unk1C->items.slots[i].count = 0;
     }
-    D_801FAB78.unkC.unk7 = 0;
+    D_801FAB78.unkC.col = 0;
     D_801FAB78.unkC.cursor = 0;
-    D_801FAB78.unkC.unk5 = 0;
+    D_801FAB78.unkC.top = 0;
 }
 
 s32 func_801F1A7C(void) {
@@ -502,15 +502,15 @@ void func_801F2280(void) {
     func_801F1D88();
     func_801F2BC0();
     func_800631AC(&D_801FAB78.unk3C);
-    func_8002EB74(&D_801FAB78.unkC);
-    func_8002EB74(&D_801FAB78.unk1C);
+    menuList_update(&D_801FAB78.unkC);
+    menuList_update(&D_801FAB78.unk1C);
 }
 
 void func_801F22C8(void) {
     ItemList *it = &D_801F3040[D_801FAB78.unk0];
     MenuList *l = it->unk8;
 
-    if (l->unk8 == 0) {
+    if (l->scroll == 0) {
         if (g_padRepeat & BTN_CIRCLE) {
             snd_playSe(0x65);
             D_801FAB78.unk1 = 1;
@@ -520,12 +520,12 @@ void func_801F22C8(void) {
             func_801F24DC();
             return;
         }
-        if (l->unk0 != 0) {
+        if (l->count != 0) {
             menuList_input(l, g_padRepeat);
-            if (l->unk8 == 0) {
-                func_8002F044(l, g_padRepeat);
-                if (l->unk8 == 0) {
-                    func_8002F0EC(l, g_padRepeat);
+            if (l->scroll == 0) {
+                menuList_left(l, g_padRepeat);
+                if (l->scroll == 0) {
+                    menuList_right(l, g_padRepeat);
                 }
             }
         }
@@ -569,7 +569,7 @@ void func_801F24DC(void) {
     ItemList *it = &D_801F3040[D_801FAB78.unk0];
     MenuList *l = it->unk8;
     void (*f)(s32, MenuList *) = it->unk0;
-    s32 idx = (l->unk5 + l->cursor) * 2 + l->unk7;
+    s32 idx = (l->top + l->cursor) * 2 + l->col;
 
     do {
         f(idx, l);
@@ -622,7 +622,7 @@ void func_801F26E0(void) {
 
     it = &D_801F3040[D_801FAB78.unk0];
     row = 0;
-    func_8002F344(it->unk8, &v);
+    menuList_getPageView(it->unk8, &v);
     idx = v.unk1 * 2;
     for (; row < v.unk0; row++) {
         for (col = 0; col < 2; col++) {
@@ -734,7 +734,7 @@ void func_801F2C58(void) {
 
     it = D_801F3040;
     m = &D_801FAB78;
-    func_80063118(&m->unk3C, D_801F3120[it[D_801FAB78.unk0].unk8->unk7 & 1], 0);
+    func_80063118(&m->unk3C, D_801F3120[it[D_801FAB78.unk0].unk8->col & 1], 0);
     m->unk1 = 0;
 }
 
@@ -772,7 +772,7 @@ void func_801F2D58(void) {
     win_setShadow(D_801FAB78.unk4C, 1);
     win_setTitle(D_801FAB78.unk4C, D_80070408);
     D_801FAB78.unk5 = 0;
-    D_801FAB78.unk6 = l->unk7 + (l->unk5 + l->cursor) * 2;
+    D_801FAB78.unk6 = l->col + (l->top + l->cursor) * 2;
     D_801FAB78.unk1 = 0;
 }
 
@@ -831,16 +831,16 @@ s32 func_801F2FC4(MenuList *l) {
     s32 r, t;
     s32 step;
 
-    if (l->unk8 & 8) {
-        t = l->unk7 ^ 1;
+    if (l->scroll & 8) {
+        t = l->col ^ 1;
         step = 1;
         r = l->cursor;
-        if (l->unk8 & 2) {
-            return (l->unk5 + (r - step)) * 2 + t;
+        if (l->scroll & 2) {
+            return (l->top + (r - step)) * 2 + t;
         }
-        return (l->unk5 + (r + step)) * 2 + t;
+        return (l->top + (r + step)) * 2 + t;
     }
-    return (l->unk5 + l->cursor) * 2 + l->unk7;
+    return (l->top + l->cursor) * 2 + l->col;
 }
 
 void func_801F3038(void) {

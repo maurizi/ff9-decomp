@@ -257,7 +257,7 @@ s32 fx_128_op81(s32 mode, Fx128Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
             rot.vx = 0;
             rot.vy = work->unk24.vy;
             rot.vz = 0;
-            ex->func_800316D8(&rot, &m);
+            ex->math_rotMatrixYXZ(&rot, &m);
             gte_SetRotMatrix(&m);
             gte_ldtr0();
             gte_ldv0(&v);

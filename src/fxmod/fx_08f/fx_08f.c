@@ -48,7 +48,7 @@ void func_801E7858(u32 *ot, s32 n, s32 h, s32 dz, void *src, SVECTOR *pt, CVECTO
     gte_SetTransMatrix(env->unk14);
     gte_ReadGeomScreen(&hsave);
     gte_SetGeomScreen(h);
-    ex->func_800316D8(src, &m);
+    ex->math_rotMatrixYXZ(src, &m);
     m.t[1] = 0;
     m.t[0] = 0;
     m.t[2] = h;

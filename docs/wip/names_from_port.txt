@@ -1357,3 +1357,91 @@ func_8004B68C evt_getObjectProp  # [code] docs/runtime-findings.md field/menu ca
 # FIELDS include/ff9.h GameConfig: unk0_0=soundMono,unk0_1=padCustom,unk0_2=cursorMemory,unk0_3=atbWait,unk0_4=battleCameraFixed,unk0_5=battleControlCustom,unk0_6=movementRun,unk0_7=vibration,unk0_8=battleSpeed,unk0_14=messageSpeed
 # ff9.h: CONFIG_HERE_ICON_OFF/CONFIG_WINDOW_CLASSIC/CONFIG_TARGET_WINDOW_ALWAYS, CONFIG_WINDOW_COLOR() used in src/main
 # Files renamed (src/main + config/slus_012.51.yaml subsegments): tu_8002F7E8.c -> fade.c, tu_80035108.c -> help.c, tu_80035D3C.c -> menu_screen.c, tu_80062344.c -> card.c, tu_800357E0.c -> spr_anim.c
+func_8002F83C fade_cancel  # [code] clears g_fade.active, unk3 and type
+func_8002F854 fade_getType  # [code] g_fade.type
+func_8002F864 fade_isSubtractive  # [code] g_fade.subtract (game_setScreenHeight inverts the clear colour for it)
+func_8002F874 fade_getFrame  # [code] g_fade.frame
+func_8002F884 fade_clear  # [code] zeroes the fade state (type, active, frame, frames, onDone)
+func_8002F8BC fade_clearEase  # [code] returns g_fade.unk4 and clears it; fade_in/fade_out call it first (unk4 selects the eased curve of fadeFlat_update)
+func_8002F8D4 fade_isEased  # [code] g_fade.unk4
+func_8002F914 fade_setCovered  # [code] sets g_fade.unk3, returns the old value (fade_isBusy is true while it is set)
+func_8002F92C fade_isCovered  # [code] g_fade.unk3
+func_8002F93C fade_setAngle  # [code] g_fade.unkA, returns the old value; the z rotation of the wipe fade's quads (fadeWipe_draw), script opcode sets it
+func_8002F954 fade_getAngle  # [code] g_fade.unkA
+func_8002F964 fade_setEndColor  # [code] g_fade end colour bytes, covered = colour != 0
+func_8002F9A8 fade_getColor  # [code] g_fade.color (game_setScreenHeight, game_freezeScreen clear with it)
+func_8002FA10 fade_inAdditiveDefault  # [code] fade_inAdditive(16)
+func_8002FA30 fade_outAdditiveDefault  # [code] fade_outAdditive(12)
+func_8002FBC0 fade_getOt  # [code] OT entry at g_fade.otz of buffer i, or D_80077CA4[i] in battle (mode 2)
+D_80077CA4 g_fadeBattleOt  # [code] per-buffer OT entries fade_getOt returns in battle; ovl_0b clears and links them
+func_8002FC10 fade_getWipeColors  # [code] fadeWipe_getColors wrapper
+func_8002FD70 fade_stepClamp  # [code] a + step, clamped at lim in the step's direction
+func_8002FD98 fade_divRoundOut  # [code] a / b rounded away from zero (per-frame colour steps)
+func_8002FDE8 fade_ease  # [code] quadratic curve a + (b - t * t / b) over the linear value (fadeFlat with g_fade.unk4)
+D_8006BD04 g_fadeTypes  # [code] {start, update, draw} per fade type, called by fade_start/fade_update: 1 flat (fadeFlat_*), 2 wipe (fadeWipe_*)
+D_8006BD28 g_fadeSeekFuncs  # [code] per fade type: advance n frames at once (fade_reverse)
+func_8002FED4 fadeWipe_start  # [code] g_fadeTypes[2].start: halves the frames between two colour ramps toward the end colour
+func_80030030 fadeWipe_update  # [code] g_fadeTypes[2].update
+func_8003015C fadeWipe_seek  # [code] g_fadeSeekFuncs[2]
+func_800302D0 fadeWipe_draw  # [code] g_fadeTypes[2].draw: two Gouraud POLY_G4 halves around the screen centre, rotated by g_fade.unkA
+func_80030770 fadeWipe_getColors  # [code] the two edge colours of the current wipe
+D_80077D00 g_fadeWipe  # [code] wipe fade state (colours, steps, half lengths)
+func_80031B6C fadeFlat_start  # [code] g_fadeTypes[1].start: per-frame colour steps from the current to the end colour
+func_80031C88 fadeFlat_update  # [code] g_fadeTypes[1].update: steps the colour (eased with g_fade.unk4)
+func_80031D98 fadeFlat_seek  # [code] g_fadeSeekFuncs[1]
+func_80031ED8 fadeFlat_draw  # [code] g_fadeTypes[1].draw: a screen-sized semi-transparent TILE (subtractive or additive)
+D_80077D68 g_fadeFlat  # [code] flat fade state (start/end colours, steps)
+func_8002F5A0 fade_reverse  # [code] restarts a running fade back toward its start colour from where it is, with a new onDone (func_80032980)
+func_80030AF4 math_rotMatrixXYZ  # [code] math_buildRotMatrixXYZ(r, m, 0): m = Rx Ry Rz (m[0][2] = sin y)
+func_80030B14 math_rotMatrixXYZ_gte  # [code] math_buildRotMatrixXYZ(r, m, 1)
+func_80030B34 math_buildRotMatrixXYZ  # [code] rotation matrix Rx Ry Rz from SVECTOR angles via g_sinTable; both mode branches are the same code
+func_80030EA4 math_rotMatrixZXY  # [code] math_buildRotMatrixZXY(r, m, 0): m = Rz Rx Ry (m[2][1] = sin x)
+func_80030EC4 math_rotMatrixZXY_gte  # [code] math_buildRotMatrixZXY(r, m, 1)
+func_80030EE4 math_buildRotMatrixZXY  # [code] rotation matrix Rz Rx Ry
+func_80031244 math_rotMatrixZYX  # [code] math_buildRotMatrixZYX(r, m, 0): m = Rz Ry Rx (m[2][0] = -sin y)
+func_80031264 math_rotMatrixZYX_gte  # [code] math_buildRotMatrixZYX(r, m, 1): the products on the GTE (gpf12)
+func_80031284 math_buildRotMatrixZYX  # [code] rotation matrix Rz Ry Rx, mode 1 multiplies on the GTE
+func_800316D8 math_rotMatrixYXZ  # [code] math_buildRotMatrixYXZ(r, m, 0): m = Ry Rx Rz (m[1][2] = -sin x)
+func_800316F8 math_rotMatrixYXZ_gte  # [code] math_buildRotMatrixYXZ(r, m, 1)
+func_80031718 math_buildRotMatrixYXZ  # [code] rotation matrix Ry Rx Rz, mode 1 multiplies on the GTE
+func_8002EB74 menuList_update  # [code] steps a MenuList's scroll / page animation (win_updateAll for open windows)
+func_8002EDFC menuList_init  # [code] (count, visible rows, columns, height): row count, clears cursor and scroll
+func_8002F044 menuList_left  # [code] PAD_LEFT: previous column, wrapping to the previous row / scrolling up
+func_8002F0EC menuList_right  # [code] PAD_RIGHT: next column, wrapping to the next row / scrolling down
+func_8002F344 menuList_getPageView  # [code] visible rows/offset while a page scroll (flag 4) runs
+func_8002F40C menuList_getRowsRect  # [code] the part of a rect below/above the scroll divider at MenuList.unk9
+func_80032078 game_initFade  # [code] fade_init wrapper (game_reset)
+func_80032098 game_updateFade  # [code] fade_update wrapper, called once per frame by the mode loops
+func_800320B8 game_startFade  # [code] fade_start wrapper used by the overlays
+func_800320D8 menu_init  # [code] game_reset: menu_reset and clears g_menu.unk2
+func_80032100 menu_update  # [code] menu_dispatch wrapper called by the field/world loops
+func_80032238 menu_onFadedOut  # [code] fade-out callback of menu_startFadeOut: saves VSync mode, clear colour and pad mask, closes all windows, stick as d-pad
+func_80032384 menu_finish  # [code] restores what menu_onFadedOut saved, runs the type's exit and g_menu.unk24, fades in when g_menu.unkA
+func_8003253C menu_initNewGame  # [code] config_init, fade, timer and menu reset
+func_80032574 menu_initForMode  # [code] config_init, fade init, help_init (ovl_14/ovl_15 mode init)
+func_800325A4 menu_reset  # [code] clears the menu state and help_init
+func_800325E0 menu_close  # [code] fades out (when g_menu.unkB) and then menu_finish, or menu_finish at once; the menu screens call it to leave
+func_80032628 menu_setOnClose  # [code] g_menu.unk24: run by menu_finish
+func_80032634 menu_setFadeInOnClose  # [code] g_menu.unkA: menu_finish fades in
+func_80032640 menu_setFadeOutOnClose  # [code] g_menu.unkB: menu_close fades out first
+func_80032658 menu_dispatch  # [code] runs g_menuStateFuncs[g_menu.unk0] while a menu is open
+D_8006CA64 g_menuStateFuncs  # [code] per menu state: 1 menu_updateLoad, 2 menu_updateWait, 3 menu_updateRun
+func_800326B0 menu_loadOverlay  # [code] menu_readOverlay for types with an overlay (g_menuTypeOvl != 0xFF), else menu_readPortraits
+func_80032708 menu_readOverlay  # [code] cd_readAsync of the type's overlay file to 0x801EDF00, state 2
+func_80032798 menu_readPortraits  # [code] type 0: reads file 30 of dir 1 (party portraits for ui_loadPartyPortraits) to 0x801EDF00 when needed
+func_8003286C menu_updateLoad  # [code] state 1: menu_loadOverlay once the CD is free (world map)
+func_800328B4 menu_updateWait  # [code] state 2: menu_start once the read and the fade-out are done
+func_800328E8 menu_updateRun  # [code] state 3: repeat pad, background, the type's update, help_update, frame counter
+func_80032980 menu_startFadeOut  # [code] menu_doOpen: fades out (or reverses the running fade) with menu_onFadedOut
+func_800329FC menu_onOverlayRead  # [code] read callback of menu_readOverlay: clears g_menu.unk6
+func_80032A18 menu_onPortraitsRead  # [code] read callback of menu_readPortraits: clears g_menu.unk6
+func_80032A44 menu_start  # [code] state 3: flushes the cache for the overlay, uploads the party portraits (type 0), fades in, runs the type's init
+D_80077DB6 g_menuReading  # [code] g_menu.unk6 under its own symbol, cleared by the read callbacks
+D_80077DBA g_menuFadeInOnClose  # [code] g_menu.unkA under its own symbol (menu_setFadeInOnClose)
+D_80077DBB g_menuFadeOutOnClose  # [code] g_menu.unkB under its own symbol (menu_setFadeOutOnClose, menu_close)
+D_80077DBC g_menuArg  # [code] g_menu.unkC under its own symbol: the menu_open argument (ovl_3a reads it)
+D_80077DD4 g_menuOnClose  # [code] g_menu.unk24 under its own symbol (menu_setOnClose)
+# Types renamed: Unk80077DB0 -> MenuState
+# FIELDS include/ff9.h FadeState: unk3=covered,unk4=eased,unk5=prevType,unkA=angle
+# FIELDS include/ff9.h MenuList: unk0=count,unk2=rows,unk3=visibleRows,unk4=cols,unk5=top,unk7=col,unk8=scroll,unk9=scrollPos,unkB=fillV,unkC=pageTop,unkD=height,unkE=pageStep
+# FIELDS include/ff9.h MenuState (g_menu): unk0=state,unk1=type,unk5=open,unk6=reading,unk7=fadingOut,unk9=drawBackground,unkA=fadeInOnClose,unkB=fadeOutOnClose,unkC=arg,unk10=frame,unk14=savedVsyncMode,unk18=savedPadMask,unk20=savedR,unk21=savedG,unk22=savedB,unk24=onClose

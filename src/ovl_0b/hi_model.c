@@ -513,12 +513,12 @@ void btl_setModelTransform(BtlUnit9C *arg0, SVECTOR *arg1, VECTOR *arg2, VECTOR 
     SVECTOR r;
     VECTOR t;
     if (arg1 != NULL) {
-        func_800316D8(arg1, &arg0->unk24);
+        math_rotMatrixYXZ(arg1, &arg0->unk24);
     } else {
         r.vx = 0;
         r.vy = 0;
         r.vz = 0;
-        func_800316D8(&r, &arg0->unk24);
+        math_rotMatrixYXZ(&r, &arg0->unk24);
     }
     if (arg2 != NULL) {
         TransMatrix(&arg0->unk24, arg2);

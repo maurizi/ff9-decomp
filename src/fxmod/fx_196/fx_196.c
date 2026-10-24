@@ -160,7 +160,7 @@ void func_801E7AA0(SVECTOR *pos, SVECTOR *rot, VECTOR *scale, s32 col, s32 col2,
     tpage |= (abr & 3) << 5;
     c4.cd = c5.cd;
     gte_rtv0tr_b();
-    ex->func_800316D8(rot, &m);
+    ex->math_rotMatrixYXZ(rot, &m);
     ex->ScaleMatrix(&m, scale);
     m2 = m;
     m2.t[0] = pos->vx;

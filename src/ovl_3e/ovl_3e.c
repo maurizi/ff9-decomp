@@ -11,9 +11,9 @@ void func_801F605C(void) {
     st = &D_801F6BBC;
     st->unk2 = 0;
     st->unk10 = 0;
-    g_menu.unk9 = 0;
-    st->unk4 = (g_menu.unkC >> 14) & 3;
-    st->unk6 = (u16)g_menu.unkC & 0x3FFF;
+    g_menu.drawBackground = 0;
+    st->unk4 = (g_menu.arg >> 14) & 3;
+    st->unk6 = (u16)g_menu.arg & 0x3FFF;
     for (i = 0; i < 2; i++) {
         st->unk8[i] = src[i];
         src[i] |= 0x300;
@@ -284,9 +284,9 @@ void func_801F6A78(void) {
         fade_in(0x18);
         break;
     case 7:
-        func_80032640(0);
-        func_80032634(0);
-        func_800325E0();
+        menu_setFadeOutOnClose(0);
+        menu_setFadeInOnClose(0);
+        menu_close();
         break;
     }
 }

@@ -827,7 +827,7 @@ void func_800C96AC(Unk800C95C8 *arg0, u16 arg1) {
             key2++;
         }
         key++;
-        func_80031264(rot, m);
+        math_rotMatrixZYX_gte(rot, m);
         m++;
     } while (m < end);
     if (arg0->unk1C != NULL) {
@@ -1333,7 +1333,7 @@ s32 func_800CAE0C(s32 arg0, WmSprHdr *h, SVECTOR *pos, SVECTOR *rot, s32 scale, 
     gte_SetTransMatrix(&g_gameState->unk1C->unk18);
     gte_ldv0(pos);
     gte_rtv0tr();
-    func_800316D8(rot, &m);
+    math_rotMatrixYXZ(rot, &m);
     if (scale >= 0) {
         s.vx = s.vy = s.vz = scale;
         ScaleMatrix(&m, &s);

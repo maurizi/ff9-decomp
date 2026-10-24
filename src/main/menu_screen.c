@@ -147,7 +147,7 @@ u8 menuScreen_getCurrent(void) {
 void menuScreen_close(void) {
     help_setCallback(NULL);
     fade_setOtz(D_80077E58);
-    func_800325E0();
+    menu_close();
 }
 
 u8 menuScreen_needsMember(s32 i) {

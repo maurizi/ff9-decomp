@@ -40,7 +40,7 @@ void func_801E77DC(SVECTOR *out, Fx138Path *path, s32 i) {
     sv.vx /= 2;
     sv.vy /= 2;
     sv.vz /= 2;
-    ex->func_800316D8(&D_801E8E68, &m);
+    ex->math_rotMatrixYXZ(&D_801E8E68, &m);
     gte_SetRotMatrix(&m);
     gte_ldtr0();
     gte_ldv0(&sv);

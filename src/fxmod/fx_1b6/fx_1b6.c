@@ -127,7 +127,7 @@ void func_801E7AAC(void) {
             v[2].vz = (*f)[2].vz - c.vz;
             ex->btlfx_stepModuleParticle((Pool6CEntry *)p, 0xB, (SVECTOR *)zero, &out);
             *(s32 *)&rot.vx = *(s32 *)&p->unk14;
-            ex->func_800316D8(&rot, &m);
+            ex->math_rotMatrixYXZ(&rot, &m);
             ex->ScaleMatrix(&m, &scale);
             m.t[0] = p->unk0 >> 12;
             m.t[1] = p->unk4 >> 12;

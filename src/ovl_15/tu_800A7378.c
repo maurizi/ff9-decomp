@@ -60,7 +60,7 @@ s32 func_800A7378(s32 arg0, s32 arg1) {
             break;
         }
         if (!(D_800AE0E0 & 2)) {
-            func_80032098();
+            game_updateFade();
         }
         func_800A787C();
     } while (D_800AE4C0 < 4);
@@ -89,7 +89,7 @@ s32 func_800A766C(s32 arg0, s32 arg1) {
         }
         mbg_streamSetBaseSector(h);
     }
-    func_800320B8(1, 1, 0x78, 0xFFFFFF);
+    game_startFade(1, 1, 0x78, 0xFFFFFF);
     D_800AE4C0 = 0;
     D_800AE0E0 = 0;
     for (i = 1; i >= 0; i--) {
@@ -680,7 +680,7 @@ s32 func_800A9488(void) {
                 t = 0x4E;
                 func_800A8F58(&D_800B0E08);
                 func_800A8FA4(&D_800B0E08);
-                func_800320B8(1, 1, 0x3C, 0);
+                game_startFade(1, 1, 0x3C, 0);
                 i = 0;
             } else if (t != 0) {
                 c = D_800B0E08.unk4[i];
@@ -1139,7 +1139,7 @@ s32 func_800A9488(void) {
             break;
         case 13:
             if (t == -1) {
-                func_800320B8(1, 1, 0x3C, 0xFFFFFF);
+                game_startFade(1, 1, 0x3C, 0xFFFFFF);
                 t = 0x3C;
                 if (D_800AE0E8 < 10) {
                     D_800AE0E8 = 1000;
@@ -1222,7 +1222,7 @@ s32 func_800A9488(void) {
                 D_800B0DF8 = 13;
             }
         }
-        func_80032098();
+        game_updateFade();
         func_800AAFFC();
     } while (D_800B0DF8 < 14);
     func_800AAFA4();
@@ -1261,7 +1261,7 @@ s32 func_800AAD24(void) {
         func_800AC598(0, 0x7009C, 0, 0, 0);
         func_800AC598(0xC401, 0x7009C, 0x5A, 0, 0x7F);
     }
-    func_800320B8(1, 1, 0, 0xFFFFFF);
+    game_startFade(1, 1, 0, 0xFFFFFF);
     D_800B0DF8 = 0;
     g_padPortMask[0] = 0;
     return 0;

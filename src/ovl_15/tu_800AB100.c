@@ -5,7 +5,7 @@ void func_800AB100(void) {
 }
 
 void func_800AB10C(void) {
-    func_80032574();
+    menu_initForMode();
     pad_setStickAsDpad(1);
     D_800B0F50.unk3 = 0;
     D_800B0F50.unk0 = 1;

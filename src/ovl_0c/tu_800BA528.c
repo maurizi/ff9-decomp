@@ -1743,7 +1743,7 @@ void func_800BF978(void) {
     memset(&rot0, 0, 8);
     rot0.vz = D_800CE3DC->pos.rotY - 0x400;
     rot = rot0;
-    func_80030AF4(&rot, &m);
+    math_rotMatrixXYZ(&rot, &m);
     for (i = 0; i < 4; i++) {
         ApplyMatrix(&m, &arrow.v[i], &v[i]);
     }
@@ -1880,7 +1880,7 @@ void func_800C0888(void) {
     rot0.vz = D_800CE3DC->pos.rotY - 0x400;
     rot = rot0;
     c = (math_sin(D_800CF4B0 << 6) >> 7) + 0x80;
-    func_80030AF4(&rot, &m);
+    math_rotMatrixXYZ(&rot, &m);
     for (i = 0; i < 4; i++) {
         ApplyMatrix(&m, &arrow.v[i], &v[i]);
     }

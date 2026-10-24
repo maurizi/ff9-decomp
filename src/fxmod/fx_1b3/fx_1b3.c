@@ -931,7 +931,7 @@ void func_801EA7E4(Fx1b3Split *sp) {
         p = sp->unk48[i];
         for (j = 0; j < sp->unk8[i]; j++) {
             if (p->unk6 > 0) {
-                ex->func_800316D8(&p->unk8, &m);
+                ex->math_rotMatrixYXZ(&p->unk8, &m);
                 m.t[0] = p->unk10 + p->unk0;
                 m.t[1] = p->unk12 + p->unk2;
                 m.t[2] = p->unk14 + p->unk4;

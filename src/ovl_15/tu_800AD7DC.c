@@ -22,14 +22,14 @@ s32 func_800AD7DC(void) {
         case 1:
             if (t == -1) {
                 t = 0xA0;
-                func_800320B8(1, 1, 0x14, 0);
+                game_startFade(1, 1, 0x14, 0);
             } else if (t != 0) {
                 ot = g_gameState->unk1C->unk10[g_gameState->unk1C->unk8] + 8;
                 msg = func_800ADE14(D_800A70EC, 0);
                 x = 0xA0 - (func_800ADF90(msg) >> 1);
                 D_800AE4B0 = func_800ADE30(x, 0x64, ot, msg, D_800AE4B0);
                 if (t == 0x14) {
-                    func_800320B8(1, 1, 0x14, 0xFFFFFF);
+                    game_startFade(1, 1, 0x14, 0xFFFFFF);
                 }
                 t--;
             } else {
@@ -40,7 +40,7 @@ s32 func_800AD7DC(void) {
         case 2:
             if (t == -1) {
                 t = 0xDC;
-                func_800320B8(1, 1, 0x14, 0);
+                game_startFade(1, 1, 0x14, 0);
             } else if (t != 0) {
                 ot = g_gameState->unk1C->unk10[g_gameState->unk1C->unk8] + 8;
                 msg = func_800ADE14(D_800A70EC, 1);
@@ -52,7 +52,7 @@ s32 func_800AD7DC(void) {
                     D_800AE4B0 = func_800ADE30(x, 0x7D, ot, msg, D_800AE4B0);
                 }
                 if (t == 0x14) {
-                    func_800320B8(1, 1, 0x14, 0xFFFFFF);
+                    game_startFade(1, 1, 0x14, 0xFFFFFF);
                 }
                 t--;
             } else {
@@ -63,14 +63,14 @@ s32 func_800AD7DC(void) {
         case 3:
             if (t == -1) {
                 t = 0xA0;
-                func_800320B8(1, 1, 0x14, 0);
+                game_startFade(1, 1, 0x14, 0);
             } else if (t != 0) {
                 ot = g_gameState->unk1C->unk10[g_gameState->unk1C->unk8] + 8;
                 msg = func_800ADE14(D_800A70EC, 3);
                 x = 0xA0 - (func_800ADF90(msg) >> 1);
                 D_800AE4B0 = func_800ADE30(x, 0x64, ot, msg, D_800AE4B0);
                 if (t == 0x14) {
-                    func_800320B8(1, 1, 0x14, 0xFFFFFF);
+                    game_startFade(1, 1, 0x14, 0xFFFFFF);
                 }
                 t--;
             } else {
@@ -81,7 +81,7 @@ s32 func_800AD7DC(void) {
         case 4:
             if (t == -1) {
                 t = 0x118;
-                func_800320B8(1, 1, 0x14, 0);
+                game_startFade(1, 1, 0x14, 0);
             } else if (t != 0) {
                 ot = g_gameState->unk1C->unk10[g_gameState->unk1C->unk8] + 8;
                 msg = func_800ADE14(D_800A70EC, 4);
@@ -93,7 +93,7 @@ s32 func_800AD7DC(void) {
                     D_800AE4B0 = func_800ADE30(x, 0x7D, ot, msg, D_800AE4B0);
                 }
                 if (t == 0x14) {
-                    func_800320B8(1, 1, 0x14, 0xFFFFFF);
+                    game_startFade(1, 1, 0x14, 0xFFFFFF);
                 }
                 t--;
             } else {
@@ -113,7 +113,7 @@ s32 func_800AD7DC(void) {
             }
             break;
         }
-        func_80032098();
+        game_updateFade();
         func_800ADD04();
     } while (D_800B5000 < 6);
     return 0;
@@ -121,7 +121,7 @@ s32 func_800AD7DC(void) {
 
 s32 func_800ADC3C(void) {
     g_gameState->vsyncMode = 0;
-    func_800320B8(1, 1, 0, 0xFFFFFF);
+    game_startFade(1, 1, 0, 0xFFFFFF);
     D_800B5000 = 0;
     D_800AE4A8 = 0;
     D_800AE4AC = 0;

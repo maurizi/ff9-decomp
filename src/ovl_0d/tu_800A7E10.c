@@ -250,7 +250,7 @@ void func_800A7E10(void) {
             func_800A932C(&s, "TURN ENEMY\n");
         }
         game_updateWindows();
-        func_80032098();
+        game_updateFade();
         if (s.unk0 == 0x12 || s.unk0 == 0x23 || s.unk0 == 0x13 || s.unk0 == 0 || s.unk0 == 1 ||
             s.unk0 == 6 || s.unk0 == 0xB || s.unk0 == 0x22 || s.unk0 == 0x17 || s.unk0 == 0x18) {
             help_setLocked(0);
@@ -4881,7 +4881,7 @@ void func_800B355C(Window *arg0) {
 }
 
 void func_800B35A4(TmState *arg0) {
-    func_8002F93C((arg0->unk2E8 * 0x88) & 0xFF8);
+    fade_setAngle((arg0->unk2E8 * 0x88) & 0xFF8);
     if (arg0->unk2E8 >= 0x1F) {
         arg0->unk0 = 0xC;
     }
@@ -4889,8 +4889,8 @@ void func_800B35A4(TmState *arg0) {
 
 void func_800B35F8(TmState *arg0) {
     arg0->unk2E8 = 0;
-    func_800320B8(2, 1, 0x1E, 0xFFFFFF);
-    func_8002F93C(0);
+    game_startFade(2, 1, 0x1E, 0xFFFFFF);
+    fade_setAngle(0);
     func_800A78EC(0xC401, 0x42, 0x1E, 0x7F, 0);
     arg0->unk0 = 0x1B;
 }

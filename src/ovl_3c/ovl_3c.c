@@ -117,8 +117,8 @@ void func_801F44F4(s32 x, s32 y, s32 z, s32 icon, u8 arg4) {
 }
 
 void func_801F45E4(void) {
-    D_801FC2D0.unk8 = D_80077DBC;
-    D_801FC2D0.unk0 = func_801F4A90(D_80077DBC);
+    D_801FC2D0.unk8 = g_menuArg;
+    D_801FC2D0.unk0 = func_801F4A90(g_menuArg);
     D_801FC2D0.unk1 = 0;
     D_801FC2D0.unk3 = 0;
     D_801FC2D0.unk2 = func_801F48F4(D_801FC2D0.unk0);
@@ -211,7 +211,7 @@ void func_801F49C4(void) {
 
 void func_801F4A14(void) {
     fade_setOtz(D_801FC2D0.unkC);
-    func_800325E0();
+    menu_close();
 }
 
 void func_801F4A44(void) {
@@ -251,7 +251,7 @@ void func_801F4B48(void) {
     setRECT(&D_801FC2F8.unk20, 0x62, 0x60, 0x7C, 0x45);
     text_setBank(D_801F3E98);
     func_801F442C(0xF);
-    func_8002EDFC(&D_801FC2F8.unk28, D_801FC2F8.unk1, D_801FC2F8.unk4 ? 7 : 0xB, 1, D_801FC2F8.unk10.h);
+    menuList_init(&D_801FC2F8.unk28, D_801FC2F8.unk1, D_801FC2F8.unk4 ? 7 : 0xB, 1, D_801FC2F8.unk10.h);
     func_801F4468();
 }
 
@@ -309,7 +309,7 @@ void func_801F4E1C(void) {
 
     r = &D_801FC2F8.unk8;
     l = &D_801FC2F8.unk28;
-    id = D_801FC2F8.unk3C[l->unk5 + l->cursor];
+    id = D_801FC2F8.unk3C[l->top + l->cursor];
     equip = (D_80069018[id].unkF & 0xF8) != 0;
     ui_drawLabel(r->x + 6, r->y - 3, 0x1E, D_80070460, 0);
     win_drawBox(r, 0x23, 1);
@@ -344,8 +344,8 @@ void func_801F506C(void) {
     for (i = 0; i < view.unk0; i++) {
         func_801F5BCC(0, i, view.unk1 + i, &view);
     }
-    if (list->unk8 & 4) {
-        func_8002F40C(list, r, &sub);
+    if (list->scroll & 4) {
+        menuList_getRowsRect(list, r, &sub);
         win_setClip(&sub, 0x1E, 1);
         func_801F5B64();
     }
@@ -370,7 +370,7 @@ void func_801F51B8(void) {
 
     r = &D_801FC2F8.unk18;
     l = &D_801FC2F8.unk28;
-    id = D_801FC2F8.unk3C[l->unk5 + l->cursor];
+    id = D_801FC2F8.unk3C[l->top + l->cursor];
     if (D_801FC2F8.unk4 == 0) {
         return;
     }
@@ -422,7 +422,7 @@ void func_801F551C(Window *w) {
 
     l = &D_801FC2F8.unk28;
     b = &D_801FC2F8;
-    id = b->unk3C[l->unk5 + l->cursor];
+    id = b->unk3C[l->top + l->cursor];
     it = &D_80069018[id];
     ui_drawItemIcon(w->unk0 + 8, w->unk2 + 8, w->unk18, id, 1);
     text_drawBlock(w->unk0 + 0x18, w->unk2 + 8, w->unk18, D_8006A218 + it->unk0, 0);
@@ -465,7 +465,7 @@ void func_801F57C8(void) {
 
     l = &D_801FC2F8.unk28;
     m = &D_801FC2F8;
-    id = m->unk3C[l->unk5 + l->cursor];
+    id = m->unk3C[l->top + l->cursor];
     it = &D_80069018[id];
     have = item_getCount(id);
     if (have < 99 && g_gameState->unk1C->gil >= it->unk4) {
@@ -538,15 +538,15 @@ void func_801F5A74(void) {
 }
 
 void func_801F5AAC(void) {
-    if (D_801FC2F8.unk28.unk8 != 0) {
-        func_8002EB74(&D_801FC2F8.unk28);
+    if (D_801FC2F8.unk28.scroll != 0) {
+        menuList_update(&D_801FC2F8.unk28);
     }
 }
 
 void func_801F5AE4(void) {
     MenuList *m = &D_801FC2F8.unk28;
 
-    if (m->unk8 == 0) {
+    if (m->scroll == 0) {
         if (g_padRepeat & BTN_CIRCLE) {
             snd_playSe(0x65);
             func_801F43F8();
@@ -564,7 +564,7 @@ void func_801F5B64(void) {
     MenuView v;
     s32 i;
 
-    func_8002F344(&D_801FC2F8.unk28, &v);
+    menuList_getPageView(&D_801FC2F8.unk28, &v);
     for (i = 0; i < v.unk0; i++) {
         func_801F5BCC(0, i, v.unk1 + i, &v);
     }
@@ -634,7 +634,7 @@ void func_801F5E4C(void) {
 
     l = &D_801FC2F8.unk28;
     b = &D_801FC2F8;
-    id = b->unk3C[l->unk5 + l->cursor];
+    id = b->unk3C[l->top + l->cursor];
     it = &D_80069018[id];
     n = item_add(id, b->unk2);
     if (n != 0) {
@@ -650,7 +650,7 @@ void func_801F5EEC(void) {
     g_menuHelp.text = NULL;
     l = &D_801FC2F8.unk28;
     if (D_801FC2F8.unk0 == 1) {
-        id = D_801FC2F8.unk3C[l->unk5 + l->cursor];
+        id = D_801FC2F8.unk3C[l->top + l->cursor];
         g_menuHelp.text = D_801F87EC + D_80069018[id].unk2;
     } else if (D_801FC2F8.unk0 == 2) {
         g_menuHelp.text = text_get(3);
@@ -668,7 +668,7 @@ void func_801F5F88(void) {
     setRECT(&D_801FC338.unk20, 0x62, 0x60, 0x7C, 0x45);
     text_setBank(D_801F3F08);
     func_801F442C(0x11);
-    func_8002EDFC(&D_801FC338.unk28, D_801FC338.unk1, D_801FC338.unk4 ? 7 : 0xB, 1, D_801FC338.unk10.h);
+    menuList_init(&D_801FC338.unk28, D_801FC338.unk1, D_801FC338.unk4 ? 7 : 0xB, 1, D_801FC338.unk10.h);
     func_801F4468();
 }
 
@@ -728,7 +728,7 @@ void func_801F625C(void) {
 
     r = &D_801FC338.unk8;
     l = &D_801FC338.unk28;
-    s = &D_801FC338.unk3C[l->unk5 + l->cursor];
+    s = &D_801FC338.unk3C[l->top + l->cursor];
     equip = (D_80069018[s->unk4].unkF & 0xF8) != 0;
     ui_drawEtchedLine(r->x + 2, r->y + 0x36, 0x23, r->w - 5);
     win_drawBox(r, 0x23, 1);
@@ -777,8 +777,8 @@ void func_801F65C8(void) {
     for (i = 0; i < view.unk0; i++) {
         func_801F6D34(0, i, view.unk1 + i, &view);
     }
-    if (list->unk8 & 4) {
-        func_8002F40C(list, r, &sub);
+    if (list->scroll & 4) {
+        menuList_getRowsRect(list, r, &sub);
         win_setClip(&sub, 0x1E, 1);
         func_801F7528();
     }
@@ -803,7 +803,7 @@ void func_801F6714(void) {
 
     r = &D_801FC338.unk18;
     l = &D_801FC338.unk28;
-    s = &D_801FC338.unk3C[l->unk5 + l->cursor];
+    s = &D_801FC338.unk3C[l->top + l->cursor];
     if (D_801FC338.unk4 == 0) {
         return;
     }
@@ -855,7 +855,7 @@ void func_801F6A7C(Window *w) {
     u8 id;
 
     l = &D_801FC338.unk28;
-    r = &D_801FC338.unk3C[l->unk5 + l->cursor];
+    r = &D_801FC338.unk3C[l->top + l->cursor];
     id = r->unk4;
     it = &D_80069018[id];
     ui_drawItemIcon(w->unk0 + 8, w->unk2 + 8, w->unk18, id, 1);
@@ -947,7 +947,7 @@ void func_801F6F00(void) {
     u32 n;
 
     l = &D_801FC338.unk28;
-    r = &D_801FC338.unk3C[l->unk5 + l->cursor];
+    r = &D_801FC338.unk3C[l->top + l->cursor];
     need = 1;
     if (r->unk2[0] == r->unk2[1]) {
         need = 2;
@@ -1036,15 +1036,15 @@ void func_801F7438(void) {
 }
 
 void func_801F7470(void) {
-    if (D_801FC338.unk28.unk8 != 0) {
-        func_8002EB74(&D_801FC338.unk28);
+    if (D_801FC338.unk28.scroll != 0) {
+        menuList_update(&D_801FC338.unk28);
     }
 }
 
 void func_801F74A8(void) {
     MenuList *m = &D_801FC338.unk28;
 
-    if (m->unk8 == 0) {
+    if (m->scroll == 0) {
         if (g_padRepeat & BTN_CIRCLE) {
             snd_playSe(0x65);
             func_801F43F8();
@@ -1062,7 +1062,7 @@ void func_801F7528(void) {
     MenuView v;
     s32 i;
 
-    func_8002F344(&D_801FC338.unk28, &v);
+    menuList_getPageView(&D_801FC338.unk28, &v);
     for (i = 0; i < v.unk0; i++) {
         func_801F6D34(0, i, v.unk1 + i, &v);
     }
@@ -1088,7 +1088,7 @@ void func_801F7614(void) {
     SynthRecipe *r;
     s32 n;
 
-    r = &D_801FC338.unk3C[m->unk5 + m->cursor];
+    r = &D_801FC338.unk3C[m->top + m->cursor];
     n = item_add(r->unk4, D_801FC338.unk2);
     if (n != 0) {
         item_remove(r->unk2[0], n);
@@ -1105,7 +1105,7 @@ void func_801F76C8(void) {
     g_menuHelp.text = NULL;
     l = &D_801FC338.unk28;
     if (D_801FC338.unk0 == 1) {
-        id = D_801FC338.unk3C[l->unk5 + l->cursor].unk4;
+        id = D_801FC338.unk3C[l->top + l->cursor].unk4;
         g_menuHelp.text = D_801F87EC + D_80069018[id].unk2;
     } else if (D_801FC338.unk0 == 2) {
         g_menuHelp.text = text_get(4);
@@ -1118,7 +1118,7 @@ void func_801F7770(void) {
     func_801F442C(0x10);
     help_setBounds(NULL);
     help_setCallback(func_801F8728);
-    func_8002EDFC(&D_801FC438.unk4, 0xFF, 0xB, 2, 0xAD);
+    menuList_init(&D_801FC438.unk4, 0xFF, 0xB, 2, 0xAD);
     setRECT(&D_801FC438.unk14, 8, 0x2A, 0x12C, 0xAD);
     setRECT(&D_801FC438.unk1C[0], 0x62, 0x40, 0x7C, 0x45);
     setRECT(&D_801FC438.unk1C[1], 0x62, 0x87, 0x7C, 0x3E);
@@ -1191,8 +1191,8 @@ void func_801F79FC(void) {
             func_801F856C(col, row, idx++, &view);
         }
     }
-    if (list->unk8 & 4) {
-        func_8002F40C(list, D_801FC288, &sub);
+    if (list->scroll & 4) {
+        menuList_getRowsRect(list, D_801FC288, &sub);
         win_setClip(&sub, 0x1E, 1);
         func_801F84D8();
     }
@@ -1208,7 +1208,7 @@ void func_801F7BC4(Window *w) {
     u32 price;
 
     l = &D_801FC438.unk4;
-    id = (g_gameState->unk1C->items.slots + ((l->unk5 + l->cursor) * 2 + l->unk7))->id;
+    id = (g_gameState->unk1C->items.slots + ((l->top + l->cursor) * 2 + l->col))->id;
     it = &D_80069018[id];
     price = it->unk4 >> 1;
     ui_drawItemIcon(w->unk0 + 8, w->unk2 + 8, w->unk18, id, 1);
@@ -1234,7 +1234,7 @@ void func_801F7DA8(Window *w) {
 
     r = (RECT *)w;
     l = &D_801FC438.unk4;
-    e = &g_gameState->unk1C->items.slots[(l->unk5 + l->cursor) * 2 + l->unk7];
+    e = &g_gameState->unk1C->items.slots[(l->top + l->cursor) * 2 + l->col];
     equip = (D_80069018[e->unk0].unkF & 0xF8) != 0;
     for (i = 0; i < 3; i++) {
         text_drawBlock(r->x + 0xC, r->y + D_801FC290[i] - 4, w->unk18, text_getFrom(D_801F3C9C, D_801FC2A4[i]),
@@ -1258,7 +1258,7 @@ void func_801F7FE0(void) {
     if (!fade_isBusy()) {
         if (D_801FC438.unk0 == 1 || (D_80077DC0 & 3)) {
             g_menuHelp.otz = 0x14;
-            g_menuHelp.x = l->unk7 * 0x96;
+            g_menuHelp.x = l->col * 0x96;
             g_menuHelp.y = l->cursor * 0xF + 0x34;
             help_drawCursor();
         }
@@ -1276,7 +1276,7 @@ void func_801F80D0(void) {
     UnkPair *p;
     s32 i;
 
-    p = &g_gameState->unk1C->items.slots[(l->unk5 + l->cursor) * 2 + l->unk7];
+    p = &g_gameState->unk1C->items.slots[(l->top + l->cursor) * 2 + l->col];
     if (p->unk1 != 0) {
         D_801FC438.unk1 = 1;
         D_801FC438.unk2 = p->unk1;
@@ -1307,7 +1307,7 @@ void func_801F8224(void) {
 
     l = &D_801FC438.unk4;
     m = &D_801FC438;
-    id = (g_gameState->unk1C->items.slots + ((l->unk5 + l->cursor) * 2 + l->unk7))->id;
+    id = (g_gameState->unk1C->items.slots + ((l->top + l->cursor) * 2 + l->col))->id;
     it = &D_80069018[id];
     price = it->unk4 >> 1;
     n = item_remove(id, D_801FC438.unk1);
@@ -1350,15 +1350,15 @@ void func_801F83D4(void) {
 }
 
 void func_801F83FC(void) {
-    if (D_801FC438.unk4.unk8 != 0) {
-        func_8002EB74(&D_801FC438.unk4);
+    if (D_801FC438.unk4.scroll != 0) {
+        menuList_update(&D_801FC438.unk4);
     }
 }
 
 void func_801F8434(void) {
     MenuList *m = &D_801FC438.unk4;
 
-    if (m->unk8 == 0) {
+    if (m->scroll == 0) {
         if (g_padRepeat & BTN_CIRCLE) {
             snd_playSe(0x65);
             func_801F43F8();
@@ -1369,8 +1369,8 @@ void func_801F8434(void) {
             return;
         }
         menuList_input(m, g_padRepeat);
-        func_8002F044(m, g_padRepeat);
-        func_8002F0EC(m, g_padRepeat);
+        menuList_left(m, g_padRepeat);
+        menuList_right(m, g_padRepeat);
     }
 }
 
@@ -1380,7 +1380,7 @@ void func_801F84D8(void) {
     s32 col;
     s32 idx;
 
-    func_8002F344(&D_801FC438.unk4, &v);
+    menuList_getPageView(&D_801FC438.unk4, &v);
     idx = v.unk1 * 2;
     for (row = 0; row < v.unk0; row++) {
         for (col = 0; col < 2; col++) {
@@ -1437,7 +1437,7 @@ void func_801F8728(void) {
     h->text = NULL;
     if (D_801FC438.unk0 == 1) {
         l = &D_801FC438.unk4;
-        idx = (l->unk5 + l->cursor) * 2 + l->unk7;
+        idx = (l->top + l->cursor) * 2 + l->col;
         p = &g_gameState->unk1C->items.slots[idx];
         if (p->unk1 == 0) {
             return;

@@ -89,7 +89,7 @@ void func_801E79E8(u32 *ot, s32 n, s32 h, s32 dz, SVECTOR *rot, SVECTOR *pts, CV
     gte_SetTransMatrix(env->unk14);
     gte_ReadGeomScreen(&oldh);
     gte_SetGeomScreen(h);
-    ex->func_800316D8(rot, &m);
+    ex->math_rotMatrixYXZ(rot, &m);
     m.t[0] = m.t[1] = 0;
     m.t[2] = h;
     gte_SetRotMatrix(&m);

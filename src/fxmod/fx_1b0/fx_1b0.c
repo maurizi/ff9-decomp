@@ -130,7 +130,7 @@ void func_801E7B04(void) {
             ex->btlfx_stepModuleParticle((Pool6CEntry *)p, 0, (SVECTOR *)zero, &out);
             if (p->unk4 >= 0) {
                 *(s32 *)&rot.vx = *(s32 *)&p->unk14;
-                ex->func_800316D8(&rot, &m);
+                ex->math_rotMatrixYXZ(&rot, &m);
                 m.t[0] = p->unk0 >> 12;
                 m.t[1] = p->unk4 >> 12;
                 m.t[2] = p->unk8 >> 12;

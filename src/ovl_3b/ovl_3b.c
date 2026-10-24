@@ -180,7 +180,7 @@ void func_801F3FEC(void) {
     D_801F4748.unk4[0].unk1 = 0;
     D_801F4748.unk9 = 0;
     D_801F4748.unk8 = 0;
-    func_801F457C((PartyRequest *)D_80077DBC);
+    func_801F457C((PartyRequest *)g_menuArg);
 }
 
 void func_801F405C(void) {
@@ -244,7 +244,7 @@ void func_801F42A4(void) {
         for (i = 0; i < D_801F4748.unk1; i++) {
             party_setMember(i, D_801F4748.unkA[0][i] != 0xFF ? D_801F4748.unkA[0][i] : -1);
         }
-        func_800325E0();
+        menu_close();
         snd_playSe(0x67);
     }
 }

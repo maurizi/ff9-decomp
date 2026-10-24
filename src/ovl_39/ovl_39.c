@@ -3,7 +3,7 @@
 void func_801F4414(void) {
     s32 i;
 
-    D_801FB1A8.unk0 = g_menu.unkC;
+    D_801FB1A8.unk0 = g_menu.arg;
     D_801FB1A8.unk14 = fade_setOtz(7);
     D_801FB1A8.unk1 = 1;
     D_801FB1A8.unk2 = 2;
@@ -50,7 +50,7 @@ void func_801F4538(void) {
 void func_801F4664(void) {
     if (g_padRepeat & BTN_CIRCLE) {
         snd_playSe(0x65);
-        if (g_menu.unk1 != 0) {
+        if (g_menu.type != 0) {
             func_801F53B0();
             return;
         }
@@ -109,7 +109,7 @@ void func_801F4840(void) {
         r.y = i * 0x3C + (s16)(v.unk2 + 0x2A);
         func_801F49C4(&r, 0x2D, v.unk1 + i);
     }
-    if (l->unk8 & 4) {
+    if (l->scroll & 4) {
         a.x = 8;
         a.y = 0x2A;
         a.w = 0x12C;
@@ -187,7 +187,7 @@ void func_801F4B18(RECT *r, s32 z, s32 i) {
 }
 
 void func_801F4E00(void) {
-    u8 blink = (g_menu.unk10 & 3) != 0;
+    u8 blink = (g_menu.frame & 3) != 0;
 
     if (!fade_isBusy() && D_801FB1A8.unk2 == 2) {
         if (D_801FB1A8.unk1 == 1) {
@@ -215,27 +215,27 @@ void func_801F4F30(void) {
         func_801F77A8(0x2D);
         return;
     }
-    if (l->unk8 != 0) {
-        if (!(l->unk8 & 4)) {
-            dec = l->unk8 & 2;
-            l->unk9 += 6;
-            if (l->unk9 >= 0x3C) {
-                v = l->unk5;
+    if (l->scroll != 0) {
+        if (!(l->scroll & 4)) {
+            dec = l->scroll & 2;
+            l->scrollPos += 6;
+            if (l->scrollPos >= 0x3C) {
+                v = l->top;
                 if (dec) {
                     v--;
                 } else {
                     v++;
                 }
-                l->unk5 = v;
-                l->unk8 = 0;
-                l->unk9 = 0;
+                l->top = v;
+                l->scroll = 0;
+                l->scrollPos = 0;
             }
         } else {
-            l->unk9 += 9;
-            if (l->unk9 >= 0xB4) {
-                l->unk8 = 0;
-                l->unk9 = 0;
-                l->unk5 = l->unkC;
+            l->scrollPos += 9;
+            if (l->scrollPos >= 0xB4) {
+                l->scroll = 0;
+                l->scrollPos = 0;
+                l->top = l->pageTop;
             }
         }
     }
@@ -274,7 +274,7 @@ void func_801F5114(void) {
     s32 st;
 
     l = &D_801FB1A8.unk24;
-    idx = l->unk5 + l->cursor;
+    idx = l->top + l->cursor;
     st = D_801FB1A8.unk34[idx].unk1A;
     switch (st) {
     case 1:
@@ -352,7 +352,7 @@ void func_801F5384(void) {
 
 void func_801F53B0(void) {
     fade_setOtz(D_801FB1A8.unk14);
-    func_800325E0();
+    menu_close();
 }
 
 void func_801F53E0(void) {
@@ -403,7 +403,7 @@ void func_801F5550(void) {
 void func_801F55D8(void) {
     MenuList *l = &D_801FB1A8.unk24;
 
-    if (l->unk8 == 0) {
+    if (l->scroll == 0) {
         if (g_padRepeat & BTN_CIRCLE) {
             snd_playSe(0x65);
             func_801F5384();
@@ -441,8 +441,8 @@ void func_801F573C(void) {
     s32 blink = (((u32)D_80077DC0 >> 4) ^ 1) & 1;
     MenuList *l = &D_801FB1A8.unk24;
 
-    ui_drawSprite(0x12E, 0x2C, 0x2A, 0xB8, l->unk5 != 0 ? blink : 1);
-    ui_drawSprite(0x12E, 0xCF, 0x2A, 0xB9, l->unk5 < l->unk2 - l->unk3 ? blink : 1);
+    ui_drawSprite(0x12E, 0x2C, 0x2A, 0xB8, l->top != 0 ? blink : 1);
+    ui_drawSprite(0x12E, 0xCF, 0x2A, 0xB9, l->top < l->rows - l->visibleRows ? blink : 1);
 }
 
 void func_801F57E4(RECT *r, s32 otz) {
@@ -468,7 +468,7 @@ void func_801F58E0(void) {
 }
 
 void func_801F5960(void) {
-    s32 i = D_801FB1A8.unk24.unk5 + D_801FB1A8.unk24.cursor;
+    s32 i = D_801FB1A8.unk24.top + D_801FB1A8.unk24.cursor;
 
     if (D_801FB1A8.unk0 == 1) {
         func_801F9788(i, i);
@@ -905,10 +905,10 @@ void func_801F6A84(void) {
     D_801FB1A8.unk1 = 4;
     D_801FB1A8.unk20 = text_get(0x1A);
     win_closeNow(D_801FBEF8.unk1C);
-    func_8002EDFC(&D_801FB1A8.unk24, 0xF, 3, 1, 0xB4);
+    menuList_init(&D_801FB1A8.unk24, 0xF, 3, 1, 0xB4);
     if (D_801FB1A8.unk34[D_801FB1A8.unk10].unk1A == 4) {
         D_801FB1A8.unk24.cursor = D_801FB1A8.unk34[D_801FB1A8.unk10].unk44;
-        D_801FB1A8.unk24.unk5 = D_801FB1A8.unk10 - D_801FB1A8.unk24.cursor;
+        D_801FB1A8.unk24.top = D_801FB1A8.unk10 - D_801FB1A8.unk24.cursor;
     }
     fade_inDefault();
     fade_setOnDone(func_801F70E4);
@@ -1653,7 +1653,7 @@ void func_801F8610(void) {
     if (func_801F9804()) {
         D_801FB1A8.unk7 = mode;
         snd_playSe(0x4ED);
-        if (g_menu.unk1 == 0) {
+        if (g_menu.type == 0) {
             menuScreen_open(0);
             return;
         }
@@ -1727,30 +1727,30 @@ MenuView *func_801F89B8(MenuList *l, MenuView *v) {
     s32 d;
     u8 f;
 
-    f = l->unk8;
+    f = l->scroll;
     if (f & 4) {
         if (f & 2) {
-            d = l->unkD - l->unk9;
+            d = l->height - l->scrollPos;
             v->unk0 = (d + 0x3B) / 60;
-            v->unk1 = l->unk5 + (l->unk3 - v->unk0);
-            v->unk2 = (l->unk3 - v->unk0) * 60;
+            v->unk1 = l->top + (l->visibleRows - v->unk0);
+            v->unk2 = (l->visibleRows - v->unk0) * 60;
         } else {
-            d = l->unkD - l->unk9;
+            d = l->height - l->scrollPos;
             v->unk0 = (d + 0x3B) / 60;
-            v->unk1 = l->unk5;
+            v->unk1 = l->top;
             v->unk2 = 0;
         }
     } else if (f & 2) {
-        v->unk0 = l->unk3 + 1;
-        v->unk1 = l->unk5 - 1;
-        v->unk2 = l->unk9 - 60;
+        v->unk0 = l->visibleRows + 1;
+        v->unk1 = l->top - 1;
+        v->unk2 = l->scrollPos - 60;
     } else if (f & 1) {
-        v->unk1 = l->unk5;
-        v->unk0 = l->unk3 + 1;
-        v->unk2 = -l->unk9;
+        v->unk1 = l->top;
+        v->unk0 = l->visibleRows + 1;
+        v->unk2 = -l->scrollPos;
     } else {
-        v->unk1 = l->unk5;
-        v->unk0 = l->unk3;
+        v->unk1 = l->top;
+        v->unk0 = l->visibleRows;
         v->unk2 = 0;
     }
     return v;
@@ -1759,15 +1759,15 @@ MenuView *func_801F89B8(MenuList *l, MenuView *v) {
 MenuView *func_801F8B10(MenuList *l, MenuView *v) {
     s32 x;
 
-    if (l->unk8 & 2) {
-        v->unk0 = (l->unk9 + 0x3B) / 60;
-        v->unk1 = l->unkC + (l->unk3 - v->unk0);
-        v->unk2 = l->unk9 - v->unk0 * 60;
+    if (l->scroll & 2) {
+        v->unk0 = (l->scrollPos + 0x3B) / 60;
+        v->unk1 = l->pageTop + (l->visibleRows - v->unk0);
+        v->unk2 = l->scrollPos - v->unk0 * 60;
     } else {
-        x = l->unk9;
-        v->unk2 = l->unkD - x;
+        x = l->scrollPos;
+        v->unk2 = l->height - x;
         v->unk0 = (x + 0x3B) / 60;
-        v->unk1 = l->unkC;
+        v->unk1 = l->pageTop;
     }
     return v;
 }
@@ -1775,28 +1775,28 @@ MenuView *func_801F8B10(MenuList *l, MenuView *v) {
 void func_801F8BD4(MenuList *m, RECT *src, RECT *dst) {
     dst->x = src->x;
     dst->w = src->w;
-    if (m->unk8 & 2) {
-        dst->y = src->y + m->unk9;
+    if (m->scroll & 2) {
+        dst->y = src->y + m->scrollPos;
     } else {
         dst->y = src->y;
     }
-    dst->h = src->h - m->unk9;
+    dst->h = src->h - m->scrollPos;
 }
 
 void func_801F8C34(MenuList *l, s32 btn) {
     s32 top;
     s32 d;
 
-    if ((btn & 0x100000) && !(g_padHeld & BTN_R1) && l->unk5 != 0) {
-        d = l->unkD;
-        l->unk9 = d >> 2;
-        l->unk8 = 7;
-        l->unkE = (d - l->unk9 + 0xE) / 15;
-        top = l->unk5 - l->unk3;
+    if ((btn & 0x100000) && !(g_padHeld & BTN_R1) && l->top != 0) {
+        d = l->height;
+        l->scrollPos = d >> 2;
+        l->scroll = 7;
+        l->pageStep = (d - l->scrollPos + 0xE) / 15;
+        top = l->top - l->visibleRows;
         if (top < 0) {
             top = 0;
         }
-        l->unkC = top;
+        l->pageTop = top;
         snd_playSe(0x67);
     }
 }
@@ -1807,18 +1807,18 @@ void func_801F8CE8(MenuList *l, s32 pad) {
     s32 top;
     s32 max;
 
-    if ((pad & 0x200000) && l->unk5 < l->unk2 - l->unk3) {
-        h = l->unkD;
-        l->unk9 = h >> 2;
-        page = l->unk3;
-        max = l->unk2 - page;
-        l->unk8 = 5;
-        top = l->unk5 + page;
-        l->unkE = (h - l->unk9 + 0xE) / 15;
+    if ((pad & 0x200000) && l->top < l->rows - l->visibleRows) {
+        h = l->height;
+        l->scrollPos = h >> 2;
+        page = l->visibleRows;
+        max = l->rows - page;
+        l->scroll = 5;
+        top = l->top + page;
+        l->pageStep = (h - l->scrollPos + 0xE) / 15;
         if (top < max) {
             max = top;
         }
-        l->unkC = max;
+        l->pageTop = max;
         snd_playSe(0x67);
     }
 }

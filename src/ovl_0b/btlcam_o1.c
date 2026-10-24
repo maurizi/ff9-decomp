@@ -865,7 +865,7 @@ void btlcam_lookAt(MATRIX *arg0, SVECTOR *arg1, SVECTOR *arg2) {
     r.vx = 0;
     r.vy = 0;
     r.vz = arg1->pad;
-    func_80030AF4(&r, &m);
+    math_rotMatrixXYZ(&r, &m);
     m.t[0] = 0;
     m.t[1] = 0;
     m.t[2] = 0;

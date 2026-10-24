@@ -229,7 +229,7 @@ extern Unk800FD6E0 D_800FD6E0;
 extern u8 D_800F8D84[]; /* ability ids */
 
 /* main exe: candidates for ff9.h */
-void func_80031264(void *, void *); /* rotation (SVECTOR) -> bone matrix */
+void math_rotMatrixZYX_gte(void *, void *); /* rotation (SVECTOR) -> bone matrix */
 typedef struct {
     u8 unk0;
     u8 unk1; /* ap needed */
@@ -2158,7 +2158,7 @@ void win_reapClosed(void);
 u8 func_800339F4(s32, u8);
 void ui_drawItemIcon(s32, s32, s32, s32, u8);
 extern u32 D_800686D8;
-void func_800316D8(void *, void *);
+void math_rotMatrixYXZ(void *, void *);
 void gfx_selectBuffer(s32);
 void pad_setRepeatEnabled(s32, s32, s32);
 void win_setVisible(Window *, s32);
@@ -2818,7 +2818,7 @@ extern u8 D_800F6A38[];
 /* main exe: candidates for ff9.h */
 extern Unk800686E8 D_80068BE8;
 s32 evt_battleTrigger(s32, s32, s32, s32);
-void func_80030AF4(void *, void *); /* rotation -> matrix */
+void math_rotMatrixXYZ(void *, void *); /* rotation -> matrix */
 s32 btlfx_transformPolar(SVECTOR *, s32, s32);
 void btlfx_transformPoint(s32, s32, s32);
 extern Unk800686E8 D_80068BF0[]; /* digits */
@@ -3243,7 +3243,7 @@ void btl_initParty(struct Battle *);
 u32 *func_800BB974(struct Battle *, u32 *);
 void btl_resetAtbSpeed(Unk800BD8F0 *);
 void func_800C0A3C(Unk800C09D8 *);
-void func_80031244(SVECTOR *, MATRIX *);
+void math_rotMatrixZYX(SVECTOR *, MATRIX *);
 
 s32 btl_setupBackground(Battle11C0 *, s32);
 s32 btl_loadEncounterFile(Unk800AA08C *, s32);
@@ -3822,7 +3822,7 @@ extern Unk800FDED0 D_800FDEB8[2];
 void func_800E9DFC(void);
 
 /* main exe: candidates for ff9.h */
-u32 *func_8002FBC0(s32);
+u32 *fade_getOt(s32);
 
 void btl_spawnTickPopups(BtlUnit *);
 void btl_tickStatusTimers(BtlUnit *);

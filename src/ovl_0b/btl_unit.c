@@ -59,14 +59,14 @@ void btl_updateUnitModel(BtlUnit *u, s32 *ot) {
         rot.vy = 0x800;
         rot.vz = u->unk86[2];
         tmp = rot;
-        func_80031244(&tmp, &m->unk24);
+        math_rotMatrixZYX(&tmp, &m->unk24);
     } else {
         memset(&rot, 0, 8);
         rot.vx = u->unk86[0];
         rot.vy = u->unk86[1];
         rot.vz = u->unk86[2];
         tmp = rot;
-        func_80031244(&tmp, &m->unk24);
+        math_rotMatrixZYX(&tmp, &m->unk24);
     }
     m->unk24.t[0] = u->unk8C[0] >> 16;
     m->unk24.t[1] = u->unk8C[1] >> 16;

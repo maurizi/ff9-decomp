@@ -385,7 +385,7 @@ void func_801E89A8(SVECTOR *pos, SVECTOR *rot, s32 n, s32 tpage, s32 clut, s32 a
     tpage |= (abr & 3) << 5;
     env->unk24 = (u8 *)(p + 32);
     gte_rtv0tr_b();
-    ex->func_800316D8(rot, &m);
+    ex->math_rotMatrixYXZ(rot, &m);
     gte_stlvnl(m.t);
     ex->MulRotMatrix(&m);
     gte_SetRotMatrix(&m);

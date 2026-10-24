@@ -698,7 +698,7 @@ void func_800585E0(AkaoChannel *ch, u32 mask, u32 keep, u32 *used) {
                         D_80083158.unk8 |= 0x100;
                     }
                 } else if (ch->voice < 24) {
-                    /* identical branches (jump2 merges them), as in func_80030EE4 */
+                    /* identical branches (jump2 merges them), as in math_buildRotMatrixZXY */
                     if (mask) {
                         ((void (*)(s32, AkaoVoiceRegs *, u32))akao_flushVoice)(ch->voice, (AkaoVoiceRegs *)&ch->voice, ch->unk34);
                     } else {

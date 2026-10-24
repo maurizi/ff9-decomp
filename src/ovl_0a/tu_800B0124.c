@@ -1758,8 +1758,8 @@ void func_800B4A5C(void) {
         case 0:
             n = 0x3C;
             i = 0;
-            func_800320B8(1, 1, 0, 0xFFFFFF);
-            func_800320B8(1, 1, n, i);
+            game_startFade(1, 1, 0, 0xFFFFFF);
+            game_startFade(1, 1, n, i);
             state = 1;
             break;
         case 1:
@@ -1777,7 +1777,7 @@ void func_800B4A5C(void) {
             } else {
                 n = 0x3C;
                 i = 0;
-                func_800320B8(1, 1, n, 0xFFFFFF);
+                game_startFade(1, 1, n, 0xFFFFFF);
                 state = 3;
             }
             break;
@@ -1791,7 +1791,7 @@ void func_800B4A5C(void) {
         }
         addPrim((u32 *)g_gameState->unk1C->unk10[g_gameState->unk1C->unk8][8], spr[g_gameState->unk1C->unk8]);
         addPrim((u32 *)g_gameState->unk1C->unk10[g_gameState->unk1C->unk8][8], tp[g_gameState->unk1C->unk8]);
-        func_80032098();
+        game_updateFade();
         DrawSync(0);
         g_gameState->vsyncMode = 2;
         VSync(g_gameState->vsyncMode);

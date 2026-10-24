@@ -990,7 +990,7 @@ typedef struct {
 
 u8 *func_800C970C(u8 *, FieldSprHdr *, SVECTOR *, SVECTOR *, s32, s32, s32, s32, u32 *);
 u8 *func_800C9AB8(u8 *, FieldSprArgs *, u8 *, u32 *);
-void func_800316D8(SVECTOR *, MATRIX *);
+void math_rotMatrixYXZ(SVECTOR *, MATRIX *);
 
 /* object placement (func_800AD488) */
 typedef struct {
@@ -1286,8 +1286,8 @@ void func_800BB714(Unk800C95C8 *, u8);
 #define ResetSpadStack12() __asm__ volatile("addiu $29, $29, 12\n\tlw $29, 0($29)" : : : "memory")
 
 /* main exe: candidates for ff9.h */
-void func_80031244(SVECTOR *, MATRIX *);
-MATRIX *func_80030EA4(SVECTOR *, MATRIX *);
+void math_rotMatrixZYX(SVECTOR *, MATRIX *);
+MATRIX *math_rotMatrixZXY(SVECTOR *, MATRIX *);
 extern s32 g_vtxScreenXY[]; /* projected screen xy per model vertex */
 extern s32 g_vtxScreenZ[]; /* projected z per model vertex */
 s32 func_80056048(s32, s32, s32);
@@ -1306,12 +1306,12 @@ extern s32 g_mbgFrame;
 void gameover_main(void *); /* overlay 0x65 (loaded at 0x801F0000) */
 void mbg_setRgb24(s32); /* overlay loaded at 0x80198000 */
 s32 mbg_getFrame(void);
-void func_80032100(void);
+void menu_update(void);
 Unk8004AB64 *evt_getPlayer(void);
 u32 func_8004AB64(void *); /* actor -> model slot */
 void game_updateWindows(void);
 void preload_reset(void);
-void func_80031264(void *, void *); /* rotation (SVECTOR) -> bone matrix */
+void math_rotMatrixZYX_gte(void *, void *); /* rotation (SVECTOR) -> bone matrix */
 
 /* field state for fld_movieCommand command 3: 0x11, 1 or 0x10/0 */
 static inline s32 fld_movieCommand_state(void) {

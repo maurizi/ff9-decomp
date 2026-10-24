@@ -153,7 +153,7 @@ void func_801E7D68(void) {
                 rot.vx = p->unk14;
                 rot.vy = p->unk16;
                 rot.vz = 0;
-                ex->func_800316D8(&rot, &m);
+                ex->math_rotMatrixYXZ(&rot, &m);
                 ex->ScaleMatrix(&m, &scale);
                 m.t[0] = p->unk0 >> 12;
                 m.t[1] = p->unk4 >> 12;
@@ -382,7 +382,7 @@ s32 fx_1a2_op80(s32 mode, Fx1a2Work80 *w, Unk800F78A4 *env, Unk80100C78Entry *en
             gte_SetRotMatrix(env->unk14);
             gte_SetTransMatrix(env->unk14);
             rot.vy = ((s16 *)tbl)[frame * 3] + 0x800;
-            ex->func_800316D8(&rot, &m);
+            ex->math_rotMatrixYXZ(&rot, &m);
             ex->ScaleMatrix(&m, &scale);
             m.t[0] = pos.vx;
             m.t[1] = pos.vy;

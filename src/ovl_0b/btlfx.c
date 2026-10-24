@@ -22,7 +22,7 @@ s32 func_800CFC2C(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, s32 *arg5) {
 void func_800CFCA8(SVECTOR *arg0, s32 arg1, s32 arg2) {
     RotMatrix33 m;
 
-    func_800316D8(arg0, &m);
+    math_rotMatrixYXZ(arg0, &m);
     gte_SetRotMatrix(&m);
     gte_ldtr0();
     btlfx_transformPoint(arg1, 0, arg2);
@@ -33,7 +33,7 @@ void func_800CFCA8(SVECTOR *arg0, s32 arg1, s32 arg2) {
 void func_800CFD78(s16 *arg0, s16 *arg1, s32 arg2, s16 *arg3) {
     MATRIX m;
 
-    func_800316D8(arg1, &m);
+    math_rotMatrixYXZ(arg1, &m);
     gte_SetRotMatrix(&m);
     m.t[0] = arg0[0];
     m.t[1] = arg0[1];
@@ -128,7 +128,7 @@ void func_800D01D4(SVECTOR *arg0, VECTOR *arg1, MATRIX *arg2, s32 arg3) {
     if (arg2 == NULL) {
         arg2 = &m;
     }
-    func_800316D8(arg0, arg2);
+    math_rotMatrixYXZ(arg0, arg2);
     if (arg1 != NULL) {
         ScaleMatrix(arg2, arg1);
     }
@@ -159,7 +159,7 @@ void func_800D044C(SVECTOR *arg0, s32 arg1, s32 arg2, XY32 *arg3, s32 arg4, s32 
 
     r.xy = *arg3;
     r.z = arg5;
-    func_800316D8(&r, &m);
+    math_rotMatrixYXZ(&r, &m);
     gte_SetRotMatrix(&m);
     m.t[0] = arg0->vx;
     m.t[1] = arg0->vy;
@@ -181,7 +181,7 @@ void func_800D0580(s16 *arg0, XY32 *arg1, s32 arg2) {
 
     r.xy = *arg1;
     r.z = arg2;
-    func_800316D8(&r, &m);
+    math_rotMatrixYXZ(&r, &m);
     gte_SetRotMatrix(&m);
     gte_ldtr0();
     b[1] = 0;
@@ -205,7 +205,7 @@ void func_800D0674(SVECTOR *arg0, SVECTOR *arg1, SVECTOR *arg2, s32 arg3, s32 ar
     v.vz = arg0->vz - arg1->vz;
     r.xy.w = (-arg2->vx & 0xFFFF) | (-arg2->vy << 16);
     r.z = 0;
-    func_80030AF4(&r.xy, &m);
+    math_rotMatrixXYZ(&r.xy, &m);
     gte_SetRotMatrix(&m);
     gte_ldtr0();
     *arg5 = btlfx_transformPolar(&v, arg3, arg4);
@@ -573,7 +573,7 @@ void btlfx_drawParticles(u8 *arg0, SVECTOR *arg1, SVECTOR *arg2, s32 arg3, s32 a
     prim = g_btlfxEnv->unk24;
     g_btlfxEnv->unk24 = prim + c.unk14 * 40;
     gte_rtv0tr_nn();
-    func_800316D8(arg2, &m);
+    math_rotMatrixYXZ(arg2, &m);
     ScaleMatrix(&m, &s);
     gte_stlvnl(m.t);
     if (arg2->pad != 0) {
@@ -740,7 +740,7 @@ void btlfx_drawAnimQuads(u8 *arg0, SVECTOR *arg1, SVECTOR *arg2, s32 arg3, s32 a
     prim = g_btlfxEnv->unk24;
     g_btlfxEnv->unk24 = prim + c.unk1C * 40;
     gte_rtv0tr_nn();
-    func_800316D8(arg2, &m);
+    math_rotMatrixYXZ(arg2, &m);
     if (arg3 >= 0) {
         s.vz = arg3;
         s.vy = arg3;
@@ -822,7 +822,7 @@ void btlfx_drawSprites(u8 *arg0, SVECTOR *arg1, SVECTOR *arg2, s32 arg3, s32 arg
     prim = g_btlfxEnv->unk24;
     g_btlfxEnv->unk24 = prim + size * c.unk1C;
     gte_rtv0tr_nn();
-    func_800316D8(arg2, &m);
+    math_rotMatrixYXZ(arg2, &m);
     if (arg3 >= 0) {
         s.vz = arg3;
         s.vy = arg3;
@@ -923,7 +923,7 @@ void func_800D23D8(u8 *arg0, SVECTOR *arg1, SVECTOR *arg2, s32 arg3, s32 arg4, s
         f = arg4 * (nf - 1) / (n - 1);
     }
     gte_rtv0tr_nn();
-    func_800316D8(arg2, &m);
+    math_rotMatrixYXZ(arg2, &m);
     ScaleMatrix(&m, &s);
     gte_stlvnl(m.t);
     if (arg2->pad != 0) {
@@ -1043,7 +1043,7 @@ void func_800D2938(Unk800D2938 *arg0, SVECTOR *arg1, SVECTOR *arg2, s32 arg3, s3
     gte_SetTransMatrix(g_btlfxEnv->unk14);
     gte_ldv0(arg1);
     gte_rtv0tr();
-    func_800316D8(arg2, &m);
+    math_rotMatrixYXZ(arg2, &m);
     ScaleMatrix(&m, &s);
     gte_stlvnl(m.t);
     if (arg2->pad != 0) {

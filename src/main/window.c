@@ -13,7 +13,7 @@ void win_drawAll(void) {
             if (w->unk44 != NULL) {
                 w->unk44(w);
             }
-            if (w->unk1C == 3 && w->unk30.unk3 < w->unk30.unk2) {
+            if (w->unk1C == 3 && w->unk30.visibleRows < w->unk30.rows) {
                 win_drawScrollArrows(&w->unk8, w->unk18, &w->unk30);
             }
             win_setClip(NULL, w->unk18, w->unk1A);
@@ -74,12 +74,12 @@ void win_drawFrame(Window *w) {
         if (w->unk1E == 0) {
             return;
         }
-        if (w->unk30.unk8 & 4) {
+        if (w->unk30.scroll & 4) {
             win_drawSplitFill(&t, w->unk18, &w->unk30, abr);
             return;
         }
     }
-    win_drawFill(&t, w->unk18, w->unk30.unkA, w->unk30.unkB, abr);
+    win_drawFill(&t, w->unk18, w->unk30.unkA, w->unk30.fillV, abr);
 }
 
 void win_drawBoxEx(RECT *r, s32 otz, s32 style, s32 abr) {
@@ -138,7 +138,7 @@ void win_setOpenAnim(Window *w, s32 mode) {
         w->unk8.x = w->unk0 + w->unk10 * (w->unk14 >> 1);
     } else if (mode == 1) {
         w->unk14 = 0;
-        w->unk30.unkB = 0;
+        w->unk30.fillV = 0;
         w->unk30.unkA = 0;
         h = w->unk6 >> 2;
         w->unk8.x = w->unk0;
@@ -212,7 +212,7 @@ void win_stepOpen(Window *w) {
             w->unk8.y = w->unk2;
         }
         w->unk30.unkA = (w->unk8.x - w->unk0) & 0x1F;
-        w->unk30.unkB = (w->unk8.y - w->unk2) & 0x1F;
+        w->unk30.fillV = (w->unk8.y - w->unk2) & 0x1F;
     } else if (w->unk28 == 1) {
         w->unk8.w += w->unk14;
         w->unk8.h += w->unk16;
@@ -222,7 +222,7 @@ void win_stepOpen(Window *w) {
         if (w->unk8.h > w->unk6) {
             w->unk8.h = w->unk6;
         }
-        w->unk30.unkB = (w->unk6 - w->unk8.h) & 0x1F;
+        w->unk30.fillV = (w->unk6 - w->unk8.h) & 0x1F;
     } else if (w->unk28 == 2) {
         s16 a = w->unk2C + w->unk2E;
         w->unk8.w += a;
@@ -244,7 +244,7 @@ void win_stepOpen(Window *w) {
             w->unk8.y = w->unk2;
         }
         w->unk30.unkA = (w->unk8.x - w->unk0) & 0x1F;
-        w->unk30.unkB = (w->unk8.y - w->unk2) & 0x1F;
+        w->unk30.fillV = (w->unk8.y - w->unk2) & 0x1F;
     }
     if (*(s32 *)&w->unk8.w == *(s32 *)&w->unk4) {
         w->unk1C = 3;
@@ -261,11 +261,11 @@ void win_stepClose(Window *w) {
         w->unk8.x += w->unk14 >> 1;
         w->unk8.y += w->unk16 >> 1;
         w->unk30.unkA = (w->unk8.x - w->unk0) & 0x1F;
-        w->unk30.unkB = (w->unk8.y - w->unk2) & 0x1F;
+        w->unk30.fillV = (w->unk8.y - w->unk2) & 0x1F;
     } else if (w->unk28 == 1) {
         w->unk8.h -= w->unk16;
         w->unk8.w -= w->unk14;
-        w->unk30.unkB = (w->unk6 - w->unk8.h) & 0x1F;
+        w->unk30.fillV = (w->unk6 - w->unk8.h) & 0x1F;
     } else if (w->unk28 == 2) {
         w->unk8.w -= w->unk2C + w->unk2E;
         w->unk8.h -= w->unk16;
@@ -274,7 +274,7 @@ void win_stepClose(Window *w) {
             w->unk8.y += w->unk16;
         }
         w->unk30.unkA = (w->unk8.x - w->unk0) & 0x1F;
-        w->unk30.unkB = (w->unk8.y - w->unk2) & 0x1F;
+        w->unk30.fillV = (w->unk8.y - w->unk2) & 0x1F;
     }
     if (w->unk8.w < 0) {
         w->unk8.w = 0;
@@ -439,10 +439,10 @@ void win_drawListBox(RECT *r, s32 otz, s32 mode, MenuList *m) {
         t = *r;
         win_drawLineBorder(&t, otz, 0, abr);
     }
-    if (m->unk8 & 4) {
+    if (m->scroll & 4) {
         win_drawSplitFill(&t, otz, m, abr);
     } else {
-        win_drawFill(&t, otz, 0, m->unkB, abr);
+        win_drawFill(&t, otz, 0, m->fillV, abr);
     }
 }
 
@@ -452,8 +452,8 @@ void win_updateAll(void) {
     for (i = 0; i < 10; w++, i++) {
         u8 st = w->unk1C;
         if (st == 3) {
-            if (w->unk30.unk3 < w->unk30.unk2 && w->unk30.unk8 != 0) {
-                func_8002EB74(&w->unk30);
+            if (w->unk30.visibleRows < w->unk30.rows && w->unk30.scroll != 0) {
+                menuList_update(&w->unk30);
             }
         } else if (st == 1) {
             win_stepOpen(w);
@@ -598,13 +598,13 @@ void win_drawTail(Window *w) {
         y = r->y - 11;
     }
     win_drawMsgTailEdge(w->unk0 + w->unk2A, y, w->unk18, w->unk29, w->unk1D);
-    win_drawTailFill(w->unk0 + w->unk2A, y, w->unk18, w->unk29, (w->unk30.unkA + w->unk2A) & 0x1F, w->unk30.unkB);
+    win_drawTailFill(w->unk0 + w->unk2A, y, w->unk18, w->unk29, (w->unk30.unkA + w->unk2A) & 0x1F, w->unk30.fillV);
 }
 
 void win_drawScrollArrows(RECT *r, s32 otz, MenuList *m) {
     s32 blink = ((u32)g_winLastVsync >> 4) & 1;
-    u8 top = m->unk5;
-    u8 more = top < m->unk2 - m->unk3;
+    u8 top = m->top;
+    u8 more = top < m->rows - m->visibleRows;
     s32 z = otz;
     s32 x;
     s32 y;
@@ -626,20 +626,20 @@ void win_drawSplitFill(RECT *r, s32 otz, MenuList *m, s32 abr) {
     win_drawDivider(r, otz, m, abr);
     t.x = r->x;
     t.w = r->w;
-    if (m->unk8 & 2) {
+    if (m->scroll & 2) {
         t.y = r->y;
-        t.h = m->unk9 + 1;
-        win_drawFill(&t, otz, 0, (m->unkB + (r->h - m->unk9)) & 0x1F, abr);
-        t.y = r->y + m->unk9 - 1;
-        t.h = r->h - m->unk9;
-        win_drawFill(&t, otz, 0, (m->unkB + (m->unk9 - 1)) & 0x1F, abr);
+        t.h = m->scrollPos + 1;
+        win_drawFill(&t, otz, 0, (m->fillV + (r->h - m->scrollPos)) & 0x1F, abr);
+        t.y = r->y + m->scrollPos - 1;
+        t.h = r->h - m->scrollPos;
+        win_drawFill(&t, otz, 0, (m->fillV + (m->scrollPos - 1)) & 0x1F, abr);
     } else {
         t.y = r->y;
-        t.h = r->h - m->unk9;
-        win_drawFill(&t, otz, 0, m->unkB, abr);
+        t.h = r->h - m->scrollPos;
+        win_drawFill(&t, otz, 0, m->fillV, abr);
         t.y = r->y + t.h;
-        t.h = m->unk9;
-        win_drawFill(&t, otz, 0, m->unkB, abr);
+        t.h = m->scrollPos;
+        win_drawFill(&t, otz, 0, m->fillV, abr);
     }
 }
 
@@ -648,16 +648,16 @@ void win_drawDivider(RECT *r, s32 otz, MenuList *m, s32 style) {
     u32 c;
     s16 y;
 
-    c = D_80068F20[style][(m->unk8 & 2) ? 1 : 0];
+    c = D_80068F20[style][(m->scroll & 2) ? 1 : 0];
     p = (LineF2Words *)g_primPtr;
     setlen(p, 3);
     ((LineF2Words *)g_primPtr)->rgbc = c;
     p->x0 = r->x + 2;
     p->x1 = r->x + r->w - 3;
-    if (m->unk8 & 2) {
-        y = r->y + m->unk9 + 4;
+    if (m->scroll & 2) {
+        y = r->y + m->scrollPos + 4;
     } else {
-        y = r->y + r->h - (m->unk9 + 1) - 2;
+        y = r->y + r->h - (m->scrollPos + 1) - 2;
     }
     p->y1 = y;
     p->y0 = y;
@@ -680,7 +680,7 @@ Window *win_init(RECT *r, s32 otz, s32 style, Window *w) {
     w->unk48 = 0;
     win_setOpenAnim(w, D_8006BCFC[style]);
     w->unk1F = w->unk1A == 3;
-    func_8002EDFC(&w->unk30, 0, 0, 0, r->h);
+    menuList_init(&w->unk30, 0, 0, 0, r->h);
     w->unk29 = 4;
     w->unk1E = 1;
     w->unk24 = 0;

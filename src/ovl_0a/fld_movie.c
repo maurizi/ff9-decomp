@@ -397,12 +397,12 @@ void func_800AB3CC(void) {
                 rot.vx = ax;
                 rot.vy = o->unk22;
                 rot.vz = az;
-                func_80030EA4(&rot, &m->unk24);
+                math_rotMatrixZXY(&rot, &m->unk24);
             } else {
                 rot.vx = o->unk20;
                 rot.vy = (o->unk22 + j) & 0xFFF;
                 rot.vz = o->unk24;
-                func_80031244(&rot, &m->unk24);
+                math_rotMatrixZYX(&rot, &m->unk24);
             }
             m->unk24.t[0] = o->unk14.vx;
             m->unk24.t[1] = o->unk14.vy;
@@ -1557,15 +1557,15 @@ void func_800AF740(void) {
         if (fade_isActive() || fade_isBusy()) {
             bright = 1;
         }
-        v = func_8002F864();
+        v = fade_isSubtractive();
         if (bright && v == 0) {
-            if (func_8002F854() == 2) {
-                func_8002FC10(buf);
+            if (fade_getType() == 2) {
+                fade_getWipeColors(buf);
                 c[0] = (buf[0] + buf[4]) >> 1;
                 c[1] = (buf[1] + buf[5]) >> 1;
                 c[2] = (buf[2] + buf[6]) >> 1;
             } else {
-                func_8002F9A8(c);
+                fade_getColor(c);
             }
             if (c[0] >= 200 && c[1] >= 200 && c[2] >= 200) {
                 D_800C9FA0.unk0.code |= 2;

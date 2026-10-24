@@ -8,7 +8,7 @@
  * BtlUnit9C.unk20 and returns the end:
  * - Without an animation (unkC == 0): one matrix, the parent model's bone unk4 matrix (unk1C->unk20) moved
  *   by RT * (unk74, unk76, unk78), or else the model's own unk24 with the y and z columns negated.
- * - With one: per bone, a rotation decoded from the animation keys for `frame` (func_80031264 turns it into
+ * - With one: per bone, a rotation decoded from the animation keys for `frame` (math_rotMatrixZYX_gte turns it into
  *   a matrix), bone 0 gets the root translation; then bone 0 is put into the model's frame (unk24, or the
  *   parent's bone) and every other bone i into its parent's (bone table byte 3) with an offset of
  *   (0, 0, bone table s16 0) along the parent's z. With fewer than 31 bones the work is done in the
@@ -89,7 +89,7 @@ static void boneFromParent(BtlUnit9C *m, u8 *mat) {
 u8 *btl_calcBoneMatrices(BtlUnit9C *m, s32 frame, u8 *out) {
     u8 *anim = (u8 *)m->unkC;
     u8 *base, *mat, *end, *keys, *nib, *bone, *parent;
-    u32 *rot = (u32 *)SCRATCHPAD;      /* SVECTOR for func_80031264 */
+    u32 *rot = (u32 *)SCRATCHPAD;      /* SVECTOR for math_rotMatrixZYX_gte */
     u32 *ofs = (u32 *)(SCRATCHPAD + 8); /* (0, 0, length) */
     u32 n, aflags, flags, k0, k1, x, y, z, w0, w1;
 
@@ -169,7 +169,7 @@ u8 *btl_calcBoneMatrices(BtlUnit9C *m, s32 frame, u8 *out) {
             nib += 8;
         }
         keys += 8;
-        func_80031264(rot, mat);
+        math_rotMatrixZYX_gte(rot, mat);
         mat += 0x20;
     } while (mat < end);
 

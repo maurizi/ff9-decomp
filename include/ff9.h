@@ -556,30 +556,30 @@ typedef struct {
 extern UnkPair g_padActuator[2];
 
 typedef struct {
-    u8 unk0;
-    u8 unk1;
+    u8 state; /* 0 closed, 1 loading, 2 waiting for the read/fade, 3 running (g_menuStateFuncs) */
+    u8 type; /* menu_open type (g_menuTypes) */
     u8 unk2; /* memory card slot */
     u8 unk3;
     u8 unk4;
-    u8 unk5;
-    u8 unk6;
-    u8 unk7;
+    u8 open; /* set by menu_doOpen, cleared by menu_finish */
+    u8 reading; /* overlay/portrait read running (g_menuReading) */
+    u8 fadingOut;
     u8 pad8;
-    u8 unk9;
-    u8 unkA;
-    u8 unkB;
-    u32 unkC; /* bits 0-13: id, bits 14-15: disc */
-    s32 unk10; /* frame counter */
-    s32 unk14; /* saved VSync mode */
-    s32 unk18;
+    u8 drawBackground; /* menu_updateRun draws ui_drawBackground */
+    u8 fadeInOnClose;
+    u8 fadeOutOnClose;
+    u32 arg; /* menu_open argument; bits 0-13: id, bits 14-15: disc */
+    s32 frame; /* frame counter */
+    s32 savedVsyncMode;
+    s32 savedPadMask;
     s32 unk1C;
-    u8 unk20; /* saved background colour */
-    u8 unk21;
-    u8 unk22;
+    u8 savedR; /* saved background colour */
+    u8 savedG;
+    u8 savedB;
     u8 pad23;
-    s32 unk24;
-} Unk80077DB0;
-extern Unk80077DB0 g_menu;
+    s32 onClose; /* run by menu_finish */
+} MenuState;
+extern MenuState g_menu;
 
 extern s32 D_80077140;
 extern s32 D_80077144;
@@ -677,20 +677,20 @@ void win_updateAll(void);
 /* ---- 0x54-byte objects, 10 at g_windows (win_reapClosed..8002E3F0) ---- */
 
 typedef struct {
-    s16 unk0; /* item count */
-    u8 unk2;
-    u8 unk3;
-    u8 unk4;
-    u8 unk5; /* scroll top */
-    u8 cursor; /* row; runtime: battle spell list 0..3 */
-    u8 unk7;
-    u8 unk8;
-    u8 unk9;
-    u8 unkA; /* row height */
-    u8 unkB; /* flags */
-    u8 unkC;
-    u8 unkD;
-    u8 unkE;
+    s16 count; /* items */
+    u8 rows; /* count / cols, rounded up */
+    u8 visibleRows;
+    u8 cols;
+    u8 top; /* first visible row */
+    u8 cursor; /* row on screen; runtime: battle spell list 0..3 */
+    u8 col;
+    u8 scroll; /* scroll animation flags: 1 down, 2 up, 4 page, 8 wrap column (menuList_update) */
+    u8 scrollPos; /* pixels scrolled / page divider position */
+    u8 unkA;
+    u8 fillV; /* fill texture v offset, moves with the scroll */
+    u8 pageTop; /* top row after a page scroll */
+    u8 height; /* pixels */
+    u8 pageStep;
     u8 padF;
 } MenuList;
 typedef MenuList Unk16; /* older name */
@@ -743,9 +743,9 @@ void win_setTail(Window *, s32, s32);
 
 extern u8 D_80068268[];
 extern s8 g_mbgState;
-extern s32 D_80077DD4;
-extern u8 D_80077DBA;
-extern u8 D_80077DBB;
+extern s32 g_menuOnClose;
+extern u8 g_menuFadeInOnClose;
+extern u8 g_menuFadeOutOnClose;
 extern u8 D_80077DB2;
 extern s32 D_800704C8;
 extern s32 D_8007041C;
@@ -939,12 +939,12 @@ typedef struct {
     u8 type; /* fade_start type, picks the g_fadeTypes handlers */
     u8 subtract; /* 1: subtractive (darkening) blend */
     u8 active;
-    u8 unk3; /* set while the colour of func_8002F964 is non-zero */
-    u8 unk4;
-    u8 unk5;
+    u8 covered; /* end colour non-zero: the screen stays covered after the fade (fade_setEndColor) */
+    u8 eased; /* fadeFlat follows fade_ease's curve */
+    u8 prevType;
     u8 pad6[0x8 - 6];
     s16 frames; /* length */
-    s16 unkA;
+    s16 angle; /* z rotation of the wipe (fade_setAngle) */
     s32 frame; /* counts up to frames, then onDone runs */
     s32 onDone;
     u8 pad14[0x18 - 0x14];
@@ -958,9 +958,9 @@ typedef struct {
     Unk4 color; /* current colour */
 } FadeState;
 extern FadeState g_fade;
-u32 *func_8002FBC0(s32);
+u32 *fade_getOt(s32);
 #if !defined(OVL_0C_H) /* ovl_0c declares its own typed view */
-void func_80030AF4(void *, void *); /* rotation -> matrix */
+void math_rotMatrixXYZ(void *, void *); /* rotation -> matrix */
 #endif
 s32 math_cos(s32); /* cos */
 extern SVECTOR D_80077CB0;
@@ -1284,7 +1284,7 @@ extern u32 D_8007B97C;
 extern u32 D_8007B980;
 extern s32 D_8007BBEC;
 extern s32 D_8007BBF4;
-extern u8 D_80077DB6;
+extern u8 g_menuReading;
 extern u8 D_80077E2C;
 extern s16 D_8007AE10[8];
 extern s32 D_8007B978;
@@ -1370,12 +1370,12 @@ void fade_in(s32);
 void fade_out(s32);
 void fade_inAdditive(s32);
 void fade_outAdditive(s32);
-void func_80030770(u8 *);
-s32 func_8002F5A0(void (*)(void));
-MATRIX *func_80030B34(SVECTOR *, MATRIX *, s32);
-MATRIX *func_80030EE4(SVECTOR *, MATRIX *, s32);
-MATRIX *func_80031284(SVECTOR *, MATRIX *, s32);
-MATRIX *func_80031718(SVECTOR *, MATRIX *, s32);
+void fadeWipe_getColors(u8 *);
+s32 fade_reverse(void (*)(void));
+MATRIX *math_buildRotMatrixXYZ(SVECTOR *, MATRIX *, s32);
+MATRIX *math_buildRotMatrixZXY(SVECTOR *, MATRIX *, s32);
+MATRIX *math_buildRotMatrixZYX(SVECTOR *, MATRIX *, s32);
+MATRIX *math_buildRotMatrixYXZ(SVECTOR *, MATRIX *, s32);
 
 /* sine table, 0x400 entries for a quarter wave (4096 = 360 degrees) */
 extern s16 g_sinTable[];
@@ -1393,7 +1393,7 @@ extern s16 g_sinTable[];
 void fade_init(void);
 void fade_update(void);
 void fade_start(s32, s32, s32, s32);
-void func_80032658(void);
+void menu_dispatch(void);
 void menu_doOpen(s32, s32);
 void akao_init(void);
 void akao_quit(void);
@@ -1439,7 +1439,7 @@ extern EventVars g_evtGlobalVars;
 
 void config_applySound(void);
 void config_applyPadMapping(void);
-void func_800325A4(void);
+void menu_reset(void);
 void func_8003264C(void);
 s32 text_getFrom(u8 *, s32);
 s32 func_8002BA68(s32);
@@ -1513,7 +1513,7 @@ s32 preload_poll(void);
 void preload_clearBusy(void);
 void help_init(void);
 void config_init(void);
-void func_80032078(void);
+void game_initFade(void);
 void func_80061070(s32, s32, s32, void (*)(void));
 void func_800611BC(void);
 void func_800611EC(void);
@@ -1553,7 +1553,7 @@ s32 func_80055210(); /* unprototyped: main calls it with no args, ovl_65 passes 
 void db_quit(void);
 void *db_lookupRegistered(s32, s32, s32); /* mode 4: address, 5: size */
 void win_drawBoxEx(RECT *, s32, s32, s32);
-void func_80032A44(void);
+void menu_start(void);
 Unk800367D0 *func_800367D0(s32, s32, s32, s32);
 s32 CdSyncCallback(void (*)(u8, u8 *));
 void CdFlush(void);
@@ -1622,7 +1622,7 @@ extern s32 D_80077E58;
 extern u32 *D_8007BCA4;
 
 void akao_applyCdVolume(void);
-void func_800325E0(void);
+void menu_close(void);
 void game_initTimer(void);
 s32 fade_setOtz(s32);
 
@@ -1739,7 +1739,7 @@ typedef struct {
 /* menu list/cursor state passed to menuList_input etc. */
 
 
-/* visible window of a MenuList (func_8002F344) */
+/* visible window of a MenuList (menuList_getPageView) */
 typedef struct {
     u8 unk0;  /* visible rows */
     u8 unk1;  /* first index */
@@ -1854,8 +1854,8 @@ typedef struct {
     s32 unk40;
     s32 unk44;
 } Unk80077D68; /* screen fade state */
-extern Unk80077D68 D_80077D68;
-s32 func_8002FD98(s32, s32);
+extern Unk80077D68 g_fadeFlat;
+s32 fade_divRoundOut(s32, s32);
 void chr_init(s32);
 void pad_setRepeatMask(s32, s32, s32);
 typedef struct {
@@ -1911,7 +1911,7 @@ void akao_setVoiceRelease(s32, s32, s32);
 void help_draw(void);
 void help_toggle(void);
 void sprAnim_update(Unk80035B90 *);
-void func_80032A18(u8 *);
+void menu_onPortraitsRead(u8 *);
 void func_8005658C(s32 *, Unk8005EBB4 *, u32, s32);
 s32 func_80056750(s32 *, s32, s32, u32);
 typedef struct {
@@ -1929,7 +1929,7 @@ typedef struct {
 s32 func_8004EBC0(Unk8004EBC0 *r);
 extern s32 D_8007F720[]; /* AKAO header copy (0x70 bytes) */
 extern u8 D_8006CACC[];
-void func_800329FC(u8 *);
+void menu_onOverlayRead(u8 *);
 extern AkaoChannel D_80080AC8[];
 void func_8005CE04(); /* (u32 *src, u32 *dst, u32 size): word copy */
 u16 func_800593C0(u32, AkaoChannel *);
@@ -1940,7 +1940,7 @@ void func_80061C1C(void);
 void akao_setVoicePitch(s32, s32);
 void akao_setVoiceVolume(s32, u32, u32, s32);
 u8 fade_isActive(void);
-void func_80032238(void);
+void menu_onFadedOut(void);
 u16 pad_getFlags(void);
 void pad_setFlags(u16, s32);
 void pad_getAnalogThresholds(Unk4 *);
@@ -1976,11 +1976,11 @@ extern s32 D_800809C0[];
 extern s32 D_800809D8; /* = D_800809C0[6] */
 void func_800616F8(s32, s32, s32, s32);
 s32 preload_isBusy(PreloadEntry *);
-u8 func_8002F8BC(); /* called with an argument it ignores */
-extern void (*D_8006CA64[])(void);
+u8 fade_clearEase(); /* called with an argument it ignores */
+extern void (*g_menuStateFuncs[])(void);
 extern s32 g_menuTypeOvl[];
-void func_80032708(void);
-void func_80032798(void);
+void menu_readOverlay(void);
+void menu_readPortraits(void);
 typedef struct {
     u16 unk0;
     u16 unk2;
@@ -2010,7 +2010,7 @@ void func_80053658(s32);
 s32 func_80053764(s32, u8, u32 *, s32);
 void chr_setLevel(s32, s32, u32 *, u8);
 extern u32 D_8006CA78[];
-extern u32 D_80077CA4[];
+extern u32 g_fadeBattleOt[];
 s32 func_80056700(s32, s32);
 void func_80051568(void);
 void func_8004E924(void);
@@ -2018,8 +2018,8 @@ void func_8004E7E0(void);
 void rand_init(s32);
 void func_8004AC80(void);
 extern u16 D_8007AE12;
-void func_80032384(void);
-void func_800326B0(void);
+void menu_finish(void);
+void menu_loadOverlay(void);
 void menuScreen_onSwitchFaded(void);
 CdReadCtx *cdRead_init(void *, s32, s32, void *, s32, s32, void (*)(CdReadCtx *));
 s32 cdRead_update(void *);
@@ -2085,30 +2085,30 @@ void win_setTitle(Window *, s32);
 void win_setShadow(Window *, u8);
 void win_setOpenFrames(Window *, s16);
 void SystemError(s32, s32);
-void func_8002EB74(MenuList *);
+void menuList_update(MenuList *);
 void win_stepOpen(Window *);
 void win_stepClose(Window *);
 MenuView *menuList_getView(MenuList *, MenuView *);
-void func_8002EDFC(MenuList *, s32, s32, s32, s32);
+void menuList_init(MenuList *, s32, s32, s32, s32);
 void menuList_input(MenuList *, s32);
-void func_8002F044(MenuList *, s32);
-void func_8002F0EC(MenuList *, s32);
-MenuView *func_8002F344(MenuList *, MenuView *);
-void func_8002F40C(MenuList *, RECT *, RECT *);
+void menuList_left(MenuList *, s32);
+void menuList_right(MenuList *, s32);
+MenuView *menuList_getPageView(MenuList *, MenuView *);
+void menuList_getRowsRect(MenuList *, RECT *, RECT *);
 void snd_playSe(s32);
 void func_8002F514(s32);
 void func_8002F55C(s32);
 u8 fade_isBusy(void);
 s32 fade_setOnDone(void (*)(void));
-u16 func_8002F93C(u16);
+u16 fade_setAngle(u16);
 void fade_inDefault(void);
-void func_800320B8(s32, s32, s32, s32);
+void game_startFade(s32, s32, s32, s32);
 void menu_open(s32, s32);
-void func_8003253C(void);
-void func_80032574(void);
-void func_80032628(void (*)(void));
-void func_80032634(u8);
-void func_80032640(u8);
+void menu_initNewGame(void);
+void menu_initForMode(void);
+void menu_setOnClose(void (*)(void));
+void menu_setFadeInOnClose(u8);
+void menu_setFadeOutOnClose(u8);
 s32 func_80033CCC(s32, s32);
 void func_80033D1C(u8);
 u8 func_800349BC(s32, s32);
@@ -2386,7 +2386,7 @@ typedef struct {
     u32 unk60; /* first-phase frames */
     s32 unk64; /* second-phase frames */
 } Unk80077D00;
-extern Unk80077D00 D_80077D00;
+extern Unk80077D00 g_fadeWipe;
 
 typedef struct {
     s32 unk0;
@@ -2547,7 +2547,7 @@ void ui_drawStatusIcons(s32, s32, s32, u8, s32); /* arg4 unused, callers pass 0 
 void ui_drawStones(s32, s32, s32, s32, s32);
 void chr_setDefaultName(u8 *, s32); /* default name by id */
 s32 func_8002BCC0(u8 *); /* strlen */
-extern u32 D_80077DBC; /* = g_menu.unkC, read on its own by ovl_3a */
+extern u32 g_menuArg; /* = g_menu.arg, read on its own by ovl_3a */
 extern u32 g_padPressed; /* buttons that went down this frame */
 void ui_restorePortraits(void);
 void ui_getPortraitRects(s32, RECT *, RECT *);
@@ -2648,7 +2648,7 @@ typedef struct {
 } PadBuf;
 #define PADBUF(i) ((PadBuf *)&g_padBuf[i])
 void pad_update(void);
-void func_80032098(void);
+void game_updateFade(void);
 void game_updateTimer(void);
 void game_setScreenHeight(s32);
 s32 func_8004BC38(); /* defined K&R-style: u8 param (unused); some callers pass none */
@@ -2772,8 +2772,8 @@ typedef struct {
 } Unk80035214;
 void help_layout(Unk80035214 *);
 void sprAnim_draw(s32, s32, s32, Unk80035B90 *);
-s32 func_8002FD70(s32, s32, s32);
-s32 func_8002FDE8(s32, s32, s32);
+s32 fade_stepClamp(s32, s32, s32);
+s32 fade_ease(s32, s32, s32);
 typedef struct {
     u32 tag;
     u32 rgbc;
@@ -3090,7 +3090,7 @@ typedef struct {
     s32 unk4;
     s32 unk8;
 } Unk8006BD04;
-extern Unk8006BD04 D_8006BD04[];
+extern Unk8006BD04 g_fadeTypes[];
 extern u8 D_8006BCFC[]; /* window style -> colour */
 typedef struct {
     u8 unk0[8];
@@ -3145,7 +3145,7 @@ static inline void chr_updateStats_inline(Character *c) {
     c->maxHp = out.unk4;
     c->maxMp = out.unk6;
 }
-extern void (*D_8006BD28[])(FadeState *, s32);
+extern void (*g_fadeSeekFuncs[])(FadeState *, s32);
 extern s32 D_8007BBD4;
 extern u32 *D_8007BBCC;
 extern s32 D_8007B94C;
@@ -3344,7 +3344,7 @@ void pad_resetState(void);
 void cd_resetState(void);
 void db_init(void);
 void mbg_resetState(void);
-void func_800320D8(void);
+void menu_init(void);
 void func_80053924(void);
 
 #define ARRAY_COUNT(a) (sizeof(a) / sizeof((a)[0]))
@@ -3973,7 +3973,7 @@ extern s32 D_8007BD28; /* frame */
 extern u32 *D_8007BD30;
 #endif
 #endif
-void func_8002F884(void);
+void fade_clear(void);
 s32 math_sin(s32); /* sin */
 void func_800540E8(s32, s32);
 u32 *func_80054294(u32 *, s32, s32);

@@ -720,7 +720,7 @@ void func_801E9564(s32 i) {
             d2.vz = t->unk10.vz - c.vz;
             ex->btlfx_stepModuleParticle((Pool6CEntry *)p, 0, &zero, &a);
             *(s32 *)&rot = *(s32 *)&p->unk14;
-            ex->func_800316D8(&rot, &m);
+            ex->math_rotMatrixYXZ(&rot, &m);
             ex->ScaleMatrix(&m, &sv);
             m.t[0] = p->unk0 >> 12;
             m.t[1] = p->unk4 >> 12;

@@ -31,7 +31,7 @@ void btl_main(s32 arg0) {
                     g_gameState->unk1C->unk8E4.battle->unk0 |= 0x40;
                 }
                 game_updateTimer();
-                func_80032098();
+                game_updateFade();
                 preload_update();
             }
         } else {
@@ -2129,7 +2129,7 @@ s32 func_800AEA08(void) {
 void btl_beginFrame(void) {
     ClearOTagR(g_gameState->unk1C->unk10[g_gameState->unk1C->unk8] - 8, 0x1010);
     ClearOTagR((u32 *)g_gameState->unk1C->unk8E4.battle->unk11C0->unk2C[g_gameState->unk1C->unk8], 0x100);
-    ClearOTagR(func_8002FBC0(g_gameState->unk1C->unk8), 1);
+    ClearOTagR(fade_getOt(g_gameState->unk1C->unk8), 1);
     ClearOTagR((u32 *)func_800F4FB4(g_gameState->unk1C->unk8), 1);
     setlen(&D_800FDEB8[g_gameState->unk1C->unk8].unk0, 2);
     ((u32 *)&D_800FDEB8[g_gameState->unk1C->unk8].unk0)[1] = 0xE6000000;
@@ -2139,7 +2139,7 @@ void btl_beginFrame(void) {
     ((u32 *)&D_800FDEB8[g_gameState->unk1C->unk8].unkC)[1] = 0xE6000000;
     ((u32 *)&D_800FDEB8[g_gameState->unk1C->unk8].unkC)[2] = 0;
     addPrim((u32 *)g_gameState->unk1C->unk8E4.battle->unk11C0->unk2C[g_gameState->unk1C->unk8], &D_800FDEB8[g_gameState->unk1C->unk8].unkC);
-    addPrim(g_gameState->unk1C->unk10[g_gameState->unk1C->unk8], func_8002FBC0(g_gameState->unk1C->unk8));
+    addPrim(g_gameState->unk1C->unk10[g_gameState->unk1C->unk8], fade_getOt(g_gameState->unk1C->unk8));
     addPrim(g_gameState->unk1C->unk10[g_gameState->unk1C->unk8], func_800F4FB4(g_gameState->unk1C->unk8));
     func_800E9DFC();
 }

@@ -66,7 +66,7 @@ void func_800AD39C(void) {
     memset(&r, 0, 8);
     r.vz = D_800CE100;
     r.vy = D_800CE0F0->unkC;
-    func_80030AF4(&r, &m);
+    math_rotMatrixXYZ(&r, &m);
     m.t[0] = 0;
     m.t[1] = 0;
     m.t[2] = 0;
@@ -347,7 +347,7 @@ void func_800AD738(void) {
         D_800CE1F3 = 2;
         p = &g_evtGlobalVars.b[0x65];
         if (*p & 1) {
-            func_8002FA10();
+            fade_inAdditiveDefault();
             g_evtGlobalVars.b[0x65] &= ~1;
         } else {
             fade_inDefault();
@@ -860,7 +860,7 @@ s32 func_800AF66C(Unk8004AB64 *arg0, SVECTOR *arg1) {
     r.vy = s->unkC->pos.rotY;
     r.vz = s->unkC->unk24;
     r2 = r;
-    func_800316D8(&r2, &m->unk24);
+    math_rotMatrixYXZ(&r2, &m->unk24);
     m->unk24.t[0] = arg1->vx;
     m->unk24.t[1] = arg1->vy;
     m->unk24.t[2] = arg1->vz;

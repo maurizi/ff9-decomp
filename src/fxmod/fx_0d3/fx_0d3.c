@@ -45,7 +45,7 @@ void func_801E7720(SVECTOR *pos, SVECTOR *rot, s32 tp, s32 x, s32 y, s32 div, s3
             rot = &zero;
         }
         gte_rtv0tr_b();
-        ex->func_800316D8(rot, &m);
+        ex->math_rotMatrixYXZ(rot, &m);
         if (scale >= 0) {
             sv.vx = sv.vy = sv.vz = scale;
             ex->ScaleMatrix(&m, &sv);

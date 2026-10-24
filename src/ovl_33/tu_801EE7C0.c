@@ -75,7 +75,7 @@ void func_801EE978(void) {
     }
     m = &D_801FBF84;
     if (m->unk1 == 2) {
-        func_8002EB74(&D_801FBF84.unk8[D_801FBF84.unk0]);
+        menuList_update(&D_801FBF84.unk8[D_801FBF84.unk0]);
     }
     if (m->unk58.unkC != 0) {
         func_800631AC(&m->unk58);
@@ -179,7 +179,7 @@ void func_801EED10(void) {
     ok = 0;
     c = g_gameState->unk1C->party[D_801FBF84.unk2];
     l = &D_801FBF84.unk8[D_801FBF84.unk0];
-    it = &D_801F34EC[D_801FBF84.unk668[(l->unk5 + l->cursor) * 2 + l->unk7].unk0];
+    it = &D_801F34EC[D_801FBF84.unk668[(l->top + l->cursor) * 2 + l->col].unk0];
     if (!(D_801FBF84.unk3 >> 7)) {
         ok = item_useOnMember(c, g_gameState->unk1C->party[D_801FBF84.unk3], it, it->unk4, 0);
     } else {
@@ -236,12 +236,12 @@ void func_801EEFDC(void) {
     r = &D_801FBF84.unk38;
     c = g_gameState->unk1C->party[D_801FBF84.unk2];
     l = &D_801FBF84.unk8[D_801FBF84.unk0];
-    n = (l->unk5 + l->cursor) * 2 + l->unk7;
+    n = (l->top + l->cursor) * 2 + l->col;
     ui_drawLabel(r->x + 6, r->y - 3, 0x1D, D_80070460, 0);
     win_drawBox(r, 0x1D, 2);
     text_drawBlock(r->x + 8, r->y + 8, 0x1C, text_get(0x10), 0);
     text_drawBlock(r->x + 8, r->y + 0x16, 0x1C, text_get(0x11), 0);
-    if (D_801FBF84.unk1 == 1 || D_801FBF84.unk1 == 5 || D_801FBF84.unk1 == 0 || l->unk0 == 0) {
+    if (D_801FBF84.unk1 == 1 || D_801FBF84.unk1 == 5 || D_801FBF84.unk1 == 0 || l->count == 0) {
         return;
     }
     if (D_801FBF84.unk0 == 0) {
@@ -280,7 +280,7 @@ void func_801EF270(void) {
     r = &D_801FBF84.unk40;
     m = &D_801FBF84;
     l = &D_801FBF84.unk8[D_801FBF84.unk0];
-    idx = (l->cursor + l->unk5) * 2 + l->unk7;
+    idx = (l->cursor + l->top) * 2 + l->col;
     c = g_gameState->unk1C->party[m->unk2];
     if (m->unk0 != 1) {
         if (m->unk1 != 1 && m->unk1 != 5 && m->unk1 != 0) {
@@ -308,7 +308,7 @@ void func_801EF3A8(void) {
     ui_drawLabel(r->x + 0x7C, r->y - 3, 0x1C, D_800703FC.unk7C, 0);
     ui_drawLabel(r->x + 0x112, r->y - 3, 0x1C, D_800703FC.unk7C, 0);
     win_drawListBox(r, 0x1D, 1, l);
-    if (l->unk0 != 0) {
+    if (l->count != 0) {
         menuList_getView(l, &view);
         win_setClip(NULL, 0x1C, 1);
         idx = view.unk1 * 2;
@@ -317,8 +317,8 @@ void func_801EF3A8(void) {
                 func_801F0934(col, row, idx++, &view);
             }
         }
-        if (l->unk8 & 4) {
-            func_8002F40C(l, r, &sub);
+        if (l->scroll & 4) {
+            menuList_getRowsRect(l, r, &sub);
             win_setClip(&sub, 0x1C, 1);
             func_801F0890();
         }
@@ -374,8 +374,8 @@ void func_801EF644(void) {
         HelpState *h2;
         l = &D_801FBF84.unk8[D_801FBF84.unk0];
         h2 = &g_menuHelp;
-        k = l->unk7;
-        k ^= (l->unk8 >> 3) & 1;
+        k = l->col;
+        k ^= (l->scroll >> 3) & 1;
         k = k * 150 - 10;
         g_menuHelp.x = D_801FBF84.unk48.x + k;
         k = l->cursor * 15 + 10;
@@ -452,8 +452,8 @@ void func_801EF900(s32 slot, s32 arg1) {
             a++;
         }
     }
-    func_8002EDFC(&D_801FBF84.unk8[0], nItems, 8, 2, 0x80);
-    func_8002EDFC(&D_801FBF84.unk8[1], nAbils, 8, 2, 0x80);
+    menuList_init(&D_801FBF84.unk8[0], nItems, 8, 2, 0x80);
+    menuList_init(&D_801FBF84.unk8[1], nAbils, 8, 2, 0x80);
     D_801FBF84.unk769 = nItems;
     D_801FBF84.unk76A = nAbils;
     memset(D_801FBF84.unk68, 0, 0x100);
@@ -515,8 +515,8 @@ void func_801EFCB4(void) {
     s32 i;
     u8 id;
 
-    if (l->unk2 != 0) {
-        i = (l->unk5 + l->cursor) * 2 + l->unk7;
+    if (l->rows != 0) {
+        i = (l->top + l->cursor) * 2 + l->col;
         if (i < D_801FBF84.unk769) {
             id = D_801FBF84.unk668[i].unk0;
             if (func_801EFB8C(id, c) == 3) {
@@ -524,7 +524,7 @@ void func_801EFCB4(void) {
                 D_801FBF84.unk76F = func_801F0E64(id);
                 ls = D_801FBF84.unk8 + D_801FBF84.unk0;
                 D_801FBF84.unk58.unk4 = D_801FBF84.unk50;
-                if (ls->unk7 == 0) {
+                if (ls->col == 0) {
                     D_801FBF84.unk58.unk4.x = 0xA4;
                     func_80063118(&D_801FBF84.unk58, D_801F3428, 1);
                 } else {
@@ -553,7 +553,7 @@ void func_801EFE2C(void) {
 
     l = &D_801FBF84.unk8[D_801FBF84.unk0];
     c = g_gameState->unk1C->party[D_801FBF84.unk2];
-    if (l->unk2 != 0 && (idx = (l->unk5 + l->cursor) * 2 + l->unk7) < D_801FBF84.unk76A) {
+    if (l->rows != 0 && (idx = (l->top + l->cursor) * 2 + l->col) < D_801FBF84.unk76A) {
         id = D_801FBF84.unk728[idx];
         sup = &D_8006D128[id - 0xC0];
         st = func_801F0CC4_inline(id, c);
@@ -613,7 +613,7 @@ void func_801F0024(void) {
     end:
         text_append(D_801FBD84, text_get(0xF));
     } else if (D_801FBF84.unk1 == 2) {
-        if (l->unk0 == 0) {
+        if (l->count == 0) {
             return;
         }
         r.x = 0;
@@ -669,13 +669,13 @@ void func_801F0410(void) {
         }
     }
     row = sel / 2;
-    l->unk7 = sel % 2;
+    l->col = sel % 2;
     if (row - 7 >= 0) {
-        l->unk5 = row - 7;
+        l->top = row - 7;
     } else {
-        l->unk5 = 0;
+        l->top = 0;
     }
-    l->cursor = row - l->unk5;
+    l->cursor = row - l->top;
 }
 
 void func_801F05FC(void) {
@@ -715,7 +715,7 @@ void func_801F070C(void) {
     MenuList *l;
 
     l = &D_801FBF84.unk8[D_801FBF84.unk0];
-    if (l->unk8 == 0) {
+    if (l->scroll == 0) {
         if (g_padRepeat & BTN_CIRCLE) {
             snd_playSe(0x65);
             D_801FBF84.unk1 = 1;
@@ -730,8 +730,8 @@ void func_801F070C(void) {
             return;
         }
         menuList_input(l, g_padRepeat);
-        func_8002F044(l, g_padRepeat);
-        func_8002F0EC(l, g_padRepeat);
+        menuList_left(l, g_padRepeat);
+        menuList_right(l, g_padRepeat);
     }
 }
 
@@ -753,7 +753,7 @@ void func_801F0890(void) {
     s32 idx;
 
     row = 0;
-    func_8002F344(&D_801FBF84.unk8[D_801FBF84.unk0], &v);
+    menuList_getPageView(&D_801FBF84.unk8[D_801FBF84.unk0], &v);
     idx = v.unk1 * 2;
     for (; row < v.unk0; row++) {
         for (col = 0; col < 2; col++) {
@@ -881,7 +881,7 @@ u32 func_801F0CC4(s32 id, Character *c) {
 void func_801F0DDC(void) {
     MenuList *l = &D_801FBF84.unk8[D_801FBF84.unk0];
 
-    func_80063118(&D_801FBF84.unk58, l->unk7 == 0 ? D_801F3458 : D_801F3468, 0);
+    func_80063118(&D_801FBF84.unk58, l->col == 0 ? D_801F3458 : D_801F3468, 0);
     D_801FBF84.unk1 = 4;
 }
 
@@ -935,16 +935,16 @@ s32 func_801F0FA4(MenuList *l) {
     s32 r, t;
     s32 step;
 
-    if (l->unk8 & 8) {
-        t = l->unk7 ^ 1;
+    if (l->scroll & 8) {
+        t = l->col ^ 1;
         step = 1;
         r = l->cursor;
-        if (l->unk8 & 2) {
-            return (l->unk5 + (r - step)) * 2 + t;
+        if (l->scroll & 2) {
+            return (l->top + (r - step)) * 2 + t;
         }
-        return (l->unk5 + (r + step)) * 2 + t;
+        return (l->top + (r + step)) * 2 + t;
     }
-    return (l->unk5 + l->cursor) * 2 + l->unk7;
+    return (l->top + l->cursor) * 2 + l->col;
 }
 
 s32 func_801F1018(Unk801F34EC *p) {
@@ -976,14 +976,14 @@ void func_801F1048(void) {
         }
     }
     row = sel / 2;
-    l->unk7 = sel % 2;
+    l->col = sel % 2;
     top = row - 7;
     if (top >= 0) {
-        l->unk5 = top;
+        l->top = top;
     } else {
-        l->unk5 = 0;
+        l->top = 0;
     }
-    l->cursor = row - l->unk5;
+    l->cursor = row - l->top;
 }
 
 void func_801F1148(void) {

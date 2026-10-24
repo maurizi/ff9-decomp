@@ -611,7 +611,7 @@ long NormalClip(long sxy0, long sxy1, long sxy2);
 #define gte_avsz4_b() __asm__ volatile(".word\t0x4B68002E")
 #define gte_gpf12_b() __asm__ volatile(".word\t0x4B98003D")
 #define gte_gpf12_n1() __asm__ volatile(GTE_NOP1 ".word\t0x4B98003D")
-/* IR0..IR3 / IR1, IR2 from registers and MAC1..MAC3 / MAC1, MAC2 to registers (func_80031284) */
+/* IR0..IR3 / IR1, IR2 from registers and MAC1..MAC3 / MAC1, MAC2 to registers (math_buildRotMatrixZYX) */
 #define gte_ldir0123(r0, r1, r2, r3) __asm__ volatile( \
     "mtc2\t%0, $8;" \
     "mtc2\t%1, $9;" \

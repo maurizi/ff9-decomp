@@ -65,7 +65,7 @@ void func_800B69B4(void) {
     func_800BA29C();
     func_80050E34(D_800CF400);
     func_80050EFC(0x24, 0x30);
-    func_800325A4();
+    menu_reset();
     g_padPortMask[0] |= 0xF0000;
 }
 
@@ -129,7 +129,7 @@ s32 func_800B6BC4(void) {
         D_800CF434 = 1;
     }
     if (!(g_gameState->unk1C->unk0 & 1)) {
-        func_80032100();
+        menu_update();
     }
     game_updateWindows();
     busy = D_800CF49C != 0;

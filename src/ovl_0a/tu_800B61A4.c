@@ -823,7 +823,7 @@ void func_800B7F14(Unk800C95C8 *arg0, u16 arg1) {
             key2++;
         }
         key++;
-        func_80031264(rot, m);
+        math_rotMatrixZYX_gte(rot, m);
         m++;
     } while (m < end);
     if (arg0->unk1C != NULL) {
@@ -1537,7 +1537,7 @@ loop1:
         key2++;
     }
     key++;
-    func_80031264(rot, m);
+    math_rotMatrixZYX_gte(rot, m);
     m++;
     if (m < end) {
         goto loop1;

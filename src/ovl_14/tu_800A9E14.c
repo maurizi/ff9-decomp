@@ -31,7 +31,7 @@ s32 func_800A9E14(s32 arg0) {
                     file_setTimPos(tim, 0, 0xE0, 0x280, 0);
                     file_loadTim(tim);
                     timer = 0x3A2;
-                    func_800320B8(1, 1, 0xF0, 0);
+                    game_startFade(1, 1, 0xF0, 0);
                 } else if (timer != 0) {
                     pad = g_padPortPressed[0];
                     setlen(&D_800AB3D0[g_gameState->unk1C->unk8][0], 4);
@@ -76,7 +76,7 @@ s32 func_800A9E14(s32 arg0) {
                             D_800AB2D0.unk0 |= 0x100;
                         }
                         if (!(D_800AB2D0.unk0 & 1) && timer < 0xF1) {
-                            func_800320B8(1, 1, timer, 0xFFFFFF);
+                            game_startFade(1, 1, timer, 0xFFFFFF);
                             D_800AB2D0.unk0 |= 1;
                         }
                     }
@@ -103,10 +103,10 @@ s32 func_800A9E14(s32 arg0) {
             if (func_800A811C() == 5) {
                 D_800AB440 = 4;
             }
-            func_80032100();
+            menu_update();
             game_updateWindows();
             if (!(D_800AB2D0.unk0 & 0x10) && (u8)func_800A82B0() && timer < 0x5B) {
-                func_800320B8(1, 1, 0x5A, 0xFFFFFF);
+                game_startFade(1, 1, 0x5A, 0xFFFFFF);
                 if (g_gameState->unkB != 0xFF && (g_gameState->unkB & 1)) {
                     func_800A799C(0x8301, 0x7003A, 0x5A, 0, 0);
                 }
@@ -125,7 +125,7 @@ s32 func_800A9E14(s32 arg0) {
             }
             break;
         }
-        func_80032098();
+        game_updateFade();
         func_800AA9D8();
     } while ((u32)D_800AB440 < 3);
     func_800AA960(arg0);
@@ -145,7 +145,7 @@ s32 func_800AA848(s32 idx) {
     buf = D_80067944 + 0x10000;
     D_800AB2D4 = buf;
     db_register((s32)buf, 0);
-    func_800320B8(1, 1, 0, 0xFFFFFF);
+    game_startFade(1, 1, 0, 0xFFFFFF);
     D_800AB440 = 0;
     D_800AB2D0.unk0 = 0;
     g_padPortMask[0] = 0;

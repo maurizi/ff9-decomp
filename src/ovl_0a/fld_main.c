@@ -63,7 +63,7 @@ void fld_main(s32 arg0) {
                 }
             }
             if (!(g_gameState->unk1C->unk0 & 1)) {
-                func_80032100();
+                menu_update();
             }
             if (g_gameState->unk0 & 0x100000) {
                 g_gameState->unk0 |= 8;
@@ -93,7 +93,7 @@ void fld_main(s32 arg0) {
                 game_updateWindows();
             }
             if (!(g_gameState->unk1C->unk8E4.field->unk0 & 0x800)) {
-                func_80032098();
+                game_updateFade();
             }
             if (!(g_gameState->unk1C->unk8E4.field->unk0 & 4)) {
                 func_800AED6C();

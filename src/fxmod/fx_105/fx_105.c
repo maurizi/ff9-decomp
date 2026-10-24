@@ -854,7 +854,7 @@ void func_801E9F28(s32 c) {
     rot.vx = 0;
     rot.vy = 0;
     rot.vz = 0;
-    ex->func_800316D8(&rot, &m);
+    ex->math_rotMatrixYXZ(&rot, &m);
     gte_stlvnl(m.t);
     ex->MulRotMatrix(&m);
     gte_SetRotMatrix(&m);
@@ -945,7 +945,7 @@ void func_801EA298(s16 *data, s32 c, s32 h, s32 n) {
         gte_ldv0(&v);
         gte_rtv0tr();
         gte_stlvnl(m.t);
-        ex->func_800316D8(&rot, &m);
+        ex->math_rotMatrixYXZ(&rot, &m);
         ex->MulRotMatrix(&m);
         gte_SetRotMatrix(&m);
         gte_SetTransMatrix(&m);
@@ -1019,7 +1019,7 @@ void func_801EA6D4(s16 *data, s32 c, s32 c2, s32 n) {
         gte_ldv0(&v);
         gte_rtv0tr();
         gte_stlvnl(m.t);
-        ex->func_800316D8(&r, &m);
+        ex->math_rotMatrixYXZ(&r, &m);
         ex->MulRotMatrix(&m);
         gte_SetRotMatrix(&m);
         gte_SetTransMatrix(&m);

@@ -1,14 +1,14 @@
 #include "ff9.h"
 
-void func_80030AF4(void *a, void *b) {
-    func_80030B34(a, b, 0);
+void math_rotMatrixXYZ(void *a, void *b) {
+    math_buildRotMatrixXYZ(a, b, 0);
 }
 
-void func_80030B14(void *a, void *b) {
-    func_80030B34(a, b, 1);
+void math_rotMatrixXYZ_gte(void *a, void *b) {
+    math_buildRotMatrixXYZ(a, b, 1);
 }
 
-MATRIX *func_80030B34(SVECTOR *r, MATRIX *m, s32 mode) {
+MATRIX *math_buildRotMatrixXYZ(SVECTOR *r, MATRIX *m, s32 mode) {
     s16 sx, cx, sy, cy, sz, cz;
     s32 x, y, z;
     s32 tx, ty, tz;
@@ -58,15 +58,15 @@ MATRIX *func_80030B34(SVECTOR *r, MATRIX *m, s32 mode) {
     return m;
 }
 
-void func_80030EA4(void *a, void *b) {
-    func_80030EE4(a, b, 0);
+void math_rotMatrixZXY(void *a, void *b) {
+    math_buildRotMatrixZXY(a, b, 0);
 }
 
-void func_80030EC4(void *a, void *b) {
-    func_80030EE4(a, b, 1);
+void math_rotMatrixZXY_gte(void *a, void *b) {
+    math_buildRotMatrixZXY(a, b, 1);
 }
 
-MATRIX *func_80030EE4(SVECTOR *r, MATRIX *m, s32 mode) {
+MATRIX *math_buildRotMatrixZXY(SVECTOR *r, MATRIX *m, s32 mode) {
     s16 sx, cx, sy, cy, sz, cz;
     s32 x, y, z;
     s32 tx, ty, tz;
@@ -116,15 +116,15 @@ MATRIX *func_80030EE4(SVECTOR *r, MATRIX *m, s32 mode) {
     return m;
 }
 
-void func_80031244(void *a, void *b) {
-    func_80031284(a, b, 0);
+void math_rotMatrixZYX(void *a, void *b) {
+    math_buildRotMatrixZYX(a, b, 0);
 }
 
-void func_80031264(void *a, void *b) {
-    func_80031284(a, b, 1);
+void math_rotMatrixZYX_gte(void *a, void *b) {
+    math_buildRotMatrixZYX(a, b, 1);
 }
 
-MATRIX *func_80031284(SVECTOR *r, MATRIX *m, s32 mode) {
+MATRIX *math_buildRotMatrixZYX(SVECTOR *r, MATRIX *m, s32 mode) {
     s16 sx, cx, sy, cy, sz, cz;
     s32 x, y, z;
     s32 t;
@@ -145,7 +145,7 @@ MATRIX *func_80031284(SVECTOR *r, MATRIX *m, s32 mode) {
         sy = g_sinTable[y & 0x3FF];
     }
     if (y & 0x800) {
-        /* identical branches (jump2 merges them), as in func_80030EE4 */
+        /* identical branches (jump2 merges them), as in math_buildRotMatrixZXY */
         if (mode) {
             sy = -sy;
         } else {
@@ -207,15 +207,15 @@ MATRIX *func_80031284(SVECTOR *r, MATRIX *m, s32 mode) {
     return m;
 }
 
-void func_800316D8(void *a, void *b) {
-    func_80031718(a, b, 0);
+void math_rotMatrixYXZ(void *a, void *b) {
+    math_buildRotMatrixYXZ(a, b, 0);
 }
 
-void func_800316F8(void *a, void *b) {
-    func_80031718(a, b, 1);
+void math_rotMatrixYXZ_gte(void *a, void *b) {
+    math_buildRotMatrixYXZ(a, b, 1);
 }
 
-MATRIX *func_80031718(SVECTOR *r, MATRIX *m, s32 mode) {
+MATRIX *math_buildRotMatrixYXZ(SVECTOR *r, MATRIX *m, s32 mode) {
     s16 sx, cx, sy, cy, sz, cz;
     s32 x, y, z;
     s32 t;
@@ -286,71 +286,71 @@ MATRIX *func_80031718(SVECTOR *r, MATRIX *m, s32 mode) {
     return m;
 }
 
-void func_80031B6C(FadeState *p) {
+void fadeFlat_start(FadeState *p) {
     s32 n;
     if (p->frames == 0) {
         p->frames = 16;
     }
-    D_80077D68.unk24.unk0 = D_80077D68.unk0 = p->color.unk0[0];
-    D_80077D68.unk24.unk4 = D_80077D68.unk4 = p->color.unk0[1];
-    D_80077D68.unk24.unk8 = D_80077D68.unk8 = p->color.unk0[2];
-    D_80077D68.unkC = p->endR;
-    D_80077D68.unk10 = p->endG;
-    D_80077D68.unk14 = p->endB;
-    D_80077D68.unk3C = D_80077D68.unkC - D_80077D68.unk0;
-    D_80077D68.unk40 = D_80077D68.unk10 - D_80077D68.unk4;
-    D_80077D68.unk44 = D_80077D68.unk14 - D_80077D68.unk8;
+    g_fadeFlat.unk24.unk0 = g_fadeFlat.unk0 = p->color.unk0[0];
+    g_fadeFlat.unk24.unk4 = g_fadeFlat.unk4 = p->color.unk0[1];
+    g_fadeFlat.unk24.unk8 = g_fadeFlat.unk8 = p->color.unk0[2];
+    g_fadeFlat.unkC = p->endR;
+    g_fadeFlat.unk10 = p->endG;
+    g_fadeFlat.unk14 = p->endB;
+    g_fadeFlat.unk3C = g_fadeFlat.unkC - g_fadeFlat.unk0;
+    g_fadeFlat.unk40 = g_fadeFlat.unk10 - g_fadeFlat.unk4;
+    g_fadeFlat.unk44 = g_fadeFlat.unk14 - g_fadeFlat.unk8;
     n = p->frames - 1;
     if (n <= 0) {
         n = 1;
     }
-    D_80077D68.unk18 = func_8002FD98(D_80077D68.unk3C, n);
+    g_fadeFlat.unk18 = fade_divRoundOut(g_fadeFlat.unk3C, n);
     n = p->frames - 1;
     if (n <= 0) {
         n = 1;
     }
-    D_80077D68.unk1C = func_8002FD98(D_80077D68.unk40, n);
+    g_fadeFlat.unk1C = fade_divRoundOut(g_fadeFlat.unk40, n);
     n = p->frames - 1;
     if (n <= 0) {
         n = 1;
     }
-    D_80077D68.unk20 = func_8002FD98(D_80077D68.unk44, n);
+    g_fadeFlat.unk20 = fade_divRoundOut(g_fadeFlat.unk44, n);
 }
 
-void func_80031C88(FadeState *p) {
-    D_80077D68.unk24.unk0 = func_8002FD70(D_80077D68.unk24.unk0, D_80077D68.unk18, D_80077D68.unkC);
-    D_80077D68.unk24.unk4 = func_8002FD70(D_80077D68.unk24.unk4, D_80077D68.unk1C, D_80077D68.unk10);
-    D_80077D68.unk24.unk8 = func_8002FD70(D_80077D68.unk24.unk8, D_80077D68.unk20, D_80077D68.unk14);
-    if (p->unk4 != 0) {
-        D_80077D68.unk30.unk0 = func_8002FDE8(D_80077D68.unk24.unk0, D_80077D68.unk0, D_80077D68.unk3C);
-        D_80077D68.unk30.unk4 = func_8002FDE8(D_80077D68.unk24.unk4, D_80077D68.unk4, D_80077D68.unk40);
-        D_80077D68.unk30.unk8 = func_8002FDE8(D_80077D68.unk24.unk8, D_80077D68.unk8, D_80077D68.unk44);
+void fadeFlat_update(FadeState *p) {
+    g_fadeFlat.unk24.unk0 = fade_stepClamp(g_fadeFlat.unk24.unk0, g_fadeFlat.unk18, g_fadeFlat.unkC);
+    g_fadeFlat.unk24.unk4 = fade_stepClamp(g_fadeFlat.unk24.unk4, g_fadeFlat.unk1C, g_fadeFlat.unk10);
+    g_fadeFlat.unk24.unk8 = fade_stepClamp(g_fadeFlat.unk24.unk8, g_fadeFlat.unk20, g_fadeFlat.unk14);
+    if (p->eased != 0) {
+        g_fadeFlat.unk30.unk0 = fade_ease(g_fadeFlat.unk24.unk0, g_fadeFlat.unk0, g_fadeFlat.unk3C);
+        g_fadeFlat.unk30.unk4 = fade_ease(g_fadeFlat.unk24.unk4, g_fadeFlat.unk4, g_fadeFlat.unk40);
+        g_fadeFlat.unk30.unk8 = fade_ease(g_fadeFlat.unk24.unk8, g_fadeFlat.unk8, g_fadeFlat.unk44);
     } else {
-        D_80077D68.unk30 = D_80077D68.unk24;
+        g_fadeFlat.unk30 = g_fadeFlat.unk24;
     }
-    p->color.unk0[0] = D_80077D68.unk30.unk0;
-    p->color.unk0[1] = D_80077D68.unk30.unk4;
-    p->color.unk0[2] = D_80077D68.unk30.unk8;
+    p->color.unk0[0] = g_fadeFlat.unk30.unk0;
+    p->color.unk0[1] = g_fadeFlat.unk30.unk4;
+    p->color.unk0[2] = g_fadeFlat.unk30.unk8;
 }
 
-void func_80031D98(FadeState *p, s32 n) {
-    D_80077D68.unk24.unk0 = func_8002FD70(D_80077D68.unk24.unk0, D_80077D68.unk18 * n, D_80077D68.unkC);
-    D_80077D68.unk24.unk4 = func_8002FD70(D_80077D68.unk24.unk4, D_80077D68.unk1C * n, D_80077D68.unk10);
-    D_80077D68.unk24.unk8 = func_8002FD70(D_80077D68.unk24.unk8, D_80077D68.unk20 * n, D_80077D68.unk14);
-    if (p->unk4 != 0) {
-        D_80077D68.unk30.unk0 = func_8002FDE8(D_80077D68.unk24.unk0, D_80077D68.unk0, D_80077D68.unk3C);
-        D_80077D68.unk30.unk4 = func_8002FDE8(D_80077D68.unk24.unk4, D_80077D68.unk4, D_80077D68.unk40);
-        D_80077D68.unk30.unk8 = func_8002FDE8(D_80077D68.unk24.unk8, D_80077D68.unk8, D_80077D68.unk44);
+void fadeFlat_seek(FadeState *p, s32 n) {
+    g_fadeFlat.unk24.unk0 = fade_stepClamp(g_fadeFlat.unk24.unk0, g_fadeFlat.unk18 * n, g_fadeFlat.unkC);
+    g_fadeFlat.unk24.unk4 = fade_stepClamp(g_fadeFlat.unk24.unk4, g_fadeFlat.unk1C * n, g_fadeFlat.unk10);
+    g_fadeFlat.unk24.unk8 = fade_stepClamp(g_fadeFlat.unk24.unk8, g_fadeFlat.unk20 * n, g_fadeFlat.unk14);
+    if (p->eased != 0) {
+        g_fadeFlat.unk30.unk0 = fade_ease(g_fadeFlat.unk24.unk0, g_fadeFlat.unk0, g_fadeFlat.unk3C);
+        g_fadeFlat.unk30.unk4 = fade_ease(g_fadeFlat.unk24.unk4, g_fadeFlat.unk4, g_fadeFlat.unk40);
+        g_fadeFlat.unk30.unk8 = fade_ease(g_fadeFlat.unk24.unk8, g_fadeFlat.unk8, g_fadeFlat.unk44);
     } else {
-        D_80077D68.unk30 = D_80077D68.unk24;
+        g_fadeFlat.unk30 = g_fadeFlat.unk24;
     }
-    p->color.unk0[0] = D_80077D68.unk30.unk0;
-    p->color.unk0[1] = D_80077D68.unk30.unk4;
-    p->color.unk0[2] = D_80077D68.unk30.unk8;
+    p->color.unk0[0] = g_fadeFlat.unk30.unk0;
+    p->color.unk0[1] = g_fadeFlat.unk30.unk4;
+    p->color.unk0[2] = g_fadeFlat.unk30.unk8;
 }
 
-void func_80031ED8(FadeState *p) {
-    u32 *ot = func_8002FBC0(g_gameState->unk1C->unk8);
+void fadeFlat_draw(FadeState *p) {
+    u32 *ot = fade_getOt(g_gameState->unk1C->unk8);
     s32 tp = 0x40;
     TILE *t;
     u8 *dr;
@@ -360,9 +360,9 @@ void func_80031ED8(FadeState *p) {
     }
     t = (TILE *)g_fade.pkt;
     SetTile(t);
-    t->r0 = D_80077D68.unk30.unk0;
-    t->g0 = D_80077D68.unk30.unk4;
-    t->b0 = D_80077D68.unk30.unk8;
+    t->r0 = g_fadeFlat.unk30.unk0;
+    t->g0 = g_fadeFlat.unk30.unk4;
+    t->b0 = g_fadeFlat.unk30.unk8;
     t->y0 = 0;
     t->x0 = 0;
     t->w = g_gameState->unkC->disp.w;

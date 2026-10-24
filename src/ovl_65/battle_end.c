@@ -19,7 +19,7 @@ void battleEnd_main(void) {
             break;
         }
         game_updateWindows();
-        func_80032098();
+        game_updateFade();
         game_updateTimer();
         preload_update();
         DrawSync(0);
@@ -419,7 +419,7 @@ void func_801F076C(void) {
         D_801F7A78.unk8++;
         fade_setOtz(D_801F7A78.unk370);
         if (D_80077DB5 != 0) {
-            func_800325E0();
+            menu_close();
         } else {
             fade_out(0x10);
             fade_setOnDone(func_801F17D4);

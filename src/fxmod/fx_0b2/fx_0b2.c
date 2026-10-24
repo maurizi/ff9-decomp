@@ -76,7 +76,7 @@ void func_801E78FC(SVECTOR *arg0, SVECTOR *arg1, VECTOR *arg2, s32 arg3, s32 arg
     arg6 |= (arg14 & 3) << 5;
     c1.code = c2.code;
     gte_rtv0tr_b();
-    ex->func_800316D8(arg1, &m);
+    ex->math_rotMatrixYXZ(arg1, &m);
     ex->ScaleMatrix(&m, arg2);
     gte_stlvnl(m.t);
     ex->MulRotMatrix(&m);

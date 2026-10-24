@@ -66,7 +66,7 @@ void func_801E79D0(Fx1eaPath *path, Fx1eaTrail *trail, s32 size, s32 base, s32 s
         v.vx += v.vx / 10;
         v.vy += v.vy / 10;
         v.vz += v.vz / 10;
-        ex->func_800316D8(&rot, &m);
+        ex->math_rotMatrixYXZ(&rot, &m);
         gte_SetRotMatrix(&m);
         gte_ldtr0();
         gte_ldv0(&v);

@@ -12,9 +12,9 @@ void func_800AAADC(void) {
         func_800AB09C();
         pad_update();
         if (t == 0xD2) {
-            func_800320B8(1, 1, 0x3C, 0);
+            game_startFade(1, 1, 0x3C, 0);
         } else if (t == 0x3C) {
-            func_800320B8(1, 1, 0x3C, 0xFFFFFF);
+            game_startFade(1, 1, 0x3C, 0xFFFFFF);
         }
         setlen(&D_800AB448[g_gameState->unk1C->unk8], 4);
         D_800AB448[g_gameState->unk1C->unk8].code = 0x64;
@@ -32,7 +32,7 @@ void func_800AAADC(void) {
         setDrawTPage(&D_800AB470[g_gameState->unk1C->unk8], 1, 1, 0xA);
         addPrim(&g_gameState->unk1C->unk10[g_gameState->unk1C->unk8][8], &D_800AB470[g_gameState->unk1C->unk8]);
         t--;
-        func_80032098();
+        game_updateFade();
         func_800AB0E0();
     } while (t > 0);
     func_800AB06C();
@@ -54,7 +54,7 @@ void func_800AAF40(void) {
     D_800AB2F4 = (s32)db_lookupRegistered(4, 0x44FB0, 0);
     file_setTimPos(D_800AB2F4, 0, 0xE0, 0x280, 0);
     file_loadTim(D_800AB2F4);
-    func_800320B8(1, 1, 0, 0xFFFFFF);
+    game_startFade(1, 1, 0, 0xFFFFFF);
     g_padPortMask[0] = 0;
 }
 

@@ -62,7 +62,7 @@ s32 func_8004B574(void);
 s32 func_80037738(void);
 s16 func_8004EC98(s32 i);
 void func_8004BB30(void *p);
-void func_80031244(void *a, void *b);
+void math_rotMatrixZYX(void *a, void *b);
 void func_8004E91C(void);
 s32 evt_execInstr(void);
 
@@ -1461,7 +1461,7 @@ void func_800530A8(SVECTOR *v, s32 rx, s32 ry) {
     a.vy = ry;
     a.vz = 0;
     a.pad = 0;
-    func_80031244(&a, &m);
+    math_rotMatrixZYX(&a, &m);
     SetRotMatrix(&m);
     gte_ldtr0();
     gte_ldv0(v);

@@ -11,8 +11,8 @@ void func_801F3874(void) {
     D_801F4BBC.unk1 = 0;
     D_801F4BBC.unk2 = 0;
     D_801F4BBC.unk3 = 0;
-    D_801F4BBC.unk24 = D_80077DBC < 12;
-    D_801F4BBC.unk12C = func_801F4A68(D_801F4BBC.unk24 ? D_80077DBC : D_80077DBC - 12);
+    D_801F4BBC.unk24 = g_menuArg < 12;
+    D_801F4BBC.unk12C = func_801F4A68(D_801F4BBC.unk24 ? g_menuArg : g_menuArg - 12);
     D_801F4BBC.unk130 = func_801F4A84(D_801F4BBC.unk12C);
     for (i = 0; i < 2; i++) {
         D_801F4BBC.unk5[i] = D_801F4B50[i];
@@ -124,7 +124,7 @@ void func_801F3D9C(void) {
             if (D_801F4BBC.unk4 != 0) {
                 snd_playSe(0x67);
                 memcpy(g_gameState->unk1C->characters[D_801F4BBC.unk130].unk0, D_801F4BBC.unk7, 8);
-                func_800325E0();
+                menu_close();
             } else {
                 snd_playSe(0x66);
             }
@@ -197,7 +197,7 @@ void func_801F4238(void) {
     win_drawBox(D_801F4B64, 6, 1);
     win_drawShadow(D_801F4B64, 6, 1);
     for (i = 0; i < 7; i++) {
-        if (cursor != i || (g_menu.unk10 & 4)) {
+        if (cursor != i || (g_menu.frame & 4)) {
             for (j = 0; j < 2; j++) {
                 p = (LINE_F2 *)g_primPtr;
                 SetLineF2(p);

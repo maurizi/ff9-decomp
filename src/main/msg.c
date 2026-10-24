@@ -1530,7 +1530,7 @@ void func_8004F9A0(void) {
     p->u1 = p->u3 = s->unk0 + 0x18;
     p->v2 = p->v3 = s->unk1 + 0x10;
     q->u0 = q->u2 = s->unk0 + 8;
-    /* identical branches (jump2 merges them), as in func_80030EE4 */
+    /* identical branches (jump2 merges them), as in math_buildRotMatrixZXY */
     if (q) {
         q->u1 = q->u3 = s->unk0 + 0x10;
     } else {

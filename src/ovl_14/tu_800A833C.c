@@ -4,7 +4,7 @@ void func_800A833C(void) {
 }
 
 void func_800A8344(void) {
-    func_80032628(func_800A8378);
+    menu_setOnClose(func_800A8378);
 }
 
 void func_800A8368(void) {
@@ -44,7 +44,7 @@ void func_800A8448(void) {
 
 void func_800A8450(void) {
     D_800AB318 = 0;
-    func_80032628(func_800A84B0);
+    menu_setOnClose(func_800A84B0);
 }
 
 void func_800A847C(void) {
@@ -59,7 +59,7 @@ void func_800A84A8(void) {
 void func_800A84B0(void) {
     D_800AB318 = 1;
     if (func_801F5330()) {
-        func_80032634(0);
+        menu_setFadeInOnClose(0);
     }
 }
 
@@ -74,7 +74,7 @@ void func_800A84EC(void) {
             menu_open(8, ((r & 3) << 14) | 0x3A98);
             mode = 3;
         } else {
-            func_80032634(0);
+            menu_setFadeInOnClose(0);
             mode = 4;
         }
     } else {

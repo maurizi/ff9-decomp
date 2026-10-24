@@ -77,7 +77,7 @@ s32 func_80053A10(s16 arg0, s16 arg1) {
                 D_8007BD20 = -a;
                 D_8007BD22 = -b;
             }
-            func_8002F884();
+            fade_clear();
         }
         if (D_8007BD28 & 1) {
             x += x < 160 ? 1 : -1;
@@ -231,7 +231,7 @@ u32 *func_80054294(u32 *buf, s32 x, s32 y) {
     sv.vy = 0;
     sv.vx = 0;
     sv.vz = (s16)D_8007BD20 >> 4;
-    func_80030AF4(&sv, &m);
+    math_rotMatrixXYZ(&sv, &m);
     v.vx = v.vy = D_8007BD08->unk4;
     v.vz = 0;
     ScaleMatrix(&m, &v);

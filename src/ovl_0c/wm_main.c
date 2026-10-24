@@ -34,7 +34,7 @@ void func_800A88C4(s32 arg0) {
                 }
             }
             if (!(g_gameState->unk1C->unk8E4.world->unk0 & 0x200)) {
-                func_80032098();
+                game_updateFade();
             }
             if (!(g_gameState->unk1C->unk8E4.world->unk0 & 0x400)) {
                 func_800ACAFC();

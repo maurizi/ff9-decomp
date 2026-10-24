@@ -4,7 +4,7 @@ void func_800A7578(void) {
     func_800651D8();
     evt_clearGlobalVars();
     func_8005392C();
-    func_8003253C();
+    menu_initNewGame();
     func_800AB1E4();
     card_initAll();
     func_800A75C8();

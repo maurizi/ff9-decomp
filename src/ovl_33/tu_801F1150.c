@@ -133,13 +133,13 @@ void func_801F15E0(void) {
     cur.unkC[2] = c->evade;
     cur.unkC[3] = c->magicDef;
     cur.unkC[4] = c->magicEva;
-    if (D_801FC840.unk1 == 3 && D_801FC840.unk4.unk2 != 0) {
+    if (D_801FC840.unk1 == 3 && D_801FC840.unk4.rows != 0) {
         in.unk0 = *(Bytes8 *)&c->unk2C;
         in.unk10 = c->hp;
         in.unk12 = c->mp;
         in.unk14 = *(Bytes5 *)c->equip;
         in.unk8 = *(Words2 *)c->supportAbilities;
-        in.unk14.unk0[D_801FC840.unk2] = (D_801FC840.unk3C + (D_801FC840.unk4.cursor + D_801FC840.unk4.unk5))->id;
+        in.unk14.unk0[D_801FC840.unk2] = (D_801FC840.unk3C + (D_801FC840.unk4.cursor + D_801FC840.unk4.top))->id;
         chr_calcEquipStats(&in, &out);
         func_801F20A0(&cur, &out);
         return;
@@ -223,7 +223,7 @@ void func_801F1A94(void) {
     if (D_801FC840.unk1 == 2) {
         id = c->equip[D_801FC840.unk2];
     } else {
-        id = D_801FC840.unk3C[D_801FC840.unk4.unk5 + D_801FC840.unk4.cursor].id;
+        id = D_801FC840.unk3C[D_801FC840.unk4.top + D_801FC840.unk4.cursor].id;
     }
     if (id == 0xFF) {
         return;
@@ -300,8 +300,8 @@ void func_801F1F08(void) {
         for (i = 0; i < view.unk0; i++) {
             func_801F2F3C(0, i, view.unk1 + i, &view);
         }
-        if (l->unk8 & 4) {
-            func_8002F40C(l, r, &sub);
+        if (l->scroll & 4) {
+            menuList_getRowsRect(l, r, &sub);
             win_setClip(&sub, 0x13, 1);
             func_801F2ED4();
         }
@@ -520,7 +520,7 @@ void func_801F2894(void) {
             }
         }
     }
-    func_8002EDFC(&D_801FC840.unk4, n, 6, 1, 0x62);
+    menuList_init(&D_801FC840.unk4, n, 6, 1, 0x62);
 }
 
 void func_801F2AB4(void) {
@@ -545,8 +545,8 @@ void func_801F2AB4(void) {
         } else {
             g_menuHelp.text = D_801F8990 + D_80069018[id].unk2;
         }
-    } else if (D_801FC840.unk1 == 3 && (l = &D_801FC840.unk4)->unk2 != 0) {
-        e = D_801FC840.unk3C + (l->unk5 + l->cursor);
+    } else if (D_801FC840.unk1 == 3 && (l = &D_801FC840.unk4)->rows != 0) {
+        e = D_801FC840.unk3C + (l->top + l->cursor);
         if (e->unk1 != 0) {
             g_menuHelp.text = D_801F8990 + D_80069018[e->unk0].unk2;
         }
@@ -590,8 +590,8 @@ void func_801F2D18(void) {
     if (help_isOpen()) {
         func_801F2AB4();
     }
-    if (D_801FC840.unk1 == 3 && D_801FC840.unk4.unk8 != 0) {
-        func_8002EB74(&D_801FC840.unk4);
+    if (D_801FC840.unk1 == 3 && D_801FC840.unk4.scroll != 0) {
+        menuList_update(&D_801FC840.unk4);
     }
     if (D_801FC840.unk23C.unkC != 0) {
         func_800631AC(&D_801FC840.unk23C);
@@ -602,7 +602,7 @@ void func_801F2D18(void) {
 }
 
 void func_801F2DB4(void) {
-    if (D_801FC840.unk4.unk8 == 0) {
+    if (D_801FC840.unk4.scroll == 0) {
         if (g_padRepeat & BTN_CIRCLE) {
             snd_playSe(0x65);
             func_801F307C();
@@ -632,7 +632,7 @@ void func_801F2ED4(void) {
     MenuView v;
     s32 i;
 
-    func_8002F344(&D_801FC840.unk4, &v);
+    menuList_getPageView(&D_801FC840.unk4, &v);
     for (i = 0; i < v.unk0; i++) {
         func_801F2F3C(0, i, v.unk1 + i, &v);
     }
@@ -693,8 +693,8 @@ void func_801F30D8(void) {
     l = &m->unk4;
     c = gs->unk1C->party[m->unk3];
     old = c->equip[m->unk2];
-    item = m->unk3C[l->unk5 + l->cursor].id;
-    if (l->unk2 == 0) {
+    item = m->unk3C[l->top + l->cursor].id;
+    if (l->rows == 0) {
         snd_playSe(0x66);
         return;
     }

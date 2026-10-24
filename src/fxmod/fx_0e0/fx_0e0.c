@@ -129,7 +129,7 @@ void func_801E7B08(SVECTOR *pos, SVECTOR *rot, s32 scale, s32 c, s32 tpage, s32 
     col[3] = (abr != 0xFF) ? 0x2E : 0x2C;
     tpage |= (abr & 3) << 5;
     gte_rtv0tr_b();
-    ex->func_800316D8(rot, &m);
+    ex->math_rotMatrixYXZ(rot, &m);
     sc.vx = sc.vy = sc.vz = scale;
     ex->ScaleMatrix(&m, &sc);
     gte_stlvnl(m.t);
@@ -205,7 +205,7 @@ void func_801E7E18(SVECTOR *pos, SVECTOR *rot, s32 scale, s32 c, s32 tpage, s32 
     }
     tpage |= (abr & 3) << 5;
     gte_rtv0tr_b();
-    ex->func_800316D8(rot, &m);
+    ex->math_rotMatrixYXZ(rot, &m);
     sc.vx = sc.vy = sc.vz = scale;
     ex->ScaleMatrix(&m, &sc);
     gte_stlvnl(m.t);

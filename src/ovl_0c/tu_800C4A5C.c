@@ -246,7 +246,7 @@ void func_800C5A48(u8 arg0) {
         if (D_800D30CD == 0 && g_worldDataSet == 1) {
             VECTOR scale;
 
-            func_80030AF4(&D_800CDF80, &m);
+            math_rotMatrixXYZ(&D_800CDF80, &m);
             if ((u8)func_800BBE24(&D_800CDF50, (VECTOR *)m.t, &v, 0)) {
                 scale = D_800A8588;
                 ScaleMatrix(&m, &scale);
@@ -256,7 +256,7 @@ void func_800C5A48(u8 arg0) {
                 func_800BA458(WM_PACK0(0x3A), 0x50, 1);
                 func_800BA458(WM_PACK0(0x35), 0x3C, 0);
                 for (j = 0; j < 3; j++) {
-                    func_80030AF4(&D_800CDFA0[j], &m);
+                    math_rotMatrixXYZ(&D_800CDFA0[j], &m);
                     func_800BBE24(&D_800CDF50, (VECTOR *)m.t, &v, 0);
                     CompMatrix(D_800CF448, &m, &m);
                     SetRotMatrix(&m);
@@ -267,7 +267,7 @@ void func_800C5A48(u8 arg0) {
         }
         break;
     case 7:
-        func_80030AF4(&D_800CDF48, &m);
+        math_rotMatrixXYZ(&D_800CDF48, &m);
         func_800BBE24(&D_800CDF38, (VECTOR *)m.t, &v, 0);
         CompMatrix(D_800CF448, &m, &m);
         SetRotMatrix(&m);
@@ -295,17 +295,17 @@ void func_800C5A48(u8 arg0) {
             }
             func_800BBE24(&D_800CDF60, (VECTOR *)m.t, &v, 0);
             CompMatrix(D_800CF448, &m, &m);
-            func_80030AF4(&D_800CDF98, &m);
+            math_rotMatrixXYZ(&D_800CDF98, &m);
             SetRotMatrix(&m);
             SetTransMatrix(&m);
             func_800BA458(WM_PACK0(0x3F), D_800CDFB8, 2);
-            func_80030AF4(&D_800CDF88, &m);
+            math_rotMatrixXYZ(&D_800CDF88, &m);
             func_800BBE24(&D_800CDF60, (VECTOR *)m.t, &v, 0);
             CompMatrix(D_800CF448, &m, &m);
             SetRotMatrix(&m);
             SetTransMatrix(&m);
             func_800BA458(WM_PACK0(0x3C), 0, 2);
-            func_80030AF4(&D_800CDF90, &m);
+            math_rotMatrixXYZ(&D_800CDF90, &m);
             func_800BBE24(&D_800CDF60, (VECTOR *)m.t, &v, 0);
             CompMatrix(D_800CF448, &m, &m);
             SetRotMatrix(&m);
@@ -339,7 +339,7 @@ void func_800C5A48(u8 arg0) {
                     c = ~(D_800D48E8[i] * 7);
                     SetBackColor(c >> 1, c >> 2, c);
                     m2.t[1] = -700;
-                    func_80030AF4(&D_800D4910[i], &m1);
+                    math_rotMatrixXYZ(&D_800D4910[i], &m1);
                     gte_CompMatrix(&m1, &m2, &m);
                     memset(&s, 0, sizeof(VECTOR));
                     s.vx = 0x2FA0;
@@ -384,7 +384,7 @@ void func_800C5A48(u8 arg0) {
                     D_800D4830[i] += 3;
                 }
                 m2.t[2] = -D_800D4830[i];
-                func_80030EA4(&D_800D4870[i], &m1);
+                math_rotMatrixZXY(&D_800D4870[i], &m1);
                 gte_CompMatrix(&m1, &m2, &m);
                 scale = D_800A8598;
                 ScaleMatrix(&m, &scale);

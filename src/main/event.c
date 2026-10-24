@@ -2161,12 +2161,12 @@ s32 evt_execInstr(void) {
     case 0xEC:
         a = evt_getArg8_inline();
         b = evt_getArg8_inline();
-        func_8002F8BC(a & 1);
-        func_8002F93C(((0x80 - evt_getArg8_inline()) << 4) & 0xFFF0);
+        fade_clearEase(a & 1);
+        fade_setAngle(((0x80 - evt_getArg8_inline()) << 4) & 0xFFF0);
         c = evt_getArg8_inline();
         d = evt_getArg8_inline();
         fade_setOtz(1);
-        func_800320B8(((a >> 2) & 1) + 1, (a >> 1) & 1, b, c | (d << 8) | (evt_getArg8_inline() << 16));
+        game_startFade(((a >> 2) & 1) + 1, (a >> 1) & 1, b, c | (d << 8) | (evt_getArg8_inline() << 16));
         return 0;
     case 0xA9:
         obj = func_80038150();

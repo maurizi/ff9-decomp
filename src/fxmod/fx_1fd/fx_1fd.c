@@ -30,7 +30,7 @@ void func_801E7704(void *trackA, void *trackB, s32 arg2, s32 arg3, SVECTOR *scal
         rot.vx = 0;
         rot.vz = 0;
         rot.vy = rotY;
-        ex->func_800316D8(&rot, &m);
+        ex->math_rotMatrixYXZ(&rot, &m);
         gte_SetRotMatrix(&m);
         gte_ldtr0();
         gte_ldv0(&p);
@@ -64,7 +64,7 @@ void func_801E7704(void *trackA, void *trackB, s32 arg2, s32 arg3, SVECTOR *scal
         } else {
             rot.vz = 0x400;
         }
-        ex->func_800316D8(&rot, &m);
+        ex->math_rotMatrixYXZ(&rot, &m);
         ex->MulRotMatrix(&m);
         gte_SetRotMatrix(&m);
         gte_SetTransMatrix(&m);
@@ -103,7 +103,7 @@ void func_801E7AF8(void *track, s32 arg1, s32 arg2, SVECTOR *scale, s32 w, s32 r
         rot.vx = 0;
         rot.vy = rotY;
         rot.vz = 0;
-        ex->func_800316D8(&rot, &m);
+        ex->math_rotMatrixYXZ(&rot, &m);
         gte_SetRotMatrix(&m);
         gte_ldtr0();
         gte_ldv0(&p);
@@ -120,7 +120,7 @@ void func_801E7AF8(void *track, s32 arg1, s32 arg2, SVECTOR *scale, s32 w, s32 r
         rot.vx = 0;
         rot.vy = 0;
         rot.vz = 0x400;
-        ex->func_800316D8(&rot, &m);
+        ex->math_rotMatrixYXZ(&rot, &m);
         ex->MulRotMatrix(&m);
         gte_SetRotMatrix(&m);
         gte_SetTransMatrix(&m);

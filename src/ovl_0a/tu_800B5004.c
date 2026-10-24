@@ -82,9 +82,9 @@ void func_800B52DC(void) {
 }
 
 void func_800B532C(void) {
-    func_80032100();
+    menu_update();
     game_updateWindows();
-    func_80032098();
+    game_updateFade();
     game_updateTimer();
     DrawSync(0);
     VSync(0);
@@ -206,8 +206,8 @@ void func_800B57C8(void) {
 
 void func_800B5870(void) {
     menu_open(4, 2);
-    func_80032628(func_800B58B8);
-    func_80032634(0);
+    menu_setOnClose(func_800B58B8);
+    menu_setFadeInOnClose(0);
 }
 
 void func_800B58A8(void) {
@@ -222,8 +222,8 @@ void func_800B58B8(void) {
 
 void func_800B58D8(void) {
     menu_open(8, ((D_800CA058.unk2 & 3) << 14) | D_800CA058.unk4);
-    func_80032628(func_800B5938);
-    func_80032634(0);
+    menu_setOnClose(func_800B5938);
+    menu_setFadeInOnClose(0);
 }
 
 void func_800B5928(void) {

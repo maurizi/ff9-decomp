@@ -62,7 +62,7 @@ void func_801E78E8(void) {
                 rot.vx = s->unk14;
                 rot.vy = s->unk16;
                 rot.vz = 0;
-                ex->func_800316D8(&rot, &m);
+                ex->math_rotMatrixYXZ(&rot, &m);
                 ex->ScaleMatrix(&m, &sc);
                 m.t[0] = s->unk0 >> 12;
                 m.t[1] = s->unk4 >> 12;
@@ -132,7 +132,7 @@ void func_801E7B68(SVECTOR *pos, SVECTOR *rot, VECTOR *scale, s32 r0, s32 r1, s3
     tpage |= (abr & 3) << 5;
     c1.code = c2.code;
     gte_rtv0tr_b();
-    ex->func_800316D8(rot, &m);
+    ex->math_rotMatrixYXZ(rot, &m);
     ex->ScaleMatrix(&m, scale);
     gte_stlvnl(m.t);
     ex->MulRotMatrix(&m);

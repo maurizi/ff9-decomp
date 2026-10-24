@@ -22,7 +22,7 @@ typedef struct BtlfxExports {
     s32 (*btlfx_stepModuleParticle)(Pool6CEntry *, s32, SVECTOR *, SVECTOR *); /* 0x008 (asm; DS port F12: particle, bias, out) */
     s32 (*btlfx_drawTrailScreen)(s32, s32, s32, s32, s32, s32, s32, s32, s32, u32 *, u32 *, s32); /* 0x00C */
     s32 (*btl_setVsyncMode)(s32); /* 0x010 */
-    s32 (*func_800316D8)(void *, void *); /* 0x014 */
+    s32 (*math_rotMatrixYXZ)(void *, void *); /* 0x014 */
     s32 (*Hi_RegisterGouEffModel)(BtlUnit9C8 *); /* 0x018 */
     s32 (*SetDrawMove)(void *, RECT *, int, int); /* 0x01C */
     MATRIX * (*ScaleMatrix)(MATRIX *, VECTOR *); /* 0x020 */

@@ -1105,12 +1105,12 @@ extern u8 D_800CE1E1;
 extern u8 D_800CE1F3;
 
 /* main exe: candidates for ff9.h */
-MATRIX *func_80030EA4(SVECTOR *, MATRIX *);
+MATRIX *math_rotMatrixZXY(SVECTOR *, MATRIX *);
 void RotTrans(SVECTOR *v0, VECTOR *v1, long *flag);
 void func_80064CDC(s32, s32);
-void func_80031264(void *, void *); /* rotation (SVECTOR) -> bone matrix */
-void func_800316D8(SVECTOR *, MATRIX *); /* RotMatrix */
-void func_80030AF4(SVECTOR *, MATRIX *);
+void math_rotMatrixZYX_gte(void *, void *); /* rotation (SVECTOR) -> bone matrix */
+void math_rotMatrixYXZ(SVECTOR *, MATRIX *); /* RotMatrix */
+void math_rotMatrixXYZ(SVECTOR *, MATRIX *);
 s32 math_cos(s32); /* cos */
 s32 math_sin(s32); /* sin */
 void SetGeomScreen(u16);
@@ -1364,7 +1364,7 @@ void func_800AAD48(WmObjEnt *, WmObjSlot *, MATRIX *, s32, s32);
 void cd_readChunks(s32, void *, s32, s32);
 s32 func_8004B1EC(void);
 s32 func_8004B1FC(void);
-void func_8002FA10(void);
+void fade_inAdditiveDefault(void);
 void OuterProduct0(VECTOR *v0, VECTOR *v1, VECTOR *v2);
 
 /* func_800B9808 (walkmesh height lookup) */

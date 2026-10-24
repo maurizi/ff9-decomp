@@ -526,7 +526,7 @@ s32 fx_1f2_op80(s32 mode, Fx1f2Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
             for (i = 0; i < 0x10; i++) {
                 tr_sp = &D_801EA690[i];
                 if (tr_sp->unk4C == 0 && work->unk34 >= 0xD) {
-                    ex->func_800316D8(&D_801EA568, &m);
+                    ex->math_rotMatrixYXZ(&D_801EA568, &m);
                     m.t[0] = D_801EA650.vx;
                     m.t[1] = D_801EA650.vy;
                     m.t[2] = D_801EA650.vz;

@@ -164,7 +164,7 @@ void func_8005CF04(void) {
                     }
                     c->unk70 = v;
                 }
-                /* identical branches (jump2 merges them), as in func_80030EE4 */
+                /* identical branches (jump2 merges them), as in math_buildRotMatrixZXY */
                 if (v) {
                     mask ^= k;
                 } else {

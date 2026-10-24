@@ -36,7 +36,7 @@ typedef struct {
 s32 cd_findFile(char *);
 extern s32 g_mbgFrame;
 u8 cd_seekStreamAsync(s32);
-void func_80032100(void);
+void menu_update(void);
 void cd_pause(void);
 void mbg_stop(void);
 s32 func_80055290(void *);

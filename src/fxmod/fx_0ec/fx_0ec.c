@@ -31,7 +31,7 @@ void func_801E77FC(SVECTOR *pos) {
     if (p != NULL) {
         gte_SetRotMatrix(env->unk14);
         gte_SetTransMatrix(env->unk14);
-        ex->func_800316D8(&D_801E98A8, &m);
+        ex->math_rotMatrixYXZ(&D_801E98A8, &m);
         ex->ScaleMatrix(&m, &D_801E98C0);
         m.t[0] = D_801E98B0.vx;
         m.t[1] = D_801E98B0.vy;
@@ -139,7 +139,7 @@ void func_801E7B84(void) {
                     rot.vy = 0;
                     rot.vz = 0;
                 }
-                ex->func_800316D8(&rot, &m);
+                ex->math_rotMatrixYXZ(&rot, &m);
                 if (s->unk18 >= 8) {
                     ex->ScaleMatrix(&m, &sc);
                 }
@@ -309,7 +309,7 @@ void func_801E82D8(void) {
             rot.vx = s->unk14;
             rot.vy = s->unk16;
             rot.vz = 0;
-            ex->func_800316D8(&rot, &m);
+            ex->math_rotMatrixYXZ(&rot, &m);
             ex->ScaleMatrix(&m, &sc);
             m.t[0] = s->unk0.vx >> 12;
             m.t[1] = s->unk0.vy >> 12;
@@ -558,7 +558,7 @@ s32 fx_0ec_op80(s32 mode, Fx0ecWork80 *work, Unk800F78A4 *env, Unk80100C78Entry 
                 sv.vz = v->vz;
                 gte_SetRotMatrix(env->unk14);
                 gte_SetTransMatrix(env->unk14);
-                ex->func_800316D8(&rot, &m);
+                ex->math_rotMatrixYXZ(&rot, &m);
                 ex->ScaleMatrix(&m, &sc);
                 m.t[0] = pos.vx;
                 m.t[1] = pos.vy;

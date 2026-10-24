@@ -18,7 +18,7 @@ s32 func_801E776C(Pool30Entry *e, SVECTOR *pos, Fx1e7Path *path, s32 frame, s32 
     if (path == D_801E82E8) {
         v.vx += 0x50;
     }
-    ex->func_800316D8(&D_801E84E0, &m);
+    ex->math_rotMatrixYXZ(&D_801E84E0, &m);
     gte_SetRotMatrix(&m);
     gte_ldtr0();
     gte_ldv0(&v);

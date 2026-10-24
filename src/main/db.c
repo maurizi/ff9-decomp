@@ -232,7 +232,7 @@ void game_setClearColor(s32 r, s32 g, s32 b) {
 }
 
 void game_setScreenHeight(s32 h) {
-    Unk4 func_8002F9A8(void);
+    Unk4 fade_getColor(void);
     Unk4 col;
     RECT r;
     s32 fade;
@@ -243,8 +243,8 @@ void game_setScreenHeight(s32 h) {
     if (fade_isActive() || fade_isBusy()) {
         fade = 1;
     }
-    busy = func_8002F864();
-    col = func_8002F9A8();
+    busy = fade_isSubtractive();
+    col = fade_getColor();
     if (busy == 1) {
         col.unk0[0] = 0xFF - col.unk0[0];
         col.unk0[1] = 0xFF - col.unk0[1];
@@ -287,7 +287,7 @@ void game_setScreenHeight(s32 h) {
 }
 
 void game_freezeScreen(void) {
-    Unk4 func_8002F9A8(void); /* ovl_0a declares it with an out-pointer */
+    Unk4 fade_getColor(void); /* ovl_0a declares it with an out-pointer */
     Unk4 col;
     s32 fade;
     s32 busy;
@@ -300,8 +300,8 @@ void game_freezeScreen(void) {
         if (fade_isActive() || fade_isBusy()) {
             fade = 1;
         }
-        busy = func_8002F864();
-        col = func_8002F9A8();
+        busy = fade_isSubtractive();
+        col = fade_getColor();
         if (fade && !busy) {
             D_80073C88.isbg = 1;
             D_80073C88.r0 = col.unk0[0];

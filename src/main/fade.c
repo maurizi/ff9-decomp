@@ -14,29 +14,29 @@ u8 fade_isBusy(void) {
     if (g_fade.active != 0) {
         return 1;
     }
-    return g_fade.unk3 != 0;
+    return g_fade.covered != 0;
 }
 
-void func_8002F83C(void) {
+void fade_cancel(void) {
     g_fade.active = 0;
-    g_fade.unk3 = 0;
+    g_fade.covered = 0;
     g_fade.type = 0;
 }
 
-u8 func_8002F854(void) {
+u8 fade_getType(void) {
     return g_fade.type;
 }
 
-u8 func_8002F864(void) {
+u8 fade_isSubtractive(void) {
     return g_fade.subtract;
 }
 
-s32 func_8002F874(void) {
+s32 fade_getFrame(void) {
     return g_fade.frame;
 }
 
-void func_8002F884(void) {
-    g_fade.unk3 = 0;
+void fade_clear(void) {
+    g_fade.covered = 0;
     g_fade.active = 0;
     g_fade.frame = 0;
     g_fade.frames = 0;
@@ -50,14 +50,14 @@ s32 fade_setOnDone(void (*a)(void)) {
     return old;
 }
 
-u8 func_8002F8BC() {
-    u8 old = g_fade.unk4;
-    g_fade.unk4 = 0;
+u8 fade_clearEase() {
+    u8 old = g_fade.eased;
+    g_fade.eased = 0;
     return old;
 }
 
-u8 func_8002F8D4(void) {
-    return g_fade.unk4;
+u8 fade_isEased(void) {
+    return g_fade.eased;
 }
 
 s32 fade_setOtz(s32 a) {
@@ -73,27 +73,27 @@ s32 fade_getOtz(void) {
     return g_fade.otz;
 }
 
-u8 func_8002F914(u8 a) {
-    u8 old = g_fade.unk3;
-    g_fade.unk3 = a;
+u8 fade_setCovered(u8 a) {
+    u8 old = g_fade.covered;
+    g_fade.covered = a;
     return old;
 }
 
-u8 func_8002F92C(void) {
-    return g_fade.unk3;
+u8 fade_isCovered(void) {
+    return g_fade.covered;
 }
 
-u16 func_8002F93C(u16 a) {
-    u16 old = g_fade.unkA;
-    g_fade.unkA = a;
+u16 fade_setAngle(u16 a) {
+    u16 old = g_fade.angle;
+    g_fade.angle = a;
     return old;
 }
 
-u16 func_8002F954(void) {
-    return g_fade.unkA;
+u16 fade_getAngle(void) {
+    return g_fade.angle;
 }
 
-void func_8002F964(u8 a, u8 b, u8 c) {
+void fade_setEndColor(u8 a, u8 b, u8 c) {
     FadeState *p = &g_fade;
     FadeState *q;
     s32 r = 0;
@@ -104,10 +104,10 @@ void func_8002F964(u8 a, u8 b, u8 c) {
     if (a != 0 || b != 0 || c != 0) {
         r = 1;
     }
-    q->unk3 = r;
+    q->covered = r;
 }
 
-Unk4 func_8002F9A8(void) {
+Unk4 fade_getColor(void) {
     return g_fade.color;
 }
 
@@ -119,51 +119,51 @@ void fade_outDefault(void) {
     fade_out(0xC);
 }
 
-void func_8002FA10(void) {
+void fade_inAdditiveDefault(void) {
     fade_inAdditive(0x10);
 }
 
-void func_8002FA30(void) {
+void fade_outAdditiveDefault(void) {
     fade_outAdditive(0xC);
 }
 
 void fade_in(s32 a) {
-    func_8002F93C(0);
-    func_8002F8BC(1);
+    fade_setAngle(0);
+    fade_clearEase(1);
     fade_start(1, 1, 0, 0xFFFFFF);
     fade_start(1, 1, a, 0);
 }
 
 void fade_out(s32 a) {
-    func_8002F93C(0);
-    func_8002F8BC(1);
+    fade_setAngle(0);
+    fade_clearEase(1);
     fade_start(1, 1, 0, 0);
     fade_start(1, 1, a, 0xFFFFFF);
 }
 
 void fade_inAdditive(s32 a) {
-    func_8002F93C(0);
-    func_8002F8BC(1);
+    fade_setAngle(0);
+    fade_clearEase(1);
     fade_start(1, 0, 0, 0xFFFFFF);
     fade_start(1, 0, a, 0);
 }
 
 void fade_outAdditive(s32 a) {
-    func_8002F93C(0);
-    func_8002F8BC(1);
+    fade_setAngle(0);
+    fade_clearEase(1);
     fade_start(1, 0, 0, 0);
     fade_start(1, 0, a, 0xFFFFFF);
 }
 
-u32 *func_8002FBC0(s32 i) {
+u32 *fade_getOt(s32 i) {
     if (g_gameState->mode != 2) {
         return &g_gameState->unk1C->unk10[i][g_fade.otz];
     }
-    return &D_80077CA4[i];
+    return &g_fadeBattleOt[i];
 }
 
-void func_8002FC10(void *a) {
-    func_80030770(a);
+void fade_getWipeColors(void *a) {
+    fadeWipe_getColors(a);
 }
 
 void func_8002FC30(void) {
@@ -171,12 +171,12 @@ void func_8002FC30(void) {
 
 void fade_init(void) {
     g_fade.otz = 1;
-    g_fade.unkA = -1;
+    g_fade.angle = -1;
     g_fade.active = 0;
     g_fade.onDone = 0;
-    g_fade.unk4 = 0;
-    g_fade.unk3 = 0;
-    g_fade.unk5 = 0;
+    g_fade.eased = 0;
+    g_fade.covered = 0;
+    g_fade.prevType = 0;
     g_fade.type = 0;
     fade_init_clear3(g_fade.color.unk0);
     fade_init_clear3(&g_fade.endR);
@@ -195,19 +195,19 @@ void fade_start(s32 a, s32 b, s32 c, s32 col) {
         g_fade.subtract = b;
         g_fade.frame = 0;
         g_fade.frames = c;
-        g_fade.unk5 = old;
+        g_fade.prevType = old;
         *(Unk4 *)&g_fade.endR = *(Unk4 *)&col;
         g_fade.active = 1;
         g_fade.onDone = 0;
-        g_fade.unk3 = (*(s32 *)&g_fade.endR & 0xFFFFFF) != 0;
-        fn = D_8006BD04[a].unk0;
+        g_fade.covered = (*(s32 *)&g_fade.endR & 0xFFFFFF) != 0;
+        fn = g_fadeTypes[a].unk0;
         if (fn != NULL) {
             fn(&g_fade);
         }
     }
 }
 
-s32 func_8002FD70(s32 a, s32 b, s32 lim) {
+s32 fade_stepClamp(s32 a, s32 b, s32 lim) {
     a += b;
     if (b < 0) {
         if (a < lim) {
@@ -221,7 +221,7 @@ s32 func_8002FD70(s32 a, s32 b, s32 lim) {
     return a;
 }
 
-s32 func_8002FD98(s32 a, s32 b) {
+s32 fade_divRoundOut(s32 a, s32 b) {
     s32 t;
 
     if (a >= 0) {
@@ -236,7 +236,7 @@ s32 func_8002FD98(s32 a, s32 b) {
     return b;
 }
 
-s32 func_8002FDE8(s32 x, s32 a, s32 b) {
+s32 fade_ease(s32 x, s32 a, s32 b) {
     s32 t;
 
     if (b != 0) {
@@ -258,10 +258,10 @@ void func_8002FEAC(void) {
 }
 
 void func_8002FEB4(void) {
-    func_8002F5A0(0);
+    fade_reverse(0);
 }
 
-void func_8002FED4(FadeState *p) {
+void fadeWipe_start(FadeState *p) {
     s32 half;
     s32 n;
     Unk80077D00 *d;
@@ -269,36 +269,36 @@ void func_8002FED4(FadeState *p) {
     if (p->frames == 0) {
         p->frames = 0x10;
     }
-    D_80077D00.unk0 = p->color.unk0[0];
-    D_80077D00.unk3C.unk0 = D_80077D00.unk0;
-    D_80077D00.unk30.unk0 = D_80077D00.unk0;
-    D_80077D00.unk4 = p->color.unk0[1];
-    D_80077D00.unk3C.unk4 = D_80077D00.unk4;
-    D_80077D00.unk30.unk4 = D_80077D00.unk4;
-    D_80077D00.unk8 = p->color.unk0[2];
-    D_80077D00.unk3C.unk8 = D_80077D00.unk8;
-    D_80077D00.unk30.unk8 = D_80077D00.unk8;
-    D_80077D00.unkC = p->endR;
-    D_80077D00.unk10 = p->endG;
-    D_80077D00.unk14 = p->endB;
-    D_80077D00.unk54 = D_80077D00.unkC - D_80077D00.unk0;
-    D_80077D00.unk58 = D_80077D00.unk10 - D_80077D00.unk4;
-    D_80077D00.unk5C = D_80077D00.unk14 - D_80077D00.unk8;
+    g_fadeWipe.unk0 = p->color.unk0[0];
+    g_fadeWipe.unk3C.unk0 = g_fadeWipe.unk0;
+    g_fadeWipe.unk30.unk0 = g_fadeWipe.unk0;
+    g_fadeWipe.unk4 = p->color.unk0[1];
+    g_fadeWipe.unk3C.unk4 = g_fadeWipe.unk4;
+    g_fadeWipe.unk30.unk4 = g_fadeWipe.unk4;
+    g_fadeWipe.unk8 = p->color.unk0[2];
+    g_fadeWipe.unk3C.unk8 = g_fadeWipe.unk8;
+    g_fadeWipe.unk30.unk8 = g_fadeWipe.unk8;
+    g_fadeWipe.unkC = p->endR;
+    g_fadeWipe.unk10 = p->endG;
+    g_fadeWipe.unk14 = p->endB;
+    g_fadeWipe.unk54 = g_fadeWipe.unkC - g_fadeWipe.unk0;
+    g_fadeWipe.unk58 = g_fadeWipe.unk10 - g_fadeWipe.unk4;
+    g_fadeWipe.unk5C = g_fadeWipe.unk14 - g_fadeWipe.unk8;
     half = p->frames >> 1;
     n = 1;
     if (half > 0) {
         n = half;
     }
-    D_80077D00.unk60 = n;
-    d = &D_80077D00;
+    g_fadeWipe.unk60 = n;
+    d = &g_fadeWipe;
     d->unk64 = p->frames - n;
-    d->unk18 = func_8002FD98(d->unk54, d->unk60);
-    d->unk1C = func_8002FD98(d->unk58, d->unk60);
-    d->unk20 = func_8002FD98(d->unk5C, d->unk60);
+    d->unk18 = fade_divRoundOut(d->unk54, d->unk60);
+    d->unk1C = fade_divRoundOut(d->unk58, d->unk60);
+    d->unk20 = fade_divRoundOut(d->unk5C, d->unk60);
     if (d->unk64 != 0) {
-        d->unk24 = func_8002FD98(d->unk54, d->unk64);
-        d->unk28 = func_8002FD98(d->unk58, d->unk64);
-        d->unk2C = func_8002FD98(d->unk5C, d->unk64);
+        d->unk24 = fade_divRoundOut(d->unk54, d->unk64);
+        d->unk28 = fade_divRoundOut(d->unk58, d->unk64);
+        d->unk2C = fade_divRoundOut(d->unk5C, d->unk64);
     } else {
         do {
         } while (0); /* empty macro in the original; needed for the s0/s1 split */
@@ -308,42 +308,42 @@ void func_8002FED4(FadeState *p) {
     }
 }
 
-void func_80030030(FadeState *p) {
-    if ((u32)p->frame < D_80077D00.unk60) {
-        D_80077D00.unk30.unk0 = func_8002FD70(D_80077D00.unk30.unk0, D_80077D00.unk18, D_80077D00.unkC);
-        D_80077D00.unk30.unk4 = func_8002FD70(D_80077D00.unk30.unk4, D_80077D00.unk1C, D_80077D00.unk10);
-        D_80077D00.unk30.unk8 = func_8002FD70(D_80077D00.unk30.unk8, D_80077D00.unk20, D_80077D00.unk14);
-        D_80077D00.unk48 = D_80077D00.unk30;
+void fadeWipe_update(FadeState *p) {
+    if ((u32)p->frame < g_fadeWipe.unk60) {
+        g_fadeWipe.unk30.unk0 = fade_stepClamp(g_fadeWipe.unk30.unk0, g_fadeWipe.unk18, g_fadeWipe.unkC);
+        g_fadeWipe.unk30.unk4 = fade_stepClamp(g_fadeWipe.unk30.unk4, g_fadeWipe.unk1C, g_fadeWipe.unk10);
+        g_fadeWipe.unk30.unk8 = fade_stepClamp(g_fadeWipe.unk30.unk8, g_fadeWipe.unk20, g_fadeWipe.unk14);
+        g_fadeWipe.unk48 = g_fadeWipe.unk30;
     } else {
-        D_80077D00.unk3C.unk0 = func_8002FD70(D_80077D00.unk3C.unk0, D_80077D00.unk24, D_80077D00.unkC);
-        D_80077D00.unk3C.unk4 = func_8002FD70(D_80077D00.unk3C.unk4, D_80077D00.unk28, D_80077D00.unk10);
-        D_80077D00.unk3C.unk8 = func_8002FD70(D_80077D00.unk3C.unk8, D_80077D00.unk2C, D_80077D00.unk14);
-        D_80077D00.unk48 = D_80077D00.unk3C;
+        g_fadeWipe.unk3C.unk0 = fade_stepClamp(g_fadeWipe.unk3C.unk0, g_fadeWipe.unk24, g_fadeWipe.unkC);
+        g_fadeWipe.unk3C.unk4 = fade_stepClamp(g_fadeWipe.unk3C.unk4, g_fadeWipe.unk28, g_fadeWipe.unk10);
+        g_fadeWipe.unk3C.unk8 = fade_stepClamp(g_fadeWipe.unk3C.unk8, g_fadeWipe.unk2C, g_fadeWipe.unk14);
+        g_fadeWipe.unk48 = g_fadeWipe.unk3C;
     }
-    p->color.unk0[0] = D_80077D00.unk48.unk0;
-    p->color.unk0[1] = D_80077D00.unk48.unk4;
-    p->color.unk0[2] = D_80077D00.unk48.unk8;
+    p->color.unk0[0] = g_fadeWipe.unk48.unk0;
+    p->color.unk0[1] = g_fadeWipe.unk48.unk4;
+    p->color.unk0[2] = g_fadeWipe.unk48.unk8;
 }
 
-void func_8003015C(FadeState *p, s32 n) {
-    if (n < (s32)D_80077D00.unk60) {
-        D_80077D00.unk30.unk0 = func_8002FD70(D_80077D00.unk30.unk0, D_80077D00.unk18 * n, D_80077D00.unkC);
-        D_80077D00.unk30.unk4 = func_8002FD70(D_80077D00.unk30.unk4, D_80077D00.unk1C * n, D_80077D00.unk10);
-        D_80077D00.unk30.unk8 = func_8002FD70(D_80077D00.unk30.unk8, D_80077D00.unk20 * n, D_80077D00.unk14);
-        D_80077D00.unk48 = D_80077D00.unk30;
+void fadeWipe_seek(FadeState *p, s32 n) {
+    if (n < (s32)g_fadeWipe.unk60) {
+        g_fadeWipe.unk30.unk0 = fade_stepClamp(g_fadeWipe.unk30.unk0, g_fadeWipe.unk18 * n, g_fadeWipe.unkC);
+        g_fadeWipe.unk30.unk4 = fade_stepClamp(g_fadeWipe.unk30.unk4, g_fadeWipe.unk1C * n, g_fadeWipe.unk10);
+        g_fadeWipe.unk30.unk8 = fade_stepClamp(g_fadeWipe.unk30.unk8, g_fadeWipe.unk20 * n, g_fadeWipe.unk14);
+        g_fadeWipe.unk48 = g_fadeWipe.unk30;
     } else {
-        n -= D_80077D00.unk60;
-        D_80077D00.unk3C.unk0 = func_8002FD70(D_80077D00.unk3C.unk0, D_80077D00.unk24 * n, D_80077D00.unkC);
-        D_80077D00.unk3C.unk4 = func_8002FD70(D_80077D00.unk3C.unk4, D_80077D00.unk28 * n, D_80077D00.unk10);
-        D_80077D00.unk3C.unk8 = func_8002FD70(D_80077D00.unk3C.unk8, D_80077D00.unk2C * n, D_80077D00.unk14);
-        D_80077D00.unk48 = D_80077D00.unk3C;
+        n -= g_fadeWipe.unk60;
+        g_fadeWipe.unk3C.unk0 = fade_stepClamp(g_fadeWipe.unk3C.unk0, g_fadeWipe.unk24 * n, g_fadeWipe.unkC);
+        g_fadeWipe.unk3C.unk4 = fade_stepClamp(g_fadeWipe.unk3C.unk4, g_fadeWipe.unk28 * n, g_fadeWipe.unk10);
+        g_fadeWipe.unk3C.unk8 = fade_stepClamp(g_fadeWipe.unk3C.unk8, g_fadeWipe.unk2C * n, g_fadeWipe.unk14);
+        g_fadeWipe.unk48 = g_fadeWipe.unk3C;
     }
-    p->color.unk0[0] = D_80077D00.unk48.unk0;
-    p->color.unk0[1] = D_80077D00.unk48.unk4;
-    p->color.unk0[2] = D_80077D00.unk48.unk8;
+    p->color.unk0[0] = g_fadeWipe.unk48.unk0;
+    p->color.unk0[1] = g_fadeWipe.unk48.unk4;
+    p->color.unk0[2] = g_fadeWipe.unk48.unk8;
 }
 
-void func_800302D0(FadeState *arg0) {
+void fadeWipe_draw(FadeState *arg0) {
     DVECTOR xy[4];
     MATRIX m;
     long ofx, ofy;
@@ -358,7 +358,7 @@ void func_800302D0(FadeState *arg0) {
     DR_TPAGE *tp;
 
     tpage = 64;
-    ot = func_8002FBC0(g_gameState->unk1C->unk8);
+    ot = fade_getOt(g_gameState->unk1C->unk8);
     if (arg0->subtract == 0) {
         tpage = 32;
     }
@@ -370,8 +370,8 @@ void func_800302D0(FadeState *arg0) {
     PushMatrix();
     D_80077CB0.vx = 0;
     D_80077CB0.vy = 0;
-    D_80077CB0.vz = arg0->unkA;
-    func_80030AF4(&D_80077CB0, &m);
+    D_80077CB0.vz = arg0->angle;
+    math_rotMatrixXYZ(&D_80077CB0, &m);
     m.t[2] = 0;
     m.t[1] = 0;
     m.t[0] = 0;
@@ -392,16 +392,16 @@ void func_800302D0(FadeState *arg0) {
         }
         poly = (POLY_G4 *)g_fade.pkt;
         SetPolyG4(poly);
-        if ((u32)arg0->frame < D_80077D00.unk60) {
-            setRGB0(poly, D_80077D00.unk48.unk0, D_80077D00.unk48.unk4, D_80077D00.unk48.unk8);
-            setRGB1(poly, D_80077D00.unk48.unk0, D_80077D00.unk48.unk4, D_80077D00.unk48.unk8);
-            setRGB2(poly, D_80077D00.unk0, D_80077D00.unk4, D_80077D00.unk8);
-            setRGB3(poly, D_80077D00.unk0, D_80077D00.unk4, D_80077D00.unk8);
+        if ((u32)arg0->frame < g_fadeWipe.unk60) {
+            setRGB0(poly, g_fadeWipe.unk48.unk0, g_fadeWipe.unk48.unk4, g_fadeWipe.unk48.unk8);
+            setRGB1(poly, g_fadeWipe.unk48.unk0, g_fadeWipe.unk48.unk4, g_fadeWipe.unk48.unk8);
+            setRGB2(poly, g_fadeWipe.unk0, g_fadeWipe.unk4, g_fadeWipe.unk8);
+            setRGB3(poly, g_fadeWipe.unk0, g_fadeWipe.unk4, g_fadeWipe.unk8);
         } else {
-            setRGB0(poly, D_80077D00.unkC, D_80077D00.unk10, D_80077D00.unk14);
-            setRGB1(poly, D_80077D00.unkC, D_80077D00.unk10, D_80077D00.unk14);
-            setRGB2(poly, D_80077D00.unk48.unk0, D_80077D00.unk48.unk4, D_80077D00.unk48.unk8);
-            setRGB3(poly, D_80077D00.unk48.unk0, D_80077D00.unk48.unk4, D_80077D00.unk48.unk8);
+            setRGB0(poly, g_fadeWipe.unkC, g_fadeWipe.unk10, g_fadeWipe.unk14);
+            setRGB1(poly, g_fadeWipe.unkC, g_fadeWipe.unk10, g_fadeWipe.unk14);
+            setRGB2(poly, g_fadeWipe.unk48.unk0, g_fadeWipe.unk48.unk4, g_fadeWipe.unk48.unk8);
+            setRGB3(poly, g_fadeWipe.unk48.unk0, g_fadeWipe.unk48.unk4, g_fadeWipe.unk48.unk8);
         }
         poly->x0 = xy[0].vx;
         poly->y0 = xy[0].vy;
@@ -423,20 +423,20 @@ void func_800302D0(FadeState *arg0) {
     SetGeomOffset(ofx, ofy);
 }
 
-void func_80030770(u8 *arg0) {
-    if ((u32)g_fade.frame < D_80077D00.unk60) {
-        arg0[0] = D_80077D00.unk48.unk0;
-        arg0[1] = D_80077D00.unk48.unk4;
-        arg0[2] = D_80077D00.unk48.unk8;
-        arg0[4] = D_80077D00.unk0;
-        arg0[5] = D_80077D00.unk4;
-        arg0[6] = D_80077D00.unk8;
+void fadeWipe_getColors(u8 *arg0) {
+    if ((u32)g_fade.frame < g_fadeWipe.unk60) {
+        arg0[0] = g_fadeWipe.unk48.unk0;
+        arg0[1] = g_fadeWipe.unk48.unk4;
+        arg0[2] = g_fadeWipe.unk48.unk8;
+        arg0[4] = g_fadeWipe.unk0;
+        arg0[5] = g_fadeWipe.unk4;
+        arg0[6] = g_fadeWipe.unk8;
         return;
     }
-    arg0[0] = D_80077D00.unkC;
-    arg0[1] = D_80077D00.unk10;
-    arg0[2] = D_80077D00.unk14;
-    arg0[4] = D_80077D00.unk48.unk0;
-    arg0[5] = D_80077D00.unk48.unk4;
-    arg0[6] = D_80077D00.unk48.unk8;
+    arg0[0] = g_fadeWipe.unkC;
+    arg0[1] = g_fadeWipe.unk10;
+    arg0[2] = g_fadeWipe.unk14;
+    arg0[4] = g_fadeWipe.unk48.unk0;
+    arg0[5] = g_fadeWipe.unk48.unk4;
+    arg0[6] = g_fadeWipe.unk48.unk8;
 }

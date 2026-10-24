@@ -5,7 +5,7 @@ void func_801EEA1C(void) {
     s32 i;
 
     text_setBank(g_configMenuText);
-    func_8002EDFC(&D_801F1558.unk3C, 0xD, 9, 1, 0xB4);
+    menuList_init(&D_801F1558.unk3C, 0xD, 9, 1, 0xB4);
     m = &D_801F1558;
     m->unk0 = 0;
     m->unk2 = 0;
@@ -46,7 +46,7 @@ void func_801EEB68(void) {
         func_801F0550(&r, 0x17, sp.unk1 + i);
         win_drawBox(&r, 0x17, 0);
     }
-    if (l->unk8 & 4) {
+    if (l->scroll & 4) {
         a.x = 8;
         a.y = 0x2A;
         a.w = 0x12C;
@@ -64,7 +64,7 @@ void func_801EECB4(void) {
     ConfigMenu *m = &D_801F1558;
     s32 dir;
 
-    if (m->unk4 == 0 && m->unk3C.unk8 == 0) {
+    if (m->unk4 == 0 && m->unk3C.scroll == 0) {
         if (g_padRepeat & BTN_CIRCLE) {
             snd_playSe(0x65);
             menuScreen_open(0);
@@ -184,7 +184,7 @@ void func_801EF2B4(void) {
 void func_801EF3F8(void) {
     s32 i;
 
-    i = D_801F1558.unk3C.unk5 + D_801F1558.unk3C.cursor;
+    i = D_801F1558.unk3C.top + D_801F1558.unk3C.cursor;
     if (!fade_isBusy()) {
         g_menuHelp.x = 0;
         g_menuHelp.otz = 0x15;
@@ -209,7 +209,7 @@ void func_801EF3F8(void) {
 void func_801EF50C(u8 v) {
     u8 changed = 0;
 
-    switch (D_801F1558.unk3C.unk5 + D_801F1558.unk3C.cursor) {
+    switch (D_801F1558.unk3C.top + D_801F1558.unk3C.cursor) {
     case 0:
         if (CFG.b0 != v) {
             changed = 1;
@@ -309,7 +309,7 @@ void func_801EF938(void) {
     s32 i;
     s32 j;
 
-    i = D_801F1558.unk3C.unk5 + D_801F1558.unk3C.cursor;
+    i = D_801F1558.unk3C.top + D_801F1558.unk3C.cursor;
     on = 1;
     if ((i == on && ((g_gameState->config >> i) & on) == on) || (i == 5 && ((g_gameState->config >> 5) & 1) == on)) {
         D_801F1558.unk0 = 0;
@@ -327,7 +327,7 @@ void func_801EFA54(void) {
     s32 d;
 
     if (D_801F1558.unk4 != 0 && ++D_801F1558.unk5 >= 5) {
-        i = D_801F1558.unk3C.unk5 + D_801F1558.unk3C.cursor;
+        i = D_801F1558.unk3C.top + D_801F1558.unk3C.cursor;
         d = 0xFF;
         if (D_801F1558.unk4 == 1) {
             d = 1;
@@ -350,7 +350,7 @@ void func_801EFB38(void) {
     s32 j;
 
     g_menuHelp.text = NULL;
-    i = D_801F1558.unk3C.unk5 + D_801F1558.unk3C.cursor;
+    i = D_801F1558.unk3C.top + D_801F1558.unk3C.cursor;
     if (D_801F1558.unk2 == 0) {
         g_menuHelp.text = text_get(i + 2);
         for (j = 0; j < 2; j++) {
@@ -424,31 +424,31 @@ ScrollPos *func_801EFF58(MenuList *l, ScrollPos *p) {
     s32 f;
     s32 d;
 
-    f = l->unk8;
+    f = l->scroll;
     if (f & 4) {
         if (f & 2) {
-            d = l->unkD - l->unk9;
+            d = l->height - l->scrollPos;
             q = (d + 19) / 20;
             p->unk0 = q;
-            p->unk1 = l->unk5 + (l->unk3 - q);
-            p->unk2 = (l->unk3 - p->unk0) * 20;
+            p->unk1 = l->top + (l->visibleRows - q);
+            p->unk2 = (l->visibleRows - p->unk0) * 20;
         } else {
-            d = l->unkD - l->unk9;
+            d = l->height - l->scrollPos;
             p->unk0 = (d + 19) / 20;
-            p->unk1 = l->unk5;
+            p->unk1 = l->top;
             p->unk2 = 0;
         }
     } else if (f & 2) {
-        p->unk0 = l->unk3 + 1;
-        p->unk1 = l->unk5 - 1;
-        p->unk2 = l->unk9 - 20;
+        p->unk0 = l->visibleRows + 1;
+        p->unk1 = l->top - 1;
+        p->unk2 = l->scrollPos - 20;
     } else if (f & 1) {
-        p->unk1 = l->unk5;
-        p->unk0 = l->unk3 + 1;
-        p->unk2 = -l->unk9;
+        p->unk1 = l->top;
+        p->unk0 = l->visibleRows + 1;
+        p->unk2 = -l->scrollPos;
     } else {
-        p->unk1 = l->unk5;
-        p->unk0 = l->unk3;
+        p->unk1 = l->top;
+        p->unk0 = l->visibleRows;
         p->unk2 = 0;
     }
     return p;
@@ -468,7 +468,7 @@ void func_801F00F8(void) {
     s32 i;
     void (*fn)(void);
 
-    i = D_801F1558.unk3C.unk5 + D_801F1558.unk3C.cursor;
+    i = D_801F1558.unk3C.top + D_801F1558.unk3C.cursor;
     if (!fade_isBusy()) {
         if (D_801F1558.unk2 == 0) {
             func_801EECB4();
@@ -511,16 +511,16 @@ void func_801F02CC(MenuList *l, u32 pad) {
     s32 h;
     s32 top;
 
-    if ((pad & 0x100000) && !(g_padHeld & BTN_R1) && l->unk5 != 0) {
-        h = l->unkD;
-        l->unk9 = h >> 2;
-        l->unk8 = 7;
-        top = l->unk5 - l->unk3;
-        l->unkE = (h - l->unk9 + 0xE) / 15;
+    if ((pad & 0x100000) && !(g_padHeld & BTN_R1) && l->top != 0) {
+        h = l->height;
+        l->scrollPos = h >> 2;
+        l->scroll = 7;
+        top = l->top - l->visibleRows;
+        l->pageStep = (h - l->scrollPos + 0xE) / 15;
         if (top < 0) {
             top = 0;
         }
-        l->unkC = top;
+        l->pageTop = top;
         snd_playSe(0x67);
     }
 }
@@ -531,18 +531,18 @@ void func_801F0380(MenuList *l, u32 pad) {
     s32 top;
     s32 max;
 
-    if ((pad & 0x200000) && l->unk5 < l->unk2 - l->unk3) {
-        h = l->unkD;
-        l->unk9 = h >> 2;
-        page = l->unk3;
-        max = l->unk2 - page;
-        l->unk8 = 5;
-        top = l->unk5 + page;
-        l->unkE = (h - l->unk9 + 0xE) / 15;
+    if ((pad & 0x200000) && l->top < l->rows - l->visibleRows) {
+        h = l->height;
+        l->scrollPos = h >> 2;
+        page = l->visibleRows;
+        max = l->rows - page;
+        l->scroll = 5;
+        top = l->top + page;
+        l->pageStep = (h - l->scrollPos + 0xE) / 15;
         if (top < max) {
             max = top;
         }
-        l->unkC = max;
+        l->pageTop = max;
         snd_playSe(0x67);
     }
 }
@@ -550,12 +550,12 @@ void func_801F0380(MenuList *l, u32 pad) {
 void func_801F043C(MenuList *m, RECT *src, RECT *dst) {
     dst->x = src->x;
     dst->w = src->w;
-    if (m->unk8 & 2) {
-        dst->y = src->y + m->unk9;
+    if (m->scroll & 2) {
+        dst->y = src->y + m->scrollPos;
     } else {
         dst->y = src->y;
     }
-    dst->h = src->h - m->unk9;
+    dst->h = src->h - m->scrollPos;
 }
 
 void func_801F049C(void) {
@@ -660,7 +660,7 @@ void func_801F0B4C(RECT *r, s32 otz) {
 void func_801F0BE8(void) {
     s32 i;
 
-    i = D_801F1558.unk3C.unk5 + D_801F1558.unk3C.cursor;
+    i = D_801F1558.unk3C.top + D_801F1558.unk3C.cursor;
     if (D_801F1558.unk2 != 0) {
         win_drawBox(&D_801F1558.unk1C[0].unk4, 0x12, 2);
         win_drawBox(&D_801F1558.unk1C[1].unk4, 0x12, 2);
@@ -680,8 +680,8 @@ void func_801F0C78(void) {
 
     l = &D_801F1558.unk3C;
     blink = (((u32)D_80077DC0 >> 4) ^ 1) & 1;
-    ui_drawSprite(0x12E, 0x2C, 0x14, 0xB8, l->unk5 != 0 ? blink : 1);
-    ui_drawSprite(0x12E, 0xCF, 0x14, 0xB9, l->unk5 < l->unk2 - l->unk3 ? blink : 1);
+    ui_drawSprite(0x12E, 0x2C, 0x14, 0xB8, l->top != 0 ? blink : 1);
+    ui_drawSprite(0x12E, 0xCF, 0x14, 0xB9, l->top < l->rows - l->visibleRows ? blink : 1);
 }
 
 void func_801F0D20(RECT *r, s32 otz, s32 sel, s32 item) {
@@ -703,7 +703,7 @@ void func_801F0DD8(RECT *r, s32 otz, s32 v, s32 n, s32 item) {
     pos = v * step * 5;
     x = r->x;
     y = r->y + 6;
-    cur = D_801F1558.unk3C.unk5 + D_801F1558.unk3C.cursor;
+    cur = D_801F1558.unk3C.top + D_801F1558.unk3C.cursor;
     w = func_8002BA68(text_get(D_801F14F0));
     if (item == cur && D_801F1558.unk4 != 0) {
         if (D_801F1558.unk4 == 1) {
@@ -745,27 +745,27 @@ void func_801F10C8(void) {
     s32 v;
     s32 dec;
 
-    if (l->unk8 != 0) {
-        if (!(l->unk8 & 4)) {
-            dec = l->unk8 & 2;
-            l->unk9 += 4;
-            if (l->unk9 >= 0x14) {
-                v = l->unk5;
+    if (l->scroll != 0) {
+        if (!(l->scroll & 4)) {
+            dec = l->scroll & 2;
+            l->scrollPos += 4;
+            if (l->scrollPos >= 0x14) {
+                v = l->top;
                 if (dec) {
                     v--;
                 } else {
                     v++;
                 }
-                l->unk5 = v;
-                l->unk8 = 0;
-                l->unk9 = 0;
+                l->top = v;
+                l->scroll = 0;
+                l->scrollPos = 0;
             }
         } else {
-            l->unk9 += 9;
-            if (l->unk9 >= 0xB4) {
-                l->unk8 = 0;
-                l->unk9 = 0;
-                l->unk5 = l->unkC;
+            l->scrollPos += 9;
+            if (l->scrollPos >= 0xB4) {
+                l->scroll = 0;
+                l->scrollPos = 0;
+                l->top = l->pageTop;
             }
         }
     }
@@ -841,15 +841,15 @@ void func_801F12D0(u8 on) {
 ScrollPos *func_801F1334(MenuList *l, ScrollPos *p) {
     s32 v;
 
-    if (l->unk8 & 2) {
-        p->unk0 = (l->unk9 + 0x13) / 20;
-        p->unk1 = l->unkC + (l->unk3 - p->unk0);
-        p->unk2 = l->unk9 - p->unk0 * 0x14;
+    if (l->scroll & 2) {
+        p->unk0 = (l->scrollPos + 0x13) / 20;
+        p->unk1 = l->pageTop + (l->visibleRows - p->unk0);
+        p->unk2 = l->scrollPos - p->unk0 * 0x14;
     } else {
-        v = l->unk9;
-        p->unk2 = l->unkD - v;
+        v = l->scrollPos;
+        p->unk2 = l->height - v;
         p->unk0 = (v + 0x13) / 20;
-        p->unk1 = l->unkC;
+        p->unk1 = l->pageTop;
     }
     return p;
 }

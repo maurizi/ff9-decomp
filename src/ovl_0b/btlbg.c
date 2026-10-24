@@ -111,7 +111,7 @@ u8 *btlbg_draw(MATRIX *arg0, s32 arg1, s32 arg2, u32 *arg3, s32 arg4) {
                 if (!done) {
                     D_800FE4F0 += D_800FE510;
                     rot.vy = D_800FE4F0 >> 3;
-                    func_80030AF4(&rot, &m);
+                    math_rotMatrixXYZ(&rot, &m);
                     done = 1;
                     MulMatrix2(arg0, &m);
                     SetRotMatrix(&m);
@@ -251,9 +251,9 @@ u8 *btlbg_draw(MATRIX *arg0, s32 arg1, s32 arg2, u32 *arg3, s32 arg4) {
         m.t[1] = arg0->t[1] + v.vy;
         m.t[2] = arg0->t[2] + v.vz;
         if (flag == 0) {
-            func_80030AF4(&rot2, &m);
+            math_rotMatrixXYZ(&rot2, &m);
         } else {
-            func_80031244(&rot2, &m);
+            math_rotMatrixZYX(&rot2, &m);
         }
         MulMatrix2(arg0, &m);
         SetRotMatrix(&m);
