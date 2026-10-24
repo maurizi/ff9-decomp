@@ -126,7 +126,7 @@ extern ConfigPadEntry s_menuConfigPadActions[CONFIG_PAD_SLOTS];
 #define SE_CANCEL 0x65
 #endif
 void help_nullHandler(void); /* empty function, passed to help_setCallback as a no-op callback */
-extern s32 D_80077E54; /* = g_menuScreen.unk4, referenced by its own name */
+extern s32 g_menuScreenFrame; /* = g_menuScreen.unk4, referenced by its own name */
 
 typedef struct {
     u8 title;      /* title text id */

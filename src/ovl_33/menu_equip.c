@@ -321,7 +321,7 @@ void menuEquip_drawStatCompare(Unk80032E84Out *cur, Unk80032E84Out *new) {
     u8 blink;
 
     r = &s_menuEquip.infoRect;
-    blink = ((u32)D_80077DC0 >> 4) & 1;
+    blink = ((u32)g_menuFrame >> 4) & 1;
     for (i = 0, y = r->y + 0x44; i < 4; y += 0xC, i++) {
         menuEquip_drawStatLabel(r->x + 8, y, 0x1D, s_menuEquipBaseStatText[i], 0);
         text_formatNumber(cur->unk8[i], buf, 2, 1);
@@ -374,7 +374,7 @@ void menuEquip_drawCursor(void) {
     if (fade_isBusy() || m->state == EQUIP_STATE_BUSY) {
         return;
     }
-    if (m->state == EQUIP_STATE_TABS || (D_80077E54 & 3)) {
+    if (m->state == EQUIP_STATE_TABS || (g_menuScreenFrame & 3)) {
         h = &g_menuHelp;
         x = s_menuEquipTabCursorX[s_menuEquip.tab][0];
         h->y = m->tabRect.y + 8;
@@ -560,7 +560,7 @@ void menuEquip_update(void) {
 }
 
 void menuEquip_exit(void) {
-    D_80077E53 = s_menuEquip.slot;
+    g_menuScreenMember = s_menuEquip.slot;
     win_closeAllNow();
     help_setCursorOnTop(1);
     help_setCallback(NULL);

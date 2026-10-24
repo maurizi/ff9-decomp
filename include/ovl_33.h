@@ -241,7 +241,7 @@ extern u16 s_menuAbilityTabCursorX[][2]; /* cursor x per slot */
 void help_nullHandler(void); /* empty function, passed to help_setCallback as a no-op callback */
 extern s32 D_80070400;
 extern s32 D_800704B8;
-extern s32 D_80077E54; /* = g_menuScreen.unk4, referenced by its own name */
+extern s32 g_menuScreenFrame; /* = g_menuScreen.unk4, referenced by its own name */
 extern s32 D_80070498;
 extern s32 D_8007042C;
 void ui_drawMemberSummary(s32, s32, s32, s32, s32);

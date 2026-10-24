@@ -516,20 +516,20 @@ s32 akao_setCdMix(s32 vol) {
     u8 v;
 
     if (D_8008315C & 2) {
-        CdlATV *atv = &D_8007F718;
+        CdlATV *atv = &g_akaoCdAtv;
 
         v = (u32)(vol * 46448) >> 17;
         atv->val3 = v;
         atv->val1 = v;
         atv->val2 = v;
-        D_8007F718.val0 = v;
+        g_akaoCdAtv.val0 = v;
     } else {
-        D_8007F718.val2 = vol;
-        D_8007F718.val0 = vol;
-        D_8007F718.val3 = 0;
-        D_8007F718.val1 = 0;
+        g_akaoCdAtv.val2 = vol;
+        g_akaoCdAtv.val0 = vol;
+        g_akaoCdAtv.val3 = 0;
+        g_akaoCdAtv.val1 = 0;
     }
-    CdMix(&D_8007F718);
+    CdMix(&g_akaoCdAtv);
     return 0;
 }
 

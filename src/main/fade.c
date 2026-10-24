@@ -368,27 +368,27 @@ void fadeWipe_draw(FadeState *arg0) {
     hw = g_gameState->dispEnv->disp.w >> 1;
     hh = g_gameState->dispEnv->disp.h >> 1;
     PushMatrix();
-    D_80077CB0.vx = 0;
-    D_80077CB0.vy = 0;
-    D_80077CB0.vz = arg0->angle;
-    math_rotMatrixXYZ(&D_80077CB0, &m);
+    g_fadeWipeRot.vx = 0;
+    g_fadeWipeRot.vy = 0;
+    g_fadeWipeRot.vz = arg0->angle;
+    math_rotMatrixXYZ(&g_fadeWipeRot, &m);
     m.t[2] = 0;
     m.t[1] = 0;
     m.t[0] = 0;
     SetRotMatrix(&m);
     SetTransMatrix(&m);
     r = SquareRoot0(hw * hw + hh * hh);
-    setVector(&D_80077CC0[0][0], -r, -r, h);
-    setVector(&D_80077CC0[0][1], 0, -r, h);
-    setVector(&D_80077CC0[0][2], -r, r, h);
-    setVector(&D_80077CC0[0][3], 0, r, h);
-    setVector(&D_80077CC0[1][0], 0, -r, h);
-    setVector(&D_80077CC0[1][1], r, -r, h);
-    setVector(&D_80077CC0[1][2], 0, r, h);
-    setVector(&D_80077CC0[1][3], r, r, h);
+    setVector(&g_fadeWipeQuads[0][0], -r, -r, h);
+    setVector(&g_fadeWipeQuads[0][1], 0, -r, h);
+    setVector(&g_fadeWipeQuads[0][2], -r, r, h);
+    setVector(&g_fadeWipeQuads[0][3], 0, r, h);
+    setVector(&g_fadeWipeQuads[1][0], 0, -r, h);
+    setVector(&g_fadeWipeQuads[1][1], r, -r, h);
+    setVector(&g_fadeWipeQuads[1][2], 0, r, h);
+    setVector(&g_fadeWipeQuads[1][3], r, r, h);
     for (i = 0; i < 2; i++) {
         for (j = 0; j < 4; j++) {
-            RotTransPers(&D_80077CC0[i][j], (long *)&xy[j], &p, &flag);
+            RotTransPers(&g_fadeWipeQuads[i][j], (long *)&xy[j], &p, &flag);
         }
         poly = (POLY_G4 *)g_fade.pkt;
         SetPolyG4(poly);

@@ -4,8 +4,8 @@ void msg_init(void) {
     GameState *s;
     Unk7D4 *f;
 
-    if (D_8007B950 != 0) {
-        D_8007B950 = 0;
+    if (g_msgKeepWindows != 0) {
+        g_msgKeepWindows = 0;
     } else {
         msg_resetWindows();
         win_closeAll();
@@ -34,8 +34,8 @@ void msg_init(void) {
 }
 
 static inline void msg_readPad_set(s32 type, u32 bits) {
-    D_8007B988.unk0 = type;
-    D_8007B988.unk4 = bits;
+    g_msgPadEvent.unk0 = type;
+    g_msgPadEvent.unk4 = bits;
 }
 
 void msg_readPad(void) {
@@ -43,21 +43,21 @@ void msg_readPad(void) {
     u32 cur = g_padPortHeld[0] & 0x3FFFFFF;
     u32 x;
 
-    x = ~cur & D_8007B978;
-    D_8007B97C = cur & ~D_8007B978;
-    D_8007B980 = x;
+    x = ~cur & g_msgPadPrev;
+    g_msgPadPressed = cur & ~g_msgPadPrev;
+    g_msgPadReleased = x;
     if (x != 0) {
         msg_readPad_set(4, x);
     }
-    if (D_8007B978 != cur) {
-        D_8007B990 = 16;
+    if (g_msgPadPrev != cur) {
+        g_msgPadRepeatTimer = 16;
     }
-    D_8007B990 = g_gameState->vsyncMode != 0 ? D_8007B990 - 2 : D_8007B990 - 1;
-    if (D_8007B990 < 0 && !(D_8007B990 & 3)) {
+    g_msgPadRepeatTimer = g_gameState->vsyncMode != 0 ? g_msgPadRepeatTimer - 2 : g_msgPadRepeatTimer - 1;
+    if (g_msgPadRepeatTimer < 0 && !(g_msgPadRepeatTimer & 3)) {
         f = 1;
-        D_8007B978 &= ~0xF0;
+        g_msgPadPrev &= ~0xF0;
     }
-    x = cur & ~D_8007B978;
+    x = cur & ~g_msgPadPrev;
     if (x != 0) {
         s32 v = 1;
         if (f) {
@@ -65,7 +65,7 @@ void msg_readPad(void) {
         }
         msg_readPad_set(v, x);
     }
-    D_8007B978 = cur;
+    g_msgPadPrev = cur;
 }
 
 void msg_beginDraw(void) {
@@ -113,7 +113,7 @@ static inline s32 msg_measureLine_width(u8 *s) {
     return w;
 }
 
-/* copy character ch's name into D_8007B930, converting the case */
+/* copy character ch's name into g_msgNameBuf, converting the case */
 static inline void msg_measureLine_name(s32 ch) {
     u8 *name = g_gameState->unk1C->characters[ch].unk0;
     s32 k;
@@ -128,7 +128,7 @@ static inline void msg_measureLine_name(s32 ch) {
         } else if (c - 0x7A < 2) {
             c -= 2;
         }
-        D_8007B930[k] = c;
+        g_msgNameBuf[k] = c;
     }
 }
 
@@ -174,14 +174,14 @@ void msg_measureLine(u8 **pp, s32 *pw) {
             case 0x86:
             case 0x87:
                 msg_measureLine_name(c - 0x80);
-                w += msg_measureLine_width(D_8007B930);
+                w += msg_measureLine_width(g_msgNameBuf);
                 break;
             case 0xE:
                 n = g_msgNumbers[*s++];
                 if (n < 0x100) {
                     str = g_itemNames + g_itemTable[n].unk0;
                 } else if (n < 0x200) {
-                    str = D_8006ADAC + D_8006B374[n - 0x100].unk0;
+                    str = g_keyItemNames + g_keyItemTable[n - 0x100].unk0;
                 } else {
                     str = (u8 *)card_getName(n - 0x200);
                 }
@@ -229,12 +229,12 @@ void msg_measureLine(u8 **pp, s32 *pw) {
 
 INCLUDE_RODATA("asm/us/main/nonmatchings/msg", D_80011A6C);
 
-/* skip the choices hidden by D_8007B964 once the window reaches the choice line */
+/* skip the choices hidden by g_msgChoiceDrawMask once the window reaches the choice line */
 static inline void msg_renderText_skip(s32 id, u8 **pp) {
     s32 c;
 
-    if (g_msgChoiceLine >= 0 && g_msgChoiceWindow == id && D_8007BB7C >= g_msgChoiceLine) {
-        if (!(D_8007B964 & 1)) {
+    if (g_msgChoiceLine >= 0 && g_msgChoiceWindow == id && g_msgLine >= g_msgChoiceLine) {
+        if (!(g_msgChoiceDrawMask & 1)) {
             do {
                 while ((c = *(*pp)++) != 0xF7 && c != 0xFF) {
                     if (c < 0xFE) {
@@ -247,10 +247,10 @@ static inline void msg_renderText_skip(s32 id, u8 **pp) {
                     (*pp)--;
                     break;
                 }
-                D_8007B964 >>= 1;
-            } while (!(D_8007B964 & 1));
+                g_msgChoiceDrawMask >>= 1;
+            } while (!(g_msgChoiceDrawMask & 1));
         }
-        D_8007B964 >>= 1;
+        g_msgChoiceDrawMask >>= 1;
     }
 }
 
@@ -304,7 +304,7 @@ void msg_renderText(MsgWindow *w, u8 *s) {
     s32 k;
     u8 *q;
 
-    D_8007BB7C = 0;
+    g_msgLine = 0;
     end = s + w->textPos;
     p = s + w->pageStart;
     msg_renderText_skip(w->unkA, &p);
@@ -318,7 +318,7 @@ void msg_renderText(MsgWindow *w, u8 *s) {
             pen_popPos();
             pen_move(0, 14);
             pen_pushPos();
-            D_8007BB7C++;
+            g_msgLine++;
             msg_renderText_skip(w->unkA, &p);
             if (p >= end) {
                 w->textPos = p - s;
@@ -556,7 +556,7 @@ void msg_advanceText(MsgWindow *w, u8 *e) {
                 break;
             case 8:
                 tmp = D_80011A6C;
-                n = D_8007BB7C;
+                n = g_msgLine;
                 pad_getAnalogThresholds(&D_8007B99C);
                 pad_setAnalogThresholds(&tmp);
                 g_msgChoiceLine = n;
@@ -622,7 +622,7 @@ void msg_advanceText(MsgWindow *w, u8 *e) {
             w->unk26 = 0xFF;
             break;
         case 0xF7:
-            D_8007BB7C++;
+            g_msgLine++;
             break;
         case 0xFA:
         case 0xFB:
@@ -688,7 +688,7 @@ void msg_drawText(MsgWindow *w) {
             w->textPos = w->pageStart;
         }
         D_8007BB98.unk0 = 0;
-        D_8007B964 = D_8007B960;
+        g_msgChoiceDrawMask = g_msgChoiceEnabled;
         msg_renderText(w, e);
         if (w->unk26 == 0) {
             if (w->unk2A == 0) {
@@ -862,8 +862,8 @@ void msg_open(s32 msg, s32 id, WinLayout *l, s32 flags) {
     }
     if (!(l->unkB & 1)) {
         g_msgChoiceLine = -1;
-        n = D_8007BB94;
-        D_8007BB94 = 0;
+        n = g_msgChoiceDefault;
+        g_msgChoiceDefault = 0;
         g_msgChoiceWindow = id;
         g_msgChoice = n;
     }
@@ -876,7 +876,7 @@ void msg_resetChoices(void) {
     u8 *e;
 
     g_msgChoice = 0;
-    D_8007B974 = -1;
+    g_msgChoiceMaskReq = -1;
     g_msgChoiceLine = -1;
     for (i = 0; i < 4; i++) {
         e = msg_drawText_msg(i);
@@ -885,7 +885,7 @@ void msg_resetChoices(void) {
         }
         D_8007BB80[i] = e + 2;
     }
-    D_8007BB94 = 0;
+    g_msgChoiceDefault = 0;
     D_8007BBC8 = 0;
 }
 
@@ -930,14 +930,14 @@ WinLayout *msg_getLayout(s32 id, s32 *x, s32 *y, s32 *z) {
             }
             switch (*p++) {
             case 0x7:
-                D_8007B960 = -1;
+                g_msgChoiceEnabled = -1;
                 g_msgChoiceCount = *p++;
                 g_msgChoiceCancel = *p++ - 1;
                 break;
             case 0x4F:
-                D_8007B960 = D_8007B974;
+                g_msgChoiceEnabled = g_msgChoiceMaskReq;
                 n = i = *p;
-                mask = D_8007B974;
+                mask = g_msgChoiceMaskReq;
                 while (--i != -1) {
                     n -= (mask ^ 1) & 1;
                     mask >>= 1;
@@ -945,7 +945,7 @@ WinLayout *msg_getLayout(s32 id, s32 *x, s32 *y, s32 *z) {
                 g_msgChoiceCount = n;
                 g_msgLayout.unk9 -= (*p++ - n) * 14;
                 n = -1;
-                mask = D_8007B960;
+                mask = g_msgChoiceEnabled;
                 cnt = *p++;
                 while (--cnt != -1) {
                     n += mask & 1;
@@ -997,7 +997,7 @@ WinLayout *msg_getLayout(s32 id, s32 *x, s32 *y, s32 *z) {
                     if (v == 0xFFFF) break;
                     t = (v >> 12) & 0xF;
                     v &= 0xFFF;
-                    if (t == 0 || ((D_8007B960 >> (t - 1)) & 1)) {
+                    if (t == 0 || ((g_msgChoiceEnabled >> (t - 1)) & 1)) {
                         msg_measureLine(&p, &v);
                         if (g_msgLayout.unk2 < v) {
                             g_msgLayout.unk2 = v;
@@ -1031,20 +1031,20 @@ s32 msg_getPartyMemberId(s32 i) {
 }
 
 void msg_resetPad(void) {
-    D_8007B978 = 0;
-    D_8007B988.unk0 = 0;
-    D_8007B988.unk4 = 0;
+    g_msgPadPrev = 0;
+    g_msgPadEvent.unk0 = 0;
+    g_msgPadEvent.unk4 = 0;
 }
 
 void msg_update(void) {
     MsgWindow *p = msg_getFocus();
     s32 a;
     msg_readPad();
-    if (D_8007B988.unk0 < 3) {
-        if (D_8007B988.unk0 > 0) {
+    if (g_msgPadEvent.unk0 < 3) {
+        if (g_msgPadEvent.unk0 > 0) {
             while (p != NULL) {
-                a = D_8007B988.unk4;
-                if (D_8007B988.unk0 == 2) {
+                a = g_msgPadEvent.unk4;
+                if (g_msgPadEvent.unk0 == 2) {
                     a |= 0x80000000;
                 }
                 if (p->onInput(p, a) != 0) {
@@ -1054,8 +1054,8 @@ void msg_update(void) {
             }
         }
     }
-    D_8007B988.unk0 = 0;
-    D_8007B988.unk4 = 0;
+    g_msgPadEvent.unk0 = 0;
+    g_msgPadEvent.unk4 = 0;
     D_8007B998 = D_8007B994;
 }
 
@@ -1064,11 +1064,11 @@ u32 msg_getPadHeld(void) {
 }
 
 u32 msg_getPadPressed(void) {
-    return D_8007B97C & 0x3FFFFFF;
+    return g_msgPadPressed & 0x3FFFFFF;
 }
 
 u32 msg_getPadReleased(void) {
-    return D_8007B980 & 0x3FFFFFF;
+    return g_msgPadReleased & 0x3FFFFFF;
 }
 
 void func_8004E91C(void) {
@@ -1146,7 +1146,7 @@ s16 msg_isOpen(s32 i) {
 
 s32 msg_getChoiceIndex(void) {
     s32 i = -1;
-    s32 b = D_8007B960;
+    s32 b = g_msgChoiceEnabled;
     s32 a = g_msgChoice;
     for (; i < 15;) {
         if (a < 0) {
@@ -1161,7 +1161,7 @@ s32 msg_getChoiceIndex(void) {
 
 void msg_setChoiceMask(s32 a, s32 b) {
     s32 r;
-    D_8007B974 = a;
+    g_msgChoiceMaskReq = a;
     r = -1;
     for (; b >= 0; b--) {
         if (a == 0) {
@@ -1173,7 +1173,7 @@ void msg_setChoiceMask(s32 a, s32 b) {
     if (r < 0) {
         r = 0;
     }
-    D_8007BB94 = r;
+    g_msgChoiceDefault = r;
 }
 
 void func_8004ED3C(void) {
@@ -1230,7 +1230,7 @@ void msg_closeWindow(MsgWindow *p) {
 }
 
 void msg_keepWindowsOnInit(void) {
-    D_8007B950 = 1;
+    g_msgKeepWindows = 1;
 }
 
 u8 *msg_getEntry(s32 i, MsgInfo *out) {
@@ -1333,7 +1333,7 @@ s32 msg_emitItemName(s32 id, s32 n) {
     if (id < 0x100) {
         t = g_itemNames + g_itemTable[id].unk0;
     } else if (id < 0x200) {
-        t = D_8006ADAC + D_8006B374[id - 0x100].unk0;
+        t = g_keyItemNames + g_keyItemTable[id - 0x100].unk0;
     } else {
         t = (u8 *)card_getName(id - 0x200);
     }
@@ -1389,9 +1389,9 @@ s32 msg_emitCharNameCaps(s32 ch, s32 n) {
         } else if (c - 0x7A < 2) {
             c -= 2;
         }
-        D_8007B930[k] = c;
+        g_msgNameBuf[k] = c;
     }
-    buf = D_8007B930;
+    buf = g_msgNameBuf;
     for (i = 0; i < 8; i++) {
         if (buf[i] == 0xFF) {
             break;
@@ -1444,31 +1444,31 @@ void msg_drawHereIcon(Unk8004AB64 *o) {
     s32 nx;
 
     if (g_evtState->controlEnabled != 0 && (msg_getPadPressed() & PAD_SELECT)) {
-        D_8007BBE8 = 60;
-        D_8007BBE0 = 1;
+        g_hereIconTimer = 60;
+        g_hereIconActive = 1;
     }
-    if (D_8007BBE8 > 0 && D_8007AEC8 == 0) {
-        n = --D_8007BBE8;
+    if (g_hereIconTimer > 0 && D_8007AEC8 == 0) {
+        n = --g_hereIconTimer;
         if (n == 0) {
-            D_8007BBE0 = 0;
+            g_hereIconActive = 0;
         }
         if (g_evtMode == 1 && !(g_gameState->unk1C->unk0 & GD_HIDE_ALL) && n < 58) {
             s = &D_80068790;
             pen_begin();
             pen_pushPos();
             evt_setDrawPosAtObject(o, 0, 0);
-            if (D_8007BBE8 == 57) {
-                D_8007BBE4 = g_penPos.s.x < 24;
+            if (g_hereIconTimer == 57) {
+                g_hereIconFlipped = g_penPos.s.x < 24;
             }
             pos = g_penPos.w;
             if ((pos >> 16) < 16) {
                 pen_setPos(pos & 0xFFFF, 16);
             }
-            pen_move(0, -((D_8007BBE8 >> 2) % 3));
+            pen_move(0, -((g_hereIconTimer >> 2) % 3));
             p = pen_addPolyFT4();
             p->x1 = p->x3 = p->x0;
             x = p->x0;
-            if (D_8007BBE4) {
+            if (g_hereIconFlipped) {
                 nx = x + s->unk4;
             } else {
                 nx = x - s->unk4;
@@ -1478,7 +1478,7 @@ void msg_drawHereIcon(Unk8004AB64 *o) {
             p->y1 = p->y0 = p->y0 - s->unk5;
             p->u0 = p->u2 = s->unk0;
             p->v0 = p->v1 = s->unk1;
-            p->u1 = p->u3 = s->unk0 + s->unk4 - (u8)D_8007BBE4;
+            p->u1 = p->u3 = s->unk0 + s->unk4 - (u8)g_hereIconFlipped;
             p->v2 = p->v3 = s->unk1 + s->unk5;
             p->tpage = 0x5F;
             p->clut = s->unk2;
@@ -1490,9 +1490,9 @@ void msg_drawHereIcon(Unk8004AB64 *o) {
 
 void msg_drawPlayerBubble(void) {
     Unk80068788 *s = &D_80068788;
-    s32 c = D_8007BC00;
-    s32 hw = D_8007BBF8;
-    s32 h = D_8007BBFC;
+    s32 c = g_bubbleColor;
+    s32 hw = g_bubbleHalfWidth;
+    s32 h = g_bubbleHeight;
     s32 n;
     POLY_FT4 *p;
     POLY_FT4 *q;
@@ -1501,9 +1501,9 @@ void msg_drawPlayerBubble(void) {
     s32 d;
 
     if (c == 0x80) {
-        n = D_8007BBF4 + 0x19;
+        n = g_bubbleVariant + 0x19;
         pen_pushPos();
-        pen_move(-4, -0x10 - D_8007BC04);
+        pen_move(-4, -0x10 - g_bubbleLift);
         pen_drawSprite(n);
         pen_popPos();
     }
@@ -1513,10 +1513,10 @@ void msg_drawPlayerBubble(void) {
     setSemiTrans(q, 1);
     p->r0 = p->g0 = p->b0 = c;
     q->r0 = q->g0 = q->b0 = c;
-    y = p->y0 - D_8007BC04;
+    y = p->y0 - g_bubbleLift;
     x = p->x0;
     p->y2 = p->y3 = y;
-    p->y0 = y - D_8007BC04;
+    p->y0 = y - g_bubbleLift;
     p->x1 = p->x3 = x + hw;
     p->x2 = p->x0 = x - hw;
     p->y1 = p->y0 = y - h;
@@ -1545,36 +1545,36 @@ void msg_drawPlayerBubble(void) {
 void msg_updatePlayerBubble(void) {
     Unk8004AB64 *o;
 
-    if (D_8007BBF0 == 0 && D_8007BBEC != 0) {
-        D_8007BC0C = D_8007BBF4 ? D_8006E6D8 : D_8006E690;
-    } else if (D_8007BBF0 != 0 && D_8007BBEC == 0) {
-        D_8007BC0C = D_8006E6F0;
+    if (g_bubbleRequestPrev == 0 && g_bubbleRequest != 0) {
+        g_bubbleScript = g_bubbleVariant ? D_8006E6D8 : D_8006E690;
+    } else if (g_bubbleRequestPrev != 0 && g_bubbleRequest == 0) {
+        g_bubbleScript = D_8006E6F0;
     }
-    D_8007BBF0 = D_8007BBEC;
-    D_8007BBEC = 0;
-    if (D_8007BC0C == NULL || D_8007AEC8 != 0) {
+    g_bubbleRequestPrev = g_bubbleRequest;
+    g_bubbleRequest = 0;
+    if (g_bubbleScript == NULL || D_8007AEC8 != 0) {
         return;
     }
-    if (D_8007BC08 > 0) {
-        D_8007BC08--;
+    if (g_bubbleWait > 0) {
+        g_bubbleWait--;
     } else {
-        switch (*D_8007BC0C) {
+        switch (*g_bubbleScript) {
         case 0xFD:
-            D_8007BC0C = NULL;
+            g_bubbleScript = NULL;
             return;
         case 0xFE:
-            D_8007BC08 = D_8007BC0C[1];
-            D_8007BC0C += 4;
+            g_bubbleWait = g_bubbleScript[1];
+            g_bubbleScript += 4;
             goto draw;
         case 0xFF:
-            D_8007BC0C -= D_8007BC0C[1] * 4;
+            g_bubbleScript -= g_bubbleScript[1] * 4;
             break;
         }
-        D_8007BC00 = D_8007BC0C[0];
-        D_8007BBF8 = D_8007BC0C[1];
-        D_8007BBFC = D_8007BC0C[2];
-        D_8007BC04 = D_8007BC0C[3];
-        D_8007BC0C += 4;
+        g_bubbleColor = g_bubbleScript[0];
+        g_bubbleHalfWidth = g_bubbleScript[1];
+        g_bubbleHeight = g_bubbleScript[2];
+        g_bubbleLift = g_bubbleScript[3];
+        g_bubbleScript += 4;
     }
     draw:
     if (!(g_gameState->unk1C->unk0 & GD_HIDE_ALL)) {
@@ -1586,26 +1586,26 @@ void msg_updatePlayerBubble(void) {
             pen_end();
         }
     }
-    if (D_8007BBE0 == 0) {
-        D_8007BBE8 = 0;
+    if (g_hereIconActive == 0) {
+        g_hereIconTimer = 0;
     }
 }
 
 void msg_drawAtePrompt(void) {
-    if (D_8007BC10 == 0) {
+    if (g_atePromptMode == 0) {
         return;
     }
-    if (!(D_8007BC10 & 4) && !evt_isControlEnabled()) {
+    if (!(g_atePromptMode & 4) && !evt_isControlEnabled()) {
         return;
     }
-    D_8007BC14++;
+    g_atePromptTimer++;
     if (g_gameState->unk1C->unk0 & GD_HIDE_ALL) {
         return;
     }
     pen_begin();
     pen_setPos(0x10, 200);
-    if ((D_8007BC10 & 3) != 2) {
-        if ((D_8007BC14 / 44) & 1) {
+    if ((g_atePromptMode & 3) != 2) {
+        if ((g_atePromptTimer / 44) & 1) {
             pen_drawSprite(0x80);
             pen_move(2, 0);
             pen_drawSprite(0x81);
@@ -1618,7 +1618,7 @@ void msg_drawAtePrompt(void) {
             pen_drawSprite(0x12);
             pen_drawSprite(0x54);
         }
-    } else if ((D_8007BC14 / 15) & 1) {
+    } else if ((g_atePromptTimer / 15) & 1) {
         pen_drawSprite(0x1F);
         pen_move(2, 0);
         pen_drawSprite(0x20);
@@ -1632,34 +1632,34 @@ void msg_startHereIcon(s32 arg0) {
     s32 mode;
 
     if (arg0 == 0) {
-        D_8007BBE0 = 0;
-        D_8007BBE8 = 0;
+        g_hereIconActive = 0;
+        g_hereIconTimer = 0;
         return;
     }
     mode = (g_gameState->config >> 17) & 1;
     mode = mode == 0;
     if (arg0 >= 3 || (g_evtState->controlEnabled != 0 &&
                       (mode >= 2 || (mode == 1 && (arg0 == 2 || D_8007BBC8 >= 3 || D_8007B710 != 0))))) {
-        D_8007BBE8 = 60;
+        g_hereIconTimer = 60;
     }
 }
 
 void msg_resetPlayerBubble(void) {
-    D_8007BC0C = 0;
-    D_8007BC08 = 0;
-    D_8007BBF0 = 0;
-    D_8007BBEC = 0;
+    g_bubbleScript = 0;
+    g_bubbleWait = 0;
+    g_bubbleRequestPrev = 0;
+    g_bubbleRequest = 0;
 }
 
 void msg_showPlayerBubble(s32 a) {
-    D_8007BBEC = 1;
-    D_8007BBF4 = a;
+    g_bubbleRequest = 1;
+    g_bubbleVariant = a;
 }
 
 void msg_setAtePrompt(s32 a) {
-    if (D_8007BC10 != a) {
-        D_8007BC10 = a;
-        D_8007BC14 = 0x2C;
+    if (g_atePromptMode != a) {
+        g_atePromptMode = a;
+        g_atePromptTimer = 0x2C;
     }
 }
 

@@ -1367,14 +1367,14 @@ s32 evt_execInstr(void) {
     case EVT_OP_GAME_OVER:
         return 8;
     case 0x2A:
-        D_8007BD2C = evt_getArg8_inline();
+        g_swirlVariant = evt_getArg8_inline();
         g_gameState->unk1C->unk848 = -1;
         a = evt_getArg16_inline();
         g_gameState->unk1C->unk571 = (a >> 15) & 1;
         evt_setNextBattle(a & 0x7FFF);
         return 3;
     case 0x8C:
-        D_8007BD2C = evt_getArg8_inline();
+        g_swirlVariant = evt_getArg8_inline();
         g_gameState->unk1C->unk848 = evt_getArg8_inline();
         a = evt_getArg16_inline();
         g_gameState->unk1C->unk571 = (a >> 15) & 1;
@@ -2407,7 +2407,7 @@ void evt_movePlayer(Unk8004AB64 *obj) {
             }
         }
     }
-    D_8007AEAC = dir != 0x8000;
+    g_evtPlayerMoved = dir != 0x8000;
     if (dir != 0x8000) {
         if (analog) {
             dir += g_evtState->unk16E8;
@@ -2619,9 +2619,9 @@ void evt_updateLookAt(Unk8004AB64 *o) {
     save = 0;
     mdl = (Unk80047B90 *)((Unk8E0 *)game_getModel(o->unk3B))->unk8;
     tgt = NULL;
-    if ((o->unk50 & 4) && D_8007AE68 != NULL && D_8007AE68 != o &&
-        func_80052E48(o->pos.vx - D_8007AE68->pos.vx, o->pos.vz - D_8007AE68->pos.vz, 0) >= 1000) {
-        tgt = D_8007AE68;
+    if ((o->unk50 & 4) && g_evtLookTarget != NULL && g_evtLookTarget != o &&
+        func_80052E48(o->pos.vx - g_evtLookTarget->pos.vx, o->pos.vz - g_evtLookTarget->pos.vz, 0) >= 1000) {
+        tgt = g_evtLookTarget;
         o->unk50 |= 0x200;
     }
     if (tgt != NULL || ((o->unk50 & 1) && !(o->unk62 & 2))) {
@@ -2891,7 +2891,7 @@ s32 evt_updateObjects(void) {
     Unk16D8 *m;
     Unk8007AECC *s;
 
-    D_8007AEAC = 0;
+    g_evtPlayerMoved = 0;
     world = g_evtMode == 2;
     for (n = g_evtState->unk16D8; n != NULL; n = n->unk0) {
         o = n->unk4;
@@ -2905,7 +2905,7 @@ s32 evt_updateObjects(void) {
                         o->unk40.vz = o->pos.vz;
                         evt_movePlayer(o);
                     } else if (g_evtMode == 3) {
-                        D_8007AEAC = g_worldPlayerStepped;
+                        g_evtPlayerMoved = g_worldPlayerStepped;
                         evt_checkPlayerAction(o);
                         t1 = evt_findNearestObject(o, 0, &dist);
                         if (t1 != NULL && dist <= 0 &&
@@ -2915,7 +2915,7 @@ s32 evt_updateObjects(void) {
                             o->pos.vz = o->unk40.vz;
                         }
                     }
-                    if (D_8007AEAC != 0) {
+                    if (g_evtPlayerMoved != 0) {
                         s = g_evtState;
                         if (s->unk1700 >= 0) {
                             s->unk1700 = (evt_rollEncounter_rand() + 200) * 4;
@@ -3004,7 +3004,7 @@ s32 evt_updateObjects(void) {
                         evt_followBalloon(p, w);
                     } else {
                         p->unk3E = 0xFF;
-                        if (D_8007AE68 == p) {
+                        if (g_evtLookTarget == p) {
                             D_8007AE6C = 30;
                         }
                     }
@@ -3044,7 +3044,7 @@ s32 evt_updateObjects(void) {
                         p->unk5D = p->unk69;
                     }
                 }
-                if (moved && o->unk7 == g_evtState->playerUid && D_8007AEAC != 0) {
+                if (moved && o->unk7 == g_evtState->playerUid && g_evtPlayerMoved != 0) {
                     g_evtEncounterDist += func_80052EC0(dx, dy, dz);
                     if (evt_rollEncounter(p)) {
                         g_evtEncounterPending = 1;
@@ -3063,7 +3063,7 @@ s32 evt_updateObjects(void) {
                 x->unk50 |= 0x400;
             }
         }
-        D_8007AE68 = NULL;
+        g_evtLookTarget = NULL;
     }
     if (g_evtEncounterPending != 0 && D_8007AEA4 == 0) {
         g_evtEncounterPending = 0;
@@ -3090,7 +3090,7 @@ s32 evt_updateObjects(void) {
             func_800B3444(0, 0, 0);
         }
         if (r == 7) {
-            D_80079630 = D_80077E60;
+            g_evtSavedState = g_evtStateData;
         }
     }
     return r;
@@ -3349,10 +3349,10 @@ void evt_init(u8 *data) {
         g_evtMode = 4;
         break;
     }
-    if ((D_80077E60.unk16EE == 1 || D_80077E60.unk16EE == 3) && g_evtMode == 2) {
-        D_80079630 = D_80077E60;
+    if ((g_evtStateData.unk16EE == 1 || g_evtStateData.unk16EE == 3) && g_evtMode == 2) {
+        g_evtSavedState = g_evtStateData;
     }
-    g_evtState = &D_80077E60;
+    g_evtState = &g_evtStateData;
     for (n = g_evtState->unk1450; n < &g_evtState->unk1450[31]; n++) {
         n->unk8 = n + 1;
     }
@@ -3377,7 +3377,7 @@ void evt_init(u8 *data) {
     msg_startHereIcon(0);
     D_8007B6FC = 0;
     g_evtState->unk16F8 = 0;
-    D_8007AE68 = NULL;
+    g_evtLookTarget = NULL;
     D_8007B710 = 10;
     D_8007BBC8 = 10;
     D_8007BBD4 = 0;
@@ -3391,7 +3391,7 @@ void evt_init(u8 *data) {
     g_evtEncounterPending = 0;
     p->unk16E8 = 0;
     p->unk16EA = 0;
-    D_8007BD2C = 0;
+    g_swirlVariant = 0;
     func_8004B3A8_inline(0, 0);
     g_evtState->unk16D8->unk4->unkE = 2;
     evt_execInstr_party();
@@ -3411,11 +3411,11 @@ void evt_init(u8 *data) {
         g_gameState->unk1C->unk570 = 0;
     }
     D_8007AE04 = 4;
-    if ((g_evtMode == 1 && D_80079630.unk16EE == g_evtMode && D_80079630.unk16F4 == (s16)g_gameState->unk1C->fieldId) ||
-        (g_evtMode == 3 && D_80079630.unk16EE == g_evtMode && D_80079630.unk16F4 == g_gameState->unk1C->unk7DC) ||
-        (g_gameState->unkA == 9 && D_8007AD1E != 0)) {
-        d = data - D_80079630.unk16F0;
-        D_80077E60 = D_80079630;
+    if ((g_evtMode == 1 && g_evtSavedState.unk16EE == g_evtMode && g_evtSavedState.unk16F4 == (s16)g_gameState->unk1C->fieldId) ||
+        (g_evtMode == 3 && g_evtSavedState.unk16EE == g_evtMode && g_evtSavedState.unk16F4 == g_gameState->unk1C->unk7DC) ||
+        (g_gameState->unkA == 9 && g_evtModelsPending != 0)) {
+        d = data - g_evtSavedState.unk16F0;
+        g_evtStateData = g_evtSavedState;
         for (q = g_evtState->unk16D8; q != NULL; q = q->unk0) {
             o = q->unk4;
             if (o->unk0 != NULL) {
@@ -3448,7 +3448,7 @@ void evt_createModels(void) {
     Unk8004AB64 *o;
     s16 *q;
 
-    if ((g_evtMode == 1 || g_evtMode == 3 || g_gameState->unkA == 9) && D_8007AD1E != 0) {
+    if ((g_evtMode == 1 || g_evtMode == 3 || g_gameState->unkA == 9) && g_evtModelsPending != 0) {
         for (n = g_evtState->unk16D8; n != NULL; n = n->unk0) {
             o = n->unk4;
             if (o->unk5 == 4 && o->unk34 != 0xFFFF) {
@@ -3464,7 +3464,7 @@ void evt_createModels(void) {
                 }
             }
         }
-        D_8007AD1E = 0;
+        g_evtModelsPending = 0;
     }
 }
 
@@ -3568,7 +3568,7 @@ void evt_reset(void) {
     g_evtState = NULL;
     g_evtLastEncounter = 0;
     D_8007954E = 0;
-    D_8007AD1E = 0;
+    g_evtModelsPending = 0;
 }
 
 void evt_setDrawPosAtObject(Unk8004AB64 *o, s32 dx, s32 dy) {

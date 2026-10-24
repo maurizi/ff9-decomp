@@ -20,7 +20,7 @@ void menuScreen_init(void) {
     g_menuScreenSwitch.unk5 = 0;
     g_menuScreenSwitch.unk1C = g_gameState->mode != 3 ? g_menuScreensField : g_menuScreensWorld;
     t = D_80077E44;
-    t[D_80077E52].unk0();
+    t[g_menuScreenCur].unk0();
 }
 
 void menuScreen_drawCommands(void) {
@@ -30,14 +30,14 @@ void menuScreen_drawCommands(void) {
     s32 i;
     s32 y;
 
-    if (D_80077E52 == 0 || (g_menuScreenSwitch.unk0 != 0 && (*(u32 *)&g_menuScreenSwitch & 0xFFFF00))) {
+    if (g_menuScreenCur == 0 || (g_menuScreenSwitch.unk0 != 0 && (*(u32 *)&g_menuScreenSwitch & 0xFFFF00))) {
         all = 1;
     }
     win_setClip(NULL, 2, 2);
     if (g_menuScreenSwitch.unk7 != 0) {
         sel = g_menuScreenSwitch.unk7 - 1;
     } else {
-        sel = D_80077E52 - 1;
+        sel = g_menuScreenCur - 1;
     }
     for (i = 0; i < 7; i++) {
         y = i * 15 + 6;
@@ -112,7 +112,7 @@ void menuScreen_exit(void) {
 }
 
 void menuScreen_open(s32 arg0) {
-    s32 prev = D_80077E52;
+    s32 prev = g_menuScreenCur;
 
     if (g_menuScreenSwitch.unk1C[arg0].unk4 != 0) {
         g_menuScreenSwitch.unk7 = arg0;
@@ -141,7 +141,7 @@ void menuScreen_switch(u8 a) {
 }
 
 u8 menuScreen_getCurrent(void) {
-    return D_80077E52;
+    return g_menuScreenCur;
 }
 
 void menuScreen_close(void) {

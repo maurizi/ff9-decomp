@@ -4267,3 +4267,65 @@ func_800573CC akao_lfoTriangleScaled  # [code] D_8006FB40[6]: akao_lfoTriangle s
 func_80057534 akao_lfoTableScaled  # [code] D_8006FB40[7]: akao_lfoTable scaled by bits 9-10
 D_8006FB40 g_akaoLfoWaves  # [code] the 8 LFO waveform functions, picked by an opcode argument & 7
 # ff9.h: AkaoBankHeader (g_akaoBankHeader retyped from s32[16]), AKAO_MAGIC; header word indexing in akao_init.c/akao_api.c converted to fields
+D_8007BC0C g_bubbleScript  # [code] animation script pointer of msg_updatePlayerBubble (D_8006E690/6D8/6F0)
+D_8007BBEC g_bubbleRequest  # [code] set by msg_showPlayerBubble this frame
+D_8007BBF0 g_bubbleRequestPrev  # [code] last frame's g_bubbleRequest (msg_updatePlayerBubble picks the start/end script on a change)
+D_8007BBF4 g_bubbleVariant  # [code] msg_showPlayerBubble's variant (picks the script and the sprite of msg_drawPlayerBubble)
+D_8007BC08 g_bubbleWait  # [code] frames left of a 0xFE wait step in the bubble script
+D_8007BC00 g_bubbleColor  # [code] bubble brightness from the script (0x80 also draws the sprite)
+D_8007BBF8 g_bubbleHalfWidth  # [code] from the bubble script (msg_drawPlayerBubble)
+D_8007BBFC g_bubbleHeight  # [code] from the bubble script
+D_8007BC04 g_bubbleLift  # [code] y offset from the bubble script
+D_8007BBE0 g_hereIconActive  # [code] HERE icon requested (msg_drawHereIcon / msg_startHereIcon)
+D_8007BBE8 g_hereIconTimer  # [code] frames left of the HERE icon (60)
+D_8007BBE4 g_hereIconFlipped  # [code] the icon points the other way when the player is near the left edge (pen x < 24)
+D_8007BC10 g_atePromptMode  # [code] msg_setAtePrompt mode (bits 0-1 style, bit 2 also without control)
+D_8007BC14 g_atePromptTimer  # [code] blink counter of msg_drawAtePrompt
+D_8007B978 g_msgPadPrev  # [code] msg_readPad's previous buttons
+D_8007B97C g_msgPadPressed  # [code] msg_readPad: newly pressed buttons (msg_getPadPressed)
+D_8007B980 g_msgPadReleased  # [code] msg_readPad: released buttons (msg_getPadReleased)
+D_8007B988 g_msgPadEvent  # [code] {type, buttons} msg_readPad passes to the focused window (1 press, 2 repeat, 4 release)
+D_8007B990 g_msgPadRepeatTimer  # [code] repeat delay counter of msg_readPad (16, then every 4)
+D_8007B960 g_msgChoiceEnabled  # [code] mask of the enabled choices (msg_getChoiceIndex)
+D_8007B964 g_msgChoiceDrawMask  # [code] copy of g_msgChoiceEnabled while msg_drawText renders
+D_8007B974 g_msgChoiceMaskReq  # [code] mask passed to msg_setChoiceMask
+D_8007BB94 g_msgChoiceDefault  # [code] msg_setChoiceMask: index of the last enabled choice
+D_8007BB7C g_msgLine  # [code] line counter of msg_renderText (0xF7 newline), compared with g_msgChoiceLine
+D_8007B950 g_msgKeepWindows  # [code] msg_keepWindowsOnInit: the next msg_init keeps the windows
+D_8007B930 g_msgNameBuf  # [code] character name converted to capitals by msg_emitCharNameCaps
+D_8007B700 g_evtExprObj  # [code] battle object the per-unit expression ops currently evaluate for (g_evtUnitObjects[i])
+D_80079630 g_evtSavedState  # [code] saved copy of the script state, restored when returning to the same field
+D_80077E60 g_evtStateData  # [code] the script state block g_evtState points at
+D_8007AEAC g_evtPlayerMoved  # [code] set when the player moved this frame
+D_8007AE68 g_evtLookTarget  # [code] object every object with look flag 4 turns its head to (evt_updateLookAt)
+D_8007AD1E g_evtModelsPending  # [code] evt_createModels runs once when set
+D_80073690 g_reverbAttr  # [code] SpuReverbAttr game_reset sets (mode 0x100, depth 0)
+D_800736A4 g_reverbMode  # [code] SpuGetReverbModeType result (game_reset clears its work area)
+D_8007F718 g_akaoCdAtv  # [code] CdlATV passed to CdMix by akao_setCdMix
+D_80073C88 g_freezeDrawEnv  # [code] DRAWENV copy game_freezeScreen puts with the fade colour
+D_8006ADAC g_keyItemNames  # [code] key item name text (msg_emitItemName ids 0x100-0x1FF)
+D_8006B374 g_keyItemTable  # [code] key item records (name offset unk0, help unk2)
+D_8006DD88 g_charClassStats  # [code] base speed/strength/magic/spirit/stones per stat class (chr_calcBase*, chr_getClass)
+D_8006DDD0 g_levelHpMp  # [code] HP and MP factors per level (chr_calcMaxHp/chr_calcMaxMp)
+D_8006D548 g_equipStatBonus  # [code] speed/strength/magic/spirit bonuses per item bonus index (chr_sumEquipBonus, chr_calcEquipStats)
+D_80067950 g_resetCount  # [code] counted by game_shutdown at the end of each game_main pass
+D_8007BD2C g_swirlVariant  # [code] picks the swirl parameter set and the zoom wobble (swirl_update)
+D_8007BD30 g_swirlBuf  # [code] packet buffers of the swirl (0x400 words per draw buffer)
+D_8007BD20 g_swirlAngle  # [code] rotation of the swirl mesh (8.4)
+D_8007BD24 g_swirlZoom  # [code] pull toward the centre (0..0x1400)
+D_8007BD1C g_swirlFade  # [code] brightness of the swirled frame
+D_8007BD1E g_swirlFlash  # [code] brightness of swirl_drawFlash
+D_80077DC0 g_menuFrame  # [code] g_menu.frame under its own symbol
+D_80077E52 g_menuScreenCur  # [code] g_menuScreen.screen under its own symbol
+D_80077E53 g_menuScreenMember  # [code] g_menuScreen.member under its own symbol
+D_80077E54 g_menuScreenFrame  # [code] g_menuScreen.frame under its own symbol
+D_800770A8 g_textArgPtr  # [code] string argument text_buildBlock is drawing (codes 0x6B/0x6D/0x6F)
+D_80077CC0 g_fadeWipeQuads  # [code] the two screen-covering quads of fadeWipe_draw
+D_80077CB0 g_fadeWipeRot  # [code] rotation (z = g_fade.angle) for fadeWipe_draw
+D_80068F40 g_noTexWindow  # [code] RECT for get_tw that disables the texture window (window drawing)
+D_80068DC0 g_uiBackgroundSprite  # [code] sprite of ui_drawBackground
+D_80068FD0 g_winRuleSprites  # [code] title bar sprites (left, right, middle) per style (ui_drawRule)
+D_80068F94 g_winShadowLineOffsets  # [code] second-line offsets of win_drawLineBorder
+D_80068F20 g_winLineColors  # [code] line colours per window palette (win_drawLineBorder, win_drawDivider, ui_drawEtchedLine)
+D_8006F440 g_akaoLfoTableData  # [code] 256-entry wave of akao_lfoTable
+D_800831A8 g_akaoSeVolume  # [code] sound effect volume

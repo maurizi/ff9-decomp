@@ -438,7 +438,7 @@ void shopBuy_drawQuantityWindow(Window *w) {
 
 void shopBuy_drawCursor(void) {
     if (!fade_isBusy()) {
-        if (s_shopBuy.state == SHOP_ST_LIST || (D_80077DC0 & 3)) {
+        if (s_shopBuy.state == SHOP_ST_LIST || (g_menuFrame & 3)) {
             g_menuHelp.otz = 0x14;
             g_menuHelp.x = s_shopBuy.listRect.x - 8;
             g_menuHelp.y = s_shopBuy.listRect.y + (s16)(s_shopBuy.list.cursor * 0xF + 0xB);
@@ -873,7 +873,7 @@ void shopSynth_drawQuantityWindow(Window *w) {
 
 void shopSynth_drawCursor(void) {
     if (!fade_isBusy()) {
-        if (s_shopSynth.state == SHOP_ST_LIST || (D_80077DC0 & 3)) {
+        if (s_shopSynth.state == SHOP_ST_LIST || (g_menuFrame & 3)) {
             g_menuHelp.otz = 0x14;
             g_menuHelp.x = s_shopSynth.listRect.x - 8;
             g_menuHelp.y = s_shopSynth.listRect.y + (s16)(s_shopSynth.list.cursor * 0xF + 0xB);
@@ -1256,7 +1256,7 @@ void shopSell_drawCursor(void) {
 
     l = &s_shopSell.list;
     if (!fade_isBusy()) {
-        if (s_shopSell.state == SHOP_ST_LIST || (D_80077DC0 & 3)) {
+        if (s_shopSell.state == SHOP_ST_LIST || (g_menuFrame & 3)) {
             g_menuHelp.otz = 0x14;
             g_menuHelp.x = l->col * 0x96;
             g_menuHelp.y = l->cursor * 0xF + 0x34;

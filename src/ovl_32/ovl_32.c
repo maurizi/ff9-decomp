@@ -187,7 +187,7 @@ void menuChocograph_drawHint(void) {
 void menuChocograph_drawCursor(void) {
     help_setCursorOnTop(s_menuChocograph.mode != CHOCO_MODE_TABS);
     if (!fade_isBusy()) {
-        if (s_menuChocograph.mode == CHOCO_MODE_TABS || (D_80077DC0 & 3)) {
+        if (s_menuChocograph.mode == CHOCO_MODE_TABS || (g_menuFrame & 3)) {
             g_menuHelp.y = 0x11;
             g_menuHelp.otz = 0x1B;
             g_menuHelp.x = s_menuChocograph.tab * 0x60 + 0x1C;

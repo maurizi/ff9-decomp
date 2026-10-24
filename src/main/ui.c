@@ -194,13 +194,13 @@ void ui_drawBackground(void) {
     addPrim(&g_ot[0xFFF], g_primPtr);
     g_primPtr += sizeof(DrTpageWords);
 
-    tw.x = D_80068DC0.unk0;
-    tw.y = D_80068DC0.unk1;
-    tw.w = D_80068DC0.unk4;
-    tw.h = D_80068DC0.unk5;
+    tw.x = g_uiBackgroundSprite.unk0;
+    tw.y = g_uiBackgroundSprite.unk1;
+    tw.w = g_uiBackgroundSprite.unk4;
+    tw.h = g_uiBackgroundSprite.unk5;
 
     setlen(g_primPtr, 2);
-    ((DrMode2Words *)g_primPtr)->code[0] = get_tw(&D_80068F40);
+    ((DrMode2Words *)g_primPtr)->code[0] = get_tw(&g_noTexWindow);
     ((DrMode2Words *)g_primPtr)->code[1] = 0;
     addPrim(&g_ot[0xFFF], g_primPtr);
     g_primPtr += sizeof(DrMode2Words);
@@ -208,13 +208,13 @@ void ui_drawBackground(void) {
     setlen(g_primPtr, 4);
     ((SprtWords *)g_primPtr)->rgbc = GPU_RGBC(GPU_SPRT, 0x808080);
     ((SprtWords *)g_primPtr)->xy = 0;
-    ((SprtWords *)g_primPtr)->uvclut = D_80068DC0.unk2 << 16;
+    ((SprtWords *)g_primPtr)->uvclut = g_uiBackgroundSprite.unk2 << 16;
     ((SprtWords *)g_primPtr)->wh = w | 0x800000;
     addPrim(&g_ot[0xFFF], g_primPtr);
     g_primPtr += sizeof(SprtWords);
 
     setlen(g_primPtr, 2);
-    ((DrMode2Words *)g_primPtr)->code[0] = get_mode(1, 1, D_80068DC0.unk6);
+    ((DrMode2Words *)g_primPtr)->code[0] = get_mode(1, 1, g_uiBackgroundSprite.unk6);
     ((DrMode2Words *)g_primPtr)->code[1] = get_tw(&tw);
     addPrim(&g_ot[0xFFF], g_primPtr);
     g_primPtr += sizeof(DrMode2Words);
@@ -230,7 +230,7 @@ u8 *win_buildFill(RECT *r, u32 *ot, u8 u, u8 v, s32 pal, u8 *pkt) {
     tw.h = g_winFillSprite.unk5;
 
     setlen(pkt, 2);
-    ((DrMode2Words *)pkt)->code[0] = get_tw(&D_80068F40);
+    ((DrMode2Words *)pkt)->code[0] = get_tw(&g_noTexWindow);
     ((DrMode2Words *)pkt)->code[1] = 0;
     addPrim(ot, pkt);
     pkt += sizeof(DrMode2Words);
@@ -272,7 +272,7 @@ void win_drawLineBorder(RECT *r, s32 otz, u8 skip, s32 abr) {
     l[3].y0 = r->y;
     l[3].x1 = r->x + r->w - 2;
     l[3].y1 = r->y + r->h - 3;
-    col = D_80068F20[abr];
+    col = g_winLineColors[abr];
     for (i = skip != 0; i < 4; i++) {
         p = (LineF2W *)g_primPtr;
         setlen(p, 3);
@@ -284,8 +284,8 @@ void win_drawLineBorder(RECT *r, s32 otz, u8 skip, s32 abr) {
         p = (LineF2W *)g_primPtr;
         setlen(p, 3);
         p->rgbc = col[(i >> 1) + 2];
-        p->xy0 = ((l[i].x0 + D_80068F94[i][0]) & 0xFFFF) | ((l[i].y0 + D_80068F94[i][1]) << 16);
-        p->xy1 = ((l[i].x1 + D_80068F94[i][2]) & 0xFFFF) | ((l[i].y1 + D_80068F94[i][3]) << 16);
+        p->xy0 = ((l[i].x0 + g_winShadowLineOffsets[i][0]) & 0xFFFF) | ((l[i].y0 + g_winShadowLineOffsets[i][1]) << 16);
+        p->xy1 = ((l[i].x1 + g_winShadowLineOffsets[i][2]) & 0xFFFF) | ((l[i].y1 + g_winShadowLineOffsets[i][3]) << 16);
         addPrim(&g_ot[otz], p);
         g_primPtr += sizeof(LineF2W);
     }
@@ -328,7 +328,7 @@ u8 *win_buildBorder(RECT *r, u32 *ot, u8 flag, u8 abe, s32 style, s32 pal, u8 *p
     }
 
     setlen(pkt, 2);
-    ((DrMode2Words *)pkt)->code[0] = get_tw(&D_80068F40);
+    ((DrMode2Words *)pkt)->code[0] = get_tw(&g_noTexWindow);
     ((DrMode2Words *)pkt)->code[1] = 0;
     addPrim(ot, pkt);
     pkt += sizeof(DrMode2Words);
@@ -396,13 +396,13 @@ void ui_drawRule(s32 x, s32 y, s32 otz, s32 style, s32 w, s32 abr) {
 
     if (style == 1) {
         tbl = (Unk800689B0 *)g_uiSprites;
-        clut = tbl[D_80068FD0[1][0]].unk2;
+        clut = tbl[g_winRuleSprites[1][0]].unk2;
     } else {
         tbl2 = (Unk800689B0 *)g_uiSprites;
-        clut = win_getClut(tbl2[D_80068FD0[style][0]].unk2, abr);
+        clut = win_getClut(tbl2[g_winRuleSprites[style][0]].unk2, abr);
     }
     for (i = 0; i < 2; i++) {
-        d = &((Unk800689B0 *)g_uiSprites)[D_80068FD0[style][i]];
+        d = &((Unk800689B0 *)g_uiSprites)[g_winRuleSprites[style][i]];
         setlen(g_primPtr, 4);
         yy = y << 16;
         ((SprtWords *)g_primPtr)->rgbc = GPU_RGBC(GPU_SPRT, 0x808080);
@@ -418,11 +418,11 @@ void ui_drawRule(s32 x, s32 y, s32 otz, s32 style, s32 w, s32 abr) {
     }
     if (w > 0x10) {
         setlen(g_primPtr, 2);
-        ((DrMode2Words *)g_primPtr)->code[0] = get_tw(&D_80068F40);
+        ((DrMode2Words *)g_primPtr)->code[0] = get_tw(&g_noTexWindow);
         ((DrMode2Words *)g_primPtr)->code[1] = 0;
         addPrim(&g_ot[otz], g_primPtr);
         g_primPtr += sizeof(DrMode2Words);
-        d = &((Unk800689B0 *)g_uiSprites)[D_80068FD0[style][2]];
+        d = &((Unk800689B0 *)g_uiSprites)[g_winRuleSprites[style][2]];
         tw.x = d->unk0;
         tw.y = d->unk1;
         tw.w = d->unk4;
@@ -437,7 +437,7 @@ void ui_drawRule(s32 x, s32 y, s32 otz, s32 style, s32 w, s32 abr) {
     }
     setlen(g_primPtr, 2);
     ((DrMode2Words *)g_primPtr)->code[0] = get_mode(1, 1, d->unk6);
-    ((DrMode2Words *)g_primPtr)->code[1] = get_tw(w > 0x10 ? &tw : &D_80068F40);
+    ((DrMode2Words *)g_primPtr)->code[1] = get_tw(w > 0x10 ? &tw : &g_noTexWindow);
     addPrim(&g_ot[otz], g_primPtr);
     g_primPtr += sizeof(DrMode2Words);
 }
@@ -543,7 +543,7 @@ void win_drawTailFill(s32 x, s32 y, s32 otz, s32 shape, s32 u, s32 v) {
     tw.h = g_winFillSprite.unk5;
 
     setlen(g_primPtr, 2);
-    ((DrMode2Words *)g_primPtr)->code[0] = get_tw(&D_80068F40);
+    ((DrMode2Words *)g_primPtr)->code[0] = get_tw(&g_noTexWindow);
     ((DrMode2Words *)g_primPtr)->code[1] = 0;
     addPrim(&g_ot[otz], g_primPtr);
     g_primPtr += sizeof(DrMode2Words);
@@ -589,9 +589,9 @@ void ui_drawEtchedLine(s32 x, s32 y, s32 otz, s32 len) {
     s32 i;
     LineF2W *p;
 
-    col[0] = D_80068F20[CONFIG_WINDOW_COLOR()][1];
+    col[0] = g_winLineColors[CONFIG_WINDOW_COLOR()][1];
     col[1] = GPU_RGBC(GPU_LINE_F2, 0x403838);
-    col[2] = D_80068F20[CONFIG_WINDOW_COLOR()][0];
+    col[2] = g_winLineColors[CONFIG_WINDOW_COLOR()][0];
 
     for (i = 0; i < 3; i++) {
         p = (LineF2W *)g_primPtr;

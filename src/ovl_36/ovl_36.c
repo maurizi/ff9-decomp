@@ -267,7 +267,7 @@ void menuCard_drawCellHighlight(void) {
     s32 x, y;
     u32 rgbc;
 
-    a = D_80077DC0 & 0x3F;
+    a = g_menuFrame & 0x3F;
     if (a >= 0x20) {
         a = 0x3F - a;
     }
@@ -293,7 +293,7 @@ void menuCard_drawCellHighlight(void) {
 }
 
 void menuCard_drawCursor(void) {
-    u8 blink = (D_80077DC0 & 3) != 0;
+    u8 blink = (g_menuFrame & 3) != 0;
 
     if (!fade_isBusy()) {
         if (s_menuCard.state == CARD_ST_GRID || (s_menuCard.state == CARD_ST_DISCARD && blink)) {

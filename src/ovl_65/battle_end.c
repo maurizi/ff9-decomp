@@ -83,7 +83,7 @@ void battleEnd_exit(void) {
         g = g_gameState->unk1C;
         g->unk0 &= ~0x400000;
         snd_quit(g);
-        D_80067950++;
+        g_resetCount++;
         g_gameState->unk1C->unk0 |= 0x100000;
     }
 }

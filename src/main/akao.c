@@ -78,7 +78,7 @@ void akao_tickSe(void) {
                 akao_setVoiceVolume(s->unk10 + 1, 0, old, 0);
             }
         }
-        D_800831A8 = v & 0xFFFF;
+        g_akaoSeVolume = v & 0xFFFF;
     }
     if (D_8007F96E != 0) {
         D_8007F96E--;
@@ -775,8 +775,8 @@ void akao_execChannel(AkaoChannel *c, u32 mask) {
             vel = ((s32 (*)())akao_calcPitch)(&g_akaoInstruments[c->unk9A], op, c->unk108, &c->unk84);
             if (c->unkF6 != 0) {
                 tmp = (u32)(vel * c->unkF6) >> 8;
-                tmp *= (u8)D_8006F440[D_8008314C];
-                if ((u8)D_8006F440[D_8008314C] & 0x80) {
+                tmp *= (u8)g_akaoLfoTableData[D_8008314C];
+                if ((u8)g_akaoLfoTableData[D_8008314C] & 0x80) {
                     tmp >>= 9;
                     vel -= tmp;
                 } else {
@@ -1859,15 +1859,15 @@ void func_80060D1C(s32 v, s32 mode, s32 a, s32 b) {
     s32 pan;
 
     if (D_8008315C & 2) {
-        l = r = (D_800831A8 * D_8006F640) >> 16;
+        l = r = (g_akaoSeVolume * D_8006F640) >> 16;
     } else if (mode == 1) {
         r = 0;
-        l = (u32)D_800831A8 >> 1;
+        l = (u32)g_akaoSeVolume >> 1;
     } else if (mode == 2) {
         l = 0;
-        r = (u32)D_800831A8 >> 1;
+        r = (u32)g_akaoSeVolume >> 1;
     } else if (mode == 3) {
-        h = D_800831A8 >> 1;
+        h = g_akaoSeVolume >> 1;
         l = r = (h >> 1) + (h >> 2);
     } else {
         pan = (u8)(g_akaoStream.unk4C >> 8);

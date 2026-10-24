@@ -152,7 +152,7 @@ void menuParty_drawCursor(void) {
             g_menuHelp.y = (pos >> 2) * 0x30 + 0x8A;
         }
         help_drawCursor();
-        if (D_80077DC0 & 3) {
+        if (g_menuFrame & 3) {
             pos = s_menuParty.cursor[0].idx;
             if (s_menuParty.cursor[0].row == PARTY_ROW_PARTY) {
                 x = 0;

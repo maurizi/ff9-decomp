@@ -1292,7 +1292,7 @@ void wm_startBattleTransition(void) {
     WmObjSlot *s;
 
     g_swirlFrame = 0;
-    D_8007BD30 = func_800B8114();
+    g_swirlBuf = func_800B8114();
     o = g_gameState->unk1C->unk8E4.world->unk8;
     o->swirlFrames = 0;
     a = evt_getPlayer();

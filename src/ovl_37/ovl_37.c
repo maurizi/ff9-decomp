@@ -194,7 +194,7 @@ void menuItem_drawCursor(void) {
 
     off = 0;
     l = s_menuItemTabs[s_menuItem.tab].list;
-    blink = (D_80077E54 & 3) != 0;
+    blink = (g_menuScreenFrame & 3) != 0;
     help_setCursorOnTop(s_menuItem.state != ITEM_STATE_TABS);
     if (fade_isBusy() || s_menuItem.state == ITEM_STATE_BUSY) {
         return;
@@ -367,7 +367,7 @@ void menuItem_updateHelp(void) {
         if (s_menuItem.tab != 0) {
             i = menuItem_getSlot(&s_menuItem.keyList);
             if (i < s_menuItem.keyCount) {
-                h->text = &s_menuItemKeyHelp[D_8006B374[s_menuItem.keyItems[i]].unk2];
+                h->text = &s_menuItemKeyHelp[g_keyItemTable[s_menuItem.keyItems[i]].unk2];
             }
             return;
         }
@@ -432,9 +432,9 @@ void menuItem_drawKeyItem(void) {
 
     if (m->keyView != 0) {
         x = m->keyViewX;
-        name = D_8006ADAC + D_8006B374[m->keyViewId].unk0;
+        name = g_keyItemNames + g_keyItemTable[m->keyViewId].unk0;
         text_drawBlock(x + ((0xB0 - text_measureWidth((s32)name)) >> 1), 0x50, 0x14, name, 8);
-        text_drawBlock(x + 0xD, 0x66, 0x14, s_menuItemKeyDesc + D_8006B374[m->keyViewId].unk6, 8);
+        text_drawBlock(x + 0xD, 0x66, 0x14, s_menuItemKeyDesc + g_keyItemTable[m->keyViewId].unk6, 8);
         setlen(g_primPtr, 4);
         ((SprtWords *)g_primPtr)->rgbc = 0x64808080;
         ((SprtWords *)g_primPtr)->xy = (x & 0xFFFF) | 0x410000;
@@ -668,7 +668,7 @@ void menuItem_drawRow(s32 col, s32 row, s32 i, MenuView *v) {
 }
 
 void menuItem_drawKeyRow(s32 col, s32 row, s32 i, MenuView *v) {
-    u8 blink = (u32)D_80077DC0 % 48 >= 0x10;
+    u8 blink = (u32)g_menuFrame % 48 >= 0x10;
     u8 id;
     s32 x, y;
     s32 k = 0x2A;
@@ -679,11 +679,11 @@ void menuItem_drawKeyRow(s32 col, s32 row, s32 i, MenuView *v) {
 
     if (i < s_menuItem.keyCount) {
         id = s_menuItem.keyItems[i];
-        t = &D_8006B374[id];
+        t = &g_keyItemTable[id];
         got = keyItem_isSeen(id);
         x = col * 0x96 + 0x18;
         y = row * 0xF + (v->unk2 + k);
-        name = D_8006ADAC + t->unk0;
+        name = g_keyItemNames + t->unk0;
         if (!got) {
             w = x + text_measureWidth((s32)name);
             ui_drawSprite(w + 5, y + 2, 0x1C, 0xB6, blink);

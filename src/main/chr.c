@@ -99,7 +99,7 @@ Unk80032E84Out *chr_calcEquipStats(Unk80032E84In *in, Unk80032E84Out *out) {
     for (i = 0; i < 5; i++) {
         id = in->unk14.unk0[i];
         if (id != 0xFF) {
-            e = D_8006D548[g_itemTable[id].unkB].unk0;
+            e = g_equipStatBonus[g_itemTable[id].unkB].unk0;
             out->unk8[0] += e[0];
             out->unk8[1] += e[1];
             out->unk8[2] += e[2];
@@ -691,7 +691,7 @@ u8 func_80034A30(Character *a) {
 
 s32 chr_calcBaseSpeed(s32 ch, s32 lv, u8 add) {
     Character *c = g_gameState->unk1C->characters + ch;
-    Unk8006DD88 *e = &D_8006DD88[chr_getClass(c->unk34.b.row)];
+    Unk8006DD88 *e = &g_charClassStats[chr_getClass(c->unk34.b.row)];
     s32 r;
     if (add) {
         c->unk3E[0] += chr_sumEquipBonus(c->equip, 0);
@@ -707,7 +707,7 @@ s32 chr_calcBaseStrength(s32 ch, s32 lv, u8 add) {
     Character *c = g_gameState->unk1C->characters + ch;
     s32 k = chr_getClass(c->unk34.b.row);
     u16 *bonus = c->unk3E;
-    Unk8006DD88 *e = &D_8006DD88[k];
+    Unk8006DD88 *e = &g_charClassStats[k];
     s32 r;
     s32 n;
     if (add) {
@@ -728,7 +728,7 @@ s32 chr_calcBaseMagic(s32 ch, s32 lv, u8 add) {
     Character *c = g_gameState->unk1C->characters + ch;
     s32 k = chr_getClass(c->unk34.b.row);
     u16 *bonus = c->unk3E;
-    Unk8006DD88 *e = &D_8006DD88[k];
+    Unk8006DD88 *e = &g_charClassStats[k];
     s32 r;
     s32 n;
     if (add) {
@@ -749,7 +749,7 @@ s32 chr_calcBaseSpirit(s32 ch, s32 lv, u8 add) {
     Character *c = g_gameState->unk1C->characters + ch;
     s32 k = chr_getClass(c->unk34.b.row);
     u16 *bonus = c->unk3E;
-    Unk8006DD88 *e = &D_8006DD88[k];
+    Unk8006DD88 *e = &g_charClassStats[k];
     s32 r;
     s32 n;
     if (add) {
@@ -767,7 +767,7 @@ s32 chr_calcMaxStones(s32 ch, s32 lv, u8 add) {
     Character *c = g_gameState->unk1C->characters + ch;
     u16 *bonus = c->unk3E;
     s32 k = chr_getClass(c->unk34.b.row);
-    Unk8006DD88 *e = &D_8006DD88[k];
+    Unk8006DD88 *e = &g_charClassStats[k];
     s32 r;
     s32 n;
 
@@ -786,7 +786,7 @@ s32 chr_calcMaxStones(s32 ch, s32 lv, u8 add) {
 }
 
 s32 chr_calcMaxHp(s32 lv, s32 m) {
-    s32 r = D_8006DDD0[lv - 1].unk0 * m / 50;
+    s32 r = g_levelHpMp[lv - 1].unk0 * m / 50;
     if (r >= 10000) {
         r = 9999;
     }
@@ -794,7 +794,7 @@ s32 chr_calcMaxHp(s32 lv, s32 m) {
 }
 
 s32 chr_calcMaxMp(s32 lv, s32 m) {
-    s32 r = D_8006DDD0[lv - 1].unk2 * m / 100;
+    s32 r = g_levelHpMp[lv - 1].unk2 * m / 100;
     if (r >= 1000) {
         r = 999;
     }
@@ -808,7 +808,7 @@ s32 chr_sumEquipBonus(u8 *eq, s32 k) {
 
     for (i = 0; i < 5; i++) {
         if (eq[i] != 0xFF) {
-            e = D_8006D548[g_itemTable[eq[i]].unkB].unk0;
+            e = g_equipStatBonus[g_itemTable[eq[i]].unkB].unk0;
             switch (k) {
             case 0:
                 sum += e[0];

@@ -484,7 +484,7 @@ typedef struct {
     u8 unk8; /* kind (icon) */
     u8 unk9; /* icon palette */
     u8 unkA; /* equip rank */
-    u8 unkB; /* stat bonus row (D_8006D548) */
+    u8 unkB; /* stat bonus row (g_equipStatBonus) */
     u8 unkC[3]; /* abilities taught */
     u8 unkF;    /* mask tested against D_8006BB84[] */
     u8 unk10;   /* sort key */
@@ -595,7 +595,7 @@ s32 text_measureStyle(u8 *, s32);
 extern s32 D_8006BBFC[];
 extern s32 g_buttonSprites[];
 extern u8 g_textNumberBuf[];
-extern u8 *D_800770A8;
+extern u8 *g_textArgPtr;
 extern s32 g_textColor;
 extern u8 *g_textStringArgs[]; /* menu strings (text_setStringArg) */
 extern s32 g_textNumberArgs[];
@@ -990,8 +990,8 @@ u32 *fade_getOt(s32);
 void math_rotMatrixXYZ(void *, void *); /* rotation -> matrix */
 #endif
 s32 math_cos(s32); /* cos */
-extern SVECTOR D_80077CB0;
-extern SVECTOR D_80077CC0[2][4]; /* two screen-filling quads */
+extern SVECTOR g_fadeWipeRot;
+extern SVECTOR g_fadeWipeQuads[2][4]; /* two screen-filling quads */
 
 /* Select help window (g_menuHelp, help_* functions; layout merged from main + ovl_14 + ovl_32) */
 typedef struct {
@@ -1080,10 +1080,10 @@ typedef struct {
 } Unk800589E0;
 
 extern s32 D_80077DCC;
-extern u8 D_80077E52;
+extern u8 g_menuScreenCur;
 extern struct Unk8004AB64 *D_8007AEB8; /* object at the world map's mark 0x40 */
 extern struct Unk8004AB64 *D_8007AEBC; /* object at the world map's mark 0x80 */
-extern s32 D_8007B950;
+extern s32 g_msgKeepWindows;
 extern s32 D_80080A24;
 extern s32 *D_80066764;
 
@@ -1253,8 +1253,8 @@ typedef struct {
     u8 pad1702[0x17C8 - 0x1702];
 } Unk8007AECC; /* 0x17C8 */
 extern Unk8007AECC *g_evtState;
-extern Unk8007AECC D_80077E60; /* the script system state g_evtState points at */
-extern Unk8007AECC D_80079630; /* saved copy, restored when returning to the same field */
+extern Unk8007AECC g_evtStateData; /* the script system state g_evtState points at */
+extern Unk8007AECC g_evtSavedState; /* saved copy, restored when returning to the same field */
 extern Unk4 D_80011A44; /* rodata */
 extern s32 D_8007B6FC;
 extern s32 D_8007AEC0;
@@ -1299,7 +1299,7 @@ typedef struct {
     s32 unk0;
     s32 unk4;
 } Unk8007B988;
-extern Unk8007B988 D_8007B988;
+extern Unk8007B988 g_msgPadEvent;
 extern s32 D_8007B994;
 extern s32 D_8007B998;
 
@@ -1307,15 +1307,15 @@ extern s32 g_textBank;
 extern s32 g_evtScriptCount;
 extern s32 D_8007AE00; /* party mask, set by evt_loadScripts */
 extern u32 g_padPortHeld[];
-extern u32 D_8007B97C;
-extern u32 D_8007B980;
-extern s32 D_8007BBEC;
-extern s32 D_8007BBF4;
+extern u32 g_msgPadPressed;
+extern u32 g_msgPadReleased;
+extern s32 g_bubbleRequest;
+extern s32 g_bubbleVariant;
 extern u8 g_menuReading;
 extern u8 D_80077E2C;
 extern s16 D_8007AE10[8];
-extern s32 D_8007B978;
-extern s8 D_8006F440[];
+extern s32 g_msgPadPrev;
+extern s8 g_akaoLfoTableData[];
 extern s16 D_8007F96E;
 extern s32 D_80083154;
 extern s16 D_8007F96C;
@@ -1375,14 +1375,14 @@ typedef struct {
     s32 unk8;
 } Unk80077E50;
 extern Unk80077E50 g_menuScreen;
-extern u8 D_80077E53;
+extern u8 g_menuScreenMember;
 extern s32 g_evtLastEncounter;
 extern u8 D_8007954E;
-extern u8 D_8007AD1E;
+extern u8 g_evtModelsPending;
 extern s32 g_msgNumbers[8];
-extern u8 *D_8007BC0C; /* help-arrow animation script */
-extern s32 D_8007BC08;
-extern s32 D_8007BBF0;
+extern u8 *g_bubbleScript; /* help-arrow animation script */
+extern s32 g_bubbleWait;
+extern s32 g_bubbleRequestPrev;
 extern volatile s32 g_akaoSpuBusy;
 
 void db_clear(void);
@@ -1455,8 +1455,8 @@ typedef struct {
 extern u8 D_8006CAA4[][2];
 extern u8 D_800110A0[];
 extern u8 D_8006FD60[];
-extern s32 D_8007BC10;
-extern s32 D_8007BC14;
+extern s32 g_atePromptMode;
+extern s32 g_atePromptTimer;
 /* event / script variables; h[0] is the story progress counter */
 typedef union {
     s16 h[0x400];
@@ -1570,7 +1570,7 @@ typedef struct {
     s16 unk12;
 } Unk8006573C;
 
-extern s16 D_80067950;
+extern s16 g_resetCount;
 extern u32 D_80077DB4;
 extern u8 D_8006CAB8[][2];
 
@@ -1702,12 +1702,12 @@ typedef struct {
     u16 unk34;
 } Unk80021698;
 
-extern s32 D_8007B960;
+extern s32 g_msgChoiceEnabled;
 extern s32 g_msgChoice;
 extern s32 g_msgChoiceCount;
 extern s32 g_msgChoiceCancel;
-extern s32 D_8007B974;
-extern s32 D_8007BB94;
+extern s32 g_msgChoiceMaskReq;
+extern s32 g_msgChoiceDefault;
 
 s32 SpuRead(s32, s32);
 void akao_beginSpuTransfer(void);
@@ -1960,7 +1960,7 @@ extern s32 g_padPortMask[];
 #define SND_RESIDENT 0x80
 extern u32 g_padRepeat; /* press, then auto-repeat after 15 frames, every 5 */
 extern u8 D_80077DB5;
-extern s32 D_80077DC0; /* frame counter? */
+extern s32 g_menuFrame; /* frame counter? */
 
 s32 func_80012AD4(void);
 s32 EnterCriticalSection(void);
@@ -2033,7 +2033,7 @@ typedef struct {
     u8 unk4;
     u8 unk5;
 } Unk8006DD88; /* base stats per character class */
-extern Unk8006DD88 D_8006DD88[];
+extern Unk8006DD88 g_charClassStats[];
 void pad_initRepeat(void);
 void win_initAll(void);
 void preload_onReadDone(u8 *);
@@ -2045,7 +2045,7 @@ typedef struct {
     u8 unk8;    /* OR'd into BtlUnit.unk79 */
     u8 pad9[0xC - 9];
 } Unk8006D548;
-extern Unk8006D548 D_8006D548[];
+extern Unk8006D548 g_equipStatBonus[];
 void chr_setRecruited(u32);
 void msg_setFocus(MsgWindow *);
 MsgWindow *msg_getFocus(void);
@@ -2136,7 +2136,7 @@ typedef struct {
     u16 unk0;
     u16 unk2;
 } Unk8006DDD0;
-extern Unk8006DDD0 D_8006DDD0[];
+extern Unk8006DDD0 g_levelHpMp[];
 typedef struct Unk8007BC20Node {
     struct Unk8007BC20Node *unk0; /* next */
     u8 pad4[0xC - 4];
@@ -2333,7 +2333,7 @@ extern Unk8 g_cdResult; /* last CD status/result bytes */
 
 s32 evt_callObjectFunc(Unk8004AB64 *, s32, s32, s32);
 extern s32 D_8007AE34;
-extern CdlATV D_8007F718;
+extern CdlATV g_akaoCdAtv;
 void func_8005A284(); /* (Unk80080A10 *, AkaoChannel *) */
 void card_rollStats(Unk6 *, u8);
 extern s32 g_akaoLfoWaves[];
@@ -2395,7 +2395,7 @@ void msg_update(void);
 void evt_updateIdleTimer(void);
 s32 evt_updateObjects(void); /* per-frame field object update */
 extern s32 D_8007AEA8;
-extern s32 D_8007AEAC; /* the player moved this frame */
+extern s32 g_evtPlayerMoved; /* the player moved this frame */
 extern s32 D_8007AEB0;
 extern s32 D_8007AEB4;
 extern u8 g_worldPlayerStepped; /* world map (ovl_0c) data */
@@ -2503,8 +2503,8 @@ static inline Unk8004AB64 *func_8004B4C4_inline(s32 id) {
 }
 extern s32 D_8007B710;
 extern s32 D_8007BBC8;
-extern s32 D_8007BBE0;
-extern s32 D_8007BBE8;
+extern s32 g_hereIconActive;
+extern s32 g_hereIconTimer;
 extern AkaoChannel *g_akaoSubChannels;
 
 typedef struct {
@@ -2580,7 +2580,7 @@ extern u8 *D_8007B9A8;
 extern u32 D_8007B9B0[];
 extern u8 **g_penPktPtr;
 void pen_putGlyph(s32);
-extern u8 D_8007B930[8]; /* name text being converted */
+extern u8 g_msgNameBuf[8]; /* name text being converted */
 u32 pen_getGlyph(s32); /* glyph info of a text code, width in the top 4 bits */
 s32 func_8004B120(s32);
 void msg_measureLine(u8 **, s32 *); /* add the width of a text control code */
@@ -2814,14 +2814,14 @@ s32 game_getPlayTime(void);
 s32 text_formatTime(s32, u8 *, s32);
 extern s32 D_800704C0;
 extern u8 g_itemNames[]; /* item names */
-extern u8 D_8006ADAC[]; /* key item names */
+extern u8 g_keyItemNames[]; /* key item names */
 typedef struct {
-    s16 unk0; /* name offset into D_8006ADAC */
+    s16 unk0; /* name offset into g_keyItemNames */
     s16 unk2; /* help offset */
     u8 pad4[2];
     s16 unk6; /* description offset */
 } Unk8006B374;
-extern Unk8006B374 D_8006B374[];
+extern Unk8006B374 g_keyItemTable[];
 Unk16D8 *evt_getObjectList(void);
 extern s32 D_8007046C;
 void SetBackColor(s32, s32, s32);
@@ -2861,7 +2861,7 @@ static inline void msg_closeWindow_inline(MsgWindow *p) {
         msg_closeAll_inline(p);
     }
 }
-extern s32 D_8007B990;
+extern s32 g_msgPadRepeatTimer;
 
 /* actor-like object updated by func_8004B9B8 */
 typedef struct {
@@ -2933,8 +2933,8 @@ typedef struct {
     s16 x1;
     s16 y1;
 } LineF2Words; /* LINE_F2 */
-extern u32 D_80068F20[][4]; /* line colours */
-extern s8 D_80068F94[4][4]; /* shadow line offsets (win_drawLineBorder) */
+extern u32 g_winLineColors[][4]; /* line colours */
+extern s8 g_winShadowLineOffsets[4][4]; /* shadow line offsets (win_drawLineBorder) */
 typedef struct {
     s16 x0;
     s16 y0;
@@ -2989,7 +2989,7 @@ void win_drawDivider(RECT *, s32, MenuList *, s32);
 void win_drawLineBorder(RECT *, s32, u8, s32);
 void win_drawFill(RECT *, s32, u8, u8, s32);
 extern s32 D_8008315C;
-extern s32 D_800831A8; /* sound effect volume */
+extern s32 g_akaoSeVolume; /* sound effect volume */
 extern s32 D_800831C0;
 extern s16 D_8006F640;
 extern s16 g_akaoPanCurve[]; /* pan curve, 256 entries */
@@ -3024,7 +3024,7 @@ void pen_move(s32, s32);
 void pen_drawSprite(s32);
 void pen_end(void);
 extern s32 *g_evtExprSp; /* script value stack pointer */
-extern void *D_8007B700; /* script current object */
+extern void *g_evtExprObj; /* script current object */
 
 /* Inlined copy of func_8004B404 (read script variable, refreshing 2-4). */
 static inline u16 func_8004B404_inline(s32 arg0) {
@@ -3049,7 +3049,7 @@ typedef struct {
     s32 unk8;
 } Unk8007BB98;
 extern Unk8007BB98 D_8007BB98;
-extern s32 D_8007B964;
+extern s32 g_msgChoiceDrawMask;
 void msg_renderText(MsgWindow *, u8 *); /* draw a window's text */
 extern DVECTOR *g_penStackPtr; /* pen position stack (pen_pushPos) */
 typedef union {
@@ -3069,7 +3069,7 @@ typedef struct {
     u8 unk5; /* h */
 } Unk80068790;
 extern Unk80068790 D_80068790;
-extern s32 D_8007BBE4; /* balloon flipped (pen x < 24) */
+extern s32 g_hereIconFlipped; /* balloon flipped (pen x < 24) */
 extern u8 D_8006E67C[];
 void func_800512B4(s32);
 void pen_setLastSemiTrans(void);
@@ -3152,10 +3152,10 @@ typedef struct {
     u16 unk2; /* clut */
 } Unk80068788;
 extern Unk80068788 D_80068788;
-extern s32 D_8007BC00; /* colour */
-extern s32 D_8007BBF8; /* half width */
-extern s32 D_8007BBFC; /* height */
-extern s32 D_8007BC04;
+extern s32 g_bubbleColor; /* colour */
+extern s32 g_bubbleHalfWidth; /* half width */
+extern s32 g_bubbleHeight; /* height */
+extern s32 g_bubbleLift;
 extern s32 D_8007AEC8;
 extern u8 D_8006E6D8[];
 extern u8 D_8006E690[];
@@ -3362,7 +3362,7 @@ typedef struct {
     u32 tag;
     u32 code[2];
 } DrMode2Words; /* DR_MODE / DR_TWIN */
-extern Unk800689B0 D_80068DC0;
+extern Unk800689B0 g_uiBackgroundSprite;
 extern Unk800689B0 g_winFillSprite;
 /* window frame tables (win_buildBorder) */
 extern u32 D_80068FA4[2]; /* edge rgbc, by flag */
@@ -3370,7 +3370,7 @@ extern u32 D_80068FAC[2]; /* corner rgbc, by flag */
 extern u8 D_80068FB4[][4]; /* corner sprites (g_uiSprites index) per style */
 extern u8 D_80068FC0[][2]; /* top/bottom edge sprites per style */
 extern u8 D_80068FC8[][2]; /* left/right edge sprites per style */
-extern u8 D_80068FD0[][3]; /* title bar sprites (left, right, middle) per style */
+extern u8 g_winRuleSprites[][3]; /* title bar sprites (left, right, middle) per style */
 typedef struct {
     u32 tag;
     u32 rgbc;
@@ -3407,7 +3407,7 @@ typedef struct {
 } PolyFT4Words; /* POLY_FT4 written as whole words */
 
 u16 win_getClut(s32, s32);
-extern RECT D_80068F40;
+extern RECT g_noTexWindow;
 void func_80058F34(AkaoChannel *, u32 *, u32, u32);
 /* ---- main: boot, system setup, TIM helpers ---- */
 
@@ -3505,9 +3505,9 @@ s32 CdGetSector(void *, s32);
 s32 preload_isLoaded(PreloadEntry *);
 void cd_onSectorReady(void);
 
-extern SpuReverbAttr D_80073690;
-extern s32 D_800736A4; /* reverb mode */
-extern DRAWENV D_80073C88;
+extern SpuReverbAttr g_reverbAttr;
+extern s32 g_reverbMode; /* reverb mode */
+extern DRAWENV g_freezeDrawEnv;
 void pad_resetState(void);
 void cd_resetState(void);
 void db_init(void);
@@ -3787,10 +3787,10 @@ s32 evt_modelOpBattle(Unk8004AB64 *, s32);
 s32 evt_modelOpWorld(Unk8004AB64 *, s32);
 
 extern s32 D_8007AEA4;
-extern Unk8004AB64 *D_8007AE68;
+extern Unk8004AB64 *g_evtLookTarget;
 extern s32 D_8007AE6C;
 extern s32 D_8007BBD8;
-extern s32 D_8007BB7C; /* message counter */
+extern s32 g_msgLine; /* message counter */
 extern u8 D_8006E688[]; /* text speed per config setting */
 void evt_turnObject(Unk8004AB64 *, s32, s32, s32);
 s32 func_80052F24(s32, s32);
@@ -3913,7 +3913,7 @@ static inline Unk8004AFF0 *func_8004AFF0_inline(Unk8004AB64 *p) {
     return NULL;
 }
 
-extern u8 D_8007BD2C;
+extern u8 g_swirlVariant;
 extern s32 g_evtEncounterChance;
 typedef struct {
     s16 unk0;
@@ -4069,7 +4069,7 @@ static inline void evt_execInstr_window(Unk8004AB64 *obj, s32 b, s32 c) {
             }
         }
         obj->unk3E = c;
-        D_8007AE68 = obj;
+        g_evtLookTarget = obj;
         D_8007AE6C = 0;
     }
 }
@@ -4108,7 +4108,7 @@ static inline void vib_init_max(u32 *m, u32 v) {
 /* primitive buffer / ordering table used by swirl_drawFlash */
 extern u32 *g_swirlOt;
 extern u32 *g_swirlPkt;
-extern u16 D_8007BD1E;
+extern u16 g_swirlFlash;
 /* battle-entry warp grid (swirl_buildMesh fills it, swirl_drawMesh draws it) */
 typedef struct {
     s16 x, y;
@@ -4131,14 +4131,14 @@ typedef struct {
 } SwirlDef; /* 0x14 */
 extern SwirlDef D_8006F2E0[2];
 extern SwirlDef *g_swirlParams;
-extern u16 D_8007BD1C;
-extern s16 D_8007BD20;
-extern s16 D_8007BD22 __asm__("D_8007BD20+2"); /* no symbol of its own */
-extern s16 D_8007BD24;
+extern u16 g_swirlFade;
+extern s16 g_swirlAngle;
+extern s16 D_8007BD22 __asm__("g_swirlAngle+2"); /* no symbol of its own */
+extern s16 g_swirlZoom;
 extern s32 g_swirlFrame; /* frame */
 #if !defined(OVL_0C_H) /* ovl_0c declares it as s32 */
 #if !defined(OVL_0A_H) && !defined(OVL_0C_H) /* the overlays type it themselves */
-extern u32 *D_8007BD30;
+extern u32 *g_swirlBuf;
 #endif
 #endif
 void fade_clear(void);

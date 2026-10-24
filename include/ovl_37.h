@@ -93,7 +93,7 @@ extern RECT s_menuItemArrangeRect;
 #define ITEM_NONE 0xFF /* empty item id */
 #endif
 void help_nullHandler(void); /* empty function, passed to help_setCallback as a no-op callback */
-extern s32 D_80077E54; /* = g_menuScreen.unk4, referenced by its own name */
+extern s32 g_menuScreenFrame; /* = g_menuScreen.unk4, referenced by its own name */
 typedef struct {
     unsigned int unk0 : 4;   /* target kind */
     unsigned int unk0_4 : 1;

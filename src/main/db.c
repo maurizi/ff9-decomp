@@ -296,21 +296,21 @@ void game_freezeScreen(void) {
         VSync(0);
         PutDispEnv(&g_gameState->dispEnv[g_gameState->unk1C->unk8]);
         fade = 0;
-        memmove(&D_80073C88, &g_gameState->drawEnv[g_gameState->unk1C->unk8 ^ 1], sizeof(DRAWENV));
+        memmove(&g_freezeDrawEnv, &g_gameState->drawEnv[g_gameState->unk1C->unk8 ^ 1], sizeof(DRAWENV));
         if (fade_isActive() || fade_isBusy()) {
             fade = 1;
         }
         busy = fade_isSubtractive();
         col = fade_getColor();
         if (fade && !busy) {
-            D_80073C88.isbg = 1;
-            D_80073C88.r0 = col.unk0[0];
-            D_80073C88.g0 = col.unk0[1];
-            D_80073C88.b0 = col.unk0[2];
+            g_freezeDrawEnv.isbg = 1;
+            g_freezeDrawEnv.r0 = col.unk0[0];
+            g_freezeDrawEnv.g0 = col.unk0[1];
+            g_freezeDrawEnv.b0 = col.unk0[2];
         } else {
-            D_80073C88.isbg = 0;
+            g_freezeDrawEnv.isbg = 0;
         }
-        PutDrawEnv(&D_80073C88);
+        PutDrawEnv(&g_freezeDrawEnv);
         DrawSync(0);
     }
 }

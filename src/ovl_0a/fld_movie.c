@@ -1422,7 +1422,7 @@ void fld_updateEncounter(void) {
 
     if (g_gameState->unk1C->unk8E4.field->unkC->unk14->encounterStep == 0) {
         g_swirlFrame = 0;
-        D_8007BD30 = g_loadAreaEnd + 0x153F00;
+        g_swirlBuf = g_loadAreaEnd + 0x153F00;
         fld_clearModelCache();
         g_gameState->unk1C->unk8E4.field->unkC->unk14->heapTop = D_80067948;
         a = evt_getPlayer();

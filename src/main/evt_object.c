@@ -173,7 +173,7 @@ s32 evt_exprUnitIncDec(s32 op) {
     }
     for (i = 0; i < 8; i++) {
         if (mask & 1) {
-            D_8007B700 = g_evtUnitObjects[i];
+            g_evtExprObj = g_evtUnitObjects[i];
             switch (op) {
             case 8:
                 r = evt_popResult();
@@ -221,7 +221,7 @@ s32 evt_exprUnitAssign(s32 op) {
     v = evt_popResult();
     for (i = 0; i < 8; i++) {
         if (mask & 1) {
-            D_8007B700 = g_evtUnitObjects[i];
+            g_evtExprObj = g_evtUnitObjects[i];
             switch (op) {
             case 0x2D:
                 r = v;
@@ -304,7 +304,7 @@ s32 evt_exprUnitSelect(s32 op) {
         for (i = 0; i < 8; i++) {
             r >>= 1;
             if (mask & 1) {
-                D_8007B700 = g_evtUnitObjects[i];
+                g_evtExprObj = g_evtUnitObjects[i];
                 if (evt_popResult() == 0) {
                     r |= 0x80;
                 }
@@ -317,7 +317,7 @@ s32 evt_exprUnitSelect(s32 op) {
         r = -0x8000;
         for (i = 0; i < 8; i++) {
             if (mask & 1) {
-                D_8007B700 = g_evtUnitObjects[i];
+                g_evtExprObj = g_evtUnitObjects[i];
                 x = evt_popResult();
                 g_evtExprSp++;
                 if (r < x) {
@@ -333,7 +333,7 @@ s32 evt_exprUnitSelect(s32 op) {
         r = 0x7FFF;
         for (i = 0; i < 8; i++) {
             if (mask & 1) {
-                D_8007B700 = g_evtUnitObjects[i];
+                g_evtExprObj = g_evtUnitObjects[i];
                 x = evt_popResult();
                 g_evtExprSp++;
                 if (x < r) {
@@ -369,7 +369,7 @@ s32 evt_exprUnitCompare(s32 op) {
     for (i = 0; i < 8; i++) {
         r >>= 1;
         if (mask & 1) {
-            D_8007B700 = g_evtUnitObjects[i];
+            g_evtExprObj = g_evtUnitObjects[i];
             switch (op) {
             case 0x1C:
                 c = evt_popResult() < v;
@@ -427,7 +427,7 @@ s32 evt_exprUnitLogic(s32 op) {
     for (i = 0; i < 8; i++) {
         r >>= 1;
         if (mask & 1) {
-            D_8007B700 = g_evtUnitObjects[i];
+            g_evtExprObj = g_evtUnitObjects[i];
             if (evt_popResult() != 0) {
                 r |= 0x80;
             }
@@ -477,7 +477,7 @@ s32 evt_exprUnitFirst(void) {
         }
     }
     if (i < 8) {
-        D_8007B700 = g_evtUnitObjects[i];
+        g_evtExprObj = g_evtUnitObjects[i];
         r = evt_popResult();
     } else {
         g_evtExprSp--;

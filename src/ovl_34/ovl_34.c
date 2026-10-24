@@ -189,7 +189,7 @@ void menuConfig_drawCursor(void) {
         g_menuHelp.x = 0;
         g_menuHelp.otz = 0x15;
         g_menuHelp.y = s_menuConfig.list.cursor * 0x14 + 0x31;
-        if (s_menuConfig.editing == 0 || (D_80077E54 & 3)) {
+        if (s_menuConfig.editing == 0 || (g_menuScreenFrame & 3)) {
             help_drawCursor();
         }
         if (s_menuConfig.editing != 0 && !menuConfig_isWindowMoving()) {
@@ -680,7 +680,7 @@ void menuConfig_drawScrollArrows(void) {
     s32 blink;
 
     l = &s_menuConfig.list;
-    blink = (((u32)D_80077DC0 >> 4) ^ 1) & 1;
+    blink = (((u32)g_menuFrame >> 4) ^ 1) & 1;
     ui_drawSprite(0x12E, 0x2C, 0x14, 0xB8, l->top != 0 ? blink : 1);
     ui_drawSprite(0x12E, 0xCF, 0x14, 0xB9, l->top < l->rows - l->visibleRows ? blink : 1);
 }

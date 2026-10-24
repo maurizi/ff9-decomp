@@ -354,7 +354,7 @@ void menuAbility_drawCursor(void) {
     s16 ry;
 
     done = 0;
-    blink = (D_80077E54 & 3) != 0;
+    blink = (g_menuScreenFrame & 3) != 0;
     help_setCursorOnTop(s_menuAbility.state != ABILITY_STATE_TABS);
     if (fade_isBusy()) {
         return;
@@ -685,7 +685,7 @@ void menuAbility_update(void) {
 }
 
 void menuAbility_exit(void) {
-    D_80077E53 = s_menuAbility.slot;
+    g_menuScreenMember = s_menuAbility.slot;
     help_setCursorOnTop(1);
     help_setCallback(NULL);
 }

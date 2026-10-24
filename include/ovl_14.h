@@ -114,7 +114,7 @@ enum {
     OPENING_MOVIE2,
     OPENING_ATTRACT2, /* attract image set 1, then the title */
     OPENING_PAUSE2,
-    OPENING_BOOT,     /* boot screen, first boot only (D_80067950 == 0) */
+    OPENING_BOOT,     /* boot screen, first boot only (g_resetCount == 0) */
     OPENING_DONE      /* the title started a game */
 };
 #define OPENING_PAUSE_FRAMES 180

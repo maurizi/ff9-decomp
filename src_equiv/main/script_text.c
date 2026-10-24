@@ -666,7 +666,7 @@ void func_80051B58(const char *fmt, ...) {
  *   space 2/3: the current object's locals (g_evtObjVars)
  *   space 4: (uid << 8) | index on another object (func_8004B4C4 + evt_getObjectProp), read-only
  *   space 5: system variable `index` (func_8004B404 / func_8004B4A8)
- *   space 6: property `index` of D_8007B700 (evt_getObjectProp / evt_setObjectProp)
+ *   space 6: property `index` of g_evtExprObj (evt_getObjectProp / evt_setObjectProp)
  *   space 7: an immediate (26-bit, sign-extended)
  *   width (spaces 0-3): 0/1 bit, 2/3 24-bit signed, 4 s8, 5 u8, 6 s16, 7 u16
  */
@@ -705,7 +705,7 @@ s32 evt_popValue(void) {
             if (tag & 1) {
                 return (s32)(t << 6) >> 6;
             }
-            return evt_getObjectProp((Unk8004AB64 *)D_8007B700, (s32)(t << 6) >> 6);
+            return evt_getObjectProp((Unk8004AB64 *)g_evtExprObj, (s32)(t << 6) >> 6);
         }
         if (tag & 1) {
             return func_8004B404(t & 0xFF);
@@ -757,7 +757,7 @@ void evt_popAssign(s32 v) {
 
     if (tag & 4) {
         if (tag & 2) {
-            evt_setObjectProp((Unk800219D8 *)D_8007B700, t & 0xFF, v);
+            evt_setObjectProp((Unk800219D8 *)g_evtExprObj, t & 0xFF, v);
         } else if (tag & 1) {
             func_8004B4A8(t & 0xFF, v);
         }

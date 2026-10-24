@@ -129,7 +129,7 @@ void fld_gameOver(void) {
         }
         fld_soundCommand(0x100, g_gameState->unk1C->unk81C[0], 0, 0, 0);
     }
-    D_80067950++;
+    g_resetCount++;
 }
 
 void fld_init(void) {

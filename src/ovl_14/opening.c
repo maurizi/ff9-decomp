@@ -6,7 +6,7 @@ void opening_main(void) {
     n = 0;
     opening_init();
     scene_init();
-    g_openingState = D_80067950 == 0 ? OPENING_BOOT : OPENING_MOVIE;
+    g_openingState = g_resetCount == 0 ? OPENING_BOOT : OPENING_MOVIE;
     while (g_openingState < OPENING_DONE) {
         switch (g_openingState) {
         case OPENING_MOVIE:

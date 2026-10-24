@@ -31,19 +31,19 @@ void game_reset(void) {
     cd_resetState();
     db_init();
     pad_resetState();
-    D_80073690.mask = 0x19;
-    D_80073690.mode = 0x100;
-    D_80073690.depth.left = 0;
-    D_80073690.depth.right = 0;
-    D_80073690.delay = 0;
-    D_80073690.feedback = 0;
-    SpuSetReverbModeParam(&D_80073690);
-    SpuSetReverbDepth(&D_80073690);
-    SpuGetReverbModeType(&D_800736A4);
-    SpuClearReverbWorkArea(D_800736A4);
+    g_reverbAttr.mask = 0x19;
+    g_reverbAttr.mode = 0x100;
+    g_reverbAttr.depth.left = 0;
+    g_reverbAttr.depth.right = 0;
+    g_reverbAttr.delay = 0;
+    g_reverbAttr.feedback = 0;
+    SpuSetReverbModeParam(&g_reverbAttr);
+    SpuSetReverbDepth(&g_reverbAttr);
+    SpuGetReverbModeType(&g_reverbMode);
+    SpuClearReverbWorkArea(g_reverbMode);
     snd_init();
-    SpuGetReverbModeType(&D_800736A4);
-    SpuClearReverbWorkArea(D_800736A4);
+    SpuGetReverbModeType(&g_reverbMode);
+    SpuClearReverbWorkArea(g_reverbMode);
     for (i = 0; i < 90; i++) {
         VSync(0);
     }
@@ -57,7 +57,7 @@ void game_reset(void) {
 void game_shutdown(void) {
     snd_quit();
     db_quit();
-    D_80067950++;
+    g_resetCount++;
 }
 
 INCLUDE_ASM("asm/us/main/nonmatchings/init", _bu_init);

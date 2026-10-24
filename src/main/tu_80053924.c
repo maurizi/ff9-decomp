@@ -59,8 +59,8 @@ s32 swirl_update(s16 arg0, s16 arg1) {
 
     x = arg0;
     y = arg1;
-    g_swirlParams = D_8007BD2C ? &D_8006F2E0[1] : &D_8006F2E0[0];
-    g_swirlOt = g_swirlPkt = D_8007BD30 + (g_gameState->unk1C->unk8 << 10);
+    g_swirlParams = g_swirlVariant ? &D_8006F2E0[1] : &D_8006F2E0[0];
+    g_swirlOt = g_swirlPkt = g_swirlBuf + (g_gameState->unk1C->unk8 << 10);
     ClearOTag(g_swirlOt, 5);
     g_swirlPkt += 5;
     if (g_swirlFrame < 0x79) {
@@ -68,13 +68,13 @@ s32 swirl_update(s16 arg0, s16 arg1) {
             gs = g_gameState;
             gs->unk1C->unk0 &= ~0x20;
             *(u32 *)&gs->drawEnv[0].isbg = *(u32 *)&gs->drawEnv[1].isbg = 1;
-            D_8007BD1E = 0;
-            D_8007BD1C = g_swirlParams->unkA;
-            D_8007BD20 = a = g_swirlParams->unk0;
-            D_8007BD24 = g_swirlParams->unk6;
+            g_swirlFlash = 0;
+            g_swirlFade = g_swirlParams->unkA;
+            g_swirlAngle = a = g_swirlParams->unk0;
+            g_swirlZoom = g_swirlParams->unk6;
             D_8007BD22 = b = g_swirlParams->unk2;
             if ((arg0 ^ arg1) & 1) {
-                D_8007BD20 = -a;
+                g_swirlAngle = -a;
                 D_8007BD22 = -b;
             }
             fade_clear();
@@ -85,7 +85,7 @@ s32 swirl_update(s16 arg0, s16 arg1) {
         if (g_swirlFrame & 2) {
             y += y < g_gameState->drawEnv->clip.h / 2 ? 1 : -1;
         }
-        if (D_8007BD2C) {
+        if (g_swirlVariant) {
             c = math_sin(g_swirlFrame * 8);
             x += c * (160 - x) / 4096;
             y += c * (g_gameState->drawEnv->clip.h / 2 - y) / 4096;
@@ -97,22 +97,22 @@ s32 swirl_update(s16 arg0, s16 arg1) {
         g_swirlPkt += 8;
         swirl_drawMesh();
         if (g_swirlFrame >= g_swirlParams->unkC) {
-            D_8007BD1C -= g_swirlParams->unkE;
-            if ((s16)D_8007BD1C < 0) {
-                D_8007BD1C = 0;
+            g_swirlFade -= g_swirlParams->unkE;
+            if ((s16)g_swirlFade < 0) {
+                g_swirlFade = 0;
             }
         }
         if (g_swirlFrame >= g_swirlParams->unk10) {
             swirl_drawFlash(x, y);
-            D_8007BD1E += g_swirlParams->unk12;
-            if ((s16)D_8007BD1E >= 0x1000) {
-                D_8007BD1E = 0xFFF;
+            g_swirlFlash += g_swirlParams->unk12;
+            if ((s16)g_swirlFlash >= 0x1000) {
+                g_swirlFlash = 0xFFF;
             }
         }
-        D_8007BD20 += D_8007BD22;
-        D_8007BD24 += g_swirlParams->unk8;
-        if (D_8007BD24 > 0x1400) {
-            D_8007BD24 = 0x1400;
+        g_swirlAngle += D_8007BD22;
+        g_swirlZoom += g_swirlParams->unk8;
+        if (g_swirlZoom > 0x1400) {
+            g_swirlZoom = 0x1400;
         }
         setlen(g_swirlPkt, 2);
         g_swirlPkt[1] = _get_mask(1, 0);
@@ -164,7 +164,7 @@ void swirl_drawFlash(s32 x, s32 y) {
     u32 g2;
 
     p = g_swirlPkt;
-    v = D_8007BD1E << 16;
+    v = g_swirlFlash << 16;
     c1 = v >> 20;
     c2 = v >> 23;
     g2 = (c2 << 16) | (c2 << 8) | c2;
@@ -222,15 +222,15 @@ u32 *swirl_buildMesh(u32 *buf, s32 x, s32 y) {
         pts[8 - i].vy = y + (dy * t) / 4096;
     }
     for (i = 1; i < 8; i++) {
-        ex = ((pts[i].vx - xs[i]) * D_8007BD24) / 4096;
+        ex = ((pts[i].vx - xs[i]) * g_swirlZoom) / 4096;
         py = ys;
-        ey = ((pts[i].vy - ys[i]) * D_8007BD24) / 4096;
+        ey = ((pts[i].vy - ys[i]) * g_swirlZoom) / 4096;
         pts[i].vx = xs[i] + ex;
         pts[i].vy = ys[i] + ey;
     }
     sv.vy = 0;
     sv.vx = 0;
-    sv.vz = (s16)D_8007BD20 >> 4;
+    sv.vz = (s16)g_swirlAngle >> 4;
     math_rotMatrixXYZ(&sv, &m);
     v.vx = v.vy = g_swirlParams->unk4;
     v.vz = 0;
@@ -269,7 +269,7 @@ void swirl_drawMesh(void) {
     u32 tp;
 
     p = g_swirlPkt;
-    c = (D_8007BD1C >> 4) & 0xFF;
+    c = (g_swirlFade >> 4) & 0xFF;
     rgbc = (c << 16) | (c << 8) | c | GPU_CODE(GPU_POLY_FT4 | GPU_ABE);
     p += 10;
     for (i = 0; i < 8; i++) {

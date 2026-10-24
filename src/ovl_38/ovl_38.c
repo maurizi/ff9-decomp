@@ -331,7 +331,7 @@ void menuStatus_update(void) {
 }
 
 void menuStatus_exit(void) {
-    D_80077E53 = s_menuStatus.slot;
+    g_menuScreenMember = s_menuStatus.slot;
     help_setFollow(s_menuStatus.savedHelp);
     help_setCallback(NULL);
 }

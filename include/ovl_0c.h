@@ -884,7 +884,7 @@ extern s32 g_worldEventResult;
 extern s32 g_worldTimeEvents;
 extern s32 g_worldTimeLogic; /* frame timing */
 extern s32 g_swirlFrame;
-extern s32 D_8007BD30;
+extern s32 g_swirlBuf;
 extern s32 g_worldTimeDraw;
 extern s32 g_worldPrimUsed;
 extern s32 g_worldPrimUsedPercent;
@@ -1253,7 +1253,7 @@ extern u32 g_portraitSavedVram[]; /* VRAM save buffer */
 extern u8 D_80077E51;
 extern u8 *g_menuHelpText;
 s32 text_measureStyle(u8 *, s32);
-extern s32 D_80077E54; /* overlaps Unk80077E50.unk4 in ff9.h */
+extern s32 g_menuScreenFrame; /* overlaps Unk80077E50.unk4 in ff9.h */
 Unk8004AB64 *evt_getPlayer(void);
 void evt_resetIdleTimer(s32);
 

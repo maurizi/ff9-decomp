@@ -158,10 +158,10 @@ u8 *text_buildBlock(s32 x, s32 y, u32 *ot, u8 *s, s32 mode, u8 *pkt) {
                 x += text_measureSmall(g_textNumberBuf);
             } else if (*s == TEXT_ARG_STRING_SMALL) {
                 s++;
-                D_800770A8 = g_textStringArgs[*s];
+                g_textArgPtr = g_textStringArgs[*s];
                 pkt = text_buildFontTpage(ot, (DrTpageWords *)pkt);
-                pkt = text_buildSmall(x, y, ot, D_800770A8, g_textColor, pkt);
-                x += text_measureSmall(D_800770A8);
+                pkt = text_buildSmall(x, y, ot, g_textArgPtr, g_textColor, pkt);
+                x += text_measureSmall(g_textArgPtr);
             } else if (*s == TEXT_ARG_NUMBER_LABEL) {
                 s++;
                 text_formatInt(g_textNumberArgs[*s], g_textNumberBuf, 1);
@@ -169,9 +169,9 @@ u8 *text_buildBlock(s32 x, s32 y, u32 *ot, u8 *s, s32 mode, u8 *pkt) {
                 x += ui_measureLabel(g_textNumberBuf);
             } else if (*s == TEXT_ARG_STRING_LABEL) {
                 s++;
-                D_800770A8 = g_textStringArgs[*s];
-                pkt = ui_buildLabel(x, y, ot, (s32)D_800770A8, g_textColor, pkt);
-                x += ui_measureLabel(D_800770A8);
+                g_textArgPtr = g_textStringArgs[*s];
+                pkt = ui_buildLabel(x, y, ot, (s32)g_textArgPtr, g_textColor, pkt);
+                x += ui_measureLabel(g_textArgPtr);
             } else if (*s == TEXT_ARG_NUMBER_DIGITS) {
                 s++;
                 text_formatInt(g_textNumberArgs[*s], g_textNumberBuf, 1);
@@ -179,9 +179,9 @@ u8 *text_buildBlock(s32 x, s32 y, u32 *ot, u8 *s, s32 mode, u8 *pkt) {
                 x += text_measureDigits(g_textNumberBuf);
             } else if (*s == TEXT_ARG_STRING_DIGITS) {
                 s++;
-                D_800770A8 = g_textStringArgs[*s];
-                pkt = text_buildDigits(x, y, ot, D_800770A8, g_textColor, pkt);
-                x += text_measureDigits(D_800770A8);
+                g_textArgPtr = g_textStringArgs[*s];
+                pkt = text_buildDigits(x, y, ot, g_textArgPtr, g_textColor, pkt);
+                x += text_measureDigits(g_textArgPtr);
             } else if (*s == TEXT_SPRITE) {
                 pkt = text_buildFontTpage(ot, (DrTpageWords *)pkt);
                 pkt = ui_buildSprite(x, y, ot, *++s, 0, &w, pkt);

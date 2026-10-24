@@ -157,7 +157,7 @@ s32 akao_lfoSquareScaled(u32 x) {
 
 static inline s32 akao_lfoTable_inline(s32 x) {
     s32 i = x & 0xFF;
-    return D_8006F440[i] << 8;
+    return g_akaoLfoTableData[i] << 8;
 }
 
 s32 akao_lfoTable(s32 x) {
@@ -169,7 +169,7 @@ s32 akao_lfoTableScaled(u32 code) {
     u32 sel;
 
     v = code & 0xFF;
-    v = D_8006F440[v] << 8;
+    v = g_akaoLfoTableData[v] << 8;
 
     sel = code >> 9;
     if (sel < 3) {

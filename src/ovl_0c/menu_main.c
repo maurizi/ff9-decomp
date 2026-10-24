@@ -253,7 +253,7 @@ void menuMain_drawLocation(void) {
 void menuMain_drawCursor(void) {
     u8 blink;
 
-    blink = (D_80077E54 & 3) != 0;
+    blink = (g_menuScreenFrame & 3) != 0;
     help_setCursorOnTop(s_menuMain.state - 1U >= 2);
     if (!fade_isBusy()) {
         if (s_menuMain.state == 0 || blink) {
@@ -265,7 +265,7 @@ void menuMain_drawCursor(void) {
         if (s_menuMain.state == 1) {
             g_menuHelp.otz = 0xC;
             g_menuHelp.x = s_menuMain.panels[0].unk4.x - 0xE;
-            g_menuHelp.y = D_80077E53 * 0x2E + 0x20;
+            g_menuHelp.y = g_menuScreenMember * 0x2E + 0x20;
             help_drawCursor();
         }
         if (s_menuMain.state == 2) {
@@ -311,7 +311,7 @@ void menuMain_setExpHelp(s32 arg0) {
     Character *c;
     u32 next;
 
-    c = g_gameState->unk1C->party[D_80077E53];
+    c = g_gameState->unk1C->party[g_menuScreenMember];
     if (c != NULL) {
         if (c->level >= 99) {
             next = c->exp;
@@ -358,7 +358,7 @@ void menuMain_setEquipHelp(u8 arg0) {
 
     i = 0;
     j = 5;
-    c = g_gameState->unk1C->party[D_80077E53];
+    c = g_gameState->unk1C->party[g_menuScreenMember];
     do {
         text_setStringArg(i, s_menuMainEquipLabels[i]);
         id = c->equip[i];
