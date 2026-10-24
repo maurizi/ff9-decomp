@@ -60,6 +60,7 @@ void func_801E7B8C(Unk80100C78Entry *entry, SVECTOR *from, s32 n, s32 ot);
 void func_801E7EB4(Unk80100C78Entry *entry, SVECTOR *from, s32 ot);
 
 s32 fx_17d_4_op80(s32 mode, Fx17d4Work80 *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *arg4) {
+    s32 q6b;
     s32 g5;
     s32 x_c0;
     Pool6CEntry *p_c1;
@@ -482,19 +483,19 @@ s32 fx_17d_4_op80(s32 mode, Fx17d4Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
                     flag = 1;
                     f3 = 0;
                 } else {
-                    q4_c6 = (frame - 0x1E) << 9;
+                    q6b = (frame - 0x1E) << 9;
                     o_3_c6 = 0x27;
                     w13_c6 = 0x1000;
                     g = 0;
                     q_c6 = 0x1000;
                     x_c6 = 0x1D;
                     f3 = (frame - 0x1E) * 3;
-                    if (q4_c6 >= 0x800) {
-                        k = (q4_c6 - 0x800) * 2;
+                    if (q6b >= 0x800) {
+                        k = (q6b - 0x800) * 2;
                     } else {
                         k = 0;
                     }
-                    ex->btlfx_drawScreenTint((u32 *)(env->unk20 + 2), 1, ((0x1000 - q4_c6) * 0x64) >> 12, 0, 0);
+                    ex->btlfx_drawScreenTint((u32 *)(env->unk20 + 2), 1, ((0x1000 - q6b) * 0x64) >> 12, 0, 0);
                 }
             } else {
                 g = 1;
