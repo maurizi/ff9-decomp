@@ -12,7 +12,9 @@
  *   it and r2.vz = (frame << 5) + 0x400 (here s2.vz = 0).
  * - a dead `struct { s32 x; } dq = { frame };` block at the start of the else branch: its CLOBBER gets the spill
  *   slot at 0x280 that the original never references (all later spill slots then line up).
- * Open: case 1's lui of the /6 constant before the a = 0x80 store; y12 in s3 instead of sharing s0 with x2k;
+ * - the frame == 0x12 bone matrix shares its stack slot with s1/r1/a1 (union u1), as in the original's layout.
+ * Open: case 1's lui of the /6 constant before the a = 0x80 store (a do-while around the if/else hoists it, but
+ *   jump.c then rotates the blocks); y12 in s3 instead of sharing s0 with x2k;
  *   register permutations in the i9/y10 ring loop and case 5 tail; a few arg-register orders.
  * D_801F0A14 is used with a 0x6C stride (13 points) and a 0x2C stride (5 points). */
 #include "fxmod/fx_0e3_1.h"
@@ -107,9 +109,14 @@ s32 fx_0e3_1_op80(s32 mode, Fx0e31Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
     MATRIX m4;
     MATRIX m5;
     MATRIX m6;
-    VECTOR s1;
-    SVECTOR r1;
-    SVECTOR a1;
+    union {
+        MATRIX m; /* the frame == 0x12 bone matrix */
+        struct {
+            VECTOR s1;
+            SVECTOR r1;
+            SVECTOR a1;
+        } v;
+    } u1;
     SVECTOR b1;
     SVECTOR r2;
     SVECTOR p2;
@@ -408,8 +415,8 @@ s32 fx_0e3_1_op80(s32 mode, Fx0e31Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
                 ex->func_800CFE88(&m6, 0x80, (s32)&work->unk40);
             } else {
                 if (frame == 0x12) {
-                    ex->Hi_GetSummonBoneMatrix(SUMMON(env)->unk60, 0x3D, (BtlBone *)&m);
-                    ex->func_800CFE88(&m, 0x80, (s32)&work->unk48);
+                    ex->Hi_GetSummonBoneMatrix(SUMMON(env)->unk60, 0x3D, (BtlBone *)&u1.m);
+                    ex->func_800CFE88(&u1.m, 0x80, (s32)&work->unk48);
                 }
                 ex->func_800CFD78(&work->unk48.vx, &work->unkBC.vx,
                                   -((ex->math_sin(((frame - 0xE) << 10) / 14) * 3) / 2), &work->unk40.vx);
@@ -432,20 +439,20 @@ s32 fx_0e3_1_op80(s32 mode, Fx0e31Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
             ex->Hi_DrawEffModel(&work->unkBC, (VECTOR *)&work->unkA4, (s32)&work->unkB0, work->unkA0);
             if (frame < 0x18 && frame != 1) {
                 k3 = (frame << 10) / 24;
-                s1.vx = s1.vy = ex->math_sin(k3) / 2 + 0x800;
-                s1.vz = 0x1000;
-                r1.vx = work->unkBC.vx;
-                r1.vy = work->unkBC.vy;
-                r1.vz = frame << 5;
-                ex->Hi_DrawEffModel(&r1, (VECTOR *)&work->unkA4, (s32)&s1, work->unkE0);
+                u1.v.s1.vx = u1.v.s1.vy = ex->math_sin(k3) / 2 + 0x800;
+                u1.v.s1.vz = 0x1000;
+                u1.v.r1.vx = work->unkBC.vx;
+                u1.v.r1.vy = work->unkBC.vy;
+                u1.v.r1.vz = frame << 5;
+                ex->Hi_DrawEffModel(&u1.v.r1, (VECTOR *)&work->unkA4, (s32)&u1.v.s1, work->unkE0);
                 ex->Hi_ModifyEffModelRGB(work->unkE0, ((ex->math_cos(k3) - 0x800) >> 5) - 0x80,
                                          ((ex->math_cos(k3) - 0x800) >> 5) - 0x80, ((ex->math_cos(k3) - 0x800) >> 5) - 0x80);
             }
-            BTLFX_COPY_SVEC(&a1, &work->unk30);
-            ex->func_800CFD78(&a1.vx, &work->unkBC.vx, -(t + 0x1000), &b1.vx);
+            BTLFX_COPY_SVEC(&u1.v.a1, &work->unk30);
+            ex->func_800CFD78(&u1.v.a1.vx, &work->unkBC.vx, -(t + 0x1000), &b1.vx);
             for (kk = 0, ang3 = -work->unk4 << 7; kk < 3; kk++, ang3 += 0x554) {
                 g1 = ex->btlfx_randCentered(0x400) + 0xC00;
-                func_801ECAF8(entry, &D_801F0D14[kk], &a1, &b1, 0x7C, 0x200, ang3, 0xC0, 0, g1, 0x1D);
+                func_801ECAF8(entry, &D_801F0D14[kk], &u1.v.a1, &b1, 0x7C, 0x200, ang3, 0xC0, 0, g1, 0x1D);
                 for (j1 = 0; j1 < 4; j1++) {
                     func_801ECCF4(entry, &D_801F0D14[kk], (Fx0e31Bolt *)((Fx0e31Bolt5 *)D_801F0A14 + j1), g1);
                 }
