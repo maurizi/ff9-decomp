@@ -113,6 +113,7 @@ s32 fx_17d_4_op80(s32 mode, Fx17d4Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
     s32 g;
     s32 flag;
     s32 f3;
+    s32 x6n;
     s32 s6a;
     s32 c6a;
     s32 k5;
@@ -479,7 +480,7 @@ s32 fx_17d_4_op80(s32 mode, Fx17d4Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
                     g = 0;
                     q_c6 = 0;
                     k = 0;
-                    r_c2 = frame;
+                    x6n = frame;
                     flag = 1;
                     f3 = 0;
                 } else {
@@ -488,7 +489,7 @@ s32 fx_17d_4_op80(s32 mode, Fx17d4Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
                     k5 = 0x1000;
                     g = 0;
                     q_c6 = 0x1000;
-                    r_c2 = 0x1D;
+                    x6n = 0x1D;
                     f3 = (frame - 0x1E) * 3;
                     if (q6b >= 0x800) {
                         k = (q6b - 0x800) * 2;
@@ -499,7 +500,7 @@ s32 fx_17d_4_op80(s32 mode, Fx17d4Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
                 }
             } else {
                 g = 1;
-                r_c2 = 0x1D;
+                x6n = 0x1D;
                 i_c3 = ((frame - 0x26) << 12) / 13;
                 n5 = (i_c3 >> 3) + 0x40;
                 f3 = 0x15;
@@ -507,7 +508,7 @@ s32 fx_17d_4_op80(s32 mode, Fx17d4Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
                 k = k5;
                 q_c6 = k;
             }
-            func_801E77DC(entry, &D_801E971C, r_c2, n5, k5, g, flag);
+            func_801E77DC(entry, &D_801E971C, x6n, n5, k5, g, flag);
             if (q_c6 != 0) {
                 func_801E7B8C(entry, &D_801E971C, f3, q_c6);
                 func_801E7EB4(entry, &D_801E971C, k);
