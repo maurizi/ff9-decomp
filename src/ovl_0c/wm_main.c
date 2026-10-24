@@ -1291,7 +1291,7 @@ void func_800AC7D4(void) {
     Unk8004AB64 *a;
     WmObjSlot *s;
 
-    D_8007BD28 = 0;
+    g_swirlFrame = 0;
     D_8007BD30 = func_800B8114();
     o = g_gameState->unk1C->unk8E4.world->unk8;
     o->unk19 = 0;
@@ -1339,7 +1339,7 @@ void func_800ACAFC(void) {
     w = g_gameState->unk1C->unk8E4.world->unk8;
     if (!(w->unk0 & 1)) {
         if (w->unk19 >= 2) {
-            if ((u8)func_80053A10(w->unkC, w->unkE)) {
+            if ((u8)swirl_update(w->unkC, w->unkE)) {
                 g_gameState->unk1C->unk8E4.world->unk8->unk0 |= 1;
             }
         } else {

@@ -14,7 +14,7 @@ void func_8005392C(void) {
     d->unk571 = 0;
 }
 
-s32 func_80053960(Unk800539FC *a, s32 b) {
+s32 chr_cureStatusBit(Unk800539FC *a, s32 b) {
     if (a->status & b) {
         a->status &= ~b;
         return 2;
@@ -22,7 +22,7 @@ s32 func_80053960(Unk800539FC *a, s32 b) {
     return 1;
 }
 
-static inline s32 func_80053960_inline(Unk800539FC *a, s32 b) {
+static inline s32 chr_cureStatusBit_inline(Unk800539FC *a, s32 b) {
     if (a->status & b) {
         a->status &= ~b;
         return 2;
@@ -30,14 +30,14 @@ static inline s32 func_80053960_inline(Unk800539FC *a, s32 b) {
     return 1;
 }
 
-s32 func_8005398C(Character *a, s32 mask) {
+s32 chr_cureStatusMask(Character *a, s32 mask) {
     s32 r = 1;
     u32 i;
 
     for (i = 0; i < 8; i++) {
         u8 m = mask & (1 << i);
         if (m) {
-            if (func_80053960_inline(a, 1 << i) == 2) {
+            if (chr_cureStatusBit_inline(a, 1 << i) == 2) {
                 r = 2;
             }
         }
@@ -45,11 +45,11 @@ s32 func_8005398C(Character *a, s32 mask) {
     return r;
 }
 
-u8 func_800539FC(Character *a, s32 b) {
+u8 chr_hasStatus(Character *a, s32 b) {
     return (a->status & b) != 0;
 }
 
-s32 func_80053A10(s16 arg0, s16 arg1) {
+s32 swirl_update(s16 arg0, s16 arg1) {
     s16 y;
     s16 x;
     s32 c;
@@ -63,8 +63,8 @@ s32 func_80053A10(s16 arg0, s16 arg1) {
     D_8007BD0C = D_8007BD10 = D_8007BD30 + (g_gameState->unk1C->unk8 << 10);
     ClearOTag(D_8007BD0C, 5);
     D_8007BD10 += 5;
-    if (D_8007BD28 < 0x79) {
-        if (D_8007BD28 == 0) {
+    if (g_swirlFrame < 0x79) {
+        if (g_swirlFrame == 0) {
             gs = g_gameState;
             gs->unk1C->unk0 &= ~0x20;
             *(u32 *)&gs->unk10[0].isbg = *(u32 *)&gs->unk10[1].isbg = 1;
@@ -79,31 +79,31 @@ s32 func_80053A10(s16 arg0, s16 arg1) {
             }
             fade_clear();
         }
-        if (D_8007BD28 & 1) {
+        if (g_swirlFrame & 1) {
             x += x < 160 ? 1 : -1;
         }
-        if (D_8007BD28 & 2) {
+        if (g_swirlFrame & 2) {
             y += y < g_gameState->unk10->clip.h / 2 ? 1 : -1;
         }
         if (D_8007BD2C) {
-            c = math_sin(D_8007BD28 * 8);
+            c = math_sin(g_swirlFrame * 8);
             x += c * (160 - x) / 4096;
             y += c * (g_gameState->unk10->clip.h / 2 - y) / 4096;
         }
-        D_8007BD10 = func_80054294(D_8007BD10, x, y);
+        D_8007BD10 = swirl_buildMesh(D_8007BD10, x, y);
         i = g_gameState->unk1C->unk8;
         SetDrawMove(D_8007BD10, &g_gameState->unkC[i].disp, g_gameState->unk10[i].clip.x, g_gameState->unk10[i].clip.y);
         addPrim(D_8007BD0C, D_8007BD10);
         D_8007BD10 += 8;
-        func_80054650();
-        if (D_8007BD28 >= D_8007BD08->unkC) {
+        swirl_drawMesh();
+        if (g_swirlFrame >= D_8007BD08->unkC) {
             D_8007BD1C -= D_8007BD08->unkE;
             if ((s16)D_8007BD1C < 0) {
                 D_8007BD1C = 0;
             }
         }
-        if (D_8007BD28 >= D_8007BD08->unk10) {
-            func_800540E8(x, y);
+        if (g_swirlFrame >= D_8007BD08->unk10) {
+            swirl_drawFlash(x, y);
             D_8007BD1E += D_8007BD08->unk12;
             if ((s16)D_8007BD1E >= 0x1000) {
                 D_8007BD1E = 0xFFF;
@@ -130,7 +130,7 @@ s32 func_80053A10(s16 arg0, s16 arg1) {
     D_8007BD10 += 4;
     setaddr(&D_8007BD0C[4], getaddr(g_gameState->unk1C->unk10[g_gameState->unk1C->unk8]));
     setaddr(g_gameState->unk1C->unk10[g_gameState->unk1C->unk8], D_8007BD0C);
-    if (D_8007BD28 == 0) {
+    if (g_swirlFrame == 0) {
         DrawSync(0);
         setlen(D_8007BD10, 2);
         D_8007BD10[1] = 0xE6000001;
@@ -152,10 +152,10 @@ s32 func_80053A10(s16 arg0, s16 arg1) {
         D_8007BD10[2] = 0;
         DrawPrim(D_8007BD10);
     }
-    return D_8007BD28++ > 0x78;
+    return g_swirlFrame++ > 0x78;
 }
 
-void func_800540E8(s32 x, s32 y) {
+void swirl_drawFlash(s32 x, s32 y) {
     u32 *p;
     s32 i;
     u32 v;
@@ -187,7 +187,7 @@ void func_800540E8(s32 x, s32 y) {
     D_8007BD10 = p;
 }
 
-u32 *func_80054294(u32 *buf, s32 x, s32 y) {
+u32 *swirl_buildMesh(u32 *buf, s32 x, s32 y) {
     s16 xs[9];
     s16 ys[9];
     SVECTOR sv;
@@ -257,7 +257,7 @@ u32 *func_80054294(u32 *buf, s32 x, s32 y) {
     return buf;
 }
 
-void func_80054650(void) {
+void swirl_drawMesh(void) {
     u32 *p;
     WarpVert *v;
     s32 i;

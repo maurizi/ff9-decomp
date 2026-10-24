@@ -1448,13 +1448,13 @@ void func_800AC5F0(void);
 void func_800B238C(void);
 void func_800B1C4C(void);
 /* main exe: candidates for ff9.h */
-extern s32 D_8007BD28;
+extern s32 g_swirlFrame;
 extern u8 *D_8007BD30;
 void akao_fadeMusicVolume(s32, s32, s32);
 void akao_fadeSeVolume(void *, s32, s32, s32);
 void akao_setMusicVolume(s32, s32);
 void preload_setVramRect(PreloadEntry *, s16, s16, s16, s16);
-u8 func_80053A10(s32, s32);
+u8 swirl_update(s32, s32);
 
 /* func_800C2AF0 (walkmesh slide along the triangle edges) */
 extern VECTOR D_800C9DE4; /* normal used when a triangle has none */

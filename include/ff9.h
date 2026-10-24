@@ -3433,13 +3433,13 @@ typedef struct {
 } LoadAddrs;
 extern LoadAddrs D_80010034;
 
-/* battle calculation context (func_800657F0 ... func_80065DF4) */
+/* battle calculation context (fieldCalc_checkAlive ... chr_addMp) */
 typedef struct {
     u32 unk0; /* low nibble: kind */
     u8 pad4;
     u8 unk5; /* power */
     u8 pad6[2];
-    u8 unk8; /* checked against the target by func_8005398C */
+    u8 unk8; /* checked against the target by chr_cureStatusMask */
     u8 unk9;
 } MainCalcCmd;
 
@@ -3457,16 +3457,16 @@ typedef struct {
     s16 unk1A;
 } MainCalc;
 
-u8 func_800539FC(Character *, s32);
-s32 func_8005398C(Character *, s32);
-u8 func_8006576C(MainCalc *);
-u8 func_800657F0(MainCalc *);
-u8 func_80065850(MainCalc *);
+u8 chr_hasStatus(Character *, s32);
+s32 chr_cureStatusMask(Character *, s32);
+u8 fieldCalc_apply(MainCalc *);
+u8 fieldCalc_checkAlive(MainCalc *);
+u8 fieldCalc_checkDead(MainCalc *);
 s32 func_801F1A7C(void); /* ovl_37 */
 void exit(s32); /* BIOS B0 call */
 
-void func_80065D90(Character *, s32);
-void func_80065DF4(Character *, s32);
+void chr_addHp(Character *, s32);
+void chr_addMp(Character *, s32);
 
 /* 12-byte entry of a type-0x12 resource table (func_800633E4) */
 typedef struct {
@@ -3848,7 +3848,7 @@ s32 msg_getPartyMemberId(s32);
 void chr_join(s32, u8, s32);
 s32 chr_resetAp(s32, s32);
 s32 chr_learnAbility(s32, s32);
-s32 func_80053960(Unk800539FC *, s32);
+s32 chr_cureStatusBit(Unk800539FC *, s32);
 void timer_setSeconds(s32);
 void timer_enable(u8);
 void timer_setRunning(u8);
@@ -3985,18 +3985,18 @@ static inline void func_80054A28_max(u32 *m, u32 v) {
     }
 }
 
-/* primitive buffer / ordering table used by func_800540E8 */
+/* primitive buffer / ordering table used by swirl_drawFlash */
 extern u32 *D_8007BD0C;
 extern u32 *D_8007BD10;
 extern u16 D_8007BD1E;
-/* battle-entry warp grid (func_80054294 fills it, func_80054650 draws it) */
+/* battle-entry warp grid (swirl_buildMesh fills it, swirl_drawMesh draws it) */
 typedef struct {
     s16 x, y;
     s16 pad[2];
 } WarpVert; /* 9x9 screen vertices */
 extern DVECTOR *D_8007BD14; /* 9 texture columns/rows */
 extern WarpVert *D_8007BD18;
-/* battle-entry swirl (func_80053A10) */
+/* battle-entry swirl (swirl_update) */
 typedef struct {
     s16 unk0; /* rotation */
     s16 unk2; /* rotation speed */
@@ -4015,7 +4015,7 @@ extern u16 D_8007BD1C;
 extern s16 D_8007BD20;
 extern s16 D_8007BD22 __asm__("D_8007BD20+2"); /* no symbol of its own */
 extern s16 D_8007BD24;
-extern s32 D_8007BD28; /* frame */
+extern s32 g_swirlFrame; /* frame */
 #if !defined(OVL_0C_H) /* ovl_0c declares it as s32 */
 #if !defined(OVL_0A_H) && !defined(OVL_0C_H) /* the overlays type it themselves */
 extern u32 *D_8007BD30;
@@ -4023,9 +4023,9 @@ extern u32 *D_8007BD30;
 #endif
 void fade_clear(void);
 s32 math_sin(s32); /* sin */
-void func_800540E8(s32, s32);
-u32 *func_80054294(u32 *, s32, s32);
-void func_80054650(void);
+void swirl_drawFlash(s32, s32);
+u32 *swirl_buildMesh(u32 *, s32, s32);
+void swirl_drawMesh(void);
 #if !defined(OVL_0B_H) /* ovl_0b declares it with its DR_MOVE */
 void SetDrawMove(void *p, RECT *rect, int x, int y);
 #endif

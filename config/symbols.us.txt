@@ -1125,3 +1125,30 @@ akao_loadBankRetry = 0x80055D80; // type:func [code] repeats akao_loadBank while
 g_akaoSpuBusy = 0x800809E0; // [code] 1 while an SPU transfer runs (akao_beginSpuTransfer/akao_onSpuTransferDone), -1 after a bad bank
 akao_shiftInstrumentUp = 0x8005936C; // type:func [code] flag 0x20 instruments 0x20-0x7F of a channel move to the bank 0x20000 higher in SPU RAM (index + 0x30)
 akao_shiftInstrumentDown = 0x800593C0; // type:func [code] the reverse of akao_shiftInstrumentUp
+chr_payMp = 0x8006573C; // type:func [code] subtracts the cost from Character.mp (+0x12) when it suffices, else returns 0
+fieldCalc_apply = 0x8006576C; // type:func [code] end of item_useOnMember on failure sets the result flag, else adds the HP/MP gains (chr_addHp/chr_addMp)
+fieldCalc_checkAlive = 0x800657F0; // type:func [code] fails (flag 1) when the target has status 0x41 or 0 HP
+fieldCalc_checkDead = 0x80065850; // type:func [code] fails unless the target is KO (0 HP and not status 1) - revive effects
+fieldCalc_setMagicHeal = 0x800658DC; // type:func [code] base = caster magic + random (level + magic) / 8, power from the command, target magic defence (effect 10)
+fieldCalc_setItemHeal = 0x800659D0; // type:func [code] base 10, power from the command (effects 69/70)
+fieldCalc_casterStatusHalf = 0x800659EC; // type:func [code] halves the base when the caster has status bit 0
+fieldCalc_supportBoost = 0x80065A44; // type:func [code] base * 1.5 when the caster's Character+0x8C bit 1 (a support ability) is set
+fieldCalc_multiTargetHalf = 0x80065A80; // type:func [code] halves the base when the command targets several members (mode 1, target type 3-5)
+fieldCalc_calcHpGain = 0x80065ADC; // type:func [code] HP gain = power * base, capped at 9999
+fieldCalc_calcMpGain = 0x80065B9C; // type:func [code] MP gain = power * base, capped at 9999
+fieldCalc_calcReviveHp = 0x80065B14; // type:func [code] HP = maxHp * (spirit + power) / 100 (/ 50 with a support ability), effect 13
+fieldCalc_restoreAll = 0x80065BD4; // type:func [code] HP and MP to max (effect 71)
+fieldCalc_reviveRandom = 0x80065BFC; // type:func [code] HP = 1-10 at random (effect 72)
+fieldCalc_restoreHalf = 0x80065C8C; // type:func [code] gains of half max HP and MP (effect 76)
+fieldCalc_cureStatusType = 0x80065CBC; // type:func [code] cures the status bits of the command's status type (effect 12)
+fieldCalc_cureStatus = 0x80065D40; // type:func [code] cures the command's status mask (effects 62/73)
+chr_addHp = 0x80065D90; // type:func [code] adds HP up to maxHp unless status bit 0 is set
+chr_addMp = 0x80065DF4; // type:func [code] adds MP up to maxMp unless status bit 0 is set
+chr_cureStatusBit = 0x80053960; // type:func [code] clears a Character.status bit, 2 if it was set else 1
+chr_cureStatusMask = 0x8005398C; // type:func [code] chr_cureStatusBit for every bit of mask, 2 if any was set
+chr_hasStatus = 0x800539FC; // type:func [code] Character.status & mask != 0
+swirl_update = 0x80053A10; // type:func [code] the screen-warp transition field (fld_movie) and world map (wm_main) run before a battle draws the swirled screen around (x, y), returns 1 after 0x78 frames
+swirl_drawFlash = 0x800540E8; // type:func [code] four semi-transparent POLY_G3 fans from the screen corners to (x, y), brightening over the transition
+swirl_buildMesh = 0x80054294; // type:func [code] 9x9 grid around (x, y) rotated and scaled by the transition's angle/zoom (WarpVert mesh)
+swirl_drawMesh = 0x80054650; // type:func [code] POLY_FT4 per mesh cell texturing the current frame buffer
+g_swirlFrame = 0x8007BD28; // [code] frame counter of swirl_update (0..0x78)

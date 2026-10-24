@@ -2122,7 +2122,7 @@ s32 evt_execInstr(void) {
         return 0;
     case 0xD9:
         a = evt_execInstr_chr(evt_getArg8_inline());
-        func_80053960(&g_gameState->unk1C->characters[a], evt_getArg8_inline() & 0xFF);
+        chr_cureStatusBit(&g_gameState->unk1C->characters[a], evt_getArg8_inline() & 0xFF);
         return 0;
     case 0x62:
         a = evt_execInstr_chr(evt_getArg8_inline());

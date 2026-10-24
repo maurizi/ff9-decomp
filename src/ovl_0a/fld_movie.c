@@ -1421,7 +1421,7 @@ void func_800AED6C(void) {
     s16 w;
 
     if (g_gameState->unk1C->unk8E4.field->unkC->unk14->unk41 == 0) {
-        D_8007BD28 = 0;
+        g_swirlFrame = 0;
         D_8007BD30 = D_80067944 + 0x153F00;
         func_800AC5F0();
         g_gameState->unk1C->unk8E4.field->unkC->unk14->unk20 = D_80067948;
@@ -1492,7 +1492,7 @@ void func_800AED6C(void) {
             g_gameState->unk1C->unk8E4.field->unkC->unk14->unk0 |= 2;
         }
         if (!(g_gameState->unk1C->unk8E4.field->unkC->unk14->unk0 & 1)
-            && func_80053A10(g_gameState->unk1C->unk8E4.field->unkC->unk14->unk38,
+            && swirl_update(g_gameState->unk1C->unk8E4.field->unkC->unk14->unk38,
                              g_gameState->unk1C->unk8E4.field->unkC->unk14->unk3A)) {
             g_gameState->unk1C->unk8E4.field->unkC->unk14->unk0 |= 1;
         }
