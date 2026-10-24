@@ -25,14 +25,16 @@
  * sparks block and the unk58 block's i * 0x150 to sp+0xCC (tr = &D_801EBB90[i] gives that but grows the frame by 8);
  * the original's reload register is t8 (all of t0-t7 used somewhere), ours t3); the mode-1 spark init's
  * i * 0x150 copy (s6 there, spilled here). *
- * Pass 28 update: 189 aligned mismatches, 61 ignoring registers (of which 4 are symbol-addend artefacts:
+ * Pass 28 update: 151 aligned mismatches, 43 ignoring registers (of which 4 are symbol-addend artefacts:
  * D_801EA278/D_801EA2D8/D_801EA3E8 = base + 8). Levers: the unk58 block's SVECTOR at sp+0x90 is
  * ((SVECTOR *)out)[1] (vx 0x90, vz 0x94); variables shared between distant blocks become long global pseudos
  * that take callee-saved registers, so block-specific copies (unk4C's dz/dx instead of c/a, the ring loop's lo,
  * the sparks' j, alpha, ...) fix most register choices (the reload register became t8 as in the original once
  * t0-t7 were used by locals); unk58 passes -a * 2 / -a * 4 (the original negates a first). With per-block
  * copies of i, j, tr, sv, alpha, lo, md and tint chosen by a knob search (build/w/g1f2.py + build/w/ksa.py)
- * ex is s7 and the loop counters fp as in the original. */
+ * ex is s7 and the loop counters fp as in the original. The ring tints use the function-wide tint (its
+ * conflicts keep it off a1: the original copies v0 into a1); the sparks loop is tr = &D_801EA690[i] inside
+ * the body and its x range uses j * 0x2400 (all givs). */
 #include "fxmod/fx_1f2.h"
 
 typedef struct {
@@ -156,7 +158,6 @@ s32 fx_1f2_op80(s32 mode, Fx1f2Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
     s32 j_m1s;
     s32 r_m1s;
     Fx1f2Model *md_r0;
-    s32 tint_r0;
     s32 lo_r0;
     s32 i_sp;
     Fx1f2Trail *tr_sp;
@@ -448,8 +449,8 @@ s32 fx_1f2_op80(s32 mode, Fx1f2Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
                         if (--work->unk44 == 0) {
                             work->unk48 = 1;
                         }
-                        tint_r0 = (work->unk44 - 0x40) * 2;
-                        ex->Hi_ModifyEffModelRGB(rg->unk8, tint_r0, tint_r0, tint_r0);
+                        tint = (work->unk44 - 0x40) * 2;
+                        ex->Hi_ModifyEffModelRGB(rg->unk8, tint, tint, tint);
                         rg->unkC -= work->unk44 >> 4;
                     }
                 }
@@ -461,8 +462,8 @@ s32 fx_1f2_op80(s32 mode, Fx1f2Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
                         if (--work->unk3C == 0) {
                             work->unk40 = 1;
                         }
-                        tint_r0 = (work->unk3C - 0x40) * 2;
-                        ex->Hi_ModifyEffModelRGB(rg->unk4, tint_r0, tint_r0, tint_r0);
+                        tint = (work->unk3C - 0x40) * 2;
+                        ex->Hi_ModifyEffModelRGB(rg->unk4, tint, tint, tint);
                     }
                 }
                 ex->Hi_DrawEffModel(&D_801EA300[i].unk10, &D_801EA300[i].unk18, (s32)&D_801EA300[i].unk28, rg->unk0);
@@ -609,7 +610,8 @@ s32 fx_1f2_op80(s32 mode, Fx1f2Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
         }
         if (work->unk34 != 0) {
             work->unk34--;
-            for (i_sp = 0, tr_sp = D_801EA690; i_sp < 0x10; i_sp++, tr_sp++) {
+            for (i_sp = 0; i_sp < 0x10; i_sp++) {
+                tr_sp = &D_801EA690[i_sp];
                 if (tr_sp->unk4C == 0 && work->unk34 >= 0xD) {
                     ex->func_800316D8(&D_801EA568, &m);
                     m.t[0] = D_801EA650.vx;
@@ -617,9 +619,9 @@ s32 fx_1f2_op80(s32 mode, Fx1f2Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
                     m.t[2] = D_801EA650.vz;
                     gte_SetRotMatrix(&m);
                     gte_SetTransMatrix(&m);
-                    for (lo_sp = j = 0; j < 2; j++, lo_sp += 0x2400) {
+                    for (j = 0; j < 2; j++) {
                         if (i_sp & 1) {
-                            in[j].vx = ex->btlfx_randRange(0xC00 - lo_sp, 0x1800 - lo_sp);
+                            in[j].vx = ex->btlfx_randRange(0xC00 - j * 0x2400, 0x1800 - j * 0x2400);
                         } else {
                             in[j].vx = ex->btlfx_randRange(j * 0x2400 - 0x1800, j * 0x2400 - 0xC00);
                         }
