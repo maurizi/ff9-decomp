@@ -1212,3 +1212,159 @@ D_801FA958 s_menuItemScrollClip  # [code] clip RECT of the rows scrolling in (fu
 D_801FA968 s_menuItemSortBuf  # [code] inventory sort buffer (menuItem_sortAuto)
 D_801FAB68 s_menuItemSortTmp  # [code] swap temp of menuItem_sortAuto
 # FIELDS include/ovl_37.h ItemMenu: unk0=tab,unk1=state,unk2=slot,unk3=targetKind,unk4=targetMode,unk5=arrangeCursor,unk6=swapFrom,unk7=swapPicked,unk8=charWinOpen,unkC=itemList,unk1C=keyList,unk2C=cmdRect,unk34=listRect,unk3C=charWin,unk4C=popup,unk50=popupTimer,unk54=keyView,unk55=keyViewPhase,unk56=keyViewId,unk57=keyViewStep,unk58=keyViewX,unk60=keyItems,unkB0=keyCount; ItemList: unk0=select,unk4=drawRow,unk8=list
+
+## ovl_0d: ovl_0d (Tetra Master card game; files tu_800A752C.c -> tm_main.c, tu_800A7E10.c -> tm_game.c)
+func_800A752C tm_main  # [code] first function of .text, runs tm_init, tm_mainLoop, tm_exit (game mode 9 loads file 0x0D in game_loadModeOverlay's table)
+func_800A755C tm_init  # [code] installs tm_soundCmd as the GameData.unk83C sound hook, loads the data file, sound blocks and music 0x42 and starts that music
+func_800A75E0 tm_exit  # [code] stops music 0x42 (tm_soundCmd 0x100), frees the data copy, sets GameState.unkA = 9 and mode 1
+func_800A7634 tm_loadSoundBlocks  # [code] passes every 0x9xxxx block of g_tmDataFile to func_80055E14, as battle's func_800A8F8C does with its two
+func_800A76F8 tm_loadMusic  # [code] copies block 0x70042 (music 0x42, the one tm_init starts) into GameData.unk814, the buffer tm_soundCmd's music start reads
+func_800A7764 tm_loadDataFile  # [code] reads file 0x2715 of directory 1 to D_80067944+0x57800 (func_8002177C), registers it with db_register
+func_800A7818 tm_copyDataFile  # [code] copies g_tmDataFile up to its 0x70000 block to D_80067944+0x141000 and registers the copy
+func_800A7884 tm_freeDataFile  # [code] db_unregister of g_tmDataFile, clears it
+func_800A78B8 tm_freeDataCopy  # [code] db_unregister of g_tmDataCopy, clears it
+func_800A78EC tm_soundCmd  # [code] same body as ovl_0b btl_soundCmd (music class 0, sound effects 0x8xxxx class 1), installed as GameData.unk83C by tm_init
+func_800A7E10 tm_mainLoop  # [string] per-frame loop that runs the handler of each task and passes its name ("PLAYER CARD SELECT", "BATTLE", ...) to tm_debugPrint, until task 12
+func_800A8B80 tm_clearOt  # [code] ClearOTagR of the current buffer's 0x1000-entry ordering table
+func_800A8BC4 tm_endFrame  # [code] L1+L2+R1+R2+Start+Select ends the game, DrawSync, VSync, PutDispEnv/PutDrawEnv, DrawOTag, swaps the buffers
+func_800A8D74 tm_setup  # [code] loads the 100 card images, the opponent/card/deck tables and the text bank, reads the opponent id from GameData.unk8B2, saves 12 config values, sets the arrow odds
+func_800A9298 tm_taskInit  # [string] "INIT" task handler, resets cursors and windows, deals the hands (tm_initHands), clears the board (tm_initBoard) and opens the stock (tm_openStock)
+func_800A932C tm_debugPrint  # [code] empty, tm_mainLoop passes it each task name string
+func_800A9334 tm_loadImageFile  # [code] reads file 0x44C of directory 1 to 0x80104A00, SystemError(0x46, 0x3E6) when missing
+func_800A93A0 tm_getFileEntry  # [code] address of entry i of the file at 0x80104A00 (its table of 2-word entries, offsets in 0x800 sectors)
+func_800A93C8 tm_copyFileEntry  # [code] copies n bytes of tm_getFileEntry(i) to a fixed address (the opponent, card and deck tables)
+func_800A9424 tm_drawBackground  # [code] 16x15 + 4x15 16px sprites of the background at VRAM 0x280/0x300, faded out right of column 3 in FIELD FADE
+func_800A96B0 tm_drawBoard  # [code] 14x15 sprites of the board image (VRAM 0x340), faded in by FIELD FADE, which ends here by switching to ENEMY APEAR
+func_800A986C tm_loadTim  # [code] LoadTPage of a 4 or 8 bpp TIM's pixels and LoadClut of its palette
+func_800A993C tm_drawScore  # [code] board card count of each side (tm_countOnBoard) as a big digit, "10" double width
+func_800A9B2C tm_taskPlayerSelect  # [string] "PLAYER CARD SELECT" handler, Up/Down picks a hand card, R1 slides out its name, Cross goes to PLAYER CARD SET
+func_800A9F10 tm_taskPlayerSet  # [string] "PLAYER CARD SET" handler, board cursor, Cross places the card on an empty square, Circle goes back to PLAYER CARD SELECT
+func_800AA1FC tm_taskResult  # [string] "RESULT" handler, on Circle/Cross starts the card move (win/lose) or returns the cards after a draw
+func_800AA368 tm_taskExtension  # [string] "EXTENSION" handler, closes the "ended in a draw" window and goes back to INIT
+func_800AA3C0 tm_drawDrawWin  # [code] window content, text 0x19 "The game ended in a draw..."
+func_800AA408 tm_autoPlace  # [string] "PLAYER AUTO SELECT" handler, puts the first hand card on a random empty square
+func_800AA504 tm_taskTrade  # [string] "TRADE" handler, Cross/Square ends the trade message (tm_endTrade)
+func_800AA548 tm_taskTryAgain  # [string] "TRY AGAIN" handler, Yes/No of the rematch window, under 5 cards opens the CARD LESS5 window
+func_800AA790 tm_stockInput  # [code] stock grid cursor (10x10 card ids) for CHOICE and CARD AWAY, L1/R1 cycles copies, Cross picks a card into the hand or opens the discard window
+func_800AAEB4 tm_taskChoice2  # [string] "CHOICE2" handler, "Confirm selection" Yes starts FIELD FADE, No returns to CHOICE
+func_800AB060 tm_drawConfirmWin  # [code] window content, text 6 "Confirm selection, Yes, No"
+func_800AB0A8 tm_drawLess5Win  # [code] window content, text 0x1A "You don't have 5 cards. End card game."
+func_800AB0F0 tm_taskStageSelect  # [string] "STAGE SELECT" handler (debug), opponent id and arrow odds editor
+func_800AB2E0 tm_taskAwayInfo  # [string] "AWAY INFO" handler, closes the over-100-cards window and goes to CARD AWAY
+func_800AB338 tm_taskCardAway2  # [string] "CARD AWAY2" handler, Yes/No of the discard window
+func_800AB52C tm_drawDiscardWin  # [code] window content, text 0x18 "Discard, Yes, No"
+func_800AB574 tm_taskBattleSelect  # [string] "BATTLE SELECT" handler, board cursor over the cards the placed card can battle, Cross starts BATTLE
+func_800AB854 tm_taskCardLess5  # [string] "CARD LESS5" handler, closes the window and ends the game (tm_startEndFade)
+func_800AB89C tm_waitWindow  # [code] sets the window's opened callback to tm_onWindowOpened and g_tmWindowOpening, which the input handlers wait on
+func_800AB8C8 tm_onWindowOpened  # [code] window opened callback, clears g_tmWindowOpening
+func_800AB8E8 tm_setWindowOpening  # [code] stores g_tmWindowOpening
+func_800AB8F4 tm_setHelpArea  # [code] passes RECT {0, 0, w, 240} to func_80035580, the clip area of the help bubble D_80077DE8
+func_800AB928 tm_taskGetSelect  # [string] "GET SELECT" handler, picks the opponent card to take after a perfect win, shows the stock count of the card
+func_800ABC74 tm_taskGameQuit  # [string] "GAME QUIT" handler, Yes/No of the "End card game" window
+func_800ABE74 tm_drawQuitWin  # [code] window content, text 0x2D "End card game, Yes, No"
+func_800ABEC4 tm_checkBattles  # [code] after a placement or win, finds the adjacent opponent cards that point back at the placed card, BATTLE or BATTLE SELECT, else flips the unopposed ones (tm_setFlips) or ends the TURN
+func_800AC060 tm_taskBattle  # [string] "BATTLE" handler, battle animation, random rolls from the attack and defence values, flips the loser
+func_800AC4C8 tm_getBattleValues  # [code] attack and defence by the attacker's type, 0 power vs pdef, 1 vs mdef, 2 vs the lower defence, 3 the highest own stat vs the lowest of the target
+func_800AC5AC tm_taskBattleWin  # [string] "BATTLE WIN" handler, combo flips from the defeated card, else the next battle check
+func_800AC624 tm_taskBattleLose  # [string] "BATTLE LOSE" handler, combo flips for the other side, else TURN
+func_800AC6A4 tm_taskTurn  # [string] "TURN" handler, passes the turn to the other side (ENEMY THINK or PLAYER CARD SELECT)
+func_800AC708 tm_drawFlash  # [string] "FLASH" task drawer, white flash over the flipped squares, combo arrow bars or the battle loser blink, then sets the new owner
+func_800ACDA0 tm_drawFlash2  # [string] "FLASH2" task drawer, flash over the cards changing hands after the game
+func_800ACF8C tm_taskFlashArrow  # [string] "FLASH ARROW" handler, after 21 frames goes to FLASH
+func_800ACFC8 tm_clearFlips  # [code] clears the 10 flip entries, the task timer and phase
+func_800ACFFC tm_layoutCards  # [code] positions and depth of the hand cards each frame, and the battle approach of the two battling cards
+func_800AD400 tm_drawCards  # [code] draws the 10 cards, frame, face (tm_drawCardFace), arrows and stats, dimmed or blinking by task
+func_800AD974 tm_startCardMove  # [code] sets start and target positions of all 10 cards and starts CARD_MOVE
+func_800AD9F8 tm_taskCardMove  # [string] "CARD_MOVE" task drawer, moves the cards back to the hands, then GET SELECT or FLASH2
+func_800ADDCC tm_countCapturedBeforeLost  # [code] counts the enemy hand cards before slot TmState.unk550 that the player owns (unused)
+func_800ADE14 tm_countKept  # [code] cards of a side's own hand (0 player 0-4, 1 enemy 5-9) still owned by that side
+func_800ADE5C tm_nextTrade  # [code] finds the next card to change hands, CARD_CHANGE, else the over-100-cards window or the rematch question
+func_800ADFFC tm_drawOver100Win  # [code] window content, text 0x16 "You have over 100 cards. Select card to discard."
+func_800AE044 tm_drawDiscardTitle  # [code] window content, text 0x17 "Discard " (unused)
+func_800AE084 tm_taskCardChange  # [string] "CARD_CHANGE" task drawer, moves the card to the middle, adds or keeps it and opens the "Received"/"Lost" window
+func_800AE398 tm_drawTradeBadge  # [string] "TRADE" task drawer, 56x24 label over the card when g_tmTradeBadge
+func_800AE494 tm_drawTradeWin  # [code] window content, text 3 "Received" or 4 "Lost", card name, text 7
+func_800AE54C tm_endTrade  # [code] closes the trade window, starts CHANGE2
+func_800AE5A0 tm_taskChange2  # [string] "CHANGE2" task drawer, moves the traded card to the top of its new hand, then tm_nextTrade
+func_800AE6EC tm_stackHands  # [code] spreads the cards stacked at each hand's x position over 128 lines, optionally resets their depth
+func_800AE830 tm_countInHand  # [code] cards owned by a side and not on the board
+func_800AE878 tm_countPlayerHand  # [code] visible cards 0-4 owned by a side and not on the board
+func_800AE8D0 tm_countCaptured  # [code] enemy hand cards (5-9) owned by the player
+func_800AE908 tm_getCaptured  # [code] n-th enemy hand card owned by the player
+func_800AE94C tm_countOnBoard  # [code] board cards owned by a side, the score tm_drawScore shows
+func_800AE998 tm_countOwned  # [code] cards owned by a side
+func_800AE9D0 tm_getHandCard  # [code] n-th card owned by a side and not on the board
+func_800AEA24 tm_initHands  # [code] resets the 10 cards, stats from the card table, all hidden
+func_800AEBB4 tm_dealEnemyHand  # [code] 5 enemy cards drawn from the opponent's deck by a rarity roll, the card won last game at slot unk550
+func_800AEE08 tm_getCardAt  # [code] card of board square x, y
+func_800AEE2C tm_showStockCard  # [code] CHOICE/CARD AWAY preview, "NO" number, up to 5 copies of the card under the stock cursor and its name
+func_800AF100 tm_returnKept  # [code] adds the player's cards still owned back to the stock (func_80062420)
+func_800AF170 tm_returnHand  # [code] adds the 5 player cards back to the stock, each with a stat level-up when the player won
+func_800AF1F4 tm_addRandomCard  # [code] adds a card with random stats (tm_makeCard) when the stock has under 100
+func_800AF268 tm_getStockCursorId  # [code] card id under the stock cursor, column * 10 + row
+func_800AF288 tm_hideCards  # [code] clears the visible flag of the 10 cards
+func_800AF2A8 tm_showCards  # [code] sets the visible flag of the 10 cards (unused)
+func_800AF2CC tm_levelUpStat  # [string] printf "AP=%x : PD=%x : MD=%x", raises power, pdef or mdef by 1 up to the card table value
+func_800AF388 tm_levelUpRandom  # [code] tm_levelUpStat of a random stat
+func_800AF3E8 tm_makeCard  # [code] stats from the card table (random 50-100% when asked), arrow count from the arrow odds, type from the table, 1/128 type 2
+func_800AF760 tm_taskEnemyAppear  # [string] "ENEMY APEAR" handler, drops the enemy cards in, then the COIN toss
+func_800AF890 tm_animEnemyThink  # [string] "ENEMY THINK" handler, slides the enemy hand cards out one after another
+func_800AF95C tm_drawCardStats  # [code] power, type letter, pdef and mdef glyphs under a card
+func_800AFB60 tm_drawStatGlyph  # [code] one 8x8 stat glyph (hex digit or type letter)
+func_800AFBE4 tm_checkGameEnd  # [code] when both hands are empty compares the board counts, records the win, loss or draw (func_800624A8/E8/52C) and starts RESULT
+func_800AFCE4 tm_drawResult  # [string] "RESULT" task drawer, WIN/PERFECT/LOSE/DRAW banner, plays its jingle
+func_800B01E8 tm_playSe  # [code] tm_soundCmd 0xD000 (sound effect start) of g_tmSeIds[i]
+func_800B022C tm_stopSe  # [code] tm_soundCmd 0x5100 of g_tmSeIds[i], stops the coin sound tm_taskEnemyAppear started
+func_800B026C tm_revealBlocks  # [string] "ENEMY APEAR" handler, shows one block every 9 frames
+func_800B030C tm_drawBlocks  # [code] block stones on the board, the appearing one zooms in
+func_800B0618 tm_placeBlocks  # [code] 0-6 blocks (weighted roll) on random empty squares
+func_800B07DC tm_taskEnemyThink  # [string] "ENEMY THINK" task drawer, random delay then ENEMY CARD SELECT
+func_800B08CC tm_enemySelect  # [string] "ENEMY CARD SELECT" handler, scores every hand card on every empty square by the opponent's AI level and places the best
+func_800B0E58 tm_setCellOwner  # [code] sets the owner of the card on a board square (unused)
+func_800B0EB8 tm_evalPlacement  # [code] for a card on a square, minus the number of battles, else the number of unopposed captures
+func_800B1010 tm_findDefender  # [code] first adjacent player card whose arrow points back at the card
+func_800B1110 tm_setFlips  # [code] marks the adjacent opponent cards a card's arrows point at, mode 1 flips (FLASH), mode 2 combo (FLASH ARROW)
+func_800B12F0 tm_getDefender  # [code] steps a position one square in a direction, returns the opponent card there if its arrow points back
+func_800B13C0 tm_stepDir  # [code] moves a board position one square in direction 0-7 (up, clockwise)
+func_800B14AC tm_drawArrows  # [code] arrow sprites of a card, blinking the combo directions
+func_800B16A4 tm_drawCursor  # [code] animated hand cursor sprite and its shadow, mirrored for mode 2
+func_800B19D4 tm_getCell  # [code] board square x, y, g_tmOffBoardCell outside the 4x4 board
+func_800B1A24 tm_initBoard  # [code] empties the 16 squares, marks g_tmOffBoardCell and places the blocks
+func_800B1A84 tm_drawStock  # [string] "Stock:", "Type:", "WIN"/"LOSE"/"DRAW" labels with the stock grid of card counts
+func_800B295C tm_openStock  # [code] refreshes the stock counts and starts CHOICE
+func_800B299C tm_drawSelectTitle  # [code] window content, text 0x13 "Select cards" (unused)
+func_800B29DC tm_resetStockCursor  # [code] clears the stock cursor, hand count and copy index
+func_800B29F0 tm_drawCardFace  # [code] card picture from the 100 images loaded by tm_setup (page id/30, clut 0x19C + id), mirrored when small
+func_800B2C5C tm_taskCoin  # [string] "COIN" task drawer, coin toss animation that picks the first turn
+func_800B2F60 tm_drawCombo  # [code] combo label and count (TmState.unk4FC) for unk4F0 frames, set by tm_drawFlash
+func_800B3198 tm_drawBattleValues  # [code] the two battle values over the battling cards (TmState.unk574/578)
+func_800B33CC tm_drawBigDigit  # [code] one 10x16 digit sprite
+func_800B3488 tm_askRematch  # [code] text 2 "Play a rematch, Yes, No" window and TRY AGAIN, forced opponents 0x7C-0x7F go to END FADE
+func_800B355C tm_drawRematchWin  # [code] window content, text 2 "Play a rematch, Yes, No"
+func_800B35A4 tm_taskEndFade  # [string] "END FADE" handler, fades out and ends the game loop after 31 frames
+func_800B35F8 tm_startEndFade  # [code] starts the screen and music fade (0xC401) and END FADE
+D_800B365C g_tmDataFile  # [code] address of the data file tm_loadDataFile reads (file 0x2715), db container
+D_800B3660 g_tmDataCopy  # [code] address of the copy tm_copyDataFile makes
+D_800B3C8C g_tmSeIds  # [code] sound effect ids played by tm_playSe(index)
+D_800B3CD0 g_tmWindowOpening  # [code] set while a window opens (tm_waitWindow), input handlers wait for 0
+D_800B3CD8 g_tmTradeCardId  # [code] id of the card changing hands, shown by tm_drawTradeWin
+D_800B3CDC g_tmTradeBadge  # [code] tm_drawTradeBadge draws its label when set, the card is the first copy received or the last copy lost
+D_800B3CE0 g_tmTradeLost  # [code] 0 card received, 1 lost (text 3 or 4 in tm_drawTradeWin)
+D_800B3CE8 g_tmOffBoardCell  # [code] returned by tm_getCell outside the board, state 3
+D_800B3CF0 g_tmStockCount  # [string] number drawn after "Stock:" by tm_drawStock
+D_800B3CF4 g_tmStockTypes  # [string] number drawn after "Type:" by tm_drawStock
+D_800A72B8 g_tmFlashBars  # [code] per direction bar piece of the combo flash (tm_drawFlash)
+D_800A73B4 g_tmArrowBits  # [code] arrow bit of direction 0-7 (1 << dir), tm_makeCard
+D_800A73BC g_tmBackArrowBits  # [code] arrow bit of the opposite direction, tested on the target card
+D_800A73C4 g_tmArrowSprites  # [code] arrow sprite position and uv per direction (tm_drawArrows)
+D_800A74A8 g_tmSlash  # [code] "/" between copy index and count in tm_drawStock
+D_800A74AC g_tmCoinFrames  # [code] coin toss animation frames (tm_taskCoin)
+D_800A7398 g_tmNoLabel  # [code] "NO" before the card number in tm_showStockCard
+func_800A9B0C tm_updatePad  # [code] func_8002C308(0) each frame, main's key-repeat update that sets g_padRepeat from port 0
+func_800ABEBC tm_drawBattleSelect  # [string] empty drawer tm_mainLoop runs in the "BATTLE SELECT" task
+func_800B3480 tm_drawTryAgain  # [string] empty drawer tm_mainLoop runs in the "TRY AGAIN" task
+# g_cardGameText (0x800B3668, already named) renamed to g_tmText by hand for the tm_ prefix
+# FIELDS include/ovl_0d.h TmCard: unk0=id,unk1=arrows,unk2=power,unk3=type,unk4=pdef,unk5=mdef,unk8=hidden,unkC=x,unk10=y,unk14=owner,unk18=onBoard,unk1C=small,unk20=fromX,unk24=fromY,unk28=toX,unk2C=toY,unk30=depth,unk34=visible
+# FIELDS include/ovl_0d.h TmCell: unk0=state,unk4=card; TmFlip (was TmUnk350): unk0=mode,unk4=x,unk8=y,unkC=arg,unk10=card; TmBlock (was TmUnk2F0): unk0=hidden,unk4=x,unk8=y,unkC=style; TmPos: unk0=x,unk4=y; TmBattle (new, tm_getBattleValues, was TmPos): atk,def
+# FIELDS include/ovl_0d.h TmCardData: unk0=power,unk1=type,unk2=pdef,unk3=mdef; TmDeck (was TmDeckOdds): v=ids; TmOpponent (was TmLevel): unk0=deck,unk1=aiLevel; TmArrow: unk0=x,unk4=y,unk8=smallX,unkC=smallY,unk10=u,unk14=v; TmCoinFrame: unk0=x,unk4=u,unk8=v,unkC=w; TmFlash: unk0=shape,unk4=dirX,unk8=dirY,unkC=cornerX,unk10=cornerY,unk14=offX,unk18=offY; TmTim: unk0=id,unk4=flags,unk8=clutLen,unkC=clutRect
+# FIELDS include/ovl_0d.h TmState: unk0=task,unk4=cursor,unk8=boardX,unkC=boardY,unk10=cards,unk268=board,unk2E8=timer,unk2EC=brightness,unk2F0=blocks,unk350=flips,unk418=phase,unk41C=flipOwner,unk420=flashNext,unk424=srcX,unk428=srcY,unk42C=dstX,unk430=dstY,unk434=turn,unk438=autoPlay,unk43C=wins,unk440=losses,unk444=draws,unk448=deck,unk44C=aiLevel,unk450=opponent,unk458=msgWin,unk45C=result,unk460=moveFrames,unk464=showScore,unk468=showBoard,unk46C=showBlocks,unk470=tradeCard,unk474=stockCol,unk478=stockRow,unk47C=handCount,unk480=animFrame,unk484=quitWin,unk488=savedFrame,unk48C=targets,unk4AC=numTargets,unk4B0=attacker,unk4B4=copyIdx,unk4B8=infoWin,unk4C4=less5Win,unk4C8=arrowOdds,unk4EC=oddsRow,unk4F0=comboTimer,unk4F4=comboX,unk4F8=comboY,unk4FC=comboShown,unk500=comboCount,unk504=flashMode,unk508=comboCard,unk50C=comboDirs,unk510=lostCard (TmCardStats id/arrows/power/type/pdef/mdef),unk54C=hasLostCard,unk550=lostSlot,unk558=savedRepeat,unk564=nameSlide,unk568=scrollTimer,unk56C=blockIdx,unk570=numBlocks,unk574=atkShown,unk578=defShown,unk57C=valuesTimer,unk590=landed,unk5A4=thinkDelay,unk5A8=blockTimer,unk5AC=blocksDone,unk5B0=getCursor,unk5B4=quitChoice,unk5B8=quitting,unk5BC=atkRoll,unk5C0=defRoll
