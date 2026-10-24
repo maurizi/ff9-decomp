@@ -2956,10 +2956,10 @@ TmCard *tm_getCardAt(TmState *arg0, s32 arg1, s32 arg2) {
     return tm_getCell(arg0, arg1, arg2)->card;
 }
 
-INCLUDE_RODATA("asm/us/ovl_0d/nonmatchings/tu_800A7E10", g_tmFlashBars);
+INCLUDE_RODATA("asm/us/ovl_0d/nonmatchings/tm_game", g_tmFlashBars);
 
 /* "NO" label */
-INCLUDE_RODATA("asm/us/ovl_0d/nonmatchings/tu_800A7E10", g_tmNoLabel);
+INCLUDE_RODATA("asm/us/ovl_0d/nonmatchings/tm_game", g_tmNoLabel);
 
 void tm_showStockCard(TmState *s) {
     u8 buf[0x20];
@@ -4152,11 +4152,11 @@ void tm_initBoard(TmState *arg0) {
     tm_placeBlocks(arg0);
 }
 
-INCLUDE_RODATA("asm/us/ovl_0d/nonmatchings/tu_800A7E10", g_tmArrowBits);
+INCLUDE_RODATA("asm/us/ovl_0d/nonmatchings/tm_game", g_tmArrowBits);
 
-INCLUDE_RODATA("asm/us/ovl_0d/nonmatchings/tu_800A7E10", g_tmBackArrowBits);
+INCLUDE_RODATA("asm/us/ovl_0d/nonmatchings/tm_game", g_tmBackArrowBits);
 
-INCLUDE_RODATA("asm/us/ovl_0d/nonmatchings/tu_800A7E10", g_tmArrowSprites);
+INCLUDE_RODATA("asm/us/ovl_0d/nonmatchings/tm_game", g_tmArrowSprites);
 
 void *tm_drawStock(u32 *ot, SPRT *p, TmState *s) {
     u8 buf[0x20];
@@ -4895,6 +4895,6 @@ void tm_startEndFade(TmState *arg0) {
     arg0->task = TM_TASK_END_FADE;
 }
 
-INCLUDE_RODATA("asm/us/ovl_0d/nonmatchings/tu_800A7E10", g_tmSlash);
+INCLUDE_RODATA("asm/us/ovl_0d/nonmatchings/tm_game", g_tmSlash);
 
-INCLUDE_RODATA("asm/us/ovl_0d/nonmatchings/tu_800A7E10", g_tmCoinFrames);
+INCLUDE_RODATA("asm/us/ovl_0d/nonmatchings/tm_game", g_tmCoinFrames);
