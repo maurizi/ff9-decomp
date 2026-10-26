@@ -3489,7 +3489,7 @@ void evt_onMenuOpen(void) {
     }
 }
 
-s32 func_8004AAF0(void) {
+s32 func_8004AAF0(s32 unused) { /* the overlays pass 0 */
     Unk8007AECC *p = g_evtState;
     Unk16D8 *n;
     s32 lim;
@@ -3628,9 +3628,9 @@ Unk16D8 *evt_getObjectList(void) {
     return r;
 }
 
-s32 func_8004AEBC(void) {
+Unk16D8 *func_8004AEBC(void) {
     Unk8007AECC *p = g_evtState;
-    s32 r = 0;
+    Unk16D8 *r = NULL;
     if (p != NULL) {
         r = p->unk16FC;
     }
@@ -3845,7 +3845,7 @@ s32 evt_getObjectProp(Unk8004AB64 *o, s32 prop) {
         }
     }
     if (i < 8) {
-        u = ((void *(*)(u16))btl_getUnitById)(1 << i);
+        u = btl_getUnitById(1 << i);
         if (u != NULL) {
             r = btl_getUnitAttr(u, prop);
         }
@@ -3855,8 +3855,8 @@ s32 evt_getObjectProp(Unk8004AB64 *o, s32 prop) {
 
 void evt_setObjectProp(Unk800219D8 *arg0, s32 arg1, s32 arg2) {
     s32 i;
-    s32 (*fn)(s32, s32);
-    s32 r;
+    struct BtlUnit *(*fn)(u16);
+    struct BtlUnit *r;
 
     if (arg0 != NULL) {
         i = 0;
@@ -3871,12 +3871,12 @@ void evt_setObjectProp(Unk800219D8 *arg0, s32 arg1, s32 arg2) {
         }
         if (i < 8) {
             if (arg1 == 0x20) {
-                fn = (s32 (*)(s32, s32))btl_findUnitByBit;
+                fn = btl_findUnitByBit;
             } else {
                 fn = btl_getUnitById;
             }
-            r = fn((1 << i) & 0xFFFF, i);
-            if (r != 0) {
+            r = fn(1 << i);
+            if (r != NULL) {
                 btl_setUnitAttr(r, arg1, arg2);
             }
         }

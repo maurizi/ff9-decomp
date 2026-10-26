@@ -302,7 +302,7 @@ s32 fld_soundCommand(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4) {
         case 3:
             switch (arg0 & 0x3F) {
             case 1:
-                akao_fadeSeVolume((void *)h, arg2, arg3, arg4);
+                akao_fadeSeVolume(h, arg2, arg3, arg4);
                 if (fp) {
                     g_gameState->gameData->unk8B8[slot] = arg4;
                 }
@@ -367,7 +367,7 @@ s32 fld_soundCommand(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4) {
                 return -1;
             }
             akao_sendCmdE4(fld_isMoviePlaying() ? SCENE->movieSndVolume : SCENE->sndVolume);
-            akao_sendCmdE0(slot, arg2, arg3);
+            akao_sendCmdE0((s32 *)slot, arg2, arg3);
             SCENE->unk5F = 0;
             return 0;
         case 1:
@@ -998,8 +998,8 @@ s32 fld_isMusicFading(void) {
     return (u32)(VSync(-1) - gd->unk8C4) < gd->unk842;
 }
 
-void fld_setObjectColor(s32 arg0, s32 arg1, s32 arg2, s32 arg3) {
-    fld_setSlotColor((FieldEvtCtx *)game_getModel(arg0), arg1, arg2, arg3);
+s32 fld_setObjectColor(s32 arg0, s32 arg1, s32 arg2, s32 arg3) {
+    return fld_setSlotColor((FieldEvtCtx *)game_getModel(arg0), arg1, arg2, arg3);
 }
 
 /* apply the field lights to the object colours */
@@ -1224,11 +1224,11 @@ s32 func_800B3444(s32 arg0, s32 arg1, s32 arg2) {
                 }
                 if (g_gameState->gameData->unk8E4.field->area->scene->heapTop != 0) {
                     start = g_gameState->gameData->unk8E4.field->area->scene->heapTop;
-                    g_gameState->gameData->unk8E4.field->area->scene->heapTop = func_80050BE0(start);
+                    g_gameState->gameData->unk8E4.field->area->scene->heapTop = (s32)func_80050BE0((void *)start);
                     size = g_gameState->gameData->unk8E4.field->area->scene->heapTop - start;
                 } else {
                     start = D_80067948;
-                    end = func_80050BE0(start);
+                    end = (s32)func_80050BE0((void *)start);
                     size = end - start;
                     D_80067948 = end;
                 }

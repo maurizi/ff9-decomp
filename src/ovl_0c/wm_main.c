@@ -246,7 +246,7 @@ void wm_load(s32 arg0) {
     wm_uploadParkedSound();
     wm_soundCommand(0x900, 0, 0, 0, 0);
     evt_loadScripts(obj->mapScript);
-    evt_init(obj->mapScript);
+    evt_init((u8 *)obj->mapScript);
     while (wm_soundCommand(SND_GET_STATE, 0, 0, 0, 0) != 0) {
     }
     msg_init();

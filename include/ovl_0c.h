@@ -1173,7 +1173,7 @@ extern u8 D_800CF47E;
 extern u8 g_worldSuspended;
 extern u8 g_worldMapJump;
 extern u8 g_worldVehiclesFound;
-void func_80050E34(u8 *);
+u8 *func_80050E34(u8 *);
 void func_80050EFC(s32, s32);
 extern s32 g_worldTimeActorDraw;
 extern s32 g_worldTimeMapDraw;
@@ -1230,7 +1230,7 @@ extern u8 D_800CE1E1;
 extern u8 g_worldCameraStartPhase;
 
 /* main exe: candidates for ff9.h */
-MATRIX *math_rotMatrixZXY(SVECTOR *, MATRIX *);
+void math_rotMatrixZXY(SVECTOR *, MATRIX *);
 void RotTrans(SVECTOR *v0, VECTOR *v1, long *flag);
 void func_80064CDC(s32, s32);
 void math_rotMatrixZYX_gte(void *, void *); /* rotation (SVECTOR) -> bone matrix */
@@ -1484,7 +1484,7 @@ void wm_calcShadowMatrix(WmObjEnt *, WmObjSlot *, MATRIX *, s32, s32);
     }
 
 /* main exe: candidates for ff9.h */
-void cd_readChunks(s32, void *, s32, s32);
+u8 cd_readChunks(s32, void *, s32, s32);
 s32 func_8004B1EC(void);
 s32 func_8004B1FC(void);
 void fade_inAdditiveDefault(void);
@@ -1528,7 +1528,7 @@ s32 wm_getModelCacheBottom(void);
 s32 akao_playMusic(void *);
 void akao_stopMusic(s32);
 void akao_saveMusic(void);
-void akao_playSe(s32, s32, s32, s32);
+s32 akao_playSe(s32, s32, s32, s32);
 void akao_sendCmd92(s32);
 void akao_setAllSeVolume(s32);
 void akao_fadeAllSeVolume(s32, s32);

@@ -46,7 +46,7 @@ void battleEnd_init(void) {
     func_801EF6D8();
     battleEnd_unloadDb();
     if (s->unk10 != 0 && g_btlRewards.unkB != 0) {
-        evt_init(s->unk10);
+        evt_init((u8 *)s->unk10);
         if (s->unk14 != 0) {
             msg_init();
         }

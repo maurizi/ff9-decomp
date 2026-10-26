@@ -10,7 +10,8 @@ returned; a port compiled for another CPU loses that value. The fix is a real re
 For every `jal` in the 20 built binaries, the instructions after the delay slot are scanned in order until
 $v0 is written, read, or control flow leaves the straight line (a branch that tests $v0 counts as a read).
 Delay slots count, including the one of the branch or call that ends the scan. A callee is reported when a caller reads its $v0 and our headers or
-sources declare it void. Calls through pointers (jalr) aren't checked.
+sources declare it void, or (for a callee in another binary) its C definition there is void, whatever the
+caller's header says. tools/decl_check.py compares declarations with definitions directly. Calls through pointers (jalr) aren't checked.
 """
 import glob
 import re
@@ -53,23 +54,39 @@ def void_decls():
     return out
 
 
+def void_defs():
+    """name -> binaries whose C defines it void; a caller in another binary sees that definition
+    (main's script interpreter calls ovl_0a functions, which ff9.h may declare with another type)."""
+    out = defaultdict(set)
+    for f in glob.glob("src/*/*.c"):
+        b = f.split("/")[1]
+        for m in re.finditer(r"^(?:static\s+)?void\s+(\w+)\s*\([^;]*?\)\s*\{", open(f).read(), re.M):
+            out[m.group(1)].add(b)
+    return out
+
+
 def main():
     voids = void_decls()
+    vdefs = void_defs()
     used = defaultdict(set)
+    labels = defaultdict(set)  # binary -> addresses of the functions in its .text
     for elf in ELFS:
         binary = "main" if "slus" in elf else elf.split("/")[-1][:-4]
         dis = subprocess.run(["mipsel-linux-gnu-objdump", "-d", "--no-show-raw-insn", elf],
                              capture_output=True, text=True).stdout
-        func = None
+        func = label = None
         lines = []
         for line in dis.splitlines():
-            m = re.match(r"^[0-9a-f]+ <([\w.]+)>:", line)
+            m = re.match(r"^([0-9a-f]+) <([\w.]+)>:", line)
             if m:
-                func = m.group(1)
+                func = m.group(2)
+                label = int(m.group(1), 16)
                 continue
             m = INS.match(line)
             if m:
                 lines.append((func, int(m.group(1), 16), m.group(2), m.group(3)))
+                if lines[-1][1] == label:  # a label with code (main's ELF also spans the overlay area, empty)
+                    labels[binary].add(label)
         for i, (fn, addr, mn, ops) in enumerate(lines):
             if mn != "jal":
                 continue
@@ -77,6 +94,7 @@ def main():
             if not t:
                 continue
             callee = t.group(1)
+            target = int(ops.split()[0], 16)
             # the delay slot runs before the callee, so start after it
             seq = lines[i + 2:i + 40]
             for k, (fn2, a2, mn2, ops2) in enumerate(seq):
@@ -84,16 +102,33 @@ def main():
                     break
                 rd, wr = reads_writes(mn2, ops2)
                 if "v0" in rd:
-                    used[(binary, callee)].add(f"{fn}@{a2:08X}")
+                    used[(binary, callee, target)].add(f"{fn}@{a2:08X}")
                     break
                 if "v0" in wr:
                     break
                 if mn2 in CTRL:
                     # its delay slot still runs on the straight line (before a jal's callee clobbers v0)
                     if k + 1 < len(seq) and "v0" in reads_writes(seq[k + 1][2], seq[k + 1][3])[0]:
-                        used[(binary, callee)].add(f"{fn}@{seq[k + 1][1]:08X}")
+                        used[(binary, callee, target)].add(f"{fn}@{seq[k + 1][1]:08X}")
                     break
-    hits = sorted((k, v) for k, v in used.items() if k[1] in voids[k[0]])
+    at = defaultdict(set)  # (binary, address) -> every function name there (aliases included)
+    for elf in ELFS:
+        b = "main" if "slus" in elf else elf.split("/")[-1][:-4]
+        for line in subprocess.run(["mipsel-linux-gnu-nm", "--defined-only", elf], capture_output=True,
+                                   text=True).stdout.splitlines():
+            parts = line.split()
+            if len(parts) == 3 and parts[1] in "tT" and int(parts[0], 16) in labels[b]:
+                at[(b, int(parts[0], 16))].add(parts[2])
+
+    def is_void(binary, callee, target):
+        if callee in voids[binary]:
+            return True
+        if target in labels[binary]:
+            return False
+        # the callee lives in another binary (main's script interpreter calls ovl_0a): its C definition there
+        # decides, whatever the caller's header says. Overlays at the same address all count.
+        return any(b in vdefs.get(name, ()) for b in labels if b != binary for name in at[(b, target)])
+    hits = sorted((k[:2], v) for k, v in used.items() if is_void(*k))
     for (binary, callee), sites in hits:
         print(f"{binary:7} {callee:28} {len(sites):3} caller(s): {' '.join(sorted(sites)[:6])}")
     print(f"{len(hits)} void-declared functions have callers that read $v0")

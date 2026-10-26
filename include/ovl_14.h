@@ -55,10 +55,10 @@ s32 cd_findFile(char *);
 extern s32 g_mbgFrame;
 u8 cd_seekStreamAsync(s32);
 void menu_update(void);
-void cd_pause(void);
+s32 cd_pause(void);
 s32 akao_playMusic(void *);
 void akao_stopMusic(s32);
-void akao_playSe(s32, s32, s32, s32);
+s32 akao_playSe(s32, s32, s32, s32);
 void akao_setAllSeVolume(s32);
 void akao_fadeAllSeVolume(s32, s32);
 void akao_setSeVolume(s32, s32, s32);
@@ -76,11 +76,11 @@ void akao_fadeMusicVolume(s32, s32, s32);
 void akao_fadeMusicVolumeFrom(s32, s32, s32, s32);
 
 /* ovl_64 (FMV player) */
-void mbg_streamSetBaseSector(s32);
-void MBG_init(s32, u8 **);
-void mbg_play(s32, s32);
+s32 mbg_streamSetBaseSector(s32);
+s32 MBG_init(s32, u8 **);
+s32 mbg_play(u32, s32);
 s32 mbg_update(s32);
-void mbg_setRgb24(s32);
+s32 mbg_setRgb24(s32);
 void mbg_setEndCallback(void (*)(void));
 s32 mbg_getLastFrame(void);
 /* movie table (ovl_64's g_mbgMovieLists): list 1 is the disc 1 movies, its entry 0 the opening movie */
@@ -95,8 +95,8 @@ typedef struct {
 } MbgMovieList;
 extern MbgMovieList g_mbgMovieLists[];
 
-void mbg_shutdown(void);
-void mbg_stop(void);
+s32 mbg_shutdown(void);
+s32 mbg_stop(void);
 
 /* ovl_39 (save / load menu, 0x801EDF00): nonzero when the load menu loaded a game */
 u8 menuSave_isLoaded(void);

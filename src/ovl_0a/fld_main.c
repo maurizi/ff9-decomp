@@ -377,7 +377,7 @@ void fld_load(s32 arg0) {
     fld_startAudio();
     fld_soundCommand(0x900, -1, 0, 0, 0);
     evt_loadScripts(sc->eventScript);
-    evt_init(sc->eventScript);
+    evt_init((u8 *)sc->eventScript);
     fld_compactModelCache();
     fld_loadModelBundlesInCdOrder();
     while (fld_soundCommand(0xC00, -1, 0, 0, 0) != 0) {

@@ -14,12 +14,12 @@ extern s8 g_mbgPaused;
 void akao_sendCmdE2(void);
 char *strcpy(char *, const char *);
 extern s8 D_80071E30;
-void cd_readStreamAsync(s32, void (*)());
-void func_80022FD0(s32);
-void cd_pause(void);
+u8 cd_readStreamAsync(s32, void (*)());
+u8 func_80022FD0(void (*)(u8 *));
+s32 cd_pause(void);
 void CdSetDebug(s32);
-void akao_sendCmdE8(s32, s32);
-void func_80056488(void *);
+s32 akao_sendCmdE8(s32, s32);
+s32 func_80056488(void *);
 int SetGraphDebug(int level);
 int CdPosToInt(CdlLOC *p);
 
@@ -352,7 +352,7 @@ u32 func_8019D3F0(u16 *p);
 void mbg_mdecOutCallback(void);
 
 /* mbg_streamReadyCallback: the two cross-jumped timeout blocks (one inline, called twice) */
-void cd_restartAt(s32); /* main exe */
+s32 cd_restartAt(s32); /* main exe */
 s32 DecDCToutSync(s32);
 extern s32 g_mbgSectorLogFrame[];
 extern s32 g_mbgSectorLogSlot[];

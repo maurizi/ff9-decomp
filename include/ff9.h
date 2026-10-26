@@ -665,11 +665,7 @@ typedef struct {
     s16 w;
     s16 h;
 } TextSize;
-#if defined(OVL_0B_H) /* ovl_0b passes its own buffer types */
-void text_measure(void *, s32);
-#else
 TextSize text_measure(u8 *); /* measure a text string */
-#endif
 s32 config_remapButton(); /* (s32 index); unprototyped, as the original's callers pass ints unconverted */
 void win_drawAll(void);
 void win_updateAll(void);
@@ -1248,7 +1244,7 @@ typedef struct {
     u8 pad16F6[0x16F8 - 0x16F6];
     u8 unk16F8;
     u8 pad16F9[0x16FC - 0x16F9];
-    s32 unk16FC;
+    Unk16D8 *unk16FC;
     s16 unk1700;
     u8 pad1702[0x17C8 - 0x1702];
 } Unk8007AECC; /* 0x17C8 */
@@ -2275,11 +2271,7 @@ void help_drawCursor(); /* unprototyped: the argument is unused and most callers
 void help_setCursorOnTop(u8);
 void text_setBank(const u8 *);
 u8 *text_get(s32); /* text lookup */
-#if defined(OVL_0A_H) || defined(OVL_0B_H) || defined(OVL_0C_H) || defined(OVL_65_H)
-void evt_init(s32); /* the overlays pass the script data as an integer */
-#else
 void evt_init(u8 *); /* start the field script system on a script data block */
-#endif
 void evt_initSystem(void);
 void msg_init(void);
 void evt_clearGlobalVars(void);
@@ -2567,8 +2559,9 @@ void menuScreen_onOverlayRead(u8 *);
 extern void *g_evtUnitObjects[8];
 #ifndef OVL_0B_H /* battle overlay code; ovl_0b.h has the real prototypes */
 struct BtlUnit *btl_findUnitByBit(u16);
-s32 btl_getUnitById(s32, s32);
-void btl_setUnitAttr(s32, s32, s32);
+struct BtlUnit *btl_getUnitById(u16);
+u32 btl_getUnitAttr(struct BtlUnit *, s32);
+void btl_setUnitAttr(struct BtlUnit *, s32, u32);
 #endif
 void cd_onDiskError(s32);
 void cd_onSyncQueued(u8);
@@ -3793,7 +3786,7 @@ s32 fld_modelCommand(s32, s32, s32, s32, s32);
 s32 fld_movieCommand(s32, s32, s32);
 VECTOR *wm_getCameraEye(void);
 VECTOR *wm_getCameraTarget(void);
-void bgi_playAnimRange(s32, s32, s32);
+s32 bgi_playAnimRange(u32, u32, u32);
 #endif
 
 extern u8 *g_evtInstrStart;

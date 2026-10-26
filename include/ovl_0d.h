@@ -545,7 +545,7 @@ void card_clearAll();
 extern u8 *g_menuHelpText; /* = g_menuHelp.text, referenced by its own name */
 s32 akao_playMusic(void *);
 void akao_stopMusic(s32);
-void akao_playSe(s32, s32, s32, s32);
+s32 akao_playSe(s32, s32, s32, s32);
 void akao_setAllSeVolume(s32);
 void akao_fadeAllSeVolume(s32, s32);
 void akao_setSeVolume(s32, s32, s32);

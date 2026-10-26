@@ -1138,7 +1138,7 @@ void fld_stopSceneSfx(FieldScene *, s16);
 s32 fld_movieCommand(s32, s32, s32);
 s32 fld_freeCommon(void);
 s32 bgi_stepFloorMove();
-void vib_init(void *);
+s32 vib_init(void *);
 s32 fld_soundCommand(s32, s32, s32, s32, s32);
 void fld_getSoundPanVolume(s16, s16, s16, u8 *, u8 *);
 s32 fld_preloadRequest(s32, s32);
@@ -1235,8 +1235,8 @@ typedef struct {
 } Unk8002208C;
 Unk8002208C *preload_waitCurrent(void);
 s32 preload_overlaps(s32, s32);
-void preload_discardRange(s32, s32);
-s32 func_80050BE0(s32);
+s32 preload_discardRange(u32, s32);
+u8 *func_80050BE0(void *);
 
 extern RECT *s_menuMainTimeGilRect;
 extern u8 s_menuMainGilSuffix[];
@@ -1304,10 +1304,10 @@ void fldmdl_drawMeshClipY(ModelObj *, u8);
 
 /* main exe: candidates for ff9.h */
 void math_rotMatrixZYX(SVECTOR *, MATRIX *);
-MATRIX *math_rotMatrixZXY(SVECTOR *, MATRIX *);
+void math_rotMatrixZXY(SVECTOR *, MATRIX *);
 extern s32 g_vtxScreenXY[]; /* projected screen xy per model vertex */
 extern s32 g_vtxScreenZ[]; /* projected z per model vertex */
-s32 func_80056048(s32, s32, s32);
+s32 func_80056048(s32 *, s32, s32);
 extern u32 g_portraitSavedVram[]; /* VRAM save buffer */
 extern u8 D_80077E51;
 extern u8 *g_menuHelpText; /* = g_menuHelp.text, referenced by its own name */
@@ -1320,8 +1320,8 @@ s32 fld_setupActorModel(s32, void *);
 void menuMain_drawMember(s32);
 void menuMain_drawPortraitShade(RECT *, s32);
 extern s32 g_mbgFrame;
-void gameover_main(void *); /* overlay 0x65 (loaded at 0x801F0000) */
-void mbg_setRgb24(s32); /* overlay loaded at 0x80198000 */
+void gameover_main(s32); /* overlay 0x65 (loaded at 0x801F0000) */
+s32 mbg_setRgb24(s32); /* overlay loaded at 0x80198000 */
 s32 mbg_getFrame(void);
 void menu_update(void);
 Unk8004AB64 *evt_getPlayer(void);
@@ -1447,10 +1447,10 @@ extern u16 g_fieldMovieLastFrame;
 extern Unk800C9F6C g_fieldMovieMaskPkt[2];
 void fld_movieStop(void);
 void fld_movieFinish(void);
-void MBG_init(s32, void *); /* overlay loaded at 0x80198000 */
+s32 MBG_init(s32, void *); /* overlay loaded at 0x80198000 */
 void mbg_setEndCallback(void (*)());
 void func_8019AB98(s32, s32, s32);
-void mbg_play(s32, s32);
+s32 mbg_play(u32, s32);
 s32 mbg_getStartCamera(void *, u16 *);
 s32 mbg_update(s32);
 s32 mbg_getLastFrame(void);
@@ -1468,7 +1468,7 @@ void fld_suspendResidentSfx(void);
 extern s32 g_swirlFrame;
 extern u8 *g_swirlBuf;
 void akao_fadeMusicVolume(s32, s32, s32);
-void akao_fadeSeVolume(void *, s32, s32, s32);
+void akao_fadeSeVolume(s32, s32, s32, s32);
 void akao_setMusicVolume(s32, s32);
 void preload_setVramRect(PreloadEntry *, s16, s16, s16, s16);
 u8 swirl_update(s32, s32);
@@ -1528,7 +1528,7 @@ s32 akao_playMusic(void *);
 void akao_stopMusic(s32);
 void akao_saveMusic(void);
 s32 akao_playMusicCount(void *, s32);
-void akao_playSe(s32, s32, s32, s32);
+s32 akao_playSe(s32, s32, s32, s32);
 void akao_sendCmd92(s32);
 void akao_setAllSeVolume(s32);
 void akao_fadeAllSeVolume(s32, s32);
@@ -1552,7 +1552,7 @@ void akao_sendCmdD8(s32);
 void akao_sendCmdD9(s32, s32);
 void akao_sendCmdDA(s32, s32, s32);
 s32 akao_getSpuTransferState(void);
-void akao_sendCmdE0(s32, s32, s32);
+void akao_sendCmdE0(s32 *, s32, s32);
 void akao_sendCmdE6(s32);
 
 /* GameData.unk828/unk82C as an array (the slot index needs `base + slot*4`) until ff9.h has it */

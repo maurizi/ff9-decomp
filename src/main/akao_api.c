@@ -28,8 +28,8 @@ s32 akao_setSeTables(u8 *a) {
     return r;
 }
 
-s32 akao_playMusic(s32 a) {
-    g_akaoArgs.unk0 = a;
+s32 akao_playMusic(void *a) {
+    g_akaoArgs.unk0 = (s32)a;
     return akao_command(0x10);
 }
 
@@ -68,8 +68,8 @@ void akao_crossfadeMusic(s32 a, s32 b, s32 c) {
     akao_command(0x1A);
 }
 
-s32 akao_playMusicCount(s32 a, s32 b) {
-    g_akaoArgs.unk0 = a;
+s32 akao_playMusicCount(void *a, s32 b) {
+    g_akaoArgs.unk0 = (s32)a;
     g_akaoArgs.unk4 = b;
     return akao_command(0x12);
 }
@@ -616,7 +616,7 @@ s32 akao_sendCmdE8(s32 a, s32 b) {
     return 0;
 }
 
-s32 func_80056488(void) {
+s32 func_80056488(void *unused) { /* mbg_stream passes its stream state */
     g_akaoStream.unk24++;
     g_akaoStream.unk38++;
     if (g_akaoStream.unk3C - 1 < g_akaoStream.unk38) {

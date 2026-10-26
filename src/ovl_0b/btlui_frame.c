@@ -119,7 +119,6 @@ u8 func_800F4FD8(void) {
 }
 
 void btl_setBannerText(s32 arg0) {
-    Unk801051F088 v;
     if (arg0 == 0) {
         g_btlBanner.text = 0xFF;
         g_btlBanner.active = 0;
@@ -128,8 +127,7 @@ void btl_setBannerText(s32 arg0) {
         text_copy(&g_btlBanner.text, (u8 *)arg0);
         g_btlBanner.active = 1;
         g_btlBanner.timer = 0;
-        text_measure(&v.unk0, (s32)&g_btlBanner);
-        g_btlBanner.size = v;
+        g_btlBanner.size = text_measure((u8 *)&g_btlBanner);
     }
 }
 
@@ -143,10 +141,10 @@ u8 *btl_buildBanner(u8 *arg0) {
             r = &g_btlBanner.rect;
         } else {
             t = &D_800FDE58;
-            t->h = g_btlBanner.size.unk2 + 6;
+            t->h = g_btlBanner.size.h + 6;
             r = t;
         }
-        arg0 = btl_buildBannerFrame(text_buildBlock(r->x + ((r->w - g_btlBanner.size.unk0) >> 1), r->y + 3,
+        arg0 = btl_buildBannerFrame(text_buildBlock(r->x + ((r->w - g_btlBanner.size.w) >> 1), r->y + 3,
                                            g_btlBanner.ot, &g_btlBanner.text, 0, arg0),
                              r);
     }

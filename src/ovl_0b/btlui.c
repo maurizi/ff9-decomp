@@ -67,7 +67,7 @@ void btlui_init(void) {
 void func_800E9D84(void) {
     void *p = db_lookupRegistered(4, 0x14, 0);
     if (p != NULL) {
-        text_uploadPartyNames(p);
+        text_uploadPartyNames((s32)p);
     }
 }
 

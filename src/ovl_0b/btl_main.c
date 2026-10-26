@@ -406,7 +406,7 @@ s32 btl_initEncounter(Unk800AA08C *arg0, s32 arg1) {
     arg0->unk10 = (s32)db_lookupRegistered(4, (s32)db_lookupRegistered(9, id, 0x50000), 0);
     arg0->unk14 = (s32)db_lookupRegistered(4, (s32)db_lookupRegistered(9, id, 0x60000), 0);
     btl_initScene();
-    evt_init(arg0->unk10);
+    evt_init((u8 *)arg0->unk10);
     msg_init();
     return 0;
 }

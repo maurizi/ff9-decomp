@@ -2241,17 +2241,13 @@ typedef struct {
 extern volatile Unk80105060 g_btluiHeap;
 
 
-typedef struct {
-    s16 unk0;
-    u16 unk2;
-} Unk801051F088;
 
 typedef struct {
     u8 text; /* text buffer (0xFF = none) */
     u8 pad1[0x80 - 1];
     s32 timer; /* frames shown */
     s32 duration; /* frames to show (btl_initBanner: by the message speed option) */
-    Unk801051F088 size; /* text width/height (text_measure) */
+    TextSize size; /* text width/height (text_measure) */
     u8 active;
     u8 useRect; /* 1: drawn in rect (btl_setBannerAt), 0: the default top box */
     u8 pad8E[2];
@@ -2361,8 +2357,8 @@ typedef struct {
 } Unk8006E0E8; /* 0xC */
 extern Unk8006E0E8 g_weaponTable[];
 void VSyncCallback(void (*)(void));
-void text_uploadPartyNames(void *);
-void akao_playSe(s32, s32, s32, s32);
+void text_uploadPartyNames(s32);
+s32 akao_playSe(s32, s32, s32, s32);
 s32 item_getCount(s32); /* main.c defines it returning u8 */
 typedef struct {
     u32 unk0_0 : 8;
@@ -2866,7 +2862,7 @@ typedef struct {
     s16 unk6;
 } Unk800ABBC4Rect;
 
-void cd_readChunks(s32, void *, s32, s32);
+u8 cd_readChunks(s32, void *, s32, s32);
 typedef struct {
     u8 pad0[8];
     s32 unk8; /* file address */
@@ -2876,7 +2872,7 @@ typedef struct {
 
 extern s16 D_800F51EC;
 s32 db_getSize(s32);
-void func_80056048(s32, s32, s32);
+s32 func_80056048(s32 *, s32, s32);
 
 /* btl_soundCmd: sound/streamed music command handler */
 s32 btl_getSoundFileSectors(s32, s32 *);
@@ -3447,7 +3443,7 @@ void func_800EA290(void);
 void btlui_drawOTagEnv(u32 *, DRAWENV *);
 void btl_cleanup(void);
 s32 btl_getModelTexInfo(u32, s32 **, s32 **, s32 **);
-u32 func_8004AB64(s32);
+u32 func_8004AB64(void *);
 /* object slot returned by game_getModel in battle */
 typedef struct {
     u32 unk0; /* flags */
@@ -3654,7 +3650,7 @@ void btlui_closeListWindow(s32);
 void btlui_onCmdWindowClosed(Window *);
 
 /* main exe: candidates for ff9.h */
-void akao_uploadSeBank(s32 *, s32);
+s32 akao_uploadSeBank(s32 *, s32);
 void text_draw(s32, s32, s32, u8 *, s32);
 void win_closeAll(void);
 s32 chr_getDefaultSet(Character *);
@@ -4326,7 +4322,7 @@ s32 btlfx_countVisibleParty(void);
 void btlfx_initSummonModels(BtlModel *, s32);
 typedef void (*Unk800DA92CFn)(s32, Unk800F78A4 *, s32);
 /* main exe: candidates for ff9.h */
-void vib_init(void *);
+s32 vib_init(void *);
 
 
 /* GTE loads used by btlfx_drawScreenGrid */

@@ -24,9 +24,9 @@ void akao_stopMusic(s32);
 s32 text_measureSmall(u8 *); /* text width */
 void file_setTimPos(s32, s32, s32, s32, s32);
 s32 cd_findFile(char *);
-void cd_seekStreamAsync(s32);
+u8 cd_seekStreamAsync(s32);
 s32 akao_playMusic(void *);
-void akao_playSe(s32, s32, s32, s32);
+s32 akao_playSe(s32, s32, s32, s32);
 void akao_setAllSeVolume(s32);
 void akao_fadeAllSeVolume(s32, s32);
 void akao_setSeVolume(s32, s32, s32);
@@ -44,14 +44,14 @@ void akao_fadeMusicVolume(s32, s32, s32);
 void akao_fadeMusicVolumeFrom(s32, s32, s32, s32);
 
 /* ovl_64 (FMV player, 0x80198700) */
-void MBG_init(s32, u8 **);
-void mbg_play(s32, s32);
+s32 MBG_init(s32, u8 **);
+s32 mbg_play(u32, s32);
 s32 mbg_update(s32);
-void mbg_setRgb24(s32);
-void mbg_shutdown(void);
+s32 mbg_setRgb24(s32);
+s32 mbg_shutdown(void);
 void mbg_setEndCallback(void (*)(void));
-void mbg_getLastFrame(void);
-void mbg_streamSetBaseSector(s32);
+s32 mbg_getLastFrame(void);
+s32 mbg_streamSetBaseSector(s32);
 /* movie table (ovl_64's g_mbgMovieLists): list 4 is the disc 4 movies */
 typedef struct {
     char *path; /* movie file name */

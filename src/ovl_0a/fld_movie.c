@@ -1450,10 +1450,10 @@ void fld_updateEncounter(void) {
             g_gameState->gameData->unk8E4.field->area->scene->encounterMusicStep = 7;
         }
         if (g_gameState->gameData->unk830[0] != 0xFFFF && (g_gameState->gameData->unk0 & GD_SFX0_PLAYING)) {
-            akao_fadeSeVolume(g_gameState->gameData->unk828, 0x100000, 0xF, 0);
+            akao_fadeSeVolume((s32)g_gameState->gameData->unk828, 0x100000, 0xF, 0);
         }
         if (g_gameState->gameData->unk830[1] != 0xFFFF && (g_gameState->gameData->unk0 & GD_SFX1_PLAYING)) {
-            akao_fadeSeVolume(g_gameState->gameData->unk82C, 0x200000, 0xF, 0);
+            akao_fadeSeVolume((s32)g_gameState->gameData->unk82C, 0x200000, 0xF, 0);
         }
         for (i = 1; i >= 0; i--) {
             g_padActuator[i].unk1 = 0;
