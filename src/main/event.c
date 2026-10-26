@@ -882,7 +882,8 @@ s32 evt_execInstr(void) {
         return 0;
     case 0x10:
         a = evt_getArg8_inline();
-        evt_callObjectFunc(evt_getObjectArg(), a, *g_evtCurObj->unk0++, 0);
+        obj = evt_getObjectArg(); /* reads the script before the key byte */
+        evt_callObjectFunc(obj, a, *g_evtCurObj->unk0++, 0);
         return 0;
     case 0x12:
         a = evt_getArg8_inline();
@@ -908,12 +909,14 @@ s32 evt_execInstr(void) {
         return 1;
     case 0x16:
         a = evt_getArg8_inline();
-        evt_callObjectFunc(evt_getObject_inline(CUR_UID()), a, *g_evtCurObj->unk0++, 0);
+        o = evt_getObject_inline(CUR_UID());
+        evt_callObjectFunc(o, a, *g_evtCurObj->unk0++, 0);
         return 0;
     case 0x18:
         a = evt_getArg8_inline();
         if (evt_getObject_inline(CUR_UID()) != NULL && a < evt_getObject_inline(CUR_UID())->unk4) {
-            evt_callObjectFunc(evt_getObject_inline(CUR_UID()), a, *g_evtCurObj->unk0++, 0);
+            o = evt_getObject_inline(CUR_UID());
+            evt_callObjectFunc(o, a, *g_evtCurObj->unk0++, 0);
             return 0;
         }
         g_evtCurObj->unk0 = g_evtInstrStart;
@@ -922,7 +925,8 @@ s32 evt_execInstr(void) {
     case 0x1A:
         a = evt_getArg8_inline();
         if (evt_getObject_inline(CUR_UID()) != NULL && a < evt_getObject_inline(CUR_UID())->unk4) {
-            evt_callObjectFunc(evt_getObject_inline(CUR_UID()), a, *g_evtCurObj->unk0++, 1);
+            o = evt_getObject_inline(CUR_UID());
+            evt_callObjectFunc(o, a, *g_evtCurObj->unk0++, 1);
         } else {
             g_evtCurObj->unk0 = g_evtInstrStart;
             g_evtArgRead = 1;

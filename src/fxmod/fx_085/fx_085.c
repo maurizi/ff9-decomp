@@ -183,9 +183,13 @@ s32 fx_085_op80(s32 mode, Fx085Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
                     p.vx += (ex->math_cos(a) * D_801E9F8C) >> 12;
                     p.vz += (ex->math_sin(a) * D_801E9F8C) >> 12;
                     a += 0x100;
-                    ex->btlfx_drawParticles((u8 *)ex->btlfx_getFileData(entry->file, 0x18), &p, NULL,
-                                            0x3000 - ((i & 1) << 12), j & 7, 1, c_5, ex->btlfx_randCentered(5),
-                                            ex->btlfx_randCentered(5));
+                    {
+                        void *fd_ = ex->btlfx_getFileData(entry->file, 0x18);
+                        s32 r0_ = ex->btlfx_randCentered(5); /* the PS1 draws them in this order */
+                        s32 r1_ = ex->btlfx_randCentered(5);
+                        ex->btlfx_drawParticles((u8 *)fd_, &p, NULL,
+                                            0x3000 - ((i & 1) << 12), j & 7, 1, c_5, r0_, r1_);
+                    }
                 }
                 env->unk28 = 0;
             }

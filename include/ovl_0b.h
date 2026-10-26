@@ -3232,7 +3232,10 @@ void btl_startScan(s32);
 void btl_startDetect(BtlUnit *);
 u8 *btl_getAbilityName(s32);
 
-/* random table: two refill checks, then one byte read as (b << 8 | b) */
+/* random table: two refill checks, then one byte read as (b << 8 | b). RAND16 reads g_randPtr in both operands
+ * and increments it in one, which C leaves unsequenced: gcc 2.8 reads the byte once and stores the increment
+ * after the enclosing expression (a statement expression that sequences it moves the store and breaks the match).
+ * A port must read the byte before the increment. */
 #define RAND_REFILL2()                         \
     if (g_randPtr >= g_randTableEnd) {            \
         rand_refill();                       \

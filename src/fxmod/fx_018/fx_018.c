@@ -178,8 +178,13 @@ s32 fx_018_op80(s32 mode, Fx018Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
                     BTLFX_COPY_SVEC(&v, &work->unk8);
                     v.vx += (ex->math_cos(frame * 0x18 + (i << 8)) * D_801E9E80) >> 12;
                     v.vz += (ex->math_sin(frame * 0x18 + (i << 8)) * D_801E9E80) >> 12;
-                    ex->btlfx_drawParticles((u8 *)ex->btlfx_getFileData(entry->file, 0x1B), &v, NULL, 0x1800 - ((i & 1) << 12),
-                                      n & 7, 1, c3, ex->btlfx_randCentered(5), ex->btlfx_randCentered(5));
+                    {
+                        void *fd_ = ex->btlfx_getFileData(entry->file, 0x1B);
+                        s32 r0_ = ex->btlfx_randCentered(5); /* the PS1 draws them in this order */
+                        s32 r1_ = ex->btlfx_randCentered(5);
+                        ex->btlfx_drawParticles((u8 *)fd_, &v, NULL, 0x1800 - ((i & 1) << 12),
+                                      n & 7, 1, c3, r0_, r1_);
+                    }
                     i++;
                     n += 3;
                 } while (i < 16);
