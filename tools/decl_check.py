@@ -4,7 +4,7 @@
     tools/docker.sh python3 tools/decl_check.py [--bin ovl_0a] [--types] [--implicit]
 
 Needs a built tree (`make`): it runs gcc 2.8.1's cc1 with `-aux-info` on every preprocessed `.i` under
-build/us/src, which lists each function prototype a TU declares (including implicit `int f()`
+build/us/src (plus src_equiv/*/*.c, preprocessed here: ports compile those too), which lists each function prototype a TU declares (including implicit `int f()`
 declarations and those coming from headers) and each function it defines, with types as written.
 
 A declaration seen in a TU of binary B resolves to: a static definition in the same TU; else B's
@@ -18,6 +18,9 @@ Reported (all should be 0; the PS1 build matches either way, a port compiled fro
   RETURN    declaration and definition disagree on void / non-void / pointer / integer return.
   NPARAMS   different parameter counts (variadic and unprototyped `()` declarations excepted).
   PARAM     a parameter is a pointer on one side and an integer on the other (wrong on 64-bit hosts).
+  ERROR     cc1 rejected a TU (e.g. "conflicting types" in a src_equiv file): its other checks are incomplete.
+  CONFLICT  a declaration and the definition in the same TU (incl. src_equiv/) differ in any type: modern gcc
+            rejects these as conflicting types.
 With --types, integer width/sign differences in returns and parameters are listed too (informational).
 """
 import argparse
@@ -37,8 +40,39 @@ INTS = {"char": (8, None), "short": (16, True), "int": (32, True), "long": (32, 
 
 def binary_of(path):
     p = path.split("/")
+    if "src_equiv" in p:
+        return p[p.index("src_equiv") + 1]
     i = p.index("src")
     return p[i + 2] if p[i + 1] == "fxmod" else p[i + 1]
+
+
+CPP_FLAGS = ["-nostdinc", "-Iinclude", "-Isrc_equiv", "-undef", "-D__GNUC__=2", "-Dmips", "-D__mips__",
+             "-D_LANGUAGE_C", "-DLANGUAGE_C"]
+STDARG = """#ifndef _STDARG_H
+#define _STDARG_H
+typedef char *va_list;
+#define va_start(ap, last) ((ap) = (char *)&(last) + sizeof(last))
+#define va_arg(ap, t) (*(t *)(((ap) += sizeof(t)) - sizeof(t)))
+#define va_end(ap) ((void)0)
+#endif
+"""
+
+
+def equiv_files(tmp):
+    """Preprocess src_equiv/<bin>/*.c (not part of the PS1 build) so their definitions are checked too.
+    A stub <stdarg.h> is enough for the prototypes."""
+    inc = os.path.join(tmp, "inc")
+    os.makedirs(inc, exist_ok=True)
+    open(os.path.join(inc, "stdarg.h"), "w").write(STDARG)
+    out = []
+    for f in sorted(glob.glob("src_equiv/*/*.c")):
+        i = os.path.join(tmp, f.replace("/", "__") + ".i")
+        r = subprocess.run(["cpp"] + CPP_FLAGS + ["-I" + inc, f, "-o", i], capture_output=True, text=True)
+        if r.returncode == 0:
+            out.append((i, f))
+        else:
+            print(f"warning: {f}: preprocessing failed: {r.stderr.strip().splitlines()[:1]}")
+    return out
 
 
 def split_params(s):
@@ -132,11 +166,17 @@ def run_aux(files):
     with tempfile.TemporaryDirectory() as d:
         for n, f in enumerate(files):
             aux = os.path.join(d, f"{n}.aux")
-            subprocess.run([CC1, "-quiet", "-O2", "-G0", "-aux-info", aux, f, "-o", "/dev/null"],
-                           capture_output=True)
+            r = subprocess.run([CC1, "-quiet", "-O2", "-G0", "-aux-info", aux, f, "-o", "/dev/null"],
+                               capture_output=True, text=True)
+            errs = [l for l in r.stderr.splitlines() if ": " in l and "warning" not in l]
+            if r.returncode != 0 and errs:
+                COMPILE_ERRORS.append((f, errs[:4]))
             if os.path.exists(aux):
                 out.append((f, open(aux).read().splitlines()))
     return out
+
+
+COMPILE_ERRORS = []  # (preprocessed file, first error lines): cc1 rejected the TU, so its aux-info is incomplete
 
 
 def main():
@@ -152,11 +192,14 @@ def main():
     files = sorted(glob.glob("build/us/src/**/*.c.i", recursive=True))
     if not files:
         raise SystemExit("no build/us/src/**/*.i: build first (tools/docker.sh make)")
+    eqtmp = tempfile.mkdtemp()
+    eq = dict(equiv_files(eqtmp))  # preprocessed path -> src_equiv source path
+    files += list(eq)
     defs = defaultdict(list)       # name -> [(binary, tu, loc, ret, params, variadic, static)]
     decls = {}                     # (loc, name) -> (binaries, tus, ret, params, variadic)
     implicit = defaultdict(set)    # (binary, name) -> {loc}
     for f, lines in run_aux(files):
-        b = binary_of(f)
+        b = binary_of(eq.get(f, f))
         tu = f
         for line in lines:
             m = AUX.match(line)
@@ -256,14 +299,34 @@ def main():
                             and ka[0] == kc[0] == "int":
                         problems["TYPE"].append(f"{where}: param {i + 1} '{a}' vs '{c}'")
 
+    # CONFLICT: a declaration and the definition in the same TU whose types differ at all (modern gcc rejects
+    # "conflicting types"; gcc 2.8 lets some through, e.g. SVECTOR * vs s16 *, u8 vs s32 parameters).
+    def norm(t):
+        return re.sub(r"\s+", " ", re.sub(r"\b(struct|union|const) ", "", t)).strip()
+    for name, ds in defs.items():
+        for db, dtu, dloc, dret, dparams, dvar, _st, _proto in ds:
+            if args.bin and db != args.bin:
+                continue
+            for (loc, n2), (bins, tus, ret, params, variadic) in decls.items():
+                if n2 != name or dtu not in tus or loc == dloc or params is None or dparams is None:
+                    continue
+                a = [norm(param_type(x)) for x in params]
+                c = [norm(param_type(x)) for x in dparams]
+                if norm(ret) != norm(dret) or a != c or variadic != dvar:
+                    problems["CONFLICT"].append(f"{name}: decl {loc} vs def {dloc} ({db}): "
+                                                f"'{norm(ret)} ({', '.join(a)})' vs '{norm(dret)} ({', '.join(c)})'")
+
     for (b, name), locs in sorted(implicit.items()):
         if args.bin and b != args.bin:
             continue
         shown = sorted(locs) if args.implicit else sorted(locs)[:1]
         problems["IMPLICIT"].append(f"{b:7} {name:32} {len(locs):3} site(s): {' '.join(shown)}")
 
+    for f, errs in COMPILE_ERRORS:
+        problems["ERROR"].append(f"{eq.get(f, f)}: " + " / ".join(errs))
+
     total = 0
-    for cat in ("IMPLICIT", "RETURN", "NPARAMS", "PARAM", "TYPE"):
+    for cat in ("ERROR", "IMPLICIT", "RETURN", "NPARAMS", "PARAM", "CONFLICT", "TYPE"):
         for p in problems.get(cat, []):
             print(f"{cat:8} {p}")
         if cat != "TYPE":

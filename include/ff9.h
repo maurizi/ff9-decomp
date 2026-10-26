@@ -1587,7 +1587,7 @@ void db_quit(void);
 void *db_lookupRegistered(s32, s32, s32); /* mode 4: address, 5: size */
 void win_drawBoxEx(RECT *, s32, s32, s32);
 void menu_start(void);
-Unk800367D0 *evt_createObject(s32, s32, s32, s32);
+Unk8004AB64 *evt_createObject(s32, s32, s32, s32);
 s32 CdSyncCallback(void (*)(u8, u8 *));
 void CdFlush(void);
 

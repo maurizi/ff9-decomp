@@ -234,8 +234,8 @@ static void glyph_sink_world(s32 c) {
 }
 
 /* func_80051274 and func_80053384 (`jr ra; nop`, the "print nothing" sinks) are matched C in src/main/main.c. */
-void func_80051274(s32 c);
-void func_80053384(s32 c);
+void func_80051274(); /* void f(void) in src; called through a void (*)(s32) sink pointer */
+void func_80053384();
 
 /* Pen to text cell (col, row): 6 pixels per cell, origin (10, 20); also sets the line start. */
 void pen_setCell(s32 col, s32 row) {
@@ -1470,7 +1470,9 @@ void func_800530A8(SVECTOR *v, s32 rx, s32 ry) {
 }
 
 /* A vector of length len along -z, rotated by (rx, ry). (Falls into func_800530A8 in the original.) */
-void func_8005309C(SVECTOR *v, s32 rx, s32 ry, s32 len) {
+void func_8005309C(s16 *out, s32 rx, s32 ry, s32 len) {
+    SVECTOR *v = (SVECTOR *)out;
+
     *(u32 *)v = 0;
     v->vz = -len;
     func_800530A8(v, rx, ry);
@@ -1480,7 +1482,8 @@ void func_8005309C(SVECTOR *v, s32 rx, s32 ry, s32 len) {
  * For each edge the GTE OP gives (edge.z * (x - v.x) - edge.x * (z - v.z)); inside means all >= 0 or all <= 0.
  * Returns 1 if inside (on an edge counts). The original computes the cross products with the GTE (OP), which
  * leaves R11, R12, R22, R23 and R33 of the rotation matrix overwritten; this version doesn't touch the GTE. */
-s32 evt_isInRegion(u8 *p, s32 x, s32 z) {
+s32 evt_isInRegion(Unk8004AB64 *obj, s32 x, s32 z) {
+    u8 *p = (u8 *)obj;
     s32 n = *(s32 *)(p + 0x14);
     u32 *v = (u32 *)(p + 0x18);
     s32 pos = 1;
@@ -1731,8 +1734,9 @@ s32 func_80053764(s32 s, u8 buf, u32 *ot, s32 pkt) {
 
 /* Pen colour preset n: 0 grey, 1 red-ish 0x2020A0, 2 green-ish 0x20A020, 3 blue-ish 0xA02020, 4 black;
  * other values do nothing. Only ovl_0c calls it (with 0). */
-void func_80064C24(u8 n) {
+void func_80064C24(s32 arg) {
     static const u32 c[5] = { 0x808080, 0x2020A0, 0x20A020, 0xA02020, 0 };
+    u8 n = arg; /* the original compares the low byte */
 
     if (n < 5) {
         pen_setColor(c[n]);
