@@ -324,7 +324,7 @@ typedef struct {
     u8 pad13FC[2];
     u16 crc; /* menuSave_crc16 of everything before it */
 } SaveBuf;
-#define SAVE_BUF      ((SaveBuf *)0x801FCB00)
+#define SAVE_BUF      PSX_RAM(SaveBuf *, 0x801FCB00)
 #define SAVE_BUF_SIZE 0x1400
 #define SAVE_CRC_LEN  0x13FE /* bytes covered by SaveBuf.crc: everything before it */
 

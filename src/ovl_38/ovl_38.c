@@ -22,8 +22,8 @@ void menuStatus_init(void) {
     s_menuStatus.savedHelp = help_getFollow();
     help_setFollow(0);
     help_setCallback(menuStatus_updateHelp);
-    s_menuStatus.primBufs[0] = (u8 *)0x801F5F00;
-    s_menuStatus.primBufs[1] = (u8 *)0x801F9F00;
+    s_menuStatus.primBufs[0] = PSX_RAM(u8 *, 0x801F5F00);
+    s_menuStatus.primBufs[1] = PSX_RAM(u8 *, 0x801F9F00);
     s_menuStatus.prim = s_menuStatus.primBufs[g_gameState->gameData->unk8];
 }
 

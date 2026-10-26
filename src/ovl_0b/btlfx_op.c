@@ -13,7 +13,7 @@ void btlfx_initCommonData(void) {
     r.y = 0xF0;
     r.w = 0x100;
     r.h = 2;
-    LoadImage(&r, (u32 *)0x801F7700);
+    LoadImage(&r, PSX_RAM(u32 *, 0x801F7700));
     DrawSync(0);
     g_btlfxEnv->prim = 0;
 }
@@ -22,10 +22,10 @@ s32 btlfx_reloadCommonData(s32 arg0) {
     RECT r;
     s32 ret = 0;
     s32 i;
-    u32 *p = (u32 *)0x801E7700;
+    u32 *p = PSX_RAM(u32 *, 0x801E7700);
     if (arg0 == 0) {
         FileEntry *e = file_find(1, 0x2BF);
-        cd_readAsync(g_gameState->imgSector + e->unk4, (e->unkC - e->unk4) << 11, (void *)0x801E7700, 0);
+        cd_readAsync(g_gameState->imgSector + e->unk4, (e->unkC - e->unk4) << 11, PSX_RAM(void *, 0x801E7700), 0);
     } else if (cd_getState() == 0) {
         btlfx_resetMaskBit();
         r.w = 0x40;
@@ -117,7 +117,7 @@ s32 btlfx_moveUnitHome(s32 arg0, s32 arg1, s16 *arg2, s32 arg3) {
 }
 
 u16 *func_800E4530(s32 arg0) {
-    s32 *p = (s32 *)0x801E9700;
+    s32 *p = PSX_RAM(s32 *, 0x801E9700);
     return (u16 *)(p[arg0] + (s32)p);
 }
 

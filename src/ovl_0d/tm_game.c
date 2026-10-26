@@ -17,7 +17,7 @@ void tm_mainLoop(void) {
         pad_update();
         tm_updatePad(&s);
         ctx = g_gameState->gameData;
-        p = (void *)(ctx->unk8 * TM_PRIM_BUF_SIZE + TM_PRIM_BUF);
+        p = TM_PRIM_BUF + ctx->unk8 * TM_PRIM_BUF_SIZE;
         if (s.showScore != 0) {
             p = tm_drawScore(ctx->unk10[ctx->unk8], p, &s);
         }
@@ -437,13 +437,13 @@ void tm_loadImageFile(void) {
     if (f == NULL) {
         SystemError(0x46, 0x3E6);
     }
-    cd_readSync(g_gameState->imgSector + f->unk4, (f->unkC - f->unk4) << 11, (void *)TM_IMAGE_FILE);
+    cd_readSync(g_gameState->imgSector + f->unk4, (f->unkC - f->unk4) << 11, TM_IMAGE_FILE);
 }
 
 u8 *tm_getFileEntry(s32 i) {
     s32 *p = (s32 *)TM_IMAGE_FILE;
     p += i * 2;
-    return (u8 *)TM_IMAGE_FILE + *p * 0x800;
+    return TM_IMAGE_FILE + *p * 0x800;
 }
 
 void tm_copyFileEntry(u8 *arg0, s32 arg1, s32 arg2) {

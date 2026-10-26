@@ -754,7 +754,7 @@ u32 fld_getModelCacheBottom(Unk800C9CCC **arg0) {
     u32 min;
     s32 i;
 
-    min = 0x801EDF00;
+    min = (s32)PSX_RAM(u8 *, 0x801EDF00);
     if (arg0 != NULL) {
         *arg0 = NULL;
     }
@@ -805,7 +805,7 @@ void fld_compactModelCache(void) {
     u32 sz;
     Unk800C9CCC *t;
 
-    top = 0x801EDF00;
+    top = (s32)PSX_RAM(u8 *, 0x801EDF00);
     for (i = 9; i >= 0; i--) {
         s = &g_fieldModelCache[i];
         id = s->id;

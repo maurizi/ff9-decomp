@@ -181,13 +181,13 @@ void game_quitState(void) {
 }
 
 void game_allocState(void) {
-    g_allocTop = 0x8008B000;
-    g_gameState = (GameState *)0x8008B000;
-    g_gameState->dispEnv = (DISPENV *)0x8008B044;
-    g_gameState->drawEnv = (DRAWENV *)0x8008B06C;
-    g_gameState->dirs = (GameStateUnk14 *)0x8008B124;
-    g_gameState->dirTables = (void *)0x8008B214;
-    g_allocTop = 0x8008B250;
+    g_allocTop = (s32)PSX_RAM(u8 *, 0x8008B000);
+    g_gameState = PSX_RAM(GameState *, 0x8008B000);
+    g_gameState->dispEnv = PSX_RAM(DISPENV *, 0x8008B044);
+    g_gameState->drawEnv = PSX_RAM(DRAWENV *, 0x8008B06C);
+    g_gameState->dirs = PSX_RAM(GameStateUnk14 *, 0x8008B124);
+    g_gameState->dirTables = PSX_RAM(void *, 0x8008B214);
+    g_allocTop = (s32)PSX_RAM(u8 *, 0x8008B250);
 }
 
 void game_resetState(void) {

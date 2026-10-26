@@ -13,8 +13,8 @@ void menuConfig_init(void) {
     m->sliderDir = 0;
     m->sliderTicks = 0;
     m->rumbleTicks = 0;
-    m->primBufs[0] = (u8 *)0x801F9F00;
-    m->primBufs[1] = (u8 *)0x801FBF00;
+    m->primBufs[0] = PSX_RAM(u8 *, 0x801F9F00);
+    m->primBufs[1] = PSX_RAM(u8 *, 0x801FBF00);
     m->prim = m->primBufs[g_gameState->gameData->unk8 ^ 1];
     m->charCount = 0;
     for (i = 0; i < 9; i++) {

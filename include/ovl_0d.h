@@ -225,8 +225,8 @@ typedef struct {
 
 /* Image file (file 0x44C of directory 1, tm_loadImageFile): a table of {sector offset, ?} entries, then the
  * entries. Its RAM is reused as the two primitive buffers once tm_setup has copied everything out. */
-#define TM_IMAGE_FILE     0x80104A00
-#define TM_PRIM_BUF       0x80104A00
+#define TM_IMAGE_FILE     PSX_RAM(u8 *, 0x80104A00)
+#define TM_PRIM_BUF       TM_IMAGE_FILE
 #define TM_PRIM_BUF_SIZE  0x4B000
 #define TM_FILE_CARDS     0 /* the 100 card picture TIMs, 0xA80 bytes each */
 #define TM_FILE_CARD_DATA 1 /* -> g_tmCardData */
@@ -238,9 +238,9 @@ typedef struct {
 #define TM_FILE_BG_RIGHT  0xB /* background right of x 256, VRAM 0x300 */
 
 /* Tables tm_setup copies out of the image file, at fixed addresses. */
-#define g_tmCardData  ((TmCardData *)0x80103800) /* [100] */
-#define g_tmDecks     ((TmDeck *)0x80103C00)     /* [64] */
-#define g_tmOpponents ((TmOpponent *)0x80104000) /* [256] */
+#define g_tmCardData  PSX_RAM(TmCardData *, 0x80103800) /* [100] */
+#define g_tmDecks     PSX_RAM(TmDeck *, 0x80103C00)     /* [64] */
+#define g_tmOpponents PSX_RAM(TmOpponent *, 0x80104000) /* [256] */
 
 /* Card stats as kept in the card stock (main's Unk6) */
 typedef struct {

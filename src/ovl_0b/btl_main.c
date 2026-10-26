@@ -2182,7 +2182,7 @@ void btl_preloadExit(void) {
     g_gameState->gameData->unk8BC = NULL;
     f = file_find(0, 0x10065);
     size = (f->unkC - f->unk4) << 11;
-    preload_setEntry(preload_add(), 0, 0x10065, 0x801EDF00, size, size, f->unk4, size);
+    preload_setEntry(preload_add(), 0, 0x10065, (s32)PSX_RAM(u8 *, 0x801EDF00), size, size, f->unk4, size);
     f = file_find(1, 0x2713);
     dst = b->loadBuf;
     size = (f->unkC - f->unk4) << 11;

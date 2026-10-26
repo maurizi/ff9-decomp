@@ -11,7 +11,7 @@
 #define CARD_GRID_ROWS 10 /* the CARD window is 10 x 10 cells */
 #define CARD_GRID_COLS 10
 #define CARD_RANK_COUNT 32
-#define CARD_VRAM_SAVE_BUF ((u8 *)0x801F6D30) /* past the overlay: VRAM saved by menuCard_loadImages */
+#define CARD_VRAM_SAVE_BUF PSX_RAM(u8 *, 0x801F6D30) /* past the overlay: VRAM saved by menuCard_loadImages */
 
 /* CardMenu.state: index into s_menuCardInputFuncs */
 enum { CARD_ST_NONE, CARD_ST_GRID, CARD_ST_DISCARD };

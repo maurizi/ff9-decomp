@@ -104,7 +104,7 @@ u8 menuSave_isLoaded(void);
 /* ---- this overlay ---- */
 
 #define SCREEN_OTZ 8 /* OT slot of the full-screen images (attract, boot screen) */
-#define TITLE_PACK_BUF ((void *)0x801CDF00) /* opening_titleLoadImages reads the title TIM pack here */
+#define TITLE_PACK_BUF PSX_RAM(void *, 0x801CDF00) /* opening_titleLoadImages reads the title TIM pack here */
 
 /* g_openingState: the states of opening_main */
 enum {

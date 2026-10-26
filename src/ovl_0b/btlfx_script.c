@@ -71,7 +71,7 @@ u8 *btlfx_findScript(s32 arg0) {
     s32 i;
     u8 *p;
     s32 n;
-    for (i = 0, p = (u8 *)0x801E7700; i < 0x200; i++) {
+    for (i = 0, p = PSX_RAM(u8 *, 0x801E7700); i < 0x200; i++) {
         n = p[0];
         if (p[1] & 0x80) {
             n += 0x100;
@@ -148,12 +148,12 @@ void btlfx_runScript(void) {
         r.w = 0x40;
         r.h = 0x10;
         btlfx_resetMaskBit();
-        StoreImage(&r, (u32 *)0x801E7700);
+        StoreImage(&r, PSX_RAM(u32 *, 0x801E7700));
         D_800FEC38 = 0;
         d->phase = 1;
         break;
     case 1:
-        hdr = ((u16 *)0x801E7700)[d->effectId];
+        hdr = PSX_RAM(u16 *, 0x801E7700)[d->effectId];
         d->flags = hdr & 0xFFFE;
         g_btlfxEnv->targets->kind &= ~8;
         if (hdr & 0xC00) {
@@ -165,7 +165,7 @@ void btlfx_runScript(void) {
             r.w = 0x40;
             r.h = 0xB0;
             btlfx_resetMaskBit();
-            StoreImage(&r, (u32 *)0x801E7700);
+            StoreImage(&r, PSX_RAM(u32 *, 0x801E7700));
             d->phase = 2;
             d->flags &= ~8;
             d->flags &= ~4;

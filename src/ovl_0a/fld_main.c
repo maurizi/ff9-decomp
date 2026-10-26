@@ -762,8 +762,8 @@ s32 fld_loadFile(FieldScene *sc, s32 arg1) {
     s32 k;
 
     size = g_gameState->gameData->sceneSectors[1] << 11;
-    if ((s32)(0x801EDF00 - (D_80067948 + size)) < 0x17000) {
-        size = 0x801D6F00 - D_80067948;
+    if ((s32)((s32)PSX_RAM(u8 *, 0x801EDF00) - (D_80067948 + size)) < 0x17000) {
+        size = (s32)(PSX_RAM(u8 *, 0x801EDF00) - 0x17000) - D_80067948;
         size = size / 2048 * 2048;
     }
     id = (u16)arg1 | DB_FIELD;

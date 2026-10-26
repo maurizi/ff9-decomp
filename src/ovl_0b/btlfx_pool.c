@@ -112,7 +112,7 @@ s32 btlfx_getFileData(s32 arg0, s32 arg1) {
     if (arg1 < 0x40) {
         base = g_btlfxEnv->loader->unk30[arg0];
     } else if (arg1 < 0x80) {
-        base = (s32 *)0x801F1700;
+        base = PSX_RAM(s32 *, 0x801F1700);
         arg1 -= 0x40;
     } else if (arg1 < 0xC0) {
         arg1 -= 0x80;
@@ -348,9 +348,9 @@ p = d->unk1C; cont = 1; d->unk10 = p[0]; d->unk12 = p[1]; d->unk1C += 2; d->unkC
                         }
                     }
                 }
-                dst = (u8 *)0x801E7700;
+                dst = PSX_RAM(u8 *, 0x801E7700);
                 if (d->unk10 == 1 && d->unk8 != 0) {
-                    dst = (u8 *)0x801EC700;
+                    dst = PSX_RAM(u8 *, 0x801EC700);
                 }
                 rd = p[1] << 11;
                 p += 2;
@@ -359,7 +359,7 @@ p = d->unk1C; cont = 1; d->unk10 = p[0]; d->unk12 = p[1]; d->unk1C += 2; d->unkC
                     sz = rd;
                     d->unkE = 1;
                     if (d->unk17 != 0) {
-x = *p++ << 11; rd += x; d->unk20 = (u8 *)0x801F1700 + x; dst = (u8 *)0x801F1700;
+x = *p++ << 11; rd += x; d->unk20 = PSX_RAM(u8 *, 0x801F1700) + x; dst = PSX_RAM(u8 *, 0x801F1700);
                         d->unk24 = 0xC800 - x;
                         d->unk30[d->unk8] = d->unk28 = d->unk20;
                     } else {
@@ -450,9 +450,9 @@ x = *p++ << 11; rd += x; d->unk20 = (u8 *)0x801F1700 + x; dst = (u8 *)0x801F1700
                     }
                     break;
                 case 0:
-                    dst = (u8 *)0x801E7700;
+                    dst = PSX_RAM(u8 *, 0x801E7700);
                     if (d->unk10 == 1 && d->unk8 != 0) {
-                        dst = (u8 *)0x801EC700;
+                        dst = PSX_RAM(u8 *, 0x801EC700);
                     }
                     hdr = (s32 *)dst;
                     q = (u16 *)(dst + hdr[1]);
@@ -480,9 +480,9 @@ x = *p++ << 11; rd += x; d->unk20 = (u8 *)0x801F1700 + x; dst = (u8 *)0x801F1700
                     btlfx_uploadTextures(&r.r, d->unk4C, (Unk800DA790 *)d);
                     break;
                 case 3:
-                    dst = (u8 *)0x801E7700;
+                    dst = PSX_RAM(u8 *, 0x801E7700);
                     if (d->unk10 == 1 && d->unk8 != 0) {
-                        dst = (u8 *)0x801EC700;
+                        dst = PSX_RAM(u8 *, 0x801EC700);
                     }
                     fh = *(u8 **)dst;
                     D_80100C70[d->unk8] = (EffFn *)(fh + 8);

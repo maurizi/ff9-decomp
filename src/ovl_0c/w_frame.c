@@ -2,13 +2,13 @@
 
 void wm_initBuffers(void) {
     g_worldPointFxBufPtr = g_worldPointFxBuf;
-    g_worldChunkBuffer = 0x80138800;
-    g_worldPrimBuffers[0] = 0x801A2300;
-    g_worldPrimBuffers[1] = 0x801C8100;
-    g_worldTexBuffers[0] = (s32 *)0x80180800;
-    g_worldTexBuffers[1] = (s32 *)0x8018A000;
-    g_worldTexBuffers[2] = (s32 *)0x80193800;
-    D_800CE3F8 = 0x80100800;
+    g_worldChunkBuffer = (s32)PSX_RAM(u8 *, 0x80138800);
+    g_worldPrimBuffers[0] = (s32)PSX_RAM(u8 *, 0x801A2300);
+    g_worldPrimBuffers[1] = (s32)PSX_RAM(u8 *, 0x801C8100);
+    g_worldTexBuffers[0] = PSX_RAM(s32 *, 0x80180800);
+    g_worldTexBuffers[1] = PSX_RAM(s32 *, 0x8018A000);
+    g_worldTexBuffers[2] = PSX_RAM(s32 *, 0x80193800);
+    D_800CE3F8 = (s32)PSX_RAM(u8 *, 0x80100800);
     g_worldPrimPtr = g_worldPrimBuffers[*g_worldBufIndex];
 }
 
@@ -669,7 +669,7 @@ void w_frameSystemDestructor(void) {
 }
 
 s32 wm_getModelCacheBottom(void) {
-    return 0x801EDF00;
+    return (s32)PSX_RAM(u8 *, 0x801EDF00);
 }
 
 s32 wm_getChunkBuffer(void) {
@@ -789,7 +789,7 @@ void wm_postDraw(void) {
 }
 
 s32 func_800B8568(void) {
-    return 0x801EDF00;
+    return (s32)PSX_RAM(u8 *, 0x801EDF00);
 }
 
 void wm_initLighting(void) {

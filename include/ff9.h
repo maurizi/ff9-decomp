@@ -12,6 +12,14 @@
 #define REG_PASSTHROUGH(x)
 #endif
 
+/* A buffer at a fixed PS1 RAM address. Square's code loads these addresses as constants (lui/ori), which a
+ * linker-placed symbol can't reproduce (it assembles to lui/addiu %hi/%lo), so every one goes through this
+ * macro instead of a raw cast: a port redefines it to map them all to its own memory. tools/raw_addr.py
+ * lists any address literal that bypasses it. */
+#ifndef PSX_RAM
+#define PSX_RAM(type, addr) ((type)(addr))
+#endif
+
 /* Pins a local to a MIPS register (`register T *v REG_ASM("$8") = ...;`) where register allocation alone keeps a
  * function from matching. No effect on behaviour; a port defines it empty. */
 #ifndef REG_ASM

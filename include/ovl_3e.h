@@ -58,7 +58,7 @@ enum {
 #define DISC_PICTURE_W 160 /* the 320x224 16-bit picture is read and drawn as two halves */
 #define DISC_PICTURE_HALF_BYTES 0x11800 /* 160 * 224 * 2 */
 #define DISC_PICTURE_HALF_SECTORS 0x23
-#define DISC_PICTURE_BUF ((u32 *)0x801CDF00) /* CD read buffer for one half */
+#define DISC_PICTURE_BUF PSX_RAM(u32 *, 0x801CDF00) /* CD read buffer for one half */
 
 /* Disc change state (s_discChange). */
 typedef struct {
