@@ -275,4 +275,9 @@ s32 shop_getId(void);
 void shop_leaveMode(void);
 void shopBuy_updateList(void);
 
+/* Functions called before (or without) a declaration in scope (tools/decl_check.py --protos) */
+void shopBuy_confirm(void);
+void shopBuy_loadList(void);
+void shopSell_confirm(void);
+
 #endif

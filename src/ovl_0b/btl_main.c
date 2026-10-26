@@ -570,7 +570,7 @@ s32 btl_loadEncounterFile(Unk800AA08C *arg0, s32 arg1) {
     return 0;
 }
 
-s16 btl_loadBackgroundStep(Battle11C0 *arg0, s32 arg1, Unk800AA08C *arg2) {
+s32 btl_loadBackgroundStep(Battle11C0 *arg0, s32 arg1, Unk800AA08C *arg2) {
     GameData *gd = g_gameState->gameData;
     Battle *b = gd->unk8E4.battle;
     u8 *cd = gd->unk854;
@@ -2112,7 +2112,7 @@ void btl_onSoundRead(Unk800AE844 *arg0) {
     arg0->unk8 = p;
 }
 
-void func_800AE9C8(s32 arg0, s16 arg1) {
+void func_800AE9C8(s32 arg0, s32 arg1) {
     GameData *gd = g_gameState->gameData;
     gd->unk826[0] = arg0;
     if (arg0 == 0) {

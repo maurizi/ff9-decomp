@@ -326,4 +326,7 @@ void opening_titleStartFadeIn(void);
 void func_800AB1E4(void);
 void func_800AB200(void);
 
+/* Functions called before (or without) a declaration in scope (tools/decl_check.py --protos) */
+void game_updateWindows(void); /* main */
+
 #endif

@@ -33,7 +33,7 @@ void scene_exit(void) {
     }
 }
 
-u8 scene_get(void) {
+s32 scene_get(void) {
     return g_scene.cur;
 }
 

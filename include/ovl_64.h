@@ -371,4 +371,8 @@ static inline void mbg_streamReadyCallback_retry(void) {
     }
 }
 
+/* Functions called before (or without) a declaration in scope (tools/decl_check.py --protos) */
+s32 fldbg_setCamera(s32 arg0); /* ovl_0a */
+s32 mbg_streamGetFrame(u8 **data, Ovl64RingHdr **hdr, Ovl64FrameInfo **arg2, Ovl64Pair **arg3, MbgRumble **arg4);
+
 #endif

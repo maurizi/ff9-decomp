@@ -3776,7 +3776,6 @@ s32 bgi_setFloorMoveRange(s32, s16, s16);
 s32 bgi_setFloorMoveAxis(s32, s32);
 void btl_setBanner(s32, s32);
 void rewards_requestClose(void);
-s32 fld_queueModelBundle(s32); /* uid; queues the actor's model */
 s32 bgi_setActorActive(s32, s32);
 s32 bgi_setActorRadius(s32, u16);
 void btl_setEnemyCmd(s32, s32, s32, s32);
@@ -3788,6 +3787,7 @@ VECTOR *wm_getCameraEye(void);
 VECTOR *wm_getCameraTarget(void);
 s32 bgi_playAnimRange(u32, u32, u32);
 #endif
+s32 fld_queueModelBundle(s32); /* uid; queues the actor's model */
 
 extern u8 *g_evtInstrStart;
 extern s32 D_8007AE04;
@@ -4340,5 +4340,67 @@ void func_80058990(AkaoChannel *c);
 void func_800589E0(Unk800589E0 *a);
 void func_80059140(u32 *out, u32 m1, u32 m2, u32 extra);
 extern s32 D_80080A74;
+
+/* Functions called before (or without) a declaration in scope (tools/decl_check.py --protos) */
+/* hand-written asm (no C definition) */
+void func_8005309C(s16 *, s32, s32, s32);
+s32 evt_isInRegion(Unk8004AB64 *, s32, s32); /* is (x, z) inside the object's region */
+void pen_endSmall(void);
+void func_80064C24(s32);
+/* ovl_0a / ovl_0c menuMain_setCursor(u8); unprototyped: the menu screen passes an int unconverted */
+void menuMainField_setCursor();
+void menuMainWorld_setCursor();
+u16 akao_shiftInstrumentUp(u32 flags, AkaoChannel *c);
+void akao_swap(u32 *a, u32 *b, u32 n);
+s32 cd_findFile(char *name);
+void config_apply(void);
+void ending_main(void); /* ovl_15 */
+s32 evt_createModel(Unk8004AB64 *a);
+s32 evt_getArg16(void);
+s32 evt_getArg8(void);
+s32 evt_isControlEnabled(void);
+s32 fade_getOtz(void);
+s32 fade_isSubtractive(void);
+void fieldCalc_calcHpGain(Unk80065ADC *a);
+void fieldCalc_calcMpGain(Unk80065ADC *a);
+void fieldCalc_calcReviveHp(MainCalc *c);
+void fieldCalc_casterStatusHalf(MainCalc *c);
+void fieldCalc_cureStatus(MainCalc *c);
+void fieldCalc_cureStatusType(MainCalc *c);
+void fieldCalc_multiTargetHalf(MainCalc *c);
+void fieldCalc_restoreAll(MainCalc *c);
+void fieldCalc_restoreHalf(MainCalc *c);
+void fieldCalc_reviveRandom(MainCalc *c);
+void fieldCalc_setItemHeal(MainCalc *c);
+void fieldCalc_setMagicHeal(MainCalc *c);
+void fieldCalc_supportBoost(Unk80065A44 *a);
+void fld_entry(void); /* ovl_0a */
+s32 fld_soundCommand(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4); /* ovl_0a */
+s32 fldbg_scrollToPlayer(s32 arg0, s32 arg1); /* ovl_0a */
+void func_8003573C(void);
+void func_80050CA8(s32 a, u32 b);
+void func_80050EFC(s32 a, u32 b);
+void game_initData(void);
+void game_initLibraries(void);
+void game_initState(void);
+void game_reset(void);
+s32 item_getCount(s32 id);
+void menuScreen_stepTitleResize(void);
+void menuScreen_stepTitleScroll(void);
+void menu_startFadeOut(void);
+void msg_closeAll(void);
+u32 msg_getPadHeld(void);
+u32 msg_getPadPressed(void);
+void opening_main(void); /* ovl_14 */
+void pad_disableRepeat(s32 a);
+void pad_resetRepeats(s32 a);
+s32 preload_isInVram(PreloadEntry *p);
+s32 text_getButtonSprite(s32 arg0);
+void tm_main(void); /* ovl_0d */
+void win_drawBalloonBorder(RECT *arg0, s32 otz, u8 arg2, u8 arg3, s32 arg4);
+void win_drawBorder(RECT *arg0, s32 otz, u8 arg2, u8 arg3, s32 arg4);
+void win_drawHelpFrame(RECT *r, s32 otz, s32 style, s32 xoff);
+Window *win_open(RECT *r, s32 a, s32 b, u32 i);
+void wm_entry(void); /* ovl_0c */
 
 #endif

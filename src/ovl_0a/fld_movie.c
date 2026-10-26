@@ -1146,7 +1146,7 @@ s32 fld_movieCommand(s32 arg0, s32 arg1, s32 arg2) {
     return 0;
 }
 
-void fld_movieStart(s8 arg0, s8 arg1, s8 arg2) {
+void fld_movieStart(s32 arg0, s32 arg1, s32 arg2) {
     g_fieldMovieFlags = 0;
     g_gameState->gameData->unk8E4.field->area->scene->movieList = arg0;
     g_gameState->gameData->unk8E4.field->area->scene->movieEntry = arg1;
@@ -1533,7 +1533,7 @@ void fld_updateEncounter(void) {
 
 /* toggle the pause screen */
 void fld_togglePause(void) {
-    u8 c[4];
+    Unk4 c;
     u8 buf[8];
     s32 tmp;
     s32 i;
@@ -1560,13 +1560,13 @@ void fld_togglePause(void) {
         if (bright && v == 0) {
             if (fade_getType() == 2) {
                 fade_getWipeColors(buf);
-                c[0] = (buf[0] + buf[4]) >> 1;
-                c[1] = (buf[1] + buf[5]) >> 1;
-                c[2] = (buf[2] + buf[6]) >> 1;
+                c.unk0[0] = (buf[0] + buf[4]) >> 1;
+                c.unk0[1] = (buf[1] + buf[5]) >> 1;
+                c.unk0[2] = (buf[2] + buf[6]) >> 1;
             } else {
-                fade_getColor(c);
+                c = fade_getColor();
             }
-            if (c[0] >= 200 && c[1] >= 200 && c[2] >= 200) {
+            if (c.unk0[0] >= 200 && c.unk0[1] >= 200 && c.unk0[2] >= 200) {
                 setSemiTrans(&g_fieldPauseSprite.unk0, 1);
                 sp = &g_fieldPauseSprite.unk0;
                 sp++;

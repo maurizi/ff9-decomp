@@ -23,11 +23,11 @@ void fade_cancel(void) {
     g_fade.type = 0;
 }
 
-u8 fade_getType(void) {
+s32 fade_getType(void) {
     return g_fade.type;
 }
 
-u8 fade_isSubtractive(void) {
+s32 fade_isSubtractive(void) {
     return g_fade.subtract;
 }
 

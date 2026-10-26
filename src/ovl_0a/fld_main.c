@@ -292,7 +292,10 @@ void fld_initArea(void) {
     }
 }
 
-s32 fld_findAreaItem(FieldMapObj *arg0, u16 arg1) {
+s32 fld_findAreaItem(arg0, arg1)
+    FieldMapObj *arg0;
+    u16 arg1;
+{
     arg0->msgTable = db_lookupRegistered(4, arg1 | DB_AREA, 0);
     return 0;
 }
@@ -662,12 +665,18 @@ void fld_refindSectors(void) {
     }
 }
 
-s32 fld_findEventScript(FieldScene *arg0, u16 arg1) {
+s32 fld_findEventScript(arg0, arg1)
+    FieldScene *arg0;
+    u16 arg1;
+{
     arg0->eventScript = db_lookupRegistered(4, arg1 | DB_FIELD, 0);
     return 0;
 }
 
-s32 fld_loadVibration(FieldScene *arg0, u16 arg1) {
+s32 fld_loadVibration(arg0, arg1)
+    FieldScene *arg0;
+    u16 arg1;
+{
     void *p = db_lookupRegistered(4, arg1 | 0x1E0000, 0);
 
     arg0->vibration = p;
@@ -694,7 +703,7 @@ s32 fld_setupBackground(FieldScene *arg0, s32 arg1) {
     return 0;
 }
 
-s32 fld_findLights(FieldScene *arg0) {
+s32 fld_findLights(FieldScene *arg0, s32 unused) { /* its caller passes this, unused */
     arg0->lights = db_lookupRegistered(4, (u16)fld_getBgKey(arg0) | DB_LIGHTS, 0);
     return 0;
 }
@@ -843,7 +852,11 @@ s32 fld_getBgKey(arg0)
     return db_lookup((s32)arg0->fieldFile, 3, DB_BG, 0);
 }
 
-s32 fld_depFindBattle(u16 arg0, s32 *arg1, s32 *arg2) {
+s32 fld_depFindBattle(arg0, arg1, arg2)
+    u16 arg0;
+    s32 *arg1;
+    s32 *arg2;
+{
     s32 i;
     FileTable *t = g_gameState->gameData->depTable;
     s32 id = arg0 | DB_BATTLE;
@@ -889,7 +902,11 @@ s32 fld_depFindBackground(s32 arg0, s32 *arg1, s32 *arg2) {
     return id;
 }
 
-s32 fld_depFindField(u16 arg0, s32 *arg1, s32 *arg2) {
+s32 fld_depFindField(arg0, arg1, arg2)
+    u16 arg0;
+    s32 *arg1;
+    s32 *arg2;
+{
     s32 i;
     FileTable *t = g_gameState->gameData->depTable;
     s32 id = arg0 | DB_FIELD;

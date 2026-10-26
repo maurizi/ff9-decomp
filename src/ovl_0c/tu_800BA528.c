@@ -557,7 +557,7 @@ void wm_getChunkEntryT(s32 arg0, s32 arg1, WmChunkEntry *arg2) {
     arg2->texSectors = cells[k * 2 + arg1].texSectors;
 }
 
-u8 wm_getAreaZone(s32 arg0) {
+s32 wm_getAreaZone(s32 arg0) {
     return g_worldAreaZone[arg0];
 }
 

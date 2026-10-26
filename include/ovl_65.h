@@ -368,4 +368,9 @@ extern Icon s_rewardsCardIcon; /* card icon */
 /* main exe: candidates for ff9.h */
 s32 text_getInfo(s32); /* text size of a menu string */
 
+/* Functions called before (or without) a declaration in scope (tools/decl_check.py --protos) */
+void game_updateWindows(void); /* main */
+s32 preload_update(void); /* main */
+void ui_drawItemIcon(s32 arg0, s32 arg1, s32 otz, s32 arg3, u8 arg4); /* main */
+
 #endif

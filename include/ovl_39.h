@@ -756,7 +756,7 @@ s32 menuSave_writeStart(s32, s32, s32);
 s32 menuSave_writeSector(void);
 s32 menuSave_readStart(s32, s32, s32);
 s32 menuSave_readSector(void);
-u8 menuSave_createFile(s32, char *);
+s32 menuSave_createFile(s32, char *);
 s32 menuSave_cardFormat(s32);
 void menuSave_cardPoll(void);
 s32 menuSave_getCardResult(); /* unprototyped: callers pass the channel or nothing */
@@ -797,5 +797,14 @@ static inline void menuSave_cardPoll_retry(s32 chan, s32 r) {
         p[chan / 16]++;
     }
 }
+
+/* Functions called before (or without) a declaration in scope (tools/decl_check.py --protos) */
+void menuSave_cardInit(void);
+void menuSave_openCardEvents(void);
+s32 menuSave_readAsync(s32 fd, s32 buf, s32 size, void (*cb) (void));
+void menuSave_resetReadProgress(void);
+void menuSave_resetWriteProgress(void);
+void menuSave_selectSlot(void);
+s32 menuSave_writeAsync(s32 fd, s32 buf, s32 size, void (*cb) (void));
 
 #endif

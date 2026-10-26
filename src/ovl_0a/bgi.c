@@ -625,7 +625,7 @@ s32 bgi_transferActorPos(BgiHeader *b, BgiActor *a, BgiTriangle *n0, BgiTriangle
     return 1;
 }
 
-s32 bgi_remapActors(u8 *arg0, BgiAnim *arg1, BgiKeyframe *arg2, s16 arg3) {
+s32 bgi_remapActors(u8 *arg0, BgiAnim *arg1, BgiKeyframe *arg2, s16 arg3, s32 unused) { /* the callers pass a 5th argument */
     BgiKeyframe *e;
     s32 *tbl;
     s32 *ids;

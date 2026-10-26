@@ -69,6 +69,7 @@ extern u32 D_801EB854[];
 
 s32 func_801E8DA0(s32 from, s32 to, s32 t, s32 n);
 void func_801E8E78(Fx1bdPath *path, u16 *data);
+s32 func_801E8E90(Fx1bdPath *path, s32 t, SVECTOR *out);
 
 /* copied */
 extern Unk800F78A4 *D_801E9E54;

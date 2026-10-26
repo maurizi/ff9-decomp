@@ -1064,7 +1064,6 @@ typedef struct {
 s32 fld_allocModelCache(s32, s32);
 
 FieldLight *fld_getLightColorTable(Unk800B3254 *);
-/* fld_findLightColor: called before its definition without a prototype */
 s32 bgi_getActorTriangle(s32, u16 *, u16 *);
 s32 bgi_linkFrameNeighbors(BgiHeader *, BgiAnim *, BgiKeyframe *);
 FieldLight *fld_findGlobalLights(Unk800B3254 *, FieldLight **, FieldLight **);
@@ -1162,7 +1161,6 @@ void fld_discChangeUpdate(void);
 void fld_discChangeEndFrame(void);
 void fld_discPromptHelp(void);
 void fld_stopResidentSfx(void);
-/* fld_getBgKey: some callers pass two arguments; no prototype */
 s32 fld_freeAreaFile(FieldMapObj *, s16);
 void fld_discChangeSetMode(s32);
 s32 *fld_findPreloadRequest(s32);
@@ -1281,7 +1279,6 @@ Unk800C9CCC *fld_findModelCache(s32);
 u32 fld_getModelCacheBottom(Unk800C9CCC **);
 void fld_allocArea(void);
 void fld_initArea(void);
-/* fld_findAreaItem: called before its definition without a prototype */
 s32 bgi_placeActor(s32, s16, s16, s16);
 s32 bgi_moveActor(BgiActor *);
 s32 bgi_slide(BgiActor *, BgiTriangle **, s16 *, SVECTOR *, s16, s16, s32, s32);
@@ -1566,5 +1563,116 @@ typedef struct {
 s32 fld_initShadows(s32, s32, s32, s32); /* returns func_80062E3C's result (the next free address) */
 
 FieldAnimSfx *fld_addAnimSfx(FieldEvtCtx *, s32, s32); /* returns the new entry */
+
+/* Functions called before (or without) a declaration in scope (tools/decl_check.py --protos) */
+void akao_sendCmd98(u32 x); /* main */
+void akao_sendCmd99(u32 x); /* main */
+s32 bgi_addActor(FieldObjSlot *arg0);
+s32 bgi_bindActor(s32 arg0, FieldObjSlot *arg1);
+s32 bgi_clear(void);
+s32 bgi_getTriangleFlags(s16 arg0, u16 *arg1);
+s32 bgi_init(BgiHeader *arg0);
+s32 bgi_remapActors(u8 *arg0, BgiAnim *arg1, BgiKeyframe *arg2, s16 arg3, s32 unused);
+s32 bgi_segmentsCross(s16 *arg0, s16 *arg1, s16 *arg2, s16 *arg3, u8 x, u8 z);
+s32 bgi_setActorActive(s32 arg0, s32 arg1);
+s32 bgi_setAnimRate(u32 arg0, s16 arg1);
+s32 bgi_updateAnims(void);
+s32 bgi_updateFloorMoves(void);
+void evt_createModels(void); /* main */
+s32 evt_getModelSlot(s32 id); /* main */
+u8 *evt_loadScripts(u8 *p); /* main */
+Unk4 fade_getColor(void); /* main */
+s32 fade_getType(void); /* main */
+void fade_getWipeColors(void *a); /* main */
+s32 *fld_addPreloadExclude(s32 arg0);
+s32 *fld_addPreloadRequest(s32 arg0);
+void fld_allocMap(void);
+void fld_allocScene(void);
+void fld_beginFrame(void);
+void fld_clearModelQueue(void);
+void fld_clearSoundBankCache(void);
+void fld_compactModelCache(void);
+s32 fld_depFindArea(s32 arg0, s32 *arg1, s32 *arg2);
+s32 fld_depFindBackground(s32 arg0, s32 *arg1, s32 *arg2);
+s32 fld_depFindBattle(); /* (u16, s32 *, s32 *); unprototyped: callers pass the argument unconverted */
+s32 fld_depFindByLink(s32 arg0);
+s32 fld_depFindField(); /* (u16, s32 *, s32 *); unprototyped: callers pass the argument unconverted */
+s32 fld_depGetFileSector(s32 arg0, s32 *arg1);
+s32 fld_depGetLink(s32 arg0);
+void fld_drawModels(void);
+void fld_drawSprites(void);
+void fld_endFrame(void);
+void fld_exit(void);
+FieldAnimSfx *fld_findAnimSfx(); /* (FieldEvtCtx *, u16, s16); unprototyped: callers pass the argument unconverted */
+s32 fld_findAreaItem(); /* (FieldMapObj *, u16); unprototyped: callers pass the argument unconverted */
+s32 fld_findEventScript(); /* (FieldScene *, u16); unprototyped: callers pass the argument unconverted */
+Unk800B3294 *fld_findLightColor(); /* (Unk800B3254 *, u16); unprototyped: callers pass the argument unconverted */
+s32 fld_findLights(FieldScene *arg0, s32 unused);
+s32 fld_freeModelBundles(void);
+s32 fld_getBgKey(); /* (FieldScene *); unprototyped: some callers pass a second argument it ignores */
+s32 fld_getModelAnimId(s32 arg0);
+s32 fld_getModelTables(s32 arg0, s32 **arg1, s32 **arg2, s32 **arg3);
+s32 fld_getShadowTexPos(u16 *arg0, u16 *arg1);
+s32 fld_getSpriteFrameCount(u16 *arg0);
+void fld_initMap(void);
+void fld_initPreload(void);
+void fld_initScene(void);
+u8 *fld_initSprites(u8 *arg0);
+s32 fld_isDiscChangePending(void);
+s32 fld_isMoviePlaying(void);
+s32 fld_isMusicFading(void);
+void fld_load(s32 arg0);
+s32 fld_loadCommon(void);
+s32 fld_loadFile(FieldScene *sc, s32 arg1);
+void fld_loadImagePack(s32 *arg0);
+s32 fld_loadModelBundle(s32 arg0);
+s32 fld_loadModelBundlesInCdOrder(void);
+s32 fld_loadSoundBanks(FieldScene *unused, s32 unused2);
+s32 fld_loadVibration(); /* (FieldScene *, u16); unprototyped: callers pass the argument unconverted */
+void fld_movieStart(s32 arg0, s32 arg1, s32 arg2);
+void fld_movieUpdate(void);
+s32 fld_needsSplashImage(void);
+s32 fld_readSoundBank(void);
+void fld_refindSectors(void);
+s32 fld_remapModelId(s32 arg0);
+s32 fld_removeAnimSfx(); /* (FieldEvtCtx *, u16, s16); unprototyped: callers pass the argument unconverted */
+void fld_resetSprite(FieldSprite *arg0);
+void fld_resumeResidentSfx(void);
+void fld_runDiscChange(void);
+void fld_setMusicVolumeFade(s32 arg0, s32 arg1);
+s32 fld_setupBackground(FieldScene *arg0, s32 arg1);
+void fld_showSplashImage(void);
+void fld_startAudio(void);
+void fld_startEncounter(void);
+void fld_togglePause(void);
+void fld_trimModelCache(void);
+s32 fld_unpackMusicSeq(s32 arg0);
+void fld_updateEncounter(void);
+s32 fldbg_draw(void);
+BgSprt *fldbg_init(void);
+s32 fldbg_setAnimSpeed(s32 arg0, s32 arg1);
+s32 fldbg_setCamera(s32 arg0);
+void fldbg_setData(BgFile *arg0);
+void fldbg_setRenderContext(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, u8 *arg5);
+void fldbg_setWorkBuffer(s32 arg0, s32 arg1);
+u32 fldmdl_addRgbClamped(u32 arg0, s32 arg1, s32 arg2, s32 arg3);
+void fldmdl_buildPackets(ModelObj *arg0, WmTexInfo *arg1, s16 (*arg2)[2]);
+void fldmdl_drawMeshMirrored(ModelObj *arg0, u8 arg1);
+void fldmdl_initModel(ModelObj *arg0, u8 *arg1);
+void fldmdl_initTexAnims(TexAnimRelocSet *hdr, ModelTexOfs *ofs);
+void fldmdl_projectMesh(ModelObj *arg0, u8 arg1);
+void fldmdl_reflectModel(ModelObj *arg0);
+void fldmdl_setAbr(ModelObj *arg0, u16 arg1);
+void fldmdl_setGroupRgb(ModelObj *arg0, u8 arg1, s16 arg2, s16 arg3, s16 arg4);
+void fldmdl_setSemiTrans(ModelObj *arg0, u16 arg1);
+void func_8002FC30(void); /* main */
+s32 func_8004AAF0(s32 unused); /* main */
+void func_800B3684(void);
+void game_resumeClock(u8 arg0); /* main */
+s32 mbg_shutdown(void); /* ovl_64 */
+s32 preload_update(void); /* main */
+s32 tpage_getX(s32 a); /* main */
+s32 tpage_getY(s16 arg0); /* main */
+s32 vib_update(void); /* main */
 
 #endif

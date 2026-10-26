@@ -2375,7 +2375,7 @@ void SetGeomScreen(s32);
 s32 ReadGeomScreen(void);
 s32 akao_getSpuTransferState(void);
 void akao_sendCmdED(s32, s32);
-s8 evt_createModel(Unk8004AB64 *);
+s32 evt_createModel(Unk8004AB64 *);
 
 /* ovl_0b functions */
 s32 btlfx_moveUnitArc(s32, s16 *, s32, s32, s32, s16 *);
@@ -2729,7 +2729,6 @@ void btlfx_drawFan(Unk800D2938 *, SVECTOR *, SVECTOR *, s32, s32, s32, s32);
 void func_800E2F84(Pool30 *, Pool30Entry *, SVECTOR *, SVECTOR *);
 extern s32 D_801014B0; /* saved g_btlfxEnv->unk28 */
 /* main exe: candidates for ff9.h */
-int VectorNormalS(VECTOR *, SVECTOR *);
 MATRIX *MulMatrix2(MATRIX *, MATRIX *);
 s32 btlfx_updateEmitters(Pool30 *, Pool6C *);
 void btlfx_runEmitters(Pool30 *, Pool6C *);
@@ -2925,7 +2924,7 @@ extern u8 D_800FB4F0[];
 extern s32 D_800F8E04[];
 extern RECT D_800F8EF4;
 extern RECT D_800F8EFC;
-Window *win_open(RECT *, s32, s32, s32);
+Window *win_open(RECT *, s32, s32, u32);
 void btlui_onTargetWindowOpened(Window *);
 void btlui_drawListWindow(Window *);
 void btlui_drawTargetList(Window *);
@@ -4346,5 +4345,73 @@ static inline u8 btl_checkCmdUsable_can(BtlCmd *arg1) {
     }
     return 1;
 }
+
+/* Functions called before (or without) a declaration in scope (tools/decl_check.py --protos) */
+void btl_allocBuffers(void);
+void btl_applyAutoAbilities(BtlUnit *arg0);
+s32 btl_applyReflect(BtlCmd *arg0);
+void btl_autoAttack(BtlUnit *arg0);
+void btl_calcShadowMatrix(Unk800AD4E4 *arg0, BtlObj *arg1, MATRIX *arg2, s32 arg3, s32 arg4, s32 arg5);
+void btl_copyStats(Unk800BD8C0 *arg0, Unk800BD8C0 *arg1);
+s32 btl_getAnimFileId(s32 arg0);
+u16 btl_getEntranceSound(void);
+void btl_initBattleState(void);
+s32 btl_initEncounter(Unk800AA08C *arg0, s32 arg1);
+void btl_initEnemies(Battle *arg0);
+void btl_initEquipElements(Character *c, BtlUnit *u);
+void btl_initReturnInfo(void);
+void btl_initWeapon(Character *arg0, BtlUnit *arg1);
+s32 btl_loadBackgroundStep(Battle11C0 *arg0, s32 arg1, Unk800AA08C *arg2);
+BtlPopup *btl_popupText(); /* (s32, u8, s16, s8); unprototyped: callers pass the argument unconverted */
+void btl_queueAutoCmd(BtlUnit *arg0, s32 arg1, s32 arg2, s32 arg3);
+void btl_reserveItem(s32 arg0);
+s32 btl_saveParty(Battle *arg0);
+void btl_setUnitAttr(BtlUnit *arg0, s32 arg1, u32 arg2);
+void btl_spreadTroubleDamage(BtlUnit *arg0);
+void btl_startBattle(void);
+void btl_tickPoison(BtlUnit *arg0);
+void btl_tickRegen(BtlUnit *arg0);
+void btl_tickVenomMp(BtlUnit *arg0);
+s32 btl_updateUnits(GameData *arg0, Battle *arg1);
+void btlcam_update(void);
+void btlfx_drawParticles(u8 *arg0, SVECTOR *arg1, SVECTOR *arg2, s32 arg3, s32 arg4, s32 arg5, s32 arg6, s32 arg7, s32 arg8);
+void btlfx_drawRings(u8 *arg0, SVECTOR *arg1, SVECTOR *arg2, s32 arg3, s32 arg4, s32 arg5, s32 arg6);
+void btlfx_drawTrail(u8 *p, s32 arg1, s32 *arg2, s32 frame, s32 scale, s32 arg5, s32 tp, u8 *out, s32 mode);
+s32 btlfx_getScaledRadius(s32 arg0);
+void btlfx_getStrikePos(s32 arg0, s32 arg1, s16 *arg2);
+void btlfx_getUnitBoneMatrix(s32 arg0, s32 arg1, BtlBone *arg2);
+void btlfx_getUnitBonePos(s32 arg0, s32 arg1, u16 *arg2);
+s32 btlfx_heapWrapIfFull(Heap *arg0, s32 arg1);
+void btlfx_rotateOffset(SVECTOR *arg0, s32 arg1, s32 arg2);
+void btlfx_setTargets(BtlUnitList *arg0);
+s32 btlfx_start(s32 arg0);
+s32 btlfx_stepWaitSameSide(u8 *arg0, s32 arg1, s32 *arg2);
+void btlfx_stopEmitter(Pool6CEntry *arg0);
+void btlfx_turnToward(s16 *arg0, s16 *arg1, s32 arg2);
+void btlui_buildAbilityList(Unk80104F88Entry *arg0);
+void btlui_clearCursor(Unk800EB518 *arg0);
+s32 btlui_confirmDoubleCast(s32 arg0);
+void btlui_drawListScroll(Window *arg0);
+void btlui_drawPanelHighlight(void);
+void btlui_listConfirm(void);
+void btlui_openListWindow(s32 arg0);
+void btlui_openTargetWindow(s8 arg0);
+void btlui_reset(void);
+s32 btlui_resolveAbility(s32 arg0);
+void btlui_startLabelSlide(Unk800F412C *arg0, Unk800F3F10 *arg1);
+void btlui_targetMove(void);
+void btlui_updatePanelRowColor(s32 arg0);
+s32 clut_getX(s32 a); /* main */
+void func_800AE9C8(s32 arg0, s32 arg1);
+void func_800B3DBC(BtlUnit *arg0);
+void func_800BA938(Unk800BA938 *arg0);
+void func_800BC1E0(Unk800BC1E0 *arg0, s16 *arg1);
+void func_800BDACC(u8 *arg0, u8 *arg1);
+s32 func_800C2DF4(void);
+void func_800C4B9C(s32 arg0, s32 arg1, s16 *arg2, s16 *arg3);
+void func_800D044C(SVECTOR *arg0, s32 arg1, s32 arg2, XY32 *arg3, s32 arg4, s32 arg5);
+void func_800D0580(s16 *arg0, XY32 *arg1, s32 arg2);
+void func_800D0674(SVECTOR *arg0, SVECTOR *arg1, SVECTOR *arg2, s32 arg3, s32 arg4, s32 *arg5);
+void func_800EA378(void);
 
 #endif

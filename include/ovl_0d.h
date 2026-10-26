@@ -577,4 +577,7 @@ extern TmFlashTbl g_tmFlashBars; /* INCLUDE_RODATA */
 
 extern char g_tmNoLabel[]; /* "NO" label (INCLUDE_RODATA) */
 
+/* Functions called before (or without) a declaration in scope (tools/decl_check.py --protos) */
+void tm_addRandomCard(); /* (TmState *, u8); unprototyped: callers pass the argument unconverted */
+
 #endif

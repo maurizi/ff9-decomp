@@ -1207,7 +1207,7 @@ void ui_restorePortraits(void) {
     }
 }
 
-u8 chr_getPortrait(s32 arg0) {
+s32 chr_getPortrait(s32 arg0) {
     return D_8006BB8C[g_gameState->gameData->characters[arg0].unk34.b.unk4];
 }
 

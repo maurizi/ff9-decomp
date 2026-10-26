@@ -371,12 +371,18 @@ void wm_resetMapObj(void) {
     }
 }
 
-s32 wm_findAreaData(WorldMapObj *arg0, u16 arg1) {
+s32 wm_findAreaData(arg0, arg1)
+    WorldMapObj *arg0;
+    u16 arg1;
+{
     arg0->areaData = db_lookupRegistered(4, arg1 | DB_AREA, 0);
     return 0;
 }
 
-s32 wm_findMapScript(WorldMapObj *arg0, u16 arg1) {
+s32 wm_findMapScript(arg0, arg1)
+    WorldMapObj *arg0;
+    u16 arg1;
+{
     arg0->mapScript = db_lookupRegistered(4, arg1 | DB_FIELD, 0);
     return 0;
 }
@@ -413,7 +419,7 @@ void wm_uploadParkedSound(void) {
     }
 }
 
-s32 wm_loadFile(WorldMapObj *arg0) {
+s32 wm_loadFile(WorldMapObj *arg0, s32 unused) { /* its caller passes this, unused */
     GameData *gd;
     u8 *buf;
     s32 a;
@@ -1157,7 +1163,7 @@ void wm_calcSoundPanVolume(s16 arg0, s16 arg1, s16 arg2, s32 arg3, u8 *arg4, u8 
     *arg5 = (0x1000 - z) * 127 / 4096;
 }
 
-void wm_setMusicVolumeFade(s32 arg0, u16 arg1) {
+void wm_setMusicVolumeFade(s32 arg0, s32 arg1) {
     GameData *gd = g_gameState->gameData;
 
     gd->unk826[0] = arg0;

@@ -4278,7 +4278,7 @@ s32 fldbg_playAnim(s32 arg0, s32 arg1) {
     return 1;
 }
 
-s32 fldbg_setAnimSpeed(s32 arg0, s16 arg1) {
+s32 fldbg_setAnimSpeed(s32 arg0, s32 arg1) {
     fldbg_overlayAnimPtr(arg0)->unk8 = arg1;
     return 1;
 }

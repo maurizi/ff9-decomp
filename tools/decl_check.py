@@ -144,6 +144,9 @@ def main():
     ap.add_argument("--bin", help="only report problems in this binary's sources")
     ap.add_argument("--types", action="store_true", help="also list integer width/sign differences")
     ap.add_argument("--implicit", action="store_true", help="list every implicit call site, not one per name")
+    ap.add_argument("--protos", action="store_true",
+                    help="for each implicit declaration print the definition's prototype (binary, name, prototype, "
+                         "definition, call sites; tab-separated)")
     args = ap.parse_args()
 
     files = sorted(glob.glob("build/us/src/**/*.c.i", recursive=True))
@@ -171,7 +174,7 @@ def main():
                 implicit[(b, name)].add(loc)
                 continue
             if what == "F":
-                defs[name].append((b, tu, loc, ret, params, variadic, static))
+                defs[name].append((b, tu, loc, ret, params, variadic, static, proto))
                 continue
             key = (loc, name)
             if key not in decls:
@@ -200,6 +203,18 @@ def main():
                 return got
         return ds
 
+    if args.protos:
+        for (b, name), locs in sorted(implicit.items()):
+            if args.bin and b != args.bin:
+                continue
+            tus = {l.split(":")[0] for l in locs}
+            ds = resolve(name, b, {f"build/us/{t}.i" for t in tus})
+            protos = sorted({re.sub(r"^(extern|static) ", "", d[7]).replace(" (", "(", 1) +
+                             ("  [static]" if d[6] else "") for d in ds}) or ["?"]
+            print("\t".join([b, name, " | ".join(protos), " ".join(sorted({d[0] + ":" + d[2] for d in ds})),
+                             " ".join(sorted(locs))]))
+        return
+
     problems = defaultdict(list)
     seen = set()
     for (loc, name), (bins, tus, ret, params, variadic) in sorted(decls.items()):
@@ -207,7 +222,7 @@ def main():
             if args.bin and b != args.bin and not any(d[0] == args.bin for d in defs.get(name, [])):
                 continue
             for d in resolve(name, b, tus):
-                db, _tu, dloc, dret, dparams, dvar, _st = d
+                db, _tu, dloc, dret, dparams, dvar, _st, _proto = d
                 if loc == dloc:
                     continue
                 key = (loc, dloc)

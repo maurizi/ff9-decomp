@@ -3073,7 +3073,10 @@ void tm_returnHand(TmState *arg0) {
     }
 }
 
-void tm_addRandomCard(TmState *arg0, u8 arg1) {
+void tm_addRandomCard(arg0, arg1)
+    TmState *arg0;
+    u8 arg1;
+{
     TmCard c;
     if (card_countAll() < 0x64) {
         tm_makeCard(arg0, &c, arg1, 1);

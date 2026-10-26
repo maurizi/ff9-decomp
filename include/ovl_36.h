@@ -264,4 +264,8 @@ static inline void menuCard_updateImageLoad_read(CardCache *c) {
     }
 }
 
+/* Functions called before (or without) a declaration in scope (tools/decl_check.py --protos) */
+void menuCard_drawCard(s32 x, s32 y, s32 z, s32 id, s32 dim, u8 flag);
+s32 text_getButtonSprite(s32 arg0); /* main */
+
 #endif

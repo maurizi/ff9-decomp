@@ -1483,8 +1483,7 @@ u8 menuSave_writeFile(void) {
         strcat(s_menuSaveAccess.fileName.name.v, "00000-");
         s_menuSaveAccess.fileName.name.v[SAVE_NAME_NUMBER] = s_menuSave.file / 10 + '0';
         s_menuSaveAccess.fileName.name.v[SAVE_NAME_NUMBER + 1] = s_menuSave.file % 10 + '0';
-        /* called before its definition without a prototype: int result */
-        if (!((s32 (*)(s32, char *))menuSave_createFile)(port, (char *)s_menuSaveAccess.fileName.name.v)) {
+        if (!menuSave_createFile(port, (char *)s_menuSaveAccess.fileName.name.v)) {
             menuSave_abortAccess(SAVE_TEXT_SAVE_FAILED);
             return 0;
         }
@@ -2429,7 +2428,7 @@ s32 menuSave_readSector(void) {
     return 1;
 }
 
-u8 menuSave_createFile(s32 chan, char *name) {
+s32 menuSave_createFile(s32 chan, char *name) {
     char path[32];
     s32 fd;
     s32 ok;

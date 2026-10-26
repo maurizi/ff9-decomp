@@ -840,7 +840,7 @@ void wm_setActorFog(Unk8004AB64 *arg0, s32 arg1) {
     }
 }
 
-s32 wm_drawActorModel(Unk8004AB64 *arg0, SVECTOR *arg1) {
+s32 wm_drawActorModel(Unk8004AB64 *arg0, SVECTOR *arg1, s32 unused) { /* its caller passes this, unused */
     WmActorType *c;
     WmObjSlot *s;
     ModelObj *m;

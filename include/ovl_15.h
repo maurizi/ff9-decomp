@@ -393,10 +393,12 @@ void bj_swapBuffers(void);
 s32 bj_exit(void);
 s32 bj_init(void);
 s32 bj_drawShoe(s32, s32);
-/* bj_actionGetCursor and scene_get (u8, defined later in ovl_15.c) stay undeclared for
- * bj_main: it calls them as implicit int (no andi 0xFF on the result). */
 
 /* Random 0..2 from the main exe's random byte stream. */
 #define RND3() (({ s32 r_; if (g_randPtr >= g_randTableEnd) { rand_refill(); } r_ = *g_randPtr++; r_; }) % 3)
+
+/* Functions called before (or without) a declaration in scope (tools/decl_check.py --protos) */
+s32 bj_actionGetCursor(void);
+s32 scene_get(void);
 
 #endif

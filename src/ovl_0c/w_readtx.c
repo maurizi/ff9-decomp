@@ -1,6 +1,8 @@
 #include "ovl_0c.h"
 
-s32 w_readtxRequest(s16 arg0) {
+s32 w_readtxRequest(arg0)
+    s16 arg0;
+{
     WmReadtxSlot *p;
     u32 i;
 

@@ -1174,7 +1174,7 @@ extern u8 g_worldSuspended;
 extern u8 g_worldMapJump;
 extern u8 g_worldVehiclesFound;
 u8 *func_80050E34(u8 *);
-void func_80050EFC(s32, s32);
+void func_80050EFC(s32, u32);
 extern s32 g_worldTimeActorDraw;
 extern s32 g_worldTimeMapDraw;
 void wm_drawActors(void);
@@ -1548,5 +1548,94 @@ void akao_fadeMusicVolumeFrom(s32, s32, s32, s32);
 s32 akao_getSpuTransferState(void);
 
 s32 wm_initShadowPrims(s32, s32); /* returns func_80062E3C's result (the next free address) */
+
+/* Functions called before (or without) a declaration in scope (tools/decl_check.py --protos) */
+void evt_createModels(void); /* main */
+s32 evt_isControlEnabled(void); /* main */
+u8 *evt_loadScripts(u8 *p); /* main */
+s32 func_8004AAF0(s32 unused); /* main */
+void func_8004B158(s32 a, s32 b, s32 c); /* main */
+void func_800B36AC(void);
+s32 func_800B8548(void);
+void func_800C16C0(void);
+void game_updateWindows(void); /* main */
+void menu_update(void); /* main */
+void msg_setOtz(s32 a); /* main */
+s32 swirl_update(s16 arg0, s16 arg1); /* main */
+void *w_framePackGetPtr(void **arg0, s32 arg1);
+void w_movementChangeSP1(void);
+void w_movementChangeSP2(void);
+s32 w_readtxRequest(); /* (s16); unprototyped: callers pass the argument unconverted */
+void wm_autoPilotOn(void);
+void wm_buildPackets(ModelObj *arg0, WmTexInfo *arg1, s16 (*arg2)[2]);
+void wm_calcCameraPreset(s32 arg0, s32 arg1, s32 arg2, s32 arg3, WmCameraParams *arg4);
+void wm_callChocobo(void);
+s32 wm_cameraAltitudeBlend(s32 arg0);
+void wm_cameraAutoTurnVehicle(void);
+void wm_cameraAutoTurnWalk(void);
+void wm_cameraSmooth(void);
+void wm_chunkListCompact(void);
+s32 wm_drawActorModel(Unk8004AB64 *arg0, SVECTOR *arg1, s32 unused);
+void wm_drawActorShadow(Unk8004AB64 *arg0, SVECTOR *arg1, s32 arg2);
+void wm_drawBlock(u8 *arg0, s32 arg1, s32 arg2);
+void wm_drawBlockFx(u8 arg0);
+void wm_drawBlocks(void);
+void wm_drawModel(s32 arg0, s32 arg1, u32 arg2);
+void wm_drawTitle(void);
+void wm_fetchParkedSound(void);
+s32 wm_findAreaData(); /* (WorldMapObj *, u16); unprototyped: callers pass the argument unconverted */
+void wm_findBattleMusic(void);
+s32 wm_findDefaultAnim(s32 arg0);
+s32 wm_findMapScript(); /* (WorldMapObj *, u16); unprototyped: callers pass the argument unconverted */
+void wm_finishLoad(void);
+s32 wm_getAreaZone(s32 arg0);
+s32 wm_getChunkBuffer(void);
+s32 wm_getWorldDataFileId(void);
+void wm_heapInit(void);
+void wm_initCamera(void);
+void wm_initDiscImage(void);
+void wm_initEffects(void);
+void wm_initLighting(void);
+void wm_initMapState(void);
+void wm_initModel(ModelObj *arg0, u8 *arg1);
+void wm_initMovement(void);
+s32 wm_isMapSongPlaying(void);
+s32 wm_lerp(s32 arg0, s32 arg1, s32 arg2);
+s32 wm_lerpShift(s32 arg0, s16 arg1, s32 arg2, s32 arg3);
+s32 wm_loadFile(WorldMapObj *arg0, s32 unused);
+void wm_loadTimPack(s32 *arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4);
+void wm_lookAt(MATRIX *arg0, SVECTOR *arg1, SVECTOR *arg2, VECTOR *arg3);
+void wm_movePlayer(WmActorType *cc);
+void wm_musicFade(s32 unused);
+void wm_musicInit(void);
+void wm_naviDrawFullMap(void);
+void wm_naviDrawMiniMap(void);
+void wm_naviDrawPlaces(void);
+void wm_naviInit(void);
+void wm_postDraw(void);
+void wm_readChunks(void);
+void wm_readtxCompact(void);
+void wm_requestChunks(s32 arg0);
+void wm_resetMapObj(void);
+void wm_runEvents(void);
+void wm_saveDepTable(void);
+void wm_setActorFog(Unk8004AB64 *arg0, s32 arg1);
+void wm_setMusicVolumeFade(s32 arg0, s32 arg1);
+void wm_setupMapObj(void);
+void wm_setupWorldData(void);
+void wm_updateCamera(void);
+void wm_updateCameraNoView(void);
+void wm_updateChunks(void);
+void wm_updateDraw(void);
+void wm_updateEffects(void);
+void wm_updateLogic(void);
+void wm_updateMap(void);
+void wm_updateTextureLists(void);
+void wm_updateVisibleBlocks(void);
+void wm_updateVramAnims(void);
+void wm_uploadParkedSound(void);
+void wm_weatherInit(void);
+void wm_weatherUpdate(void);
+s32 wm_worldToView(VECTOR *arg0, VECTOR *arg1, VECTOR *arg2, s32 *arg3);
 
 #endif

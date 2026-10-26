@@ -29,6 +29,9 @@ MASPSX   := $(PYTHON) tools/maspsx/maspsx.py
 
 CC_FLAGS      ?= -O2 -G0
 ASPSX_VERSION ?= 2.77
+# Checks that never change code: every call needs a declaration in scope (a port compiles src/ with a
+# modern compiler, which rejects implicit declarations; tools/decl_check.py compares them with the definitions).
+CC_CHECKS := -Werror-implicit-function-declaration
 CPP_FLAGS := -nostdinc -Iinclude -undef -D__GNUC__=2 -Dmips -D__mips__ -D_LANGUAGE_C -DLANGUAGE_C
 ASFLAGS   := -march=r3000 -mabi=32 -EL -no-pad-sections -O0 -Iinclude
 LDFLAGS   := -T $(LD_SCRIPT) \
@@ -108,10 +111,10 @@ TU_SPLIT := src/main $(foreach o,$(OVLS),src/ovl_$(o))
 $(BUILD_DIR)/%_o1.c.o: CC_FLAGS := -O1 -G0
 
 # cpp -> cc1 -> maspsx (emulates ASPSX expansions) -> GNU as
-$(BUILD_DIR)/%.c.o: %.c $(wildcard include/*.h)
+$(BUILD_DIR)/%.c.o: %.c $(wildcard include/*.h include/fxmod/*.h)
 	@mkdir -p $(dir $@)
 	$(CPP) $(CPP_FLAGS) $< -o $(@:.o=.i)
-	$(CC1) -quiet $(CC_FLAGS) $(@:.o=.i) -o $(@:.o=.cc1.s)
+	$(CC1) -quiet $(CC_FLAGS) $(CC_CHECKS) $(@:.o=.i) -o $(@:.o=.cc1.s)
 	@# gcc 8-aligns jump tables (.align 3); originals were separate objects packed at 4, so
 	@# in a C file that merges several of them that alignment lands differently. Use 4 there.
 	@# Binaries split into their original translation units keep .align 3 (TU_SPLIT).

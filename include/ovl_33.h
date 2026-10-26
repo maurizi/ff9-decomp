@@ -304,4 +304,8 @@ extern Unk801F34EC s_menuEquipActionTable[]; /* action abilities (ability menu),
 extern u8 s_menuEquipActionNames[]; /* action ability names (ability menu) */
 extern u8 s_menuEquipSupportNames[]; /* support ability names (ability menu) */
 
+/* Functions called before (or without) a declaration in scope (tools/decl_check.py --protos) */
+s32 menuAbility_getSlot(MenuList *l);
+void menuEquip_drawScrollRows(void);
+
 #endif

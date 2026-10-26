@@ -28,7 +28,7 @@ void bj_actionLeave(void) {
     pad_setStickAsDpad(0);
 }
 
-u8 bj_actionGetCursor(void) {
+s32 bj_actionGetCursor(void) {
     return g_bjAction.cursor;
 }
 

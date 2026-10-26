@@ -111,7 +111,12 @@ BtlPopup *btl_popupMp(s32 arg0, s16 arg1, s16 arg2, u8 arg3) {
     return p;
 }
 
-BtlPopup *btl_popupText(s32 arg0, u8 arg1, s16 arg2, s8 arg3) {
+BtlPopup *btl_popupText(arg0, arg1, arg2, arg3)
+    s32 arg0;
+    u8 arg1;
+    s16 arg2;
+    s8 arg3;
+{
     BtlPopup *p = btl_newPopup((BtlUnit *)arg0);
     p->unk10.b.unk2 = 2;
     p->unk10.b.unk0 = arg3;

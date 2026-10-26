@@ -685,7 +685,11 @@ void fld_playAnimSfx(FieldEvtCtx **arg0, s32 arg1) {
 }
 
 /* find the trigger matching the object, id and value (searching backwards) */
-FieldAnimSfx *fld_findAnimSfx(FieldEvtCtx *arg0, u16 arg1, s16 arg2) {
+FieldAnimSfx *fld_findAnimSfx(arg0, arg1, arg2)
+    FieldEvtCtx *arg0;
+    u16 arg1;
+    s16 arg2;
+{
     FieldScene *sc = g_gameState->gameData->unk8E4.field->area->scene;
     FieldAnimSfx *base = sc->animSfx;
     FieldAnimSfx *e = &base[sc->animSfxCount] - 1;
@@ -719,7 +723,11 @@ FieldAnimSfx *fld_addAnimSfx(FieldEvtCtx *arg0, s32 arg1, s32 arg2) {
     return e;
 }
 
-s32 fld_removeAnimSfx(FieldEvtCtx *arg0, u16 arg1, s16 arg2) {
+s32 fld_removeAnimSfx(arg0, arg1, arg2)
+    FieldEvtCtx *arg0;
+    u16 arg1;
+    s16 arg2;
+{
     FieldAnimSfx *base;
     FieldAnimSfx *last;
     FieldAnimSfx *e;
@@ -787,7 +795,7 @@ void fld_findBattleMusic(void) {
 }
 
 /* assign sound slots to the field's sound files and load the missing ones (smallest first) */
-s32 fld_loadSoundBanks(void) {
+s32 fld_loadSoundBanks(FieldScene *unused, s32 unused2) { /* its caller passes these, unused */
     u32 id[5];
     s32 sz[5];
     u8 used[5];
@@ -982,7 +990,7 @@ s32 fld_unpackMusicSeq(s32 arg0) {
     return 0;
 }
 
-void fld_setMusicVolumeFade(s32 arg0, u16 arg1) {
+void fld_setMusicVolumeFade(s32 arg0, s32 arg1) {
     GameData *gd = g_gameState->gameData;
 
     gd->unk826[0] = arg0;
@@ -1134,7 +1142,10 @@ FieldLight *fld_getLightColorTable(Unk800B3254 *arg0) {
     return NULL;
 }
 
-Unk800B3294 *fld_findLightColor(Unk800B3254 *arg0, u16 arg1) {
+Unk800B3294 *fld_findLightColor(arg0, arg1)
+    Unk800B3254 *arg0;
+    u16 arg1;
+{
     Unk800B3294 *base;
     Unk800B3294 *p;
     s32 id;

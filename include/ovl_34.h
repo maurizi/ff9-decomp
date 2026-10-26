@@ -203,5 +203,7 @@ typedef struct {
 extern u32 s_menuConfigSliderColors[3]; /* gauge line colours */
 extern RECT s_menuConfigSliderTexWindow; /* gauge texture window */
 
+/* Functions called before (or without) a declaration in scope (tools/decl_check.py --protos) */
+void config_apply(void); /* main */
 
 #endif
