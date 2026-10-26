@@ -1606,7 +1606,7 @@ s32 wm_loadFile(WorldMapObj *arg0, s32 unused);
 void wm_loadTimPack(s32 *arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4);
 void wm_lookAt(MATRIX *arg0, SVECTOR *arg1, SVECTOR *arg2, VECTOR *arg3);
 void wm_movePlayer(WmActorType *cc);
-void wm_musicFade(s32 unused);
+void wm_musicFade(); /* (void); unprototyped: w_frame.c passes an argument it ignores (splat writes the empty body itself) */
 void wm_musicInit(void);
 void wm_naviDrawFullMap(void);
 void wm_naviDrawMiniMap(void);

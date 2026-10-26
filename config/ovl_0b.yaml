@@ -76,6 +76,10 @@ segments:
       - [0x25044, c, btl_popup]
       - [0x2705C, c, btlbg]
       - [0x27ED4, c, btlbg_asm]
+      - [0x28588, textbin]    # g_btlbgBrightness: a data word inside the hand-written asm module
+      - [0x2858C, c, btlbg_asm_b]
+      - [0x285A0, textbin]    # g_btlbgOtShift: another data word
+      - [0x285A4, c, btlbg_asm_c]
       - [0x28A80, textbin]    # u16 lookup table embedded in .text (0x1000, 0xFE0, ...)
       - [0x28C0C, c, btlfx]
       - [0x2CED4, c, btlfx_emit_asm]

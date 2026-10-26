@@ -2335,9 +2335,7 @@ ovl_0b btlbg_drawRecord 0x574 0x800ceed4
 ovl_0b btlbg_projectVertices 0x118 0x800cf448
 ovl_0b btlbg_setBrightness 0x14 0x800cf560
 ovl_0b btlbg_getBrightness 0x14 0x800cf574
-ovl_0b g_btlbgBrightness 0x4 0x800cf588
 ovl_0b btlbg_setOtShift 0x14 0x800cf58c
-ovl_0b g_btlbgOtShift 0x4 0x800cf5a0
 ovl_0b btlfx_pushTrailPoint 0x54 0x800cf5a4
 ovl_0b btlfx_distance 0x98 0x800cf5f8
 ovl_0b btlfx_rand 0x28 0x800cf690

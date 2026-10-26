@@ -165,7 +165,7 @@ functions the cut is at the function with fewest crossing calls (weak position).
 | btlseq.c | 800CA3CC-800CC044 | 43 | weak edges (names; calls barely cross 0x800CC044) |
 | btl_popup.c | 800CC044-800CE05C | 24 | weak start; end medium (data cut exactly at `btlbg_init`) |
 | btlbg.c | 800CE05C-800CEED4 | 11 | medium start; end strong (asm) |
-| btlbg_asm.c | 800CEED4-800CFA80 | 20 | strong: hand-written asm (btlbg draw, btlfx math helpers, two data words); the `textbin` table 800CFA80-800CFC0C follows |
+| btlbg_asm.c, btlbg_asm_b.c, btlbg_asm_c.c | 800CEED4-800CFA80 | 18 | strong: one hand-written asm module (btlbg draw, btlfx math helpers); its two data words `g_btlbgBrightness` (800CF588) and `g_btlbgOtShift` (800CF5A0) are `textbin` subsegments, which splits it into three files; the `textbin` table 800CFA80-800CFC0C follows (docs/text-data.md) |
 | btlfx.c | 800CFC0C-800D3ED4 | 36 | strong edges (textbin, asm) |
 | btlfx_emit_asm.c | 800D3ED4-800D616C | 16 | strong: hand-written asm emitters |
 | btlfx_script.c | 800D616C-800DA0FC | 101 | start strong; parity 4 (`btlfx_runScript`); end in 475→588 window, cut before the pool functions (one crossing call) — medium |

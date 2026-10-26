@@ -317,7 +317,7 @@ void wm_musicStop(u16 arg0) {
     wm_soundCommand(0x100, wm_getSongMusicId(arg0), 0, 0, 0);
 }
 
-void wm_musicFade(s32 unused) { /* its caller passes this, unused */
+void wm_musicFade(void) {
 }
 
 void wm_sePlay(s32 arg0, u8 arg1) {
