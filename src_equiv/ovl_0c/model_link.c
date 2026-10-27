@@ -87,6 +87,10 @@ void wm_drawMesh(ModelObj *model, u8 group) {
                 gte_stotz(&z);
                 z >>= 1;
             }
+            /* Not clamped, as in the original asm: z (quads up to 0x1FFF, triangles AVSZ3's OTZ >> 1) can pass the end of the caller's OT
+             * (the field copy in ovl_0a was seen doing this in d2_f1750). The PS1 then writes this packet's link word over whatever follows the
+             * OT (another ModelObj's model pointer, still read correctly through the KUSEG RAM mirror) and never
+             * draws the packet. Not a port bug; a port has to leave such packets unlinked (ff9-ds F35). */
             slot = &ot[z];
             *(u32 *)pkt = *slot | ((u32)t->len << 24);
             *slot = (u32)pkt & 0xFFFFFF;
