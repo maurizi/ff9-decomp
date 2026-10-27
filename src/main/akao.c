@@ -681,6 +681,10 @@ void akao_execChannel(AkaoChannel *c, u32 mask) {
         if (op >= 0xA0) {
             if (op == 0xFE) {
                 vel = *c->unk0++;
+                /* Not bounded, as in the original: g_akaoOpsFE has 0x20 handlers, but any byte the sequence holds
+                 * indexes it. A channel reading garbage (e.g. a replaced overlay, ff9-ds d1_f0310: 0xFE 0x4F) jumps
+                 * through whatever word follows the table; on the PS1 that is data (an address error there).
+                 * A port may send indices >= 0x20 to akao_opInvalid. */
                 g_akaoOpsFE[vel](c, mask);
             } else if (op - 0xF0 < 14) {
                 op = (op - 0xF0) * 11;
