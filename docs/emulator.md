@@ -104,8 +104,13 @@ then lets the normal battle loader run. Unlike the ff9-ds tool it keeps the save
 Example: `enter_battle.py 899 --field 2714 --base-state disc3_pandemonium_lv99_field --party 0,1,2,6 --frames 1200`
 reaches the Malboro's first command menu. Encounter ids: `python3 ../ff9-ds/tools/scenario_catalog.py --disc 3
 disks/us/disc3/FF9.IMG [--find NAME]`. Any encounter whose data is on the inserted disc works; the battle
-returns to `--field` afterwards. Fields can't be entered this way (the helper only swaps the battle data); a field
-jump would need GameData.fieldId plus the field loader, untested.
+returns to `--field` afterwards. Fields can't be entered this way (the helper only swaps the battle data).
+
+**Entering any field.** The DS port's `../ff9-ds/tools/psx_field_fixture.py` does it on the original PS1 (verified
+by the port, 2026-10-28): field cleanup to main's dispatcher, then `GameData.fieldId` (+0xC), the area/field CD
+extents from FF9.IMG dirs 4/2 into `sceneSector`/`sceneSectors` (+0x7FC/+0x804), `GameData.unk3A` = area, and mode 1.
+It also measures VBlanks per drawn frame with a breakpoint-free vsync listener. Disc-4 state from that work:
+`ds_perf_disc4_treno` (card 1 FILE05, Treno, loaded through Continue).
 
 Battle experiment helpers in `tools/rt/` (outputs go to `build/rt/`; `tools/rt/init.sh [STATE]` starts Redux on disc 3,
 loads a state and installs coverage + freeze): `freeze.lua` (per-vsync memory
