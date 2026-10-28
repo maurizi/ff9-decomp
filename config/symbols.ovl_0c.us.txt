@@ -109,7 +109,7 @@ wm_entry = 0x800A8860; // type:func [code] main's mode-3 case calls it after gam
 wm_main = 0x800A88C4; // type:func [code] per-map loop (arg GameData.unk7DC world id) - wm_load, per-frame update/draw until flags 0x3001, then wm_exit, counterpart of fld_main
 wm_init = 0x800A8B14; // type:func [code] once per mode-3 entry - allocates the WorldMap context, vsyncMode 3, sets GameData callbacks unk838/83C/8BC, loads world data, sounds, shadow texture
 wm_shutdown = 0x800A8CA4; // type:func [code] end of wm_entry - zeroes both pad actuator buffers D_800739B0, w_frameSystemDestructor, wm_freeWorldData
-wm_allocContext = 0x800A8CF0; // type:func [code] places the 0x3000-byte WorldMap context at D_80067944+0x32000 into GameData.unk8E4 and advances the allocator D_80067948
+wm_allocContext = 0x800A8CF0; // type:func [code] places the 0x3000-byte WorldMap context at D_80067944+0x32000 into GameData.unk8E4 and advances the allocator g_modeHeap
 wm_resetContext = 0x800A8D28; // type:func [code] zeroes the WorldMap context fields (unk10 = -1, unk14[0x34] cleared)
 wm_loadSoundBanks = 0x800A8D78; // type:func [code] items 0x9017B and 0x90139 (0x9xxxx = sound, see wm_soundCommand) - 0x17B is parked in VRAM (size in WorldMap.unk10), 0x139 goes to func_80055E14
 wm_loadResidentMusic = 0x800A8F18; // type:func [code] copies music item 0x70064 (id 100) to GameData.unk818, which wm_soundCommand plays in slot 1 when asked for music 100
@@ -265,7 +265,7 @@ wm_getPadPressed = 0x800B84C0; // type:func [code] g_padPortPressed while the ma
 wm_initLighting = 0x800B8574; // type:func [code] fills the light matrices D_800CF540/D_800CF520/D_800CF4C0, SetBackColor/SetFarColor 0, SetFogNearFar(5000, 30000), then func_800B8664
 wm_updateColorMatrices = 0x800B8664; // type:func [code] colour matrices D_800CF500/D_800CF4E0 from the current weather set D_800D3FA0.unk5E0[0] (unk0[3], unk18), called each frame by func_800C26EC
 wm_initDiscImage = 0x800B872C; // type:func [string] prints "Read CD Image [Disc-1]" / "[Disc-4]" by g_worldDataSet and "Image Top Sector = %d", fills the sector table D_800CF598 via file_find(0xC, ...)
-wm_heapInit = 0x800B8A80; // type:func [code] resets the w_memoryman heap (D_800CFE10/14/18/1C) and takes 0x24800 bytes from D_80067948 - the size w_memorymanHeapAlloc prints as the limit
+wm_heapInit = 0x800B8A80; // type:func [code] resets the w_memoryman heap (D_800CFE10/14/18/1C) and takes 0x24800 bytes from g_modeHeap - the size w_memorymanHeapAlloc prints as the limit
 wm_initClutAnims = 0x800B8B10; // type:func [code] for the 18 entries of D_800CFF18 copies the palette lines (StoreImage, or pack entry 2 for 15-17) into D_800CFFD0 with shifted copies for animation, called when the map starts
 wm_loadTim = 0x800B8DC0; // type:func [code] uploads TIM arg1 of pack arg0 (image and clut, with offsets) directly at start-up, else as queued RECT+LoadImage in the prim buffer
 wm_scrollTextures = 0x800B905C; // type:func [code] 8 VRAM rects of D_800CFEA0 scrolled each frame by MoveImage through 0x280,0xF8 by their speed unk8
@@ -554,9 +554,9 @@ g_worldSprayLevel = 0x800D53CC; // [code] g_worldSprayTarget smoothed 1/32 per f
 g_worldTimeActorDraw = 0x800CF468; // [code] VSync(1) delta around wm_drawActors in wm_updateDraw, like g_worldTimeMapDraw
 g_worldSuspended = 0x800CF434; // [code] set while wm_frameMain skips the frame (GameData.unk0 & 0x1C), on the next run it frees a WM_CD_SCRIPT CD lock
 g_worldVehiclesFound = 0x800CF47C; // [code] set at the end of wm_findVehicles, from then wm_frameMain holds GameData.unk892 = 1 during each frame
-g_worldPointFxOn = 0x800CF44C; // [code] wm_updateMap sets it when the player is within 0x47C of a fixed point (story b[0x66] 0/8, also sets func_80050EFC strength), wm_updateDraw then runs func_80050D38
-g_worldPointFxBufPtr = 0x800CF400; // [code] = g_worldPointFxBuf (wm_initBuffers), node buffer handed to func_80050E34 in wm_systemInit
-g_worldPointFxBuf = 0x800CE400; // [code] 0x1000-byte buffer pointed to by g_worldPointFxBufPtr, the 222 nodes of the func_80050D38 effect
+g_worldPointFxOn = 0x800CF44C; // [code] wm_updateMap sets it when the player is within 0x47C of a fixed point (story b[0x66] 0/8, also sets wrain_set strength), wm_updateDraw then runs wrain_draw
+g_worldPointFxBufPtr = 0x800CF400; // [code] = g_worldPointFxBuf (wm_initBuffers), node buffer handed to wrain_init in wm_systemInit
+g_worldPointFxBuf = 0x800CE400; // [code] 0x1000-byte buffer pointed to by g_worldPointFxBufPtr, the 222 nodes of the wrain_draw effect
 g_worldImageNames = 0x800CF580; // [string] the 5 CD image names "\DISC1.IMG,1", S, T, H, V (or DISC4) copied by wm_initDiscImage
 g_worldVramSaveRect = 0x800A71D8; // [code] rodata RECT (0x100, 0xFD, 0x100, 2) StoreImage'd into g_worldClutBuf by wm_systemInit
 g_worldVramParkRect = 0x800A71E0; // [code] rodata RECT (0x280, 0xDC, 0x100, 2) - func_800B7F7C loads g_worldClutBuf there, w_frameSystemDestructor moves it back to (0x100, 0xFD)

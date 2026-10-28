@@ -87,7 +87,7 @@ INCLUDE_ASM("asm/us/main/nonmatchings/evt_expr_asm", evt_runExpr);
 
 INCLUDE_ASM("asm/us/main/nonmatchings/evt_expr_asm", func_80052834);
 
-INCLUDE_ASM("asm/us/main/nonmatchings/evt_expr_asm", func_80052870);
+INCLUDE_ASM("asm/us/main/nonmatchings/evt_expr_asm", evt_runScripts);
 
 INCLUDE_ASM("asm/us/main/nonmatchings/evt_expr_asm", evt_getVarBank);
 

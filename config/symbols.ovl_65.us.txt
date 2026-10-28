@@ -8,7 +8,7 @@ battleEnd_update = 0x801F3A7C; // type:func [runtime] docs/runtime-findings.md b
 battleEnd_init = 0x801EF45C; // type:func [runtime] docs/runtime-findings.md battle campaign 3, once in both the victory and the defeat run
 rewards_update = 0x801F0F04; // type:func [runtime] docs/runtime-findings.md battle campaign 3, every frame of the victory run only (487 calls), drives the EXP/AP, items and gil screens
 battleEnd_exit = 0x801EF5C8; // type:func [code] after battleEnd_main's loop - sets GameData flags, and when going back to the field (mode 0) fades the music, waits 30 vsyncs and calls func_80055210
-battleEnd_loadDb = 0x801EF6F8; // type:func [code] loads file 0x2713 (from the preload queue or the CD) to D_80067948 and db_registers it
+battleEnd_loadDb = 0x801EF6F8; // type:func [code] loads file 0x2713 (from the preload queue or the CD) to g_modeHeap and db_registers it
 battleEnd_unloadDb = 0x801EF814; // type:func [code] db_unregister of the block loaded by battleEnd_loadDb
 battleEnd_preloadScene = 0x801EF890; // type:func [code] queues preload_add reads of the next scene's files (0x1000A/0x1000C, 0x2712/0x2714/0x2716, the area and field)
 rewards_init = 0x801F0E30; // type:func [code] init of menu type 7 (main's D_8006C9D4[7] = 0x801F0E30/0x801F0F04/0x801F0FC4), picks skip / screen / event by rewards_getKind

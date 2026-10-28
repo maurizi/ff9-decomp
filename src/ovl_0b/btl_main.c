@@ -152,7 +152,7 @@ void btl_initMode(void) {
     func_800A902C();
     func_800A9090();
     btl_initBattleState();
-    b->unk4 = D_80067948;
+    b->unk4 = g_modeHeap;
 }
 
 void btl_exitMode(void) {
@@ -166,10 +166,10 @@ void btl_exitMode(void) {
 
 void btl_allocBattle(void) {
     BattleMem *m;
-    D_80067948 = g_loadAreaEnd + 0x61800;
-    m = (BattleMem *)D_80067948;
+    g_modeHeap = g_loadAreaEnd + 0x61800;
+    m = (BattleMem *)g_modeHeap;
     g_gameState->gameData->unk8E4.battle = &m->unk0;
-    D_80067948 = (s32)m->unk241C;
+    g_modeHeap = (s32)m->unk241C;
     m->unk0.files = (BtlFiles *)m->unk23CC;
     m->unk0.unk1538 = (struct Battle1538 **)m->unk240C;
 }
@@ -231,7 +231,7 @@ s32 func_800A9090(void) {
 }
 
 s32 btl_loadCommonData(void) {
-    s32 p = D_80067948;
+    s32 p = g_modeHeap;
     Battle *b = g_gameState->gameData->unk8E4.battle;
     FileEntry *f = file_find(1, 0x271B);
     s32 s = f->unk4;
@@ -245,7 +245,7 @@ s32 btl_loadCommonData(void) {
     file_copyViaVram((s32)b->abilities, (s32)db_lookupRegistered(4, 0x1F5, 0), 0xC00, NULL);
     file_copyViaVram((s32)b->statusSets, (s32)db_lookupRegistered(4, 0x1F6, 0), 0x100, NULL);
     DrawSync(0);
-    D_80067948 = db_lookup(p, 4, 0x1E, 0);
+    g_modeHeap = db_lookup(p, 4, 0x1E, 0);
     return 0;
 }
 
@@ -261,7 +261,7 @@ void btl_load(s32 arg0) {
     Battle11C0 *p;
     s32 i;
 
-    D_80067948 = g_gameState->gameData->unk8E4.battle->unk4;
+    g_modeHeap = g_gameState->gameData->unk8E4.battle->unk4;
     btl_allocBuffers();
     p = g_gameState->gameData->unk8E4.battle->work;
     btl_initReturnInfo();
@@ -274,10 +274,10 @@ void btl_load(s32 arg0) {
     do {
     } while (btl_loadBackgroundStep(p, arg0, &st) != 0);
     btl_setupBackground(p, arg0);
-    g_gameState->gameData->unk38 = func_8004AAF0(0);
+    g_gameState->gameData->unk38 = evt_countNpcActors(0);
     g_gameState->gameData->unk8DC = (struct Unk8D4 *)(p->weaponBufs + 4);
     g_gameState->gameData->unk8E0 = (struct Unk8E0 *)&g_gameState->gameData->unk8DC[g_gameState->gameData->unk38];
-    D_80067948 = (s32)&g_gameState->gameData->unk8E0[g_gameState->gameData->unk38];
+    g_modeHeap = (s32)&g_gameState->gameData->unk8E0[g_gameState->gameData->unk38];
     g_gameState->gameData->unk9 = 0;
     for (i = 0; i < 9; i++) {
         func_8001E3A4(&g_gameState->gameData->unk8D8[i]);
@@ -288,9 +288,9 @@ void btl_load(s32 arg0) {
         func_8001E3A4(&g_gameState->gameData->unk8E0[i]);
         g_gameState->gameData->unk8E0[i].unk8 = (struct BtlUnit9C *)&g_gameState->gameData->unk8DC[i];
     }
-    p->shadows = (struct BtlShadow *)D_80067948;
-    D_80067948 = func_800AD4AC(D_80067948, g_gameState->gameData->unk38 + 9);
-    p->unk8 = D_80067948;
+    p->shadows = (struct BtlShadow *)g_modeHeap;
+    g_modeHeap = func_800AD4AC(g_modeHeap, g_gameState->gameData->unk38 + 9);
+    p->unk8 = g_modeHeap;
     btlui_reset();
     btl_startBattle();
 }
@@ -346,28 +346,28 @@ void btl_cleanup(void) {
 void btl_allocBuffers(void) {
     Battle11C0 *p;
     s32 i;
-    g_gameState->gameData->unk8E4.battle->work = (Battle11C0 *)D_80067948;
-    p = (Battle11C0 *)D_80067948;
-    D_80067948 = (s32)(p + 1);
+    g_gameState->gameData->unk8E4.battle->work = (Battle11C0 *)g_modeHeap;
+    p = (Battle11C0 *)g_modeHeap;
+    g_modeHeap = (s32)(p + 1);
     p->sceneTables = (u16 *)((s32)g_gameState->gameData->unk8E4.battle + 0x5800);
     p->bgData = (s32)p->sceneTables + 0x2800;
     p->heapStart = (u8 *)(p->bgData + 0x6000);
-    D_80067948 = (s32)p->heapStart + 0x35800;
+    g_modeHeap = (s32)p->heapStart + 0x35800;
     for (i = 0; i < 4; i++) {
-        g_gameState->gameData->unk8E4.battle->unk153C[i] = D_80067948;
-        D_80067948 += 0x13000;
-        g_gameState->gameData->unk8E4.battle->unk1538[i] = (Battle1538 *)(D_80067948 - 0x28);
+        g_gameState->gameData->unk8E4.battle->unk153C[i] = g_modeHeap;
+        g_modeHeap += 0x13000;
+        g_gameState->gameData->unk8E4.battle->unk1538[i] = (Battle1538 *)(g_modeHeap - 0x28);
     }
     p->weaponBufs = (s32 *)(p + 1);
     for (i = 0; i < 4; i++) {
-        p->weaponBufs[i] = D_80067948;
-        D_80067948 += 0x1000;
+        p->weaponBufs[i] = g_modeHeap;
+        g_modeHeap += 0x1000;
     }
-    p->ot[1] = D_80067948 + 0x400;
-    p->ot[0] = D_80067948;
-    p->prims[0] = D_80067948 + 0x800;
+    p->ot[1] = g_modeHeap + 0x400;
+    p->ot[0] = g_modeHeap;
+    p->prims[0] = g_modeHeap + 0x800;
     p->prims[1] = p->prims[0] + 0x20000;
-    D_80067948 = p->prims[1] + 0x20000;
+    g_modeHeap = p->prims[1] + 0x20000;
     p->loadBuf = (s32 *)(g_loadAreaEnd + 0x136700);
 }
 
@@ -809,8 +809,8 @@ loop:
             }
             te--;
         } while (te >= tf);
-        D_80067948 = sp1C + db_getSize(sp1C);
-        b->work->heap = (u8 *)D_80067948;
+        g_modeHeap = sp1C + db_getSize(sp1C);
+        b->work->heap = (u8 *)g_modeHeap;
         arg2->unkC += db_getSize(dst);
         *(b->files->enemyModels + arg2->unkA) = (void *)sp1C;
         db_register(sp1C, 0);
@@ -1271,7 +1271,7 @@ u32 btl_registerModel(s32 arg0, s32 arg1) {
     u32 r;
     u32 cnt;
 
-    r = func_8004AB64(arg1);
+    r = evt_getObjectChrIndex(arg1);
     if (r < 9) {
         n = r;
         e = (Unk8E0Ld *)game_getModel(r);

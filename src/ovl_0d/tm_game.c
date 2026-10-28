@@ -1554,7 +1554,7 @@ void tm_taskGameQuit(TmState *s) {
                                   c->pdef, c->mdef);
                 }
                 s->handCount = 0;
-                func_80062750(1);
+                card_setGameResult(1);
                 s->quitting = 1;
                 tm_startEndFade(s);
             } else {
@@ -3324,19 +3324,19 @@ void tm_checkGameEnd(TmState *s) {
         a = tm_countOnBoard(s, TM_PLAYER);
         b = tm_countOnBoard(s, TM_ENEMY);
         if (a > b) {
-            func_80062750(0);
+            card_setGameResult(0);
             card_addWin();
             s->result = TM_RESULT_WIN;
             s->wins++;
         }
         if (a < b) {
-            func_80062750(1);
+            card_setGameResult(1);
             card_addLoss();
             s->result = TM_RESULT_LOSE;
             s->losses++;
         }
         if (a == b) {
-            func_80062750(2);
+            card_setGameResult(2);
             card_addDraw();
             s->result = TM_RESULT_DRAW;
             s->draws++;

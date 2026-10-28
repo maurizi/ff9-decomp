@@ -50,17 +50,17 @@ s32 fld_loadModelBundle(s32 arg0) {
     c = fld_findModelCache(arg0);
     if (c->addr == 0) {
         cdRead_init(g_gameState->gameData->unk854, f->unk4, size,
-                      (void *)(fld_allocModelCache(arg0, size) != 0 ? c->addr : D_80067948), 0, -1, 0);
+                      (void *)(fld_allocModelCache(arg0, size) != 0 ? c->addr : g_modeHeap), 0, -1, 0);
         while (cdRead_update(g_gameState->gameData->unk854) != 0) {
         }
     }
     if (c->addr != 0) {
-        s32 m = file_copyViaVram(D_80067948, c->addr, size, NULL);
+        s32 m = file_copyViaVram(g_modeHeap, c->addr, size, NULL);
         DrawSync(0);
-        fld_invalidateModelCache(D_80067948 + m);
+        fld_invalidateModelCache(g_modeHeap + m);
     }
     vp = db_lookupRegistered(4, 0x1C0000, 0);
-    n = D_80067948;
+    n = g_modeHeap;
     pack1 = db_lookup(n, 2, DB_PACK, 0);
     pack2 = db_lookup(n, 2, (DB_PACK | 1), 0);
     hdr = (u8 *)db_lookup(pack1, 2, DB_MODEL_INFO, 0) + 4;
@@ -131,7 +131,7 @@ s32 fld_loadModelBundle(s32 arg0) {
     g_gameState->gameData->unk8E4.field->area->scene->modelBundles[g_gameState->gameData->unk8E4.field->area->scene->modelBundleCount] = pack1;
     g_gameState->gameData->unk8E4.field->area->scene->modelBundleCount++;
     db_register(pack1, 0);
-    D_80067948 = pack1 + db_getSize(pack1);
+    g_modeHeap = pack1 + db_getSize(pack1);
     return 0;
 }
 
@@ -163,7 +163,7 @@ s32 fld_setupActorModel(s32 arg0, void *arg1) {
     WmModel *a;
 
     sprId = -1;
-    r = func_8004AB64(arg1);
+    r = evt_getObjectChrIndex(arg1);
     if (r < 9) {
         slot = r;
         s = (FieldObjSlot *)game_getModel(r);
@@ -779,7 +779,7 @@ s32 fld_allocModelCache(s32 arg0, s32 arg1) {
     min = fld_getModelCacheBottom(NULL);
     lo = g_gameState->gameData->unk8E4.field->area->scene->heapTop;
     if (lo == 0) {
-        lo = D_80067948;
+        lo = g_modeHeap;
     }
     a = min - arg1;
     if (lo < a) {
@@ -863,7 +863,7 @@ void fld_trimModelCache(void) {
     s32 v = g_gameState->gameData->unk8E4.field->area->scene->heapTop;
 
     if (v == 0) {
-        v = D_80067948;
+        v = g_modeHeap;
     }
     fld_invalidateModelCache(v);
 }
@@ -1234,7 +1234,7 @@ void fld_movieUpdate(void) {
         if (g_fieldMovieFlags & 0x40) {
             mbg_getStartCamera((void *)&g_gameState->gameData->unk18, &g_gameState->gameData->unkA);
         }
-        if ((g_fieldMovieFlags & 2) && (func_80012AD4() & 2)) {
+        if ((g_fieldMovieFlags & 2) && (mbg_getStatus() & 2)) {
             done = mbg_update(0);
             t = mbg_getLastFrame();
             if (!(g_fieldMovieFlags & 0x20) && (u32)t < 99999) {
@@ -1307,7 +1307,7 @@ void fld_movieFinish(void) {
 
 s32 fld_isMoviePlaying(void) {
     if ((u32)(g_gameState->gameData->unk8E4.field->area->scene->movieState - 6) < 2 && (g_fieldMovieFlags & 2)
-        && (func_80012AD4() & 2)) {
+        && (mbg_getStatus() & 2)) {
         return 1;
     }
     return 0;
@@ -1348,7 +1348,7 @@ void fld_endFrame(void) {
         g_gameState->unk0 |= GS_RESET;
     }
     DrawSync(0);
-    if (!(func_80012AD4() & 2)) {
+    if (!(mbg_getStatus() & 2)) {
         if ((g_gameState->gameData->unk0 & GD_HIDE_ALL) == GD_HIDE_ALL && (g_gameState->gameData->unk8E4.field->flags & 4)) {
             g_gameState->vsyncMode = 0;
         } else {
@@ -1423,7 +1423,7 @@ void fld_updateEncounter(void) {
         g_swirlFrame = 0;
         g_swirlBuf = g_loadAreaEnd + 0x153F00;
         fld_clearModelCache();
-        g_gameState->gameData->unk8E4.field->area->scene->heapTop = D_80067948;
+        g_gameState->gameData->unk8E4.field->area->scene->heapTop = g_modeHeap;
         a = evt_getPlayer();
         if (a != NULL) {
             fldbg_applyGeomOffset();

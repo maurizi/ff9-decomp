@@ -149,8 +149,8 @@ typedef struct {
 #define FLD_SCN_ENCOUNTER_DONE 0x1 /* encounter screen effect (func_80053A10) finished */
 #define FLD_SCN_ENCOUNTER_LOADED 0x2 /* fld_updateEncounter uploaded file 0x1000B and played its SEs */
 #define FLD_SCN_BANK_SLOT 0x10 /* fld_soundBankReadCallback uploads to soundBankSlot */
-#define FLD_SCN_OBJFX_ALLOC 0x100 /* func_800B3444 allocated the main func_80050BE0 node buffer */
-#define FLD_SCN_OBJFX_ON 0x200 /* func_800B3684 runs main func_80050AAC each frame */
+#define FLD_SCN_OBJFX_ALLOC 0x100 /* func_800B3444 allocated the main rain_init node buffer */
+#define FLD_SCN_OBJFX_ON 0x200 /* func_800B3684 runs main rain_draw each frame */
 #define FLD_SCN_MOVIE_DISPMASK 0x1000 /* fld_movieUpdate set g_padPortMask bit 0x04000000 */
 #define FLD_SCN_ACTORS_READY 0x10000 /* set by fld_setupActorModel; fld_preloadHook starts queuing */
 #define FLD_SCN_PRELOADS_QUEUED 0x100000 /* fld_preloadHook queued fld_queueFieldPreloads */
@@ -1234,7 +1234,7 @@ typedef struct {
 Unk8002208C *preload_waitCurrent(void);
 s32 preload_overlaps(s32, s32);
 s32 preload_discardRange(u32, s32);
-u8 *func_80050BE0(void *);
+u8 *rain_init(void *);
 
 extern RECT *s_menuMainTimeGilRect;
 extern u8 s_menuMainGilSuffix[];
@@ -1322,7 +1322,7 @@ s32 mbg_setRgb24(s32); /* overlay loaded at 0x80198000 */
 s32 mbg_getFrame(void);
 void menu_update(void);
 Unk8004AB64 *evt_getPlayer(void);
-u32 func_8004AB64(void *); /* actor -> model slot */
+u32 evt_getObjectChrIndex(void *); /* actor -> model slot */
 void game_updateWindows(void);
 void preload_reset(void);
 void math_rotMatrixZYX_gte(void *, void *); /* rotation (SVECTOR) -> bone matrix */
@@ -1666,7 +1666,7 @@ void fldmdl_setAbr(ModelObj *arg0, u16 arg1);
 void fldmdl_setGroupRgb(ModelObj *arg0, u8 arg1, s16 arg2, s16 arg3, s16 arg4);
 void fldmdl_setSemiTrans(ModelObj *arg0, u16 arg1);
 void func_8002FC30(void); /* main */
-s32 func_8004AAF0(s32 unused); /* main */
+s32 evt_countNpcActors(s32 unused); /* main */
 void func_800B3684(void);
 void game_resumeClock(u8 arg0); /* main */
 s32 mbg_shutdown(void); /* ovl_64 */

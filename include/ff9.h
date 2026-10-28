@@ -782,7 +782,7 @@ extern s32 D_800704C8;
 extern s32 D_8007041C;
 extern u8 g_partyChanged;
 extern struct MsgWindow *g_msgFocus;
-extern s32 D_800834C8;
+extern s32 g_cardGameResult;
 extern s32 D_8006798C;
 extern u16 g_padFlags;
 extern u8 D_8006825C;
@@ -1261,7 +1261,7 @@ extern Unk8007AECC g_evtStateData; /* the script system state g_evtState points 
 extern Unk8007AECC g_evtSavedState; /* saved copy, restored when returning to the same field */
 extern Unk4 D_80011A44; /* rodata */
 extern s32 D_8007B6FC;
-extern s32 D_8007AEC0;
+extern s32 g_evtCamera;
 extern s32 g_evtEncounterPending;
 void msg_resetPlayerBubble(void);
 
@@ -1806,7 +1806,7 @@ typedef struct {
 extern Unk800703FC g_winLabelStrings;
 
 extern u8 *g_loadAreaEnd; /* end of load area */
-extern s32 D_80067948;
+extern s32 g_modeHeap;
 extern u32 g_levelExp[]; /* exp needed for next level, by level */
 extern s32 D_80070424;
 extern s32 D_80070428;
@@ -1971,7 +1971,7 @@ extern u32 g_padRepeat; /* press, then auto-repeat after 15 frames, every 5 */
 extern u8 D_80077DB5;
 extern s32 g_menuFrame; /* frame counter? */
 
-s32 func_80012AD4(void);
+s32 mbg_getStatus(void);
 s32 EnterCriticalSection(void);
 void ExitCriticalSection(void);
 s32 OpenEvent(s32, s32, s32, void (*)(void)); /* BIOS OpenEvent */
@@ -2160,14 +2160,14 @@ typedef struct {
     u8 pad20[0x24 - 0x20];
     s32 unk24;
 } Unk8007BC20;
-extern u8 *D_8007BC18;
-extern u8 *D_8007BC48;
-extern Unk8007BC20 D_8007BC20;
-extern Unk8007BC20 D_8007BC50;
-void func_8005338C(s32);  /* hand-written asm module */
-s32 func_80053498(s32, u8, u32 *, s32);
-void func_80053658(s32);
-s32 func_80053764(s32, u8, u32 *, s32);
+extern u8 *g_fieldRainPrims;
+extern u8 *g_worldRainPrims;
+extern Unk8007BC20 g_fieldRain;
+extern Unk8007BC20 g_worldRain;
+void rain_spawn(s32);  /* hand-written asm module */
+s32 rain_drawDrops(s32, u8, u32 *, s32);
+void wrain_spawn(s32);
+s32 wrain_drawDrops(s32, u8, u32 *, s32);
 void chr_setLevel(s32, s32, u32 *, u8);
 extern u32 D_8006CA78[];
 extern u32 g_fadeBattleOt[];
@@ -2256,8 +2256,8 @@ void menuList_right(MenuList *, s32);
 MenuView *menuList_getPageView(MenuList *, MenuView *);
 void menuList_getRowsRect(MenuList *, RECT *, RECT *);
 void snd_playSe(s32);
-void func_8002F514(s32);
-void func_8002F55C(s32);
+void snd_startSe(s32);
+void snd_stopSe(s32);
 u8 fade_isBusy(void);
 s32 fade_setOnDone(void (*)(void));
 u16 fade_setAngle(u16);
@@ -2283,7 +2283,7 @@ void evt_init(u8 *); /* start the field script system on a script data block */
 void evt_initSystem(void);
 void msg_init(void);
 void evt_clearGlobalVars(void);
-void func_8005392C(void);
+void gamedata_resetEventFlags(void);
 s32 snd_init(void);
 void akao_stopMusicNow(void);
 void akao_stopAllSe(void);
@@ -2292,7 +2292,7 @@ s32 akao_uploadBank(s32 *, u32, s32);
 s32 CloseEvent(s32);
 s32 DisableEvent(s32);
 void card_initAll(void);
-void func_8006237C(void);
+void card_resetGameResult(void);
 s32 card_addWithStats(u8, u8, u8, u8, u8, u8);
 s32 card_add(s32);
 s32 card_countAll(void);
@@ -2302,7 +2302,7 @@ s32 card_getName(s32); /* number to string */
 void card_addWin(void);
 void card_addLoss(void);
 void card_addDraw(void);
-void func_80062750(s32);
+void card_setGameResult(s32);
 FileEntry *dep_find(FileTable *, s32);
 void strcat(u8 *, u8 *);
 /* per-frame offset animation of a window (tween_start / tween_step) */
@@ -2399,10 +2399,10 @@ extern s32 D_8007B718;
 void msg_update(void);
 void evt_updateIdleTimer(void);
 s32 evt_updateObjects(void); /* per-frame field object update */
-extern s32 D_8007AEA8;
+extern s32 g_evtPlayerBlocked;
 extern s32 g_evtPlayerMoved; /* the player moved this frame */
-extern s32 D_8007AEB0;
-extern s32 D_8007AEB4;
+extern s32 g_evtPushFrames;
+extern s32 g_evtPushable;
 extern u8 g_worldPlayerStepped; /* world map (ovl_0c) data */
 void evt_movePlayer(Unk8004AB64 *);
 void evt_updateLookAt(Unk8004AB64 *);
@@ -2410,9 +2410,9 @@ void evt_checkPlayerAction(Unk8004AB64 *);
 void evt_updateBattleObjects(void);
 void evt_stepAnim(Unk8004AB64 *);
 void msg_drawHereIcon(Unk8004AB64 *);
-s32 func_80052870(Unk16D8 *);
+s32 evt_runScripts(Unk16D8 *);
 s32 math_length3(s32, s32, s32);
-s32 func_8002170C(Unk8004AB64 *);
+s32 evt_updateActorWalkmesh(Unk8004AB64 *);
 s32 evt_rollEncounter(Unk8004AB64 *);
 #if !defined(OVL_0A_H) /* field overlay functions; ovl_0a has the definitions */
 s32 func_800B3444(s32, s32, s32);
@@ -2479,7 +2479,7 @@ typedef struct {
 
 extern CdRequest g_cdRetryRequest;
 extern CdRequest g_cdRestartRequest;
-extern Unk8004AB64 *D_8007B704;
+extern Unk8004AB64 *g_evtActor;
 
 /* Same as evt_getArg8_inline, but written as `>>= (g_evtArgRead = 1)` (srav). */
 static inline s32 evt_getArg8_inline2(void) {
@@ -2494,10 +2494,10 @@ static inline s32 evt_getArg8_inline2(void) {
     return r;
 }
 
-/* Inlined copy of func_8004B4C4 (resolve a script object reference). */
-static inline Unk8004AB64 *func_8004B4C4_inline(s32 id) {
+/* Inlined copy of evt_resolveObjectId (resolve a script object reference). */
+static inline Unk8004AB64 *evt_resolveObjectId_inline(s32 id) {
     if (id == 0xFF) {
-        return D_8007B704;
+        return g_evtActor;
     }
     if (id == 0xFA) {
         id = g_evtState->playerUid;
@@ -2506,8 +2506,8 @@ static inline Unk8004AB64 *func_8004B4C4_inline(s32 id) {
     }
     return evt_getObject_inline(id);
 }
-extern s32 D_8007B710;
-extern s32 D_8007BBC8;
+extern s32 g_evtPlayerAnimCount;
+extern s32 g_evtMsgCount;
 extern s32 g_hereIconActive;
 extern s32 g_hereIconTimer;
 extern AkaoChannel *g_akaoSubChannels;
@@ -2588,7 +2588,7 @@ extern u8 **g_penPktPtr;
 void pen_putGlyph(s32);
 extern u8 g_msgNameBuf[8]; /* name text being converted */
 u32 pen_getGlyph(s32); /* glyph info of a text code, width in the top 4 bits */
-s32 func_8004B120(s32);
+s32 evt_getPartyChrIndex(s32);
 void msg_measureLine(u8 **, s32 *); /* add the width of a text control code */
 
 typedef struct {
@@ -2813,7 +2813,7 @@ u8 menuScreen_needsMember(s32);
 s32 menuScreen_getCommandHelp(s32);
 void menuScreen_close(void);
 s32 vib_clear(void);
-s32 func_80050AAC(void);
+s32 rain_draw(void);
 void akao_stopSe(s32, s32);
 void akao_sendCmdE2(void);
 s32 game_getPlayTime(void);
@@ -3162,7 +3162,7 @@ extern s32 g_bubbleColor; /* colour */
 extern s32 g_bubbleHalfWidth; /* half width */
 extern s32 g_bubbleHeight; /* height */
 extern s32 g_bubbleLift;
-extern s32 D_8007AEC8;
+extern s32 g_evtCameraChanged;
 extern u8 D_8006E6D8[];
 extern u8 D_8006E690[];
 extern u8 D_8006E6F0[];
@@ -3320,7 +3320,7 @@ static inline void chr_updateStats_inline(Character *c) {
     c->maxMp = out.unk6;
 }
 extern void (*g_fadeSeekFuncs[])(FadeState *, s32);
-extern s32 D_8007BBD4;
+extern s32 g_msgReady;
 extern u32 *D_8007BBCC;
 extern s32 D_8007B94C;
 void win_closeAll(void);
@@ -3805,10 +3805,10 @@ s32 evt_modelOpField(Unk8004AB64 *, s32);
 s32 evt_modelOpBattle(Unk8004AB64 *, s32);
 s32 evt_modelOpWorld(Unk8004AB64 *, s32);
 
-extern s32 D_8007AEA4;
+extern s32 g_evtPosSetThisFrame;
 extern Unk8004AB64 *g_evtLookTarget;
 extern s32 D_8007AE6C;
-extern s32 D_8007BBD8;
+extern s32 g_msgSyncTag;
 extern s32 g_msgLine; /* message counter */
 extern u8 D_8006E688[]; /* text speed per config setting */
 void evt_turnObject(Unk8004AB64 *, s32, s32, s32);
@@ -3851,7 +3851,7 @@ static inline s32 evt_getArg8_inline(void) {
     return r;
 }
 
-extern s32 D_8007B710;
+extern s32 g_evtPlayerAnimCount;
 extern s32 D_8007AE24;
 extern s32 D_8007AE28;
 void msg_close(s32);
@@ -3916,8 +3916,8 @@ typedef struct Unk8004AFF0 {
     s16 unk78;
 } Unk8004AFF0;
 
-/* Inlined copy of func_8004AFF0. */
-static inline Unk8004AFF0 *func_8004AFF0_inline(Unk8004AB64 *p) {
+/* Inlined copy of evt_getObjectModelData. */
+static inline Unk8004AFF0 *evt_getObjectModelData_inline(Unk8004AB64 *p) {
     Unk8E0 *q;
 
     if (p != NULL) {
@@ -3944,7 +3944,7 @@ typedef struct {
 extern Unk8007AE40 g_evtEncounterTable;
 extern u8 D_8006E658[];
 void evt_setNextBattle(u16);
-void func_80021680();
+void evt_setCardOpponent();
 void msg_startHereIcon(s32);
 void func_80052D0C(u8 **);
 Unk16D8 *evt_deleteObject(Unk8004AB64 *);
@@ -3999,8 +3999,8 @@ s32 vib_setTrackEnabled(s32, s32, s32);
 s32 vib_setRate(s16);
 s32 vib_setLoopMode(s32);
 s32 vib_setRange(s32, s32);
-extern u8 D_8007AE90[];
-extern u8 *D_8007AE8C;
+extern u8 g_evtLocationNameBuf[];
+extern u8 *g_evtLocationName;
 
 typedef struct {
     s32 unk0;
@@ -4036,7 +4036,7 @@ static inline void func_8004B3A8_inline(s32 a, s32 b) {
     evt_createObject(a, b, 0x14, 0x10)->unk5 = 2;
 }
 
-static inline void func_8004B3D0_inline(s32 a, s32 b) {
+static inline void evt_createRegion_inline(s32 a, s32 b) {
     Unk800367D0 *p = evt_createObject(a, b, 0x38, 0x10);
     p->unk5 = 3;
     p->unkF = 1;
@@ -4224,16 +4224,16 @@ static inline s32 evt_exprSpecial_chr(s32 i) {
 }
 
 /* evt_getSysVar (script system variables) */
-extern s32 D_8007AE20;
+extern s32 g_evtTalkAngle;
 void *evt_findNearestObject(Unk8004AB64 *, s32, s32 *); /* nearest object of a kind */
-extern s32 D_8007AEC4;
+extern s32 g_evtStepCount;
 s32 fldbg_getCamera(u8 *);
 s32 btlseq_isBusy(void);
 s32 w_frameGetParameter(s32); /* ovl_0c */
 s32 btl_getBattleVar(s32);
 u32 game_getPlayTimeSeconds(void);
 s32 timer_getSeconds(void);
-s32 func_8006275C(void);
+s32 card_getGameResult(void);
 s32 msg_getChoiceIndex(void);
 
 /* random encounter check (evt_rollEncounter). ovl_0c declares wm_getEncounterEntry with its own
@@ -4386,8 +4386,8 @@ void fld_entry(void); /* ovl_0a */
 s32 fld_soundCommand(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4); /* ovl_0a */
 s32 fldbg_scrollToPlayer(s32 arg0, s32 arg1); /* ovl_0a */
 void func_8003573C(void);
-void func_80050CA8(s32 a, u32 b);
-void func_80050EFC(s32 a, u32 b);
+void rain_set(s32 a, u32 b);
+void wrain_set(s32 a, u32 b);
 void game_initData(void);
 void game_initLibraries(void);
 void game_initState(void);

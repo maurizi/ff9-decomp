@@ -271,7 +271,7 @@ void wm_updateMap(void) {
             }
             if (h > 0x10) {
                 h >>= 4;
-                func_80050EFC(h, 0x40);
+                wrain_set(h, 0x40);
                 g_worldPointFxOn = 1;
                 g_gameState->gameData->rainCount = h >> 4;
                 return;

@@ -450,7 +450,7 @@ state:
         if (!(g->unk8E4.field->area->scene->flags & FLD_SCN_BANK_SLOT) && g->unk852 != 0x84) {
             akao_beginBankUpload();
         }
-        g_gameState->gameData->unk8C0 = SCENE->heapTop ? SCENE->heapTop : D_80067948;
+        g_gameState->gameData->unk8C0 = SCENE->heapTop ? SCENE->heapTop : g_modeHeap;
         g_gameState->gameData->unk878 = 0x156F00 - (g_gameState->gameData->unk8C0 - (s32)g_loadAreaEnd);
         if (!(g_gameState->gameData->unk8E4.field->flags & 4)) {
             g_gameState->gameData->unk878 -= 0x3000;
@@ -1228,20 +1228,20 @@ s32 func_800B3444(s32 arg0, s32 arg1, s32 arg2) {
             if (!(g_gameState->gameData->unk8E4.field->area->scene->flags & FLD_SCN_OBJFX_ALLOC)) {
                 start = g_gameState->gameData->unk8E4.field->area->scene->heapTop;
                 if (start == 0) {
-                    start = D_80067948;
+                    start = g_modeHeap;
                 }
                 if (preload_overlaps(start, 0x5000) != 0) {
                     preload_remove(preload_waitCurrent()->unk4);
                 }
                 if (g_gameState->gameData->unk8E4.field->area->scene->heapTop != 0) {
                     start = g_gameState->gameData->unk8E4.field->area->scene->heapTop;
-                    g_gameState->gameData->unk8E4.field->area->scene->heapTop = (s32)func_80050BE0((void *)start);
+                    g_gameState->gameData->unk8E4.field->area->scene->heapTop = (s32)rain_init((void *)start);
                     size = g_gameState->gameData->unk8E4.field->area->scene->heapTop - start;
                 } else {
-                    start = D_80067948;
-                    end = (s32)func_80050BE0((void *)start);
+                    start = g_modeHeap;
+                    end = (s32)rain_init((void *)start);
                     size = end - start;
-                    D_80067948 = end;
+                    g_modeHeap = end;
                 }
                 fld_trimModelCache();
                 preload_discardRange(start, size);
@@ -1257,7 +1257,7 @@ s32 func_800B3444(s32 arg0, s32 arg1, s32 arg2) {
 
 void func_800B3684(void) {
     if (g_gameState->gameData->unk8E4.field->area->scene->flags & FLD_SCN_OBJFX_ON) {
-        func_80050AAC();
+        rain_draw();
     }
 }
 

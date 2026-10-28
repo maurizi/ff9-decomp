@@ -1370,7 +1370,7 @@ typedef struct {
     Battle unk0;
     u8 unk23CC[0x240C - 0x23CC];
     u8 unk240C[0x241C - 0x240C];
-    u8 unk241C[1]; /* becomes D_80067948 */
+    u8 unk241C[1]; /* becomes g_modeHeap */
 } BattleMem;
 
 typedef struct {
@@ -1483,7 +1483,7 @@ typedef struct LinkNode {
     u32 unk10;
 } LinkNode;
 void btl_linkCmd(LinkNode *, LinkNode **);
-Unk16D8 *func_8004AEBC(void);
+Unk16D8 *evt_getBattleObjects(void);
 s16 btl_getEnemyModelId(s16);
 void btl_resetUnit(struct BtlUnit *, struct Unk8E0 *);
 void btl_setupEnemies(void);
@@ -3404,7 +3404,7 @@ void btlui_onUnitTargetable(BtlUnit *);
 u32 btl_registerModel(s32, s32);
 void btl_load(); /* takes the battle id (s32); unprototyped, the caller passes an s16 unconverted */
 s32 func_800AD4AC(s32, s32);
-s32 func_8004AAF0(s32);
+s32 evt_countNpcActors(s32);
 void func_8001E3A4(void *);
 void btl_makeEnemyGreyCluts(void);
 void btl_execCmd(struct BtlUnit *);
@@ -3445,7 +3445,7 @@ void func_800EA290(void);
 void btlui_drawOTagEnv(u32 *, DRAWENV *);
 void btl_cleanup(void);
 s32 btl_getModelTexInfo(u32, s32 **, s32 **, s32 **);
-u32 func_8004AB64(void *);
+u32 evt_getObjectChrIndex(void *);
 /* object slot returned by game_getModel in battle */
 typedef struct {
     u32 unk0; /* flags */

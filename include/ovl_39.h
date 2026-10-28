@@ -276,7 +276,7 @@ u16 fld_getDiscChangeAreaId(void);
 
 typedef struct {
     EventVars vars; /* g_evtGlobalVars */
-    s32 unk800; /* D_8007AEC4 */
+    s32 unk800; /* g_evtStepCount */
 } SaveEvents;
 
 #define SAVE_CHARACTERS 9 /* GameData.characters; also "no member" in SaveParty.party */
@@ -540,7 +540,7 @@ s32 chr_getPortrait(s32); /* defined u8 in main; used unmasked */
 char *strcpy(char *, const char *); /* C library (builtin) */
 s32 open(char *, s32);
 void game_setPlayTime(s32);
-extern s32 D_8007AEC4;
+extern s32 g_evtStepCount;
 void lseek(s32, s32, s32);
 /* slider gauge pieces drawn by ui_drawSpriteDef: left cap, middle (repeated via DR_TWIN), right cap */
 typedef struct {

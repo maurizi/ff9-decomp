@@ -165,7 +165,7 @@ void fld_init(void) {
         fld_soundCommand(0x8601, 0, 0x78, 0, 0);
     }
     func_8002FC30();
-    f->loadEnd = D_80067948;
+    f->loadEnd = g_modeHeap;
 }
 
 void fld_quit(void) {
@@ -180,10 +180,10 @@ void fld_quit(void) {
 }
 
 void fld_allocMap(void) {
-    D_80067948 = (s32)(g_loadAreaEnd + 0x28000);
-    D_80067948 += 0x2000;
-    g_gameState->gameData->unk8E4.field = (FieldMap *)D_80067948;
-    D_80067948 += 0x50;
+    g_modeHeap = (s32)(g_loadAreaEnd + 0x28000);
+    g_modeHeap += 0x2000;
+    g_gameState->gameData->unk8E4.field = (FieldMap *)g_modeHeap;
+    g_modeHeap += 0x50;
 }
 
 void fld_initMap(void) {
@@ -222,16 +222,16 @@ s32 fld_loadCommon(void) {
 
     if (preload_isReady(0x2714) != 0) {
         p = preload_find(0x2714);
-        file_copyViaVram(D_80067948, p->unk8, p->unkC, NULL);
+        file_copyViaVram(g_modeHeap, p->unk8, p->unkC, NULL);
         preload_remove(0x2714);
         DrawSync(0);
     } else {
         f = file_find(1, 0x2714);
-        cdRead_init(g_gameState->gameData->unk854, f->unk4, (f->unkC - f->unk4) << 11, (void *)D_80067948, 0, -1, 0);
+        cdRead_init(g_gameState->gameData->unk854, f->unk4, (f->unkC - f->unk4) << 11, (void *)g_modeHeap, 0, -1, 0);
         while (cdRead_update(g_gameState->gameData->unk854) != 0) {
         }
     }
-    g_gameState->gameData->unk8E4.field->commonFile = (void *)D_80067948;
+    g_gameState->gameData->unk8E4.field->commonFile = (void *)g_modeHeap;
     db_register((s32)g_gameState->gameData->unk8E4.field->commonFile, 0);
     return 0;
 }
@@ -249,14 +249,14 @@ s32 fld_freeCommon(void) {
 void fld_loadArea(s32 arg0) {
     FieldMapObj *o;
 
-    D_80067948 = g_gameState->gameData->unk8E4.field->loadEnd;
+    g_modeHeap = g_gameState->gameData->unk8E4.field->loadEnd;
     fld_allocArea();
     o = g_gameState->gameData->unk8E4.field->area;
     fld_initArea();
     game_freezeScreen();
     fld_readAreaFile(o, arg0);
     fld_findAreaItem(o, arg0);
-    o->loadEnd = D_80067948;
+    o->loadEnd = g_modeHeap;
 }
 
 void fld_unloadArea(void) {
@@ -268,9 +268,9 @@ void fld_unloadArea(void) {
 }
 
 void fld_allocArea(void) {
-    FieldMapObj *p = (FieldMapObj *)D_80067948;
+    FieldMapObj *p = (FieldMapObj *)g_modeHeap;
 
-    D_80067948 = (s32)(p + 1);
+    g_modeHeap = (s32)(p + 1);
     g_gameState->gameData->unk8E4.field->area = p;
 }
 
@@ -316,24 +316,24 @@ s32 fld_readAreaFile(FieldMapObj *arg0, s32 arg1) {
         g_gameState->gameData->unk854->unk20 = (u8 *)(e->unk8 + e->unkC);
         g_gameState->gameData->unk854->unk10 = e->unkC;
         g_gameState->gameData->unk854->unk4 = e->unk1C;
-        file_copyViaVram(D_80067948, e->unk8, e->unkC, NULL);
+        file_copyViaVram(g_modeHeap, e->unk8, e->unkC, NULL);
         preload_remove(id);
         DrawSync(0);
         g = g_gameState->gameData;
         t = g->unk854->unk10;
         if (t < g->unk854->unk4) {
-            cdRead_init(g->unk854, g->sceneSector[0], g->sceneSectors[0] << 11, (void *)(D_80067948 + t), t, -1, NULL);
+            cdRead_init(g->unk854, g->sceneSector[0], g->sceneSectors[0] << 11, (void *)(g_modeHeap + t), t, -1, NULL);
             while (cdRead_update(g_gameState->gameData->unk854) != 0) {
             }
         }
     } else {
-        cdRead_init(cd, gd->sceneSector[0], gd->sceneSectors[0] << 11, (void *)D_80067948, 0, -1, NULL);
+        cdRead_init(cd, gd->sceneSector[0], gd->sceneSectors[0] << 11, (void *)g_modeHeap, 0, -1, NULL);
         while (cdRead_update(cd) != 0) {
         }
     }
-    arg0->areaFile = (void *)D_80067948;
-    db_register(D_80067948, 0);
-    D_80067948 += db_getSize((s32)arg0->areaFile);
+    arg0->areaFile = (void *)g_modeHeap;
+    db_register(g_modeHeap, 0);
+    g_modeHeap += db_getSize((s32)arg0->areaFile);
     return 0;
 }
 
@@ -349,7 +349,7 @@ void fld_load(s32 arg0) {
     s32 i;
     s32 j;
 
-    D_80067948 = g_gameState->gameData->unk8E4.field->area->loadEnd;
+    g_modeHeap = g_gameState->gameData->unk8E4.field->area->loadEnd;
     fld_allocScene();
     sc = g_gameState->gameData->unk8E4.field->area->scene;
     fld_initScene();
@@ -386,10 +386,10 @@ void fld_load(s32 arg0) {
     while (fld_soundCommand(0xC00, -1, 0, 0, 0) != 0) {
     }
     msg_init();
-    g_gameState->gameData->unk38 = func_8004AAF0(0);
-    g_gameState->gameData->unk8DC = (Unk8D4 *)D_80067948;
+    g_gameState->gameData->unk38 = evt_countNpcActors(0);
+    g_gameState->gameData->unk8DC = (Unk8D4 *)g_modeHeap;
     g_gameState->gameData->unk8E0 = (Unk8E0 *)(g_gameState->gameData->unk8DC + g_gameState->gameData->unk38);
-    D_80067948 = (s32)(g_gameState->gameData->unk8E0 + g_gameState->gameData->unk38);
+    g_modeHeap = (s32)(g_gameState->gameData->unk8E0 + g_gameState->gameData->unk38);
     g_gameState->gameData->unk9 = 0;
     for (i = 0; i < 9; i++) {
         func_8001E3A4(&g_gameState->gameData->unk8D8[i]);
@@ -400,14 +400,14 @@ void fld_load(s32 arg0) {
         func_8001E3A4(&g_gameState->gameData->unk8E0[i]);
         g_gameState->gameData->unk8E0[i].unk8 = &g_gameState->gameData->unk8DC[i];
     }
-    sc->shadows = (FieldObjPlace *)D_80067948;
-    D_80067948 = fld_initShadows(D_80067948, g_gameState->gameData->unk38 + 9,
+    sc->shadows = (FieldObjPlace *)g_modeHeap;
+    g_modeHeap = fld_initShadows(g_modeHeap, g_gameState->gameData->unk38 + 9,
                                g_gameState->gameData->unk8E4.field->area->scene->shadowTexX,
                                g_gameState->gameData->unk8E4.field->area->scene->shadowTexY);
     fld_loadSoundBanks(sc, arg0);
     fld_resumeResidentSfx();
-    sc->heapTop = D_80067948;
-    sc->loadEnd = D_80067948;
+    sc->heapTop = g_modeHeap;
+    sc->loadEnd = g_modeHeap;
     evt_createModels();
     g_padPortMask[0] |= BTN_TRIANGLE;
     g_gameState->gameData->unk0 &= ~GD_NO_FLIP;
@@ -502,13 +502,13 @@ void fld_exit(void) {
 void fld_allocScene(void) {
     FieldScene *sc;
 
-    g_gameState->gameData->unk8E4.field->area->scene = sc = (FieldScene *)D_80067948;
+    g_gameState->gameData->unk8E4.field->area->scene = sc = (FieldScene *)g_modeHeap;
     sc->modelBundles = sc->unk6C;
-    D_80067948 += 0x90;
-    sc->actorInfo = (FieldActorInfo *)D_80067948;
-    D_80067948 += 0x1E0;
-    sc->animSfx = (FieldAnimSfx *)D_80067948;
-    D_80067948 += 0xC0;
+    g_modeHeap += 0x90;
+    sc->actorInfo = (FieldActorInfo *)g_modeHeap;
+    g_modeHeap += 0x1E0;
+    sc->animSfx = (FieldAnimSfx *)g_modeHeap;
+    g_modeHeap += 0xC0;
 }
 
 void fld_initScene(void) {
@@ -690,16 +690,16 @@ s32 fld_setupBackground(FieldScene *arg0, s32 arg1) {
     GameData *gd = g_gameState->gameData;
     s32 id;
 
-    fldbg_setRenderContext(&gd->unk8, &gd->unkA, gd->unk10[0], gd->unk10[1], &gd->unk18, D_80067948 + 0x400);
-    fldbg_setWorkBuffer(D_80067948, 0x400);
+    fldbg_setRenderContext(&gd->unk8, &gd->unkA, gd->unk10[0], gd->unk10[1], &gd->unk18, g_modeHeap + 0x400);
+    fldbg_setWorkBuffer(g_modeHeap, 0x400);
     id = fld_getBgKey(arg0, arg1);
     arg0->bg = db_lookupRegistered(4, id, 0);
     fldbg_setData(arg0->bg);
-    D_80067948 = fldbg_init();
+    g_modeHeap = fldbg_init();
     bgi_clear();
     arg0->walkmesh = db_lookupRegistered(4, (s32)db_lookupRegistered(9, id, DB_WALKMESH), 0);
     bgi_init((u8 *)arg0->walkmesh + 4);
-    D_80067948 = fld_initSprites(D_80067948);
+    g_modeHeap = fld_initSprites(g_modeHeap);
     return 0;
 }
 
@@ -762,8 +762,8 @@ s32 fld_loadFile(FieldScene *sc, s32 arg1) {
     s32 k;
 
     size = g_gameState->gameData->sceneSectors[1] << 11;
-    if ((s32)((s32)PSX_RAM(u8 *, 0x801EDF00) - (D_80067948 + size)) < 0x17000) {
-        size = (s32)(PSX_RAM(u8 *, 0x801EDF00) - 0x17000) - D_80067948;
+    if ((s32)((s32)PSX_RAM(u8 *, 0x801EDF00) - (g_modeHeap + size)) < 0x17000) {
+        size = (s32)(PSX_RAM(u8 *, 0x801EDF00) - 0x17000) - g_modeHeap;
         size = size / 2048 * 2048;
     }
     id = (u16)arg1 | DB_FIELD;
@@ -772,25 +772,25 @@ s32 fld_loadFile(FieldScene *sc, s32 arg1) {
         g_gameState->gameData->unk854[0].unk20 = (u8 *)(e->unk8 + e->unkC);
         g_gameState->gameData->unk854[0].unk10 = e->unkC;
         g_gameState->gameData->unk854[0].unk4 = e->unk1C;
-        file_copyViaVram(D_80067948, e->unk8, e->unkC, NULL);
+        file_copyViaVram(g_modeHeap, e->unk8, e->unkC, NULL);
         preload_remove(id);
         DrawSync(0);
     } else {
         cdRead_init(g_gameState->gameData->unk854, g_gameState->gameData->sceneSector[1], g_gameState->gameData->sceneSectors[1] << 11,
-                      (void *)D_80067948, 0, size, NULL);
+                      (void *)g_modeHeap, 0, size, NULL);
         while (cdRead_update(g_gameState->gameData->unk854) != 0) {
         }
     }
     fld_invalidateModelCache((s32)g_gameState->gameData->unk854[0].unk20);
-    base = D_80067948;
+    base = g_modeHeap;
     g_gameState->gameData->depTable = (FileTable *)db_lookup(base, 4, DB_DEP_TABLE, 0);
     id = db_lookup(base, 2, DB_PACK, 0);
     if (id != 0) {
         r = db_lookup(base, 5, DB_PACK, 0);
-        if ((u32)(D_80067948 + g_gameState->gameData->unk854[0].unk10) < (u32)(id + r)) {
+        if ((u32)(g_modeHeap + g_gameState->gameData->unk854[0].unk10) < (u32)(id + r)) {
             rest = g_gameState->gameData->unk854[0].unk10;
             cdRead_init(g_gameState->gameData->unk854, g_gameState->gameData->sceneSector[1], g_gameState->gameData->sceneSectors[1] << 11,
-                          (void *)(D_80067948 + rest), rest, size - g_gameState->gameData->unk854[0].unk10, NULL);
+                          (void *)(g_modeHeap + rest), rest, size - g_gameState->gameData->unk854[0].unk10, NULL);
             while (cdRead_update(g_gameState->gameData->unk854) != 0) {
             }
             g_gameState->gameData->unk854[0].unk10 += rest;
@@ -822,7 +822,7 @@ s32 fld_loadFile(FieldScene *sc, s32 arg1) {
         }
     }
     db_register((s32)sc->fieldFile, 0);
-    D_80067948 = (s32)sc->fieldFile + db_getSize((s32)sc->fieldFile);
+    g_modeHeap = (s32)sc->fieldFile + db_getSize((s32)sc->fieldFile);
     return 0;
 }
 

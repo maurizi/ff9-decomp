@@ -99,16 +99,16 @@ s32 battleEnd_loadDb(void) {
 
     if (preload_isReady(0x2713)) {
         f = preload_find(0x2713);
-        file_copyViaVram(D_80067948, f->unk8, f->unkC, 0);
+        file_copyViaVram(g_modeHeap, f->unk8, f->unkC, 0);
         preload_remove(0x2713);
         DrawSync(0);
     } else {
         e = file_find(1, 0x2713);
-        cdRead_init(g_gameState->gameData->unk854, e->unk4, (e->unkC - e->unk4) << 11, (void *)D_80067948, 0, -1, 0);
+        cdRead_init(g_gameState->gameData->unk854, e->unk4, (e->unkC - e->unk4) << 11, (void *)g_modeHeap, 0, -1, 0);
         while (cdRead_update(g_gameState->gameData->unk854)) {
         }
     }
-    g_gameState->gameData->unk8E4.ovl65->unk1354->unk4 = D_80067948;
+    g_gameState->gameData->unk8E4.ovl65->unk1354->unk4 = g_modeHeap;
     db_register(g_gameState->gameData->unk8E4.ovl65->unk1354->unk4, 0);
     return 0;
 }
@@ -437,7 +437,7 @@ void rewards_finishExp(void) {
             rewards_showLevelUp(i);
         }
     }
-    func_8002F55C(SE_EXP_COUNT);
+    snd_stopSe(SE_EXP_COUNT);
     snd_playSe(SE_CURSOR);
     for (i = 0; i < 7; i++) {
         tween_start(&s_rewards.wins[2 + i], &s_rewardsWinClose[i], 0);
@@ -763,7 +763,7 @@ void rewards_giveAp(void) {
         }
     }
     if (any) {
-        func_8002F514(SE_EXP_COUNT);
+        snd_startSe(SE_EXP_COUNT);
     }
 }
 
@@ -777,7 +777,7 @@ void rewards_takeItems(void) {
         }
         s_rewards.state++;
         if (g_btlRewards.gil != 0) {
-            func_8002F514(SE_GIL_COUNT);
+            snd_startSe(SE_GIL_COUNT);
         }
     }
 }
@@ -788,7 +788,7 @@ void rewards_finishGil(void) {
     if (r->gil.target != r->gil.cur) {
         rewards_addGil(r->gil.target - r->gil.cur);
         r->gil.cur = r->gil.target;
-        func_8002F55C(SE_GIL_COUNT);
+        snd_stopSe(SE_GIL_COUNT);
         s_rewards.timer = 0;
     } else {
         s_rewards.timer = 24;
@@ -1179,7 +1179,7 @@ void rewards_stepExp(void) {
         }
     }
     if (done) {
-        func_8002F55C(SE_EXP_COUNT);
+        snd_stopSe(SE_EXP_COUNT);
     }
 }
 
@@ -1289,7 +1289,7 @@ void rewards_stepGil(void) {
         step = Counter_step(c);
         rewards_addGil(step);
         if (c->cur >= c->target) {
-            func_8002F55C(SE_GIL_COUNT);
+            snd_stopSe(SE_GIL_COUNT);
         }
     }
 }

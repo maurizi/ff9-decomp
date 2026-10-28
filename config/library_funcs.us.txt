@@ -5,7 +5,7 @@ main InitHeap BIOS A0 call stub
 main FlushCache BIOS A0 call stub
 main EnterCriticalSection BIOS syscall (Enter/ExitCriticalSection)
 main ExitCriticalSection BIOS syscall (Enter/ExitCriticalSection)
-main func_80012AD4 boot: SN startup helper
+main mbg_getStatus boot: SN startup helper
 main func_8001310C libgpu: RECT check / GPU debug print
 main func_800140E8 libgpu internals (GPU queue/DMA, D_80066660 state)
 main func_80014358 libgpu internals (GPU queue/DMA, D_80066660 state)
@@ -206,7 +206,7 @@ main evt_popAssign hand-written asm module 0x80050F4C-0x80053924 (global regs $t
 main func_80051F18 hand-written asm module 0x80050F4C-0x80053924 (global regs $t5/$s6/$s7, no ABI)
 main evt_runExpr hand-written asm module 0x80050F4C-0x80053924 (global regs $t5/$s6/$s7, no ABI)
 main func_80052834 hand-written asm module 0x80050F4C-0x80053924 (global regs $t5/$s6/$s7, no ABI)
-main func_80052870 hand-written asm module 0x80050F4C-0x80053924 (global regs $t5/$s6/$s7, no ABI)
+main evt_runScripts hand-written asm module 0x80050F4C-0x80053924 (global regs $t5/$s6/$s7, no ABI)
 main evt_getVarBank hand-written asm module 0x80050F4C-0x80053924 (global regs $t5/$s6/$s7, no ABI)
 main func_80052D0C hand-written asm module 0x80050F4C-0x80053924 (global regs $t5/$s6/$s7, no ABI)
 main evt_popResult hand-written asm module 0x80050F4C-0x80053924 (global regs $t5/$s6/$s7, no ABI)
@@ -221,12 +221,12 @@ main func_8005309C hand-written asm module 0x80050F4C-0x80053924 (global regs $t
 main func_800530A8 hand-written asm module 0x80050F4C-0x80053924 (global regs $t5/$s6/$s7, no ABI)
 main evt_isInRegion hand-written asm module 0x80050F4C-0x80053924 (global regs $t5/$s6/$s7, no ABI)
 main evt_angleToObject hand-written asm module 0x80050F4C-0x80053924 (global regs $t5/$s6/$s7, no ABI)
-main func_8005338C hand-written asm module 0x80050F4C-0x80053924 (global regs $t5/$s6/$s7, no ABI)
-main func_8005345C hand-written asm module 0x80050F4C-0x80053924 (global regs $t5/$s6/$s7, no ABI)
-main func_80053498 hand-written asm module 0x80050F4C-0x80053924 (global regs $t5/$s6/$s7, no ABI)
-main func_80053658 hand-written asm module 0x80050F4C-0x80053924 (global regs $t5/$s6/$s7, no ABI)
-main func_80053728 hand-written asm module 0x80050F4C-0x80053924 (global regs $t5/$s6/$s7, no ABI)
-main func_80053764 hand-written asm module 0x80050F4C-0x80053924 (global regs $t5/$s6/$s7, no ABI)
+main rain_spawn hand-written asm module 0x80050F4C-0x80053924 (global regs $t5/$s6/$s7, no ABI)
+main rain_stepDrop hand-written asm module 0x80050F4C-0x80053924 (global regs $t5/$s6/$s7, no ABI)
+main rain_drawDrops hand-written asm module 0x80050F4C-0x80053924 (global regs $t5/$s6/$s7, no ABI)
+main wrain_spawn hand-written asm module 0x80050F4C-0x80053924 (global regs $t5/$s6/$s7, no ABI)
+main wrain_stepDrop hand-written asm module 0x80050F4C-0x80053924 (global regs $t5/$s6/$s7, no ABI)
+main wrain_drawDrops hand-written asm module 0x80050F4C-0x80053924 (global regs $t5/$s6/$s7, no ABI)
 main func_80064A2C libgpu: GP1 0x10 info query via GPU register pointers
 main func_8006605C libcard: patches a BIOS device-table (0x150) entry by name
 main func_800661E0 libcard: memory card sector write/verify with checksum retries

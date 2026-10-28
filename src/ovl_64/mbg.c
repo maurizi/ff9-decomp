@@ -507,7 +507,7 @@ s32 mbg_setRgb24(s32 on) {
             return 0;
         }
     }
-    if (func_80012AD4() & 2) {
+    if (mbg_getStatus() & 2) {
         D_8019DC97 = 1;
     } else if (on != 0) {
         k = 1;

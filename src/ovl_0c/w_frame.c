@@ -63,8 +63,8 @@ void wm_systemInit(void) {
     wm_weatherInit();
     wm_initLighting();
     wm_initMapState();
-    func_80050E34(g_worldPointFxBufPtr);
-    func_80050EFC(0x24, 0x30);
+    wrain_init(g_worldPointFxBufPtr);
+    wrain_set(0x24, 0x30);
     menu_reset();
     g_padPortMask[0] |= (BTN_CIRCLE | BTN_CROSS | BTN_TRIANGLE | BTN_SQUARE);
 }
@@ -244,7 +244,7 @@ void wm_updateDraw(void) {
             wm_drawEffects();
             g_worldDebugStep = 0x68;
             if (g_worldPointFxOn != 0 && g_worldNaviMode != 2) {
-                g_worldPrimPtr = func_80050D38(g_worldPrimPtr);
+                g_worldPrimPtr = wrain_draw(g_worldPrimPtr);
             }
         } else {
             g_worldDebugStep = 0x6A;

@@ -30,7 +30,7 @@ void timer_enable(u8);
 #define BATTLE_END_GAME_OVER 6   /* GameData.unk56E: party defeated (gameover_main) */
 
 /* sounds of the rewards screen */
-#define SE_EXP_COUNT  0x69  /* loop while exp counts up (func_8002F514 / func_8002F55C) */
+#define SE_EXP_COUNT  0x69  /* loop while exp counts up (snd_startSe / snd_stopSe) */
 #define SE_GIL_COUNT  0x6D  /* loop while gil counts */
 #define SE_ITEMS      0x6C  /* items or a card received */
 #define SE_LEARN      0x413 /* an ability learned window opens */

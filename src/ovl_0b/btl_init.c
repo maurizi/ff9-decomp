@@ -46,7 +46,7 @@ void btl_initParty(Battle *arg0) {
 void btl_initEnemies(Battle *arg0) {
     s16 i = 0;
     s16 n = 4;
-    Unk16D8 *p = func_8004AEBC()->unk0;
+    Unk16D8 *p = evt_getBattleObjects()->unk0;
     BtlUnit *prev = NULL;
     BtlEnemy *e;
     BtlUnit *u;

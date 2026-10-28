@@ -3,7 +3,7 @@
 void func_80053924(void) {
 }
 
-void func_8005392C(void) {
+void gamedata_resetEventFlags(void) {
     GameData *d = g_gameState->gameData;
     d->unk568 = 0;
     d->unk56A = 0;

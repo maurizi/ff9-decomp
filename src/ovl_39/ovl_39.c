@@ -2191,12 +2191,12 @@ void menuSave_unpackCards(void *p) {
 
 void menuSave_packEvents(SaveEvents *d) {
     d->vars = g_evtGlobalVars;
-    d->unk800 = D_8007AEC4;
+    d->unk800 = g_evtStepCount;
 }
 
 void menuSave_unpackEvents(SaveEvents *s) {
     g_evtGlobalVars = s->vars;
-    D_8007AEC4 = s->unk800;
+    g_evtStepCount = s->unk800;
 }
 
 void menuSave_packItems(SaveItems *s) {

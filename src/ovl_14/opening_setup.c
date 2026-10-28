@@ -3,7 +3,7 @@
 void opening_initNewGame(void) {
     game_newGame();
     evt_clearGlobalVars();
-    func_8005392C();
+    gamedata_resetEventFlags();
     menu_initNewGame();
     func_800AB1E4();
     card_initAll();
@@ -14,7 +14,7 @@ void opening_resetGameData(void) {
     opening_resetFieldState();
     evt_initSystem();
     func_800AB200();
-    func_8006237C();
+    card_resetGameResult();
 }
 
 void opening_resetFieldState(void) {

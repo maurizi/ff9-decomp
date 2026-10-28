@@ -83,7 +83,7 @@ void wm_init(void) {
     if (g_gameState->gameData->unk0 & 0x400000) {
         wm_soundCommand(SND_MUSIC_VOL_INTPL, 0, 0x78, 0, 0);
     }
-    wm->mapHeapBase = (u8 *)D_80067948;
+    wm->mapHeapBase = (u8 *)g_modeHeap;
 }
 
 void wm_shutdown(void) {
@@ -98,9 +98,9 @@ void wm_shutdown(void) {
 }
 
 void wm_allocContext(void) {
-    D_80067948 = (s32)(g_loadAreaEnd + 0x32000);
-    g_gameState->gameData->unk8E4.world = (WorldMap *)D_80067948;
-    D_80067948 += 0x3000;
+    g_modeHeap = (s32)(g_loadAreaEnd + 0x32000);
+    g_gameState->gameData->unk8E4.world = (WorldMap *)g_modeHeap;
+    g_modeHeap += 0x3000;
 }
 
 void wm_resetContext(void) {
@@ -231,7 +231,7 @@ void wm_load(s32 arg0) {
     WorldMapObj *obj;
     s32 i;
 
-    D_80067948 = (s32)g_gameState->gameData->unk8E4.world->mapHeapBase;
+    g_modeHeap = (s32)g_gameState->gameData->unk8E4.world->mapHeapBase;
     wm_setupMapObj();
     obj = g_gameState->gameData->unk8E4.world->obj;
     wm_resetMapObj();
@@ -250,10 +250,10 @@ void wm_load(s32 arg0) {
     while (wm_soundCommand(SND_GET_STATE, 0, 0, 0, 0) != 0) {
     }
     msg_init();
-    g_gameState->gameData->unk38 = func_8004AAF0(0);
+    g_gameState->gameData->unk38 = evt_countNpcActors(0);
     g_gameState->gameData->unk8DC = (Unk8D4 *)(obj + 1);
     g_gameState->gameData->unk8E0 = (Unk8E0 *)&g_gameState->gameData->unk8DC[g_gameState->gameData->unk38];
-    D_80067948 = (s32)&g_gameState->gameData->unk8E0[g_gameState->gameData->unk38];
+    g_modeHeap = (s32)&g_gameState->gameData->unk8E0[g_gameState->gameData->unk38];
     g_gameState->gameData->unk9 = 0;
     for (i = 0; i < 9; i++) {
         func_8001E3A4(&g_gameState->gameData->unk8D8[i]);
@@ -264,9 +264,9 @@ void wm_load(s32 arg0) {
         func_8001E3A4(&g_gameState->gameData->unk8E0[i]);
         g_gameState->gameData->unk8E0[i].unk8 = &g_gameState->gameData->unk8DC[i];
     }
-    obj->shadows = (void *)D_80067948;
-    D_80067948 = wm_initShadowPrims(D_80067948, g_gameState->gameData->unk38 + 9);
-    obj->heapEnd = (void *)D_80067948;
+    obj->shadows = (void *)g_modeHeap;
+    g_modeHeap = wm_initShadowPrims(g_modeHeap, g_gameState->gameData->unk38 + 9);
+    obj->heapEnd = (void *)g_modeHeap;
     obj->primCursor = (s32)obj->loadPtr;
     evt_createModels();
     wm_finishLoad();
@@ -336,7 +336,7 @@ void wm_setupMapObj(void) {
 
     wm->obj = &wm->objData;
     wm->obj->loadBase = g_loadAreaEnd + 0x5EB00;
-    D_80067948 = (s32)(wm + 1);
+    g_modeHeap = (s32)(wm + 1);
 }
 
 /* reset the world map object */
@@ -567,7 +567,7 @@ u32 wm_loadActorModel(s32 arg0, Unk8004AB64 *arg1) {
     u32 i;
     s32 n;
 
-    t = func_8004AB64(arg1);
+    t = evt_getObjectChrIndex(arg1);
     if ((u32)t < 9) {
         id = t;
         o = (WmObjSlot *)game_getModel(t);

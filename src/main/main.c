@@ -88,7 +88,7 @@ void game_loadModeOverlay(s32 mode) {
 
 INCLUDE_RODATA("asm/us/main/nonmatchings/main", D_80010034);
 
-INCLUDE_ASM("asm/us/main/nonmatchings/main", func_80012AD4);
+INCLUDE_ASM("asm/us/main/nonmatchings/main", mbg_getStatus);
 
 s8 mbg_getState(void) {
     return g_mbgState;

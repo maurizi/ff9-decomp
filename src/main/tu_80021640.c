@@ -8,7 +8,7 @@ void evt_setNextBattle(u16 a) {
     game_setNextScene(a);
 }
 
-void func_80021680(a)
+void evt_setCardOpponent(a)
     s16 a;
 {
     g_gameState->gameData->unk8B2 = a;
@@ -25,7 +25,7 @@ s32 evt_getAnimFrameCount(a, b)
     return ((u16 *)db_lookupRegistered(4, b | DB_ANIM, 0))[1];
 }
 
-s32 func_8002170C(Unk8004AB64 *p) {
+s32 evt_updateActorWalkmesh(Unk8004AB64 *p) {
     if (g_gameState->mode == 3) {
         goto ret0;
     }

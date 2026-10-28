@@ -11,8 +11,8 @@ void card_initAll(void) {
     }
 }
 
-void func_8006237C(void) {
-    D_800834C8 = 1;
+void card_resetGameResult(void) {
+    g_cardGameResult = 1;
 }
 
 s32 card_add(s32 a) {
@@ -162,12 +162,12 @@ void card_clearAll(void) {
     }
 }
 
-void func_80062750(s32 a) {
-    D_800834C8 = a;
+void card_setGameResult(s32 a) {
+    g_cardGameResult = a;
 }
 
-s32 func_8006275C(void) {
-    return D_800834C8;
+s32 card_getGameResult(void) {
+    return g_cardGameResult;
 }
 
 s32 card_getName(s32 a) {

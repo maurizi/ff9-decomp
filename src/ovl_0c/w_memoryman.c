@@ -50,8 +50,8 @@ void wm_heapInit(void) {
     g_worldHeapUsed = 0;
     g_worldHeapDepth = 0;
     g_worldHeapLastSize = 0;
-    g_worldHeapTop = D_80067948;
-    D_80067948 += 0x24800;
+    g_worldHeapTop = g_modeHeap;
+    g_modeHeap += 0x24800;
 }
 
 void w_memorymanDestructor(void) {

@@ -123,7 +123,7 @@ void wm_cameraFollow(void) {
     u8 *p;
 
     res = 0;
-    if (func_8004B1FC() == 0) {
+    if (evt_getWorldCamTargetObj() == 0) {
         y = g_worldPlayer->pos.vy + g_worldCameraTargetHeight;
         x = g_worldPlayer->pos.vx;
         z = g_worldPlayer->pos.vz;
@@ -209,7 +209,7 @@ void wm_cameraFollow(void) {
         g_worldPlayer->pos.vy = g_worldCameraTarget[1];
         g_worldPlayer->pos.vz = g_worldCameraTarget[2];
     }
-    if (func_8004B1EC() == 0) {
+    if (evt_getWorldCamEyeObj() == 0) {
         k = 0;
         y2 = g_worldPlayer->pos.vy + g_worldCameraEyeOffset.vy;
         x2 = g_worldPlayer->pos.vx + g_worldCameraEyeOffset.vx;
@@ -1095,7 +1095,7 @@ void wm_updateActors(void) {
         cc = &g_worldActorTypeInfo[g_worldPlayer->unk11];
         if ((cc->cellAttr & 0xC000) && D_800CCE4D != 0) {
             wm_posToCell(g_worldPlayer->pos.vx, g_worldPlayer->pos.vz, &cell);
-            func_8004B158(cell % g_worldCellsW, cell / g_worldCellsW, (cc->cellAttr & 0xC000) >> 14);
+            evt_callWorldCellTrigger(cell % g_worldCellsW, cell / g_worldCellsW, (cc->cellAttr & 0xC000) >> 14);
         }
     }
 }

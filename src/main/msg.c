@@ -11,7 +11,7 @@ void msg_init(void) {
         win_closeAll();
     }
     s = g_gameState;
-    D_8007BBD4 = 0;
+    g_msgReady = 0;
     f = s->gameData->unk7D4;
     D_8007BB98.unk0 = 0;
     D_8007BBCC = f->unkC;
@@ -29,7 +29,7 @@ void msg_init(void) {
         g_msgTable = (Unk8007B954 *)s->gameData->unk8E4.ovl65->work->unk14;
         break;
     }
-    D_8007BBD4 = 1;
+    g_msgReady = 1;
     msg_resetChoices();
 }
 
@@ -163,7 +163,7 @@ void msg_measureLine(u8 **pp, s32 *pw) {
             case 0x19:
             case 0x1A:
             case 0x1B:
-                w += msg_measureLine_width(g_gameState->gameData->characters[func_8004B120(c - 0x18)].unk0);
+                w += msg_measureLine_width(g_gameState->gameData->characters[evt_getPartyChrIndex(c - 0x18)].unk0);
                 break;
             case 0x80:
             case 0x81:
@@ -392,7 +392,7 @@ void msg_renderText(MsgWindow *w, u8 *s) {
             case 0x1A:
             case 0x1B:
                 last = end - p == 0;
-                msg_renderText_value(w, func_8004B120(c - 0x18), msg_emitCharName, last);
+                msg_renderText_value(w, evt_getPartyChrIndex(c - 0x18), msg_emitCharName, last);
                 break;
             case 0x80:
             case 0x81:
@@ -571,10 +571,10 @@ void msg_advanceText(MsgWindow *w, u8 *e) {
                 w->flags |= 8;
                 break;
             case 0xF:
-                D_8007BBD8 = *p++;
+                g_msgSyncTag = *p++;
                 break;
             case 0x46:
-                D_8007BBD8++;
+                g_msgSyncTag++;
                 break;
             case 6:
                 p++;
@@ -867,7 +867,7 @@ void msg_open(s32 msg, s32 id, WinLayout *l, s32 flags) {
         g_msgChoiceWindow = id;
         g_msgChoice = n;
     }
-    D_8007BBC8++;
+    g_evtMsgCount++;
     msg_startHereIcon(0);
 }
 
@@ -886,7 +886,7 @@ void msg_resetChoices(void) {
         g_msgTextBanks[i] = e + 2;
     }
     g_msgChoiceDefault = 0;
-    D_8007BBC8 = 0;
+    g_evtMsgCount = 0;
 }
 
 /* Inlined copy of msg_getEntry (message i, its size into out). */
@@ -1447,7 +1447,7 @@ void msg_drawHereIcon(Unk8004AB64 *o) {
         g_hereIconTimer = 60;
         g_hereIconActive = 1;
     }
-    if (g_hereIconTimer > 0 && D_8007AEC8 == 0) {
+    if (g_hereIconTimer > 0 && g_evtCameraChanged == 0) {
         n = --g_hereIconTimer;
         if (n == 0) {
             g_hereIconActive = 0;
@@ -1552,7 +1552,7 @@ void msg_updatePlayerBubble(void) {
     }
     g_bubbleRequestPrev = g_bubbleRequest;
     g_bubbleRequest = 0;
-    if (g_bubbleScript == NULL || D_8007AEC8 != 0) {
+    if (g_bubbleScript == NULL || g_evtCameraChanged != 0) {
         return;
     }
     if (g_bubbleWait > 0) {
@@ -1639,7 +1639,7 @@ void msg_startHereIcon(s32 arg0) {
     mode = (g_gameState->config >> 17) & 1;
     mode = mode == 0;
     if (arg0 >= 3 || (g_evtState->controlEnabled != 0 &&
-                      (mode >= 2 || (mode == 1 && (arg0 == 2 || D_8007BBC8 >= 3 || D_8007B710 != 0))))) {
+                      (mode >= 2 || (mode == 1 && (arg0 == 2 || g_evtMsgCount >= 3 || g_evtPlayerAnimCount != 0))))) {
         g_hereIconTimer = 60;
     }
 }
@@ -1704,7 +1704,7 @@ s32 evt_modelOpField(Unk8004AB64 *o, s32 op) {
     case 0xD8:
         func_800B3444(0, 0, 1);
         a = evt_getArg8();
-        func_80050CA8(a, evt_getArg8());
+        rain_set(a, evt_getArg8());
         g_gameState->gameData->rainCount = a;
         return 0;
     default:
@@ -1802,7 +1802,7 @@ s32 evt_modelOpWorld(Unk8004AB64 *o, s32 op) {
         return 0;
     case 0xD8:
         a = evt_getArg8();
-        func_80050EFC(a, evt_getArg8());
+        wrain_set(a, evt_getArg8());
         g_gameState->gameData->rainCount = a;
         return 0;
     default:
@@ -1815,36 +1815,36 @@ void evt_clearGlobalVars(void) {
     bzero(&g_evtGlobalVars, 0x800);
 }
 
-s32 func_80050AAC(void) {
-    u8 *r = D_8007BC18;
+s32 rain_draw(void) {
+    u8 *r = g_fieldRainPrims;
     GameData *gd;
     s32 n;
 
     if (g_gameState->gameData->unk8 != 0) {
         r += 0x22B0;
     }
-    if (D_8007BC20.unk24 < 2) {
-        func_8005338C(D_8007BC20.unkC == 0xFF0 ? -0x1770 : -0xFA0);
+    if (g_fieldRain.unk24 < 2) {
+        rain_spawn(g_fieldRain.unkC == 0xFF0 ? -0x1770 : -0xFA0);
     }
-    if (D_8007BC20.unk24 != 0) {
-        D_8007BC20.unk24++;
+    if (g_fieldRain.unk24 != 0) {
+        g_fieldRain.unk24++;
     }
-    n = D_8007BC20.unk4;
+    n = g_fieldRain.unk4;
     if (n != 0) {
         fldbg_applyGeomOffset();
         gd = g_gameState->gameData;
         gte_SetRotMatrix(&gd->unk18);
         gte_SetTransMatrix(&gd->unk18);
-        r = (u8 *)func_80053498(n, gd->unk8, gd->unk10[gd->unk8] + 3, (s32)r);
+        r = (u8 *)rain_drawDrops(n, gd->unk8, gd->unk10[gd->unk8] + 3, (s32)r);
         fldbg_resetGeomOffset();
     }
     return (s32)r;
 }
 
-u8 *func_80050BE0(Unk8007BC20Node *buf) {
+u8 *rain_init(Unk8007BC20Node *buf) {
     Unk8007BC20Node *p = buf;
     Unk8007BC20Node *end;
-    D_8007BC20.unk0 = buf;
+    g_fieldRain.unk0 = buf;
     if (buf != NULL) {
         end = buf + 222;
         for (; p < end; p++) {
@@ -1852,19 +1852,19 @@ u8 *func_80050BE0(Unk8007BC20Node *buf) {
         }
         p[-1].unk0 = NULL;
     }
-    D_8007BC20.unk4 = 0;
-    SetDrawTPage(&D_8007BC20.unk10, 0, 0, GetTPage(0, 3, 0, 0));
-    D_8007BC20.unk18 = D_8007BC20.unk10;
-    D_8007BC20.unk8 = 0;
-    D_8007BC20.unkC = 0;
-    D_8007BC20.unk24 = 0;
-    D_8007BC18 = (u8 *)(buf + 222);
+    g_fieldRain.unk4 = 0;
+    SetDrawTPage(&g_fieldRain.unk10, 0, 0, GetTPage(0, 3, 0, 0));
+    g_fieldRain.unk18 = g_fieldRain.unk10;
+    g_fieldRain.unk8 = 0;
+    g_fieldRain.unkC = 0;
+    g_fieldRain.unk24 = 0;
+    g_fieldRainPrims = (u8 *)(buf + 222);
     return (u8 *)p + 0x4560;
 }
 
-void func_80050CA8(s32 a, u32 b) {
+void rain_set(s32 a, u32 b) {
     if (a != 0 && b != 0) {
-        Unk8007BC20 *p = &D_8007BC20;
+        Unk8007BC20 *p = &g_fieldRain;
 
         if (a < 0x83) {
             p->unk8 = a;
@@ -1872,6 +1872,6 @@ void func_80050CA8(s32 a, u32 b) {
             p->unk8 = 0x82;
         }
     }
-    D_8007BC20.unkC = b * 16;
-    D_8007BC20.unk24 = a == 0 && b != 0;
+    g_fieldRain.unkC = b * 16;
+    g_fieldRain.unk24 = a == 0 && b != 0;
 }

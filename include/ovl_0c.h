@@ -459,7 +459,7 @@ typedef struct {
     ModelObj *obj;
     Unk8004AB64 *actor;
 } WmObjSlot;
-s32 func_8004AB64(Unk8004AB64 *);
+s32 evt_getObjectChrIndex(Unk8004AB64 *);
 void wm_drawMesh(ModelObj *, u8);
 void wm_projectMesh(ModelObj *, u8);
 void wm_applyScale(ModelObj *);
@@ -1173,8 +1173,8 @@ extern u8 D_800CF47E;
 extern u8 g_worldSuspended;
 extern u8 g_worldMapJump;
 extern u8 g_worldVehiclesFound;
-u8 *func_80050E34(u8 *);
-void func_80050EFC(s32, u32);
+u8 *wrain_init(u8 *);
+void wrain_set(s32, u32);
 extern s32 g_worldTimeActorDraw;
 extern s32 g_worldTimeMapDraw;
 void wm_drawActors(void);
@@ -1239,7 +1239,7 @@ void math_rotMatrixXYZ(SVECTOR *, MATRIX *);
 s32 math_cos(s32); /* cos */
 s32 math_sin(s32); /* sin */
 void SetGeomScreen(u16);
-s32 func_80050D38(s32);
+s32 wrain_draw(s32);
 extern u32 g_portraitSavedVram[]; /* VRAM save buffer */
 extern u8 D_80077E51;
 extern u8 *g_menuHelpText;
@@ -1485,8 +1485,8 @@ void wm_calcShadowMatrix(WmObjEnt *, WmObjSlot *, MATRIX *, s32, s32);
 
 /* main exe: candidates for ff9.h */
 u8 cd_readChunks(s32, void *, s32, s32);
-s32 func_8004B1EC(void);
-s32 func_8004B1FC(void);
+s32 evt_getWorldCamEyeObj(void);
+s32 evt_getWorldCamTargetObj(void);
 void fade_inAdditiveDefault(void);
 void OuterProduct0(VECTOR *v0, VECTOR *v1, VECTOR *v2);
 
@@ -1553,8 +1553,8 @@ s32 wm_initShadowPrims(s32, s32); /* returns func_80062E3C's result (the next fr
 void evt_createModels(void); /* main */
 s32 evt_isControlEnabled(void); /* main */
 u8 *evt_loadScripts(u8 *p); /* main */
-s32 func_8004AAF0(s32 unused); /* main */
-void func_8004B158(s32 a, s32 b, s32 c); /* main */
+s32 evt_countNpcActors(s32 unused); /* main */
+void evt_callWorldCellTrigger(s32 a, s32 b, s32 c); /* main */
 void func_800B36AC(void);
 s32 func_800B8548(void);
 void func_800C16C0(void);

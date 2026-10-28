@@ -260,11 +260,11 @@ void func_8002F4D0(s32 a) {
     g_gameState->gameData->unk83C(SND_SE_STOP, a, 0x800000, 0, 0);
 }
 
-void func_8002F514(s32 a) {
+void snd_startSe(s32 a) {
     g_gameState->gameData->unk83C(SND_SE_PLAY, a, 0, 0x80, 0x7F);
 }
 
-void func_8002F55C(s32 a) {
+void snd_stopSe(s32 a) {
     g_gameState->gameData->unk83C(SND_SE_STOP, a, 0, 0, 0);
 }
 

@@ -28,19 +28,19 @@ fld_entry = 0x800A7A48; // type:func [code] mode-1 entry, called by main game_ma
 fld_runArea = 0x800A7AAC; // type:func [code] fld_loadArea, then fld_main(GameData.fieldId) until GameState.unk0 & 7, then fld_unloadArea (called by fld_entry with GameData.unk3A)
 fld_init = 0x800A8198; // type:func [code] field-mode init called once by fld_entry - allocates the FieldMap, vsyncMode 2, GameData callbacks unk838/83C/8BC, loads the common file and sound bank
 fld_quit = 0x800A82F8; // type:func [code] end of fld_entry - clears D_800739B0[0..1], func_800B1CE4, fld_freeCommon
-fld_allocMap = 0x800A8344; // type:func [code] puts the 0x50-byte FieldMap (GameData.unk8E4.field) at D_80067944+0x2A000 and advances the allocation pointer D_80067948
+fld_allocMap = 0x800A8344; // type:func [code] puts the 0x50-byte FieldMap (GameData.unk8E4.field) at D_80067944+0x2A000 and advances the allocation pointer g_modeHeap
 fld_initMap = 0x800A8380; // type:func [code] resets every FieldMap member (fld_init)
 fld_readSoundBank = 0x800A83E0; // type:func [code] copies db item 0x90164 to D_80067944+0x146F00 and keeps its size in FieldMap.unk20, fld_startAudio uploads it with func_80055E14 (AKAO data)
-fld_loadCommon = 0x800A847C; // type:func [code] loads dir-1 file 0x2714 (preloaded copy or CD) at D_80067948 and registers it as a db container in FieldMap.unk10 (fld_init)
+fld_loadCommon = 0x800A847C; // type:func [code] loads dir-1 file 0x2714 (preloaded copy or CD) at g_modeHeap and registers it as a db container in FieldMap.unk10 (fld_init)
 fld_freeCommon = 0x800A8588; // type:func [code] db_unregister of FieldMap.unk10, the fld_loadCommon container (fld_quit)
 fld_loadArea = 0x800A85F4; // type:func [code] allocates and resets the FieldMapObj, reads the area bundle (fld_readAreaFile) and finds its 0x60000|id item (fld_runArea)
 fld_unloadArea = 0x800A8698; // type:func [code] fld_freeAreaFile, then GameData.unk3A = FieldMapObj.unk10, the area to load next (fld_runArea)
-fld_allocArea = 0x800A86FC; // type:func [code] takes a FieldMapObj from the allocation pointer D_80067948 and stores it in FieldMap.unkC
+fld_allocArea = 0x800A86FC; // type:func [code] takes a FieldMapObj from the allocation pointer g_modeHeap and stores it in FieldMap.unkC
 fld_initArea = 0x800A8724; // type:func [code] resets the FieldMapObj, unk10 = GameData.unk3A
 fld_findAreaItem = 0x800A879C; // type:func [code] FieldMapObj.unk8 = db item 0x60000|area (fld_loadArea)
-fld_readAreaFile = 0x800A87DC; // type:func [code] reads the area bundle at GameData.sceneSector[0] (or its preload copy) to D_80067948 and registers it (FieldMapObj.unkC)
+fld_readAreaFile = 0x800A87DC; // type:func [code] reads the area bundle at GameData.sceneSector[0] (or its preload copy) to g_modeHeap and registers it (FieldMapObj.unkC)
 fld_freeAreaFile = 0x800A8990; // type:func [code] db_unregister of FieldMapObj.unkC (fld_unloadArea)
-fld_allocScene = 0x800A9350; // type:func [code] allocates the FieldScene at D_80067948 plus its actor-info (0x1E0) and trigger (0xC0) tables (fld_load)
+fld_allocScene = 0x800A9350; // type:func [code] allocates the FieldScene at g_modeHeap plus its actor-info (0x1E0) and trigger (0xC0) tables (fld_load)
 fld_initScene = 0x800A939C; // type:func [code] resets every FieldScene member, the 24 FieldActorInfo records and the 16 FieldTrig entries (fld_load)
 fld_refindSectors = 0x800A9570; // type:func [code] when FieldMap.unk0 & 0x10000, finds the field, area and music sectors again in the CD directory tables (GameState.unk14), called after the disc-change screen
 fld_findEventScript = 0x800A97D4; // type:func [code] FieldScene.unkC = db item 0x50000|field (the event script, docs/encounters.md), passed to evt_init by fld_load
@@ -64,7 +64,7 @@ bgi_setActorActive = 0x800C3E18; // type:func [code] sets/clears actor-entry fla
 bgi_placeActor = 0x800C3EC0; // type:func [code] scans every triangle containing (x,z), keeps the nearest height >= y, sets the actor's floor/triangle and position, called by bgi_updateActor when its triangle is -1
 bgi_setActorTriangle = 0x800C420C; // type:func [code] puts actor entry a0 on triangle a1 (floor from triangle.unk4) at the triangle centre (unk1E..22) + floor/mesh offset, pos and previous pos
 bgi_setActorFloorTriangle = 0x800C4378; // type:func [code] as bgi_setActorTriangle but the triangle is entry a2 of floor a1's triangle index list (floor.unk1E)
-bgi_updateActor = 0x800C44F4; // type:func [code] 0x8000 when no walkmesh, 0x4000 bad index, 0 inactive, active entries go to bgi_placeActor (triangle unknown) or bgi_moveActor, main func_8002170C returns this
+bgi_updateActor = 0x800C44F4; // type:func [code] 0x8000 when no walkmesh, 0x4000 bad index, 0 inactive, active entries go to bgi_placeActor (triangle unknown) or bgi_moveActor, main evt_updateActorWalkmesh returns this
 bgi_findTriangleBelow = 0x800C45C0; // type:func [code] scans every triangle containing (x,z), returns 1 and the index/pointer of the one whose height is the smallest value >= y
 bgi_setFloorActive = 0x800C47E4; // type:func [code] event opcode 0xCB (floor, on) - sets/clears flag 1 on the floor and on every triangle of its index list
 bgi_getHeight = 0x800C48DC; // type:func [code] height at (x,z) from the first triangle containing it (plane or first vertex), without a walkmesh the player actor's y, -0x7FFF when outside
@@ -145,10 +145,10 @@ fld_modelCommand = 0x800ABA98; // type:func [code] event opcode 0x88 (object uid
 fld_applyModelCommands = 0x800AC02C; // type:func [code] applies what fld_modelCommand set - palette changes (func_800BA190/func_800BA3CC on flag 0x10000) and draws mirrored models with their tint (fld_drawModels)
 fld_findModelCache = 0x800AC344; // type:func [code] returns the g_fieldModelCache slot whose id matches the low 16 bits, NULL otherwise
 fld_getModelCacheBottom = 0x800AC380; // type:func [code] lowest address of a filled g_fieldModelCache slot (0x801EDF00 when empty), optionally returns that slot
-fld_allocModelCache = 0x800AC3D8; // type:func [code] reserves size bytes below fld_getModelCacheBottom for the id's slot if that stays above the heap top (FieldScene.unk20 or D_80067948), returns 1 on success
+fld_allocModelCache = 0x800AC3D8; // type:func [code] reserves size bytes below fld_getModelCacheBottom for the id's slot if that stays above the heap top (FieldScene.unk20 or g_modeHeap), returns 1 on success
 fld_compactModelCache = 0x800AC474; // type:func [code] empties slots whose id is no longer in D_800C9F20, then moves the rest up against 0x801EDF00 (fld_load)
 fld_clearModelCache = 0x800AC5F0; // type:func [code] zeroes the flags, address and size of all 10 g_fieldModelCache slots
-fld_trimModelCache = 0x800AC620; // type:func [code] fld_invalidateModelCache with the current heap top (FieldScene.unk20, else D_80067948)
+fld_trimModelCache = 0x800AC620; // type:func [code] fld_invalidateModelCache with the current heap top (FieldScene.unk20, else g_modeHeap)
 fld_invalidateModelCache = 0x800AC67C; // type:func [code] empties every g_fieldModelCache slot whose address is <= arg (memory reused by a load below it)
 fld_drawShadow = 0x800AC6C0; // type:func [code] builds the 4 mirrored semi-transparent POLY_FT4 of an object's 3x3 shadow grid on y=0 (FieldScene.unk2C entry) and links them by depth (fld_drawModels)
 fld_initShadows = 0x800AD44C; // type:func [code] func_80062E3C(addr, ..., count, 3) builds the shadow entries and their primitives, returns the next free address (fld_load, count unk38+9)
@@ -302,7 +302,7 @@ fldbg_toggleOverlayColor = 0x800C0650; // type:func [code] if layer arg0 is tint
 fldbg_startClutFade = 0x800C07D8; // type:func [code] adds a type 0x80 entry - StoreImage of the layer's CLUT row and 16.16 r/g/b steps (add/subtract/mode 2) over arg2 frames, no callers
 fldbg_setCamera = 0x800C0BCC; // type:func [code] event opcode 0x7E - loads background camera arg0 (projection distance, view matrix, OT bias FieldScene.unk30), sets g_fieldBgState.unk75 and flag 0x80
 fldbg_setRenderContext = 0x800C0D40; // type:func [code] stores the draw-buffer index, projection-distance, OT pair, view-matrix and allocation pointers in g_fieldBgCtx, fld_setupBackground with GameData members
-fldbg_setWorkBuffer = 0x800C0D8C; // type:func [code] g_fieldBgCtx.unk2C/unk30 = work buffer and size, used = 0, fld_setupBackground (D_80067948, 0x400)
+fldbg_setWorkBuffer = 0x800C0D8C; // type:func [code] g_fieldBgCtx.unk2C/unk30 = work buffer and size, used = 0, fld_setupBackground (g_modeHeap, 0x400)
 fldbg_setData = 0x800C0DA4; // type:func [code] g_fieldBgData = the background file, fld_setupBackground passes FieldScene.unk14
 fldbg_moveOrigin = 0x800C0DB0; // type:func [code] event opcode 0x58 - adds dx/dy to the background origin (header unk20-26) and dz to its base depth (unk1C/1E)
 fldbg_scrollTo = 0x800C0DF4; // type:func [code] event opcode 0x6F - starts a scripted scroll from the current position to (arg0, arg1) over arg2 frames, mode 1, arg3 8 = smooth, needs follow flag 0x40
@@ -310,7 +310,7 @@ fldbg_getScroll = 0x800C0E6C; // type:func [code] event opcode 0xEA - returns th
 fldbg_setFollow = 0x800C0E94; // type:func [code] event opcode 0x71 - sets/clears follow flag 0x40, with arg1 > 0 also fldbg_scrollToPlayer(arg1, arg2)
 fldbg_isFollowing = 0x800C0EF0; // type:func [code] returns follow flag 0x40 of g_fieldBgState, no callers
 fldbg_applyGeomOffset = 0x800C0F08; // type:func [code] SetGeomOffset to the current camera's centre (unk20/22) plus the scroll offset (state unkC/E), func_800AB3CC and main event/msg code around projections
-fldbg_resetGeomOffset = 0x800C0FB0; // type:func [code] SetGeomOffset(160, 112) unless func_80012AD4 & 2, called after every fldbg_applyGeomOffset
+fldbg_resetGeomOffset = 0x800C0FB0; // type:func [code] SetGeomOffset(160, 112) unless mbg_getStatus & 2, called after every fldbg_applyGeomOffset
 fldbg_setFollowHeight = 0x800C1024; // type:func [code] event opcode 0x72 - g_fieldBgState.unk76, subtracted from the actor y in fldbg_followPlayer/fldbg_scrollToPlayer (default 0x144)
 fldbg_hasScrollLimits = 0x800C1034; // type:func [code] returns g_fieldBgState flag 0x20, which fldbg_disableScrollLimits clears and fldbg_enableScrollLimits sets, no callers
 fldbg_disableScrollLimits = 0x800C104C; // type:func [code] event opcode 0x74 - saves the camera's scroll limits (unk28-2E) and opens them to -0x8000..0x7FFF, clears flag 0x20

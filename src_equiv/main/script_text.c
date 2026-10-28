@@ -46,7 +46,7 @@ extern u16 D_8006EAD0[];         /* atan table, 0x401 entries, 0 .. 0x200 (45 de
 /* ---- callees without prototypes in the headers ---- */
 s32 evt_getObjectProp(Unk8004AB64 *o, s32 prop);
 u16 func_8004B404(s32 arg0);
-Unk8004AB64 *func_8004B4C4(s32 id);
+Unk8004AB64 *evt_resolveObjectId(s32 id);
 void evt_setObjectProp(Unk800219D8 *arg0, s32 arg1, s32 arg2);
 void func_8004B4A8(s32 i, s16 v);
 s32 evt_exprSpecial(s32 op);
@@ -664,7 +664,7 @@ void func_80051B58(const char *fmt, ...) {
  * the space and bits 3-5 (bits 29-31) the width:
  *   space 0: global variables (g_evtGlobalVars)       space 1: the event context's map variables
  *   space 2/3: the current object's locals (g_evtObjVars)
- *   space 4: (uid << 8) | index on another object (func_8004B4C4 + evt_getObjectProp), read-only
+ *   space 4: (uid << 8) | index on another object (evt_resolveObjectId + evt_getObjectProp), read-only
  *   space 5: system variable `index` (func_8004B404 / func_8004B4A8)
  *   space 6: property `index` of g_evtExprObj (evt_getObjectProp / evt_setObjectProp)
  *   space 7: an immediate (26-bit, sign-extended)
@@ -710,7 +710,7 @@ s32 evt_popValue(void) {
         if (tag & 1) {
             return func_8004B404(t & 0xFF);
         }
-        return evt_getObjectProp(func_8004B4C4((t >> 8) & 0xFF), t & 0xFF);
+        return evt_getObjectProp(evt_resolveObjectId((t >> 8) & 0xFF), t & 0xFF);
     }
     if (tag & 2) {
         return evt_readVar(g_evtObjVars, t & 0xFFFF, tag);
@@ -994,7 +994,7 @@ void evt_runExpr(void) {
         case 0x5E: /* distance from the current object to (x, z) */
             t = evt_popValue();
             v = evt_popValue();
-            o = D_8007B704;
+            o = g_evtActor;
             if (op == 0x5D) {
                 v = (s32)((u32)math_atan2(v - o->pos.vx, t - o->pos.vz) << 20) >> 24;
             } else {
@@ -1005,7 +1005,7 @@ void evt_runExpr(void) {
             /* v comes from opcode 0x5F (an object pointer pushed as a 26-bit immediate); see src_equiv.h. */
         case 0x61:
             q = (Unk8004AB64 *)SCRIPT_PTR_RESTORE(evt_popValue());
-            o = D_8007B704;
+            o = g_evtActor;
             if (op == 0x60) {
                 v = (s32)((u32)math_atan2(q->pos.vx - o->pos.vx, q->pos.vz - o->pos.vz) << 20) >> 24;
             } else {
@@ -1013,7 +1013,7 @@ void evt_runExpr(void) {
             }
             break;
         case 0x5F:
-            v = (s32)func_8004B4C4(*r_ip++);
+            v = (s32)evt_resolveObjectId(*r_ip++);
             break;
         case 0x66:
             t = evt_popValue();
@@ -1021,7 +1021,7 @@ void evt_runExpr(void) {
             break;
         case 0x6A:
             t = evt_popValue();
-            v = evt_getAnimFrameCount(D_8007B704->unk34, t);
+            v = evt_getAnimFrameCount(g_evtActor->unk34, t);
             break;
         case 0x6B:
             v = func_8004B85C(evt_popValue());
@@ -1098,7 +1098,7 @@ s32 func_80052834(void) {
  * here: 1 jump, 2 jump if false, 3 jump if true, 4 evt_returnFromFunc, 5 expression, 6 / 0xB / 0xD switches,
  * 0x1C, 0x22 wait, 0x30/0x6C print, 0x31/0x6D printf, 0x32 print position. Everything else (including all
  * opcodes >= 0x6E) goes to evt_execInstr. */
-s32 func_80052870(Unk16D8 *n) {
+s32 evt_runScripts(Unk16D8 *n) {
     u32 save_args = r_args;
     u8 *save_ip = r_ip;
     s32 *save_sp = r_sp;
@@ -1140,7 +1140,7 @@ s32 func_80052870(Unk16D8 *n) {
         }
         g_evtCurObj = o;
         g_evtObjVars = (u8 *)o + o->unk8 * 4;
-        D_8007B704 = o->unk5 == 1 ? evt_getObject(o->unk7 - 0x40) : o;
+        g_evtActor = o->unk5 == 1 ? evt_getObject(o->unk7 - 0x40) : o;
         if (g_evtMode == 2) {
             func_8004BB30(o);
         }
@@ -1206,7 +1206,7 @@ s32 func_80052870(Unk16D8 *n) {
                 k = r_ip[1];
                 r_ip += 2;
                 if (k != 0xFF) {
-                    Unk8004AB64 *t = func_8004B4C4(k);
+                    Unk8004AB64 *t = evt_resolveObjectId(k);
                     if (t != o) {
                         evt_deleteObject(t);
                         break;
@@ -1609,12 +1609,12 @@ static void streak_spawn(Unk8007BC20 *pool, s32 y0) {
     }
 }
 
-void func_8005338C(s32 y0) {
-    streak_spawn(&D_8007BC20, y0);
+void rain_spawn(s32 y0) {
+    streak_spawn(&g_fieldRain, y0);
 }
 
-void func_80053658(s32 y0) {
-    streak_spawn(&D_8007BC50, y0);
+void wrain_spawn(s32 y0) {
+    streak_spawn(&g_worldRain, y0);
 }
 
 /* Load a streak's three vertices (p, p + dy, p + 2dy) into V0-V2; unless `still`, move p by dy first. */
@@ -1637,11 +1637,11 @@ static void streak_load(Streak *s, s32 dy, s32 still) {
     gte_ldv3(&v[0], &v[1], &v[2]);
 }
 
-void func_8005345C(Streak *s, s32 dy, s32 still) {
+void rain_stepDrop(Streak *s, s32 dy, s32 still) {
     streak_load(s, dy, still);
 }
 
-void func_80053728(Streak *s, s32 dy, s32 still) {
+void wrain_stepDrop(Streak *s, s32 dy, s32 still) {
     streak_load(s, dy, still);
 }
 
@@ -1722,12 +1722,12 @@ static u8 *streak_draw(Unk8007BC20 *pool, Streak *s, s32 buf, u32 *ot, u8 *pkt) 
 }
 
 /* Prototype as in ff9.h: (list, buffer, ot, packet) with pointers passed as s32. */
-s32 func_80053498(s32 s, u8 buf, u32 *ot, s32 pkt) {
-    return (s32)streak_draw(&D_8007BC20, (Streak *)s, buf, ot, (u8 *)pkt);
+s32 rain_drawDrops(s32 s, u8 buf, u32 *ot, s32 pkt) {
+    return (s32)streak_draw(&g_fieldRain, (Streak *)s, buf, ot, (u8 *)pkt);
 }
 
-s32 func_80053764(s32 s, u8 buf, u32 *ot, s32 pkt) {
-    return (s32)streak_draw(&D_8007BC50, (Streak *)s, buf, ot, (u8 *)pkt);
+s32 wrain_drawDrops(s32 s, u8 buf, u32 *ot, s32 pkt) {
+    return (s32)streak_draw(&g_worldRain, (Streak *)s, buf, ot, (u8 *)pkt);
 }
 
 /* ============================================================ func_80064C24 (main, outside the module) */

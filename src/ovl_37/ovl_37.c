@@ -470,7 +470,7 @@ void menuItem_update(void) {
 
 void menuItem_exit(void) {
     if (g_gameState->mode == 3) {
-        func_8002F55C(0x44A);
+        snd_stopSe(0x44A);
     }
     help_setLocked(0);
     help_setCursorOnTop(1);
@@ -695,7 +695,7 @@ void menuItem_drawKeyRow(s32 col, s32 row, s32 i, MenuView *v) {
 
 void menuItem_onKwehOpened(Window *w) {
     if (g_gameState->mode == 3) {
-        func_8002F514(0x44A);
+        snd_startSe(0x44A);
     }
 }
 
@@ -716,7 +716,7 @@ void menuItem_stepKweh(void) {
             if (t >= 0x60) {
                 s_menuItem.popupTimer = 0;
                 if (g_gameState->mode == 3) {
-                    func_8002F55C(0x44A);
+                    snd_stopSe(0x44A);
                 }
                 help_setLocked(0);
                 help_setCursorOnTop(1);
