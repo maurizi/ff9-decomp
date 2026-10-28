@@ -3091,7 +3091,7 @@ s32 evt_updateObjects(void) {
                     }
                 }
             }
-            func_800B3444(0, 0, 0);
+            fld_enableRain(0, 0, 0);
         }
         if (r == 7) {
             g_evtSavedState = g_evtStateData;

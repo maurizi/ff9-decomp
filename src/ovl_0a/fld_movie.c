@@ -901,7 +901,7 @@ void fld_drawShadow(FieldObjPlace *arg0, s32 arg1) {
     e = &arg0[arg1];
     s = (FieldObjSlot *)game_getModel(arg1);
     bias = 0;
-    if (s->flags & 0x10) {
+    if (s->flags & FLD_OBJ_NO_SHADOW) {
         return;
     }
     lt = g_gameState->gameData->unk8E4.field->area->scene->lights;

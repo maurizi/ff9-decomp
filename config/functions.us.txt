@@ -1685,8 +1685,8 @@ ovl_0a fld_getLightColorTable 0x40 0x800b3254
 ovl_0a fld_findLightColor 0x6c 0x800b3294
 ovl_0a fld_findGlobalLights 0x78 0x800b3300
 ovl_0a fld_findFloorLight 0xcc 0x800b3378
-ovl_0a func_800B3444 0x240 0x800b3444
-ovl_0a func_800B3684 0x5c 0x800b3684
+ovl_0a fld_enableRain 0x240 0x800b3444
+ovl_0a fld_drawRain 0x5c 0x800b3684
 ovl_0a fld_preloadRequest 0x3a0 0x800b36e0
 ovl_0a fld_initPreload 0x4c 0x800b3a80
 ovl_0a fld_clearPreloadLists 0x60 0x800b3acc

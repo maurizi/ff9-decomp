@@ -88,6 +88,7 @@ typedef struct {
 /* FieldEvtCtx.flags / FieldObjSlot.flags */
 #define FLD_OBJ_TILT 0x2 /* fld_drawModels tilts the model to the floor (bgi_getActorTilt) */
 #define FLD_OBJ_DIR_LIGHT 0x4 /* fld_applyLights uses the directional light */
+#define FLD_OBJ_NO_SHADOW 0x10 /* fld_drawShadow skips the object (event ops 0x7F/0x80; runtime: removes Zidane's shadow) */
 #define FLD_OBJ_SHADOW_FIXED 0x20 /* fld_calcShadowMatrix uses the FieldObjEnt placement (event ops 0x83/0x84) */
 #define FLD_OBJ_NO_ANIM_SFX 0x40 /* fld_playAnimSfx skips the object */
 #define FLD_OBJ_LIT 0x100 /* light colour applied (fld_applyLights) */
@@ -149,8 +150,8 @@ typedef struct {
 #define FLD_SCN_ENCOUNTER_DONE 0x1 /* encounter screen effect (func_80053A10) finished */
 #define FLD_SCN_ENCOUNTER_LOADED 0x2 /* fld_updateEncounter uploaded file 0x1000B and played its SEs */
 #define FLD_SCN_BANK_SLOT 0x10 /* fld_soundBankReadCallback uploads to soundBankSlot */
-#define FLD_SCN_OBJFX_ALLOC 0x100 /* func_800B3444 allocated the main rain_init node buffer */
-#define FLD_SCN_OBJFX_ON 0x200 /* func_800B3684 runs main rain_draw each frame */
+#define FLD_SCN_RAIN_ALLOC 0x100 /* fld_enableRain allocated the main rain_init node buffer */
+#define FLD_SCN_RAIN_ON 0x200 /* fld_drawRain runs main rain_draw each frame */
 #define FLD_SCN_MOVIE_DISPMASK 0x1000 /* fld_movieUpdate set g_padPortMask bit 0x04000000 */
 #define FLD_SCN_ACTORS_READY 0x10000 /* set by fld_setupActorModel; fld_preloadHook starts queuing */
 #define FLD_SCN_PRELOADS_QUEUED 0x100000 /* fld_preloadHook queued fld_queueFieldPreloads */
@@ -1667,7 +1668,7 @@ void fldmdl_setGroupRgb(ModelObj *arg0, u8 arg1, s16 arg2, s16 arg3, s16 arg4);
 void fldmdl_setSemiTrans(ModelObj *arg0, u16 arg1);
 void func_8002FC30(void); /* main */
 s32 evt_countNpcActors(s32 unused); /* main */
-void func_800B3684(void);
+void fld_drawRain(void);
 void game_resumeClock(u8 arg0); /* main */
 s32 mbg_shutdown(void); /* ovl_64 */
 s32 preload_update(void); /* main */

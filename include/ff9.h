@@ -2415,7 +2415,7 @@ s32 math_length3(s32, s32, s32);
 s32 evt_updateActorWalkmesh(Unk8004AB64 *);
 s32 evt_rollEncounter(Unk8004AB64 *);
 #if !defined(OVL_0A_H) /* field overlay functions; ovl_0a has the definitions */
-s32 func_800B3444(s32, s32, s32);
+s32 fld_enableRain(s32, s32, s32);
 /* field walkmesh actor entry returned by ovl_0a bgi_getActor (ovl_0a calls it BgiActor) */
 typedef struct {
     s16 unk0;

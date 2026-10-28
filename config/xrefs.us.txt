@@ -37,6 +37,7 @@ fld_spriteCommand = 0x800AFAC0;  /* ovl_0a */
 fld_soundCommand = 0x800B0124;  /* ovl_0a */
 fld_getSoundPanVolume = 0x800B1A20;  /* ovl_0a */
 fld_setObjectColor = 0x800B2CC0;  /* ovl_0a */
+fld_enableRain = 0x800B3444;  /* ovl_0a, event-script opcode 0xD8 and evt_updateObjects */
 fld_requestDiscChange = 0x800B5004;  /* ovl_0a */
 fldbg_scrollToPlayer = 0x800C0038;  /* ovl_0a */
 fldbg_addFollowOverlay = 0x800C02D0;  /* ovl_0a */

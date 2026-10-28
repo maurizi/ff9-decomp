@@ -87,7 +87,7 @@ void fld_main(s32 arg0) {
                 fld_drawSprites();
             }
             if (!(g_gameState->gameData->unk0 & GD_HIDE_BG)) {
-                func_800B3684();
+                fld_drawRain();
             }
             if (!(g_gameState->gameData->unk8E4.field->flags & FLD_MAP_NO_WINDOWS)) {
                 game_updateWindows();

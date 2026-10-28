@@ -1218,14 +1218,14 @@ FieldLight *fld_findFloorLight(Unk800B3254 *arg0, FieldEvtCtx *arg1, s16 *arg2) 
     return NULL;
 }
 
-s32 func_800B3444(s32 arg0, s32 arg1, s32 arg2) {
+s32 fld_enableRain(s32 arg0, s32 arg1, s32 arg2) {
     s32 start;
     s32 size;
     s32 end;
 
     if (arg0 == 0 && arg1 == 0) {
         if (arg2 != 0) {
-            if (!(g_gameState->gameData->unk8E4.field->area->scene->flags & FLD_SCN_OBJFX_ALLOC)) {
+            if (!(g_gameState->gameData->unk8E4.field->area->scene->flags & FLD_SCN_RAIN_ALLOC)) {
                 start = g_gameState->gameData->unk8E4.field->area->scene->heapTop;
                 if (start == 0) {
                     start = g_modeHeap;
@@ -1245,18 +1245,18 @@ s32 func_800B3444(s32 arg0, s32 arg1, s32 arg2) {
                 }
                 fld_trimModelCache();
                 preload_discardRange(start, size);
-                g_gameState->gameData->unk8E4.field->area->scene->flags |= FLD_SCN_OBJFX_ALLOC;
+                g_gameState->gameData->unk8E4.field->area->scene->flags |= FLD_SCN_RAIN_ALLOC;
             }
-            g_gameState->gameData->unk8E4.field->area->scene->flags |= FLD_SCN_OBJFX_ON;
+            g_gameState->gameData->unk8E4.field->area->scene->flags |= FLD_SCN_RAIN_ON;
         } else {
-            g_gameState->gameData->unk8E4.field->area->scene->flags &= ~FLD_SCN_OBJFX_ON;
+            g_gameState->gameData->unk8E4.field->area->scene->flags &= ~FLD_SCN_RAIN_ON;
         }
     }
     return 0;
 }
 
-void func_800B3684(void) {
-    if (g_gameState->gameData->unk8E4.field->area->scene->flags & FLD_SCN_OBJFX_ON) {
+void fld_drawRain(void) {
+    if (g_gameState->gameData->unk8E4.field->area->scene->flags & FLD_SCN_RAIN_ON) {
         rain_draw();
     }
 }

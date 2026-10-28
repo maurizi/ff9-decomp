@@ -1702,7 +1702,7 @@ s32 evt_modelOpField(Unk8004AB64 *o, s32 op) {
         g_gameState->gameData->unk8E4.ovl65->unkC->unk14->unk2C[o->unk3B].unk0_0 = evt_getArg8();
         return 0;
     case 0xD8:
-        func_800B3444(0, 0, 1);
+        fld_enableRain(0, 0, 1);
         a = evt_getArg8();
         rain_set(a, evt_getArg8());
         g_gameState->gameData->rainCount = a;
