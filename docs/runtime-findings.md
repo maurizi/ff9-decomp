@@ -1835,7 +1835,7 @@ D_8007B970 2.
   (cutscenes with non-zero direction offsets), `field_d1_456` (animated flag and scrolling clouds), `field_d1_502`
   (cargo ship cutscene with a scripted pan).
 
-## Event VM: scheduler and object header (main evt_expr_asm.c / event.c / evt_object.c)  (status: proposed)
+## Event VM: scheduler and object header (main evt_expr_asm.c / event.c / evt_object.c)  (status: applied — evt_runScripts, g_evtActor, type EvtObject with its header fields; unk11 left unnamed)
 Runs: `talk` = `evtrec.py talk --state field_dali_inn_moogle --seq 'w4,x:2,w120'` (Cross on the Moogle),
 `f100b` = `evtrec.py f100b --field 100 --frames 1200` (Alexandria street at night: 23 objects created, three
 copies of one NPC script), `f153` (field 153, camera switch), `f259` (Evil Forest, a scripted jump), plus the opcode
@@ -1885,7 +1885,7 @@ log of field 100 (`opscan.py 100 --log 3000`, `build/rtf2/ops_1_100.json`).
   - unk10 → windowId: 0xFF; 2 while the Moogle's message window 2 is open (`talk`), set by ops 0x1F/0x20/0x54. high.
   - unk11 → set by op 0x3B (meaning unknown).
 
-## Field actor fields (EvtObject kind 4)  (status: proposed)
+## Field actor fields (EvtObject kind 4)  (status: applied — EvtObject members; lookParams became lookParam0/1, lookAt/balloonOfs/jump* got X/Y/Z suffixes, unk26-2E savedWalk*; the turn-left/right anims stay ActorPos unk20/rotY of prevPos)
 Runs: `t_walk` = `track.py field_dali_inn 0x8007805C 0xAC 'w20,right:40,w20,right+o:40,w30'` (Zidane; this
 save's Movement option is Run, so Right runs and Right+Circle walks), `t_talk`/`t_talkm` (Cross on the Moogle,
 player 0x8007805C / Moogle 0x80078588), `t_idle` (idle timer poked to 3), `f100b` (NPC copies uid 128-130),
@@ -1948,7 +1948,7 @@ player 0x8007805C / Moogle 0x80078588), `t_idle` (idle timer poked to 3), `f100b
 - unk6E → talkTurnScript: 0xA7 = turn toward the talker before the talk function runs (op 0x91; func_80047AB8 uses
   it as a 2-byte script `A7 <dir>`), 4 = don't. medium (code).
 
-## Event state block (Unk8007AECC at g_evtStateData 0x80077E60) and event globals  (status: proposed)
+## Event state block (Unk8007AECC at g_evtStateData 0x80077E60) and event globals  (status: applied — type EvtState (its node type EvtAllocNode), every field, globals and functions below, GameData npcCount/npcModelSlots/locationName/cardOpponent)
 - Unk8007AECC → proposed type name `EvtState`.
 - unk0[0x50] → fieldVars: variable bank 1 (evt_getVarBank 1 = *g_evtState). Bytes 0x00-0x27 change while field
   100's and the Moogle's scripts run (f100b: +0x00..+0x06, +0x12/13, +0x20..+0x26; talk: +0x10, +0x13, +0x27);
@@ -2039,7 +2039,7 @@ Functions (main):
 - func_8005392C → gamedata_resetEventFlags (clears GameData.unk568/56A/56C, battleResult, unk56F, rainCount, unk571).
   medium (code).
 
-## Message windows, speech tails, bubble, HERE icon, ATE prompt  (status: proposed)
+## Message windows, speech tails, bubble, HERE icon, ATE prompt  (status: applied — MsgWindow and Window members)
 Run `msg359`: `evtrec.py msg359 --state field_dali_359 --seq 'x:2,w200,x:2,w200,x:2,w200' --g 0x8007B9C0:0x1B8`
 (the Dali arrival cutscene: windows 1 and 2 open, three pages, Cross every 200 VBlanks).
 - MsgWindow.unkA → id: 1 / 2 for g_msgWindows[1] / [2] (msg_open stores the index). high.
@@ -2074,7 +2074,7 @@ Run `msg359`: `evtrec.py msg359 --state field_dali_359 --seq 'x:2,w200,x:2,w200,
 - Field 359 entered out of story order shows a script error window "Error Env Play() / Slot=0" (a debug message in
   the field's text, `build/rtf2/f359.png`): a lead for the field's environment-sound handling, not followed.
 
-## Field rain (main msg.c tail, tu_80050D38.c, asm_80053384.c; ovl_0a tu_800B0124.c)  (status: proposed)
+## Field rain (main msg.c tail, tu_80050D38.c, asm_80053384.c; ovl_0a tu_800B0124.c)  (status: applied — rain_*, wrain_*, g_fieldRain*, g_worldRain*, fld_enableRain, fld_drawRain, FLD_SCN_RAIN_*)
 Nine Burmecia fields (750-768) run op 0xD8 in their first 900 VBlanks (`opscan.py`; rain visible in 751 and 763). At
 `field_burmecia_rain` (763): `D_8007BC20` = {free list 0x800FBD7C, active list, 24, 896, DR_TPAGE x2, ..., 0}.
 - Trace at the field-763 entry (`enter_field.py 763 --frames 0`, then `trace ... --frames 700`): op 0xD8 →
@@ -2103,7 +2103,7 @@ Nine Burmecia fields (750-768) run op 0xD8 in their first 900 VBlanks (`opscan.p
   run in a rainy world map).
 - GameData.rainCount (already named) = op 0xD8's first argument (24 in field 763).
 
-## Field exits, menus from scripts, jumps  (status: reference; confirms [code] names)
+## Field exits, menus from scripts, jumps  (status: reference; applied — FLD_OBJ_NO_SHADOW, [runtime] on the four fldbg_* entries)
 - Field → field: at `field_burmecia_rain` holding Down 150 frames: op 0x2B → evt_setNextLocation(0x2FA) →
   game_setNextScene(0x2FA); 300 frames later field 762 is loaded (fieldId 762). At `field_ice_300` Up: 0x2B(301).
 - Field → world map: `build/rtf2/exits.py 1` finds 24 disc-1 fields whose scripts hold `B6 00 <9000-9012>`. At
@@ -2132,7 +2132,7 @@ Nine Burmecia fields (750-768) run op 0xD8 in their first 900 VBlanks (`opscan.p
   (EVT_OP_SHADOW_ON / SHADOW_OFF; 0x80 runs in 72 disc-1 fields), the jump op 0xE2 sets it and the jump end
   clears it. 0x20 (FLD_OBJ_SHADOW_FIXED, ops 0x83/0x84) moved the shadow slightly (14 pixels). high for 0x10.
 
-## Event opcode table  (status: proposed; EVT_OP_* names with runtime evidence in the last column are proposed, the rest are code leads)
+## Event opcode table  (status: applied for the opcodes seen running plus the scheduler ops and 0x75/0xB6/0x83/0x84 — EVT_OP_* in ff9.h; placeholder names (DEBUG_*, NOP_*, SOUND3-5, MSG_8E, ...) and ops not seen stay code leads)
 How the runtime column was made: every disc-1 field (222) and 74 disc-2 fields were entered with `opscan.py` (900
 VBlanks each, no input) and every opcode fetched by evt_execInstr was counted (`build/rtf2/ops_*.json`,
 `build/rtf2/optable.py 1 2` regenerates this table). 150 distinct opcodes ran. "N calls / F fields" = totals over
