@@ -111,6 +111,21 @@ by the port, 2026-10-28): field cleanup to main's dispatcher, then `GameData.fie
 extents from FF9.IMG dirs 4/2 into `sceneSector`/`sceneSectors` (+0x7FC/+0x804), `GameData.unk3A` = area, and mode 1.
 It also measures VBlanks per drawn frame with a breakpoint-free vsync listener. Disc-4 state from that work:
 `ds_perf_disc4_treno` (card 1 FILE05, Treno, loaded through Continue).
+The field campaign's variant `build/rtf2/enter_field.py FIELD [--disc N] [--base-state S] [--frames N] [--save NAME]`
+(scratch) does the same but keeps the save's own party and event variables (no host export, nothing touches ff9-ds).
+The field then runs its scripts with that save's story flags, so it often plays a cutscene or a variant of one.
+Field states made with it from `field_dali_inn` (disc 1, Lv 50 Dali party): `field_burmecia_rain` (763, rain),
+`field_burmecia_bubble` (757, "?" over Zidane), `field_burmecia_btl47` (battle 47 forced from 763),
+`field_burmecia_rewards` (its rewards screen, ovl_65), `field_opening_dark` (50, "Sure is dark..." speech balloon),
+`field_dali_359` (Dali entrance, arrival cutscene), `field_ice_300` (Ice Cavern exit: hold Down to leave for the world
+map), `field_worldmap_ice_exit` (world map 9000 outside the Ice Cavern, ovl_0c), `field_alex_100` (Alexandria street
+at night), `field_d1_101` (Alexandria street with control; the background scrolls), `field_d1_352` (Dali, scrolls),
+`field_d1_404` / `field_d1_501` (cutscenes with non-zero direction offsets), `field_d1_456` (animated flag, scrolling
+clouds), `field_d1_502` (cargo ship cutscene with a scripted pan).
+Long Lua-breakpoint runs (the 222-field opcode survey) crashed Redux twice after ~65 field entries ("Unknown error in
+event listener", then the X connection broke) even with LuaJIT off; restarting Redux every 30 entries
+(`build/rtf2/scanall.sh`) avoided it. A per-VBlank memory recorder that runs inside Redux (`build/rtf2/rec.lua`,
+`evtrec.py`) records 1000 VBlanks of the 6 KB event state in ~5 s; per-frame HTTP reads take minutes.
 
 Battle experiment helpers in `tools/rt/` (outputs go to `build/rt/`; `tools/rt/init.sh [STATE]` starts Redux on disc 3,
 loads a state and installs coverage + freeze): `freeze.lua` (per-vsync memory

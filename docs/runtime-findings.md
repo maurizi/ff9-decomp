@@ -1801,3 +1801,634 @@ D_8007B970 2.
   the world-map copies of the main menu (ovl_0c), ovl_65 beyond the battle campaign.
 - Party select and Chocograph were opened outside their story context, so their logic (picking members against a
   real request, using a chocograph) was not exercised; the names there are mostly from ablation + code.
+
+## Field fixture campaign (2026-10-28): method, states, helper scripts  (status: reference)
+- Redux, disc 1 (disc 2 for the opcode survey). Any field is entered with `build/rtf2/enter_field.py FIELD [--disc N]
+  [--base-state S] [--frames N] [--save NAME] [--poke ADDR=HEX]`, adapted from ff9-ds `tools/psx_field_fixture.py`
+  but keeping the save's own party and event variables (no host export): from a paused field it sets
+  GameState flag 2 + byte 10, breaks at main's dispatcher 0x80012834, writes the field's area/field extents (FF9.IMG
+  dirs 2/4) into GameData.unk7FC/unk804, fieldId (+0xC), unk3A (area) and mode 1, then lets fld_main load it. The
+  scripts run with the base save's story flags, so many fields play their cutscene or a variant of it.
+- Opcode survey: `build/rtf2/op.lua` (one exec breakpoint on evt_execInstr, ONE shared callback that pcall()s a
+  predefined function: no closure per hit) records the opcode under `g_evtCurObj->ip` (FF xx as 0xFFxx), the uid
+  and up to 4 pcs per opcode; `build/rtf2/opscan.py FIELDS --frames 900` enters each field and saves
+  `build/rtf2/ops_<disc>_<field>.json` + a screenshot; `build/rtf2/scanall.sh DISC 30` restarts Redux every 30
+  fields. All 222 disc-1 fields were entered (900 VBlanks each; `build/rtf2/opsum_d1.txt` = per-opcode totals),
+  plus the disc-2 fields listed below. Redux crashed twice during the long scans (`redux.log`: "1: (Table)" ...
+  "Unknown error in event listener", then "X connection broken"), after ~65 fields each, with LuaJIT off; restarting
+  every 30 fields avoided it.
+- Object recording: `build/rtf2/rec.lua` (GPU::Vsync listener, pcall'd, `Rec.uninstall()` removes it) copies memory
+  regions every VBlank inside Redux; `build/rtf2/evtrec.py NAME (--state S | --field F) --frames N [--seq ...]`
+  records the whole `g_evtStateData` block (0x17C8 bytes) plus globals and `build/rtf2/evtan.py NAME [--uid U]
+  [--globals] [--list]` prints every byte that changes per object. 1000 VBlanks take ~5 s (the old
+  per-frame HTTP reads took >10 min). `build/rtf2/track.py STATE ADDR SIZE SEQ` is the per-frame HTTP version.
+- Ablation with input after the stub: `build/rtf2/ablate2.py STATE SEQ FUNC...` (diff pixel counts vs no stub).
+- Static exits: `build/rtf2/exits.py DISC` lists the fields whose scripts hold a literal `B6 00 <world id>` (world
+  map exit) with the world ids in their dependency tables (uses tools/encounter_catalog.py's parsers).
+- New states (disc 1, listed in `docs/emulator.md`; all made with enter_field.py from `field_dali_inn`, so they carry
+  the Lv 50 Dali save's party and story flags): `field_burmecia_rain` (763, rain), `field_burmecia_bubble`
+  (757, "?" over Zidane), `field_burmecia_btl47` (battle 47 forced from 763), `field_burmecia_rewards` (its rewards
+  screen, ovl_65), `field_opening_dark` (50, "Sure is dark..." balloon), `field_dali_359` (Dali entrance, arrival
+  cutscene), `field_ice_300` (Ice Cavern exit; walking down leaves for the world map), `field_worldmap_ice_exit`
+  (world map 9000 outside the Ice Cavern, ovl_0c), `field_alex_100` (Alexandria street at night), `field_d1_101`
+  (Alexandria street with control, scrolls), `field_d1_352` (Dali, scrolls), `field_d1_404`, `field_d1_501`
+  (cutscenes with non-zero direction offsets), `field_d1_456` (animated flag and scrolling clouds), `field_d1_502`
+  (cargo ship cutscene with a scripted pan).
+
+## Event VM: scheduler and object header (main evt_expr_asm.c / event.c / evt_object.c)  (status: proposed)
+Runs: `talk` = `evtrec.py talk --state field_dali_inn_moogle --seq 'w4,x:2,w120'` (Cross on the Moogle),
+`f100b` = `evtrec.py f100b --field 100 --frames 1200` (Alexandria street at night: 23 objects created, three
+copies of one NPC script), `f153` (field 153, camera switch), `f259` (Evil Forest, a scripted jump), plus the opcode
+log of field 100 (`opscan.py 100 --log 3000`, `build/rtf2/ops_1_100.json`).
+- func_80052870 → evt_runScripts (`(Unk16D8 *list)` → event result): the scheduler. Trace at `field_dali_inn`: one
+  call per game frame (10 in 20 VBlanks) from evt_updateObjects+0x284. Its op jump table 0x8006E918 (read from RAM)
+  handles 0x01 jump, 0x02 jump if the popped value is 0, 0x03 jump if non-zero, 0x04 return (evt_returnFromFunc),
+  0x05 expression (evt_runExpr), 0x06/0x0B/0x0D switch forms, 0x1C delete object (0xFF = self), 0x22 wait N frames
+  (object +0xD = N-1, max 0xFD), 0x30/0x6C func_80051878(0/1), 0x31/0x6D func_80051920(0/1), 0x32 pen_setCell;
+  every other opcode goes to evt_execInstr. Before an object runs it sets g_evtCurObj, g_evtObjVars (= o + varsOfs*4)
+  and D_8007B704. high.
+- D_8007B704 → g_evtActor: the object the running script moves/animates/talks through. The scheduler stores the
+  object itself, or for a kind-1 thread (op 0x43, uid = parent + 0x40) `evt_getObject(uid - 0x40)` (0x80052904).
+  In f153 it equals g_evtCurObj on every frame (no threads); in field 56 (`evtrec.py f56 --field 56 --g
+  0x8007B704:4,0x8007B70C:4`) they differ on 40 VBlanks: g_evtCurObj = 0x800782AC (thread uid 73 = 9 + 0x40, kind 1)
+  while D_8007B704 = 0x800781AC (its parent); field 62 likewise with threads 77/82/84. high.
+- Unk8004AB64 → proposed type name `EvtObject`; header fields (all kinds):
+  - unk0 → ip. The logged opcodes are read through it; it walks the script bytes (`build/rtf2/ops_1_100.json` log:
+    `2F 00 08 00 3D`, `1D 03 D9 00 7F D9 04 7F`, `36 01 D9 06 7F`, `33 00 94 00`, ...). high.
+  - unk4 → level: running priority. 7 while idle; the Moogle runs its talk function at level 1 (7 → 1 on Cross), the
+    player runs the turn-to-talker function at level 4, both back to 7 when it returns (`talk`). evt_callObjectFunc
+    only calls into an object whose level is above the requested one. high.
+  - unk5 → kind: 2 = code object (op 0x07, 0x14-byte header), 3 = region (op 0x08, 0x38), 4 = actor (op 0x09, 0xAC),
+    1 = thread (op 0x43). f100b: uids 0-4 and 14 are kind 2 with 84-88-byte blocks, 16-18 kind 3 (120), the actors
+    kind 4 (236-252). high.
+  - unk6 → scriptIdx: equals the uid except for copies (uids 128/129/130 in field 100 are entry 10, created by the
+    logged `09 0A 80`, `09 0A 81`, `09 0A 82`). high.
+  - unk7 → uid. high.
+  - unk8 → varsOfs: header size in words, 5 / 14 / 43 for kinds 2 / 3 / 4 (0x14/0x38/0xAC); g_evtObjVars = o +
+    unk8*4. high.
+  - unk9 → stackOfs: varsOfs + local-variable words (43 → 44, 46, 47 for actors with variables). high.
+  - unkA → sp: call stack depth in words, 0 → 2 per call (both objects in `talk`), back to 0 on return. high.
+  - unkD → wait: frames left of op 0x22 (f100b uid 3 counts 19 → 0, uid 4 29 → 0), 0xFE = waiting for its message
+    window (ops 0x1F/0x95/0x54), 0xFF = waiting for a function it called with save=1. high (frame counter), code
+    (FE/FF).
+  - unkE → state: 2 while a new object runs its init function (the first ~130 VBlanks of every object of f100b),
+    then 1; 3 = suspended. Run `ret`: at `field_burmecia_rain` an encounter was forced (g_evtEncounterChance 0x7FF,
+    g_evtEncounterDist 0x3C1, one step: battle 47 from the field's table 47/47/38/79, state `field_burmecia_btl47`),
+    holding L1+R1 for 600 frames ended the battle, the rewards screen (0 EXP, state `field_burmecia_rewards`) was
+    closed with Cross, and back in field 763 every object had state 3 with unk12 = 1 for ~124 VBlanks while object 0
+    ran function 10 at level 0 (sp 2), then all went back to 1 (evt_returnFromFunc copies unk12 back). high.
+    unk12 → savedState. high.
+  - unkF → flags: 0x80 = turning (0x05 → 0x85 → 0x05 for the player and the Moogle in `talk`; ops 0x50/0xBC wait for
+    it to clear). Code (evt_findNearestObject): 0x02 / 0x04 collision masks against the player / other actors (two
+    actors pass through each other when both have the bit), 0x08 talk mask, 0x10 not pushable (D_8007AEB4); op 0x93
+    sets the low six bits. medium-high for 0x80, code for the others.
+  - unk10 → windowId: 0xFF; 2 while the Moogle's message window 2 is open (`talk`), set by ops 0x1F/0x20/0x54. high.
+  - unk11 → set by op 0x3B (meaning unknown).
+
+## Field actor fields (EvtObject kind 4)  (status: proposed)
+Runs: `t_walk` = `track.py field_dali_inn 0x8007805C 0xAC 'w20,right:40,w20,right+o:40,w30'` (Zidane; this
+save's Movement option is Run, so Right runs and Right+Circle walks), `t_talk`/`t_talkm` (Cross on the Moogle,
+player 0x8007805C / Moogle 0x80078588), `t_idle` (idle timer poked to 3), `f100b` (NPC copies uid 128-130),
+`f259` (field 259, uid 12 jumps three times). The field runs at 30 fps, so values hold for two VBlanks.
+- unk34 → modelId: 98 for Zidane, 220 for the Moogle, 0xFFFF for model-less objects (op 0x2F's u16). high.
+- unk3B → modelSlot: 0 for Zidane, 9, 10, 11 ... for NPCs (fld_setupActorModel: slots 0-8 belong to the nine
+  characters, NPCs take 9 + GameData.unk39). high.
+- unk36 → anim: 200 idle, 38 running, 25 walking, back to 200 (t_walk); 55 when the idle animation plays. high.
+- unk38 → animFrames: 60 / 18 / 20 / 82 for those four anims. high.
+- unk3A → animFrame (0 .. animFrames-1, wraps), unk39 → animPrevFrame (its previous value every step). high.
+- unk64 → animSubFrame: the 4-bit fraction of the 12.4 frame position (4, 6, ... 14, 0 idle at speed 18). high.
+- unk5D → animSpeed: 16 while moving, 18 idle (Zidane); NPC uid 128 switches among 28/32/36/40 at each idle loop.
+  high. unk7C → idleAnimSpeeds[4]: uid 128 = {28,32,36,40}, Zidane {14,16,18,20} (op 0x86 `86 00 0E 10 12 14`). high.
+- unk69 → defaultAnimSpeed (op 0x3E, copied to animSpeed on each anim change; 16 everywhere seen). medium.
+- unk54 → standAnim, unk56 → walkAnim, unk58 → runAnim: Zidane (200, 25, 38), the anims shown idle / walking /
+  running in t_walk (ops 0x33/0x34/0x35). high.
+- unk5C → speed: 60 running, 30 walking (evt_movePlayer stores the pad speed). high.
+- unk5E → runSpeed: 31; speed >= runSpeed shows runAnim, below it walkAnim (op 0xA6). high.
+- unk74 → idleAnim: 55 (op 0x52). With the idle timer poked to 3 (`write 0x80079560 3 --size 2` at field_dali_inn),
+  the timer reached 0, the stand anim finished its loop and anim became 55 (82 frames), unk62 0x82, timer reloaded
+  to 0x2DC (t_idle). high.
+- unk62 → animFlags: 0x80 = scripted anim playing (ops 0x40/0x41), 0x02 = idle anim (t_idle 0x82), 0x40 reverse,
+  0x10/0x20 loop/bounce (op 0x3F), 0x04 hold last frame. high for 0x80/0x02, code for the rest. unk63 → animLoops
+  (op 0x3F / 0x98 count, 0xFF = forever). medium. unk60/unk61 → animStart/animEnd (op 0x3D). medium.
+- unk40 → prevPos: the position one game frame earlier (+0x40 follows +0x14 two VBlanks later in t_walk). high.
+- unk52 → turnTarget: 0x6BB for both actors when they face each other in `talk` (= their final rotY). high.
+- unk5A → turnPrevAnim: the anim to restore after a turn (200 Zidane, 0xB58 the Moogle's stand anim). high.
+- unk80 → turnStartDir (0xDA0 = the Moogle's rotY before turning), unk82 → turnStep (141 per frame),
+  unk6C → turnRate (0x7FFF = turn without a turn animation). high / high / medium.
+- unk73 → turnSpeed (op 0x99, default 16). medium (code). unk5F → moveTurnRate (op 0x55; per-frame turn step x8
+  while walking to a point). medium (code).
+- unk40.unk20 / unk40.rotY (+0x4C/+0x4E) double as turnLeftAnim / turnRightAnim (ops 0x7A/0x7B; 0x87B for uid 128).
+  medium (code + values).
+- unk93 → talkTarget: uid of the object the player last talked to (0xFF → 8, the Moogle, on Cross). high.
+- unk78 → moveDistSq: squared distance to the walk target, shrinking every frame of a scripted walk and reset to
+  0x7FFFFFFF at the end (f259 uid 12: high half 35, 32, ... 0, then 0x7FFF). high. unk50 bit 0x10 = getting closer,
+  0x20 = facing locked (code).
+- unk50 → moveFlags: bit 8 while jumping (f259: 3 → 11 → 3), bits 0-2 op 0x47, 0x40/0x80 world-map camera marks.
+  medium.
+- Jump (ops 0x94, 0xE2, 0xDC; f259 uid 12, three jumps): unk68 → jumpFrame (0 .. 12), unk92 → jumpFrames (12),
+  unk94 / unkAA / unk96 → jumpTargetX / Y / Z ((-420, -1264, 1451), (260, -1159, 1444), (49, 16, 1086)),
+  unkA4 / unkA6 / unkA8 → jumpStartX / Y / Z (the position before each jump), pos follows a parabola between them;
+  unk76 → jumpAnim (10444 / 10446), unk90 / unk91 → jumpAnimStart / jumpAnimEnd (9, 25). high.
+- unk3C → collisionRadius, unk3D → talkRadius (x4 world units; op 0x4B args 2/3). With the Moogle's and Zidane's
+  unk3D = 0 Cross no longer starts the dialog (level stays 7, control stays 1); with the Moogle's unk3C = 0x40 Zidane
+  can't move at all next to it (distance stays 203 in every direction; `build/rtf2/coll.py`). high.
+- unk98 → collidedObject (= the Moogle while pushing into it), unk9C → collisionDepth (negative, -899 normal,
+  -100571 with the big radius). high / medium.
+- unk32 → height (-(op 0x2F's u8 << 2); -148 for uid 128), unk2F → scale (64 = 1.0; op 0x9F's 2nd arg); both place
+  the HERE icon / bubble anchor (evt_setDrawPosAtObject). medium.
+- unk2D → collisionEllipse (op 0xDF; stretches the radius along the facing). medium (code).
+- unk3E → balloonWindow (window anchored on the actor, evt_followBalloon; 0xFF none). medium (code).
+- unk84/86/88 → lookAt (smoothed look-at point), unk6A/unk6B → lookParams (op 0x8B). medium (code; changed while
+  the Moogle and Zidane face each other in t_talk).
+- unk8A/8C/8E → balloonOfs (copied from D_8007AE5C..64, msg_getLayout's 0xF9 0x5F offsets). medium (code).
+- unkA0 → animSyncSource (op 0xB5: copy another actor's anim and frame). medium (code).
+- unk26 / unk28 / unk2A / unk2E → saved walkmesh radius/4, triangle, flags and floor (evt_updateObjects saves them
+  when the field exits to a battle, evt_createModels restores them). medium (code).
+- unk30 → pitch (rotation x while flying to a point, op 0xA2). medium (code).
+- unk6E → talkTurnScript: 0xA7 = turn toward the talker before the talk function runs (op 0x91; func_80047AB8 uses
+  it as a 2-byte script `A7 <dir>`), 4 = don't. medium (code).
+
+## Event state block (Unk8007AECC at g_evtStateData 0x80077E60) and event globals  (status: proposed)
+- Unk8007AECC → proposed type name `EvtState`.
+- unk0[0x50] → fieldVars: variable bank 1 (evt_getVarBank 1 = *g_evtState). Bytes 0x00-0x27 change while field
+  100's and the Moogle's scripts run (f100b: +0x00..+0x06, +0x12/13, +0x20..+0x26; talk: +0x10, +0x13, +0x27);
+  evt_init clears them. high.
+- unk50 → objPool (0x1400 bytes; every object of f100b lies in 0x80077EB0-0x80078AD0), unk1450[32] → allocNodes,
+  unk15D0 → allocUsed, unk15D4 → allocFree, unk15D8[32] → listNodes, unk16D8 → objects (the list evtan.py walks),
+  unk16DC → objectsTail, unk16E0 → listFree. high (structure; names medium).
+- unk16E4[4] → partyUids: [19,22,20,21] at Dali (g_evtScriptCount 28; uid - 19 = character 0 Zidane, 3 Steiner,
+  1 Vivi, 2 Dagger, the Dali party), [18,21,19,20] in field 100 (27 scripts). high.
+- unk16E8 → analogDirOfs, unk16EA → padDirOfs: added to the stick / d-pad direction by evt_movePlayer. 0 in the
+  Dali/Alexandria fields, (0x400, 0x1E0) in field 404 and (0x300, 0x3E0) in field 501 (op 0x67 arguments << 4).
+  With padDirOfs poked to 0x400 at `field_dali_inn`, Right walked Zidane toward the camera (z falling, rotY 0)
+  instead of to the right (rotY 0xC00). high.
+- unk16EC controlEnabled / unk16ED playerUid: already named (field/menu campaign); op 0x2C sets playerUid, 0x2D/0x2E
+  clear/set controlEnabled (talk: 1 → 0 → 1).
+- unk16EE → mode (1 at Dali and in field 100) and unk16F4 → locationId (351 at Dali, 100 in field 100): the mode and
+  field the block belongs to; evt_init restores g_evtSavedState when both match. high.
+- unk16F0 → scriptBase: 0x8010D938 at Dali (event data; call frames store ip - scriptBase). high.
+- unk16EF → encounterRate (op 0x57; added to g_evtEncounterChance per roll): 0x40 in Burmecia field 763, whose
+  g_evtEncounterTable is {47, 47, 38, 79, pattern 1}; forcing the chance gave battle 47 (run `ret`). high.
+- unk16F8 → walkOnly: poked to 1 at `field_dali_inn`, Right played the walk anim 25 instead of running (op 0x6A sets,
+  0xF0 clears). high.
+- unk16FC → battleObjectsTail (evt_init in battle; func_8004AEBC returns it to btl_init). medium (code).
+- unk1700 → idleTimer: counts down once per frame while the player has control (talk: 191 → 187, then frozen while
+  the dialog has control), reloaded with (rand + 200) * 2 or * 4; at 0 the player's idleAnim plays (t_idle).
+  -1 = disabled (op 0x90), 0 = off (op 0xEE). high.
+
+Globals (main):
+- D_8007AEC4 → g_evtStepCount: +2 per game frame while running, +1 walking (t_walk 0x18E70 → ...); sysvar 7. high.
+- D_8007AE20 → g_evtTalkAngle: angle from the player's facing to the object talked to (-188 for the Moogle in
+  t_talk); sysvar 4. high.
+- D_8007AEC0 → g_evtCamera, D_8007AEC8 → g_evtCameraChanged: in field 153 the script's fldbg_setCamera(1) turned
+  AEC0 0 → 1 and AEC8 was 1 for 34 VBlanks, then 0 (f153). The bubble, HERE icon and balloons skip frames with
+  AEC8 set. high.
+- D_8007BBC8 → g_evtMsgCount: message windows opened since control was taken (0 → 1 → 2 in the Moogle talk; msg_open
+  increments, op 0x2D clears). D_8007B710 → g_evtPlayerAnimCount: player anim changes in the same period (10 → 0 at
+  op 0x2D, increments in field 153's cutscene every frame). msg_startHereIcon(1) at op 0x2E shows the HERE icon only
+  when the Config HERE Icon option is On and (g_evtMsgCount >= 3 or g_evtPlayerAnimCount != 0): Moogle talk with
+  HERE icon On and nothing poked: no icon (count 1); with 0x8007BBC8 poked to 3 or 0x8007B710 to 1 before the dialog
+  closed, g_hereIconTimer went 59, 56, ... (icon shown); with the save's own Config (HERE icon Off, bit 17 set) never.
+  (`build/rtf2/here2.py`). high.
+- D_8007AEA8 → g_evtPlayerBlocked (set to 2 when a collision pushed the player back, counts down; suppresses the
+  stand anim), D_8007AEB0 → g_evtPushFrames (frames pushed into a pushable actor; 1, 2 per contact in the Moogle
+  run, at 25 it turns to -25 and collisions are skipped while negative), D_8007AEB4 → g_evtPushable (!(unkF & 0x10)
+  of the nearest actor; 1 for the Moogle). medium-high (runtime counts + code).
+- D_8007AEA4 → g_evtPosSetThisFrame (op 0x1D sets it, cleared each update; blocks a pending encounter that frame).
+  medium (runtime: 1 for 4 VBlanks at field 153's placement ops).
+- D_8007AE8C → g_evtLocationName (event data + 0x2C: the field's location name) and GameData.unk80C → locationName:
+  the main menu's LOCATION box shows "Dali/Inn" from it; with unk80C poked to 0 the box printed whatever is at RAM 0
+  ("Honolulu conversion code"). D_8007AE90 → g_evtLocationNameBuf (op 0xB0 copies a message there, 0xB1 restores).
+  high for unk80C, medium for the two globals.
+- D_8007BBD4 → g_msgReady: 0 while msg_init runs at a field load, 1 afterwards (f55 record). medium.
+- D_8007BBD8 → g_msgSyncTag: set by op 0xE3 and by the text codes F9 0F xx / F9 46 while a message prints, read by
+  scripts as sysvar 8. medium (code; not seen changing in the f55 dialog).
+- D_80067948 → g_modeHeap: bump allocator of the running mode. fld_main sets it to g_loadAreaEnd + 0x28000, skips
+  0x2000 and carves the FieldMap there: at `field_burmecia_rain` FieldMap = 0x800D1000 = 0x800A7000 + 0x2A000 and
+  D_80067948 = 0x80107A20 past the loaded field data (g_allocTop stays 0x800A6528); battle (btl_main) and world map
+  (wm_main, w_memoryman) use it the same way. medium-high.
+- GameData.unk38 → npcCount, unk39 → npcModelSlots: at field 351 (Dali) func_8004AAF0 returned 8 (fld_load+0x258)
+  = the eight kind-4 objects with scriptIdx < g_evtScriptCount - 9; unk39 = 7 (one of them has no model). high.
+- GameData.unk8B2 → cardOpponent (func_80021680 stores op 0xAE's argument; ovl_0d tm_game reads it as the
+  opponent). medium (code).
+
+Functions (main):
+- func_8004AAF0 → evt_countNpcActors (above; called by fld_load, wm_main and btl_main with 0). high.
+- func_8004AB64 → evt_getObjectChrIndex (`(o)` → o->scriptIdx + 9 - g_evtScriptCount: 0-8 for the character
+  scripts, used by fld_setupActorModel to give characters model slots 0-8). medium-high (code + slot numbers).
+- func_8004B120 → evt_getPartyChrIndex (`(slot)`: partyUids[slot] → character index; msg name codes 0x18+).
+  medium (code; the Dali uids map to the Dali party as above).
+- func_8004B3D0 → evt_createRegion (out-of-line op 0x08: kind 3, flags 1). high (structure).
+- func_8004AFF0 → evt_getObjectModelData (`(o)` → the model slot's +8 object: mesh show/hide, attach, scale,
+  texture anims; 0 for model-less objects). medium (code).
+- func_8004B158 → evt_callWorldCellTrigger (`(x, z, attr)` → object 0's function 0x8000|z<<8|x<<2|attr, from
+  ovl_0c w_movement). medium (code).
+- func_8004B1EC → evt_getWorldCamEyeObj, func_8004B1FC → evt_getWorldCamTargetObj (return D_8007AEB8/AEBC, the
+  objects with world-map flags 0x40/0x80). medium (code).
+- func_8004AEBC → evt_getBattleObjects (unk16FC). medium (code).
+- func_8002170C → evt_updateActorWalkmesh (bgi_updateActor for field actors with a model; called per actor by
+  evt_updateObjects). medium (code).
+- func_80021680 → evt_setCardOpponent. medium (code).
+- func_80062750 → card_setGameResult, func_8006275C → card_getGameResult (sysvar 18), func_8006237C →
+  card_resetGameResult, D_800834C8 → g_cardGameResult (0 win, 1 loss/quit, 2 draw; tm_checkGameEnd). medium (code).
+- func_80012AD4 → mbg_getStatus (bits: 1 starting, 2 playing, 4 24-bit, 0x10 paused from g_mbgState/Frame/Paused/
+  Rgb24; fld_movie and ovl_15 wait for bit 2). medium (code).
+- func_8002F514 → snd_startSe (`(id)`: sound command 0xD000 with pan 0x80, volume 0x7F) and func_8002F55C →
+  snd_stopSe (command 0x5100): the EXP/Gil count loop in ovl_65 and sound 0x44A in ovl_37 start/stop in pairs.
+  medium (code).
+- func_8005392C → gamedata_resetEventFlags (clears GameData.unk568/56A/56C, battleResult, unk56F, rainCount, unk571).
+  medium (code).
+
+## Message windows, speech tails, bubble, HERE icon, ATE prompt  (status: proposed)
+Run `msg359`: `evtrec.py msg359 --state field_dali_359 --seq 'x:2,w200,x:2,w200,x:2,w200' --g 0x8007B9C0:0x1B8`
+(the Dali arrival cutscene: windows 1 and 2 open, three pages, Cross every 200 VBlanks).
+- MsgWindow.unkA → id: 1 / 2 for g_msgWindows[1] / [2] (msg_open stores the index). high.
+- MsgWindow.unk24 → typeAccum: text timing in 1/8 characters (+speed per frame, >>3 = characters; 8, 64, 72, ...
+  per page). medium-high. MsgWindow.unk2A → pendingChars: 1 for two VBlanks at each page start, else 0. medium.
+- MsgWindow.unk26 → waitFrames: 0xFF while the text waits for Cross (255 for ~250 VBlanks per page), my Cross makes
+  it 1 → 0 and the next page starts (msg_input); other values count down text-code pauses. high.
+- MsgWindow.unk1C → textWidth (76 / 132 / 110 = the window width w each page; the text is centred with it). medium.
+- MsgWindow.unk1A → tailOffset (46 / 53 / 55) and MsgWindow.unk2B → tailMode (3 / 1 / 2): msg_open copies the
+  layout's tail into them and passes them to win_setTail. medium (runtime values + code).
+- Window (g_windows[10], 0x54 bytes) at `field_opening_dark` ("Sure is dark..." over Zidane): slot 2 = rect
+  (128, 144, 94, 23), unk1A = 3 (style 3 = balloon with tail), unk1B = 2 (slot), unk1C = 3 (open), unk28 = 2 (anim
+  mode 2 = tail), unk29 = 2 (tail mode), unk2A = 38 (tail x). Poking unk2A = 70 moved the tail 32 px to the right
+  (`build/rtf2/tail_z.png`); poking unk29 to 0-3 changed nothing visible on an open window (it only feeds the open
+  steps). Proposed: Window.unk1A → style, unk1B → slot, unk1C → state, unk28 → animMode, unk29 → tailMode,
+  unk2A → tailX; the setters give unk10 openFrames, unk12 closeFrames, unk1D translucent, unk1F shadow,
+  unk20/22/24 titleX/titleY/title, unk23 visible, unk30 list, unk40 drawContent, unk44 drawOverlay, unk48 onOpened,
+  unk4C onClosed (code). high for 1A/1C/2A, medium for the rest.
+- Player bubble (`field_burmecia_bubble`, field 757, near a "?" spot): op 0x68 calls msg_showPlayerBubble(0) every
+  frame (trace: 5 calls in 10 VBlanks from evt_execInstr+0x9284) and a "?" balloon floats over Zidane. Patching the
+  store in msg_showPlayerBubble to always write 1 (`write 0x8005007C 0xac43bbf4`) shows "!" instead; stubbing it
+  removes the balloon (`build/rtf2/bubble_m.png`). Confirms msg_showPlayerBubble / msg_updatePlayerBubble /
+  msg_drawPlayerBubble and g_bubbleVariant (0 "?", 1 "!") at runtime (they were [code]). high.
+- HERE icon: Select at `field_burmecia_rain` draws the white pointing hand over Zidane (`build/rtf2/here.png`); the
+  automatic one is the g_evtMsgCount / g_evtPlayerAnimCount rule above (needs Config HERE Icon On; the Dali save has
+  it Off, config 0xF39A40 bit 17, which is why the field/menu campaign never saw it). Confirms msg_drawHereIcon /
+  msg_startHereIcon / g_hereIconTimer. high.
+- ATE prompt: g_atePromptMode (0x8007BC10) poked at `field_burmecia_rain`: 1 = "PRESS SELECT TO SEE ATE" at the bottom
+  left (blinking with the sprite-string variant every 44 frames), 2 = blinking "ACTIVE TIME EVENT"
+  (`build/rtf2/ate_m.png`, `ate2_m.png`). Op 0xD7 runs in the Dali fields 350-359, 450 and 505 (13 disc-1 fields).
+  Confirms msg_drawAtePrompt / msg_setAtePrompt at runtime. high.
+- Field 359 entered out of story order shows a script error window "Error Env Play() / Slot=0" (a debug message in
+  the field's text, `build/rtf2/f359.png`): a lead for the field's environment-sound handling, not followed.
+
+## Field rain (main msg.c tail, tu_80050D38.c, asm_80053384.c; ovl_0a tu_800B0124.c)  (status: proposed)
+Nine Burmecia fields (750-768) run op 0xD8 in their first 900 VBlanks (`opscan.py`; rain visible in 751 and 763). At
+`field_burmecia_rain` (763): `D_8007BC20` = {free list 0x800FBD7C, active list, 24, 896, DR_TPAGE x2, ..., 0}.
+- Trace at the field-763 entry (`enter_field.py 763 --frames 0`, then `trace ... --frames 700`): op 0xD8 →
+  func_800B3444(0, 0, 1) → func_80050BE0(0x800FBC5C) once, then func_80050CA8(0x18, 0x38); func_800B3684 runs every
+  game frame from fld_main+0x41C.
+- Ablation at `field_burmecia_rain`, 30 frames (`build/rtf2/abl_rain.png`): stubbing func_80050AAC, func_8005338C,
+  func_80053498 or func_800B3684 removes the falling streaks; nothing else changes.
+- func_800B3444 → fld_enableRain (`(0, 0, on)`: allocates the drop buffer once (FLD_SCN_OBJFX_ALLOC, at the scene's
+  heapTop, 0x800FBC5C in field 763, else at D_80067948), sets/clears FLD_SCN_OBJFX_ON; evt_updateObjects calls it with
+  0 when the field exits to a battle). high. FLD_SCN_OBJFX_ALLOC/ON → FLD_SCN_RAIN_ALLOC/FLD_SCN_RAIN_ON.
+- func_800B3684 → fld_drawRain (every frame, calls func_80050AAC when ON). high.
+- func_80050BE0 → rain_init (`(buf)`: 222 drop nodes into the free list, tpage, returns the end of its two primitive
+  buffers). high.
+- func_80050CA8 → rain_set (`(count, speed)`: drops per frame (max 0x82) and fall speed * 16; count 0 with a speed
+  stops spawning and lets the drops fall out). high.
+- func_80050AAC → rain_draw (spawns, then moves and draws the active drops with the field's view matrix). high.
+- func_8005338C → rain_spawn (`(height)`: takes `count` nodes from the free list at random x/z, y = height). high.
+- func_80053498 → rain_drawDrops (moves each drop, emits its line primitive, frees drops below the floor). high.
+- func_8005345C → rain_stepDrop (asm helper of rain_drawDrops). medium.
+- D_8007BC20 → g_fieldRain {free, active, count, speed, tpage[2], ..., stopping}. high. D_8007BC18 → g_fieldRainPrims:
+  the line-primitive buffer after the 222 nodes, two halves 0x22B0 apart picked by the draw buffer (rain_draw).
+  medium (code).
+- World-map copies with identical code (op 0xD8 in evt_modelOpWorld): func_80050D38 → wrain_draw, func_80050E34 →
+  wrain_init, func_80050EFC → wrain_set, func_80053658 → wrain_spawn, func_80053764 → wrain_drawDrops,
+  func_80053728 → wrain_stepDrop, D_8007BC50 → g_worldRain, D_8007BC48 → g_worldRainPrims. medium (code; not
+  run in a rainy world map).
+- GameData.rainCount (already named) = op 0xD8's first argument (24 in field 763).
+
+## Field exits, menus from scripts, jumps  (status: reference; confirms [code] names)
+- Field → field: at `field_burmecia_rain` holding Down 150 frames: op 0x2B → evt_setNextLocation(0x2FA) →
+  game_setNextScene(0x2FA); 300 frames later field 762 is loaded (fieldId 762). At `field_ice_300` Up: 0x2B(301).
+- Field → world map: `build/rtf2/exits.py 1` finds 24 disc-1 fields whose scripts hold `B6 00 <9000-9012>`. At
+  `field_ice_300` (field 300, Ice Cavern exit) holding Down 240 frames: op 0xB6 → evt_setNextLocation(0x2328 =
+  9000) (ra evt_execInstr+0x3DE8); GameState.mode becomes 3, ovl_0c replaces ovl_0a, wm_main(0x2328) runs from
+  wm_entry+0x30 and GameData.unk7DC = 9000; the world map with the mini-map comes up outside the cavern
+  (`build/rtf2/world1.png`, state `field_worldmap_ice_exit`).
+- Moogle save point: `field_dali_inn_moogle`, Cross, Cross ("Save, kupo?" → Save / Don't save), Cross: op 0x75 →
+  menu_open(4, 0) + evt_onMenuOpen (ra evt_execInstr+0xA4F0/0xA4F8) and ovl_39 loads (the save screen; nothing was
+  saved). So the script-opened save screen uses arg 0 (the forced `menu_save` state used 2).
+- Scripted jump: field 259 (Evil Forest) uid 12 runs 0x94 / 0x9C / 0xE2 / 0xDC (see the jump fields above).
+- Camera switch: field 153 calls fldbg_setCamera(0) at load and (1) from op 0x7E (traces in fields 61, 63, 153).
+- Background layers (`build/rtf2/ablate2.py STATE SEQ FUNCS`, pixel diffs against an unstubbed run):
+  fldbg_followPlayer at `field_d1_101` / `field_d1_352` while walking Left 40 frames: the background no longer
+  scrolls with the player (41668 / 50249 pixels differ, `build/rtf2/ab_follow.png`). fldbg_updateOverlayAnims at
+  `field_d1_456` (a windy lookout with a flag and a moon vane, 60 frames): only the flag and the vane differ (frozen
+  frames; 1093 pixels, `build/rtf2/ab_456_diffs.png`). fldbg_updateOverlayScroll there: the drifting cloud layer
+  stops (599 pixels along the cloud edges). fldbg_updateScroll at `field_d1_502` (cutscene with a scripted pan,
+  60 frames): the whole view stays at the old scroll (22837 pixels, `build/rtf2/ab_502_scroll.png`).
+  fldbg_updateFollowOverlays, bgi_updateAnims and bgi_updateFloorMoves changed nothing in any field tried (100, 101,
+  300, 352, 404, 456, 502). So fldbg_followPlayer, fldbg_updateOverlayAnims, fldbg_updateOverlayScroll and
+  fldbg_updateScroll can carry [runtime]. high.
+- FieldObjSlot.flags (ovl_0a, game_getModel slot) 0x10 → FLD_OBJ_NO_SHADOW: at `field_dali_inn` setting it on
+  Zidane's slot (0x80094110, flags 0x101 → 0x111) removed the dark shadow under his feet after 20 frames (92 pixels
+  differ there, `build/rtf2/shadow_m.png`; fld_drawShadow returns early for it). Ops 0x7F / 0x80 clear / set it
+  (EVT_OP_SHADOW_ON / SHADOW_OFF; 0x80 runs in 72 disc-1 fields), the jump op 0xE2 sets it and the jump end
+  clears it. 0x20 (FLD_OBJ_SHADOW_FIXED, ops 0x83/0x84) moved the shadow slightly (14 pixels). high for 0x10.
+
+## Event opcode table  (status: proposed; EVT_OP_* names with runtime evidence in the last column are proposed, the rest are code leads)
+How the runtime column was made: every disc-1 field (222) and 74 disc-2 fields were entered with `opscan.py` (900
+VBlanks each, no input) and every opcode fetched by evt_execInstr was counted (`build/rtf2/ops_*.json`,
+`build/rtf2/optable.py 1 2` regenerates this table). 150 distinct opcodes ran. "N calls / F fields" = totals over
+those entries; scheduler opcodes are handled in evt_runScripts before evt_execInstr and are not counted (their
+evidence is the scheduler entry above). Object arguments: 0xFF = the current actor (g_evtActor), 0xFA = the player,
+0xFB-0xFE = party slots 0-3 (func_8004B4C4 → evt_resolveObjectId; at runtime the Moogle's talk function runs `10 00 04
+FA 16` = CALL level 4, the player, function 0x16, and the player's function 0x16 is `51 00 08 10`, `50` = turn to
+object 8 (the Moogle) at speed 16 and wait: `build/rtf2/oplog.py field_dali_inn_moogle 'w4,x:2,w60'`).
+Disc-1 examples: 0xB3
+(fld_spriteCommand) 118855 calls in 109 fields, 0x59 (layer colour) 51953 in 99, 0x80 (shadow off) 26069 in 72, 0x23
+(walk to x/z) 11884 in 65; 0x68 (bubble) only in 357, 405, 757 and 801; 0xD7 (ATE prompt) in the Dali fields 350-359,
+450 and 505; 0xD8 (rain) in nine Burmecia fields 750-768; 0xE2 (jump) in 259, 454, 2950; 0x2A (battle) in 258; 0x48
+(add item) in 261.
+
+| op | proposed EVT_OP_ | args | effect (handler) | runtime |
+|---|---|---|---|---|
+| 01 | JMP | s16 ofs | scheduler: ip += ofs | scheduler op (not hooked) |
+| 02 | JMP_IFNOT | s16 ofs | scheduler: pop expression result, jump when 0 | scheduler op (not hooked) |
+| 03 | JMP_IF | s16 ofs | scheduler: jump when non-zero | scheduler op (not hooked) |
+| 04 | RETURN |  | scheduler: evt_returnFromFunc | scheduler op (not hooked) |
+| 05 | EXPR | expr | scheduler: evt_runExpr (assignments, variable writes) | scheduler op (not hooked) |
+| 06 | SWITCH | n, default, {value, ofs}[n] | scheduler: switch on the popped value | scheduler op (not hooked) |
+| 07 | NEW_CODE | entry, uid | evt_createObject kind 2 (0x14-byte header) | 693 calls / 255 fields; f100b uids 0-4/14: kind 2, header 5 words |
+| 08 | NEW_REGION | entry, uid | evt_createObject kind 3 (0x38), flags 1 | 612 calls / 226 fields; f100b uids 16-18: kind 3, header 14 words |
+| 09 | NEW_ACTOR | entry, uid | evt_createObject kind 4 (0xAC) with actor defaults | 1202 calls / 294 fields; `09 0A 80..82` makes uids 128-130 from entry 10 (field 100) |
+| 0B | SWITCH_TABLE | u8 n, base, default, ofs[n] | scheduler: dense jump table indexed by value - base | scheduler op (not hooked) |
+| 0D | SWITCH_TABLE16 | u16 n, base, default, ofs[n] | scheduler: the same with a 16-bit count | scheduler op (not hooked) |
+| 10 | CALL | level, obj, func | evt_callObjectFunc(obj, level, func, 0) | 66 calls / 33 fields |
+| 12 | CALL_WAIT_FREE | level, obj, func | retries until obj.level > level, then calls | 361 calls / 16 fields |
+| 14 | CALL_SYNC | level, obj, func | calls with save=1 (caller waits, wait=0xFF) | 350 calls / 14 fields |
+| 16 | CALL_CALLER | level, func | calls a function of the object that called this function (uid in the top call frame) | not seen |
+| 18 | CALL_CALLER_WAIT_FREE | level, func |  | not seen |
+| 1A | CALL_CALLER_SYNC | level, func |  | not seen |
+| 1B | ? | flag | GameData.unk56F bit 3 | not seen |
+| 1C | DELETE_OBJ | obj (0xFF self) | scheduler: evt_deleteObject | scheduler op (not hooked) |
+| 1D | SET_POS_XZ | x, z | pos/prevPos = (x, -0x8000, z): placed on the floor | 1239 calls / 294 fields; every actor init |
+| 1E | BG_SCROLL_LIMITS | cam, 4 x s16 | fldbg_setScrollLimits | 868 calls / 16 fields |
+| 1F | MSG_WAIT | win, flags, msg | msg_open + wait (obj.wait = 0xFE) | 40 calls / 36 fields; talk: the Moogle +0x10 = 2 |
+| 20 | MSG | win, flags, msg | msg_open, no wait | 90 calls / 78 fields |
+| 21 | MSG_CLOSE | win | msg_close | 644 calls / 5 fields |
+| 22 | WAIT | u8 frames | scheduler: obj.wait = n-1 (max 0xFD) | scheduler op (not hooked); f100b uid 3/4: +0xD counts 19..0, 29..0 |
+| 23 | MOVE_XZ | x, z | evt_moveObjectTo(x, 0, z, 0), repeats until there | 15034 calls / 81 fields; f259: +0x78 dist^2 shrinks to 0 |
+| 24 | MOVE_TO_OBJ | obj | evt_moveObjectTo the object | 67 calls / 1 fields |
+| 25 | MOVE_RESET |  | loop count 0xFF, stops the walk state | 457 calls / 86 fields |
+| 26 | SET_WALK_SPEED | u8 | actor.speed | 211 calls / 89 fields |
+| 27 | BG_MASK_FILTER | u8 | bgi_setMaskFilter | 1114 calls / 293 fields |
+| 28 | MOVIE | cmd, u16, u8 | fld_movieCommand | 8 calls / 3 fields |
+| 29 | SET_PATH | n, {x,z}[n] | points used by 0xA4 | 610 calls / 226 fields |
+| 2A | BATTLE | swirl, u16 battle | evt_setNextBattle, returns 3 | 1 calls / 1 fields |
+| 2B | GOTO_FIELD | u16 field | evt_setNextLocation, returns 4 | 1 calls / 1 fields; field_burmecia_rain, walking down: 0x2B(0x2FA) -> field 762; field_ice_300 up: 0x2B(301) |
+| 2C | SET_PLAYER |  | playerUid = current object | 294 calls / 288 fields; state +0x16ED = 19 (Zidane) |
+| 2D | DISABLE_CONTROL |  | controlEnabled = 0, HERE icon off, msg/anim counters cleared | 2 calls / 2 fields; talk: +0x16EC 1 -> 0 |
+| 2E | ENABLE_CONTROL |  | controlEnabled = 1, msg_startHereIcon(1), idle timer re-rolled | 173 calls / 173 fields; HERE icon test (here2.py) |
+| 2F | SET_MODEL | u16 model, u8 height | actor.modelId/modelSlot/height | 1193 calls / 294 fields; Zidane model 98 |
+| 30 | DEBUG_30 |  | scheduler: func_80051878(0) | scheduler op (not hooked) |
+| 31 | DEBUG_31 |  | scheduler: func_80051920(0) | scheduler op (not hooked) |
+| 32 | PEN_CELL | a, b | scheduler: pen_setCell(a, b) | scheduler op (not hooked) |
+| 33 | SET_STAND_ANIM | u16 | actor.standAnim | 3253 calls / 294 fields; t_walk |
+| 34 | SET_WALK_ANIM | u16 | actor.walkAnim | 1058 calls / 294 fields; t_walk |
+| 35 | SET_RUN_ANIM | u16 | actor.runAnim | 1027 calls / 294 fields; t_walk |
+| 36 | SET_DIR | u8 dir | rotY = dir << 4 | 6696 calls / 294 fields |
+| 37 | SET_ROT_XZ | u8, u8 | rotX, rotZ | 535 calls / 10 fields |
+| 38 | BTL_ENEMY_CMD | u8 | battle: btl_setEnemyCmd (death/counter/turn) | not seen |
+| 39 | MESH_HIDE | obj, mesh | model unk14 &= ~bit | 51 calls / 2 fields |
+| 3A | MESH_SHOW | obj, mesh | model unk14 |= bit | 45 calls / 8 fields |
+| 3B | SET_OBJ_11 | u8 | current object +0x11 | not seen |
+| 3C | ENCOUNTER_TABLE | u8, 4 x u16 | g_evtEncounterTable | 47 calls / 47 fields |
+| 3D | SET_ANIM_RANGE | start, end | actor anim frame range | 1513 calls / 26 fields |
+| 3E | SET_ANIM_SPEED | u8 | actor.defaultAnimSpeed | 15 calls / 8 fields |
+| 3F | SET_ANIM_LOOP | mode, count | anim flags (loop/bounce) and loop count | 55 calls / 32 fields |
+| 40 | ANIM | u16 anim | evt_execInstr_anim (play once) | 1981 calls / 78 fields |
+| 41 | WAIT_ANIM |  | retries while the anim plays (flags 0x80) | 8294 calls / 66 fields; f100b 4954 retries |
+| 42 | ANIM_END |  | evt_onAnimEnd | 2 calls / 2 fields |
+| 43 | RUN_THREAD | func | kind-1 object uid+0x40 running a function of this object | 27 calls / 18 fields |
+| 44 | WAIT_THREAD |  | retries while the uid+0x40 thread exists | 271 calls / 2 fields |
+| 45 | KILL_THREAD |  | deletes it | 8 calls / 5 fields |
+| 46 | NOP_46 |  | returns 0 | not seen |
+| 47 | SET_MOVE_FLAGS | u8 | actor flags 0-2 | 470 calls / 151 fields |
+| 48 | ADD_ITEM | u16 id, u8 n | item / key item / card | 1 calls / 1 fields |
+| 49 | REMOVE_ITEM | u16 id, u8 n |  | not seen |
+| 4A | BTL_SET_VAR | u8, u16 | battle | not seen |
+| 4B | SET_RADIUS | walkmesh r, collision r, talk r | bgi radius, actor.collisionRadius, actor.talkRadius | 1191 calls / 294 fields; radius pokes (talk/collision tests) |
+| 4C | ATTACH | obj, parent, bone | model attach | 31 calls / 17 fields |
+| 4D | DETACH | obj |  | 3 calls / 3 fields |
+| 4E | DEBUG_STRING | string | func_80052D0C on the inline string | not seen |
+| 4F | YIELD |  | returns 6 (rest of the list runs next frame) | not seen |
+| 50 | WAIT_TURN |  | retries while turning (flags 0x80) | 1832 calls / 53 fields |
+| 51 | TURN_TO_OBJ | obj, speed | evt_turnObject toward obj | 34 calls / 19 fields |
+| 52 | SET_IDLE_ANIM | u16 | actor.idleAnim | 301 calls / 271 fields; idle test: anim 55 |
+| 53 | MSG_KEEP |  | msg_keepWindowsOnInit | not seen |
+| 54 | MSG_WAIT_WIN | win | waits for window | 80 calls / 75 fields |
+| 55 | SET_MOVE_TURN | u8 | actor turn rate while walking (0 = 0xFF) | 142 calls / 53 fields |
+| 56 | TURN | dir, speed | evt_turnObject | 132 calls / 43 fields |
+| 57 | ENCOUNTER_RATE | u8 | state.encounterRate (0 clears the chance) | 47 calls / 47 fields |
+| 58 | BG_ORIGIN | 3 x s16 | fldbg_moveOrigin | not seen |
+| 59 | BG_LAYER_COLOR | layer, r, g, b | fldbg_setOverlayColor | 71002 calls / 134 fields; field 100: 4900 calls (per-frame colour animation) |
+| 5A | BG_LAYER_MOVE |  | fldbg_moveOverlay | 368 calls / 29 fields |
+| 5B | BG_LAYER_SHOW | layer, on | fldbg_showOverlay | 1876 calls / 66 fields |
+| 5C | BG_LAYER_LOOP |  | fldbg_setOverlayLoop | 1415 calls / 18 fields |
+| 5D | BG_LAYER_PARALLAX |  | fldbg_setOverlayParallax | 44 calls / 14 fields |
+| 5E | BG_LAYER_POS |  | fldbg_setOverlayPos | 162 calls / 1 fields |
+| 5F | BG_ANIM_FRAME |  | fldbg_setAnimFrame | 95 calls / 62 fields |
+| 60 | BG_ANIM_PLAY |  | fldbg_playAnim | 120 calls / 41 fields |
+| 61 | BG_ANIM_SPEED |  | fldbg_setAnimSpeed | 1016 calls / 102 fields |
+| 62 | CHR_ROW | chr, back | character row bit (Character +0x34 bit 9) | not seen |
+| 63 | BG_ANIM_DELAY |  | fldbg_setAnimStepDelay | 2 calls / 2 fields |
+| 64 | BG_ANIM_FLAGS |  | fldbg_setAnimFlags | 189 calls / 98 fields |
+| 65 | BG_ANIM_RANGE |  | fldbg_playAnimRange | 226 calls / 21 fields |
+| 66 | MSG_NUMBER | slot, u16 | msg_setNumber (value printed by a text code) | 69 calls / 68 fields |
+| 67 | SET_DIR_OFFSETS | analog, pad | state.analogDirOfs/padDirOfs = arg << 4 | 1496 calls / 296 fields; fields 404 (0x400, 0x1E0) and 501 (0x300, 0x3E0); 0 elsewhere |
+| 68 | PLAYER_BUBBLE | variant | msg_showPlayerBubble: 0 "?", 1 "!" | 1436 calls / 5 fields; field 757 calls it every frame (a0 0, "?"); variant 1 patched -> "!" |
+| 69 | TIMER_SET | u16 s | timer_setSeconds | not seen |
+| 6A | WALK_ONLY |  | state.walkOnly = 1 | 1 calls / 1 fields; the flag it sets, poked: walk anim only |
+| 6B | CLEAR_COLOR | r, g, b | game_setClearColor | 6 calls / 6 fields |
+| 6C | DEBUG_6C |  | scheduler: func_80051878(1) | scheduler op (not hooked) |
+| 6D | DEBUG_6D |  | scheduler: func_80051920(1) | scheduler op (not hooked) |
+| 6F | BG_SCROLL_TO | x, y, frames, mode | fldbg_scrollTo | 1046 calls / 37 fields |
+| 70 | BG_SCROLL_TO_PLAYER |  | fldbg_scrollToPlayer | 2 calls / 2 fields |
+| 71 | BG_FOLLOW |  | fldbg_setFollow | not seen |
+| 72 | BG_FOLLOW_HEIGHT | s16 | fldbg_setFollowHeight | 2845 calls / 24 fields |
+| 73 | BG_LIMITS_ON |  | fldbg_enableScrollLimits | not seen |
+| 74 | BG_LIMITS_OFF |  | fldbg_disableScrollLimits | 1 calls / 1 fields |
+| 75 | MENU | type, arg | menu_open + evt_onMenuOpen, returns 1 | not seen; Moogle "Save" -> menu_open(4, 0), ovl_39 loads |
+| 76 | PATH_START | x, z |  | not seen |
+| 77 | PATH_POINT | x, z |  | not seen |
+| 78 | PATH_ADD |  |  | not seen |
+| 79 | NOP_79 |  | returns 0 | not seen |
+| 7A | SET_TURN_LEFT_ANIM | u16 | actor prevPos.rotX field reused as turn-left anim | 902 calls / 294 fields |
+| 7B | SET_TURN_RIGHT_ANIM | u16 |  | 902 calls / 294 fields |
+| 7C | MSG_CHOICE_MASK | u16, u8 | msg_setChoiceMask | not seen |
+| 7D | TIMER_RUN | u8 | timer_setRunning | not seen |
+| 7E | BG_CAMERA | u8 cam | fldbg_setCamera | 19 calls / 15 fields; field 153: setCamera(1) -> D_8007AEC0 0 -> 1 |
+| 7F | SHADOW_ON |  | clears FieldObjSlot flag 0x10 (evt_modelOp*) | 5 calls / 4 fields |
+| 80 | SHADOW_OFF |  | sets FieldObjSlot flag 0x10: no shadow | 31833 calls / 96 fields; flag poke removes Zidane's shadow |
+| 81 | SHADOW_SIZE | u8, u8 | evt_modelOpField | 1 calls / 1 fields |
+| 82 | SHADOW_OFS | s16, s16 |  | not seen |
+| 83 | SHADOW_FIXED | u8 | flag 0x20 + placement | not seen |
+| 84 | SHADOW_UNFIX |  |  | not seen |
+| 85 | SHADOW_85 | u8 | placement byte 0 | not seen |
+| 86 | SET_IDLE_SPEEDS | 4 x u8 | actor.idleAnimSpeeds | 930 calls / 294 fields; Zidane 0E 10 12 14; uid 128 28/32/36/40 seen in +0x5D |
+| 87 | SET_DIR_OBJ | obj, dir | 0x36 on another object | 121 calls / 2 fields |
+| 88 | MODEL_CMD | cmd, 3 x s16 | fld_modelCommand | 5935 calls / 274 fields |
+| 89 | SOUND_POS | x, y, z, u8 | fld_getSoundPanVolume -> sysvars 22/23 | 10 calls / 6 fields |
+| 8A | SOUND_POS_OBJ | obj, u8 |  | 381 calls / 4 fields |
+| 8B | SET_LOOK | u8, u8 | look-at params, flags |= 3 | 1032 calls / 294 fields |
+| 8C | BATTLE_EX | swirl, u8, u16 | battle with a music override | not seen |
+| 8D | TIMER_ENABLE | u8 | timer_enable | not seen |
+| 8E | MSG_8E |  | func_8004ED3C | 70 calls / 68 fields |
+| 8F | OBJ_COLOR | obj, r, g, b | fld_setObjectColor (retries while fading) | 746 calls / 8 fields |
+| 90 | IDLE_OFF |  | state.idleTimer = -1 | 6 calls / 6 fields |
+| 91 | SET_TALK_TURN | u8 | actor turns toward the talker (0xA7) or not | 48 calls / 23 fields |
+| 92 | BG_FOLLOW_LAYER | 7 args | fldbg_addFollowOverlay | 1 calls / 1 fields |
+| 93 | SET_OBJ_FLAGS | u8 | flags 0-5 of +0xF | 5699 calls / 161 fields |
+| 94 | SET_JUMP_ANIM | u16 anim, start, end | actor.jumpAnim / jumpAnimStart / jumpAnimEnd | 90 calls / 58 fields; f259: 10444, 9..25 |
+| 95 | MSG_OBJ_WAIT | obj, win, flags, msg | message anchored on obj | 10 calls / 10 fields |
+| 96 | MSG_OBJ | obj, win, flags, msg |  | 1 calls / 1 fields |
+| 97 | RESTART_OBJ | obj | sp 0, state 2, return: the object re-runs its init function | not seen |
+| 98 | SET_MOVE_COUNT | u8 | actor loop/move count | 117 calls / 8 fields |
+| 99 | SET_TURN_SPEED | u8 | actor.turnSpeed | 9 calls / 5 fields |
+| 9A | BGI_TRI_ACTIVE | u16 tri, on | bgi_setTriangleActive | 8933 calls / 24 fields |
+| 9B | TURN_TO_POINT | x, z |  | 4 calls / 3 fields |
+| 9C | ANIM_FWD |  | jump anim forward | 9 calls / 5 fields |
+| 9D | ANIM_BACK |  |  | 7 calls / 4 fields |
+| 9E | PLAYER_CALL_16 |  | pushes a call frame on the player | not seen |
+| 9F | MODEL_SCALE | obj, x, y, z | model scale (x64), actor.scale | 463 calls / 67 fields |
+| A0 | MOVE_TO_PATH_POINT |  | moves to sysvars 10/11 | not seen |
+| A1 | SET_POS | x, y, z | pos/prevPos | 8773 calls / 180 fields |
+| A2 | MOVE_XYZ | x, y, z | evt_moveObjectTo flags 2 (flying) | 977 calls / 5 fields |
+| A3 | NOP_A3 | 4 x u8 | arguments read, nothing done | not seen |
+| A4 | PATH_NEAREST |  | nearest point of the path segment to the player -> sysvars 10/11 | not seen |
+| A5 | MOVE_XZ_NOTURN | x, z | evt_moveObjectTo flags 1 | 1208 calls / 6 fields |
+| A6 | SET_RUN_SPEED | u8 | actor.runSpeed | not seen |
+| A7 | TURN_DEFAULT | dir | evt_turnObject with turnSpeed | not seen |
+| A8 | BGI_ACTOR_ACTIVE | u8 | bgi_setActorActive | 211 calls / 100 fields |
+| A9 | OBJ_SCREEN_POS | obj | evt_projectToScreen -> sysvars 12/13 | 236 calls / 227 fields |
+| AA | PAD_UNLOCK_MENU |  | g_padPortMask[0] &= ~0x40000 | 174 calls / 174 fields |
+| AB | PAD_LOCK_MENU |  | |= 0x40000 | 1 calls / 1 fields |
+| AC | DISC_CHANGE | u16 disc<<14|field | fld_requestDiscChange | not seen |
+| AD | SET_POS_OBJ | obj, x, y, z |  | 120 calls / 1 fields |
+| AE | CARD_GAME | u16 opponent | func_80021680 -> GameData.unk8B2, returns 7 (Tetra Master) | not seen |
+| B0 | SET_LOCATION | u16 msg | location name = message text | not seen |
+| B1 | RESET_LOCATION |  | location name = the field's | not seen |
+| B2 | PARTY_SELECT | u8, u16 | D_8007AE70 request, menu_open(3) | not seen |
+| B3 | SPRITE_CMD | 5 args | fld_spriteCommand | 121704 calls / 134 fields |
+| B4 | SET_RECRUITED | u16 mask | chr_setRecruited per bit | 2 calls / 2 fields |
+| B5 | SYNC_ANIM | obj | copy another actor's anim (unkA0) | not seen |
+| B6 | GOTO_WORLD | u16 world | evt_setNextLocation, returns 5 | not seen; field_ice_300 walking down: 0xB6(9000) -> mode 3, ovl_0c, wm_main(0x2328) |
+| B7 | WM_CAM_EYE |  |  | not seen |
+| B8 | WM_CAM_TARGET |  |  | not seen |
+| B9 | PAD_MASK_SET | port, u16 |  | not seen |
+| BA | PAD_MASK_CLEAR | port, u16 |  | not seen |
+| BB | TURN_OBJ | obj, dir, speed |  | not seen |
+| BC | WAIT_TURN_OBJ | obj |  | not seen |
+| BD | ANIM_OBJ | obj, anim |  | 1 calls / 1 fields |
+| BE | WAIT_ANIM_OBJ | obj |  | 41 calls / 1 fields |
+| BF | SET_POS_XZ_OBJ | obj, x, z |  | 1 calls / 1 fields |
+| C0 | TEX_ANIM_PLAY | obj, n | model texture anim n on | 44 calls / 20 fields |
+| C1 | TEX_ANIM_LOOP | obj, n |  | not seen |
+| C2 | TEX_ANIM_STOP | obj, n |  | not seen |
+| C3 | BG_LAYER_VIEWPORT |  | fldbg_setOverlayViewport | 869 calls / 13 fields |
+| C4 | WM_PARAM |  | w_frameSetParameter | not seen |
+| C5 | SOUND | u16 cmd, u16 id | GameData.unk83C(cmd, id) | 2644 calls / 286 fields |
+| C6 | SOUND3 | cmd, id, u24 |  | 214 calls / 196 fields |
+| C7 | SOUND4 |  |  | 34 calls / 25 fields |
+| C8 | SOUND5 |  |  | 2225 calls / 210 fields |
+| C9 | BG_VIEWPORT |  | fldbg_setViewport | 594 calls / 11 fields |
+| CA | BG_ANIM_RESET |  | fldbg_resetAnim | 3 calls / 1 fields |
+| CB | BGI_FLOOR_ACTIVE | floor, on | bgi_setFloorActive | 41 calls / 25 fields |
+| CC | MODEL_FLAGS_SET | u16 |  | 4 calls / 3 fields |
+| CD | MODEL_FLAGS_CLEAR | u16 |  | 2 calls / 2 fields |
+| CE | ADD_GIL | u24 |  | not seen |
+| CF | REMOVE_GIL | u24 |  | not seen |
+| D0 | BTL_BANNER | u16 msg | btl_setBanner | not seen |
+| D1 | CLEAR_GLOBALS |  | evt_clearGlobalVars | not seen |
+| D2 | NOP_D2 |  | returns 0 | not seen |
+| D3 | NOP_D3 |  | returns 0 | not seen |
+| D4 | MODEL_OFS | 3 x s16 | model +0x74..0x78 | not seen |
+| D5 | SAVE_ACTOR_FLAGS |  |  | not seen |
+| D6 | RESTORE_ACTOR_FLAGS |  |  | not seen |
+| D7 | ATE_PROMPT | mode | msg_setAtePrompt | 27 calls / 24 fields; Dali fields 350-359, 450, 505; mode 1 "PRESS SELECT TO SEE ATE", 2 blinking "ACTIVE TIME EVENT" (poke) |
+| D8 | RAIN | count, speed | func_800B3444(0,0,1) + func_80050CA8, GameData.rainCount | 11 calls / 10 fields; Burmecia 750-768: rain (24, 56) in 763 (field_burmecia_rain) |
+| D9 | CURE_STATUS | chr, bits | chr_cureStatusBit | 36 calls / 3 fields |
+| DA | SPRITE_CMD2 |  | fld_spriteCommand | 2 calls / 1 fields |
+| DB | CHR_BIT10 | chr, bit | Character +0x34 bit 10 | 1 calls / 1 fields |
+| DC | JUMP_STEP |  | one jump frame, retries until done | 95 calls / 5 fields; f259: +0x68 0..12 |
+| DD | PARTY_REMOVE | chr |  | 4 calls / 2 fields |
+| DE | SET_CHR_NAME | chr, msg |  | not seen |
+| DF | SET_COLL_ELLIPSE | u8 | actor +0x2D | not seen |
+| E0 | INC_GD568 |  |  | not seen |
+| E1 | BTL_END_REWARDS |  | rewards_requestClose | not seen |
+| E2 | JUMP | x, y, z, frames | starts a jump (jumpTarget, jumpFrames) | 9 calls / 5 fields; f259 uid 12 |
+| E3 | MSG_SYNC_TAG | u8 | D_8007BBD8 (sysvar 8) | 61 calls / 60 fields |
+| E4 | BG_LAYER_SKEW |  |  | 197 calls / 3 fields |
+| E5 | BTLSEQ_START |  |  | not seen |
+| E6 | BG_LAYER_FLAG1 |  |  | 7 calls / 5 fields |
+| E7 | BG_ANIM_SHOW_FRAME |  | fldbg_showAnimFrame | 1887 calls / 20 fields |
+| E8 | MOVE_XYZ3 | x, y, z | evt_moveObjectTo flags 3 | 165 calls / 1 fields |
+| E9 | PARTY_REFRESH |  | evt_execInstr_party | not seen |
+| EA | GET_SCROLL |  | fldbg_getScroll -> sysvars 12/13 | 1058 calls / 3 fields |
+| EB | MSG_CLOSE_ALL |  |  | not seen |
+| EC | FADE | 6 args | game_startFade | 232 calls / 230 fields |
+| ED | BG_VIEWPORT_RATE |  |  | 3 calls / 3 fields |
+| EE | IDLE_ON |  | state.idleTimer = 0 | not seen |
+| EF | HERE_ICON | u8 | msg_startHereIcon | 16 calls / 14 fields |
+| F0 | RUN_ALLOWED |  | state.walkOnly = 0 | not seen |
+| F1 | SET_HP |  |  | 18 calls / 2 fields; applied earlier |
+| F2 | SET_MP |  |  | 18 calls / 2 fields; applied earlier |
+| F3 | RESET_AP |  |  | not seen |
+| F4 | LEARN_ABILITY |  |  | not seen |
+| F5 | GAME_OVER |  |  | not seen; applied earlier |
+| F6 | VIB_PLAY |  |  | not seen |
+| F7 | VIB_SET_PLAYING | u8 | vib_setPlaying | 1 calls / 1 fields |
+| F8 | VIB_TRACK | 3 x u8 | vib_selectTrack | 2 calls / 1 fields |
+| F9 | VIB_TRACK_ENABLE | 3 x u8 | vib_setTrackEnabled | not seen |
+| FA | VIB_RATE | u16 | vib_setRate | not seen |
+| FB | VIB_LOOP | u8 | vib_setLoopMode | not seen |
+| FC | VIB_RANGE | 2 x u8 | vib_setRange | not seen |
+| FD | GD8BC_CALL | u8, u16 | GameData.unk8BC(a, b) | 13 calls / 13 fields |
+| FE | PARTY_JOIN |  | chr_join | 1 calls / 1 fields |
+| FF 00 | BGI_FLOOR_MOVE_START | u8, u8 | bgi_startFloorMove | 16 calls / 1 fields; field 404 |
+| FF 01 | BGI_FLOOR_MOVE_STOP |  | bgi_stopFloorMove | not seen |
+| FF 02 | BGI_FLOOR_MOVE_PLAYING |  | bgi_setFloorMovePlaying | not seen |
+| FF 03 | BGI_FLOOR_MOVE_MODE |  | bgi_setFloorMoveMode | not seen |
+| FF 04 | BGI_FLOOR_MOVE_FLOOR |  | bgi_setFloorMoveFloor | not seen |
+| FF 05 | BGI_FLOOR_MOVE_SPEED |  | bgi_setFloorMoveSpeed | not seen |
+| FF 06 | BGI_FLOOR_MOVE_CURVE |  | bgi_setFloorMoveCurve | not seen |
+| FF 07 | BGI_FLOOR_MOVE_RANGE |  | bgi_setFloorMoveRange | not seen |
+| FF 08 | BGI_FLOOR_MOVE_AXIS |  | bgi_setFloorMoveAxis | not seen |
+| FF 09 | BGI_ANIM_FRAME |  | bgi_setAnimFrame | not seen |
+| FF 0A | BGI_ANIM_SHOW_FRAME |  | bgi_showAnimFrame | not seen |
+| FF 0B | BGI_ANIM_PLAYING |  | bgi_setAnimPlaying | not seen |
+| FF 0C | BGI_ANIM_MODE |  | bgi_setAnimMode | not seen |
+| FF 0D | BGI_ANIM_RATE |  | bgi_setAnimRate | not seen |
+| FF 0E | BGI_ANIM_VALUES |  | bgi_setAnimFrameValues | not seen |
+| FF 0F | BGI_ANIM_VALUE |  | bgi_setAnimFrameValue | not seen |
+| FF 10 | BGI_ANIM_RANGE |  | bgi_playAnimRange | not seen |
+| FF 11 | BGI_ANIM_RESET |  | bgi_resetAnim | not seen |
+
+## What the field campaign did not reach  (status: reference)
+- Minigames: jump rope, Hippaul's race and Chocobo Hot & Cold run as field scripts in specific story states; entering
+  their fields with the Lv 50/99 saves' flags plays other variants, so their opcodes (timer 0x69/0x7D/0x8D, pad
+  masks 0xB9/0xBA) were seen only as counts. Tetra Master from a field (op 0xAE → mode 9, card_*GameResult) was not
+  started; the NPC challenge (Square, function 8) needs a card-playing NPC in its story state.
+- Not seen in any field entry: 0x16/0x18/0x1A (call the caller; the Moogle uses 0x10 with object 0xFA instead),
+  0xA4/0x76-0x78 path ops, 0x9E, 0xAC (disc change), 0xB2 (party select), 0xDE (rename), 0xF3/0xF4, the FF01-FF11
+  walkmesh ops and the vibration ops other than F7/F8. 0x2B and 0xB6 only ran when the player walked out (0x2B also
+  once in disc-2 field 1400's cutscene).
+- World-map rain (wrain_*), world-map camera marks (ops 0xB7/0xB8, func_8004B1EC/1FC) and the world-map cell
+  trigger (func_8004B158) were not run; `field_worldmap_ice_exit` is a starting point for them.
+- fldbg_updateFollowOverlays, bgi_updateAnims and bgi_updateFloorMoves showed no visible change when stubbed in the
+  fields tried; the walkmesh animations need a field where a floor visibly moves. tu_800B61A4's remaining unnamed
+  functions (800C0D38, 800C1CC0, 800C1D08, 800C1DAC/B4/BC) are empty or return 1; ovl_0a 800B58A8/B0 and 800B5928/30
+  are the empty update/leave hooks of the disc-change save and disc modes (g_fieldDiscChangeModes[2]/[3]);
+  800C7450/7458 return/store 1; 800C77DC/800C7914 return (count, pointer) pairs D_800C9DDE/D_800CAA98 and
+  D_800C9DE0/D_800CAAB8 of the walkmesh; 800C0FF4 stores arg² (or 3600) into D_800CA0E0; 8019AB98 is called by
+  fld_movie before mbg_play with (2, 4, movie volume) and lives in the FMV overlay's space.
+- g_msgSyncTag (D_8007BBD8) never changed in the dialog recorded; the F9 0F / F9 46 text codes that set it were not
+  found in a running message.
+
