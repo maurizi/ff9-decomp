@@ -5,7 +5,6 @@ main InitHeap BIOS A0 call stub
 main FlushCache BIOS A0 call stub
 main EnterCriticalSection BIOS syscall (Enter/ExitCriticalSection)
 main ExitCriticalSection BIOS syscall (Enter/ExitCriticalSection)
-main mbg_getStatus boot: SN startup helper
 main func_8001310C libgpu: RECT check / GPU debug print
 main func_800140E8 libgpu internals (GPU queue/DMA, D_80066660 state)
 main func_80014358 libgpu internals (GPU queue/DMA, D_80066660 state)

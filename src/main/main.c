@@ -88,7 +88,29 @@ void game_loadModeOverlay(s32 mode) {
 
 INCLUDE_RODATA("asm/us/main/nonmatchings/main", D_80010034);
 
-INCLUDE_ASM("asm/us/main/nonmatchings/main", mbg_getStatus);
+s32 mbg_getStatus(void) {
+    s32 r = 0;
+
+    if (g_mbgState == 1) {
+        return 1;
+    }
+    if (g_mbgState >= 2) {
+        r = 1;
+        if (g_mbgFrame > 0) {
+            r = 3;
+        }
+        if (g_mbgPaused != 0) {
+            r |= 0x10;
+        }
+        if (g_mbgRgb24 != 0) {
+            r |= 4;
+        }
+        if (D_80071E30 == 1) {
+            r |= 8;
+        }
+    }
+    return r;
+}
 
 s8 mbg_getState(void) {
     return g_mbgState;

@@ -17,11 +17,17 @@ or a wrong base could compile silently.
 """
 import glob
 import re
+import os
 import subprocess
 import sys
 
 # Same preprocessor and cc1 as the Makefile; output goes nowhere, only the errors matter.
-EXTRA_CC = ("for f; do cpp -nostdinc -Iinclude -undef -D__GNUC__=2 -Dmips -D__mips__ -D_LANGUAGE_C -DLANGUAGE_C \"$f\""
+# src_equiv files include <stdarg.h>; a stub (build/stdarg_stub/, as tools/decl_check.py uses) is enough to type-check.
+STDARG_DIR = "build/stdarg_stub"
+STDARG = ("#ifndef _STDARG_H\n#define _STDARG_H\ntypedef char *va_list;\n"
+          "#define va_start(ap, last) ((ap) = (char *)&(last) + sizeof(last))\n"
+          "#define va_arg(ap, t) (*(t *)(((ap) += sizeof(t)) - sizeof(t)))\n#define va_end(ap) ((void)0)\n#endif\n")
+EXTRA_CC = ("for f; do cpp -nostdinc -Iinclude -Isrc_equiv -I" + STDARG_DIR + " -undef -D__GNUC__=2 -Dmips -D__mips__ -D_LANGUAGE_C -DLANGUAGE_C \"$f\""
             " | /opt/cc/gcc-2.8.1-psx/cc1 -quiet -O2 -G0 -o /dev/null; done")
 ERR = re.compile(r"^([\w/.]+):(\d+): structure has no member named `(\w+)'", re.M)
 
@@ -30,6 +36,8 @@ def main():
     if len(sys.argv) != 2 or "=" not in sys.argv[1]:
         sys.exit(__doc__)
     pairs = dict(p.split("=") for p in sys.argv[1].split(","))
+    os.makedirs(STDARG_DIR, exist_ok=True)
+    open(os.path.join(STDARG_DIR, "stdarg.h"), "w").write(STDARG)
     for _ in range(20):
         out = subprocess.run(["tools/docker.sh", "make", "-j8", "build"], capture_output=True, text=True)
         text = out.stdout + out.stderr

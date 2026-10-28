@@ -774,6 +774,10 @@ void win_setTail(Window *, s32, s32);
 
 extern u8 D_80068268[];
 extern s8 g_mbgState;
+extern s32 g_mbgFrame; /* movie frame counter (mbg_getStatus reports 3 once it is > 0) */
+extern s8 g_mbgPaused;
+extern s8 g_mbgRgb24;
+extern s8 D_80071E30; /* mbg_getStatus reports bit 8 when it is 1 */
 extern s32 g_menuOnClose;
 extern u8 g_menuFadeInOnClose;
 extern u8 g_menuFadeOutOnClose;
