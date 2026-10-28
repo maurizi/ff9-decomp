@@ -1151,31 +1151,31 @@ s32 evt_runScripts(Unk16D8 *n) {
             }
             r_ip++;
             switch (op) {
-            case 0x01:
+            case EVT_OP_JMP:
                 r_ip += 2;
                 r_ip += (s16)U16AT(r_ip - 2);
                 break;
-            case 0x02:
+            case EVT_OP_JMP_IFNOT:
                 v = evt_popValue();
                 r_ip += 2;
                 if (v == 0) {
                     r_ip += (s16)U16AT(r_ip - 2);
                 }
                 break;
-            case 0x03:
+            case EVT_OP_JMP_IF:
                 v = evt_popValue();
                 r_ip += 2;
                 if (v != 0) {
                     r_ip += (s16)U16AT(r_ip - 2);
                 }
                 break;
-            case 0x04:
+            case EVT_OP_RETURN:
                 evt_returnFromFunc(o);
                 goto status; /* the instruction pointer is not stored back */
-            case 0x05:
+            case EVT_OP_EXPR:
                 evt_runExpr();
                 break;
-            case 0x06: /* count, default, {value, offset} x count; offsets are from r_ip + 3 */
+            case EVT_OP_SWITCH: /* count, default, {value, offset} x count; offsets are from r_ip + 3 */
                 k = r_ip[0];
                 v = (u16)evt_popValue();
                 for (e = r_ip + 3; k > 0; k--, e += 4) {
@@ -1187,8 +1187,8 @@ s32 evt_runScripts(Unk16D8 *n) {
                 r_ip += U16AT(r_ip + 1) + 3;
             switched:
                 break;
-            case 0x0B: /* range switch, 8-bit count */
-            case 0x0D: /* range switch, 16-bit count */
+            case EVT_OP_SWITCH_TABLE: /* range switch, 8-bit count */
+            case EVT_OP_SWITCH_TABLE16: /* range switch, 16-bit count */
                 if (op == 0x0D) {
                     k = U16AT(r_ip);
                     r_ip++;
@@ -1202,7 +1202,7 @@ s32 evt_runScripts(Unk16D8 *n) {
                     r_ip += U16AT(r_ip + 3);
                 }
                 break;
-            case 0x1C:
+            case EVT_OP_DELETE_OBJ:
                 k = r_ip[1];
                 r_ip += 2;
                 if (k != 0xFF) {
@@ -1215,7 +1215,7 @@ s32 evt_runScripts(Unk16D8 *n) {
                 n = evt_deleteObject(o);
                 st = 2;
                 break;
-            case 0x22: /* wait: frames, then the object sleeps */
+            case EVT_OP_WAIT: /* wait: frames, then the object sleeps */
                 r_args = *r_ip++;
                 v = func_80052834();
                 if (v == 0) {
@@ -1236,7 +1236,7 @@ s32 evt_runScripts(Unk16D8 *n) {
             case 0x6D:
                 func_80051920(1);
                 break;
-            case 0x32:
+            case EVT_OP_PEN_CELL:
                 r_args = *r_ip++;
                 k = func_80052834();
                 pen_setCell(k, func_80052834());

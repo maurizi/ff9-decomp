@@ -3717,10 +3717,166 @@ typedef struct {
 
 
 /* ---- event script interpreter (evt_execInstr) ---- */
-/* Event script opcodes (first byte of an instruction run by evt_execInstr), runtime-checked ones only */
+/* Event script opcodes (first byte of an instruction run by evt_runScripts / evt_execInstr; 0xFFxx = FF xx).
+ * Opcodes seen running in the field fixture campaign (docs/runtime-findings.md, opcode table) plus the
+ * scheduler ops evt_runScripts handles itself. Comment: arguments: effect. */
+#define EVT_OP_JMP 0x01 /* s16 ofs: scheduler: ip += ofs */
+#define EVT_OP_JMP_IFNOT 0x02 /* s16 ofs: scheduler: pop expression result, jump when 0 */
+#define EVT_OP_JMP_IF 0x03 /* s16 ofs: scheduler: jump when non-zero */
+#define EVT_OP_RETURN 0x04 /* scheduler: evt_returnFromFunc */
+#define EVT_OP_EXPR 0x05 /* expr: scheduler: evt_runExpr (assignments, variable writes) */
+#define EVT_OP_SWITCH 0x06 /* n, default, {value, ofs}[n]: scheduler: switch on the popped value */
+#define EVT_OP_NEW_CODE 0x07 /* entry, uid: evt_createObject kind 2 (0x14-byte header) */
+#define EVT_OP_NEW_REGION 0x08 /* entry, uid: evt_createObject kind 3 (0x38), flags 1 */
+#define EVT_OP_NEW_ACTOR 0x09 /* entry, uid: evt_createObject kind 4 (0xAC) with actor defaults */
+#define EVT_OP_SWITCH_TABLE 0x0B /* u8 n, base, default, ofs[n]: scheduler: dense jump table indexed by value - base */
+#define EVT_OP_SWITCH_TABLE16 0x0D /* u16 n, base, default, ofs[n]: scheduler: the same with a 16-bit count */
+#define EVT_OP_CALL 0x10 /* level, obj, func: evt_callObjectFunc(obj, level, func, 0) */
+#define EVT_OP_CALL_WAIT_FREE 0x12 /* level, obj, func: retries until obj.level > level, then calls */
+#define EVT_OP_CALL_SYNC 0x14 /* level, obj, func: calls with save=1 (caller waits, wait=0xFF) */
+#define EVT_OP_DELETE_OBJ 0x1C /* obj (0xFF self): scheduler: evt_deleteObject */
+#define EVT_OP_SET_POS_XZ 0x1D /* x, z: pos/prevPos = (x, -0x8000, z): placed on the floor */
+#define EVT_OP_BG_SCROLL_LIMITS 0x1E /* cam, 4 x s16: fldbg_setScrollLimits */
+#define EVT_OP_MSG_WAIT 0x1F /* win, flags, msg: msg_open + wait (obj.wait = 0xFE) */
+#define EVT_OP_MSG 0x20 /* win, flags, msg: msg_open, no wait */
+#define EVT_OP_MSG_CLOSE 0x21 /* win: msg_close */
+#define EVT_OP_WAIT 0x22 /* u8 frames: scheduler: obj.wait = n-1 (max 0xFD) */
+#define EVT_OP_MOVE_XZ 0x23 /* x, z: evt_moveObjectTo(x, 0, z, 0), repeats until there */
+#define EVT_OP_MOVE_TO_OBJ 0x24 /* obj: evt_moveObjectTo the object */
+#define EVT_OP_MOVE_RESET 0x25 /* loop count 0xFF, stops the walk state */
+#define EVT_OP_SET_WALK_SPEED 0x26 /* u8: actor.speed */
+#define EVT_OP_BG_MASK_FILTER 0x27 /* u8: bgi_setMaskFilter */
+#define EVT_OP_MOVIE 0x28 /* cmd, u16, u8: fld_movieCommand */
+#define EVT_OP_SET_PATH 0x29 /* n, {x,z}[n]: points used by 0xA4 */
+#define EVT_OP_BATTLE 0x2A /* swirl, u16 battle: evt_setNextBattle, returns 3 */
+#define EVT_OP_GOTO_FIELD 0x2B /* u16 field: evt_setNextLocation, returns 4 */
+#define EVT_OP_SET_PLAYER 0x2C /* playerUid = current object */
+#define EVT_OP_DISABLE_CONTROL 0x2D /* controlEnabled = 0, HERE icon off, msg/anim counters cleared */
+#define EVT_OP_ENABLE_CONTROL 0x2E /* controlEnabled = 1, msg_startHereIcon(1), idle timer re-rolled */
+#define EVT_OP_SET_MODEL 0x2F /* u16 model, u8 height: actor.modelId/modelSlot/height */
+#define EVT_OP_PEN_CELL 0x32 /* a, b: scheduler: pen_setCell(a, b) */
+#define EVT_OP_SET_STAND_ANIM 0x33 /* u16: actor.standAnim */
+#define EVT_OP_SET_WALK_ANIM 0x34 /* u16: actor.walkAnim */
+#define EVT_OP_SET_RUN_ANIM 0x35 /* u16: actor.runAnim */
+#define EVT_OP_SET_DIR 0x36 /* u8 dir: rotY = dir << 4 */
+#define EVT_OP_SET_ROT_XZ 0x37 /* u8, u8: rotX, rotZ */
+#define EVT_OP_MESH_HIDE 0x39 /* obj, mesh: model unk14 &= ~bit */
+#define EVT_OP_MESH_SHOW 0x3A /* obj, mesh: model unk14 |= bit */
+#define EVT_OP_ENCOUNTER_TABLE 0x3C /* u8, 4 x u16: g_evtEncounterTable */
+#define EVT_OP_SET_ANIM_RANGE 0x3D /* start, end: actor anim frame range */
+#define EVT_OP_SET_ANIM_SPEED 0x3E /* u8: actor.defaultAnimSpeed */
+#define EVT_OP_SET_ANIM_LOOP 0x3F /* mode, count: anim flags (loop/bounce) and loop count */
+#define EVT_OP_ANIM 0x40 /* u16 anim: evt_execInstr_anim (play once) */
+#define EVT_OP_WAIT_ANIM 0x41 /* retries while the anim plays (flags 0x80) */
+#define EVT_OP_ANIM_END 0x42 /* evt_onAnimEnd */
+#define EVT_OP_RUN_THREAD 0x43 /* func: kind-1 object uid+0x40 running a function of this object */
+#define EVT_OP_WAIT_THREAD 0x44 /* retries while the uid+0x40 thread exists */
+#define EVT_OP_KILL_THREAD 0x45 /* deletes it */
+#define EVT_OP_SET_MOVE_FLAGS 0x47 /* u8: actor flags 0-2 */
+#define EVT_OP_ADD_ITEM 0x48 /* u16 id, u8 n: item / key item / card */
+#define EVT_OP_SET_RADIUS 0x4B /* walkmesh r, collision r, talk r: bgi radius, actor.collisionRadius, actor.talkRadius */
+#define EVT_OP_ATTACH 0x4C /* obj, parent, bone: model attach */
+#define EVT_OP_DETACH 0x4D /* obj */
+#define EVT_OP_WAIT_TURN 0x50 /* retries while turning (flags 0x80) */
+#define EVT_OP_TURN_TO_OBJ 0x51 /* obj, speed: evt_turnObject toward obj */
+#define EVT_OP_SET_IDLE_ANIM 0x52 /* u16: actor.idleAnim */
+#define EVT_OP_MSG_WAIT_WIN 0x54 /* win: waits for window */
+#define EVT_OP_SET_MOVE_TURN 0x55 /* u8: actor turn rate while walking (0 = 0xFF) */
+#define EVT_OP_TURN 0x56 /* dir, speed: evt_turnObject */
+#define EVT_OP_ENCOUNTER_RATE 0x57 /* u8: state.encounterRate (0 clears the chance) */
+#define EVT_OP_BG_LAYER_COLOR 0x59 /* layer, r, g, b: fldbg_setOverlayColor */
+#define EVT_OP_BG_LAYER_MOVE 0x5A /* fldbg_moveOverlay */
+#define EVT_OP_BG_LAYER_SHOW 0x5B /* layer, on: fldbg_showOverlay */
+#define EVT_OP_BG_LAYER_LOOP 0x5C /* fldbg_setOverlayLoop */
+#define EVT_OP_BG_LAYER_PARALLAX 0x5D /* fldbg_setOverlayParallax */
+#define EVT_OP_BG_LAYER_POS 0x5E /* fldbg_setOverlayPos */
+#define EVT_OP_BG_ANIM_FRAME 0x5F /* fldbg_setAnimFrame */
+#define EVT_OP_BG_ANIM_PLAY 0x60 /* fldbg_playAnim */
+#define EVT_OP_BG_ANIM_SPEED 0x61 /* fldbg_setAnimSpeed */
+#define EVT_OP_BG_ANIM_DELAY 0x63 /* fldbg_setAnimStepDelay */
+#define EVT_OP_BG_ANIM_FLAGS 0x64 /* fldbg_setAnimFlags */
+#define EVT_OP_BG_ANIM_RANGE 0x65 /* fldbg_playAnimRange */
+#define EVT_OP_MSG_NUMBER 0x66 /* slot, u16: msg_setNumber (value printed by a text code) */
+#define EVT_OP_SET_DIR_OFFSETS 0x67 /* analog, pad: state.analogDirOfs/padDirOfs = arg << 4 */
+#define EVT_OP_PLAYER_BUBBLE 0x68 /* variant: msg_showPlayerBubble: 0 "?", 1 "!" */
+#define EVT_OP_WALK_ONLY 0x6A /* state.walkOnly = 1 */
+#define EVT_OP_CLEAR_COLOR 0x6B /* r, g, b: game_setClearColor */
+#define EVT_OP_BG_SCROLL_TO 0x6F /* x, y, frames, mode: fldbg_scrollTo */
+#define EVT_OP_BG_SCROLL_TO_PLAYER 0x70 /* fldbg_scrollToPlayer */
+#define EVT_OP_BG_FOLLOW_HEIGHT 0x72 /* s16: fldbg_setFollowHeight */
+#define EVT_OP_BG_LIMITS_OFF 0x74 /* fldbg_disableScrollLimits */
+#define EVT_OP_MENU 0x75 /* type, arg: menu_open + evt_onMenuOpen, returns 1 (runtime: Moogle "Save" -> menu_open(4, 0), ovl_39 loads) */
+#define EVT_OP_SET_TURN_LEFT_ANIM 0x7A /* u16: actor prevPos.rotX field reused as turn-left anim */
+#define EVT_OP_SET_TURN_RIGHT_ANIM 0x7B /* u16 */
+#define EVT_OP_BG_CAMERA 0x7E /* u8 cam: fldbg_setCamera */
+#define EVT_OP_SHADOW_ON 0x7F /* clears FieldObjSlot flag 0x10 (evt_modelOp*) */
+#define EVT_OP_SHADOW_OFF 0x80 /* sets FieldObjSlot flag 0x10: no shadow */
+#define EVT_OP_SHADOW_SIZE 0x81 /* u8, u8: evt_modelOpField */
+#define EVT_OP_SHADOW_FIXED 0x83 /* u8: flag 0x20 + placement */
+#define EVT_OP_SHADOW_UNFIX 0x84
+#define EVT_OP_SET_IDLE_SPEEDS 0x86 /* 4 x u8: actor.idleAnimSpeeds */
+#define EVT_OP_SET_DIR_OBJ 0x87 /* obj, dir: 0x36 on another object */
+#define EVT_OP_MODEL_CMD 0x88 /* cmd, 3 x s16: fld_modelCommand */
+#define EVT_OP_SOUND_POS 0x89 /* x, y, z, u8: fld_getSoundPanVolume -> sysvars 22/23 */
+#define EVT_OP_SOUND_POS_OBJ 0x8A /* obj, u8 */
+#define EVT_OP_SET_LOOK 0x8B /* u8, u8: look-at params, flags |= 3 */
+#define EVT_OP_OBJ_COLOR 0x8F /* obj, r, g, b: fld_setObjectColor (retries while fading) */
+#define EVT_OP_IDLE_OFF 0x90 /* state.idleTimer = -1 */
+#define EVT_OP_SET_TALK_TURN 0x91 /* u8: actor turns toward the talker (0xA7) or not */
+#define EVT_OP_BG_FOLLOW_LAYER 0x92 /* 7 args: fldbg_addFollowOverlay */
+#define EVT_OP_SET_OBJ_FLAGS 0x93 /* u8: flags 0-5 of +0xF */
+#define EVT_OP_SET_JUMP_ANIM 0x94 /* u16 anim, start, end: actor.jumpAnim / jumpAnimStart / jumpAnimEnd */
+#define EVT_OP_MSG_OBJ_WAIT 0x95 /* obj, win, flags, msg: message anchored on obj */
+#define EVT_OP_MSG_OBJ 0x96 /* obj, win, flags, msg */
+#define EVT_OP_SET_MOVE_COUNT 0x98 /* u8: actor loop/move count */
+#define EVT_OP_SET_TURN_SPEED 0x99 /* u8: actor.turnSpeed */
+#define EVT_OP_BGI_TRI_ACTIVE 0x9A /* u16 tri, on: bgi_setTriangleActive */
+#define EVT_OP_TURN_TO_POINT 0x9B /* x, z */
+#define EVT_OP_ANIM_FWD 0x9C /* jump anim forward */
+#define EVT_OP_ANIM_BACK 0x9D
+#define EVT_OP_MODEL_SCALE 0x9F /* obj, x, y, z: model scale (x64), actor.scale */
+#define EVT_OP_SET_POS 0xA1 /* x, y, z: pos/prevPos */
+#define EVT_OP_MOVE_XYZ 0xA2 /* x, y, z: evt_moveObjectTo flags 2 (flying) */
+#define EVT_OP_MOVE_XZ_NOTURN 0xA5 /* x, z: evt_moveObjectTo flags 1 */
+#define EVT_OP_BGI_ACTOR_ACTIVE 0xA8 /* u8: bgi_setActorActive */
+#define EVT_OP_OBJ_SCREEN_POS 0xA9 /* obj: evt_projectToScreen -> sysvars 12/13 */
+#define EVT_OP_PAD_UNLOCK_MENU 0xAA /* g_padPortMask[0] &= ~0x40000 */
+#define EVT_OP_PAD_LOCK_MENU 0xAB /* |= 0x40000 */
+#define EVT_OP_SET_POS_OBJ 0xAD /* obj, x, y, z */
+#define EVT_OP_SPRITE_CMD 0xB3 /* 5 args: fld_spriteCommand */
+#define EVT_OP_SET_RECRUITED 0xB4 /* u16 mask: chr_setRecruited per bit */
+#define EVT_OP_GOTO_WORLD 0xB6 /* u16 world: evt_setNextLocation, returns 5 (runtime: field_ice_300 walking down: 0xB6(9000) -> mode 3, ovl_0c, wm_main(0x2328)) */
+#define EVT_OP_ANIM_OBJ 0xBD /* obj, anim */
+#define EVT_OP_WAIT_ANIM_OBJ 0xBE /* obj */
+#define EVT_OP_SET_POS_XZ_OBJ 0xBF /* obj, x, z */
+#define EVT_OP_TEX_ANIM_PLAY 0xC0 /* obj, n: model texture anim n on */
+#define EVT_OP_BG_LAYER_VIEWPORT 0xC3 /* fldbg_setOverlayViewport */
+#define EVT_OP_SOUND 0xC5 /* u16 cmd, u16 id: GameData.unk83C(cmd, id) */
+#define EVT_OP_BG_VIEWPORT 0xC9 /* fldbg_setViewport */
+#define EVT_OP_BG_ANIM_RESET 0xCA /* fldbg_resetAnim */
+#define EVT_OP_BGI_FLOOR_ACTIVE 0xCB /* floor, on: bgi_setFloorActive */
+#define EVT_OP_MODEL_FLAGS_SET 0xCC /* u16 */
+#define EVT_OP_MODEL_FLAGS_CLEAR 0xCD /* u16 */
+#define EVT_OP_ATE_PROMPT 0xD7 /* mode: msg_setAtePrompt */
+#define EVT_OP_RAIN 0xD8 /* count, speed: func_800B3444(0,0,1) + func_80050CA8, GameData.rainCount */
+#define EVT_OP_CURE_STATUS 0xD9 /* chr, bits: chr_cureStatusBit */
+#define EVT_OP_JUMP_STEP 0xDC /* one jump frame, retries until done */
+#define EVT_OP_PARTY_REMOVE 0xDD /* chr */
+#define EVT_OP_JUMP 0xE2 /* x, y, z, frames: starts a jump (jumpTarget, jumpFrames) */
+#define EVT_OP_MSG_SYNC_TAG 0xE3 /* u8: D_8007BBD8 (sysvar 8) */
+#define EVT_OP_BG_LAYER_SKEW 0xE4
+#define EVT_OP_BG_ANIM_SHOW_FRAME 0xE7 /* fldbg_showAnimFrame */
+#define EVT_OP_GET_SCROLL 0xEA /* fldbg_getScroll -> sysvars 12/13 */
+#define EVT_OP_FADE 0xEC /* 6 args: game_startFade */
+#define EVT_OP_BG_VIEWPORT_RATE 0xED
+#define EVT_OP_HERE_ICON 0xEF /* u8: msg_startHereIcon */
 #define EVT_OP_SET_HP 0xF1 /* character, value: set HP (capped at maxHp); runtime: the Moogle's Tent */
 #define EVT_OP_SET_MP 0xF2 /* character, value: set MP (capped at maxMp); runtime: the Moogle's Tent */
 #define EVT_OP_GAME_OVER 0xF5 /* field game over: returns 8 -> field exit 7 -> mode 7 (runtime: patched into the Dali Moogle script) */
+#define EVT_OP_VIB_SET_PLAYING 0xF7 /* u8: vib_setPlaying */
+#define EVT_OP_VIB_TRACK 0xF8 /* 3 x u8: vib_selectTrack */
+#define EVT_OP_PARTY_JOIN 0xFE /* chr_join */
+#define EVT_OP_BGI_FLOOR_MOVE_START 0xFF00 /* u8, u8: bgi_startFloorMove */
 /* overlay entry points as called from the main exe (the overlays have their own prototypes) */
 #if !defined(OVL_0A_H) && !defined(OVL_0B_H) && !defined(OVL_0C_H) && !defined(OVL_0D_H) && !defined(OVL_14_H) && !defined(OVL_15_H) && !defined(OVL_32_H) && !defined(OVL_33_H) && !defined(OVL_34_H) && !defined(OVL_36_H) && !defined(OVL_37_H) && !defined(OVL_38_H) && !defined(OVL_39_H) && !defined(OVL_3A_H) && !defined(OVL_3B_H) && !defined(OVL_3C_H) && !defined(OVL_3E_H) && !defined(OVL_64_H) && !defined(OVL_65_H)
 /* mode entry points in overlays, linked through config/xrefs.us.txt */

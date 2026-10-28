@@ -1670,13 +1670,13 @@ s32 evt_modelOpField(EvtObject *o, s32 op) {
     GameState *gs;
 
     switch (op) {
-    case 0x7F:
+    case EVT_OP_SHADOW_ON:
         *(u32 *)game_getModel(o->modelSlot) &= ~0x10;
         return 0;
-    case 0x80:
+    case EVT_OP_SHADOW_OFF:
         *(u32 *)game_getModel(o->modelSlot) |= 0x10;
         return 0;
-    case 0x81:
+    case EVT_OP_SHADOW_SIZE:
         a = evt_getArg8();
         b = evt_getArg8();
         g_gameState->gameData->unk8E4.ovl65->unkC->unk14->unk2C[o->modelSlot].unk0_8 = a * 14;
@@ -1688,20 +1688,20 @@ s32 evt_modelOpField(EvtObject *o, s32 op) {
         g_gameState->gameData->unk8E4.ovl65->unkC->unk14->unk2C[o->modelSlot].unk4_12 = a;
         g_gameState->gameData->unk8E4.ovl65->unkC->unk14->unk2C[o->modelSlot].unk4_22 = b;
         return 0;
-    case 0x83:
+    case EVT_OP_SHADOW_FIXED:
         a = evt_getArg8();
         p = (u32 *)game_getModel(o->modelSlot);
         gs = g_gameState;
         *p |= 0x20;
         gs->gameData->unk8E4.ovl65->unkC->unk14->unk2C[o->modelSlot].unk4_0 = a * 16;
         return 0;
-    case 0x84:
+    case EVT_OP_SHADOW_UNFIX:
         *(u32 *)game_getModel(o->modelSlot) &= ~0x20;
         return 0;
     case 0x85:
         g_gameState->gameData->unk8E4.ovl65->unkC->unk14->unk2C[o->modelSlot].unk0_0 = evt_getArg8();
         return 0;
-    case 0xD8:
+    case EVT_OP_RAIN:
         fld_enableRain(0, 0, 1);
         a = evt_getArg8();
         rain_set(a, evt_getArg8());
@@ -1720,13 +1720,13 @@ s32 evt_modelOpBattle(EvtObject *o, s32 op) {
     GameState *gs;
 
     switch (op) {
-    case 0x7F:
+    case EVT_OP_SHADOW_ON:
         *(u32 *)game_getModel(o->modelSlot) &= ~0x10;
         return 0;
-    case 0x80:
+    case EVT_OP_SHADOW_OFF:
         *(u32 *)game_getModel(o->modelSlot) |= 0x10;
         return 0;
-    case 0x81:
+    case EVT_OP_SHADOW_SIZE:
         a = evt_getArg8();
         b = evt_getArg8();
         g_gameState->gameData->unk8E4.ovl65->work->unk28[o->modelSlot].unk0_8 = a * 14;
@@ -1738,20 +1738,20 @@ s32 evt_modelOpBattle(EvtObject *o, s32 op) {
         g_gameState->gameData->unk8E4.ovl65->work->unk28[o->modelSlot].unk4_12 = a;
         g_gameState->gameData->unk8E4.ovl65->work->unk28[o->modelSlot].unk4_22 = b;
         return 0;
-    case 0x83:
+    case EVT_OP_SHADOW_FIXED:
         a = evt_getArg8();
         p = (u32 *)game_getModel(o->modelSlot);
         gs = g_gameState;
         *p |= 0x20;
         gs->gameData->unk8E4.ovl65->work->unk28[o->modelSlot].unk4_0 = a * 16;
         return 0;
-    case 0x84:
+    case EVT_OP_SHADOW_UNFIX:
         *(u32 *)game_getModel(o->modelSlot) &= ~0x20;
         return 0;
     case 0x85:
         g_gameState->gameData->unk8E4.ovl65->work->unk28[o->modelSlot].unk0_0 = evt_getArg8();
         return 0;
-    case 0xD8:
+    case EVT_OP_RAIN:
         a = evt_getArg8();
         evt_getArg8();
         g_gameState->gameData->rainCount = a;
@@ -1769,13 +1769,13 @@ s32 evt_modelOpWorld(EvtObject *o, s32 op) {
     GameState *gs;
 
     switch (op) {
-    case 0x7F:
+    case EVT_OP_SHADOW_ON:
         *(u32 *)game_getModel(o->modelSlot) &= ~0x10;
         return 0;
-    case 0x80:
+    case EVT_OP_SHADOW_OFF:
         *(u32 *)game_getModel(o->modelSlot) |= 0x10;
         return 0;
-    case 0x81:
+    case EVT_OP_SHADOW_SIZE:
         a = evt_getArg8();
         b = evt_getArg8();
         ((Unk11C0Slot *)g_gameState->gameData->unk8E4.ovl65->unk8->unk1C)[o->modelSlot].unk0_8 = a * 14;
@@ -1787,20 +1787,20 @@ s32 evt_modelOpWorld(EvtObject *o, s32 op) {
         ((Unk11C0Slot *)g_gameState->gameData->unk8E4.ovl65->unk8->unk1C)[o->modelSlot].unk4_12 = a;
         ((Unk11C0Slot *)g_gameState->gameData->unk8E4.ovl65->unk8->unk1C)[o->modelSlot].unk4_22 = b;
         return 0;
-    case 0x83:
+    case EVT_OP_SHADOW_FIXED:
         a = evt_getArg8();
         p = (u32 *)game_getModel(o->modelSlot);
         gs = g_gameState;
         *p |= 0x20;
         ((Unk11C0Slot *)gs->gameData->unk8E4.ovl65->unk8->unk1C)[o->modelSlot].unk4_0 = a * 16;
         return 0;
-    case 0x84:
+    case EVT_OP_SHADOW_UNFIX:
         *(u32 *)game_getModel(o->modelSlot) &= ~0x20;
         return 0;
     case 0x85:
         ((Unk11C0Slot *)g_gameState->gameData->unk8E4.ovl65->unk8->unk1C)[o->modelSlot].unk0_0 = evt_getArg8();
         return 0;
-    case 0xD8:
+    case EVT_OP_RAIN:
         a = evt_getArg8();
         wrain_set(a, evt_getArg8());
         g_gameState->gameData->rainCount = a;
