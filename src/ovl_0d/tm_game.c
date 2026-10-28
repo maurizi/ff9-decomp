@@ -353,7 +353,7 @@ void tm_setup(TmState *s) {
     s->autoPlay = 0;
     s->hasLostCard = 0;
     s->quitting = 0;
-    s->opponent = (u16)g_gameState->gameData->unk8B2;
+    s->opponent = (u16)g_gameState->gameData->cardOpponent;
     s->deck = g_tmOpponents[s->opponent].deck;
     s->aiLevel = g_tmOpponents[s->opponent].aiLevel;
     s->unk454 = 1;

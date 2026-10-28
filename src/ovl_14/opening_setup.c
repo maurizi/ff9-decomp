@@ -22,8 +22,8 @@ void opening_resetFieldState(void) {
     GameData *ctx = g_gameState->gameData;
 
     ctx->unk9 = 0;
-    ctx->unk39 = 0;
-    ctx->unk38 = 0;
+    ctx->npcModelSlots = 0;
+    ctx->npcCount = 0;
     ctx->unk7E8 = 0xFFFF;
     ctx->unk7EA = 0xFFFF;
     ctx->unk840 = 0xFFFF;

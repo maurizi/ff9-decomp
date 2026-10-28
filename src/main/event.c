@@ -674,13 +674,13 @@ void evt_followBalloon(EvtObject *obj, Window *w) {
     ox = w->unk0;
     oy = w->unk2;
     evt_placeBalloon_pos(obj, &sx, &sy);
-    below = (w->unk29 >> 1) & 1;
-    right = w->unk29 & 1;
+    below = (w->tailMode >> 1) & 1;
+    right = w->tailMode & 1;
     x = evt_followBalloon_x(w->unk4 - 3, sx, right, &tx);
     y = evt_followBalloon_y(w->unk6 - 3, &sy, below);
     w->unk0 = (ox + x) >> 1;
     w->unk2 = (oy + y) >> 1;
-    w->unk2A = tx - w->unk0 - right * 16;
+    w->tailX = tx - w->unk0 - right * 16;
     w->unk8.x += w->unk0 - ox;
     w->unk8.y += w->unk2 - oy;
 }
@@ -2147,11 +2147,11 @@ s32 evt_execInstr(void) {
             *dst++ = *src++;
         }
         *dst = 0xFF;
-        g_gameState->gameData->unk80C = g_evtLocationNameBuf;
+        g_gameState->gameData->locationName = g_evtLocationNameBuf;
         return 0;
     }
     case 0xB1:
-        g_gameState->gameData->unk80C = g_evtLocationName;
+        g_gameState->gameData->locationName = g_evtLocationName;
         return 0;
     case 0x69:
         timer_setSeconds(evt_getArg16_inline());
@@ -3337,7 +3337,7 @@ void evt_init(u8 *data) {
     g_evtLocationName = data + 0x2C;
     gs->gameData->unk810 = data + 4;
     g_evtScriptCount = k;
-    gs->gameData->unk80C = data + 0x2C;
+    gs->gameData->locationName = data + 0x2C;
     mode = g_gameState->mode;
     switch (mode) {
     case 1:
@@ -3485,7 +3485,7 @@ void evt_onMenuOpen(void) {
             }
             n--;
         }
-        g_gameState->gameData->unk80C = s;
+        g_gameState->gameData->locationName = s;
         while (*s++ != 0) {
         }
         g_gameState->gameData->unk810 = s;

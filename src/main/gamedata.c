@@ -61,15 +61,15 @@ void game_resetData(void) {
     gd->unk4 = 0;
     gd->unk8 = 0;
     gd->unk9 = 0;
-    gd->unk38 = 0;
-    gd->unk39 = 0;
+    gd->npcCount = 0;
+    gd->npcModelSlots = 0;
     gd->unk18.t[0] = gd->unk18.t[1] = gd->unk18.t[2] = 0;
     gd->unk18.m[0][1] = gd->unk18.m[0][2] = gd->unk18.m[1][0] = gd->unk18.m[1][2] = gd->unk18.m[2][0] =
         gd->unk18.m[2][1] = 0;
     gd->fieldId = 0;
     gd->unk7D4 = NULL;
     gd->unk84C = NULL;
-    gd->unk80C = NULL;
+    gd->locationName = NULL;
     gd->unk810 = NULL;
     gd->chocograph = 0;
     gd->unk851 = 0;
@@ -117,7 +117,7 @@ void game_resetData(void) {
     gd->unk878 = 0;
     gd->unk87C = 0;
     memset(&gd->unk880, 0, 0x28);
-    gd->unk8B2 = 0;
+    gd->cardOpponent = 0;
     gd->unk8BC = NULL;
     gd->unk8E4.ovl65 = NULL;
     for (i = 0; i >= 0; i--) {

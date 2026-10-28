@@ -141,8 +141,8 @@ void btl_initMode(void) {
     g->unk83C = btl_soundCmd;
     g_gameState->gameData->unk8BC = func_800AF1C8;
     preload_init();
-    g->unk39 = 0;
-    g->unk38 = 0;
+    g->npcModelSlots = 0;
+    g->npcCount = 0;
     g->unk84C = 0;
     b->dataSector = g_gameState->imgSector + g_gameState->dirs->unkDC;
     btl_loadCommonData();
@@ -274,22 +274,22 @@ void btl_load(s32 arg0) {
     do {
     } while (btl_loadBackgroundStep(p, arg0, &st) != 0);
     btl_setupBackground(p, arg0);
-    g_gameState->gameData->unk38 = evt_countNpcActors(0);
+    g_gameState->gameData->npcCount = evt_countNpcActors(0);
     g_gameState->gameData->unk8DC = (struct Unk8D4 *)(p->weaponBufs + 4);
-    g_gameState->gameData->unk8E0 = (struct Unk8E0 *)&g_gameState->gameData->unk8DC[g_gameState->gameData->unk38];
-    g_modeHeap = (s32)&g_gameState->gameData->unk8E0[g_gameState->gameData->unk38];
+    g_gameState->gameData->unk8E0 = (struct Unk8E0 *)&g_gameState->gameData->unk8DC[g_gameState->gameData->npcCount];
+    g_modeHeap = (s32)&g_gameState->gameData->unk8E0[g_gameState->gameData->npcCount];
     g_gameState->gameData->unk9 = 0;
     for (i = 0; i < 9; i++) {
         func_8001E3A4(&g_gameState->gameData->unk8D8[i]);
         g_gameState->gameData->unk8D8[i].unk8 = (struct BtlUnit9C *)&g_gameState->gameData->unk8D4[i];
     }
-    g_gameState->gameData->unk39 = 0;
-    for (i = 0; i < g_gameState->gameData->unk38; i++) {
+    g_gameState->gameData->npcModelSlots = 0;
+    for (i = 0; i < g_gameState->gameData->npcCount; i++) {
         func_8001E3A4(&g_gameState->gameData->unk8E0[i]);
         g_gameState->gameData->unk8E0[i].unk8 = (struct BtlUnit9C *)&g_gameState->gameData->unk8DC[i];
     }
     p->shadows = (struct BtlShadow *)g_modeHeap;
-    g_modeHeap = func_800AD4AC(g_modeHeap, g_gameState->gameData->unk38 + 9);
+    g_modeHeap = func_800AD4AC(g_modeHeap, g_gameState->gameData->npcCount + 9);
     p->unk8 = g_modeHeap;
     btlui_reset();
     btl_startBattle();
@@ -314,7 +314,7 @@ void btl_cleanup(void) {
             g_gameState->gameData->unk8D8[i].unk0 &= ~1;
         }
     }
-    for (i = 0; i < g_gameState->gameData->unk38; i++) {
+    for (i = 0; i < g_gameState->gameData->npcCount; i++) {
         if (g_gameState->gameData->unk8D8[i].unk0 & 1) {
             g_gameState->gameData->unk8D8[i].unk0 &= ~1;
         }
@@ -1276,9 +1276,9 @@ u32 btl_registerModel(s32 arg0, s32 arg1) {
         n = r;
         e = (Unk8E0Ld *)game_getModel(r);
     } else {
-        n = g_gameState->gameData->unk39 + 9;
+        n = g_gameState->gameData->npcModelSlots + 9;
         e = (Unk8E0Ld *)game_getModel(n);
-        g_gameState->gameData->unk39++;
+        g_gameState->gameData->npcModelSlots++;
     }
     e->unk4 = arg0;
     e->unkC = arg1;

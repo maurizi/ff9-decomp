@@ -64,8 +64,8 @@ void wm_init(void) {
     g_gameState->gameData->unk8BC = wm_preloadRequest;
     g_gameState->gameData->unk84C = 0;
     gd = g_gameState->gameData;
-    gd->unk39 = 0;
-    gd->unk38 = 0;
+    gd->npcModelSlots = 0;
+    gd->npcCount = 0;
     wm->flags |= WM_MAP_LOADING;
     wm_loadWorldData();
     wm_afterLoadWorldData();
@@ -250,22 +250,22 @@ void wm_load(s32 arg0) {
     while (wm_soundCommand(SND_GET_STATE, 0, 0, 0, 0) != 0) {
     }
     msg_init();
-    g_gameState->gameData->unk38 = evt_countNpcActors(0);
+    g_gameState->gameData->npcCount = evt_countNpcActors(0);
     g_gameState->gameData->unk8DC = (Unk8D4 *)(obj + 1);
-    g_gameState->gameData->unk8E0 = (Unk8E0 *)&g_gameState->gameData->unk8DC[g_gameState->gameData->unk38];
-    g_modeHeap = (s32)&g_gameState->gameData->unk8E0[g_gameState->gameData->unk38];
+    g_gameState->gameData->unk8E0 = (Unk8E0 *)&g_gameState->gameData->unk8DC[g_gameState->gameData->npcCount];
+    g_modeHeap = (s32)&g_gameState->gameData->unk8E0[g_gameState->gameData->npcCount];
     g_gameState->gameData->unk9 = 0;
     for (i = 0; i < 9; i++) {
         func_8001E3A4(&g_gameState->gameData->unk8D8[i]);
         g_gameState->gameData->unk8D8[i].unk8 = &g_gameState->gameData->unk8D4[i];
     }
-    g_gameState->gameData->unk39 = 0;
-    for (i = 0; i < g_gameState->gameData->unk38; i++) {
+    g_gameState->gameData->npcModelSlots = 0;
+    for (i = 0; i < g_gameState->gameData->npcCount; i++) {
         func_8001E3A4(&g_gameState->gameData->unk8E0[i]);
         g_gameState->gameData->unk8E0[i].unk8 = &g_gameState->gameData->unk8DC[i];
     }
     obj->shadows = (void *)g_modeHeap;
-    g_modeHeap = wm_initShadowPrims(g_modeHeap, g_gameState->gameData->unk38 + 9);
+    g_modeHeap = wm_initShadowPrims(g_modeHeap, g_gameState->gameData->npcCount + 9);
     obj->heapEnd = (void *)g_modeHeap;
     obj->primCursor = (s32)obj->loadPtr;
     evt_createModels();
@@ -291,7 +291,7 @@ void wm_exit(void) {
             g_gameState->gameData->unk8D8[i].unk0 &= ~1;
         }
     }
-    for (i = 0; i < g_gameState->gameData->unk38; i++) {
+    for (i = 0; i < g_gameState->gameData->npcCount; i++) {
         if (g_gameState->gameData->unk8E0[i].unk0 & 1) {
             g_gameState->gameData->unk8E0[i].unk0 &= ~1;
         }
@@ -572,9 +572,9 @@ u32 wm_loadActorModel(s32 arg0, EvtObject *arg1) {
         id = t;
         o = (WmObjSlot *)game_getModel(t);
     } else {
-        id = g_gameState->gameData->unk39 + 9;
+        id = g_gameState->gameData->npcModelSlots + 9;
         o = (WmObjSlot *)game_getModel(id);
-        g_gameState->gameData->unk39++;
+        g_gameState->gameData->npcModelSlots++;
     }
     o->modelId = arg0;
     o->obj->model = db_lookupRegistered(4, arg0, 0);

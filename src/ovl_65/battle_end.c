@@ -371,7 +371,7 @@ void rewards_moveMemberWins(void) {
     for (i = 0; i < 4; i++) {
         if (s_rewards.getsExp[i] != 0) {
             w = s_rewards.levelWins[i].win;
-            if (w != NULL && w->unk1C != 0) {
+            if (w != NULL && w->state != 0) {
                 tx = w->unk0 - 0x26;
                 dx = s_rewards.wins[i + 2].unk4.x - tx;
                 ty = w->unk2 - 2;
@@ -385,7 +385,7 @@ void rewards_moveMemberWins(void) {
         if (s_rewards.getsAp[i] != 0) {
             w2 = s_rewards.learnWins[i].win;
             d = &s_rewards.wins[i + 2];
-            if (w2 != NULL && w2->unk1C != 0) {
+            if (w2 != NULL && w2->state != 0) {
                 t = d->unkC;
                 if (t != NULL && d->unk2 >= 2) {
                     if (t->unk4 != NULL) {

@@ -151,8 +151,8 @@ void fld_init(void) {
     g_gameState->unk0 &= ~(GS_RESET | GS_FLD_LEAVE | GS_FLD_NEW_AREA);
     g_gameState->gameData->unk84C = 0;
     gd = g_gameState->gameData;
-    gd->unk39 = 0;
-    gd->unk38 = 0;
+    gd->npcModelSlots = 0;
+    gd->npcCount = 0;
     gd2 = g_gameState->gameData;
     gd2->unk836 = 0xFFFF;
     gd2->unk834 = 0xFFFF;
@@ -386,22 +386,22 @@ void fld_load(s32 arg0) {
     while (fld_soundCommand(0xC00, -1, 0, 0, 0) != 0) {
     }
     msg_init();
-    g_gameState->gameData->unk38 = evt_countNpcActors(0);
+    g_gameState->gameData->npcCount = evt_countNpcActors(0);
     g_gameState->gameData->unk8DC = (Unk8D4 *)g_modeHeap;
-    g_gameState->gameData->unk8E0 = (Unk8E0 *)(g_gameState->gameData->unk8DC + g_gameState->gameData->unk38);
-    g_modeHeap = (s32)(g_gameState->gameData->unk8E0 + g_gameState->gameData->unk38);
+    g_gameState->gameData->unk8E0 = (Unk8E0 *)(g_gameState->gameData->unk8DC + g_gameState->gameData->npcCount);
+    g_modeHeap = (s32)(g_gameState->gameData->unk8E0 + g_gameState->gameData->npcCount);
     g_gameState->gameData->unk9 = 0;
     for (i = 0; i < 9; i++) {
         func_8001E3A4(&g_gameState->gameData->unk8D8[i]);
         g_gameState->gameData->unk8D8[i].unk8 = &g_gameState->gameData->unk8D4[i];
     }
-    g_gameState->gameData->unk39 = 0;
-    for (i = 0; i < g_gameState->gameData->unk38; i++) {
+    g_gameState->gameData->npcModelSlots = 0;
+    for (i = 0; i < g_gameState->gameData->npcCount; i++) {
         func_8001E3A4(&g_gameState->gameData->unk8E0[i]);
         g_gameState->gameData->unk8E0[i].unk8 = &g_gameState->gameData->unk8DC[i];
     }
     sc->shadows = (FieldObjPlace *)g_modeHeap;
-    g_modeHeap = fld_initShadows(g_modeHeap, g_gameState->gameData->unk38 + 9,
+    g_modeHeap = fld_initShadows(g_modeHeap, g_gameState->gameData->npcCount + 9,
                                g_gameState->gameData->unk8E4.field->area->scene->shadowTexX,
                                g_gameState->gameData->unk8E4.field->area->scene->shadowTexY);
     fld_loadSoundBanks(sc, arg0);
@@ -430,7 +430,7 @@ void fld_exit(void) {
             g_gameState->gameData->unk8D8[i].unk0 &= ~1;
         }
     }
-    for (i = 0; i < g_gameState->gameData->unk38; i++) {
+    for (i = 0; i < g_gameState->gameData->npcCount; i++) {
         if (g_gameState->gameData->unk8E0[i].unk0 & 1) {
             g_gameState->gameData->unk8E0[i].unk0 &= ~1;
         }

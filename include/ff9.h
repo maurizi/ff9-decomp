@@ -272,8 +272,8 @@ typedef struct {
     u16 battleId; /* next battle (encounter bundle id), set by evt_setNextBattle / the field and world exits */
     u32 *unk10[2]; /* ordering tables, 0x1000 entries */
     MATRIX unk18;
-    u8 unk38;
-    u8 unk39;
+    u8 npcCount; /* kind-4 objects below the character scripts (evt_countNpcActors in fld_load) */
+    u8 npcModelSlots; /* NPC model slots used, NPC slot = 9 + this */
     u16 unk3A;
     Character characters[9];
     Character *party[4];
@@ -304,7 +304,7 @@ typedef struct {
     s32 returnSectors[2];
     s32 sceneSector[2]; /* CD sectors of the next scene's files: field/world file + area, or battle bundle + background */
     s32 sceneSectors[2]; /* their sector counts */
-    u8 *unk80C; /* name text */
+    u8 *locationName; /* menu LOCATION box text (g_evtLocationName / g_evtLocationNameBuf) */
     u8 *unk810;
     void *unk814;
     s32 unk818;
@@ -340,7 +340,7 @@ typedef struct {
     s32 unk8A8;
     s32 unk8AC;
     u16 unk8B0;
-    s16 unk8B2;
+    s16 cardOpponent; /* Tetra Master opponent (evt_setCardOpponent, read by ovl_0d tm_game) */
     u16 unk8B4[2];
     u8 unk8B8[2];
     u8 unk8BA[2];
@@ -737,31 +737,31 @@ typedef struct Window {
     s16 unk4; /* w */
     s16 unk6; /* h */
     RECT unk8; /* inner/content rect */
-    s16 unk10;
-    s16 unk12;
+    s16 openFrames;
+    s16 closeFrames;
     s16 unk14; /* open/close step x */
     s16 unk16; /* open/close step y */
     s16 unk18; /* OT layer */
-    u8 unk1A;
-    u8 unk1B; /* index */
-    u8 unk1C; /* state: 2 = fire callback */
-    u8 unk1D;
+    u8 style; /* 3 = balloon with tail (runtime: "Sure is dark..." balloon) */
+    u8 slot; /* index in g_windows */
+    u8 state; /* 3 open, 2 = fire callback */
+    u8 translucent;
     u8 unk1E;
-    u8 unk1F;
-    s16 unk20;
-    s8 unk22;
-    u8 unk23;
-    s32 unk24;
-    u8 unk28;
-    u8 unk29;
-    s16 unk2A;
+    u8 shadow;
+    s16 titleX;
+    s8 titleY;
+    u8 visible;
+    s32 title;
+    u8 animMode; /* open/close animation, 2 = tail */
+    u8 tailMode; /* feeds the open steps */
+    s16 tailX; /* tail x (runtime: poking it moves the tail) */
     s16 unk2C;
     s16 unk2E;
-    MenuList unk30;
-    void (*unk40)(struct Window *);
-    void (*unk44)(struct Window *);
-    void (*unk48)(struct Window *);
-    void (*unk4C)(struct Window *);
+    MenuList list;
+    void (*drawContent)(struct Window *);
+    void (*drawOverlay)(struct Window *);
+    void (*onOpened)(struct Window *);
+    void (*onClosed)(struct Window *);
     s32 unk50; /* user data */
 } Window; /* 0x54 */
 extern Window g_windows[10];
@@ -1517,23 +1517,23 @@ typedef struct MsgWindow {
     s16 x;
     s16 y;
     s16 open;
-    s16 unkA;
+    s16 id; /* index in g_msgWindows (msg_open) */
     s32 (*onInput)(struct MsgWindow *, s32); /* pad handler, msg_update */
     s32 unk10;
     Window *window;
     s16 w;
-    s16 unk1A;
-    s16 unk1C;
+    s16 tailOffset; /* from the layout, passed to win_setTail */
+    s16 textWidth; /* width the text is centred with */
     s16 msgId; /* message index */
     s16 textPos; /* offset of the next character */
     s16 pageStart;
-    s16 unk24;
-    u8 unk26;
+    s16 typeAccum; /* text timing in 1/8 characters (+speed per frame) */
+    u8 waitFrames; /* 0xFF waiting for Cross (msg_input), else a text-code pause */
     u8 h;
     u8 flags; /* 2 modal (msg_allocWindow), 4, 8 */
     u8 speed; /* text speed */
-    u8 unk2A;
-    u8 unk2B;
+    u8 pendingChars;
+    u8 tailMode; /* from the layout, passed to win_setTail */
 } MsgWindow;
 extern MsgWindow g_msgWindows[];
 
@@ -2223,10 +2223,10 @@ Window *win_init(RECT *, s32, s32, Window *);
 
 /* Inlined copy of win_close (close window). */
 static inline void win_close_inline(Window *w) {
-    if (w != NULL && w->unk1C != 0 && w->unk1C != 2) {
-        w->unk1C = 2;
+    if (w != NULL && w->state != 0 && w->state != 2) {
+        w->state = 2;
         if (g_drawBufs.unk1 != 2) {
-            win_setCloseAnim(w, w->unk28);
+            win_setCloseAnim(w, w->animMode);
         }
     }
 }
@@ -2860,7 +2860,7 @@ static inline void msg_closeWindow_inline(MsgWindow *p) {
         if (p->window != NULL) {
             win_close(p->window);
         }
-        if (g_msgChoiceLine >= 0 && g_msgChoiceWindow == p->unkA) {
+        if (g_msgChoiceLine >= 0 && g_msgChoiceWindow == p->id) {
             pad_setAnalogThresholds(&D_8007B99C);
         }
         msg_closeAll_inline(p);

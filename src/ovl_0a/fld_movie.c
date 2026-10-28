@@ -168,9 +168,9 @@ s32 fld_setupActorModel(s32 arg0, void *arg1) {
         slot = r;
         s = (FieldObjSlot *)game_getModel(r);
     } else {
-        slot = g_gameState->gameData->unk39 + 9;
+        slot = g_gameState->gameData->npcModelSlots + 9;
         s = (FieldObjSlot *)game_getModel(slot);
-        g_gameState->gameData->unk39++;
+        g_gameState->gameData->npcModelSlots++;
     }
     arg0 = fld_remapModelId(arg0);
     s->modelId = arg0;

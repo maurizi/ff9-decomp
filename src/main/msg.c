@@ -256,11 +256,11 @@ static inline void msg_renderText_skip(s32 id, u8 **pp) {
 
 /* typewriter: advance the shown character count of an embedded value of n characters */
 static inline void msg_renderText_type(MsgWindow *w, s32 n) {
-    w->unk24 += w->speed;
-    w->unk2A += w->unk24 >> 3;
-    w->unk24 &= 7;
-    if (w->unk2A >= n) {
-        w->unk2A = 0;
+    w->typeAccum += w->speed;
+    w->pendingChars += w->typeAccum >> 3;
+    w->typeAccum &= 7;
+    if (w->pendingChars >= n) {
+        w->pendingChars = 0;
     }
 }
 
@@ -285,8 +285,8 @@ static inline u8 *msg_renderText_text(u32 a, u32 b) {
 
 /* print an embedded value, typewriter-style when it ends the text */
 static inline void msg_renderText_value(MsgWindow *w, s32 arg, s32 (*fn)(), s32 last) {
-    if (last && w->unk2A != 0) {
-        msg_renderText_type(w, fn(arg, w->unk2A));
+    if (last && w->pendingChars != 0) {
+        msg_renderText_type(w, fn(arg, w->pendingChars));
     } else {
         fn(arg, 0xFF);
     }
@@ -307,7 +307,7 @@ void msg_renderText(MsgWindow *w, u8 *s) {
     g_msgLine = 0;
     end = s + w->textPos;
     p = s + w->pageStart;
-    msg_renderText_skip(w->unkA, &p);
+    msg_renderText_skip(w->id, &p);
     while (p < end) {
         c = *p++;
         switch (c) {
@@ -319,7 +319,7 @@ void msg_renderText(MsgWindow *w, u8 *s) {
             pen_move(0, 14);
             pen_pushPos();
             g_msgLine++;
-            msg_renderText_skip(w->unkA, &p);
+            msg_renderText_skip(w->id, &p);
             if (p >= end) {
                 w->textPos = p - s;
             }
@@ -516,7 +516,7 @@ void msg_advanceText(MsgWindow *w, u8 *e) {
 
     p = e + w->textPos;
     start = p;
-    while (w->unk26 == 0 && w->unk2A == 0 && w->unk24 >= 8) {
+    while (w->waitFrames == 0 && w->pendingChars == 0 && w->typeAccum >= 8) {
         start = p;
         c = *p++;
         switch (c) {
@@ -531,7 +531,7 @@ void msg_advanceText(MsgWindow *w, u8 *e) {
                 break;
             case 0x41:
                 if (!(w->flags & 4)) {
-                    w->unk26 = *p++;
+                    w->waitFrames = *p++;
                 } else {
                     p++;
                 }
@@ -540,7 +540,7 @@ void msg_advanceText(MsgWindow *w, u8 *e) {
             case 1:
                 w->flags = (w->flags & ~4) | 8;
             set26:
-                w->unk26 = *p++;
+                w->waitFrames = *p++;
                 break;
             case 2:
                 w->speed = *p++;
@@ -563,7 +563,7 @@ void msg_advanceText(MsgWindow *w, u8 *e) {
                 w->flags |= 2;
                 break;
             case 9:
-                w->unk26 = 0xFF;
+                w->waitFrames = 0xFF;
             case 0x45:
                 w->flags |= 0x40;
                 break;
@@ -602,8 +602,8 @@ void msg_advanceText(MsgWindow *w, u8 *e) {
             case 0x86:
             case 0x87:
                 if (!(w->flags & 4)) {
-                    w->unk2A = 1;
-                    w->unk24 = 0;
+                    w->pendingChars = 1;
+                    w->typeAccum = 0;
                 }
                 break;
             case 0x43:
@@ -619,7 +619,7 @@ void msg_advanceText(MsgWindow *w, u8 *e) {
             break;
         case 0xFE:
         case 0xFF:
-            w->unk26 = 0xFF;
+            w->waitFrames = 0xFF;
             break;
         case 0xF7:
             g_msgLine++;
@@ -631,16 +631,16 @@ void msg_advanceText(MsgWindow *w, u8 *e) {
             p++;
         default:
             if (!(w->flags & 4)) {
-                w->unk24 -= 8;
+                w->typeAccum -= 8;
             }
             break;
         }
     }
-    w->textPos = (w->unk26 != 0 ? start : p) - e;
-    if (w->unk26 == 0xFF) {
+    w->textPos = (w->waitFrames != 0 ? start : p) - e;
+    if (w->waitFrames == 0xFF) {
         w->flags &= ~4;
     }
-    w->unk24 += w->speed;
+    w->typeAccum += w->speed;
 }
 
 void msg_stepControl(MsgWindow *w, u8 *e) {
@@ -682,7 +682,7 @@ void msg_drawText(MsgWindow *w) {
         e += *(u16 *)&((u32 *)e)[(g_evtMode == 2 || g_evtMode == 4) ? i : i * 2 + 1];
     }
     if (e != NULL) {
-        pen_move(((w->w - w->unk1C) >> 1) + 4, 2);
+        pen_move(((w->w - w->textWidth) >> 1) + 4, 2);
         pen_pushPos();
         if (w->textPos < w->pageStart) {
             w->textPos = w->pageStart;
@@ -690,19 +690,19 @@ void msg_drawText(MsgWindow *w) {
         D_8007BB98.unk0 = 0;
         g_msgChoiceDrawMask = g_msgChoiceEnabled;
         msg_renderText(w, e);
-        if (w->unk26 == 0) {
-            if (w->unk2A == 0) {
+        if (w->waitFrames == 0) {
+            if (w->pendingChars == 0) {
                 msg_advanceText(w, e);
             } else if (w->flags & 4) {
-                w->unk2A = 0;
-                w->unk24 = 8;
+                w->pendingChars = 0;
+                w->typeAccum = 8;
             }
         } else {
-            w->unk26 -= (w->unk26 != 0xFF);
+            w->waitFrames -= (w->waitFrames != 0xFF);
             if (w->flags & 4) {
-                w->unk26 = 0;
+                w->waitFrames = 0;
             }
-            if (w->unk26 == 0) {
+            if (w->waitFrames == 0) {
                 msg_stepControl(w, e);
             }
         }
@@ -722,8 +722,8 @@ s32 msg_input(MsgWindow *w, s32 pad) {
     if ((g_evtMode == 1 && (pad & 0xA0000)) || (g_evtMode != 1 && (pad & 0x20000))) {
         f = w->flags;
         if (!(f & 0x40)) {
-            if (w->unk26 == 0xFF) {
-                w->unk26 = 1;
+            if (w->waitFrames == 0xFF) {
+                w->waitFrames = 1;
                 if (g_msgChoiceLine >= 0) {
                     g_gameState->gameData->unk83C(0xD000, 0x67, 0x800000, 0x80, 0x7F);
                 }
@@ -736,7 +736,7 @@ s32 msg_input(MsgWindow *w, s32 pad) {
         }
     }
     if (g_msgChoiceLine >= 0) {
-        if (g_msgChoiceWindow != w->unkA) {
+        if (g_msgChoiceWindow != w->id) {
             return 0;
         }
         if (pad & 0x10) {
@@ -776,7 +776,7 @@ static inline MsgWindow *msg_open_init(s32 id, WinLayout *l) {
     w->unk10 = 0;
     w->y = 0;
     w->x = 0;
-    w->unkA = 0;
+    w->id = 0;
     w->parent = parent;
     if (l->unk0 != 0) {
         w->x = l->unk0;
@@ -790,8 +790,8 @@ static inline MsgWindow *msg_open_init(s32 id, WinLayout *l) {
     w->flags = 0;
     w->msgId = 0;
     w->textPos = 0;
-    w->unk1A = 0;
-    w->unk2B = 0;
+    w->tailOffset = 0;
+    w->tailMode = 0;
     w->window = NULL;
     return w;
 }
@@ -818,16 +818,16 @@ void msg_open(s32 msg, s32 id, WinLayout *l, s32 flags) {
     }
     w = msg_open_init(id, l);
     w->onInput = msg_input;
-    w->unk26 = 0;
-    w->unkA = id;
+    w->waitFrames = 0;
+    w->id = id;
     w->msgId = msg;
     w->speed = D_8006E688[(g_gameState->config >> 14) & 7];
     w->pageStart = 0;
-    w->unk24 = 8;
-    w->unk2A = 0;
-    w->unk1A = l->unk4;
-    w->unk2B = l->unk6;
-    w->unk1C = l->unk2;
+    w->typeAccum = 8;
+    w->pendingChars = 0;
+    w->tailOffset = l->unk4;
+    w->tailMode = l->unk6;
+    w->textWidth = l->unk2;
     w->flags |= 0x10;
     if (!(l->unkB & 1)) {
         g_msgFocus = w;
@@ -1202,7 +1202,7 @@ MsgWindow *msg_allocWindow(Unk8004EBC0 *r, MsgWindow *a, s32 idx, s32 flag) {
     e->unk10 = 0;
     e->y = 0;
     e->x = 0;
-    e->unkA = 0;
+    e->id = 0;
     if (r->unk0 != 0) {
         e->x = r->unk0;
         e->y = r->unk8;
@@ -1219,8 +1219,8 @@ MsgWindow *msg_allocWindow(Unk8004EBC0 *r, MsgWindow *a, s32 idx, s32 flag) {
     }
     e->msgId = 0;
     e->textPos = 0;
-    e->unk1A = 0;
-    e->unk2B = 0;
+    e->tailOffset = 0;
+    e->tailMode = 0;
     e->window = NULL;
     return e;
 }
@@ -1422,7 +1422,7 @@ void msg_drawChoiceCursor(Window *w) {
     GameData *g;
     s32 ofs;
 
-    if (g_msgChoiceLine >= 0 && w->unk1C == 3 && (((Window *)w->unk50)->unk28 & 2)) {
+    if (g_msgChoiceLine >= 0 && w->state == 3 && (((Window *)w->unk50)->animMode & 2)) {
         g = g_gameState->gameData;
         g_penOt = g->unk10[g->unk8] + w->unk18;
         pen_begin();

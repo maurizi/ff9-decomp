@@ -6,7 +6,7 @@ void menuMain_initPanels(void) {
     s32 w;
     s32 i;
 
-    p = g_gameState->gameData->unk80C;
+    p = g_gameState->gameData->locationName;
     if (p != NULL && *p != 0xFF) {
         s = p;
     } else {
@@ -243,8 +243,8 @@ void menuMain_drawLocation(void) {
     win_drawBox(s_menuMainLocationRect, 0x14, 2);
     win_drawShadow(s_menuMainLocationRect, 0x14, 2);
     gd = g_gameState->gameData;
-    if (gd->unk80C != NULL && *gd->unk80C != 0xFF) {
-        text_drawBlock(s_menuMainLocationRect->x + 8, s_menuMainLocationRect->y + 7, 0x13, gd->unk80C, 0);
+    if (gd->locationName != NULL && *gd->locationName != 0xFF) {
+        text_drawBlock(s_menuMainLocationRect->x + 8, s_menuMainLocationRect->y + 7, 0x13, gd->locationName, 0);
     } else {
         text_drawBlock(s_menuMainLocationRect->x + 8, s_menuMainLocationRect->y + 7, 0x13, text_get(1), 0);
     }

@@ -670,7 +670,7 @@ void menuSave_drawConfirmCursor(Window *w) {
     if (b < (a & 0xFFF)) {
         b = a & 0xFFF;
     }
-    if (w->unk1C == WIN_OPEN) {
+    if (w->state == WIN_OPEN) {
         g_menuHelp.x = w->unk0 + ((s32)(w->unk4 - b) >> 1) - 0x1A;
         g_menuHelp.y = w->unk2 + (s16)(w->unk6 + (s16)(s_menuSaveConfirm.choice * 15 - 0x26)) + 3;
         z = w->unk18;
@@ -684,7 +684,7 @@ void menuSave_initConfirm(void) {
 }
 
 void menuSave_inputConfirm(void) {
-    if (s_menuSaveConfirm.win->unk1C == WIN_OPEN) {
+    if (s_menuSaveConfirm.win->state == WIN_OPEN) {
         if (g_padRepeat & BTN_CROSS) {
             snd_playSe(SE_CURSOR);
             win_close(s_menuSaveConfirm.win);
@@ -1172,7 +1172,7 @@ void menuSave_openSavedMsg(SaveMenu *m) {
 }
 
 void menuSave_inputSavedMsg(void) {
-    if (s_menuSaveSavedMsg.win->unk1C == WIN_OPEN && (g_padRepeat & (BTN_CIRCLE | BTN_CROSS))) {
+    if (s_menuSaveSavedMsg.win->state == WIN_OPEN && (g_padRepeat & (BTN_CIRCLE | BTN_CROSS))) {
         snd_playSe(SE_CANCEL);
         s_menuSave.phase = SAVE_PH_WAIT;
         win_close(s_menuSaveSavedMsg.win);
@@ -1247,7 +1247,7 @@ void menuSave_initMessage(void) {
 }
 
 void menuSave_inputMessage(void) {
-    if (s_menuSaveMessage.win->unk1C == WIN_OPEN && (g_padRepeat & (BTN_CIRCLE | BTN_CROSS))) {
+    if (s_menuSaveMessage.win->state == WIN_OPEN && (g_padRepeat & (BTN_CIRCLE | BTN_CROSS))) {
         snd_playSe(SE_CANCEL);
         s_menuSave.phase = SAVE_PH_WAIT;
         win_close(s_menuSaveMessage.win);
@@ -1883,7 +1883,7 @@ void menuSave_getLocation(u8 *dst) {
     if (s_menuSave.mode == SAVE_MODE_NEXT_DISC) {
         name = text_get(fld_getDiscChangeDisc() + SAVE_TEXT_DISC_START);
     } else {
-        name = g_gameState->gameData->unk80C;
+        name = g_gameState->gameData->locationName;
     }
     if (name == NULL) {
         s = text_get(SAVE_TEXT_NO_LOCATION);

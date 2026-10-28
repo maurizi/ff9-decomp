@@ -11,7 +11,7 @@ void evt_setNextBattle(u16 a) {
 void evt_setCardOpponent(a)
     s16 a;
 {
-    g_gameState->gameData->unk8B2 = a;
+    g_gameState->gameData->cardOpponent = a;
 }
 
 s32 evt_createModel(EvtObject *a) {
