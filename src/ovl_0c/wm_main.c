@@ -557,7 +557,7 @@ s32 wm_depFindArea(s32 arg0, s32 *arg1, s32 *arg2) {
     return id;
 }
 
-u32 wm_loadActorModel(s32 arg0, Unk8004AB64 *arg1) {
+u32 wm_loadActorModel(s32 arg0, EvtObject *arg1) {
     WmObjSlot *o;
     u32 id;
     WmAnimHdr *h;
@@ -1294,7 +1294,7 @@ void wm_endFrame(void) {
 void wm_startBattleTransition(void) {
     SVECTOR v;
     WorldMapObj *o;
-    Unk8004AB64 *a;
+    EvtObject *a;
     WmObjSlot *s;
 
     g_swirlFrame = 0;

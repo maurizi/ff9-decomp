@@ -2375,7 +2375,7 @@ void SetGeomScreen(s32);
 s32 ReadGeomScreen(void);
 s32 akao_getSpuTransferState(void);
 void akao_sendCmdED(s32, s32);
-s32 evt_createModel(Unk8004AB64 *);
+s32 evt_createModel(EvtObject *);
 
 /* ovl_0b functions */
 s32 btlfx_moveUnitArc(s32, s16 *, s32, s32, s32, s16 *);
@@ -3050,7 +3050,7 @@ void btl_initPartyUnit(Character *, BtlUnit *, u16, u16);
 void btl_insertUnit(BtlUnit *);
 void btl_placeParty(void);
 void btl_initDotTimer(BtlUnit *, s32);
-void func_800BBF30(Unk8004AB64 *, s16);
+void func_800BBF30(EvtObject *, s16);
 extern s32 D_800FDF34;
 extern RECT D_800A858C;
 extern RECT D_800A8594;

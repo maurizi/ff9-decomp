@@ -1,9 +1,9 @@
 #include "ff9.h"
 
-Unk8004AB64 *evt_allocObject(s32 n) {
-    Unk8007AECCNode *cur = g_evtState->unk15D0;
-    Unk8007AECCNode *nn = NULL;
-    Unk8007AECCNode *next;
+EvtObject *evt_allocObject(s32 n) {
+    EvtAllocNode *cur = g_evtState->unk15D0;
+    EvtAllocNode *nn = NULL;
+    EvtAllocNode *next;
 
     if (cur != NULL) {
         if ((u32 *)cur->unk0 >= g_evtState->unk50 + n) {
@@ -13,7 +13,7 @@ Unk8004AB64 *evt_allocObject(s32 n) {
             g_evtState->unk15D0 = nn;
             {
                 u32 *p1 = g_evtState->unk50;
-                nn->unk0 = (Unk8004AB64 *)p1;
+                nn->unk0 = (EvtObject *)p1;
                 nn->unk4 = p1 + n;
             }
         } else {
@@ -30,7 +30,7 @@ Unk8004AB64 *evt_allocObject(s32 n) {
                 cur->unk8 = nn;
                 {
                     u32 *p2 = cur->unk4;
-                    nn->unk0 = (Unk8004AB64 *)p2;
+                    nn->unk0 = (EvtObject *)p2;
                     nn->unk4 = p2 + n;
                 }
             } else if (cur->unk4 + n <= g_evtState->unk50 + 0x500) {
@@ -40,7 +40,7 @@ Unk8004AB64 *evt_allocObject(s32 n) {
                 cur->unk8 = nn;
                 {
                     u32 *p3 = cur->unk4;
-                    nn->unk0 = (Unk8004AB64 *)p3;
+                    nn->unk0 = (EvtObject *)p3;
                     nn->unk4 = p3 + n;
                 }
             }
@@ -52,7 +52,7 @@ Unk8004AB64 *evt_allocObject(s32 n) {
         g_evtState->unk15D0 = nn;
         {
             u32 *p4 = g_evtState->unk50;
-            nn->unk0 = (Unk8004AB64 *)p4;
+            nn->unk0 = (EvtObject *)p4;
             nn->unk4 = p4 + n;
         }
     }
@@ -62,10 +62,10 @@ Unk8004AB64 *evt_allocObject(s32 n) {
     return NULL;
 }
 
-Unk8004AB64 *evt_createObject(s32 idx, s32 id, s32 a2, s32 a3) {
-    Unk8004AB64 *o;
+EvtObject *evt_createObject(s32 idx, s32 id, s32 a2, s32 a3) {
+    EvtObject *o;
     Unk16D8 *n;
-    Unk8007AECC *d;
+    EvtState *d;
     s32 nw, nv;
     u32 *p;
     u32 *end;
@@ -126,7 +126,7 @@ Unk8004AB64 *evt_createObject(s32 idx, s32 id, s32 a2, s32 a3) {
     return o;
 }
 
-Unk16D8 *evt_deleteObject(Unk8004AB64 *obj) {
+Unk16D8 *evt_deleteObject(EvtObject *obj) {
     Unk16D8 *n;
     Unk16D8 *prev;
     Unk16D8 *next = NULL;
@@ -518,7 +518,7 @@ s32 evt_exprSpecial(s32 op) {
     s16 py;
     s32 x;
     GameData *gd;
-    Unk8004AB64 *o;
+    EvtObject *o;
 
     switch (op) {
     case 0x8:
@@ -569,7 +569,7 @@ s32 evt_exprSpecial(s32 op) {
         break;
     case 0x70:
         px = -1;
-        o = (Unk8004AB64 *)evt_popResult();
+        o = (EvtObject *)evt_popResult();
         if (o != NULL && o->unk5 == 4) {
             bgi_getActorTriangle(o->unk3B, (u16 *)&px, (u16 *)&py);
         }
@@ -577,7 +577,7 @@ s32 evt_exprSpecial(s32 op) {
         break;
     case 0x71:
         py = -1;
-        o = (Unk8004AB64 *)evt_popResult();
+        o = (EvtObject *)evt_popResult();
         if (o != NULL && o->unk5 == 4) {
             bgi_getActorTriangle(o->unk3B, (u16 *)&px, (u16 *)&py);
         }

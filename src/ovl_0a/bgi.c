@@ -764,7 +764,7 @@ s32 bgi_updateFloorMoves(void) {
     BgiFloor *t;
     s32 i;
     s32 j;
-    Unk8004AB64 *p;
+    EvtObject *p;
     u16 flags;
 
     e = g_fieldBgiFloorMoves;

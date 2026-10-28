@@ -2752,7 +2752,7 @@ s32 fldbg_updateFollowOverlays(void) {
     BgFile *bg;
     BgOverlay *objs;
     BgOverlay *o;
-    Unk8004AB64 *a;
+    EvtObject *a;
     BgFollowOverlay *f;
     u8 i;
     u8 mode;
@@ -2769,7 +2769,7 @@ s32 fldbg_updateFollowOverlays(void) {
         objs = (BgOverlay *)((u8 *)bg + bg->overlayOffset);
         mode = g_gameState->mode;
         if (mode == 5) {
-            a = (Unk8004AB64 *)g_gameState->gameData->unk8E0[g_gameState->gameData->unk8E4.field->playerObj].unkC;
+            a = (EvtObject *)g_gameState->gameData->unk8E0[g_gameState->gameData->unk8E4.field->playerObj].unkC;
         } else if (mode == 1) {
             a = evt_getPlayer();
         } else {
@@ -3305,7 +3305,7 @@ s32 fldbg_followPlayer(void) {
     s16 *px, *py;
     BgFile *h;
     BgCamera *c;
-    Unk8004AB64 *a;
+    EvtObject *a;
     s32 x;
     s32 y;
     s32 cx;
@@ -3331,7 +3331,7 @@ s32 fldbg_followPlayer(void) {
     }
     mode = g_gameState->mode;
     if (mode == 5) {
-        a = (Unk8004AB64 *)g_gameState->gameData->unk8E0[g_gameState->gameData->unk8E4.field->playerObj].unkC;
+        a = (EvtObject *)g_gameState->gameData->unk8E0[g_gameState->gameData->unk8E4.field->playerObj].unkC;
     } else if (mode == 1) {
         a = evt_getPlayer();
     } else {
@@ -3604,7 +3604,7 @@ s32 fldbg_scrollToPlayer(s32 arg0, s32 arg1) {
     SVECTOR v;
     s16 xy[2];
     BgCamera *c;
-    Unk8004AB64 *a;
+    EvtObject *a;
     u8 mode;
     s32 x;
     s32 y;
@@ -3622,7 +3622,7 @@ s32 fldbg_scrollToPlayer(s32 arg0, s32 arg1) {
     }
     mode = g_gameState->mode;
     if (mode == 5) {
-        a = (Unk8004AB64 *)g_gameState->gameData->unk8E0[g_gameState->gameData->unk8E4.field->playerObj].unkC;
+        a = (EvtObject *)g_gameState->gameData->unk8E0[g_gameState->gameData->unk8E4.field->playerObj].unkC;
     } else {
         a = NULL;
         if (mode == 1) {

@@ -1435,7 +1435,7 @@ void msg_drawChoiceCursor(Window *w) {
     }
 }
 
-void msg_drawHereIcon(Unk8004AB64 *o) {
+void msg_drawHereIcon(EvtObject *o) {
     POLY_FT4 *p;
     Unk80068790 *s;
     s32 pos;
@@ -1543,7 +1543,7 @@ void msg_drawPlayerBubble(void) {
 }
 
 void msg_updatePlayerBubble(void) {
-    Unk8004AB64 *o;
+    EvtObject *o;
 
     if (g_bubbleRequestPrev == 0 && g_bubbleRequest != 0) {
         g_bubbleScript = g_bubbleVariant ? D_8006E6D8 : D_8006E690;
@@ -1663,7 +1663,7 @@ void msg_setAtePrompt(s32 a) {
     }
 }
 
-s32 evt_modelOpField(Unk8004AB64 *o, s32 op) {
+s32 evt_modelOpField(EvtObject *o, s32 op) {
     s32 a;
     s32 b;
     u32 *p;
@@ -1713,7 +1713,7 @@ s32 evt_modelOpField(Unk8004AB64 *o, s32 op) {
     return 0;
 }
 
-s32 evt_modelOpBattle(Unk8004AB64 *o, s32 op) {
+s32 evt_modelOpBattle(EvtObject *o, s32 op) {
     s32 a;
     s32 b;
     u32 *p;
@@ -1762,7 +1762,7 @@ s32 evt_modelOpBattle(Unk8004AB64 *o, s32 op) {
     return 0;
 }
 
-s32 evt_modelOpWorld(Unk8004AB64 *o, s32 op) {
+s32 evt_modelOpWorld(EvtObject *o, s32 op) {
     s32 a;
     s32 b;
     u32 *p;

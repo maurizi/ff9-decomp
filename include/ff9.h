@@ -1085,8 +1085,8 @@ typedef struct {
 
 extern s32 D_80077DCC;
 extern u8 g_menuScreenCur;
-extern struct Unk8004AB64 *D_8007AEB8; /* object at the world map's mark 0x40 */
-extern struct Unk8004AB64 *D_8007AEBC; /* object at the world map's mark 0x80 */
+extern struct EvtObject *D_8007AEB8; /* object at the world map's mark 0x40 */
+extern struct EvtObject *D_8007AEBC; /* object at the world map's mark 0x80 */
 extern s32 g_msgKeepWindows;
 extern s32 D_80080A24;
 extern s32 *D_80066764;
@@ -1110,7 +1110,7 @@ typedef struct {
 } ActorPos;
 
 /* field / world object (actor) */
-typedef struct Unk8004AB64 {
+typedef struct EvtObject {
     u8 *unk0; /* script pc */
     u8 unk4;
     u8 unk5; /* kind: 4 = ... */
@@ -1195,14 +1195,14 @@ typedef struct Unk8004AB64 {
     u8 unk93;
     s16 unk94;
     s16 unk96;
-    struct Unk8004AB64 *unk98; /* object collided with (evt_movePlayer) */
+    struct EvtObject *unk98; /* object collided with (evt_movePlayer) */
     s32 unk9C;
-    struct Unk8004AB64 *unkA0;
+    struct EvtObject *unkA0;
     u16 unkA4;
     u16 unkA6;
     u16 unkA8;
     s16 unkAA;
-} Unk8004AB64;
+} EvtObject;
 
 /* model header as seen by evt_relaxLookAt (BtlUnit9C in ovl_0b) */
 typedef struct {
@@ -1212,30 +1212,30 @@ typedef struct {
     s16 unk4A;
     s16 unk4C;
 } Unk80047B90;
-void evt_onAnimLimit(Unk8004AB64 *);
-s32 func_80047AB8(Unk8004AB64 *, s32);
-void evt_relaxLookAt(Unk8004AB64 *, Unk80047B90 *);
+void evt_onAnimLimit(EvtObject *);
+s32 func_80047AB8(EvtObject *, s32);
+void evt_relaxLookAt(EvtObject *, Unk80047B90 *);
 s32 math_distSq2(s32, s32, s32); /* distance */
 s32 math_isqrt(s32);
 s32 math_dist2(s32, s32, s32);
 
-typedef struct Unk8007AECCNode {
-    Unk8004AB64 *unk0; /* key = start of the block in unk50 */
+typedef struct EvtAllocNode {
+    EvtObject *unk0; /* key = start of the block in unk50 */
     u32 *unk4; /* end of the block */
-    struct Unk8007AECCNode *unk8; /* next */
-} Unk8007AECCNode;
+    struct EvtAllocNode *unk8; /* next */
+} EvtAllocNode;
 
 typedef struct Unk16D8 {
     struct Unk16D8 *unk0; /* next */
-    Unk8004AB64 *unk4;
+    EvtObject *unk4;
 } Unk16D8;
 
 typedef struct {
     u8 unk0[0x50]; /* cleared by evt_init */
     u32 unk50[0x500]; /* object pool (evt_allocObject) */
-    Unk8007AECCNode unk1450[32];
-    Unk8007AECCNode *unk15D0; /* active list */
-    Unk8007AECCNode *unk15D4; /* free list */
+    EvtAllocNode unk1450[32];
+    EvtAllocNode *unk15D0; /* active list */
+    EvtAllocNode *unk15D4; /* free list */
     Unk16D8 unk15D8[32];
     Unk16D8 *unk16D8;
     Unk16D8 *unk16DC; /* tail */
@@ -1255,10 +1255,10 @@ typedef struct {
     Unk16D8 *unk16FC;
     s16 unk1700;
     u8 pad1702[0x17C8 - 0x1702];
-} Unk8007AECC; /* 0x17C8 */
-extern Unk8007AECC *g_evtState;
-extern Unk8007AECC g_evtStateData; /* the script system state g_evtState points at */
-extern Unk8007AECC g_evtSavedState; /* saved copy, restored when returning to the same field */
+} EvtState; /* 0x17C8 */
+extern EvtState *g_evtState;
+extern EvtState g_evtStateData; /* the script system state g_evtState points at */
+extern EvtState g_evtSavedState; /* saved copy, restored when returning to the same field */
 extern Unk4 D_80011A44; /* rodata */
 extern s32 D_8007B6FC;
 extern s32 g_evtCamera;
@@ -1266,7 +1266,7 @@ extern s32 g_evtEncounterPending;
 void msg_resetPlayerBubble(void);
 
 /* Inlined copy of evt_getObject (find object by id). */
-static inline Unk8004AB64 *evt_getObject_inline(s32 id) {
+static inline EvtObject *evt_getObject_inline(s32 id) {
     Unk16D8 *n;
     for (n = g_evtState->unk16D8; n != NULL; n = n->unk0) {
         if (n->unk4->unk7 == id) {
@@ -1567,7 +1567,6 @@ typedef struct {
 } Unk80073940; /* 0x24-byte entries */
 extern Unk80073940 g_padBuf[];
 
-typedef Unk8004AB64 Unk800367D0; /* evt_createObject creates a script object */
 
 typedef struct {
     u8 pad0[0x12];
@@ -1587,7 +1586,7 @@ void db_quit(void);
 void *db_lookupRegistered(s32, s32, s32); /* mode 4: address, 5: size */
 void win_drawBoxEx(RECT *, s32, s32, s32);
 void menu_start(void);
-Unk8004AB64 *evt_createObject(s32, s32, s32, s32);
+EvtObject *evt_createObject(s32, s32, s32, s32);
 s32 CdSyncCallback(void (*)(u8, u8 *));
 void CdFlush(void);
 
@@ -2336,7 +2335,7 @@ typedef struct {
 } Unk8; /* 8 bytes, byte-aligned (copied with lwl/lwr) */
 extern Unk8 g_cdResult; /* last CD status/result bytes */
 
-s32 evt_callObjectFunc(Unk8004AB64 *, s32, s32, s32);
+s32 evt_callObjectFunc(EvtObject *, s32, s32, s32);
 extern s32 D_8007AE34;
 extern CdlATV g_akaoCdAtv;
 void akao_markSeqDirty(); /* (Unk80080A10 *, AkaoChannel *) */
@@ -2391,7 +2390,7 @@ void help_update(void);
 
 extern s32 g_evtArgFlags;
 extern s32 g_evtArgRead;
-extern struct Unk8004AB64 *g_evtCurObj; /* current script object */
+extern struct EvtObject *g_evtCurObj; /* current script object */
 void evt_evalExpr(void);
 s32 evt_popResult(void);
 void evt_assignResult(s32);
@@ -2404,16 +2403,16 @@ extern s32 g_evtPlayerMoved; /* the player moved this frame */
 extern s32 g_evtPushFrames;
 extern s32 g_evtPushable;
 extern u8 g_worldPlayerStepped; /* world map (ovl_0c) data */
-void evt_movePlayer(Unk8004AB64 *);
-void evt_updateLookAt(Unk8004AB64 *);
-void evt_checkPlayerAction(Unk8004AB64 *);
+void evt_movePlayer(EvtObject *);
+void evt_updateLookAt(EvtObject *);
+void evt_checkPlayerAction(EvtObject *);
 void evt_updateBattleObjects(void);
-void evt_stepAnim(Unk8004AB64 *);
-void msg_drawHereIcon(Unk8004AB64 *);
+void evt_stepAnim(EvtObject *);
+void msg_drawHereIcon(EvtObject *);
 s32 evt_runScripts(Unk16D8 *);
 s32 math_length3(s32, s32, s32);
-s32 evt_updateActorWalkmesh(Unk8004AB64 *);
-s32 evt_rollEncounter(Unk8004AB64 *);
+s32 evt_updateActorWalkmesh(EvtObject *);
+s32 evt_rollEncounter(EvtObject *);
 #if !defined(OVL_0A_H) /* field overlay functions; ovl_0a has the definitions */
 s32 fld_enableRain(s32, s32, s32);
 /* field walkmesh actor entry returned by ovl_0a bgi_getActor (ovl_0a calls it BgiActor) */
@@ -2429,8 +2428,8 @@ s32 bgi_getActorRadius(s32, s32 *);
 s32 bgi_revertActor(s32);
 #endif
 Window *msg_getWindow(s32);
-void evt_followBalloon(Unk8004AB64 *, Window *);
-s32 evt_angleToObject(Unk8004AB64 *, Unk8004AB64 *, s32);
+void evt_followBalloon(EvtObject *, Window *);
+s32 evt_angleToObject(EvtObject *, EvtObject *, s32);
 void func_800530A8(SVECTOR *, s32, s32);
 void msg_updatePlayerBubble(void);
 void msg_drawAtePrompt(void);
@@ -2479,7 +2478,7 @@ typedef struct {
 
 extern CdRequest g_cdRetryRequest;
 extern CdRequest g_cdRestartRequest;
-extern Unk8004AB64 *g_evtActor;
+extern EvtObject *g_evtActor;
 
 /* Same as evt_getArg8_inline, but written as `>>= (g_evtArgRead = 1)` (srav). */
 static inline s32 evt_getArg8_inline2(void) {
@@ -2495,7 +2494,7 @@ static inline s32 evt_getArg8_inline2(void) {
 }
 
 /* Inlined copy of evt_resolveObjectId (resolve a script object reference). */
-static inline Unk8004AB64 *evt_resolveObjectId_inline(s32 id) {
+static inline EvtObject *evt_resolveObjectId_inline(s32 id) {
     if (id == 0xFF) {
         return g_evtActor;
     }
@@ -2972,9 +2971,9 @@ static inline u8 *ui_buildSpriteDef_inline(s32 x, s32 y, u32 *ot, Unk800686E8 *d
     return (u8 *)s;
 }
 /* Inlined copy of func_8004B2F4 (move an object's node to the free list). */
-static inline void func_8004B2F4_inline(Unk8004AB64 *key) {
-    Unk8007AECCNode *n;
-    Unk8007AECCNode *prev = NULL;
+static inline void func_8004B2F4_inline(EvtObject *key) {
+    EvtAllocNode *n;
+    EvtAllocNode *prev = NULL;
     for (n = g_evtState->unk15D0; n != NULL; n = n->unk8) {
         if (n->unk0 == key) {
             break;
@@ -3166,8 +3165,8 @@ extern s32 g_evtCameraChanged;
 extern u8 D_8006E6D8[];
 extern u8 D_8006E690[];
 extern u8 D_8006E6F0[];
-Unk8004AB64 *evt_getObject(s32);
-void evt_setDrawPosAtObject(Unk8004AB64 *, s32, s32);
+EvtObject *evt_getObject(s32);
+void evt_setDrawPosAtObject(EvtObject *, s32, s32);
 void msg_drawPlayerBubble(void);
 /* zero the first three bytes (r, g, b) of a 4-byte colour */
 static inline void fade_init_clear3(u8 *p) {
@@ -3698,7 +3697,7 @@ void msg_drawChoiceCursor(Window *);
 
 WinLayout *msg_getLayout(s32, s32 *, s32 *, s32 *);
 extern WinLayout g_msgLayout;
-void evt_placeBalloon(Unk8004AB64 *, WinLayout *, s32, s32);
+void evt_placeBalloon(EvtObject *, WinLayout *, s32, s32);
 extern s32 D_8007AE5C;
 extern s32 D_8007AE60;
 extern s32 D_8007AE64;
@@ -3799,24 +3798,24 @@ s32 fld_queueModelBundle(s32); /* uid; queues the actor's model */
 
 extern u8 *g_evtInstrStart;
 extern s32 D_8007AE04;
-Unk8004AB64 *evt_getObjectArg(void);
-void evt_returnFromFunc(Unk8004AB64 *);
-s32 evt_modelOpField(Unk8004AB64 *, s32);
-s32 evt_modelOpBattle(Unk8004AB64 *, s32);
-s32 evt_modelOpWorld(Unk8004AB64 *, s32);
+EvtObject *evt_getObjectArg(void);
+void evt_returnFromFunc(EvtObject *);
+s32 evt_modelOpField(EvtObject *, s32);
+s32 evt_modelOpBattle(EvtObject *, s32);
+s32 evt_modelOpWorld(EvtObject *, s32);
 
 extern s32 g_evtPosSetThisFrame;
-extern Unk8004AB64 *g_evtLookTarget;
+extern EvtObject *g_evtLookTarget;
 extern s32 D_8007AE6C;
 extern s32 g_msgSyncTag;
 extern s32 g_msgLine; /* message counter */
 extern u8 D_8006E688[]; /* text speed per config setting */
-void evt_turnObject(Unk8004AB64 *, s32, s32, s32);
+void evt_turnObject(EvtObject *, s32, s32, s32);
 s32 math_atan2(s32, s32);
 void msg_setNumber(u32, s32);
 void msg_setChoiceMask(s32, s32);
 void msg_keepWindowsOnInit(void);
-WinLayout *evt_getMsgLayout(Unk8004AB64 *, s32, s32);
+WinLayout *evt_getMsgLayout(EvtObject *, s32, s32);
 void msg_open(s32, s32, WinLayout *, s32);
 
 static inline s32 evt_getArg16_inline(void) {
@@ -3825,7 +3824,7 @@ static inline s32 evt_getArg16_inline(void) {
         evt_evalExpr();
         r = evt_popResult();
     } else {
-        Unk8004AB64 *pp = g_evtCurObj;
+        EvtObject *pp = g_evtCurObj;
         r = *pp->unk0++;
         r |= *pp->unk0++ << 8;
         r = (s16)r;
@@ -3863,7 +3862,7 @@ s32 evt_moveObjectTo(s32, s32, s32, s32);
 void func_8004B9B8(Unk8004B9B8 *);
 
 /* Inlined helper: start the animation set up in unk60/unk61/unk62. */
-static inline void evt_execInstr_anim(Unk8004AB64 *p, s32 anim) {
+static inline void evt_execInstr_anim(EvtObject *p, s32 anim) {
     if ((p->unk62 & 0x80) && (p->unkF & 0x80)) {
         func_8004B9B8((Unk8004B9B8 *)p);
     }
@@ -3876,7 +3875,7 @@ static inline void evt_execInstr_anim(Unk8004AB64 *p, s32 anim) {
     p->unk5D = p->unk69;
 }
 
-/* event region (quad) object, same header as Unk8004AB64 */
+/* event region (quad) object, same header as EvtObject */
 typedef struct {
     s16 unk0; /* x */
     s16 unk2; /* z */
@@ -3917,7 +3916,7 @@ typedef struct Unk8004AFF0 {
 } Unk8004AFF0;
 
 /* Inlined copy of evt_getObjectModelData. */
-static inline Unk8004AFF0 *evt_getObjectModelData_inline(Unk8004AB64 *p) {
+static inline Unk8004AFF0 *evt_getObjectModelData_inline(EvtObject *p) {
     Unk8E0 *q;
 
     if (p != NULL) {
@@ -3947,8 +3946,8 @@ void evt_setNextBattle(u16);
 void evt_setCardOpponent();
 void msg_startHereIcon(s32);
 void func_80052D0C(u8 **);
-Unk16D8 *evt_deleteObject(Unk8004AB64 *);
-Unk8004AB64 *evt_allocObject(s32);
+Unk16D8 *evt_deleteObject(EvtObject *);
+EvtObject *evt_allocObject(s32);
 void evt_onAnimEnd(Unk8004B9B8 *);
 
 extern s32 D_8007AE2C;
@@ -3966,7 +3965,7 @@ void chr_clearRecruited(u32);
 /* Inlined copy of evt_getArg24 (24-bit script argument). */
 static inline s32 evt_getArg24_inline(void) {
     s32 v;
-    Unk8004AB64 *pp;
+    EvtObject *pp;
 
     if (g_evtArgFlags & 1) {
         evt_evalExpr();
@@ -4037,15 +4036,15 @@ static inline void func_8004B3A8_inline(s32 a, s32 b) {
 }
 
 static inline void evt_createRegion_inline(s32 a, s32 b) {
-    Unk800367D0 *p = evt_createObject(a, b, 0x38, 0x10);
+    EvtObject *p = evt_createObject(a, b, 0x38, 0x10);
     p->unk5 = 3;
     p->unkF = 1;
 }
 
 static inline void evt_execInstr_newactor(s32 uid, s32 b) {
-    Unk8004AB64 *p;
+    EvtObject *p;
 
-    p = (Unk8004AB64 *)evt_createObject(uid, b, 0xAC, 0x10);
+    p = (EvtObject *)evt_createObject(uid, b, 0xAC, 0x10);
     p->unk3C = 0x10;
     p->unk3D = 0x10;
     p->unk34 = 0xFFFF;
@@ -4076,9 +4075,9 @@ static inline void evt_execInstr_newactor(s32 uid, s32 b) {
 }
 
 /* Inlined helper: give the window opened by obj the focus (b = window flags). */
-static inline void evt_execInstr_window(Unk8004AB64 *obj, s32 b, s32 c) {
+static inline void evt_execInstr_window(EvtObject *obj, s32 b, s32 c) {
     Unk16D8 *n;
-    Unk8004AB64 *o;
+    EvtObject *o;
 
     if ((b & 0xA0) == 0x80 && obj->unk5 == 4) {
         for (n = g_evtState->unk16D8; n != NULL; n = n->unk0) {
@@ -4225,7 +4224,7 @@ static inline s32 evt_exprSpecial_chr(s32 i) {
 
 /* evt_getSysVar (script system variables) */
 extern s32 g_evtTalkAngle;
-void *evt_findNearestObject(Unk8004AB64 *, s32, s32 *); /* nearest object of a kind */
+void *evt_findNearestObject(EvtObject *, s32, s32 *); /* nearest object of a kind */
 extern s32 g_evtStepCount;
 s32 fldbg_getCamera(u8 *);
 s32 btlseq_isBusy(void);
@@ -4280,7 +4279,7 @@ static inline u16 evt_rollEncounter_pick(void) {
 #endif
 
 /* start an object's idle animation (evt_updateIdleTimer) */
-static inline void evt_updateIdleTimer_idle(Unk8004AB64 *q) {
+static inline void evt_updateIdleTimer_idle(EvtObject *q) {
     q->unk60 = 0;
     q->unk61 = 0xFF;
     evt_execInstr_anim(q, q->unk74);
@@ -4352,7 +4351,7 @@ extern s32 D_80080A74;
 /* Functions called before (or without) a declaration in scope (tools/decl_check.py --protos) */
 /* hand-written asm (no C definition) */
 void func_8005309C(s16 *, s32, s32, s32);
-s32 evt_isInRegion(Unk8004AB64 *, s32, s32); /* is (x, z) inside the object's region */
+s32 evt_isInRegion(EvtObject *, s32, s32); /* is (x, z) inside the object's region */
 void pen_endSmall(void);
 void func_80064C24(s32);
 /* ovl_0a / ovl_0c menuMain_setCursor(u8); unprototyped: the menu screen passes an int unconverted */
@@ -4363,7 +4362,7 @@ void akao_swap(u32 *a, u32 *b, u32 n);
 s32 cd_findFile(char *name);
 void config_apply(void);
 void ending_main(void); /* ovl_15 */
-s32 evt_createModel(Unk8004AB64 *a);
+s32 evt_createModel(EvtObject *a);
 s32 evt_getArg16(void);
 s32 evt_getArg8(void);
 s32 evt_isControlEnabled(void);

@@ -304,7 +304,7 @@ s32 fld_collectVisibleModels(FieldObjSlot **arg0) {
     u32 sum;
     u32 k;
     ModelObj *o;
-    Unk8004AB64 *a;
+    EvtObject *a;
     u16 *p;
 
     n = 0;
@@ -443,9 +443,9 @@ void fld_drawModels(void) {
         c = list[i];
         if (c != NULL) {
             m = c->model;
-            rot.vx = ((Unk8004AB64 *)m->boneMatrices)->pos.vx;
-            rot.vy = ((Unk8004AB64 *)m->boneMatrices)->pos.vy;
-            rot.vz = ((Unk8004AB64 *)m->boneMatrices)->pos.vz;
+            rot.vx = ((EvtObject *)m->boneMatrices)->pos.vx;
+            rot.vy = ((EvtObject *)m->boneMatrices)->pos.vy;
+            rot.vz = ((EvtObject *)m->boneMatrices)->pos.vz;
             gte_ldv0(&rot);
             gte_rtps();
             gte_stsxy(&sxy);
@@ -1069,9 +1069,9 @@ void fld_calcShadowMatrix(FieldObjEnt *arg0, FieldObjSlot *arg1, MATRIX *arg2) {
         arg2->m[0][2] = sn * arg0->scaleZ >> 12;
         arg2->m[1][2] = 0;
         arg2->m[2][2] = c * arg0->scaleZ >> 12;
-        arg2->t[0] = ((c * arg0->offsetX + sn * arg0->offsetZ) >> 12) + ((Unk8004AB64 *)arg1->actor)->pos.vx;
-        arg2->t[1] = ((Unk8004AB64 *)arg1->actor)->pos.vy;
-        arg2->t[2] = ((-sn * arg0->offsetX + c * arg0->offsetZ) >> 12) + ((Unk8004AB64 *)arg1->actor)->pos.vz;
+        arg2->t[0] = ((c * arg0->offsetX + sn * arg0->offsetZ) >> 12) + ((EvtObject *)arg1->actor)->pos.vx;
+        arg2->t[1] = ((EvtObject *)arg1->actor)->pos.vy;
+        arg2->t[2] = ((-sn * arg0->offsetX + c * arg0->offsetZ) >> 12) + ((EvtObject *)arg1->actor)->pos.vz;
     } else {
         /* word-wise copy of the joint matrix */
         d = (s32 *)&m;
@@ -1117,7 +1117,7 @@ void fld_calcShadowMatrix(FieldObjEnt *arg0, FieldObjSlot *arg1, MATRIX *arg2) {
         arg2->m[1][2] = fwd.vy * arg0->scaleZ >> 12;
         arg2->m[2][2] = fwd.vz * arg0->scaleZ >> 12;
         arg2->t[0] = ((side.vx * arg0->offsetX + fwd.vx * arg0->offsetZ) >> 12) + ((MATRIX *)arg1->model->boneMatrices)[1].t[0];
-        arg2->t[1] = ((side.vy * arg0->offsetX + fwd.vy * arg0->offsetZ) >> 12) + ((Unk8004AB64 *)arg1->actor)->pos.vy;
+        arg2->t[1] = ((side.vy * arg0->offsetX + fwd.vy * arg0->offsetZ) >> 12) + ((EvtObject *)arg1->actor)->pos.vy;
         arg2->t[2] = ((side.vz * arg0->offsetX + fwd.vz * arg0->offsetZ) >> 12) + ((MATRIX *)arg1->model->boneMatrices)[1].t[2];
     }
 }
@@ -1412,7 +1412,7 @@ void fld_startEncounter(void) {
 }
 
 void fld_updateEncounter(void) {
-    Unk8004AB64 *a;
+    EvtObject *a;
     SVECTOR v;
     RECT r;
     PreloadEntry *e;

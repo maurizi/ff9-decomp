@@ -457,9 +457,9 @@ typedef struct {
     s32 flags; /* flags: 1 = loaded */
     s32 modelId; /* file id */
     ModelObj *obj;
-    Unk8004AB64 *actor;
+    EvtObject *actor;
 } WmObjSlot;
-s32 evt_getObjectChrIndex(Unk8004AB64 *);
+s32 evt_getObjectChrIndex(EvtObject *);
 void wm_drawMesh(ModelObj *, u8);
 void wm_projectMesh(ModelObj *, u8);
 void wm_applyScale(ModelObj *);
@@ -707,7 +707,7 @@ void wm_updateActors(void);
 s32 w_memorymanHeapAlloc(s32);
 void wm_setWeather(s32, s32, s32);
 s32 wm_getTerrainHeightOffset(s32, u32, u8 *);
-void wm_updateActorHeight(Unk8004AB64 *);
+void wm_updateActorHeight(EvtObject *);
 void wm_modelVerts(s32);
 void wm_modelVertsFlat(s32);
 s32 wm_modelFaces(s32, s32, s32);
@@ -774,7 +774,7 @@ s32 wm_freeWorldData(void);
 s32 wm_afterLoadShadowTexture(void);
 void wm_load();
 void wm_exit(void);
-u32 wm_loadActorModel(s32, Unk8004AB64 *);
+u32 wm_loadActorModel(s32, EvtObject *);
 void wm_clearOT(void);
 void wm_endFrame(void);
 void wm_startBattleTransition(void);
@@ -844,7 +844,7 @@ extern MATRIX g_worldMapLightMatrix;
 extern u8 g_worldMapLoaded;
 extern u8 s_menuMainText[]; /* text */
 extern WmActorType g_worldActorTypeInfo[];
-extern Unk8004AB64 *g_worldPlayer; /* player actor */
+extern EvtObject *g_worldPlayer; /* player actor */
 extern WmMoveMode *g_worldMoveModeInfo;
 extern s32 g_worldWidth; /* map width (wraps) */
 extern s32 g_worldDepth; /* map height (wraps) */
@@ -1134,14 +1134,14 @@ s32 wm_getGroundHeight(VECTOR *, u32 *, s32 *, WmPolyCache *, u16 *);
 u8 wm_tryStep(VECTOR *, s32, s32, s32, u32 *, s32 *);
 u8 wm_findGetoffPos(ActorPos *);
 extern WmPolyCache g_worldPolyCache[11];
-extern Unk8004AB64 g_worldDummyActor;
+extern EvtObject g_worldDummyActor;
 extern u8 g_worldFlyTurning;
 extern u8 g_worldCameraTurning;
 extern u8 g_worldPlayerPosChanged;
 extern s32 g_worldCeilingGap;
-extern Unk8004AB64 *g_worldMountActor;
+extern EvtObject *g_worldMountActor;
 extern u8 g_worldCameraFastRise;
-extern Unk8004AB64 *D_800CE270;
+extern EvtObject *D_800CE270;
 extern u8 g_worldFastFly;
 extern s32 g_worldPlayerClimbSpeed;
 extern s32 g_worldMountPaletteOverride;
@@ -1149,9 +1149,9 @@ extern s32 D_800CE284;
 extern u8 g_worldCameraTurnedByHand;
 extern s32 g_worldPlayerSpeed;
 extern u16 g_worldPlayerHeading;
-extern Unk8004AB64 *g_worldVehicleActor;
+extern EvtObject *g_worldVehicleActor;
 extern s32 g_worldCameraTurnGain;
-extern Unk8004AB64 *D_800CE3D8;
+extern EvtObject *D_800CE3D8;
 extern s32 g_worldPlayerTurn;
 
 extern u8 D_800CCE49;
@@ -1245,7 +1245,7 @@ extern u8 D_80077E51;
 extern u8 *g_menuHelpText;
 s32 text_measureStyle(u8 *, s32);
 extern s32 g_menuScreenFrame; /* overlaps Unk80077E50.unk4 in ff9.h */
-Unk8004AB64 *evt_getPlayer(void);
+EvtObject *evt_getPlayer(void);
 void evt_resetIdleTimer(s32);
 
 /* run on the scratchpad stack (top of the 1 KB scratchpad) */
@@ -1575,8 +1575,8 @@ void wm_cameraAutoTurnVehicle(void);
 void wm_cameraAutoTurnWalk(void);
 void wm_cameraSmooth(void);
 void wm_chunkListCompact(void);
-s32 wm_drawActorModel(Unk8004AB64 *arg0, SVECTOR *arg1, s32 unused);
-void wm_drawActorShadow(Unk8004AB64 *arg0, SVECTOR *arg1, s32 arg2);
+s32 wm_drawActorModel(EvtObject *arg0, SVECTOR *arg1, s32 unused);
+void wm_drawActorShadow(EvtObject *arg0, SVECTOR *arg1, s32 arg2);
 void wm_drawBlock(u8 *arg0, s32 arg1, s32 arg2);
 void wm_drawBlockFx(u8 arg0);
 void wm_drawBlocks(void);
@@ -1619,7 +1619,7 @@ void wm_requestChunks(s32 arg0);
 void wm_resetMapObj(void);
 void wm_runEvents(void);
 void wm_saveDepTable(void);
-void wm_setActorFog(Unk8004AB64 *arg0, s32 arg1);
+void wm_setActorFog(EvtObject *arg0, s32 arg1);
 void wm_setMusicVolumeFade(s32 arg0, s32 arg1);
 void wm_setupMapObj(void);
 void wm_setupWorldData(void);

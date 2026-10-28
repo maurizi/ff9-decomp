@@ -14,7 +14,7 @@ void evt_setCardOpponent(a)
     g_gameState->gameData->unk8B2 = a;
 }
 
-s32 evt_createModel(Unk8004AB64 *a) {
+s32 evt_createModel(EvtObject *a) {
     return g_gameState->gameData->unk838(a->unk34 | DB_MODEL, a);
 }
 
@@ -25,7 +25,7 @@ s32 evt_getAnimFrameCount(a, b)
     return ((u16 *)db_lookupRegistered(4, b | DB_ANIM, 0))[1];
 }
 
-s32 evt_updateActorWalkmesh(Unk8004AB64 *p) {
+s32 evt_updateActorWalkmesh(EvtObject *p) {
     if (g_gameState->mode == 3) {
         goto ret0;
     }

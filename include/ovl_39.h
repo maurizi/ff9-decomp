@@ -525,7 +525,7 @@ typedef union { s32 w; u16 h; } Crc16;
 #define SE_BUZZER 0x66
 #define SE_CANCEL 0x65
 #endif
-Unk8004AB64 *evt_getPlayer(void);
+EvtObject *evt_getPlayer(void);
 u8 fld_getDiscChangeMask(void); /* other overlay */
 u8 fld_getDiscChangeDisc(void); /* other overlay */
 void config_apply(void);

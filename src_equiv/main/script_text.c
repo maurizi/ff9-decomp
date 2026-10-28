@@ -44,9 +44,9 @@ extern u8 D_8006E700[];          /* "divide by zero"-style message printed by th
 extern u16 D_8006EAD0[];         /* atan table, 0x401 entries, 0 .. 0x200 (45 degrees) */
 
 /* ---- callees without prototypes in the headers ---- */
-s32 evt_getObjectProp(Unk8004AB64 *o, s32 prop);
+s32 evt_getObjectProp(EvtObject *o, s32 prop);
 u16 func_8004B404(s32 arg0);
-Unk8004AB64 *evt_resolveObjectId(s32 id);
+EvtObject *evt_resolveObjectId(s32 id);
 void evt_setObjectProp(Unk800219D8 *arg0, s32 arg1, s32 arg2);
 void func_8004B4A8(s32 i, s16 v);
 s32 evt_exprSpecial(s32 op);
@@ -705,7 +705,7 @@ s32 evt_popValue(void) {
             if (tag & 1) {
                 return (s32)(t << 6) >> 6;
             }
-            return evt_getObjectProp((Unk8004AB64 *)g_evtExprObj, (s32)(t << 6) >> 6);
+            return evt_getObjectProp((EvtObject *)g_evtExprObj, (s32)(t << 6) >> 6);
         }
         if (tag & 1) {
             return func_8004B404(t & 0xFF);
@@ -803,8 +803,8 @@ void evt_runExpr(void) {
     s32 v = 0;
     s32 t;
     s32 op;
-    Unk8004AB64 *o;
-    Unk8004AB64 *q;
+    EvtObject *o;
+    EvtObject *q;
 
     r_sp = base;
     for (;;) {
@@ -1004,7 +1004,7 @@ void evt_runExpr(void) {
         case 0x60: /* angle / distance from the current object to the object at address v */
             /* v comes from opcode 0x5F (an object pointer pushed as a 26-bit immediate); see src_equiv.h. */
         case 0x61:
-            q = (Unk8004AB64 *)SCRIPT_PTR_RESTORE(evt_popValue());
+            q = (EvtObject *)SCRIPT_PTR_RESTORE(evt_popValue());
             o = g_evtActor;
             if (op == 0x60) {
                 v = (s32)((u32)math_atan2(q->pos.vx - o->pos.vx, q->pos.vz - o->pos.vz) << 20) >> 24;
@@ -1102,7 +1102,7 @@ s32 evt_runScripts(Unk16D8 *n) {
     u32 save_args = r_args;
     u8 *save_ip = r_ip;
     s32 *save_sp = r_sp;
-    Unk8004AB64 *o;
+    EvtObject *o;
     s32 st;
     s32 op;
     s32 v;
@@ -1206,7 +1206,7 @@ s32 evt_runScripts(Unk16D8 *n) {
                 k = r_ip[1];
                 r_ip += 2;
                 if (k != 0xFF) {
-                    Unk8004AB64 *t = evt_resolveObjectId(k);
+                    EvtObject *t = evt_resolveObjectId(k);
                     if (t != o) {
                         evt_deleteObject(t);
                         break;
@@ -1326,7 +1326,7 @@ void evt_assignResult(s32 v) {
 void evt_evalExpr(void) {
     u8 *save_ip = r_ip;
     s32 *save_sp = r_sp;
-    Unk8004AB64 *x = g_evtCurObj;
+    EvtObject *x = g_evtCurObj;
 
     r_ip = x->unk0;
     evt_runExpr();
@@ -1482,7 +1482,7 @@ void func_8005309C(s16 *out, s32 rx, s32 ry, s32 len) {
  * For each edge the GTE OP gives (edge.z * (x - v.x) - edge.x * (z - v.z)); inside means all >= 0 or all <= 0.
  * Returns 1 if inside (on an edge counts). The original computes the cross products with the GTE (OP), which
  * leaves R11, R12, R22, R23 and R33 of the rotation matrix overwritten; this version doesn't touch the GTE. */
-s32 evt_isInRegion(Unk8004AB64 *obj, s32 x, s32 z) {
+s32 evt_isInRegion(EvtObject *obj, s32 x, s32 z) {
     u8 *p = (u8 *)obj;
     s32 n = *(s32 *)(p + 0x14);
     u32 *v = (u32 *)(p + 0x18);
@@ -1512,7 +1512,7 @@ s32 evt_isInRegion(Unk8004AB64 *obj, s32 x, s32 z) {
 }
 
 /* Signed difference (-0x800..0x7FF) between angle `ang` and the direction from a to b. */
-s32 evt_angleToObject(Unk8004AB64 *a, Unk8004AB64 *b, s32 ang) {
+s32 evt_angleToObject(EvtObject *a, EvtObject *b, s32 ang) {
     s32 d = math_atan2(b->pos.vx - a->pos.vx, b->pos.vz - a->pos.vz);
 
     return (s32)((u32)(ang - d) << 20) >> 20;

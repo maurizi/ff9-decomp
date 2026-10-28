@@ -1833,7 +1833,7 @@ void menuSave_pageDown(MenuList *l, s32 pad) {
 
 void menuSave_buildHeader(SaveBuf *buf) {
     SaveHeader *h;
-    Unk8004AB64 *o;
+    EvtObject *o;
     s32 t;
     s32 i;
     u8 n;

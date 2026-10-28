@@ -607,7 +607,7 @@ void wm_setMountPalette(void) {
     u16 *pal;
     u16 *dst;
     Unk16D8 *n;
-    Unk8004AB64 *a;
+    EvtObject *a;
     s32 c;
     s32 i;
     s32 j;
@@ -674,7 +674,7 @@ void wm_setMountPalette(void) {
 /* find the world map actors (vehicles) and sync the camera with the player */
 void wm_findVehicles(void) {
     Unk16D8 *n;
-    Unk8004AB64 *a;
+    EvtObject *a;
 
     for (n = evt_getObjectList(); n != NULL; n = n->unk0) {
         if (n->unk4->unk5 == 4) {
@@ -729,7 +729,7 @@ void wm_drawActors(void) {
     s32 d;
     s32 ang;
     Unk16D8 *e;
-    Unk8004AB64 *act;
+    EvtObject *act;
     u8 f;
 
     VectorNormalS((VECTOR *)g_worldCameraDir, &n);
@@ -786,7 +786,7 @@ void wm_drawActors(void) {
     SetFarColor(0, 0, 0);
 }
 
-void wm_setActorFog(Unk8004AB64 *arg0, s32 arg1) {
+void wm_setActorFog(EvtObject *arg0, s32 arg1) {
     s16 col[3];
     s32 t;
     s32 f;
@@ -840,7 +840,7 @@ void wm_setActorFog(Unk8004AB64 *arg0, s32 arg1) {
     }
 }
 
-s32 wm_drawActorModel(Unk8004AB64 *arg0, SVECTOR *arg1, s32 unused) { /* its caller passes this, unused */
+s32 wm_drawActorModel(EvtObject *arg0, SVECTOR *arg1, s32 unused) { /* its caller passes this, unused */
     WmActorType *c;
     WmObjSlot *s;
     ModelObj *m;
@@ -900,7 +900,7 @@ s32 wm_drawActorModel(Unk8004AB64 *arg0, SVECTOR *arg1, s32 unused) { /* its cal
 }
 
 /* shadow under world map object arg0 at arg1; arg2 = distance from the camera */
-void wm_drawActorShadow(Unk8004AB64 *arg0, SVECTOR *arg1, s32 arg2) {
+void wm_drawActorShadow(EvtObject *arg0, SVECTOR *arg1, s32 arg2) {
     WmActorType *c;
     s32 k;
     s32 d;
@@ -989,7 +989,7 @@ void wm_updateActors(void) {
     s32 h;
     s32 cell;
     Unk16D8 *e;
-    Unk8004AB64 *act;
+    EvtObject *act;
     WmActorType *cc;
 
     g_worldPlayerStepped = 0;
@@ -1100,7 +1100,7 @@ void wm_updateActors(void) {
     }
 }
 
-void wm_updateActorHeight(Unk8004AB64 *arg0) {
+void wm_updateActorHeight(EvtObject *arg0) {
     u8 flat;
     s32 h;
     WmActorType *c;
@@ -1381,7 +1381,7 @@ u8 wm_tryStep(VECTOR *arg0, s32 arg1, s32 arg2, s32 arg3, u32 *arg4, s32 *arg5) 
 }
 
 u8 wm_findGetoffPos(ActorPos *out) {
-    Unk8004AB64 *act;
+    EvtObject *act;
     s32 d[2];
     ActorPos v;
     u32 cell;
@@ -2033,7 +2033,7 @@ void wm_cameraAutoTurnVehicle(void) {
 
 void wm_snapActorsToFloor(void) {
     Unk16D8 *n;
-    Unk8004AB64 *o;
+    EvtObject *o;
     WmActorType *c;
     ActorPos pos;
     s32 tmp;

@@ -232,7 +232,7 @@ typedef struct BgiActor {
     u8 padC[0x1C - 0xC];
     s32 radius;
     s32 radiusSq;
-    Unk8004AB64 *actor;
+    EvtObject *actor;
 } BgiActor;
 
 /* 0xC-byte entries at g_fieldBgCtxEntries */
@@ -799,7 +799,7 @@ typedef struct {
     u16 clut; /* clut */
 } WmTexInfo;
 
-/* Unk8004AB64 position (unk14) seen as an array, indexed by axis */
+/* EvtObject position (unk14) seen as an array, indexed by axis */
 typedef struct {
     u8 pad0[0x14];
     s32 unk14[3];
@@ -1322,7 +1322,7 @@ void gameover_main(s32); /* overlay 0x65 (loaded at 0x801F0000) */
 s32 mbg_setRgb24(s32); /* overlay loaded at 0x80198000 */
 s32 mbg_getFrame(void);
 void menu_update(void);
-Unk8004AB64 *evt_getPlayer(void);
+EvtObject *evt_getPlayer(void);
 u32 evt_getObjectChrIndex(void *); /* actor -> model slot */
 void game_updateWindows(void);
 void preload_reset(void);

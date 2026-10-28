@@ -3,7 +3,7 @@
 s32 evt_getSysVar(s32 op) {
     s32 r;
     u8 buf[8];
-    Unk8004AB64 *o;
+    EvtObject *o;
     s32 id;
 
     switch ((u32)op) {
@@ -126,7 +126,7 @@ s32 evt_getSysVar(s32 op) {
     return r;
 }
 
-Unk8004AB64 *evt_getObjectArg(void) {
+EvtObject *evt_getObjectArg(void) {
     return evt_resolveObjectId_inline(evt_getArg8_inline2());
 }
 
@@ -146,12 +146,12 @@ static inline u8 *evt_callObjectFunc_find(s32 idx, s32 key) {
     return n != 0 ? h + (*p + 2) : NULL;
 }
 
-void evt_returnFromFunc(Unk8004AB64 *o) {
+void evt_returnFromFunc(EvtObject *o) {
     s32 v;
     Unk16D8 *n;
     Unk16D8 *m;
-    Unk8004AB64 *t;
-    Unk8004AB64 *q;
+    EvtObject *t;
+    EvtObject *q;
     u32 *base;
     u32 *p;
 
@@ -208,7 +208,7 @@ void evt_returnFromFunc(Unk8004AB64 *o) {
     }
 }
 
-s32 evt_callObjectFunc(Unk8004AB64 *o, s32 lv, s32 key, s32 save) {
+s32 evt_callObjectFunc(EvtObject *o, s32 lv, s32 key, s32 save) {
     u8 *e = NULL;
     u32 *slot;
     u16 w;
@@ -243,14 +243,14 @@ s32 evt_callObjectFunc(Unk8004AB64 *o, s32 lv, s32 key, s32 save) {
     return e != NULL;
 }
 
-void *evt_findNearestObject(Unk8004AB64 *o, s32 flags, s32 *dist) {
-    Unk8004AB64 *best = NULL;
+void *evt_findNearestObject(EvtObject *o, s32 flags, s32 *dist) {
+    EvtObject *best = NULL;
     s32 bestd = 0;
     s32 x, y, z;
     s32 back;
     s32 r;
     Unk16D8 *n;
-    Unk8004AB64 *q;
+    EvtObject *q;
     s32 a;
     s32 b;
     s32 dx, dz;
@@ -304,7 +304,7 @@ void *evt_findNearestObject(Unk8004AB64 *o, s32 flags, s32 *dist) {
             continue;
         }
         {
-            Unk8004AB64 *p = q;
+            EvtObject *p = q;
         if ((u32)(p->pos.vy - y + 399) >= 799) {
             continue;
         }
@@ -358,7 +358,7 @@ void *evt_findNearestObject(Unk8004AB64 *o, s32 flags, s32 *dist) {
 }
 
 s32 evt_moveObjectTo(s32 x, s32 y, s32 z, s32 flags) {
-    Unk8004AB64 *p;
+    EvtObject *p;
     s32 dz;
     s32 dx;
     s32 dy;
@@ -471,7 +471,7 @@ s32 evt_moveObjectTo(s32 x, s32 y, s32 z, s32 flags) {
     return r;
 }
 
-s32 evt_rollEncounter(Unk8004AB64 *p) {
+s32 evt_rollEncounter(EvtObject *p) {
     s32 id = 0;
 
     if (g_evtState->controlEnabled != 0 && g_evtEncounterDist > 0x3C0) {
@@ -492,7 +492,7 @@ s32 evt_rollEncounter(Unk8004AB64 *p) {
 }
 
 /* screen position of an actor's speech-bubble anchor */
-static inline void evt_placeBalloon_pos(Unk8004AB64 *obj, s32 *x, s32 *y) {
+static inline void evt_placeBalloon_pos(EvtObject *obj, s32 *x, s32 *y) {
     SVECTOR sv;
 
     sv.vx = obj->pos.vx;
@@ -566,14 +566,14 @@ static inline void evt_placeBalloon_y(WinLayout *w, s32 sy, s32 *below, s32 fixe
     w->unk8 = ty;
 }
 
-void evt_placeBalloon(Unk8004AB64 *obj, WinLayout *w, s32 dir, s32 fixed) {
+void evt_placeBalloon(EvtObject *obj, WinLayout *w, s32 dir, s32 fixed) {
     s32 sx, sy;
     s32 ox, oy;
     s32 tx;
     s32 below;
     s32 right;
     s32 id;
-    Unk8004AB64 *other;
+    EvtObject *other;
 
     if (obj->unk5 == 4) {
         obj->unk8A = D_8007AE5C;
@@ -664,7 +664,7 @@ static inline s32 evt_followBalloon_y(s32 h, s32 *sy, s32 below) {
     return ty;
 }
 
-void evt_followBalloon(Unk8004AB64 *obj, Window *w) {
+void evt_followBalloon(EvtObject *obj, Window *w) {
     s32 sx, sy;
     s32 tx;
     s32 ox, oy;
@@ -685,7 +685,7 @@ void evt_followBalloon(Unk8004AB64 *obj, Window *w) {
     w->unk8.y += w->unk2 - oy;
 }
 
-WinLayout *evt_getMsgLayout(Unk8004AB64 *obj, s32 id, s32 flags) {
+WinLayout *evt_getMsgLayout(EvtObject *obj, s32 id, s32 flags) {
     WinLayout *w = msg_getLayout(id, &D_8007AE5C, &D_8007AE60, &D_8007AE64);
     s32 ww;
     s32 wh;
@@ -761,7 +761,7 @@ WinLayout *evt_getMsgLayout(Unk8004AB64 *obj, s32 id, s32 flags) {
     return w;
 }
 
-void evt_turnObject(Unk8004AB64 *p, s32 d, s32 wrap, s32 speed) {
+void evt_turnObject(EvtObject *p, s32 d, s32 wrap, s32 speed) {
     s32 cur;
     s32 rate;
     s32 frames;
@@ -840,10 +840,10 @@ void evt_turnObject(Unk8004AB64 *p, s32 d, s32 wrap, s32 speed) {
 }
 
 s32 evt_execInstr(void) {
-    Unk8004AB64 *po = g_evtActor;
-    Unk8004AB64 *actor = po;
-    Unk8004AB64 *obj;
-    Unk8004AB64 *o;
+    EvtObject *po = g_evtActor;
+    EvtObject *actor = po;
+    EvtObject *obj;
+    EvtObject *o;
     Unk16D8 *n;
     s32 op;
     s32 a, b, c, d, e, f, i;
@@ -952,7 +952,7 @@ s32 evt_execInstr(void) {
         return 0;
     case 0xD5:
         for (n = g_evtState->unk16D8; n != NULL; n = n->unk0) {
-            Unk8004AB64 *o = n->unk4;
+            EvtObject *o = n->unk4;
             if (o->unk5 == 4) {
                 o->unk2C = o->unkF;
                 if (!(o->unkF & 0x20)) {
@@ -963,7 +963,7 @@ s32 evt_execInstr(void) {
         return 0;
     case 0xD6:
         for (n = g_evtState->unk16D8; n != NULL; n = n->unk0) {
-            Unk8004AB64 *o = n->unk4;
+            EvtObject *o = n->unk4;
             if (o->unk5 == 4) {
                 o->unkF &= 0xFE;
                 o->unkF |= o->unk2C & 1;
@@ -1406,7 +1406,7 @@ s32 evt_execInstr(void) {
         g_evtMsgCount = 0;
         return 0;
     case 0x2E: {
-        Unk8007AECC *e;
+        EvtState *e;
         g_evtState->controlEnabled = 1;
         msg_startHereIcon(1);
         e = g_evtState;
@@ -1588,7 +1588,7 @@ s32 evt_execInstr(void) {
         }
         return 0;
     case 0x43: {
-        Unk8004AB64 *o;
+        EvtObject *o;
         a = g_evtCurObj->unk7 + 0x40;
         o = evt_getObject_inline(a);
         if (o != NULL) {
@@ -1605,7 +1605,7 @@ s32 evt_execInstr(void) {
         }
         return 0;
     case 0x45: {
-        Unk8004AB64 *o = evt_getObject_inline(g_evtCurObj->unk7 + 0x40);
+        EvtObject *o = evt_getObject_inline(g_evtCurObj->unk7 + 0x40);
         if (o != NULL) {
             evt_deleteObject(o);
         }
@@ -2337,7 +2337,7 @@ s32 evt_execInstr(void) {
     }
 }
 
-void evt_movePlayer(Unk8004AB64 *obj) {
+void evt_movePlayer(EvtObject *obj) {
     SVECTOR v;
     u8 dz[4];
     s32 dist;
@@ -2349,7 +2349,7 @@ void evt_movePlayer(Unk8004AB64 *obj) {
     s32 run;
     s32 cur, d;
     s32 c, k;
-    Unk8004AB64 *o;
+    EvtObject *o;
     s32 m;
 
     o = NULL;
@@ -2479,7 +2479,7 @@ void evt_movePlayer(Unk8004AB64 *obj) {
                                  : (g_evtPushFrames < 0 ? g_evtPushFrames + 1 : 0);
 }
 
-s32 func_80047AB8(Unk8004AB64 *p, s32 b) {
+s32 func_80047AB8(EvtObject *p, s32 b) {
     s32 *sp;
     s32 ok;
     s32 x;
@@ -2509,7 +2509,7 @@ s32 func_80047AB8(Unk8004AB64 *p, s32 b) {
 }
 
 /* point 500 units ahead of o at angle a, at head height */
-static inline void evt_updateLookAt_ahead(Unk8004AB64 *o, s32 a, VECTOR *out) {
+static inline void evt_updateLookAt_ahead(EvtObject *o, s32 a, VECTOR *out) {
     SVECTOR v;
     MATRIX m;
 
@@ -2530,7 +2530,7 @@ static inline void evt_updateLookAt_ahead(Unk8004AB64 *o, s32 a, VECTOR *out) {
     gte_stlvnl(out);
 }
 
-void evt_relaxLookAt(Unk8004AB64 *o, Unk80047B90 *m) {
+void evt_relaxLookAt(EvtObject *o, Unk80047B90 *m) {
     VECTOR out;
     s32 d;
 
@@ -2550,7 +2550,7 @@ void evt_relaxLookAt(Unk8004AB64 *o, Unk80047B90 *m) {
 }
 
 /* move the look-at point towards t */
-static inline void evt_updateLookAt_approach(Unk8004AB64 *o, Unk80047B90 *mdl, VECTOR *t) {
+static inline void evt_updateLookAt_approach(EvtObject *o, Unk80047B90 *mdl, VECTOR *t) {
     s32 d;
 
     d = math_length3(t->vx - o->unk84, t->vy - o->unk86, t->vz - o->unk88);
@@ -2567,7 +2567,7 @@ static inline void evt_updateLookAt_approach(Unk8004AB64 *o, Unk80047B90 *mdl, V
 }
 
 /* is the look-at point still in front of o (within ~80 degrees)? */
-static inline s32 evt_updateLookAt_infront(Unk8004AB64 *o) {
+static inline s32 evt_updateLookAt_infront(EvtObject *o) {
     s32 ok = 1;
     s32 d;
 
@@ -2584,7 +2584,7 @@ static inline s32 evt_updateLookAt_infront(Unk8004AB64 *o) {
     return ok;
 }
 
-static inline s32 evt_updateLookAt_infront2(Unk8004AB64 *o, s32 *pa) {
+static inline s32 evt_updateLookAt_infront2(EvtObject *o, s32 *pa) {
     s32 ok = 1;
     s32 a;
     s32 d;
@@ -2604,15 +2604,15 @@ static inline s32 evt_updateLookAt_infront2(Unk8004AB64 *o, s32 *pa) {
     return ok;
 }
 
-void evt_updateLookAt(Unk8004AB64 *o) {
+void evt_updateLookAt(EvtObject *o) {
     VECTOR t;
     s32 ang;
     s32 save;
     s32 x, y, z;
     Unk80047B90 *mdl;
-    Unk8004AB64 *tgt;
-    Unk8004AB64 *best;
-    Unk8004AB64 *q;
+    EvtObject *tgt;
+    EvtObject *best;
+    EvtObject *q;
     Unk16D8 *n;
     u8 mask;
     s32 bestd;
@@ -2712,10 +2712,10 @@ void evt_updateLookAt(Unk8004AB64 *o) {
 }
 
 void evt_updateIdleTimer(void) {
-    Unk8007AECC *e = g_evtState;
-    Unk8004AB64 *p;
-    Unk8004AB64 *o;
-    Unk8007AECC *e2;
+    EvtState *e = g_evtState;
+    EvtObject *p;
+    EvtObject *o;
+    EvtState *e2;
 
     if (e == NULL || e->controlEnabled == 0) {
         return;
@@ -2750,12 +2750,12 @@ void evt_updateIdleTimer(void) {
 
 /* Nearest kind-3 object whose script has entry `key` and that evt_isInRegion
  * accepts for p's position. */
-static inline Unk8004AB64 *evt_checkPlayerAction_find(Unk8004AB64 *p, s32 key) {
-    Unk8004AB64 *found = NULL;
+static inline EvtObject *evt_checkPlayerAction_find(EvtObject *p, s32 key) {
+    EvtObject *found = NULL;
     s32 x = p->pos.vx;
     Unk16D8 *n = g_evtState->unk16D8;
     s32 z = p->pos.vz;
-    Unk8004AB64 *o;
+    EvtObject *o;
 
     for (; n != NULL; n = n->unk0) {
         o = n->unk4;
@@ -2767,10 +2767,10 @@ static inline Unk8004AB64 *evt_checkPlayerAction_find(Unk8004AB64 *p, s32 key) {
     return found;
 }
 
-void evt_checkPlayerAction(Unk8004AB64 *p) {
+void evt_checkPlayerAction(EvtObject *p) {
     s32 btn;
     s32 t;
-    Unk8004AB64 *o;
+    EvtObject *o;
 
     t = msg_getPadPressed();
     btn = t & (g_evtMode == 1 ? (BTN_CROSS | BTN_SQUARE) : BTN_CROSS);
@@ -2842,7 +2842,7 @@ void evt_updateBattleObjects(void) {
 }
 
 /* turn towards unk52 by unk82 per frame (unk6C 0x7FFE / 0x7FFF: direction) */
-static inline void evt_updateObjects_turn(Unk8004AB64 *p) {
+static inline void evt_updateObjects_turn(EvtObject *p) {
     s32 a;
 
     if ((s16)p->unk6C == 0x7FFE) {
@@ -2865,7 +2865,7 @@ static inline void evt_updateObjects_turn(Unk8004AB64 *p) {
 }
 
 /* remember the position at the start of the frame */
-static inline void evt_updateObjects_save(Unk8004AB64 *p) {
+static inline void evt_updateObjects_save(EvtObject *p) {
     p->unk40.vx = p->pos.vx;
     p->unk40.vy = p->pos.vy;
     p->unk40.vz = p->pos.vz;
@@ -2873,13 +2873,13 @@ static inline void evt_updateObjects_save(Unk8004AB64 *p) {
 
 s32 evt_updateObjects(void) {
     Unk16D8 *n;
-    Unk8004AB64 *o;
-    Unk8004AB64 *p;
-    Unk8004AB64 *t;
-    Unk8004AB64 *t1;
-    Unk8004AB64 *x;
+    EvtObject *o;
+    EvtObject *p;
+    EvtObject *t;
+    EvtObject *t1;
+    EvtObject *x;
     Unk16D8 *y;
-    Unk8004AB64 *z;
+    EvtObject *z;
     Unk800C748C *q;
     s32 world;
     s32 r;
@@ -2893,7 +2893,7 @@ s32 evt_updateObjects(void) {
     Window *w;
     Unk16D8 *l;
     Unk16D8 *m;
-    Unk8007AECC *s;
+    EvtState *s;
 
     g_evtPlayerMoved = 0;
     world = g_evtMode == 2;
@@ -3135,7 +3135,7 @@ void evt_onAnimEnd(Unk8004B9B8 *p) {
     }
 }
 
-static inline void evt_onAnimLimit_bounce(Unk8004AB64 *o, u8 f) {
+static inline void evt_onAnimLimit_bounce(EvtObject *o, u8 f) {
     u8 t;
     u8 pos;
 
@@ -3155,7 +3155,7 @@ static inline void evt_onAnimLimit_bounce(Unk8004AB64 *o, u8 f) {
     }
 }
 
-void evt_onAnimLimit(Unk8004AB64 *o) {
+void evt_onAnimLimit(EvtObject *o) {
     u8 f = o->unk62;
 
     if (f & 0x30) {
@@ -3174,8 +3174,8 @@ void evt_onAnimLimit(Unk8004AB64 *o) {
     }
 }
 
-void evt_stepAnim(Unk8004AB64 *p) {
-    Unk8004AB64 *q;
+void evt_stepAnim(EvtObject *p) {
+    EvtObject *q;
     u8 f;
     s32 last;
     s32 t;
@@ -3318,15 +3318,15 @@ void evt_init(u8 *data) {
     Unk4 t;
     s32 k;
     u8 mode;
-    Unk8007AECCNode *n;
+    EvtAllocNode *n;
     Unk16D8 *m;
     Unk16D8 *q;
     Unk16D8 *l;
     s32 i;
     s32 r;
     s32 d;
-    Unk8004AB64 *o;
-    Unk8007AECC *p;
+    EvtObject *o;
+    EvtState *p;
     GameState *gs;
 
     t = D_80011A44;
@@ -3449,7 +3449,7 @@ void evt_init(u8 *data) {
 
 void evt_createModels(void) {
     Unk16D8 *n;
-    Unk8004AB64 *o;
+    EvtObject *o;
     s16 *q;
 
     if ((g_evtMode == 1 || g_evtMode == 3 || g_gameState->unkA == 9) && g_evtModelsPending != 0) {
@@ -3494,7 +3494,7 @@ void evt_onMenuOpen(void) {
 }
 
 s32 evt_countNpcActors(s32 unused) { /* the overlays pass 0 */
-    Unk8007AECC *p = g_evtState;
+    EvtState *p = g_evtState;
     Unk16D8 *n;
     s32 lim;
     s32 cnt = 0;
@@ -3503,7 +3503,7 @@ s32 evt_countNpcActors(s32 unused) { /* the overlays pass 0 */
         if (n != NULL) {
             lim = g_evtScriptCount - 9;
             do {
-                Unk8004AB64 *e = n->unk4;
+                EvtObject *e = n->unk4;
                 s32 t = 0;
                 if (e->unk6 < lim) {
                     t = e->unk5 == 4;
@@ -3516,7 +3516,7 @@ s32 evt_countNpcActors(s32 unused) { /* the overlays pass 0 */
     return cnt;
 }
 
-s32 evt_getObjectChrIndex(Unk8004AB64 *a) {
+s32 evt_getObjectChrIndex(EvtObject *a) {
     s32 t = a->unk6 + 9;
     return t - g_evtScriptCount;
 }
@@ -3524,7 +3524,7 @@ s32 evt_getObjectChrIndex(Unk8004AB64 *a) {
 s32 evt_battleTrigger(s32 op, s32 bits, s32 v, s32 w) {
     s32 r = 0;
     s32 i;
-    Unk8004AB64 *o;
+    EvtObject *o;
     s32 a;
     s32 b;
 
@@ -3575,7 +3575,7 @@ void evt_reset(void) {
     g_evtModelsPending = 0;
 }
 
-void evt_setDrawPosAtObject(Unk8004AB64 *o, s32 dx, s32 dy) {
+void evt_setDrawPosAtObject(EvtObject *o, s32 dx, s32 dy) {
     SVECTOR v;
     SVECTOR *pv = &v;
     s32 p[2];
@@ -3604,9 +3604,9 @@ void evt_setDrawPosAtObject(Unk8004AB64 *o, s32 dx, s32 dy) {
     pen_end();
 }
 
-Unk8004AB64 *evt_getPlayer(void) {
-    Unk8004AB64 *p = NULL;
-    Unk8004AB64 *r;
+EvtObject *evt_getPlayer(void) {
+    EvtObject *p = NULL;
+    EvtObject *r;
 
     if (g_evtState != NULL) {
         p = evt_getObject_inline(g_evtState->playerUid);
@@ -3624,7 +3624,7 @@ s32 evt_isControlEnabled(void) {
 }
 
 Unk16D8 *evt_getObjectList(void) {
-    Unk8007AECC *p = g_evtState;
+    EvtState *p = g_evtState;
     Unk16D8 *r = NULL;
     if (p != NULL) {
         r = p->unk16D8;
@@ -3633,7 +3633,7 @@ Unk16D8 *evt_getObjectList(void) {
 }
 
 Unk16D8 *evt_getBattleObjects(void) {
-    Unk8007AECC *p = g_evtState;
+    EvtState *p = g_evtState;
     Unk16D8 *r = NULL;
     if (p != NULL) {
         r = p->unk16FC;
@@ -3660,7 +3660,7 @@ s32 evt_getArg16(void) {
         evt_evalExpr();
         r = evt_popResult();
     } else {
-        Unk8004AB64 *pp = g_evtCurObj;
+        EvtObject *pp = g_evtCurObj;
         r = *pp->unk0++;
         r |= *pp->unk0++ << 8;
         r = (s16)r;
@@ -3670,7 +3670,7 @@ s32 evt_getArg16(void) {
     return r;
 }
 
-s32 evt_getObjectModelData(Unk8004AB64 *p) {
+s32 evt_getObjectModelData(EvtObject *p) {
     s32 *q;
 
     if (p != NULL) {
@@ -3685,12 +3685,12 @@ s32 evt_getObjectModelData(Unk8004AB64 *p) {
     return 0;
 }
 
-Unk8004AB64 *evt_getObject(s32 id) {
+EvtObject *evt_getObject(s32 id) {
     return evt_getObject_inline(id);
 }
 
 s32 evt_getModelSlot(s32 id) {
-    Unk8004AB64 *p = evt_getObject_inline(id);
+    EvtObject *p = evt_getObject_inline(id);
     s32 r;
 
     if (p != NULL) {
@@ -3728,7 +3728,7 @@ s32 evt_getWorldCamTargetObj(void) {
 }
 
 void evt_resetIdleTimer(s32 a) {
-    Unk8007AECC *p = g_evtState;
+    EvtState *p = g_evtState;
     s32 v;
     if (p->unk1700 >= 0) {
         if (g_randPtr >= g_randTableEnd) {
@@ -3744,7 +3744,7 @@ void evt_resetIdleTimer(s32 a) {
 }
 
 void func_8004B2A0(void) {
-    Unk8007AECCNode *p = g_evtState->unk1450;
+    EvtAllocNode *p = g_evtState->unk1450;
     for (; p < &g_evtState->unk1450[31]; p++) {
         p->unk8 = p + 1;
     }
@@ -3753,7 +3753,7 @@ void func_8004B2A0(void) {
     g_evtState->unk15D0 = NULL;
 }
 
-void func_8004B2F4(Unk8004AB64 *key) {
+void func_8004B2F4(EvtObject *key) {
     func_8004B2F4_inline(key);
 }
 
@@ -3769,7 +3769,7 @@ void evt_initObjectList(void) {
 }
 
 void evt_createRegion(s32 a, s32 b) {
-    Unk800367D0 *p = evt_createObject(a, b, 0x38, 0x10);
+    EvtObject *p = evt_createObject(a, b, 0x38, 0x10);
     p->unk5 = 3;
     p->unkF = 1;
 }
@@ -3782,7 +3782,7 @@ void func_8004B4A8(s32 i, s16 v) {
     D_8007AE10[i & 7] = v;
 }
 
-Unk8004AB64 *evt_resolveObjectId(s32 id) {
+EvtObject *evt_resolveObjectId(s32 id) {
     return evt_resolveObjectId_inline(id);
 }
 
@@ -3819,7 +3819,7 @@ s32 evt_popRandomBit(void) {
 
 INCLUDE_RODATA("asm/us/main/nonmatchings/event", D_80011A44);
 
-s32 evt_getObjectProp(Unk8004AB64 *o, s32 prop) {
+s32 evt_getObjectProp(EvtObject *o, s32 prop) {
     s32 r;
     s32 i;
     void *u;
@@ -3893,7 +3893,7 @@ s32 func_8004B85C(s32 slot) {
 
 s32 evt_getArg24(void) {
     s32 v;
-    Unk8004AB64 *pp;
+    EvtObject *pp;
 
     if (g_evtArgFlags & 1) {
         evt_evalExpr();

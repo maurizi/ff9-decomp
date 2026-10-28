@@ -27,7 +27,7 @@ s32 bgi_segmentsCross(s16 *arg0, s16 *arg1, s16 *arg2, s16 *arg3, u8 x, u8 z) {
 
 BgiTriangle *bgi_getPassableNeighbor(BgiActor *arg0, BgiTriangle *arg1, s32 arg2) {
     BgiTriangle *n;
-    Unk8004AB64 *a;
+    EvtObject *a;
     s16 id;
     u8 m;
     u8 mode;
@@ -43,7 +43,7 @@ BgiTriangle *bgi_getPassableNeighbor(BgiActor *arg0, BgiTriangle *arg1, s32 arg2
     if ((m = (n->flags >> 8) & g_fieldBgi.maskFilter) & (BGI_MASK_NO_PLAYER | BGI_MASK_NO_OTHERS)) {
         mode = g_gameState->mode;
         if (mode == 5) {
-            a = (Unk8004AB64 *)g_gameState->gameData->unk8E0[g_gameState->gameData->unk8E4.field->playerObj].unkC;
+            a = (EvtObject *)g_gameState->gameData->unk8E0[g_gameState->gameData->unk8E4.field->playerObj].unkC;
         } else if (mode == 1) {
             a = evt_getPlayer();
         } else {
@@ -650,14 +650,14 @@ s32 bgi_init(BgiHeader *arg0) {
 }
 
 BgiActor *bgi_findPlayerActor(s32 *arg0) {
-    Unk8004AB64 *a;
+    EvtObject *a;
     s32 i;
     u8 mode;
 
     *arg0 = 0;
     mode = g_gameState->mode;
     if (mode == 5) {
-        a = (Unk8004AB64 *)g_gameState->gameData->unk8E0[g_gameState->gameData->unk8E4.field->playerObj].unkC;
+        a = (EvtObject *)g_gameState->gameData->unk8E0[g_gameState->gameData->unk8E4.field->playerObj].unkC;
     } else if (mode == 1) {
         a = evt_getPlayer();
     } else {
@@ -932,7 +932,7 @@ s16 bgi_getHeight(s16 arg0, s16 arg1) {
     if (g_fieldBgi.header == NULL) {
         if (g_gameState->mode == 5) {
             g = g_gameState->gameData;
-            return ((Unk8004AB64 *)g->unk8E0[g->unk8E4.field->playerObj].unkC)->pos.vy;
+            return ((EvtObject *)g->unk8E0[g->unk8E4.field->playerObj].unkC)->pos.vy;
         }
         if (g_gameState->mode == 1) {
             return evt_getPlayer()->pos.vy;
