@@ -619,9 +619,9 @@ void wm_setMountPalette(void) {
     func_800B36AC();
     for (n = evt_getObjectList(); n != NULL; n = n->unk0) {
         a = n->unk4;
-        if (a->unkE == 1 && (a->unkF & 1) && a->unk5 == 4) {
+        if (a->state == 1 && (a->flags & 1) && a->kind == 4) {
             if ((a->unk11 >= 3 && a->unk11 < 8)) {
-                id = a->unk34;
+                id = a->modelId;
                 switch (a->unk11) {
                 case 3:
                     k = 0;
@@ -677,7 +677,7 @@ void wm_findVehicles(void) {
     EvtObject *a;
 
     for (n = evt_getObjectList(); n != NULL; n = n->unk0) {
-        if (n->unk4->unk5 == 4) {
+        if (n->unk4->kind == 4) {
             a = n->unk4;
             switch (a->unk11) {
             case 1:
@@ -737,7 +737,7 @@ void wm_drawActors(void) {
     func_80064CDC(10, 100);
     for (e = evt_getObjectList(); e != NULL; e = e->unk0) {
         act = e->unk4;
-        if (act->unk5 == 4 && act->unkE == 1 && (act->unkF & 1) && (u8)wm_worldToView((VECTOR *)&act->pos, &a, &b, &z)) {
+        if (act->kind == 4 && act->state == 1 && (act->flags & 1) && (u8)wm_worldToView((VECTOR *)&act->pos, &a, &b, &z)) {
             f = 1;
             dv.vx = act->pos.vx - (g_worldCameraEye[0] - n.vx);
             dv.vz = act->pos.vz - (g_worldCameraEye[2] - n.vz);
@@ -797,7 +797,7 @@ void wm_setActorFog(EvtObject *arg0, s32 arg1) {
     WmPalAnim *e;
     RECT *r;
 
-    id = arg0->unk34;
+    id = arg0->modelId;
     e = g_gameState->gameData->unk8E4.world->obj->palAnims;
     t = -arg0->pos.vy;
     t -= 0xC1F;
@@ -853,7 +853,7 @@ s32 wm_drawActorModel(EvtObject *arg0, SVECTOR *arg1, s32 unused) { /* its calle
     s32 i;
 
     c = &g_worldActorTypeInfo[arg0->unk11];
-    s = (WmObjSlot *)game_getModel(arg0->unk3B);
+    s = (WmObjSlot *)game_getModel(arg0->modelSlot);
     m = s->obj;
     memset(&r, 0, 8);
     r.vx = s->actor->pos.unk20;
@@ -865,7 +865,7 @@ s32 wm_drawActorModel(EvtObject *arg0, SVECTOR *arg1, s32 unused) { /* its calle
     m->worldMatrix.t[1] = arg1->vy;
     m->worldMatrix.t[2] = arg1->vz;
     wm_applyScale(m);
-    m->anim = h = db_lookupRegistered(4, s->actor->unk36 | DB_ANIM, 0);
+    m->anim = h = db_lookupRegistered(4, s->actor->anim | DB_ANIM, 0);
     if (h != NULL) {
         if (IS_OFFSET(h->rotKeys)) {
             t = h->rotKeysLo;
@@ -874,7 +874,7 @@ s32 wm_drawActorModel(EvtObject *arg0, SVECTOR *arg1, s32 unused) { /* its calle
                 h->rotKeysLo = (s32)m->anim + t;
             }
         }
-        wm_calcBoneMatrices(m, s->actor->unk3A);
+        wm_calcBoneMatrices(m, s->actor->animFrame);
         if (arg0->unk11 != 0xE) {
             n = m->model->groupCount;
             if (c->terrainClass != 0 && c->rideOffset > 0) {
@@ -912,7 +912,7 @@ void wm_drawActorShadow(EvtObject *arg0, SVECTOR *arg1, s32 arg2) {
     u32 *ot;
 
     c = &g_worldActorTypeInfo[arg0->unk11];
-    k = arg0->unk3B;
+    k = arg0->modelSlot;
     sx = 0x1000;
     if (arg0->unk11 != 0xE) {
         d = c->floorY - arg0->pos.vy;
@@ -998,14 +998,14 @@ void wm_updateActors(void) {
     g_worldPlayerTurn = 0;
     if (evt_getPlayer() != NULL) {
         g_worldPlayer = evt_getPlayer();
-        g_worldPlayer->unk40.vx = g_worldPlayer->pos.vx;
-        g_worldPlayer->unk40.vy = g_worldPlayer->pos.vy;
-        g_worldPlayer->unk40.vz = g_worldPlayer->pos.vz;
+        g_worldPlayer->prevPos.vx = g_worldPlayer->pos.vx;
+        g_worldPlayer->prevPos.vy = g_worldPlayer->pos.vy;
+        g_worldPlayer->prevPos.vz = g_worldPlayer->pos.vz;
     }
     for (e = evt_getObjectList(); e != NULL; e = e->unk0) {
         act = e->unk4;
         cc = &g_worldActorTypeInfo[act->unk11];
-        if (act->unk5 == 4 && act->unkE == 1 && (act->unkF & 1)) {
+        if (act->kind == 4 && act->state == 1 && (act->flags & 1)) {
             switch (act->unk11) {
             case 7:
                 cc->flying = g_worldMoveMode == 6;
@@ -1188,9 +1188,9 @@ void wm_movePlayer(WmActorType *cc) {
             p = g_worldPlayer->pos;
             if (wm_tryStep((VECTOR *)&p, i, g_worldMoveMode, spd, &cell, &h) ||
                 wm_tryStep((VECTOR *)&p, j = -i, g_worldMoveMode, spd, &cell, &h)) {
-                dx = p.vx - g_worldPlayer->unk40.vx;
-                dy = p.vy - g_worldPlayer->unk40.vy;
-                dz = p.vz - g_worldPlayer->unk40.vz;
+                dx = p.vx - g_worldPlayer->prevPos.vx;
+                dy = p.vy - g_worldPlayer->prevPos.vy;
+                dz = p.vz - g_worldPlayer->prevPos.vz;
                 if (wm_getTerrainHeightOffset(cc->terrainClass, cell, 0) != 0) {
                     dist = SquareRoot0(dx * dx + dz * dz);
                 } else {
@@ -1263,9 +1263,9 @@ void wm_movePlayer(WmActorType *cc) {
                 }
                 dz = dz < abs(dy + r2);
                 if (dz) {
-                    g_worldPlayer->unk40.vy = g_worldPlayer->pos.vy = SquareRoot0(dx - zz) - off;
+                    g_worldPlayer->prevPos.vy = g_worldPlayer->pos.vy = SquareRoot0(dx - zz) - off;
                 } else {
-                    g_worldPlayer->unk40.vy = g_worldPlayer->pos.vy = -SquareRoot0(dx - zz) - off;
+                    g_worldPlayer->prevPos.vy = g_worldPlayer->pos.vy = -SquareRoot0(dx - zz) - off;
                 }
             }
         }
@@ -1640,21 +1640,21 @@ void wm_controlWalk(void) {
             if (g_randPtr >= g_randTableEnd) {
                 rand_refill();
             }
-            rx = g_worldPlayer->unk40.vx + *g_randPtr++ - 0x80;
+            rx = g_worldPlayer->prevPos.vx + *g_randPtr++ - 0x80;
             if (g_randPtr >= g_randTableEnd) {
                 rand_refill();
             }
             lo = *g_randPtr++;
-            wm_spawnEffect(rx, g_worldPlayer->unk40.vy, g_worldPlayer->unk40.vz + lo - 0x80, 16, 0x6D80);
+            wm_spawnEffect(rx, g_worldPlayer->prevPos.vy, g_worldPlayer->prevPos.vz + lo - 0x80, 16, 0x6D80);
             if (g_randPtr >= g_randTableEnd) {
                 rand_refill();
             }
-            rx = g_worldPlayer->unk40.vx + *g_randPtr++ - 0x80;
+            rx = g_worldPlayer->prevPos.vx + *g_randPtr++ - 0x80;
             if (g_randPtr >= g_randTableEnd) {
                 rand_refill();
             }
             lo = *g_randPtr++;
-            wm_spawnEffect(rx, g_worldPlayer->unk40.vy, g_worldPlayer->unk40.vz + lo - 0x80, 16, 0x6D80);
+            wm_spawnEffect(rx, g_worldPlayer->prevPos.vy, g_worldPlayer->prevPos.vz + lo - 0x80, 16, 0x6D80);
         }
     }
 }
@@ -2043,14 +2043,14 @@ void wm_snapActorsToFloor(void) {
     if (n != NULL) {
         do {
             o = n->unk4;
-            if (o->unk5 == 4) {
+            if (o->kind == 4) {
                 pos = o->pos;
                 c = &g_worldActorTypeInfo[o->unk11];
                 wm_getGroundHeight((VECTOR *)&pos, &c->cellAttr, &tmp, NULL, &h);
                 c->floorY = h;
                 c->rideOffset = wm_getTerrainHeightOffset(c->terrainClass, c->cellAttr, 0);
                 wm_updateActorHeight(o);
-                o->unk40 = o->pos;
+                o->prevPos = o->pos;
             }
             n = n->unk0;
         } while (n != NULL);

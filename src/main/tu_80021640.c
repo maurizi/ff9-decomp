@@ -15,7 +15,7 @@ void evt_setCardOpponent(a)
 }
 
 s32 evt_createModel(EvtObject *a) {
-    return g_gameState->gameData->unk838(a->unk34 | DB_MODEL, a);
+    return g_gameState->gameData->unk838(a->modelId | DB_MODEL, a);
 }
 
 s32 evt_getAnimFrameCount(a, b)
@@ -29,14 +29,14 @@ s32 evt_updateActorWalkmesh(EvtObject *p) {
     if (g_gameState->mode == 3) {
         goto ret0;
     }
-    if (p->unk5 != 4) {
+    if (p->kind != 4) {
         return 0;
     }
-    if (p->unk34 == 0xFFFF) {
+    if (p->modelId == 0xFFFF) {
     ret0:
         return 0;
     }
-    return bgi_updateActor(p->unk3B);
+    return bgi_updateActor(p->modelSlot);
 }
 
 void mbg_resetState(void) {

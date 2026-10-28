@@ -1021,7 +1021,7 @@ void evt_runExpr(void) {
             break;
         case 0x6A:
             t = evt_popValue();
-            v = evt_getAnimFrameCount(g_evtActor->unk34, t);
+            v = evt_getAnimFrameCount(g_evtActor->modelId, t);
             break;
         case 0x6B:
             v = func_8004B85C(evt_popValue());
@@ -1112,35 +1112,35 @@ s32 evt_runScripts(Unk16D8 *n) {
 
     while (n != NULL) {
         o = n->unk4;
-        if (o->unkE == 0) {
-            o->unkE = 2;
+        if (o->state == 0) {
+            o->state = 2;
             goto next;
         }
-        if (o->unkE == 3) {
+        if (o->state == 3) {
             goto next;
         }
         st = 0;
-        r_ip = o->unk0;
+        r_ip = o->ip;
         if (r_ip == NULL) {
             goto next;
         }
-        if (o->unkD != 0) {
-            if (o->unkD == 0xFE) {
-                if (o->unk10 != 0xFF) {
-                    if (msg_isOpen(o->unk10) != 0) {
+        if (o->wait != 0) {
+            if (o->wait == 0xFE) {
+                if (o->windowId != 0xFF) {
+                    if (msg_isOpen(o->windowId) != 0) {
                         goto next;
                     }
-                    o->unk10 = 0xFF;
+                    o->windowId = 0xFF;
                 }
-                o->unkD = 0;
-            } else if (o->unkD != 0xFF) {
-                o->unkD = (s8)o->unkD - 1;
+                o->wait = 0;
+            } else if (o->wait != 0xFF) {
+                o->wait = (s8)o->wait - 1;
             }
             goto next;
         }
         g_evtCurObj = o;
-        g_evtObjVars = (u8 *)o + o->unk8 * 4;
-        g_evtActor = o->unk5 == 1 ? evt_getObject(o->unk7 - 0x40) : o;
+        g_evtObjVars = (u8 *)o + o->varsOfs * 4;
+        g_evtActor = o->kind == 1 ? evt_getObject(o->uid - 0x40) : o;
         if (g_evtMode == 2) {
             func_8004BB30(o);
         }
@@ -1221,7 +1221,7 @@ s32 evt_runScripts(Unk16D8 *n) {
                 if (v == 0) {
                     break;
                 }
-                o->unkD = v - 0xFE > 0 ? 0xFD : v - 1;
+                o->wait = v - 0xFE > 0 ? 0xFD : v - 1;
                 st = 1;
                 break;
             case 0x30:
@@ -1244,16 +1244,16 @@ s32 evt_runScripts(Unk16D8 *n) {
             default:
                 r_ip--;
             exec:
-                o->unk0 = r_ip;
+                o->ip = r_ip;
                 st = evt_execInstr();
-                r_ip = o->unk0;
+                r_ip = o->ip;
                 if (g_evtArgRead <= 0) {
                     r_ip--;
                 }
                 break;
             }
         }
-        o->unk0 = r_ip;
+        o->ip = r_ip;
     status:
         if (st == 4 || st == 5 || st == 3 || st == 7 || st == 8) {
             ret = st;
@@ -1328,9 +1328,9 @@ void evt_evalExpr(void) {
     s32 *save_sp = r_sp;
     EvtObject *x = g_evtCurObj;
 
-    r_ip = x->unk0;
+    r_ip = x->ip;
     evt_runExpr();
-    x->unk0 = r_ip;
+    x->ip = r_ip;
     r_ip = save_ip;
     r_sp = save_sp;
 }

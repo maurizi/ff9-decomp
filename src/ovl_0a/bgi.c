@@ -782,13 +782,13 @@ s32 bgi_updateFloorMoves(void) {
                 ((ActorPosView *)p)->unk14[e->axis] += e->cur - e->prev;
                 switch (e->axis) {
                 case 0:
-                    a->actor->unk40.vx = a->actor->pos.vx;
+                    a->actor->prevPos.vx = a->actor->pos.vx;
                     break;
                 case 1:
-                    a->actor->unk40.vy = a->actor->pos.vy;
+                    a->actor->prevPos.vy = a->actor->pos.vy;
                     break;
                 case 2:
-                    a->actor->unk40.vz = a->actor->pos.vz;
+                    a->actor->prevPos.vz = a->actor->pos.vz;
                     break;
                 }
             }
@@ -926,9 +926,9 @@ s32 bgi_getActorTriangle(s32 arg0, u16 *arg1, u16 *arg2) {
 s32 bgi_revertActor(s32 arg0) {
     BgiActor *e = &g_fieldBgi.actors[arg0];
 
-    e->actor->pos.vx = e->actor->unk40.vx;
-    e->actor->pos.vy = e->actor->unk40.vy;
-    e->actor->pos.vz = e->actor->unk40.vz;
+    e->actor->pos.vx = e->actor->prevPos.vx;
+    e->actor->pos.vy = e->actor->prevPos.vy;
+    e->actor->pos.vz = e->actor->prevPos.vz;
     e->floor = e->lastFloor;
     e->triangle = e->lastTriangle;
     return 1;

@@ -209,8 +209,8 @@ void wm_updateLogic(void) {
         }
         break;
     }
-    if (g_worldPlayer->pos.vx != g_worldPlayer->unk40.vx || g_worldPlayer->pos.vy != g_worldPlayer->unk40.vy ||
-        g_worldPlayer->pos.vz != g_worldPlayer->unk40.vz) {
+    if (g_worldPlayer->pos.vx != g_worldPlayer->prevPos.vx || g_worldPlayer->pos.vy != g_worldPlayer->prevPos.vy ||
+        g_worldPlayer->pos.vz != g_worldPlayer->prevPos.vz) {
         g_worldPlayerPosChanged = 1;
     } else {
         g_worldPlayerPosChanged = 0;

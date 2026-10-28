@@ -1302,7 +1302,7 @@ void wm_startBattleTransition(void) {
     o = g_gameState->gameData->unk8E4.world->obj;
     o->swirlFrames = 0;
     a = evt_getPlayer();
-    if (a != NULL && (s = (WmObjSlot *)game_getModel(a->unk3B)) != NULL) {
+    if (a != NULL && (s = (WmObjSlot *)game_getModel(a->modelSlot)) != NULL) {
         v.vx = ((MATRIX *)s->obj->boneMatrices)[1].t[0];
         v.vy = ((MATRIX *)s->obj->boneMatrices)[1].t[1];
         v.vz = ((MATRIX *)s->obj->boneMatrices)[1].t[2];

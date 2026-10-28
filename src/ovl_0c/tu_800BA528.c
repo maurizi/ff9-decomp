@@ -256,8 +256,8 @@ void wm_updateMap(void) {
     }
     if (g_worldAmbientSeDist[1] < 0x22 && evt_isControlEnabled() != 0 && WM_ATTR_TOPOGRAPHY(flags) == 0x17 && m - 1 < 7U) {
         g_worldPlayer->pos.vz += (0x22 - g_worldAmbientSeDist[1]) * 8;
-        if (g_worldPlayer->pos.vx == g_worldPlayer->unk40.vx && g_worldPlayer->pos.vz == g_worldPlayer->unk40.vz) {
-            g_worldPlayer->unk40.vx++;
+        if (g_worldPlayer->pos.vx == g_worldPlayer->prevPos.vx && g_worldPlayer->pos.vz == g_worldPlayer->prevPos.vz) {
+            g_worldPlayer->prevPos.vx++;
         }
     }
     if (g_evtGlobalVars.b[0x66] == 8 || g_evtGlobalVars.b[0x66] == 0) {
@@ -1481,14 +1481,14 @@ void wm_naviDraw(void) {
     page = g_worldNaviPage;
     switch (g_worldNaviMode) {
     case 1:
-        if (g_worldVehicleActor != NULL && g_worldVehicleActor->unkE == 1 && (g_worldVehicleActor->unkF & 1) &&
+        if (g_worldVehicleActor != NULL && g_worldVehicleActor->state == 1 && (g_worldVehicleActor->flags & 1) &&
             !((u8)g_worldMoveMode >= 7 && (u8)g_worldMoveMode < 10)) {
             CVECTOR c0 = g_worldNaviVehicleColorA;
             CVECTOR c1 = g_worldNaviVehicleColorB;
             wm_naviWorldToMap(g_worldVehicleActor->pos.vx, g_worldVehicleActor->pos.vz, &x, &z, page * 2);
             wm_naviDrawMarker(x, z, 1, 1, c0, c1, 0x40, 0xC8, 0x82, 1);
         }
-        if (g_worldMountActor != NULL && g_worldMountActor->unkE == 1 && (g_worldMountActor->unkF & 1) &&
+        if (g_worldMountActor != NULL && g_worldMountActor->state == 1 && (g_worldMountActor->flags & 1) &&
             !((u8)g_worldMoveMode >= 1 && (u8)g_worldMoveMode < 7)) {
             CVECTOR c0 = g_worldNaviMountColorA;
             CVECTOR c2 = g_worldNaviMountColorB;
@@ -1502,14 +1502,14 @@ void wm_naviDraw(void) {
         break;
     case 2:
         if (g_worldNaviVisible != 0) {
-            if (g_worldVehicleActor != NULL && g_worldVehicleActor->unkE == 1 && (g_worldVehicleActor->unkF & 1) &&
+            if (g_worldVehicleActor != NULL && g_worldVehicleActor->state == 1 && (g_worldVehicleActor->flags & 1) &&
                 !((u8)g_worldMoveMode >= 7 && (u8)g_worldMoveMode < 10)) {
                 CVECTOR c0 = g_worldNaviVehicleColorA;
                 CVECTOR c3 = g_worldNaviVehicleColorB;
                 wm_naviWorldToMap(g_worldVehicleActor->pos.vx, g_worldVehicleActor->pos.vz, &x, &z, page * 2 + 1);
                 wm_naviDrawMarker(x, z, 1, 1, c0, c3, 0x40, 0x28, 9, 1);
             }
-            if (g_worldMountActor != NULL && g_worldMountActor->unkE == 1 && (g_worldMountActor->unkF & 1) &&
+            if (g_worldMountActor != NULL && g_worldMountActor->state == 1 && (g_worldMountActor->flags & 1) &&
                 !((u8)g_worldMoveMode >= 1 && (u8)g_worldMoveMode < 7)) {
                 CVECTOR c0 = g_worldNaviMountColorA;
                 CVECTOR c1 = g_worldNaviMountColorB;

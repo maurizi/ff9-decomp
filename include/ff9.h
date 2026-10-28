@@ -1111,97 +1111,97 @@ typedef struct {
 
 /* field / world object (actor) */
 typedef struct EvtObject {
-    u8 *unk0; /* script pc */
-    u8 unk4;
-    u8 unk5; /* kind: 4 = ... */
-    u8 unk6;
-    u8 unk7;
-    u8 unk8;
-    u8 unk9;
-    u8 unkA;
+    u8 *ip; /* script instruction pointer (runtime: walks the logged opcodes) */
+    u8 level; /* running priority, 7 idle (runtime: 1 while the Moogle's talk function runs) */
+    u8 kind; /* 1 thread, 2 code object, 3 region, 4 actor (ops 0x43/0x07/0x08/0x09) */
+    u8 scriptIdx; /* script entry (= uid except copies made by op 0x09 with a uid >= 0x80) */
+    u8 uid; /* object id */
+    u8 varsOfs; /* header size in words, 5/14/43 for kinds 2/3/4 (g_evtObjVars = o + varsOfs * 4) */
+    u8 stackOfs; /* varsOfs + local-variable words */
+    u8 sp; /* call stack depth in words (2 per call) */
     u8 unkB;
     u8 unkC;
-    u8 unkD;
-    u8 unkE;
-    u8 unkF;
-    u8 unk10;
+    u8 wait; /* frames left of op 0x22, 0xFE waiting for its message window, 0xFF waiting for a called function */
+    u8 state; /* 2 running the init function, 1 running, 3 suspended */
+    u8 flags; /* 0x80 turning, 0x02/0x04 collision masks, 0x08 talk mask, 0x10 not pushable (op 0x93 sets bits 0-5) */
+    u8 windowId; /* message window it opened (ops 0x1F/0x20/0x54), 0xFF none */
     u8 unk11;
-    u8 unk12;
+    u8 savedState; /* state saved while suspended (evt_returnFromFunc copies it back) */
     u8 pad13;
     ActorPos pos; /* runtime: x rises walking right, z falls walking toward the camera */
     s16 unk24; /* rotation z */
-    u8 unk26;
+    u8 savedWalkRadius; /* walkmesh radius / 4 saved when the field exits to a battle (evt_createModels restores) */
     u8 pad27;
-    u16 unk28;
-    u16 unk2A;
+    u16 savedWalkTri; /* walkmesh triangle saved for a battle */
+    u16 savedWalkFlags; /* walkmesh flags saved for a battle */
     u8 unk2C;
-    u8 unk2D;
-    s8 unk2E;
-    u8 unk2F;
-    s16 unk30;
-    s16 unk32;
-    u16 unk34;
-    u16 unk36; /* animation file */
-    u8 unk38;
-    u8 unk39;
-    u8 unk3A;
-    u8 unk3B;
-    u8 unk3C;
-    u8 unk3D;
-    u8 unk3E;
+    u8 collisionEllipse; /* op 0xDF, stretches the radius along the facing */
+    s8 savedWalkFloor; /* walkmesh floor saved for a battle */
+    u8 scale; /* 64 = 1.0 (op 0x9F), places the HERE icon / bubble anchor */
+    s16 pitch; /* rotation x while flying to a point (op 0xA2) */
+    s16 height; /* -(op 0x2F height << 2), places the HERE icon / bubble anchor */
+    u16 modelId; /* op 0x2F (runtime: 98 Zidane, 220 the Moogle), 0xFFFF none */
+    u16 anim; /* current animation (runtime: 200 idle, 38 running, 25 walking) */
+    u8 animFrames; /* frame count of anim */
+    u8 animPrevFrame; /* animFrame of the previous step */
+    u8 animFrame; /* 0 .. animFrames-1 */
+    u8 modelSlot; /* 0-8 the characters, 9 + GameData.npcModelSlots for NPCs */
+    u8 collisionRadius; /* x4 world units (op 0x4B) */
+    u8 talkRadius; /* x4 world units (op 0x4B, runtime: 0 stops Cross from starting the dialog) */
+    u8 balloonWindow; /* window anchored on the actor (evt_followBalloon), 0xFF none */
     u8 pad3F;
-    ActorPos unk40; /* previous position; unk20/unk22: turn left/right anims */
-    u16 unk50; /* flags */
-    s16 unk52; /* target direction */
-    s16 unk54;
-    s16 unk56;
-    s16 unk58;
-    u16 unk5A; /* animation to restore after turning */
-    u8 unk5C;
-    u8 unk5D;
-    u8 unk5E;
-    u8 unk5F;
-    u8 unk60;
-    u8 unk61;
-    u8 unk62;
-    u8 unk63;
-    u8 unk64;
+    ActorPos prevPos; /* position one game frame earlier, unk20/rotY double as turn-left/right anims (ops 0x7A/0x7B) */
+    u16 moveFlags; /* 0x100 jumping, bits 0-2 op 0x47, 0x10 getting closer, 0x20 facing locked, 0x40/0x80 world-map camera marks */
+    s16 turnTarget; /* target direction of a turn */
+    s16 standAnim; /* op 0x33 */
+    s16 walkAnim; /* op 0x34 */
+    s16 runAnim; /* op 0x35 */
+    u16 turnPrevAnim; /* animation to restore after turning */
+    u8 speed; /* pad / script speed (runtime: 60 running, 30 walking) */
+    u8 animSpeed; /* 16 moving, 18 idle (Zidane) */
+    u8 runSpeed; /* speed >= runSpeed shows runAnim (op 0xA6) */
+    u8 moveTurnRate; /* per-frame turn step x8 while walking to a point (op 0x55) */
+    u8 animStart; /* op 0x3D */
+    u8 animEnd; /* op 0x3D */
+    u8 animFlags; /* 0x80 scripted anim playing, 0x02 idle anim, 0x40 reverse, 0x10/0x20 loop/bounce, 0x04 hold last frame */
+    u8 animLoops; /* loop count (ops 0x3F/0x98), 0xFF forever */
+    u8 animSubFrame; /* 4-bit fraction of the 12.4 frame position */
     u8 pad65[0x68 - 0x65];
-    u8 unk68;
-    u8 unk69;
-    u8 unk6A;
-    u8 unk6B;
-    u16 unk6C; /* rotation y speed */
-    s16 unk6E; /* also used as a tiny script buffer */
+    u8 jumpFrame; /* 0 .. jumpFrames */
+    u8 defaultAnimSpeed; /* op 0x3E, copied to animSpeed on each anim change */
+    u8 lookParam0; /* op 0x8B */
+    u8 lookParam1; /* op 0x8B */
+    u16 turnRate; /* rotation y step, 0x7FFF turns without a turn animation */
+    s16 talkTurnScript; /* 0xA7 turn toward the talker before the talk function (op 0x91), 4 don't */
     u8 unk70;
     u8 unk71;
     u8 unk72;
-    u8 unk73;
-    u16 unk74; /* idle animation */
-    u16 unk76;
-    s32 unk78;
-    union { u32 w; u8 b[4]; } unk7C; /* colour */
-    u16 unk80;
-    u16 unk82;
-    s16 unk84; /* smoothed look-at point (evt_relaxLookAt) */
-    s16 unk86;
-    s16 unk88;
-    s16 unk8A; /* speech bubble anchor offset (copied from D_8007AE5C..64) */
-    s16 unk8C;
-    s16 unk8E;
-    u8 unk90;
-    u8 unk91;
-    u8 unk92;
-    u8 unk93;
-    s16 unk94;
-    s16 unk96;
-    struct EvtObject *unk98; /* object collided with (evt_movePlayer) */
-    s32 unk9C;
-    struct EvtObject *unkA0;
-    u16 unkA4;
-    u16 unkA6;
-    u16 unkA8;
-    s16 unkAA;
+    u8 turnSpeed; /* op 0x99, default 16 */
+    u16 idleAnim; /* op 0x52 (runtime: 55) */
+    u16 jumpAnim; /* op 0x94 */
+    s32 moveDistSq; /* squared distance to the walk target, 0x7FFFFFFF when done */
+    union { u32 w; u8 b[4]; } idleAnimSpeeds; /* op 0x86 (runtime: Zidane 14/16/18/20) */
+    u16 turnStartDir; /* rotY when the turn started */
+    u16 turnStep; /* per-frame turn step */
+    s16 lookAtX; /* smoothed look-at point (evt_relaxLookAt) */
+    s16 lookAtY;
+    s16 lookAtZ;
+    s16 balloonOfsX; /* speech bubble anchor offset (copied from D_8007AE5C..64) */
+    s16 balloonOfsY;
+    s16 balloonOfsZ;
+    u8 jumpAnimStart; /* op 0x94 */
+    u8 jumpAnimEnd; /* op 0x94 */
+    u8 jumpFrames; /* op 0xE2 (runtime: 12) */
+    u8 talkTarget; /* uid of the object the player last talked to */
+    s16 jumpTargetX; /* op 0xE2 */
+    s16 jumpTargetZ; /* op 0xE2 */
+    struct EvtObject *collidedObject; /* object collided with (evt_movePlayer) */
+    s32 collisionDepth; /* negative penetration depth */
+    struct EvtObject *animSyncSource; /* actor whose anim it copies (op 0xB5) */
+    u16 jumpStartX; /* position before the jump */
+    u16 jumpStartY;
+    u16 jumpStartZ;
+    s16 jumpTargetY; /* op 0xE2 */
 } EvtObject;
 
 /* model header as seen by evt_relaxLookAt (BtlUnit9C in ovl_0b) */
@@ -1269,7 +1269,7 @@ void msg_resetPlayerBubble(void);
 static inline EvtObject *evt_getObject_inline(s32 id) {
     Unk16D8 *n;
     for (n = g_evtState->unk16D8; n != NULL; n = n->unk0) {
-        if (n->unk4->unk7 == id) {
+        if (n->unk4->uid == id) {
             break;
         }
     }
@@ -2487,7 +2487,7 @@ static inline s32 evt_getArg8_inline2(void) {
         evt_evalExpr();
         r = evt_popResult();
     } else {
-        r = *g_evtCurObj->unk0++;
+        r = *g_evtCurObj->ip++;
     }
     g_evtArgFlags >>= (g_evtArgRead = 1);
     return r;
@@ -3825,8 +3825,8 @@ static inline s32 evt_getArg16_inline(void) {
         r = evt_popResult();
     } else {
         EvtObject *pp = g_evtCurObj;
-        r = *pp->unk0++;
-        r |= *pp->unk0++ << 8;
+        r = *pp->ip++;
+        r |= *pp->ip++ << 8;
         r = (s16)r;
     }
     g_evtArgFlags >>= 1;
@@ -3835,7 +3835,7 @@ static inline s32 evt_getArg16_inline(void) {
 }
 
 /* uid of the object the current script runs for */
-#define CUR_UID() (((u8 *)((s32 *)g_evtCurObj + g_evtCurObj->unk9) + g_evtCurObj->unkA * 4)[-1])
+#define CUR_UID() (((u8 *)((s32 *)g_evtCurObj + g_evtCurObj->stackOfs) + g_evtCurObj->sp * 4)[-1])
 
 static inline s32 evt_getArg8_inline(void) {
     s32 r;
@@ -3843,7 +3843,7 @@ static inline s32 evt_getArg8_inline(void) {
         evt_evalExpr();
         r = evt_popResult();
     } else {
-        r = *g_evtCurObj->unk0++;
+        r = *g_evtCurObj->ip++;
     }
     g_evtArgFlags >>= 1;
     g_evtArgRead = 1;
@@ -3863,16 +3863,16 @@ void func_8004B9B8(Unk8004B9B8 *);
 
 /* Inlined helper: start the animation set up in unk60/unk61/unk62. */
 static inline void evt_execInstr_anim(EvtObject *p, s32 anim) {
-    if ((p->unk62 & 0x80) && (p->unkF & 0x80)) {
+    if ((p->animFlags & 0x80) && (p->flags & 0x80)) {
         func_8004B9B8((Unk8004B9B8 *)p);
     }
-    p->unk36 = anim;
-    p->unk3A = p->unk60;
-    p->unk62 &= ~0x46;
-    p->unk62 |= (p->unk60 > p->unk61) ? 0xC0 : 0x80;
-    p->unk64 = 0;
-    p->unk38 = evt_getAnimFrameCount(p->unk34, anim);
-    p->unk5D = p->unk69;
+    p->anim = anim;
+    p->animFrame = p->animStart;
+    p->animFlags &= ~0x46;
+    p->animFlags |= (p->animStart > p->animEnd) ? 0xC0 : 0x80;
+    p->animSubFrame = 0;
+    p->animFrames = evt_getAnimFrameCount(p->modelId, anim);
+    p->animSpeed = p->defaultAnimSpeed;
 }
 
 /* event region (quad) object, same header as EvtObject */
@@ -3920,10 +3920,10 @@ static inline Unk8004AFF0 *evt_getObjectModelData_inline(EvtObject *p) {
     Unk8E0 *q;
 
     if (p != NULL) {
-        if (p->unk34 == 0xFFFF) {
+        if (p->modelId == 0xFFFF) {
             return NULL;
         }
-        q = (Unk8E0 *)game_getModel(p->unk3B);
+        q = (Unk8E0 *)game_getModel(p->modelSlot);
         if (q != NULL) {
             return (Unk8004AFF0 *)q->unk8;
         }
@@ -3972,9 +3972,9 @@ static inline s32 evt_getArg24_inline(void) {
         v = evt_popResult();
     } else {
         pp = g_evtCurObj;
-        v = *pp->unk0++;
-        v |= *pp->unk0++ << 8;
-        v |= *pp->unk0++ << 16;
+        v = *pp->ip++;
+        v |= *pp->ip++ << 8;
+        v |= *pp->ip++ << 16;
     }
     g_evtArgFlags >>= (g_evtArgRead = 1);
     return v;
@@ -4032,38 +4032,38 @@ static inline void evt_execInstr_party(void) {
 }
 
 static inline void func_8004B3A8_inline(s32 a, s32 b) {
-    evt_createObject(a, b, 0x14, 0x10)->unk5 = 2;
+    evt_createObject(a, b, 0x14, 0x10)->kind = 2;
 }
 
 static inline void evt_createRegion_inline(s32 a, s32 b) {
     EvtObject *p = evt_createObject(a, b, 0x38, 0x10);
-    p->unk5 = 3;
-    p->unkF = 1;
+    p->kind = 3;
+    p->flags = 1;
 }
 
 static inline void evt_execInstr_newactor(s32 uid, s32 b) {
     EvtObject *p;
 
     p = (EvtObject *)evt_createObject(uid, b, 0xAC, 0x10);
-    p->unk3C = 0x10;
-    p->unk3D = 0x10;
-    p->unk34 = 0xFFFF;
-    p->unk3E = 0xFF;
-    p->unk2F = 0x40;
-    p->unk5 = 4;
-    p->unk69 = 0x10;
-    p->unk5C = 0x1E;
-    p->unk5D = 0x10;
-    p->unk61 = 0xFF;
-    p->unk5E = 0x1F;
-    p->unk5F = 0x10;
-    p->unk6E = 4;
+    p->collisionRadius = 0x10;
+    p->talkRadius = 0x10;
+    p->modelId = 0xFFFF;
+    p->balloonWindow = 0xFF;
+    p->scale = 0x40;
+    p->kind = 4;
+    p->defaultAnimSpeed = 0x10;
+    p->speed = 0x1E;
+    p->animSpeed = 0x10;
+    p->animEnd = 0xFF;
+    p->runSpeed = 0x1F;
+    p->moveTurnRate = 0x10;
+    p->talkTurnScript = 4;
     p->unk71 = 0x50;
     p->unk72 = 4;
-    p->unk73 = 0x10;
-    p->unk93 = 0xFF;
-    p->unk7C.w = 0x10101010;
-    p->unkF |= 4;
+    p->turnSpeed = 0x10;
+    p->talkTarget = 0xFF;
+    p->idleAnimSpeeds.w = 0x10101010;
+    p->flags |= 4;
     switch (g_evtMode) {
     case 1:
         fld_queueModelBundle(uid);
@@ -4079,14 +4079,14 @@ static inline void evt_execInstr_window(EvtObject *obj, s32 b, s32 c) {
     Unk16D8 *n;
     EvtObject *o;
 
-    if ((b & 0xA0) == 0x80 && obj->unk5 == 4) {
+    if ((b & 0xA0) == 0x80 && obj->kind == 4) {
         for (n = g_evtState->unk16D8; n != NULL; n = n->unk0) {
             o = n->unk4;
-            if (o->unk5 == 4 && o->unk3E == c) {
-                o->unk3E = 0xFF;
+            if (o->kind == 4 && o->balloonWindow == c) {
+                o->balloonWindow = 0xFF;
             }
         }
-        obj->unk3E = c;
+        obj->balloonWindow = c;
         g_evtLookTarget = obj;
         D_8007AE6C = 0;
     }
@@ -4280,9 +4280,9 @@ static inline u16 evt_rollEncounter_pick(void) {
 
 /* start an object's idle animation (evt_updateIdleTimer) */
 static inline void evt_updateIdleTimer_idle(EvtObject *q) {
-    q->unk60 = 0;
-    q->unk61 = 0xFF;
-    evt_execInstr_anim(q, q->unk74);
+    q->animStart = 0;
+    q->animEnd = 0xFF;
+    evt_execInstr_anim(q, q->idleAnim);
 }
 
 /* party slot key for func_8004B85C: slots 9+ map down by 4 */

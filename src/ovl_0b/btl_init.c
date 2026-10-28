@@ -282,8 +282,8 @@ void btl_resetUnit(BtlUnit *arg0, Unk8E0 *arg1) {
 }
 
 void func_800BBF30(EvtObject *arg0, s16 arg1) {
-    arg0->unk34 = arg1;
-    arg0->unk3B = evt_createModel(arg0);
+    arg0->modelId = arg1;
+    arg0->modelSlot = evt_createModel(arg0);
 }
 
 void btl_initWeapon(Character *arg0, BtlUnit *arg1) {

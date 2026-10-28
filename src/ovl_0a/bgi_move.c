@@ -534,9 +534,9 @@ s32 bgi_moveActor(BgiActor *arg0) {
     cur.vx = arg0->actor->pos.vx;
     cur.vy = arg0->actor->pos.vy;
     cur.vz = arg0->actor->pos.vz;
-    prev.vx = arg0->actor->unk40.vx;
-    prev.vy = arg0->actor->unk40.vy;
-    prev.vz = arg0->actor->unk40.vz;
+    prev.vx = arg0->actor->prevPos.vx;
+    prev.vy = arg0->actor->prevPos.vy;
+    prev.vz = arg0->actor->prevPos.vz;
     if (cur.vx == prev.vx && cur.vy == prev.vy && cur.vz == prev.vz) {
         arg0->lastFloor = arg0->floor;
         arg0->lastTriangle = arg0->triangle;
@@ -552,9 +552,9 @@ s32 bgi_moveActor(BgiActor *arg0) {
         } else {
             arg0->floor = -1;
         }
-        arg0->actor->pos.vx = arg0->actor->unk40.vx;
-        arg0->actor->pos.vy = arg0->actor->unk40.vy;
-        arg0->actor->pos.vz = arg0->actor->unk40.vz;
+        arg0->actor->pos.vx = arg0->actor->prevPos.vx;
+        arg0->actor->pos.vy = arg0->actor->prevPos.vy;
+        arg0->actor->pos.vz = arg0->actor->prevPos.vz;
         ret |= BGI_MOVE_BLOCKED;
         if (arg0->lastTriangle >= 0) {
             if (!(u8)bgi_pointInTriangle(g_fieldBgi.header, &g_fieldBgi.floors[arg0->lastFloor], &g_fieldBgi.triangles[arg0->lastTriangle], &prev.vx)) {
@@ -574,9 +574,9 @@ s32 bgi_moveActor(BgiActor *arg0) {
             } else {
                 arg0->floor = -1;
             }
-            arg0->actor->pos.vx = arg0->actor->unk40.vx;
-            arg0->actor->pos.vy = arg0->actor->unk40.vy;
-            arg0->actor->pos.vz = arg0->actor->unk40.vz;
+            arg0->actor->pos.vx = arg0->actor->prevPos.vx;
+            arg0->actor->pos.vy = arg0->actor->prevPos.vy;
+            arg0->actor->pos.vz = arg0->actor->prevPos.vz;
             ret |= BGI_MOVE_BLOCKED;
             if (arg0->lastTriangle >= 0 && arg0->lastFloor >= 0) {
             if (!(u8)bgi_pointInTriangle(g_fieldBgi.header, &g_fieldBgi.floors[arg0->lastFloor], &g_fieldBgi.triangles[arg0->lastTriangle], &prev.vx)) {
@@ -787,9 +787,9 @@ s32 bgi_setActorTriangle(s32 arg0, s16 arg1) {
     g_fieldBgi.actors[arg0].actor->pos.vx = v.vx + n->centerX;
     g_fieldBgi.actors[arg0].actor->pos.vy = v.vy + n->centerY;
     g_fieldBgi.actors[arg0].actor->pos.vz = v.vz + n->centerZ;
-    g_fieldBgi.actors[arg0].actor->unk40.vx = v.vx + n->centerX;
-    g_fieldBgi.actors[arg0].actor->unk40.vy = v.vy + n->centerY;
-    g_fieldBgi.actors[arg0].actor->unk40.vz = v.vz + n->centerZ;
+    g_fieldBgi.actors[arg0].actor->prevPos.vx = v.vx + n->centerX;
+    g_fieldBgi.actors[arg0].actor->prevPos.vy = v.vy + n->centerY;
+    g_fieldBgi.actors[arg0].actor->prevPos.vz = v.vz + n->centerZ;
     return 1;
 }
 
@@ -812,9 +812,9 @@ s32 bgi_setActorFloorTriangle(s32 arg0, u16 arg1, u16 arg2) {
     g_fieldBgi.actors[arg0].actor->pos.vx = v.vx + n->centerX;
     g_fieldBgi.actors[arg0].actor->pos.vy = v.vy + n->centerY;
     g_fieldBgi.actors[arg0].actor->pos.vz = v.vz + n->centerZ;
-    g_fieldBgi.actors[arg0].actor->unk40.vx = v.vx + n->centerX;
-    g_fieldBgi.actors[arg0].actor->unk40.vy = v.vy + n->centerY;
-    g_fieldBgi.actors[arg0].actor->unk40.vz = v.vz + n->centerZ;
+    g_fieldBgi.actors[arg0].actor->prevPos.vx = v.vx + n->centerX;
+    g_fieldBgi.actors[arg0].actor->prevPos.vy = v.vy + n->centerY;
+    g_fieldBgi.actors[arg0].actor->prevPos.vz = v.vz + n->centerZ;
     return 1;
 }
 

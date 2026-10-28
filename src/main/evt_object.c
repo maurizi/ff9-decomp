@@ -96,9 +96,9 @@ EvtObject *evt_createObject(s32 idx, s32 id, s32 a2, s32 a3) {
     }
     n->unk0 = NULL;
     n->unk4 = o;
-    o->unk6 = idx;
-    o->unk7 = id;
-    o->unk5 = 0;
+    o->scriptIdx = idx;
+    o->uid = id;
+    o->kind = 0;
     {
         u8 *h = g_evtScripts + ((ScriptEntry *)g_evtScripts)[idx].unk0;
         s32 c = *(u16 *)h >> 8;
@@ -116,13 +116,13 @@ EvtObject *evt_createObject(s32 idx, s32 id, s32 a2, s32 a3) {
         } else {
             h = NULL;
         }
-        o->unk0 = h;
+        o->ip = h;
     }
-    o->unk9 = nw + nv;
-    o->unk8 = nw;
+    o->stackOfs = nw + nv;
+    o->varsOfs = nw;
     o->unkC = a3;
-    o->unkE = 0;
-    o->unk10 = 0xFF;
+    o->state = 0;
+    o->windowId = 0xFF;
     return o;
 }
 
@@ -151,7 +151,7 @@ Unk16D8 *evt_deleteObject(EvtObject *obj) {
         n->unk0 = g_evtState->unk16E0;
         g_evtState->unk16E0 = n;
         func_8004B2F4_inline(obj);
-        if (g_evtState->playerUid == n->unk4->unk7) {
+        if (g_evtState->playerUid == n->unk4->uid) {
             g_evtState->playerUid = 0;
         }
     }
@@ -570,16 +570,16 @@ s32 evt_exprSpecial(s32 op) {
     case 0x70:
         px = -1;
         o = (EvtObject *)evt_popResult();
-        if (o != NULL && o->unk5 == 4) {
-            bgi_getActorTriangle(o->unk3B, (u16 *)&px, (u16 *)&py);
+        if (o != NULL && o->kind == 4) {
+            bgi_getActorTriangle(o->modelSlot, (u16 *)&px, (u16 *)&py);
         }
         r = px;
         break;
     case 0x71:
         py = -1;
         o = (EvtObject *)evt_popResult();
-        if (o != NULL && o->unk5 == 4) {
-            bgi_getActorTriangle(o->unk3B, (u16 *)&px, (u16 *)&py);
+        if (o != NULL && o->kind == 4) {
+            bgi_getActorTriangle(o->modelSlot, (u16 *)&px, (u16 *)&py);
         }
         r = py;
         break;

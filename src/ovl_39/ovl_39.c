@@ -1844,7 +1844,7 @@ void menuSave_buildHeader(SaveBuf *buf) {
     n = 0;
     o = evt_getPlayer();
     if (o != NULL) {
-        n = o->unk3B;
+        n = o->modelSlot;
     }
     if (s_menuSave.mode == SAVE_MODE_NEXT_DISC) {
         h->discs = fld_getDiscChangeMask();
