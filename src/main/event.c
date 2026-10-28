@@ -160,19 +160,19 @@ void evt_returnFromFunc(EvtObject *o) {
         p--;
         v = p[0];
         if (!(*(u32 *)&o->level & 0xFF0000FF)) {
-            for (m = g_evtState->unk16D8; m != NULL; m = m->unk0) {
+            for (m = g_evtState->objects; m != NULL; m = m->unk0) {
                 t = m->unk4;
                 if (t->uid != 0) {
                     t->state = t->savedState;
                 }
             }
         }
-        o->ip = g_evtState->unk16F0 + p[-1];
+        o->ip = g_evtState->scriptBase + p[-1];
         o->wait = v;
         o->sp -= 2;
         o->level = v >> 8;
         if (((v >> 16) & 0xFF) != 0xFF) {
-            for (n = g_evtState->unk16D8; n != NULL; n = n->unk0) {
+            for (n = g_evtState->objects; n != NULL; n = n->unk0) {
                 if (n->unk4->uid == (u32)v >> 24) {
                     break;
                 }
@@ -219,7 +219,7 @@ s32 evt_callObjectFunc(EvtObject *o, s32 lv, s32 key, s32 save) {
         e = evt_callObjectFunc_find(o->scriptIdx, key);
         if (e != NULL) {
             slot = &((u32 *)o + o->stackOfs)[o->sp];
-            slot[0] = o->ip - g_evtState->unk16F0;
+            slot[0] = o->ip - g_evtState->scriptBase;
             w = o->wait | (o->level << 8);
             hi = g_evtCurObj->uid << 24;
             if (save) {
@@ -270,7 +270,7 @@ void *evt_findNearestObject(EvtObject *o, s32 flags, s32 *dist) {
     } else {
         r = o->collisionRadius * 4;
     }
-    for (n = g_evtState->unk16D8; n != NULL; n = n->unk0) {
+    for (n = g_evtState->objects; n != NULL; n = n->unk0) {
         q = n->unk4;
         a = 0;
         if (back) {
@@ -476,7 +476,7 @@ s32 evt_rollEncounter(EvtObject *p) {
 
     if (g_evtState->controlEnabled != 0 && g_evtEncounterDist > 0x3C0) {
         g_evtEncounterDist = 0;
-        g_evtEncounterChance += g_evtState->unk16EF;
+        g_evtEncounterChance += g_evtState->encounterRate;
         if (evt_rollEncounter_rand() < (g_evtEncounterChance >> 3)) {
             g_evtEncounterChance = 0;
             id = evt_rollEncounter_pick();
@@ -870,7 +870,7 @@ s32 evt_execInstr(void) {
         a = g_evtArgFlags;
         b = *g_evtCurObj->ip++;
         if ((u32)(a - 0xFB) < 4) {
-            a = g_evtState->unk16E4[a - 0xFB];
+            a = g_evtState->partyUids[a - 0xFB];
         }
         evt_execInstr_newactor(a, b);
         g_evtArgRead = 1;
@@ -945,13 +945,13 @@ s32 evt_execInstr(void) {
         g_evtActor->flags |= evt_getArg8_inline() & 0x3F;
         return 0;
     case 0x6A:
-        g_evtState->unk16F8 = 1;
+        g_evtState->walkOnly = 1;
         return 0;
     case 0xF0:
-        g_evtState->unk16F8 = 0;
+        g_evtState->walkOnly = 0;
         return 0;
     case 0xD5:
-        for (n = g_evtState->unk16D8; n != NULL; n = n->unk0) {
+        for (n = g_evtState->objects; n != NULL; n = n->unk0) {
             EvtObject *o = n->unk4;
             if (o->kind == 4) {
                 o->unk2C = o->flags;
@@ -962,7 +962,7 @@ s32 evt_execInstr(void) {
         }
         return 0;
     case 0xD6:
-        for (n = g_evtState->unk16D8; n != NULL; n = n->unk0) {
+        for (n = g_evtState->objects; n != NULL; n = n->unk0) {
             EvtObject *o = n->unk4;
             if (o->kind == 4) {
                 o->flags &= 0xFE;
@@ -1322,14 +1322,14 @@ s32 evt_execInstr(void) {
         if (po != NULL) {
             s32 *sp = (s32 *)po + po->stackOfs + po->sp;
             Unk16D8 *nn;
-            sp[0] = po->ip - g_evtState->unk16F0;
+            sp[0] = po->ip - g_evtState->scriptBase;
             sp[1] = po->wait | po->level << 8 | 0xFF << 16 | g_evtCurObj->uid << 24;
             po->level = 0;
             po->wait = 0;
             po->sp += 2;
             po->ip = D_8006E658;
             g_evtState->controlEnabled = 0;
-            for (nn = g_evtState->unk16D8; nn != NULL; nn = nn->unk0) {
+            for (nn = g_evtState->objects; nn != NULL; nn = nn->unk0) {
                 nn->unk4->flags |= 6;
             }
         }
@@ -1385,7 +1385,7 @@ s32 evt_execInstr(void) {
         evt_setNextBattle(a & 0x7FFF);
         return 3;
     case 0x57:
-        if ((g_evtState->unk16EF = evt_getArg8_inline()) == 0) {
+        if ((g_evtState->encounterRate = evt_getArg8_inline()) == 0) {
             g_evtEncounterChance = 0;
         }
         return 0;
@@ -1410,11 +1410,11 @@ s32 evt_execInstr(void) {
         g_evtState->controlEnabled = 1;
         msg_startHereIcon(1);
         e = g_evtState;
-        if (e->unk1700 >= 0) {
+        if (e->idleTimer >= 0) {
             if (g_randPtr >= g_randTableEnd) {
                 rand_refill();
             }
-            e->unk1700 = (*g_randPtr++ + 0xC8) * 4;
+            e->idleTimer = (*g_randPtr++ + 0xC8) * 4;
         }
         return 0;
     }
@@ -1672,8 +1672,8 @@ s32 evt_execInstr(void) {
         }
         return 0;
     case 0x67:
-        g_evtState->unk16E8 = evt_getArg8_inline() << 4;
-        g_evtState->unk16EA = evt_getArg8_inline() << 4;
+        g_evtState->analogDirOfs = evt_getArg8_inline() << 4;
+        g_evtState->padDirOfs = evt_getArg8_inline() << 4;
         return 0;
     case 0x6B:
         a = evt_getArg8_inline();
@@ -1893,10 +1893,10 @@ s32 evt_execInstr(void) {
         msg_startHereIcon(evt_getArg8_inline());
         return 0;
     case 0x90:
-        g_evtState->unk1700 = -1;
+        g_evtState->idleTimer = -1;
         return 0;
     case 0xEE:
-        g_evtState->unk1700 = 0;
+        g_evtState->idleTimer = 0;
         return 0;
     case 0xB9:
         a = evt_getArg8_inline();
@@ -2414,9 +2414,9 @@ void evt_movePlayer(EvtObject *obj) {
     g_evtPlayerMoved = dir != 0x8000;
     if (dir != 0x8000) {
         if (analog) {
-            dir += g_evtState->unk16E8;
+            dir += g_evtState->analogDirOfs;
         } else {
-            dir += g_evtState->unk16EA;
+            dir += g_evtState->padDirOfs;
         }
         dir &= 0xFFF;
         cur = obj->pos.rotY & 0xFFF;
@@ -2427,7 +2427,7 @@ void evt_movePlayer(EvtObject *obj) {
             cur += 0x1000;
         }
         obj->pos.rotY = ((cur + dir) >> 1) & 0xFFF;
-        if (g_evtState->unk16F8 != 0 && speed > 30) {
+        if (g_evtState->walkOnly != 0 && speed > 30) {
             speed = 30;
         }
         if (speed > 30) {
@@ -2494,7 +2494,7 @@ s32 func_80047AB8(EvtObject *p, s32 b) {
         if (ok) {
             p->unk70 = b >> 4;
             sp = &((s32 *)p + p->stackOfs)[p->sp];
-            sp[0] = p->ip - g_evtState->unk16F0;
+            sp[0] = p->ip - g_evtState->scriptBase;
             w = p->wait | (p->level << 8);
             hi = g_evtCurObj->uid << 24;
             x = hi | 0xFF0000;
@@ -2640,7 +2640,7 @@ void evt_updateLookAt(EvtObject *o) {
             z = o->pos.vz;
             mask = o->lookParam1;
             bestd = 0;
-            for (n = g_evtState->unk16D8; n != NULL; n = n->unk0) {
+            for (n = g_evtState->objects; n != NULL; n = n->unk0) {
                 q = n->unk4;
                 if (q != o && q->kind == 4 && (u32)(q->pos.vy - y + 399) < 799 && (q->moveFlags & 2) &&
                     (mask & q->lookParam0)) {
@@ -2720,8 +2720,8 @@ void evt_updateIdleTimer(void) {
     if (e == NULL || e->controlEnabled == 0) {
         return;
     }
-    e->unk1700 -= e->unk1700 > 0;
-    if (e->unk1700 != 0) {
+    e->idleTimer -= e->idleTimer > 0;
+    if (e->idleTimer != 0) {
         return;
     }
     o = evt_getObject_inline(e->playerUid);
@@ -2733,11 +2733,11 @@ void evt_updateIdleTimer(void) {
         return;
     }
     e2 = g_evtState;
-    if (e2->unk1700 >= 0) {
+    if (e2->idleTimer >= 0) {
         if (g_randPtr >= g_randTableEnd) {
             rand_refill();
         }
-        e2->unk1700 = (*g_randPtr++ + 0xC8) * 2;
+        e2->idleTimer = (*g_randPtr++ + 0xC8) * 2;
     }
     if (p->idleAnim != 0 && !(p->animFlags & 0x84)) {
         evt_updateIdleTimer_idle(p);
@@ -2753,7 +2753,7 @@ void evt_updateIdleTimer(void) {
 static inline EvtObject *evt_checkPlayerAction_find(EvtObject *p, s32 key) {
     EvtObject *found = NULL;
     s32 x = p->pos.vx;
-    Unk16D8 *n = g_evtState->unk16D8;
+    Unk16D8 *n = g_evtState->objects;
     s32 z = p->pos.vz;
     EvtObject *o;
 
@@ -2897,7 +2897,7 @@ s32 evt_updateObjects(void) {
 
     g_evtPlayerMoved = 0;
     world = g_evtMode == 2;
-    for (n = g_evtState->unk16D8; n != NULL; n = n->unk0) {
+    for (n = g_evtState->objects; n != NULL; n = n->unk0) {
         o = n->unk4;
         if (o->kind == 4) {
             z = o;
@@ -2921,8 +2921,8 @@ s32 evt_updateObjects(void) {
                     }
                     if (g_evtPlayerMoved != 0) {
                         s = g_evtState;
-                        if (s->unk1700 >= 0) {
-                            s->unk1700 = (evt_rollEncounter_rand() + 200) * 4;
+                        if (s->idleTimer >= 0) {
+                            s->idleTimer = (evt_rollEncounter_rand() + 200) * 4;
                         }
                     }
                 } else {
@@ -2942,7 +2942,7 @@ s32 evt_updateObjects(void) {
     l = (Unk16D8 *)D_8007B6FC;
     g_evtPosSetThisFrame = 0;
     if (l == NULL) {
-        l = g_evtState->unk16D8;
+        l = g_evtState->objects;
     }
     r = evt_runScripts(l);
     if (r == 6) {
@@ -2958,14 +2958,14 @@ s32 evt_updateObjects(void) {
         g_evtCamera = b;
     }
     if (world) {
-        for (n = g_evtState->unk16D8; n != NULL; n = n->unk0) {
+        for (n = g_evtState->objects; n != NULL; n = n->unk0) {
             o = n->unk4;
             if (o->unkB == 2 && evt_callObjectFunc(o, 3, 5, 0)) {
                 o->unkB = 1;
             }
         }
     } else {
-        for (n = g_evtState->unk16D8; n != NULL; n = n->unk0) {
+        for (n = g_evtState->objects; n != NULL; n = n->unk0) {
             o = n->unk4;
             if (o->kind == 4) {
                 p = o;
@@ -3061,7 +3061,7 @@ s32 evt_updateObjects(void) {
         g_evtPlayerBlocked--;
     }
     if (D_8007AE6C > 0 && --D_8007AE6C == 0) {
-        for (y = g_evtState->unk16D8; y != NULL; y = y->unk0) {
+        for (y = g_evtState->objects; y != NULL; y = y->unk0) {
             x = y->unk4;
             if (x->kind == 4 && (x->moveFlags & 0x200)) {
                 x->moveFlags |= 0x400;
@@ -3075,7 +3075,7 @@ s32 evt_updateObjects(void) {
     }
     if (r == 3 || r == 7) {
         if (g_evtMode == 1) {
-            for (m = g_evtState->unk16D8; m != NULL; m = m->unk0) {
+            for (m = g_evtState->objects; m != NULL; m = m->unk0) {
                 p = m->unk4;
                 if (p->kind == 4 && p->modelId != 0xFFFF) {
                     q = bgi_getActor(p->modelSlot);
@@ -3353,34 +3353,34 @@ void evt_init(u8 *data) {
         g_evtMode = 4;
         break;
     }
-    if ((g_evtStateData.unk16EE == 1 || g_evtStateData.unk16EE == 3) && g_evtMode == 2) {
+    if ((g_evtStateData.mode == 1 || g_evtStateData.mode == 3) && g_evtMode == 2) {
         g_evtSavedState = g_evtStateData;
     }
     g_evtState = &g_evtStateData;
-    for (n = g_evtState->unk1450; n < &g_evtState->unk1450[31]; n++) {
+    for (n = g_evtState->allocNodes; n < &g_evtState->allocNodes[31]; n++) {
         n->unk8 = n + 1;
     }
     n->unk8 = NULL;
-    g_evtState->unk15D4 = g_evtState->unk1450;
-    g_evtState->unk15D0 = NULL;
-    for (m = g_evtState->unk15D8; m < &g_evtState->unk15D8[31]; m++) {
+    g_evtState->allocFree = g_evtState->allocNodes;
+    g_evtState->allocUsed = NULL;
+    for (m = g_evtState->listNodes; m < &g_evtState->listNodes[31]; m++) {
         m->unk0 = m + 1;
     }
     m->unk0 = NULL;
-    g_evtState->unk16E0 = g_evtState->unk15D8;
-    g_evtState->unk16DC = NULL;
-    g_evtState->unk16D8 = NULL;
+    g_evtState->listFree = g_evtState->listNodes;
+    g_evtState->objectsTail = NULL;
+    g_evtState->objects = NULL;
     msg_resetPlayerBubble();
     msg_setAtePrompt(0);
     for (i = 0; i < 0x50; i++) {
-        g_evtState->unk0[i] = 0;
+        g_evtState->fieldVars[i] = 0;
     }
     g_evtState->controlEnabled = 0;
     g_evtState->playerUid = 0;
-    g_evtState->unk1700 = 0;
+    g_evtState->idleTimer = 0;
     msg_startHereIcon(0);
     D_8007B6FC = 0;
-    g_evtState->unk16F8 = 0;
+    g_evtState->walkOnly = 0;
     g_evtLookTarget = NULL;
     g_evtPlayerAnimCount = 10;
     g_evtMsgCount = 10;
@@ -3390,14 +3390,14 @@ void evt_init(u8 *data) {
     g_evtCamera = 0;
     g_evtEncounterDist = -0x5A0;
     p = g_evtState;
-    p->unk16EF = 0;
+    p->encounterRate = 0;
     g_evtEncounterChance = 0;
     g_evtEncounterPending = 0;
-    p->unk16E8 = 0;
-    p->unk16EA = 0;
+    p->analogDirOfs = 0;
+    p->padDirOfs = 0;
     g_swirlVariant = 0;
     func_8004B3A8_inline(0, 0);
-    g_evtState->unk16D8->unk4->state = 2;
+    g_evtState->objects->unk4->state = 2;
     evt_execInstr_party();
     for (i = 7; i >= 0; i--) {
         g_evtUnitObjects[i] = NULL;
@@ -3410,17 +3410,17 @@ void evt_init(u8 *data) {
                 evt_execInstr_newactor(r + g_evtScriptCount - 9, 0);
             }
         }
-        g_evtState->unk16FC = (s32)g_evtState->unk16DC;
+        g_evtState->battleObjectsTail = (s32)g_evtState->objectsTail;
     } else {
         g_gameState->gameData->rainCount = 0;
     }
     D_8007AE04 = 4;
-    if ((g_evtMode == 1 && g_evtSavedState.unk16EE == g_evtMode && g_evtSavedState.unk16F4 == (s16)g_gameState->gameData->fieldId) ||
-        (g_evtMode == 3 && g_evtSavedState.unk16EE == g_evtMode && g_evtSavedState.unk16F4 == g_gameState->gameData->unk7DC) ||
+    if ((g_evtMode == 1 && g_evtSavedState.mode == g_evtMode && g_evtSavedState.locationId == (s16)g_gameState->gameData->fieldId) ||
+        (g_evtMode == 3 && g_evtSavedState.mode == g_evtMode && g_evtSavedState.locationId == g_gameState->gameData->unk7DC) ||
         (g_gameState->unkA == 9 && g_evtModelsPending != 0)) {
-        d = data - g_evtSavedState.unk16F0;
+        d = data - g_evtSavedState.scriptBase;
         g_evtStateData = g_evtSavedState;
-        for (q = g_evtState->unk16D8; q != NULL; q = q->unk0) {
+        for (q = g_evtState->objects; q != NULL; q = q->unk0) {
             o = q->unk4;
             if (o->ip != NULL) {
                 o->ip += d;
@@ -3430,7 +3430,7 @@ void evt_init(u8 *data) {
             }
         }
         evt_callObjectFunc(evt_getObject_inline(0), 0, 10, 0);
-        for (l = g_evtState->unk16D8; l != NULL; l = l->unk0) {
+        for (l = g_evtState->objects; l != NULL; l = l->unk0) {
             o = l->unk4;
             if (o->uid != 0) {
                 o->savedState = o->state;
@@ -3440,9 +3440,9 @@ void evt_init(u8 *data) {
     } else {
         evt_updateObjects();
     }
-    g_evtState->unk16F0 = data;
-    g_evtState->unk16EE = g_evtMode;
-    g_evtState->unk16F4 = g_evtMode == 1   ? g_gameState->gameData->fieldId
+    g_evtState->scriptBase = data;
+    g_evtState->mode = g_evtMode;
+    g_evtState->locationId = g_evtMode == 1   ? g_gameState->gameData->fieldId
                           : g_evtMode == 3 ? g_gameState->gameData->unk7DC
                                             : 0;
 }
@@ -3453,7 +3453,7 @@ void evt_createModels(void) {
     s16 *q;
 
     if ((g_evtMode == 1 || g_evtMode == 3 || g_gameState->unkA == 9) && g_evtModelsPending != 0) {
-        for (n = g_evtState->unk16D8; n != NULL; n = n->unk0) {
+        for (n = g_evtState->objects; n != NULL; n = n->unk0) {
             o = n->unk4;
             if (o->kind == 4 && o->modelId != 0xFFFF) {
                 o->modelSlot = evt_createModel(o);
@@ -3499,7 +3499,7 @@ s32 evt_countNpcActors(s32 unused) { /* the overlays pass 0 */
     s32 lim;
     s32 cnt = 0;
     if (p != NULL) {
-        n = p->unk16D8;
+        n = p->objects;
         if (n != NULL) {
             lim = g_evtScriptCount - 9;
             do {
@@ -3627,7 +3627,7 @@ Unk16D8 *evt_getObjectList(void) {
     EvtState *p = g_evtState;
     Unk16D8 *r = NULL;
     if (p != NULL) {
-        r = p->unk16D8;
+        r = p->objects;
     }
     return r;
 }
@@ -3636,7 +3636,7 @@ Unk16D8 *evt_getBattleObjects(void) {
     EvtState *p = g_evtState;
     Unk16D8 *r = NULL;
     if (p != NULL) {
-        r = p->unk16FC;
+        r = p->battleObjectsTail;
     }
     return r;
 }
@@ -3706,7 +3706,7 @@ s32 evt_getModelSlot(s32 id) {
 }
 
 s32 evt_getPartyChrIndex(s32 i) {
-    s32 t = g_evtState->unk16E4[i] + 9;
+    s32 t = g_evtState->partyUids[i] + 9;
     u32 r = t - g_evtScriptCount;
     s32 ret = 0;
     if (r < 9) {
@@ -3730,27 +3730,27 @@ s32 evt_getWorldCamTargetObj(void) {
 void evt_resetIdleTimer(s32 a) {
     EvtState *p = g_evtState;
     s32 v;
-    if (p->unk1700 >= 0) {
+    if (p->idleTimer >= 0) {
         if (g_randPtr >= g_randTableEnd) {
             rand_refill();
         }
         v = *g_randPtr++ + 200;
         if (a == 0) {
-            p->unk1700 = v * 4;
+            p->idleTimer = v * 4;
         } else {
-            p->unk1700 = v * 2;
+            p->idleTimer = v * 2;
         }
     }
 }
 
 void func_8004B2A0(void) {
-    EvtAllocNode *p = g_evtState->unk1450;
-    for (; p < &g_evtState->unk1450[31]; p++) {
+    EvtAllocNode *p = g_evtState->allocNodes;
+    for (; p < &g_evtState->allocNodes[31]; p++) {
         p->unk8 = p + 1;
     }
     p->unk8 = NULL;
-    g_evtState->unk15D4 = g_evtState->unk1450;
-    g_evtState->unk15D0 = NULL;
+    g_evtState->allocFree = g_evtState->allocNodes;
+    g_evtState->allocUsed = NULL;
 }
 
 void func_8004B2F4(EvtObject *key) {
@@ -3758,14 +3758,14 @@ void func_8004B2F4(EvtObject *key) {
 }
 
 void evt_initObjectList(void) {
-    Unk16D8 *p = g_evtState->unk15D8;
-    for (; p < &g_evtState->unk15D8[31]; p++) {
+    Unk16D8 *p = g_evtState->listNodes;
+    for (; p < &g_evtState->listNodes[31]; p++) {
         p->unk0 = p + 1;
     }
     p->unk0 = NULL;
-    g_evtState->unk16E0 = g_evtState->unk15D8;
-    g_evtState->unk16DC = NULL;
-    g_evtState->unk16D8 = NULL;
+    g_evtState->listFree = g_evtState->listNodes;
+    g_evtState->objectsTail = NULL;
+    g_evtState->objects = NULL;
 }
 
 void evt_createRegion(s32 a, s32 b) {

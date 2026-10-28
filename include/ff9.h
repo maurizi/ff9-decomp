@@ -1231,29 +1231,29 @@ typedef struct Unk16D8 {
 } Unk16D8;
 
 typedef struct {
-    u8 unk0[0x50]; /* cleared by evt_init */
-    u32 unk50[0x500]; /* object pool (evt_allocObject) */
-    EvtAllocNode unk1450[32];
-    EvtAllocNode *unk15D0; /* active list */
-    EvtAllocNode *unk15D4; /* free list */
-    Unk16D8 unk15D8[32];
-    Unk16D8 *unk16D8;
-    Unk16D8 *unk16DC; /* tail */
-    Unk16D8 *unk16E0; /* free list */
-    u8 unk16E4[4]; /* party member object ids */
-    s16 unk16E8; /* analog / d-pad camera direction offsets */
-    s16 unk16EA;
+    u8 fieldVars[0x50]; /* variable bank 1 (evt_getVarBank 1), cleared by evt_init */
+    u32 objPool[0x500]; /* object pool (evt_allocObject) */
+    EvtAllocNode allocNodes[32];
+    EvtAllocNode *allocUsed; /* active list */
+    EvtAllocNode *allocFree; /* free list */
+    Unk16D8 listNodes[32];
+    Unk16D8 *objects; /* object list the scheduler runs */
+    Unk16D8 *objectsTail; /* tail */
+    Unk16D8 *listFree; /* free list */
+    u8 partyUids[4]; /* party member object uids (uid - 19 = character in the Dali party) */
+    s16 analogDirOfs; /* added to the stick direction (op 0x67) */
+    s16 padDirOfs; /* added to the d-pad direction (op 0x67) */
     u8 controlEnabled; /* runtime: 1 while the player walks, 0 during a dialog (field/menu campaign) */
     u8 playerUid; /* runtime: uid of the object the pad moves (Zidane, 19, in the Dali inn) */
-    u8 unk16EE; /* field mode the state was saved in */
-    u8 unk16EF;
-    u8 *unk16F0; /* script data base */
-    u16 unk16F4; /* field / world id the state was saved for */
+    u8 mode; /* game mode the state belongs to */
+    u8 encounterRate; /* op 0x57, added to g_evtEncounterChance per roll */
+    u8 *scriptBase; /* event data, call frames store ip - scriptBase */
+    u16 locationId; /* field / world id the state belongs to (evt_init restores g_evtSavedState when mode and id match) */
     u8 pad16F6[0x16F8 - 0x16F6];
-    u8 unk16F8;
+    u8 walkOnly; /* op 0x6A sets, 0xF0 clears (runtime: walk anim only) */
     u8 pad16F9[0x16FC - 0x16F9];
-    Unk16D8 *unk16FC;
-    s16 unk1700;
+    Unk16D8 *battleObjectsTail; /* evt_init in battle, returned by evt_getBattleObjects */
+    s16 idleTimer; /* frames until the player's idle anim, -1 disabled (op 0x90), 0 off (op 0xEE) */
     u8 pad1702[0x17C8 - 0x1702];
 } EvtState; /* 0x17C8 */
 extern EvtState *g_evtState;
@@ -1268,7 +1268,7 @@ void msg_resetPlayerBubble(void);
 /* Inlined copy of evt_getObject (find object by id). */
 static inline EvtObject *evt_getObject_inline(s32 id) {
     Unk16D8 *n;
-    for (n = g_evtState->unk16D8; n != NULL; n = n->unk0) {
+    for (n = g_evtState->objects; n != NULL; n = n->unk0) {
         if (n->unk4->uid == id) {
             break;
         }
@@ -2501,7 +2501,7 @@ static inline EvtObject *evt_resolveObjectId_inline(s32 id) {
     if (id == 0xFA) {
         id = g_evtState->playerUid;
     } else if ((u32)(id - 0xFB) < 4) {
-        id = g_evtState->unk16E4[id - 0xFB];
+        id = g_evtState->partyUids[id - 0xFB];
     }
     return evt_getObject_inline(id);
 }
@@ -2974,7 +2974,7 @@ static inline u8 *ui_buildSpriteDef_inline(s32 x, s32 y, u32 *ot, Unk800686E8 *d
 static inline void func_8004B2F4_inline(EvtObject *key) {
     EvtAllocNode *n;
     EvtAllocNode *prev = NULL;
-    for (n = g_evtState->unk15D0; n != NULL; n = n->unk8) {
+    for (n = g_evtState->allocUsed; n != NULL; n = n->unk8) {
         if (n->unk0 == key) {
             break;
         }
@@ -2983,10 +2983,10 @@ static inline void func_8004B2F4_inline(EvtObject *key) {
     if (prev != NULL) {
         prev->unk8 = n->unk8;
     } else {
-        g_evtState->unk15D0 = n->unk8;
+        g_evtState->allocUsed = n->unk8;
     }
-    n->unk8 = g_evtState->unk15D4;
-    g_evtState->unk15D4 = n;
+    n->unk8 = g_evtState->allocFree;
+    g_evtState->allocFree = n;
 }
 void win_drawScrollArrows(RECT *, s32, MenuList *);
 void win_drawSplitFill(RECT *, s32, MenuList *, s32);
@@ -4013,10 +4013,10 @@ extern Unk8007AE70 D_8007AE70;
 static inline void evt_execInstr_party(void) {
     s32 mask = 0;
     s32 i = 0;
-    u8 *p = g_evtState->unk16E4;
+    u8 *p = g_evtState->partyUids;
     s32 r;
 
-    *(s32 *)g_evtState->unk16E4 = -1;
+    *(s32 *)g_evtState->partyUids = -1;
     for (; i < 4; i++) {
         r = msg_getPartyMemberId(i);
         if (r >= 0) {
@@ -4080,7 +4080,7 @@ static inline void evt_execInstr_window(EvtObject *obj, s32 b, s32 c) {
     EvtObject *o;
 
     if ((b & 0xA0) == 0x80 && obj->kind == 4) {
-        for (n = g_evtState->unk16D8; n != NULL; n = n->unk0) {
+        for (n = g_evtState->objects; n != NULL; n = n->unk0) {
             o = n->unk4;
             if (o->kind == 4 && o->balloonWindow == c) {
                 o->balloonWindow = 0xFF;

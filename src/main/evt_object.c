@@ -1,18 +1,18 @@
 #include "ff9.h"
 
 EvtObject *evt_allocObject(s32 n) {
-    EvtAllocNode *cur = g_evtState->unk15D0;
+    EvtAllocNode *cur = g_evtState->allocUsed;
     EvtAllocNode *nn = NULL;
     EvtAllocNode *next;
 
     if (cur != NULL) {
-        if ((u32 *)cur->unk0 >= g_evtState->unk50 + n) {
-            nn = g_evtState->unk15D4;
-            g_evtState->unk15D4 = nn->unk8;
-            nn->unk8 = g_evtState->unk15D0;
-            g_evtState->unk15D0 = nn;
+        if ((u32 *)cur->unk0 >= g_evtState->objPool + n) {
+            nn = g_evtState->allocFree;
+            g_evtState->allocFree = nn->unk8;
+            nn->unk8 = g_evtState->allocUsed;
+            g_evtState->allocUsed = nn;
             {
-                u32 *p1 = g_evtState->unk50;
+                u32 *p1 = g_evtState->objPool;
                 nn->unk0 = (EvtObject *)p1;
                 nn->unk4 = p1 + n;
             }
@@ -24,8 +24,8 @@ EvtObject *evt_allocObject(s32 n) {
                 cur = next;
             }
             if (next != NULL) {
-                nn = g_evtState->unk15D4;
-                g_evtState->unk15D4 = nn->unk8;
+                nn = g_evtState->allocFree;
+                g_evtState->allocFree = nn->unk8;
                 nn->unk8 = cur->unk8;
                 cur->unk8 = nn;
                 {
@@ -33,9 +33,9 @@ EvtObject *evt_allocObject(s32 n) {
                     nn->unk0 = (EvtObject *)p2;
                     nn->unk4 = p2 + n;
                 }
-            } else if (cur->unk4 + n <= g_evtState->unk50 + 0x500) {
-                nn = g_evtState->unk15D4;
-                g_evtState->unk15D4 = nn->unk8;
+            } else if (cur->unk4 + n <= g_evtState->objPool + 0x500) {
+                nn = g_evtState->allocFree;
+                g_evtState->allocFree = nn->unk8;
                 nn->unk8 = NULL;
                 cur->unk8 = nn;
                 {
@@ -46,12 +46,12 @@ EvtObject *evt_allocObject(s32 n) {
             }
         }
     } else if (n <= 0x500) {
-        nn = g_evtState->unk15D4;
-        g_evtState->unk15D4 = nn->unk8;
+        nn = g_evtState->allocFree;
+        g_evtState->allocFree = nn->unk8;
         nn->unk8 = NULL;
-        g_evtState->unk15D0 = nn;
+        g_evtState->allocUsed = nn;
         {
-            u32 *p4 = g_evtState->unk50;
+            u32 *p4 = g_evtState->objPool;
             nn->unk0 = (EvtObject *)p4;
             nn->unk4 = p4 + n;
         }
@@ -85,14 +85,14 @@ EvtObject *evt_createObject(s32 idx, s32 id, s32 a2, s32 a3) {
         *p = 0;
     }
     d = g_evtState;
-    n = d->unk16E0;
-    d->unk16E0 = n->unk0;
-    if (d->unk16DC != NULL) {
-        d->unk16DC->unk0 = n;
-        d->unk16DC = n;
+    n = d->listFree;
+    d->listFree = n->unk0;
+    if (d->objectsTail != NULL) {
+        d->objectsTail->unk0 = n;
+        d->objectsTail = n;
     } else {
-        d->unk16D8 = n;
-        d->unk16DC = n;
+        d->objects = n;
+        d->objectsTail = n;
     }
     n->unk0 = NULL;
     n->unk4 = o;
@@ -132,7 +132,7 @@ Unk16D8 *evt_deleteObject(EvtObject *obj) {
     Unk16D8 *next = NULL;
 
     prev = NULL;
-    for (n = g_evtState->unk16D8; n != NULL; n = n->unk0) {
+    for (n = g_evtState->objects; n != NULL; n = n->unk0) {
         if (n->unk4 == obj) {
             break;
         }
@@ -143,13 +143,13 @@ Unk16D8 *evt_deleteObject(EvtObject *obj) {
         if (prev != NULL) {
             prev->unk0 = next;
         } else {
-            g_evtState->unk16D8 = next;
+            g_evtState->objects = next;
         }
-        if (g_evtState->unk16DC == n) {
-            g_evtState->unk16DC = prev;
+        if (g_evtState->objectsTail == n) {
+            g_evtState->objectsTail = prev;
         }
-        n->unk0 = g_evtState->unk16E0;
-        g_evtState->unk16E0 = n;
+        n->unk0 = g_evtState->listFree;
+        g_evtState->listFree = n;
         func_8004B2F4_inline(obj);
         if (g_evtState->playerUid == n->unk4->uid) {
             g_evtState->playerUid = 0;
