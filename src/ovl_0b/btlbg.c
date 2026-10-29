@@ -4,7 +4,7 @@ void btlbg_init(BtlBgHeader *arg0, BtlUnit9C50 *arg1) {
     s32 unused[4];
     s32 i;
     g_btlbgHeader = arg0;
-    g_btlbgScrolls = (BtlBgScroll *)arg0->unk10;
+    g_btlbgScrolls = arg0->scrolls;
     g_btlbgId = arg0->id;
     btlbg_setOtShift(0);
     g_btlbgSkyOwnProj = 0;
@@ -74,22 +74,22 @@ u8 *btlbg_draw(MATRIX *arg0, s32 arg1, s32 arg2, u32 *arg3, s32 arg4) {
     TransMatrix(&m2, &t);
     if (g_btlbgScrollPaused == 0) {
         for (i = 0; i < g_btlbgScrollCount; i++) {
-            a = arg1 + g_btlbgScrolls[i].unk0;
-            ((u8 *)a)[0] += g_btlbgScrolls[i].unk3;
-            ((u8 *)a)[1] += g_btlbgScrolls[i].unk4;
-            g_btlbgScrolls[i].unk5++;
-            if (g_btlbgScrolls[i].unk5 >= g_btlbgScrolls[i].unk6) {
-                switch (g_btlbgScrolls[i].unk2) {
+            a = arg1 + g_btlbgScrolls[i].uvOfs;
+            ((u8 *)a)[0] += g_btlbgScrolls[i].du;
+            ((u8 *)a)[1] += g_btlbgScrolls[i].dv;
+            g_btlbgScrolls[i].step++;
+            if (g_btlbgScrolls[i].step >= g_btlbgScrolls[i].period) {
+                switch (g_btlbgScrolls[i].mode) {
                 case 0:
-                    ((u8 *)a)[0] -= g_btlbgScrolls[i].unk6 * g_btlbgScrolls[i].unk3;
-                    ((u8 *)a)[1] -= g_btlbgScrolls[i].unk6 * g_btlbgScrolls[i].unk4;
+                    ((u8 *)a)[0] -= g_btlbgScrolls[i].period * g_btlbgScrolls[i].du;
+                    ((u8 *)a)[1] -= g_btlbgScrolls[i].period * g_btlbgScrolls[i].dv;
                     break;
                 case 1:
-                    g_btlbgScrolls[i].unk3 = -g_btlbgScrolls[i].unk3;
-                    g_btlbgScrolls[i].unk4 = -g_btlbgScrolls[i].unk4;
+                    g_btlbgScrolls[i].du = -g_btlbgScrolls[i].du;
+                    g_btlbgScrolls[i].dv = -g_btlbgScrolls[i].dv;
                     break;
                 }
-                g_btlbgScrolls[i].unk5 = 0;
+                g_btlbgScrolls[i].step = 0;
             }
         }
     }
@@ -104,9 +104,9 @@ u8 *btlbg_draw(MATRIX *arg0, s32 arg1, s32 arg2, u32 *arg3, s32 arg4) {
     grp = (BtlBgGroup *)arg1;
     k = 0;
     for (;;) {
-        rec = (BtlBgRec *)((u8 *)grp + grp->unk6);
-        for (i = 0; i < grp->unk4; rec++, i++) {
-            switch (rec->unk0) {
+        rec = (BtlBgRec *)((u8 *)grp + grp->recOfs);
+        for (i = 0; i < grp->recCount; rec++, i++) {
+            switch (rec->layer) {
             case 8:
                 if (!done) {
                     g_btlbgSkyAngle += g_btlbgSkySpeed;
@@ -148,7 +148,7 @@ u8 *btlbg_draw(MATRIX *arg0, s32 arg1, s32 arg2, u32 *arg3, s32 arg4) {
             return out;
         }
         k++;
-        grp = (BtlBgGroup *)((u8 *)grp + grp->unk0);
+        grp = (BtlBgGroup *)((u8 *)grp + grp->size);
         flag = 0;
         switch (g_btlbgHeader->id) {
         case 0x44:
@@ -229,14 +229,14 @@ u8 *btlbg_draw(MATRIX *arg0, s32 arg1, s32 arg2, u32 *arg3, s32 arg4) {
         case 7:
             if (k == 1) {
                 if (!((g_btlbgFrame + 0x1F) & 0x3F)) {
-                    D_800FE4FC = rand() & 0x1FF;
+                    g_btlbgJitterBase1 = rand() & 0x1FF;
                 }
-                rot2.vy = D_800FE4FC + (rand() & 0x3F);
+                rot2.vy = g_btlbgJitterBase1 + (rand() & 0x3F);
             } else {
                 if (!(g_btlbgFrame & 0x3F)) {
-                    D_800FE500 = rand() & 0x3FF;
+                    g_btlbgJitterBase2 = rand() & 0x3FF;
                 }
-                rot2.vy = D_800FE500 + (rand() & 0x7F);
+                rot2.vy = g_btlbgJitterBase2 + (rand() & 0x7F);
             }
             break;
         default:

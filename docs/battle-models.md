@@ -51,8 +51,10 @@ So a file whose size changes also changes its dependency entry in every bundle t
   `btl_registerModel(0x020000 | id, obj)`. That sets `BtlUnit9C.header = db_lookupRegistered(4, key)`, takes the
   texture tables from the model info (`btl_getModelTexInfo`), calls `btl_applyModelTextures`, and relocates the
   texture animations (key 0x19, `btl_relocTexAnims`).
-- **Party / weapon models**: the same format, from their own files (`btl_loadPartyModelsStep`,
-  `btl_loadWeaponModelsStep`, `btl_getWeaponModelHeader`).
+- **Party / weapon models**: the same format, from their own files (`btl_loadPartyModelsStep`:
+  FF9.IMG dir index 10, model id from `g_btlCharModelIds`; `btl_loadWeaponModelsStep`: dir index 8, model data in
+  the first 0x1000 bytes; `btl_getWeaponModelHeader`). Backgrounds have a format of their own:
+  docs/battle-backgrounds.md.
 - **Effect and summon models**: also the same format, inside effect files (FF9.IMG dir 13), registered through
   `Hi_Register*`.
 

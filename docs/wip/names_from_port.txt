@@ -5354,3 +5354,12 @@ func_800DE11C btlfx_drawSliceMesh  # [code] (ovl_0b) btl_drawMesh variant withou
 # FIELDS include/ovl_0b.h Unk800C9D1C (enemy type record): pad1E=modelId,unk20=motionIds (was "file ids"),unk2C=meshMasks,unk48=bones,unk4B=baseBone,unk68=shadowBone,unk6E=shadowDirBone
 # FIELDS include/ovl_0b.h Battle1334: unk1E=modelId
 # FIELDS include/ovl_0b.h BtlUnit: unkBD=shadowBone,unkBE=shadowDirBone
+
+## R26 battle backgrounds
+D_800FE4FC g_btlbgJitterBase1  # [code] btlbg_draw, background scene 7, group 1: re-rolled to rand() & 0x1FF every 64 frames, the group's y rotation is it + rand() & 0x3F, docs/battle-backgrounds.md
+D_800FE500 g_btlbgJitterBase2  # [code] btlbg_draw, background scene 7, group 2: re-rolled to rand() & 0x3FF every 64 frames, the group's y rotation is it + rand() & 0x7F, docs/battle-backgrounds.md
+
+# FIELDS include/ovl_0b.h BtlBgRec: unk0=layer,unk2=vertexCount,unk4=firstVertex,unk6=colorOfs,unk8=indexOfs,unkA=uvOfs,unkC=quadCount,unkE=triCount [code] btlbg_draw / btlbg_drawRecord, docs/battle-backgrounds.md
+# FIELDS include/ovl_0b.h BtlBgGroup: unk0=size,pad2=cornerCount,unk4=recCount,unk6=recOfs,pad8=texCount,unkA=texOfs,padC=vertexCount,unkE=vertexOfs, new +0x10 polyCount,colorOfs,indexOfs,uvOfs (0x18 bytes; the pad/new members are data, consistent on every file of the 4 discs: tools/battle_budget.py)
+# FIELDS include/ovl_0b.h BtlBgScroll: unk0=uvOfs,unk2=mode,unk3=du,unk4=dv,unk5=step,unk6=period [code] btlbg_draw
+# FIELDS include/ovl_0b.h BtlBgHeader: unk10=scrolls (BtlBgScroll[scrollCount], btlbg_init g_btlbgScrolls)

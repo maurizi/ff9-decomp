@@ -1047,3 +1047,5 @@ btlui_onPanelLabelsOut = 0x800F4140; // type:func [code] slide done hook hides l
 btlui_onListLabelOut = 0x800F4180; // type:func [code] slide done hook hides label 4, back to the remembered menu state
 btlui_loadPortraits = 0x800E9DBC; // type:func [code] looks up registered db kind 4 id 0x1E and loads the party portraits from it (ui_loadPartyPortraits), clears the party-changed flag
 btlfx_drawSliceMesh = 0x800DE11C; // type:func [code] btl_drawMesh variant without the group otBias, only caller Hi_DrawSliceEffModel after btlfx_projectSliceMesh, docs/battle-models.md
+g_btlbgJitterBase1 = 0x800FE4FC; // [code] btlbg_draw, background scene 7, group 1 re-rolled to rand() & 0x1FF every 64 frames, the group's y rotation is it + rand() & 0x3F each frame, docs/battle-backgrounds.md
+g_btlbgJitterBase2 = 0x800FE500; // [code] btlbg_draw, background scene 7, group 2 re-rolled to rand() & 0x3FF every 64 frames, the group's y rotation is it + rand() & 0x7F each frame, docs/battle-backgrounds.md

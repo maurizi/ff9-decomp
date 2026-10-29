@@ -964,44 +964,53 @@ extern struct BtlUnit9C50 *g_btlbgTexAnims;
 extern s32 g_btlbgSkyOwnProj;
 /* battle background: texture scroll entry (g_btlbgScrolls) */
 typedef struct {
-    s16 unk0; /* offset of the uv pair in the group data */
-    u8 unk2;  /* 0 = wrap, 1 = bounce */
-    u8 unk3;  /* du */
-    u8 unk4;  /* dv */
-    u8 unk5;  /* step */
-    u8 unk6;  /* steps per cycle */
+    s16 uvOfs; /* the uv pair it moves, offset from the first group (Battle11C0.bgData) */
+    u8 mode;   /* 0 = wrap (step back period x (du, dv)), 1 = bounce (negate du, dv) */
+    u8 du;
+    u8 dv;
+    u8 step;   /* frames since the last wrap/bounce (written at run time) */
+    u8 period; /* frames per cycle */
     u8 pad7;
 } BtlBgScroll;
 
-/* battle background: group header, followed by 0x10-byte records */
+/* battle background: group header (0x18 bytes), followed by its records; offsets are from the group, groups
+ * follow each other (docs/battle-backgrounds.md). Members marked "data" are not read by the code. */
 typedef struct {
-    u16 unk0; /* size */
-    u16 pad2;
-    u16 unk4; /* record count */
-    u16 unk6; /* record offset */
-    u16 pad8;
-    u16 unkA; /* offset of the texture word table (clut << 16 | tpage, indexed by color bits 24-28) */
-    u16 padC;
-    u16 unkE; /* offset of the packed 6-byte vertices */
+    u16 size; /* bytes to the next group */
+    u16 cornerCount; /* data: 4 x quads + 3 x triangles of all records (index and uv entries) */
+    u16 recCount;
+    u16 recOfs; /* BtlBgRec[recCount] */
+    u16 texCount; /* data: entries of the texture word table */
+    u16 texOfs; /* texture word table (clut << 16 | tpage, indexed by color bits 24-28) */
+    u16 vertexCount; /* data: sum of the records' vertexCount */
+    u16 vertexOfs; /* the packed 6-byte vertices (s16 x, y, z) */
+    u16 polyCount; /* data: quads + triangles of all records (color words) */
+    u16 colorOfs; /* data: first record's colors */
+    u16 indexOfs; /* data: first record's vertex indices */
+    u16 uvOfs; /* data: first record's uvs */
 } BtlBgGroup;
 
+/* battle background: record (draw batch) of a group, 0x10 bytes; offsets are from the record itself
+ * (docs/battle-backgrounds.md) */
 typedef struct {
-    u16 unk0; /* kind; btlbg_drawRecord: 0 = OT index from the depth sum << g_btlbgOtShift, else bit 3 = back
-               * (0x3FC), bit 1 = front (0), otherwise sum >> 6 (quads) / >> 4 (triangles) << 2 */
-    u16 unk2; /* vertex count (a multiple of 6) */
-    u16 unk4; /* first vertex */
-    u16 unk6; /* offset of the colors (a word per primitive: bgr, texture index << 24, bit 29 = semi-transparent,
-               * bits 30-31 = blend mode) */
-    u16 unk8; /* offset of the vertex indices (scratchpad byte offsets, 4 per quad then 3 per triangle) */
-    u16 unkA; /* offset of the uvs */
-    u16 unkC; /* quad count */
-    u16 unkE; /* triangle count */
+    u16 layer; /* 8 sky (turns with g_btlbgSkyAngle), 4, 2, 0 (btlbg_draw, g_btlbgLayerMask bits 8/4/2/1);
+                * btlbg_drawRecord: 0 = scene OT, index from the depth sum << g_btlbgOtShift; else the
+                * background OT: bit 3 = back (0x3FC), bit 1 = front (0), otherwise sum >> 6 (quads) /
+                * >> 4 (triangles) << 2 */
+    u16 vertexCount; /* vertices projected (a non-zero multiple of 6, at most 126: the scratchpad holds 128) */
+    u16 firstVertex; /* index of the first one in the group's vertex array */
+    u16 colorOfs; /* the colors (a word per primitive: bgr, texture index << 24, bit 29 = semi-transparent,
+                   * bits 30-31 = blend mode) */
+    u16 indexOfs; /* the vertex indices (scratchpad byte offsets, i.e. 4 x index; 4 per quad then 3 per triangle) */
+    u16 uvOfs; /* the uvs (u8 u, v per corner, in the same order) */
+    u16 quadCount;
+    u16 triCount;
 } BtlBgRec;
 
 extern BtlBgScroll *g_btlbgScrolls;
 extern s32 g_btlbgFrame; /* frame counter */
-extern s32 D_800FE4FC;
-extern s32 D_800FE500;
+extern s32 g_btlbgJitterBase1;
+extern s32 g_btlbgJitterBase2;
 u8 *btlbg_drawRain(u8 *, u32 *, MATRIX *);
 u8 *btlbg_drawRecord(BtlBgRec *, u8 *, u32 *, BtlBgGroup *);
 void btlbg_projectVertices(BtlBgRec *, u8 *, u32 *, s32);
@@ -2028,18 +2037,20 @@ typedef struct Unk800D7E14 {
     s16 unk8[4];
 } Unk800D7E14;
 
+/* battle background header: DB item 0x1Axxxx of the background file (docs/battle-backgrounds.md) */
 typedef struct BtlBgHeader {
-    s16 id; /* background id (g_btlbgId) */
-    s16 texAnimCount; /* count of g_btlbgTexAnims entries */
-    s16 skySpeed;
-    s16 skyOwnProj;
+    s16 id; /* scene id (g_btlbgId), not the file id; btlbg_draw moves the groups after the first for 7, 0x44,
+             * 0x6E, 0x70, 0xA8, 0xAB */
+    s16 texAnimCount; /* count of g_btlbgTexAnims entries (DB item 0x19xxxx) */
+    s16 skySpeed; /* added to g_btlbgSkyAngle every frame (layer 8 records turn by it >> 3) */
+    s16 skyOwnProj; /* layer 8 records are drawn with their own projection (screen 0x200, fixed distance) */
     s16 lastGroup; /* last group index */
-    s16 scrollCount;
+    s16 scrollCount; /* BtlBgScroll entries after the header */
     u8 lightR; /* light colour the units take (btl_applyBgLight, btl_setUnitFade) */
     u8 lightG;
     u8 lightB;
     u8 shadowShade; /* shadow grey level (BtlShadow.shade) */
-    u8 unk10[1]; /* data */
+    BtlBgScroll scrolls[1]; /* [scrollCount] (g_btlbgScrolls; their step bytes change at run time) */
 } BtlBgHeader;
 
 

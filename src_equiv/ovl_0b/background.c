@@ -110,7 +110,7 @@ static u32 btlbg_shade(u32 c, u32 bright) {
 /* The texture word for a color: the table entry (clut << 16 | tpage) the color's bits 24-28 pick, with the
  * color's bits 30-31 as the tpage's blend mode (bits 5-6). */
 static u32 btlbg_texture(BtlBgGroup *grp, u32 c) {
-    return ((u32 *)((u8 *)grp + grp->unkA))[(c >> 24) & 0x1F] | ((c >> 25) & 0x60);
+    return ((u32 *)((u8 *)grp + grp->texOfs))[(c >> 24) & 0x1F] | ((c >> 25) & 0x60);
 }
 
 /* Draws one background record: projects its vertices (btlbg_projectVertices), then emits a POLY_FT4 per
@@ -119,18 +119,18 @@ static u32 btlbg_texture(BtlBgGroup *grp, u32 c) {
  * Only the low halfwords of g_btlbgBrightness and g_btlbgOtShift are read. Standard C ABI (returns the
  * advanced packet pointer). GTE: see btlbg_project and btlbg_shade, plus SXY0-SXY2 and NCLIP's MAC0. */
 u8 *btlbg_drawRecord(BtlBgRec *rec, u8 *out, u32 *ot, BtlBgGroup *grp) {
-    u32 flags = rec->unk0;
-    u32 *col = (u32 *)((u8 *)rec + rec->unk6);
-    u8 *idx = (u8 *)rec + rec->unk8;
-    u8 *uv = (u8 *)rec + rec->unkA;
-    s32 nquad = rec->unkC;
-    s32 ntri = rec->unkE;
+    u32 flags = rec->layer;
+    u32 *col = (u32 *)((u8 *)rec + rec->colorOfs);
+    u8 *idx = (u8 *)rec + rec->indexOfs;
+    u8 *uv = (u8 *)rec + rec->uvOfs;
+    s32 nquad = rec->quadCount;
+    s32 ntri = rec->triCount;
     u32 bright = *(u16 *)&g_btlbgBrightness;
     u32 shift;
     u32 xy0, xy1, xy2, xy3, z, c, t, u, code;
     u32 i01, i23;
 
-    btlbg_project((u32 *)((u8 *)grp + grp->unkE + rec->unk4 * 6), rec->unk2);
+    btlbg_project((u32 *)((u8 *)grp + grp->vertexOfs + rec->firstVertex * 6), rec->vertexCount);
     shift = *(u16 *)&g_btlbgOtShift & 31;
 
     for (; nquad != 0; nquad--, idx += 8, uv += 8, col++) {

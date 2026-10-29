@@ -30,12 +30,12 @@ Packed back to back from sector 1, one per directory in header order.
 | 2 | 3 | 19 | 0.5 MB | ? |
 | 3 | 4 | 15 | 1.3 MB | ? (ids look like packed u16 pairs) |
 | 4 | 5 | 222 | 122.5 MB | ? (largest) |
-| 5 | 6 | 337 | 2.0 MB | ? |
-| 6 | 8 | 151 | 33.4 MB | ? |
+| 5 | 6 | 337 | 2.0 MB | **encounter bundles** (file id = battle id; docs/encounters.md) |
+| 6 | 8 | 151 | 33.4 MB | **battle backgrounds** (file id = background id, key 0x0Cxxxx; docs/battle-backgrounds.md) |
 | 7 | 9 | 101 | 12.3 MB | **battle models** (enemies; file id = model id, key 0x02xxxx; docs/battle-models.md) |
-| 8 | 10 | 85 | 1.0 MB | ? |
+| 8 | 10 | 85 | 1.0 MB | **weapon models** (file id word 0xFFFF << 16 \| model id; `btl_loadWeaponModelsStep`) |
 | 9 | 11 | 55 | 14.8 MB | ? |
-| 10 | 12 | 42 | 3.3 MB | ? |
+| 10 | 12 | 42 | 3.3 MB | **party models** (file id word = model-data sectors << 16 \| model id; `btl_loadPartyModelsStep`, ids from `g_btlCharModelIds`) |
 | 11 | 13 | 427 | 50.6 MB | ? |
 | 12 | 15 | 2 | 11.4 MB | ? |
 | 13 | 16 | 511 | ~70 MB | **battle effect files** (type 3; 372 present): effect data, textures and an effect code module each |
