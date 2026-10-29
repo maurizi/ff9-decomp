@@ -7,6 +7,9 @@
     python3 tools/encounter_catalog.py --encounters --bg-absent --json -     # per (disc, encounter), only those
                                                                              # whose background is not on the disc
 
+Disc images: --img DIR (or an FF9.IMG with one --disc), else $FF9_DISKS, else disks/ in this checkout or in any
+directory above it (find_image), so a submodule copy finds its superproject's disks/.
+
 Formats and code paths: docs/encounters.md. In short:
 - Every encounter bundle (dir index 5) names its background (dependency key 0x0C0000|bg). On a disc that lacks
   that background file the entry is sector 0 / length 0, and no field or world map on that disc starts the
@@ -51,6 +54,45 @@ def u16(b, o):
 
 def u32(b, o):
     return struct.unpack_from('<I', b, o)[0]
+
+
+DISKS_ENV = 'FF9_DISKS'
+# layouts under a disks directory (or the checkout / superproject that holds one)
+DISC_LAYOUTS = ('us/disc{n}/FF9.IMG', 'disc{n}/FF9.IMG', 'disks/us/disc{n}/FF9.IMG')
+
+
+def disk_dirs():
+    """Where the disc images may be, in order: $FF9_DISKS, this checkout's disks/, then every directory above
+    the checkout (and an `ff9-decomp` checkout next to each), so a copy used as a git submodule (e.g. the DS
+    port's decomp/) finds the superproject's or a sibling checkout's disks/."""
+    out = []
+    if os.environ.get(DISKS_ENV):
+        out.append(os.environ[DISKS_ENV])
+    d = ROOT
+    while True:
+        out += [os.path.join(d, 'disks'), os.path.join(d, 'ff9-decomp', 'disks')]
+        up = os.path.dirname(d)
+        if up == d:
+            return out
+        d = up
+
+
+def find_image(disc, img=None):
+    """FF9.IMG of a disc. `img` (the tools' --img) is either the FF9.IMG itself or a directory in one of the
+    DISC_LAYOUTS; without it, disk_dirs() is searched. Returns the path, or None (with the places tried on
+    stderr)."""
+    tried = []
+    for base in [img] if img else disk_dirs():
+        if img and os.path.isfile(img):
+            return img
+        for lay in DISC_LAYOUTS:
+            p = os.path.join(base, lay.format(n=disc))
+            if os.path.isfile(p):
+                return p
+            tried.append(p)
+    print(f'disc {disc}: no FF9.IMG (set --img DIR or ${DISKS_ENV}); tried ' + ', '.join(tried[:6])
+          + (f' and {len(tried) - 6} more' if len(tried) > 6 else ''), file=sys.stderr)
+    return None
 
 
 def slot_shares(pattern):
@@ -363,7 +405,8 @@ def summary(rows, own, disc):
 def main():
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     ap.add_argument('--disc', type=int, action='append', choices=range(1, 5))
-    ap.add_argument('--img', help='FF9.IMG path (with a single --disc)')
+    ap.add_argument('--img', help='FF9.IMG (with a single --disc) or a directory holding discN/FF9.IMG, us/discN/ '
+                    'or disks/us/discN/ (default: $FF9_DISKS, else disks/ here or in a directory above)')
     ap.add_argument('--encounter', type=int)
     ap.add_argument('--encounters', action='store_true',
                     help='one record per (disc, encounter) instead of one per (place, encounter)')
@@ -372,9 +415,8 @@ def main():
     a = ap.parse_args()
     per_disc = {}
     for disc in a.disc or [1, 2, 3, 4]:
-        path = a.img or os.path.join(ROOT, f'disks/us/disc{disc}/FF9.IMG')
-        if not os.path.exists(path):
-            print(f'disc {disc}: {path} missing', file=sys.stderr)
+        path = find_image(disc, a.img)
+        if path is None:
             continue
         per_disc[disc] = catalog(path, disc)
         if a.json != '-':

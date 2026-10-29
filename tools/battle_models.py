@@ -7,7 +7,8 @@
     python3 tools/battle_models.py --model 512 --meshes    # per mesh group detail
     python3 tools/battle_models.py --json build/battle_models.json
 
-Reads disks/us/discN/FF9.IMG (no emulator). Formats and code paths: docs/battle-models.md, docs/encounters.md.
+Reads discN/FF9.IMG (no emulator) from --img DIR, $FF9_DISKS, or disks/ in this checkout or a directory above it
+(encounter_catalog.find_image). Formats and code paths: docs/battle-models.md, docs/encounters.md.
 - Encounter bundle (dir index 5, file id = battle id): its first item of DB block 0x10 is the encounter header
   (`Battle11C020`: u8 ?, u8 ngroups, u8 ntypes, u8 nabilities, ...; then ngroups 0x38-byte groups, then ntypes
   0x74-byte enemy type records). The record's u16 at +0x1E is the type's **model id** (`btl_getEnemyModelId`; the
@@ -27,7 +28,7 @@ import struct
 import sys
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
-from encounter_catalog import Img, SECTOR, ROOT, db_items, db_find, u16, u32  # noqa: E402
+from encounter_catalog import Img, SECTOR, db_items, db_find, find_image, u16  # noqa: E402
 
 DIR_ENCOUNTERS, DIR_MODELS = 5, 7
 KIND_MODEL, KIND_DEPS, KIND_ENC_HEADER, KIND_TEXTS, KIND_PACK = 0x02, 0x14, 0x10, 0x06, 0x1B
@@ -159,7 +160,9 @@ def model_stats(data, mid):
     return out
 
 
-def scan_disc(path, disc):
+def scan_disc(path, disc, groups_out=None):
+    """({(disc, model): model}, [per (encounter, enemy type) row], [problems]); groups_out, if given, gets
+    {battle: [enemy group: {'weight', 'enemies': [{'type', 'no_model'}]}]}."""
     img = Img(path)
     where = {}
     for i in range(len(img.dirs)):
@@ -174,6 +177,8 @@ def scan_disc(path, disc):
         if enc is None:
             continue
         groups, types = enc
+        if groups_out is not None:
+            groups_out[battle] = groups
         deps = {}
         for key, msec, nsec, split in dep_entries(data):
             if key >> 16 == KIND_MODEL:
@@ -200,7 +205,8 @@ def scan_disc(path, disc):
 def main():
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     ap.add_argument('--disc', type=int, action='append', choices=range(1, 5))
-    ap.add_argument('--img', help='FF9.IMG path (with a single --disc)')
+    ap.add_argument('--img', help='FF9.IMG (with a single --disc) or a directory holding discN/FF9.IMG, us/discN/ '
+                    'or disks/us/discN/ (default: $FF9_DISKS, else disks/ here or in a directory above)')
     ap.add_argument('--name', action='append', help='only enemy types whose name contains this (any case)')
     ap.add_argument('--model', type=int, action='append', help='only these model ids')
     ap.add_argument('--battle', type=int, action='append', help='only these encounters')
@@ -211,9 +217,8 @@ def main():
     a = ap.parse_args()
     models, rows, problems = {}, [], []
     for disc in a.disc or [1, 2, 3, 4]:
-        path = a.img or os.path.join(ROOT, f'disks/us/disc{disc}/FF9.IMG')
-        if not os.path.exists(path):
-            print(f'disc {disc}: {path} missing', file=sys.stderr)
+        path = find_image(disc, a.img)
+        if path is None:
             continue
         m, r, p = scan_disc(path, disc)
         models.update(m)
