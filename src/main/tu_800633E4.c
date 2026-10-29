@@ -23,17 +23,17 @@ u16 *db_findModelInfo(s32 id) {
     return NULL;
 }
 
-u8 *func_800634A8(s32 a) {
+u8 *db_getModelTexPages(s32 a) {
     u16 *p = db_findModelInfo(a);
     return (u8 *)p + (((u32 *)p)[1] & 0xFFFFFF);
 }
 
-u8 *func_800634D8(s32 a) {
+u8 *db_getModelUvOffsets(s32 a) {
     u8 *p = (u8 *)db_findModelInfo(a);
     return p + (((u32 *)p)[1] & 0xFFFFFF) + p[7] * 4;
 }
 
-u8 *func_80063514(s32 a) {
+u8 *db_getModelTexPos(s32 a) {
     DbEntry12 *p = (DbEntry12 *)db_findModelInfo(a);
     s32 n = p->unk7;
     u8 *q = (u8 *)p + p->unk4;

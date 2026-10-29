@@ -1441,3 +1441,7 @@ wrain_drawDrops = 0x80053764; // type:func [code] world-map copy of rain_drawDro
 wrain_stepDrop = 0x80053728; // type:func [code] world-map copy of rain_stepDrop, docs/runtime-findings.md field fixture campaign
 g_worldRain = 0x8007BC50; // [code] world-map copy of g_fieldRain, docs/runtime-findings.md field fixture campaign
 g_worldRainPrims = 0x8007BC48; // [code] world-map copy of g_fieldRainPrims, docs/runtime-findings.md field fixture campaign
+db_getModelTexPages = 0x800634A8; // type:func [code] first table of a model info entry (db_findModelInfo, entry + offset) one {tpage, clut} word per texture index, btl_registerModel/btlfx_getCasterTexInfo/wm_buildPackets use it as the model's texture words, btl_drawMesh reads it by polygon tex, docs/battle-models.md
+db_getModelUvOffsets = 0x800634D8; // type:func [code] second table of a model info entry (first + count words) s16 du, dv per texture index, btl_applyModelTextures adds them to the uv entries of polygons using that texture, docs/battle-models.md
+db_getModelTexPos = 0x80063514; // type:func [code] third table of a model info entry (first + 2 x count words, 8 bytes per texture) VRAM position of each texture's TIM (btl_loadEnemyModelsStep file_setTimPos) and texture-animation offsets (btl_relocTexAnims), docs/battle-models.md
+db_getModelTexCount = 0x80063830; // type:func [code] model info entry count byte (DbEntry12.unk7) or 0 textures of a model, loop bound of btl_setStoneClut/btl_makeGreyCluts, docs/battle-models.md

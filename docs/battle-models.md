@@ -10,8 +10,8 @@ holds the same bytes as item 0x020060 of FF9.IMG dir index 7, file 96, with the 
   +0x1E (`modelId`, read by `btl_getEnemyModelId`). The six u16 at +0x20 (`motionIds`, formerly "file ids") are
   its **motions** (keys 0x03xxxx, `btl_initEnemyType`), which live in the same model file.
 - **Model id → FF9.IMG**: key `0x020000 | id` of the encounter bundle's dependency table. Its entry
-  `{key, sector, sectors, split}` is FF9.IMG **dir index 7 (directory id 10), file id = model id**. This holds for
-  every model entry of every encounter on all four discs (431 entries, 182 distinct models).
+  `{key, sector, sectors, split}` is FF9.IMG **dir index 7, file id = model id**. This holds for
+  every model entry of every encounter on all four discs (431 (disc, model) pairs, 182 distinct models).
 - All 182 enemy models use only **FT4 and FT3** polygons (no gouraud or untextured lists), none is double-sided,
   and the largest mesh group has 798 vertices (the limit is 801).
 - **The indices a simplified file must keep valid**: bone numbers (count, order, parents), mesh-group numbers
@@ -129,11 +129,11 @@ offset there are three tables of `count` entries:
 
 | table | entry | used by |
 |---|---|---|
-| texture words (`func_800634A8` → `db_getModelTexPages`) | `{tpage, clut}` | `BtlUnit9C.texPages`; CLUT position for each TIM's upload; `btl_setStoneClut` / `btl_makeGreyCluts` (petrify) |
+| texture words (`db_getModelTexPages`, was func_800634A8) | `{tpage, clut}` | `BtlUnit9C.texPages`; CLUT position for each TIM's upload; `btl_setStoneClut` / `btl_makeGreyCluts` (petrify) |
 | uv offsets (`db_getModelUvOffsets`) | `{s16 du, dv}` | `btl_applyModelTextures`: added once to every uv entry that a polygon with that texture uses |
 | texture positions (`db_getModelTexPos`) | 8 bytes, `{x, y, ...}` | VRAM position of TIM n's image; texture-animation offsets (`btl_relocTexAnims`) |
 
-`count` (`func_80063830` → `db_getModelTexCount`) is also the number of TIMs in item 1 of the file. Keeping the
+`count` (`db_getModelTexCount`, was func_80063830) is also the number of TIMs in item 1 of the file. Keeping the
 texture indices of the kept polygons is enough. The texture data doesn't change with the geometry.
 
 ### Motions (key 0x03xxxx, `BtlUnit9CC`)
@@ -184,3 +184,113 @@ Nothing else in the file is a pointer. Vertex, uv and colour indices are 16-bit 
 | texture index | model info tables | polygon `tex` |
 | vertex / uv / colour index | the group's arrays | that group's polygons only (for enemy models; effect models: `Hi_SplitMdlVertex` etc., below) |
 | polygon number / list position | — | nothing for unit models. The order is only the order packets are built in; `btl_setModelRgb` and co. walk the *built* packets until each group's 0xFF terminator |
+
+## Consumers: who reads a model's vertices, polygons and packets
+This covers every ovl_0b function that takes a `BtlUnit9C` or `BtlUnit9C8`, the `src_equiv/ovl_0b` routines, and
+all 380 effect modules. The modules were scanned through the `btlfx_mod.h` exports they call: no module reaches
+ovl_0b any other way, and none reads a model header's fields directly. Main, ovl_65 and the other overlays never
+touch a battle model's geometry.
+
+### Base game (ovl_0b), unit models (party, enemies, weapons)
+| function | reads | writes |
+|---|---|---|
+| `btl_updateUnitModel` (per unit per tick) | calls `btl_calcBoneMatrices`, then `btl_projectMesh` + `btl_drawMesh` for each group not in `hiddenMeshes`; the same for the weapon model | |
+| `btl_calcBoneMatrices` (asm; `src_equiv/ovl_0b/bones.c`) | `boneCount`, `bones[].parent/length`, the motion's keys (one per bone), the parent model's bone (`parentBone`) | bone matrices (`BtlUnit9C.bones`) |
+| `btl_projectMesh` | `vertexCounts[boneCount]`, `vertices`, bone matrices | `g_vtxScreenXY/Z[0 .. group vertices + 2]` |
+| `btl_drawMesh` (asm; `src_equiv/ovl_0b/mesh_packets.c`; its C twin `btl_buildMeshPrims` has no callers) | all eight lists: `vtx` → screen arrays, `uv` → `uvs`, `col` → `colors`, `rgb`, `tex` → `texPages`, `flags`; `otBias` | GPU packets for the front-facing polygons, then a 0xFF terminator per group; the first packet is stored in `BtlUnit9C.prims` |
+| `btl_applyModelTextures` (from `btl_registerModel`, `btl_initWeapon`, weapon/party reloads) | header, groups, the FT4/FT3/GT4/GT3 `uv` and `tex` | relocation (`flags` bit 0), `uvs` (+ per-texture offsets, once) |
+| `btl_setMeshRgb` | the FT4 and FT3 lists of one group (strides 0x18 / 0x14; the other lists are not visited) | their `rgb` (the byte after it is kept). Callers: `btl_resetUnit` and `btl_initPartyUnit` (start black), `btl_setUnitBrightness` (intro/escape fades), `btl_applyBgLight` (background light on weapon models) |
+| `btl_addMeshRgb` | the same lists | `rgb` + clamp; nothing calls it |
+| `btl_setModelRgb`, `btl_fillModelRgb`, `btl_setModelAbr` | the **built packets** from `BtlUnit9C.prims`, group by group up to each 0xFF terminator, skipping hidden groups | packet colours / semi-transparency. Callers: `btl_updateUnitTint` (Zombie/Berserk/Heat/Freeze fills, Shell/Protect pulse, the **Trance** glow), `btl_setUnitBrightness`, `btl_cmdfx.c`, `btlfx_fadeUnit` / `btlfx_setUnitBrightness` / `btlfx_setUnitLight` |
+| `btl_setStoneClut`, `btl_makeGreyCluts` (**petrify**) | `texPages[0 .. db_getModelTexCount)` | `texPages[].clut` (moved 6 or 12 rows), grey CLUT copies in VRAM; no geometry |
+| `btl_hideMeshes`, `btl_showMeshes`, `btl_hideWeapon`, `btl_showWeapon` | `meshCount` | `hiddenMeshes` bits |
+| `btl_drawShadow` / `btl_calcShadowMatrix` | bone matrices `shadowBone`, `shadowDirBone` | its own 4 FT4 quads; no model polygons |
+| `btl_getBaseBonePos`, `btl_getUnitBodyPos`, `btl_getBonePos`, `btl_getBoneMatrix` | bone matrices (`baseBone`, enemy `bones[2]`, any bone number) | |
+| `btl_getUnitHeight`, `btlfx_getScaledRadius`, `btl_getMeshCount` | `height`, `radius`, `meshCount` | |
+| `btl_updateTexAnims` / `btl_relocTexAnims` | the texture-animation item 0x19xxxx, model info positions | VRAM rectangles only |
+| `btl_forEachModelVertex` (export 0x06C) | every group's `vertexCounts` and `vertices` | calls `fn(&vertices[i], i)`, i = vertex number within the group |
+| `btlfx_swapModelData` (export 0x2E0) | the whole item `0x020000 \| id` (`db_lookupRegistered` modes 4/5) | copies it to a buffer behind a 0x1234 marker, or back |
+
+### Effect and summon models (`Hi_*`, models inside effect files)
+These run the same drawing path on `g_btlfxEffModels` / `g_btlfxSummonModels` slots:
+- `Hi_DrawEffModel`, `Hi_DrawEffModelByBone`, `Hi_DrawSummonModel`: `btl_projectMesh` + `btl_drawMesh` /
+  `btl_drawMeshOffset`.
+- `Hi_DrawSliceEffModel`: `btlfx_projectSliceMesh` + `btlfx_drawSliceMesh`.
+- `Hi_DrawMorphEffModel` / `Hi_DrawMorphModelByBone`: `btlfx_projectMorphMesh` blends vertex i of each bone of the
+  model with vertex i of the morph target, so both models need the same bone and vertex counts.
+- `Hi_Modify*RGB/Abr`: built packets. `Hi_Show/HideSummonModelMesh`: group bits.
+
+The vertex-number users all work on effect models:
+- `Hi_SplitMdlVertex` → `GeoSplitVertices` → `btlfx_splitMeshVertices` gives every polygon corner its own copy of
+  its vertex, in a buffer the module passes. It rewrites every `vtx` index to point there (in list order) and
+  points `vertices` at the buffer. It stores the new count in `vertexCounts[group number]` (the group number used
+  as a bone index), clamped to 0x321 with a warning.
+- `Hi_GetSplitMdlVertex` → `btlfx_getSplitVertexSize`: 8 bytes per corner of all lists.
+- `Hi_GetMdlVertexPtr` → `btlfx_getMeshPrims`: where list k's split vertices start in that buffer, and its polygon
+  count (32 bytes per quad, 24 per triangle).
+
+Every `Hi_Register*` / `btlfx_registerEffectModel` / `btlfx_registerSummonModel` call in the 380 modules passes a
+header from the module's own effect file (`btlfx_getFileData`). No module draws, splits or recolours a unit's model
+through these functions.
+
+### Effect modules and unit models
+These exports reach a unit's (party or enemy) model. The middle column is how many of the 380 modules call each one:
+
+| export | modules | touches |
+|---|---|---|
+| `btlfx_getUnitBodyPos` | 219 | bones (`baseBone`, enemy `bones[2]`) |
+| `btlfx_getUnitBonePos` / `…ArgBonePos` / `…BoneMatrix` / `…ArgBoneMatrix` | 41 / 44 / 31 / 1 | a bone number (a literal, or the target list's `unk25`) |
+| `btlfx_getWeaponPos` | 13 | the weapon's parent bone |
+| `btlfx_fadeUnitById` | 23 | built packets (`btlfx_fadeUnit` → `btl_setModelRgb` / `btl_setModelAbr`); -1 / -2: `hiddenMeshes` 0xFFFF on / off |
+| `btlfx_setUnitLight` | 1 (fx_0fb_1) | built packets |
+| `btlfx_setUnitVisible` | 2 | the unit's hidden flag (`BtlUnit.flags` bit 22), not the model |
+| `btlfx_getCasterTexInfo` | 2 (fx_12d, fx_1b3) | model info texture tables of the caster's model id |
+| `btlfx_swapModelData` + `btl_forEachModelVertex` | 1 (fx_17f) | **model 14 (the Zombie enemy), vertices by number**: below |
+
+**fx_17f** (effect file 0x17F) is the only code that uses an enemy model's vertex numbers. When unit 0x10 is an
+enemy, it saves item `0x02000E` (19,340 bytes on the discs) in its buffer `D_801E88E0` (26,620 bytes after the
+marker). Every frame it moves each vertex of the model down by `D_801E7C60[i]`, a table of 700 random entries
+indexed by the vertex's number within its group (the model has one group of 399 vertices). It also squeezes x/z
+near the floor and fades unit 0x11. At the end it restores the saved copy. A simplified Zombie must keep at most
+700 vertices per group and still fit the buffer. None of the port's heavy enemies is affected.
+
+So for the enemy models the port wants to simplify, the vertex, uv and polygon numbering inside each group is used
+only by `btl_projectMesh`, `btl_drawMesh`, `btl_applyModelTextures` and `btl_setMeshRgb`. These must stay:
+- `boneCount`, and every bone's parent and length (motions, anchors, shadows);
+- `meshCount` and the group order (hide/show masks);
+- each group's `vertexCounts` layout by bone (each vertex keeps the bone it moves with);
+- the texture indices, `otBias`, `height` and `radius`;
+- the per-group limits above.
+
+## tools/battle_models.py
+```
+python3 tools/battle_models.py                         # one row per enemy model, heaviest first, all discs
+python3 tools/battle_models.py --name Hecteyes --name Ochu
+python3 tools/battle_models.py --encounters --disc 3   # one row per (encounter, enemy type)
+python3 tools/battle_models.py --model 166 --meshes    # per mesh group detail (bones, textures, flags)
+python3 tools/battle_models.py --json build/battle_models.json   # everything, per disc
+```
+The tool reads the encounter bundles (enemy type records, names, dependency tables) and each model file's header.
+On the way it checks that each entry is dir index 7 with file id = model id, the list sizes, `packetSize`, the
+index ranges and the 801-vertex limit. Problems go to stderr, and there are none on the four discs. "max copies"
+is the largest number of placements of the type in one enemy group that have their own model (placements with the
+no-model bit are left out). Counts are for the whole model, front and back faces.
+
+The port's heavy enemies (`--name` for each):
+
+```
+model dir/file d:sector  sects bones mesh  verts polys   FT4  FT3  GT4  GT3   G4   G3   F4   F3  max copies  names / battles
+  166 7/166   1:83926    93    56    2   1308  1889    43 1846    0    0    0    0    0    0  x1  Hecteyes / discs 1234 battles 15 293 333 420 569 570 756 757 +5
+   95 7/95    2:111103   87    42    2   1183  1897    98 1799    0    0    0    0    0    0  x1  Ochu / discs 23 battles 110 111 113
+  355 7/355   1:85602   115    56    2   1181  1816   184 1632    0    0    0    0    0    0  x1  Grand Dragon / discs 1234 battles 262 277 278 280 617 620 621 622 +3
+  324 7/324   1:84453    89    40    2   1115  1788   192 1596    0    0    0    0    0    0  x1  Adamantoise / discs 1234 battles 68 69 291 292 777 778
+  341 7/341   3:128511  119    55    3   1100  1782   218 1564    0    0    0    0    0    0  x1  Abadon / discs 3 battles 160 901 902 903
+   78 7/78    1:81664   100    26    3    986  1632   272 1360    0    0    0    0    0    0  x1  Whale Zombie / discs 1234 battles 740 758 813 815 827 828
+  163 7/163   1:83740    69    26    2    795  1384   114 1270    0    0    0    0    0    0  x1  Zaghnol / discs 1234 battles 14 81 674 677 678 679 680
+  157 7/157   1:83444    58    27    1    514   850    94  756    0    0    0    0    0    0  x2  Wyerd / discs 1 battles 23 24
+  145 7/145   1:83032    53    41    1    514   908    86  822    0    0    0    0    0    0  x2  Bandersnatch / discs 1234 battles 65 66 273 274 275 913 916
+  150 7/150   1:83170    56    30    1    335   618    48  570    0    0    0    0    0    0  x2  Clipper / discs 1234 battles 185 186
+```
+To make the list complete, these models outweigh Hecteyes by vertex count (`--top 8`): Nova Dragon (model 545,
+1408 vertices), Trance Kuja (566, 1371), Zuu (87, 1358) and Armodullahan (344, 1315). Ark (512, 1305), Garland
+(446, 1292) and Iron Man (343, 1290) come right after Hecteyes.

@@ -4,7 +4,7 @@ INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/btl_mesh_asm", btl_drawMeshOffset);
 
 INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/btl_mesh_asm", btlfx_projectSliceMesh);
 
-u8 *func_800DE11C(BtlUnit9C *arg0, u8 arg1, u8 *prim) {
+u8 *btlfx_drawSliceMesh(BtlUnit9C *arg0, u8 arg1, u8 *prim) {
     s32 opz;
     s32 otz;
     BtlMesh *g;

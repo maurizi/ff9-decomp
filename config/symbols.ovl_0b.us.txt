@@ -1046,3 +1046,4 @@ btlui_hideListHeader = 0x800F3DE0; // type:func [code] slides the panel labels b
 btlui_onPanelLabelsOut = 0x800F4140; // type:func [code] slide done hook hides labels 1-3, BTLUI_MENU_TARGET
 btlui_onListLabelOut = 0x800F4180; // type:func [code] slide done hook hides label 4, back to the remembered menu state
 btlui_loadPortraits = 0x800E9DBC; // type:func [code] looks up registered db kind 4 id 0x1E and loads the party portraits from it (ui_loadPartyPortraits), clears the party-changed flag
+btlfx_drawSliceMesh = 0x800DE11C; // type:func [code] btl_drawMesh variant without the group otBias, only caller Hi_DrawSliceEffModel after btlfx_projectSliceMesh, docs/battle-models.md

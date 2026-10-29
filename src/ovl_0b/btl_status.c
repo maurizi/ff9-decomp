@@ -528,7 +528,7 @@ void btl_setStoneClut(BtlUnit *arg0, s32 arg1) {
     if (arg0->flags & 1) {
         arg0->weaponModel->texPages->clut = ((d + clut_getY(arg0->weaponModel->texPages->clut)) << 6) | 0x10;
     }
-    while (i < func_80063830(arg0->modelId | 0x20000)) {
+    while (i < db_getModelTexCount(arg0->modelId | 0x20000)) {
         arg0->model->texPages[i].clut = ((d + clut_getY(arg0->model->texPages[i].clut)) << 6) | 0x10;
         i++;
     }
@@ -540,7 +540,7 @@ void btl_makeGreyCluts(BtlUnit *arg0) {
     u8 c[3];
     u8 g;
 
-    for (i = 0; i < func_80063830(arg0->modelId | 0x20000); i++) {
+    for (i = 0; i < db_getModelTexCount(arg0->modelId | 0x20000); i++) {
         g_btlClutRect.x = 0x100;
         g_btlClutRect.y = clut_getY(arg0->model->texPages[i].clut);
         g_btlClutRect.w = 0x100;

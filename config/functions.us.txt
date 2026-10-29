@@ -1472,9 +1472,9 @@ main tween_step 0x108 0x800631ac
 main tween_sumDeltas 0x40 0x800632b4
 main MulRotMatrix 0xe8 0x800632f4
 main db_findModelInfo 0xc4 0x800633e4
-main func_800634A8 0x30 0x800634a8
-main func_800634D8 0x3c 0x800634d8
-main func_80063514 0x3c 0x80063514
+main db_getModelTexPages 0x30 0x800634a8
+main db_getModelUvOffsets 0x3c 0x800634d8
+main db_getModelTexPos 0x3c 0x80063514
 main NormalClip 0x24 0x80063550
 main gfx_initTpageSprt 0x60 0x80063580
 main gfx_initTpageTile 0x60 0x800635e0
@@ -1486,7 +1486,7 @@ main exit 0xc 0x800637c0
 main SetPolyF3 0x14 0x800637d0
 main SetPolyG3 0x14 0x800637f0
 main SetSprt 0x14 0x80063810
-main func_80063830 0x34 0x80063830
+main db_getModelTexCount 0x34 0x80063830
 main bcopy 0xc 0x80063864
 main CompMatrix 0x160 0x80063874
 main SetGeomScreen 0xc 0x800639d4
@@ -2576,7 +2576,7 @@ ovl_0b btl_getMeshCount 0x14 0x800dd10c
 ovl_0b btlfx_getCasterTexInfo 0x15c 0x800dd120
 ovl_0b btl_drawMeshOffset 0xc94 0x800dd27c
 ovl_0b btlfx_projectSliceMesh 0x20c 0x800ddf10
-ovl_0b func_800DE11C 0x1040 0x800de11c
+ovl_0b btlfx_drawSliceMesh 0x1040 0x800de11c
 ovl_0b btlfx_projectMorphMesh 0x3ac 0x800df15c
 ovl_0b Hi_SplitMdlVertex 0x48 0x800df508
 ovl_0b Hi_GetSplitMdlVertex 0x38 0x800df550

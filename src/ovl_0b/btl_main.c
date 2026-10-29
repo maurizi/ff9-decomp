@@ -510,9 +510,9 @@ s32 btl_reloadPartyStep(s32 arg0) {
             id = btl_getPartyModelId(i, arg0 & ~0x10);
             e->unk8->header = db_lookupRegistered(4, id, 0);
             k = (id & 0xFFFFFF) | (cid << 24);
-            pa = (s32 *)func_800634A8(k);
-            pb = (s32 *)func_800634D8(k);
-            pc = (s32 *)func_80063514(k);
+            pa = (s32 *)db_getModelTexPages(k);
+            pb = (s32 *)db_getModelUvOffsets(k);
+            pc = (s32 *)db_getModelTexPos(k);
             btl_applyModelTextures(e->unk8, (s16 *)pa, (s16 *)pb);
             p = (s32)db_lookupRegistered(9, id, 0x190000);
             if (p != -1) {
@@ -1463,9 +1463,9 @@ s32 btl_swapPartyModelStep(s32 arg0, s32 arg1) {
             id2 = btl_getPartyModelId(arg0, arg1 & ~0x10);
             ent->unk8->header = db_lookupRegistered(4, id2, 0);
             k = (id2 & 0xFFFFFF) | (cid << 24);
-            pa = func_800634A8(k);
-            pb = func_800634D8(k);
-            pc = func_80063514(k);
+            pa = db_getModelTexPages(k);
+            pb = db_getModelUvOffsets(k);
+            pc = db_getModelTexPos(k);
             btl_applyModelTextures(ent->unk8, (s16 *)pa, (s16 *)pb);
             p = (s32)db_lookupRegistered(9, id2, 0x190000);
             if (p != -1) {

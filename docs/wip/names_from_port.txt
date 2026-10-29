@@ -5330,3 +5330,27 @@ func_800B3684 fld_drawRain  # [runtime] docs/runtime-findings.md field fixture c
 # FIELDS include/ff9.h Window: unk10=openFrames,unk12=closeFrames,unk1A=style,unk1B=slot,unk1C=state,unk1D=translucent,unk1F=shadow,unk20=titleX,unk22=titleY,unk23=visible,unk24=title,unk28=animMode,unk29=tailMode,unk2A=tailX,unk30=list,unk40=drawContent,unk44=drawOverlay,unk48=onOpened,unk4C=onClosed
 # FIELDS include/ff9.h MsgWindow: unkA=id,unk1A=tailOffset,unk1C=textWidth,unk24=typeAccum,unk26=waitFrames,unk2A=pendingChars,unk2B=tailMode
 # FIELDS include/ff9.h GameData: unk38=npcCount,unk39=npcModelSlots,unk80C=locationName,unk8B2=cardOpponent
+
+## R26 battle models
+func_800634A8 db_getModelTexPages  # [code] first table of a model info entry (db_findModelInfo, entry + offset): one {tpage, clut} word per texture index; btl_registerModel/btlfx_getCasterTexInfo/wm_buildPackets use it as the model's texture words, btl_drawMesh reads it by polygon tex, docs/battle-models.md
+func_800634D8 db_getModelUvOffsets  # [code] second table of a model info entry (first + count words): s16 du, dv per texture index, btl_applyModelTextures adds them to the uv entries of polygons using that texture, docs/battle-models.md
+func_80063514 db_getModelTexPos  # [code] third table of a model info entry (8 bytes per texture): VRAM position of each texture's TIM (btl_loadEnemyModelsStep file_setTimPos) and texture-animation offsets (btl_relocTexAnims), docs/battle-models.md
+func_80063830 db_getModelTexCount  # [code] model info entry count byte (DbEntry12.unk7) or 0: textures of a model, loop bound of btl_setStoneClut/btl_makeGreyCluts, docs/battle-models.md
+func_800DE11C btlfx_drawSliceMesh  # [code] (ovl_0b) btl_drawMesh variant without the group otBias, only caller Hi_DrawSliceEffModel after btlfx_projectSliceMesh, docs/battle-models.md
+
+# TYPES include/ovl_0b.h: new BtlBoneDef {s16 length; u8 unk2; u8 parent} (the model's bone table, BtlUnit9C8.bones)
+# FIELDS include/ovl_0b.h BtlUnit9C8 (model header): unk0=flags,unk2=boneCount,pad4=packetSize(u16)+unk6+pad7,unkC=bones
+# FIELDS include/ovl_0b.h BtlMesh: pad0=packetSize,unk13=otBias
+# FIELDS include/ovl_0b.h WmSrcFT4: unk0=vtx,unk8=uv,unk10=rgb,unk13=tex,unk15=flags
+# FIELDS include/ovl_0b.h WmSrcFT3: unk0=vtx,unk6=tex,unk8=rgb,unkC=uv,unk12=flags
+# FIELDS include/ovl_0b.h WmSrcGT4: unk0=vtx,unk8=uv,unk10=col,unk1C=flags,unk1D=tex
+# FIELDS include/ovl_0b.h WmSrcGT3: unk0=vtx,unk6=uv,unkF=flags,unk10=col,unk16=tex
+# FIELDS include/ovl_0b.h WmSrcG4: unk0=vtx,unk8=col,unk14=flags
+# FIELDS include/ovl_0b.h WmSrcG3: unk0=vtx,unk8=col,unk13=flags
+# FIELDS include/ovl_0b.h WmSrcF4: unk0=vtx,unk8=rgb,unkD=flags
+# FIELDS include/ovl_0b.h WmSrcF3: unk0=vtx,unk8=rgb,unkB=flags
+# FIELDS include/ovl_0b.h BtlUnit9C18: unk0=tpage,unk2=clut (the old comment called unk2 the tpage; btl_drawMesh puts it in the clut half)
+# FIELDS include/ovl_0b.h BtlUnit9CC (motion): unk2=frameCount,unk4=rootX,unk6=rootY,unk8=rootZ,unkA=constMask,unkC=rotKeys,unk10=rotKeysLo
+# FIELDS include/ovl_0b.h Unk800C9D1C (enemy type record): pad1E=modelId,unk20=motionIds (was "file ids"),unk2C=meshMasks,unk48=bones,unk4B=baseBone,unk68=shadowBone,unk6E=shadowDirBone
+# FIELDS include/ovl_0b.h Battle1334: unk1E=modelId
+# FIELDS include/ovl_0b.h BtlUnit: unkBD=shadowBone,unkBE=shadowDirBone

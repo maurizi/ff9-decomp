@@ -171,7 +171,7 @@ functions the cut is at the function with fewest crossing calls (weak position).
 | btlfx_script.c | 800D616C-800DA0FC | 101 | start strong; parity 4 (`btlfx_runScript`); end in 475→588 window, cut before the pool functions (one crossing call) — medium |
 | btlfx_pool.c | 800DA0FC-800DB424 | 20 | parity 0 (`btlfx_updateLoader`); end: rodata of the `Hi_*` functions starts the next TU — medium |
 | hi_model.c | 800DB424-800DD27C | 52 | Square's `Hi_*` names with their own error strings; rodata 800A7D00-800A81D0; end strong (asm) |
-| btl_mesh_asm.c | 800DD27C-800DF508 | 4 | strong: asm `btl_drawMeshOffset`, `btlfx_projectSliceMesh`, `btlfx_projectMorphMesh` around the compiled-C `func_800DE11C` |
+| btl_mesh_asm.c | 800DD27C-800DF508 | 4 | strong: asm `btl_drawMeshOffset`, `btlfx_projectSliceMesh`, `btlfx_projectMorphMesh` around the compiled-C `btlfx_drawSliceMesh` (was func_800DE11C) |
 | hi_vertex.c | 800DF508-800DFE4C | 11 | strong edges (asm both sides); `Hi_SplitMdlVertex` .. |
 | btlfx_particle_asm.c | 800DFE4C-800E00DC | 5 | strong: asm particle steppers |
 | btlfx_heap.c | 800E00DC-800E3EEC | 23 | strong edges; parity 4 (`func_800E0168`..`func_800E2F84`); `btlfx_heap*` |
@@ -329,7 +329,7 @@ header word as its own object they build without the alignment rewrite, so their
   CLAUDE.md notes 0x800C7730-0x800C8BE0 may use other compiler flags. It probably holds 3-4
   objects, but with no rodata or flag evidence for the cuts it stays one file.
 - **Compiled C inside asm runs.** `func_80051274` and `func_80053384` (main, `jr ra; nop`) and
-  `func_800DE11C` (ovl_0b, 0x1040 bytes) sit between hand-written asm functions. They may be
+  `btlfx_drawSliceMesh` (ovl_0b, 0x1040 bytes) sit between hand-written asm functions. They may be
   objects of their own; they stay in the asm files.
 - **Big single files with weak internal candidates** (ui.c, akao.c, event.c, msg.c, btlui.c,
   btl_cmd.c, tu_800B61A4.c): the data interleaves, or the only candidates are call-graph cuts,

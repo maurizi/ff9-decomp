@@ -32,7 +32,7 @@ Packed back to back from sector 1, one per directory in header order.
 | 4 | 5 | 222 | 122.5 MB | ? (largest) |
 | 5 | 6 | 337 | 2.0 MB | ? |
 | 6 | 8 | 151 | 33.4 MB | ? |
-| 7 | 9 | 101 | 12.3 MB | ? |
+| 7 | 9 | 101 | 12.3 MB | **battle models** (enemies; file id = model id, key 0x02xxxx; docs/battle-models.md) |
 | 8 | 10 | 85 | 1.0 MB | ? |
 | 9 | 11 | 55 | 14.8 MB | ? |
 | 10 | 12 | 42 | 3.3 MB | ? |

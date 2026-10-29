@@ -3086,7 +3086,7 @@ extern u8 g_btlCmdNames[];
 void btlui_drawSideCmd(); /* (Window *); btlui_drawCmdList passes its own */
 s32 btlfx_isUnitKind(s32, s32);
 void btlfx_projectSliceMesh(BtlUnit9C *, u8);
-u8 *func_800DE11C(BtlUnit9C *, u8, u8 *);
+u8 *btlfx_drawSliceMesh(BtlUnit9C *, u8, u8 *);
 void btlfx_projectMorphMesh(BtlUnit9C *, u8, u16);
 u8 *btl_drawMeshOffset(BtlUnit9C *, u8, u8 *, s32);
 void *btl_getUnitName(BtlUnit *);
@@ -3132,8 +3132,8 @@ Unk8010141C *btlfx_allocSummonModel(void);
 typedef struct {
     s16 unk0[6][2];
 } Unk800DD120;
-u8 *func_800634A8(s32);
-u8 *func_800634D8(s32);
+u8 *db_getModelTexPages(s32);
+u8 *db_getModelUvOffsets(s32);
 typedef struct {
     u32 unk0_0 : 4;
     u32 unk0_4 : 1;
@@ -3555,7 +3555,7 @@ static inline BtlUnit *find_target(void) {
 extern u8 D_800F8E68[][2];
 void btlui_closeTargetWindow(s32);
 s32 clut_getY(s16);
-s32 func_80063830(s32);
+s32 db_getModelTexCount(s32);
 void btl_startHitMotion(BtlUnit *);
 s32 btlfx_heapAlloc(Heap *, s32);
 void btl_playCmdEffect(BtlCmd *, s32, s16 *);
@@ -4057,7 +4057,7 @@ s32 btl_loadPartyModelsStep(s32, Unk800AA958 *);
 s32 btl_getWeaponModelHeader(s32);
 BtlUnit *btl_getUnitBySlot(s32);
 void btl_loadPartyMotions(BtlUnit *, s32, s32);
-u8 *func_80063514(s32);
+u8 *db_getModelTexPos(s32);
 
 typedef struct {
     s16 unk0; /* state */

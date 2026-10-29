@@ -467,8 +467,8 @@ void wm_calcBoneMatrices(ModelObj *, u16);
 void wm_drawShadow(WmObjEnt *, s32, s32, s32); /* draw a shadow */
 void wm_projectMeshClipY(ModelObj *, u8);
 void wm_drawMeshClipY(ModelObj *, u8);
-u8 *func_800634A8(s32);
-u8 *func_800634D8(s32);
+u8 *db_getModelTexPages(s32);
+u8 *db_getModelUvOffsets(s32);
 
 /* relocatable block: offsets are turned into pointers by wm_relocatePack */
 typedef struct {

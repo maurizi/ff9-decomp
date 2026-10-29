@@ -193,7 +193,7 @@ void Hi_DrawSliceEffModel(SVECTOR *arg0, VECTOR *arg1, s32 arg2, s32 arg3) {
     n = s->unk0->header->meshCount;
     for (i = 0; i < n; i++) {
         btlfx_projectSliceMesh(s->unk0, i);
-        g_btlfxEnv->prim = func_800DE11C(s->unk0, i, g_btlfxEnv->prim);
+        g_btlfxEnv->prim = btlfx_drawSliceMesh(s->unk0, i, g_btlfxEnv->prim);
     }
 }
 
@@ -667,8 +667,8 @@ void btlfx_getCasterTexInfo(BtlTexInfo *arg0, BtlTexInfo *arg1, s32 arg2) {
     k = arg2 & 0xFFFF;
     k |= 0x20000;
     k |= e->unkC->unk3B << 24;
-    a = (BtlTexInfo *)func_800634A8(k);
-    b = (BtlTexInfo *)func_800634D8(k);
+    a = (BtlTexInfo *)db_getModelTexPages(k);
+    b = (BtlTexInfo *)db_getModelUvOffsets(k);
     *arg0 = *a;
     *arg1 = *b;
 }

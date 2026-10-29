@@ -601,7 +601,7 @@ u32 wm_loadActorModel(s32 arg0, EvtObject *arg1) {
     n *= 2;
     n += (o->obj->model->boneCount << 5) + o->obj->model->groupCount * 12;
     wm_initModel(o->obj, g_gameState->gameData->unk8E4.world->obj->primCursor);
-    wm_buildPackets(o->obj, func_800634A8(o->modelId), func_800634D8(o->modelId));
+    wm_buildPackets(o->obj, db_getModelTexPages(o->modelId), db_getModelUvOffsets(o->modelId));
     g_gameState->gameData->unk8E4.world->obj->primCursor += n;
     o->flags |= 1;
     return id;
