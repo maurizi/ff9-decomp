@@ -1285,10 +1285,10 @@ u32 btl_registerModel(s32 arg0, s32 arg1) {
     e->unk8->header = (BtlUnit9C8 *)db_lookupRegistered(4, e->unk4, 0);
     e->unk8->motion = (BtlUnit9CC *)db_lookupRegistered(4, btl_getAnimFileId(e->unk4), 0);
     c = e->unk8->motion;
-    if (IS_OFFSET(c->unkC)) {
-        c->unkC = (s32)c + c->unkC;
-        if (c->unk10 != 0) {
-            c->unk10 = (s32)e->unk8->motion + c->unk10;
+    if (IS_OFFSET(c->rotKeys)) {
+        c->rotKeys = (s32)c + c->rotKeys;
+        if (c->rotKeysLo != 0) {
+            c->rotKeysLo = (s32)e->unk8->motion + c->rotKeysLo;
         }
     }
     btl_getModelTexInfo((e->unk4 & 0xFFFFFF) | (n << 24), (s32 **)&pa, (s32 **)&pb, (s32 **)&pc);

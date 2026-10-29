@@ -783,7 +783,7 @@ void btl_updatePartyCmd(BtlCmd *arg0) {
         m = u->model;
         a = u->motions;
         if (m->motion == (BtlUnit9CC *)a[12]) {
-            if (u->obj->frame < m->motion->unk2) {
+            if (u->obj->frame < m->motion->frameCount) {
                 return;
             }
             m->motion = (BtlUnit9CC *)a[13];
@@ -793,7 +793,7 @@ void btl_updatePartyCmd(BtlCmd *arg0) {
         m = u->model;
         a = u->motions;
         if (m->motion == (BtlUnit9CC *)a[9]) {
-            if (u->obj->frame < m->motion->unk2) {
+            if (u->obj->frame < m->motion->frameCount) {
                 return;
             }
             m->motion = (BtlUnit9CC *)a[29 + ((u->flags >> 8) & 3)];
@@ -804,7 +804,7 @@ void btl_updatePartyCmd(BtlCmd *arg0) {
         k = (u->flags >> 8) & 3;
         c = m2->motion;
         if (c == (BtlUnit9CC *)a2[29 + k]) {
-            n = c->unk2;
+            n = c->frameCount;
             f = u->obj->frame;
             if (f < n) {
                 f++;
@@ -821,7 +821,7 @@ void btl_updatePartyCmd(BtlCmd *arg0) {
             return;
         }
         if (c == (BtlUnit9CC *)a2[32]) {
-            if (u->obj->frame < c->unk2) {
+            if (u->obj->frame < c->frameCount) {
                 return;
             }
             m2->motion = (BtlUnit9CC *)a2[0];

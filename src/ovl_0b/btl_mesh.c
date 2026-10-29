@@ -23,7 +23,7 @@ void btl_projectMesh(BtlUnit9C *arg0, u8 arg1) {
     sxy = g_vtxScreenXY;
     sz = g_vtxScreenZ;
     k = 0;
-    cnt = arg0->header->unk2;
+    cnt = arg0->header->boneCount;
     bone = (MATRIX *)arg0->bones;
     for (i = 0; i < cnt; bone++) {
         n = g->vertexCounts[i++];
@@ -112,13 +112,13 @@ u8 *btl_buildMeshPrims(BtlUnit9C *arg0, u8 arg1, u8 *prim) {
     }
     tex = (u32 *)arg0->texPages;
     ot = g_gameState->gameData->unk10[g_gameState->gameData->unk8];
-    ot -= g->unk13;
+    ot -= g->otBias;
 
     n = g->nFT4;
     for (i = 0; i < n; sFT4++) {
         pFT4 = (POLY_FT4 *)prim;
-        i0 = *(u32 *)&sFT4->unk0[0];
-        i2 = *(u32 *)&sFT4->unk0[2];
+        i0 = *(u32 *)&sFT4->vtx[0];
+        i2 = *(u32 *)&sFT4->vtx[2];
         i1 = i0 >> 16;
         i3 = i2 >> 16;
         i0 &= 0xFFFF;
@@ -127,7 +127,7 @@ u8 *btl_buildMeshPrims(BtlUnit9C *arg0, u8 arg1, u8 *prim) {
         xy1 = g_vtxScreenXY[i1];
         xy2 = g_vtxScreenXY[i2];
         i++;
-        if (!(sFT4->unk15 & 2)) {
+        if (!(sFT4->flags & 2)) {
             gte_ldsxy3(xy0, xy1, xy2);
             gte_nclip();
             gte_stopz(&opz);
@@ -135,7 +135,7 @@ u8 *btl_buildMeshPrims(BtlUnit9C *arg0, u8 arg1, u8 *prim) {
                 continue;
             }
         }
-        *(u32 *)&pFT4->r0 = *(u32 *)sFT4->unk10;
+        *(u32 *)&pFT4->r0 = *(u32 *)sFT4->rgb;
         setlen(pFT4, 9);
         *(s32 *)&pFT4->x0 = xy0;
         *(s32 *)&pFT4->x1 = xy1;
@@ -143,9 +143,9 @@ u8 *btl_buildMeshPrims(BtlUnit9C *arg0, u8 arg1, u8 *prim) {
         setcode(pFT4, 0x2C);
         *(s32 *)&pFT4->x3 = g_vtxScreenXY[i3];
         otz = g_vtxScreenZ[i0] + g_vtxScreenZ[i1] + g_vtxScreenZ[i2] + g_vtxScreenZ[i3];
-        i0 = *(u32 *)&sFT4->unk8[0];
-        i2 = *(u32 *)&sFT4->unk8[2];
-        t = tex[sFT4->unk13];
+        i0 = *(u32 *)&sFT4->uv[0];
+        i2 = *(u32 *)&sFT4->uv[2];
+        t = tex[sFT4->tex];
         hi = t & 0xFFFF0000;
         t <<= 16;
         i1 = i0 >> 16;
@@ -156,8 +156,8 @@ u8 *btl_buildMeshPrims(BtlUnit9C *arg0, u8 arg1, u8 *prim) {
         *(u32 *)&pFT4->u1 = *(u16 *)uv[i1] | t;
         *(u16 *)&pFT4->u2 = *(u16 *)uv[i2];
         *(u16 *)&pFT4->u3 = *(u16 *)uv[i3];
-        if (sFT4->unk15 & 1) {
-            pFT4->tpage |= sFT4->unk15 & 0xE0;
+        if (sFT4->flags & 1) {
+            pFT4->tpage |= sFT4->flags & 0xE0;
             setSemiTrans(pFT4, 1);
         }
         otz >>= 6;
@@ -169,8 +169,8 @@ u8 *btl_buildMeshPrims(BtlUnit9C *arg0, u8 arg1, u8 *prim) {
     sFT3 = (WmSrcFT3 *)sFT4;
     for (i = 0; i < n; sFT3++) {
         pFT3 = (POLY_FT3 *)prim;
-        i0 = *(u32 *)&sFT3->unk0[0];
-        i2 = *(u32 *)&sFT3->unk0[2];
+        i0 = *(u32 *)&sFT3->vtx[0];
+        i2 = *(u32 *)&sFT3->vtx[2];
         i1 = i0 >> 16;
         i0 &= 0xFFFF;
         i2 &= 0xFFFF;
@@ -178,7 +178,7 @@ u8 *btl_buildMeshPrims(BtlUnit9C *arg0, u8 arg1, u8 *prim) {
         xy1 = g_vtxScreenXY[i1];
         xy2 = g_vtxScreenXY[i2];
         i++;
-        if (!(sFT3->unk12 & 2)) {
+        if (!(sFT3->flags & 2)) {
             gte_ldsxy3(xy0, xy1, xy2);
             gte_nclip();
             gte_stopz(&opz);
@@ -186,19 +186,19 @@ u8 *btl_buildMeshPrims(BtlUnit9C *arg0, u8 arg1, u8 *prim) {
                 continue;
             }
         }
-        *(u32 *)&pFT3->r0 = *(u32 *)sFT3->unk8;
+        *(u32 *)&pFT3->r0 = *(u32 *)sFT3->rgb;
         setlen(pFT3, 7);
         *(s32 *)&pFT3->x0 = xy0;
         *(s32 *)&pFT3->x1 = xy1;
         *(s32 *)&pFT3->x2 = xy2;
         setcode(pFT3, 0x24);
         gte_ldsz3(g_vtxScreenZ[i0], g_vtxScreenZ[i1], g_vtxScreenZ[i2]);
-        t = tex[sFT3->unk6];
+        t = tex[sFT3->tex];
         hi = t & 0xFFFF0000;
         t <<= 16;
         gte_avsz3_b();
-        i0 = *(u32 *)&sFT3->unkC[0];
-        i2 = *(u32 *)&sFT3->unkC[2];
+        i0 = *(u32 *)&sFT3->uv[0];
+        i2 = *(u32 *)&sFT3->uv[2];
         i1 = i0 >> 16;
         i0 &= 0xFFFF;
         i2 &= 0xFFFF;
@@ -206,8 +206,8 @@ u8 *btl_buildMeshPrims(BtlUnit9C *arg0, u8 arg1, u8 *prim) {
         *(u32 *)&pFT3->u1 = *(u16 *)uv[i1] | t;
         *(u16 *)&pFT3->u2 = *(u16 *)uv[i2];
         gte_stotz(&otz);
-        if (sFT3->unk12 & 1) {
-            pFT3->tpage |= sFT3->unk12 & 0xE0;
+        if (sFT3->flags & 1) {
+            pFT3->tpage |= sFT3->flags & 0xE0;
             setSemiTrans(pFT3, 1);
         }
         otz >>= 2;
@@ -219,8 +219,8 @@ u8 *btl_buildMeshPrims(BtlUnit9C *arg0, u8 arg1, u8 *prim) {
     sGT4 = (WmSrcGT4 *)sFT3;
     for (i = 0; i < n; sGT4++) {
         pGT4 = (POLY_GT4 *)prim;
-        i0 = *(u32 *)&sGT4->unk0[0];
-        i2 = *(u32 *)&sGT4->unk0[2];
+        i0 = *(u32 *)&sGT4->vtx[0];
+        i2 = *(u32 *)&sGT4->vtx[2];
         i1 = i0 >> 16;
         i3 = i2 >> 16;
         i0 &= 0xFFFF;
@@ -229,7 +229,7 @@ u8 *btl_buildMeshPrims(BtlUnit9C *arg0, u8 arg1, u8 *prim) {
         xy1 = g_vtxScreenXY[i1];
         xy2 = g_vtxScreenXY[i2];
         i++;
-        if (!(sGT4->unk1C & 2)) {
+        if (!(sGT4->flags & 2)) {
             gte_ldsxy3(xy0, xy1, xy2);
             gte_nclip();
             gte_stopz(&opz);
@@ -242,13 +242,13 @@ u8 *btl_buildMeshPrims(BtlUnit9C *arg0, u8 arg1, u8 *prim) {
         *(s32 *)&pGT4->x2 = xy2;
         *(s32 *)&pGT4->x3 = g_vtxScreenXY[i3];
         otz = g_vtxScreenZ[i0] + g_vtxScreenZ[i1] + g_vtxScreenZ[i2] + g_vtxScreenZ[i3];
-        i0 = *(u32 *)&sGT4->unk10[0];
-        i2 = *(u32 *)&sGT4->unk10[2];
+        i0 = *(u32 *)&sGT4->col[0];
+        i2 = *(u32 *)&sGT4->col[2];
         i1 = i0 >> 16;
         i3 = i2 >> 16;
         i0 &= 0xFFFF;
         i2 &= 0xFFFF;
-        t = tex[sGT4->unk1D];
+        t = tex[sGT4->tex];
         hi = t & 0xFFFF0000;
         t <<= 16;
         cp = (u32 *)col[i0];
@@ -261,8 +261,8 @@ u8 *btl_buildMeshPrims(BtlUnit9C *arg0, u8 arg1, u8 *prim) {
         *(u32 *)&pGT4->r3 = *cp;
         setlen(pGT4, 12);
         setcode(pGT4, 0x3C);
-        i0 = *(u32 *)&sGT4->unk8[0];
-        i2 = *(u32 *)&sGT4->unk8[2];
+        i0 = *(u32 *)&sGT4->uv[0];
+        i2 = *(u32 *)&sGT4->uv[2];
         i1 = i0 >> 16;
         i3 = i2 >> 16;
         i0 &= 0xFFFF;
@@ -271,8 +271,8 @@ u8 *btl_buildMeshPrims(BtlUnit9C *arg0, u8 arg1, u8 *prim) {
         *(u32 *)&pGT4->u1 = *(u16 *)uv[i1] | t;
         *(u16 *)&pGT4->u2 = *(u16 *)uv[i2];
         *(u16 *)&pGT4->u3 = *(u16 *)uv[i3];
-        if (sGT4->unk1C & 1) {
-            pGT4->tpage |= sGT4->unk1C & 0xE0;
+        if (sGT4->flags & 1) {
+            pGT4->tpage |= sGT4->flags & 0xE0;
             setSemiTrans(pGT4, 1);
         }
         otz >>= 6;
@@ -284,8 +284,8 @@ u8 *btl_buildMeshPrims(BtlUnit9C *arg0, u8 arg1, u8 *prim) {
     sGT3 = (WmSrcGT3 *)sGT4;
     for (i = 0; i < n; sGT3++) {
         pGT3 = (POLY_GT3 *)prim;
-        i0 = *(u32 *)&sGT3->unk0[0];
-        i2 = *(u32 *)&sGT3->unk0[2];
+        i0 = *(u32 *)&sGT3->vtx[0];
+        i2 = *(u32 *)&sGT3->vtx[2];
         i1 = i0 >> 16;
         i0 &= 0xFFFF;
         i2 &= 0xFFFF;
@@ -293,7 +293,7 @@ u8 *btl_buildMeshPrims(BtlUnit9C *arg0, u8 arg1, u8 *prim) {
         xy1 = g_vtxScreenXY[i1];
         xy2 = g_vtxScreenXY[i2];
         i++;
-        if (!(sGT3->unkF & 2)) {
+        if (!(sGT3->flags & 2)) {
             gte_ldsxy3(xy0, xy1, xy2);
             gte_nclip();
             gte_stopz(&opz);
@@ -306,12 +306,12 @@ u8 *btl_buildMeshPrims(BtlUnit9C *arg0, u8 arg1, u8 *prim) {
         *(s32 *)&pGT3->x1 = xy1;
         *(s32 *)&pGT3->x2 = xy2;
         gte_avsz3_b();
-        t = tex[sGT3->unk16];
+        t = tex[sGT3->tex];
         hi = t & 0xFFFF0000;
         t <<= 16;
         gte_stotz(&otz);
-        i0 = *(u32 *)&sGT3->unk10[0];
-        i2 = *(u32 *)&sGT3->unk10[2];
+        i0 = *(u32 *)&sGT3->col[0];
+        i2 = *(u32 *)&sGT3->col[2];
         i1 = i0 >> 16;
         i0 &= 0xFFFF;
         i2 &= 0xFFFF;
@@ -323,15 +323,15 @@ u8 *btl_buildMeshPrims(BtlUnit9C *arg0, u8 arg1, u8 *prim) {
         *(u32 *)&pGT3->r2 = *cp;
         setlen(pGT3, 9);
         setcode(pGT3, 0x34);
-        i1 = *(u32 *)&sGT3->unk6[1];
-        i0 = sGT3->unk6[0];
+        i1 = *(u32 *)&sGT3->uv[1];
+        i0 = sGT3->uv[0];
         i2 = i1 >> 16;
         i1 &= 0xFFFF;
         *(u32 *)&pGT3->u0 = *(u16 *)uv[i0] | hi;
         *(u32 *)&pGT3->u1 = *(u16 *)uv[i1] | t;
         *(u16 *)&pGT3->u2 = *(u16 *)uv[i2];
-        if (sGT3->unkF & 1) {
-            pGT3->tpage |= sGT3->unkF & 0xE0;
+        if (sGT3->flags & 1) {
+            pGT3->tpage |= sGT3->flags & 0xE0;
             setSemiTrans(pGT3, 1);
         }
         otz >>= 2;
@@ -343,8 +343,8 @@ u8 *btl_buildMeshPrims(BtlUnit9C *arg0, u8 arg1, u8 *prim) {
     sG4 = (WmSrcG4 *)sGT3;
     for (i = 0; i < n; sG4++) {
         pG4 = (POLY_G4 *)prim;
-        i0 = *(u32 *)&sG4->unk0[0];
-        i2 = *(u32 *)&sG4->unk0[2];
+        i0 = *(u32 *)&sG4->vtx[0];
+        i2 = *(u32 *)&sG4->vtx[2];
         i1 = i0 >> 16;
         i3 = i2 >> 16;
         i0 &= 0xFFFF;
@@ -353,7 +353,7 @@ u8 *btl_buildMeshPrims(BtlUnit9C *arg0, u8 arg1, u8 *prim) {
         xy1 = g_vtxScreenXY[i1];
         xy2 = g_vtxScreenXY[i2];
         i++;
-        if (!(sG4->unk14 & 2)) {
+        if (!(sG4->flags & 2)) {
             gte_ldsxy3(xy0, xy1, xy2);
             gte_nclip();
             gte_stopz(&opz);
@@ -366,8 +366,8 @@ u8 *btl_buildMeshPrims(BtlUnit9C *arg0, u8 arg1, u8 *prim) {
         *(s32 *)&pG4->x2 = xy2;
         *(s32 *)&pG4->x3 = g_vtxScreenXY[i3];
         otz = g_vtxScreenZ[i0] + g_vtxScreenZ[i1] + g_vtxScreenZ[i2] + g_vtxScreenZ[i3];
-        i0 = *(u32 *)&sG4->unk8[0];
-        i2 = *(u32 *)&sG4->unk8[2];
+        i0 = *(u32 *)&sG4->col[0];
+        i2 = *(u32 *)&sG4->col[2];
         i1 = i0 >> 16;
         i3 = i2 >> 16;
         i0 &= 0xFFFF;
@@ -391,8 +391,8 @@ u8 *btl_buildMeshPrims(BtlUnit9C *arg0, u8 arg1, u8 *prim) {
     sG3 = (WmSrcG3 *)sG4;
     for (i = 0; i < n; sG3++) {
         pG3 = (POLY_G3 *)prim;
-        i0 = *(u32 *)&sG3->unk0[0];
-        i2 = *(u32 *)&sG3->unk0[2];
+        i0 = *(u32 *)&sG3->vtx[0];
+        i2 = *(u32 *)&sG3->vtx[2];
         i1 = i0 >> 16;
         i0 &= 0xFFFF;
         i2 &= 0xFFFF;
@@ -400,7 +400,7 @@ u8 *btl_buildMeshPrims(BtlUnit9C *arg0, u8 arg1, u8 *prim) {
         xy1 = g_vtxScreenXY[i1];
         xy2 = g_vtxScreenXY[i2];
         i++;
-        if (!(sG3->unk13 & 2)) {
+        if (!(sG3->flags & 2)) {
             gte_ldsxy3(xy0, xy1, xy2);
             gte_nclip();
             gte_stopz(&opz);
@@ -413,8 +413,8 @@ u8 *btl_buildMeshPrims(BtlUnit9C *arg0, u8 arg1, u8 *prim) {
         *(s32 *)&pG3->x1 = xy1;
         *(s32 *)&pG3->x2 = xy2;
         gte_avsz3_b();
-        i0 = *(u32 *)&sG3->unk8[0];
-        i2 = *(u32 *)&sG3->unk8[2];
+        i0 = *(u32 *)&sG3->col[0];
+        i2 = *(u32 *)&sG3->col[2];
         i1 = i0 >> 16;
         i0 &= 0xFFFF;
         i2 &= 0xFFFF;
@@ -436,8 +436,8 @@ u8 *btl_buildMeshPrims(BtlUnit9C *arg0, u8 arg1, u8 *prim) {
     sF4 = (WmSrcF4 *)sG3;
     for (i = 0; i < n; sF4++) {
         pF4 = (POLY_F4 *)prim;
-        i0 = *(u32 *)&sF4->unk0[0];
-        i2 = *(u32 *)&sF4->unk0[2];
+        i0 = *(u32 *)&sF4->vtx[0];
+        i2 = *(u32 *)&sF4->vtx[2];
         i1 = i0 >> 16;
         i3 = i2 >> 16;
         i0 &= 0xFFFF;
@@ -446,7 +446,7 @@ u8 *btl_buildMeshPrims(BtlUnit9C *arg0, u8 arg1, u8 *prim) {
         xy1 = g_vtxScreenXY[i1];
         xy2 = g_vtxScreenXY[i2];
         i++;
-        if (!(sF4->unkD & 2)) {
+        if (!(sF4->flags & 2)) {
             gte_ldsxy3(xy0, xy1, xy2);
             gte_nclip();
             gte_stopz(&opz);
@@ -455,7 +455,7 @@ u8 *btl_buildMeshPrims(BtlUnit9C *arg0, u8 arg1, u8 *prim) {
             }
         }
         otz = g_vtxScreenZ[i0] + g_vtxScreenZ[i1] + g_vtxScreenZ[i2] + g_vtxScreenZ[i3];
-        *(u32 *)&pF4->r0 = *(u32 *)sF4->unk8;
+        *(u32 *)&pF4->r0 = *(u32 *)sF4->rgb;
         setlen(pF4, 5);
         *(s32 *)&pF4->x0 = xy0;
         *(s32 *)&pF4->x1 = xy1;
@@ -471,8 +471,8 @@ u8 *btl_buildMeshPrims(BtlUnit9C *arg0, u8 arg1, u8 *prim) {
     sF3 = (WmSrcF3 *)sF4;
     for (i = 0; i < n; sF3++) {
         pF3 = (POLY_F3 *)prim;
-        i0 = *(u32 *)&sF3->unk0[0];
-        i2 = *(u32 *)&sF3->unk0[2];
+        i0 = *(u32 *)&sF3->vtx[0];
+        i2 = *(u32 *)&sF3->vtx[2];
         i1 = i0 >> 16;
         i0 &= 0xFFFF;
         i2 &= 0xFFFF;
@@ -480,7 +480,7 @@ u8 *btl_buildMeshPrims(BtlUnit9C *arg0, u8 arg1, u8 *prim) {
         xy1 = g_vtxScreenXY[i1];
         xy2 = g_vtxScreenXY[i2];
         i++;
-        if (!(sF3->unkB & 2)) {
+        if (!(sF3->flags & 2)) {
             gte_ldsxy3(xy0, xy1, xy2);
             gte_nclip();
             gte_stopz(&opz);
@@ -489,7 +489,7 @@ u8 *btl_buildMeshPrims(BtlUnit9C *arg0, u8 arg1, u8 *prim) {
             }
         }
         gte_ldsz3(g_vtxScreenZ[i0], g_vtxScreenZ[i1], g_vtxScreenZ[i2]);
-        *(u32 *)&pF3->r0 = *(u32 *)sF3->unk8;
+        *(u32 *)&pF3->r0 = *(u32 *)sF3->rgb;
         gte_avsz3_b();
         *(s32 *)&pF3->x0 = xy0;
         *(s32 *)&pF3->x1 = xy1;
@@ -538,10 +538,10 @@ void btl_applyModelTextures(BtlUnit9C *arg0, s16 *arg1, s16 *arg2) {
     arg0->unk78 = 0;
     arg0->hiddenMeshes = 0;
     arg0->flags = 0;
-    if (!(h->unk0 & 1)) {
-        h->unk0 |= 1;
+    if (!(h->flags & 1)) {
+        h->flags |= 1;
         m = h->meshes = (BtlMesh *)((u8 *)h + (s32)h->meshes);
-        h->unkC = (s32)h + h->unkC;
+        h->bones = (s32)h + h->bones;
         for (i = 0; i < h->meshCount; i++, m++) {
             m->vertexCounts = (u16 *)((u8 *)h + (s32)m->vertexCounts);
             m->vertices = (SVECTOR *)((u8 *)h + (s32)m->vertices);
@@ -559,52 +559,52 @@ void btl_applyModelTextures(BtlUnit9C *arg0, s16 *arg1, s16 *arg2) {
                 src = (u8 *)m->prims;
                 for (k = 0; k < m->nFT4; k++) {
                     ft4 = (WmSrcFT4 *)src;
-                    du = arg2[ft4->unk13 * 2];
-                    dv = arg2[ft4->unk13 * 2 + 1];
+                    du = arg2[ft4->tex * 2];
+                    dv = arg2[ft4->tex * 2 + 1];
                     for (j = 0; j < 4; j++) {
-                        if (mark[ft4->unk8[j]] == 0) {
-                            m->uvs[ft4->unk8[j]][0] += du;
-                            m->uvs[ft4->unk8[j]][1] += dv;
-                            mark[ft4->unk8[j]] = 1;
+                        if (mark[ft4->uv[j]] == 0) {
+                            m->uvs[ft4->uv[j]][0] += du;
+                            m->uvs[ft4->uv[j]][1] += dv;
+                            mark[ft4->uv[j]] = 1;
                         }
                     }
                     src += sizeof(WmSrcFT4);
                 }
                 for (k = 0; k < m->nFT3; k++) {
                     ft3 = (WmSrcFT3 *)src;
-                    du = arg2[ft3->unk6 * 2];
-                    dv = arg2[ft3->unk6 * 2 + 1];
+                    du = arg2[ft3->tex * 2];
+                    dv = arg2[ft3->tex * 2 + 1];
                     for (j = 0; j < 3; j++) {
-                        if (mark[ft3->unkC[j]] == 0) {
-                            m->uvs[ft3->unkC[j]][0] += du;
-                            m->uvs[ft3->unkC[j]][1] += dv;
-                            mark[ft3->unkC[j]] = 1;
+                        if (mark[ft3->uv[j]] == 0) {
+                            m->uvs[ft3->uv[j]][0] += du;
+                            m->uvs[ft3->uv[j]][1] += dv;
+                            mark[ft3->uv[j]] = 1;
                         }
                     }
                     src += sizeof(WmSrcFT3);
                 }
                 for (k = 0; k < m->nGT4; k++) {
                     gt4 = (WmSrcGT4 *)src;
-                    du = arg2[gt4->unk1D * 2];
-                    dv = arg2[gt4->unk1D * 2 + 1];
+                    du = arg2[gt4->tex * 2];
+                    dv = arg2[gt4->tex * 2 + 1];
                     for (j = 0; j < 4; j++) {
-                        if (mark[gt4->unk8[j]] == 0) {
-                            m->uvs[gt4->unk8[j]][0] += du;
-                            m->uvs[gt4->unk8[j]][1] += dv;
-                            mark[gt4->unk8[j]] = 1;
+                        if (mark[gt4->uv[j]] == 0) {
+                            m->uvs[gt4->uv[j]][0] += du;
+                            m->uvs[gt4->uv[j]][1] += dv;
+                            mark[gt4->uv[j]] = 1;
                         }
                     }
                     src += sizeof(WmSrcGT4);
                 }
                 for (k = 0; k < m->nGT3; k++) {
                     gt3 = (WmSrcGT3 *)src;
-                    du = arg2[gt3->unk16 * 2];
-                    dv = arg2[gt3->unk16 * 2 + 1];
+                    du = arg2[gt3->tex * 2];
+                    dv = arg2[gt3->tex * 2 + 1];
                     for (j = 0; j < 3; j++) {
-                        if (mark[gt3->unk6[j]] == 0) {
-                            m->uvs[gt3->unk6[j]][0] += du;
-                            m->uvs[gt3->unk6[j]][1] += dv;
-                            mark[gt3->unk6[j]] = 1;
+                        if (mark[gt3->uv[j]] == 0) {
+                            m->uvs[gt3->uv[j]][0] += du;
+                            m->uvs[gt3->uv[j]][1] += dv;
+                            mark[gt3->uv[j]] = 1;
                         }
                     }
                     src += sizeof(WmSrcGT3);

@@ -55,8 +55,8 @@ u8 *func_800DE11C(BtlUnit9C *arg0, u8 arg1, u8 *prim) {
     for (i = 0; i < n; src += sizeof(WmSrcFT4)) {
         sFT4 = (WmSrcFT4 *)src;
         pFT4 = (POLY_FT4 *)prim;
-        a = *(u32 *)&sFT4->unk0[0];
-        b = *(u32 *)&sFT4->unk0[2];
+        a = *(u32 *)&sFT4->vtx[0];
+        b = *(u32 *)&sFT4->vtx[2];
         i1 = a >> 16;
         i3 = b >> 16;
         xy0 = g_vtxScreenXY[a & 0xFFFF];
@@ -67,7 +67,7 @@ u8 *func_800DE11C(BtlUnit9C *arg0, u8 arg1, u8 *prim) {
         if (otz > 0x3FFFFFFF) {
             continue;
         }
-        if (!(sFT4->unk15 & 2)) {
+        if (!(sFT4->flags & 2)) {
             gte_ldsxy3(xy0, xy1, xy2);
             gte_nclip();
             gte_stopz(&opz);
@@ -75,24 +75,24 @@ u8 *func_800DE11C(BtlUnit9C *arg0, u8 arg1, u8 *prim) {
                 continue;
             }
         }
-        *(u32 *)&pFT4->r0 = *(u32 *)sFT4->unk10;
+        *(u32 *)&pFT4->r0 = *(u32 *)sFT4->rgb;
         setlen(pFT4, 9);
         *(s32 *)&pFT4->x0 = xy0;
         *(s32 *)&pFT4->x1 = xy1;
         *(s32 *)&pFT4->x2 = xy2;
         setcode(pFT4, 0x2C);
         *(s32 *)&pFT4->x3 = g_vtxScreenXY[i3];
-        a = *(u32 *)&sFT4->unk8[0];
-        b = *(u32 *)&sFT4->unk8[2];
-        t = tex[sFT4->unk13];
+        a = *(u32 *)&sFT4->uv[0];
+        b = *(u32 *)&sFT4->uv[2];
+        t = tex[sFT4->tex];
         hi = t & 0xFFFF0000;
         t <<= 16;
         *(u32 *)&pFT4->u0 = *(u16 *)uv[a & 0xFFFF] | hi;
         *(u32 *)&pFT4->u1 = *(u16 *)uv[a >> 16] | t;
         *(u16 *)&pFT4->u2 = *(u16 *)uv[b & 0xFFFF];
         *(u16 *)&pFT4->u3 = *(u16 *)uv[b >> 16];
-        if (sFT4->unk15 & 1) {
-            pFT4->tpage |= sFT4->unk15 & 0xE0;
+        if (sFT4->flags & 1) {
+            pFT4->tpage |= sFT4->flags & 0xE0;
             setSemiTrans(pFT4, 1);
         }
         otz &= 0xFFFFF;
@@ -104,8 +104,8 @@ u8 *func_800DE11C(BtlUnit9C *arg0, u8 arg1, u8 *prim) {
     for (i = 0; i < n; src += sizeof(WmSrcFT3)) {
         sFT3 = (WmSrcFT3 *)src;
         pFT3 = (POLY_FT3 *)prim;
-        a = *(u32 *)&sFT3->unk0[0];
-        b = sFT3->unk0[2];
+        a = *(u32 *)&sFT3->vtx[0];
+        b = sFT3->vtx[2];
         i1 = a >> 16;
         xy0 = g_vtxScreenXY[a & 0xFFFF];
         xy1 = g_vtxScreenXY[i1];
@@ -115,7 +115,7 @@ u8 *func_800DE11C(BtlUnit9C *arg0, u8 arg1, u8 *prim) {
         if (otz > 0x2FFFFFFF) {
             continue;
         }
-        if (!(sFT3->unk12 & 2)) {
+        if (!(sFT3->flags & 2)) {
             gte_ldsxy3(xy0, xy1, xy2);
             gte_nclip();
             gte_stopz(&opz);
@@ -124,22 +124,22 @@ u8 *func_800DE11C(BtlUnit9C *arg0, u8 arg1, u8 *prim) {
             }
         }
         otz &= 0xFFFFF;
-        *(u32 *)&pFT3->r0 = *(u32 *)sFT3->unk8;
+        *(u32 *)&pFT3->r0 = *(u32 *)sFT3->rgb;
         setlen(pFT3, 7);
         *(s32 *)&pFT3->x0 = xy0;
         *(s32 *)&pFT3->x1 = xy1;
         *(s32 *)&pFT3->x2 = xy2;
         setcode(pFT3, 0x24);
-        t = tex[sFT3->unk6];
-        a = *(u32 *)&sFT3->unkC[0];
+        t = tex[sFT3->tex];
+        a = *(u32 *)&sFT3->uv[0];
         hi = t & 0xFFFF0000;
         t <<= 16;
         *(u32 *)&pFT3->u0 = *(u16 *)uv[a & 0xFFFF] | hi;
         *(u32 *)&pFT3->u1 = *(u16 *)uv[a >> 16] | t;
-        *(u16 *)&pFT3->u2 = *(u16 *)uv[sFT3->unkC[2]];
+        *(u16 *)&pFT3->u2 = *(u16 *)uv[sFT3->uv[2]];
         otz /= 3;
-        if (sFT3->unk12 & 1) {
-            pFT3->tpage |= sFT3->unk12 & 0xE0;
+        if (sFT3->flags & 1) {
+            pFT3->tpage |= sFT3->flags & 0xE0;
             setSemiTrans(pFT3, 1);
         }
         addPrim(&ot[otz >> 4], pFT3);
@@ -150,8 +150,8 @@ u8 *func_800DE11C(BtlUnit9C *arg0, u8 arg1, u8 *prim) {
     for (i = 0; i < n; src += sizeof(WmSrcGT4)) {
         sGT4 = (WmSrcGT4 *)src;
         pGT4 = (POLY_GT4 *)prim;
-        a = *(u32 *)&sGT4->unk0[0];
-        b = *(u32 *)&sGT4->unk0[2];
+        a = *(u32 *)&sGT4->vtx[0];
+        b = *(u32 *)&sGT4->vtx[2];
         i1 = a >> 16;
         i3 = b >> 16;
         xy0 = g_vtxScreenXY[a & 0xFFFF];
@@ -162,7 +162,7 @@ u8 *func_800DE11C(BtlUnit9C *arg0, u8 arg1, u8 *prim) {
         if (otz > 0x3FFFFFFF) {
             continue;
         }
-        if (!(sGT4->unk1C & 2)) {
+        if (!(sGT4->flags & 2)) {
             gte_ldsxy3(xy0, xy1, xy2);
             gte_nclip();
             gte_stopz(&opz);
@@ -174,9 +174,9 @@ u8 *func_800DE11C(BtlUnit9C *arg0, u8 arg1, u8 *prim) {
         *(s32 *)&pGT4->x1 = xy1;
         *(s32 *)&pGT4->x2 = xy2;
         *(s32 *)&pGT4->x3 = g_vtxScreenXY[i3];
-        a = *(u32 *)&sGT4->unk10[0];
-        i1 = *(u32 *)&sGT4->unk10[2];
-        t = tex[sGT4->unk1D];
+        a = *(u32 *)&sGT4->col[0];
+        i1 = *(u32 *)&sGT4->col[2];
+        t = tex[sGT4->tex];
         cp = (u32 *)col[a & 0xFFFF];
         *(u32 *)&pGT4->r0 = *cp;
         cp = (u32 *)col[a >> 16];
@@ -187,16 +187,16 @@ u8 *func_800DE11C(BtlUnit9C *arg0, u8 arg1, u8 *prim) {
         *(u32 *)&pGT4->r3 = *cp;
         setlen(pGT4, 12);
         setcode(pGT4, 0x3C);
-        a = *(u32 *)&sGT4->unk8[0];
-        i1 = *(u32 *)&sGT4->unk8[2];
+        a = *(u32 *)&sGT4->uv[0];
+        i1 = *(u32 *)&sGT4->uv[2];
         hi = t & 0xFFFF0000;
         t <<= 16;
         *(u32 *)&pGT4->u0 = *(u16 *)uv[a & 0xFFFF] | hi;
         *(u32 *)&pGT4->u1 = *(u16 *)uv[a >> 16] | t;
         *(u16 *)&pGT4->u2 = *(u16 *)uv[i1 & 0xFFFF];
         *(u16 *)&pGT4->u3 = *(u16 *)uv[i1 >> 16];
-        if (sGT4->unk1C & 1) {
-            pGT4->tpage |= sGT4->unk1C & 0xE0;
+        if (sGT4->flags & 1) {
+            pGT4->tpage |= sGT4->flags & 0xE0;
             setSemiTrans(pGT4, 1);
         }
         otz &= 0xFFFFF;
@@ -208,8 +208,8 @@ u8 *func_800DE11C(BtlUnit9C *arg0, u8 arg1, u8 *prim) {
     for (i = 0; i < n; src += sizeof(WmSrcGT3)) {
         sGT3 = (WmSrcGT3 *)src;
         pGT3 = (POLY_GT3 *)prim;
-        a = *(u32 *)&sGT3->unk0[0];
-        b = sGT3->unk0[2];
+        a = *(u32 *)&sGT3->vtx[0];
+        b = sGT3->vtx[2];
         i1 = a >> 16;
         xy0 = g_vtxScreenXY[a & 0xFFFF];
         xy1 = g_vtxScreenXY[i1];
@@ -219,7 +219,7 @@ u8 *func_800DE11C(BtlUnit9C *arg0, u8 arg1, u8 *prim) {
         if (otz > 0x2FFFFFFF) {
             continue;
         }
-        if (!(sGT3->unkF & 2)) {
+        if (!(sGT3->flags & 2)) {
             gte_ldsxy3(xy0, xy1, xy2);
             gte_nclip();
             gte_stopz(&opz);
@@ -231,25 +231,25 @@ u8 *func_800DE11C(BtlUnit9C *arg0, u8 arg1, u8 *prim) {
         *(s32 *)&pGT3->x0 = xy0;
         *(s32 *)&pGT3->x1 = xy1;
         *(s32 *)&pGT3->x2 = xy2;
-        a = *(u32 *)&sGT3->unk10[0];
-        t = tex[sGT3->unk16];
+        a = *(u32 *)&sGT3->col[0];
+        t = tex[sGT3->tex];
         cp = (u32 *)col[a & 0xFFFF];
         *(u32 *)&pGT3->r0 = *cp;
         cp = (u32 *)col[a >> 16];
         *(u32 *)&pGT3->r1 = *cp;
-        cp = (u32 *)col[sGT3->unk10[2]];
+        cp = (u32 *)col[sGT3->col[2]];
         *(u32 *)&pGT3->r2 = *cp;
         setlen(pGT3, 9);
         setcode(pGT3, 0x34);
         hi = t & 0xFFFF0000;
         t <<= 16;
-        *(u32 *)&pGT3->u0 = *(u16 *)uv[sGT3->unk6[0]] | hi;
-        a = *(u32 *)&sGT3->unk6[1];
+        *(u32 *)&pGT3->u0 = *(u16 *)uv[sGT3->uv[0]] | hi;
+        a = *(u32 *)&sGT3->uv[1];
         *(u32 *)&pGT3->u1 = *(u16 *)uv[a & 0xFFFF] | t;
         *(u16 *)&pGT3->u2 = *(u16 *)uv[a >> 16];
         otz /= 3;
-        if (sGT3->unkF & 1) {
-            pGT3->tpage |= sGT3->unkF & 0xE0;
+        if (sGT3->flags & 1) {
+            pGT3->tpage |= sGT3->flags & 0xE0;
             setSemiTrans(pGT3, 1);
         }
         addPrim(&ot[otz >> 4], pGT3);
@@ -260,8 +260,8 @@ u8 *func_800DE11C(BtlUnit9C *arg0, u8 arg1, u8 *prim) {
     for (i = 0; i < n; src += sizeof(WmSrcG4)) {
         sG4 = (WmSrcG4 *)src;
         pG4 = (POLY_G4 *)prim;
-        a = *(u32 *)&sG4->unk0[0];
-        b = *(u32 *)&sG4->unk0[2];
+        a = *(u32 *)&sG4->vtx[0];
+        b = *(u32 *)&sG4->vtx[2];
         i1 = a >> 16;
         i3 = b >> 16;
         xy0 = g_vtxScreenXY[a & 0xFFFF];
@@ -272,7 +272,7 @@ u8 *func_800DE11C(BtlUnit9C *arg0, u8 arg1, u8 *prim) {
         if (otz > 0x3FFFFFFF) {
             continue;
         }
-        if (!(sG4->unk14 & 2)) {
+        if (!(sG4->flags & 2)) {
             gte_ldsxy3(xy0, xy1, xy2);
             gte_nclip();
             gte_stopz(&opz);
@@ -285,8 +285,8 @@ u8 *func_800DE11C(BtlUnit9C *arg0, u8 arg1, u8 *prim) {
         *(s32 *)&pG4->x2 = xy2;
         *(s32 *)&pG4->x3 = g_vtxScreenXY[i3];
         otz &= 0xFFFFF;
-        a = *(u32 *)&sG4->unk8[0];
-        i1 = *(u32 *)&sG4->unk8[2];
+        a = *(u32 *)&sG4->col[0];
+        i1 = *(u32 *)&sG4->col[2];
         cp = (u32 *)col[a & 0xFFFF];
         *(u32 *)&pG4->r0 = *cp;
         cp = (u32 *)col[a >> 16];
@@ -305,8 +305,8 @@ u8 *func_800DE11C(BtlUnit9C *arg0, u8 arg1, u8 *prim) {
     for (i = 0; i < n; src += sizeof(WmSrcG3)) {
         sG3 = (WmSrcG3 *)src;
         pG3 = (POLY_G3 *)prim;
-        a = *(u32 *)&sG3->unk0[0];
-        b = sG3->unk0[2];
+        a = *(u32 *)&sG3->vtx[0];
+        b = sG3->vtx[2];
         i1 = a >> 16;
         xy0 = g_vtxScreenXY[a & 0xFFFF];
         xy1 = g_vtxScreenXY[i1];
@@ -316,7 +316,7 @@ u8 *func_800DE11C(BtlUnit9C *arg0, u8 arg1, u8 *prim) {
         if (otz > 0x2FFFFFFF) {
             continue;
         }
-        if (!(sG3->unk13 & 2)) {
+        if (!(sG3->flags & 2)) {
             gte_ldsxy3(xy0, xy1, xy2);
             gte_nclip();
             gte_stopz(&opz);
@@ -328,12 +328,12 @@ u8 *func_800DE11C(BtlUnit9C *arg0, u8 arg1, u8 *prim) {
         *(s32 *)&pG3->x0 = xy0;
         *(s32 *)&pG3->x1 = xy1;
         *(s32 *)&pG3->x2 = xy2;
-        a = *(u32 *)&sG3->unk8[0];
+        a = *(u32 *)&sG3->col[0];
         cp = (u32 *)col[a & 0xFFFF];
         *(u32 *)&pG3->r0 = *cp;
         cp = (u32 *)col[a >> 16];
         *(u32 *)&pG3->r1 = *cp;
-        cp = (u32 *)col[sG3->unk8[2]];
+        cp = (u32 *)col[sG3->col[2]];
         *(u32 *)&pG3->r2 = *cp;
         setlen(pG3, 6);
         setcode(pG3, 0x30);
@@ -346,8 +346,8 @@ u8 *func_800DE11C(BtlUnit9C *arg0, u8 arg1, u8 *prim) {
     for (i = 0; i < n; src += sizeof(WmSrcF4)) {
         sF4 = (WmSrcF4 *)src;
         pF4 = (POLY_F4 *)prim;
-        a = *(u32 *)&sF4->unk0[0];
-        b = *(u32 *)&sF4->unk0[2];
+        a = *(u32 *)&sF4->vtx[0];
+        b = *(u32 *)&sF4->vtx[2];
         i1 = a >> 16;
         i3 = b >> 16;
         xy0 = g_vtxScreenXY[a & 0xFFFF];
@@ -358,7 +358,7 @@ u8 *func_800DE11C(BtlUnit9C *arg0, u8 arg1, u8 *prim) {
         if (otz > 0x3FFFFFFF) {
             continue;
         }
-        if (!(sF4->unkD & 2)) {
+        if (!(sF4->flags & 2)) {
             gte_ldsxy3(xy0, xy1, xy2);
             gte_nclip();
             gte_stopz(&opz);
@@ -366,7 +366,7 @@ u8 *func_800DE11C(BtlUnit9C *arg0, u8 arg1, u8 *prim) {
                 continue;
             }
         }
-        *(u32 *)&pF4->r0 = *(u32 *)sF4->unk8;
+        *(u32 *)&pF4->r0 = *(u32 *)sF4->rgb;
         setlen(pF4, 5);
         *(s32 *)&pF4->x0 = xy0;
         *(s32 *)&pF4->x1 = xy1;
@@ -382,8 +382,8 @@ u8 *func_800DE11C(BtlUnit9C *arg0, u8 arg1, u8 *prim) {
     for (i = 0; i < n; src += sizeof(WmSrcF3)) {
         sF3 = (WmSrcF3 *)src;
         pF3 = (POLY_F3 *)prim;
-        a = *(u32 *)&sF3->unk0[0];
-        b = sF3->unk0[2];
+        a = *(u32 *)&sF3->vtx[0];
+        b = sF3->vtx[2];
         i1 = a >> 16;
         xy0 = g_vtxScreenXY[a & 0xFFFF];
         xy1 = g_vtxScreenXY[i1];
@@ -393,7 +393,7 @@ u8 *func_800DE11C(BtlUnit9C *arg0, u8 arg1, u8 *prim) {
         if (otz > 0x2FFFFFFF) {
             continue;
         }
-        if (!(sF3->unkB & 2)) {
+        if (!(sF3->flags & 2)) {
             gte_ldsxy3(xy0, xy1, xy2);
             gte_nclip();
             gte_stopz(&opz);
@@ -402,7 +402,7 @@ u8 *func_800DE11C(BtlUnit9C *arg0, u8 arg1, u8 *prim) {
             }
         }
         otz &= 0xFFFFF;
-        *(u32 *)&pF3->r0 = *(u32 *)sF3->unk8;
+        *(u32 *)&pF3->r0 = *(u32 *)sF3->rgb;
         setlen(pF3, 4);
         setcode(pF3, 0x20);
         *(s32 *)&pF3->x0 = xy0;

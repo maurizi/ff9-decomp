@@ -295,13 +295,13 @@ s32 Hi_DrawSummonModel(SVECTOR *arg0, VECTOR *arg1, s32 arg2, s32 arg3, s32 arg4
     s32 i;
     btl_setModelTransform(s->unk0, arg0, arg1, arg2);
     a = s->unk0->motion;
-    if (IS_OFFSET(a->unkC)) {
-        a->unkC = (s32)a + a->unkC;
-        if (a->unk10 != 0) {
-            a->unk10 = (s32)s->unk0->motion + a->unk10;
+    if (IS_OFFSET(a->rotKeys)) {
+        a->rotKeys = (s32)a + a->rotKeys;
+        if (a->rotKeysLo != 0) {
+            a->rotKeysLo = (s32)s->unk0->motion + a->rotKeysLo;
         }
     }
-    n = s->unk0->motion->unk2;
+    n = s->unk0->motion->frameCount;
     if (s->unk50 >= n) {
         if (arg4 & 1) {
             s->unk50 = 0;
@@ -334,7 +334,7 @@ void Hi_SetSummonMotion(BtlUnit9CC *arg0, s32 arg1) {
 
 void Hi_SetSummonMotFrame(s32 arg0, s32 arg1) {
     Unk8010141C *p = btlfx_getSummonModel(arg0, D_800A7F34);
-    if (p->unk0->motion->unk2 < arg1) {
+    if (p->unk0->motion->frameCount < arg1) {
         p->unk50 = 0;
     } else {
         p->unk50 = arg1;

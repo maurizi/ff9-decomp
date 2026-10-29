@@ -21,9 +21,10 @@ typedef struct BtlUnitA0 {
     u8 unk3B;
 } BtlUnitA0;
 
-/* model mesh group: primitive counts per type */
+/* model mesh group (ovl_0a WmModelGroup): primitive counts per type. The five arrays follow each other in the file in
+ * this order; uvs and colours are indexed per polygon corner (not shared with the vertices). docs/battle-models.md */
 typedef struct {
-    u8 pad0[2];
+    u16 packetSize; /* bytes of GPU packets if every polygon were drawn: 0x28 FT4, 0x20 FT3, 0x34 GT4, 0x28 GT3, 0x24 G4, 0x1C G3, 0x18 F4, 0x14 F3 (ovl_0a sizes packet buffers with it) */
     u16 nFT4; /* primitive counts by type, in the order of the packed sources (btlfx_getMeshPrims) */
     u16 nFT3;
     u16 nGT4;
@@ -33,108 +34,121 @@ typedef struct {
     u16 nF4;
     u16 nF3;
     u8 pad12;
-    s8 unk13; /* ordering table bias */
-    u16 *vertexCounts;
-    SVECTOR *vertices;
-    u32 *prims; /* primitive sources (WmSrc*) */
-    u8 (*uvs)[2];
-    u8 (*colors)[4];
+    s8 otBias; /* ordering table entries the group's polygons are moved toward the front (btl_drawMesh) */
+    u16 *vertexCounts; /* per bone (BtlUnit9C8.boneCount): vertices bone b moves, consecutive from bone 0 (btl_projectMesh) */
+    SVECTOR *vertices; /* sum of vertexCounts; polygon vertex indices index this (and g_vtxScreenXY/Z) */
+    u32 *prims; /* primitive sources (WmSrc*), the eight lists back to back in the order of the counts */
+    u8 (*uvs)[2]; /* indexed by the textured sources' uv indices */
+    u8 (*colors)[4]; /* indexed by the gouraud sources' colour indices */
 } BtlMesh; /* 0x28 */
 
 /* primitive sources of a model mesh (same layout as WorldMap's in ovl_0a/0c) */
 typedef struct {
-    u16 unk0[4];
-    u16 unk8[4]; /* uv */
-    u8 unk10[3]; /* rgb */
-    u8 unk13;    /* texture */
+    u16 vtx[4]; /* vertex indices (BtlMesh.vertices) */
+    u16 uv[4]; /* uv indices (BtlMesh.uvs) */
+    u8 rgb[3]; /* colour (with the code byte: the packet's rgb word) */
+    u8 tex; /* texture: BtlUnit9C.texPages index, model info uv offsets */
     u8 unk14;
-    u8 unk15; /* flags: 1 = semi transparent, 0xE0 = mode */
+    u8 flags; /* flags: 1 semi-transparent (abr = flags & 0xE0), 2 double-sided (no NCLIP) */
     u8 pad16[2];
 } WmSrcFT4; /* 0x18 */
 
 typedef struct {
-    u16 unk0[3];
-    u8 unk6; /* texture */
+    u16 vtx[3]; /* vertex indices */
+    u8 tex; /* texture */
     u8 pad7;
-    u8 unk8[3]; /* rgb */
+    u8 rgb[3];
     u8 padB;
-    u16 unkC[3]; /* uv */
-    u8 unk12;    /* flags */
+    u16 uv[3]; /* uv indices */
+    u8 flags; /* as WmSrcFT4 */
     u8 pad13;
 } WmSrcFT3; /* 0x14 */
 
 typedef struct {
-    u16 unk0[4];
-    u16 unk8[4];  /* uv */
-    u16 unk10[4]; /* colours */
+    u16 vtx[4]; /* vertex indices */
+    u16 uv[4]; /* uv indices */
+    u16 col[4]; /* colour indices (BtlMesh.colors) */
     u8 pad18[4];
-    u8 unk1C; /* flags */
-    u8 unk1D; /* texture */
+    u8 flags; /* as WmSrcFT4 */
+    u8 tex; /* texture */
     u8 pad1E[2];
 } WmSrcGT4; /* 0x20 */
 
 typedef struct {
-    u16 unk0[3];
-    u16 unk6[3]; /* uv */
+    u16 vtx[3]; /* vertex indices */
+    u16 uv[3]; /* uv indices */
     u8 padC[3];
-    u8 unkF;      /* flags */
-    u16 unk10[3]; /* colours */
-    u8 unk16;     /* texture */
+    u8 flags; /* as WmSrcFT4 */
+    u16 col[3]; /* colour indices */
+    u8 tex; /* texture */
     u8 pad17;
 } WmSrcGT3; /* 0x18 */
 
 typedef struct {
-    u16 unk0[4];
-    u16 unk8[4]; /* colours */
+    u16 vtx[4]; /* vertex indices */
+    u16 col[4]; /* colour indices */
     u8 pad10[4];
-    u8 unk14; /* flags */
+    u8 flags; /* as WmSrcFT4 */
     u8 pad15[3];
 } WmSrcG4; /* 0x18 */
 
 typedef struct {
-    u16 unk0[3];
+    u16 vtx[3]; /* vertex indices */
     u8 pad6[2];
-    u16 unk8[3]; /* colours */
+    u16 col[3]; /* colour indices */
     u8 padE[5];
-    u8 unk13; /* flags */
+    u8 flags; /* as WmSrcFT4 */
 } WmSrcG3; /* 0x14 */
 
 typedef struct {
-    u16 unk0[4];
-    u8 unk8[3]; /* rgb */
+    u16 vtx[4]; /* vertex indices */
+    u8 rgb[3];
     u8 padB[2];
-    u8 unkD; /* flags */
+    u8 flags; /* as WmSrcFT4 */
     u8 padE[2];
 } WmSrcF4; /* 0x10 */
 
 typedef struct {
-    u16 unk0[3];
+    u16 vtx[3]; /* vertex indices */
     u8 pad6[2];
-    u8 unk8[3]; /* rgb */
-    u8 unkB; /* flags */
+    u8 rgb[3];
+    u8 flags; /* as WmSrcFT4 */
 } WmSrcF3; /* 0xC */
 
-typedef struct BtlUnit9C8 {
-    u16 unk0; /* flags: 1 = relocated */
+/* skeleton bone of a model (BtlUnit9C8.bones, 4 bytes; ovl_0a WmBone): btl_calcBoneMatrices composes bone i's
+ * matrix with its parent's (already built: parent < i) and a z offset of `length`; bone 0 is the root */
+typedef struct {
+    s16 length; /* z offset from the parent */
     u8 unk2;
-    u8 meshCount; /* mesh groups (unk10) */
-    u8 pad4[8 - 4];
+    u8 parent; /* parent bone */
+} BtlBoneDef;
+
+/* model header (DB item 0x02xxxx: battle model files in FF9.IMG dir index 7, file id = model id; weapon and effect
+ * models use the same format; ovl_0a WmModel). Layout and users: docs/battle-models.md */
+typedef struct BtlUnit9C8 {
+    u16 flags; /* 1 = relocated (btl_applyModelTextures turns the offsets below into pointers once) */
+    u8 boneCount; /* bones: BtlMesh.vertexCounts entries, motion keys per frame (btl_projectMesh, btl_calcBoneMatrices) */
+    u8 meshCount; /* mesh groups (meshes); bit i of BtlUnit9C.hiddenMeshes hides group i */
+    u16 packetSize; /* sum of the groups' BtlMesh.packetSize */
+    u8 unk6; /* ovl_0a: look-at bone (WmModel.lookAtBone) */
+    u8 pad7;
     u16 height; /* btl_getUnitHeight */
     u16 radius; /* btlfx_getUnitRadius (party units) */
-    s32 unkC; /* offset, relocated on load */
-    BtlMesh *meshes;
+    s32 bones; /* BtlBoneDef[boneCount]: offset from the header, relocated on load (btl_applyModelTextures) */
+    BtlMesh *meshes; /* meshCount groups: offset from the header, relocated on load */
 } BtlUnit9C8;
 
-/* animation (btl_calcBoneMatrices) */
+/* motion (DB item 0x03xxxx, in the model file next to the model header; btl_calcBoneMatrices; ovl_0a WmAnim).
+ * One key per bone of the model it plays on (BtlUnit9C8.boneCount), in bone order */
 typedef struct BtlUnit9CC {
     u8 pad0[2];
-    u16 unk2;
-    u16 unk4; /* root x: the value (unkA bit 0) or the offset of a per-frame s16 table */
-    u16 unk6; /* root y (bit 1) */
-    u16 unk8; /* root z (bit 2) */
-    u16 unkA; /* flags */
-    s32 unkC; /* offset, relocated on load: per-bone rotation keys, 8 bytes (3 u16 + flags u16) */
-    s32 unk10; /* offset, relocated on load: per-bone low-nibble keys, or 0 */
+    u16 frameCount; /* frames (btl_updateUnitModel wraps the unit's frame at it) */
+    u16 rootX; /* root x: the value (constMask bit 0) or the offset of a per-frame s16 table */
+    u16 rootY; /* root y (bit 1) */
+    u16 rootZ; /* root z (bit 2) */
+    u16 constMask;
+    s32 rotKeys; /* offset, relocated on load: per-bone rotation keys, 8 bytes (3 u16 + flags u16): a constant, or the offset of a per-frame s8 table */
+    s32 rotKeysLo; /* offset, relocated on load: per-bone low-nibble keys (two frames per byte), or 0 */
 } BtlUnit9CC;
 
 typedef struct {
@@ -153,9 +167,11 @@ typedef struct BtlUnit9C50 {
     s16 unk12;
 } BtlUnit9C50; /* 0x14 */
 
+/* texture word of a model, one per texture index (WmSrc*.tex): the model info entry's first table (ovl_0a WmTexInfo).
+ * btl_drawMesh puts clut in the first uv word and tpage in the second; btl_setStoneClut moves clut */
 typedef struct {
-    s16 unk0;
-    s16 unk2; /* tpage */
+    s16 tpage;
+    s16 clut;
 } BtlUnit9C18;
 
 /* FileEntry viewed with its first word split (file_find type 0xD) */
@@ -603,8 +619,8 @@ typedef struct BtlUnit {
     s16 screenX;
     s16 screenY;
     u8 onScreen; /* screenX/Y valid (btl_projectUnitPos) */
-    u8 unkBD;
-    u8 unkBE;
+    u8 shadowBone; /* bone the shadow sits under (btl_calcShadowMatrix) */
+    u8 shadowDirBone; /* bone the shadow faces toward from shadowBone; = shadowBone: that bone's own axis */
     u8 shadowW; /* shadow width / 14 (btl_setShadowSize) */
     u8 shadowD; /* shadow depth / 12 */
     u8 unkC1[3];
@@ -1117,9 +1133,10 @@ typedef struct {
     Unk800C9EE0 unk8[4]; /* enemy placements */
 } Battle1330; /* 0x38 */
 
+/* enemy type record as the scene sees it (Unk800C9D1C is the same record) */
 typedef struct {
     u8 pad0[0x1E];
-    u16 unk1E;
+    u16 modelId; /* model (Unk800C9D1C.modelId) */
     u8 pad20[0x62 - 0x20];
     u16 unk62;
     u8 pad64[0x74 - 0x64];
@@ -2260,7 +2277,8 @@ typedef struct {
 extern Unk801051F0 g_btlBanner;
 extern s32 D_800FDE3C[];
 extern s16 D_800F5850[];
-/* enemy data record (btl_initEnemyType) */
+/* enemy type record (btl_initEnemyType; 0x74 bytes, the encounter header's records after its groups; Battle1334 is the
+ * same record) */
 typedef struct {
     s32 unk0;
     s32 unk4;
@@ -2272,9 +2290,9 @@ typedef struct {
     s32 unk14;
     s32 unk18;
     u16 unk1C;
-    u8 pad1E[0x20 - 0x1E];
-    u16 unk20[6]; /* file ids */
-    s32 unk2C;
+    u16 modelId; /* model (key 0x02xxxx; FF9.IMG dir index 7, file id = model id): btl_getEnemyModelId via Battle1334 */
+    u16 motionIds[6]; /* motions (keys 0x03xxxx, in the model file): BtlEnemyType.motions */
+    s32 meshMasks; /* BtlUnit.hiddenMeshes | vanishMeshes << 16: mesh-group bits (btl_setEnemyStats) */
     u16 unk30;
     u8 pad32[0x34 - 0x32];
     u8 unk34[4];
@@ -2285,8 +2303,8 @@ typedef struct {
     u8 pad42;
     u8 unk43[4];
     u8 unk47;
-    u8 unk48[3];
-    u8 unk4B;
+    u8 bones[3]; /* BtlEnemyType.bones: camera/effect anchor bones */
+    u8 baseBone; /* BtlUnit.baseBone */
     u16 unk4C;
     u8 unk4E;
     u8 unk4F;
@@ -2296,11 +2314,11 @@ typedef struct {
     u8 pad62[0x64 - 0x62];
     u16 unk64;
     u16 unk66;
-    u8 unk68;
+    u8 shadowBone; /* BtlUnit.shadowBone */
     u8 unk69;
     s16 unk6A;
     s16 unk6C;
-    u8 unk6E;
+    u8 shadowDirBone; /* BtlUnit.shadowDirBone */
     u8 pad6F[0x74 - 0x6F];
 } Unk800C9D1C;
 extern u32 D_80104E80;

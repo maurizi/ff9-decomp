@@ -21,10 +21,10 @@ void btlseq_init(void) {
     for (i = 0; i < n; i++, q++) {
         m = db_lookupRegistered(4, (*q & 0xFFFF) | 0x30000, 0);
         *q = (u32)m;
-        if (IS_OFFSET(m->unkC)) {
-            m->unkC = (s32)m + m->unkC;
-            if (m->unk10 != 0) {
-                m->unk10 = *q + m->unk10;
+        if (IS_OFFSET(m->rotKeys)) {
+            m->rotKeys = (s32)m + m->rotKeys;
+            if (m->rotKeysLo != 0) {
+                m->rotKeysLo = *q + m->rotKeysLo;
             }
         }
     }
@@ -178,7 +178,7 @@ void btlseq_update(void) {
 
 s32 btlseq_opEnd(BtlScript *arg0, BtlUnit *arg1) {
     BtlUnit9C *m = arg1->model;
-    if (!((arg0->flags >> 2) & 1) && arg0->frame != 0 && arg1->obj->frame >= m->motion->unk2) {
+    if (!((arg0->flags >> 2) & 1) && arg0->frame != 0 && arg1->obj->frame >= m->motion->frameCount) {
         m->motion = (BtlUnit9CC *)arg1->motions[(arg1->flags >> 18) & 1];
         arg1->obj->frame = 0;
         arg0->flags |= 4;
@@ -403,7 +403,7 @@ s32 btlseq_opEffect(BtlScript *arg0) {
 s32 btlseq_opWaitAnim(BtlScript *arg0, BtlUnit *arg1) {
     BtlUnit9C *m = arg1->model;
     BtlUnitA0 *a = arg1->obj;
-    if (arg0->frame != 0 && (a->frame >= m->motion->unk2 || (arg1->status & (BTL_STATUS_VENOM | BTL_STATUS_STOP | BTL_STATUS_FREEZE)))) {
+    if (arg0->frame != 0 && (a->frame >= m->motion->frameCount || (arg1->status & (BTL_STATUS_VENOM | BTL_STATUS_STOP | BTL_STATUS_FREEZE)))) {
         g_btlfxEnv->camera->unk52 = 0;
         arg0->pc += 1;
         return 1;

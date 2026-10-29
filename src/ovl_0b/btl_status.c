@@ -526,10 +526,10 @@ void btl_setStoneClut(BtlUnit *arg0, s32 arg1) {
     }
     i = 0;
     if (arg0->flags & 1) {
-        arg0->weaponModel->texPages->unk2 = ((d + clut_getY(arg0->weaponModel->texPages->unk2)) << 6) | 0x10;
+        arg0->weaponModel->texPages->clut = ((d + clut_getY(arg0->weaponModel->texPages->clut)) << 6) | 0x10;
     }
     while (i < func_80063830(arg0->modelId | 0x20000)) {
-        arg0->model->texPages[i].unk2 = ((d + clut_getY(arg0->model->texPages[i].unk2)) << 6) | 0x10;
+        arg0->model->texPages[i].clut = ((d + clut_getY(arg0->model->texPages[i].clut)) << 6) | 0x10;
         i++;
     }
 }
@@ -542,7 +542,7 @@ void btl_makeGreyCluts(BtlUnit *arg0) {
 
     for (i = 0; i < func_80063830(arg0->modelId | 0x20000); i++) {
         g_btlClutRect.x = 0x100;
-        g_btlClutRect.y = clut_getY(arg0->model->texPages[i].unk2);
+        g_btlClutRect.y = clut_getY(arg0->model->texPages[i].clut);
         g_btlClutRect.w = 0x100;
         g_btlClutRect.h = 1;
         StoreImage(&g_btlClutRect, (u32 *)g_btlClutBuf[i]);

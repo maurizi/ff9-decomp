@@ -90,7 +90,7 @@ static u8 *meshEmit(BtlUnit9C *m, u32 meshIdx, u8 *out, s32 otOfs, s32 offsetVar
         m->prims = (s32)out;
     }
     mesh = &m->header->meshes[meshIdx];
-    ot = (u8 *)g_gameState->gameData->unk10[g_gameState->gameData->unk8] - mesh->unk13 * 4;
+    ot = (u8 *)g_gameState->gameData->unk10[g_gameState->gameData->unk8] - mesh->otBias * 4;
     if (offsetVariant) {
         ot += otOfs * 4;
     }

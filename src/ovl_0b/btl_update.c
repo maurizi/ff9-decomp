@@ -96,7 +96,7 @@ s32 btl_updateUnits(GameData *arg0, Battle *arg1) {
                 n = u->model;
                 g = u->flags & ~0x200000;
                 u->flags = g;
-                if (u->obj->frame >= n->motion->unk2) {
+                if (u->obj->frame >= n->motion->frameCount) {
                     if (!(u->status & BTL_STATUS_KO)) {
                         n->motion = (BtlUnit9CC *)u->motions[(g >> 18) & 1];
                     }
@@ -111,7 +111,7 @@ s32 btl_updateUnits(GameData *arg0, Battle *arg1) {
                 f = u->flags;
                 if ((f & 1) && !(u->status & (BTL_STATUS_PETRIFY | BTL_STATUS_VENOM | BTL_STATUS_KO | BTL_STATUS_STOP)) && ((arg1->scene.unk0 >> 6) & 1) && (g_gameState->gameData->characters + ((f >> 1) & 0xF))->unk34.b.unkA) {
                     m = u->model;
-                    if (u->obj->frame >= m->motion->unk2) {
+                    if (u->obj->frame >= m->motion->frameCount) {
                         m->motion = (BtlUnit9CC *)u->motions[19];
                         u->obj->frame = 0;
                     }

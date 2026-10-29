@@ -1780,7 +1780,7 @@ void btl_forEachModelVertex(BtlUnit9C8 *arg0, void (*arg1)(SVECTOR *, s32)) {
     for (i = 0; i < g->meshCount; i++) {
         m = &g->meshes[i];
         n = 0;
-        for (j = 0; j < g->unk2; j++) {
+        for (j = 0; j < g->boneCount; j++) {
             for (k = 0; k < m->vertexCounts[j]; k++) {
                 arg1(&m->vertices[n + k], n + k);
             }

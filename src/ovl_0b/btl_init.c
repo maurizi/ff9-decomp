@@ -210,11 +210,11 @@ u32 *btl_initEnemyState(Battle *arg0, u32 *arg1) {
                 u->model->matrix.t[1] = u->obj->y >> 16;
                 u->model->matrix.t[2] = u->obj->z >> 16;
                 cc = u->model->motion;
-                if (IS_OFFSET(cc->unkC)) {
-                    t = cc->unk10;
-                    cc->unkC = (s32)cc + cc->unkC;
+                if (IS_OFFSET(cc->rotKeys)) {
+                    t = cc->rotKeysLo;
+                    cc->rotKeys = (s32)cc + cc->rotKeys;
                     if (t != 0) {
-                        cc->unk10 = (s32)u->model->motion + t;
+                        cc->rotKeysLo = (s32)u->model->motion + t;
                     }
                 }
                 arg1 = (u32 *)btl_calcBoneMatrices(u->model, 0, (u8 *)arg1);
@@ -229,7 +229,7 @@ u32 *btl_initEnemyState(Battle *arg0, u32 *arg1) {
                 if (g_randPtr >= g_randTableEnd) {
                     rand_refill();
                 }
-                a0->frame = *g_randPtr++ % u->model->motion->unk2;
+                a0->frame = *g_randPtr++ % u->model->motion->frameCount;
             }
         }
     }

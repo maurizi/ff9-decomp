@@ -18,7 +18,7 @@ Reads disks/us/discN/FF9.IMG (no emulator). Formats and code paths: docs/battle-
   0x1B item 0 is a nested container with the model header 0x02|id and its motions 0x03xxxx), then the rest
   (block 0x1B item 1: TIM textures 0x04xxxx). The entry is FF9.IMG **dir index 7, file id = model id**; this tool
   checks that for every entry.
-- The model header (`BtlModelHeader`) and its mesh groups are counted here as the loader leaves them.
+- The model header (`BtlUnit9C8`) and its mesh groups are counted here as the loader leaves them.
 """
 import argparse
 import json
@@ -38,6 +38,8 @@ PRIM_TYPES = [('FT4', 0x18, 4, 0x28), ('FT3', 0x14, 3, 0x20), ('GT4', 0x20, 4, 0
 # Offsets inside a source record: vertex indices, uv indices (textured), colour indices (gouraud)
 PRIM_FIELDS = {'FT4': (0x0, 0x8, None), 'FT3': (0x0, 0xC, None), 'GT4': (0x0, 0x8, 0x10), 'GT3': (0x0, 0x6, 0x10),
                'G4': (0x0, None, 0x8), 'G3': (0x0, None, 0x8), 'F4': (0x0, None, None), 'F3': (0x0, None, None)}
+# flags byte (WmSrc*.flags): 1 semi-transparent (mode in 0xE0), 2 double-sided (no NCLIP back-face test)
+PRIM_FLAGS = {'FT4': 0x15, 'FT3': 0x12, 'GT4': 0x1C, 'GT3': 0xF, 'G4': 0x14, 'G3': 0x13, 'F4': 0xD, 'F3': 0xB}
 VERTEX_BUFFER = 0x321  # g_vtxScreenZ holds 802 entries; GeoSplitVertices clamps a group to 0x321 vertices
 
 
@@ -117,7 +119,7 @@ def model_stats(data, mid):
         p = p_o
         maxv = maxuv = maxc = -1
         texs = set()
-        want = 0
+        want = double = semi = 0
         for (name, size, nvert, pkt), n in zip(PRIM_TYPES, counts):
             vf, uf, cf = PRIM_FIELDS[name]
             for _ in range(n):
@@ -129,10 +131,14 @@ def model_stats(data, mid):
                 tex = {'FT4': 0x13, 'FT3': 0x6, 'GT4': 0x1D, 'GT3': 0x16}.get(name)
                 if tex is not None:
                     texs.add(data[p + tex])
+                f = data[p + PRIM_FLAGS[name]]
+                double += f >> 1 & 1
+                semi += f & 1
                 p += size
             want += n * pkt
         mesh.update({'max_vertex_index': maxv, 'max_uv_index': maxuv, 'max_colour_index': maxc,
-                     'textures': sorted(texs), 'prim_bytes': p - p_o})
+                     'textures': sorted(texs), 'prim_bytes': p - p_o, 'double_sided': double,
+                     'semi_transparent': semi})
         if p != uv_o:
             out['problems'].append(f'mesh {i}: sources end at {p - h:#x}, uvs start at {uv_o - h:#x}')
         if v_o + nv * 8 != p_o:
@@ -278,7 +284,7 @@ def main():
             for i, g in enumerate(st['meshes']):
                 bones = ' '.join(f'{b}:{n}' for b, n in g['bone_vertices'].items())
                 print(f"      mesh {i}: {g['vertices']} vertices, {g['uvs']} uvs, ot bias {g['ot_bias']}, "
-                      f"textures {g['textures']}, polys "
+                      f"textures {g['textures']}, {g['double_sided']} double-sided, {g['semi_transparent']} semi-transparent, polys "
                       + ' '.join(f"{k} {v}" for k, v in g['polys'].items() if v) + f"; bone:vertices {bones}")
 
 

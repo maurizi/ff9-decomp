@@ -1091,14 +1091,14 @@ s32 btlfx_getUnitMotion(s32 arg0, s32 arg1) {
 
 void btlfx_setMotionFrame(s32 arg0, s32 arg1) {
     BtlUnit *u = btl_getUnit(arg0);
-    if (arg1 >= u->model->motion->unk2) {
-        arg1 = u->model->motion->unk2;
+    if (arg1 >= u->model->motion->frameCount) {
+        arg1 = u->model->motion->frameCount;
     }
     u->obj->frame = arg1;
 }
 
 s32 btlfx_getMotionLength(s32 arg0) {
-    return btl_getUnit(arg0)->model->motion->unk2;
+    return btl_getUnit(arg0)->model->motion->frameCount;
 }
 
 u8 btlfx_getMotionFrame(s32 arg0) {

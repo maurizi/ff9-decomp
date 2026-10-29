@@ -415,8 +415,8 @@ void btl_placeParty(void) {
         u->rot[2] = 0;
         tbl = D_800F57F0;
         e = &tbl[g_gameState->gameData->characters[(u->flags >> 1) & 0xF].unk34.b.unk4];
-        u->unkBD = e->unk0;
-        u->unkBE = e->unk1;
+        u->shadowBone = e->unk0;
+        u->shadowDirBone = e->unk1;
         btl_setShadowSize(u, e->unk2, e->unk3);
         x -= 0x278;
         g_gameState->gameData->unk8E4.battle->work->shadows[(u->flags >> 1) & 0xF].unk4_22 = e->unk4;
@@ -438,17 +438,17 @@ void btl_initEnemyType(Unk800C9D1C *arg0, BtlEnemyType *arg1) {
     arg1->card = arg0->unk69;
     arg1->drops.w = arg0->unk14;
     for (i = 0; i < 6; i++) {
-        h = db_lookupRegistered(4, arg0->unk20[i] | 0x30000, 0);
+        h = db_lookupRegistered(4, arg0->motionIds[i] | 0x30000, 0);
         arg1->motions[i] = h;
-        if (IS_OFFSET(h->unkC)) {
-            h->unkC = (s32)h + h->unkC;
-            if (h->unk10 != 0) {
-                h->unk10 = (s32)arg1->motions[i] + h->unk10;
+        if (IS_OFFSET(h->rotKeys)) {
+            h->rotKeys = (s32)h + h->rotKeys;
+            if (h->rotKeysLo != 0) {
+                h->rotKeysLo = (s32)arg1->motions[i] + h->rotKeysLo;
             }
         }
     }
     for (i = 0; i < 3; i++) {
-        arg1->bones[i] = arg0->unk48[i];
+        arg1->bones[i] = arg0->bones[i];
     }
     arg1->deathCry = arg0->unk4C;
     arg1->confuseAbility = arg0->unk4E;
@@ -505,15 +505,15 @@ void btl_setEnemyStats(Unk800C9D1C *arg0, BtlUnit *arg1) {
     arg1->magic = arg0->unk34[2];
     arg1->spirit = arg0->unk34[3];
     *(s32 *)&arg1->elemGuard = arg0->unk3C;
-    *(s32 *)&arg1->hiddenMeshes = arg0->unk2C;
-    arg1->baseBone = arg0->unk4B;
+    *(s32 *)&arg1->hiddenMeshes = arg0->meshMasks;
+    arg1->baseBone = arg0->baseBone;
     s = &g_gameState->gameData->unk8E4.battle->enemies[(arg1->flags >> 1) & 0xF];
     s->steal.w = arg0->unk18;
     s->flags = (s->flags & ~0x40) | ((arg0->unk30 & 1) << 6);
     s->flags = (s->flags & ~0x80) | ((arg0->unk30 << 6) & 0x80);
     btl_setShadowSize(arg1, arg0->unk64, arg0->unk66);
-    arg1->unkBD = arg0->unk68;
-    arg1->unkBE = arg0->unk6E;
+    arg1->shadowBone = arg0->shadowBone;
+    arg1->shadowDirBone = arg0->shadowDirBone;
     t = &g_gameState->gameData->unk8E4.battle->work->shadows[((arg1->flags >> 1) & 0xF) + 9];
     t->unk4_12 = arg0->unk6A;
     t->unk4_22 = arg0->unk6C;
@@ -534,7 +534,7 @@ s16 btl_getEnemyModelId(s16 arg0) {
     if (arg0 > 0 && (e->unk1 & 2)) {
         r = -1;
     } else {
-        r = g_gameState->gameData->unk8E4.battle->scene.unk8[e->unk0].unk1E;
+        r = g_gameState->gameData->unk8E4.battle->scene.unk8[e->unk0].modelId;
     }
     return r;
 }

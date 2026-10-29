@@ -46,7 +46,7 @@ void btlfx_projectSliceMesh(BtlUnit9C *m, u8 meshIdx) {
     base = 0;
     mesh = &m->header->meshes[meshIdx];
     bone = (u8 *)m->bones;
-    nb = m->header->unk2;
+    nb = m->header->boneCount;
     ylim = m->unk5A;
     v = (u8 *)mesh->vertices;
     if (nb == 0) {
@@ -127,7 +127,7 @@ void btlfx_projectMorphMesh(BtlUnit9C *m, u8 meshIdx, u16 factor) {
     morph = &m->morph->meshes[meshIdx];
     GTE_CTC2(26, *(u16 *)&g_gameState->gameData->unkA);
     base = 0;
-    nb = m->header->unk2;
+    nb = m->header->boneCount;
     bone = (u8 *)m->bones;
     if (nb == 0) {
         return;

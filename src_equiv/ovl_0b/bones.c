@@ -114,12 +114,12 @@ u8 *btl_calcBoneMatrices(BtlUnit9C *m, s32 frame, u8 *out) {
         return out + 0x20;
     }
 
-    n = m->header->unk2;
+    n = m->header->boneCount;
     base = n < 31 ? SCRATCHPAD + 0x18 : out;
     ofs[0] = 0;
     ofs[1] = 0;
-    keys = (u8 *)((BtlUnit9CC *)anim)->unkC;
-    nib = (u8 *)((BtlUnit9CC *)anim)->unk10;
+    keys = (u8 *)((BtlUnit9CC *)anim)->rotKeys;
+    nib = (u8 *)((BtlUnit9CC *)anim)->rotKeysLo;
     aflags = H(anim, 0xA);
     W(base, 0x14) = (aflags & 1) ? (s32)(s16)H(anim, 4) : *(s16 *)(anim + H(anim, 4) + (frame & 0xFFFF) * 2);
     W(base, 0x18) = (aflags & 2) ? (s32)(s16)H(anim, 6) : *(s16 *)(anim + H(anim, 6) + (frame & 0xFFFF) * 2);
@@ -191,7 +191,7 @@ u8 *btl_calcBoneMatrices(BtlUnit9C *m, s32 frame, u8 *out) {
         W(base, 0x1C) = GTE_MFC2(27);
     }
 
-    bone = (u8 *)m->header->unkC + 4;
+    bone = (u8 *)m->header->bones + 4;
     parent = base + bone[3] * 32;
     mat = base + 0x20;
     do {

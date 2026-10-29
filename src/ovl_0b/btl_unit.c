@@ -72,7 +72,7 @@ void btl_updateUnitModel(BtlUnit *u, s32 *ot) {
     m->matrix.t[1] = u->pos[1] >> 16;
     m->matrix.t[2] = u->pos[2] >> 16;
     m->prims = 0;
-    if (a->frame >= m->motion->unk2) {
+    if (a->frame >= m->motion->frameCount) {
         if (!(u8)btl_setIdleMotion(u)) {
             u->obj->frame = 0;
         } else if (u->status & (BTL_STATUS_PETRIFY | BTL_STATUS_VENOM | BTL_STATUS_STOP | BTL_STATUS_FREEZE)) {
@@ -81,11 +81,11 @@ void btl_updateUnitModel(BtlUnit *u, s32 *ot) {
     }
     btl_applyModelScale(m);
     p = m->motion;
-    if (IS_OFFSET(p->unkC)) {
-        t = p->unk10;
-        p->unkC = (s32)p + p->unkC;
+    if (IS_OFFSET(p->rotKeys)) {
+        t = p->rotKeysLo;
+        p->rotKeys = (s32)p + p->rotKeys;
         if (t != 0) {
-            p->unk10 = (s32)m->motion + t;
+            p->rotKeysLo = (s32)m->motion + t;
         }
     }
     *ot = (s32)btl_calcBoneMatrices(m, a->frame, (u8 *)*ot);
@@ -121,7 +121,7 @@ void btl_updateUnitModel(BtlUnit *u, s32 *ot) {
         }
     }
     if ((u->flags >> 24) & 1) {
-        id = (u->unkBE << 8) | u->unkBD;
+        id = (u->shadowDirBone << 8) | u->shadowBone;
         if (u->flags & 1) {
             if (!(g_gameState->gameData->unk8E4.battle->cmdFlags & 1)) {
                 if (u->unk7B != g_gameState->gameData->unk8E4.battle->escapeHeld) {
@@ -302,7 +302,7 @@ void btl_updateKo(BtlUnit *u) {
             btl_playDeathCry(u, e->type->deathCry);
             return;
         case 2:
-            if (u->obj->frame >= u->model->motion->unk2 - 1) {
+            if (u->obj->frame >= u->model->motion->frameCount - 1) {
                 u->flags |= 0x200000;
                 u->koState++;
             }
@@ -347,7 +347,7 @@ void btl_updateKo(BtlUnit *u) {
                 u->obj->frame = 0;
                 return;
             }
-            if ((s32)m->motion == u->motions[32] && u->obj->frame < m->motion->unk2) {
+            if ((s32)m->motion == u->motions[32] && u->obj->frame < m->motion->frameCount) {
                 break;
             }
             u->koState = 2;
@@ -362,14 +362,14 @@ void btl_updateKo(BtlUnit *u) {
             u->obj->frame = 0;
             return;
         case 3:
-            if (u->obj->frame >= u->model->motion->unk2) {
+            if (u->obj->frame >= u->model->motion->frameCount) {
                 u->model->motion = (BtlUnit9CC *)u->motions[8];
                 u->obj->frame = 0;
                 u->koState++;
             }
             break;
         case 4:
-            if (u->obj->frame < u->model->motion->unk2) {
+            if (u->obj->frame < u->model->motion->frameCount) {
                 break;
             }
         case 5:
@@ -394,7 +394,7 @@ s32 btl_waitHitMotions(BtlCmd *arg0) {
     for (u = g_gameState->gameData->unk8E4.battle->unitList; u != 0; u = u->next) {
         if ((u->flags >> 17) & 1) {
             r = 0;
-            if (u->obj->frame >= u->model->motion->unk2) {
+            if (u->obj->frame >= u->model->motion->frameCount) {
                 u->pos[2] = u->home->pos[2];
                 if (u->flags & 1) {
                     btl_endPartyHitMotion(u);
