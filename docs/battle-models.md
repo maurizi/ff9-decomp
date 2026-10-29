@@ -21,6 +21,8 @@ holds the same bytes as item 0x020060 of FF9.IMG dir index 7, file 96, with the 
   the port named are free to change inside their mesh groups.
 - `python3 tools/battle_models.py` lists every model with its counts, heaviest first. Usage and sample output are at
   the end of this file.
+- **Motions and posing** (R27): "Motions" below has the key format and the bone formulas; idle = motionIds[0].
+  `tools/battle_pose.py` gives every vertex's model-space position for a motion frame, bit-exact with the PS1.
 
 ## Where the file comes from
 1. `btl_loadEncounterFile` reads the encounter bundle (FF9.IMG dir index 5, file id = battle id; docs/encounters.md)
@@ -151,7 +153,8 @@ typedef struct BtlUnit9CC {
 ```
 `btl_calcBoneMatrices` builds `boneCount` matrices from one key each, then composes bone i (i >= 1) with
 `bones[i].parent` and translation (0, 0, length). The parent's matrix must already be built, so parent < i. Motions
-are indexed by bone number only, so they stay valid if the bones stay as they are.
+are indexed by bone number only, so they stay valid if the bones stay as they are. The full decoding, with formulas,
+is in "Motions" below.
 
 ### What is relocated at load
 All of it is relocated in place, once per loaded file:
@@ -264,6 +267,129 @@ only by `btl_projectMesh`, `btl_drawMesh`, `btl_applyModelTextures` and `btl_set
 - the texture indices, `otBias`, `height` and `radius`;
 - the per-group limits above.
 
+## Motions
+Answer to ff9-ds request R27. Read from `btl_calcBoneMatrices` (ovl_0b 0x800C7DAC, hand-written asm; behaviourally
+equivalent C in `src_equiv/ovl_0b/bones.c`) and main `math_buildRotMatrixZYX` (mode 1, `math_rotMatrixZYX_gte`).
+`tools/battle_pose.py` implements it bit for bit (validation below).
+
+### Summary
+- A motion is a sequence of frames. Each frame gives every bone **one rotation** (three 12-bit angles, 4096 =
+  360°), and gives bone 0 a **root translation**. There is no per-bone translation, no scale and no interpolation:
+  the game shows frame `obj->frame` exactly and adds 1 per `btl_updateUnitModel` call.
+- A bone's local matrix is **Rz · Ry · Rx** (column vectors: x is applied first, then y, then z).
+- Bone i (i ≥ 1) sits at its parent's origin moved by `BtlBoneDef.length` **along the parent's z axis**, and then
+  turns by its own rotation: `World_i = World_parent · Translate(0, 0, length_i) · Rot_i`.
+- Bone 0: `World_0 = Base · Translate(root) · Rot_0`, where Base is the model matrix `BtlUnit9C.matrix` (the
+  unit's rotation and position; identity = model space).
+- A vertex of bone b (the `vertexCounts[b]` block of a mesh group, docs above) is in bone-local coordinates:
+  `p = World_b · v`.
+- PS1 axes: y points down (models stand at y ≤ 0, e.g. the Malboro's idle frame spans y -1024..28).
+
+### Header (`BtlUnit9CC`)
+| offset | field | meaning |
+|---|---|---|
+| +0 | u16 | 0 in every motion on the discs (2,732 in the 182 enemy model files); not read |
+| +2 | `frameCount` | frames 0 .. frameCount-1 (1 to 170 on the discs) |
+| +4, +6, +8 | `rootX`, `rootY`, `rootZ` | root translation: the value itself (s16) when `constMask` bit 0 / 1 / 2 is set, else the offset (from the motion's start) of an s16[frameCount] table |
+| +A | `constMask` | bits 0-2: rootX/Y/Z constant; no other bit is set |
+| +C | `rotKeys` | offset (relocated to a pointer at load) of `boneCount` keys of 8 bytes: high bits of the angles |
+| +10 | `rotKeysLo` | offset (relocated) of `boneCount` keys of 8 bytes: low 4 bits of the angles; 0 = none (every motion on the discs has them) |
+
+A key (both tables) is `{u16 x, u16 y, u16 z, u16 constMask}`: for axis j (bit j of constMask), the value is a
+constant, else the offset (from the motion's start) of a per-frame table.
+
+### Decoding frame f
+For bone i, with `K = rotKeys[i]`, `L = rotKeysLo[i]` and `m` = the motion's bytes:
+
+```
+hi_j = K.v[j]                       if K.constMask bit j     (only its low 8 bits survive the mask below)
+     = (s8) m[K.v[j] + f]           otherwise               (one byte per frame)
+lo_j = L.v[j] & 0xF                 if L.constMask bit j
+     = (m[L.v[j] + f/2] >> (4 * (f & 1))) & 0xF  otherwise  (two frames per byte: even f low nibble, odd f high)
+lo_j = 0                            if rotKeysLo == 0
+angle_j = ((hi_j << 4) | lo_j) & 0xFFF                       (j = x, y, z; 4096 = 360 degrees)
+
+root_j = (s16) rootJ                if constMask bit j
+       = ((s16 *)(m + rootJ))[f & 0xFFFF]  otherwise
+```
+So an angle is 12 bits: 8 per frame in `rotKeys`, refined by 4 in `rotKeysLo`. The SVECTOR handed to
+`math_rotMatrixZYX_gte` is (angle_x, angle_y, angle_z) (the routine only looks at the low 12 bits).
+
+### Local rotation (`math_rotMatrixZYX_gte`)
+With `s_a = sin(angle_a)`, `c_a = cos(angle_a)` from `g_sinTable` (main 0x8006C1C4, 0x401 s16: exactly
+`round(4096 · sin(i · π / 2048))`, so `sin(a)` = 4096 · sin(2π a / 4096) rounded, sign and quadrant by the angle's
+bits 10 and 11), and every product shifted right by 12 (arithmetic, so floor):
+
+```
+Rot = Rz(z) · Ry(y) · Rx(x) =
+  | cy·cz    sy·sx·cz − cx·sz    sy·cx·cz + sx·sz |
+  | cy·sz    sy·sx·sz + cx·cz    sy·cx·sz − sx·cz |
+  | −sy      cy·sx               cy·cx            |
+```
+The GTE version computes the products in this order (each `>> 12`, MAC values, stored as s16):
+`a = cz·sx`, `b = sz·sx`, `c = cx·sz`, `t = cx·cz`; `m00 = cy·cz`, `m10 = cy·sz`, `m21 = cy·sx`, `m22 = cx·cy`,
+`m20 = −sy`, `m01 = sy·a − c`, `m11 = sy·b + t`, `m02 = sy·t + b`, `m12 = sy·c − a`. (Mode 0, the CPU version,
+rounds the products slightly differently; motions only use mode 1.)
+
+### Composing the bones
+All in 4096 = 1.0 fixed point, with the GTE's rounding: MVMVA with sf=1 shifts the full sum right by 12
+(floor), rotation results come from IR1-3 and saturate to s16 (lm=0), translations come from MAC1-3 (32 bits).
+
+```
+Bone 0, no parent model:  R_0 = sat16((B.R · Rot_0) >> 12)          (column by column)
+                          T_0 = B.T + ((B.R · (s16) root) >> 12)     (MAC: (B.T << 12 + B.R · root) >> 12)
+Bone i >= 1, p = bones[i].parent:
+                          R_i = sat16((R_p · Rot_i) >> 12)
+                          T_i = T_p + ((R_p · (0, 0, length_i)) >> 12)   i.e. T_p + (R_p column 2 · length_i) >> 12
+```
+B is `BtlUnit9C.matrix`: `btl_updateUnitModel` builds it each frame from the unit's `rot[3]`
+(`math_rotMatrixZYX`) and position (`pos >> 16`), and `btl_applyModelScale` scales it for scaled models.
+Bones are built in order, so a parent must come before its children; that holds for every enemy model (the tool
+checks). A bone's translation uses its parent's full rotation, but not its own: the bone's own rotation turns its
+children and its vertices, not its position.
+
+Other cases in the routine:
+- **Parent model** (weapons: `BtlUnit9C.parent`): bone 0 is replaced by the parent's bone `parentBone`, moved by
+  `sat16(R · (unk74, unk76, unk78) >> 12)`; the decoded rotation and root translation of bone 0 are dropped.
+  `btl_updateUnitModel` always calls the weapon with frame 0.
+- **No motion** (`motion == NULL`): one matrix, the parent's bone moved as above, or else `BtlUnit9C.matrix` with
+  its y and z columns negated.
+- Motions are not checked against the model: a motion with fewer keys than the model has bones reads the bytes after
+  its key tables for the extra bones. One case on the discs: motion 0x0326E5 has 25 keys and plays on model 671
+  (28 bones); the tool reads the same bytes the PS1 does (the file is loaded as one block).
+
+### Vertices
+`btl_projectMesh` loads (camera · bone) into the GTE per bone and projects that bone's vertices with RTPT, so the
+game never stores model-space positions. The model-space position used by the tool is what one MVMVA with the bone
+matrix gives (`btlfx_projectSliceMesh` uses this one): `p = T_b + ((R_b · v) >> 12)`.
+
+### Idle stance
+- **Enemies**: `btl_initEnemyUnit` sets `model->motion = type->motions[0]`, i.e. **motionIds[0]** of the enemy
+  type record (+0x20). `btl_initEnemyState` then starts each enemy on a **random frame** (`rand % frameCount`), except
+  units with flags bit 23 ("model part"), whose bones are built at frame 0 to place their home position. When the frame reaches
+  `frameCount`, `btl_updateUnitModel` calls `btl_setIdleMotion`, which picks `motions[(flags >> 18) & 1]` and frame 0:
+  the idle loops through all its frames. Bit 18 (weak stance) is only set for an enemy by its AI script (attribute
+  0x45, `btl_setUnitAttr`) or a sequence (`btlseq_opSetStance`), and then **motionIds[1]** is its idle. Of the other slots,
+  `btl_setKoMotion` plays slot 4; attack sequences play motions from their own list (`Battle.seq.anims`).
+  Any frame of motionIds[0] is a fair "as mostly seen" pose; frame 0 is the conventional choice. At run time, the
+  Malboro in `disc3_malboro_lv99_calm` plays 0x030C2F = motionIds[0] (32 frames).
+- **Party**: `btl_loadPartyMotions` fills 0x22 slots per member from `D_800F524C[kind][slot]` (ovl_0b; keys
+  0x03xxxx in the member's model file, FF9.IMG dir index 10, file id & 0xFFFF = model id). Idle is slot 0, or slot 1
+  with weak stance (bit 18 = Venom / Low HP / Poison / Sleep, `btl_initPartyUnit`, `btl_setIdleMotion`). Other slots
+  `btl_setIdleMotion` uses: 5 (back from weak, from slots 1 and 6), 7 (weak, from slot 0), 9 (ready: the member whose
+  command menu is up), 10/11 (stance + 10 with flag 19), 13 (Defend), 17 (escaping). At run time in
+  `disc3_malboro_lv99_calm`, all four members played slot 0: Zidane (model 5414, kind 0) 0x03007D, Vivi (5415, kind 2)
+  0x030BDC, Dagger (283, kind 4) 0x032CE2, Eiko (291, kind 11) 0x0337F4.
+
+### Validation of tools/battle_pose.py
+- Against `src_equiv/ovl_0b/bones.c` and main's `math_buildRotMatrixZYX` C, compiled natively with the ff9-ds port's
+  software GTE (`port/psx/gte.c`): every frame of every motion in all 182 enemy model files (45,172 frames,
+  2,162,261 bone matrices) is identical (max error 0).
+- Against the PS1 (PCSX-Redux, `disc3_malboro_lv99_calm`): the bone matrices in RAM (`BtlUnit9C.bones`, read after
+  the frame, `obj->frame - 1`) of the Malboro (63 bones, frames 3, 5 and 8 of 0x030C2F, the last with the unit's
+  rotation poked to (0x50, 0x321, 0x10)) and of the four party members are identical to the tool's with
+  `base = BtlUnit9C.matrix` (max error 0).
+
 ## tools/battle_models.py
 ```
 python3 tools/battle_models.py                         # one row per enemy model, heaviest first, all discs
@@ -298,3 +424,16 @@ model dir/file d:sector  sects bones mesh  verts polys   FT4  FT3  GT4  GT3   G4
 To make the list complete, these models outweigh Hecteyes by vertex count (`--top 8`): Nova Dragon (model 545,
 1408 vertices), Trance Kuja (566, 1371), Zuu (87, 1358) and Armodullahan (344, 1315). Ark (512, 1305), Garland
 (446, 1292) and Iron Man (343, 1290) come right after Hecteyes.
+
+## tools/battle_pose.py
+```
+python3 tools/battle_pose.py --model 96 --list                  # the file's motions; which are the enemy's motionIds
+python3 tools/battle_pose.py --model 96                         # idle (motionIds[0]) frame 0: counts and bounds
+python3 tools/battle_pose.py --model 96 --motion 4 --frame 10 --bones --vertices
+python3 tools/battle_pose.py --model 5414 --key 0x03007d --obj build/zidane.obj   # party model (dir 10), any key
+python3 tools/battle_pose.py --check-all --disc 3               # every enemy model's motions: bone order, key counts
+```
+As a module: `meshes, bones = battle_pose.pose(model_id, motion=0, frame=0, disc=None, img=None, key=None,
+base=None)`; `meshes[g][v]` = (x, y, z) of vertex v of mesh group g (the group's own vertex numbering), `bones[b]` =
+(R, T), R[row][col] in 4096 = 1.0. The OBJ export negates y (PS1 y points down) and writes one object per mesh
+group, quads split as the GPU draws them.
