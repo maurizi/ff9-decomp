@@ -218,9 +218,9 @@ u32 *btl_initEnemyState(Battle *arg0, u32 *arg1) {
                     }
                 }
                 arg1 = (u32 *)btl_calcBoneMatrices(u->model, 0, (u8 *)arg1);
-                u->home->pos[0] = u->model->bones[u->baseBone].unk14 << 16;
+                u->home->pos[0] = u->model->bones[u->baseBone].tx << 16;
                 u->home->pos[1] = 0;
-                u->home->pos[2] = u->model->bones[u->baseBone].unk1C << 16;
+                u->home->pos[2] = u->model->bones[u->baseBone].tz << 16;
             } else {
                 u->home->pos[0] = u->obj->x;
                 u->home->pos[1] = u->obj->y;

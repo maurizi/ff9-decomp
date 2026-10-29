@@ -1328,9 +1328,9 @@ void btl_projectUnitPos(BtlUnit *arg0) {
         gte_SetRotMatrix(&g_gameState->gameData->unk18);
         gte_SetTransMatrix(&g_gameState->gameData->unk18);
         b = &arg0->model->bones[arg0->baseBone];
-        v.vx = b->unk14;
-        v.vy = b->unk18;
-        v.vz = b->unk1C;
+        v.vx = b->tx;
+        v.vy = b->ty;
+        v.vz = b->tz;
         gte_ldv0(&v);
         gte_rtps();
         gte_stsxy(&sxy);

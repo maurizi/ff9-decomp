@@ -500,9 +500,9 @@ void Hi_GetSummonBoneMatrix(s32 arg0, s32 arg1, BtlBone *arg2) {
 }
 
 void btl_getBonePos(BtlUnit9C *arg0, s32 arg1, u16 *arg2) {
-    arg2[0] = arg0->bones[arg1].unk14;
-    arg2[1] = arg0->bones[arg1].unk18;
-    arg2[2] = arg0->bones[arg1].unk1C;
+    arg2[0] = arg0->bones[arg1].tx;
+    arg2[1] = arg0->bones[arg1].ty;
+    arg2[2] = arg0->bones[arg1].tz;
 }
 
 void btl_getBoneMatrix(BtlUnit9C *arg0, s32 arg1, BtlBone *arg2) {

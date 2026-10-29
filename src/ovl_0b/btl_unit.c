@@ -45,9 +45,9 @@ void btl_updateUnitModel(BtlUnit *u, s32 *ot) {
         u->rot[0] = v->rot[0];
         u->rot[1] = v->rot[1];
         u->rot[2] = v->rot[2];
-        u->home->pos[0] = u->model->bones[u->baseBone].unk14 << 16;
+        u->home->pos[0] = u->model->bones[u->baseBone].tx << 16;
         u->home->pos[1] = 0;
-        u->home->pos[2] = u->model->bones[u->baseBone].unk1C << 16;
+        u->home->pos[2] = u->model->bones[u->baseBone].tz << 16;
         u->pos[0] = u->home->pos[0];
         u->pos[1] = u->home->pos[1];
         u->pos[2] = u->home->pos[2];

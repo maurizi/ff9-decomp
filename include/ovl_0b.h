@@ -118,7 +118,7 @@ typedef struct {
 /* skeleton bone of a model (BtlUnit9C8.bones, 4 bytes; ovl_0a WmBone): btl_calcBoneMatrices composes bone i's
  * matrix with its parent's (already built: parent < i) and a z offset of `length`; bone 0 is the root */
 typedef struct {
-    s16 length; /* z offset from the parent */
+    s16 length; /* offset from the parent's origin along the parent's z axis */
     u8 unk2;
     u8 parent; /* parent bone */
 } BtlBoneDef;
@@ -146,16 +146,18 @@ typedef struct BtlUnit9CC {
     u16 rootX; /* root x: the value (constMask bit 0) or the offset of a per-frame s16 table */
     u16 rootY; /* root y (bit 1) */
     u16 rootZ; /* root z (bit 2) */
-    u16 constMask;
-    s32 rotKeys; /* offset, relocated on load: per-bone rotation keys, 8 bytes (3 u16 + flags u16): a constant, or the offset of a per-frame s8 table */
-    s32 rotKeysLo; /* offset, relocated on load: per-bone low-nibble keys (two frames per byte), or 0 */
+    u16 constMask; /* bits 0-2: rootX/Y/Z is the value itself */
+    s32 rotKeys; /* offset, relocated on load: per-bone keys {u16 x, y, z, constMask}: bits 4-11 of the angles (4096 = 360 deg), a constant or the offset of an s8 per-frame table */
+    s32 rotKeysLo; /* offset, relocated on load: the same for bits 0-3 (per-frame tables: two frames per byte, even frame in the low nibble), or 0 */
 } BtlUnit9CC;
 
+/* bone matrix (BtlUnit9C.bones, built by btl_calcBoneMatrices), laid out as a MATRIX: model/world space of the bone
+ * (BtlUnit9C.matrix applied), 4096 = 1.0. docs/battle-models.md "Motions" */
 typedef struct {
-    s32 unk0[5];
-    s32 unk14;
-    s32 unk18;
-    s32 unk1C;
+    s32 rot[5]; /* rotation, s16 m[3][3] (row-major) + pad: parent rotation . Rz Ry Rx of the motion key */
+    s32 tx; /* translation: parent's + parent rotation . (0, 0, BtlBoneDef.length); bone 0: the root translation */
+    s32 ty;
+    s32 tz;
 } BtlBone; /* 0x20 */
 
 typedef struct BtlUnit9C50 {

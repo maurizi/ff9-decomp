@@ -5363,3 +5363,7 @@ D_800FE500 g_btlbgJitterBase2  # [code] btlbg_draw, background scene 7, group 2:
 # FIELDS include/ovl_0b.h BtlBgGroup: unk0=size,pad2=cornerCount,unk4=recCount,unk6=recOfs,pad8=texCount,unkA=texOfs,padC=vertexCount,unkE=vertexOfs, new +0x10 polyCount,colorOfs,indexOfs,uvOfs (0x18 bytes; the pad/new members are data, consistent on every file of the 4 discs: tools/battle_budget.py)
 # FIELDS include/ovl_0b.h BtlBgScroll: unk0=uvOfs,unk2=mode,unk3=du,unk4=dv,unk5=step,unk6=period [code] btlbg_draw
 # FIELDS include/ovl_0b.h BtlBgHeader: unk10=scrolls (BtlBgScroll[scrollCount], btlbg_init g_btlbgScrolls)
+
+## R27 battle motions
+# FIELDS include/ovl_0b.h BtlBone (bone matrix, MATRIX layout): unk0=rot,unk14=tx,unk18=ty,unk1C=tz [code] btl_calcBoneMatrices (src_equiv/ovl_0b/bones.c) writes the composed rotation halfwords and the MVMVA translation; btl_projectMesh loads it as a MATRIX. Applied (rename_fields), docs/battle-models.md "Motions"
+# COMMENTS include/ovl_0b.h BtlUnit9CC.rotKeys/rotKeysLo/constMask, BtlBoneDef.length: key layout (high 8 / low 4 bits of 12-bit angles), length along the parent's z axis [code] btl_calcBoneMatrices; runtime: tools/battle_pose.py equals the PS1's BtlUnit9C.bones (max error 0, disc3_malboro_lv99_calm)

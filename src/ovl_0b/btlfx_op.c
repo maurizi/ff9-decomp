@@ -1292,9 +1292,9 @@ s32 btlfx_getUnitHeight(s32 arg0) {
 
 void btl_getBaseBonePos(BtlUnit *arg0, u16 *arg1) {
     BtlBone *b = &arg0->model->bones[arg0->baseBone];
-    arg1[0] = b->unk14;
-    arg1[1] = b->unk18;
-    arg1[2] = b->unk1C;
+    arg1[0] = b->tx;
+    arg1[1] = b->ty;
+    arg1[2] = b->tz;
 }
 
 void btlfx_getUnitHomePos(s32 arg0, s16 *arg1) {
@@ -1344,7 +1344,7 @@ void btl_getUnitBodyPos(BtlUnit *arg0, s32 arg1, s16 *arg2) {
     } else {
         btl_getBaseBonePos(arg0, (u16 *)arg2);
         if (arg1 == 1) {
-            arg2[1] = arg0->model->bones[g_gameState->gameData->unk8E4.battle->enemies[(arg0->flags >> 1) & 0xF].type->bones[2]].unk18;
+            arg2[1] = arg0->model->bones[g_gameState->gameData->unk8E4.battle->enemies[(arg0->flags >> 1) & 0xF].type->bones[2]].ty;
         }
     }
 }

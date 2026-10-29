@@ -87,9 +87,9 @@ BtlPopup *btl_newPopup(BtlUnit *u) {
     p->frame = 0;
     p->unk10.w = 0;
     bone = &u->model->bones[u->baseBone];
-    p->x = bone->unk14;
-    p->y = bone->unk18 - 4;
-    p->z = bone->unk1C;
+    p->x = bone->tx;
+    p->y = bone->ty - 4;
+    p->z = bone->tz;
     return p;
 }
 
@@ -398,9 +398,9 @@ void btl_drawStatusIcons(Unk800CCD00 *arg0) {
                 z = (u32)(z0 * mdl->scaleZ) >> 12;
             }
             b = &mdl->bones[bone[k]];
-            pos.vx = b->unk14 + (((s16)z * sn) >> 12);
-            pos.vz = b->unk1C + (((s16)z * cs) >> 12);
-            pos.vy = b->unk18 + y;
+            pos.vx = b->tx + (((s16)z * sn) >> 12);
+            pos.vz = b->tz + (((s16)z * cs) >> 12);
+            pos.vy = b->ty + y;
             if (e->unkE != 0) {
                 f = (u16)r->tick;
                 btlfx_drawSprite(e->unk8, &pos, f % (*(u16 *)e->unk8 & 0x7FFF), e->unkD, -1);
@@ -459,9 +459,9 @@ void btl_drawStatusCountdown(Unk800CCD00 *arg0) {
             y = (u32)(y * mdl->scaleY) >> 12;
         }
         b = &mdl->bones[bone];
-        v.vx = b->unk14;
-        v.vy = b->unk18 + (y << 4);
-        v.vz = b->unk1C;
+        v.vx = b->tx;
+        v.vy = b->ty + (y << 4);
+        v.vz = b->tz;
         gte_ldv0(&v);
         gte_rtps();
         gte_stsxy(&arg0->unk10);
