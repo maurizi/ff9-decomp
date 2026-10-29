@@ -178,3 +178,80 @@ Nothing else reads the geometry, and no effect module reaches the background (th
 - Texture words and TIMs can stay as they are. The layers can be merged or dropped freely: no other data refers
   to a record, polygon or vertex number (the only offsets into the geometry from outside are the uv scrolls,
   and no file has one).
+
+## tools/battle_budget.py
+```
+python3 tools/battle_budget.py                          # one row per encounter, heaviest (background + enemies) first
+python3 tools/battle_budget.py --battle 678 --battle 679
+python3 tools/battle_budget.py --name Clipper --sort bg   # --sort total|bg|enemies|battle, --verts, --top N
+python3 tools/battle_budget.py --backgrounds [--bg 94 --records]   # per background (and per record)
+python3 tools/battle_budget.py --party                    # what the party column assumes
+python3 tools/battle_budget.py --json build/battle_budget.json
+```
+Disc images: `--img DIR` (or an FF9.IMG with one `--disc`), else `$FF9_DISKS`, else `disks/` in this checkout or
+in any directory above it, or an `ff9-decomp/disks` next to one (`encounter_catalog.find_image`; the same applies
+to `encounter_catalog.py` and `battle_models.py`). So from the port's `decomp/` submodule the superproject's or a
+sibling checkout's `disks/` is found without arguments. A directory may hold `discN/FF9.IMG`, `us/discN/FF9.IMG`
+or `disks/us/discN/FF9.IMG`.
+
+Columns:
+- **bg**: every record of the arena: quads + triangles, projected vertices (padding included; `--backgrounds`
+  also shows the `used` ones). Front and back faces: the game culls back faces per frame.
+- **enemy**: the heaviest enemy group `btl_pickEnemyGroup` can pick. Group weights are percentages taken in
+  order, so a group with no share left is only started when event op 0x8C forces a group; the row names such a
+  group when it is heavier (`--any-group` counts it). Each placement with its own model adds its type's model
+  (battle_models.py's polygon counts).
+- **total** = bg + enemy, the ranking key. **+party** adds a constant upper bound: the four heaviest of the 19
+  party body models in `g_btlCharModelIds` (models 444, 5414, 281, 283: 421 + 412 + 411 + 411 polygons) plus four
+  times the heaviest weapon model (model 43, 90 polygons): 2015 polygons, 1810 vertices. Party models are FF9.IMG
+  dir index 10 (not 7), weapons dir index 8; the party bodies weigh 340-482 polygons each (`--party`).
+- An encounter with identical data on several discs is one row (`--per-disc` splits them); only discs where its
+  background file is present are counted (`--all` adds the others).
+
+### The port's examples
+```
+discs battle   bg  bg polys/verts  enemy polys/verts  total polys/verts  +party   enemies (heaviest group, its chance)
+ 1234    185   94    590/864       1236/670         1826/1534       3841   Clipper 618x2 (60%)
+  124    221   90    764/840       1809/1116        2573/1956       4588   Ladybug 603x3 (50%)
+  124    223   79    745/672       1809/1116        2554/1788       4569   Ladybug 603x3 (50%)
+ 1234    678   94    590/864       1384/795         1974/1659       3989   Zaghnol 1384x1 (100%)
+ 1234    679  103    784/744       1384/795         2168/1539       4183   Zaghnol 1384x1 (100%)
+  124    840   80    718/648       1572/936         2290/1584       4305   Ghost 524x3 (50%); forced group 4: Ladybug 603x3 = 1809
+```
+- 678 and 679 load the same Zaghnol, with identical data on every disc; only the arena differs: 678 uses
+  background 94, 679 background 103.
+- "Ghost x3 + Ladybug x3" never meet: in 221 and 223 the groups the game can pick are Ladybug x2 / x3 (the Ghost
+  groups have weight 0: op 0x8C only), in 840 Ghost x2 / x3 (Ladybug x3 only when forced). The heaviest real
+  group is Ladybug x3, 1809 polygons.
+- The common factor of the two battles that don't fit (678, 185) is **background 94** (also used by 230, 238,
+  288 and 292; its near twin 92 by 186, 220, 226, 283, 291 and 673). But by count it is a *light* arena: 590
+  polygons (rank 131 of 178), against 784 for 103 and 718-764 for the Ghost/Ladybug arenas, and the totals of
+  678 and 185 are below those of 679, 221, 223 and 840. Splitting quads into triangles doesn't change that (94:
+  1000 triangles, 103: 998). What sets 94 apart is its make-up: many quads (410, rank 28; 103 has 214), 244
+  layer-2 polygons (rank 9; 103 has 120) and 864 vertices (rank 35). A rough front-facing estimate (cameras on a
+  ring around the origin, not the game's camera data) also leaves 94 with fewer visible polygons than 103. So
+  if the port's budget is a per-frame polygon or vertex count, these arena counts don't explain 678 / 185;
+  what else differs between the fixtures (party size and members, camera, how quads are handled, screen
+  coverage) is the next thing to measure.
+
+### Top 15 by total
+```
+discs battle   bg  bg polys/verts  enemy polys/verts  total polys/verts  +party   enemies (heaviest group, its chance)
+ 1234     51   15    614/804       3519/2282        4133/3086       6148   Mimic 951x1, Magic Vice 856x3 (100%)
+ 1234     45   12    566/792       3519/2282        4085/3074       6100   Mimic 951x1, Magic Vice 856x3 (100%)
+    3    467  124    828/696       2619/1736        3447/2432       5462   Epitaph 1194x1, <F9>E 475x3 (100%)
+    3    465  124    828/696       2613/1922        3441/2618       5456   Epitaph 1194x1, <F9>G 473x3 (100%)
+    3    464  124    828/696       2592/2333        3420/3029       5435   Epitaph 1194x1, <F9>D 466x3 (100%)
+    3    519  123    600/690       2676/1949        3276/2639       5291   Epitaph 1194x1, <F9>F 494x3 (100%)
+    3    499  125    552/672       2709/1967        3261/2639       5276   Epitaph 1194x1, <F9>H 505x3 (100%)
+    3    502  123    600/690       2574/2180        3174/2870       5189   Epitaph 1194x1, <F9>A 460x3 (100%)
+  124    727   79    745/672       2416/1596        3161/2268       5176   Zombie 604x1, Zombie 604x3 (50%)
+    2    129   57    738/900       2416/1596        3154/2496       5169   Zombie 604x1, Zombie 604x3 (70%)
+    3    468  125    552/672       2544/1892        3096/2564       5111   Epitaph 1194x1, <F9>C 450x3 (100%)
+    3    475  125    552/672       2544/1778        3096/2450       5111   Epitaph 1194x1, <F9>B 450x3 (100%)
+   23    130   61    650/798       2416/1596        3066/2394       5081   Zombie 604x1, Zombie 604x3 (70%)
+   23    128   60    627/756       2416/1596        3043/2352       5058   Zombie 604x1, Zombie 604x3 (70%)
+    2    127   58    556/654       2416/1596        2972/2250       4987   Zombie 604x1, Zombie 604x3 (70%)
+```
+The heaviest arenas (`--backgrounds --top 5`): 37 (898 polygons; battles 75 and 76), 25 (897; 300), 50 (894; 21
+and 29), 8 (888; 294), 137 (885; 849, 854, 859).

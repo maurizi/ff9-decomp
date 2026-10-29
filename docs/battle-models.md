@@ -276,7 +276,9 @@ The tool reads the encounter bundles (enemy type records, names, dependency tabl
 On the way it checks that each entry is dir index 7 with file id = model id, the list sizes, `packetSize`, the
 index ranges and the 801-vertex limit. Problems go to stderr, and there are none on the four discs. "max copies"
 is the largest number of placements of the type in one enemy group that have their own model (placements with the
-no-model bit are left out). Counts are for the whole model, front and back faces.
+no-model bit are left out). Counts are for the whole model, front and back faces. Max copies of two types don't
+add up to what is on screen when the types never share a group: `tools/battle_budget.py` (background + heaviest
+enemy group per encounter, docs/battle-backgrounds.md) counts real groups.
 
 The port's heavy enemies (`--name` for each):
 
