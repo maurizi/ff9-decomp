@@ -5472,3 +5472,6 @@ D_800FE500 g_btlbgJitterBase2  # [code] btlbg_draw, background scene 7, group 2:
 # FIELDS include/ff9.h EvtAllocNode: unk0=start,unk4=end,unk8=next [code] chr_calcEquipStats/btl_initEquipElements (g_equipStatBonus); db_register/db_unregister (g_dbList); evt_allocObject / func_8004B2F4; text_buildDpad
 # FIELDS include/ff9.h Unk8006BC0C: unk0=x,unk1=y,unk2=sprite [code] chr_calcEquipStats/btl_initEquipElements (g_equipStatBonus); db_register/db_unregister (g_dbList); evt_allocObject / func_8004B2F4; text_buildDpad
 # MERGED include/ff9.h Unk800219D8 away: preload_setVramRect takes a PreloadEntry (earlier), evt_setObjectProp takes the EvtObject (prop 2 sets pos.rotY)
+# FIELDS include/ff9.h Unk8007BB98 (D_8007BB98, dialogue glyph lookup state): unk0=lead,unk4=extRange,unk8=kanjiCode [code] msg_init / pen_getGlyph (src_equiv); msg_drawPlayerBubble; evt_updateObjects saving the walkmesh state
+# FIELDS include/ff9.h Unk80068788: unk0=u,unk1=v,unk2=clut [code] msg_init / pen_getGlyph (src_equiv); msg_drawPlayerBubble; evt_updateObjects saving the walkmesh state
+# FIELDS include/ff9.h Unk800C748C (main's view of ovl_0a BgiActor): unk0=walkFlags,unk8=walkFloor,unkA=walkTri [code] msg_init / pen_getGlyph (src_equiv); msg_drawPlayerBubble; evt_updateObjects saving the walkmesh state

@@ -13,11 +13,11 @@ void msg_init(void) {
     s = g_gameState;
     g_msgReady = 0;
     f = s->gameData->font;
-    D_8007BB98.unk0 = 0;
+    D_8007BB98.lead = 0;
     D_8007BBCC = f->glyphs;
-    D_8007BB98.unk4 = *(s32 *)&f->extCode;
+    D_8007BB98.extRange = *(s32 *)&f->extCode;
     D_8007B94C = f->unk8;
-    D_8007BB98.unk8 = -1;
+    D_8007BB98.kanjiCode = -1;
     switch (s->mode) {
     case 1:
         g_msgTable = s->gameData->ctx.ovl65->unkC->unk8;
@@ -98,7 +98,7 @@ static inline s32 msg_measureLine_width(u8 *s) {
     s32 c;
     u32 g;
 
-    D_8007BB98.unk0 = 0;
+    D_8007BB98.lead = 0;
     c = *s++;
     while (c != 0xF7 && c != 0xFF) {
         do {
@@ -687,7 +687,7 @@ void msg_drawText(MsgWindow *w) {
         if (w->textPos < w->pageStart) {
             w->textPos = w->pageStart;
         }
-        D_8007BB98.unk0 = 0;
+        D_8007BB98.lead = 0;
         g_msgChoiceDrawMask = g_msgChoiceEnabled;
         msg_renderText(w, e);
         if (w->waitFrames == 0) {
@@ -1525,21 +1525,21 @@ void msg_drawPlayerBubble(void) {
     d = hw / 3;
     q->x0 = q->x2 = x - d;
     q->x1 = q->x3 = x + d;
-    p->u0 = p->u2 = s->unk0;
-    p->v0 = p->v1 = s->unk1;
-    p->u1 = p->u3 = s->unk0 + 0x18;
-    p->v2 = p->v3 = s->unk1 + 0x10;
-    q->u0 = q->u2 = s->unk0 + 8;
+    p->u0 = p->u2 = s->u;
+    p->v0 = p->v1 = s->v;
+    p->u1 = p->u3 = s->u + 0x18;
+    p->v2 = p->v3 = s->v + 0x10;
+    q->u0 = q->u2 = s->u + 8;
     /* identical branches (jump2 merges them), as in math_buildRotMatrixZXY */
     if (q) {
-        q->u1 = q->u3 = s->unk0 + 0x10;
+        q->u1 = q->u3 = s->u + 0x10;
     } else {
-        q->u1 = q->u3 = s->unk0 + 0x10;
+        q->u1 = q->u3 = s->u + 0x10;
     }
-    q->v0 = q->v1 = s->unk1 + 0x10;
-    q->v2 = q->v3 = s->unk1 + 0x18;
+    q->v0 = q->v1 = s->v + 0x10;
+    q->v2 = q->v3 = s->v + 0x18;
     q->tpage = p->tpage = 0x5F;
-    q->clut = p->clut = s->unk2;
+    q->clut = p->clut = s->clut;
 }
 
 void msg_updatePlayerBubble(void) {

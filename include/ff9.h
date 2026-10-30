@@ -2335,11 +2335,11 @@ s32 evt_rollEncounter(EvtObject *);
 s32 fld_enableRain(s32, s32, s32);
 /* field walkmesh actor entry returned by ovl_0a bgi_getActor (ovl_0a calls it BgiActor) */
 typedef struct {
-    s16 unk0;
+    s16 walkFlags; /* EvtObject.savedWalkFlags (evt_updateObjects) */
     u8 pad2[6];
-    u8 unk8;
+    u8 walkFloor; /* EvtObject.savedWalkFloor */
     u8 pad9;
-    u16 unkA;
+    u16 walkTri; /* EvtObject.savedWalkTri */
 } Unk800C748C;
 void *bgi_getActor(s32);
 s32 bgi_getActorRadius(s32, s32 *);
@@ -2928,9 +2928,9 @@ static inline u16 func_8004B404_inline(s32 arg0) {
     return D_8007AE10[i];
 }
 typedef struct {
-    s32 unk0;
-    s32 unk4;
-    s32 unk8;
+    s32 lead; /* pending lead byte (>= 0xFA) of a two-byte code (pen_getGlyph) */
+    s32 extRange; /* Font.extCode | extBase << 16 (msg_init) */
+    s32 kanjiCode; /* first code of the second table (-1 = none) */
 } Unk8007BB98;
 extern Unk8007BB98 D_8007BB98;
 extern s32 g_msgChoiceDrawMask;
@@ -3031,9 +3031,9 @@ s32 chr_calcMaxStones(s32, s32, u8);
 void chr_fitSupportAbilities(Character *);
 POLY_FT4 *pen_addPolyFT4(void);
 typedef struct {
-    u8 unk0; /* u */
-    u8 unk1; /* v */
-    u16 unk2; /* clut */
+    u8 u; /* u */
+    u8 v; /* v */
+    u16 clut; /* clut */
 } Unk80068788;
 extern Unk80068788 D_80068788;
 extern s32 g_bubbleColor; /* colour */

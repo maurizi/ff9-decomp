@@ -3085,9 +3085,9 @@ s32 evt_updateObjects(void) {
                         p->pos.vx = p->prevPos.vx;
                         p->pos.vy = p->prevPos.vy;
                         p->pos.vz = p->prevPos.vz;
-                        p->savedWalkFloor = q->unk8;
-                        p->savedWalkTri = q->unkA;
-                        p->savedWalkFlags = q->unk0;
+                        p->savedWalkFloor = q->walkFloor;
+                        p->savedWalkTri = q->walkTri;
+                        p->savedWalkFlags = q->walkFlags;
                     }
                 }
             }

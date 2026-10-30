@@ -99,19 +99,19 @@ u32 pen_getGlyph(s32 c) {
     s32 d;
     s32 e;
 
-    if (g->unk0 != 0) {
-        c |= g->unk0 << 8;
-        g->unk0 = 0;
+    if (g->lead != 0) {
+        c |= g->lead << 8;
+        g->lead = 0;
     } else if (c - 0xFA >= 0) {
-        g->unk0 = c;
+        g->lead = c;
         return 0;
     }
-    range = g->unk4;
+    range = g->extRange;
     d = c - (s32)(range & 0xFFFF);
     if (d < 0) {
         return D_8007BBCC[c];
     }
-    e = c - (s32)(u16)g->unk8;
+    e = c - (s32)(u16)g->kanjiCode;
     if (e < 0) {
         return D_8007BBCC[d + (range >> 16)];
     }
