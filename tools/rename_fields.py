@@ -36,6 +36,8 @@ def main():
     if len(sys.argv) != 2 or "=" not in sys.argv[1]:
         sys.exit(__doc__)
     pairs = dict(p.split("=") for p in sys.argv[1].split(","))
+    if os.path.exists("/.dockerenv"):
+        sys.exit("rename_fields: run this on the host; it calls tools/docker.sh itself (inside the container it can't build)")
     os.makedirs(STDARG_DIR, exist_ok=True)
     open(os.path.join(STDARG_DIR, "stdarg.h"), "w").write(STDARG)
     for _ in range(20):
