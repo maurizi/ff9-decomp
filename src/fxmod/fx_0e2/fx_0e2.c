@@ -759,7 +759,7 @@ s32 fx_0e2_op80(s32 mode, Fx0e2Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
                 work->unkB4 = -((0x13 - f) * 6);
                 ex->Hi_ModifyEffModelRGB(work->unk150[4], work->unkB4, work->unkB4, work->unkB4);
                 if (frame >= 0xB5) {
-                    if (work->unk28[i5] != NULL && work->unk28[i5]->unk30 == -1) {
+                    if (work->unk28[i5] != NULL && work->unk28[i5]->state == -1) {
                         work->unk28[i5] = NULL;
                     }
                     ex->btlfx_moveEmitterTo((s32)work->unk28[i5], (s32)&D_801F100C[i5]);
@@ -787,7 +787,7 @@ s32 fx_0e2_op80(s32 mode, Fx0e2Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
                 work->unk7C.vz = D_801F0FFC.vz;
                 ex->Hi_DrawMorphEffModel(&work->unk7C, &work->unk84, (s32)&work->unk94, work->unk150[4], work->unk150[5],
                                          0);
-                if (work->unk28[i6] != NULL && work->unk28[i6]->unk30 == -1) {
+                if (work->unk28[i6] != NULL && work->unk28[i6]->state == -1) {
                     work->unk28[i6] = NULL;
                 }
                 ex->btlfx_moveEmitterTo((s32)work->unk28[i6], (s32)&D_801F100C[i6]);
@@ -820,7 +820,7 @@ s32 fx_0e2_op80(s32 mode, Fx0e2Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
                 func_801EC920(work->unk14E * 0x14A - work->unk14C * work->unk14E, 0x1C0, 0x180, 0x80, 0x40, 0x1C0, 0x1C0);
                 work->unk14C++;
                 if (frame >= 0xF8) {
-                    if (work->unk8[i7] != NULL && work->unk8[i7]->unk30 == -1) {
+                    if (work->unk8[i7] != NULL && work->unk8[i7]->state == -1) {
                         work->unk8[i7] = NULL;
                     }
                     ex->btlfx_moveEmitterTo((s32)work->unk8[i7], (s32)&D_801F100C[i7]);
@@ -891,7 +891,7 @@ s32 fx_0e2_op80(s32 mode, Fx0e2Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             work->unk110.vy = -0x2C9E;
             work->unk110.vx = 0;
             work->unk110.vz = -0x729A;
-            if (work->unk0 != NULL && work->unk0->unk30 == -1) {
+            if (work->unk0 != NULL && work->unk0->state == -1) {
                 work->unk0 = NULL;
             }
             ex->btlfx_moveEmitterTo((s32)work->unk0, (s32)&work->unk110);
@@ -900,7 +900,7 @@ s32 fx_0e2_op80(s32 mode, Fx0e2Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             work->unk110.vy = -0x303D;
             work->unk110.vx = 0;
             work->unk110.vz = -0x7411;
-            if (work->unk4 != NULL && work->unk4->unk30 == -1) {
+            if (work->unk4 != NULL && work->unk4->state == -1) {
                 work->unk4 = NULL;
             }
             ex->btlfx_moveEmitterTo((s32)work->unk4, (s32)&work->unk110);
@@ -912,7 +912,7 @@ s32 fx_0e2_op80(s32 mode, Fx0e2Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             work->unk118.vx += work->unk54.vx;
             work->unk118.vy += work->unk54.vy;
             work->unk118.vz += work->unk54.vz;
-            if (work->unk1C != NULL && work->unk1C->unk30 == -1) {
+            if (work->unk1C != NULL && work->unk1C->state == -1) {
                 work->unk1C = NULL;
             }
             ex->btlfx_moveEmitterTo((s32)work->unk1C, (s32)&work->unk118);
@@ -921,11 +921,11 @@ s32 fx_0e2_op80(s32 mode, Fx0e2Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             work->unk120.vx = D_801F100C[0].vx;
             work->unk120.vy = D_801F100C[0].vy;
             work->unk120.vz = D_801F100C[0].vz;
-            if (work->unk20 != NULL && work->unk20->unk30 == -1) {
+            if (work->unk20 != NULL && work->unk20->state == -1) {
                 work->unk20 = NULL;
             }
             ex->btlfx_moveEmitterTo((s32)work->unk20, (s32)&work->unk120);
-            if (work->unk24 != NULL && work->unk24->unk30 == -1) {
+            if (work->unk24 != NULL && work->unk24->state == -1) {
                 work->unk24 = NULL;
             }
             ex->btlfx_moveEmitterTo((s32)work->unk24, (s32)&work->unk120);

@@ -107,11 +107,11 @@ s32 fx_187_op80(s32 mode, Fx187Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
                 }
             } else {
                 for (i = 0; i < 2; i++) {
-                    if (work->unk4[i] != NULL && work->unk4[i]->unk30 == -1) {
+                    if (work->unk4[i] != NULL && work->unk4[i]->state == -1) {
                         work->unk4[i] = NULL;
                     }
                     ex->btlfx_moveEmitterTo((s32)work->unk4[i], (s32)&a);
-                    if (work->unkC[i] != NULL && work->unkC[i]->unk30 == -1) {
+                    if (work->unkC[i] != NULL && work->unkC[i]->state == -1) {
                         work->unkC[i] = NULL;
                     }
                     ex->btlfx_moveEmitterTo((s32)work->unkC[i], (s32)&b);

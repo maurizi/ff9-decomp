@@ -787,10 +787,10 @@ s32 fx_0d3_op81(s32 mode, Fx0d3Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
                 p2->unk22 = 0x80;
             }
         }
-        if (work->unk4C != NULL && work->unk4C->unk30 == -1) {
+        if (work->unk4C != NULL && work->unk4C->state == -1) {
             work->unk4C = NULL;
         }
-        if (work->unk50 != NULL && work->unk50->unk30 == -1) {
+        if (work->unk50 != NULL && work->unk50->state == -1) {
             work->unk50 = NULL;
         }
         if (frame_119 >= 0x25) {
@@ -1002,8 +1002,8 @@ s32 fx_0d3_op81(s32 mode, Fx0d3Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
             ex->btlfx_initParticleSystem();
             p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0x19), (s32)&work->unk8);
             if (p != NULL) {
-                p->unk24->unk0 = -1;
-                *(s32 *)&p->unk24->unk3C = (s32)func_801E9050;
+                p->tail->unk0 = -1;
+                *(s32 *)&p->tail->unk3C = (s32)func_801E9050;
                 p->unk22 = 0x20;
             }
         }

@@ -57,7 +57,7 @@ s32 fx_0a7_op80(s32 mode, Fx0a7Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
             break;
         }
         if (work->unk0 != NULL) {
-            if (work->unk0->unk30 == -1) {
+            if (work->unk0->state == -1) {
                 work->unk0 = NULL;
             }
             if (work->unk0 != NULL) {
@@ -67,7 +67,7 @@ s32 fx_0a7_op80(s32 mode, Fx0a7Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
             }
         }
         if (work->unk4 != NULL) {
-            if (work->unk4->unk30 == -1) {
+            if (work->unk4->state == -1) {
                 work->unk4 = NULL;
             }
             if (work->unk4 != NULL) {
@@ -78,7 +78,7 @@ s32 fx_0a7_op80(s32 mode, Fx0a7Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
         }
         if (frame >= 0xC) {
             if (work->unkC != NULL) {
-                if (work->unkC->unk30 == -1) {
+                if (work->unkC->state == -1) {
                     work->unkC = NULL;
                 }
                 if (work->unkC != NULL) {
@@ -88,7 +88,7 @@ s32 fx_0a7_op80(s32 mode, Fx0a7Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
                 }
             }
             if (work->unk10 != NULL) {
-                if (work->unk10->unk30 == -1) {
+                if (work->unk10->state == -1) {
                     work->unk10 = NULL;
                 }
                 if (work->unk10 != NULL) {

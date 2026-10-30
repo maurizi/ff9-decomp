@@ -108,7 +108,7 @@ s32 fx_11e_op80(s32 mode, Fx11eWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
             ex->Hi_DrawEffModel(&work->unk4, &work->unkC, (s32)&work->unk1C, m);
         }
         if (work->unk0 != NULL) {
-            if (work->unk0->unk30 == -1) {
+            if (work->unk0->state == -1) {
                 work->unk0 = NULL;
             }
             if (work->unk0 != NULL) {

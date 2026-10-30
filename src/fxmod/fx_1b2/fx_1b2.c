@@ -93,7 +93,7 @@ s32 fx_1b2_op80(s32 mode, Fx1b2Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             work->unk5C--;
         }
         if (work->unk4 != NULL) {
-            if (work->unk4->unk30 == -1) {
+            if (work->unk4->state == -1) {
                 work->unk4 = NULL;
             }
             if (work->unk4 != NULL) {
@@ -103,7 +103,7 @@ s32 fx_1b2_op80(s32 mode, Fx1b2Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             }
         }
         if (work->unk8 != NULL) {
-            if (work->unk8->unk30 == -1) {
+            if (work->unk8->state == -1) {
                 work->unk8 = NULL;
             }
             if (work->unk8 != NULL) {

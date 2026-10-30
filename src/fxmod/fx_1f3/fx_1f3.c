@@ -208,25 +208,25 @@ s32 fx_1f3_op80(s32 mode, Fx1f3Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             work->unk0[10] = 0x20;
             break;
         }
-        if (work->unk40[0] != NULL && work->unk40[0]->unk30 == -1) {
+        if (work->unk40[0] != NULL && work->unk40[0]->state == -1) {
             work->unk40[0] = NULL;
         }
-        if (work->unk40[1] != NULL && work->unk40[1]->unk30 == -1) {
+        if (work->unk40[1] != NULL && work->unk40[1]->state == -1) {
             work->unk40[1] = NULL;
         }
-        if (work->unk40[2] != NULL && work->unk40[2]->unk30 == -1) {
+        if (work->unk40[2] != NULL && work->unk40[2]->state == -1) {
             work->unk40[2] = NULL;
         }
-        if (work->unk40[3] != NULL && work->unk40[3]->unk30 == -1) {
+        if (work->unk40[3] != NULL && work->unk40[3]->state == -1) {
             work->unk40[3] = NULL;
         }
-        if (work->unk40[4] != NULL && work->unk40[4]->unk30 == -1) {
+        if (work->unk40[4] != NULL && work->unk40[4]->state == -1) {
             work->unk40[4] = NULL;
         }
-        if (work->unk40[5] != NULL && work->unk40[5]->unk30 == -1) {
+        if (work->unk40[5] != NULL && work->unk40[5]->state == -1) {
             work->unk40[5] = NULL;
         }
-        if (work->unk40[6] != NULL && work->unk40[6]->unk30 == -1) {
+        if (work->unk40[6] != NULL && work->unk40[6]->state == -1) {
             work->unk40[6] = NULL;
         }
         if (work->unk40[1] != NULL) {

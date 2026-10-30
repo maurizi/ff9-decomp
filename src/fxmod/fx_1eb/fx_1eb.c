@@ -21,7 +21,7 @@ s32 fx_1eb_op80(s32 mode, Fx1ebWork80 *work, Unk800F78A4 *env, Unk80100C78Entry 
         s32 frame = entry->frame;
 
         if (work->unk0 != NULL) {
-            if (work->unk0->unk30 == -1) {
+            if (work->unk0->state == -1) {
                 work->unk0 = NULL;
             }
             if (work->unk0 != NULL) {
@@ -31,7 +31,7 @@ s32 fx_1eb_op80(s32 mode, Fx1ebWork80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             }
         }
         if (work->unk4 != NULL) {
-            if (work->unk4->unk30 == -1) {
+            if (work->unk4->state == -1) {
                 work->unk4 = NULL;
             }
             if (work->unk4 != NULL) {

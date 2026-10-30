@@ -93,7 +93,7 @@ s32 fx_040_op80(s32 mode, Fx040Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
         for (i = 0; i < 4; i++) {
             work->unk0[i] = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, D_801E7E98[i]), (s32)&D_801E7F18[i]);
             if (work->unk0[i] != NULL) {
-                ((s32 *)work->unk0[i]->unk0)[2] = D_801E7EA0[i];
+                ((s32 *)work->unk0[i]->file)[2] = D_801E7EA0[i];
             }
         }
     } else {

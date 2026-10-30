@@ -46,19 +46,19 @@ s32 fx_1ac_op80(s32 mode, Fx1acWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
         work->unk4C[4] = NULL;
     } else {
         frame = entry->frame;
-        if (work->unk4C[0] != NULL && work->unk4C[0]->unk30 == -1) {
+        if (work->unk4C[0] != NULL && work->unk4C[0]->state == -1) {
             work->unk4C[0] = NULL;
         }
-        if (work->unk4C[1] != NULL && work->unk4C[1]->unk30 == -1) {
+        if (work->unk4C[1] != NULL && work->unk4C[1]->state == -1) {
             work->unk4C[1] = NULL;
         }
-        if (work->unk4C[2] != NULL && work->unk4C[2]->unk30 == -1) {
+        if (work->unk4C[2] != NULL && work->unk4C[2]->state == -1) {
             work->unk4C[2] = NULL;
         }
-        if (work->unk4C[3] != NULL && work->unk4C[3]->unk30 == -1) {
+        if (work->unk4C[3] != NULL && work->unk4C[3]->state == -1) {
             work->unk4C[3] = NULL;
         }
-        if (work->unk4C[4] != NULL && work->unk4C[4]->unk30 == -1) {
+        if (work->unk4C[4] != NULL && work->unk4C[4]->state == -1) {
             work->unk4C[4] = NULL;
         }
         ex->btlfx_getUnitBonePos(0x10, 4, (u16 *)&work->unk30);
@@ -71,7 +71,7 @@ s32 fx_1ac_op80(s32 mode, Fx1acWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
                 p->unk14 = (s32)D_801E8310;
                 p->unk12 = 4;
                 p->unkC = 0x9C;
-                ((EffMotion *)p->unk0)->unk8 = func_801E81C4;
+                ((EffMotion *)p->file)->unk8 = func_801E81C4;
             }
             work->unk0[0] = 0xE;
             break;
@@ -228,15 +228,15 @@ s32 func_801E81C4(Pool30Entry *e, Pool6CEntry *owner, SVECTOR *pos, s32 arg3, s3
         break;
     }
     }
-    D_801E85B0.vx = e->unk0.vx >> 12;
-    D_801E85B0.vy = e->unk0.vy >> 12;
-    D_801E85B0.vz = e->unk0.vz >> 12;
+    D_801E85B0.vx = e->pos.vx >> 12;
+    D_801E85B0.vy = e->pos.vy >> 12;
+    D_801E85B0.vz = e->pos.vz >> 12;
     pos->vx = v.vx;
     pos->vy = v.vy;
     pos->vz = v.vz;
-    e->unk0.vx = v.vx << 12;
-    e->unk0.vy = v.vy << 12;
-    e->unk0.vz = v.vz << 12;
+    e->pos.vx = v.vx << 12;
+    e->pos.vy = v.vy << 12;
+    e->pos.vz = v.vz << 12;
     if (frame >= frames) {
         return -1;
     }

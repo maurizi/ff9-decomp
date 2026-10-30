@@ -76,7 +76,7 @@ s32 fx_1e9_op80(s32 mode, Fx1e9Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
         scale.vx = scale.vz = 0x174;
         scale.vy = (ex->math_sin(t0) >> 7) + 0x2AA;
         b = 0x1000;
-        if (work->unk8 != NULL && work->unk8->unk30 == -1) {
+        if (work->unk8 != NULL && work->unk8->state == -1) {
             work->unk8 = NULL;
         }
         if (frame != 0 && t0 == 0 && env->state->pad10[0] != 0) {

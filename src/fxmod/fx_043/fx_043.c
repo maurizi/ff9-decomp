@@ -43,7 +43,7 @@ s32 fx_043_op80(s32 mode, Fx043Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             work->unk0->unkC = 0x20;
         }
         if (work->unk0 != NULL) {
-            ((s32 *)work->unk0->unk0)[2] = (s32)func_801E7704;
+            ((s32 *)work->unk0->file)[2] = (s32)func_801E7704;
         }
     } else {
         return entry->frame >= 0x1E;
@@ -77,7 +77,7 @@ s32 fx_043_op81(s32 mode, Fx043Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
     } else {
         frame = entry->frame;
         if (work->unk0 != NULL) {
-            if (work->unk0->unk30 == -1) {
+            if (work->unk0->state == -1) {
                 work->unk0 = NULL;
             }
             if (work->unk0 != NULL) {

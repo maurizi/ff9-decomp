@@ -260,19 +260,19 @@ s32 fx_1ef_op80(s32 mode, void *work, Unk800F78A4 *env, Unk80100C78Entry *entry,
             }
         }
         if (D_801E8D6C != NULL) {
-            if (D_801E8D6C->unk30 == -1) {
+            if (D_801E8D6C->state == -1) {
                 D_801E8D6C = NULL;
             }
             ex->Hi_GetSummonBonePos(SUMMON(env)->unk60, 0, (u16 *)&D_801E8D74);
         }
         if (D_801E8D7C != NULL) {
-            if (D_801E8D7C->unk30 == -1) {
+            if (D_801E8D7C->state == -1) {
                 D_801E8D7C = NULL;
             }
             ex->Hi_GetSummonBonePos(SUMMON(env)->unk60, 0, (u16 *)&D_801E8D84);
         }
         if (D_801EA87C != NULL) {
-            if (D_801EA87C->unk30 == -1) {
+            if (D_801EA87C->state == -1) {
                 D_801EA87C = NULL;
             }
             ex->Hi_GetSummonBonePos(SUMMON(env)->unk60, 0x11, (u16 *)&D_801EA884);

@@ -39,7 +39,7 @@ s32 fx_04b_op80(s32 mode, Fx04bWork80 *work, Unk800F78A4 *env, Unk80100C78Entry 
         if (frame >= 10) {
             ex->btlfx_getUnitArgBonePos(0x10, 0, (u16 *)&work->unk18);
             if (work->unk0 != NULL) {
-                if (work->unk0->unk30 == -1) {
+                if (work->unk0->state == -1) {
                     work->unk0 = NULL;
                 }
                 if (work->unk0 != NULL) {
@@ -49,7 +49,7 @@ s32 fx_04b_op80(s32 mode, Fx04bWork80 *work, Unk800F78A4 *env, Unk80100C78Entry 
         }
         if (frame >= 40) {
             if (work->unk4 != NULL) {
-                if (work->unk4->unk30 == -1) {
+                if (work->unk4->state == -1) {
                     work->unk4 = NULL;
                 }
                 if (work->unk4 != NULL) {
@@ -88,7 +88,7 @@ s32 fx_04b_op81(s32 mode, Fx04bWork81 *work, Unk800F78A4 *env, Unk80100C78Entry 
     } else {
         frame = entry->frame;
         if (work->unk0 != NULL) {
-            if (work->unk0->unk30 == -1) {
+            if (work->unk0->state == -1) {
                 work->unk0 = NULL;
             }
             if (work->unk0 != NULL) {

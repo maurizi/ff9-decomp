@@ -1746,8 +1746,8 @@ extern char D_800A7F78[];
 extern char D_800A81A8[];
 /* effect element (0x28) in an effect file, after the header */
 typedef struct EffElem {
-    u8 unk0; /* kind, 9 = no texture */
-    u8 unk1; /* 0xFF = no second texture */
+    u8 kind; /* kind, 9 = no texture */
+    u8 kind2; /* 0xFF = no second texture */
     u8 unk2;
     u8 unk3; /* flags */
     s16 unk4;
@@ -1763,23 +1763,23 @@ typedef struct EffElem {
     u8 unk17[3]; /* rotation spread */
     u8 unk1A;
     u8 unk1B;
-    s32 unk1C; /* offset, relocated on load */
-    s32 unk20; /* offset, relocated on load */
+    s32 tex; /* texture data offset, relocated on load */
+    s32 tex2; /* second texture data, relocated on load */
     void (*unk24)();
 } EffElem; /* 0x28 */
 
 typedef struct {
-    s32 unk0; /* count of unk10 weights */
-    s16 unk4; /* count of EffElem following */
+    s32 weightCount; /* count of weights */
+    s16 elemCount; /* count of EffElem following */
     u16 unk6;
     u16 unk8;
     u16 unkA;
     u16 unkC;
-    s16 unkE; /* 1 = blend weights animated */
+    s16 weightAnim; /* 1 = blend weights animated */
     union {
         s32 w;
         u8 b[4];
-    } unk10;
+    } weights;
 } EffElemHdr; /* 0x14 */
 
 /* effect file header */
@@ -1897,8 +1897,8 @@ typedef union {
 } XY32;
 
 typedef struct Pool6CEntry {
-    EffFileHdr *unk0; /* effect file */
-    EffSub *unk4;
+    EffFileHdr *file; /* effect file: header, motion parameters */
+    EffSub *sub; /* sub-emitter parameters (EffMotion), NULL = none; the EffSub block is just before it */
     s16 unk8;
     s16 unkA;
     s16 unkC;
@@ -1906,17 +1906,17 @@ typedef struct Pool6CEntry {
     s16 unk10;
     s16 unk12;
     s32 unk14;
-    EffElem *unk18;
+    EffElem *elems; /* elements (btlfx_spawnEmitter relocates their textures) */
     s32 unk1C;
     s16 unk20;
     s16 unk22;
-    EffTail *unk24;
-    SVECTOR *unk28;
+    EffTail *tail;
+    SVECTOR *origin; /* emitter position (btlfx_moveEmitter shifts its particles with it) */
     s32 unk2C;
-    s16 unk30; /* in use, -1 = release */
+    s16 state; /* in use, -1 = release */
     s16 unk32;
     XY32 unk34; /* live particle counts (s.x, s.y) */
-    s16 unk38; /* frame */
+    s16 frame; /* frame */
     s16 unk3A;
     s16 unk3C;
     s16 unk3E;
@@ -1934,17 +1934,17 @@ typedef struct Pool6CEntry {
 } Pool6CEntry; /* 0x6C */
 
 typedef struct {
-    s32 unk0; /* count */
-    s32 unk4;
-    s32 unk8;
-    Pool6CEntry *unkC;
-    Pool6CEntry unk10[1];
+    s32 capacity; /* entries */
+    s32 live; /* live emitters (btlfx_updateEmitters) */
+    s32 maxUsed; /* highest index in use */
+    Pool6CEntry *entries;
+    Pool6CEntry buf[1];
 } Pool6C;
 
 typedef struct {
     struct {
         s32 vx, vy, vz;
-    } unk0; /* position, 20.12 */
+    } pos; /* position, 20.12 */
     s16 unkC; /* rotation */
     s16 unkE;
     s16 unk10;
@@ -1952,17 +1952,17 @@ typedef struct {
     s8 unk13;
     XY32 unk14;
     s16 unk18;
-    u8 unk1A; /* frame */
-    u8 unk1B; /* frame count */
-    u8 unk1C; /* element index, 0xFF = none */
-    u8 unk1D; /* element frame */
-    s8 unk1E;
+    u8 frame; /* frame */
+    u8 frames; /* lifetime in frames */
+    u8 elem; /* element index, 0xFF = none */
+    u8 elemFrame; /* element frame */
+    s8 timeStep; /* time step of the motion (btlfx_stepParticle*) */
     u8 unk1F; /* in use */
     s16 unk20;
     s16 unk22;
     XY32 unk24;
     XY32 unk28;
-    Pool6CEntry *unk2C;
+    Pool6CEntry *owner; /* emitter (btlfx_killEmitter, btlfx_moveEmitter) */
 } Pool30Entry; /* 0x30 */
 
 /* particle motion parameters: the effect file (Pool6CEntry.unk0) or the
@@ -1986,10 +1986,10 @@ typedef struct {
 } EffMotion;
 
 typedef struct {
-    s32 unk0; /* count */
-    s32 unk4;
-    s32 unk8;
-    Pool30Entry *unkC;
+    s32 capacity; /* entries in the buffer */
+    s32 live; /* live particles (btlfx_updateParticles) */
+    s32 maxUsed; /* highest index in use */
+    Pool30Entry *entries;
 } Pool30;
 
 extern Pool30Entry g_btlfxParticleBuf[0x100];

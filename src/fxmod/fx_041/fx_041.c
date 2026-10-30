@@ -76,7 +76,7 @@ s32 fx_041_op80(s32 mode, Fx041Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
                 work->unk14->unkC = 0xD0;
             }
             if (work->unk14 != NULL) {
-                ((s32 *)work->unk14->unk0)[2] = (s32)func_801E7704;
+                ((s32 *)work->unk14->file)[2] = (s32)func_801E7704;
             }
             break;
         }

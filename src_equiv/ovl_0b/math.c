@@ -253,15 +253,15 @@ static void btlfx_particleStep(Pool30Entry *e, s32 drag, s32 gravity, s16 *accel
     GTE_MTC2(9, e->unkC);
     GTE_MTC2(10, e->unkE);
     GTE_MTC2(11, *(u32 *)&e->unk10);
-    step = e->unk1E;
+    step = e->timeStep;
     GTE_CMD(0x4B98003D);
     vx = GTE_MFC2(9);
     vy = GTE_MFC2(10) + ((gravity * step) >> 7);
     vz = GTE_MFC2(11);
     GTE_MTC2(8, 0x40);
-    GTE_MTC2(25, e->unk0.vx);
-    GTE_MTC2(26, e->unk0.vy);
-    GTE_MTC2(27, e->unk0.vz);
+    GTE_MTC2(25, e->pos.vx);
+    GTE_MTC2(26, e->pos.vy);
+    GTE_MTC2(27, e->pos.vz);
     GTE_CMD(0x4BA0003E);
     e->unkC = vx;
     e->unkE = vy;
@@ -275,11 +275,11 @@ static void btlfx_particleStep(Pool30Entry *e, s32 drag, s32 gravity, s16 *accel
     GTE_MTC2(11, accel[2]);
     GTE_CMD(0x4B98003D);
     px += GTE_MFC2(25) << 6;
-    e->unk0.vx = px;
+    e->pos.vx = px;
     py += GTE_MFC2(26) << 6;
-    e->unk0.vy = py;
+    e->pos.vy = py;
     pz += GTE_MFC2(27) << 6;
-    e->unk0.vz = pz;
+    e->pos.vz = pz;
     out->vx = px >> 12;
     out->vy = py >> 12;
     out->vz = pz >> 12;
@@ -298,7 +298,7 @@ void btlfx_stepParticleAltDrag(Pool30Entry *e, s32 gravity, s16 *accel, SVECTOR 
  * position += (dir * (step << 6) >> 12) << 6, with the new *acc added to y first; out = position >> 12.
  * GTE: IR0-IR3, MAC1-MAC3. */
 static void btlfx_particleStepNoDrag(Pool30Entry *e, s16 *acc, s32 speed, s16 *dir, SVECTOR *out) {
-    s32 step = e->unk1E;
+    s32 step = e->timeStep;
     s32 a;
     s32 px, py, pz;
 
@@ -309,12 +309,12 @@ static void btlfx_particleStepNoDrag(Pool30Entry *e, s16 *acc, s32 speed, s16 *d
     GTE_CMD(0x4B98003D);
     a = *acc + ((speed * step) >> 7);
     *acc = a;
-    px = e->unk0.vx + (GTE_MFC2(25) << 6);
-    e->unk0.vx = px;
-    py = e->unk0.vy + ((GTE_MFC2(26) + a) << 6);
-    e->unk0.vy = py;
-    pz = e->unk0.vz + (GTE_MFC2(27) << 6);
-    e->unk0.vz = pz;
+    px = e->pos.vx + (GTE_MFC2(25) << 6);
+    e->pos.vx = px;
+    py = e->pos.vy + ((GTE_MFC2(26) + a) << 6);
+    e->pos.vy = py;
+    pz = e->pos.vz + (GTE_MFC2(27) << 6);
+    e->pos.vz = pz;
     out->vx = px >> 12;
     out->vy = py >> 12;
     out->vz = pz >> 12;

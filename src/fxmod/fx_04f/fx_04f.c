@@ -122,7 +122,7 @@ s32 fx_04f_op80(s32 mode, Fx04fWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
                 ex->btlfx_poolSpawn((s16 *)entry->pool);
             }
             if (work->unk44 != NULL) {
-                if (work->unk44->unk30 == -1) {
+                if (work->unk44->state == -1) {
                     work->unk44 = NULL;
                 } else {
                     work->unk38.vy += 0x800;

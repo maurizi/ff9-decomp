@@ -44,7 +44,7 @@ s32 fx_128_op80(s32 mode, Fx128Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
     } else {
         frame = entry->frame;
         if (work->unk0 != NULL) {
-            if (work->unk0->unk30 == -1) {
+            if (work->unk0->state == -1) {
                 work->unk0 = NULL;
             }
             if (work->unk0 != NULL) {
@@ -54,7 +54,7 @@ s32 fx_128_op80(s32 mode, Fx128Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             }
         }
         if (work->unk4 != NULL) {
-            if (work->unk4->unk30 == -1) {
+            if (work->unk4->state == -1) {
                 work->unk4 = NULL;
             }
             if (work->unk4 != NULL) {
@@ -167,10 +167,10 @@ s32 fx_128_op81(s32 mode, Fx128Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
                 work->unk0[4]->unkC = 0x48;
             }
             if (work->unk0[2] != NULL) {
-                *(s32 *)&work->unk0[2]->unk0->unk8 = (s32)func_801E7704;
+                *(s32 *)&work->unk0[2]->file->unk8 = (s32)func_801E7704;
             }
             if (work->unk0[3] != NULL) {
-                *(s32 *)&work->unk0[3]->unk0->unk8 = (s32)func_801E77C8;
+                *(s32 *)&work->unk0[3]->file->unk8 = (s32)func_801E77C8;
             }
             break;
         case 0x3C:
@@ -243,7 +243,7 @@ s32 fx_128_op81(s32 mode, Fx128Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
             }
         }
         if (frame >= 0x2D && work->unk0[4] != NULL) {
-            if (work->unk0[4]->unk30 == -1) {
+            if (work->unk0[4]->state == -1) {
                 work->unk0[4] = NULL;
             }
             if (work->unk0[4] != NULL) {
@@ -269,7 +269,7 @@ s32 fx_128_op81(s32 mode, Fx128Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
             work->unk90.vx += work->unk50.vx;
             work->unk90.vy += work->unk50.vy;
             work->unk90.vz += work->unk50.vz;
-            if (work->unk0[0] != NULL && work->unk0[0]->unk30 == -1) {
+            if (work->unk0[0] != NULL && work->unk0[0]->state == -1) {
                 work->unk0[0] = NULL;
             }
             ex->btlfx_moveEmitterTo((s32)work->unk0[0], (s32)&work->unk90);

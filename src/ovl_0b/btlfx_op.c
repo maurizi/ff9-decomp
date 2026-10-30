@@ -202,7 +202,7 @@ s32 func_800E4634(s32 arg0, Unk800E4634 *c, Unk800E4634Arg2 *arg2, s32 *arg3, s3
                 c->unk30[i]->unk5C.vx = c->unk28[0];
                 c->unk30[i]->unk5C.vy = c->unk28[1];
                 c->unk30[i]->unk5C.vz = c->unk28[2];
-                if (c->unk30[i]->unk30 == -1) {
+                if (c->unk30[i]->state == -1) {
                     c->unk30[i] = NULL;
                 }
             }
@@ -212,9 +212,9 @@ s32 func_800E4634(s32 arg0, Unk800E4634 *c, Unk800E4634Arg2 *arg2, s32 *arg3, s3
         if (c->unk30[c->unk0] != NULL) {
             c->unk30[c->unk0]->unk22 = 0x73;
             if (c->unk30[c->unk0] != NULL) {
-                c->unk30[c->unk0]->unk18[0].unk1C = btlfx_getCommonData(7);
+                c->unk30[c->unk0]->elems[0].tex = btlfx_getCommonData(7);
                 if (c->unk30[c->unk0] != NULL) {
-                    c->unk30[c->unk0]->unk18[1].unk1C = btlfx_getCommonData(6);
+                    c->unk30[c->unk0]->elems[1].tex = btlfx_getCommonData(6);
                 }
             }
         }
@@ -263,15 +263,15 @@ Pool6CEntry *func_800E4A3C_def(s32 arg0, s32 arg1, Unk800E4A3CArgs arg2) {
         e = btlfx_startEmitter(btlfx_getCommonData(5), (s32)arg2.a);
         if (arg1 == 0) {
             if (e != NULL) {
-                e->unk18[0].unk1C = btlfx_getCommonData(7);
+                e->elems[0].tex = btlfx_getCommonData(7);
                 goto common;
             }
         } else {
             if (e != NULL) {
-                e->unk18[0].unk1C = btlfx_getCommonData(8);
+                e->elems[0].tex = btlfx_getCommonData(8);
             common:
                 if (e != NULL) {
-                    e->unk18[1].unk1C = btlfx_getCommonData(6);
+                    e->elems[1].tex = btlfx_getCommonData(6);
                     e->unk22 = 8;
                 }
             }
@@ -286,9 +286,9 @@ Pool6CEntry *func_800E4A3C_def(s32 arg0, s32 arg1, Unk800E4A3CArgs arg2) {
         arg2.b[1] -= 0x40;
         e = btlfx_startEmitter(btlfx_getCommonData(1), (s32)arg2.a);
         if (e != NULL) {
-            e->unk18[0].unk1C = btlfx_getCommonData(0x14);
-            e->unk18[1].unk1C = btlfx_getCommonData(6);
-            e->unk18[2].unk1C = btlfx_getCommonData(2);
+            e->elems[0].tex = btlfx_getCommonData(0x14);
+            e->elems[1].tex = btlfx_getCommonData(6);
+            e->elems[2].tex = btlfx_getCommonData(2);
             e->unk2C = *(s32 *)&arg2.b;
             e->unk22 = 0x20;
         }
@@ -297,8 +297,8 @@ Pool6CEntry *func_800E4A3C_def(s32 arg0, s32 arg1, Unk800E4A3CArgs arg2) {
     case 4:
         e = btlfx_startEmitter(btlfx_getCommonData(4), (s32)arg2.a);
         if (e != NULL) {
-            e->unk18[0].unk1C = btlfx_getCommonData(7);
-            e->unk18[1].unk1C = btlfx_getCommonData(6);
+            e->elems[0].tex = btlfx_getCommonData(7);
+            e->elems[1].tex = btlfx_getCommonData(6);
             e->unk22 = 0x80;
         }
     zero:
@@ -411,7 +411,7 @@ s32 btlfx_opCast(s32 arg0, Unk800E4C88 *arg1, Unk800F78A4 *arg2, s32 *arg3, s32 
         }
         break;
     case 2:
-        if (arg1->unk24 != NULL && arg1->unk24->unk30 == -1) {
+        if (arg1->unk24 != NULL && arg1->unk24->state == -1) {
             arg1->unk24 = NULL;
         }
         if (t == 0) {
@@ -496,7 +496,7 @@ s32 btlfx_opCast(s32 arg0, Unk800E4C88 *arg1, Unk800F78A4 *arg2, s32 *arg3, s32 
         }
         if (arg1->unk5 != 3) {
             if (arg1->unk24 != NULL) {
-                if (arg1->unk24->unk30 == -1) {
+                if (arg1->unk24->state == -1) {
                     arg1->unk24 = NULL;
                 }
                 if (arg1->unk24 != NULL && t < 5) {
@@ -713,10 +713,10 @@ s32 func_800E57B0(s32 arg0, Unk800E57B0 *arg1, Unk800F78A4 *arg2, s32 *arg3, s32
                 }
                 p = func_800E4530(arg1->unk8);
                 if (e != NULL) {
-                    e->unk18->unk1C = (s32)p;
-                    e->unk18->unk0 = arg1->unk4;
+                    e->elems->tex = (s32)p;
+                    e->elems->kind = arg1->unk4;
                 }
-                e->unk18->unk8 = *p & 0x7FFF; /* outside the NULL check in the original */
+                e->elems->unk8 = *p & 0x7FFF; /* outside the NULL check in the original */
                 arg1->unk10 = e;
             }
             if (arg1->unkE < arg1->unk14) {
@@ -726,7 +726,7 @@ s32 func_800E57B0(s32 arg0, Unk800E57B0 *arg1, Unk800F78A4 *arg2, s32 *arg3, s32
                     e->unk5C.vy = arg1->unk24[1];
                     e->unk5C.vz = arg1->unk24[2];
                 }
-                if (e->unk30 == -1) {
+                if (e->state == -1) {
                     return 1;
                 }
             }

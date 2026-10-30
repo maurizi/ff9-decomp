@@ -42,9 +42,9 @@ s32 func_801E7968(Pool30Entry *e, SVECTOR *pos, s32 angle, s32 radius, s32 frame
     ex->btlfx_lerpVec((s16 *)&D_801EA5C0, (s16 *)&D_801EA5D0, (frame << 12) / 12, (s16 *)pos);
     pos->vx += radius * ex->math_sin(angle) / 4096;
     pos->vy += radius * ex->math_cos(angle) / 4096;
-    e->unk0.vx = pos->vx << 12;
-    e->unk0.vy = pos->vy << 12;
-    e->unk0.vz = pos->vz << 12;
+    e->pos.vx = pos->vx << 12;
+    e->pos.vy = pos->vy << 12;
+    e->pos.vz = pos->vz << 12;
     if (frame >= frames) {
         return -1;
     }
@@ -93,9 +93,9 @@ s32 func_801E7D18(Pool30Entry *e, SVECTOR *pos, s32 angle, s32 radius, s32 frame
     ex->btlfx_lerpVec((s16 *)&D_801EA5C8, (s16 *)&D_801EA5D8, (frame << 12) / 12, (s16 *)pos);
     pos->vx += radius * ex->math_sin(angle) / 4096;
     pos->vy += radius * ex->math_cos(angle) / 4096;
-    e->unk0.vx = pos->vx << 12;
-    e->unk0.vy = pos->vy << 12;
-    e->unk0.vz = pos->vz << 12;
+    e->pos.vx = pos->vx << 12;
+    e->pos.vy = pos->vy << 12;
+    e->pos.vz = pos->vz << 12;
     if (frame >= frames) {
         return -1;
     }
@@ -148,7 +148,7 @@ s32 fx_1a7_op80(s32 mode, Fx1a7Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
                         work->unk8[i]->unkC = 0x38;
                     }
                     if (work->unk8[i] != NULL) {
-                        ((EffMotion *)work->unk8[i]->unk0)->unk8 = D_801E88B0[i];
+                        ((EffMotion *)work->unk8[i]->file)->unk8 = D_801E88B0[i];
                     }
                     D_801E8950[i] = i * 0x155 + ex->btlfx_rand() % 4096;
                     D_801E8990[i] = i * 10;
@@ -159,11 +159,11 @@ s32 fx_1a7_op80(s32 mode, Fx1a7Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             }
         }
         if (frame >= 0 && frame < 0x18) {
-            if (work->unk0 != NULL && work->unk0->unk30 == -1) {
+            if (work->unk0 != NULL && work->unk0->state == -1) {
                 work->unk0 = NULL;
             }
             ex->btlfx_moveEmitterTo((s32)work->unk0, (s32)&work->unk34);
-            if (work->unk4 != NULL && work->unk4->unk30 == -1) {
+            if (work->unk4 != NULL && work->unk4->state == -1) {
                 work->unk4 = NULL;
             }
             ex->btlfx_moveEmitterTo((s32)work->unk4, (s32)&work->unk34);
@@ -222,7 +222,7 @@ s32 fx_1a7_op81(s32 mode, Fx1a7Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
                         work->unk8[i]->unkC = 0xB0;
                     }
                     if (work->unk8[i] != NULL) {
-                        ((EffMotion *)work->unk8[i]->unk0)->unk8 = D_801E88D4[i];
+                        ((EffMotion *)work->unk8[i]->file)->unk8 = D_801E88D4[i];
                     }
                     D_801E8970[i] = i * 0x155 + ex->btlfx_rand() % 4096;
                     D_801E89B0[i] = ex->btlfx_rand() % 200 + 0x64;

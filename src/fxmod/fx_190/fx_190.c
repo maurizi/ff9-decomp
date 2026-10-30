@@ -47,10 +47,10 @@ s32 fx_190_op80(s32 mode, Fx190Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
             ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 4), (s32)&work->unk3C);
         }
         for (i = 0; i < work->unk0; i++) {
-            if (work->unk54[i] != NULL && work->unk54[i]->unk30 == -1) {
+            if (work->unk54[i] != NULL && work->unk54[i]->state == -1) {
                 work->unk54[i] = NULL;
             }
-            if (work->unk64[i] != NULL && work->unk64[i]->unk30 == -1) {
+            if (work->unk64[i] != NULL && work->unk64[i]->state == -1) {
                 work->unk64[i] = NULL;
             }
             if (work->unk54[i] != NULL) {

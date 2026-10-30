@@ -100,7 +100,7 @@ s32 fx_0d9_op80(s32 mode, Fx0d9Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             rot.vz = 0;
             rot.vy = 0;
             if (work->unk1C != NULL) {
-                if (work->unk1C->unk30 == -1) {
+                if (work->unk1C->state == -1) {
                     work->unk1C = NULL;
                 }
                 if (work->unk1C != NULL) {
@@ -498,8 +498,8 @@ s32 fx_0d9_op83(s32 mode, Fx0d9Work83 *work, Unk800F78A4 *env, Unk80100C78Entry 
             if (frame == 0) {
                 p = (Pool6CEntry *)ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0x25), (s32)&work->unk0);
                 if (p != NULL) {
-                    p->unk24->unk0 = -1;
-                    ((EffTailSpawn *)p->unk24)->unk3C = func_801E8B10;
+                    p->tail->unk0 = -1;
+                    ((EffTailSpawn *)p->tail)->unk3C = func_801E8B10;
                     p->unk22 = 0x20;
                 }
             }

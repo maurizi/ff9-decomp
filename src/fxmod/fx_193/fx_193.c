@@ -20,9 +20,9 @@ s32 func_801E7794(Pool30Entry *e, SVECTOR *pos, SVECTOR *from, SVECTOR *to, s32 
         amp /= 2;
     }
     pos->vx += amp * ex->math_sin(t) / 4096;
-    e->unk0.vx = pos->vx << 12;
-    e->unk0.vy = pos->vy << 12;
-    e->unk0.vz = pos->vz << 12;
+    e->pos.vx = pos->vx << 12;
+    e->pos.vy = pos->vy << 12;
+    e->pos.vz = pos->vz << 12;
     if (frame >= frames) {
         return -1;
     }
@@ -58,10 +58,10 @@ s32 fx_193_op80(s32 mode, Fx193Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             work->unk4->unkC = 0xF0;
         }
         if (work->unk0 != NULL) {
-            ((EffMotion *)work->unk0->unk0)->unk8 = func_801E7704;
+            ((EffMotion *)work->unk0->file)->unk8 = func_801E7704;
         }
         if (work->unk4 != NULL) {
-            ((EffMotion *)work->unk4->unk0)->unk8 = func_801E774C;
+            ((EffMotion *)work->unk4->file)->unk8 = func_801E774C;
         }
     } else {
         return entry->frame >= 0x1E;

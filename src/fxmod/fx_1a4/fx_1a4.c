@@ -79,11 +79,11 @@ s32 fx_1a4_op80(s32 mode, Fx1a4Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             work->unk40--;
         }
         if (frame >= 0x1E) {
-            if (work->unk4 != NULL && work->unk4->unk30 == -1) {
+            if (work->unk4 != NULL && work->unk4->state == -1) {
                 work->unk4 = NULL;
             }
             ex->btlfx_moveEmitterTo((s32)work->unk4, (s32)&work->unk1C);
-            if (work->unk8 != NULL && work->unk8->unk30 == -1) {
+            if (work->unk8 != NULL && work->unk8->state == -1) {
                 work->unk8 = NULL;
             }
             ex->btlfx_moveEmitterTo((s32)work->unk8, (s32)&work->unk1C);

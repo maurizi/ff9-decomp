@@ -226,7 +226,7 @@ s32 func_801ECBE0(s32 mode, Fx0fb1Rock *it, Unk800F78A4 *env, Unk80100C78Entry *
                                          (ex->math_cos(t) >> 5) - 0x80);
             }
             env->otZ = 0;
-            if (it->unk20->unk30 == -1) {
+            if (it->unk20->state == -1) {
                 return 1;
             }
             break;
@@ -298,7 +298,7 @@ s32 func_801ECBE0(s32 mode, Fx0fb1Rock *it, Unk800F78A4 *env, Unk80100C78Entry *
                                          (ex->math_cos(t) >> 5) - 0x80);
             }
             env->otZ = 0;
-            if (it->unk20->unk30 == -1) {
+            if (it->unk20->state == -1) {
                 return 1;
             }
             break;

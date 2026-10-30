@@ -496,44 +496,44 @@ s32 fx_105_op80(s32 mode, Fx105Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             return 1;
         }
         if (work->unk40 != NULL) {
-            if (work->unk40->unk30 == -1) {
+            if (work->unk40->state == -1) {
                 work->unk40 = NULL;
             }
             ex->Hi_GetSummonBonePos(SUMMON105(env)->unk60, 0x4C, (u16 *)&work->unk70);
         }
         if (work->unk44 != NULL) {
-            if (work->unk44->unk30 == -1) {
+            if (work->unk44->state == -1) {
                 work->unk44 = NULL;
             }
             ex->Hi_GetSummonBonePos(SUMMON105(env)->unk60, 0x60, (u16 *)&work->unk78);
         }
         if (work->unk48 != NULL) {
-            if (work->unk48->unk30 == -1) {
+            if (work->unk48->state == -1) {
                 work->unk48 = NULL;
             }
             ex->Hi_GetSummonBonePos(SUMMON105(env)->unk60, 0x4C, (u16 *)&work->unk80);
         }
         if (work->unk4C != NULL) {
-            if (work->unk4C->unk30 == -1) {
+            if (work->unk4C->state == -1) {
                 work->unk4C = NULL;
             }
             ex->Hi_GetSummonBonePos(SUMMON105(env)->unk60, 0x60, (u16 *)&work->unk90);
         }
         if (work->unk50 != NULL) {
-            if (work->unk50->unk30 == -1) {
+            if (work->unk50->state == -1) {
                 work->unk50 = NULL;
             }
             ex->Hi_GetSummonBonePos(SUMMON105(env)->unk60, 0x3E, (u16 *)&work->unk88);
         }
         if (work->unk54 != NULL) {
-            if (work->unk54->unk30 == -1) {
+            if (work->unk54->state == -1) {
                 work->unk54 = NULL;
             }
             ex->Hi_GetSummonBonePos(SUMMON105(env)->unk60, 0x43, (u16 *)&work->unk98);
         }
         if (frame >= 0xFC) {
             if (work->unkA8 != NULL) {
-                if (work->unkA8->unk30 == -1) {
+                if (work->unkA8->state == -1) {
                     work->unkA8 = NULL;
                 }
                 if (work->unkA8 != NULL) {
@@ -544,7 +544,7 @@ s32 fx_105_op80(s32 mode, Fx105Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
                 ex->Hi_GetSummonBonePos(SUMMON105(env)->unk60, 0x60, (u16 *)&work->unkB4);
             }
             if (work->unkAC != NULL) {
-                if (work->unkAC->unk30 == -1) {
+                if (work->unkAC->state == -1) {
                     work->unkAC = NULL;
                 }
                 if (work->unkAC != NULL) {
@@ -555,7 +555,7 @@ s32 fx_105_op80(s32 mode, Fx105Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
                 ex->Hi_GetSummonBonePos(SUMMON105(env)->unk60, 0x5C, (u16 *)&work->unkBC);
             }
             if (work->unkB0 != NULL) {
-                if (work->unkB0->unk30 == -1) {
+                if (work->unkB0->state == -1) {
                     work->unkB0 = NULL;
                 }
                 if (work->unkB0 != NULL) {
@@ -567,25 +567,25 @@ s32 fx_105_op80(s32 mode, Fx105Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             }
         }
         if (work->unkD4 != NULL) {
-            if (work->unkD4->unk30 == -1) {
+            if (work->unkD4->state == -1) {
                 work->unkD4 = NULL;
             }
             ex->Hi_GetSummonBonePos(SUMMON105(env)->unk60, 0x4C, (u16 *)&work->unkE4);
         }
         if (work->unkD8 != NULL) {
-            if (work->unkD8->unk30 == -1) {
+            if (work->unkD8->state == -1) {
                 work->unkD8 = NULL;
             }
             ex->Hi_GetSummonBonePos(SUMMON105(env)->unk60, 0x60, (u16 *)&work->unkEC);
         }
         if (work->unkDC != NULL) {
-            if (work->unkDC->unk30 == -1) {
+            if (work->unkDC->state == -1) {
                 work->unkDC = NULL;
             }
             ex->Hi_GetSummonBonePos(SUMMON105(env)->unk60, 0x3E, (u16 *)&work->unkF4);
         }
         if (work->unkE0 != NULL) {
-            if (work->unkE0->unk30 == -1) {
+            if (work->unkE0->state == -1) {
                 work->unkE0 = NULL;
             }
             ex->Hi_GetSummonBonePos(SUMMON105(env)->unk60, 0x43, (u16 *)&work->unkFC);
@@ -664,7 +664,7 @@ s32 fx_105_op80(s32 mode, Fx105Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
         if (work->unk8 != 0) {
             work->unk8--;
             if (work->unk124 != NULL) {
-                if (work->unk124->unk30 == -1) {
+                if (work->unk124->state == -1) {
                     work->unk124 = NULL;
                 }
                 if (work->unk8 != 0) {

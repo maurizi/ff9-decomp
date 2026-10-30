@@ -45,8 +45,8 @@ s32 fx_036_op80(s32 mode, Fx036Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
         case 9:
             work->unk10 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 2), (s32)&work->unk24);
             if (work->unk10 != NULL) {
-                work->unk10->unk24->unk0 = -1;
-                ((EffTailSpawn *)work->unk10->unk24)->unk3C = func_801E7704;
+                work->unk10->tail->unk0 = -1;
+                ((EffTailSpawn *)work->unk10->tail)->unk3C = func_801E7704;
             }
             work->unk14 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0xB), (s32)&env->targets->centerX);
             work->unk18 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0xC), (s32)&env->targets->centerX);

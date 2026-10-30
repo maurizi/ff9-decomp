@@ -132,7 +132,7 @@ s32 func_801E7A5C(s32 mode, Fx026Item *it, Unk800F78A4 *env, Unk80100C78Entry *e
             }
         }
         if (it->unk8 != NULL) {
-            if (it->unk8->unk30 == -1) {
+            if (it->unk8->state == -1) {
                 it->unk8 = NULL;
             }
             ex->btlfx_moveEmitterTo((s32)it->unk8, (s32)&p);

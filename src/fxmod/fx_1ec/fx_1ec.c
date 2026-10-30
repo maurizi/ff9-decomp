@@ -112,7 +112,7 @@ s32 fx_1ec_op80(s32 mode, Fx1ecWork80 *work, Unk800F78A4 *env, Unk80100C78Entry 
                 work->unk0[7]->unk12 = 0x12;
                 work->unk0[7]->unkC = 0x70;
                 if (work->unk0[7] != NULL) {
-                    ((EffMotion *)work->unk0[7]->unk0)->unk8 = func_801E78E0;
+                    ((EffMotion *)work->unk0[7]->file)->unk8 = func_801E78E0;
                 }
             }
             if (work->unk0[5] != NULL) {
@@ -207,7 +207,7 @@ s32 fx_1ec_op81(s32 mode, Fx1ecWork81 *work, Unk800F78A4 *env, Unk80100C78Entry 
             work->unk0[9]->unk12 = 0x2A;
             work->unk0[9]->unkC = 0x90;
             if (work->unk0[9] != NULL) {
-                ((EffMotion *)work->unk0[9]->unk0)->unk8 = func_801E79DC;
+                ((EffMotion *)work->unk0[9]->file)->unk8 = func_801E79DC;
             }
         }
         break;

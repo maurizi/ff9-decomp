@@ -278,10 +278,10 @@ s32 fx_12b_op80(s32 mode, Fx12bWork80 *work, Unk800F78A4 *env, Unk80100C78Entry 
                 work->unk0[0]->unkC = 0xA4;
             }
             if (work->unk0[0] != NULL) {
-                ((s32 *)work->unk0[0]->unk0)[2] = (s32)func_801E7704;
+                ((s32 *)work->unk0[0]->file)[2] = (s32)func_801E7704;
             }
             if (work->unk0[2] != NULL) {
-                ((s32 *)work->unk0[2]->unk0)[2] = (s32)func_801E7E40;
+                ((s32 *)work->unk0[2]->file)[2] = (s32)func_801E7E40;
             }
             break;
         case 1:
@@ -293,10 +293,10 @@ s32 fx_12b_op80(s32 mode, Fx12bWork80 *work, Unk800F78A4 *env, Unk80100C78Entry 
                 work->unk0[1]->unkC = 0xA4;
             }
             if (work->unk0[1] != NULL) {
-                ((s32 *)work->unk0[1]->unk0)[2] = (s32)func_801E77B0;
+                ((s32 *)work->unk0[1]->file)[2] = (s32)func_801E77B0;
             }
             if (work->unk0[3] != NULL) {
-                ((s32 *)work->unk0[3]->unk0)[2] = (s32)func_801E7EB0;
+                ((s32 *)work->unk0[3]->file)[2] = (s32)func_801E7EB0;
             }
             break;
         }
@@ -420,16 +420,16 @@ s32 fx_12b_op81(s32 mode, Fx12bWork81 *work, Unk800F78A4 *env, Unk80100C78Entry 
                 work->unk0[1]->unkC = 0xA4;
             }
             if (work->unk0[0] != NULL) {
-                ((s32 *)work->unk0[0]->unk0)[2] = (s32)func_801E785C;
+                ((s32 *)work->unk0[0]->file)[2] = (s32)func_801E785C;
             }
             if (work->unk0[1] != NULL) {
-                ((s32 *)work->unk0[1]->unk0)[2] = (s32)func_801E78F8;
+                ((s32 *)work->unk0[1]->file)[2] = (s32)func_801E78F8;
             }
             if (work->unk0[2] != NULL) {
-                ((s32 *)work->unk0[2]->unk0)[2] = (s32)func_801E7F20;
+                ((s32 *)work->unk0[2]->file)[2] = (s32)func_801E7F20;
             }
             if (work->unk0[3] != NULL) {
-                ((s32 *)work->unk0[3]->unk0)[2] = (s32)func_801E7F90;
+                ((s32 *)work->unk0[3]->file)[2] = (s32)func_801E7F90;
             }
         }
         for (j = 0, r = D_801E9A20, q = D_801E996C; j < 5; j++, q++, r++) {

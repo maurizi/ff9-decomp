@@ -55,10 +55,10 @@ s32 fx_11d_op80(s32 mode, Fx11dWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
             work->unk4 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0xB), (s32)&D_801E914C);
             work->unk8 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0xC), (s32)&D_801E9154);
             if (work->unk4 != NULL) {
-                ((Fx11dEffHdr *)work->unk4->unk0)->unk8 = func_801E7704;
+                ((Fx11dEffHdr *)work->unk4->file)->unk8 = func_801E7704;
             }
             if (work->unk8 != NULL) {
-                ((Fx11dEffHdr *)work->unk8->unk0)->unk8 = func_801E7754;
+                ((Fx11dEffHdr *)work->unk8->file)->unk8 = func_801E7754;
             }
             if (work->unk4 != NULL) {
                 work->unk4->unk22 = ex->func_800E7CC4(0x10, 0x100);
@@ -81,10 +81,10 @@ s32 fx_11d_op80(s32 mode, Fx11dWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
                 work->unk10->unkC = 0x70;
             }
             if (work->unkC != NULL) {
-                ((Fx11dEffHdr *)work->unkC->unk0)->unk8 = func_801E7704;
+                ((Fx11dEffHdr *)work->unkC->file)->unk8 = func_801E7704;
             }
             if (work->unk10 != NULL) {
-                ((Fx11dEffHdr *)work->unk10->unk0)->unk8 = func_801E7754;
+                ((Fx11dEffHdr *)work->unk10->file)->unk8 = func_801E7754;
             }
             /* sets unkC twice; unk10 keeps its default */
             if (work->unkC != NULL) {

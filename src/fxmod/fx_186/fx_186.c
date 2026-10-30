@@ -263,7 +263,7 @@ s32 fx_186_op80(s32 mode, Fx186Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
                         }
                     }
                 }
-                if (work->unk18 != NULL && work->unk18->unk30 == -1) {
+                if (work->unk18 != NULL && work->unk18->state == -1) {
                     work->unk18 = NULL;
                 }
                 if (frame < 4) {

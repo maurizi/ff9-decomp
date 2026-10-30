@@ -282,7 +282,7 @@ s32 fx_17d_7_op80(s32 mode, Fx17d7Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
             if (frame < 5) {
                 q = 0x800;
                 m = (frame << 12) / 5;
-                if (work->unk68 != NULL && work->unk68->unk30 == -1) {
+                if (work->unk68 != NULL && work->unk68->state == -1) {
                     work->unk68 = NULL;
                 }
                 BTLFX_COPY_SVEC(&p60, &work->unk8);
@@ -336,8 +336,8 @@ s32 fx_17d_7_op80(s32 mode, Fx17d7Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
                     work->unk10.vy -= 0x400;
                     p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0xA), (s32)&work->unk10);
                     if (p != NULL) {
-                        p->unk24->unk0 = -1;
-                        *(s32 *)&p->unk24->unk3C = (s32)func_801EC704;
+                        p->tail->unk0 = -1;
+                        *(s32 *)&p->tail->unk3C = (s32)func_801EC704;
                         p->unk22 = 0x100;
                     }
                 } else if (frame < 21) {
@@ -462,7 +462,7 @@ s32 fx_17d_7_op80(s32 mode, Fx17d7Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
 
             t = (frame << 12) / 41;
             if (work->unk6C != NULL) {
-                if (work->unk6C->unk30 == -1) {
+                if (work->unk6C->state == -1) {
                     work->unk6C = NULL;
                 }
                 if (work->unk6C != NULL) {

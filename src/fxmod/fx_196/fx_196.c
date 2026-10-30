@@ -344,8 +344,8 @@ s32 fx_196_op85(s32 mode, Fx196Work85 *work, Unk800F78A4 *env, Unk80100C78Entry 
             if (frame == 0x12) {
                 work->unk48 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 5), (s32)&work->unk10);
                 if (work->unk48 != NULL) {
-                    work->unk48->unk24->unk0 = -1;
-                    ((EffTailSpawn *)work->unk48->unk24)->unk3C = (s32 (*)(SVECTOR *, SVECTOR *, s32, s32))func_801E8370;
+                    work->unk48->tail->unk0 = -1;
+                    ((EffTailSpawn *)work->unk48->tail)->unk3C = (s32 (*)(SVECTOR *, SVECTOR *, s32, s32))func_801E8370;
                 }
                 if (work->unk48 != NULL) {
                     work->unk48->unk22 = 0x200;

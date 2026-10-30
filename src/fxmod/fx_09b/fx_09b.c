@@ -24,9 +24,9 @@ s32 func_801E7808(Pool30Entry *pt, SVECTOR *pos, SVECTOR *src, s32 frame, s32 n)
     pos->vx = src->vx;
     pos->vy = src->vy;
     pos->vz = src->vz;
-    pt->unk0.vx = pos->vx << 12;
-    pt->unk0.vy = pos->vy << 12;
-    pt->unk0.vz = pos->vz << 12;
+    pt->pos.vx = pos->vx << 12;
+    pt->pos.vy = pos->vy << 12;
+    pt->pos.vz = pos->vz << 12;
     if (frame >= n) {
         return -1;
     }
@@ -90,7 +90,7 @@ s32 fx_09b_op80(s32 mode, Fx09bWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
             work->unk4->unkC = 0x4C;
         }
         if (work->unk4 != NULL) {
-            ((EffMotion *)work->unk4->unk0)->unk8 = D_801E8108[work->unk6C];
+            ((EffMotion *)work->unk4->file)->unk8 = D_801E8108[work->unk6C];
         }
         if (work->unk0 != NULL) {
             work->unk0->unk22 = ex->func_800E7CC4(0x10, 0x80);

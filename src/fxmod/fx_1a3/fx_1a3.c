@@ -9,9 +9,9 @@ s32 func_801E7704(Pool30Entry *e, Pool6CEntry *owner, SVECTOR *pos, s32 arg3, s3
     }
     ex->btlfx_lerpVec((s16 *)&D_801E93F4, (s16 *)&D_801E93FC, t, (s16 *)pos);
     pos->vy += ex->math_sin(t >> 1) * 0;
-    e->unk0.vx = pos->vx << 12;
-    e->unk0.vy = pos->vy << 12;
-    e->unk0.vz = pos->vz << 12;
+    e->pos.vx = pos->vx << 12;
+    e->pos.vy = pos->vy << 12;
+    e->pos.vz = pos->vz << 12;
     if (frame >= frames) {
         return -1;
     }
@@ -43,7 +43,7 @@ s32 fx_1a3_op80(s32 mode, Fx1a3Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             work->unk0->unkC = 0x20;
         }
         if (work->unk0 != NULL) {
-            ((EffMotion *)work->unk0->unk0)->unk8 = func_801E7704;
+            ((EffMotion *)work->unk0->file)->unk8 = func_801E7704;
         }
         if (work->unk0 != NULL) {
             work->unk0->unk22 = ex->func_800E7CC4(0, 0x80);

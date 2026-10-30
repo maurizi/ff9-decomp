@@ -70,7 +70,7 @@ s32 fx_0fa_op80(s32 mode, Fx0faWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
         return 0;
     } else {
         frame = entry->frame;
-        if (work->unk74 != NULL && work->unk74->unk30 == -1) {
+        if (work->unk74 != NULL && work->unk74->state == -1) {
             work->unk74 = NULL;
         }
         switch (frame) {

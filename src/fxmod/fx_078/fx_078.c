@@ -71,7 +71,7 @@ s32 fx_078_op80(s32 mode, Fx078Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
         work->unk44.vx += work->unk10.vx;
         work->unk44.vy += work->unk10.vy;
         work->unk44.vz += work->unk10.vz;
-        if (work->unk4 != NULL && work->unk4->unk30 == -1) {
+        if (work->unk4 != NULL && work->unk4->state == -1) {
             work->unk4 = NULL;
         }
         ex->btlfx_moveEmitterTo((s32)work->unk4, (s32)&work->unk44);

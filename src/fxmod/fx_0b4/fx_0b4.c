@@ -40,9 +40,9 @@ s32 func_801E793C(Pool30Entry *pt, SVECTOR *pos, Fx0b4Timer *timer, Fx0b4Path *p
     pos->vx = p.vx;
     pos->vy = p.vy;
     pos->vz = p.vz;
-    pt->unk0.vx = pos->vx << 12;
-    pt->unk0.vy = pos->vy << 12;
-    pt->unk0.vz = pos->vz << 12;
+    pt->pos.vx = pos->vx << 12;
+    pt->pos.vy = pos->vy << 12;
+    pt->pos.vz = pos->vz << 12;
     if (frame >= n) {
         return -1;
     }
@@ -113,7 +113,7 @@ s32 fx_0b4_op80(s32 mode, Fx0b4Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
                     work->unk0[i]->unkC = 0x90;
                 }
                 if (work->unk0[i] != NULL) {
-                    ((EffMotion *)work->unk0[i]->unk0)->unk8 = D_801E8124[i];
+                    ((EffMotion *)work->unk0[i]->file)->unk8 = D_801E8124[i];
                 }
             }
             if (frame >= tm->unk0) {
@@ -122,7 +122,7 @@ s32 fx_0b4_op80(s32 mode, Fx0b4Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
         }
         if (frame >= 0) {
             if (work->unk1C != NULL) {
-                if (work->unk1C->unk30 == -1) {
+                if (work->unk1C->state == -1) {
                     work->unk1C = NULL;
                 }
                 if (work->unk1C != NULL) {
@@ -134,7 +134,7 @@ s32 fx_0b4_op80(s32 mode, Fx0b4Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
         }
         if (frame >= 8) {
             if (work->unk20 != NULL) {
-                if (work->unk20->unk30 == -1) {
+                if (work->unk20->state == -1) {
                     work->unk20 = NULL;
                 }
                 if (work->unk20 != NULL) {
@@ -146,7 +146,7 @@ s32 fx_0b4_op80(s32 mode, Fx0b4Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
         }
         if (frame >= 0x14) {
             if (work->unk18 != NULL) {
-                if (work->unk18->unk30 == -1) {
+                if (work->unk18->state == -1) {
                     work->unk18 = NULL;
                 }
                 if (work->unk18 != NULL) {
@@ -158,7 +158,7 @@ s32 fx_0b4_op80(s32 mode, Fx0b4Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
         }
         if (frame >= 0x2D) {
             if (work->unk28 != NULL) {
-                if (work->unk28->unk30 == -1) {
+                if (work->unk28->state == -1) {
                     work->unk28 = NULL;
                 }
                 if (work->unk28 != NULL) {

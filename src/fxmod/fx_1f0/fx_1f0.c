@@ -146,7 +146,7 @@ s32 fx_1f0_op80(s32 mode, Fx1f0Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
         if (work->unk0[1] != 0) {
             work->unk0[1]--;
             for (i = 0; i < env->targets->targetCount; i++) {
-                if (D_801E8558[i].unk28 != NULL && D_801E8558[i].unk28->unk30 == -1) {
+                if (D_801E8558[i].unk28 != NULL && D_801E8558[i].unk28->state == -1) {
                     D_801E8558[i].unk28 = NULL;
                 }
                 if (D_801E8558[i].unk0 == 0) {

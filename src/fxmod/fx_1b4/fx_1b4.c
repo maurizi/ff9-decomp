@@ -97,7 +97,7 @@ s32 fx_1b4_op80(s32 mode, Fx1b4Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
                     work->unk20[i]->unk12 = 8;
                     work->unk20[i]->unkC = 0x70;
                     if (work->unk20[i] != NULL) {
-                        ((EffMotion *)work->unk20[i]->unk0)->unk8 = D_801E85EC[i];
+                        ((EffMotion *)work->unk20[i]->file)->unk8 = D_801E85EC[i];
                     }
                 }
             }

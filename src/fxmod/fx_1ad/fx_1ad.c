@@ -17,9 +17,9 @@ s32 func_801E7704(Pool30Entry *e, Pool6CEntry *owner, SVECTOR *pos, s32 arg3, s3
     pos->vx = c.vx;
     pos->vy = c.vy;
     pos->vz = c.vz;
-    e->unk0.vx = c.vx << 12;
-    e->unk0.vy = c.vy << 12;
-    e->unk0.vz = c.vz << 12;
+    e->pos.vx = c.vx << 12;
+    e->pos.vy = c.vy << 12;
+    e->pos.vz = c.vz << 12;
     if (frame >= frames) {
         return -1;
     }
@@ -70,7 +70,7 @@ s32 fx_1ad_op80(s32 mode, Fx1adWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
                     work->unk20->unk22 = k;
                 }
                 if (work->unk20 != NULL) {
-                    ((EffMotion *)work->unk20->unk0)->unk8 = func_801E7704;
+                    ((EffMotion *)work->unk20->file)->unk8 = func_801E7704;
                 }
                 p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 4), (s32)&work->unk10);
                 if (p != NULL) {

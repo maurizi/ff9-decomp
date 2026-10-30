@@ -79,7 +79,7 @@ s32 fx_0eb_op80(s32 mode, Fx0ebWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
         }
         if (frame >= 0) {
             if (work->unk0 != NULL) {
-                if (work->unk0->unk30 == -1) {
+                if (work->unk0->state == -1) {
                     work->unk0 = NULL;
                 }
                 if (work->unk0 != NULL) {

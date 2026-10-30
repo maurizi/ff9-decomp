@@ -170,7 +170,7 @@ s32 fx_0b3_op80(s32 mode, Fx0b3Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
                 ang.vy = 0x800;
                 ang.vz = 0;
                 if (work->unk68 != NULL) {
-                    if (work->unk68->unk30 == -1) {
+                    if (work->unk68->state == -1) {
                         work->unk68 = NULL;
                     }
                     if (work->unk68 != NULL) {
@@ -304,7 +304,7 @@ s32 fx_0b3_op81(s32 mode, Fx0b3Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
             rot.vy = 0x800;
             rot.vz = 0;
             if (work->unk80 != NULL) {
-                if (work->unk80->unk30 == -1) {
+                if (work->unk80->state == -1) {
                     work->unk80 = NULL;
                 }
                 if (work->unk80 != NULL) {
@@ -1138,8 +1138,8 @@ s32 fx_0b3_op85(s32 mode, Fx0b3Work85 *work, Unk800F78A4 *env, Unk80100C78Entry 
             if (frame == 0x12) {
                 work->unk68 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0x25), (s32)&work->unk10);
                 if (work->unk68 != NULL) {
-                    work->unk68->unk24->unk0 = -1;
-                    ((EffTailSpawn *)work->unk68->unk24)->unk3C = (s32 (*)(SVECTOR *, SVECTOR *, s32, s32))func_801EA6C8;
+                    work->unk68->tail->unk0 = -1;
+                    ((EffTailSpawn *)work->unk68->tail)->unk3C = (s32 (*)(SVECTOR *, SVECTOR *, s32, s32))func_801EA6C8;
                     if (work->unk68 != NULL) {
                         work->unk68->unk22 = 0x200;
                     }

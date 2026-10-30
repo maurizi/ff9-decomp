@@ -20,13 +20,13 @@ s32 fx_030_op80(s32 mode, Fx030Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
         work->unk28 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 8), (s32)&work->unk0);
     } else {
         frame = entry->frame;
-        if (work->unk20 != NULL && work->unk20->unk30 == -1) {
+        if (work->unk20 != NULL && work->unk20->state == -1) {
             work->unk20 = NULL;
         }
-        if (work->unk24 != NULL && work->unk24->unk30 == -1) {
+        if (work->unk24 != NULL && work->unk24->state == -1) {
             work->unk24 = NULL;
         }
-        if (work->unk28 != NULL && work->unk28->unk30 == -1) {
+        if (work->unk28 != NULL && work->unk28->state == -1) {
             work->unk28 = NULL;
         }
         if (work->unk20 != NULL) {

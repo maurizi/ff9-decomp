@@ -83,7 +83,7 @@ s32 fx_18a_op80(s32 mode, Fx18aWork80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             sc.vx = sc.vz = 0x200;
             sc.vy = (ex->math_sin(t) >> 7) + 0x333;
             c = 0x1000;
-            if (work->unk8 != NULL && work->unk8->unk30 == -1) {
+            if (work->unk8 != NULL && work->unk8->state == -1) {
                 work->unk8 = NULL;
             }
             if (frame >= 0xB && t == 0) {

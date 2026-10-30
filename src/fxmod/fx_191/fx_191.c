@@ -54,9 +54,9 @@ s32 func_801E7870(Pool30Entry *e, SVECTOR *pos, SVECTOR *base, SVECTOR *to, s32 
     pos->vx = b.vx;
     pos->vy = b.vy;
     pos->vz = b.vz;
-    e->unk0.vx = pos->vx << 12;
-    e->unk0.vy = pos->vy << 12;
-    e->unk0.vz = pos->vz << 12;
+    e->pos.vx = pos->vx << 12;
+    e->pos.vy = pos->vy << 12;
+    e->pos.vz = pos->vz << 12;
     if (frame >= frames) {
         return -1;
     }
@@ -94,9 +94,9 @@ s32 func_801E7A00(Pool30Entry *e, SVECTOR *pos, SVECTOR *ofs, s32 frame, s32 fra
     pos->vx = v.vx;
     pos->vy = v.vy;
     pos->vz = v.vz;
-    e->unk0.vx = pos->vx << 12;
-    e->unk0.vy = pos->vy << 12;
-    e->unk0.vz = pos->vz << 12;
+    e->pos.vx = pos->vx << 12;
+    e->pos.vy = pos->vy << 12;
+    e->pos.vz = pos->vz << 12;
     if (frame >= frames) {
         return -1;
     }
@@ -116,9 +116,9 @@ s32 func_801E7B24(Pool30Entry *e, SVECTOR *pos, SVECTOR *ofs, s32 frame, s32 fra
     pos->vx = v.vx;
     pos->vy = v.vy;
     pos->vz = v.vz;
-    e->unk0.vx = pos->vx << 12;
-    e->unk0.vy = pos->vy << 12;
-    e->unk0.vz = pos->vz << 12;
+    e->pos.vx = pos->vx << 12;
+    e->pos.vy = pos->vy << 12;
+    e->pos.vz = pos->vz << 12;
     if (frame >= frames) {
         return -1;
     }
@@ -147,7 +147,7 @@ s32 fx_191_op80(s32 mode, Fx191Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
                 work->unk0[i]->unkC = 0x60;
             }
             if (work->unk0[i] != NULL) {
-                ((EffMotion *)work->unk0[i]->unk0)->unk8 = D_801E8504[i];
+                ((EffMotion *)work->unk0[i]->file)->unk8 = D_801E8504[i];
             }
             D_801E857C[i].vx = work->unk18.vx;
             D_801E857C[i].vy = work->unk18.vy;
@@ -188,7 +188,7 @@ s32 fx_191_op81(s32 mode, Fx191Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
             work->unk0->unkC = 0x70;
         }
         if (work->unk0 != NULL) {
-            ((EffMotion *)work->unk0->unk0)->unk8 = func_801E7988;
+            ((EffMotion *)work->unk0->file)->unk8 = func_801E7988;
         }
         if (work->unk0 != NULL) {
             work->unk0->unk22 = ex->func_800E7CC4(0, 0x80);
@@ -207,7 +207,7 @@ s32 fx_191_op81(s32 mode, Fx191Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
                 work->unk4->unkC = 0x70;
             }
             if (work->unk4 != NULL) {
-                ((EffMotion *)work->unk4->unk0)->unk8 = func_801E79C4;
+                ((EffMotion *)work->unk4->file)->unk8 = func_801E79C4;
             }
             if (work->unk4 != NULL) {
                 work->unk4->unk22 = ex->func_800E7CC4(0, 0x80);
@@ -264,7 +264,7 @@ s32 fx_191_op81(s32 mode, Fx191Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
                 t = 0x1000;
             }
             ex->btlfx_lerpVec((s16 *)&work->unk30, (s16 *)&work->unk38, t, (s16 *)&work->unk50);
-            if (work->unk8 != NULL && work->unk8->unk30 == -1) {
+            if (work->unk8 != NULL && work->unk8->state == -1) {
                 work->unk8 = NULL;
             }
             if (work->unk8 != NULL) {
@@ -277,7 +277,7 @@ s32 fx_191_op81(s32 mode, Fx191Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
                 t = 0x1000;
             }
             ex->btlfx_lerpVec((s16 *)&work->unk40, (s16 *)&work->unk48, t, (s16 *)&work->unk58);
-            if (work->unk10 != NULL && work->unk10->unk30 == -1) {
+            if (work->unk10 != NULL && work->unk10->state == -1) {
                 work->unk10 = NULL;
             }
             if (work->unk10 != NULL) {

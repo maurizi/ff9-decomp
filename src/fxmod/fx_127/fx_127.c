@@ -8,7 +8,7 @@ s32 func_801E7704(VECTOR *out, s32 arg1, SVECTOR *pos, s32 arg3, s32 frame, s32 
     D_801E8308.vy = 0;
     D_801E8308.vz = pos->vz;
     if (D_801E8340 != NULL) {
-        if (D_801E8340->unk30 == -1) {
+        if (D_801E8340->state == -1) {
             D_801E8340 = NULL;
         }
     }
@@ -98,10 +98,10 @@ s32 fx_127_op80(s32 mode, Fx127Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
                 work->unk14->unkC = 0x40;
             }
             if (work->unk10 != NULL) {
-                ((Fx127EffHdr *)work->unk10->unk0)->unk8 = func_801E7704;
+                ((Fx127EffHdr *)work->unk10->file)->unk8 = func_801E7704;
             }
             if (work->unk14 != NULL) {
-                ((Fx127EffHdr *)work->unk14->unk0)->unk8 = func_801E77D0;
+                ((Fx127EffHdr *)work->unk14->file)->unk8 = func_801E77D0;
             }
             if (work->unk10 != NULL) {
                 work->unk10->unk22 = ex->func_800E7CC4(0, 0x20);
@@ -118,15 +118,15 @@ s32 fx_127_op80(s32 mode, Fx127Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             break;
         }
         if (frame >= 0xA && frame < 0xE) {
-            if (work->unk0 != NULL && work->unk0->unk30 == -1) {
+            if (work->unk0 != NULL && work->unk0->state == -1) {
                 work->unk0 = NULL;
             }
             ex->btlfx_moveEmitterTo((s32)work->unk0, (s32)&work->unk44);
-            if (work->unk4 != NULL && work->unk4->unk30 == -1) {
+            if (work->unk4 != NULL && work->unk4->state == -1) {
                 work->unk4 = NULL;
             }
             ex->btlfx_moveEmitterTo((s32)work->unk4, (s32)&work->unk44);
-            if (work->unk8 != NULL && work->unk8->unk30 == -1) {
+            if (work->unk8 != NULL && work->unk8->state == -1) {
                 work->unk8 = NULL;
             }
             ex->btlfx_moveEmitterTo((s32)work->unk8, (s32)&work->unk44);
@@ -138,7 +138,7 @@ s32 fx_127_op80(s32 mode, Fx127Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
         }
         if (frame >= 0xA) {
             if (work->unk0 != NULL) {
-                if (work->unk0->unk30 == -1) {
+                if (work->unk0->state == -1) {
                     work->unk0 = NULL;
                 }
                 if (work->unk0 != NULL) {
@@ -148,7 +148,7 @@ s32 fx_127_op80(s32 mode, Fx127Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
                 }
             }
             if (work->unk4 != NULL) {
-                if (work->unk4->unk30 == -1) {
+                if (work->unk4->state == -1) {
                     work->unk4 = NULL;
                 }
                 if (work->unk4 != NULL) {
@@ -158,7 +158,7 @@ s32 fx_127_op80(s32 mode, Fx127Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
                 }
             }
             if (work->unk8 != NULL) {
-                if (work->unk8->unk30 == -1) {
+                if (work->unk8->state == -1) {
                     work->unk8 = NULL;
                 }
                 if (work->unk8 != NULL) {
@@ -215,7 +215,7 @@ s32 fx_127_op81(s32 mode, Fx127Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
         }
         if (frame >= 0) {
             if (work->unk0 != NULL) {
-                if (work->unk0->unk30 == -1) {
+                if (work->unk0->state == -1) {
                     work->unk0 = NULL;
                 }
                 if (work->unk0 != NULL) {

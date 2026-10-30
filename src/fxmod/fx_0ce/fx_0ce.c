@@ -87,7 +87,7 @@ s32 fx_0ce_op80(s32 mode, Fx0ceWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
             break;
         }
         if (work->unk2C != NULL) {
-            if (work->unk2C->unk30 == -1) {
+            if (work->unk2C->state == -1) {
                 work->unk2C = NULL;
             }
             if (work->unk2C != NULL) {

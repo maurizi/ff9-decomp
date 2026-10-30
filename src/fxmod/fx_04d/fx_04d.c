@@ -36,7 +36,7 @@ s32 func_801E7704(s32 mode, Fx04dItem *it, Unk800F78A4 *env, Unk80100C78Entry *e
         rot.vx -= 0x800;
         fade = 0x1000;
         if (it->unk40 != NULL) {
-            if (it->unk40->unk30 == -1) {
+            if (it->unk40->state == -1) {
                 it->unk40 = NULL;
             }
             if (it->unk40 != NULL) {
@@ -58,7 +58,7 @@ s32 func_801E7704(s32 mode, Fx04dItem *it, Unk800F78A4 *env, Unk80100C78Entry *e
         rot.vx -= 0x800;
         fade = 0x1000;
         if (it->unk40 != NULL) {
-            if (it->unk40->unk30 == -1) {
+            if (it->unk40->state == -1) {
                 it->unk40 = NULL;
             }
             if (it->unk40 != NULL) {

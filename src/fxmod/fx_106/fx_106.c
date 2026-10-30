@@ -39,7 +39,7 @@ s32 fx_106_op80(s32 mode, Fx106Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             work->unk0->unk12 = 0x23;
             work->unk0->unkC = 0x20;
             if (work->unk0 != NULL) {
-                ((Fx106EffHdr *)work->unk0->unk0)->unk8 = func_801E7704;
+                ((Fx106EffHdr *)work->unk0->file)->unk8 = func_801E7704;
                 if (work->unk0 != NULL) {
                     work->unk0->unk22 = ex->func_800E7CC4(0, 0x80);
                 }

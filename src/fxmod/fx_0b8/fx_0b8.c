@@ -334,7 +334,7 @@ s32 fx_0b8_op80(s32 mode, Fx0b8Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
         case 0xBC:
             work->unk1B0 = p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0xC), (s32)&work->unk1A8);
             if (p != NULL) {
-                *(s32 *)&p->unk0->unk8 = (s32)func_801EA558;
+                *(s32 *)&p->file->unk8 = (s32)func_801EA558;
             }
             work->unk0[0x21] = 0x10;
             break;
@@ -906,9 +906,9 @@ s32 func_801EA558(Pool30Entry *pt, s32 a1, SVECTOR *pos, s32 a3, s32 frame, s32 
     pos->vx = v.vx;
     pos->vy = v.vy;
     pos->vz = v.vz;
-    pt->unk0.vx = v.vx << 12;
-    pt->unk0.vy = v.vy << 12;
-    pt->unk0.vz = v.vz << 12;
+    pt->pos.vx = v.vx << 12;
+    pt->pos.vy = v.vy << 12;
+    pt->pos.vz = v.vz << 12;
     if (frame >= n) {
         return -1;
     }

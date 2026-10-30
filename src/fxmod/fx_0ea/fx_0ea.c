@@ -22,9 +22,9 @@ s32 func_801E77D4(Pool30Entry *pt, SVECTOR *pos, SVECTOR *to, s32 frame, s32 n) 
 
     ex->btlfx_lerpVec((s16 *)&D_801E7E5C, (s16 *)to, t, (s16 *)pos);
     pos->vy -= ex->math_sin(t / 2) * 800 / 4096;
-    pt->unk0.vx = pos->vx << 12;
-    pt->unk0.vy = pos->vy << 12;
-    pt->unk0.vz = pos->vz << 12;
+    pt->pos.vx = pos->vx << 12;
+    pt->pos.vy = pos->vy << 12;
+    pt->pos.vz = pos->vz << 12;
     if (frame >= n) {
         return -1;
     }
@@ -105,7 +105,7 @@ s32 fx_0ea_op81(s32 mode, Fx0eaWork81 *work, Unk800F78A4 *env, Unk80100C78Entry 
         ex->btlfx_getUnitPos(work->unk20, (s16 *)&work->unk18);
         work->unk0 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, D_801E7DF4[work->unk20]), (s32)&D_801E7E84);
         if (work->unk0 != NULL) {
-            ((Fx0eaEffHdr *)work->unk0->unk0)->unk8 = D_801E7DFC[work->unk20];
+            ((Fx0eaEffHdr *)work->unk0->file)->unk8 = D_801E7DFC[work->unk20];
             if (work->unk0 != NULL) {
                 work->unk0->unk22 = ex->func_800E7CC4(0x10, 0x80);
             }

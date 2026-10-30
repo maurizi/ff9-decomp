@@ -164,7 +164,7 @@ s32 fx_083_op80(s32 mode, Fx083Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
                 work->unk1A0[i].vz = work->unk158.vz + ((ex->math_cos(t + work->unk1C0) *
                                                          (work->unk168 + work->unkA8 + 0x200)) >> 12);
                 work->unk1A0[i].vy = work->unk58[0].vy;
-                if (work->unk170[i] != NULL && work->unk170[i]->unk30 == -1) {
+                if (work->unk170[i] != NULL && work->unk170[i]->state == -1) {
                     work->unk170[i] = NULL;
                 }
                 ex->btlfx_moveEmitterTo((s32)work->unk170[i], (s32)&work->unk1A0[i]);

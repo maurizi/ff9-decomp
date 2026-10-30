@@ -41,10 +41,10 @@ s32 fx_0f7_op80(s32 mode, Fx0f7Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
             }
             break;
         }
-        if (work->unkC != NULL && work->unkC->unk30 == -1) {
+        if (work->unkC != NULL && work->unkC->state == -1) {
             work->unkC = NULL;
         }
-        if (work->unk14 != NULL && work->unk14->unk30 == -1) {
+        if (work->unk14 != NULL && work->unk14->state == -1) {
             work->unk14 = NULL;
         }
         if (work->unkC != NULL) {

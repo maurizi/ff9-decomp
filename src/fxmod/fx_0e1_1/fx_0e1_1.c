@@ -106,7 +106,7 @@ s32 fx_0e1_1_op80(s32 mode, Fx0e11Work *work, Unk800F78A4 *env, Unk80100C78Entry
             if (frame < 0x20) {
                 ex->btlfx_drawRippleGrid((s32)&env->ot[2], -frame * 2, 4, 1, 0x78, 1, &D_801ECD80, 0x18, work->unk4 << 8, 0x100, 0);
             }
-            if (work->unk2C->unk30 == -1) {
+            if (work->unk2C->state == -1) {
                 work->unk3C = 0;
             }
             if (work->unk38 != 0) {

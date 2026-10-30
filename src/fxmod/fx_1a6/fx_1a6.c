@@ -20,9 +20,9 @@ s32 func_801E77C4(Pool30Entry *e, SVECTOR *pos, SVECTOR *from, SVECTOR *to, s32 
         t = 0x1000;
     }
     ex->btlfx_lerpVec((s16 *)from, (s16 *)to, t, (s16 *)pos);
-    e->unk0.vx = pos->vx << 12;
-    e->unk0.vy = pos->vy << 12;
-    e->unk0.vz = pos->vz << 12;
+    e->pos.vx = pos->vx << 12;
+    e->pos.vy = pos->vy << 12;
+    e->pos.vz = pos->vz << 12;
     if (frame >= frames) {
         return -1;
     }
@@ -79,7 +79,7 @@ s32 fx_1a6_op80(s32 mode, Fx1a6Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             work->unk4->unkC = 0x40;
         }
         if (work->unk4 != NULL) {
-            ((EffMotion *)work->unk4->unk0)->unk8 = D_801E8244[work->unk48];
+            ((EffMotion *)work->unk4->file)->unk8 = D_801E8244[work->unk48];
         }
         if (work->unk0 != NULL) {
             work->unk0->unk22 = ex->func_800E7CC4(0x10, 0x20);
@@ -115,7 +115,7 @@ s32 fx_1a6_op80(s32 mode, Fx1a6Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             break;
         }
         if (work->unk0 != NULL) {
-            if (work->unk0->unk30 == -1) {
+            if (work->unk0->state == -1) {
                 work->unk0 = NULL;
             }
             if (work->unk0 != NULL) {
@@ -126,7 +126,7 @@ s32 fx_1a6_op80(s32 mode, Fx1a6Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
         }
         if (frame >= 6) {
             if (work->unkC != NULL) {
-                if (work->unkC->unk30 == -1) {
+                if (work->unkC->state == -1) {
                     work->unkC = NULL;
                 }
                 if (work->unkC != NULL) {

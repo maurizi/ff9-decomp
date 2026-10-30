@@ -554,7 +554,7 @@ s32 fx_1b3_op80(s32 mode, Fx1b3Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             return 1;
         }
         for (i = 0; i < 32; i++) {
-            if (work->unk80[i] != NULL && work->unk80[i]->unk30 == -1) {
+            if (work->unk80[i] != NULL && work->unk80[i]->state == -1) {
                 work->unk80[i] = NULL;
             }
         }

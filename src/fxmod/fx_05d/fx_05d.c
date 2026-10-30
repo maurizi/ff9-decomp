@@ -141,7 +141,7 @@ s32 fx_05d_op80(s32 mode, Fx05dWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
             work->unk44.vy = work->unk20.vy;
             work->unk44.vz = work->unk20.vz;
             if (frame >= 0) {
-                if (work->unk4 != NULL && work->unk4->unk30 == -1) {
+                if (work->unk4 != NULL && work->unk4->state == -1) {
                     work->unk4 = NULL;
                 }
                 ex->btlfx_moveEmitterTo((s32)work->unk4, (s32)&work->unk44);

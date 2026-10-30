@@ -19,7 +19,7 @@ s32 fx_12f_op80(s32 mode, Fx12fWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
     } else {
         frame = entry->frame;
         if (work->unk40 != NULL) {
-            if (work->unk40->unk30 == -1) {
+            if (work->unk40->state == -1) {
                 work->unk40 = NULL;
             }
         }

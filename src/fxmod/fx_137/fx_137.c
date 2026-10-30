@@ -25,7 +25,7 @@ s32 fx_137_op80(s32 mode, Fx137Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
     } else {
         frame = entry->frame;
         if (work->unk20 != NULL) {
-            if (work->unk20->unk30 == -1) {
+            if (work->unk20->state == -1) {
                 work->unk20 = NULL;
             }
         }

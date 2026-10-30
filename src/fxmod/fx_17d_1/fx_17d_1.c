@@ -212,7 +212,7 @@ s32 fx_17d_1_op80(s32 mode, Fx17d1Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
                 }
             } else if (frame >= 9) {
                 if (work->unk74 != NULL) {
-                    if (work->unk74->unk30 == -1) {
+                    if (work->unk74->state == -1) {
                         work->unk74 = NULL;
                     }
                     if (work->unk74 != NULL) {
@@ -278,7 +278,7 @@ s32 fx_17d_1_op80(s32 mode, Fx17d1Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
             ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->file, 5), &work->unk10, NULL, 0x1000, 0, 1, -1);
             env->otZ = 0;
             if (work->unk70 != NULL) {
-                if (work->unk70->unk30 == -1) {
+                if (work->unk70->state == -1) {
                     work->unk70 = NULL;
                 }
                 if (work->unk70 != NULL) {

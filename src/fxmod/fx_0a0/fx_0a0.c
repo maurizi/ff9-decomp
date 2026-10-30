@@ -59,7 +59,7 @@ void func_801E78F8(Pool30Entry *pt, Pool6CEntry *p, SVECTOR *pos, s32 arg3, s32 
     if (frame == 0) {
         ex->btlfx_drawTrail((u8 *)ex->btlfx_getFileData(entry->file, 7), (s32)pos, NULL, -1, 0, 0, 0, (u8 *)r, 2);
     }
-    ex->btlfx_drawTrail((u8 *)ex->btlfx_getFileData(entry->file, 7), (s32)pos, (s32 *)p->unk28, frame, *arg4, D_801E8870, 1,
+    ex->btlfx_drawTrail((u8 *)ex->btlfx_getFileData(entry->file, 7), (s32)pos, (s32 *)p->origin, frame, *arg4, D_801E8870, 1,
                       (u8 *)r, 2);
     if (frame < 0x28) {
         s = ex->math_cos((frame << 10) / 40);
@@ -94,7 +94,7 @@ s32 fx_0a0_op80(s32 mode, Fx0a0Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
             work->unk1C->unk12 = 0x10;
             work->unk1C->unkC = 0xAC;
         }
-        work->unk1C->unk18->unk24 = func_801E78F8;
+        work->unk1C->elems->unk24 = func_801E78F8;
         work->unk20 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 2), (s32)&work->unkC);
         if (work->unk20 != NULL) {
             work->unk20->unk22 = 0x20;
@@ -105,7 +105,7 @@ s32 fx_0a0_op80(s32 mode, Fx0a0Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
         BTLFX_COPY_SVEC(&D_801E8864, &work->unk4);
         switch (work->unk0) {
         case 0:
-            if (work->unk20 != NULL && work->unk20->unk30 == -1) {
+            if (work->unk20 != NULL && work->unk20->state == -1) {
                 work->unk20 = NULL;
             }
             ex->btlfx_moveEmitterTo((s32)work->unk20, (s32)&work->unk4);

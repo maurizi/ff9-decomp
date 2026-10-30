@@ -66,7 +66,7 @@ s32 fx_0f3_op80(s32 mode, Fx0f3Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
                     }
                 }
             }
-            if (work->unk24 != NULL && work->unk24->unk30 == -1) {
+            if (work->unk24 != NULL && work->unk24->state == -1) {
                 work->unk24 = NULL;
             }
             ex->btlfx_moveEmitterTo((s32)work->unk24, (s32)&work->unk10);

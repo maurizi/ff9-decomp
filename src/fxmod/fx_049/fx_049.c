@@ -291,7 +291,7 @@ s32 fx_049_op83(s32 mode, Fx049Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
         if (frame == 0x14) {
             p2 = (Pool6CEntry *)ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0x15), (s32)&work->unk0);
             if (p2 != NULL) {
-                p2->unk18->unk24 = (void (*)())func_801E7CEC;
+                p2->elems->unk24 = (void (*)())func_801E7CEC;
             }
         }
         if (frame >= 0x22 && frame - 0x22 < env->targets->targetCount) {

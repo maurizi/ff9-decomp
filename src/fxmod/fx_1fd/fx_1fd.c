@@ -251,7 +251,7 @@ s32 fx_1fd_op80(s32 mode, Fx1fdWork80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             t = frame;
             for (i = 0; i < 5; i++) {
                 func_801E97DC(&D_801EBB7C[i], t, &work->unk14[i]);
-                if (work->unk0[i] != NULL && work->unk0[i]->unk30 == -1) {
+                if (work->unk0[i] != NULL && work->unk0[i]->state == -1) {
                     work->unk0[i] = NULL;
                 }
                 ex->btlfx_moveEmitterTo((s32)work->unk0[i], (s32)&work->unk14[i]);

@@ -50,7 +50,7 @@ s32 fx_09c_op80(s32 mode, Fx09cWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
             }
         }
         if (work->unk20 != NULL) {
-            if (work->unk20->unk30 == -1) {
+            if (work->unk20->state == -1) {
                 work->unk20 = NULL;
             }
             if (work->unk20 != NULL) {
@@ -60,7 +60,7 @@ s32 fx_09c_op80(s32 mode, Fx09cWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
             }
         }
         if (work->unk3C != NULL) {
-            if (work->unk3C->unk30 == -1) {
+            if (work->unk3C->state == -1) {
                 work->unk3C = NULL;
             }
             if (work->unk3C != NULL) {

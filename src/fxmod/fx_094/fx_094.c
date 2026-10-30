@@ -40,7 +40,7 @@ s32 fx_094_op80(s32 mode, Fx094Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
             break;
         }
         if (work->unk20 != NULL) {
-            if (work->unk20->unk30 == -1) {
+            if (work->unk20->state == -1) {
                 work->unk20 = NULL;
             }
             if (work->unk20 != NULL) {

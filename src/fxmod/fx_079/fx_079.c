@@ -182,7 +182,7 @@ s32 fx_079_op80(s32 mode, Fx079Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
         D_801E899C.vx = D_801E8984.vx;
         D_801E899C.vy = D_801E8984.vy;
         D_801E899C.vz = D_801E8984.vz;
-        if (D_801E8990 != NULL && D_801E8990->unk30 == -1) {
+        if (D_801E8990 != NULL && D_801E8990->state == -1) {
             D_801E8990 = NULL;
         }
         ex->btlfx_moveEmitterTo((s32)D_801E8990, (s32)&D_801E899C);

@@ -186,7 +186,7 @@ s32 fx_0d2_op80(s32 mode, Fx0d2Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             work->unk6C.vx = env->camera->pointRots[2].vx;
             work->unk6C.vy = env->camera->pointRots[2].vy;
             work->unk6C.vz = env->camera->pointRots[2].vz;
-            if (work->unk0 != NULL && work->unk0->unk30 == -1) {
+            if (work->unk0 != NULL && work->unk0->state == -1) {
                 work->unk0 = NULL;
             }
             ex->btlfx_moveEmitterTo((s32)work->unk0, (s32)&work->unk6C);
@@ -197,11 +197,11 @@ s32 fx_0d2_op80(s32 mode, Fx0d2Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             work->unk84.vy = work->unk8C.vy;
             work->unk84.vz = work->unk8C.vz;
             work->unk84.vx = -work->unk84.vx;
-            if (work->unkC != NULL && work->unkC->unk30 == -1) {
+            if (work->unkC != NULL && work->unkC->state == -1) {
                 work->unkC = NULL;
             }
             ex->btlfx_moveEmitterTo((s32)work->unkC, (s32)&work->unk84);
-            if (work->unk10 != NULL && work->unk10->unk30 == -1) {
+            if (work->unk10 != NULL && work->unk10->state == -1) {
                 work->unk10 = NULL;
             }
             ex->btlfx_moveEmitterTo((s32)work->unk10, (s32)&work->unk8C);
@@ -437,7 +437,7 @@ s32 fx_0d2_op82(s32 mode, Fx0d2Work82 *work, Unk800F78A4 *env, Unk80100C78Entry 
                     ex->btlfx_stopEmitter(work->unk0[i]);
                 }
                 if (frame >= sp->unk2 && work->unk0[i] != NULL) {
-                    if (work->unk0[i]->unk30 == -1) {
+                    if (work->unk0[i]->state == -1) {
                         work->unk0[i] = NULL;
                     }
                     if (work->unk0[i] != NULL) {
@@ -665,7 +665,7 @@ s32 fx_0d2_op83(s32 mode, Fx0d2Work83 *work, Unk800F78A4 *env, Unk80100C78Entry 
             }
         }
         if ((u32)(frame - 3) < 0x23 && work->unk0 != NULL) {
-            if (work->unk0->unk30 == -1) {
+            if (work->unk0->state == -1) {
                 work->unk0 = NULL;
             }
             if (work->unk0 != NULL) {

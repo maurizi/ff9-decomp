@@ -20,9 +20,9 @@ s32 func_801E784C(Pool30Entry *pt, SVECTOR *pos, SVECTOR *src, s32 frame, s32 n)
     pos->vx = src->vx;
     pos->vy = src->vy;
     pos->vz = src->vz;
-    pt->unk0.vx = pos->vx << 12;
-    pt->unk0.vy = pos->vy << 12;
-    pt->unk0.vz = pos->vz << 12;
+    pt->pos.vx = pos->vx << 12;
+    pt->pos.vy = pos->vy << 12;
+    pt->pos.vz = pos->vz << 12;
     if (frame >= n) {
         return -1;
     }
@@ -279,16 +279,16 @@ s32 fx_114_op80(s32 mode, Fx114Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             work->unk1C->unkC = 0xD0;
         }
         if (work->unk10 != NULL) {
-            ((EffMotion *)work->unk10->unk0)->unk8 = func_801E777C;
+            ((EffMotion *)work->unk10->file)->unk8 = func_801E777C;
         }
         if (work->unk14 != NULL) {
-            ((EffMotion *)work->unk14->unk0)->unk8 = func_801E77B0;
+            ((EffMotion *)work->unk14->file)->unk8 = func_801E77B0;
         }
         if (work->unk18 != NULL) {
-            ((EffMotion *)work->unk18->unk0)->unk8 = func_801E77E4;
+            ((EffMotion *)work->unk18->file)->unk8 = func_801E77E4;
         }
         if (work->unk1C != NULL) {
-            ((EffMotion *)work->unk1C->unk0)->unk8 = func_801E7818;
+            ((EffMotion *)work->unk1C->file)->unk8 = func_801E7818;
         }
         break;
     case 0x2C:
@@ -416,7 +416,7 @@ s32 fx_114_op80(s32 mode, Fx114Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
         work->unk134.vx = work->unk68.vx;
         work->unk134.vy = work->unk68.vy;
         work->unk134.vz = work->unk68.vz;
-        if (work->unk0 != NULL && work->unk0->unk30 == -1) {
+        if (work->unk0 != NULL && work->unk0->state == -1) {
             work->unk0 = NULL;
         }
         ex->btlfx_moveEmitterTo((s32)work->unk0, (s32)&work->unk134);

@@ -139,7 +139,7 @@ s32 fx_17d_2_op80(s32 mode, Fx17d2Work *work, Unk800F78A4 *env, Unk80100C78Entry
             r.vz = 0;
             sc.vz = 0x1000;
             ex->btlfx_drawScreenGrid(1, 0xA0, 0x70, 0x50, 0x38, 4, 4, 2, 2, &r, &sc, &col, 0, 0);
-            if (work->unk7C != NULL && work->unk7C->unk30 == -1) {
+            if (work->unk7C != NULL && work->unk7C->state == -1) {
                 work->unk7C = NULL;
             }
             if (work->unk7C != NULL) {

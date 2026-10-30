@@ -501,8 +501,8 @@ s32 fx_0e1_0_op80(s32 mode, Fx0e10Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
                 ex->Hi_SetSummonMotFrame(((Fx0e10Summon *)env->loader)->unk60, 0);
                 p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0xC), (s32)&work->unk8);
                 if (p != NULL) {
-                    p->unk24->unk0 = -1;
-                    *(s32 *)&p->unk24->unk3C = (s32)func_801E8844;
+                    p->tail->unk0 = -1;
+                    *(s32 *)&p->tail->unk3C = (s32)func_801E8844;
                     p->unk22 = 0x20;
                 }
             }

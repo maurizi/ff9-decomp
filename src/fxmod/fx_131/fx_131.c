@@ -16,7 +16,7 @@ s32 fx_131_op80(s32 mode, Fx131Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
         }
     } else {
         frame = entry->frame;
-        if (work->unk18 != NULL && work->unk18->unk30 == -1) {
+        if (work->unk18 != NULL && work->unk18->state == -1) {
             work->unk18 = NULL;
         }
         ex->btlfx_getUnitBonePos(0x10, 0xC, (u16 *)&work->unk10);

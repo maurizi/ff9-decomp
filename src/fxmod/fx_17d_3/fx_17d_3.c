@@ -249,7 +249,7 @@ s32 fx_17d_3_op80(s32 mode, Fx17d3Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
             v.vy = 0;
             v.vz = 0;
             if (work->unk78 != NULL) {
-                if (work->unk78->unk30 == -1) {
+                if (work->unk78->state == -1) {
                     work->unk78 = NULL;
                 }
                 if (work->unk78 != NULL) {
@@ -259,7 +259,7 @@ s32 fx_17d_3_op80(s32 mode, Fx17d3Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
                 }
             }
             if (work->unk7C != NULL) {
-                if (work->unk7C->unk30 == -1) {
+                if (work->unk7C->state == -1) {
                     work->unk7C = NULL;
                 }
                 if (work->unk7C != NULL) {
@@ -333,7 +333,7 @@ s32 fx_17d_3_op80(s32 mode, Fx17d3Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
             v.vy = 0;
             v.vz = 0;
             if (work->unk78 != NULL) {
-                if (work->unk78->unk30 == -1) {
+                if (work->unk78->state == -1) {
                     work->unk78 = NULL;
                 }
                 if (work->unk78 != NULL) {
@@ -343,7 +343,7 @@ s32 fx_17d_3_op80(s32 mode, Fx17d3Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
                 }
             }
             if (work->unk7C != NULL) {
-                if (work->unk7C->unk30 == -1) {
+                if (work->unk7C->state == -1) {
                     work->unk7C = NULL;
                 }
                 if (work->unk7C != NULL) {
@@ -409,7 +409,7 @@ s32 fx_17d_3_op80(s32 mode, Fx17d3Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
             v.vy = 0;
             v.vz = 0;
             if (work->unk78 != NULL) {
-                if (work->unk78->unk30 == -1) {
+                if (work->unk78->state == -1) {
                     work->unk78 = NULL;
                 }
                 if (work->unk78 != NULL) {
@@ -419,7 +419,7 @@ s32 fx_17d_3_op80(s32 mode, Fx17d3Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
                 }
             }
             if (work->unk7C != NULL) {
-                if (work->unk7C->unk30 == -1) {
+                if (work->unk7C->state == -1) {
                     work->unk7C = NULL;
                 }
                 if (work->unk7C != NULL) {
@@ -484,7 +484,7 @@ s32 fx_17d_3_op80(s32 mode, Fx17d3Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
             v.vy = 0;
             v.vz = 0;
             if (work->unk78 != NULL) {
-                if (work->unk78->unk30 == -1) {
+                if (work->unk78->state == -1) {
                     work->unk78 = NULL;
                 }
                 if (work->unk78 != NULL) {
@@ -508,7 +508,7 @@ s32 fx_17d_3_op80(s32 mode, Fx17d3Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
             v.vy = 0;
             v.vz = 0;
             if (work->unk7C != NULL) {
-                if (work->unk7C->unk30 == -1) {
+                if (work->unk7C->state == -1) {
                     work->unk7C = NULL;
                 }
                 if (work->unk7C != NULL) {
@@ -577,7 +577,7 @@ s32 fx_17d_3_op80(s32 mode, Fx17d3Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
             v.vy = 0;
             v.vz = 0;
             if (work->unk78 != NULL) {
-                if (work->unk78->unk30 == -1) {
+                if (work->unk78->state == -1) {
                     work->unk78 = NULL;
                 }
                 if (work->unk78 != NULL) {
@@ -601,7 +601,7 @@ s32 fx_17d_3_op80(s32 mode, Fx17d3Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
             v.vy = 0;
             v.vz = 0;
             if (work->unk7C != NULL) {
-                if (work->unk7C->unk30 == -1) {
+                if (work->unk7C->state == -1) {
                     work->unk7C = NULL;
                 }
                 if (work->unk7C != NULL) {
@@ -664,7 +664,7 @@ s32 fx_17d_3_op80(s32 mode, Fx17d3Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
             v.vy = 0;
             v.vz = 0;
             if (work->unk78 != NULL) {
-                if (work->unk78->unk30 == -1) {
+                if (work->unk78->state == -1) {
                     work->unk78 = NULL;
                 }
                 if (work->unk78 != NULL) {

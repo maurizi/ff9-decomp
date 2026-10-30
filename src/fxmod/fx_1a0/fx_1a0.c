@@ -46,9 +46,9 @@ s32 func_801E789C(Pool30Entry *e, SVECTOR *pos, Fx1a0Path *path, s32 t, s32 fram
     pos->vx = v.vx;
     pos->vy = v.vy;
     pos->vz = v.vz;
-    e->unk0.vx = pos->vx << 12;
-    e->unk0.vy = pos->vy << 12;
-    e->unk0.vz = pos->vz << 12;
+    e->pos.vx = pos->vx << 12;
+    e->pos.vy = pos->vy << 12;
+    e->pos.vz = pos->vz << 12;
     if (frame >= frames) {
         return -1;
     }
@@ -81,7 +81,7 @@ s32 fx_1a0_op80(s32 mode, Fx1a0Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             for (i = 0; i < 6; i++, b++) {
                 ex->btlfx_getUnitBoneMatrix(0x10, b->unk0, (BtlBone *)&m);
                 ex->btlfx_matrixPointAhead(&m, b->unk2, (s32)&work->unk18[i]);
-                if (work->unk0[i] != NULL && work->unk0[i]->unk30 == -1) {
+                if (work->unk0[i] != NULL && work->unk0[i]->state == -1) {
                     work->unk0[i] = NULL;
                 }
                 ex->btlfx_moveEmitterTo((s32)work->unk0[i], (s32)&work->unk18[i]);
@@ -122,7 +122,7 @@ s32 fx_1a0_op81(s32 mode, Fx1a0Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
                 work->unk0->unkC = 0x70;
             }
             if (work->unk0 != NULL) {
-                ((EffMotion *)work->unk0->unk0)->unk8 = D_801E7F28[work->unk14];
+                ((EffMotion *)work->unk0->file)->unk8 = D_801E7F28[work->unk14];
             }
             if (work->unk0 != NULL) {
                 work->unk0->unk22 = 0x20;

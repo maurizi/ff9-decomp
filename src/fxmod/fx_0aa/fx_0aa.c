@@ -10,9 +10,9 @@ s32 func_801E7744(Pool30Entry *pt, s32 arg1, SVECTOR *pos, s32 arg3, s32 frame, 
 
 s32 func_801E7784(Pool30Entry *pt, SVECTOR *pos, SVECTOR *from, SVECTOR *to, s32 frame, s32 n) {
     BTLFX_EXPORTS(D_801E7D78)->btlfx_lerpVec((s16 *)from, (s16 *)to, frame << 9, (s16 *)pos);
-    pt->unk0.vx = pos->vx << 12;
-    pt->unk0.vy = pos->vy << 12;
-    pt->unk0.vz = pos->vz << 12;
+    pt->pos.vx = pos->vx << 12;
+    pt->pos.vy = pos->vy << 12;
+    pt->pos.vz = pos->vz << 12;
     if (frame >= n) {
         return -1;
     }
@@ -47,10 +47,10 @@ s32 fx_0aa_op80(s32 mode, Fx0aaWork80 *work, Unk800F78A4 *env, Unk80100C78Entry 
                 work->unkC->unkC = 0x70;
             }
             if (work->unk8 != NULL) {
-                ((EffMotion *)work->unk8->unk0)->unk8 = func_801E7704;
+                ((EffMotion *)work->unk8->file)->unk8 = func_801E7704;
             }
             if (work->unkC != NULL) {
-                ((EffMotion *)work->unkC->unk0)->unk8 = func_801E7744;
+                ((EffMotion *)work->unkC->file)->unk8 = func_801E7744;
             }
             D_801E9088.vx = work->unk10.vx;
             D_801E9088.vy = work->unk10.vy;

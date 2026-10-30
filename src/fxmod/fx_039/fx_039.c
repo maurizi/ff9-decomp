@@ -70,7 +70,7 @@ s32 fx_039_op81(s32 mode, Fx039Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
                     work->unk18.vx += (ex->math_sin(t >> 1) * 0x4B0) >> 12;
                 }
                 work->unk18.vy -= (ex->math_sin(t >> 1) * 0x258) >> 12;
-                if (work->unk0 != NULL && work->unk0->unk30 == -1) {
+                if (work->unk0 != NULL && work->unk0->state == -1) {
                     work->unk0 = NULL;
                 }
                 ex->btlfx_moveEmitterTo((s32)work->unk0, (s32)&work->unk18);

@@ -27,13 +27,13 @@ s32 fx_031_op80(s32 mode, Fx031Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
         frame = entry->frame;
         ex->btlfx_getUnitBoneMatrix(0x10, env->targets->unk25[0], (BtlBone *)&m1);
         ex->btlfx_matrixPointAhead(&m1, (s16)env->targets->unk42, (s32)&work->unk18);
-        if (work->unk30 != NULL && work->unk30->unk30 == -1) {
+        if (work->unk30 != NULL && work->unk30->state == -1) {
             work->unk30 = NULL;
         }
         ex->btlfx_moveEmitterTo((s32)work->unk30, (s32)&work->unk18);
         ex->btlfx_getUnitBoneMatrix(0x10, env->targets->unk25[1], (BtlBone *)&m2);
         ex->btlfx_matrixPointAhead(&m2, (s16)env->targets->unk42, (s32)&work->unk28);
-        if (work->unk34 != NULL && work->unk34->unk30 == -1) {
+        if (work->unk34 != NULL && work->unk34->state == -1) {
             work->unk34 = NULL;
         }
         ex->btlfx_moveEmitterTo((s32)work->unk34, (s32)&work->unk28);

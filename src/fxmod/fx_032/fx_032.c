@@ -37,7 +37,7 @@ s32 fx_032_op80(s32 mode, Fx032Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
         }
         if (frame >= 5) {
             if (work->unk48 != NULL) {
-                if (work->unk48->unk30 == -1) {
+                if (work->unk48->state == -1) {
                     work->unk48 = NULL;
                 }
                 if (work->unk48 != NULL) {
@@ -47,7 +47,7 @@ s32 fx_032_op80(s32 mode, Fx032Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
                 }
             }
             if (work->unk4C != NULL) {
-                if (work->unk4C->unk30 == -1) {
+                if (work->unk4C->state == -1) {
                     work->unk4C = NULL;
                 }
                 if (work->unk4C != NULL) {
@@ -57,7 +57,7 @@ s32 fx_032_op80(s32 mode, Fx032Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
                 }
             }
             if (work->unk50 != NULL) {
-                if (work->unk50->unk30 == -1) {
+                if (work->unk50->state == -1) {
                     work->unk50 = NULL;
                 }
                 if (work->unk50 != NULL) {
@@ -67,7 +67,7 @@ s32 fx_032_op80(s32 mode, Fx032Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
                 }
             }
             if (work->unk54 != NULL) {
-                if (work->unk54->unk30 == -1) {
+                if (work->unk54->state == -1) {
                     work->unk54 = NULL;
                 }
                 if (work->unk54 != NULL) {

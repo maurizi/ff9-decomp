@@ -32,12 +32,12 @@ s32 func_801E7704(s32 mode, Fx188Elem *e, Unk800F78A4 *env, Unk80100C78Entry *en
         ex->btlfx_pointAhead((s16 *)&e->unkC, (s16 *)&e->unk14, e->unk4, (s16 *)&e->unkC);
         ex->btlfx_drawParticles((u8 *)ex->btlfx_getFileData(entry->file, 0xE), &e->unkC, 0, t + 0x800, frame, 1, -1, 0, 0);
         ex->btlfx_drawParticles((u8 *)ex->btlfx_getFileData(entry->file, 3), &e->unkC, 0, t + 0x800, frame, 2, -1, 0, 0);
-        if (e->unk1C != NULL && e->unk1C->unk30 == -1) {
+        if (e->unk1C != NULL && e->unk1C->state == -1) {
             e->unk1C = NULL;
         }
         if (D_801E86CC == 0) {
             if (e->unk1C != NULL) {
-                e->unk1C->unk38 = e->unk1C->unk24->unk4.unk2;
+                e->unk1C->frame = e->unk1C->tail->unk4.unk2;
             }
             e->unk0 = 1;
             return 1;

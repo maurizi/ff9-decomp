@@ -19,7 +19,7 @@ void func_801E7704(Pool30Entry *pt, Pool6CEntry *p, SVECTOR *pos, s32 arg3, s32 
     } else {
         t = 0x1000 - (((frame - (n - 4)) << 12) >> 2);
     }
-    ex->btlfx_drawTrail((u8 *)ex->btlfx_getFileData(entry->file, 0x12), (s32)pos, (s32 *)p->unk28, frame,
+    ex->btlfx_drawTrail((u8 *)ex->btlfx_getFileData(entry->file, 0x12), (s32)pos, (s32 *)p->origin, frame,
                       0x1C00 - (frame << 12) / n, t, 1, (u8 *)r, 1);
     if (pt->unk1F == 1) {
         if (D_801EA738 != 0) {
@@ -83,7 +83,7 @@ s32 fx_081_op80(s32 mode, Fx081Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
                 work->unk2C->unk12 = 0x10;
                 work->unk2C->unkC = 0x184;
                 if (work->unk2C != NULL) {
-                    work->unk2C->unk18->unk24 = func_801E7704;
+                    work->unk2C->elems->unk24 = func_801E7704;
                 }
             }
         }
@@ -107,13 +107,13 @@ s32 fx_081_op80(s32 mode, Fx081Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
         case 0:
             b = 0x1000;
             t = (frame << 12) / 22;
-            if (work->unk2C != NULL && work->unk2C->unk30 == -1) {
+            if (work->unk2C != NULL && work->unk2C->state == -1) {
                 work->unk2C = NULL;
             }
-            if (work->unk30 != NULL && work->unk30->unk30 == -1) {
+            if (work->unk30 != NULL && work->unk30->state == -1) {
                 work->unk30 = NULL;
             }
-            if (work->unk34 != NULL && work->unk34->unk30 == -1) {
+            if (work->unk34 != NULL && work->unk34->state == -1) {
                 work->unk34 = NULL;
             }
             if (work->unk2C != NULL) {
@@ -140,13 +140,13 @@ s32 fx_081_op80(s32 mode, Fx081Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             b = 0x1000 - t;
             sc = 0x1000;
             D_801EA73C = t;
-            if (work->unk2C != NULL && work->unk2C->unk30 == -1) {
+            if (work->unk2C != NULL && work->unk2C->state == -1) {
                 work->unk2C = NULL;
             }
-            if (work->unk30 != NULL && work->unk30->unk30 == -1) {
+            if (work->unk30 != NULL && work->unk30->state == -1) {
                 work->unk30 = NULL;
             }
-            if (work->unk34 != NULL && work->unk34->unk30 == -1) {
+            if (work->unk34 != NULL && work->unk34->state == -1) {
                 work->unk34 = NULL;
             }
             if (work->unk2C != NULL) {
@@ -169,7 +169,7 @@ s32 fx_081_op80(s32 mode, Fx081Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
         case 2:
             D_801EA73C = 0x1000;
             if (work->unk2C != NULL) {
-                if (work->unk2C->unk30 == -1) {
+                if (work->unk2C->state == -1) {
                     work->unk2C = NULL;
                 }
                 if (work->unk2C != NULL) {

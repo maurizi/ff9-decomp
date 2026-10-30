@@ -149,7 +149,7 @@ s32 fx_1be_op80(s32 mode, Fx1beWork80 *w, Unk800F78A4 *env, Unk80100C78Entry *en
             w->unk0[0xC] = 0x30;
             p = w->unk20[2] = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 5), (s32)&w->unkD4);
             if (p != NULL) {
-                *(s32 *)&p->unk0->unk8 = (s32)func_801E8E10;
+                *(s32 *)&p->file->unk8 = (s32)func_801E8E10;
             }
             break;
         case 0x30:
@@ -208,7 +208,7 @@ s32 fx_1be_op80(s32 mode, Fx1beWork80 *w, Unk800F78A4 *env, Unk80100C78Entry *en
             return 1;
         }
         for (i = 0; i < 16; i++) {
-            if (w->unk20[i] != NULL && w->unk20[i]->unk30 == -1) {
+            if (w->unk20[i] != NULL && w->unk20[i]->state == -1) {
                 w->unk20[i] = NULL;
             }
         }
@@ -451,9 +451,9 @@ s32 func_801E8E10(Pool30Entry *e, Pool6CEntry *owner, SVECTOR *pos, s32 arg3, s3
     pos->vx = v.vx;
     pos->vy = v.vy;
     pos->vz = v.vz;
-    e->unk0.vx = v.vx << 12;
-    e->unk0.vy = v.vy << 12;
-    e->unk0.vz = v.vz << 12;
+    e->pos.vx = v.vx << 12;
+    e->pos.vy = v.vy << 12;
+    e->pos.vz = v.vz << 12;
     if (frame >= frames) {
         return -1;
     }

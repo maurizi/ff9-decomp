@@ -43,7 +43,7 @@ s32 fx_033_op80(s32 mode, Fx033Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
     } else {
         frame = entry->frame;
         if (work->unk2C != NULL) {
-            if (work->unk2C->unk30 == -1) {
+            if (work->unk2C->state == -1) {
                 work->unk2C = NULL;
             }
             if (work->unk2C != NULL) {

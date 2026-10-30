@@ -699,7 +699,7 @@ s32 fx_0ba_op81(s32 mode, Fx0baPWork81 *work, Unk800F78A4 *env, Unk80100C78Entry
             }
             if (work->unk68 != NULL && frame < 10) {
                 q10 = (frame << 12) / 10;
-                if (work->unk68->unk30 == -1) {
+                if (work->unk68->state == -1) {
                     work->unk68 = NULL;
                 }
                 if (work->unk68 != NULL) {
@@ -715,7 +715,7 @@ s32 fx_0ba_op81(s32 mode, Fx0baPWork81 *work, Unk800F78A4 *env, Unk80100C78Entry
             }
             if (work->unk6C != NULL && frame < 8) {
                 q9 = frame << 9;
-                if (work->unk6C->unk30 == -1) {
+                if (work->unk6C->state == -1) {
                     work->unk6C = NULL;
                 }
                 if (work->unk6C != NULL) {

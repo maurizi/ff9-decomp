@@ -30,9 +30,9 @@ s32 func_801E776C(Pool30Entry *e, SVECTOR *pos, Fx1e7Path *path, s32 frame, s32 
     pos->vx = o.vx;
     pos->vy = o.vy;
     pos->vz = o.vz;
-    e->unk0.vx = pos->vx << 12;
-    e->unk0.vy = pos->vy << 12;
-    e->unk0.vz = pos->vz << 12;
+    e->pos.vx = pos->vx << 12;
+    e->pos.vy = pos->vy << 12;
+    e->pos.vz = pos->vz << 12;
     if (frame >= frames) {
         return -1;
     }
@@ -103,7 +103,7 @@ s32 fx_1e7_op80(s32 mode, Fx1e7Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
                     work->unk0->unkC = 0xD0;
                 }
                 if (work->unk0 != NULL) {
-                    ((EffMotion *)work->unk0->unk0)->unk8 = func_801E7704;
+                    ((EffMotion *)work->unk0->file)->unk8 = func_801E7704;
                 }
                 if (work->unk0 != NULL) {
                     work->unk0->unk22 = ex->func_800E7CC4(0, 0x80);
@@ -117,7 +117,7 @@ s32 fx_1e7_op80(s32 mode, Fx1e7Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
                 work->unk4->unkC = 0xD0;
             }
             if (work->unk4 != NULL) {
-                ((EffMotion *)work->unk4->unk0)->unk8 = func_801E7738;
+                ((EffMotion *)work->unk4->file)->unk8 = func_801E7738;
             }
             if (work->unk4 != NULL) {
                 work->unk4->unk22 = ex->func_800E7CC4(0, 0x80);
@@ -160,8 +160,8 @@ s32 fx_1e7_op81(s32 mode, Fx1e7Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
             func_801E8054(&D_801E8300[i], (u16 *)ex->btlfx_getFileData(entry->file, D_801E8278[i]));
             work->unk4[i] = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, D_801E826C[i]), (s32)&D_801E84F0[i]);
             if (work->unk4[i] != NULL) {
-                work->unk4[i]->unk24->unk0 = -1;
-                ((EffTailSpawn *)work->unk4[i]->unk24)->unk3C = D_801E8284[i];
+                work->unk4[i]->tail->unk0 = -1;
+                ((EffTailSpawn *)work->unk4[i]->tail)->unk3C = D_801E8284[i];
             }
         }
         work->unk30 = 0;
