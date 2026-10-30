@@ -223,12 +223,12 @@ void btlfx_emitDots(u8 *pts, Unk800D3ED4Ctx *ctx, u8 *out, s32 *ot) {
  * (u1, v1 corners), u16 tpage}: positions offset by ctx unk4/unk8 (<< 2), one color (unk0) for all, uv0's
  * word ored with unk10 << 16, uv1's with (tpage | unkC) << 16. MAC0 == 0 ends the batch. */
 void btlfx_emitParticles(u8 *rec, Unk800D1680Ctx *ctx, u8 *out, s32 *ot) {
-    u32 hi10 = ctx->unk10 << 16;
-    u32 n = ctx->unk14;
-    s32 zbase = ctx->unk18;
-    u32 color = ctx->unk0;
-    u32 tpOr = ctx->unkC;
-    s32 ox = ctx->unk4 << 2, oy = ctx->unk8 << 2;
+    u32 hi10 = ctx->tpage << 16;
+    u32 n = ctx->frame;
+    s32 zbase = ctx->otZ;
+    u32 color = ctx->color;
+    u32 tpOr = ctx->abr;
+    s32 ox = ctx->x << 2, oy = ctx->y << 2;
     u32 x0, x1, y0, y1, uv0, uv1, tp, xy3, sz;
 
     GTE_MTC2(1, 0);
@@ -278,12 +278,12 @@ void btlfx_emitParticles(u8 *rec, Unk800D1680Ctx *ctx, u8 *out, s32 *ot) {
  * records with the same non-zero tpage gets a DR_MODE (E1000200 | tpage | unkC) from the buffer at unk18,
  * linked after the run (so it comes first in the chain). Returns the advanced DR_MODE buffer. */
 u8 *btlfx_emitScreenSprites(u8 *rec, Unk800D1BC4Ctx *ctx, u8 *out, s32 *ot) {
-    u32 hi10 = ctx->unk10 << 16;
-    u32 n = ctx->unk14;
-    u8 *mode = ctx->unk18;
-    u32 color = ctx->unk0;
-    u32 tpOr = ctx->unkC;
-    s32 ox = ctx->unk4, oy = ctx->unk8;
+    u32 hi10 = ctx->tpage << 16;
+    u32 n = ctx->frame;
+    u8 *mode = ctx->prim;
+    u32 color = ctx->color;
+    u32 tpOr = ctx->abr;
+    s32 ox = ctx->x, oy = ctx->y;
     u32 cur = 0, tp;
 
     if (n != 0) {

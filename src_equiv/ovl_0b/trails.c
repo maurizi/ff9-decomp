@@ -47,18 +47,18 @@ static void trailFarColor(u32 far) {
  * direction being the packed s16 pair (x, z) in ctx unk28. The first segment projects both edges of its
  * start point; later ones reuse the previous end's projected edges. */
 void btlfx_emitTrailRibbonFlat(s32 count, Unk800D4D6CCtx *ctx, u8 *out, s32 *ot) {
-    s32 zbase = ctx->unk0;
+    s32 zbase = ctx->otZ;
     u32 dir = ctx->unk28;
-    u8 *ring = (u8 *)ctx->unk4;
-    s32 fade = ctx->unk8;
-    u32 color = ctx->unkC.w;
-    u32 vBase = (u16)ctx->unk14;
+    u8 *ring = (u8 *)ctx->ring;
+    s32 fade = ctx->fade;
+    u32 color = ctx->color.w;
+    u32 vBase = (u16)ctx->v0;
     u32 prevColor = color, v = vBase;
     u32 size, idx, n, w0, yhi, ox, oy, sxy0 = 0, sxy1 = 0, edgeP = 0, edgeM = 0, t;
     s32 x, z, zP = 0, zM = 0, k;
     u8 *ent, *e;
 
-    trailFarColor(ctx->unk10);
+    trailFarColor(ctx->farColor);
     size = ring[0] + 1;
     idx = ring[1];
     ent = ring + 4;
@@ -117,8 +117,8 @@ void btlfx_emitTrailRibbonFlat(s32 count, Unk800D4D6CCtx *ctx, u8 *out, s32 *ot)
         GTE_CMD(0x4A780010);
         W(out, 0x4) = prevColor;
         W(out, 0x10) = prevColor;
-        W(out, 0xC) = v | H(ctx, 0x24) | ctx->unk1C;
-        W(out, 0x18) = H(ctx, 0x26) | v | ctx->unk18;
+        W(out, 0xC) = v | H(ctx, 0x24) | ctx->clut;
+        W(out, 0x18) = H(ctx, 0x26) | v | ctx->tpage;
         v = vBase + (((u32)fade * H(ctx, 0x16)) >> 12);
         prevColor = GTE_MFC2(22);
         GTE_MTC2(0, edgeP);
@@ -146,7 +146,7 @@ void btlfx_emitTrailRibbonFlat(s32 count, Unk800D4D6CCtx *ctx, u8 *out, s32 *ot)
                 trailLink((u32 *)ot + t, out, 0xC);
             }
         }
-        fade += ctx->unk20;
+        fade += ctx->fadeStep;
         out += 0x34;
     } while (k < count);
 }
@@ -156,18 +156,18 @@ void btlfx_emitTrailRibbonFlat(s32 count, Unk800D4D6CCtx *ctx, u8 *out, s32 *ot)
  * reciprocal-square-root table g_btlfxRsqrtTable, scaled by the signed width with GPF. a's coordinates go to
  * unk44-unk4C, b's to unk50-unk58, the projected end edges to unk3C/unk40 for the next segment. */
 void btlfx_emitTrailRibbon3D(s32 count, Unk800D50A0Ctx *ctx, u8 *out, s32 *ot) {
-    s32 zbase = ctx->unk0;
+    s32 zbase = ctx->otZ;
     u8 *ref = (u8 *)ctx + 0x28;
-    u8 *ring = (u8 *)ctx->unk4;
-    s32 fade = ctx->unk8;
-    u32 color = ctx->unkC.w;
-    u32 vBase = (u16)ctx->unk14;
+    u8 *ring = (u8 *)ctx->ring;
+    s32 fade = ctx->fade;
+    u32 color = ctx->color.w;
+    u32 vBase = (u16)ctx->v0;
     u32 prevColor = color, v = vBase;
     u32 size, idx, n, t, sum, lz, mx, my, mz, edgeP = 0, edgeM = 0, sxy0, sxy1;
     s32 ax, ay, az, bx, by, bz, shift, norm, ox, oy, oz, zP = 0, zM = 0, k, w;
     u8 *ent, *ea, *eb;
 
-    trailFarColor(ctx->unk10);
+    trailFarColor(ctx->farColor);
     size = ring[0] + 1;
     idx = ring[1];
     ent = ring + 4;
@@ -268,8 +268,8 @@ void btlfx_emitTrailRibbon3D(s32 count, Unk800D50A0Ctx *ctx, u8 *out, s32 *ot) {
         GTE_CMD(0x4A780010);
         W(out, 0x4) = prevColor;
         W(out, 0x10) = prevColor;
-        W(out, 0xC) = v | H(ctx, 0x24) | ctx->unk1C;
-        W(out, 0x18) = H(ctx, 0x26) | v | ctx->unk18;
+        W(out, 0xC) = v | H(ctx, 0x24) | ctx->clut;
+        W(out, 0x18) = H(ctx, 0x26) | v | ctx->tpage;
         v = vBase + (((u32)fade * H(ctx, 0x16)) >> 12);
         prevColor = GTE_MFC2(22);
         GTE_CTC2(0, W(ctx, 0x30));
@@ -302,7 +302,7 @@ void btlfx_emitTrailRibbon3D(s32 count, Unk800D50A0Ctx *ctx, u8 *out, s32 *ot) {
                 trailLink((u32 *)ot + t, out, 0xC);
             }
         }
-        fade += ctx->unk20;
+        fade += ctx->fadeStep;
         out += 0x34;
     } while (k < count);
 }
@@ -311,17 +311,17 @@ void btlfx_emitTrailRibbon3D(s32 count, Unk800D50A0Ctx *ctx, u8 *out, s32 *ot) {
  * previous point's SZ, SZ2 after the new point's RTPS). The start point is the previous projected point
  * moved one pixel toward the new one on each axis where they differ. */
 void btlfx_emitTrailLines(s32 count, Unk800D4D6CCtx *ctx, u8 *out, s32 *ot) {
-    s32 zbase = ctx->unk0;
+    s32 zbase = ctx->otZ;
     u32 mode = ctx->unk28;
-    u8 *ring = (u8 *)ctx->unk4;
-    s32 fade = ctx->unk8;
-    u32 color = ctx->unkC.w;
+    u8 *ring = (u8 *)ctx->ring;
+    s32 fade = ctx->fade;
+    u32 color = ctx->color.w;
     u32 prevColor = color;
     u32 size, idx, xy, pxy, sz, z;
     s32 x, y, px, py, dx, dy, k;
     u8 *ent, *e, *m;
 
-    trailFarColor(ctx->unk10);
+    trailFarColor(ctx->farColor);
     size = ring[0] + 1;
     idx = ring[1];
     ent = ring + 4;
@@ -372,7 +372,7 @@ void btlfx_emitTrailLines(s32 count, Unk800D4D6CCtx *ctx, u8 *out, s32 *ot) {
         if (z < 0x1000) {
             trailLink((u32 *)ot + z, m, 1);
         }
-        fade += ctx->unk20;
+        fade += ctx->fadeStep;
         prevColor = GTE_MFC2(22);
         W(out, 0xC) = prevColor;
         idx = TRAIL_NEXT(idx, size);
@@ -388,17 +388,17 @@ void btlfx_emitTrailLines(s32 count, Unk800D4D6CCtx *ctx, u8 *out, s32 *ot) {
  * screen step; later ones reuse the previous end. The quad is linked when its first RTPT's SZ2 is non-zero
  * and NCLIP of the final SXY registers is non-zero. Scratch values in ctx unk48-unk68. */
 void btlfx_emitTrailRibbonScreen(s32 count, Unk800D5C30Ctx *ctx, u8 *out, s32 *ot) {
-    s32 zbase = ctx->unk0;
-    u8 *ring = (u8 *)ctx->unk4;
-    s32 fade = ctx->unk8;
-    u32 color = ctx->unkC.w;
-    u32 vBase = (u16)ctx->unk14;
+    s32 zbase = ctx->otZ;
+    u8 *ring = (u8 *)ctx->ring;
+    s32 fade = ctx->fade;
+    u32 color = ctx->color.w;
+    u32 vBase = (u16)ctx->v0;
     u32 prevColor = color, v = vBase;
     u32 size, idx, n1, n2, sum, lz, t, mx, my, ex, ey, edgeP, edgeM, sxy0, sxy1, sz;
     s32 shift, norm, w, dx, dy, k;
     u8 *ent, *e0, *e1, *e2;
 
-    trailFarColor(ctx->unk10);
+    trailFarColor(ctx->farColor);
     size = ring[0] + 1;
     idx = ring[1];
     ent = ring + 4;
@@ -480,7 +480,7 @@ void btlfx_emitTrailRibbonScreen(s32 count, Unk800D5C30Ctx *ctx, u8 *out, s32 *o
         ey = GTE_MFC2(10);
         edgeP = (ex + 0xFFFF) | (ey << 16);
         edgeM = (-ex + 0xFFFF) | (-ey << 16);
-        W(out, 0xC) = v | H(ctx, 0x24) | ctx->unk1C;
+        W(out, 0xC) = v | H(ctx, 0x24) | ctx->clut;
         GTE_CTC2(5, W(ctx, 0x60));
         GTE_CTC2(6, W(ctx, 0x64));
         GTE_CTC2(7, W(ctx, 0x68));
@@ -494,7 +494,7 @@ void btlfx_emitTrailRibbonScreen(s32 count, Unk800D5C30Ctx *ctx, u8 *out, s32 *o
         GTE_MTC2(2, edgeM);
         GTE_MTC2(3, 0);
         GTE_CMD(0x4A280030);
-        W(out, 0x18) = H(ctx, 0x26) | v | ctx->unk18;
+        W(out, 0x18) = H(ctx, 0x26) | v | ctx->tpage;
         v = vBase + (((u32)fade * H(ctx, 0x16)) >> 12);
         H(out, 0x24) = H(ctx, 0x24) | v;
         H(out, 0x30) = H(ctx, 0x26) | v;
@@ -548,7 +548,7 @@ void btlfx_emitTrailRibbonScreen(s32 count, Unk800D5C30Ctx *ctx, u8 *out, s32 *o
                 }
             }
         }
-        fade += ctx->unk20;
+        fade += ctx->fadeStep;
         out += 0x34;
     } while (k < count);
 }

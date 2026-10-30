@@ -3837,42 +3837,42 @@ typedef struct {
 
 /* sprite-strip context passed to btlfx_emitTrailRibbonScreen / btlfx_emitTrailRibbon3D */
 typedef struct {
-    s32 unk0; /* ot base z */
-    s32 unk4;
-    s32 unk8; /* 0x1000 / count */
+    s32 otZ; /* g_btlfxEnv->otZ */
+    s32 ring; /* trail point ring */
+    s32 fade; /* 0x1000 / count */
     union {
         u32 w;
         u8 b[4]; /* b[3]: primitive code */
-    } unkC;   /* rgb */
-    u32 unk10; /* rgb */
-    s16 unk14;
-    s16 unk16;
-    s32 unk18; /* tpage << 16 */
-    s32 unk1C; /* clut << 16 */
-    s32 unk20; /* 0x1000 / count */
-    s16 unk24;
-    s16 unk26;
+    } color; /* rgb + primitive code (b[3]) */
+    u32 farColor; /* rgb at the far end */
+    s16 v0; /* v of the strip */
+    s16 v1;
+    s32 tpage; /* tpage << 16 */
+    s32 clut; /* clut << 16 */
+    s32 fadeStep; /* 0x1000 / count */
+    s16 u0; /* u << 8 */
+    s16 u1; /* (u + width) << 8 */
     u8 pad28[0x70 - 0x28];
 } Unk800D5C30Ctx;
 void btlfx_emitTrailRibbonScreen(s32, Unk800D5C30Ctx *, u8 *, s32 *);
 
 /* same as Unk800D5C30Ctx plus two words (btlfx_emitTrailRibbon3D) */
 typedef struct {
-    s32 unk0; /* ot base z */
-    s32 unk4;
-    s32 unk8; /* 0x1000 / count */
+    s32 otZ; /* g_btlfxEnv->otZ */
+    s32 ring; /* trail point ring */
+    s32 fade; /* 0x1000 / count */
     union {
         u32 w;
         u8 b[4]; /* b[3]: primitive code */
-    } unkC;   /* rgb */
-    u32 unk10; /* rgb */
-    s16 unk14;
-    s16 unk16;
-    s32 unk18; /* tpage << 16 */
-    s32 unk1C; /* clut << 16 */
-    s32 unk20; /* 0x1000 / count */
-    s16 unk24;
-    s16 unk26;
+    } color; /* rgb + primitive code (b[3]) */
+    u32 farColor; /* rgb at the far end */
+    s16 v0; /* v of the strip */
+    s16 v1;
+    s32 tpage; /* tpage << 16 */
+    s32 clut; /* clut << 16 */
+    s32 fadeStep; /* 0x1000 / count */
+    s16 u0; /* u << 8 */
+    s16 u1; /* (u + width) << 8 */
     s32 unk28;
     s32 unk2C;
     u8 pad30[0x60 - 0x30];
@@ -3881,21 +3881,21 @@ void btlfx_emitTrailRibbon3D(s32, Unk800D50A0Ctx *, u8 *, s32 *);
 
 /* same fields as Unk800D50A0Ctx, without the padding (btlfx_emitTrailRibbonFlat / btlfx_emitTrailLines) */
 typedef struct {
-    s32 unk0; /* ot base z */
-    s32 unk4;
-    s32 unk8; /* 0x1000 / count */
+    s32 otZ; /* g_btlfxEnv->otZ */
+    s32 ring; /* trail point ring */
+    s32 fade; /* 0x1000 / count */
     union {
         u32 w;
         u8 b[4]; /* b[3]: primitive code */
-    } unkC;   /* rgb */
-    u32 unk10; /* rgb */
-    s16 unk14;
-    s16 unk16;
-    s32 unk18; /* tpage << 16 */
-    s32 unk1C; /* clut << 16 */
-    s32 unk20; /* 0x1000 / count */
-    s16 unk24;
-    s16 unk26;
+    } color; /* rgb + primitive code (b[3]) */
+    u32 farColor; /* rgb at the far end */
+    s16 v0; /* v of the strip */
+    s16 v1;
+    s32 tpage; /* tpage << 16 */
+    s32 clut; /* clut << 16 */
+    s32 fadeStep; /* 0x1000 / count */
+    s16 u0; /* u << 8 */
+    s16 u1; /* (u + width) << 8 */
     s32 unk28;
     s32 unk2C;
 } Unk800D4D6CCtx;
@@ -3919,20 +3919,20 @@ void btlfx_drawTrail3D(s32, s32 *, s32, s32, s32, s32, s32, s32, s32, s32, u32 *
 void btlfx_drawTrailFlat(s32, s32, s32, s32, s32, s32, s32, s32, s32, u32 *, u32 *, s32);
 
 typedef struct {
-    u16 unk0;
-    u16 unk2;
+    u16 frameCount; /* frame count (& 0x7FFF) */
+    u16 tpage; /* tpage */
     u16 unk4;
-    u16 unk6[1];
+    u16 frameOfs[1]; /* frame offsets */
 } Unk800D1BC4;
 
 typedef struct {
-    u32 unk0;
-    s32 unk4;
-    s32 unk8;
-    s32 unkC;
-    s32 unk10;
-    s32 unk14;
-    u8 *unk18;
+    u32 color; /* rgb */
+    s32 x; /* screen x */
+    s32 y; /* screen y */
+    s32 abr; /* abr << 5 */
+    s32 tpage; /* tpage */
+    s32 frame; /* frame word: 0x8000 colour from the data, 0x4000 skips a word */
+    u8 *prim;
 } Unk800D1BC4Ctx;
 
 u8 *btlfx_emitScreenSprites(u8 *, Unk800D1BC4Ctx *, u8 *, s32 *);
@@ -3980,13 +3980,13 @@ extern RECT D_800FDE34;
 #define SHADOW_QUAD(q) e->unk8[g_gameState->gameData->unk8][q]
 
 typedef struct {
-    u32 unk0;
-    s32 unk4;
-    s32 unk8;
-    s32 unkC;
-    s32 unk10;
-    s32 unk14;
-    s32 unk18;
+    u32 color; /* rgb */
+    s32 x; /* x offset (<< 2) */
+    s32 y; /* y offset (<< 2) */
+    s32 abr; /* abr << 5 */
+    s32 tpage; /* tpage */
+    s32 frame; /* frame word: 0x8000 colour from the data */
+    s32 otZ; /* g_btlfxEnv->otZ */
 } Unk800D1680Ctx;
 
 void btlfx_emitParticles(u8 *, Unk800D1680Ctx *, u8 *, s32 *);
@@ -4189,13 +4189,13 @@ extern s32 g_vtxScreenZ[]; /* projected z per model vertex */
     "mtc2\t$0, $5" : : )
 
 typedef struct {
-    u16 unk0;
+    u16 frameCount; /* frame count */
     u8 unk2;
     u8 unk3;
-    u8 unk4;
-    u8 unk5;
-    u8 unk6;
-    u8 unk7;
+    u8 flags; /* 2: gouraud colours */
+    u8 type; /* ring type */
+    u8 count; /* rings */
+    u8 w;
 } Unk800D23D8Hdr;
 
 typedef struct {
@@ -4204,32 +4204,32 @@ typedef struct {
 } Unk800D23D8Scale;
 
 typedef struct {
-    u32 unk0;
-    s32 unk4;
-    u16 *unk8;
-    u16 *unkC;
-    u16 *unk10;
-    u16 *unk14;
-    s32 unk18;
-    s32 unk1C;
-    s32 unk20;
-    s32 unk24;
-    s32 unk28;
+    u32 color; /* rgb + primitive code */
+    s32 clut; /* clut << 16 */
+    u16 *scale; /* scale table */
+    u16 *sizes; /* size table */
+    u16 *dirs; /* direction table */
+    u16 *frame; /* frame entry */
+    s32 otZ; /* g_btlfxEnv->otZ */
+    s32 last; /* last ring index */
+    s32 uvAdd; /* uv offset of the frame */
+    s32 count;
+    s32 tpage; /* tpage << 16 (abr bits added) */
     u8 pad2C[0x40 - 0x2C];
 } Unk800D4768Ctx;
 
 typedef struct {
-    u32 unk0;
-    s32 unk4;
-    u32 *unk8;
-    u32 *unkC;
-    u16 *unk10;
-    u32 *unk14;
-    s32 unk18;
-    s32 unk1C;
-    u32 *unk20;
-    s32 unk24;
-    s32 unk28;
+    u32 code; /* primitive code */
+    s32 fade; /* fade */
+    u32 *scale; /* scale table */
+    u32 *sizes; /* size table */
+    u16 *dirs; /* direction table */
+    u32 *colors; /* colour table (inner ring) */
+    s32 otZ; /* g_btlfxEnv->otZ */
+    s32 last; /* last ring index */
+    u32 *colors2; /* colour table of the frame */
+    s32 count;
+    s32 abr; /* abr << 5 */
     u8 pad2C[0x40 - 0x2C];
 } Unk800D4A30Ctx;
 

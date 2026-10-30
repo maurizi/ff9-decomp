@@ -74,14 +74,14 @@ static void ringRadii(u8 *ctx, u16 *scale, u16 **sizes) {
  * word ored with unk4 (clut << 16), uv1's with unk28 (tpage << 16). The uv column is (i - 1) & stride while
  * stride + 1 < points, else i - 1. */
 void btlfx_emitRingQuads(s32 stride, Unk800D4768Ctx *ctx, u8 *out, s32 *ot) {
-    u32 clut = ctx->unk4;
-    s32 last = ctx->unk1C;
-    s32 zbase = ctx->unk18;
-    u32 color = ctx->unk0;
-    u16 *scale = ctx->unk8;
-    u16 *sizes = ctx->unkC;
-    u32 uvAdd = ctx->unk20;
-    u16 *uvRow = ctx->unk14;
+    u32 clut = ctx->clut;
+    s32 last = ctx->last;
+    s32 zbase = ctx->otZ;
+    u32 color = ctx->color;
+    u16 *scale = ctx->scale;
+    u16 *sizes = ctx->sizes;
+    u32 uvAdd = ctx->uvAdd;
+    u16 *uvRow = ctx->frame;
     u16 *dir;
     u32 inner, outer, prevInner = 0, prevOuter = 0, r, sz;
     s32 i, col;
@@ -89,7 +89,7 @@ void btlfx_emitRingQuads(s32 stride, Unk800D4768Ctx *ctx, u8 *out, s32 *ot) {
 
     do {
         ringRadii((u8 *)ctx, scale, &sizes);
-        dir = ctx->unk10;
+        dir = ctx->dirs;
         for (i = 0; i <= last; i++) {
             r = (i & 1) ? W(ctx, 0x34) : W(ctx, 0x2C);
             inner = ringPoint(dir[0], dir[1], r);
@@ -116,7 +116,7 @@ void btlfx_emitRingQuads(s32 stride, Unk800D4768Ctx *ctx, u8 *out, s32 *ot) {
                 GTE_MTC2(0, inner);
                 GTE_CMD(0x4A180001);
                 W(out, 0xC) = (uv[0] + uvAdd) | clut;
-                W(out, 0x14) = (uv[1] + uvAdd) | ctx->unk28;
+                W(out, 0x14) = (uv[1] + uvAdd) | ctx->tpage;
                 W(out, 0x4) = color;
                 W(out, 0x20) = GTE_MFC2(14);
                 r = ringZ(sz, zbase);
@@ -129,7 +129,7 @@ void btlfx_emitRingQuads(s32 stride, Unk800D4768Ctx *ctx, u8 *out, s32 *ot) {
             prevOuter = outer;
         }
         uvRow += stride + 2;
-    } while (--ctx->unk24 != 0);
+    } while (--ctx->count != 0);
 }
 
 /* The DPCS fade (IR0 = 0x1000 - fade) of a color. */
@@ -150,14 +150,14 @@ u32 btlfx_fadeColor(u32 color, s32 fade) {
  * edge from one and the outer from the other, swapping on odd points; all four faded by unk4 through
  * btlfx_fadeColor, the first ored with the code unk0. FC = 0. */
 void btlfx_emitRingGouraud(s32 stride, Unk800D4A30Ctx *ctx, u8 *out, s32 *ot) {
-    s32 fade = ctx->unk4;
-    s32 last = ctx->unk1C;
-    s32 zbase = ctx->unk18;
-    u32 code = ctx->unk0;
-    u16 *scale = (u16 *)ctx->unk8;
-    u16 *sizes = (u16 *)ctx->unkC;
-    u32 *colA = ctx->unk14;
-    u32 *colB = ctx->unk20;
+    s32 fade = ctx->fade;
+    s32 last = ctx->last;
+    s32 zbase = ctx->otZ;
+    u32 code = ctx->code;
+    u16 *scale = (u16 *)ctx->scale;
+    u16 *sizes = (u16 *)ctx->sizes;
+    u32 *colA = ctx->colors;
+    u32 *colB = ctx->colors2;
     u16 *dir;
     u8 *mode;
     u32 inner, outer, prevInner = 0, prevOuter = 0, r, sz;
@@ -169,7 +169,7 @@ void btlfx_emitRingGouraud(s32 stride, Unk800D4A30Ctx *ctx, u8 *out, s32 *ot) {
     GTE_CTC2(23, 0);
     do {
         ringRadii((u8 *)ctx, scale, &sizes);
-        dir = ctx->unk10;
+        dir = ctx->dirs;
         for (i = 0; i <= last; i++) {
             r = (i & 1) ? W(ctx, 0x34) : W(ctx, 0x2C);
             inner = ringPoint(dir[0], dir[1], r);
@@ -182,7 +182,7 @@ void btlfx_emitRingGouraud(s32 stride, Unk800D4A30Ctx *ctx, u8 *out, s32 *ot) {
                 GTE_MTC2(4, prevInner);
                 mode = out + 0x24;
                 GTE_CMD(0x4A280030);
-                W(mode, 4) = 0xE1000200 | ctx->unk28;
+                W(mode, 4) = 0xE1000200 | ctx->abr;
                 W(out, 0x8) = GTE_MFC2(12);
                 W(out, 0x10) = GTE_MFC2(13);
                 W(out, 0x18) = GTE_MFC2(14);
@@ -213,5 +213,5 @@ void btlfx_emitRingGouraud(s32 stride, Unk800D4A30Ctx *ctx, u8 *out, s32 *ot) {
         }
         colB += stride;
         colA += stride;
-    } while (--ctx->unk24 != 0);
+    } while (--ctx->count != 0);
 }

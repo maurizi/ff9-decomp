@@ -342,26 +342,26 @@ void btlfx_drawTrail3D(s32 arg0, s32 *arg1, s32 n, s32 arg3, s32 arg4, s32 arg5,
     gte_DpqColorFar_nst(c1, p);
     prim = g_btlfxEnv->prim;
     g_btlfxEnv->prim = prim + n * 0x34;
-    gte_strgb(&c.unkC);
+    gte_strgb(&c.color);
     gte_DpqColorFar_nst(c2, p);
-    c.unk26 = (arg4 + arg6) << 8;
-    c.unk24 = arg4 << 8;
-    gte_strgb(&c.unk10);
-    c.unk18 = (((tp & 3) << 5) | arg7) << 16;
-    c.unk1C = arg8 << 16;
-    c.unkC.b[3] = (tp == 0xFF) ? 0x3C : 0x3E;
+    c.u1 = (arg4 + arg6) << 8;
+    c.u0 = arg4 << 8;
+    gte_strgb(&c.farColor);
+    c.tpage = (((tp & 3) << 5) | arg7) << 16;
+    c.clut = arg8 << 16;
+    c.color.b[3] = (tp == 0xFF) ? 0x3C : 0x3E;
     gte_SetRotMatrix(g_btlfxEnv->viewMatrix);
     gte_SetTransMatrix(g_btlfxEnv->viewMatrix);
     if (n != 0) {
         inv = 0x1000 / n;
-        c.unk20 = inv;
-        c.unk8 = inv;
+        c.fadeStep = inv;
+        c.fade = inv;
         c.unk28 = arg1[0];
         inv = arg1[1];
-        c.unk4 = arg0;
-        c.unk14 = arg3;
-        c.unk16 = arg5;
-        c.unk0 = g_btlfxEnv->otZ;
+        c.ring = arg0;
+        c.v0 = arg3;
+        c.v1 = arg5;
+        c.otZ = g_btlfxEnv->otZ;
         c.unk2C = inv;
         btlfx_emitTrailRibbon3D(n, &c, prim, g_btlfxEnv->ot);
     }
@@ -378,35 +378,35 @@ void btlfx_drawTrailFlat(s32 arg0, s32 n, s32 arg2, s32 arg3, s32 arg4, s32 arg5
         p = 0x1000;
     }
     gte_DpqColorFar_nst(c1, p);
-    gte_strgb(&c.unkC);
+    gte_strgb(&c.color);
     gte_DpqColorFar_nst(c2, p);
     if (arg6 >= 0) {
         prim = g_btlfxEnv->prim;
         g_btlfxEnv->prim = prim + n * 0x34;
-        c.unk26 = (arg3 + arg5) << 8;
-        c.unk24 = arg3 << 8;
+        c.u1 = (arg3 + arg5) << 8;
+        c.u0 = arg3 << 8;
         s = math_sin(-g_btlfxEnv->camera->yaw + 0x400);
         c.unk28 = (s & 0xFFFF) | (math_cos(-g_btlfxEnv->camera->yaw + 0x400) << 16);
-        c.unkC.b[3] = (tp != 0xFF) ? 0x3E : 0x3C;
-        c.unk18 = (((tp & 3) << 5) | arg6) << 16;
-        c.unk1C = arg7 << 16;
-        c.unk14 = arg2;
-        c.unk16 = arg4;
+        c.color.b[3] = (tp != 0xFF) ? 0x3E : 0x3C;
+        c.tpage = (((tp & 3) << 5) | arg6) << 16;
+        c.clut = arg7 << 16;
+        c.v0 = arg2;
+        c.v1 = arg4;
     } else {
         prim = g_btlfxEnv->prim;
         g_btlfxEnv->prim = prim + n * 0x1C;
         c.unk28 = (tp & 3) << 5;
-        c.unkC.b[3] = (tp == 0xFF) ? 0x50 : 0x52;
+        c.color.b[3] = (tp == 0xFF) ? 0x50 : 0x52;
     }
-    gte_strgb(&c.unk10);
+    gte_strgb(&c.farColor);
     gte_SetRotMatrix(g_btlfxEnv->viewMatrix);
     gte_SetTransMatrix(g_btlfxEnv->viewMatrix);
     if (n != 0) {
         inv = 0x1000 / n;
-        c.unk4 = arg0;
-        c.unk20 = inv;
-        c.unk8 = inv;
-        c.unk0 = g_btlfxEnv->otZ;
+        c.ring = arg0;
+        c.fadeStep = inv;
+        c.fade = inv;
+        c.otZ = g_btlfxEnv->otZ;
         if (arg6 >= 0) {
             btlfx_emitTrailRibbonFlat(n, &c, prim, g_btlfxEnv->ot);
         } else {
@@ -427,24 +427,24 @@ void btlfx_drawTrailScreen(s32 arg0, s32 n, s32 arg2, s32 arg3, s32 arg4, s32 ar
     gte_DpqColorFar_nst(c1, p);
     prim = g_btlfxEnv->prim;
     g_btlfxEnv->prim = prim + n * 0x34;
-    gte_strgb(&c.unkC);
+    gte_strgb(&c.color);
     gte_DpqColorFar_nst(c2, p);
-    c.unk26 = (arg3 + arg5) << 8;
-    c.unk24 = arg3 << 8;
-    c.unk18 = (((tp & 3) << 5) | arg6) << 16;
-    c.unk1C = arg7 << 16;
-    c.unkC.b[3] = (tp == 0xFF) ? 0x3C : 0x3E;
-    gte_strgb(&c.unk10);
+    c.u1 = (arg3 + arg5) << 8;
+    c.u0 = arg3 << 8;
+    c.tpage = (((tp & 3) << 5) | arg6) << 16;
+    c.clut = arg7 << 16;
+    c.color.b[3] = (tp == 0xFF) ? 0x3C : 0x3E;
+    gte_strgb(&c.farColor);
     gte_SetRotMatrix(g_btlfxEnv->viewMatrix);
     gte_SetTransMatrix(g_btlfxEnv->viewMatrix);
     if (n != 0) {
         inv = 0x1000 / n;
-        c.unk4 = arg0;
-        c.unk14 = arg2;
-        c.unk16 = arg4;
-        c.unk20 = inv;
-        c.unk8 = inv;
-        c.unk0 = g_btlfxEnv->otZ;
+        c.ring = arg0;
+        c.v0 = arg2;
+        c.v1 = arg4;
+        c.fadeStep = inv;
+        c.fade = inv;
+        c.otZ = g_btlfxEnv->otZ;
         btlfx_emitTrailRibbonScreen(n, &c, prim, g_btlfxEnv->ot);
     }
 }
@@ -524,31 +524,31 @@ void btlfx_drawParticles(u8 *arg0, SVECTOR *arg1, SVECTOR *arg2, s32 arg3, s32 a
         zero.w[1] = 0;
     }
     k = arg4;
-    off = h->unk0 & 0x7FFF;
+    off = h->frameCount & 0x7FFF;
     if (k >= off) {
         k = off - 1;
     }
-    o = &h->unk6[k];
-    c.unk10 = h->unk2;
+    o = &h->frameOfs[k];
+    c.tpage = h->tpage;
     off = *o;
-    c.unk14 = *(u16 *)(arg0 + off);
+    c.frame = *(u16 *)(arg0 + off);
     off += 2;
-    if (c.unk14 & 0x8000) {
+    if (c.frame & 0x8000) {
         d = arg0 + off;
         off += 4;
-        c.unk0 = *(u16 *)d | (d[2] << 16);
+        c.color = *(u16 *)d | (d[2] << 16);
         if (arg6 >= 0) {
-            gte_DpqColorFar(&c.unk0, arg6);
+            gte_DpqColorFar(&c.color, arg6);
         }
     } else {
         if (arg6 < 0) {
             arg6 = 0x1000;
         }
         arg6 = (arg6 >> 5) & 0xFF;
-        c.unk0 = arg6 | (arg6 << 8) | (arg6 << 16);
+        c.color = arg6 | (arg6 << 8) | (arg6 << 16);
     }
     s.vz = 0x1000;
-    if (c.unk14 & 0x4000) {
+    if (c.frame & 0x4000) {
         e = arg0 + off;
         s.vx = *(u16 *)e;
         s.vy = *(u16 *)(e + 2);
@@ -566,12 +566,12 @@ void btlfx_drawParticles(u8 *arg0, SVECTOR *arg1, SVECTOR *arg2, s32 arg3, s32 a
         s.vx = s.vy = arg3;
     }
     arg0 += off;
-    c.unk14 &= 0x3FFF;
+    c.frame &= 0x3FFF;
     gte_SetRotMatrix(g_btlfxEnv->viewMatrix);
     gte_SetTransMatrix(g_btlfxEnv->viewMatrix);
     gte_ldv0(arg1);
     prim = g_btlfxEnv->prim;
-    g_btlfxEnv->prim = prim + c.unk14 * 40;
+    g_btlfxEnv->prim = prim + c.frame * 40;
     gte_rtv0tr_nn();
     math_rotMatrixYXZ(arg2, &m);
     ScaleMatrix(&m, &s);
@@ -581,11 +581,11 @@ void btlfx_drawParticles(u8 *arg0, SVECTOR *arg1, SVECTOR *arg2, s32 arg3, s32 a
     }
     gte_SetRotMatrix(&m);
     gte_SetTransMatrix(&m);
-    c.unk0 |= (arg5 == 0xFF) ? 0x2C000000 : 0x2E000000;
-    c.unkC = (arg5 & 3) << 5;
-    c.unk4 = arg7;
-    c.unk8 = arg8;
-    c.unk18 = g_btlfxEnv->otZ;
+    c.color |= (arg5 == 0xFF) ? 0x2C000000 : 0x2E000000;
+    c.abr = (arg5 & 3) << 5;
+    c.x = arg7;
+    c.y = arg8;
+    c.otZ = g_btlfxEnv->otZ;
     btlfx_emitParticles(arg0, &c, prim, g_btlfxEnv->ot);
 }
 
@@ -599,47 +599,47 @@ void btlfx_drawSprite(u8 *arg0, SVECTOR *arg1, s32 arg2, s32 arg3, s32 arg4) {
     u16 *o;
     Unk800D1BC4 *h = (Unk800D1BC4 *)arg0;
 
-    off = h->unk0 & 0x7FFF;
+    off = h->frameCount & 0x7FFF;
     if (arg2 >= off) {
         arg2 = off - 1;
     }
-    o = &h->unk6[arg2];
-    c.unk10 = h->unk2;
+    o = &h->frameOfs[arg2];
+    c.tpage = h->tpage;
     off = *o;
-    c.unk14 = *(u16 *)(arg0 + off);
+    c.frame = *(u16 *)(arg0 + off);
     off += 2;
-    if (c.unk14 & 0x8000) {
+    if (c.frame & 0x8000) {
         d = arg0 + off;
         off += 4;
-        c.unk0 = *(u16 *)d | (d[2] << 16);
+        c.color = *(u16 *)d | (d[2] << 16);
         if (arg4 >= 0) {
-            gte_DpqColorFar(&c.unk0, arg4);
+            gte_DpqColorFar(&c.color, arg4);
         }
     } else {
         if (arg4 < 0) {
             arg4 = 0x1000;
         }
         arg4 = (arg4 >> 5) & 0xFF;
-        c.unk0 = arg4 | (arg4 << 8) | (arg4 << 16);
+        c.color = arg4 | (arg4 << 8) | (arg4 << 16);
     }
-    if (c.unk14 & 0x4000) {
+    if (c.frame & 0x4000) {
         off += 4;
     }
     gte_SetRotMatrix(g_btlfxEnv->viewMatrix);
     gte_SetTransMatrix(g_btlfxEnv->viewMatrix);
     gte_ldv0(arg1);
     arg0 += off;
-    c.unk14 &= 0x3FFF;
+    c.frame &= 0x3FFF;
     gte_rtps_nn();
     prim = g_btlfxEnv->prim;
-    g_btlfxEnv->prim = prim + c.unk14 * 20;
+    g_btlfxEnv->prim = prim + c.frame * 20;
     gte_stsxy(&sxy);
     gte_stszotz(&z);
-    c.unk0 |= (arg3 == 0xFF) ? 0x64000000 : 0x66000000;
-    c.unkC = (arg3 & 3) << 5;
-    c.unk4 = sxy.vx;
-    c.unk8 = sxy.vy;
-    c.unk18 = g_btlfxEnv->prim;
+    c.color |= (arg3 == 0xFF) ? 0x64000000 : 0x66000000;
+    c.abr = (arg3 & 3) << 5;
+    c.x = sxy.vx;
+    c.y = sxy.vy;
+    c.prim = g_btlfxEnv->prim;
     z = (z - g_btlfxEnv->otZ) >> 2;
     if ((u32)z < 0x1000) {
         g_btlfxEnv->prim = btlfx_emitScreenSprites(arg0, &c, prim, &g_btlfxEnv->ot[z]);
@@ -657,41 +657,41 @@ void btlfx_drawSpriteAtOt(u32 arg0, u8 *arg1, s32 arg2, s32 arg3, s32 arg4, s32 
 
     s32 k = arg4;
 
-    n = h->unk0 & 0x7FFF;
+    n = h->frameCount & 0x7FFF;
     if (k >= n) {
         k = n - 1;
     }
-    o = &h->unk6[k];
-    c.unk10 = h->unk2;
+    o = &h->frameOfs[k];
+    c.tpage = h->tpage;
     off = *o;
-    c.unk14 = *(u16 *)(arg1 + off);
+    c.frame = *(u16 *)(arg1 + off);
     off += 2;
-    if (c.unk14 & 0x8000) {
+    if (c.frame & 0x8000) {
         d = arg1 + off;
         off += 4;
-        c.unk0 = *(u16 *)d | (d[2] << 16);
+        c.color = *(u16 *)d | (d[2] << 16);
         if (arg6 >= 0) {
-            gte_DpqColorFar(&c.unk0, arg6);
+            gte_DpqColorFar(&c.color, arg6);
         }
     } else {
         if (arg6 < 0) {
             arg6 = 0x1000;
         }
         arg6 = (arg6 >> 5) & 0xFF;
-        c.unk0 = arg6 | (arg6 << 8) | (arg6 << 16);
+        c.color = arg6 | (arg6 << 8) | (arg6 << 16);
     }
-    if (c.unk14 & 0x4000) {
+    if (c.frame & 0x4000) {
         off += 4;
     }
     arg1 += off;
-    c.unk14 &= 0x3FFF;
+    c.frame &= 0x3FFF;
     prim = g_btlfxEnv->prim;
-    g_btlfxEnv->prim = prim + c.unk14 * 20;
-    c.unk0 |= (arg5 == 0xFF) ? 0x64000000 : 0x66000000;
-    c.unkC = (arg5 & 3) << 5;
-    c.unk4 = arg2;
-    c.unk8 = arg3;
-    c.unk18 = g_btlfxEnv->prim;
+    g_btlfxEnv->prim = prim + c.frame * 20;
+    c.color |= (arg5 == 0xFF) ? 0x64000000 : 0x66000000;
+    c.abr = (arg5 & 3) << 5;
+    c.x = arg2;
+    c.y = arg3;
+    c.prim = g_btlfxEnv->prim;
     if (arg0 < 0x1000) {
         g_btlfxEnv->prim = btlfx_emitScreenSprites(arg1, &c, prim, &g_btlfxEnv->ot[arg0]);
     }
@@ -887,16 +887,16 @@ void btlfx_drawRings(u8 *arg0, SVECTOR *arg1, SVECTOR *arg2, s32 arg3, s32 arg4,
         zero.w[0] = 0;
         zero.w[1] = 0;
     }
-    n = h->unk0;
+    n = h->frameCount;
     if (arg4 >= n) {
         arg4 %= n;
     }
-    type = h->unk5;
-    cnt = h->unk6;
-    w = h->unk7;
+    type = h->type;
+    cnt = h->count;
+    w = h->w;
     e = (Unk800D23D8Scale *)(h + 1);
     s.vz = 0x1000;
-    if (((Unk800D23D8Hdr *)e)[-1].unk4 & 2) {
+    if (((Unk800D23D8Hdr *)e)[-1].flags & 2) {
         sc = &e[arg4];
         s.vx = sc->unk0;
         s.vy = sc->unk2;
@@ -934,54 +934,54 @@ void btlfx_drawRings(u8 *arg0, SVECTOR *arg1, SVECTOR *arg2, s32 arg3, s32 arg4,
     gte_zero_vz012();
     switch (type) {
     case 1:
-        c.unk14 = (u16 *)((u32 *)s1 + (nf + 1));
+        c.frame = (u16 *)((u32 *)s1 + (nf + 1));
         col = (u32 *)s1 + (f + 1);
         if (arg6 >= 0) {
             gte_DpqColorFar_nst(col, arg6);
         } else {
             gte_DpqColorFar_nst(col, 0x1000);
         }
-        gte_strgb(&c.unk0);
-        q = c.unk14;
+        gte_strgb(&c.color);
+        q = c.frame;
         k = q[0];
-        c.unk28 = (q[2] | ((arg5 & 3) << 5)) << 16;
-        c.unk4 = q[3] << 16;
-        c.unk14 = q = q + 4;
+        c.tpage = (q[2] | ((arg5 & 3) << 5)) << 16;
+        c.clut = q[3] << 16;
+        c.frame = q = q + 4;
         t = q + (cnt + 1) * (k + 2);
-        c.unk8 = t + n;
-        c.unkC = c.unk8 + 2;
-        c.unk10 = c.unkC + cnt + 1;
-        c.unk20 = t[arg4];
+        c.scale = t + n;
+        c.sizes = c.scale + 2;
+        c.dirs = c.sizes + cnt + 1;
+        c.uvAdd = t[arg4];
         prim = g_btlfxEnv->prim;
         g_btlfxEnv->prim = prim + w * cnt * 40;
-        ((u8 *)&c.unk0)[3] = (arg5 != 0xFF) ? 0x2E : 0x2C;
-        c.unk24 = cnt;
-        c.unk1C = w;
-        c.unk18 = g_btlfxEnv->otZ;
+        ((u8 *)&c.color)[3] = (arg5 != 0xFF) ? 0x2E : 0x2C;
+        c.count = cnt;
+        c.last = w;
+        c.otZ = g_btlfxEnv->otZ;
         btlfx_emitRingQuads(k, &c, prim, g_btlfxEnv->ot);
         break;
     case 2:
         m2 = s1[0] ? 2 : 1;
-        d.unk20 = (u32 *)s1 + (f * m2 * (cnt + 1) + 1);
+        d.colors2 = (u32 *)s1 + (f * m2 * (cnt + 1) + 1);
         if (s1[0]) {
-            d.unk14 = d.unk20 + 1;
+            d.colors = d.colors2 + 1;
         } else {
-            d.unk14 = d.unk20;
+            d.colors = d.colors2;
         }
         if (arg6 < 0) {
             arg6 = 0x1000;
         }
-        d.unk8 = (u32 *)s1 + (nf * m2 * (cnt + 1) + 1);
-        d.unkC = d.unk8 + 1;
-        d.unk10 = (u16 *)d.unkC + cnt + 1;
+        d.scale = (u32 *)s1 + (nf * m2 * (cnt + 1) + 1);
+        d.sizes = d.scale + 1;
+        d.dirs = (u16 *)d.sizes + cnt + 1;
         prim = g_btlfxEnv->prim;
         g_btlfxEnv->prim = prim + w * cnt * 44;
-        d.unk0 = (arg5 != 0xFF) ? 0x3A000000 : 0x38000000;
-        d.unk4 = arg6;
-        d.unk24 = cnt;
-        d.unk28 = (arg5 & 3) << 5;
-        d.unk1C = w;
-        d.unk18 = g_btlfxEnv->otZ;
+        d.code = (arg5 != 0xFF) ? 0x3A000000 : 0x38000000;
+        d.fade = arg6;
+        d.count = cnt;
+        d.abr = (arg5 & 3) << 5;
+        d.last = w;
+        d.otZ = g_btlfxEnv->otZ;
         btlfx_emitRingGouraud(m2, &d, prim, g_btlfxEnv->ot);
         break;
     }
