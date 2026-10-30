@@ -98,40 +98,40 @@ void akao_tickSe(void) {
         }
         D_80083150 = v;
     }
-    if (g_akaoSeq->unk4 != 0) {
-        if (g_akaoSeq->unk58 != 0) {
-            g_akaoSeq->unk58--;
-            v = g_akaoSeq->unk50 + g_akaoSeq->unk54;
-            if ((v & 0x7F0000) != (g_akaoSeq->unk50 & 0x7F0000)) {
+    if (g_akaoSeq->activeMask != 0) {
+        if (g_akaoSeq->volumeFadeLen != 0) {
+            g_akaoSeq->volumeFadeLen--;
+            v = g_akaoSeq->volume + g_akaoSeq->volumeStep;
+            if ((v & 0x7F0000) != (g_akaoSeq->volume & 0x7F0000)) {
                 akao_markSeqDirty(g_akaoSeq, g_akaoChannels);
             }
-            g_akaoSeq->unk50 = v;
+            g_akaoSeq->volume = v;
         }
-        if (g_akaoSeq->unk64 != 0) {
-            g_akaoSeq->unk64--;
-            v = g_akaoSeq->unk5C + g_akaoSeq->unk60;
-            if ((v & 0x7F0000) != (g_akaoSeq->unk5C & 0x7F0000)) {
+        if (g_akaoSeq->panSlideLen != 0) {
+            g_akaoSeq->panSlideLen--;
+            v = g_akaoSeq->pan + g_akaoSeq->panStep;
+            if ((v & 0x7F0000) != (g_akaoSeq->pan & 0x7F0000)) {
                 akao_markSeqDirty(g_akaoSeq, g_akaoChannels);
             }
-            g_akaoSeq->unk5C = v;
+            g_akaoSeq->pan = v;
         }
     }
-    if (g_akaoSubSeq != NULL && g_akaoSubSeq->unk4 != 0) {
-        if (g_akaoSubSeq->unk58 != 0) {
-            g_akaoSubSeq->unk58--;
-            v = g_akaoSubSeq->unk50 + g_akaoSubSeq->unk54;
-            if ((v & 0x7F0000) != (g_akaoSubSeq->unk50 & 0x7F0000)) {
+    if (g_akaoSubSeq != NULL && g_akaoSubSeq->activeMask != 0) {
+        if (g_akaoSubSeq->volumeFadeLen != 0) {
+            g_akaoSubSeq->volumeFadeLen--;
+            v = g_akaoSubSeq->volume + g_akaoSubSeq->volumeStep;
+            if ((v & 0x7F0000) != (g_akaoSubSeq->volume & 0x7F0000)) {
                 akao_markSeqDirty(g_akaoSubSeq, g_akaoSubChannels);
             }
-            g_akaoSubSeq->unk50 = v;
+            g_akaoSubSeq->volume = v;
         }
-        if (g_akaoSubSeq->unk64 != 0) {
-            g_akaoSubSeq->unk58--;
-            v = g_akaoSubSeq->unk5C + g_akaoSubSeq->unk60;
-            if ((v & 0x7F0000) != (g_akaoSubSeq->unk5C & 0x7F0000)) {
+        if (g_akaoSubSeq->panSlideLen != 0) {
+            g_akaoSubSeq->volumeFadeLen--;
+            v = g_akaoSubSeq->pan + g_akaoSubSeq->panStep;
+            if ((v & 0x7F0000) != (g_akaoSubSeq->pan & 0x7F0000)) {
                 akao_markSeqDirty(g_akaoSubSeq, g_akaoSubChannels);
             }
-            g_akaoSubSeq->unk5C = v;
+            g_akaoSubSeq->pan = v;
         }
     }
     if (g_akaoSeState.unk0 != 0) {
@@ -186,7 +186,7 @@ u32 akao_tickChannels(AkaoChannel *chans, s32 sub) {
     u32 active;
     s32 flags;
 
-    tempo = g_akaoSeq->unk20.h[1];
+    tempo = g_akaoSeq->tempo.h[1];
     m = D_80083156;
     if (m != 0) {
         if (m < 0x80) {
@@ -195,15 +195,15 @@ u32 akao_tickChannels(AkaoChannel *chans, s32 sub) {
             tempo = (tempo * m) >> 8;
         }
     }
-    acc = g_akaoSeq->unk28 + tempo;
-    g_akaoSeq->unk28 = acc;
+    acc = g_akaoSeq->tempoAcc + tempo;
+    g_akaoSeq->tempoAcc = acc;
     if ((acc & 0xFFFF0000) || (D_800831C4 & 4)) {
-        g_akaoSeq->unk28 = acc & 0xFFFF;
+        g_akaoSeq->tempoAcc = acc & 0xFFFF;
         do {
             for (;;) {
                 c = chans;
                 bit = 1;
-                active = g_akaoSeq->unk4;
+                active = g_akaoSeq->activeMask;
                 do {
                     if (active & bit) {
                         c->noteTicks--;
@@ -211,7 +211,7 @@ u32 akao_tickChannels(AkaoChannel *chans, s32 sub) {
                         if (c->noteTicks == 0) {
                             akao_execChannel(c, bit);
                         } else if (c->gateTicks == 0) {
-                            g_akaoSeq->unk18 |= bit;
+                            g_akaoSeq->keyOffMask |= bit;
                         }
                         akao_stepChannelSlides(c, bit, 0);
                         active &= ~bit;
@@ -219,25 +219,25 @@ u32 akao_tickChannels(AkaoChannel *chans, s32 sub) {
                     c++;
                     bit <<= 1;
                 } while (active != 0);
-                if (g_akaoSeq->unk68 != 0) {
-                    g_akaoSeq->unk68--;
-                    g_akaoSeq->unk20.w += g_akaoSeq->unk24;
+                if (g_akaoSeq->tempoSlideLen != 0) {
+                    g_akaoSeq->tempoSlideLen--;
+                    g_akaoSeq->tempo.w += g_akaoSeq->tempoStep;
                 }
-                if (g_akaoSeq->unk66 != 0) {
-                    g_akaoSeq->unk66--;
-                    g_akaoSeq->unk48 += g_akaoSeq->unk4C;
+                if (g_akaoSeq->reverbDepthSlideLen != 0) {
+                    g_akaoSeq->reverbDepthSlideLen--;
+                    g_akaoSeq->reverbDepth += g_akaoSeq->reverbDepthStep;
                     flags = g_akaoFlags.unk8;
                     flags |= 0x80;
                     if (sub == 0) {
                         g_akaoFlags.unk8 = flags;
                     }
                 }
-                if (g_akaoSeq->unk74 != 0) {
-                    if (++g_akaoSeq->unk76 == g_akaoSeq->unk74) {
-                        g_akaoSeq->unk76 = 0;
-                        if (++g_akaoSeq->unk72 == g_akaoSeq->unk70) {
-                            g_akaoSeq->unk72 = 0;
-                            g_akaoSeq->unk78++;
+                if (g_akaoSeq->ticksPerBeat != 0) {
+                    if (++g_akaoSeq->tick == g_akaoSeq->ticksPerBeat) {
+                        g_akaoSeq->tick = 0;
+                        if (++g_akaoSeq->beat == g_akaoSeq->beatsPerMeasure) {
+                            g_akaoSeq->beat = 0;
+                            g_akaoSeq->measure++;
                             if (sub == 0 && D_800809B8 != 0) {
                                 D_800809B8--;
                             }
@@ -250,20 +250,20 @@ u32 akao_tickChannels(AkaoChannel *chans, s32 sub) {
             }
         } while (0);
     }
-    return g_akaoSeq->unk4;
+    return g_akaoSeq->activeMask;
 }
 
-void func_8005D628(Unk80080A10 *arg0, AkaoChannel *arg1) {
+void func_8005D628(AkaoSeq *arg0, AkaoChannel *arg1) {
     s32 t;
 
     if (D_80080A18.unk8 != 0) {
         if (--D_80080A18.unk8 == 0) {
-            s32 v = arg0->unk4;
-            arg0->unk6A = 0;
-            arg0->unk4 = 0;
-            arg0->unk10 = 0;
-            arg0->unk14 = 0;
-            arg0->unk18 = v;
+            s32 v = arg0->activeMask;
+            arg0->musicId = 0;
+            arg0->activeMask = 0;
+            arg0->keyOnMask = 0;
+            arg0->playingMask = 0;
+            arg0->keyOffMask = v;
             return;
         }
         t = D_80080A18.unk0 + D_80080A18.unk4;
@@ -278,7 +278,7 @@ s32 akao_tick(void) {
     s32 t0;
     s32 n;
     u32 now;
-    Unk80080A10 *tmp;
+    AkaoSeq *tmp;
     AkaoChannel *c;
     u32 mask;
     u32 bit;
@@ -306,36 +306,36 @@ s32 akao_tick(void) {
         n--;
         D_8007E3D0++;
         g_akaoTickCount++;
-        if ((g_akaoSeq->unk18 | g_akaoSeState.unkC) != 0 || (g_akaoSubSeq != NULL && g_akaoSubSeq->unk18 != 0)) {
+        if ((g_akaoSeq->keyOffMask | g_akaoSeState.unkC) != 0 || (g_akaoSubSeq != NULL && g_akaoSubSeq->keyOffMask != 0)) {
             func_80058F94();
         }
         if (g_akaoSubSeq != NULL) {
-            if (g_akaoSubSeq->unk4 == 0) {
+            if (g_akaoSubSeq->activeMask == 0) {
                 g_akaoSubSeq = NULL;
-            } else if ((g_akaoSeq->unk4 | g_akaoSeq->unk1C) == 0) {
+            } else if ((g_akaoSeq->activeMask | g_akaoSeq->pausedMask) == 0) {
                 akao_copy(g_akaoSubSeq, g_akaoSeq, 0x7C);
                 akao_copy(g_akaoSubChannels, g_akaoChannels, 0x2680);
                 tmp = g_akaoSubSeq;
                 g_akaoSubSeq = NULL;
-                tmp->unk6A = 0;
-                tmp->unk4 = 0;
+                tmp->musicId = 0;
+                tmp->activeMask = 0;
             }
         }
-        if ((g_akaoFlags.unk8 | g_akaoSeq->unk14 | g_akaoSeState.unk8) != 0 || (g_akaoSubSeq != NULL && g_akaoSubSeq->unk14 != 0)) {
+        if ((g_akaoFlags.unk8 | g_akaoSeq->playingMask | g_akaoSeState.unk8) != 0 || (g_akaoSubSeq != NULL && g_akaoSubSeq->playingMask != 0)) {
             akao_updateVoices();
         }
-        if (g_akaoSeq->unk4 != 0) {
+        if (g_akaoSeq->activeMask != 0) {
             akao_tickChannels(g_akaoChannels, 0);
         }
         if (g_akaoSubSeq != NULL) {
-            if (g_akaoSubSeq->unk4 != 0) {
+            if (g_akaoSubSeq->activeMask != 0) {
                 g_akaoSeq = g_akaoSubSeq;
                 akao_tickChannels(g_akaoSubChannels, 1);
                 g_akaoSeq = &g_akaoMainSeq;
             }
             if ((g_akaoFlags.unk4 & 0x100) && !(g_akaoTickCount & 3)) {
                 func_8005D628(g_akaoSubSeq, g_akaoSubChannels);
-                if (g_akaoSubSeq->unk4 == 0) {
+                if (g_akaoSubSeq->activeMask == 0) {
                     g_akaoFlags.unk4 &= ~0x100;
                 }
             }
@@ -461,7 +461,7 @@ s32 func_8005DB40(AkaoChannel *c) {
                 continue;
             case 0x7:
                 p++;
-                if (*p++ <= g_akaoSeq->unk6C) {
+                if (*p++ <= g_akaoSeq->condition) {
                     op = p[0] + (p[1] << 8);
                     p += (s16)op;
                     continue;
@@ -531,7 +531,7 @@ void akao_applyKeySplit(AkaoChannel *c, u32 key) {
         return;
     }
     f = c->flags;
-    v = akao_remapInstrument(g_akaoSeq->unk0, e->unk0);
+    v = akao_remapInstrument(g_akaoSeq->flags, e->unk0);
     c->instrument = v;
     p = &g_akaoInstruments[v];
     c->voiceStartAddr = p->unk0;
@@ -616,14 +616,14 @@ s32 func_8005E170(AkaoChannel *c, u32 mask, s32 key) {
     s32 v;
     s32 r;
 
-    e = (AkaoDrumKey *)g_akaoSeq->unk34;
+    e = (AkaoDrumKey *)g_akaoSeq->drumKit;
     e += key;
-    g_akaoSeq->unk10 |= mask;
-    if (g_akaoSeq->unk14 & mask) {
-        g_akaoSeq->unk18 |= mask;
+    g_akaoSeq->keyOnMask |= mask;
+    if (g_akaoSeq->playingMask & mask) {
+        g_akaoSeq->keyOffMask |= mask;
     }
     f = c->flags;
-    v = akao_remapInstrument(g_akaoSeq->unk0, e->unk0);
+    v = akao_remapInstrument(g_akaoSeq->flags, e->unk0);
     c->instrument = v;
     p = &g_akaoInstruments[v];
     c->voiceStartAddr = p->unk0;
@@ -660,9 +660,9 @@ s32 func_8005E170(AkaoChannel *c, u32 mask, s32 key) {
     c->voiceVolScale = e->unk6;
     c->pan = ((e->unk7 & 0x7F) + 0x40) << 8;
     if (e->unk7 & 0x80) {
-        g_akaoSeq->unk40 |= mask;
+        g_akaoSeq->reverbMask |= mask;
     } else {
-        g_akaoSeq->unk40 &= ~mask;
+        g_akaoSeq->reverbMask &= ~mask;
     }
     g_akaoFlags.unk8 |= 0x100;
     return r;
@@ -703,7 +703,7 @@ void akao_execChannel(AkaoChannel *c, u32 mask) {
     } while (op > 0xA0);
     if (op == 0xA0) {
         if (c->isSe == 0) {
-            g_akaoSeq->unk18 |= mask;
+            g_akaoSeq->keyOffMask |= mask;
         }
         return;
     }
@@ -730,9 +730,9 @@ void akao_execChannel(AkaoChannel *c, u32 mask) {
     c->voiceDirty |= 0x4000;
     if (op >= 0x8F) {
         if (c->isSe == 0) {
-            g_akaoSeq->unk14 &= ~mask;
+            g_akaoSeq->playingMask &= ~mask;
             if (c->voice < 0x18) {
-                g_akaoSeq->unk18 |= mask;
+                g_akaoSeq->keyOffMask |= mask;
             }
         }
         c->portamentoLen = 0;
@@ -753,9 +753,9 @@ void akao_execChannel(AkaoChannel *c, u32 mask) {
                     if (f & 0x1000) {
                         akao_applyKeySplit(c, op);
                     }
-                    g_akaoSeq->unk10 |= mask;
-                    if ((g_akaoSeq->unk14 & mask) && c->voice < 0x18) {
-                        g_akaoSeq->unk18 |= mask;
+                    g_akaoSeq->keyOnMask |= mask;
+                    if ((g_akaoSeq->playingMask & mask) && c->voice < 0x18) {
+                        g_akaoSeq->keyOffMask |= mask;
                     }
                     if (c->noteVolumeSlideLen != 0) {
                         c->volumeSlideLen = c->noteVolumeSlideLen;
@@ -791,7 +791,7 @@ void akao_execChannel(AkaoChannel *c, u32 mask) {
         }
         c->pitch = vel;
         if (c->isSe == 0) {
-            g_akaoSeq->unk14 |= mask;
+            g_akaoSeq->playingMask |= mask;
         } else {
             g_akaoSeState.unk8 |= mask;
         }
@@ -887,21 +887,21 @@ s32 func_8005EC8C(s32 a, s32 b) {
 }
 
 void akao_opEnd(AkaoChannel *c, s32 mask) {
-    Unk80080A10 *t;
+    AkaoSeq *t;
 
     if (c->isSe == 0) {
         t = g_akaoSeq;
-        if ((t->unk4 &= ~mask) == 0) {
+        if ((t->activeMask &= ~mask) == 0) {
             D_800809B8 = 0;
-            t->unk6A = 0;
-            t->unk0 = 0;
+            t->musicId = 0;
+            t->flags = 0;
         }
-        g_akaoSeq->unk14 &= ~mask;
-        g_akaoSeq->unk8 &= ~mask;
-        g_akaoSeq->unkC &= ~mask;
-        g_akaoSeq->unk3C &= ~mask;
-        g_akaoSeq->unk40 &= ~mask;
-        g_akaoSeq->unk44 &= ~mask;
+        g_akaoSeq->playingMask &= ~mask;
+        g_akaoSeq->priorityMask &= ~mask;
+        g_akaoSeq->keepVoiceMask &= ~mask;
+        g_akaoSeq->noiseMask &= ~mask;
+        g_akaoSeq->reverbMask &= ~mask;
+        g_akaoSeq->pitchModMask &= ~mask;
     } else {
         akao_stopSeChannel(c, mask);
     }
@@ -910,30 +910,30 @@ void akao_opEnd(AkaoChannel *c, s32 mask) {
 }
 
 void akao_opFETempo(AkaoChannel *c) {
-    Unk80080A10 *a = g_akaoSeq;
+    AkaoSeq *a = g_akaoSeq;
     s32 v = c->pc[0] << 16;
-    a->unk20.w = v;
-    a->unk20.w = v | (c->pc[1] << 24);
+    a->tempo.w = v;
+    a->tempo.w = v | (c->pc[1] << 24);
     c->pc += 2;
-    a->unk68 = 0;
+    a->tempoSlideLen = 0;
 }
 
 void akao_opFETempoSlide(AkaoChannel *c) {
     s32 x;
     s32 m;
 
-    if ((g_akaoSeq->unk68 = *c->pc++) == 0) {
-        g_akaoSeq->unk68 = 0x100;
+    if ((g_akaoSeq->tempoSlideLen = *c->pc++) == 0) {
+        g_akaoSeq->tempoSlideLen = 0x100;
     }
     x = (c->pc[0] << 16) | (c->pc[1] << 24);
     c->pc += 2;
-    m = g_akaoSeq->unk20.w & 0xFFFF0000;
-    g_akaoSeq->unk24 = (x - m) / g_akaoSeq->unk68;
-    g_akaoSeq->unk20.w = m;
+    m = g_akaoSeq->tempo.w & 0xFFFF0000;
+    g_akaoSeq->tempoStep = (x - m) / g_akaoSeq->tempoSlideLen;
+    g_akaoSeq->tempo.w = m;
 }
 
 void akao_opFE02(AkaoChannel *c) {
-    Unk80080A10 *a = g_akaoSeq;
+    AkaoSeq *a = g_akaoSeq;
     u8 *p = c->pc;
     s32 hi = (s8)p[1];
     s32 lo = p[0];
@@ -941,24 +941,24 @@ void akao_opFE02(AkaoChannel *c) {
     c->pc = p + 2;
     v = hi << 20;
     v |= lo << 12;
-    a->unk66 = 0;
+    a->reverbDepthSlideLen = 0;
     g_akaoFlags.unk8 |= 0x80;
-    a->unk48 = v;
+    a->reverbDepth = v;
 }
 
 void akao_opFE03(AkaoChannel *arg0) {
     u8 *p;
     s32 v;
 
-    g_akaoSeq->unk66 = *arg0->pc++;
-    if (g_akaoSeq->unk66 == 0) {
-        g_akaoSeq->unk66 = 0x100;
+    g_akaoSeq->reverbDepthSlideLen = *arg0->pc++;
+    if (g_akaoSeq->reverbDepthSlideLen == 0) {
+        g_akaoSeq->reverbDepthSlideLen = 0x100;
     }
     p = arg0->pc;
     v = ((s8)p[1] << 20) | (p[0] << 12);
     arg0->pc = p + 2;
-    g_akaoSeq->unk48 &= ~0xFFF;
-    g_akaoSeq->unk4C = (v - g_akaoSeq->unk48) / g_akaoSeq->unk66;
+    g_akaoSeq->reverbDepth &= ~0xFFF;
+    g_akaoSeq->reverbDepthStep = (v - g_akaoSeq->reverbDepth) / g_akaoSeq->reverbDepthSlideLen;
 }
 
 void akao_opFEJump(AkaoChannel *c) {
@@ -970,7 +970,7 @@ void akao_opFEJumpIfGe(AkaoChannel *c) {
     u8 *p = c->pc;
     s32 v = *p++;
     c->pc = p;
-    if (g_akaoSeq->unk6C >= v) {
+    if (g_akaoSeq->condition >= v) {
         c->pc = p + (s16)(p[0] | (p[1] << 8));
     } else {
         c->pc = p + 2;
@@ -1092,7 +1092,7 @@ void akao_opProgram(AkaoChannel *arg0) {
     s32 b = *arg0->pc++;
 
     if (arg0->isSe == 0) {
-        i = akao_remapInstrument(g_akaoSeq->unk0, b);
+        i = akao_remapInstrument(g_akaoSeq->flags, b);
     } else {
         i = func_8005EC8C(arg0->seBank, b);
     }
@@ -1104,7 +1104,7 @@ void akao_opProgram(AkaoChannel *arg0) {
 }
 
 void akao_opFE0A(AkaoChannel *c) {
-    s32 i = akao_remapInstrument(g_akaoSeq->unk0, *c->pc++);
+    s32 i = akao_remapInstrument(g_akaoSeq->flags, *c->pc++);
     akao_setChannelInstrument(c, &g_akaoInstruments[i], 0x1010);
     c->instrument = i;
     c->voiceVolScale = 0;
@@ -1113,7 +1113,7 @@ void akao_opFE0A(AkaoChannel *c) {
 
 void akao_opFE14(AkaoChannel *c) {
     u8 v = *c->pc++;
-    u16 *tbl = g_akaoSeq->unk30;
+    u16 *tbl = g_akaoSeq->regionTable;
     if (tbl != NULL) {
         if (tbl[v] > 0x8000) {
             c->voiceVolScale = 0;
@@ -1383,7 +1383,7 @@ void akao_opBE(AkaoChannel *c) {
 
 void akao_opC4(AkaoChannel *c, u32 mask) {
     if (c->isSe == 0) {
-        g_akaoSeq->unk3C |= mask;
+        g_akaoSeq->noiseMask |= mask;
     } else {
         g_akaoSeState.unk1C |= mask;
     }
@@ -1392,7 +1392,7 @@ void akao_opC4(AkaoChannel *c, u32 mask) {
 
 void akao_opC5(AkaoChannel *c, u32 mask) {
     if (c->isSe == 0) {
-        g_akaoSeq->unk3C &= ~mask;
+        g_akaoSeq->noiseMask &= ~mask;
     } else {
         g_akaoSeState.unk1C &= ~mask;
     }
@@ -1402,7 +1402,7 @@ void akao_opC5(AkaoChannel *c, u32 mask) {
 
 void akao_opC6(AkaoChannel *c, u32 mask) {
     if (c->isSe == 0) {
-        g_akaoSeq->unk44 |= mask;
+        g_akaoSeq->pitchModMask |= mask;
     } else if (c->flags & 0x10000) {
         g_akaoSeState.unk24 |= mask;
     }
@@ -1411,7 +1411,7 @@ void akao_opC6(AkaoChannel *c, u32 mask) {
 
 void akao_opC7(AkaoChannel *c, u32 mask) {
     if (c->isSe == 0) {
-        g_akaoSeq->unk44 &= ~mask;
+        g_akaoSeq->pitchModMask &= ~mask;
     } else {
         g_akaoSeState.unk24 &= ~mask;
     }
@@ -1421,7 +1421,7 @@ void akao_opC7(AkaoChannel *c, u32 mask) {
 
 void akao_opC2(AkaoChannel *c, u32 mask) {
     if (c->isSe == 0) {
-        g_akaoSeq->unk40 |= mask;
+        g_akaoSeq->reverbMask |= mask;
     } else {
         g_akaoSeState.unk20 |= mask;
     }
@@ -1430,7 +1430,7 @@ void akao_opC2(AkaoChannel *c, u32 mask) {
 
 void akao_opC3(AkaoChannel *c, u32 mask) {
     if (c->isSe == 0) {
-        g_akaoSeq->unk40 &= ~mask;
+        g_akaoSeq->reverbMask &= ~mask;
     } else {
         g_akaoSeState.unk20 &= ~mask;
     }
@@ -1458,9 +1458,9 @@ void akao_opAC(AkaoChannel *arg0) {
 
     if (arg0->isSe == 0) {
         if (b & 0xC0) {
-            g_akaoSeq->unk6E = (g_akaoSeq->unk6E + (b & 0x3F)) & 0x3F;
+            g_akaoSeq->noiseClock = (g_akaoSeq->noiseClock + (b & 0x3F)) & 0x3F;
         } else {
-            g_akaoSeq->unk6E = b;
+            g_akaoSeq->noiseClock = b;
         }
     } else if (b & 0xC0) {
         g_akaoSeState.unk28 = (g_akaoSeState.unk28 + (b & 0x3F)) & 0x3F;
@@ -1540,11 +1540,11 @@ void akao_opBF(AkaoChannel *c) {
 }
 
 void akao_opFE10(AkaoChannel *c) {
-    g_akaoSeq->unk38 = *c->pc++;
+    g_akaoSeq->firstVoice = *c->pc++;
 }
 
 void akao_opFE11(void) {
-    g_akaoSeq->unk38 = 0;
+    g_akaoSeq->firstVoice = 0;
 }
 
 void akao_opC8(AkaoChannel *c) {
@@ -1625,7 +1625,7 @@ void akao_opDC(AkaoChannel *c) {
 }
 
 void akao_opFE04(AkaoChannel *c) {
-    if (g_akaoSeq->unk34 != 0) {
+    if (g_akaoSeq->drumKit != 0) {
         c->flags = (c->flags & 0xE6FFEFF7) | 8;
     }
 }
@@ -1636,17 +1636,17 @@ void akao_opFE05(AkaoChannel *c) {
 }
 
 void akao_opFE15(AkaoChannel *c) {
-    Unk80080A10 *d = g_akaoSeq;
-    d->unk74 = *c->pc++;
-    d->unk70 = *c->pc++;
-    d->unk76 = 0;
-    d->unk72 = 0;
+    AkaoSeq *d = g_akaoSeq;
+    d->ticksPerBeat = *c->pc++;
+    d->beatsPerMeasure = *c->pc++;
+    d->tick = 0;
+    d->beat = 0;
 }
 
 void akao_opFE16(AkaoChannel *c) {
-    Unk80080A10 *d = g_akaoSeq;
-    d->unk78 = *c->pc++;
-    d->unk78 |= *c->pc++ << 8;
+    AkaoSeq *d = g_akaoSeq;
+    d->measure = *c->pc++;
+    d->measure |= *c->pc++ << 8;
 }
 
 void akao_opB0(AkaoChannel *c, s32 b) {
@@ -1738,11 +1738,11 @@ void akao_opFE1C(AkaoChannel *c) {
 }
 
 void akao_opFE1D(AkaoChannel *c, s32 b) {
-    g_akaoSeq->unk8 |= b;
+    g_akaoSeq->priorityMask |= b;
 }
 
 void akao_opFE1E(AkaoChannel *c, s32 b) {
-    g_akaoSeq->unk8 &= ~b;
+    g_akaoSeq->priorityMask &= ~b;
 }
 
 void akao_opE1(AkaoChannel *c) {

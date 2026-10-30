@@ -19,8 +19,8 @@ u16 akao_shiftInstrumentDown(u32 flags, AkaoChannel *c) {
 }
 
 void func_80059414(void) {
-    Unk80080A10 *a = g_akaoSubSeq;
-    Unk80080A10 *seq;
+    AkaoSeq *a = g_akaoSubSeq;
+    AkaoSeq *seq;
     u32 seq8, a8, seqC, aC;
     u32 seqBoth, aBoth;
     u32 mask;
@@ -35,10 +35,10 @@ void func_80059414(void) {
         lim = 0xFFFFFF;
         seq = g_akaoSeq;
         found = 0;
-        seq8 = seq->unk8;
-        a8 = a->unk8;
-        seqC = seq->unkC;
-        aC = a->unkC;
+        seq8 = seq->priorityMask;
+        a8 = a->priorityMask;
+        seqC = seq->keepVoiceMask;
+        aC = a->keepVoiceMask;
         seqBoth = seq8 & seqC;
         aBoth = a8 & aC;
         v = ~seqBoth | aBoth;

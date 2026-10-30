@@ -1022,55 +1022,55 @@ extern HelpState g_menuHelp;
 
 /* sound sequencer state (AKAO), g_akaoSeq */
 typedef struct {
-    s32 unk0;
-    s32 unk4;
-    s32 unk8;
-    s32 unkC;
-    s32 unk10;
-    s32 unk14;
-    s32 unk18;
-    s32 unk1C;
+    s32 flags; /* 0x10/0x20 instrument set (akao_startSeq: 0x20 remaps programs 0x20-0x7F, akao_remapInstrument), 1/2 out of voices (akao_assignVoices) */
+    s32 activeMask; /* channels running (akao_tickChannels) */
+    s32 priorityMask; /* channels that take voices first, from voice 0 (header +0x24, ops FE1D/FE1E; akao_findFreeVoice) */
+    s32 keepVoiceMask; /* channels that keep their voice between notes (header +0x28); the others get flag 0x40 */
+    s32 keyOnMask; /* channels with a key-on this tick */
+    s32 playingMask; /* channels with a note sounding */
+    s32 keyOffMask; /* channels to key off */
+    s32 pausedMask; /* activeMask saved while paused (akao_cmd9B / akao_cmd9A) */
     union {
         s32 w;
         u16 h[2];
-    } unk20; /* tempo, 16.16 */
-    s32 unk24;
-    s32 unk28; /* tempo accumulator */
-    u8 *unk2C; /* sequence data */
-    u16 *unk30;
-    s32 unk34;
-    s32 unk38;
-    u32 unk3C;
-    u32 unk40;
-    u32 unk44;
-    s32 unk48;
-    s32 unk4C;
-    s32 unk50;
-    s32 unk54;
-    s16 unk58;
+    } tempo; /* tempo, 16.16 */
+    s32 tempoStep; /* op FE tempo slide */
+    s32 tempoAcc; /* tempo accumulator */
+    u8 *data; /* sequence data (akao_startSeq) */
+    u16 *regionTable; /* key-split region table (header +0x30; op FE14) */
+    s32 drumKit; /* drum kit table (AkaoDrumKey[], header +0x34; op FE04) */
+    s32 firstVoice; /* first voice the channels without priority may use (ops FE10/FE11; akao_findFreeVoice, akao_stealVoice) */
+    u32 noiseMask; /* channels with SPU noise (ops C4/C5/CE, akao_setNoiseVoices) */
+    u32 reverbMask; /* channels with reverb (ops C2/C3, drum keys; akao_setReverbVoices) */
+    u32 pitchModMask; /* channels with pitch modulation (ops C6/C7/D2, akao_setPitchModVoices) */
+    s32 reverbDepth; /* << 12 (op FE02, SpuSetReverbModeDepth) */
+    s32 reverbDepthStep; /* (op FE03) */
+    s32 volume; /* music volume << 16 (0x7F), scales every channel (akao_calcChannelVoice) */
+    s32 volumeStep; /* (akao_cmdFadeMusicVolume) */
+    s16 volumeFadeLen;
     u8 pad5A[0x5C - 0x5A];
-    s32 unk5C;
-    s32 unk60;
-    s16 unk64;
-    s16 unk66;
-    u16 unk68;
-    u16 unk6A;
-    u16 unk6C;
-    u16 unk6E;
-    u16 unk70;
-    u16 unk72;
-    u16 unk74;
-    u16 unk76;
-    u16 unk78;
-} Unk80080A10;
-extern Unk80080A10 *g_akaoSeq;
-extern Unk80080A10 g_akaoMainSeq; /* main sequencer state */
+    s32 pan; /* music pan << 16, 0x40 = centre (akao_cmdC4), added to the channel pans */
+    s32 panStep; /* (akao_cmdC5) */
+    s16 panSlideLen;
+    s16 reverbDepthSlideLen;
+    u16 tempoSlideLen;
+    u16 musicId; /* id of the music playing (akao_cmdPlayMusic, akao_stopSeq) */
+    u16 condition; /* value tested by op FE JumpIfGe, set by akao_cmd92 */
+    u16 noiseClock; /* SpuSetNoiseClock value (op AC) */
+    u16 beatsPerMeasure; /* op FE15 */
+    u16 beat;
+    u16 ticksPerBeat; /* op FE15, 0 = no counting */
+    u16 tick;
+    u16 measure; /* measure counter (op FE16 sets it) */
+} AkaoSeq;
+extern AkaoSeq *g_akaoSeq;
+extern AkaoSeq g_akaoMainSeq; /* main sequencer state */
 extern s32 g_akaoTickTimeSum;
 extern u16 g_akaoTickCount; /* tick counter */
 extern s32 g_akaoTickTimes[4]; /* recent tick timings */
 void func_80058F94(void);
 void akao_updateVoices(void);
-void func_8005D628(Unk80080A10 *, AkaoChannel *);
+void func_8005D628(AkaoSeq *, AkaoChannel *);
 extern AkaoChannel *D_800809EC;
 extern s32 D_8007F8D8[2];
 extern s32 D_8008314C;
@@ -1342,25 +1342,25 @@ typedef struct {
 extern Unk4 g_padAnalogThresholds;
 
 extern u8 D_800739B8[];
-extern Unk80080A10 *g_akaoSubSeq;
-extern Unk80080A10 g_akaoSavedSeq;
+extern AkaoSeq *g_akaoSubSeq;
+extern AkaoSeq g_akaoSavedSeq;
 /* AKAO sequence file header (akao_resumeSeq) */
 typedef struct {
     u8 pad0[4];
-    u16 unk4; /* sequence id */
+    u16 id; /* sequence id (akao_command compares it with AkaoSeq.musicId) */
     u8 pad6[2];
-    u16 unk8;
+    u16 reverbMode; /* passed to akao_setReverbMode when the music starts */
     u8 padA[0x14 - 0xA];
-    s32 unk14;
+    s32 instrumentSet; /* compared with D_8007F8DC: equal selects AkaoSeq.flags 0x20 (programs 0x20-0x7F remapped), else 0x10 */
     u8 pad18[0x20 - 0x18];
-    u32 unk20; /* channel mask */
-    s32 unk24;
-    s32 unk28;
+    u32 channelMask; /* channel mask */
+    s32 priorityMask; /* AkaoSeq.priorityMask */
+    s32 keepVoiceMask; /* AkaoSeq.keepVoiceMask */
     u8 pad2C[0x30 - 0x2C];
-    s32 unk30; /* offset from &unk30 */
-    s32 unk34; /* offset from &unk34 */
+    s32 regionTableOfs; /* offset from &unk30 */
+    s32 drumKitOfs; /* offset from &unk34 */
     u8 pad38[0x40 - 0x38];
-    u16 unk40[1]; /* per-channel offsets from the entry itself */
+    u16 channelOfs[1]; /* per-channel offsets from the entry itself */
 } AkaoSeqHeader;
 void akao_resumeSeq(s32, s32);
 void akao_startSeq(s32, s32);
@@ -2069,7 +2069,7 @@ extern Unk4 D_80011A6C; /* rodata constant, used by msg_advanceText */
 
 void func_800615F8(void);
 extern u8 D_8006F40C[];
-extern Unk80080A10 *g_akaoVoiceOwner[24];
+extern AkaoSeq *g_akaoVoiceOwner[24];
 void akao_setVoiceRelease(s32, s32, s32);
 void help_draw(void);
 void help_toggle(void);
@@ -2342,7 +2342,7 @@ extern Unk8 g_cdResult; /* last CD status/result bytes */
 s32 evt_callObjectFunc(EvtObject *, s32, s32, s32);
 extern s32 D_8007AE34;
 extern CdlATV g_akaoCdAtv;
-void akao_markSeqDirty(); /* (Unk80080A10 *, AkaoChannel *) */
+void akao_markSeqDirty(); /* (AkaoSeq *, AkaoChannel *) */
 void card_rollStats(Unk6 *, u8);
 extern s32 g_akaoLfoWaves[];
 
@@ -2620,7 +2620,7 @@ typedef struct {
 } Unk80083168;
 u32 SpuWrite(u8 *, u32);
 void akao_streamStartMono(void);
-void akao_stopSeq(Unk80080A10 *, AkaoChannel *, s32);
+void akao_stopSeq(AkaoSeq *, AkaoChannel *, s32);
 void SpuGetReverbModeType(s32 *); /* libspu SpuGetReverbModeType */
 void func_800618C0(s32, s32);
 void akao_streamStart(s32, s32, s32);
