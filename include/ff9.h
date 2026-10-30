@@ -1289,7 +1289,6 @@ extern s16 D_8007F96E;
 extern s32 D_80083154;
 extern s16 D_8007F96C;
 extern s32 D_80083150;
-} Unk800219D8;
 
 extern Unk4 g_padAnalogThresholds;
 
