@@ -397,7 +397,7 @@ void akao_stepChannelSlides(AkaoChannel *c, u32 mask, s32 kind) {
             } else {
                 g_akaoSeState.noiseMask ^= mask;
             }
-            g_akaoFlags.unk8 |= 0x110;
+            g_akaoFlags.dirty |= 0x110;
         }
     }
     if (c->pitchModTimer != 0) {
@@ -407,7 +407,7 @@ void akao_stepChannelSlides(AkaoChannel *c, u32 mask, s32 kind) {
             } else {
                 g_akaoSeState.pitchModMask ^= mask;
             }
-            g_akaoFlags.unk8 |= 0x100;
+            g_akaoFlags.dirty |= 0x100;
         }
     }
     if ((u16)c->vibratoDepthSlideLen != 0) {
@@ -695,7 +695,7 @@ void akao_assignVoices(AkaoChannel *ch, u32 mask, u32 keep, u32 *used) {
                     if (ch->voice < 24) {
                         akao_writeVoice(ch->voice, (AkaoVoiceRegs *)&ch->voice, (u16)ch->voiceVolScale);
                         g_akaoVoiceOwner[ch->voice] = g_akaoSeq;
-                        g_akaoFlags.unk8 |= 0x100;
+                        g_akaoFlags.dirty |= 0x100;
                     }
                 } else if (ch->voice < 24) {
                     /* identical branches (jump2 merges them), as in math_buildRotMatrixZXY */
@@ -760,7 +760,7 @@ void func_80058990(AkaoChannel *c) {
     s32 v;
     D_80080A18.unkC = v = c->tremoloPeriodStep;
     v >>= 16;
-    v *= D_80080A18.unk0 >> 8;
+    v *= D_80080A18.volume >> 8;
     v /= 127;
     v <<= 8;
     c->tremoloPeriodStep = v;
@@ -789,7 +789,7 @@ void akao_updateVoices(void) {
         akao_readEnvelopes(ex);
     }
     if (g_akaoSubSeq != NULL) {
-        if (g_akaoFlags.unk4 & 0x100) {
+        if (g_akaoFlags.mode & 0x100) {
             ((void (*)(AkaoSeq *, AkaoChannel *))func_80058990)(g_akaoSubSeq, g_akaoSubChannels);
         }
         t = g_akaoSubSeq;
@@ -821,7 +821,7 @@ void akao_updateVoices(void) {
             akao_assignVoices(g_akaoChannels, m2, b2, &keyon);
             g_akaoSeq->keyOnMask = 0;
         }
-        if (g_akaoFlags.unk4 & 0x100) {
+        if (g_akaoFlags.mode & 0x100) {
             if (m2) {
                 ((void (*)(AkaoSeq *, AkaoChannel *))func_800589E0)(g_akaoSubSeq, g_akaoSubChannels);
             } else {
@@ -857,14 +857,14 @@ void akao_updateVoices(void) {
         }
         D_80080A74 = 0;
     }
-    m2 = g_akaoFlags.unk8;
+    m2 = g_akaoFlags.dirty;
     if (m2 & 0x80) {
         SpuSetReverbModeDepth(g_akaoSeq->reverbDepth >> 12, g_akaoSeq->reverbDepth >> 12);
-        g_akaoFlags.unk8 &= ~0x80;
+        g_akaoFlags.dirty &= ~0x80;
     }
     if (m2 & 0x10) {
         SpuSetNoiseClock(g_akaoSeState.activeMask ? g_akaoSeState.noiseClock : g_akaoSeq->noiseClock);
-        g_akaoFlags.unk8 &= ~0x10;
+        g_akaoFlags.dirty &= ~0x10;
     }
     if (m2 & 0x100) {
         func_80059140((u32 *)&D_80083238[1], g_akaoSubSeq->noiseMask, g_akaoSeq->noiseMask, g_akaoSeState.noiseMask);
@@ -873,7 +873,7 @@ void akao_updateVoices(void) {
         akao_setReverbVoices(D_80083238[0]);
         akao_setNoiseVoices(D_80083238[1]);
         akao_setPitchModVoices(D_80083238[2]);
-        g_akaoFlags.unk8 &= ~0x100;
+        g_akaoFlags.dirty &= ~0x100;
     }
     if (keyon) {
         akao_keyOn(keyon);
@@ -966,5 +966,5 @@ void func_80059140(u32 *out, u32 m1, u32 m2, u32 extra) {
         func_80058F34(g_akaoChannels, &r, b, keep);
     }
     *out = r |= extra;
-    g_akaoFlags.unk8 |= 0x100;
+    g_akaoFlags.dirty |= 0x100;
 }

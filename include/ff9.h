@@ -1368,11 +1368,11 @@ extern s16 D_8007F95A;
 extern s32 D_8007F8DC;
 extern s32 D_8008322C;
 typedef struct {
-    s32 unk0;
-    s32 unk4;
-    s32 unk8;
-} Unk80083158;
-extern Unk80083158 g_akaoFlags;
+    s32 bankUpload; /* 1 while a sound bank upload runs (akao_beginBankUpload / akao_uploadBank) */
+    s32 mode; /* output mode 1/2 (akao_cmdSetOutputMode1/2), 0x100 crossfade pending (akao_cmdCrossfadeMusic) */
+    s32 dirty; /* SPU state to update in akao_updateVoices: 0x10 noise clock, 0x80 reverb depth, 0x100 noise/reverb/pitch-mod voice masks */
+} AkaoFlags;
+extern AkaoFlags g_akaoFlags;
 /* menu state */
 typedef struct {
     u8 unk0;
@@ -2347,12 +2347,12 @@ void card_rollStats(Unk6 *, u8);
 extern s32 g_akaoLfoWaves[];
 
 typedef struct {
-    s32 unk0;
-    s32 unk4;
-    s32 unk8;
+    s32 volume; /* fade-out volume of the crossfaded music (<< 16 of 0x7F), akao_cmdCrossfadeMusic */
+    s32 volumeStep;
+    s32 fadeLen; /* frames left; at 0 the old music stops (func_8005D628) */
     s32 unkC; /* also accessed as D_80080A24 */
-} Unk80080A18;
-extern Unk80080A18 D_80080A18;
+} AkaoCrossfade;
+extern AkaoCrossfade D_80080A18;
 
 
 extern AkaoChannel g_akaoChannels[];
@@ -2595,36 +2595,36 @@ s32 evt_getPartyChrIndex(s32);
 void msg_measureLine(u8 **, s32 *); /* add the width of a text control code */
 
 typedef struct {
-    u8 *unk0; /* stream read pointer */
-    u8 *unk4; /* loop start */
-    s32 unk8;
-    u32 unkC;
-    s32 unk10;
-    u32 unk14; /* bytes left */
-    u32 unk18; /* loop length (initial) */
-    u32 unk1C; /* loop length */
+    u8 *readPtr; /* stream read pointer */
+    u8 *loopPtr; /* loop start (header flags & 2) */
+    s32 flags; /* header +0x18 flags: 1 stereo halves, 2 loops, 0x400, 0x1000000 */
+    u32 voiceMask; /* voices the stream plays on (akao_streamStart), 0 = stopped */
+    s32 voice; /* first of its two voices (left, right = voice + 1) */
+    u32 bytesLeft; /* bytes left */
+    u32 loopLength; /* loop length (initial), header +0x20 */
+    u32 loopBytes; /* bytesLeft reloaded at the loop point (akao_streamRefill) */
     s32 unk20;
     s32 unk24;
     s32 unk28;
-    s32 unk2C;
+    s32 spuAddr; /* SPU address of the stream buffer (SpuSetTransferStartAddr, voice start/loop) */
     s32 unk30;
     s32 unk34;
     u32 unk38;
     u32 unk3C;
-    s32 unk40; /* volume */
-    s32 unk44;
-    s32 unk48;
-    s32 unk4C; /* pan in bits 8-15 */
+    s32 volume; /* volume (akao_cmdE4/E5, akao_streamSetVoice) */
+    s32 volumeStep; /* (akao_cmdE5 fade) */
+    s32 volumeFadeLen;
+    s32 pan; /* pan in bits 8-15 (akao_cmdE6) */
     u8 pad50[0x58 - 0x50];
-    s32 unk58;
-} Unk80083168;
+    s32 pitch; /* header +0x1C, akao_setVoicePitch on both voices */
+} AkaoStreamState;
 u32 SpuWrite(u8 *, u32);
 void akao_streamStartMono(void);
 void akao_stopSeq(AkaoSeq *, AkaoChannel *, s32);
 void SpuGetReverbModeType(s32 *); /* libspu SpuGetReverbModeType */
 void func_800618C0(s32, s32);
 void akao_streamStart(s32, s32, s32);
-extern Unk80083168 g_akaoStream;
+extern AkaoStreamState g_akaoStream;
 s32 func_80061BC8(); /* K&R: callers pass one or two arguments */
 s32 func_80061FBC(s32, s32, s32, void (*)(void));
 void akao_setVoiceLoopAddr(s32, s32);
@@ -3128,17 +3128,17 @@ void akao_setVoiceDecay(s32, s32);
 void akao_setVoiceSustainLevel(s32, s32);
 /* streamed AKAO sound header (func_800616F8) */
 typedef struct {
-    s32 unk0; /* "AKAO" */
+    s32 magic; /* "AKAO" */
     s32 unk4;
     u8 pad8[0x10 - 0x8];
-    u32 unk10; /* data size */
-    u32 unk14; /* loop start offset */
-    s32 unk18; /* flags */
-    u16 unk1C;
+    u32 dataSize; /* data size */
+    u32 loopStart; /* loop start offset */
+    s32 flags; /* flags: AkaoStreamState.flags */
+    u16 pitch; /* voice pitch (AkaoStreamState.pitch) */
     u8 pad1E[0x20 - 0x1E];
-    u32 unk20; /* loop length */
+    u32 loopLength; /* loop length */
     u8 pad24[0x40 - 0x24];
-    u8 unk40[1]; /* sample data */
+    u8 data[1]; /* sample data */
 } AkaoStream;
 s32 akao_allocStreamVoices(void);
 void func_80061624(void);

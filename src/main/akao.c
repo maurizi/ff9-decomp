@@ -51,7 +51,7 @@ void akao_tickSe(void) {
     s32 v;
     AkaoChannel *c;
     u32 mask;
-    Unk80083168 *s;
+    AkaoStreamState *s;
     s32 old;
     s32 k;
 
@@ -62,20 +62,20 @@ void akao_tickSe(void) {
         akao_applyCdVolume();
     }
     s = &g_akaoStream;
-    if (s->unkC != 0 && s->unk48 != 0) {
-        s->unk48--;
-        old = s->unk40;
-        v = old + s->unk44;
+    if (s->voiceMask != 0 && s->volumeFadeLen != 0) {
+        s->volumeFadeLen--;
+        old = s->volume;
+        v = old + s->volumeStep;
         if ((v & 0xFF00) != (old & 0xFF00)) {
             if (g_akaoOutputFlags & 2) {
                 old = (old * g_akaoMonoGain) >> 16;
-                akao_setVoiceVolume(s->unk10, old, old, 0);
-                akao_setVoiceVolume(s->unk10 + 1, old, old, 0);
+                akao_setVoiceVolume(s->voice, old, old, 0);
+                akao_setVoiceVolume(s->voice + 1, old, old, 0);
             } else {
                 old = v << 15;
                 old >>= 16;
-                akao_setVoiceVolume(s->unk10, old, 0, 0);
-                akao_setVoiceVolume(s->unk10 + 1, 0, old, 0);
+                akao_setVoiceVolume(s->voice, old, 0, 0);
+                akao_setVoiceVolume(s->voice + 1, 0, old, 0);
             }
         }
         g_akaoSeVolume = v & 0xFFFF;
@@ -226,10 +226,10 @@ u32 akao_tickChannels(AkaoChannel *chans, s32 sub) {
                 if (g_akaoSeq->reverbDepthSlideLen != 0) {
                     g_akaoSeq->reverbDepthSlideLen--;
                     g_akaoSeq->reverbDepth += g_akaoSeq->reverbDepthStep;
-                    flags = g_akaoFlags.unk8;
+                    flags = g_akaoFlags.dirty;
                     flags |= 0x80;
                     if (sub == 0) {
-                        g_akaoFlags.unk8 = flags;
+                        g_akaoFlags.dirty = flags;
                     }
                 }
                 if (g_akaoSeq->ticksPerBeat != 0) {
@@ -256,8 +256,8 @@ u32 akao_tickChannels(AkaoChannel *chans, s32 sub) {
 void func_8005D628(AkaoSeq *arg0, AkaoChannel *arg1) {
     s32 t;
 
-    if (D_80080A18.unk8 != 0) {
-        if (--D_80080A18.unk8 == 0) {
+    if (D_80080A18.fadeLen != 0) {
+        if (--D_80080A18.fadeLen == 0) {
             s32 v = arg0->activeMask;
             arg0->musicId = 0;
             arg0->activeMask = 0;
@@ -266,11 +266,11 @@ void func_8005D628(AkaoSeq *arg0, AkaoChannel *arg1) {
             arg0->keyOffMask = v;
             return;
         }
-        t = D_80080A18.unk0 + D_80080A18.unk4;
-        if ((t & 0xFFFF0000) != (D_80080A18.unk0 & 0xFFFF0000)) {
+        t = D_80080A18.volume + D_80080A18.volumeStep;
+        if ((t & 0xFFFF0000) != (D_80080A18.volume & 0xFFFF0000)) {
             akao_markSeqDirty(arg0, arg1, arg0);
         }
-        D_80080A18.unk0 = t;
+        D_80080A18.volume = t;
     }
 }
 
@@ -321,7 +321,7 @@ s32 akao_tick(void) {
                 tmp->activeMask = 0;
             }
         }
-        if ((g_akaoFlags.unk8 | g_akaoSeq->playingMask | g_akaoSeState.playingMask) != 0 || (g_akaoSubSeq != NULL && g_akaoSubSeq->playingMask != 0)) {
+        if ((g_akaoFlags.dirty | g_akaoSeq->playingMask | g_akaoSeState.playingMask) != 0 || (g_akaoSubSeq != NULL && g_akaoSubSeq->playingMask != 0)) {
             akao_updateVoices();
         }
         if (g_akaoSeq->activeMask != 0) {
@@ -333,10 +333,10 @@ s32 akao_tick(void) {
                 akao_tickChannels(g_akaoSubChannels, 1);
                 g_akaoSeq = &g_akaoMainSeq;
             }
-            if ((g_akaoFlags.unk4 & 0x100) && !(g_akaoTickCount & 3)) {
+            if ((g_akaoFlags.mode & 0x100) && !(g_akaoTickCount & 3)) {
                 func_8005D628(g_akaoSubSeq, g_akaoSubChannels);
                 if (g_akaoSubSeq->activeMask == 0) {
-                    g_akaoFlags.unk4 &= ~0x100;
+                    g_akaoFlags.mode &= ~0x100;
                 }
             }
         }
@@ -664,7 +664,7 @@ s32 func_8005E170(AkaoChannel *c, u32 mask, s32 key) {
     } else {
         g_akaoSeq->reverbMask &= ~mask;
     }
-    g_akaoFlags.unk8 |= 0x100;
+    g_akaoFlags.dirty |= 0x100;
     return r;
 }
 
@@ -906,7 +906,7 @@ void akao_opEnd(AkaoChannel *c, s32 mask) {
         akao_stopSeChannel(c, mask);
     }
     c->flags = 0;
-    g_akaoFlags.unk8 |= 0x110;
+    g_akaoFlags.dirty |= 0x110;
 }
 
 void akao_opFETempo(AkaoChannel *c) {
@@ -942,7 +942,7 @@ void akao_opFE02(AkaoChannel *c) {
     v = hi << 20;
     v |= lo << 12;
     a->reverbDepthSlideLen = 0;
-    g_akaoFlags.unk8 |= 0x80;
+    g_akaoFlags.dirty |= 0x80;
     a->reverbDepth = v;
 }
 
@@ -1387,7 +1387,7 @@ void akao_opC4(AkaoChannel *c, u32 mask) {
     } else {
         g_akaoSeState.noiseMask |= mask;
     }
-    g_akaoFlags.unk8 |= 0x110;
+    g_akaoFlags.dirty |= 0x110;
 }
 
 void akao_opC5(AkaoChannel *c, u32 mask) {
@@ -1396,7 +1396,7 @@ void akao_opC5(AkaoChannel *c, u32 mask) {
     } else {
         g_akaoSeState.noiseMask &= ~mask;
     }
-    g_akaoFlags.unk8 |= 0x110;
+    g_akaoFlags.dirty |= 0x110;
     c->noiseTimer = 0;
 }
 
@@ -1406,7 +1406,7 @@ void akao_opC6(AkaoChannel *c, u32 mask) {
     } else if (c->flags & 0x10000) {
         g_akaoSeState.pitchModMask |= mask;
     }
-    g_akaoFlags.unk8 |= 0x100;
+    g_akaoFlags.dirty |= 0x100;
 }
 
 void akao_opC7(AkaoChannel *c, u32 mask) {
@@ -1415,7 +1415,7 @@ void akao_opC7(AkaoChannel *c, u32 mask) {
     } else {
         g_akaoSeState.pitchModMask &= ~mask;
     }
-    g_akaoFlags.unk8 |= 0x100;
+    g_akaoFlags.dirty |= 0x100;
     c->pitchModTimer = 0;
 }
 
@@ -1425,7 +1425,7 @@ void akao_opC2(AkaoChannel *c, u32 mask) {
     } else {
         g_akaoSeState.reverbMask |= mask;
     }
-    g_akaoFlags.unk8 |= 0x100;
+    g_akaoFlags.dirty |= 0x100;
 }
 
 void akao_opC3(AkaoChannel *c, u32 mask) {
@@ -1434,7 +1434,7 @@ void akao_opC3(AkaoChannel *c, u32 mask) {
     } else {
         g_akaoSeState.reverbMask &= ~mask;
     }
-    g_akaoFlags.unk8 |= 0x100;
+    g_akaoFlags.dirty |= 0x100;
 }
 
 void akao_opCC(AkaoChannel *a) {
@@ -1467,7 +1467,7 @@ void akao_opAC(AkaoChannel *arg0) {
     } else {
         D_80080A98 = b;
     }
-    g_akaoFlags.unk8 |= 0x10;
+    g_akaoFlags.dirty |= 0x10;
 }
 
 void akao_opAD(AkaoChannel *c) {
@@ -1759,20 +1759,20 @@ void akao_opInvalid(AkaoChannel *c, s32 b) {
 
 void akao_streamStop(void) {
     u32 m;
-    if (g_akaoStream.unkC != 0) {
+    if (g_akaoStream.voiceMask != 0) {
         SpuSetIRQ(0);
         SpuSetIRQCallback(NULL);
-        akao_keyOff(g_akaoStream.unkC);
-        if (g_akaoStream.unk8 & 0x400) {
-            akao_setVoiceLoopAddr(g_akaoStream.unk10 - 2, 0x1030);
-            akao_setVoiceLoopAddr(g_akaoStream.unk10 - 1, 0x1030);
+        akao_keyOff(g_akaoStream.voiceMask);
+        if (g_akaoStream.flags & 0x400) {
+            akao_setVoiceLoopAddr(g_akaoStream.voice - 2, 0x1030);
+            akao_setVoiceLoopAddr(g_akaoStream.voice - 1, 0x1030);
         }
-        akao_setVoiceLoopAddr(g_akaoStream.unk10, 0x1030);
-        akao_setVoiceLoopAddr(g_akaoStream.unk10 + 1, 0x1030);
-        m = g_akaoStream.unkC;
-        g_akaoStream.unkC = 0;
+        akao_setVoiceLoopAddr(g_akaoStream.voice, 0x1030);
+        akao_setVoiceLoopAddr(g_akaoStream.voice + 1, 0x1030);
+        m = g_akaoStream.voiceMask;
+        g_akaoStream.voiceMask = 0;
         g_akaoSeState.reverbMask &= ~m;
-        g_akaoFlags.unk8 |= 0x100;
+        g_akaoFlags.dirty |= 0x100;
     }
 }
 
@@ -1798,7 +1798,7 @@ s32 akao_allocStreamVoices(void) {
 }
 
 void akao_streamUploadSecond(void) {
-    u8 *p = g_akaoStream.unk0 + 0x800;
+    u8 *p = g_akaoStream.readPtr + 0x800;
     SpuSetTransferStartAddr(0x2100);
     SpuSetTransferCallback(akao_streamStartMono);
     SpuWrite(p, 0x800);
@@ -1815,45 +1815,45 @@ void akao_streamStart(s32 addr, s32 vol, s32 flag) {
     if (v == -1) {
         return;
     }
-    g_akaoStream.unk4C = vol;
+    g_akaoStream.pan = vol;
     SpuSetIRQ(0);
     SpuSetIRQCallback(NULL);
     h = (StreamHeader *)addr;
-    g_akaoStream.unk0 = (u8 *)h + 0x40;
-    g_akaoStream.unk14 = h->unk10;
+    g_akaoStream.readPtr = (u8 *)h + 0x40;
+    g_akaoStream.bytesLeft = h->unk10;
     mask = (1 << v) | (1 << (v + 1));
     t = h->unk20;
-    g_akaoStream.unk10 = v;
-    g_akaoStream.unkC = mask;
-    g_akaoStream.unk18 = t;
+    g_akaoStream.voice = v;
+    g_akaoStream.voiceMask = mask;
+    g_akaoStream.loopLength = t;
     akao_keyOff(mask);
-    g_akaoStream.unk8 = h->unk18;
-    g_akaoStream.unk58 = h->unk1C;
-    g_akaoStream.unk10 = v;
-    g_akaoStream.unkC = mask;
+    g_akaoStream.flags = h->unk18;
+    g_akaoStream.pitch = h->unk1C;
+    g_akaoStream.voice = v;
+    g_akaoStream.voiceMask = mask;
     akao_keyOff(mask);
     SpuSetTransferMode(0);
     SpuSetTransferStartAddr(0x1100);
     g_akaoSpuBusy = 1;
-    g_akaoStream.unk4 = (g_akaoStream.unk8 & 2) ? (s32)(g_akaoStream.unk0 + h->unk14) : 0;
-    if (g_akaoStream.unk8 & 1) {
-        g_akaoStream.unk1C = (g_akaoStream.unk8 & 2) ? g_akaoStream.unk14 - (h->unk14 >> 1) : 0;
+    g_akaoStream.loopPtr = (g_akaoStream.flags & 2) ? (s32)(g_akaoStream.readPtr + h->unk14) : 0;
+    if (g_akaoStream.flags & 1) {
+        g_akaoStream.loopBytes = (g_akaoStream.flags & 2) ? g_akaoStream.bytesLeft - (h->unk14 >> 1) : 0;
         SpuSetTransferCallback(akao_streamStartStereo);
         size = 0x2000;
     } else {
-        g_akaoStream.unk1C = (g_akaoStream.unk8 & 2) ? g_akaoStream.unk14 - h->unk14 : 0;
+        g_akaoStream.loopBytes = (g_akaoStream.flags & 2) ? g_akaoStream.bytesLeft - h->unk14 : 0;
         SpuSetTransferCallback(akao_streamUploadSecond);
         size = 0x800;
     }
-    SpuWrite(g_akaoStream.unk0, size);
+    SpuWrite(g_akaoStream.readPtr, size);
     if (flag) {
-        g_akaoSeState.reverbMask |= g_akaoStream.unkC;
+        g_akaoSeState.reverbMask |= g_akaoStream.voiceMask;
     } else {
-        g_akaoSeState.reverbMask &= ~g_akaoStream.unkC;
+        g_akaoSeState.reverbMask &= ~g_akaoStream.voiceMask;
     }
     g_akaoSeState.pitchModMask &= ~g_akaoStreamVoices;
     g_akaoSeState.noiseMask &= ~g_akaoStreamVoices;
-    g_akaoFlags.unk8 |= 0x100;
+    g_akaoFlags.dirty |= 0x100;
 }
 
 void akao_streamSetVoice(s32 v, s32 mode, s32 a, s32 b) {
@@ -1874,9 +1874,9 @@ void akao_streamSetVoice(s32 v, s32 mode, s32 a, s32 b) {
         h = g_akaoSeVolume >> 1;
         l = r = (h >> 1) + (h >> 2);
     } else {
-        pan = (u8)(g_akaoStream.unk4C >> 8);
-        l = (u32)(g_akaoStream.unk40 * g_akaoPanCurve[pan]) >> 16;
-        r = (u32)(g_akaoStream.unk40 * g_akaoPanCurve[pan ^ 0xFF]) >> 16;
+        pan = (u8)(g_akaoStream.pan >> 8);
+        l = (u32)(g_akaoStream.volume * g_akaoPanCurve[pan]) >> 16;
+        r = (u32)(g_akaoStream.volume * g_akaoPanCurve[pan ^ 0xFF]) >> 16;
     }
     akao_setVoiceVolume(v, l, r, 0);
     akao_setVoicePitch(v, D_800831C0);
@@ -1890,60 +1890,60 @@ void akao_streamSetVoice(s32 v, s32 mode, s32 a, s32 b) {
 }
 
 void akao_streamKeyOn(s32 a, s32 b, void (*cb)(void)) {
-    if (g_akaoStream.unkC != 0) {
+    if (g_akaoStream.voiceMask != 0) {
         SpuSetTransferCallback(NULL);
         g_akaoSpuBusy = 0;
-        if (g_akaoStream.unk14 > 0x1000) {
-            g_akaoStream.unk14 -= 0x1000;
-            g_akaoStream.unk0 += a;
+        if (g_akaoStream.bytesLeft > 0x1000) {
+            g_akaoStream.bytesLeft -= 0x1000;
+            g_akaoStream.readPtr += a;
             SpuSetIRQCallback(cb);
         } else {
             SpuSetIRQCallback(akao_streamStop);
             b = 0x1030;
-            g_akaoStream.unk14 = 0;
+            g_akaoStream.bytesLeft = 0;
         }
         SpuSetIRQAddr(b + 8);
-        akao_keyOn(g_akaoStream.unkC);
+        akao_keyOn(g_akaoStream.voiceMask);
         SpuSetIRQ(1);
     }
 }
 
 void akao_streamStartMono(void) {
-    akao_streamSetVoice(g_akaoStream.unk10, 0, 0x1100, 0x2100);
-    akao_streamSetVoice(g_akaoStream.unk10 + 1, 0, 0x1100, 0x2100);
+    akao_streamSetVoice(g_akaoStream.voice, 0, 0x1100, 0x2100);
+    akao_streamSetVoice(g_akaoStream.voice + 1, 0, 0x1100, 0x2100);
     akao_streamKeyOn(0x1000, 0x2100, akao_streamRefillMonoA);
 }
 
 void akao_streamStartStereo(void) {
-    akao_streamSetVoice(g_akaoStream.unk10, 1, 0x1100, 0x2100);
-    akao_streamSetVoice(g_akaoStream.unk10 + 1, 2, 0x1900, 0x2900);
+    akao_streamSetVoice(g_akaoStream.voice, 1, 0x1100, 0x2100);
+    akao_streamSetVoice(g_akaoStream.voice + 1, 2, 0x1900, 0x2900);
     akao_streamKeyOn(0x2000, 0x2100, akao_streamRefillStereoA);
 }
 
 void akao_streamRefill(s32 a, s32 b, s32 n, void (*cb)(void)) {
-    if (g_akaoStream.unkC == 0 || g_akaoStream.unk14 == 0) {
+    if (g_akaoStream.voiceMask == 0 || g_akaoStream.bytesLeft == 0) {
         return;
     }
     SpuSetTransferStartAddr(a);
     akao_beginSpuTransfer();
-    SpuWrite(g_akaoStream.unk0, n);
+    SpuWrite(g_akaoStream.readPtr, n);
     SpuSetIRQ(0);
-    if (g_akaoStream.unk14 > 0x800) {
+    if (g_akaoStream.bytesLeft > 0x800) {
         SpuSetIRQCallback(cb);
-        g_akaoStream.unk14 -= 0x800;
-        g_akaoStream.unk0 += n;
-    } else if (g_akaoStream.unk4 != NULL) {
+        g_akaoStream.bytesLeft -= 0x800;
+        g_akaoStream.readPtr += n;
+    } else if (g_akaoStream.loopPtr != NULL) {
         SpuSetIRQCallback(cb);
-        g_akaoStream.unk0 = g_akaoStream.unk4;
-        g_akaoStream.unk14 = g_akaoStream.unk1C;
+        g_akaoStream.readPtr = g_akaoStream.loopPtr;
+        g_akaoStream.bytesLeft = g_akaoStream.loopBytes;
     } else {
         SpuSetIRQCallback(akao_streamStop);
         b = 0x1030;
         a = b;
-        g_akaoStream.unk14 = 0;
+        g_akaoStream.bytesLeft = 0;
     }
-    akao_setVoiceLoopAddr(g_akaoStream.unk10, a);
-    akao_setVoiceLoopAddr(g_akaoStream.unk10 + 1, b);
+    akao_setVoiceLoopAddr(g_akaoStream.voice, a);
+    akao_setVoiceLoopAddr(g_akaoStream.voice + 1, b);
     SpuSetIRQAddr(a + 8);
     SpuSetIRQ(1);
 }
@@ -1967,7 +1967,7 @@ void akao_streamRefillStereoB(void) {
 void akao_cmdE0(s32 *a) {
     akao_streamStop();
     akao_streamStart(a[0], a[1], a[2]);
-    g_akaoSeState.activeMask &= ~g_akaoStream.unkC;
+    g_akaoSeState.activeMask &= ~g_akaoStream.voiceMask;
 }
 
 void akao_cmdE2(void) {
@@ -1975,32 +1975,32 @@ void akao_cmdE2(void) {
 }
 
 void akao_cmdE4(s32 *a) {
-    Unk80083168 *d = &g_akaoStream;
+    AkaoStreamState *d = &g_akaoStream;
     s32 v = *a;
     s32 l;
     s32 r;
     s32 pan;
 
-    d->unk48 = 0;
-    d->unk40 = v;
-    if (d->unkC == 0) {
+    d->volumeFadeLen = 0;
+    d->volume = v;
+    if (d->voiceMask == 0) {
         return;
     }
     if (g_akaoOutputFlags & 2) {
         v = v * g_akaoMonoGain >> 16;
-        akao_setVoiceVolume(d->unk10, v, v, 0);
-        akao_setVoiceVolume(d->unk10 + 1, v, v, 0);
-    } else if (d->unk8 & 1) {
+        akao_setVoiceVolume(d->voice, v, v, 0);
+        akao_setVoiceVolume(d->voice + 1, v, v, 0);
+    } else if (d->flags & 1) {
         v <<= 15;
         v >>= 16;
-        akao_setVoiceVolume(d->unk10, v, 0, 0);
-        akao_setVoiceVolume(d->unk10 + 1, 0, v, 0);
+        akao_setVoiceVolume(d->voice, v, 0, 0);
+        akao_setVoiceVolume(d->voice + 1, 0, v, 0);
     } else {
-        pan = (u8)(d->unk4C >> 8);
+        pan = (u8)(d->pan >> 8);
         l = v * g_akaoPanCurve[pan] >> 16;
         r = v * g_akaoPanCurve[pan ^ 0xFF] >> 16;
-        akao_setVoiceVolume(d->unk10, l, r, 0);
-        akao_setVoiceVolume(d->unk10 + 1, l, r, 0);
+        akao_setVoiceVolume(d->voice, l, r, 0);
+        akao_setVoiceVolume(d->voice + 1, l, r, 0);
     }
 }
 
@@ -2010,38 +2010,38 @@ void akao_cmdE5(Unk80080AA0 *p) {
     if (p->unk0 != 0) {
         n = p->unk0;
     }
-    g_akaoStream.unk44 = (s16)((s16)((u16)p->unk4 - (u16)g_akaoStream.unk40) / n);
-    g_akaoStream.unk48 = n;
+    g_akaoStream.volumeStep = (s16)((s16)((u16)p->unk4 - (u16)g_akaoStream.volume) / n);
+    g_akaoStream.volumeFadeLen = n;
 }
 
 void akao_cmdE6(s32 *a) {
-    Unk80083168 *d = &g_akaoStream;
+    AkaoStreamState *d = &g_akaoStream;
     s32 p = *a;
     s32 v;
     s32 l;
     s32 r;
     s32 pan;
 
-    d->unk4C = p;
-    if (d->unkC == 0) {
+    d->pan = p;
+    if (d->voiceMask == 0) {
         return;
     }
     if (g_akaoOutputFlags & 2) {
-        v = d->unk40 * g_akaoMonoGain >> 16;
-        akao_setVoiceVolume(d->unk10, v, v, 0);
-        akao_setVoiceVolume(d->unk10 + 1, v, v, 0);
-    } else if (d->unk8 & 1) {
-        v = d->unk40;
+        v = d->volume * g_akaoMonoGain >> 16;
+        akao_setVoiceVolume(d->voice, v, v, 0);
+        akao_setVoiceVolume(d->voice + 1, v, v, 0);
+    } else if (d->flags & 1) {
+        v = d->volume;
         v <<= 15;
         v >>= 16;
-        akao_setVoiceVolume(d->unk10, v, 0, 0);
-        akao_setVoiceVolume(d->unk10 + 1, 0, v, 0);
+        akao_setVoiceVolume(d->voice, v, 0, 0);
+        akao_setVoiceVolume(d->voice + 1, 0, v, 0);
     } else {
         pan = (p >> 8) & 0xFF;
-        l = d->unk40 * g_akaoPanCurve[pan] >> 16;
-        r = d->unk40 * g_akaoPanCurve[pan ^ 0xFF] >> 16;
-        akao_setVoiceVolume(d->unk10, l, r, 0);
-        akao_setVoiceVolume(d->unk10 + 1, l, r, 0);
+        l = d->volume * g_akaoPanCurve[pan] >> 16;
+        r = d->volume * g_akaoPanCurve[pan ^ 0xFF] >> 16;
+        akao_setVoiceVolume(d->voice, l, r, 0);
+        akao_setVoiceVolume(d->voice + 1, l, r, 0);
     }
 }
 
@@ -2052,24 +2052,24 @@ void func_800615F8(void) {
 
 void func_80061624(void) {
     u32 irq;
-    if (g_akaoStream.unk14 > 0x2000) {
-        SpuSetTransferStartAddr(g_akaoStream.unk2C + 0x2000);
-        akao_spuWrite(g_akaoStream.unk0, g_akaoStream.unk14 - 0x2000);
-        irq = g_akaoStream.unk2C + 0x1FF8;
+    if (g_akaoStream.bytesLeft > 0x2000) {
+        SpuSetTransferStartAddr(g_akaoStream.spuAddr + 0x2000);
+        akao_spuWrite(g_akaoStream.readPtr, g_akaoStream.bytesLeft - 0x2000);
+        irq = g_akaoStream.spuAddr + 0x1FF8;
     } else {
-        irq = g_akaoStream.unk2C + (g_akaoStream.unk14 >> 1) + 8;
+        irq = g_akaoStream.spuAddr + (g_akaoStream.bytesLeft >> 1) + 8;
     }
-    akao_streamSetVoice(g_akaoStream.unk10, 0, g_akaoStream.unk2C, 0x1030);
-    akao_streamSetVoice(g_akaoStream.unk10 + 1, 0, g_akaoStream.unk2C, 0x1030);
+    akao_streamSetVoice(g_akaoStream.voice, 0, g_akaoStream.spuAddr, 0x1030);
+    akao_streamSetVoice(g_akaoStream.voice + 1, 0, g_akaoStream.spuAddr, 0x1030);
     SpuSetIRQAddr(irq);
     SpuSetIRQCallback(func_800615F8);
-    akao_keyOn(g_akaoStream.unkC);
+    akao_keyOn(g_akaoStream.voiceMask);
     SpuSetIRQ(1);
 }
 
 void func_800616F8(s32 arg0, s32 b, s32 addr, s32 loop) {
     AkaoStream *h = (AkaoStream *)arg0;
-    Unk80083168 *d;
+    AkaoStreamState *d;
     s32 v;
     u32 n;
     u32 m;
@@ -2079,36 +2079,36 @@ void func_800616F8(s32 arg0, s32 b, s32 addr, s32 loop) {
         SpuSetIRQ(0);
         SpuSetIRQCallback(NULL);
         d = &g_akaoStream;
-        d->unk4C = b;
-        g_akaoStream.unk0 = h->unk40;
-        d->unk14 = h->unk10;
-        d->unk18 = h->unk20;
+        d->pan = b;
+        g_akaoStream.readPtr = h->data;
+        d->bytesLeft = h->dataSize;
+        d->loopLength = h->loopLength;
         m = (1 << v) | (1 << (v + 1));
-        n = d->unkC;
-        d->unk10 = v;
-        d->unkC = m;
+        n = d->voiceMask;
+        d->voice = v;
+        d->voiceMask = m;
         akao_keyOff(m | n);
-        d->unk8 = h->unk18;
-        d->unk58 = h->unk1C;
-        d->unk2C = addr;
+        d->flags = h->flags;
+        d->pitch = h->pitch;
+        d->spuAddr = addr;
         SpuSetTransferMode(0);
         SpuSetTransferStartAddr(addr);
         g_akaoSpuBusy = 1;
         SpuSetTransferCallback(func_80061624);
-        n = d->unk14;
+        n = d->bytesLeft;
         if (n > 0x2000) {
             n = 0x2000;
         }
-        SpuWrite(g_akaoStream.unk0, n);
-        g_akaoStream.unk0 += n;
+        SpuWrite(g_akaoStream.readPtr, n);
+        g_akaoStream.readPtr += n;
         if (loop) {
-            g_akaoSeState.reverbMask |= d->unkC;
+            g_akaoSeState.reverbMask |= d->voiceMask;
         } else {
-            g_akaoSeState.reverbMask &= ~d->unkC;
+            g_akaoSeState.reverbMask &= ~d->voiceMask;
         }
         g_akaoSeState.pitchModMask &= ~g_akaoStreamVoices;
         g_akaoSeState.noiseMask &= ~g_akaoStreamVoices;
-        g_akaoFlags.unk8 |= 0x100;
+        g_akaoFlags.dirty |= 0x100;
     }
 }
 
@@ -2130,39 +2130,39 @@ void func_800618C0(s32 unused, s32 flag) {
     SpuSetIRQ(0);
     SpuSetIRQCallback(NULL);
     mask = (1 << v) | (1 << (v + 1));
-    old = g_akaoStream.unkC;
-    g_akaoStream.unk10 = v;
-    g_akaoStream.unkC = mask;
+    old = g_akaoStream.voiceMask;
+    g_akaoStream.voice = v;
+    g_akaoStream.voiceMask = mask;
     akao_keyOff(mask | old);
     h2 = h;
-    g_akaoStream.unk8 = h2[6];
-    g_akaoStream.unk58 = (u16)h2[7];
+    g_akaoStream.flags = h2[6];
+    g_akaoStream.pitch = (u16)h2[7];
     if (flag) {
-        g_akaoSeState.reverbMask |= g_akaoStream.unkC;
+        g_akaoSeState.reverbMask |= g_akaoStream.voiceMask;
     } else {
-        g_akaoSeState.reverbMask &= ~g_akaoStream.unkC;
+        g_akaoSeState.reverbMask &= ~g_akaoStream.voiceMask;
     }
     irq = h2[8] + ((u32)h2[4] >> 1) + 8;
-    g_akaoSeState.pitchModMask &= ~g_akaoStream.unkC;
-    g_akaoSeState.noiseMask &= ~g_akaoStream.unkC;
-    g_akaoFlags.unk8 |= 0x100;
+    g_akaoSeState.pitchModMask &= ~g_akaoStream.voiceMask;
+    g_akaoSeState.noiseMask &= ~g_akaoStream.voiceMask;
+    g_akaoFlags.dirty |= 0x100;
     SpuSetIRQAddr(irq);
     SpuSetIRQCallback(func_800615F8);
     if (h2[6] & 1) {
         if (h2[6] & 2) {
-            akao_streamSetVoice(g_akaoStream.unk10, 1, h2[8], h2[8] + h2[5]);
-            akao_streamSetVoice(g_akaoStream.unk10 + 1, 2, h2[8] + h2[9], h2[8] + h2[9] + h2[5]);
+            akao_streamSetVoice(g_akaoStream.voice, 1, h2[8], h2[8] + h2[5]);
+            akao_streamSetVoice(g_akaoStream.voice + 1, 2, h2[8] + h2[9], h2[8] + h2[9] + h2[5]);
         } else {
-            akao_streamSetVoice(g_akaoStream.unk10, 1, h2[8], 0x1030);
-            akao_streamSetVoice(g_akaoStream.unk10 + 1, 2, h2[8] + h2[9], 0x1030);
+            akao_streamSetVoice(g_akaoStream.voice, 1, h2[8], 0x1030);
+            akao_streamSetVoice(g_akaoStream.voice + 1, 2, h2[8] + h2[9], 0x1030);
         }
     } else {
         if (h2[6] & 2) {
-            akao_streamSetVoice(g_akaoStream.unk10, 3, h2[8], h2[8] + h2[5]);
-            akao_streamSetVoice(g_akaoStream.unk10 + 1, 3, h2[8], h2[8] + h2[5]);
+            akao_streamSetVoice(g_akaoStream.voice, 3, h2[8], h2[8] + h2[5]);
+            akao_streamSetVoice(g_akaoStream.voice + 1, 3, h2[8], h2[8] + h2[5]);
         } else {
-            akao_streamSetVoice(g_akaoStream.unk10, 3, h2[8], 0x1030);
-            akao_streamSetVoice(g_akaoStream.unk10 + 1, 3, h2[8], 0x1030);
+            akao_streamSetVoice(g_akaoStream.voice, 3, h2[8], 0x1030);
+            akao_streamSetVoice(g_akaoStream.voice + 1, 3, h2[8], 0x1030);
         }
     }
     akao_keyOn(g_akaoStreamVoices);
@@ -2172,13 +2172,13 @@ void func_800618C0(s32 unused, s32 flag) {
 void akao_cmdEC(s32 *a) {
     akao_streamStop();
     func_800616F8(a[0], a[1], a[2], a[3]);
-    g_akaoSeState.activeMask &= ~g_akaoStream.unkC;
+    g_akaoSeState.activeMask &= ~g_akaoStream.voiceMask;
 }
 
 void akao_cmdED(s32 *a) {
     akao_streamStop();
     func_800618C0(a[0], a[1]);
-    g_akaoSeState.activeMask &= ~g_akaoStream.unkC;
+    g_akaoSeState.activeMask &= ~g_akaoStream.voiceMask;
 }
 
 /* K&R definition: callers pass one or two arguments */
@@ -2195,7 +2195,7 @@ s32 func_80061BC8(p)
 
 void func_80061C1C(void) {
     StreamHeader *h;
-    Unk80083168 *d;
+    AkaoStreamState *d;
     s32 v;
     s32 vol;
     s32 mask;
@@ -2206,58 +2206,58 @@ void func_80061C1C(void) {
     }
     SpuSetIRQ(0);
     SpuSetIRQCallback(NULL);
-    h = (StreamHeader *)(g_akaoStream.unk2C + 0x80);
-    if (h->unk28 != 0 && g_akaoStream.unk48 == 0) {
-        vol = g_akaoStream.unk40;
-        g_akaoStream.unk40 = 0;
+    h = (StreamHeader *)(g_akaoStream.spuAddr + 0x80);
+    if (h->unk28 != 0 && g_akaoStream.volumeFadeLen == 0) {
+        vol = g_akaoStream.volume;
+        g_akaoStream.volume = 0;
         akao_sendCmdE5(h->unk28, vol >> 8);
     }
     d = &g_akaoStream;
-    g_akaoStream.unk0 = (u8 *)d->unk2C;
-    d->unk14 = h->unk10;
-    d->unk18 = h->unk20;
+    g_akaoStream.readPtr = (u8 *)d->spuAddr;
+    d->bytesLeft = h->unk10;
+    d->loopLength = h->unk20;
     mask = (1 << v) | (1 << (v + 1));
-    d->unk10 = v;
-    d->unkC = mask;
+    d->voice = v;
+    d->voiceMask = mask;
     d->unk34 = 0;
     akao_keyOff(mask);
-    d->unk8 = h->unk18;
-    d->unk58 = h->unk1C;
+    d->flags = h->unk18;
+    d->pitch = h->unk1C;
     SpuSetTransferMode(0);
     SpuSetTransferStartAddr(0x1100);
     g_akaoSpuBusy = 1;
     SpuSetTransferCallback(func_80061EE4);
-    if (d->unk8 & 0x400) {
-        SpuWrite(g_akaoStream.unk0 + 0xD0, 0x4000);
+    if (d->flags & 0x400) {
+        SpuWrite(g_akaoStream.readPtr + 0xD0, 0x4000);
         func_80061BC8(&d->unk34);
         func_80061BC8(&d->unk34);
         func_80061BC8(&d->unk34);
         func_80061BC8(&d->unk34);
-        d->unkC |= (1 << (v - 2)) | (1 << (v - 1));
+        d->voiceMask |= (1 << (v - 2)) | (1 << (v - 1));
     } else {
-        SpuWrite(g_akaoStream.unk0 + 0xD0, 0x2000);
+        SpuWrite(g_akaoStream.readPtr + 0xD0, 0x2000);
         func_80061BC8(&d->unk34);
         func_80061BC8(&d->unk34);
     }
     g_akaoSeState.reverbMask &= ~g_akaoStreamVoices;
     g_akaoSeState.pitchModMask &= ~g_akaoStreamVoices;
     g_akaoSeState.noiseMask &= ~g_akaoStreamVoices;
-    g_akaoFlags.unk8 |= 0x100;
+    g_akaoFlags.dirty |= 0x100;
 }
 
 void func_80061E1C(s32 a, s32 b, void (*cb)(void)) {
-    if (g_akaoStream.unkC != 0) {
+    if (g_akaoStream.voiceMask != 0) {
         SpuSetTransferCallback(NULL);
         g_akaoSpuBusy = 0;
-        if (g_akaoStream.unk14 >= 0xE61) {
-            g_akaoStream.unk0 += a;
+        if (g_akaoStream.bytesLeft >= 0xE61) {
+            g_akaoStream.readPtr += a;
             SpuSetIRQCallback(cb);
         } else {
             SpuSetIRQCallback(akao_streamStop);
             b = 0x1030;
         }
         SpuSetIRQAddr(b + 8);
-        akao_keyOn(g_akaoStream.unkC);
+        akao_keyOn(g_akaoStream.voiceMask);
         SpuSetIRQ(1);
     }
 }
@@ -2265,16 +2265,16 @@ void func_80061E1C(s32 a, s32 b, void (*cb)(void)) {
 void func_80061EE4(void) {
     s32 a;
     s32 b;
-    if (g_akaoStream.unk8 & 0x400) {
-        akao_streamSetVoice(g_akaoStream.unk10, 1, 0x1100, 0x3100);
-        akao_streamSetVoice(g_akaoStream.unk10 + 1, 2, 0x1900, 0x3900);
-        akao_streamSetVoice(g_akaoStream.unk10 - 2, 1, 0x2100, 0x4100);
-        akao_streamSetVoice(g_akaoStream.unk10 - 1, 2, 0x2900, 0x4900);
+    if (g_akaoStream.flags & 0x400) {
+        akao_streamSetVoice(g_akaoStream.voice, 1, 0x1100, 0x3100);
+        akao_streamSetVoice(g_akaoStream.voice + 1, 2, 0x1900, 0x3900);
+        akao_streamSetVoice(g_akaoStream.voice - 2, 1, 0x2100, 0x4100);
+        akao_streamSetVoice(g_akaoStream.voice - 1, 2, 0x2900, 0x4900);
         a = 0x4000;
         b = 0x3100;
     } else {
-        akao_streamSetVoice(g_akaoStream.unk10, 1, 0x1100, 0x2100);
-        akao_streamSetVoice(g_akaoStream.unk10 + 1, 2, 0x1900, 0x2900);
+        akao_streamSetVoice(g_akaoStream.voice, 1, 0x1100, 0x2100);
+        akao_streamSetVoice(g_akaoStream.voice + 1, 2, 0x1900, 0x2900);
         a = 0x2000;
         b = 0x2100;
     }
@@ -2284,29 +2284,29 @@ void func_80061EE4(void) {
 s32 func_80061FBC(s32 a, s32 b, s32 n, void (*cb)(void)) {
     AkaoStream *h;
 
-    if (g_akaoStream.unkC != 0) {
-        h = (AkaoStream *)(g_akaoStream.unk0 + 0x80);
-        if (h->unk0 == AKAO_MAGIC) {
+    if (g_akaoStream.voiceMask != 0) {
+        h = (AkaoStream *)(g_akaoStream.readPtr + 0x80);
+        if (h->magic == AKAO_MAGIC) {
             SpuSetIRQ(0);
             SpuSetTransferStartAddr(a);
             akao_beginSpuTransfer();
             func_80061BC8(&g_akaoStream.unk34);
-            SpuWrite(g_akaoStream.unk0 + 0xD0, n - 0xD0);
+            SpuWrite(g_akaoStream.readPtr + 0xD0, n - 0xD0);
             g_akaoStream.unk20 = h->unk4;
-            g_akaoStream.unk18 = h->unk20;
-            if (h->unk10 > h->unk20) {
+            g_akaoStream.loopLength = h->loopLength;
+            if (h->dataSize > h->loopLength) {
                 SpuSetIRQCallback(cb);
-                g_akaoStream.unk0 += n;
+                g_akaoStream.readPtr += n;
                 if (g_akaoStream.unk34 == 0) {
-                    g_akaoStream.unk0 = (u8 *)g_akaoStream.unk2C;
+                    g_akaoStream.readPtr = (u8 *)g_akaoStream.spuAddr;
                 }
             } else {
                 SpuSetIRQCallback(akao_streamStop);
                 b = 0x1030;
                 a = b;
             }
-            akao_setVoiceLoopAddr(g_akaoStream.unk10, a);
-            akao_setVoiceLoopAddr(g_akaoStream.unk10 + 1, b);
+            akao_setVoiceLoopAddr(g_akaoStream.voice, a);
+            akao_setVoiceLoopAddr(g_akaoStream.voice + 1, b);
             SpuSetIRQAddr(a + 8);
             SpuSetIRQ(1);
         }
@@ -2317,7 +2317,7 @@ s32 func_80061FBC(s32 a, s32 b, s32 n, void (*cb)(void)) {
 void func_80062118(void) {
     s32 a;
     s32 b;
-    if (g_akaoStream.unk8 & 0x400) {
+    if (g_akaoStream.flags & 0x400) {
         func_80061BC8(&g_akaoStream.unk34);
         a = func_80061FBC(0x1100, 0x1900, 0x2000, func_800621D4);
         b = 0x2900;
@@ -2326,8 +2326,8 @@ void func_80062118(void) {
         } else {
             a = 0x2100;
         }
-        akao_setVoiceLoopAddr(g_akaoStream.unk10 - 2, a);
-        akao_setVoiceLoopAddr(g_akaoStream.unk10 - 1, b);
+        akao_setVoiceLoopAddr(g_akaoStream.voice - 2, a);
+        akao_setVoiceLoopAddr(g_akaoStream.voice - 1, b);
     } else {
         func_80061FBC(0x1100, 0x1900, 0x1000, func_800621D4);
     }
@@ -2336,7 +2336,7 @@ void func_80062118(void) {
 void func_800621D4(void) {
     s32 a;
     s32 b;
-    if (g_akaoStream.unk8 & 0x400) {
+    if (g_akaoStream.flags & 0x400) {
         func_80061BC8(&g_akaoStream.unk34);
         a = func_80061FBC(0x3100, 0x3900, 0x2000, func_80062118);
         b = 0x4900;
@@ -2345,8 +2345,8 @@ void func_800621D4(void) {
         } else {
             a = 0x4100;
         }
-        akao_setVoiceLoopAddr(g_akaoStream.unk10 - 2, a);
-        akao_setVoiceLoopAddr(g_akaoStream.unk10 - 1, b);
+        akao_setVoiceLoopAddr(g_akaoStream.voice - 2, a);
+        akao_setVoiceLoopAddr(g_akaoStream.voice - 1, b);
     } else {
         func_80061FBC(0x2100, 0x2900, 0x1000, func_80062118);
     }
@@ -2359,9 +2359,9 @@ void akao_cmdE8(s32 *a) {
     g_akaoStream.unk24 = 0;
     g_akaoStream.unk28 = 0;
     g_akaoStream.unk38 = 0;
-    g_akaoStream.unk8 = 0x1000000;
+    g_akaoStream.flags = 0x1000000;
     g_akaoStream.unk3C = (u32)g_akaoArgs.unk4 >> 12;
-    g_akaoStream.unk2C = a[0];
+    g_akaoStream.spuAddr = a[0];
     g_akaoStream.unk30 = a[1];
 }
 

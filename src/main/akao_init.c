@@ -98,8 +98,8 @@ void akao_initState(void) {
     D_8008314C = 0;
     g_akaoLoadedBanks[0] = 0;
     D_8007F8E0 = 1;
-    g_akaoFlags.unk0 = 0;
-    g_akaoFlags.unk4 = 1;
+    g_akaoFlags.bankUpload = 0;
+    g_akaoFlags.mode = 1;
     g_akaoSeState.activeMask = 0;
     g_akaoMainSeq.activeMask = 0;
     g_akaoMainSeq.priorityMask = 0;
@@ -137,8 +137,8 @@ void akao_initState(void) {
     D_800809B8 = 0;
     D_80080AC4 = 0;
     D_800831C4 = 0;
-    g_akaoStream.unk40 = 0x7F00;
-    g_akaoStream.unk48 = 0;
+    g_akaoStream.volume = 0x7F00;
+    g_akaoStream.volumeFadeLen = 0;
     D_80083238[2] = 0;
     D_80083238[1] = 0;
     D_80083238[0] = 0;
@@ -187,7 +187,7 @@ loop1:
     g_akaoSeq->reverbDepth = 0x3FFF000;
     g_akaoSeq->reverbDepthStep = 0;
     g_akaoSeq->reverbDepthSlideLen = 0;
-    g_akaoFlags.unk8 |= 0x80;
+    g_akaoFlags.dirty |= 0x80;
     akao_setReverbMode(4);
     SpuSetReverb(1);
     for (i = 0; i < 24; i++) {

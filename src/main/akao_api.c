@@ -410,7 +410,7 @@ s32 akao_getSpuTransferState(void) {
 
 s32 akao_beginBankUpload(void) {
     D_8008322C = 0;
-    g_akaoFlags.unk0 |= 1;
+    g_akaoFlags.bankUpload |= 1;
     return 0;
 }
 
@@ -419,7 +419,7 @@ s32 akao_uploadBank(s32 *buf, u32 size, s32 wait) {
     u32 m;
     s32 slot;
 
-    if (g_akaoFlags.unk0 & 1) {
+    if (g_akaoFlags.bankUpload & 1) {
         if (g_akaoUpload.unk4 == 0) {
             if (buf[0] == AKAO_MAGIC) {
                 akao_copy(buf, (u32 *)&g_akaoBankHeader, sizeof(AkaoBankHeader));
@@ -473,7 +473,7 @@ s32 akao_uploadBank(s32 *buf, u32 size, s32 wait) {
     end:
         if (D_80083230 == 0) {
         clear:
-            g_akaoFlags.unk0 &= ~1;
+            g_akaoFlags.bankUpload &= ~1;
         }
     }
     return D_80083230;
@@ -622,7 +622,7 @@ s32 func_80056488(void *unused) { /* mbg_stream passes its stream state */
     if (g_akaoStream.unk3C - 1 < g_akaoStream.unk38) {
         g_akaoStream.unk38 = 0;
     }
-    if ((g_akaoStream.unk8 & 0x1000000) && g_akaoStream.unk38 >= 2) {
+    if ((g_akaoStream.flags & 0x1000000) && g_akaoStream.unk38 >= 2) {
         func_80061C1C();
     }
     return g_akaoStream.unk34;
