@@ -221,7 +221,7 @@ void btlui_drawOTag(u32 *arg0) {
     g_btluiState.drawing = 0;
 }
 
-u8 func_800EA268(void) {
+u8 btlui_getPort(void) {
     return g_btluiState.port;
 }
 

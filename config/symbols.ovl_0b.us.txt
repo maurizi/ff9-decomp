@@ -1246,3 +1246,4 @@ g_btlfxInCall = 0x800FEC38; // [code] set by btlfx_callScript, cleared by contro
 g_btlfxReturnPc = 0x800FEC3C; // [code] script pc btlfx_callScript saves, control op 14 jumps back to it
 g_btlfxCommonInit = 0x80104DE8; // [code] set to 1 by btlfx_initCommonData, never read
 s_btlDetectItemSuffix = 0x800A7C20; // [code] text appended after the item name of each Detect popup (btl_updateDetect)
+btlui_getPort = 0x800EA268; // type:func [code] returns g_btluiState.port, the controller port of the last command menu, no callers

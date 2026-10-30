@@ -2762,7 +2762,7 @@ ovl_0b btl_addItem 0x20 0x800ea1b0
 ovl_0b func_800EA1D0 0x28 0x800ea1d0
 ovl_0b btlui_drawOTagEnv 0x38 0x800ea1f8
 ovl_0b btlui_drawOTag 0x38 0x800ea230
-ovl_0b func_800EA268 0x14 0x800ea268
+ovl_0b btlui_getPort 0x14 0x800ea268
 ovl_0b func_800EA27C 0x14 0x800ea27c
 ovl_0b btl_putDispEnvNoUi 0x7c 0x800ea290
 ovl_0b btlui_isPauseRequested 0x2c 0x800ea30c

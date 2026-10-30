@@ -33,7 +33,7 @@ s32 fx_02f_op80(s32 mode, Fx02fWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
             work->unk20 = NULL;
         }
         ex->btlfx_getUnitArgBonePos(0x10, 0, (u16 *)&work->unk10);
-        if ((s16)env->targets->unk42 != 0) {
+        if ((s16)env->targets->fxParam != 0) {
             ex->btlfx_moveEmitterTo((s32)work->unk20, (s32)&work->unk10);
         } else {
             ex->btlfx_getUnitArgBonePos(0x10, 0, (u16 *)&work->unk8);

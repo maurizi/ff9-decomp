@@ -171,6 +171,7 @@ D_800FEC38 g_btlfxInCall
 D_800FEC3C g_btlfxReturnPc
 D_80104DE8 g_btlfxCommonInit
 D_800A7C20 s_btlDetectItemSuffix
+func_800EA268 btlui_getPort
 # Aliases replaced by struct fields (externs removed): D_800FE470 = g_btlCamera.nextVariant, D_800FE484 = g_btlCamera.focusUnit,
 # D_800FEC65 = g_btlfxState.castEnded, D_800FEC42 = g_btlfxState.effectId, D_80100DCC = g_btlfxLoader.state,
 # D_80100E14 = g_btlfxLoader.summon, D_80105274 = g_btlBanner.duration, D_8010527C = g_btlBanner.active,
@@ -188,3 +189,4 @@ D_800A7C20 s_btlDetectItemSuffix
 # FIELDS include/ovl_0b.h Unk800D8EA4: unk2=trimFrames
 # FIELDS include/ovl_0b.h Unk800D805C: unk2=turnAway
 # FIELDS include/ovl_0b.h Unk800FEC40: cameras.b.unk0=ids,cameras.b.unk3=count
+# FIELDS include/ovl_0b.h BtlUnitList: unk42=fxParam

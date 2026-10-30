@@ -39,10 +39,10 @@ void btl_playCmdEffect(BtlCmd *arg0, s32 arg1, s16 *arg2) {
     if (arg2 != NULL) {
         l->fxArgs[0] = arg2[0];
         l->fxArgs[1] = arg2[1];
-        l->unk42 = arg2[2];
+        l->fxParam = arg2[2];
         l->kind = arg2[3];
     } else {
-        l->unk42 = 0;
+        l->fxParam = 0;
         l->kind = 0;
         l->fxArgs[1] = 0;
         l->fxArgs[0] = 0;

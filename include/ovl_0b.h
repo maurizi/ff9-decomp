@@ -714,7 +714,7 @@ typedef struct {
     s16 centerZ;
     u8 pad3E[0x40 - 0x3E];
     u16 kind; /* btl_playCmdEffect: 1 Eidolon follow-up, 2 item, 4 Swd Mag, 0x11 bounce */
-    u16 unk42;
+    u16 fxParam; /* btl_playCmdEffect arg2[2] (fx_031: distance ahead of the fxArgs bones) */
     BtlUnit *partner; /* id 0x11: the Swd Mag partner (character kind 2) */
     u8 pad48[0x4C - 0x48];
 } BtlUnitList; /* 0x4C */
