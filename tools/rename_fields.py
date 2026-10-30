@@ -74,6 +74,9 @@ def main():
         if not fixed:
             print("fix by hand, then run again:\n" + "\n".join(sorted(set(manual))))
             sys.exit(1)
+    # 20 rounds without a clean build: stop loudly, so a half-applied rename isn't mistaken for done.
+    sys.exit("rename_fields: still member errors after 20 build rounds; the rename is incomplete. "
+             "Fix the remaining lines (or run again) and check the build before committing.")
 
 
 if __name__ == "__main__":
