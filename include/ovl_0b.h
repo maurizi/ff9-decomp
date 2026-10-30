@@ -2338,18 +2338,18 @@ typedef struct {
 } Unk800C9D1C;
 extern u32 D_80104E80;
 typedef struct {
-    SPRT unk0[4][2];
-    DR_TPAGE unkA0[2];
-    SPRT unkB0[2];
-    SPRT unkD8[2];
-    DR_TPAGE unk100[2];
-    SPRT unk110[4][2];
-    SPRT unk1B0[4][2];
-    SPRT unk250[4][2];
-    DR_TPAGE unk2F0[2];
-    DR_TPAGE unk300[2];
-    POLY_G4 unk310[2];
-    DR_TPAGE unk358[2];
+    SPRT cmdIcons[4][2]; /* command icon sprites (btlui_initCachedCmdIcons) */
+    DR_TPAGE cmdIconsTpage[2];
+    SPRT headerA[2]; /* panel header sprites (btlui_initCachedHeader) */
+    SPRT headerB[2];
+    DR_TPAGE headerTpage[2];
+    SPRT names[4][2]; /* party name sprites (btlui_initNamePrims) */
+    SPRT rowsA[4][2]; /* cached row sprites (btlui_initCachedRows) */
+    SPRT rowsB[4][2];
+    DR_TPAGE namesTpage[2];
+    DR_TPAGE rowsTpage[2];
+    POLY_G4 highlight[2]; /* highlight bar (btlui_initHighlightPrim) */
+    DR_TPAGE highlightTpage[2];
 } Unk801050D8; /* 0x368, double-buffered menu primitives */
 extern Unk801050D8 *g_btluiPrims;
 extern u8 g_btluiBuf;

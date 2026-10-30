@@ -1292,21 +1292,21 @@ void btlui_initCachedCmdIcons(s32 arg0) {
     s32 y = 0x9A;
 
     for (i = 0; i < 4; i++) {
-        setlen(&g_btluiPrims->unk0[i][arg0], 4);
-        setcode(&g_btluiPrims->unk0[i][arg0], 0x64);
-        setRGB0(&g_btluiPrims->unk0[i][arg0], 0x80, 0x80, 0x80);
-        g_btluiPrims->unk0[i][arg0].x0 = 0;
-        g_btluiPrims->unk0[i][arg0].y0 = y;
-        g_btluiPrims->unk0[i][arg0].u0 = u & 0x3F;
-        g_btluiPrims->unk0[i][arg0].v0 = 0xE0;
-        g_btluiPrims->unk0[i][arg0].w = 0xE;
-        g_btluiPrims->unk0[i][arg0].h = 0x10;
-        g_btluiPrims->unk0[i][arg0].clut = 0;
+        setlen(&g_btluiPrims->cmdIcons[i][arg0], 4);
+        setcode(&g_btluiPrims->cmdIcons[i][arg0], 0x64);
+        setRGB0(&g_btluiPrims->cmdIcons[i][arg0], 0x80, 0x80, 0x80);
+        g_btluiPrims->cmdIcons[i][arg0].x0 = 0;
+        g_btluiPrims->cmdIcons[i][arg0].y0 = y;
+        g_btluiPrims->cmdIcons[i][arg0].u0 = u & 0x3F;
+        g_btluiPrims->cmdIcons[i][arg0].v0 = 0xE0;
+        g_btluiPrims->cmdIcons[i][arg0].w = 0xE;
+        g_btluiPrims->cmdIcons[i][arg0].h = 0x10;
+        g_btluiPrims->cmdIcons[i][arg0].clut = 0;
         u += 0x10;
         y += 0x10;
     }
-    setlen(&g_btluiPrims->unkA0[arg0], 1);
-    *g_btluiPrims->unkA0[arg0].code = get_mode(1, 1, getTPage(2, 0, 0x3C0, 0x100));
+    setlen(&g_btluiPrims->cmdIconsTpage[arg0], 1);
+    *g_btluiPrims->cmdIconsTpage[arg0].code = get_mode(1, 1, getTPage(2, 0, 0x3C0, 0x100));
 }
 
 void btlui_cacheCmdIcons(void) {
@@ -1330,9 +1330,9 @@ void btlui_drawCachedCmdIcons(void) {
     s32 i;
     if (g_btlUi->windows[3]->state == 2 || g_btlUi->windows[3]->state == 3) {
         for (i = 0; i < 4; i++) {
-            addPrim(&g_ot[18], &g_btluiPrims->unk0[i][g_drawBufs.cur]);
+            addPrim(&g_ot[18], &g_btluiPrims->cmdIcons[i][g_drawBufs.cur]);
         }
-        addPrim(&g_ot[18], &g_btluiPrims->unkA0[g_drawBufs.cur]);
+        addPrim(&g_ot[18], &g_btluiPrims->cmdIconsTpage[g_drawBufs.cur]);
     }
 }
 
@@ -3114,35 +3114,35 @@ void btlui_cacheHeader(void) {
 }
 
 void btlui_drawCachedHeader(void) {
-    SPRT *a = &g_btluiPrims->unkB0[g_drawBufs.cur];
-    SPRT *b = &g_btluiPrims->unkD8[g_drawBufs.cur];
+    SPRT *a = &g_btluiPrims->headerA[g_drawBufs.cur];
+    SPRT *b = &g_btluiPrims->headerB[g_drawBufs.cur];
     a->y0 = b->y0 = btlui_getPanel()->y - 4;
     addPrim(&g_ot[18], a);
     addPrim(&g_ot[18], b);
-    addPrim(&g_ot[18], &g_btluiPrims->unk100[g_drawBufs.cur]);
+    addPrim(&g_ot[18], &g_btluiPrims->headerTpage[g_drawBufs.cur]);
 }
 
 void btlui_initCachedHeader(s32 arg0) {
-    setlen(&g_btluiPrims->unkB0[arg0], 4);
-    setcode(&g_btluiPrims->unkB0[arg0], 0x64);
-    setRGB0(&g_btluiPrims->unkB0[arg0], 0x80, 0x80, 0x80);
-    g_btluiPrims->unkB0[arg0].x0 = 0xD0;
-    g_btluiPrims->unkB0[arg0].u0 = 0;
-    g_btluiPrims->unkB0[arg0].v0 = 0xF8;
-    g_btluiPrims->unkB0[arg0].clut = 0;
-    g_btluiPrims->unkB0[arg0].w = 0x40;
-    g_btluiPrims->unkB0[arg0].h = 4;
-    setlen(&g_btluiPrims->unkD8[arg0], 4);
-    setcode(&g_btluiPrims->unkD8[arg0], 0x64);
-    setRGB0(&g_btluiPrims->unkD8[arg0], 0x80, 0x80, 0x80);
-    g_btluiPrims->unkD8[arg0].x0 = 0x110;
-    g_btluiPrims->unkD8[arg0].u0 = 0;
-    g_btluiPrims->unkD8[arg0].v0 = 0xFC;
-    g_btluiPrims->unkD8[arg0].clut = 0;
-    g_btluiPrims->unkD8[arg0].w = 0x30;
-    g_btluiPrims->unkD8[arg0].h = 4;
-    setlen(&g_btluiPrims->unk100[arg0], 1);
-    *g_btluiPrims->unk100[arg0].code = get_mode(1, 1, getTPage(2, 0, 0x3C0, 0x100));
+    setlen(&g_btluiPrims->headerA[arg0], 4);
+    setcode(&g_btluiPrims->headerA[arg0], 0x64);
+    setRGB0(&g_btluiPrims->headerA[arg0], 0x80, 0x80, 0x80);
+    g_btluiPrims->headerA[arg0].x0 = 0xD0;
+    g_btluiPrims->headerA[arg0].u0 = 0;
+    g_btluiPrims->headerA[arg0].v0 = 0xF8;
+    g_btluiPrims->headerA[arg0].clut = 0;
+    g_btluiPrims->headerA[arg0].w = 0x40;
+    g_btluiPrims->headerA[arg0].h = 4;
+    setlen(&g_btluiPrims->headerB[arg0], 4);
+    setcode(&g_btluiPrims->headerB[arg0], 0x64);
+    setRGB0(&g_btluiPrims->headerB[arg0], 0x80, 0x80, 0x80);
+    g_btluiPrims->headerB[arg0].x0 = 0x110;
+    g_btluiPrims->headerB[arg0].u0 = 0;
+    g_btluiPrims->headerB[arg0].v0 = 0xFC;
+    g_btluiPrims->headerB[arg0].clut = 0;
+    g_btluiPrims->headerB[arg0].w = 0x30;
+    g_btluiPrims->headerB[arg0].h = 4;
+    setlen(&g_btluiPrims->headerTpage[arg0], 1);
+    *g_btluiPrims->headerTpage[arg0].code = get_mode(1, 1, getTPage(2, 0, 0x3C0, 0x100));
 }
 
 void btlui_openListWindow(s32 arg0) {
@@ -3251,64 +3251,64 @@ void btlui_updatePanel(void) {
 }
 
 void btlui_initHighlightPrim(s32 arg0) {
-    setPolyG4(&g_btluiPrims->unk310[arg0]);
-    setSemiTrans(&g_btluiPrims->unk310[arg0], 1);
-    setRGB0(&g_btluiPrims->unk310[arg0], 0x40, 0x40, 0);
-    setRGB1(&g_btluiPrims->unk310[arg0], 0x10, 0x10, 0);
-    setRGB2(&g_btluiPrims->unk310[arg0], 0x40, 0x40, 0);
-    setRGB3(&g_btluiPrims->unk310[arg0], 0x10, 0x10, 0);
-    g_btluiPrims->unk310[arg0].x0 = 0x8E;
-    g_btluiPrims->unk310[arg0].x1 = 0x137;
-    g_btluiPrims->unk310[arg0].x3 = 0x137;
-    g_btluiPrims->unk310[arg0].x2 = 0x8E;
-    setlen(&g_btluiPrims->unk358[arg0], 1);
-    *g_btluiPrims->unk358[arg0].code = get_mode(1, 1, getTPage(0, 1, 0, 0));
+    setPolyG4(&g_btluiPrims->highlight[arg0]);
+    setSemiTrans(&g_btluiPrims->highlight[arg0], 1);
+    setRGB0(&g_btluiPrims->highlight[arg0], 0x40, 0x40, 0);
+    setRGB1(&g_btluiPrims->highlight[arg0], 0x10, 0x10, 0);
+    setRGB2(&g_btluiPrims->highlight[arg0], 0x40, 0x40, 0);
+    setRGB3(&g_btluiPrims->highlight[arg0], 0x10, 0x10, 0);
+    g_btluiPrims->highlight[arg0].x0 = 0x8E;
+    g_btluiPrims->highlight[arg0].x1 = 0x137;
+    g_btluiPrims->highlight[arg0].x3 = 0x137;
+    g_btluiPrims->highlight[arg0].x2 = 0x8E;
+    setlen(&g_btluiPrims->highlightTpage[arg0], 1);
+    *g_btluiPrims->highlightTpage[arg0].code = get_mode(1, 1, getTPage(0, 1, 0, 0));
 }
 
 void btlui_initNamePrims(s32 arg0) {
     s32 i;
     SPRT *s;
     for (i = 0; i < 4; i++) {
-        setlen(&g_btluiPrims->unk110[i][arg0], 4);
-        setcode(&g_btluiPrims->unk110[i][arg0], 0x64);
-        setRGB0(&g_btluiPrims->unk110[i][arg0], 0x80, 0x80, 0x80);
-        g_btluiPrims->unk110[i][arg0].x0 = 0x92;
-        g_btluiPrims->unk110[i][arg0].h = 0xC;
-        g_btluiPrims->unk110[i][arg0].w = 0x54;
+        setlen(&g_btluiPrims->names[i][arg0], 4);
+        setcode(&g_btluiPrims->names[i][arg0], 0x64);
+        setRGB0(&g_btluiPrims->names[i][arg0], 0x80, 0x80, 0x80);
+        g_btluiPrims->names[i][arg0].x0 = 0x92;
+        g_btluiPrims->names[i][arg0].h = 0xC;
+        g_btluiPrims->names[i][arg0].w = 0x54;
         if (i & 1) {
-            g_btluiPrims->unk110[i][arg0].u0 = 0x54;
+            g_btluiPrims->names[i][arg0].u0 = 0x54;
         } else {
-            g_btluiPrims->unk110[i][arg0].u0 = 0;
+            g_btluiPrims->names[i][arg0].u0 = 0;
         }
-        g_btluiPrims->unk110[i][arg0].v0 = 0xF0;
+        g_btluiPrims->names[i][arg0].v0 = 0xF0;
     }
-    setlen(&g_btluiPrims->unk2F0[arg0], 1);
-    *g_btluiPrims->unk2F0[arg0].code = get_mode(1, 1, getTPage(0, 0, 0x380, 0x100));
+    setlen(&g_btluiPrims->namesTpage[arg0], 1);
+    *g_btluiPrims->namesTpage[arg0].code = get_mode(1, 1, getTPage(0, 0, 0x380, 0x100));
 }
 
 void btlui_initCachedRows(s32 arg0) {
     s32 i;
     SPRT *s;
     for (i = 0; i < 4; i++) {
-        setlen(&g_btluiPrims->unk1B0[i][arg0], 4);
-        setcode(&g_btluiPrims->unk1B0[i][arg0], 0x64);
-        setRGB0(&g_btluiPrims->unk1B0[i][arg0], 0x80, 0x80, 0x80);
-        g_btluiPrims->unk1B0[i][arg0].x0 = 0xD0;
-        g_btluiPrims->unk1B0[i][arg0].u0 = 0;
-        g_btluiPrims->unk1B0[i][arg0].w = 0x1D;
-        g_btluiPrims->unk1B0[i][arg0].h = 0xA;
-        g_btluiPrims->unk1B0[i][arg0].clut = 0;
-        setlen(&g_btluiPrims->unk250[i][arg0], 4);
-        setcode(&g_btluiPrims->unk250[i][arg0], 0x64);
-        setRGB0(&g_btluiPrims->unk250[i][arg0], 0x80, 0x80, 0x80);
-        g_btluiPrims->unk250[i][arg0].x0 = 0xEF;
-        g_btluiPrims->unk250[i][arg0].u0 = 0x20;
-        g_btluiPrims->unk250[i][arg0].w = 0x16;
-        g_btluiPrims->unk250[i][arg0].h = 0xA;
-        g_btluiPrims->unk250[i][arg0].clut = 0;
+        setlen(&g_btluiPrims->rowsA[i][arg0], 4);
+        setcode(&g_btluiPrims->rowsA[i][arg0], 0x64);
+        setRGB0(&g_btluiPrims->rowsA[i][arg0], 0x80, 0x80, 0x80);
+        g_btluiPrims->rowsA[i][arg0].x0 = 0xD0;
+        g_btluiPrims->rowsA[i][arg0].u0 = 0;
+        g_btluiPrims->rowsA[i][arg0].w = 0x1D;
+        g_btluiPrims->rowsA[i][arg0].h = 0xA;
+        g_btluiPrims->rowsA[i][arg0].clut = 0;
+        setlen(&g_btluiPrims->rowsB[i][arg0], 4);
+        setcode(&g_btluiPrims->rowsB[i][arg0], 0x64);
+        setRGB0(&g_btluiPrims->rowsB[i][arg0], 0x80, 0x80, 0x80);
+        g_btluiPrims->rowsB[i][arg0].x0 = 0xEF;
+        g_btluiPrims->rowsB[i][arg0].u0 = 0x20;
+        g_btluiPrims->rowsB[i][arg0].w = 0x16;
+        g_btluiPrims->rowsB[i][arg0].h = 0xA;
+        g_btluiPrims->rowsB[i][arg0].clut = 0;
     }
-    setlen(&g_btluiPrims->unk300[arg0], 1);
-    *g_btluiPrims->unk300[arg0].code = get_mode(1, 1, getTPage(2, 0, 0x3C0, 0x100));
+    setlen(&g_btluiPrims->rowsTpage[arg0], 1);
+    *g_btluiPrims->rowsTpage[arg0].code = get_mode(1, 1, getTPage(2, 0, 0x3C0, 0x100));
 }
 
 void btlui_drawPartyPanel(void) {
@@ -3426,22 +3426,22 @@ void btlui_drawPanelHighlight(void) {
     s32 d = 4;
     if (c != 0xFF && D_80104E77 != 0) {
         y = g_btluiPanel->y + (c * 12 + d);
-        p = &g_btluiPrims->unk310[g_drawBufs.cur];
+        p = &g_btluiPrims->highlight[g_drawBufs.cur];
         p->y0 = p->y1 = y;
         p->y2 = p->y3 = y + 13;
         addPrim(&g_ot[20], p);
-        addPrim(&g_ot[20], &g_btluiPrims->unk358[g_drawBufs.cur]);
+        addPrim(&g_ot[20], &g_btluiPrims->highlightTpage[g_drawBufs.cur]);
     }
 }
 
 void btlui_drawPanelName(s32 arg0, u32 arg1) {
     s32 k = g_btluiPanel->slot[arg1];
-    SPRT *s = &g_btluiPrims->unk110[k][g_drawBufs.cur];
+    SPRT *s = &g_btluiPrims->names[k][g_drawBufs.cur];
     s->y0 = g_btluiPanel->y + arg1 * 12 + 3;
     s->clut = D_800F9048[(u8)g_btluiPanel->rowColor[arg1]] + ((k >> 1) << 6);
     addPrim(&g_ot[16], s);
     if (arg1 >= g_btluiPanel->rowCount - 1) {
-        addPrim(&g_ot[16], &g_btluiPrims->unk2F0[g_drawBufs.cur]);
+        addPrim(&g_ot[16], &g_btluiPrims->namesTpage[g_drawBufs.cur]);
     }
 }
 
@@ -3492,8 +3492,8 @@ void btlui_drawCachedRows(void) {
     SPRT *b;
     if (g_btluiPanel->shown != 0 && g_btluiPanel->rowCount != 0) {
         for (i = 0; i < g_btluiPanel->rowCount; i++) {
-            b = &g_btluiPrims->unk1B0[i][g_drawBufs.cur];
-            a = &g_btluiPrims->unk250[i][g_drawBufs.cur];
+            b = &g_btluiPrims->rowsA[i][g_drawBufs.cur];
+            a = &g_btluiPrims->rowsB[i][g_drawBufs.cur];
             a->y0 = y;
             b->y0 = y;
             y += 12;
@@ -3503,7 +3503,7 @@ void btlui_drawCachedRows(void) {
             addPrim(&g_ot[18], b);
             addPrim(&g_ot[18], a);
         }
-        addPrim(&g_ot[18], &g_btluiPrims->unk300[g_drawBufs.cur]);
+        addPrim(&g_ot[18], &g_btluiPrims->rowsTpage[g_drawBufs.cur]);
     }
 }
 
