@@ -4151,8 +4151,8 @@ s32 btl_loadEnemyModelsStep(s32, s32, Unk800AA504 *);
  * given type/kind to dst, skipping duplicates */
 static inline void btl_loadSoundsStep_collect(s16 *dst, u32 type, u32 kind) {
     FileTable *t = g_gameState->gameData->depTable;
-    FileEntryX *first = (FileEntryX *)t->unk4;
-    FileEntryX *e = &first[t->unk2] - 1;
+    FileEntryX *first = (FileEntryX *)t->entries;
+    FileEntryX *e = &first[t->count] - 1;
     s16 *q = dst;
     s16 *s;
     u32 w;

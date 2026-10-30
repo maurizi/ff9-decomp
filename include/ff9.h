@@ -1698,24 +1698,24 @@ void akao_cmdPlayMusic(AkaoArgs *);
 
 /* file table entry (file_find / dep_find) */
 typedef struct {
-    s32 unk0;
-    s32 unk4; /* start sector */
+    s32 id; /* file id (24-bit key in a dependency table, dep_find) */
+    s32 sector; /* start sector */
     s32 unk8;
     s32 unkC; /* end sector / next id */
 } FileEntry;
 
 /* g_gameState->dirTables[i]: 8-byte {id, sector} entries searched by file_find */
 typedef struct {
-    u16 unk0; /* id */
+    u16 id; /* id */
     u16 unk2;
-    s32 unk4;
+    s32 sector; /* start sector (the next entry's sector ends the file) */
 } FileIdEntry;
 
 /* file id table (GameData.depTable) */
 typedef struct FileTable {
     u16 unk0;
-    u16 unk2; /* count */
-    FileEntry unk4[1];
+    u16 count; /* count */
+    FileEntry entries[1]; /* {key, sector, sectors, link} records (dep_find) */
 } FileTable;
 
 typedef struct {
@@ -3400,14 +3400,6 @@ typedef struct {
     u16 unk8;
     u8 padA[6];
 } Unk8001DE50b;
-
-/* 8-byte file directory entry (GameState.unk18 tables) */
-typedef struct {
-    u16 unk0; /* id */
-    u16 unk2;
-    s32 unk4;
-} DirEntry;
-
 /* PreloadEntry.unk4 split into its parts */
 typedef struct {
     u16 unk0;

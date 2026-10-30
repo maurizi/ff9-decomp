@@ -183,7 +183,7 @@ void menu_readOverlay(void) {
         g_menu.state = 2;
         g_menu.reading = 1;
         f = file_find(0, g_menuTypeOvl[g_menu.type]);
-        cd_readAsync(f->unk4 + g_gameState->imgSector, (f->unkC - f->unk4) << 11, PSX_RAM(void *, 0x801EDF00), menu_onOverlayRead);
+        cd_readAsync(f->sector + g_gameState->imgSector, (f->unkC - f->sector) << 11, PSX_RAM(void *, 0x801EDF00), menu_onOverlayRead);
 
     }
 }
@@ -198,7 +198,7 @@ void menu_readPortraits(void) {
         } else if (busy == 0 || g_gameState->mode != 3) {
             g_menu.reading = 1;
             f = file_find(1, 30);
-            if (cd_readAsync(g_gameState->imgSector + f->unk4, (f->unkC - f->unk4) << 11, PSX_RAM(void *, 0x801EDF00),
+            if (cd_readAsync(g_gameState->imgSector + f->sector, (f->unkC - f->sector) << 11, PSX_RAM(void *, 0x801EDF00),
                               menu_onPortraitsRead)) {
                 g_menu.state = 2;
             }

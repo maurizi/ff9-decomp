@@ -227,7 +227,7 @@ s32 fld_loadCommon(void) {
         DrawSync(0);
     } else {
         f = file_find(1, 0x2714);
-        cdRead_init(g_gameState->gameData->cdRead, f->unk4, (f->unkC - f->unk4) << 11, (void *)g_modeHeap, 0, -1, 0);
+        cdRead_init(g_gameState->gameData->cdRead, f->sector, (f->unkC - f->sector) << 11, (void *)g_modeHeap, 0, -1, 0);
         while (cdRead_update(g_gameState->gameData->cdRead) != 0) {
         }
     }
@@ -734,7 +734,7 @@ s32 fld_loadModelBundlesInCdOrder(void) {
             min = 0x7FFFFFFF;
             for (i = g_gameState->gameData->ctx.field->area->scene->modelQueueCount - 1; i >= 0; i--) {
                 if (g_fieldModelQueue[i] != -1) {
-                    v = file_find(0xA, g_fieldModelQueue[i])->unk4;
+                    v = file_find(0xA, g_fieldModelQueue[i])->sector;
                     if (v < min) {
                         best = i;
                         min = v;
@@ -860,12 +860,12 @@ s32 fld_depFindBattle(arg0, arg1, arg2)
     s32 i;
     FileTable *t = g_gameState->gameData->depTable;
     s32 id = arg0 | DB_BATTLE;
-    FileEntry *e = t->unk4;
+    FileEntry *e = t->entries;
 
-    for (i = 0; i < g_gameState->gameData->depTable->unk2; i++) {
-        if (e[i].unk0 == id) {
+    for (i = 0; i < g_gameState->gameData->depTable->count; i++) {
+        if (e[i].id == id) {
             if (arg1 != NULL) {
-                *arg1 = e[i].unk4;
+                *arg1 = e[i].sector;
             }
             if (arg2 != NULL) {
                 *arg2 = e[i].unk8;
@@ -880,18 +880,18 @@ s32 fld_depFindBackground(s32 arg0, s32 *arg1, s32 *arg2) {
     s32 id = -1;
     FileTable *t = g_gameState->gameData->depTable;
     s32 i;
-    FileEntry *e = t->unk4;
+    FileEntry *e = t->entries;
 
-    for (i = 0; i < t->unk2; i++) {
-        if (e[i].unk0 == arg0) {
+    for (i = 0; i < t->count; i++) {
+        if (e[i].id == arg0) {
             id = e[i].unkC;
             break;
         }
     }
-    for (i = 0; i < g_gameState->gameData->depTable->unk2; i++) {
-        if (e[i].unk0 == id) {
+    for (i = 0; i < g_gameState->gameData->depTable->count; i++) {
+        if (e[i].id == id) {
             if (arg1 != NULL) {
-                *arg1 = e[i].unk4;
+                *arg1 = e[i].sector;
             }
             if (arg2 != NULL) {
                 *arg2 = e[i].unk8;
@@ -910,12 +910,12 @@ s32 fld_depFindField(arg0, arg1, arg2)
     s32 i;
     FileTable *t = g_gameState->gameData->depTable;
     s32 id = arg0 | DB_FIELD;
-    FileEntry *e = t->unk4;
+    FileEntry *e = t->entries;
 
-    for (i = 0; i < g_gameState->gameData->depTable->unk2; i++) {
-        if (e[i].unk0 == id) {
+    for (i = 0; i < g_gameState->gameData->depTable->count; i++) {
+        if (e[i].id == id) {
             if (arg1 != NULL) {
-                *arg1 = e[i].unk4;
+                *arg1 = e[i].sector;
             }
             if (arg2 != NULL) {
                 *arg2 = e[i].unk8;
@@ -928,20 +928,20 @@ s32 fld_depFindField(arg0, arg1, arg2)
 
 s32 fld_depFindArea(s32 arg0, s32 *arg1, s32 *arg2) {
     FileTable *t = g_gameState->gameData->depTable;
-    FileEntry *e = t->unk4;
-    FileEntry *end = e + t->unk2;
+    FileEntry *e = t->entries;
+    FileEntry *end = e + t->count;
     s32 id = -1;
 
     for (; e < end; e++) {
-        if (e->unk0 == arg0) {
+        if (e->id == arg0) {
             id = e->unkC;
             break;
         }
     }
-    for (e = t->unk4; e < end; e++) {
-        if (e->unk0 == id) {
+    for (e = t->entries; e < end; e++) {
+        if (e->id == id) {
             if (arg1 != NULL) {
-                *arg1 = e->unk4;
+                *arg1 = e->sector;
             }
             if (arg2 != NULL) {
                 *arg2 = e->unk8;

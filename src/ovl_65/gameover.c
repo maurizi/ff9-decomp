@@ -103,7 +103,7 @@ void gameover_initDisp(DispBuf *b) {
 void gameover_loadImage(s32 arg0) {
     FileEntry *e = file_find(1, 0xB);
 
-    cd_readSync(g_gameState->imgSector + e->unk4, (e->unkC - e->unk4) << 11, arg0);
+    cd_readSync(g_gameState->imgSector + e->sector, (e->unkC - e->sector) << 11, arg0);
     file_loadTim(arg0);
 }
 

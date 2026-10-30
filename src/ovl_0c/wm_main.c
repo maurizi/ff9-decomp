@@ -178,13 +178,13 @@ s32 wm_loadWorldData(void) {
         file_copyViaVram((s32)buf, e->dest, e->loaded, 0);
         DrawSync(0);
         if (e->loaded < e->readSize) {
-            cdRead_init(g_gameState->gameData->cdRead, f->unk4, (f->unkC - f->unk4) << 11, buf + e->loaded, e->loaded, -1, 0);
+            cdRead_init(g_gameState->gameData->cdRead, f->sector, (f->unkC - f->sector) << 11, buf + e->loaded, e->loaded, -1, 0);
             while (cdRead_update(g_gameState->gameData->cdRead) != 0) {
             }
         }
         preload_remove(id);
     } else {
-        cdRead_init(g_gameState->gameData->cdRead, f->unk4, (f->unkC - f->unk4) << 11, buf, 0, -1, 0);
+        cdRead_init(g_gameState->gameData->cdRead, f->sector, (f->unkC - f->sector) << 11, buf, 0, -1, 0);
         while (cdRead_update(g_gameState->gameData->cdRead) != 0) {
         }
     }
@@ -469,12 +469,12 @@ s32 wm_depFindBattle(s16 arg0, s32 *arg1, s32 *arg2) {
     s32 i;
     FileTable *t = g_gameState->gameData->depTable;
     s32 id = (u16)arg0 | DB_BATTLE;
-    FileEntry *e = t->unk4;
+    FileEntry *e = t->entries;
 
-    for (i = 0; i < g_gameState->gameData->depTable->unk2; i++) {
-        if (e[i].unk0 == id) {
+    for (i = 0; i < g_gameState->gameData->depTable->count; i++) {
+        if (e[i].id == id) {
             if (arg1 != NULL) {
-                *arg1 = e[i].unk4;
+                *arg1 = e[i].sector;
             }
             if (arg2 != NULL) {
                 *arg2 = e[i].unk8;
@@ -489,18 +489,18 @@ s32 wm_depFindBackground(s32 arg0, s32 *arg1, s32 *arg2) {
     s32 id = -1;
     FileTable *t = g_gameState->gameData->depTable;
     s32 i;
-    FileEntry *e = t->unk4;
+    FileEntry *e = t->entries;
 
-    for (i = 0; i < t->unk2; i++) {
-        if (e[i].unk0 == arg0) {
+    for (i = 0; i < t->count; i++) {
+        if (e[i].id == arg0) {
             id = e[i].unkC;
             break;
         }
     }
-    for (i = 0; i < g_gameState->gameData->depTable->unk2; i++) {
-        if (e[i].unk0 == id) {
+    for (i = 0; i < g_gameState->gameData->depTable->count; i++) {
+        if (e[i].id == id) {
             if (arg1 != NULL) {
-                *arg1 = e[i].unk4;
+                *arg1 = e[i].sector;
             }
             if (arg2 != NULL) {
                 *arg2 = e[i].unk8;
@@ -515,12 +515,12 @@ s32 wm_depFindField(s16 arg0, s32 *arg1, s32 *arg2) {
     s32 i;
     FileTable *t = g_gameState->gameData->depTable;
     s32 id = (u16)arg0 | DB_FIELD;
-    FileEntry *e = t->unk4;
+    FileEntry *e = t->entries;
 
-    for (i = 0; i < g_gameState->gameData->depTable->unk2; i++) {
-        if (e[i].unk0 == id) {
+    for (i = 0; i < g_gameState->gameData->depTable->count; i++) {
+        if (e[i].id == id) {
             if (arg1 != NULL) {
-                *arg1 = e[i].unk4;
+                *arg1 = e[i].sector;
             }
             if (arg2 != NULL) {
                 *arg2 = e[i].unk8;
@@ -535,18 +535,18 @@ s32 wm_depFindArea(s32 arg0, s32 *arg1, s32 *arg2) {
     s32 id = -1;
     FileTable *t = g_gameState->gameData->depTable;
     s32 i;
-    FileEntry *e = t->unk4;
+    FileEntry *e = t->entries;
 
-    for (i = 0; i < t->unk2; i++) {
-        if (e[i].unk0 == arg0) {
+    for (i = 0; i < t->count; i++) {
+        if (e[i].id == arg0) {
             id = e[i].unkC;
             break;
         }
     }
-    for (i = 0; i < g_gameState->gameData->depTable->unk2; i++) {
-        if (e[i].unk0 == id) {
+    for (i = 0; i < g_gameState->gameData->depTable->count; i++) {
+        if (e[i].id == id) {
             if (arg1 != NULL) {
-                *arg1 = e[i].unk4;
+                *arg1 = e[i].sector;
             }
             if (arg2 != NULL) {
                 *arg2 = e[i].unk8;
@@ -1192,23 +1192,23 @@ s32 *arg1;
         if (arg1 != NULL) {
             *arg1 = e->unk8 << 11;
         }
-        return e->unk4;
+        return e->sector;
     } else {
         f = file_find(0xB, arg0);
         if (arg1 != NULL) {
-            *arg1 = (f->unkC - f->unk4) << 11;
+            *arg1 = (f->unkC - f->sector) << 11;
         }
-        return f->unk4;
+        return f->sector;
     }
 }
 
 s32 wm_depGetLink(s32 arg0) {
     FileTable *t = g_gameState->gameData->depTable;
     s32 i;
-    FileEntry *e = t->unk4;
+    FileEntry *e = t->entries;
 
-    for (i = 0; i < t->unk2; i++) {
-        if (e[i].unk0 == arg0) {
+    for (i = 0; i < t->count; i++) {
+        if (e[i].id == arg0) {
             return e[i].unkC;
         }
     }
@@ -1366,12 +1366,12 @@ void wm_updateBattleTransition(void) {
             wm_soundCommand(0x700, g_gameState->gameData->ctx.world->obj->battleMusic, 0, 0, 0);
             g_gameState->gameData->ctx.world->obj->battleStep = -1;
         } else {
-            cd_seekAsync(g_gameState->imgSector + file_find(0, 0x1000B)->unk4, 0);
+            cd_seekAsync(g_gameState->imgSector + file_find(0, 0x1000B)->sector, 0);
             g_gameState->gameData->ctx.world->obj->battleStep = -2;
         }
     } else if (o->battleStep == -1) {
         if (wm_soundCommand(SND_GET_STATE, 0, 0, 0, 0) == 0) {
-            cd_seekAsync(g_gameState->imgSector + file_find(0, 0x1000B)->unk4, 0);
+            cd_seekAsync(g_gameState->imgSector + file_find(0, 0x1000B)->sector, 0);
             wm_soundCommand(0, g_gameState->gameData->ctx.world->obj->battleMusic, 0, 0, 0);
             akao_setMusicVolume(0, 0x7F);
             g_gameState->gameData->ctx.world->obj->battleStep = -2;
@@ -1394,10 +1394,10 @@ void wm_findBattleMusic(void) {
 
     obj->battleMusic = gd->musicId[0];
     id = (u16)obj->sceneId | DB_BATTLE;
-    e = g_gameState->gameData->depTable->unk4;
-    for (; i < g_gameState->gameData->depTable->unk2; i++) {
+    e = g_gameState->gameData->depTable->entries;
+    for (; i < g_gameState->gameData->depTable->count; i++) {
         v = e[i].unkC;
-        if (e[i].unk0 == id && ((v >> 16) & 0xFF) == 7) {
+        if (e[i].id == id && ((v >> 16) & 0xFF) == 7) {
             g_gameState->gameData->ctx.world->obj->battleMusic = v;
             return;
         }
@@ -1462,7 +1462,7 @@ void wm_saveDepTable(void) {
 
     if (t != (FileTable *)-1) {
         dst = g_loadAreaEnd + 0x146F00;
-        wm_copyViaVram((s32)dst, (s32)t, (t->unk2 * 0x10) | 4);
+        wm_copyViaVram((s32)dst, (s32)t, (t->count * 0x10) | 4);
         DrawSync(0);
         g_gameState->gameData->depTable = (FileTable *)dst;
     }

@@ -80,7 +80,7 @@ void opening_titleLoadImages(void) {
     FileEntry *e;
 
     e = file_find(1, 0x3C);
-    cd_readSync(g_gameState->imgSector + e->unk4, (e->unkC - e->unk4) << 11, TITLE_PACK_BUF, e->unk4);
+    cd_readSync(g_gameState->imgSector + e->sector, (e->unkC - e->sector) << 11, TITLE_PACK_BUF, e->sector);
     opening_titleLoadTims((s32 *)TITLE_PACK_BUF);
 }
 

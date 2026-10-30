@@ -55,11 +55,11 @@ void battleEnd_init(void) {
         e = dep_find(g_gameState->gameData->depTable, g_gameState->gameData->fieldId | 0x50000);
         if (e != NULL) {
             g_gameState->gameData->fieldAreaId = e->unkC;
-            g_gameState->gameData->sceneSector[1] = e->unk4;
+            g_gameState->gameData->sceneSector[1] = e->sector;
             g_gameState->gameData->sceneSectors[1] = e->unk8;
             e = dep_find(g_gameState->gameData->depTable, e->unkC);
             if (e != NULL) {
-                g_gameState->gameData->sceneSector[0] = e->unk4;
+                g_gameState->gameData->sceneSector[0] = e->sector;
                 g_gameState->gameData->sceneSectors[0] = e->unk8;
             }
         }
@@ -104,7 +104,7 @@ s32 battleEnd_loadDb(void) {
         DrawSync(0);
     } else {
         e = file_find(1, 0x2713);
-        cdRead_init(g_gameState->gameData->cdRead, e->unk4, (e->unkC - e->unk4) << 11, (void *)g_modeHeap, 0, -1, 0);
+        cdRead_init(g_gameState->gameData->cdRead, e->sector, (e->unkC - e->sector) << 11, (void *)g_modeHeap, 0, -1, 0);
         while (cdRead_update(g_gameState->gameData->cdRead)) {
         }
     }
@@ -145,8 +145,8 @@ void battleEnd_preloadScene(void) {
     }
     f = file_find(0, id);
     dst = b->unk1C;
-    size = (f->unkC - f->unk4) << 11;
-    preload_setEntry(preload_add(), 0, id, (s32)dst, size, size, f->unk4, size);
+    size = (f->unkC - f->sector) << 11;
+    preload_setEntry(preload_add(), 0, id, (s32)dst, size, size, f->sector, size);
     dst += size;
     if (b->unk6 == 1) {
         id = 0x2714;
@@ -157,10 +157,10 @@ void battleEnd_preloadScene(void) {
     }
     f = file_find(1, id);
     k = -0x146F00;
-    size = (f->unkC - f->unk4) << 11;
+    size = (f->unkC - f->sector) << 11;
     at = g_loadAreaEnd - (dst + k);
     at = at / 0x800 * 0x800;
-    preload_setEntry(preload_add(), 0, id, (s32)dst, at, size, f->unk4, size);
+    preload_setEntry(preload_add(), 0, id, (s32)dst, at, size, f->sector, size);
     dst += size;
     if (b->unk6 != 1) {
         return;

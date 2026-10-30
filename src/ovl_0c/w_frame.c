@@ -869,17 +869,17 @@ void wm_initDiscImage(void) {
             g_worldImageNames[i] = D_800CCF84[i];
         }
         printf("Read CD Image [Disc-1]\n");
-        g_worldImageSectors[0] = file_find(0xC, 0x3F3)->unk4 + g_gameState->imgSector;
-        g_worldImageSectors[3] = file_find(0xC, 0x3FD)->unk4 + g_gameState->imgSector;
-        g_worldImageSectors[4] = file_find(0xC, 0x407)->unk4 + g_gameState->imgSector;
+        g_worldImageSectors[0] = file_find(0xC, 0x3F3)->sector + g_gameState->imgSector;
+        g_worldImageSectors[3] = file_find(0xC, 0x3FD)->sector + g_gameState->imgSector;
+        g_worldImageSectors[4] = file_find(0xC, 0x407)->sector + g_gameState->imgSector;
     } else {
         for (i = 0; i < 5; i++) {
             g_worldImageNames[i] = D_800CCF98[i];
         }
         printf("Read CD Image [Disc-4]\n");
-        g_worldImageSectors[0] = file_find(0xC, 0x3F6)->unk4 + g_gameState->imgSector;
-        g_worldImageSectors[3] = file_find(0xC, 0x400)->unk4 + g_gameState->imgSector;
-        g_worldImageSectors[4] = file_find(0xC, 0x40A)->unk4 + g_gameState->imgSector;
+        g_worldImageSectors[0] = file_find(0xC, 0x3F6)->sector + g_gameState->imgSector;
+        g_worldImageSectors[3] = file_find(0xC, 0x400)->sector + g_gameState->imgSector;
+        g_worldImageSectors[4] = file_find(0xC, 0x40A)->sector + g_gameState->imgSector;
     }
     if (g_worldMapDebugFlags & WM_DEBUG_MEMORY) {
         printf(D_800A7BB8, g_worldImageSectors[0]);

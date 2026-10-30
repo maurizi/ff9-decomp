@@ -76,7 +76,7 @@ s32 ending_movieInit(s32 arg0, s32 arg1) {
     while (cdRead_update(g_gameState->gameData->cdRead) != 0) {
     }
     e = file_find(0, 0x64);
-    cdRead_init(g_gameState->gameData->cdRead, e->unk4, (e->unkC - e->unk4) << 11, g_loadAreaEnd + 0xF1700, 0, 0x15000, 0);
+    cdRead_init(g_gameState->gameData->cdRead, e->sector, (e->unkC - e->sector) << 11, g_loadAreaEnd + 0xF1700, 0, 0x15000, 0);
     while (cdRead_update(g_gameState->gameData->cdRead) != 0) {
     }
     EnterCriticalSection();

@@ -437,7 +437,7 @@ void tm_loadImageFile(void) {
     if (f == NULL) {
         SystemError(0x46, 0x3E6);
     }
-    cd_readSync(g_gameState->imgSector + f->unk4, (f->unkC - f->unk4) << 11, TM_IMAGE_FILE);
+    cd_readSync(g_gameState->imgSector + f->sector, (f->unkC - f->sector) << 11, TM_IMAGE_FILE);
 }
 
 u8 *tm_getFileEntry(s32 i) {

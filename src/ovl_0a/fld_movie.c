@@ -46,10 +46,10 @@ s32 fld_loadModelBundle(s32 arg0) {
     s32 y2;
 
     f = file_find(10, arg0);
-    size = (f->unkC - f->unk4) << 11;
+    size = (f->unkC - f->sector) << 11;
     c = fld_findModelCache(arg0);
     if (c->addr == 0) {
-        cdRead_init(g_gameState->gameData->cdRead, f->unk4, size,
+        cdRead_init(g_gameState->gameData->cdRead, f->sector, size,
                       (void *)(fld_allocModelCache(arg0, size) != 0 ? c->addr : g_modeHeap), 0, -1, 0);
         while (cdRead_update(g_gameState->gameData->cdRead) != 0) {
         }
@@ -236,11 +236,11 @@ s32 fld_remapModelId(s32 arg0) {
 s32 fld_depFindByLink(s32 arg0) {
     FileTable *t = g_gameState->gameData->depTable;
     s32 i;
-    FileEntry *e = t->unk4;
+    FileEntry *e = t->entries;
 
-    for (i = t->unk2 - 1; i >= 0; i--) {
+    for (i = t->count - 1; i >= 0; i--) {
         if (e[i].unkC == arg0) {
-            return e[i].unk0;
+            return e[i].id;
         }
     }
     return -1;
@@ -1168,7 +1168,7 @@ void fld_movieUpdate(void) {
         if (cd_getState() == 0) {
             if (cdRead_update(g_gameState->gameData->cdRead) == 0) {
                 FileEntry *f = file_find(0, 0x64);
-                cdRead_init(g_gameState->gameData->cdRead, f->unk4, (f->unkC - f->unk4) << 11,
+                cdRead_init(g_gameState->gameData->cdRead, f->sector, (f->unkC - f->sector) << 11,
                               (void *)(g_loadAreaEnd + 0xF1700), 0, 0x15000, NULL);
             }
             g_gameState->gameData->ctx.field->area->scene->movieState = 2;

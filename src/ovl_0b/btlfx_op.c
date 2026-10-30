@@ -25,7 +25,7 @@ s32 btlfx_reloadCommonData(s32 arg0) {
     u32 *p = PSX_RAM(u32 *, 0x801E7700);
     if (arg0 == 0) {
         FileEntry *e = file_find(1, 0x2BF);
-        cd_readAsync(g_gameState->imgSector + e->unk4, (e->unkC - e->unk4) << 11, PSX_RAM(void *, 0x801E7700), 0);
+        cd_readAsync(g_gameState->imgSector + e->sector, (e->unkC - e->sector) << 11, PSX_RAM(void *, 0x801E7700), 0);
     } else if (cd_getState() == 0) {
         btlfx_resetMaskBit();
         r.w = 0x40;

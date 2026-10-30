@@ -77,8 +77,8 @@ void game_loadModeOverlay(s32 mode) {
         DrawSync(0);
     }
     f = file_find(0, id);
-    if (loaded < f->unkC - f->unk4) {
-        cd_readSync(g_gameState->imgSector + f->unk4 + loaded, (f->unkC - (f->unk4 + loaded)) << 11,
+    if (loaded < f->unkC - f->sector) {
+        cd_readSync(g_gameState->imgSector + f->sector + loaded, (f->unkC - (f->sector + loaded)) << 11,
                       (u8 *)addrs.unk0[mode] + (loaded << 11));
     }
     EnterCriticalSection();

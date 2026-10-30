@@ -301,7 +301,7 @@ FileEntry *file_find(s32 a, s32 id) {
     base = g_gameState->dirTables[a];
     e = base + d->count - 1;
 loop:
-    if (e->unk0 == id) {
+    if (e->id == id) {
         return (FileEntry *)e;
     }
     e--;

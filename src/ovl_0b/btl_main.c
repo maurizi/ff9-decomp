@@ -234,7 +234,7 @@ s32 btl_loadCommonData(void) {
     s32 p = g_modeHeap;
     Battle *b = g_gameState->gameData->ctx.battle;
     FileEntry *f = file_find(1, 0x271B);
-    s32 s = f->unk4;
+    s32 s = f->sector;
     void *ctx = g_gameState->gameData->cdRead;
     cdRead_init(ctx, s, (f->unkC - s) << 11, (void *)p, 0, -1, NULL);
     while (cdRead_update(ctx) != 0) {
@@ -734,8 +734,8 @@ loop:
         arg2->unkC = b->unk153C[0];
         arg2->unk10.w[0] = -1;
         arg2->unk10.w[1] = -1;
-        first = (FileEntryX *)t->unk4;
-        e = &first[t->unk2] - 1;
+        first = (FileEntryX *)t->entries;
+        e = &first[t->count] - 1;
         do {
             w = e->unk0.w;
             if (e->unk0.b.type == 2) {
@@ -764,8 +764,8 @@ loop:
             id = *p;
             if (id != 0xFFFF) {
                 f = dep_find(g_gameState->gameData->depTable, id | 0x20000);
-                if ((u32)f->unk4 < best) {
-                    best = f->unk4;
+                if ((u32)f->sector < best) {
+                    best = f->sector;
                     bf = f;
                     bp = p;
                 }
@@ -1028,7 +1028,7 @@ u32 btl_findNearestFile(u32 arg0, u16 *arg1, u16 *arg2, u16 **arg3, s32 *arg4) {
             n = 0;
             f = file_find(arg0, id);
             if (f != NULL) {
-                start = f->unk4;
+                start = f->sector;
                 n = f->unkC - start;
             } else {
                 k = 0;
@@ -1066,7 +1066,7 @@ u32 btl_findNearestFile(u32 arg0, u16 *arg1, u16 *arg2, u16 **arg3, s32 *arg4) {
                 }
                 f = dep_find(g_gameState->gameData->depTable, (k << 16) | id);
                 if (f != NULL) {
-                    start = f->unk4;
+                    start = f->sector;
                     n = f->unk8;
                 }
             }
@@ -1147,12 +1147,12 @@ s32 btl_unregisterFiles(void **arg0, s32 arg1) {
 
 s32 btl_findBackgroundId(void) {
     FileTable *t = g_gameState->gameData->depTable;
-    FileEntry *base = t->unk4;
-    FileEntry *e = &base[t->unk2] - 1;
+    FileEntry *base = t->entries;
+    FileEntry *e = &base[t->count] - 1;
     s32 v;
     do {
-        v = e->unk0;
-        if ((u8)(e->unk0 >> 16) == 0xC) {
+        v = e->id;
+        if ((u8)(e->id >> 16) == 0xC) {
             return v;
         }
         e--;
@@ -1162,7 +1162,7 @@ s32 btl_findBackgroundId(void) {
 
 s32 btl_getDepSectors(s32 arg0, s32 *arg1, s32 *arg2) {
     FileEntry *e = dep_find(g_gameState->gameData->depTable, arg0);
-    *arg1 = e->unk4;
+    *arg1 = e->sector;
     *arg2 = e->unk8;
     return arg0;
 }
@@ -2023,13 +2023,13 @@ s32 btl_getSoundFileSectors(s32 arg0, s32 *arg1) {
         if (arg1 != 0) {
             *arg1 = e->unk8 << 11;
         }
-        return e->unk4;
+        return e->sector;
     } else {
         f = file_find(11, arg0);
         if (arg1 != 0) {
-            *arg1 = (f->unkC - f->unk4) << 11;
+            *arg1 = (f->unkC - f->sector) << 11;
         }
-        return f->unk4;
+        return f->sector;
     }
 }
 
@@ -2064,10 +2064,10 @@ s16 func_800AE618(s32 arg0, BtlStepTask *arg1) {
 
 s32 btl_getDepLink(s32 arg0) {
     FileTable *t = g_gameState->gameData->depTable;
-    FileEntry *e = t->unk4;
+    FileEntry *e = t->entries;
     s32 i;
-    for (i = t->unk2 - 1; i >= 0; i--) {
-        if (e[i].unk0 == arg0) {
+    for (i = t->count - 1; i >= 0; i--) {
+        if (e[i].id == arg0) {
             return e[i].unkC;
         }
     }
@@ -2181,10 +2181,10 @@ void btl_preloadExit(void) {
     preload_init();
     g_gameState->gameData->preloadRequest = NULL;
     f = file_find(0, 0x10065);
-    size = (f->unkC - f->unk4) << 11;
-    preload_setEntry(preload_add(), 0, 0x10065, (s32)PSX_RAM(u8 *, 0x801EDF00), size, size, f->unk4, size);
+    size = (f->unkC - f->sector) << 11;
+    preload_setEntry(preload_add(), 0, 0x10065, (s32)PSX_RAM(u8 *, 0x801EDF00), size, size, f->sector, size);
     f = file_find(1, 0x2713);
     dst = b->loadBuf;
-    size = (f->unkC - f->unk4) << 11;
-    preload_setEntry(preload_add(), 0, 0x2713, (s32)dst, size, size, f->unk4, size);
+    size = (f->unkC - f->sector) << 11;
+    preload_setEntry(preload_add(), 0, 0x2713, (s32)dst, size, size, f->sector, size);
 }
