@@ -164,7 +164,7 @@ extern RewardsMenu s_rewards;
 
 typedef struct {
     u8 pad0[0xE];
-    u16 unkE; /* name offset into s_rewardsActionNames */
+    u16 nameOffset; /* name offset into s_rewardsActionNames */
 } Ovl65Ability; /* active ability table */
 extern Ovl65Ability s_rewardsActionTable[];
 extern u8 s_rewardsActionNames[]; /* ability names */

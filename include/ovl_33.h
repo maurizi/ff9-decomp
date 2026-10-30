@@ -139,16 +139,16 @@ typedef struct {
 extern EquipMenu s_menuEquip;
 
 typedef struct {
-    unsigned int unk0 : 4; /* item kind */
+    unsigned int targetKind : 4; /* target kind (menuAbility_canTargetAll) */
     unsigned int unk0_4 : 1;
-    unsigned int unk0_5 : 3;
+    unsigned int targetMode : 3; /* s_menuAbility.targetMode */
     unsigned int pad0_8 : 24;
-    u8 unk4;
+    u8 effect; /* calculation script, item_useOnMember's kind */
     u8 pad5[0xA - 5];
-    u8 unkA;
-    u8 unkB; /* bit 0: usable from the menu; bit 2: value x4 when D_8007AF02 */
+    u8 mpCost; /* menuAbility_getMpCost */
+    u8 flags; /* bit 0: usable from the menu; bit 1: clear = AP gauge flag; bit 2: mpCost x4 when D_8007AF02 */
     u8 padC[2];
-    u16 unkE; /* name offset into s_menuAbilityActionNames */
+    u16 nameOffset; /* name offset into s_menuAbilityActionNames */
 } Unk801F34EC; /* 0x10 */
 extern Unk801F34EC s_menuAbilityActionTable[];
 
@@ -272,7 +272,7 @@ void menuEquip_drawTabs(void);
 void menuEquip_drawListRow(s32, s32, s32, MenuView *);
 
 typedef struct {
-    u16 unk0;
+    u16 helpOffset;
     u16 unk2;
 } HelpOfs; /* item help text offsets into s_menuAbilityActionHelp */
 extern HelpOfs s_menuAbilityActionHelpOfs[];
@@ -283,7 +283,7 @@ extern u8 s_menuAbilityHelpBuf[];
 extern u8 *g_menuHelpText; /* = g_menuHelp.text, referenced by its own name */
 typedef struct {
     u8 pad0[4];
-    u16 unk4;
+    u16 helpOffset;
     u8 pad6[2];
 } SupportHelp; /* g_supportAbilities entry: +4 = help text offset into s_menuAbilitySupportHelp */
 
@@ -291,7 +291,7 @@ typedef struct {
 static inline u8 *menuAbility_updateHelp_suphelp(s32 i) {
     SupportHelp *b = (SupportHelp *)g_supportAbilities;
     i -= ABILITY_SUPPORT_FIRST;
-    return s_menuAbilitySupportHelp + b[i].unk4;
+    return s_menuAbilitySupportHelp + b[i].helpOffset;
 }
 
 void menuEquip_drawStatLabel(s32 x, s32 y, s32 z, u8 id, s32 color);

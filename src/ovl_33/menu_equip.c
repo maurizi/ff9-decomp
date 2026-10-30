@@ -239,7 +239,7 @@ void menuEquip_drawAbilities(void) {
             continue;
         }
         if (ab < ABILITY_SUPPORT_FIRST) {
-            name = s_menuEquipActionNames + s_menuEquipActionTable[ab].unkE;
+            name = s_menuEquipActionNames + s_menuEquipActionTable[ab].nameOffset;
         } else {
             name = s_menuEquipSupportNames + g_supportAbilities[ab - ABILITY_SUPPORT_FIRST].unk2;
         }
@@ -263,7 +263,7 @@ void menuEquip_drawAbilities(void) {
             }
             if (ok) {
                 if (ab < ABILITY_SUPPORT_FIRST) {
-                    flag = !(s_menuEquipActionTable[ab].unkB & 2);
+                    flag = !(s_menuEquipActionTable[ab].flags & 2);
                 } else {
                     flag = 1;
                 }

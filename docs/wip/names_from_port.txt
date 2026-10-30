@@ -5400,3 +5400,8 @@ D_800FE500 g_btlbgJitterBase2  # [code] btlbg_draw, background scene 7, group 2:
 # FIELDS include/ovl_64.h Ovl64Vlc4C8 (g_mbgMaskCursor): unk0=runMasked,unk2=runLength,unk4=size,unk8=data,unkC=cursor [code] mbg_update, mbg_applyMask asm; Ovl64Stp: unk3=len,unk4/unk8=code[2] (0xE6000002 mask packet)
 # FIELDS include/ovl_64.h Ovl64Field (ovl_0a g_fieldFlagQueue): unk8=gameFlags[1][0],unk18=mapFlags[1][0] (clear queues); Ovl64Field8E4/C/C14 (FieldMap/FieldMapObj/FieldScene views): unkC=area,unk14=scene,unk30=otBias,unk44=movieFile
 # TYPES include/ovl_64.h merged: Ovl64Out -> Ovl64Dec (mbg_readFrame(Ovl64Dec *): frameRect[0/1].w/h, slice.h)
+# FIELDS include/ovl_33.h Unk801F34EC (ability action table): unk0=targetKind,unk0_5=targetMode,unk4=effect,unkA=mpCost,unkB=flags,unkE=nameOffset [code] menuAbility_getMpCost, menuAbility_canTargetAll, item_useOnMember(kind = effect); HelpOfs: unk0=helpOffset; SupportHelp: unk4=helpOffset
+# FIELDS include/ovl_37.h Unk8006B1F4: unk0=targetKind,unk0_5=targetMode,unk4=effect [code] s_menuItem.targetKind/targetMode, item_useOnMember
+# FIELDS include/ovl_38.h ActiveAbility: unkB=flags,unkE=nameOffset; StatusEntry: unk0=nameOffset; Unk8006E0E8: unk5=attack
+# FIELDS include/ovl_39.h SaveState: unk22=areaId; CardData (CardInventory + 4 bytes): unk0=wins,unk2=losses,unk4=draws,unk6=cards; SaveEvents: unk800=evtStepCount; SaveMisc: unk0=chocograph; SaveItems: unk240=config; SaveMenu: unk18=savedPortMask; GaugeIcon: unk0=u,unk1=v,unk2=clut,unk4=w,unk5=h [code] menuSave_* copy routines, menuSave_drawGauge
+# FIELDS include/ovl_65.h Ovl65Ability: unkE=nameOffset; include/ovl_14.h TmTimLike: unk0=id,unk4=flags; include/ovl_36.h Unk801F4DC4: unk0=repeatDelay,unk4=repeatInterval [code] pad_get/setRepeatDelay/Interval

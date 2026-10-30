@@ -48,8 +48,8 @@ typedef struct {
 #define MENU_DISC 8 /* "Change to DISC" (ovl_3e); argument (disc & 3) << 14 | field id, 0x3A98 here */
 void file_getTimRects(void *, RECT **, RECT **); /* TIM: clut rect, image rect */
 typedef struct {
-    u32 unk0;
-    u32 unk4; /* flags: bpp in low bits */
+    u32 id;
+    u32 flags; /* bpp mode in the low bits */
 } TmTimLike; /* TIM header */
 s32 cd_findFile(char *);
 extern s32 g_mbgFrame;
