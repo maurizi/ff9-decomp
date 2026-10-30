@@ -114,7 +114,13 @@ the per-group limits. Field names in ovl_0a.h: `WmModel` {`flags`, `boneCount`, 
 then 12-byte entries `WmAnimTableEntry` `{u16 modelId, u16 animId, u32 tableOffset:24 | texCount:8, u16
 texAnimId, u16 pad}`. `animId` is the motion set at setup (`0x03xxxx`, 0xFFFF in 88 models: no motion until the
 script sets one; fld_drawModels replaces it every frame by the actor's `anim`); `texAnimId` the `0x19xxxx` item
-(0xFFFF none). At entry + `tableOffset` there are three tables of `texCount` entries:
+(0xFFFF none). **Only entry 0 is ever matched** for these two: the search loops of `fld_getModelAnimId` and
+`fld_setupActorModel` never advance their entry pointer (`fld_getModelTables` does), so a model gets its default
+motion and its texture animations only when it is the first entry of its container's table: always for a dir-10
+model (one entry), for one local model per field file (978 of the 3,601 field-file entries on the four discs are first; 1,277
+later ones name a texture animation that is never attached). A mirror copy (`fld_modelCommand` 8-11) instead
+takes the container's first `0x19` item whatever its model (`db_lookupRegistered(9, ...)`). At entry +
+`tableOffset` there are three tables of `texCount` entries:
 
 | table | entry | used by |
 |---|---|---|
@@ -134,7 +140,8 @@ script sets one; fld_drawModels replaces it every frame by the actor's `anim`); 
    rgb (gouraud lists: `colors[col[i]]` per corner), uv = `uvs[uv[i]] + uvOffsets[tex]` (u8 arithmetic),
    `clut = texWords[tex].clut`, `tpage = texWords[tex].tpage & ~0x20`, and when `flags & 1` (semi-transparent)
    `tpage |= flags & 0xE0` plus the semi-transparency code bit. The flat lists take the record's rgb only.
-5. The texture animation item is relocated with the model's texture positions (`fldmdl_initTexAnims`).
+5. The texture animation item (`texAnimId`, first info entry only) is relocated with the model's texture positions
+   (`fldmdl_initTexAnims`) and becomes `ModelObj.texAnims`.
 
 | list | source | packet |
 |---|---|---|
@@ -252,6 +259,14 @@ records. There are no vertex anchors:
   flags have 0x1000): `MoveImage` of VRAM rectangles; they never touch polygons. A simplified model must keep the uvs
   of polygons that sample animated rectangles (eyes, mouths) where they are, or the animation shows up distorted.
 - **Mirror** (`fld_modelCommand` 8-11, `FieldActorExt`): the same header and the actor's motion, reflected.
+- **Port note, a NULL read and write**: `fld_drawModels` reads `ModelObj.texAnims->count` for every drawn model
+  whose slot flags lack 0x1000, without a NULL check. For a model without texture animations (every local model
+  that is not its container's first info entry, see "Model info") that reads the u16 at address 0 (3 on the PS1,
+  BIOS RAM), and since `fld_isModelTexAnimActive(NULL)` returns 0 it then writes "animation 2" fields at
+  physical 0x2C (`flags |= 1`), 0x34 (`pos = 0`, s32) and 0x3A (`lastFrame = 0x1000`). The `field_dali_inn` state's
+  RAM holds exactly these values (01 at 0x2C, 0 at 0x34, 0x1000 at 0x3A), and `ModelObj.texAnims` is NULL for all
+  seven local models of field 351 (Zidane's is 0x80133200, 3 animations). Like F4, a low-RAM dependency of the
+  original, not something to fix in the matching code.
 - **World map** (ovl_0c `wm_*`): the same code on world files' own models.
 
 ### Bone and group numbers

@@ -533,9 +533,9 @@ void btl_applyModelTextures(BtlUnit9C *arg0, s16 *arg1, s16 *arg2) {
     arg0->bones = NULL;
     arg0->prims = 0;
     arg0->texAnims = NULL;
-    arg0->unk74 = 0;
-    arg0->unk76 = 0;
-    arg0->unk78 = 0;
+    arg0->attachX = 0;
+    arg0->attachY = 0;
+    arg0->attachZ = 0;
     arg0->hiddenMeshes = 0;
     arg0->flags = 0;
     if (!(h->flags & 1)) {

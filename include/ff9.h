@@ -1208,13 +1208,13 @@ typedef struct EvtObject {
     s16 jumpTargetY; /* op 0xE2 */
 } EvtObject;
 
-/* model header as seen by evt_relaxLookAt (BtlUnit9C in ovl_0b) */
+/* model object as seen by evt_relaxLookAt (ovl_0a ModelObj, BtlUnit9C in ovl_0b; Unk8004AFF0 has the rest) */
 typedef struct {
-    u16 unk0; /* flags */
+    u16 flags; /* 1: look-at on (fldmdl_calcBoneMatricesLookAt turns WmModel.lookAtBone toward lookAtX-Z) */
     u8 pad2[0x48 - 0x2];
-    s16 unk48; /* look-at point */
-    s16 unk4A;
-    s16 unk4C;
+    s16 lookAtX; /* look-at point (ModelObj.lookAtTarget) */
+    s16 lookAtY;
+    s16 lookAtZ;
 } Unk80047B90;
 void evt_onAnimLimit(EvtObject *);
 s32 func_80047AB8(EvtObject *, s32);
@@ -3764,8 +3764,8 @@ typedef struct {
 #define EVT_OP_SET_RUN_ANIM 0x35 /* u16: actor.runAnim */
 #define EVT_OP_SET_DIR 0x36 /* u8 dir: rotY = dir << 4 */
 #define EVT_OP_SET_ROT_XZ 0x37 /* u8, u8: rotX, rotZ */
-#define EVT_OP_MESH_HIDE 0x39 /* obj, mesh: model unk14 &= ~bit */
-#define EVT_OP_MESH_SHOW 0x3A /* obj, mesh: model unk14 |= bit */
+#define EVT_OP_MESH_SHOW 0x39 /* obj, group: hiddenGroups &= ~bit (fld_drawModels draws groups whose bit is clear) */
+#define EVT_OP_MESH_HIDE 0x3A /* obj, group: hiddenGroups |= bit */
 #define EVT_OP_ENCOUNTER_TABLE 0x3C /* u8, 4 x u16: g_evtEncounterTable */
 #define EVT_OP_SET_ANIM_RANGE 0x3D /* start, end: actor anim frame range */
 #define EVT_OP_SET_ANIM_SPEED 0x3E /* u8: actor.defaultAnimSpeed */
@@ -4046,33 +4046,39 @@ typedef struct {
     Unk80039C38Pt unk18[8];
 } Unk80039C38Quad;
 
+/* texture animation n seen from the set's start (Unk8004AFF0.texAnims->unk0[n]): the set has a 4-byte count before
+ * its 0x14-byte entries (ovl_0a TexAnimSet / TexAnim), so this record's +4 is entry n's +0 */
 typedef struct {
     u8 pad0[4];
-    u8 unk4;
+    u8 flags; /* TexAnim.flags: 1 active, 2 one-shot */
     u8 pad5[0xC - 5];
-    s32 unkC;
+    s32 pos; /* TexAnim.pos: frame position (20.12) */
     u8 pad10[0x12 - 0x10];
-    s16 unk12;
+    s16 lastFrame; /* TexAnim.lastFrame: 0x1000 forces the next frame's upload */
 } Unk8004AFF0Sub; /* 0x14 */
 
-/* model object (Unk8E0.unk8) */
+/* model object (Unk8E0.unk8): main's view of ovl_0a ModelObj / ovl_0b BtlUnit9C (docs/field-models.md) */
 typedef struct Unk8004AFF0 {
-    u16 unk0; /* flags */
+    u16 flags; /* 1 look-at on (lookAtX-Z, fldmdl_calcBoneMatricesLookAt), 2 scaled (scaleX-Z), 0x10 behind the camera */
     u8 pad2[4 - 2];
-    u8 unk4;
+    u8 parentBone; /* op 0x4C: bone of the parent model it follows */
     u8 pad5[0x14 - 5];
-    u32 unk14;
+    u32 hiddenGroups; /* mesh-group bits not drawn (ops 0x39 clear / 0x3A set) */
     u8 pad18[0x1C - 0x18];
-    struct Unk8004AFF0 *unk1C;
-    u8 pad20[0x50 - 0x20];
-    struct { Unk8004AFF0Sub unk0[1]; } *unk50;
-    s16 unk54;
-    s16 unk56;
-    s16 unk58;
+    struct Unk8004AFF0 *parent; /* op 0x4C / 0x4D: model it is attached to */
+    u8 pad20[0x48 - 0x20];
+    s16 lookAtX; /* look-at target (evt_relaxLookAt) */
+    s16 lookAtY;
+    s16 lookAtZ;
+    u8 pad4E[0x50 - 0x4E];
+    struct { Unk8004AFF0Sub unk0[1]; } *texAnims; /* texture animations (item 0x19xxxx), ops 0xC0-0xC2 */
+    s16 scaleX; /* op 0x9F: (s8)arg << 6, flags 2 */
+    s16 scaleY;
+    s16 scaleZ;
     u8 pad5A[0x74 - 0x5A];
-    s16 unk74;
-    s16 unk76;
-    s16 unk78;
+    s16 attachX; /* op 0xD4: offset from the parent bone */
+    s16 attachY;
+    s16 attachZ;
 } Unk8004AFF0;
 
 /* Inlined copy of evt_getObjectModelData. */

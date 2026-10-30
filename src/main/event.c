@@ -1430,9 +1430,9 @@ s32 evt_execInstr(void) {
         b = evt_getArg16_inline();
         c = evt_getArg16_inline();
         if (m != NULL) {
-            m->unk74 = a;
-            m->unk76 = b;
-            m->unk78 = c;
+            m->attachX = a;
+            m->attachY = b;
+            m->attachZ = c;
         }
         return 0;
     case EVT_OP_ATTACH:
@@ -1442,15 +1442,15 @@ s32 evt_execInstr(void) {
         m2 = evt_getObjectModelData_inline(o);
         a = evt_getArg8_inline();
         if (m != NULL && m2 != NULL) {
-            m->unk1C = m2;
-            m->unk4 = a;
+            m->parent = m2;
+            m->parentBone = a;
         }
         return 0;
     case EVT_OP_DETACH:
         o = evt_getObjectArg();
         m = evt_getObjectModelData_inline(o);
         if (m != NULL) {
-            m->unk1C = NULL;
+            m->parent = NULL;
         }
         return 0;
     case EVT_OP_MODEL_SCALE:
@@ -1460,10 +1460,10 @@ s32 evt_execInstr(void) {
         b = evt_getArg8_inline();
         c = evt_getArg8_inline();
         if (m != NULL) {
-            m->unk54 = (s8)a << 6;
-            m->unk56 = (s8)b << 6;
-            m->unk58 = (s8)c << 6;
-            m->unk0 |= 2;
+            m->scaleX = (s8)a << 6;
+            m->scaleY = (s8)b << 6;
+            m->scaleZ = (s8)c << 6;
+            m->flags |= 2;
         }
         po->scale = b;
         return 0;
@@ -1472,9 +1472,9 @@ s32 evt_execInstr(void) {
         m = evt_getObjectModelData_inline(o);
         b = evt_getArg8_inline();
         if (m != NULL) {
-            m->unk50->unk0[b].unk4 |= 1;
-            m->unk50->unk0[b].unkC = 0;
-            m->unk50->unk0[b].unk12 = 0x1000;
+            m->texAnims->unk0[b].flags |= 1;
+            m->texAnims->unk0[b].pos = 0;
+            m->texAnims->unk0[b].lastFrame = 0x1000;
         }
         return 0;
     case 0xC1:
@@ -1482,9 +1482,9 @@ s32 evt_execInstr(void) {
         m = evt_getObjectModelData_inline(o);
         b = evt_getArg8_inline();
         if (m != NULL) {
-            m->unk50->unk0[b].unk4 |= 3;
-            m->unk50->unk0[b].unkC = 0;
-            m->unk50->unk0[b].unk12 = 0x1000;
+            m->texAnims->unk0[b].flags |= 3;
+            m->texAnims->unk0[b].pos = 0;
+            m->texAnims->unk0[b].lastFrame = 0x1000;
         }
         return 0;
     case 0xC2:
@@ -1492,7 +1492,7 @@ s32 evt_execInstr(void) {
         m = evt_getObjectModelData_inline(o);
         b = evt_getArg8_inline();
         if (m != NULL) {
-            m->unk50->unk0[b].unk4 &= 0xFC;
+            m->texAnims->unk0[b].flags &= 0xFC;
         }
         return 0;
     case EVT_OP_MODEL_FLAGS_SET: {
@@ -1867,20 +1867,20 @@ s32 evt_execInstr(void) {
         c = evt_getArg16_inline();
         fld_modelCommand(po->modelSlot, a, b, c, evt_getArg16_inline());
         return 0;
-    case EVT_OP_MESH_SHOW:
-        o = evt_getObjectArg();
-        m = evt_getObjectModelData_inline(o);
-        a = evt_getArg8_inline();
-        if (m != NULL) {
-            m->unk14 |= 1 << a;
-        }
-        return 0;
     case EVT_OP_MESH_HIDE:
         o = evt_getObjectArg();
         m = evt_getObjectModelData_inline(o);
         a = evt_getArg8_inline();
         if (m != NULL) {
-            m->unk14 &= ~(1 << a);
+            m->hiddenGroups |= 1 << a;
+        }
+        return 0;
+    case EVT_OP_MESH_SHOW:
+        o = evt_getObjectArg();
+        m = evt_getObjectModelData_inline(o);
+        a = evt_getArg8_inline();
+        if (m != NULL) {
+            m->hiddenGroups &= ~(1 << a);
         }
         return 0;
     case EVT_OP_PLAYER_BUBBLE:
@@ -2543,10 +2543,10 @@ void evt_relaxLookAt(EvtObject *o, Unk80047B90 *m) {
     o->lookAtX += (out.vx - o->lookAtX) * 100 / d;
     o->lookAtY += (out.vy - o->lookAtY) * 100 / d;
     o->lookAtZ += (out.vz - o->lookAtZ) * 100 / d;
-    m->unk0 |= 1;
-    m->unk48 = o->lookAtX;
-    m->unk4A = o->lookAtY;
-    m->unk4C = o->lookAtZ;
+    m->flags |= 1;
+    m->lookAtX = o->lookAtX;
+    m->lookAtY = o->lookAtY;
+    m->lookAtZ = o->lookAtZ;
 }
 
 /* move the look-at point towards t */
@@ -2560,10 +2560,10 @@ static inline void evt_updateLookAt_approach(EvtObject *o, Unk80047B90 *mdl, VEC
     o->lookAtX += (t->vx - o->lookAtX) * 100 / d;
     o->lookAtY += (t->vy - o->lookAtY) * 100 / d;
     o->lookAtZ += (t->vz - o->lookAtZ) * 100 / d;
-    mdl->unk0 |= 1;
-    mdl->unk48 = o->lookAtX;
-    mdl->unk4A = o->lookAtY;
-    mdl->unk4C = o->lookAtZ;
+    mdl->flags |= 1;
+    mdl->lookAtX = o->lookAtX;
+    mdl->lookAtY = o->lookAtY;
+    mdl->lookAtZ = o->lookAtZ;
 }
 
 /* is the look-at point still in front of o (within ~80 degrees)? */
@@ -2707,7 +2707,7 @@ void evt_updateLookAt(EvtObject *o) {
         evt_relaxLookAt(o, mdl);
     }
     if (!(o->moveFlags & 0x100)) {
-        mdl->unk0 &= ~1;
+        mdl->flags &= ~1;
     }
 }
 

@@ -350,7 +350,7 @@ children and its vertices, not its position.
 
 Other cases in the routine:
 - **Parent model** (weapons: `BtlUnit9C.parent`): bone 0 is replaced by the parent's bone `parentBone`, moved by
-  `sat16(R · (unk74, unk76, unk78) >> 12)`; the decoded rotation and root translation of bone 0 are dropped.
+  `sat16(R · (attachX, attachY, attachZ) >> 12)`; the decoded rotation and root translation of bone 0 are dropped.
   `btl_updateUnitModel` always calls the weapon with frame 0.
 - **No motion** (`motion == NULL`): one matrix, the parent's bone moved as above, or else `BtlUnit9C.matrix` with
   its y and z columns negated.

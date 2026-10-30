@@ -6,20 +6,20 @@
  * live here, not in ff9.h. */
 #include "ff9.h"
 
-/* field context, GameData.unk8E4.field */
+/* texture animation as ModelObj.texAnims shows it (fld_isModelTexAnimActive, fld_drawModels): TexAnim's layout */
 typedef struct {
-    u8 unk0; /* flags */
+    u8 flags; /* TEXANIM_ACTIVE / TEXANIM_ONESHOT */
     u8 pad1[7];
-    s32 unk8;
+    s32 pos; /* frame position (20.12) */
     u8 padC[2];
-    s16 unkE;
+    s16 lastFrame; /* frame last uploaded; 0x1000 forces the next upload */
     u8 pad10[4];
 } Unk800AB0B0Entry; /* 0x14 */
 
 typedef struct Unk800AB0B0 {
-    u16 unk0; /* count */
+    u16 count; /* animations (TexAnimSet.count) */
     u8 pad2[2];
-    Unk800AB0B0Entry unk4[1];
+    Unk800AB0B0Entry anims[1];
 } Unk800AB0B0;
 
 /* 0x24-byte entries at FieldSpriteSet.unk8 (fld_spriteCommand sets them) */
@@ -667,10 +667,10 @@ typedef struct {
 /* file 0x12xxxx lookup table (fld_getModelAnimId) */
 typedef struct {
     u16 modelId;
-    u16 animId;          /* file 0x3xxxx */
-    unsigned unk4 : 24; /* offset from the entry: 3 tables of unk7 words */
-    unsigned unk7 : 8;
-    u16 unk8;          /* file 0x19xxxx */
+    u16 animId;          /* default motion 0x3xxxx (0xFFFF none); only entry 0 is ever matched, docs/field-models.md */
+    unsigned tableOffset : 24; /* from the entry: texCount {tpage, clut}, then {du, dv}, then ModelTexOfs */
+    unsigned texCount : 8;
+    u16 texAnimId;          /* texture animations 0x19xxxx (0xFFFF none); only entry 0 is ever matched */
     u8 padA[2];
 } WmAnimTableEntry; /* 0xC */
 
@@ -779,8 +779,8 @@ typedef struct {
 typedef struct {
     u16 flags; /* flags: 1 = relocated */
     u8 boneCount;  /* bone count */
-    u8 groupCount; /* group count */
-    u8 pad4[2];
+    u8 groupCount; /* group count (<= 32: ModelObj.hiddenGroups bits) */
+    u16 packetSize; /* sum of the groups' packetSize (u16, wraps for model 200; the field code sums the groups) */
     u8 lookAtBone; /* look-at bone (fldmdl_calcBoneMatricesLookAt) */
     u8 pad7[0xC - 7];
     s32 bones;

@@ -306,9 +306,9 @@ typedef struct BtlUnit9C {
     BtlUnit9C8 *morph; /* morph target */
     void *unk60;
     u8 pad64[0x74 - 0x64];
-    s16 unk74;
-    s16 unk76;
-    s16 unk78;
+    s16 attachX; /* offset from the parent bone (btl_calcBoneMatrices; event op 0xD4 writes it through main's Unk8004AFF0) */
+    s16 attachY;
+    s16 attachZ;
 } BtlUnit9C;
 
 /* GameData.unk8E0 entry as btl_registerModel fills it (ff9.h's Unk8E0 has pad4) */

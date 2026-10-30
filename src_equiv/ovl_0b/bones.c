@@ -7,7 +7,7 @@
  * Builds a model's bone matrices (32 bytes each: MATRIX m[3][3], pad, t[3]) at `out`, records `out` at
  * BtlUnit9C.unk20 and returns the end:
  * - Without an animation (unkC == 0): one matrix, the parent model's bone unk4 matrix (unk1C->unk20) moved
- *   by RT * (unk74, unk76, unk78), or else the model's own unk24 with the y and z columns negated.
+ *   by RT * (attachX, attachY, attachZ), or else the model's own unk24 with the y and z columns negated.
  * - With one: per bone, a rotation decoded from the animation keys for `frame` (math_rotMatrixZYX_gte turns it into
  *   a matrix), bone 0 gets the root translation; then bone 0 is put into the model's frame (unk24, or the
  *   parent's bone) and every other bone i into its parent's (bone table byte 3) with an offset of
@@ -50,7 +50,7 @@ static void boneRotColumn(u8 *col) {
     H(col, 0xC) = GTE_MFC2(11);
 }
 
-/* Copies the parent model's bone matrix and moves it by RT * (unk74, unk76, unk78) (IR, saturated s16). */
+/* Copies the parent model's bone matrix and moves it by RT * (attachX, attachY, attachZ) (IR, saturated s16). */
 static void boneFromParent(BtlUnit9C *m, u8 *mat) {
     u8 *src = (u8 *)m->parent->bones + m->parentBone * 32;
     u32 a, b, c, d;

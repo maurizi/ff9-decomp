@@ -382,7 +382,9 @@ typedef struct {
     u16 flags; /* flags: 1 = relocated */
     u8 boneCount;
     u8 groupCount; /* group count */
-    u8 pad4[0xC - 4];
+    u16 packetSize; /* sum of the groups' packetSize (ovl_0a WmModel, docs/field-models.md) */
+    u8 lookAtBone; /* ovl_0a fldmdl_calcBoneMatricesLookAt; the world map has no look-at variant */
+    u8 pad7[0xC - 7];
     s32 bones;
     WmModelGroup *groups;
 } WmModel;

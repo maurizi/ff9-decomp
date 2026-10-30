@@ -206,7 +206,7 @@ s32 fld_setupActorModel(s32 arg0, void *arg1) {
     e = t->entries;
     for (i = t->count - 1; i >= 0; i--) {
         if (e->modelId == (u16)arg0) {
-            sprId = e->unk8 | DB_TEX_ANIM;
+            sprId = e->texAnimId | DB_TEX_ANIM;
         }
     }
     if (sprId != -1) {
@@ -268,9 +268,9 @@ s32 fld_getModelTables(s32 arg0, s32 **arg1, s32 **arg2, s32 **arg3) {
 
     for (i = t->count - 1; i >= 0; i--) {
         if (e->modelId == (u16)arg0) {
-            *arg1 = (s32 *)((u8 *)e + e->unk4);
-            *arg2 = *arg1 + e->unk7;
-            *arg3 = *arg2 + e->unk7;
+            *arg1 = (s32 *)((u8 *)e + e->tableOffset);
+            *arg2 = *arg1 + e->texCount;
+            *arg3 = *arg2 + e->texCount;
             break;
         }
         e++;
@@ -284,9 +284,9 @@ s32 fld_isModelTexAnimActive(ModelObj *arg0) {
     Unk800AB0B0Entry *e;
 
     if (t != NULL) {
-        e = t->unk4;
-        for (i = t->unk0 - 1; i >= 0; i--) {
-            if (e[i].unk0 & 1) {
+        e = t->anims;
+        for (i = t->count - 1; i >= 0; i--) {
+            if (e[i].flags & 1) {
                 return 1;
             }
         }
@@ -493,10 +493,10 @@ void fld_drawModels(void) {
         c = list[i];
         if (c != NULL && !(c->flags & 0x1000)) {
             m = c->model;
-            if (m->texAnims->unk0 >= 2 && fld_isModelTexAnimActive(m) == 0) {
-                m->texAnims->unk4[2].unk0 |= 1;
-                m->texAnims->unk4[2].unk8 = 0;
-                m->texAnims->unk4[2].unkE = 0x1000;
+            if (m->texAnims->count >= 2 && fld_isModelTexAnimActive(m) == 0) {
+                m->texAnims->anims[2].flags |= 1;
+                m->texAnims->anims[2].pos = 0;
+                m->texAnims->anims[2].lastFrame = 0x1000;
             }
         }
     }
