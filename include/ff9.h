@@ -1485,17 +1485,17 @@ void bzero(void *, s32);
 
 /* argument block for sound command akao_command */
 typedef struct {
-    s32 unk0;
-    s32 unk4;
-    s32 unk8;
-    s32 unkC;
-    s32 unk10;
-    s32 unk14;
-} Unk80080AA0;
-void akao_startSe(); /* (VoiceParams *, u8 *, u8 *, s32); callers pass Unk80080AA0 * */
-extern Unk80080AA0 g_akaoArgs;
-extern Unk80080AA0 g_akaoCommandBlock; /* command block passed to the handlers */
-extern void (*g_akaoCommandHandlers[])(Unk80080AA0 *); /* sound command handlers */
+    s32 arg0; /* first argument of the sound command (akao_api.c senders store their arguments in order, then akao_command) */
+    s32 arg1;
+    s32 arg2;
+    s32 arg3;
+    s32 arg4;
+    s32 arg5;
+} AkaoArgs;
+void akao_startSe(); /* (VoiceParams *, u8 *, u8 *, s32); callers pass AkaoArgs * */
+extern AkaoArgs g_akaoArgs;
+extern AkaoArgs g_akaoCommandBlock; /* command block passed to the handlers */
+extern void (*g_akaoCommandHandlers[])(AkaoArgs *); /* sound command handlers */
 
 typedef struct {
     u8 unk0; /* card id, 0xFF = none */
@@ -1730,7 +1730,7 @@ extern u8 D_80083156; /* tempo scale */
 void akao_execChannel(AkaoChannel *, u32);
 void akao_stepChannelSlides(AkaoChannel *, u32, s32);
 
-void akao_cmdPlayMusic(Unk80080AA0 *);
+void akao_cmdPlayMusic(AkaoArgs *);
 
 /* ---- hoisted from overlay headers ---- */
 
@@ -3239,7 +3239,7 @@ s32 akao_isqrt(s32);
 extern s32 D_8007F8E8;
 extern s32 D_8007F8E4;
 extern s32 D_8007F740;
-extern Unk80080AA0 D_800809F0;
+extern AkaoArgs D_800809F0;
 typedef struct {
     u16 unk0[6];
 } Unk8007BD44Row;

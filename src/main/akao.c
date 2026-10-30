@@ -1721,10 +1721,10 @@ void akao_opFE0B(AkaoChannel *c) {
     a = akao_opFE0B_ref(p);
     p += 2;
     b = akao_opFE0B_ref(p);
-    D_800809F0.unk0 = 0;
-    D_800809F0.unk4 = 0;
-    D_800809F0.unk8 = c->pan >> 8;
-    D_800809F0.unkC = c->volume >> 23;
+    D_800809F0.arg0 = 0;
+    D_800809F0.arg1 = 0;
+    D_800809F0.arg2 = c->pan >> 8;
+    D_800809F0.arg3 = c->volume >> 23;
     akao_startSe(&D_800809F0, a, b, 0);
     c->pc += 4;
 }
@@ -2004,13 +2004,13 @@ void akao_cmdE4(s32 *a) {
     }
 }
 
-void akao_cmdE5(Unk80080AA0 *p) {
+void akao_cmdE5(AkaoArgs *p) {
     s16 n = 1;
 
-    if (p->unk0 != 0) {
-        n = p->unk0;
+    if (p->arg0 != 0) {
+        n = p->arg0;
     }
-    g_akaoStream.volumeStep = (s16)((s16)((u16)p->unk4 - (u16)g_akaoStream.volume) / n);
+    g_akaoStream.volumeStep = (s16)((s16)((u16)p->arg1 - (u16)g_akaoStream.volume) / n);
     g_akaoStream.volumeFadeLen = n;
 }
 
@@ -2360,7 +2360,7 @@ void akao_cmdE8(s32 *a) {
     g_akaoStream.unk28 = 0;
     g_akaoStream.unk38 = 0;
     g_akaoStream.flags = 0x1000000;
-    g_akaoStream.unk3C = (u32)g_akaoArgs.unk4 >> 12;
+    g_akaoStream.unk3C = (u32)g_akaoArgs.arg1 >> 12;
     g_akaoStream.spuAddr = a[0];
     g_akaoStream.unk30 = a[1];
 }

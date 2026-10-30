@@ -29,18 +29,18 @@ s32 akao_setSeTables(u8 *a) {
 }
 
 s32 akao_playMusic(void *a) {
-    g_akaoArgs.unk0 = (s32)a;
+    g_akaoArgs.arg0 = (s32)a;
     return akao_command(0x10);
 }
 
 void akao_stopMusic(s32 a) {
-    g_akaoArgs.unk0 = a;
+    g_akaoArgs.arg0 = a;
     akao_command(0x11);
 }
 
 void akao_playMusicFrom(s32 a, s32 b) {
-    g_akaoArgs.unk0 = a;
-    g_akaoArgs.unk4 = b;
+    g_akaoArgs.arg0 = a;
+    g_akaoArgs.arg1 = b;
     akao_command(0x14);
 }
 
@@ -56,31 +56,31 @@ s32 func_80055330(void) {
 }
 
 void akao_pushMusic(s32 a, s32 b) {
-    g_akaoArgs.unk0 = a;
-    g_akaoArgs.unk4 = b & 0x7F;
+    g_akaoArgs.arg0 = a;
+    g_akaoArgs.arg1 = b & 0x7F;
     akao_command(0x19);
 }
 
 void akao_crossfadeMusic(s32 a, s32 b, s32 c) {
-    g_akaoArgs.unk0 = a;
-    g_akaoArgs.unk4 = b;
-    g_akaoArgs.unk8 = c & 0x7F;
+    g_akaoArgs.arg0 = a;
+    g_akaoArgs.arg1 = b;
+    g_akaoArgs.arg2 = c & 0x7F;
     akao_command(0x1A);
 }
 
 s32 akao_playMusicCount(void *a, s32 b) {
-    g_akaoArgs.unk0 = (s32)a;
-    g_akaoArgs.unk4 = b;
+    g_akaoArgs.arg0 = (s32)a;
+    g_akaoArgs.arg1 = b;
     return akao_command(0x12);
 }
 
 s32 akao_playSe(s32 a, s32 b, s32 c, s32 d) {
     s32 r;
 
-    g_akaoArgs.unk0 = a;
-    g_akaoArgs.unk4 = b & 0xFFFFFF;
-    g_akaoArgs.unk8 = c & 0xFF;
-    g_akaoArgs.unkC = d & 0x7F;
+    g_akaoArgs.arg0 = a;
+    g_akaoArgs.arg1 = b & 0xFFFFFF;
+    g_akaoArgs.arg2 = c & 0xFF;
+    g_akaoArgs.arg3 = d & 0x7F;
     if ((u32)a >= 0x400) {
         r = akao_checkHeader((s32 *)a);
         if (r != 0) {
@@ -93,13 +93,13 @@ s32 akao_playSe(s32 a, s32 b, s32 c, s32 d) {
 }
 
 void akao_stopSe(s32 a, s32 b) {
-    g_akaoArgs.unk0 = a;
-    g_akaoArgs.unk4 = b & 0xFFFFFF;
+    g_akaoArgs.arg0 = a;
+    g_akaoArgs.arg1 = b & 0xFFFFFF;
     akao_command(0x21);
 }
 
 void akao_playSeDefault(s32 a) {
-    g_akaoArgs.unk0 = a & 0x3FF;
+    g_akaoArgs.arg0 = a & 0x3FF;
     akao_command(0x30);
 }
 
@@ -155,12 +155,12 @@ void akao_setOutputMode(s32 a) {
 }
 
 void akao_sendCmd90(s32 a) {
-    g_akaoArgs.unk0 = a;
+    g_akaoArgs.arg0 = a;
     akao_command(0x90);
 }
 
 void akao_sendCmd92(s32 a) {
-    g_akaoArgs.unk0 = a;
+    g_akaoArgs.arg0 = a;
     akao_command(0x92);
 }
 
@@ -203,186 +203,186 @@ void akao_sendCmd98(u32 x) {
 }
 
 void akao_setAllSeVolume(s32 a) {
-    g_akaoArgs.unk0 = a & 0x7F;
+    g_akaoArgs.arg0 = a & 0x7F;
     akao_command(0xA8);
 }
 
 void akao_fadeAllSeVolume(s32 a, s32 b) {
-    g_akaoArgs.unk0 = a;
-    g_akaoArgs.unk4 = b & 0x7F;
+    g_akaoArgs.arg0 = a;
+    g_akaoArgs.arg1 = b & 0x7F;
     akao_command(0xA9);
 }
 
 void akao_setSeVolume(s32 a, s32 b, s32 c) {
-    g_akaoArgs.unk0 = a;
-    g_akaoArgs.unk4 = b & 0xFFFFFF;
-    g_akaoArgs.unk8 = c & 0x7F;
+    g_akaoArgs.arg0 = a;
+    g_akaoArgs.arg1 = b & 0xFFFFFF;
+    g_akaoArgs.arg2 = c & 0x7F;
     akao_command(0xA0);
 }
 
 void akao_fadeSeVolume(s32 a, s32 b, s32 c, s32 d) {
-    g_akaoArgs.unk0 = a;
-    g_akaoArgs.unk4 = b & 0xFFFFFF;
-    g_akaoArgs.unk8 = c;
-    g_akaoArgs.unkC = d & 0x7F;
+    g_akaoArgs.arg0 = a;
+    g_akaoArgs.arg1 = b & 0xFFFFFF;
+    g_akaoArgs.arg2 = c;
+    g_akaoArgs.arg3 = d & 0x7F;
     akao_command(0xA1);
 }
 
 void akao_sendCmdAA(s32 a) {
-    g_akaoArgs.unk0 = a & 0xFF;
+    g_akaoArgs.arg0 = a & 0xFF;
     akao_command(0xAA);
 }
 
 void akao_sendCmdAB(s32 a, s32 b) {
-    g_akaoArgs.unk0 = a;
-    g_akaoArgs.unk4 = b & 0xFF;
+    g_akaoArgs.arg0 = a;
+    g_akaoArgs.arg1 = b & 0xFF;
     akao_command(0xAB);
 }
 
 void akao_sendCmdA2(s32 a, s32 b, u8 c) {
-    g_akaoArgs.unk0 = a;
-    g_akaoArgs.unk4 = b & 0xFFFFFF;
-    g_akaoArgs.unk8 = c;
+    g_akaoArgs.arg0 = a;
+    g_akaoArgs.arg1 = b & 0xFFFFFF;
+    g_akaoArgs.arg2 = c;
     akao_command(0xA2);
 }
 
 void akao_sendCmdA3(s32 a, s32 b, s32 c, u8 d) {
-    g_akaoArgs.unk0 = a;
-    g_akaoArgs.unk4 = b & 0xFFFFFF;
-    g_akaoArgs.unk8 = c;
-    g_akaoArgs.unkC = d;
+    g_akaoArgs.arg0 = a;
+    g_akaoArgs.arg1 = b & 0xFFFFFF;
+    g_akaoArgs.arg2 = c;
+    g_akaoArgs.arg3 = d;
     akao_command(0xA3);
 }
 
 void akao_sendCmdAC(s32 a) {
-    g_akaoArgs.unk0 = a & 0xFF;
+    g_akaoArgs.arg0 = a & 0xFF;
     akao_command(0xAC);
 }
 
 void akao_sendCmdAD(s32 a, s32 b) {
-    g_akaoArgs.unk0 = a;
-    g_akaoArgs.unk4 = b & 0xFF;
+    g_akaoArgs.arg0 = a;
+    g_akaoArgs.arg1 = b & 0xFF;
     akao_command(0xAD);
 }
 
 void akao_sendCmdA4(s32 a, s32 b, u8 c) {
-    g_akaoArgs.unk0 = a;
-    g_akaoArgs.unk4 = b & 0xFFFFFF;
-    g_akaoArgs.unk8 = c;
+    g_akaoArgs.arg0 = a;
+    g_akaoArgs.arg1 = b & 0xFFFFFF;
+    g_akaoArgs.arg2 = c;
     akao_command(0xA4);
 }
 
 void akao_sendCmdA5(s32 a, s32 b, s32 c, u8 d) {
-    g_akaoArgs.unk0 = a;
-    g_akaoArgs.unk4 = b & 0xFFFFFF;
-    g_akaoArgs.unk8 = c;
-    g_akaoArgs.unkC = d;
+    g_akaoArgs.arg0 = a;
+    g_akaoArgs.arg1 = b & 0xFFFFFF;
+    g_akaoArgs.arg2 = c;
+    g_akaoArgs.arg3 = d;
     akao_command(0xA5);
 }
 
 void akao_setMusicVolume(s32 a, s32 b) {
-    g_akaoArgs.unk0 = a;
-    g_akaoArgs.unk4 = b & 0x7F;
+    g_akaoArgs.arg0 = a;
+    g_akaoArgs.arg1 = b & 0x7F;
     akao_command(0xC0);
 }
 
 void akao_fadeMusicVolume(s32 a, s32 b, s32 c) {
-    g_akaoArgs.unk0 = a;
-    g_akaoArgs.unk4 = b;
-    g_akaoArgs.unk8 = c & 0x7F;
+    g_akaoArgs.arg0 = a;
+    g_akaoArgs.arg1 = b;
+    g_akaoArgs.arg2 = c & 0x7F;
     akao_command(0xC1);
 }
 
 void akao_fadeMusicVolumeFrom(s32 a, s32 b, s32 c, s32 d) {
-    g_akaoArgs.unk0 = a;
-    g_akaoArgs.unk4 = b;
-    g_akaoArgs.unk8 = c & 0x7F;
-    g_akaoArgs.unkC = d & 0x7F;
+    g_akaoArgs.arg0 = a;
+    g_akaoArgs.arg1 = b;
+    g_akaoArgs.arg2 = c & 0x7F;
+    g_akaoArgs.arg3 = d & 0x7F;
     akao_command(0xC2);
 }
 
 void akao_sendCmdC4(s32 a, s32 b) {
-    g_akaoArgs.unk0 = a;
-    g_akaoArgs.unk4 = b & 0x7F;
+    g_akaoArgs.arg0 = a;
+    g_akaoArgs.arg1 = b & 0x7F;
     akao_command(0xC4);
 }
 
 void akao_sendCmdC5(s32 a, s32 b, s32 c) {
-    g_akaoArgs.unk0 = a;
-    g_akaoArgs.unk4 = b;
-    g_akaoArgs.unk8 = c & 0x7F;
+    g_akaoArgs.arg0 = a;
+    g_akaoArgs.arg1 = b;
+    g_akaoArgs.arg2 = c & 0x7F;
     akao_command(0xC5);
 }
 
 void akao_setCdVolume(s32 a) {
-    g_akaoArgs.unk0 = a;
+    g_akaoArgs.arg0 = a;
     akao_command(0x70);
 }
 
 void akao_fadeCdVolume(s32 a, s32 b) {
-    g_akaoArgs.unk0 = a;
-    g_akaoArgs.unk4 = b;
+    g_akaoArgs.arg0 = a;
+    g_akaoArgs.arg1 = b;
     akao_command(0x71);
 }
 
 void akao_fadeCdVolumeFrom(s32 a, s32 b, s32 c) {
-    g_akaoArgs.unk0 = a;
-    g_akaoArgs.unk4 = b;
-    g_akaoArgs.unk8 = c;
+    g_akaoArgs.arg0 = a;
+    g_akaoArgs.arg1 = b;
+    g_akaoArgs.arg2 = c;
     akao_command(0x72);
 }
 
 void akao_sendCmdD0(s32 a) {
-    g_akaoArgs.unk0 = a & 0xFF;
+    g_akaoArgs.arg0 = a & 0xFF;
     akao_command(0xD0);
 }
 
 void akao_sendCmdD1(s32 a, s32 b) {
-    g_akaoArgs.unk0 = a;
-    g_akaoArgs.unk4 = b & 0xFF;
+    g_akaoArgs.arg0 = a;
+    g_akaoArgs.arg1 = b & 0xFF;
     akao_command(0xD1);
 }
 
 void akao_sendCmdD2(s32 a, s32 b, s32 c) {
-    g_akaoArgs.unk0 = a;
-    g_akaoArgs.unk4 = b & 0xFF;
-    g_akaoArgs.unk8 = c & 0xFF;
+    g_akaoArgs.arg0 = a;
+    g_akaoArgs.arg1 = b & 0xFF;
+    g_akaoArgs.arg2 = c & 0xFF;
     akao_command(0xD2);
 }
 
 void akao_sendCmdD4(s32 a) {
-    g_akaoArgs.unk0 = a & 0xFF;
+    g_akaoArgs.arg0 = a & 0xFF;
     akao_command(0xD4);
 }
 
 void akao_sendCmdD5(s32 a, s32 b) {
-    g_akaoArgs.unk0 = a;
-    g_akaoArgs.unk4 = b & 0xFF;
+    g_akaoArgs.arg0 = a;
+    g_akaoArgs.arg1 = b & 0xFF;
     akao_command(0xD5);
 }
 
 void akao_sendCmdD6(s32 a, s32 b, s32 c) {
-    g_akaoArgs.unk0 = a;
-    g_akaoArgs.unk4 = b & 0xFF;
-    g_akaoArgs.unk8 = c & 0xFF;
+    g_akaoArgs.arg0 = a;
+    g_akaoArgs.arg1 = b & 0xFF;
+    g_akaoArgs.arg2 = c & 0xFF;
     akao_command(0xD6);
 }
 
 void akao_sendCmdD8(s32 a) {
-    g_akaoArgs.unk0 = a & 0xFF;
+    g_akaoArgs.arg0 = a & 0xFF;
     akao_command(0xD8);
 }
 
 void akao_sendCmdD9(s32 a, s32 b) {
-    g_akaoArgs.unk0 = a;
-    g_akaoArgs.unk4 = b & 0xFF;
+    g_akaoArgs.arg0 = a;
+    g_akaoArgs.arg1 = b & 0xFF;
     akao_command(0xD9);
 }
 
 void akao_sendCmdDA(s32 a, s32 b, s32 c) {
-    g_akaoArgs.unk0 = a;
-    g_akaoArgs.unk4 = b & 0xFF;
-    g_akaoArgs.unk8 = c & 0xFF;
+    g_akaoArgs.arg0 = a;
+    g_akaoArgs.arg1 = b & 0xFF;
+    g_akaoArgs.arg2 = c & 0xFF;
     akao_command(0xDA);
 }
 
@@ -535,9 +535,9 @@ s32 akao_setCdMix(s32 vol) {
 
 void akao_sendCmdE0(s32 *a, s32 b, s32 c) {
     if (akao_checkHeader(a) == 0) {
-        g_akaoArgs.unk0 = (s32)a;
-        g_akaoArgs.unk4 = (b & 0xFF) << 8;
-        g_akaoArgs.unk8 = c;
+        g_akaoArgs.arg0 = (s32)a;
+        g_akaoArgs.arg1 = (b & 0xFF) << 8;
+        g_akaoArgs.arg2 = c;
         akao_command(0xE0);
     }
 }
@@ -547,18 +547,18 @@ void akao_sendCmdE2(void) {
 }
 
 void akao_sendCmdE4(s32 a) {
-    g_akaoArgs.unk0 = (a & 0x7F) << 8;
+    g_akaoArgs.arg0 = (a & 0x7F) << 8;
     akao_command(0xE4);
 }
 
 void akao_sendCmdE5(s32 a, s32 b) {
-    g_akaoArgs.unk0 = a;
-    g_akaoArgs.unk4 = (b & 0x7F) << 8;
+    g_akaoArgs.arg0 = a;
+    g_akaoArgs.arg1 = (b & 0x7F) << 8;
     akao_command(0xE5);
 }
 
 void akao_sendCmdE6(s32 a) {
-    g_akaoArgs.unk0 = (a & 0xFF) << 8;
+    g_akaoArgs.arg0 = (a & 0xFF) << 8;
     akao_command(0xE6);
 }
 
@@ -586,8 +586,8 @@ s32 akao_uploadSeBank(s32 *a, s32 b) {
 }
 
 void akao_sendCmdED(s32 a, s32 b) {
-    g_akaoArgs.unk0 = (a & 0xFF) << 8;
-    g_akaoArgs.unk4 = b;
+    g_akaoArgs.arg0 = (a & 0xFF) << 8;
+    g_akaoArgs.arg1 = b;
     akao_command(0xED);
 }
 
@@ -598,10 +598,10 @@ void akao_sendCmdEC(s32 *a, s32 b, s32 c, s32 d) {
         if (c == 0) {
             x = 0x4F100;
         }
-        g_akaoArgs.unk0 = (s32)a;
-        g_akaoArgs.unk4 = (b & 0xFF) << 8;
-        g_akaoArgs.unk8 = x;
-        g_akaoArgs.unkC = d;
+        g_akaoArgs.arg0 = (s32)a;
+        g_akaoArgs.arg1 = (b & 0xFF) << 8;
+        g_akaoArgs.arg2 = x;
+        g_akaoArgs.arg3 = d;
         akao_command(0xEC);
     }
 }
@@ -610,8 +610,8 @@ s32 akao_sendCmdE8(s32 a, s32 b) {
     if (b == 0) {
         return -1;
     }
-    g_akaoArgs.unk0 = a;
-    g_akaoArgs.unk4 = b;
+    g_akaoArgs.arg0 = a;
+    g_akaoArgs.arg1 = b;
     akao_command(0xE8);
     return 0;
 }
