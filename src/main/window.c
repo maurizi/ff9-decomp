@@ -79,7 +79,7 @@ void win_drawFrame(Window *w) {
             return;
         }
     }
-    win_drawFill(&t, w->otz, w->list.unkA, w->list.fillV, abr);
+    win_drawFill(&t, w->otz, w->list.fillU, w->list.fillV, abr);
 }
 
 void win_drawBoxEx(RECT *r, s32 otz, s32 style, s32 abr) {
@@ -139,7 +139,7 @@ void win_setOpenAnim(Window *w, s32 mode) {
     } else if (mode == 1) {
         w->stepW = 0;
         w->list.fillV = 0;
-        w->list.unkA = 0;
+        w->list.fillU = 0;
         h = w->h >> 2;
         w->cur.x = w->x;
         w->cur.y = w->y;
@@ -211,7 +211,7 @@ void win_stepOpen(Window *w) {
         if (w->cur.y < w->y) {
             w->cur.y = w->y;
         }
-        w->list.unkA = (w->cur.x - w->x) & 0x1F;
+        w->list.fillU = (w->cur.x - w->x) & 0x1F;
         w->list.fillV = (w->cur.y - w->y) & 0x1F;
     } else if (w->animMode == 1) {
         w->cur.w += w->stepW;
@@ -243,7 +243,7 @@ void win_stepOpen(Window *w) {
         if (w->cur.y < w->y) {
             w->cur.y = w->y;
         }
-        w->list.unkA = (w->cur.x - w->x) & 0x1F;
+        w->list.fillU = (w->cur.x - w->x) & 0x1F;
         w->list.fillV = (w->cur.y - w->y) & 0x1F;
     }
     if (*(s32 *)&w->cur.w == *(s32 *)&w->w) {
@@ -260,7 +260,7 @@ void win_stepClose(Window *w) {
         w->cur.h -= w->stepH;
         w->cur.x += w->stepW >> 1;
         w->cur.y += w->stepH >> 1;
-        w->list.unkA = (w->cur.x - w->x) & 0x1F;
+        w->list.fillU = (w->cur.x - w->x) & 0x1F;
         w->list.fillV = (w->cur.y - w->y) & 0x1F;
     } else if (w->animMode == 1) {
         w->cur.h -= w->stepH;
@@ -273,7 +273,7 @@ void win_stepClose(Window *w) {
         if (w->tailMode >= 2) {
             w->cur.y += w->stepH;
         }
-        w->list.unkA = (w->cur.x - w->x) & 0x1F;
+        w->list.fillU = (w->cur.x - w->x) & 0x1F;
         w->list.fillV = (w->cur.y - w->y) & 0x1F;
     }
     if (w->cur.w < 0) {
@@ -598,7 +598,7 @@ void win_drawTail(Window *w) {
         y = r->y - 11;
     }
     win_drawMsgTailEdge(w->x + w->tailX, y, w->otz, w->tailMode, w->translucent);
-    win_drawTailFill(w->x + w->tailX, y, w->otz, w->tailMode, (w->list.unkA + w->tailX) & 0x1F, w->list.fillV);
+    win_drawTailFill(w->x + w->tailX, y, w->otz, w->tailMode, (w->list.fillU + w->tailX) & 0x1F, w->list.fillV);
 }
 
 void win_drawScrollArrows(RECT *r, s32 otz, MenuList *m) {

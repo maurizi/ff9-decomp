@@ -91,7 +91,7 @@ void menuList_init(MenuList *m, s32 count, s32 rows, s32 cols, s32 e) {
     m->scroll = 0;
     m->pageTop = 0;
     m->fillV = 0;
-    m->unkA = 0;
+    m->fillU = 0;
     m->scrollPos = 0;
     m->col = 0;
     m->cursor = 0;

@@ -717,7 +717,7 @@ typedef struct {
     u8 col;
     u8 scroll; /* scroll animation flags: 1 down, 2 up, 4 page, 8 wrap column (menuList_update) */
     u8 scrollPos; /* pixels scrolled / page divider position */
-    u8 unkA;
+    u8 fillU; /* fill texture u offset (win_drawFill), follows the open animation x */
     u8 fillV; /* fill texture v offset, moves with the scroll */
     u8 pageTop; /* top row after a page scroll */
     u8 height; /* pixels */
