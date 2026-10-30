@@ -1415,19 +1415,19 @@ void help_setCallback(void (*)(void));
 
 typedef struct {
     u8 pad0[4];
-    u16 unk4; /* row count */
-    u16 unk6; /* offset of a u16[][6] flag table */
-} Unk8007BD44;
+    u16 trackCount; /* row count */
+    u16 tracksOfs; /* offset of a u16[][6] flag table: per track {flags[2], length[2], data offset[2]} (u16[6]; bit 0 of flags = selected, vib_selectTrack) */
+} VibData;
 
 typedef struct {
-    u16 unk0;
-    s16 unk2;
-    s16 unk4;
-    s16 unk6;
-    s32 unk8;
-    Unk8007BD44 *unkC;
-} Unk8007BD38;
-extern Unk8007BD38 g_vib;
+    u16 flags; /* 1 initialised, 2 playing, 4/8 running/looping (cleared at the end unless 8), 0x10 bounce (vib_update) */
+    s16 start; /* first frame (pos is reset to it) */
+    s16 end; /* last frame (longest track - 1, vib_init) */
+    s16 rate; /* pos step per frame << 8 (vib_setRate; negated when bouncing) */
+    s32 pos; /* current frame << 8 */
+    VibData *data; /* vibration data (vib_init) */
+} VibState;
+extern VibState g_vib;
 u8 func_800EA27C(void); /* ovl_0b */
 
 typedef struct {
@@ -3150,7 +3150,7 @@ extern s32 D_8007F740;
 extern AkaoArgs D_800809F0;
 typedef struct {
     u16 unk0[6];
-} Unk8007BD44Row;
+} VibTrack;
 extern u32 g_akaoStreamVoices;
 /* voice parameter block written to the SPU by akao_writeVoice */
 typedef struct {
