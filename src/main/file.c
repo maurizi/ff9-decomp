@@ -327,9 +327,9 @@ void game_setNextScene(u16 arg0) {
 
 s32 game_getModel(s32 arg0) {
     if (arg0 < 9) {
-        return (s32)&g_gameState->gameData->unk8D8[arg0];
+        return (s32)&g_gameState->gameData->chrModels[arg0];
     }
-    return (s32)&g_gameState->gameData->unk8E0[arg0 - 9];
+    return (s32)&g_gameState->gameData->npcModels[arg0 - 9];
 }
 
 void func_8001E3A4(Unk8001E3A4 *a) {

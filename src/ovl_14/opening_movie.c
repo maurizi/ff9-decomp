@@ -143,11 +143,11 @@ s32 opening_movieInit(void) {
     s32 h;
     s32 i, j;
 
-    while (cdRead_update(g_gameState->gameData->unk854) != 0) {
+    while (cdRead_update(g_gameState->gameData->cdRead) != 0) {
     }
     f = file_find(0, 0x64);
-    cdRead_init(g_gameState->gameData->unk854, f->unk4, (f->unkC - f->unk4) << 11, g_loadAreaEnd + 0xF1700, 0, 0x15000, NULL);
-    while (cdRead_update(g_gameState->gameData->unk854) != 0) {
+    cdRead_init(g_gameState->gameData->cdRead, f->unk4, (f->unkC - f->unk4) << 11, g_loadAreaEnd + 0xF1700, 0, 0x15000, NULL);
+    while (cdRead_update(g_gameState->gameData->cdRead) != 0) {
     }
     EnterCriticalSection();
     FlushCache();

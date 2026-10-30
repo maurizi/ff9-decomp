@@ -18,7 +18,7 @@ s32 fld_soundCommand(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4) {
     s32 d;
 
     kind = (arg0 >> 8) & 0xF;
-    if (kind == 12 && g_gameState->gameData->unk851 != 0) {
+    if (kind == 12 && g_gameState->gameData->soundLoadState != 0) {
         goto state;
     }
     switch ((arg0 >> 12) & 3) {
@@ -28,30 +28,30 @@ s32 fld_soundCommand(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4) {
         switch (kind) {
         case 9:
             ok = 0;
-            if (g_gameState->gameData->unk7E8 != 0xFFFF && g_gameState->gameData->unk7EA == (s16)g_gameState->gameData->fieldId) {
+            if (g_gameState->gameData->savedMusicId != 0xFFFF && g_gameState->gameData->savedMusicField == (s16)g_gameState->gameData->fieldId) {
                 GameData *p;
                 ok = 1;
                 g_fieldMusicRequest = kind;
                 p = g_gameState->gameData;
-                p->unk826[0] = p->unk850;
-                arg1 = p->unk7E8;
-                id = p->unk7E8 | DB_MUSIC;
-                t = p->unk840 | DB_SOUND_BANK;
-                g_gameState->gameData->unk8A8 = g_gameState->gameData->unk8AC;
-                g_gameState->gameData->unk84A = g_gameState->gameData->unk8B0;
+                p->musicVolume[0] = p->savedMusicVolume;
+                arg1 = p->savedMusicId;
+                id = p->savedMusicId | DB_MUSIC;
+                t = p->savedMusicBank | DB_SOUND_BANK;
+                g_gameState->gameData->musicFileSector = g_gameState->gameData->savedMusicFileSector;
+                g_gameState->gameData->musicFileSectors = g_gameState->gameData->savedMusicFileSectors;
             }
             /* v2 */
-            g_gameState->gameData->unk7E8 = 0xFFFF;
-            g_gameState->gameData->unk840 = 0xFFFF;
-            g_gameState->gameData->unk7EA = 0xFFFF;
-            g_gameState->gameData->unk8AC = -1;
-            g_gameState->gameData->unk8B0 = 0xFFFF;
+            g_gameState->gameData->savedMusicId = 0xFFFF;
+            g_gameState->gameData->savedMusicBank = 0xFFFF;
+            g_gameState->gameData->savedMusicField = 0xFFFF;
+            g_gameState->gameData->savedMusicFileSector = -1;
+            g_gameState->gameData->savedMusicFileSectors = 0xFFFF;
             if (!ok) {
                 return 0;
             }
         case 0:
         case 7:
-            if (g_gameState->gameData->unk851 != 0) {
+            if (g_gameState->gameData->soundLoadState != 0) {
                 return -1;
             }
             if (g_fieldMusicRequest == -1) {
@@ -60,52 +60,52 @@ s32 fld_soundCommand(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4) {
             if (g_fieldMusicRequest != 9) {
                 t = fld_depGetLink(id);
             }
-            if (g_gameState->gameData->unk81C[0] != arg1 || g_gameState->gameData->unk820[0] != (u16)t) {
+            if (g_gameState->gameData->musicId[0] != arg1 || g_gameState->gameData->musicBank[0] != (u16)t) {
                 if (g_gameState->gameData->unk0 & GD_MUSIC_PLAYING) {
                     g_gameState->gameData->unk0 |= GD_MUSIC_STOP_PENDING;
                 }
                 g_gameState->gameData->unk0 &= ~(GD_MUSIC_LOADED | GD_MUSIC_PLAYING);
                 SCENE->flags &= ~FLD_SCN_BANK_SLOT;
-                g_gameState->gameData->unk820[0] = t;
+                g_gameState->gameData->musicBank[0] = t;
                 g_fieldSoundLoadId = id;
-                g_gameState->gameData->unk81C[0] = arg1;
-                g_gameState->gameData->unk851 = 1;
-                return g_gameState->gameData->unk851;
+                g_gameState->gameData->musicId[0] = arg1;
+                g_gameState->gameData->soundLoadState = 1;
+                return g_gameState->gameData->soundLoadState;
             }
             if (g_fieldMusicRequest == 7) {
                 goto done;
             }
         start:
-            g_gameState->gameData->unk824[0] = akao_playMusic(g_gameState->gameData->unk814);
+            g_gameState->gameData->musicHandle[0] = akao_playMusic(g_gameState->gameData->musicSeq);
             if (!(g_gameState->gameData->unk0 & GD_MUSIC_PLAYING)) {
-                akao_fadeMusicVolumeFrom(g_gameState->gameData->unk824[0], 0xA, 0, g_gameState->gameData->unk826[0]);
+                akao_fadeMusicVolumeFrom(g_gameState->gameData->musicHandle[0], 0xA, 0, g_gameState->gameData->musicVolume[0]);
             }
             g_gameState->gameData->unk0 |= (GD_MUSIC_LOADED | GD_MUSIC_PLAYING);
         done:
             g_fieldMusicRequest = -1;
             return 0;
         case 12:
-            if (g_gameState->gameData->unk851 != 0) {
+            if (g_gameState->gameData->soundLoadState != 0) {
                 goto state;
             }
             return fld_isMusicFading() ? 6 : 0;
         case 8:
             akao_saveMusic();
-            g_gameState->gameData->unk7E8 = g_gameState->gameData->unk81C[0];
-            g_gameState->gameData->unk840 = g_gameState->gameData->unk820[0];
-            g_gameState->gameData->unk850 = g_gameState->gameData->unk826[0];
-            g_gameState->gameData->unk7EA = g_gameState->gameData->fieldId;
-            g_gameState->gameData->unk8AC = g_gameState->gameData->unk8A8;
-            g_gameState->gameData->unk8B0 = g_gameState->gameData->unk84A;
+            g_gameState->gameData->savedMusicId = g_gameState->gameData->musicId[0];
+            g_gameState->gameData->savedMusicBank = g_gameState->gameData->musicBank[0];
+            g_gameState->gameData->savedMusicVolume = g_gameState->gameData->musicVolume[0];
+            g_gameState->gameData->savedMusicField = g_gameState->gameData->fieldId;
+            g_gameState->gameData->savedMusicFileSector = g_gameState->gameData->musicFileSector;
+            g_gameState->gameData->savedMusicFileSectors = g_gameState->gameData->musicFileSectors;
         case 1:
             if ((arg0 & 0x3F) == 1) {
-                akao_stopMusic(g_gameState->gameData->unk824[0]);
-                g_gameState->gameData->unk826[0] = 0x7F;
+                akao_stopMusic(g_gameState->gameData->musicHandle[0]);
+                g_gameState->gameData->musicVolume[0] = 0x7F;
                 g_gameState->gameData->unk0 &= ~GD_MUSIC_PLAYING;
                 return 0;
             }
-            akao_stopMusic(g_gameState->gameData->unk824[0]);
-            g_gameState->gameData->unk826[0] = 0x7F;
+            akao_stopMusic(g_gameState->gameData->musicHandle[0]);
+            g_gameState->gameData->musicVolume[0] = 0x7F;
             g_gameState->gameData->unk0 &= ~GD_MUSIC_PLAYING;
             return 0;
         case 2:
@@ -116,8 +116,8 @@ s32 fld_soundCommand(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4) {
             case 1 ... 3:
                 switch (arg0 & 0x3F) {
                 case 1:
-                    akao_setMusicVolume(g_gameState->gameData->unk824[0], arg2);
-                    g_gameState->gameData->unk826[0] = arg2;
+                    akao_setMusicVolume(g_gameState->gameData->musicHandle[0], arg2);
+                    g_gameState->gameData->musicVolume[0] = arg2;
                     return 0;
                 case 2:
                     akao_sendCmdD0(arg2);
@@ -131,7 +131,7 @@ s32 fld_soundCommand(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4) {
                 }
                 break;
             case 7:
-                g_gameState->gameData->unk824[0] = akao_playMusicCount(g_gameState->gameData->unk814, arg2);
+                g_gameState->gameData->musicHandle[0] = akao_playMusicCount(g_gameState->gameData->musicSeq, arg2);
                 g_gameState->gameData->unk0 |= GD_MUSIC_PLAYING;
                 return 0;
             }
@@ -139,7 +139,7 @@ s32 fld_soundCommand(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4) {
         case 3:
             switch (arg0 & 0x3F) {
             case 1:
-                akao_fadeMusicVolume(g_gameState->gameData->unk824[0], arg2, arg3);
+                akao_fadeMusicVolume(g_gameState->gameData->musicHandle[0], arg2, arg3);
                 fld_setMusicVolumeFade(arg3, arg2);
                 return 0;
             case 2:
@@ -156,7 +156,7 @@ s32 fld_soundCommand(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4) {
         case 4:
             switch (arg0 & 0x3F) {
             case 1:
-                akao_fadeMusicVolumeFrom(g_gameState->gameData->unk824[0], arg2, arg3, arg4);
+                akao_fadeMusicVolumeFrom(g_gameState->gameData->musicHandle[0], arg2, arg3, arg4);
                 fld_setMusicVolumeFade(arg4, arg2);
                 return 0;
             case 2:
@@ -207,7 +207,7 @@ s32 fld_soundCommand(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4) {
                     slot = (arg0 >> 6) & 1;
                 } else {
                     for (slot = 0; slot < 2; slot++) {
-                        if (g_gameState->gameData->unk830[slot] == arg1) {
+                        if (g_gameState->gameData->sfxSlotId[slot] == arg1) {
                             break;
                         }
                     }
@@ -218,15 +218,15 @@ s32 fld_soundCommand(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4) {
                 arg2 = (0x100000 << slot) & 0x300000;
                 mask = GD_SFX0_PLAYING << (slot * 2);
                 mask2 = mask >> 1;
-                if (kind == 0 && g_gameState->gameData->unk830[slot] != arg1) {
+                if (kind == 0 && g_gameState->gameData->sfxSlotId[slot] != arg1) {
                     if (g_gameState->gameData->unk0 & mask) {
                         akao_stopSe(SFXH(slot), arg2);
                         g_gameState->gameData->unk0 ^= mask | mask2;
                     }
                     memcpy((void *)SFXH(slot), db_lookupRegistered(4, id, 0), (s32)db_lookupRegistered(5, id, 0));
-                    g_gameState->gameData->unk830[slot] = arg1;
-                    g_gameState->gameData->unk8B8[slot] = 0x7F;
-                    g_gameState->gameData->unk8BA[slot] = 0x80;
+                    g_gameState->gameData->sfxSlotId[slot] = arg1;
+                    g_gameState->gameData->sfxSlotVolume[slot] = 0x7F;
+                    g_gameState->gameData->sfxSlotPan[slot] = 0x80;
                     g_gameState->gameData->unk0 |= mask2;
                 }
                 h = SFXH(slot);
@@ -237,13 +237,13 @@ s32 fld_soundCommand(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4) {
         switch (kind) {
         case 9:
             t = 0;
-            if (g_gameState->gameData->unk830[slot] != 0xFFFF && g_gameState->gameData->unk8B4[slot] == (s16)g_gameState->gameData->fieldId) {
+            if (g_gameState->gameData->sfxSlotId[slot] != 0xFFFF && g_gameState->gameData->sfxSlotSuspendField[slot] == (s16)g_gameState->gameData->fieldId) {
                 arg2 = (0x100000 << slot) & 0x300000;
                 t = 1;
-                arg3 = g_gameState->gameData->unk8BA[slot];
-                arg4 = g_gameState->gameData->unk8B8[slot];
+                arg3 = g_gameState->gameData->sfxSlotPan[slot];
+                arg4 = g_gameState->gameData->sfxSlotVolume[slot];
             }
-            g_gameState->gameData->unk8B4[slot] = 0xFFFF;
+            g_gameState->gameData->sfxSlotSuspendField[slot] = 0xFFFF;
             if (!t) {
                 return 0;
             }
@@ -252,8 +252,8 @@ s32 fld_soundCommand(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4) {
                 akao_playSe(h, arg2, arg3, arg4);
             }
             if (fp) {
-                g_gameState->gameData->unk8BA[slot] = arg3;
-                g_gameState->gameData->unk8B8[slot] = arg4;
+                g_gameState->gameData->sfxSlotPan[slot] = arg3;
+                g_gameState->gameData->sfxSlotVolume[slot] = arg4;
                 g_gameState->gameData->unk0 |= mask;
             }
             return 0;
@@ -261,14 +261,14 @@ s32 fld_soundCommand(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4) {
             if (!(g_gameState->gameData->unk0 & mask)) {
                 return 0;
             }
-            g_gameState->gameData->unk8B4[slot] = g_gameState->gameData->fieldId;
+            g_gameState->gameData->sfxSlotSuspendField[slot] = g_gameState->gameData->fieldId;
         case 1:
             if ((arg0 & 0x3F) == 9 && fp) {
                 if (g_gameState->gameData->unk0 & GD_SFX0_PLAYING) {
-                    akao_stopSe((s32)g_gameState->gameData->unk828, 0x100000);
+                    akao_stopSe((s32)g_gameState->gameData->sfxSlotBuf0, 0x100000);
                 }
                 if (g_gameState->gameData->unk0 & GD_SFX1_PLAYING) {
-                    akao_stopSe((s32)g_gameState->gameData->unk82C, 0x200000);
+                    akao_stopSe((s32)g_gameState->gameData->sfxSlotBuf1, 0x200000);
                 }
                 g_gameState->gameData->unk0 &= ~(GD_SFX0_PLAYING | GD_SFX1_PLAYING);
             } else {
@@ -283,13 +283,13 @@ s32 fld_soundCommand(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4) {
             case 1:
                 akao_setSeVolume(h, arg2, arg3);
                 if (fp) {
-                    g_gameState->gameData->unk8B8[slot] = arg3;
+                    g_gameState->gameData->sfxSlotVolume[slot] = arg3;
                 }
                 return 0;
             case 5:
                 akao_sendCmdA2(h, arg2, arg3);
                 if (fp) {
-                    g_gameState->gameData->unk8BA[slot] = arg3;
+                    g_gameState->gameData->sfxSlotPan[slot] = arg3;
                 }
                 return 0;
             case 3:
@@ -304,13 +304,13 @@ s32 fld_soundCommand(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4) {
             case 1:
                 akao_fadeSeVolume(h, arg2, arg3, arg4);
                 if (fp) {
-                    g_gameState->gameData->unk8B8[slot] = arg4;
+                    g_gameState->gameData->sfxSlotVolume[slot] = arg4;
                 }
                 return 0;
             case 5:
                 akao_sendCmdA3(h, arg2, arg3, arg4);
                 if (fp) {
-                    g_gameState->gameData->unk8BA[slot] = arg4;
+                    g_gameState->gameData->sfxSlotPan[slot] = arg4;
                 }
                 return 0;
             case 3:
@@ -323,13 +323,13 @@ s32 fld_soundCommand(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4) {
             case 1:
                 akao_setAllSeVolume(arg2);
                 if (fp) {
-                    g_gameState->gameData->unk8B8[0] = g_gameState->gameData->unk8B8[1] = arg2;
+                    g_gameState->gameData->sfxSlotVolume[0] = g_gameState->gameData->sfxSlotVolume[1] = arg2;
                 }
                 return 0;
             case 5:
                 akao_sendCmdAA(arg2);
                 if (fp) {
-                    g_gameState->gameData->unk8BA[0] = g_gameState->gameData->unk8BA[1] = arg2;
+                    g_gameState->gameData->sfxSlotPan[0] = g_gameState->gameData->sfxSlotPan[1] = arg2;
                 }
                 return 0;
             case 3:
@@ -342,13 +342,13 @@ s32 fld_soundCommand(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4) {
             case 1:
                 akao_fadeAllSeVolume(arg2, arg3);
                 if (fp) {
-                    g_gameState->gameData->unk8B8[0] = g_gameState->gameData->unk8B8[1] = arg3;
+                    g_gameState->gameData->sfxSlotVolume[0] = g_gameState->gameData->sfxSlotVolume[1] = arg3;
                 }
                 return -1;
             case 5:
                 akao_sendCmdAB(arg2, arg3);
                 if (fp) {
-                    g_gameState->gameData->unk8BA[0] = g_gameState->gameData->unk8BA[1] = arg3;
+                    g_gameState->gameData->sfxSlotPan[0] = g_gameState->gameData->sfxSlotPan[1] = arg3;
                 }
                 return -1;
             case 3:
@@ -363,7 +363,7 @@ s32 fld_soundCommand(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4) {
         switch (kind) {
         case 0:
             slot = (s32)db_lookupRegistered(4, id, 0);
-            if (g_gameState->gameData->unk851 != 0) {
+            if (g_gameState->gameData->soundLoadState != 0) {
                 return -1;
             }
             akao_sendCmdE4(fld_isMoviePlaying() ? SCENE->movieSndVolume : SCENE->sndVolume);
@@ -410,8 +410,8 @@ s32 fld_soundCommand(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4) {
             }
             g_fieldMusicRequest = kind;
             g_fieldSoundLoadId = id;
-            g_gameState->gameData->unk851 = 1;
-            return g_gameState->gameData->unk851;
+            g_gameState->gameData->soundLoadState = 1;
+            return g_gameState->gameData->soundLoadState;
         case 12:
             goto state;
         }
@@ -420,94 +420,94 @@ s32 fld_soundCommand(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4) {
     return -1;
 
 state:
-    switch (g_gameState->gameData->unk851) {
+    switch (g_gameState->gameData->soundLoadState) {
     case 1:
         if (fld_isMusicFading() == 0) {
             if (g_gameState->gameData->unk0 & GD_MUSIC_STOP_PENDING) {
-                akao_stopMusic(g_gameState->gameData->unk824[0]);
+                akao_stopMusic(g_gameState->gameData->musicHandle[0]);
                 g_gameState->gameData->unk0 &= ~GD_MUSIC_STOP_PENDING;
             }
-            g_gameState->gameData->unk851 = 2;
+            g_gameState->gameData->soundLoadState = 2;
         }
         break;
     case 2:
         if (((g_fieldSoundLoadId >> 16) & 0xFF) == 7) {
-            g_gameState->gameData->unk852 = g_gameState->gameData->unk820[0];
+            g_gameState->gameData->soundLoadBank = g_gameState->gameData->musicBank[0];
         } else {
-            g_gameState->gameData->unk852 = g_fieldSoundLoadId;
+            g_gameState->gameData->soundLoadBank = g_fieldSoundLoadId;
         }
         if (g_fieldMusicRequest == 9) {
-            g_fieldSoundLoadSector = g_gameState->gameData->unk8A8;
-            sz = g_gameState->gameData->unk84A << 11;
+            g_fieldSoundLoadSector = g_gameState->gameData->musicFileSector;
+            sz = g_gameState->gameData->musicFileSectors << 11;
         } else {
             g_fieldSoundLoadSector = fld_depGetFileSector(g_fieldSoundLoadId, &sz);
             if (((g_fieldSoundLoadId >> 16) & 0xFF) == 7) {
-                g_gameState->gameData->unk8A8 = g_fieldSoundLoadSector;
-                g_gameState->gameData->unk84A = sz >> 11;
+                g_gameState->gameData->musicFileSector = g_fieldSoundLoadSector;
+                g_gameState->gameData->musicFileSectors = sz >> 11;
             }
         }
         g = g_gameState->gameData;
-        if (!(g->unk8E4.field->area->scene->flags & FLD_SCN_BANK_SLOT) && g->unk852 != 0x84) {
+        if (!(g->unk8E4.field->area->scene->flags & FLD_SCN_BANK_SLOT) && g->soundLoadBank != 0x84) {
             akao_beginBankUpload();
         }
-        g_gameState->gameData->unk8C0 = SCENE->heapTop ? SCENE->heapTop : g_modeHeap;
-        g_gameState->gameData->unk878 = 0x156F00 - (g_gameState->gameData->unk8C0 - (s32)g_loadAreaEnd);
+        g_gameState->gameData->soundLoadDest = SCENE->heapTop ? SCENE->heapTop : g_modeHeap;
+        g_gameState->gameData->soundLoadChunk = 0x156F00 - (g_gameState->gameData->soundLoadDest - (s32)g_loadAreaEnd);
         if (!(g_gameState->gameData->unk8E4.field->flags & 4)) {
-            g_gameState->gameData->unk878 -= 0x3000;
+            g_gameState->gameData->soundLoadChunk -= 0x3000;
         }
-        m = g_gameState->gameData->unk878;
-        g_gameState->gameData->unk878 = m / 2048 * 2048;
-        g_gameState->gameData->unk87C = 0;
-        cdRead_init(g_gameState->gameData->unk854, g_fieldSoundLoadSector, sz, (void *)g_gameState->gameData->unk8C0, 0,
-                      g_gameState->gameData->unk878, fld_soundBankReadCallback);
-        g_gameState->gameData->unk851 = 3;
+        m = g_gameState->gameData->soundLoadChunk;
+        g_gameState->gameData->soundLoadChunk = m / 2048 * 2048;
+        g_gameState->gameData->soundBankSize = 0;
+        cdRead_init(g_gameState->gameData->cdRead, g_fieldSoundLoadSector, sz, (void *)g_gameState->gameData->soundLoadDest, 0,
+                      g_gameState->gameData->soundLoadChunk, fld_soundBankReadCallback);
+        g_gameState->gameData->soundLoadState = 3;
         break;
     case 3:
-        if (cdRead_update(g_gameState->gameData->unk854) == 0 && akao_getSpuTransferState() == 0) {
-            fld_invalidateModelCache((s32)g_gameState->gameData->unk854[0].unk20);
-            preload_discardRange((s32)g_gameState->gameData->unk854[0].unk8, g_gameState->gameData->unk854[0].unk10);
-            if (g_gameState->gameData->unk854[0].unkC + g_gameState->gameData->unk854[0].unk10 < g_gameState->gameData->unk87C) {
-                g_gameState->gameData->unk8C0 = (s32)g_gameState->gameData->unk854[0].unk8;
-                d = 0x156F00 - ((s32)g_gameState->gameData->unk854[0].unk8 - (s32)g_loadAreaEnd);
+        if (cdRead_update(g_gameState->gameData->cdRead) == 0 && akao_getSpuTransferState() == 0) {
+            fld_invalidateModelCache((s32)g_gameState->gameData->cdRead[0].unk20);
+            preload_discardRange((s32)g_gameState->gameData->cdRead[0].unk8, g_gameState->gameData->cdRead[0].unk10);
+            if (g_gameState->gameData->cdRead[0].unkC + g_gameState->gameData->cdRead[0].unk10 < g_gameState->gameData->soundBankSize) {
+                g_gameState->gameData->soundLoadDest = (s32)g_gameState->gameData->cdRead[0].unk8;
+                d = 0x156F00 - ((s32)g_gameState->gameData->cdRead[0].unk8 - (s32)g_loadAreaEnd);
                 if (!(g_gameState->gameData->unk8E4.field->flags & 4)) {
                     d -= 0x3000;
                 }
                 d = d / 2048 * 2048;
-                cdRead_init(g_gameState->gameData->unk854, g_fieldSoundLoadSector, g_gameState->gameData->unk854[0].unk4, (void *)g_gameState->gameData->unk8C0,
-                              g_gameState->gameData->unk854[0].unkC + g_gameState->gameData->unk854[0].unk10, d, fld_soundBankReadCallback);
+                cdRead_init(g_gameState->gameData->cdRead, g_fieldSoundLoadSector, g_gameState->gameData->cdRead[0].unk4, (void *)g_gameState->gameData->soundLoadDest,
+                              g_gameState->gameData->cdRead[0].unkC + g_gameState->gameData->cdRead[0].unk10, d, fld_soundBankReadCallback);
             } else if (g_fieldSoundLoadKind == 7) {
                 if (g_fieldMusicRequest != 9) {
-                    g_gameState->gameData->unk826[0] = 0x7F;
+                    g_gameState->gameData->musicVolume[0] = 0x7F;
                 }
-                g_gameState->gameData->unk851 = 4;
+                g_gameState->gameData->soundLoadState = 4;
             } else {
                 g_fieldMusicRequest = -1;
-                g_gameState->gameData->unk851 = 0;
+                g_gameState->gameData->soundLoadState = 0;
             }
         }
         break;
     case 4:
-        n = g_gameState->gameData->unk854[0].unkC + g_gameState->gameData->unk854[0].unk10 - g_gameState->gameData->unk87C;
+        n = g_gameState->gameData->cdRead[0].unkC + g_gameState->gameData->cdRead[0].unk10 - g_gameState->gameData->soundBankSize;
         if (n > 0) {
-            memcpy(g_gameState->gameData->unk814, (u8 *)g_gameState->gameData->unk8C0 + (g_gameState->gameData->unk87C - g_gameState->gameData->unk854[0].unkC), n);
+            memcpy(g_gameState->gameData->musicSeq, (u8 *)g_gameState->gameData->soundLoadDest + (g_gameState->gameData->soundBankSize - g_gameState->gameData->cdRead[0].unkC), n);
         }
         t = 0x6800 - n;
-        g_gameState->gameData->unk8C0 = (s32)((u8 *)g_gameState->gameData->unk814 + n);
+        g_gameState->gameData->soundLoadDest = (s32)((u8 *)g_gameState->gameData->musicSeq + n);
         t = t / 2048 * 2048;
-        cdRead_init(g_gameState->gameData->unk854, g_fieldSoundLoadSector, g_gameState->gameData->unk854[0].unk4, (void *)g_gameState->gameData->unk8C0,
-                      g_gameState->gameData->unk854[0].unkC + g_gameState->gameData->unk854[0].unk10, t, NULL);
-        g_gameState->gameData->unk851 = 5;
+        cdRead_init(g_gameState->gameData->cdRead, g_fieldSoundLoadSector, g_gameState->gameData->cdRead[0].unk4, (void *)g_gameState->gameData->soundLoadDest,
+                      g_gameState->gameData->cdRead[0].unkC + g_gameState->gameData->cdRead[0].unk10, t, NULL);
+        g_gameState->gameData->soundLoadState = 5;
         break;
     case 5:
-        if (cdRead_update(g_gameState->gameData->unk854) == 0) {
-            if (g_gameState->gameData->unk854[0].unkC + g_gameState->gameData->unk854[0].unk10 < g_gameState->gameData->unk854[0].unk4) {
-                m = g_gameState->gameData->unk854[0].unkC + g_gameState->gameData->unk854[0].unk10 - g_gameState->gameData->unk87C;
-                g_gameState->gameData->unk8C0 = (s32)((u8 *)g_gameState->gameData->unk814 + m);
-                cdRead_init(g_gameState->gameData->unk854, g_fieldSoundLoadSector, g_gameState->gameData->unk854[0].unk4, (void *)g_gameState->gameData->unk8C0, m, 0x6800 - m, NULL);
+        if (cdRead_update(g_gameState->gameData->cdRead) == 0) {
+            if (g_gameState->gameData->cdRead[0].unkC + g_gameState->gameData->cdRead[0].unk10 < g_gameState->gameData->cdRead[0].unk4) {
+                m = g_gameState->gameData->cdRead[0].unkC + g_gameState->gameData->cdRead[0].unk10 - g_gameState->gameData->soundBankSize;
+                g_gameState->gameData->soundLoadDest = (s32)((u8 *)g_gameState->gameData->musicSeq + m);
+                cdRead_init(g_gameState->gameData->cdRead, g_fieldSoundLoadSector, g_gameState->gameData->cdRead[0].unk4, (void *)g_gameState->gameData->soundLoadDest, m, 0x6800 - m, NULL);
             } else {
-                fld_unpackMusicSeq((s32)g_gameState->gameData->unk814);
+                fld_unpackMusicSeq((s32)g_gameState->gameData->musicSeq);
                 g_gameState->gameData->unk0 |= GD_MUSIC_LOADED;
-                g_gameState->gameData->unk851 = 0;
+                g_gameState->gameData->soundLoadState = 0;
                 if (g_fieldMusicRequest != 7) {
                     goto start;
                 }
@@ -516,7 +516,7 @@ state:
         }
         break;
     }
-    return g_gameState->gameData->unk851;
+    return g_gameState->gameData->soundLoadState;
 }
 
 void fld_getSoundPanVolume(s16 arg0, s16 arg1, s16 arg2, u8 *arg4, u8 *arg5) {
@@ -585,8 +585,8 @@ void fld_stopResidentSfx(void) {
     s32 i;
 
     for (i = 1; i >= 0; i--) {
-        if (g_gameState->gameData->unk830[i] != 0xFFFF) {
-            fld_soundCommand(0x5180, g_gameState->gameData->unk830[i], 0, 0, 0);
+        if (g_gameState->gameData->sfxSlotId[i] != 0xFFFF) {
+            fld_soundCommand(0x5180, g_gameState->gameData->sfxSlotId[i], 0, 0, 0);
         }
     }
 }
@@ -771,9 +771,9 @@ void fld_findBattleMusic(void) {
     s32 w;
 
     o = g_gameState->gameData->unk8E4.field->area->scene;
-    o->battleMusic = g_gameState->gameData->unk81C[0];
+    o->battleMusic = g_gameState->gameData->musicId[0];
     key = (u16)o->nextId;
-    g_gameState->gameData->unk8E4.field->area->scene->battleMusicBank = g_gameState->gameData->unk820[0];
+    g_gameState->gameData->unk8E4.field->area->scene->battleMusicBank = g_gameState->gameData->musicBank[0];
     base = g_gameState->gameData->depTable->unk4;
     key |= 0x110000;
     w = key;
@@ -952,21 +952,21 @@ s32 fld_soundBankReadCallback(Unk800B29F8 *arg0) {
 
     r = 0;
     a = arg0->unk8;
-    id = g_gameState->gameData->unk852 | DB_SOUND_BANK;
+    id = g_gameState->gameData->soundLoadBank | DB_SOUND_BANK;
     if (arg0->unkC == 0) {
         b = a;
         t = db_lookup(a, 2, DB_PACK, 0);
         if (t == -1) {
             a = db_lookup(a, 4, id, 0);
-            g_gameState->gameData->unk87C = db_getSize(b);
+            g_gameState->gameData->soundBankSize = db_getSize(b);
         } else {
             a = db_lookup(t, 4, id, 0);
-            g_gameState->gameData->unk87C = db_lookup(b, 2, (DB_PACK | 1), 0) - g_gameState->gameData->unk8C0;
-            fld_dropSoundBankCache(g_gameState->gameData->unk87C - arg0->unkC);
+            g_gameState->gameData->soundBankSize = db_lookup(b, 2, (DB_PACK | 1), 0) - g_gameState->gameData->soundLoadDest;
+            fld_dropSoundBankCache(g_gameState->gameData->soundBankSize - arg0->unkC);
         }
     }
     gd = g_gameState->gameData;
-    n = gd->unk87C - arg0->unkC;
+    n = gd->soundBankSize - arg0->unkC;
     if (arg0->unk10 < n) {
         n = arg0->unk10;
     }
@@ -993,17 +993,17 @@ s32 fld_unpackMusicSeq(s32 arg0) {
 void fld_setMusicVolumeFade(s32 arg0, s32 arg1) {
     GameData *gd = g_gameState->gameData;
 
-    gd->unk826[0] = arg0;
+    gd->musicVolume[0] = arg0;
     if (arg0 == 0) {
-        gd->unk842 = arg1;
-        gd->unk8C4 = VSync(-1);
+        gd->musicFadeFrames = arg1;
+        gd->musicFadeStart = VSync(-1);
     }
 }
 
 s32 fld_isMusicFading(void) {
     GameData *gd = g_gameState->gameData;
 
-    return (u32)(VSync(-1) - gd->unk8C4) < gd->unk842;
+    return (u32)(VSync(-1) - gd->musicFadeStart) < gd->musicFadeFrames;
 }
 
 s32 fld_setObjectColor(s32 arg0, s32 arg1, s32 arg2, s32 arg3) {
@@ -1364,7 +1364,7 @@ s32 fld_preloadRequest(s32 arg0, s32 arg1) {
 
 void fld_initPreload(void) {
     preload_init();
-    g_gameState->gameData->unk8BC = fld_preloadRequest;
+    g_gameState->gameData->preloadRequest = fld_preloadRequest;
     preload_setHook((s32)fld_preloadHook);
     fld_clearPreloadLists();
 }
@@ -1565,7 +1565,7 @@ void fld_queueFieldPreloads(void) {
             if (((g_fieldPreloadRequests[i] >> 16) & 0xFF) == 5) {
                 e = dep_find(g_gameState->gameData->depTable, key);
                 if (e != NULL) {
-                    if ((e->unkC & 0xFFFF) != (s16)g_gameState->gameData->unk3A) {
+                    if ((e->unkC & 0xFFFF) != (s16)g_gameState->gameData->fieldAreaId) {
                         f = dep_find(g_gameState->gameData->depTable, e->unkC);
                         if (f != NULL) {
                             fld_preloadFile(e->unkC & 0xFFFFFF, 0, f->unk4, f->unk8 << 11);
@@ -1615,7 +1615,7 @@ void fld_queueFieldPreloads(void) {
             }
         }
         if (sel != -1) {
-            if ((tbl[sel].unkC & 0xFFFF) != (s16)g_gameState->gameData->unk3A) {
+            if ((tbl[sel].unkC & 0xFFFF) != (s16)g_gameState->gameData->fieldAreaId) {
                 for (i = g_gameState->gameData->depTable->unk2 - 1; i >= 0; i--) {
                     if (tbl[i].unk0 == tbl[sel].unkC) {
                         fld_preloadFile(tbl[i].unk0 & 0xFFFFFF, 0, tbl[i].unk4, tbl[i].unk8 << 11);
@@ -1669,7 +1669,7 @@ void fld_queueFieldPreloads(void) {
                 }
             }
             if (sel != -1) {
-                if ((tbl[sel].unkC & 0xFFFF) != (s16)g_gameState->gameData->unk3A) {
+                if ((tbl[sel].unkC & 0xFFFF) != (s16)g_gameState->gameData->fieldAreaId) {
                     for (i = g_gameState->gameData->depTable->unk2 - 1; i >= 0; i--) {
                         if (tbl[i].unk0 == tbl[sel].unkC) {
                             fld_preloadFile(tbl[i].unk0 & 0xFFFFFF, 1, tbl[i].unk4, -1);
@@ -1687,7 +1687,7 @@ void fld_queueFieldPreloads(void) {
 s32 fld_preloadHook(void) {
     FieldScene *s;
 
-    if ((u32)(g_gameState->gameData->unk851 - 1) < 5) {
+    if ((u32)(g_gameState->gameData->soundLoadState - 1) < 5) {
         return 1;
     }
     s = g_gameState->gameData->unk8E4.field->area->scene;

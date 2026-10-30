@@ -2091,12 +2091,12 @@ void menuSave_packParty(SaveParty *s) {
             s->party[i] = SAVE_CHARACTERS;
         }
     }
-    s->unk514 = gd->unk55C;
+    s->unk514 = gd->escapeCount;
     s->firstUseFxSeen = gd->firstUseFxSeen;
     s->gil = gd->gil;
-    s->unk51C = gd->unk568;
-    s->unk51E = gd->unk56A;
-    s->unk520 = gd->unk56C;
+    s->unk51C = gd->frogCount;
+    s->unk51E = gd->stealCount;
+    s->unk520 = gd->dragonKills;
 }
 
 void menuSave_unpackParty(SaveParty *s) {
@@ -2114,12 +2114,12 @@ void menuSave_unpackParty(SaveParty *s) {
             gd->party[i] = NULL;
         }
     }
-    gd->unk55C = s->unk514;
+    gd->escapeCount = s->unk514;
     gd->firstUseFxSeen = s->firstUseFxSeen;
     gd->gil = s->gil;
-    gd->unk568 = s->unk51C;
-    gd->unk56A = s->unk51E;
-    gd->unk56C = s->unk520;
+    gd->frogCount = s->unk51C;
+    gd->stealCount = s->unk51E;
+    gd->dragonKills = s->unk520;
 }
 
 void menuSave_packState(SaveState *h) {
@@ -2137,12 +2137,12 @@ void menuSave_packState(SaveState *h) {
         h->unk22 = fld_getDiscChangeAreaId();
     } else {
         h->fieldId = gd->fieldId;
-        h->unk22 = gd->unk3A;
+        h->unk22 = gd->fieldAreaId;
     }
     h->battleId = gd->battleId;
-    h->unk26 = (s8)gd->unk848;
-    h->unk28 = gd->unk7DC;
-    h->unk2A = gd->unk7DE;
+    h->unk26 = (s8)gd->enemyGroup;
+    h->unk28 = gd->worldId;
+    h->unk2A = gd->worldAreaId;
     for (i = sizeof(h->reserved2C) - 1; i >= 0; i--) {
         h->reserved2C[i] = 0;
     }
@@ -2156,11 +2156,11 @@ void menuSave_unpackState(SaveState *p) {
     gd = gs->gameData;
     g_gameState->unkA = p->unk1;
     gd->fieldId = p->fieldId;
-    gd->unk3A = p->unk22;
+    gd->fieldAreaId = p->unk22;
     gd->battleId = p->battleId;
-    gd->unk848 = p->unk26;
-    gd->unk7DC = p->unk28;
-    gd->unk7DE = p->unk2A;
+    gd->enemyGroup = p->unk26;
+    gd->worldId = p->unk28;
+    gd->worldAreaId = p->unk2A;
 }
 
 void menuSave_copyCards(CardData *d, CardData *s) {
@@ -2201,26 +2201,26 @@ void menuSave_unpackEvents(SaveEvents *s) {
 
 void menuSave_packItems(SaveItems *s) {
     s->items = g_gameState->gameData->items;
-    s->flags = g_gameState->gameData->unk774;
+    s->flags = g_gameState->gameData->keyItems;
     s->unk240 = *(GameConfig *)&g_gameState->config;
 }
 
 void menuSave_unpackItems(SaveItems *s) {
     g_gameState->gameData->items = s->items;
-    g_gameState->gameData->unk774 = s->flags;
+    g_gameState->gameData->keyItems = s->flags;
     *(GameConfig *)&g_gameState->config = s->unk240;
     config_apply();
 }
 
 void menuSave_packMisc(SaveMisc *p) {
     p->unk0 = g_gameState->gameData->chocograph;
-    p->unk4 = g_gameState->gameData->unk880;
+    p->unk4 = g_gameState->gameData->worldCamera;
     p->unk14 = g_gameState->gameData->unk892;
 }
 
 void menuSave_unpackMisc(SaveMisc *p) {
     g_gameState->gameData->chocograph = p->unk0;
-    g_gameState->gameData->unk880 = p->unk4;
+    g_gameState->gameData->worldCamera = p->unk4;
     g_gameState->gameData->unk892 = p->unk14;
 }
 

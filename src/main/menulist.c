@@ -253,19 +253,19 @@ void menuList_getRowsRect(MenuList *m, RECT *src, RECT *dst) {
 }
 
 void snd_playSe(s32 a) {
-    g_gameState->gameData->unk83C(SND_SE_PLAY, a, 0x800000, 0x80, 0x7F);
+    g_gameState->gameData->soundHook(SND_SE_PLAY, a, 0x800000, 0x80, 0x7F);
 }
 
 void func_8002F4D0(s32 a) {
-    g_gameState->gameData->unk83C(SND_SE_STOP, a, 0x800000, 0, 0);
+    g_gameState->gameData->soundHook(SND_SE_STOP, a, 0x800000, 0, 0);
 }
 
 void snd_startSe(s32 a) {
-    g_gameState->gameData->unk83C(SND_SE_PLAY, a, 0, 0x80, 0x7F);
+    g_gameState->gameData->soundHook(SND_SE_PLAY, a, 0, 0x80, 0x7F);
 }
 
 void snd_stopSe(s32 a) {
-    g_gameState->gameData->unk83C(SND_SE_STOP, a, 0, 0, 0);
+    g_gameState->gameData->soundHook(SND_SE_STOP, a, 0, 0, 0);
 }
 
 s32 fade_reverse(void (*fn)(void)) {

@@ -51,7 +51,7 @@ s32 text_renderNameGlyph(s32 x, s32 hi, s32 c) {
 }
 
 s32 text_drawChar(s32 x, s32 y, s32 otz, u8 c, s32 mode) {
-    u32 *tbl = g_gameState->gameData->unk7D4->unkC;
+    u32 *tbl = g_gameState->gameData->font->unkC;
     u32 g;
     s32 w;
     SprtWords *p;
@@ -73,7 +73,7 @@ s32 text_drawChar(s32 x, s32 y, s32 otz, u8 c, s32 mode) {
 }
 
 void text_draw(s32 x, s32 y, s32 otz, u8 *s, s32 pal) {
-    Unk7D4 *f = g_gameState->gameData->unk7D4;
+    Unk7D4 *f = g_gameState->gameData->font;
     s32 th = f->unk4 >> 8;
     SprtWords *p = (SprtWords *)g_primPtr;
     u32 *ot = &g_ot[otz];
@@ -118,7 +118,7 @@ u8 *text_buildBlock(s32 x, s32 y, u32 *ot, u8 *s, s32 mode, u8 *pkt) {
     s32 c;
     s32 k;
 
-    font = g_gameState->gameData->unk7D4;
+    font = g_gameState->gameData->font;
     g_textColor = mode;
     x0 = x;
     th = font->unk4 >> 8;
@@ -244,11 +244,11 @@ u8 *text_buildPlain(s32 x, s32 y, u32 *ot, Character *ch, s32 *w, u8 *pkt) {
     s32 c;
     s32 code;
 
-    font = g_gameState->gameData->unk7D4;
+    font = g_gameState->gameData->font;
     s = ch->name;
     x0 = x;
     th = font->unk4 >> 8;
-    kanji = g_gameState->gameData->unk84C;
+    kanji = g_gameState->gameData->kanjiFont;
     th2 = 0;
     if (kanji != NULL) {
         th2 = kanji->unk0 >> 8;
@@ -758,7 +758,7 @@ u8 *text_append(u8 *dst, u8 *src) {
     ret = dst;
     s = ret;
     p = s;
-    th = g_gameState->gameData->unk7D4->unk4 >> 8;
+    th = g_gameState->gameData->font->unk4 >> 8;
     while ((c = *p) != 0xFF) {
         p++;
         if (c == 0xF9) {
@@ -771,7 +771,7 @@ u8 *text_append(u8 *dst, u8 *src) {
         }
     }
     dst += p - s;
-    th2 = g_gameState->gameData->unk7D4->unk4 >> 8;
+    th2 = g_gameState->gameData->font->unk4 >> 8;
     while ((c2 = *src) != 0xFF) {
         *dst++ = *src++;
         if (c2 == 0xF9) {
@@ -837,8 +837,8 @@ TextSize text_measure(u8 *s) {
     memset(&r, 0, 4);
     w = 0;
     maxw = 0;
-    font = g_gameState->gameData->unk7D4;
-    kanji = g_gameState->gameData->unk84C;
+    font = g_gameState->gameData->font;
+    kanji = g_gameState->gameData->kanjiFont;
     h = 15;
     th2 = 0;
     if (s == NULL) {
@@ -1154,7 +1154,7 @@ void text_formatInt(s32 v, u8 *buf, s32 ascii) {
 
 s32 text_getLength(u8 *s) {
     u8 *start = s;
-    u8 lim = g_gameState->gameData->unk7D4->unk4 >> 8;
+    u8 lim = g_gameState->gameData->font->unk4 >> 8;
     s32 c;
 
     while ((c = *s) != TEXT_END) {
@@ -1173,7 +1173,7 @@ s32 text_getLength(u8 *s) {
 
 u8 *text_copy(u8 *dst, u8 *src) {
     u8 *start = dst;
-    u8 lim = g_gameState->gameData->unk7D4->unk4 >> 8;
+    u8 lim = g_gameState->gameData->font->unk4 >> 8;
     s32 c;
 
     while ((c = *src) != TEXT_END) {

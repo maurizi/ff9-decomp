@@ -65,7 +65,7 @@ s32 evt_getSysVar(s32 op) {
         r = fld_movieCommand(3, 0, 0);
         break;
     case 16:
-        r = g_gameState->gameData->unk568;
+        r = g_gameState->gameData->frogCount;
         break;
     case 17:
         r = timer_getSeconds();
@@ -485,7 +485,7 @@ s32 evt_rollEncounter(EvtObject *p) {
             }
             g_evtLastEncounter = id;
             evt_setNextBattle(id);
-            g_gameState->gameData->unk848 = -1;
+            g_gameState->gameData->enemyGroup = -1;
         }
     }
     return id != 0;
@@ -1372,14 +1372,14 @@ s32 evt_execInstr(void) {
         return 8;
     case EVT_OP_BATTLE:
         g_swirlVariant = evt_getArg8_inline();
-        g_gameState->gameData->unk848 = -1;
+        g_gameState->gameData->enemyGroup = -1;
         a = evt_getArg16_inline();
         g_gameState->gameData->unk571 = (a >> 15) & 1;
         evt_setNextBattle(a & 0x7FFF);
         return 3;
     case 0x8C:
         g_swirlVariant = evt_getArg8_inline();
-        g_gameState->gameData->unk848 = evt_getArg8_inline();
+        g_gameState->gameData->enemyGroup = evt_getArg8_inline();
         a = evt_getArg16_inline();
         g_gameState->gameData->unk571 = (a >> 15) & 1;
         evt_setNextBattle(a & 0x7FFF);
@@ -1642,9 +1642,9 @@ s32 evt_execInstr(void) {
         return 0;
     case 0x1B:
         if (evt_getArg8_inline()) {
-            g_gameState->gameData->unk56F |= 8;
+            g_gameState->gameData->battleFlags |= 8;
         } else {
-            g_gameState->gameData->unk56F &= 0xF7;
+            g_gameState->gameData->battleFlags &= 0xF7;
         }
         return 0;
     case 0xE1:
@@ -1908,26 +1908,26 @@ s32 evt_execInstr(void) {
         return 0;
     case EVT_OP_SOUND:
         a = evt_getArg16_inline();
-        g_gameState->gameData->unk83C(a, evt_getArg16_inline(), 0, 0, 0);
+        g_gameState->gameData->soundHook(a, evt_getArg16_inline(), 0, 0, 0);
         return 0;
     case 0xC6:
         a = evt_getArg16_inline();
         b = evt_getArg16_inline();
         c = evt_getArg24_inline();
-        g_gameState->gameData->unk83C(a, b, c, 0, 0);
+        g_gameState->gameData->soundHook(a, b, c, 0, 0);
         return 0;
     case 0xC7:
         a = evt_getArg16_inline();
         b = evt_getArg16_inline();
         c = evt_getArg24_inline();
-        g_gameState->gameData->unk83C(a, b, c, evt_getArg8_inline(), 0);
+        g_gameState->gameData->soundHook(a, b, c, evt_getArg8_inline(), 0);
         return 0;
     case 0xC8:
         a = evt_getArg16_inline();
         b = evt_getArg16_inline();
         c = evt_getArg24_inline();
         d = evt_getArg8_inline();
-        g_gameState->gameData->unk83C(a, b, c, d, evt_getArg8_inline());
+        g_gameState->gameData->soundHook(a, b, c, d, evt_getArg8_inline());
         return 0;
     case EVT_OP_SOUND_POS: {
         u8 vol, pan;
@@ -2135,8 +2135,8 @@ s32 evt_execInstr(void) {
         }
         return 0;
     case 0xE0:
-        if (g_gameState->gameData->unk568 < 0x7FFF) {
-            g_gameState->gameData->unk568++;
+        if (g_gameState->gameData->frogCount < 0x7FFF) {
+            g_gameState->gameData->frogCount++;
         }
         return 0;
     case 0xB0: {
@@ -2239,7 +2239,7 @@ s32 evt_execInstr(void) {
         return 0;
     case 0xFD:
         a = evt_getArg8_inline();
-        ((s32 (*)(s32, s32))g_gameState->gameData->unk8BC)(a & 0xFF, evt_getArg16_inline() & 0xFFFF);
+        ((s32 (*)(s32, s32))g_gameState->gameData->preloadRequest)(a & 0xFF, evt_getArg16_inline() & 0xFFFF);
         return 0;
     case 0xFF:
         /* padding between the two jump tables in the original rodata */
@@ -3416,7 +3416,7 @@ void evt_init(u8 *data) {
     }
     D_8007AE04 = 4;
     if ((g_evtMode == 1 && g_evtSavedState.mode == g_evtMode && g_evtSavedState.locationId == (s16)g_gameState->gameData->fieldId) ||
-        (g_evtMode == 3 && g_evtSavedState.mode == g_evtMode && g_evtSavedState.locationId == g_gameState->gameData->unk7DC) ||
+        (g_evtMode == 3 && g_evtSavedState.mode == g_evtMode && g_evtSavedState.locationId == g_gameState->gameData->worldId) ||
         (g_gameState->unkA == 9 && g_evtModelsPending != 0)) {
         d = data - g_evtSavedState.scriptBase;
         g_evtStateData = g_evtSavedState;
@@ -3443,7 +3443,7 @@ void evt_init(u8 *data) {
     g_evtState->scriptBase = data;
     g_evtState->mode = g_evtMode;
     g_evtState->locationId = g_evtMode == 1   ? g_gameState->gameData->fieldId
-                          : g_evtMode == 3 ? g_gameState->gameData->unk7DC
+                          : g_evtMode == 3 ? g_gameState->gameData->worldId
                                             : 0;
 }
 

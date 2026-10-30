@@ -1,11 +1,11 @@
 #include "ovl_0c.h"
 
 void wm_initCamera(void) {
-    void *p = &g_gameState->gameData->unk880;
+    void *p = &g_gameState->gameData->worldCamera;
 
     g_worldCameraFlags = p;
     g_worldCamera = p;
-    g_gameState->gameData->unkA = 0xDC;
+    g_gameState->gameData->projDist = 0xDC;
     SetGeomOffset(0xA0, 0x70);
     g_worldCameraUp.vx = 0;
     g_worldCameraUp.vy = -0x4E20;
@@ -47,7 +47,7 @@ void wm_updateCamera(void) {
     if (g_worldCameraHold == 0) {
         wm_updateCameraPreset();
     }
-    g_gameState->gameData->unkA = g_worldCameraParams.unk0[0];
+    g_gameState->gameData->projDist = g_worldCameraParams.unk0[0];
     g_worldCamera->yaw &= 0xFFF;
     g_worldCameraTargetHeight = g_worldCameraParams.unk0[4];
     if ((u8)g_worldMoveMode == 8 || (u8)g_worldMoveMode == 9) {

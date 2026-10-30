@@ -58,7 +58,7 @@ u8 *mbg_readFrame(Ovl64Out *out) {
             g_gameState->gameData->unk18.t[0] = info->tx;
             g_gameState->gameData->unk18.t[1] = info->ty;
             g_gameState->gameData->unk18.t[2] = info->tz;
-            g_gameState->gameData->unkA = info->id;
+            g_gameState->gameData->projDist = info->id;
         }
     }
     if (rumble != NULL && (!((Ovl64Cfg *)&g_gameState->config)->vibrationOff || g_gameState->mode == 5)) {

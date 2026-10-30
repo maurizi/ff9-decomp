@@ -321,8 +321,8 @@ void btl_updateKo(BtlUnit *u) {
             return;
         case 5:
             if (btl_hasEnemyFlag(u, 8) != 0) {
-                if (g_gameState->gameData->unk56C < 9999) {
-                    g_gameState->gameData->unk56C++;
+                if (g_gameState->gameData->dragonKills < 9999) {
+                    g_gameState->gameData->dragonKills++;
                 }
             }
             if (g_gameState->gameData->battleResult != 4) {

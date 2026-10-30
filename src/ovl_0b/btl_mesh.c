@@ -19,7 +19,7 @@ void btl_projectMesh(BtlUnit9C *arg0, u8 arg1) {
     s16 *c2;
 
     g = &arg0->header->meshes[arg1];
-    gte_SetGeomScreen(g_gameState->gameData->unkA);
+    gte_SetGeomScreen(g_gameState->gameData->projDist);
     sxy = g_vtxScreenXY;
     sz = g_vtxScreenZ;
     k = 0;

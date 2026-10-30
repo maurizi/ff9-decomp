@@ -17,7 +17,7 @@ void wm_projectMesh(ModelObj *arg0, u8 arg1) {
     s16 *c2;
 
     g = &arg0->model->groups[arg1];
-    gte_SetGeomScreen(g_gameState->gameData->unkA);
+    gte_SetGeomScreen(g_gameState->gameData->projDist);
     sxy = g_vtxScreenXY;
     sz = g_vtxScreenZ;
     k = 0;
@@ -944,7 +944,7 @@ void wm_projectMeshClipY(ModelObj *arg0, u8 arg1) {
     u32 cnt;
     s32 ymax;
 
-    gte_SetGeomScreen(g_gameState->gameData->unkA);
+    gte_SetGeomScreen(g_gameState->gameData->projDist);
     sxy = g_vtxScreenXY;
     sz = g_vtxScreenZ;
     k = 0;

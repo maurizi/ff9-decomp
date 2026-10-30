@@ -651,9 +651,9 @@ s32 btl_checkCmdUsable(Battle *arg0, BtlCmd *arg1) {
         }
         if (*(u16 *)&arg0->phase == 0x305) {
             btlui_setAtbEnabled(0);
-            g_gameState->gameData->unk55C++;
+            g_gameState->gameData->escapeCount++;
             if (arg1->subNo == 0) {
-                g_gameState->gameData->unk56F |= 4;
+                g_gameState->gameData->battleFlags |= 4;
             }
             btl_clearCmdQueue(arg0);
         } else {
@@ -2267,7 +2267,7 @@ void btl_calcCmd(BtlUnit *caster, BtlUnit *target, BtlCmd *cmd, s32 type) {
         {
             s32 v;
             c.targetResult |= 1;
-            v = g_gameState->gameData->unk568;
+            v = g_gameState->gameData->frogCount;
             if (v != 0) {
                 v = v * caster->level;
                 if (v >= 10000) {
@@ -2284,7 +2284,7 @@ void btl_calcCmd(BtlUnit *caster, BtlUnit *target, BtlCmd *cmd, s32 type) {
         {
             s32 v;
             c.targetResult |= 1;
-            v = g_gameState->gameData->unk56A * caster->speed / 2;
+            v = g_gameState->gameData->stealCount * caster->speed / 2;
             if (v >= 10000) {
                 c.targetHpChange = 9999;
             } else {
@@ -2295,8 +2295,8 @@ void btl_calcCmd(BtlUnit *caster, BtlUnit *target, BtlCmd *cmd, s32 type) {
     case 0x44:
         {
             c.targetResult |= 1;
-            if (g_gameState->gameData->unk56C * g_gameState->gameData->unk56C < 10000) {
-                c.targetHpChange = (u16)g_gameState->gameData->unk56C * (u16)g_gameState->gameData->unk56C;
+            if (g_gameState->gameData->dragonKills * g_gameState->gameData->dragonKills < 10000) {
+                c.targetHpChange = (u16)g_gameState->gameData->dragonKills * (u16)g_gameState->gameData->dragonKills;
             } else {
                 c.targetHpChange = 9999;
             }
@@ -2776,8 +2776,8 @@ void btl_calcSteal(BtlCalc *arg0, Unk800B7F20 *arg1, s32 arg2) {
     if (id != 0xFF) {
         arg1->unk8[arg2] = 0xFF;
         g = g_gameState->gameData;
-        if (g->unk56A < 9999) {
-            g->unk56A++;
+        if (g->stealCount < 9999) {
+            g->stealCount++;
         }
         btl_addItem(id);
         btl_showMessage(BTL_MSG_STOLE, btl_getItemName(id));

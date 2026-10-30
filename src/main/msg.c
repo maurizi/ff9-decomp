@@ -12,7 +12,7 @@ void msg_init(void) {
     }
     s = g_gameState;
     g_msgReady = 0;
-    f = s->gameData->unk7D4;
+    f = s->gameData->font;
     D_8007BB98.unk0 = 0;
     D_8007BBCC = f->unkC;
     D_8007BB98.unk4 = *(s32 *)&f->unk4;
@@ -711,7 +711,7 @@ void msg_drawText(MsgWindow *w) {
     }
 }
 
-/* The sound callback returns s32 (GameData.unk83C), so each call is a call_value insn even with the
+/* The sound callback returns s32 (GameData.soundHook), so each call is a call_value insn even with the
    result ignored. That gives the function pointer a v0 preference in local-alloc, which the
    0x10000 path needs (pointer in v0, %hi(g_msgChoice) in v1). The 0x10000 path must come
    last in the chain so its call falls into the shared `return 1` and jump2 cross-jumps the
@@ -725,7 +725,7 @@ s32 msg_input(MsgWindow *w, s32 pad) {
             if (w->waitFrames == 0xFF) {
                 w->waitFrames = 1;
                 if (g_msgChoiceLine >= 0) {
-                    g_gameState->gameData->unk83C(0xD000, 0x67, 0x800000, 0x80, 0x7F);
+                    g_gameState->gameData->soundHook(0xD000, 0x67, 0x800000, 0x80, 0x7F);
                 }
                 return 1;
             }
@@ -745,19 +745,19 @@ s32 msg_input(MsgWindow *w, s32 pad) {
             } else {
                 g_msgChoice = g_msgChoiceCount - 1;
             }
-            g_gameState->gameData->unk83C(0xD000, 0x67, 0x800000, 0x80, 0x7F);
+            g_gameState->gameData->soundHook(0xD000, 0x67, 0x800000, 0x80, 0x7F);
         } else if (pad & 0x40) {
             if (g_msgChoice < g_msgChoiceCount - 1) {
                 g_msgChoice++;
             } else {
                 g_msgChoice = 0;
             }
-            g_gameState->gameData->unk83C(0xD000, 0x67, 0x800000, 0x80, 0x7F);
+            g_gameState->gameData->soundHook(0xD000, 0x67, 0x800000, 0x80, 0x7F);
         } else if (!(pad & 0x10000) || g_msgChoiceCancel < 0) {
             return 0;
         } else {
             g_msgChoice = g_msgChoiceCancel;
-            g_gameState->gameData->unk83C(0xD000, 0x65, 0x800000, 0x80, 0x7F);
+            g_gameState->gameData->soundHook(0xD000, 0x65, 0x800000, 0x80, 0x7F);
         }
         return 1;
     }

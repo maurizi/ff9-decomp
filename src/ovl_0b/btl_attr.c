@@ -663,7 +663,7 @@ void btl_setBattleVar(s32 arg0, s32 arg1) {
         }
         break;
     case BTL_SETVAR_NEXT_LOCATION:
-        g_gameState->gameData->unk56F |= 1;
+        g_gameState->gameData->battleFlags |= 1;
         evt_setNextLocation(arg1);
         break;
     case BTL_SETVAR_ADD_GIL:
@@ -673,13 +673,13 @@ void btl_setBattleVar(s32 arg0, s32 arg1) {
         }
         break;
     case 39:
-        if (g_gameState->gameData->unk56C < 9999) {
-            g_gameState->gameData->unk56C++;
+        if (g_gameState->gameData->dragonKills < 9999) {
+            g_gameState->gameData->dragonKills++;
         }
         break;
     case 40:
         btl_soundCmd(0x8601, 0, 0x1E, 0, 0);
-        g_gameState->gameData->unk56F |= 0x10;
+        g_gameState->gameData->battleFlags |= 0x10;
         break;
     }
 }

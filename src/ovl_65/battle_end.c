@@ -51,10 +51,10 @@ void battleEnd_init(void) {
             msg_init();
         }
     }
-    if (g_gameState->gameData->unk56F & 1) {
+    if (g_gameState->gameData->battleFlags & 1) {
         e = dep_find(g_gameState->gameData->depTable, g_gameState->gameData->fieldId | 0x50000);
         if (e != NULL) {
-            g_gameState->gameData->unk3A = e->unkC;
+            g_gameState->gameData->fieldAreaId = e->unkC;
             g_gameState->gameData->sceneSector[1] = e->unk4;
             g_gameState->gameData->sceneSectors[1] = e->unk8;
             e = dep_find(g_gameState->gameData->depTable, e->unkC);
@@ -71,7 +71,7 @@ void battleEnd_exit(void) {
     GameData *g = g_gameState->gameData;
     s32 i;
 
-    if (!(g->unk56F & 8) && (g->unk0 & 0x20000000) && g->unk81C[0] != 0xFFFF) {
+    if (!(g->battleFlags & 8) && (g->unk0 & 0x20000000) && g->musicId[0] != 0xFFFF) {
         g->unk0 |= 0x400000;
     }
     g_gameState->gameData->depTable = (FileTable *)-1;
@@ -104,8 +104,8 @@ s32 battleEnd_loadDb(void) {
         DrawSync(0);
     } else {
         e = file_find(1, 0x2713);
-        cdRead_init(g_gameState->gameData->unk854, e->unk4, (e->unkC - e->unk4) << 11, (void *)g_modeHeap, 0, -1, 0);
-        while (cdRead_update(g_gameState->gameData->unk854)) {
+        cdRead_init(g_gameState->gameData->cdRead, e->unk4, (e->unkC - e->unk4) << 11, (void *)g_modeHeap, 0, -1, 0);
+        while (cdRead_update(g_gameState->gameData->cdRead)) {
         }
     }
     g_gameState->gameData->unk8E4.ovl65->unk1354->unk4 = g_modeHeap;
@@ -135,7 +135,7 @@ void battleEnd_preloadScene(void) {
 
     b = g_gameState->gameData->unk8E4.ovl65->work;
     preload_init();
-    g_gameState->gameData->unk8BC = NULL;
+    g_gameState->gameData->preloadRequest = NULL;
     if (g_gameState->gameData->battleResult == 6) {
         return;
     }
@@ -166,7 +166,7 @@ void battleEnd_preloadScene(void) {
         return;
     }
     sector = g_gameState->gameData->sceneSector[0];
-    id = g_gameState->gameData->unk3A | 0x60000;
+    id = g_gameState->gameData->fieldAreaId | 0x60000;
     size = g_gameState->gameData->sceneSectors[0] << 11;
     at = g_loadAreaEnd - (dst + k);
     at = at / 0x800 * 0x800;
@@ -179,9 +179,9 @@ void battleEnd_preloadScene(void) {
     at = at / 0x800 * 0x800;
     preload_setEntry(preload_add(), 0, id, (s32)dst, at, size, sector, size);
     g = g_gameState->gameData;
-    if ((s16)g->fieldId == g->unk7EA && g->unk8AC != -1) {
-        sector = g->unk8AC;
-        id = g->unk7E8 | 0x70000;
+    if ((s16)g->fieldId == g->savedMusicField && g->savedMusicFileSector != -1) {
+        sector = g->savedMusicFileSector;
+        id = g->savedMusicId | 0x70000;
         preload_setEntry(preload_add(), 1, id, 0, 0, 0, sector, -1);
     }
 }

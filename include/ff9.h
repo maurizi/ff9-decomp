@@ -139,7 +139,7 @@ typedef struct {
     u32 supportAbilities[2]; /* equipped: bit (id - 0xC0) (runtime, chr_setSupportAbility) */
 } Character; /* 0x90 */
 
-/* GameData.unk8E0 entry */
+/* GameData.npcModels entry */
 typedef struct Unk8E0 {
     s32 unk0; /* flags */
     u8 pad4[8 - 4];
@@ -228,7 +228,7 @@ typedef union {
 } Unk8E4Ptr;
 
 
-/* 0x98-byte per-object record (GameData.unk8D4 / unk8DC) */
+/* 0x98-byte per-object record (GameData.chrModelObjs / unk8DC) */
 typedef struct Unk8D4 {
     u8 pad0[0x98];
 } Unk8D4;
@@ -243,7 +243,7 @@ typedef struct CdReadCtx {
     s32 unk18;
     s32 unk1C; /* state */
     u8 *unk20;
-} CdReadCtx; /* GameData.unk854 */
+} CdReadCtx; /* GameData.cdRead */
 
 /* runtime: menu_items shows Potion 46, Hi-Potion 10, Ether 12, Phoenix Down 14, ... = {236,46} {237,10} {238,12} {240,14} */
 typedef struct {
@@ -256,7 +256,7 @@ typedef struct {
     ItemSlot slots[0x100];
 } __attribute__((aligned(4))) ItemInventory; /* block copies are word-aligned */
 
-/* GameData.unk774: 2 bits per item id */
+/* GameData.keyItems: 2 bits per item id */
 typedef struct {
     u8 unk0[0x40];
 } __attribute__((aligned(4))) ItemFlags;
@@ -264,95 +264,95 @@ typedef struct {
 /* g_gameState->gameData: looks like the save-data block */
 typedef struct {
     u32 unk0; /* flags */
-    u32 unk4; /* allocator top (g_allocTop) after setup */
+    u32 allocTop; /* allocator top (g_allocTop) after setup */
     u8 unk8; /* draw buffer index (0/1) */
     u8 unk9;
-    u16 unkA; /* projection distance (SetFogNearFar) */
+    u16 projDist; /* projection distance (SetFogNearFar); GTE geometry screen distance (SetGeomScreen), the battle camera's projDist */
     u16 fieldId; /* current field (runtime: Dali inn 351 -> street 350) */
     u16 battleId; /* next battle (encounter bundle id), set by evt_setNextBattle / the field and world exits */
     u32 *unk10[2]; /* ordering tables, 0x1000 entries */
     MATRIX unk18;
     u8 npcCount; /* kind-4 objects below the character scripts (evt_countNpcActors in fld_load) */
     u8 npcModelSlots; /* NPC model slots used, NPC slot = 9 + this */
-    u16 unk3A;
+    u16 fieldAreaId; /* field area to load next (fld_runArea, fld_unloadArea from FieldMapObj.areaId, wm_exit from wm_depFindArea) */
     Character characters[9];
     Character *party[4];
-    u16 unk55C;
+    u16 escapeCount; /* +1 per successful Escape (btl_checkCmdUsable, BTL_END_ESCAPE); saved */
     u16 firstUseFxSeen;
     u32 gil; /* capped at 9999999 (runtime: menu shows this value) */
     u8 pad564[0x568 - 0x564];
-    s16 unk568;
-    s16 unk56A;
-    s16 unk56C;
+    s16 frogCount; /* event op 0xE0 adds 1 (max 0x7FFF), system variable 16; ability formula 0x42 = it * level (Frog Drop) */
+    s16 stealCount; /* +1 per successful steal (btl_calcSteal, max 9999); formula 0x43 = it * speed / 2 (Thievery) */
+    s16 dragonKills; /* +1 per defeated enemy with enemy flag 8 (btl_updateKo) or BTL_SETVAR 39 (max 9999); formula 0x44 = it squared (Dragon's Crest) */
     u8 battleResult; /* how the battle ended, 6 = game over (ovl_0b, ovl_65 battle_end; event system variable 27) */
-    u8 unk56F;
+    u8 battleFlags; /* per-battle flags, cleared by btl_initBattleState: 1 next location set, 2/0x10/0x20 victory music steps (btl_playVictoryMusic), 4 escaped, 8 event op 0x1B, 0x40 start the exit preload */
     u8 rainCount; /* rain streaks (event opcode 0xD8, ovl_0b) */
     u8 unk571;
     u8 pad572[2];
     ItemInventory items;
-    ItemFlags unk774;
+    ItemFlags keyItems;
     u8 pad7B4[0x7D4 - 0x7B4];
-    Unk7D4 *unk7D4;
-    void *unk7D8;
-    s16 unk7DC;
-    u16 unk7DE;
-    s32 unk7E0;
+    Unk7D4 *font; /* text font (game_loadCommonImages), text_* glyph widths */
+    void *commonDb; /* the common db registered by game_loadCommonDb (sound bank lookup) */
+    s16 worldId; /* world map to run (wm_main), set by field/world exits; the battle saves and restores it (returnId) */
+    u16 worldAreaId; /* area data of that world map (wm_findAreaData), from wm_depFindArea / fld_exit */
+    s32 packetBuf; /* two 0x4000-byte primitive buffers for gfx_init (game_initGfx); btlui heap */
     struct FileTable *depTable; /* the loaded field/world file's dependency table (dep_find), -1 = none */
-    u16 unk7E8;
-    u16 unk7EA;
+    u16 savedMusicId; /* music saved by sound command kind 8 (akao_saveMusic), restored by kind 9; 0xFFFF = none */
+    u16 savedMusicField; /* field (or world) id where it was saved; kind 9 restores only there */
     s32 returnSector[2]; /* sceneSector/sceneSectors saved by fld_exit, to return to after a battle */
     s32 returnSectors[2];
     s32 sceneSector[2]; /* CD sectors of the next scene's files: field/world file + area, or battle bundle + background */
     s32 sceneSectors[2]; /* their sector counts */
     u8 *locationName; /* menu LOCATION box text (g_evtLocationName / g_evtLocationNameBuf) */
     u8 *unk810;
-    void *unk814;
-    s32 unk818;
-    u16 unk81C[2];
-    u16 unk820[2];
-    u8 unk824[2];
-    u8 unk826[2];
-    void *unk828;
-    void *unk82C;
-    u16 unk830[2];
-    u16 unk834;
+    void *musicSeq; /* music sequence buffer (0x6800 bytes) of slot 0, akao_playMusic(musicSeq) */
+    s32 musicSeq2; /* second music buffer (0x2000 bytes): slot-1 music (wm_loadResidentMusic), the battle copies it to musicSeq */
+    u16 musicId[2]; /* current music per slot, 0xFFFF = none */
+    u16 musicBank[2]; /* its sound bank (dep link of the music file) */
+    u8 musicHandle[2]; /* akao_playMusic handle per slot */
+    u8 musicVolume[2]; /* per slot, 0x7F = full */
+    void *sfxSlotBuf0; /* resident sound effect slot 0 data (0x800 bytes), akao_playSe handle, channel mask 0x100000 */
+    void *sfxSlotBuf1; /* slot 1 (0x800 bytes), mask 0x200000 */
+    u16 sfxSlotId[2]; /* sound effect loaded in each slot, 0xFFFF = none */
+    u16 worldBankReq; /* last sound bank requested by the world map (wm_soundCommand class 3 kind 7 skips a repeat) */
     u16 unk836;
-    s32 (*unk838)(s32, void *);
-    s32 (*unk83C)(s32, s32, s32, s32, s32);
-    u16 unk840;
-    u16 unk842;
+    s32 (*modelHook)(s32, void *); /* per-mode model setup (field fld_setupActorModel) */
+    s32 (*soundHook)(s32, s32, s32, s32, s32); /* per-mode sound command handler (fld_soundCommand, wm_soundCommand, btl_soundCmd), snd_playSe calls it */
+    u16 savedMusicBank; /* musicBank saved with savedMusicId */
+    u16 musicFadeFrames; /* length of the running music fade (fld_setMusicVolumeFade / fld_isMusicFading) */
     s32 chocograph; /* selected chocograph 1-24, 0 = none (runtime field/menu campaign) */
-    s8 unk848;
+    s8 enemyGroup; /* forced enemy group of the next battle (event op 0x8C), -1 = random (btl_pickEnemyGroup) */
     u8 unk849[1];
-    u16 unk84A;
-    Unk7D4 *unk84C; /* second (kanji) font table */
-    u8 unk850;
-    u8 unk851;
-    u16 unk852;
-    CdReadCtx unk854[1]; /* CD read context (cdRead_init) */
-    s32 unk878;
-    s32 unk87C; /* end of the world map data */
-    Unk880 unk880;
+    u16 musicFileSectors; /* sector count of the current music file (fld_refindSectors, fld_soundCommand) */
+    Unk7D4 *kanjiFont; /* second (kanji) font table */
+    u8 savedMusicVolume; /* musicVolume saved with savedMusicId */
+    u8 soundLoadState; /* music/bank load state machine (fld_soundCommand 1 wait fade, 2 start read, 3 bank, 4-5 sequence, 0 idle) */
+    u16 soundLoadBank; /* id of the sound bank being loaded (fld_soundBankReadCallback looks it up) */
+    CdReadCtx cdRead[1]; /* CD read context (cdRead_init) */
+    s32 soundLoadChunk; /* bytes read per chunk while loading a sound bank (free heap rounded to sectors) */
+    s32 soundBankSize; /* bytes of the bank part of the sound file being loaded (the music sequence follows) */
+    Unk880 worldCamera; /* world map camera state (g_worldCamera points here, cleared with the next 0x18 bytes); saved */
     u8 unk890;
     u8 pad891;
     u8 unk892;
     u8 pad893[0x8A8 - 0x893];
-    s32 unk8A8;
-    s32 unk8AC;
-    u16 unk8B0;
+    s32 musicFileSector; /* CD sector of the current music file (fld_refindSectors, fld_soundCommand) */
+    s32 savedMusicFileSector; /* musicFileSector saved with savedMusicId */
+    u16 savedMusicFileSectors; /* musicFileSectors saved with savedMusicId */
     s16 cardOpponent; /* Tetra Master opponent (evt_setCardOpponent, read by ovl_0d tm_game) */
-    u16 unk8B4[2];
-    u8 unk8B8[2];
-    u8 unk8BA[2];
-    void *unk8BC; /* callback, signature varies by module */
-    s32 unk8C0;
-    s32 unk8C4; /* VSync(-1) timestamp */
-    PreloadQueue *unk8C8;
+    u16 sfxSlotSuspendField[2]; /* field id where the slot's sound was suspended (sound kind 8), kind 9 resumes it there (fld_suspendResidentSfx) */
+    u8 sfxSlotVolume[2]; /* per slot, 0x7F = full (akao_setSeVolume) */
+    u8 sfxSlotPan[2]; /* per slot, 0x80 = centre (akao_sendCmdA2 sets the SE channels' pan, akao_voice adds it to the voice pan) */
+    void *preloadRequest; /* callback, signature varies by module; event op 0xFD (fld_preloadRequest, wm_preloadRequest) */
+    s32 soundLoadDest; /* where the next sound-file chunk is read to */
+    s32 musicFadeStart; /* VSync(-1) when the music fade started */
+    PreloadQueue *preloadQueue;
     u8 unk8CC[8];
-    struct Unk8D4 *unk8D4; /* [9] */
-    struct Unk8E0 *unk8D8; /* [9] */
-    struct Unk8D4 *unk8DC;
-    struct Unk8E0 *unk8E0; /* indexed by unk8E4.field->unk8 */
+    struct Unk8D4 *chrModelObjs; /* [9] model objects of the characters, bound to chrModels[i].model */
+    struct Unk8E0 *chrModels; /* [9] per character (game_getModel ids 0-8) */
+    struct Unk8D4 *npcModelObjs; /* model objects of the NPCs (npcCount), bound to npcModels[i].model */
+    struct Unk8E0 *npcModels; /* per NPC (game_getModel ids 9+), indexed by FieldMap.playerObj */
     Unk8E4Ptr unk8E4;
 } GameData;
 
@@ -1940,7 +1940,7 @@ extern s32 g_padPortMask[];
 #define DB_SOUND_BANK 0x90000 /* AKAO banks (game_loadCommonAkao, game_loadCommonDb's db) */
 #define DB_BG 0xA0000 /* field background */
 #define DB_WALKMESH 0xB0000 /* field walkmesh (bgi) */
-#define DB_FONT 0xD0000 /* the font (GameData.unk7D4, game_loadCommonImages) */
+#define DB_FONT 0xD0000 /* the font (GameData.font, game_loadCommonImages) */
 #define DB_BATTLE 0x110000 /* encounter bundle */
 #define DB_MODEL_INFO 0x120000 /* per-model tables */
 #define DB_DEP_TABLE 0x140000 /* dependency table (GameData.depTable) */
@@ -1950,7 +1950,7 @@ extern s32 g_padPortMask[];
 #define DB_PACK 0x1B0000 /* nested container inside field/world files */
 #define DB_LIGHTS 0x1F0000
 
-/* Sound command words for the mode's sound handler (GameData.unk83C: fld_soundCommand / wm_soundCommand).
+/* Sound command words for the mode's sound handler (GameData.soundHook: fld_soundCommand / wm_soundCommand).
  * Bits 12-13 type (0 music, 1 SE, 3 bank), 8-11 kind, 0-5 sub-command, 7 resident SE slot, 6 slot index.
  * The SE/state/volume words carry the world map's debug-print names (ovl_0c WM_SND_*). */
 #define SND_MUSIC_PLAY 0x0000
@@ -3855,7 +3855,7 @@ typedef struct {
 #define EVT_OP_SET_POS_XZ_OBJ 0xBF /* obj, x, z */
 #define EVT_OP_TEX_ANIM_PLAY 0xC0 /* obj, n: model texture anim n on */
 #define EVT_OP_BG_LAYER_VIEWPORT 0xC3 /* fldbg_setOverlayViewport */
-#define EVT_OP_SOUND 0xC5 /* u16 cmd, u16 id: GameData.unk83C(cmd, id) */
+#define EVT_OP_SOUND 0xC5 /* u16 cmd, u16 id: GameData.soundHook(cmd, id) */
 #define EVT_OP_BG_VIEWPORT 0xC9 /* fldbg_setViewport */
 #define EVT_OP_BG_ANIM_RESET 0xCA /* fldbg_resetAnim */
 #define EVT_OP_BGI_FLOOR_ACTIVE 0xCB /* floor, on: bgi_setFloorActive */

@@ -3201,7 +3201,7 @@ void btlui_drawListWindow(Window *arg0) {
 }
 
 void btlui_initHeap(void) {
-    g_btluiHeap.unk4 = g_gameState->gameData->unk7E0;
+    g_btluiHeap.unk4 = g_gameState->gameData->packetBuf;
     g_btluiHeap.unk0 = g_btluiHeap.unk4;
     g_btluiHeap.unk10 = 0x8000;
     g_btluiHeap.unk8 = g_btluiHeap.unk10;

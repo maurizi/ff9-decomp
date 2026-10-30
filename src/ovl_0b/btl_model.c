@@ -274,7 +274,7 @@ Battle1330 *btl_pickEnemyGroup(Battle11C020 *arg0) {
         sum += e->unk0;
         i++;
     }
-    v = g_gameState->gameData->unk848;
+    v = g_gameState->gameData->enemyGroup;
     if (v != -1) {
         i = v;
         if (i >= arg0->unk1) {

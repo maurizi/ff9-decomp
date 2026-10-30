@@ -943,7 +943,7 @@ void keyItem_clearAll(void) {
     s32 i;
 
     for (i = 0; i < 0x40; i++) {
-        g_gameState->gameData->unk774.unk0[i] = 0;
+        g_gameState->gameData->keyItems.unk0[i] = 0;
     }
 }
 
@@ -1039,31 +1039,31 @@ s32 item_getEquipSlot(s32 arg0) {
 void keyItem_add(s32 id) {
     s32 idx = id >> 2;
 
-    g_gameState->gameData->unk774.unk0[idx] |= 1 << ((id & 3) * 2);
-    g_gameState->gameData->unk774.unk0[idx] &= ~(1 << ((id & 3) * 2 + 1));
+    g_gameState->gameData->keyItems.unk0[idx] |= 1 << ((id & 3) * 2);
+    g_gameState->gameData->keyItems.unk0[idx] &= ~(1 << ((id & 3) * 2 + 1));
 }
 
 void keyItem_remove(s32 id) {
     s32 idx = id >> 2;
 
-    g_gameState->gameData->unk774.unk0[idx] &= ~(1 << ((id & 3) * 2));
-    g_gameState->gameData->unk774.unk0[idx] &= ~(1 << ((id & 3) * 2 + 1));
+    g_gameState->gameData->keyItems.unk0[idx] &= ~(1 << ((id & 3) * 2));
+    g_gameState->gameData->keyItems.unk0[idx] &= ~(1 << ((id & 3) * 2 + 1));
 }
 
 void keyItem_setSeen(s32 id) {
-    g_gameState->gameData->unk774.unk0[id >> 2] |= 1 << ((id & 3) * 2 + 1);
+    g_gameState->gameData->keyItems.unk0[id >> 2] |= 1 << ((id & 3) * 2 + 1);
 }
 
 void keyItem_clearSeen(s32 id) {
-    g_gameState->gameData->unk774.unk0[id >> 2] &= ~(1 << ((id & 3) * 2 + 1));
+    g_gameState->gameData->keyItems.unk0[id >> 2] &= ~(1 << ((id & 3) * 2 + 1));
 }
 
 s32 keyItem_has(s32 arg0) {
-    return (g_gameState->gameData->unk774.unk0[arg0 >> 2] >> ((arg0 & 3) * 2)) & 1;
+    return (g_gameState->gameData->keyItems.unk0[arg0 >> 2] >> ((arg0 & 3) * 2)) & 1;
 }
 
 s32 keyItem_isSeen(s32 id) {
-    return (g_gameState->gameData->unk774.unk0[id >> 2] >> ((id & 3) * 2 + 1)) & 1;
+    return (g_gameState->gameData->keyItems.unk0[id >> 2] >> ((id & 3) * 2 + 1)) & 1;
 }
 
 void ui_drawPortraitId(s32 x, s32 y, s32 otz, s32 id, s32 h, u8 flag) {

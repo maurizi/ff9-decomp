@@ -228,7 +228,7 @@ void wm_updateDraw(void) {
     if (mode == 2) {
         if (g_worldNaviMode != mode) {
             g_worldDebugStep = 0x64;
-            SetGeomScreen(g_gameState->gameData->unkA);
+            SetGeomScreen(g_gameState->gameData->projDist);
             g_worldTimeActorDraw = VSync(1);
             if (D_800CCE49 < 2 && g_worldDrawActors != 0) {
                 wm_drawActors();
@@ -822,7 +822,7 @@ void wm_initLighting(void) {
     g_worldBlockFxLightMatrix.m[2][2] = 0x1000;
     SetBackColor(0, 0, 0);
     SetFarColor(0, 0, 0);
-    SetFogNearFar(5000, 30000, g_gameState->gameData->unkA);
+    SetFogNearFar(5000, 30000, g_gameState->gameData->projDist);
     wm_updateColorMatrices();
 }
 

@@ -94,7 +94,7 @@ void func_800A73B8(void) {
     g_gameState->mode = 1;
     g_gameState->vsyncMode = 2;
     ctx->fieldId = 0;
-    ctx->unk3A = 1;
+    ctx->fieldAreaId = 1;
 }
 
 /* looks up the current area/field ids in the two directories at g_loadAreaEnd + 0x14C700 and stores their sector ranges */
@@ -120,7 +120,7 @@ void opening_findSceneSectors(void) {
             start = area + ((f->unk48 - base) << 11);
             e = (SceneDirEntry *)start + f->unk44 - 1;
         } else {
-            key = ctx->unk7DC;
+            key = ctx->worldId;
             start = area + ((f->unk38 - base) << 11);
             e = (SceneDirEntry *)start + f->unk34 - 1;
         }
@@ -150,9 +150,9 @@ void opening_findSceneSectors(void) {
             }
         }
         if (mode == 1) {
-            ctx->unk3A = id;
+            ctx->fieldAreaId = id;
         } else {
-            ctx->unk7DE = id;
+            ctx->worldAreaId = id;
         }
     }
 }

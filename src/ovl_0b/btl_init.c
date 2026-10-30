@@ -72,7 +72,7 @@ void btl_initEnemies(Battle *arg0) {
         u->flags = (u->flags & ~0xE0) | (((k + 4) & 7) << 5);
         u->flags &= ~0x40000000;
         u->flags = (u->flags & ~0x800000) | (((e->flags >> 9) & 1) << 23);
-        btl_resetUnit(u, &g_gameState->gameData->unk8E0[k]);
+        btl_resetUnit(u, &g_gameState->gameData->npcModels[k]);
         u->home = (struct BtlUnit98 *)&e->home;
         u->weaponModel = NULL;
         u->support = (u32 *)D_800F5244;
@@ -121,7 +121,7 @@ void btl_initPartyUnit(Character *c, BtlUnit *u, u16 slot, u16 n) {
     u->level = c->level;
     u->max = (BtlUnit24 *)&c->maxHp;
     btl_copyStats((Unk800BD8C0 *)&u->hp, (Unk800BD8C0 *)&c->hp);
-    btl_resetUnit(u, &g_gameState->gameData->unk8D8[c->info.w & 0xF]);
+    btl_resetUnit(u, &g_gameState->gameData->chrModels[c->info.w & 0xF]);
     u->vanishMeshes = 0xFFFF;
     btl_initDoomCount((Unk800C09D8 *)u);
     u->max->maxAtb = (0x3C - u->speed) * 160;
@@ -266,8 +266,8 @@ void btl_resetUnit(BtlUnit *arg0, Unk8E0 *arg1) {
     arg0->flags = f;
     arg1->unk10 = arg0;
     if ((arg0->flags >> 23) & 1) {
-        arg0->model = g_gameState->gameData->unk8E0->unk8;
-        arg0->obj = g_gameState->gameData->unk8E0->unkC;
+        arg0->model = g_gameState->gameData->npcModels->unk8;
+        arg0->obj = g_gameState->gameData->npcModels->unkC;
     } else {
         arg0->model = arg1->unk8;
         arg0->obj = arg1->unkC;

@@ -49,9 +49,9 @@ s32 fld_loadModelBundle(s32 arg0) {
     size = (f->unkC - f->unk4) << 11;
     c = fld_findModelCache(arg0);
     if (c->addr == 0) {
-        cdRead_init(g_gameState->gameData->unk854, f->unk4, size,
+        cdRead_init(g_gameState->gameData->cdRead, f->unk4, size,
                       (void *)(fld_allocModelCache(arg0, size) != 0 ? c->addr : g_modeHeap), 0, -1, 0);
-        while (cdRead_update(g_gameState->gameData->unk854) != 0) {
+        while (cdRead_update(g_gameState->gameData->cdRead) != 0) {
         }
     }
     if (c->addr != 0) {
@@ -1166,16 +1166,16 @@ void fld_movieUpdate(void) {
     switch (g_gameState->gameData->unk8E4.field->area->scene->movieState) {
     case 1:
         if (cd_getState() == 0) {
-            if (cdRead_update(g_gameState->gameData->unk854) == 0) {
+            if (cdRead_update(g_gameState->gameData->cdRead) == 0) {
                 FileEntry *f = file_find(0, 0x64);
-                cdRead_init(g_gameState->gameData->unk854, f->unk4, (f->unkC - f->unk4) << 11,
+                cdRead_init(g_gameState->gameData->cdRead, f->unk4, (f->unkC - f->unk4) << 11,
                               (void *)(g_loadAreaEnd + 0xF1700), 0, 0x15000, NULL);
             }
             g_gameState->gameData->unk8E4.field->area->scene->movieState = 2;
         }
         break;
     case 2:
-        if (cdRead_update(g_gameState->gameData->unk854) == 0) {
+        if (cdRead_update(g_gameState->gameData->cdRead) == 0) {
             g_fieldMovieFlags |= 8;
             g_gameState->gameData->unk8E4.field->area->scene->movieState = 3;
         }
@@ -1232,7 +1232,7 @@ void fld_movieUpdate(void) {
         break;
     case 6:
         if (g_fieldMovieFlags & 0x40) {
-            mbg_getStartCamera((void *)&g_gameState->gameData->unk18, &g_gameState->gameData->unkA);
+            mbg_getStartCamera((void *)&g_gameState->gameData->unk18, &g_gameState->gameData->projDist);
         }
         if ((g_fieldMovieFlags & 2) && (mbg_getStatus() & 2)) {
             done = mbg_update(0);
@@ -1444,16 +1444,16 @@ void fld_updateEncounter(void) {
             fldbg_resetGeomOffset();
         }
         fld_findBattleMusic();
-        if (g_gameState->gameData->unk81C[0] != g_gameState->gameData->unk8E4.field->area->scene->battleMusic
+        if (g_gameState->gameData->musicId[0] != g_gameState->gameData->unk8E4.field->area->scene->battleMusic
             && (g_gameState->gameData->unk0 & GD_MUSIC_PLAYING)) {
             akao_fadeMusicVolume(0, 0xF, 0);
             g_gameState->gameData->unk8E4.field->area->scene->encounterMusicStep = 7;
         }
-        if (g_gameState->gameData->unk830[0] != 0xFFFF && (g_gameState->gameData->unk0 & GD_SFX0_PLAYING)) {
-            akao_fadeSeVolume((s32)g_gameState->gameData->unk828, 0x100000, 0xF, 0);
+        if (g_gameState->gameData->sfxSlotId[0] != 0xFFFF && (g_gameState->gameData->unk0 & GD_SFX0_PLAYING)) {
+            akao_fadeSeVolume((s32)g_gameState->gameData->sfxSlotBuf0, 0x100000, 0xF, 0);
         }
-        if (g_gameState->gameData->unk830[1] != 0xFFFF && (g_gameState->gameData->unk0 & GD_SFX1_PLAYING)) {
-            akao_fadeSeVolume((s32)g_gameState->gameData->unk82C, 0x200000, 0xF, 0);
+        if (g_gameState->gameData->sfxSlotId[1] != 0xFFFF && (g_gameState->gameData->unk0 & GD_SFX1_PLAYING)) {
+            akao_fadeSeVolume((s32)g_gameState->gameData->sfxSlotBuf1, 0x200000, 0xF, 0);
         }
         for (i = 1; i >= 0; i--) {
             g_padActuator[i].unk1 = 0;
@@ -1499,9 +1499,9 @@ void fld_updateEncounter(void) {
             g_gameState->gameData->unk8E4.field->area->scene->encounterMusicStep--;
         } else if (g_gameState->gameData->unk8E4.field->area->scene->encounterMusicStep == 0) {
             if (g_gameState->gameData->unk8E4.field->area->scene->battleMusic != 0xFFFF
-                && g_gameState->gameData->unk8E4.field->area->scene->battleMusic != g_gameState->gameData->unk81C[0]) {
+                && g_gameState->gameData->unk8E4.field->area->scene->battleMusic != g_gameState->gameData->musicId[0]) {
                 if (g_gameState->gameData->unk0 & GD_MUSIC_PLAYING) {
-                    fld_soundCommand(0x800, g_gameState->gameData->unk81C[0], 0, 0, 0);
+                    fld_soundCommand(0x800, g_gameState->gameData->musicId[0], 0, 0, 0);
                 }
                 fld_soundCommand(0x700, g_gameState->gameData->unk8E4.field->area->scene->battleMusic, 0, 0, 0);
                 g_gameState->gameData->unk8E4.field->area->scene->encounterMusicStep = -1;

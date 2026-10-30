@@ -398,9 +398,9 @@ s32 btlcam_step(void) {
         }
     }
     if (g_btlCamera.unk66 == 0) {
-        g_gameState->gameData->unkA = g_btlCamera.projDist;
+        g_gameState->gameData->projDist = g_btlCamera.projDist;
     }
-    SetGeomScreen(g_gameState->gameData->unkA);
+    SetGeomScreen(g_gameState->gameData->projDist);
     e = g_btlCamera.unk67;
     if (e == 1) {
         b = g_gameState->gameData->unk8E4.battle;
@@ -901,7 +901,7 @@ void btlcam_applyTargetView(SVECTOR *arg0, SVECTOR *arg1) {
                     LoadAverageShort12(&g_btlCamera.unkC4, &g_btlCamera.points[5], a, b, arg1);
                 }
             }
-            g_gameState->gameData->unkA = g_btlCamera.baseProjDist;
+            g_gameState->gameData->projDist = g_btlCamera.baseProjDist;
             g_btlCamera.unk66 = 1;
         }
     } else {

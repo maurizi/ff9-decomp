@@ -157,7 +157,7 @@ u8 *ending_getMessage(u8 *arg0, s32 arg1) {
 }
 
 void *ending_drawText(s32 x, s32 y, u32 *ot, u8 *s, void *p) {
-    Unk7D4 *f = g_gameState->gameData->unk7D4;
+    Unk7D4 *f = g_gameState->gameData->font;
     s32 w;
     s32 c;
     s32 hi = f->unk4 >> 8;
@@ -188,7 +188,7 @@ s32 ending_textWidth(u8 *s) {
     u32 *g;
 
     n = 0;
-    f = g_gameState->gameData->unk7D4;
+    f = g_gameState->gameData->font;
     hi = f->unk4 >> 8;
     while ((c = *s) != 0xFF) {
         if (c >= hi) {

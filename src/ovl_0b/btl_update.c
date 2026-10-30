@@ -62,7 +62,7 @@ s32 btl_update(void) {
     case BTL_PHASE_EXIT_DEFEAT:
     case BTL_PHASE_EXIT_OTHER:
         if ((u8)btl_updateUnits(g, b)) {
-            g->unk56F |= 0x40;
+            g->battleFlags |= 0x40;
             if (b->subPhase == 0) {
                 if (g->battleResult != 5) {
                     fade_out(0x20);
@@ -215,7 +215,7 @@ void btl_victory(GameData *arg0, Battle *arg1) {
         switch (arg1->subPhase) {
         case BTL_END_VICTORY:
         case BTL_END_SCRIPT_VICTORY:
-            arg0->unk56F |= 0x40;
+            arg0->battleFlags |= 0x40;
             arg0->battleResult = 1;
             if ((arg1->scene.unk0 >> 6) & 1) {
                 if ((u8)btl_playVictoryMusic(arg0, 0x1E, 5) == 0) {
@@ -243,7 +243,7 @@ void btl_victory(GameData *arg0, Battle *arg1) {
                 }
                 btlcam_playScene(btl_getSceneData(2));
             } else if ((arg1->scene.unk0 >> 14) & 1) {
-                arg0->unk56F |= 8;
+                arg0->battleFlags |= 8;
             }
             arg1->phase = BTL_PHASE_EXIT;
             break;
@@ -253,7 +253,7 @@ void btl_victory(GameData *arg0, Battle *arg1) {
             break;
         case BTL_END_STOPPED:
             if ((arg1->scene.unk0 & 0x4040) == 0x4000) {
-                arg0->unk56F |= 8;
+                arg0->battleFlags |= 8;
             }
             arg1->phase = BTL_PHASE_SCRIPT;
             btl_clearCmdQueue(arg1);
@@ -268,19 +268,19 @@ void btl_victory(GameData *arg0, Battle *arg1) {
             break;
         case BTL_END_ESCAPE:
             exp = g_btlRewards.unk0;
-            arg0->unk56F |= 0x40;
+            arg0->battleFlags |= 0x40;
             for (u = arg1->unitList; u != NULL; u = u->next) {
                 if (!(u->flags & 1)) {
                     exp += g_gameState->gameData->unk8E4.battle->enemies[(u->flags >> 1) & 0xF].type->exp;
                 }
             }
             if ((arg1->scene.unk0 & 0x4040) == 0x4000) {
-                arg0->unk56F |= 8;
+                arg0->battleFlags |= 8;
             }
             arg0->battleResult = 4;
             arg1->phase = BTL_PHASE_EXIT_OTHER;
             btl_clearRewards();
-            if (arg0->unk56F & 4) {
+            if (arg0->battleFlags & 4) {
                 exp /= 10;
                 if (exp < arg0->gil) {
                     arg0->gil -= exp;
@@ -379,7 +379,7 @@ void btl_updateIntro(GameData *arg0, Battle *arg1) {
 void btl_initBattleState(void) {
     GameData *gd;
     s32 v;
-    g_gameState->gameData->unk56F = 0;
+    g_gameState->gameData->battleFlags = 0;
     gd = g_gameState->gameData;
     v = 7;
     if (gd->unk571 != 0) {

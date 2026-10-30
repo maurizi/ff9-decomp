@@ -42,11 +42,11 @@ void opening_bootScreenLoad(void) {
     u8 *buf;
     FileEntry *e;
 
-    while (cdRead_update(g_gameState->gameData->unk854) != 0) {
+    while (cdRead_update(g_gameState->gameData->cdRead) != 0) {
     }
     e = file_find(1, 0x2718);
-    cdRead_init(g_gameState->gameData->unk854, e->unk4, (e->unkC - e->unk4) << 11, g_loadAreaEnd + 0x10000, 0, -1, 0);
-    while (cdRead_update(g_gameState->gameData->unk854) != 0) {
+    cdRead_init(g_gameState->gameData->cdRead, e->unk4, (e->unkC - e->unk4) << 11, g_loadAreaEnd + 0x10000, 0, -1, 0);
+    while (cdRead_update(g_gameState->gameData->cdRead) != 0) {
     }
     buf = g_loadAreaEnd + 0x10000;
     g_bootScreenData = buf;

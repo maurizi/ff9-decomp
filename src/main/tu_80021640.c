@@ -15,7 +15,7 @@ void evt_setCardOpponent(a)
 }
 
 s32 evt_createModel(EvtObject *a) {
-    return g_gameState->gameData->unk838(a->modelId | DB_MODEL, a);
+    return g_gameState->gameData->modelHook(a->modelId | DB_MODEL, a);
 }
 
 s32 evt_getAnimFrameCount(a, b)

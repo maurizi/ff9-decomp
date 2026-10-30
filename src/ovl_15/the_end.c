@@ -172,33 +172,33 @@ s32 ending_soundCmd(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4) {
         id = (arg1 & 0xFFFF) | 0x70000;
         switch (kind) {
         case 0:
-            if (g_gameState->gameData->unk851 != 0) {
+            if (g_gameState->gameData->soundLoadState != 0) {
                 return -1;
             }
             if (g_endingSoundPending == -1) {
                 g_endingSoundPending = kind;
             }
-            if (g_gameState->gameData->unk81C[0] != arg1) {
+            if (g_gameState->gameData->musicId[0] != arg1) {
                 if (g_gameState->gameData->unk0 & 0x20000000) {
-                    akao_stopMusic(g_gameState->gameData->unk824[0]);
+                    akao_stopMusic(g_gameState->gameData->musicHandle[0]);
                 }
                 g_gameState->gameData->unk0 &= 0xCFFFFFFF;
-                g_gameState->gameData->unk820[0] = 0x1F3;
-                g_gameState->gameData->unk81C[0] = arg1;
-                g_gameState->gameData->unk826[0] = 0x7F;
+                g_gameState->gameData->musicBank[0] = 0x1F3;
+                g_gameState->gameData->musicId[0] = arg1;
+                g_gameState->gameData->musicVolume[0] = 0x7F;
             }
-            g_gameState->gameData->unk824[0] = akao_playMusic(g_gameState->gameData->unk814);
+            g_gameState->gameData->musicHandle[0] = akao_playMusic(g_gameState->gameData->musicSeq);
             g = g_gameState->gameData;
             if (!(g->unk0 & 0x20000000)) {
-                akao_fadeMusicVolumeFrom(g->unk824[0], 0xA, 0, g->unk826[0]);
+                akao_fadeMusicVolumeFrom(g->musicHandle[0], 0xA, 0, g->musicVolume[0]);
             }
             g_endingSoundPending = -1;
             g_gameState->gameData->unk0 |= 0x30000000;
             return 0;
         case 1:
-            if (g_gameState->gameData->unk81C[0] == (u16)id) {
-                akao_stopMusic(g_gameState->gameData->unk824[0]);
-                g_gameState->gameData->unk826[0] = 0x7F;
+            if (g_gameState->gameData->musicId[0] == (u16)id) {
+                akao_stopMusic(g_gameState->gameData->musicHandle[0]);
+                g_gameState->gameData->musicVolume[0] = 0x7F;
                 g_gameState->gameData->unk0 &= 0xDFFFFFFF;
             }
             return 0;
@@ -206,36 +206,36 @@ s32 ending_soundCmd(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4) {
             if ((arg0 & 0x3F) != 1) {
                 break;
             }
-            akao_setMusicVolume(g_gameState->gameData->unk824[0], arg2);
-            g_gameState->gameData->unk826[0] = arg2;
+            akao_setMusicVolume(g_gameState->gameData->musicHandle[0], arg2);
+            g_gameState->gameData->musicVolume[0] = arg2;
             return 0;
         case 3:
             if ((arg0 & 0x3F) != 1) {
                 break;
             }
-            akao_fadeMusicVolume(g_gameState->gameData->unk824[0], arg2, arg3);
-            g_gameState->gameData->unk826[0] = arg3;
+            akao_fadeMusicVolume(g_gameState->gameData->musicHandle[0], arg2, arg3);
+            g_gameState->gameData->musicVolume[0] = arg3;
             return 0;
         case 4:
             if ((arg0 & 0x3F) != 1) {
                 break;
             }
-            akao_fadeMusicVolumeFrom(g_gameState->gameData->unk824[0], arg2, arg3, arg4);
-            g_gameState->gameData->unk826[0] = arg4;
+            akao_fadeMusicVolumeFrom(g_gameState->gameData->musicHandle[0], arg2, arg3, arg4);
+            g_gameState->gameData->musicVolume[0] = arg4;
             return 0;
         case 6:
             if ((arg0 & 0x3F) != 1) {
                 break;
             }
             akao_fadeMusicVolume(0, arg2, arg3);
-            g_gameState->gameData->unk826[0] = arg3;
+            g_gameState->gameData->musicVolume[0] = arg3;
             return 0;
         case 11:
             if ((arg0 & 0x3F) != 1) {
                 break;
             }
             akao_fadeMusicVolumeFrom(0, arg2, arg3, arg4);
-            g_gameState->gameData->unk826[0] = arg4;
+            g_gameState->gameData->musicVolume[0] = arg4;
             return 0;
         }
         return -1;
@@ -317,7 +317,7 @@ void ending_init(void) {
         g_padActuator[i].unk1 = 0;
         g_padActuator[i].unk0 = 0;
     }
-    g_gameState->gameData->unk83C = ending_soundCmd;
+    g_gameState->gameData->soundHook = ending_soundCmd;
     ending_loadData();
     ending_loadMusic();
     game_initGfx();
@@ -345,7 +345,7 @@ void ending_loadMusic(void) {
 
     akao_stopMusic(0);
     a = (s32)db_lookupRegistered(4, ENDING_MUSIC, 0);
-    memmove(g_gameState->gameData->unk814, (void *)a, (s32)db_lookupRegistered(5, ENDING_MUSIC, 0));
+    memmove(g_gameState->gameData->musicSeq, (void *)a, (s32)db_lookupRegistered(5, ENDING_MUSIC, 0));
     a = (s32)db_lookupRegistered(4, ENDING_MUSIC_BANK, 0);
     b = (s32)db_lookupRegistered(5, ENDING_MUSIC_BANK, 0);
     akao_beginBankUpload();
@@ -358,8 +358,8 @@ void ending_loadData(void) {
 
     buf = g_loadAreaEnd + 0x10000;
     e = file_find(1, 0x2F44);
-    cdRead_init(g_gameState->gameData->unk854, e->unk4, (e->unkC - e->unk4) << 11, buf, 0, -1, 0);
-    while (cdRead_update(g_gameState->gameData->unk854) != 0) {
+    cdRead_init(g_gameState->gameData->cdRead, e->unk4, (e->unkC - e->unk4) << 11, buf, 0, -1, 0);
+    while (cdRead_update(g_gameState->gameData->cdRead) != 0) {
     }
     g_endingData = buf;
     db_register((s32)buf, 0);

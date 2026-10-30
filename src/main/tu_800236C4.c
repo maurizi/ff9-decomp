@@ -72,7 +72,7 @@ void config_applySound(void) {
 
 void game_initGfx(void) {
     GameData *d = g_gameState->gameData;
-    gfx_init(d->unk10[0], d->unk10[1], d->unk7E0, d->unk7E0 + 0x4000);
+    gfx_init(d->unk10[0], d->unk10[1], d->packetBuf, d->packetBuf + 0x4000);
 }
 
 void game_updateWindows(void) {

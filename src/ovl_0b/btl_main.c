@@ -26,7 +26,7 @@ void btl_main(s32 arg0) {
                     btlui_init();
                     g_gameState->gameData->unk8E4.battle->flags |= 0x10;
                 }
-                if (!(g_gameState->gameData->unk8E4.battle->flags & 0x40) && (g_gameState->gameData->unk56F & 0x40)) {
+                if (!(g_gameState->gameData->unk8E4.battle->flags & 0x40) && (g_gameState->gameData->battleFlags & 0x40)) {
                     btl_preloadExit();
                     g_gameState->gameData->unk8E4.battle->flags |= 0x40;
                 }
@@ -137,13 +137,13 @@ void btl_initMode(void) {
     game_setScreenHeight(0xDA);
     game_freezeScreen();
     SetDispMask(1);
-    g->unk838 = btl_registerModel;
-    g->unk83C = btl_soundCmd;
-    g_gameState->gameData->unk8BC = func_800AF1C8;
+    g->modelHook = btl_registerModel;
+    g->soundHook = btl_soundCmd;
+    g_gameState->gameData->preloadRequest = func_800AF1C8;
     preload_init();
     g->npcModelSlots = 0;
     g->npcCount = 0;
-    g->unk84C = 0;
+    g->kanjiFont = 0;
     b->dataSector = g_gameState->imgSector + g_gameState->dirs->unkDC;
     btl_loadCommonData();
     func_800A8F10();
@@ -200,7 +200,7 @@ s32 func_800A8F10(void) {
 
 s32 func_800A8F18(void) {
     s32 a = (s32)db_lookupRegistered(4, 0x70005, 0);
-    file_copyViaVram(g_gameState->gameData->unk818, a, (s32)db_lookupRegistered(5, 0x70005, 0), NULL);
+    file_copyViaVram(g_gameState->gameData->musicSeq2, a, (s32)db_lookupRegistered(5, 0x70005, 0), NULL);
     DrawSync(0);
     return 0;
 }
@@ -235,7 +235,7 @@ s32 btl_loadCommonData(void) {
     Battle *b = g_gameState->gameData->unk8E4.battle;
     FileEntry *f = file_find(1, 0x271B);
     s32 s = f->unk4;
-    void *ctx = g_gameState->gameData->unk854;
+    void *ctx = g_gameState->gameData->cdRead;
     cdRead_init(ctx, s, (f->unkC - s) << 11, (void *)p, 0, -1, NULL);
     while (cdRead_update(ctx) != 0) {
     }
@@ -275,18 +275,18 @@ void btl_load(s32 arg0) {
     } while (btl_loadBackgroundStep(p, arg0, &st) != 0);
     btl_setupBackground(p, arg0);
     g_gameState->gameData->npcCount = evt_countNpcActors(0);
-    g_gameState->gameData->unk8DC = (struct Unk8D4 *)(p->weaponBufs + 4);
-    g_gameState->gameData->unk8E0 = (struct Unk8E0 *)&g_gameState->gameData->unk8DC[g_gameState->gameData->npcCount];
-    g_modeHeap = (s32)&g_gameState->gameData->unk8E0[g_gameState->gameData->npcCount];
+    g_gameState->gameData->npcModelObjs = (struct Unk8D4 *)(p->weaponBufs + 4);
+    g_gameState->gameData->npcModels = (struct Unk8E0 *)&g_gameState->gameData->npcModelObjs[g_gameState->gameData->npcCount];
+    g_modeHeap = (s32)&g_gameState->gameData->npcModels[g_gameState->gameData->npcCount];
     g_gameState->gameData->unk9 = 0;
     for (i = 0; i < 9; i++) {
-        func_8001E3A4(&g_gameState->gameData->unk8D8[i]);
-        g_gameState->gameData->unk8D8[i].unk8 = (struct BtlUnit9C *)&g_gameState->gameData->unk8D4[i];
+        func_8001E3A4(&g_gameState->gameData->chrModels[i]);
+        g_gameState->gameData->chrModels[i].unk8 = (struct BtlUnit9C *)&g_gameState->gameData->chrModelObjs[i];
     }
     g_gameState->gameData->npcModelSlots = 0;
     for (i = 0; i < g_gameState->gameData->npcCount; i++) {
-        func_8001E3A4(&g_gameState->gameData->unk8E0[i]);
-        g_gameState->gameData->unk8E0[i].unk8 = (struct BtlUnit9C *)&g_gameState->gameData->unk8DC[i];
+        func_8001E3A4(&g_gameState->gameData->npcModels[i]);
+        g_gameState->gameData->npcModels[i].unk8 = (struct BtlUnit9C *)&g_gameState->gameData->npcModelObjs[i];
     }
     p->shadows = (struct BtlShadow *)g_modeHeap;
     g_modeHeap = func_800AD4AC(g_modeHeap, g_gameState->gameData->npcCount + 9);
@@ -310,13 +310,13 @@ void btl_cleanup(void) {
     btl_unregisterFiles(&g_gameState->gameData->unk8E4.battle->files->data[3], 0);
     btl_unregisterFiles(&g_gameState->gameData->unk8E4.battle->files->data[2], 0);
     for (i = 0; i < 9; i++) {
-        if (g_gameState->gameData->unk8D8[i].unk0 & 1) {
-            g_gameState->gameData->unk8D8[i].unk0 &= ~1;
+        if (g_gameState->gameData->chrModels[i].unk0 & 1) {
+            g_gameState->gameData->chrModels[i].unk0 &= ~1;
         }
     }
     for (i = 0; i < g_gameState->gameData->npcCount; i++) {
-        if (g_gameState->gameData->unk8D8[i].unk0 & 1) {
-            g_gameState->gameData->unk8D8[i].unk0 &= ~1;
+        if (g_gameState->gameData->chrModels[i].unk0 & 1) {
+            g_gameState->gameData->chrModels[i].unk0 &= ~1;
         }
     }
     switch (s->returnMode) {
@@ -330,7 +330,7 @@ void btl_cleanup(void) {
             g_gameState->gameData->sceneSectors[i] = v;
         }
         if (s->returnMode == 3) {
-            g_gameState->gameData->unk7DC = s->returnId;
+            g_gameState->gameData->worldId = s->returnId;
         } else {
             g_gameState->gameData->fieldId = s->returnId;
         }
@@ -380,7 +380,7 @@ void btl_initReturnInfo(void) {
     if (g_gameState->unkA == 1) {
         p->returnId = g_gameState->gameData->fieldId;
     } else if (g_gameState->unkA == 3) {
-        p->returnId = g_gameState->gameData->unk7DC;
+        p->returnId = g_gameState->gameData->worldId;
     } else {
         p->returnId = -1;
     }
@@ -502,7 +502,7 @@ s32 btl_reloadPartyStep(s32 arg0) {
                 continue;
             }
             cid = ch->info.b.id;
-            e = &g_gameState->gameData->unk8D8[cid];
+            e = &g_gameState->gameData->chrModels[cid];
             u = btl_getUnitBySlot(i);
             if (u == NULL) {
                 continue;
@@ -559,7 +559,7 @@ s32 btl_reloadPartyStep(s32 arg0) {
 s32 btl_loadEncounterFile(Unk800AA08C *arg0, s32 arg1) {
     s32 v = arg0->unk24;
     GameData *gd = g_gameState->gameData;
-    u8 *cd = gd->unk854;
+    u8 *cd = gd->cdRead;
     Battle *b = gd->unk8E4.battle;
     cdRead_init(cd, gd->sceneSector[0], gd->sceneSectors[0] << 11, (void *)arg0->unk24, 0, 0x2800, 0);
     while (cdRead_update(cd) != 0) {
@@ -573,7 +573,7 @@ s32 btl_loadEncounterFile(Unk800AA08C *arg0, s32 arg1) {
 s32 btl_loadBackgroundStep(Battle11C0 *arg0, s32 arg1, Unk800AA08C *arg2) {
     GameData *gd = g_gameState->gameData;
     Battle *b = gd->unk8E4.battle;
-    u8 *cd = gd->unk854;
+    u8 *cd = gd->cdRead;
     Unk800AA08C *st;
     s32 v;
     GameData *gd2;
@@ -616,7 +616,7 @@ s32 btl_loadSoundsStep(s16 arg0, s32 arg1, Unk800AA24C *arg2) {
     st = arg2;
     gd = g_gameState->gameData;
     b = gd->unk8E4.battle;
-    cd = gd->unk854;
+    cd = gd->cdRead;
     if (arg1 & 0x8000) {
         b->flags &= ~2;
         st->unk0 = 2;
@@ -1457,7 +1457,7 @@ s32 btl_swapPartyModelStep(s32 arg0, s32 arg1) {
         break;
     case 6:
         cid = g_gameState->gameData->party[arg0]->info.b.id;
-        ent = &g_gameState->gameData->unk8D8[cid];
+        ent = &g_gameState->gameData->chrModels[cid];
         u = btl_getUnitBySlot(arg0);
         if (u != NULL) {
             id2 = btl_getPartyModelId(arg0, arg1 & ~0x10);
@@ -1732,7 +1732,7 @@ s32 btl_soundCmd(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4) {
     s32 m2;
 
     kind = (arg0 >> 8) & 0xF;
-    if (kind == 12 && g_gameState->gameData->unk851 != 0) {
+    if (kind == 12 && g_gameState->gameData->soundLoadState != 0) {
         goto stream;
     }
     switch ((arg0 >> 12) & 3) {
@@ -1741,7 +1741,7 @@ s32 btl_soundCmd(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4) {
         switch (kind) {
         case 0:
         case 7:
-            if (g_gameState->gameData->unk851 != 0) {
+            if (g_gameState->gameData->soundLoadState != 0) {
                 return -1;
             }
             if (D_800F51F8 == -1) {
@@ -1749,61 +1749,61 @@ s32 btl_soundCmd(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4) {
             }
             r = btl_getDepLink(id);
             ga = g_gameState->gameData;
-            if (ga->unk81C[0] != arg1 || ga->unk820[0] != (u16)r) {
+            if (ga->musicId[0] != arg1 || ga->musicBank[0] != (u16)r) {
                 if (ga->unk0 & 0x20000000) {
-                    akao_stopMusic(ga->unk824[0]);
+                    akao_stopMusic(ga->musicHandle[0]);
                 }
                 g_gameState->gameData->unk0 &= 0xCFFFFFFF;
-                g_gameState->gameData->unk820[0] = r;
-                g_gameState->gameData->unk81C[0] = arg1;
+                g_gameState->gameData->musicBank[0] = r;
+                g_gameState->gameData->musicId[0] = arg1;
                 if ((id & 0xFFFF) != 5) {
-                    g_gameState->gameData->unk8C0 = (s32)(g_loadAreaEnd + 0x140700);
+                    g_gameState->gameData->soundLoadDest = (s32)(g_loadAreaEnd + 0x140700);
                     D_800F51EC = -1;
-                    g_gameState->gameData->unk878 = 0x16800;
+                    g_gameState->gameData->soundLoadChunk = 0x16800;
                     D_800F51F0 = id;
-                    g_gameState->gameData->unk87C = 0;
-                    g_gameState->gameData->unk851 = 2;
-                    return g_gameState->gameData->unk851;
+                    g_gameState->gameData->soundBankSize = 0;
+                    g_gameState->gameData->soundLoadState = 2;
+                    return g_gameState->gameData->soundLoadState;
                 }
-                memmove(g_gameState->gameData->unk814, (void *)g_gameState->gameData->unk818, 0x2000);
-                g_gameState->gameData->unk826[0] = 0x7F;
+                memmove(g_gameState->gameData->musicSeq, (void *)g_gameState->gameData->musicSeq2, 0x2000);
+                g_gameState->gameData->musicVolume[0] = 0x7F;
                 g_gameState->gameData->unk0 |= 0x10000000;
             }
         finish:
             if (D_800F51F8 != 7) {
-                g_gameState->gameData->unk824[0] = akao_playMusic(g_gameState->gameData->unk814);
+                g_gameState->gameData->musicHandle[0] = akao_playMusic(g_gameState->gameData->musicSeq);
                 gb = g_gameState->gameData;
                 if (!(gb->unk0 & 0x20000000)) {
-                    akao_fadeMusicVolumeFrom(gb->unk824[0], 0x1E, 0, gb->unk826[0]);
+                    akao_fadeMusicVolumeFrom(gb->musicHandle[0], 0x1E, 0, gb->musicVolume[0]);
                 }
                 g_gameState->gameData->unk0 |= 0x30000000;
             }
             D_800F51F8 = -1;
             return 0;
         case 1:
-            akao_stopMusic(g_gameState->gameData->unk824[0]);
-            g_gameState->gameData->unk826[0] = 0x7F;
+            akao_stopMusic(g_gameState->gameData->musicHandle[0]);
+            g_gameState->gameData->musicVolume[0] = 0x7F;
             g_gameState->gameData->unk0 &= 0xDFFFFFFF;
             return 0;
         case 2:
             if ((arg0 & 0x3F) != 1) {
                 break;
             }
-            akao_setMusicVolume(g_gameState->gameData->unk824[0], arg2);
-            g_gameState->gameData->unk826[0] = arg2;
+            akao_setMusicVolume(g_gameState->gameData->musicHandle[0], arg2);
+            g_gameState->gameData->musicVolume[0] = arg2;
             return 0;
         case 3:
             if ((arg0 & 0x3F) != 1) {
                 break;
             }
-            akao_fadeMusicVolume(g_gameState->gameData->unk824[0], arg2, arg3);
+            akao_fadeMusicVolume(g_gameState->gameData->musicHandle[0], arg2, arg3);
             func_800AE9C8(arg3, arg2);
             return 0;
         case 4:
             if ((arg0 & 0x3F) != 1) {
                 break;
             }
-            akao_fadeMusicVolumeFrom(g_gameState->gameData->unk824[0], arg2, arg3, arg4);
+            akao_fadeMusicVolumeFrom(g_gameState->gameData->musicHandle[0], arg2, arg3, arg4);
             func_800AE9C8(arg4, arg2);
             return 0;
         case 6:
@@ -1887,23 +1887,23 @@ s32 btl_soundCmd(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4) {
             if (arg2 >= 4) {
                 gc = g_gameState->gameData;
                 e = gc->unk8E4.battle->unk1538[arg2 % 4];
-                gc->unk8C0 = e->unk24;
-                g_gameState->gameData->unk878 = 0x12FD8 - (e->unk24 - e->unk20);
+                gc->soundLoadDest = e->unk24;
+                g_gameState->gameData->soundLoadChunk = 0x12FD8 - (e->unk24 - e->unk20);
                 gx = g_gameState->gameData;
             } else {
-                g_gameState->gameData->unk8C0 = (s32)g_gameState->gameData->unk8E4.battle->work->heap;
-                g_gameState->gameData->unk878 = g_gameState->gameData->unk8E4.battle->work->ot[0] -
+                g_gameState->gameData->soundLoadDest = (s32)g_gameState->gameData->unk8E4.battle->work->heap;
+                g_gameState->gameData->soundLoadChunk = g_gameState->gameData->unk8E4.battle->work->ot[0] -
                                             (s32)g_gameState->gameData->unk8E4.battle->work->heap;
                 gx = g_gameState->gameData;
             }
-            k2 = gx->unk878;
-            gx->unk878 = k2 / 2048 * 2048;
+            k2 = gx->soundLoadChunk;
+            gx->soundLoadChunk = k2 / 2048 * 2048;
             D_800F51EC = arg2 % 4;
             D_800F51F8 = kind;
             D_800F51F0 = id;
-            g_gameState->gameData->unk87C = 0;
-            g_gameState->gameData->unk851 = 2;
-            return g_gameState->gameData->unk851;
+            g_gameState->gameData->soundBankSize = 0;
+            g_gameState->gameData->soundLoadState = 2;
+            return g_gameState->gameData->soundLoadState;
         case 12:
             goto stream;
         }
@@ -1913,68 +1913,68 @@ s32 btl_soundCmd(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4) {
     }
 stream:
     gd = g_gameState->gameData;
-    switch (gd->unk851) {
+    switch (gd->soundLoadState) {
     case 2:
         if (((D_800F51F0 >> 16) & 0xFF) == 7) {
-            gd->unk852 = gd->unk820[0];
+            gd->soundLoadBank = gd->musicBank[0];
         } else {
-            gd->unk852 = D_800F51F0;
+            gd->soundLoadBank = D_800F51F0;
         }
         D_800F51F4 = btl_getSoundFileSectors(D_800F51F0, &size);
         if (D_800F51EC == -1) {
             akao_beginBankUpload();
         }
         ge = g_gameState->gameData;
-        cdRead_init(ge->unk854, D_800F51F4, size, (void *)ge->unk8C0, 0, g_gameState->gameData->unk878, btl_onSoundRead);
-        g_gameState->gameData->unk851 = 3;
+        cdRead_init(ge->cdRead, D_800F51F4, size, (void *)ge->soundLoadDest, 0, g_gameState->gameData->soundLoadChunk, btl_onSoundRead);
+        g_gameState->gameData->soundLoadState = 3;
         break;
     case 3:
-        if (cdRead_update(gd->unk854) == 0 && akao_getSpuTransferState() == 0) {
+        if (cdRead_update(gd->cdRead) == 0 && akao_getSpuTransferState() == 0) {
             gf = g_gameState->gameData;
-            if (gf->unk854[0].unkC + gf->unk854[0].unk10 < gf->unk87C) {
-                gf->unk8C0 = (s32)gf->unk854[0].unk8;
+            if (gf->cdRead[0].unkC + gf->cdRead[0].unk10 < gf->soundBankSize) {
+                gf->soundLoadDest = (s32)gf->cdRead[0].unk8;
                 gg = g_gameState->gameData;
-                m = (s32)(g_loadAreaEnd + 0x156F00) - gg->unk8C0;
+                m = (s32)(g_loadAreaEnd + 0x156F00) - gg->soundLoadDest;
                 m = m / 2048 * 2048;
-                cdRead_init(gg->unk854, D_800F51F4, gg->unk854[0].unk4, (void *)gg->unk8C0,
-                              gg->unk854[0].unkC + gg->unk854[0].unk10, m, btl_onSoundRead);
+                cdRead_init(gg->cdRead, D_800F51F4, gg->cdRead[0].unk4, (void *)gg->soundLoadDest,
+                              gg->cdRead[0].unkC + gg->cdRead[0].unk10, m, btl_onSoundRead);
             } else if (D_800F51F2 == 7) {
                 if (D_800F51F8 != 9) {
-                    gf->unk826[0] = 0x7F;
+                    gf->musicVolume[0] = 0x7F;
                 }
-                g_gameState->gameData->unk851 = 4;
+                g_gameState->gameData->soundLoadState = 4;
             } else {
                 D_800F51F8 = -1;
-                g_gameState->gameData->unk851 = 0;
+                g_gameState->gameData->soundLoadState = 0;
             }
         }
         break;
     case 4:
-        n = gd->unk854[0].unkC + gd->unk854[0].unk10 - gd->unk87C;
+        n = gd->cdRead[0].unkC + gd->cdRead[0].unk10 - gd->soundBankSize;
         if (n > 0) {
-            memcpy(gd->unk814, (u8 *)(gd->unk8C0 + (gd->unk87C - gd->unk854[0].unkC)), n);
+            memcpy(gd->musicSeq, (u8 *)(gd->soundLoadDest + (gd->soundBankSize - gd->cdRead[0].unkC)), n);
         }
-        g_gameState->gameData->unk8C0 = (s32)((u8 *)g_gameState->gameData->unk814 + n);
+        g_gameState->gameData->soundLoadDest = (s32)((u8 *)g_gameState->gameData->musicSeq + n);
         m2 = 0x6800 - n;
         m2 = m2 / 2048 * 2048;
         gh = g_gameState->gameData;
-        cdRead_init(gh->unk854, D_800F51F4, gh->unk854[0].unk4, (void *)gh->unk8C0,
-                      gh->unk854[0].unkC + gh->unk854[0].unk10, m2, NULL);
-        g_gameState->gameData->unk851 = 5;
+        cdRead_init(gh->cdRead, D_800F51F4, gh->cdRead[0].unk4, (void *)gh->soundLoadDest,
+                      gh->cdRead[0].unkC + gh->cdRead[0].unk10, m2, NULL);
+        g_gameState->gameData->soundLoadState = 5;
         break;
     case 5:
-        if (cdRead_update(gd->unk854) == 0) {
+        if (cdRead_update(gd->cdRead) == 0) {
             gi = g_gameState->gameData;
-            k1 = gi->unk854[0].unkC + gi->unk854[0].unk10;
-            if (k1 < gi->unk854[0].unk4) {
-                k2 = k1 - gi->unk87C;
-                gi->unk8C0 = (s32)((u8 *)gi->unk814 + k2);
+            k1 = gi->cdRead[0].unkC + gi->cdRead[0].unk10;
+            if (k1 < gi->cdRead[0].unk4) {
+                k2 = k1 - gi->soundBankSize;
+                gi->soundLoadDest = (s32)((u8 *)gi->musicSeq + k2);
                 gj = g_gameState->gameData;
-                cdRead_init(gj->unk854, D_800F51F4, gj->unk854[0].unk4, (void *)gj->unk8C0, k2, 0x6800 - k2, NULL);
+                cdRead_init(gj->cdRead, D_800F51F4, gj->cdRead[0].unk4, (void *)gj->soundLoadDest, k2, 0x6800 - k2, NULL);
             } else {
-                func_800AE7C8((s32)gi->unk814);
+                func_800AE7C8((s32)gi->musicSeq);
                 g_gameState->gameData->unk0 |= 0x10000000;
-                g_gameState->gameData->unk851 = 0;
+                g_gameState->gameData->soundLoadState = 0;
                 if (D_800F51F8 == 0) {
                     goto finish;
                 }
@@ -1983,7 +1983,7 @@ stream:
         }
         break;
     }
-    return g_gameState->gameData->unk851;
+    return g_gameState->gameData->soundLoadState;
 }
 
 s32 btl_getWeaponSound(s32 arg0, u16 arg1) {
@@ -2083,7 +2083,7 @@ s32 func_800AE7C8(s32 arg0) {
 
 void btl_onSoundRead(Unk800AE844 *arg0) {
     s32 p = arg0->unk8;
-    s32 id = g_gameState->gameData->unk852 | 0x90000;
+    s32 id = g_gameState->gameData->soundLoadBank | 0x90000;
     s32 f;
     s32 base;
     s32 n;
@@ -2093,13 +2093,13 @@ void btl_onSoundRead(Unk800AE844 *arg0) {
         base = p;
         if (f == -1) {
             p = db_lookup(p, 4, id, 0);
-            g_gameState->gameData->unk87C = db_getSize(base);
+            g_gameState->gameData->soundBankSize = db_getSize(base);
         } else {
             p = db_lookup(f, 4, id, 0);
-            g_gameState->gameData->unk87C = db_lookup(base, 2, 0x1B0001, 0) - g_gameState->gameData->unk8C0;
+            g_gameState->gameData->soundBankSize = db_lookup(base, 2, 0x1B0001, 0) - g_gameState->gameData->soundLoadDest;
         }
     }
-    n = g_gameState->gameData->unk87C - arg0->unkC;
+    n = g_gameState->gameData->soundBankSize - arg0->unkC;
     if (arg0->unk10 < n) {
         n = arg0->unk10;
     }
@@ -2114,16 +2114,16 @@ void btl_onSoundRead(Unk800AE844 *arg0) {
 
 void func_800AE9C8(s32 arg0, s32 arg1) {
     GameData *gd = g_gameState->gameData;
-    gd->unk826[0] = arg0;
+    gd->musicVolume[0] = arg0;
     if (arg0 == 0) {
-        gd->unk842 = arg1;
-        gd->unk8C4 = VSync(-1);
+        gd->musicFadeFrames = arg1;
+        gd->musicFadeStart = VSync(-1);
     }
 }
 
 s32 func_800AEA08(void) {
     GameData *gd = g_gameState->gameData;
-    return (u32)(VSync(-1) - gd->unk8C4) < gd->unk842;
+    return (u32)(VSync(-1) - gd->musicFadeStart) < gd->musicFadeFrames;
 }
 
 void btl_beginFrame(void) {
@@ -2179,7 +2179,7 @@ void btl_preloadExit(void) {
 
     b = g_gameState->gameData->unk8E4.battle->work;
     preload_init();
-    g_gameState->gameData->unk8BC = NULL;
+    g_gameState->gameData->preloadRequest = NULL;
     f = file_find(0, 0x10065);
     size = (f->unkC - f->unk4) << 11;
     preload_setEntry(preload_add(), 0, 0x10065, (s32)PSX_RAM(u8 *, 0x801EDF00), size, size, f->unk4, size);

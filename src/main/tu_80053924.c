@@ -5,11 +5,11 @@ void func_80053924(void) {
 
 void gamedata_resetEventFlags(void) {
     GameData *d = g_gameState->gameData;
-    d->unk568 = 0;
-    d->unk56A = 0;
-    d->unk56C = 0;
+    d->frogCount = 0;
+    d->stealCount = 0;
+    d->dragonKills = 0;
     d->battleResult = 0;
-    d->unk56F = 0;
+    d->battleFlags = 0;
     d->rainCount = 0;
     d->unk571 = 0;
 }

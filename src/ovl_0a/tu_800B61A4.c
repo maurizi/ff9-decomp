@@ -17,7 +17,7 @@ void fldmdl_projectMesh(ModelObj *arg0, u8 arg1) {
     s16 *c2;
 
     g = &arg0->model->groups[arg1];
-    gte_SetGeomScreen(g_gameState->gameData->unkA);
+    gte_SetGeomScreen(g_gameState->gameData->projDist);
     sxy = g_vtxScreenXY;
     sz = g_vtxScreenZ;
     k = 0;
@@ -1824,7 +1824,7 @@ void fldmdl_projectMeshClipY(ModelObj *arg0, u8 arg1) {
     u32 cnt;
     s32 ymax;
 
-    gte_SetGeomScreen(g_gameState->gameData->unkA);
+    gte_SetGeomScreen(g_gameState->gameData->projDist);
     sxy = g_vtxScreenXY;
     sz = g_vtxScreenZ;
     k = 0;
@@ -2769,7 +2769,7 @@ s32 fldbg_updateFollowOverlays(void) {
         objs = (BgOverlay *)((u8 *)bg + bg->overlayOffset);
         mode = g_gameState->mode;
         if (mode == 5) {
-            a = (EvtObject *)g_gameState->gameData->unk8E0[g_gameState->gameData->unk8E4.field->playerObj].unkC;
+            a = (EvtObject *)g_gameState->gameData->npcModels[g_gameState->gameData->unk8E4.field->playerObj].unkC;
         } else if (mode == 1) {
             a = evt_getPlayer();
         } else {
@@ -3331,7 +3331,7 @@ s32 fldbg_followPlayer(void) {
     }
     mode = g_gameState->mode;
     if (mode == 5) {
-        a = (EvtObject *)g_gameState->gameData->unk8E0[g_gameState->gameData->unk8E4.field->playerObj].unkC;
+        a = (EvtObject *)g_gameState->gameData->npcModels[g_gameState->gameData->unk8E4.field->playerObj].unkC;
     } else if (mode == 1) {
         a = evt_getPlayer();
     } else {
@@ -3622,7 +3622,7 @@ s32 fldbg_scrollToPlayer(s32 arg0, s32 arg1) {
     }
     mode = g_gameState->mode;
     if (mode == 5) {
-        a = (EvtObject *)g_gameState->gameData->unk8E0[g_gameState->gameData->unk8E4.field->playerObj].unkC;
+        a = (EvtObject *)g_gameState->gameData->npcModels[g_gameState->gameData->unk8E4.field->playerObj].unkC;
     } else {
         a = NULL;
         if (mode == 1) {
