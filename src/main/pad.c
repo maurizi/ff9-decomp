@@ -65,7 +65,7 @@ void pad_update(void) {
         } else if (state == 1) {
             g_padFlags |= 4 << (i * 4);
         }
-        if (PADBUF(i)->unk0 == 0 && (((g_padBuf[i].unk0 >> 12) & 0xF) == PAD_ID_ANALOG || ((g_padBuf[i].unk0 >> 12) & 0xF) == PAD_ID_DIGITAL)) {
+        if (PADBUF(i)->status == 0 && (((g_padBuf[i].unk0 >> 12) & 0xF) == PAD_ID_ANALOG || ((g_padBuf[i].unk0 >> 12) & 0xF) == PAD_ID_DIGITAL)) {
             if ((g_padFlags >> (i * 4)) & 1) {
                 if (g_padPortState[i] == 2) {
                     g_padFlags &= ~(1 << (i * 4));
@@ -91,12 +91,12 @@ void pad_update(void) {
                 g_padFlags &= ~b;
             }
             j = 0;
-            buttons = ~PADBUF(i)->unk2;
+            buttons = ~PADBUF(i)->buttons;
             buttons &= 0xFFFF;
-            g_padAnalog[i].unk0[0] = PADBUF(i)->unk4[0];
-            g_padAnalog[i].unk0[1] = PADBUF(i)->unk4[1];
-            g_padAnalog[i].unk0[2] = PADBUF(i)->unk4[2];
-            g_padAnalog[i].unk0[3] = PADBUF(i)->unk4[3];
+            g_padAnalog[i].unk0[0] = PADBUF(i)->analog[0];
+            g_padAnalog[i].unk0[1] = PADBUF(i)->analog[1];
+            g_padAnalog[i].unk0[2] = PADBUF(i)->analog[2];
+            g_padAnalog[i].unk0[3] = PADBUF(i)->analog[3];
             g_padPortPrevHeld[i] = g_padPortHeld[i];
             g_padPortHeld[i] = 0;
             for (; j < 32; j++) {

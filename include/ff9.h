@@ -72,14 +72,14 @@ typedef struct {
 } UnkPair;
 
 typedef struct {
-    u16 unk0; /* (second table) high byte: first two-byte code */
+    u16 codeBase; /* (second table) high byte: first two-byte code; subtracted from a code to index the glyphs (text_buildPlain/text_measure, kanji table) */
     u8 pad2[2];
-    u16 unk4; /* high byte: first text code that takes an extra byte */
-    u16 unk6;
+    u16 extCode; /* high byte: first text code that takes an extra byte (text_draw: (c << 8) + next byte - extCode + extBase) */
+    u16 extBase; /* glyph index of the first two-byte code */
     s16 unk8;
     u8 padA[2];
-    u32 unkC[1]; /* glyph info, width in the top 4 bits */
-} Unk7D4;
+    u32 glyphs[1]; /* glyph info, width in the top 4 bits */
+} Font;
 
 /* Character.info: packed ids, also read as a whole word */
 typedef union {
@@ -293,7 +293,7 @@ typedef struct {
     ItemInventory items;
     ItemFlags keyItems;
     u8 pad7B4[0x7D4 - 0x7B4];
-    Unk7D4 *font; /* text font (game_loadCommonImages), text_* glyph widths */
+    Font *font; /* text font (game_loadCommonImages), text_* glyph widths */
     void *commonDb; /* the common db registered by game_loadCommonDb (sound bank lookup) */
     s16 worldId; /* world map to run (wm_main), set by field/world exits; the battle saves and restores it (returnId) */
     u16 worldAreaId; /* area data of that world map (wm_findAreaData), from wm_depFindArea / fld_exit */
@@ -326,7 +326,7 @@ typedef struct {
     s8 enemyGroup; /* forced enemy group of the next battle (event op 0x8C), -1 = random (btl_pickEnemyGroup) */
     u8 unk849[1];
     u16 musicFileSectors; /* sector count of the current music file (fld_refindSectors, fld_soundCommand) */
-    Unk7D4 *kanjiFont; /* second (kanji) font table */
+    Font *kanjiFont; /* second (kanji) font table */
     u8 savedMusicVolume; /* musicVolume saved with savedMusicId */
     u8 soundLoadState; /* music/bank load state machine (fld_soundCommand 1 wait fade, 2 start read, 3 bank, 4-5 sequence, 0 idle) */
     u16 soundLoadBank; /* id of the sound bank being loaded (fld_soundBankReadCallback looks it up) */
@@ -2755,10 +2755,10 @@ extern Unk4 g_padAnalog[2]; /* analog stick bytes */
 extern u8 g_padActAlign[]; /* actuator alignment */
 /* byte view of a g_padBuf pad buffer */
 typedef struct {
-    u8 unk0; /* status, 0 = ok */
+    u8 status; /* status, 0 = ok */
     u8 unk1;
-    u16 unk2; /* buttons, active low */
-    u8 unk4[4]; /* analog sticks */
+    u16 buttons; /* buttons, active low */
+    u8 analog[4]; /* analog sticks */
 } PadBuf;
 #define PADBUF(i) ((PadBuf *)&g_padBuf[i])
 void pad_update(void);

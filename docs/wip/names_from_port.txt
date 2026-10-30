@@ -5434,3 +5434,5 @@ D_800FE500 g_btlbgJitterBase2  # [code] btlbg_draw, background scene 7, group 2:
 # FIELDS include/ff9.h FileIdEntry: unk0=id,unk4=sector [code] file_find (dirTables {id, sector} pairs), dep_find / fld_depFind* / wm_depFind* ({key, sector, sectors, link}); FileEntry unk8/unkC stay unk: next id/end sector for file_find results, sectors/link for dependency tables
 # FIELDS include/ff9.h FileTable: unk2=count,unk4=entries [code] file_find (dirTables {id, sector} pairs), dep_find / fld_depFind* / wm_depFind* ({key, sector, sectors, link}); FileEntry unk8/unkC stay unk: next id/end sector for file_find results, sectors/link for dependency tables
 # REMOVED include/ff9.h DirEntry (unused duplicate of FileIdEntry)
+# FIELDS include/ff9.h Unk7D4 (type renamed Font; GameData.font/kanjiFont): unk0=codeBase,unk4=extCode,unk6=extBase,unkC=glyphs [code] text.c text_draw/text_buildBlock/text_buildPlain/text_measure, msg_init; pad.c pad_update
+# FIELDS include/ff9.h PadBuf: unk0=status,unk2=buttons,unk4=analog [code] text.c text_draw/text_buildBlock/text_buildPlain/text_measure, msg_init; pad.c pad_update

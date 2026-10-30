@@ -2,7 +2,7 @@
 
 void msg_init(void) {
     GameState *s;
-    Unk7D4 *f;
+    Font *f;
 
     if (g_msgKeepWindows != 0) {
         g_msgKeepWindows = 0;
@@ -14,8 +14,8 @@ void msg_init(void) {
     g_msgReady = 0;
     f = s->gameData->font;
     D_8007BB98.unk0 = 0;
-    D_8007BBCC = f->unkC;
-    D_8007BB98.unk4 = *(s32 *)&f->unk4;
+    D_8007BBCC = f->glyphs;
+    D_8007BB98.unk4 = *(s32 *)&f->extCode;
     D_8007B94C = f->unk8;
     D_8007BB98.unk8 = -1;
     switch (s->mode) {

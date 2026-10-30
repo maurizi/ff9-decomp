@@ -157,20 +157,20 @@ u8 *ending_getMessage(u8 *arg0, s32 arg1) {
 }
 
 void *ending_drawText(s32 x, s32 y, u32 *ot, u8 *s, void *p) {
-    Unk7D4 *f = g_gameState->gameData->font;
+    Font *f = g_gameState->gameData->font;
     s32 w;
     s32 c;
-    s32 hi = f->unk4 >> 8;
+    s32 hi = f->extCode >> 8;
 
     c = *s;
     while (c != 0xFF) {
         if (c >= hi) {
-            c = (c << 8) + s[1] - f->unk4 + f->unk6;
+            c = (c << 8) + s[1] - f->extCode + f->extBase;
             s++;
-            p = ending_drawGlyph(x, y, ot, *(f->unkC + c), &w, p);
+            p = ending_drawGlyph(x, y, ot, *(f->glyphs + c), &w, p);
             x += w;
         } else {
-            p = ending_drawGlyph(x, y, ot, *(f->unkC + c), &w, p);
+            p = ending_drawGlyph(x, y, ot, *(f->glyphs + c), &w, p);
             x += w;
         }
         c = *++s;
@@ -181,7 +181,7 @@ void *ending_drawText(s32 x, s32 y, u32 *ot, u8 *s, void *p) {
 }
 
 s32 ending_textWidth(u8 *s) {
-    Unk7D4 *f;
+    Font *f;
     s32 n;
     s32 c;
     u8 hi;
@@ -189,14 +189,14 @@ s32 ending_textWidth(u8 *s) {
 
     n = 0;
     f = g_gameState->gameData->font;
-    hi = f->unk4 >> 8;
+    hi = f->extCode >> 8;
     while ((c = *s) != 0xFF) {
         if (c >= hi) {
-            c = (c << 8) + s[1] - f->unk4 + f->unk6;
+            c = (c << 8) + s[1] - f->extCode + f->extBase;
             s++;
-            n += (f->unkC[c] >> 28) + 1;
+            n += (f->glyphs[c] >> 28) + 1;
         } else {
-            g = &f->unkC[c];
+            g = &f->glyphs[c];
             n += (*g >> 28) + 1;
         }
         s++;

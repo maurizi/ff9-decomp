@@ -51,7 +51,7 @@ s32 text_renderNameGlyph(s32 x, s32 hi, s32 c) {
 }
 
 s32 text_drawChar(s32 x, s32 y, s32 otz, u8 c, s32 mode) {
-    u32 *tbl = g_gameState->gameData->font->unkC;
+    u32 *tbl = g_gameState->gameData->font->glyphs;
     u32 g;
     s32 w;
     SprtWords *p;
@@ -73,8 +73,8 @@ s32 text_drawChar(s32 x, s32 y, s32 otz, u8 c, s32 mode) {
 }
 
 void text_draw(s32 x, s32 y, s32 otz, u8 *s, s32 pal) {
-    Unk7D4 *f = g_gameState->gameData->font;
-    s32 th = f->unk4 >> 8;
+    Font *f = g_gameState->gameData->font;
+    s32 th = f->extCode >> 8;
     SprtWords *p = (SprtWords *)g_primPtr;
     u32 *ot = &g_ot[otz];
     s32 spacing;
@@ -86,10 +86,10 @@ void text_draw(s32 x, s32 y, s32 otz, u8 *s, s32 pal) {
 
     while ((c = *s) != TEXT_END) {
         if (c >= th) {
-            c = (c << 8) + s[1] - f->unk4 + f->unk6;
+            c = (c << 8) + s[1] - f->extCode + f->extBase;
             s++;
         }
-        g = *(f->unkC + c);
+        g = *(f->glyphs + c);
         setlen(p, 4);
         k = (g >> 20) & 3;
         p->rgbc = GPU_RGBC(GPU_SPRT, 0x808080);
@@ -114,14 +114,14 @@ u8 *text_buildBlock(s32 x, s32 y, u32 *ot, u8 *s, s32 mode, u8 *pkt) {
     s32 w;
     s32 x0;
     u8 th;
-    Unk7D4 *font;
+    Font *font;
     s32 c;
     s32 k;
 
     font = g_gameState->gameData->font;
     g_textColor = mode;
     x0 = x;
-    th = font->unk4 >> 8;
+    th = font->extCode >> 8;
     while ((c = *s) != TEXT_END) {
         if (c == TEXT_ESC) {
             s++;
@@ -215,12 +215,12 @@ u8 *text_buildBlock(s32 x, s32 y, u32 *ot, u8 *s, s32 mode, u8 *pkt) {
             y += 15;
         } else {
             if (c >= th) {
-                c = (c << 8) + s[1] - font->unk4 + font->unk6;
+                c = (c << 8) + s[1] - font->extCode + font->extBase;
                 s++;
-                pkt = text_buildGlyph(x, y, ot, *(font->unkC + c), g_textColor, &w, (SprtWords *)pkt);
+                pkt = text_buildGlyph(x, y, ot, *(font->glyphs + c), g_textColor, &w, (SprtWords *)pkt);
                 x += w;
             } else {
-                pkt = text_buildGlyph(x, y, ot, *(font->unkC + c), g_textColor, &w, (SprtWords *)pkt);
+                pkt = text_buildGlyph(x, y, ot, *(font->glyphs + c), g_textColor, &w, (SprtWords *)pkt);
                 x += w;
             }
         }
@@ -237,8 +237,8 @@ u8 *text_buildPlain(s32 x, s32 y, u32 *ot, Character *ch, s32 *w, u8 *pkt) {
     s32 adv;
     s32 x0;
     u8 th;
-    Unk7D4 *font;
-    Unk7D4 *kanji;
+    Font *font;
+    Font *kanji;
     s32 th2;
     u8 *s;
     s32 c;
@@ -247,27 +247,27 @@ u8 *text_buildPlain(s32 x, s32 y, u32 *ot, Character *ch, s32 *w, u8 *pkt) {
     font = g_gameState->gameData->font;
     s = ch->name;
     x0 = x;
-    th = font->unk4 >> 8;
+    th = font->extCode >> 8;
     kanji = g_gameState->gameData->kanjiFont;
     th2 = 0;
     if (kanji != NULL) {
-        th2 = kanji->unk0 >> 8;
+        th2 = kanji->codeBase >> 8;
     }
     while ((c = *s) != TEXT_END) {
         if (kanji != NULL && c >= th2) {
             code = (c << 8) + s[1];
             s++;
-            c = code - kanji->unk0;
-            pkt = text_buildGlyph(x, y, ot, *(kanji->unkC + c), g_textColor, &adv, (SprtWords *)pkt);
+            c = code - kanji->codeBase;
+            pkt = text_buildGlyph(x, y, ot, *(kanji->glyphs + c), g_textColor, &adv, (SprtWords *)pkt);
             x += adv;
         } else if (c >= th) {
             code = (c << 8) + s[1];
             s++;
-            c = code - font->unk4 + font->unk6;
-            pkt = text_buildGlyph(x, y, ot, *(font->unkC + c), g_textColor, &adv, (SprtWords *)pkt);
+            c = code - font->extCode + font->extBase;
+            pkt = text_buildGlyph(x, y, ot, *(font->glyphs + c), g_textColor, &adv, (SprtWords *)pkt);
             x += adv;
         } else {
-            pkt = text_buildGlyph(x, y, ot, *(font->unkC + c), g_textColor, &adv, (SprtWords *)pkt);
+            pkt = text_buildGlyph(x, y, ot, *(font->glyphs + c), g_textColor, &adv, (SprtWords *)pkt);
             x += adv;
         }
         s++;
@@ -758,7 +758,7 @@ u8 *text_append(u8 *dst, u8 *src) {
     ret = dst;
     s = ret;
     p = s;
-    th = g_gameState->gameData->font->unk4 >> 8;
+    th = g_gameState->gameData->font->extCode >> 8;
     while ((c = *p) != 0xFF) {
         p++;
         if (c == 0xF9) {
@@ -771,7 +771,7 @@ u8 *text_append(u8 *dst, u8 *src) {
         }
     }
     dst += p - s;
-    th2 = g_gameState->gameData->font->unk4 >> 8;
+    th2 = g_gameState->gameData->font->extCode >> 8;
     while ((c2 = *src) != 0xFF) {
         *dst++ = *src++;
         if (c2 == 0xF9) {
@@ -827,12 +827,12 @@ TextSize text_measure(u8 *s) {
     s32 h;
     s32 c;
     s32 code;
-    Unk7D4 *font;
-    Unk7D4 *kanji;
+    Font *font;
+    Font *kanji;
     u8 th;
     u8 th2;
     s32 idx;
-    Unk7D4 *tbl;
+    Font *tbl;
 
     memset(&r, 0, 4);
     w = 0;
@@ -844,9 +844,9 @@ TextSize text_measure(u8 *s) {
     if (s == NULL) {
         return r;
     }
-    th = font->unk4 >> 8;
+    th = font->extCode >> 8;
     if (kanji != NULL) {
-        th2 = kanji->unk0 >> 8;
+        th2 = kanji->codeBase >> 8;
     }
     while ((c = *s) != TEXT_END) {
         if (c == TEXT_ESC) {
@@ -917,16 +917,16 @@ TextSize text_measure(u8 *s) {
             w = 0;
         } else if (kanji != NULL && c >= th2) {
             code = (c << 8) + s[1];
-            c = code - kanji->unk0;
+            c = code - kanji->codeBase;
             s++;
-            w += 1 + (*(kanji->unkC + c) >> 28);
+            w += 1 + (*(kanji->glyphs + c) >> 28);
         } else if (c < th) {
-            w += 1 + (*(font->unkC + c) >> 28);
+            w += 1 + (*(font->glyphs + c) >> 28);
         } else {
             code = (c << 8) + s[1];
-            c = code - font->unk4 + font->unk6;
+            c = code - font->extCode + font->extBase;
             s++;
-            w += 1 + (*(font->unkC + c) >> 28);
+            w += 1 + (*(font->glyphs + c) >> 28);
         }
         s++;
     }
@@ -1154,7 +1154,7 @@ void text_formatInt(s32 v, u8 *buf, s32 ascii) {
 
 s32 text_getLength(u8 *s) {
     u8 *start = s;
-    u8 lim = g_gameState->gameData->font->unk4 >> 8;
+    u8 lim = g_gameState->gameData->font->extCode >> 8;
     s32 c;
 
     while ((c = *s) != TEXT_END) {
@@ -1173,7 +1173,7 @@ s32 text_getLength(u8 *s) {
 
 u8 *text_copy(u8 *dst, u8 *src) {
     u8 *start = dst;
-    u8 lim = g_gameState->gameData->font->unk4 >> 8;
+    u8 lim = g_gameState->gameData->font->extCode >> 8;
     s32 c;
 
     while ((c = *src) != TEXT_END) {
