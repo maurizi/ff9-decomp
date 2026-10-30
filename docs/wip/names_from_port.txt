@@ -5471,3 +5471,4 @@ D_800FE500 g_btlbgJitterBase2  # [code] btlbg_draw, background scene 7, group 2:
 # FIELDS include/ff9.h Unk80073C40 (type renamed DbList, g_dbList): unk2=count,unk4=dbs [code] chr_calcEquipStats/btl_initEquipElements (g_equipStatBonus); db_register/db_unregister (g_dbList); evt_allocObject / func_8004B2F4; text_buildDpad
 # FIELDS include/ff9.h EvtAllocNode: unk0=start,unk4=end,unk8=next [code] chr_calcEquipStats/btl_initEquipElements (g_equipStatBonus); db_register/db_unregister (g_dbList); evt_allocObject / func_8004B2F4; text_buildDpad
 # FIELDS include/ff9.h Unk8006BC0C: unk0=x,unk1=y,unk2=sprite [code] chr_calcEquipStats/btl_initEquipElements (g_equipStatBonus); db_register/db_unregister (g_dbList); evt_allocObject / func_8004B2F4; text_buildDpad
+# MERGED include/ff9.h Unk800219D8 away: preload_setVramRect takes a PreloadEntry (earlier), evt_setObjectProp takes the EvtObject (prop 2 sets pos.rotY)

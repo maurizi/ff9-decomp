@@ -3857,7 +3857,7 @@ s32 evt_getObjectProp(EvtObject *o, s32 prop) {
     return r;
 }
 
-void evt_setObjectProp(Unk800219D8 *arg0, s32 arg1, s32 arg2) {
+void evt_setObjectProp(EvtObject *arg0, s32 arg1, s32 arg2) {
     s32 i;
     struct BtlUnit *(*fn)(u16);
     struct BtlUnit *r;
@@ -3865,7 +3865,7 @@ void evt_setObjectProp(Unk800219D8 *arg0, s32 arg1, s32 arg2) {
     if (arg0 != NULL) {
         i = 0;
         if (arg1 == 2) {
-            arg0->unk22 = arg2 * 16;
+            arg0->pos.rotY = arg2 * 16;
             return;
         }
         for (; i < 8; i++) {
