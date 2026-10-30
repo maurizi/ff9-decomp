@@ -540,7 +540,7 @@ s32 btl_reloadPartyStep(s32 arg0) {
             e->unkC->frame = 0;
             m = u->weaponModel;
             save = m->parentBone;
-            id2 = ((Unk8006E0E8 *)u->weapon)->unk2 | 0x20000;
+            id2 = ((Unk8006E0E8 *)u->weapon)->modelId | 0x20000;
             m->header = (BtlUnit9C8 *)btl_getWeaponModelHeader(i);
             btl_getWeaponTexInfo(id2, i, &pa, &pb, &pc);
             btl_applyModelTextures(m, (s16 *)pa, (s16 *)pb);
@@ -865,7 +865,7 @@ loop:
             q = &arg1->unk10.h[3];
             do {
                 if (*c != NULL) {
-                    *q = g_weaponTable[(*c)->equip[0]].unk2;
+                    *q = g_weaponTable[(*c)->equip[0]].modelId;
                 }
                 c--;
                 q--;
@@ -2012,7 +2012,7 @@ s32 func_800AE4FC(s32 arg0) {
             } while (0);
         } while (0);
     }
-    return ((FileEntry16 *)file_find(8, g_weaponTable[c->equip[0]].unk2))->unk2 | 0x90000;
+    return ((FileEntry16 *)file_find(8, g_weaponTable[c->equip[0]].modelId))->unk2 | 0x90000;
 }
 
 s32 btl_getSoundFileSectors(s32 arg0, s32 *arg1) {

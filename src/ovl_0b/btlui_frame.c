@@ -19,10 +19,10 @@ void btlui_submitOt(void) {
     addPrim(&g_ot[0x17], &D_80105100[g_btluiBuf]);
     addPrim(&g_ot[1], &g_btluiSavedEnv[g_btluiBuf]);
     p = (Unk80104E68 *)&g_btluiState;
-    if (p->unk10 == 0) {
+    if (p->drawing == 0) {
         s32 r = BreakDraw();
         if (r == -1) {
-            p->unk24++;
+            p->breakMisses++;
         } else {
             while (IsIdleGPU(1) != 0) {
             }

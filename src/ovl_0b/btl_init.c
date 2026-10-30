@@ -292,7 +292,7 @@ void btl_initWeapon(Character *arg0, BtlUnit *arg1) {
     s32 *c;
     s32 id;
     arg1->weapon = (u8 *)&g_weaponTable[arg0->equip[0]];
-    id = ((Unk8006E0E8 *)arg1->weapon)->unk2 | 0x20000;
+    id = ((Unk8006E0E8 *)arg1->weapon)->modelId | 0x20000;
     arg1->weaponModel->header = (BtlUnit9C8 *)btl_findWeaponModel(id, (u8)arg1->flags >> 5);
     btl_getWeaponTexInfo(id, (u8)arg1->flags >> 5, &a, &b, &c);
     btl_applyModelTextures(arg1->weaponModel, (s16 *)a, (s16 *)b);

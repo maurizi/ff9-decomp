@@ -1931,7 +1931,7 @@ void btl_calcCmd(BtlUnit *caster, BtlUnit *target, BtlCmd *cmd, s32 type) {
                 RAND_REFILL2();
                 i = caster->strength;
                 c.multiplier = i + RAND16() % (((caster->level + i) >> 3) + 1);
-                c.power = g_weaponTable[cmd->subNo].unk5 * 2;
+                c.power = g_weaponTable[cmd->subNo].attack * 2;
                 c.defense = target->defense;
                 if (caster->support[0] & 0x10000000) {
                     c.multiplier = c.multiplier * 3 >> 1;

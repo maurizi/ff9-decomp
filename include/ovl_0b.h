@@ -240,8 +240,8 @@ s32 func_800E84F0(s32);
 
 typedef struct {
     u8 pad0[7];
-    u8 unk7; /* count */
-    s32 unk8; /* index into g_btlCmdAbilities */
+    u8 count; /* count */
+    s32 first; /* index into g_btlCmdAbilities */
 } Unk800FD6E0;
 extern Unk800FD6E0 D_800FD6E0;
 extern u8 D_800F8D84[]; /* ability ids */
@@ -254,7 +254,7 @@ extern u8 D_800F8D84[]; /* ability ids */
 void math_rotMatrixZYX_gte(void *, void *); /* rotation (SVECTOR) -> bone matrix */
 typedef struct {
     u8 unk0;
-    u8 unk1; /* ap needed */
+    u8 apNeeded; /* ap needed */
 } Unk8006CB88;
 extern Unk8006CB88 D_8006CB88[]; /* abilities */
 
@@ -769,17 +769,17 @@ extern Unk800F78A4 *g_btlfxEnv;
 extern s16 g_btlfxRsqrtTable[];
 
 typedef struct {
-    s32 unk0;
-    s8 unk4[4];
-    s8 unk8[4];
+    s32 cmdRow; /* command menu cursor */
+    s8 listCursor[4]; /* per command row: list cursor */
+    s8 listTop[4]; /* per command row: list top row */
 } Unk800EB518;
 
 /* animated hp/mp readout */
 typedef struct {
-    s16 unk0; /* step */
-    s16 unk2; /* shown */
-    s16 unk4; /* target */
-    u8 unk6; /* frames left */
+    s16 step; /* per frame */
+    s16 shown; /* shown */
+    s16 target; /* target */
+    u8 frames; /* frames left */
     u8 pad7;
 } Unk80104F88Gauge;
 
@@ -821,43 +821,43 @@ typedef struct {
 extern Unk80104F88 *g_btlUi;
 
 typedef struct {
-    s16 unk0;          /* count of unk4 */
-    u16 unk2;          /* count of unk80 */
-    UnkPair *unk4[31]; /* inventory entries, item ids >= 0xE0 */
-    UnkPair *unk80[0x58];
-    u8 unk1E0[0x100];
+    s16 itemCount; /* count of items */
+    u16 throwCount; /* count of throwItems */
+    UnkPair *items[31]; /* inventory slots with item ids >= 0xE0 (btlui_buildItemList) */
+    UnkPair *throwItems[0x58]; /* inventory slots of throwable weapons (g_weaponTable flag 4, btlui_buildThrowList) */
+    u8 reserved[0x100]; /* per item id: count reserved by queued commands (btlui_reserveItem) */
 } Unk80104FA8;
 extern Unk80104FA8 *g_btluiItems;
 
 /* battle menu / frame state */
 typedef struct {
-    u8 unk0;
-    u8 unk1;
-    u8 unk2;
+    u8 enabled; /* UI running (btlui_applyEnable, btlui_enable(0) clears it) */
+    u8 inVsync; /* inside btlui_vsync */
+    u8 atbOn; /* ATB and menus run (btlui_setAtbEnabled, btl_isAtbRunning) */
     s8 unk3;
-    u8 unk4;
+    u8 multiTarget; /* two or more units are targeted (func_800EA378) */
     u8 unk5;
-    u8 unk6;
+    u8 started; /* btlui_init ran */
     u8 pad7;
-    u8 unk8;
+    u8 hideWindows; /* Select (pad bit 19) held: btlui_drawWindows skips the windows */
     u8 unk9;
     u8 padA;
-    s8 unkB;
-    u8 unkC;
-    u8 unkD;
+    s8 pauseReq; /* pause requested (Start, btlui_readPad; btlui_isPauseRequested) */
+    u8 skipFrames; /* frames the vsync callback skips drawing (func_800EA34C sets 2) */
+    u8 prevAtbOn; /* atbOn at the start of the frame (btlui_frameUpdate) */
     u8 unkE;
-    u8 unkF;
-    u8 unk10;
+    u8 frameReady; /* set by btlui_waitFrame: the next vsync runs btlui_frameUpdate */
+    u8 drawing; /* inside DrawOTag/DrawOTagEnv (btlui_drawOTag): the vsync draw doesn't break in */
     u8 pad11;
-    u8 unk12;
-    u8 unk13;
+    u8 enableReq; /* btlui_enable(1): btlui_applyEnable enables the UI next frame */
+    u8 escapeFrames; /* frames L1+R1 held (btlui_pollEscape: btl_tryEscape(1) every 0x3E) */
     s8 unk14;
-    u8 unk15;
+    u8 port; /* controller port of the last command menu (btlui_onCmdMenuOpened, pad_updateRepeat) */
     u8 pad16[0x18 - 0x16];
-    s32 unk18;
-    s32 unk1C;
+    s32 vsyncTick; /* btlui_vsync calls (blinks the port icon, btlui_drawPortIcons) */
+    s32 vsyncCount; /* vsyncs since btlui_resetVsyncCount (btlui_waitFrame) */
     s32 unk20;
-    s32 unk24;
+    s32 breakMisses; /* BreakDraw found nothing to break (btlui_frame) */
 } Unk80104E68;
 extern volatile Unk80104E68 g_btluiState;
 
@@ -1021,15 +1021,15 @@ extern s32 g_btlbgScrollCount;
 extern s16 D_80100DCC;
 extern s32 *g_btlfxCommonTable; /* offset table, entries relative to its start */
 typedef struct {
-    s16 unk0;          /* count of unk14 */
-    s16 unk2;          /* count of unk4 */
-    struct BtlUnit *unk4[4]; /* player units */
-    s16 unk14[8][2];   /* screen positions */
+    s16 count; /* count of pos */
+    s16 partyCount; /* count of party */
+    struct BtlUnit *party[4]; /* party units among them */
+    s16 pos[8][2]; /* cursor positions of the targetable units on screen (btlui_collectCursorPositions) */
 } Unk80105020;
 extern Unk80105020 g_btluiCursors;
 typedef struct {
-    u8 unk0;
-    u8 unk1;
+    u8 open; /* battle list window open (btlui_openListWindow) */
+    u8 kind; /* D_800F8F04 content handler */
 } Unk80105058;
 extern Unk80105058 D_80105058;
 extern s32 D_80105274;
@@ -2138,13 +2138,13 @@ extern void (*g_btluiMenuUpdate[])(void);
 
 
 typedef struct {
-    u8 unk0;
-    u8 unk1;
+    u8 open; /* help window shown (btlui_toggleHelp) */
+    u8 opening; /* sliding in (unkC frames) */
     u8 unk2;
-    u8 unk3;
-    s32 unk4;
+    u8 closeReq; /* btlui_checkHelpClose closes it next frame */
+    s32 text; /* help text (btlui_updateHelpText) */
     u8 pad8[0xC - 8];
-    s32 unkC;
+    s32 frame; /* frames since it opened (slide-in: 7) */
 } Unk80104F90;
 extern volatile Unk80104F90 g_btluiHelp;
 extern u8 D_80104E75;
@@ -2223,9 +2223,9 @@ extern void (*g_btluiMenuInput[])(void);
 
 typedef struct Unk80104FD4 {
     u8 pad0[6];
-    u8 unk6;
-    u8 unk7; /* count */
-    s32 unk8;
+    u8 kind; /* Unk800FD56C.kind */
+    u8 count; /* count */
+    s32 first;
 } Unk80104FD4;
 extern s32 (*D_800F8E58[])(void);
 extern void (*D_800F8E48[])(s32, s32, s32, MenuView *);
@@ -2264,11 +2264,11 @@ extern u8 D_800F8EE4[];
 extern void (*D_800F8F04[])(Window *);
 
 typedef struct {
-    s32 unk0;
-    s32 unk4; /* next free */
-    s32 unk8;
-    s32 unkC; /* used */
-    s32 unk10; /* free */
+    s32 base; /* start (GameData.unk7E0) */
+    s32 cursor; /* next free byte (btlui_alloc) */
+    s32 size; /* 0x8000 */
+    s32 used; /* used */
+    s32 free; /* free */
 } Unk80105060;
 extern volatile Unk80105060 g_btluiHeap;
 
@@ -2381,11 +2381,11 @@ void win_close(Window *);
 Window *win_get(s32);
 ItemSlot *item_findSlot(s32);
 typedef struct {
-    u8 unk0;
+    u8 flags; /* 4: throwable (Throw list) */
     u8 pad1;
-    u16 unk2;
+    u16 modelId; /* weapon model (| 0x20000: db key; btl_initWeapon) */
     u8 pad4;
-    u8 unk5; /* attack */
+    u8 attack; /* attack power (Throw: power x2) */
     u8 pad6[0xC - 6];
 } Unk8006E0E8; /* 0xC */
 extern Unk8006E0E8 g_weaponTable[];
@@ -2943,12 +2943,12 @@ void btlfx_aimAngles(s16 *, s16 *, s16 *);
 void btlfx_pointAhead(s16 *, s16 *, s32, s16 *);
 
 typedef struct {
-    u16 unk0; /* text offset into g_btlCmdNames */
-    u16 unk2; /* text offset into g_btlCmdHelp */
+    u16 nameOfs; /* text offset into g_btlCmdNames */
+    u16 helpOfs; /* text offset into g_btlCmdHelp */
     u8 pad4[6 - 4];
-    u8 unk6;
-    u8 unk7;
-    s32 unk8;
+    u8 kind; /* confirm handler (D_800F8DF0): 1 ability list, 2/3 item lists, ... */
+    u8 count; /* abilities of the command */
+    s32 first; /* first ability: index into g_btlCmdAbilities (single-ability commands: btl_setCmd's ability) */
 } Unk800FD56C; /* 0xC */
 extern Unk800FD56C g_btlCmdTable[];
 extern u8 g_btlCmdHelp[];
@@ -3593,7 +3593,7 @@ typedef struct {
 
 typedef struct {
     u8 pad0[8];
-    s32 unk8;
+    s32 ability; /* ability id (Battle.abilities index) */
 } Unk800EDE6C;
 
 typedef struct {
@@ -3628,12 +3628,12 @@ s32 btlfx_getSplitVertexSize(BtlUnit9C *, s32);
 
 /* argument block of btlui_openList */
 typedef struct {
-    s16 unk0;
-    u8 unk2;
+    s16 cmdNo;
+    u8 trance;
     u8 pad3;
-    s32 unk4;
-    s32 unk8;
-    s32 unkC;
+    s32 cmd; /* command table entry */
+    s32 label; /* list window title label */
+    s32 label2; /* second title label */
 } Unk800EE37C;
 void btlui_openList(Unk800EE37C *);
 extern RECT D_800F8E30;
