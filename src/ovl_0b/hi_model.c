@@ -60,11 +60,11 @@ u16 Hi_RegisterTexEffModel(BtlUnit9C8 *arg0, s16 arg1, s16 arg2, s32 arg3, s32 a
     p->sliceY = 0;
     p->model->header = arg0;
     p->model->motion = NULL;
-    p->tex.unk0[0][0] = arg1;
-    p->tex.unk0[0][1] = arg2;
+    p->tex.pages[0][0] = arg1;
+    p->tex.pages[0][1] = arg2;
     v[0] = arg3;
     v[1] = arg4;
-    btl_applyModelTextures(p->model, p->tex.unk0[0], v);
+    btl_applyModelTextures(p->model, p->tex.pages[0], v);
     return p->id;
 }
 
@@ -86,7 +86,7 @@ u16 Hi_RegisterTexListModel(BtlUnit9C8 *arg0, BtlTexInfo *arg1, s16 *arg2, s32 a
     p->model->header = arg0;
     p->model->motion = NULL;
     p->tex = *arg1;
-    btl_applyModelTextures(p->model, p->tex.unk0[0], arg2);
+    btl_applyModelTextures(p->model, p->tex.pages[0], arg2);
     return p->id;
 }
 
@@ -410,13 +410,13 @@ void btlfx_initEffModels(BtlModel *arg0, s32 arg1) {
         p->id = i;
         p->model = NULL;
         for (j = 0; j < 6; j++) {
-            p->tex.unk0[j][0] = 0;
-            p->tex.unk0[j][1] = 0;
+            p->tex.pages[j][0] = 0;
+            p->tex.pages[j][1] = 0;
         }
     }
     p = g_btlfxEffModels;
     for (i = 0; i < arg1; i++, p++, arg0++) {
-        p->model = &arg0->unk0;
+        p->model = &arg0->model;
     }
 }
 
@@ -454,7 +454,7 @@ void btlfx_initSummonModels(BtlModel *arg0, s32 arg1) {
     }
     p = g_btlfxSummonModels;
     for (i = 0; i < arg1; i++, p++, arg0++) {
-        p->model = &arg0->unk0;
+        p->model = &arg0->model;
     }
 }
 

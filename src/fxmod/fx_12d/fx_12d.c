@@ -80,10 +80,10 @@ s32 fx_12d_op82(s32 mode, Fx12dWork82 *work, Unk800F78A4 *env, Unk80100C78Entry 
         work->unk8.vz += 0x304;
         ex->btlfx_getCasterTexInfo(&D_801E7CC0, &D_801E7CF0, 0x15E);
         for (i = 0; i < 6; i++) {
-            D_801E7CD8[5 - i][0] = D_801E7CC0.unk0[i][0];
-            D_801E7CD8[5 - i][1] = D_801E7CC0.unk0[i][1];
-            D_801E7D08[5 - i][0] = D_801E7CF0.unk0[i][0];
-            D_801E7D08[5 - i][1] = D_801E7CF0.unk0[i][1];
+            D_801E7CD8[5 - i][0] = D_801E7CC0.pages[i][0];
+            D_801E7CD8[5 - i][1] = D_801E7CC0.pages[i][1];
+            D_801E7D08[5 - i][0] = D_801E7CF0.pages[i][0];
+            D_801E7D08[5 - i][1] = D_801E7CF0.pages[i][1];
         }
         /* passes three arguments; the fourth parameter keeps whatever is in $a3 */
         work->unk34 = ((s32(*)())ex->Hi_RegisterTexListModel)(ex->btlfx_getFileData(entry->file, 0xE),

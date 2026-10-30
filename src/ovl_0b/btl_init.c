@@ -140,7 +140,7 @@ void btl_initPartyUnit(Character *c, BtlUnit *u, u16 slot, u16 n) {
         }
         u->atb = ((*g_randPtr << 8) | *g_randPtr++) % u->max->maxAtb;
     }
-    u->weaponModel = &g_gameState->gameData->unk8E4.battle->weaponModels[n].unk0;
+    u->weaponModel = &g_gameState->gameData->unk8E4.battle->weaponModels[n].model;
     btl_loadPartyMotions(u, (c->unk34.w >> 4) & 0x1F, n);
     btl_initWeapon(c, u);
     u->defense = c->defense;

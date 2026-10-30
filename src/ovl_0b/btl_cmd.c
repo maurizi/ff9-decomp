@@ -1366,9 +1366,9 @@ s32 btl_payMpCost(BtlCmd *arg0) {
 }
 
 void btl_linkCmd(LinkNode *arg0, LinkNode **arg1) {
-    arg0->unk0 = *arg1;
+    arg0->next = *arg1;
     *arg1 = arg0;
-    arg0->unk10 = (arg0->unk10 & ~0xC) | 4;
+    arg0->flags = (arg0->flags & ~0xC) | 4;
 }
 
 void btl_releaseItem(BtlCmd *arg0) {

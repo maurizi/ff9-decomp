@@ -30,7 +30,7 @@ s32 func_801E77CC(s32 curve, s32 n, s32 t, s32 from, s32 to) {
 /* Hi_RegisterTexListModel called with three arguments (a3 is left as it is) */
 #define REGTEX(id) \
     ((s32(*)(BtlUnit9C8 *, BtlTexInfo *, s16 *))ex->Hi_RegisterTexListModel)( \
-        (BtlUnit9C8 *)ex->btlfx_getFileData(entry->file, id), (BtlTexInfo *)v, ((BtlTexInfo *)w)->unk0[0])
+        (BtlUnit9C8 *)ex->btlfx_getFileData(entry->file, id), (BtlTexInfo *)v, ((BtlTexInfo *)w)->pages[0])
 
 #define SET_ROT(p, r)              \
     if ((p) != NULL) {             \
@@ -85,27 +85,27 @@ s32 fx_1b3_op80(s32 mode, Fx1b3Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
         env->camera->points[1].vz = 0;
         ex->btlfx_getUnitBodyPos(0x10, 0, (s16 *)&work->unk100);
         ex->btlfx_getUnitPos(0x10, (s16 *)&work->unk108);
-        ((BtlTexInfo *)v)->unk0[0][0] = 0x8A;
-        ((BtlTexInfo *)v)->unk0[1][0] = 0x8C;
-        ((BtlTexInfo *)v)->unk0[0][1] = 0x3800;
-        ((BtlTexInfo *)v)->unk0[1][1] = 0x3840;
-        ((BtlTexInfo *)w)->unk0[0][0] = 0;
-        ((BtlTexInfo *)w)->unk0[1][0] = 0;
-        ((BtlTexInfo *)w)->unk0[0][1] = 0;
-        ((BtlTexInfo *)w)->unk0[1][1] = 0;
+        ((BtlTexInfo *)v)->pages[0][0] = 0x8A;
+        ((BtlTexInfo *)v)->pages[1][0] = 0x8C;
+        ((BtlTexInfo *)v)->pages[0][1] = 0x3800;
+        ((BtlTexInfo *)v)->pages[1][1] = 0x3840;
+        ((BtlTexInfo *)w)->pages[0][0] = 0;
+        ((BtlTexInfo *)w)->pages[1][0] = 0;
+        ((BtlTexInfo *)w)->pages[0][1] = 0;
+        ((BtlTexInfo *)w)->pages[1][1] = 0;
         work->unk158 = REGTEX(0x81);
-        ((BtlTexInfo *)v)->unk0[0][0] = 0x8E;
-        ((BtlTexInfo *)v)->unk0[1][0] = 0x8F;
-        ((BtlTexInfo *)v)->unk0[0][1] = 0x3900;
-        ((BtlTexInfo *)v)->unk0[1][1] = 0x3980;
-        ((BtlTexInfo *)v)->unk0[2][1] = 0x39C0;
-        ((BtlTexInfo *)w)->unk0[2][0] = 0x30;
-        ((BtlTexInfo *)v)->unk0[2][0] = 0x8C;
-        ((BtlTexInfo *)w)->unk0[0][0] = 0;
-        ((BtlTexInfo *)w)->unk0[1][0] = 0;
-        ((BtlTexInfo *)w)->unk0[0][1] = 0;
-        ((BtlTexInfo *)w)->unk0[1][1] = 0;
-        ((BtlTexInfo *)w)->unk0[2][1] = 0x80;
+        ((BtlTexInfo *)v)->pages[0][0] = 0x8E;
+        ((BtlTexInfo *)v)->pages[1][0] = 0x8F;
+        ((BtlTexInfo *)v)->pages[0][1] = 0x3900;
+        ((BtlTexInfo *)v)->pages[1][1] = 0x3980;
+        ((BtlTexInfo *)v)->pages[2][1] = 0x39C0;
+        ((BtlTexInfo *)w)->pages[2][0] = 0x30;
+        ((BtlTexInfo *)v)->pages[2][0] = 0x8C;
+        ((BtlTexInfo *)w)->pages[0][0] = 0;
+        ((BtlTexInfo *)w)->pages[1][0] = 0;
+        ((BtlTexInfo *)w)->pages[0][1] = 0;
+        ((BtlTexInfo *)w)->pages[1][1] = 0;
+        ((BtlTexInfo *)w)->pages[2][1] = 0x80;
         work->unk16C.vx = 0;
         work->unk16C.vy = 0;
         work->unk16C.vz = 0;
@@ -137,10 +137,10 @@ s32 fx_1b3_op80(s32 mode, Fx1b3Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
         D_801EB0F4[7].unk4 = 0x64;
         D_801EB0F4[6].unk4 = 0x64;
         ex->btlfx_getCasterTexInfo(&D_801EB084, &D_801EB0A4, 0x2A0);
-        ((BtlTexInfo *)v)->unk0[0][0] = D_801EB084.unk0[5][0];
-        ((BtlTexInfo *)v)->unk0[0][1] = D_801EB084.unk0[5][1];
-        ((BtlTexInfo *)w)->unk0[0][0] = D_801EB0A4.unk0[5][0];
-        ((BtlTexInfo *)w)->unk0[0][1] = D_801EB0A4.unk0[5][1];
+        ((BtlTexInfo *)v)->pages[0][0] = D_801EB084.pages[5][0];
+        ((BtlTexInfo *)v)->pages[0][1] = D_801EB084.pages[5][1];
+        ((BtlTexInfo *)w)->pages[0][0] = D_801EB0A4.pages[5][0];
+        ((BtlTexInfo *)w)->pages[0][1] = D_801EB0A4.pages[5][1];
         D_801EB4A4[0].unk0 = REGTEX(0x91);
         D_801EB4A4[1].unk0 = REGTEX(0x8D);
         D_801EB4A4[1].unk4 = 0x80;
@@ -154,10 +154,10 @@ s32 fx_1b3_op80(s32 mode, Fx1b3Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
         work->unk1BC.vx = 0x1000;
         work->unk1BC.vy = 0x1000;
         work->unk1BC.vz = 0x1000;
-        ((BtlTexInfo *)v)->unk0[0][0] = D_801EB084.unk0[0][0];
-        ((BtlTexInfo *)v)->unk0[0][1] = D_801EB084.unk0[0][1];
-        ((BtlTexInfo *)w)->unk0[0][0] = D_801EB0A4.unk0[0][0];
-        ((BtlTexInfo *)w)->unk0[0][1] = D_801EB0A4.unk0[0][1];
+        ((BtlTexInfo *)v)->pages[0][0] = D_801EB084.pages[0][0];
+        ((BtlTexInfo *)v)->pages[0][1] = D_801EB084.pages[0][1];
+        ((BtlTexInfo *)w)->pages[0][0] = D_801EB0A4.pages[0][0];
+        ((BtlTexInfo *)w)->pages[0][1] = D_801EB0A4.pages[0][1];
         D_801EB574.unk0 = REGTEX(0x8B);
         D_801EB574.unk4 = 0x80;
         work->unk1D4.vx = 0;
@@ -169,14 +169,14 @@ s32 fx_1b3_op80(s32 mode, Fx1b3Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
         work->unk1E4.vx = 0x1000;
         work->unk1E4.vy = 0x1000;
         work->unk1E4.vz = 0x1000;
-        ((BtlTexInfo *)v)->unk0[0][0] = D_801EB084.unk0[3][0];
-        ((BtlTexInfo *)v)->unk0[0][1] = D_801EB084.unk0[3][1];
-        ((BtlTexInfo *)w)->unk0[0][0] = D_801EB0A4.unk0[3][0];
-        ((BtlTexInfo *)w)->unk0[0][1] = D_801EB0A4.unk0[3][1];
-        ((BtlTexInfo *)v)->unk0[1][0] = D_801EB084.unk0[1][0];
-        ((BtlTexInfo *)v)->unk0[1][1] = D_801EB084.unk0[1][1];
-        ((BtlTexInfo *)w)->unk0[1][0] = D_801EB0A4.unk0[1][0];
-        ((BtlTexInfo *)w)->unk0[1][1] = D_801EB0A4.unk0[1][1];
+        ((BtlTexInfo *)v)->pages[0][0] = D_801EB084.pages[3][0];
+        ((BtlTexInfo *)v)->pages[0][1] = D_801EB084.pages[3][1];
+        ((BtlTexInfo *)w)->pages[0][0] = D_801EB0A4.pages[3][0];
+        ((BtlTexInfo *)w)->pages[0][1] = D_801EB0A4.pages[3][1];
+        ((BtlTexInfo *)v)->pages[1][0] = D_801EB084.pages[1][0];
+        ((BtlTexInfo *)v)->pages[1][1] = D_801EB084.pages[1][1];
+        ((BtlTexInfo *)w)->pages[1][0] = D_801EB0A4.pages[1][0];
+        ((BtlTexInfo *)w)->pages[1][1] = D_801EB0A4.pages[1][1];
         D_801EB5E4[0].unk0 = REGTEX(0x8E);
         D_801EB5E4[1].unk0 = REGTEX(0x8C);
         work->unk1FC.vx = 0;
@@ -188,18 +188,18 @@ s32 fx_1b3_op80(s32 mode, Fx1b3Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
         work->unk22C.vx = 0x1000;
         work->unk22C.vy = 0x1000;
         work->unk22C.vz = 0x1000;
-        ((BtlTexInfo *)v)->unk0[0][0] = D_801EB084.unk0[3][0];
-        ((BtlTexInfo *)v)->unk0[0][1] = D_801EB084.unk0[3][1];
-        ((BtlTexInfo *)w)->unk0[0][0] = D_801EB0A4.unk0[3][0];
-        ((BtlTexInfo *)w)->unk0[0][1] = D_801EB0A4.unk0[3][1];
-        ((BtlTexInfo *)v)->unk0[1][0] = D_801EB084.unk0[2][0];
-        ((BtlTexInfo *)v)->unk0[1][1] = D_801EB084.unk0[2][1];
-        ((BtlTexInfo *)w)->unk0[1][0] = D_801EB0A4.unk0[2][0];
-        ((BtlTexInfo *)w)->unk0[1][1] = D_801EB0A4.unk0[2][1];
-        ((BtlTexInfo *)v)->unk0[2][0] = D_801EB084.unk0[0][0];
-        ((BtlTexInfo *)v)->unk0[2][1] = D_801EB084.unk0[0][1];
-        ((BtlTexInfo *)w)->unk0[2][0] = D_801EB0A4.unk0[0][0];
-        ((BtlTexInfo *)w)->unk0[2][1] = D_801EB0A4.unk0[0][1];
+        ((BtlTexInfo *)v)->pages[0][0] = D_801EB084.pages[3][0];
+        ((BtlTexInfo *)v)->pages[0][1] = D_801EB084.pages[3][1];
+        ((BtlTexInfo *)w)->pages[0][0] = D_801EB0A4.pages[3][0];
+        ((BtlTexInfo *)w)->pages[0][1] = D_801EB0A4.pages[3][1];
+        ((BtlTexInfo *)v)->pages[1][0] = D_801EB084.pages[2][0];
+        ((BtlTexInfo *)v)->pages[1][1] = D_801EB084.pages[2][1];
+        ((BtlTexInfo *)w)->pages[1][0] = D_801EB0A4.pages[2][0];
+        ((BtlTexInfo *)w)->pages[1][1] = D_801EB0A4.pages[2][1];
+        ((BtlTexInfo *)v)->pages[2][0] = D_801EB084.pages[0][0];
+        ((BtlTexInfo *)v)->pages[2][1] = D_801EB084.pages[0][1];
+        ((BtlTexInfo *)w)->pages[2][0] = D_801EB0A4.pages[0][0];
+        ((BtlTexInfo *)w)->pages[2][1] = D_801EB0A4.pages[0][1];
         D_801EB6B4[0].unk0 = REGTEX(0x88);
         D_801EB6B4[1].unk0 = REGTEX(0x82);
         work->unk23C.vx = 0;
@@ -211,14 +211,14 @@ s32 fx_1b3_op80(s32 mode, Fx1b3Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
         work->unk244.vx = work->unk108.vx;
         work->unk244.vy = work->unk108.vy;
         work->unk244.vz = work->unk108.vz;
-        ((BtlTexInfo *)v)->unk0[0][0] = D_801EB084.unk0[4][0];
-        ((BtlTexInfo *)v)->unk0[0][1] = D_801EB084.unk0[4][1];
-        ((BtlTexInfo *)w)->unk0[0][0] = D_801EB0A4.unk0[4][0];
-        ((BtlTexInfo *)w)->unk0[0][1] = D_801EB0A4.unk0[4][1];
-        ((BtlTexInfo *)v)->unk0[1][0] = D_801EB084.unk0[0][0];
-        ((BtlTexInfo *)v)->unk0[1][1] = D_801EB084.unk0[0][1];
-        ((BtlTexInfo *)w)->unk0[1][0] = D_801EB0A4.unk0[0][0];
-        ((BtlTexInfo *)w)->unk0[1][1] = D_801EB0A4.unk0[0][1];
+        ((BtlTexInfo *)v)->pages[0][0] = D_801EB084.pages[4][0];
+        ((BtlTexInfo *)v)->pages[0][1] = D_801EB084.pages[4][1];
+        ((BtlTexInfo *)w)->pages[0][0] = D_801EB0A4.pages[4][0];
+        ((BtlTexInfo *)w)->pages[0][1] = D_801EB0A4.pages[4][1];
+        ((BtlTexInfo *)v)->pages[1][0] = D_801EB084.pages[0][0];
+        ((BtlTexInfo *)v)->pages[1][1] = D_801EB084.pages[0][1];
+        ((BtlTexInfo *)w)->pages[1][0] = D_801EB0A4.pages[0][0];
+        ((BtlTexInfo *)w)->pages[1][1] = D_801EB0A4.pages[0][1];
         D_801EB6B4[2].unk0 = REGTEX(0x80);
     } else {
         frame = entry->frame;

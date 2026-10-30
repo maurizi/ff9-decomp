@@ -207,7 +207,7 @@ typedef struct {
             u8 pad0[2];
             u8 unk2; /* kind */
         } b;
-    } unk0;
+    } data;
     u8 pad4[0x10 - 4];
 } BtlAnimEvt; /* 0x10 */
 
@@ -1340,7 +1340,7 @@ typedef struct {
 } Battle132C;
 
 typedef struct {
-    BtlUnit9C unk0;
+    BtlUnit9C model;
     u8 pad7C[0x98 - sizeof(BtlUnit9C)];
 } BtlModel; /* 0x98 */
 
@@ -1508,9 +1508,9 @@ extern s16 D_80100D8C;
 extern u16 D_800F7460[];
 
 typedef struct LinkNode {
-    struct LinkNode *unk0;
+    struct LinkNode *next;
     u8 pad4[0x10 - 4];
-    u32 unk10;
+    u32 flags; /* BtlCmd.info.w */
 } LinkNode;
 void btl_linkCmd(LinkNode *, LinkNode **);
 Unk16D8 *evt_getBattleObjects(void);
@@ -1706,7 +1706,7 @@ extern Unk80100C78 g_btlfxTasks;
 extern Heap D_800FF470; /* 0x1800 bytes */
 
 typedef struct {
-    s16 unk0[6][2];
+    s16 pages[6][2]; /* tpage/clut pairs (btl_applyModelTextures) */
 } BtlTexInfo; /* 0x18, passed to btl_applyModelTextures */
 
 typedef struct {
@@ -2866,32 +2866,32 @@ typedef struct {
 
 /* btl_swapPartyModelStep: model texture table (db_lookup section 2, tag 0x12) */
 typedef struct {
-    u16 unk0; /* model id */
+    u16 modelId; /* model id */
     u8 pad2[4 - 2];
     union {
         s32 w; /* low 24 bits: offset of the texture lists from this entry */
         u8 b[4]; /* b[3]: texture count */
-    } unk4;
+    } tex;
     u8 pad8[0xC - 8];
 } Unk800ABBC4Ent; /* 0xC */
 
 typedef struct {
     u8 pad0;
-    u8 unk1; /* entry count */
+    u8 count; /* entry count */
     u8 pad2[4 - 2];
-    Unk800ABBC4Ent unk4[1];
+    Unk800ABBC4Ent entries[1];
 } Unk800ABBC4Tbl;
 
 typedef struct {
-    s16 unk0;
-    s16 unk2;
+    s16 tpage; /* tpage */
+    s16 clut; /* clut */
 } Unk800ABBC4Tex;
 
 typedef struct {
-    s16 unk0;
-    s16 unk2;
-    s16 unk4;
-    s16 unk6;
+    s16 x; /* x */
+    s16 y; /* y (CLUT row; becomes h) */
+    s16 w;
+    s16 h;
 } Unk800ABBC4Rect;
 
 u8 cd_readChunks(s32, void *, s32, s32);
@@ -4097,7 +4097,7 @@ typedef union {
 } FileEntryId;
 
 typedef struct {
-    FileEntryId unk0;
+    FileEntryId id;
     s32 unk4;
     s32 unk8;
     s32 unkC;
@@ -4119,32 +4119,32 @@ typedef struct {
 } Unk800AA504;
 
 typedef struct {
-    u16 unk0; /* id */
+    u16 modelId; /* id */
     u8 pad2[4 - 2];
     union {
         s32 w; /* low 24 bits: offset of the texture lists from this entry */
         u8 b[4]; /* b[3]: texture count */
-    } unk4;
+    } tex;
     u8 pad8[0xC - 8];
 } Unk800AA504Ent; /* 0xC */
 
 typedef struct {
     u8 pad0;
-    u8 unk1; /* entry count */
+    u8 count; /* entry count */
     u8 pad2[4 - 2];
-    Unk800AA504Ent unk4[1];
+    Unk800AA504Ent entries[1];
 } Unk800AA504Tbl;
 
 typedef struct {
-    s16 unk0;
-    s16 unk2;
+    s16 tpage; /* tpage */
+    s16 clut; /* clut */
 } Unk800AA504Pos;
 
 typedef struct {
-    s16 unk0;
-    s16 unk2;
-    s16 unk4;
-    s16 unk6;
+    s16 x; /* x */
+    s16 y; /* y (CLUT row; becomes h) */
+    s16 w;
+    s16 h;
 } Unk800AA504Pos8;
 
 s32 btl_loadEnemyModelsStep(s32, s32, Unk800AA504 *);
@@ -4160,8 +4160,8 @@ static inline void btl_loadSoundsStep_collect(s16 *dst, u32 type, u32 kind) {
     u32 w;
 
     do {
-        w = e->unk0.w;
-        if (e->unk0.b.type == type && (w >> 24) == kind) {
+        w = e->id.w;
+        if (e->id.b.type == type && (w >> 24) == kind) {
             w &= 0xFFFF;
             s = q - 1;
             do {

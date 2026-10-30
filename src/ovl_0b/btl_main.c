@@ -737,8 +737,8 @@ loop:
         first = (FileEntryX *)t->unk4;
         e = &first[t->unk2] - 1;
         do {
-            w = e->unk0.w;
-            if (e->unk0.b.type == 2) {
+            w = e->id.w;
+            if (e->id.b.type == 2) {
                 w &= 0xFFFF;
                 s = &ids[cnt] - 1;
                 do {
@@ -790,19 +790,19 @@ loop:
         sp1C = db_lookup((s32)b->work->heap, 2, 0x1B0000, 0);
         dst = arg2->dst;
         tbl = (Unk800AA504Tbl *)db_lookup((s32)b->files->data[2], 2, 0x120000, 0);
-        tf = tbl->unk4;
-        te = &tf[tbl->unk1] - 1;
+        tf = tbl->entries;
+        te = &tf[tbl->count] - 1;
         do {
-            if (te->unk0 == arg2->fileId) {
-                n = te->unk4.b[3];
-                a = (Unk800AA504Pos *)((u8 *)te + (te->unk4.w & 0xFFFFFF));
+            if (te->modelId == arg2->fileId) {
+                n = te->tex.b[3];
+                a = (Unk800AA504Pos *)((u8 *)te + (te->tex.w & 0xFFFFFF));
                 bb = a + n;
                 r = (Unk800AA504Pos8 *)(bb + n);
                 while (n > 0) {
                     n--;
                     x = db_lookup(dst, 2, (n & 0xFFFF) | 0x40000, 0);
-                    h = clut_getX(a[n].unk2);
-                    file_setTimPos(x, h, clut_getY(a[n].unk2), r[n].unk0, r[n].unk2);
+                    h = clut_getX(a[n].clut);
+                    file_setTimPos(x, h, clut_getY(a[n].clut), r[n].x, r[n].y);
                     file_loadTim(x);
                 }
                 break;
@@ -1100,9 +1100,9 @@ s32 btl_uploadModelTextures(Unk800AA958 *arg0, Unk800AA958Req *arg1, s32 arg2, s
     sp18 = db_lookup(arg0->buf, 2, 0x1B0000, 0);
     dst = arg1->dst1;
     tbl = (Unk800AA504Tbl *)db_lookup(sp18, 2, 0x120000, 0);
-    te = tbl->unk4;
-    n = te->unk4.b[3];
-    a = (Unk800AA504Pos *)((u8 *)te + (te->unk4.w & 0xFFFFFF));
+    te = tbl->entries;
+    n = te->tex.b[3];
+    a = (Unk800AA504Pos *)((u8 *)te + (te->tex.w & 0xFFFFFF));
     b = a + n;
     r = (Unk800AA504Pos8 *)(b + n);
     if (n > 0) {
@@ -1112,22 +1112,22 @@ s32 btl_uploadModelTextures(Unk800AA958 *arg0, Unk800AA958Req *arg1, s32 arg2, s
             y = arg2 * 3;
             m = db_lookup(dst, 2, (n & 0xFFFF) | 0x40000, 0);
             if (arg3) {
-                yy = y + 0xE5 + r[n].unk2;
-                h = (r[n].unk2 << 7) + 0x80;
+                yy = y + 0xE5 + r[n].y;
+                h = (r[n].y << 7) + 0x80;
             } else {
                 yy = y + 0xE8;
                 h = 0x1D0;
             }
             file_setTimPos(m, 0x100, yy, x, h);
             file_loadTim(m);
-            a[n].unk0 = getTPage(1, 0, x, h);
-            a[n].unk2 = getClut(0x100, yy);
-            b[n].unk0 = 0;
-            b[n].unk2 = h % 256 - h % 128;
-            r[n].unk4 = x;
-            r[n].unk0 = x;
-            r[n].unk6 = h;
-            r[n].unk2 = h;
+            a[n].tpage = getTPage(1, 0, x, h);
+            a[n].clut = getClut(0x100, yy);
+            b[n].tpage = 0;
+            b[n].clut = h % 256 - h % 128;
+            r[n].w = x;
+            r[n].x = x;
+            r[n].h = h;
+            r[n].y = h;
         } while (n > 0);
     }
     return sp18;
@@ -1423,30 +1423,30 @@ s32 btl_swapPartyModelStep(s32 arg0, s32 arg1) {
         model = db_lookup(st->buf, 2, 0x1B0000, 0);
         img = (s32)g_gameState->gameData->unk8E4.battle->work->loadBuf;
         t = (Unk800ABBC4Tbl *)db_lookup(model, 2, 0x120000, 0);
-        e = t->unk4;
-        for (i = 0; i < t->unk1; i++) {
-            if (e[i].unk0 == (u16)id) {
+        e = t->entries;
+        for (i = 0; i < t->count; i++) {
+            if (e[i].modelId == (u16)id) {
                 e = &e[i];
-                n = e->unk4.b[3];
-                a = (Unk800ABBC4Tex *)((u8 *)e + (e->unk4.w & 0xFFFFFF));
+                n = e->tex.b[3];
+                a = (Unk800ABBC4Tex *)((u8 *)e + (e->tex.w & 0xFFFFFF));
                 b = a + n;
                 r = (Unk800ABBC4Rect *)(b + n);
                 for (j = 0; j < n; j++) {
                     w = db_lookup(img, 2, (j & 0xFFFF) | 0x40000, 0);
-                    s = r[j].unk2 + 0xE5;
+                    s = r[j].y + 0xE5;
                     y = arg0 * 3 + s;
-                    h = (r[j].unk2 << 7) + 0x80;
+                    h = (r[j].y << 7) + 0x80;
                     x = (arg0 << 6) + 0xC0;
                     file_setTimPos(w, 0x100, y, x, h);
                     file_loadTim(w);
-                    a[j].unk0 = ((h & 0x100) >> 4) | (s16)(((x & 0x3FF) >> 6) | 0x80) | ((h & 0x200) << 2);
-                    a[j].unk2 = (y << 6) | 0x10;
-                    b[j].unk0 = 0;
-                    b[j].unk2 = h % 256 - h % 128;
-                    r[j].unk4 = x;
-                    r[j].unk0 = x;
-                    r[j].unk6 = h;
-                    r[j].unk2 = h;
+                    a[j].tpage = ((h & 0x100) >> 4) | (s16)(((x & 0x3FF) >> 6) | 0x80) | ((h & 0x200) << 2);
+                    a[j].clut = (y << 6) | 0x10;
+                    b[j].tpage = 0;
+                    b[j].clut = h % 256 - h % 128;
+                    r[j].w = x;
+                    r[j].x = x;
+                    r[j].h = h;
+                    r[j].y = h;
                 }
                 break;
             }
@@ -2047,8 +2047,8 @@ s16 func_800AE618(s32 arg0, BtlStepTask *arg1) {
         l = (BtlAnimEvtList *)db_lookup((s32)*m, 2, 0x140000, 0);
         e = l->events;
         for (i = l->count - 1; i >= 0; i--) {
-            if (e[i].unk0.b.unk2 == 9) {
-                btl_soundCmd(0x7700, e[i].unk0.w, arg0 + 4, 0, 0);
+            if (e[i].data.b.unk2 == 9) {
+                btl_soundCmd(0x7700, e[i].data.w, arg0 + 4, 0, 0);
                 break;
             }
         }
