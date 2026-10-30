@@ -12,8 +12,8 @@ void menuStatus_init(void) {
         s_menuStatus.pageOpen[i] = 0;
     }
     text_setBank(g_statusMenuText);
-    ui_initMemberSwitch(&s_menuStatus.header, g_menuScreen.unk3, menuStatus_onMemberSwitched);
-    menuStatus_setMember(g_menuScreen.unk3, 0);
+    ui_initMemberSwitch(&s_menuStatus.header, g_menuScreen.member, menuStatus_onMemberSwitched);
+    menuStatus_setMember(g_menuScreen.member, 0);
     r = &s_menuStatus.win;
     r->x = 8;
     r->y = 0x26;

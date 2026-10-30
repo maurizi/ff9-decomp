@@ -1376,14 +1376,14 @@ typedef struct {
 extern AkaoFlags g_akaoFlags;
 /* menu state */
 typedef struct {
-    u8 unk0;
-    u8 unk1;
-    u8 unk2;
-    u8 unk3; /* selected party slot */
-    s32 unk4; /* frame counter */
-    s32 unk8;
-} Unk80077E50;
-extern Unk80077E50 g_menuScreen;
+    u8 active; /* 1 while the main menu runs (menuScreen_init / menuScreen_exit) */
+    u8 slideIn; /* the main menu panels are sliding in (menuMain_onSlideInDone clears it) */
+    u8 screen; /* current screen (0 main, 1 items, 4 status, 6 cards at runtime) */
+    u8 member; /* selected party slot */
+    s32 frame; /* frame counter, reset when a screen opens */
+    s32 savedOtz; /* fade_getOtz() when the menu opened */
+} MenuScreen;
+extern MenuScreen g_menuScreen;
 extern u8 g_menuScreenMember;
 extern s32 g_evtLastEncounter;
 extern u8 D_8007954E;
@@ -1627,31 +1627,31 @@ typedef struct {
 void akao_setChannelInstrument(AkaoChannel *, AkaoInstrument *, s32);
 
 typedef struct {
-    void (*unk0)(void);
-    s32 unk4;
-    void (*unk8)(void);
-    s32 unkC;
-} Unk80077E28Entry;
+    void (*init)(void); /* screen init (menuScreen_updateOpen, menuScreen_onSwitchFaded) */
+    s32 update; /* per-frame update (menuScreen_update); 0 = no screen (menuScreen_open ignores it) */
+    void (*exit)(void);
+    s32 needsMember; /* 1 for the screens that pick a party member first (menuScreen_needsMember) */
+} MenuScreenDef;
 
 typedef struct {
-    u8 unk0;
-    u8 unk1;
-    u8 unk2;
-    u8 unk3;
-    u8 unk4;
-    u8 unk5;
-    u8 unk6;
-    u8 unk7; /* = D_80077E2F */
-    s16 unk8;
-    s16 unkA;
-    s16 unkC;
-    s16 unkE;
-    s32 unk10; /* loaded file id */
-    RECT unk14;
-    Unk80077E28Entry *unk1C;
-    void (*unk20)(void);
-} Unk80077E28;
-extern Unk80077E28 g_menuScreenSwitch;
+    u8 busy; /* a screen open/switch is in progress (menuScreen_updateOpen) */
+    u8 titleResizing; /* the command window is resizing to the title box (menuScreen_stepTitleResize) */
+    u8 titleScrolling; /* (menuScreen_stepTitleScroll) */
+    u8 overlayRetry; /* the overlay read was refused, retried every frame (menuScreen_loadOverlay) */
+    u8 overlayLoading; /* the overlay read is running */
+    u8 fadingOut; /* menuScreen_open's fade-out runs (menuScreen_onOpenFaded clears it) */
+    u8 switching; /* menuScreen_switch (no overlay load) */
+    u8 target; /* = D_80077E2F: screen being opened */
+    s16 titleScroll; /* y offset of the command names in the title box */
+    s16 titleScrollEnd;
+    s16 titleScrollStep;
+    s16 titleScrollFrame;
+    s32 loadedOverlay; /* file id of the screen overlay at 0x801EDF00, 0xFF none */
+    RECT cmdRect; /* command window rect (menuScreen_drawCommands) */
+    MenuScreenDef *screens; /* g_menuScreensField / g_menuScreensWorld */
+    void (*onFaded)(void); /* previous screen's exit, called when the fade-out ends */
+} MenuScreenSwitch;
+extern MenuScreenSwitch g_menuScreenSwitch;
 
 extern s16 g_akaoCdVolumeFadeTicks;
 extern s32 g_akaoCdVolume;
@@ -2564,8 +2564,8 @@ extern Unk8006D128 g_supportAbilities[];
 void chr_setSupportAbility(s32, s32, u8);
 extern s32 g_menuScreenOvl[];
 extern RECT D_8006E508;
-extern Unk80077E28Entry g_menuScreensField[];
-extern Unk80077E28Entry g_menuScreensWorld[];
+extern MenuScreenDef g_menuScreensField[];
+extern MenuScreenDef g_menuScreensWorld[];
 u8 cd_readAsync(s32, s32, void *, void (*)(u8 *));
 void menuScreen_onOverlayRead(u8 *);
 extern void *g_evtUnitObjects[8];

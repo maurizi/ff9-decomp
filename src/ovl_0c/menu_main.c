@@ -46,7 +46,7 @@ void menuMain_inputCommand(void) {
 }
 
 void menuMain_inputMember(void) {
-    Unk80077E50 *m;
+    MenuScreen *m;
     s32 old;
     s32 new;
 
@@ -60,11 +60,11 @@ void menuMain_inputMember(void) {
         return;
     } else if (g_padRepeat & PAD_UP) {
         m = &g_menuScreen;
-        old = m->unk3;
+        old = m->member;
         new = party_getPrevMember(old);
     } else if (g_padRepeat & PAD_DOWN) {
         m = &g_menuScreen;
-        old = m->unk3;
+        old = m->member;
         new = party_getNextMember(old);
     } else {
         return;
@@ -72,7 +72,7 @@ void menuMain_inputMember(void) {
     if (old != new) {
         snd_playSe(0x67);
         old = new;
-        m->unk3 = old;
+        m->member = old;
     }
 }
 
@@ -126,8 +126,8 @@ void menuMain_reorder(s32 arg0, s32 arg1) {
         g_gameState->gameData->party[s_menuMain.orderCursor] = g_gameState->gameData->party[s_menuMain.orderTarget];
         g_gameState->gameData->party[s_menuMain.orderTarget] = t;
         menuMain_swapPortraits(arg0, arg1);
-        if (g_gameState->gameData->party[g_menuScreen.unk3] == NULL) {
-            g_menuScreen.unk3 = party_getFirstMember();
+        if (g_gameState->gameData->party[g_menuScreen.member] == NULL) {
+            g_menuScreen.member = party_getFirstMember();
         }
     }
 }
@@ -347,7 +347,7 @@ void menuMain_selectCommand(void) {
 }
 
 void menuMain_onSlideInDone(void) {
-    g_menuScreen.unk1 = 0;
+    g_menuScreen.slideIn = 0;
 }
 
 void menuMain_setEquipHelp(u8 arg0) {
@@ -377,7 +377,7 @@ void menuMain_setEquipHelp(u8 arg0) {
 void menuMain_init(void) {
     RECT r;
 
-    if (g_menuScreen.unk1 != 0) {
+    if (g_menuScreen.slideIn != 0) {
         s_menuMain.cursor = 0;
         s_menuMain.orderCursor = 0;
     }
@@ -391,8 +391,8 @@ void menuMain_init(void) {
     help_setBounds(&r);
     help_setCallback(menuMain_updateHelp);
     help_setCursorOnTop(1);
-    if (g_gameState->gameData->party[g_menuScreen.unk3] == NULL) {
-        g_menuScreen.unk3 = party_getFirstMember();
+    if (g_gameState->gameData->party[g_menuScreen.member] == NULL) {
+        g_menuScreen.member = party_getFirstMember();
     }
 }
 
@@ -413,7 +413,7 @@ void menuMain_setCursor(u8 arg0) {
 }
 
 void menuMain_input(void) {
-    if (g_menuScreen.unk1 == 0 && fade_isBusy() == 0) {
+    if (g_menuScreen.slideIn == 0 && fade_isBusy() == 0) {
         if (s_menuMainInput[s_menuMain.state] != NULL) {
             s_menuMainInput[s_menuMain.state]();
         }
@@ -430,7 +430,7 @@ void menuMain_draw(void) {
 void menuMain_updatePanels(void) {
     s32 i;
 
-    if (g_menuScreen.unk1 != 0) {
+    if (g_menuScreen.slideIn != 0) {
         for (i = 0; i < 6; i++) {
             if (s_menuMain.panels[i].unkC != 0) {
                 tween_step(&s_menuMain.panels[i]);

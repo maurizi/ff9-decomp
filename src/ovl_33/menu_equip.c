@@ -29,8 +29,8 @@ void menuEquip_init(void) {
         d->initStones[0] = lv;
     }
     tween_start(&s_menuEquip.listWin, 0, 1);
-    menuEquip_setMember(g_menuScreen.unk3, 0);
-    ui_initMemberSwitch(&s_menuEquip.header, g_menuScreen.unk3, menuEquip_onMemberSwitched);
+    menuEquip_setMember(g_menuScreen.member, 0);
+    ui_initMemberSwitch(&s_menuEquip.header, g_menuScreen.member, menuEquip_onMemberSwitched);
 }
 
 void menuEquip_inputTabs(void) {

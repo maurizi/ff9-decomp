@@ -42,8 +42,8 @@ void menuAbility_init(void) {
     s_menuAbility.slot = MENU_NO_SLOT;
     s_menuAbility.state = ABILITY_STATE_TABS;
     s_menuAbility.tab = 0;
-    ui_initMemberSwitch(&s_menuAbility.header, g_menuScreen.unk3, menuAbility_onMemberSwitched);
-    menuAbility_setMember(g_menuScreen.unk3, 0);
+    ui_initMemberSwitch(&s_menuAbility.header, g_menuScreen.member, menuAbility_onMemberSwitched);
+    menuAbility_setMember(g_menuScreen.member, 0);
     s_menuAbility.animFrame = 0;
     s_menuAbility.animTick = 0;
     text_setBank(g_abilityMenuText);

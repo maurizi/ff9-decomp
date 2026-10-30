@@ -1246,7 +1246,7 @@ extern u32 g_portraitSavedVram[]; /* VRAM save buffer */
 extern u8 D_80077E51;
 extern u8 *g_menuHelpText;
 s32 text_measureStyle(u8 *, s32);
-extern s32 g_menuScreenFrame; /* overlaps Unk80077E50.unk4 in ff9.h */
+extern s32 g_menuScreenFrame; /* overlaps MenuScreen.unk4 in ff9.h */
 EvtObject *evt_getPlayer(void);
 void evt_resetIdleTimer(s32);
 

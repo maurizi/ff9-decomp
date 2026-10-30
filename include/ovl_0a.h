@@ -1311,7 +1311,7 @@ extern u8 D_80077E51;
 extern u8 *g_menuHelpText; /* = g_menuHelp.text, referenced by its own name */
 extern s32 D_80077DEC; /* = g_menuHelp.otz, referenced by its own name */
 s32 text_measureStyle(u8 *, s32);
-extern s32 g_menuScreenFrame; /* overlaps Unk80077E50.unk4 in ff9.h */
+extern s32 g_menuScreenFrame; /* overlaps MenuScreen.unk4 in ff9.h */
 void menuMain_reorder(s32, s32);
 void fld_discPromptSelect(void);
 s32 fld_setupActorModel(s32, void *);
