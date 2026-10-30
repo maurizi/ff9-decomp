@@ -714,12 +714,12 @@ FieldAnimSfx *fld_addAnimSfx(FieldEvtCtx *arg0, s32 arg1, s32 arg2) {
     sc->animSfxCount = n;
     e = &sc->animSfx[i];
     e->uid = arg0->obj->uid;
-    id = arg0->obj->unk34;
+    id = arg0->obj->modelId;
     e->anim = arg1;
     do {
         e->frame = arg2;
     } while (0);
-    e->unk2 = id;
+    e->modelId = id;
     return e;
 }
 
@@ -940,7 +940,7 @@ s32 fld_depGetFileSector(s32 arg0, s32 *arg1) {
     return e->unk4;
 }
 
-s32 fld_soundBankReadCallback(Unk800B29F8 *arg0) {
+s32 fld_soundBankReadCallback(CdReadCtx *arg0) {
     s32 a;
     s32 id;
     s32 t;
@@ -951,7 +951,7 @@ s32 fld_soundBankReadCallback(Unk800B29F8 *arg0) {
     FieldScene *sc;
 
     r = 0;
-    a = arg0->unk8;
+    a = (s32)arg0->unk8;
     id = g_gameState->gameData->unk852 | DB_SOUND_BANK;
     if (arg0->unkC == 0) {
         b = a;
@@ -970,7 +970,7 @@ s32 fld_soundBankReadCallback(Unk800B29F8 *arg0) {
     if (arg0->unk10 < n) {
         n = arg0->unk10;
     }
-    n = arg0->unk8 + n - a;
+    n = (s32)arg0->unk8 + n - a;
     if ((id & 0xFFFF) != 0x84) {
         sc = gd->unk8E4.field->area->scene;
         if (sc->flags & 0x10) {
@@ -979,7 +979,7 @@ s32 fld_soundBankReadCallback(Unk800B29F8 *arg0) {
             r = akao_uploadBank(a, n, 0);
         }
     }
-    arg0->unk8 = a;
+    arg0->unk8 = (u8 *)a;
     return r;
 }
 
@@ -1062,9 +1062,9 @@ void fld_applyLights(FieldEvtCtx **arg0, s32 arg1) {
             if (!(c->flags & FLD_OBJ_COLOR_SET)) {
                 b = 0;
                 if (l != NULL) {
-                    a = l->unk4;
+                    a = l->color;
                 } else {
-                    a = def->unk4;
+                    a = def->color;
                 }
                 if (shade && dir != NULL) {
                     b = dir->color;
@@ -1231,7 +1231,7 @@ s32 fld_enableRain(s32 arg0, s32 arg1, s32 arg2) {
                     start = g_modeHeap;
                 }
                 if (preload_overlaps(start, 0x5000) != 0) {
-                    preload_remove(preload_waitCurrent()->unk4);
+                    preload_remove(preload_waitCurrent()->fileId);
                 }
                 if (g_gameState->gameData->unk8E4.field->area->scene->heapTop != 0) {
                     start = g_gameState->gameData->unk8E4.field->area->scene->heapTop;

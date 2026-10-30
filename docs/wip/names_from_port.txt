@@ -5377,3 +5377,15 @@ D_800FE500 g_btlbgJitterBase2  # [code] btlbg_draw, background scene 7, group 2:
 # FIELDS include/ovl_0a.h WmModel, include/ovl_0c.h WmModel: pad4=packetSize (u16) (+ovl_0c lookAtBone at +6) [code] battle BtlUnit9C8 +4 (btl_drawMesh layout); equals the groups' sum on every field model but 200 (wraps)
 # FIELDS include/ovl_0b.h BtlUnit9C: unk74=attachX,unk76=attachY,unk78=attachZ [code] btl_calcBoneMatrices parent-bone offset, main op 0xD4 writes the same offsets; ModelObj.attachX-Z in ovl_0a
 # CONSTANTS include/ff9.h EVT_OP_MESH_SHOW / EVT_OP_MESH_HIDE swapped: 0x39 clears the hidden-group bit (show), 0x3A sets it (hide) [code] fld_drawModels draws only groups whose ModelObj.hiddenGroups bit is clear; btl_updateUnitModel likewise for hiddenMeshes
+
+## struct field pass: overlays
+# FIELDS include/ovl_0a.h FieldSprite: unk7=brightness [code] fld_drawSprite3D gets it << 4 as the GPF colour scale, default 0x80 (fld_resetSprite), sprite command 0x9B
+# FIELDS include/ovl_0a.h FieldAnimSfx: unk2=modelId; FieldEvtObj: unk34=modelId [code] fld_addAnimSfx copies the object's EvtObject.modelId (+0x34)
+# FIELDS include/ovl_0a.h FieldScene: unk6C=modelBundleBuf,unk90=actorInfoBuf,unk270=animSfxBuf [code] fld_allocScene points modelBundles/actorInfo/animSfx at them
+# FIELDS include/ovl_0a.h BgPoint: unk0=x,unk2=y; BgFile: unk2A=scrollMaxX,unk2E=scrollMaxY [code] fldbg_setCamera copies the camera's scroll maxima
+# FIELDS include/ovl_0a.h BgOverlayAnim: unk8=speed [code] fldbg_updateOverlayAnims adds it to pos, fldbg_setAnimSpeed; BgOverlayAnimView: unk0=flags,unk4=cameraPos,unk8=speed,unkA=delayCounter,unkC=stepOffset (same layout); BgOverlayAnimTbl merged into BgOverlayAnim (tbl->stepCount, fldbg_initEffectList)
+# FIELDS include/ovl_0a.h BgSprt: unk0=tpage,unk8=sprt; FieldPausePkt: unk0=sprite,unk14=tpage; BgiVertexArr: unk0=xyz; ActorPosView: unk14=pos; TexAnimRelocPos: unk0=x,unk2=y
+# FIELDS include/ovl_0a.h Unk800B3294: unk4=color; Unk800B3294Bias: unk7=shadowOtBias [code] fld_applyLights colour, fld_drawShadow OT bias (top byte)
+# FIELDS include/ovl_0a.h FieldDirEnt: unk0=id,unk2=areaId,unk4=sector [code] fld_refindSectors
+# FIELDS include/ovl_0a.h FieldTexEnt (ModelTexOfs as fld_loadModelBundle fills it): unk0=srcX,unk2=srcY,unk4=destX,unk6=destY; FieldVramPos (file 0x1C0000): unk0=pageX,unk2=pageY,unk8=clutX,unkA=clutY,unk10=stripX,unk12=stripY,unk18=stripClutX,unk1A=stripClutY,unk20=skipX, new +0x30 shadowTexX/Y (Unk800AA01C merged in, fld_getShadowTexPos)
+# TYPES include/ovl_0a.h merged: Unk800C9DCC -> BgEntry (g_fieldBgCtxEntries .type), Unk8002208C -> PreloadEntry (preload_waitCurrent()->fileId; prototype now matches main), Unk800B29F8 -> CdReadCtx (fld_soundBankReadCallback), TextWin -> TweenDef (s_menuMainSlideIn), Unk8019DC5C/Ent -> MbgMovieList/MbgMovie {count, movies; path} (as ovl_15)

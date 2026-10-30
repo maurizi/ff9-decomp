@@ -39,17 +39,17 @@ s32 bgi_pointInTriangle(BgiHeader *b, BgiFloor *t, BgiTriangle *n, s16 *p) {
     c[0] = 0;
     c[1] = 0;
     for (; i < 3; i++) {
-        v[i].unk0[x] = o[x] + vtx[n->vertices[i]].unk0[x];
-        v[i].unk0[z] = o[z] + vtx[n->vertices[i]].unk0[z];
-        if (v[i].unk0[x] == p[x]) {
+        v[i].xyz[x] = o[x] + vtx[n->vertices[i]].xyz[x];
+        v[i].xyz[z] = o[z] + vtx[n->vertices[i]].xyz[z];
+        if (v[i].xyz[x] == p[x]) {
             c[0]++;
-            if (v[i].unk0[z] <= p[z]) {
+            if (v[i].xyz[z] <= p[z]) {
                 c[0] = -c[0];
             }
         }
-        if (v[i].unk0[z] == p[z]) {
+        if (v[i].xyz[z] == p[z]) {
             c[1]++;
-            if (v[i].unk0[x] <= p[x]) {
+            if (v[i].xyz[x] <= p[x]) {
                 c[1] = -c[1];
             }
         }
@@ -61,13 +61,13 @@ s32 bgi_pointInTriangle(BgiHeader *b, BgiFloor *t, BgiTriangle *n, s16 *p) {
         return 1;
     }
     pv[0] = &v[2];
-    c[0] = p[z] >= pv[0]->unk0[z];
+    c[0] = p[z] >= pv[0]->xyz[z];
     for (i = 0; i < 3; i++) {
         pv[1] = &v[i];
-        c[1] = p[z] >= pv[1]->unk0[z];
+        c[1] = p[z] >= pv[1]->xyz[z];
         if (c[0] != c[1]) {
-            d[0] = (pv[1]->unk0[z] - p[z]) * (pv[0]->unk0[x] - pv[1]->unk0[x]);
-            d[1] = (pv[1]->unk0[x] - p[x]) * (pv[0]->unk0[z] - pv[1]->unk0[z]);
+            d[0] = (pv[1]->xyz[z] - p[z]) * (pv[0]->xyz[x] - pv[1]->xyz[x]);
+            d[1] = (pv[1]->xyz[x] - p[x]) * (pv[0]->xyz[z] - pv[1]->xyz[z]);
             if (d[0] == d[1]) {
                 return 1;
             }
@@ -104,17 +104,17 @@ s32 bgi_pointInTriangleXZ(BgiHeader *b, BgiFloor *t, BgiTriangle *n, SVECTOR *sv
     c[0] = 0;
     c[1] = 0;
     for (; i < 3; i++) {
-        v[i].unk0[x] = o[x] + vtx[n->vertices[i]].unk0[x];
-        v[i].unk0[z] = o[z] + vtx[n->vertices[i]].unk0[z];
-        if (v[i].unk0[x] == p[x]) {
+        v[i].xyz[x] = o[x] + vtx[n->vertices[i]].xyz[x];
+        v[i].xyz[z] = o[z] + vtx[n->vertices[i]].xyz[z];
+        if (v[i].xyz[x] == p[x]) {
             c[0]++;
-            if (v[i].unk0[z] <= p[z]) {
+            if (v[i].xyz[z] <= p[z]) {
                 c[0] = -c[0];
             }
         }
-        if (v[i].unk0[z] == p[z]) {
+        if (v[i].xyz[z] == p[z]) {
             c[1]++;
-            if (v[i].unk0[x] <= p[x]) {
+            if (v[i].xyz[x] <= p[x]) {
                 c[1] = -c[1];
             }
         }
@@ -126,13 +126,13 @@ s32 bgi_pointInTriangleXZ(BgiHeader *b, BgiFloor *t, BgiTriangle *n, SVECTOR *sv
         return 1;
     }
     pv[0] = &v[2];
-    c[0] = p[z] >= pv[0]->unk0[z];
+    c[0] = p[z] >= pv[0]->xyz[z];
     for (i = 0; i < 3; i++) {
         pv[1] = &v[i];
-        c[1] = p[z] >= pv[1]->unk0[z];
+        c[1] = p[z] >= pv[1]->xyz[z];
         if (c[0] != c[1]) {
-            d[0] = (pv[1]->unk0[z] - p[z]) * (pv[0]->unk0[x] - pv[1]->unk0[x]);
-            d[1] = (pv[1]->unk0[x] - p[x]) * (pv[0]->unk0[z] - pv[1]->unk0[z]);
+            d[0] = (pv[1]->xyz[z] - p[z]) * (pv[0]->xyz[x] - pv[1]->xyz[x]);
+            d[1] = (pv[1]->xyz[x] - p[x]) * (pv[0]->xyz[z] - pv[1]->xyz[z]);
             if (d[0] == d[1]) {
                 return 1;
             }
@@ -197,23 +197,23 @@ s32 bgi_findEdgeCrossing(BgiHeader *b, BgiFloor *t, BgiTriangle *n, s16 *arg3, s
     o[1] = b->curPos[1] + t->curPos[1];
     o[2] = b->curPos[2] + t->curPos[2];
     for (i = 0; i < 3; i++) {
-        v[i].unk0[0] = o[0] + vtx[n->vertices[i]].unk0[0];
-        v[i].unk0[1] = o[1] + vtx[n->vertices[i]].unk0[1];
-        v[i].unk0[2] = o[2] + vtx[n->vertices[i]].unk0[2];
+        v[i].xyz[0] = o[0] + vtx[n->vertices[i]].xyz[0];
+        v[i].xyz[1] = o[1] + vtx[n->vertices[i]].xyz[1];
+        v[i].xyz[2] = o[2] + vtx[n->vertices[i]].xyz[2];
     }
     pv[0] = &v[2];
     cnt = 0;
     for (i = 0; i < 3; i++) {
         pv[1] = &v[i];
         if (i != edge) {
-            d = (pv[1]->unk0[x] - pv[0]->unk0[x]) * (ez = arg3[z] - arg4[z]);
+            d = (pv[1]->xyz[x] - pv[0]->xyz[x]) * (ez = arg3[z] - arg4[z]);
             ex = arg3[x] - arg4[x];
-            e = (pv[0]->unk0[z] - arg4[z]) * ex;
-            d -= (pv[1]->unk0[z] - pv[0]->unk0[z]) * ex;
-            e -= (pv[0]->unk0[x] - arg4[x]) * ez;
+            e = (pv[0]->xyz[z] - arg4[z]) * ex;
+            d -= (pv[1]->xyz[z] - pv[0]->xyz[z]) * ex;
+            e -= (pv[0]->xyz[x] - arg4[x]) * ez;
             if (ABS(e) <= ABS(d)) {
-                f = (pv[0]->unk0[z] - arg4[z]) * (pv[1]->unk0[x] - pv[0]->unk0[x]);
-                f -= (pv[0]->unk0[x] - arg4[x]) * (pv[1]->unk0[z] - pv[0]->unk0[z]);
+                f = (pv[0]->xyz[z] - arg4[z]) * (pv[1]->xyz[x] - pv[0]->xyz[x]);
+                f -= (pv[0]->xyz[x] - arg4[x]) * (pv[1]->xyz[z] - pv[0]->xyz[z]);
                 if (ABS(f) <= ABS(d)) {
                     if ((e >= 0 && d >= 0) || (e <= 0 && d < 0)) {
                         if ((f >= 0 && d >= 0) || (f <= 0 && d < 0)) {
@@ -222,16 +222,16 @@ s32 bgi_findEdgeCrossing(BgiHeader *b, BgiFloor *t, BgiTriangle *n, s16 *arg3, s
                                     e >>= 1;
                                     d >>= 1;
                                 }
-                                hit[cnt][x] = pv[0]->unk0[x] + e * (pv[1]->unk0[x] - pv[0]->unk0[x]) / d;
-                                hit[cnt][z] = pv[0]->unk0[z] + e * (pv[1]->unk0[z] - pv[0]->unk0[z]) / d;
-                                ax = pv[1]->unk0[x] - pv[0]->unk0[x];
+                                hit[cnt][x] = pv[0]->xyz[x] + e * (pv[1]->xyz[x] - pv[0]->xyz[x]) / d;
+                                hit[cnt][z] = pv[0]->xyz[z] + e * (pv[1]->xyz[z] - pv[0]->xyz[z]) / d;
+                                ax = pv[1]->xyz[x] - pv[0]->xyz[x];
                                 if (ax < 0) {
-                                    ax = pv[0]->unk0[x] - pv[1]->unk0[x];
+                                    ax = pv[0]->xyz[x] - pv[1]->xyz[x];
                                 }
-                                if ((pv[1]->unk0[z] - pv[0]->unk0[z] >= 0 ? pv[1]->unk0[z] - pv[0]->unk0[z] : pv[0]->unk0[z] - pv[1]->unk0[z]) < ax) {
-                                    hit[cnt][y] = pv[1]->unk0[y] - (pv[1]->unk0[x] - hit[cnt][x]) * (pv[0]->unk0[y] - pv[1]->unk0[y]) / (pv[0]->unk0[x] - pv[1]->unk0[x]);
+                                if ((pv[1]->xyz[z] - pv[0]->xyz[z] >= 0 ? pv[1]->xyz[z] - pv[0]->xyz[z] : pv[0]->xyz[z] - pv[1]->xyz[z]) < ax) {
+                                    hit[cnt][y] = pv[1]->xyz[y] - (pv[1]->xyz[x] - hit[cnt][x]) * (pv[0]->xyz[y] - pv[1]->xyz[y]) / (pv[0]->xyz[x] - pv[1]->xyz[x]);
                                 } else {
-                                    hit[cnt][y] = pv[1]->unk0[y] - (pv[1]->unk0[z] - hit[cnt][z]) * (pv[0]->unk0[y] - pv[1]->unk0[y]) / (pv[0]->unk0[z] - pv[1]->unk0[z]);
+                                    hit[cnt][y] = pv[1]->xyz[y] - (pv[1]->xyz[z] - hit[cnt][z]) * (pv[0]->xyz[y] - pv[1]->xyz[y]) / (pv[0]->xyz[z] - pv[1]->xyz[z]);
                                 }
                             }
                             idx[cnt] = i;
@@ -270,7 +270,7 @@ s32 bgi_findEdgeCrossing(BgiHeader *b, BgiFloor *t, BgiTriangle *n, s16 *arg3, s
             pv[2] = &v[1];
             break;
         }
-        if (bgi_segmentsCross(pv[0]->unk0, arg3, pv[2]->unk0, pv[1]->unk0, x, z)) {
+        if (bgi_segmentsCross(pv[0]->xyz, arg3, pv[2]->xyz, pv[1]->xyz, x, z)) {
             *arg6 = idx[0];
             arg5->vx = hit[0][0];
             arg5->vy = hit[0][1];
@@ -779,7 +779,7 @@ s32 bgi_updateFloorMoves(void) {
             flags = a->flags;
             if ((flags & 1) && a->floor == e->floor && a->triangle >= 0) {
                 p = a->actor;
-                ((ActorPosView *)p)->unk14[e->axis] += e->cur - e->prev;
+                ((ActorPosView *)p)->pos[e->axis] += e->cur - e->prev;
                 switch (e->axis) {
                 case 0:
                     a->actor->prevPos.vx = a->actor->pos.vx;
