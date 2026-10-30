@@ -289,9 +289,9 @@ s32 fx_105_op80(s32 mode, Fx105Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
         work->unk130.vx = -0x304;
         work->unk130.vy = -0x26FC;
         work->unk130.vz = -0x2A94;
-        env->camera->unk30[2].vx = -0x304;
-        env->camera->unk30[2].vy = -0x26FC;
-        env->camera->unk30[2].vz = -0x2A94;
+        env->camera->pointRots[2].vx = -0x304;
+        env->camera->pointRots[2].vy = -0x26FC;
+        env->camera->pointRots[2].vz = -0x2A94;
         work->unk138[0] = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, 0xD), 0xFF);
         work->unk138[1] = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, 0x15), 0xFF);
         work->unk138[2] = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, 0x29), 0xFF);
@@ -668,9 +668,9 @@ s32 fx_105_op80(s32 mode, Fx105Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
                     work->unk124 = NULL;
                 }
                 if (work->unk8 != 0) {
-                    work->unk130.vx = env->camera->unk30[2].vx;
-                    work->unk130.vy = env->camera->unk30[2].vy;
-                    work->unk130.vz = env->camera->unk30[2].vz;
+                    work->unk130.vx = env->camera->pointRots[2].vx;
+                    work->unk130.vy = env->camera->pointRots[2].vy;
+                    work->unk130.vz = env->camera->pointRots[2].vz;
                     ex->btlfx_moveEmitterTo((s32)work->unk124, (s32)&work->unk130);
                     if (work->unk8 >= 0x62 && work->unk124 != NULL) {
                         work->unk124->unk20 = (0x71 - work->unk8) << 8;

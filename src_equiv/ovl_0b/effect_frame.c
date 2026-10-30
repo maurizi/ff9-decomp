@@ -41,7 +41,7 @@ u8 *btlfx_runFrame(u8 *out) {
         vib_update();
     } else {
         btlfx_copyDisplayToDraw();
-        g_btlfxEnv->camera->unk5D = 1;
+        g_btlfxEnv->camera->stepped = 1;
     }
     btlfx_updateSounds();
     stp += 0xC;

@@ -21,7 +21,7 @@ s32 fx_1fc_op80(s32 mode, void *work, Unk800F78A4 *env, Unk80100C78Entry *entry,
         func_801E8B04(0, 3, 0, (s16 *)ex->btlfx_getFileData(entry->file, 0xA));
     } else {
         frame = entry->frame;
-        env->camera->unk30[1].vz = env->camera->points[2].vz;
+        env->camera->pointRots[1].vz = env->camera->points[2].vz;
         func_801E8B60(0);
         return frame >= 0x78;
     }

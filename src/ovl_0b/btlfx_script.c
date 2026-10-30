@@ -190,7 +190,7 @@ void btlfx_runScript(void) {
     case 3:
         if (g_btlfxEnv->loader->unkE == 3) {
             d->phase = 4;
-            g_btlfxEnv->camera->unk5C |= 2;
+            g_btlfxEnv->camera->flags |= 2;
         }
         break;
     case 2:

@@ -576,7 +576,7 @@ s32 fx_17d_0_op82(s32 mode, void *work, Unk800F78A4 *env, Unk80100C78Entry *entr
             n = f[1] - 1;
         }
         f += n * 3 + 2;
-        env->camera->unk30[0].vz = f[2];
+        env->camera->pointRots[0].vz = f[2];
         f = (s16 *)ex->btlfx_getFileData(entry->file, 0x19);
         n = frame;
         if (n >= f[1]) {

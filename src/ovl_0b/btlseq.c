@@ -404,7 +404,7 @@ s32 btlseq_opWaitAnim(BtlScript *arg0, BtlUnit *arg1) {
     BtlUnit9C *m = arg1->model;
     BtlUnitA0 *a = arg1->obj;
     if (arg0->frame != 0 && (a->frame >= m->motion->frameCount || (arg1->status & (BTL_STATUS_VENOM | BTL_STATUS_STOP | BTL_STATUS_FREEZE)))) {
-        g_btlfxEnv->camera->unk52 = 0;
+        g_btlfxEnv->camera->paused = 0;
         arg0->pc += 1;
         return 1;
     }

@@ -151,9 +151,9 @@ s32 fx_083_op80(s32 mode, Fx083Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
             env->camera->points[0].vx = work->unk58[0].vx;
             env->camera->points[0].vy = work->unk58[0].vy;
             env->camera->points[0].vz = work->unk58[0].vz;
-            env->camera->unk30[0].vx = 0x100;
-            env->camera->unk30[0].vy = work->unk38[0].vy;
-            env->camera->unk30[0].vz = 0;
+            env->camera->pointRots[0].vx = 0x100;
+            env->camera->pointRots[0].vy = work->unk38[0].vy;
+            env->camera->pointRots[0].vz = 0;
         }
         if (work->unk0[8] != 0) {
             work->unk0[8]--;

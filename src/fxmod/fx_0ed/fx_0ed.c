@@ -403,7 +403,7 @@ s32 fx_0ed_op81(s32 mode, Fx0edWork81 *work, Unk800F78A4 *env, Unk80100C78Entry 
             break;
         case 2:
             ((Fx0edBattleState *)env->state)->unk10 = 1;
-            env->camera->unk52 = 0;
+            env->camera->paused = 0;
             return 1;
         }
         if (c != 0) {

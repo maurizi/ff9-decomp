@@ -13,7 +13,7 @@ s32 fx_122_op80(s32 mode, Fx122Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
         *arg4 = 0x50;
     } else if (mode == 1) {
         D_801E7D44 = env;
-        env->camera->unk52 = 0;
+        env->camera->paused = 0;
         ex->btlfx_getUnitPos(0, (s16 *)&work->unk30);
         ex->btlfx_getUnitRot(0, (s16 *)&work->unk38);
         work->unk4.vx = 0;

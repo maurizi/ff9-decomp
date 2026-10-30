@@ -459,7 +459,7 @@ s32 btlfx_opCast(s32 arg0, Unk800E4C88 *arg1, Unk800F78A4 *arg2, s32 *arg3, s32 
                 btlfx_stopEmitter(arg1->unk24);
                 g_btlfxState.unk10.b[3] = 1;
                 g_btlfxState.unk25 = 1;
-                arg2->camera->unk52 = 0;
+                arg2->camera->paused = 0;
                 btlfx_setPartyTexAnim(arg1->unk2, 2, 0);
                 return 1;
             }
@@ -483,7 +483,7 @@ s32 btlfx_opCast(s32 arg0, Unk800E4C88 *arg1, Unk800F78A4 *arg2, s32 *arg3, s32 
         } else if (g_btlfxState.unk10.b[2] != 0) {
             g_btlfxState.unk10.b[3] = 1;
             func_800E4C54();
-            arg2->camera->unk52 = 0;
+            arg2->camera->paused = 0;
             btlfx_setPartyTexAnim(arg1->unk2, 2, 0);
             btlfx_showCasterCmdName();
             return 1;
@@ -491,7 +491,7 @@ s32 btlfx_opCast(s32 arg0, Unk800E4C88 *arg1, Unk800F78A4 *arg2, s32 *arg3, s32 
         break;
     case 3:
         if (t == 0 && arg1->unk5 != 1) {
-            arg2->camera->unk52 = 0;
+            arg2->camera->paused = 0;
             btlfx_setPartyTexAnim(arg1->unk2, 0, 1);
         }
         if (arg1->unk5 != 3) {
@@ -824,7 +824,7 @@ s32 btlfx_opPlayCamera(s32 arg0, s32 arg1, s32 arg2, Unk800F78A40 *arg3, s32 *ar
             r = btlfx_getFileData(arg3->file, g_btlfxState.cameras.b.unk0[g_btlfxState.cameraPick]);
             break;
         case 3:
-            k = g_btlfxEnv->camera->unk53;
+            k = g_btlfxEnv->camera->effectPick;
             if (k >= g_btlfxState.cameras.b.unk3) {
                 k = g_btlfxState.cameras.b.unk3 - 1;
             }

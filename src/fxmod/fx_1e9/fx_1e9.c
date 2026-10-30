@@ -82,7 +82,7 @@ s32 fx_1e9_op80(s32 mode, Fx1e9Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
         if (frame != 0 && t0 == 0 && env->state->pad10[0] != 0) {
             work->unk0 = 2;
             entry->frame = -1;
-            env->camera->unk52 = 0;
+            env->camera->paused = 0;
             ex->btlfx_fadeUnitById(0x10, 0x80);
             ex->btlfx_stopEmitter(work->unk8);
             p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0xF), (s32)&work->unkC);

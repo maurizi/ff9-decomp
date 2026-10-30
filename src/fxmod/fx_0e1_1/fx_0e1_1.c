@@ -138,7 +138,7 @@ s32 fx_0e1_1_op85(s32 mode, void *work, Unk800F78A4 *env, Unk80100C78Entry *entr
         *arg4 = 0;
     } else if (mode == 1) {
         D_801ECDD0 = env;
-        env->camera->unk52 = 0;
+        env->camera->paused = 0;
     } else {
         return 1;
     }

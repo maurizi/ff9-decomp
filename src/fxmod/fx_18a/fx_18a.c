@@ -89,7 +89,7 @@ s32 fx_18a_op80(s32 mode, Fx18aWork80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             if (frame >= 0xB && t == 0) {
                 work->unk0 = 2;
                 entry->frame = -1;
-                env->camera->unk52 = 0;
+                env->camera->paused = 0;
                 ex->btlfx_fadeUnitById(0x10, -1);
                 ex->btlfx_fadeUnitById(0, -2);
                 work->unkC.vz += 0x64;

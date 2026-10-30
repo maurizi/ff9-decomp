@@ -276,7 +276,7 @@ static inline s32 rand8_inline(void) {
     return *g_randPtr++;
 }
 
-/* one primitive in a model's packed GPU packet buffer (BtlUnit9C.unk10) */
+/* one primitive in a model's packed GPU packet buffer (BtlUnit9C.prims) */
 typedef union {
     P_TAG tag;
     u32 w[13]; /* w[1], w[3]/w[4], ...: rgb + code words */
@@ -338,7 +338,7 @@ typedef struct {
     s8 atbSpeed;  /* atb speed */
 } BtlUnit28;
 
-/* battle unit; 8 of them at Battle.unk6FC, linked through unk0 */
+/* battle unit; 8 of them at Battle.units, linked through next */
 /* BtlUnit.status bits (docs/runtime-findings.md "Battle STATUS bits"; 0x4 unidentified). BtlUnit.autoStatus uses the same
  * bits (btl_hasStatus tests both words). */
 #define BTL_STATUS_PETRIFY         0x00000001 /* runtime: Break; model CLUT turns to stone (btl_setStoneClut) */
@@ -419,7 +419,7 @@ typedef struct {
 #define BTL_CMD_ENEMY_DEATH   0x36 /* code: enemy command from the event script (trigger 0x36 = killed) */
 #define BTL_CMD_ENEMY_REACT   0x37 /* code: btl_startCmdEffect plays a sequence for it like 0x2F/0x35/0x36 */
 #define BTL_CMD_ESCAPE        0x38 /* runtime: queued by btl_rollFlee / btl_tryEscape; ability 0xB4 Flee */
-#define BTL_CMD_TRANCE_EIDOLON 0x39 /* code: trance Eidolon timer (btl_updateUnitStatus) casts Battle.unk11BB */
+#define BTL_CMD_TRANCE_EIDOLON 0x39 /* code: trance Eidolon timer (btl_updateUnitStatus) casts Battle.eidolonAbility */
 #define BTL_CMD_REBIRTH_FLAME 0x3A /* code: the item 0xF9 chance in btl_checkSideDefeated, ability 0x49 Rebirth Flame */
 #define BTL_CMD_TRANCE        0x3B /* code: adding/removing BTL_STATUS_TRANCE queues it; effect 0x101 in trance */
 #define BTL_CMD_KO            0x3C /* code: adding BTL_STATUS_KO queues it (btl_addStatus) */
@@ -436,12 +436,12 @@ typedef struct {
 #define BTL_ABIL_TERRA_HOMING  0xBB
 #define BTL_ABIL_THROW         0xBE
 
-/* Battle.unkD80 (phase), as btl_update switches on it */
+/* Battle.phase, as btl_update switches on it */
 #define BTL_PHASE_SCRIPT   1 /* code: waits for the event script (btl_setBattleVar 33-36 act only now) */
 #define BTL_PHASE_INTRO    2 /* code: btl_startBattle; btl_updateIntro loads and fades the units in */
 #define BTL_PHASE_ENTRANCE 3 /* code: waits for the entrance motions, then combat and the ambush messages */
 #define BTL_PHASE_COMBAT   4 /* runtime */
-#define BTL_PHASE_END      5 /* runtime: btl_victory; Battle.unkD81 says how (victory, defeat, escape) */
+#define BTL_PHASE_END      5 /* runtime: btl_victory; Battle.subPhase says how (victory, defeat, escape) */
 #define BTL_PHASE_EXIT     6 /* runtime: after a victory, fade out, then btl_saveParty */
 #define BTL_PHASE_EXIT_DEFEAT 7 /* code: from a defeat (GameData.unk56E = 3) */
 #define BTL_PHASE_EXIT_OTHER  8 /* code: from an escape or a script-ended battle */
@@ -561,7 +561,7 @@ typedef struct {
 #define BTL_ATTR_MAGIC_EVADE   0x4D
 
 typedef struct BtlUnit {
-    struct BtlUnit *next; /* active-unit list (Battle.unk6F8) */
+    struct BtlUnit *next; /* active-unit list (Battle.unitList) */
     struct BtlCmd *cmd; /* six command slots (btl_initUnitCmds; enemies have the first three): chosen command */
     struct BtlCmd *autoCmd; /* btl_queueAutoCmd: counter, Return Magic, Auto-Potion, Spear, enemy reactions */
     struct BtlCmd *koCmd; /* BTL_CMD_KO / BTL_CMD_PETRIFY */
@@ -601,7 +601,7 @@ typedef struct BtlUnit {
     u8 escapeStance; /* Battle.escapeHeld when the idle motion was last chosen (btl_updateUnits re-picks it on a change) */
     u8 baseBone; /* bone used as the unit position (btl_getBaseBonePos) */
     u8 koState; /* KO state machine step (btl_updateKo) */
-    u16 popupFlags; /* btl_spawnPopups: BtlCalc.unk1B bits (1 hp, 2 heal, 4 critical, 8 mp, 0x10 mp heal), 0x20 miss, 0x40 killed, 0x80 guard */
+    u16 popupFlags; /* btl_spawnPopups: BtlCalc.targetResult bits (1 hp, 2 heal, 4 critical, 8 mp, 0x10 mp heal), 0x20 miss, 0x40 killed, 0x80 guard */
     s16 hpChange; /* damage or heal shown by btl_spawnPopups */
     s16 mpChange;
     u16 modelId;
@@ -635,7 +635,7 @@ typedef struct BtlUnit {
 } BtlUnit; /* 0xD0 */
 
 /* ability/command calculation context */
-/* BtlCmd seen by the formulas (btl_calcCmd's sub = the BtlCmd; flags = BtlCmd.unk10.w) */
+/* BtlCmd seen by the formulas (btl_calcCmd's sub = the BtlCmd; flags = BtlCmd.info.w) */
 typedef struct BtlCalc8 {
     u8 pad0[8];
     struct BtlCmd8 *ability;
@@ -1253,7 +1253,7 @@ typedef struct {
     u16 nameOfs; /* as BtlCmd8.nameOfs */
 } Battle16CC; /* 0x10 */
 
-/* Battle.unk1358 ring entry (btl_newPopup hands out the next one) */
+/* Battle.popups ring entry (btl_newPopup hands out the next one) */
 typedef struct {
     u8 *anim; /* animation, 0xFF-terminated */
     u16 glyph; /* glyph index into g_uiSprites */
@@ -1299,7 +1299,7 @@ typedef struct {
     u8 pad1D2[0x1D4 - 0x1D2];
     u8 hiddenMask; /* units hidden from status effects (mask) */
     u8 pad1D5[0x1D8 - 0x1D5];
-} BtlPopupRing; /* Battle.unk1358 (0x1D8) */
+} BtlPopupRing; /* Battle.popups (0x1D8) */
 
 /* Inlined copy of btl_clearCmd (clear a command); the original source inlines it. */
 static inline void btl_clearCmd_inline(BtlCmd *arg0) {
@@ -1329,7 +1329,7 @@ typedef struct Battle108CSet {
     Battle108C unk0[4];
 } Battle108CSet;
 
-/* battle scene data (Battle.unk132C) */
+/* battle scene data (Battle.scene) */
 typedef struct {
     u32 flags; /* bits 0-1 ambush (BTL_GETVAR_AMBUSH: 0 back attack, 1 preemptive, 2 normal, btl_rollAmbush); bits 2 and up
                 * are the encounter's Battle11C020.flags ^ 0x30, shifted left 2 (func_800C972C) */
@@ -1379,7 +1379,7 @@ typedef struct Battle {
     u16 deathCryWait; /* frames until the next death cry may play: btl_playDeathCry sets 8, btl_drawScene counts down */
     struct Battle11C0 *work; /* battle work area: buffers, background, encounter, shadows (btl_allocBuffers) */
     struct Battle11C4 seq; /* enemy battle sequences (btlseq_*) */
-    u8 cameraNo; /* camera variant (0-2) the camera scripts pick (btlcam: g_btlCamera.unkA8); btl_initScene from the group, btlseq_opSetCamera / btlseq_opPlayCamera set it */
+    u8 cameraNo; /* camera variant (0-2) the camera scripts pick (btlcam: g_btlCamera.variant); btl_initScene from the group, btlseq_opSetCamera / btlseq_opPlayCamera set it */
     u8 pad131D[0x132C - 0x131D];
     Battle132C scene;
     u8 groupNo; /* enemy group index btl_pickEnemyGroup chose */
@@ -1428,50 +1428,50 @@ typedef struct {
 extern BtlUnit *D_800FE484;
 
 typedef struct {
-    s16 unk0[4];
-    u8 unk8;
-    u8 unk9;
+    s16 pos[4]; /* x, y, z, and the fourth value (distance / roll) */
+    u8 anchor; /* bits 0-4 anchor kind (func_800C4E84: 1 caster, 5 target, 0xA focusUnit, 0xF partner, 0x15+ points), 0x20 use the unit's rotation */
+    u8 anchorFlags;
     u8 padA[0xC - 0xA];
 } Unk800C412C0; /* 0xC */
 
 typedef struct {
-    Unk800C412C0 unk0[2];
-    u8 unk18;
-    u8 unk19;
-    u8 unk1A;
-    u8 unk1B;
-    u8 unk1C;
-    u8 unk1D;
+    Unk800C412C0 keys[2]; /* from [0] and to [1] (btlcam_setPathKey shifts them) */
+    u8 mode; /* 0 off, 1 hold the key, 2 lerp, 3 lerp between anchored points, 4 cubic over g_btlCamera.points */
+    u8 wrapModes; /* per axis, 2 bits: how angles wrap while lerping */
+    u8 easeModes; /* 2 bits per weight: 0 linear, 1 ease out, 2 ease in (g_btlCamScript.accel) */
+    u8 locked; /* keys set by camera flag 0x8000: the next command doesn't replace the mode or timing */
+    u8 frames;
+    u8 framesLeft; /* counts down in btlcam_step */
     u8 pad1E[0x20 - 0x1E];
 } Unk800C412C; /* 0x20 */
 
 typedef struct Unk800FE3B8 {
     SVECTOR points[6]; /* camera path control points (cubic, btlcam_step); [4]/[5] keep the eye/target for script flag 0x80 */
-    SVECTOR unk30[4];
+    SVECTOR pointRots[4]; /* rotations kept with points[0-3] (zeroed by btlcam_loadScript; func_800C4E84 anchors 0x15+) */
     s16 yaw; /* from eye to target (btlcam_step) */
-    u8 unk52;
-    u8 unk53;
+    u8 paused; /* script frame stops counting (camera flag 0x100100); effect steps resume it */
+    u8 effectPick; /* camera choice btlfx_opPlayCamera mode 3 plays: random 0/1 per effect, or the variant (camera flag 0x2000) */
     SVECTOR eye; /* eye position given to btlcam_lookAt */
-    u8 unk5C;
-    u8 unk5D;
+    u8 flags; /* 1 a camera script took over (projDist reset), 2 the effect script started (btlfx_runScript) */
+    u8 stepped; /* the effect frame already stepped the camera: btlcam_update skips this frame */
     u16 projDist; /* projection distance (SetGeomScreen through GameData.unkA) */
     u16 baseProjDist; /* default projection distance (0x200) */
     u8 pad62[0x65 - 0x62];
-    u8 unk65;
-    u8 unk66;
-    u8 unk67;
-    Unk800C412C unk68[2];
-    s32 unkA8;
-    u32 unkAC;
-    s32 unkB0;
-    s32 unkB4;
-    u8 unkB8;
-    u8 unkB9;
-    u8 unkBA;
-    u8 unkBB;
-    SVECTOR unkBC;
-    SVECTOR unkC4;
-    BtlUnit *unkCC;
+    u8 prevViewState; /* viewState of the previous frame */
+    u8 projFixed; /* the target view set the projection (btlcam_step leaves GameData.unkA) */
+    u8 endIntro; /* camera command 0x4000 with 1: ends the intro once loadFlags has all three setup bits */
+    Unk800C412C paths[2]; /* eye path [0], target path [1] (btlcam_evalPath) */
+    s32 variant; /* script variant 0-2 the camera plays (btlcam_loadScript: from the script header, Battle.cameraNo, the unit size, ...) */
+    u32 idleSway; /* sway used when the script sets none (camera flag 0x400): amplitude bits 4-7, speed 0-3 */
+    s32 idleSwayPhase;
+    s32 viewBlend; /* frames left of the blend into the target view (btlcam_applyTargetView) */
+    u8 nextVariant; /* variant chosen by a header with flag 0x200 for the next script (2 bits per variant) */
+    u8 mode; /* 0 scene (btlcam_playScene), 1 effect (btlcam_play), 2 enemy sequence (btlcam_playSeq) */
+    u8 targetView; /* 1 while the target-select view is on */
+    u8 viewState; /* 2: at the target view; btlcam_evalPath counts anchors 0x19/0x1A up to it */
+    SVECTOR viewFromEye; /* eye when the target view started */
+    SVECTOR viewFromAt; /* target when the target view started */
+    BtlUnit *focusUnit; /* unit the scene camera follows (anchor 0xA; btlcam_loadScript variant from its state) */
 } Unk800FE3B8;
 extern Unk800FE3B8 g_btlCamera;
 
@@ -2200,7 +2200,7 @@ typedef struct {
     u8 side; /* 0 none, 1 right (Defend, command 4), 2 left (Change, command 7) */
     u8 slide; /* 1 sliding out (btlui_slideLeft/Right), 2 sliding back (btlui_slideBack) */
     u8 slideFrame; /* 0-5 */
-} Unk80104FC0; /* g_btlCmdMenu.unk10 */
+} Unk80104FC0; /* g_btlCmdMenu.sideCmd */
 
 /* battle command menu (runtime: Vivi's menu -> Eiko's, docs/runtime-findings.md) */
 typedef struct {
@@ -2216,7 +2216,7 @@ typedef struct {
     BtlUnit *unit; /* the unit choosing a command */
 } Unk80104FB0;
 extern Unk80104FB0 g_btlCmdMenu;
-extern Unk80104FC0 D_80104FC0; /* g_btlCmdMenu.unk10, also addressed by its own label */
+extern Unk80104FC0 D_80104FC0; /* g_btlCmdMenu.sideCmd, also addressed by its own label */
 extern void (*g_btluiMenuInput[])(void);
 
 
@@ -3037,11 +3037,11 @@ extern Unk800686E8 D_80068BF0[]; /* digits */
 typedef struct {
     u8 *pc; /* camera script pointer (btlcam_step reads its commands) */
     u32 frame; /* script frame, compared with each command's 10-bit frame */
-    s32 unk8;
-    s32 unkC;
+    s32 accel; /* ease acceleration of the paths (camera flag 0x40) */
+    s32 viewHold; /* frames the target view is kept after target select (btlcam_applyTargetView) */
     u32 sway; /* sway: amplitude bits 4-7, speed bits 0-3 (btlcam_applySway) */
     s32 swayPhase;
-    s32 unk18;
+    s32 savedVariant; /* variant restored for the scene camera after an effect (btlcam_endEffect) */
     s32 shakeAxes; /* shake: bit 0 no vertical, bit 1 no horizontal (btlcam_applyShake) */
     s32 shakeFrames;
     s32 shakeLeft;
@@ -3049,11 +3049,11 @@ typedef struct {
     s32 shakeTo;
     s32 zoomFrames; /* projection-distance tween (btlcam_step) */
     s32 zoomLeft;
-    s32 zoomTarget; /* 1 base distance (g_btlCamera.unk60), 2 current (unk5E) */
+    s32 zoomTarget; /* 1 base distance (g_btlCamera.baseProjDist), 2 current (projDist) */
     s32 zoomFrom;
     s32 zoomTo;
-    u8 unk44;
-    u8 unk45;
+    u8 saveView; /* camera flag 0x80: 1 requested, 2 eye/target saved in points[4]/[5] */
+    u8 keepCamera; /* camera flag 0x80000: btlcam_endEffect doesn't reload the scene camera */
     s16 casterAnchors[5]; /* btlcam_getUnitAnchors of the acting unit */
     s16 partnerAnchors[5]; /* btlcam_getUnitAnchors of the partner (effect flag 4) */
     s16 targetAnchors[5]; /* btlcam_getUnitAnchors of the target */
@@ -3737,19 +3737,19 @@ void btlcam_evalPath(s32, Unk800C412C *, s16 *);
 s32 btlfx_lerp(s32, s32, s32);
 
 typedef struct {
-    u8 unk0;
-    u8 unk1;
-    u16 unk2_0 : 7;
-    u16 unk2_7 : 7;
-    u16 unk2_14 : 2;
-    u16 unk4_0 : 7;
-    u16 unk4_7 : 7;
+    u8 anchor; /* Unk800C412C0.anchor */
+    u8 anchorFlags;
+    u16 x : 7; /* x >> 5 */
+    u16 y : 7;
+    u16 preset : 2; /* nonzero: per-character preset row D_800F5758[(preset - 1) * 19 + model] for caster/target anchors */
+    u16 z : 7;
+    u16 w : 7; /* fourth value >> 7 */
 } Unk800C3F78;
 typedef struct {
-    u8 unk0;
-    u8 unk1;
-    u8 unk2;
-    u8 unk3;
+    u8 w; /* fourth value >> 6 */
+    u8 x; /* x >> 4 */
+    u8 y;
+    u8 z;
 } Unk800F5758;
 extern Unk800F5758 D_800F5758[];
 void btlcam_setPathKey(Unk800C412C *, Unk800C3F78 *);
@@ -4332,7 +4332,7 @@ void btlfx_retryOp(void);
 extern s32 D_800FE530[];
 extern u8 D_800FF068[];
 extern const u8 D_800A857C[]; /* "TRANCE" label */
-/* BtlUnit9C.unk50 seen as an array member: indexing it as an ARRAY_REF keeps `c ? 1 : 0` from folding into the address (btlfx_setUnitTexAnim) */
+/* BtlUnit9C.texAnims seen as an array member: indexing it as an ARRAY_REF keeps `c ? 1 : 0` from folding into the address (btlfx_setUnitTexAnim) */
 typedef struct {
     BtlUnit9C50 e[3];
 } BtlUnit9C50Arr;

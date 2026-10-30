@@ -167,9 +167,9 @@ s32 fx_0d2_op80(s32 mode, Fx0d2Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
         }
         if ((u32)k < 0xDE) {
             if (frame < 0xB6) {
-                work->unk44.vx = env->camera->unk30[3].vx;
-                work->unk44.vy = env->camera->unk30[3].vy;
-                work->unk44.vz = env->camera->unk30[3].vz;
+                work->unk44.vx = env->camera->pointRots[3].vx;
+                work->unk44.vy = env->camera->pointRots[3].vy;
+                work->unk44.vz = env->camera->pointRots[3].vz;
             } else {
                 func_801E9F04((Fx0d2KeyPath *)&D_801EF230, frame - 0xB6, &work->unk3C, &w);
                 work->unk44.vx = w.vx;
@@ -183,9 +183,9 @@ s32 fx_0d2_op80(s32 mode, Fx0d2Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             }
         }
         if (frame > 0) {
-            work->unk6C.vx = env->camera->unk30[2].vx;
-            work->unk6C.vy = env->camera->unk30[2].vy;
-            work->unk6C.vz = env->camera->unk30[2].vz;
+            work->unk6C.vx = env->camera->pointRots[2].vx;
+            work->unk6C.vy = env->camera->pointRots[2].vy;
+            work->unk6C.vz = env->camera->pointRots[2].vz;
             if (work->unk0 != NULL && work->unk0->unk30 == -1) {
                 work->unk0 = NULL;
             }
@@ -206,7 +206,7 @@ s32 fx_0d2_op80(s32 mode, Fx0d2Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             }
             ex->btlfx_moveEmitterTo((s32)work->unk10, (s32)&work->unk8C);
         }
-        env->camera->unk30[1].vz = env->camera->points[2].vz;
+        env->camera->pointRots[1].vz = env->camera->points[2].vz;
         env->camera->projDist = env->camera->points[3].vx;
         func_801EA27C(0);
         if (frame >= 0x12C) {
