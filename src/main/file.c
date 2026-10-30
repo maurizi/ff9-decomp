@@ -83,7 +83,7 @@ s32 clut_getY(s32 a) {
     return (s16)a >> 6;
 }
 
-void func_8001DA78(u8 **arg0, s32 arg1) {
+void file_advanceLoadPtr(u8 **arg0, s32 arg1) {
     *arg0 += arg1 + 0xC;
     if (arg1 & 3) {
         *arg0 += 4;
@@ -332,7 +332,7 @@ s32 game_getModel(s32 arg0) {
     return (s32)&g_gameState->gameData->npcModels[arg0 - 9];
 }
 
-void func_8001E3A4(ModelSlot *a) {
+void game_clearModelSlot(ModelSlot *a) {
     a->flags = 0;
     a->unk4 = -1;
     a->model = NULL;

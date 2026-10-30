@@ -256,12 +256,12 @@ void wm_load(s32 arg0) {
     g_modeHeap = (s32)&g_gameState->gameData->npcModels[g_gameState->gameData->npcCount];
     g_gameState->gameData->unk9 = 0;
     for (i = 0; i < 9; i++) {
-        func_8001E3A4(&g_gameState->gameData->chrModels[i]);
+        game_clearModelSlot(&g_gameState->gameData->chrModels[i]);
         g_gameState->gameData->chrModels[i].model = &g_gameState->gameData->chrModelObjs[i];
     }
     g_gameState->gameData->npcModelSlots = 0;
     for (i = 0; i < g_gameState->gameData->npcCount; i++) {
-        func_8001E3A4(&g_gameState->gameData->npcModels[i]);
+        game_clearModelSlot(&g_gameState->gameData->npcModels[i]);
         g_gameState->gameData->npcModels[i].model = &g_gameState->gameData->npcModelObjs[i];
     }
     obj->shadows = (void *)g_modeHeap;
@@ -727,7 +727,7 @@ void wm_drawShadow(WmObjEnt *arg0, s32 arg1, s32 arg2, s32 arg3) {
 }
 
 s32 wm_initShadowPrims(s32 arg0, s32 arg1) {
-    return func_80062E3C(arg0, 0x280, 0xDE, 0x330, 0xB0, arg1, 1);
+    return shadow_initSlots(arg0, 0x280, 0xDE, 0x330, 0xB0, arg1, 1);
 }
 
 /* object matrix facing the joint's direction (in the xz plane) */

@@ -151,7 +151,7 @@ main func_80062C8C libgte: hand-written GTE asm
 main SpuRead libspu
 main SpuWrite libspu
 main func_80059504 libspu
-main func_80064C24 out of scope (prior analysis; calls hand-written asm func_800512E4 register ABI)
+main pen_setColorPreset out of scope (prior analysis; calls hand-written asm func_800512E4 register ABI)
 main text_setBank hand-written asm (addi, odd scheduling)
 main text_get hand-written asm (addi, odd scheduling)
 main text_getInfo hand-written asm (addi, odd scheduling)
@@ -170,7 +170,7 @@ main func_80051084 hand-written asm module 0x80050F4C-0x80053924 (global regs $t
 main pen_drawSmallChar hand-written asm module 0x80050F4C-0x80053924 (global regs $t5/$s6/$s7, no ABI)
 main pen_putSmallChar hand-written asm module 0x80050F4C-0x80053924 (global regs $t5/$s6/$s7, no ABI)
 main pen_setCell hand-written asm module 0x80050F4C-0x80053924 (global regs $t5/$s6/$s7, no ABI)
-main func_800512B4 hand-written asm module 0x80050F4C-0x80053924 (global regs $t5/$s6/$s7, no ABI)
+main pen_setX hand-written asm module 0x80050F4C-0x80053924 (global regs $t5/$s6/$s7, no ABI)
 main pen_setPos hand-written asm module 0x80050F4C-0x80053924 (global regs $t5/$s6/$s7, no ABI)
 main pen_move hand-written asm module 0x80050F4C-0x80053924 (global regs $t5/$s6/$s7, no ABI)
 main pen_setColor hand-written asm module 0x80050F4C-0x80053924 (global regs $t5/$s6/$s7, no ABI)
@@ -207,7 +207,7 @@ main evt_runExpr hand-written asm module 0x80050F4C-0x80053924 (global regs $t5/
 main func_80052834 hand-written asm module 0x80050F4C-0x80053924 (global regs $t5/$s6/$s7, no ABI)
 main evt_runScripts hand-written asm module 0x80050F4C-0x80053924 (global regs $t5/$s6/$s7, no ABI)
 main evt_getVarBank hand-written asm module 0x80050F4C-0x80053924 (global regs $t5/$s6/$s7, no ABI)
-main func_80052D0C hand-written asm module 0x80050F4C-0x80053924 (global regs $t5/$s6/$s7, no ABI)
+main evt_skipVarRef hand-written asm module 0x80050F4C-0x80053924 (global regs $t5/$s6/$s7, no ABI)
 main evt_popResult hand-written asm module 0x80050F4C-0x80053924 (global regs $t5/$s6/$s7, no ABI)
 main evt_assignResult hand-written asm module 0x80050F4C-0x80053924 (global regs $t5/$s6/$s7, no ABI)
 main evt_evalExpr hand-written asm module 0x80050F4C-0x80053924 (global regs $t5/$s6/$s7, no ABI)
@@ -216,8 +216,8 @@ main math_dist2 hand-written asm module 0x80050F4C-0x80053924 (global regs $t5/$
 main math_length3 hand-written asm module 0x80050F4C-0x80053924 (global regs $t5/$s6/$s7, no ABI)
 main math_isqrt hand-written asm module 0x80050F4C-0x80053924 (global regs $t5/$s6/$s7, no ABI)
 main math_atan2 hand-written asm module 0x80050F4C-0x80053924 (global regs $t5/$s6/$s7, no ABI)
-main func_8005309C hand-written asm module 0x80050F4C-0x80053924 (global regs $t5/$s6/$s7, no ABI)
-main func_800530A8 hand-written asm module 0x80050F4C-0x80053924 (global regs $t5/$s6/$s7, no ABI)
+main math_dirVector hand-written asm module 0x80050F4C-0x80053924 (global regs $t5/$s6/$s7, no ABI)
+main math_rotateSVector hand-written asm module 0x80050F4C-0x80053924 (global regs $t5/$s6/$s7, no ABI)
 main evt_isInRegion hand-written asm module 0x80050F4C-0x80053924 (global regs $t5/$s6/$s7, no ABI)
 main evt_angleToObject hand-written asm module 0x80050F4C-0x80053924 (global regs $t5/$s6/$s7, no ABI)
 main rain_spawn hand-written asm module 0x80050F4C-0x80053924 (global regs $t5/$s6/$s7, no ABI)

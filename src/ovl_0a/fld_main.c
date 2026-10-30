@@ -392,12 +392,12 @@ void fld_load(s32 arg0) {
     g_modeHeap = (s32)(g_gameState->gameData->npcModels + g_gameState->gameData->npcCount);
     g_gameState->gameData->unk9 = 0;
     for (i = 0; i < 9; i++) {
-        func_8001E3A4(&g_gameState->gameData->chrModels[i]);
+        game_clearModelSlot(&g_gameState->gameData->chrModels[i]);
         g_gameState->gameData->chrModels[i].model = &g_gameState->gameData->chrModelObjs[i];
     }
     g_gameState->gameData->npcModelSlots = 0;
     for (i = 0; i < g_gameState->gameData->npcCount; i++) {
-        func_8001E3A4(&g_gameState->gameData->npcModels[i]);
+        game_clearModelSlot(&g_gameState->gameData->npcModels[i]);
         g_gameState->gameData->npcModels[i].model = &g_gameState->gameData->npcModelObjs[i];
     }
     sc->shadows = (FieldObjPlace *)g_modeHeap;

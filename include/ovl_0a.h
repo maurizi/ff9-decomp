@@ -1277,7 +1277,7 @@ void math_rotMatrixZYX(SVECTOR *, MATRIX *);
 void math_rotMatrixZXY(SVECTOR *, MATRIX *);
 extern s32 g_vtxScreenXY[]; /* projected screen xy per model vertex */
 extern s32 g_vtxScreenZ[]; /* projected z per model vertex */
-s32 func_80056048(s32 *, s32, s32);
+s32 akao_loadBankInSlot(s32 *, s32, s32);
 extern u32 g_portraitSavedVram[]; /* VRAM save buffer */
 extern u8 D_80077E51;
 extern u8 *g_menuHelpText; /* = g_menuHelp.text, referenced by its own name */
@@ -1514,12 +1514,12 @@ void akao_sendCmdAD(s32, s32);
 void akao_sendCmdA4(s32, s32, s32);
 void akao_sendCmdA5(s32, s32, s32, s32);
 void akao_fadeMusicVolumeFrom(s32, s32, s32, s32);
-void akao_sendCmdD0(s32);
-void akao_sendCmdD1(s32, s32);
-void akao_sendCmdD2(s32, s32, s32);
-void akao_sendCmdD4(s32);
-void akao_sendCmdD5(s32, s32);
-void akao_sendCmdD6(s32, s32, s32);
+void akao_setTempoScale(s32);
+void akao_fadeTempoScale(s32, s32);
+void akao_fadeTempoScaleFrom(s32, s32, s32);
+void akao_setPitchScale(s32);
+void akao_fadePitchScale(s32, s32);
+void akao_fadePitchScaleFrom(s32, s32, s32);
 void akao_sendCmdD8(s32);
 void akao_sendCmdD9(s32, s32);
 void akao_sendCmdDA(s32, s32, s32);
@@ -1535,7 +1535,7 @@ typedef struct {
 #define SFXH(i) (((GameDataSfx *)g_gameState->gameData)->unk828[i])
 #define SCENE (g_gameState->gameData->ctx.field->area->scene)
 
-s32 fld_initShadows(s32, s32, s32, s32); /* returns func_80062E3C's result (the next free address) */
+s32 fld_initShadows(s32, s32, s32, s32); /* returns shadow_initSlots's result (the next free address) */
 
 FieldAnimSfx *fld_addAnimSfx(FieldEvtCtx *, s32, s32); /* returns the new entry */
 

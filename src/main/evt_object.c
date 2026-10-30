@@ -150,7 +150,7 @@ Unk16D8 *evt_deleteObject(EvtObject *obj) {
         }
         n->unk0 = g_evtState->listFree;
         g_evtState->listFree = n;
-        func_8004B2F4_inline(obj);
+        evt_freeAllocNode_inline(obj);
         if (g_evtState->playerUid == n->unk4->uid) {
             g_evtState->playerUid = 0;
         }
@@ -165,7 +165,7 @@ s32 evt_exprUnitIncDec(s32 op) {
     s32 i;
 
     if (((w >> 26) & 7) == 5) {
-        mask = func_8004B404_inline(w);
+        mask = evt_getBattleVar_inline(w);
     } else {
         g_evtExprSp--;
         mask = evt_popResult();
@@ -212,7 +212,7 @@ s32 evt_exprUnitAssign(s32 op) {
     s32 i;
 
     if (((w >> 26) & 7) == 5) {
-        mask = func_8004B404_inline(w);
+        mask = evt_getBattleVar_inline(w);
     } else {
         g_evtExprSp -= 2;
         mask = evt_popResult();
@@ -293,7 +293,7 @@ s32 evt_exprUnitSelect(s32 op) {
     s32 x;
 
     if (((w >> 26) & 7) == 5) {
-        mask = func_8004B404_inline(w);
+        mask = evt_getBattleVar_inline(w);
     } else {
         g_evtExprSp--;
         mask = evt_popResult();
@@ -359,7 +359,7 @@ s32 evt_exprUnitCompare(s32 op) {
     s32 i;
 
     if (((w >> 26) & 7) == 5) {
-        mask = func_8004B404_inline(w);
+        mask = evt_getBattleVar_inline(w);
     } else {
         g_evtExprSp -= 2;
         mask = evt_popResult();
@@ -418,7 +418,7 @@ s32 evt_exprUnitLogic(s32 op) {
     s32 i;
 
     if (((w >> 26) & 7) == 5) {
-        mask = func_8004B404_inline(w);
+        mask = evt_getBattleVar_inline(w);
     } else {
         g_evtExprSp--;
         mask = evt_popResult();
@@ -461,7 +461,7 @@ s32 evt_exprUnitFirst(void) {
     s32 i;
 
     if (((w >> 26) & 7) == 5) {
-        mask = func_8004B404_inline(w);
+        mask = evt_getBattleVar_inline(w);
     } else {
         g_evtExprSp--;
         mask = evt_popResult();
@@ -490,10 +490,10 @@ s32 evt_joinParty(s32 slot) {
     s32 i;
     s32 r;
 
-    if (func_8004B85C_find(func_8004B85C_key(slot), slot)) {
+    if (evt_isInParty_find(evt_isInParty_key(slot), slot)) {
         r = 1;
     } else {
-        slot = func_8004B85C_key(slot);
+        slot = evt_isInParty_key(slot);
         if (slot >= 0 && slot < 9) {
             for (i = 0; i < 4; i++) {
                 if (g_gameState->gameData->party[i] == NULL) {

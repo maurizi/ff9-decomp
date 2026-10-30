@@ -333,7 +333,7 @@ void msg_renderText(MsgWindow *w, u8 *s) {
                 pen_move(0x12, 0);
                 break;
             case 0x44:
-                func_800512B4(g_penStackPtr[-1].vx);
+                pen_setX(g_penStackPtr[-1].vx);
             case 0x43:
                 pen_move(*p++, 0);
                 break;
@@ -1176,7 +1176,7 @@ void msg_setChoiceMask(s32 a, s32 b) {
     g_msgChoiceDefault = r;
 }
 
-void func_8004ED3C(void) {
+void msg_clearWindowOtz(void) {
     MsgWindow *p;
     for (p = g_msgWindows; p < g_msgWindows + 10; p++) {
         if (p->open != 0 && p->window != NULL) {

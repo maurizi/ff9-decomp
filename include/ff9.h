@@ -143,7 +143,7 @@ typedef struct {
 /* GameData.npcModels entry */
 typedef struct ModelSlot {
     s32 flags; /* flags: 1 cleared by fld_exit/btl_cleanup, 0x10 (event ops), others from op args */
-    s32 unk4; /* -1 after func_8001E3A4 */
+    s32 unk4; /* -1 after game_clearModelSlot */
     struct BtlUnit9C *model; /* the model object (GameData.chrModelObjs / npcModelObjs entry; battle BtlUnit9C) */
     struct BtlUnitA0 *actor; /* the EvtObject using the slot (FieldMap.playerObj's actor) */
     struct BtlUnit *unit; /* battle unit (btl_resetUnit) */
@@ -177,7 +177,7 @@ typedef struct Unk11C0Slot {
     u32 unk4_0 : 12;
     u32 unk4_12 : 10;
     u32 unk4_22 : 10;
-    POLY_FT4 *unk8[2][4]; /* prims, filled by func_80062E3C */
+    POLY_FT4 *unk8[2][4]; /* prims, filled by shadow_initSlots */
 } Unk11C0Slot;
 
 typedef struct {
@@ -764,7 +764,6 @@ extern s8 D_80071E30; /* mbg_getStatus reports bit 8 when it is 1 */
 extern s32 g_menuOnClose;
 extern u8 g_menuFadeInOnClose;
 extern u8 g_menuFadeOutOnClose;
-extern u8 D_80077DB2;
 extern s32 D_800704C8;
 extern s32 D_8007041C;
 extern u8 g_partyChanged;
@@ -805,7 +804,7 @@ typedef struct {
     u32 pitch; /* pitch of the current note (akao_calcPitch), base of voicePitch and of the vibrato depth */
     s32 pitchSlide; /* pitch offset of a running slide (<< 16), added to voicePitch */
     u32 flags; /* 1 vibrato, 2 tremolo, 4 pan LFO, 8 drum kit (op FE04), 0x10/0x20 pitch/volume from the previous channel (ops D4-D7), 0x40 full gate (op FE1A), 0x1000 key split, 0x100000 stop only at the loop end (op E0): a stop request sets 0x200000 and op CA then ends the channel; 0x1000000/0x8000000/0x10000000 ADSR fields overridden (ops AD/B1/B2) */
-    s32 seBank; /* instrument bank offset of a sound effect (VoiceParams +0x10; func_8005EC8C in op Program) */
+    s32 seBank; /* instrument bank offset of a sound effect (VoiceParams +0x10; akao_remapSeInstrument in op Program) */
     s32 vibratoPeriod; /* LFO period << 12 (op B4) */
     s32 vibratoPeriodStep; /* (op E4) */
     s32 vibratoPhase;
@@ -871,7 +870,7 @@ typedef struct {
     u16 noiseTimer; /* frames until the noise bit toggles (ops CE/CF) */
     u16 pitchModTimer; /* frames until the pitch-modulation bit toggles (ops D2/D3) */
     u16 loopDepth; /* loop depth */
-    u16 pitchRandom; /* op E1: random pitch variation per note (g_akaoLfoTableData[D_8008314C]) */
+    u16 pitchRandom; /* op E1: random pitch variation per note (g_akaoLfoTableData[g_akaoRandIndex]) */
     u16 noteLen; /* length of the last note */
     s16 fixedLen; /* op DC: every note gets this length (0 = off) */
     s16 expressionStep;
@@ -1051,31 +1050,26 @@ extern AkaoSeq g_akaoMainSeq; /* main sequencer state */
 extern s32 g_akaoTickTimeSum;
 extern u16 g_akaoTickCount; /* tick counter */
 extern s32 g_akaoTickTimes[4]; /* recent tick timings */
-void func_80058F94(void);
+void akao_flushKeyOffs(void);
 void akao_updateVoices(void);
-void func_8005D628(AkaoSeq *, AkaoChannel *);
+void akao_tickCrossfade(AkaoSeq *, AkaoChannel *);
 extern AkaoChannel *D_800809EC;
 extern s32 D_8007F8D8[2];
-extern s32 D_8008314C;
+extern s32 g_akaoRandIndex;
 extern s32 D_8007F8E0;
-extern s32 D_80083238[3];
+extern s32 g_akaoVoiceModeMasks[3];
 extern s32 D_80080A20;
 extern s32 D_8007E3C8[2];
 extern s32 D_8007E3D0;
 
 typedef Character Unk800539FC;
 
-typedef struct {
-    u8 pad0[0x50];
-    s32 unk50;
-} Unk800589E0;
 
 extern s32 D_80077DCC;
 extern u8 g_menuScreenCur;
 extern struct EvtObject *D_8007AEB8; /* object at the world map's mark 0x40 */
 extern struct EvtObject *D_8007AEBC; /* object at the world map's mark 0x80 */
 extern s32 g_msgKeepWindows;
-extern s32 D_80080A24;
 extern s32 *D_80066764;
 
 typedef struct {
@@ -1200,7 +1194,7 @@ typedef struct {
     s16 lookAtZ;
 } Unk80047B90;
 void evt_onAnimLimit(EvtObject *);
-s32 func_80047AB8(EvtObject *, s32);
+s32 evt_callTurnScript(EvtObject *, s32);
 void evt_relaxLookAt(EvtObject *, Unk80047B90 *);
 s32 math_distSq2(s32, s32, s32); /* distance */
 s32 math_isqrt(s32);
@@ -1282,13 +1276,13 @@ extern s32 g_bubbleRequest;
 extern s32 g_bubbleVariant;
 extern u8 g_menuReading;
 extern u8 D_80077E2C;
-extern s16 D_8007AE10[8];
+extern s16 g_evtBattleVars[8];
 extern s32 g_msgPadPrev;
 extern s8 g_akaoLfoTableData[];
-extern s16 D_8007F96E;
-extern s32 D_80083154;
-extern s16 D_8007F96C;
-extern s32 D_80083150;
+extern s16 g_akaoTempoScaleLen;
+extern s32 g_akaoTempoScale;
+extern s16 g_akaoPitchScaleLen;
+extern s32 g_akaoPitchScale;
 
 extern Unk4 g_padAnalogThresholds;
 
@@ -1315,7 +1309,7 @@ typedef struct {
 } AkaoSeqHeader;
 void akao_resumeSeq(s32, s32);
 void akao_startSeq(s32, s32);
-extern s16 D_8007F95A;
+extern s16 g_akaoSavedSeqMusicId;
 extern s32 D_8007F8DC;
 extern s32 D_8008322C;
 typedef struct {
@@ -1426,7 +1420,7 @@ extern EventVars g_evtGlobalVars;
 void config_applySound(void);
 void config_applyPadMapping(void);
 void menu_reset(void);
-void func_8003264C(void);
+void menu_clearCardSlot(void);
 s32 text_getFrom(u8 *, s32);
 s32 text_measureWidth(s32);
 void akao_setOutputMode(s32);
@@ -1556,14 +1550,14 @@ typedef struct {
 extern u32 g_akaoSemitonePitch[12]; /* semitone pitch table */
 extern AkaoInstrument g_akaoInstruments[];
 u16 akao_calcPitch(AkaoInstrument *p, s32 note, u8 fine, s32 *out);
-extern u8 D_8006F374[]; /* operand length of opcodes 0xA0-0xFF, 0 = special */
-extern u8 D_8006F3D4[]; /* operand length of 0xFE xx opcodes */
-s32 func_8005DB40(AkaoChannel *c);
+extern u8 g_akaoOpLengths[]; /* operand length of opcodes 0xA0-0xFF, 0 = special */
+extern u8 g_akaoFeOpLengths[]; /* operand length of 0xFE xx opcodes */
+s32 akao_peekNextNote(AkaoChannel *c);
 extern void (*g_akaoOps[])(AkaoChannel *, u32); /* opcode 0xA0-0xFF handlers */
 extern void (*g_akaoOpsFE[])(AkaoChannel *, u32); /* 0xFE xx opcode handlers */
 extern u16 D_8006F3F4[]; /* note lengths */
 
-/* drum kit key entry (func_8005E170) */
+/* drum kit key entry (akao_playDrumNote) */
 typedef struct {
     u8 sample; /* sample: instrument index */
     u8 note; /* note */
@@ -1655,8 +1649,8 @@ u8 cd_syncAsync(void (*)(u8 *));
 
 
 extern u8 D_8006CAD8[][5];
-extern s32 D_800809B8;
-extern u8 D_80083156; /* tempo scale */
+extern s32 g_akaoSkipMeasures;
+extern u8 g_akaoTempoScaleHi; /* tempo scale */
 void akao_execChannel(AkaoChannel *, u32);
 void akao_stepChannelSlides(AkaoChannel *, u32, s32);
 
@@ -1893,7 +1887,6 @@ extern s32 g_padPortMask[];
 #define SND_BANK_LOAD 0x7700
 #define SND_RESIDENT 0x80
 extern u32 g_padRepeat; /* press, then auto-repeat after 15 frames, every 5 */
-extern u8 D_80077DB5;
 extern s32 g_menuFrame; /* frame counter? */
 
 s32 mbg_getStatus(void);
@@ -1989,7 +1982,7 @@ extern Unk4 D_8007B99C;
 extern Unk4 D_80011A6C; /* rodata constant, used by msg_advanceText */
 
 
-void func_800615F8(void);
+void akao_streamArmStop(void);
 extern u8 D_8006F40C[];
 extern AkaoSeq *g_akaoVoiceOwner[24];
 void akao_setVoiceRelease(s32, s32, s32);
@@ -2003,8 +1996,8 @@ typedef struct {
     s32 unk0[4];
 } Unk80010CD0;
 extern Unk80010CD0 D_80010CD0; /* min widths per window style */
-void func_80059414(void);
-extern s32 D_8007F720[]; /* AKAO header copy (0x70 bytes) */
+void akao_freeSubSeqVoices(void);
+extern s32 g_akaoResidentStream[]; /* AKAO header copy (0x70 bytes) */
 extern u8 D_8006CACC[];
 void menu_onOverlayRead(u8 *);
 extern AkaoChannel g_akaoSavedChannels[];
@@ -2013,7 +2006,7 @@ u16 akao_shiftInstrumentDown(u32, AkaoChannel *);
 s32 text_initNameImage(s32);
 void text_renderPartyName(s32);
 extern RECT D_8006BC38;
-void func_80061C1C(void);
+void akao_streamStartRing(void);
 void akao_setVoicePitch(s32, s32);
 void akao_setVoiceVolume(s32, u32, u32, s32);
 u8 fade_isActive(void);
@@ -2033,7 +2026,7 @@ s32 bgi_updateActor(u32); /* field overlay (ovl_0a) */
 s32 fldbg_applyGeomOffset(void); /* field overlay (ovl_0a) */
 s32 fldbg_resetGeomOffset(void); /* field overlay (ovl_0a) */
 extern CdRequest g_cdReadRequest;
-s32 func_8005EB40(s32 *, s32, s32, s32);
+s32 akao_initSlide(s32 *, s32, s32, s32);
 s32 CdMode(void);
 s32 cd_startTransfer(); /* called with a u8 it ignores; callers see an int return (no prototype in the original) */
 u8 timer_isEnabled(void);
@@ -2042,16 +2035,16 @@ void game_tickClock(void);
 extern SprAnimData D_80010E48;
 void sprAnim_init(SprAnim *, SprAnimData *);
 s32 akao_checkHeader(s32 *);
-extern u16 *D_800809DC;
-extern u16 *D_800809E4;
-extern u16 *D_80083148;
-s32 func_8005A5FC(s32);
+extern u16 *g_akaoSeTrackOfs;
+extern u16 *g_akaoSeBankIds;
+extern u16 *g_akaoSeExtraCounts;
+s32 akao_findBankSlot(s32);
 void akao_getSeData(u8 **, u8 **, s32);
 void akao_keyOn(u32);
-extern u8 *D_800809E8;
+extern u8 *g_akaoSeData;
 extern s32 g_akaoLoadedBanks[];
 extern s32 D_800809D8; /* = g_akaoLoadedBanks[6] */
-void func_800616F8(s32, s32, s32, s32);
+void akao_streamPlayOneShot(s32, s32, s32, s32);
 s32 preload_isBusy(PreloadEntry *);
 u8 fade_clearEase(); /* called with an argument it ignores */
 extern void (*g_menuStateFuncs[])(void);
@@ -2094,7 +2087,7 @@ void msg_resetWindows(void);
 void msg_resetPad(void);
 void rand_init(s32);
 void evt_reset(void);
-extern u16 D_8007AE12;
+extern u16 g_evtCurUnitMask;
 void menu_finish(void);
 void menu_loadOverlay(void);
 void menuScreen_onSwitchFaded(void);
@@ -2263,10 +2256,10 @@ extern s32 g_akaoLfoWaves[];
 typedef struct {
     s32 volume; /* fade-out volume of the crossfaded music (<< 16 of 0x7F), akao_cmdCrossfadeMusic */
     s32 volumeStep;
-    s32 fadeLen; /* frames left; at 0 the old music stops (func_8005D628) */
-    s32 unkC; /* also accessed as D_80080A24 */
+    s32 fadeLen; /* frames left; at 0 the old music stops (akao_tickCrossfade) */
+    s32 savedVolume; /* volume of the fading-out sequence before akao_applyCrossfadeVolume scaled it (akao_restoreCrossfadeVolume) */
 } AkaoCrossfade;
-extern AkaoCrossfade D_80080A18;
+extern AkaoCrossfade g_akaoCrossfade;
 
 
 extern AkaoChannel g_akaoChannels[];
@@ -2348,7 +2341,7 @@ s32 bgi_revertActor(s32);
 Window *msg_getWindow(s32);
 void evt_followBalloon(EvtObject *, Window *);
 s32 evt_angleToObject(EvtObject *, EvtObject *, s32);
-void func_800530A8(SVECTOR *, s32, s32);
+void math_rotateSVector(SVECTOR *, s32, s32);
 void msg_updatePlayerBubble(void);
 void msg_drawAtePrompt(void);
 
@@ -2363,7 +2356,7 @@ u8 cd_submit(CdRequest *);
 void cd_onSync(u8, u8 *);
 void cd_onDataReady(u8, u8 *);
 s32 akao_remapInstrument(s32, s32);
-s32 func_8005EC8C(s32, s32);
+s32 akao_remapSeInstrument(s32, s32);
 void akao_setChannelProgram(AkaoChannel *, s32);
 void akao_spuWrite(void *, s32);
 void akao_waitSpuTransfer(void);
@@ -2536,16 +2529,16 @@ u32 SpuWrite(u8 *, u32);
 void akao_streamStartMono(void);
 void akao_stopSeq(AkaoSeq *, AkaoChannel *, s32);
 void SpuGetReverbModeType(s32 *); /* libspu SpuGetReverbModeType */
-void func_800618C0(s32, s32);
+void akao_streamPlayResident(s32, s32);
 void akao_streamStart(s32, s32, s32);
 extern AkaoStreamState g_akaoStream;
-s32 func_80061BC8(); /* K&R: callers pass one or two arguments */
-s32 func_80061FBC(s32, s32, s32, void (*)(void));
+s32 akao_streamNextReadBlock(); /* K&R: callers pass one or two arguments */
+s32 akao_streamRefillRing(s32, s32, s32, void (*)(void));
 void akao_setVoiceLoopAddr(s32, s32);
 void akao_setReverbMode(s32 mode);
-void func_80062118(void);
-void func_80061E1C(s32, s32, void (*)(void));
-void func_800621D4(void);
+void akao_streamRefillRingA(void);
+void akao_streamRingKeyOn(s32, s32, void (*)(void));
+void akao_streamRefillRingB(void);
 
 /* ---- main batch 5 ---- */
 s32 preload_isUsed(PreloadEntry *);
@@ -2695,7 +2688,7 @@ void party_setMember(s32, s32);
 
 
 /* ---- hoisted for the world map (ovl_0c) ---- */
-s32 func_80062E3C(s32, s32, s32, s32, s32, s32, s32);
+s32 shadow_initSlots(s32, s32, s32, s32, s32, s32, s32);
 #if defined(OVL_0A_H) || defined(OVL_0C_H) /* the field code only reads port 1 */
 extern s32 g_padPortPressed;
 #else
@@ -2782,8 +2775,8 @@ extern s32 g_msgPadRepeatTimer;
 s32 evt_getAnimFrameCount();
 s32 game_getModel(s32);
 
-/* Inlined copy of func_8004B9B8. */
-static inline void func_8004B9B8_inline(EvtObject *p) {
+/* Inlined copy of evt_finishTurn. */
+static inline void evt_finishTurn_inline(EvtObject *p) {
     s32 v;
     p->pos.rotY = (u16)p->turnTarget & 0xFFF;
     v = p->turnPrevAnim;
@@ -2849,8 +2842,8 @@ static inline u8 *ui_buildSpriteDef_inline(s32 x, s32 y, u32 *ot, SpriteDef *d, 
     s = (SprtWords *)(t + 1);
     return (u8 *)s;
 }
-/* Inlined copy of func_8004B2F4 (move an object's node to the free list). */
-static inline void func_8004B2F4_inline(EvtObject *key) {
+/* Inlined copy of evt_freeAllocNode (move an object's node to the free list). */
+static inline void evt_freeAllocNode_inline(EvtObject *key) {
     EvtAllocNode *n;
     EvtAllocNode *prev = NULL;
     for (n = g_evtState->allocUsed; n != NULL; n = n->next) {
@@ -2910,22 +2903,22 @@ void pen_end(void);
 extern s32 *g_evtExprSp; /* script value stack pointer */
 extern void *g_evtExprObj; /* script current object */
 
-/* Inlined copy of func_8004B404 (read script variable, refreshing 2-4). */
-static inline u16 func_8004B404_inline(s32 arg0) {
+/* Inlined copy of evt_getBattleVar (read script variable, refreshing 2-4). */
+static inline u16 evt_getBattleVar_inline(s32 arg0) {
     s32 i = arg0 & 7;
 
     switch (i) {
     case 2:
-        D_8007AE10[2] = btl_getUnitMask(0);
+        g_evtBattleVars[2] = btl_getUnitMask(0);
         break;
     case 3:
-        D_8007AE10[3] = btl_getUnitMask(1);
+        g_evtBattleVars[3] = btl_getUnitMask(1);
         break;
     case 4:
-        D_8007AE10[4] = btl_getUnitMask(2);
+        g_evtBattleVars[4] = btl_getUnitMask(2);
         break;
     }
-    return D_8007AE10[i];
+    return g_evtBattleVars[i];
 }
 typedef struct {
     s32 lead; /* pending lead byte (>= 0xFA) of a two-byte code (pen_getGlyph) */
@@ -2955,7 +2948,7 @@ typedef struct {
 extern Unk80068790 D_80068790;
 extern s32 g_hereIconFlipped; /* balloon flipped (pen x < 24) */
 extern u8 D_8006E67C[];
-void func_800512B4(s32);
+void pen_setX(s32);
 void pen_setLastSemiTrans(void);
 s32 msg_emitNumber(s32, s32);
 s32 msg_emitString(u8 *, s32);
@@ -3001,7 +2994,7 @@ static inline s32 chr_getApNeeded_inline(s32 ch, s32 id) {
 void akao_setVoiceStartAddr(s32, s32);
 void akao_setVoiceDecay(s32, s32);
 void akao_setVoiceSustainLevel(s32, s32);
-/* streamed AKAO sound header (func_800616F8) */
+/* streamed AKAO sound header (akao_streamPlayOneShot) */
 typedef struct {
     s32 magic; /* "AKAO" */
     s32 unk4;
@@ -3016,7 +3009,7 @@ typedef struct {
     u8 data[1]; /* sample data */
 } AkaoStream;
 s32 akao_allocStreamVoices(void);
-void func_80061624(void);
+void akao_streamOneShotStart(void);
 void akao_streamStartStereo(void);
 void akao_streamUploadSecond(void);
 u8 *text_buildGlyph(s32, s32, u32 *, u32, s32, s32 *, SprtWords *);
@@ -3097,8 +3090,8 @@ typedef struct {
 extern s16 g_akaoCdVolumeHi;
 extern s32 g_akaoCdVolumeStep;
 s32 akao_isqrt(s32);
-extern s32 D_8007F8E8;
-extern s32 D_8007F8E4;
+extern s32 g_akaoTempoScaleStep;
+extern s32 g_akaoPitchScaleStep;
 extern s32 D_8007F740;
 extern AkaoArgs D_800809F0;
 typedef struct {
@@ -3278,7 +3271,7 @@ typedef struct {
 
 u16 win_getClut(s32, s32);
 extern RECT g_noTexWindow;
-void func_80058F34(AkaoChannel *, u32 *, u32, u32);
+void akao_channelsToVoiceMask(AkaoChannel *, u32 *, u32, u32);
 /* ---- main: boot, system setup, TIM helpers ---- */
 
 /* GameState.config bits (the Config screen rows, ovl_34; runtime field/menu campaign) */
@@ -3373,7 +3366,7 @@ void pad_init(void);
 s32 game_loadCommonAkao(void);
 void game_allocData(void);
 void game_resetData(void);
-void func_8001E3A4(); /* (ModelSlot *): resets a slot; ovl_0b declares it with void * */
+void game_clearModelSlot(); /* (ModelSlot *): resets a slot; ovl_0b declares it with void * */
 s32 game_loadCommonImages(void);
 s32 game_loadCommonDb(void);
 
@@ -3474,7 +3467,7 @@ typedef struct {
 } DbEntry12;
 
 extern TimHeader D_800834D0;
-extern s32 D_8007BCB0;
+extern s32 g_penLineStart;
 
 void text_formatInt(s32, u8 *, s32);
 
@@ -3871,15 +3864,15 @@ extern s32 D_8007AE28;
 void msg_close(s32);
 void msg_resetWindows(void);
 void win_closeAll(void);
-void func_8004ED3C(void);
+void msg_clearWindowOtz(void);
 void *msg_getText(s32);
 s32 evt_moveObjectTo(s32, s32, s32, s32);
-void func_8004B9B8(EvtObject *);
+void evt_finishTurn(EvtObject *);
 
 /* Inlined helper: start the animation set up in animStart/animEnd/animFlags. */
 static inline void evt_execInstr_anim(EvtObject *p, s32 anim) {
     if ((p->animFlags & 0x80) && (p->flags & 0x80)) {
-        func_8004B9B8(p);
+        evt_finishTurn(p);
     }
     p->anim = anim;
     p->animFrame = p->animStart;
@@ -3966,7 +3959,7 @@ extern u8 D_8006E658[];
 void evt_setNextBattle(u16);
 void evt_setCardOpponent();
 void msg_startHereIcon(s32);
-void func_80052D0C(u8 **);
+void evt_skipVarRef(u8 **);
 Unk16D8 *evt_deleteObject(EvtObject *);
 EvtObject *evt_allocObject(s32);
 void evt_onAnimEnd(EvtObject *);
@@ -4191,7 +4184,7 @@ void SetDrawMove(void *p, RECT *rect, int x, int y);
 extern u8 D_8006F308[];
 extern u8 D_8006F310[];
 
-/* sound stream header (g_akaoStream.unk2C + 0x80), func_80061C1C */
+/* sound stream header (g_akaoStream.unk2C + 0x80), akao_streamStartRing */
 typedef struct {
     u8 pad0[0x10];
     s32 dataSize; /* AkaoStreamState.bytesLeft */
@@ -4201,11 +4194,11 @@ typedef struct {
     u8 pad1E[0x20 - 0x1E];
     s32 loopLength; /* AkaoStreamState.loopLength */
     u8 pad24[0x28 - 0x24];
-    s32 fadeIn; /* nonzero: akao_sendCmdE5 fades the volume in over it (func_80061C1C) */
+    s32 fadeIn; /* nonzero: akao_sendCmdE5 fades the volume in over it (akao_streamStartRing) */
 } StreamHeader;
 
 void akao_sendCmdE5(s32 a, s32 b);
-void func_80061EE4(void);
+void akao_streamStartRingVoices(void);
 
 /* AKAO sample stream state, akao_uploadBank */
 typedef struct {
@@ -4306,8 +4299,8 @@ static inline void evt_updateIdleTimer_idle(EvtObject *q) {
     evt_execInstr_anim(q, q->idleAnim);
 }
 
-/* party slot key for func_8004B85C: slots 9+ map down by 4 */
-static inline s32 func_8004B85C_key(s32 slot) {
+/* party slot key for evt_isInParty: slots 9+ map down by 4 */
+static inline s32 evt_isInParty_key(s32 slot) {
     s32 key = slot;
     if (slot >= 9) {
         key = slot - 4;
@@ -4316,7 +4309,7 @@ static inline s32 func_8004B85C_key(s32 slot) {
 }
 
 /* is the party member with this key present, kind < 14 for slot < 8, kind >= 14 otherwise */
-static inline s32 func_8004B85C_find(s32 key, s32 slot) {
+static inline s32 evt_isInParty_find(s32 key, s32 slot) {
     Character **p;
     Character *c;
     s32 kind;
@@ -4364,17 +4357,17 @@ void akao_flushVoice(s32 v, AkaoVoiceRegs *p);
 void akao_calcSeChannelVoice(AkaoChannel *c, u32 bit);
 void akao_assignVoices(AkaoChannel *ch, u32 mask, u32 keep, u32 *used);
 void akao_readEnvelopes(u32 extra);
-void func_80058990(AkaoChannel *c);
-void func_800589E0(Unk800589E0 *a);
-void func_80059140(u32 *out, u32 m1, u32 m2, u32 extra);
+void akao_applyCrossfadeVolume(); /* (AkaoSeq *): saves the sequence volume in g_akaoCrossfade.savedVolume and scales it by the crossfade volume */
+void akao_restoreCrossfadeVolume(); /* (AkaoSeq *) */
+void akao_buildVoiceModeMask(u32 *out, u32 m1, u32 m2, u32 extra);
 extern s32 D_80080A74;
 
 /* Functions called before (or without) a declaration in scope (tools/decl_check.py --protos) */
 /* hand-written asm (no C definition) */
-void func_8005309C(s16 *, s32, s32, s32);
+void math_dirVector(s16 *, s32, s32, s32);
 s32 evt_isInRegion(EvtObject *, s32, s32); /* is (x, z) inside the object's region */
 void pen_endSmall(void);
-void func_80064C24(s32);
+void pen_setColorPreset(s32);
 /* ovl_0a / ovl_0c menuMain_setCursor(u8); unprototyped: the menu screen passes an int unconverted */
 void menuMainField_setCursor();
 void menuMainWorld_setCursor();

@@ -734,7 +734,7 @@ void wm_drawActors(void) {
 
     VectorNormalS((VECTOR *)g_worldCameraDir, &n);
     base = (-ratan2(n.vz, n.vx) + 0x400) % 4096;
-    func_80064CDC(10, 100);
+    pen_locate(10, 100);
     for (e = evt_getObjectList(); e != NULL; e = e->unk0) {
         act = e->unk4;
         if (act->kind == 4 && act->state == 1 && (act->flags & 1) && (u8)wm_worldToView((VECTOR *)&act->pos, &a, &b, &z)) {
@@ -782,7 +782,7 @@ void wm_drawActors(void) {
             }
         }
     }
-    func_80064C24(0);
+    pen_setColorPreset(0);
     SetFarColor(0, 0, 0);
 }
 
@@ -1027,7 +1027,7 @@ void wm_updateActors(void) {
             wm_updateActorHeight(act);
         }
     }
-    func_80064C24(0);
+    pen_setColorPreset(0);
     switch (g_worldMoveModeInfo->controlType) {
     case 0:
     case 3:

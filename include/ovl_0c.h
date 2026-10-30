@@ -1225,7 +1225,7 @@ extern u8 g_worldCameraStartPhase;
 /* main exe: candidates for ff9.h */
 void math_rotMatrixZXY(SVECTOR *, MATRIX *);
 void RotTrans(SVECTOR *v0, VECTOR *v1, long *flag);
-void func_80064CDC(s32, s32);
+void pen_locate(s32, s32);
 void math_rotMatrixZYX_gte(void *, void *); /* rotation (SVECTOR) -> bone matrix */
 void math_rotMatrixYXZ(SVECTOR *, MATRIX *); /* RotMatrix */
 void math_rotMatrixXYZ(SVECTOR *, MATRIX *);
@@ -1540,7 +1540,7 @@ void akao_fadeMusicVolume(s32, s32, s32);
 void akao_fadeMusicVolumeFrom(s32, s32, s32, s32);
 s32 akao_getSpuTransferState(void);
 
-s32 wm_initShadowPrims(s32, s32); /* returns func_80062E3C's result (the next free address) */
+s32 wm_initShadowPrims(s32, s32); /* returns shadow_initSlots's result (the next free address) */
 
 /* Functions called before (or without) a declaration in scope (tools/decl_check.py --protos) */
 void evt_createModels(void); /* main */

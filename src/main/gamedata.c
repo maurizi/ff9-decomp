@@ -100,7 +100,7 @@ void game_resetData(void) {
     gd->modelHook = NULL;
     gd->soundHook = NULL;
     for (i = 8; i >= 0; i--) {
-        func_8001E3A4(&gd->chrModels[i]);
+        game_clearModelSlot(&gd->chrModels[i]);
         gd->chrModels[i].model = (struct BtlUnit9C *)&gd->chrModelObjs[i];
     }
     gd->npcModelObjs = NULL;

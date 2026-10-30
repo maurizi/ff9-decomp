@@ -14,7 +14,7 @@ void game_startFade(s32 a, s32 b, s32 c, s32 d) {
 
 void menu_init(void) {
     menu_reset();
-    func_8003264C();
+    menu_clearCardSlot();
 }
 
 void menu_update(void) {
@@ -155,8 +155,8 @@ void menu_setFadeOutOnClose(u8 a) {
     g_menuFadeOutOnClose = a;
 }
 
-void func_8003264C(void) {
-    D_80077DB2 = 0;
+void menu_clearCardSlot(void) {
+    g_menu.cardSlot = 0;
 }
 
 void menu_dispatch(void) {

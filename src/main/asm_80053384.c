@@ -1,6 +1,6 @@
 #include "ff9.h"
 
-void func_80053384(void) {
+void pen_glyphSinkQuiet(void) {
 }
 
 INCLUDE_ASM("asm/us/main/nonmatchings/asm_80053384", rain_spawn);

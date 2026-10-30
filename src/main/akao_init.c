@@ -95,7 +95,7 @@ void akao_initState(void) {
     g_akaoLoadedBanks[3] = 0;
     g_akaoLoadedBanks[2] = 0;
     g_akaoLoadedBanks[1] = 0;
-    D_8008314C = 0;
+    g_akaoRandIndex = 0;
     g_akaoLoadedBanks[0] = 0;
     D_8007F8E0 = 1;
     g_akaoFlags.bankUpload = 0;
@@ -111,12 +111,12 @@ void akao_initState(void) {
     g_akaoMainSeq.volume = 0x7F0000;
     g_akaoMainSeq.pan = 0x400000;
     g_akaoCdVolume = 0x7FFF0000;
-    D_8007F96C = 0;
-    D_80083150 = 0;
+    g_akaoPitchScaleLen = 0;
+    g_akaoPitchScale = 0;
     g_akaoMainSeq.volumeFadeLen = 0;
     g_akaoMainSeq.panSlideLen = 0;
-    D_8007F96E = 0;
-    D_80083154 = 0;
+    g_akaoTempoScaleLen = 0;
+    g_akaoTempoScale = 0;
     g_akaoCdVolumeFadeTicks = 0;
     p = (u8 *)g_akaoChannels + 0x88;
     i = *cnt;
@@ -134,14 +134,14 @@ void akao_initState(void) {
     SPU_REG16(SPU_MAIN_VOL_R) = 0x3FFF;
     SPU_REG16(SPU_CD_VOL_L) = 0x7FFF;
     SPU_REG16(SPU_CD_VOL_R) = 0x7FFF;
-    D_800809B8 = 0;
+    g_akaoSkipMeasures = 0;
     D_80080AC4 = 0;
     D_800831C4 = 0;
     g_akaoStream.volume = 0x7F00;
     g_akaoStream.volumeFadeLen = 0;
-    D_80083238[2] = 0;
-    D_80083238[1] = 0;
-    D_80083238[0] = 0;
+    g_akaoVoiceModeMasks[2] = 0;
+    g_akaoVoiceModeMasks[1] = 0;
+    g_akaoVoiceModeMasks[0] = 0;
     D_80080A20 = 0;
     /* The nested do-while(0)s emit no code. flow weights references inside loop notes by depth, so they
      * raise cnt's reference count until local-alloc ranks it above &g_akaoChannels and gives it a2. The

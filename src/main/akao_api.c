@@ -17,13 +17,13 @@ s32 akao_setSeTables(u8 *a) {
     r = akao_checkHeader((s32 *)a);
     if (r == 0) {
         p = a + 0x10;
-        D_800809DC = (u16 *)p;
+        g_akaoSeTrackOfs = (u16 *)p;
         p = a + 0x210;
-        D_800809E4 = (u16 *)p;
+        g_akaoSeBankIds = (u16 *)p;
         p = a + 0x310;
-        D_80083148 = (u16 *)p;
+        g_akaoSeExtraCounts = (u16 *)p;
         p = a + 0x410;
-        D_800809E8 = p;
+        g_akaoSeData = p;
     }
     return r;
 }
@@ -48,9 +48,9 @@ void akao_saveMusic(void) {
     akao_command(0x40);
 }
 
-s32 func_80055330(void) {
+s32 akao_clearSavedMusic(void) {
     if (g_akaoSubSeq == 0) {
-        D_8007F95A = 0;
+        g_akaoSavedSeqMusicId = 0;
     }
     return 0;
 }
@@ -332,36 +332,36 @@ void akao_fadeCdVolumeFrom(s32 a, s32 b, s32 c) {
     akao_command(0x72);
 }
 
-void akao_sendCmdD0(s32 a) {
+void akao_setTempoScale(s32 a) {
     g_akaoArgs.arg0 = a & 0xFF;
     akao_command(0xD0);
 }
 
-void akao_sendCmdD1(s32 a, s32 b) {
+void akao_fadeTempoScale(s32 a, s32 b) {
     g_akaoArgs.arg0 = a;
     g_akaoArgs.arg1 = b & 0xFF;
     akao_command(0xD1);
 }
 
-void akao_sendCmdD2(s32 a, s32 b, s32 c) {
+void akao_fadeTempoScaleFrom(s32 a, s32 b, s32 c) {
     g_akaoArgs.arg0 = a;
     g_akaoArgs.arg1 = b & 0xFF;
     g_akaoArgs.arg2 = c & 0xFF;
     akao_command(0xD2);
 }
 
-void akao_sendCmdD4(s32 a) {
+void akao_setPitchScale(s32 a) {
     g_akaoArgs.arg0 = a & 0xFF;
     akao_command(0xD4);
 }
 
-void akao_sendCmdD5(s32 a, s32 b) {
+void akao_fadePitchScale(s32 a, s32 b) {
     g_akaoArgs.arg0 = a;
     g_akaoArgs.arg1 = b & 0xFF;
     akao_command(0xD5);
 }
 
-void akao_sendCmdD6(s32 a, s32 b, s32 c) {
+void akao_fadePitchScaleFrom(s32 a, s32 b, s32 c) {
     g_akaoArgs.arg0 = a;
     g_akaoArgs.arg1 = b & 0xFF;
     g_akaoArgs.arg2 = c & 0xFF;
@@ -483,7 +483,7 @@ void func_80056028(s32 a, s32 b) {
     akao_loadBankRetry(a, b);
 }
 
-s32 func_80056048(s32 *a, s32 b, s32 c) {
+s32 akao_loadBankInSlot(s32 *a, s32 b, s32 c) {
     AkaoBankHeader *h = (AkaoBankHeader *)a;
     s32 y;
     s32 id;
@@ -578,7 +578,7 @@ s32 akao_uploadSeBank(s32 *a, s32 b) {
         SpuSetTransferStartAddr(addr);
         akao_spuWrite(a, h[4]);
         h[8] = addr;
-        akao_copy(h, D_8007F720, 0x70);
+        akao_copy(h, g_akaoResidentStream, 0x70);
     } else {
         D_8007F740 = 0;
     }
@@ -616,14 +616,14 @@ s32 akao_sendCmdE8(s32 a, s32 b) {
     return 0;
 }
 
-s32 func_80056488(void *unused) { /* mbg_stream passes its stream state */
+s32 akao_streamPushBlock(void *unused) { /* mbg_stream passes its stream state */
     g_akaoStream.unk24++;
     g_akaoStream.unk38++;
     if (g_akaoStream.unk3C - 1 < g_akaoStream.unk38) {
         g_akaoStream.unk38 = 0;
     }
     if ((g_akaoStream.flags & 0x1000000) && g_akaoStream.unk38 >= 2) {
-        func_80061C1C();
+        akao_streamStartRing();
     }
     return g_akaoStream.unk34;
 }

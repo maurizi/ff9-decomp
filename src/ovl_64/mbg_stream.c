@@ -432,7 +432,7 @@ s32 mbg_streamPushAudio(void) {
         return 6;
     }
     g_mbgStream.audioPending -= 2;
-    func_80056488(&g_mbgStream);
+    akao_streamPushBlock(&g_mbgStream);
     return 0;
 }
 
@@ -442,7 +442,7 @@ s32 mbg_streamSeek(CdlLOC *loc) {
     mbg_streamClearRing();
     pos = CdPosToInt(loc);
     if (cd_getState() != 0) {
-        func_80022FD0(0);
+        cd_pauseAsync(0);
         while (cd_getState() != 0) {
         }
     }

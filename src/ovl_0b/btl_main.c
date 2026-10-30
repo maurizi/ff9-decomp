@@ -280,12 +280,12 @@ void btl_load(s32 arg0) {
     g_modeHeap = (s32)&g_gameState->gameData->npcModels[g_gameState->gameData->npcCount];
     g_gameState->gameData->unk9 = 0;
     for (i = 0; i < 9; i++) {
-        func_8001E3A4(&g_gameState->gameData->chrModels[i]);
+        game_clearModelSlot(&g_gameState->gameData->chrModels[i]);
         g_gameState->gameData->chrModels[i].model = (struct BtlUnit9C *)&g_gameState->gameData->chrModelObjs[i];
     }
     g_gameState->gameData->npcModelSlots = 0;
     for (i = 0; i < g_gameState->gameData->npcCount; i++) {
-        func_8001E3A4(&g_gameState->gameData->npcModels[i]);
+        game_clearModelSlot(&g_gameState->gameData->npcModels[i]);
         g_gameState->gameData->npcModels[i].model = (struct BtlUnit9C *)&g_gameState->gameData->npcModelObjs[i];
     }
     p->shadows = (struct BtlShadow *)g_modeHeap;
@@ -627,7 +627,7 @@ loop:
         if (cdRead_update(cd) != 0) {
             break;
         }
-        func_8001DA78(&arg2->buf, cd->chunk);
+        file_advanceLoadPtr(&arg2->buf, cd->chunk);
         st->state = arg2->nextState;
         goto loop;
     case 2:
@@ -667,7 +667,7 @@ loop:
         if (arg2->bank == -1) {
             akao_loadBankRetry(h, 0);
         } else {
-            func_80056048(h, arg2->bank & 3, 0);
+            akao_loadBankInSlot(h, arg2->bank & 3, 0);
         }
         st->state = 5;
         goto loop;
@@ -1648,7 +1648,7 @@ u8 *btl_drawShadow(BtlShadow *arg0, s32 arg1, s32 arg2, s32 arg3, u8 *prim) {
 }
 
 s32 btl_allocShadows(s32 arg0, s32 arg1) {
-    return func_80062E3C(arg0, 0x100, 0xFF, 0x200, 0xE0, arg1, 0);
+    return shadow_initSlots(arg0, 0x100, 0xFF, 0x200, 0xE0, arg1, 0);
 }
 
 void btl_calcShadowMatrix(Unk800AD4E4 *arg0, BtlObj *arg1, MATRIX *arg2, s32 arg3, s32 arg4, s32 arg5) {
@@ -2107,7 +2107,7 @@ void btl_onSoundRead(Unk800AE844 *arg0) {
     if (D_800F51EC == -1) {
         akao_uploadBank(p, n, 0);
     } else {
-        func_80056048(p, D_800F51EC, 0);
+        akao_loadBankInSlot(p, D_800F51EC, 0);
     }
     arg0->addr = p;
 }

@@ -18,7 +18,7 @@ u16 akao_shiftInstrumentDown(u32 flags, AkaoChannel *c) {
     return c->instrument;
 }
 
-void func_80059414(void) {
+void akao_freeSubSeqVoices(void) {
     AkaoSeq *a = g_akaoSubSeq;
     AkaoSeq *seq;
     u32 seq8, a8, seqC, aC;

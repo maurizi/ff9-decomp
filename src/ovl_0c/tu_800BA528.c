@@ -1119,7 +1119,7 @@ void wm_updateVisibleBlocks(void) {
 
     pos.vy = 0;
     wm_blockListInit();
-    func_80064CDC(10, 10);
+    pen_locate(10, 10);
     n = 0;
     if (g_worldMoveMode < 6) {
         if (g_worldPlayer->pos.vy >= -0x9C3) {

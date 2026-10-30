@@ -306,7 +306,7 @@ s32 cd_restartAt(s32 a) {
     return 1;
 }
 
-u8 func_80022FD0(void (*a)(u8 *)) {
+u8 cd_pauseAsync(void (*a)(u8 *)) {
     CdRequest r;
     r.flags = 4;
     r.doneCallback = a;

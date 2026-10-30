@@ -1041,7 +1041,7 @@ void fld_drawShadow(FieldObjPlace *arg0, s32 arg1) {
 }
 
 s32 fld_initShadows(s32 arg0, s32 arg1, s32 arg2, s32 arg3) {
-    return func_80062E3C(arg0, 0x100, 0xFF, arg2, arg3, arg1, 3);
+    return shadow_initSlots(arg0, 0x100, 0xFF, arg2, arg3, arg1, 3);
 }
 
 /* object placement matrix: either a plain y rotation or facing the model's joint */

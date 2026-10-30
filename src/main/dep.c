@@ -1,6 +1,6 @@
 #include "ff9.h"
 
-s32 func_80062E3C(s32 prim, s32 cx, s32 cy, s32 u, s32 v, s32 n, s32 flags) {
+s32 shadow_initSlots(s32 prim, s32 cx, s32 cy, s32 u, s32 v, s32 n, s32 flags) {
     Unk11C0Slot *s;
     Unk11C0Slot *q;
     POLY_FT4 *p;

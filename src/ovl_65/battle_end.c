@@ -418,7 +418,7 @@ void rewards_stateGil(void) {
         }
         s_rewards.state++;
         fade_setOtz(s_rewards.savedOtz);
-        if (D_80077DB5 != 0) {
+        if (g_menu.open != 0) {
             menu_close();
         } else {
             fade_out(0x10);
@@ -578,7 +578,7 @@ u8 rewards_update(void) {
             goto count;
         }
         s_rewards.prim = s_rewards.primBufs[g_drawBufs.cur];
-        if (D_80077DB5 == 0) {
+        if (g_menu.open == 0) {
             pad_updateRepeat(0);
         }
         rewards_draw();

@@ -644,7 +644,7 @@ u8 *ui_buildItemIcon(s32 x, s32 y, u32 *ot, s32 item, u8 flag, u8 *pkt) {
     return pkt + sizeof(DrTpageWords);
 }
 
-void func_80026DCC(s32 arg0, s32 arg1, s32 otz, s32 arg3, u8 arg4) {
+void ui_drawItemIcon2(s32 arg0, s32 arg1, s32 otz, s32 arg3, u8 arg4) {
     g_primPtr = ui_buildItemIcon(arg0, arg1, &g_ot[otz], arg3, arg4, g_primPtr);
 }
 

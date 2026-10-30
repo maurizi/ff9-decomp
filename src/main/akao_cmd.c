@@ -409,7 +409,7 @@ void akao_startSe(VoiceParams *p, u8 *a, u8 *b, s32 flag) {
 }
 
 static inline u8 *akao_getSeData_get(s32 i) {
-    return D_800809DC[i] != 0xFFFF ? D_800809E8 + D_800809DC[i] : NULL;
+    return g_akaoSeTrackOfs[i] != 0xFFFF ? g_akaoSeData + g_akaoSeTrackOfs[i] : NULL;
 }
 
 void akao_getSeData(u8 **a, u8 **b, s32 idx) {
@@ -531,7 +531,7 @@ void akao_resumeSeq(s32 addr, s32 restore) {
     }
 }
 
-s32 func_8005A5FC(s32 a) {
+s32 akao_findBankSlot(s32 a) {
     s32 i = 0;
 
     if (a != 0) {
@@ -596,7 +596,7 @@ void akao_cmdPushMusic(AkaoArgs *a) {
     t->volume = (a->arg4 & 0x7F) << 16;
     t->volumeFadeLen = 0;
     t->musicId = a->arg2;
-    func_80059414();
+    akao_freeSubSeqVoices();
 }
 
 void akao_cmdCrossfadeMusic(AkaoArgs *a) {
@@ -618,15 +618,15 @@ void akao_cmdCrossfadeMusic(AkaoArgs *a) {
     }
     if (g_akaoSubSeq != NULL) {
         d = a->arg4;
-        D_80080A18.volume = 0x7F8000;
-        D_80080A18.fadeLen = d;
+        g_akaoCrossfade.volume = 0x7F8000;
+        g_akaoCrossfade.fadeLen = d;
         g_akaoFlags.mode |= 0x100;
-        D_80080A18.volumeStep = -0x7F8000 / d;
+        g_akaoCrossfade.volumeStep = -0x7F8000 / d;
     }
     g_akaoSeq->volume = 0;
     g_akaoSeq->volumeFadeLen = a->arg4;
     g_akaoSeq->volumeStep = (u32)(((a->arg5 & 0x7F) << 16) | 0x8000) / (u32)a->arg4;
-    func_80059414();
+    akao_freeSubSeqVoices();
 }
 
 void akao_cmdPlayMusicCount(AkaoArgs *a) {
@@ -636,7 +636,7 @@ void akao_cmdPlayMusicCount(AkaoArgs *a) {
     if (a->arg3 != 0) {
         r = a->arg3 - 1;
     }
-    D_800809B8 = r;
+    g_akaoSkipMeasures = r;
 }
 
 void akao_cmdPlaySeData(AkaoArgs *p) {
@@ -654,12 +654,12 @@ void akao_cmdPlaySeDefault(AkaoArgs *p) {
     u8 *a;
     u8 *b;
     s32 i;
-    s32 n = D_80083148[p->arg0];
+    s32 n = g_akaoSeExtraCounts[p->arg0];
 
     p->arg1 = 0x2000000;
     p->arg2 = 0x80;
     p->arg3 = 0x7F;
-    p->arg4 = func_8005A5FC(D_800809E4[p->arg0]);
+    p->arg4 = akao_findBankSlot(g_akaoSeBankIds[p->arg0]);
     akao_getSeData(&a, &b, p->arg0);
     akao_startSe(p, a, b, 0);
     if (n != 0) {
@@ -677,9 +677,9 @@ void akao_cmdPlaySe(AkaoArgs *p) {
     u8 *a;
     u8 *b;
     s32 i;
-    s32 n = D_80083148[p->arg0];
+    s32 n = g_akaoSeExtraCounts[p->arg0];
 
-    p->arg4 = func_8005A5FC(D_800809E4[p->arg0]);
+    p->arg4 = akao_findBankSlot(g_akaoSeBankIds[p->arg0]);
     akao_getSeData(&a, &b, p->arg0);
     akao_startSe(p, a, b, 0);
     if (n != 0) {
@@ -703,7 +703,7 @@ void akao_cmdPlaySeBank(AkaoArgs *s) {
     u8 *b;
     s32 n;
 
-    s->arg4 = func_8005A5FC(h->id);
+    s->arg4 = akao_findBankSlot(h->id);
     n = h->trackCount;
     base = (u8 *)(offs + n);
     p = (u16 *)(base + offs[0]);
@@ -1173,58 +1173,58 @@ void akao_cmdAD(AkaoArgs *p) {
     }
 }
 
-void akao_cmdD0(s8 *a) {
+void akao_cmdSetTempoScale(s8 *a) {
     s32 v = *a;
-    D_8007F96E = 0;
-    D_80083154 = v << 16;
+    g_akaoTempoScaleLen = 0;
+    g_akaoTempoScale = v << 16;
 }
 
-void akao_cmdD1(AkaoArgs *p) {
+void akao_cmdFadeTempoScale(AkaoArgs *p) {
     s32 n = 1;
 
     if (p->arg0 != 0) {
         n = p->arg0;
     }
-    D_8007F8E8 = (((s8)p->arg1 << 16) - D_80083154) / n;
-    D_8007F96E = n;
+    g_akaoTempoScaleStep = (((s8)p->arg1 << 16) - g_akaoTempoScale) / n;
+    g_akaoTempoScaleLen = n;
 }
 
-void akao_cmdD2(AkaoArgs *p) {
+void akao_cmdFadeTempoScaleFrom(AkaoArgs *p) {
     s32 n = 1;
 
     if (p->arg1 != 0) {
         n = p->arg0;
     }
-    D_80083154 = (s8)p->arg1 << 16;
-    D_8007F8E8 = (((s8)p->arg2 << 16) - D_80083154) / n;
-    D_8007F96E = n;
+    g_akaoTempoScale = (s8)p->arg1 << 16;
+    g_akaoTempoScaleStep = (((s8)p->arg2 << 16) - g_akaoTempoScale) / n;
+    g_akaoTempoScaleLen = n;
 }
 
-void akao_cmdD4(s8 *a) {
+void akao_cmdSetPitchScale(s8 *a) {
     s32 v = *a;
-    D_8007F96C = 0;
-    D_80083150 = v << 16;
+    g_akaoPitchScaleLen = 0;
+    g_akaoPitchScale = v << 16;
 }
 
-void akao_cmdD5(AkaoArgs *p) {
+void akao_cmdFadePitchScale(AkaoArgs *p) {
     s32 n = 1;
 
     if (p->arg0 != 0) {
         n = p->arg0;
     }
-    D_8007F8E4 = (((s8)p->arg1 << 16) - D_80083150) / n;
-    D_8007F96C = n;
+    g_akaoPitchScaleStep = (((s8)p->arg1 << 16) - g_akaoPitchScale) / n;
+    g_akaoPitchScaleLen = n;
 }
 
-void akao_cmdD6(AkaoArgs *p) {
+void akao_cmdFadePitchScaleFrom(AkaoArgs *p) {
     s32 n = 1;
 
     if (p->arg1 != 0) {
         n = p->arg0;
     }
-    D_80083150 = (s8)p->arg1 << 16;
-    D_8007F8E4 = (((s8)p->arg2 << 16) - D_80083150) / n;
-    D_8007F96C = n;
+    g_akaoPitchScale = (s8)p->arg1 << 16;
+    g_akaoPitchScaleStep = (((s8)p->arg2 << 16) - g_akaoPitchScale) / n;
+    g_akaoPitchScaleLen = n;
 }
 
 void akao_cmdStopMusicNow(void) {

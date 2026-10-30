@@ -55,7 +55,7 @@ void akao_tickSe(void) {
     s32 old;
     s32 k;
 
-    D_8008314C = (D_8008314C + 1) & 0xFF;
+    g_akaoRandIndex = (g_akaoRandIndex + 1) & 0xFF;
     if (g_akaoCdVolumeFadeTicks != 0) {
         g_akaoCdVolumeFadeTicks--;
         g_akaoCdVolume += g_akaoCdVolumeStep;
@@ -80,14 +80,14 @@ void akao_tickSe(void) {
         }
         g_akaoSeVolume = v & 0xFFFF;
     }
-    if (D_8007F96E != 0) {
-        D_8007F96E--;
-        D_80083154 += D_8007F8E8;
+    if (g_akaoTempoScaleLen != 0) {
+        g_akaoTempoScaleLen--;
+        g_akaoTempoScale += g_akaoTempoScaleStep;
     }
-    if (D_8007F96C != 0) {
-        D_8007F96C--;
-        v = D_80083150 + D_8007F8E4;
-        if ((v & 0xFF0000) != (D_80083150 & 0xFF0000)) {
+    if (g_akaoPitchScaleLen != 0) {
+        g_akaoPitchScaleLen--;
+        v = g_akaoPitchScale + g_akaoPitchScaleStep;
+        if ((v & 0xFF0000) != (g_akaoPitchScale & 0xFF0000)) {
             k = 32;
             c = g_akaoChannels;
             do {
@@ -96,7 +96,7 @@ void akao_tickSe(void) {
                 c++;
             } while (k != 0);
         }
-        D_80083150 = v;
+        g_akaoPitchScale = v;
     }
     if (g_akaoSeq->activeMask != 0) {
         if (g_akaoSeq->volumeFadeLen != 0) {
@@ -187,7 +187,7 @@ u32 akao_tickChannels(AkaoChannel *chans, s32 sub) {
     s32 flags;
 
     tempo = g_akaoSeq->tempo.h[1];
-    m = D_80083156;
+    m = g_akaoTempoScaleHi;
     if (m != 0) {
         if (m < 0x80) {
             tempo += (tempo * m) >> 7;
@@ -238,13 +238,13 @@ u32 akao_tickChannels(AkaoChannel *chans, s32 sub) {
                         if (++g_akaoSeq->beat == g_akaoSeq->beatsPerMeasure) {
                             g_akaoSeq->beat = 0;
                             g_akaoSeq->measure++;
-                            if (sub == 0 && D_800809B8 != 0) {
-                                D_800809B8--;
+                            if (sub == 0 && g_akaoSkipMeasures != 0) {
+                                g_akaoSkipMeasures--;
                             }
                         }
                     }
                 }
-                if (sub != 0 || D_800809B8 == 0) {
+                if (sub != 0 || g_akaoSkipMeasures == 0) {
                     break;
                 }
             }
@@ -253,11 +253,11 @@ u32 akao_tickChannels(AkaoChannel *chans, s32 sub) {
     return g_akaoSeq->activeMask;
 }
 
-void func_8005D628(AkaoSeq *arg0, AkaoChannel *arg1) {
+void akao_tickCrossfade(AkaoSeq *arg0, AkaoChannel *arg1) {
     s32 t;
 
-    if (D_80080A18.fadeLen != 0) {
-        if (--D_80080A18.fadeLen == 0) {
+    if (g_akaoCrossfade.fadeLen != 0) {
+        if (--g_akaoCrossfade.fadeLen == 0) {
             s32 v = arg0->activeMask;
             arg0->musicId = 0;
             arg0->activeMask = 0;
@@ -266,11 +266,11 @@ void func_8005D628(AkaoSeq *arg0, AkaoChannel *arg1) {
             arg0->keyOffMask = v;
             return;
         }
-        t = D_80080A18.volume + D_80080A18.volumeStep;
-        if ((t & 0xFFFF0000) != (D_80080A18.volume & 0xFFFF0000)) {
+        t = g_akaoCrossfade.volume + g_akaoCrossfade.volumeStep;
+        if ((t & 0xFFFF0000) != (g_akaoCrossfade.volume & 0xFFFF0000)) {
             akao_markSeqDirty(arg0, arg1, arg0);
         }
-        D_80080A18.volume = t;
+        g_akaoCrossfade.volume = t;
     }
 }
 
@@ -307,7 +307,7 @@ s32 akao_tick(void) {
         D_8007E3D0++;
         g_akaoTickCount++;
         if ((g_akaoSeq->keyOffMask | g_akaoSeState.keyOffMask) != 0 || (g_akaoSubSeq != NULL && g_akaoSubSeq->keyOffMask != 0)) {
-            func_80058F94();
+            akao_flushKeyOffs();
         }
         if (g_akaoSubSeq != NULL) {
             if (g_akaoSubSeq->activeMask == 0) {
@@ -334,7 +334,7 @@ s32 akao_tick(void) {
                 g_akaoSeq = &g_akaoMainSeq;
             }
             if ((g_akaoFlags.mode & 0x100) && !(g_akaoTickCount & 3)) {
-                func_8005D628(g_akaoSubSeq, g_akaoSubChannels);
+                akao_tickCrossfade(g_akaoSubSeq, g_akaoSubChannels);
                 if (g_akaoSubSeq->activeMask == 0) {
                     g_akaoFlags.mode &= ~0x100;
                 }
@@ -389,7 +389,7 @@ s32 akao_tick(void) {
 }
 
 /* Looks ahead in the channel's sequence for the next note opcode (0xA0: rest or end). */
-s32 func_8005DB40(AkaoChannel *c) {
+s32 akao_peekNextNote(AkaoChannel *c) {
     u8 *p;
     u32 n;
     u32 op;
@@ -408,7 +408,7 @@ s32 func_8005DB40(AkaoChannel *c) {
             return 0xA0;
         }
         op = *p;
-        len = D_8006F374[op - 0xA0];
+        len = g_akaoOpLengths[op - 0xA0];
         if (len != 0) {
             p += len;
             continue;
@@ -434,7 +434,7 @@ s32 func_8005DB40(AkaoChannel *c) {
         case 0xFE:
             p++;
             op = *p;
-            len = D_8006F3D4[op];
+            len = g_akaoFeOpLengths[op];
             if (len != 0) {
                 p += len;
                 continue;
@@ -609,7 +609,7 @@ u16 akao_calcPitch(AkaoInstrument *p, s32 note, u8 fine, s32 *out) {
     return freq;
 }
 
-s32 func_8005E170(AkaoChannel *c, u32 mask, s32 key) {
+s32 akao_playDrumNote(AkaoChannel *c, u32 mask, s32 key) {
     AkaoDrumKey *e;
     AkaoInstrument *p;
     u32 f;
@@ -707,7 +707,7 @@ void akao_execChannel(AkaoChannel *c, u32 mask) {
         }
         return;
     }
-    vel = func_8005DB40(c) & 0xFF;
+    vel = akao_peekNextNote(c) & 0xFF;
     if (c->fixedLen != 0) {
         c->noteTicks = c->gateTicks = c->fixedLen;
     }
@@ -746,7 +746,7 @@ void akao_execChannel(AkaoChannel *c, u32 mask) {
         op += c->octave * 12;
         f = c->flags;
         if (f & 8) {
-            vel = func_8005E170(c, mask, op);
+            vel = akao_playDrumNote(c, mask, op);
         } else {
             if (!(c->legato & 2)) {
                 if (c->isSe == 0) {
@@ -779,8 +779,8 @@ void akao_execChannel(AkaoChannel *c, u32 mask) {
             vel = ((s32 (*)())akao_calcPitch)(&g_akaoInstruments[c->instrument], op, c->fineTune, &c->fineTuneOfs);
             if (c->pitchRandom != 0) {
                 tmp = (u32)(vel * c->pitchRandom) >> 8;
-                tmp *= (u8)g_akaoLfoTableData[D_8008314C];
-                if ((u8)g_akaoLfoTableData[D_8008314C] & 0x80) {
+                tmp *= (u8)g_akaoLfoTableData[g_akaoRandIndex];
+                if ((u8)g_akaoLfoTableData[g_akaoRandIndex] & 0x80) {
                     tmp >>= 9;
                     vel -= tmp;
                 } else {
@@ -832,7 +832,7 @@ void akao_execChannel(AkaoChannel *c, u32 mask) {
     c->prevTranspose = c->transpose;
 }
 
-s32 func_8005EB40(s32 *p, s32 target, s32 steps, s32 shift) {
+s32 akao_initSlide(s32 *p, s32 target, s32 steps, s32 shift) {
     s32 mask = (1 << shift) - 1;
     s32 cur = *p & ~mask;
     s32 step;
@@ -874,7 +874,7 @@ void akao_stopSeChannel(AkaoChannel *c, u32 mask) {
     c->seHandle = 0;
 }
 
-s32 func_8005EC8C(s32 a, s32 b) {
+s32 akao_remapSeInstrument(s32 a, s32 b) {
     if (a != 0) {
         if ((u32)(b - 0xC0) < 0x20) {
             return b + a * 8;
@@ -892,7 +892,7 @@ void akao_opEnd(AkaoChannel *c, s32 mask) {
     if (c->isSe == 0) {
         t = g_akaoSeq;
         if ((t->activeMask &= ~mask) == 0) {
-            D_800809B8 = 0;
+            g_akaoSkipMeasures = 0;
             t->musicId = 0;
             t->flags = 0;
         }
@@ -1094,7 +1094,7 @@ void akao_opProgram(AkaoChannel *arg0) {
     if (arg0->isSe == 0) {
         i = akao_remapInstrument(g_akaoSeq->flags, b);
     } else {
-        i = func_8005EC8C(arg0->seBank, b);
+        i = akao_remapSeInstrument(arg0->seBank, b);
     }
     e = &g_akaoInstruments[i];
     akao_setChannelInstrument(arg0, e, e->startAddr);
@@ -1272,7 +1272,7 @@ void akao_opE4(AkaoChannel *c) {
         v = 0x100;
     }
     c->vibratoPeriodSlideLen = v;
-    c->vibratoPeriodStep = func_8005EB40(&c->vibratoPeriod, *c->pc++, v, 0xC);
+    c->vibratoPeriodStep = akao_initSlide(&c->vibratoPeriod, *c->pc++, v, 0xC);
 }
 
 void akao_opB6(AkaoChannel *c) {
@@ -1327,7 +1327,7 @@ void akao_opE5(AkaoChannel *c) {
         v = 0x100;
     }
     c->tremoloPeriodSlideLen = v;
-    c->tremoloPeriodStep = func_8005EB40(&c->tremoloPeriod, *c->pc++, v, 0xC);
+    c->tremoloPeriodStep = akao_initSlide(&c->tremoloPeriod, *c->pc++, v, 0xC);
 }
 
 void akao_opBA(AkaoChannel *c) {
@@ -1372,7 +1372,7 @@ void akao_opE6(AkaoChannel *c) {
         v = 0x100;
     }
     c->panLfoPeriodSlideLen = v;
-    c->panLfoPeriodStep = func_8005EB40(&c->panLfoPeriod, *c->pc++, v, 0xC);
+    c->panLfoPeriodStep = akao_initSlide(&c->panLfoPeriod, *c->pc++, v, 0xC);
 }
 
 void akao_opBE(AkaoChannel *c) {
@@ -2045,12 +2045,12 @@ void akao_cmdE6(s32 *a) {
     }
 }
 
-void func_800615F8(void) {
+void akao_streamArmStop(void) {
     SpuSetIRQAddr(0x1038);
     SpuSetIRQCallback(akao_streamStop);
 }
 
-void func_80061624(void) {
+void akao_streamOneShotStart(void) {
     u32 irq;
     if (g_akaoStream.bytesLeft > 0x2000) {
         SpuSetTransferStartAddr(g_akaoStream.spuAddr + 0x2000);
@@ -2062,12 +2062,12 @@ void func_80061624(void) {
     akao_streamSetVoice(g_akaoStream.voice, 0, g_akaoStream.spuAddr, 0x1030);
     akao_streamSetVoice(g_akaoStream.voice + 1, 0, g_akaoStream.spuAddr, 0x1030);
     SpuSetIRQAddr(irq);
-    SpuSetIRQCallback(func_800615F8);
+    SpuSetIRQCallback(akao_streamArmStop);
     akao_keyOn(g_akaoStream.voiceMask);
     SpuSetIRQ(1);
 }
 
-void func_800616F8(s32 arg0, s32 b, s32 addr, s32 loop) {
+void akao_streamPlayOneShot(s32 arg0, s32 b, s32 addr, s32 loop) {
     AkaoStream *h = (AkaoStream *)arg0;
     AkaoStreamState *d;
     s32 v;
@@ -2094,7 +2094,7 @@ void func_800616F8(s32 arg0, s32 b, s32 addr, s32 loop) {
         SpuSetTransferMode(0);
         SpuSetTransferStartAddr(addr);
         g_akaoSpuBusy = 1;
-        SpuSetTransferCallback(func_80061624);
+        SpuSetTransferCallback(akao_streamOneShotStart);
         n = d->bytesLeft;
         if (n > 0x2000) {
             n = 0x2000;
@@ -2112,8 +2112,8 @@ void func_800616F8(s32 arg0, s32 b, s32 addr, s32 loop) {
     }
 }
 
-void func_800618C0(s32 unused, s32 flag) {
-    s32 *h = D_8007F720;
+void akao_streamPlayResident(s32 unused, s32 flag) {
+    s32 *h = g_akaoResidentStream;
     s32 *h2;
     s32 v;
     s32 mask;
@@ -2147,7 +2147,7 @@ void func_800618C0(s32 unused, s32 flag) {
     g_akaoSeState.noiseMask &= ~g_akaoStream.voiceMask;
     g_akaoFlags.dirty |= 0x100;
     SpuSetIRQAddr(irq);
-    SpuSetIRQCallback(func_800615F8);
+    SpuSetIRQCallback(akao_streamArmStop);
     if (h2[6] & 1) {
         if (h2[6] & 2) {
             akao_streamSetVoice(g_akaoStream.voice, 1, h2[8], h2[8] + h2[5]);
@@ -2171,18 +2171,18 @@ void func_800618C0(s32 unused, s32 flag) {
 
 void akao_cmdEC(s32 *a) {
     akao_streamStop();
-    func_800616F8(a[0], a[1], a[2], a[3]);
+    akao_streamPlayOneShot(a[0], a[1], a[2], a[3]);
     g_akaoSeState.activeMask &= ~g_akaoStream.voiceMask;
 }
 
 void akao_cmdED(s32 *a) {
     akao_streamStop();
-    func_800618C0(a[0], a[1]);
+    akao_streamPlayResident(a[0], a[1]);
     g_akaoSeState.activeMask &= ~g_akaoStream.voiceMask;
 }
 
 /* K&R definition: callers pass one or two arguments */
-s32 func_80061BC8(p)
+s32 akao_streamNextReadBlock(p)
     s32 *p;
 {
     g_akaoStream.unk28++;
@@ -2193,7 +2193,7 @@ s32 func_80061BC8(p)
     return *p;
 }
 
-void func_80061C1C(void) {
+void akao_streamStartRing(void) {
     StreamHeader *h;
     AkaoStreamState *d;
     s32 v;
@@ -2226,18 +2226,18 @@ void func_80061C1C(void) {
     SpuSetTransferMode(0);
     SpuSetTransferStartAddr(0x1100);
     g_akaoSpuBusy = 1;
-    SpuSetTransferCallback(func_80061EE4);
+    SpuSetTransferCallback(akao_streamStartRingVoices);
     if (d->flags & 0x400) {
         SpuWrite(g_akaoStream.readPtr + 0xD0, 0x4000);
-        func_80061BC8(&d->unk34);
-        func_80061BC8(&d->unk34);
-        func_80061BC8(&d->unk34);
-        func_80061BC8(&d->unk34);
+        akao_streamNextReadBlock(&d->unk34);
+        akao_streamNextReadBlock(&d->unk34);
+        akao_streamNextReadBlock(&d->unk34);
+        akao_streamNextReadBlock(&d->unk34);
         d->voiceMask |= (1 << (v - 2)) | (1 << (v - 1));
     } else {
         SpuWrite(g_akaoStream.readPtr + 0xD0, 0x2000);
-        func_80061BC8(&d->unk34);
-        func_80061BC8(&d->unk34);
+        akao_streamNextReadBlock(&d->unk34);
+        akao_streamNextReadBlock(&d->unk34);
     }
     g_akaoSeState.reverbMask &= ~g_akaoStreamVoices;
     g_akaoSeState.pitchModMask &= ~g_akaoStreamVoices;
@@ -2245,7 +2245,7 @@ void func_80061C1C(void) {
     g_akaoFlags.dirty |= 0x100;
 }
 
-void func_80061E1C(s32 a, s32 b, void (*cb)(void)) {
+void akao_streamRingKeyOn(s32 a, s32 b, void (*cb)(void)) {
     if (g_akaoStream.voiceMask != 0) {
         SpuSetTransferCallback(NULL);
         g_akaoSpuBusy = 0;
@@ -2262,7 +2262,7 @@ void func_80061E1C(s32 a, s32 b, void (*cb)(void)) {
     }
 }
 
-void func_80061EE4(void) {
+void akao_streamStartRingVoices(void) {
     s32 a;
     s32 b;
     if (g_akaoStream.flags & 0x400) {
@@ -2278,10 +2278,10 @@ void func_80061EE4(void) {
         a = 0x2000;
         b = 0x2100;
     }
-    func_80061E1C(a, b, func_80062118);
+    akao_streamRingKeyOn(a, b, akao_streamRefillRingA);
 }
 
-s32 func_80061FBC(s32 a, s32 b, s32 n, void (*cb)(void)) {
+s32 akao_streamRefillRing(s32 a, s32 b, s32 n, void (*cb)(void)) {
     AkaoStream *h;
 
     if (g_akaoStream.voiceMask != 0) {
@@ -2290,7 +2290,7 @@ s32 func_80061FBC(s32 a, s32 b, s32 n, void (*cb)(void)) {
             SpuSetIRQ(0);
             SpuSetTransferStartAddr(a);
             akao_beginSpuTransfer();
-            func_80061BC8(&g_akaoStream.unk34);
+            akao_streamNextReadBlock(&g_akaoStream.unk34);
             SpuWrite(g_akaoStream.readPtr + 0xD0, n - 0xD0);
             g_akaoStream.unk20 = h->unk4;
             g_akaoStream.loopLength = h->loopLength;
@@ -2314,12 +2314,12 @@ s32 func_80061FBC(s32 a, s32 b, s32 n, void (*cb)(void)) {
     return a;
 }
 
-void func_80062118(void) {
+void akao_streamRefillRingA(void) {
     s32 a;
     s32 b;
     if (g_akaoStream.flags & 0x400) {
-        func_80061BC8(&g_akaoStream.unk34);
-        a = func_80061FBC(0x1100, 0x1900, 0x2000, func_800621D4);
+        akao_streamNextReadBlock(&g_akaoStream.unk34);
+        a = akao_streamRefillRing(0x1100, 0x1900, 0x2000, akao_streamRefillRingB);
         b = 0x2900;
         if (a == 0x1030) {
             b = 0x1030;
@@ -2329,16 +2329,16 @@ void func_80062118(void) {
         akao_setVoiceLoopAddr(g_akaoStream.voice - 2, a);
         akao_setVoiceLoopAddr(g_akaoStream.voice - 1, b);
     } else {
-        func_80061FBC(0x1100, 0x1900, 0x1000, func_800621D4);
+        akao_streamRefillRing(0x1100, 0x1900, 0x1000, akao_streamRefillRingB);
     }
 }
 
-void func_800621D4(void) {
+void akao_streamRefillRingB(void) {
     s32 a;
     s32 b;
     if (g_akaoStream.flags & 0x400) {
-        func_80061BC8(&g_akaoStream.unk34);
-        a = func_80061FBC(0x3100, 0x3900, 0x2000, func_80062118);
+        akao_streamNextReadBlock(&g_akaoStream.unk34);
+        a = akao_streamRefillRing(0x3100, 0x3900, 0x2000, akao_streamRefillRingA);
         b = 0x4900;
         if (a == 0x1030) {
             b = 0x1030;
@@ -2348,7 +2348,7 @@ void func_800621D4(void) {
         akao_setVoiceLoopAddr(g_akaoStream.voice - 2, a);
         akao_setVoiceLoopAddr(g_akaoStream.voice - 1, b);
     } else {
-        func_80061FBC(0x2100, 0x2900, 0x1000, func_80062118);
+        akao_streamRefillRing(0x2100, 0x2900, 0x1000, akao_streamRefillRingA);
     }
 }
 

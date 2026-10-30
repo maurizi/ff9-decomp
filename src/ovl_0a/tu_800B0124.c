@@ -120,10 +120,10 @@ s32 fld_soundCommand(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4) {
                     g_gameState->gameData->musicVolume[0] = arg2;
                     return 0;
                 case 2:
-                    akao_sendCmdD0(arg2);
+                    akao_setTempoScale(arg2);
                     return 0;
                 case 3:
-                    akao_sendCmdD4(arg2);
+                    akao_setPitchScale(arg2);
                     return 0;
                 case 4:
                     akao_sendCmdD8(arg2);
@@ -143,10 +143,10 @@ s32 fld_soundCommand(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4) {
                 fld_setMusicVolumeFade(arg3, arg2);
                 return 0;
             case 2:
-                akao_sendCmdD1(arg2, arg3);
+                akao_fadeTempoScale(arg2, arg3);
                 return 0;
             case 3:
-                akao_sendCmdD5(arg2, arg3);
+                akao_fadePitchScale(arg2, arg3);
                 return 0;
             case 4:
                 akao_sendCmdD9(arg2, arg3);
@@ -160,10 +160,10 @@ s32 fld_soundCommand(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4) {
                 fld_setMusicVolumeFade(arg4, arg2);
                 return 0;
             case 2:
-                akao_sendCmdD2(arg2, arg3, arg4);
+                akao_fadeTempoScaleFrom(arg2, arg3, arg4);
                 return 0;
             case 3:
-                akao_sendCmdD6(arg2, arg3, arg4);
+                akao_fadePitchScaleFrom(arg2, arg3, arg4);
                 return 0;
             case 4:
                 akao_sendCmdDA(arg2, arg3, arg4);
@@ -974,7 +974,7 @@ s32 fld_soundBankReadCallback(CdReadCtx *arg0) {
     if ((id & 0xFFFF) != 0x84) {
         sc = gd->ctx.field->area->scene;
         if (sc->flags & 0x10) {
-            r = func_80056048(a, sc->soundBankSlot, 0);
+            r = akao_loadBankInSlot(a, sc->soundBankSlot, 0);
         } else {
             r = akao_uploadBank(a, n, 0);
         }

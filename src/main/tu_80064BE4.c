@@ -3,22 +3,22 @@
 void func_80064BE4(void) {
 }
 
-void func_80064BEC(s32 a, u32 *b) {
+void pen_beginOt(s32 a, u32 *b) {
     msg_beginDraw();
     g_penOt = b;
     pen_setColor(0x808080);
 }
 
-INCLUDE_ASM("asm/us/main/nonmatchings/tu_80064BE4", func_80064C24);
+INCLUDE_ASM("asm/us/main/nonmatchings/tu_80064BE4", pen_setColorPreset);
 
-void func_80064CA4(u8 r, u8 g, u8 b) {
+void pen_setColorRGB(u8 r, u8 g, u8 b) {
     pen_setColor(r | (g << 8) | (b << 16));
 }
 
-void func_80064CDC(u16 a, u16 b) {
+void pen_locate(u16 a, u16 b) {
     pen_begin();
     pen_setPos(a, b);
-    D_8007BCB0 = a;
+    g_penLineStart = a;
     pen_end();
 }
 

@@ -432,7 +432,7 @@ s32 evt_moveObjectTo(s32 x, s32 y, s32 z, s32 flags) {
         rx = 0;
         dy = 0;
     }
-    func_8005309C(v, rx, ry, speed);
+    math_dirVector(v, rx, ry, speed);
     p->pos.vx += v[0];
     p->pos.vy += v[1];
     p->pos.vz += v[2];
@@ -1154,7 +1154,7 @@ s32 evt_execInstr(void) {
         g_evtActor->wait = 0xFE;
         return 1;
     case 0x8E:
-        func_8004ED3C();
+        msg_clearWindowOtz();
         return 0;
     case 0xD0:
         btl_setBanner((s32)msg_getText(evt_getArg16_inline()), 3);
@@ -1507,7 +1507,7 @@ s32 evt_execInstr(void) {
         str = g_evtCurObj->ip - 1;
         while (*str++ != 0) {
         }
-        func_80052D0C(&str);
+        evt_skipVarRef(&str);
         g_evtArgRead = 1;
         g_evtCurObj->ip = str + 1;
         return 0;
@@ -1614,17 +1614,17 @@ s32 evt_execInstr(void) {
     case 0x38:
         switch (g_evtCurObj->level) {
         case 0: {
-            s32 x = (u16)D_8007AE10[1], z = (u16)D_8007AE10[0];
+            s32 x = (u16)g_evtBattleVars[1], z = (u16)g_evtBattleVars[0];
             btl_setEnemyCmd(x, z, BTL_CMD_ENEMY_DEATH, evt_getArg8_inline());
             break;
         }
         case 1: {
-            s32 x = (u16)D_8007AE10[1], z = (u16)D_8007AE10[0];
+            s32 x = (u16)g_evtBattleVars[1], z = (u16)g_evtBattleVars[0];
             btl_setEnemyCmd(x, z, BTL_CMD_ENEMY_COUNTER, evt_getArg8_inline());
             break;
         }
         case 3: {
-            s32 x = (u16)D_8007AE10[1], z = (u16)D_8007AE10[0];
+            s32 x = (u16)g_evtBattleVars[1], z = (u16)g_evtBattleVars[0];
             btl_setEnemyCmd(x, z, BTL_CMD_ENEMY_TURN, evt_getArg8_inline());
             g_evtCurObj->unkB = 0;
             break;
@@ -1632,7 +1632,7 @@ s32 evt_execInstr(void) {
         }
         return 0;
     case 0xE5: {
-        s32 x = (u16)D_8007AE10[1], z = (u16)D_8007AE10[0];
+        s32 x = (u16)g_evtBattleVars[1], z = (u16)g_evtBattleVars[0];
         btlseq_startDirect(x, z, evt_getArg8_inline());
         return 0;
     }
@@ -2437,7 +2437,7 @@ void evt_movePlayer(EvtObject *obj) {
         }
         obj->speed = speed;
         v.vz = -speed;
-        func_800530A8(&v, 0, dir);
+        math_rotateSVector(&v, 0, dir);
         obj->pos.vx += v.vx;
         obj->pos.vz += v.vz;
         o = evt_findNearestObject(obj, 0, &dist);
@@ -2455,7 +2455,7 @@ void evt_movePlayer(EvtObject *obj) {
                 k = math_sin(c);
                 v.vx = (v.vx * k) >> 13;
                 v.vz = (v.vz * k) >> 13;
-                func_800530A8(&v, 0, 0x400);
+                math_rotateSVector(&v, 0, 0x400);
                 obj->pos.vx += v.vx;
                 obj->pos.vz += v.vz;
                 if (evt_findNearestObject(obj, 0, &dist) != NULL && dist <= 0) {
@@ -2479,7 +2479,7 @@ void evt_movePlayer(EvtObject *obj) {
                                  : (g_evtPushFrames < 0 ? g_evtPushFrames + 1 : 0);
 }
 
-s32 func_80047AB8(EvtObject *p, s32 b) {
+s32 evt_callTurnScript(EvtObject *p, s32 b) {
     s32 *sp;
     s32 ok;
     s32 x;
@@ -2688,14 +2688,14 @@ void evt_updateLookAt(EvtObject *o) {
                         t.vy = (((o->pos.vy << 6) + o->height * (s8)o->scale) * 3 + (t.vy << 6) +
                                 tgt->height * (s8)tgt->scale) >> 8;
                         evt_updateLookAt_approach(o, mdl, &t);
-                    } else if (func_80047AB8(o, ang)) {
+                    } else if (evt_callTurnScript(o, ang)) {
                         a = d > 0x280 ? 0x280 : -0x280;
                         evt_updateLookAt_ahead(o, a + o->pos.rotY, &t);
                         evt_updateLookAt_approach(o, mdl, &t);
                     }
                 }
             }
-        } else if ((o->moveFlags & 0x100) && evt_updateLookAt_infront2(o, &ang) && func_80047AB8(o, ang)) {
+        } else if ((o->moveFlags & 0x100) && evt_updateLookAt_infront2(o, &ang) && evt_callTurnScript(o, ang)) {
             {
                 evt_relaxLookAt(o, mdl);
             }
@@ -2818,8 +2818,8 @@ void evt_updateBattleObjects(void) {
 
     if (g_gameState->gameData->ctx.ovl65->phase != 0) {
         i = 3;
-        D_8007AE10[i] = btl_getUnitMask(1);
-        m = (u16)D_8007AE10[i];
+        g_evtBattleVars[i] = btl_getUnitMask(1);
+        m = (u16)g_evtBattleVars[i];
         for (i = 4; i < 8; i++) {
             o = g_evtUnitObjects[i];
             if (o != NULL) {
@@ -3120,7 +3120,7 @@ void evt_onAnimEnd(EvtObject *p) {
         p->animSpeed = p->idleAnimSpeeds.b[*g_randPtr++ & 3];
         p->animFlags &= 0x39;
         if (p->flags & 0x80) {
-            func_8004B9B8_inline(p);
+            evt_finishTurn_inline(p);
         }
         if (p->moveFlags & 8) {
             p->moveFlags &= ~8;
@@ -3550,12 +3550,12 @@ s32 evt_battleTrigger(s32 op, s32 bits, s32 v, s32 w) {
             switch (op) {
             case BTL_CMD_ENEMY_COUNTER:
                 b = 6;
-                D_8007AE10[0] = v;
+                g_evtBattleVars[0] = v;
                 a = 1;
                 break;
             case BTL_CMD_ENEMY_DEATH:
                 b = 9;
-                D_8007AE10[0] = v;
+                g_evtBattleVars[0] = v;
                 a = 0;
                 break;
             case 0x37:
@@ -3743,7 +3743,7 @@ void evt_resetIdleTimer(s32 a) {
     }
 }
 
-void func_8004B2A0(void) {
+void evt_initAllocNodes(void) {
     EvtAllocNode *p = g_evtState->allocNodes;
     for (; p < &g_evtState->allocNodes[31]; p++) {
         p->next = p + 1;
@@ -3753,8 +3753,8 @@ void func_8004B2A0(void) {
     g_evtState->allocUsed = NULL;
 }
 
-void func_8004B2F4(EvtObject *key) {
-    func_8004B2F4_inline(key);
+void evt_freeAllocNode(EvtObject *key) {
+    evt_freeAllocNode_inline(key);
 }
 
 void evt_initObjectList(void) {
@@ -3774,12 +3774,12 @@ void evt_createRegion(s32 a, s32 b) {
     p->flags = 1;
 }
 
-u16 func_8004B404(s32 arg0) {
-    return func_8004B404_inline(arg0);
+u16 evt_getBattleVar(s32 arg0) {
+    return evt_getBattleVar_inline(arg0);
 }
 
-void func_8004B4A8(s32 i, s16 v) {
-    D_8007AE10[i & 7] = v;
+void evt_setBattleVar(s32 i, s16 v) {
+    g_evtBattleVars[i & 7] = v;
 }
 
 EvtObject *evt_resolveObjectId(s32 id) {
@@ -3887,8 +3887,8 @@ void evt_setObjectProp(EvtObject *arg0, s32 arg1, s32 arg2) {
     }
 }
 
-s32 func_8004B85C(s32 slot) {
-    return func_8004B85C_find(func_8004B85C_key(slot), slot);
+s32 evt_isInParty(s32 slot) {
+    return evt_isInParty_find(evt_isInParty_key(slot), slot);
 }
 
 s32 evt_getArg24(void) {
@@ -3908,8 +3908,8 @@ s32 evt_getArg24(void) {
     return v;
 }
 
-void func_8004B9B8(EvtObject *p) {
-    func_8004B9B8_inline(p);
+void evt_finishTurn(EvtObject *p) {
+    evt_finishTurn_inline(p);
 }
 
 void evt_projectToScreen(SVECTOR *v, s32 *x, s32 *y) {
@@ -3934,7 +3934,7 @@ void evt_projectToScreen(SVECTOR *v, s32 *x, s32 *y) {
     }
 }
 
-void func_8004BB30(void *p) {
+void evt_setCurUnit(void *p) {
     s32 i;
     s32 bit;
     for (i = 0; i < 8; i++) {
@@ -3944,6 +3944,6 @@ void func_8004BB30(void *p) {
     }
     if (i < 8) {
         bit = 1 << i;
-        D_8007AE12 = bit;
+        g_evtCurUnitMask = bit;
     }
 }

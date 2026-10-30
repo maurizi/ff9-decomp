@@ -2904,7 +2904,7 @@ typedef struct {
 
 extern s16 D_800F51EC;
 s32 db_getSize(s32);
-s32 func_80056048(s32 *, s32, s32);
+s32 akao_loadBankInSlot(s32 *, s32, s32);
 
 /* btl_soundCmd: sound/streamed music command handler */
 s32 btl_getSoundFileSectors(s32, s32 *);
@@ -3438,7 +3438,7 @@ u32 btl_registerModel(s32, s32);
 void btl_load(); /* takes the battle id (s32); unprototyped, the caller passes an s16 unconverted */
 s32 btl_allocShadows(s32, s32);
 s32 evt_countNpcActors(s32);
-void func_8001E3A4(void *);
+void game_clearModelSlot(void *);
 void btl_makeEnemyGreyCluts(void);
 void btl_execCmd(struct BtlUnit *);
 void btl_onCmdEffectDone(void);
@@ -4178,7 +4178,7 @@ static inline void btl_loadSoundsStep_collect(s16 *dst, u32 type, u32 kind) {
 }
 
 /* main exe: candidates for ff9.h */
-void func_8001DA78(void *, s32);
+void file_advanceLoadPtr(void *, s32);
 extern s32 g_vtxScreenXY[]; /* projected screen xy per model vertex */
 extern s32 g_vtxScreenZ[]; /* projected z per model vertex */
 

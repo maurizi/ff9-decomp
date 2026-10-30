@@ -12,12 +12,12 @@ INCLUDE_ASM("asm/us/main/nonmatchings/evt_expr_asm", pen_drawSmallChar);
 
 INCLUDE_ASM("asm/us/main/nonmatchings/evt_expr_asm", pen_putSmallChar);
 
-void func_80051274(void) {
+void pen_glyphSinkNone(void) {
 }
 
 INCLUDE_ASM("asm/us/main/nonmatchings/evt_expr_asm", pen_setCell);
 
-INCLUDE_ASM("asm/us/main/nonmatchings/evt_expr_asm", func_800512B4);
+INCLUDE_ASM("asm/us/main/nonmatchings/evt_expr_asm", pen_setX);
 
 INCLUDE_ASM("asm/us/main/nonmatchings/evt_expr_asm", pen_setPos);
 
@@ -91,7 +91,7 @@ INCLUDE_ASM("asm/us/main/nonmatchings/evt_expr_asm", evt_runScripts);
 
 INCLUDE_ASM("asm/us/main/nonmatchings/evt_expr_asm", evt_getVarBank);
 
-INCLUDE_ASM("asm/us/main/nonmatchings/evt_expr_asm", func_80052D0C);
+INCLUDE_ASM("asm/us/main/nonmatchings/evt_expr_asm", evt_skipVarRef);
 
 INCLUDE_ASM("asm/us/main/nonmatchings/evt_expr_asm", evt_popResult);
 
@@ -109,9 +109,9 @@ INCLUDE_ASM("asm/us/main/nonmatchings/evt_expr_asm", math_isqrt);
 
 INCLUDE_ASM("asm/us/main/nonmatchings/evt_expr_asm", math_atan2);
 
-INCLUDE_ASM("asm/us/main/nonmatchings/evt_expr_asm", func_8005309C);
+INCLUDE_ASM("asm/us/main/nonmatchings/evt_expr_asm", math_dirVector);
 
-INCLUDE_ASM("asm/us/main/nonmatchings/evt_expr_asm", func_800530A8);
+INCLUDE_ASM("asm/us/main/nonmatchings/evt_expr_asm", math_rotateSVector);
 
 INCLUDE_ASM("asm/us/main/nonmatchings/evt_expr_asm", evt_isInRegion);
 
