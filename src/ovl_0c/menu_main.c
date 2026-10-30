@@ -119,7 +119,7 @@ void menuMain_reorder(s32 arg0, s32 arg1) {
     if (arg0 == arg1) {
         c = g_gameState->gameData->party[arg1];
         if (c != NULL) {
-            c->unk34.b.unk9 ^= 1;
+            c->info.b.battleRow ^= 1;
         }
     } else {
         t = g_gameState->gameData->party[s_menuMain.orderCursor];
@@ -177,11 +177,11 @@ void menuMain_drawMember(s32 arg0) {
     c = g_gameState->gameData->party[arg0];
     r = &s_menuMain.panels[arg0].unk4;
     x = r->x + 8;
-    if (!c->unk34.b.unk9) {
+    if (!c->info.b.battleRow) {
         x = r->x + 0x16;
     }
     ui_drawPortrait(x, r->y + 1, 0x14, arg0, 0x2D, c->hp == 0);
-    text_drawBlock(r->x + 0x3C, r->y + 3, 0x14, c->unk0, 0);
+    text_drawBlock(r->x + 0x3C, r->y + 3, 0x14, c->name, 0);
     ui_drawStatusIcons(r->x + 0x86, r->y + 4, 0x14, c->status, 0);
     text_formatNumber(c->level, buf, 2, 1);
     ui_drawSprite(r->x + 0x3C, r->y + 0x12, 0x14, 0xB4, 0);
@@ -318,7 +318,7 @@ void menuMain_setExpHelp(s32 arg0) {
         } else {
             next = g_levelExp[c->level];
         }
-        text_setStringArg(0, c->unk0);
+        text_setStringArg(0, c->name);
         text_formatNumber(c->exp, s_menuMainExpText, 7, 1);
         text_formatNumber(next - c->exp, s_menuMainNextText, 7, 1);
         text_setStringArg(1, s_menuMainExpLabel);

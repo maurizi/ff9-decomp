@@ -1655,7 +1655,7 @@ s32 evt_execInstr(void) {
         a = evt_execInstr_chr(evt_getArg8_inline());
         if ((u32)a < 9) {
             u8 *src = msg_getText(evt_getArg16_inline());
-            u8 *dst = g_gameState->gameData->characters[a].unk0;
+            u8 *dst = g_gameState->gameData->characters[a].name;
             u8 *end = dst + 9;
             while (dst < end) {
                 *dst++ = *src++;
@@ -1668,7 +1668,7 @@ s32 evt_execInstr(void) {
     case 0xDB:
         a = evt_execInstr_chr(evt_getArg8_inline());
         if ((u32)a < 9) {
-            g_gameState->gameData->characters[a].unk34.w = (g_gameState->gameData->characters[a].unk34.w & ~0x400) | ((evt_getArg8_inline() & 1) << 10);
+            g_gameState->gameData->characters[a].info.w = (g_gameState->gameData->characters[a].info.w & ~0x400) | ((evt_getArg8_inline() & 1) << 10);
         }
         return 0;
     case EVT_OP_SET_DIR_OFFSETS:
@@ -2034,11 +2034,11 @@ s32 evt_execInstr(void) {
             Character *ch = &g_gameState->gameData->characters[a];
             d = evt_getArg8_inline();
             if (d != 0xFF) {
-                ch->unkA = d;
+                ch->classFlags = d;
             }
             d = evt_getArg8_inline();
             if (d != 0xFF) {
-                ch->unk34.w = (ch->unk34.w & 0xFFFE0FFF) | ((d & 0x1F) << 12);
+                ch->info.w = (ch->info.w & 0xFFFE0FFF) | ((d & 0x1F) << 12);
             }
             chr_join(a, b & 0xFF, c);
         } else {
@@ -2050,7 +2050,7 @@ s32 evt_execInstr(void) {
         a = evt_execInstr_chr(evt_getArg8_inline());
         for (i = 0; i < 4; i++) {
             Character *ch = g_gameState->gameData->party[i];
-            if (ch != NULL && (ch->unk34.w & 0xF) == a) {
+            if (ch != NULL && (ch->info.w & 0xF) == a) {
                 break;
             }
         }
@@ -2064,7 +2064,7 @@ s32 evt_execInstr(void) {
         a = 0;
         for (i = 8; i >= 0; i--) {
             a <<= 1;
-            a |= (g_gameState->gameData->characters[i].unk34.w >> 11) & 1;
+            a |= (g_gameState->gameData->characters[i].info.w >> 11) & 1;
         }
         b = evt_getArg16_inline();
         for (i = 0; i < 9; i++) {
@@ -2074,7 +2074,7 @@ s32 evt_execInstr(void) {
         for (i = 0; i < 4; i++) {
             Character *ch = g_gameState->gameData->party[i];
             if (ch != NULL) {
-                b = ch->unk34.w & 0xF;
+                b = ch->info.w & 0xF;
                 a &= ~(1 << b);
                 D_8007AE70.unk4[i] = b;
             } else {
@@ -2131,7 +2131,7 @@ s32 evt_execInstr(void) {
     case 0x62:
         a = evt_execInstr_chr(evt_getArg8_inline());
         if ((u32)a < 9) {
-            g_gameState->gameData->characters[a].unk34.w = (g_gameState->gameData->characters[a].unk34.w & ~0x200) | ((evt_getArg8_inline() & 1) << 9);
+            g_gameState->gameData->characters[a].info.w = (g_gameState->gameData->characters[a].info.w & ~0x200) | ((evt_getArg8_inline() & 1) << 9);
         }
         return 0;
     case 0xE0:

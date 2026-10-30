@@ -347,7 +347,7 @@ void btlui_initPartyEntries(void) {
         e->slot = f;
         e->chr = &g_gameState->gameData->characters[(u->flags >> 1) & 0xF];
         e->learns = func_80034A30(e->chr);
-        e->defaultSet = chr_getAppearanceType(e->chr->unk34.b.id, (e->chr->unkA >> 4) & 1);
+        e->defaultSet = chr_getAppearanceType(e->chr->info.b.id, (e->chr->classFlags >> 4) & 1);
         if ((g_gameState->config >> 5) & 1) {
             f = ((s32)(g_gameState->config >> 20) >> e->defaultSet) & 1;
         } else {
@@ -364,7 +364,7 @@ void btlui_initPartyEntries(void) {
 }
 
 void btlui_copyTranceAbilities(Unk80104F88Entry *arg0) {
-    s32 k = arg0->chr->unk34.b.row;
+    s32 k = arg0->chr->info.b.row;
     u8 *s = g_btlCharTranceCmds[k];
     u8 *t = g_btlCharCmds[k];
     Unk800FD56C *a;
@@ -404,7 +404,7 @@ void func_800EA908(Unk80104F88Entry *arg0) {
     s32 e;
     Unk80069018 *it;
 
-    if (arg0->chr->unk34.b.id == 3) {
+    if (arg0->chr->info.b.id == 3) {
         for (i = 0; i < m->unk7; i++) {
             slot = g_btlCmdAbilities[m->unk8 + i];
             v = chr_findAbilitySlot(1, D_800F8D84[i]);
@@ -756,9 +756,9 @@ void btlui_addLearnedAbilities(Unk80104F88Entry *arg0) {
     c = arg0->chr;
     if (arg0->learns != 0) {
         i = 0;
-        row = g_abilityRows[c->unk34.b.row];
+        row = g_abilityRows[c->info.b.row];
         for (; i < 0xC0; i++) {
-            v = chr_findAbilitySlot(c->unk34.b.id, i);
+            v = chr_findAbilitySlot(c->info.b.id, i);
             if (v >= 0) {
                 arg0->apCounters[i] = &c->ap[v];
                 arg0->apNeeded[i] = row[v].unk1;
@@ -1124,7 +1124,7 @@ void btlui_openCmdMenu(void) {
         g_btlCmdMenu.cursor = e->cursor.unk0;
     }
     g_btlCmdMenu.unk1 = (u8)btl_hasStatus(g_btlUi->cmdUnit, BTL_STATUS_TRANCE) != 0;
-    g_btlCmdMenu.charIndex = e->chr->unk34.b.row;
+    g_btlCmdMenu.charIndex = e->chr->info.b.row;
     g_btlCmdMenu.unit = g_btlUi->cmdUnit;
     p->unk1 = 0;
     p->unk2 = 0;

@@ -134,7 +134,7 @@ void menuEquip_drawInfo(void) {
     cur.unkC[3] = c->magicDef;
     cur.unkC[4] = c->magicEva;
     if (s_menuEquip.state == EQUIP_STATE_LIST && s_menuEquip.list.rows != 0) {
-        in.unk0 = *(Bytes8 *)&c->unk2C;
+        in.unk0 = *(Bytes8 *)&c->baseMaxHp;
         in.unk10 = c->hp;
         in.unk12 = c->mp;
         in.unk14 = *(Bytes5 *)c->equip;
@@ -144,7 +144,7 @@ void menuEquip_drawInfo(void) {
         menuEquip_drawStatCompare(&cur, &out);
         return;
     } else if (*(u16 *)&s_menuEquip == EQUIP_TAB_STATE(EQUIP_TAB_OFF, EQUIP_STATE_SLOT) && s_menuEquip.equipSlot != 0) {
-        in.unk0 = *(Bytes8 *)&c->unk2C;
+        in.unk0 = *(Bytes8 *)&c->baseMaxHp;
         in.unk10 = c->hp;
         in.unk12 = c->mp;
         in.unk14 = *(Bytes5 *)c->equip;
@@ -244,8 +244,8 @@ void menuEquip_drawAbilities(void) {
             name = s_menuEquipSupportNames + g_supportAbilities[ab - ABILITY_SUPPORT_FIRST].unk2;
         }
         if (func_80034A30(c)) {
-            ok = chr_findAbilitySlot(c->unk34.b.id, ab) >= 0;
-            ap = chr_getApNeeded(c->unk34.b.id, ab);
+            ok = chr_findAbilitySlot(c->info.b.id, ab) >= 0;
+            ap = chr_getApNeeded(c->info.b.id, ab);
             if (ok) {
                 if (ab < ABILITY_SUPPORT_FIRST) {
                     icon = 0xBC;
@@ -268,7 +268,7 @@ void menuEquip_drawAbilities(void) {
                     flag = 1;
                 }
                 k = 0x26;
-                ui_drawApGauge(r->x + 0x72, r->y + (y3 + k), 0x1D, chr_getAp(c->unk34.b.id, ab), ap, flag, 0);
+                ui_drawApGauge(r->x + 0x72, r->y + (y3 + k), 0x1D, chr_getAp(c->info.b.id, ab), ap, flag, 0);
             }
             text_drawBlock(r->x + 0x18, r->y + y2, 0x1D, name, ok ? 0 : 2);
             ui_drawSprite(r->x + 8, r->y + y1, 0x1D, icon, ok ^ 1);
@@ -464,11 +464,11 @@ void menuEquip_dropUnlearnedSupport(Character *c) {
                 }
             }
         }
-        a = g_abilityRows[c->unk34.b.row];
+        a = g_abilityRows[c->info.b.row];
         for (i = 0; i < ABILITY_MAX; i++, a++) {
-            if (a->unk0 >= ABILITY_SUPPORT_FIRST && chr_hasSupportAbility(c->unk34.b.id, a->unk0)) {
+            if (a->unk0 >= ABILITY_SUPPORT_FIRST && chr_hasSupportAbility(c->info.b.id, a->unk0)) {
                 if (s_menuEquipTaught[a->unk0 - ABILITY_SUPPORT_FIRST] == 0 && c->ap[i] < a->unk1) {
-                    chr_setSupportAbility(c->unk34.b.id, a->unk0, 0);
+                    chr_setSupportAbility(c->info.b.id, a->unk0, 0);
                     if (c->maxStones - c->stones >= g_supportAbilities[a->unk0 - ABILITY_SUPPORT_FIRST].unk1) {
                         c->stones += g_supportAbilities[a->unk0 - ABILITY_SUPPORT_FIRST].unk1;
                     } else {
@@ -752,7 +752,7 @@ void menuEquip_setMember(s32 slot, s32 dir) {
 void menuEquip_applyEquip(Character *c) {
     menuEquip_dropUnlearnedSupport(c);
     chr_updateStats(c);
-    c->unk34.b.unk4 = chr_calcAppearance(c->unk34.b.id, (c->unkA >> 4) & 1, c->equip);
+    c->info.b.kind = chr_calcAppearance(c->info.b.id, (c->classFlags >> 4) & 1, c->equip);
 }
 
 void menuEquip_drawStatLabel(s32 x, s32 y, s32 z, u8 id, s32 color) {

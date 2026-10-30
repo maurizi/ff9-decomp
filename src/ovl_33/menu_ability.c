@@ -14,13 +14,13 @@ static inline s32 menuAbility_getSupportState_inline(s32 id, Character *c) {
         return ABILITY_EQUIPPED;
     }
     if (s_menuAbility.equipSlots[id] == 0) {
-        slot = chr_findAbilitySlot(c->unk34.b.id, id);
+        slot = chr_findAbilitySlot(c->info.b.id, id);
         if (slot < 0) {
             return 0;
         }
         if (func_80034A30(c)) {
             ap = c->ap[slot];
-            need = g_abilityRows[c->unk34.b.row][slot].unk1;
+            need = g_abilityRows[c->info.b.row][slot].unk1;
             if (ap == 0) {
                 return 0;
             }
@@ -257,7 +257,7 @@ void menuAbility_drawInfo(void) {
         return;
     }
     if (func_80034A30(c)) {
-        ui_drawApGauge(r->x + 0x2D, r->y + 0xC, 0x1C, chr_getAp(c->unk34.b.id, id), chr_getApNeeded(c->unk34.b.id, id), flag, 0);
+        ui_drawApGauge(r->x + 0x2D, r->y + 0xC, 0x1C, chr_getAp(c->info.b.id, id), chr_getApNeeded(c->info.b.id, id), flag, 0);
     }
     if (s_menuAbility.equipSlots[id] != 0) {
         x = r->x;
@@ -434,10 +434,10 @@ void menuAbility_setMember(s32 slot, s32 arg1) {
         m->state = ABILITY_STATE_SWITCH;
     }
     m->slot = slot;
-    if (c->unk34.b.row < 16) {
+    if (c->info.b.row < 16) {
         m2 = m;
         slot = 0;
-        a = g_abilityRows[c->unk34.b.row];
+        a = g_abilityRows[c->info.b.row];
         for (; slot < ABILITY_MAX; slot++) {
             if (a->unk0 != 0) {
                 if (a->unk0 < ABILITY_SUPPORT_FIRST) {
@@ -481,13 +481,13 @@ s32 menuAbility_getActionState(s32 id, Character *c) {
 
     info = &s_menuAbilityActionTable[id];
     if (s_menuAbility.equipSlots[id] == 0) {
-        slot = chr_findAbilitySlot(c->unk34.b.id, id);
+        slot = chr_findAbilitySlot(c->info.b.id, id);
         if (slot < 0) {
             return 0;
         }
         if (func_80034A30(c)) {
             ap = c->ap[slot];
-            need = g_abilityRows[c->unk34.b.row][slot].unk1;
+            need = g_abilityRows[c->info.b.row][slot].unk1;
             if (ap == 0) {
                 return 0;
             }
@@ -558,7 +558,7 @@ void menuAbility_toggleSupport(void) {
         sup = &g_supportAbilities[id - ABILITY_SUPPORT_FIRST];
         st = menuAbility_getSupportState_inline(id, c);
         if (st >= ABILITY_USABLE) {
-            chr_setSupportAbility(c->unk34.b.id, id, st == ABILITY_USABLE);
+            chr_setSupportAbility(c->info.b.id, id, st == ABILITY_USABLE);
             ap = c->stones;
             if (st == ABILITY_USABLE) {
                 c->stones = ap - sup->unk1;
@@ -603,7 +603,7 @@ void menuAbility_updateHelp(void) {
             if (func_80034A30(c)) {
                 goto end;
             }
-            if (c->unkA & 0x10) {
+            if (c->classFlags & 0x10) {
                 t = ABILITY_TEXT_CANNOT_EQUIP;
             } else {
                 t = ABILITY_TEXT_CANNOT_EQUIP_NOW;
@@ -830,7 +830,7 @@ u8 menuAbility_findCommand(s32 id, Character *c) {
     MenuCmd *e;
 
     for (i = 0; i < 2; i++) {
-        k = s_menuAbilityCharCmds[c->unk34.b.row][i];
+        k = s_menuAbilityCharCmds[c->info.b.row][i];
         e = &s_menuAbilityCmds[k];
         if (e->kind == MENU_CMD_ABILITIES) {
             for (j = 0; j < e->count; j++) {
@@ -856,13 +856,13 @@ u32 menuAbility_getSupportState(s32 id, Character *c) {
         return ABILITY_EQUIPPED;
     }
     if (s_menuAbility.equipSlots[id] == 0) {
-        slot = chr_findAbilitySlot(c->unk34.b.id, id);
+        slot = chr_findAbilitySlot(c->info.b.id, id);
         if (slot < 0) {
             return 0;
         }
         if (func_80034A30(c)) {
             ap = c->ap[slot];
-            need = g_abilityRows[c->unk34.b.row][slot].unk1;
+            need = g_abilityRows[c->info.b.row][slot].unk1;
             if (ap == 0) {
                 return 0;
             }

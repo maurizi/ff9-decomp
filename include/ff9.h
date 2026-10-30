@@ -80,15 +80,15 @@ typedef struct {
     u32 unkC[1]; /* glyph info, width in the top 4 bits */
 } Unk7D4;
 
-/* Character.unk34: packed ids, also read as a whole word */
+/* Character.info: packed ids, also read as a whole word */
 typedef union {
     u32 w;
     struct {
         u32 id : 4;    /* character id (index into GameData.unk3C) */
-        u32 unk4 : 5;  /* index into D_8006BB8C */
-        u32 unk9 : 1;
+        u32 kind : 5;  /* model/appearance kind (chr_calcAppearance; btlfx_getUnitKind, battle model and motion tables; 2 = Sword Magic user); index into D_8006BB8C */
+        u32 battleRow : 1; /* = the battle unit's row (flags >> 8 & 3, btl_toggleRow); toggled by the menu's Order; event op 0x62 */
         u32 unkA : 1;
-        u32 unkB : 1;
+        u32 recruited : 1; /* chr_setRecruited / chr_clearRecruited; members counted by chr_join's level average, shops, config */
         u32 row : 5;   /* ability table row (g_abilityRows) */
         u32 unk11 : 15;
     } b;
@@ -97,8 +97,8 @@ typedef union {
 /* Character record: GameData.characters[9]; GameData.party[] points at the party members. Field names checked
  * against the main menu at runtime (docs/runtime-findings.md). */
 typedef struct {
-    u8 unk0[0xA]; /* name: 0xFF-terminated text, read up to 7 chars */
-    u8 unkA;      /* bit 4 tested */
+    u8 name[0xA]; /* 0xFF-terminated text, read up to 7 chars */
+    u8 classFlags; /* chr_getClassFlags(row): 0x2 checked by Protect Girls (btl_findCover) and ability 0x61, 0x8 by ability 0x62, 0x10 picks the alternate default set / appearance */
     u8 level;
     u32 exp;      /* capped at 9999999 */
     u16 hp;
@@ -112,7 +112,7 @@ typedef struct {
     u8 pad1E;
     u8 maxStones;
     u8 trance;    /* gauge 0-255; runtime: 121 with the status bar about half full */
-    u8 unk21;
+    u8 weaponBone; /* bone the weapon model hangs from (btl_initWeapon, btlfx_getWeaponPos) */
     u8 pad22[0x24 - 0x22];
     /* as the Status screen shows them (runtime, Zidane Lv12: 24 26 22 25 / 9 10 10 7) */
     u8 speed;
@@ -123,17 +123,17 @@ typedef struct {
     u8 evade;
     u8 magicDef;
     u8 magicEva;
-    u16 unk2C;
-    u16 unk2E;
+    u16 baseMaxHp; /* chr_calcMaxHp, before equipment (chr_setLevel; chr_updateStats input) */
+    u16 baseMaxMp; /* chr_calcMaxMp */
     /* before equipment bonuses (runtime: 24 25 22 24 vs 24 26 22 25 shown) */
     u8 baseSpeed;
     u8 baseStrength;
     u8 baseMagic;
     u8 baseSpirit;
-    CharBits unk34;
+    CharBits info;
     u8 status;   /* persistent status bits shown by ui_drawStatusIcons (runtime); 0x45 = dead/stone/... (can't gain exp) */
     u8 equip[5]; /* item ids: weapon, head, arm, body, accessory (0xFF = none); runtime: Zidane 3 115 90 152 255 with no accessory */
-    u16 unk3E[5]; /* stat bonuses from equipment */
+    u16 equipBonus[5]; /* stat bonuses from equipment (chr_sumEquipBonus), >> 5 added to speed/strength/magic/spirit/stones */
     u8 pad48[0x58 - 0x48];
     u8 ap[0x30]; /* AP per ability slot of the character's g_abilityRows row (chr_getAp, chr_clearAp) */
     u32 supportAbilities[2]; /* equipped: bit (id - 0xC0) (runtime, chr_setSupportAbility) */
@@ -2661,7 +2661,7 @@ typedef struct {
     u8 unk0; /* ability id, 0 = none */
     u8 unk1; /* ap needed? */
 } AbilityEntry;
-extern AbilityEntry g_abilityRows[16][0x30]; /* rows indexed by Character.unk34.b.row */
+extern AbilityEntry g_abilityRows[16][0x30]; /* rows indexed by Character.info.b.row */
 
 /* Inlined copy of chr_findAbilitySlot (ability slot of a character). */
 static inline s32 chr_findAbilitySlot_inline(s32 ch, s32 id) {
@@ -2670,7 +2670,7 @@ static inline s32 chr_findAbilitySlot_inline(s32 ch, s32 id) {
     if (ch >= 9) {
         return -1;
     }
-    row = ((g_gameState->gameData->characters + ch)->unk34.w >> 12) & 0x1F;
+    row = ((g_gameState->gameData->characters + ch)->info.w >> 12) & 0x1F;
     if (row >= 16) {
         return -1;
     }
@@ -3121,7 +3121,7 @@ static inline s32 chr_getApNeeded_inline(s32 ch, s32 id) {
     if (i < 0) {
         return 0;
     }
-    return g_abilityRows[c->unk34.b.row][i].unk1;
+    return g_abilityRows[c->info.b.row][i].unk1;
 }
 void akao_setVoiceStartAddr(s32, s32);
 void akao_setVoiceDecay(s32, s32);
@@ -3303,7 +3303,7 @@ static inline void chr_updateStats_inline(Character *c) {
     Unk80032E84In in;
     Unk80032E84Out out;
 
-    in.unk0 = *(Bytes8 *)&c->unk2C;
+    in.unk0 = *(Bytes8 *)&c->baseMaxHp;
     in.unk10 = c->hp;
     in.unk12 = c->mp;
     in.unk8 = *(Words2 *)c->supportAbilities;
@@ -4473,10 +4473,10 @@ static inline s32 func_8004B85C_find(s32 key, s32 slot) {
         if (c == NULL) {
             continue;
         }
-        if (c->unk34.b.id != key) {
+        if (c->info.b.id != key) {
             continue;
         }
-        kind = c->unk34.b.unk4;
+        kind = c->info.b.kind;
         lt = kind < 14;
         if (kind) {
             ge = lt ^ 1;

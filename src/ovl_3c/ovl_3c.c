@@ -101,7 +101,7 @@ void shop_collectMembers(void) {
 
     s_shop.memberCount = 0;
     for (i = 0; i < 9; i++) {
-        if (g_gameState->gameData->characters[i].unk34.b.unkB) {
+        if (g_gameState->gameData->characters[i].info.b.recruited) {
             s_shop.members[s_shop.memberCount] = i;
             if (++s_shop.memberCount >= 8) {
                 break;

@@ -115,7 +115,7 @@ static inline s32 msg_measureLine_width(u8 *s) {
 
 /* copy character ch's name into g_msgNameBuf, converting the case */
 static inline void msg_measureLine_name(s32 ch) {
-    u8 *name = g_gameState->gameData->characters[ch].unk0;
+    u8 *name = g_gameState->gameData->characters[ch].name;
     s32 k;
     u32 c;
 
@@ -157,13 +157,13 @@ void msg_measureLine(u8 **pp, s32 *pw) {
             case 0x15:
             case 0x16:
             case 0x17:
-                w += msg_measureLine_width(g_gameState->gameData->characters[c - 0x10].unk0);
+                w += msg_measureLine_width(g_gameState->gameData->characters[c - 0x10].name);
                 break;
             case 0x18:
             case 0x19:
             case 0x1A:
             case 0x1B:
-                w += msg_measureLine_width(g_gameState->gameData->characters[evt_getPartyChrIndex(c - 0x18)].unk0);
+                w += msg_measureLine_width(g_gameState->gameData->characters[evt_getPartyChrIndex(c - 0x18)].name);
                 break;
             case 0x80:
             case 0x81:
@@ -1027,7 +1027,7 @@ s32 msg_getPartyMemberId(s32 i) {
     if (p == NULL) {
         return -1;
     }
-    return p->unk34.b.id;
+    return p->info.b.id;
 }
 
 void msg_resetPad(void) {
@@ -1354,7 +1354,7 @@ s32 msg_emitItemName(s32 id, s32 n) {
 }
 
 s32 msg_emitCharName(s32 arg0, s32 n) {
-    u8 *name = g_gameState->gameData->characters[arg0].unk0;
+    u8 *name = g_gameState->gameData->characters[arg0].name;
     s32 len;
     s32 i;
 
@@ -1376,7 +1376,7 @@ s32 msg_emitCharNameCaps(s32 ch, s32 n) {
     s32 i;
     s32 j;
     s32 k;
-    u8 *name = g_gameState->gameData->characters[ch].unk0;
+    u8 *name = g_gameState->gameData->characters[ch].name;
     u32 c;
     u8 *buf;
 

@@ -1518,7 +1518,7 @@ void btlfx_getWeaponPos(s32 arg0, s32 arg1, s16 *arg2) {
     SVECTOR v;
 
     u = btl_getUnit(arg0);
-    bone = (g_gameState->gameData->characters + ((u->flags >> 1) & 0xF))->unk21;
+    bone = (g_gameState->gameData->characters + ((u->flags >> 1) & 0xF))->weaponBone;
     if (arg1 == 0) {
         btlfx_getUnitBonePos(arg0, bone, (u16 *)arg2);
     } else {
@@ -1735,7 +1735,7 @@ s32 func_800E8554(s32 arg0, s32 arg1) {
 s32 btlfx_isUnitKind(s32 arg0, s32 arg1) {
     u32 f = btl_getUnit(arg0)->flags;
     u8 k = D_800F8D70[arg1];
-    return ((f & 1) ? g_gameState->gameData->characters[(f >> 1) & 0xF].unk34.b.unk4 : 0x13) == k;
+    return ((f & 1) ? g_gameState->gameData->characters[(f >> 1) & 0xF].info.b.kind : 0x13) == k;
 }
 
 void btlfx_copyWords(s32 *arg0, s32 *arg1, u32 arg2) {

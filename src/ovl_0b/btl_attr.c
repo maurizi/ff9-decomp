@@ -362,11 +362,11 @@ u32 btl_getUnitAttr(BtlUnit *arg0, s32 arg1) {
         r >>= 5;
         break;
     case 0x42:
-        r = (g_gameState->gameData->characters + ((arg0->flags >> 1) & 0xF))->unk34.w >> 4;
+        r = (g_gameState->gameData->characters + ((arg0->flags >> 1) & 0xF))->info.w >> 4;
         r &= 0x1F;
         break;
     case 0x43:
-        r = (g_gameState->gameData->characters + ((arg0->flags >> 1) & 0xF))->unkA;
+        r = (g_gameState->gameData->characters + ((arg0->flags >> 1) & 0xF))->classFlags;
         break;
     case 0x44:
         r = g_gameState->gameData->unk8E4.battle->enemies[(arg0->flags >> 1) & 0xF].type->category;
@@ -594,7 +594,7 @@ s32 btl_getBattleVar(s32 arg0) {
         r = 0;
         for (u = b->unitList; u != NULL; u = u->next) {
             if (u->flags & 1) {
-                k = g_gameState->gameData->characters[(u->flags >> 1) & 0xF].unk34.b.unk4;
+                k = g_gameState->gameData->characters[(u->flags >> 1) & 0xF].info.b.kind;
             } else {
                 k = 0x13;
             }

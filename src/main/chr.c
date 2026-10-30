@@ -9,15 +9,15 @@ void chr_init(s32 ch) {
     memset(c, 0, 0x90);
     tbl = D_8006CA78;
     init = tbl + ch;
-    c->unk34.w = *init;
+    c->info.w = *init;
     c->status = 0;
-    c->unkA = chr_getClassFlags(c->unk34.b.row);
-    memset(c->unk3E, 0, 10);
+    c->classFlags = chr_getClassFlags(c->info.b.row);
+    memset(c->equipBonus, 0, 10);
     chr_clearAbilities(ch);
     r = chr_getDefaultSet(c);
-    chr_setDefaultName(c->unk0, r);
+    chr_setDefaultName(c->name, r);
     chr_setDefaultEquip(c->equip, r);
-    c->unk34.b.unk4 = chr_calcAppearance(c->unk34.b.id, (c->unkA >> 4) & 1, c->equip);
+    c->info.b.kind = chr_calcAppearance(c->info.b.id, (c->classFlags >> 4) & 1, c->equip);
     chr_setLevel(ch, 1, init, 0);
     c->hp = c->maxHp;
     c->mp = c->maxMp;
@@ -44,8 +44,8 @@ void chr_setLevel(s32 ch, s32 lv, u32 *heal, u8 f) {
     c->baseStrength = chr_calcBaseStrength(ch, c->level, f);
     c->baseMagic = chr_calcBaseMagic(ch, c->level, f);
     c->baseSpirit = chr_calcBaseSpirit(ch, c->level, f);
-    c->maxHp = c->unk2C = chr_calcMaxHp(c->level, c->baseStrength);
-    c->maxMp = c->unk2E = chr_calcMaxMp(c->level, c->baseMagic);
+    c->maxHp = c->baseMaxHp = chr_calcMaxHp(c->level, c->baseStrength);
+    c->maxMp = c->baseMaxMp = chr_calcMaxMp(c->level, c->baseMagic);
     c->maxStones = chr_calcMaxStones(ch, c->level, f);
     c->hp = (hp < c->maxHp) ? hp : c->maxHp;
     c->mp = (mp < c->maxMp) ? mp : c->maxMp;
@@ -216,7 +216,7 @@ void chr_join(s32 ch, u8 avg, s32 eq) {
             p[i] = D_8006CAD8[eq][i];
         }
     }
-    c->unk34.b.unk4 = chr_calcAppearance(c->unk34.b.id, (c->unkA >> 4) & 1, c->equip);
+    c->info.b.kind = chr_calcAppearance(c->info.b.id, (c->classFlags >> 4) & 1, c->equip);
     if (avg == 0) {
         if (eq == 0xFF) {
             return;
@@ -227,7 +227,7 @@ void chr_join(s32 ch, u8 avg, s32 eq) {
     sum = 0;
     for (i = 0; i < 9; i++) {
         if (ch != i) {
-            if (g_gameState->gameData->characters[i].unk34.b.unkB) {
+            if (g_gameState->gameData->characters[i].info.b.recruited) {
                 n++;
                 sum += g_gameState->gameData->characters[i].level;
             }
@@ -238,7 +238,7 @@ void chr_join(s32 ch, u8 avg, s32 eq) {
     } else {
         lv = 1;
     }
-    if ((u32)(c->unk34.b.unk4 - 10) >= 2) {
+    if ((u32)(c->info.b.kind - 10) >= 2) {
         if (lv < c->level) {
             lv = c->level;
         }
@@ -304,7 +304,7 @@ void chr_updateStats(Character *c) {
     Unk80032E84In in;
     Unk80032E84Out out;
 
-    in.unk0 = *(Bytes8 *)&c->unk2C;
+    in.unk0 = *(Bytes8 *)&c->baseMaxHp;
     in.unk10 = c->hp;
     in.unk12 = c->mp;
     in.unk8 = *(Words2 *)c->supportAbilities;
@@ -367,7 +367,7 @@ u8 chr_getAppearanceType(s32 a, u8 b) {
 }
 
 s32 chr_getDefaultSet(Character *c) {
-    return D_8006CAB8[c->unk34.b.id][(c->unkA & 0x10) != 0];
+    return D_8006CAB8[c->info.b.id][(c->classFlags & 0x10) != 0];
 }
 
 u8 chr_getClassFlags(u32 x) {
@@ -443,13 +443,13 @@ void party_setMember(s32 slot, s32 ch) {
 
 void chr_setRecruited(u32 i) {
     if (i < 9) {
-        g_gameState->gameData->characters[i].unk34.b.unkB = 1;
+        g_gameState->gameData->characters[i].info.b.recruited = 1;
     }
 }
 
 void chr_clearRecruited(u32 i) {
     if (i < 9) {
-        g_gameState->gameData->characters[i].unk34.b.unkB = 0;
+        g_gameState->gameData->characters[i].info.b.recruited = 0;
     }
 }
 
@@ -502,7 +502,7 @@ void chr_fitSupportAbilities(Character *c) {
 
     i = 0;
     e = g_supportAbilities;
-    id = c->unk34.b.id;
+    id = c->info.b.id;
     c->stones = c->maxStones;
     do {
         if (chr_hasSupportAbility(id, i + 0xC0)) {
@@ -551,7 +551,7 @@ s32 chr_learnAbility(s32 ch, s32 id) {
     if (i < 0) {
         return 0;
     }
-    c->ap[i] = g_abilityRows[c->unk34.b.row][i].unk1;
+    c->ap[i] = g_abilityRows[c->info.b.row][i].unk1;
     return 1;
 }
 
@@ -648,7 +648,7 @@ u8 chr_getApNeeded(s32 ch, s32 id) {
     if (i < 0) {
         return 0;
     }
-    return g_abilityRows[c->unk34.b.row][i].unk1;
+    return g_abilityRows[c->info.b.row][i].unk1;
 }
 
 s32 chr_countSupportStones(s32 ch) {
@@ -683,20 +683,20 @@ u8 chr_testSupportBit(u32 *bits, s32 b) {
 }
 
 u8 func_80034A30(Character *a) {
-    if (a->unkA & 0x10) {
+    if (a->classFlags & 0x10) {
         return 0;
     }
-    return (s32)a->unk34.b.row < 8;
+    return (s32)a->info.b.row < 8;
 }
 
 s32 chr_calcBaseSpeed(s32 ch, s32 lv, u8 add) {
     Character *c = g_gameState->gameData->characters + ch;
-    Unk8006DD88 *e = &g_charClassStats[chr_getClass(c->unk34.b.row)];
+    Unk8006DD88 *e = &g_charClassStats[chr_getClass(c->info.b.row)];
     s32 r;
     if (add) {
-        c->unk3E[0] += chr_sumEquipBonus(c->equip, 0);
+        c->equipBonus[0] += chr_sumEquipBonus(c->equip, 0);
     }
-    r = e->unk0 + lv / 10 + (c->unk3E[0] >> 5);
+    r = e->unk0 + lv / 10 + (c->equipBonus[0] >> 5);
     if (r >= 51) {
         r = 50;
     }
@@ -705,8 +705,8 @@ s32 chr_calcBaseSpeed(s32 ch, s32 lv, u8 add) {
 
 s32 chr_calcBaseStrength(s32 ch, s32 lv, u8 add) {
     Character *c = g_gameState->gameData->characters + ch;
-    s32 k = chr_getClass(c->unk34.b.row);
-    u16 *bonus = c->unk3E;
+    s32 k = chr_getClass(c->info.b.row);
+    u16 *bonus = c->equipBonus;
     Unk8006DD88 *e = &g_charClassStats[k];
     s32 r;
     s32 n;
@@ -726,8 +726,8 @@ s32 chr_calcBaseStrength(s32 ch, s32 lv, u8 add) {
 
 s32 chr_calcBaseMagic(s32 ch, s32 lv, u8 add) {
     Character *c = g_gameState->gameData->characters + ch;
-    s32 k = chr_getClass(c->unk34.b.row);
-    u16 *bonus = c->unk3E;
+    s32 k = chr_getClass(c->info.b.row);
+    u16 *bonus = c->equipBonus;
     Unk8006DD88 *e = &g_charClassStats[k];
     s32 r;
     s32 n;
@@ -747,8 +747,8 @@ s32 chr_calcBaseMagic(s32 ch, s32 lv, u8 add) {
 
 s32 chr_calcBaseSpirit(s32 ch, s32 lv, u8 add) {
     Character *c = g_gameState->gameData->characters + ch;
-    s32 k = chr_getClass(c->unk34.b.row);
-    u16 *bonus = c->unk3E;
+    s32 k = chr_getClass(c->info.b.row);
+    u16 *bonus = c->equipBonus;
     Unk8006DD88 *e = &g_charClassStats[k];
     s32 r;
     s32 n;
@@ -765,8 +765,8 @@ s32 chr_calcBaseSpirit(s32 ch, s32 lv, u8 add) {
 
 s32 chr_calcMaxStones(s32 ch, s32 lv, u8 add) {
     Character *c = g_gameState->gameData->characters + ch;
-    u16 *bonus = c->unk3E;
-    s32 k = chr_getClass(c->unk34.b.row);
+    u16 *bonus = c->equipBonus;
+    s32 k = chr_getClass(c->info.b.row);
     Unk8006DD88 *e = &g_charClassStats[k];
     s32 r;
     s32 n;

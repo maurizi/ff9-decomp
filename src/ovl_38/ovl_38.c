@@ -95,8 +95,8 @@ void menuStatus_drawCommands(void) {
     r.h = 0x48;
     r.x = w->x + 0xE4;
     r.y = w->y + 8;
-    s_menuStatusCmds[1] = s_menuStatusCharCmds[c->unk34.b.row][0];
-    s_menuStatusCmds[2] = s_menuStatusCharCmds[c->unk34.b.row][1];
+    s_menuStatusCmds[1] = s_menuStatusCharCmds[c->info.b.row][0];
+    s_menuStatusCmds[2] = s_menuStatusCharCmds[c->info.b.row][1];
     for (i = 0; i < 4; i++) {
         tp = t.v;
         y = i * 15 + 6;
@@ -162,7 +162,7 @@ void menuStatus_drawExp(void) {
     c = g_gameState->gameData->party[st->slot];
     show = 0;
     if (D_8007AF00 != 0) {
-        bit = c->unkA & 0x10;
+        bit = c->classFlags & 0x10;
         show = bit == 0;
     }
     if (show) {
@@ -254,8 +254,8 @@ void menuStatus_drawAbilityRow(s32 x, s32 y, s32 z, s32 i, u8 draw) {
     if (ok && c->ap[i] == 0) {
         return;
     }
-    id = g_abilityRows[c->unk34.b.row][i].unk0;
-    max = g_abilityRows[c->unk34.b.row][i].unk1;
+    id = g_abilityRows[c->info.b.row][i].unk0;
+    max = g_abilityRows[c->info.b.row][i].unk1;
     if (id == 0) {
         return;
     }
@@ -314,9 +314,9 @@ void menuStatus_setMember(s32 slot, s32 dir) {
     s_menuStatus.slot = slot;
     s_menuStatus.pageCount = 0;
     s_menuStatus.abilityCount = 0;
-    if ((s32)(c->unk34.b.row) < 0x10) {
+    if ((s32)(c->info.b.row) < 0x10) {
         for (i = 0; i < STATUS_ABILITY_MAX; i++) {
-            if (g_abilityRows[c->unk34.b.row][i].unk0 != 0) {
+            if (g_abilityRows[c->info.b.row][i].unk0 != 0) {
                 s_menuStatus.abilityCount++;
             }
         }

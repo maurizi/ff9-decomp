@@ -1179,7 +1179,7 @@ s32 btlfx_isSameUnit(s32 arg0, s32 arg1) {
 
 s32 btlfx_getUnitKind(s32 arg0) {
     s32 idx = (btl_getUnit(arg0)->flags >> 1) & 0xF;
-    return g_gameState->gameData->characters[idx].unk34.b.unk4;
+    return g_gameState->gameData->characters[idx].info.b.kind;
 }
 
 s32 btlfx_getUnitWeapon(s32 arg0) {

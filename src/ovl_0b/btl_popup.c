@@ -374,9 +374,9 @@ void btl_drawStatusIcons(Unk800CCD00 *arg0) {
         sn = math_sin(u->rot[1]);
         cs = math_cos(u->rot[1]);
         if (u->flags & 1) {
-            bone = D_800F6B48[g_gameState->gameData->characters[(u->flags >> 1) & 0xF].unk34.b.unk4];
-            ty = D_800F6BBC[g_gameState->gameData->characters[(u->flags >> 1) & 0xF].unk34.b.unk4];
-            tz = D_800F6C30[g_gameState->gameData->characters[(u->flags >> 1) & 0xF].unk34.b.unk4];
+            bone = D_800F6B48[g_gameState->gameData->characters[(u->flags >> 1) & 0xF].info.b.kind];
+            ty = D_800F6BBC[g_gameState->gameData->characters[(u->flags >> 1) & 0xF].info.b.kind];
+            tz = D_800F6C30[g_gameState->gameData->characters[(u->flags >> 1) & 0xF].info.b.kind];
         } else {
             BtlEnemyType *m = g_gameState->gameData->unk8E4.battle->enemies[(u->flags >> 1) & 0xF].type;
             bone = m->unk32;
@@ -447,8 +447,8 @@ void btl_drawStatusCountdown(Unk800CCD00 *arg0) {
             continue;
         }
         if (u->flags & 1) {
-            bone = D_800F6B48[g_gameState->gameData->characters[(u->flags >> 1) & 0xF].unk34.b.unk4][5];
-            y = (s8)D_800F6BBC[g_gameState->gameData->characters[(u->flags >> 1) & 0xF].unk34.b.unk4][5];
+            bone = D_800F6B48[g_gameState->gameData->characters[(u->flags >> 1) & 0xF].info.b.kind][5];
+            y = (s8)D_800F6BBC[g_gameState->gameData->characters[(u->flags >> 1) & 0xF].info.b.kind][5];
         } else {
             m = g_gameState->gameData->unk8E4.battle->enemies[(u->flags >> 1) & 0xF].type;
             bone = m->unk32[5];

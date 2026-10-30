@@ -82,7 +82,7 @@ void btl_playCmdEffect(BtlCmd *arg0, s32 arg1, s16 *arg2) {
         if (u->unitBit & mask) {
             l->bounced[l->bounceCount++] = u;
         }
-        if (arg0->cmdNo == BTL_CMD_SWD_MAG && (u->flags & 1) && g_gameState->gameData->characters[(u->flags >> 1) & 0xF].unk34.b.unk4 == 2) {
+        if (arg0->cmdNo == BTL_CMD_SWD_MAG && (u->flags & 1) && g_gameState->gameData->characters[(u->flags >> 1) & 0xF].info.b.kind == 2) {
             l->partner = u;
         }
     }
@@ -105,7 +105,7 @@ void btl_startCmdEffect(BtlCmd *cmd) {
     case BTL_CMD_COUNTER:
     case BTL_CMD_CHARGE_ATTACK:
         if (u->flags & 1) {
-            id = g_gameState->gameData->characters[(u->flags >> 1) & 0xF].unk34.b.unk4 + 0x64;
+            id = g_gameState->gameData->characters[(u->flags >> 1) & 0xF].info.b.kind + 0x64;
         } else {
             id = 0x77;
         }
@@ -113,7 +113,7 @@ void btl_startCmdEffect(BtlCmd *cmd) {
         break;
     case BTL_CMD_STEAL:
         if (u->flags & 1) {
-            k = g_gameState->gameData->characters[(u->flags >> 1) & 0xF].unk34.b.unk4;
+            k = g_gameState->gameData->characters[(u->flags >> 1) & 0xF].info.b.kind;
         } else {
             k = 0x13;
         }

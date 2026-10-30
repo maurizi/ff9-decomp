@@ -386,7 +386,7 @@ void btl_placeParty(void) {
             return;
         }
         m = u->flags & ~0x300;
-        m |= (g_gameState->gameData->characters[(u->flags >> 1) & 0xF].unk34.w >> 1) & 0x100;
+        m |= (g_gameState->gameData->characters[(u->flags >> 1) & 0xF].info.w >> 1) & 0x100;
         u->flags = m;
         if (!(*flags & 3)) {
             u->flags = (u->flags & ~0x300) | ((((u->flags >> 8) & 3) ^ 1) << 8);
@@ -414,7 +414,7 @@ void btl_placeParty(void) {
         u->obj->rotZ = 0;
         u->rot[2] = 0;
         tbl = D_800F57F0;
-        e = &tbl[g_gameState->gameData->characters[(u->flags >> 1) & 0xF].unk34.b.unk4];
+        e = &tbl[g_gameState->gameData->characters[(u->flags >> 1) & 0xF].info.b.kind];
         u->shadowBone = e->unk0;
         u->shadowDirBone = e->unk1;
         btl_setShadowSize(u, e->unk2, e->unk3);

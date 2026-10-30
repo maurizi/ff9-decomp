@@ -18,8 +18,8 @@ void menuConfig_init(void) {
     m->prim = m->primBufs[g_gameState->gameData->unk8 ^ 1];
     m->charCount = 0;
     for (i = 0; i < 9; i++) {
-        if (g_gameState->gameData->characters[i].unk34.b.unkB) {
-            s_menuConfig.charPortBit[s_menuConfig.charCount] = chr_getClass(g_gameState->gameData->characters[i].unk34.b.row);
+        if (g_gameState->gameData->characters[i].info.b.recruited) {
+            s_menuConfig.charPortBit[s_menuConfig.charCount] = chr_getClass(g_gameState->gameData->characters[i].info.b.row);
             s_menuConfig.charIdx[s_menuConfig.charCount] = i;
             s_menuConfig.charCount++;
         }
@@ -175,7 +175,7 @@ void menuConfig_drawBattleControl(void) {
     text_drawBlock(r2->x + 0x2A, r2->y + 8, 0x11, text_get(CONFIG_TEXT_PORT_EXIT), 0);
     for (i = 0; i < s_menuConfig.charCount; i++) {
         on = ((s32)(g_gameState->config >> CFG_SHIFT_CHAR_PORT) >> s_menuConfig.charPortBit[i]) & 1;
-        text_drawBlock(r->x + 0xE, r->y + 0xA + i * 0x11, 0x11, g_gameState->gameData->characters[s_menuConfig.charIdx[i]].unk0, 0);
+        text_drawBlock(r->x + 0xE, r->y + 0xA + i * 0x11, 0x11, g_gameState->gameData->characters[s_menuConfig.charIdx[i]].name, 0);
         menuConfig_drawIcon(r->x + 0x60, r->y + 0xA + i * 0x11, 0x11, 0xF8, on);
         menuConfig_drawIcon(r->x + 0x92, r->y + 0xA + i * 0x11, 0x11, 0x100, on == 0);
     }

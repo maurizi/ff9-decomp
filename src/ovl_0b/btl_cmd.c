@@ -102,7 +102,7 @@ u16 btl_findCover(s32 arg0) {
         return 0;
     }
     g = g_gameState->gameData;
-    if (((g->characters + ((t->flags >> 1) & 0xF))->unkA & 2) && t->hp < (t->max->maxHp >> 1)) {
+    if (((g->characters + ((t->flags >> 1) & 0xF))->classFlags & 2) && t->hp < (t->max->maxHp >> 1)) {
         for (u = g->unk8E4.battle->unitList; u != NULL; u = u->next) {
             if ((u->support[1] & 0x40) && !(u->status & (BTL_STATUS_PETRIFY | BTL_STATUS_VENOM | BTL_STATUS_KO | BTL_STATUS_STOP | BTL_STATUS_HEAT | BTL_STATUS_FREEZE | BTL_STATUS_JUMP)) && u != t && (best == NULL || best->hp < u->hp)) {
                 best = u;
@@ -669,9 +669,9 @@ s32 btl_checkCmdUsable(Battle *arg0, BtlCmd *arg1) {
     case BTL_CMD_TRANCE:
         if (u->status & BTL_STATUS_TRANCE) {
             btl_showMessage(BTL_MSG_TRANCE);
-            u->modelId = g_btlCharModelIds[(u->flags & 1) ? g_gameState->gameData->characters[(u->flags >> 1) & 0xF].unk34.b.unk4 + 0x13 : 0x26];
+            u->modelId = g_btlCharModelIds[(u->flags & 1) ? g_gameState->gameData->characters[(u->flags >> 1) & 0xF].info.b.kind + 0x13 : 0x26];
         } else {
-            u->modelId = g_btlCharModelIds[(u->flags & 1) ? (g_gameState->gameData->characters[(u->flags >> 1) & 0xF].unk34.w >> 4) & 0x1F : 0x13];
+            u->modelId = g_btlCharModelIds[(u->flags & 1) ? (g_gameState->gameData->characters[(u->flags >> 1) & 0xF].info.w >> 4) & 0x1F : 0x13];
         }
         break;
     case BTL_CMD_KO:
@@ -2110,7 +2110,7 @@ void btl_calcCmd(BtlUnit *caster, BtlUnit *target, BtlCmd *cmd, s32 type) {
                 v = (caster->flags & 1) << 11;
                 target->rot[1] = v;
                 target->obj->rotY = v;
-                if ((target->flags & 1) && (&g_gameState->gameData->characters[(target->flags >> 1) & 0xF])->unk34.b.unk9 != ((target->flags >> 8) & 3)) {
+                if ((target->flags & 1) && (&g_gameState->gameData->characters[(target->flags >> 1) & 0xF])->info.b.battleRow != ((target->flags >> 8) & 3)) {
                     btl_toggleRow(target);
                 }
             } else {
@@ -2523,14 +2523,14 @@ void btl_calcCmd(BtlUnit *caster, BtlUnit *target, BtlCmd *cmd, s32 type) {
         btl_addStatus(target, BTL_STATUS_TRANCE);
         break;
     case 0x61:
-        if ((&g_gameState->gameData->characters[(target->flags >> 1) & 0xF])->unkA & 2) {
+        if ((&g_gameState->gameData->characters[(target->flags >> 1) & 0xF])->classFlags & 2) {
             c.flags |= 1;
         } else {
             btl_applyAbilityStatus(&c);
         }
         break;
     case 0x62:
-        if ((&g_gameState->gameData->characters[(target->flags >> 1) & 0xF])->unkA & 8) {
+        if ((&g_gameState->gameData->characters[(target->flags >> 1) & 0xF])->classFlags & 8) {
             c.flags |= 1;
         } else {
             btl_setAbilityPhysParams(&c);
@@ -3183,7 +3183,7 @@ s32 btl_checkSwdMagUsable(BtlUnit *arg0, s16 arg1) {
     if (arg0->mp >= arg1) {
         for (u = g_gameState->gameData->unk8E4.battle->unitList; u != NULL; u = u->next) {
             f = u->flags;
-            if ((f & 1) && g_gameState->gameData->characters[(f >> 1) & 0xF].unk34.b.unk4 == 2) {
+            if ((f & 1) && g_gameState->gameData->characters[(f >> 1) & 0xF].info.b.kind == 2) {
                 if (!(u->status & (BTL_STATUS_PETRIFY | BTL_STATUS_VENOM | BTL_STATUS_SILENCE | BTL_STATUS_KO | BTL_STATUS_CONFUSE | BTL_STATUS_BERSERK | BTL_STATUS_STOP | BTL_STATUS_SLEEP | BTL_STATUS_HEAT | BTL_STATUS_FREEZE | BTL_STATUS_MINI)) && !(arg0->status & (BTL_STATUS_PETRIFY | BTL_STATUS_VENOM | BTL_STATUS_SILENCE | BTL_STATUS_KO | BTL_STATUS_CONFUSE | BTL_STATUS_BERSERK | BTL_STATUS_STOP | BTL_STATUS_SLEEP | BTL_STATUS_HEAT | BTL_STATUS_FREEZE | BTL_STATUS_MINI))) {
                     return 1;
                 }

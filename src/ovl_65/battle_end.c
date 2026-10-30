@@ -222,7 +222,7 @@ void rewards_drawMembers(void) {
                 }
                 ui_drawPartyPortrait(r->x + 4, r->y + 4, 0xB, i, dim);
                 rewards_drawLevelUp(r->x + 0x24, r->y + 0x12, 0xB, &s_rewards.levelPopups[i]);
-                s_rewards.prim = text_buildBlock(r->x + 0x29, r->y + 4, g_ot + 0xB, c->unk0, col, s_rewards.prim);
+                s_rewards.prim = text_buildBlock(r->x + 0x29, r->y + 4, g_ot + 0xB, c->name, col, s_rewards.prim);
                 text_formatNumber(c->level, buf, 2, 1);
                 ui_drawSprite(r->x + 0x72, r->y + 7, 0xB, 0xB4, dim);
                 p = buf;
@@ -884,9 +884,9 @@ void rewards_addAp(s32 arg0, u32 arg1) {
                 e = &g_itemTable[c->equip[i]];
                 for (j = 0; j < 3; j++) {
                     if (e->unkC[j] != 0) {
-                        k = chr_findAbilitySlot(c->unk34.b.id, e->unkC[j]);
+                        k = chr_findAbilitySlot(c->info.b.id, e->unkC[j]);
                         if (k >= 0) {
-                            need = g_abilityRows[c->unk34.b.row][k].unk1;
+                            need = g_abilityRows[c->info.b.row][k].unk1;
                             have = c->ap[k];
                             if (have < need) {
                                 if (arg1 >= need - have) {
@@ -916,7 +916,7 @@ u8 rewards_willLearn(Character *c, s32 arg1) {
 
     ret = 0;
     eq = c->equip;
-    ch = c->unk34.b.id;
+    ch = c->info.b.id;
     memset(s_rewardsAbilityItems, 0, 0x30);
     for (i = 0; i < 5; i++) {
         if (eq[i] != ITEM_NONE) {
@@ -926,7 +926,7 @@ u8 rewards_willLearn(Character *c, s32 arg1) {
                     k = chr_findAbilitySlot(ch & 0xFF, e->unkC[j]);
                     if (k >= 0) {
                         have = c->ap[k];
-                        if (have < g_abilityRows[c->unk34.b.row][k].unk1) {
+                        if (have < g_abilityRows[c->info.b.row][k].unk1) {
                             s_rewardsAbilityItems[k]++;
                         }
                     }
@@ -937,7 +937,7 @@ u8 rewards_willLearn(Character *c, s32 arg1) {
     for (i = 0; i < 0x30; i++) {
         if (s_rewardsAbilityItems[i] != 0) {
             have = c->ap[i];
-            if (s_rewardsAbilityItems[i] * arg1 >= g_abilityRows[c->unk34.b.row][i].unk1 - have) {
+            if (s_rewardsAbilityItems[i] * arg1 >= g_abilityRows[c->info.b.row][i].unk1 - have) {
                 ret = 1;
                 break;
             }
@@ -1005,7 +1005,7 @@ s32 rewards_initApCounter(s32 i) {
     u32 ap = s_rewards.rewards.ap;
     Counter *c = &s_rewards.rewards.apGain[i];
 
-    if (chr_hasSupportAbility(g_gameState->gameData->party[i]->unk34.b.id, SUPPORT_ABILITY_UP)) {
+    if (chr_hasSupportAbility(g_gameState->gameData->party[i]->info.b.id, SUPPORT_ABILITY_UP)) {
         c->target = ap * 2;
     } else {
         c->target = ap;
@@ -1137,7 +1137,7 @@ u32 rewards_initExpCounter(s32 arg0) {
     u32 step;
 
     c->target = exp;
-    if (chr_hasSupportAbility(m->unk34.b.id, SUPPORT_LEVEL_UP)) {
+    if (chr_hasSupportAbility(m->info.b.id, SUPPORT_LEVEL_UP)) {
         c->target += exp >> 1;
     }
     if (exp < 16) {
@@ -1203,7 +1203,7 @@ void rewards_updateLevelUps(void) {
 void rewards_levelUp(s32 arg0) {
     Character *m = g_gameState->gameData->party[arg0];
 
-    chr_levelUp(m->unk34.b.id, m->level + 1);
+    chr_levelUp(m->info.b.id, m->level + 1);
     s_rewards.levelWins[arg0].queued++;
     s_rewards.levelPopups[arg0].pending++;
 }
@@ -1270,7 +1270,7 @@ void rewards_initGil(void) {
 
     for (i = 0; i < 4; i++) {
         m = g_gameState->gameData->party[i];
-        if (m != NULL && chr_hasSupportAbility(m->unk34.b.id, SUPPORT_MILLIONAIRE)) {
+        if (m != NULL && chr_hasSupportAbility(m->info.b.id, SUPPORT_MILLIONAIRE)) {
             found = 1;
         }
     }

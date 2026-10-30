@@ -245,7 +245,7 @@ u8 *text_buildPlain(s32 x, s32 y, u32 *ot, Character *ch, s32 *w, u8 *pkt) {
     s32 code;
 
     font = g_gameState->gameData->unk7D4;
-    s = ch->unk0;
+    s = ch->name;
     x0 = x;
     th = font->unk4 >> 8;
     kanji = g_gameState->gameData->unk84C;
@@ -946,7 +946,7 @@ void text_renderPartyName(s32 arg0) {
     s32 x = (arg0 & 1) * 0x54;
     s32 y = arg0 >> 1;
     s32 i;
-    u8 *name = g_gameState->gameData->party[arg0]->unk0;
+    u8 *name = g_gameState->gameData->party[arg0]->name;
 
     for (i = 0; i < 7; i++) {
         if (*name == 0xFF) {

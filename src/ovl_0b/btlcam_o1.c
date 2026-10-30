@@ -438,7 +438,7 @@ void btlcam_setPathKey(Unk800C412C *arg0, Unk800C3F78 *arg1) {
         }
         u = (k == 1) ? g_btlCamTargets.caster : g_btlCamTargets.target;
         if (u->flags & 1) {
-            idx = ((g_gameState->gameData->characters[(u->flags >> 1) & 0xF].unk34.w >> 4) & 0x1F) +
+            idx = ((g_gameState->gameData->characters[(u->flags >> 1) & 0xF].info.w >> 4) & 0x1F) +
                   (arg1->unk2_14 - 1) * 19;
             tb = D_800F5758;
             t = &tb[idx];

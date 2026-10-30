@@ -1321,11 +1321,11 @@ u8 menuSave_getPortrait(Character *c) {
     if (c == NULL) {
         return PORTRAIT_NONE;
     }
-    m = chr_getPortrait(c->unk34.b.id);
+    m = chr_getPortrait(c->info.b.id);
     if (m == 0xFF) {
         return PORTRAIT_NONE;
     }
-    if (m == 2 && (s32)(c->unk34.b.unk4) >= 5) {
+    if (m == 2 && (s32)(c->info.b.kind) >= 5) {
         return 3;
     }
     return s_menuSavePortraitIds[m];
@@ -1859,14 +1859,14 @@ void menuSave_buildHeader(SaveBuf *buf) {
     h->windowColor = (g_gameState->config >> CFG_BIT_WINDOW_COLOR) & 1;
     h->counter = ++s_menuSave.newestCounter;
     h->cursor = s_menuSave.list.cursor;
-    h->name = *(SaveName *)g_gameState->gameData->characters[n].unk0;
+    h->name = *(SaveName *)g_gameState->gameData->characters[n].name;
     menuSave_getLocation((u8 *)&h->location);
     for (i = 0; i < 4; i++) {
         if (g_gameState->gameData->party[i] != NULL) {
             h->party[i].present = 1;
             h->party[i].portrait = menuSave_getPortrait(g_gameState->gameData->party[i]);
             h->party[i].level = g_gameState->gameData->party[i]->level;
-            *(Name10 *)h->party[i].name = *(Name10 *)g_gameState->gameData->party[i]->unk0;
+            *(Name10 *)h->party[i].name = *(Name10 *)g_gameState->gameData->party[i]->name;
         } else {
             h->party[i].present = 0;
             h->party[i].portrait = PORTRAIT_NONE;
@@ -2086,7 +2086,7 @@ void menuSave_packParty(SaveParty *s) {
     }
     for (i = 0; i < 4; i++) {
         if (gd->party[i] != NULL) {
-            s->party[i] = gd->party[i]->unk34.b.id;
+            s->party[i] = gd->party[i]->info.b.id;
         } else {
             s->party[i] = SAVE_CHARACTERS;
         }

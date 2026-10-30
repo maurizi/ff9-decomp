@@ -501,7 +501,7 @@ s32 btl_reloadPartyStep(s32 arg0) {
             if (ch == NULL) {
                 continue;
             }
-            cid = ch->unk34.b.id;
+            cid = ch->info.b.id;
             e = &g_gameState->gameData->unk8D8[cid];
             u = btl_getUnitBySlot(i);
             if (u == NULL) {
@@ -524,7 +524,7 @@ s32 btl_reloadPartyStep(s32 arg0) {
             if (v != 0) {
                 btl_relocTexAnims((TexAnimSet *)e->unk8->texAnims, (u16 (*)[4])pc);
             }
-            btl_loadPartyMotions(u, g_gameState->gameData->party[i]->unk34.b.unk4, u - g_gameState->gameData->unk8E4.battle->units);
+            btl_loadPartyMotions(u, g_gameState->gameData->party[i]->info.b.kind, u - g_gameState->gameData->unk8E4.battle->units);
             if (u->status & BTL_STATUS_KO) {
                 if (u != g_gameState->gameData->unk8E4.battle->curCmd->caster) {
                     u->model->motion = (BtlUnit9CC *)u->motions[4];
@@ -1325,10 +1325,10 @@ s32 btl_getPartyModelId(s32 arg0, s32 arg1) {
     if (!(arg1 & 0x20)) {
         u = btl_getUnitBySlot(arg0);
         if (u != NULL) {
-            m = ((s16)u->modelId != g_btlCharModelIds[(u->flags & 1) ? (g_gameState->gameData->characters[(u->flags >> 1) & 0xF].unk34.w >> 4) & 0x1F : 0x13]) << 4;
+            m = ((s16)u->modelId != g_btlCharModelIds[(u->flags & 1) ? (g_gameState->gameData->characters[(u->flags >> 1) & 0xF].info.w >> 4) & 0x1F : 0x13]) << 4;
         }
     }
-    idx = g_gameState->gameData->party[arg0]->unk34.w >> 4;
+    idx = g_gameState->gameData->party[arg0]->info.w >> 4;
     idx &= 0x1F;
     if ((arg1 & 0x10) != m) {
         if (!(arg1 & 0x20)) {
@@ -1456,7 +1456,7 @@ s32 btl_swapPartyModelStep(s32 arg0, s32 arg1) {
         *state = 6;
         break;
     case 6:
-        cid = g_gameState->gameData->party[arg0]->unk34.b.id;
+        cid = g_gameState->gameData->party[arg0]->info.b.id;
         ent = &g_gameState->gameData->unk8D8[cid];
         u = btl_getUnitBySlot(arg0);
         if (u != NULL) {
@@ -1477,7 +1477,7 @@ s32 btl_swapPartyModelStep(s32 arg0, s32 arg1) {
             if (anim != 0) {
                 btl_relocTexAnims((TexAnimSet *)ent->unk8->texAnims, (u16 (*)[4])pc);
             }
-            btl_loadPartyMotions(u, g_gameState->gameData->party[arg0]->unk34.b.unk4,
+            btl_loadPartyMotions(u, g_gameState->gameData->party[arg0]->info.b.kind,
                           u - g_gameState->gameData->unk8E4.battle->units);
             if (u->status & BTL_STATUS_KO) {
                 u->model->motion = (BtlUnit9CC *)u->motions[4];

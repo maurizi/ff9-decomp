@@ -800,7 +800,7 @@ void btl_checkSideDefeated(BtlUnit *arg0) {
         for (u = b->unitList; u != NULL; u = u->next) {
             f = u->flags;
             if (f & 1) {
-                k = g_gameState->gameData->characters[(f >> 1) & 0xF].unk34.b.unk4;
+                k = g_gameState->gameData->characters[(f >> 1) & 0xF].info.b.kind;
             } else {
                 k = 0x13;
             }

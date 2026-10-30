@@ -8,7 +8,7 @@ void ui_drawCharStatus(s32 x, s32 y, s32 otz, Character *c) {
         return;
     }
     text_formatNumber(c->level, buf, 2, 1);
-    text_drawBlock(x, y, otz, c->unk0, 0);
+    text_drawBlock(x, y, otz, c->name, 0);
     ui_drawSmallDigits(x + 0x24, y + 0xE, otz, buf, 0);
     ui_drawSprite(x, y + 0xE, otz, 0xB4, 0);
     ui_drawSprite(x, y + 0x17, otz, 0xAF, 0);
@@ -869,7 +869,7 @@ void ui_drawCharStatuses(s32 x, s32 y, s32 otz, s32 slot) {
         return;
     }
     text_formatNumber(c->level, buf, 2, 1);
-    text_drawBlock(x, y, otz, c->unk0, 0);
+    text_drawBlock(x, y, otz, c->name, 0);
     ui_drawSmallDigits(x + 0x26, y + 0xE, otz, buf, 0);
     ui_drawSprite(x, y + 0xE, otz, 0xB4, 0);
     ui_drawStatusIcons(x, y + 0x1C, otz, c->status, 0);
@@ -1013,7 +1013,7 @@ s32 item_countEquipped(s32 id) {
     s32 n = 0;
 
     for (i = 0; i < 9; i++) {
-        if (g_gameState->gameData->characters[i].unk34.b.unkB) {
+        if (g_gameState->gameData->characters[i].info.b.recruited) {
             for (j = 0; j < 5; j++) {
                 if (id == g_gameState->gameData->characters[i].equip[j]) {
                     n++;
@@ -1208,7 +1208,7 @@ void ui_restorePortraits(void) {
 }
 
 s32 chr_getPortrait(s32 arg0) {
-    return D_8006BB8C[g_gameState->gameData->characters[arg0].unk34.b.unk4];
+    return D_8006BB8C[g_gameState->gameData->characters[arg0].info.b.kind];
 }
 
 void ui_getPortraitRects(s32 arg0, RECT *clut, RECT *img) {
@@ -1269,7 +1269,7 @@ void ui_loadPartyPortraits(u8 *buf) {
         Character *p = d->party[i];
 
         if (p != NULL) {
-            ui_loadPartyPortrait(buf + D_8006BB8C[d->characters[p->unk34.b.id].unk34.b.unk4] * 0x6C0, i);
+            ui_loadPartyPortrait(buf + D_8006BB8C[d->characters[p->info.b.id].info.b.kind] * 0x6C0, i);
         }
     }
 }
