@@ -1677,33 +1677,12 @@ typedef struct {
 } PadRepeat; /* 20 bytes */
 extern PadRepeat g_padRepeats[][23];
 
-
-typedef struct {
-    u8 pad0[0x12];
-    u16 unk12;
-    u8 pad14[2];
-    u16 unk16;
-    s16 unk18;
-    s16 unk1A;
-} Unk80065ADC;
-
 void msg_beginDraw(void);
 void pen_setColor(s32);
 void preload_setEntry(PreloadEntry *, s32, s32, s32, s32, s32, s32, s32);
 PreloadEntry *preload_find(s32);
 s32 preload_wait(PreloadEntry *);
 void gfx_init(u32 *, u32 *, s32, s32);
-
-typedef struct {
-    u8 pad0[0x8C];
-    s32 unk8C;
-} Unk80065A44Sub;
-
-typedef struct {
-    Unk80065A44Sub *unk0;
-    u8 pad4[0x16 - 4];
-    s16 unk16;
-} Unk80065A44;
 
 typedef struct {
     u8 pad0[0x34];
@@ -3548,24 +3527,24 @@ extern LoadAddrs D_80010034;
 typedef struct {
     u32 unk0; /* low nibble: kind */
     u8 pad4;
-    u8 unk5; /* power */
+    u8 power; /* power */
     u8 pad6[2];
-    u8 unk8; /* checked against the target by chr_cureStatusMask */
-    u8 unk9;
+    u8 statusMask; /* checked against the target by chr_cureStatusMask: status bits cured (fieldCalc_cureStatus) */
+    u8 statusSet; /* index into fieldCalc_cureStatusType's status mask table */
 } MainCalcCmd;
 
 typedef struct {
-    Character *unk0; /* caster */
-    Character *unk4; /* target */
-    MainCalcCmd *unk8;
-    s32 unkC;
-    u8 unk10; /* bit 0: miss */
-    u8 unk11;
-    s16 unk12;
-    s16 unk14;
-    s16 unk16;
-    s16 unk18;
-    s16 unk1A;
+    Character *caster; /* caster */
+    Character *target; /* target */
+    MainCalcCmd *cmd; /* ability/item data */
+    s32 all; /* nonzero: the item/ability hits the whole party (item_useOnMember last argument; fieldCalc_multiTargetHalf) */
+    u8 flags; /* bit 0: miss, set when nothing happens (full hp, dead target, cure failed) */
+    u8 result; /* 0x20 set by fieldCalc_apply */
+    s16 power; /* base power (cmd power) */
+    s16 defense; /* target magicDef (magic heals), 0 for items */
+    s16 multiplier; /* level-based (fieldCalc_setMagicHeal) or 10 for items, halved/boosted */
+    s16 hpChange; /* chr_addHp amount */
+    s16 mpChange; /* chr_addMp amount */
 } MainCalc;
 
 u8 chr_hasStatus(Character *, s32);
@@ -4503,8 +4482,8 @@ s32 evt_getArg8(void);
 s32 evt_isControlEnabled(void);
 s32 fade_getOtz(void);
 s32 fade_isSubtractive(void);
-void fieldCalc_calcHpGain(Unk80065ADC *a);
-void fieldCalc_calcMpGain(Unk80065ADC *a);
+void fieldCalc_calcHpGain(MainCalc *a);
+void fieldCalc_calcMpGain(MainCalc *a);
 void fieldCalc_calcReviveHp(MainCalc *c);
 void fieldCalc_casterStatusHalf(MainCalc *c);
 void fieldCalc_cureStatus(MainCalc *c);
@@ -4515,7 +4494,7 @@ void fieldCalc_restoreHalf(MainCalc *c);
 void fieldCalc_reviveRandom(MainCalc *c);
 void fieldCalc_setItemHeal(MainCalc *c);
 void fieldCalc_setMagicHeal(MainCalc *c);
-void fieldCalc_supportBoost(Unk80065A44 *a);
+void fieldCalc_supportBoost(MainCalc *a);
 void fld_entry(void); /* ovl_0a */
 s32 fld_soundCommand(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4); /* ovl_0a */
 s32 fldbg_scrollToPlayer(s32 arg0, s32 arg1); /* ovl_0a */

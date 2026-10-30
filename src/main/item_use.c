@@ -3,13 +3,13 @@
 u8 item_useOnMember(Character *a, Character *t, MainCalcCmd *cmd, u8 kind, s32 e) {
     MainCalc c;
 
-    c.unk0 = a;
-    c.unk4 = t;
-    c.unk8 = cmd;
-    c.unkC = e;
-    c.unk10 = 0;
-    c.unk1A = 0;
-    c.unk18 = 0;
+    c.caster = a;
+    c.target = t;
+    c.cmd = cmd;
+    c.all = e;
+    c.flags = 0;
+    c.mpChange = 0;
+    c.hpChange = 0;
     switch (kind) {
     case 10:
         if (fieldCalc_checkAlive(&c)) {
@@ -17,10 +17,10 @@ u8 item_useOnMember(Character *a, Character *t, MainCalcCmd *cmd, u8 kind, s32 e
                 goto full;
             }
             fieldCalc_setMagicHeal(&c);
-            fieldCalc_supportBoost((Unk80065A44 *)&c);
+            fieldCalc_supportBoost(&c);
             fieldCalc_casterStatusHalf(&c);
             fieldCalc_multiTargetHalf(&c);
-            fieldCalc_calcHpGain((Unk80065ADC *)&c);
+            fieldCalc_calcHpGain(&c);
         }
         break;
     case 12:
@@ -37,7 +37,7 @@ u8 item_useOnMember(Character *a, Character *t, MainCalcCmd *cmd, u8 kind, s32 e
                 goto full;
             }
             fieldCalc_setItemHeal(&c);
-            fieldCalc_calcHpGain((Unk80065ADC *)&c);
+            fieldCalc_calcHpGain(&c);
         }
         break;
     case 70:
@@ -46,14 +46,14 @@ u8 item_useOnMember(Character *a, Character *t, MainCalcCmd *cmd, u8 kind, s32 e
                 goto full;
             }
             fieldCalc_setItemHeal(&c);
-            fieldCalc_calcMpGain((Unk80065ADC *)&c);
+            fieldCalc_calcMpGain(&c);
         }
         break;
     case 71:
         if (fieldCalc_checkAlive(&c)) {
             if (*(u32 *)&t->hp == *(u32 *)&t->maxHp) { /* hp and mp both full */
             full:
-                c.unk10 |= 1;
+                c.flags |= 1;
                 break;
             }
             fieldCalc_restoreAll(&c);
@@ -89,31 +89,31 @@ s32 chr_payMp(Unk8006573C *a, s16 b) {
 }
 
 u8 fieldCalc_apply(MainCalc *c) {
-    if (c->unk10 & 1) {
-        c->unk11 |= 0x20;
+    if (c->flags & 1) {
+        c->result |= 0x20;
         return 0;
     }
-    if (c->unk18 > 0) {
-        chr_addHp(c->unk4, c->unk18);
+    if (c->hpChange > 0) {
+        chr_addHp(c->target, c->hpChange);
     }
-    if (c->unk1A > 0) {
-        chr_addMp(c->unk4, c->unk1A);
+    if (c->mpChange > 0) {
+        chr_addMp(c->target, c->mpChange);
     }
     return 1;
 }
 
 u8 fieldCalc_checkAlive(MainCalc *c) {
-    if (chr_hasStatus(c->unk4, 0x41) || c->unk4->hp == 0) {
-        c->unk10 |= 1;
+    if (chr_hasStatus(c->target, 0x41) || c->target->hp == 0) {
+        c->flags |= 1;
         return 0;
     }
     return 1;
 }
 
 u8 fieldCalc_checkDead(MainCalc *c) {
-    if (chr_hasStatus(c->unk4, 1) || c->unk4->hp != 0 ||
-        (chr_hasStatus(c->unk4, 0x40) && c->unk4->hp == 0)) {
-        c->unk10 |= 1;
+    if (chr_hasStatus(c->target, 1) || c->target->hp != 0 ||
+        (chr_hasStatus(c->target, 0x40) && c->target->hp == 0)) {
+        c->flags |= 1;
         return 0;
     }
     return 1;
@@ -129,51 +129,51 @@ void fieldCalc_setMagicHeal(MainCalc *c) {
     if (g_randPtr >= g_randTableEnd) {
         rand_refill();
     }
-    a = c->unk0;
+    a = c->caster;
     lv = a->magic;
-    c->unk16 = lv + ((*g_randPtr << 8) | *g_randPtr) % (((a->level + lv) >> 3) + 1);
+    c->multiplier = lv + ((*g_randPtr << 8) | *g_randPtr) % (((a->level + lv) >> 3) + 1);
     g_randPtr++;
-    c->unk12 = c->unk8->unk5;
-    c->unk14 = c->unk4->magicDef;
+    c->power = c->cmd->power;
+    c->defense = c->target->magicDef;
 }
 
 void fieldCalc_setItemHeal(MainCalc *c) {
-    c->unk16 = 10;
-    c->unk12 = c->unk8->unk5;
-    c->unk14 = 0;
+    c->multiplier = 10;
+    c->power = c->cmd->power;
+    c->defense = 0;
 }
 
 void fieldCalc_casterStatusHalf(MainCalc *c) {
-    if (chr_hasStatus(c->unk0, 0)) {
-        c->unk16 /= 2;
+    if (chr_hasStatus(c->caster, 0)) {
+        c->multiplier /= 2;
     }
 }
 
-void fieldCalc_supportBoost(Unk80065A44 *a) {
-    if (a->unk0->unk8C & 2) {
-        a->unk16 = (a->unk16 * 3) >> 1;
+void fieldCalc_supportBoost(MainCalc *a) {
+    if (a->caster->supportAbilities[1] & 2) {
+        a->multiplier = (a->multiplier * 3) >> 1;
     }
 }
 
 void fieldCalc_multiTargetHalf(MainCalc *c) {
-    if (c->unkC == 1 && (u32)((c->unk8->unk0 & 0xF) - 3) < 3) {
-        c->unk16 /= 2;
+    if (c->all == 1 && (u32)((c->cmd->unk0 & 0xF) - 3) < 3) {
+        c->multiplier /= 2;
     }
 }
 
-void fieldCalc_calcHpGain(Unk80065ADC *a) {
-    u16 v = a->unk12 * a->unk16;
+void fieldCalc_calcHpGain(MainCalc *a) {
+    u16 v = a->power * a->multiplier;
     if ((s16)v >= 10000) {
         v = 9999;
     }
-    a->unk18 = v;
+    a->hpChange = v;
 }
 
 void fieldCalc_calcReviveHp(MainCalc *c) {
-    Character *t = c->unk4;
-    s32 v = t->maxHp * (t->spirit + c->unk8->unk5);
+    Character *t = c->target;
+    s32 v = t->maxHp * (t->spirit + c->cmd->power);
 
-    if (c->unk0->supportAbilities[1] & 2) {
+    if (c->caster->supportAbilities[1] & 2) {
         v /= 50;
     } else {
         v /= 100;
@@ -181,24 +181,24 @@ void fieldCalc_calcReviveHp(MainCalc *c) {
     if (v >= 10000) {
         v = 9999;
     }
-    c->unk18 = v;
+    c->hpChange = v;
 }
 
-void fieldCalc_calcMpGain(Unk80065ADC *a) {
-    u16 v = a->unk12 * a->unk16;
+void fieldCalc_calcMpGain(MainCalc *a) {
+    u16 v = a->power * a->multiplier;
     if ((s16)v >= 10000) {
         v = 9999;
     }
-    a->unk1A = v;
+    a->mpChange = v;
 }
 
 void fieldCalc_restoreAll(MainCalc *c) {
-    c->unk4->hp = c->unk4->maxHp;
-    c->unk4->mp = c->unk4->maxMp;
+    c->target->hp = c->target->maxHp;
+    c->target->mp = c->target->maxMp;
 }
 
 void fieldCalc_reviveRandom(MainCalc *c) {
-    Character *t = c->unk4;
+    Character *t = c->target;
     s32 r;
 
     if (g_randPtr >= g_randTableEnd) {
@@ -209,21 +209,21 @@ void fieldCalc_reviveRandom(MainCalc *c) {
 }
 
 void fieldCalc_restoreHalf(MainCalc *c) {
-    c->unk18 = c->unk4->maxHp >> 1;
-    c->unk1A = c->unk4->maxMp >> 1;
+    c->hpChange = c->target->maxHp >> 1;
+    c->mpChange = c->target->maxMp >> 1;
 }
 
 void fieldCalc_cureStatusType(MainCalc *c) {
     u8 masks[6] = { 0, 0, 0, 2, 1, 24 };
 
-    if (chr_cureStatusMask(c->unk4, masks[c->unk8->unk9]) != 2) {
-        c->unk10 |= 1;
+    if (chr_cureStatusMask(c->target, masks[c->cmd->statusSet]) != 2) {
+        c->flags |= 1;
     }
 }
 
 void fieldCalc_cureStatus(MainCalc *c) {
-    if (chr_cureStatusMask(c->unk4, c->unk8->unk8) != 2) {
-        c->unk10 |= 1;
+    if (chr_cureStatusMask(c->target, c->cmd->statusMask) != 2) {
+        c->flags |= 1;
     }
 }
 
