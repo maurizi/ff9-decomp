@@ -944,30 +944,30 @@ typedef struct {
 
 /* frame animation (sprAnim_update) */
 typedef struct {
-    u16 unk0; /* cell list index */
-    u8 unk2; /* ticks */
+    u16 cellList; /* cell list index */
+    u8 ticks; /* ticks */
     u8 pad3;
-    s16 unk4; /* x offset */
-    s16 unk6; /* y offset */
-} Unk80035B90Frame;
+    s16 x; /* x offset */
+    s16 y; /* y offset */
+} SprAnimFrame;
 
 typedef struct {
-    s16 unk0; /* frame count */
+    s16 frameCount; /* frame count */
     u8 pad2[2];
-    Unk80035B90Frame unk4[1];
-} Unk80035B90Data;
+    SprAnimFrame frames[1];
+} SprAnimData;
 
-typedef struct Unk80035B90 {
-    u8 unk0; /* active */
-    u8 unk1; /* frame */
-    u8 unk2; /* tick */
-    u8 unk3; /* frame count */
-    Unk80035B90Data *unk4;
-    Unk80035B90Frame *unk8;
-    Unk80035B90Frame *unkC; /* end of frames */
-    Unk80035B90Data *unk10;
-    void (*unk14)(); /* called with the object */
-} Unk80035B90;
+typedef struct SprAnim {
+    u8 playing; /* active (sprAnim_setPlaying) */
+    u8 frame; /* frame */
+    u8 tick; /* tick */
+    u8 frameCount; /* frame count */
+    SprAnimData *data; /* animation data (sprAnim_init) */
+    SprAnimFrame *frames; /* frame table (data->frames) */
+    SprAnimFrame *cellLists; /* cell lists, right after the frames */
+    SprAnimData *base; /* cell offsets are relative to it (= data) */
+    void (*onDone)(); /* called with the object; at the last frame (sprAnim_setOnDone) */
+} SprAnim;
 
 
 /* screen fade (g_fade, fade_*): runtime field/menu campaign, docs/runtime-findings.md */
@@ -1017,7 +1017,7 @@ typedef struct {
     u8 follow; /* 0: help box at x/y itself, else beside the hand */
     u8 cursorOnTop; /* hand drawn above the help box */
     u8 pad1E[2];
-    Unk80035B90 iconAnim; /* moogle icon (sprAnim_*) */
+    SprAnim iconAnim; /* moogle icon (sprAnim_*) */
 } HelpState;
 extern HelpState g_menuHelp;
 
@@ -2074,7 +2074,7 @@ extern AkaoSeq *g_akaoVoiceOwner[24];
 void akao_setVoiceRelease(s32, s32, s32);
 void help_draw(void);
 void help_toggle(void);
-void sprAnim_update(Unk80035B90 *);
+void sprAnim_update(SprAnim *);
 void menu_onPortraitsRead(u8 *);
 void akao_relocInstruments(s32 *, AkaoInstrument *, u32, s32);
 s32 akao_loadBankAt(s32 *, s32, s32, u32);
@@ -2126,8 +2126,8 @@ s32 cd_startTransfer(); /* called with a u8 it ignores; callers see an int retur
 u8 timer_isEnabled(void);
 void timer_draw(void);
 void game_tickClock(void);
-extern Unk80035B90Data D_80010E48;
-void sprAnim_init(Unk80035B90 *, Unk80035B90Data *);
+extern SprAnimData D_80010E48;
+void sprAnim_init(SprAnim *, SprAnimData *);
 s32 akao_checkHeader(s32 *);
 extern u16 *D_800809DC;
 extern u16 *D_800809E4;
@@ -2580,9 +2580,9 @@ void cd_onSyncQueued(u8);
 extern void (*g_cdStateHandlers[])(s32);
 
 /* ---- main batch 4 ---- */
-u8 sprAnim_setPlaying(Unk80035B90 *, u8);
-void sprAnim_setOnDone(Unk80035B90 *, void (*)());
-void sprAnim_reset(Unk80035B90 *);
+u8 sprAnim_setPlaying(SprAnim *, u8);
+void sprAnim_setOnDone(SprAnim *, void (*)());
+void sprAnim_reset(SprAnim *);
 void help_onIconAnimDone(void);
 extern s32 D_8007B9A0;
 extern u8 *D_8007B9A4;
@@ -2900,7 +2900,7 @@ typedef struct {
     s16 unkA; /* x offset */
 } Unk80035214;
 void help_layout(Unk80035214 *);
-void sprAnim_draw(s32, s32, s32, Unk80035B90 *);
+void sprAnim_draw(s32, s32, s32, SprAnim *);
 s32 fade_stepClamp(s32, s32, s32);
 s32 fade_ease(s32, s32, s32);
 typedef struct {
@@ -2987,14 +2987,14 @@ void win_drawFrame(Window *);
 void win_drawTitle(Window *);
 /* sprite cell of a frame animation (sprAnim_drawCell) */
 typedef struct {
-    u8 unk0; /* u */
-    u8 unk1; /* v */
-    u8 unk2; /* x + 0x80 */
-    u8 unk3; /* y + 0x80 */
-    u32 unk4; /* clut | tpage bits << 16 */
-    u16 unk8; /* w */
-    u16 unkA; /* h */
-} Unk800357E0;
+    u8 u; /* u */
+    u8 v; /* v */
+    u8 x; /* x + 0x80 */
+    u8 y; /* y + 0x80 */
+    u32 clutTpage; /* clut | tpage bits << 16; bit 26 = scaled (sprAnim_draw) */
+    u16 w; /* w */
+    u16 h; /* h */
+} SprCell;
 /* debug/system text output (hand-written asm, 0x80051xxx) */
 void pen_begin(void);
 void pen_setPos(s32, s32);
@@ -3638,18 +3638,18 @@ typedef void (*FadeFn)(FadeState *);
 
 /* frame animation cells (sprAnim_draw) */
 typedef struct {
-    s16 unk0; /* cell count */
-    s16 unk2; /* byte offset of the first cell in unk10 */
+    s16 count; /* cell count */
+    s16 offset; /* byte offset of the first cell in unk10 */
 } AnimCellList;
 
 typedef struct {
-    Unk800357E0 unk0;
+    SprCell cell;
     u8 padC[0x10 - 0xC];
-    u16 unk10; /* x scale, 4096 = 1.0 (sprAnim_drawScaledCell) */
-    u16 unk12; /* y scale */
+    u16 scaleX; /* x scale, 4096 = 1.0 (sprAnim_drawScaledCell) */
+    u16 scaleY; /* y scale */
 } AnimCell;
 
-void sprAnim_drawScaledCell(s32, s32, s32, Unk80035B90 *, AnimCell *);
+void sprAnim_drawScaledCell(s32, s32, s32, SprAnim *, AnimCell *);
 
 
 /* dialog window layout (msg_getLayout / evt_getMsgLayout) */
