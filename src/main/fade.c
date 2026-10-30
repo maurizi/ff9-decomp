@@ -264,83 +264,83 @@ void func_8002FEB4(void) {
 void fadeWipe_start(FadeState *p) {
     s32 half;
     s32 n;
-    Unk80077D00 *d;
+    FadeWipe *d;
 
     if (p->frames == 0) {
         p->frames = 0x10;
     }
-    g_fadeWipe.unk0 = p->color.unk0[0];
-    g_fadeWipe.unk3C.unk0 = g_fadeWipe.unk0;
-    g_fadeWipe.unk30.unk0 = g_fadeWipe.unk0;
-    g_fadeWipe.unk4 = p->color.unk0[1];
-    g_fadeWipe.unk3C.unk4 = g_fadeWipe.unk4;
-    g_fadeWipe.unk30.unk4 = g_fadeWipe.unk4;
-    g_fadeWipe.unk8 = p->color.unk0[2];
-    g_fadeWipe.unk3C.unk8 = g_fadeWipe.unk8;
-    g_fadeWipe.unk30.unk8 = g_fadeWipe.unk8;
-    g_fadeWipe.unkC = p->endR;
-    g_fadeWipe.unk10 = p->endG;
-    g_fadeWipe.unk14 = p->endB;
-    g_fadeWipe.unk54 = g_fadeWipe.unkC - g_fadeWipe.unk0;
-    g_fadeWipe.unk58 = g_fadeWipe.unk10 - g_fadeWipe.unk4;
-    g_fadeWipe.unk5C = g_fadeWipe.unk14 - g_fadeWipe.unk8;
+    g_fadeWipe.startR = p->color.unk0[0];
+    g_fadeWipe.color2.r = g_fadeWipe.startR;
+    g_fadeWipe.color.r = g_fadeWipe.startR;
+    g_fadeWipe.startG = p->color.unk0[1];
+    g_fadeWipe.color2.g = g_fadeWipe.startG;
+    g_fadeWipe.color.g = g_fadeWipe.startG;
+    g_fadeWipe.startB = p->color.unk0[2];
+    g_fadeWipe.color2.b = g_fadeWipe.startB;
+    g_fadeWipe.color.b = g_fadeWipe.startB;
+    g_fadeWipe.endR = p->endR;
+    g_fadeWipe.endG = p->endG;
+    g_fadeWipe.endB = p->endB;
+    g_fadeWipe.deltaR = g_fadeWipe.endR - g_fadeWipe.startR;
+    g_fadeWipe.deltaG = g_fadeWipe.endG - g_fadeWipe.startG;
+    g_fadeWipe.deltaB = g_fadeWipe.endB - g_fadeWipe.startB;
     half = p->frames >> 1;
     n = 1;
     if (half > 0) {
         n = half;
     }
-    g_fadeWipe.unk60 = n;
+    g_fadeWipe.frames = n;
     d = &g_fadeWipe;
-    d->unk64 = p->frames - n;
-    d->unk18 = fade_divRoundOut(d->unk54, d->unk60);
-    d->unk1C = fade_divRoundOut(d->unk58, d->unk60);
-    d->unk20 = fade_divRoundOut(d->unk5C, d->unk60);
-    if (d->unk64 != 0) {
-        d->unk24 = fade_divRoundOut(d->unk54, d->unk64);
-        d->unk28 = fade_divRoundOut(d->unk58, d->unk64);
-        d->unk2C = fade_divRoundOut(d->unk5C, d->unk64);
+    d->frames2 = p->frames - n;
+    d->stepR = fade_divRoundOut(d->deltaR, d->frames);
+    d->stepG = fade_divRoundOut(d->deltaG, d->frames);
+    d->stepB = fade_divRoundOut(d->deltaB, d->frames);
+    if (d->frames2 != 0) {
+        d->step2R = fade_divRoundOut(d->deltaR, d->frames2);
+        d->step2G = fade_divRoundOut(d->deltaG, d->frames2);
+        d->step2B = fade_divRoundOut(d->deltaB, d->frames2);
     } else {
         do {
         } while (0); /* empty macro in the original; needed for the s0/s1 split */
-        d->unk2C = 0;
-        d->unk28 = 0;
-        d->unk24 = 0;
+        d->step2B = 0;
+        d->step2G = 0;
+        d->step2R = 0;
     }
 }
 
 void fadeWipe_update(FadeState *p) {
-    if ((u32)p->frame < g_fadeWipe.unk60) {
-        g_fadeWipe.unk30.unk0 = fade_stepClamp(g_fadeWipe.unk30.unk0, g_fadeWipe.unk18, g_fadeWipe.unkC);
-        g_fadeWipe.unk30.unk4 = fade_stepClamp(g_fadeWipe.unk30.unk4, g_fadeWipe.unk1C, g_fadeWipe.unk10);
-        g_fadeWipe.unk30.unk8 = fade_stepClamp(g_fadeWipe.unk30.unk8, g_fadeWipe.unk20, g_fadeWipe.unk14);
-        g_fadeWipe.unk48 = g_fadeWipe.unk30;
+    if ((u32)p->frame < g_fadeWipe.frames) {
+        g_fadeWipe.color.r = fade_stepClamp(g_fadeWipe.color.r, g_fadeWipe.stepR, g_fadeWipe.endR);
+        g_fadeWipe.color.g = fade_stepClamp(g_fadeWipe.color.g, g_fadeWipe.stepG, g_fadeWipe.endG);
+        g_fadeWipe.color.b = fade_stepClamp(g_fadeWipe.color.b, g_fadeWipe.stepB, g_fadeWipe.endB);
+        g_fadeWipe.out = g_fadeWipe.color;
     } else {
-        g_fadeWipe.unk3C.unk0 = fade_stepClamp(g_fadeWipe.unk3C.unk0, g_fadeWipe.unk24, g_fadeWipe.unkC);
-        g_fadeWipe.unk3C.unk4 = fade_stepClamp(g_fadeWipe.unk3C.unk4, g_fadeWipe.unk28, g_fadeWipe.unk10);
-        g_fadeWipe.unk3C.unk8 = fade_stepClamp(g_fadeWipe.unk3C.unk8, g_fadeWipe.unk2C, g_fadeWipe.unk14);
-        g_fadeWipe.unk48 = g_fadeWipe.unk3C;
+        g_fadeWipe.color2.r = fade_stepClamp(g_fadeWipe.color2.r, g_fadeWipe.step2R, g_fadeWipe.endR);
+        g_fadeWipe.color2.g = fade_stepClamp(g_fadeWipe.color2.g, g_fadeWipe.step2G, g_fadeWipe.endG);
+        g_fadeWipe.color2.b = fade_stepClamp(g_fadeWipe.color2.b, g_fadeWipe.step2B, g_fadeWipe.endB);
+        g_fadeWipe.out = g_fadeWipe.color2;
     }
-    p->color.unk0[0] = g_fadeWipe.unk48.unk0;
-    p->color.unk0[1] = g_fadeWipe.unk48.unk4;
-    p->color.unk0[2] = g_fadeWipe.unk48.unk8;
+    p->color.unk0[0] = g_fadeWipe.out.r;
+    p->color.unk0[1] = g_fadeWipe.out.g;
+    p->color.unk0[2] = g_fadeWipe.out.b;
 }
 
 void fadeWipe_seek(FadeState *p, s32 n) {
-    if (n < (s32)g_fadeWipe.unk60) {
-        g_fadeWipe.unk30.unk0 = fade_stepClamp(g_fadeWipe.unk30.unk0, g_fadeWipe.unk18 * n, g_fadeWipe.unkC);
-        g_fadeWipe.unk30.unk4 = fade_stepClamp(g_fadeWipe.unk30.unk4, g_fadeWipe.unk1C * n, g_fadeWipe.unk10);
-        g_fadeWipe.unk30.unk8 = fade_stepClamp(g_fadeWipe.unk30.unk8, g_fadeWipe.unk20 * n, g_fadeWipe.unk14);
-        g_fadeWipe.unk48 = g_fadeWipe.unk30;
+    if (n < (s32)g_fadeWipe.frames) {
+        g_fadeWipe.color.r = fade_stepClamp(g_fadeWipe.color.r, g_fadeWipe.stepR * n, g_fadeWipe.endR);
+        g_fadeWipe.color.g = fade_stepClamp(g_fadeWipe.color.g, g_fadeWipe.stepG * n, g_fadeWipe.endG);
+        g_fadeWipe.color.b = fade_stepClamp(g_fadeWipe.color.b, g_fadeWipe.stepB * n, g_fadeWipe.endB);
+        g_fadeWipe.out = g_fadeWipe.color;
     } else {
-        n -= g_fadeWipe.unk60;
-        g_fadeWipe.unk3C.unk0 = fade_stepClamp(g_fadeWipe.unk3C.unk0, g_fadeWipe.unk24 * n, g_fadeWipe.unkC);
-        g_fadeWipe.unk3C.unk4 = fade_stepClamp(g_fadeWipe.unk3C.unk4, g_fadeWipe.unk28 * n, g_fadeWipe.unk10);
-        g_fadeWipe.unk3C.unk8 = fade_stepClamp(g_fadeWipe.unk3C.unk8, g_fadeWipe.unk2C * n, g_fadeWipe.unk14);
-        g_fadeWipe.unk48 = g_fadeWipe.unk3C;
+        n -= g_fadeWipe.frames;
+        g_fadeWipe.color2.r = fade_stepClamp(g_fadeWipe.color2.r, g_fadeWipe.step2R * n, g_fadeWipe.endR);
+        g_fadeWipe.color2.g = fade_stepClamp(g_fadeWipe.color2.g, g_fadeWipe.step2G * n, g_fadeWipe.endG);
+        g_fadeWipe.color2.b = fade_stepClamp(g_fadeWipe.color2.b, g_fadeWipe.step2B * n, g_fadeWipe.endB);
+        g_fadeWipe.out = g_fadeWipe.color2;
     }
-    p->color.unk0[0] = g_fadeWipe.unk48.unk0;
-    p->color.unk0[1] = g_fadeWipe.unk48.unk4;
-    p->color.unk0[2] = g_fadeWipe.unk48.unk8;
+    p->color.unk0[0] = g_fadeWipe.out.r;
+    p->color.unk0[1] = g_fadeWipe.out.g;
+    p->color.unk0[2] = g_fadeWipe.out.b;
 }
 
 void fadeWipe_draw(FadeState *arg0) {
@@ -392,16 +392,16 @@ void fadeWipe_draw(FadeState *arg0) {
         }
         poly = (POLY_G4 *)g_fade.pkt;
         SetPolyG4(poly);
-        if ((u32)arg0->frame < g_fadeWipe.unk60) {
-            setRGB0(poly, g_fadeWipe.unk48.unk0, g_fadeWipe.unk48.unk4, g_fadeWipe.unk48.unk8);
-            setRGB1(poly, g_fadeWipe.unk48.unk0, g_fadeWipe.unk48.unk4, g_fadeWipe.unk48.unk8);
-            setRGB2(poly, g_fadeWipe.unk0, g_fadeWipe.unk4, g_fadeWipe.unk8);
-            setRGB3(poly, g_fadeWipe.unk0, g_fadeWipe.unk4, g_fadeWipe.unk8);
+        if ((u32)arg0->frame < g_fadeWipe.frames) {
+            setRGB0(poly, g_fadeWipe.out.r, g_fadeWipe.out.g, g_fadeWipe.out.b);
+            setRGB1(poly, g_fadeWipe.out.r, g_fadeWipe.out.g, g_fadeWipe.out.b);
+            setRGB2(poly, g_fadeWipe.startR, g_fadeWipe.startG, g_fadeWipe.startB);
+            setRGB3(poly, g_fadeWipe.startR, g_fadeWipe.startG, g_fadeWipe.startB);
         } else {
-            setRGB0(poly, g_fadeWipe.unkC, g_fadeWipe.unk10, g_fadeWipe.unk14);
-            setRGB1(poly, g_fadeWipe.unkC, g_fadeWipe.unk10, g_fadeWipe.unk14);
-            setRGB2(poly, g_fadeWipe.unk48.unk0, g_fadeWipe.unk48.unk4, g_fadeWipe.unk48.unk8);
-            setRGB3(poly, g_fadeWipe.unk48.unk0, g_fadeWipe.unk48.unk4, g_fadeWipe.unk48.unk8);
+            setRGB0(poly, g_fadeWipe.endR, g_fadeWipe.endG, g_fadeWipe.endB);
+            setRGB1(poly, g_fadeWipe.endR, g_fadeWipe.endG, g_fadeWipe.endB);
+            setRGB2(poly, g_fadeWipe.out.r, g_fadeWipe.out.g, g_fadeWipe.out.b);
+            setRGB3(poly, g_fadeWipe.out.r, g_fadeWipe.out.g, g_fadeWipe.out.b);
         }
         poly->x0 = xy[0].vx;
         poly->y0 = xy[0].vy;
@@ -424,19 +424,19 @@ void fadeWipe_draw(FadeState *arg0) {
 }
 
 void fadeWipe_getColors(u8 *arg0) {
-    if ((u32)g_fade.frame < g_fadeWipe.unk60) {
-        arg0[0] = g_fadeWipe.unk48.unk0;
-        arg0[1] = g_fadeWipe.unk48.unk4;
-        arg0[2] = g_fadeWipe.unk48.unk8;
-        arg0[4] = g_fadeWipe.unk0;
-        arg0[5] = g_fadeWipe.unk4;
-        arg0[6] = g_fadeWipe.unk8;
+    if ((u32)g_fade.frame < g_fadeWipe.frames) {
+        arg0[0] = g_fadeWipe.out.r;
+        arg0[1] = g_fadeWipe.out.g;
+        arg0[2] = g_fadeWipe.out.b;
+        arg0[4] = g_fadeWipe.startR;
+        arg0[5] = g_fadeWipe.startG;
+        arg0[6] = g_fadeWipe.startB;
         return;
     }
-    arg0[0] = g_fadeWipe.unkC;
-    arg0[1] = g_fadeWipe.unk10;
-    arg0[2] = g_fadeWipe.unk14;
-    arg0[4] = g_fadeWipe.unk48.unk0;
-    arg0[5] = g_fadeWipe.unk48.unk4;
-    arg0[6] = g_fadeWipe.unk48.unk8;
+    arg0[0] = g_fadeWipe.endR;
+    arg0[1] = g_fadeWipe.endG;
+    arg0[2] = g_fadeWipe.endB;
+    arg0[4] = g_fadeWipe.out.r;
+    arg0[5] = g_fadeWipe.out.g;
+    arg0[6] = g_fadeWipe.out.b;
 }

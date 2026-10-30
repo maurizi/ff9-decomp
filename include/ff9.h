@@ -1998,27 +1998,27 @@ void pad_resetRepeat(s32, s32);
 void pad_clearRepeat(s32, s32);
 void pad_setRepeatEnabled(s32, s32, s32);
 typedef struct {
-    s32 unk0;
-    s32 unk4;
-    s32 unk8;
+    s32 r;
+    s32 g;
+    s32 b;
 } Rgb32;
 typedef struct {
-    s32 unk0;
-    s32 unk4;
-    s32 unk8;
-    s32 unkC;
-    s32 unk10;
-    s32 unk14;
-    s32 unk18;
-    s32 unk1C;
-    s32 unk20;
-    Rgb32 unk24; /* current */
-    Rgb32 unk30; /* output */
-    s32 unk3C;
-    s32 unk40;
-    s32 unk44;
-} Unk80077D68; /* screen fade state */
-extern Unk80077D68 g_fadeFlat;
+    s32 startR; /* start colour (fadeFlat_start) */
+    s32 startG;
+    s32 startB;
+    s32 endR;
+    s32 endG;
+    s32 endB;
+    s32 stepR; /* per-frame step (delta / frames) */
+    s32 stepG;
+    s32 stepB;
+    Rgb32 color; /* current: linear colour */
+    Rgb32 out; /* output: eased colour (fade_ease) or color */
+    s32 deltaR; /* end - start */
+    s32 deltaG;
+    s32 deltaB;
+} FadeFlat; /* screen fade state */
+extern FadeFlat g_fadeFlat;
 s32 fade_divRoundOut(s32, s32);
 void chr_init(s32);
 void pad_setRepeatMask(s32, s32, s32);
@@ -2525,28 +2525,28 @@ extern AkaoVoiceEnv g_akaoVoiceEnv[24];
 void akao_detachVoice(); /* (AkaoChannel *, s32 voice) */
 
 typedef struct {
-    s32 unk0;
-    s32 unk4;
-    s32 unk8;
-    s32 unkC;
-    s32 unk10;
-    s32 unk14;
-    s32 unk18;
-    s32 unk1C;
-    s32 unk20;
-    s32 unk24;
-    s32 unk28;
-    s32 unk2C;
-    Rgb32 unk30;
-    Rgb32 unk3C;
-    Rgb32 unk48; /* output */
-    s32 unk54;
-    s32 unk58;
-    s32 unk5C;
-    u32 unk60; /* first-phase frames */
-    s32 unk64; /* second-phase frames */
-} Unk80077D00;
-extern Unk80077D00 g_fadeWipe;
+    s32 startR; /* start colour (FadeState.color, fadeWipe_start) */
+    s32 startG;
+    s32 startB;
+    s32 endR; /* end colour (FadeState.endR-B) */
+    s32 endG;
+    s32 endB;
+    s32 stepR; /* per-frame step of the first phase (delta / frames) */
+    s32 stepG;
+    s32 stepB;
+    s32 step2R; /* per-frame step of the second phase (delta / frames2) */
+    s32 step2G;
+    s32 step2B;
+    Rgb32 color; /* colour of the first phase (fadeWipe_update) */
+    Rgb32 color2; /* colour of the second phase */
+    Rgb32 out; /* output: copied to FadeState.color */
+    s32 deltaR; /* end - start */
+    s32 deltaG;
+    s32 deltaB;
+    u32 frames; /* first-phase frames */
+    s32 frames2; /* second-phase frames */
+} FadeWipe;
+extern FadeWipe g_fadeWipe;
 
 typedef struct {
     s32 unk0;
