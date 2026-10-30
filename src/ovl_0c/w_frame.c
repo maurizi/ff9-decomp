@@ -142,7 +142,7 @@ s32 wm_frameMain(void) {
     pad_setFlags(0x8000, busy);
     switch (g_worldEventResult) {
     case WM_EVT_BATTLE:
-        if ((u8)g_worldActorTypeInfo[g_worldPlayer->unk11].cellAttr >> 2 == 0x34) {
+        if ((u8)g_worldActorTypeInfo[g_worldPlayer->actorType].cellAttr >> 2 == 0x34) {
             g_worldEventResult = 0;
         }
         g_gameState->gameData->unk571 = func_800B8548();
@@ -509,7 +509,7 @@ s32 w_frameGetParameter(s32 arg0) {
     u8 ret;
     s32 k;
 
-    v = g_worldActorTypeInfo[g_worldPlayer->unk11].cellAttr;
+    v = g_worldActorTypeInfo[g_worldPlayer->actorType].cellAttr;
     if ((g_worldMapDebugFlags & WM_DEBUG_REQUEST) && arg0 == WM_PARAM_CD_BUSY) {
         printf("Event:CDAccessWait\n");
     }
@@ -520,9 +520,9 @@ s32 w_frameGetParameter(s32 arg0) {
         return WM_ATTR_TOPOGRAPHY(v);
     case 0xC2:
         if (g_worldMoveMode == 6) {
-            return g_worldActorTypeInfo[g_worldPlayer->unk11].floorY + 400;
+            return g_worldActorTypeInfo[g_worldPlayer->actorType].floorY + 400;
         }
-        return g_worldActorTypeInfo[g_worldPlayer->unk11].floorY + g_worldActorTypeInfo[g_worldPlayer->unk11].rideOffset;
+        return g_worldActorTypeInfo[g_worldPlayer->actorType].floorY + g_worldActorTypeInfo[g_worldPlayer->actorType].rideOffset;
     case WM_PARAM_REQ0:
         return g_worldReqParams[0];
     case WM_PARAM_REQ1:
@@ -683,7 +683,7 @@ INCLUDE_RODATA("asm/us/ovl_0c/nonmatchings/w_frame", D_800A7A0C);
 INCLUDE_RODATA("asm/us/ovl_0c/nonmatchings/w_frame", D_800A7A40);
 
 s32 wm_canCallChocobo(void) {
-    s32 n = g_worldPlayer->unk11;
+    s32 n = g_worldPlayer->actorType;
     if (n < 3 && n != 0) {
         switch ((u8)g_worldActorTypeInfo[n].cellAttr >> 2) {
         case 3:

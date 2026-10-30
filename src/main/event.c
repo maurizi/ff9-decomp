@@ -789,7 +789,7 @@ void evt_turnObject(EvtObject *p, s32 d, s32 wrap, s32 speed) {
         speed = 0x10;
     }
     if (d < 0) {
-        frames = evt_getAnimFrameCount(p->modelId, (u16)p->prevPos.unk20);
+        frames = evt_getAnimFrameCount(p->modelId, (u16)p->prevPos.rotX);
         rate = frames * 16 / speed;
         if (-d < 0x400) {
             rate = rate * -d >> 10;
@@ -797,7 +797,7 @@ void evt_turnObject(EvtObject *p, s32 d, s32 wrap, s32 speed) {
         if (rate >= 6) {
             p->turnRate = (d + 0x400) / rate;
             p->animFlags = 0;
-            evt_execInstr_anim(p, (u16)p->prevPos.unk20);
+            evt_execInstr_anim(p, (u16)p->prevPos.rotX);
             if (p->uid == g_evtState->playerUid) {
                 g_evtPlayerAnimCount++;
             }
@@ -954,7 +954,7 @@ s32 evt_execInstr(void) {
         for (n = g_evtState->objects; n != NULL; n = n->unk0) {
             EvtObject *o = n->unk4;
             if (o->kind == 4) {
-                o->unk2C = o->flags;
+                o->savedFlags = o->flags;
                 if (!(o->flags & 0x20)) {
                     o->flags &= 0xFE;
                 }
@@ -966,7 +966,7 @@ s32 evt_execInstr(void) {
             EvtObject *o = n->unk4;
             if (o->kind == 4) {
                 o->flags &= 0xFE;
-                o->flags |= o->unk2C & 1;
+                o->flags |= o->savedFlags & 1;
             }
         }
         return 0;
@@ -994,7 +994,7 @@ s32 evt_execInstr(void) {
         po->collisionEllipse = evt_getArg8_inline();
         return 0;
     case 0x3B:
-        g_evtCurObj->unk11 = evt_getArg8_inline();
+        g_evtCurObj->actorType = evt_getArg8_inline();
         return 0;
     case EVT_OP_SET_POS_XZ_OBJ:
         po = evt_getObjectArg();
@@ -1043,8 +1043,8 @@ s32 evt_execInstr(void) {
         po->pos.rotY = evt_getArg8_inline() << 4;
         return 0;
     case EVT_OP_SET_ROT_XZ:
-        po->pos.unk20 = evt_getArg8_inline() << 4;
-        po->unk24 = evt_getArg8_inline() << 4;
+        po->pos.rotX = evt_getArg8_inline() << 4;
+        po->rotZ = evt_getArg8_inline() << 4;
         return 0;
     case EVT_OP_SET_LOOK:
         actor->lookParam0 = evt_getArg8_inline();
@@ -1525,7 +1525,7 @@ s32 evt_execInstr(void) {
         actor->runAnim = evt_getArg16_inline();
         return 0;
     case EVT_OP_SET_TURN_LEFT_ANIM:
-        actor->prevPos.unk20 = evt_getArg16_inline();
+        actor->prevPos.rotX = evt_getArg16_inline();
         return 0;
     case EVT_OP_SET_TURN_RIGHT_ANIM:
         actor->prevPos.rotY = evt_getArg16_inline();

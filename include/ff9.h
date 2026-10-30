@@ -1110,7 +1110,7 @@ typedef struct {
     s32 vx;
     s32 vy;
     s32 vz;
-    s16 unk20; /* rotation x */
+    s16 rotX; /* rotation x */
     s16 rotY; /* facing; runtime: 0 toward the camera, 3072 walking right */
 } ActorPos;
 
@@ -1130,16 +1130,16 @@ typedef struct EvtObject {
     u8 state; /* 2 running the init function, 1 running, 3 suspended */
     u8 flags; /* 0x80 turning, 0x02/0x04 collision masks, 0x08 talk mask, 0x10 not pushable (op 0x93 sets bits 0-5) */
     u8 windowId; /* message window it opened (ops 0x1F/0x20/0x54), 0xFF none */
-    u8 unk11;
+    u8 actorType; /* op 0x3B; the world map indexes g_worldActorTypeInfo with it (wm_getEncounterEntry, w_frameGetParameter) */
     u8 savedState; /* state saved while suspended (evt_returnFromFunc copies it back) */
     u8 pad13;
     ActorPos pos; /* runtime: x rises walking right, z falls walking toward the camera */
-    s16 unk24; /* rotation z */
+    s16 rotZ; /* rotation z (op EVT_OP_SET_ROT_XZ second byte << 4) */
     u8 savedWalkRadius; /* walkmesh radius / 4 saved when the field exits to a battle (evt_createModels restores) */
     u8 pad27;
     u16 savedWalkTri; /* walkmesh triangle saved for a battle */
     u16 savedWalkFlags; /* walkmesh flags saved for a battle */
-    u8 unk2C;
+    u8 savedFlags; /* flags saved by op 0xD5, bit 0 restored by op 0xD6 */
     u8 collisionEllipse; /* op 0xDF, stretches the radius along the facing */
     s8 savedWalkFloor; /* walkmesh floor saved for a battle */
     u8 scale; /* 64 = 1.0 (op 0x9F), places the HERE icon / bubble anchor */
