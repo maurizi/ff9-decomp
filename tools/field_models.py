@@ -81,8 +81,11 @@ def model_info(data, base):
     for i in range(data[o + 1]):
         e = o + 4 + 12 * i
         mid, anim, w, ta = struct.unpack_from('<HHIH', data, e)
-        out[mid] = {'anim': None if anim == 0xFFFF else KIND_MOTION << 16 | anim, 'tables': e + (w & 0xFFFFFF), 'textures': w >> 24,
-                    'texanim': None if ta == 0xFFFF else KIND_TEXANIM << 16 | ta}
+        # fld_getModelAnimId and fld_setupActorModel compare only entry 0 (their loops never advance), so the
+        # default motion and the texture animations are attached only for the first model of a container
+        out[mid] = {'anim': None if anim == 0xFFFF else KIND_MOTION << 16 | anim, 'tables': e + (w & 0xFFFFFF),
+                    'textures': w >> 24, 'texanim': None if ta == 0xFFFF else KIND_TEXANIM << 16 | ta,
+                    'first_entry': i == 0}
     return out
 
 
@@ -115,7 +118,7 @@ def model_record(data, base, mid, ext):
             st['problems'].append(f"texture animation 0x{info['texanim']:06x} missing")
     if CHECK_MOTIONS and info and info['anim'] in ext:
         check_motion(data, base, mid, info['anim'], st)
-    st['info'] = info and {k: v for k, v in info.items() if k != 'tables'}
+    st['info'] = info and {k: v for k, v in info.items() if k not in ('tables', 'first_entry')}
     st['packet_bytes'] = sum(m['packet_size'] for m in st['meshes'])
     # fld_setupActorModel: 2 x packets (double buffer) + 32 per bone matrix + 12 per group (WmModelOut)
     st['ram_per_actor'] = 2 * st['packet_bytes'] + BONE_MATRIX * nb + GROUP_OUT * len(st['meshes'])
