@@ -116,7 +116,7 @@ s32 btlfx_getFileData(s32 arg0, s32 arg1) {
         arg1 -= 0x40;
     } else if (arg1 < 0xC0) {
         arg1 -= 0x80;
-        base = D_80100E14->unk50[0];
+        base = D_80100E14->data[0];
         arg1 &= 0x7F;
     } else {
         base = g_gameState->gameData->unk8E4.battle->work->loadBuf;
@@ -387,19 +387,19 @@ x = *p++ << 11; rd += x; d->ringBase = PSX_RAM(u8 *, 0x801F1700) + x; dst = PSX_
                     d->summon = (Unk80100DC054 *)dst;
                     ((Unk80100DC054 *)dst)->unk4C = 0;
                     for (i = 0; i < 16; i++) {
-                        d->summon->unk50[i] = 0;
+                        d->summon->data[i] = 0;
                     }
                     break;
                 case 5:
-                    dst = (u8 *)d->summon + d->summon->unk0;
+                    dst = (u8 *)d->summon + d->summon->dataOfs;
                     break;
                 case 6:
                     d->summonDataState = 1;
                     e2 = d->summon;
-                    d->workCursor = (s32)e2->unk44;
-                    d->workLeft = e2->unk48;
+                    d->workCursor = (s32)e2->work;
+                    d->workLeft = e2->workSize;
                     dst = (u8 *)d->workCursor;
-                    e2->unk50[0] = (s32 *)dst;
+                    e2->data[0] = (s32 *)dst;
                     d->workLeft -= rd;
                     d->workCursor += rd;
                     break;
@@ -496,17 +496,17 @@ x = *p++ << 11; rd += x; d->ringBase = PSX_RAM(u8 *, 0x801F1700) + x; dst = PSX_
                 case 4:
                     cnt = 0;
                     e = d->summon;
-                    dst = (u8 *)e + e->unk0;
+                    dst = (u8 *)e + e->dataOfs;
                     r.r.x = 0x100;
                     r.r.y = 0xE6;
                     r.r.w = 0x100;
-                    r.r.h = e->unk6;
+                    r.r.h = e->clutRows;
                     btlfx_resetMaskBit();
-                    LoadImage(&r.r, (u32 *)(dst + e->unk8));
-                    k = e->unk4;
+                    LoadImage(&r.r, (u32 *)(dst + e->clutOfs));
+                    k = e->texCount;
                     for (src = dst; cnt < k; src += 0x4000, cnt++) {
-                        r.r.x = (e->unk18[cnt] & 0xF) << 6;
-                        r.r.y = e->unk30[cnt] + ((e->unk18[cnt] & 0x10) << 4);
+                        r.r.x = (e->texTpage[cnt] & 0xF) << 6;
+                        r.r.y = e->texY[cnt] + ((e->texTpage[cnt] & 0x10) << 4);
                         r.r.w = 0x40;
                         r.r.h = 0x80;
                         LoadImage(&r.r, (u32 *)src);
@@ -516,17 +516,17 @@ x = *p++ << 11; rd += x; d->ringBase = PSX_RAM(u8 *, 0x801F1700) + x; dst = PSX_
                 case 5:
                     e = d->summon;
                     dst = (u8 *)e;
-                    e->unk3C = dst + e->unk0;
-                    e->unk40 = (BtlUnit9C50 *)(dst + e->unk14);
-                    for (ni = 0; ni < e->unk2; ni++) {
-                        e->unk180[ni] += (s32)dst;
+                    e->modelHdr = dst + e->dataOfs;
+                    e->texAnims = (BtlUnit9C50 *)(dst + e->texAnimOfs);
+                    for (ni = 0; ni < e->motionCount; ni++) {
+                        e->motions[ni] += (s32)dst;
                     }
-                    e->unk44 = dst + e->unk10;
-                    d->workCursor = (s32)e->unk44;
-                    e->unk48 = 0x50000 - e->unk10;
-                    d->workLeft = e->unk48;
-                    btlfx_initSummonModels(&e->unk90, 1);
-                    d->summonModel = Hi_RegisterSummonModel(e, e->unk180[0] != (s32)e->unk40 ? (s16 *)D_80100D90 : NULL);
+                    e->work = dst + e->workOfs;
+                    d->workCursor = (s32)e->work;
+                    e->workSize = 0x50000 - e->workOfs;
+                    d->workLeft = e->workSize;
+                    btlfx_initSummonModels(&e->model, 1);
+                    d->summonModel = Hi_RegisterSummonModel(e, e->motions[0] != (s32)e->texAnims ? (s16 *)D_80100D90 : NULL);
                     d->summonState = 2;
                     break;
                 case 6:

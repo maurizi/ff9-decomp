@@ -1766,8 +1766,8 @@ s32 *btlfx_swapModelData(s32 arg0, s32 *arg1) {
 
 void func_800E87C4(s32 arg0) {
     btl_unloadEnemyModels();
-    btlfx_copyWords(g_gameState->gameData->unk8E4.battle->work->heapStart, g_btlfxLoader.summon->unk50[0], arg0 << 10);
-    g_btlfxLoader.summon->unk50[0] = g_gameState->gameData->unk8E4.battle->work->heapStart;
+    btlfx_copyWords(g_gameState->gameData->unk8E4.battle->work->heapStart, g_btlfxLoader.summon->data[0], arg0 << 10);
+    g_btlfxLoader.summon->data[0] = g_gameState->gameData->unk8E4.battle->work->heapStart;
 }
 
 void btl_forEachModelVertex(BtlUnit9C8 *arg0, void (*arg1)(SVECTOR *, s32)) {
@@ -1917,17 +1917,17 @@ void btlfx_registerEffectModel(Unk800E8F50 *arg0, s32 arg1) {
     Unk800E8F50Entry *e;
     void *p;
     h = arg0;
-    if (arg0->unk0 != 0x6F73) {
+    if (arg0->magic != 0x6F73) {
         SystemError(0x53, 0x190);
     }
-    p = (u8 *)arg0 + h->unk4;
-    if (h->unk2 != 0) {
-        n = (arg0->unk4 - 8) >> 3;
-        e = h->unk8;
+    p = (u8 *)arg0 + h->modelOfs;
+    if (h->textured != 0) {
+        n = (arg0->modelOfs - 8) >> 3;
+        e = h->tex;
         for (i = 0; i < n; i++) {
-            e[i].unk0 |= (arg1 & 3) << 5;
+            e[i].tpage |= (arg1 & 3) << 5;
         }
-        Hi_RegisterTexListModel(p, (BtlTexInfo *)e, (s16 *)((u8 *)h + h->unk6), n);
+        Hi_RegisterTexListModel(p, (BtlTexInfo *)e, (s16 *)((u8 *)h + h->texPosOfs), n);
     } else {
         Hi_RegisterGouEffModel(p);
     }
@@ -1942,26 +1942,26 @@ void btlfx_registerSummonModel(Unk800E9000 *arg0, s32 *src, s32 n, Unk80100DC054
     Unk800E9000Ent *a;
     Unk800E9000Ent *b;
 
-    if (h->unk0 != 0x6F73) {
+    if (h->magic != 0x6F73) {
         SystemError(0x53, 0x190);
     }
-    k = (h->unk4 - 8) >> 3;
-    e->unk2 = n;
-    e->unk40 = NULL;
-    e->unk4 = k;
-    e->unk3C = (u8 *)h + h->unk4;
+    k = (h->modelOfs - 8) >> 3;
+    e->motionCount = n;
+    e->texAnims = NULL;
+    e->texCount = k;
+    e->modelHdr = (u8 *)h + h->modelOfs;
     s = src;
     for (i = 0; i < n; i++, s++) {
-        e->unk180[i] = *s;
+        e->motions[i] = *s;
     }
-    b = (Unk800E9000Ent *)((u8 *)h + h->unk6);
-    a = h->unk8;
+    b = (Unk800E9000Ent *)((u8 *)h + h->texPosOfs);
+    a = h->tex;
     for (i = 0; i < k; i++) {
-        e->unk18[i] = a[i].unk0;
-        e->unk24[i] = a[i].unk2;
-        e->unk30[i] = b[i].unk2;
+        e->texTpage[i] = a[i].tpage;
+        e->texClut[i] = a[i].clut;
+        e->texY[i] = b[i].clut;
     }
-    btlfx_initSummonModels(&e->unk90, 1);
+    btlfx_initSummonModels(&e->model, 1);
     g_btlfxLoader.summon = e;
     g_btlfxLoader.summonModel = Hi_RegisterSummonModel(e, NULL);
 }

@@ -1,11 +1,11 @@
 #include "ovl_0b.h"
 
 void Hi_SplitMdlVertex(s32 arg0, s32 arg1, s32 arg2) {
-    GeoSplitVertices(btlfx_getEffModel(arg0, "Hi_SplitMdlVertex()\nid:%d cannot use!")->unk0, arg1, arg2);
+    GeoSplitVertices(btlfx_getEffModel(arg0, "Hi_SplitMdlVertex()\nid:%d cannot use!")->model, arg1, arg2);
 }
 
 s32 Hi_GetSplitMdlVertex(s32 arg0, s32 arg1) {
-    return btlfx_getSplitVertexSize(btlfx_getEffModel(arg0, "Hi_GetSplitMdlVertex()\nid:%d cannot use!")->unk0, arg1);
+    return btlfx_getSplitVertexSize(btlfx_getEffModel(arg0, "Hi_GetSplitMdlVertex()\nid:%d cannot use!")->model, arg1);
 }
 
 void GeoSplitVertices(BtlUnit9C *arg0, s32 arg1, s32 arg2) {
@@ -50,7 +50,7 @@ s32 btlfx_getSplitVertexSize(BtlUnit9C *arg0, s32 arg1) {
 /* Void in the original; effect modules read $v0 after it (export 0x310): btlfx_getMeshPrims's u16 result.
    Ports must return it (docs/effect-modules.md). */
 void Hi_GetMdlVertexPtr(s32 arg0, u16 arg1, s32 arg2, s32 *arg3, s32 arg4) {
-    btlfx_getMeshPrims(btlfx_getEffModel(arg0, D_800A825C)->unk0, arg1, arg2, arg3, arg4);
+    btlfx_getMeshPrims(btlfx_getEffModel(arg0, D_800A825C)->model, arg1, arg2, arg3, arg4);
 }
 
 u16 btlfx_getMeshPrims(BtlUnit9C *arg0, u16 arg1, s32 arg2, s32 *arg3, s32 arg4) {

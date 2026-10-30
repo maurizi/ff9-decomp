@@ -313,10 +313,10 @@ typedef struct BtlUnit9C {
 
 /* GameData.unk8E0 entry as btl_registerModel fills it (ff9.h's Unk8E0 has pad4) */
 typedef struct {
-    s32 unk0; /* flags */
-    s32 unk4; /* model id */
-    BtlUnit9C *unk8;
-    s32 unkC;
+    s32 flags; /* flags (1 loaded) */
+    s32 modelId; /* model id */
+    BtlUnit9C *model;
+    s32 obj;
 } Unk8E0Ld;
 
 typedef struct BtlUnit98 {
@@ -1710,27 +1710,27 @@ typedef struct {
 } BtlTexInfo; /* 0x18, passed to btl_applyModelTextures */
 
 typedef struct {
-    BtlUnit9C *unk0;
-    BtlTexInfo unk4;
-    u8 unk1C; /* in use */
-    u8 unk1D;
-    s16 unk1E; /* index */
-    s16 unk20; /* kind */
-    s16 unk22;
-    s16 unk24;
+    BtlUnit9C *model;
+    BtlTexInfo tex; /* texture tpage/clut pairs (btl_applyModelTextures) */
+    u8 used; /* in use */
+    u8 slice; /* drawn sliced (Hi_SetEffModelSlice) */
+    s16 id; /* index */
+    s16 kind; /* 0 solid, 1 gouraud, 2 textured (Hi_RegisterSolid/Gou/Tex*EffModel) */
+    s16 otOffset; /* OT offset when drawn (Hi_SetEffModelOffset, btl_drawMeshOffset) */
+    s16 sliceY; /* slice height (Hi_SetEffModelSlice) */
     u8 pad26[0x28 - 0x26];
 } BtlObjSlot; /* 0x28 */
 extern BtlObjSlot g_btlfxEffModels[32];
 
 
 typedef struct {
-    BtlUnit9C *unk0;
-    s16 unk4[6][2];
-    s16 unk1C[6][4];
-    u8 unk4C; /* in use */
-    u8 unk4D;
-    s16 unk4E; /* index */
-    u16 unk50; /* frame */
+    BtlUnit9C *model;
+    s16 tex[6][2]; /* texture tpage/clut pairs */
+    s16 texPos[6][4]; /* texture positions (btl_relocTexAnims) */
+    u8 used; /* in use */
+    u8 texAnimOn; /* texture animations run (btl_updateTexAnims) */
+    s16 id; /* index */
+    u16 frame; /* motion frame */
     u8 pad52[0x54 - 0x52];
 } Unk8010141C; /* 0x54 */
 extern Unk8010141C g_btlfxSummonModels[1];
@@ -2082,39 +2082,39 @@ extern char g_btlfxErrorMsg[];
 
 /* summon model header ('so' magic) */
 typedef struct {
-    u16 unk0;
-    u16 unk2;
+    u16 tpage;
+    u16 clut; /* clut (position table: y) */
 } Unk800E9000Ent;
 
 typedef struct {
-    u16 unk0; /* 0x6F73 */
+    u16 magic; /* 'so' (0x6F73) */
     u16 unk2;
-    u16 unk4; /* offset */
-    u16 unk6; /* offset */
-    Unk800E9000Ent unk8[1];
+    u16 modelOfs; /* model header offset; (modelOfs - 8) / 8 texture entries */
+    u16 texPosOfs; /* texture position table offset */
+    Unk800E9000Ent tex[1]; /* texture entries */
 } Unk800E9000;
 
 typedef struct Unk80100DC054 {
-    s16 unk0;
-    s16 unk2;
-    s16 unk4;
-    u16 unk6;
-    s32 unk8;
+    s16 dataOfs; /* offset of the model data */
+    s16 motionCount; /* count of motions */
+    s16 texCount; /* count of the texture tables */
+    u16 clutRows; /* CLUT rows loaded at y 0xE6 */
+    s32 clutOfs; /* CLUT data offset from the model data */
     u8 padC[0x10 - 0xC];
-    s32 unk10;
-    s32 unk14;
-    u16 unk18[6];
-    u16 unk24[6];
-    u16 unk30[6];
-    u8 *unk3C;
-    BtlUnit9C50 *unk40;
-    u8 *unk44;
-    s32 unk48;
+    s32 workOfs; /* work area offset (work area: 0x50000 - workOfs bytes) */
+    s32 texAnimOfs; /* texture animation offset */
+    u16 texTpage[6]; /* per texture: tpage (bits 0-3 x / 64, bit 4 y + 256) */
+    u16 texClut[6]; /* per texture: clut */
+    u16 texY[6]; /* per texture: y in its page */
+    u8 *modelHdr; /* model header */
+    BtlUnit9C50 *texAnims;
+    u8 *work; /* work area (g_btlfxLoader.workCursor) */
+    s32 workSize;
     s32 unk4C;
-    s32 *unk50[16];
-    BtlModel unk90;
+    s32 *data[16]; /* file data tables (btlfx_getFileData 0x80-0xBF) */
+    BtlModel model;
     u8 pad128[0x180 - 0x128];
-    s32 unk180[1];
+    s32 motions[1];
 } Unk80100DC054;
 
 typedef struct {
@@ -2816,52 +2816,52 @@ typedef struct {
 } Unk800D955C;
 
 typedef struct {
-    u16 unk0;
-    u16 unk2;
+    u16 tpage;
+    u16 clut;
 } Unk800E8F50Entry;
 
 typedef struct {
-    u16 unk0; /* magic 'so' */
-    u16 unk2;
-    u16 unk4; /* offset */
-    u16 unk6; /* offset */
-    Unk800E8F50Entry unk8[1];
+    u16 magic; /* 'so' */
+    u16 textured; /* nonzero: textured (Hi_RegisterTexListModel), else gouraud */
+    u16 modelOfs; /* offset */
+    u16 texPosOfs; /* offset */
+    Unk800E8F50Entry tex[1];
 } Unk800E8F50;
 
 typedef struct {
-    s16 unk0; /* state */
-    u16 unk2; /* next state */
+    s16 state; /* state */
+    u16 nextState; /* next state */
     u8 pad4[0x10 - 4];
-    s32 unk10;
+    s32 script; /* battle event script (dependency 0x05xxxx; evt_init) */
     s32 unk14;
     u8 pad18[0x1C - 0x18];
     s32 unk1C;
     s32 unk20;
-    s32 unk24;
+    s32 sceneBuf; /* encounter scene file buffer (btl_initEncounter) */
 } Unk800AA08C;
 
 typedef struct {
-    s16 unk0; /* state */
-    u16 unk2; /* next state */
+    s16 state; /* state */
+    u16 nextState; /* state after the CD read */
     s16 unk4;
     s16 unk6;
     s16 unk8;
-    s16 unkA;
+    s16 slot; /* party slot of the file being loaded */
     u8 padC[0xE - 0xC];
     s16 unkE;
     union {
         s32 w[4];
         u16 h[8];
-    } unk10;
+    } fileIds; /* file ids still to load, -1 = done */
     s32 unk20;
-    s32 unk24;
+    s32 buf; /* destination buffer */
 } Unk800AA958; /* party model load state */
 
 typedef struct {
-    s32 unk0;
-    s32 unk4;
-    s32 unk8;
-    s32 unkC;
+    s32 size0; /* CD read request (cd_readChunks): first chunk size */
+    s32 dst0; /* first chunk destination */
+    s32 size1; /* second chunk size */
+    s32 dst1; /* second chunk destination */
 } Unk800AA958Req; /* CD read request */
 
 /* btl_swapPartyModelStep: model texture table (db_lookup section 2, tag 0x12) */
@@ -2897,9 +2897,9 @@ typedef struct {
 u8 cd_readChunks(s32, void *, s32, s32);
 typedef struct {
     u8 pad0[8];
-    s32 unk8; /* file address */
-    s32 unkC; /* bytes done */
-    s32 unk10; /* chunk size */
+    s32 addr; /* file address */
+    s32 done; /* bytes done */
+    s32 chunk; /* chunk size */
 } Unk800AE844; /* streamed file read */
 
 extern s16 D_800F51EC;
@@ -3481,9 +3481,9 @@ s32 btl_getModelTexInfo(u32, s32 **, s32 **, s32 **);
 u32 evt_getObjectChrIndex(void *);
 /* object slot returned by game_getModel in battle */
 typedef struct {
-    u32 unk0; /* flags */
-    s32 unk4; /* model id */
-    BtlUnit9C *unk8;
+    u32 flags; /* flags (0x10 off screen) */
+    s32 modelId; /* model id */
+    BtlUnit9C *model;
     s32 unkC;
 } BtlObj;
 /* placement data passed to btl_calcShadowMatrix */
@@ -4075,16 +4075,16 @@ void btl_loadPartyMotions(BtlUnit *, s32, s32);
 u8 *db_getModelTexPos(s32);
 
 typedef struct {
-    s16 unk0; /* state */
-    u16 unk2; /* next state */
-    s16 unk4;
+    s16 state; /* state */
+    u16 nextState; /* next state */
+    s16 bank; /* sound bank index found (btl_findNearestFile), -1 = none */
     u8 pad6[8 - 6];
     union {
         s32 w[4];
         s16 h[8];
-    } unk8;
+    } fileIds;
     u8 pad18[0x24 - 0x18];
-    s32 unk24;
+    s32 buf;
 } Unk800AA24C; /* model file load state (btl_loadSoundsStep) */
 
 typedef union {
@@ -4106,16 +4106,16 @@ typedef struct {
 s32 btl_loadSoundsStep(s16, s32, Unk800AA24C *);
 /* battle scene model load state (btl_loadEnemyModelsStep) */
 typedef struct {
-    s16 unk0; /* state */
-    u16 unk2; /* next state */
+    s16 state; /* state */
+    u16 nextState; /* next state */
     u8 pad4[8 - 4];
-    s16 unk8; /* file id being loaded */
-    s16 unkA; /* files loaded */
-    s32 unkC; /* load address */
+    s16 fileId; /* file id being loaded */
+    s16 loaded; /* files loaded */
+    s32 dst; /* load address */
     union {
         s32 w[2];
         s16 h[4];
-    } unk10; /* file ids still to load, -1 = done */
+    } fileIds; /* file ids still to load, -1 = done */
 } Unk800AA504;
 
 typedef struct {

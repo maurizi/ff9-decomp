@@ -401,12 +401,12 @@ void btl_initReturnInfo(void) {
 
 s32 btl_initEncounter(Unk800AA08C *arg0, s32 arg1) {
     s32 id = (arg1 & 0xFFFF) | 0x110000;
-    arg0->unk24 = (s32)db_lookupRegistered(4, id, 0);
+    arg0->sceneBuf = (s32)db_lookupRegistered(4, id, 0);
     arg0->unk20 = (s32)db_lookupRegistered(4, (s32)db_lookupRegistered(9, id, 0x100000), 0);
-    arg0->unk10 = (s32)db_lookupRegistered(4, (s32)db_lookupRegistered(9, id, 0x50000), 0);
+    arg0->script = (s32)db_lookupRegistered(4, (s32)db_lookupRegistered(9, id, 0x50000), 0);
     arg0->unk14 = (s32)db_lookupRegistered(4, (s32)db_lookupRegistered(9, id, 0x60000), 0);
     btl_initScene();
-    evt_init((u8 *)arg0->unk10);
+    evt_init((u8 *)arg0->script);
     msg_init();
     return 0;
 }
@@ -557,11 +557,11 @@ s32 btl_reloadPartyStep(s32 arg0) {
 }
 
 s32 btl_loadEncounterFile(Unk800AA08C *arg0, s32 arg1) {
-    s32 v = arg0->unk24;
+    s32 v = arg0->sceneBuf;
     GameData *gd = g_gameState->gameData;
     u8 *cd = gd->unk854;
     Battle *b = gd->unk8E4.battle;
-    cdRead_init(cd, gd->sceneSector[0], gd->sceneSectors[0] << 11, (void *)arg0->unk24, 0, 0x2800, 0);
+    cdRead_init(cd, gd->sceneSector[0], gd->sceneSectors[0] << 11, (void *)arg0->sceneBuf, 0, 0x2800, 0);
     while (cdRead_update(cd) != 0) {
     }
     b->files->data[2] = (void *)v;
@@ -580,26 +580,26 @@ s32 btl_loadBackgroundStep(Battle11C0 *arg0, s32 arg1, Unk800AA08C *arg2) {
     st = arg2;
     if (arg1 == -1) {
         b->flags &= ~1;
-        st->unk0 = 2;
+        st->state = 2;
     }
-    if (st->unk0 == 1) {
+    if (st->state == 1) {
         if (cdRead_update(cd) == 0) {
-            st->unk0 = st->unk2;
+            st->state = st->nextState;
         }
-    } else if (st->unk0 == 2) {
+    } else if (st->state == 2) {
         gd2 = g_gameState->gameData;
-        st->unk24 = arg0->bgData;
-        cdRead_init(cd, gd2->sceneSector[1], gd2->sceneSectors[1] << 11, (void *)st->unk24, 0, -1, 0);
-        st->unk2 = 4;
-        st->unk0 = 1;
-    } else if (st->unk0 == 4) {
+        st->sceneBuf = arg0->bgData;
+        cdRead_init(cd, gd2->sceneSector[1], gd2->sceneSectors[1] << 11, (void *)st->sceneBuf, 0, -1, 0);
+        st->nextState = 4;
+        st->state = 1;
+    } else if (st->state == 4) {
         v = arg0->bgData;
         b->files->data[3] = (void *)v;
         db_register(v, 0);
         b->flags |= 1;
-        st->unk0 = 0;
+        st->state = 0;
     }
-    return st->unk0;
+    return st->state;
 }
 
 s32 btl_loadSoundsStep(s16 arg0, s32 arg1, Unk800AA24C *arg2) {
@@ -619,66 +619,66 @@ s32 btl_loadSoundsStep(s16 arg0, s32 arg1, Unk800AA24C *arg2) {
     cd = gd->unk854;
     if (arg1 & 0x8000) {
         b->flags &= ~2;
-        st->unk0 = 2;
+        st->state = 2;
     }
 loop:
-    switch (st->unk0) {
+    switch (st->state) {
     case 1:
         if (cdRead_update(cd) != 0) {
             break;
         }
-        func_8001DA78(&arg2->unk24, cd->unk10);
-        st->unk0 = arg2->unk2;
+        func_8001DA78(&arg2->buf, cd->unk10);
+        st->state = arg2->nextState;
         goto loop;
     case 2:
-        arg2->unk24 = b->partyBufs[0];
-        arg2->unk8.w[0] = -1;
-        arg2->unk8.w[1] = -1;
-        arg2->unk8.w[2] = -1;
-        arg2->unk8.w[3] = -1;
-        arg2->unk8.h[0] = 0x201;
+        arg2->buf = b->partyBufs[0];
+        arg2->fileIds.w[0] = -1;
+        arg2->fileIds.w[1] = -1;
+        arg2->fileIds.w[2] = -1;
+        arg2->fileIds.w[3] = -1;
+        arg2->fileIds.h[0] = 0x201;
         if (arg1 & 0x100) {
-            btl_loadSoundsStep_collect(&arg2->unk8.h[4], 9, 2);
+            btl_loadSoundsStep_collect(&arg2->fileIds.h[4], 9, 2);
         }
-        st->unk0 = 5;
+        st->state = 5;
         goto loop;
     case 5:
-        hb = arg2->unk8.h;
-        n = btl_findNearestFile(0xB, (u16 *)hb, (u16 *)&arg2->unk8.h[6], (u16 **)&p, &sz);
+        hb = arg2->fileIds.h;
+        n = btl_findNearestFile(0xB, (u16 *)hb, (u16 *)&arg2->fileIds.h[6], (u16 **)&p, &sz);
         if (n != -1) {
-            cdRead_init(cd, n, sz << 11, (void *)arg2->unk24, 0, -1, 0);
+            cdRead_init(cd, n, sz << 11, (void *)arg2->buf, 0, -1, 0);
             if (*p == 0x201) {
-                arg2->unk4 = -1;
+                arg2->bank = -1;
             } else {
-                arg2->unk4 = p - hb;
+                arg2->bank = p - hb;
             }
             *p = -1;
-            arg2->unk2 = 6;
-            st->unk0 = 1;
+            arg2->nextState = 6;
+            st->state = 1;
             break;
         }
-        st->unk0 = 7;
+        st->state = 7;
         goto loop;
     case 6:
         if (akao_getSpuTransferState() != 0) {
             break;
         }
         h = db_lookup((s32)cd->unk8, 2, 0x90000, 0);
-        if (arg2->unk4 == -1) {
+        if (arg2->bank == -1) {
             akao_loadBankRetry(h, 0);
         } else {
-            func_80056048(h, arg2->unk4 & 3, 0);
+            func_80056048(h, arg2->bank & 3, 0);
         }
-        st->unk0 = 5;
+        st->state = 5;
         goto loop;
     case 7:
         if (akao_getSpuTransferState() != 0) {
             break;
         }
-        st->unk0 = 0;
+        st->state = 0;
         break;
     }
-    return st->unk0;
+    return st->state;
 }
 
 s32 btl_loadEnemyModelsStep(s32 arg0, s32 arg1, Unk800AA504 *arg2) {
@@ -716,24 +716,24 @@ s32 btl_loadEnemyModelsStep(s32 arg0, s32 arg1, Unk800AA504 *arg2) {
     req = (Unk800AA958Req *)&b->work->loadBuf[0x9FA0 / 4];
     if (arg1 & 0x8000) {
         b->flags &= ~2;
-        st->unk0 = 2;
+        st->state = 2;
     }
 loop:
-    switch (st->unk0) {
+    switch (st->state) {
     case 1:
         if (cd_getState() != 0) {
             break;
         }
-        st->unk0 = arg2->unk2;
+        st->state = arg2->nextState;
         goto loop;
     case 2:
         t = g_gameState->gameData->depTable;
-        ids = arg2->unk10.h;
+        ids = arg2->fileIds.h;
         cnt = 0;
-        arg2->unkA = 0;
-        arg2->unkC = b->partyBufs[0];
-        arg2->unk10.w[0] = -1;
-        arg2->unk10.w[1] = -1;
+        arg2->loaded = 0;
+        arg2->dst = b->partyBufs[0];
+        arg2->fileIds.w[0] = -1;
+        arg2->fileIds.w[1] = -1;
         first = (FileEntryX *)t->unk4;
         e = &first[t->unk2] - 1;
         do {
@@ -752,14 +752,14 @@ loop:
         next:
             e--;
         } while (e >= first);
-        st->unk0 = 4;
+        st->state = 4;
         goto loop;
     case 4:
         best = -1;
         bp = NULL;
         bf = NULL;
-        lo = arg2->unk10.h;
-        p = &arg2->unk10.h[2];
+        lo = arg2->fileIds.h;
+        p = &arg2->fileIds.h[2];
         do {
             id = *p;
             if (id != 0xFFFF) {
@@ -773,27 +773,27 @@ loop:
             p--;
         } while (p >= lo);
         if (bp != NULL) {
-            arg2->unk8 = *bp;
+            arg2->fileId = *bp;
             *bp = -1;
-            req->unk0 = bf->unkC << 11;
-            req->unk4 = (s32)b->work->heap;
-            req->unk8 = (bf->unk8 - bf->unkC) << 11;
-            req->unkC = arg2->unkC;
+            req->size0 = bf->unkC << 11;
+            req->dst0 = (s32)b->work->heap;
+            req->size1 = (bf->unk8 - bf->unkC) << 11;
+            req->dst1 = arg2->dst;
             cd_readChunks(g_gameState->imgSector + best, req, 2, 0);
-            arg2->unk2 = 6;
-            st->unk0 = 1;
+            arg2->nextState = 6;
+            st->state = 1;
         } else {
-            st->unk0 = 7;
+            st->state = 7;
         }
         break;
     case 6:
         sp1C = db_lookup((s32)b->work->heap, 2, 0x1B0000, 0);
-        dst = arg2->unkC;
+        dst = arg2->dst;
         tbl = (Unk800AA504Tbl *)db_lookup((s32)b->files->data[2], 2, 0x120000, 0);
         tf = tbl->unk4;
         te = &tf[tbl->unk1] - 1;
         do {
-            if (te->unk0 == arg2->unk8) {
+            if (te->unk0 == arg2->fileId) {
                 n = te->unk4.b[3];
                 a = (Unk800AA504Pos *)((u8 *)te + (te->unk4.w & 0xFFFFFF));
                 bb = a + n;
@@ -811,18 +811,18 @@ loop:
         } while (te >= tf);
         g_modeHeap = sp1C + db_getSize(sp1C);
         b->work->heap = (u8 *)g_modeHeap;
-        arg2->unkC += db_getSize(dst);
-        *(b->files->enemyModels + arg2->unkA) = (void *)sp1C;
+        arg2->dst += db_getSize(dst);
+        *(b->files->enemyModels + arg2->loaded) = (void *)sp1C;
         db_register(sp1C, 0);
-        arg2->unkA++;
-        st->unk0 = 4;
+        arg2->loaded++;
+        st->state = 4;
         goto loop;
     case 7:
         b->flags |= 2;
-        st->unk0 = 0;
+        st->state = 0;
         break;
     }
-    return st->unk0;
+    return st->state;
 }
 
 s32 btl_loadWeaponModelsStep(s32 arg0, Unk800AA958 *arg1) {
@@ -846,23 +846,23 @@ s32 btl_loadWeaponModelsStep(s32 arg0, Unk800AA958 *arg1) {
     req = (Unk800AA958Req *)&b->work->loadBuf[0x9FA0 / 4];
     if (arg0 & 0x8000) {
         b->flags &= ~4;
-        st->unk0 = 2;
+        st->state = 2;
     }
 loop:
-    switch (st->unk0) {
+    switch (st->state) {
         case 1:
             if (cd_getState() != 0) {
                 goto end;
             }
-            st->unk0 = arg1->unk2;
+            st->state = arg1->nextState;
             goto loop;
         case 2:
-            arg1->unk10.w[0] = -1;
-            arg1->unk10.w[1] = -1;
+            arg1->fileIds.w[0] = -1;
+            arg1->fileIds.w[1] = -1;
             gd = g_gameState->gameData;
             e = gd->party;
             c = &gd->party[3];
-            q = &arg1->unk10.h[3];
+            q = &arg1->fileIds.h[3];
             do {
                 if (*c != NULL) {
                     *q = g_weaponTable[(*c)->equip[0]].modelId;
@@ -870,41 +870,41 @@ loop:
                 c--;
                 q--;
             } while (c >= e);
-            st->unk0 = 5;
+            st->state = 5;
             goto loop;
         case 5:
-            n = btl_findNearestFile(8, arg1->unk10.h, &arg1->unk10.h[3], &p, &sz);
+            n = btl_findNearestFile(8, arg1->fileIds.h, &arg1->fileIds.h[3], &p, &sz);
             if (n != -1) {
                 *(s16 *)p = -1;
-                i = p - arg1->unk10.h;
-                arg1->unkA = i;
-                arg1->unk24 = b->work->weaponBufs[i];
-                req->unk0 = 0x1000;
-                req->unk4 = arg1->unk24;
-                req->unk8 = (sz << 11) - 0x1000;
-                req->unkC = b->partyBufs[i];
+                i = p - arg1->fileIds.h;
+                arg1->slot = i;
+                arg1->buf = b->work->weaponBufs[i];
+                req->size0 = 0x1000;
+                req->dst0 = arg1->buf;
+                req->size1 = (sz << 11) - 0x1000;
+                req->dst1 = b->partyBufs[i];
                 cd_readChunks(g_gameState->imgSector + n, req, 2, 0);
-                arg1->unk2 = 7;
-                st->unk0 = 1;
+                arg1->nextState = 7;
+                st->state = 1;
             } else {
-                st->unk0 = 8;
+                st->state = 8;
             }
             goto end;
         case 7:
-            j = arg1->unkA;
+            j = arg1->slot;
             v = btl_uploadModelTextures(arg1, req, j, 0);
             pp = &b->files->weaponFiles[j];
             *pp = (void *)v;
             db_register(v, 0);
-            st->unk0 = 5;
+            st->state = 5;
             goto loop;
         case 8:
-            st->unk0 = 0;
+            st->state = 0;
         default:
             goto end;
     }
 end:
-    return st->unk0;
+    return st->state;
 }
 
 s32 btl_loadPartyModelsStep(s32 arg0, Unk800AA958 *arg1) {
@@ -930,48 +930,48 @@ s32 btl_loadPartyModelsStep(s32 arg0, Unk800AA958 *arg1) {
     req = (Unk800AA958Req *)&b->work->loadBuf[0x9FA0 / 4];
     if (arg0 & 0x8000) {
         b->flags &= ~4;
-        st->unk0 = 1;
+        st->state = 1;
     }
 loop:
-    switch (st->unk0) {
+    switch (st->state) {
     case 2:
         if (cd_getState() != 0) {
             goto end;
         }
-        st->unk0 = arg1->unk2;
+        st->state = arg1->nextState;
         goto loop;
     case 1:
-        h = (s16 *)arg1->unk10.h;
-        q = (s16 *)&arg1->unk10.h[3];
-        arg1->unk10.w[0] = -1;
-        arg1->unk10.w[1] = -1;
-        arg1->unk10.w[2] = 0;
-        arg1->unk10.w[3] = 0;
+        h = (s16 *)arg1->fileIds.h;
+        q = (s16 *)&arg1->fileIds.h[3];
+        arg1->fileIds.w[0] = -1;
+        arg1->fileIds.w[1] = -1;
+        arg1->fileIds.w[2] = 0;
+        arg1->fileIds.w[3] = 0;
         do {
             *q = btl_getPartyModelId(q - h, arg0 & ~0x10);
             q--;
         } while (q >= h);
-        st->unk0 = 5;
+        st->state = 5;
         goto loop;
     found:
-        req->unkC = b->partyBufs[k];
+        req->dst1 = b->partyBufs[k];
         goto done;
     case 5:
-        h = (s16 *)arg1->unk10.h;
-        q = (s16 *)&arg1->unk10.h[3];
+        h = (s16 *)arg1->fileIds.h;
+        q = (s16 *)&arg1->fileIds.h[3];
         n = btl_findNearestFile(0xA, (u16 *)h, (u16 *)q, (u16 **)&p, &sz);
         if (n != -1) {
             i = -1;
             f = (FileEntry16 *)file_find(0xA, *p);
             p[0] = i;
             p[4] = i;
-            arg1->unkA = p - h;
-            arg1->unk24 = b->partyBufs[arg1->unkA];
-            req->unkC = 0;
+            arg1->slot = p - h;
+            arg1->buf = b->partyBufs[arg1->slot];
+            req->dst1 = 0;
             if (btl_findNearestFile(0xA, (u16 *)h, (u16 *)q, (u16 **)&p2, &sz2) != i) {
-                q = (s16 *)&arg1->unk10.h[7];
+                q = (s16 *)&arg1->fileIds.h[7];
                 i = p2 - h;
-                h = (s16 *)&arg1->unk10.h[4];
+                h = (s16 *)&arg1->fileIds.h[4];
                 do {
                     if (*q != -1) {
                         k = q - h;
@@ -983,34 +983,34 @@ loop:
                 } while (q >= h);
             }
         done:
-            if (req->unkC == 0) {
-                req->unkC = (s32)b->work->loadBuf;
+            if (req->dst1 == 0) {
+                req->dst1 = (s32)b->work->loadBuf;
             }
-            req->unk0 = f->unk2 << 11;
-            req->unk4 = arg1->unk24;
-            req->unk8 = (sz - f->unk2) << 11;
+            req->size0 = f->unk2 << 11;
+            req->dst0 = arg1->buf;
+            req->size1 = (sz - f->unk2) << 11;
             cd_readChunks(g_gameState->imgSector + n, req, 2, 0);
-            arg1->unk2 = 7;
-            st->unk0 = 2;
+            arg1->nextState = 7;
+            st->state = 2;
         } else {
-            st->unk0 = 8;
+            st->state = 8;
         }
         goto end;
     case 7:
-        j = arg1->unkA;
+        j = arg1->slot;
         v = btl_uploadModelTextures(arg1, req, j, 1);
         pp = &g_gameState->gameData->unk8E4.battle->files->partyModels[j];
         *pp = (void *)v;
         db_register(v, 0);
-        st->unk0 = 5;
+        st->state = 5;
         goto loop;
     case 8:
-        st->unk0 = 0;
+        st->state = 0;
     default:
         goto end;
     }
 end:
-    return st->unk0;
+    return st->state;
 }
 
 u32 btl_findNearestFile(u32 arg0, u16 *arg1, u16 *arg2, u16 **arg3, s32 *arg4) {
@@ -1097,8 +1097,8 @@ s32 btl_uploadModelTextures(Unk800AA958 *arg0, Unk800AA958Req *arg1, s32 arg2, s
     s32 h;
     s32 m;
 
-    sp18 = db_lookup(arg0->unk24, 2, 0x1B0000, 0);
-    dst = arg1->unkC;
+    sp18 = db_lookup(arg0->buf, 2, 0x1B0000, 0);
+    dst = arg1->dst1;
     tbl = (Unk800AA504Tbl *)db_lookup(sp18, 2, 0x120000, 0);
     te = tbl->unk4;
     n = te->unk4.b[3];
@@ -1280,20 +1280,20 @@ u32 btl_registerModel(s32 arg0, s32 arg1) {
         e = (Unk8E0Ld *)game_getModel(n);
         g_gameState->gameData->npcModelSlots++;
     }
-    e->unk4 = arg0;
-    e->unkC = arg1;
-    e->unk8->header = (BtlUnit9C8 *)db_lookupRegistered(4, e->unk4, 0);
-    e->unk8->motion = (BtlUnit9CC *)db_lookupRegistered(4, btl_getAnimFileId(e->unk4), 0);
-    c = e->unk8->motion;
+    e->modelId = arg0;
+    e->obj = arg1;
+    e->model->header = (BtlUnit9C8 *)db_lookupRegistered(4, e->modelId, 0);
+    e->model->motion = (BtlUnit9CC *)db_lookupRegistered(4, btl_getAnimFileId(e->modelId), 0);
+    c = e->model->motion;
     if (IS_OFFSET(c->rotKeys)) {
         c->rotKeys = (s32)c + c->rotKeys;
         if (c->rotKeysLo != 0) {
-            c->rotKeysLo = (s32)e->unk8->motion + c->rotKeysLo;
+            c->rotKeysLo = (s32)e->model->motion + c->rotKeysLo;
         }
     }
-    btl_getModelTexInfo((e->unk4 & 0xFFFFFF) | (n << 24), (s32 **)&pa, (s32 **)&pb, (s32 **)&pc);
+    btl_getModelTexInfo((e->modelId & 0xFFFFFF) | (n << 24), (s32 **)&pa, (s32 **)&pb, (s32 **)&pc);
     /* c reused for the unk8 block (a second set keeps it a global pseudo, in v1 as in the original) */
-    c = (BtlUnit9CC *)e->unk8->header;
+    c = (BtlUnit9CC *)e->model->header;
     cnt = ((BtlUnit9C8 *)c)->meshCount;
     i = 0;
     if (cnt) {
@@ -1303,13 +1303,13 @@ u32 btl_registerModel(s32 arg0, s32 arg1) {
     }
     for (; i < cnt; i++) {
     }
-    btl_applyModelTextures(e->unk8, pa, pb);
-    p = (s32)db_lookupRegistered(9, e->unk4, 0x190000);
+    btl_applyModelTextures(e->model, pa, pb);
+    p = (s32)db_lookupRegistered(9, e->modelId, 0x190000);
     if (p != -1) {
-        e->unk8->texAnims = (BtlUnit9C50 *)db_lookupRegistered(4, p, 0);
-        btl_relocTexAnims(e->unk8->texAnims, pc);
+        e->model->texAnims = (BtlUnit9C50 *)db_lookupRegistered(4, p, 0);
+        btl_relocTexAnims(e->model->texAnims, pc);
     }
-    e->unk0 |= 1;
+    e->flags |= 1;
     return n;
 }
 
@@ -1379,21 +1379,21 @@ s32 btl_swapPartyModelStep(s32 arg0, s32 arg1) {
     s32 anim;
 
     st = (Unk800AA958 *)&g_gameState->gameData->unk8E4.battle->work->loadBuf[0x9FD8 / 4];
-    state = &st->unk0;
+    state = &st->state;
     req = (Unk800AA958Req *)&g_gameState->gameData->unk8E4.battle->work->loadBuf[0x9FA0 / 4];
     if (arg1 & 0x8000) {
-        st->unk0 = 1;
+        st->state = 1;
     }
     switch (*state) {
     case 1:
         k = arg0;
         v = (void *)g_gameState->gameData->unk8E4.battle->partyBufs[k];
-        st->unk2 = 0;
+        st->nextState = 0;
         st->unk4 = 0;
         st->unk6 = 0;
         st->unk8 = -1;
         st->unkE = 0;
-        st->unk24 = (s32)v;
+        st->buf = (s32)v;
         st->unk20 = (s32)v;
         if (*(g_gameState->gameData->unk8E4.battle->files->partyModels + k) != NULL) {
             db_unregister(*(g_gameState->gameData->unk8E4.battle->files->partyModels + k));
@@ -1403,24 +1403,24 @@ s32 btl_swapPartyModelStep(s32 arg0, s32 arg1) {
         break;
     case 2:
         if (cd_getState() == 0) {
-            *state = st->unk2;
+            *state = st->nextState;
         }
         break;
     case 3:
         f = (FileEntry16 *)file_find(0xA, btl_getPartyModelId(arg0, arg1 & ~0x10));
         src = g_gameState->imgSector + f->unk4;
         sz = f->unkC - f->unk4;
-        req->unk0 = f->unk2 << 11;
-        req->unk4 = st->unk24;
-        req->unk8 = (sz - f->unk2) << 11;
-        req->unkC = (s32)g_gameState->gameData->unk8E4.battle->work->loadBuf;
+        req->size0 = f->unk2 << 11;
+        req->dst0 = st->buf;
+        req->size1 = (sz - f->unk2) << 11;
+        req->dst1 = (s32)g_gameState->gameData->unk8E4.battle->work->loadBuf;
         cd_readChunks((s32)src, req, 2, 0);
-        st->unk2 = 5;
+        st->nextState = 5;
         *state = 2;
         break;
     case 5:
         id = btl_getPartyModelId(arg0, arg1 & ~0x10);
-        model = db_lookup(st->unk24, 2, 0x1B0000, 0);
+        model = db_lookup(st->buf, 2, 0x1B0000, 0);
         img = (s32)g_gameState->gameData->unk8E4.battle->work->loadBuf;
         t = (Unk800ABBC4Tbl *)db_lookup(model, 2, 0x120000, 0);
         e = t->unk4;
@@ -1534,7 +1534,7 @@ u8 *btl_drawShadow(BtlShadow *arg0, s32 arg1, s32 arg2, s32 arg3, u8 *prim) {
 
     e = &arg0[arg1];
     o = (BtlObj *)game_getModel(arg1);
-    if (o->unk0 & 0x10) {
+    if (o->flags & 0x10) {
         return prim;
     }
     btl_calcShadowMatrix((Unk800AD4E4 *)e, o, &m, arg2, arg3 & 0xFF, (arg3 >> 8) & 0xFF);
@@ -1662,7 +1662,7 @@ void btl_calcShadowMatrix(Unk800AD4E4 *arg0, BtlObj *arg1, MATRIX *arg2, s32 arg
     s32 *p1;
 
     if (arg4 == arg5) {
-        COPY_MATRIX(&m, &((MATRIX *)arg1->unk8->bones)[arg4]);
+        COPY_MATRIX(&m, &((MATRIX *)arg1->model->bones)[arg4]);
         m.t[2] = 0;
         m.t[1] = 0;
         m.t[0] = 0;
@@ -1680,8 +1680,8 @@ void btl_calcShadowMatrix(Unk800AD4E4 *arg0, BtlObj *arg1, MATRIX *arg2, s32 arg
         n.vy = -n.vy;
         n.vz = -n.vz;
     } else {
-        p0 = ((MATRIX *)arg1->unk8->bones)[arg4].t;
-        p1 = ((MATRIX *)arg1->unk8->bones)[arg5].t;
+        p0 = ((MATRIX *)arg1->model->bones)[arg4].t;
+        p1 = ((MATRIX *)arg1->model->bones)[arg5].t;
         d.vx = p1[0] - p0[0];
         d.vy = p1[1] - p0[1];
         d.vz = p1[2] - p0[2];
@@ -1711,10 +1711,10 @@ void btl_calcShadowMatrix(Unk800AD4E4 *arg0, BtlObj *arg1, MATRIX *arg2, s32 arg
     arg2->m[1][2] = (n.vy * arg0->depth) >> 12;
     arg2->m[2][2] = (n.vz * arg0->depth) >> 12;
     arg2->t[0] = (((r.vx << 1) * arg0->offsetX + (n.vx << 1) * arg0->offsetZ) >> 12) +
-                 ((MATRIX *)arg1->unk8->bones)[arg4].t[0];
+                 ((MATRIX *)arg1->model->bones)[arg4].t[0];
     arg2->t[1] = (((r.vy << 1) * arg0->offsetX + (n.vy << 1) * arg0->offsetZ) >> 12) + arg3;
     arg2->t[2] = (((r.vz << 1) * arg0->offsetX + (n.vz << 1) * arg0->offsetZ) >> 12) +
-                 ((MATRIX *)arg1->unk8->bones)[arg4].t[2];
+                 ((MATRIX *)arg1->model->bones)[arg4].t[2];
 }
 
 s32 btl_soundCmd(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4) {
@@ -2082,13 +2082,13 @@ s32 func_800AE7C8(s32 arg0) {
 }
 
 void btl_onSoundRead(Unk800AE844 *arg0) {
-    s32 p = arg0->unk8;
+    s32 p = arg0->addr;
     s32 id = g_gameState->gameData->unk852 | 0x90000;
     s32 f;
     s32 base;
     s32 n;
 
-    if (arg0->unkC == 0) {
+    if (arg0->done == 0) {
         f = db_lookup(p, 2, 0x1B0000, 0);
         base = p;
         if (f == -1) {
@@ -2099,17 +2099,17 @@ void btl_onSoundRead(Unk800AE844 *arg0) {
             g_gameState->gameData->unk87C = db_lookup(base, 2, 0x1B0001, 0) - g_gameState->gameData->unk8C0;
         }
     }
-    n = g_gameState->gameData->unk87C - arg0->unkC;
-    if (arg0->unk10 < n) {
-        n = arg0->unk10;
+    n = g_gameState->gameData->unk87C - arg0->done;
+    if (arg0->chunk < n) {
+        n = arg0->chunk;
     }
-    n = arg0->unk8 + n - p;
+    n = arg0->addr + n - p;
     if (D_800F51EC == -1) {
         akao_uploadBank(p, n, 0);
     } else {
         func_80056048(p, D_800F51EC, 0);
     }
-    arg0->unk8 = p;
+    arg0->addr = p;
 }
 
 void func_800AE9C8(s32 arg0, s32 arg1) {
