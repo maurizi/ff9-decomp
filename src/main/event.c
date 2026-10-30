@@ -2060,7 +2060,7 @@ s32 evt_execInstr(void) {
         }
         return 0;
     case 0xB2:
-        D_8007AE70.unk0 = evt_getArg8_inline();
+        D_8007AE70.size = evt_getArg8_inline();
         a = 0;
         for (i = 8; i >= 0; i--) {
             a <<= 1;
@@ -2068,7 +2068,7 @@ s32 evt_execInstr(void) {
         }
         b = evt_getArg16_inline();
         for (i = 0; i < 9; i++) {
-            D_8007AE70.unk10[i] = b & 1;
+            D_8007AE70.fixed[i] = b & 1;
             b >>= 1;
         }
         for (i = 0; i < 4; i++) {
@@ -2076,18 +2076,18 @@ s32 evt_execInstr(void) {
             if (ch != NULL) {
                 b = ch->info.w & 0xF;
                 a &= ~(1 << b);
-                D_8007AE70.unk4[i] = b;
+                D_8007AE70.party[i] = b;
             } else {
-                D_8007AE70.unk4[i] = 0xFF;
+                D_8007AE70.party[i] = 0xFF;
             }
         }
         for (b = 0, i = 0; i < 9 && b < 8 && a != 0; i++, a >>= 1) {
             if (a & 1) {
-                D_8007AE70.unk8[b++] = i;
+                D_8007AE70.reserve[b++] = i;
             }
         }
         for (; b < 8; b++) {
-            D_8007AE70.unk8[b] = 0xFF;
+            D_8007AE70.reserve[b] = 0xFF;
         }
         menu_open(3, (s32)&D_8007AE70);
         return 1;

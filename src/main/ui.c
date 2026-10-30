@@ -307,7 +307,7 @@ u8 *win_buildBorder(RECT *r, u32 *ot, u8 flag, u8 abe, s32 style, s32 pal, u8 *p
     }
     d = NULL;
     if (style != 2) {
-        clut = win_getClut(g_uiSprites[D_80068FB4[style][0]].unk0 >> 16, pal) << 16;
+        clut = win_getClut(g_uiSprites[D_80068FB4[style][0]].uvclut >> 16, pal) << 16;
     } else {
         clut = 0x3EA40000;
     }
@@ -711,7 +711,7 @@ u8 *ui_buildApGauge(s32 x, s32 y, u32 *ot, s32 cur, s32 max, u8 show, u8 flag, u
     s32 w;
     s32 t;
     u32 rgbc;
-    Unk800686E8 *d = &D_800686E8;
+    SpriteDef *d = &D_800686E8;
 
     if (max < cur) {
         cur = max;
@@ -725,7 +725,7 @@ u8 *ui_buildApGauge(s32 x, s32 y, u32 *ot, s32 cur, s32 max, u8 show, u8 flag, u
         pkt = ui_buildDigits(x + 3, y + 2, ot, buf, flag ? GPU_RGBC(GPU_SPRT | GPU_ABE, 0x606060) : GPU_RGBC(GPU_SPRT, 0x808080), (SprtWords *)pkt);
     }
     if (cur != 0) {
-        t = d->unk4 - 6;
+        t = d->w - 6;
         if (max != 0) {
             w = cur * t / max;
         } else {
@@ -802,7 +802,7 @@ void win_drawMsgTailEdge(arg0, arg1, arg2, arg3, arg4)
 
 s32 ui_drawSprite(s32 x, s32 y, s32 otz, s32 id, u8 flag) {
     s32 w;
-    Unk800686E8 *d = &g_uiSprites[id];
+    SpriteDef *d = &g_uiSprites[id];
 
     g_primPtr = ui_buildSpriteDef_inline(x, y, &g_ot[otz], d, flag, &w, (SprtWords *)g_primPtr);
     return w;
@@ -818,7 +818,7 @@ s32 ui_drawSpriteDef(s32 x, s32 y, s32 otz, void *d, u8 flag) {
 u8 *ui_buildSprite(s32 x, s32 y, u32 *ot, s32 i, u8 flag, s32 *out, void *pkt) {
     SprtWords *s = pkt;
     DrTpageWords *t;
-    Unk800686E8 *d;
+    SpriteDef *d;
     setlen(s, 4);
     d = &g_uiSprites[i];
     if (flag) {
@@ -827,19 +827,19 @@ u8 *ui_buildSprite(s32 x, s32 y, u32 *ot, s32 i, u8 flag, s32 *out, void *pkt) {
         s->rgbc = GPU_RGBC(GPU_SPRT, 0x808080);
     }
     s->xy = (x & 0xFFFF) | (y << 16);
-    s->uvclut = d->unk0;
-    s->wh = d->unk4 | (d->unk5 << 16);
+    s->uvclut = d->uvclut;
+    s->wh = d->w | (d->h << 16);
     addPrim(ot, s);
     s++;
     t = (DrTpageWords *)s;
     setlen(t, 1);
-    t->code = get_mode(1, 1, d->unk6);
+    t->code = get_mode(1, 1, d->tpage);
     addPrim(ot, t);
-    *out = d->unk4;
+    *out = d->w;
     return (u8 *)(t + 1);
 }
 
-u8 *ui_buildSpriteDef(s32 x, s32 y, u32 *ot, Unk800686E8 *d, u8 flag, s32 *out, SprtWords *s) {
+u8 *ui_buildSpriteDef(s32 x, s32 y, u32 *ot, SpriteDef *d, u8 flag, s32 *out, SprtWords *s) {
     DrTpageWords *t;
     setlen(s, 4);
     if (flag) {
@@ -848,15 +848,15 @@ u8 *ui_buildSpriteDef(s32 x, s32 y, u32 *ot, Unk800686E8 *d, u8 flag, s32 *out, 
         s->rgbc = GPU_RGBC(GPU_SPRT, 0x808080);
     }
     s->xy = (x & 0xFFFF) | (y << 16);
-    s->uvclut = d->unk0;
-    s->wh = d->unk4 | (d->unk5 << 16);
+    s->uvclut = d->uvclut;
+    s->wh = d->w | (d->h << 16);
     addPrim(ot, s);
     s++;
     t = (DrTpageWords *)s;
     setlen(t, 1);
-    t->code = get_mode(1, 1, d->unk6);
+    t->code = get_mode(1, 1, d->tpage);
     addPrim(ot, t);
-    *out = d->unk4;
+    *out = d->w;
     return (u8 *)(t + 1);
 }
 
@@ -883,7 +883,7 @@ void ui_drawCharStatuses(s32 x, s32 y, s32 otz, s32 slot) {
 u8 *ui_buildDigits(s32 x, s32 y, u32 *ot, u8 *s, s32 unused, SprtWords *p) {
     s32 idx;
     s32 adv;
-    Unk800686E8 *g;
+    SpriteDef *g;
     DrTpageWords *t;
 
     while (*s != 0) {
@@ -903,8 +903,8 @@ u8 *ui_buildDigits(s32 x, s32 y, u32 *ot, u8 *s, s32 unused, SprtWords *p) {
             p->rgbc = GPU_RGBC(GPU_SPRT, 0x808080);
             p->xy = (x & 0xFFFF) | (y << 16);
             g = &D_800687E0[idx];
-            p->wh = g->unk4 | (g->unk5 << 16);
-            p->uvclut = g->unk0;
+            p->wh = g->w | (g->h << 16);
+            p->uvclut = g->uvclut;
             addPrim(ot, p);
             p++;
         } else {

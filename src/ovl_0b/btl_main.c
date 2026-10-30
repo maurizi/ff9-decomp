@@ -69,7 +69,7 @@ void btl_updatePause(void) {
             if (g_gameState->gameData->ctx.battle->flags & 0x20) {
                 text_buildSmall(0x66, 0x6D, D_800FDEB0, "Disc Cover Open", 4, (u8 *)g_gameState->gameData->ctx.battle->work->prims[g_gameState->gameData->drawBuf]);
             } else {
-                ui_buildSprite((0x140 - g_uiSprites[0xEB].unk4) / 2, (0xDA - g_uiSprites[0xEB].unk5) / 2, D_800FDEB0, 0xEB, 0, &w, D_800FDE60);
+                ui_buildSprite((0x140 - g_uiSprites[0xEB].w) / 2, (0xDA - g_uiSprites[0xEB].h) / 2, D_800FDEB0, 0xEB, 0, &w, D_800FDE60);
             }
             setlen(&D_800FDE98, 3);
             D_800FDE98.code = 0x62;

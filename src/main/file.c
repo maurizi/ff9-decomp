@@ -239,12 +239,12 @@ void file_loadDirTables(void) {
     s = (Unk8001DE50 *)(list8 + dir[8].count * 8) - 1;
     list11 = buf + ((dir[11].tableSector - base) << 11);
     do {
-        key = s->unk2;
+        key = s->link;
         e = (Unk8001DE50 *)(list11 + dir[11].count * 8) - 1;
         do {
-            if (e->unk0 == key) {
-                if (e->unk2 == 0) {
-                    e->unk2 = 1;
+            if (e->id == key) {
+                if (e->link == 0) {
+                    e->link = 1;
                     cnt++;
                 }
                 break;
@@ -259,15 +259,15 @@ void file_loadDirTables(void) {
     s = (Unk8001DE50 *)(list8 + dir[8].count * 8) - 1;
     dst = gs->dirTables[11];
     do {
-        key2 = s->unk2;
+        key2 = s->link;
         e = (Unk8001DE50 *)(list11 + dir[11].count * 8) - 1;
         do {
-            if (e->unk0 == key2) {
-                if (e->unk2 == 1) {
+            if (e->id == key2) {
+                if (e->link == 1) {
                     memmove(dst, e, 0x10);
                     dst->unk8 = 0xFFFF;
                     dst++;
-                    e->unk2 = 2;
+                    e->link = 2;
                 }
                 break;
             }

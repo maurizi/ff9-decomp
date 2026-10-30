@@ -2984,7 +2984,7 @@ typedef struct {
     u16 unk14; /* clut */
 } Unk800CCD00;
 
-void btl_drawPopupGlyph(Unk800CCD00 *, Unk800686E8 *);
+void btl_drawPopupGlyph(Unk800CCD00 *, SpriteDef *);
 void btl_drawPopupDigits(Unk800CCD00 *, u32);
 void btl_clampPopup(struct BtlPopup *, Unk800CCD00 *, s32, s32);
 extern void (*D_800F6A7C[])(struct BtlPopup *, Unk800CCD00 *);
@@ -3025,12 +3025,12 @@ void btl_updateDetect(void);
 extern u8 D_800F6A28[];
 extern u8 D_800F6A38[];
 /* main exe: candidates for ff9.h */
-extern Unk800686E8 D_80068BE8;
+extern SpriteDef D_80068BE8;
 s32 evt_battleTrigger(s32, s32, s32, s32);
 void math_rotMatrixXYZ(void *, void *); /* rotation -> matrix */
 s32 btlfx_transformPolar(SVECTOR *, s32, s32);
 void btlfx_transformPoint(s32, s32, s32);
-extern Unk800686E8 D_80068BF0[]; /* digits */
+extern SpriteDef D_80068BF0[]; /* digits */
 
 typedef struct {
     u8 *pc; /* camera script pointer (btlcam_step reads its commands) */

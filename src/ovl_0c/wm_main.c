@@ -1418,7 +1418,7 @@ void wm_togglePause(void) {
             g_padActuator[i].unk0 = 0;
         }
         ClearOTag(&g_worldPauseOT, 1);
-        ui_buildSprite((320 - g_uiSprites[235].unk4) / 2, (218 - g_uiSprites[235].unk5) / 2, &g_worldPauseOT, 0xEB, 0, buf, g_worldPauseSprite);
+        ui_buildSprite((320 - g_uiSprites[235].w) / 2, (218 - g_uiSprites[235].h) / 2, &g_worldPauseOT, 0xEB, 0, buf, g_worldPauseSprite);
         setlen(&g_worldPauseTile, 3);
         g_worldPauseTile.code = 0x62;
         setRGB0(&g_worldPauseTile, 0x60, 0x60, 0x60);

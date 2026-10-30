@@ -191,7 +191,7 @@ u8 *btl_drawPopups(u8 *arg0) {
     }
     btl_drawStatusCountdown(&c);
     ((u8 *)c.unk0)[3] = 1;
-    c.unk0[1] = get_mode(0, 0, D_80068BF0[0].unk6);
+    c.unk0[1] = get_mode(0, 0, D_80068BF0[0].tpage);
     addPrim(c.unk4, c.unk0);
     c.unk0 += 2;
     e = g_btlfxEnv->state;
@@ -234,7 +234,7 @@ void btl_drawNumberPopup(BtlPopup *arg0, Unk800CCD00 *arg1) {
         if (arg0->unk10.b.unk3 == 0) {
             x = w;
             if (arg0->unk10.b.unk2 != 0) {
-                x = D_80068BE8.unk4 + w;
+                x = D_80068BE8.w + w;
             }
             btl_clampPopup(arg0, arg1, x, 10);
         } else {
@@ -255,7 +255,7 @@ void btl_drawNumberPopup(BtlPopup *arg0, Unk800CCD00 *arg1) {
 void btl_drawTextPopup(BtlPopup *arg0, Unk800CCD00 *arg1) {
     u8 *anim;
     u8 c;
-    Unk800686E8 *g;
+    SpriteDef *g;
 
     anim = arg0->unk14.p->unk0;
     c = anim[arg0->frame];
@@ -263,10 +263,10 @@ void btl_drawTextPopup(BtlPopup *arg0, Unk800CCD00 *arg1) {
         arg1->unk8 = (c & 0x80) ? 0x03000000 : 0x01000000;
         arg1->unk14 = arg0->clut;
         g = &g_uiSprites[arg0->unk14.p->unk4];
-        arg1->unk10.s.x -= g->unk4 >> 1;
-        arg1->unk10.s.y -= (g->unk5 >> 1) + (c & 0x1F);
+        arg1->unk10.s.x -= g->w >> 1;
+        arg1->unk10.s.y -= (g->h >> 1) + (c & 0x1F);
         if (arg0->unk10.b.unk3 == 0) {
-            btl_clampPopup(arg0, arg1, g->unk4, g->unk5);
+            btl_clampPopup(arg0, arg1, g->w, g->h);
         }
         btl_drawPopupGlyph(arg1, g);
     }
@@ -300,7 +300,7 @@ void btl_clampPopup(BtlPopup *arg0, Unk800CCD00 *arg1, s32 w, s32 h) {
 void btl_drawPopupDigits(Unk800CCD00 *arg0, u32 arg1) {
     DVECTOR xy;
     s16 i;
-    Unk800686E8 *g;
+    SpriteDef *g;
 
     i = (arg1 >> 16) - 1;
     xy.vx = arg0->unk10.s.x + (((s32)arg1 >> 16) - 1) * 8;
@@ -310,8 +310,8 @@ void btl_drawPopupDigits(Unk800CCD00 *arg0, u32 arg1) {
         arg0->unk0[1] = arg0->unk8 | 0x64000000;
         arg0->unk0[2] = *(s32 *)&xy;
         g = &D_80068BF0[arg1 & 0xF];
-        arg0->unk0[3] = g->unk0 + (arg0->unk14 << 16);
-        arg0->unk0[4] = (g->unk5 << 16) | g->unk4;
+        arg0->unk0[3] = g->uvclut + (arg0->unk14 << 16);
+        arg0->unk0[4] = (g->h << 16) | g->w;
         addPrim(arg0->unk4, arg0->unk0);
         arg0->unk0 += 5;
         xy.vx -= 8;
@@ -319,12 +319,12 @@ void btl_drawPopupDigits(Unk800CCD00 *arg0, u32 arg1) {
     }
 }
 
-void btl_drawPopupGlyph(Unk800CCD00 *arg0, Unk800686E8 *arg1) {
+void btl_drawPopupGlyph(Unk800CCD00 *arg0, SpriteDef *arg1) {
     arg0->unk0[0] = 0x04000000;
     arg0->unk0[1] = arg0->unk8 | 0x64000000;
     arg0->unk0[2] = arg0->unk10.w;
-    arg0->unk0[3] = arg1->unk0 + (arg0->unk14 << 16);
-    arg0->unk0[4] = (arg1->unk5 << 16) | arg1->unk4;
+    arg0->unk0[3] = arg1->uvclut + (arg0->unk14 << 16);
+    arg0->unk0[4] = (arg1->h << 16) | arg1->w;
     addPrim(arg0->unk4, arg0->unk0);
     arg0->unk0 += 5;
 }

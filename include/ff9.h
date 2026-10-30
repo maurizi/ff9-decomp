@@ -523,14 +523,14 @@ extern u32 D_8006BBB4[]; /* per-style clut row offset for text_buildDigits */
 
 /* sprite descriptor: uv/clut word, size, tpage (D_800686E8) */
 typedef struct {
-    u32 unk0; /* uv0 | clut << 16 */
-    u8 unk4;  /* w */
-    u8 unk5;  /* h */
-    u16 unk6; /* tpage */
-} Unk800686E8;
-extern Unk800686E8 D_800686E8;
-extern Unk800686E8 g_uiSprites[];
-extern Unk800686E8 D_800687E0[]; /* digit glyphs */
+    u32 uvclut; /* uv0 | clut << 16 */
+    u8 w; /* w */
+    u8 h; /* h */
+    u16 tpage; /* tpage */
+} SpriteDef;
+extern SpriteDef D_800686E8;
+extern SpriteDef g_uiSprites[];
+extern SpriteDef D_800687E0[]; /* digit glyphs */
 
 /* member header slide (ui_*MemberSwitch, ui_drawMemberHeader) */
 typedef struct {
@@ -2835,10 +2835,10 @@ typedef struct {
     s16 x1;
     s16 y1;
 } LineXY;
-u8 *ui_buildSpriteDef(s32 x, s32 y, u32 *ot, Unk800686E8 *d, u8 flag, s32 *out, SprtWords *s);
+u8 *ui_buildSpriteDef(s32 x, s32 y, u32 *ot, SpriteDef *d, u8 flag, s32 *out, SprtWords *s);
 u8 *ui_buildDigits(s32 x, s32 y, u32 *ot, u8 *s, s32 unused, SprtWords *p);
 /* Inlined copy of ui_buildSpriteDef (SPRT + DR_TPAGE from a sprite descriptor). */
-static inline u8 *ui_buildSpriteDef_inline(s32 x, s32 y, u32 *ot, Unk800686E8 *d, u8 flag, s32 *out, SprtWords *s) {
+static inline u8 *ui_buildSpriteDef_inline(s32 x, s32 y, u32 *ot, SpriteDef *d, u8 flag, s32 *out, SprtWords *s) {
     DrTpageWords *t;
     setlen(s, 4);
     if (flag) {
@@ -2847,15 +2847,15 @@ static inline u8 *ui_buildSpriteDef_inline(s32 x, s32 y, u32 *ot, Unk800686E8 *d
         s->rgbc = 0x64808080;
     }
     s->xy = (x & 0xFFFF) | (y << 16);
-    s->uvclut = d->unk0;
-    s->wh = d->unk4 | (d->unk5 << 16);
+    s->uvclut = d->uvclut;
+    s->wh = d->w | (d->h << 16);
     addPrim(ot, s);
     s++;
     t = (DrTpageWords *)s;
     setlen(t, 1);
-    t->code = (d->unk6 & 0x9FF) | 0xE1000600;
+    t->code = (d->tpage & 0x9FF) | 0xE1000600;
     addPrim(ot, t);
-    *out = d->unk4;
+    *out = d->w;
     s = (SprtWords *)(t + 1);
     return (u8 *)s;
 }
@@ -3272,7 +3272,7 @@ typedef struct {
     u8 w;
     u8 h;
     u16 tpage;
-} SpriteDesc16; /* Unk800686E8 with uv and clut as halves */
+} SpriteDesc16; /* SpriteDef with uv and clut as halves */
 typedef struct {
     u32 tag;
     u32 rgbc;
@@ -3337,8 +3337,8 @@ typedef struct DirInfo {
 
 /* file_loadDirTables: 8-byte entries of directory lists 8 and 11 */
 typedef struct {
-    u16 unk0;
-    u16 unk2;
+    u16 id; /*  */
+    u16 link; /* list-8 entries: id of a list-11 entry; file_loadDirTables reuses it in list 11 as a mark (1 needed, 2 copied) */
     u16 unk4;
     u16 unk6;
 } Unk8001DE50;
@@ -4033,10 +4033,10 @@ extern u8 g_evtLocationNameBuf[];
 extern u8 *g_evtLocationName;
 
 typedef struct {
-    s32 unk0;
-    u8 unk4[4]; /* party character ids */
-    u8 unk8[8];
-    u8 unk10[9];
+    s32 size; /* members to pick (op 0xB2; = ovl_3b PartyRequest.size) */
+    u8 party[4]; /* party character ids */
+    u8 reserve[8]; /* recruited characters not in the party, 0xFF-terminated */
+    u8 fixed[9]; /* per character: can't leave the party (op 0xB2 bit mask) */
 } Unk8007AE70;
 extern Unk8007AE70 D_8007AE70;
 

@@ -1551,7 +1551,7 @@ void fld_togglePause(void) {
             g_padActuator[i].unk0 = 0;
         }
         ClearOTag(&g_fieldTempOt, 1);
-        ui_buildSprite((320 - g_uiSprites[235].unk4) / 2, (224 - g_uiSprites[235].unk5) / 2, &g_fieldTempOt, 0xEB, 0, &tmp, &g_fieldPauseSprite);
+        ui_buildSprite((320 - g_uiSprites[235].w) / 2, (224 - g_uiSprites[235].h) / 2, &g_fieldTempOt, 0xEB, 0, &tmp, &g_fieldPauseSprite);
         bright = 0;
         if (fade_isActive() || fade_isBusy()) {
             bright = 1;
@@ -1571,7 +1571,7 @@ void fld_togglePause(void) {
                 sp = &g_fieldPauseSprite.unk0;
                 sp++;
                 SetDrawTPage(sp, 1, 1,
-                             getTPage(0, 2, tpage_getX((s16)g_uiSprites[235].unk6), tpage_getY((s16)g_uiSprites[235].unk6)));
+                             getTPage(0, 2, tpage_getX((s16)g_uiSprites[235].tpage), tpage_getY((s16)g_uiSprites[235].tpage)));
             }
         }
         setlen(&g_fieldPauseDim, 3);
