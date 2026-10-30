@@ -42,3 +42,5 @@ s_menuChocographFrameClutRect = 0x801F971C; // [code] RECT for the clut part of 
 s_menuChocographFrameRect = 0x801F9724; // [code] RECT for the pixel part of s_menuChocographFrameImage
 s_menuChocographFramePieces = 0x801F972C; // [code] the 4 frame pieces drawn by menuChocograph_drawFrame
 s_menuChocographFrameShadowPieces = 0x801F974C; // [code] the 2 frame pieces menuChocograph_drawFrame draws again as a shadow
+menuChocograph_loadImagesStub = 0x801F9660; // type:func [code] empty, first call of menuChocograph_loadImages
+s_menuChocographPictureImages = 0x801EF6FC; // [code] s_menuChocographPictures[1..24] (0x518 bytes past it), the 24 chocograph pictures menuChocograph_loadImages loads while slot 0 receives the saved VRAM

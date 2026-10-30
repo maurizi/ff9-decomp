@@ -191,7 +191,7 @@ u8 menuAbility_findCommand(s32, Character *);
 void menuAbility_initActionCursor(void);
 void menuAbility_initSupportCursor(void);
 extern s32 D_8007043C; /* main exe */
-extern u8 D_801EE644[];
+extern u8 s_menuEquipColon[];
 extern u16 s_menuEquipCharMask[]; /* character masks */
 extern u8 s_menuEquipSlotMask[]; /* slot masks */
 s32 chr_getDefaultSet(Character *); /* main exe (returns u8) */
@@ -199,7 +199,7 @@ extern u8 s_menuEquipTaught[0x40];
 extern u8 s_menuEquipOptSlotMask[5]; /* slot masks */
 extern u16 s_menuEquipOptCharMask[]; /* character masks */
 void menuAbility_loadImages(void);
-void func_801F1148(void);
+void menuAbility_initStub(void);
 void menuEquip_openList(void);
 void menuEquip_removeSlot(void);
 void menuEquip_buildItemList(void);

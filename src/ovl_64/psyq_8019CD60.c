@@ -28,8 +28,8 @@ INCLUDE_ASM("asm/us/ovl_64/nonmatchings/psyq_8019CD60", MDEC_in_sync);
 
 INCLUDE_ASM("asm/us/ovl_64/nonmatchings/psyq_8019CD60", MDEC_out_sync);
 
-u32 func_8019D354(void) {
-    return *D_8019E008;
+u32 mdec_getStatus(void) {
+    return *g_mdec1Reg;
 }
 
-INCLUDE_ASM("asm/us/ovl_64/nonmatchings/psyq_8019CD60", func_8019D36C);
+INCLUDE_ASM("asm/us/ovl_64/nonmatchings/psyq_8019CD60", mdec_timeout);

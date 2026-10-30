@@ -182,7 +182,7 @@ void menuEquip_drawEquipment(void) {
             sel = (i == 0);
         }
         ui_drawSprite(r->x + 10, r->y + y10, 0x1D, i + 0xF9, sel);
-        ui_drawSmallDigits(r->x + 0x19, r->y + y12, 0x1D, D_801EE644, sel ? grey : 0);
+        ui_drawSmallDigits(r->x + 0x19, r->y + y12, 0x1D, s_menuEquipColon, sel ? grey : 0);
         if (c->equip[i] != ITEM_NONE) {
             it = &g_itemTable[c->equip[i]];
             ui_drawItemIcon(r->x + 0x21, r->y + y8, 0x1D, c->equip[i], !sel);
@@ -219,7 +219,7 @@ void menuEquip_drawAbilities(void) {
         return;
     }
     ui_drawSprite(r->x + 0xA, r->y + 9, 0x1D, s_menuEquip.equipSlot + 0xF9, 0);
-    ui_drawSmallDigits(r->x + 0x19, r->y + 0xB, 0x1D, D_801EE644, 0);
+    ui_drawSmallDigits(r->x + 0x19, r->y + 0xB, 0x1D, s_menuEquipColon, 0);
     if (s_menuEquip.state == EQUIP_STATE_SLOT) {
         id = c->equip[s_menuEquip.equipSlot];
     } else {
@@ -759,6 +759,6 @@ void menuEquip_drawStatLabel(s32 x, s32 y, s32 z, u8 id, s32 color) {
     text_drawBlock(x, y - 4, z, text_get(id), color);
 }
 
-INCLUDE_RODATA("asm/us/ovl_33/nonmatchings/menu_equip", D_801EE644);
+INCLUDE_RODATA("asm/us/ovl_33/nonmatchings/menu_equip", s_menuEquipColon);
 
 INCLUDE_RODATA("asm/us/ovl_33/nonmatchings/menu_equip", g_equipMenuText);

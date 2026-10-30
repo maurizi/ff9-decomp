@@ -312,7 +312,7 @@ void wm_cameraFollow(void) {
                 if (a > 0x200) {
                     a = 0x200;
                 }
-                a = (((0x200 - a) * D_800CCB14 >> 12) + 0x800) << 1;
+                a = (((0x200 - a) * g_worldCameraEaseBoost >> 12) + 0x800) << 1;
                 step *= a;
                 step /= 4096;
                 break;
@@ -616,7 +616,7 @@ void wm_setMountPalette(void) {
     k = 0;
     e = g_gameState->gameData->ctx.world->obj->palAnims;
     pal = w_framePackGetPtr(g_worldDataPack, 1);
-    func_800B36AC();
+    wm_mountPalettePre();
     for (n = evt_getObjectList(); n != NULL; n = n->unk0) {
         a = n->unk4;
         if (a->state == 1 && (a->flags & 1) && a->kind == 4) {
@@ -1093,7 +1093,7 @@ void wm_updateActors(void) {
             }
         }
         cc = &g_worldActorTypeInfo[g_worldPlayer->actorType];
-        if ((cc->cellAttr & 0xC000) && D_800CCE4D != 0) {
+        if ((cc->cellAttr & 0xC000) && g_worldCellTriggersOn != 0) {
             wm_posToCell(g_worldPlayer->pos.vx, g_worldPlayer->pos.vz, &cell);
             evt_callWorldCellTrigger(cell % g_worldCellsW, cell / g_worldCellsW, (cc->cellAttr & 0xC000) >> 14);
         }
@@ -1353,9 +1353,9 @@ u8 wm_tryStep(VECTOR *arg0, s32 arg1, s32 arg2, s32 arg3, u32 *arg4, s32 *arg5) 
         if (ok) {
             if (mode->checkTransitions != 0) {
                 a = wm_testCellType(g_worldWaterCellTypes, cell);
-                b = wm_testCellType(D_800CCB18, cell);
+                b = wm_testCellType(g_worldLandCellTypes, cell);
                 x = wm_testCellType(g_worldWaterCellTypes, g_worldActorTypeInfo[g_worldPlayer->actorType].cellAttr);
-                y = wm_testCellType(D_800CCB18, g_worldActorTypeInfo[g_worldPlayer->actorType].cellAttr);
+                y = wm_testCellType(g_worldLandCellTypes, g_worldActorTypeInfo[g_worldPlayer->actorType].cellAttr);
                 if (b & x) {
                     ok = 0;
                 }
@@ -1460,7 +1460,7 @@ u8 wm_findGetoffPos(ActorPos *out) {
                     }
                     break;
                 case 7:
-                    if (wm_testCellType(D_800CCB18, cell)) {
+                    if (wm_testCellType(g_worldLandCellTypes, cell)) {
                         ok = 0;
                     }
                     break;
@@ -1968,7 +1968,7 @@ void wm_cameraAutoTurnWalk(void) {
         if (g_worldAutoTurnDiv > g_worldAutoTurnDivMax) {
             g_worldAutoTurnDiv = g_worldAutoTurnDivMax;
         }
-        t = (((0x800 - abs(d)) * D_800CCE2C >> 12) + 0x800) * (2 * g_worldCameraTurnGain);
+        t = (((0x800 - abs(d)) * g_worldAutoTurnBoost >> 12) + 0x800) * (2 * g_worldCameraTurnGain);
         q = (d * 256 / g_worldAutoTurnDiv) * (t / 4096);
         g_worldCamera->yaw += q / 4096;
     }
@@ -2076,7 +2076,7 @@ void w_movementChangeSP1(void) {
 }
 
 /* padded: the next jump table is 8-aligned */
-const char D_800A7164[0x1C] = "w_movementChange SP2\n";
+const char s_wmStrMovementChangeSP2[0x1C] = "w_movementChange SP2\n";
 
 void w_movementChangeSP2(void) {
     evt_resetIdleTimer(0);
@@ -2090,7 +2090,7 @@ void w_movementChangeSP2(void) {
     g_worldCameraFourProbes = g_worldMoveModeInfo->airborne == 0;
     wm_updateActors();
     if (g_worldMapDebugFlags & WM_DEBUG_MOVEMENT) {
-        printf(D_800A7164);
+        printf(s_wmStrMovementChangeSP2);
     }
 }
 
@@ -2213,7 +2213,7 @@ void wm_autoPilotOff(void) {
     }
 }
 
-void func_800B36AC(void) {
+void wm_mountPalettePre(void) {
 }
 
 s32 wm_getTerrainHeightOffset(s32 arg0, u32 arg1, u8 *arg2) {

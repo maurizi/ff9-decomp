@@ -118,3 +118,5 @@ s_menuEquipListOpen = 0x801FBD54; // [code] item list window slide-in
 s_menuEquipListClose = 0x801FBD74; // [code] item list window slide-out
 s_menuEquipTaught = 0x801FC700; // [code] per support ability, 1 = an equipped item teaches it (menuEquip_dropUnlearnedSupport)
 s_menuEquipHelpBuf = 0x801FC740; // [code] tab help text built by menuEquip_updateHelp
+s_menuEquipColon = 0x801EE644; // [string] a colon small-digit label drawn after the slot icon by menuEquip_drawEquipment and menuEquip_drawAbilities
+menuAbility_initStub = 0x801F1148; // type:func [code] empty, called by menuAbility_init right after text_setBank

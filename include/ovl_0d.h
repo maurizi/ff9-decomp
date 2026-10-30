@@ -390,7 +390,7 @@ typedef struct {
 } TmTimImage; /* TIM pixel block */
 
 extern s32 g_tmDataFile;
-extern s8 D_800B3664; /* sound request kind, -1 = none */
+extern s8 g_tmMusicRequest; /* sound request kind, -1 = none */
 extern u8 g_tmText[];
 extern s32 g_tmDataCopy;
 extern s32 g_tmSeIds[];

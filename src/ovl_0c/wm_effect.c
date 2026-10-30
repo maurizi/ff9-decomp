@@ -592,4 +592,4 @@ void wm_freeEffect(WmEffect *arg0) {
     g_worldEffectFree.next = arg0;
 }
 
-INCLUDE_RODATA("asm/us/ovl_0c/nonmatchings/wm_effect", D_800A8644);
+INCLUDE_RODATA("asm/us/ovl_0c/nonmatchings/wm_effect", s_menuMainEquipLabelStrs);

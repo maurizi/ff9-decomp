@@ -43,7 +43,7 @@ void battleEnd_init(void) {
     preload_setHook(0);
     rewards_init();
     battleEnd_loadDb();
-    func_801EF6D8();
+    battleEnd_loadPortraits();
     battleEnd_unloadDb();
     if (s->unk10 != 0 && g_btlRewards.unkB != 0) {
         evt_init((u8 *)s->unk10);
@@ -88,7 +88,7 @@ void battleEnd_exit(void) {
     }
 }
 
-s32 func_801EF6D8(void) {
+s32 battleEnd_loadPortraits(void) {
     btlui_loadPortraits();
     return 0;
 }
@@ -407,7 +407,7 @@ void rewards_stateGil(void) {
 
     if (s_rewards.gilSkipped == 0) {
         rewards_stepGil();
-        func_801F325C();
+        rewards_stepGilStub();
         if (!fade_isBusy() && (g_padRepeat & BTN_CROSS)) {
             rewards_finishGil();
         }
@@ -608,7 +608,7 @@ s32 rewards_getKind(void) {
     s32 ret = 0;
 
     if (mode == 4) {
-        ret = D_800FDF4D != 0;
+        ret = g_btlRewards.fleeGil != 0;
     } else if (mode != 7) {
         ret = 1;
         if (g_btlRewards.unkB != 0) {
@@ -1411,7 +1411,7 @@ void rewards_resetFullWarning(void) {
     s_rewardsFullShown = 0;
 }
 
-void func_801F325C(void) {
+void rewards_stepGilStub(void) {
 }
 
 u8 rewards_tryAddItems(void) {

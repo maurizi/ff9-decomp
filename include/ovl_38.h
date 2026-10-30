@@ -142,11 +142,11 @@ void menuStatus_draw(void);
 void menuStatus_updateAnims(void);
 void menuStatus_inputAbilities(void);
 void menuStatus_drawFrame(void);
-void func_801EF9B4(void);
+void menuStatus_drawStub(void);
 void menuStatus_closeAbilityPages(void);
 void menuStatus_onMemberSwitched(void);
 void menuStatus_updateHelp(void);
 
-extern const u8 D_801EE264[]; /* name strings */
+extern const u8 s_menuStatusColon[]; /* name strings */
 
 #endif

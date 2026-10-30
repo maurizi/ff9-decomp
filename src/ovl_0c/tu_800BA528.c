@@ -431,7 +431,7 @@ WmEncounter *wm_getEncounterEntry(void) {
             return &g_worldEncounterTable[i + add];
         }
     }
-    printf(D_800A7F48);
+    printf(s_wmStrEncounterNoScene);
     return &g_worldEncounterTable[i + add - 1];
 }
 
@@ -783,7 +783,7 @@ void wm_readChunks(void) {
             }
             if ((*cell & 0x80) && b.packSectors == 0) {
                 if (g_worldMapDebugFlags & WM_DEBUG_FORM) {
-                    printf(D_800A7F94, id2);
+                    printf(s_wmStrBlockNoForm, id2);
                 }
                 *cell &= 0x7F;
             }
@@ -1433,9 +1433,9 @@ s32 wm_getGroundHeight(VECTOR *arg0, u32 *arg1, s32 *arg2, WmPolyCache *arg3, u1
     return 0;
 }
 
-INCLUDE_RODATA("asm/us/ovl_0c/nonmatchings/tu_800BA528", D_800A7F48);
+INCLUDE_RODATA("asm/us/ovl_0c/nonmatchings/tu_800BA528", s_wmStrEncounterNoScene);
 
-INCLUDE_RODATA("asm/us/ovl_0c/nonmatchings/tu_800BA528", D_800A7F94);
+INCLUDE_RODATA("asm/us/ovl_0c/nonmatchings/tu_800BA528", s_wmStrBlockNoForm);
 
 INCLUDE_RODATA("asm/us/ovl_0c/nonmatchings/tu_800BA528", g_worldBlockBackQuad);
 
@@ -1497,7 +1497,7 @@ void wm_naviDraw(void) {
         }
         wm_naviDrawMiniMap();
         if (g_gameState->gameData->chocograph != 0) {
-            func_800C16C0();
+            wm_naviDrawChocograph();
         }
         break;
     case 2:
@@ -2083,7 +2083,7 @@ s32 wm_naviIsPlaceKnown(u32 arg0) {
     return (mask >> bit) & 1;
 }
 
-void func_800C16C0(void) {
+void wm_naviDrawChocograph(void) {
     u32 *ot;
 
     ot = (u32 *)g_worldOt[*g_worldBufIndex];

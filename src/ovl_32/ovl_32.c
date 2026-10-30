@@ -252,7 +252,7 @@ void menuChocograph_loadImages(void) {
     Ovl32Image *dst = &s_menuChocographPictures[0];
     s32 i;
 
-    func_801F9660();
+    menuChocograph_loadImagesStub();
     LoadImage(&s_menuChocographIconClutRect, (u32 *)s_menuChocographIconImage);
     DrawSync(0);
     LoadImage(&s_menuChocographIconRect, (u32 *)(s_menuChocographIconImage + 0x1C0));
@@ -533,7 +533,7 @@ void menuChocograph_scrollTo(s32 idx) {
     }
 }
 
-void func_801F9660(void) {
+void menuChocograph_loadImagesStub(void) {
 }
 
 void menuChocograph_getPictureRects(s32 i, RECT *a, RECT *b) {
@@ -549,7 +549,7 @@ void menuChocograph_getPictureRects(s32 i, RECT *a, RECT *b) {
 
 INCLUDE_RODATA("asm/us/ovl_32/nonmatchings/ovl_32", s_menuChocographPictures);
 
-INCLUDE_RODATA("asm/us/ovl_32/nonmatchings/ovl_32", D_801EF6FC);
+INCLUDE_RODATA("asm/us/ovl_32/nonmatchings/ovl_32", s_menuChocographPictureImages);
 
 INCLUDE_RODATA("asm/us/ovl_32/nonmatchings/ovl_32", s_menuChocographIconImage);
 

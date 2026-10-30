@@ -68,3 +68,6 @@ s_menuItemSortBuf = 0x801FA968; // [code] inventory sort buffer (menuItem_sortAu
 s_menuItemSortTmp = 0x801FAB68; // [code] swap temp of menuItem_sortAuto
 wm_canCallChocobo = 0x800B8124; // type:func [code] ovl_0c function at this address (ovl_0c is loaded alongside this overlay)
 wm_callChocobo = 0x800B81A0; // type:func [code] ovl_0c function at this address (ovl_0c is loaded alongside this overlay)
+menuItem_exitStub = 0x801F2F30; // type:func [code] empty, last call of menuItem_exit and of the menuItem_stepKweh exit path before menuScreen_close
+menuItem_initStub = 0x801F3038; // type:func [code] empty, called by menuItem_init before menuItem_collectKeyItems
+s_menuItemChocoboTitle = 0x801F3140; // [string] "CHOCOBO", title of the Kweh popup window (menuItem_callChocobo win_setTitle)

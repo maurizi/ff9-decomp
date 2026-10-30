@@ -1224,7 +1224,7 @@ void fld_movieUpdate(void) {
             mbg_setRgb24(g_gameState->gameData->ctx.field->area->scene->movieRgb24);
             mbg_setEndCallback(fld_movieStop);
             g_fieldMovieLastFrame = g_mbgFrame;
-            func_8019AB98(2, 4, g_gameState->gameData->ctx.field->area->scene->movieSndVolume);
+            mbg_setVolume(2, 4, g_gameState->gameData->ctx.field->area->scene->movieSndVolume);
             mbg_play(g_gameState->gameData->ctx.field->area->scene->movieList,
                           g_gameState->gameData->ctx.field->area->scene->movieEntry);
             g_gameState->gameData->ctx.field->area->scene->movieState = 6;
