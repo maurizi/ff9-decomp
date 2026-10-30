@@ -154,7 +154,7 @@ void discChange_exit(void) {
     }
     dst = g_padPortMask;
     st = &s_discChange;
-    g_gameState->unk0 |= 0x100000;
+    g_gameState->flags |= 0x100000;
     for (i = 0; i < 2; i++) {
         dst[i] = st->savedFlags[i];
     }

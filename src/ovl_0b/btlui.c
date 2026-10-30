@@ -1942,8 +1942,8 @@ void btlui_drawListContent(Window *arg0) {
     s32 i;
     menuList_getView((MenuList *)&arg0->list, &v);
     win_setClip(0, 7, 1);
-    for (i = 0; i < v.unk0; i++) {
-        btlui_drawListRow(0, i, v.unk1 + i, &v);
+    for (i = 0; i < v.rows; i++) {
+        btlui_drawListRow(0, i, v.first + i, &v);
     }
     if (((MenuList *)&arg0->list)->scroll & 4) {
         menuList_getRowsRect((MenuList *)&arg0->list, rc, &r);
@@ -1957,8 +1957,8 @@ void btlui_drawListScroll(Window *arg0) {
     MenuView v;
     s32 i;
     menuList_getPageView((MenuList *)&arg0->list, &v);
-    for (i = 0; i < v.unk0; i++) {
-        btlui_drawListRow(0, i, v.unk1 + i, &v);
+    for (i = 0; i < v.rows; i++) {
+        btlui_drawListRow(0, i, v.first + i, &v);
     }
 }
 
@@ -1992,7 +1992,7 @@ void btlui_drawAbilityRow(s32 arg0, s32 arg1, s32 arg2, MenuView *arg3) {
     if (res != 0) {
         x = r->x;
         a = &g_gameState->gameData->ctx.battle->abilities[k];
-        y = r->y + arg1 * 15 + arg3->unk2 - dy;
+        y = r->y + arg1 * 15 + arg3->y - dy;
         c = (res != 2) * 2;
         text_draw(x + 6, y, 7, D_800F909C + a->nameOfs, c);
         if (a->mpCost != 0) {

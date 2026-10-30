@@ -46,7 +46,7 @@ void game_main(void) {
                 ending_main();
                 break;
             }
-        } while (!(g_gameState->unk0 & GS_RESET));
+        } while (!(g_gameState->flags & GS_RESET));
         game_quitData();
         game_quitState();
         game_shutdown();

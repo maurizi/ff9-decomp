@@ -4,7 +4,7 @@ void btl_entry(void) {
     btl_initMode();
     do {
         btl_main((s16)g_gameState->gameData->battleId);
-    } while (!(g_gameState->unk0 & 0x101));
+    } while (!(g_gameState->flags & 0x101));
     btl_exitMode();
 }
 
@@ -36,10 +36,10 @@ void btl_main(s32 arg0) {
             }
         } else {
             g_gameState->mode = 8;
-            g_gameState->unk0 |= 0x100;
+            g_gameState->flags |= 0x100;
         }
         btl_endFrame();
-    } while (!(g_gameState->unk0 & 0x301));
+    } while (!(g_gameState->flags & 0x301));
     btl_cleanup();
 }
 
@@ -265,7 +265,7 @@ void btl_load(s32 arg0) {
     btl_allocBuffers();
     p = g_gameState->gameData->ctx.battle->work;
     btl_initReturnInfo();
-    g_gameState->unk0 &= ~0x30F;
+    g_gameState->flags &= ~0x30F;
     game_setClearColor(0, 0, 0);
     g_gameState->gameData->battleId = arg0;
     btl_loadEncounterFile((Unk800AA08C *)p, arg0);
@@ -376,10 +376,10 @@ void btl_initReturnInfo(void) {
     s32 i;
     p->unk0 = 0;
     p->unk8 = 0;
-    p->returnMode = g_gameState->unkA;
-    if (g_gameState->unkA == 1) {
+    p->returnMode = g_gameState->prevMode;
+    if (g_gameState->prevMode == 1) {
         p->returnId = g_gameState->gameData->fieldId;
-    } else if (g_gameState->unkA == 3) {
+    } else if (g_gameState->prevMode == 3) {
         p->returnId = g_gameState->gameData->worldId;
     } else {
         p->returnId = -1;
@@ -2146,7 +2146,7 @@ void btl_beginFrame(void) {
 
 void btl_endFrame(void) {
     if (!(g_gameState->gameData->flags & 0x100) && ((g_padPortHeld[0] & 0xF09) == 0xF09 || (g_padPortHeld[1] & 0xF09) == 0xF09)) {
-        g_gameState->unk0 |= 1;
+        g_gameState->flags |= 1;
     }
     btlui_waitFrame();
     setlen(&D_800FDED0[g_gameState->gameData->drawBuf].unk0, 2);

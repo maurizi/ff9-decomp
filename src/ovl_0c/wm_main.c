@@ -4,7 +4,7 @@ void wm_entry(void) {
     wm_init();
     do {
         wm_main(g_gameState->gameData->worldId);
-    } while (!(g_gameState->unk0 & (GS_RESET | GS_WM_LEAVE)));
+    } while (!(g_gameState->flags & (GS_RESET | GS_WM_LEAVE)));
     wm_shutdown();
 }
 
@@ -26,10 +26,10 @@ void wm_main(s32 arg0) {
                     break;
                 case WM_EVT_FIELD:
                     g_gameState->gameData->ctx.world->obj->exitReason = WM_EXIT_FIELD;
-                    g_gameState->unk0 |= GS_WM_LEAVE;
+                    g_gameState->flags |= GS_WM_LEAVE;
                     break;
                 case WM_EVT_WORLD:
-                    g_gameState->unk0 |= GS_WM_NEW_MAP;
+                    g_gameState->flags |= GS_WM_NEW_MAP;
                     break;
                 }
             }
@@ -44,7 +44,7 @@ void wm_main(s32 arg0) {
             }
         }
         wm_endFrame();
-    } while (!(g_gameState->unk0 & (GS_RESET | GS_WM_LEAVE | GS_WM_NEW_MAP)));
+    } while (!(g_gameState->flags & (GS_RESET | GS_WM_LEAVE | GS_WM_NEW_MAP)));
     wm_exit();
 }
 
@@ -235,7 +235,7 @@ void wm_load(s32 arg0) {
     wm_setupMapObj();
     obj = g_gameState->gameData->ctx.world->obj;
     wm_resetMapObj();
-    g_gameState->unk0 &= ~(GS_RESET | GS_WM_LEAVE | GS_WM_NEW_MAP);
+    g_gameState->flags &= ~(GS_RESET | GS_WM_LEAVE | GS_WM_NEW_MAP);
     g_gameState->gameData->ctx.world->flags |= WM_MAP_NO_TRANSITION;
     g_gameState->gameData->worldId = arg0;
     obj->sceneId = arg0;
@@ -309,7 +309,7 @@ void wm_exit(void) {
                       &g_gameState->gameData->sceneSectors[1]);
         g_gameState->gameData->battleId = obj->sceneId;
         g_gameState->mode = mode;
-        g_gameState->unkA = 3;
+        g_gameState->prevMode = 3;
         break;
     case WM_EXIT_WORLD:
         i = wm_depFindArea(wm_depFindField(obj->sceneId, &gd->sceneSector[1], &gd->sceneSectors[1]), &g_gameState->gameData->sceneSector[0],
@@ -322,7 +322,7 @@ void wm_exit(void) {
                                                  &g_gameState->gameData->sceneSector[0], &g_gameState->gameData->sceneSectors[0]);
         g_gameState->gameData->fieldId = obj->sceneId;
         g_gameState->mode = mode;
-        g_gameState->unkA = 3;
+        g_gameState->prevMode = 3;
         break;
     default:
         SystemError(0x39, 0x194);
@@ -1262,7 +1262,7 @@ void wm_endFrame(void) {
     s32 f;
 
     if ((g_padPortHeld[0] & PAD_SOFT_RESET) == PAD_SOFT_RESET || (g_padPortHeld[1] & PAD_SOFT_RESET) == PAD_SOFT_RESET) {
-        g_gameState->unk0 |= GS_RESET;
+        g_gameState->flags |= GS_RESET;
     }
     DrawSync(0);
     gs = g_gameState;
@@ -1380,7 +1380,7 @@ void wm_updateBattleTransition(void) {
         gd->flags &= ~(GD_MENU_DISABLED | GD_MENU_OPEN | GD_HIDE_MODELS | GD_HIDE_BG | GD_NO_FLIP);
         g_gameState->gameData->ctx.world->flags &= ~0x300;
         g_padPortMask[0] &= ~BTN_START;
-        g_gameState->unk0 |= GS_WM_LEAVE;
+        g_gameState->flags |= GS_WM_LEAVE;
     }
 }
 

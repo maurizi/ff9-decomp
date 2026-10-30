@@ -311,8 +311,8 @@ void menuAbility_drawList(void) {
     if (l->count != 0) {
         menuList_getView(l, &view);
         win_setClip(NULL, 0x1C, 1);
-        idx = view.unk1 * 2;
-        for (row = 0; row < view.unk0; row++) {
+        idx = view.first * 2;
+        for (row = 0; row < view.rows; row++) {
             for (col = 0; col < 2; col++) {
                 menuAbility_drawRow(col, row, idx++, &view);
             }
@@ -754,8 +754,8 @@ void menuAbility_drawScrollRows(void) {
 
     row = 0;
     menuList_getPageView(&s_menuAbility.lists[s_menuAbility.tab], &v);
-    idx = v.unk1 * 2;
-    for (; row < v.unk0; row++) {
+    idx = v.first * 2;
+    for (; row < v.rows; row++) {
         for (col = 0; col < 2; col++) {
             menuAbility_drawRow(col, row, idx++, &v);
         }
@@ -769,7 +769,7 @@ void menuAbility_drawRow(s32 col, s32 row, s32 z, MenuView *v) {
     s32 dy = 0x5E;
 
     x = col * 0x96 + (s_menuAbility.listRect.x + dx);
-    y = row * 0xF + (v->unk2 + dy);
+    y = row * 0xF + (v->y + dy);
     if (s_menuAbility.tab == ABILITY_TAB_ACTION) {
         menuAbility_drawActionRow(x, y, z, c);
     } else {

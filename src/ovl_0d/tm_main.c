@@ -25,7 +25,7 @@ void tm_init(void) {
 void tm_exit(void) {
     tm_freeDataCopy();
     tm_soundCmd(0x100, 0x42, 0, 0, 0);
-    g_gameState->unkA = 9;
+    g_gameState->prevMode = 9;
     g_gameState->mode = 1;
 }
 

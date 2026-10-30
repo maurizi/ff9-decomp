@@ -291,7 +291,7 @@ void tm_endFrame(TmState *s) {
     GameData *ctx;
 
     if ((g_padHeld & (PAD_L2 | PAD_R2 | PAD_L1 | PAD_R1 | PAD_START | PAD_SELECT)) == (PAD_L2 | PAD_R2 | PAD_L1 | PAD_R1 | PAD_START | PAD_SELECT)) {
-        g_gameState->unk0 |= 1;
+        g_gameState->flags |= 1;
         s->task = TM_TASK_EXIT;
     }
     if (&g_gameState->drawEnv[g_gameState->gameData->drawBuf].dfe != NULL) {

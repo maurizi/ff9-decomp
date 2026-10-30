@@ -5440,3 +5440,6 @@ D_800FE500 g_btlbgJitterBase2  # [code] btlbg_draw, background scene 7, group 2:
 # FIELDS include/ff9.h TweenDef: unk0=delay,unk2=frames,unk4=dx,unk8=dy,unkC=onDone [code] tween.c tween_start/tween_step/tween_sumDeltas
 # FIELDS include/ff9.h Unk8E0 (type renamed ModelSlot; GameData.chrModels/npcModels): unk0=flags,unk8=model,unkC=actor,unk10=unit [code] game_getModel / game_resetData / fld_load / btl_resetUnit / event ops on the model flags
 # MERGED include/ff9.h Unk8001E3A4 into ModelSlot (func_8001E3A4 resets a slot: flags 0, unk4 -1, model/actor/unit NULL)
+# FIELDS include/ff9.h GameState: unk0=flags,unkA=prevMode [code] GS_* flag users; fld_exit/wm_exit set prevMode 1/3, evt_init/evt_createModels test 9; ovl_39 memory card slot; menuList_getView
+# FIELDS include/ff9.h MenuState: unk2=cardSlot [code] GS_* flag users; fld_exit/wm_exit set prevMode 1/3, evt_init/evt_createModels test 9; ovl_39 memory card slot; menuList_getView
+# FIELDS include/ff9.h MenuView: unk0=rows,unk1=first,unk2=y [code] GS_* flag users; fld_exit/wm_exit set prevMode 1/3, evt_init/evt_createModels test 9; ovl_39 memory card slot; menuList_getView

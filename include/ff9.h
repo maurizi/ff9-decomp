@@ -359,11 +359,11 @@ typedef struct {
 
 
 typedef struct {
-    u32 unk0; /* flags */
+    u32 flags; /* flags: GS_* */
     u32 allocTop; /* allocator top after boot (g_allocTop, game_initState) */
     u8 mode; /* runtime: 0 title, 1 field (and its menus) */
     u8 vsyncMode; /* VSync mode */
-    u8 unkA;
+    u8 prevMode; /* mode being left (1 field, 3 world, set by the exits); 9 makes evt_init/evt_createModels rebuild models after Tetra Master */
     u8 disc;          /* disc bit (1 << disc - 1) of the SLUS file file_initImg found, 0xFF = none */
     DISPENV *dispEnv;    /* [2] */
     DRAWENV *drawEnv;   /* [2] */
@@ -549,7 +549,7 @@ extern UnkPair g_padActuator[2];
 typedef struct {
     u8 state; /* 0 closed, 1 loading, 2 waiting for the read/fade, 3 running (g_menuStateFuncs) */
     u8 type; /* menu_open type (g_menuTypes) */
-    u8 unk2; /* memory card slot */
+    u8 cardSlot; /* memory card slot (ovl_39 save screen) */
     u8 unk3;
     u8 unk4;
     u8 open; /* set by menu_doOpen, cleared by menu_finish */
@@ -1723,9 +1723,9 @@ typedef struct {
 
 /* visible window of a MenuList (menuList_getPageView) */
 typedef struct {
-    u8 unk0;  /* visible rows */
-    u8 unk1;  /* first index */
-    s16 unk2; /* y */
+    u8 rows; /* visible rows */
+    u8 first; /* first index */
+    s16 y; /* y */
     u8 pad4[4];
 } MenuView;
 

@@ -1345,7 +1345,7 @@ void fld_endFrame(void) {
     u32 f;
 
     if ((g_padPortHeld[0] & PAD_SOFT_RESET) == PAD_SOFT_RESET || (g_padPortHeld[1] & PAD_SOFT_RESET) == PAD_SOFT_RESET) {
-        g_gameState->unk0 |= GS_RESET;
+        g_gameState->flags |= GS_RESET;
     }
     DrawSync(0);
     if (!(mbg_getStatus() & 2)) {
@@ -1527,7 +1527,7 @@ void fld_updateEncounter(void) {
         g_gameState->gameData->flags &= ~0x7F;
         g_gameState->gameData->ctx.field->flags &= ~0x1919;
         g_padPortMask[0] &= ~BTN_START;
-        g_gameState->unk0 |= GS_FLD_LEAVE;
+        g_gameState->flags |= GS_FLD_LEAVE;
     }
 }
 

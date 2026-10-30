@@ -51,27 +51,27 @@ MenuView *menuList_getView(MenuList *m, MenuView *v) {
     if (m->scroll & 4) {
         if (m->scroll & 2) {
             d = m->height - m->scrollPos;
-            v->unk0 = (d + 8) / 15;
-            v->unk1 = m->top + (m->visibleRows - v->unk0);
-            v->unk2 = (m->visibleRows - v->unk0) * 15 + 6;
+            v->rows = (d + 8) / 15;
+            v->first = m->top + (m->visibleRows - v->rows);
+            v->y = (m->visibleRows - v->rows) * 15 + 6;
         } else {
             d = m->height - m->scrollPos;
-            v->unk0 = (d + 8) / 15;
-            v->unk1 = m->top;
-            v->unk2 = 6;
+            v->rows = (d + 8) / 15;
+            v->first = m->top;
+            v->y = 6;
         }
     } else if (m->scroll & 2) {
-        v->unk0 = m->visibleRows + 1;
-        v->unk1 = m->top - 1;
-        v->unk2 = m->scrollPos - 9;
+        v->rows = m->visibleRows + 1;
+        v->first = m->top - 1;
+        v->y = m->scrollPos - 9;
     } else if (m->scroll & 1) {
-        v->unk1 = m->top;
-        v->unk0 = m->visibleRows + 1;
-        v->unk2 = -m->scrollPos + 6;
+        v->first = m->top;
+        v->rows = m->visibleRows + 1;
+        v->y = -m->scrollPos + 6;
     } else {
-        v->unk1 = m->top;
-        v->unk0 = m->visibleRows;
-        v->unk2 = 6;
+        v->first = m->top;
+        v->rows = m->visibleRows;
+        v->y = 6;
     }
     return v;
 }
@@ -228,14 +228,14 @@ MenuView *menuList_getPageView(MenuList *m, MenuView *v) {
     s32 q;
     if (m->scroll & 2) {
         q = (m->scrollPos + 12) / 15;
-        v->unk0 = q;
-        v->unk1 = m->pageTop + (m->visibleRows - v->unk0);
-        v->unk2 = m->scrollPos - v->unk0 * 15 + 7;
+        v->rows = q;
+        v->first = m->pageTop + (m->visibleRows - v->rows);
+        v->y = m->scrollPos - v->rows * 15 + 7;
     } else {
         s32 n = m->scrollPos;
-        v->unk2 = m->height - n;
-        v->unk0 = (n + 14) / 15;
-        v->unk1 = m->pageTop;
+        v->y = m->height - n;
+        v->rows = (n + 14) / 15;
+        v->first = m->pageTop;
     }
     return v;
 }

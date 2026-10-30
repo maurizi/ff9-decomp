@@ -61,7 +61,7 @@ void opening_main(void) {
             break;
         }
     }
-    g_gameState->unk0 |= 0x100000;
+    g_gameState->flags |= 0x100000;
     file_loadDirTables(g_gameState);
     opening_findSceneSectors();
     scene_exit();

@@ -169,9 +169,9 @@ void menuItem_drawList(void) {
     menuList_getView(il->list, &view);
     win_drawListBox(s_menuItemListRect, 0x1D, 1, il->list);
     win_drawShadow(s_menuItemListRect, 0x1D, 1);
-    idx = view.unk1 * 2;
+    idx = view.first * 2;
     win_setClip(NULL, 0x1C, 1);
-    for (row = 0; row < view.unk0; row++) {
+    for (row = 0; row < view.rows; row++) {
         for (col = 0; col < 2; col++) {
             il->drawRow(col, row, idx++, &view);
         }
@@ -623,8 +623,8 @@ void menuItem_drawScrollRows(void) {
     it = &s_menuItemTabs[s_menuItem.tab];
     row = 0;
     menuList_getPageView(it->list, &v);
-    idx = v.unk1 * 2;
-    for (; row < v.unk0; row++) {
+    idx = v.first * 2;
+    for (; row < v.rows; row++) {
         for (col = 0; col < 2; col++) {
             it->drawRow(col, row, idx++, &v);
         }
@@ -658,7 +658,7 @@ void menuItem_drawRow(s32 col, s32 row, s32 i, MenuView *v) {
         it = &g_itemTable[p->unk0];
         ok = it->slots & 1;
         x = col * 0x96;
-        y = row * 0xF + (v->unk2 + k);
+        y = row * 0xF + (v->y + k);
         text_formatNumber(p->unk1, buf, 2, 1);
         x2 = x + 0x18;
         text_drawBlock(x + 0x28, y, 0x1C, g_itemNames + it->name, ok ? 0 : 2);
@@ -682,7 +682,7 @@ void menuItem_drawKeyRow(s32 col, s32 row, s32 i, MenuView *v) {
         t = &g_keyItemTable[id];
         got = keyItem_isSeen(id);
         x = col * 0x96 + 0x18;
-        y = row * 0xF + (v->unk2 + k);
+        y = row * 0xF + (v->y + k);
         name = g_keyItemNames + t->unk0;
         if (!got) {
             w = x + text_measureWidth((s32)name);

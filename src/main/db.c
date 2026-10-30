@@ -194,11 +194,11 @@ void game_resetState(void) {
     GameState *gs = g_gameState;
     s32 i;
 
-    gs->unk0 = GS_RELOAD_FILE_TABLES;
+    gs->flags = GS_RELOAD_FILE_TABLES;
     gs->disc = 0xFF;
     gs->allocTop = 0;
     gs->mode = 0;
-    gs->unkA = 0;
+    gs->prevMode = 0;
     gs->imgSector = -1;
     gs->gameData = NULL;
     game_setClearColor(0, 0, 0);

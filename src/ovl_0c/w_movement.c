@@ -14,7 +14,7 @@ void wm_initCamera(void) {
     g_worldCameraLookupFix = 0;
     g_worldCameraRoll = 0;
     D_800CE1E1 = 0;
-    if (g_gameState->unkA == 1 && g_gameState->gameData->unk890 == 0) {
+    if (g_gameState->prevMode == 1 && g_gameState->gameData->unk890 == 0) {
         g_worldCamera->viewBlend = 0;
         g_worldCamera->viewBlendSpeed = 0;
         g_worldCamera->viewForceNormal = 0;
@@ -702,7 +702,7 @@ void wm_findVehicles(void) {
                 break;
             }
             if (a == evt_getPlayer()) {
-                if (g_gameState->unkA == 1 && g_gameState->gameData->unk892 == 0) {
+                if (g_gameState->prevMode == 1 && g_gameState->gameData->unk892 == 0) {
                     if (g_worldMoveModeInfo->cameraInFront != 0) {
                         g_worldCamera->yawOffset = 0x800;
                     } else {

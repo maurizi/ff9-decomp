@@ -4,7 +4,7 @@ void fld_entry(void) {
     fld_init();
     do {
         fld_runArea((s16)g_gameState->gameData->fieldAreaId);
-    } while (!(g_gameState->unk0 & (GS_RESET | GS_FLD_LEAVE)));
+    } while (!(g_gameState->flags & (GS_RESET | GS_FLD_LEAVE)));
     fld_quit();
 }
 
@@ -12,7 +12,7 @@ void fld_runArea(s32 arg0) {
     fld_loadArea(arg0);
     do {
         fld_main((s16)g_gameState->gameData->fieldId);
-    } while (!(g_gameState->unk0 & (GS_RESET | GS_FLD_LEAVE | GS_FLD_NEW_AREA)));
+    } while (!(g_gameState->flags & (GS_RESET | GS_FLD_LEAVE | GS_FLD_NEW_AREA)));
     fld_unloadArea();
 }
 
@@ -43,30 +43,30 @@ void fld_main(s32 arg0) {
                 case 4:
                     if (g_gameState->gameData->ctx.field->area->scene->nextId == 0x3E80) {
                         g_gameState->gameData->ctx.field->area->scene->exitReason = 4;
-                        g_gameState->unk0 |= GS_FLD_LEAVE;
+                        g_gameState->flags |= GS_FLD_LEAVE;
                     } else {
-                        g_gameState->unk0 |= GS_FLD_NEW_FIELD;
+                        g_gameState->flags |= GS_FLD_NEW_FIELD;
                     }
                     break;
                 case 5:
                     g_gameState->gameData->ctx.field->area->scene->exitReason = FLD_EXIT_WORLD;
-                    g_gameState->unk0 |= GS_FLD_LEAVE;
+                    g_gameState->flags |= GS_FLD_LEAVE;
                     break;
                 case 7:
                     g_gameState->gameData->ctx.field->area->scene->exitReason = FLD_EXIT_TETRA_MASTER;
-                    g_gameState->unk0 |= GS_FLD_LEAVE;
+                    g_gameState->flags |= GS_FLD_LEAVE;
                     break;
                 case 8:
                     g_gameState->gameData->ctx.field->area->scene->exitReason = FLD_EXIT_GAME_OVER;
-                    g_gameState->unk0 |= GS_FLD_LEAVE;
+                    g_gameState->flags |= GS_FLD_LEAVE;
                     break;
                 }
             }
             if (!(g_gameState->gameData->flags & GD_MENU_DISABLED)) {
                 menu_update();
             }
-            if (g_gameState->unk0 & GS_RELOAD_FILE_TABLES) {
-                g_gameState->unk0 |= GS_FLD_NEW_FIELD;
+            if (g_gameState->flags & GS_RELOAD_FILE_TABLES) {
+                g_gameState->flags |= GS_FLD_NEW_FIELD;
                 g_gameState->gameData->ctx.field->flags |= FLD_MAP_REFIND_SECTORS;
                 break;
             }
@@ -106,7 +106,7 @@ void fld_main(s32 arg0) {
             }
         }
         fld_endFrame();
-    } while (!(g_gameState->unk0 & (GS_RESET | GS_FLD_LEAVE | GS_FLD_NEW_AREA | GS_FLD_NEW_FIELD)));
+    } while (!(g_gameState->flags & (GS_RESET | GS_FLD_LEAVE | GS_FLD_NEW_AREA | GS_FLD_NEW_FIELD)));
     if (fld_needsSplashImage() != 0) {
         fld_showSplashImage();
     }
@@ -121,7 +121,7 @@ void fld_gameOver(void) {
 
     gameover_main(g_gameState->gameData->ctx.field->area->scene->eventScript);
     g_gameState->mode = 0;
-    g_gameState->unk0 |= GS_RELOAD_FILE_TABLES;
+    g_gameState->flags |= GS_RELOAD_FILE_TABLES;
     if ((g_gameState->gameData->flags & GD_MUSIC_PLAYING) && g_gameState->gameData->musicId[0] != 0xFFFF) {
         fld_soundCommand(0x8301, g_gameState->gameData->musicId[0], 0x1E, 0, 0);
         for (i = 0x1D; i >= 0; i--) {
@@ -148,7 +148,7 @@ void fld_init(void) {
     g_gameState->gameData->soundHook = fld_soundCommand;
     g_gameState->gameData->preloadRequest = fld_preloadRequest;
     preload_setHook(0);
-    g_gameState->unk0 &= ~(GS_RESET | GS_FLD_LEAVE | GS_FLD_NEW_AREA);
+    g_gameState->flags &= ~(GS_RESET | GS_FLD_LEAVE | GS_FLD_NEW_AREA);
     g_gameState->gameData->kanjiFont = 0;
     gd = g_gameState->gameData;
     gd->npcModelSlots = 0;
@@ -354,7 +354,7 @@ void fld_load(s32 arg0) {
     sc = g_gameState->gameData->ctx.field->area->scene;
     fld_initScene();
     game_freezeScreen();
-    g_gameState->unk0 &= ~0x30F;
+    g_gameState->flags &= ~0x30F;
     g_gameState->gameData->flags |= GD_NO_FLIP;
     g_gameState->gameData->ctx.field->flags |= 4;
     game_setClearColor(0, 0, 0);
@@ -445,7 +445,7 @@ void fld_exit(void) {
                       &g_gameState->gameData->sceneSector[1], &g_gameState->gameData->sceneSectors[1]);
         g_gameState->gameData->battleId = sc->nextId;
         g_gameState->mode = 2;
-        g_gameState->unkA = 1;
+        g_gameState->prevMode = 1;
         break;
     case FLD_EXIT_WORLD:
         id = fld_depFindArea(fld_depFindField(sc->nextId, &g_gameState->gameData->sceneSector[1], &g_gameState->gameData->sceneSectors[1]),
@@ -453,7 +453,7 @@ void fld_exit(void) {
         g_gameState->gameData->worldId = sc->nextId;
         g_gameState->gameData->worldAreaId = id;
         g_gameState->mode = 3;
-        g_gameState->unkA = 1;
+        g_gameState->prevMode = 1;
         break;
     case FLD_EXIT_TETRA_MASTER:
         if (g_gameState->gameData->flags & GD_MUSIC_PLAYING) {
@@ -462,19 +462,19 @@ void fld_exit(void) {
         fld_suspendResidentSfx();
         akao_sendCmdE2();
         g_gameState->mode = 9;
-        g_gameState->unkA = 1;
+        g_gameState->prevMode = 1;
         break;
     case FLD_EXIT_GAME_OVER:
         akao_stopSe(-1, 0);
         akao_sendCmdE2();
         g_gameState->mode = 7;
-        g_gameState->unkA = 1;
+        g_gameState->prevMode = 1;
         break;
     case 4:
         akao_stopSe(-1, 0);
         akao_sendCmdE2();
         g_gameState->mode = 4;
-        g_gameState->unkA = 1;
+        g_gameState->prevMode = 1;
         break;
     case FLD_EXIT_FIELD:
         if (g_gameState->gameData->ctx.field->flags & FLD_MAP_REFIND_SECTORS) {
@@ -484,7 +484,7 @@ void fld_exit(void) {
                                &g_gameState->gameData->sceneSector[0], &g_gameState->gameData->sceneSectors[0]);
         }
         if (id != (g_gameState->gameData->fieldAreaId | DB_AREA)) {
-            g_gameState->unk0 |= GS_FLD_NEW_AREA;
+            g_gameState->flags |= GS_FLD_NEW_AREA;
         }
         g_gameState->gameData->ctx.field->flags &= ~FLD_MAP_REFIND_SECTORS;
         g_gameState->gameData->ctx.field->area->areaId = id;

@@ -341,8 +341,8 @@ void shopBuy_drawList(void) {
     win_drawListBox(r, 0x23, 1, list);
     menuList_getView(list, &view);
     win_setClip(NULL, 0x1E, 1);
-    for (i = 0; i < view.unk0; i++) {
-        shopBuy_drawRow(0, i, view.unk1 + i, &view);
+    for (i = 0; i < view.rows; i++) {
+        shopBuy_drawRow(0, i, view.first + i, &view);
     }
     if (list->scroll & 4) {
         menuList_getRowsRect(list, r, &sub);
@@ -565,8 +565,8 @@ void shopBuy_drawScrollRows(void) {
     s32 i;
 
     menuList_getPageView(&s_shopBuy.list, &v);
-    for (i = 0; i < v.unk0; i++) {
-        shopBuy_drawRow(0, i, v.unk1 + i, &v);
+    for (i = 0; i < v.rows; i++) {
+        shopBuy_drawRow(0, i, v.first + i, &v);
     }
 }
 
@@ -586,7 +586,7 @@ void shopBuy_drawRow(s32 unused, s32 row, s32 idx, MenuView *v) {
     }
     x = 0x18;
     y = 0x26;
-    y = row * 15 + (v->unk2 + y);
+    y = row * 15 + (v->y + y);
     text_formatNumber(it->price, buf, 5, 1);
     ui_drawItemIcon(x, y, 0x1E, id, ok);
     text_drawBlock(x + 0x10, y, 0x1E, g_itemNames + it->name, ok ? 0 : 2);
@@ -774,8 +774,8 @@ void shopSynth_drawList(void) {
     win_drawListBox(r, 0x23, 1, list);
     menuList_getView(list, &view);
     win_setClip(NULL, 0x1E, 1);
-    for (i = 0; i < view.unk0; i++) {
-        shopSynth_drawRow(0, i, view.unk1 + i, &view);
+    for (i = 0; i < view.rows; i++) {
+        shopSynth_drawRow(0, i, view.first + i, &view);
     }
     if (list->scroll & 4) {
         menuList_getRowsRect(list, r, &sub);
@@ -910,7 +910,7 @@ void shopSynth_drawRow(s32 unused, s32 row, s32 idx, MenuView *v) {
     }
     x = 0x18;
     y = 0x26;
-    y = row * 15 + (v->unk2 + y);
+    y = row * 15 + (v->y + y);
     i = 0;
 loop:
     if (r->ingredients[i] != ITEM_NONE) {
@@ -1063,8 +1063,8 @@ void shopSynth_drawScrollRows(void) {
     s32 i;
 
     menuList_getPageView(&s_shopSynth.list, &v);
-    for (i = 0; i < v.unk0; i++) {
-        shopSynth_drawRow(0, i, v.unk1 + i, &v);
+    for (i = 0; i < v.rows; i++) {
+        shopSynth_drawRow(0, i, v.first + i, &v);
     }
 }
 
@@ -1184,9 +1184,9 @@ void shopSell_drawList(void) {
     ui_drawLabel((s_shopSellListRectPtr->x + 0x120) - w, s_shopSellListRectPtr->y - 3, 0x23, g_winLabelStrings.unk94, 0);
     menuList_getView(list, &view);
     win_drawListBox(s_shopSellListRectPtr, 0x23, 1, list);
-    idx = view.unk1 * 2;
+    idx = view.first * 2;
     win_setClip(NULL, 0x1E, 1);
-    for (row = 0; row < view.unk0; row++) {
+    for (row = 0; row < view.rows; row++) {
         for (col = 0; col < 2; col++) {
             shopSell_drawRow(col, row, idx++, &view);
         }
@@ -1381,8 +1381,8 @@ void shopSell_drawScrollRows(void) {
     s32 idx;
 
     menuList_getPageView(&s_shopSell.list, &v);
-    idx = v.unk1 * 2;
-    for (row = 0; row < v.unk0; row++) {
+    idx = v.first * 2;
+    for (row = 0; row < v.rows; row++) {
         for (col = 0; col < 2; col++) {
             shopSell_drawRow(col, row, idx++, &v);
         }
@@ -1399,7 +1399,7 @@ void shopSell_drawRow(s32 col, s32 row, s32 i, MenuView *v) {
     if (p->unk1 != 0) {
         it = &g_itemTable[p->unk0];
         x = col * 0x96;
-        y = v->unk2 + (row * 0xF + k);
+        y = v->y + (row * 0xF + k);
         text_formatNumber(p->unk1, buf, 2, 1);
         text_drawBlock(x + 0x28, y, 0x1E, g_itemNames + it->name, 0);
         ui_drawItemIcon(x + 0x18, y, 0x1E, p->unk0, 1);

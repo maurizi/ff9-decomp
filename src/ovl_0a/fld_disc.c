@@ -6,7 +6,7 @@ void fld_requestDiscChange(s32 arg0, s16 arg1) {
     g_fieldDiscChange.fieldId = arg1;
     g_fieldDiscChange.areaId = -1;
     g_gameState->gameData->ctx.field->flags |= FLD_MAP_DISC_CHANGE;
-    g_gameState->unk0 |= GS_FLD_NEW_FIELD;
+    g_gameState->flags |= GS_FLD_NEW_FIELD;
 }
 
 u8 fld_getDiscChangeDisc(void) {

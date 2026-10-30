@@ -297,8 +297,8 @@ void menuEquip_drawList(void) {
         win_drawListBox(r, 0x14, 1, l);
         menuList_getView(l, &view);
         win_setClip(NULL, 0x13, 1);
-        for (i = 0; i < view.unk0; i++) {
-            menuEquip_drawListRow(0, i, view.unk1 + i, &view);
+        for (i = 0; i < view.rows; i++) {
+            menuEquip_drawListRow(0, i, view.first + i, &view);
         }
         if (l->scroll & 4) {
             menuList_getRowsRect(l, r, &sub);
@@ -633,8 +633,8 @@ void menuEquip_drawScrollRows(void) {
     s32 i;
 
     menuList_getPageView(&s_menuEquip.list, &v);
-    for (i = 0; i < v.unk0; i++) {
-        menuEquip_drawListRow(0, i, v.unk1 + i, &v);
+    for (i = 0; i < v.rows; i++) {
+        menuEquip_drawListRow(0, i, v.first + i, &v);
     }
 }
 
@@ -648,7 +648,7 @@ void menuEquip_drawListRow(s32 col, s32 row, s32 i, MenuView *v) {
     p = s_menuEquip.items + i;
     x = s_menuEquip.listWin.rect.x;
     w = &s_menuEquip.listWin;
-    y = w->rect.y + row * 0xF + v->unk2;
+    y = w->rect.y + row * 0xF + v->y;
     ui_drawItemIcon(x + 0xB, y, 0x13, p->unk0, 1);
     text_drawBlock(x + 0x1B, y, 0x13, g_itemNames + g_itemTable[p->unk0].name, 0);
     text_formatNumber(p->unk1, buf, 2, 1);

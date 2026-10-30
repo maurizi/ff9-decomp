@@ -3417,7 +3417,7 @@ void evt_init(u8 *data) {
     D_8007AE04 = 4;
     if ((g_evtMode == 1 && g_evtSavedState.mode == g_evtMode && g_evtSavedState.locationId == (s16)g_gameState->gameData->fieldId) ||
         (g_evtMode == 3 && g_evtSavedState.mode == g_evtMode && g_evtSavedState.locationId == g_gameState->gameData->worldId) ||
-        (g_gameState->unkA == 9 && g_evtModelsPending != 0)) {
+        (g_gameState->prevMode == 9 && g_evtModelsPending != 0)) {
         d = data - g_evtSavedState.scriptBase;
         g_evtStateData = g_evtSavedState;
         for (q = g_evtState->objects; q != NULL; q = q->unk0) {
@@ -3452,7 +3452,7 @@ void evt_createModels(void) {
     EvtObject *o;
     s16 *q;
 
-    if ((g_evtMode == 1 || g_evtMode == 3 || g_gameState->unkA == 9) && g_evtModelsPending != 0) {
+    if ((g_evtMode == 1 || g_evtMode == 3 || g_gameState->prevMode == 9) && g_evtModelsPending != 0) {
         for (n = g_evtState->objects; n != NULL; n = n->unk0) {
             o = n->unk4;
             if (o->kind == 4 && o->modelId != 0xFFFF) {
