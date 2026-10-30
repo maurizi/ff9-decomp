@@ -84,13 +84,13 @@ void opening_bootSwap(void) {
     gfx_setBuffer(g_gameState->gameData->drawBuf);
 }
 
-void func_800AB1E4(void) {
-    g_gameState->gameData->unk890 = 1;
+void opening_setWorldCamKeepNew(void) {
+    g_gameState->gameData->worldCamKeep = 1;
 }
 
-void func_800AB200(void) {
+void opening_setWorldCamKeepLoad(void) {
     GameData *ctx = g_gameState->gameData;
-    if (ctx->unk890 == 0) {
-        ctx->unk890 = 2;
+    if (ctx->worldCamKeep == 0) {
+        ctx->worldCamKeep = 2;
     }
 }

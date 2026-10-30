@@ -159,7 +159,7 @@ void menuConfig_drawPadMap(void) {
     text_drawBlock(r2->x + 0x2A, r2->y + 8, 0x11, text_get(CONFIG_TEXT_PAD_EXIT), 0);
     for (; i < CONFIG_PAD_SLOTS; i++) {
         ui_drawSprite(r->x + 0x10, r->y + 0xB + i * 0x11, 0x11, s_menuConfigPadActions[(g_gameState->padMap >> (i * 4)) & 7].icon, 0);
-        menuConfig_drawSmallText(r->x + 0x27, r->y + 0xE + i * 0x11, 0x11, D_801F14F8, 0);
+        menuConfig_drawSmallText(r->x + 0x27, r->y + 0xE + i * 0x11, 0x11, s_menuConfigPadArrow, 0);
         ui_drawSprite(r->x + 0x3A, r->y + 0xB + i * 0x11, 0x11, s_menuConfigPadActions[i].icon, 0);
         menuConfig_drawText(r->x + 0x54, r->y + 0xC + i * 0x11, 0x11, s_menuConfigPadActions[i].text, 0);
     }

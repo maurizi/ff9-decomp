@@ -246,11 +246,6 @@ extern u8 g_btlSwdMagSourceAbilities[]; /* character 1 ability ids per Sword Mag
 
 /* main exe: candidates for ff9.h */
 void math_rotMatrixZYX_gte(void *, void *); /* rotation (SVECTOR) -> bone matrix */
-typedef struct {
-    u8 unk0;
-    u8 apNeeded; /* ap needed */
-} Unk8006CB88;
-extern Unk8006CB88 D_8006CB88[]; /* abilities */
 
 /* draw environment pair built in the primitive buffer by btlfx_drawBgOffscreen */
 typedef struct {
@@ -1472,7 +1467,7 @@ typedef struct {
     s32 exp; /* exp (BtlEnemyType.exp; ovl_65 splits it among expMask) */
     s16 ap; /* ap of the enemy group (Battle1330.ap, btl_initSceneFlags). runtime: Malboro group 3 = "AP 3" */
     u8 expMask; /* bit per party slot in the battle (btl_initPartyUnit), cleared when a unit leaves (btl_calcCmd 0x6A); ovl_65: receives exp */
-    u8 unkB;
+    u8 hasPostEvent; /* encounter flag 0x800, story battles (BattleResult in ovl_65, runtime) */
     u8 items[16]; /* dropped item ids, 0xFF = none (btl_addEnemyRewards) */
     u8 card; /* card won, 0xFF = none */
     u8 fleeGil; /* set when Flee-Gil (support 0x4000) turned the escape into gil (btl_victory) */
@@ -2579,9 +2574,9 @@ Battle122C *btlseq_start(BtlCmd *);
 struct BtlBgHeader *btlbg_getHeader(void);
 s32 btlfx_stepPlayMotionWait(struct Unk800D8EA4 *, s32, s32 *);
 s32 btlfx_stepPlayMotionHold(struct Unk800D8EA4 *, s32, s32 *);
-s32 func_800D8EA4(struct Unk800D8EA4 *, s32, s32 *);
-s32 func_800D8F1C(struct Unk800D8EA4 *, s32, s32 *);
-s32 func_800D8FAC(struct Unk800D8EA4 *, s32, s32 *);
+s32 btlfx_stepPlayAttackMotion(struct Unk800D8EA4 *, s32, s32 *);
+s32 btlfx_stepPlayAttackMotionHold(struct Unk800D8EA4 *, s32, s32 *);
+s32 btlfx_stepPlayAttackReturnMotion(struct Unk800D8EA4 *, s32, s32 *);
 s32 btlfx_stepFileMotionWait(struct Unk800D8EA4 *, s32, s32 *);
 typedef struct {
     u8 unit; /* unit id moved */
@@ -3144,7 +3139,7 @@ typedef struct {
     u32 unk0_31 : 1;
     u8 pad4[0xC - 4];
 } Unk8006A774;
-extern Unk8006A774 D_8006A774[];
+extern Unk8006A774 g_usableItemTableById[];
 u8 *btl_calcBoneMatrices(BtlUnit9C *, s32, u8 *);
 void btl_projectMesh(BtlUnit9C *, u8);
 u8 *btl_drawMesh(BtlUnit9C *, u8, u8 *);
@@ -3343,7 +3338,7 @@ typedef struct {
     u8 unit; /* unit id turned */
     u8 target; /* unit id faced, 0xFF = its home */
     u8 turnAway; /* 1: face away from the target (+0x800) */
-    u8 unk3;
+    u8 snapToFront; /* op 0x71 third argument (runtime) */
     s32 frames; /* turn frames */
     s32 unk8;
     s16 delta[3]; /* rotation delta (btlfx_stepFaceTarget) */
@@ -3395,7 +3390,7 @@ typedef struct {
     u32 code[5];
 } DR_MOVE;
 
-extern s32 D_800F78AC;
+extern s32 g_btlfxSoundPaused;
 void SetDrawMove(DR_MOVE *p, RECT *rect, int x, int y);
 void akao_pause(s32);
 void btlfx_resetMaskBit(void);
@@ -3450,7 +3445,6 @@ void btl_checkDiscCover(void);
 u8 btlui_isPauseRequested(void);
 void btl_updatePause(void);
 s32 btl_update(void);
-extern u8 D_8007AFB1;
 void btl_updateIntro(GameData *, Battle *);
 void btl_updateCombat(GameData *, Battle *);
 void btl_victory(GameData *, Battle *);
@@ -3626,7 +3620,7 @@ void btlui_drawListContent(Window *);
 void btlui_drawListOverlay(Window *);
 void btlui_onListOpened(void);
 s32 btlfx_isSameSide(s32, s32);
-s32 func_800DA064(u8 *, s32, s32);
+s32 btlfx_stepSyncOpposed(u8 *, s32, s32);
 extern u8 g_btluiHideWindows;
 extern u8 g_btlCmdAbilities[];
 extern U16Pair g_btlAbilityHelpOfs[];
@@ -3649,7 +3643,7 @@ extern s32 g_btlfxCommonData[];
 extern u16 g_btlfxCommonCluts[];
 extern s32 (*g_btluiListConfirmFns[])(void);
 s32 btlfx_reloadCommonData(s32);
-u16 *func_800E4530(s32);
+u16 *btlfx_getCommonSprite(s32);
 s32 btlfx_resolveFirstUse(s32);
 extern u8 g_btlfxLargeTargetFx[][2];  /* summon id upgrades */
 extern u16 g_btlfxFirstUsePairs[16][2];
@@ -4256,7 +4250,7 @@ typedef struct {
     s16 otBias; /* otZ for the unit (btlfx_addRadiusSixth) */
     s16 scale; /* sprite scale, -1 = none (btlfx_drawAnimQuads/btlfx_drawParticles arg 3) */
     s16 roll; /* z rotation of the sprites (op argument b << 8) */
-    s16 dataId; /* common data id of the sprite set (func_800E4530) */
+    s16 dataId; /* common data id of the sprite set (btlfx_getCommonSprite) */
     s16 emitterId; /* common data id of the emitter (kind 3) */
     s16 colorIdx; /* g_btlfxCommonCluts palette index */
     s16 frames; /* frame count (kind 2: frame the emitter starts) */
@@ -4354,7 +4348,6 @@ s32 vib_init(void *);
 
 /* btl_checkCmdUsable */
 /* main exe: candidates for ff9.h */
-extern u8 D_8007AF01;
 
 /* the command's caster can't act (status 8 with flag 2): prints message 0x15 */
 static inline u8 btl_checkCmdUsable_can(BtlCmd *arg1) {

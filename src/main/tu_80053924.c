@@ -11,7 +11,7 @@ void gamedata_resetEventFlags(void) {
     d->battleResult = 0;
     d->battleFlags = 0;
     d->rainCount = 0;
-    d->unk571 = 0;
+    d->darkBattle = 0;
 }
 
 s32 chr_cureStatusBit(Unk800539FC *a, s32 b) {

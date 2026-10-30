@@ -11,7 +11,7 @@ void btl_startBattle(void) {
     btl_initCmdQueue(b);
     btl_initTargetCursor(b);
     btl_initSceneFlags();
-    g_btlRewards.unkB = (b->scene.flags >> 13) & 1;
+    g_btlRewards.hasPostEvent = (b->scene.flags >> 13) & 1;
     msg_beginDraw();
     evt_update();
     btl_loadModelsStep(1);
@@ -521,7 +521,7 @@ s32 btl_checkCmdUsable(Battle *arg0, BtlCmd *arg1) {
             u->obj->rotY = v;
             u->rot[1] = v;
         }
-        if (D_8007AF01 != 0 && (u->flags & 0x1F) == 5 && arg1->cmdNo < BTL_CMD_TABLE_COUNT) {
+        if (g_evtGlobalVars.b[EVT_GB_DAGGER_FALTERS] != 0 && (u->flags & 0x1F) == 5 && arg1->cmdNo < BTL_CMD_TABLE_COUNT) {
             if (evt_rollEncounter_rand() < 0x40) {
                 msg = 0x1B;
                 goto fail;
@@ -1352,7 +1352,7 @@ void btl_unlinkCmd(BtlCmd **arg0, u8 arg1) {
 
 s32 btl_payMpCost(BtlCmd *arg0) {
     s32 mp = arg0->ability->mpCost;
-    if (D_8007AF02 != 0 && (arg0->ability->unkB & 4)) {
+    if (g_evtGlobalVars.b[EVT_GB_SUMMON_MP_X4] != 0 && (arg0->ability->unkB & 4)) {
         mp <<= 2;
     }
     if (arg0->cmdNo == BTL_CMD_RETURN_MAGIC) {

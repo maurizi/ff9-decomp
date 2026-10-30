@@ -106,3 +106,4 @@ menuMainWorld_setCursor = 0x800CC820;  /* ovl_0c menuMain_setCursor */
 rewards_requestClose = 0x801F0FF4;  /* ovl_65 */
 menuItem_callChocobo = 0x801F1A7C;  /* ovl_37 */
 btlui_isSecondPortUsed = 0x800EA27C;  /* ovl_0b */
+g_worldAreaNames = 0x800CF478; /* ovl_0c data, read by main evt_onMenuOpen */

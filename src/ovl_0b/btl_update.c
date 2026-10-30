@@ -26,7 +26,7 @@ s32 btl_update(void) {
                     break;
                 }
             }
-            if (D_8007AFB1 == 0) {
+            if (g_evtGlobalVars.b[EVT_GB_BATTLE_NO_HUD] == 0) {
                 btlui_enable(1);
                 btlui_setAtbEnabled(1);
             }
@@ -382,7 +382,7 @@ void btl_initBattleState(void) {
     g_gameState->gameData->battleFlags = 0;
     gd = g_gameState->gameData;
     v = 7;
-    if (gd->unk571 != 0) {
+    if (gd->darkBattle != 0) {
         v = 8;
     }
     gd->characters[3].info.w = (gd->characters[3].info.w & ~0x1F0) | (v << 4);

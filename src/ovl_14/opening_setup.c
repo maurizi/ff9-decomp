@@ -5,7 +5,7 @@ void opening_initNewGame(void) {
     evt_clearGlobalVars();
     gamedata_resetEventFlags();
     menu_initNewGame();
-    func_800AB1E4();
+    opening_setWorldCamKeepNew();
     card_initAll();
     opening_resetGameData();
 }
@@ -13,7 +13,7 @@ void opening_initNewGame(void) {
 void opening_resetGameData(void) {
     opening_resetFieldState();
     evt_initSystem();
-    func_800AB200();
+    opening_setWorldCamKeepLoad();
     card_resetGameResult();
 }
 

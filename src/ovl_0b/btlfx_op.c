@@ -116,7 +116,7 @@ s32 btlfx_moveUnitHome(s32 arg0, s32 arg1, s16 *arg2, s32 arg3) {
     return arg1 >= n;
 }
 
-u16 *func_800E4530(s32 arg0) {
+u16 *btlfx_getCommonSprite(s32 arg0) {
     s32 *p = PSX_RAM(s32 *, 0x801E9700);
     return (u16 *)(p[arg0] + (s32)p);
 }
@@ -607,7 +607,7 @@ s32 btlfx_opSetSpriteClut(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 *arg4) {
     if (arg0 == 1) {
         idx = arg4[1] & 0x1F;
         k = (arg4[1] & 0xE0) >> 5;
-        p = func_800E4530(arg4[0]);
+        p = btlfx_getCommonSprite(arg4[0]);
         if (k >= 0) {
             if (k < 2) {
                 p[1] = g_btlfxCommonCluts[idx];
@@ -649,7 +649,7 @@ s32 btlfx_opDrawOnUnit(s32 arg0, Unk800E57B0 *arg1, Unk800F78A4 *arg2, s32 *arg3
             arg1->dataId = g_btlfxResArgs.unk1;
             arg1->colorIdx = a;
             arg1->roll = (s8)b << 8;
-            arg1->data = func_800E4530(arg1->dataId);
+            arg1->data = btlfx_getCommonSprite(arg1->dataId);
             ((u16 *)arg1->data)[1] = g_btlfxCommonCluts[arg1->colorIdx];
             arg1->frames = *(u16 *)arg1->data & 0x7FFF;
             arg1->offX = (s8)g_btlfxResArgs.unk2 * 4;
@@ -659,7 +659,7 @@ s32 btlfx_opDrawOnUnit(s32 arg0, Unk800E57B0 *arg1, Unk800F78A4 *arg2, s32 *arg3
             arg1->dataId = g_btlfxResArgs.unk1;
             arg1->colorIdx = a;
             arg1->roll = (s8)b << 8;
-            arg1->data = func_800E4530(arg1->dataId);
+            arg1->data = btlfx_getCommonSprite(arg1->dataId);
             ((u16 *)arg1->data)[2] = g_btlfxCommonCluts[arg1->colorIdx];
             arg1->frames = *(u16 *)arg1->data & 0x7FFF;
             break;
@@ -672,7 +672,7 @@ s32 btlfx_opDrawOnUnit(s32 arg0, Unk800E57B0 *arg1, Unk800F78A4 *arg2, s32 *arg3
         case 3:
             arg1->dataId = a;
             arg1->frames = g_btlfxResArgs.unk1;
-            arg1->data = func_800E4530(arg1->dataId);
+            arg1->data = btlfx_getCommonSprite(arg1->dataId);
             arg1->roll = 0;
             break;
         default:
@@ -707,11 +707,11 @@ s32 btlfx_opDrawOnUnit(s32 arg0, Unk800E57B0 *arg1, Unk800F78A4 *arg2, s32 *arg3
                         btlfx_getUnitBodyPos(arg1->unit, 0, &arg1->pos.vx);
                     }
                 }
-                e = btlfx_startEmitter((s32)func_800E4530(arg1->emitterId), (s32)&arg1->pos);
+                e = btlfx_startEmitter((s32)btlfx_getCommonSprite(arg1->emitterId), (s32)&arg1->pos);
                 if (e != NULL) {
                     e->otZ = arg1->otBias;
                 }
-                p = func_800E4530(arg1->dataId);
+                p = btlfx_getCommonSprite(arg1->dataId);
                 if (e != NULL) {
                     e->elems->tex = (s32)p;
                     e->elems->kind = arg1->scale;

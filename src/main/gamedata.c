@@ -70,7 +70,7 @@ void game_resetData(void) {
     gd->font = NULL;
     gd->kanjiFont = NULL;
     gd->locationName = NULL;
-    gd->unk810 = NULL;
+    gd->debugLocationName = NULL;
     gd->chocograph = 0;
     gd->soundLoadState = 0;
     gd->musicFadeStart = 0;

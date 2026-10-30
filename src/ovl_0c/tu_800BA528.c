@@ -121,7 +121,7 @@ void wm_setupWorldData(void) {
         wm_relocatePack(w_framePackGetPtr(g_worldDataPack, i));
     }
     g_worldDefaultBlocks = w_framePackGetPtr(g_worldDataPack, 0x42);
-    D_800CF478 = w_framePackGetPtr(g_worldDataPack, 0);
+    g_worldAreaNames = w_framePackGetPtr(g_worldDataPack, 0);
     g_worldEncounterTable = w_framePackGetPtr(g_worldDataPack, 3);
     g_worldWeatherData = *(WmWeatherData *)w_framePackGetPtr(g_worldDataPack, 5);
     dst = (WmTexScrollTbl *)g_worldTexScrolls;

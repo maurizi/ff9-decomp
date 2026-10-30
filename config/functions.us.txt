@@ -2423,9 +2423,9 @@ ovl_0b btlfx_opUnitSound 0x74 0x800d7578
 ovl_0b btlfx_opPlayMotion 0x74 0x800d75ec
 ovl_0b btlfx_opPlayMotionWait 0x7c 0x800d7660
 ovl_0b btlfx_opPlayMotionHold 0x8c 0x800d76dc
-ovl_0b func_800D7768 0x7c 0x800d7768
-ovl_0b func_800D77E4 0x8c 0x800d77e4
-ovl_0b func_800D7870 0x7c 0x800d7870
+ovl_0b btlfx_opPlayAttackMotion 0x7c 0x800d7768
+ovl_0b btlfx_opPlayAttackMotionHold 0x8c 0x800d77e4
+ovl_0b btlfx_opPlayAttackReturnMotion 0x7c 0x800d7870
 ovl_0b btlfx_opResetMotion 0x5c 0x800d78ec
 ovl_0b btlfx_opFileMotion 0x74 0x800d7948
 ovl_0b btlfx_opFileMotionWait 0x7c 0x800d79bc
@@ -2445,7 +2445,7 @@ ovl_0b btlfx_opWaitKindTime 0xf8 0x800d8270
 ovl_0b btlfx_opWaitOtherSide 0xac 0x800d8368
 ovl_0b btlfx_opWaitSameSide 0xb0 0x800d8414
 ovl_0b btlfx_opCallWeaponScript 0x5c 0x800d84c4
-ovl_0b func_800D8520 0x8c 0x800d8520
+ovl_0b btlfx_opSyncOpposed 0x8c 0x800d8520
 ovl_0b btlfx_playUnitMotion 0x4c 0x800d85ac
 ovl_0b btlfx_setFileMotion 0x60 0x800d85f8
 ovl_0b btlfx_resetUnitMotion 0x88 0x800d8658
@@ -2477,9 +2477,9 @@ ovl_0b btlfx_stepUnitSound 0x60 0x800d8d08
 ovl_0b btlfx_stepPlayMotion 0x2c 0x800d8d68
 ovl_0b btlfx_stepPlayMotionWait 0x7c 0x800d8d94
 ovl_0b btlfx_stepPlayMotionHold 0x94 0x800d8e10
-ovl_0b func_800D8EA4 0x78 0x800d8ea4
-ovl_0b func_800D8F1C 0x90 0x800d8f1c
-ovl_0b func_800D8FAC 0x8c 0x800d8fac
+ovl_0b btlfx_stepPlayAttackMotion 0x78 0x800d8ea4
+ovl_0b btlfx_stepPlayAttackMotionHold 0x90 0x800d8f1c
+ovl_0b btlfx_stepPlayAttackReturnMotion 0x8c 0x800d8fac
 ovl_0b btlfx_stepResetMotion 0x24 0x800d9038
 ovl_0b btlfx_stepFileMotion 0x30 0x800d905c
 ovl_0b btlfx_stepFileMotionWait 0x84 0x800d908c
@@ -2499,7 +2499,7 @@ ovl_0b btlfx_stepWaitKindTime 0x50 0x800d9f88
 ovl_0b btlfx_stepWaitOtherSide 0x2c 0x800d9fd8
 ovl_0b btlfx_stepWaitSameSide 0x2c 0x800da004
 ovl_0b btlfx_stepCallWeaponScript 0x34 0x800da030
-ovl_0b func_800DA064 0x8 0x800da064
+ovl_0b btlfx_stepSyncOpposed 0x8 0x800da064
 ovl_0b btlfx_getKindTiming 0x4c 0x800da06c
 ovl_0b btlfx_getWeaponScript 0x44 0x800da0b8
 ovl_0b func_800DA0FC 0x8 0x800da0fc
@@ -2623,7 +2623,7 @@ ovl_0b btlfx_reloadCommonData 0xe4 0x800e4134
 ovl_0b btlfx_stepBack 0x154 0x800e4218
 ovl_0b btlfx_turnUnitTowardFast 0x6c 0x800e436c
 ovl_0b btlfx_moveUnitHome 0x158 0x800e43d8
-ovl_0b func_800E4530 0x1c 0x800e4530
+ovl_0b btlfx_getCommonSprite 0x1c 0x800e4530
 ovl_0b btlfx_getCommonData 0x1c 0x800e454c
 ovl_0b btlfx_opSetResArgsA 0x38 0x800e4568
 ovl_0b btlfx_opSetResArgsB 0x30 0x800e45a0
@@ -3140,7 +3140,7 @@ ovl_0c wm_runEvents 0x9c 0x800b83fc
 ovl_0c wm_getPadHeld 0x28 0x800b8498
 ovl_0c wm_getPadPressed 0x28 0x800b84c0
 ovl_0c wm_runSetupStep 0x60 0x800b84e8
-ovl_0c func_800B8548 0x18 0x800b8548
+ovl_0c wm_isDarkWeather 0x18 0x800b8548
 ovl_0c wm_postDraw 0x8 0x800b8560
 ovl_0c func_800B8568 0xc 0x800b8568
 ovl_0c wm_initLighting 0xf0 0x800b8574
@@ -3519,8 +3519,8 @@ ovl_14 opening_bootScreenLoad 0x12c 0x800aaf40
 ovl_14 opening_bootScreenFree 0x30 0x800ab06c
 ovl_14 opening_bootClearOt 0x44 0x800ab09c
 ovl_14 opening_bootSwap 0x104 0x800ab0e0
-ovl_14 func_800AB1E4 0x1c 0x800ab1e4
-ovl_14 func_800AB200 0x30 0x800ab200
+ovl_14 opening_setWorldCamKeepNew 0x1c 0x800ab1e4
+ovl_14 opening_setWorldCamKeepLoad 0x30 0x800ab200
 ovl_15 ending_main 0x100 0x800a713c
 ovl_15 ending_clearOt 0x44 0x800a723c
 ovl_15 ending_swapBuffers 0xf8 0x800a7280

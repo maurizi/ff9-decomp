@@ -146,7 +146,7 @@ typedef struct {
     u8 effect; /* calculation script, item_useOnMember's kind */
     u8 pad5[0xA - 5];
     u8 mpCost; /* menuAbility_getMpCost */
-    u8 flags; /* bit 0: usable from the menu; bit 1: clear = AP gauge flag; bit 2: mpCost x4 when D_8007AF02 */
+    u8 flags; /* bit 0: usable from the menu; bit 1: clear = AP gauge flag; bit 2: mpCost x4 when g_evtGlobalVars.b[EVT_GB_SUMMON_MP_X4] */
     u8 padC[2];
     u16 nameOffset; /* name offset into s_menuAbilityActionNames */
 } Unk801F34EC; /* 0x10 */
@@ -186,7 +186,6 @@ void menuAbility_drawScrollRows(void);
 void ui_drawApGauge(s32, s32, s32, s32, s32, u8, u8); /* main exe */
 s32 chr_getAp(s32, s32); /* main exe */
 s32 chr_getApNeeded(s32, s32); /* main exe */
-extern u8 D_8007AFD3;
 u8 menuAbility_findCommand(s32, Character *);
 void menuAbility_initActionCursor(void);
 void menuAbility_initSupportCursor(void);

@@ -1510,8 +1510,8 @@ void btlfx_copyDisplayToDraw(void) {
         i += 0x20;
         r.x += 0x20;
     } while (i < 0x140);
-    if (D_800F78AC == 0) {
-        D_800F78AC = 1;
+    if (g_btlfxSoundPaused == 0) {
+        g_btlfxSoundPaused = 1;
         akao_pause(2);
     }
 }

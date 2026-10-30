@@ -212,7 +212,7 @@ s32 MBG_init(s32 mode, u8 **buf) {
     g_mbgRgb24 = -1;
     g_mbgState = 1;
     g_mbgFrame = 0;
-    D_80071E30 = 0;
+    g_mbgIsBackground = 0;
     g_mbgPlayer.volumeDelay = 3;
     g_mbgPlayer.volumeFade = 4;
     g_mbgPlayer.volume = 0x7F;
@@ -286,7 +286,7 @@ s32 mbg_play(u32 movie, s32 idx) {
         return 0;
     }
     g_mbgMovie = &g_mbgMovieLists[movie].entries[idx];
-    D_80071E30 = g_mbgMovie->unk5;
+    g_mbgIsBackground = g_mbgMovie->unk5;
     if (g_mbgRgb24 < 0) {
         mbg_setRgb24(g_mbgMovie->rgb24);
     }
@@ -354,7 +354,7 @@ s32 mbg_play(u32 movie, s32 idx) {
     }
     mbg_vlcBuildTable(st->vlcTable);
     g_mbgPaused = 0;
-    D_80071E30 = 0;
+    g_mbgIsBackground = 0;
     st->ended = 0;
     st->pauseReq = 0;
     st->unk5 = 0;

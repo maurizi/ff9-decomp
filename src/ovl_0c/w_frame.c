@@ -145,7 +145,7 @@ s32 wm_frameMain(void) {
         if ((u8)g_worldActorTypeInfo[g_worldPlayer->actorType].cellAttr >> 2 == 0x34) {
             g_worldEventResult = 0;
         }
-        g_gameState->gameData->unk571 = func_800B8548();
+        g_gameState->gameData->darkBattle = wm_isDarkWeather();
         cd_syncAsync(0);
         while (cd_getState() != 0) {
         }
@@ -781,7 +781,7 @@ void wm_runSetupStep(void) {
     g_worldState = WM_STATE_SETUP;
 }
 
-s32 func_800B8548(void) {
+s32 wm_isDarkWeather(void) {
     return (u32)(g_worldWeatherMode - 2) < 2U;
 }
 

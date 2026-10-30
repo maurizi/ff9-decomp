@@ -1636,3 +1636,5 @@ chr_canLearnAbilities = 0x80034A30; // type:func [code] 0 for class flag 0x10, e
 snd_stopPlayedSe = 0x8002F4D0; // type:func [code] soundHook(SND_SE_STOP, id, 0x800000), the stop counterpart of snd_playSe (snd_stopSe passes 0 like snd_startSe)
 fade_reverseNoCallback = 0x8002FEB4; // type:func [code] fade_reverse(NULL)
 gfx_setUiMode = 0x8002C064; // type:func [code] sets g_drawBufs.uiMode (2 from btlui_initDrawBufs, 0 from the rewards screen) - in mode 2 windows close without the close animation (win_close, win_update) and lastVsync is reset
+g_mbgIsBackground = 0x80071E30; // [runtime] 1 for every .MBG movie, mbg_getStatus reports bit 8 (docs/runtime-findings.md R30)
+g_usableItemTableById = 0x8006A774; // [runtime] g_usableItemTable minus ITEM_FIRST_USABLE entries, indexed by raw item id in btlui_selectItem (docs/runtime-findings.md R30)

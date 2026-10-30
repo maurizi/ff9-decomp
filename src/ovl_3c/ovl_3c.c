@@ -58,10 +58,10 @@ s32 shop_sumArmorStat(s32 stat, u8 *equip) {
             if (equip[i] < 0xE0) {
                 j = equip[i] - 0x58;
                 b = &g_armorStatBonus[j];
-                sum[0] += b->unk0;
-                sum[1] += b->unk1;
-                sum[2] += b->unk2;
-                sum[3] += b->unk3;
+                sum[0] += b->defense;
+                sum[1] += b->evade;
+                sum[2] += b->magicDef;
+                sum[3] += b->magicEvade;
             }
         }
     }

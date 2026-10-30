@@ -105,7 +105,7 @@ s32 mbg_getStatus(void) {
         if (g_mbgRgb24 != 0) {
             r |= 4;
         }
-        if (D_80071E30 == 1) {
+        if (g_mbgIsBackground == 1) {
             r |= 8;
         }
     }

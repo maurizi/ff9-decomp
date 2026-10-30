@@ -110,7 +110,7 @@ extern TweenDef s_menuConfigBattleControlClose; /* port window slides out, then 
 extern s32 s_menuConfigPadBits[CONFIG_PAD_SLOTS]; /* pad bit per button mapping slot: Cross, Circle, Triangle, Square, L1, R1, L2, R2 */
 extern s32 s_menuConfigSlowText; /* text id "Slow" (slider left label) */
 extern s32 s_menuConfigFastText; /* text id "Fast" (slider right label) */
-extern u8 D_801F14F8[];
+extern u8 s_menuConfigPadArrow[];
 typedef struct {
     u8 text; /* action name text id */
     u8 icon; /* button sprite */

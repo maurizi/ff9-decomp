@@ -394,7 +394,7 @@ void btlui_copyTranceAbilities(Unk80104F88Entry *arg0) {
 void btlui_linkSwdMagAbilities(Unk80104F88Entry *arg0) {
     Unk800FD56C *m = &g_btlCmdTable[BTL_CMD_SWD_MAG];
     Character *c = &g_gameState->gameData->characters[1];
-    Unk8006CB88 *ab = D_8006CB88;
+    AbilityEntry *ab = g_abilityRows[1];
     s32 i;
     s32 j;
     s32 k;
@@ -410,7 +410,7 @@ void btlui_linkSwdMagAbilities(Unk80104F88Entry *arg0) {
             v = chr_findAbilitySlot(1, g_btlSwdMagSourceAbilities[i]);
             if (v >= 0) {
                 arg0->apCounters[slot] = &c->ap[v];
-                arg0->apNeeded[slot] = ab[v].apNeeded;
+                arg0->apNeeded[slot] = ab[v].ap;
             }
         }
         for (i = 0; i < 5; i++) {
@@ -1804,7 +1804,7 @@ s32 btlui_selectItem(void) {
     MenuList *l = &g_btlUi->windows[2]->list;
     UnkPair *p = btlui_getItemListEntry(l->cursor + l->top);
     u8 r = 0;
-    Unk8006A774 *e = &D_8006A774[p->unk0];
+    Unk8006A774 *e = &g_usableItemTableById[p->unk0];
     s32 n;
 
     if (p == NULL) {
@@ -2085,7 +2085,7 @@ s32 btlui_resolveAbility(s32 arg0) {
 s32 btl_getMpCost(BtlCmd8 *arg0) {
     s32 cost = arg0->mpCost;
     if (arg0->unkB & 4) {
-        if (D_8007AF02 != 0) {
+        if (g_evtGlobalVars.b[EVT_GB_SUMMON_MP_X4] != 0) {
             cost *= 4;
         }
     }

@@ -66,3 +66,4 @@ s_menuConfigPadMapClose = 0x801F1464; // [code] slide-out TweenDef of the button
 s_menuConfigBattleControlClose = 0x801F14AC; // [code] slide-out TweenDef of the port window, then menuConfig_closeSubWindow
 s_menuConfigSliderTexWindow = 0x801F1544; // [code] texture window of the gauge (menuConfig_drawSlider)
 s_menuConfigSliderColors = 0x801F154C; // [code] colours of the gauge's 3 fill lines
+s_menuConfigPadArrow = 0x801F14F8; // [runtime] left arrow glyph on the Controller Custom page (docs/runtime-findings.md R30)

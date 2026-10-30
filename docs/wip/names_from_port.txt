@@ -6198,3 +6198,40 @@ D_8019F4A8 g_mbgMaskStp
 func_801F325C rewards_stepGilStub
 func_801EF6D8 battleEnd_loadPortraits
 # D_800FDF4D (byte 0x1D of g_btlRewards) is now g_btlRewards.fleeGil (new BattleResult field, ovl_0b Unk800FDF30.fleeGil)
+
+# ===== R30 runtime pass (docs/runtime-findings.md R30) =====
+## 0b
+func_800D7768 btlfx_opPlayAttackMotion
+func_800D8EA4 btlfx_stepPlayAttackMotion
+func_800D77E4 btlfx_opPlayAttackMotionHold
+func_800D8F1C btlfx_stepPlayAttackMotionHold
+func_800D7870 btlfx_opPlayAttackReturnMotion
+func_800D8FAC btlfx_stepPlayAttackReturnMotion
+func_800D8520 btlfx_opSyncOpposed
+func_800DA064 btlfx_stepSyncOpposed
+func_800E4530 btlfx_getCommonSprite
+D_800F78AC g_btlfxSoundPaused
+## 0c
+func_800B8548 wm_isDarkWeather
+D_800CF478 g_worldAreaNames
+## 14
+func_800AB1E4 opening_setWorldCamKeepNew
+func_800AB200 opening_setWorldCamKeepLoad
+## 34
+D_801F14F8 s_menuConfigPadArrow
+## main
+D_80071E30 g_mbgIsBackground
+D_8006A774 g_usableItemTableById
+D_8007AF00 g_evtGlobalVars.b[EVT_GB_TRANCE_ENABLED]
+D_8007AF01 g_evtGlobalVars.b[EVT_GB_DAGGER_FALTERS]
+D_8007AF02 g_evtGlobalVars.b[EVT_GB_SUMMON_MP_X4]
+D_8007AFB1 g_evtGlobalVars.b[EVT_GB_BATTLE_NO_HUD]
+D_8007AFD3 g_evtGlobalVars.b[EVT_GB_NO_ACTION_ABILITIES]
+D_8006CB88 g_abilityRows[1]  # type Unk8006CB88 removed, uses AbilityEntry
+D_800D32FC g_worldAmbientSeDist[1]
+# FIELDS include/ff9.h GameData: unk571=darkBattle,unk810=debugLocationName,unk890=worldCamKeep
+# FIELDS include/ff9.h ModelSlot: unk4=modelKey
+# FIELDS include/ovl_65.h BattleResult: unkB=hasPostEvent
+# FIELDS include/ovl_0b.h Unk800FDF30: unkB=hasPostEvent
+# FIELDS include/ovl_0b.h Unk800D805C: unk3=snapToFront
+# FIELDS include/ovl_3c.h Unk8006D328: unk0=defense,unk1=evade,unk2=magicDef,unk3=magicEvade

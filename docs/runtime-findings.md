@@ -2432,3 +2432,160 @@ Disc-1 examples: 0xB3
 - g_msgSyncTag (D_8007BBD8) never changed in the dialog recorded; the F9 0F / F9 46 text codes that set it were not
   found in a running message.
 
+
+## R30 runtime pass (2026-10-30): rows of docs/wip/r30_runtime_{main,ovl_0b,overlays}.md  (status: **applied**)
+Method: Redux disc 3 (`disc3_malboro_lv99_calm` with the two calm pokes, `ds_zidane_trance_entry`, encounters entered with
+`tools/rt/enter_battle.py`) and disc 1 (field/menu/world-map states). Action runs use `build/rt3/run3.py` (hang-safe
+breakpoints, `--patch CMD,ABILITY[,TARGETS]` rewrites the first Attack); effect-op arguments were logged by a small Lua hook
+(scratch `r30.lua`, reads the op's argument words through the stack pointer, `g_btlfxState.effectId` 0x800FEC42 and
+`g_btlfxOpArgs` 0x80100D88). Encounter flags were read from the encounter files (FF9.IMG dir 5, header block 16 +4, the
+same u16 `btl_initSceneFlags` reads; checked at runtime against `encounter->flags` / `Battle.scene.flags` for encounters
+899 and 878). New Redux states (disc 3): `r30_veteran_cmd` (encounter 878 Veteran, Zidane's command menu),
+`r30_malboro_dagger_cmd`, `r30_malboro_eiko_cmd` (Malboro calm state, Dagger's / Eiko's menu up after Triangle presses).
+
+### ovl_0b
+
+- **func_800D7768 (unit op 0x5E) + func_800D8EA4 → btlfx_opPlayAttackMotion / btlfx_stepPlayAttackMotion; func_800D77E4
+  (0x5F) + func_800D8F1C → btlfx_opPlayAttackMotionHold / btlfx_stepPlayAttackMotionHold; func_800D7870 (0x61) +
+  func_800D8FAC → btlfx_opPlayAttackReturnMotion / btlfx_stepPlayAttackReturnMotion. CONFIRMED (structure), motion slots
+  named from screenshots.** Zidane Attack (effect 0x64, `disc3_malboro_lv99_calm`): op 0x71 face target (args unit 0x10,
+  target 0), 0x7F, then 0x5E (unit 0x10 = caster) steps from t+101 to t+141 frames after the menu input, the frames in
+  which Zidane runs in and slashes (impact particles from btlfx_opDrawOnUnit at t+121, damage 3233). 0x61 (caster, target 0
+  = the Malboro) steps t+153..t+169, exactly the back-flip home after the hit (screenshots every 8 frames). Steal (effect
+  0xC8) runs 0x71 and 0x61 too. 0x5F was seen once, in effect 0xDF (Zidane's command patched to 8/0xBD) with
+  `g_btlfxOpArgs` 03 00 bc 02, so trimFrames 3. So motion slot 0x17 = the attack motion (run in and strike), 0x19 = the
+  jump back after attacking an enemy (0x61 skips it for party targets). Names [runtime], medium.
+- **func_800D8520 (unit op 0x7F) + func_800DA064 → btlfx_opSyncOpposed / btlfx_stepSyncOpposed. CONFIRMED (no visible
+  effect).** In effect 0x64 it ran with (0x10, 0) caster vs the Malboro: the task lived exactly one step (one mode-2 call,
+  same frame as the following op), as the code says (done at once on the same side, one frame later otherwise). Nothing
+  drawn. [runtime] low-medium (a one-frame sync when caster and target are on opposite sides).
+- **func_800E4530 → btlfx_getCommonSprite. REFUTED (not per-effect data).** The table at 0x801E9700 is 0xFF-filled at rest
+  and gets filled ~35 frames after the Attack input by `StoreImage` called from btlfx_runScript+0xE0/+0x184 (watch on
+  0x801E9700 hit libgpu func_80014AA8 = the StoreImage DMA, destination 0x801E7700). The contents (offset table e0 294 348
+  3fc ...) occur on disc 3 only in dir 1 file 0x2BF (sector 9) and file 0x2C0 (sector 0), i.e. the common effect file that
+  btlfx_reloadCommonData puts into VRAM. So it's the common effect data read back from VRAM at effect start, and
+  func_800E4530(n) returns entry n of its self-relative table (btlfx_opDrawOnUnit called it with 0x12, 0x16, 0x0F during
+  Attack). medium.
+- **func_800E83EC (export 0x34C, sets g_evtGlobalVars.b[0xC7] 0x10). REFUTED "summon seen", NOT REACHED.** Effect ids
+  0x1B3/0x1A2/0x1EC are enemy abilities in story battles, from the encounter files (ability record effect field):
+  encounter 21 Sealion/Black Waltz ability 2 "Tsunami" (0x1B3), 337 Blank ability 1 "Moonlight Slash" (0x1A2),
+  891/937 Kuja/Trance Kuja ability 5 "Ultima" (0x1EC). No ability (party, item or enemy) uses 0x180 or 0x18A, and none of
+  the five is a summon. Not run (no state reaches those bosses). Leave unnamed until a field script reading var 0xC7 is
+  found.
+- **D_800F78AC → g_btlfxSoundPaused. code-proven, runtime NOT REACHED.** btlfx_copyDisplayToDraw only runs from the
+  hand-written btlfx_runFrame when `env->...->retry` is set (the script waits on the loader, `btlfx_retryOp`); it then
+  pauses sound group 2 (akao_pause(2)) once and btlfx_runFrame clears the flag and calls akao_resume(2) on the next frame
+  that isn't frozen. No freeze happened in Shiva (short and with firstUseFxSeen cleared), Ark, Madeen, Doomsday runs
+  (akao_pause 0 calls, no write to 0x800F78AC): Redux's CD never stalled the loader. [code] (sound paused while the effect
+  waits for its data).
+- **btl_rollMagicFail (applied): CONFIRMED.** Battle ability table (Battle+0x16CC, names from D_800F909C): 0x2E is
+  "Meteor", MP 42 (neighbours 0x2D Water 22, 0x2F Flare 40, 0x30 Doomsday 72).
+- **btl_randomizeDefense (applied): CONFIRMED, the bit is support ability 0xDA "Gamble Defense".** Support bit n of
+  support[0] = ability 0xC0+n (Character.supportAbilities, g_supportAbilities name offsets into ovl_65's
+  s_rewardsSupportNames): 0x04000000 = 0xDA "Gamble Defense" (1 stone), 0x02000000 = 0xD9 "Add Status" (matches
+  btl_calcCmd's weapon-status use). Runtime: with the Malboro's support word (g_btlEnemySupport 0x800F5244) given bit
+  0x04000000, Zidane's Attack takes the rand path in btl_randomizeDefense (a0 replaced by the rand pointer at +0xDC),
+  without it the function returns untouched. No party member of the Lv 99 save has it equipped.
+- **btl_applyInvertedPower (applied): CONFIRMED, scene flag 0x400 = encounter flag 0x100, set only for Ipsen's Castle
+  encounters.** Encounters with flag 0x100 (all discs): 246/253 Cerberus, 871 Taharka, 872-874 Tonberry, 878-880 Veteran,
+  881-883 Gargoyle+Agares. Runtime: `enter_battle.py 878` (Veteran): encounter flags 0x100, scene.flags 0x4C2; Zidane's
+  Attack hit btl_applyInvertedPower with BtlCalc.power 71, which became 1 (60 - 71 clamped), state `r30_veteran_cmd`.
+- **g_btlfxCmdCameras (applied): CONFIRMED with details.** btlfx_playCmdCamera never runs for Attack, Steal, Focus,
+  Jump or Items. Arguments (camera code, high nibble = category): Dagger summons Shiva/Ark 0x3018 and Eiko's Madeen 0x3318
+  (category 1, so entry [2] for character 2 Dagger, [3] for Eiko), Zidane's Doomsday 0x3328 (category 2, scene data 4,
+  enemy target), trance Zidane's Free Energy 0x3300 (category 0, in Trance, enemy target, entry [1]), the Malboro's
+  ability (enemy camera). Category 0xF0 (trance entry 0x30F8, Focus 0x33F0) plays nothing. [2]/[3] are the summon cameras
+  of Dagger / the other summoner.
+- **Unk800D805C.unk3 (op 0x71 third op argument) → snapToFront. CONFIRMED.** Effect 0xDF runs 0x71 with
+  `g_btlfxOpArgs` 0c 00 01 00 (frames 12, turnAway 0, unk3 1). Against the Malboro it stepped 12 frames (14 hits);
+  with Vivi as target (patch targets 2) it finished after one step (3 hits) and set rotY 0x800 instead of turning.
+  Unk800D7C9C.unk2 / Unk800D955C.unk2 (ops 0x6C/0x6D): Focus (effect 0xC7) runs both with arguments (target 0, unk2 0);
+  no run had unk2 = 1, INCONCLUSIVE.
+- **g_btluiState.unk5 / unk9 / unk14 / unk20 (0x80104E6D/71/7C/88): CONFIRMED unused.** Read and write watchpoints over 700
+  frames of menu, target selection and an Attack: no access to any of them (the hits at 0x80104E7D are the next field,
+  btlui_readPad). Leave unnamed.
+
+### main
+
+- **GameData.unk810 → debugLocationName. CONFIRMED.** Points at a Shift-JIS full-width developer name: Dali inn
+  "Ｄａｌｉ／Ｉｎｎｌａｇｅ　Ｒｏａｄｅｌｌ" (field data + 4), world map "ｗｏｒｌｄ　Ｃｅｎｔｒａｌｔｅｍ　Ｓｈ..." (right before the
+  area name). No reads while opening the menu in the Dali inn or in the save screen (`menu_save`). [runtime] high.
+- **GameData.unk571 → darkBattle. CONFIRMED.** World map: teleporting the player to the weather-2 zone (pos 0x50B00,
+  -0x3A000 from `field_worldmap_ice_exit`) sets g_worldWeatherMode 2 (dark sky), the next random encounter wrote
+  unk571 = 1 on leaving the world map, the battle background was a night sky and characters[3] (Steiner) kind became 8.
+  Forcing encounter 47 from `field_burmecia_rain` with unk571 0 or 1: kind 7 vs 8, and the only pixels that differ in the
+  whole battle frame are Steiner's (bbox 265,67-283,101, darker armour). So bit 15 of EVT_OP_BATTLE's id / the world-map
+  weather selects Steiner's dark-scene model variant. [runtime] medium (name the field after the battle condition).
+- **GameData.unk9, unk836, unk849, unk8CC[8]: CONFIRMED unused.** Read watchpoints in a battle Attack, field walking
+  (`field_d1_101`) and the menu (`menu_main`): no reads (the one hit near unk849 was +0x84C kanjiFont, text_measure).
+- **g_menu.unk1C / func_80032A34, g_menu.unk3 / unk4: CONFIRMED unused.** Menu open/close from `field_dali_inn`, a shop
+  (`menu_shop_weapons` Buy then exit) and the save screen: func_80032A34 0 calls, unk1C written once by menu_doOpen,
+  unk3/unk4 never written. (0x80077DB5 is written by menu_doOpen and menu_finish.)
+- **D_80071E30 → g_mbgIsBackground. CONFIRMED.** g_mbgMovieLists in RAM (`intro_test`): unk5 = 1 for every `.MBG` entry
+  (MBG101-MBG119, rgb24 0) and 0 for every `.STR` FMV. So mbg_getStatus bit 8 = the playing movie is a field movie
+  background. [runtime] high.
+- **D_8007AF00 → g_evtTranceEnabled, D_8007AF01 → g_evtDaggerFalters, D_8007AF02 → g_evtSummonMpX4, D_8007AFB1 →
+  g_evtBattleNoHud, D_8007AFD3 → g_evtNoActionAbilities. CONFIRMED.** b[0x10] = 1 in the disc 3 saves; its code uses are
+  the trance gauge (btl_initPartyUnit trance, ovl_38 Trance bar). b[0x11]: the unit kind tested is flags & 0x1F == 5, which
+  at runtime is Dagger (character id 2) in the Malboro battle, and btl_initPartyUnit also blocks trance for character 2
+  (the 1/4 failure didn't roll in 8 tries, the rand state is the save state's). b[0x12] = 1: Dagger's Summon list shows
+  Ramuh 88 MP instead of 22 (abilities with unkB bit 4 = Dagger's eidolons Shiva..Ark, not Eiko's). b[0xC1] = 1 before
+  entering encounter 899: the battle opens with no HUD and no ATB. b[0xE3] = 1 before opening Ability (`menu_main`): the
+  Use tab is greyed. [runtime] high (names describe the effect, not the story reason).
+- **D_8007B9A0, D_8007B9A4 (msg_beginDraw): CONFIRMED write-only.** In battle msg_beginDraw never runs (Attack, Steal);
+  in the field it runs every frame from fld_beginFrame and no code reads 0x8007B9A0 or 0x8007B9A4 (60 frames with a speech
+  balloon). The battle values (1, both pointers = D_8007B9B0) are left from the battle's mode switch. Leave unnamed.
+- **D_8007B994 / D_8007B998, D_8007B94C: CONFIRMED unused.** With a message on screen and Cross presses: D_8007B994 is only
+  read by msg_update (never written, 0), D_8007B998 only written by msg_update, D_8007B94C (0xB2) never read.
+- **D_8007F8DC (D_8007F8D8[1]): CONFIRMED never written after init.** Field → world map transition: akao_startSeq ran once
+  and read 0x8007F8DC (value 0), no writes to 0x8007F8D8-0x8007F8DF. So the 0x20 flag goes to sequences whose
+  instrumentSet is 0. D_8007F8E0, D_80080A20, D_800809EC, D_8007AE04: no reads (title, field → world map).
+  D_8007954E (EvtState+0x16EE) is only read by the whole-struct copy `g_evtSavedState = g_evtStateData` in evt_init.
+- **ModelSlot.unk4 → modelKey. CONFIRMED.** `field_d1_101`: chrModels[1] 0x20008, npcModels[0..4] 0x20020, 0x21574,
+  0x2003F; the bound actor's modelId (+0x34) is 8, 0x20, 0x1574, 0x3F. So unk4 = 0x20000 | modelId (the model's db key,
+  type 2), -1 for empty slots. [runtime] high.
+- **EvtObject.unkC: CONFIRMED unused.** 16 in every actor of `field_d1_101`; read watchpoints on three actors over 400
+  frames of walking and talking: none.
+- **D_8006A774 → alias of g_usableItemTable. CONFIRMED.** btlui_selectItem indexes it with the raw item id (Potion 0xEC,
+  Hi-Potion 0xED as subNo of btlui_startTargetSelect), so D_8006A774 + 0xE0 * 12 = 0x8006B1F4 = g_usableItemTable. Use
+  `g_usableItemTable[id - ITEM_FIRST_USABLE]` there. **D_8006CB88 → g_abilityRows[1] (Vivi's row). CONFIRMED.** It is
+  0x8006CB28 + 0x60, entries (ability, AP): Fire 25, Fira 50, Firaga 75, Sleep 20, Blizzard 25 ... and Vivi's info.row is 1.
+- **D_8006E658 (op 0x9E script): NOT REACHED** (op 0x9E ran in none of the 222 fields of the opcode survey either).
+
+### overlays
+
+- **ovl_14 func_800AB1E4 → opening_setWorldCamKeepNew, func_800AB200 → opening_setWorldCamKeepLoad, GameData.unk890 →
+  worldCamKeep. CONFIRMED (load path).** Title → Continue → load: func_800AB200 called once from opening_resetGameData,
+  writes 2 to GameData+0x890. On the world map (`field_worldmap_ice_exit`) it is already 0 (wm_findVehicles clears it).
+  New Game path not run. [runtime] medium.
+- **ovl_14 func_800A73B8: CONFIRMED uncalled** (title, Continue, load: 0 calls).
+- **ovl_0c func_800C45D8: INCONCLUSIVE.** Walking out of the Ice Cavern it ran once from wm_init with story counter
+  0xB18 and b[0xBE] 0, returning 0 (music fades in). No state with the story counter in 0x2580-0x26B5 was tried.
+- **ovl_0c func_800B8548 → wm_isDarkWeather. CONFIRMED.** See GameData.unk571 above: weather mode 2 (the zone around
+  0x50B/-0x3A0, `wm_getWeatherByPos`) darkens the world map, and the flag it returns turns into the dark battle.
+- **ovl_0c D_800CE3D8, D_800CE270: NOT REACHED** (no actor of type 1, 2 or 11 near the Ice Cavern exit, no writes in
+  380 frames).
+- **ovl_0c D_800D4960 / D_800D49F0: CONFIRMED unread** (380 frames walking, menu open/close).
+- **ovl_0c D_800CCE49, D_800CCE4A, D_800CCE55: CONFIRMED never written.** **D_800D32FC: REFUTED** - it is
+  g_worldAmbientSeDist[1] (0x800D32F8 + 4), written by wm_updateMap every 3 frames (value 718 at the Ice Cavern exit), so
+  wm_findGetoffPos's test is "within 0x16 of ambient sound source 1". Replace the D_ name with the array element.
+- **ovl_0c D_800D30C4, D_800CE284, D_800CE1E1, D_800CF47E, D_800CE3F8: CONFIRMED unread** (the hits at 0x800D30C5/C6 are
+  the next variables). **D_800CF478 → g_worldAreaNames (world data pack entry 0): READ by main evt_onMenuOpen+0x2C when
+  the menu opens on the world map**, i.e. it is the table the world map's LOCATION name comes from. [runtime] medium.
+- **ovl_34 D_801F14F8 → s_menuConfigPadArrow. CONFIRMED.** Controller → Custom page: the glyph between the NEW and NORMAL
+  button icons is a left arrow.
+- **Unk8006D328 (g_armorStatBonus) unk0..unk3 → defense, evade, magicDef, magicEvade. CONFIRMED (game data).** Wrist
+  0 5 0 3, Glass Armlet 0 10 0 7, Silver Gloves 0 10 0 5, Feather Hat 0 0 7 0, Magus Hat 0 0 10 0, Iron Helm 0 0 7 0,
+  Silk Shirt 7 0 0 0, Bronze Vest 9 0 1 0, Linen Cuirass 10 0 0 0 (names from g_itemTable/g_itemNames in RAM): armlets
+  give evade and magic evade, hats magic defense, body armour defense. The Lv 99 save's status values are all capped at 99,
+  so the screen check wasn't possible. medium-high.
+- **FieldScene.unk5F, FieldPalAnim.unk4: NOT REACHED.** No fld_soundCommand kind 2 sub 12 call and no
+  fldbg_startClutFade call in `field_burmecia_rain`, `field_d1_456`, `field_alex_100`, `field_opening_dark` (300-400
+  frames each).
+- **BattleResult.unkB → hasPostEvent. CONFIRMED.** Scene flag bit 13 = encounter flag 0x800, set for story battles
+  (Beatrix 4/73/299, Baku 295, Black Waltz 296, Prison Cage 302, Masked Man 336, Blank 337, King Leo 338, Zorn and Thorn,
+  Garland, Kuja, Necron, the Mu/Fang/Trick Sparrow tutorial-area bundles 12-35, ...). Runtime: g_btlRewards.unkB
+  (0x800FDF3B) = 1 in `ds_port_first_battle` (encounter flags 0x835), 0 in the random Ironite battle 47 and in the
+  fixture battle (flags 0x21). [runtime] high.
+- **FieldBgState.unk74 / unk78 / unk9C / unkA0-A3: CONFIRMED unread** (300 frames of scrolling in `field_d1_101`).
+  FieldMap.unk14/18, title-menu and Tetra Master fields not run.

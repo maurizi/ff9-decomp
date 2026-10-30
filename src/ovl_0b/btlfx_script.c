@@ -671,11 +671,11 @@ s32 btlfx_opPlayMotionHold(s32 arg0, Unk800D8EA4 *arg1, s32 arg2, s32 *arg3, s32
     return 0;
 }
 
-s32 func_800D7768(s32 arg0, Unk800D8EA4 *arg1, s32 arg2, s32 *arg3, s32 *arg4) {
+s32 btlfx_opPlayAttackMotion(s32 arg0, Unk800D8EA4 *arg1, s32 arg2, s32 *arg3, s32 *arg4) {
     if (arg0 == 0) {
         *arg4 = 8;
     } else if (arg0 != 1) {
-        return func_800D8EA4(arg1, arg2, arg3);
+        return btlfx_stepPlayAttackMotion(arg1, arg2, arg3);
     } else {
         arg1->unit = arg4[0];
         arg1->motion = arg4[1];
@@ -684,11 +684,11 @@ s32 func_800D7768(s32 arg0, Unk800D8EA4 *arg1, s32 arg2, s32 *arg3, s32 *arg4) {
     return 0;
 }
 
-s32 func_800D77E4(s32 arg0, Unk800D8EA4 *arg1, s32 arg2, s32 *arg3, s32 *arg4) {
+s32 btlfx_opPlayAttackMotionHold(s32 arg0, Unk800D8EA4 *arg1, s32 arg2, s32 *arg3, s32 *arg4) {
     if (arg0 == 0) {
         *arg4 = 8;
     } else if (arg0 != 1) {
-        return func_800D8F1C(arg1, arg2, arg3);
+        return btlfx_stepPlayAttackMotionHold(arg1, arg2, arg3);
     } else {
         arg1->unit = arg4[0];
         arg1->motion = arg4[1];
@@ -698,11 +698,11 @@ s32 func_800D77E4(s32 arg0, Unk800D8EA4 *arg1, s32 arg2, s32 *arg3, s32 *arg4) {
     return 0;
 }
 
-s32 func_800D7870(s32 arg0, Unk800D8EA4 *arg1, s32 arg2, s32 *arg3, s32 *arg4) {
+s32 btlfx_opPlayAttackReturnMotion(s32 arg0, Unk800D8EA4 *arg1, s32 arg2, s32 *arg3, s32 *arg4) {
     if (arg0 == 0) {
         *arg4 = 8;
     } else if (arg0 != 1) {
-        return func_800D8FAC(arg1, arg2, arg3);
+        return btlfx_stepPlayAttackReturnMotion(arg1, arg2, arg3);
     } else {
         arg1->unit = arg4[0];
         arg1->motion = arg4[1];
@@ -918,7 +918,7 @@ s32 btlfx_opFaceTarget(s32 arg0, Unk800D805C *arg1, s32 arg2, s32 *arg3, s32 *ar
         arg1->target = arg4[1];
         arg1->frames = g_btlfxOpArgs.unk0;
         arg1->turnAway = g_btlfxOpArgs.unk1;
-        arg1->unk3 = g_btlfxOpArgs.unk2;
+        arg1->snapToFront = g_btlfxOpArgs.unk2;
         arg1->unk8 = 0;
         if (btlfx_isSameUnit(arg1->unit, arg1->target) != 0) {
             g_btlfxState.turnDone = arg0;
@@ -1037,7 +1037,7 @@ s32 btlfx_opCallWeaponScript(s32 arg0, u8 *arg1, s32 arg2, s32 arg3, s32 *arg4) 
     return 0;
 }
 
-s32 func_800D8520(s32 arg0, u8 *arg1, s32 arg2, s32 arg3, s32 *arg4) {
+s32 btlfx_opSyncOpposed(s32 arg0, u8 *arg1, s32 arg2, s32 arg3, s32 *arg4) {
     if (arg0 == 0) {
         *arg4 = 4;
     } else if (arg0 == 1) {
@@ -1047,7 +1047,7 @@ s32 func_800D8520(s32 arg0, u8 *arg1, s32 arg2, s32 arg3, s32 *arg4) {
             return 1;
         }
     } else {
-        return func_800DA064(arg1, arg2, arg3);
+        return btlfx_stepSyncOpposed(arg1, arg2, arg3);
     }
     return 0;
 }
@@ -1279,7 +1279,7 @@ s32 btlfx_stepPlayMotionHold(Unk800D8EA4 *arg0, s32 arg1, s32 *arg2) {
     return 0;
 }
 
-s32 func_800D8EA4(Unk800D8EA4 *arg0, s32 arg1, s32 *arg2) {
+s32 btlfx_stepPlayAttackMotion(Unk800D8EA4 *arg0, s32 arg1, s32 *arg2) {
     s32 v = *arg2;
     if (v == 0) {
         btlfx_playUnitMotion(arg0->unit, 0x17);
@@ -1292,7 +1292,7 @@ s32 func_800D8EA4(Unk800D8EA4 *arg0, s32 arg1, s32 *arg2) {
     return 0;
 }
 
-s32 func_800D8F1C(Unk800D8EA4 *arg0, s32 arg1, s32 *arg2) {
+s32 btlfx_stepPlayAttackMotionHold(Unk800D8EA4 *arg0, s32 arg1, s32 *arg2) {
     s32 v = *arg2;
     if (v == 0) {
         btlfx_playUnitMotion(arg0->unit, 0x17);
@@ -1306,7 +1306,7 @@ s32 func_800D8F1C(Unk800D8EA4 *arg0, s32 arg1, s32 *arg2) {
     return 0;
 }
 
-s32 func_800D8FAC(Unk800D8EA4 *arg0, s32 arg1, s32 *arg2) {
+s32 btlfx_stepPlayAttackReturnMotion(Unk800D8EA4 *arg0, s32 arg1, s32 *arg2) {
     s32 v = *arg2;
     if (btlfx_isPartyUnit(arg0->motion) == 0) {
         if (v == 0) {
@@ -1601,7 +1601,7 @@ s32 btlfx_stepFaceTarget(Unk800D805C *arg0, s32 arg1, s32 *arg2) {
     s16 tgt[4];
     s32 v = *arg2;
 
-    if (arg0->unk3 == 0 || btlfx_isPartyUnit(arg0->target) == 0) {
+    if (arg0->snapToFront == 0 || btlfx_isPartyUnit(arg0->target) == 0) {
         btl_getUnit(arg0->unit);
         if (v == 0) {
             btlfx_getUnitPos(arg0->unit, pos);
@@ -1715,7 +1715,7 @@ s32 btlfx_stepCallWeaponScript(u8 *arg0, s32 arg1, s32 arg2) {
     return 1;
 }
 
-s32 func_800DA064(u8 *arg0, s32 arg1, s32 arg2) {
+s32 btlfx_stepSyncOpposed(u8 *arg0, s32 arg1, s32 arg2) {
     return 1;
 }
 

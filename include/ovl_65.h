@@ -56,7 +56,7 @@ typedef struct {
     u32 exp;       /* split among the members in expMask */
     u16 ap;
     u8 expMask;    /* bit per party slot: receives exp */
-    u8 unkB;
+    u8 hasPostEvent; /* encounter flag 0x800, story battles (runtime) */
     u8 items[BTL_DROP_COUNT]; /* dropped item ids, ITEM_NONE = none */
     u8 card;       /* card won */
     u8 fleeGil;    /* set when Flee-Gil turned the escape into gil (ovl_0b btl_victory), rewards_getKind shows the rewards after an escape */

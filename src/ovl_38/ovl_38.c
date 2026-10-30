@@ -161,7 +161,7 @@ void menuStatus_drawExp(void) {
     st = &s_menuStatus;
     c = g_gameState->gameData->party[st->slot];
     show = 0;
-    if (D_8007AF00 != 0) {
+    if (g_evtGlobalVars.b[EVT_GB_TRANCE_ENABLED] != 0) {
         bit = c->classFlags & 0x10;
         show = bit == 0;
     }

@@ -45,7 +45,7 @@ void battleEnd_init(void) {
     battleEnd_loadDb();
     battleEnd_loadPortraits();
     battleEnd_unloadDb();
-    if (s->unk10 != 0 && g_btlRewards.unkB != 0) {
+    if (s->unk10 != 0 && g_btlRewards.hasPostEvent != 0) {
         evt_init((u8 *)s->unk10);
         if (s->unk14 != 0) {
             msg_init();
@@ -611,7 +611,7 @@ s32 rewards_getKind(void) {
         ret = g_btlRewards.fleeGil != 0;
     } else if (mode != 7) {
         ret = 1;
-        if (g_btlRewards.unkB != 0) {
+        if (g_btlRewards.hasPostEvent != 0) {
             ret = 2;
         }
     }

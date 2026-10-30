@@ -208,10 +208,10 @@ void shopSynth_updateHelp(void);
 void shopSell_updateHelp(void);
 s32 shop_sumArmorStat(s32, u8 *);
 typedef struct {
-    u8 unk0;
-    u8 unk1;
-    u8 unk2;
-    u8 unk3;
+    u8 defense;
+    u8 evade;
+    u8 magicDef;
+    u8 magicEvade;
 } Unk8006D328; /* equipment stat bonuses, from item 0x58 */
 extern Unk8006D328 g_armorStatBonus[];
 

@@ -143,7 +143,7 @@ typedef struct {
 /* GameData.npcModels entry */
 typedef struct ModelSlot {
     s32 flags; /* flags: 1 cleared by fld_exit/btl_cleanup, 0x10 (event ops), others from op args */
-    s32 unk4; /* -1 after game_clearModelSlot */
+    s32 modelKey; /* 0x20000 | model id (DB_MODEL), -1 after game_clearModelSlot (runtime) */
     struct BtlUnit9C *model; /* the model object (GameData.chrModelObjs / npcModelObjs entry; battle BtlUnit9C) */
     struct BtlUnitA0 *actor; /* the EvtObject using the slot (FieldMap.playerObj's actor) */
     struct BtlUnit *unit; /* battle unit (btl_resetUnit) */
@@ -288,7 +288,7 @@ typedef struct {
     u8 battleResult; /* how the battle ended, 6 = game over (ovl_0b, ovl_65 battle_end; event system variable 27) */
     u8 battleFlags; /* per-battle flags, cleared by btl_initBattleState: 1 next location set, 2/0x10/0x20 victory music steps (btl_playVictoryMusic), 4 escaped, 8 event op 0x1B, 0x40 start the exit preload */
     u8 rainCount; /* rain streaks (event opcode 0xD8, ovl_0b) */
-    u8 unk571;
+    u8 darkBattle; /* set from wm_isDarkWeather when a world-map battle starts in the dark weather zone - night battle, Steiner model kind 8 (runtime) */
     u8 pad572[2];
     ItemInventory items;
     ItemFlags keyItems;
@@ -306,7 +306,7 @@ typedef struct {
     s32 sceneSector[2]; /* CD sectors of the next scene's files: field/world file + area, or battle bundle + background */
     s32 sceneSectors[2]; /* their sector counts */
     u8 *locationName; /* menu LOCATION box text (g_evtLocationName / g_evtLocationNameBuf) */
-    u8 *unk810;
+    u8 *debugLocationName; /* Shift-JIS developer name of the current location (runtime) */
     void *musicSeq; /* music sequence buffer (0x6800 bytes) of slot 0, akao_playMusic(musicSeq) */
     s32 musicSeq2; /* second music buffer (0x2000 bytes): slot-1 music (wm_loadResidentMusic), the battle copies it to musicSeq */
     u16 musicId[2]; /* current music per slot, 0xFFFF = none */
@@ -334,7 +334,7 @@ typedef struct {
     s32 soundLoadChunk; /* bytes read per chunk while loading a sound bank (free heap rounded to sectors) */
     s32 soundBankSize; /* bytes of the bank part of the sound file being loaded (the music sequence follows) */
     Unk880 worldCamera; /* world map camera state (g_worldCamera points here, cleared with the next 0x18 bytes); saved */
-    u8 unk890;
+    u8 worldCamKeep; /* opening_setWorldCamKeepNew / opening_setWorldCamKeepLoad, world-map camera reset (runtime) */
     u8 pad891;
     u8 unk892;
     u8 pad893[0x8A8 - 0x893];
@@ -757,7 +757,7 @@ extern s8 g_mbgState;
 extern s32 g_mbgFrame; /* movie frame counter (mbg_getStatus reports 3 once it is > 0) */
 extern s8 g_mbgPaused;
 extern s8 g_mbgRgb24;
-extern s8 D_80071E30; /* mbg_getStatus reports bit 8 when it is 1 */
+extern s8 g_mbgIsBackground; /* mbg_getStatus reports bit 8 when it is 1 */
 extern s32 g_menuOnClose;
 extern u8 g_menuFadeInOnClose;
 extern u8 g_menuFadeOutOnClose;
@@ -1403,6 +1403,12 @@ typedef union {
     u8 b[0x800];
 } EventVars;
 extern EventVars g_evtGlobalVars;
+/* story flags in g_evtGlobalVars.b[] read by game code (docs/runtime-findings.md R30) */
+#define EVT_GB_TRANCE_ENABLED 0x10      /* Trance gauge shown and filled (menuStatus_drawExp, btl_cmd) */
+#define EVT_GB_DAGGER_FALTERS 0x11      /* Dagger may fail to act after Alexandria (btl_cmd) */
+#define EVT_GB_SUMMON_MP_X4 0x12        /* summons marked flags & 4 cost 4x MP (Ramuh 22 -> 88) */
+#define EVT_GB_BATTLE_NO_HUD 0xC1       /* battle runs without the HUD (btl_update) */
+#define EVT_GB_NO_ACTION_ABILITIES 0xE3 /* action abilities unusable from the menu (menu_ability) */
 
 void config_applySound(void);
 void config_applyPadMapping(void);
@@ -2586,7 +2592,6 @@ extern GaugeColors g_gaugeColors[];
     (o).r = (f)->r + ((t)->r - (f)->r) * (n) / (d);         \
     (o).g = (f)->g + ((t)->g - (f)->g) * (n) / (d);         \
     (o).b = (f)->b + ((t)->b - (f)->b) * (n) / (d)
-extern u8 D_8007AF00;
 void ui_drawMemberHeader(s32, s32, s32, MemberSwitch *);
 void ui_drawStatusIcons(s32, s32, s32, u8, s32); /* arg4 unused, callers pass 0 */
 void ui_drawStones(s32, s32, s32, s32, s32);
@@ -2656,7 +2661,6 @@ void menuList_pageDown(MenuList *, s32);
 void menuList_up(MenuList *, u32);
 extern u32 g_padHeld; /* buttons held */
 extern s32 g_labelConfig;
-extern u8 D_8007AF02;
 void chr_updateStats(Character *);
 s32 chr_calcAppearance(s32, s32, u8 *);
 void ui_loadPortraits(void *, s32);
@@ -2773,7 +2777,7 @@ static inline void evt_finishTurn_inline(EvtObject *p) {
 }
 
 s32 evt_getSysVar(s32);
-extern u8 *D_800CF478;
+extern u8 *g_worldAreaNames;
 /* help-window rect plus frame style and x offset (help_layout) */
 typedef struct {
     RECT rect; /*  */

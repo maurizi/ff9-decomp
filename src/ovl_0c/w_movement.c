@@ -14,7 +14,7 @@ void wm_initCamera(void) {
     g_worldCameraLookupFix = 0;
     g_worldCameraRoll = 0;
     D_800CE1E1 = 0;
-    if (g_gameState->prevMode == 1 && g_gameState->gameData->unk890 == 0) {
+    if (g_gameState->prevMode == 1 && g_gameState->gameData->worldCamKeep == 0) {
         g_worldCamera->viewBlend = 0;
         g_worldCamera->viewBlendSpeed = 0;
         g_worldCamera->viewForceNormal = 0;
@@ -714,7 +714,7 @@ void wm_findVehicles(void) {
             }
         }
     }
-    g_gameState->gameData->unk890 = 0;
+    g_gameState->gameData->worldCamKeep = 0;
     g_worldVehiclesFound = 1;
 }
 
@@ -1397,7 +1397,7 @@ u8 wm_findGetoffPos(ActorPos *out) {
 
     memset(&v, 0, sizeof(v));
     ok = 0;
-    if (D_800D32FC < 0x16 && ((u8)g_worldActorTypeInfo[g_worldPlayer->actorType].cellAttr >> 2) == 0x17) {
+    if (g_worldAmbientSeDist[1] < 0x16 && ((u8)g_worldActorTypeInfo[g_worldPlayer->actorType].cellAttr >> 2) == 0x17) {
         return 0;
     }
     g_worldFlyTurning = 0;

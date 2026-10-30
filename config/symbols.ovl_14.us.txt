@@ -125,3 +125,5 @@ opening_loadInit = 0x800A8448; // type:func [code] g_sceneModes[2] init (empty)
 opening_loadLeave = 0x800A84A8; // type:func [code] g_sceneModes[2] leave (empty)
 menuSave_isLoaded = 0x801F5330; // type:func [code] ovl_39 function (ovl_39 is loaded at 0x801EDF00 by menu type 4 while this overlay runs), see config/symbols.ovl_39.us.txt
 opening_titleDrawStub = 0x800A8A8C; // type:func [code] empty, first call of opening_titleDraw before opening_titleDrawBackground
+opening_setWorldCamKeepNew = 0x800AB1E4; // type:func [runtime] sets GameData.worldCamKeep on a new game (docs/runtime-findings.md R30)
+opening_setWorldCamKeepLoad = 0x800AB200; // type:func [runtime] called once from opening_resetGameData on load (docs/runtime-findings.md R30)

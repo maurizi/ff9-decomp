@@ -334,7 +334,7 @@ s32 game_getModel(s32 arg0) {
 
 void game_clearModelSlot(ModelSlot *a) {
     a->flags = 0;
-    a->unk4 = -1;
+    a->modelKey = -1;
     a->model = NULL;
     a->actor = NULL;
     a->unit = NULL;

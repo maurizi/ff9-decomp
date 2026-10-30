@@ -13,7 +13,7 @@ extern s32 g_mbgFrame;
 extern s8 g_mbgPaused;
 void akao_sendCmdE2(void);
 char *strcpy(char *, const char *);
-extern s8 D_80071E30;
+extern s8 g_mbgIsBackground;
 u8 cd_readStreamAsync(s32, void (*)());
 u8 cd_pauseAsync(void (*)(u8 *));
 s32 cd_pause(void);

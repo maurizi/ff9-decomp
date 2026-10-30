@@ -1374,14 +1374,14 @@ s32 evt_execInstr(void) {
         g_swirlVariant = evt_getArg8_inline();
         g_gameState->gameData->enemyGroup = -1;
         a = evt_getArg16_inline();
-        g_gameState->gameData->unk571 = (a >> 15) & 1;
+        g_gameState->gameData->darkBattle = (a >> 15) & 1;
         evt_setNextBattle(a & 0x7FFF);
         return 3;
     case 0x8C:
         g_swirlVariant = evt_getArg8_inline();
         g_gameState->gameData->enemyGroup = evt_getArg8_inline();
         a = evt_getArg16_inline();
-        g_gameState->gameData->unk571 = (a >> 15) & 1;
+        g_gameState->gameData->darkBattle = (a >> 15) & 1;
         evt_setNextBattle(a & 0x7FFF);
         return 3;
     case EVT_OP_ENCOUNTER_RATE:
@@ -3335,7 +3335,7 @@ void evt_init(u8 *data) {
     g_evtScripts = data + 0x80;
     gs = g_gameState;
     g_evtLocationName = data + 0x2C;
-    gs->gameData->unk810 = data + 4;
+    gs->gameData->debugLocationName = data + 4;
     g_evtScriptCount = k;
     gs->gameData->locationName = data + 0x2C;
     mode = g_gameState->mode;
@@ -3478,7 +3478,7 @@ void evt_onMenuOpen(void) {
     msg_closeAll();
     msg_startHereIcon(0);
     if (g_evtMode == 3) {
-        s = D_800CF478;
+        s = g_worldAreaNames;
         n = (evt_getSysVar(WM_PARAM_AREA) * 2) & 0x7F;
         while (n != 0) {
             while (*s++ != 0) {
@@ -3488,7 +3488,7 @@ void evt_onMenuOpen(void) {
         g_gameState->gameData->locationName = s;
         while (*s++ != 0) {
         }
-        g_gameState->gameData->unk810 = s;
+        g_gameState->gameData->debugLocationName = s;
         evt_callObjectFunc(evt_getObject_inline(0), 1, 4, 0);
     }
 }

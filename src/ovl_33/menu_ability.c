@@ -467,7 +467,7 @@ void menuAbility_setMember(s32 slot, s32 arg1) {
             }
         }
     }
-    s_menuAbility.tabEnabled[0] = c->hp != 0 && !(c->status & 9) && nItems != 0 && D_8007AFD3 == 0;
+    s_menuAbility.tabEnabled[0] = c->hp != 0 && !(c->status & 9) && nItems != 0 && g_evtGlobalVars.b[EVT_GB_NO_ACTION_ABILITIES] == 0;
     s_menuAbility.tabEnabled[1] = chr_canLearnAbilities(c);
     menuAbility_initActionCursor();
     menuAbility_initSupportCursor();
@@ -592,7 +592,7 @@ void menuAbility_updateHelp(void) {
         text_setStringArg(0, s_menuAbilityHelpArg);
         text_copy(buf, text_get(s_menuAbility.tab + ABILITY_TEXT_TAB_HELP));
         if (s_menuAbility.tab == ABILITY_TAB_ACTION) {
-            if (D_8007AFD3) {
+            if (g_evtGlobalVars.b[EVT_GB_NO_ACTION_ABILITIES]) {
                 t = ABILITY_TEXT_NOT_HERE;
             } else if (!s_menuAbility.actionCount) {
                 t = ABILITY_TEXT_CANNOT_USE;
@@ -951,7 +951,7 @@ s32 menuAbility_getMpCost(Unk801F34EC *p) {
     s32 v;
 
     v = p->mpCost;
-    if ((p->flags & 4) && D_8007AF02 != 0) {
+    if ((p->flags & 4) && g_evtGlobalVars.b[EVT_GB_SUMMON_MP_X4] != 0) {
         v *= 4;
     }
     return v;

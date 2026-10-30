@@ -323,8 +323,8 @@ void opening_titleLoadImages(void);
 void opening_titleOpenCardEvents(void);
 s32 opening_titleGetCursor(void);
 void opening_titleStartFadeIn(void);
-void func_800AB1E4(void);
-void func_800AB200(void);
+void opening_setWorldCamKeepNew(void);
+void opening_setWorldCamKeepLoad(void);
 
 /* Functions called before (or without) a declaration in scope (tools/decl_check.py --protos) */
 void game_updateWindows(void); /* main */

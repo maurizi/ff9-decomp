@@ -32,8 +32,8 @@ u8 *btlfx_runFrame(u8 *out) {
     btlfx_runScript();
     btlfx_updateLoader(); /* scratchpad stack */
     if (g_btlfxEnv->state->retry == 0) {
-        if (D_800F78AC != 0) {
-            D_800F78AC = 0;
+        if (g_btlfxSoundPaused != 0) {
+            g_btlfxSoundPaused = 0;
             akao_resume(2);
         }
         btlfx_updateTasks(); /* caller's stack */

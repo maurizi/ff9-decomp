@@ -995,7 +995,6 @@ extern s32 g_worldChunkLookPos[];
 extern s32 g_worldCameraRecenter;
 extern s32 g_worldChunkBuffer;
 extern u8 D_800D30C4;
-extern s32 D_800D32FC;
 extern u8 g_worldLoadedFrames;
 extern u8 g_worldUsePolyCache;
 extern u8 g_worldChunkGeneration;
@@ -1547,7 +1546,7 @@ u8 *evt_loadScripts(u8 *p); /* main */
 s32 evt_countNpcActors(s32 unused); /* main */
 void evt_callWorldCellTrigger(s32 a, s32 b, s32 c); /* main */
 void wm_mountPalettePre(void);
-s32 func_800B8548(void);
+s32 wm_isDarkWeather(void);
 void wm_naviDrawChocograph(void);
 void game_updateWindows(void); /* main */
 void menu_update(void); /* main */
