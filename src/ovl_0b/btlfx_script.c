@@ -650,8 +650,8 @@ s32 btlfx_opPlayMotionWait(s32 arg0, Unk800D8EA4 *arg1, s32 arg2, s32 *arg3, s32
     } else if (arg0 != 1) {
         return btlfx_stepPlayMotionWait(arg1, arg2, arg3);
     } else {
-        arg1->unk0 = arg4[0];
-        arg1->unk1 = arg4[1];
+        arg1->unit = arg4[0];
+        arg1->motion = arg4[1];
         g_btlfxState.motionDone = 0;
     }
     return 0;
@@ -663,8 +663,8 @@ s32 btlfx_opPlayMotionHold(s32 arg0, Unk800D8EA4 *arg1, s32 arg2, s32 *arg3, s32
     } else if (arg0 != 1) {
         return btlfx_stepPlayMotionHold(arg1, arg2, arg3);
     } else {
-        arg1->unk0 = arg4[0];
-        arg1->unk1 = arg4[1];
+        arg1->unit = arg4[0];
+        arg1->motion = arg4[1];
         arg1->unk2 = g_btlfxOpArgs.unk0;
         g_btlfxState.motionDone = 0;
     }
@@ -677,8 +677,8 @@ s32 func_800D7768(s32 arg0, Unk800D8EA4 *arg1, s32 arg2, s32 *arg3, s32 *arg4) {
     } else if (arg0 != 1) {
         return func_800D8EA4(arg1, arg2, arg3);
     } else {
-        arg1->unk0 = arg4[0];
-        arg1->unk1 = arg4[1];
+        arg1->unit = arg4[0];
+        arg1->motion = arg4[1];
         g_btlfxState.motionDone = 0;
     }
     return 0;
@@ -690,8 +690,8 @@ s32 func_800D77E4(s32 arg0, Unk800D8EA4 *arg1, s32 arg2, s32 *arg3, s32 *arg4) {
     } else if (arg0 != 1) {
         return func_800D8F1C(arg1, arg2, arg3);
     } else {
-        arg1->unk0 = arg4[0];
-        arg1->unk1 = arg4[1];
+        arg1->unit = arg4[0];
+        arg1->motion = arg4[1];
         arg1->unk2 = g_btlfxOpArgs.unk0;
         g_btlfxState.motionDone = 0;
     }
@@ -704,8 +704,8 @@ s32 func_800D7870(s32 arg0, Unk800D8EA4 *arg1, s32 arg2, s32 *arg3, s32 *arg4) {
     } else if (arg0 != 1) {
         return func_800D8FAC(arg1, arg2, arg3);
     } else {
-        arg1->unk0 = arg4[0];
-        arg1->unk1 = arg4[1];
+        arg1->unit = arg4[0];
+        arg1->motion = arg4[1];
         g_btlfxState.motionDone = 0;
     }
     return 0;
@@ -740,8 +740,8 @@ s32 btlfx_opFileMotionWait(s32 arg0, Unk800D8EA4 *arg1, s32 arg2, s32 *arg3, s32
     } else if (arg0 != 1) {
         return btlfx_stepFileMotionWait(arg1, arg2, arg3);
     } else {
-        arg1->unk0 = arg4[0];
-        arg1->unk1 = arg4[1];
+        arg1->unit = arg4[0];
+        arg1->motion = arg4[1];
         g_btlfxState.motionDone = 0;
     }
     return 0;
@@ -781,8 +781,8 @@ s32 btlfx_opRunHome(s32 arg0, Unk800D9260 *arg1, s32 arg2, s32 *arg3, s32 *arg4)
     } else if (arg0 != 1) {
         return btlfx_stepRunHome(arg1, arg2, arg3);
     } else {
-        arg1->unk0 = arg4[0];
-        arg1->unk1 = arg4[1];
+        arg1->unit = arg4[0];
+        arg1->target = arg4[1];
         g_btlfxState.moveDone = 0;
     }
     return 0;
@@ -792,16 +792,16 @@ s32 func_800D7BA8(s32 arg0, Unk800D7C9C *arg1, s32 arg2, s32 *arg3, s32 *arg4) {
     if (arg0 == 0) {
         *arg4 = 0x1C;
     } else if (arg0 == 1) {
-        arg1->unk0 = 0x10;
-        arg1->unk1 = arg4[0];
-        arg1->unk8 = arg4[1];
-        arg1->unk4 = g_btlfxOpArgs.unk0 | (g_btlfxOpArgs.unk1 << 8);
-        arg1->unk6 = g_btlfxOpArgs.unk2 | (g_btlfxOpArgs.unk3 << 8);
-        if (btlfx_isSameUnit(arg1->unk0, arg1->unk1) != 0) {
+        arg1->unit = 0x10;
+        arg1->target = arg4[0];
+        arg1->frames = arg4[1];
+        arg1->dist = g_btlfxOpArgs.unk0 | (g_btlfxOpArgs.unk1 << 8);
+        arg1->dist2 = g_btlfxOpArgs.unk2 | (g_btlfxOpArgs.unk3 << 8);
+        if (btlfx_isSameUnit(arg1->unit, arg1->target) != 0) {
             g_btlfxState.moveDone = arg0;
             return 1;
         }
-        if (btlfx_isPartyUnit(arg1->unk1) == 0) {
+        if (btlfx_isPartyUnit(arg1->target) == 0) {
             return 1;
         }
         g_btlfxState.moveDone = 0;
@@ -816,12 +816,12 @@ s32 btlfx_opJumpForward(s32 arg0, Unk800D7C9C *arg1, s32 arg2, s32 *arg3, s32 *a
     if (arg0 == 0) {
         *arg4 = 0x1C;
     } else if (arg0 == 1) {
-        arg1->unk0 = 0x10;
-        arg1->unk1 = arg4[0];
+        arg1->unit = 0x10;
+        arg1->target = arg4[0];
         arg1->unk2 = arg4[1];
         arg1->unk3 = 1;
-        arg1->unk4 = g_btlfxOpArgs.unk0 | (g_btlfxOpArgs.unk1 << 8);
-        if ((v = arg1->unk2) == arg0 && btlfx_isPartyUnit(arg1->unk1) != 0) {
+        arg1->dist = g_btlfxOpArgs.unk0 | (g_btlfxOpArgs.unk1 << 8);
+        if ((v = arg1->unk2) == arg0 && btlfx_isPartyUnit(arg1->target) != 0) {
             g_btlfxState.moveDone = v;
             return 1;
         }
@@ -837,11 +837,11 @@ s32 btlfx_opJumpHome(s32 arg0, Unk800D955C *arg1, s32 arg2, s32 *arg3, s32 *arg4
     if (arg0 == 0) {
         *arg4 = 0x18;
     } else if (arg0 == 1) {
-        arg1->unk0 = 0x10;
-        arg1->unk1 = arg4[0];
+        arg1->unit = 0x10;
+        arg1->target = arg4[0];
         arg1->unk2 = arg4[1];
         arg1->unk3 = 1;
-        if ((v = arg1->unk2) == arg0 && btlfx_isPartyUnit(arg1->unk1) != 0) {
+        if ((v = arg1->unk2) == arg0 && btlfx_isPartyUnit(arg1->target) != 0) {
             g_btlfxState.moveDone = v;
             return 1;
         }
@@ -858,9 +858,9 @@ s32 btlfx_opMoveToPoint(s32 arg0, Unk800D7E14 *arg1, s32 arg2, s32 arg3, s32 *ar
     } else if (arg0 != 1) {
         return btlfx_stepMoveToPoint(arg1, arg2, arg3);
     } else {
-        arg1->unk0 = arg4[0];
-        arg1->unk1 = arg4[1];
-        arg1->unk4 = g_btlfxOpArgs.unk0;
+        arg1->unit = arg4[0];
+        arg1->point = arg4[1];
+        arg1->frames = g_btlfxOpArgs.unk0;
         do {
             g_btlfxState.moveDone = 0;
         } while (0);
@@ -872,12 +872,12 @@ s32 btlfx_opMoveTowardTarget(s32 arg0, Unk800D7C9C *arg1, s32 arg2, s32 *arg3, s
     if (arg0 == 0) {
         *arg4 = 0x1C;
     } else if (arg0 == 1) {
-        arg1->unk0 = 0x10;
-        arg1->unk1 = arg4[0];
-        arg1->unk8 = arg4[1];
-        arg1->unk4 = g_btlfxOpArgs.unk0 | (g_btlfxOpArgs.unk1 << 8);
+        arg1->unit = 0x10;
+        arg1->target = arg4[0];
+        arg1->frames = arg4[1];
+        arg1->dist = g_btlfxOpArgs.unk0 | (g_btlfxOpArgs.unk1 << 8);
         arg1->unk2 = g_btlfxOpArgs.unk2;
-        if (btlfx_isSameUnit(arg1->unk0, arg1->unk1) != 0 || btlfx_isPartyUnit(arg1->unk1) != 0) {
+        if (btlfx_isSameUnit(arg1->unit, arg1->target) != 0 || btlfx_isPartyUnit(arg1->target) != 0) {
             g_btlfxState.moveDone = arg0;
             return 1;
         }
@@ -892,15 +892,15 @@ s32 btlfx_opRunToTarget(s32 arg0, Unk800D7C9C *arg1, s32 arg2, s32 *arg3, s32 *a
     if (arg0 == 0) {
         *arg4 = 0x1C;
     } else if (arg0 == 1) {
-        arg1->unk0 = 0x10;
-        arg1->unk1 = arg4[0];
-        arg1->unk8 = arg4[1];
-        arg1->unk4 = g_btlfxOpArgs.unk0 | (g_btlfxOpArgs.unk1 << 8);
-        if (btlfx_isSameUnit(arg1->unk0, arg1->unk1) != 0) {
+        arg1->unit = 0x10;
+        arg1->target = arg4[0];
+        arg1->frames = arg4[1];
+        arg1->dist = g_btlfxOpArgs.unk0 | (g_btlfxOpArgs.unk1 << 8);
+        if (btlfx_isSameUnit(arg1->unit, arg1->target) != 0) {
             g_btlfxState.moveDone = arg0;
             return 1;
         }
-        if (btlfx_isPartyUnit(arg1->unk1) != 0) {
+        if (btlfx_isPartyUnit(arg1->target) != 0) {
             return 1;
         }
         g_btlfxState.moveDone = 0;
@@ -914,13 +914,13 @@ s32 btlfx_opFaceTarget(s32 arg0, Unk800D805C *arg1, s32 arg2, s32 *arg3, s32 *ar
     if (arg0 == 0) {
         *arg4 = 0x14;
     } else if (arg0 == 1) {
-        arg1->unk0 = arg4[0];
-        arg1->unk1 = arg4[1];
-        arg1->unk4 = g_btlfxOpArgs.unk0;
+        arg1->unit = arg4[0];
+        arg1->target = arg4[1];
+        arg1->frames = g_btlfxOpArgs.unk0;
         arg1->unk2 = g_btlfxOpArgs.unk1;
         arg1->unk3 = g_btlfxOpArgs.unk2;
         arg1->unk8 = 0;
-        if (btlfx_isSameUnit(arg1->unk0, arg1->unk1) != 0) {
+        if (btlfx_isSameUnit(arg1->unit, arg1->target) != 0) {
             g_btlfxState.turnDone = arg0;
             return 1;
         }
@@ -935,11 +935,11 @@ s32 btlfx_opFaceHome(s32 arg0, Unk800D8124 *arg1, s32 arg2, s32 *arg3, s32 *arg4
     if (arg0 == 0) {
         *arg4 = 0x10;
     } else if (arg0 == 1) {
-        arg1->unk0 = arg4[0];
-        arg1->unk1 = arg4[1];
-        arg1->unk4 = g_btlfxOpArgs.unk0;
+        arg1->unit = arg4[0];
+        arg1->target = arg4[1];
+        arg1->frames = g_btlfxOpArgs.unk0;
         arg1->unk2 = g_btlfxOpArgs.unk1;
-        if (arg1->unk2 == 2 && btlfx_isPartyUnit(arg1->unk1) != 0) {
+        if (arg1->unk2 == 2 && btlfx_isPartyUnit(arg1->target) != 0) {
             g_btlfxState.turnDone = arg0;
             return 1;
         }
@@ -1255,10 +1255,10 @@ s32 btlfx_stepPlayMotion(u8 *arg0, s32 arg1, s32 arg2) {
 s32 btlfx_stepPlayMotionWait(Unk800D8EA4 *arg0, s32 arg1, s32 *arg2) {
     s32 v = *arg2;
     if (v == 0) {
-        btlfx_playUnitMotion(arg0->unk0, arg0->unk1);
-        arg0->unk4 = btlfx_getMotionLength(arg0->unk0) - 1;
+        btlfx_playUnitMotion(arg0->unit, arg0->motion);
+        arg0->lastFrame = btlfx_getMotionLength(arg0->unit) - 1;
     }
-    if (v >= arg0->unk4) {
+    if (v >= arg0->lastFrame) {
         g_btlfxState.motionDone = 1;
         return 1;
     }
@@ -1268,12 +1268,12 @@ s32 btlfx_stepPlayMotionWait(Unk800D8EA4 *arg0, s32 arg1, s32 *arg2) {
 s32 btlfx_stepPlayMotionHold(Unk800D8EA4 *arg0, s32 arg1, s32 *arg2) {
     s32 v = *arg2;
     if (v == 0) {
-        btlfx_playUnitMotion(arg0->unk0, arg0->unk1);
-        arg0->unk4 = btlfx_getMotionLength(arg0->unk0) - arg0->unk2 - 1;
+        btlfx_playUnitMotion(arg0->unit, arg0->motion);
+        arg0->lastFrame = btlfx_getMotionLength(arg0->unit) - arg0->unk2 - 1;
     }
-    if (v >= arg0->unk4) {
+    if (v >= arg0->lastFrame) {
         g_btlfxState.motionDone = 1;
-        btlfx_holdMotion(arg0->unk0);
+        btlfx_holdMotion(arg0->unit);
         return 1;
     }
     return 0;
@@ -1282,10 +1282,10 @@ s32 btlfx_stepPlayMotionHold(Unk800D8EA4 *arg0, s32 arg1, s32 *arg2) {
 s32 func_800D8EA4(Unk800D8EA4 *arg0, s32 arg1, s32 *arg2) {
     s32 v = *arg2;
     if (v == 0) {
-        btlfx_playUnitMotion(arg0->unk0, 0x17);
-        arg0->unk4 = btlfx_getMotionLength(arg0->unk0) - 1;
+        btlfx_playUnitMotion(arg0->unit, 0x17);
+        arg0->lastFrame = btlfx_getMotionLength(arg0->unit) - 1;
     }
-    if (v >= arg0->unk4) {
+    if (v >= arg0->lastFrame) {
         g_btlfxState.motionDone = 1;
         return 1;
     }
@@ -1295,11 +1295,11 @@ s32 func_800D8EA4(Unk800D8EA4 *arg0, s32 arg1, s32 *arg2) {
 s32 func_800D8F1C(Unk800D8EA4 *arg0, s32 arg1, s32 *arg2) {
     s32 v = *arg2;
     if (v == 0) {
-        btlfx_playUnitMotion(arg0->unk0, 0x17);
-        arg0->unk4 = btlfx_getMotionLength(arg0->unk0) - arg0->unk2 - 1;
+        btlfx_playUnitMotion(arg0->unit, 0x17);
+        arg0->lastFrame = btlfx_getMotionLength(arg0->unit) - arg0->unk2 - 1;
     }
-    if (v >= arg0->unk4) {
-        btlfx_holdMotion(arg0->unk0);
+    if (v >= arg0->lastFrame) {
+        btlfx_holdMotion(arg0->unit);
         g_btlfxState.motionDone = 1;
         return 1;
     }
@@ -1308,12 +1308,12 @@ s32 func_800D8F1C(Unk800D8EA4 *arg0, s32 arg1, s32 *arg2) {
 
 s32 func_800D8FAC(Unk800D8EA4 *arg0, s32 arg1, s32 *arg2) {
     s32 v = *arg2;
-    if (btlfx_isPartyUnit(arg0->unk1) == 0) {
+    if (btlfx_isPartyUnit(arg0->motion) == 0) {
         if (v == 0) {
-            btlfx_playUnitMotion(arg0->unk0, 0x19);
-            arg0->unk4 = btlfx_getMotionLength(arg0->unk0) - 1;
+            btlfx_playUnitMotion(arg0->unit, 0x19);
+            arg0->lastFrame = btlfx_getMotionLength(arg0->unit) - 1;
         }
-        if (v < arg0->unk4) {
+        if (v < arg0->lastFrame) {
             return 0;
         }
     }
@@ -1334,10 +1334,10 @@ s32 btlfx_stepFileMotion(u8 *arg0, s32 arg1, Unk800F78A40 *arg2) {
 s32 btlfx_stepFileMotionWait(Unk800D8EA4 *arg0, s32 arg1, s32 *arg2) {
     s32 v = *arg2;
     if (v == 0) {
-        btlfx_setFileMotion((Unk800F78A40 *)arg2, arg0->unk0, arg0->unk1);
-        arg0->unk4 = btlfx_getMotionLength(arg0->unk0) - 1;
+        btlfx_setFileMotion((Unk800F78A40 *)arg2, arg0->unit, arg0->motion);
+        arg0->lastFrame = btlfx_getMotionLength(arg0->unit) - 1;
     }
-    if (v >= arg0->unk4) {
+    if (v >= arg0->lastFrame) {
         g_btlfxState.motionDone = 1;
         return 1;
     }
@@ -1356,28 +1356,28 @@ s32 btlfx_stepMoveToUnit(Unk800D9134 *p, s32 arg1, s32 *arg2) {
     s16 c[4];
     s32 n = *arg2;
     s32 v;
-    if (btlfx_isPartyUnit(p->unk1) == 0) {
+    if (btlfx_isPartyUnit(p->target) == 0) {
         if (n == 0) {
-            p->unk4 = btlfx_getKindTiming(p->unk0, 0);
-            pos = p->unk10;
-            btlfx_getUnitPos(p->unk1, pos);
-            v = p->unk4;
+            p->frames = btlfx_getKindTiming(p->unit, 0);
+            pos = p->to;
+            btlfx_getUnitPos(p->target, pos);
+            v = p->frames;
             if (v == 1) {
-                btlfx_setUnitPos(p->unk0, p->unk10);
+                btlfx_setUnitPos(p->unit, p->to);
                 g_btlfxState.moveDone = v;
                 return 1;
             }
         }
-        if (btlfx_moveUnitArc(p->unk0, p->unk10, n + 1, p->unk4, 0, p->unk8) != 0) {
+        if (btlfx_moveUnitArc(p->unit, p->to, n + 1, p->frames, 0, p->from) != 0) {
             g_btlfxState.moveDone = 1;
             return 1;
         }
         return 0;
     }
-    btlfx_getUnitHomePos(p->unk1, b);
-    btlfx_getUnitRot(p->unk1, c);
+    btlfx_getUnitHomePos(p->target, b);
+    btlfx_getUnitRot(p->target, c);
     btlfx_pointAhead(b, c, 1000, a);
-    btlfx_setUnitPos(p->unk0, a);
+    btlfx_setUnitPos(p->unit, a);
     g_btlfxState.moveDone = 1;
     return 1;
 }
@@ -1386,24 +1386,24 @@ s32 btlfx_stepRunHome(Unk800D9260 *arg0, s32 arg1, s32 *arg2) {
     s16 sp18[4];
     s32 n = *arg2;
     s32 v;
-    btlfx_getUnitHomePos(arg0->unk0, sp18);
-    if (btlfx_isPartyUnit(arg0->unk1) == 0) {
+    btlfx_getUnitHomePos(arg0->unit, sp18);
+    if (btlfx_isPartyUnit(arg0->target) == 0) {
         if (n == 0) {
-            v = btlfx_getKindTiming(arg0->unk0, 3);
-            arg0->unk4 = v;
+            v = btlfx_getKindTiming(arg0->unit, 3);
+            arg0->frames = v;
             if (v == 1) {
-                btlfx_setUnitPos(arg0->unk0, sp18);
+                btlfx_setUnitPos(arg0->unit, sp18);
                 g_btlfxState.moveDone = v;
                 return 1;
             }
         }
-        if (btlfx_moveUnitArc(arg0->unk0, sp18, n + 1, arg0->unk4, 0, arg0->unk8) != 0) {
+        if (btlfx_moveUnitArc(arg0->unit, sp18, n + 1, arg0->frames, 0, arg0->from) != 0) {
             g_btlfxState.moveDone = 1;
             return 1;
         }
         return 0;
     }
-    btlfx_setUnitPos(arg0->unk0, sp18);
+    btlfx_setUnitPos(arg0->unit, sp18);
     g_btlfxState.moveDone = 1;
     return 1;
 }
@@ -1415,8 +1415,8 @@ s32 func_800D9350(Unk800D7C9C *arg0, s32 arg1, s32 *arg2) {
     s32 m;
     s32 v = *arg2;
     if (v == 0) {
-        btlfx_getUnitPos(arg0->unk0, a);
-        btlfx_getUnitHomePos(arg0->unk1, b);
+        btlfx_getUnitPos(arg0->unit, a);
+        btlfx_getUnitHomePos(arg0->target, b);
         c[0] = 0;
         c[1] = 0;
         c[2] = 0;
@@ -1427,17 +1427,17 @@ s32 func_800D9350(Unk800D7C9C *arg0, s32 arg1, s32 *arg2) {
         } else {
             b[1] = a[1];
         }
-        btlfx_pointAhead(b, c, arg0->unk4, a);
-        btlfx_pointAhead(b, c, arg0->unk6, arg0->unk14);
-        btlfx_setUnitPos(arg0->unk0, a);
-        m = arg0->unk8;
+        btlfx_pointAhead(b, c, arg0->dist, a);
+        btlfx_pointAhead(b, c, arg0->dist2, arg0->to);
+        btlfx_setUnitPos(arg0->unit, a);
+        m = arg0->frames;
         if (m == 1) {
-            btlfx_setUnitPos(arg0->unk0, arg0->unk14);
+            btlfx_setUnitPos(arg0->unit, arg0->to);
             g_btlfxState.moveDone = m;
             return 1;
         }
     }
-    if (btlfx_moveUnitArc(arg0->unk0, arg0->unk14, v + 1, arg0->unk8, 0, arg0->unkC) != 0) {
+    if (btlfx_moveUnitArc(arg0->unit, arg0->to, v + 1, arg0->frames, 0, arg0->from) != 0) {
         g_btlfxState.moveDone = 1;
         return 1;
     }
@@ -1449,15 +1449,15 @@ s32 btlfx_stepJumpForward(Unk800D7C9C *arg0, s32 arg1, s32 *arg2) {
     s16 b[4];
     s32 v = *arg2;
     if (v == 0) {
-        btlfx_getUnitPos(arg0->unk0, a);
-        btlfx_getUnitRot(arg0->unk0, b);
-        btlfx_pointAhead(a, b, arg0->unk4, arg0->unk14);
+        btlfx_getUnitPos(arg0->unit, a);
+        btlfx_getUnitRot(arg0->unit, b);
+        btlfx_pointAhead(a, b, arg0->dist, arg0->to);
         if (arg0->unk3 != 0) {
-            btlfx_playUnitMotion(arg0->unk0, 0x1D);
+            btlfx_playUnitMotion(arg0->unit, 0x1D);
         }
-        arg0->unk8 = btlfx_getMotionLength(arg0->unk0);
+        arg0->frames = btlfx_getMotionLength(arg0->unit);
     }
-    if (btlfx_moveUnitLinear(arg0->unk0, arg0->unk14, v, arg0->unk8, arg0->unkC, 0) != 0) {
+    if (btlfx_moveUnitLinear(arg0->unit, arg0->to, v, arg0->frames, arg0->from, 0) != 0) {
         g_btlfxState.moveDone = 1;
         return 1;
     }
@@ -1467,13 +1467,13 @@ s32 btlfx_stepJumpForward(Unk800D7C9C *arg0, s32 arg1, s32 *arg2) {
 s32 btlfx_stepJumpHome(Unk800D955C *arg0, s32 arg1, s32 *arg2) {
     s32 v = *arg2;
     if (v == 0) {
-        btlfx_getUnitHomePos(arg0->unk0, arg0->unk10);
+        btlfx_getUnitHomePos(arg0->unit, arg0->to);
         if (arg0->unk3 != 0) {
-            btlfx_playUnitMotion(arg0->unk0, 0x1E);
+            btlfx_playUnitMotion(arg0->unit, 0x1E);
         }
-        arg0->unk4 = btlfx_getMotionLength(arg0->unk0);
+        arg0->frames = btlfx_getMotionLength(arg0->unit);
     }
-    if (btlfx_moveUnitLinear(arg0->unk0, arg0->unk10, v, arg0->unk4, arg0->unk8, 1) != 0) {
+    if (btlfx_moveUnitLinear(arg0->unit, arg0->to, v, arg0->frames, arg0->from, 1) != 0) {
         g_btlfxState.moveDone = 1;
         return 1;
     }
@@ -1484,14 +1484,14 @@ s32 btlfx_stepMoveToPoint(Unk800D7E14 *arg0, s32 arg1, s32 arg2) {
     s16 sp18[4];
     s32 n = *(s32 *)arg2;
     s32 v;
-    switch (arg0->unk1) {
+    switch (arg0->point) {
     case 0:
         sp18[0] = 0;
         sp18[1] = 0;
         sp18[2] = -0x100;
         break;
     case 1:
-        btlfx_getUnitHomePos(arg0->unk0, sp18);
+        btlfx_getUnitHomePos(arg0->unit, sp18);
         break;
     case 2:
         sp18[0] = ((Unk800F78A4 *)arg1)->targets->centerX;
@@ -1505,14 +1505,14 @@ s32 btlfx_stepMoveToPoint(Unk800D7E14 *arg0, s32 arg1, s32 arg2) {
         break;
     }
     if (n == 0) {
-        v = arg0->unk4;
+        v = arg0->frames;
         if (v == 1) {
-            btlfx_setUnitPos(arg0->unk0, sp18);
+            btlfx_setUnitPos(arg0->unit, sp18);
             g_btlfxState.moveDone = v;
             return 1;
         }
     }
-    if (btlfx_moveUnitArc(arg0->unk0, sp18, n + 1, arg0->unk4, 0, arg0->unk8) != 0) {
+    if (btlfx_moveUnitArc(arg0->unit, sp18, n + 1, arg0->frames, 0, arg0->from) != 0) {
         g_btlfxState.moveDone = 1;
         return 1;
     }
@@ -1526,8 +1526,8 @@ s32 btlfx_stepMoveTowardTarget(Unk800D7C9C *arg0, s32 arg1, s32 *arg2) {
     s32 m;
     s32 v = *arg2;
     if (v == 0) {
-        btlfx_getUnitPos(arg0->unk0, a);
-        btlfx_getStrikePos(arg0->unk0, arg0->unk1, b);
+        btlfx_getUnitPos(arg0->unit, a);
+        btlfx_getStrikePos(arg0->unit, arg0->target, b);
         if (a[1] == 0) {
             if (b[1] != 0) {
                 b[1] = 0;
@@ -1536,27 +1536,27 @@ s32 btlfx_stepMoveTowardTarget(Unk800D7C9C *arg0, s32 arg1, s32 *arg2) {
             b[1] = a[1];
         }
         btlfx_aimAngles(b, a, c);
-        btlfx_pointAhead(b, c, arg0->unk4, arg0->unk14);
-        arg0->unk14[0] -= a[0];
-        arg0->unk14[1] -= a[1];
-        arg0->unk14[2] -= a[2];
-        arg0->unk14[0] *= arg0->unk2;
-        arg0->unk14[1] *= arg0->unk2;
-        arg0->unk14[2] *= arg0->unk2;
-        arg0->unk14[0] /= 10;
-        arg0->unk14[1] /= 10;
-        arg0->unk14[2] /= 10;
-        arg0->unk14[0] += a[0];
-        arg0->unk14[1] += a[1];
-        arg0->unk14[2] += a[2];
-        m = arg0->unk8;
+        btlfx_pointAhead(b, c, arg0->dist, arg0->to);
+        arg0->to[0] -= a[0];
+        arg0->to[1] -= a[1];
+        arg0->to[2] -= a[2];
+        arg0->to[0] *= arg0->unk2;
+        arg0->to[1] *= arg0->unk2;
+        arg0->to[2] *= arg0->unk2;
+        arg0->to[0] /= 10;
+        arg0->to[1] /= 10;
+        arg0->to[2] /= 10;
+        arg0->to[0] += a[0];
+        arg0->to[1] += a[1];
+        arg0->to[2] += a[2];
+        m = arg0->frames;
         if (m == 1) {
-            btlfx_setUnitPos(arg0->unk0, arg0->unk14);
+            btlfx_setUnitPos(arg0->unit, arg0->to);
             g_btlfxState.moveDone = m;
             return 1;
         }
     }
-    if (btlfx_moveUnitArc(arg0->unk0, arg0->unk14, v + 1, arg0->unk8, 0, arg0->unkC) != 0) {
+    if (btlfx_moveUnitArc(arg0->unit, arg0->to, v + 1, arg0->frames, 0, arg0->from) != 0) {
         g_btlfxState.moveDone = 1;
         return 1;
     }
@@ -1570,8 +1570,8 @@ s32 btlfx_stepRunToTarget(Unk800D7C9C *arg0, s32 arg1, s32 *arg2) {
     s32 m;
     s32 v = *arg2;
     if (v == 0) {
-        btlfx_getUnitPos(arg0->unk0, a);
-        btlfx_getStrikePos(arg0->unk0, arg0->unk1, b);
+        btlfx_getUnitPos(arg0->unit, a);
+        btlfx_getStrikePos(arg0->unit, arg0->target, b);
         if (a[1] == 0) {
             if (b[1] != 0) {
                 b[1] = 0;
@@ -1580,15 +1580,15 @@ s32 btlfx_stepRunToTarget(Unk800D7C9C *arg0, s32 arg1, s32 *arg2) {
             b[1] = a[1];
         }
         btlfx_aimAngles(b, a, c);
-        btlfx_pointAhead(b, c, arg0->unk4, arg0->unk14);
-        m = arg0->unk8;
+        btlfx_pointAhead(b, c, arg0->dist, arg0->to);
+        m = arg0->frames;
         if (m == 1) {
-            btlfx_setUnitPos(arg0->unk0, arg0->unk14);
+            btlfx_setUnitPos(arg0->unit, arg0->to);
             g_btlfxState.moveDone = m;
             return 1;
         }
     }
-    if (btlfx_moveUnitArc(arg0->unk0, arg0->unk14, v + 1, arg0->unk8, 0, arg0->unkC) != 0) {
+    if (btlfx_moveUnitArc(arg0->unit, arg0->to, v + 1, arg0->frames, 0, arg0->from) != 0) {
         g_btlfxState.moveDone = 1;
         return 1;
     }
@@ -1601,44 +1601,44 @@ s32 btlfx_stepFaceTarget(Unk800D805C *arg0, s32 arg1, s32 *arg2) {
     s16 tgt[4];
     s32 v = *arg2;
 
-    if (arg0->unk3 == 0 || btlfx_isPartyUnit(arg0->unk1) == 0) {
-        btl_getUnit(arg0->unk0);
+    if (arg0->unk3 == 0 || btlfx_isPartyUnit(arg0->target) == 0) {
+        btl_getUnit(arg0->unit);
         if (v == 0) {
-            btlfx_getUnitPos(arg0->unk0, pos);
-            if (arg0->unk1 == 0xFF) {
+            btlfx_getUnitPos(arg0->unit, pos);
+            if (arg0->target == 0xFF) {
                 tgt[0] = ((Unk800F78A4 *)arg1)->targets->centerX;
                 tgt[1] = ((Unk800F78A4 *)arg1)->targets->centerY;
                 tgt[2] = ((Unk800F78A4 *)arg1)->targets->centerZ;
             } else {
-                btlfx_getUnitHomePos(arg0->unk1, tgt);
+                btlfx_getUnitHomePos(arg0->target, tgt);
             }
-            btlfx_aimAngles(pos, tgt, arg0->unkC);
-            arg0->unkC[0] = 0;
+            btlfx_aimAngles(pos, tgt, arg0->delta);
+            arg0->delta[0] = 0;
             if (arg0->unk2 == 1) {
-                arg0->unkC[1] += 0x800;
+                arg0->delta[1] += 0x800;
             }
         }
-        btlfx_getUnitRot(arg0->unk0, rot);
-        rot[0] += arg0->unkC[0] / arg0->unk4;
-        rot[1] += arg0->unkC[1] / arg0->unk4;
-        rot[2] += arg0->unkC[2] / arg0->unk4;
-        btlfx_setUnitRot(arg0->unk0, rot);
-        if (v != arg0->unk4 - 1) {
+        btlfx_getUnitRot(arg0->unit, rot);
+        rot[0] += arg0->delta[0] / arg0->frames;
+        rot[1] += arg0->delta[1] / arg0->frames;
+        rot[2] += arg0->delta[2] / arg0->frames;
+        btlfx_setUnitRot(arg0->unit, rot);
+        if (v != arg0->frames - 1) {
             goto end;
         }
         g_btlfxState.turnDone = 1;
         return 1;
     }
-    if (arg0->unk1 == 0xFF) {
+    if (arg0->target == 0xFF) {
         tgt[0] = ((Unk800F78A4 *)arg1)->targets->centerX;
         tgt[1] = ((Unk800F78A4 *)arg1)->targets->centerY;
         tgt[2] = ((Unk800F78A4 *)arg1)->targets->centerZ;
     } else {
-        btlfx_getUnitHomePos(arg0->unk1, tgt);
+        btlfx_getUnitHomePos(arg0->target, tgt);
     }
-    btlfx_getUnitRot(arg0->unk0, rot);
+    btlfx_getUnitRot(arg0->unit, rot);
     rot[1] = 0x800;
-    btlfx_setUnitRot(arg0->unk0, rot);
+    btlfx_setUnitRot(arg0->unit, rot);
     g_btlfxState.turnDone = 1;
     return 1;
 end:
@@ -1651,19 +1651,19 @@ s32 btlfx_stepFaceHome(Unk800D8124 *arg0, s32 arg1, s32 *arg2) {
     s32 v = *arg2;
     BtlUnitA0 *a;
 
-    u = btl_getUnit(arg0->unk0);
-    if (arg0->unk2 == 0 || btlfx_isPartyUnit(arg0->unk1) == 0) {
+    u = btl_getUnit(arg0->unit);
+    if (arg0->unk2 == 0 || btlfx_isPartyUnit(arg0->target) == 0) {
         if (v == 0) {
-            arg0->unk8[0] = u->obj->rotX - u->rot[0];
-            arg0->unk8[1] = u->obj->rotY - u->rot[1];
-            arg0->unk8[2] = u->obj->rotZ - u->rot[2];
+            arg0->delta[0] = u->obj->rotX - u->rot[0];
+            arg0->delta[1] = u->obj->rotY - u->rot[1];
+            arg0->delta[2] = u->obj->rotZ - u->rot[2];
         }
-        btlfx_getUnitRot(arg0->unk0, rot);
-        rot[0] += arg0->unk8[0] / arg0->unk4;
-        rot[1] += arg0->unk8[1] / arg0->unk4;
-        rot[2] += arg0->unk8[2] / arg0->unk4;
-        btlfx_setUnitRot(arg0->unk0, rot);
-        if (v != arg0->unk4 - 1) {
+        btlfx_getUnitRot(arg0->unit, rot);
+        rot[0] += arg0->delta[0] / arg0->frames;
+        rot[1] += arg0->delta[1] / arg0->frames;
+        rot[2] += arg0->delta[2] / arg0->frames;
+        btlfx_setUnitRot(arg0->unit, rot);
+        if (v != arg0->frames - 1) {
             goto end;
         }
         g_btlfxState.turnDone = 1;

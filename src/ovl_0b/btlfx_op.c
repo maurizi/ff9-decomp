@@ -161,14 +161,14 @@ s32 func_800E4634(s32 arg0, Unk800E4634 *c, Unk800E4634Arg2 *arg2, s32 *arg3, s3
         return 0;
     }
     if (arg0 == 1) {
-        c->unk0 = 0;
-        c->unk4 = 0;
+        c->point = 0;
+        c->timer = 0;
         if (arg2->unkC->unk27 == 0) {
-            c->unk4 = 0xFFFF;
+            c->timer = 0xFFFF;
             if (btlfx_isEnemyUnit(0x10) != 0) {
-                c->unk0 = 0;
+                c->point = 0;
             } else {
-                c->unk0 = 12;
+                c->point = 12;
             }
         }
         btlfx_playBounceCamera();
@@ -176,56 +176,56 @@ s32 func_800E4634(s32 arg0, Unk800E4634 *c, Unk800E4634Arg2 *arg2, s32 *arg3, s3
         {
             s32 j;
             for (j = 3; j >= 0; j--) {
-                c->unk30[j] = NULL;
+                c->emitters[j] = NULL;
             }
         }
         return 0;
     }
     t = *arg3;
-    if (c->unk4 == 0xFFFF) {
-        if (--c->unk0 < 0) {
+    if (c->timer == 0xFFFF) {
+        if (--c->point < 0) {
             g_btlfxState.signals.b[2] = 1;
             return 1;
         }
-    } else if (c->unk4 != 0) {
-        c->unk4++;
-        if ((c->unk4 >= 5 && c->unk0 >= 0) || (c->unk4 >= 15 && c->unk0 < 0)) {
-            c->unk4 = 0;
-            if (c->unk0 < 0) {
+    } else if (c->timer != 0) {
+        c->timer++;
+        if ((c->timer >= 5 && c->point >= 0) || (c->timer >= 15 && c->point < 0)) {
+            c->timer = 0;
+            if (c->point < 0) {
                 g_btlfxState.signals.b[2] = 1;
                 g_btlfxState.unk25 = 1;
                 return 1;
             }
         }
         for (i = 0; i < 4; i++) {
-            if (c->unk30[i] != NULL) {
-                c->unk30[i]->unk5C.vx = c->unk28[0];
-                c->unk30[i]->unk5C.vy = c->unk28[1];
-                c->unk30[i]->unk5C.vz = c->unk28[2];
-                if (c->unk30[i]->state == -1) {
-                    c->unk30[i] = NULL;
+            if (c->emitters[i] != NULL) {
+                c->emitters[i]->unk5C.vx = c->rot[0];
+                c->emitters[i]->unk5C.vy = c->rot[1];
+                c->emitters[i]->unk5C.vz = c->rot[2];
+                if (c->emitters[i]->state == -1) {
+                    c->emitters[i] = NULL;
                 }
             }
         }
-    } else if (btlfx_getBouncePos(c->unk0, (s16 *)&c->unk8[c->unk0], c->unk28) == 0) {
-        c->unk30[c->unk0] = btlfx_startEmitter(btlfx_getCommonData(3), (s32)&c->unk8[c->unk0]);
-        if (c->unk30[c->unk0] != NULL) {
-            c->unk30[c->unk0]->unk22 = 0x73;
-            if (c->unk30[c->unk0] != NULL) {
-                c->unk30[c->unk0]->elems[0].tex = btlfx_getCommonData(7);
-                if (c->unk30[c->unk0] != NULL) {
-                    c->unk30[c->unk0]->elems[1].tex = btlfx_getCommonData(6);
+    } else if (btlfx_getBouncePos(c->point, (s16 *)&c->points[c->point], c->rot) == 0) {
+        c->emitters[c->point] = btlfx_startEmitter(btlfx_getCommonData(3), (s32)&c->points[c->point]);
+        if (c->emitters[c->point] != NULL) {
+            c->emitters[c->point]->unk22 = 0x73;
+            if (c->emitters[c->point] != NULL) {
+                c->emitters[c->point]->elems[0].tex = btlfx_getCommonData(7);
+                if (c->emitters[c->point] != NULL) {
+                    c->emitters[c->point]->elems[1].tex = btlfx_getCommonData(6);
                 }
             }
         }
-        c->unk28[0] = 0x400;
-        c->unk4 = 1;
-        c->unk28[1] += 0x800;
-        btlfx_playSoundSet(3, c->unk0 + 8);
-        c->unk0++;
+        c->rot[0] = 0x400;
+        c->timer = 1;
+        c->rot[1] += 0x800;
+        btlfx_playSoundSet(3, c->point + 8);
+        c->point++;
     } else {
-        c->unk0 = -1;
-        c->unk4 = 1;
+        c->point = -1;
+        c->timer = 1;
     }
     *arg3 = t;
     return 0;
@@ -333,95 +333,95 @@ s32 btlfx_opCast(s32 arg0, Unk800E4C88 *arg1, Unk800F78A4 *arg2, s32 *arg3, s32 
         *arg4 = 0x28;
     } else if (arg0 == 1) {
         q = arg4;
-        arg1->unk1 = 0;
-        arg1->unk6 = 0;
-        arg1->unk2 = (q[1] & 0xF) + 0x10;
-        arg1->unk3 = q[0];
-        arg1->unk24 = NULL;
+        arg1->phase = 0;
+        arg1->frame = 0;
+        arg1->unit = (q[1] & 0xF) + 0x10;
+        arg1->target = q[0];
+        arg1->emitter = NULL;
         if (arg2->state->flags & 8) {
             func_800E8C84(0);
         }
-        if (arg2->targets->bounceCount != 0 && arg1->unk3 != 0xFF) {
+        if (arg2->targets->bounceCount != 0 && arg1->target != 0xFF) {
             if (arg2->targets->bounceCount == 1) {
-                arg1->unk3 += 8;
+                arg1->target += 8;
             } else {
-                arg1->unk3 = 0xFF;
+                arg1->target = 0xFF;
             }
         }
         if (arg2->targets->kind & 4) {
-            arg1->unk2 = 0x11;
-            arg1->unk3 = 0x10;
+            arg1->unit = 0x11;
+            arg1->target = 0x10;
         }
-        arg1->unk0 = (u8)q[1] >> 4;
-        arg1->unk4 = ((u32)g_btlfxState.flags & 0x3000) >> 12;
+        arg1->kind = (u8)q[1] >> 4;
+        arg1->castMode = ((u32)g_btlfxState.flags & 0x3000) >> 12;
         g_btlfxState.signals.b[2] = 0;
         g_btlfxState.signals.b[3] = 0;
         a = arg2->targets->kind & 1;
-        c = btlfx_isEnemyUnit(arg1->unk2);
-        arg1->unk8 = 100;
-        btlfx_setPartyTexAnim(arg1->unk2, 1, 0);
-        if ((a != 0 || arg1->unk0 == 0xF) && c == 0) {
-            arg1->unk5 = 2;
-            arg1->unk1 = 2;
+        c = btlfx_isEnemyUnit(arg1->unit);
+        arg1->loopFrames = 100;
+        btlfx_setPartyTexAnim(arg1->unit, 1, 0);
+        if ((a != 0 || arg1->kind == 0xF) && c == 0) {
+            arg1->motionMode = 2;
+            arg1->phase = 2;
         } else if (c != 0) {
-            arg1->unk5 = 1;
-            arg1->unk1 = 2;
-            if (a == 0 && arg1->unk0 != 0xF) {
-                btlfx_getUnitBodyPos(arg1->unk2, 0, arg1->unkC);
-                arg1->unk24 = func_800E4A3C(arg1->unk2, 4, arg1->unkC, arg1->unk14);
+            arg1->motionMode = 1;
+            arg1->phase = 2;
+            if (a == 0 && arg1->kind != 0xF) {
+                btlfx_getUnitBodyPos(arg1->unit, 0, arg1->pos);
+                arg1->emitter = func_800E4A3C(arg1->unit, 4, arg1->pos, arg1->pos2);
             } else {
-                arg1->unk24 = NULL;
+                arg1->emitter = NULL;
             }
         } else if (arg2->targets->kind & 2) {
-            arg1->unk5 = 3;
-            arg1->unk1 = 2;
+            arg1->motionMode = 3;
+            arg1->phase = 2;
         } else {
-            arg1->unk5 = 0;
+            arg1->motionMode = 0;
         }
     } else {
     t = *arg3;
-    switch (arg1->unk1) {
+    switch (arg1->phase) {
     case 0:
-        if (btlfx_stepBack(arg1->unk2, arg1->unk3, t) != 0) {
-            b = arg1->unk5;
+        if (btlfx_stepBack(arg1->unit, arg1->target, t) != 0) {
+            b = arg1->motionMode;
             if (b != 3) {
-                btlfx_playUnitMotion(arg1->unk2, 0x1A);
-                arg1->unk1 = 1;
+                btlfx_playUnitMotion(arg1->unit, 0x1A);
+                arg1->phase = 1;
                 goto set_t;
             }
-            btlfx_playUnitMotion(arg1->unk2, 0x1F);
-            arg1->unk1 = b;
+            btlfx_playUnitMotion(arg1->unit, 0x1F);
+            arg1->phase = b;
             btlfx_showCasterCmdName();
             goto set_t;
         }
         break;
     case 1:
-        if (arg1->unk3 != 0xFF && (s16)D_800FEC42 != 0xED) {
-            btlfx_getUnitPos(arg1->unk3, v);
-            func_800E436C(arg1->unk2, v, (s32)arg1->unk1C, t, 0);
+        if (arg1->target != 0xFF && (s16)D_800FEC42 != 0xED) {
+            btlfx_getUnitPos(arg1->target, v);
+            func_800E436C(arg1->unit, v, (s32)arg1->unk1C, t, 0);
         }
-        if (t >= btlfx_getMotionLength(arg1->unk2) - 1) {
-            btlfx_playUnitMotion(arg1->unk2, 0x1B);
+        if (t >= btlfx_getMotionLength(arg1->unit) - 1) {
+            btlfx_playUnitMotion(arg1->unit, 0x1B);
             t = -1;
-            arg1->unk1 = 2;
-            btlfx_getUnitPos(arg1->unk2, arg1->unkC);
-            arg1->unk24 = func_800E4A3C(arg1->unk2, arg1->unk0, arg1->unkC, arg1->unk14);
-            btlfx_setPartyTexAnim(arg1->unk2, 0, 0);
+            arg1->phase = 2;
+            btlfx_getUnitPos(arg1->unit, arg1->pos);
+            arg1->emitter = func_800E4A3C(arg1->unit, arg1->kind, arg1->pos, arg1->pos2);
+            btlfx_setPartyTexAnim(arg1->unit, 0, 0);
             btlfx_showCasterCmdName();
         }
         break;
     case 2:
-        if (arg1->unk24 != NULL && arg1->unk24->state == -1) {
-            arg1->unk24 = NULL;
+        if (arg1->emitter != NULL && arg1->emitter->state == -1) {
+            arg1->emitter = NULL;
         }
         if (t == 0) {
             k = ((u32)g_btlfxState.flags & 0x300) >> 8;
             if (k != 3) {
-                btlfx_startFadeBackground(k, arg1->unk0 == 1 ? 0xC : 0x14);
+                btlfx_startFadeBackground(k, arg1->kind == 1 ? 0xC : 0x14);
             }
         }
         b = t - 9;
-        if (arg1->unk0 == 1) {
+        if (arg1->kind == 1) {
             if (b >= 0) {
                 if (b < 16) {
                     a = (b * 255) >> 4;
@@ -429,12 +429,12 @@ s32 btlfx_opCast(s32 arg0, Unk800E4C88 *arg1, Unk800F78A4 *arg2, s32 *arg3, s32 
                     a = 255;
                 }
                 if (b == 0) {
-                    arg1->unk8 = btlfx_getMotionLength(arg1->unk2);
+                    arg1->loopFrames = btlfx_getMotionLength(arg1->unit);
                     if (arg2->targets->kind & 1) {
                         btlfx_showCasterCmdName();
                     }
                 }
-                switch (arg1->unk4) {
+                switch (arg1->castMode) {
                 case 0:
                     btlfx_drawScreenTint((u32 *)(arg2->ot + 1), 1, a, a, a);
                     if (b == 16) {
@@ -455,83 +455,83 @@ s32 btlfx_opCast(s32 arg0, Unk800E4C88 *arg1, Unk800F78A4 *arg2, s32 *arg3, s32 
                     break;
                 }
             }
-            if (t % arg1->unk8 == 0 && t >= 25 && arg1->unk6 >= 27 && g_btlfxState.signals.b[2] != 0) {
-                btlfx_stopEmitter(arg1->unk24);
+            if (t % arg1->loopFrames == 0 && t >= 25 && arg1->frame >= 27 && g_btlfxState.signals.b[2] != 0) {
+                btlfx_stopEmitter(arg1->emitter);
                 g_btlfxState.signals.b[3] = 1;
                 g_btlfxState.unk25 = 1;
                 arg2->camera->paused = 0;
-                btlfx_setPartyTexAnim(arg1->unk2, 2, 0);
+                btlfx_setPartyTexAnim(arg1->unit, 2, 0);
                 return 1;
             }
-        } else if (arg1->unk5 == 0) {
-            if (t % btlfx_getMotionLength(arg1->unk2) == 0 && t > 0 && arg1->unk6 >= 27 && g_btlfxState.signals.b[2] != 0) {
-                btlfx_playUnitMotion(arg1->unk2, 0x1C);
+        } else if (arg1->motionMode == 0) {
+            if (t % btlfx_getMotionLength(arg1->unit) == 0 && t > 0 && arg1->frame >= 27 && g_btlfxState.signals.b[2] != 0) {
+                btlfx_playUnitMotion(arg1->unit, 0x1C);
                 t = -1;
-                arg1->unk1 = 3;
+                arg1->phase = 3;
             }
-        } else if (arg1->unk5 == 1) {
-            if (g_btlfxState.signals.b[2] != 0 && arg1->unk6 >= 27) {
-                arg1->unk1 = 3;
+        } else if (arg1->motionMode == 1) {
+            if (g_btlfxState.signals.b[2] != 0 && arg1->frame >= 27) {
+                arg1->phase = 3;
             set_t:
                 t = -1;
             }
-        } else if (arg1->unk5 == 3) {
+        } else if (arg1->motionMode == 3) {
             if (g_btlfxState.signals.b[2] != 0) {
-                arg1->unk1 = 0;
+                arg1->phase = 0;
                 goto set_t;
             }
         } else if (g_btlfxState.signals.b[2] != 0) {
             g_btlfxState.signals.b[3] = 1;
             func_800E4C54();
             arg2->camera->paused = 0;
-            btlfx_setPartyTexAnim(arg1->unk2, 2, 0);
+            btlfx_setPartyTexAnim(arg1->unit, 2, 0);
             btlfx_showCasterCmdName();
             return 1;
         }
         break;
     case 3:
-        if (t == 0 && arg1->unk5 != 1) {
+        if (t == 0 && arg1->motionMode != 1) {
             arg2->camera->paused = 0;
-            btlfx_setPartyTexAnim(arg1->unk2, 0, 1);
+            btlfx_setPartyTexAnim(arg1->unit, 0, 1);
         }
-        if (arg1->unk5 != 3) {
-            if (arg1->unk24 != NULL) {
-                if (arg1->unk24->state == -1) {
-                    arg1->unk24 = NULL;
+        if (arg1->motionMode != 3) {
+            if (arg1->emitter != NULL) {
+                if (arg1->emitter->state == -1) {
+                    arg1->emitter = NULL;
                 }
-                if (arg1->unk24 != NULL && t < 5) {
+                if (arg1->emitter != NULL && t < 5) {
                     k = (t << 12) >> 2;
-                    arg1->unk24->unk20 = 0x1000 - k;
-                    if (arg1->unk24 != NULL) {
-                        arg1->unk24->unk1C = k * 2 + 0x1000;
+                    arg1->emitter->unk20 = 0x1000 - k;
+                    if (arg1->emitter != NULL) {
+                        arg1->emitter->unk1C = k * 2 + 0x1000;
                     }
                     if (t != 4) {
                         goto skip;
                     }
-                    btlfx_stopEmitter(arg1->unk24);
+                    btlfx_stopEmitter(arg1->emitter);
                 }
             }
             g_btlfxState.signals.b[3] = 1;
             func_800E4C54();
         } else {
             g_btlfxState.signals.b[3] = 1;
-            if (arg1->unk3 != 0xFF) {
-                btlfx_getUnitPos(arg1->unk3, v);
-                func_800E436C(arg1->unk2, v, (s32)arg1->unk1C, t, 0);
+            if (arg1->target != 0xFF) {
+                btlfx_getUnitPos(arg1->target, v);
+                func_800E436C(arg1->unit, v, (s32)arg1->unk1C, t, 0);
             }
         }
     skip:
-        if (arg1->unk5 == 1) {
+        if (arg1->motionMode == 1) {
             if (t >= 5) {
                 return 1;
             }
             break;
         }
-        if (t >= btlfx_getMotionLength(arg1->unk2) - 1) {
-            if (arg1->unk5 == 0 || arg1->unk5 == 3) {
-                btlfx_playUnitMotion(arg1->unk2, 9);
+        if (t >= btlfx_getMotionLength(arg1->unit) - 1) {
+            if (arg1->motionMode == 0 || arg1->motionMode == 3) {
+                btlfx_playUnitMotion(arg1->unit, 9);
             }
-            btlfx_setPartyTexAnim(arg1->unk2, 2, 0);
+            btlfx_setPartyTexAnim(arg1->unit, 2, 0);
             g_btlfxState.signals.b[3] = 1;
             func_800E4C54();
             return 1;
@@ -539,7 +539,7 @@ s32 btlfx_opCast(s32 arg0, Unk800E4C88 *arg1, Unk800F78A4 *arg2, s32 *arg3, s32 
         break;
     }
     *arg3 = t;
-    arg1->unk6++;
+    arg1->frame++;
     }
     return 0;
 }
@@ -552,37 +552,37 @@ s32 btlfx_opReturnHome(s32 arg0, Unk800E5538 *arg1, Unk800F78A4 *arg2, s32 *arg3
         return 0;
     }
     if (arg0 == 1) {
-        arg1->unk1 = 0;
-        arg1->unk2 = *arg4;
+        arg1->phase = 0;
+        arg1->unit = *arg4;
         if (arg2->targets->kind & 4) {
-            arg1->unk2 = 0x11;
+            arg1->unit = 0x11;
         }
         if (arg2->targets->kind & 1) {
             return 1;
         }
-        if (btlfx_isEnemyUnit(arg1->unk2) != 0) {
+        if (btlfx_isEnemyUnit(arg1->unit) != 0) {
             return 1;
         }
-        arg1->unk3 = btl_hasStatus(btl_getUnit(arg1->unk2), BTL_STATUS_STOP);
+        arg1->stopped = btl_hasStatus(btl_getUnit(arg1->unit), BTL_STATUS_STOP);
         return 0;
     }
     t = *arg3;
-    if (arg1->unk1 == 0) {
-        if (btlfx_moveUnitHome(arg1->unk2, t, arg1->unkC, arg1->unk3) != 0) {
+    if (arg1->phase == 0) {
+        if (btlfx_moveUnitHome(arg1->unit, t, arg1->unkC, arg1->stopped) != 0) {
             t = -1;
-            arg1->unk1 = 1;
-            if (func_800E84F0(arg1->unk2) != 0) {
-                btlfx_playUnitMotion(arg1->unk2, 9);
+            arg1->phase = 1;
+            if (func_800E84F0(arg1->unit) != 0) {
+                btlfx_playUnitMotion(arg1->unit, 9);
                 return 1;
             }
-            if (arg1->unk3 == 0) {
-                btlfx_playUnitMotion(arg1->unk2, 0x20);
+            if (arg1->stopped == 0) {
+                btlfx_playUnitMotion(arg1->unit, 0x20);
             }
         }
     } else {
-        func_800E436C(arg1->unk2, NULL, (s32)arg1->unk1C, t, 1);
-        if (t >= btlfx_getMotionLength(arg1->unk2) - 1) {
-            btlfx_resetUnitMotion(arg1->unk2, 1);
+        func_800E436C(arg1->unit, NULL, (s32)arg1->unk1C, t, 1);
+        if (t >= btlfx_getMotionLength(arg1->unit) - 1) {
+            btlfx_resetUnitMotion(arg1->unit, 1);
             return 1;
         }
     }
@@ -856,25 +856,25 @@ s32 btlfx_opFadeBackground(s32 arg0, Unk800E6270 *arg1, s32 arg2, s32 *arg3, s32
         return 0;
     }
     if (arg0 == 1) {
-        arg1->unk4 = btlbg_getBrightness() & 0xFF;
-        arg1->unk6 = arg4[0];
-        if (arg1->unk6 == 0xFF) {
-            arg1->unk6 = 0x80;
+        arg1->from = btlbg_getBrightness() & 0xFF;
+        arg1->delta = arg4[0];
+        if (arg1->delta == 0xFF) {
+            arg1->delta = 0x80;
         }
-        arg1->unk6 -= arg1->unk4;
-        if ((arg1->unk0 = arg4[1]) == 0 || arg1->unk6 == 0) {
-            btlbg_setBrightness(arg1->unk4 + arg1->unk6);
+        arg1->delta -= arg1->from;
+        if ((arg1->frames = arg4[1]) == 0 || arg1->delta == 0) {
+            btlbg_setBrightness(arg1->from + arg1->delta);
             return 1;
         }
         return 0;
     }
     n = *arg3;
-    v = arg1->unk4 + n * arg1->unk6 / arg1->unk0;
+    v = arg1->from + n * arg1->delta / arg1->frames;
     if (v < 0x10) {
         v = 0;
     }
     btlbg_setBrightness(v);
-    if (n < arg1->unk0) {
+    if (n < arg1->frames) {
         *arg3 = n;
         return 0;
     }
@@ -894,23 +894,23 @@ s32 btlfx_opFadeUnits(s32 arg0, Unk800E6270 *arg1, s32 arg2, s32 *arg3, s32 *arg
     }
     if (arg0 == 1) {
         if (arg4[1] & 4) {
-            arg1->unk4 = 0x80;
+            arg1->from = 0x80;
             v = -0x80;
         } else {
-            arg1->unk4 = 0;
+            arg1->from = 0;
             v = 0x80;
         }
-        arg1->unk6 = v;
-        arg1->unk8 = arg4[1] & 0xB;
-        if ((arg1->unk0 = arg4[0]) != 0) {
+        arg1->delta = v;
+        arg1->group = arg4[1] & 0xB;
+        if ((arg1->frames = arg4[0]) != 0) {
             return 0;
         }
-        btlfx_fadeUnitGroup(arg1->unk8, arg1->unk4 + arg1->unk6);
+        btlfx_fadeUnitGroup(arg1->group, arg1->from + arg1->delta);
         return 1;
     }
     n = *arg3;
-    btlfx_fadeUnitGroup(arg1->unk8, arg1->unk4 + n * arg1->unk6 / arg1->unk0);
-    if (n < arg1->unk0) {
+    btlfx_fadeUnitGroup(arg1->group, arg1->from + n * arg1->delta / arg1->frames);
+    if (n < arg1->frames) {
         *arg3 = n;
         return 0;
     }
@@ -945,19 +945,19 @@ s32 btlfx_opScreenFade(s32 arg0, Unk800E6410 *arg1, s32 arg2, s32 *arg3, s32 *ar
             return 1;
         }
         if (p[0] == 1) {
-            arg1->unk4 = 0;
+            arg1->shade = 0;
         } else if (p[0] == 0) {
-            arg1->unk4 = 0xFF;
+            arg1->shade = 0xFF;
         }
-        if ((arg1->unk0 = p[1]) != 0) {
+        if ((arg1->frames = p[1]) != 0) {
             return 0;
         }
-        btlfx_drawScreenTint(g_btlfxEnv->ot + 1, 0xFF, arg1->unk4, arg1->unk4, arg1->unk4);
+        btlfx_drawScreenTint(g_btlfxEnv->ot + 1, 0xFF, arg1->shade, arg1->shade, arg1->shade);
         return 1;
     }
     n = *arg3;
-    btlfx_drawScreenTint(g_btlfxEnv->ot + 1, 0xFF, arg1->unk4, arg1->unk4, arg1->unk4);
-    if (n < arg1->unk0) {
+    btlfx_drawScreenTint(g_btlfxEnv->ot + 1, 0xFF, arg1->shade, arg1->shade, arg1->shade);
+    if (n < arg1->frames) {
         *arg3 = n;
         return 0;
     }

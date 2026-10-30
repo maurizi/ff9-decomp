@@ -226,9 +226,9 @@ typedef struct {
 /* work area of the effect step btlfx_opReturnHome */
 typedef struct {
     u8 unk0;
-    u8 unk1; /* phase */
-    u8 unk2; /* unit id */
-    u8 unk3;
+    u8 phase; /* phase */
+    u8 unit; /* unit id */
+    u8 stopped; /* the unit has Stop: moves home without its motion (btlfx_moveUnitHome) */
     u8 pad4[0xC - 4];
     s16 unkC[8];
     s16 unk1C[6];
@@ -2026,19 +2026,19 @@ extern u8 D_800F8CF4[][4];
 extern char D_800A825C[];
 
 typedef struct Unk800D8EA4 {
-    u8 unk0;
-    u8 unk1;
+    u8 unit; /* unit id */
+    u8 motion; /* motion slot */
     u8 unk2;
     u8 pad3;
-    s32 unk4;
+    s32 lastFrame; /* frame the step ends at (motion length - 1, or minus unk2) */
 } Unk800D8EA4;
 
 typedef struct Unk800D7E14 {
-    u8 unk0;
-    u8 unk1;
+    u8 unit; /* unit id moved */
+    u8 point; /* destination kind (btlfx_stepMoveToPoint) */
     u8 pad2[2];
-    s32 unk4;
-    s16 unk8[4];
+    s32 frames;
+    s16 from[4]; /* start position */
 } Unk800D7E14;
 
 /* battle background header: DB item 0x1Axxxx of the background file (docs/battle-backgrounds.md) */
@@ -2356,10 +2356,10 @@ extern u8 g_btluiBuf;
 extern u8 D_80104E94[2][0x18];
 
 typedef struct {
-    s32 unk0; /* frames */
-    s16 unk4;
-    s16 unk6;
-    s32 unk8;
+    s32 frames; /* frames */
+    s16 from; /* start brightness */
+    s16 delta; /* brightness change */
+    s32 group; /* unit group (btlfx_fadeUnitGroup) */
 } Unk800E6270;
 s32 btlfx_fadeUnitGroup(u32, s32);
 
@@ -2598,11 +2598,11 @@ s32 func_800D8F1C(struct Unk800D8EA4 *, s32, s32 *);
 s32 func_800D8FAC(struct Unk800D8EA4 *, s32, s32 *);
 s32 btlfx_stepFileMotionWait(struct Unk800D8EA4 *, s32, s32 *);
 typedef struct {
-    u8 unk0;
-    u8 unk1;
+    u8 unit; /* unit id moved */
+    u8 target;
     u8 pad2[2];
-    s32 unk4;
-    s16 unk8[4];
+    s32 frames;
+    s16 from[4]; /* start position */
 } Unk800D9260;
 s32 btlfx_stepRunHome(Unk800D9260 *, s32, s32 *);
 s32 btlfx_stepMoveToPoint(struct Unk800D7E14 *, s32, s32);
@@ -2690,12 +2690,12 @@ s32 btlfx_getBouncePos(s32, s16 *, s16 *);
 
 /* func_800E4634 work area */
 typedef struct {
-    s32 unk0; /* next point, -1 = done */
-    s32 unk4; /* timer, 0xFFFF = skipped */
-    SVECTOR unk8[4];
-    s16 unk28[3];
+    s32 point; /* next point, -1 = done */
+    s32 timer; /* timer, 0xFFFF = skipped */
+    SVECTOR points[4]; /* bounce positions */
+    s16 rot[3];
     u8 pad2E[2];
-    Pool6CEntry *unk30[4];
+    Pool6CEntry *emitters[4];
 } Unk800E4634;
 
 typedef struct {
@@ -2806,13 +2806,13 @@ s32 btlui_setMenuState(s32);
 u8 func_800F1360(void);
 
 typedef struct {
-    u8 unk0;
-    u8 unk1;
+    u8 unit; /* unit id moved */
+    u8 target;
     u8 unk2;
     u8 unk3;
-    s32 unk4;
-    s16 unk8[4];
-    s16 unk10[4];
+    s32 frames; /* move frames (the motion's length) */
+    s16 from[4]; /* start position */
+    s16 to[4]; /* destination (home) */
 } Unk800D955C;
 
 typedef struct {
@@ -3343,34 +3343,34 @@ void func_800C4DC4(s32, s32, s16 *, s16 *, s32 *);
 s32 btlcam_getAnchorUnit(s32);
 
 typedef struct {
-    u8 unk0;
-    u8 unk1;
+    u8 unit; /* unit id moved (0x10 caster) */
+    u8 target; /* unit id moved toward */
     u8 unk2;
     u8 unk3;
-    s16 unk4;
-    s16 unk6;
-    s32 unk8;
-    s16 unkC[4];
-    s16 unk14[4];
+    s16 dist; /* distance ahead of the target (btlfx_pointAhead) */
+    s16 dist2; /* second distance (btlfx_pointAhead) */
+    s32 frames; /* move frames */
+    s16 from[4]; /* start position (btlfx_moveUnitArc/Linear) */
+    s16 to[4]; /* destination */
 } Unk800D7C9C;
 
 typedef struct {
-    u8 unk0;
-    u8 unk1;
+    u8 unit; /* unit id turned */
+    u8 target; /* unit id faced, 0xFF = its home */
     u8 unk2;
     u8 unk3;
-    s32 unk4;
+    s32 frames; /* turn frames */
     s32 unk8;
-    s16 unkC[3]; /* rotation delta (btlfx_stepFaceTarget) */
+    s16 delta[3]; /* rotation delta (btlfx_stepFaceTarget) */
 } Unk800D805C;
 
 typedef struct {
-    u8 unk0;
-    u8 unk1;
+    u8 unit; /* unit id turned */
+    u8 target;
     u8 unk2;
     u8 unk3;
-    s32 unk4;
-    s16 unk8[3];
+    s32 frames; /* turn frames */
+    s16 delta[3]; /* rotation delta back to its start rotation (btlfx_stepFaceHome) */
 } Unk800D8124;
 
 s32 btlfx_stepJumpForward(Unk800D7C9C *, s32, s32 *);
@@ -3652,12 +3652,12 @@ s32 *btl_getBannerOt(s32);
 u8 *btl_buildBanner(u8 *);
 u8 *btl_drawBanner(u8 *);
 typedef struct Unk800D9134 {
-    u8 unk0;
-    u8 unk1;
+    u8 unit; /* unit id moved */
+    u8 target; /* unit id moved to */
     u8 pad2[2];
-    s32 unk4;
-    s16 unk8[4];
-    s16 unk10[4];
+    s32 frames;
+    s16 from[4]; /* start position */
+    s16 to[4]; /* destination */
 } Unk800D9134;
 s32 btlfx_stepMoveToUnit(Unk800D9134 *, s32, s32 *);
 extern s32 D_80104DE8;
@@ -3773,8 +3773,8 @@ typedef struct {
 } Unk800DA790;
 
 typedef struct {
-    s32 unk0; /* frames */
-    s32 unk4; /* shade */
+    s32 frames; /* frames */
+    s32 shade; /* shade */
 } Unk800E6410;
 
 void btlfx_drawScreenTint(u32 *, s32, s32, s32, s32);
@@ -4252,18 +4252,18 @@ u32 btlfx_fadeColor(u32, s32);
 
 /* work area of the effect step btlfx_opCast */
 typedef struct {
-    u8 unk0; /* kind */
-    u8 unk1; /* phase */
-    u8 unk2; /* unit id */
-    u8 unk3;
-    u8 unk4;
-    u8 unk5;
-    u16 unk6; /* frame */
-    s32 unk8;
-    s16 unkC[4];
-    s16 unk14[4];
+    u8 kind; /* cast kind (op argument high nibble, 0xF = none): func_800E4A3C emitter kind */
+    u8 phase; /* phase */
+    u8 unit; /* unit id (0x10 + n) */
+    u8 target; /* unit id of the target (+8 when bounced, 0xFF none) */
+    u8 castMode; /* effect flags bits 12-13 */
+    u8 motionMode; /* cast motion handling (0-3) */
+    u16 frame; /* frames run */
+    s32 loopFrames; /* cast motion length */
+    s16 pos[4]; /* emitter position */
+    s16 pos2[4];
     s16 unk1C[4];
-    Pool6CEntry *unk24;
+    Pool6CEntry *emitter; /* cast emitter */
 } Unk800E4C88; /* 0x28 */
 
 /* func_800E57B0 effect state (sprite sheet on a unit) */
