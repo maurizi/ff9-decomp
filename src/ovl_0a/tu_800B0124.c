@@ -126,7 +126,7 @@ s32 fld_soundCommand(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4) {
                     akao_setPitchScale(arg2);
                     return 0;
                 case 4:
-                    akao_sendCmdD8(arg2);
+                    akao_setTempoPitchScale(arg2);
                     return 0;
                 }
                 break;
@@ -149,7 +149,7 @@ s32 fld_soundCommand(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4) {
                 akao_fadePitchScale(arg2, arg3);
                 return 0;
             case 4:
-                akao_sendCmdD9(arg2, arg3);
+                akao_fadeTempoPitchScale(arg2, arg3);
                 return 0;
             }
             break;
@@ -166,7 +166,7 @@ s32 fld_soundCommand(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4) {
                 akao_fadePitchScaleFrom(arg2, arg3, arg4);
                 return 0;
             case 4:
-                akao_sendCmdDA(arg2, arg3, arg4);
+                akao_fadeTempoPitchScaleFrom(arg2, arg3, arg4);
                 return 0;
             }
             break;
@@ -188,7 +188,7 @@ s32 fld_soundCommand(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4) {
             if ((arg0 & 0x3F) != 6) {
                 break;
             }
-            akao_sendCmd92(arg1);
+            akao_setCondition(arg1);
             return 0;
         }
         return -1;

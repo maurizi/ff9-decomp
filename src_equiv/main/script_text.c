@@ -45,15 +45,15 @@ extern u16 D_8006EAD0[];         /* atan table, 0x401 entries, 0 .. 0x200 (45 de
 
 /* ---- callees without prototypes in the headers ---- */
 s32 evt_getObjectProp(EvtObject *o, s32 prop);
-u16 func_8004B404(s32 arg0);
+u16 evt_getBattleVar(s32 arg0);
 EvtObject *evt_resolveObjectId(s32 id);
 void evt_setObjectProp(EvtObject *arg0, s32 arg1, s32 arg2);
-void func_8004B4A8(s32 i, s16 v);
+void evt_setBattleVar(s32 i, s16 v);
 s32 evt_exprSpecial(s32 op);
 u32 msg_getPadPressed(void);
 u32 msg_getPadReleased(void);
 u32 msg_getPadHeld(void);
-s32 func_8004B85C(s32 slot);
+s32 evt_isInParty(s32 slot);
 s32 evt_joinParty(s32 slot);
 s32 evt_exprUnitCompare(s32 op);
 s32 evt_popRandomBit(void);
@@ -61,7 +61,7 @@ s32 evt_exprUnitAssign(s32 op);
 s32 evt_popBitCount(void);
 s32 evt_exprUnitFirst(void);
 s16 msg_isOpen(s32 i);
-void func_8004BB30(void *p);
+void evt_setCurUnit(void *p);
 void math_rotMatrixZYX(void *a, void *b);
 void func_8004E91C(void);
 s32 evt_execInstr(void);
@@ -138,7 +138,7 @@ void pen_putGlyph(s32 c) {
 
 /* Tab: next multiple of 48 pixels from the line start. Shared by both debug fonts. */
 static void pen_tab48(void) {
-    u32 org = (u32)D_8007BCB0;
+    u32 org = (u32)g_penLineStart;
     u32 rel = r_pen - org;
     u32 q = rel / 6;
 
@@ -146,7 +146,7 @@ static void pen_tab48(void) {
 }
 
 static void pen_newline(s32 dy) {
-    r_pen = ((PEN_Y(r_pen) + dy) << 16) | (u32)D_8007BCB0;
+    r_pen = ((PEN_Y(r_pen) + dy) << 16) | (u32)g_penLineStart;
 }
 
 /* 6x6 debug font sprite (u,v from the character, CLUT 0x7FFC). */
@@ -233,19 +233,19 @@ static void glyph_sink_world(s32 c) {
     glyph_debug6(c);
 }
 
-/* func_80051274 and func_80053384 (`jr ra; nop`, the "print nothing" sinks) are matched C in src/main/main.c. */
-void func_80051274(); /* void f(void) in src; called through a void (*)(s32) sink pointer */
-void func_80053384();
+/* pen_glyphSinkNone and pen_glyphSinkQuiet (`jr ra; nop`, the "print nothing" sinks) are matched C in src/main/main.c. */
+void pen_glyphSinkNone(); /* void f(void) in src; called through a void (*)(s32) sink pointer */
+void pen_glyphSinkQuiet();
 
 /* Pen to text cell (col, row): 6 pixels per cell, origin (10, 20); also sets the line start. */
 void pen_setCell(s32 col, s32 row) {
     r_pen = ((u32)col | ((u32)row << 16)) * 6 + 0x14000A;
     g_penPos.w = r_pen;
-    *(s16 *)&D_8007BCB0 = r_pen;
+    *(s16 *)&g_penLineStart = r_pen;
 }
 
 /* Pen x = x, keep y. (Falls into pen_setPos in the original.) */
-void func_800512B4(s32 x) {
+void pen_setX(s32 x) {
     r_pen = (x & 0xFFFF) | (PEN_Y(r_pen) << 16);
 }
 
@@ -384,7 +384,7 @@ void pen_init(void) {
     g_penPktPtr = NULL;
     g_penStackPtr = D_8007BC78;
     g_penColor = 0x808080;
-    D_8007BCB0 = 0xA;
+    g_penLineStart = 0xA;
     D_8007BCB4 = 0x38270000;
 }
 
@@ -487,9 +487,9 @@ void func_8005179C(s32 quiet) {
     void (*f)(s32);
 
     if (r_pkt == NULL) {
-        f = func_80051274;
+        f = pen_glyphSinkNone;
     } else if (quiet != 0) {
-        f = func_80053384;
+        f = pen_glyphSinkQuiet;
     } else if (g_evtMode == 2) {
         f = glyph_sink_battle;
     } else if (g_evtMode == 3) {
@@ -665,7 +665,7 @@ void func_80051B58(const char *fmt, ...) {
  *   space 0: global variables (g_evtGlobalVars)       space 1: the event context's map variables
  *   space 2/3: the current object's locals (g_evtObjVars)
  *   space 4: (uid << 8) | index on another object (evt_resolveObjectId + evt_getObjectProp), read-only
- *   space 5: system variable `index` (func_8004B404 / func_8004B4A8)
+ *   space 5: system variable `index` (evt_getBattleVar / evt_setBattleVar)
  *   space 6: property `index` of g_evtExprObj (evt_getObjectProp / evt_setObjectProp)
  *   space 7: an immediate (26-bit, sign-extended)
  *   width (spaces 0-3): 0/1 bit, 2/3 24-bit signed, 4 s8, 5 u8, 6 s16, 7 u16
@@ -708,7 +708,7 @@ s32 evt_popValue(void) {
             return evt_getObjectProp((EvtObject *)g_evtExprObj, (s32)(t << 6) >> 6);
         }
         if (tag & 1) {
-            return func_8004B404(t & 0xFF);
+            return evt_getBattleVar(t & 0xFF);
         }
         return evt_getObjectProp(evt_resolveObjectId((t >> 8) & 0xFF), t & 0xFF);
     }
@@ -759,7 +759,7 @@ void evt_popAssign(s32 v) {
         if (tag & 2) {
             evt_setObjectProp((EvtObject *)g_evtExprObj, t & 0xFF, v);
         } else if (tag & 1) {
-            func_8004B4A8(t & 0xFF, v);
+            evt_setBattleVar(t & 0xFF, v);
         }
         return;
     }
@@ -1024,7 +1024,7 @@ void evt_runExpr(void) {
             v = evt_getAnimFrameCount(g_evtActor->modelId, t);
             break;
         case 0x6B:
-            v = func_8004B85C(evt_popValue());
+            v = evt_isInParty(evt_popValue());
             break;
         case 0x6D:
             v = evt_joinParty(evt_popValue());
@@ -1142,7 +1142,7 @@ s32 evt_runScripts(Unk16D8 *n) {
         g_evtObjVars = (u8 *)o + o->varsOfs * 4;
         g_evtActor = o->kind == 1 ? evt_getObject(o->uid - 0x40) : o;
         if (g_evtMode == 2) {
-            func_8004BB30(o);
+            evt_setCurUnit(o);
         }
         while (st == 0) {
             op = *r_ip;
@@ -1291,7 +1291,7 @@ u8 *evt_getVarBank(s32 space) {
 }
 
 /* Skip a variable reference at *pp (the original also returns it in v0; the C prototype is void). */
-void func_80052D0C(u8 **pp) {
+void evt_skipVarRef(u8 **pp) {
     u8 *save = r_ip;
 
     r_ip = *pp;
@@ -1450,7 +1450,7 @@ s32 math_atan2(s32 dx, s32 dz) {
 }
 
 /* Rotate the SVECTOR v in place by the angles (rx, ry, 0); TR is cleared and RT left set (as the original). */
-void func_800530A8(SVECTOR *v, s32 rx, s32 ry) {
+void math_rotateSVector(SVECTOR *v, s32 rx, s32 ry) {
     SVECTOR a;
     MATRIX m;
 
@@ -1469,13 +1469,13 @@ void func_800530A8(SVECTOR *v, s32 rx, s32 ry) {
     gte_stsv(v);
 }
 
-/* A vector of length len along -z, rotated by (rx, ry). (Falls into func_800530A8 in the original.) */
-void func_8005309C(s16 *out, s32 rx, s32 ry, s32 len) {
+/* A vector of length len along -z, rotated by (rx, ry). (Falls into math_rotateSVector in the original.) */
+void math_dirVector(s16 *out, s32 rx, s32 ry, s32 len) {
     SVECTOR *v = (SVECTOR *)out;
 
     *(u32 *)v = 0;
     v->vz = -len;
-    func_800530A8(v, rx, ry);
+    math_rotateSVector(v, rx, ry);
 }
 
 /* Is (x, z) inside the convex polygon p? p+0x14: vertex count, p+0x18: vertices as words (x low, z high).
@@ -1730,11 +1730,11 @@ s32 wrain_drawDrops(s32 s, u8 buf, u32 *ot, s32 pkt) {
     return (s32)streak_draw(&g_worldRain, (Streak *)s, buf, ot, (u8 *)pkt);
 }
 
-/* ============================================================ func_80064C24 (main, outside the module) */
+/* ============================================================ pen_setColorPreset (main, outside the module) */
 
 /* Pen colour preset n: 0 grey, 1 red-ish 0x2020A0, 2 green-ish 0x20A020, 3 blue-ish 0xA02020, 4 black;
  * other values do nothing. Only ovl_0c calls it (with 0). */
-void func_80064C24(s32 arg) {
+void pen_setColorPreset(s32 arg) {
     static const u32 c[5] = { 0x808080, 0x2020A0, 0x20A020, 0xA02020, 0 };
     u8 n = arg; /* the original compares the low byte */
 

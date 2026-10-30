@@ -2921,7 +2921,7 @@ s32 akao_playMusic(void *);
 void akao_setMusicVolume(s32, s32);
 void akao_fadeMusicVolume(s32, s32, s32);
 void akao_fadeMusicVolumeFrom(s32, s32, s32, s32);
-void akao_sendCmd92(s32);
+void akao_setCondition(s32);
 void akao_setSeVolume(s32, s32, s32);
 void akao_fadeSeVolume(s32, s32, s32, s32);
 void akao_sendCmdA3(s32, s32, s32, s32);
@@ -3412,7 +3412,7 @@ typedef struct {
 
 extern s32 D_800F78AC;
 void SetDrawMove(DR_MOVE *p, RECT *rect, int x, int y);
-void akao_sendCmd99(s32);
+void akao_pause(s32);
 void btlfx_resetMaskBit(void);
 /* the frame update btlfx_runFrame runs (src_equiv/ovl_0b/effect_frame.c) */
 void btlfx_initEnv(void);
@@ -4064,7 +4064,7 @@ extern DR_TPAGE g_btlPauseDrawMode;
 extern DR_STP g_btlPauseStpOn;
 extern u8 D_800FDE60[];
 void game_resumeClock(s32);
-void akao_sendCmd98(s32);
+void akao_resume(s32);
 void btlui_resumeFromPause(void);
 
 s32 btl_loadWeaponModelsStep(s32, Unk800AA958 *);

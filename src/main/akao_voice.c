@@ -666,7 +666,7 @@ void akao_assignVoices(AkaoChannel *ch, u32 mask, u32 keep, u32 *used) {
         if (mask & bit) {
             akao_calcChannelVoice(ch, bit);
             if (ch->voiceDirty != 0) {
-                if (D_80080AC4 & bit) {
+                if (g_akaoMuteMask & bit) {
                     ch->voiceVolR = 0;
                     ch->voiceVolL = 0;
                 }
@@ -861,7 +861,7 @@ void akao_updateVoices(void) {
                 m2 &= ~bit;
             }
         }
-        D_80080A74 = 0;
+        g_akaoSeState.keyOnMask = 0;
     }
     m2 = g_akaoFlags.dirty;
     if (m2 & 0x80) {

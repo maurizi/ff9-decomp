@@ -197,7 +197,7 @@ u32 akao_tickChannels(AkaoChannel *chans, s32 sub) {
     }
     acc = g_akaoSeq->tempoAcc + tempo;
     g_akaoSeq->tempoAcc = acc;
-    if ((acc & 0xFFFF0000) || (D_800831C4 & 4)) {
+    if ((acc & 0xFFFF0000) || (g_akaoPauseFlags & 4)) {
         g_akaoSeq->tempoAcc = acc & 0xFFFF;
         do {
             for (;;) {
@@ -344,13 +344,13 @@ s32 akao_tick(void) {
             mask = g_akaoSeState.activeMask;
             acc = g_akaoSeState.tempoAcc + g_akaoSeState.tempo.h[1];
             g_akaoSeState.tempoAcc = acc;
-            if ((acc & 0xFFFF0000) || (D_800831C4 & 4)) {
+            if ((acc & 0xFFFF0000) || (g_akaoPauseFlags & 4)) {
                 g_akaoSeState.tempoAcc = acc & 0xFFFF;
                 bit = 0x100;
                 c = g_akaoSeChannels;
                 do {
                     if (mask & bit) {
-                        if (!(D_800831C4 & 2) || (c->seMask & 0x2000000)) {
+                        if (!(g_akaoPauseFlags & 2) || (c->seMask & 0x2000000)) {
                             c->age++;
                             c->noteTicks--;
                             c->gateTicks--;
@@ -716,7 +716,7 @@ void akao_execChannel(AkaoChannel *c, u32 mask) {
             c->gateTicks -= 2;
         }
     } else {
-        c->noteTicks = D_8006F3F4[op % 11];
+        c->noteTicks = g_akaoNoteLengths[op % 11];
         len = c->noteTicks;
         if ((vel < 0x84 || vel >= 0x8F) && !(c->legato & 5)) {
             len -= 2;
@@ -1465,7 +1465,7 @@ void akao_opAC(AkaoChannel *arg0) {
     } else if (b & 0xC0) {
         g_akaoSeState.noiseClock = (g_akaoSeState.noiseClock + (b & 0x3F)) & 0x3F;
     } else {
-        D_80080A98 = b;
+        g_akaoSeState.noiseClock = b;
     }
     g_akaoFlags.dirty |= 0x10;
 }
@@ -1879,7 +1879,7 @@ void akao_streamSetVoice(s32 v, s32 mode, s32 a, s32 b) {
         r = (u32)(g_akaoStream.volume * g_akaoPanCurve[pan ^ 0xFF]) >> 16;
     }
     akao_setVoiceVolume(v, l, r, 0);
-    akao_setVoicePitch(v, D_800831C0);
+    akao_setVoicePitch(v, g_akaoStream.pitch);
     akao_setVoiceStartAddr(v, a);
     akao_setVoiceLoopAddr(v, b);
     akao_setVoiceAttack(v, 0, 1);

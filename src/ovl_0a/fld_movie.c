@@ -1544,7 +1544,7 @@ void fld_togglePause(void) {
 
     g_gameState->gameData->flags ^= GD_PAUSED;
     if (g_gameState->gameData->flags & GD_PAUSED) {
-        akao_sendCmd99(0);
+        akao_pause(0);
         game_resumeClock(1);
         for (i = 1; i >= 0; i--) {
             g_padActuator[i].unk1 = 0;
@@ -1588,7 +1588,7 @@ void fld_togglePause(void) {
         g_gameState->gameData->flags |= GD_NO_FLIP;
     } else {
         game_resumeClock(0);
-        akao_sendCmd98(0);
+        akao_resume(0);
         g_gameState->gameData->flags &= ~GD_NO_FLIP;
     }
 }

@@ -1011,7 +1011,7 @@ typedef struct {
     s32 keyOnMask; /* channels with a key-on this tick */
     s32 playingMask; /* channels with a note sounding */
     s32 keyOffMask; /* channels to key off */
-    s32 pausedMask; /* activeMask saved while paused (akao_cmd9B / akao_cmd9A) */
+    s32 pausedMask; /* activeMask saved while paused (akao_cmdPauseMusic / akao_cmdResumeMusic) */
     union {
         s32 w;
         u16 h[2];
@@ -1037,7 +1037,7 @@ typedef struct {
     s16 reverbDepthSlideLen;
     u16 tempoSlideLen;
     u16 musicId; /* id of the music playing (akao_cmdPlayMusic, akao_stopSeq) */
-    u16 condition; /* value tested by op FE JumpIfGe, set by akao_cmd92 */
+    u16 condition; /* value tested by op FE JumpIfGe, set by akao_cmdSetCondition */
     u16 noiseClock; /* SpuSetNoiseClock value (op AC) */
     u16 beatsPerMeasure; /* op FE15 */
     u16 beat;
@@ -1555,7 +1555,7 @@ extern u8 g_akaoFeOpLengths[]; /* operand length of 0xFE xx opcodes */
 s32 akao_peekNextNote(AkaoChannel *c);
 extern void (*g_akaoOps[])(AkaoChannel *, u32); /* opcode 0xA0-0xFF handlers */
 extern void (*g_akaoOpsFE[])(AkaoChannel *, u32); /* 0xFE xx opcode handlers */
-extern u16 D_8006F3F4[]; /* note lengths */
+extern u16 g_akaoNoteLengths[]; /* note lengths */
 
 /* drum kit key entry (akao_playDrumNote) */
 typedef struct {
@@ -1983,7 +1983,7 @@ extern Unk4 D_80011A6C; /* rodata constant, used by msg_advanceText */
 
 
 void akao_streamArmStop(void);
-extern u8 D_8006F40C[];
+extern u8 g_akaoEmptyTrack[];
 extern AkaoSeq *g_akaoVoiceOwner[24];
 void akao_setVoiceRelease(s32, s32, s32);
 void help_draw(void);
@@ -2043,7 +2043,6 @@ void akao_getSeData(u8 **, u8 **, s32);
 void akao_keyOn(u32);
 extern u8 *g_akaoSeData;
 extern s32 g_akaoLoadedBanks[];
-extern s32 D_800809D8; /* = g_akaoLoadedBanks[6] */
 void akao_streamPlayOneShot(s32, s32, s32, s32);
 s32 preload_isBusy(PreloadEntry *);
 u8 fade_clearEase(); /* called with an argument it ignores */
@@ -2263,16 +2262,16 @@ extern AkaoCrossfade g_akaoCrossfade;
 
 
 extern AkaoChannel g_akaoChannels[];
-extern s32 D_80080AC4;
+extern s32 g_akaoMuteMask;
 extern AkaoChannel g_akaoSeChannels[];
-extern s32 D_800831C4;
+extern s32 g_akaoPauseFlags;
 
 typedef struct {
     s32 activeMask; /* sound-effect channels running (bits 0x100 << i) */
     u32 keyOnMask;
     u32 playingMask;
     u32 keyOffMask;
-    s32 pausedMask; /* active channels set aside while D_800831C4 & 2 */
+    s32 pausedMask; /* active channels set aside while g_akaoPauseFlags & 2 */
     union {
         u32 w;
         u16 h[2];
@@ -2286,8 +2285,6 @@ typedef struct {
 extern AkaoSeState g_akaoSeState;
 void akao_opC4(AkaoChannel *, u32);
 void akao_opC6(AkaoChannel *, u32);
-extern u16 D_80080A98; /* = g_akaoSeState.noiseClock */
-extern s32 D_80080A80;
 
 
 typedef struct {
@@ -2362,13 +2359,13 @@ void akao_spuWrite(void *, s32);
 void akao_waitSpuTransfer(void);
 void akao_initState(void);
 s32 akao_tick(void); /* root counter 2 callback; returns the ticks this tick took */
-extern u8 D_80080990[];
+extern u8 g_akaoSpuMallocTable[];
 void UnDeliverEvent(s32, s32);
 void akao_keyOff(s32);
 s32 StopRCnt(s32);
 void SpuQuit(void);
 extern s32 g_akaoTickEvent;
-extern u8 D_8006F334[];
+extern u8 g_akaoSilenceSample[];
 extern s32 g_evtMode;
 /* offset-table blob: count, then per-entry u16 offsets relative to unk4 */
 typedef struct Unk8007B954 {
@@ -2867,7 +2864,6 @@ void win_drawLineBorder(RECT *, s32, u8, s32);
 void win_drawFill(RECT *, s32, u8, u8, s32);
 extern s32 g_akaoOutputFlags;
 extern s32 g_akaoSeVolume; /* sound effect volume */
-extern s32 D_800831C0;
 extern s16 g_akaoMonoGain;
 extern s16 g_akaoPanCurve[]; /* pan curve, 256 entries */
 /* item icon sprites (D_800689B0) */
@@ -3092,7 +3088,6 @@ extern s32 g_akaoCdVolumeStep;
 s32 akao_isqrt(s32);
 extern s32 g_akaoTempoScaleStep;
 extern s32 g_akaoPitchScaleStep;
-extern s32 D_8007F740;
 extern AkaoArgs D_800809F0;
 typedef struct {
     u16 unk0[6];
@@ -4360,7 +4355,6 @@ void akao_readEnvelopes(u32 extra);
 void akao_applyCrossfadeVolume(); /* (AkaoSeq *): saves the sequence volume in g_akaoCrossfade.savedVolume and scales it by the crossfade volume */
 void akao_restoreCrossfadeVolume(); /* (AkaoSeq *) */
 void akao_buildVoiceModeMask(u32 *out, u32 m1, u32 m2, u32 extra);
-extern s32 D_80080A74;
 
 /* Functions called before (or without) a declaration in scope (tools/decl_check.py --protos) */
 /* hand-written asm (no C definition) */

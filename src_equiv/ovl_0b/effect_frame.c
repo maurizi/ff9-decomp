@@ -34,7 +34,7 @@ u8 *btlfx_runFrame(u8 *out) {
     if (g_btlfxEnv->state->retry == 0) {
         if (D_800F78AC != 0) {
             D_800F78AC = 0;
-            akao_sendCmd98(2);
+            akao_resume(2);
         }
         btlfx_updateTasks(); /* caller's stack */
         btlfx_updateParticleSystem();     /* scratchpad stack */

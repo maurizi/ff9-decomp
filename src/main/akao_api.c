@@ -154,17 +154,17 @@ void akao_setOutputMode(s32 a) {
     akao_command(a);
 }
 
-void akao_sendCmd90(s32 a) {
+void akao_setMuteMask(s32 a) {
     g_akaoArgs.arg0 = a;
     akao_command(0x90);
 }
 
-void akao_sendCmd92(s32 a) {
+void akao_setCondition(s32 a) {
     g_akaoArgs.arg0 = a;
     akao_command(0x92);
 }
 
-void akao_sendCmd99(u32 x) {
+void akao_pause(u32 x) {
     s32 cmd;
     switch (x) {
     case 1:
@@ -183,7 +183,7 @@ void akao_sendCmd99(u32 x) {
     akao_command(cmd);
 }
 
-void akao_sendCmd98(u32 x) {
+void akao_resume(u32 x) {
     s32 cmd;
     switch (x) {
     case 1:
@@ -368,18 +368,18 @@ void akao_fadePitchScaleFrom(s32 a, s32 b, s32 c) {
     akao_command(0xD6);
 }
 
-void akao_sendCmdD8(s32 a) {
+void akao_setTempoPitchScale(s32 a) {
     g_akaoArgs.arg0 = a & 0xFF;
     akao_command(0xD8);
 }
 
-void akao_sendCmdD9(s32 a, s32 b) {
+void akao_fadeTempoPitchScale(s32 a, s32 b) {
     g_akaoArgs.arg0 = a;
     g_akaoArgs.arg1 = b & 0xFF;
     akao_command(0xD9);
 }
 
-void akao_sendCmdDA(s32 a, s32 b, s32 c) {
+void akao_fadeTempoPitchScaleFrom(s32 a, s32 b, s32 c) {
     g_akaoArgs.arg0 = a;
     g_akaoArgs.arg1 = b & 0xFF;
     g_akaoArgs.arg2 = c & 0xFF;
@@ -580,7 +580,7 @@ s32 akao_uploadSeBank(s32 *a, s32 b) {
         h[8] = addr;
         akao_copy(h, g_akaoResidentStream, 0x70);
     } else {
-        D_8007F740 = 0;
+        g_akaoResidentStream[8] = 0;
     }
     return r;
 }

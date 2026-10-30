@@ -937,7 +937,7 @@ s32 wm_soundCommand(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4) {
             if ((arg0 & 0x3F) != 6) {
                 break;
             }
-            akao_sendCmd92(arg1);
+            akao_setCondition(arg1);
             return 0;
         }
         return -1;
@@ -1411,7 +1411,7 @@ void wm_togglePause(void) {
 
     g_gameState->gameData->flags ^= GD_PAUSED;
     if (g_gameState->gameData->flags & GD_PAUSED) {
-        akao_sendCmd99(0);
+        akao_pause(0);
         game_resumeClock(1);
         for (i = 1; i >= 0; i--) {
             g_padActuator[i].unk1 = 0;
@@ -1433,7 +1433,7 @@ void wm_togglePause(void) {
         g_gameState->gameData->flags |= GD_NO_FLIP;
     } else {
         game_resumeClock(0);
-        akao_sendCmd98(0);
+        akao_resume(0);
         g_gameState->gameData->flags &= ~GD_NO_FLIP;
     }
 }

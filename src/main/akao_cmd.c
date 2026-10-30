@@ -71,7 +71,7 @@ void akao_startSeq(s32 addr, s32 mask) {
     x = 0xFFFFFF;
     g_akaoSeState.keyOffMask |= ~bit & (~(g_akaoSeState.activeMask | g_akaoStreamVoices) & x);
     g_akaoSeq->keyOffMask = 0;
-    if (D_800831C4 & 1) {
+    if (g_akaoPauseFlags & 1) {
         g_akaoSeq->activeMask = 0;
         g_akaoSeq->pausedMask |= active & mask;
     } else {
@@ -138,7 +138,7 @@ void akao_startSeq(s32 addr, s32 mask) {
             }
             c->noteTicks = 3;
             c->gateTicks = 1;
-            c->pc = D_8006F40C;
+            c->pc = g_akaoEmptyTrack;
             c->voiceDirty |= 0x4400;
             c->voiceAdsr2 = (c->voiceAdsr2 & 0xFFE0) | 5;
         }
@@ -174,7 +174,7 @@ void akao_stopSeq(AkaoSeq *a, AkaoChannel *c, s32 id) {
         for (i = 32; i != 0; i--) {
             c->noteTicks = 3;
             c->gateTicks = 1;
-            c->pc = D_8006F40C;
+            c->pc = g_akaoEmptyTrack;
             c++;
         }
         a->musicId = 0;
@@ -311,7 +311,7 @@ void akao_startSeChannel(AkaoChannel *c, VoiceParams *p, s32 mask, u8 *data) {
     g_akaoSeState.noiseMask &= mask;
     g_akaoSeState.reverbMask &= mask;
     g_akaoSeState.pitchModMask &= mask;
-    if (D_800831C4 & 2) {
+    if (g_akaoPauseFlags & 2) {
         mask = 0x100;
         c = g_akaoSeChannels;
         n = 16;
@@ -508,7 +508,7 @@ void akao_resumeSeq(s32 addr, s32 restore) {
         } else {
             c->noteTicks = 4;
             c->gateTicks = 2;
-            c->pc = D_8006F40C;
+            c->pc = g_akaoEmptyTrack;
         }
         c->voice = 0x18;
         n--;
@@ -525,7 +525,7 @@ void akao_resumeSeq(s32 addr, s32 restore) {
     g_akaoSavedSeq.musicId = 0;
     g_akaoSeState.keyOffMask |= ~active & (~(g_akaoSeState.activeMask | g_akaoStream.voiceMask) & x);
     g_akaoFlags.dirty |= 0x100;
-    if (D_800831C4 & 1) {
+    if (g_akaoPauseFlags & 1) {
         g_akaoSeq->pausedMask = g_akaoSeq->activeMask;
         g_akaoSeq->activeMask = 0;
     }
@@ -536,7 +536,7 @@ s32 akao_findBankSlot(s32 a) {
 
     if (a != 0) {
         i = 7;
-        if (a == D_800809D8) {
+        if (a == g_akaoLoadedBanks[6]) {
             i = 6;
         } else {
         loop:
@@ -1273,10 +1273,10 @@ void akao_cmdSetOutputMode2(void) {
     akao_markSeDirty();
 }
 
-void akao_cmd90(s32 *arg0) {
+void akao_cmdSetMuteMask(s32 *arg0) {
     u32 i;
     AkaoChannel *ch;
-    D_80080AC4 = *arg0;
+    g_akaoMuteMask = *arg0;
     ch = g_akaoChannels;
     for (i = 0; i < 0x20; i++) {
         ch->voiceDirty |= 3;
@@ -1284,11 +1284,11 @@ void akao_cmd90(s32 *arg0) {
     }
 }
 
-void akao_cmd92(u16 *a) {
+void akao_cmdSetCondition(u16 *a) {
     g_akaoSeq->condition = *a;
 }
 
-void akao_cmd9B(void) {
+void akao_cmdPauseMusic(void) {
     u32 m;
     u32 bit;
     s32 i;
@@ -1316,10 +1316,10 @@ void akao_cmd9B(void) {
         t->activeMask = 0;
         t->pausedMask = v;
     }
-    D_800831C4 |= 1;
+    g_akaoPauseFlags |= 1;
 }
 
-void akao_cmd9A(void) {
+void akao_cmdResumeMusic(void) {
     AkaoChannel *ch;
     s32 bit;
     s32 mask;
@@ -1342,10 +1342,10 @@ void akao_cmd9A(void) {
         g_akaoSeq->pausedMask = 0;
         g_akaoFlags.dirty |= 0x100;
     }
-    D_800831C4 &= ~1;
+    g_akaoPauseFlags &= ~1;
 }
 
-void akao_cmd9D(void) {
+void akao_cmdPauseSe(void) {
     u32 m;
     u32 bit;
     u32 i;
@@ -1377,16 +1377,16 @@ void akao_cmd9D(void) {
             v++;
         }
     }
-    D_800831C4 |= 2;
+    g_akaoPauseFlags |= 2;
 }
 
-void akao_cmd9C(void) {
+void akao_cmdResumeSe(void) {
     u32 mask;
     u32 bit;
     AkaoChannel *c;
     s32 m;
-    if (D_80080A80 != 0) {
-        mask = D_80080A80;
+    if (g_akaoSeState.pausedMask != 0) {
+        mask = g_akaoSeState.pausedMask;
         bit = 0x100;
         c = g_akaoSeChannels;
         do {
@@ -1402,10 +1402,10 @@ void akao_cmd9C(void) {
         g_akaoSeState.activeMask |= m;
         g_akaoFlags.dirty |= 0x100;
     }
-    D_800831C4 &= ~2;
+    g_akaoPauseFlags &= ~2;
 }
 
-void akao_cmd9F(void) {
+void akao_cmdPauseStream(void) {
     if (g_akaoStream.voiceMask != 0) {
         akao_setVoicePitch(g_akaoStream.voice, 0);
         akao_setVoicePitch(g_akaoStream.voice + 1, 0);
@@ -1414,7 +1414,7 @@ void akao_cmd9F(void) {
     }
 }
 
-void akao_cmd9E(void) {
+void akao_cmdResumeStream(void) {
     AkaoStreamState *d = &g_akaoStream;
     s32 v;
     s32 l;

@@ -1512,6 +1512,6 @@ void btlfx_copyDisplayToDraw(void) {
     } while (i < 0x140);
     if (D_800F78AC == 0) {
         D_800F78AC = 1;
-        akao_sendCmd99(2);
+        akao_pause(2);
     }
 }

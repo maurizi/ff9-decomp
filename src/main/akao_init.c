@@ -135,8 +135,8 @@ void akao_initState(void) {
     SPU_REG16(SPU_CD_VOL_L) = 0x7FFF;
     SPU_REG16(SPU_CD_VOL_R) = 0x7FFF;
     g_akaoSkipMeasures = 0;
-    D_80080AC4 = 0;
-    D_800831C4 = 0;
+    g_akaoMuteMask = 0;
+    g_akaoPauseFlags = 0;
     g_akaoStream.volume = 0x7F00;
     g_akaoStream.volumeFadeLen = 0;
     g_akaoVoiceModeMasks[2] = 0;
@@ -200,10 +200,10 @@ loop1:
 
 void akao_init(void) {
     SpuStart();
-    SpuInitMalloc(4, D_80080990);
+    SpuInitMalloc(4, g_akaoSpuMallocTable);
     SpuSetTransferMode(0);
     SpuSetTransferStartAddr(0x1010);
-    akao_spuWrite(D_8006F334, 0x40);
+    akao_spuWrite(g_akaoSilenceSample, 0x40);
     akao_waitSpuTransfer();
     akao_initState();
     SpuSetIRQ(0);
@@ -220,7 +220,7 @@ void akao_init(void) {
 
 void akao_quit(void) {
     if (g_akaoSpuBusy == 1) {
-        akao_spuWrite(D_8006F334, 0x40);
+        akao_spuWrite(g_akaoSilenceSample, 0x40);
         akao_waitSpuTransfer();
     }
     while (StopRCnt(0xF2000002) == 0) {

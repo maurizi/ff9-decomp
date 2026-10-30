@@ -52,7 +52,7 @@ void btl_updatePause(void) {
     if (!(f & 0x1000)) {
         if (!(gd->flags & 0x100) || (f & 0x20)) {
             gd->flags |= 0x100;
-            akao_sendCmd99(0);
+            akao_pause(0);
             game_resumeClock(1);
             for (i = 1; i >= 0; i--) {
                 g_padActuator[i].unk1 = 0;
@@ -97,7 +97,7 @@ void btl_updatePause(void) {
         return;
     }
     game_resumeClock(0);
-    akao_sendCmd98(0);
+    akao_resume(0);
     g_padPortMask[0] &= ~8;
     btlui_resumeFromPause();
     g_gameState->gameData->flags &= ~0x20;
@@ -1817,7 +1817,7 @@ s32 btl_soundCmd(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4) {
             if ((arg0 & 0x3F) != 6) {
                 break;
             }
-            akao_sendCmd92(arg1);
+            akao_setCondition(arg1);
             return 0;
         case 12:
             goto stream;

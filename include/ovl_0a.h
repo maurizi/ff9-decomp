@@ -1501,7 +1501,7 @@ void akao_stopMusic(s32);
 void akao_saveMusic(void);
 s32 akao_playMusicCount(void *, s32);
 s32 akao_playSe(s32, s32, s32, s32);
-void akao_sendCmd92(s32);
+void akao_setCondition(s32);
 void akao_setAllSeVolume(s32);
 void akao_fadeAllSeVolume(s32, s32);
 void akao_setSeVolume(s32, s32, s32);
@@ -1520,9 +1520,9 @@ void akao_fadeTempoScaleFrom(s32, s32, s32);
 void akao_setPitchScale(s32);
 void akao_fadePitchScale(s32, s32);
 void akao_fadePitchScaleFrom(s32, s32, s32);
-void akao_sendCmdD8(s32);
-void akao_sendCmdD9(s32, s32);
-void akao_sendCmdDA(s32, s32, s32);
+void akao_setTempoPitchScale(s32);
+void akao_fadeTempoPitchScale(s32, s32);
+void akao_fadeTempoPitchScaleFrom(s32, s32, s32);
 s32 akao_getSpuTransferState(void);
 void akao_sendCmdE0(s32 *, s32, s32);
 void akao_sendCmdE6(s32);
@@ -1540,8 +1540,8 @@ s32 fld_initShadows(s32, s32, s32, s32); /* returns shadow_initSlots's result (t
 FieldAnimSfx *fld_addAnimSfx(FieldEvtCtx *, s32, s32); /* returns the new entry */
 
 /* Functions called before (or without) a declaration in scope (tools/decl_check.py --protos) */
-void akao_sendCmd98(u32 x); /* main */
-void akao_sendCmd99(u32 x); /* main */
+void akao_resume(u32 x); /* main */
+void akao_pause(u32 x); /* main */
 s32 bgi_addActor(FieldObjSlot *arg0);
 s32 bgi_bindActor(s32 arg0, FieldObjSlot *arg1);
 s32 bgi_clear(void);
