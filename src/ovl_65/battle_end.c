@@ -871,7 +871,7 @@ void rewards_addAp(s32 arg0, u32 arg1) {
     Character *c;
     s32 i;
     s32 j;
-    Unk80069018 *e;
+    ItemInfo *e;
     s32 k;
     s32 need;
     s32 have;
@@ -883,15 +883,15 @@ void rewards_addAp(s32 arg0, u32 arg1) {
             if (c->equip[i] != ITEM_NONE) {
                 e = &g_itemTable[c->equip[i]];
                 for (j = 0; j < 3; j++) {
-                    if (e->unkC[j] != 0) {
-                        k = chr_findAbilitySlot(c->info.b.id, e->unkC[j]);
+                    if (e->abilities[j] != 0) {
+                        k = chr_findAbilitySlot(c->info.b.id, e->abilities[j]);
                         if (k >= 0) {
                             need = g_abilityRows[c->info.b.row][k].unk1;
                             have = c->ap[k];
                             if (have < need) {
                                 if (arg1 >= need - have) {
                                     c->ap[k] = need;
-                                    rewards_addLearned(arg0, e->unkC[j]);
+                                    rewards_addLearned(arg0, e->abilities[j]);
                                 } else {
                                     c->ap[k] = have + arg1;
                                 }
@@ -911,7 +911,7 @@ u8 rewards_willLearn(Character *c, s32 arg1) {
     s32 ch;
     s32 k;
     u8 *eq;
-    Unk80069018 *e;
+    ItemInfo *e;
     s32 have;
 
     ret = 0;
@@ -922,8 +922,8 @@ u8 rewards_willLearn(Character *c, s32 arg1) {
         if (eq[i] != ITEM_NONE) {
             e = &g_itemTable[eq[i]];
             for (j = 0; j < 3; j++) {
-                if (e->unkC[j] != 0) {
-                    k = chr_findAbilitySlot(ch & 0xFF, e->unkC[j]);
+                if (e->abilities[j] != 0) {
+                    k = chr_findAbilitySlot(ch & 0xFF, e->abilities[j]);
                     if (k >= 0) {
                         have = c->ap[k];
                         if (have < g_abilityRows[c->info.b.row][k].unk1) {
@@ -1369,7 +1369,7 @@ u8 rewards_addItems(void) {
 
 void rewards_drawItems(Window *w) {
     Window *r;
-    Unk80069018 *it;
+    ItemInfo *it;
     u8 *s;
     u32 i;
     s32 off;
@@ -1390,7 +1390,7 @@ void rewards_drawItems(Window *w) {
         y2 = i * 15 + 10;
         text_formatNumber(rw->items[i][1], s_rewardsTextBuf, 2, 1);
         ui_drawItemIcon(r->x + 7, r->y + y - off, w->otz, rw->items[i][0], 1);
-        text_drawBlock(r->x + 0x16, r->y + y - off, w->otz, g_itemNames + it->unk0, 0);
+        text_drawBlock(r->x + 0x16, r->y + y - off, w->otz, g_itemNames + it->name, 0);
         ui_drawSmallDigits(r->x + 0x88, r->y + y2 - off, w->otz, s_rewardsTextBuf, 0);
     }
     if (rw->itemCount == 0) {

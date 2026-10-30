@@ -192,7 +192,7 @@ u8 *text_buildBlock(s32 x, s32 y, u32 *ot, u8 *s, s32 mode, u8 *pkt) {
                 if (k != 0xFF) {
                     pkt = text_buildFontTpage(ot, (DrTpageWords *)pkt);
                     pkt = ui_buildItemIcon(x, y, ot, k, 1, pkt);
-                    x += g_uiSprites[g_itemTable[k].unk8 + 0x5C].unk4;
+                    x += g_uiSprites[g_itemTable[k].icon + 0x5C].unk4;
                 }
             } else if (*s == TEXT_ARG_SPRITE) {
                 pkt = text_buildFontTpage(ot, (DrTpageWords *)pkt);
@@ -204,7 +204,7 @@ u8 *text_buildBlock(s32 x, s32 y, u32 *ot, u8 *s, s32 mode, u8 *pkt) {
                 if (k != 0xFF) {
                     pkt = text_buildFontTpage(ot, (DrTpageWords *)pkt);
                     pkt = ui_buildItemIcon(x, y, ot, k, 1, pkt);
-                    x += g_uiSprites[g_itemTable[k].unk8 + 0x5C].unk4;
+                    x += g_uiSprites[g_itemTable[k].icon + 0x5C].unk4;
                 }
             } else {
                 pkt = text_buildCode(x, y, ot, *s, &w, pkt);

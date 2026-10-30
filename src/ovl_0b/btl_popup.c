@@ -550,7 +550,7 @@ s32 btl_getElementName(u8 arg0) {
 }
 
 u8 *btl_getItemName(u8 arg0) {
-    return &g_itemNames[g_itemTable[arg0].unk0];
+    return &g_itemNames[g_itemTable[arg0].name];
 }
 
 void *btl_getUnitName(BtlUnit *arg0) {

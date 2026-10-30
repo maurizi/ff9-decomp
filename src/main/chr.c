@@ -99,7 +99,7 @@ Unk80032E84Out *chr_calcEquipStats(Unk80032E84In *in, Unk80032E84Out *out) {
     for (i = 0; i < 5; i++) {
         id = in->unk14.unk0[i];
         if (id != 0xFF) {
-            e = g_equipStatBonus[g_itemTable[id].unkB].unk0;
+            e = g_equipStatBonus[g_itemTable[id].statBonus].unk0;
             out->unk8[0] += e[0];
             out->unk8[1] += e[1];
             out->unk8[2] += e[2];
@@ -151,7 +151,7 @@ Unk80032E84Out *chr_calcEquipStats(Unk80032E84In *in, Unk80032E84Out *out) {
 
 s32 chr_calcAppearance(s32 kind, s32 flag, u8 *item) {
     u8 t = D_8006CAA4[kind][(u8)flag != 0];
-    u8 k = g_itemTable[*item].unk8;
+    u8 k = g_itemTable[*item].icon;
     s32 r;
 
     switch (t) {
@@ -808,7 +808,7 @@ s32 chr_sumEquipBonus(u8 *eq, s32 k) {
 
     for (i = 0; i < 5; i++) {
         if (eq[i] != 0xFF) {
-            e = g_equipStatBonus[g_itemTable[eq[i]].unkB].unk0;
+            e = g_equipStatBonus[g_itemTable[eq[i]].statBonus].unk0;
             switch (k) {
             case 0:
                 sum += e[0];

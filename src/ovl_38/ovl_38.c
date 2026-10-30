@@ -204,7 +204,7 @@ void menuStatus_drawEquipment(void) {
         id = c->equip[i];
         if (id != ITEM_NONE) {
             ui_drawItemIcon(r->x + 0x8D, r->y + 0x68 + i * 15 - 1, 0x1D, id, 1);
-            s_menuStatus.prim = text_buildBlock(r->x + 0x9D, r->y + 0x68 + i * 15 - 1, &g_ot[0x1D], g_itemNames + g_itemTable[id].unk0, 0, s_menuStatus.prim);
+            s_menuStatus.prim = text_buildBlock(r->x + 0x9D, r->y + 0x68 + i * 15 - 1, &g_ot[0x1D], g_itemNames + g_itemTable[id].name, 0, s_menuStatus.prim);
         }
     }
 }

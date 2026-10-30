@@ -363,7 +363,7 @@ void menuMain_setEquipHelp(u8 arg0) {
         text_setStringArg(i, s_menuMainEquipLabels[i]);
         id = c->equip[i];
         if (id != 0xFF) {
-            text_setStringArg(j, g_itemNames + g_itemTable[id].unk0);
+            text_setStringArg(j, g_itemNames + g_itemTable[id].name);
         } else {
             text_setStringArg(j, text_get(0xD));
         }

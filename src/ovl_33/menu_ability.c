@@ -418,7 +418,7 @@ void menuAbility_setMember(s32 slot, s32 arg1) {
     UnkBlink *b;
     Character *c;
     AbilityEntry *a;
-    Unk80069018 *it;
+    ItemInfo *it;
     s32 j;
     s32 nItems;
     s32 nAbils;
@@ -462,8 +462,8 @@ void menuAbility_setMember(s32 slot, s32 arg1) {
         if (id != 0xFF) {
             it = &g_itemTable[id];
             for (j = 0; j < 3; j++) {
-                s_menuAbility.equipSlots[it->unkC[j]] |= 1 << slot;
-                s_menuAbility.equipItems[it->unkC[j]][slot] = id;
+                s_menuAbility.equipSlots[it->abilities[j]] |= 1 << slot;
+                s_menuAbility.equipItems[it->abilities[j]][slot] = id;
             }
         }
     }

@@ -179,7 +179,7 @@ void msg_measureLine(u8 **pp, s32 *pw) {
             case 0xE:
                 n = g_msgNumbers[*s++];
                 if (n < 0x100) {
-                    str = g_itemNames + g_itemTable[n].unk0;
+                    str = g_itemNames + g_itemTable[n].name;
                 } else if (n < 0x200) {
                     str = g_keyItemNames + g_keyItemTable[n - 0x100].unk0;
                 } else {
@@ -1331,7 +1331,7 @@ s32 msg_emitItemName(s32 id, s32 n) {
     u8 *t;
 
     if (id < 0x100) {
-        t = g_itemNames + g_itemTable[id].unk0;
+        t = g_itemNames + g_itemTable[id].name;
     } else if (id < 0x200) {
         t = g_keyItemNames + g_keyItemTable[id - 0x100].unk0;
     } else {

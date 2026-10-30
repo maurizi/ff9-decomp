@@ -402,7 +402,7 @@ void func_800EA908(Unk80104F88Entry *arg0) {
     s32 v;
     s32 id;
     s32 e;
-    Unk80069018 *it;
+    ItemInfo *it;
 
     if (arg0->chr->info.b.id == 3) {
         for (i = 0; i < m->unk7; i++) {
@@ -418,7 +418,7 @@ void func_800EA908(Unk80104F88Entry *arg0) {
             if (e != 0xFF) {
                 it = &g_itemTable[e];
                 for (j = 0; j < 3; j++) {
-                    id = it->unkC[j];
+                    id = it->abilities[j];
                     if (id != 0 && id < 0xC0) {
                         for (k = 0; k < m->unk7; k++) {
                             if (id == D_800F8D84[k]) {
@@ -775,9 +775,9 @@ void btlui_addEquipAbilities(Unk80104F88Entry *arg0) {
     for (i = 0; i < 5; i++) {
         u8 item = c->equip[i];
         if (item != 0xFF) {
-            Unk80069018 *e = &g_itemTable[item];
+            ItemInfo *e = &g_itemTable[item];
             for (j = 0; j < 3; j++) {
-                s32 a = e->unkC[j];
+                s32 a = e->abilities[j];
                 if (a != 0 && a < 0xC0) {
                     arg0->fromEquip[a] = 1;
                 }
@@ -2013,7 +2013,7 @@ void btlui_drawItemRow(s32 arg0, s32 arg1, s32 arg2, Window *arg3) {
     u8 id;
     s16 x;
     s32 y;
-    Unk80069018 *it;
+    ItemInfo *it;
     if (e != NULL) {
         if (e->unk1 - btlui_getItemReserved(e->unk0) >= 0) {
             n = e->unk1 - btlui_getItemReserved(e->unk0);
@@ -2027,7 +2027,7 @@ void btlui_drawItemRow(s32 arg0, s32 arg1, s32 arg2, Window *arg3) {
             x5 = x + 5;
             y = r->y + arg1 * 15 + arg3->y - dy;
             ui_drawItemIcon(x5, y, 7, id, 1);
-            text_draw(x + 0x14, y, 7, g_itemNames + it->unk0, 0);
+            text_draw(x + 0x14, y, 7, g_itemNames + it->name, 0);
             text_formatNumber(n, buf, 2, 1);
             ui_drawSmallDigits(x + 0x67, y + 4, 7, buf, 0);
         }
@@ -2043,7 +2043,7 @@ void btlui_drawThrowRow(s32 arg0, s32 arg1, s32 arg2, Window *arg3) {
     s32 n;
     s32 x;
     s32 y;
-    Unk80069018 *it;
+    ItemInfo *it;
     if (e != NULL) {
         if (e->unk1 - btlui_getItemReserved(e->unk0) >= 0) {
             n = e->unk1 - btlui_getItemReserved(e->unk0);
@@ -2055,7 +2055,7 @@ void btlui_drawThrowRow(s32 arg0, s32 arg1, s32 arg2, Window *arg3) {
             it = &g_itemTable[e->unk0];
             y = r->y + arg1 * 15 + arg3->y - dy;
             text_formatNumber(n, buf, 2, 1);
-            text_draw(x + 5, y, 7, g_itemNames + it->unk0, 0);
+            text_draw(x + 5, y, 7, g_itemNames + it->name, 0);
             ui_drawSmallDigits(x + 0x67, y + 4, 7, buf, 0);
         }
     }

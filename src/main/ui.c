@@ -626,11 +626,11 @@ void ui_drawItemIcon(s32 arg0, s32 arg1, s32 otz, s32 arg3, u8 arg4) {
 }
 
 u8 *ui_buildItemIcon(s32 x, s32 y, u32 *ot, s32 item, u8 flag, u8 *pkt) {
-    Unk80069018 *e = &g_itemTable[item];
-    Unk800689B0 *d = &D_800689B0[e->unk8];
+    ItemInfo *e = &g_itemTable[item];
+    Unk800689B0 *d = &D_800689B0[e->icon];
     s32 clut;
 
-    clut = d->unk2 + (flag ? e->unk9 << 6 : 0x3C0);
+    clut = d->unk2 + (flag ? e->iconPalette << 6 : 0x3C0);
     setlen(pkt, 4);
     ((SprtWords *)pkt)->rgbc = (flag == 0 ? GPU_RGBC(GPU_SPRT | GPU_ABE, 0x808080) : GPU_RGBC(GPU_SPRT, 0x808080));
     ((SprtWords *)pkt)->xy = (x & 0xFFFF) | (y << 16);
@@ -1026,10 +1026,10 @@ s32 item_countEquipped(s32 id) {
 
 s32 item_getEquipSlot(s32 arg0) {
     s32 i;
-    Unk80069018 *e = &g_itemTable[arg0];
+    ItemInfo *e = &g_itemTable[arg0];
 
     for (i = 0; i < 5; i++) {
-        if (e->unkF & D_8006BB84[i]) {
+        if (e->slots & D_8006BB84[i]) {
             return i;
         }
     }

@@ -123,7 +123,7 @@ void menuItem_inputManualArrange(void) {
 
 void menuItem_selectItem(s32 idx, MenuList *l) {
     UnkPair *p;
-    Unk80069018 *it;
+    ItemInfo *it;
     Unk8006B1F4 *e;
     u8 ok;
     s32 id;
@@ -134,7 +134,7 @@ void menuItem_selectItem(s32 idx, MenuList *l) {
         id = p->unk0;
         it = &g_itemTable[id];
         e = &D_8006B1F4[id - ITEM_FIRST_USABLE];
-        if (it->unkF & 1) {
+        if (it->slots & 1) {
             s_menuItem.targetKind = e->unk0;
             ok = 1;
             s_menuItem.targetMode = p->unk0 != 0xFB ? e->unk0_5 : 0;
@@ -296,11 +296,11 @@ void menuItem_sortAuto(void) {
     }
     for (i = 0; i < n - 1; i++) {
         for (j = i + 1; j < n; j++) {
-            if (g_itemTable[s_menuItemSortBuf[i].id].unk10 > g_itemTable[s_menuItemSortBuf[j].id].unk10) {
+            if (g_itemTable[s_menuItemSortBuf[i].id].sortKey > g_itemTable[s_menuItemSortBuf[j].id].sortKey) {
                 s_menuItemSortTmp = s_menuItemSortBuf[i];
                 s_menuItemSortBuf[i] = s_menuItemSortBuf[j];
                 s_menuItemSortBuf[j] = s_menuItemSortTmp;
-            } else if (g_itemTable[s_menuItemSortBuf[i].id].unk10 == g_itemTable[s_menuItemSortBuf[j].id].unk10 &&
+            } else if (g_itemTable[s_menuItemSortBuf[i].id].sortKey == g_itemTable[s_menuItemSortBuf[j].id].sortKey &&
                        s_menuItemSortBuf[j].id < s_menuItemSortBuf[i].id) {
                 s_menuItemSortTmp = s_menuItemSortBuf[i];
                 s_menuItemSortBuf[i] = s_menuItemSortBuf[j];
@@ -398,7 +398,7 @@ void menuItem_updateHelp(void) {
     }
     p = &g_gameState->gameData->items.slots[menuItem_getSlot(l)];
     if (p->unk1 != 0) {
-        h->text = &s_menuItemHelp[g_itemTable[p->unk0].unk2];
+        h->text = &s_menuItemHelp[g_itemTable[p->unk0].help];
     }
 }
 
@@ -648,7 +648,7 @@ void menuItem_drawTargetWindow(void) {
 
 void menuItem_drawRow(s32 col, s32 row, s32 i, MenuView *v) {
     UnkPair *p = &g_gameState->gameData->items.slots[i];
-    Unk80069018 *it;
+    ItemInfo *it;
     u8 ok;
     s32 x, y, x2;
     s32 k = 0x2A;
@@ -656,12 +656,12 @@ void menuItem_drawRow(s32 col, s32 row, s32 i, MenuView *v) {
 
     if (p->unk1 != 0 && p->unk0 != ITEM_NONE) {
         it = &g_itemTable[p->unk0];
-        ok = it->unkF & 1;
+        ok = it->slots & 1;
         x = col * 0x96;
         y = row * 0xF + (v->unk2 + k);
         text_formatNumber(p->unk1, buf, 2, 1);
         x2 = x + 0x18;
-        text_drawBlock(x + 0x28, y, 0x1C, g_itemNames + it->unk0, ok ? 0 : 2);
+        text_drawBlock(x + 0x28, y, 0x1C, g_itemNames + it->name, ok ? 0 : 2);
         ui_drawItemIcon(x2, y, 0x1C, p->unk0, ok);
         ui_drawSmallDigits(x2 + 0x6C, y + 4, 0x1C, buf, ok ? 0 : 2);
     }

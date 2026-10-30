@@ -486,20 +486,20 @@ extern s16 D_80068F70[];
 extern u8 D_8006BB8C[];
 
 typedef struct {
-    u16 unk0; /* name offset into g_itemNames */
-    u16 unk2; /* name offset into the shop's text block */
-    u16 unk4; /* price */
-    u16 unk6; /* who can equip (mask) */
-    u8 unk8; /* kind (icon) */
-    u8 unk9; /* icon palette */
-    u8 unkA; /* equip rank */
-    u8 unkB; /* stat bonus row (g_equipStatBonus) */
-    u8 unkC[3]; /* abilities taught */
-    u8 unkF;    /* mask tested against D_8006BB84[] */
-    u8 unk10;   /* sort key */
+    u16 name; /* name offset into g_itemNames (msg_emitItemName, btl_getItemName) */
+    u16 help; /* name offset into the shop's text block: the screens' item help text (menuItem_updateHelp, shopBuy_updateHelp) */
+    u16 price; /* price; runtime: the shop charges it, sells for half */
+    u16 equipMask; /* who can equip (mask): bit per character set (shopBuy_drawParty, menuEquip_buildItemList) */
+    u8 icon; /* kind (icon): sprite 0x5C + it (text_buildBlock), chr_calcAppearance weapon kind */
+    u8 iconPalette; /* icon palette */
+    u8 rank; /* equip rank: menuEquip_optimize picks the highest */
+    u8 statBonus; /* stat bonus row (g_equipStatBonus) */
+    u8 abilities[3]; /* abilities taught */
+    u8 slots; /* mask tested against D_8006BB84[]: equip slot bits (item_getEquipSlot), 1 = usable from the Item menu (menuItem_selectItem) */
+    u8 sortKey; /* sort key: menuItem_sortAuto */
     u8 pad11;
-} Unk80069018; /* item table, 0x12-byte entries */
-extern Unk80069018 g_itemTable[];
+} ItemInfo; /* item table, 0x12-byte entries */
+extern ItemInfo g_itemTable[];
 extern u8 D_8006CA9C[4]; /* max hp/mp support abilities */
 extern u8 D_8006CAA0[4]; /* stat caps */
 extern u8 D_8006D1C8[][4]; /* armor bonuses, indexed by item id (0x58..0xDF) */
