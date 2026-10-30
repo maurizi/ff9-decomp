@@ -372,14 +372,14 @@ void rewards_moveMemberWins(void) {
         if (s_rewards.getsExp[i] != 0) {
             w = s_rewards.levelWins[i].win;
             if (w != NULL && w->state != 0) {
-                tx = w->unk0 - 0x26;
+                tx = w->x - 0x26;
                 dx = s_rewards.wins[i + 2].unk4.x - tx;
-                ty = w->unk2 - 2;
+                ty = w->y - 2;
                 dy = s_rewards.wins[i + 2].unk4.y - ty;
-                w->unk0 += dx;
-                s_rewards.levelWins[i].win->unk8.x += dx;
-                s_rewards.levelWins[i].win->unk2 += dy;
-                s_rewards.levelWins[i].win->unk8.y += dy;
+                w->x += dx;
+                s_rewards.levelWins[i].win->cur.x += dx;
+                s_rewards.levelWins[i].win->y += dy;
+                s_rewards.levelWins[i].win->cur.y += dy;
             }
         }
         if (s_rewards.getsAp[i] != 0) {
@@ -389,12 +389,12 @@ void rewards_moveMemberWins(void) {
                 t = d->unkC;
                 if (t != NULL && d->unk2 >= 2) {
                     if (t->unk4 != NULL) {
-                        w2->unk0 += t->unk4[d->unk2];
-                        s_rewards.learnWins[i].win->unk8.x += t->unk4[d->unk2];
+                        w2->x += t->unk4[d->unk2];
+                        s_rewards.learnWins[i].win->cur.x += t->unk4[d->unk2];
                     }
                     if (t->unk8 != NULL) {
-                        s_rewards.learnWins[i].win->unk2 += t->unk8[d->unk2];
-                        s_rewards.learnWins[i].win->unk8.y += t->unk8[d->unk2];
+                        s_rewards.learnWins[i].win->y += t->unk8[d->unk2];
+                        s_rewards.learnWins[i].win->cur.y += t->unk8[d->unk2];
                     }
                 }
             }
@@ -845,7 +845,7 @@ void rewards_updateLearnWins(void) {
                         rr->w = 0x70;
                         rr->h = 0x19;
                         w->win = win_openFree(rr, 6, 2);
-                        w->win->unk50 = i;
+                        w->win->userData = i;
                         win_setTitle(w->win, (s32)s_rewardsLearnLabel);
                         win_setDrawContent(w->win, rewards_drawLearnWin);
                         win_setOnClosed(w->win, rewards_onLearnWinClosed);
@@ -956,12 +956,12 @@ void rewards_drawLearnWin(Window *w) {
     s32 id;
 
     v = w;
-    slot = w->unk50;
+    slot = w->userData;
     s = &s_rewards.learnWins[slot];
     id = s->ids[s->shown];
     if (id < ABILITY_SUPPORT_FIRST) {
         name = s_rewardsActionNames + s_rewardsActionTable[id].unkE;
-        ui_drawSprite(w->unk0 + 6, w->unk2 + 7, w->unk18, 0xBC, 0);
+        ui_drawSprite(w->x + 6, w->y + 7, w->otz, 0xBC, 0);
     } else {
         name = s_rewardsSupportNames + g_supportAbilities[id - ABILITY_SUPPORT_FIRST].unk2;
         if (chr_testSupportBit(g_gameState->gameData->party[slot]->supportAbilities, id)) {
@@ -969,18 +969,18 @@ void rewards_drawLearnWin(Window *w) {
         } else {
             icon = 0xF4;
         }
-        ui_drawSprite(w->unk0 + 6, w->unk2 + 7, w->unk18, icon, 0);
+        ui_drawSprite(w->x + 6, w->y + 7, w->otz, icon, 0);
     }
-    text_drawBlock(v->unk0 + 0x16, v->unk2 + 6, w->unk18, name, 0);
+    text_drawBlock(v->x + 0x16, v->y + 6, w->otz, name, 0);
     setlen(g_primPtr, 3);
     t = (TileWords *)g_primPtr;
     t->rgbc = 0x62101010;
-    t->xy = (v->unk0 + 4) | ((v->unk2 + 4) << 16);
-    t->wh = (v->unk4 - 4) | ((v->unk6 - 4) << 16);
-    addPrim(&g_ot[w->unk18], t);
+    t->xy = (v->x + 4) | ((v->y + 4) << 16);
+    t->wh = (v->w - 4) | ((v->h - 4) << 16);
+    addPrim(&g_ot[w->otz], t);
     g_primPtr += sizeof(TileWords);
     SetDrawTPage(g_primPtr, 1, 1, 0x20);
-    addPrim(&g_ot[w->unk18], g_primPtr);
+    addPrim(&g_ot[w->otz], g_primPtr);
     g_primPtr += sizeof(DrTpageWords);
 }
 
@@ -1037,7 +1037,7 @@ void rewards_addLearned(s32 arg0, u8 arg1) {
 }
 
 void rewards_onLearnWinClosed(Window *arg0) {
-    s_rewards.learnWins[arg0->unk50].win = 0;
+    s_rewards.learnWins[arg0->userData].win = 0;
 }
 
 void rewards_drawLevelUp(s32 x, s32 y, s32 otz, Popup *p) {
@@ -1353,8 +1353,8 @@ u8 rewards_addItems(void) {
     if (f) {
         k = 0x10;
         ts = text_measure(text_get(REWARDS_TEXT_ITEMS_FULL));
-        rr.x = s_rewards.itemsWin->unk0 + ((s_rewards.itemsWin->unk4 - k - ts.w) >> 1);
-        rr.y = s_rewards.itemsWin->unk2 + ((s_rewards.itemsWin->unk6 - k - ts.h) >> 1);
+        rr.x = s_rewards.itemsWin->x + ((s_rewards.itemsWin->w - k - ts.w) >> 1);
+        rr.y = s_rewards.itemsWin->y + ((s_rewards.itemsWin->h - k - ts.h) >> 1);
         rr.w = ts.w + 0x10;
         rr.h = ts.h + 0xF;
         ws->win = win_openFree(&rr, 6, 2);
@@ -1383,28 +1383,28 @@ void rewards_drawItems(Window *w) {
     r = w;
     i = 0;
     rw = &s_rewards.rewards;
-    off = r->unk6 - r->unk8.h;
+    off = r->h - r->cur.h;
     for (; i < rw->itemCount; i++) {
         it = &g_itemTable[rw->items[i][0]];
         y = i * 15 + 7;
         y2 = i * 15 + 10;
         text_formatNumber(rw->items[i][1], s_rewardsTextBuf, 2, 1);
-        ui_drawItemIcon(r->unk0 + 7, r->unk2 + y - off, w->unk18, rw->items[i][0], 1);
-        text_drawBlock(r->unk0 + 0x16, r->unk2 + y - off, w->unk18, g_itemNames + it->unk0, 0);
-        ui_drawSmallDigits(r->unk0 + 0x88, r->unk2 + y2 - off, w->unk18, s_rewardsTextBuf, 0);
+        ui_drawItemIcon(r->x + 7, r->y + y - off, w->otz, rw->items[i][0], 1);
+        text_drawBlock(r->x + 0x16, r->y + y - off, w->otz, g_itemNames + it->unk0, 0);
+        ui_drawSmallDigits(r->x + 0x88, r->y + y2 - off, w->otz, s_rewardsTextBuf, 0);
     }
     if (rw->itemCount == 0) {
         s = text_get(REWARDS_TEXT_NO_ITEM);
-        text_drawBlock(r->unk0 + ((r->unk4 - (text_getInfo(REWARDS_TEXT_NO_ITEM) & 0xFFF)) >> 1), r->unk2 - (k1 = off - 0x28), w->unk18, s, 0);
+        text_drawBlock(r->x + ((r->w - (text_getInfo(REWARDS_TEXT_NO_ITEM) & 0xFFF)) >> 1), r->y - (k1 = off - 0x28), w->otz, s, 0);
     }
     if (rw->card != ITEM_NONE) {
         k = off - 0x66;
-        ui_drawSpriteDef(r->unk0 + 8, r->unk2 - k, w->unk18, &s_rewardsCardIcon, 0);
+        ui_drawSpriteDef(r->x + 8, r->y - k, w->otz, &s_rewardsCardIcon, 0);
         text_copy(s_rewardsTextBuf, (u8 *)card_getName(rw->card));
         text_append(s_rewardsTextBuf, text_get(REWARDS_TEXT_CARD));
-        text_drawBlock(r->unk0 + 0x16, r->unk2 - k, w->unk18, s_rewardsTextBuf, 0);
+        text_drawBlock(r->x + 0x16, r->y - k, w->otz, s_rewardsTextBuf, 0);
     }
-    ui_drawEtchedLine(r->unk0 + 2, r->unk2 - (k3 = off - 0x61), w->unk18, r->unk4 - 5);
+    ui_drawEtchedLine(r->x + 2, r->y - (k3 = off - 0x61), w->otz, r->w - 5);
 }
 
 void rewards_resetFullWarning(void) {
@@ -1449,12 +1449,12 @@ void rewards_drawItemsLabels(Window *w) {
     s32 n = ui_measureLabel((u8 *)g_winLabelStrings.unk94);
     s32 k = 0x97;
 
-    ui_drawLabel(w->unk0 + 8, w->unk2 - 3, w->unk18 - 1, g_winLabelStrings.unk68, 0);
-    ui_drawLabel(w->unk0 - (n - k), w->unk2 - 3, w->unk18 - 1, g_winLabelStrings.unk94, 0);
+    ui_drawLabel(w->x + 8, w->y - 3, w->otz - 1, g_winLabelStrings.unk68, 0);
+    ui_drawLabel(w->x - (n - k), w->y - 3, w->otz - 1, g_winLabelStrings.unk94, 0);
 }
 
 void rewards_drawFullWarning(Window *arg0) {
-    text_drawBlock(arg0->unk0 + 8, arg0->unk2 + 8, arg0->unk18, text_get(REWARDS_TEXT_ITEMS_FULL), 0);
+    text_drawBlock(arg0->x + 8, arg0->y + 8, arg0->otz, text_get(REWARDS_TEXT_ITEMS_FULL), 0);
 }
 
 void rewards_onFullWarningClosed(void) {

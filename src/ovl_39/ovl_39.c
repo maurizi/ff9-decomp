@@ -656,10 +656,10 @@ void menuSave_drawConfirm(Window *w) {
     if (b < (a & 0xFFF)) {
         b = a & 0xFFF;
     }
-    text_drawBlock(w->unk0 + 8, w->unk2 + 8, w->unk18, (u8 *)s_menuSaveConfirm.text, 0);
+    text_drawBlock(w->x + 8, w->y + 8, w->otz, (u8 *)s_menuSaveConfirm.text, 0);
     m = b;
-    text_drawBlock(w->unk0 + ((s32)(w->unk4 - m) >> 1), (w->unk2 - d1) + w->unk6, w->unk18, text_get(SAVE_TEXT_YES), 0);
-    text_drawBlock(w->unk0 + ((s32)(w->unk4 - m) >> 1), (w->unk2 - d2) + w->unk6, w->unk18, text_get(SAVE_TEXT_NO), 0);
+    text_drawBlock(w->x + ((s32)(w->w - m) >> 1), (w->y - d1) + w->h, w->otz, text_get(SAVE_TEXT_YES), 0);
+    text_drawBlock(w->x + ((s32)(w->w - m) >> 1), (w->y - d2) + w->h, w->otz, text_get(SAVE_TEXT_NO), 0);
 }
 
 void menuSave_drawConfirmCursor(Window *w) {
@@ -671,9 +671,9 @@ void menuSave_drawConfirmCursor(Window *w) {
         b = a & 0xFFF;
     }
     if (w->state == WIN_OPEN) {
-        g_menuHelp.x = w->unk0 + ((s32)(w->unk4 - b) >> 1) - 0x1A;
-        g_menuHelp.y = w->unk2 + (s16)(w->unk6 + (s16)(s_menuSaveConfirm.choice * 15 - 0x26)) + 3;
-        z = w->unk18;
+        g_menuHelp.x = w->x + ((s32)(w->w - b) >> 1) - 0x1A;
+        g_menuHelp.y = w->y + (s16)(w->h + (s16)(s_menuSaveConfirm.choice * 15 - 0x26)) + 3;
+        z = w->otz;
         g_menuHelp.otz = z;
         ui_drawHand(g_menuHelp.x, g_menuHelp.y, z - 1);
     }
@@ -1038,8 +1038,8 @@ void menuSave_retryCheck(s32 result) {
 }
 
 void menuSave_drawCheck(Window *w) {
-    menuSave_drawBook(w->unk0 + 0xE, w->unk2 + 0x12, w->unk18);
-    text_drawBlock(w->unk0 + 0x4A, w->unk2 + 0xE, w->unk18, text_get(SAVE_TEXT_DO_NOT_REMOVE), 0);
+    menuSave_drawBook(w->x + 0xE, w->y + 0x12, w->otz);
+    text_drawBlock(w->x + 0x4A, w->y + 0xE, w->otz, text_get(SAVE_TEXT_DO_NOT_REMOVE), 0);
 }
 
 void menuSave_onCheckOpened(Window *w) {
@@ -1207,7 +1207,7 @@ void menuSave_onSavedMsgClosed(Window *w) {
 void menuSave_drawSavedMsg(Window *w) {
     u8 *s = text_get(SAVE_TEXT_DATA_SAVED);
 
-    text_drawBlock(w->unk0 + ((w->unk4 - text_measureWidth((s32)s)) >> 1), w->unk2 + 8, w->unk18, s, 0);
+    text_drawBlock(w->x + ((w->w - text_measureWidth((s32)s)) >> 1), w->y + 8, w->otz, s, 0);
 }
 
 void menuSave_openMessage(s32 id, s32 title) {
@@ -1274,7 +1274,7 @@ u8 menuSave_isMessageActive(void) {
 }
 
 void menuSave_drawMessage(Window *w) {
-    text_drawBlock(w->unk0 + 8, w->unk2 + 8, w->unk18, s_menuSaveMessage.text, 0);
+    text_drawBlock(w->x + 8, w->y + 8, w->otz, s_menuSaveMessage.text, 0);
 }
 
 void menuSave_onMessageOpened(Window *w) {
@@ -1460,14 +1460,14 @@ void menuSave_drawAccess(Window *w) {
         if (n >= 6) {
             n = 5;
         }
-        menuSave_drawBook(r->x + 0xE, r->y + 0x12, w->unk18);
-        text_drawBlock(r->x + 0x4A, r->y + 0xE, w->unk18, text_get(SAVE_TEXT_DO_NOT_REMOVE), 0);
-        menuSave_drawGauge(r->x + 0x1A, r->y + 0x44, w->unk18, st * ACCESS_GAUGE_STEP + n, ACCESS_GAUGE_W);
+        menuSave_drawBook(r->x + 0xE, r->y + 0x12, w->otz);
+        text_drawBlock(r->x + 0x4A, r->y + 0xE, w->otz, text_get(SAVE_TEXT_DO_NOT_REMOVE), 0);
+        menuSave_drawGauge(r->x + 0x1A, r->y + 0x44, w->otz, st * ACCESS_GAUGE_STEP + n, ACCESS_GAUGE_W);
         s_menuSaveAccess.lastProgress = st;
         return;
     }
-    text_drawBlock(r->x + 0x26, r->y + 0xC, w->unk18, text_get(SAVE_TEXT_FORMATTING_CARD), 0);
-    text_drawBlock(r->x + 0x32, r->y + 0x20, w->unk18, text_get(SAVE_TEXT_DO_NOT_REMOVE), 0);
+    text_drawBlock(r->x + 0x26, r->y + 0xC, w->otz, text_get(SAVE_TEXT_FORMATTING_CARD), 0);
+    text_drawBlock(r->x + 0x32, r->y + 0x20, w->otz, text_get(SAVE_TEXT_DO_NOT_REMOVE), 0);
 }
 
 u8 menuSave_writeFile(void) {

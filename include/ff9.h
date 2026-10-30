@@ -732,21 +732,21 @@ typedef struct {
 
 /* Menu window object (win_openFree returns one of these). */
 typedef struct Window {
-    s16 unk0; /* x */
-    s16 unk2; /* y */
-    s16 unk4; /* w */
-    s16 unk6; /* h */
-    RECT unk8; /* inner/content rect */
+    s16 x; /* final rect (the open animation grows cur towards it) */
+    s16 y; /* y */
+    s16 w; /* w */
+    s16 h; /* h */
+    RECT cur; /* rect drawn this frame (frame, clip, shadow, content), animated towards x/y/w/h */
     s16 openFrames;
     s16 closeFrames;
-    s16 unk14; /* open/close step x */
-    s16 unk16; /* open/close step y */
-    s16 unk18; /* OT layer */
+    s16 stepW; /* per-frame width step of the open/close animation (win_setOpenAnim, win_stepOpen) */
+    s16 stepH; /* per-frame height step */
+    s16 otz; /* OT layer (win_init otz), passed to every draw call */
     u8 style; /* 3 = balloon with tail (runtime: "Sure is dark..." balloon) */
     u8 slot; /* index in g_windows */
     u8 state; /* 3 open, 2 = fire callback */
     u8 translucent;
-    u8 unk1E;
+    u8 active; /* nonzero: draw the content, bright title (0 dims it: the battle command window while a list is open) */
     u8 shadow;
     s16 titleX;
     s8 titleY;
@@ -755,14 +755,14 @@ typedef struct Window {
     u8 animMode; /* open/close animation, 2 = tail */
     u8 tailMode; /* feeds the open steps */
     s16 tailX; /* tail x (runtime: poking it moves the tail) */
-    s16 unk2C;
-    s16 unk2E;
+    s16 stepLeft; /* per-frame step of the left edge when the window opens around its tail (win_setTail) */
+    s16 stepRight; /* per-frame step of the right edge */
     MenuList list;
     void (*drawContent)(struct Window *);
     void (*drawOverlay)(struct Window *);
     void (*onOpened)(struct Window *);
     void (*onClosed)(struct Window *);
-    s32 unk50; /* user data */
+    s32 userData; /* user data: msg_open stores its MsgWindow, battle_end the learn-window slot */
 } Window; /* 0x54 */
 extern Window g_windows[10];
 

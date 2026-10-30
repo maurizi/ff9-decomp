@@ -671,18 +671,18 @@ void evt_followBalloon(EvtObject *obj, Window *w) {
     s32 right, below;
     s32 x, y;
 
-    ox = w->unk0;
-    oy = w->unk2;
+    ox = w->x;
+    oy = w->y;
     evt_placeBalloon_pos(obj, &sx, &sy);
     below = (w->tailMode >> 1) & 1;
     right = w->tailMode & 1;
-    x = evt_followBalloon_x(w->unk4 - 3, sx, right, &tx);
-    y = evt_followBalloon_y(w->unk6 - 3, &sy, below);
-    w->unk0 = (ox + x) >> 1;
-    w->unk2 = (oy + y) >> 1;
-    w->tailX = tx - w->unk0 - right * 16;
-    w->unk8.x += w->unk0 - ox;
-    w->unk8.y += w->unk2 - oy;
+    x = evt_followBalloon_x(w->w - 3, sx, right, &tx);
+    y = evt_followBalloon_y(w->h - 3, &sy, below);
+    w->x = (ox + x) >> 1;
+    w->y = (oy + y) >> 1;
+    w->tailX = tx - w->x - right * 16;
+    w->cur.x += w->x - ox;
+    w->cur.y += w->y - oy;
 }
 
 WinLayout *evt_getMsgLayout(EvtObject *obj, s32 id, s32 flags) {

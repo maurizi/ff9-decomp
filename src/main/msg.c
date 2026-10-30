@@ -845,7 +845,7 @@ void msg_open(s32 msg, s32 id, WinLayout *l, s32 flags) {
     }
     w->window = win_open(&r, 2, style, id);
     if (w->window != NULL) {
-        w->window->unk50 = (s32)w;
+        w->window->userData = (s32)w;
         win_setDrawContent(w->window, (void (*)(Window *))msg_drawWindowContent);
         win_setDrawOverlay(w->window, msg_drawChoiceCursor);
         if (l->unk4 != 0 && !(flags & 4)) {
@@ -1180,7 +1180,7 @@ void func_8004ED3C(void) {
     MsgWindow *p;
     for (p = g_msgWindows; p < g_msgWindows + 10; p++) {
         if (p->open != 0 && p->window != NULL) {
-            p->window->unk18 = 0;
+            p->window->otz = 0;
         }
     }
 }
@@ -1422,13 +1422,13 @@ void msg_drawChoiceCursor(Window *w) {
     GameData *g;
     s32 ofs;
 
-    if (g_msgChoiceLine >= 0 && w->state == 3 && (((Window *)w->unk50)->animMode & 2)) {
+    if (g_msgChoiceLine >= 0 && w->state == 3 && (((Window *)w->userData)->animMode & 2)) {
         g = g_gameState->gameData;
-        g_penOt = g->ot[g->drawBuf] + w->unk18;
+        g_penOt = g->ot[g->drawBuf] + w->otz;
         pen_begin();
         pen_pushPos();
         ofs = 8;
-        pen_setPos(w->unk0 - 3, w->unk2 + ((g_msgChoiceLine + g_msgChoice) * 14 + ofs));
+        pen_setPos(w->x - 3, w->y + ((g_msgChoiceLine + g_msgChoice) * 14 + ofs));
         pen_drawSprite(1);
         pen_popPos();
         pen_endSmall();

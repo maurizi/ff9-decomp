@@ -703,7 +703,7 @@ void menuItem_drawKweh(Window *w) {
     u8 *s;
 
     s = text_get(ITEM_TEXT_KWEH);
-    text_drawBlock(w->unk0 + ((w->unk4 - text_measureWidth((s32)s)) >> 1), w->unk2 + 6, w->unk18, s, 0);
+    text_drawBlock(w->x + ((w->w - text_measureWidth((s32)s)) >> 1), w->y + 6, w->otz, s, 0);
 }
 
 void menuItem_stepKweh(void) {
@@ -785,7 +785,7 @@ void menuItem_drawArrangeWindow(Window *w) {
     s32 i;
 
     for (i = 0; i < 2; i++) {
-        text_drawBlock(p->unk0 + 10, p->unk2 + 6 + i * 15, w->unk18, text_get(i + ITEM_TEXT_AUTO), 0);
+        text_drawBlock(p->x + 10, p->y + 6 + i * 15, w->otz, text_get(i + ITEM_TEXT_AUTO), 0);
     }
 }
 

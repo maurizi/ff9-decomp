@@ -955,8 +955,8 @@ void btlui_getHelpRect(RECT *arg0, RECT *arg1) {
     *arg1 = *arg0;
     w = btlui_getTargetWindow();
     if (w != NULL && w->state != 0) {
-        if (arg1->x < w->unk8.x + w->unk8.w - 4) {
-            x = w->unk8.x + w->unk8.w - 4;
+        if (arg1->x < w->cur.x + w->cur.w - 4) {
+            x = w->cur.x + w->cur.w - 4;
             arg1->x = x;
             arg1->w = 0x137 - x;
         }
@@ -1139,8 +1139,8 @@ void btlui_openCmdMenu(void) {
 }
 
 void btlui_drawCmdList(Window *arg0) {
-    s32 y = arg0->unk2 + 6;
-    s32 x = arg0->unk0 + 0xA;
+    s32 y = arg0->y + 6;
+    s32 x = arg0->x + 0xA;
     s32 i;
     u8 *t;
     if (g_btlCmdMenu.unk10.unk1 != 0) {
@@ -1149,9 +1149,9 @@ void btlui_drawCmdList(Window *arg0) {
     for (i = 0; i < 4; i++) {
         t = g_btlCmdNames + g_btlCmdTable[g_btlCmdMenu.cmdIds[i]].unk0;
         if (g_btlCmdMenu.unk8[i] == 0) {
-            text_draw(x, y, arg0->unk18, t, 2);
+            text_draw(x, y, arg0->otz, t, 2);
         } else {
-            text_draw(x, y, arg0->unk18, t, 0);
+            text_draw(x, y, arg0->otz, t, 0);
         }
         do {
             y += 15;
@@ -1166,30 +1166,30 @@ INCLUDE_RODATA("asm/us/ovl_0b/nonmatchings/btlui", D_800A857C);
 
 void btlui_drawCmdOverlay(Window *arg0) {
     u8 st = arg0->state;
-    RECT *r = &arg0->unk8;
+    RECT *r = &arg0->cur;
     s32 dy = 10;
     RECT rc;
     if (arg0->state == 3) {
         if (btlui_getMenuState() == BTLUI_MENU_CMD || (btlui_getMenuState() == st && btlui_getTargetReturnState() == BTLUI_MENU_CMD && !(func_800F1360() & 0xFF) && (D_80104E80 & 1))) {
-            ui_drawHand(arg0->unk8.x - 0xE, r->y + (g_btlCmdMenu.cursor * 15 + dy), arg0->unk18 - 1);
+            ui_drawHand(arg0->cur.x - 0xE, r->y + (g_btlCmdMenu.cursor * 15 + dy), arg0->otz - 1);
         }
     }
     if (arg0->state != 3) {
-        win_setClip(NULL, arg0->unk18, 4);
+        win_setClip(NULL, arg0->otz, 4);
     }
     if (g_btlCmdMenu.unit != NULL && !(btl_hasStatus(g_btlCmdMenu.unit, BTL_STATUS_TRANCE) & 0xFF)) {
-        ui_drawLabel(arg0->unk0 + 6, r->y - 3, arg0->unk18, g_winLabelStrings.unk30, arg0->unk1E ? 0 : 2);
-    } else if (arg0->unk1E != 0) {
-        btlui_drawTranceLabel(arg0->unk0 + 6, r->y - 3, arg0->unk18, D_800A857C);
+        ui_drawLabel(arg0->x + 6, r->y - 3, arg0->otz, g_winLabelStrings.unk30, arg0->active ? 0 : 2);
+    } else if (arg0->active != 0) {
+        btlui_drawTranceLabel(arg0->x + 6, r->y - 3, arg0->otz, D_800A857C);
     } else {
-        ui_drawLabel(arg0->unk0 + 6, r->y - 3, arg0->unk18, (s32)D_800A857C, 2);
+        ui_drawLabel(arg0->x + 6, r->y - 3, arg0->otz, (s32)D_800A857C, 2);
     }
     if (arg0->state != 3) {
         rc.x = r->x;
         rc.y = r->y - 3;
         rc.w = r->w;
         rc.h = 8;
-        win_setClip(&rc, arg0->unk18, 4);
+        win_setClip(&rc, arg0->otz, 4);
     }
 }
 
@@ -1213,16 +1213,16 @@ void btlui_drawSideCmd(Window *arg0) {
     if (p->unk1 == 2) {
         dx = dx2;
         x = off + 4;
-        r.x = w->unk0 + x;
+        r.x = w->x + x;
     } else {
-        r.x = w->unk0 - off;
+        r.x = w->x - off;
     }
-    y = w->unk2 + g_btlCmdMenu.cursor * 15;
+    y = w->y + g_btlCmdMenu.cursor * 15;
     r.w = 0x3E;
     r.h = 0x11;
     r.y = y + 4;
-    text_draw(r.x + dx, r.y + 2, arg0->unk18, text_get(D_800F8DE4[D_80104FC0.unk1]), 0);
-    btlui_drawSideFrame(&r, arg0->unk18);
+    text_draw(r.x + dx, r.y + 2, arg0->otz, text_get(D_800F8DE4[D_80104FC0.unk1]), 0);
+    btlui_drawSideFrame(&r, arg0->otz);
 }
 
 void btlui_confirmCmd(void) {
@@ -1877,24 +1877,24 @@ s32 btlui_getAbilityState(s32 arg0) {
 }
 
 void btlui_drawListOverlay(Window *arg0) {
-    RECT *r = &arg0->unk8;
+    RECT *r = &arg0->cur;
     s32 x;
     s32 y;
     s32 dy = 10;
     s32 dx = 0x74;
     if (g_btluiList.label != 0) {
-        ui_drawLabel(arg0->unk8.x + 6, r->y - 4, arg0->unk18, g_btluiList.label, 0);
+        ui_drawLabel(arg0->cur.x + 6, r->y - 4, arg0->otz, g_btluiList.label, 0);
     }
     if (g_btluiList.label2 != 0) {
-        ui_drawLabel(arg0->unk8.x - (g_btluiList.label2Width - dx), r->y - 4, arg0->unk18, g_btluiList.label2, 0);
+        ui_drawLabel(arg0->cur.x - (g_btluiList.label2Width - dx), r->y - 4, arg0->otz, g_btluiList.label2, 0);
     }
     if (btlui_getMenuState() == BTLUI_MENU_LIST || (btlui_getMenuState() == BTLUI_MENU_TARGET && btlui_getTargetReturnState() == BTLUI_MENU_LIST && !(func_800F1360() & 0xFF) && (D_80104E80 & 1))) {
-        x = arg0->unk8.x - 0x12;
+        x = arg0->cur.x - 0x12;
         y = r->y + (arg0->list.cursor * 15 + dy);
         if (g_btluiList.cmdNo == BTL_CMD_DBL_BLK || g_btluiList.cmdNo == BTL_CMD_DBL_WHT) {
-            ui_drawSprite(x + 7, y + 2, arg0->unk18, g_btluiList.doubleCast + 0x5A, 0);
+            ui_drawSprite(x + 7, y + 2, arg0->otz, g_btluiList.doubleCast + 0x5A, 0);
         }
-        ui_drawHand(x, y, arg0->unk18);
+        ui_drawHand(x, y, arg0->otz);
     }
 }
 
@@ -1938,7 +1938,7 @@ void btlui_listConfirm(void) {
 void btlui_drawListContent(Window *arg0) {
     RECT r;
     MenuView v;
-    RECT *rc = &arg0->unk8;
+    RECT *rc = &arg0->cur;
     s32 i;
     menuList_getView((MenuList *)&arg0->list, &v);
     win_setClip(0, 7, 1);
@@ -1964,7 +1964,7 @@ void btlui_drawListScroll(Window *arg0) {
 
 void btlui_onListOpened(void) {
     btlui_setMenuState(BTLUI_MENU_LIST);
-    g_btlUi->windows[3]->unk1E = 0;
+    g_btlUi->windows[3]->active = 0;
 }
 
 void btlui_closeList(void) {
@@ -1981,8 +1981,8 @@ void btlui_drawAbilityRow(s32 arg0, s32 arg1, s32 arg2, MenuView *arg3) {
     u8 buf[8];
     u8 k = g_btlCmdAbilities[g_btluiList.cmd->unk8 + arg2];
     Window *w = g_btlUi->windows[2];
-    RECT *r = &w->unk8;
-    s32 dy = w->unk6 - r->h;
+    RECT *r = &w->cur;
+    s32 dy = w->h - r->h;
     s32 res = btlui_getAbilityState(k);
     s16 x;
     s32 y;
@@ -2007,8 +2007,8 @@ void btlui_drawItemRow(s32 arg0, s32 arg1, s32 arg2, Window *arg3) {
     s32 x5;
     UnkPair *e = btlui_getItemListEntry(arg2);
     Window *w = g_btlUi->windows[2];
-    RECT *r = &w->unk8;
-    s32 dy = w->unk6 - r->h;
+    RECT *r = &w->cur;
+    s32 dy = w->h - r->h;
     s32 n;
     u8 id;
     s16 x;
@@ -2025,7 +2025,7 @@ void btlui_drawItemRow(s32 arg0, s32 arg1, s32 arg2, Window *arg3) {
             x = r->x;
             it = &g_itemTable[id];
             x5 = x + 5;
-            y = r->y + arg1 * 15 + arg3->unk2 - dy;
+            y = r->y + arg1 * 15 + arg3->y - dy;
             ui_drawItemIcon(x5, y, 7, id, 1);
             text_draw(x + 0x14, y, 7, g_itemNames + it->unk0, 0);
             text_formatNumber(n, buf, 2, 1);
@@ -2038,8 +2038,8 @@ void btlui_drawThrowRow(s32 arg0, s32 arg1, s32 arg2, Window *arg3) {
     u8 buf[8];
     UnkPair *e = btlui_getThrowListEntry(arg2);
     Window *w = g_btlUi->windows[2];
-    RECT *r = &w->unk8;
-    s32 dy = w->unk6 - r->h;
+    RECT *r = &w->cur;
+    s32 dy = w->h - r->h;
     s32 n;
     s32 x;
     s32 y;
@@ -2053,7 +2053,7 @@ void btlui_drawThrowRow(s32 arg0, s32 arg1, s32 arg2, Window *arg3) {
         if (n != 0) {
             x = r->x;
             it = &g_itemTable[e->unk0];
-            y = r->y + arg1 * 15 + arg3->unk2 - dy;
+            y = r->y + arg1 * 15 + arg3->y - dy;
             text_formatNumber(n, buf, 2, 1);
             text_draw(x + 5, y, 7, g_itemNames + it->unk0, 0);
             ui_drawSmallDigits(x + 0x67, y + 4, 7, buf, 0);
@@ -2135,7 +2135,7 @@ u8 *btlui_getThrowHelpText(void) {
 
 void btlui_onListClosed(Window *arg0) {
     btlui_setMenuState(BTLUI_MENU_CMD);
-    g_btlUi->windows[3]->unk1E = 1;
+    g_btlUi->windows[3]->active = 1;
 }
 
 void btlui_startTargetSelect(Unk800EF80C *arg0) {
@@ -2515,7 +2515,7 @@ void btlui_updateTargetWindow(void) {
 }
 
 void btlui_drawTargetList(Window *arg0) {
-    s32 y1 = arg0->unk2 + 8;
+    s32 y1 = arg0->y + 8;
     s32 y2 = y1;
     BtlUnit *u = g_gameState->gameData->ctx.battle->unitList;
     s32 m;
@@ -2523,7 +2523,7 @@ void btlui_drawTargetList(Window *arg0) {
     u8 *name;
     s32 c;
     Window *w = arg0;
-    ui_drawEtchedLine(arg0->unk0 + 0x6E, arg0->unk2 + 4, arg0->unk18, 9 - arg0->unk6);
+    ui_drawEtchedLine(arg0->x + 0x6E, arg0->y + 4, arg0->otz, 9 - arg0->h);
     m = text_getColor();
     for (; u != NULL; u = u->next) {
         name = btl_getUnitName(u);
@@ -2535,11 +2535,11 @@ void btlui_drawTargetList(Window *arg0) {
                 } else {
                     c = 3;
                 }
-                text_draw(w->unk0 + 0x7A, y2, arg0->unk18, name, c);
+                text_draw(w->x + 0x7A, y2, arg0->otz, name, c);
                 y2 += 15;
             } else {
                 c = ((u8)btl_hasStatus(u, BTL_STATUS_KO) != 0) * 2;
-                text_drawBlock(w->unk0 + 0xC, y1, arg0->unk18, name, c);
+                text_drawBlock(w->x + 0xC, y1, arg0->otz, name, c);
                 y1 += 15;
             }
         }
@@ -2551,7 +2551,7 @@ void btlui_drawTargetListOverlay(Window *arg0) {
     Window *w = arg0;
     s32 n = 0;
     BtlUnit *u = g_gameState->gameData->ctx.battle->unitList;
-    RECT *r = &arg0->unk8;
+    RECT *r = &arg0->cur;
     BtlUnit *p;
     RECT rc;
     s32 yl;
@@ -2562,16 +2562,16 @@ void btlui_drawTargetListOverlay(Window *arg0) {
         }
     }
     if (arg0->state != 3) {
-        win_setClip(NULL, arg0->unk18, 4);
+        win_setClip(NULL, arg0->otz, 4);
     }
-    ui_drawLabel(w->unk0 + 8, r->y - 3, arg0->unk18, g_winLabelStrings.unk3C, 0);
-    ui_drawLabel(w->unk0 + 0x76, r->y - 3, arg0->unk18, g_winLabelStrings.unkA0, 0);
+    ui_drawLabel(w->x + 8, r->y - 3, arg0->otz, g_winLabelStrings.unk3C, 0);
+    ui_drawLabel(w->x + 0x76, r->y - 3, arg0->otz, g_winLabelStrings.unkA0, 0);
     if (arg0->state != 3) {
         rc.x = r->x;
         rc.y = r->y - 3;
         rc.w = r->w;
         rc.h = 8;
-        win_setClip(&rc, arg0->unk18, 4);
+        win_setClip(&rc, arg0->otz, 4);
     }
     if (arg0->state == 3 && (n < 2 || !(D_80104E80 & 1))) {
         yl = r->y + 0xC;
@@ -2580,9 +2580,9 @@ void btlui_drawTargetListOverlay(Window *arg0) {
             if ((u->flags >> 28) & 1) {
                 if ((u->flags >> 29) & 1) {
                     if (u->flags & 1) {
-                        ui_drawHand(r->x + 0x62, yr, arg0->unk18 - 1);
+                        ui_drawHand(r->x + 0x62, yr, arg0->otz - 1);
                     } else {
-                        ui_drawHand(r->x - 0xC, yl, arg0->unk18 - 1);
+                        ui_drawHand(r->x - 0xC, yl, arg0->otz - 1);
                     }
                 }
                 if (u->flags & 1) {
@@ -2961,8 +2961,8 @@ void btlui_drawListCursors(Window *arg0) {
     if (b->unk2 >= 2 && !(D_80104E80 & 3)) {
         c = 0x64404040;
     }
-    y = w->unk2 + 5;
-    x = w->unk0 - 0xE;
+    y = w->y + 5;
+    x = w->x - 0xE;
     for (; u != NULL; u = u->next) {
         if (!(u->flags & 1)) {
             continue;
@@ -2976,7 +2976,7 @@ void btlui_drawListCursors(Window *arg0) {
                 p->xy = x | (yy << 16);
                 p->uvclut = d->unk0;
                 p->wh = d->unk4 | (d->unk5 << 16);
-                addPrim(&g_ot[arg0->unk18 - 1], p);
+                addPrim(&g_ot[arg0->otz - 1], p);
                 g_primPtr = (u8 *)(p + 1);
             }
             n++;
@@ -2989,7 +2989,7 @@ void btlui_drawListCursors(Window *arg0) {
     setlen(g_primPtr, 1);
     t = (DR_TPAGE *)g_primPtr;
     t->code[0] = get_mode(1, 1, D_80068EEE);
-    addPrim(&g_ot[arg0->unk18], t);
+    addPrim(&g_ot[arg0->otz], t);
     g_primPtr = (u8 *)(t + 1);
 }
 
@@ -2998,8 +2998,8 @@ void btlui_drawHpList(Window *arg0) {
     u8 b[8];
     BtlUnit *u;
     Window *w = arg0;
-    s32 y = arg0->unk2 + 6;
-    s32 dy = arg0->unk6 - arg0->unk8.h;
+    s32 y = arg0->y + 6;
+    s32 dy = arg0->h - arg0->cur.h;
     s32 c;
     for (u = g_gameState->gameData->ctx.battle->unitList; u != 0 && (u->flags & 1); u = u->next) {
         c = 3;
@@ -3009,8 +3009,8 @@ void btlui_drawHpList(Window *arg0) {
         b[0] = 0x2F;
         text_formatNumber(u->hp, a, 4, 1);
         text_formatNumber(u->max->maxHp, b + 1, -1, 1);
-        ui_drawDigits(w->unk0 + 4, y, arg0->unk18, a, c);
-        ui_drawDigits(w->unk0 + 0x20, y - dy, arg0->unk18, b, c);
+        ui_drawDigits(w->x + 4, y, arg0->otz, a, c);
+        ui_drawDigits(w->x + 0x20, y - dy, arg0->otz, b, c);
         y += 12;
     }
 }
@@ -3019,9 +3019,9 @@ void btlui_drawMpList(Window *arg0) {
     u8 hp[8];
     u8 max[8];
     Window *w = arg0;
-    s32 y = arg0->unk2 + 6;
+    s32 y = arg0->y + 6;
     BtlUnit *u = g_gameState->gameData->ctx.battle->unitList;
-    s32 dy = arg0->unk6 - arg0->unk8.h;
+    s32 dy = arg0->h - arg0->cur.h;
     s32 yy;
     s32 c;
     while (u != NULL) {
@@ -3032,8 +3032,8 @@ void btlui_drawMpList(Window *arg0) {
             text_formatNumber(u->mp, hp, 3, 1);
             y += 0xC;
             text_formatNumber((s16)u->max->maxMp, &max[1], -1, 1);
-            ui_drawDigits(w->unk0 + 4, yy, arg0->unk18, hp, c);
-            ui_drawDigits(w->unk0 + 0x19, yy, arg0->unk18, max, c);
+            ui_drawDigits(w->x + 4, yy, arg0->otz, hp, c);
+            ui_drawDigits(w->x + 0x19, yy, arg0->otz, max, c);
         }
         u = u->next;
     }
@@ -3045,19 +3045,19 @@ void btlui_drawStatusList(Window *arg0) {
     s32 n;
     s32 x;
     Window *w = arg0;
-    s32 d = arg0->unk6 - arg0->unk8.h;
+    s32 d = arg0->h - arg0->cur.h;
     s32 y;
     u32 st;
     d -= 6;
-    y = arg0->unk2 - d;
+    y = arg0->y - d;
     for (u = g_gameState->gameData->ctx.battle->unitList; u != 0; u = u->next) {
         if (u->flags & 1) {
             n = 0;
             st = u->status | u->autoStatus;
-            x = w->unk0 + 4;
+            x = w->x + 4;
             for (i = 0; i < 16; i++) {
                 if (st & D_800F8F18[i].unk0) {
-                    ui_drawSprite(x, y, arg0->unk18, D_800F8F18[i].unk4, 0);
+                    ui_drawSprite(x, y, arg0->otz, D_800F8F18[i].unk4, 0);
                     x += 12;
                     if (++n >= 9) {
                         break;
@@ -3074,18 +3074,18 @@ void btlui_drawStatusList2(Window *arg0) {
     s32 i;
     s32 x;
     Window *w = arg0;
-    s32 d = arg0->unk6 - arg0->unk8.h;
+    s32 d = arg0->h - arg0->cur.h;
     s32 y;
     u32 st;
     d -= 6;
-    y = arg0->unk2 - d;
+    y = arg0->y - d;
     for (u = g_gameState->gameData->ctx.battle->unitList; u != 0; u = u->next) {
         if (u->flags & 1) {
             st = u->status | u->autoStatus;
-            x = w->unk0 + 4;
+            x = w->x + 4;
             for (i = 0; i < 8; i++) {
                 if (st & D_800F8F98[i].unk0) {
-                    ui_drawSprite(x, y, arg0->unk18, D_800F8F98[i].unk4, 0);
+                    ui_drawSprite(x, y, arg0->otz, D_800F8F98[i].unk4, 0);
                 }
                 x += D_800F8F98[i].unk6;
             }
@@ -3176,10 +3176,10 @@ void btlui_resizeListWindow(void) {
 
     if (D_80105058.unk0 != 0 && p->rowCount != 0) {
         w = g_btlUi->windows[1];
-        r = &w->unk8;
-        r->y = w->unk2 = p->y;
+        r = &w->cur;
+        r->y = w->y = p->y;
         h = p->rowCount * 12 + 8;
-        w->unk6 = h;
+        w->h = h;
         if (w->state == 2 || w->state == 3) {
             r->h = h;
         } else if (w->state == 1) {

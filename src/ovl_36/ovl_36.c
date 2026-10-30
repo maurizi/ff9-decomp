@@ -304,8 +304,8 @@ void menuCard_drawCursor(void) {
         }
         if (s_menuCard.state == CARD_ST_DISCARD) {
             Window *w = s_menuCard.discardWin;
-            g_menuHelp.x = w->unk0 + 0x16;
-            g_menuHelp.y = w->unk2 + (s16)(s_menuCard.discardCursor * 15 + 0x32);
+            g_menuHelp.x = w->x + 0x16;
+            g_menuHelp.y = w->y + (s16)(s_menuCard.discardCursor * 15 + 0x32);
             g_menuHelp.otz = 9;
             help_drawCursor();
         }
@@ -829,9 +829,9 @@ void menuCard_onDiscardClosed(Window *w) {
 }
 
 void menuCard_drawDiscardWindow(Window *w) {
-    text_drawBlock(w->unk0 + 0xE, w->unk2 + 0xA, w->unk18, text_get(CARD_TEXT_DISCARD), 0);
-    text_drawBlock(w->unk0 + 0x30, w->unk2 + 0x2E, w->unk18, text_get(CARD_TEXT_DISCARD + 1), 0);
-    text_drawBlock(w->unk0 + 0x30, w->unk2 + 0x3D, w->unk18, text_get(CARD_TEXT_DISCARD + 2), 0);
+    text_drawBlock(w->x + 0xE, w->y + 0xA, w->otz, text_get(CARD_TEXT_DISCARD), 0);
+    text_drawBlock(w->x + 0x30, w->y + 0x2E, w->otz, text_get(CARD_TEXT_DISCARD + 1), 0);
+    text_drawBlock(w->x + 0x30, w->y + 0x3D, w->otz, text_get(CARD_TEXT_DISCARD + 2), 0);
 }
 
 void menuCard_initFlip(void) {

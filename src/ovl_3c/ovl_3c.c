@@ -424,16 +424,16 @@ void shopBuy_drawQuantityWindow(Window *w) {
     b = &s_shopBuy;
     id = b->items[l->top + l->cursor];
     it = &g_itemTable[id];
-    ui_drawItemIcon(w->unk0 + 8, w->unk2 + 8, w->unk18, id, 1);
-    text_drawBlock(w->unk0 + 0x18, w->unk2 + 8, w->unk18, g_itemNames + it->unk0, 0);
-    ui_drawEtchedLine(w->unk0 + 4, w->unk2 + 0x18, w->unk18, w->unk4 - 9);
-    text_drawBlock(w->unk0 + 0xC, w->unk2 + 0x1E, w->unk18, text_getFrom(g_shopText, SHOP_TEXT_QUANTITY), 0);
-    text_drawBlock(w->unk0 + 0xC, w->unk2 + 0x2E, w->unk18, text_getFrom(g_shopText, SHOP_TEXT_PRICE), 0);
+    ui_drawItemIcon(w->x + 8, w->y + 8, w->otz, id, 1);
+    text_drawBlock(w->x + 0x18, w->y + 8, w->otz, g_itemNames + it->unk0, 0);
+    ui_drawEtchedLine(w->x + 4, w->y + 0x18, w->otz, w->w - 9);
+    text_drawBlock(w->x + 0xC, w->y + 0x1E, w->otz, text_getFrom(g_shopText, SHOP_TEXT_QUANTITY), 0);
+    text_drawBlock(w->x + 0xC, w->y + 0x2E, w->otz, text_getFrom(g_shopText, SHOP_TEXT_PRICE), 0);
     text_formatNumber(b->quantity, buf, 2, 1);
-    ui_drawSmallDigits(w->unk0 + 0x5C, w->unk2 + 0x22, w->unk18, buf, 0);
+    ui_drawSmallDigits(w->x + 0x5C, w->y + 0x22, w->otz, buf, 0);
     text_formatNumber(b->quantity * it->unk4, buf, 7, 1);
     strcat(buf, s_shopBuyQuantityGil);
-    ui_drawSmallDigits(w->unk0 + 0x39, w->unk2 + 0x32, w->unk18, buf, 0);
+    ui_drawSmallDigits(w->x + 0x39, w->y + 0x32, w->otz, buf, 0);
 }
 
 void shopBuy_drawCursor(void) {
@@ -445,9 +445,9 @@ void shopBuy_drawCursor(void) {
             help_drawCursor();
         }
         if (s_shopBuy.state == SHOP_ST_QUANTITY) {
-            g_menuHelp.x = s_shopBuy.quantityWin->unk0 - 0xE;
-            g_menuHelp.y = s_shopBuy.quantityWin->unk2 + 0x22;
-            g_menuHelp.otz = s_shopBuy.quantityWin->unk18 - 1;
+            g_menuHelp.x = s_shopBuy.quantityWin->x - 0xE;
+            g_menuHelp.y = s_shopBuy.quantityWin->y + 0x22;
+            g_menuHelp.otz = s_shopBuy.quantityWin->otz - 1;
             help_drawCursor();
         }
     }
@@ -858,17 +858,17 @@ void shopSynth_drawQuantityWindow(Window *w) {
     r = &s_shopSynth.recipes[l->top + l->cursor];
     id = r->product;
     it = &g_itemTable[id];
-    ui_drawItemIcon(w->unk0 + 8, w->unk2 + 8, w->unk18, id, 1);
-    text_drawBlock(w->unk0 + 0x18, w->unk2 + 8, w->unk18, g_itemNames + it->unk0, 0);
-    ui_drawEtchedLine(w->unk0 + 4, w->unk2 + 0x18, w->unk18, w->unk4 - 9);
-    text_drawBlock(w->unk0 + 0xC, w->unk2 + 0x1E, w->unk18, text_getFrom(g_shopText, SHOP_TEXT_QUANTITY), 0);
-    text_drawBlock(w->unk0 + 0xC, w->unk2 + 0x2E, w->unk18, text_getFrom(g_shopText, SHOP_TEXT_PRICE), 0);
+    ui_drawItemIcon(w->x + 8, w->y + 8, w->otz, id, 1);
+    text_drawBlock(w->x + 0x18, w->y + 8, w->otz, g_itemNames + it->unk0, 0);
+    ui_drawEtchedLine(w->x + 4, w->y + 0x18, w->otz, w->w - 9);
+    text_drawBlock(w->x + 0xC, w->y + 0x1E, w->otz, text_getFrom(g_shopText, SHOP_TEXT_QUANTITY), 0);
+    text_drawBlock(w->x + 0xC, w->y + 0x2E, w->otz, text_getFrom(g_shopText, SHOP_TEXT_PRICE), 0);
     s = &s_shopSynth;
     text_formatNumber(s->quantity, buf, 2, 1);
-    ui_drawSmallDigits(w->unk0 + 0x5C, w->unk2 + 0x22, w->unk18, buf, 0);
+    ui_drawSmallDigits(w->x + 0x5C, w->y + 0x22, w->otz, buf, 0);
     text_formatNumber(s->quantity * r->price, buf, 7, 1);
     strcat(buf, s_shopSynthQuantityGil);
-    ui_drawSmallDigits(w->unk0 + 0x39, w->unk2 + 0x32, w->unk18, buf, 0);
+    ui_drawSmallDigits(w->x + 0x39, w->y + 0x32, w->otz, buf, 0);
 }
 
 void shopSynth_drawCursor(void) {
@@ -880,9 +880,9 @@ void shopSynth_drawCursor(void) {
             help_drawCursor();
         }
         if (s_shopSynth.state == SHOP_ST_QUANTITY) {
-            g_menuHelp.x = s_shopSynth.quantityWin->unk0 - 0xE;
-            g_menuHelp.y = s_shopSynth.quantityWin->unk2 + 0x22;
-            g_menuHelp.otz = s_shopSynth.quantityWin->unk18 - 1;
+            g_menuHelp.x = s_shopSynth.quantityWin->x - 0xE;
+            g_menuHelp.y = s_shopSynth.quantityWin->y + 0x22;
+            g_menuHelp.otz = s_shopSynth.quantityWin->otz - 1;
             help_drawCursor();
         }
     }
@@ -1211,17 +1211,17 @@ void shopSell_drawQuantityWindow(Window *w) {
     id = (g_gameState->gameData->items.slots + ((l->top + l->cursor) * 2 + l->col))->id;
     it = &g_itemTable[id];
     price = it->unk4 >> 1;
-    ui_drawItemIcon(w->unk0 + 8, w->unk2 + 8, w->unk18, id, 1);
-    text_drawBlock(w->unk0 + 0x18, w->unk2 + 8, w->unk18, g_itemNames + it->unk0, 0);
-    ui_drawEtchedLine(w->unk0 + 4, w->unk2 + 0x18, w->unk18, w->unk4 - 9);
-    text_drawBlock(w->unk0 + 0xC, w->unk2 + 0x1E, w->unk18, text_getFrom(g_shopText, SHOP_TEXT_QUANTITY), 0);
-    text_drawBlock(w->unk0 + 0xC, w->unk2 + 0x2E, w->unk18, text_getFrom(g_shopText, SHOP_TEXT_PRICE), 0);
+    ui_drawItemIcon(w->x + 8, w->y + 8, w->otz, id, 1);
+    text_drawBlock(w->x + 0x18, w->y + 8, w->otz, g_itemNames + it->unk0, 0);
+    ui_drawEtchedLine(w->x + 4, w->y + 0x18, w->otz, w->w - 9);
+    text_drawBlock(w->x + 0xC, w->y + 0x1E, w->otz, text_getFrom(g_shopText, SHOP_TEXT_QUANTITY), 0);
+    text_drawBlock(w->x + 0xC, w->y + 0x2E, w->otz, text_getFrom(g_shopText, SHOP_TEXT_PRICE), 0);
     m = &s_shopSell;
     text_formatNumber(m->quantity, buf, 2, 1);
-    ui_drawSmallDigits(w->unk0 + 0x5C, w->unk2 + 0x22, w->unk18, buf, 0);
+    ui_drawSmallDigits(w->x + 0x5C, w->y + 0x22, w->otz, buf, 0);
     text_formatNumber(m->quantity * price, buf, 7, 1);
     strcat(buf, s_shopSellQuantityGil);
-    ui_drawSmallDigits(w->unk0 + 0x39, w->unk2 + 0x32, w->unk18, buf, 0);
+    ui_drawSmallDigits(w->x + 0x39, w->y + 0x32, w->otz, buf, 0);
 }
 
 void shopSell_drawInfoWindow(Window *w) {
@@ -1237,17 +1237,17 @@ void shopSell_drawInfoWindow(Window *w) {
     e = &g_gameState->gameData->items.slots[(l->top + l->cursor) * 2 + l->col];
     equip = (g_itemTable[e->unk0].unkF & 0xF8) != 0;
     for (i = 0; i < 3; i++) {
-        text_drawBlock(r->x + 0xC, r->y + s_shopSellInfoRowY[i] - 4, w->unk18, text_getFrom(g_shopText, s_shopSellInfoRowText[i]),
+        text_drawBlock(r->x + 0xC, r->y + s_shopSellInfoRowY[i] - 4, w->otz, text_getFrom(g_shopText, s_shopSellInfoRowText[i]),
                       (s_shopSellInfoRowAlways[i] | equip) ? 0 : 2);
     }
     text_formatNumber(g_gameState->gameData->gil, buf, 7, 1);
     strcat(buf, s_shopSellInfoGil);
-    ui_drawSmallDigits(r->x + 0x39, r->y + s_shopSellInfoRowY[0], w->unk18, buf, 0);
+    ui_drawSmallDigits(r->x + 0x39, r->y + s_shopSellInfoRowY[0], w->otz, buf, 0);
     text_formatNumber(item_getCount(e->unk0), buf, 2, 1);
-    ui_drawSmallDigits(r->x + 0x5C, r->y + s_shopSellInfoRowY[1], w->unk18, buf, 0);
+    ui_drawSmallDigits(r->x + 0x5C, r->y + s_shopSellInfoRowY[1], w->otz, buf, 0);
     if (equip) {
         text_formatNumber(item_countEquipped(e->unk0), buf, 2, 1);
-        ui_drawSmallDigits(r->x + 0x5C, r->y + s_shopSellInfoRowY[2], w->unk18, buf, 0);
+        ui_drawSmallDigits(r->x + 0x5C, r->y + s_shopSellInfoRowY[2], w->otz, buf, 0);
     }
 }
 
@@ -1263,9 +1263,9 @@ void shopSell_drawCursor(void) {
             help_drawCursor();
         }
         if (s_shopSell.state == SHOP_ST_QUANTITY) {
-            g_menuHelp.x = s_shopSell.wins[0]->unk0 - 0xE;
-            g_menuHelp.y = s_shopSell.wins[0]->unk2 + 0x22;
-            g_menuHelp.otz = s_shopSell.wins[0]->unk18 - 1;
+            g_menuHelp.x = s_shopSell.wins[0]->x - 0xE;
+            g_menuHelp.y = s_shopSell.wins[0]->y + 0x22;
+            g_menuHelp.otz = s_shopSell.wins[0]->otz - 1;
             help_drawCursor();
         }
     }

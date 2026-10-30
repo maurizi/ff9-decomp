@@ -14,18 +14,18 @@ void win_drawAll(void) {
                 w->drawOverlay(w);
             }
             if (w->state == 3 && w->list.visibleRows < w->list.rows) {
-                win_drawScrollArrows(&w->unk8, w->unk18, &w->list);
+                win_drawScrollArrows(&w->cur, w->otz, &w->list);
             }
-            win_setClip(NULL, w->unk18, w->style);
-            if (w->drawContent != NULL && w->unk1E != 0) {
+            win_setClip(NULL, w->otz, w->style);
+            if (w->drawContent != NULL && w->active != 0) {
                 w->drawContent(w);
             }
-            win_setClip(&w->unk8, w->unk18, w->style);
+            win_setClip(&w->cur, w->otz, w->style);
             if (w->style != 4) {
                 win_drawFrame(w);
             }
             if (w->shadow != 0) {
-                win_drawShadow(&w->unk8, w->unk18, w->style);
+                win_drawShadow(&w->cur, w->otz, w->style);
             }
         }
     }
@@ -39,47 +39,47 @@ void win_drawFrame(Window *w) {
     abr &= 1;
 
     if (w->style == 2) {
-        win_drawBorder(&w->unk8, w->unk18, w->unk1E, w->translucent, abr);
-        if (w->unk1E == 0) {
+        win_drawBorder(&w->cur, w->otz, w->active, w->translucent, abr);
+        if (w->active == 0) {
             return;
         }
-        t.x = w->unk8.x + 4;
-        t.y = w->unk8.y + 4;
-        t.w = w->unk8.w - 8;
-        t.h = w->unk8.h - 8;
+        t.x = w->cur.x + 4;
+        t.y = w->cur.y + 4;
+        t.w = w->cur.w - 8;
+        t.h = w->cur.h - 8;
     } else if (w->style == 3) {
         if (w->tailMode != 4) {
             win_drawTail(w);
         }
-        win_drawBalloonBorder(&w->unk8, w->unk18, w->unk1E, w->translucent, abr);
-        if (w->unk1E == 0) {
+        win_drawBalloonBorder(&w->cur, w->otz, w->active, w->translucent, abr);
+        if (w->active == 0) {
             return;
         }
-        t.x = w->unk8.x + 2;
-        t.y = w->unk8.y + 2;
-        t.w = w->unk8.w - 4;
-        t.h = w->unk8.h - 4;
+        t.x = w->cur.x + 2;
+        t.y = w->cur.y + 2;
+        t.w = w->cur.w - 4;
+        t.h = w->cur.h - 4;
     } else {
         if (w->style == 1) {
-            t.x = w->unk8.x;
-            t.y = w->unk8.y + 4;
-            t.w = w->unk8.w;
-            t.h = w->unk8.h - 4;
-            ui_drawRule(w->unk8.x, w->unk8.y, w->unk18, 0, w->unk8.w, abr);
-            win_drawLineBorder(&t, w->unk18, 1, abr);
+            t.x = w->cur.x;
+            t.y = w->cur.y + 4;
+            t.w = w->cur.w;
+            t.h = w->cur.h - 4;
+            ui_drawRule(w->cur.x, w->cur.y, w->otz, 0, w->cur.w, abr);
+            win_drawLineBorder(&t, w->otz, 1, abr);
         } else {
-            t = w->unk8;
-            win_drawLineBorder(&t, w->unk18, 0, abr);
+            t = w->cur;
+            win_drawLineBorder(&t, w->otz, 0, abr);
         }
-        if (w->unk1E == 0) {
+        if (w->active == 0) {
             return;
         }
         if (w->list.scroll & 4) {
-            win_drawSplitFill(&t, w->unk18, &w->list, abr);
+            win_drawSplitFill(&t, w->otz, &w->list, abr);
             return;
         }
     }
-    win_drawFill(&t, w->unk18, w->list.unkA, w->list.fillV, abr);
+    win_drawFill(&t, w->otz, w->list.unkA, w->list.fillV, abr);
 }
 
 void win_drawBoxEx(RECT *r, s32 otz, s32 style, s32 abr) {
@@ -123,31 +123,31 @@ void win_setOpenAnim(Window *w, s32 mode) {
 
     w->animMode = mode;
     if (mode == 0) {
-        w->unk14 = ((w->unk4 + w->openFrames - 0x11) / w->openFrames) & ~1;
-        w->unk16 = ((w->unk6 + w->openFrames - 0x11) / w->openFrames) & ~1;
-        w->unk8.w = w->unk4 - w->unk14 * w->openFrames;
-        w->unk8.h = w->unk6 - w->unk16 * w->openFrames;
-        w->unk8.x = w->unk0 + w->openFrames * (w->unk14 >> 1);
-        w->unk8.y = w->unk2 + w->openFrames * (w->unk16 >> 1);
+        w->stepW = ((w->w + w->openFrames - 0x11) / w->openFrames) & ~1;
+        w->stepH = ((w->h + w->openFrames - 0x11) / w->openFrames) & ~1;
+        w->cur.w = w->w - w->stepW * w->openFrames;
+        w->cur.h = w->h - w->stepH * w->openFrames;
+        w->cur.x = w->x + w->openFrames * (w->stepW >> 1);
+        w->cur.y = w->y + w->openFrames * (w->stepH >> 1);
     } else if (mode == 4) {
-        w->unk14 = ((w->unk4 + w->openFrames - 0x11) / w->openFrames) & ~1;
-        w->unk16 = 0;
-        w->unk8.h = w->unk6;
-        w->unk8.y = w->unk2;
-        w->unk8.w = w->unk4 - w->unk14 * w->openFrames;
-        w->unk8.x = w->unk0 + w->openFrames * (w->unk14 >> 1);
+        w->stepW = ((w->w + w->openFrames - 0x11) / w->openFrames) & ~1;
+        w->stepH = 0;
+        w->cur.h = w->h;
+        w->cur.y = w->y;
+        w->cur.w = w->w - w->stepW * w->openFrames;
+        w->cur.x = w->x + w->openFrames * (w->stepW >> 1);
     } else if (mode == 1) {
-        w->unk14 = 0;
+        w->stepW = 0;
         w->list.fillV = 0;
         w->list.unkA = 0;
-        h = w->unk6 >> 2;
-        w->unk8.x = w->unk0;
-        w->unk8.y = w->unk2;
-        w->unk8.w = w->unk4;
-        w->unk8.h = h;
-        w->unk16 = (w->unk6 - h + (w->openFrames - 1)) / w->openFrames;
+        h = w->h >> 2;
+        w->cur.x = w->x;
+        w->cur.y = w->y;
+        w->cur.w = w->w;
+        w->cur.h = h;
+        w->stepH = (w->h - h + (w->openFrames - 1)) / w->openFrames;
     } else if (mode == 3) {
-        w->unk8 = *(RECT *)w;
+        w->cur = *(RECT *)w;
         w->state = mode;
     }
 }
@@ -155,15 +155,15 @@ void win_setOpenAnim(Window *w, s32 mode) {
 void win_setCloseAnim(Window *w, s32 mode) {
     w->animMode = mode;
     if (mode == 0 || mode == 4) {
-        w->unk14 = (w->unk4 + w->closeFrames - 0x11) / w->closeFrames;
-        w->unk16 = (w->unk6 + w->closeFrames - 0x11) / w->closeFrames;
+        w->stepW = (w->w + w->closeFrames - 0x11) / w->closeFrames;
+        w->stepH = (w->h + w->closeFrames - 0x11) / w->closeFrames;
     } else if (mode == 1) {
-        w->unk14 = 0;
-        w->unk16 = (w->unk8.h + w->closeFrames - 1) / w->closeFrames;
+        w->stepW = 0;
+        w->stepH = (w->cur.h + w->closeFrames - 1) / w->closeFrames;
     } else if (mode == 2) {
-        w->unk2C = (w->tailX + w->closeFrames - 9) / w->closeFrames;
-        w->unk2E = (w->unk4 - (w->tailX + 0x18) + w->closeFrames - 1) / w->closeFrames;
-        w->unk16 = (w->unk6 + w->closeFrames - 0x11) / w->closeFrames;
+        w->stepLeft = (w->tailX + w->closeFrames - 9) / w->closeFrames;
+        w->stepRight = (w->w - (w->tailX + 0x18) + w->closeFrames - 1) / w->closeFrames;
+        w->stepH = (w->h + w->closeFrames - 0x11) / w->closeFrames;
     } else if (mode == 3) {
         w->state = 0;
     }
@@ -179,74 +179,74 @@ void win_setTail(Window *w, s32 mode, s32 off) {
         }
         w->tailMode = mode;
         w->tailX = off;
-        w->unk2C = (off + w->openFrames - 9) / w->openFrames;
-        w->unk2E = (r->w - (off + 0x18) + w->openFrames - 1) / w->openFrames;
-        w->unk16 = (w->openFrames + r->h - 0x11) / w->openFrames;
-        w->unk8.w = r->w - (w->unk2C + w->unk2E) * w->openFrames;
-        w->unk8.h = r->h - w->unk16 * w->openFrames;
-        w->unk8.x = r->x + w->unk2C * w->openFrames;
+        w->stepLeft = (off + w->openFrames - 9) / w->openFrames;
+        w->stepRight = (r->w - (off + 0x18) + w->openFrames - 1) / w->openFrames;
+        w->stepH = (w->openFrames + r->h - 0x11) / w->openFrames;
+        w->cur.w = r->w - (w->stepLeft + w->stepRight) * w->openFrames;
+        w->cur.h = r->h - w->stepH * w->openFrames;
+        w->cur.x = r->x + w->stepLeft * w->openFrames;
         if ((u32)(mode - 2) < 2) {
-            w->unk8.y = r->y + r->h - (s16)(w->unk8.h + 1);
+            w->cur.y = r->y + r->h - (s16)(w->cur.h + 1);
         } else {
-            w->unk8.y = r->y;
+            w->cur.y = r->y;
         }
     }
 }
 
 void win_stepOpen(Window *w) {
     if (w->animMode == 0 || w->animMode == 4) {
-        w->unk8.w += w->unk14;
-        w->unk8.h += w->unk16;
-        w->unk8.x -= w->unk14 >> 1;
-        w->unk8.y -= w->unk16 >> 1;
-        if (w->unk8.w > w->unk4) {
-            w->unk8.w = w->unk4;
+        w->cur.w += w->stepW;
+        w->cur.h += w->stepH;
+        w->cur.x -= w->stepW >> 1;
+        w->cur.y -= w->stepH >> 1;
+        if (w->cur.w > w->w) {
+            w->cur.w = w->w;
         }
-        if (w->unk8.h > w->unk6) {
-            w->unk8.h = w->unk6;
+        if (w->cur.h > w->h) {
+            w->cur.h = w->h;
         }
-        if (w->unk8.x < w->unk0) {
-            w->unk8.x = w->unk0;
+        if (w->cur.x < w->x) {
+            w->cur.x = w->x;
         }
-        if (w->unk8.y < w->unk2) {
-            w->unk8.y = w->unk2;
+        if (w->cur.y < w->y) {
+            w->cur.y = w->y;
         }
-        w->list.unkA = (w->unk8.x - w->unk0) & 0x1F;
-        w->list.fillV = (w->unk8.y - w->unk2) & 0x1F;
+        w->list.unkA = (w->cur.x - w->x) & 0x1F;
+        w->list.fillV = (w->cur.y - w->y) & 0x1F;
     } else if (w->animMode == 1) {
-        w->unk8.w += w->unk14;
-        w->unk8.h += w->unk16;
-        if (w->unk8.w > w->unk4) {
-            w->unk8.w = w->unk4;
+        w->cur.w += w->stepW;
+        w->cur.h += w->stepH;
+        if (w->cur.w > w->w) {
+            w->cur.w = w->w;
         }
-        if (w->unk8.h > w->unk6) {
-            w->unk8.h = w->unk6;
+        if (w->cur.h > w->h) {
+            w->cur.h = w->h;
         }
-        w->list.fillV = (w->unk6 - w->unk8.h) & 0x1F;
+        w->list.fillV = (w->h - w->cur.h) & 0x1F;
     } else if (w->animMode == 2) {
-        s16 a = w->unk2C + w->unk2E;
-        w->unk8.w += a;
-        w->unk8.h += w->unk16;
-        w->unk8.x -= w->unk2C;
+        s16 a = w->stepLeft + w->stepRight;
+        w->cur.w += a;
+        w->cur.h += w->stepH;
+        w->cur.x -= w->stepLeft;
         if (w->tailMode >= 2) {
-            w->unk8.y -= w->unk16;
+            w->cur.y -= w->stepH;
         }
-        if (w->unk8.w > w->unk4) {
-            w->unk8.w = w->unk4;
+        if (w->cur.w > w->w) {
+            w->cur.w = w->w;
         }
-        if (w->unk8.h > w->unk6) {
-            w->unk8.h = w->unk6;
+        if (w->cur.h > w->h) {
+            w->cur.h = w->h;
         }
-        if (w->unk8.x < w->unk0) {
-            w->unk8.x = w->unk0;
+        if (w->cur.x < w->x) {
+            w->cur.x = w->x;
         }
-        if (w->unk8.y < w->unk2) {
-            w->unk8.y = w->unk2;
+        if (w->cur.y < w->y) {
+            w->cur.y = w->y;
         }
-        w->list.unkA = (w->unk8.x - w->unk0) & 0x1F;
-        w->list.fillV = (w->unk8.y - w->unk2) & 0x1F;
+        w->list.unkA = (w->cur.x - w->x) & 0x1F;
+        w->list.fillV = (w->cur.y - w->y) & 0x1F;
     }
-    if (*(s32 *)&w->unk8.w == *(s32 *)&w->unk4) {
+    if (*(s32 *)&w->cur.w == *(s32 *)&w->w) {
         w->state = 3;
         if (w->onOpened != NULL) {
             w->onOpened(w);
@@ -256,33 +256,33 @@ void win_stepOpen(Window *w) {
 
 void win_stepClose(Window *w) {
     if (w->animMode == 0 || w->animMode == 4) {
-        w->unk8.w -= w->unk14;
-        w->unk8.h -= w->unk16;
-        w->unk8.x += w->unk14 >> 1;
-        w->unk8.y += w->unk16 >> 1;
-        w->list.unkA = (w->unk8.x - w->unk0) & 0x1F;
-        w->list.fillV = (w->unk8.y - w->unk2) & 0x1F;
+        w->cur.w -= w->stepW;
+        w->cur.h -= w->stepH;
+        w->cur.x += w->stepW >> 1;
+        w->cur.y += w->stepH >> 1;
+        w->list.unkA = (w->cur.x - w->x) & 0x1F;
+        w->list.fillV = (w->cur.y - w->y) & 0x1F;
     } else if (w->animMode == 1) {
-        w->unk8.h -= w->unk16;
-        w->unk8.w -= w->unk14;
-        w->list.fillV = (w->unk6 - w->unk8.h) & 0x1F;
+        w->cur.h -= w->stepH;
+        w->cur.w -= w->stepW;
+        w->list.fillV = (w->h - w->cur.h) & 0x1F;
     } else if (w->animMode == 2) {
-        w->unk8.w -= w->unk2C + w->unk2E;
-        w->unk8.h -= w->unk16;
-        w->unk8.x += w->unk2C;
+        w->cur.w -= w->stepLeft + w->stepRight;
+        w->cur.h -= w->stepH;
+        w->cur.x += w->stepLeft;
         if (w->tailMode >= 2) {
-            w->unk8.y += w->unk16;
+            w->cur.y += w->stepH;
         }
-        w->list.unkA = (w->unk8.x - w->unk0) & 0x1F;
-        w->list.fillV = (w->unk8.y - w->unk2) & 0x1F;
+        w->list.unkA = (w->cur.x - w->x) & 0x1F;
+        w->list.fillV = (w->cur.y - w->y) & 0x1F;
     }
-    if (w->unk8.w < 0) {
-        w->unk8.w = 0;
+    if (w->cur.w < 0) {
+        w->cur.w = 0;
     }
-    if (w->unk8.h < 0) {
-        w->unk8.h = 0;
+    if (w->cur.h < 0) {
+        w->cur.h = 0;
     }
-    if (w->unk8.w == 0 || w->unk8.h == 0) {
+    if (w->cur.w == 0 || w->cur.h == 0) {
         w->state = 0;
         if (w->onClosed != NULL) {
             w->onClosed(w);
@@ -561,10 +561,10 @@ u8 win_isVisible(Window *w) {
         return r;
     }
     if (w->style == 2 || w->style == 3) {
-        if (w->unk8.w >= min.unk0[w->style] && w->unk8.h >= 16) {
+        if (w->cur.w >= min.unk0[w->style] && w->cur.h >= 16) {
             r = 1;
         }
-    } else if ((u16)w->unk8.w | (u16)w->unk8.h) {
+    } else if ((u16)w->cur.w | (u16)w->cur.h) {
         r = 1;
     }
     return r;
@@ -576,29 +576,29 @@ void win_drawTitle(Window *w) {
         return;
     }
     if (w->state != 3) {
-        win_setClip(NULL, w->unk18, 4);
+        win_setClip(NULL, w->otz, 4);
     }
-    ui_drawLabel(w->unk0 + w->titleX, w->unk8.y + w->titleY, w->unk18, w->title, w->unk1E ? 0 : 2);
+    ui_drawLabel(w->x + w->titleX, w->cur.y + w->titleY, w->otz, w->title, w->active ? 0 : 2);
     if (w->state != 3) {
-        RECT *s = &w->unk8;
+        RECT *s = &w->cur;
         r.x = s->x;
         r.y = s->y - 3;
         r.w = s->w;
         r.h = 8;
-        win_setClip(&r, w->unk18, 4);
+        win_setClip(&r, w->otz, 4);
     }
 }
 
 void win_drawTail(Window *w) {
-    RECT *r = &w->unk8;
+    RECT *r = &w->cur;
     s32 y;
     if (w->tailMode >= 2) {
         y = r->y + r->h - 2;
     } else {
         y = r->y - 11;
     }
-    win_drawMsgTailEdge(w->unk0 + w->tailX, y, w->unk18, w->tailMode, w->translucent);
-    win_drawTailFill(w->unk0 + w->tailX, y, w->unk18, w->tailMode, (w->list.unkA + w->tailX) & 0x1F, w->list.fillV);
+    win_drawMsgTailEdge(w->x + w->tailX, y, w->otz, w->tailMode, w->translucent);
+    win_drawTailFill(w->x + w->tailX, y, w->otz, w->tailMode, (w->list.unkA + w->tailX) & 0x1F, w->list.fillV);
 }
 
 void win_drawScrollArrows(RECT *r, s32 otz, MenuList *m) {
@@ -673,7 +673,7 @@ Window *win_init(RECT *r, s32 otz, s32 style, Window *w) {
     w->closeFrames = 5;
     w->visible = 1;
     w->translucent = 0;
-    w->unk18 = otz;
+    w->otz = otz;
     w->onClosed = 0;
     w->drawOverlay = 0;
     w->drawContent = 0;
@@ -682,7 +682,7 @@ Window *win_init(RECT *r, s32 otz, s32 style, Window *w) {
     w->shadow = w->style == 3;
     menuList_init(&w->list, 0, 0, 0, r->h);
     w->tailMode = 4;
-    w->unk1E = 1;
+    w->active = 1;
     w->title = 0;
     w->tailX = 0;
     return w;
