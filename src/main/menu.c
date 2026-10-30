@@ -263,7 +263,7 @@ void menu_onPortraitsRead(u8 *a) {
 }
 
 s32 func_80032A34(void) {
-    return D_80077DCC;
+    return g_menu.unk1C;
 }
 
 void menu_start(void) {

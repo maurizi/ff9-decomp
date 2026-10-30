@@ -529,10 +529,10 @@ EvtObject *evt_getPlayer(void);
 u8 fld_getDiscChangeMask(void); /* other overlay */
 u8 fld_getDiscChangeDisc(void); /* other overlay */
 void config_apply(void);
-/* Window labels: entries of main's label string table g_winLabelStrings (ASCII), e.g. D_80070440 "ERROR",
- * D_8007048C "NOTICE", D_80070450 "HELP" (declared in ff9.h) */
-extern s32 D_80070420; /* "CHECK" */
-extern s32 D_80070444; /* "FILE" */
+/* Window labels: entries of main's label string table g_winLabelStrings (ASCII), e.g. g_labelError "ERROR",
+ * g_labelNotice "NOTICE", g_labelHelp "HELP" (declared in ff9.h) */
+extern s32 g_labelCheck; /* "CHECK" */
+extern s32 g_labelFile; /* "FILE" */
 void text_setNumberArg(s32, s32);
 extern u8 *g_menuHelpText; /* = g_menuHelp.text, referenced by its own name */
 s32 firstfile(char *, s32); /* PsyQ libapi: struct DIRENTRY *firstfile(char *, struct DIRENTRY *) */

@@ -1,7 +1,7 @@
 #include "ff9.h"
 
 void menuScreen_init(void) {
-    Unk80077E44 *t;
+    MenuScreenDef *t;
 
     printf("path=%s\n", "f:/code/dms/loc_us/ff9db.h");
     g_menuScreen.screen = 0;
@@ -10,7 +10,7 @@ void menuScreen_init(void) {
     g_menuScreen.frame = 0;
     g_menuScreen.savedOtz = fade_getOtz();
     g_menuScreen.member = party_getFirstMember();
-    g_menuScreenSwitch.cmdRect = D_8006E508;
+    g_menuScreenSwitch.cmdRect = g_menuCmdRectInit;
     g_menuScreenSwitch.titleScroll = 0;
     g_menuScreenSwitch.busy = 0;
     g_menuScreenSwitch.loadedOverlay = 0xFF;
@@ -19,8 +19,8 @@ void menuScreen_init(void) {
     g_menuScreenSwitch.switching = 0;
     g_menuScreenSwitch.fadingOut = 0;
     g_menuScreenSwitch.screens = g_gameState->mode != 3 ? g_menuScreensField : g_menuScreensWorld;
-    t = D_80077E44;
-    t[g_menuScreenCur].unk0();
+    t = g_menuScreenSwitch.screens;
+    t[g_menuScreenCur].init();
 }
 
 void menuScreen_drawCommands(void) {
@@ -43,7 +43,7 @@ void menuScreen_drawCommands(void) {
         y = i * 15 + 6;
         if (all || i == sel) {
             text_drawBlock(r->x + 10, r->y + y + g_menuScreenSwitch.titleScroll, 2,
-                          (u8 *)text_getFrom(D_800110A0, i), 0);
+                          (u8 *)text_getFrom(g_menuScreenStrings, i), 0);
         }
     }
     win_setClip(r, 2, 2);
@@ -95,11 +95,11 @@ void menuScreen_stepTitleScroll(void) {
 
 void menuScreen_update(void) {
     void (*fn)(void);
-    Unk80077E44 *t;
+    MenuScreenDef *t;
     menuScreen_drawCommands();
     menuScreen_updateOpen();
-    t = D_80077E44;
-    fn = t[g_menuScreen.screen].unk4;
+    t = g_menuScreenSwitch.screens;
+    fn = t[g_menuScreen.screen].update;
     if (fn != NULL) {
         fn();
     }
@@ -146,16 +146,16 @@ u8 menuScreen_getCurrent(void) {
 
 void menuScreen_close(void) {
     help_setCallback(NULL);
-    fade_setOtz(D_80077E58);
+    fade_setOtz(g_menuScreen.savedOtz);
     menu_close();
 }
 
 u8 menuScreen_needsMember(s32 i) {
-    return D_80077E44[i].unkC;
+    return g_menuScreenSwitch.screens[i].needsMember;
 }
 
 s32 menuScreen_getCommandHelp(s32 a) {
-    return text_getFrom(D_800110A0, a + 9);
+    return text_getFrom(g_menuScreenStrings, a + 9);
 }
 
 void menuScreen_stepTitleResize(void) {
@@ -178,13 +178,13 @@ void menuScreen_startTitleAnim(void) {
     s32 v;
     s32 d;
     s32 q;
-    s32 t = D_80077E2F;
+    s32 t = g_menuScreenSwitch.target;
     if (t != 0) {
         v = (1 - t) * 15;
     } else {
         v = 0;
     }
-    d = v - D_80077E30;
+    d = v - g_menuScreenSwitch.titleScroll;
     if (d >= 0) {
         q = (d + 11) / 12;
     } else {
@@ -197,7 +197,7 @@ void menuScreen_startTitleAnim(void) {
 }
 
 void menuScreen_requestOverlay(void) {
-    if (D_80077E2F != 0) {
+    if (g_menuScreenSwitch.target != 0) {
         menuScreen_loadOverlay();
     }
 }
@@ -240,8 +240,8 @@ void menuScreen_onSwitchFaded(void) {
 
 void menuScreen_onOverlayRead(u8 *a) {
     if (*a == 0) {
-        D_80077E2C = 0;
+        g_menuScreenSwitch.overlayLoading = 0;
     }
 }
 
-INCLUDE_RODATA("asm/us/main/nonmatchings/menu_screen", D_800110A0);
+INCLUDE_RODATA("asm/us/main/nonmatchings/menu_screen", g_menuScreenStrings);

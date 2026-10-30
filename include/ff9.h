@@ -575,7 +575,6 @@ extern s32 g_nameImage;
 extern u8 g_nameGlyphSpans[]; /* font glyph start/width nibbles, text_renderNameGlyph */
 extern void (*g_winShadowFuncs[])(RECT *, s32);
 extern s32 (*g_textMeasureFuncs[])(u8 *); /* text width of a value, per format */
-extern u8 D_8006A20E;
 s32 text_getCodeWidth(s32);
 s32 text_measureNumber(s32, s32);
 #if !defined(OVL_0A_H) && !defined(OVL_0C_H)
@@ -762,8 +761,8 @@ extern s8 D_80071E30; /* mbg_getStatus reports bit 8 when it is 1 */
 extern s32 g_menuOnClose;
 extern u8 g_menuFadeInOnClose;
 extern u8 g_menuFadeOutOnClose;
-extern s32 D_800704C8;
-extern s32 D_8007041C;
+extern s32 g_labelWarning;
+extern s32 g_labelCard;
 extern u8 g_partyChanged;
 extern struct MsgWindow *g_msgFocus;
 extern s32 g_cardGameResult;
@@ -1057,27 +1056,18 @@ extern s32 g_akaoRandIndex;
 extern s32 D_8007F8E0;
 extern s32 g_akaoVoiceModeMasks[3];
 extern s32 D_80080A20;
-extern s32 D_8007E3C8[2];
-extern s32 D_8007E3D0;
+extern s32 g_akaoVsyncs[2];
+extern s32 g_akaoTickPhase;
 
 typedef Character Unk800539FC;
 
 
-extern s32 D_80077DCC;
 extern u8 g_menuScreenCur;
 extern struct EvtObject *g_evtWorldCamEyeObj; /* object at the world map's mark 0x40 */
 extern struct EvtObject *g_evtWorldCamTargetObj; /* object at the world map's mark 0x80 */
 extern s32 g_msgKeepWindows;
 extern s32 *D_80066764;
 
-typedef struct {
-    void (*unk0)(void);
-    void (*unk4)(void);
-    u8 pad8[0xC - 8];
-    u8 unkC;
-    u8 padD[3];
-} Unk80077E44; /* 16-byte entries */
-extern Unk80077E44 *D_80077E44;
 
 /* actor position (VECTOR layout, the pad word holds two rotation angles) */
 typedef struct {
@@ -1273,7 +1263,6 @@ extern u32 g_msgPadReleased;
 extern s32 g_bubbleRequest;
 extern s32 g_bubbleVariant;
 extern u8 g_menuReading;
-extern u8 D_80077E2C;
 extern s16 g_evtBattleVars[8];
 extern s32 g_msgPadPrev;
 extern s8 g_akaoLfoTableData[];
@@ -1309,7 +1298,6 @@ void akao_resumeSeq(s32, s32);
 void akao_startSeq(s32, s32);
 extern s16 g_akaoSavedSeqMusicId;
 extern s32 D_8007F8DC;
-extern s32 D_8008322C;
 typedef struct {
     s32 bankUpload; /* 1 while a sound bank upload runs (akao_beginBankUpload / akao_uploadBank) */
     s32 mode; /* output mode 1/2 (akao_cmdSetOutputMode1/2), 0x100 crossfade pending (akao_cmdCrossfadeMusic) */
@@ -1404,8 +1392,8 @@ typedef struct {
 } Unk80021910;
 
 extern u8 g_chrAppearanceTypes[][2];
-extern u8 D_800110A0[];
-extern u8 D_8006FD60[];
+extern u8 g_menuScreenStrings[];
+extern u8 g_cardNames[];
 extern s32 g_atePromptMode;
 extern s32 g_atePromptTimer;
 /* event / script variables; h[0] is the story progress counter */
@@ -1484,8 +1472,6 @@ typedef struct MsgWindow {
 } MsgWindow;
 extern MsgWindow g_msgWindows[];
 
-extern u8 D_80077E2F;
-extern s16 D_80077E30; /* = g_menuScreenSwitch.unk8 */
 
 void menuScreen_loadOverlay(void);
 void akao_stopSeChannels(s32, s32);
@@ -1570,9 +1556,10 @@ void akao_setChannelInstrument(AkaoChannel *, AkaoInstrument *, s32);
 
 typedef struct {
     void (*init)(void); /* screen init (menuScreen_updateOpen, menuScreen_onSwitchFaded) */
-    s32 update; /* per-frame update (menuScreen_update); 0 = no screen (menuScreen_open ignores it) */
+    void (*update)(void); /* per-frame update (menuScreen_update); NULL = no screen (menuScreen_open ignores it) */
     void (*exit)(void);
-    s32 needsMember; /* 1 for the screens that pick a party member first (menuScreen_needsMember) */
+    u8 needsMember; /* 1 for the screens that pick a party member first (menuScreen_needsMember) */
+    u8 padD[3];
 } MenuScreenDef;
 
 typedef struct {
@@ -1583,7 +1570,7 @@ typedef struct {
     u8 overlayLoading; /* the overlay read is running */
     u8 fadingOut; /* menuScreen_open's fade-out runs (menuScreen_onOpenFaded clears it) */
     u8 switching; /* menuScreen_switch (no overlay load) */
-    u8 target; /* = D_80077E2F: screen being opened */
+    u8 target; /* screen being opened */
     s16 titleScroll; /* y offset of the command names in the title box */
     s16 titleScrollEnd;
     s16 titleScrollStep;
@@ -1597,7 +1584,6 @@ extern MenuScreenSwitch g_menuScreenSwitch;
 
 extern s16 g_akaoCdVolumeFadeTicks;
 extern s32 g_akaoCdVolume;
-extern s32 D_80077E58;
 extern u32 *g_penOt;
 
 void akao_applyCdVolume(void);
@@ -1725,12 +1711,12 @@ extern Unk800703FC g_winLabelStrings;
 extern u8 *g_loadAreaEnd; /* end of load area */
 extern s32 g_modeHeap;
 extern u32 g_levelExp[]; /* exp needed for next level, by level */
-extern s32 D_80070424;
-extern s32 D_80070428;
-extern s32 D_80070450;
-extern s32 D_80070454;
-extern s32 D_80070460;
-extern s32 D_800704AC;
+extern s32 g_labelChocoboAbility;
+extern s32 g_labelChocograph;
+extern s32 g_labelHelp;
+extern s32 g_labelHint;
+extern s32 g_labelInfo;
+extern s32 g_labelSelected;
 extern s32 g_padPortMask[];
 /* Pad bits in g_padHeld/g_padPressed/g_padRepeat and g_padPort*: the low 16 are the controller's own
  * button bits, the high ones the game's buttons, named after their default mapping (checked at runtime by
@@ -1900,8 +1886,8 @@ void game_freezeScreen(void);
 void file_loadTim(s32);
 void file_setTimPos(s32, s32, s32, s32, s32);
 s32 file_copyViaVram(s32, s32, s32, RECT *); /* copy through VRAM, returns bytes done */
-extern u8 D_80068234;      /* next slot in D_80073CE8 */
-extern RECT D_80073CE8[6]; /* transfer rects (file_copyViaVram) */
+extern u8 g_vramCopyRectIdx;      /* next slot in g_vramCopyRects */
+extern RECT g_vramCopyRects[6]; /* transfer rects (file_copyViaVram) */
 void file_initImg(void);
 FileEntry *file_find(s32, s32);
 void evt_setNextLocation(s32);
@@ -2003,7 +1989,7 @@ void akao_copy(); /* (u32 *src, u32 *dst, u32 size): word copy */
 u16 akao_shiftInstrumentDown(u32, AkaoChannel *);
 s32 text_initNameImage(s32);
 void text_renderPartyName(s32);
-extern RECT D_8006BC38;
+extern RECT g_partyNameRect;
 void akao_streamStartRing(void);
 void akao_setVoicePitch(s32, s32);
 void akao_setVoiceVolume(s32, u32, u32, s32);
@@ -2030,7 +2016,7 @@ s32 cd_startTransfer(); /* called with a u8 it ignores; callers see an int retur
 u8 timer_isEnabled(void);
 void timer_draw(void);
 void game_tickClock(void);
-extern SprAnimData D_80010E48;
+extern SprAnimData g_helpIconAnimData;
 void sprAnim_init(SprAnim *, SprAnimData *);
 s32 akao_checkHeader(s32 *);
 extern u16 *g_akaoSeTrackOfs;
@@ -2467,7 +2453,7 @@ typedef struct {
 extern Unk8006D128 g_supportAbilities[];
 void chr_setSupportAbility(s32, s32, u8);
 extern s32 g_menuScreenOvl[];
-extern RECT D_8006E508;
+extern RECT g_menuCmdRectInit;
 extern MenuScreenDef g_menuScreensField[];
 extern MenuScreenDef g_menuScreensWorld[];
 u8 cd_readAsync(s32, s32, void *, void (*)(u8 *));
@@ -2624,7 +2610,7 @@ typedef struct {
 extern Icon D_800687C0;
 extern Icon D_80068E30;
 extern Icon D_80068E38;
-extern s32 D_80070494;
+extern s32 g_labelParty;
 void ui_drawHand(s32, s32, s32);
 void pad_setRepeatDelay(s32, s32, s32);
 void pad_setRepeatInterval(s32, s32, s32);
@@ -2639,11 +2625,11 @@ typedef struct {
     u8 magicDef; /* magic defence (x2) */
     u8 points; /* collector points */
 } CardInfo; /* 5 bytes */
-extern CardInfo D_800121C8[]; /* card table */
+extern CardInfo g_cardInfo[]; /* card table */
 CardInfo *card_getInfoTable(void);
 s32 card_getRarity(s32);
-extern s32 D_800704C4;
-extern s32 D_80070418;
+extern s32 g_labelTrash;
+extern s32 g_labelCardInfo;
 void help_setLocked(u8);
 s32 keyItem_has(s32);
 s32 tween_sumDeltas(s32, s8 *);
@@ -2668,7 +2654,7 @@ void menuList_pageUp(MenuList *, s32);
 void menuList_pageDown(MenuList *, s32);
 void menuList_up(MenuList *, u32);
 extern u32 g_padHeld; /* buttons held */
-extern s32 D_80070430;
+extern s32 g_labelConfig;
 extern u8 D_8007AF02;
 void chr_updateStats(Character *);
 s32 chr_calcAppearance(s32, s32, u8 *);
@@ -2680,8 +2666,8 @@ s32 _card_load(s32);
 s32 write(s32, s32, s32);
 s32 read(s32, s32, s32);
 void *card_getInventory(void);
-extern s32 D_80070440;
-extern s32 D_8007048C;
+extern s32 g_labelError;
+extern s32 g_labelNotice;
 void party_setMember(s32, s32);
 
 
@@ -2719,7 +2705,7 @@ void akao_stopSe(s32, s32);
 void akao_sendCmdE2(void);
 s32 game_getPlayTime(void);
 s32 text_formatTime(s32, u8 *, s32);
-extern s32 D_800704C0;
+extern s32 g_labelTimeAndGil;
 extern u8 g_itemNames[]; /* item names */
 extern u8 g_keyItemNames[]; /* key item names */
 typedef struct {
@@ -2730,14 +2716,11 @@ typedef struct {
 } KeyItemInfo;
 extern KeyItemInfo g_keyItemTable[];
 Unk16D8 *evt_getObjectList(void);
-extern s32 D_8007046C;
+extern s32 g_labelLocation;
 void SetBackColor(s32, s32, s32);
 void SetFarColor(s32, s32, s32);
 void SetFogNearFar(s32, s32, s32);
 s32 party_getFirstMember(void);
-extern u8 D_80073939;
-extern u8 D_8007393A; /* pad analog stick */
-extern u8 D_8007393B;
 void printf(const char *, ...);
 
 /* Inlined body of msg_closeAll for one entry (close and unlink). */
@@ -3089,7 +3072,7 @@ extern s32 g_akaoCdVolumeStep;
 s32 akao_isqrt(s32);
 extern s32 g_akaoTempoScaleStep;
 extern s32 g_akaoPitchScaleStep;
-extern AkaoArgs D_800809F0;
+extern AkaoArgs g_akaoOpSeArgs;
 typedef struct {
     u16 unk0[6];
 } VibTrack;
@@ -3122,7 +3105,7 @@ extern u8 g_winStyleOpenAnim[]; /* window style -> colour */
 typedef struct {
     u8 unk0[8];
 } Bytes8;
-extern Bytes8 D_800121C0; /* card arrow bits (card_rollStats) */
+extern Bytes8 g_cardArrowBits; /* card arrow bits (card_rollStats) */
 typedef struct {
     u8 unk0[5];
 } Bytes5;
@@ -3391,10 +3374,10 @@ typedef struct {
 } Ff9ImgHeader;
 
 
-extern u32 D_80068680[8];
-extern s32 D_800686A0[];
-extern u32 D_800686C0[1]; /* extra button masks (parallel to D_800686C4) */
-extern s32 D_800686C4[1]; /* their action indices */
+extern u32 g_configButtons[8];
+extern s32 g_configPadButtons[];
+extern u32 g_configExtraButtons[1]; /* extra button masks (parallel to g_configExtraSlots) */
+extern s32 g_configExtraSlots[1]; /* their action indices */
 void pad_setMapping(s32, u32, s32);
 extern s32 g_padMapping[2][32]; /* indexed by leading-zero count (pad_setMapping) */
 extern s32 g_padHoldFrames[2][32];
@@ -3412,11 +3395,11 @@ void game_shutdown(void);
 void game_freezeScreen(void);
 
 /* overlay load addresses by game mode (game_loadModeOverlay). The rodata block
- * D_80010034 also holds the next word and libgpu's version string. */
+ * g_modeOverlayAddrs also holds the next word and libgpu's version string. */
 typedef struct {
     u32 *unk0[10];
 } LoadAddrs;
-extern LoadAddrs D_80010034;
+extern LoadAddrs g_modeOverlayAddrs;
 
 /* battle calculation context (fieldCalc_checkAlive ... chr_addMp) */
 typedef struct {
@@ -3506,7 +3489,7 @@ static inline void text_formatNumber_inline(s32 n, u8 *buf, s32 width, u8 ascii)
 }
 extern s32 g_hourHundredsGlyphs[];
 
-extern u8 D_80077878[2][0x200]; /* fade packet buffers, one per draw buffer */
+extern u8 g_fadePktBufs[2][0x200]; /* fade packet buffers, one per draw buffer */
 
 typedef void (*FadeFn)(FadeState *);
 
@@ -4157,11 +4140,11 @@ typedef struct {
     s16 flashStart; /* frame the flash starts */
     s16 flashStep; /* added to g_swirlFlash per frame */
 } SwirlDef; /* 0x14 */
-extern SwirlDef D_8006F2E0[2];
+extern SwirlDef g_swirlParamSets[2];
 extern SwirlDef *g_swirlParams;
 extern u16 g_swirlFade;
 extern s16 g_swirlAngle;
-extern s16 D_8007BD22 __asm__("g_swirlAngle+2"); /* no symbol of its own */
+extern s16 g_swirlAngleStep __asm__("g_swirlAngle+2"); /* per-frame g_swirlAngle change; no symbol of its own */
 extern s16 g_swirlZoom;
 extern s32 g_swirlFrame; /* frame */
 #if !defined(OVL_0C_H) /* ovl_0c declares it as s32 */
@@ -4177,8 +4160,8 @@ void swirl_drawMesh(void);
 #if !defined(OVL_0B_H) /* ovl_0b declares it with its DR_MOVE */
 void SetDrawMove(void *p, RECT *rect, int x, int y);
 #endif
-extern u8 D_8006F308[];
-extern u8 D_8006F310[];
+extern u8 g_swirlFlashX[];
+extern u8 g_swirlFlashY[];
 
 /* sound stream header (g_akaoStream.unk2C + 0x80), akao_streamStartRing */
 typedef struct {
@@ -4218,7 +4201,6 @@ typedef struct {
     s32 unk20[8];
 } AkaoBankHeader; /* 0x40 */
 extern AkaoBankHeader g_akaoBankHeader; /* AKAO header copy */
-extern u32 D_80083230; /* = g_akaoUpload.unk8 */
 
 /* ovl_0a functions called from the main script interpreter */
 s32 bgi_getActorTriangle(s32, u16 *, u16 *);

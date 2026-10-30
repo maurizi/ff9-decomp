@@ -121,7 +121,7 @@ void menuEquip_drawInfo(void) {
     r = &s_menuEquip.infoRect;
     c = g_gameState->gameData->party[s_menuEquip.slot];
     ui_drawEtchedLine(r->x + 3, r->y + 0x3B, 0x1E, r->w - 6);
-    ui_drawLabel(r->x + 6, r->y - 3, 0x1E, D_80070460, 0);
+    ui_drawLabel(r->x + 6, r->y - 3, 0x1E, g_labelInfo, 0);
     win_drawBox(r, 0x1E, 1);
     ui_drawMemberHeader(r->x + 8, r->y + 9, 0x1D, (MemberSwitch *)&s_menuEquip.header);
     cur.stats[0] = c->speed;
@@ -173,7 +173,7 @@ void menuEquip_drawEquipment(void) {
     if (s_menuEquip.state == EQUIP_STATE_LIST) {
         return;
     }
-    ui_drawLabel(r->x + 6, r->y - 3, 0x1E, D_8007043C, 0);
+    ui_drawLabel(r->x + 6, r->y - 3, 0x1E, g_labelEquipment, 0);
     win_drawBox(r, 0x1E, 2);
     win_drawShadow(r, 0x1E, 2);
     for (i = 0, grey = 2, y8 = 8, y12 = 12, y10 = 10; i < 5; i++) {
@@ -212,7 +212,7 @@ void menuEquip_drawAbilities(void) {
 
     r = &s_menuEquip.abilityRect;
     c = g_gameState->gameData->party[s_menuEquip.slot];
-    ui_drawLabel(r->x + 6, r->y - 3, 0x13, D_80070400, 0);
+    ui_drawLabel(r->x + 6, r->y - 3, 0x13, g_labelAbility, 0);
     ui_drawEtchedLine(r->x + 3, r->y + 0x1A, 0x1E, r->w - 6);
     win_drawBox(r, 0x1E, 1);
     if (s_menuEquip.state < EQUIP_STATE_SLOT) {

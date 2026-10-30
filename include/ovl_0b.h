@@ -2403,7 +2403,7 @@ typedef struct {
     u8 unk7;
     s32 unk8;
 } Unk8006B1F4; /* 0xC */
-extern Unk8006B1F4 D_8006B1F4[];
+extern Unk8006B1F4 g_usableItemTable[];
 void SetGeomScreen(s32);
 s32 ReadGeomScreen(void);
 s32 akao_getSpuTransferState(void);

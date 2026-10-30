@@ -190,7 +190,7 @@ extern u8 D_8007AFD3;
 u8 menuAbility_findCommand(s32, Character *);
 void menuAbility_initActionCursor(void);
 void menuAbility_initSupportCursor(void);
-extern s32 D_8007043C; /* main exe */
+extern s32 g_labelEquipment; /* main exe */
 extern u8 s_menuEquipColon[];
 extern u16 s_menuEquipCharMask[]; /* character masks */
 extern u8 s_menuEquipSlotMask[]; /* slot masks */
@@ -239,11 +239,11 @@ extern u16 s_menuAbilityTabCursorX[][2]; /* cursor x per slot */
 #endif
 #define ITEM_SLOT_COUNT 0x100 /* GameData.items slots */
 void help_nullHandler(void); /* empty function, passed to help_setCallback as a no-op callback */
-extern s32 D_80070400;
-extern s32 D_800704B8;
+extern s32 g_labelAbility;
+extern s32 g_labelTarget;
 extern s32 g_menuScreenFrame; /* = g_menuScreen.unk4, referenced by its own name */
-extern s32 D_80070498;
-extern s32 D_8007042C;
+extern s32 g_labelPlayer;
+extern s32 g_labelCommand;
 void ui_drawMemberSummary(s32, s32, s32, s32, s32);
 s32 chr_findAbilitySlot(s32, s32);
 void ui_drawItemIcon(s32, s32, s32, s32, u8); /* main exe */

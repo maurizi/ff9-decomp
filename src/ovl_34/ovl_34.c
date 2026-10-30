@@ -487,7 +487,7 @@ void menuConfig_draw(void) {
 
     s_menuConfig.primFree = s_menuConfig.primBufs[g_gameState->gameData->drawBuf ^ 1] - (s_menuConfig.prim - k);
     s_menuConfig.prim = s_menuConfig.primBufs[g_gameState->gameData->drawBuf];
-    ui_drawLabel(0x10, 0x23, 0x16, D_80070430, 0);
+    ui_drawLabel(0x10, 0x23, 0x16, g_labelConfig, 0);
     ui_drawRule(8, 0x26, 0x16, 0, 0x12C, (g_gameState->config >> CFG_BIT_WINDOW_COLOR) & 1);
     menuConfig_drawRows();
     menuConfig_drawSubWindows();

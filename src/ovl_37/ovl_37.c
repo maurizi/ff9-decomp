@@ -133,7 +133,7 @@ void menuItem_selectItem(s32 idx, MenuList *l) {
     if (p->unk1 != 0 && p->unk0 != ITEM_NONE && p->unk0 >= ITEM_FIRST_USABLE) {
         id = p->unk0;
         it = &g_itemTable[id];
-        e = &D_8006B1F4[id - ITEM_FIRST_USABLE];
+        e = &g_usableItemTable[id - ITEM_FIRST_USABLE];
         if (it->slots & 1) {
             s_menuItem.targetKind = e->targetKind;
             ok = 1;
@@ -591,7 +591,7 @@ void menuItem_useOnTarget(s32 id) {
     s32 i;
 
     i = id - ITEM_FIRST_USABLE;
-    e = &D_8006B1F4[i];
+    e = &g_usableItemTable[i];
     c = g_gameState->gameData->party[s_menuItem.slot];
     if (item_useOnMember(c, c, e, e->effect, 0)) {
         snd_playSe(SE_USE_ITEM);
@@ -770,7 +770,7 @@ void menuItem_openArrange(void) {
     win_setOnOpened(s_menuItem.popup, menuItem_onArrangeOpened);
     win_setOnClosed(s_menuItem.popup, menuItem_onArrangeClosed);
     win_setShadow(s_menuItem.popup, 1);
-    win_setTitle(s_menuItem.popup, D_80070408);
+    win_setTitle(s_menuItem.popup, g_labelArrange);
     s_menuItem.arrangeCursor = 0;
     s_menuItem.swapFrom = l->col + (l->top + l->cursor) * 2;
     s_menuItem.state = ITEM_STATE_BUSY;

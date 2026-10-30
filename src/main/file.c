@@ -102,11 +102,11 @@ s32 file_copyViaVram(s32 dst, s32 src, s32 size, RECT *rc) {
     if (size != 0) {
         while (done < size) {
             left = size - done;
-            i = D_80068234;
-            D_80068234 = i + 1;
-            r = &D_80073CE8[i];
+            i = g_vramCopyRectIdx;
+            g_vramCopyRectIdx = i + 1;
+            r = &g_vramCopyRects[i];
             if (i >= 5) {
-                D_80068234 = 0;
+                g_vramCopyRectIdx = 0;
             }
             if (rc != NULL) {
                 r->x = rc->x;

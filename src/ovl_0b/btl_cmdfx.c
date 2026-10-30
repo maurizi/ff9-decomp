@@ -147,7 +147,7 @@ void btl_startCmdEffect(BtlCmd *cmd) {
         return;
     case BTL_CMD_ITEM:
     case BTL_CMD_AUTO_POTION:
-        btl_playCmdEffect(cmd, D_8006B1F4[cmd->subNo - 0xE0].unk0_8, 0);
+        btl_playCmdEffect(cmd, g_usableItemTable[cmd->subNo - 0xE0].unk0_8, 0);
         break;
     case BTL_CMD_THROW:
         /* padded: the first jump table is 8-aligned in its object */

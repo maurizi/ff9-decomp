@@ -1,7 +1,7 @@
 #include "ovl_3c.h"
 
 void shop_drawMessage(void) {
-    ui_drawLabel(s_shopMessageRect.x + 6, s_shopMessageRect.y - 3, s_shop.messageOtz, D_80070450, 0);
+    ui_drawLabel(s_shopMessageRect.x + 6, s_shopMessageRect.y - 3, s_shop.messageOtz, g_labelHelp, 0);
     if (s_shop.help != NULL) {
         text_drawBlock(s_shopMessageRect.x + 0xA, s_shopMessageRect.y + 6, s_shop.messageOtz, s_shop.help, 0);
     }
@@ -311,7 +311,7 @@ void shopBuy_drawInfo(void) {
     l = &s_shopBuy.list;
     id = s_shopBuy.items[l->top + l->cursor];
     equip = (g_itemTable[id].slots & 0xF8) != 0;
-    ui_drawLabel(r->x + 6, r->y - 3, 0x1E, D_80070460, 0);
+    ui_drawLabel(r->x + 6, r->y - 3, 0x1E, g_labelInfo, 0);
     win_drawBox(r, 0x23, 1);
     for (i = 0; i < 3; i++) {
         text_drawBlock(r->x + 8, r->y + s_shopBuyInfoRowY[i] - 4, 0x1E, text_getFrom(g_shopText, s_shopBuyInfoRowText[i]),
@@ -483,7 +483,7 @@ void shopBuy_openQuantity(void) {
         win_setOnOpened(s_shopBuy.quantityWin, shopBuy_onQuantityOpened);
         win_setOnClosed(s_shopBuy.quantityWin, shopBuy_onQuantityClosed);
         win_setShadow(s_shopBuy.quantityWin, 1);
-        win_setTitle(s_shopBuy.quantityWin, D_800704A4);
+        win_setTitle(s_shopBuy.quantityWin, g_labelQuantity);
         snd_playSe(SE_CURSOR);
     } else {
         snd_playSe(SE_BUZZER);
@@ -732,7 +732,7 @@ void shopSynth_drawInfo(void) {
     equip = (g_itemTable[s->product].slots & 0xF8) != 0;
     ui_drawEtchedLine(r->x + 2, r->y + 0x36, 0x23, r->w - 5);
     win_drawBox(r, 0x23, 1);
-    ui_drawLabel(r->x + 6, r->y - 3, 0x1E, D_80070460, 0);
+    ui_drawLabel(r->x + 6, r->y - 3, 0x1E, g_labelInfo, 0);
     for (i = 0; i < 4; i++) {
         text_drawBlock(r->x + 8, r->y + s_shopSynthInfoRowY[i] - 4, 0x1E, text_getFrom(g_shopText, s_shopSynthInfoRowText[i]),
                       (s_shopSynthInfoRowAlways[i] | equip) ? 0 : 2);
@@ -977,7 +977,7 @@ void shopSynth_openQuantity(void) {
         win_setOnOpened(m3->quantityWin, shopSynth_onQuantityOpened);
         win_setOnClosed(m3->quantityWin, shopSynth_onQuantityClosed);
         win_setShadow(m3->quantityWin, 1);
-        win_setTitle(m3->quantityWin, D_800704A4);
+        win_setTitle(m3->quantityWin, g_labelQuantity);
         snd_playSe(SE_CURSOR);
     } else {
         snd_playSe(SE_BUZZER);

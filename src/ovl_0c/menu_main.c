@@ -22,7 +22,7 @@ void menuMain_initPanels(void) {
         s_menuMain.panels[i].rect = s_menuMainPanelRects[i];
         tween_start(&s_menuMain.panels[i], NULL, 0);
     }
-    if (D_80077E51 != 0) {
+    if (g_menuScreen.slideIn != 0) {
         tween_start(&s_menuMain.panels[0], &s_menuMainSlideIn[0], 1);
         tween_start(&s_menuMain.panels[1], &s_menuMainSlideIn[1], 1);
         tween_start(&s_menuMain.panels[2], &s_menuMainSlideIn[2], 1);
@@ -232,14 +232,14 @@ void menuMain_drawTimeGil(void) {
     text_formatNumber(g_gameState->gameData->gil, buf, 7, 1);
     strcat(buf, s_menuMainGilSuffix);
     ui_drawSmallDigits(s_menuMainTimeGilRect->x + 0x13, s_menuMainTimeGilRect->y + 0x16, 0x13, buf, 0);
-    ui_drawLabel(s_menuMainTimeGilRect->x + 6, s_menuMainTimeGilRect->y - 3, 0x13, D_800704C0, 0);
+    ui_drawLabel(s_menuMainTimeGilRect->x + 6, s_menuMainTimeGilRect->y - 3, 0x13, g_labelTimeAndGil, 0);
     win_drawBox(s_menuMainTimeGilRect, 0x14, 2);
 }
 
 void menuMain_drawLocation(void) {
     GameData *gd;
 
-    ui_drawLabel(s_menuMainLocationRect->x + 8, s_menuMainLocationRect->y - 3, 0x13, D_8007046C, 0);
+    ui_drawLabel(s_menuMainLocationRect->x + 8, s_menuMainLocationRect->y - 3, 0x13, g_labelLocation, 0);
     win_drawBox(s_menuMainLocationRect, 0x14, 2);
     win_drawShadow(s_menuMainLocationRect, 0x14, 2);
     gd = g_gameState->gameData;

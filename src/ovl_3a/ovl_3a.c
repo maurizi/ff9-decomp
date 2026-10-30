@@ -192,7 +192,7 @@ void menuName_drawNameWindow(void) {
     if (s_menuName.len < 6) {
         cursor = s_menuName.len;
     }
-    ui_drawLabel(s_menuNameNameWin->x + 0x23, s_menuNameNameWin->y - 4, 5, D_8007047C, 0);
+    ui_drawLabel(s_menuNameNameWin->x + 0x23, s_menuNameNameWin->y - 4, 5, g_labelName, 0);
     ui_drawEtchedLine(s_menuNameNameWin->x + 4, s_menuNameNameWin->y + 0x1A, 6, s_menuNameNameWin->w - 8);
     win_drawBox(s_menuNameNameWin, 6, 1);
     win_drawShadow(s_menuNameNameWin, 6, 1);
@@ -258,7 +258,7 @@ void menuName_drawCursor(void) {
             g_menuHelp.y = r->y + row * 21 + 0x26;
         }
     }
-    D_80077DEC = 3;
+    g_menuHelp.otz = 3;
     help_drawCursor();
 }
 
@@ -310,7 +310,7 @@ void menuName_drawHelp(void) {
     win_drawBox(s_menuNameHelpWin, 7, 1);
     win_drawShadow(s_menuNameHelpWin, 7, 1);
     text_drawBlock(s_menuNameHelpWin->x + 0x3E, s_menuNameHelpWin->y + 6, 6, text_get(NAME_TEXT_PROMPT), 0);
-    ui_drawLabel(s_menuNameHelpWin->x + 0x23, s_menuNameHelpWin->y - 4, 6, D_80070450, 0);
+    ui_drawLabel(s_menuNameHelpWin->x + 0x23, s_menuNameHelpWin->y - 4, 6, g_labelHelp, 0);
 }
 
 void menuName_loadPortrait(s32 chr) {

@@ -189,7 +189,7 @@ void battleEnd_preloadScene(void) {
 void rewards_drawInfo(void) {
     RECT *r = &s_rewards.wins[0].rect;
     s32 x, y;
-    ui_drawLabel(r->x + 6, r->y - 3, 0xB, D_80070460, 0);
+    ui_drawLabel(r->x + 6, r->y - 3, 0xB, g_labelInfo, 0);
     win_drawBox(r, 0xB, 1);
     win_drawShadow(r, 0xC, 1);
     x = r->x;
@@ -677,7 +677,7 @@ void rewards_updateState(void) {
 void rewards_drawHelp(void) {
     s32 x, y;
     RECT *r = &s_rewards.wins[1].rect;
-    ui_drawLabel(r->x + 6, r->y - 3, 0xB, D_80070450, 0);
+    ui_drawLabel(r->x + 6, r->y - 3, 0xB, g_labelHelp, 0);
     win_drawBox(r, 0xB, 1);
     win_drawShadow(r, 0xC, 1);
     x = r->x;
@@ -1362,7 +1362,7 @@ u8 rewards_addItems(void) {
         win_setOnClosed(ws->win, (void (*)(Window *))rewards_onFullWarningClosed);
         win_setOpenAnim(ws->win, 0);
         win_setShadow(ws->win, 1);
-        win_setTitle(ws->win, D_800704C8);
+        win_setTitle(ws->win, g_labelWarning);
     }
     return !f;
 }

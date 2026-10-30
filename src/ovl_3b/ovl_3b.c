@@ -78,7 +78,7 @@ void menuParty_drawParty(void) {
     s32 t;
     u8 *s;
 
-    ui_drawLabel(s_menuPartyListRect.x + 8, s_menuPartyListRect.y - 3, 7, D_80070494, 0);
+    ui_drawLabel(s_menuPartyListRect.x + 8, s_menuPartyListRect.y - 3, 7, g_labelParty, 0);
     for (i = 0; i < 3; i++) {
         ui_drawEtchedLine(s_menuPartyListRect.x + 4, s_menuPartyListRect.y + 0x35 + i * 0x33, 7, s_menuPartyListRect.w - 9);
     }
@@ -106,7 +106,7 @@ void menuParty_drawInfo(void) {
     s32 dx;
     s32 dy;
 
-    ui_drawLabel(s_menuPartyInfoRect.x + 0xC, s_menuPartyInfoRect.y - 3, 7, D_80070460, 0);
+    ui_drawLabel(s_menuPartyInfoRect.x + 0xC, s_menuPartyInfoRect.y - 3, 7, g_labelInfo, 0);
     ui_drawEtchedLine(s_menuPartyInfoRect.x + 4, s_menuPartyInfoRect.y + 0x35, 8, s_menuPartyInfoRect.w - 8);
     win_drawBox(&s_menuPartyInfoRect, 8, 1);
     win_drawShadow(&s_menuPartyInfoRect, 9, 1);
@@ -226,7 +226,7 @@ void menuParty_drawTitle(void) {
 }
 
 void menuParty_drawHelp(void) {
-    ui_drawLabel(s_menuPartyHelpRect.x + 0xC, s_menuPartyHelpRect.y - 3, 8, D_80070450, 0);
+    ui_drawLabel(s_menuPartyHelpRect.x + 0xC, s_menuPartyHelpRect.y - 3, 8, g_labelHelp, 0);
     win_drawBox(&s_menuPartyHelpRect, 8, 1);
     win_drawShadow(&s_menuPartyHelpRect, 9, 1);
     text_drawBlock(s_menuPartyHelpRect.x + 0x12, s_menuPartyHelpRect.y + 6, 6, text_get(s_menuParty.size), 0);

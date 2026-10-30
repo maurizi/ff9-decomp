@@ -59,7 +59,7 @@ s32 swirl_update(s16 arg0, s16 arg1) {
 
     x = arg0;
     y = arg1;
-    g_swirlParams = g_swirlVariant ? &D_8006F2E0[1] : &D_8006F2E0[0];
+    g_swirlParams = g_swirlVariant ? &g_swirlParamSets[1] : &g_swirlParamSets[0];
     g_swirlOt = g_swirlPkt = g_swirlBuf + (g_gameState->gameData->drawBuf << 10);
     ClearOTag(g_swirlOt, 5);
     g_swirlPkt += 5;
@@ -72,10 +72,10 @@ s32 swirl_update(s16 arg0, s16 arg1) {
             g_swirlFade = g_swirlParams->fade;
             g_swirlAngle = a = g_swirlParams->angle;
             g_swirlZoom = g_swirlParams->zoom;
-            D_8007BD22 = b = g_swirlParams->angleStep;
+            g_swirlAngleStep = b = g_swirlParams->angleStep;
             if ((arg0 ^ arg1) & 1) {
                 g_swirlAngle = -a;
-                D_8007BD22 = -b;
+                g_swirlAngleStep = -b;
             }
             fade_clear();
         }
@@ -109,7 +109,7 @@ s32 swirl_update(s16 arg0, s16 arg1) {
                 g_swirlFlash = 0xFFF;
             }
         }
-        g_swirlAngle += D_8007BD22;
+        g_swirlAngle += g_swirlAngleStep;
         g_swirlZoom += g_swirlParams->zoomStep;
         if (g_swirlZoom > 0x1400) {
             g_swirlZoom = 0x1400;
@@ -174,9 +174,9 @@ void swirl_drawFlash(s32 x, s32 y) {
     for (i = 0; i < 4; i++) {
         p[0] = 0x06000000;
         p[1] = ((c1 << 16) | (c1 << 8) | c1) | GPU_CODE(GPU_POLY_G3 | GPU_ABE);
-        p[2] = ((D_8006F310[i] * g_gameState->drawEnv->clip.h) << 16) | ((D_8006F308[i] * 320) & 0xFFFF);
+        p[2] = ((g_swirlFlashY[i] * g_gameState->drawEnv->clip.h) << 16) | ((g_swirlFlashX[i] * 320) & 0xFFFF);
         p[3] = (c1 << 16) | (c1 << 8) | c1;
-        p[4] = ((D_8006F310[i + 1] * g_gameState->drawEnv->clip.h) << 16) | ((D_8006F308[i + 1] * 320) & 0xFFFF);
+        p[4] = ((g_swirlFlashY[i + 1] * g_gameState->drawEnv->clip.h) << 16) | ((g_swirlFlashX[i + 1] * 320) & 0xFFFF);
         p[5] = g2;
         p[6] = (y << 16) | (x & 0xFFFF);
         setaddr(p - 7, p);

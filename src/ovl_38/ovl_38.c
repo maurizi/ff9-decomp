@@ -104,7 +104,7 @@ void menuStatus_drawCommands(void) {
         k = ((StatusEntry *)((u8 *)tp + off))->nameOffset;
         s_menuStatus.prim = text_buildBlock(r.x + 0xC, r.y + y, g_ot + 25, pool.s + k, 0, s_menuStatus.prim);
     }
-    ui_drawLabel(r.x + 6, r.y - 3, 0x19, D_8007042C, 0);
+    ui_drawLabel(r.x + 6, r.y - 3, 0x19, g_labelCommand, 0);
     win_drawBox(&r, 0x19, 2);
     win_drawShadow(&r, 0x19, 2);
 }

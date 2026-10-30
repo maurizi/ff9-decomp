@@ -1278,9 +1278,7 @@ extern s32 g_vtxScreenXY[]; /* projected screen xy per model vertex */
 extern s32 g_vtxScreenZ[]; /* projected z per model vertex */
 s32 akao_loadBankInSlot(s32 *, s32, s32);
 extern u32 g_portraitSavedVram[]; /* VRAM save buffer */
-extern u8 D_80077E51;
 extern u8 *g_menuHelpText; /* = g_menuHelp.text, referenced by its own name */
-extern s32 D_80077DEC; /* = g_menuHelp.otz, referenced by its own name */
 s32 text_measureStyle(u8 *, s32);
 extern s32 g_menuScreenFrame; /* overlaps MenuScreen.unk4 in ff9.h */
 void menuMain_reorder(s32, s32);

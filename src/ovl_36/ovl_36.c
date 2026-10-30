@@ -104,7 +104,7 @@ void menuCard_openDiscard(void) {
         win_setDrawContent(s_menuCard.discardWin, menuCard_drawDiscardWindow);
         win_setOnOpened(s_menuCard.discardWin, menuCard_onDiscardOpened);
         win_setOnClosed(s_menuCard.discardWin, menuCard_onDiscardClosed);
-        win_setTitle(s_menuCard.discardWin, D_800704C4);
+        win_setTitle(s_menuCard.discardWin, g_labelTrash);
         win_setShadow(s_menuCard.discardWin, 1);
         return;
     }
@@ -129,7 +129,7 @@ void menuCard_drawGrid(void) {
     r = &s_menuCard.gridRect;
     a = card_countAll();
     b = card_countKinds();
-    ui_drawLabel(r->x + 8, r->y - 3, 0x1E, D_8007041C, 0);
+    ui_drawLabel(r->x + 8, r->y - 3, 0x1E, g_labelCard, 0);
     win_drawBox(r, 0x1E, 1);
     win_drawShadow(r, 0x1E, 1);
     s = text_get(CARD_TEXT_STOCK);
@@ -176,7 +176,7 @@ void menuCard_drawInfo(void) {
         c = 99999;
     }
     rank = s_menuCard.rank;
-    ui_drawLabel(r->x + 8, r->y - 3, 0x1E, D_80070460, 0);
+    ui_drawLabel(r->x + 8, r->y - 3, 0x1E, g_labelInfo, 0);
     win_drawBox(r, 0x1E, 2);
     win_drawShadow(r, 0x1F, 2);
     ui_drawEtchedLine(r->x + 4, r->y + 0x24, 0x14, r->w - 9);
@@ -616,7 +616,7 @@ void menuCard_drawCardInfo(void) {
     s32 cur;
 
     cur = s_menuCard.col * CARD_GRID_ROWS + s_menuCard.row;
-    ui_drawLabel(r->x + 8, r->y - 3, 0x1E, D_80070418, 0);
+    ui_drawLabel(r->x + 8, r->y - 3, 0x1E, g_labelCardInfo, 0);
     if (c->shown != CARD_NONE) {
         if (c->shown != cur && c->fading != 0) {
             menuCard_drawCardStack(c->prev);

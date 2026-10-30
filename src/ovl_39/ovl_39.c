@@ -41,7 +41,7 @@ void menuSave_drawHelp(void) {
     if (s_menuSave.help != NULL) {
         text_drawBlock(s_menuSaveHelpRect.x + 0xA, s_menuSaveHelpRect.y + 6, 5, s_menuSave.help, 0);
     }
-    ui_drawLabel(s_menuSaveHelpRect.x + 6, s_menuSaveHelpRect.y - 3, 5, D_80070450, 0);
+    ui_drawLabel(s_menuSaveHelpRect.x + 6, s_menuSaveHelpRect.y - 3, 5, g_labelHelp, 0);
     win_drawBox(&s_menuSaveSlotNameRect, 5, 0);
     win_drawBox(&s_menuSaveHelpRect, 5, 1);
     win_drawShadow(&s_menuSaveHelpRect, 5, 1);
@@ -97,7 +97,7 @@ void menuSave_drawFileList(void) {
     MenuList *l = &s_menuSave.list;
 
     menuSave_drawScrollArrows();
-    ui_drawLabel(0xE, 0x23, 0x2C, D_80070444, 0);
+    ui_drawLabel(0xE, 0x23, 0x2C, g_labelFile, 0);
     ui_drawRule(8, 0x26, 0x2C, 1, 0x12C, (g_gameState->config >> CFG_BIT_WINDOW_COLOR) & 1);
     r.x = SAVE_LIST_X;
     r.y = 0;
@@ -643,7 +643,7 @@ void menuSave_openConfirm(s32 id, s32 yes, s32 no) {
     win_setDrawContent(s_menuSaveConfirm.win, menuSave_drawConfirm);
     win_setDrawOverlay(s_menuSaveConfirm.win, menuSave_drawConfirmCursor);
     win_setShadow(s_menuSaveConfirm.win, 1);
-    win_setTitle(s_menuSaveConfirm.win, D_8007048C);
+    win_setTitle(s_menuSaveConfirm.win, g_labelNotice);
 }
 
 void menuSave_drawConfirm(Window *w) {
@@ -780,7 +780,7 @@ void menuSave_openCheck(void) {
     win_setDrawContent(s_menuSaveCheck.win, menuSave_drawCheck);
     win_setOnOpened(s_menuSaveCheck.win, menuSave_onCheckOpened);
     win_setOnClosed(s_menuSaveCheck.win, menuSave_onCheckClosed);
-    win_setTitle(s_menuSaveCheck.win, D_80070420);
+    win_setTitle(s_menuSaveCheck.win, g_labelCheck);
     win_setShadow(s_menuSaveCheck.win, 1);
     sl = g_menu.cardSlot;
     switch (s_menuSave.cardStatus[sl]) {
@@ -1255,11 +1255,11 @@ void menuSave_inputMessage(void) {
 }
 
 void menuSave_showError(s32 id) {
-    menuSave_openMessage(id, D_80070440);
+    menuSave_openMessage(id, g_labelError);
 }
 
 void menuSave_showNotice(s32 id) {
-    menuSave_openMessage(id, D_8007048C);
+    menuSave_openMessage(id, g_labelNotice);
 }
 
 u8 menuSave_setMessageActive(u8 v) {

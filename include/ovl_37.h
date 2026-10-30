@@ -23,7 +23,7 @@ enum { KEY_VIEW_NONE, KEY_VIEW_OPENING, KEY_VIEW_SHOWN, KEY_VIEW_CLOSING }; /* I
 
 #define ITEM_SLOT_COUNT   0x100 /* GameData.items slots */
 #define KEY_ITEM_COUNT    0x50  /* key item ids (keyItem_has) */
-#define ITEM_FIRST_USABLE 0xE0  /* items from here have a use entry in D_8006B1F4 */
+#define ITEM_FIRST_USABLE 0xE0  /* items from here have a use entry in g_usableItemTable */
 
 /* g_itemMenuText ids */
 #define ITEM_TEXT_USE          0   /* "Use", "Arrange", "Key": the tabs, + ITEM_TAB_* */
@@ -38,8 +38,8 @@ typedef struct {
     u8 tab;           /* ITEM_TAB_*, index into s_menuItemTabs */
     u8 state;         /* ITEM_STATE_* */
     u8 slot;          /* party slot of the target */
-    u8 targetKind;    /* D_8006B1F4 target kind of the item being used */
-    u8 targetMode;    /* D_8006B1F4 bits 5-7: 0 = use at once, else pick a character (cursor mode) */
+    u8 targetKind;    /* g_usableItemTable target kind of the item being used */
+    u8 targetMode;    /* g_usableItemTable bits 5-7: 0 = use at once, else pick a character (cursor mode) */
     u8 arrangeCursor; /* 0 = Auto, 1 = Manual */
     u8 swapFrom;      /* manual arrange: first slot picked */
     u8 swapPicked;    /* manual arrange: swapFrom is set */
@@ -103,9 +103,9 @@ typedef struct {
     u8 pad5[3];
     s32 unk8;
 } Unk8006B1F4; /* 0xC, items 0xE0.. (also in ovl_0b.h) */
-extern Unk8006B1F4 D_8006B1F4[];
+extern Unk8006B1F4 g_usableItemTable[];
 u8 item_useOnMember(Character *, Character *, Unk8006B1F4 *, s32, s32);
-extern s32 D_80070408;
+extern s32 g_labelArrange;
 void menuItem_initStub(void);
 void menuItem_collectKeyItems(void);
 void menuItem_loadImages(void);

@@ -98,7 +98,7 @@ void help_init(void) {
     g_menuHelp.follow = 1;
     g_menuHelp.cursorOnTop = 1;
     help_setBounds(NULL);
-    sprAnim_init(&g_menuHelp.iconAnim, &D_80010E48);
+    sprAnim_init(&g_menuHelp.iconAnim, &g_helpIconAnimData);
 }
 
 void help_update(void) {
@@ -197,4 +197,4 @@ void help_onIconAnimDone(void) {
     g_menuHelp.opening = 0;
 }
 
-INCLUDE_RODATA("asm/us/main/nonmatchings/help", D_80010E48);
+INCLUDE_RODATA("asm/us/main/nonmatchings/help", g_helpIconAnimData);

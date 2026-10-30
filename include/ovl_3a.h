@@ -68,10 +68,9 @@ extern u8 s_menuNamePortraits[][0x6C0];
 #define SE_CANCEL 0x65
 #endif
 void SetLineF2(LINE_F2 *);
-extern s32 D_8007047C;
+extern s32 g_labelName;
 s32 text_drawChar(s32, s32, s32, u8, s32);
 u8 *text_buildFontTpage(u32 *, void *);
-extern s32 D_80077DEC; /* = g_menuHelp.otz, referenced by its own name */
 
 /* x offset of a 5-column group in the name-entry character grid */
 static inline s32 grp_x(s32 c) {

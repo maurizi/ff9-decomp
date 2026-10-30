@@ -246,7 +246,7 @@ void shopBuy_drawScrollRows(void);
 void shopBuy_drawQuantityWindow(Window *);
 void shopBuy_onQuantityOpened(Window *);
 void shopBuy_onQuantityClosed(Window *);
-extern s32 D_800704A4;
+extern s32 g_labelQuantity;
 void shopSynth_confirm(void);
 void shopSell_closeQuantity(void);
 void shopSynth_drawScrollRows(void);

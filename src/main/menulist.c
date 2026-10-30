@@ -289,12 +289,12 @@ s32 fade_reverse(void (*fn)(void)) {
 }
 
 void fade_update(void) {
-    u8 *buf = D_80077878[0];
+    u8 *buf = g_fadePktBufs[0];
     FadeState *f = &g_fade;
     FadeFn fn;
 
     if (g_gameState->gameData->drawBuf != 0) {
-        buf = D_80077878[1];
+        buf = g_fadePktBufs[1];
     }
     f->pkt = buf;
     if (f->active != 0) {

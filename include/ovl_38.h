@@ -115,7 +115,7 @@ extern StatusPool s_menuStatusCmdNames;
 #ifndef ITEM_NONE
 #define ITEM_NONE 0xFF /* empty Character.equip slot */
 #endif
-extern s32 D_8007042C;
+extern s32 g_labelCommand;
 void ui_drawItemIcon(s32, s32, s32, s32, u8);
 typedef struct {
     u8 unk0;

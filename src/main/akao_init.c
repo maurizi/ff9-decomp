@@ -193,9 +193,9 @@ loop1:
     for (i = 0; i < 24; i++) {
         akao_setVoiceLoopAddr(i, 0x1030);
     }
-    D_8007E3C8[1] = 0;
-    D_8007E3C8[0] = 0;
-    D_8007E3D0 = 0;
+    g_akaoVsyncs[1] = 0;
+    g_akaoVsyncs[0] = 0;
+    g_akaoTickPhase = 0;
 }
 
 void akao_init(void) {

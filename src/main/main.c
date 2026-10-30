@@ -56,7 +56,7 @@ void game_main(void) {
 void game_loadModeOverlay(s32 mode) {
     u32 loaded = 0;
     u8 files[10] = { 20, 10, 11, 12, 21, 0xFF, 0xFF, 101, 101, 13 };
-    LoadAddrs addrs = D_80010034;
+    LoadAddrs addrs = g_modeOverlayAddrs;
     s32 id;
     PreloadEntry *e;
     FileEntry *f;
@@ -86,7 +86,7 @@ void game_loadModeOverlay(s32 mode) {
     ExitCriticalSection();
 }
 
-INCLUDE_RODATA("asm/us/main/nonmatchings/main", D_80010034);
+INCLUDE_RODATA("asm/us/main/nonmatchings/main", g_modeOverlayAddrs);
 
 s32 mbg_getStatus(void) {
     s32 r = 0;

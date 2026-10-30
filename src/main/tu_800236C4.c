@@ -30,14 +30,14 @@ void config_applyPadMapping(void) {
     u32 *tbl;
 
     port = 0;
-    tbl = D_80068680;
+    tbl = g_configButtons;
     for (; port < 2; port++) {
         for (i = 0; i < 8; i++) {
-            act = D_800686A0;
+            act = g_configPadButtons;
             pad_setMapping(port, tbl[i], act[config_applyPadMapping_remap(i)]);
         }
         for (i = 0; i < 1; i++) {
-            pad_setMapping(port, D_800686C0[i], act[config_applyPadMapping_remap(D_800686C4[i])]);
+            pad_setMapping(port, g_configExtraButtons[i], act[config_applyPadMapping_remap(g_configExtraSlots[i])]);
         }
         pad_setMapping(port, BTN_START, PAD_START);
         pad_setMapping(port, 0x02000000, PAD_SELECT);

@@ -168,7 +168,7 @@ void fld_discPromptDraw(void) {
         } else {
             m->y = y + 0x41;
         }
-        D_80077DEC = 9;
+        g_menuHelp.otz = 9;
         help_drawCursor();
     }
     win_drawBox(&g_fieldDiscChangeRect, 0xA, 2);

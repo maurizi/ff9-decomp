@@ -79,7 +79,7 @@ void text_uploadPartyNames(s32 a) {
             text_renderPartyName(i);
         }
     }
-    LoadImage(&D_8006BC38, (u32 *)buf);
+    LoadImage(&g_partyNameRect, (u32 *)buf);
     DrawSync(0);
 }
 

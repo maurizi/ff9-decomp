@@ -409,7 +409,7 @@ s32 akao_getSpuTransferState(void) {
 }
 
 s32 akao_beginBankUpload(void) {
-    D_8008322C = 0;
+    g_akaoUpload.spuAddr = 0;
     g_akaoFlags.bankUpload |= 1;
     return 0;
 }
@@ -471,12 +471,12 @@ s32 akao_uploadBank(s32 *buf, u32 size, s32 wait) {
             }
         }
     end:
-        if (D_80083230 == 0) {
+        if (g_akaoUpload.sampleLeft == 0) {
         clear:
             g_akaoFlags.bankUpload &= ~1;
         }
     }
-    return D_80083230;
+    return g_akaoUpload.sampleLeft;
 }
 
 void func_80056028(s32 a, s32 b) {

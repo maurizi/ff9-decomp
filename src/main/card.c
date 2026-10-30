@@ -171,7 +171,7 @@ s32 card_getGameResult(void) {
 }
 
 s32 card_getName(s32 a) {
-    return text_getFrom(D_8006FD60, a);
+    return text_getFrom(g_cardNames, a);
 }
 
 s32 card_getNameWidth(s32 a) {
@@ -214,8 +214,8 @@ void card_rollStats(CardEntry *card, u8 id) {
     u8 *b;
     CardInfo *tbl;
 
-    bits = D_800121C0;
-    tbl = D_800121C8;
+    bits = g_cardArrowBits;
+    tbl = g_cardInfo;
     card->id = id;
     v = tbl[id].power >> 1;
     if (v != 0) {
@@ -273,9 +273,9 @@ void card_rollStats(CardEntry *card, u8 id) {
 }
 
 CardInfo *card_getInfoTable(void) {
-    return D_800121C8;
+    return g_cardInfo;
 }
 
-INCLUDE_RODATA("asm/us/main/nonmatchings/card", D_800121C0);
+INCLUDE_RODATA("asm/us/main/nonmatchings/card", g_cardArrowBits);
 
-INCLUDE_RODATA("asm/us/main/nonmatchings/card", D_800121C8);
+INCLUDE_RODATA("asm/us/main/nonmatchings/card", g_cardInfo);

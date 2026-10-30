@@ -288,23 +288,23 @@ s32 akao_tick(void) {
     s32 e;
 
     t0 = GetRCnt(0xF2000002);
-    D_8007E3C8[1] = D_8007E3C8[0];
+    g_akaoVsyncs[1] = g_akaoVsyncs[0];
     now = VSync(-1);
     n = 1;
-    mask = now - D_8007E3C8[1];
-    D_8007E3C8[0] = now;
+    mask = now - g_akaoVsyncs[1];
+    g_akaoVsyncs[0] = now;
     if (mask != 0) {
         if (mask < 9) {
             bit = mask * 4;
-            if (D_8007E3D0 < bit) {
-                n = bit - D_8007E3D0 + 1;
+            if (g_akaoTickPhase < bit) {
+                n = bit - g_akaoTickPhase + 1;
             }
-            D_8007E3D0 %= bit;
+            g_akaoTickPhase %= bit;
         }
     }
     do {
         n--;
-        D_8007E3D0++;
+        g_akaoTickPhase++;
         g_akaoTickCount++;
         if ((g_akaoSeq->keyOffMask | g_akaoSeState.keyOffMask) != 0 || (g_akaoSubSeq != NULL && g_akaoSubSeq->keyOffMask != 0)) {
             akao_flushKeyOffs();
@@ -1721,11 +1721,11 @@ void akao_opFE0B(AkaoChannel *c) {
     a = akao_opFE0B_ref(p);
     p += 2;
     b = akao_opFE0B_ref(p);
-    D_800809F0.arg0 = 0;
-    D_800809F0.arg1 = 0;
-    D_800809F0.arg2 = c->pan >> 8;
-    D_800809F0.arg3 = c->volume >> 23;
-    akao_startSe(&D_800809F0, a, b, 0);
+    g_akaoOpSeArgs.arg0 = 0;
+    g_akaoOpSeArgs.arg1 = 0;
+    g_akaoOpSeArgs.arg2 = c->pan >> 8;
+    g_akaoOpSeArgs.arg3 = c->volume >> 23;
+    akao_startSe(&g_akaoOpSeArgs, a, b, 0);
     c->pc += 4;
 }
 

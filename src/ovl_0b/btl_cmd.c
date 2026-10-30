@@ -724,7 +724,7 @@ s32 btl_validateTargets(Battle *b, BtlCmd *cmd) {
         switch (cmd->cmdNo) {
         case BTL_CMD_ITEM:
         case BTL_CMD_AUTO_POTION:
-            tbl = D_8006B1F4;
+            tbl = g_usableItemTable;
             i = cmd->subNo - 0xE0;
             a = (BtlCmd8 *)(tbl + i);
             f = (*(u32 *)a >> 29) & 1;
@@ -857,7 +857,7 @@ void btl_execCmd(BtlUnit *arg0) {
     case BTL_CMD_ITEM:
     case BTL_CMD_AUTO_POTION:
         btl_useReservedItem(cmd->subNo);
-        tbl = D_8006B1F4;
+        tbl = g_usableItemTable;
         i = cmd->subNo - 0xE0;
         btl_calcCmd(u, arg0, cmd, ((BtlCmd8 *)(tbl + i))->formula);
         break;
@@ -2072,7 +2072,7 @@ void btl_calcCmd(BtlUnit *caster, BtlUnit *target, BtlCmd *cmd, s32 type) {
             sub2.cmdNo = 0xE;
             sub2.subNo = cmd->ability->power;
             sub2.ability = (BtlCmd8 *)&g_gameState->gameData->ctx.battle->abilities[0];
-            btl_calcCmd(caster, target, &sub2, D_8006B1F4[sub2.subNo - 0xE0].unk4);
+            btl_calcCmd(caster, target, &sub2, g_usableItemTable[sub2.subNo - 0xE0].unk4);
             btl_useItem(sub2.subNo);
             return;
         }
@@ -2307,7 +2307,7 @@ void btl_calcCmd(BtlUnit *caster, BtlUnit *target, BtlCmd *cmd, s32 type) {
         {
             s32 v;
             c.multiplier = 15;
-            c.power = D_8006B1F4[cmd->subNo - 0xE0].unk5;
+            c.power = g_usableItemTable[cmd->subNo - 0xE0].unk5;
             c.defense = 0;
             if (caster->support[0] & 0x08000000) {
                 c.multiplier = 30;
@@ -2358,20 +2358,20 @@ void btl_calcCmd(BtlUnit *caster, BtlUnit *target, BtlCmd *cmd, s32 type) {
         break;
     case 0x4A:
         c.targetResult |= 3;
-        c.targetHpChange = D_8006B1F4[cmd->subNo - 0xE0].unk5 * (item_getCount(cmd->subNo) + 1);
+        c.targetHpChange = g_usableItemTable[cmd->subNo - 0xE0].unk5 * (item_getCount(cmd->subNo) + 1);
         break;
     case 0x4B:
         c.targetResult |= 1;
-        c.targetHpChange = D_8006B1F4[cmd->subNo - 0xE0].unk5 * (item_getCount(cmd->subNo) + 1);
+        c.targetHpChange = g_usableItemTable[cmd->subNo - 0xE0].unk5 * (item_getCount(cmd->subNo) + 1);
         break;
     case 0x4C:
         c.targetResult |= 0x1B;
         c.targetHpChange = target->max->maxHp >> 1;
         c.targetMpChange = target->max->maxMp >> 1;
         RAND_REFILL2();
-        if (D_8006B1F4[cmd->subNo - 0xE0].unk7 < RAND16() % 100) {
+        if (g_usableItemTable[cmd->subNo - 0xE0].unk7 < RAND16() % 100) {
             btl_showMessage(BTL_MSG_SNAKE_BITE);
-            btl_addStatuses(target, D_8006B1F4[cmd->subNo - 0xE0].unk8);
+            btl_addStatuses(target, g_usableItemTable[cmd->subNo - 0xE0].unk8);
         }
         break;
     case 0x4D:
@@ -3664,7 +3664,7 @@ void btl_cureAbilityStatus(BtlCalc *arg0) {
 }
 
 void btl_cureItemStatus(BtlCalc *arg0) {
-    if (btl_removeStatuses(arg0->target, D_8006B1F4[arg0->cmd->subNo - 0xE0].unk8) != 2) {
+    if (btl_removeStatuses(arg0->target, g_usableItemTable[arg0->cmd->subNo - 0xE0].unk8) != 2) {
         arg0->flags |= 1;
     }
 }
