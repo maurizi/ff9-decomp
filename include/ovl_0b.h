@@ -1413,11 +1413,11 @@ extern Unk80100D88 g_btlfxOpArgs;
 
 
 typedef struct {
-    u16 unk0;
-    u16 unk2;
-    u16 unk4;
+    u16 hp; /* BtlUnit.hp / Character.hp (btl_copyStats) */
+    u16 mp;
+    u16 atb; /* BtlUnit.atb / Character +0x14 */
     u8 pad6;
-    u8 unk7;
+    u8 stones; /* Character.stones (BtlUnit +0x2F) */
 } Unk800BD8C0;
 
 typedef struct {
@@ -1522,7 +1522,7 @@ extern u8 D_800F5244[];
 
 typedef struct {
     u8 pad0[0x1C];
-    s16 unk1C[4];
+    s16 bounceMasks[4]; /* BtlUnit.bounceMasks */
 } Unk800B44A0;
 
 
@@ -1535,18 +1535,18 @@ typedef struct {
 
 typedef struct {
     u8 pad0[0x33];
-    u8 unk33;
+    u8 spirit; /* BtlUnit.spirit */
     u8 pad34[0x38 - 0x34];
-    u8 unk38;
+    u8 chrStatus; /* Character.status (func_800C09D8 copies the unit's status & 0x7F there) */
     u8 pad39[0x3C - 0x39];
-    u8 unk3C;
+    u8 status; /* BtlUnit.status */
     u8 pad3D[0x66 - 0x3D];
-    s16 unk66;
+    s16 countdownStep; /* BtlUnit.countdownStep (btl_initDoomCount) */
 } Unk800C09D8;
 
 typedef struct {
     u8 pad0[0x2E];
-    u8 unk2E;
+    u8 atbSpeed; /* BtlUnit.atbSpeed (btl_resetAtbSpeed) */
 } Unk800BD8F0;
 
 
@@ -2005,13 +2005,13 @@ extern char D_800A7F34[];
 
 typedef struct {
     u8 pad0[0xE];
-    s16 unkE;
+    s16 power; /* BtlCalc.power (func_800BA938: 60 - power with scene flag bit 10) */
 } Unk800BA938;
 
 typedef struct {
     u8 pad0[0x8C];
-    s32 unk8C[3];
-    s32 *unk98;
+    s32 pos[3]; /* BtlUnit.pos */
+    s32 *home; /* BtlUnit.home */
 } Unk800CB090;
 
 
@@ -2568,7 +2568,7 @@ void text_formatInt(s32, u8 *, s32);
 u8 *btl_getItemName(u8);
 typedef struct {
     u8 pad0[8];
-    u8 unk8[4]; /* steal items, 0xFF = none */
+    u8 steal[4]; /* BtlEnemy.steal: steal items, 0xFF = none */
 } Unk800B7F20; /* enemy steal slots */
 
 void btl_addItem(s32);
@@ -2966,8 +2966,8 @@ void btlui_onSideCmdClosed(Window *);
 
 typedef struct {
     s32 unk0;
-    u32 unk4 : 24; /* offset of the tables from this header */
-    u32 unk7 : 8;  /* table length */
+    u32 tablesOfs : 24; /* offset of the tables from this header */
+    u32 count : 8; /* table length */
 } Unk800AB758;
 
 /* rotation part of a MATRIX, used where no translation is stored */

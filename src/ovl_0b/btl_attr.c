@@ -94,20 +94,20 @@ void btl_spreadTroubleDamage(BtlUnit *arg0) {
 }
 
 void btl_copyStats(Unk800BD8C0 *arg0, Unk800BD8C0 *arg1) {
-    arg0->unk0 = arg1->unk0;
-    arg0->unk2 = arg1->unk2;
-    arg0->unk4 = arg1->unk4;
-    arg0->unk7 = arg1->unk7;
+    arg0->hp = arg1->hp;
+    arg0->mp = arg1->mp;
+    arg0->atb = arg1->atb;
+    arg0->stones = arg1->stones;
 }
 
 void btl_resetAtbSpeed(Unk800BD8F0 *arg0) {
     s32 v;
-    arg0->unk2E = 10;
+    arg0->atbSpeed = 10;
     v = (g_gameState->config >> 8) & 7;
     if (v == 0) {
-        arg0->unk2E = 8;
+        arg0->atbSpeed = 8;
     } else if (v == 2) {
-        arg0->unk2E = 14;
+        arg0->atbSpeed = 14;
     }
 }
 

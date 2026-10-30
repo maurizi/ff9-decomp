@@ -310,7 +310,7 @@ s32 btlseq_stepMoveSetHome(s32 arg0, Unk800CB090 *arg1) {
     s16 i;
     btlseq_stepMove((BtlScript *)arg0, (BtlUnit *)arg1);
     for (i = 0; i < 3; i++) {
-        arg1->unk98[i] = arg1->unk8C[i];
+        arg1->home[i] = arg1->pos[i];
     }
     return 0;
 }

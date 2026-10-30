@@ -1251,8 +1251,8 @@ s32 btl_findWeaponModel(s32 arg0, s32 arg1) {
 void btl_getWeaponTexInfo(s32 arg0, s32 arg1, s32 **arg2, s32 **arg3, s32 **arg4) {
     s32 v = g_gameState->gameData->unk8E4.battle->work->weaponBufs[arg1];
     Unk800AB758 *h = (Unk800AB758 *)(db_lookup(db_lookup(v, 2, 0x1B0000, 0), 2, 0x120000, 0) + 4);
-    s32 *p = (s32 *)((u8 *)h + h->unk4);
-    s32 n = h->unk7;
+    s32 *p = (s32 *)((u8 *)h + h->tablesOfs);
+    s32 n = h->count;
     *arg2 = p;
     p += n;
     *arg3 = p;
@@ -1507,11 +1507,11 @@ s32 btl_getModelTexInfo(u32 arg0, s32 **arg1, s32 **arg2, s32 **arg3) {
     s32 n;
 
     h = (Unk800AB758 *)db_findModelInfo(arg0);
-    *arg1 = (s32 *)((u8 *)h + h->unk4);
-    *arg2 = *arg1 + h->unk7;
-    *arg3 = *arg2 + h->unk7;
+    *arg1 = (s32 *)((u8 *)h + h->tablesOfs);
+    *arg2 = *arg1 + h->count;
+    *arg3 = *arg2 + h->count;
     if ((s32)(arg0 >> 24) >= 9) {
-        n = h->unk7 * 4;
+        n = h->count * 4;
         dst = g_gameState->gameData->unk8E4.battle->work->heap;
         memcpy(dst, (u8 *)*arg1, n);
         *arg1 = (s32 *)dst;

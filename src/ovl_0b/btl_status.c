@@ -635,7 +635,7 @@ s32 btl_hasStatus(BtlUnit *arg0, u32 arg1) {
 }
 
 void func_800C09D8(Unk800C09D8 *arg0, Unk800C09D8 *arg1) {
-    arg0->unk38 = arg1->unk3C & 0x7F;
+    arg0->chrStatus = arg1->status & 0x7F;
 }
 
 void btl_clearUnitStatus(BtlUnit *arg0) {
@@ -654,8 +654,8 @@ void btl_clearUnitStatus(BtlUnit *arg0) {
 }
 
 void btl_initDoomCount(Unk800C09D8 *arg0) {
-    s32 t = (0x3C - arg0->unk33) * 8;
-    arg0->unk66 = t * g_gameState->gameData->unk8E4.battle->statusInfo[27].timerScale;
+    s32 t = (0x3C - arg0->spirit) * 8;
+    arg0->countdownStep = t * g_gameState->gameData->unk8E4.battle->statusInfo[27].timerScale;
 }
 
 void btl_interruptUnit(BtlUnit *arg0, s32 arg1) {

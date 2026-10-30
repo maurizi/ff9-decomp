@@ -1391,7 +1391,7 @@ u16 btl_orTargets(u16 *arg0) {
 void btl_clearBounceMasks(Unk800B44A0 *arg0) {
     s32 i;
     for (i = 3; i >= 0; i--) {
-        arg0->unk1C[i] = 0;
+        arg0->bounceMasks[i] = 0;
     }
 }
 
@@ -2768,13 +2768,13 @@ void btl_applyCalcResult(BtlCalc *c) {
 }
 
 void btl_calcSteal(BtlCalc *arg0, Unk800B7F20 *arg1, s32 arg2) {
-    u8 id = arg1->unk8[arg2];
+    u8 id = arg1->steal[arg2];
     GameData *gd;
     GameData *g;
     u32 r;
 
     if (id != 0xFF) {
-        arg1->unk8[arg2] = 0xFF;
+        arg1->steal[arg2] = 0xFF;
         g = g_gameState->gameData;
         if (g->unk56A < 9999) {
             g->unk56A++;
@@ -3560,9 +3560,9 @@ void btl_applyAbilityElementBoost(BtlCalc *arg0) {
 
 void func_800BA938(Unk800BA938 *arg0) {
     if ((g_gameState->gameData->unk8E4.battle->scene.flags >> 10) & 1) {
-        arg0->unkE = 0x3C - arg0->unkE;
-        if (arg0->unkE <= 0) {
-            arg0->unkE = 1;
+        arg0->power = 0x3C - arg0->power;
+        if (arg0->power <= 0) {
+            arg0->power = 1;
         }
     }
 }
