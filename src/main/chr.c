@@ -65,86 +65,86 @@ void chr_setLevel(s32 ch, s32 lv, u32 *heal, u8 f) {
     }
 }
 
-Unk80032E84Out *chr_calcEquipStats(Unk80032E84In *in, Unk80032E84Out *out) {
+EquipStatsOut *chr_calcEquipStats(EquipStatsIn *in, EquipStatsOut *out) {
     s32 i;
     u8 *a;
     u8 *e;
     s32 id;
 
-    memset(out, 0, sizeof(Unk80032E84Out));
-    out->unk0 = in->unk10;
-    out->unk2 = in->unk12;
-    out->unk4 = *(u16 *)&in->unk0.unk0[0];
-    out->unk6 = *(u16 *)&in->unk0.unk0[2];
-    out->unk8[0] = in->unk0.unk0[4];
-    out->unk8[1] = in->unk0.unk0[5];
-    out->unk8[2] = in->unk0.unk0[6];
-    out->unk8[3] = in->unk0.unk0[7];
-    id = in->unk14.unk0[0];
+    memset(out, 0, sizeof(EquipStatsOut));
+    out->hp = in->hp;
+    out->mp = in->mp;
+    out->maxHp = *(u16 *)&in->base.unk0[0];
+    out->maxMp = *(u16 *)&in->base.unk0[2];
+    out->stats[0] = in->base.unk0[4];
+    out->stats[1] = in->base.unk0[5];
+    out->stats[2] = in->base.unk0[6];
+    out->stats[3] = in->base.unk0[7];
+    id = in->equip.unk0[0];
     if (id != 0xFF) {
-        out->unkC[0] = g_weaponTable[id].unk5;
+        out->defs[0] = g_weaponTable[id].unk5;
     }
     for (i = 0; i < 4; i++) {
-        id = (&in->unk14.unk0[1])[i];
+        id = (&in->equip.unk0[1])[i];
         if (id != 0xFF) {
             if ((u32)(id - 0x58) < 0x88) {
                 a = D_8006D1C8[id];
-                out->unkC[1] += a[0];
-                out->unkC[2] += a[1];
-                out->unkC[3] += a[2];
-                out->unkC[4] += a[3];
+                out->defs[1] += a[0];
+                out->defs[2] += a[1];
+                out->defs[3] += a[2];
+                out->defs[4] += a[3];
             }
         }
     }
     for (i = 0; i < 5; i++) {
-        id = in->unk14.unk0[i];
+        id = in->equip.unk0[i];
         if (id != 0xFF) {
             e = g_equipStatBonus[g_itemTable[id].statBonus].unk0;
-            out->unk8[0] += e[0];
-            out->unk8[1] += e[1];
-            out->unk8[2] += e[2];
-            out->unk8[3] += e[3];
+            out->stats[0] += e[0];
+            out->stats[1] += e[1];
+            out->stats[2] += e[2];
+            out->stats[3] += e[3];
         }
     }
     for (i = 0; i < 4; i++) {
-        if (chr_testSupportBit(in->unk8.unk0, D_8006CA9C[i])) {
+        if (chr_testSupportBit(in->support.unk0, D_8006CA9C[i])) {
             switch (D_8006CA9C[i]) {
             case 0xC5:
-                out->unk4 += out->unk4 / 10;
+                out->maxHp += out->maxHp / 10;
                 break;
             case 0xC6:
-                out->unk4 += out->unk4 / 5;
+                out->maxHp += out->maxHp / 5;
                 break;
             case 0xC7:
-                out->unk6 += out->unk6 / 10;
+                out->maxMp += out->maxMp / 10;
                 break;
             case 0xC8:
-                out->unk6 += out->unk6 / 5;
+                out->maxMp += out->maxMp / 5;
                 break;
             }
         }
     }
     for (i = 0; i < 4; i++) {
-        if (out->unk8[i] > D_8006CAA0[i]) {
-            out->unk8[i] = D_8006CAA0[i];
+        if (out->stats[i] > D_8006CAA0[i]) {
+            out->stats[i] = D_8006CAA0[i];
         }
     }
     for (i = 0; i < 5; i++) {
-        if (out->unkC[i] >= 1000) {
-            out->unkC[i] = 999;
+        if (out->defs[i] >= 1000) {
+            out->defs[i] = 999;
         }
     }
-    if (out->unk4 >= 10000) {
-        out->unk4 = 9999;
+    if (out->maxHp >= 10000) {
+        out->maxHp = 9999;
     }
-    if (out->unk6 >= 1000) {
-        out->unk6 = 999;
+    if (out->maxMp >= 1000) {
+        out->maxMp = 999;
     }
-    if (out->unk4 < out->unk0) {
-        out->unk0 = out->unk4;
+    if (out->maxHp < out->hp) {
+        out->hp = out->maxHp;
     }
-    if (out->unk6 < out->unk2) {
-        out->unk2 = out->unk6;
+    if (out->maxMp < out->mp) {
+        out->mp = out->maxMp;
     }
     return out;
 }
@@ -301,27 +301,27 @@ s32 party_getNextMember(s32 i) {
 }
 
 void chr_updateStats(Character *c) {
-    Unk80032E84In in;
-    Unk80032E84Out out;
+    EquipStatsIn in;
+    EquipStatsOut out;
 
-    in.unk0 = *(Bytes8 *)&c->baseMaxHp;
-    in.unk10 = c->hp;
-    in.unk12 = c->mp;
-    in.unk8 = *(Words2 *)c->supportAbilities;
-    in.unk14 = *(Bytes5 *)c->equip;
+    in.base = *(Bytes8 *)&c->baseMaxHp;
+    in.hp = c->hp;
+    in.mp = c->mp;
+    in.support = *(Words2 *)c->supportAbilities;
+    in.equip = *(Bytes5 *)c->equip;
     chr_calcEquipStats(&in, &out);
-    c->speed = out.unk8[0];
-    c->strength = out.unk8[1];
-    c->magic = out.unk8[2];
-    c->spirit = out.unk8[3];
-    c->defense = out.unkC[1];
-    c->evade = out.unkC[2];
-    c->magicDef = out.unkC[3];
-    c->magicEva = out.unkC[4];
-    c->hp = out.unk0;
-    c->mp = out.unk2;
-    c->maxHp = out.unk4;
-    c->maxMp = out.unk6;
+    c->speed = out.stats[0];
+    c->strength = out.stats[1];
+    c->magic = out.stats[2];
+    c->spirit = out.stats[3];
+    c->defense = out.defs[1];
+    c->evade = out.defs[2];
+    c->magicDef = out.defs[3];
+    c->magicEva = out.defs[4];
+    c->hp = out.hp;
+    c->mp = out.mp;
+    c->maxHp = out.maxHp;
+    c->maxMp = out.maxMp;
 }
 
 s32 chr_getClass(u32 x) {
@@ -691,12 +691,12 @@ u8 func_80034A30(Character *a) {
 
 s32 chr_calcBaseSpeed(s32 ch, s32 lv, u8 add) {
     Character *c = g_gameState->gameData->characters + ch;
-    Unk8006DD88 *e = &g_charClassStats[chr_getClass(c->info.b.row)];
+    ClassStats *e = &g_charClassStats[chr_getClass(c->info.b.row)];
     s32 r;
     if (add) {
         c->equipBonus[0] += chr_sumEquipBonus(c->equip, 0);
     }
-    r = e->unk0 + lv / 10 + (c->equipBonus[0] >> 5);
+    r = e->speed + lv / 10 + (c->equipBonus[0] >> 5);
     if (r >= 51) {
         r = 50;
     }
@@ -707,7 +707,7 @@ s32 chr_calcBaseStrength(s32 ch, s32 lv, u8 add) {
     Character *c = g_gameState->gameData->characters + ch;
     s32 k = chr_getClass(c->info.b.row);
     u16 *bonus = c->equipBonus;
-    Unk8006DD88 *e = &g_charClassStats[k];
+    ClassStats *e = &g_charClassStats[k];
     s32 r;
     s32 n;
     if (add) {
@@ -717,7 +717,7 @@ s32 chr_calcBaseStrength(s32 ch, s32 lv, u8 add) {
         }
         bonus[1] += n + chr_sumEquipBonus(c->equip, 1);
     }
-    r = e->unk1 + lv * 3 / 10 + (bonus[1] >> 5);
+    r = e->strength + lv * 3 / 10 + (bonus[1] >> 5);
     if (r >= 100) {
         r = 99;
     }
@@ -728,7 +728,7 @@ s32 chr_calcBaseMagic(s32 ch, s32 lv, u8 add) {
     Character *c = g_gameState->gameData->characters + ch;
     s32 k = chr_getClass(c->info.b.row);
     u16 *bonus = c->equipBonus;
-    Unk8006DD88 *e = &g_charClassStats[k];
+    ClassStats *e = &g_charClassStats[k];
     s32 r;
     s32 n;
     if (add) {
@@ -738,7 +738,7 @@ s32 chr_calcBaseMagic(s32 ch, s32 lv, u8 add) {
         }
         bonus[2] += n + chr_sumEquipBonus(c->equip, 2);
     }
-    r = e->unk2 + lv * 3 / 10 + (bonus[2] >> 5);
+    r = e->magic + lv * 3 / 10 + (bonus[2] >> 5);
     if (r >= 100) {
         r = 99;
     }
@@ -749,14 +749,14 @@ s32 chr_calcBaseSpirit(s32 ch, s32 lv, u8 add) {
     Character *c = g_gameState->gameData->characters + ch;
     s32 k = chr_getClass(c->info.b.row);
     u16 *bonus = c->equipBonus;
-    Unk8006DD88 *e = &g_charClassStats[k];
+    ClassStats *e = &g_charClassStats[k];
     s32 r;
     s32 n;
     if (add) {
         n = c->stones == 0;
         bonus[3] += n + chr_sumEquipBonus(c->equip, 3);
     }
-    r = e->unk3 + lv * 3 / 20 + (bonus[3] >> 5);
+    r = e->spirit + lv * 3 / 20 + (bonus[3] >> 5);
     if (r >= 51) {
         r = 50;
     }
@@ -767,7 +767,7 @@ s32 chr_calcMaxStones(s32 ch, s32 lv, u8 add) {
     Character *c = g_gameState->gameData->characters + ch;
     u16 *bonus = c->equipBonus;
     s32 k = chr_getClass(c->info.b.row);
-    Unk8006DD88 *e = &g_charClassStats[k];
+    ClassStats *e = &g_charClassStats[k];
     s32 r;
     s32 n;
 
@@ -778,7 +778,7 @@ s32 chr_calcMaxStones(s32 ch, s32 lv, u8 add) {
         }
         bonus[4] += n;
     }
-    r = e->unk4 + lv * 4 / 10 + (bonus[4] >> 5);
+    r = e->stones + lv * 4 / 10 + (bonus[4] >> 5);
     if (r >= 100) {
         r = 99;
     }

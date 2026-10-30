@@ -112,9 +112,9 @@ void menuEquip_inputSlot(void) {
 }
 
 void menuEquip_drawInfo(void) {
-    Unk80032E84In in;
-    Unk80032E84Out cur;
-    Unk80032E84Out out;
+    EquipStatsIn in;
+    EquipStatsOut cur;
+    EquipStatsOut out;
     RECT *r;
     Character *c;
 
@@ -124,32 +124,32 @@ void menuEquip_drawInfo(void) {
     ui_drawLabel(r->x + 6, r->y - 3, 0x1E, D_80070460, 0);
     win_drawBox(r, 0x1E, 1);
     ui_drawMemberHeader(r->x + 8, r->y + 9, 0x1D, (Unk80024428 *)&s_menuEquip.header);
-    cur.unk8[0] = c->speed;
-    cur.unk8[1] = c->strength;
-    cur.unk8[2] = c->magic;
-    cur.unk8[3] = c->spirit;
-    cur.unkC[0] = g_weaponTable[c->equip[0]].unk5;
-    cur.unkC[1] = c->defense;
-    cur.unkC[2] = c->evade;
-    cur.unkC[3] = c->magicDef;
-    cur.unkC[4] = c->magicEva;
+    cur.stats[0] = c->speed;
+    cur.stats[1] = c->strength;
+    cur.stats[2] = c->magic;
+    cur.stats[3] = c->spirit;
+    cur.defs[0] = g_weaponTable[c->equip[0]].unk5;
+    cur.defs[1] = c->defense;
+    cur.defs[2] = c->evade;
+    cur.defs[3] = c->magicDef;
+    cur.defs[4] = c->magicEva;
     if (s_menuEquip.state == EQUIP_STATE_LIST && s_menuEquip.list.rows != 0) {
-        in.unk0 = *(Bytes8 *)&c->baseMaxHp;
-        in.unk10 = c->hp;
-        in.unk12 = c->mp;
-        in.unk14 = *(Bytes5 *)c->equip;
-        in.unk8 = *(Words2 *)c->supportAbilities;
-        in.unk14.unk0[s_menuEquip.equipSlot] = (s_menuEquip.items + (s_menuEquip.list.cursor + s_menuEquip.list.top))->id;
+        in.base = *(Bytes8 *)&c->baseMaxHp;
+        in.hp = c->hp;
+        in.mp = c->mp;
+        in.equip = *(Bytes5 *)c->equip;
+        in.support = *(Words2 *)c->supportAbilities;
+        in.equip.unk0[s_menuEquip.equipSlot] = (s_menuEquip.items + (s_menuEquip.list.cursor + s_menuEquip.list.top))->id;
         chr_calcEquipStats(&in, &out);
         menuEquip_drawStatCompare(&cur, &out);
         return;
     } else if (*(u16 *)&s_menuEquip == EQUIP_TAB_STATE(EQUIP_TAB_OFF, EQUIP_STATE_SLOT) && s_menuEquip.equipSlot != 0) {
-        in.unk0 = *(Bytes8 *)&c->baseMaxHp;
-        in.unk10 = c->hp;
-        in.unk12 = c->mp;
-        in.unk14 = *(Bytes5 *)c->equip;
-        in.unk8 = *(Words2 *)c->supportAbilities;
-        in.unk14.unk0[s_menuEquip.equipSlot] = ITEM_NONE;
+        in.base = *(Bytes8 *)&c->baseMaxHp;
+        in.hp = c->hp;
+        in.mp = c->mp;
+        in.equip = *(Bytes5 *)c->equip;
+        in.support = *(Words2 *)c->supportAbilities;
+        in.equip.unk0[s_menuEquip.equipSlot] = ITEM_NONE;
         chr_calcEquipStats(&in, &out);
         menuEquip_drawStatCompare(&cur, &out);
         return;
@@ -311,7 +311,7 @@ void menuEquip_drawList(void) {
     }
 }
 
-void menuEquip_drawStatCompare(Unk80032E84Out *cur, Unk80032E84Out *new) {
+void menuEquip_drawStatCompare(EquipStatsOut *cur, EquipStatsOut *new) {
     u8 buf[16];
     RECT *r;
     s32 i;
@@ -324,11 +324,11 @@ void menuEquip_drawStatCompare(Unk80032E84Out *cur, Unk80032E84Out *new) {
     blink = ((u32)g_menuFrame >> 4) & 1;
     for (i = 0, y = r->y + 0x44; i < 4; y += 0xC, i++) {
         menuEquip_drawStatLabel(r->x + 8, y, 0x1D, s_menuEquipBaseStatText[i], 0);
-        text_formatNumber(cur->unk8[i], buf, 2, 1);
+        text_formatNumber(cur->stats[i], buf, 2, 1);
         ui_drawSmallDigits(r->x + 0x4A, y, 0x1D, buf, 0);
         if (new != NULL) {
-            diff = cur->unk8[i] != new->unk8[i];
-            if (new->unk8[i] >= cur->unk8[i]) {
+            diff = cur->stats[i] != new->stats[i];
+            if (new->stats[i] >= cur->stats[i]) {
                 if (diff) {
                     col = 7;
                 } else {
@@ -337,18 +337,18 @@ void menuEquip_drawStatCompare(Unk80032E84Out *cur, Unk80032E84Out *new) {
             } else {
                 col = 3;
             }
-            text_formatNumber(new->unk8[i], buf, 2, 1);
+            text_formatNumber(new->stats[i], buf, 2, 1);
             ui_drawSmallDigits(r->x + 0x5C, y, 0x1D, s_menuEquipArrow, (diff && blink) ? 0 : 2);
             ui_drawSmallDigits(r->x + 0x6D, y, 0x1D, buf, col);
         }
     }
     for (i = 0, y = r->y + 0x78; i < 5; y += 0xC, i++) {
         menuEquip_drawStatLabel(r->x + 8, y, 0x1D, s_menuEquipBattleStatText[i], 0);
-        text_formatNumber(cur->unkC[i], buf, 3, 1);
+        text_formatNumber(cur->defs[i], buf, 3, 1);
         ui_drawSmallDigits(r->x + 0x43, y, 0x1D, buf, 0);
         if (new != NULL) {
-            diff = cur->unkC[i] != new->unkC[i];
-            if (new->unkC[i] >= cur->unkC[i]) {
+            diff = cur->defs[i] != new->defs[i];
+            if (new->defs[i] >= cur->defs[i]) {
                 if (diff) {
                     col = 7;
                 } else {
@@ -357,7 +357,7 @@ void menuEquip_drawStatCompare(Unk80032E84Out *cur, Unk80032E84Out *new) {
             } else {
                 col = 3;
             }
-            text_formatNumber(new->unkC[i], buf, 3, 1);
+            text_formatNumber(new->defs[i], buf, 3, 1);
             ui_drawSmallDigits(r->x + 0x5C, y, 0x1D, s_menuEquipArrow, (diff && blink) ? 0 : 2);
             ui_drawSmallDigits(r->x + 0x66, y, 0x1D, buf, col);
         }

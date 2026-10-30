@@ -2039,14 +2039,14 @@ void akao_setVoiceSustain(s32, s32, s32);
 s32 chr_getClass(u32);
 s32 chr_sumEquipBonus(u8 *, s32);
 typedef struct {
-    u8 unk0;
-    u8 unk1;
-    u8 unk2;
-    u8 unk3;
-    u8 unk4;
+    u8 speed; /* base speed (chr_calcBaseSpeed) */
+    u8 strength; /* (chr_calcBaseStrength) */
+    u8 magic; /* (chr_calcBaseMagic) */
+    u8 spirit; /* (chr_calcBaseSpirit) */
+    u8 stones; /* magic stones (chr_calcMaxStones) */
     u8 unk5;
-} Unk8006DD88; /* base stats per character class */
-extern Unk8006DD88 g_charClassStats[];
+} ClassStats; /* base stats per character class */
+extern ClassStats g_charClassStats[];
 void pad_initRepeat(void);
 void win_initAll(void);
 void preload_onReadDone(u8 *);
@@ -3250,46 +3250,46 @@ typedef struct {
 } Words2;
 /* stat calculation input (chr_calcEquipStats) */
 typedef struct {
-    Bytes8 unk0; /* = Character.unk2C..unk33 */
-    Words2 unk8; /* = Character.unk88 */
-    u16 unk10;
-    u16 unk12;
-    Bytes5 unk14; /* equipment */
-} Unk80032E84In;
+    Bytes8 base; /* = Character.unk2C..unk33: baseMaxHp, baseMaxMp, baseSpeed..baseSpirit */
+    Words2 support; /* Character.supportAbilities (Auto HP/MP+ bits 0xC5-0xC8) */
+    u16 hp;
+    u16 mp;
+    Bytes5 equip; /* equipment */
+} EquipStatsIn;
 /* stat calculation output (chr_calcEquipStats) */
 typedef struct {
-    u16 unk0; /* hp */
-    u16 unk2; /* mp */
-    u16 unk4; /* max hp */
-    u16 unk6; /* max mp */
-    u8 unk8[4]; /* stats */
-    u16 unkC[5]; /* attack, defences */
-} Unk80032E84Out;
-Unk80032E84Out *chr_calcEquipStats(Unk80032E84In *, Unk80032E84Out *);
+    u16 hp; /* hp */
+    u16 mp; /* mp */
+    u16 maxHp; /* max hp */
+    u16 maxMp; /* max mp */
+    u8 stats[4]; /* stats: speed, strength, magic, spirit (capped by D_8006CAA0) */
+    u16 defs[5]; /* attack (weapon), defense, evade, magicDef, magicEva (capped at 999) */
+} EquipStatsOut;
+EquipStatsOut *chr_calcEquipStats(EquipStatsIn *, EquipStatsOut *);
 
 /* Inlined copy of chr_updateStats (recompute a character's stats). */
 static inline void chr_updateStats_inline(Character *c) {
-    Unk80032E84In in;
-    Unk80032E84Out out;
+    EquipStatsIn in;
+    EquipStatsOut out;
 
-    in.unk0 = *(Bytes8 *)&c->baseMaxHp;
-    in.unk10 = c->hp;
-    in.unk12 = c->mp;
-    in.unk8 = *(Words2 *)c->supportAbilities;
-    in.unk14 = *(Bytes5 *)c->equip;
+    in.base = *(Bytes8 *)&c->baseMaxHp;
+    in.hp = c->hp;
+    in.mp = c->mp;
+    in.support = *(Words2 *)c->supportAbilities;
+    in.equip = *(Bytes5 *)c->equip;
     chr_calcEquipStats(&in, &out);
-    c->speed = out.unk8[0];
-    c->strength = out.unk8[1];
-    c->magic = out.unk8[2];
-    c->spirit = out.unk8[3];
-    c->defense = out.unkC[1];
-    c->evade = out.unkC[2];
-    c->magicDef = out.unkC[3];
-    c->magicEva = out.unkC[4];
-    c->hp = out.unk0;
-    c->mp = out.unk2;
-    c->maxHp = out.unk4;
-    c->maxMp = out.unk6;
+    c->speed = out.stats[0];
+    c->strength = out.stats[1];
+    c->magic = out.stats[2];
+    c->spirit = out.stats[3];
+    c->defense = out.defs[1];
+    c->evade = out.defs[2];
+    c->magicDef = out.defs[3];
+    c->magicEva = out.defs[4];
+    c->hp = out.hp;
+    c->mp = out.mp;
+    c->maxHp = out.maxHp;
+    c->maxMp = out.maxMp;
 }
 extern void (*g_fadeSeekFuncs[])(FadeState *, s32);
 extern s32 g_msgReady;

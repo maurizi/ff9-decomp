@@ -298,7 +298,7 @@ void menuEquip_drawStatLabel(s32 x, s32 y, s32 z, u8 id, s32 color);
 extern u8 s_menuEquipArrow[]; /* arrow */
 extern u8 s_menuEquipBaseStatText[4]; /* stat names */
 extern u8 s_menuEquipBattleStatText[5]; /* attack/defence names */
-void menuEquip_drawStatCompare(Unk80032E84Out *cur, Unk80032E84Out *new);
+void menuEquip_drawStatCompare(EquipStatsOut *cur, EquipStatsOut *new);
 
 extern Unk801F34EC s_menuEquipActionTable[]; /* action abilities (ability menu), same layout as s_menuAbilityActionTable */
 extern u8 s_menuEquipActionNames[]; /* action ability names (ability menu) */
