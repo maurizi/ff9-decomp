@@ -47,7 +47,7 @@ extern u16 D_8006EAD0[];         /* atan table, 0x401 entries, 0 .. 0x200 (45 de
 s32 evt_getObjectProp(EvtObject *o, s32 prop);
 u16 func_8004B404(s32 arg0);
 EvtObject *evt_resolveObjectId(s32 id);
-void evt_setObjectProp(Unk800219D8 *arg0, s32 arg1, s32 arg2);
+void evt_setObjectProp(EvtObject *arg0, s32 arg1, s32 arg2);
 void func_8004B4A8(s32 i, s16 v);
 s32 evt_exprSpecial(s32 op);
 u32 msg_getPadPressed(void);
@@ -757,7 +757,7 @@ void evt_popAssign(s32 v) {
 
     if (tag & 4) {
         if (tag & 2) {
-            evt_setObjectProp((Unk800219D8 *)g_evtExprObj, t & 0xFF, v);
+            evt_setObjectProp((EvtObject *)g_evtExprObj, t & 0xFF, v);
         } else if (tag & 1) {
             func_8004B4A8(t & 0xFF, v);
         }
