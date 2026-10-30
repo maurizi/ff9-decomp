@@ -28,10 +28,11 @@ class Img:
             sys.exit("not an FF9.IMG")
         self.dirs = []
         for i in range(ndirs + 1):
-            t, count, did, sec = struct.unpack_from("<4I", self.read(16 + i * 16, 16))
+            # word 2 is the sector of this directory's file table (docs/ff9img.md), word 3 its first file sector
+            t, count, tsec_hdr, sec = struct.unpack_from("<4I", self.read(16 + i * 16, 16))
             if t == 4:
                 break
-            self.dirs.append({"index": i, "type": t, "count": count, "id": did, "sector": sec})
+            self.dirs.append({"index": i, "type": t, "count": count, "table_sector": tsec_hdr, "sector": sec})
         # File tables are packed back to back from sector 1.
         tsec = 1
         for d in self.dirs:
@@ -78,7 +79,7 @@ def main():
         for d in img.dirs:
             fs = img.files(d)
             total = sum(s for _, _, s in fs)
-            print(f"dir {d['index']:2} type {d['type']} id {d['id']:2} table {d['table']:3} files {d['count']:4} "
+            print(f"dir {d['index']:2} type {d['type']} table_sector {d["table_sector"]:3} table {d['table']:3} files {d['count']:4} "
                   f"sector {d['sector']:7} size {total / 1e6:7.1f} MB")
     elif cmd == "code":
         for d in img.dirs:
