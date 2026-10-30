@@ -2264,19 +2264,19 @@ FileEntry *dep_find(FileTable *, s32);
 void strcat(u8 *, u8 *);
 /* per-frame offset animation of a window (tween_start / tween_step) */
 typedef struct TweenDef {
-    u16 unk0; /* start delay */
-    s16 unk2; /* frame count */
-    s8 *unk4; /* x deltas */
-    s8 *unk8; /* y deltas */
-    void (*unkC)(struct TweenDef *); /* called when done */
+    u16 delay; /* start delay */
+    s16 frames; /* frame count */
+    s8 *dx; /* x deltas */
+    s8 *dy; /* y deltas */
+    void (*onDone)(struct TweenDef *); /* called when done */
 } TweenDef;
 
 /* text window (tween_start / tween_step) */
 typedef struct {
-    s16 unk0; /* start delay */
-    s16 unk2; /* frame */
-    RECT unk4;
-    TweenDef *unkC; /* running animation, NULL when idle */
+    s16 delay; /* start delay */
+    s16 frame; /* frame */
+    RECT rect; /* moved by the tween's deltas */
+    TweenDef *anim; /* running animation, NULL when idle */
 } WinDef; /* 0x10 */
 void tween_start(void *, void *, s32);
 void gfx_initTpageSprt(DR_TPAGE *, s32);

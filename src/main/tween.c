@@ -4,38 +4,38 @@ void tween_start(void *arg0, void *arg1, s32 jump) {
     WinDef *w = arg0;
     TweenDef *t = arg1;
 
-    w->unkC = t;
-    w->unk2 = 0;
-    w->unk0 = 0;
+    w->anim = t;
+    w->frame = 0;
+    w->delay = 0;
     if (t != NULL) {
-        w->unk0 = t->unk0;
+        w->delay = t->delay;
         if ((u8)jump) {
-            w->unk4.x -= tween_sumDeltas(t->unk2, t->unk4);
-            w->unk4.y -= tween_sumDeltas(t->unk2, t->unk8);
+            w->rect.x -= tween_sumDeltas(t->frames, t->dx);
+            w->rect.y -= tween_sumDeltas(t->frames, t->dy);
         }
     }
 }
 
 s32 tween_step(WinDef *t) {
-    if (t->unkC == NULL) {
+    if (t->anim == NULL) {
         return 0;
     }
-    if (t->unk0 != 0) {
-        t->unk0--;
+    if (t->delay != 0) {
+        t->delay--;
     } else {
-        if (t->unkC->unk4 != NULL) {
-            t->unk4.x += t->unkC->unk4[t->unk2];
+        if (t->anim->dx != NULL) {
+            t->rect.x += t->anim->dx[t->frame];
         }
-        if (t->unkC->unk8 != NULL) {
-            t->unk4.y += t->unkC->unk8[t->unk2];
+        if (t->anim->dy != NULL) {
+            t->rect.y += t->anim->dy[t->frame];
         }
-        if (++t->unk2 < t->unkC->unk2) {
+        if (++t->frame < t->anim->frames) {
             return 0;
         }
-        if (t->unkC->unkC != NULL) {
-            t->unkC->unkC(t->unkC);
+        if (t->anim->onDone != NULL) {
+            t->anim->onDone(t->anim);
         }
-        t->unkC = NULL;
+        t->anim = NULL;
         return 1;
     }
     return 0;

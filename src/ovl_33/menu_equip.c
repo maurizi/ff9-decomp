@@ -283,7 +283,7 @@ void menuEquip_drawList(void) {
     RECT sub;
     MenuView view;
     WinDef *wd = &s_menuEquip.listWin;
-    RECT *r = &wd->unk4;
+    RECT *r = &wd->rect;
     EquipMenu *m = &s_menuEquip;
     MenuList *l = &s_menuEquip.list;
     s32 w;
@@ -292,8 +292,8 @@ void menuEquip_drawList(void) {
 
     if (m->listOpen != 0) {
         w = ui_measureLabel((u8 *)g_winLabelStrings.unk94);
-        ui_drawLabel(wd->unk4.x + 6, r->y - 3, 0x14, g_winLabelStrings.unk0[s_menuEquipSlotLabel[m->equipSlot]], 0);
-        ui_drawLabel(wd->unk4.x - (w - k), r->y - 3, 0x14, g_winLabelStrings.unk94, 0);
+        ui_drawLabel(wd->rect.x + 6, r->y - 3, 0x14, g_winLabelStrings.unk0[s_menuEquipSlotLabel[m->equipSlot]], 0);
+        ui_drawLabel(wd->rect.x - (w - k), r->y - 3, 0x14, g_winLabelStrings.unk94, 0);
         win_drawListBox(r, 0x14, 1, l);
         menuList_getView(l, &view);
         win_setClip(NULL, 0x13, 1);
@@ -305,7 +305,7 @@ void menuEquip_drawList(void) {
             win_setClip(&sub, 0x13, 1);
             menuEquip_drawScrollRows();
         }
-        if (wd->unkC == 0) {
+        if (wd->anim == 0) {
             win_setClip(r, 0x13, 1);
         }
     }
@@ -390,9 +390,9 @@ void menuEquip_drawCursor(void) {
         help_drawCursor();
     } else if (s_menuEquip.state == EQUIP_STATE_LIST) {
         g_menuHelp.otz = 0x12;
-        g_menuHelp.x = s_menuEquip.listWin.unk4.x - 0xD;
+        g_menuHelp.x = s_menuEquip.listWin.rect.x - 0xD;
         k = s_menuEquip.list.cursor * 15 + 0xA;
-        g_menuHelp.y = s_menuEquip.listWin.unk4.y + k;
+        g_menuHelp.y = s_menuEquip.listWin.rect.y + k;
         help_drawCursor();
     }
 }
@@ -593,7 +593,7 @@ void menuEquip_updateAnims(void) {
     if (s_menuEquip.state == EQUIP_STATE_LIST && s_menuEquip.list.scroll != 0) {
         menuList_update(&s_menuEquip.list);
     }
-    if (s_menuEquip.listWin.unkC != 0) {
+    if (s_menuEquip.listWin.anim != 0) {
         tween_step(&s_menuEquip.listWin);
     }
     if (s_menuEquip.header.unk0 != 0) {
@@ -646,9 +646,9 @@ void menuEquip_drawListRow(s32 col, s32 row, s32 i, MenuView *v) {
     u8 buf[16];
 
     p = s_menuEquip.items + i;
-    x = s_menuEquip.listWin.unk4.x;
+    x = s_menuEquip.listWin.rect.x;
     w = &s_menuEquip.listWin;
-    y = w->unk4.y + row * 0xF + v->unk2;
+    y = w->rect.y + row * 0xF + v->unk2;
     ui_drawItemIcon(x + 0xB, y, 0x13, p->unk0, 1);
     text_drawBlock(x + 0x1B, y, 0x13, g_itemNames + g_itemTable[p->unk0].name, 0);
     text_formatNumber(p->unk1, buf, 2, 1);
@@ -658,7 +658,7 @@ void menuEquip_drawListRow(s32 col, s32 row, s32 i, MenuView *v) {
 void menuEquip_openList(void) {
     WinDef *w = &s_menuEquip.listWin;
 
-    w->unk4 = s_menuEquip.listRect;
+    w->rect = s_menuEquip.listRect;
     s_menuEquip.listOpen = 1;
     s_menuEquip.state = EQUIP_STATE_BUSY;
     tween_start(w, &s_menuEquipListOpen, 1);

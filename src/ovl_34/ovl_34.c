@@ -149,13 +149,13 @@ void menuConfig_inputBattleControl(void) {
 }
 
 void menuConfig_drawPadMap(void) {
-    RECT *r = &s_menuConfig.wins[0].unk4;
+    RECT *r = &s_menuConfig.wins[0].rect;
     RECT *r2;
     s32 i = 0;
 
     ui_drawLabel(r->x + 0xB, r->y - 3, 0x11, g_winLabelStrings.unk84, 0);
     ui_drawLabel(r->x + 0x2D, r->y - 3, 0x11, g_winLabelStrings.unk8C, 0);
-    r2 = &s_menuConfig.wins[1].unk4;
+    r2 = &s_menuConfig.wins[1].rect;
     text_drawBlock(r2->x + 0x2A, r2->y + 8, 0x11, text_get(CONFIG_TEXT_PAD_EXIT), 0);
     for (; i < CONFIG_PAD_SLOTS; i++) {
         ui_drawSprite(r->x + 0x10, r->y + 0xB + i * 0x11, 0x11, s_menuConfigPadActions[(g_gameState->padMap >> (i * 4)) & 7].icon, 0);
@@ -166,12 +166,12 @@ void menuConfig_drawPadMap(void) {
 }
 
 void menuConfig_drawBattleControl(void) {
-    RECT *r = &s_menuConfig.wins[0].unk4;
+    RECT *r = &s_menuConfig.wins[0].rect;
     RECT *r2;
     s32 i;
     u8 on;
 
-    r2 = &s_menuConfig.wins[1].unk4;
+    r2 = &s_menuConfig.wins[1].rect;
     text_drawBlock(r2->x + 0x2A, r2->y + 8, 0x11, text_get(CONFIG_TEXT_PORT_EXIT), 0);
     for (i = 0; i < s_menuConfig.charCount; i++) {
         on = ((s32)(g_gameState->config >> CFG_SHIFT_CHAR_PORT) >> s_menuConfig.charPortBit[i]) & 1;
@@ -316,7 +316,7 @@ void menuConfig_openSubWindow(void) {
         s_menuConfig.subCursor = 0;
         s_menuConfig.editing = 1;
         for (j = 0; j < 2; j++) {
-            s_menuConfig.wins[j].unk4 = s_menuConfigSubRects[j];
+            s_menuConfig.wins[j].rect = s_menuConfigSubRects[j];
             tween_start(&s_menuConfig.wins[j], &s_menuConfigSubOpen, 1);
         }
         snd_playSe(SE_CURSOR);
@@ -663,8 +663,8 @@ void menuConfig_drawSubWindows(void) {
 
     i = s_menuConfig.list.top + s_menuConfig.list.cursor;
     if (s_menuConfig.editing != 0) {
-        win_drawBox(&s_menuConfig.wins[0].unk4, 0x12, 2);
-        win_drawBox(&s_menuConfig.wins[1].unk4, 0x12, 2);
+        win_drawBox(&s_menuConfig.wins[0].rect, 0x12, 2);
+        win_drawBox(&s_menuConfig.wins[1].rect, 0x12, 2);
         if (i == CONFIG_ROW_CONTROLLER) {
             menuConfig_drawPadMap();
             return;
@@ -733,10 +733,10 @@ void menuConfig_drawText(s32 x, s32 y, s32 otz, s32 text, s32 color) {
 }
 
 void menuConfig_stepWindows(void) {
-    if (s_menuConfig.wins[0].unkC != 0) {
+    if (s_menuConfig.wins[0].anim != 0) {
         tween_step(&s_menuConfig.wins[0]);
     }
-    if (s_menuConfig.wins[1].unkC != 0) {
+    if (s_menuConfig.wins[1].anim != 0) {
         tween_step(&s_menuConfig.wins[1]);
     }
 }
@@ -806,7 +806,7 @@ void menuConfig_closeSubWindow(void) {
 }
 
 u8 menuConfig_isWindowMoving(void) {
-    return s_menuConfig.wins[0].unkC != 0;
+    return s_menuConfig.wins[0].anim != 0;
 }
 
 u8 menuConfig_hasVibration(void) {

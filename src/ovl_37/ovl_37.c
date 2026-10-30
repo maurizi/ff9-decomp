@@ -57,7 +57,7 @@ void menuItem_inputTarget(void) {
     u8 cur;
     s32 next;
 
-    if (s_menuItem.charWin.unkC == 0) {
+    if (s_menuItem.charWin.anim == 0) {
         if (g_padRepeat & BTN_CIRCLE) {
             snd_playSe(SE_CANCEL);
             menuItem_closeTarget();
@@ -228,8 +228,8 @@ void menuItem_drawCursor(void) {
     }
     if (s_menuItem.state == ITEM_STATE_TARGET) {
         g_menuHelp.otz = 0x12;
-        g_menuHelp.x = s_menuItem.charWin.unk4.x - 0xA;
-        g_menuHelp.y = s_menuItem.charWin.unk4.y + (s16)(s_menuItem.slot * 43 + 0x12);
+        g_menuHelp.x = s_menuItem.charWin.rect.x - 0xA;
+        g_menuHelp.y = s_menuItem.charWin.rect.y + (s16)(s_menuItem.slot * 43 + 0x12);
         help_drawCursor();
     }
     if (s_menuItem.state == ITEM_STATE_MANUAL) {
@@ -263,8 +263,8 @@ void menuItem_openTarget(void) {
     GameState *gs;
     s32 k = (s_menuItemTabs[s_menuItem.tab].list->col ^ 1) & 1;
 
-    s_menuItem.charWin.unk4.x = (u8)k == 0 ? 8 : 0xA4;
-    r = &s_menuItem.charWin.unk4;
+    s_menuItem.charWin.rect.x = (u8)k == 0 ? 8 : 0xA4;
+    r = &s_menuItem.charWin.rect;
     r->y = 0x26;
     r->w = 0x90;
     r->h = 0xB6;
@@ -632,7 +632,7 @@ void menuItem_drawScrollRows(void) {
 }
 
 void menuItem_drawTargetWindow(void) {
-    RECT *r = &s_menuItem.charWin.unk4;
+    RECT *r = &s_menuItem.charWin.rect;
     s32 i;
 
     if (s_menuItem.charWinOpen != 0) {

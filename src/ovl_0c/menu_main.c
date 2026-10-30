@@ -19,7 +19,7 @@ void menuMain_initPanels(void) {
     s_menuMainPanelRects[5].w = w;
     s_menuMainPanelRects[5].x = 0x134 - w;
     for (i = 0; i < 6; i++) {
-        s_menuMain.panels[i].unk4 = s_menuMainPanelRects[i];
+        s_menuMain.panels[i].rect = s_menuMainPanelRects[i];
         tween_start(&s_menuMain.panels[i], NULL, 0);
     }
     if (D_80077E51 != 0) {
@@ -175,7 +175,7 @@ void menuMain_drawMember(s32 arg0) {
     s16 maxmp;
 
     c = g_gameState->gameData->party[arg0];
-    r = &s_menuMain.panels[arg0].unk4;
+    r = &s_menuMain.panels[arg0].rect;
     x = r->x + 8;
     if (!c->info.b.battleRow) {
         x = r->x + 0x16;
@@ -264,22 +264,22 @@ void menuMain_drawCursor(void) {
         }
         if (s_menuMain.state == 1) {
             g_menuHelp.otz = 0xC;
-            g_menuHelp.x = s_menuMain.panels[0].unk4.x - 0xE;
+            g_menuHelp.x = s_menuMain.panels[0].rect.x - 0xE;
             g_menuHelp.y = g_menuScreenMember * 0x2E + 0x20;
             help_drawCursor();
         }
         if (s_menuMain.state == 2) {
             if (s_menuMain.orderPicked == 1) {
                 g_menuHelp.otz = 0xB;
-                g_menuHelp.x = s_menuMain.panels[0].unk4.x - 0xA;
+                g_menuHelp.x = s_menuMain.panels[0].rect.x - 0xA;
                 g_menuHelp.y = s_menuMain.orderTarget * 0x2E + 0x24;
                 help_drawCursor();
                 if (blink) {
-                    ui_drawHand(s_menuMain.panels[0].unk4.x - 0xE, s_menuMain.orderCursor * 0x2E + 0x20, 0xC);
+                    ui_drawHand(s_menuMain.panels[0].rect.x - 0xE, s_menuMain.orderCursor * 0x2E + 0x20, 0xC);
                 }
             } else if (s_menuMain.orderPicked == 0) {
                 g_menuHelp.otz = 0xC;
-                g_menuHelp.x = s_menuMain.panels[0].unk4.x - 0xE;
+                g_menuHelp.x = s_menuMain.panels[0].rect.x - 0xE;
                 g_menuHelp.y = s_menuMain.orderCursor * 0x2E + 0x20;
                 help_drawCursor();
             }
@@ -432,7 +432,7 @@ void menuMain_updatePanels(void) {
 
     if (g_menuScreen.slideIn != 0) {
         for (i = 0; i < 6; i++) {
-            if (s_menuMain.panels[i].unkC != 0) {
+            if (s_menuMain.panels[i].anim != 0) {
                 tween_step(&s_menuMain.panels[i]);
             }
         }
@@ -447,7 +447,7 @@ void menuMain_drawParty(void) {
 
     i = 0;
     do {
-        p = &s_menuMain.panels[i].unk4;
+        p = &s_menuMain.panels[i].rect;
         r.x = p->x + 0x82;
         y = p->y;
         r.w = 0x72;

@@ -187,7 +187,7 @@ void battleEnd_preloadScene(void) {
 }
 
 void rewards_drawInfo(void) {
-    RECT *r = &s_rewards.wins[0].unk4;
+    RECT *r = &s_rewards.wins[0].rect;
     s32 x, y;
     ui_drawLabel(r->x + 6, r->y - 3, 0xB, D_80070460, 0);
     win_drawBox(r, 0xB, 1);
@@ -211,7 +211,7 @@ void rewards_drawMembers(void) {
 
     for (i = 0; i < 4; i++) {
         if (s_rewards.winShown[i + 2] != 0) {
-            r = &s_rewards.wins[i + 2].unk4;
+            r = &s_rewards.wins[i + 2].rect;
             c = g_gameState->gameData->party[i];
             if (c != NULL) {
                 alive = rewards_isRewarded(c, i);
@@ -247,7 +247,7 @@ void rewards_drawMembers(void) {
 }
 
 void rewards_drawExp(void) {
-    RECT *r = &s_rewards.wins[6].unk4;
+    RECT *r = &s_rewards.wins[6].rect;
     u8 buf[16];
     s32 x, y;
 
@@ -265,7 +265,7 @@ void rewards_drawExp(void) {
 }
 
 void rewards_drawAp(void) {
-    RECT *r = &s_rewards.wins[7].unk4;
+    RECT *r = &s_rewards.wins[7].rect;
     u8 buf[16];
     s32 x, y;
 
@@ -283,7 +283,7 @@ void rewards_drawAp(void) {
 }
 
 void rewards_drawReceivedGil(void) {
-    RECT *r = &s_rewards.wins[8].unk4;
+    RECT *r = &s_rewards.wins[8].rect;
     u8 buf[16];
     s32 x, y;
     u32 gil = s_rewards.rewards.gil.target - s_rewards.rewards.gil.cur;
@@ -306,7 +306,7 @@ void rewards_drawReceivedGil(void) {
 }
 
 void rewards_drawCurrentGil(void) {
-    RECT *r = &s_rewards.wins[9].unk4;
+    RECT *r = &s_rewards.wins[9].rect;
     u8 buf[16];
     s32 x, y;
     u32 gil = g_gameState->gameData->gil;
@@ -348,7 +348,7 @@ void rewards_initWindows(void) {
 
     for (i = 0; i < 10; i++) {
         s_rewards.winShown[i] = s_rewardsWinInit[i].shown;
-        s_rewards.wins[i].unk4 = s_rewardsWinInit[i].rect;
+        s_rewards.wins[i].rect = s_rewardsWinInit[i].rect;
         if (s_rewardsWinInit[i].shown != 0) {
             tween_start(&s_rewards.wins[i], s_rewardsWinOpen[i], 1);
         } else {
@@ -373,9 +373,9 @@ void rewards_moveMemberWins(void) {
             w = s_rewards.levelWins[i].win;
             if (w != NULL && w->state != 0) {
                 tx = w->x - 0x26;
-                dx = s_rewards.wins[i + 2].unk4.x - tx;
+                dx = s_rewards.wins[i + 2].rect.x - tx;
                 ty = w->y - 2;
-                dy = s_rewards.wins[i + 2].unk4.y - ty;
+                dy = s_rewards.wins[i + 2].rect.y - ty;
                 w->x += dx;
                 s_rewards.levelWins[i].win->cur.x += dx;
                 s_rewards.levelWins[i].win->y += dy;
@@ -386,15 +386,15 @@ void rewards_moveMemberWins(void) {
             w2 = s_rewards.learnWins[i].win;
             d = &s_rewards.wins[i + 2];
             if (w2 != NULL && w2->state != 0) {
-                t = d->unkC;
-                if (t != NULL && d->unk2 >= 2) {
-                    if (t->unk4 != NULL) {
-                        w2->x += t->unk4[d->unk2];
-                        s_rewards.learnWins[i].win->cur.x += t->unk4[d->unk2];
+                t = d->anim;
+                if (t != NULL && d->frame >= 2) {
+                    if (t->dx != NULL) {
+                        w2->x += t->dx[d->frame];
+                        s_rewards.learnWins[i].win->cur.x += t->dx[d->frame];
                     }
-                    if (t->unk8 != NULL) {
-                        s_rewards.learnWins[i].win->y += t->unk8[d->unk2];
-                        s_rewards.learnWins[i].win->cur.y += t->unk8[d->unk2];
+                    if (t->dy != NULL) {
+                        s_rewards.learnWins[i].win->y += t->dy[d->frame];
+                        s_rewards.learnWins[i].win->cur.y += t->dy[d->frame];
                     }
                 }
             }
@@ -676,7 +676,7 @@ void rewards_updateState(void) {
 
 void rewards_drawHelp(void) {
     s32 x, y;
-    RECT *r = &s_rewards.wins[1].unk4;
+    RECT *r = &s_rewards.wins[1].rect;
     ui_drawLabel(r->x + 6, r->y - 3, 0xB, D_80070450, 0);
     win_drawBox(r, 0xB, 1);
     win_drawShadow(r, 0xC, 1);
@@ -716,7 +716,7 @@ void rewards_stepWindows(void) {
     s32 i;
 
     for (i = 0; i < 10; i++) {
-        if (s_rewards.winShown[i] != 0 && s_rewards.wins[i].unkC != 0) {
+        if (s_rewards.winShown[i] != 0 && s_rewards.wins[i].anim != 0) {
             tween_step(&s_rewards.wins[i]);
         }
     }
@@ -838,7 +838,7 @@ void rewards_updateLearnWins(void) {
             if (w->delay == 0) {
                 if (w->win == NULL) {
                     if (w->queued != 0) {
-                        s_rewardsLearnPanel = r = &s_rewards.wins[i + 2].unk4;
+                        s_rewardsLearnPanel = r = &s_rewards.wins[i + 2].rect;
                         s_rewardsLearnRect.x = r->x + 0x26;
                         rr = &s_rewardsLearnRect;
                         rr->y = r->y + 0x1B;

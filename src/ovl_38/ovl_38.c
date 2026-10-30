@@ -217,7 +217,7 @@ void menuStatus_drawAbilityPages(void) {
 
     for (i = 0; i < s_menuStatus.pageCount; i++) {
         if (s_menuStatus.pageOpen[i] != 0) {
-            r = &s_menuStatus.pageWins[i].unk4;
+            r = &s_menuStatus.pageWins[i].rect;
             for (j = 0; j < STATUS_PAGE_ROWS; j++) {
                 if (base + j < s_menuStatus.abilityCount) {
                     menuStatus_drawAbilityRow(r->x + 0xA, r->y + 8 + j * 15, 0x14 - i, base + j, s_menuStatus.pageOnTop[i]);
@@ -298,7 +298,7 @@ void menuStatus_openAbilityPage(void) {
     w = &s_menuStatus.pageWins[s_menuStatus.pagesOpen];
     s_menuStatus.pageOpen[s_menuStatus.pagesOpen] = 1;
     s_menuStatus.pageOnTop[s_menuStatus.pagesOpen] = 1;
-    w->unk4 = s_menuStatusPageRects[s_menuStatus.pagesOpen];
+    w->rect = s_menuStatusPageRects[s_menuStatus.pagesOpen];
     tween_start(w, &s_menuStatusPageOpenTween, 1);
 }
 
@@ -366,7 +366,7 @@ void menuStatus_updateAnims(void) {
     s32 i;
 
     for (i = 0; i < 6; i++) {
-        if (s_menuStatus.pageOpen[i] != 0 && s_menuStatus.pageWins[i].unkC != 0) {
+        if (s_menuStatus.pageOpen[i] != 0 && s_menuStatus.pageWins[i].anim != 0) {
             tween_step(&s_menuStatus.pageWins[i]);
         }
     }

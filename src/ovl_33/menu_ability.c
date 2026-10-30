@@ -77,7 +77,7 @@ void menuAbility_updateAnims(void) {
     if (m->state == ABILITY_STATE_LIST) {
         menuList_update(&s_menuAbility.lists[s_menuAbility.tab]);
     }
-    if (m->targetWin.unkC != 0) {
+    if (m->targetWin.anim != 0) {
         tween_step(&m->targetWin);
     }
     if (++m->animTick >= 7) {
@@ -327,7 +327,7 @@ void menuAbility_drawList(void) {
 }
 
 void menuAbility_drawTargetWindow(void) {
-    RECT *r = &s_menuAbility.targetWin.unk4;
+    RECT *r = &s_menuAbility.targetWin.rect;
     AbilityMenu *m = &s_menuAbility;
     s32 i;
 
@@ -384,7 +384,7 @@ void menuAbility_drawCursor(void) {
         help_drawCursor();
     }
     if (s_menuAbility.state == ABILITY_STATE_TARGET) {
-        r = &s_menuAbility.targetWin.unk4;
+        r = &s_menuAbility.targetWin.rect;
         if (s_menuAbility.target & ABILITY_TARGET_ALL) {
             g_menuHelp.otz = 0x12;
             if (blink) {
@@ -401,7 +401,7 @@ void menuAbility_drawCursor(void) {
                 }
             }
         } else {
-            g_menuHelp.x = s_menuAbility.targetWin.unk4.x - 10;
+            g_menuHelp.x = s_menuAbility.targetWin.rect.x - 10;
             h3 = &g_menuHelp;
             k = s_menuAbility.target * 0x2B + 0x12;
             ry = r->y;
@@ -523,12 +523,12 @@ void menuAbility_selectAction(void) {
                 s_menuAbility.targetMode = s_menuAbilityActionTable[id].unk0_5;
                 s_menuAbility.canTargetAll = menuAbility_canTargetAll(id);
                 ls = s_menuAbility.lists + s_menuAbility.tab;
-                s_menuAbility.targetWin.unk4 = s_menuAbility.targetRect;
+                s_menuAbility.targetWin.rect = s_menuAbility.targetRect;
                 if (ls->col == 0) {
-                    s_menuAbility.targetWin.unk4.x = 0xA4;
+                    s_menuAbility.targetWin.rect.x = 0xA4;
                     tween_start(&s_menuAbility.targetWin, &s_menuAbilityTargetOpenL, 1);
                 } else {
-                    s_menuAbility.targetWin.unk4.x = 8;
+                    s_menuAbility.targetWin.rect.x = 8;
                     tween_start(&s_menuAbility.targetWin, &s_menuAbilityTargetOpenR, 1);
                 }
                 s_menuAbility.targetWinOpen = 1;
