@@ -41,12 +41,12 @@ s32 fx_106_op80(s32 mode, Fx106Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             if (work->unk0 != NULL) {
                 ((Fx106EffHdr *)work->unk0->file)->unk8 = func_801E7704;
                 if (work->unk0 != NULL) {
-                    work->unk0->unk22 = ex->func_800E7CC4(0, 0x80);
+                    work->unk0->unk22 = ex->btlfx_addRadiusSixth(0, 0x80);
                 }
             }
         }
         if (work->unk4 != NULL) {
-            work->unk4->unk22 = ex->func_800E7CC4(0x10, 0x80);
+            work->unk4->unk22 = ex->btlfx_addRadiusSixth(0x10, 0x80);
         }
     } else {
         return entry->frame >= 0x28;

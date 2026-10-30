@@ -152,7 +152,7 @@ void btl_toggleRow(BtlUnit *arg0) {
     arg0->flags = m | (v << 8);
 }
 
-void func_800BDACC(u8 *arg0, u8 *arg1) {
+void btl_orElements(u8 *arg0, u8 *arg1) {
     arg0[0] |= arg1[0];
     arg0[1] |= arg1[1];
     arg0[2] |= arg1[2];
@@ -339,11 +339,11 @@ u32 btl_getUnitAttr(BtlUnit *arg0, s32 arg1) {
     case BTL_ATTR_ELEM_WEAK:
         r = arg0->elemWeak;
         break;
-    case 0x34:
+    case BTL_ATTR_TARGETABLE:
         r = arg0->flags >> 28;
         r &= 1;
         break;
-    case 0x35:
+    case BTL_ATTR_HIDDEN:
         r = arg0->flags >> 22;
         r &= 1;
         break;
@@ -447,7 +447,7 @@ void btl_setUnitAttr(BtlUnit *arg0, s32 arg1, u32 arg2) {
     case BTL_ATTR_ELEM_WEAK:
         arg0->elemWeak = arg2;
         break;
-    case 0x34:
+    case BTL_ATTR_TARGETABLE:
         if (g_gameState->gameData->ctx.battle->phase == BTL_PHASE_INTRO) {
             arg0->targetableReq = 0;
             arg0->flags &= ~0x10000000;
@@ -457,7 +457,7 @@ void btl_setUnitAttr(BtlUnit *arg0, s32 arg1, u32 arg2) {
             arg0->targetableReq = arg2 + 2;
         }
         break;
-    case 0x35:
+    case BTL_ATTR_HIDDEN:
         arg0->flags = (arg0->flags & ~0x400000) | ((arg2 & 1) << 22);
         if (arg2 != 0 && g_gameState->gameData->ctx.battle->phase == BTL_PHASE_INTRO) {
             btl_applyBgLight(arg0->model);
@@ -465,7 +465,7 @@ void btl_setUnitAttr(BtlUnit *arg0, s32 arg1, u32 arg2) {
             g_gameState->gameData->ctx.battle->work->shadows[k].shade = btlbg_getHeader()->shadowShade;
         }
         break;
-    case 0x36:
+    case BTL_ATTR_SHADOW:
         arg0->flags = (arg0->flags & ~0x1000000) | ((arg2 & 1) << 24);
         break;
     case BTL_ATTR_SCALE:
@@ -588,7 +588,7 @@ s32 btl_getBattleVar(s32 arg0) {
         r = b->loadFlags;
         break;
     case 41:
-        r = D_800FDF34;
+        r = g_btlRewards.exp;
         break;
     case 42:
         r = 0;

@@ -76,7 +76,7 @@ s32 fx_0f3_op80(s32 mode, Fx0f3Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
             if (frame == 7) {
                 p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 2), (s32)&work->unk8);
                 if (p != NULL) {
-                    p->unk22 = ex->func_800E7CC4(0, 0x20);
+                    p->unk22 = ex->btlfx_addRadiusSixth(0, 0x20);
                 }
                 ex->btlfx_drawScreenTint((u32 *)env->ot + 1, 1, 0x5D, 0x5D, 0x5D);
             }

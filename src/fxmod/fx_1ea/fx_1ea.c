@@ -95,10 +95,10 @@ s32 fx_1ea_op80(s32 mode, Fx1eaWork80 *work, Unk800F78A4 *env, Unk80100C78Entry 
         work->unk0 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0x13), (s32)&work->unk8);
         work->unk4 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0x14), (s32)&work->unk8);
         if (work->unk0 != NULL) {
-            work->unk0->unk22 = ex->func_800E7CC4(0x10, 0x80);
+            work->unk0->unk22 = ex->btlfx_addRadiusSixth(0x10, 0x80);
         }
         if (work->unk4 != NULL) {
-            work->unk4->unk22 = ex->func_800E7CC4(0x10, 0x80);
+            work->unk4->unk22 = ex->btlfx_addRadiusSixth(0x10, 0x80);
         }
     } else {
         s32 frame = entry->frame;
@@ -201,7 +201,7 @@ s32 fx_1ea_op81(s32 mode, Fx1eaWork81 *work, Unk800F78A4 *env, Unk80100C78Entry 
             work->unk0[4] = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 3), (s32)&work->unk84);
             work->unk0[5] = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0x1D), (s32)&work->unk84);
             if (work->unk0[3] != NULL) {
-                work->unk0[3]->unk22 = ex->func_800E7CC4(0, 0x80);
+                work->unk0[3]->unk22 = ex->btlfx_addRadiusSixth(0, 0x80);
             }
             break;
         case 0x3C:

@@ -10,7 +10,7 @@ s32 fx_133_op80(s32 mode, SVECTOR *work, Unk800F78A4 *env, Unk80100C78Entry *ent
     } else if (mode == 1) {
         D_801E7874 = env;
         ex->btlfx_getUnitArgBonePos(0, 1, (u16 *)work);
-        dir = env->targets->unk25[0];
+        dir = env->targets->fxArgs[0];
         if (dir < 0x80) {
             work->vy += dir * 4;
         } else {
@@ -18,7 +18,7 @@ s32 fx_133_op80(s32 mode, SVECTOR *work, Unk800F78A4 *env, Unk80100C78Entry *ent
         }
         p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 1), (s32)work);
         if (p != NULL) {
-            p->unk22 = ex->func_800E7CC4(0, 0x80);
+            p->unk22 = ex->btlfx_addRadiusSixth(0, 0x80);
         }
     } else {
         return entry->frame >= 0x30;

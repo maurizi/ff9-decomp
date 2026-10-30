@@ -297,7 +297,7 @@ s32 fx_1a2_op80(s32 mode, Fx1a2Work80 *w, Unk800F78A4 *env, Unk80100C78Entry *en
         w->unk48 = (s16)((s32(*)())ex->Hi_RegisterTexListModel)(ex->btlfx_getFileData(entry->file, 6), &rot, &a);
         ex->btlfx_getUnitPos(0, (s16 *)&w->unk8);
         ex->btlfx_getUnitBodyPos(0, 0, (s16 *)&w->unk10);
-        ex->func_800E8980(0);
+        ex->btlfx_setPartnerByArg(0);
         w->unk2C = 0x8F8;
     } else {
     frame = entry->frame;

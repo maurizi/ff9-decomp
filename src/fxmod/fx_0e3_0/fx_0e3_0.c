@@ -101,7 +101,7 @@ void func_801E7B40(Unk80100C78Entry *entry, Fx0e30Bolt *bolt, SVECTOR *from, SVE
         a = ex->btlfx_randCentered(D_801EB374);
         a = (ex->math_sin(t >> 1) * a) >> 12;
         a += ex->btlfx_lerp(amp0, amp1, t);
-        ex->func_800D044C(&p, (s32)pt, 0, (XY32 *)&rot, a, ang);
+        ex->btlfx_offsetPoint(&p, (s32)pt, 0, (XY32 *)&rot, a, ang);
         pt->pad = 0x19;
         pt++;
         ang += dang + ex->btlfx_randCentered(D_801EB378);
@@ -131,7 +131,7 @@ void func_801E7D40(Unk80100C78Entry *entry, s32 arg1, Fx0e30Bolt *bolt, SVECTOR 
         a = ex->btlfx_randCentered(0x73);
         a = (ex->math_sin(t >> 1) * a) >> 12;
         a += (ex->math_sin(t >> 1) * amp) >> 12;
-        ex->func_800D044C(&p, (s32)pt, 0, (XY32 *)&rot, a, ang);
+        ex->btlfx_offsetPoint(&p, (s32)pt, 0, (XY32 *)&rot, a, ang);
         pt->pad = 0x33;
         ang += dang + ex->btlfx_randCentered(0x100);
         pt++;

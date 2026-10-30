@@ -77,9 +77,9 @@ typedef struct BtlfxExports {
     s32 (*btlfx_turnToward)(s16 *, s16 *, s32); /* 0x0E4 */
     s32 (*btlfx_setWorldTrans)(SVECTOR *, MATRIX *); /* 0x0E8 */
     s32 (*btlfx_setRotScale)(SVECTOR *, VECTOR *, MATRIX *, s32); /* 0x0EC */
-    s32 (*func_800D044C)(SVECTOR *, s32, s32, XY32 *, s32, s32); /* 0x0F0 */
-    s32 (*func_800D0580)(s16 *, XY32 *, s32); /* 0x0F4 */
-    s32 (*func_800D0674)(SVECTOR *, SVECTOR *, SVECTOR *, s32, s32, s32 *); /* 0x0F8 */
+    s32 (*btlfx_offsetPoint)(SVECTOR *, s32, s32, XY32 *, s32, s32); /* 0x0F0 */
+    s32 (*btlfx_forwardAngles)(s16 *, XY32 *, s32); /* 0x0F4 */
+    s32 (*btlfx_toLocalPolar)(SVECTOR *, SVECTOR *, SVECTOR *, s32, s32, s32 *); /* 0x0F8 */
     DR_TPAGE * (*btlfx_allocDrMode)(s32, s32); /* 0x0FC */
     s32 (*btlfx_drawScreenTint)(u32 *, s32, s32, s32, s32); /* 0x100 */
     s32 (*Hi_ModifySummonModelRGB)(s32, s32, s32, s32); /* 0x104 */
@@ -97,7 +97,7 @@ typedef struct BtlfxExports {
     s32 (*btlfx_drawBackdrop)(BtlBgLayers *, s32); /* 0x134 */
     s32 (*btlfx_drawSpriteLine)(u8 *, SVECTOR *, s32, s32); /* 0x138 */
     s32 (*btlfx_initParticles)(s32, Pool30Entry *, Pool30 *); /* 0x13C */
-    s32 (*func_800E0134)(Pool30Entry *, Pool6CEntry *); /* 0x140 */
+    s32 (*btlfx_getParticleTrail)(Pool30Entry *, Pool6CEntry *); /* 0x140 */
     s32 (*btlfx_updateParticles)(Pool30 *); /* 0x144 */
     s32 (*btlfx_initEmitters)(u32, Pool6C *); /* 0x148 */
     Pool6CEntry * (*btlfx_spawnEmitter)(Pool30 *, Pool6C *, u8 *, s32); /* 0x14C */
@@ -106,7 +106,7 @@ typedef struct BtlfxExports {
     s32 (*btlfx_updateEmitters)(Pool30 *, Pool6C *); /* 0x158 */
     Pool30Entry * (*btlfx_allocParticle)(Pool30 *); /* 0x15C */
     s32 (*btlfx_runEmitters)(Pool30 *, Pool6C *); /* 0x160 */
-    s32 (*func_800E2F84)(Pool30 *, Pool30Entry *, SVECTOR *, SVECTOR *); /* 0x164 */
+    s32 (*btlfx_runSubEmitter)(Pool30 *, Pool30Entry *, SVECTOR *, SVECTOR *); /* 0x164 */
     s32 (*btlfx_initTasks)(void); /* 0x168 */
     s32 (*btlfx_allocTaskMem)(Unk80100C78Entry *, s32); /* 0x16C */
     s32 (*btlfx_spawnTask)(s32, s32, s32, s32); /* 0x170 */
@@ -121,7 +121,7 @@ typedef struct BtlfxExports {
     s32 (*btlfx_popViewMatrix)(void); /* 0x194 */
     s32 (*btlfx_getFileData)(s32, s32); /* 0x198 */
     s32 (*btlfx_getFileDataSize)(s32, s32); /* 0x19C */
-    s32 (*func_800DA4E8)(void); /* 0x1A0 */
+    s32 (*btlfx_resetLoader)(void); /* 0x1A0 */
     s32 (*btlfx_loadFile)(s32); /* 0x1A4 */
     s32 (*btlfx_loadNextBlock)(void); /* 0x1A8 */
     s32 (*btlfx_updateLoader)(void); /* 0x1AC */
@@ -153,7 +153,7 @@ typedef struct BtlfxExports {
     s32 (*btlfx_turnUnitToward)(s32, s16 *, s16 *, s32, s32, s32, s32); /* 0x214 */
     s32 (*btlfx_getStrikePos)(s32, s32, s16 *); /* 0x218 */
     s32 (*btlfx_compareDepth)(s32, s32); /* 0x21C */
-    s32 (*func_800E7CC4)(s32, s32); /* 0x220 */
+    s32 (*btlfx_addRadiusSixth)(s32, s32); /* 0x220 */
     s32 (*btlfx_fadeUnitGroup)(u32, s32); /* 0x224 */
     s32 (*btlfx_execCmd)(s32); /* 0x228 */
     s32 (*btlfx_addPrimAbr)(s32, s32, void *, s32); /* 0x22C */
@@ -198,15 +198,15 @@ typedef struct BtlfxExports {
     s32 (*btlfx_getUnitBoneMatrix)(s32, s32, BtlBone *); /* 0x2C4 */
     s32 (*btlfx_getUnitArgBoneMatrix)(s32, s32, BtlBone *); /* 0x2C8 */
     s32 (*btlfx_startScreenFade)(s32, s32); /* 0x2CC */
-    s32 (*func_800E98C8)(s32, s32); /* 0x2D0 */
-    s32 (*func_800E98F8)(s32); /* 0x2D4 */
+    s32 (*btlfx_setSoundUnit)(s32, s32); /* 0x2D0 */
+    s32 (*btlfx_setAllSoundsUnit)(s32); /* 0x2D4 */
     s32 (*btlfx_playFileSound)(s32, s32, s32); /* 0x2D8 */
-    s32 (*func_800E8554)(s32, s32); /* 0x2DC */
+    s32 (*btlfx_resetIdleMotion)(s32, s32); /* 0x2DC */
     s32 * (*btlfx_swapModelData)(s32, s32 *); /* 0x2E0 */
     s32 (*Hi_SetEffModelOffset)(s32, s32); /* 0x2E4 */
     s32 (*btlfx_setUnitLight)(s32, s32); /* 0x2E8 */
     s32 (*btlfx_setUnitVisible)(s32, s32); /* 0x2EC */
-    s32 (*func_800E8980)(s32); /* 0x2F0 */
+    s32 (*btlfx_setPartnerByArg)(s32); /* 0x2F0 */
     s32 (*btlfx_drawBgOffscreen)(s32, s32, s32, s32, u32 *, s32, s32, s32); /* 0x2F4 */
     BtlUnit * (*btl_getUnit)(s32); /* 0x2F8 */
     s32 (*Hi_GetSplitMdlVertex)(s32, s32); /* 0x2FC */
@@ -243,7 +243,7 @@ typedef struct BtlfxExports {
     (((s32 *)(dst))[0] = ((s32 *)(src))[0], ((s32 *)(dst))[1] = ((s32 *)(src))[1])
 
 /* Module header, pointed to by the module's first word (its first .rodata word).
- * btlfx_updateLoader installs &ops[0] as the slot's op table (D_80100C70) and calls init when non-NULL
+ * btlfx_updateLoader installs &ops[0] as the slot's op table (g_btlfxModuleOps) and calls init when non-NULL
  * (NULL in every module on the discs); script op 0x80 + i runs ops[i] (btlfx_spawnTask). */
 typedef struct BtlfxModHeader {
     s32 unk0; /* 0 in every module */

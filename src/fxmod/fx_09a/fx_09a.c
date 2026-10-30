@@ -221,7 +221,7 @@ s32 fx_09a_op80(s32 mode, Fx09aWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
                                                           ((ang = env->camera->yaw & 0xFFF) - 0x400U > 0x800)))),
                     (s32)&work->unk14);
                 if (p != NULL) {
-                    p->unk22 = ex->func_800E7CC4(work->unk8, 0x40);
+                    p->unk22 = ex->btlfx_addRadiusSixth(work->unk8, 0x40);
                 }
                 ex->btlfx_playFileSound(0x15, entry->file, -1);
                 ex->btlfx_playFileSound(0x16, entry->file, -1);
@@ -231,11 +231,11 @@ s32 fx_09a_op80(s32 mode, Fx09aWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
                 ex->btlfx_drawScreenTint((u32 *)(env->ot + 2), 1, 0xDC, 0, 0x20);
                 p = (Pool6CEntry *)ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 1), (s32)&work->unk14);
                 if (p != NULL) {
-                    p->unk22 = ex->func_800E7CC4(work->unk8, 0x40);
+                    p->unk22 = ex->btlfx_addRadiusSixth(work->unk8, 0x40);
                 }
                 p = (Pool6CEntry *)ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 9), (s32)&work->unk14);
                 if (p != NULL) {
-                    p->unk22 = ex->func_800E7CC4(work->unk8, 0x40);
+                    p->unk22 = ex->btlfx_addRadiusSixth(work->unk8, 0x40);
                 }
             }
             if (frame == 29) {

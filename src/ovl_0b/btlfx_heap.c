@@ -13,7 +13,7 @@ void btlfx_initParticles(s32 arg0, Pool30Entry *arg1, Pool30 *arg2) {
     }
 }
 
-s32 func_800E0134(Pool30Entry *arg0, Pool6CEntry *arg1) {
+s32 btlfx_getParticleTrail(Pool30Entry *arg0, Pool6CEntry *arg1) {
     s32 p = arg1->unk14;
     s32 t;
     if (p == 0) {
@@ -61,7 +61,7 @@ s32 btlfx_updateParticles(Pool30 *pool) {
     e = pool->entries;
     amp = 0;
     i = 0;
-    D_801014B0 = g_btlfxEnv->otZ;
+    g_btlfxSavedOtZ = g_btlfxEnv->otZ;
     pool->live = 0;
     for (; i <= pool->maxUsed; i++, e++) {
         if (e->unk1F == 0) {
@@ -175,7 +175,7 @@ s32 btlfx_updateParticles(Pool30 *pool) {
             e->unkC += e->unkE;
             e->unk20 += e->unk22;
             e->unk24.s.x += e->unk24.s.y;
-            func_800D044C(&pos, (s32)&pos, e->unk20 >> 2, &e->unk28, e->unk24.s.x >> 2, e->unkC);
+            btlfx_offsetPoint(&pos, (s32)&pos, e->unk20 >> 2, &e->unk28, e->unk24.s.x >> 2, e->unkC);
             break;
         case 3:
             btlfx_stepParticleNoDragAlt(e, rs, rp, &pos);
@@ -211,7 +211,7 @@ s32 btlfx_updateParticles(Pool30 *pool) {
                 rs = e->unk20 - ((e->unk20 * t) >> 12);
                 break;
             }
-            func_800D044C(&pos, (s32)&pos, e->unk24.w >> 6, &e->unk28, rs, e->unkC);
+            btlfx_offsetPoint(&pos, (s32)&pos, e->unk24.w >> 6, &e->unk28, rs, e->unkC);
             break;
         case 5:
             btlfx_stepParticle(e, rs, rp, &pos);
@@ -227,7 +227,7 @@ s32 btlfx_updateParticles(Pool30 *pool) {
             btlfx_pointAhead(&e->unkC, (s16 *)&v, rs, &e->unkC);
             break;
         case 0xFF:
-            if (m->unk8(e, owner, &pos, func_800E0134(e, owner), frame, frames) != 0) {
+            if (m->unk8(e, owner, &pos, btlfx_getParticleTrail(e, owner), frame, frames) != 0) {
                 e->unk1F = 0;
                 if (e->unk12 & 0x80) {
                     owner->unk34.s.y--;
@@ -270,17 +270,17 @@ s32 btlfx_updateParticles(Pool30 *pool) {
                 v.vy = -0x1000;
                 break;
             case 5:
-                func_800D0674(&pos, owner->unk64, owner->unk68, (s32)&alpha, (s32)&cnt, &scale);
+                btlfx_toLocalPolar(&pos, owner->unk64, owner->unk68, (s32)&alpha, (s32)&cnt, &scale);
                 if (cnt <= range) {
                     btlfx_rotateOffset(owner->unk68, 0x1000, (s32)&v);
                 }
                 break;
             case 6:
-                func_800D0674(&pos, owner->unk64, owner->unk68, (s32)&alpha, (s32)&cnt, &scale);
+                btlfx_toLocalPolar(&pos, owner->unk64, owner->unk68, (s32)&alpha, (s32)&cnt, &scale);
                 if (cnt <= range) {
                     ((s32 *)&v)[1] = 0;
                     ((s32 *)&v)[0] = 0;
-                    func_800D044C(&v, (s32)&v, 0, (XY32 *)owner->unk68, 0x1000, scale);
+                    btlfx_offsetPoint(&v, (s32)&v, 0, (XY32 *)owner->unk68, 0x1000, scale);
                 }
                 break;
             case 7:
@@ -293,7 +293,7 @@ s32 btlfx_updateParticles(Pool30 *pool) {
                 cnt = btlfx_distance(&v, owner->unk64);
                 break;
             case 9:
-                func_800D0674(&pos, owner->unk64, owner->unk68, (s32)&alpha, (s32)&cnt, &scale);
+                btlfx_toLocalPolar(&pos, owner->unk64, owner->unk68, (s32)&alpha, (s32)&cnt, &scale);
                 break;
             }
             if (cnt <= range) {
@@ -430,10 +430,10 @@ s32 btlfx_updateParticles(Pool30 *pool) {
                     btlfx_drawSprites((u8 *)mode, &pos, vp, scale, e->elemFrame, cnt, alpha);
                     break;
                 case 4:
-                    btlfx_drawTrail((u8 *)mode, (s32)&pos, (s32 *)owner->origin, e->elemFrame, scale, alpha, cnt, (u8 *)func_800E0134(e, owner), 1);
+                    btlfx_drawTrail((u8 *)mode, (s32)&pos, (s32 *)owner->origin, e->elemFrame, scale, alpha, cnt, (u8 *)btlfx_getParticleTrail(e, owner), 1);
                     break;
                 case 5:
-                    btlfx_drawTrail((u8 *)mode, (s32)&pos, NULL, e->elemFrame, scale, alpha, cnt, (u8 *)func_800E0134(e, owner), 2);
+                    btlfx_drawTrail((u8 *)mode, (s32)&pos, NULL, e->elemFrame, scale, alpha, cnt, (u8 *)btlfx_getParticleTrail(e, owner), 2);
                     break;
                 case 6:
                     btlfx_drawRings((u8 *)mode, &pos, vp, scale, e->elemFrame, cnt, alpha);
@@ -442,7 +442,7 @@ s32 btlfx_updateParticles(Pool30 *pool) {
                     btlfx_drawFan((Unk800D2938 *)mode, &pos, vp, scale, e->elemFrame, cnt, alpha);
                     break;
                 case 8:
-                    btlfx_drawTrail((u8 *)mode, (s32)&pos, NULL, e->elemFrame, scale, alpha, cnt, (u8 *)func_800E0134(e, owner), 0);
+                    btlfx_drawTrail((u8 *)mode, (s32)&pos, NULL, e->elemFrame, scale, alpha, cnt, (u8 *)btlfx_getParticleTrail(e, owner), 0);
                     break;
                 }
                 if (el->kind2 == 0xFF) {
@@ -464,13 +464,13 @@ s32 btlfx_updateParticles(Pool30 *pool) {
             if (lvl >= 4) {
                 btlfx_aimAngles((s16 *)&rel, (s16 *)&pos, (s16 *)&v);
             }
-            func_800E2F84(pool, e, &pos, &v);
+            btlfx_runSubEmitter(pool, e, &pos, &v);
         }
         frame++;
         e->frame = frame;
     }
     pool->maxUsed = last;
-    g_btlfxEnv->otZ = D_801014B0;
+    g_btlfxEnv->otZ = g_btlfxSavedOtZ;
     return pool->live;
 }
 
@@ -971,14 +971,14 @@ void btlfx_runEmitters(Pool30 *pool, Pool6C *list) {
                 r = btlfx_randRange(e->unk3C, e->unk3E);
                 *(s32 *)&off.vx = 0;
                 *(s32 *)&off.vz = 0;
-                func_800D044C(&off, (s32)&off, acc, (XY32 *)&ang, r, d58);
+                btlfx_offsetPoint(&off, (s32)&off, acc, (XY32 *)&ang, r, d58);
                 if (((EffTailSpawn *)e->tail)->unk4C == 1) {
                     ((XY32 *)&rot)[0].w = ((XY32 *)&ang)[0].w;
                 } else if (((EffTailSpawn *)e->tail)->unk4C == 2) {
                     ((XY32 *)&rot)[0].w = ((XY32 *)&ang)[0].w;
                     rot.vx += 0x800;
                 } else {
-                    func_800D0580(&rot.vx, (XY32 *)&ang, d58);
+                    btlfx_forwardAngles(&rot.vx, (XY32 *)&ang, d58);
                 }
                 base = e->origin;
                 break;
@@ -988,14 +988,14 @@ void btlfx_runEmitters(Pool30 *pool, Pool6C *list) {
                 acc = btlfx_randRange(e->unk40, e->unk42);
                 r = btlfx_randRange(e->unk3C, e->unk3E);
                 btlfx_lerpVec((s16 *)e->origin, (s16 *)e->unk2C, acc, &off.vx);
-                func_800D044C(&off, (s32)&off, 0, (XY32 *)&ang, r, d58);
+                btlfx_offsetPoint(&off, (s32)&off, 0, (XY32 *)&ang, r, d58);
                 if (((EffTailSpawn *)e->tail)->unk4C == 1) {
                     ((XY32 *)&rot)[0].w = ((XY32 *)&ang)[0].w;
                 } else if (((EffTailSpawn *)e->tail)->unk4C == 2) {
                     ((XY32 *)&rot)[0].w = ((XY32 *)&ang)[0].w;
                     rot.vx += 0x800;
                 } else {
-                    func_800D0580(&rot.vx, (XY32 *)&ang, d58);
+                    btlfx_forwardAngles(&rot.vx, (XY32 *)&ang, d58);
                 }
                 base = e->origin;
                 off.vx -= base->vx;
@@ -1018,7 +1018,7 @@ void btlfx_runEmitters(Pool30 *pool, Pool6C *list) {
                 n = btlfx_rand();
                 *(s32 *)&off.vx = 0;
                 *(s32 *)&off.vz = 0;
-                func_800D044C(&off, (s32)&off, acc, (XY32 *)&ang, r, n);
+                btlfx_offsetPoint(&off, (s32)&off, acc, (XY32 *)&ang, r, n);
                 if (((EffTailSpawn *)e->tail)->unk48.h == 1) {
                     ((XY32 *)&rot)[0].w = ((XY32 *)&ang)[0].w;
                 } else if (((EffTailSpawn *)e->tail)->unk48.h == 2) {
@@ -1027,10 +1027,10 @@ void btlfx_runEmitters(Pool30 *pool, Pool6C *list) {
                 } else {
                     *(s32 *)&tmp.vx = 0;
                     *(s32 *)&tmp.vz = 0;
-                    func_800D044C(&tmp, (s32)&tmp, 0, (XY32 *)&ang, d58, n);
+                    btlfx_offsetPoint(&tmp, (s32)&tmp, 0, (XY32 *)&ang, d58, n);
                     *(s32 *)&rot.vx = 0;
                     *(s32 *)&rot.vz = 0;
-                    func_800D044C(&rot, (s32)&rot, e->unk40, (XY32 *)&ang, y4, n);
+                    btlfx_offsetPoint(&rot, (s32)&rot, e->unk40, (XY32 *)&ang, y4, n);
                     ((XY32 *)&ang)[0].w = ((XY32 *)&rot)[0].w;
                     ((XY32 *)&ang)[1].w = ((XY32 *)&rot)[1].w;
                     btlfx_aimAngles(&tmp.vx, &ang.vx, &rot.vx);
@@ -1104,7 +1104,7 @@ void btlfx_runEmitters(Pool30 *pool, Pool6C *list) {
                 p->unk22 = e->unk8 + btlfx_randCentered(mot->unkC);
                 *(s32 *)&tmp.vx = 0;
                 *(s32 *)&tmp.vz = 0;
-                func_800D0674(&off, &tmp, &rot, (s32)&k, (s32)&r, &d58);
+                btlfx_toLocalPolar(&off, &tmp, &rot, (s32)&k, (s32)&r, &d58);
                 p->unkC = d58;
                 p->unk20 = k;
                 p->unk24.s.x = r;
@@ -1154,13 +1154,13 @@ void btlfx_runEmitters(Pool30 *pool, Pool6C *list) {
                 tmp.vx = p->pos.vx >> 12;
                 tmp.vy = p->pos.vy >> 12;
                 tmp.vz = p->pos.vz >> 12;
-                btlfx_drawTrail((u8 *)el->tex, (s32)&tmp, NULL, -1, 0, 0, 0, (u8 *)func_800E0134(p, e), 0);
+                btlfx_drawTrail((u8 *)el->tex, (s32)&tmp, NULL, -1, 0, 0, 0, (u8 *)btlfx_getParticleTrail(p, e), 0);
             }
         }
     }
 }
 
-void func_800E2F84(Pool30 *pool, Pool30Entry *e, SVECTOR *pos, SVECTOR *rot) {
+void btlfx_runSubEmitter(Pool30 *pool, Pool30Entry *e, SVECTOR *pos, SVECTOR *rot) {
     SVECTOR off;
     SVECTOR ang;
     SVECTOR dir;
@@ -1346,7 +1346,7 @@ void func_800E2F84(Pool30 *pool, Pool30Entry *e, SVECTOR *pos, SVECTOR *rot) {
                     p->unk22 = btlfx_lerp(mot->unk8, mot->unkA, t) + btlfx_randCentered(mot->unkC);
                     *(s32 *)&dir.vx = 0;
                     *(s32 *)&dir.vz = 0;
-                    func_800D0674(&off, &dir, &ang, (s32)&d40, (s32)&cnt, &k);
+                    btlfx_toLocalPolar(&off, &dir, &ang, (s32)&d40, (s32)&cnt, &k);
                     p->unkC = k;
                     p->unk20 = d40;
                     p->unk24.s.x = cnt;
@@ -1399,7 +1399,7 @@ void func_800E2F84(Pool30 *pool, Pool30Entry *e, SVECTOR *pos, SVECTOR *rot) {
                     dir.vx = p->pos.vx >> 12;
                     dir.vy = p->pos.vy >> 12;
                     dir.vz = p->pos.vz >> 12;
-                    btlfx_drawTrail((u8 *)el->tex, (s32)&dir, NULL, -1, 0, 0, 0, (u8 *)func_800E0134(p, owner), 0);
+                    btlfx_drawTrail((u8 *)el->tex, (s32)&dir, NULL, -1, 0, 0, 0, (u8 *)btlfx_getParticleTrail(p, owner), 0);
                 }
             }
         }
@@ -1485,7 +1485,7 @@ void btlfx_resetAll(void) {
     btlfx_clearTargets();
     btlfx_reset();
     btlfx_initTasks();
-    func_800DA4E8();
+    btlfx_resetLoader();
     btlfx_initParticleSystem();
     btlfx_initSounds();
     btlfx_clearEffModels();

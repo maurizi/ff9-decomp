@@ -10,13 +10,13 @@ void btl_initEquipElements(Character *c, BtlUnit *u) {
     u->elemGuard = 0;
     for (i = 0; i < 5; i++) {
         if (c->equip[i] != 0xFF) {
-            func_800BDACC(&u->elemGuard, g_equipStatBonus[g_itemTable[c->equip[i]].statBonus].elemGuard);
+            btl_orElements(&u->elemGuard, g_equipStatBonus[g_itemTable[c->equip[i]].statBonus].elemGuard);
             u->elemBoost |= g_equipStatBonus[g_itemTable[c->equip[i]].statBonus].elemBoost;
         }
     }
 }
 
-void func_800BC1E0(Unk800BC1E0 *arg0, s16 *arg1) {
+void btl_getWeaponOffset(Unk800BC1E0 *arg0, s16 *arg1) {
     if (!(arg0->unk0 & 8)) {
         arg1[0] = 0;
         arg1[1] = arg0->unk8;

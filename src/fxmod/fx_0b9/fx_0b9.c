@@ -81,7 +81,7 @@ s32 fx_0b9_op81(s32 mode, Fx0b9Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
         work->unk4.vy -= 0xC8;
         work->unk0 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 3), (s32)&work->unk4);
         if (work->unk0 != NULL) {
-            work->unk0->unk22 = ex->func_800E7CC4(work->unk14, 0x80);
+            work->unk0->unk22 = ex->btlfx_addRadiusSixth(work->unk14, 0x80);
         }
         ex->btlfx_aimAngles((s16 *)&D_801E7B9C, (s16 *)&work->unk4, (s16 *)&work->unkC);
     } else {

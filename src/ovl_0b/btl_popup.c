@@ -120,7 +120,7 @@ BtlPopup *btl_popupText(arg0, arg1, arg2, arg3)
     BtlPopup *p = btl_newPopup((BtlUnit *)arg0);
     p->info.b.kind = 2;
     p->info.b.delay = arg3;
-    p->data.p = &D_800F6A54[arg1];
+    p->data.p = &g_btlTextPopups[arg1];
     p->clut = arg2;
     return p;
 }
@@ -137,9 +137,9 @@ s32 btl_packDigits(u32 n) {
         }
         for (i = 3; i != 0; i--) {
             d = 0;
-            if (n >= D_800F6A74[i]) {
-                d = n / D_800F6A74[i];
-                n = n % D_800F6A74[i];
+            if (n >= g_btlPowersOf10[i]) {
+                d = n / g_btlPowersOf10[i];
+                n = n % g_btlPowersOf10[i];
             }
             r = (r << 4) | d;
         }
@@ -181,7 +181,7 @@ u8 *btl_drawPopups(u8 *arg0) {
                 if (p->info.b.yOfs != 0 && (u16)(c.xy.s.y - 21) < 180) {
                     p->info.b.yOfs = 0;
                 }
-                D_800F6A7C[p->info.b.kind](p, &c);
+                g_btlPopupDrawFns[p->info.b.kind](p, &c);
             }
         }
         j++;
@@ -219,9 +219,9 @@ void btl_drawNumberPopup(BtlPopup *arg0, Unk800CCD00 *arg1) {
     s16 x;
 
     if (arg0->clut == 0xC0) {
-        anim = D_800F6A38;
+        anim = g_btlPopupBounceHeal;
     } else {
-        anim = D_800F6A28;
+        anim = g_btlPopupBounce;
     }
     c = anim[arg0->frame];
     if (!(arg0->unit->model->flags & 0x10)) {
@@ -374,9 +374,9 @@ void btl_drawStatusIcons(Unk800CCD00 *arg0) {
         sn = math_sin(u->rot[1]);
         cs = math_cos(u->rot[1]);
         if (u->flags & 1) {
-            bone = D_800F6B48[g_gameState->gameData->characters[(u->flags >> 1) & 0xF].info.b.kind];
-            ty = D_800F6BBC[g_gameState->gameData->characters[(u->flags >> 1) & 0xF].info.b.kind];
-            tz = D_800F6C30[g_gameState->gameData->characters[(u->flags >> 1) & 0xF].info.b.kind];
+            bone = g_btlPartyIconBones[g_gameState->gameData->characters[(u->flags >> 1) & 0xF].info.b.kind];
+            ty = g_btlPartyIconY[g_gameState->gameData->characters[(u->flags >> 1) & 0xF].info.b.kind];
+            tz = g_btlPartyIconZ[g_gameState->gameData->characters[(u->flags >> 1) & 0xF].info.b.kind];
         } else {
             BtlEnemyType *m = g_gameState->gameData->ctx.battle->enemies[(u->flags >> 1) & 0xF].type;
             bone = m->iconBones;
@@ -447,8 +447,8 @@ void btl_drawStatusCountdown(Unk800CCD00 *arg0) {
             continue;
         }
         if (u->flags & 1) {
-            bone = D_800F6B48[g_gameState->gameData->characters[(u->flags >> 1) & 0xF].info.b.kind][5];
-            y = (s8)D_800F6BBC[g_gameState->gameData->characters[(u->flags >> 1) & 0xF].info.b.kind][5];
+            bone = g_btlPartyIconBones[g_gameState->gameData->characters[(u->flags >> 1) & 0xF].info.b.kind][5];
+            y = (s8)g_btlPartyIconY[g_gameState->gameData->characters[(u->flags >> 1) & 0xF].info.b.kind][5];
         } else {
             m = g_gameState->gameData->ctx.battle->enemies[(u->flags >> 1) & 0xF].type;
             bone = m->iconBones[5];
@@ -466,7 +466,7 @@ void btl_drawStatusCountdown(Unk800CCD00 *arg0) {
         gte_rtps();
         gte_stsxy(&arg0->xy);
         arg0->xy.s.y -= 12;
-        for (e = D_800F6CA4, i = 1; i != -1; e++, i--) {
+        for (e = g_btlStatusCountdowns, i = 1; i != -1; e++, i--) {
             if (st & e->status) {
                 if (u->countdownStep > 0 && (t = u->statusTimers[e->timer]) >= 0) {
                     q = t * 10 / u->countdownStep;
@@ -629,7 +629,7 @@ void btl_updateScan(void) {
         return;
     }
 show:
-    g_gameState->gameData->ctx.battle->popups.scan.b[0] = func_800F4FC8() - 1;
+    g_gameState->gameData->ctx.battle->popups.scan.b[0] = btl_getBannerDuration() - 1;
     btl_setBanner((s32)buf, 2);
 }
 
@@ -639,7 +639,7 @@ void btl_startDetect(BtlUnit *arg0) {
         if (g_gameState->gameData->ctx.battle->popups.detectEnemy->steal.w == -1) {
             btl_setBanner(text_getFrom(g_btlScanTexts, 9), 2);
             g_gameState->gameData->ctx.battle->popups.detectSlot = 4;
-            g_gameState->gameData->ctx.battle->popups.detectDelay = func_800F4FC8() - 1;
+            g_gameState->gameData->ctx.battle->popups.detectDelay = btl_getBannerDuration() - 1;
             return;
         }
         g_gameState->gameData->ctx.battle->popups.detectSlot = 0;
@@ -663,7 +663,7 @@ void btl_updateDetect(void) {
     while ((i = g_gameState->gameData->ctx.battle->popups.detectSlot++) < 4) {
         id = g_gameState->gameData->ctx.battle->popups.detectEnemy->steal.b[3 - i];
         if (id != 0xFF) {
-            g_gameState->gameData->ctx.battle->popups.detectDelay = func_800F4FC8() - 1;
+            g_gameState->gameData->ctx.battle->popups.detectDelay = btl_getBannerDuration() - 1;
             text_copy(buf, (u8 *)text_getFrom(g_btlScanTexts, 8));
             text_append(buf, btl_getItemName(id));
             text_append(buf, D_800A7C20);
@@ -693,7 +693,7 @@ void btl_showCmdName(BtlCmd *arg0) {
         break;
     default:
         if (arg0->subNo < 0xC0) {
-            t = D_800F7124[arg0->subNo];
+            t = g_btlCmdNameMap[arg0->subNo];
             switch (t) {
             case 0:
                 break;
@@ -703,13 +703,13 @@ void btl_showCmdName(BtlCmd *arg0) {
             case 0xFE:
                 s = buf;
                 text_copy(s, btl_getAbilityName(arg0->subNo));
-                text_append(s, (u8 *)text_getFrom(D_800F71E4, 0));
+                text_append(s, (u8 *)text_getFrom(g_btlCmdNameTexts, 0));
                 break;
             default:
                 if (t < 0xC0) {
                     s = btl_getAbilityName(t);
                 } else {
-                    s = (u8 *)text_getFrom(D_800F71E4, (t & 0x3F) + 1);
+                    s = (u8 *)text_getFrom(g_btlCmdNameTexts, (t & 0x3F) + 1);
                 }
                 break;
             }

@@ -95,7 +95,7 @@ s32 fx_1ec_op80(s32 mode, Fx1ecWork80 *work, Unk800F78A4 *env, Unk80100C78Entry 
                 work->unk0[3]->unkC = 0x50;
             }
             if (work->unk0[0] != NULL) {
-                work->unk0[0]->unk22 = ex->func_800E7CC4(0x10, 0x80);
+                work->unk0[0]->unk22 = ex->btlfx_addRadiusSixth(0x10, 0x80);
             }
             break;
         case 0x12:

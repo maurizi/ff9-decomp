@@ -243,18 +243,18 @@ s32 fx_05e_op80(s32 mode, Fx05eWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
                                                                       ((ang = env->camera->yaw & 0xFFF) - 0x400U > 0x800)))),
                                       (s32)&work->unk8);
                 if (p != NULL) {
-                    p->unk22 = ex->func_800E7CC4(0, 0x40);
+                    p->unk22 = ex->btlfx_addRadiusSixth(0, 0x40);
                 }
             }
             if (frame == 0x21) {
                 ex->btlfx_drawScreenTint((u32 *)(env->ot + 2), 1, 0xDC, 0, 0x20);
                 p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 4), (s32)&work->unk8);
                 if (p != NULL) {
-                    p->unk22 = ex->func_800E7CC4(0, 0x40);
+                    p->unk22 = ex->btlfx_addRadiusSixth(0, 0x40);
                 }
                 p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 5), (s32)&work->unk8);
                 if (p != NULL) {
-                    p->unk22 = ex->func_800E7CC4(0, 0x40);
+                    p->unk22 = ex->btlfx_addRadiusSixth(0, 0x40);
                 }
             }
             if (frame == 0x26) {

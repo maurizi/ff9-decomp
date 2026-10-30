@@ -15,7 +15,7 @@ void btl_initParty(Battle *arg0) {
         if (c != NULL) {
             u = &arg0->units[n];
             u->modelId = g_btlCharModelIds[(c->info.w >> 4) & 0x1F];
-            func_800BBF30(p->unk4, u->modelId);
+            btl_createObjModel(p->unk4, u->modelId);
             btl_initPartyUnit(c, u, i, n);
             n++;
             p = p->unk0;
@@ -61,7 +61,7 @@ void btl_initEnemies(Battle *arg0) {
         if (m < 0) {
             e->flags |= 0x200;
         } else {
-            func_800BBF30(p->unk4, m);
+            btl_createObjModel(p->unk4, m);
             e->flags &= ~0x200;
             p = p->unk0;
         }
@@ -75,7 +75,7 @@ void btl_initEnemies(Battle *arg0) {
         btl_resetUnit(u, &g_gameState->gameData->npcModels[k]);
         u->home = (struct BtlUnit98 *)&e->home;
         u->weaponModel = NULL;
-        u->support = (u32 *)D_800F5244;
+        u->support = (u32 *)g_btlEnemySupport;
         u->flags &= ~0x40000;
         if (prev != NULL) {
             prev->next = u;
@@ -281,7 +281,7 @@ void btl_resetUnit(BtlUnit *arg0, ModelSlot *arg1) {
     arg0->hiddenMeshes = 0;
 }
 
-void func_800BBF30(EvtObject *arg0, s16 arg1) {
+void btl_createObjModel(EvtObject *arg0, s16 arg1) {
     arg0->modelId = arg1;
     arg0->modelSlot = evt_createModel(arg0);
 }

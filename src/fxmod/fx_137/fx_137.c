@@ -35,13 +35,13 @@ s32 fx_137_op80(s32 mode, Fx137Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
         } else {
             ex->btlfx_getUnitArgBonePos(0x10, 0, (u16 *)&work->unk8);
         }
-        ex->btlfx_getUnitBoneMatrix(0x10, env->targets->unk25[0], (BtlBone *)&m);
+        ex->btlfx_getUnitBoneMatrix(0x10, env->targets->fxArgs[0], (BtlBone *)&m);
         ex->btlfx_matrixPointAhead(&m, 0x1000, (s32)&pos);
         ex->btlfx_aimAngles((s16 *)&work->unk10, (s16 *)&pos, (s16 *)&work->unk0);
         ex->btlfx_aimAngles((s16 *)&work->unk10, (s16 *)&work->unk18, (s16 *)&rot);
         work->unk0.vx = rot.vx;
         ex->btlfx_getUnitRot(0x10, (s16 *)&rot);
-        work->unk0.vy += (((work->unk0.vy + 0x1000) & 0xFFF) - ((rot.vy + 0x1000) & 0xFFF)) * env->targets->unk25[1];
+        work->unk0.vy += (((work->unk0.vy + 0x1000) & 0xFFF) - ((rot.vy + 0x1000) & 0xFFF)) * env->targets->fxArgs[1];
         if (work->unk20 != NULL) {
             work->unk20->unk5C.vx = work->unk0.vx;
             work->unk20->unk5C.vy = work->unk0.vy;
@@ -51,7 +51,7 @@ s32 fx_137_op80(s32 mode, Fx137Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
             for (i = 0; i < env->targets->targetCount; i++) {
                 p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 5), (s32)&D_801E7AD0[i]);
                 if (p != NULL) {
-                    p->unk22 = ex->func_800E7CC4(i, 0x40);
+                    p->unk22 = ex->btlfx_addRadiusSixth(i, 0x40);
                 }
             }
         }

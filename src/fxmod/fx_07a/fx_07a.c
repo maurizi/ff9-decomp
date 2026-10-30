@@ -141,7 +141,7 @@ s32 fx_07a_op80(s32 mode, Fx07aWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
             work->unk0[7] = 4;
             p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 9), (s32)&D_801E9B94);
             if (p != NULL) {
-                p->unk22 = ex->func_800E7CC4(0, 0x80);
+                p->unk22 = ex->btlfx_addRadiusSixth(0, 0x80);
             }
             break;
         case 40:

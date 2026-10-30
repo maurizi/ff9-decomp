@@ -270,7 +270,7 @@ s32 btl_removeStatus(BtlUnit *u, u32 f) {
         break;
     case 0x4000:
         u->trance = 0;
-        func_800B3DBC(u);
+        btl_cancelTranceEidolon(u);
         if (u->status & BTL_STATUS_JUMP) {
             btl_removeStatus(u, BTL_STATUS_JUMP);
             u->flags &= ~0x400000;
@@ -634,7 +634,7 @@ s32 btl_hasStatus(BtlUnit *arg0, u32 arg1) {
     return ret;
 }
 
-void func_800C09D8(Unk800C09D8 *arg0, Unk800C09D8 *arg1) {
+void btl_saveCharStatus(Unk800C09D8 *arg0, Unk800C09D8 *arg1) {
     arg0->chrStatus = arg1->status & 0x7F;
 }
 
@@ -914,7 +914,7 @@ void btl_initState(void) {
     b->eidolonAbility = 0;
     b->eidolonTimer = 0;
     b->deathCryWait = 0;
-    D_800FDF3A = 0;
+    g_btlRewards.expMask = 0;
     btl_clearRewards();
 }
 
@@ -1011,7 +1011,7 @@ void btl_saveCharacter(BtlUnit *arg0, s32 arg1) {
     if (arg0->hp == 0) {
         btl_addStatus(arg0, BTL_STATUS_KO);
     }
-    func_800C09D8((Unk800C09D8 *)c, (Unk800C09D8 *)arg0);
+    btl_saveCharStatus((Unk800C09D8 *)c, (Unk800C09D8 *)arg0);
 }
 
 void btl_unlinkUnit(BtlUnit *arg0) {

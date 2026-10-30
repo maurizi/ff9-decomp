@@ -318,7 +318,7 @@ void func_801E8B10(Unk80100C78Entry *entry, s32 file, s32 ot, Fx17d6Trail *trail
         h = (ex->math_sin((t >> 1) >> 1) * h) >> 12;
         t >>= 1;
         h += ex->btlfx_lerp(h0, h1, ex->math_sin(t));
-        ex->func_800D044C(&pos, (s32)pt, 0, (XY32 *)&rot, h, ang);
+        ex->btlfx_offsetPoint(&pos, (s32)pt, 0, (XY32 *)&rot, h, ang);
         if (dip != 0) {
             pt->vy -= (ex->math_sin(t) * dip) >> 12;
         }

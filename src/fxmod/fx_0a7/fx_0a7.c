@@ -29,10 +29,10 @@ s32 fx_0a7_op80(s32 mode, Fx0a7Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
             work->unk4->unkC = 0x18;
         }
         if (work->unk0 != NULL) {
-            work->unk0->unk22 = ex->func_800E7CC4(0x10, 0x20);
+            work->unk0->unk22 = ex->btlfx_addRadiusSixth(0x10, 0x20);
         }
         if (work->unk4 != NULL) {
-            work->unk4->unk22 = ex->func_800E7CC4(0, 0x20);
+            work->unk4->unk22 = ex->btlfx_addRadiusSixth(0, 0x20);
         }
     } else {
         frame = entry->frame;
@@ -46,10 +46,10 @@ s32 fx_0a7_op80(s32 mode, Fx0a7Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
                 work->unkC->unkC = 0x40;
             }
             if (work->unkC != NULL) {
-                work->unkC->unk22 = ex->func_800E7CC4(0, 0x80);
+                work->unkC->unk22 = ex->btlfx_addRadiusSixth(0, 0x80);
             }
             if (work->unk10 != NULL) {
-                work->unk10->unk22 = ex->func_800E7CC4(0, 0x80);
+                work->unk10->unk22 = ex->btlfx_addRadiusSixth(0, 0x80);
             }
             break;
         case 30:

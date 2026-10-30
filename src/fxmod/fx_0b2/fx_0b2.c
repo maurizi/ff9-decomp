@@ -23,7 +23,7 @@ void func_801E7704(Unk80100C78Entry *entry, Fx0b2Trail *trail, SVECTOR *from, SV
         i++;
         h = (ex->math_sin(t >> 1) * h) >> 12;
         h += ex->btlfx_lerp(arg4, arg5, t);
-        ex->func_800D044C(&pos, (s32)p, 0, (XY32 *)&rot, h, arg6);
+        ex->btlfx_offsetPoint(&pos, (s32)p, 0, (XY32 *)&rot, h, arg6);
         p->pad = arg10;
         arg6 += arg7 + ex->btlfx_randCentered(0x80);
         p++;

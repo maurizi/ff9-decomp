@@ -647,7 +647,7 @@ s32 btlseq_opDelayedSound(BtlScript *arg0) {
     return 1;
 }
 
-s32 func_800CBEFC(BtlScript *arg0, BtlUnit *arg1) {
+s32 btlseq_opSetBaseBone(BtlScript *arg0, BtlUnit *arg1) {
     arg1->baseBone = arg0->pc[1];
     arg0->pc += 2;
     return 1;
@@ -659,7 +659,7 @@ s32 btlseq_opFadeOut(BtlScript *arg0, BtlUnit *arg1) {
     return 1;
 }
 
-s32 func_800CBF50(BtlScript *arg0, BtlUnit *arg1) {
+s32 btlseq_opShowShadow(BtlScript *arg0, BtlUnit *arg1) {
     arg1->flags = (arg1->flags & ~0x1000000) | ((arg0->pc[1] & 1) << 24);
     arg0->pc += 2;
     return 1;

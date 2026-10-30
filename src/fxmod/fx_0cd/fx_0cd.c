@@ -71,14 +71,14 @@ s32 fx_0cd_op80(s32 mode, Fx0cdWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
         case 0x10:
             p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 5), (s32)&work->unkA4);
             if (p != NULL) {
-                p->unk22 = ex->func_800E7CC4(0, -0x200);
+                p->unk22 = ex->btlfx_addRadiusSixth(0, -0x200);
             }
             work->unk0 = 0x20;
             break;
         case 0x28:
             p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 7), (s32)&work->unkA4);
             if (p != NULL) {
-                p->unk22 = ex->func_800E7CC4(0, -0x200);
+                p->unk22 = ex->btlfx_addRadiusSixth(0, -0x200);
             }
             work->unk4 = 0x30;
             break;

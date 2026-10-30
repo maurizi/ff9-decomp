@@ -19,23 +19,23 @@ s32 fx_0ee_op80(s32 mode, Fx0eeWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
         case 0:
             p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 2), (s32)&work->unk0);
             if (p != NULL) {
-                p->unk22 = ex->func_800E7CC4(0x10, 0x80);
+                p->unk22 = ex->btlfx_addRadiusSixth(0x10, 0x80);
             }
             p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 1), (s32)&work->unk0);
             if (p != NULL) {
-                p->unk22 = ex->func_800E7CC4(0x10, 0x80);
+                p->unk22 = ex->btlfx_addRadiusSixth(0x10, 0x80);
             }
             break;
         case 8:
             p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 5), (s32)&work->unk0);
             if (p != NULL) {
-                p->unk22 = ex->func_800E7CC4(0x10, 0x80);
+                p->unk22 = ex->btlfx_addRadiusSixth(0x10, 0x80);
             }
             break;
         case 0x10:
             p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 3), (s32)&work->unk0);
             if (p != NULL) {
-                p->unk22 = ex->func_800E7CC4(0x10, 0x80);
+                p->unk22 = ex->btlfx_addRadiusSixth(0x10, 0x80);
             }
             break;
         }

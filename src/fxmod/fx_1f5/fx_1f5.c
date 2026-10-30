@@ -54,7 +54,7 @@ s32 fx_1f5_op82(s32 mode, Fx1f5Work82 *work, Unk800F78A4 *env, Unk80100C78Entry 
         ex->btlfx_getUnitPos(unit, (s16 *)&work->unk4);
         work->unk0 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 6), (s32)&work->unk4);
         if (work->unk0 != NULL) {
-            work->unk0->unk22 = ex->func_800E7CC4(work->unkC, 0x20);
+            work->unk0->unk22 = ex->btlfx_addRadiusSixth(work->unkC, 0x20);
         }
     } else {
         return entry->frame >= 0x28;

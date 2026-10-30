@@ -170,7 +170,7 @@ s32 func_801ECBE0(s32 mode, Fx0fb1Rock *it, Unk800F78A4 *env, Unk80100C78Entry *
                             q->unkC.vy += ex->btlfx_randCentered(0x100);
                             q->unk1C = ex->btlfx_randCentered(0x84);
                             q->unk1E = ex->btlfx_randCentered(0x84);
-                            ex->func_800D0580((s16 *)&v, (XY32 *)&work->unk6C, a);
+                            ex->btlfx_forwardAngles((s16 *)&v, (XY32 *)&work->unk6C, a);
                             ex->btlfx_rotateOffset(&v, (it->unkA << 16) >> 21, (s32)&q->unk4);
                         }
                     }
@@ -880,7 +880,7 @@ s32 fx_0fb_1_op80(s32 mode, Fx0fb1Op80Work *work, Unk800F78A4 *env, Unk80100C78E
         ang.vy = work->unk4 << 3;
         ang.vz = 0;
         for (zz8 = 0, f4 = work->unk4 * 0xC; zz8 < 0x80; zz8++, f4 += 0x20) {
-            ex->func_800D044C(&work->unkC, (s32)&at, 0, (XY32 *)&ang, c, f4);
+            ex->btlfx_offsetPoint(&work->unkC, (s32)&at, 0, (XY32 *)&ang, c, f4);
             ex->btlfx_drawParticles((u8 *)ex->btlfx_getFileData(entry->file, 7), &at, NULL, 0x260E, 0, 1, g2, 0, 0);
             ang.vx += 0x40;
             ang.vy -= 0x80;
@@ -909,7 +909,7 @@ s32 fx_0fb_1_op80(s32 mode, Fx0fb1Op80Work *work, Unk800F78A4 *env, Unk80100C78E
         ang2.vy = work->unk4 * 0x52 - 0x180;
         ang2.vz = 0;
         for (k = 0, j = work->unk4 * 0x5C; k < 2; k++, j += 0x800) {
-            ex->func_800D044C(&work->unkC, (s32)&at2, 0, (XY32 *)&ang2, w, j);
+            ex->btlfx_offsetPoint(&work->unkC, (s32)&at2, 0, (XY32 *)&ang2, w, j);
             ex->btlfx_drawTrail((u8 *)ex->btlfx_getFileData(entry->file, 0x14), (s32)&at2, (s32 *)&work->unkC, 0, h,
                                 (ex->math_sin(t >> 1) >> 1) + 0x800, 1, (u8 *)&D_801F0914[k], 1);
         }

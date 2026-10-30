@@ -63,7 +63,7 @@ void func_801E7894(Unk80100C78Entry *entry, Fx19fTrail *trail, SVECTOR *from, SV
         h = (ex->math_sin(a) * h) >> 12;
         i++;
         h += 0x20 + ((ex->math_sin(a) * amp) >> 12);
-        ex->func_800D044C(&pos, (s32)p, 0, (XY32 *)&rot, h, arg5);
+        ex->btlfx_offsetPoint(&pos, (s32)p, 0, (XY32 *)&rot, h, arg5);
         p->pad = arg9;
         arg5 += arg6 + ex->btlfx_randCentered(0x100);
         p++;
@@ -685,7 +685,7 @@ void func_801E9968(Unk80100C78Entry *entry, s32 file, s32 ot, Fx19fTrail *trail,
         a = t >> 1;
         h = (ex->math_sin(a) * h) >> 12;
         h += ex->btlfx_lerp(h0, h1, t);
-        ex->func_800D044C(&pos, (s32)pt, 0, (XY32 *)&rot, h, ang);
+        ex->btlfx_offsetPoint(&pos, (s32)pt, 0, (XY32 *)&rot, h, ang);
         if (dip != 0) {
             pt->vy -= (ex->math_sin(a) * dip) >> 12;
         }

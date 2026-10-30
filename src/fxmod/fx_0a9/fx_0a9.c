@@ -13,7 +13,7 @@ s32 fx_0a9_op80(s32 mode, Fx0a9Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
         ex->btlfx_getUnitBodyPos(0, 0, (s16 *)&work->unk4);
         p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 3), (s32)&work->unk4);
         if (p != NULL) {
-            p->unk22 = ex->func_800E7CC4(0, 0x18);
+            p->unk22 = ex->btlfx_addRadiusSixth(0, 0x18);
         }
     } else {
         frame = entry->frame;
@@ -93,7 +93,7 @@ void func_801E79D4(Unk80100C78Entry *entry, SVECTOR *from, SVECTOR *to) {
         t += (s * ex->btlfx_randCentered(0x100)) >> 12;
         ex->btlfx_lerpVec((s16 *)from, (s16 *)to, t, (s16 *)&pos);
         z = ((t * 3) >> 1) + r + ex->btlfx_randCentered(0x100);
-        ex->func_800D044C(&pos, (s32)p, 0, (XY32 *)&ang, (s * ((ex->btlfx_rand() & 0x7F) + 0x40)) >> 12, z);
+        ex->btlfx_offsetPoint(&pos, (s32)p, 0, (XY32 *)&ang, (s * ((ex->btlfx_rand() & 0x7F) + 0x40)) >> 12, z);
         part = ex->btlfx_poolSpawn((s16 *)entry->pool);
         if (part != NULL) {
             part->unk14 = D_801E8528;

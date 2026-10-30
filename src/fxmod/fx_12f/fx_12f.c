@@ -36,7 +36,7 @@ s32 fx_12f_op80(s32 mode, Fx12fWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
                 ex->btlfx_getUnitPos(i, (s16 *)&work->unk20[i]);
                 p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 3), (s32)&work->unk20[i]);
                 if (p != NULL) {
-                    p->unk22 = ex->func_800E7CC4(i, 0x80);
+                    p->unk22 = ex->btlfx_addRadiusSixth(i, 0x80);
                 }
             }
         }
@@ -44,7 +44,7 @@ s32 fx_12f_op80(s32 mode, Fx12fWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
             for (i = 0; i < env->targets->targetCount; i++) {
                 p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 8), (s32)&work->unk20[i]);
                 if (p != NULL) {
-                    p->unk22 = ex->func_800E7CC4(i, 0x80);
+                    p->unk22 = ex->btlfx_addRadiusSixth(i, 0x80);
                 }
             }
         }

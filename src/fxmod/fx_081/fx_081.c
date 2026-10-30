@@ -10,7 +10,7 @@ void func_801E7704(Pool30Entry *pt, Pool6CEntry *p, SVECTOR *pos, s32 arg3, s32 
     s32 t;
     s32 k;
 
-    r = ex->func_800E0134(pt, p);
+    r = ex->btlfx_getParticleTrail(pt, p);
     if (frame == 0) {
         ex->btlfx_drawTrail((u8 *)ex->btlfx_getFileData(entry->file, 0x12), (s32)pos, NULL, -1, 0, 0, 0, (u8 *)r, 0);
     }
@@ -384,7 +384,7 @@ s32 fx_081_op81(s32 mode, Fx081Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
                 }
                 a = work->unk4 * 41 + (j << 7);
                 for (i = 0; i < 12; i++, a += 0x155) {
-                    ex->func_800D044C(&work->unkC, (s32)pp, 0, (XY32 *)&ang, h, a);
+                    ex->btlfx_offsetPoint(&work->unkC, (s32)pp, 0, (XY32 *)&ang, h, a);
                     ex->btlfx_drawParticles((u8 *)ex->btlfx_getFileData(entry->file, 0xC), pp, NULL, 0x1000, frame & 0xF, 1,
                                       c, 0, 0);
                 }

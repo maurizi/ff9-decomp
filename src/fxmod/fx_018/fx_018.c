@@ -222,7 +222,7 @@ void func_801E82FC(Unk80100C78Entry *entry, Fx018Strip *strip, s32 *tbl, SVECTOR
         s = *tbl++;
         s = (ex->math_sin(t >> 1) * s) >> 12;
         s += ex->btlfx_lerp(from1, to1, t);
-        ex->func_800D044C(&v, (s32)p, 0, (XY32 *)&ang, s, width);
+        ex->btlfx_offsetPoint(&v, (s32)p, 0, (XY32 *)&ang, s, width);
         p->pad = arg11;
         width += dwidth + *tbl++;
         p++;
@@ -259,7 +259,7 @@ void func_801E8564(Unk80100C78Entry *entry, Fx018Strip *strip, s32 *tbl, SVECTOR
         t >>= 1;
         s = (ex->math_sin(t) * s) >> 12;
         s += (ex->math_sin(t) * amp) >> 12;
-        ex->func_800D044C(&v, (s32)p, 0, (XY32 *)&ang, s, width);
+        ex->btlfx_offsetPoint(&v, (s32)p, 0, (XY32 *)&ang, s, width);
         p->pad = arg10;
         width += dwidth + *tbl++ / 2;
         p++;

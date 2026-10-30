@@ -61,10 +61,10 @@ s32 fx_11d_op80(s32 mode, Fx11dWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
                 ((Fx11dEffHdr *)work->unk8->file)->unk8 = func_801E7754;
             }
             if (work->unk4 != NULL) {
-                work->unk4->unk22 = ex->func_800E7CC4(0x10, 0x100);
+                work->unk4->unk22 = ex->btlfx_addRadiusSixth(0x10, 0x100);
             }
             if (work->unk8 != NULL) {
-                work->unk8->unk22 = ex->func_800E7CC4(0x10, 0x100);
+                work->unk8->unk22 = ex->btlfx_addRadiusSixth(0x10, 0x100);
             }
         }
         if (frame >= 0 && frame < 0x18 && frame % 12 == 0) {
@@ -88,10 +88,10 @@ s32 fx_11d_op80(s32 mode, Fx11dWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
             }
             /* sets unkC twice; unk10 keeps its default */
             if (work->unkC != NULL) {
-                work->unkC->unk22 = ex->func_800E7CC4(0x10, 0x100);
+                work->unkC->unk22 = ex->btlfx_addRadiusSixth(0x10, 0x100);
             }
             if (work->unkC != NULL) {
-                work->unkC->unk22 = ex->func_800E7CC4(0x10, 0x100);
+                work->unkC->unk22 = ex->btlfx_addRadiusSixth(0x10, 0x100);
             }
         }
         switch (frame) {

@@ -116,7 +116,7 @@ s32 btlfx_getFileData(s32 arg0, s32 arg1) {
         arg1 -= 0x40;
     } else if (arg1 < 0xC0) {
         arg1 -= 0x80;
-        base = D_80100E14->data[0];
+        base = g_btlfxLoader.summon->data[0];
         arg1 &= 0x7F;
     } else {
         base = g_gameState->gameData->ctx.battle->work->loadBuf;
@@ -140,8 +140,8 @@ s32 btlfx_takeWork(s32 arg0) {
     return p;
 }
 
-void func_800DA4E8(void) {
-    D_80100DCC = 0;
+void btlfx_resetLoader(void) {
+    g_btlfxLoader.state = 0;
 }
 
 s32 btlfx_loadFile(s32 arg0) {
@@ -194,7 +194,7 @@ s32 btlfx_loadNextBlock(void) {
 
 s32 btlfx_loadSoundBank(s32 arg0) {
     if (arg0 == 0) {
-        if (D_80100DCC != 7 && D_80100DCC != 0) {
+        if (g_btlfxLoader.state != 7 && g_btlfxLoader.state != 0) {
             return 1;
         }
     }
@@ -429,7 +429,7 @@ x = *p++ << 11; rd += x; d->ringBase = PSX_RAM(u8 *, 0x801F1700) + x; dst = PSX_
                 if (cd_getState() != 0) {
                     break;
                 }
-                if (d->cmdKind == 9 && (d->cmdArg & 0xF) && D_800FEC65 == 0) {
+                if (d->cmdKind == 9 && (d->cmdArg & 0xF) && g_btlfxState.castEnded == 0) {
                     break;
                 }
                 if (d->cmdKind == 3 && btlfx_drawSyncStep() == 0) {
@@ -485,7 +485,7 @@ x = *p++ << 11; rd += x; d->ringBase = PSX_RAM(u8 *, 0x801F1700) + x; dst = PSX_
                         dst = PSX_RAM(u8 *, 0x801EC700);
                     }
                     fh = *(u8 **)dst;
-                    D_80100C70[d->slot] = (EffFn *)(fh + 8);
+                    g_btlfxModuleOps[d->slot] = (EffFn *)(fh + 8);
                     fn = ((Unk800DA92CFn *)fh)[1];
                     if (fn != NULL) {
                         fn(d->modArg, g_btlfxEnv, g_btlfxEnv->exports);
@@ -510,7 +510,7 @@ x = *p++ << 11; rd += x; d->ringBase = PSX_RAM(u8 *, 0x801F1700) + x; dst = PSX_
                         r.r.w = 0x40;
                         r.r.h = 0x80;
                         LoadImage(&r.r, (u32 *)src);
-                        ((s32 *)D_80100D90)[cnt * 2] = ((s32 *)D_80100D90)[cnt * 2 + 1] = r.w;
+                        ((s32 *)g_btlfxSummonTexPos)[cnt * 2] = ((s32 *)g_btlfxSummonTexPos)[cnt * 2 + 1] = r.w;
                     }
                     break;
                 case 5:
@@ -526,7 +526,7 @@ x = *p++ << 11; rd += x; d->ringBase = PSX_RAM(u8 *, 0x801F1700) + x; dst = PSX_
                     e->workSize = 0x50000 - e->workOfs;
                     d->workLeft = e->workSize;
                     btlfx_initSummonModels(&e->model, 1);
-                    d->summonModel = Hi_RegisterSummonModel(e, e->motions[0] != (s32)e->texAnims ? (s16 *)D_80100D90 : NULL);
+                    d->summonModel = Hi_RegisterSummonModel(e, e->motions[0] != (s32)e->texAnims ? (s16 *)g_btlfxSummonTexPos : NULL);
                     d->summonState = 2;
                     break;
                 case 6:

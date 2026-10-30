@@ -25,11 +25,11 @@ s32 fx_103_op80(s32 mode, Fx103Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
         work->unk20.vx = -0x200;
         work->unk38 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 3), (s32)&work->unk10);
         if (work->unk38 != NULL) {
-            work->unk38->unk22 = ex->func_800E7CC4(0, 0x40);
+            work->unk38->unk22 = ex->btlfx_addRadiusSixth(0, 0x40);
         }
         work->unk3C = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 3), (s32)&work->unk18);
         if (work->unk3C != NULL) {
-            work->unk3C->unk22 = ex->func_800E7CC4(0, 0x40);
+            work->unk3C->unk22 = ex->btlfx_addRadiusSixth(0, 0x40);
         }
     } else {
         frame = entry->frame;

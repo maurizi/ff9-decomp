@@ -19,7 +19,7 @@
 u8 *btlfx_runFrame(u8 *out) {
     u8 *stp;
 
-    D_800F7278 = 0;
+    g_btlfxMaskResetBusy = 0;
     g_btlfxEnv->prim = out;
     btlfx_resetMaskBit();
     btlfx_initEnv();

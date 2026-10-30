@@ -3,7 +3,7 @@
 void btlui_vsync(void) {
     GameData *g;
     g_btluiState.inVsync = 1;
-    func_800EA5C4();
+    btlui_putDispEnvIfReady();
     func_800EA548();
     btlui_readPad();
     if (g_btluiState.frameReady != 0) {
@@ -14,8 +14,8 @@ void btlui_vsync(void) {
         if (g_btluiState.skipFrames == 0 && (u8)btlui_isEnabled()) {
             func_800EB578(0xBA);
             btlui_beginFrame();
-            func_800EA4D0();
-            func_800EA378();
+            btlui_cacheFrame();
+            btlui_updateTargetFlags();
             btlui_input();
             btlui_drawWindows();
             btlui_update();
@@ -31,7 +31,7 @@ void btlui_vsync(void) {
 }
 
 void btlui_frameUpdate(void) {
-    func_800EA5C4();
+    btlui_putDispEnvIfReady();
     g_drawBufs.cur = g_gameState->gameData->drawBuf ^ 1;
     if (g_btluiState.enabled == 0) {
         btlui_applyEnable();
@@ -64,7 +64,7 @@ void btlui_init(void) {
     VSyncCallback(btlui_vsync);
 }
 
-void func_800E9D84(void) {
+void btlui_uploadPartyNames(void) {
     void *p = db_lookupRegistered(4, 0x14, 0);
     if (p != NULL) {
         text_uploadPartyNames((s32)p);
@@ -151,7 +151,7 @@ s32 btlui_isTargetSelect(void) {
     return g_btlUi->menuState == BTLUI_MENU_TARGET;
 }
 
-u8 func_800EA024(void) {
+u8 btlui_isMultiTarget(void) {
     return g_btluiState.multiTarget;
 }
 
@@ -167,8 +167,8 @@ u8 btl_isAtbRunning(void) {
     return g_btlUi->menuState < BTLUI_MENU_LIST;
 }
 
-s32 func_800EA094(void) {
-    return func_800F1360();
+s32 btl_isTargetWindowOpen(void) {
+    return btlui_isTargetWindowOpen();
 }
 
 u8 *btl_getAbilityName(s32 arg0) {
@@ -252,7 +252,7 @@ void btlui_resumeFromPause(void) {
     g_drawBufs.cur = v;
 }
 
-void func_800EA378(void) {
+void btlui_updateTargetFlags(void) {
     GameState *g = g_gameState;
     s32 r = 0;
     volatile Unk80104E68 *p = &g_btluiState;
@@ -283,7 +283,7 @@ void btlui_drawWindows(void) {
         btlui_drawHelpWindow();
         btlui_drawPartyPanel();
         win_drawAll();
-        func_800EA518();
+        btlui_drawCached();
     }
     btlui_drawTargetCursors();
 }
@@ -295,7 +295,7 @@ void btlui_update(void) {
     btlui_updateHelpSlide();
 }
 
-void func_800EA4D0(void) {
+void btlui_cacheFrame(void) {
     if (g_btluiState.frameReady != 0) {
         btlui_cacheRows();
         btlui_cacheCmdIcons();
@@ -303,7 +303,7 @@ void func_800EA4D0(void) {
     }
 }
 
-void func_800EA518(void) {
+void btlui_drawCached(void) {
     btlui_drawCachedRows();
     btlui_drawCachedCmdIcons();
     btlui_drawCachedHeader();
@@ -325,7 +325,7 @@ void btlui_applyEnable(void) {
     }
 }
 
-void func_800EA5C4(void) {
+void btlui_putDispEnvIfReady(void) {
     if (g_btluiState.frameReady != 0 && g_btluiState.started != 0) {
         GameData *gd = g_gameState->gameData;
         if (!(gd->ctx.battle->flags & 0x100)) {
@@ -391,8 +391,8 @@ void btlui_copyTranceAbilities(Unk80104F88Entry *arg0) {
 }
 
 /* character 3: also list the abilities of character record 1 and its equipment */
-void func_800EA908(Unk80104F88Entry *arg0) {
-    Unk800FD6E0 *m = &D_800FD6E0;
+void btlui_linkSwdMagAbilities(Unk80104F88Entry *arg0) {
+    Unk800FD56C *m = &g_btlCmdTable[BTL_CMD_SWD_MAG];
     Character *c = &g_gameState->gameData->characters[1];
     Unk8006CB88 *ab = D_8006CB88;
     s32 i;
@@ -407,7 +407,7 @@ void func_800EA908(Unk80104F88Entry *arg0) {
     if (arg0->chr->info.b.id == 3) {
         for (i = 0; i < m->count; i++) {
             slot = g_btlCmdAbilities[m->first + i];
-            v = chr_findAbilitySlot(1, D_800F8D84[i]);
+            v = chr_findAbilitySlot(1, g_btlSwdMagSourceAbilities[i]);
             if (v >= 0) {
                 arg0->apCounters[slot] = &c->ap[v];
                 arg0->apNeeded[slot] = ab[v].apNeeded;
@@ -421,7 +421,7 @@ void func_800EA908(Unk80104F88Entry *arg0) {
                     id = it->abilities[j];
                     if (id != 0 && id < 0xC0) {
                         for (k = 0; k < m->count; k++) {
-                            if (id == D_800F8D84[k]) {
+                            if (id == g_btlSwdMagSourceAbilities[k]) {
                                 slot = g_btlCmdAbilities[m->first + k];
                                 arg0->fromEquip[slot] = 1;
                             }
@@ -721,7 +721,7 @@ void btlui_clearCursor(Unk800EB518 *arg0) {
 void func_800EB578(s32 arg0) {
 }
 
-u8 *func_800EB580(void) {
+u8 *btlui_getQueueCountPtr(void) {
     return &g_btlUi->queueCount;
 }
 
@@ -745,7 +745,7 @@ void btlui_buildAbilityList(Unk80104F88Entry *arg0) {
     btlui_addLearnedAbilities(arg0);
     btlui_addEquipAbilities(arg0);
     btlui_copyTranceAbilities(arg0);
-    func_800EA908(arg0);
+    btlui_linkSwdMagAbilities(arg0);
 }
 
 void btlui_addLearnedAbilities(Unk80104F88Entry *arg0) {
@@ -791,7 +791,7 @@ s32 btlui_canOpenMenu(BtlUnit *arg0) {
         return 0;
     }
     if (arg0->hp != 0 && !(btl_hasStatus(arg0, (BTL_STATUS_PETRIFY | BTL_STATUS_VENOM | BTL_STATUS_KO | BTL_STATUS_CONFUSE | BTL_STATUS_BERSERK | BTL_STATUS_STOP | BTL_STATUS_SLEEP | BTL_STATUS_FREEZE | BTL_STATUS_JUMP)) & 0xFF)) {
-        return (D_800FDF3A >> ((u8)arg0->flags >> 5)) & 1;
+        return (g_btlRewards.expMask >> ((u8)arg0->flags >> 5)) & 1;
     }
     return 0;
 }
@@ -854,7 +854,7 @@ void btlui_drawHelpWindow(void) {
     RECT r;
     s32 m;
     if (g_btluiHelp.open != 0 && D_80104E75 != 0) {
-        btlui_getHelpRect(&D_800F8DBC, &r);
+        btlui_getHelpRect(&g_btluiHelpRect, &r);
         win_setClip(NULL, 2, 4);
         if (g_btluiHelp.opening == 0) {
             ui_drawSprite(r.x + 8, r.y, 2, 0xB7, 0);
@@ -1129,7 +1129,7 @@ void btlui_openCmdMenu(void) {
     p->side = 0;
     p->slide = 0;
     btlui_setMenuState(BTLUI_MENU_CLOSING);
-    w = win_open(&D_800F8DDC, 0xF, 2, 3);
+    w = win_open(&g_btluiCmdWindowRect, 0xF, 2, 3);
     g_btlUi->windows[3] = w;
     win_setDrawContent(w, btlui_drawCmdList);
     win_setDrawOverlay(g_btlUi->windows[3], btlui_drawCmdOverlay);
@@ -1162,7 +1162,7 @@ void btlui_drawCmdList(Window *arg0) {
 INCLUDE_RODATA("asm/us/ovl_0b/nonmatchings/btlui", g_battleText);
 
 /* TRANCE label */
-INCLUDE_RODATA("asm/us/ovl_0b/nonmatchings/btlui", D_800A857C);
+INCLUDE_RODATA("asm/us/ovl_0b/nonmatchings/btlui", s_btluiTranceLabel);
 
 void btlui_drawCmdOverlay(Window *arg0) {
     u8 st = arg0->state;
@@ -1170,7 +1170,7 @@ void btlui_drawCmdOverlay(Window *arg0) {
     s32 dy = 10;
     RECT rc;
     if (arg0->state == 3) {
-        if (btlui_getMenuState() == BTLUI_MENU_CMD || (btlui_getMenuState() == st && btlui_getTargetReturnState() == BTLUI_MENU_CMD && !(func_800F1360() & 0xFF) && (D_80104E80 & 1))) {
+        if (btlui_getMenuState() == BTLUI_MENU_CMD || (btlui_getMenuState() == st && btlui_getTargetReturnState() == BTLUI_MENU_CMD && !(btlui_isTargetWindowOpen() & 0xFF) && (D_80104E80 & 1))) {
             ui_drawHand(arg0->cur.x - 0xE, r->y + (g_btlCmdMenu.cursor * 15 + dy), arg0->otz - 1);
         }
     }
@@ -1180,9 +1180,9 @@ void btlui_drawCmdOverlay(Window *arg0) {
     if (g_btlCmdMenu.unit != NULL && !(btl_hasStatus(g_btlCmdMenu.unit, BTL_STATUS_TRANCE) & 0xFF)) {
         ui_drawLabel(arg0->x + 6, r->y - 3, arg0->otz, g_winLabelStrings.command, arg0->active ? 0 : 2);
     } else if (arg0->active != 0) {
-        btlui_drawTranceLabel(arg0->x + 6, r->y - 3, arg0->otz, D_800A857C);
+        btlui_drawTranceLabel(arg0->x + 6, r->y - 3, arg0->otz, s_btluiTranceLabel);
     } else {
-        ui_drawLabel(arg0->x + 6, r->y - 3, arg0->otz, (s32)D_800A857C, 2);
+        ui_drawLabel(arg0->x + 6, r->y - 3, arg0->otz, (s32)s_btluiTranceLabel, 2);
     }
     if (arg0->state != 3) {
         rc.x = r->x;
@@ -1221,7 +1221,7 @@ void btlui_drawSideCmd(Window *arg0) {
     r.w = 0x3E;
     r.h = 0x11;
     r.y = y + 4;
-    text_draw(r.x + dx, r.y + 2, arg0->otz, text_get(D_800F8DE4[D_80104FC0.side]), 0);
+    text_draw(r.x + dx, r.y + 2, arg0->otz, text_get(g_btluiSideCmdTexts[D_80104FC0.side]), 0);
     btlui_drawSideFrame(&r, arg0->otz);
 }
 
@@ -1233,7 +1233,7 @@ void btlui_confirmCmd(void) {
             do {
                 snd_playSe(0x67);
                 btlui_saveCursor(&g_btlCmdMenu.unit->menu->cursor, 0, g_btlCmdMenu.cursor, 0);
-                f = D_800F8DF0[e->kind];
+                f = g_btluiCmdConfirmFns[e->kind];
             } while (0);
         } else {
             snd_playSe(0x66);
@@ -1245,7 +1245,7 @@ void btlui_confirmCmd(void) {
         }
         snd_playSe(0x67);
         btlui_saveCursor(&g_btlCmdMenu.unit->menu->cursor, 0, g_btlCmdMenu.cursor, 0);
-        f = D_800F8E00;
+        f = g_btluiSideCmdConfirmFn;
     }
     f(e);
 }
@@ -1310,7 +1310,7 @@ void btlui_initCachedCmdIcons(s32 arg0) {
 }
 
 void btlui_cacheCmdIcons(void) {
-    RECT r = D_800A8584;
+    RECT r = s_btluiCmdIconsSrc;
     s32 x = 0x3C0;
     s32 y = 0x1E0;
     s32 i = 0;
@@ -1371,7 +1371,7 @@ void btlui_drawSideFrame(RECT *r, s32 otz) {
     tw.h = 0xFF;
     tw.x = D_80068E78[1].u;
     tw.w = d1->w;
-    SetTexWindow(g_primPtr, &D_800F8E10);
+    SetTexWindow(g_primPtr, &g_btluiTitleTexWindow);
     addPrim(ot, g_primPtr);
     g_primPtr += 0xC;
 
@@ -1403,7 +1403,7 @@ void btlui_drawTranceLabel(s32 x, s32 y, s32 otz, char *str) {
     u32 tp;
     u32 stp;
 
-    w = ui_measureLabel(D_800F8E18);
+    w = ui_measureLabel(g_btluiHighlightLabel);
     wh = w | 0x70000;
     setlen(g_primPtr, 3);
     ((TileWords *)g_primPtr)->rgbc = 0x62000000;
@@ -1423,7 +1423,7 @@ void btlui_drawTranceLabel(s32 x, s32 y, s32 otz, char *str) {
     ((DrMode2Words *)g_primPtr)->code[1] = 0;
     addPrim(&g_ot[otz], g_primPtr);
     g_primPtr += sizeof(DrMode2Words);
-    btlui_drawPulseGradient(x, y, otz, w, 7, D_800F8E20);
+    btlui_drawPulseGradient(x, y, otz, w, 7, g_btluiHighlightColors);
     setlen(g_primPtr, 2);
     ((DrMode2Words *)g_primPtr)->code[0] = GPU_STP(0, 1);
     ((DrMode2Words *)g_primPtr)->code[1] = 0;
@@ -1627,7 +1627,7 @@ void btlui_openThrowList(s32 arg0) {
 }
 
 void btlui_issueSideCmd(void) {
-    s32 v = D_800F8E04[g_btlCmdMenu.sideCmd.side];
+    s32 v = g_btluiSideCmdIds[g_btlCmdMenu.sideCmd.side];
     g_btlCmdMenu.unit->inMenuQueue = 0;
     g_btlCmdMenu.unit->cmdIssued = 1;
     btl_setCmd((s32)g_btlCmdMenu.unit->cmd, v, g_btlCmdTable[v].first, g_btlCmdMenu.unit->unitBit, 0);
@@ -1741,7 +1741,7 @@ void btlui_openList(Unk800EE37C *arg0) {
         l.top = c->listTop[e->cursor.cmdRow];
         l.cursor = c->listCursor[e->cursor.cmdRow];
     }
-    g_btlUi->windows[2] = win_open(&D_800F8E30, 8, 1, 2);
+    g_btlUi->windows[2] = win_open(&g_btluiSelectListRect, 8, 1, 2);
     win_setList(g_btlUi->windows[2], &l);
     win_setDrawContent(g_btlUi->windows[2], btlui_drawListContent);
     win_setDrawOverlay(g_btlUi->windows[2], btlui_drawListOverlay);
@@ -1888,7 +1888,7 @@ void btlui_drawListOverlay(Window *arg0) {
     if (g_btluiList.label2 != 0) {
         ui_drawLabel(arg0->cur.x - (g_btluiList.label2Width - dx), r->y - 4, arg0->otz, g_btluiList.label2, 0);
     }
-    if (btlui_getMenuState() == BTLUI_MENU_LIST || (btlui_getMenuState() == BTLUI_MENU_TARGET && btlui_getTargetReturnState() == BTLUI_MENU_LIST && !(func_800F1360() & 0xFF) && (D_80104E80 & 1))) {
+    if (btlui_getMenuState() == BTLUI_MENU_LIST || (btlui_getMenuState() == BTLUI_MENU_TARGET && btlui_getTargetReturnState() == BTLUI_MENU_LIST && !(btlui_isTargetWindowOpen() & 0xFF) && (D_80104E80 & 1))) {
         x = arg0->cur.x - 0x12;
         y = r->y + (arg0->list.cursor * 15 + dy);
         if (g_btluiList.cmdNo == BTL_CMD_DBL_BLK || g_btluiList.cmdNo == BTL_CMD_DBL_WHT) {
@@ -1917,7 +1917,7 @@ void btlui_nextDoubleCast(void) {
 
 s32 btlui_getListHelpText(void) {
     s32 r = 0;
-    s32 (*f)(void) = D_800F8E58[g_btluiList.cmd->kind];
+    s32 (*f)(void) = g_btluiListHelpFns[g_btluiList.cmd->kind];
     if (f != NULL) {
         r = f();
     }
@@ -1926,7 +1926,7 @@ s32 btlui_getListHelpText(void) {
 
 void btlui_listConfirm(void) {
     Window *w;
-    if ((u8)D_800F8E38[g_btluiList.cmd->kind]()) {
+    if ((u8)g_btluiListConfirmFns[g_btluiList.cmd->kind]()) {
         snd_playSe(0x67);
         w = g_btlUi->windows[2];
         btlui_saveCursor(&g_btluiList.unit->menu->cursor, 1, w->list.top, w->list.cursor);
@@ -1974,7 +1974,7 @@ void btlui_closeList(void) {
 }
 
 void btlui_drawListRow(s32 arg0, s32 arg1, s32 arg2, MenuView *arg3) {
-    D_800F8E48[g_btluiList.cmd->kind](arg0, arg1, arg2, arg3);
+    g_btluiListRowFns[g_btluiList.cmd->kind](arg0, arg1, arg2, arg3);
 }
 
 void btlui_drawAbilityRow(s32 arg0, s32 arg1, s32 arg2, MenuView *arg3) {
@@ -2152,7 +2152,7 @@ void btlui_startTargetSelect(Unk800EF80C *arg0) {
     g_btlTarget.listKind = arg0->listKind;
     g_btlTarget.allowKo = arg0->allowKo;
     g_btlTarget.doubleCast = arg0->doubleCast;
-    g_btlTarget.targetAll = D_800F8E84[g_btlTarget.targetType];
+    g_btlTarget.targetAll = g_btluiTargetAllByType[g_btlTarget.targetType];
     g_btlTarget.windowOpen = 0;
     g_btlTarget.halfMp = chr_hasSupportAbility((g_btlTarget.unit->flags >> 1) & 0xF, 0xE2);
     g_btlTarget.trance = arg0->trance;
@@ -2192,9 +2192,9 @@ void btlui_setDefaultTargets(s32 arg0) {
     } else if (g_btlTarget.targetType == 0xD) {
         g_btlTarget.unit->flags |= 0x20000000;
     } else if (arg0 & 0xFF) {
-        btlui_targetDefault(D_800F8E68[g_btlTarget.targetType][0], D_800F8E68[g_btlTarget.targetType][1]);
+        btlui_targetDefault(g_btluiDefaultTargets[g_btlTarget.targetType][0], g_btluiDefaultTargets[g_btlTarget.targetType][1]);
     } else {
-        btlui_targetFirst(D_800F8E68[g_btlTarget.targetType][0], D_800F8E68[g_btlTarget.targetType][1]);
+        btlui_targetFirst(g_btluiDefaultTargets[g_btlTarget.targetType][0], g_btluiDefaultTargets[g_btlTarget.targetType][1]);
     }
 }
 
@@ -2497,7 +2497,7 @@ void btlui_updateTargetWindow(void) {
         if (D_80104E6B != 0) {
             if (g_btlTarget.windowOpen == 0) {
                 btlui_setMenuState(BTLUI_MENU_CLOSING);
-                g_btlUi->windows[0] = win_open(&D_800F8EF4, 5, 2, 0);
+                g_btlUi->windows[0] = win_open(&g_btluiTargetWindowRect, 5, 2, 0);
                 win_setOpenAnim(g_btlUi->windows[0], 4);
                 win_setOnOpened(g_btlUi->windows[0], btlui_onTargetWindowOpened);
                 win_setDrawContent(g_btlUi->windows[0], btlui_drawTargetList);
@@ -2661,7 +2661,7 @@ void *btlui_getTargetHelpText(void) {
 }
 
 void btlui_onUnitTargetable(BtlUnit *arg0) {
-    if (g_btlTarget.targetAll != 0 && D_800F8EE4[g_btlTarget.targetType] != 0) {
+    if (g_btlTarget.targetAll != 0 && g_btluiRetargetOnAdd[g_btlTarget.targetType] != 0) {
         btlui_setDefaultTargets(0);
     }
 }
@@ -2708,7 +2708,7 @@ void btlui_updateTarget(void) {
     }
 }
 
-u8 func_800F1360(void) {
+u8 btlui_isTargetWindowOpen(void) {
     return g_btlTarget.windowOpen;
 }
 
@@ -2716,7 +2716,7 @@ Window *btlui_getTargetWindow(void) {
     return g_btlUi->windows[0];
 }
 
-s32 func_800F1388(void) {
+s32 btlui_isTargetFromList(void) {
     s32 ret = 0;
     if (g_btlUi->menuState == BTLUI_MENU_TARGET) {
         ret = g_btlTarget.listKind != 0;
@@ -2781,13 +2781,13 @@ void btlui_targetMove(void) {
     s32 i;
     s32 m;
     if (g_btlTarget.windowOpen == 0) {
-        m = func_800C2DF4();
+        m = btlcam_getNextVariant();
     } else {
         m = 0;
     }
     for (i = 0; i < 4; i++) {
-        if (g_padRepeat & D_800F8EA4[m][i]) {
-            D_800F8E94[i]();
+        if (g_padRepeat & g_btluiTargetMovePads[m][i]) {
+            g_btluiTargetMoveFns[i]();
         }
     }
 }
@@ -2887,7 +2887,7 @@ BtlUnit *btlui_findKoUnit(u8 arg0) {
 void btlui_openTargetWindow(s8 arg0) {
     Window *w;
     btlui_setMenuState(BTLUI_MENU_CLOSING);
-    w = win_open(&D_800F8EF4, 5, 2, 0);
+    w = win_open(&g_btluiTargetWindowRect, 5, 2, 0);
     g_btlUi->windows[0] = w;
     win_setOpenAnim(w, 4);
     win_setOnOpened(g_btlUi->windows[0], btlui_onTargetWindowOpened);
@@ -3056,8 +3056,8 @@ void btlui_drawStatusList(Window *arg0) {
             st = u->status | u->autoStatus;
             x = w->x + 4;
             for (i = 0; i < 16; i++) {
-                if (st & D_800F8F18[i].status) {
-                    ui_drawSprite(x, y, arg0->otz, D_800F8F18[i].icon, 0);
+                if (st & g_btluiStatusIcons[i].status) {
+                    ui_drawSprite(x, y, arg0->otz, g_btluiStatusIcons[i].icon, 0);
                     x += 12;
                     if (++n >= 9) {
                         break;
@@ -3084,10 +3084,10 @@ void btlui_drawStatusList2(Window *arg0) {
             st = u->status | u->autoStatus;
             x = w->x + 4;
             for (i = 0; i < 8; i++) {
-                if (st & D_800F8F98[i].status) {
-                    ui_drawSprite(x, y, arg0->otz, D_800F8F98[i].icon, 0);
+                if (st & g_btluiStatusIcons2[i].status) {
+                    ui_drawSprite(x, y, arg0->otz, g_btluiStatusIcons2[i].icon, 0);
                 }
-                x += D_800F8F98[i].width;
+                x += g_btluiStatusIcons2[i].width;
             }
             y += 12;
         }
@@ -3148,23 +3148,23 @@ void btlui_initCachedHeader(s32 arg0) {
 void btlui_openListWindow(s32 arg0) {
     Unk80105078 *p = btlui_getPanel();
     Window *w;
-    D_800F8EFC.y = p->y;
-    D_800F8EFC.h = p->rowCount * 12 + 8;
-    w = win_open(&D_800F8EFC, 0xA, 0, 1);
+    g_btluiListWindowRect.y = p->y;
+    g_btluiListWindowRect.h = p->rowCount * 12 + 8;
+    w = win_open(&g_btluiListWindowRect, 0xA, 0, 1);
     g_btlUi->windows[1] = w;
     win_setDrawContent(w, btlui_drawListWindow);
     win_setDrawOverlay(g_btlUi->windows[1], btlui_drawListCursors);
     win_setOpenFrames(g_btlUi->windows[1], 7);
     btlui_showListHeader(arg0);
-    D_80105058.kind = arg0;
-    D_80105058.open = 1;
+    g_btluiListWindow.kind = arg0;
+    g_btluiListWindow.open = 1;
 }
 
 void btlui_closeListWindow(s32 arg0) {
     win_setCloseFrames(g_btlUi->windows[1], 7);
     win_close(g_btlUi->windows[1]);
     btlui_hideListHeader(arg0);
-    D_80105058.open = 0;
+    g_btluiListWindow.open = 0;
 }
 
 /* resizes the battle list window to the current entry count */
@@ -3174,7 +3174,7 @@ void btlui_resizeListWindow(void) {
     RECT *r;
     s16 h;
 
-    if (D_80105058.open != 0 && p->rowCount != 0) {
+    if (g_btluiListWindow.open != 0 && p->rowCount != 0) {
         w = g_btlUi->windows[1];
         r = &w->cur;
         r->y = w->y = p->y;
@@ -3191,12 +3191,12 @@ void btlui_resizeListWindow(void) {
 }
 
 u8 btlui_isListWindowOpen(void) {
-    return D_80105058.open;
+    return g_btluiListWindow.open;
 }
 
 void btlui_drawListWindow(Window *arg0) {
     if (btlui_getPanel()->shown != 0) {
-        D_800F8F04[D_80105058.kind](arg0);
+        g_btluiListWindowDrawFns[g_btluiListWindow.kind](arg0);
     }
 }
 
@@ -3245,7 +3245,7 @@ void btlui_updatePanel(void) {
     }
     g_btluiPanel->menuUnit = g_btlUi->cmdUnit;
     g_btluiPanel->rowCount = n;
-    g_btluiPanel->y = D_800F9028[n - 1];
+    g_btluiPanel->y = g_btluiPanelY[n - 1];
     g_btluiPanel->unk1 = 0;
     g_btluiPanel->highlightRow = 0xFF;
 }
@@ -3320,8 +3320,8 @@ void btlui_drawPartyPanel(void) {
         for (i = 0; i < g_btluiPanel->rowCount; i++) {
             for (j = 0; j < 4; j++) {
                 btlui_updatePanelRowColor(i);
-                if (g_btluiPanel->labels[j].visible != 0 && D_800F9038[j] != 0) {
-                    D_800F9038[j](g_btluiPanel->units[i], i);
+                if (g_btluiPanel->labels[j].visible != 0 && g_btluiPanelColumnFns[j] != 0) {
+                    g_btluiPanelColumnFns[j](g_btluiPanel->units[i], i);
                 }
             }
         }
@@ -3438,7 +3438,7 @@ void btlui_drawPanelName(s32 arg0, u32 arg1) {
     s32 k = g_btluiPanel->slot[arg1];
     SPRT *s = &g_btluiPrims->names[k][g_drawBufs.cur];
     s->y0 = g_btluiPanel->y + arg1 * 12 + 3;
-    s->clut = D_800F9048[(u8)g_btluiPanel->rowColor[arg1]] + ((k >> 1) << 6);
+    s->clut = g_btluiRowCluts[(u8)g_btluiPanel->rowColor[arg1]] + ((k >> 1) << 6);
     addPrim(&g_ot[16], s);
     if (arg1 >= g_btluiPanel->rowCount - 1) {
         addPrim(&g_ot[16], &g_btluiPrims->namesTpage[g_drawBufs.cur]);
@@ -3464,8 +3464,8 @@ void btlui_drawPanelGauges(BtlUnit *arg0, s32 arg1) {
 }
 
 void btlui_cacheRows(void) {
-    RECT a = D_800A858C;
-    RECT b = D_800A8594;
+    RECT a = s_btluiRowsSrcA;
+    RECT b = s_btluiRowsSrcB;
     s16 h;
     if (g_btluiPanel->shown != 0 && g_btluiPanel->rowCount != 0) {
         a.x += g_btluiDispOrigin[g_gameState->gameData->drawBuf & 1][0];
@@ -3512,7 +3512,7 @@ void btlui_initPanel(void) {
     g_btluiPanel = btlui_alloc(0x8C);
     btlui_updatePanel();
     for (i = 0; i < 5; i++) {
-        g_btluiPanel->labels[i] = D_800F8FD8[i];
+        g_btluiPanel->labels[i] = g_btluiPanelLabels[i];
         btlui_alignPanelLabel(&g_btluiPanel->labels[i]);
     }
     for (i = 0; i < g_btluiPanel->rowCount; i++) {
@@ -3530,20 +3530,20 @@ void btlui_updatePanelAnims(void) {
 }
 
 void btlui_showListHeader(s32 arg0) {
-    btlui_startLabelSlide(&g_btluiPanel->labels[1], &D_800F9058);
-    btlui_startLabelSlide(&g_btluiPanel->labels[2], &D_800F9058);
-    btlui_startLabelSlide(&g_btluiPanel->labels[3], &D_800F9058);
-    btlui_startLabelSlide(&g_btluiPanel->labels[4], &D_800F9064);
-    g_btluiPanel->labels[4].text = D_800F9070[arg0].unk0;
+    btlui_startLabelSlide(&g_btluiPanel->labels[1], &g_btluiListShowSlide);
+    btlui_startLabelSlide(&g_btluiPanel->labels[2], &g_btluiListShowSlide);
+    btlui_startLabelSlide(&g_btluiPanel->labels[3], &g_btluiListShowSlide);
+    btlui_startLabelSlide(&g_btluiPanel->labels[4], &g_btluiListShowTitleSlide);
+    g_btluiPanel->labels[4].text = g_btluiListTitles[arg0].unk0;
     btlui_setMenuState(BTLUI_MENU_CLOSING);
 }
 
 void btlui_hideListHeader(s32 arg0) {
     g_btluiPanel->returnState = arg0;
-    btlui_startLabelSlide(&g_btluiPanel->labels[1], &D_800F9084);
-    btlui_startLabelSlide(&g_btluiPanel->labels[2], &D_800F9084);
-    btlui_startLabelSlide(&g_btluiPanel->labels[3], &D_800F9084);
-    btlui_startLabelSlide(&g_btluiPanel->labels[4], &D_800F9090);
+    btlui_startLabelSlide(&g_btluiPanel->labels[1], &g_btluiListHideSlide);
+    btlui_startLabelSlide(&g_btluiPanel->labels[2], &g_btluiListHideSlide);
+    btlui_startLabelSlide(&g_btluiPanel->labels[3], &g_btluiListHideSlide);
+    btlui_startLabelSlide(&g_btluiPanel->labels[4], &g_btluiListHideTitleSlide);
     btlui_setMenuState(BTLUI_MENU_CLOSING);
 }
 
@@ -3690,39 +3690,39 @@ void btlui_drawPortIcons(void) {
 
     if (!(g->flags & 0x100) && !(g->ctx.battle->flags & 0x20) && g_btluiState.enabled != 0 &&
         (f = (g_gameState->config >> 5) & 1) == 1) {
-        ClearOTag(&D_801050D4, 1);
+        ClearOTag(&g_btluiPortIconOt, 1);
         if (g_btluiState.vsyncTick & 0x20) {
             if (g_btluiState.port == 0) {
                 s = &D_80068ED8;
             } else {
                 s = &D_80068EE0;
             }
-            setlen(&D_801050C0, 4);
-            D_801050C0.rgbc = 0x64808080;
-            D_801050C0.xy = 0x6012B;
-            D_801050C0.uvclut = s->uvclut;
-            D_801050C0.wh = s->w | (s->h << 16);
-            addPrim(&D_801050D4, &D_801050C0);
+            setlen(&g_btluiPortBlinkSprt, 4);
+            g_btluiPortBlinkSprt.rgbc = 0x64808080;
+            g_btluiPortBlinkSprt.xy = 0x6012B;
+            g_btluiPortBlinkSprt.uvclut = s->uvclut;
+            g_btluiPortBlinkSprt.wh = s->w | (s->h << 16);
+            addPrim(&g_btluiPortIconOt, &g_btluiPortBlinkSprt);
         }
         if (D_80104E7D == 0) {
             s = &D_80068E90;
         } else {
             s = &D_80068ED0;
         }
-        setlen(&D_801050A0, 4);
-        D_801050A0.rgbc = 0x64808080;
-        D_801050A0.xy = 0x60124;
-        D_801050A0.uvclut = s->uvclut;
-        D_801050A0.wh = s->w | (s->h << 16);
-        addPrim(&D_801050D4, &D_801050A0);
-        setlen(&D_80105080, 1);
-        D_80105080.code[0] = get_mode(1, 1, s->tpage);
-        addPrim(&D_801050D4, &D_80105080);
-        setlen(&D_80105090, 2);
-        D_80105090.code[0] = GPU_STP(1, 0);
-        D_80105090.code[1] = 0;
-        addPrim(&D_801050D4, &D_80105090);
-        DrawOTag(&D_801050D4);
+        setlen(&g_btluiPortIconSprt, 4);
+        g_btluiPortIconSprt.rgbc = 0x64808080;
+        g_btluiPortIconSprt.xy = 0x60124;
+        g_btluiPortIconSprt.uvclut = s->uvclut;
+        g_btluiPortIconSprt.wh = s->w | (s->h << 16);
+        addPrim(&g_btluiPortIconOt, &g_btluiPortIconSprt);
+        setlen(&g_btluiPortIconTpage, 1);
+        g_btluiPortIconTpage.code[0] = get_mode(1, 1, s->tpage);
+        addPrim(&g_btluiPortIconOt, &g_btluiPortIconTpage);
+        setlen(&g_btluiPortIconStp, 2);
+        g_btluiPortIconStp.code[0] = GPU_STP(1, 0);
+        g_btluiPortIconStp.code[1] = 0;
+        addPrim(&g_btluiPortIconOt, &g_btluiPortIconStp);
+        DrawOTag(&g_btluiPortIconOt);
         DrawSync(0);
     }
 }
@@ -3733,7 +3733,7 @@ void btlui_saveKeyRepeat(void) {
     u8 *row;
     pad_setStickAsDpad(1);
     i = 0;
-    row = D_80104E94[0];
+    row = g_btluiSavedRepeat[0];
     for (; i < 2; i++, row += 0x18) {
         for (j = 0; j < 0x17; j++) {
             row[j] = pad_isRepeatEnabled(i, j);
@@ -3750,7 +3750,7 @@ void btlui_saveKeyRepeat(void) {
 void btlui_restoreKeyRepeat(void) {
     s32 i, j;
     u8 *p;
-    for (i = 0, p = D_80104E94[0]; i < 2; i++) {
+    for (i = 0, p = g_btluiSavedRepeat[0]; i < 2; i++) {
         for (j = 0; j < 0x17; j++) {
             pad_setRepeatEnabled(i, j, p[j]);
         }
@@ -3820,8 +3820,8 @@ void btlui_initDrawBufs(void) {
     DrawSync(0);
 }
 
-INCLUDE_RODATA("asm/us/ovl_0b/nonmatchings/btlui", D_800A8584);
+INCLUDE_RODATA("asm/us/ovl_0b/nonmatchings/btlui", s_btluiCmdIconsSrc);
 
-INCLUDE_RODATA("asm/us/ovl_0b/nonmatchings/btlui", D_800A858C);
+INCLUDE_RODATA("asm/us/ovl_0b/nonmatchings/btlui", s_btluiRowsSrcA);
 
-INCLUDE_RODATA("asm/us/ovl_0b/nonmatchings/btlui", D_800A8594);
+INCLUDE_RODATA("asm/us/ovl_0b/nonmatchings/btlui", s_btluiRowsSrcB);

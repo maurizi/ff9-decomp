@@ -4,19 +4,19 @@ void btlui_submitOt(void) {
     RECT *tw;
     Unk80104E68 *p;
 
-    setlen(&D_80105140[g_btluiBuf], 2);
-    D_80105140[g_btluiBuf].code[0] = GPU_STP(1, 0);
-    D_80105140[g_btluiBuf].code[1] = 0;
-    setlen(&D_80105120[g_btluiBuf], 2);
-    ((u32 *)&D_80105120[g_btluiBuf])[1] = get_mode(1, 1, 0);
-    tw = &D_800FDE34;
-    ((u32 *)&D_80105120[g_btluiBuf])[2] = get_tw(tw);
-    SetDrawOffset(&D_801050E0[g_btluiBuf], g_btluiDispOrigin[g_drawBufs.cur ^ 1]);
-    SetDrawArea(&D_80105100[g_btluiBuf], &g_gameState->dispEnv[g_drawBufs.cur ^ 1].disp);
-    addPrim(&g_ot[0x17], &D_80105140[g_btluiBuf]);
-    addPrim(&g_ot[0x17], &D_80105120[g_btluiBuf]);
-    addPrim(&g_ot[0x17], &D_801050E0[g_btluiBuf]);
-    addPrim(&g_ot[0x17], &D_80105100[g_btluiBuf]);
+    setlen(&g_btluiDrStp[g_btluiBuf], 2);
+    g_btluiDrStp[g_btluiBuf].code[0] = GPU_STP(1, 0);
+    g_btluiDrStp[g_btluiBuf].code[1] = 0;
+    setlen(&g_btluiDrMode[g_btluiBuf], 2);
+    ((u32 *)&g_btluiDrMode[g_btluiBuf])[1] = get_mode(1, 1, 0);
+    tw = &g_btluiTexWindowRect;
+    ((u32 *)&g_btluiDrMode[g_btluiBuf])[2] = get_tw(tw);
+    SetDrawOffset(&g_btluiDrOffset[g_btluiBuf], g_btluiDispOrigin[g_drawBufs.cur ^ 1]);
+    SetDrawArea(&g_btluiDrArea[g_btluiBuf], &g_gameState->dispEnv[g_drawBufs.cur ^ 1].disp);
+    addPrim(&g_ot[0x17], &g_btluiDrStp[g_btluiBuf]);
+    addPrim(&g_ot[0x17], &g_btluiDrMode[g_btluiBuf]);
+    addPrim(&g_ot[0x17], &g_btluiDrOffset[g_btluiBuf]);
+    addPrim(&g_ot[0x17], &g_btluiDrArea[g_btluiBuf]);
     addPrim(&g_ot[1], &g_btluiSavedEnv[g_btluiBuf]);
     p = (Unk80104E68 *)&g_btluiState;
     if (p->drawing == 0) {
@@ -62,7 +62,7 @@ void btl_initBanner(void) {
     g_btlBanner.active = 0;
     g_btlBanner.timer = 0;
     g_btlBanner.text = 0xFF;
-    v = D_800FDE3C[(g_gameState->config >> 11) & 7];
+    v = g_btlBannerDurations[(g_gameState->config >> 11) & 7];
     r = &g_btlBanner.rect;
     r->x = 0x60;
     r->y = 8;
@@ -110,12 +110,12 @@ s32 *btl_getBannerOt(s32 arg0) {
     return &g_btlBannerOt[arg0];
 }
 
-s32 func_800F4FC8(void) {
-    return D_80105274;
+s32 btl_getBannerDuration(void) {
+    return g_btlBanner.duration;
 }
 
-u8 func_800F4FD8(void) {
-    return D_8010527C;
+u8 btl_isBannerActive(void) {
+    return g_btlBanner.active;
 }
 
 void btl_setBannerText(s32 arg0) {
@@ -140,7 +140,7 @@ u8 *btl_buildBanner(u8 *arg0) {
         if (g_btlBanner.useRect != 0) {
             r = &g_btlBanner.rect;
         } else {
-            t = &D_800FDE58;
+            t = &g_btlBannerDefaultRect;
             t->h = g_btlBanner.size.h + 6;
             r = t;
         }

@@ -628,7 +628,7 @@ s32 fx_1fd_op84(s32 mode, Fx1fdWork84 *work, Unk800F78A4 *env, Unk80100C78Entry 
                     work->unk0[i]->unkC = 0x30;
                 }
                 if (work->unk20[i] != NULL) {
-                    work->unk20[i]->unk22 = ex->func_800E7CC4(i, 0x80);
+                    work->unk20[i]->unk22 = ex->btlfx_addRadiusSixth(i, 0x80);
                 }
             }
         }

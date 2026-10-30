@@ -5,7 +5,7 @@ void func_801E7704(Pool30Entry *pt, Pool6CEntry *e, SVECTOR *pos, s32 arg3, s32 
     Unk800F78A4 *env = D_801E8EA4;
     BtlfxExports *ex = BTLFX_EXPORTS(env);
     Unk80100C78Entry *entry = D_801EA97C;
-    u8 *buf = (u8 *)ex->func_800E0134(pt, e);
+    u8 *buf = (u8 *)ex->btlfx_getParticleTrail(pt, e);
     s32 s;
     s32 d;
     SVECTOR v;
@@ -270,7 +270,7 @@ s32 fx_057_op81(s32 mode, Fx057Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
         work->unk0 = 0;
         work->unk4 = 0;
         D_801E8EA4 = env;
-        work->unk8 = ex->func_800E7CC4(0, 0);
+        work->unk8 = ex->btlfx_addRadiusSixth(0, 0);
         work->unkC.vx = 0;
         work->unkC.vy = 0;
         work->unkC.vz = 0;
@@ -392,7 +392,7 @@ s32 fx_057_op81(s32 mode, Fx057Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
             }
             a = work->unk4 * 0x29 + (j << 7);
             for (i = 0; i < 0x10; i++, a += 0x100) {
-                ex->func_800D044C(&work->unkC, (s32)&out2, 0, (XY32 *)&v, t4, a);
+                ex->btlfx_offsetPoint(&work->unkC, (s32)&out2, 0, (XY32 *)&v, t4, a);
                 ex->btlfx_drawParticles((u8 *)ex->btlfx_getFileData(entry->file, 0x1D), &out2, NULL, 0x1800, frame & 0xF, 1,
                                   c, 0, 0);
             }

@@ -14,7 +14,7 @@ s32 fx_1f4_op80(s32 mode, Fx1f4Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
         ex->btlfx_getUnitBodyPos(0, 0, (s16 *)&work->unk8);
         p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 2), (s32)&work->unk8);
         if (p != NULL) {
-            p->unk22 = ex->func_800E7CC4(0, 0x200);
+            p->unk22 = ex->btlfx_addRadiusSixth(0, 0x200);
             p->unk14 = (s32)D_801E79C8;
             p->unk12 = 0x1E;
             p->unkC = 0x9C;
@@ -25,14 +25,14 @@ s32 fx_1f4_op80(s32 mode, Fx1f4Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
         case 16:
             p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 1), (s32)&work->unk8);
             if (p != NULL) {
-                p->unk22 = ex->func_800E7CC4(0, 0x200);
+                p->unk22 = ex->btlfx_addRadiusSixth(0, 0x200);
                 p->unk14 = (s32)D_801E8C18;
                 p->unk12 = 0x1E;
                 p->unkC = 0x9C;
             }
             p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 4), (s32)&work->unk8);
             if (p != NULL) {
-                p->unk22 = ex->func_800E7CC4(0, 0x200);
+                p->unk22 = ex->btlfx_addRadiusSixth(0, 0x200);
             }
             break;
         case 24:

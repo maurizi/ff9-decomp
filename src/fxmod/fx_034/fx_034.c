@@ -146,7 +146,7 @@ s32 fx_034_op80(s32 mode, Fx034Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
             work->unk0->unk12 = 0x28;
             work->unk0->unkC = 0x30;
             if (work->unk0 != NULL) {
-                work->unk0->unk22 = ex->func_800E7CC4(0, 0x80);
+                work->unk0->unk22 = ex->btlfx_addRadiusSixth(0, 0x80);
             }
         }
         ex->btlfx_aimAngles((s16 *)&work->unk4C, (s16 *)&work->unk44, (s16 *)&work->unk54);

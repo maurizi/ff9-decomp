@@ -533,7 +533,7 @@ s32 fx_196_op86(s32 mode, Fx196Work86 *work, Unk800F78A4 *env, Unk80100C78Entry 
                 work->unk0[i].vy -= 0x200;
                 p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 8), (s32)&work->unk0[i]);
                 if (p != NULL) {
-                    p->unk22 = ex->func_800E7CC4(i, 0x200);
+                    p->unk22 = ex->btlfx_addRadiusSixth(i, 0x200);
                 }
             }
         }

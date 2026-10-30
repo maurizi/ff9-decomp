@@ -281,7 +281,7 @@ s32 fx_07d_op80(s32 mode, Fx07dWork80 *work, Unk800F78A4 *env, Unk80100C78Entry 
         work->unk0 = 0;
         work->unk4 = 0;
         D_801EA534 = entry;
-        work->unk8 = ex->func_800E7CC4(0, 0);
+        work->unk8 = ex->btlfx_addRadiusSixth(0, 0);
         ex->btlfx_getUnitBodyPos(0, 0, (s16 *)&work->unkC);
         work->unk14 = work->unkC.vx;
         work->unk18 = work->unkC.vy;
@@ -625,7 +625,7 @@ void func_801E9834(Unk80100C78Entry *entry, Fx07dStrip *buf, s32 *tab, SVECTOR *
         h = *tab++;
         h = (ex->math_sin(t >> 1) * h) >> 12;
         h += ex->btlfx_lerp(r0, r1, t);
-        ex->func_800D044C(&pos, (s32)v, 0, (XY32 *)&ang, h, s);
+        ex->btlfx_offsetPoint(&pos, (s32)v, 0, (XY32 *)&ang, h, s);
         v->pad = pad;
         s += step + *tab++;
         v++;

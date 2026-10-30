@@ -186,7 +186,7 @@ s32 func_801E7EB8(s32 mode, Fx07ePart *part, Unk800F78A4 *env, Unk80100C78Entry 
     ((XY32 *)&ang)[0].w = w0;
     ((XY32 *)&ang)[1].w = w1;
     s += c;
-    ex->func_800D044C(&work->unkC, (s32)&out, 0, (XY32 *)&ang, work->unk1C, s);
+    ex->btlfx_offsetPoint(&work->unkC, (s32)&out, 0, (XY32 *)&ang, work->unk1C, s);
     pos.vx = out.vx;
     pos.vy = out.vy;
     pos.vz = out.vz;
@@ -338,7 +338,7 @@ s32 fx_07e_op81(s32 mode, Fx07eWork81 *work, Unk800F78A4 *env, Unk80100C78Entry 
     } else if (mode == 1) {
         D_801E8AB8 = env;
         ex->btlfx_getUnitBodyPos(0, 0, (s16 *)&work->unkC);
-        work->unk8 = ex->func_800E7CC4(0, 0x20);
+        work->unk8 = ex->btlfx_addRadiusSixth(0, 0x20);
         work->unk0 = 0;
     } else {
         frame = entry->frame;

@@ -233,7 +233,7 @@ s32 fx_0cb_op80(s32 mode, Fx0cbWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
         work->unk0 = 0;
         work->unk4 = 0;
         D_801E8670 = env;
-        work->unk8 = ex->func_800E7CC4(0, 0);
+        work->unk8 = ex->btlfx_addRadiusSixth(0, 0);
         ex->btlfx_getUnitBodyPos(0, 0, (s16 *)&work->unkC);
         work->unk14.vx = work->unkC.vx;
         work->unk14.vy = work->unkC.vy;

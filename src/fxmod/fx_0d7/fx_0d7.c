@@ -22,7 +22,7 @@ void func_801E7704(Unk80100C78Entry *entry, Fx0d7Strip *strip, s32 *tbl, SVECTOR
         s = *tbl++;
         s = (ex->math_sin(t >> 1) * s) >> 12;
         s += ex->btlfx_lerp(from1, to1, t);
-        ex->func_800D044C(&v, (s32)p, 0, (XY32 *)&ang, s, width);
+        ex->btlfx_offsetPoint(&v, (s32)p, 0, (XY32 *)&ang, s, width);
         p->pad = arg11;
         width += dwidth + *tbl++;
         p++;
@@ -59,7 +59,7 @@ void func_801E796C(Unk80100C78Entry *entry, Fx0d7Strip *strip, s32 *tbl, SVECTOR
         t >>= 1;
         s = (ex->math_sin(t) * s) >> 12;
         s += (ex->math_sin(t) * amp) >> 12;
-        ex->func_800D044C(&v, (s32)p, 0, (XY32 *)&ang, s, width);
+        ex->btlfx_offsetPoint(&v, (s32)p, 0, (XY32 *)&ang, s, width);
         p->pad = arg10;
         width += dwidth + *tbl++ / 2;
         p++;
@@ -110,9 +110,9 @@ s32 func_801E7CEC(s32 mode, Fx0d7Bolt *it, Unk800F78A4 *env, Unk80100C78Entry *e
             if (frame == 0) {
                 it->unk1C = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 9), (s32)&it->unk0);
                 if (it->unk1C != NULL) {
-                    it->unk1C->unk22 = ex->func_800E7CC4(0, 0x40);
+                    it->unk1C->unk22 = ex->btlfx_addRadiusSixth(0, 0x40);
                 }
-                env->otZ = ex->func_800E7CC4(0, 0x46);
+                env->otZ = ex->btlfx_addRadiusSixth(0, 0x46);
                 ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->file, 8), &it->unk0, NULL, 0x1400, 4, 1, 0x1000);
                 env->otZ = 0;
                 ex->btlfx_drawScreenTint((u32 *)(env->ot + 1), 1, 0, 7, 0x20);
@@ -120,7 +120,7 @@ s32 func_801E7CEC(s32 mode, Fx0d7Bolt *it, Unk800F78A4 *env, Unk80100C78Entry *e
             if (frame == 1) {
                 it->unk20 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 7), (s32)&it->unk0);
                 if (it->unk20 != NULL) {
-                    it->unk20->unk22 = ex->func_800E7CC4(0, 0x40);
+                    it->unk20->unk22 = ex->btlfx_addRadiusSixth(0, 0x40);
                 }
             }
             if (frame >= 6) {

@@ -313,7 +313,7 @@ s32 fx_12b_op80(s32 mode, Fx12bWork80 *work, Unk800F78A4 *env, Unk80100C78Entry 
                 if (++q->unk20 == 0x13) {
                     e = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 8), (s32)q);
                     if (e != NULL) {
-                        e->unk22 = ex->func_800E7CC4(0, 0x80);
+                        e->unk22 = ex->btlfx_addRadiusSixth(0, 0x80);
                     }
                 }
             }
@@ -321,7 +321,7 @@ s32 fx_12b_op80(s32 mode, Fx12bWork80 *work, Unk800F78A4 *env, Unk80100C78Entry 
                 if (++r->unk20 == 0x13) {
                     e = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 8), (s32)r);
                     if (e != NULL) {
-                        e->unk22 = ex->func_800E7CC4(0, 0x80);
+                        e->unk22 = ex->btlfx_addRadiusSixth(0, 0x80);
                     }
                     /* the do-while(0) adds a loop-depth-weighted ref to j, which puts it ahead of q and r in
                      * global-alloc (j in s4) */
@@ -468,13 +468,13 @@ s32 fx_12b_op82(s32 mode, Fx12bWork82 *work, Unk800F78A4 *env, Unk80100C78Entry 
         work->unk0[3] = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0xC), (s32)&work->unk14);
         work->unk0[4] = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0x23), (s32)&work->unk14);
         if (work->unk0[0] != NULL) {
-            work->unk0[0]->unk22 = ex->func_800E7CC4(0, 0x80);
+            work->unk0[0]->unk22 = ex->btlfx_addRadiusSixth(0, 0x80);
         }
         if (work->unk0[1] != NULL) {
-            work->unk0[1]->unk22 = ex->func_800E7CC4(0, 0x80);
+            work->unk0[1]->unk22 = ex->btlfx_addRadiusSixth(0, 0x80);
         }
         if (work->unk0[2] != NULL) {
-            work->unk0[2]->unk22 = ex->func_800E7CC4(0, 0x80);
+            work->unk0[2]->unk22 = ex->btlfx_addRadiusSixth(0, 0x80);
         }
     } else {
         return entry->frame >= 0x28;

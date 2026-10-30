@@ -315,7 +315,7 @@ void func_801E8778(Unk80100C78Entry *entry, Fx0baStrip *buf, SVECTOR *from, SVEC
         h = ex->btlfx_randCentered(0x80);
         h = (ex->math_sin(t >> 1) * h) >> 12;
         h += 0x20 + ((ex->math_sin(t >> 1) * amp) >> 12);
-        ex->func_800D044C(&pos, (s32)v, 0, (XY32 *)&ang, h, s);
+        ex->btlfx_offsetPoint(&pos, (s32)v, 0, (XY32 *)&ang, h, s);
         v->pad = pad;
         s += step + ex->btlfx_randCentered(0x100);
     }
@@ -934,7 +934,7 @@ void func_801EA850(Unk80100C78Entry *entry, s32 file, s32 a2, Fx0baStrip *buf, s
         h = *tab++;
         h = (ex->math_sin(t >> 1) * h) >> 12;
         h += ex->btlfx_lerp(r0, r1, t);
-        ex->func_800D044C(&pos, (s32)v, 0, (XY32 *)&ang, h, s);
+        ex->btlfx_offsetPoint(&pos, (s32)v, 0, (XY32 *)&ang, h, s);
         if (wave != 0) {
             v->vy -= (ex->math_sin(t >> 1) * wave) >> 12;
         }

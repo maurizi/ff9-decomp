@@ -321,7 +321,7 @@ void func_801E8430(Unk80100C78Entry *entry, Fx0e0Bolt *bolt, SVECTOR *from, SVEC
         a = ex->btlfx_randCentered(0xA0);
         a = (ex->math_sin(t >> 1) * a) >> 12;
         a += ex->btlfx_lerp(amp0, amp1, t);
-        ex->func_800D044C(&p, (s32)pt, 0, (XY32 *)&rot, a, ang);
+        ex->btlfx_offsetPoint(&p, (s32)pt, 0, (XY32 *)&rot, a, ang);
         pt->pad = pad;
         ang += dang + ex->btlfx_randCentered(0x80);
         pt++;
@@ -676,7 +676,7 @@ s32 fx_0e0_op80(s32 mode, Fx0e0Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
                 d1 = ex->btlfx_randCentered(0x400) + 0xC00;
                 ((s32 *)&to)[0] = work->unk24.vx;
                 ((s32 *)&to)[1] = work->unk24.vy;
-                ex->func_800D044C(&from, (s32)&to, 0x1000, (XY32 *)&work->unk3C, 0x3000, r2);
+                ex->btlfx_offsetPoint(&from, (s32)&to, 0x1000, (XY32 *)&work->unk3C, 0x3000, r2);
                 func_801E8430(entry, &D_801EA928[i], &from, &to, 0x100, 0x200, r2, 0xC0, 0, d1, (ex->btlfx_rand() & 0x1F) + 0x58);
             }
             if (frame >= 0x42) {

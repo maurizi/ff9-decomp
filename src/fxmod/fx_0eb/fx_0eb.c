@@ -33,7 +33,7 @@ s32 fx_0eb_op80(s32 mode, Fx0ebWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
             work->unk0 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 3), (s32)&work->unk24);
             work->unk4 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 2), (s32)&work->unk14);
             if (work->unk0 != NULL) {
-                work->unk0->unk22 = ex->func_800E7CC4(0, 0x80);
+                work->unk0->unk22 = ex->btlfx_addRadiusSixth(0, 0x80);
             }
             break;
         case 0x1C:

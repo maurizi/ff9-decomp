@@ -69,7 +69,7 @@ void btl_updatePause(void) {
             if (g_gameState->gameData->ctx.battle->flags & 0x20) {
                 text_buildSmall(0x66, 0x6D, g_btlPauseOt, "Disc Cover Open", 4, (u8 *)g_gameState->gameData->ctx.battle->work->prims[g_gameState->gameData->drawBuf]);
             } else {
-                ui_buildSprite((0x140 - g_uiSprites[0xEB].w) / 2, (0xDA - g_uiSprites[0xEB].h) / 2, g_btlPauseOt, 0xEB, 0, &w, D_800FDE60);
+                ui_buildSprite((0x140 - g_uiSprites[0xEB].w) / 2, (0xDA - g_uiSprites[0xEB].h) / 2, g_btlPauseOt, 0xEB, 0, &w, g_btlPauseSprite);
             }
             setlen(&g_btlPauseDimTile, 3);
             g_btlPauseDimTile.code = 0x62;
@@ -139,7 +139,7 @@ void btl_initMode(void) {
     SetDispMask(1);
     g->modelHook = btl_registerModel;
     g->soundHook = btl_soundCmd;
-    g_gameState->gameData->preloadRequest = func_800AF1C8;
+    g_gameState->gameData->preloadRequest = btl_preloadRequest;
     preload_init();
     g->npcModelSlots = 0;
     g->npcCount = 0;
@@ -147,10 +147,10 @@ void btl_initMode(void) {
     b->dataSector = g_gameState->imgSector + g_gameState->dirs[13].firstSector;
     btl_loadCommonData();
     func_800A8F10();
-    func_800A8F18();
-    func_800A8F8C();
-    func_800A902C();
-    func_800A9090();
+    btl_loadResidentMusic();
+    btl_loadSoundBanks();
+    btl_loadShadowTexture();
+    btl_initPartyNames();
     btl_initBattleState();
     b->savedHeap = g_modeHeap;
 }
@@ -198,17 +198,17 @@ s32 func_800A8F10(void) {
     return 0;
 }
 
-s32 func_800A8F18(void) {
+s32 btl_loadResidentMusic(void) {
     s32 a = (s32)db_lookupRegistered(4, 0x70005, 0);
     file_copyViaVram(g_gameState->gameData->musicSeq2, a, (s32)db_lookupRegistered(5, 0x70005, 0), NULL);
     DrawSync(0);
     return 0;
 }
 
-s32 func_800A8F8C(void) {
+s32 btl_loadSoundBanks(void) {
     s32 i;
     for (i = 1; i >= 0; i--) {
-        s32 id = D_800F51E8[i] | 0x90000;
+        s32 id = g_btlSoundBankIds[i] | 0x90000;
         s32 a = (s32)db_lookupRegistered(4, id, 0);
         s32 b = (s32)db_lookupRegistered(5, id, 0);
         akao_beginBankUpload();
@@ -217,7 +217,7 @@ s32 func_800A8F8C(void) {
     return 0;
 }
 
-s32 func_800A902C(void) {
+s32 btl_loadShadowTexture(void) {
     s32 p = (s32)db_lookupRegistered(4, 0x42774, 0);
     file_setTimPos(p, 0x100, 0xFF, 0x200, 0xE0);
     file_loadTim(p);
@@ -225,8 +225,8 @@ s32 func_800A902C(void) {
     return 0;
 }
 
-s32 func_800A9090(void) {
-    func_800E9D84();
+s32 btl_initPartyNames(void) {
+    btlui_uploadPartyNames();
     return 0;
 }
 
@@ -1744,8 +1744,8 @@ s32 btl_soundCmd(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4) {
             if (g_gameState->gameData->soundLoadState != 0) {
                 return -1;
             }
-            if (D_800F51F8 == -1) {
-                D_800F51F8 = kind;
+            if (g_btlSoundLoadKind == -1) {
+                g_btlSoundLoadKind = kind;
             }
             r = btl_getDepLink(id);
             ga = g_gameState->gameData;
@@ -1758,9 +1758,9 @@ s32 btl_soundCmd(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4) {
                 g_gameState->gameData->musicId[0] = arg1;
                 if ((id & 0xFFFF) != 5) {
                     g_gameState->gameData->soundLoadDest = (s32)(g_loadAreaEnd + 0x140700);
-                    D_800F51EC = -1;
+                    g_btlSoundLoadSlot = -1;
                     g_gameState->gameData->soundLoadChunk = 0x16800;
-                    D_800F51F0 = id;
+                    g_btlSoundLoadId = id;
                     g_gameState->gameData->soundBankSize = 0;
                     g_gameState->gameData->soundLoadState = 2;
                     return g_gameState->gameData->soundLoadState;
@@ -1770,7 +1770,7 @@ s32 btl_soundCmd(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4) {
                 g_gameState->gameData->flags |= 0x10000000;
             }
         finish:
-            if (D_800F51F8 != 7) {
+            if (g_btlSoundLoadKind != 7) {
                 g_gameState->gameData->musicHandle[0] = akao_playMusic(g_gameState->gameData->musicSeq);
                 gb = g_gameState->gameData;
                 if (!(gb->flags & 0x20000000)) {
@@ -1778,7 +1778,7 @@ s32 btl_soundCmd(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4) {
                 }
                 g_gameState->gameData->flags |= 0x30000000;
             }
-            D_800F51F8 = -1;
+            g_btlSoundLoadKind = -1;
             return 0;
         case 1:
             akao_stopMusic(g_gameState->gameData->musicHandle[0]);
@@ -1797,21 +1797,21 @@ s32 btl_soundCmd(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4) {
                 break;
             }
             akao_fadeMusicVolume(g_gameState->gameData->musicHandle[0], arg2, arg3);
-            func_800AE9C8(arg3, arg2);
+            btl_setMusicVolumeFade(arg3, arg2);
             return 0;
         case 4:
             if ((arg0 & 0x3F) != 1) {
                 break;
             }
             akao_fadeMusicVolumeFrom(g_gameState->gameData->musicHandle[0], arg2, arg3, arg4);
-            func_800AE9C8(arg4, arg2);
+            btl_setMusicVolumeFade(arg4, arg2);
             return 0;
         case 6:
             if ((arg0 & 0x3F) != 1) {
                 break;
             }
             akao_fadeMusicVolume(0, arg2, arg3);
-            func_800AE9C8(arg3, arg2);
+            btl_setMusicVolumeFade(arg3, arg2);
             return 0;
         case 10:
             if ((arg0 & 0x3F) != 6) {
@@ -1898,9 +1898,9 @@ s32 btl_soundCmd(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4) {
             }
             k2 = gx->soundLoadChunk;
             gx->soundLoadChunk = k2 / 2048 * 2048;
-            D_800F51EC = arg2 % 4;
-            D_800F51F8 = kind;
-            D_800F51F0 = id;
+            g_btlSoundLoadSlot = arg2 % 4;
+            g_btlSoundLoadKind = kind;
+            g_btlSoundLoadId = id;
             g_gameState->gameData->soundBankSize = 0;
             g_gameState->gameData->soundLoadState = 2;
             return g_gameState->gameData->soundLoadState;
@@ -1915,17 +1915,17 @@ stream:
     gd = g_gameState->gameData;
     switch (gd->soundLoadState) {
     case 2:
-        if (((D_800F51F0 >> 16) & 0xFF) == 7) {
+        if (((g_btlSoundLoadId >> 16) & 0xFF) == 7) {
             gd->soundLoadBank = gd->musicBank[0];
         } else {
-            gd->soundLoadBank = D_800F51F0;
+            gd->soundLoadBank = g_btlSoundLoadId;
         }
-        D_800F51F4 = btl_getSoundFileSectors(D_800F51F0, &size);
-        if (D_800F51EC == -1) {
+        g_btlSoundLoadSector = btl_getSoundFileSectors(g_btlSoundLoadId, &size);
+        if (g_btlSoundLoadSlot == -1) {
             akao_beginBankUpload();
         }
         ge = g_gameState->gameData;
-        cdRead_init(ge->cdRead, D_800F51F4, size, (void *)ge->soundLoadDest, 0, g_gameState->gameData->soundLoadChunk, btl_onSoundRead);
+        cdRead_init(ge->cdRead, g_btlSoundLoadSector, size, (void *)ge->soundLoadDest, 0, g_gameState->gameData->soundLoadChunk, btl_onSoundRead);
         g_gameState->gameData->soundLoadState = 3;
         break;
     case 3:
@@ -1936,15 +1936,15 @@ stream:
                 gg = g_gameState->gameData;
                 m = (s32)(g_loadAreaEnd + 0x156F00) - gg->soundLoadDest;
                 m = m / 2048 * 2048;
-                cdRead_init(gg->cdRead, D_800F51F4, gg->cdRead[0].size, (void *)gg->soundLoadDest,
+                cdRead_init(gg->cdRead, g_btlSoundLoadSector, gg->cdRead[0].size, (void *)gg->soundLoadDest,
                               gg->cdRead[0].offset + gg->cdRead[0].chunk, m, btl_onSoundRead);
-            } else if (D_800F51F2 == 7) {
-                if (D_800F51F8 != 9) {
+            } else if (g_btlSoundLoadType == 7) {
+                if (g_btlSoundLoadKind != 9) {
                     gf->musicVolume[0] = 0x7F;
                 }
                 g_gameState->gameData->soundLoadState = 4;
             } else {
-                D_800F51F8 = -1;
+                g_btlSoundLoadKind = -1;
                 g_gameState->gameData->soundLoadState = 0;
             }
         }
@@ -1958,7 +1958,7 @@ stream:
         m2 = 0x6800 - n;
         m2 = m2 / 2048 * 2048;
         gh = g_gameState->gameData;
-        cdRead_init(gh->cdRead, D_800F51F4, gh->cdRead[0].size, (void *)gh->soundLoadDest,
+        cdRead_init(gh->cdRead, g_btlSoundLoadSector, gh->cdRead[0].size, (void *)gh->soundLoadDest,
                       gh->cdRead[0].offset + gh->cdRead[0].chunk, m2, NULL);
         g_gameState->gameData->soundLoadState = 5;
         break;
@@ -1970,15 +1970,15 @@ stream:
                 k2 = k1 - gi->soundBankSize;
                 gi->soundLoadDest = (s32)((u8 *)gi->musicSeq + k2);
                 gj = g_gameState->gameData;
-                cdRead_init(gj->cdRead, D_800F51F4, gj->cdRead[0].size, (void *)gj->soundLoadDest, k2, 0x6800 - k2, NULL);
+                cdRead_init(gj->cdRead, g_btlSoundLoadSector, gj->cdRead[0].size, (void *)gj->soundLoadDest, k2, 0x6800 - k2, NULL);
             } else {
-                func_800AE7C8((s32)gi->musicSeq);
+                btl_unpackMusic((s32)gi->musicSeq);
                 g_gameState->gameData->flags |= 0x10000000;
                 g_gameState->gameData->soundLoadState = 0;
-                if (D_800F51F8 == 0) {
+                if (g_btlSoundLoadKind == 0) {
                     goto finish;
                 }
-                D_800F51F8 = -1;
+                g_btlSoundLoadKind = -1;
             }
         }
         break;
@@ -2001,7 +2001,7 @@ s32 btl_getWeaponSound(s32 arg0, u16 arg1) {
     return db_lookup(f, 3, arg1 | 0x80000, 0);
 }
 
-s32 func_800AE4FC(s32 arg0) {
+s32 btl_getWeaponSoundBank(s32 arg0) {
     Character *c = g_gameState->gameData->party[arg0];
 
     if (c == NULL) {
@@ -2033,7 +2033,7 @@ s32 btl_getSoundFileSectors(s32 arg0, s32 *arg1) {
     }
 }
 
-s16 func_800AE618(s32 arg0, BtlStepTask *arg1) {
+s16 btl_loadWeaponSoundStep(s32 arg0, BtlStepTask *arg1) {
     BtlAnimEvtList *l;
     s32 i;
     BtlAnimEvt *e;
@@ -2074,7 +2074,7 @@ s32 btl_getDepLink(s32 arg0) {
     return -1;
 }
 
-s32 func_800AE7C8(s32 arg0) {
+s32 btl_unpackMusic(s32 arg0) {
     s32 v = db_lookup(arg0, 3, 0x70000, 0);
     s32 a = db_lookup(arg0, 4, v, 0);
     memcpy((u8 *)arg0, (u8 *)a, db_lookup(arg0, 5, v, 0));
@@ -2104,15 +2104,15 @@ void btl_onSoundRead(Unk800AE844 *arg0) {
         n = arg0->chunk;
     }
     n = arg0->addr + n - p;
-    if (D_800F51EC == -1) {
+    if (g_btlSoundLoadSlot == -1) {
         akao_uploadBank(p, n, 0);
     } else {
-        func_80056048(p, D_800F51EC, 0);
+        func_80056048(p, g_btlSoundLoadSlot, 0);
     }
     arg0->addr = p;
 }
 
-void func_800AE9C8(s32 arg0, s32 arg1) {
+void btl_setMusicVolumeFade(s32 arg0, s32 arg1) {
     GameData *gd = g_gameState->gameData;
     gd->musicVolume[0] = arg0;
     if (arg0 == 0) {
@@ -2121,7 +2121,7 @@ void func_800AE9C8(s32 arg0, s32 arg1) {
     }
 }
 
-s32 func_800AEA08(void) {
+s32 btl_isMusicFadingOut(void) {
     GameData *gd = g_gameState->gameData;
     return (u32)(VSync(-1) - gd->musicFadeStart) < gd->musicFadeFrames;
 }
@@ -2167,7 +2167,7 @@ void btl_endFrame(void) {
     }
 }
 
-s32 func_800AF1C8(void) {
+s32 btl_preloadRequest(void) {
     return 0;
 }
 

@@ -22,7 +22,7 @@ void func_801EC71C(Unk80100C78Entry *entry, Fx0e31Bolt *bolt, SVECTOR *from, SVE
         a = ex->btlfx_randCentered(0x80);
         a = (ex->math_sin(t >> 1) * a) >> 12;
         a += ex->btlfx_lerp(amp0, amp1, t);
-        ex->func_800D044C(&p, (s32)pt, 0, (XY32 *)&rot, a, ang);
+        ex->btlfx_offsetPoint(&p, (s32)pt, 0, (XY32 *)&rot, a, ang);
         pt->pad = 0x1C;
         ang += dang + ex->btlfx_randCentered(0x100);
         pt++;
@@ -52,7 +52,7 @@ void func_801EC910(Unk80100C78Entry *entry, Fx0e31Bolt *bolt, SVECTOR *from, SVE
         a = ex->btlfx_randCentered(0x20);
         a = (ex->math_sin(t >> 1) * a) >> 12;
         a += (ex->math_sin(t >> 1) * amp) >> 12;
-        ex->func_800D044C(&p, (s32)pt, 0, (XY32 *)&rot, a, ang);
+        ex->btlfx_offsetPoint(&p, (s32)pt, 0, (XY32 *)&rot, a, ang);
         pt->pad = 0x1A;
         ang += dang + ex->btlfx_randCentered(0xC0);
         pt++;
@@ -82,7 +82,7 @@ void func_801ECAF8(Unk80100C78Entry *entry, Fx0e31Bolt *bolt, SVECTOR *from, SVE
         a = ex->btlfx_randCentered(0xA0);
         a = (ex->math_sin(t >> 1) * a) >> 12;
         a += ex->btlfx_lerp(amp0, amp1, t);
-        ex->func_800D044C(&p, (s32)pt, 0, (XY32 *)&rot, a, ang);
+        ex->btlfx_offsetPoint(&p, (s32)pt, 0, (XY32 *)&rot, a, ang);
         pt->pad = col;
         ang += dang + ex->btlfx_randCentered(0x80);
         pt++;
@@ -123,7 +123,7 @@ void func_801ECDEC(Unk80100C78Entry *entry, Fx0e31Bolt *bolt, SVECTOR *from, SVE
         a = ex->btlfx_randCentered(0xA0);
         a = (ex->math_sin(t >> 1) * a) >> 12;
         a += ex->btlfx_lerp(amp0, amp1, t);
-        ex->func_800D044C(&p, (s32)pt, 0, (XY32 *)&rot, a, ang);
+        ex->btlfx_offsetPoint(&p, (s32)pt, 0, (XY32 *)&rot, a, ang);
         pt->pad = col;
         ang += dang + ex->btlfx_randCentered(0x80);
         pt++;
@@ -281,7 +281,7 @@ void func_801ED708(VECTOR *pos, SVECTOR *rot) {
     v.vx = pos->vx;
     v.vy = pos->vy;
     v.vz = pos->vz;
-    ex->func_800D0674(&env->camera->eye, &v, rot, (s32)&tmp, (s32)&tmp, &a);
+    ex->btlfx_toLocalPolar(&env->camera->eye, &v, rot, (s32)&tmp, (s32)&tmp, &a);
     rot->vz = -a + 0x400;
 }
 
