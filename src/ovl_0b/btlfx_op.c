@@ -193,7 +193,7 @@ s32 func_800E4634(s32 arg0, Unk800E4634 *c, Unk800E4634Arg2 *arg2, s32 *arg3, s3
             c->timer = 0;
             if (c->point < 0) {
                 g_btlfxState.signals.b[2] = 1;
-                g_btlfxState.unk25 = 1;
+                g_btlfxState.castEnded = 1;
                 return 1;
             }
         }
@@ -458,7 +458,7 @@ s32 btlfx_opCast(s32 arg0, Unk800E4C88 *arg1, Unk800F78A4 *arg2, s32 *arg3, s32 
             if (t % arg1->loopFrames == 0 && t >= 25 && arg1->frame >= 27 && g_btlfxState.signals.b[2] != 0) {
                 btlfx_stopEmitter(arg1->emitter);
                 g_btlfxState.signals.b[3] = 1;
-                g_btlfxState.unk25 = 1;
+                g_btlfxState.castEnded = 1;
                 arg2->camera->paused = 0;
                 btlfx_setPartyTexAnim(arg1->unit, 2, 0);
                 return 1;

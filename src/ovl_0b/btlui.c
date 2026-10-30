@@ -100,7 +100,7 @@ void btlui_exit(void) {
     VSyncCallback(NULL);
     btlui_restoreKeyRepeat();
     btlui_clearDfe();
-    g_btluiState.unkE = 0;
+    g_btluiState.secondPort = 0;
 }
 
 void btlui_waitFrame(void) {
@@ -226,7 +226,7 @@ u8 func_800EA268(void) {
 }
 
 u8 func_800EA27C(void) {
-    return g_btluiState.unkE;
+    return g_btluiState.secondPort;
 }
 
 void func_800EA290(void) {
@@ -267,7 +267,7 @@ void func_800EA378(void) {
             }
         } while (0);
     }
-    p->unk3 = r;
+    p->targetWindow = r;
     g_btluiState.multiTarget = btlui_countTargeted() >= 2;
 }
 

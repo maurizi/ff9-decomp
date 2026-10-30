@@ -834,7 +834,7 @@ typedef struct {
     u8 enabled; /* UI running (btlui_applyEnable, btlui_enable(0) clears it) */
     u8 inVsync; /* inside btlui_vsync */
     u8 atbOn; /* ATB and menus run (btlui_setAtbEnabled, btl_isAtbRunning) */
-    s8 unk3;
+    s8 targetWindow; /* target select opens the target-name window (func_800EA378; read as D_80104E6B by btlui_startTargetSelect) */
     u8 multiTarget; /* two or more units are targeted (func_800EA378) */
     u8 unk5;
     u8 started; /* btlui_init ran */
@@ -845,7 +845,7 @@ typedef struct {
     s8 pauseReq; /* pause requested (Start, btlui_readPad; btlui_isPauseRequested) */
     u8 skipFrames; /* frames the vsync callback skips drawing (func_800EA34C sets 2) */
     u8 prevAtbOn; /* atbOn at the start of the frame (btlui_frameUpdate) */
-    u8 unkE;
+    u8 secondPort; /* a party member is on controller port 2 (btlui_anyOnSecondPort, stored through D_80104E76) */
     u8 frameReady; /* set by btlui_waitFrame: the next vsync runs btlui_frameUpdate */
     u8 drawing; /* inside DrawOTag/DrawOTagEnv (btlui_drawOTag): the vsync draw doesn't break in */
     u8 pad11;
@@ -891,7 +891,7 @@ typedef struct {
     u8 partyReload; /* control op 11: btl_reloadParty running */
     u8 seqSync; /* control op 8 ran with an enemy caster (btlseq waits for it) */
     u8 modelSwap; /* control op 13: unit slot + 1 whose model func_800AB3E4 swaps */
-    u8 unk25;
+    u8 castEnded; /* the cast op (btlfx_opCast) finished its caster motion; the loader holds common texture blocks (kind 9) until then (read as D_800FEC65) */
 } Unk800FEC40;
 extern Unk800FEC40 g_btlfxState;
 
@@ -1053,8 +1053,8 @@ typedef struct {
     u8 iconBones[6]; /* status icon attach points: bone (btl_drawStatusIcons, as D_800F6B48 for players) */
     u8 iconY[6]; /* y offset (<< 4) */
     u8 iconZ[6]; /* z offset (<< 4) */
-    u16 gil; /* gil (g_btlRewards.gil; an escape drops a tenth of the remaining enemies' gil, Flee-Gil gains it: btl_victory) */
-    u16 exp; /* exp (g_btlRewards.exp) */
+    u16 gil; /* gil (g_btlRewards.gil; an escape drops a tenth of the remaining enemies' gil, Flee-Gil gains it: btl_victory). runtime: Malboro 2572 = "Received Gil 2572G" */
+    u16 exp; /* exp (g_btlRewards.exp). runtime: Malboro 30579, the rewards screen shows EXP 7644 = 30579 / 4 */
     union {
         s32 w;
         u8 b[4]; /* item drops, rarest last */
@@ -1478,7 +1478,7 @@ extern Unk800FE3B8 g_btlCamera;
 typedef struct {
     s32 gil; /* gil (BtlEnemyType.gil of the defeated enemies; ovl_65 BattleResult.gil) */
     s32 exp; /* exp (BtlEnemyType.exp; ovl_65 splits it among expMask) */
-    s16 ap; /* ap of the enemy group (Battle1330.ap, func_800C972C) */
+    s16 ap; /* ap of the enemy group (Battle1330.ap, func_800C972C). runtime: Malboro group 3 = "AP 3" */
     u8 expMask; /* bit per party slot in the battle (btl_initPartyUnit), cleared when a unit leaves (btl_calcCmd 0x6A); ovl_65: receives exp */
     u8 unkB;
     u8 items[16]; /* dropped item ids, 0xFF = none (btl_addEnemyRewards) */

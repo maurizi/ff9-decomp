@@ -55,7 +55,7 @@ s32 btlfx_start(s32 arg0) {
     g_btlfxState.pc = 0;
     g_btlfxState.partyReload = 0;
     g_btlfxState.modelSwap = 0;
-    g_btlfxState.unk25 = 0;
+    g_btlfxState.castEnded = 0;
     g_btlfxState.flags = 0x8000;
     func_800C30B8();
     g_btlfxEnv->workBuf = g_gameState->gameData->unk8E4.battle->work->loadBuf;
