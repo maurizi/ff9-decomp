@@ -162,8 +162,9 @@ polygons are semi-transparent on the discs.
 | `btlfx_drawBgOffscreen` | layer 2 records (`btlbg_draw` with mask 2) |
 | `btlfx_opFadeBackground` | `g_btlbgBrightness` |
 
-Nothing else reads the geometry, and no effect module reaches the background (the module exports have no
-`btlbg_*` function). `btlbg_getId`, `btlbg_addSkySpeed`, `btlbg_getSkySpeed`, `btlbg_pauseScroll`,
+Nothing else reads the geometry. The module exports have no `btlbg_*` function, but effect modules reach the
+background through two exports: 13 of them call `btlfx_drawBgOffscreen` (a top-down snapshot of the ground into
+VRAM), and fx_0ba / fx_19f call `btlfx_startFadeBackground` (docs/r29/battle-arena-memory.md). `btlbg_getId`, `btlbg_addSkySpeed`, `btlbg_getSkySpeed`, `btlbg_pauseScroll`,
 `btlbg_startRain` and `btlbg_stopRain` have no callers.
 
 ## What a simplified background must keep
@@ -186,6 +187,8 @@ python3 tools/battle_budget.py --battle 678 --battle 679
 python3 tools/battle_budget.py --name Clipper --sort bg   # --sort total|bg|enemies|battle, --verts, --top N
 python3 tools/battle_budget.py --backgrounds [--bg 94 --records]   # per background (and per record)
 python3 tools/battle_budget.py --party                    # what the party column assumes
+python3 tools/battle_budget.py --motion                   # static / sky-only / animated per background (R29)
+python3 tools/battle_budget.py --memory                   # battle buffer use per encounter (R29)
 python3 tools/battle_budget.py --json build/battle_budget.json
 ```
 Disc images: `--img DIR` (or an FF9.IMG with one `--disc`), else `$FF9_DISKS`, else `disks/` in this checkout or
