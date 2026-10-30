@@ -65,7 +65,7 @@ void opening_titleInput(void) {
 }
 
 void opening_titleDraw(void) {
-    func_800A8A8C();
+    opening_titleDrawStub();
     opening_titleDrawBackground();
     opening_titleDrawChoices();
     opening_titleDrawCursor();
@@ -136,7 +136,7 @@ void opening_titleDecide(void) {
     fade_setOnDone(opening_titleOnFadeOut);
 }
 
-void func_800A8A8C(void) {
+void opening_titleDrawStub(void) {
 }
 
 void opening_titleDrawBackground(void) {

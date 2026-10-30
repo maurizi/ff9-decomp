@@ -1177,8 +1177,8 @@ extern FieldBgCtx g_fieldBgCtx;
 extern BgFile *g_fieldBgData;
 extern u8 g_fieldBgClutRows; /* palette rows used from 0xE0 up (fldbg_buildOverlaySprites), never read */
 extern s32 g_fieldBgCtxWork;
-extern u16 D_800C9DDE;
-extern u16 D_800C9DE0;
+extern u16 g_fieldBgiMoveTriCount;
+extern u16 g_fieldBgiMoveEdgeCount;
 extern BgiContext g_fieldBgi;
 extern struct BgEntry *g_fieldBgCtxEntries; /* = g_fieldBgCtx.entries */
 extern s32 g_fieldModelQueue[16];
@@ -1191,15 +1191,15 @@ extern u8 g_fieldPreloadRequestCount; /* g_fieldPreloadRequests count */
 extern u8 g_fieldPreloadExcludeCount; /* g_fieldPreloadExcludes count */
 extern FieldDiscChange g_fieldDiscChange;
 extern FieldBgState g_fieldBgState;
-extern s16 D_800CAA98[];
-extern s16 D_800CAAB8[];
+extern s16 g_fieldBgiMoveTris[];
+extern s16 g_fieldBgiMoveEdges[];
 extern BgiFloorMove g_fieldBgiFloorMoves[];
 extern MenuMain s_menuMain;
 extern void (*s_menuMainInput[])(void);
 extern Unk800C9EF0 g_fieldFlagQueue;
 extern u16 g_fieldMovieFlags;
 extern s16 g_fieldBgiPushCount;
-extern char D_800A7814[]; /* "          1/ny = %lx\n" (walkmesh dump) */
+extern char s_bgiStrInvNy[]; /* "          1/ny = %lx\n" (walkmesh dump) */
 extern s16 g_fieldBgiPushVecs[][3]; /* collision push vectors */
 extern s16 g_fieldBgiPushOnEdge[];
 extern s32 g_fieldBgiPushDist[];
@@ -1421,7 +1421,7 @@ void fld_movieStop(void);
 void fld_movieFinish(void);
 s32 MBG_init(s32, void *); /* overlay loaded at 0x80198000 */
 void mbg_setEndCallback(void (*)());
-void func_8019AB98(s32, s32, s32);
+void mbg_setVolume(s32, s32, s32);
 s32 mbg_play(u32, s32);
 s32 mbg_getStartCamera(void *, u16 *);
 s32 mbg_update(s32);

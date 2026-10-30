@@ -134,7 +134,7 @@ typedef struct {
     s8 y;
 } CardArrow; /* per arrow bit of a card (menuCard_drawArrows) */
 
-extern s32 D_801F30E4[4];
+extern s32 s_menuCardRestoreRepeatIds[4];
 extern void (*s_menuCardInputFuncs[])(); /* state handlers, called without arguments */
 extern RECT s_menuCardDiscardRect;
 extern CardArrow s_menuCardArrows[8];
@@ -172,7 +172,7 @@ void menuCard_refresh(void);
 void menuCard_initImageCache(void);
 void menuCard_loadImages(void);
 void menuCard_initFlip(void);
-extern s32 D_801F30D4[4];
+extern s32 s_menuCardRepeatIds[4];
 void menuCard_drawGrid(void);
 void menuCard_drawInfo(void);
 void menuCard_drawCardStack(s32);

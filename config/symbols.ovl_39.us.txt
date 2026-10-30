@@ -254,3 +254,4 @@ fld_getDiscChangeDisc = 0x800B5064; // type:func [code] ovl_0a function at this 
 fld_getDiscChangeFieldId = 0x800B5084; // type:func [code] ovl_0a function at this address (ovl_0a is loaded alongside this overlay)
 fld_getDiscChangeMask = 0x800B5074; // type:func [code] ovl_0a function at this address (ovl_0a is loaded alongside this overlay)
 fld_getDiscChangeAreaId = 0x800B5094; // type:func [code] ovl_0a function at this address (ovl_0a is loaded alongside this overlay)
+menuSave_initStub = 0x801F5A60; // type:func [code] empty, called by menuSave_init after menuSave_openCardEvents

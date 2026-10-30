@@ -109,7 +109,7 @@ void wm_readtxDone(s32 *arg0) {
     s32 i;
 
     if (g_worldMapDebugFlags & WM_DEBUG_TEXTURE) {
-        printf(D_800A8098, arg0);
+        printf(s_wmStrReadtxDone, arg0);
     }
     w_frameExtruct(arg0);
     p = g_worldReadtxHead.next;
@@ -156,4 +156,4 @@ void wm_frmbufInit(void) {
     g_worldFrmbufDirty = 0;
 }
 
-INCLUDE_RODATA("asm/us/ovl_0c/nonmatchings/w_readtx", D_800A8098);
+INCLUDE_RODATA("asm/us/ovl_0c/nonmatchings/w_readtx", s_wmStrReadtxDone);

@@ -817,11 +817,11 @@ void menuMain_drawParty(void);
 extern RECT *s_menuMainTimeGilRect;
 extern u8 s_menuMainGilSuffix[];
 extern u8 g_worldFog;
-extern u8 D_800CCE4D;
+extern u8 g_worldCellTriggersOn;
 extern WmTexArea *g_worldCurTexArea;
 extern u8 *s_menuMainEquipLabels[5];
-extern char D_800A79D0[];
-extern char D_800A7A0C[];
+extern char s_wmStrFrameExtructExtract[];
+extern char s_wmStrFrameExtructAlready[];
 extern RECT *s_menuMainLocationRect;
 extern s16 g_worldCameraBlendSpeed;
 extern s16 g_worldCameraBlend;
@@ -832,7 +832,7 @@ extern s32 g_worldSpeedSmoothDiv;
 extern s32 g_worldSpeedScaleDiv;
 extern s32 g_vtxScreenXY[]; /* projected screen xy per model vertex */
 extern s32 g_vtxScreenZ[]; /* projected z per model vertex */
-extern s32 D_800CCE2C;
+extern s32 g_worldAutoTurnBoost;
 extern s32 g_worldAutoTurnDiv;
 extern s32 g_worldAutoTurnDivMin;
 extern s32 g_worldAutoTurnDivMax;
@@ -840,7 +840,7 @@ extern s32 g_worldAutoTurnDeadZone;
 extern u8 g_worldAreaCameraGroup[];
 extern u8 g_worldAreaZone[];
 extern u8 g_worldEncounterZoneStart[];
-extern char D_800A7F48[];
+extern char s_wmStrEncounterNoScene[];
 extern WmCameraParams g_worldCameraParams;
 extern WmCameraParams g_worldCameraParamsFrom;
 extern u8 g_worldBackdropOn;
@@ -856,7 +856,7 @@ extern WmMoveMode *g_worldMoveModeInfo;
 extern s32 g_worldWidth; /* map width (wraps) */
 extern s32 g_worldDepth; /* map height (wraps) */
 extern RECT g_worldVramParkRect;
-extern char D_800A720C[]; /* "w_frameSystemDestructor:\n" */
+extern char s_wmStrFrameSystemDestructor[]; /* "w_frameSystemDestructor:\n" */
 extern WmNaviPlace g_worldNaviPlaces[][64];
 extern s32 *g_worldTexBuffers[3];
 extern s32 D_800CE3F8;
@@ -881,7 +881,7 @@ extern u8 g_worldClutAnimFrame[];
 extern u16 g_worldClutAnimOffset[];
 extern WmTexArea g_worldTexAreas[17];
 extern s8 g_worldNaviPage;
-extern char D_800A8098[];
+extern char s_wmStrReadtxDone[];
 extern s32 g_worldPrimPtr;
 extern WmChunkTable *g_worldChunkTable;
 extern WmChunkTable *g_worldChunkTableT;
@@ -911,8 +911,8 @@ extern s32 g_worldChunkCenter;
 extern s32 g_worldChunksLoadedCount;
 extern s32 g_worldChunkListDirty;
 extern WmWeatherData g_worldWeatherData;
-extern char D_800A71F4[]; /* "w_frameMapDestructor:\n" */
-extern char D_800A7A40[]; /* "w_framePackGetPtr : attempt to get %d element with %d max\n" */
+extern char s_wmStrFrameMapDestructor[]; /* "w_frameMapDestructor:\n" */
+extern char s_wmStrFramePackGetPtrRange[]; /* "w_framePackGetPtr : attempt to get %d element with %d max\n" */
 extern void (*s_menuMainInput[])(void);
 extern u8 g_worldSongMusicIds[];
 extern WmCameraState *g_worldCamera;
@@ -944,7 +944,7 @@ extern s16 g_worldFrmbufAreaX[2];
 extern s16 g_worldFrmbufAreaY[2];
 extern s16 g_worldFrmbufClutX[2];
 extern s16 g_worldFrmbufClutY[2];
-extern char D_800A8118[];
+extern char s_wmStrFrmbufTransfer[];
 extern WmCameraFlags *g_worldCameraFlags;
 extern u8 g_worldAutoPilot;
 extern u8 g_worldAutoPilotSavedAutoTurn;
@@ -1004,7 +1004,7 @@ extern u8 g_worldChunkFlags[]; /* map cells, g_worldChunksW per row */
 extern u16 g_worldFormStoryThresholds[11]; /* story progress thresholds (wm_applyStoryForms) */
 extern u8 g_worldFormStatusTable[][11];
 extern u8 D_8007AF55; /* = g_evtGlobalVars.b[0x65], general global flags */
-extern u32 D_800CCB18[2]; /* cell type masks */
+extern u32 g_worldLandCellTypes[2]; /* cell type masks */
 extern u32 g_worldWaterCellTypes[2];
 u8 wm_testCellType(u32 *, u32);
 extern s32 g_worldChunkRunGeneration;
@@ -1022,7 +1022,7 @@ extern s32 g_worldMusicId;
 extern s32 g_worldMusicRequest;
 extern MenuMain s_menuMain;
 extern u8 g_worldState;
-extern char D_800A7CCC[];
+extern char s_wmStrMemorymanDone[];
 extern s16 g_worldTerrainHeightOffsets[][9];
 extern WmMoveMode g_worldMoveModes[];
 extern s16 g_worldClimbSmooth;
@@ -1068,8 +1068,8 @@ typedef struct {
 
 extern u16 g_worldTexScrollAcc[8];
 extern WmTexScroll g_worldTexScrolls[8];
-extern u16 D_800CFEF8;
-extern u16 D_800CFF02;
+extern u16 g_worldTexAnim0Interval;
+extern u16 g_worldTexAnim1Interval;
 extern void *g_worldTexAnimPack;
 extern s8 g_worldTexAnimStep[2];
 extern s8 g_worldTexAnimSeq[];
@@ -1081,7 +1081,6 @@ extern s32 g_worldAmbientSeX[3]; /* sound source x */
 extern s32 g_worldAmbientSeZ[3]; /* sound source z */
 extern u8 g_worldAmbientSe[3]; /* sound ids */
 extern u8 g_worldFormFlags[]; /* flags (wm_applyStoryForms) */
-extern s32 D_800D3300;
 extern u8 g_worldBlockFx7Spin;
 extern u8 g_worldClutAnimFx2;
 extern u8 g_worldCdUser;
@@ -1191,9 +1190,9 @@ extern WmPack *g_worldChunkRunPacks[];
 extern s32 *g_worldChunkRunTex[];
 extern s32 g_worldImageNames[5];
 extern s32 g_worldImageSectors[5]; /* CD sectors */
-extern s32 D_800CCF84[5];
-extern s32 D_800CCF98[5];
-extern char D_800A7BB8[];
+extern s32 g_worldImageNamesDisc1[5];
+extern s32 g_worldImageNamesDisc4[5];
+extern char s_wmStrImageTopSector[];
 /* sprite table (wm_naviDrawFrame) */
 typedef struct {
     s16 x; /* x */
@@ -1270,7 +1269,7 @@ extern WmQuad g_worldBlockBackQuad;
 extern WmQuad g_worldNaviMiniMapArrow; /* radar arrow */
 extern WmQuad g_worldNaviFullMapArrow; /* big-map arrow */
 extern WmScrRect g_worldBlockCullRects[]; /* on-screen test rects */
-extern char D_800A8178[]; /* "Illegal Weather Mode" */
+extern char s_wmStrIllegalWeatherMode[]; /* "Illegal Weather Mode" */
 extern VECTOR g_worldBlockFx7Pos;
 extern VECTOR g_worldBlockFx6Pos;
 extern SVECTOR g_worldBlockFx6CoreRot;
@@ -1307,7 +1306,7 @@ extern u8 g_worldNaviTileR; /* big-map tile colour */
 extern u8 g_worldNaviTileG;
 extern u8 g_worldNaviTileB;
 extern RECT g_worldVramSaveRect;
-extern char D_800A7F48[]; /* encounter fallback message */ /* palette area (wm_systemInit) */
+extern char s_wmStrEncounterNoScene[]; /* encounter fallback message */ /* palette area (wm_systemInit) */
 extern CVECTOR g_worldNaviVehicleColorA; /* marker colours */
 extern CVECTOR g_worldNaviVehicleColorB;
 extern CVECTOR g_worldNaviMountColorA;
@@ -1432,7 +1431,7 @@ extern WmLoadReq g_worldChunkReadReqs[];
 extern WmLoadReq g_worldChunkReadList[];
 extern s32 g_worldChunkRunDir[];
 extern s32 g_worldChunkReadCount;
-extern char D_800A7F94[];
+extern char s_wmStrBlockNoForm[];
 extern SVECTOR g_worldEffectFlatRot; /* rotation used by wm_drawEffects */
 s32 wm_readtxFind(s32, s32);
 u8 wm_findChunkRun(WmChunkSlot **, s32 *, s32 *);
@@ -1486,7 +1485,7 @@ void OuterProduct0(VECTOR *v0, VECTOR *v1, VECTOR *v2);
 /* wm_getBlockHeight (walkmesh height lookup) */
 extern s16 g_worldHitHeights[];
 extern u16 g_worldHitPolys[];
-extern char D_800A7D20[];
+extern char s_wmStrMemorymanError[];
 
 /* wm_movePlayer (walkmesh movement) */
 void wm_controlPlayer(void);
@@ -1503,11 +1502,11 @@ extern s32 g_worldCameraEaseShift;
 extern s32 g_worldCameraEaseDivMin;
 extern s32 g_worldCameraEaseDivMax;
 extern s32 g_worldCameraEaseScale;
-extern s32 D_800CCB14;
+extern s32 g_worldCameraEaseBoost;
 
 /* wm_soundCommand (sound/music request handler) */
 extern s32 g_worldMusicReqId; /* requested music id */
-extern u8 D_800CCA12;  /* byte 2 of g_worldMusicReqId: id kind */
+extern u8 g_worldMusicReqIdKind;  /* byte 2 of g_worldMusicReqId: id kind */
 extern s8 g_worldMusicReqKind;  /* request kind, -1 = none */
 extern s32 g_worldMusicSector; /* CD sector of the music file */
 s32 wm_isMusicFadingOut(void);
@@ -1548,9 +1547,9 @@ s32 evt_isControlEnabled(void); /* main */
 u8 *evt_loadScripts(u8 *p); /* main */
 s32 evt_countNpcActors(s32 unused); /* main */
 void evt_callWorldCellTrigger(s32 a, s32 b, s32 c); /* main */
-void func_800B36AC(void);
+void wm_mountPalettePre(void);
 s32 func_800B8548(void);
-void func_800C16C0(void);
+void wm_naviDrawChocograph(void);
 void game_updateWindows(void); /* main */
 void menu_update(void); /* main */
 void msg_setOtz(s32 a); /* main */

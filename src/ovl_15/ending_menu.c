@@ -47,9 +47,9 @@ void ending_menuInput(void) {
 }
 
 void ending_menuDraw(void) {
-    func_800AD678();
-    func_800AD680();
-    func_800AD688();
+    ending_menuDrawStub1();
+    ending_menuDrawStub2();
+    ending_menuDrawStub3();
     ending_menuDrawCursor();
 }
 
@@ -63,13 +63,13 @@ void ending_menuDecide(void) {
     fade_setOnDone(ending_menuOnFadeOut);
 }
 
-void func_800AD678(void) {
+void ending_menuDrawStub1(void) {
 }
 
-void func_800AD680(void) {
+void ending_menuDrawStub2(void) {
 }
 
-void func_800AD688(void) {
+void ending_menuDrawStub3(void) {
 }
 
 void ending_menuDrawCursor(void) {

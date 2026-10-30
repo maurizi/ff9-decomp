@@ -1,0 +1,118 @@
+# R30 overlay naming round: applied OLD NEW pairs (and # FIELDS lines) per binary
+
+## ovl_0a
+D_800A7814 s_bgiStrInvNy
+func_800B58A8 fld_discChangeMenu4Update
+func_800B58B0 fld_discChangeMenu4Leave
+func_800B5928 fld_discChangeMenu8Update
+func_800B5930 fld_discChangeMenu8Leave
+D_800C9DDE g_fieldBgiMoveTriCount
+D_800CAA98 g_fieldBgiMoveTris
+D_800C9DE0 g_fieldBgiMoveEdgeCount
+D_800CAAB8 g_fieldBgiMoveEdges
+func_800C77DC bgi_getMoveTris
+func_800C7914 bgi_getMoveEdges
+func_8019AB98 mbg_setVolume
+
+## ovl_0c
+D_800A71F4 s_wmStrFrameMapDestructor
+D_800A720C s_wmStrFrameSystemDestructor
+D_800A79D0 s_wmStrFrameExtructExtract
+D_800A7A0C s_wmStrFrameExtructAlready
+D_800A7A40 s_wmStrFramePackGetPtrRange
+D_800A7AE8 s_wmImageFileNames
+D_800A7BB8 s_wmStrImageTopSector
+D_800A7CCC s_wmStrMemorymanDone
+D_800A7D20 s_wmStrMemorymanError
+D_800A7F48 s_wmStrEncounterNoScene
+D_800A7F94 s_wmStrBlockNoForm
+D_800A8098 s_wmStrReadtxDone
+D_800A80BC s_wmStrFrmbufReqOver
+D_800A80E0 s_wmStrFrmbufError
+D_800A80F8 s_wmStrFrmbufRequestError
+D_800A8118 s_wmStrFrmbufTransfer
+D_800A8178 s_wmStrIllegalWeatherMode
+D_800A832C s_wmStrMusicNormalSong
+D_800A8350 s_wmStrMusicAirShipSong
+D_800A8374 s_wmStrMusicChocoboSong
+D_800A8398 s_wmStrMusicDisc4Song
+D_800A83B8 s_wmStrMusicFieldSong1
+D_800A83DC s_wmStrMusicFieldSong2
+D_800A8400 s_wmStrMusicUnknownError
+D_800A8424 s_wmStrMusicAccepted
+D_800A8430 s_wmStrMusicDenied
+D_800A844C s_wmStrMusicNotReady
+D_800A7164 s_wmStrMovementChangeSP2
+D_800A8644 s_menuMainEquipLabelStrs
+D_800CCF84 g_worldImageNamesDisc1
+D_800CCF98 g_worldImageNamesDisc4
+D_800CCA12 g_worldMusicReqIdKind
+D_800CCB18 g_worldLandCellTypes
+D_800CCB14 g_worldCameraEaseBoost
+D_800CCE2C g_worldAutoTurnBoost
+D_800CCE4D g_worldCellTriggersOn
+D_800CFEF8 g_worldTexAnim0Interval
+D_800CFF02 g_worldTexAnim1Interval
+func_800C16C0 wm_naviDrawChocograph
+func_800B84E8 wm_runSetupStep
+func_800B36AC wm_mountPalettePre
+
+## ovl_0d
+D_800B3664 g_tmMusicRequest
+
+## ovl_14
+func_800A8A8C opening_titleDrawStub
+
+## ovl_15
+func_800AD678 ending_menuDrawStub1
+func_800AD680 ending_menuDrawStub2
+func_800AD688 ending_menuDrawStub3
+func_800AD380 bj_wagerDrawStub1
+func_800AD388 bj_wagerDrawStub2
+func_800AB3C4 bj_actionDrawStub1
+func_800AB3CC bj_actionDrawStub2
+D_800AE4A8 g_messagesUnused
+D_800AE430 g_theEndUnused
+
+## ovl_32
+func_801F9660 menuChocograph_loadImagesStub
+D_801EF6FC s_menuChocographPictureImages
+
+## ovl_33
+D_801EE644 s_menuEquipColon
+func_801F1148 menuAbility_initStub
+
+## ovl_36
+D_801F30D4 s_menuCardRepeatIds
+D_801F30E4 s_menuCardRestoreRepeatIds
+
+## ovl_37
+func_801F2F30 menuItem_exitStub
+func_801F3038 menuItem_initStub
+D_801F3140 s_menuItemChocoboTitle
+
+## ovl_38
+func_801EF9B4 menuStatus_drawStub
+D_801EE264 s_menuStatusColon
+
+## ovl_39
+func_801F5A60 menuSave_initStub
+
+## ovl_3c
+func_801F47F0 shop_updateStub
+
+## ovl_64
+func_8019AB98 mbg_setVolume
+func_8019D3F0 DecDCTBufSize
+func_8019D354 mdec_getStatus
+func_8019D36C mdec_timeout
+D_8019E008 g_mdec1Reg
+D_80198700 s_mbgTestMoviePaths
+D_8019F4A8 g_mbgMaskStp
+D_8019DC9C g_mbgFrame50Flag
+# D_8019DC97 (byte 3 of g_mbgPlayer) is now written as g_mbgPlayer.modeSwitch
+
+## ovl_65
+func_801F325C rewards_stepGilStub
+func_801EF6D8 battleEnd_loadPortraits
+# D_800FDF4D (byte 0x1D of g_btlRewards) is now g_btlRewards.fleeGil (new BattleResult field, ovl_0b Unk800FDF30.fleeGil)

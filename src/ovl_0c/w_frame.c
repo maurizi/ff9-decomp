@@ -253,9 +253,9 @@ void wm_updateDraw(void) {
     }
 }
 
-INCLUDE_RODATA("asm/us/ovl_0c/nonmatchings/w_frame", D_800A71F4);
+INCLUDE_RODATA("asm/us/ovl_0c/nonmatchings/w_frame", s_wmStrFrameMapDestructor);
 
-INCLUDE_RODATA("asm/us/ovl_0c/nonmatchings/w_frame", D_800A720C);
+INCLUDE_RODATA("asm/us/ovl_0c/nonmatchings/w_frame", s_wmStrFrameSystemDestructor);
 
 /* script request (w_frameSetParameter) */
 void w_frameSetParameter(u32 arg0, s32 arg1) {
@@ -647,7 +647,7 @@ void wm_finishLoad(void) {
 
 void w_frameMapDestructor(void) {
     if (g_worldMapDebugFlags & WM_DEBUG_MEMORY) {
-        printf(D_800A71F4);
+        printf(s_wmStrFrameMapDestructor);
     }
     wm_stopAllSe();
     wm_mapTerm();
@@ -659,7 +659,7 @@ void w_frameSystemDestructor(void) {
     MoveImage(&r, 0x100, 0xFD);
     DrawSync(0);
     if (g_worldMapDebugFlags & WM_DEBUG_MEMORY) {
-        printf(D_800A720C);
+        printf(s_wmStrFrameSystemDestructor);
     }
     wm_termEffects();
     wm_musicTerm();
@@ -676,11 +676,11 @@ s32 wm_getChunkBuffer(void) {
     return g_worldChunkBuffer;
 }
 
-INCLUDE_RODATA("asm/us/ovl_0c/nonmatchings/w_frame", D_800A79D0);
+INCLUDE_RODATA("asm/us/ovl_0c/nonmatchings/w_frame", s_wmStrFrameExtructExtract);
 
-INCLUDE_RODATA("asm/us/ovl_0c/nonmatchings/w_frame", D_800A7A0C);
+INCLUDE_RODATA("asm/us/ovl_0c/nonmatchings/w_frame", s_wmStrFrameExtructAlready);
 
-INCLUDE_RODATA("asm/us/ovl_0c/nonmatchings/w_frame", D_800A7A40);
+INCLUDE_RODATA("asm/us/ovl_0c/nonmatchings/w_frame", s_wmStrFramePackGetPtrRange);
 
 s32 wm_canCallChocobo(void) {
     s32 n = g_worldPlayer->actorType;
@@ -723,14 +723,14 @@ s32 w_frameExtruct(s32 *arg0) {
 
     if (!(*arg0 & 0x80000000)) {
         if (g_worldMapDebugFlags & WM_DEBUG_PACK) {
-            printf(D_800A79D0, arg0, *arg0 & 0x7FFFFFFF);
+            printf(s_wmStrFrameExtructExtract, arg0, *arg0 & 0x7FFFFFFF);
         }
         *arg0 |= 0x80000000;
         for (i = 0; i < (*arg0 & 0x7FFFFFFF); i++) {
             arg0[i + 1] += (s32)arg0;
         }
     } else if (g_worldMapDebugFlags & WM_DEBUG_PACK) {
-        printf(D_800A7A0C, arg0);
+        printf(s_wmStrFrameExtructAlready, arg0);
     }
     return *arg0 & 0x7FFFFFFF;
 }
@@ -739,7 +739,7 @@ void *w_framePackGetPtr(void **arg0, s32 arg1) {
     s32 n = (s32)arg0[0] & 0x7FFFFFFF;
 
     if ((g_worldMapDebugFlags & WM_DEBUG_PACK) && n < arg1) {
-        printf(D_800A7A40, arg1, n);
+        printf(s_wmStrFramePackGetPtrRange, arg1, n);
     }
     return arg0[arg1 + 1];
 }
@@ -769,7 +769,7 @@ s32 wm_getPadPressed(void) {
     return 0;
 }
 
-void func_800B84E8(void) {
+void wm_runSetupStep(void) {
     wm_applyEncounterEvents();
     wm_frameSetup();
     wm_initClutAnims();
@@ -859,14 +859,14 @@ void wm_updateColorMatrices(void) {
 void wm_frameSetup(void) {
 }
 
-INCLUDE_RODATA("asm/us/ovl_0c/nonmatchings/w_frame", D_800A7AE8);
+INCLUDE_RODATA("asm/us/ovl_0c/nonmatchings/w_frame", s_wmImageFileNames);
 
 void wm_initDiscImage(void) {
     s32 i;
 
     if (g_worldDataSet == WM_DATASET_DISC1) {
         for (i = 0; i < 5; i++) {
-            g_worldImageNames[i] = D_800CCF84[i];
+            g_worldImageNames[i] = g_worldImageNamesDisc1[i];
         }
         printf("Read CD Image [Disc-1]\n");
         g_worldImageSectors[0] = file_find(0xC, 0x3F3)->sector + g_gameState->imgSector;
@@ -874,7 +874,7 @@ void wm_initDiscImage(void) {
         g_worldImageSectors[4] = file_find(0xC, 0x407)->sector + g_gameState->imgSector;
     } else {
         for (i = 0; i < 5; i++) {
-            g_worldImageNames[i] = D_800CCF98[i];
+            g_worldImageNames[i] = g_worldImageNamesDisc4[i];
         }
         printf("Read CD Image [Disc-4]\n");
         g_worldImageSectors[0] = file_find(0xC, 0x3F6)->sector + g_gameState->imgSector;
@@ -882,8 +882,8 @@ void wm_initDiscImage(void) {
         g_worldImageSectors[4] = file_find(0xC, 0x40A)->sector + g_gameState->imgSector;
     }
     if (g_worldMapDebugFlags & WM_DEBUG_MEMORY) {
-        printf(D_800A7BB8, g_worldImageSectors[0]);
+        printf(s_wmStrImageTopSector, g_worldImageSectors[0]);
     }
 }
 
-INCLUDE_RODATA("asm/us/ovl_0c/nonmatchings/w_frame", D_800A7BB8);
+INCLUDE_RODATA("asm/us/ovl_0c/nonmatchings/w_frame", s_wmStrImageTopSector);

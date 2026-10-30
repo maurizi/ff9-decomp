@@ -26,7 +26,7 @@ void menuSave_init(void) {
     s_menuSave.cardStatus[1] = CARD_RES_ERROR;
     menuSave_cardInit();
     menuSave_openCardEvents();
-    func_801F5A60();
+    menuSave_initStub();
     for (i = 0; i < 2; i++) {
         s_menuSave.savedPortMask[i] = g_padPortMask[i];
         g_padPortMask[i] |= 0x300;
@@ -498,7 +498,7 @@ void menuSave_returnToSlots(void) {
     fade_inDefault();
 }
 
-void func_801F5A60(void) {
+void menuSave_initStub(void) {
 }
 
 void menuSave_drawBookIcon(s32 x, s32 y, s32 z, s32 idx) {

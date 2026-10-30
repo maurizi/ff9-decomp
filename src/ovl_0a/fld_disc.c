@@ -210,10 +210,10 @@ void fld_discChangeOpenMenu4(void) {
     menu_setFadeInOnClose(0);
 }
 
-void func_800B58A8(void) {
+void fld_discChangeMenu4Update(void) {
 }
 
-void func_800B58B0(void) {
+void fld_discChangeMenu4Leave(void) {
 }
 
 void fld_discChangeBackToPrompt(void) {
@@ -226,10 +226,10 @@ void fld_discChangeOpenMenu8(void) {
     menu_setFadeInOnClose(0);
 }
 
-void func_800B5928(void) {
+void fld_discChangeMenu8Update(void) {
 }
 
-void func_800B5930(void) {
+void fld_discChangeMenu8Leave(void) {
 }
 
 void fld_discChangeFinish(void) {

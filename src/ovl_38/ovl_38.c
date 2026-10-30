@@ -186,7 +186,7 @@ INCLUDE_RODATA("asm/us/ovl_38/nonmatchings/ovl_38", s_menuStatusCmdTable);
 
 INCLUDE_RODATA("asm/us/ovl_38/nonmatchings/ovl_38", s_menuStatusCmdNames);
 
-INCLUDE_RODATA("asm/us/ovl_38/nonmatchings/ovl_38", D_801EE264);
+INCLUDE_RODATA("asm/us/ovl_38/nonmatchings/ovl_38", s_menuStatusColon);
 
 void menuStatus_drawEquipment(void) {
     RECT *r = &s_menuStatus.win;
@@ -200,7 +200,7 @@ void menuStatus_drawEquipment(void) {
     c = g_gameState->gameData->party[st->slot];
     for (i = 0; i < 5; i++) {
         s_menuStatus.prim = ui_buildSprite(r->x + 0x74, r->y + 0x68 + i * 15 + 1, &g_ot[0x1D], i + 0xF9, 0, buf, s_menuStatus.prim);
-        s_menuStatus.prim = text_buildSmall(r->x + 0x84, r->y + 0x68 + i * 15 + 3, &g_ot[0x1D], D_801EE264, 0, s_menuStatus.prim);
+        s_menuStatus.prim = text_buildSmall(r->x + 0x84, r->y + 0x68 + i * 15 + 3, &g_ot[0x1D], s_menuStatusColon, 0, s_menuStatus.prim);
         id = c->equip[i];
         if (id != ITEM_NONE) {
             ui_drawItemIcon(r->x + 0x8D, r->y + 0x68 + i * 15 - 1, 0x1D, id, 1);
@@ -359,7 +359,7 @@ void menuStatus_draw(void) {
     menuStatus_drawExp();
     menuStatus_drawEquipment();
     menuStatus_drawAbilityPages();
-    func_801EF9B4();
+    menuStatus_drawStub();
 }
 
 void menuStatus_updateAnims(void) {
@@ -395,7 +395,7 @@ void menuStatus_drawFrame(void) {
     win_drawShadow(r, 0x1E, 2);
 }
 
-void func_801EF9B4(void) {
+void menuStatus_drawStub(void) {
     fade_isBusy();
 }
 

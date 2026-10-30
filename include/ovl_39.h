@@ -614,7 +614,7 @@ void menuSave_resetToSlots(void);
 void menuSave_onSlotsFadedIn(void);
 void menuSave_close(void);
 void menuSave_selectFile(void);
-void func_801F5A60(void);
+void menuSave_initStub(void);
 void menuSave_loadImage(void);
 void menuSave_freeImage(void);
 u8 menuSave_isSlotReady(s32, u8);

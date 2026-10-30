@@ -25,7 +25,7 @@ int CdPosToInt(CdlLOC *p);
 
 /* PsyQ libpress */
 void DecDCToutCallback(void (*func)());
-extern volatile u32 *D_8019E008; /* MDEC1 register pointer */
+extern volatile u32 *g_mdec1Reg; /* MDEC1 register pointer */
 
 /* ---- this overlay ---- */
 
@@ -70,7 +70,7 @@ typedef struct {
     s32 width; /* frame width */
     s32 height; /* frame height */
     s32 audioFrames; /* frames with audio pushed (mbg_streamPushAudio) */
-    s32 volumeDelay; /* at audioFrames == volumeDelay: akao_sendCmdE5(volumeFade, volume) (func_8019AB98, default 3) */
+    s32 volumeDelay; /* at audioFrames == volumeDelay: akao_sendCmdE5(volumeFade, volume) (mbg_setVolume, default 3) */
     s32 volumeFade; /* default 4 */
     s32 volume; /* default 0x7F; the field passes movieSndVolume */
     void *vlcTable;
@@ -282,15 +282,14 @@ extern Ovl64Vlc4C8 g_mbgMaskCursor;
 extern u16 g_mbgMaskBit;
 extern u8 g_mbgLoadRectIdx;
 extern RECT g_mbgLoadRects[4];
-extern u8 D_8019DC97; /* = g_mbgPlayer.modeSwitch, referenced by its own name */
 void mbg_applyMask(void *, u32 *, u16);
 typedef struct {
     u8 pad0[3];
     u8 len; /* packet length (2) */
     u32 code[2]; /* 0xE6000002 (check mask), 0 */
 } Ovl64Stp;
-extern Ovl64Stp D_8019F4A8[2];
-extern s32 D_8019DC9C;
+extern Ovl64Stp g_mbgMaskStp[2];
+extern s32 g_mbgFrame50Flag;
 s32 mbg_stop(void);
 s32 mbg_streamPushAudio(void);
 /* PsyQ libpress */
@@ -338,7 +337,7 @@ s32 mbg_streamSeek(CdlLOC *loc);
 s32 mbg_streamGetPos(CdlLOC *loc);
 s32 mbg_streamUngetFrame(void);
 s32 mbg_streamFreeFrame(u8 *data);
-u32 func_8019D3F0(u16 *p);
+u32 DecDCTBufSize(u16 *p);
 void mbg_mdecOutCallback(void);
 
 /* mbg_streamReadyCallback: the two cross-jumped timeout blocks (one inline, called twice) */

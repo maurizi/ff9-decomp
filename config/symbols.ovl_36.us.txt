@@ -66,3 +66,5 @@ s_menuCardImage2 = 0x801EEFB4; // [code] clut then pixels loaded by menuCard_loa
 s_menuCardImageOffsets = 0x801F0274; // [code] per card id, offset of its packed image part (from 4 bytes before the table), menuCard_loadCardImage
 s_menuCardSlotClutRect = 0x801EDF08; // [code] RECT of a cache slot's clut row (y set per slot), menuCard_saveVram / menuCard_restoreVram
 s_menuCardSlotRect = 0x801EDF10; // [code] RECT of a cache slot's 19x47 pixel block (x, y set per slot), menuCard_saveVram / menuCard_restoreVram
+s_menuCardRepeatIds = 0x801F30D4; // [code] {0,1,2,3} pad repeat channels menuCard_init saves and sets to delay 0x10 / interval 10
+s_menuCardRestoreRepeatIds = 0x801F30E4; // [code] {0,1,2,3} pad repeat channels menuCard_exit restores

@@ -141,7 +141,7 @@ void shop_update(void) {
     }
     shop_inputMenu();
     shop_drawMenuAll();
-    func_801F47F0();
+    shop_updateStub();
 }
 
 void shop_exit(void) {
@@ -160,7 +160,7 @@ void shop_drawMenuAll(void) {
     shop_drawMenuCursor();
 }
 
-void func_801F47F0(void) {
+void shop_updateStub(void) {
 }
 
 void shop_drawMenuCursor(void) {

@@ -94,8 +94,8 @@ s32 tm_soundCmd(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4) {
             if (g_gameState->gameData->soundLoadState != 0) {
                 return -1;
             }
-            if (D_800B3664 == -1) {
-                D_800B3664 = kind;
+            if (g_tmMusicRequest == -1) {
+                g_tmMusicRequest = kind;
             }
             if (g_gameState->gameData->musicId[0] != arg1) {
                 if (g_gameState->gameData->flags & 0x20000000) {
@@ -111,7 +111,7 @@ s32 tm_soundCmd(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4) {
             if (!(g->flags & 0x20000000)) {
                 akao_fadeMusicVolumeFrom(g->musicHandle[0], 0xA, 0, g->musicVolume[0]);
             }
-            D_800B3664 = -1;
+            g_tmMusicRequest = -1;
             g_gameState->gameData->flags |= 0x30000000;
             return 0;
         case 1:

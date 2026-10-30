@@ -124,3 +124,5 @@ s_rewardsImage1 = 0x801EE19C; // [code] CLUT and image (the level-up label) load
 s_gameoverClearRect = 0x801EF260; // [code] {0, 0, 320, 224}, cleared by gameover_main
 s_gameoverVramRect = 0x801EF27C; // [code] {0, 0, 640, 224}, cleared by gameover_initDisp
 btlui_loadPortraits = 0x800E9DBC; // type:func [code] ovl_0b function at this address (ovl_0b is loaded alongside this overlay)
+rewards_stepGilStub = 0x801F325C; // type:func [code] empty, called by rewards_stateGil after rewards_stepGil
+battleEnd_loadPortraits = 0x801EF6D8; // type:func [code] calls ovl_0b btlui_loadPortraits and returns 0, battleEnd_init
