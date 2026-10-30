@@ -1050,9 +1050,9 @@ typedef struct {
     u8 bones[3]; /* bones for camera anchors; [2] the head (btl_getUnitBodyPos) */
     s32 camera; /* cast camera data (btl_getSceneData(5 + type), btlfx_playCmdCamera) */
     u16 deathCry; /* sound (btl_playDeathCry) */
-    u8 unk32[6];
-    u8 unk38[6];
-    u8 unk3E[6];
+    u8 iconBones[6]; /* status icon attach points: bone (btl_drawStatusIcons, as D_800F6B48 for players) */
+    u8 iconY[6]; /* y offset (<< 4) */
+    u8 iconZ[6]; /* z offset (<< 4) */
     u16 gil; /* gil (g_btlRewards.gil; an escape drops a tenth of the remaining enemies' gil, Flee-Gil gains it: btl_victory) */
     u16 exp; /* exp (g_btlRewards.exp) */
     union {
@@ -1254,8 +1254,8 @@ typedef struct {
 
 /* Battle.unk1358 ring entry (btl_newPopup hands out the next one) */
 typedef struct {
-    u8 *unk0; /* animation, 0xFF-terminated */
-    u16 unk4; /* glyph index into g_uiSprites */
+    u8 *anim; /* animation, 0xFF-terminated */
+    u16 glyph; /* glyph index into g_uiSprites */
     u8 pad6[8 - 6];
 } Unk800F6A54;
 
@@ -1269,16 +1269,16 @@ typedef struct BtlPopup {
     union {
         s32 w; /* cleared as a word */
         struct {
-            u8 unk0; /* delay */
-            s8 unk1; /* y offset */
-            u8 unk2;
-            u8 unk3;
+            u8 delay; /* frames before it shows (btl_drawPopups) */
+            s8 yOfs; /* y offset that keeps it on screen, fixed in its first frame (btl_clampPopup) */
+            u8 kind; /* 0 hp, 1 mp (btl_popupHp/Mp), 2 text (btl_popupText): D_800F6A7C draw handler; 3+ removes it */
+            u8 noClamp; /* status-tick popups (btl_spawnTickPopups): keep yOfs, no clamping */
         } b;
-    } unk10;
+    } info;
     union {
         u32 w; /* packed digits (btl_packDigits) */
-        Unk800F6A54 *p;
-    } unk14;
+        Unk800F6A54 *p; /* text popup: animation and glyph */
+    } data;
     u16 clut;
     u8 pad1A[0x1C - 0x1A];
 } BtlPopup; /* 0x1C */
@@ -1291,10 +1291,10 @@ typedef struct {
     union {
         s32 w; /* cleared as a word */
         u8 b[4]; /* b[0]: delay, b[1]: item index, b[2]: state */
-    } unk1C8;
-    BtlEnemy *unk1CC;
-    u8 unk1D0;
-    u8 unk1D1;
+    } scan; /* Scan banner sequence (btl_updateScan) */
+    BtlEnemy *detectEnemy; /* enemy whose steal items Detect lists, NULL = idle (btl_startDetect, btl_updateDetect) */
+    u8 detectDelay; /* frames until the next item banner */
+    u8 detectSlot; /* next steal slot to show (0-3, 4 = done) */
     u8 pad1D2[0x1D4 - 0x1D2];
     u8 hiddenMask; /* units hidden from status effects (mask) */
     u8 pad1D5[0x1D8 - 0x1D5];
@@ -2977,12 +2977,12 @@ typedef struct {
 /* packed screen coordinate */
 
 typedef struct {
-    u32 *unk0; /* next free primitive */
-    u32 *unk4; /* ordering table entry */
-    s32 unk8;  /* rgb */
+    u32 *prim; /* next free primitive */
+    u32 *ot; /* ordering table entry */
+    s32 rgb; /* colour word: rgb, bit 25 semi-transparent (popups: animation bit 7), bit 24 set */
     u8 padC[0x10 - 0xC];
-    XY32 unk10;
-    u16 unk14; /* clut */
+    XY32 xy; /* screen position (projected from the popup, then offset) */
+    u16 clut; /* clut (BtlPopup.clut), shifted into the uv word */
 } Unk800CCD00;
 
 void btl_drawPopupGlyph(Unk800CCD00 *, Unk800686E8 *);
@@ -2994,13 +2994,13 @@ void btl_drawStatusIcons(Unk800CCD00 *);
 
 /* status-effect sprites drawn on battle units (btl_drawStatusIcons) */
 typedef struct {
-    s32 unk0; /* status mask that shows it */
-    s32 unk4; /* status mask that hides it */
-    u8 *unk8; /* sprite data */
-    u8 unkC;  /* attach point index */
-    u8 unkD;  /* semi-trans mode */
-    u8 unkE;  /* flat (btlfx_drawSprite) */
-    u8 unkF;  /* turns with the unit */
+    s32 showMask; /* status mask that shows it */
+    s32 hideMask; /* status mask that hides it */
+    u8 *sprite; /* sprite data */
+    u8 attach; /* attach point index (D_800F6B48 rows for players, BtlEnemyType.iconBones/iconY/iconZ for enemies) */
+    u8 abr; /* semi-trans mode */
+    u8 single; /* nonzero: one animated sprite (btlfx_drawSprite), else a sprite set (btlfx_drawSprites) */
+    u8 turnsWithUnit; /* turns with the unit */
 } Unk800F6A88;
 
 extern Unk800F6A88 g_btlStatusIcons[];
@@ -3011,9 +3011,9 @@ extern u8 D_800F6C30[][6];
 
 /* status countdowns drawn as digits over battle units (btl_drawStatusCountdown) */
 typedef struct {
-    s32 unk0; /* status mask */
-    s16 unk4; /* status timer index (BtlUnit.statusTimers) */
-    u16 unk6; /* nonzero: colour by level */
+    s32 status; /* status mask */
+    s16 timer; /* status timer index (BtlUnit.statusTimers) */
+    u16 colorByLevel; /* nonzero: grey level from the count (btl_drawStatusCountdown) */
 } Unk800F6CA4;
 
 extern Unk800F6CA4 D_800F6CA4[];
@@ -3526,9 +3526,9 @@ void btlui_drawPanelHeader(void);
 u8 btl_isCmdQueued(BtlUnit *, u8);
 void btlui_targetFirst(u8, u8);
 typedef struct {
-    u32 unk0; /* status mask */
-    s16 unk4; /* icon */
-    s16 unk6; /* width */
+    u32 status; /* status mask */
+    s16 icon; /* g_uiSprites index */
+    s16 width; /* x advance (btlui_drawStatusList2) */
 } Unk800F8F98;
 extern Unk800F8F98 D_800F8F98[];
 extern Unk800F8F98 D_800F8F18[];

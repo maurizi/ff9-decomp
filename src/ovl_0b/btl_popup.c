@@ -53,15 +53,15 @@ void btl_spawnTickPopups(BtlUnit *arg0) {
     u8 n = 0;
     if (!((arg0->flags >> 22) & 1)) {
         if (f & 1) {
-            btl_popupHp((s32)arg0, arg0->tickHeal, (f & 8) ? 0 : 0xC0, 0)->unk10.b.unk3 = 1;
+            btl_popupHp((s32)arg0, arg0->tickHeal, (f & 8) ? 0 : 0xC0, 0)->info.b.noClamp = 1;
             n = 4;
         }
         if (f & 2) {
-            btl_popupHp((s32)arg0, arg0->tickDamage, 0, n)->unk10.b.unk3 = 1;
+            btl_popupHp((s32)arg0, arg0->tickDamage, 0, n)->info.b.noClamp = 1;
             n += 4;
         }
         if (f & 4) {
-            btl_popupMp((s32)arg0, arg0->tickMpDamage, 0, n)->unk10.b.unk3 = 1;
+            btl_popupMp((s32)arg0, arg0->tickMpDamage, 0, n)->info.b.noClamp = 1;
         }
     }
     arg0->tickFlags = 0;
@@ -85,7 +85,7 @@ BtlPopup *btl_newPopup(BtlUnit *u) {
     p = &r->entries[i];
     p->unit = u;
     p->frame = 0;
-    p->unk10.w = 0;
+    p->info.w = 0;
     bone = &u->model->bones[u->baseBone];
     p->x = bone->tx;
     p->y = bone->ty - 4;
@@ -95,19 +95,19 @@ BtlPopup *btl_newPopup(BtlUnit *u) {
 
 BtlPopup *btl_popupHp(s32 arg0, s16 arg1, s16 arg2, u8 arg3) {
     BtlPopup *p = btl_newPopup((BtlUnit *)arg0);
-    p->unk10.b.unk2 = 0;
-    p->unk10.b.unk0 = arg3;
+    p->info.b.kind = 0;
+    p->info.b.delay = arg3;
     p->clut = arg2;
-    p->unk14.w = btl_packDigits(arg1);
+    p->data.w = btl_packDigits(arg1);
     return p;
 }
 
 BtlPopup *btl_popupMp(s32 arg0, s16 arg1, s16 arg2, u8 arg3) {
     BtlPopup *p = btl_newPopup((BtlUnit *)arg0);
-    p->unk10.b.unk2 = 1;
-    p->unk10.b.unk0 = arg3;
+    p->info.b.kind = 1;
+    p->info.b.delay = arg3;
     p->clut = arg2;
-    p->unk14.w = btl_packDigits(arg1);
+    p->data.w = btl_packDigits(arg1);
     return p;
 }
 
@@ -118,9 +118,9 @@ BtlPopup *btl_popupText(arg0, arg1, arg2, arg3)
     s8 arg3;
 {
     BtlPopup *p = btl_newPopup((BtlUnit *)arg0);
-    p->unk10.b.unk2 = 2;
-    p->unk10.b.unk0 = arg3;
-    p->unk14.p = &D_800F6A54[arg1];
+    p->info.b.kind = 2;
+    p->info.b.delay = arg3;
+    p->data.p = &D_800F6A54[arg1];
     p->clut = arg2;
     return p;
 }
@@ -162,26 +162,26 @@ u8 *btl_drawPopups(u8 *arg0) {
     Unk800F78A40 *e;
 
     r = &g_gameState->gameData->unk8E4.battle->popups;
-    c.unk0 = (u32 *)arg0;
-    c.unk4 = &g_gameState->gameData->unk10[g_gameState->gameData->unk8][4];
+    c.prim = (u32 *)arg0;
+    c.ot = &g_gameState->gameData->unk10[g_gameState->gameData->unk8][4];
     gte_SetRotMatrix(&g_gameState->gameData->unk18);
     gte_SetTransMatrix(&g_gameState->gameData->unk18);
     j = r->last;
     for (i = 0; i < 16; i++) {
         p = &r->entries[j];
         if (p->unit != NULL) {
-            if (p->unk10.b.unk2 >= 3) {
+            if (p->info.b.kind >= 3) {
                 p->unit = NULL;
-            } else if (p->unk10.b.unk0 != 0) {
-                p->unk10.b.unk0--;
+            } else if (p->info.b.delay != 0) {
+                p->info.b.delay--;
             } else {
                 gte_ldv0(&p->x);
                 gte_rtps();
-                gte_stsxy(&c.unk10);
-                if (p->unk10.b.unk1 != 0 && (u16)(c.unk10.s.y - 21) < 180) {
-                    p->unk10.b.unk1 = 0;
+                gte_stsxy(&c.xy);
+                if (p->info.b.yOfs != 0 && (u16)(c.xy.s.y - 21) < 180) {
+                    p->info.b.yOfs = 0;
                 }
-                D_800F6A7C[p->unk10.b.unk2](p, &c);
+                D_800F6A7C[p->info.b.kind](p, &c);
             }
         }
         j++;
@@ -190,10 +190,10 @@ u8 *btl_drawPopups(u8 *arg0) {
         }
     }
     btl_drawStatusCountdown(&c);
-    ((u8 *)c.unk0)[3] = 1;
-    c.unk0[1] = get_mode(0, 0, D_80068BF0[0].unk6);
-    addPrim(c.unk4, c.unk0);
-    c.unk0 += 2;
+    ((u8 *)c.prim)[3] = 1;
+    c.prim[1] = get_mode(0, 0, D_80068BF0[0].unk6);
+    addPrim(c.ot, c.prim);
+    c.prim += 2;
     e = g_btlfxEnv->state;
     if (((e->flags ^ 1) & 1) | ((e->phase == -1) | ((e->flags >> 15) & 1))) {
         btl_drawStatusIcons(&c);
@@ -208,7 +208,7 @@ u8 *btl_drawPopups(u8 *arg0) {
         }
     }
     r->hiddenMask = mask;
-    return (u8 *)c.unk0;
+    return (u8 *)c.prim;
 }
 
 void btl_drawNumberPopup(BtlPopup *arg0, Unk800CCD00 *arg1) {
@@ -225,25 +225,25 @@ void btl_drawNumberPopup(BtlPopup *arg0, Unk800CCD00 *arg1) {
     }
     c = anim[arg0->frame];
     if (!(arg0->unit->model->flags & 0x10)) {
-        n = arg0->unk14.w;
-        arg1->unk8 = (c & 0x80) ? 0x03000000 : 0x01000000;
-        arg1->unk14 = arg0->clut;
+        n = arg0->data.w;
+        arg1->rgb = (c & 0x80) ? 0x03000000 : 0x01000000;
+        arg1->clut = arg0->clut;
         w = (n >> 16) * 8;
-        arg1->unk10.s.x -= w >> 1;
-        arg1->unk10.s.y -= (c & 0x7F) + 5;
-        if (arg0->unk10.b.unk3 == 0) {
+        arg1->xy.s.x -= w >> 1;
+        arg1->xy.s.y -= (c & 0x7F) + 5;
+        if (arg0->info.b.noClamp == 0) {
             x = w;
-            if (arg0->unk10.b.unk2 != 0) {
+            if (arg0->info.b.kind != 0) {
                 x = D_80068BE8.unk4 + w;
             }
             btl_clampPopup(arg0, arg1, x, 10);
         } else {
-            arg1->unk10.s.y += arg0->unk10.b.unk1;
+            arg1->xy.s.y += arg0->info.b.yOfs;
         }
         btl_drawPopupDigits(arg1, n);
-        if (arg0->unk10.b.unk2 != 0) {
-            arg1->unk10.s.x += (n >> 16) * 8;
-            arg1->unk10.s.y += 3;
+        if (arg0->info.b.kind != 0) {
+            arg1->xy.s.x += (n >> 16) * 8;
+            arg1->xy.s.y += 3;
             btl_drawPopupGlyph(arg1, &D_80068BE8);
         }
     }
@@ -257,15 +257,15 @@ void btl_drawTextPopup(BtlPopup *arg0, Unk800CCD00 *arg1) {
     u8 c;
     Unk800686E8 *g;
 
-    anim = arg0->unk14.p->unk0;
+    anim = arg0->data.p->anim;
     c = anim[arg0->frame];
     if (!(arg0->unit->model->flags & 0x10)) {
-        arg1->unk8 = (c & 0x80) ? 0x03000000 : 0x01000000;
-        arg1->unk14 = arg0->clut;
-        g = &g_uiSprites[arg0->unk14.p->unk4];
-        arg1->unk10.s.x -= g->unk4 >> 1;
-        arg1->unk10.s.y -= (g->unk5 >> 1) + (c & 0x1F);
-        if (arg0->unk10.b.unk3 == 0) {
+        arg1->rgb = (c & 0x80) ? 0x03000000 : 0x01000000;
+        arg1->clut = arg0->clut;
+        g = &g_uiSprites[arg0->data.p->glyph];
+        arg1->xy.s.x -= g->unk4 >> 1;
+        arg1->xy.s.y -= (g->unk5 >> 1) + (c & 0x1F);
+        if (arg0->info.b.noClamp == 0) {
             btl_clampPopup(arg0, arg1, g->unk4, g->unk5);
         }
         btl_drawPopupGlyph(arg1, g);
@@ -278,22 +278,22 @@ void btl_drawTextPopup(BtlPopup *arg0, Unk800CCD00 *arg1) {
 
 void btl_clampPopup(BtlPopup *arg0, Unk800CCD00 *arg1, s32 w, s32 h) {
     if (arg0->frame == 0) {
-        if (arg1->unk10.s.y - 21 < 0) {
-            arg0->unk10.b.unk1 = 21 - arg1->unk10.s.y;
-        } else if (arg1->unk10.s.y + h >= 211) {
-            arg0->unk10.b.unk1 = -46 - (arg1->unk10.s.y + h);
+        if (arg1->xy.s.y - 21 < 0) {
+            arg0->info.b.yOfs = 21 - arg1->xy.s.y;
+        } else if (arg1->xy.s.y + h >= 211) {
+            arg0->info.b.yOfs = -46 - (arg1->xy.s.y + h);
         }
     }
-    if (arg1->unk10.s.x < 8) {
-        arg1->unk10.s.x = 8;
-    } else if (arg1->unk10.s.x + w >= 313) {
-        arg1->unk10.s.x = 312 - w;
+    if (arg1->xy.s.x < 8) {
+        arg1->xy.s.x = 8;
+    } else if (arg1->xy.s.x + w >= 313) {
+        arg1->xy.s.x = 312 - w;
     }
-    arg1->unk10.s.y += arg0->unk10.b.unk1;
-    if (arg1->unk10.s.y < 8) {
-        arg1->unk10.s.y = 8;
-    } else if (arg1->unk10.s.y + h >= 211) {
-        arg1->unk10.s.y = 210 - h;
+    arg1->xy.s.y += arg0->info.b.yOfs;
+    if (arg1->xy.s.y < 8) {
+        arg1->xy.s.y = 8;
+    } else if (arg1->xy.s.y + h >= 211) {
+        arg1->xy.s.y = 210 - h;
     }
 }
 
@@ -303,30 +303,30 @@ void btl_drawPopupDigits(Unk800CCD00 *arg0, u32 arg1) {
     Unk800686E8 *g;
 
     i = (arg1 >> 16) - 1;
-    xy.vx = arg0->unk10.s.x + (((s32)arg1 >> 16) - 1) * 8;
-    xy.vy = arg0->unk10.s.y;
+    xy.vx = arg0->xy.s.x + (((s32)arg1 >> 16) - 1) * 8;
+    xy.vy = arg0->xy.s.y;
     for (; i != -1; i--) {
-        arg0->unk0[0] = 0x04000000;
-        arg0->unk0[1] = arg0->unk8 | 0x64000000;
-        arg0->unk0[2] = *(s32 *)&xy;
+        arg0->prim[0] = 0x04000000;
+        arg0->prim[1] = arg0->rgb | 0x64000000;
+        arg0->prim[2] = *(s32 *)&xy;
         g = &D_80068BF0[arg1 & 0xF];
-        arg0->unk0[3] = g->unk0 + (arg0->unk14 << 16);
-        arg0->unk0[4] = (g->unk5 << 16) | g->unk4;
-        addPrim(arg0->unk4, arg0->unk0);
-        arg0->unk0 += 5;
+        arg0->prim[3] = g->unk0 + (arg0->clut << 16);
+        arg0->prim[4] = (g->unk5 << 16) | g->unk4;
+        addPrim(arg0->ot, arg0->prim);
+        arg0->prim += 5;
         xy.vx -= 8;
         arg1 >>= 4;
     }
 }
 
 void btl_drawPopupGlyph(Unk800CCD00 *arg0, Unk800686E8 *arg1) {
-    arg0->unk0[0] = 0x04000000;
-    arg0->unk0[1] = arg0->unk8 | 0x64000000;
-    arg0->unk0[2] = arg0->unk10.w;
-    arg0->unk0[3] = arg1->unk0 + (arg0->unk14 << 16);
-    arg0->unk0[4] = (arg1->unk5 << 16) | arg1->unk4;
-    addPrim(arg0->unk4, arg0->unk0);
-    arg0->unk0 += 5;
+    arg0->prim[0] = 0x04000000;
+    arg0->prim[1] = arg0->rgb | 0x64000000;
+    arg0->prim[2] = arg0->xy.w;
+    arg0->prim[3] = arg1->unk0 + (arg0->clut << 16);
+    arg0->prim[4] = (arg1->unk5 << 16) | arg1->unk4;
+    addPrim(arg0->ot, arg0->prim);
+    arg0->prim += 5;
 }
 
 void btl_drawStatusIcons(Unk800CCD00 *arg0) {
@@ -352,7 +352,7 @@ void btl_drawStatusIcons(Unk800CCD00 *arg0) {
     u8 *tz;
 
     r = &g_gameState->gameData->unk8E4.battle->popups;
-    btlfx_beginPrims((u8 *)arg0->unk0, g_gameState->gameData->unk10[g_gameState->gameData->unk8]);
+    btlfx_beginPrims((u8 *)arg0->prim, g_gameState->gameData->unk10[g_gameState->gameData->unk8]);
     g_btlfxEnv->unk28 = 0;
     rot.vx = 0;
     rot.vz = 0;
@@ -379,15 +379,15 @@ void btl_drawStatusIcons(Unk800CCD00 *arg0) {
             tz = D_800F6C30[g_gameState->gameData->characters[(u->flags >> 1) & 0xF].unk34.b.unk4];
         } else {
             BtlEnemyType *m = g_gameState->gameData->unk8E4.battle->enemies[(u->flags >> 1) & 0xF].type;
-            bone = m->unk32;
-            ty = m->unk38;
-            tz = m->unk3E;
+            bone = m->iconBones;
+            ty = m->iconY;
+            tz = m->iconZ;
         }
         for (e = g_btlStatusIcons, i = 11; i != -1; e++, i--) {
-            if (!(st & e->unk0) || (st & e->unk4)) {
+            if (!(st & e->showMask) || (st & e->hideMask)) {
                 continue;
             }
-            k = e->unkC;
+            k = e->attach;
             mdl = u->model;
             y0 = (ty[k] << 24) >> 20;
             z0 = (tz[k] << 24) >> 20;
@@ -401,20 +401,20 @@ void btl_drawStatusIcons(Unk800CCD00 *arg0) {
             pos.vx = b->tx + (((s16)z * sn) >> 12);
             pos.vz = b->tz + (((s16)z * cs) >> 12);
             pos.vy = b->ty + y;
-            if (e->unkE != 0) {
+            if (e->single != 0) {
                 f = (u16)r->tick;
-                btlfx_drawSprite(e->unk8, &pos, f % (*(u16 *)e->unk8 & 0x7FFF), e->unkD, -1);
+                btlfx_drawSprite(e->sprite, &pos, f % (*(u16 *)e->sprite & 0x7FFF), e->abr, -1);
             } else {
-                if ((rot.pad = e->unkF) != 0) {
+                if ((rot.pad = e->turnsWithUnit) != 0) {
                     rot.vy = (u->rot[1] + 0xC00) & 0xFFF;
                 } else {
                     rot.vy = 0;
                 }
-                btlfx_drawSprites(e->unk8, &pos, &rot, -1, (u16)r->tick, e->unkD, -1);
+                btlfx_drawSprites(e->sprite, &pos, &rot, -1, (u16)r->tick, e->abr, -1);
             }
         }
     }
-    arg0->unk0 = (u32 *)btlfx_endPrims();
+    arg0->prim = (u32 *)btlfx_endPrims();
 }
 
 void btl_drawStatusCountdown(Unk800CCD00 *arg0) {
@@ -451,8 +451,8 @@ void btl_drawStatusCountdown(Unk800CCD00 *arg0) {
             y = (s8)D_800F6BBC[g_gameState->gameData->characters[(u->flags >> 1) & 0xF].unk34.b.unk4][5];
         } else {
             m = g_gameState->gameData->unk8E4.battle->enemies[(u->flags >> 1) & 0xF].type;
-            bone = m->unk32[5];
-            y = (s8)m->unk38[5];
+            bone = m->iconBones[5];
+            y = (s8)m->iconY[5];
         }
         mdl = u->model;
         if (mdl->flags & 2) {
@@ -464,11 +464,11 @@ void btl_drawStatusCountdown(Unk800CCD00 *arg0) {
         v.vz = b->tz;
         gte_ldv0(&v);
         gte_rtps();
-        gte_stsxy(&arg0->unk10);
-        arg0->unk10.s.y -= 12;
+        gte_stsxy(&arg0->xy);
+        arg0->xy.s.y -= 12;
         for (e = D_800F6CA4, i = 1; i != -1; e++, i--) {
-            if (st & e->unk0) {
-                if (u->countdownStep > 0 && (t = u->statusTimers[e->unk4]) >= 0) {
+            if (st & e->status) {
+                if (u->countdownStep > 0 && (t = u->statusTimers[e->timer]) >= 0) {
                     q = t * 10 / u->countdownStep;
                     d = u->atbSpeed;
                     bone = q;
@@ -477,21 +477,21 @@ void btl_drawStatusCountdown(Unk800CCD00 *arg0) {
                     } else {
                         blink = ((s16)q != (s16)((t - d) * 10 / u->countdownStep)) * 2;
                     }
-                    if (e->unk6 != 0) {
+                    if (e->colorByLevel != 0) {
                         c = (bone << 4) + 0x20;
-                        arg0->unk8 = (c << 16) | (c << 8) | c;
+                        arg0->rgb = (c << 16) | (c << 8) | c;
                     } else {
-                        arg0->unk8 = 0x1000000;
+                        arg0->rgb = 0x1000000;
                     }
-                    arg0->unk14 = 0;
-                    arg0->unk8 |= blink << 24;
+                    arg0->clut = 0;
+                    arg0->rgb |= blink << 24;
                     t = bone + 1;
                     if (t < 10) {
                         n = t | 0x10000;
                     } else {
                         n = 0x20010;
                     }
-                    arg0->unk10.s.x -= (n >> 16) * 4;
+                    arg0->xy.s.x -= (n >> 16) * 4;
                     btl_drawPopupDigits(arg0, n);
                 }
                 break;
@@ -565,7 +565,7 @@ void *btl_getUnitName(BtlUnit *arg0) {
 
 void btl_startScan(s32 arg0) {
     g_gameState->gameData->unk8E4.battle->popups.scanUnit = arg0;
-    g_gameState->gameData->unk8E4.battle->popups.unk1C8.w = 0;
+    g_gameState->gameData->unk8E4.battle->popups.scan.w = 0;
 }
 
 void btl_updateScan(void) {
@@ -580,16 +580,16 @@ void btl_updateScan(void) {
     if (s == NULL) {
         return;
     }
-    if (--b->popups.unk1C8.b[0] != 0xFF) {
+    if (--b->popups.scan.b[0] != 0xFF) {
         return;
     }
     c = g_gameState->gameData->unk8E4.battle;
-    switch (c->popups.unk1C8.b[2]) {
+    switch (c->popups.scan.b[2]) {
     case 0:
         text_copy(buf, btl_getUnitName(s));
         text_append(buf, (u8 *)text_getFrom(D_800F6FB8, 10));
         text_formatInt(s->level, buf + text_getLength(buf), 0);
-        g_gameState->gameData->unk8E4.battle->popups.unk1C8.b[2] = 1;
+        g_gameState->gameData->unk8E4.battle->popups.scan.b[2] = 1;
         break;
     case 1:
         text_copy(buf, (u8 *)text_getFrom(D_800F6FB8, 11));
@@ -600,24 +600,24 @@ void btl_updateScan(void) {
         text_formatInt(s->mp, buf + text_getLength(buf), 0);
         text_append(buf, (u8 *)text_getFrom(D_800F6FB8, 13));
         text_formatInt(s->max->maxMp, buf + text_getLength(buf), 0);
-        g_gameState->gameData->unk8E4.battle->popups.unk1C8.b[1] = 0;
-        g_gameState->gameData->unk8E4.battle->popups.unk1C8.b[2] = 2;
+        g_gameState->gameData->unk8E4.battle->popups.scan.b[1] = 0;
+        g_gameState->gameData->unk8E4.battle->popups.scan.b[2] = 2;
         break;
     case 2:
         if (!(s->flags & 1)) {
             mask = c->enemies[(s->flags >> 1) & 0xF].type->category;
-            while ((j = g_gameState->gameData->unk8E4.battle->popups.unk1C8.b[1]++) < 8) {
+            while ((j = g_gameState->gameData->unk8E4.battle->popups.scan.b[1]++) < 8) {
                 if ((mask >> j) & 1) {
                     text_copy(buf, (u8 *)text_getFrom(D_800F6FB8, j));
                     goto show;
                 }
             }
         }
-        g_gameState->gameData->unk8E4.battle->popups.unk1C8.b[1] = 0;
-        g_gameState->gameData->unk8E4.battle->popups.unk1C8.b[2] = 3;
+        g_gameState->gameData->unk8E4.battle->popups.scan.b[1] = 0;
+        g_gameState->gameData->unk8E4.battle->popups.scan.b[2] = 3;
     case 3:
         mask = s->elemWeak & ~s->elemGuard;
-        while ((k = g_gameState->gameData->unk8E4.battle->popups.unk1C8.b[1]++) < 8) {
+        while ((k = g_gameState->gameData->unk8E4.battle->popups.scan.b[1]++) < 8) {
             if ((mask >> k) & 1) {
                 text_copy(buf, (u8 *)text_getFrom(D_800F6FB8, k + 14));
                 goto show;
@@ -629,21 +629,21 @@ void btl_updateScan(void) {
         return;
     }
 show:
-    g_gameState->gameData->unk8E4.battle->popups.unk1C8.b[0] = func_800F4FC8() - 1;
+    g_gameState->gameData->unk8E4.battle->popups.scan.b[0] = func_800F4FC8() - 1;
     btl_setBanner((s32)buf, 2);
 }
 
 void btl_startDetect(BtlUnit *arg0) {
     if (!(arg0->flags & 1)) {
-        g_gameState->gameData->unk8E4.battle->popups.unk1CC = &g_gameState->gameData->unk8E4.battle->enemies[(arg0->flags >> 1) & 0xF];
-        if (g_gameState->gameData->unk8E4.battle->popups.unk1CC->steal.w == -1) {
+        g_gameState->gameData->unk8E4.battle->popups.detectEnemy = &g_gameState->gameData->unk8E4.battle->enemies[(arg0->flags >> 1) & 0xF];
+        if (g_gameState->gameData->unk8E4.battle->popups.detectEnemy->steal.w == -1) {
             btl_setBanner(text_getFrom(D_800F6FB8, 9), 2);
-            g_gameState->gameData->unk8E4.battle->popups.unk1D1 = 4;
-            g_gameState->gameData->unk8E4.battle->popups.unk1D0 = func_800F4FC8() - 1;
+            g_gameState->gameData->unk8E4.battle->popups.detectSlot = 4;
+            g_gameState->gameData->unk8E4.battle->popups.detectDelay = func_800F4FC8() - 1;
             return;
         }
-        g_gameState->gameData->unk8E4.battle->popups.unk1D1 = 0;
-        g_gameState->gameData->unk8E4.battle->popups.unk1D0 = 0;
+        g_gameState->gameData->unk8E4.battle->popups.detectSlot = 0;
+        g_gameState->gameData->unk8E4.battle->popups.detectDelay = 0;
     }
 }
 
@@ -654,16 +654,16 @@ void btl_updateDetect(void) {
     u8 *s;
     s32 kind;
 
-    if (g_gameState->gameData->unk8E4.battle->popups.unk1CC == NULL) {
+    if (g_gameState->gameData->unk8E4.battle->popups.detectEnemy == NULL) {
         return;
     }
-    if (--g_gameState->gameData->unk8E4.battle->popups.unk1D0 != 0xFF) {
+    if (--g_gameState->gameData->unk8E4.battle->popups.detectDelay != 0xFF) {
         return;
     }
-    while ((i = g_gameState->gameData->unk8E4.battle->popups.unk1D1++) < 4) {
-        id = g_gameState->gameData->unk8E4.battle->popups.unk1CC->steal.b[3 - i];
+    while ((i = g_gameState->gameData->unk8E4.battle->popups.detectSlot++) < 4) {
+        id = g_gameState->gameData->unk8E4.battle->popups.detectEnemy->steal.b[3 - i];
         if (id != 0xFF) {
-            g_gameState->gameData->unk8E4.battle->popups.unk1D0 = func_800F4FC8() - 1;
+            g_gameState->gameData->unk8E4.battle->popups.detectDelay = func_800F4FC8() - 1;
             text_copy(buf, (u8 *)text_getFrom(D_800F6FB8, 8));
             text_append(buf, btl_getItemName(id));
             text_append(buf, D_800A7C20);
@@ -674,7 +674,7 @@ void btl_updateDetect(void) {
     }
     s = NULL;
     kind = 1;
-    g_gameState->gameData->unk8E4.battle->popups.unk1CC = NULL;
+    g_gameState->gameData->unk8E4.battle->popups.detectEnemy = NULL;
 show:
     btl_setBanner((s32)s, kind);
 }

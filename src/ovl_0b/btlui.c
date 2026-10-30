@@ -3056,8 +3056,8 @@ void btlui_drawStatusList(Window *arg0) {
             st = u->status | u->autoStatus;
             x = w->unk0 + 4;
             for (i = 0; i < 16; i++) {
-                if (st & D_800F8F18[i].unk0) {
-                    ui_drawSprite(x, y, arg0->unk18, D_800F8F18[i].unk4, 0);
+                if (st & D_800F8F18[i].status) {
+                    ui_drawSprite(x, y, arg0->unk18, D_800F8F18[i].icon, 0);
                     x += 12;
                     if (++n >= 9) {
                         break;
@@ -3084,10 +3084,10 @@ void btlui_drawStatusList2(Window *arg0) {
             st = u->status | u->autoStatus;
             x = w->unk0 + 4;
             for (i = 0; i < 8; i++) {
-                if (st & D_800F8F98[i].unk0) {
-                    ui_drawSprite(x, y, arg0->unk18, D_800F8F98[i].unk4, 0);
+                if (st & D_800F8F98[i].status) {
+                    ui_drawSprite(x, y, arg0->unk18, D_800F8F98[i].icon, 0);
                 }
-                x += D_800F8F98[i].unk6;
+                x += D_800F8F98[i].width;
             }
             y += 12;
         }

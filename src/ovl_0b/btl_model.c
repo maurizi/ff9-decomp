@@ -453,9 +453,9 @@ void btl_initEnemyType(Unk800C9D1C *arg0, BtlEnemyType *arg1) {
     arg1->deathCry = arg0->unk4C;
     arg1->confuseAbility = arg0->unk4E;
     for (i = 0; i < 6; i++) {
-        arg1->unk32[i] = arg0->unk50[i];
-        arg1->unk38[i] = arg0->unk56[i];
-        arg1->unk3E[i] = arg0->unk5C[i];
+        arg1->iconBones[i] = arg0->unk50[i];
+        arg1->iconY[i] = arg0->unk56[i];
+        arg1->iconZ[i] = arg0->unk5C[i];
     }
 }
 

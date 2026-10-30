@@ -677,5 +677,5 @@ void btl_clearPopups(void) {
         p++;
     }
     g_gameState->gameData->unk8E4.battle->popups.scanUnit = 0;
-    g_gameState->gameData->unk8E4.battle->popups.unk1CC = 0;
+    g_gameState->gameData->unk8E4.battle->popups.detectEnemy = 0;
 }
