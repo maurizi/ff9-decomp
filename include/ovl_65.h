@@ -238,12 +238,12 @@ static inline u8 func_801F_canExp(Character *c) {
     return 1;
 }
 
-/* Member can learn abilities (alive, func_80034A30). */
+/* Member can learn abilities (alive, chr_canLearnAbilities). */
 static inline u8 func_801F_canAp(Character *c) {
     if (!func_801F_alive(c)) {
         return 0;
     }
-    if (!func_80034A30(c)) {
+    if (!chr_canLearnAbilities(c)) {
         return 0;
     }
     return 1;

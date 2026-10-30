@@ -540,7 +540,7 @@ main text_measureNumber 0x48 0x8002bea4
 main gfx_init 0xe4 0x8002beec
 main win_runFrame 0x8c 0x8002bfd0
 main func_8002C05C 0x8 0x8002c05c
-main func_8002C064 0x20 0x8002c064
+main gfx_setUiMode 0x20 0x8002c064
 main gfx_selectBuffer 0x58 0x8002c084
 main gfx_setBuffer 0x5c 0x8002c0dc
 main gfx_setBufferIndex 0xc 0x8002c138
@@ -622,7 +622,7 @@ main menuList_pageDown 0xc0 0x8002f284
 main menuList_getPageView 0xc8 0x8002f344
 main menuList_getRowsRect 0x7c 0x8002f40c
 main snd_playSe 0x48 0x8002f488
-main func_8002F4D0 0x44 0x8002f4d0
+main snd_stopPlayedSe 0x44 0x8002f4d0
 main snd_startSe 0x48 0x8002f514
 main snd_stopSe 0x44 0x8002f55c
 main fade_reverse 0x128 0x8002f5a0
@@ -664,7 +664,7 @@ main fade_divRoundOut 0x50 0x8002fd98
 main fade_ease 0xbc 0x8002fde8
 main func_8002FEA4 0x8 0x8002fea4
 main func_8002FEAC 0x8 0x8002feac
-main func_8002FEB4 0x20 0x8002feb4
+main fade_reverseNoCallback 0x20 0x8002feb4
 main fadeWipe_start 0x15c 0x8002fed4
 main fadeWipe_update 0x12c 0x80030030
 main fadeWipe_seek 0x174 0x8003015c
@@ -768,7 +768,7 @@ main chr_countSupportStones 0x7c 0x800348c0
 main chr_setSupportAbility 0x80 0x8003493c
 main chr_hasSupportAbility 0x48 0x800349bc
 main chr_testSupportBit 0x2c 0x80034a04
-main func_80034A30 0x34 0x80034a30
+main chr_canLearnAbilities 0x34 0x80034a30
 main chr_calcBaseSpeed 0xec 0x80034a64
 main chr_calcBaseStrength 0x114 0x80034b50
 main chr_calcBaseMagic 0x114 0x80034c64

@@ -257,7 +257,7 @@ void func_8002FEA4(void) {
 void func_8002FEAC(void) {
 }
 
-void func_8002FEB4(void) {
+void fade_reverseNoCallback(void) {
     fade_reverse(0);
 }
 

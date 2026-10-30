@@ -15,7 +15,7 @@ void gfx_init(u32 *ot0, u32 *ot1, s32 pk0, s32 pk1) {
     g_ot = g_drawBufs.ots[g_drawBufs.cur];
     pad_initRepeat();
     win_initAll();
-    g_drawBufs.unk1 = 0;
+    g_drawBufs.uiMode = 0;
     g_drawBufs.lastVsync = VSync(-1);
     g_drawBufs.unk2 = 0;
 }
@@ -41,8 +41,8 @@ void win_runFrame(void) {
 void func_8002C05C(void) {
 }
 
-void func_8002C064(s32 arg0) {
-    g_drawBufs.unk1 = arg0;
+void gfx_setUiMode(s32 arg0) {
+    g_drawBufs.uiMode = arg0;
     if (arg0 == 2) {
         g_drawBufs.lastVsync = 0;
     }

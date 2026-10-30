@@ -548,7 +548,7 @@ void rewards_drawText(s32 arg0, s32 arg1, s32 arg2, u8 *arg3, s32 arg4) {
 
 void rewards_init(void) {
     game_initGfx();
-    func_8002C064(0);
+    gfx_setUiMode(0);
     help_setCallback(0);
     g_gameState->vsyncMode = 2;
     s_rewards.screen = 0;
@@ -877,7 +877,7 @@ void rewards_addAp(s32 arg0, u32 arg1) {
     s32 have;
 
     c = g_gameState->gameData->party[arg0];
-    if (arg1 != 0 && func_80034A30(c)) {
+    if (arg1 != 0 && chr_canLearnAbilities(c)) {
         s_rewards.rewards.apGain[arg0].cur += arg1;
         for (i = 0; i < 5; i++) {
             if (c->equip[i] != ITEM_NONE) {

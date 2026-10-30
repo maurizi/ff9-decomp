@@ -256,7 +256,7 @@ void snd_playSe(s32 a) {
     g_gameState->gameData->soundHook(SND_SE_PLAY, a, 0x800000, 0x80, 0x7F);
 }
 
-void func_8002F4D0(s32 a) {
+void snd_stopPlayedSe(s32 a) {
     g_gameState->gameData->soundHook(SND_SE_STOP, a, 0x800000, 0, 0);
 }
 

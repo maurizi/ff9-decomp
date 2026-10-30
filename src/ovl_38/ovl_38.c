@@ -250,7 +250,7 @@ void menuStatus_drawAbilityRow(s32 x, s32 y, s32 z, s32 i, u8 draw) {
     Unk8006D128 *sup;
 
     c = g_gameState->gameData->party[s_menuStatus.slot];
-    ok = func_80034A30(c);
+    ok = chr_canLearnAbilities(c);
     if (ok && c->ap[i] == 0) {
         return;
     }

@@ -1632,3 +1632,7 @@ g_labelTrash = 0x800704C4; // [code] pointer to the label string "TRASH" (ui_dra
 g_labelWarning = 0x800704C8; // [code] pointer to the label string "WARNING" (ui_drawLabel / win_setTitle in the menu overlays)
 g_akaoOpSeArgs = 0x800809F0; // [code] AkaoArgs block sequence op FE0B (akao_opFE0B) fills (pan, volume from the channel) to start a sound effect from inside a sequence
 g_usableItemTable = 0x8006B1F4; // [code] battle/menu effect record per usable item (index item id - ITEM_FIRST_USABLE 0xE0) - power, status, accuracy, effect id (btl_cmd item commands, ovl_37 item use)
+chr_canLearnAbilities = 0x80034A30; // type:func [code] 0 for class flag 0x10, else row < 8 - gates AP gain and learned abilities (battle_end AP rewards, btlui learned-ability list, menu_equip/menu_ability)
+snd_stopPlayedSe = 0x8002F4D0; // type:func [code] soundHook(SND_SE_STOP, id, 0x800000), the stop counterpart of snd_playSe (snd_stopSe passes 0 like snd_startSe)
+fade_reverseNoCallback = 0x8002FEB4; // type:func [code] fade_reverse(NULL)
+gfx_setUiMode = 0x8002C064; // type:func [code] sets g_drawBufs.uiMode (2 from btlui_initDrawBufs, 0 from the rewards screen) - in mode 2 windows close without the close animation (win_close, win_update) and lastVsync is reset

@@ -682,7 +682,7 @@ u8 chr_testSupportBit(u32 *bits, s32 b) {
     return (bits[b >> 5] & (1 << (b & 0x1F))) != 0;
 }
 
-u8 func_80034A30(Character *a) {
+u8 chr_canLearnAbilities(Character *a) {
     if (a->classFlags & 0x10) {
         return 0;
     }

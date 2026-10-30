@@ -243,7 +243,7 @@ void menuEquip_drawAbilities(void) {
         } else {
             name = s_menuEquipSupportNames + g_supportAbilities[ab - ABILITY_SUPPORT_FIRST].unk2;
         }
-        if (func_80034A30(c)) {
+        if (chr_canLearnAbilities(c)) {
             ok = chr_findAbilitySlot(c->info.b.id, ab) >= 0;
             ap = chr_getApNeeded(c->info.b.id, ab);
             if (ok) {
@@ -449,7 +449,7 @@ void menuEquip_dropUnlearnedSupport(Character *c) {
     ItemInfo *it;
     s32 id;
 
-    if (func_80034A30(c)) {
+    if (chr_canLearnAbilities(c)) {
         memset(s_menuEquipTaught, 0, SUPPORT_COUNT);
         for (i = 0; i < EQUIP_SLOT_COUNT; i++) {
             if (c->equip[i] != ITEM_NONE) {

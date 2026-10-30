@@ -18,7 +18,7 @@ static inline s32 menuAbility_getSupportState_inline(s32 id, Character *c) {
         if (slot < 0) {
             return 0;
         }
-        if (func_80034A30(c)) {
+        if (chr_canLearnAbilities(c)) {
             ap = c->ap[slot];
             need = g_abilityRows[c->info.b.row][slot].ap;
             if (ap == 0) {
@@ -256,7 +256,7 @@ void menuAbility_drawInfo(void) {
     if (ok == 0) {
         return;
     }
-    if (func_80034A30(c)) {
+    if (chr_canLearnAbilities(c)) {
         ui_drawApGauge(r->x + 0x2D, r->y + 0xC, 0x1C, chr_getAp(c->info.b.id, id), chr_getApNeeded(c->info.b.id, id), flag, 0);
     }
     if (s_menuAbility.equipSlots[id] != 0) {
@@ -468,7 +468,7 @@ void menuAbility_setMember(s32 slot, s32 arg1) {
         }
     }
     s_menuAbility.tabEnabled[0] = c->hp != 0 && !(c->status & 9) && nItems != 0 && D_8007AFD3 == 0;
-    s_menuAbility.tabEnabled[1] = func_80034A30(c);
+    s_menuAbility.tabEnabled[1] = chr_canLearnAbilities(c);
     menuAbility_initActionCursor();
     menuAbility_initSupportCursor();
 }
@@ -485,7 +485,7 @@ s32 menuAbility_getActionState(s32 id, Character *c) {
         if (slot < 0) {
             return 0;
         }
-        if (func_80034A30(c)) {
+        if (chr_canLearnAbilities(c)) {
             ap = c->ap[slot];
             need = g_abilityRows[c->info.b.row][slot].ap;
             if (ap == 0) {
@@ -600,7 +600,7 @@ void menuAbility_updateHelp(void) {
                 t = ABILITY_TEXT_STATUS_BLOCKS;
             }
         } else {
-            if (func_80034A30(c)) {
+            if (chr_canLearnAbilities(c)) {
                 goto end;
             }
             if (c->classFlags & 0x10) {
@@ -860,7 +860,7 @@ u32 menuAbility_getSupportState(s32 id, Character *c) {
         if (slot < 0) {
             return 0;
         }
-        if (func_80034A30(c)) {
+        if (chr_canLearnAbilities(c)) {
             ap = c->ap[slot];
             need = g_abilityRows[c->info.b.row][slot].ap;
             if (ap == 0) {

@@ -788,7 +788,7 @@ typedef struct Unk80104F88Entry {
     struct BtlUnit *unit;
     Character *chr;
     u8 slot; /* unit slot id (flags bits 5-7) */
-    u8 learns; /* the character learns abilities (func_80034A30); 0: btlui_addLearnedAbilities skips it */
+    u8 learns; /* the character learns abilities (chr_canLearnAbilities); 0: btlui_addLearnedAbilities skips it */
     u8 defaultSet; /* chr_getAppearanceType of the character */
     u8 port; /* controller port in the two-controller option */
     u8 *apCounters[0xC0]; /* -> Character.unk58[], AP gathered per ability id */

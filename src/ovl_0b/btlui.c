@@ -346,7 +346,7 @@ void btlui_initPartyEntries(void) {
         e->unit = u;
         e->slot = f;
         e->chr = &g_gameState->gameData->characters[(u->flags >> 1) & 0xF];
-        e->learns = func_80034A30(e->chr);
+        e->learns = chr_canLearnAbilities(e->chr);
         e->defaultSet = chr_getAppearanceType(e->chr->info.b.id, (e->chr->classFlags >> 4) & 1);
         if ((g_gameState->config >> 5) & 1) {
             f = ((s32)(g_gameState->config >> 20) >> e->defaultSet) & 1;
@@ -373,7 +373,7 @@ void btlui_copyTranceAbilities(Unk80104F88Entry *arg0) {
     s32 j;
     u8 x;
     u8 y;
-    if ((func_80034A30(arg0->chr) & 0xFF) && (s[2] == 1 || s[2] == 2)) {
+    if ((chr_canLearnAbilities(arg0->chr) & 0xFF) && (s[2] == 1 || s[2] == 2)) {
         i = 0;
         j = s[2] - 1;
         a = &g_btlCmdTable[t[j]];
@@ -3803,7 +3803,7 @@ void btlui_initDrawBufs(void) {
     s32 b = (s32)btlui_alloc(0x4000);
     DRAWENV *e;
     gfx_init(a, a + 0x18, b, b + 0x2000);
-    func_8002C064(2);
+    gfx_setUiMode(2);
     gfx_setBufferIndex(g_gameState->gameData->drawBuf);
     g_btluiBuf = 0;
     g_ot = g_drawBufs.ots[0];

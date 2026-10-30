@@ -592,7 +592,7 @@ extern s32 g_winLastVsync;
 
 typedef struct {
     u8 cur; /* buffer being built */
-    u8 unk1;
+    u8 uiMode; /* 2 for the battle UI (gfx_setUiMode): windows close without the close animation */
     u8 unk2;
     u8 pad3;
     s32 freeBytes; /* free bytes in the packet buffer */
@@ -2110,7 +2110,7 @@ void ui_drawLabel(s32, s32, s32, s32, s32);
 void ui_drawSmallDigits(s32, s32, s32, u8 *, s32);
 void text_drawBlock(s32, s32, s32, u8 *, s32);
 u8 *text_copy(u8 *, u8 *);
-void func_8002C064(s32);
+void gfx_setUiMode(s32);
 void gfx_setBuffer(s32);
 void pad_updateRepeat(s32);
 void pad_setStickAsDpad(u8);
@@ -2122,7 +2122,7 @@ Window *win_init(RECT *, s32, s32, Window *);
 static inline void win_close_inline(Window *w) {
     if (w != NULL && w->state != 0 && w->state != 2) {
         w->state = 2;
-        if (g_drawBufs.unk1 != 2) {
+        if (g_drawBufs.uiMode != 2) {
             win_setCloseAnim(w, w->animMode);
         }
     }
@@ -2168,7 +2168,7 @@ void menu_setFadeOutOnClose(u8);
 s32 chr_levelUp(s32, s32);
 void party_setChanged(u8);
 u8 chr_hasSupportAbility(s32, s32);
-u8 func_80034A30(Character *);
+u8 chr_canLearnAbilities(Character *);
 u8 chr_testSupportBit(u32 *, s32);
 void help_setBounds(RECT *);
 void help_drawCursor(); /* unprototyped: the argument is unused and most callers pass none */

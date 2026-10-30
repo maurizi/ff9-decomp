@@ -358,7 +358,7 @@ Window *win_open(RECT *r, s32 a, s32 b, u32 i) {
 void win_close(Window *w) {
     if (w != NULL && w->state != 0 && w->state != 2) {
         w->state = 2;
-        if (g_drawBufs.unk1 != 2) {
+        if (g_drawBufs.uiMode != 2) {
             win_setCloseAnim(w, w->animMode);
         }
     }
@@ -457,7 +457,7 @@ void win_updateAll(void) {
             }
         } else if (st == 1) {
             win_stepOpen(w);
-        } else if (st == 2 && g_drawBufs.unk1 != 2) {
+        } else if (st == 2 && g_drawBufs.uiMode != 2) {
             win_stepClose(w);
         }
     }
