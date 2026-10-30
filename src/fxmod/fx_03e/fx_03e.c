@@ -39,7 +39,7 @@ s32 fx_03e_op80(s32 mode, Fx03eWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
                     p->unk14 = (s32)D_801E82A0;
                     p->unk12 = 0xA;
                     p->unkC = 0x5C;
-                    p->unk22 = ex->func_800E7CC4(0, 0x20);
+                    p->otZ = ex->btlfx_addRadiusSixth(0, 0x20);
                 }
             }
             if (frame >= 8) {
@@ -90,15 +90,15 @@ s32 fx_03e_op80(s32 mode, Fx03eWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
                 entry->frame = -1;
                 p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0x18), (s32)&work->unk14);
                 if (p != NULL) {
-                    p->unk22 = ex->func_800E7CC4(0, 0x20);
+                    p->otZ = ex->btlfx_addRadiusSixth(0, 0x20);
                 }
                 p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0x16), (s32)&work->unk14);
                 if (p != NULL) {
-                    p->unk22 = ex->func_800E7CC4(0, 0x20);
+                    p->otZ = ex->btlfx_addRadiusSixth(0, 0x20);
                 }
                 p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0x15), (s32)&work->unk14);
                 if (p != NULL) {
-                    p->unk22 = ex->func_800E7CC4(0, 0x20);
+                    p->otZ = ex->btlfx_addRadiusSixth(0, 0x20);
                 }
                 ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0xA), (s32)&work->unk1C);
                 ex->btlfx_drawScreenTint((u32 *)(env->ot + 1), 1, 0, 0x20, 0x46);
@@ -130,7 +130,7 @@ s32 fx_03e_op80(s32 mode, Fx03eWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
             if (frame == 1) {
                 p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 8), (s32)&work->unk1C);
                 if (p != NULL) {
-                    p->unk22 = ex->func_800E7CC4(0, 0x20);
+                    p->otZ = ex->btlfx_addRadiusSixth(0, 0x20);
                 }
             }
             if (frame >= 0xC) {

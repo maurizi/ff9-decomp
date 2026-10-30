@@ -40,13 +40,13 @@ s32 fx_018_op80(s32 mode, Fx018Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             if (frame == 0) {
                 work->unk1C = (Pool6CEntry *)ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 7), (s32)&work->unk8);
                 if (work->unk1C != NULL) {
-                    work->unk1C->unk22 = 0x46;
+                    work->unk1C->otZ = 0x46;
                 }
             }
             if (frame == 5) {
                 work->unk20 = (Pool6CEntry *)ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0xA), (s32)&work->unk8);
                 if (work->unk20 != NULL) {
-                    work->unk20->unk22 = 0x46;
+                    work->unk20->otZ = 0x46;
                 }
             }
             if (frame == 28) {
@@ -62,7 +62,7 @@ s32 fx_018_op80(s32 mode, Fx018Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
                 ex->btlfx_stopEmitter(work->unk20);
                 p = (Pool6CEntry *)ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0x21), (s32)&work->unk8);
                 if (p != NULL) {
-                    p->unk22 = 0x20;
+                    p->otZ = 0x20;
                 }
             }
             break;
@@ -87,11 +87,11 @@ s32 fx_018_op80(s32 mode, Fx018Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
                 entry->frame = -1;
                 p = (Pool6CEntry *)ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0x22), (s32)&work->unk8);
                 if (p != NULL) {
-                    p->unk22 = 0x80;
+                    p->otZ = 0x80;
                 }
                 work->unk1C = (Pool6CEntry *)ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0x26), (s32)&work->unk8);
                 if (work->unk1C != NULL) {
-                    work->unk1C->unk22 = 0x80;
+                    work->unk1C->otZ = 0x80;
                 }
             }
             break;
@@ -127,9 +127,9 @@ s32 fx_018_op80(s32 mode, Fx018Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
                     work->unk1C = NULL;
                 }
                 if (work->unk1C != NULL) {
-                    work->unk1C->unk5C.vx = d.vx;
-                    work->unk1C->unk5C.vy = d.vy;
-                    work->unk1C->unk5C.vz = d.vz;
+                    work->unk1C->rot.vx = d.vx;
+                    work->unk1C->rot.vy = d.vy;
+                    work->unk1C->rot.vz = d.vz;
                 }
             }
             if (frame < 16) {
@@ -150,7 +150,7 @@ s32 fx_018_op80(s32 mode, Fx018Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             if (frame == 1) {
                 p = (Pool6CEntry *)ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0x27), (s32)&work->unk8);
                 if (p != NULL) {
-                    p->unk22 = 0x80;
+                    p->otZ = 0x80;
                 }
             }
             if (frame < 24) {
@@ -222,7 +222,7 @@ void func_801E82FC(Unk80100C78Entry *entry, Fx018Strip *strip, s32 *tbl, SVECTOR
         s = *tbl++;
         s = (ex->math_sin(t >> 1) * s) >> 12;
         s += ex->btlfx_lerp(from1, to1, t);
-        ex->func_800D044C(&v, (s32)p, 0, (XY32 *)&ang, s, width);
+        ex->btlfx_offsetPoint(&v, (s32)p, 0, (XY32 *)&ang, s, width);
         p->pad = arg11;
         width += dwidth + *tbl++;
         p++;
@@ -259,7 +259,7 @@ void func_801E8564(Unk80100C78Entry *entry, Fx018Strip *strip, s32 *tbl, SVECTOR
         t >>= 1;
         s = (ex->math_sin(t) * s) >> 12;
         s += (ex->math_sin(t) * amp) >> 12;
-        ex->func_800D044C(&v, (s32)p, 0, (XY32 *)&ang, s, width);
+        ex->btlfx_offsetPoint(&v, (s32)p, 0, (XY32 *)&ang, s, width);
         p->pad = arg10;
         width += dwidth + *tbl++ / 2;
         p++;
@@ -527,7 +527,7 @@ s32 fx_018_op83(s32 mode, Fx018Work83 *work, Unk800F78A4 *env, Unk80100C78Entry 
                 if (p != NULL) {
                     p->tail->unk0 = -1;
                     ((EffTailSpawn *)p->tail)->unk3C = func_801E8C84;
-                    p->unk22 = 0x20;
+                    p->otZ = 0x20;
                 }
             }
             if (frame < 31) {

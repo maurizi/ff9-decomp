@@ -36,10 +36,10 @@ s32 fx_128_op80(s32 mode, Fx128Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
         work->unk0 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0x15), (s32)&work->unk8);
         work->unk4 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0x16), (s32)&work->unk8);
         if (work->unk0 != NULL) {
-            work->unk0->unk22 = ex->func_800E7CC4(0x10, 0x80);
+            work->unk0->otZ = ex->btlfx_addRadiusSixth(0x10, 0x80);
         }
         if (work->unk4 != NULL) {
-            work->unk4->unk22 = ex->func_800E7CC4(0x10, 0x80);
+            work->unk4->otZ = ex->btlfx_addRadiusSixth(0x10, 0x80);
         }
     } else {
         frame = entry->frame;
@@ -48,9 +48,9 @@ s32 fx_128_op80(s32 mode, Fx128Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
                 work->unk0 = NULL;
             }
             if (work->unk0 != NULL) {
-                work->unk0->unk5C.vx = work->unk10.vx;
-                work->unk0->unk5C.vy = work->unk10.vy;
-                work->unk0->unk5C.vz = work->unk10.vz;
+                work->unk0->rot.vx = work->unk10.vx;
+                work->unk0->rot.vy = work->unk10.vy;
+                work->unk0->rot.vz = work->unk10.vz;
             }
         }
         if (work->unk4 != NULL) {
@@ -58,9 +58,9 @@ s32 fx_128_op80(s32 mode, Fx128Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
                 work->unk4 = NULL;
             }
             if (work->unk4 != NULL) {
-                work->unk4->unk5C.vx = work->unk10.vx;
-                work->unk4->unk5C.vy = work->unk10.vy;
-                work->unk4->unk5C.vz = work->unk10.vz;
+                work->unk4->rot.vx = work->unk10.vx;
+                work->unk4->rot.vy = work->unk10.vy;
+                work->unk4->rot.vz = work->unk10.vz;
             }
         }
         return frame >= 0x28;
@@ -184,7 +184,7 @@ s32 fx_128_op81(s32 mode, Fx128Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
                 work->unk0[7]->unkC = 0x48;
             }
             if (work->unk0[5] != NULL) {
-                work->unk0[5]->unk22 = 0x80;
+                work->unk0[5]->otZ = 0x80;
             }
             break;
         case 8:
@@ -247,9 +247,9 @@ s32 fx_128_op81(s32 mode, Fx128Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
                 work->unk0[4] = NULL;
             }
             if (work->unk0[4] != NULL) {
-                work->unk0[4]->unk5C.vx = work->unk80.vx;
-                work->unk0[4]->unk5C.vy = work->unk80.vy;
-                work->unk0[4]->unk5C.vz = work->unk80.vz;
+                work->unk0[4]->rot.vx = work->unk80.vx;
+                work->unk0[4]->rot.vy = work->unk80.vy;
+                work->unk0[4]->rot.vz = work->unk80.vz;
             }
         }
         if (frame >= 0x19) {

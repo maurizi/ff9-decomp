@@ -16,7 +16,7 @@ s32 fx_017_op80(s32 mode, Fx017Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
         work->unk1C.vy = 0;
         work->unk0 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 7), (s32)&work->unk14);
         if (work->unk0 != NULL) {
-            work->unk0->unk22 = ex->func_800E7CC4(0, 0x10);
+            work->unk0->otZ = ex->btlfx_addRadiusSixth(0, 0x10);
         }
     } else {
         frame = entry->frame;

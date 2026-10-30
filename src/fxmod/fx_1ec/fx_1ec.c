@@ -95,7 +95,7 @@ s32 fx_1ec_op80(s32 mode, Fx1ecWork80 *work, Unk800F78A4 *env, Unk80100C78Entry 
                 work->unk0[3]->unkC = 0x50;
             }
             if (work->unk0[0] != NULL) {
-                work->unk0[0]->unk22 = ex->func_800E7CC4(0x10, 0x80);
+                work->unk0[0]->otZ = ex->btlfx_addRadiusSixth(0x10, 0x80);
             }
             break;
         case 0x12:
@@ -116,13 +116,13 @@ s32 fx_1ec_op80(s32 mode, Fx1ecWork80 *work, Unk800F78A4 *env, Unk80100C78Entry 
                 }
             }
             if (work->unk0[5] != NULL) {
-                work->unk0[5]->unk22 = 0x600;
+                work->unk0[5]->otZ = 0x600;
             }
             if (work->unk0[6] != NULL) {
-                work->unk0[6]->unk22 = 0x600;
+                work->unk0[6]->otZ = 0x600;
             }
             if (work->unk0[7] != NULL) {
-                work->unk0[7]->unk22 = 0x600;
+                work->unk0[7]->otZ = 0x600;
             }
             break;
         case 0x4E:
@@ -272,13 +272,13 @@ s32 fx_1ec_op82(s32 mode, Fx1ecWork82 *work, Unk800F78A4 *env, Unk80100C78Entry 
             work->unk54.vy = -0x157C;
             work->unk0[0] = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 6), (s32)&work->unk54);
             if (work->unk0[0] != NULL) {
-                work->unk0[0]->unk22 = 0x500;
+                work->unk0[0]->otZ = 0x500;
             }
             break;
         case 4:
             work->unk0[1] = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0x17), (s32)&work->unk4C);
             if (work->unk0[1] != NULL) {
-                work->unk0[1]->unk22 = 0x500;
+                work->unk0[1]->otZ = 0x500;
             }
             break;
         case 16:
@@ -289,7 +289,7 @@ s32 fx_1ec_op82(s32 mode, Fx1ecWork82 *work, Unk800F78A4 *env, Unk80100C78Entry 
             work->unk0[2] = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0x24), (s32)&work->unk5C);
             work->unk0[3] = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0x18), (s32)&work->unk4C);
             if (work->unk0[2] != NULL) {
-                work->unk0[2]->unk22 = 0x500;
+                work->unk0[2]->otZ = 0x500;
             }
             break;
         case 30:
@@ -307,7 +307,7 @@ s32 fx_1ec_op82(s32 mode, Fx1ecWork82 *work, Unk800F78A4 *env, Unk80100C78Entry 
                 work->unk0[5]->unkC = 0x90;
             }
             if (work->unk0[7] != NULL) {
-                work->unk0[7]->unk22 = 0x200;
+                work->unk0[7]->otZ = 0x200;
             }
             break;
         case 32:

@@ -137,10 +137,10 @@ s32 fx_1be_op80(s32 mode, Fx1beWork80 *w, Unk800F78A4 *env, Unk80100C78Entry *en
             w->unk20[0] = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 2), (s32)&w->unkBC);
             w->unk20[1] = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 4), (s32)&w->unkC4);
             if (w->unk20[0] != NULL) {
-                w->unk20[0]->unk22 = 0x200;
+                w->unk20[0]->otZ = 0x200;
             }
             if (w->unk20[1] != NULL) {
-                w->unk20[1]->unk22 = 0x200;
+                w->unk20[1]->otZ = 0x200;
             }
             w->unk0[0xF] = 0x20;
             w->unk0[7] = 0x10;
@@ -172,18 +172,18 @@ s32 fx_1be_op80(s32 mode, Fx1beWork80 *w, Unk800F78A4 *env, Unk80100C78Entry *en
             w->unk8C.vz = 0x418;
             p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 8), (s32)&w->unk8C);
             if (p != NULL) {
-                p->unk22 = 0x400;
+                p->otZ = 0x400;
             }
             break;
         case 0x50:
             ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 7), (s32)&w->unk8C);
             p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 1), (s32)&w->unk8C);
             if (p != NULL) {
-                p->unk22 = 0x80;
+                p->otZ = 0x80;
             }
             p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 6), (s32)&w->unk8C);
             if (p != NULL) {
-                p->unk22 = 0x100;
+                p->otZ = 0x100;
             }
             break;
         case 0x54:
@@ -321,7 +321,7 @@ s32 fx_1be_op80(s32 mode, Fx1beWork80 *w, Unk800F78A4 *env, Unk80100C78Entry *en
                     D_801E95E8[i].unk18.vy = 0;
                     p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0x10), (s32)&D_801E95E8[i].unk18);
                     if (p != NULL) {
-                        p->unk22 = -0x100;
+                        p->otZ = -0x100;
                     }
                 }
             }

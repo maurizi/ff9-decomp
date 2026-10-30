@@ -13,7 +13,7 @@ s32 fx_091_op80(s32 mode, Fx091Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
         ex->btlfx_getUnitBodyPos(0, 0, (s16 *)&work->unk10);
         work->unk4 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 2), (s32)&work->unk8);
         if (work->unk4 != NULL) {
-            work->unk4->unk22 = ex->func_800E7CC4(0, 0xC8);
+            work->unk4->otZ = ex->btlfx_addRadiusSixth(0, 0xC8);
         }
         ex->btlfx_aimAngles((s16 *)&work->unk8, (s16 *)&work->unk10, (s16 *)&work->unk18);
     } else {
@@ -23,9 +23,9 @@ s32 fx_091_op80(s32 mode, Fx091Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
                 work->unk4 = NULL;
             }
             if (work->unk4 != NULL) {
-                work->unk4->unk5C.vx = work->unk18.vx;
-                work->unk4->unk5C.vy = work->unk18.vy;
-                work->unk4->unk5C.vz = work->unk18.vz;
+                work->unk4->rot.vx = work->unk18.vx;
+                work->unk4->rot.vy = work->unk18.vy;
+                work->unk4->rot.vz = work->unk18.vz;
             }
         }
         ex->btlfx_drawBackdrop((BtlBgLayers *)ex->btlfx_getFileData(entry->file, 1), work->unk0);

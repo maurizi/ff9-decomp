@@ -333,7 +333,7 @@ void Hi_SetSummonMotion(BtlUnit9CC *arg0, s32 arg1) {
 }
 
 void Hi_SetSummonMotFrame(s32 arg0, s32 arg1) {
-    Unk8010141C *p = btlfx_getSummonModel(arg0, D_800A7F34);
+    Unk8010141C *p = btlfx_getSummonModel(arg0, s_hiSetSummonMotFrameErr);
     if (p->model->motion->frameCount < arg1) {
         p->frame = 0;
     } else {
@@ -397,7 +397,7 @@ void btlfx_halt(char *arg0) {
 
 void btlfx_error(char *arg0) {
     char buf[0x100];
-    sprintf(buf, D_800A7F60, arg0);
+    sprintf(buf, s_hiraishiErrorFmt, arg0);
     btlfx_halt(buf);
 }
 
@@ -421,7 +421,7 @@ void btlfx_initEffModels(BtlModel *arg0, s32 arg1) {
 }
 
 void Hi_FreeEffModel(s32 arg0) {
-    btlfx_getEffModel(arg0, D_800A7F78)->used = 0;
+    btlfx_getEffModel(arg0, s_hiFreeEffModelErr)->used = 0;
 }
 
 void btlfx_clearEffModels(void) {
@@ -474,7 +474,7 @@ void btlfx_getUnitBonePos(s32 arg0, s32 arg1, u16 *arg2) {
 }
 
 void btlfx_getUnitArgBonePos(s32 arg0, s32 arg1, u16 *arg2) {
-    btl_getBonePos(btl_getUnit(arg0)->model, g_btlfxEnv->targets->unk25[arg1], arg2);
+    btl_getBonePos(btl_getUnit(arg0)->model, g_btlfxEnv->targets->fxArgs[arg1], arg2);
 }
 
 void btlfx_getUnitBoneMatrix(s32 arg0, s32 arg1, BtlBone *arg2) {
@@ -482,14 +482,14 @@ void btlfx_getUnitBoneMatrix(s32 arg0, s32 arg1, BtlBone *arg2) {
 }
 
 void btlfx_getUnitArgBoneMatrix(s32 arg0, s32 arg1, BtlBone *arg2) {
-    btl_getBoneMatrix(btl_getUnit(arg0)->model, g_btlfxEnv->targets->unk25[arg1], arg2);
+    btl_getBoneMatrix(btl_getUnit(arg0)->model, g_btlfxEnv->targets->fxArgs[arg1], arg2);
 }
 
-INCLUDE_RODATA("asm/us/ovl_0b/nonmatchings/hi_model", D_800A7F34);
+INCLUDE_RODATA("asm/us/ovl_0b/nonmatchings/hi_model", s_hiSetSummonMotFrameErr);
 
-INCLUDE_RODATA("asm/us/ovl_0b/nonmatchings/hi_model", D_800A7F60);
+INCLUDE_RODATA("asm/us/ovl_0b/nonmatchings/hi_model", s_hiraishiErrorFmt);
 
-INCLUDE_RODATA("asm/us/ovl_0b/nonmatchings/hi_model", D_800A7F78);
+INCLUDE_RODATA("asm/us/ovl_0b/nonmatchings/hi_model", s_hiFreeEffModelErr);
 
 void Hi_GetSummonBonePos(s32 arg0, s32 arg1, u16 *arg2) {
     btl_getBonePos(btlfx_getSummonModel(arg0, "Hi_GetSummonBonePos()\nid:%d cannot use!")->model, arg1, arg2);
@@ -648,7 +648,7 @@ void btlfx_getUnitMeshCount(s32 arg0) {
 /* Void in the original; effect modules read $v0 after it (export 0x318): btl_getMeshCount's u8 result.
    Ports must return it (docs/effect-modules.md). */
 void btlfx_getEffModelMeshCount(s32 arg0) {
-    btl_getMeshCount(btlfx_getEffModel(arg0, D_800A81A8)->model);
+    btl_getMeshCount(btlfx_getEffModel(arg0, s_hiSplitMdlVertexErr)->model);
 }
 
 u8 btl_getMeshCount(BtlUnit9C *arg0) {
@@ -673,4 +673,4 @@ void btlfx_getCasterTexInfo(BtlTexInfo *arg0, BtlTexInfo *arg1, s32 arg2) {
     *arg1 = *b;
 }
 
-INCLUDE_RODATA("asm/us/ovl_0b/nonmatchings/hi_model", D_800A81A8);
+INCLUDE_RODATA("asm/us/ovl_0b/nonmatchings/hi_model", s_hiSplitMdlVertexErr);

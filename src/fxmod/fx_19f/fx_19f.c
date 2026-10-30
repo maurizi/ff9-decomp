@@ -63,7 +63,7 @@ void func_801E7894(Unk80100C78Entry *entry, Fx19fTrail *trail, SVECTOR *from, SV
         h = (ex->math_sin(a) * h) >> 12;
         i++;
         h += 0x20 + ((ex->math_sin(a) * amp) >> 12);
-        ex->func_800D044C(&pos, (s32)p, 0, (XY32 *)&rot, h, arg5);
+        ex->btlfx_offsetPoint(&pos, (s32)p, 0, (XY32 *)&rot, h, arg5);
         p->pad = arg9;
         arg5 += arg6 + ex->btlfx_randCentered(0x100);
         p++;
@@ -341,14 +341,14 @@ s32 fx_19f_op81(s32 mode, Fx19fWork81 *work, Unk800F78A4 *env, Unk80100C78Entry 
                 p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0xC), (s32)&work->unk10);
                 work->unk6C = p;
                 if (p != NULL) {
-                    p->unk22 = 0x96;
+                    p->otZ = 0x96;
                 }
             }
             if (frame == 14) {
                 p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0x16), (s32)&work->unk8);
                 work->unk68 = p;
                 if (p != NULL) {
-                    p->unk22 = -0x20;
+                    p->otZ = -0x20;
                 }
             }
             if (frame < 8) {
@@ -432,7 +432,7 @@ s32 fx_19f_op81(s32 mode, Fx19fWork81 *work, Unk800F78A4 *env, Unk80100C78Entry 
                 ex->btlfx_startFadeBackground(-1, 6);
                 p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0x2A), (s32)&work->unk10);
                 if (p != NULL) {
-                    p->unk22 = 0x96;
+                    p->otZ = 0x96;
                 }
             }
             break;
@@ -685,7 +685,7 @@ void func_801E9968(Unk80100C78Entry *entry, s32 file, s32 ot, Fx19fTrail *trail,
         a = t >> 1;
         h = (ex->math_sin(a) * h) >> 12;
         h += ex->btlfx_lerp(h0, h1, t);
-        ex->func_800D044C(&pos, (s32)pt, 0, (XY32 *)&rot, h, ang);
+        ex->btlfx_offsetPoint(&pos, (s32)pt, 0, (XY32 *)&rot, h, ang);
         if (dip != 0) {
             pt->vy -= (ex->math_sin(a) * dip) >> 12;
         }

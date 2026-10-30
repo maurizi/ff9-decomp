@@ -74,7 +74,7 @@ s32 fx_1f1_op80(s32 mode, s32 *work, Unk800F78A4 *env, Unk80100C78Entry *entry, 
                             u->unkC.vy = 0;
                             p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 5), (s32)&D_801E7F14[i].unkC);
                             if (p != NULL) {
-                                p->unk22 = ex->func_800E7CC4(i, 0x100);
+                                p->otZ = ex->btlfx_addRadiusSixth(i, 0x100);
                             }
                             ex->btlfx_playFileSound(6, entry->file, -1);
                             ex->btlfx_playFileSound(7, entry->file, -1);

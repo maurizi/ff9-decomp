@@ -251,7 +251,7 @@ s32 fx_186_op80(s32 mode, Fx186Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
                     work->unk10.vy -= 0x180;
                     work->unk18 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0x1A), (s32)&work->unk10);
                     if (work->unk18 != NULL) {
-                        work->unk18->unk22 = 0x100;
+                        work->unk18->otZ = 0x100;
                     }
                     for (j = 0; j < 25; j++) {
                         o = ex->btlfx_poolSpawn((s16 *)entry->pool);
@@ -319,7 +319,7 @@ s32 fx_186_op80(s32 mode, Fx186Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             if (frame == 1) {
                 p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0x1D), (s32)&work->unk8);
                 if (p != NULL) {
-                    p->unk22 = 0x100;
+                    p->otZ = 0x100;
                 }
             }
             env->camera->points[3].vx = work->unk8.vx;

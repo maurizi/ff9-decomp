@@ -321,7 +321,7 @@ void func_801E8430(Unk80100C78Entry *entry, Fx0e0Bolt *bolt, SVECTOR *from, SVEC
         a = ex->btlfx_randCentered(0xA0);
         a = (ex->math_sin(t >> 1) * a) >> 12;
         a += ex->btlfx_lerp(amp0, amp1, t);
-        ex->func_800D044C(&p, (s32)pt, 0, (XY32 *)&rot, a, ang);
+        ex->btlfx_offsetPoint(&p, (s32)pt, 0, (XY32 *)&rot, a, ang);
         pt->pad = pad;
         ang += dang + ex->btlfx_randCentered(0x80);
         pt++;
@@ -389,7 +389,7 @@ s32 func_801E8628(s32 mode, Fx0e0Obj *it, Unk800F78A4 *env, Unk80100C78Entry *en
                     ((s16 *)it)[-1] = -1;
                     it->unk20 = e = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0xD), (s32)&it->unkC);
                     if (e != NULL) {
-                        e->unk22 = 0x20;
+                        e->otZ = 0x20;
                     }
                 }
                 break;
@@ -402,9 +402,9 @@ s32 func_801E8628(s32 mode, Fx0e0Obj *it, Unk800F78A4 *env, Unk80100C78Entry *en
                 ex->btlfx_aimAngles((s16 *)&parent->unk8, (s16 *)&it->unkC, (s16 *)&ang);
                 ang.pad = 1;
                 if (it->unk20 != NULL) {
-                    it->unk20->unk5C.vx = ang.vx;
-                    it->unk20->unk5C.vy = ang.vy;
-                    it->unk20->unk5C.vz = ang.vz;
+                    it->unk20->rot.vx = ang.vx;
+                    it->unk20->rot.vy = ang.vy;
+                    it->unk20->rot.vz = ang.vz;
                 }
                 if (frame < 4) {
                     k = 0x1000 - ((frame << 12) >> 2);
@@ -676,7 +676,7 @@ s32 fx_0e0_op80(s32 mode, Fx0e0Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
                 d1 = ex->btlfx_randCentered(0x400) + 0xC00;
                 ((s32 *)&to)[0] = work->unk24.vx;
                 ((s32 *)&to)[1] = work->unk24.vy;
-                ex->func_800D044C(&from, (s32)&to, 0x1000, (XY32 *)&work->unk3C, 0x3000, r2);
+                ex->btlfx_offsetPoint(&from, (s32)&to, 0x1000, (XY32 *)&work->unk3C, 0x3000, r2);
                 func_801E8430(entry, &D_801EA928[i], &from, &to, 0x100, 0x200, r2, 0xC0, 0, d1, (ex->btlfx_rand() & 0x1F) + 0x58);
             }
             if (frame >= 0x42) {

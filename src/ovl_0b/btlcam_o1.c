@@ -1,7 +1,7 @@
 #include "ovl_0b.h"
 
-s32 func_800C2DF4(void) {
-    return D_800FE470;
+s32 btlcam_getNextVariant(void) {
+    return g_btlCamera.nextVariant;
 }
 
 void btlcam_init(void) {
@@ -56,10 +56,10 @@ void btlcam_playSeq(s32 arg0) {
     g_btlCamera.flags = 0;
 }
 
-void func_800C30B8(void) {
+void btlcam_focusCaster(void) {
     BtlUnit *u = g_btlfxEnv->targets->caster;
     if (u->flags & 1) {
-        D_800FE484 = u;
+        g_btlCamera.focusUnit = u;
     }
 }
 
@@ -440,7 +440,7 @@ void btlcam_setPathKey(Unk800C412C *arg0, Unk800C3F78 *arg1) {
         if (u->flags & 1) {
             idx = ((g_gameState->gameData->characters[(u->flags >> 1) & 0xF].info.w >> 4) & 0x1F) +
                   (arg1->preset - 1) * 19;
-            tb = D_800F5758;
+            tb = g_btlCamPartyPresets;
             t = &tb[idx];
             arg0->keys[1].pos[3] = t->w << 6;
             arg0->keys[1].pos[0] = t->x << 4;
@@ -561,15 +561,15 @@ void btlcam_evalPath(s32 arg0, Unk800C412C *arg1, s16 *arg2) {
             arg2[3] = out.pad;
             return;
         }
-        func_800C4B9C(arg1->keys[1].anchor, arg1->keys[1].anchorFlags, &out.vx, arg2);
+        btlcam_orbitAnchor(arg1->keys[1].anchor, arg1->keys[1].anchorFlags, &out.vx, arg2);
         goto tail;
     case 3:
         if (arg0 != 0) {
             for (i = 0; i < 2; i++) {
-                func_800C4B9C(arg1->keys[i].anchor, arg1->keys[i].anchorFlags, &v[i].vx, &w[i].vx);
+                btlcam_orbitAnchor(arg1->keys[i].anchor, arg1->keys[i].anchorFlags, &v[i].vx, &w[i].vx);
             }
             LoadAverageShort12(&w[0], &w[1], wa[0], wb[0], &w[1]);
-            func_800C4DC4(arg1->keys[1].anchor, arg1->keys[1].anchorFlags, &w[0].vx, &v[0].vx, &z);
+            btlcam_resolveAnchorPair(arg1->keys[1].anchor, arg1->keys[1].anchorFlags, &w[0].vx, &v[0].vx, &z);
             dx = w[1].vx - w[0].vx;
             dy = w[1].vy - w[0].vy;
             dz = w[1].vz - w[0].vz;
@@ -582,7 +582,7 @@ void btlcam_evalPath(s32 arg0, Unk800C412C *arg1, s16 *arg2) {
             return;
         }
         for (i = 0; i < 2; i++) {
-            func_800C4B9C(arg1->keys[i].anchor, arg1->keys[i].anchorFlags, &v[i].vx, &w[i].vx);
+            btlcam_orbitAnchor(arg1->keys[i].anchor, arg1->keys[i].anchorFlags, &v[i].vx, &w[i].vx);
         }
         LoadAverageShort12(&w[0], &w[1], wa[0], wb[0], (SVECTOR *)arg2);
     tail:
@@ -609,7 +609,7 @@ void btlcam_evalPath(s32 arg0, Unk800C412C *arg1, s16 *arg2) {
         }
         break;
     default:
-        func_800C4B9C(arg1->keys[1].anchor, arg1->keys[1].anchorFlags, &v[1].vx, arg2);
+        btlcam_orbitAnchor(arg1->keys[1].anchor, arg1->keys[1].anchorFlags, &v[1].vx, arg2);
         arg2[3] = v[1].vz;
         if ((u32)((arg1->keys[1].anchor & 0x1F) - 0x19) < 2) {
             g_btlCamera.viewState++;
@@ -651,7 +651,7 @@ void btlcam_applySway(s16 *arg0, s16 *arg1) {
     arg1[1] += v;
 }
 
-void func_800C4B9C(s32 arg0, s32 arg1, s16 *arg2, s16 *arg3) {
+void btlcam_orbitAnchor(s32 arg0, s32 arg1, s16 *arg2, s16 *arg3) {
     s16 a[4];
     s16 b[4];
     s32 c;
@@ -659,7 +659,7 @@ void func_800C4B9C(s32 arg0, s32 arg1, s16 *arg2, s16 *arg3) {
     s32 ang;
     BtlUnit *u;
 
-    func_800C4DC4(arg0, arg1, a, b, &c);
+    btlcam_resolveAnchorPair(arg0, arg1, a, b, &c);
     if (arg1 & 0x80) {
         c = arg2[3];
     } else {
@@ -687,20 +687,20 @@ void func_800C4B9C(s32 arg0, s32 arg1, s16 *arg2, s16 *arg3) {
     arg3[2] += a[2];
 }
 
-void func_800C4DC4(s32 arg0, s32 arg1, s16 *arg2, s16 *arg3, s32 *arg4) {
+void btlcam_resolveAnchorPair(s32 arg0, s32 arg1, s16 *arg2, s16 *arg3, s32 *arg4) {
     s16 a[4], b[4];
     s32 c[2];
-    func_800C4E84(arg0, arg2, arg3, arg4);
+    btlcam_resolveAnchor(arg0, arg2, arg3, arg4);
     if (arg1 & 0x1F) {
         arg1 = (arg0 & 0xC0) | (arg1 & 0x3F);
-        func_800C4E84(arg1, a, b, c);
+        btlcam_resolveAnchor(arg1, a, b, c);
         arg2[0] = (s16)(arg2[0] + a[0]) >> 1;
         arg2[1] = (s16)(arg2[1] + a[1]) >> 1;
         arg2[2] = (s16)(arg2[2] + a[2]) >> 1;
     }
 }
 
-s32 func_800C4E84(s32 arg0, s16 *arg1, s16 *arg2, s32 *arg3) {
+s32 btlcam_resolveAnchor(s32 arg0, s16 *arg1, s16 *arg2, s32 *arg3) {
     s32 n;
     BtlUnit *u;
     s16 *s;
@@ -880,7 +880,7 @@ void btlcam_applyTargetView(SVECTOR *arg0, SVECTOR *arg1) {
     if (g_btlCamera.viewBlend != 0) {
         g_btlCamera.viewBlend--;
     }
-    if ((u8)func_800EA094() != 1 && ((u8)btlui_isTargetSelect() || g_btlCamScript.viewHold != 0)) {
+    if ((u8)btl_isTargetWindowOpen() != 1 && ((u8)btlui_isTargetSelect() || g_btlCamScript.viewHold != 0)) {
         if (g_btlCamera.targetView != 1) {
             g_btlCamera.targetView = 1;
             g_btlCamera.viewBlend = 2;

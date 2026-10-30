@@ -191,7 +191,7 @@ s32 fx_191_op81(s32 mode, Fx191Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
             ((EffMotion *)work->unk0->file)->unk8 = func_801E7988;
         }
         if (work->unk0 != NULL) {
-            work->unk0->unk22 = ex->func_800E7CC4(0, 0x80);
+            work->unk0->otZ = ex->btlfx_addRadiusSixth(0, 0x80);
         }
         func_801E8460(&D_801E8564, (u8 *)ex->btlfx_getFileData(entry->file, 4));
         func_801E8460(&D_801E856C, (u8 *)ex->btlfx_getFileData(entry->file, 5));
@@ -210,7 +210,7 @@ s32 fx_191_op81(s32 mode, Fx191Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
                 ((EffMotion *)work->unk4->file)->unk8 = func_801E79C4;
             }
             if (work->unk4 != NULL) {
-                work->unk4->unk22 = ex->func_800E7CC4(0, 0x80);
+                work->unk4->otZ = ex->btlfx_addRadiusSixth(0, 0x80);
             }
             break;
         case 3:
@@ -229,10 +229,10 @@ s32 fx_191_op81(s32 mode, Fx191Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
             work->unk8 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0x12), (s32)&work->unk30);
             work->unkC = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0x11), (s32)&work->unk18);
             if (work->unk8 != NULL) {
-                work->unk8->unk22 = ex->func_800E7CC4(0, 0x80);
+                work->unk8->otZ = ex->btlfx_addRadiusSixth(0, 0x80);
             }
             if (work->unkC != NULL) {
-                work->unkC->unk22 = ex->func_800E7CC4(0, 0x80);
+                work->unkC->otZ = ex->btlfx_addRadiusSixth(0, 0x80);
             }
             break;
         case 8:
@@ -251,10 +251,10 @@ s32 fx_191_op81(s32 mode, Fx191Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
             work->unk10 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0xF), (s32)&work->unk40);
             work->unk14 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0x10), (s32)&work->unk18);
             if (work->unk10 != NULL) {
-                work->unk10->unk22 = ex->func_800E7CC4(0, 0x80);
+                work->unk10->otZ = ex->btlfx_addRadiusSixth(0, 0x80);
             }
             if (work->unk14 != NULL) {
-                work->unk14->unk22 = ex->func_800E7CC4(0, 0x80);
+                work->unk14->otZ = ex->btlfx_addRadiusSixth(0, 0x80);
             }
             break;
         }

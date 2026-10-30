@@ -126,9 +126,9 @@ s32 fx_0b4_op80(s32 mode, Fx0b4Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
                     work->unk1C = NULL;
                 }
                 if (work->unk1C != NULL) {
-                    work->unk1C->unk5C.vx = D_801E811C.vx;
-                    work->unk1C->unk5C.vy = D_801E811C.vy;
-                    work->unk1C->unk5C.vz = D_801E811C.vz;
+                    work->unk1C->rot.vx = D_801E811C.vx;
+                    work->unk1C->rot.vy = D_801E811C.vy;
+                    work->unk1C->rot.vz = D_801E811C.vz;
                 }
             }
         }
@@ -138,9 +138,9 @@ s32 fx_0b4_op80(s32 mode, Fx0b4Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
                     work->unk20 = NULL;
                 }
                 if (work->unk20 != NULL) {
-                    work->unk20->unk5C.vx = D_801E811C.vx;
-                    work->unk20->unk5C.vy = D_801E811C.vy;
-                    work->unk20->unk5C.vz = D_801E811C.vz;
+                    work->unk20->rot.vx = D_801E811C.vx;
+                    work->unk20->rot.vy = D_801E811C.vy;
+                    work->unk20->rot.vz = D_801E811C.vz;
                 }
             }
         }
@@ -150,9 +150,9 @@ s32 fx_0b4_op80(s32 mode, Fx0b4Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
                     work->unk18 = NULL;
                 }
                 if (work->unk18 != NULL) {
-                    work->unk18->unk5C.vx = D_801E811C.vx;
-                    work->unk18->unk5C.vy = D_801E811C.vy;
-                    work->unk18->unk5C.vz = D_801E811C.vz;
+                    work->unk18->rot.vx = D_801E811C.vx;
+                    work->unk18->rot.vy = D_801E811C.vy;
+                    work->unk18->rot.vz = D_801E811C.vz;
                 }
             }
         }
@@ -162,9 +162,9 @@ s32 fx_0b4_op80(s32 mode, Fx0b4Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
                     work->unk28 = NULL;
                 }
                 if (work->unk28 != NULL) {
-                    work->unk28->unk5C.vx = D_801E811C.vx;
-                    work->unk28->unk5C.vy = D_801E811C.vy;
-                    work->unk28->unk5C.vz = D_801E811C.vz;
+                    work->unk28->rot.vx = D_801E811C.vx;
+                    work->unk28->rot.vy = D_801E811C.vy;
+                    work->unk28->rot.vz = D_801E811C.vz;
                 }
             }
         }

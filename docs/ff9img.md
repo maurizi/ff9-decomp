@@ -97,7 +97,7 @@ A module is linked for its load address, with no relocations, and is laid out li
 | ... | `.data`, zero-initialised variables included; contains the header |
 | end | 0xFF fill to the end of the chunk (not part of the module) |
 
-Header: `{u32 0, init, op80, op81, ...}`. The loader sets the slot's op table (`D_80100C70[slot]`) to `header + 8`
+Header: `{u32 0, init, op80, op81, ...}`. The loader sets the slot's op table (`g_btlfxModuleOps[slot]`) to `header + 8`
 and calls `init(effect data, g_btlfxEnv, g_btlfxEnv->unk10)` when it is non-NULL (it is NULL in every module on
 the discs). Script opcodes 0x80 and up dispatch to `ops[op - 0x80]` (`btlfx_spawnTask`) with the usual effect
 handler signature `(mode, work, env, entry, args)`; modules use up to 8 ops.

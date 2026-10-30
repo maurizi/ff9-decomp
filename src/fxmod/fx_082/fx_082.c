@@ -48,7 +48,7 @@ s32 fx_082_op80(s32 mode, Fx082Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
                 }
                 p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 1), (s32)&work->unk10);
                 if (p != NULL) {
-                    p->unk22 = 0x20;
+                    p->otZ = 0x20;
                 }
             }
             work->unk28.vx = -0x200;
@@ -67,7 +67,7 @@ s32 fx_082_op80(s32 mode, Fx082Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             if (frame == 3) {
                 p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 3), (s32)&work->unk8);
                 if (p != NULL) {
-                    p->unk22 = 0x20;
+                    p->otZ = 0x20;
                 }
             }
             if (frame >= 4) {
@@ -75,11 +75,11 @@ s32 fx_082_op80(s32 mode, Fx082Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
                 entry->frame = -1;
                 p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 7), (s32)&work->unk8);
                 if (p != NULL) {
-                    p->unk22 = 0x20;
+                    p->otZ = 0x20;
                 }
                 p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 8), (s32)&work->unk8);
                 if (p != NULL) {
-                    p->unk22 = 0x20;
+                    p->otZ = 0x20;
                 }
             }
             break;
@@ -92,11 +92,11 @@ s32 fx_082_op80(s32 mode, Fx082Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             if (frame == 0) {
                 p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 2), (s32)&work->unk8);
                 if (p != NULL) {
-                    p->unk22 = 0x20;
+                    p->otZ = 0x20;
                 }
                 p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 4), (s32)&work->unk8);
                 if (p != NULL) {
-                    p->unk22 = 0x20;
+                    p->otZ = 0x20;
                 }
             }
             if (frame >= 6) {

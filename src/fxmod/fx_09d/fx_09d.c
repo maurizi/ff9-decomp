@@ -14,14 +14,14 @@ s32 fx_09d_op80(s32 mode, Fx09dWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
         D_801E7880 = env;
         p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 8), (s32)&work->unk0);
         if (p != NULL) {
-            p->unk22 = ex->func_800E7CC4(0, 0x80);
+            p->otZ = ex->btlfx_addRadiusSixth(0, 0x80);
         }
     } else {
         frame = entry->frame;
         if (frame == 0x18) {
             p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 7), (s32)&work->unk0);
             if (p != NULL) {
-                p->unk22 = ex->func_800E7CC4(0, 0x80);
+                p->otZ = ex->btlfx_addRadiusSixth(0, 0x80);
             }
         }
         return frame >= 0x38;

@@ -150,7 +150,7 @@ void btlfx_setRotScale(SVECTOR *arg0, VECTOR *arg1, MATRIX *arg2, s32 arg3) {
     gte_SetRotMatrix(arg2);
 }
 
-void func_800D044C(SVECTOR *arg0, s32 arg1, s32 arg2, XY32 *arg3, s32 arg4, s32 arg5) {
+void btlfx_offsetPoint(SVECTOR *arg0, s32 arg1, s32 arg2, XY32 *arg3, s32 arg4, s32 arg5) {
     struct {
         XY32 xy;
         s16 z;
@@ -170,7 +170,7 @@ void func_800D044C(SVECTOR *arg0, s32 arg1, s32 arg2, XY32 *arg3, s32 arg4, s32 
     gte_SetTransMatrix(g_btlfxEnv->viewMatrix);
 }
 
-void func_800D0580(s16 *arg0, XY32 *arg1, s32 arg2) {
+void btlfx_forwardAngles(s16 *arg0, XY32 *arg1, s32 arg2) {
     s16 a[4];
     s32 b[2];
     struct {
@@ -192,7 +192,7 @@ void func_800D0580(s16 *arg0, XY32 *arg1, s32 arg2) {
     gte_SetTransMatrix(g_btlfxEnv->viewMatrix);
 }
 
-void func_800D0674(SVECTOR *arg0, SVECTOR *arg1, SVECTOR *arg2, s32 arg3, s32 arg4, s32 *arg5) {
+void btlfx_toLocalPolar(SVECTOR *arg0, SVECTOR *arg1, SVECTOR *arg2, s32 arg3, s32 arg4, s32 *arg5) {
     SVECTOR v;
     struct {
         XY32 xy;
@@ -252,7 +252,7 @@ void btlfx_resetMaskBit(void) {
     Unk800D0940 *p;
     u32 *ot;
     if (g_btlfxEnv->prim != NULL) {
-        D_800F7278 = n = 1;
+        g_btlfxMaskResetBusy = n = 1;
         p = (Unk800D0940 *)g_btlfxEnv->prim;
         ot = &p->unkC;
         g_btlfxEnv->prim = (u8 *)(p + 1);
@@ -264,7 +264,7 @@ void btlfx_resetMaskBit(void) {
         EnterCriticalSection();
         DrawOTag(ot);
         ExitCriticalSection();
-        D_800F7278 = 0;
+        g_btlfxMaskResetBusy = 0;
     }
 }
 

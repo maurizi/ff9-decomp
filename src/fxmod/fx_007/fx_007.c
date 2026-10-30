@@ -159,7 +159,7 @@ s32 fx_007_op80(s32 mode, Fx007Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             p->unk14 = (s32)D_801E93A8;
             p->unk12 = 0x12;
             p->unkC = 0x24;
-            p->unk22 = 0x20;
+            p->otZ = 0x20;
         }
         work->unk2C = NULL;
         work->unk30 = NULL;
@@ -188,7 +188,7 @@ s32 fx_007_op80(s32 mode, Fx007Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
                 entry->frame = -1;
                 p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0xA), (s32)work);
                 if (p != NULL) {
-                    p->unk22 = 0x100;
+                    p->otZ = 0x100;
                 }
             }
             break;
@@ -200,15 +200,15 @@ s32 fx_007_op80(s32 mode, Fx007Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
 
                 p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0x12), (s32)work);
                 if (p != NULL) {
-                    p->unk22 = 0x100;
+                    p->otZ = 0x100;
                 }
                 p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0x11), (s32)work);
                 if (p != NULL) {
-                    p->unk22 = 0x100;
+                    p->otZ = 0x100;
                 }
                 p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0x10), (s32)work);
                 if (p != NULL) {
-                    p->unk22 = 0x100;
+                    p->otZ = 0x100;
                 }
             }
             alpha = ex->math_cos(t >> 2);
@@ -302,24 +302,24 @@ s32 fx_007_op80(s32 mode, Fx007Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
                     Pool6CEntry *pp = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0xE), (s32)&work->unk8);
 
                     if (pp != NULL) {
-                        pp->unk22 = 0x100;
+                        pp->otZ = 0x100;
                     }
                 }
                 if (frame == 0xE) {
                     Pool6CEntry *pp = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0x13), (s32)work);
 
                     if (pp != NULL) {
-                        pp->unk22 = 0x100;
+                        pp->otZ = 0x100;
                     }
                 }
                 if (frame == 3) {
                     work->unk2C = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0x15), (s32)&work->unk8);
                     if (work->unk2C != NULL) {
-                        work->unk2C->unk22 = 0x100;
+                        work->unk2C->otZ = 0x100;
                     }
                     work->unk30 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0x14), (s32)&work->unk8);
                     if (work->unk30 != NULL) {
-                        work->unk30->unk22 = 0x100;
+                        work->unk30->otZ = 0x100;
                     }
                 }
                 q.vx = 0x400;
@@ -330,9 +330,9 @@ s32 fx_007_op80(s32 mode, Fx007Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
                         work->unk2C = NULL;
                     }
                     if (work->unk2C != NULL) {
-                        work->unk2C->unk5C.vx = q.vx;
-                        work->unk2C->unk5C.vy = q.vy;
-                        work->unk2C->unk5C.vz = q.vz;
+                        work->unk2C->rot.vx = q.vx;
+                        work->unk2C->rot.vy = q.vy;
+                        work->unk2C->rot.vz = q.vz;
                     }
                 }
                 if (work->unk30 != NULL) {
@@ -340,9 +340,9 @@ s32 fx_007_op80(s32 mode, Fx007Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
                         work->unk30 = NULL;
                     }
                     if (work->unk30 != NULL) {
-                        work->unk30->unk5C.vx = q.vx;
-                        work->unk30->unk5C.vy = q.vy;
-                        work->unk30->unk5C.vz = q.vz;
+                        work->unk30->rot.vx = q.vx;
+                        work->unk30->rot.vy = q.vy;
+                        work->unk30->rot.vz = q.vz;
                     }
                 }
                 if (frame < 0x24) {

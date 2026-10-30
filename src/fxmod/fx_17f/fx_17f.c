@@ -28,7 +28,7 @@ s32 fx_17f_op80(s32 mode, Fx17fWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
             ex->btlfx_getUnitRot(0x10, (s16 *)&work->unk14);
             ex->btlfx_getUnitScale(0x10, (VECTOR *)work->unk0);
             ex->btlfx_getUnitPos(0x10, (s16 *)&work->unkC);
-            ex->func_800E8980(0);
+            ex->btlfx_setPartnerByArg(0);
             ex->btlfx_fadeUnitById(0x10, -1);
             work->unk1C = (BtlUnit9C8 *)ex->btlfx_swapModelData(0xE, D_801E88E0);
             ex->btlfx_fadeUnitById(0x11, 0x1000);
@@ -58,17 +58,17 @@ s32 fx_17f_op80(s32 mode, Fx17fWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
         if (frame == 3) {
             p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0xB), (s32)&work->unk20);
             if (p != NULL) {
-                p->unk22 = 0x80;
+                p->otZ = 0x80;
             }
         }
         if (frame == 6) {
             p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 2), (s32)&work->unk20);
             if (p != NULL) {
-                p->unk22 = 0x80;
+                p->otZ = 0x80;
             }
             p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 1), (s32)&work->unk20);
             if (p != NULL) {
-                p->unk22 = 0x80;
+                p->otZ = 0x80;
             }
         }
         if (frame == 0x1C) {

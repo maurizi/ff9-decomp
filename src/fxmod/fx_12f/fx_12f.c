@@ -26,9 +26,9 @@ s32 fx_12f_op80(s32 mode, Fx12fWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
         ex->btlfx_getUnitArgBonePos(0x10, 0, (u16 *)&work->unk10);
         ex->btlfx_moveEmitterTo((s32)work->unk40, (s32)&work->unk10);
         if (work->unk40 != NULL) {
-            work->unk40->unk5C.vx = work->unk0.vx;
-            work->unk40->unk5C.vy = work->unk0.vy;
-            work->unk40->unk5C.vz = work->unk0.vz;
+            work->unk40->rot.vx = work->unk0.vx;
+            work->unk40->rot.vy = work->unk0.vy;
+            work->unk40->rot.vz = work->unk0.vz;
         }
         if (frame == 0x10) {
             ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 4), (s32)&work->unk18);
@@ -36,7 +36,7 @@ s32 fx_12f_op80(s32 mode, Fx12fWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
                 ex->btlfx_getUnitPos(i, (s16 *)&work->unk20[i]);
                 p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 3), (s32)&work->unk20[i]);
                 if (p != NULL) {
-                    p->unk22 = ex->func_800E7CC4(i, 0x80);
+                    p->otZ = ex->btlfx_addRadiusSixth(i, 0x80);
                 }
             }
         }
@@ -44,7 +44,7 @@ s32 fx_12f_op80(s32 mode, Fx12fWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
             for (i = 0; i < env->targets->targetCount; i++) {
                 p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 8), (s32)&work->unk20[i]);
                 if (p != NULL) {
-                    p->unk22 = ex->func_800E7CC4(i, 0x80);
+                    p->otZ = ex->btlfx_addRadiusSixth(i, 0x80);
                 }
             }
         }

@@ -72,7 +72,7 @@ s32 fx_1a0_op80(s32 mode, Fx1a0Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             for (i = 0; i < 6; i++) {
                 work->unk0[i] = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 3), (s32)&D_801E8288[i]);
                 if (work->unk0[i] != NULL) {
-                    work->unk0[i]->unk22 = 0x20;
+                    work->unk0[i]->otZ = 0x20;
                 }
             }
         }
@@ -125,16 +125,16 @@ s32 fx_1a0_op81(s32 mode, Fx1a0Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
                 ((EffMotion *)work->unk0->file)->unk8 = D_801E7F28[work->unk14];
             }
             if (work->unk0 != NULL) {
-                work->unk0->unk22 = 0x20;
+                work->unk0->otZ = 0x20;
             }
             if (work->unk18 != 0) {
                 work->unk4 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 4), (s32)&work->unkC);
                 work->unk8 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 1), (s32)&work->unkC);
                 if (work->unk4 != NULL) {
-                    work->unk4->unk22 = 0x80;
+                    work->unk4->otZ = 0x80;
                 }
                 if (work->unk8 != NULL) {
-                    work->unk8->unk22 = 0x80;
+                    work->unk8->otZ = 0x80;
                 }
             }
         }

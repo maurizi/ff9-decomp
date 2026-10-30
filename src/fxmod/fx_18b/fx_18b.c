@@ -181,7 +181,7 @@ s32 fx_18b_op80(s32 mode, Fx18bWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
         D_801E827C = env;
         ex->btlfx_getUnitBodyPos(0, 0, (s16 *)&work->unkC);
         ex->btlfx_getUnitBodyPos(0x10, 0, (s16 *)&work->unk14);
-        work->unk8 = ex->func_800E7CC4(0, 0x20);
+        work->unk8 = ex->btlfx_addRadiusSixth(0, 0x20);
         D_801E8280 = 0;
         work->unk0 = 0;
         D_801E8284 = 0;
@@ -204,7 +204,7 @@ s32 fx_18b_op80(s32 mode, Fx18bWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
             if (frame == 1) {
                 p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 1), (s32)&work->unkC);
                 if (p != NULL) {
-                    p->unk22 = ex->func_800E7CC4(0, 0x20);
+                    p->otZ = ex->btlfx_addRadiusSixth(0, 0x20);
                 }
             }
             if (frame >= 0x28) {

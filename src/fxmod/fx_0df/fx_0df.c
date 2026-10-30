@@ -273,7 +273,7 @@ s32 fx_0df_op80(s32 mode, Fx0dfWork80 *work, Unk800F78A4 *env, Unk80100C78Entry 
         work->unk0 = 1;
         work->unk4 = 0;
         D_801EA414 = entry;
-        work->unk8 = ex->func_800E7CC4(0, 0);
+        work->unk8 = ex->btlfx_addRadiusSixth(0, 0);
         ex->btlfx_getUnitBodyPos(0, 0, (s16 *)&work->unkC);
         D_801EA410 = 0;
         work->unk34 = 0x3E8;
@@ -337,11 +337,11 @@ s32 fx_0df_op80(s32 mode, Fx0dfWork80 *work, Unk800F78A4 *env, Unk80100C78Entry 
                     ex->btlfx_drawScreenTint((u32 *)(env->ot + 1), 2, 0xFF, 0x80, 0x80);
                     work->unk3C = p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 8), (s32)&work->unkC);
                     if (p != NULL) {
-                        p->unk22 = work->unk8 + 0x46;
+                        p->otZ = work->unk8 + 0x46;
                     }
                     p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0x11), (s32)&work->unkC);
                     if (p != NULL) {
-                        p->unk22 = work->unk8 + 0x46;
+                        p->otZ = work->unk8 + 0x46;
                     }
                     work->unk38 = (ex->btlfx_rand() % 3 - 1) * 0x9B;
                 }
@@ -442,11 +442,11 @@ s32 fx_0df_op80(s32 mode, Fx0dfWork80 *work, Unk800F78A4 *env, Unk80100C78Entry 
                     ex->btlfx_drawScreenTint((u32 *)(env->ot + 1), 2, 0xAA, 0xAA, 0xAA);
                     p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 6), (s32)&work->unkC);
                     if (p != NULL) {
-                        p->unk22 = work->unk8 + 0x46;
+                        p->otZ = work->unk8 + 0x46;
                     }
                     p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 9), (s32)&work->unkC);
                     if (p != NULL) {
-                        p->unk22 = work->unk8 + 0x46;
+                        p->otZ = work->unk8 + 0x46;
                     }
                 }
                 break;
@@ -547,7 +547,7 @@ void func_801E93F4(Unk80100C78Entry *entry, Fx0dfBolt *bolt, s32 *jitter, SVECTO
         a = *jitter++;
         a = (ex->math_sin(t >> 1) * a) >> 12;
         a += ex->btlfx_lerp(amp0, amp1, t);
-        ex->func_800D044C(&p, (s32)pt, 0, (XY32 *)&rot, a, ang);
+        ex->btlfx_offsetPoint(&p, (s32)pt, 0, (XY32 *)&rot, a, ang);
         pt->pad = pad;
         ang += dang + *jitter++;
         pt++;

@@ -34,7 +34,7 @@ s32 fx_006_op80(s32 mode, Fx006Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
                     p->unk14 = (s32)D_801E829C;
                     p->unk12 = 0xA;
                     p->unkC = 0x5C;
-                    p->unk22 = ex->func_800E7CC4(0, 0x20);
+                    p->otZ = ex->btlfx_addRadiusSixth(0, 0x20);
                 }
             }
             if (frame >= 8) {
@@ -85,19 +85,19 @@ s32 fx_006_op80(s32 mode, Fx006Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
                 entry->frame = -1;
                 p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0xE), (s32)&work->unk14);
                 if (p != NULL) {
-                    p->unk22 = ex->func_800E7CC4(0, 0x20);
+                    p->otZ = ex->btlfx_addRadiusSixth(0, 0x20);
                 }
                 p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0xD), (s32)&work->unk14);
                 if (p != NULL) {
-                    p->unk22 = ex->func_800E7CC4(0, 0x20);
+                    p->otZ = ex->btlfx_addRadiusSixth(0, 0x20);
                 }
                 p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 1), (s32)&work->unk14);
                 if (p != NULL) {
-                    p->unk22 = ex->func_800E7CC4(0, 0x20);
+                    p->otZ = ex->btlfx_addRadiusSixth(0, 0x20);
                 }
                 p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 6), (s32)&work->unk14);
                 if (p != NULL) {
-                    p->unk22 = ex->func_800E7CC4(0, 0x20);
+                    p->otZ = ex->btlfx_addRadiusSixth(0, 0x20);
                 }
                 ex->btlfx_drawScreenTint((u32 *)(env->ot + 1), 1, 0, 0x20, 0x46);
             }
@@ -128,7 +128,7 @@ s32 fx_006_op80(s32 mode, Fx006Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
             if (frame == 1) {
                 p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0x10), (s32)&work->unk14);
                 if (p != NULL) {
-                    p->unk22 = ex->func_800E7CC4(0, 0x20);
+                    p->otZ = ex->btlfx_addRadiusSixth(0, 0x20);
                 }
             }
             if (frame >= 0xC) {

@@ -55,7 +55,7 @@ s32 fx_101_op80(s32 mode, Fx101Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             ex->btlfx_fadeUnitById(0x10, 0);
             work->unk8 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 5), (s32)&work->unk14);
             if (work->unk8 != NULL) {
-                work->unk8->unk22 = ex->func_800E7CC4(0x10, 0x20);
+                work->unk8->otZ = ex->btlfx_addRadiusSixth(0x10, 0x20);
             }
             work->unk1C = 0;
         }
@@ -87,15 +87,15 @@ s32 fx_101_op80(s32 mode, Fx101Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             ex->btlfx_stopEmitter(work->unk8);
             p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0xF), (s32)&work->unkC);
             if (p != NULL) {
-                p->unk22 = ex->func_800E7CC4(0x10, 0x20);
+                p->otZ = ex->btlfx_addRadiusSixth(0x10, 0x20);
             }
             p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0x10), (s32)&work->unkC);
             if (p != NULL) {
-                p->unk22 = ex->func_800E7CC4(0x10, 0x20);
+                p->otZ = ex->btlfx_addRadiusSixth(0x10, 0x20);
             }
             p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0xC), (s32)&work->unkC);
             if (p != NULL) {
-                p->unk22 = ex->func_800E7CC4(0x10, 0x20);
+                p->otZ = ex->btlfx_addRadiusSixth(0x10, 0x20);
             }
         }
         break;
@@ -118,11 +118,11 @@ s32 fx_101_op80(s32 mode, Fx101Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             scale.vx = scale.vz = (ex->math_sin(t2) >> 3) + 0x174;
             scale.vy = ex->math_cos(t2) / 6;
         }
-        if (frame == 3 && ex->func_800E8554(1, 0x10) == 0) {
+        if (frame == 3 && ex->btlfx_resetIdleMotion(1, 0x10) == 0) {
             work->unk20 = 1;
         }
         if (work->unk20 != 0 && frame >= 0x12) {
-            ex->func_800E8554(0, 0x10);
+            ex->btlfx_resetIdleMotion(0, 0x10);
             work->unk20 = 0;
         }
         if (frame >= 0x2F) {

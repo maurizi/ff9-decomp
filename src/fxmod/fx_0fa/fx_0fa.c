@@ -86,7 +86,7 @@ s32 fx_0fa_op80(s32 mode, Fx0faWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
         case 0x20:
             p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 3), (s32)&work->unk30);
             if (p != NULL) {
-                p->unk22 = ex->func_800E7CC4(0, 0x80);
+                p->otZ = ex->btlfx_addRadiusSixth(0, 0x80);
             }
             break;
         case 0x40:
@@ -114,9 +114,9 @@ s32 fx_0fa_op80(s32 mode, Fx0faWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
             work->unk5C.vx = work->unk5C.vy = work->unk5C.vz = ex->math_cos((0x10 - work->unk0[1]) << 6) / 5;
         }
         if (work->unk0[6] != 0 && work->unk74 != NULL) {
-            work->unk74->unk5C.vx = work->unk6C.vx;
-            work->unk74->unk5C.vy = work->unk6C.vy;
-            work->unk74->unk5C.vz = work->unk6C.vz;
+            work->unk74->rot.vx = work->unk6C.vx;
+            work->unk74->rot.vy = work->unk6C.vy;
+            work->unk74->rot.vz = work->unk6C.vz;
         }
         if (work->unk0[2] != 0) {
             work->unk0[2]--;

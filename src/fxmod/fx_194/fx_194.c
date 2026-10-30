@@ -50,12 +50,12 @@ s32 fx_194_op80(s32 mode, Fx194Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
         ex->btlfx_getUnitPos(0x10, (s16 *)&work->unkC);
         p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 1), (s32)&work->unk4);
         if (p != NULL) {
-            p->unk22 = 0x200;
+            p->otZ = 0x200;
         }
         ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 3), (s32)&work->unkC);
         p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 2), (s32)&work->unk4);
         if (p != NULL) {
-            p->unk22 = 0x200;
+            p->otZ = 0x200;
         }
         work->unk14.vx = work->unk4.vx;
         work->unk14.vy = work->unk4.vy;
@@ -123,7 +123,7 @@ s32 fx_194_op81(s32 mode, Fx194Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
         ex->btlfx_getUnitBodyPos(0x10, 0, (s16 *)&work->unk4);
         p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 6), (s32)&work->unk4);
         if (p != NULL) {
-            p->unk22 = 0x200;
+            p->otZ = 0x200;
         }
         env->camera->points[3].vx = work->unk4.vx;
         env->camera->points[3].vy = work->unk4.vy;

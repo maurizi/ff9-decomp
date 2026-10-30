@@ -87,7 +87,7 @@ s32 fx_17d_2_op80(s32 mode, Fx17d2Work *work, Unk800F78A4 *env, Unk80100C78Entry
         env->camera->points[3].vz = work->unk18.vz;
         work->unk7C = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 3), (s32)&work->unk10);
         if (work->unk7C != NULL) {
-            work->unk7C->unk22 = 0x80;
+            work->unk7C->otZ = 0x80;
         }
         for (i = 0; i < 0x14; i++) {
             y = i * 0x140 - 0x400;
@@ -143,9 +143,9 @@ s32 fx_17d_2_op80(s32 mode, Fx17d2Work *work, Unk800F78A4 *env, Unk80100C78Entry
                 work->unk7C = NULL;
             }
             if (work->unk7C != NULL) {
-                work->unk7C->unk5C.vx = work->unk40.vx;
-                work->unk7C->unk5C.vy = work->unk40.vy;
-                work->unk7C->unk5C.vz = work->unk40.vz;
+                work->unk7C->rot.vx = work->unk40.vx;
+                work->unk7C->rot.vy = work->unk40.vy;
+                work->unk7C->rot.vz = work->unk40.vz;
             }
             if (frame >= 0x3C) {
                 ex->btlfx_poolClear((Unk800DA1B8 *)entry->pool);

@@ -60,11 +60,11 @@ s32 fx_130_op80(s32 mode, Fx130Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
         case 0:
             p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 5), (s32)&work->unk20);
             if (p != NULL) {
-                p->unk22 = -0x100;
+                p->otZ = -0x100;
             }
             p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 4), (s32)&work->unk20);
             if (p != NULL) {
-                p->unk22 = -0x100;
+                p->otZ = -0x100;
             }
             break;
         case 8:
@@ -74,7 +74,7 @@ s32 fx_130_op80(s32 mode, Fx130Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
         case 0x2A:
             p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 2), (s32)&work->unk20);
             if (p != NULL) {
-                p->unk22 = -0x100;
+                p->otZ = -0x100;
             }
             break;
         }

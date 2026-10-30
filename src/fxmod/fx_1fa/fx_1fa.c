@@ -71,7 +71,7 @@ s32 fx_1fa_op81(s32 mode, void *work, Unk800F78A4 *env, Unk80100C78Entry *entry,
         case 8:
             p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0x13), (s32)&D_801E80F4);
             if (p != NULL) {
-                p->unk22 = 0x80;
+                p->otZ = 0x80;
             }
             break;
         case 0x18:
@@ -79,15 +79,15 @@ s32 fx_1fa_op81(s32 mode, void *work, Unk800F78A4 *env, Unk80100C78Entry *entry,
                 ex->btlfx_getUnitBodyPos(i, 0, (s16 *)&D_801E80FC[i]);
                 p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0x14), (s32)&D_801E80FC[i]);
                 if (p != NULL) {
-                    p->unk22 = ex->func_800E7CC4(i, 0x80);
+                    p->otZ = ex->btlfx_addRadiusSixth(i, 0x80);
                 }
                 p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 2), (s32)&D_801E80FC[i]);
                 if (p != NULL) {
-                    p->unk22 = ex->func_800E7CC4(i, 0x80);
+                    p->otZ = ex->btlfx_addRadiusSixth(i, 0x80);
                 }
                 p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0x17), (s32)&D_801E80FC[i]);
                 if (p != NULL) {
-                    p->unk22 = ex->func_800E7CC4(i, 0x80);
+                    p->otZ = ex->btlfx_addRadiusSixth(i, 0x80);
                 }
             }
             break;

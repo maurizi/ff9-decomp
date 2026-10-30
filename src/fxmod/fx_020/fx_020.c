@@ -25,9 +25,9 @@ s32 fx_020_op80(s32 mode, Fx020Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
                 work->unk4 = NULL;
             }
             if (work->unk4 != NULL) {
-                work->unk4->unk5C.vx = D_801E7894.vx;
-                work->unk4->unk5C.vy = D_801E7894.vy;
-                work->unk4->unk5C.vz = D_801E7894.vz;
+                work->unk4->rot.vx = D_801E7894.vx;
+                work->unk4->rot.vy = D_801E7894.vy;
+                work->unk4->rot.vz = D_801E7894.vz;
             }
         }
         return frame >= 0x32;

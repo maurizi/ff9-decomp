@@ -50,7 +50,7 @@ s32 fx_12d_op81(s32 mode, Fx12dWork81 *work, Unk800F78A4 *env, Unk80100C78Entry 
                 work->unk8->unkC = 0x70;
             }
             if (work->unk0 != NULL) {
-                work->unk0->unk22 = ex->func_800E7CC4(0x10, 0x80);
+                work->unk0->otZ = ex->btlfx_addRadiusSixth(0x10, 0x80);
             }
         }
         return frame >= 0x3C;

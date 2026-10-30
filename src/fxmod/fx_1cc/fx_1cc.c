@@ -315,16 +315,16 @@ s32 func_801E82D0(s32 mode, Fx1ccObj *o, Unk800F78A4 *env, Unk80100C78Entry *ent
                 e = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0xE), (s32)&o->unk18);
                 o->unk34 = e;
                 if (e != NULL) {
-                    e->unk22 = 0x80;
+                    e->otZ = 0x80;
                 }
             }
             sc.vx = 0;
             BTLFX_COPY_SVEC(&a, tab);
             a.vx -= 0x800;
             if (o->unk34 != NULL) {
-                o->unk34->unk5C.vx = a.vx;
-                o->unk34->unk5C.vy = a.vy;
-                o->unk34->unk5C.vz = a.vz;
+                o->unk34->rot.vx = a.vx;
+                o->unk34->rot.vy = a.vy;
+                o->unk34->rot.vz = a.vz;
             }
             if (++o->unk8 > 0) {
                 o->unk0 = 1;
@@ -338,9 +338,9 @@ s32 func_801E82D0(s32 mode, Fx1ccObj *o, Unk800F78A4 *env, Unk80100C78Entry *ent
             BTLFX_COPY_SVEC(&a, tab);
             a.vx -= 0x800;
             if (o->unk34 != NULL) {
-                o->unk34->unk5C.vx = a.vx;
-                o->unk34->unk5C.vy = a.vy;
-                o->unk34->unk5C.vz = a.vz;
+                o->unk34->rot.vx = a.vx;
+                o->unk34->rot.vy = a.vy;
+                o->unk34->rot.vz = a.vz;
             }
             if (++o->unk8 >= 4) {
                 o->unk0 = 2;
@@ -352,9 +352,9 @@ s32 func_801E82D0(s32 mode, Fx1ccObj *o, Unk800F78A4 *env, Unk80100C78Entry *ent
             BTLFX_COPY_SVEC(&a, tab);
             a.vx -= 0x800;
             if (o->unk34 != NULL) {
-                o->unk34->unk5C.vx = a.vx;
-                o->unk34->unk5C.vy = a.vy;
-                o->unk34->unk5C.vz = a.vz;
+                o->unk34->rot.vx = a.vx;
+                o->unk34->rot.vy = a.vy;
+                o->unk34->rot.vz = a.vz;
             }
             if (frame < 12) {
                 u = (frame << 10) / 12;
@@ -547,15 +547,15 @@ s32 fx_1cc_op80(s32 mode, Fx1ccWork80 *work, Unk800F78A4 *env, Unk80100C78Entry 
                 work->unk68.vy -= 0xAAA;
                 p1 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0xD), (s32)&work->unk58);
                 if (p1 != NULL) {
-                    p1->unk22 = 0x80;
+                    p1->otZ = 0x80;
                 }
                 p1 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0xF), (s32)&work->unk68);
                 if (p1 != NULL) {
-                    p1->unk22 = 0x80;
+                    p1->otZ = 0x80;
                 }
                 p1 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0xB), (s32)&work->unk58);
                 if (p1 != NULL) {
-                    p1->unk22 = 0x80;
+                    p1->otZ = 0x80;
                 }
                 ex->btlfx_drawScreenTint((u32 *)(env->ot + 1), 2, 0xFF, 0xFF, 0);
                 ex->btlfx_drawScreenTint((u32 *)(env->ot + 1), 1, 0, 0, 0x80);
@@ -653,19 +653,19 @@ s32 fx_1cc_op80(s32 mode, Fx1ccWork80 *work, Unk800F78A4 *env, Unk80100C78Entry 
                 ex->btlfx_drawScreenTint((u32 *)(env->ot + 1), 2, 0xFF, 0xFF, 0);
                 p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 6), (s32)&work->unk58);
                 if (p != NULL) {
-                    p->unk22 = 0x60;
+                    p->otZ = 0x60;
                 }
                 p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 7), (s32)&work->unk58);
                 if (p != NULL) {
-                    p->unk22 = 0x60;
+                    p->otZ = 0x60;
                 }
                 p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 1), (s32)&work->unk60);
                 if (p != NULL) {
-                    p->unk22 = 0x80;
+                    p->otZ = 0x80;
                 }
                 p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 5), (s32)&work->unk60);
                 if (p != NULL) {
-                    p->unk22 = 0x80;
+                    p->otZ = 0x80;
                 }
                 rot.vx = -0x400;
                 rot.vy = 0;

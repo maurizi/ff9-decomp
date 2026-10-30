@@ -186,14 +186,14 @@ s32 fx_0b1_op80(s32 mode, void *work, Unk800F78A4 *env, Unk80100C78Entry *entry,
                 e->unk14 = (s32)D_801E8D8C;
                 e->unk12 = 0x28;
                 e->unkC = 0xAC;
-                e->unk22 = 0x50;
+                e->otZ = 0x50;
             }
             break;
         case 0x48:
             ex->Hi_GetSummonBonePos(SUMMON0B1(env)->unk60, 0x11, (u16 *)&D_801EA87C);
             D_801EA86C = e2 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0xC), (s32)&D_801EA87C);
             if (e2 != NULL) {
-                e2->unk22 = 0x40;
+                e2->otZ = 0x40;
             }
             break;
         case 0x67:
@@ -205,7 +205,7 @@ s32 fx_0b1_op80(s32 mode, void *work, Unk800F78A4 *env, Unk80100C78Entry *entry,
             D_801EA88C.vy -= 0x180;
             D_801EA884 = e3 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0x1), (s32)&D_801EA88C);
             if (e3 != NULL) {
-                e3->unk22 = -0x80;
+                e3->otZ = -0x80;
             }
             D_801E8D3C[1] = 0x10;
             ex->Hi_GetSummonBonePos(SUMMON0B1(env)->unk60, 0x11, (u16 *)&D_801EA89C);

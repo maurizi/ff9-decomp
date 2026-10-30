@@ -171,7 +171,7 @@ s32 fx_138_op81(s32 mode, Fx138Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
                     work->unk0[i]->tail->unk0 = -1;
                     *(s32 *)&work->unk0[i]->tail->unk3C = D_801E84A0[i];
                     if (work->unk0[i] != NULL) {
-                        work->unk0[i]->unk22 = ex->func_800E7CC4(0, 0x80);
+                        work->unk0[i]->otZ = ex->btlfx_addRadiusSixth(0, 0x80);
                     }
                 }
             }
@@ -181,14 +181,14 @@ s32 fx_138_op81(s32 mode, Fx138Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
                 work->unk18->unk12 = 0x18;
                 work->unk18->unkC = 0x40;
                 if (work->unk18 != NULL) {
-                    work->unk18->unk22 = ex->func_800E7CC4(0, 0x80);
+                    work->unk18->otZ = ex->btlfx_addRadiusSixth(0, 0x80);
                 }
             }
             break;
         case 0xC:
             work->unk1C = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 1), (s32)&work->unk20);
             if (work->unk1C != NULL) {
-                work->unk1C->unk22 = ex->func_800E7CC4(0, 0x80);
+                work->unk1C->otZ = ex->btlfx_addRadiusSixth(0, 0x80);
             }
             break;
         }

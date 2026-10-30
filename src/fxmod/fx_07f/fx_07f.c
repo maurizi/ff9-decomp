@@ -28,11 +28,11 @@ s32 fx_07f_op80(s32 mode, Fx07fWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
         work->unk10.vy -= 0x180;
         p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 9), (s32)&work->unk8);
         if (p != NULL) {
-            p->unk22 = 0x20;
+            p->otZ = 0x20;
         }
         p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0xC), (s32)&work->unk8);
         if (p != NULL) {
-            p->unk22 = -0x20;
+            p->otZ = -0x20;
         }
         ex->btlfx_initEffModels(D_801E7B5C, 2);
         work->unk2C = ex->Hi_RegisterTexEffModel((BtlUnit9C8 *)ex->btlfx_getFileData(entry->file, 5), 0xB7, 0x3D40, 0, 0);
@@ -67,7 +67,7 @@ s32 fx_07f_op80(s32 mode, Fx07fWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
             if (frame == 0xC) {
                 p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 3), (s32)&work->unk10);
                 if (p != NULL) {
-                    p->unk22 = 0x46;
+                    p->otZ = 0x46;
                 }
             }
             if (frame >= 0x29) {

@@ -34,9 +34,9 @@ s32 func_801E77CC(s32 curve, s32 n, s32 t, s32 from, s32 to) {
 
 #define SET_ROT(p, r)              \
     if ((p) != NULL) {             \
-        (p)->unk5C.vx = (r).vx;    \
-        (p)->unk5C.vy = (r).vy;    \
-        (p)->unk5C.vz = (r).vz;    \
+        (p)->rot.vx = (r).vx;    \
+        (p)->rot.vy = (r).vy;    \
+        (p)->rot.vz = (r).vz;    \
     }
 
 /* Matching notes: the tex/clut lists, trail points and flash locals share three function-scope buffers (v, w, sc),
@@ -230,18 +230,18 @@ s32 fx_1b3_op80(s32 mode, Fx1b3Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
         case 8:
             p = work->unk80[0] = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 5), (s32)&work->unk100);
             if (p != NULL) {
-                p->unk22 = 0x400;
+                p->otZ = 0x400;
             }
             p = work->unk80[1] = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 6), (s32)&work->unk100);
             if (p != NULL) {
-                p->unk22 = 0x400;
+                p->otZ = 0x400;
             }
             break;
         case 0x10:
             work->unk0[1] = 0x90;
             p = work->unk80[2] = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 2), (s32)&work->unk100);
             if (p != NULL) {
-                p->unk22 = 0x400;
+                p->otZ = 0x400;
             }
             break;
         case 0x30:
@@ -260,7 +260,7 @@ s32 fx_1b3_op80(s32 mode, Fx1b3Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
                 work->unk80[3]->unkC = 0x6C;
                 p = work->unk80[3];
                 if (p != NULL) {
-                    p->unk22 = 0x400;
+                    p->otZ = 0x400;
                 }
             }
             break;
@@ -282,11 +282,11 @@ s32 fx_1b3_op80(s32 mode, Fx1b3Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             work->unk0[5] = 0;
             p = work->unk80[16] = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0xC), (s32)&work->unk110);
             if (p != NULL) {
-                p->unk22 = 0x200;
+                p->otZ = 0x200;
             }
             p = work->unk80[17] = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0xD), (s32)&work->unk110);
             if (p != NULL) {
-                p->unk22 = 0x200;
+                p->otZ = 0x200;
             }
             break;
         case 0x9C:
@@ -305,11 +305,11 @@ s32 fx_1b3_op80(s32 mode, Fx1b3Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             work->unk0[5] = 3;
             p = work->unk80[18] = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0xC), (s32)&work->unk110);
             if (p != NULL) {
-                p->unk22 = 0x200;
+                p->otZ = 0x200;
             }
             p = work->unk80[19] = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0xD), (s32)&work->unk110);
             if (p != NULL) {
-                p->unk22 = 0x200;
+                p->otZ = 0x200;
             }
             break;
         case 0xD8:
@@ -328,11 +328,11 @@ s32 fx_1b3_op80(s32 mode, Fx1b3Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             work->unk0[5] = 6;
             p = work->unk80[20] = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0xC), (s32)&work->unk110);
             if (p != NULL) {
-                p->unk22 = 0x200;
+                p->otZ = 0x200;
             }
             p = work->unk80[21] = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0xD), (s32)&work->unk110);
             if (p != NULL) {
-                p->unk22 = 0x200;
+                p->otZ = 0x200;
             }
             break;
         case 0xFE:
@@ -348,7 +348,7 @@ s32 fx_1b3_op80(s32 mode, Fx1b3Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             ex->btlfx_getUnitBonePos(0x10, 0x3A, (u16 *)&work->unk118);
             p = work->unk80[4] = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 7), (s32)&work->unk118);
             if (p != NULL) {
-                p->unk22 = 0x400;
+                p->otZ = 0x400;
             }
             break;
         case 0x11E:
@@ -357,11 +357,11 @@ s32 fx_1b3_op80(s32 mode, Fx1b3Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             ex->btlfx_stopEmitter(work->unk80[21]);
             p = work->unk80[5] = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 8), (s32)&work->unk118);
             if (p != NULL) {
-                p->unk22 = 0x400;
+                p->otZ = 0x400;
             }
             p = work->unk80[6] = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 9), (s32)&work->unk118);
             if (p != NULL) {
-                p->unk22 = 0x400;
+                p->otZ = 0x400;
             }
             break;
         case 0x11F:
@@ -381,7 +381,7 @@ s32 fx_1b3_op80(s32 mode, Fx1b3Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             ex->btlfx_getUnitBonePos(0x10, 0x3A, (u16 *)&work->unk118);
             p = work->unk80[7] = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0xB), (s32)&work->unk118);
             if (p != NULL) {
-                p->unk22 = 0x200;
+                p->otZ = 0x200;
             }
             work->unk80[8] = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0xE), (s32)&work->unk118);
             p = work->unk80[9] = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0x3A), (s32)&work->unk118);
@@ -413,7 +413,7 @@ s32 fx_1b3_op80(s32 mode, Fx1b3Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             ex->btlfx_getUnitBonePos(0x10, 0x18, (u16 *)&work->unk120);
             p = work->unk80[10] = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 7), (s32)&work->unk120);
             if (p != NULL) {
-                p->unk22 = 0x400;
+                p->otZ = 0x400;
             }
             break;
         case 0x16F:
@@ -423,11 +423,11 @@ s32 fx_1b3_op80(s32 mode, Fx1b3Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             ex->btlfx_stopEmitter(work->unk80[6]);
             p = work->unk80[11] = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 8), (s32)&work->unk120);
             if (p != NULL) {
-                p->unk22 = 0x400;
+                p->otZ = 0x400;
             }
             p = work->unk80[12] = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 9), (s32)&work->unk120);
             if (p != NULL) {
-                p->unk22 = 0x400;
+                p->otZ = 0x400;
             }
             break;
         case 0x170:
@@ -451,7 +451,7 @@ s32 fx_1b3_op80(s32 mode, Fx1b3Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             ex->btlfx_getUnitBonePos(0x10, 0x18, (u16 *)&work->unk120);
             p = work->unk80[13] = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0xB), (s32)&work->unk120);
             if (p != NULL) {
-                p->unk22 = 0x200;
+                p->otZ = 0x200;
             }
             work->unk80[14] = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0xE), (s32)&work->unk120);
             p = work->unk80[15] = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0x39), (s32)&work->unk120);
@@ -502,11 +502,11 @@ s32 fx_1b3_op80(s32 mode, Fx1b3Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             work->unk1F4.vy -= 0x80;
             p = work->unk80[22] = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 8), (s32)&work->unk1F4);
             if (p != NULL) {
-                p->unk22 = 0x400;
+                p->otZ = 0x400;
             }
             p = work->unk80[23] = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 9), (s32)&work->unk1F4);
             if (p != NULL) {
-                p->unk22 = 0x400;
+                p->otZ = 0x400;
             }
             break;
         case 0x1C2:
@@ -526,14 +526,14 @@ s32 fx_1b3_op80(s32 mode, Fx1b3Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
                 work->unk80[24]->unkC = 0x6C;
                 p = work->unk80[24];
                 if (p != NULL) {
-                    p->unk22 = 0x400;
+                    p->otZ = 0x400;
                 }
             }
             ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0x10), (s32)&D_801EB7EC);
             ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0x11), (s32)&D_801EB7EC);
             p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0x14), (s32)&D_801EB7EC);
             if (p != NULL) {
-                p->unk22 = 0x100;
+                p->otZ = 0x100;
             }
             break;
         case 0x1E4:

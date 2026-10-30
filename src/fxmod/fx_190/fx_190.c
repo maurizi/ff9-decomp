@@ -55,15 +55,15 @@ s32 fx_190_op80(s32 mode, Fx190Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
             }
             if (work->unk54[i] != NULL) {
                 v = (SVECTOR *)((u8 *)work + i * 8 + 0x14);
-                work->unk54[i]->unk5C.vx = v->vx;
-                work->unk54[i]->unk5C.vy = v->vy;
-                work->unk54[i]->unk5C.vz = v->vz;
+                work->unk54[i]->rot.vx = v->vx;
+                work->unk54[i]->rot.vy = v->vy;
+                work->unk54[i]->rot.vz = v->vz;
             }
             if (work->unk64[i] != NULL) {
                 v = (SVECTOR *)((u8 *)work + i * 8 + 0x14);
-                work->unk64[i]->unk5C.vx = v->vx;
-                work->unk64[i]->unk5C.vy = v->vy;
-                work->unk64[i]->unk5C.vz = v->vz;
+                work->unk64[i]->rot.vx = v->vx;
+                work->unk64[i]->rot.vy = v->vy;
+                work->unk64[i]->rot.vz = v->vz;
             }
         }
         return frame >= 0x60;

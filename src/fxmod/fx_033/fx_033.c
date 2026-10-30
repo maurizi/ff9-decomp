@@ -47,9 +47,9 @@ s32 fx_033_op80(s32 mode, Fx033Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
                 work->unk2C = NULL;
             }
             if (work->unk2C != NULL) {
-                work->unk2C->unk5C.vx = work->unk24.vx;
-                work->unk2C->unk5C.vy = work->unk24.vy;
-                work->unk2C->unk5C.vz = work->unk24.vz;
+                work->unk2C->rot.vx = work->unk24.vx;
+                work->unk2C->rot.vy = work->unk24.vy;
+                work->unk2C->rot.vz = work->unk24.vz;
             }
         }
         if (frame == 0x18) {

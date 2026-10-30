@@ -184,11 +184,11 @@ s32 fx_0ba_op80(s32 mode, Fx0baWork80 *work, Unk800F78A4 *env, Unk80100C78Entry 
                     D_801ECAB8.vz = work->unk10.vz;
                     p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0x86), (s32)&work->unk10);
                     if (p != NULL) {
-                        p->unk22 = 0x37;
+                        p->otZ = 0x37;
                     }
                     p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0x84), (s32)&work->unk10);
                     if (p != NULL) {
-                        p->unk22 = 0x37;
+                        p->otZ = 0x37;
                     }
                     D_801EC550 = 0;
                 }
@@ -315,7 +315,7 @@ void func_801E8778(Unk80100C78Entry *entry, Fx0baStrip *buf, SVECTOR *from, SVEC
         h = ex->btlfx_randCentered(0x80);
         h = (ex->math_sin(t >> 1) * h) >> 12;
         h += 0x20 + ((ex->math_sin(t >> 1) * amp) >> 12);
-        ex->func_800D044C(&pos, (s32)v, 0, (XY32 *)&ang, h, s);
+        ex->btlfx_offsetPoint(&pos, (s32)v, 0, (XY32 *)&ang, h, s);
         v->pad = pad;
         s += step + ex->btlfx_randCentered(0x100);
     }
@@ -592,14 +592,14 @@ s32 fx_0ba_op81(s32 mode, Fx0baPWork81 *work, Unk800F78A4 *env, Unk80100C78Entry
                 p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0xA), (s32)&work->unk10);
                 work->unk6C = p;
                 if (p != NULL) {
-                    p->unk22 = 0x96;
+                    p->otZ = 0x96;
                 }
             }
             if (frame == 14) {
                 p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0x14), (s32)&work->unk8);
                 work->unk68 = p;
                 if (p != NULL) {
-                    p->unk22 = -0x20;
+                    p->otZ = -0x20;
                 }
             }
             if (frame < 8) {
@@ -683,7 +683,7 @@ s32 fx_0ba_op81(s32 mode, Fx0baPWork81 *work, Unk800F78A4 *env, Unk80100C78Entry
                 ex->btlfx_startFadeBackground(-1, 6);
                 p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0x2C), (s32)&work->unk10);
                 if (p != NULL) {
-                    p->unk22 = 0x96;
+                    p->otZ = 0x96;
                 }
             }
             break;
@@ -934,7 +934,7 @@ void func_801EA850(Unk80100C78Entry *entry, s32 file, s32 a2, Fx0baStrip *buf, s
         h = *tab++;
         h = (ex->math_sin(t >> 1) * h) >> 12;
         h += ex->btlfx_lerp(r0, r1, t);
-        ex->func_800D044C(&pos, (s32)v, 0, (XY32 *)&ang, h, s);
+        ex->btlfx_offsetPoint(&pos, (s32)v, 0, (XY32 *)&ang, h, s);
         if (wave != 0) {
             v->vy -= (ex->math_sin(t >> 1) * wave) >> 12;
         }

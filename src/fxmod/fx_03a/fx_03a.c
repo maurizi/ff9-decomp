@@ -50,7 +50,7 @@ s32 fx_03a_op80(s32 mode, Fx03aWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
         case 1:
             p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0x10), (s32)&work->unk20);
             if (p != NULL) {
-                p->unk22 = 0x100;
+                p->otZ = 0x100;
             }
             work->unkC = 0x40;
             work->unk0 = 0x40;

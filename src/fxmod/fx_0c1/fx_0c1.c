@@ -27,7 +27,7 @@ s32 fx_0c1_op80(s32 mode, Fx0c1Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
         ex->btlfx_matrixPointAhead((MATRIX *)&bone, 0x64, (s32)&work->unk28);
         work->unk0 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 7), (s32)&work->unk28);
         if (work->unk0 != NULL) {
-            work->unk0->unk22 = ex->func_800E7CC4(0x10, 0x20);
+            work->unk0->otZ = ex->btlfx_addRadiusSixth(0x10, 0x20);
         }
     } else {
         frame = entry->frame;
@@ -46,7 +46,7 @@ s32 fx_0c1_op80(s32 mode, Fx0c1Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
                 ((EffMotion *)work->unk8->file)->unk8 = func_801E7704;
             }
             if (work->unk8 != NULL) {
-                work->unk8->unk22 = ex->func_800E7CC4(0x10, 0x80);
+                work->unk8->otZ = ex->btlfx_addRadiusSixth(0x10, 0x80);
             }
             ex->btlfx_aimAngles((s16 *)&work->unk38, (s16 *)&work->unk20, (s16 *)&work->unk48);
             work->unk40.vx = work->unk48.vx;
@@ -56,7 +56,7 @@ s32 fx_0c1_op80(s32 mode, Fx0c1Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
         if (frame == 0x2D) {
             work->unkC = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0xD), (s32)&work->unk20);
             if (work->unkC != NULL) {
-                work->unkC->unk22 = ex->func_800E7CC4(0, 0x80);
+                work->unkC->otZ = ex->btlfx_addRadiusSixth(0, 0x80);
             }
         }
         if (frame >= 0x24) {
@@ -65,9 +65,9 @@ s32 fx_0c1_op80(s32 mode, Fx0c1Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
                     work->unk4 = NULL;
                 }
                 if (work->unk4 != NULL) {
-                    work->unk4->unk5C.vx = work->unk40.vx;
-                    work->unk4->unk5C.vy = work->unk40.vy;
-                    work->unk4->unk5C.vz = work->unk40.vz;
+                    work->unk4->rot.vx = work->unk40.vx;
+                    work->unk4->rot.vy = work->unk40.vy;
+                    work->unk4->rot.vz = work->unk40.vz;
                 }
             }
             if (work->unk8 != NULL) {
@@ -75,9 +75,9 @@ s32 fx_0c1_op80(s32 mode, Fx0c1Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
                     work->unk8 = NULL;
                 }
                 if (work->unk8 != NULL) {
-                    work->unk8->unk5C.vx = work->unk48.vx;
-                    work->unk8->unk5C.vy = work->unk48.vy;
-                    work->unk8->unk5C.vz = work->unk48.vz;
+                    work->unk8->rot.vx = work->unk48.vx;
+                    work->unk8->rot.vy = work->unk48.vy;
+                    work->unk8->rot.vz = work->unk48.vz;
                 }
             }
         }

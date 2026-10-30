@@ -9,7 +9,7 @@ s32 func_801E7704(s32 mode, Fx188Elem *e, Unk800F78A4 *env, Unk80100C78Entry *en
         e->unk0 = 0;
         e->unk1C = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 4), (s32)&e->unkC);
         if (e->unk1C != NULL) {
-            e->unk1C->unk22 = 0;
+            e->unk1C->otZ = 0;
         }
         e->unk4 = (ex->btlfx_rand() & 0x1F) + 0x27;
         e->unk8 = (ex->btlfx_rand() & 0x1F) + 0x20;
@@ -121,26 +121,26 @@ s32 fx_188_op80(s32 mode, Fx188Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
                 entry->frame = -1;
                 p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0x10), (s32)&work->unk4);
                 if (p != NULL) {
-                    p->unk22 = 0x80;
+                    p->otZ = 0x80;
                 }
                 p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0x11), (s32)&work->unk4);
                 if (p != NULL) {
-                    p->unk22 = 0x80;
+                    p->otZ = 0x80;
                 }
                 p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0x12), (s32)&work->unk4);
                 if (p != NULL) {
-                    p->unk22 = 0x80;
+                    p->otZ = 0x80;
                 }
                 p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0x13), (s32)&work->unk4);
                 if (p != NULL) {
                     p->unk14 = (s32)D_801E7E98;
                     p->unk12 = 0x19;
-                    p->unk22 = 0x20;
+                    p->otZ = 0x20;
                     p->unkC = 0x54;
                 }
                 p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0x15), (s32)&work->unk4);
                 if (p != NULL) {
-                    p->unk22 = 0x20;
+                    p->otZ = 0x20;
                 }
             }
             break;

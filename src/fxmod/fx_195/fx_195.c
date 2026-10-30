@@ -23,7 +23,7 @@ void func_801E7704(Unk80100C78Entry *entry, Fx195Trail *trail, SVECTOR *from, SV
         i++;
         h = (ex->math_sin(t >> 1) * h) >> 12;
         h += ex->btlfx_lerp(arg4, arg5, t);
-        ex->func_800D044C(&pos, (s32)p, 0, (XY32 *)&rot, h, arg6);
+        ex->btlfx_offsetPoint(&pos, (s32)p, 0, (XY32 *)&rot, h, arg6);
         p->pad = 0x1A;
         arg6 += arg7 + ex->btlfx_randCentered(0x100);
         p++;
@@ -53,7 +53,7 @@ void func_801E78A4(Unk80100C78Entry *entry, Fx195Trail57 *trail, SVECTOR *from, 
         i++;
         h = (ex->math_sin(t >> 1) * h) >> 12;
         h += ex->btlfx_lerp(arg4, arg5, t);
-        ex->func_800D044C(&pos, (s32)p, 0, (XY32 *)&rot, h, arg6);
+        ex->btlfx_offsetPoint(&pos, (s32)p, 0, (XY32 *)&rot, h, arg6);
         p->pad = arg10;
         arg6 += arg7 + ex->btlfx_randCentered(0x80);
         p++;
@@ -84,7 +84,7 @@ void func_801E7AA0(Unk80100C78Entry *entry, Fx195Trail *trail, SVECTOR *from, SV
         i++;
         h = (ex->math_sin(t >> 1) * h) >> 12;
         h += ex->btlfx_lerp(arg4, arg5, t);
-        ex->func_800D044C(&pos, (s32)p, 0, (XY32 *)&rot, h, arg6);
+        ex->btlfx_offsetPoint(&pos, (s32)p, 0, (XY32 *)&rot, h, arg6);
         p->pad = arg10;
         arg6 += arg7 + ex->btlfx_randCentered(0x80);
         p++;
@@ -242,7 +242,7 @@ void func_801E83BC(VECTOR *pos, SVECTOR *rot) {
     v.vx = pos->vx;
     v.vy = pos->vy;
     v.vz = pos->vz;
-    ex->func_800D0674(&env->camera->eye, &v, rot, (s32)&tmp, (s32)&tmp, &a);
+    ex->btlfx_toLocalPolar(&env->camera->eye, &v, rot, (s32)&tmp, (s32)&tmp, &a);
     rot->vz = -a + 0x400;
 }
 
@@ -431,15 +431,15 @@ s32 fx_195_op80(s32 mode, Fx195Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
                 ex->btlfx_drawScreenTint((u32 *)(env->ot + 1), 1, 0, 0x80, 0xFF);
                 p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0xF), (s32)&work->unk10);
                 if (p != NULL) {
-                    p->unk22 = 0x300;
+                    p->otZ = 0x300;
                 }
                 p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0xB), (s32)&work->unk10);
                 if (p != NULL) {
-                    p->unk22 = 0x300;
+                    p->otZ = 0x300;
                 }
                 p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0x17), (s32)&work->unk10);
                 if (p != NULL) {
-                    p->unk22 = 0x400;
+                    p->otZ = 0x400;
                 }
                 work->unk30 = ex->btlfx_playFileSound(0x22, entry->file, -1);
                 work->unk32 = ex->btlfx_playFileSound(0x23, entry->file, -1);
@@ -683,7 +683,7 @@ s32 fx_195_op80(s32 mode, Fx195Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
                 work->unk18.vy -= 0x400;
                 p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0x10), (s32)&work->unk18);
                 if (p != NULL) {
-                    p->unk22 = 0x180;
+                    p->otZ = 0x180;
                 }
             }
             env->otZ = 0x300;

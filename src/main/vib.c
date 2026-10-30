@@ -75,7 +75,7 @@ s32 vib_update(void) {
     if (!((g_gameState->config & 0xFF) >> 7) || g_gameState->mode == 5) {
         g_padActuator[0].unk0 = b;
         g_padActuator[0].unk1 = a;
-        if (g_gameState->mode == 2 && func_800EA27C()) {
+        if (g_gameState->mode == 2 && btlui_isSecondPortUsed()) {
             g_padActuator[1].unk0 = b;
             g_padActuator[1].unk1 = a;
         }

@@ -39,7 +39,7 @@ s32 fx_136_op81(s32 mode, Fx136Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
         ex->btlfx_getUnitBonePos(0x10, 0xF, (u16 *)&work->unkC);
         work->unk0 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 3), (s32)&work->unkC);
         if (work->unk0 != NULL) {
-            work->unk0->unk22 = ex->func_800E7CC4(0x10, 0x20);
+            work->unk0->otZ = ex->btlfx_addRadiusSixth(0x10, 0x20);
         }
     } else {
         frame = entry->frame;
@@ -49,9 +49,9 @@ s32 fx_136_op81(s32 mode, Fx136Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
                 work->unk0 = NULL;
             }
             if (work->unk0 != NULL) {
-                work->unk0->unk5C.vx = work->unk4.vx;
-                work->unk0->unk5C.vy = work->unk4.vy;
-                work->unk0->unk5C.vz = work->unk4.vz;
+                work->unk0->rot.vx = work->unk4.vx;
+                work->unk0->rot.vy = work->unk4.vy;
+                work->unk0->rot.vz = work->unk4.vz;
             }
         }
         return frame >= 0x28;

@@ -56,7 +56,7 @@ s32 fx_112_op80(s32 mode, Fx112Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
             ex->btlfx_getUnitBodyPos(0, 0, (s16 *)&work->unk40);
             p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 3), (s32)&work->unk40);
             if (p != NULL) {
-                p->unk22 = 0x80;
+                p->otZ = 0x80;
             }
         } else if (frame >= 5) {
             t = ((frame - 4) << 12) / 28;
@@ -105,7 +105,7 @@ s32 fx_112_op80(s32 mode, Fx112Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
                 q->unk14 = (s32)D_801E8130[k];
                 q->unk12 = 0x14;
                 q->unkC = 0x24;
-                q->unk22 = 0x80;
+                q->otZ = 0x80;
             }
         }
         if (frame >= 0x13) {
@@ -119,7 +119,7 @@ s32 fx_112_op80(s32 mode, Fx112Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
             entry->frame = -1;
             work->unk50 = p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 4), (s32)&work->unk48);
             if (p != NULL) {
-                p->unk22 = 0x80;
+                p->otZ = 0x80;
             }
         }
         break;
@@ -128,9 +128,9 @@ s32 fx_112_op80(s32 mode, Fx112Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
         ex->btlfx_getUnitBoneMatrix(0x10, 4, &u.s4.m);
         ex->btlfx_matrixAngles((MATRIX *)&u.s4.m, (s16 *)&u.s4.rot);
         if (work->unk50 != NULL) {
-            work->unk50->unk5C.vx = u.s4.rot.vx;
-            work->unk50->unk5C.vy = u.s4.rot.vy;
-            work->unk50->unk5C.vz = u.s4.rot.vz;
+            work->unk50->rot.vx = u.s4.rot.vx;
+            work->unk50->rot.vy = u.s4.rot.vy;
+            work->unk50->rot.vz = u.s4.rot.vz;
         }
         if (frame < 0xD) {
             if (frame == 1) {

@@ -26,7 +26,7 @@ s32 fx_092_op80(s32 mode, Fx092Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
         env->camera->points[0].vz = work->unk28.vz;
         work->unk0 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 1), (s32)&work->unk28);
         if (work->unk0 != NULL) {
-            work->unk0->unk22 = ex->func_800E7CC4(0x10, 0x20);
+            work->unk0->otZ = ex->btlfx_addRadiusSixth(0x10, 0x20);
         }
     } else {
         frame = entry->frame;
@@ -36,9 +36,9 @@ s32 fx_092_op80(s32 mode, Fx092Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
                 work->unk0 = NULL;
             }
             if (work->unk0 != NULL) {
-                work->unk0->unk5C.vx = work->unk40.vx;
-                work->unk0->unk5C.vy = work->unk40.vy;
-                work->unk0->unk5C.vz = work->unk40.vz;
+                work->unk0->rot.vx = work->unk40.vx;
+                work->unk0->rot.vy = work->unk40.vy;
+                work->unk0->rot.vz = work->unk40.vz;
             }
         }
         if (frame == 0xA) {

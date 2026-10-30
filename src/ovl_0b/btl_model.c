@@ -286,10 +286,10 @@ Battle1330 *btl_pickEnemyGroup(Battle11C020 *arg0) {
     return e;
 }
 
-void func_800C972C(void) {
+void btl_initSceneFlags(void) {
     Battle *b = g_gameState->gameData->ctx.battle;
     b->scene.flags = (b->work->encounter->flags ^ 0x30) * 4;
-    D_800FDF38 = g_gameState->gameData->ctx.battle->scene.group->ap;
+    g_btlRewards.ap = g_gameState->gameData->ctx.battle->scene.group->ap;
 }
 
 void btl_setupEnemies(void) {
@@ -413,7 +413,7 @@ void btl_placeParty(void) {
         u->rot[1] = rot;
         u->obj->rotZ = 0;
         u->rot[2] = 0;
-        tbl = D_800F57F0;
+        tbl = g_btlPartyShadows;
         e = &tbl[g_gameState->gameData->characters[(u->flags >> 1) & 0xF].info.b.kind];
         u->shadowBone = e->shadowBone;
         u->shadowDirBone = e->shadowDirBone;
@@ -479,7 +479,7 @@ void btl_initEnemyUnit(Unk800C9EE0 *arg0, BtlUnit *arg1, s32 *arg2, s32 arg3) {
         arg1->rot[0] = 0;
         arg1->obj->rotZ = 0;
         arg1->rot[2] = 0;
-        r = (arg0->rotY + D_800F5850[*arg2 & 3]) & 0xFFF;
+        r = (arg0->rotY + g_btlEnemyRotByAmbush[*arg2 & 3]) & 0xFFF;
         arg1->obj->rotY = r;
         arg1->rot[1] = r;
     }

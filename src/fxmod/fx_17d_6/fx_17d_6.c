@@ -64,7 +64,7 @@ s32 fx_17d_6_op80(s32 mode, Fx17d6Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
         p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 2), (s32)&work->unk10);
         work->unk78 = p;
         if (p != NULL) {
-            p->unk22 = 0x200;
+            p->otZ = 0x200;
         }
         D_801EB114 = 0;
     } else {
@@ -134,7 +134,7 @@ s32 fx_17d_6_op80(s32 mode, Fx17d6Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
                 env->camera->points[2].vz = work->unk18.vz;
                 p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 4), (s32)&work->unk30);
                 if (p != NULL) {
-                    p->unk22 = 0x80;
+                    p->otZ = 0x80;
                 }
             }
             break;
@@ -162,7 +162,7 @@ s32 fx_17d_6_op80(s32 mode, Fx17d6Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
             if (frame == 0x18) {
                 p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 1), (s32)&work->unk30);
                 if (p != NULL) {
-                    p->unk22 = 0x80;
+                    p->otZ = 0x80;
                 }
             }
             if (frame == 0x20) {
@@ -171,13 +171,13 @@ s32 fx_17d_6_op80(s32 mode, Fx17d6Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
                     p->unk14 = (s32)D_801E9624;
                     p->unk12 = 0x28;
                     p->unkC = 0xAC;
-                    p->unk22 = 0x80;
+                    p->otZ = 0x80;
                 }
             }
             if (frame == 0x32) {
                 p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0xE), (s32)&work->unk30);
                 if (p != NULL) {
-                    p->unk22 = 0x80;
+                    p->otZ = 0x80;
                 }
             }
             if (frame >= 0x54) {
@@ -256,7 +256,7 @@ s32 fx_17d_6_op80(s32 mode, Fx17d6Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
             if (frame == 0) {
                 p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0xC), (s32)&work->unk28);
                 if (p != NULL) {
-                    p->unk22 = 0x80;
+                    p->otZ = 0x80;
                 }
             }
             env->otZ = 0x80;
@@ -318,7 +318,7 @@ void func_801E8B10(Unk80100C78Entry *entry, s32 file, s32 ot, Fx17d6Trail *trail
         h = (ex->math_sin((t >> 1) >> 1) * h) >> 12;
         t >>= 1;
         h += ex->btlfx_lerp(h0, h1, ex->math_sin(t));
-        ex->func_800D044C(&pos, (s32)pt, 0, (XY32 *)&rot, h, ang);
+        ex->btlfx_offsetPoint(&pos, (s32)pt, 0, (XY32 *)&rot, h, ang);
         if (dip != 0) {
             pt->vy -= (ex->math_sin(t) * dip) >> 12;
         }

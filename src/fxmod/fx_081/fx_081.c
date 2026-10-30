@@ -10,7 +10,7 @@ void func_801E7704(Pool30Entry *pt, Pool6CEntry *p, SVECTOR *pos, s32 arg3, s32 
     s32 t;
     s32 k;
 
-    r = ex->func_800E0134(pt, p);
+    r = ex->btlfx_getParticleTrail(pt, p);
     if (frame == 0) {
         ex->btlfx_drawTrail((u8 *)ex->btlfx_getFileData(entry->file, 0x12), (s32)pos, NULL, -1, 0, 0, 0, (u8 *)r, 0);
     }
@@ -77,7 +77,7 @@ s32 fx_081_op80(s32 mode, Fx081Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
         ex->btlfx_getUnitBodyPos(0, 0, (s16 *)&D_801EA748);
         work->unk2C = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0x11), (s32)&work->unk10);
         if (work->unk2C != NULL) {
-            work->unk2C->unk22 = 0x18;
+            work->unk2C->otZ = 0x18;
             if (work->unk2C != NULL) {
                 work->unk2C->unk14 = (s32)D_801E8EE8;
                 work->unk2C->unk12 = 0x10;
@@ -89,11 +89,11 @@ s32 fx_081_op80(s32 mode, Fx081Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
         }
         D_801EA738 = work->unk30 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0x15), (s32)&work->unk24);
         if (work->unk30 != NULL) {
-            work->unk30->unk22 = 0x18;
+            work->unk30->otZ = 0x18;
         }
         work->unk34 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 5), (s32)&work->unk24);
         if (work->unk34 != NULL) {
-            work->unk34->unk22 = 0x10;
+            work->unk34->otZ = 0x10;
         }
         ex->btlfx_initEffModels(D_801EA758, 3);
         work->unk8 = ex->Hi_RegisterTexEffModel((BtlUnit9C8 *)ex->btlfx_getFileData(entry->file, 0x21), 0x137,
@@ -179,7 +179,7 @@ s32 fx_081_op80(s32 mode, Fx081Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             if (frame == 0x13) {
                 D_801EA740 = e = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0x13), (s32)&work->unk10);
                 if (e != NULL) {
-                    e->unk22 = 0x80;
+                    e->otZ = 0x80;
                 }
                 ex->btlfx_drawScreenTint((u32 *)(env->ot + 1), 1, 0, 0x80, 0xFF);
             }
@@ -284,7 +284,7 @@ s32 fx_081_op81(s32 mode, Fx081Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
         D_801E8ED8 = env;
         e = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0xF), (s32)&work->unkC);
         if (e != NULL) {
-            e->unk22 = work->unk8 + 0x40;
+            e->otZ = work->unk8 + 0x40;
         }
     } else {
         frame = entry->frame;
@@ -341,24 +341,24 @@ s32 fx_081_op81(s32 mode, Fx081Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
                 work->unk1C.vz = work->unkC.vz;
                 e = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0x14), (s32)&work->unkC);
                 if (e != NULL) {
-                    e->unk22 = work->unk8 + 0x40;
+                    e->otZ = work->unk8 + 0x40;
                 }
                 e = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0x1C), (s32)&work->unkC);
                 if (e != NULL) {
-                    e->unk22 = work->unk8 + 0x40;
+                    e->otZ = work->unk8 + 0x40;
                 }
                 ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0x19), (s32)&work->unkC);
                 e = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0x1D), (s32)&work->unkC);
                 if (e != NULL) {
-                    e->unk22 = work->unk8 + 0x80;
+                    e->otZ = work->unk8 + 0x80;
                 }
                 e = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0x1A), (s32)&work->unk14);
                 if (e != NULL) {
-                    e->unk22 = 0x46;
+                    e->otZ = 0x46;
                 }
                 e = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0x27), (s32)&work->unkC);
                 if (e != NULL) {
-                    e->unk22 = 0x46;
+                    e->otZ = 0x46;
                 }
             }
             break;
@@ -384,7 +384,7 @@ s32 fx_081_op81(s32 mode, Fx081Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
                 }
                 a = work->unk4 * 41 + (j << 7);
                 for (i = 0; i < 12; i++, a += 0x155) {
-                    ex->func_800D044C(&work->unkC, (s32)pp, 0, (XY32 *)&ang, h, a);
+                    ex->btlfx_offsetPoint(&work->unkC, (s32)pp, 0, (XY32 *)&ang, h, a);
                     ex->btlfx_drawParticles((u8 *)ex->btlfx_getFileData(entry->file, 0xC), pp, NULL, 0x1000, frame & 0xF, 1,
                                       c, 0, 0);
                 }

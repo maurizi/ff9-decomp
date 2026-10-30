@@ -21,10 +21,10 @@ s32 fx_00d_op80(s32 mode, Fx00dWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
             work->unk4 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 3), (s32)&work->unkC);
             work->unk8 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 9), (s32)&work->unkC);
             if (work->unk4 != NULL) {
-                work->unk4->unk22 = ex->func_800E7CC4(0, 0x80);
+                work->unk4->otZ = ex->btlfx_addRadiusSixth(0, 0x80);
             }
             if (work->unk8 != NULL) {
-                work->unk8->unk22 = ex->func_800E7CC4(0, 0x80);
+                work->unk8->otZ = ex->btlfx_addRadiusSixth(0, 0x80);
             }
         }
         return frame >= 0x32;

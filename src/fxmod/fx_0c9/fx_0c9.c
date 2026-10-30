@@ -12,7 +12,7 @@ s32 fx_0c9_op80(s32 mode, Fx0c9Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
         work->unk0 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 2), (s32)&work->unk8);
         work->unk4 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 3), (s32)&work->unk8);
         if (work->unk4 != NULL) {
-            work->unk4->unk22 = ex->func_800E7CC4(0, 0x80);
+            work->unk4->otZ = ex->btlfx_addRadiusSixth(0, 0x80);
         }
     } else {
         return entry->frame >= 0x28;
@@ -52,7 +52,7 @@ s32 fx_0c9_op81(s32 mode, Fx0c9Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
         work->unk1C.vz = work->unk14.vz;
         work->unk4 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 4), (s32)&work->unk14);
         if (work->unk4 != NULL) {
-            work->unk4->unk22 = ex->func_800E7CC4(0, 0x80);
+            work->unk4->otZ = ex->btlfx_addRadiusSixth(0, 0x80);
         }
         work->unk24.vx = 0;
         work->unk24.vy = 0;
@@ -78,7 +78,7 @@ s32 fx_0c9_op81(s32 mode, Fx0c9Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
                 ((EffMotion *)work->unk0->file)->unk8 = func_801E7828;
             }
             if (work->unk0 != NULL) {
-                work->unk0->unk22 = ex->func_800E7CC4(0, 0x10);
+                work->unk0->otZ = ex->btlfx_addRadiusSixth(0, 0x10);
             }
             break;
         case 0x1A:

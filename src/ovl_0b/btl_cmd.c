@@ -10,7 +10,7 @@ void btl_startBattle(void) {
     b->loadFlags |= 1;
     btl_initCmdQueue(b);
     btl_initTargetCursor(b);
-    func_800C972C();
+    btl_initSceneFlags();
     g_btlRewards.unkB = (b->scene.flags >> 13) & 1;
     msg_beginDraw();
     evt_update();
@@ -572,7 +572,7 @@ s32 btl_checkCmdUsable(Battle *arg0, BtlCmd *arg1) {
     case BTL_CMD_BLK_MAG:
     case BTL_CMD_DBL_BLK:
         if (arg1->subNo == 0x2E) {
-            func_800B95BC(arg1);
+            btl_rollMagicFail(arg1);
         }
         return 1;
     case BTL_CMD_BLU_MAG:
@@ -1203,7 +1203,7 @@ void btl_clearCmd(BtlCmd *arg0) {
     arg0->info.b.covered = 0;
     arg0->info.b.dodged = 0;
     arg0->info.b.reflect = 0;
-    arg0->info.b.unk0_9 = 0;
+    arg0->info.b.magicFailed = 0;
     arg0->info.b.shortSummon = 0;
     arg0->info.b.enemyBounce = 0;
 }
@@ -1214,7 +1214,7 @@ void btl_queueAutoCmd(BtlUnit *arg0, s32 arg1, s32 arg2, s32 arg3) {
     }
 }
 
-void func_800B3DBC(BtlUnit *arg0) {
+void btl_cancelTranceEidolon(BtlUnit *arg0) {
     if ((arg0->flags & 0x1F) == 5) {
         Battle *b = g_gameState->gameData->ctx.battle;
         BtlCmd *p;
@@ -1419,7 +1419,7 @@ void btl_calcCmd(BtlUnit *caster, BtlUnit *target, BtlCmd *cmd, s32 type) {
                 btl_setPhysParams(&c, type);
                 btl_applyKillerBonus(&c);
                 btl_applyCasterStatusMod(&c);
-                func_800BA308(&c);
+                btl_randomizeDefense(&c);
                 btl_applyTargetStatusMod(&c);
                 if ((caster->status & BTL_STATUS_TRANCE) && ((caster->flags >> 1) & 0xF) == 3) {
                     c.multiplier *= 2;
@@ -1428,7 +1428,7 @@ void btl_calcCmd(BtlUnit *caster, BtlUnit *target, BtlCmd *cmd, s32 type) {
                 btl_applyWeaponElementBoost(&c);
                 if (btl_applyWeaponElement(&c)) {
                     btl_rollCritical(&c);
-                    func_800BA938((Unk800BA938 *)&c);
+                    btl_applyInvertedPower((Unk800BA938 *)&c);
                     btl_finishPhysDamage(&c);
                     btl_markTrouble(&c);
                     btl_payMpAttack(&c);
@@ -1453,11 +1453,11 @@ void btl_calcCmd(BtlUnit *caster, BtlUnit *target, BtlCmd *cmd, s32 type) {
                     btl_setPhysParams(&c, 1);
                     btl_applyKillerBonus(&c);
                     btl_applyCasterStatusMod(&c);
-                    func_800BA308(&c);
+                    btl_randomizeDefense(&c);
                     btl_applyTargetStatusMod(&c);
                     btl_applyRowMod(&c);
                     btl_rollCritical(&c);
-                    func_800BA938((Unk800BA938 *)&c);
+                    btl_applyInvertedPower((Unk800BA938 *)&c);
                     btl_setDrainFlags(&c);
                     d = c.power - c.defense;
                     if (d <= 0) {
@@ -1483,7 +1483,7 @@ void btl_calcCmd(BtlUnit *caster, BtlUnit *target, BtlCmd *cmd, s32 type) {
             if (btl_rollHit(&c)) {
                 btl_setAbilityPhysParams(&c);
                 btl_applyCasterStatusMod(&c);
-                func_800BA308(&c);
+                btl_randomizeDefense(&c);
                 btl_applyTargetStatusMod(&c);
                 btl_applyRowMod(&c);
                 btl_applyAbilityElementBoost(&c);
@@ -1530,7 +1530,7 @@ void btl_calcCmd(BtlUnit *caster, BtlUnit *target, BtlCmd *cmd, s32 type) {
     case 0xD:
         {
             s32 v;
-            if (func_800B9DDC(&c) && (btl_initUndeadHitRate(&c) || btl_rollStatusHit(&c))) {
+            if (btl_checkRevivable(&c) && (btl_initUndeadHitRate(&c) || btl_rollStatusHit(&c))) {
                 if (!(target->status & BTL_STATUS_ZOMBIE) && btl_hasEnemyFlag(target, BTL_ENEMY_UNDEAD) == 0) {
                     if (btl_checkTargetIsPlayer(&c)) {
                         v = target->max->maxHp * (target->spirit + cmd->ability->power);
@@ -1661,7 +1661,7 @@ void btl_calcCmd(BtlUnit *caster, BtlUnit *target, BtlCmd *cmd, s32 type) {
             break;
         }
     case 0x12:
-        if ((cmd->ability->effect != 0x38 || RAND8() < 0xAB) && (cmd->subNo != 0x2E || !cmd->info.b.unk0_9)) {
+        if ((cmd->ability->effect != 0x38 || RAND8() < 0xAB) && (cmd->subNo != 0x2E || !cmd->info.b.magicFailed)) {
             RAND_REFILL2();
             c.multiplier = RAND16() % (caster->magic + caster->level);
             c.power = cmd->ability->power;
@@ -2339,7 +2339,7 @@ void btl_calcCmd(BtlUnit *caster, BtlUnit *target, BtlCmd *cmd, s32 type) {
         }
         break;
     case 0x48:
-        if (func_800B9DDC(&c)) {
+        if (btl_checkRevivable(&c)) {
             if ((target->status & BTL_STATUS_ZOMBIE) || btl_hasEnemyFlag(target, BTL_ENEMY_UNDEAD) != 0) {
                 target->hp = RAND8() % 10;
                 if (target->hp == 0) {
@@ -2553,7 +2553,7 @@ void btl_calcCmd(BtlUnit *caster, BtlUnit *target, BtlCmd *cmd, s32 type) {
     case 0x6B:
         btl_setEnemyAttackParams(&c);
         btl_applyCasterStatusMod(&c);
-        func_800BA308(&c);
+        btl_randomizeDefense(&c);
         btl_applyTargetStatusMod(&c);
         btl_applyRowMod(&c);
         btl_applyAbilityElementBoost(&c);
@@ -2576,7 +2576,7 @@ void btl_calcCmd(BtlUnit *caster, BtlUnit *target, BtlCmd *cmd, s32 type) {
     case 0x66:
         btl_setEnemyAttackParams(&c);
         btl_applyCasterStatusMod(&c);
-        func_800BA308(&c);
+        btl_randomizeDefense(&c);
         btl_applyTargetStatusMod(&c);
         btl_applyRowMod(&c);
         btl_finishMagicDamage(&c);
@@ -2610,7 +2610,7 @@ void btl_calcCmd(BtlUnit *caster, BtlUnit *target, BtlCmd *cmd, s32 type) {
         }
     case 0x6A:
         g_btlRewards.expMask &= ~(1 << ((u8)target->flags >> 5));
-        func_800B3DBC(target);
+        btl_cancelTranceEidolon(target);
         btl_removeUnitCmds(target);
         btl_saveCharacter(target, 1);
         btl_unlinkUnit(target);
@@ -3165,7 +3165,7 @@ s32 btl_consumeMp(BtlUnit *arg0, s16 arg1) {
     return 0;
 }
 
-void func_800B95BC(BtlCmd *arg0) {
+void btl_rollMagicFail(BtlCmd *arg0) {
     if (g_randPtr >= g_randTableEnd) {
         rand_refill();
         if (g_randPtr >= g_randTableEnd) {
@@ -3173,7 +3173,7 @@ void func_800B95BC(BtlCmd *arg0) {
         }
     }
     if ((arg0->caster->level >> 1) + arg0->caster->spirit < ((*g_randPtr << 8) | *g_randPtr++) % 100) {
-        arg0->info.b.unk0_9 = 1;
+        arg0->info.b.magicFailed = 1;
     }
 }
 
@@ -3333,7 +3333,7 @@ u8 btl_checkTargetAlive(BtlCalc *arg0) {
     return 1;
 }
 
-u8 func_800B9DDC(BtlCalc *arg0) {
+u8 btl_checkRevivable(BtlCalc *arg0) {
     u32 st = arg0->target->status;
     if ((st & BTL_STATUS_PETRIFY) || (st & (BTL_STATUS_ZOMBIE | BTL_STATUS_KO)) == (BTL_STATUS_ZOMBIE | BTL_STATUS_KO)) {
         arg0->flags |= 1;
@@ -3442,7 +3442,7 @@ void btl_applyCasterStatusMod(BtlCalc *arg0) {
     }
 }
 
-void func_800BA308(BtlCalc *arg0) {
+void btl_randomizeDefense(BtlCalc *arg0) {
     s32 r;
     if ((arg0->target->support[0] & 0x04000000) && arg0->defense != 0) {
         if (g_randPtr >= g_randTableEnd) {
@@ -3558,7 +3558,7 @@ void btl_applyAbilityElementBoost(BtlCalc *arg0) {
     }
 }
 
-void func_800BA938(Unk800BA938 *arg0) {
+void btl_applyInvertedPower(Unk800BA938 *arg0) {
     if ((g_gameState->gameData->ctx.battle->scene.flags >> 10) & 1) {
         arg0->power = 0x3C - arg0->power;
         if (arg0->power <= 0) {

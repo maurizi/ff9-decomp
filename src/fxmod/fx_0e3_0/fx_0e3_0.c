@@ -101,7 +101,7 @@ void func_801E7B40(Unk80100C78Entry *entry, Fx0e30Bolt *bolt, SVECTOR *from, SVE
         a = ex->btlfx_randCentered(D_801EB374);
         a = (ex->math_sin(t >> 1) * a) >> 12;
         a += ex->btlfx_lerp(amp0, amp1, t);
-        ex->func_800D044C(&p, (s32)pt, 0, (XY32 *)&rot, a, ang);
+        ex->btlfx_offsetPoint(&p, (s32)pt, 0, (XY32 *)&rot, a, ang);
         pt->pad = 0x19;
         pt++;
         ang += dang + ex->btlfx_randCentered(D_801EB378);
@@ -131,7 +131,7 @@ void func_801E7D40(Unk80100C78Entry *entry, s32 arg1, Fx0e30Bolt *bolt, SVECTOR 
         a = ex->btlfx_randCentered(0x73);
         a = (ex->math_sin(t >> 1) * a) >> 12;
         a += (ex->math_sin(t >> 1) * amp) >> 12;
-        ex->func_800D044C(&p, (s32)pt, 0, (XY32 *)&rot, a, ang);
+        ex->btlfx_offsetPoint(&p, (s32)pt, 0, (XY32 *)&rot, a, ang);
         pt->pad = 0x33;
         ang += dang + ex->btlfx_randCentered(0x100);
         pt++;
@@ -715,13 +715,13 @@ s32 fx_0e3_0_op80(s32 mode, Fx0e30Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
         if (frame == 7) {
             p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0x83), (s32)&work->unk40);
             if (p != NULL) {
-                p->unk22 = 0x80;
+                p->otZ = 0x80;
             }
         }
         if (frame == 0xC) {
             p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 5), (s32)&work->unk40);
             if (p != NULL) {
-                p->unk22 = 0x80;
+                p->otZ = 0x80;
             }
         }
         ex->Hi_GetSummonBoneMatrix(SUMMON(env)->unk60, 0x3D, (BtlBone *)&ba);
@@ -731,13 +731,13 @@ s32 fx_0e3_0_op80(s32 mode, Fx0e30Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
         if (frame == 0xC) {
             work->unk4C = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0xA), (s32)&work->unk38);
             if (work->unk4C != NULL) {
-                work->unk4C->unk22 = 0x80;
+                work->unk4C->otZ = 0x80;
             }
         }
         if (work->unk4C != NULL) {
-            work->unk4C->unk5C.vx = v0.vx;
-            work->unk4C->unk5C.vy = v0.vy;
-            work->unk4C->unk5C.vz = v0.vz;
+            work->unk4C->rot.vx = v0.vx;
+            work->unk4C->rot.vy = v0.vy;
+            work->unk4C->rot.vz = v0.vz;
         }
         ex->Hi_GetSummonBonePos(SUMMON(env)->unk60, 0, (u16 *)&work->unk30);
         work->unk30.vy -= 0x200;

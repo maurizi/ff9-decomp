@@ -1384,7 +1384,7 @@ typedef struct {
     VibData *data; /* vibration data (vib_init) */
 } VibState;
 extern VibState g_vib;
-u8 func_800EA27C(void); /* ovl_0b */
+u8 btlui_isSecondPortUsed(void); /* ovl_0b */
 
 typedef struct {
     u8 pad0[0x1C];

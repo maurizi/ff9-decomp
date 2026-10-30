@@ -174,14 +174,14 @@ s32 fx_0ed_op80(s32 mode, Fx0edWork80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             if (frame == 0) {
                 p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0x11), (s32)&work->unk18);
                 if (p != NULL) {
-                    p->unk22 = 0x40;
+                    p->otZ = 0x40;
                 }
                 p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0x1D), (s32)&work->unk18);
                 if (p != NULL) {
                     p->unk14 = (s32)D_801E8C84;
                     p->unk12 = 0x18;
                     p->unkC = 0x3C;
-                    p->unk22 = 0x40;
+                    p->otZ = 0x40;
                 }
             }
             if (frame > 0) {
@@ -241,18 +241,18 @@ s32 fx_0ed_op80(s32 mode, Fx0edWork80 *work, Unk800F78A4 *env, Unk80100C78Entry 
                                                                       ((ang = env->camera->yaw & 0xFFF) - 0x400U > 0x800)))),
                                       (s32)&work->unk8);
                 if (p != NULL) {
-                    p->unk22 = ex->func_800E7CC4(0, 0x40);
+                    p->otZ = ex->btlfx_addRadiusSixth(0, 0x40);
                 }
             }
             if (frame == 0x21) {
                 ex->btlfx_drawScreenTint((u32 *)(env->ot + 2), 1, 0xDC, 0, 0x20);
                 p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0xB), (s32)&work->unk8);
                 if (p != NULL) {
-                    p->unk22 = ex->func_800E7CC4(0, 0x40);
+                    p->otZ = ex->btlfx_addRadiusSixth(0, 0x40);
                 }
                 p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0xC), (s32)&work->unk8);
                 if (p != NULL) {
-                    p->unk22 = ex->func_800E7CC4(0, 0x40);
+                    p->otZ = ex->btlfx_addRadiusSixth(0, 0x40);
                 }
             }
             if (frame == 0x26) {
@@ -261,7 +261,7 @@ s32 fx_0ed_op80(s32 mode, Fx0edWork80 *work, Unk800F78A4 *env, Unk80100C78Entry 
                     p->unk14 = (s32)D_801E9494;
                     p->unk12 = 0x18;
                     p->unkC = 0x44;
-                    p->unk22 = 0x40;
+                    p->otZ = 0x40;
                 }
                 ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0x10), (s32)&work->unk18);
             }

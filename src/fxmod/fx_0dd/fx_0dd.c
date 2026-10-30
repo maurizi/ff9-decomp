@@ -54,11 +54,11 @@ s32 fx_0dd_op80(s32 mode, Fx0ddWork80 *work, Unk800F78A4 *env, Unk80100C78Entry 
                 work->unk8->unk12 = 0x35;
                 work->unk8->unkC = 0x28;
                 if (work->unk8 != NULL) {
-                    work->unk8->unk22 = ex->func_800E7CC4(0, 0x80);
+                    work->unk8->otZ = ex->btlfx_addRadiusSixth(0, 0x80);
                 }
             }
             if (work->unkC != NULL) {
-                work->unkC->unk22 = ex->func_800E7CC4(0, 0x80);
+                work->unkC->otZ = ex->btlfx_addRadiusSixth(0, 0x80);
             }
             break;
         }

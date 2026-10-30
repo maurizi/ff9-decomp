@@ -204,7 +204,7 @@ s32 fx_08f_op80(s32 mode, Fx08fWork80 *work, Unk800F78A4 *env, Unk80100C78Entry 
                 p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0xB), (s32)&work->unk14);
                 work->unk44 = p;
                 if (p != NULL) {
-                    p->unk22 = 0x5C;
+                    p->otZ = 0x5C;
                 }
             }
             if (frame >= 0x19) {
@@ -257,7 +257,7 @@ s32 fx_08f_op80(s32 mode, Fx08fWork80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             if (frame == 7) {
                 p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0x1B), (s32)&work->unk14);
                 if (p != NULL) {
-                    p->unk22 = 0x5C;
+                    p->otZ = 0x5C;
                 }
             }
             ex->Hi_DrawEffModel(&rot, &pos, (s32)&scale, work->unk24);
