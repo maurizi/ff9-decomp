@@ -94,7 +94,7 @@ void pen_setPalette(s32 clut) {
 /* Glyph lookup for the dialogue font. 0xFA-0xFF are lead bytes: they are remembered and 0 is returned;
  * the next byte is then looked up as (lead << 8) | byte. Returns the glyph word, 0 for none. */
 u32 pen_getGlyph(s32 c) {
-    Unk8007BB98 *g = &D_8007BB98;
+    Unk8007BB98 *g = &g_penGlyphDecode;
     u32 range;
     s32 d;
     s32 e;
@@ -109,11 +109,11 @@ u32 pen_getGlyph(s32 c) {
     range = g->extRange;
     d = c - (s32)(range & 0xFFFF);
     if (d < 0) {
-        return D_8007BBCC[c];
+        return g_penGlyphs[c];
     }
     e = c - (s32)(u16)g->kanjiCode;
     if (e < 0) {
-        return D_8007BBCC[d + (range >> 16)];
+        return g_penGlyphs[d + (range >> 16)];
     }
     return D_8007BBD0[e];
 }
@@ -1094,7 +1094,7 @@ s32 func_80052834(void) {
 #define U16AT(p) ((p)[0] | ((p)[1] << 8))
 
 /* Run every object in the list `n` (ObjList-style nodes {next, obj}) until each yields. Returns 0, or the
- * status that stopped the run: 3, 4, 5, 7, 8, or 6 (also saved in D_8007B6FC with the node). Opcodes handled
+ * status that stopped the run: 3, 4, 5, 7, 8, or 6 (also saved in g_evtResumeNode with the node). Opcodes handled
  * here: 1 jump, 2 jump if false, 3 jump if true, 4 evt_returnFromFunc, 5 expression, 6 / 0xB / 0xD switches,
  * 0x1C, 0x22 wait, 0x30/0x6C print, 0x31/0x6D printf, 0x32 print position. Everything else (including all
  * opcodes >= 0x6E) goes to evt_execInstr. */
@@ -1260,7 +1260,7 @@ s32 evt_runScripts(Unk16D8 *n) {
             goto out;
         }
         if (st == 6) {
-            D_8007B6FC = (s32)n;
+            g_evtResumeNode = (s32)n;
             ret = 6;
             goto out;
         }

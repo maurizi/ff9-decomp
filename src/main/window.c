@@ -298,7 +298,7 @@ void win_setClip(RECT *r, s32 otz, s32 style) {
     s8 *o;
 
     clip = &g_gameState->dispEnv[g_drawBufs.cur ^ 1].disp;
-    offs = D_80010CE0;
+    offs = g_winClipInsets;
     p = (DR_AREA *)g_primPtr;
     o = offs.unk0[style];
     if (r != NULL) {
@@ -554,7 +554,7 @@ void win_initAll(void) {
 }
 
 u8 win_isVisible(Window *w) {
-    Unk80010CD0 min = D_80010CD0;
+    Unk80010CD0 min = g_winMinWidths;
     u8 r = 0;
 
     if (w->visible == 0) {
@@ -678,7 +678,7 @@ Window *win_init(RECT *r, s32 otz, s32 style, Window *w) {
     w->drawOverlay = 0;
     w->drawContent = 0;
     w->onOpened = 0;
-    win_setOpenAnim(w, D_8006BCFC[style]);
+    win_setOpenAnim(w, g_winStyleOpenAnim[style]);
     w->shadow = w->style == 3;
     menuList_init(&w->list, 0, 0, 0, r->h);
     w->tailMode = 4;
@@ -688,6 +688,6 @@ Window *win_init(RECT *r, s32 otz, s32 style, Window *w) {
     return w;
 }
 
-INCLUDE_RODATA("asm/us/main/nonmatchings/window", D_80010CD0);
+INCLUDE_RODATA("asm/us/main/nonmatchings/window", g_winMinWidths);
 
-INCLUDE_RODATA("asm/us/main/nonmatchings/window", D_80010CE0);
+INCLUDE_RODATA("asm/us/main/nonmatchings/window", g_winClipInsets);

@@ -7,7 +7,7 @@ void chr_init(s32 ch) {
     s32 r;
 
     memset(c, 0, 0x90);
-    tbl = D_8006CA78;
+    tbl = g_chrInitInfo;
     init = tbl + ch;
     c->info.w = *init;
     c->status = 0;
@@ -88,7 +88,7 @@ EquipStatsOut *chr_calcEquipStats(EquipStatsIn *in, EquipStatsOut *out) {
         id = (&in->equip.unk0[1])[i];
         if (id != 0xFF) {
             if ((u32)(id - 0x58) < 0x88) {
-                a = D_8006D1C8[id];
+                a = g_armorDefs[id];
                 out->defs[1] += a[0];
                 out->defs[2] += a[1];
                 out->defs[3] += a[2];
@@ -107,8 +107,8 @@ EquipStatsOut *chr_calcEquipStats(EquipStatsIn *in, EquipStatsOut *out) {
         }
     }
     for (i = 0; i < 4; i++) {
-        if (chr_testSupportBit(in->support.unk0, D_8006CA9C[i])) {
-            switch (D_8006CA9C[i]) {
+        if (chr_testSupportBit(in->support.unk0, g_chrHpMpSupports[i])) {
+            switch (g_chrHpMpSupports[i]) {
             case 0xC5:
                 out->maxHp += out->maxHp / 10;
                 break;
@@ -125,8 +125,8 @@ EquipStatsOut *chr_calcEquipStats(EquipStatsIn *in, EquipStatsOut *out) {
         }
     }
     for (i = 0; i < 4; i++) {
-        if (out->stats[i] > D_8006CAA0[i]) {
-            out->stats[i] = D_8006CAA0[i];
+        if (out->stats[i] > g_chrStatCaps[i]) {
+            out->stats[i] = g_chrStatCaps[i];
         }
     }
     for (i = 0; i < 5; i++) {
@@ -150,7 +150,7 @@ EquipStatsOut *chr_calcEquipStats(EquipStatsIn *in, EquipStatsOut *out) {
 }
 
 s32 chr_calcAppearance(s32 kind, s32 flag, u8 *item) {
-    u8 t = D_8006CAA4[kind][(u8)flag != 0];
+    u8 t = g_chrAppearanceTypes[kind][(u8)flag != 0];
     u8 k = g_itemTable[*item].icon;
     s32 r;
 
@@ -213,7 +213,7 @@ void chr_join(s32 ch, u8 avg, s32 eq) {
     if (eq != 0xFF) {
         p = c->equip;
         for (i = 0; i < 5; i++) {
-            p[i] = D_8006CAD8[eq][i];
+            p[i] = g_chrDefaultEquip[eq][i];
         }
     }
     c->info.b.kind = chr_calcAppearance(c->info.b.id, (c->classFlags >> 4) & 1, c->equip);
@@ -363,15 +363,15 @@ s32 chr_getClass(u32 x) {
 }
 
 u8 chr_getAppearanceType(s32 a, u8 b) {
-    return D_8006CAA4[a][b != 0];
+    return g_chrAppearanceTypes[a][b != 0];
 }
 
 s32 chr_getDefaultSet(Character *c) {
-    return D_8006CAB8[c->info.b.id][(c->classFlags & 0x10) != 0];
+    return g_chrDefaultSets[c->info.b.id][(c->classFlags & 0x10) != 0];
 }
 
 u8 chr_getClassFlags(u32 x) {
-    u8 *tbl = D_8006CACC;
+    u8 *tbl = g_chrClassFlags;
     s32 i;
     switch (x) {
     case 0:
@@ -481,17 +481,17 @@ u8 party_hasChanged(void) {
 }
 
 /* default character names: count, then {offset, length} entries */
-INCLUDE_RODATA("asm/us/main/nonmatchings/chr", D_80010DC4);
+INCLUDE_RODATA("asm/us/main/nonmatchings/chr", g_chrDefaultNames);
 
 void chr_setDefaultName(u8 *dst, s32 id) {
     memset(dst, 0xFF, 10);
-    text_copy(dst, (u8 *)text_getFrom((u8 *)D_80010DC4, id));
+    text_copy(dst, (u8 *)text_getFrom((u8 *)g_chrDefaultNames, id));
 }
 
 void chr_setDefaultEquip(u8 *dst, s32 b) {
     s32 i;
     for (i = 0; i < 5; i++) {
-        dst[i] = D_8006CAD8[b][i];
+        dst[i] = g_chrDefaultEquip[b][i];
     }
 }
 

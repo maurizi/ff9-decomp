@@ -12,7 +12,7 @@ s32 evt_update(a)
 u8 a;
 {
     s32 r = 0;
-    if (D_8007B718 == 0) {
+    if (g_evtHalted == 0) {
         msg_update();
         evt_updateIdleTimer();
         r = evt_updateObjects();

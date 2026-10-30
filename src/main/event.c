@@ -47,16 +47,16 @@ s32 evt_getSysVar(s32 op) {
         r = msg_getChoiceIndex();
         break;
     case 10:
-        r = D_8007AE24;
+        r = g_evtLinePointX;
         break;
     case 11:
-        r = D_8007AE28;
+        r = g_evtLinePointZ;
         break;
     case 12:
-        r = D_8007AE2C;
+        r = g_evtScreenX;
         break;
     case 13:
-        r = D_8007AE30;
+        r = g_evtScreenY;
         break;
     case 14:
         r = fld_movieCommand(4, 0, 0);
@@ -86,10 +86,10 @@ s32 evt_getSysVar(s32 op) {
         r = timer_isEnabled();
         break;
     case 22:
-        r = D_8007AE38;
+        r = g_evtSoundVolume;
         break;
     case 23:
-        r = D_8007AE3C;
+        r = g_evtSoundPan;
         break;
     case 24:
         r = (s16)g_gameState->gameData->battleId;
@@ -104,10 +104,10 @@ s32 evt_getSysVar(s32 op) {
         r = g_gameState->gameData->battleResult;
         break;
     case 28:
-        r = (D_8007AE34 >> 8) & 0xFF;
+        r = (g_evtBattleTriggerArg >> 8) & 0xFF;
         break;
     case 29:
-        r = (u8)D_8007AE34;
+        r = (u8)g_evtBattleTriggerArg;
         break;
     case 30:
         r = g_gameState->gameData->ctx.ovl65->phase;
@@ -576,9 +576,9 @@ void evt_placeBalloon(EvtObject *obj, WinLayout *w, s32 dir, s32 fixed) {
     EvtObject *other;
 
     if (obj->kind == 4) {
-        obj->balloonOfsX = D_8007AE5C;
-        obj->balloonOfsY = D_8007AE60;
-        obj->balloonOfsZ = D_8007AE64;
+        obj->balloonOfsX = g_evtBalloonOfsX;
+        obj->balloonOfsY = g_evtBalloonOfsY;
+        obj->balloonOfsZ = g_evtBalloonOfsZ;
     }
     evt_placeBalloon_pos(obj, &sx, &sy);
     if (dir < 0) {
@@ -686,7 +686,7 @@ void evt_followBalloon(EvtObject *obj, Window *w) {
 }
 
 WinLayout *evt_getMsgLayout(EvtObject *obj, s32 id, s32 flags) {
-    WinLayout *w = msg_getLayout(id, &D_8007AE5C, &D_8007AE60, &D_8007AE64);
+    WinLayout *w = msg_getLayout(id, &g_evtBalloonOfsX, &g_evtBalloonOfsY, &g_evtBalloonOfsZ);
     s32 ww;
     s32 wh;
 
@@ -1191,7 +1191,7 @@ s32 evt_execInstr(void) {
         g_evtArgRead = 1;
         return 1;
     case 0xA0:
-        if (evt_moveObjectTo(D_8007AE24, 0, D_8007AE28, 0)) {
+        if (evt_moveObjectTo(g_evtLinePointX, 0, g_evtLinePointZ, 0)) {
             g_evtCurObj->ip = g_evtInstrStart;
             g_evtArgRead = 1;
         }
@@ -1310,11 +1310,11 @@ s32 evt_execInstr(void) {
                     t = 0x100;
                 }
             }
-            D_8007AE24 = ((t * dx) >> 8) + p[0].unk0;
-            D_8007AE28 = ((t * dz) >> 8) + p[0].unk2;
+            g_evtLinePointX = ((t * dx) >> 8) + p[0].unk0;
+            g_evtLinePointZ = ((t * dz) >> 8) + p[0].unk2;
         } else {
-            D_8007AE28 = 0;
-            D_8007AE24 = 0;
+            g_evtLinePointZ = 0;
+            g_evtLinePointX = 0;
         }
         return 0;
     case 0x9E:
@@ -1649,7 +1649,7 @@ s32 evt_execInstr(void) {
         return 0;
     case 0xE1:
         rewards_requestClose();
-        D_8007B718 = 1;
+        g_evtHalted = 1;
         return 0;
     case 0xDE:
         a = evt_execInstr_chr(evt_getArg8_inline());
@@ -1847,8 +1847,8 @@ s32 evt_execInstr(void) {
     case EVT_OP_GET_SCROLL: {
         s16 x, z;
         fldbg_getScroll(&x, &z);
-        D_8007AE2C = x;
-        D_8007AE30 = z;
+        g_evtScreenX = x;
+        g_evtScreenY = z;
         return 0;
     }
     case EVT_OP_OBJ_COLOR:
@@ -1934,10 +1934,10 @@ s32 evt_execInstr(void) {
         a = evt_getArg16_inline();
         b = evt_getArg16_inline();
         fld_getSoundPanVolume(a, b, evt_getArg16_inline(), &vol, &pan);
-        D_8007AE38 = vol;
-        D_8007AE3C = (pan * evt_getArg8_inline()) >> 7;
-        if (D_8007AE3C >= 0x80) {
-            D_8007AE3C = 0x7F;
+        g_evtSoundVolume = vol;
+        g_evtSoundPan = (pan * evt_getArg8_inline()) >> 7;
+        if (g_evtSoundPan >= 0x80) {
+            g_evtSoundPan = 0x7F;
         }
         return 0;
     }
@@ -1945,10 +1945,10 @@ s32 evt_execInstr(void) {
         u8 vol, pan;
         po = evt_getObjectArg();
         fld_getSoundPanVolume(po->pos.vx, po->pos.vy, po->pos.vz, &vol, &pan);
-        D_8007AE38 = vol;
-        D_8007AE3C = (pan * evt_getArg8_inline()) >> 7;
-        if (D_8007AE3C >= 0x80) {
-            D_8007AE3C = 0x7F;
+        g_evtSoundVolume = vol;
+        g_evtSoundPan = (pan * evt_getArg8_inline()) >> 7;
+        if (g_evtSoundPan >= 0x80) {
+            g_evtSoundPan = 0x7F;
         }
         return 0;
     }
@@ -2060,7 +2060,7 @@ s32 evt_execInstr(void) {
         }
         return 0;
     case 0xB2:
-        D_8007AE70.size = evt_getArg8_inline();
+        g_evtPartyRequest.size = evt_getArg8_inline();
         a = 0;
         for (i = 8; i >= 0; i--) {
             a <<= 1;
@@ -2068,7 +2068,7 @@ s32 evt_execInstr(void) {
         }
         b = evt_getArg16_inline();
         for (i = 0; i < 9; i++) {
-            D_8007AE70.fixed[i] = b & 1;
+            g_evtPartyRequest.fixed[i] = b & 1;
             b >>= 1;
         }
         for (i = 0; i < 4; i++) {
@@ -2076,20 +2076,20 @@ s32 evt_execInstr(void) {
             if (ch != NULL) {
                 b = ch->info.w & 0xF;
                 a &= ~(1 << b);
-                D_8007AE70.party[i] = b;
+                g_evtPartyRequest.party[i] = b;
             } else {
-                D_8007AE70.party[i] = 0xFF;
+                g_evtPartyRequest.party[i] = 0xFF;
             }
         }
         for (b = 0, i = 0; i < 9 && b < 8 && a != 0; i++, a >>= 1) {
             if (a & 1) {
-                D_8007AE70.reserve[b++] = i;
+                g_evtPartyRequest.reserve[b++] = i;
             }
         }
         for (; b < 8; b++) {
-            D_8007AE70.reserve[b] = 0xFF;
+            g_evtPartyRequest.reserve[b] = 0xFF;
         }
-        menu_open(3, (s32)&D_8007AE70);
+        menu_open(3, (s32)&g_evtPartyRequest);
         return 1;
     case 0xE9:
         evt_execInstr_party();
@@ -2178,7 +2178,7 @@ s32 evt_execInstr(void) {
             sv.vx = obj->pos.vx;
             sv.vy = obj->pos.vy;
             sv.vz = obj->pos.vz;
-            evt_projectToScreen(&sv, &D_8007AE2C, &D_8007AE30);
+            evt_projectToScreen(&sv, &g_evtScreenX, &g_evtScreenY);
         }
         return 0;
     case EVT_OP_MOVIE:
@@ -2939,7 +2939,7 @@ s32 evt_updateObjects(void) {
     if (world) {
         evt_updateBattleObjects();
     }
-    l = (Unk16D8 *)D_8007B6FC;
+    l = (Unk16D8 *)g_evtResumeNode;
     g_evtPosSetThisFrame = 0;
     if (l == NULL) {
         l = g_evtState->objects;
@@ -2948,10 +2948,10 @@ s32 evt_updateObjects(void) {
     if (r == 6) {
         r = 0;
     } else {
-        D_8007B6FC = 0;
+        g_evtResumeNode = 0;
     }
-    D_8007AEBC = NULL;
-    D_8007AEB8 = NULL;
+    g_evtWorldCamTargetObj = NULL;
+    g_evtWorldCamEyeObj = NULL;
     if (g_evtMode == 1) {
         fldbg_getCamera(&b);
         g_evtCameraChanged = b != g_evtCamera;
@@ -2992,13 +2992,13 @@ s32 evt_updateObjects(void) {
                         VECTOR *v = wm_getCameraEye();
                         v->vx = p->pos.vx;
                         v->vy = p->pos.vy;
-                        D_8007AEB8 = p;
+                        g_evtWorldCamEyeObj = p;
                         v->vz = p->pos.vz;
                     } else if (p->moveFlags & 0x80) {
                         VECTOR *v = wm_getCameraTarget();
                         v->vx = p->pos.vx;
                         v->vy = p->pos.vy;
-                        D_8007AEBC = p;
+                        g_evtWorldCamTargetObj = p;
                         v->vz = p->pos.vz;
                     }
                 }
@@ -3009,7 +3009,7 @@ s32 evt_updateObjects(void) {
                     } else {
                         p->balloonWindow = 0xFF;
                         if (g_evtLookTarget == p) {
-                            D_8007AE6C = 30;
+                            g_evtLookReleaseTimer = 30;
                         }
                     }
                 }
@@ -3060,7 +3060,7 @@ s32 evt_updateObjects(void) {
     if (g_evtPlayerBlocked > 0) {
         g_evtPlayerBlocked--;
     }
-    if (D_8007AE6C > 0 && --D_8007AE6C == 0) {
+    if (g_evtLookReleaseTimer > 0 && --g_evtLookReleaseTimer == 0) {
         for (y = g_evtState->objects; y != NULL; y = y->unk0) {
             x = y->unk4;
             if (x->kind == 4 && (x->moveFlags & 0x200)) {
@@ -3310,7 +3310,7 @@ u8 *evt_loadScripts(u8 *p) {
         }
         bit <<= 1;
     }
-    D_8007AE00 = mask;
+    g_evtCharScriptMask = mask;
     return dst;
 }
 
@@ -3329,7 +3329,7 @@ void evt_init(u8 *data) {
     EvtState *p;
     GameState *gs;
 
-    t = D_80011A44;
+    t = g_evtDefaultAnalogThresholds;
     pad_setAnalogThresholds(&t);
     k = data[3];
     g_evtScripts = data + 0x80;
@@ -3379,13 +3379,13 @@ void evt_init(u8 *data) {
     g_evtState->playerUid = 0;
     g_evtState->idleTimer = 0;
     msg_startHereIcon(0);
-    D_8007B6FC = 0;
+    g_evtResumeNode = 0;
     g_evtState->walkOnly = 0;
     g_evtLookTarget = NULL;
     g_evtPlayerAnimCount = 10;
     g_evtMsgCount = 10;
     g_msgReady = 0;
-    D_8007B718 = 0;
+    g_evtHalted = 0;
     g_evtCameraChanged = 0;
     g_evtCamera = 0;
     g_evtEncounterDist = -0x5A0;
@@ -3561,7 +3561,7 @@ s32 evt_battleTrigger(s32 op, s32 bits, s32 v, s32 w) {
             case 0x37:
                 break;
             }
-            D_8007AE34 = w;
+            g_evtBattleTriggerArg = w;
             r = evt_callObjectFunc(o, a, b, 0);
         }
     }
@@ -3720,11 +3720,11 @@ void evt_callWorldCellTrigger(s32 a, s32 b, s32 c) {
 }
 
 s32 evt_getWorldCamEyeObj(void) {
-    return (s32)D_8007AEB8;
+    return (s32)g_evtWorldCamEyeObj;
 }
 
 s32 evt_getWorldCamTargetObj(void) {
-    return (s32)D_8007AEBC;
+    return (s32)g_evtWorldCamTargetObj;
 }
 
 void evt_resetIdleTimer(s32 a) {
@@ -3817,7 +3817,7 @@ s32 evt_popRandomBit(void) {
     return 0;
 }
 
-INCLUDE_RODATA("asm/us/main/nonmatchings/event", D_80011A44);
+INCLUDE_RODATA("asm/us/main/nonmatchings/event", g_evtDefaultAnalogThresholds);
 
 s32 evt_getObjectProp(EvtObject *o, s32 prop) {
     s32 r;

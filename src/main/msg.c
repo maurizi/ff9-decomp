@@ -13,11 +13,11 @@ void msg_init(void) {
     s = g_gameState;
     g_msgReady = 0;
     f = s->gameData->font;
-    D_8007BB98.lead = 0;
-    D_8007BBCC = f->glyphs;
-    D_8007BB98.extRange = *(s32 *)&f->extCode;
+    g_penGlyphDecode.lead = 0;
+    g_penGlyphs = f->glyphs;
+    g_penGlyphDecode.extRange = *(s32 *)&f->extCode;
     D_8007B94C = f->unk8;
-    D_8007BB98.kanjiCode = -1;
+    g_penGlyphDecode.kanjiCode = -1;
     switch (s->mode) {
     case 1:
         g_msgTable = s->gameData->ctx.ovl65->unkC->unk8;
@@ -98,7 +98,7 @@ static inline s32 msg_measureLine_width(u8 *s) {
     s32 c;
     u32 g;
 
-    D_8007BB98.lead = 0;
+    g_penGlyphDecode.lead = 0;
     c = *s++;
     while (c != 0xF7 && c != 0xFF) {
         do {
@@ -227,7 +227,7 @@ void msg_measureLine(u8 **pp, s32 *pw) {
     }
 }
 
-INCLUDE_RODATA("asm/us/main/nonmatchings/msg", D_80011A6C);
+INCLUDE_RODATA("asm/us/main/nonmatchings/msg", g_msgChoiceAnalogThresholds);
 
 /* skip the choices hidden by g_msgChoiceDrawMask once the window reaches the choice line */
 static inline void msg_renderText_skip(s32 id, u8 **pp) {
@@ -415,7 +415,7 @@ void msg_renderText(MsgWindow *w, u8 *s) {
             case 0x38:
             case 0x39:
                 pen_move(0, 1);
-                pen_drawSprite(D_8006E67C[c - 0x30]);
+                pen_drawSprite(g_msgIconSprites[c - 0x30]);
                 pen_move(1, -1);
                 break;
             case 0x60:
@@ -434,7 +434,7 @@ void msg_renderText(MsgWindow *w, u8 *s) {
                 if (c < 2) {
                     c ^= 1;
                 }
-                pen_drawSprite(D_8006E67C[c]);
+                pen_drawSprite(g_msgIconSprites[c]);
                 pen_move(1, -1);
                 break;
             case 0x3A:
@@ -546,7 +546,7 @@ void msg_advanceText(MsgWindow *w, u8 *e) {
                 w->speed = *p++;
                 break;
             case 0x42:
-                w->speed = D_8006E688[(g_gameState->config >> 14) & 7];
+                w->speed = g_msgTextSpeeds[(g_gameState->config >> 14) & 7];
                 break;
             case 0xC:
                 w->flags |= 4;
@@ -555,9 +555,9 @@ void msg_advanceText(MsgWindow *w, u8 *e) {
                 p += 2;
                 break;
             case 8:
-                tmp = D_80011A6C;
+                tmp = g_msgChoiceAnalogThresholds;
                 n = g_msgLine;
-                pad_getAnalogThresholds(&D_8007B99C);
+                pad_getAnalogThresholds(&g_msgSavedAnalogThresholds);
                 pad_setAnalogThresholds(&tmp);
                 g_msgChoiceLine = n;
                 w->flags |= 2;
@@ -687,7 +687,7 @@ void msg_drawText(MsgWindow *w) {
         if (w->textPos < w->pageStart) {
             w->textPos = w->pageStart;
         }
-        D_8007BB98.lead = 0;
+        g_penGlyphDecode.lead = 0;
         g_msgChoiceDrawMask = g_msgChoiceEnabled;
         msg_renderText(w, e);
         if (w->waitFrames == 0) {
@@ -797,9 +797,9 @@ static inline MsgWindow *msg_open_init(s32 id, WinLayout *l) {
 }
 
 /* window titles */
-INCLUDE_RODATA("asm/us/main/nonmatchings/msg", D_80011EFC);
+INCLUDE_RODATA("asm/us/main/nonmatchings/msg", g_msgAteTitle);
 
-INCLUDE_RODATA("asm/us/main/nonmatchings/msg", D_80011F10);
+INCLUDE_RODATA("asm/us/main/nonmatchings/msg", g_msgMognetTitle);
 
 void msg_open(s32 msg, s32 id, WinLayout *l, s32 flags) {
     MsgWindow *w;
@@ -821,7 +821,7 @@ void msg_open(s32 msg, s32 id, WinLayout *l, s32 flags) {
     w->waitFrames = 0;
     w->id = id;
     w->msgId = msg;
-    w->speed = D_8006E688[(g_gameState->config >> 14) & 7];
+    w->speed = g_msgTextSpeeds[(g_gameState->config >> 14) & 7];
     w->pageStart = 0;
     w->typeAccum = 8;
     w->pendingChars = 0;
@@ -851,13 +851,13 @@ void msg_open(s32 msg, s32 id, WinLayout *l, s32 flags) {
         if (l->tailOffset != 0 && !(flags & 4)) {
             win_setTail(w->window, l->tailMode & 3, l->tailOffset);
         }
-        if (D_8007BB90 != 0) {
+        if (g_msgLayoutAltOpen != 0) {
             win_setOpenAnim(w->window, 3);
         }
         if (flags & 0x40) {
-            win_setTitle(w->window, (s32)D_80011EFC);
+            win_setTitle(w->window, (s32)g_msgAteTitle);
         } else if (flags & 8) {
-            win_setTitle(w->window, (s32)D_80011F10);
+            win_setTitle(w->window, (s32)g_msgMognetTitle);
         }
     }
     if (!(l->flags & 1)) {
@@ -918,7 +918,7 @@ WinLayout *msg_getLayout(s32 id, s32 *x, s32 *y, s32 *z) {
     p = msg_getEntry_inline(id, &g_msgLayout);
     if (p != NULL) {
         done = 0;
-        D_8007BB90 = 0;
+        g_msgLayoutAltOpen = 0;
         g_msgLayout.anchor = 0;
         g_msgLayout.flags = 0;
         *x = 0;
@@ -985,7 +985,7 @@ WinLayout *msg_getLayout(s32 id, s32 *x, s32 *y, s32 *z) {
                 p++;
                 break;
             case 0xB:
-                D_8007BB90 = 1;
+                g_msgLayoutAltOpen = 1;
                 break;
             case 0x45:
                 g_msgLayout.flags = 1;
@@ -1453,7 +1453,7 @@ void msg_drawHereIcon(EvtObject *o) {
             g_hereIconActive = 0;
         }
         if (g_evtMode == 1 && !(g_gameState->gameData->flags & GD_HIDE_ALL) && n < 58) {
-            s = &D_80068790;
+            s = &g_hereIconSprite;
             pen_begin();
             pen_pushPos();
             evt_setDrawPosAtObject(o, 0, 0);
@@ -1489,7 +1489,7 @@ void msg_drawHereIcon(EvtObject *o) {
 }
 
 void msg_drawPlayerBubble(void) {
-    Unk80068788 *s = &D_80068788;
+    Unk80068788 *s = &g_bubbleSprite;
     s32 c = g_bubbleColor;
     s32 hw = g_bubbleHalfWidth;
     s32 h = g_bubbleHeight;
@@ -1546,9 +1546,9 @@ void msg_updatePlayerBubble(void) {
     EvtObject *o;
 
     if (g_bubbleRequestPrev == 0 && g_bubbleRequest != 0) {
-        g_bubbleScript = g_bubbleVariant ? D_8006E6D8 : D_8006E690;
+        g_bubbleScript = g_bubbleVariant ? g_bubbleScriptOpenAlt : g_bubbleScriptOpen;
     } else if (g_bubbleRequestPrev != 0 && g_bubbleRequest == 0) {
-        g_bubbleScript = D_8006E6F0;
+        g_bubbleScript = g_bubbleScriptClose;
     }
     g_bubbleRequestPrev = g_bubbleRequest;
     g_bubbleRequest = 0;

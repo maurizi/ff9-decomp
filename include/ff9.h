@@ -86,7 +86,7 @@ typedef union {
     u32 w;
     struct {
         u32 id : 4;    /* character id (index into GameData.unk3C) */
-        u32 kind : 5;  /* model/appearance kind (chr_calcAppearance; btlfx_getUnitKind, battle model and motion tables; 2 = Sword Magic user); index into D_8006BB8C */
+        u32 kind : 5;  /* model/appearance kind (chr_calcAppearance; btlfx_getUnitKind, battle model and motion tables; 2 = Sword Magic user); index into g_portraitByKind */
         u32 battleRow : 1; /* = the battle unit's row (flags >> 8 & 3, btl_toggleRow); toggled by the menu's Order; event op 0x62 */
         u32 unkA : 1;
         u32 recruited : 1; /* chr_setRecruited / chr_clearRecruited; members counted by chr_join's level average, shops, config */
@@ -464,8 +464,8 @@ extern CdLoadState g_cdLoad;
 
 extern u32 *g_ot; /* ordering table */
 extern u8 *g_primPtr;  /* next free primitive in the packet buffer */
-extern s16 D_80068F70[];
-extern u8 D_8006BB8C[];
+extern s16 g_statusIconSprites[];
+extern u8 g_portraitByKind[];
 
 typedef struct {
     u16 name; /* name offset into g_itemNames (msg_emitItemName, btl_getItemName) */
@@ -477,14 +477,14 @@ typedef struct {
     u8 rank; /* equip rank: menuEquip_optimize picks the highest */
     u8 statBonus; /* stat bonus row (g_equipStatBonus) */
     u8 abilities[3]; /* abilities taught */
-    u8 slots; /* mask tested against D_8006BB84[]: equip slot bits (item_getEquipSlot), 1 = usable from the Item menu (menuItem_selectItem) */
+    u8 slots; /* mask tested against g_equipSlotMasks[]: equip slot bits (item_getEquipSlot), 1 = usable from the Item menu (menuItem_selectItem) */
     u8 sortKey; /* sort key: menuItem_sortAuto */
     u8 pad11;
 } ItemInfo; /* item table, 0x12-byte entries */
 extern ItemInfo g_itemTable[];
-extern u8 D_8006CA9C[4]; /* max hp/mp support abilities */
-extern u8 D_8006CAA0[4]; /* stat caps */
-extern u8 D_8006D1C8[][4]; /* armor bonuses, indexed by item id (0x58..0xDF) */
+extern u8 g_chrHpMpSupports[4]; /* max hp/mp support abilities */
+extern u8 g_chrStatCaps[4]; /* stat caps */
+extern u8 g_armorDefs[][4]; /* armor bonuses, indexed by item id (0x58..0xDF) */
 /* weapon table entry (0xC bytes) */
 typedef struct {
     u8 pad0[5];
@@ -494,8 +494,8 @@ typedef struct {
 #if !defined(OVL_0B_H) && !defined(OVL_38_H) /* those headers declare their own view */
 extern WeaponEntry g_weaponTable[];
 #endif
-extern u8 D_8006BB84[];
-extern u8 D_8006BB74[];
+extern u8 g_equipSlotMasks[];
+extern u8 g_newGameItems[];
 
 typedef struct {
     u32 tag;
@@ -519,18 +519,16 @@ typedef struct {
 } DrTpageWords;
 
 extern u16 g_textPalettes[];
-extern u32 D_8006BBB4[]; /* per-style clut row offset for text_buildDigits */
+extern u32 g_numberClutRows[]; /* per-style clut row offset for text_buildDigits */
 
-/* sprite descriptor: uv/clut word, size, tpage (D_800686E8) */
+/* sprite descriptor: uv/clut word, size, tpage (g_uiSprites) */
 typedef struct {
     u32 uvclut; /* uv0 | clut << 16 */
     u8 w; /* w */
     u8 h; /* h */
     u16 tpage; /* tpage */
 } SpriteDef;
-extern SpriteDef D_800686E8;
 extern SpriteDef g_uiSprites[];
-extern SpriteDef D_800687E0[]; /* digit glyphs */
 
 /* member header slide (ui_*MemberSwitch, ui_drawMemberHeader) */
 typedef struct {
@@ -574,7 +572,7 @@ extern MenuState g_menu;
 
 extern s32 g_nameGlyphs;
 extern s32 g_nameImage;
-extern u8 D_80010BD0[]; /* font glyph start/width nibbles, text_renderNameGlyph */
+extern u8 g_nameGlyphSpans[]; /* font glyph start/width nibbles, text_renderNameGlyph */
 extern void (*g_winShadowFuncs[])(RECT *, s32);
 extern s32 (*g_textMeasureFuncs[])(u8 *); /* text width of a value, per format */
 extern u8 D_8006A20E;
@@ -583,7 +581,7 @@ s32 text_measureNumber(s32, s32);
 #if !defined(OVL_0A_H) && !defined(OVL_0C_H)
 s32 text_measureStyle(u8 *, s32);
 #endif
-extern s32 D_8006BBFC[];
+extern s32 g_numberDigitWidths[];
 extern s32 g_buttonSprites[];
 extern u8 g_textNumberBuf[];
 extern u8 *g_textArgPtr;
@@ -610,7 +608,7 @@ extern DrawBufs g_drawBufs;
 typedef struct {
     s8 unk0[5][4];
 } Unk80010CE0;
-extern Unk80010CE0 D_80010CE0;
+extern Unk80010CE0 g_winClipInsets;
 
 /* ---- functions (main exe) ---- */
 
@@ -1067,8 +1065,8 @@ typedef Character Unk800539FC;
 
 extern s32 D_80077DCC;
 extern u8 g_menuScreenCur;
-extern struct EvtObject *D_8007AEB8; /* object at the world map's mark 0x40 */
-extern struct EvtObject *D_8007AEBC; /* object at the world map's mark 0x80 */
+extern struct EvtObject *g_evtWorldCamEyeObj; /* object at the world map's mark 0x40 */
+extern struct EvtObject *g_evtWorldCamTargetObj; /* object at the world map's mark 0x80 */
 extern s32 g_msgKeepWindows;
 extern s32 *D_80066764;
 
@@ -1167,7 +1165,7 @@ typedef struct EvtObject {
     s16 lookAtX; /* smoothed look-at point (evt_relaxLookAt) */
     s16 lookAtY;
     s16 lookAtZ;
-    s16 balloonOfsX; /* speech bubble anchor offset (copied from D_8007AE5C..64) */
+    s16 balloonOfsX; /* speech bubble anchor offset (copied from g_evtBalloonOfsX..64) */
     s16 balloonOfsY;
     s16 balloonOfsZ;
     u8 jumpAnimStart; /* op 0x94 */
@@ -1240,8 +1238,8 @@ typedef struct {
 extern EvtState *g_evtState;
 extern EvtState g_evtStateData; /* the script system state g_evtState points at */
 extern EvtState g_evtSavedState; /* saved copy, restored when returning to the same field */
-extern Unk4 D_80011A44; /* rodata */
-extern s32 D_8007B6FC;
+extern Unk4 g_evtDefaultAnalogThresholds; /* rodata */
+extern s32 g_evtResumeNode;
 extern s32 g_evtCamera;
 extern s32 g_evtEncounterPending;
 void msg_resetPlayerBubble(void);
@@ -1268,7 +1266,7 @@ extern s32 D_8007B998;
 
 extern s32 g_textBank;
 extern s32 g_evtScriptCount;
-extern s32 D_8007AE00; /* party mask, set by evt_loadScripts */
+extern s32 g_evtCharScriptMask; /* party mask, set by evt_loadScripts */
 extern u32 g_padPortHeld[];
 extern u32 g_msgPadPressed;
 extern u32 g_msgPadReleased;
@@ -1405,7 +1403,7 @@ typedef struct {
     s32 unk1C;
 } Unk80021910;
 
-extern u8 D_8006CAA4[][2];
+extern u8 g_chrAppearanceTypes[][2];
 extern u8 D_800110A0[];
 extern u8 D_8006FD60[];
 extern s32 g_atePromptMode;
@@ -1524,7 +1522,7 @@ typedef struct {
 
 extern s16 g_resetCount;
 extern u32 D_80077DB4;
-extern u8 D_8006CAB8[][2];
+extern u8 g_chrDefaultSets[][2];
 
 u16 *db_findModelInfo(s32);
 void item_initNew(void);
@@ -1648,7 +1646,7 @@ u8 cd_syncAsync(void (*)(u8 *));
 
 
 
-extern u8 D_8006CAD8[][5];
+extern u8 g_chrDefaultEquip[][5];
 extern s32 g_akaoSkipMeasures;
 extern u8 g_akaoTempoScaleHi; /* tempo scale */
 void akao_execChannel(AkaoChannel *, u32);
@@ -1978,8 +1976,8 @@ void msg_setFocus(MsgWindow *);
 MsgWindow *msg_getFocus(void);
 extern s32 g_msgChoiceLine;
 extern s32 g_msgChoiceWindow;
-extern Unk4 D_8007B99C;
-extern Unk4 D_80011A6C; /* rodata constant, used by msg_advanceText */
+extern Unk4 g_msgSavedAnalogThresholds;
+extern Unk4 g_msgChoiceAnalogThresholds; /* rodata constant, used by msg_advanceText */
 
 
 void akao_streamArmStop(void);
@@ -1995,10 +1993,10 @@ s32 akao_loadBankAt(s32 *, s32, s32, u32);
 typedef struct {
     s32 unk0[4];
 } Unk80010CD0;
-extern Unk80010CD0 D_80010CD0; /* min widths per window style */
+extern Unk80010CD0 g_winMinWidths; /* min widths per window style */
 void akao_freeSubSeqVoices(void);
 extern s32 g_akaoResidentStream[]; /* AKAO header copy (0x70 bytes) */
-extern u8 D_8006CACC[];
+extern u8 g_chrClassFlags[];
 void menu_onOverlayRead(u8 *);
 extern AkaoChannel g_akaoSavedChannels[];
 void akao_copy(); /* (u32 *src, u32 *dst, u32 size): word copy */
@@ -2078,7 +2076,7 @@ s32 rain_drawDrops(s32, u8, u32 *, s32);
 void wrain_spawn(s32);
 s32 wrain_drawDrops(s32, u8, u32 *, s32);
 void chr_setLevel(s32, s32, u32 *, u8);
-extern u32 D_8006CA78[];
+extern u32 g_chrInitInfo[];
 extern u32 g_fadeBattleOt[];
 s32 akao_loadBank(s32, s32);
 void pen_init(void);
@@ -2115,10 +2113,13 @@ typedef struct {
     u8 unk4; /* advance width */
     u8 pad5[3];
 } Glyph8;
-extern Glyph8 D_80068690[]; /* indexed by ASCII code */
-extern Glyph8 D_80068890; /* & */
-extern Glyph8 D_80068CE0; /* . */
-extern Glyph8 D_80068DC8; /* _ */
+/* g_uiSprites ids of the label font (ui_measureLabel, text_buildLabel): 'A'-'Z' at c - 8, 'a'-'z' share them
+ * (c - 0x28), '0'-'9' at c - 2, plus these three */
+#define UI_SPRITE_AMPERSAND 0x38
+#define UI_SPRITE_PERIOD 0xC2
+#define UI_SPRITE_UNDERSCORE 0xDF
+#define UI_SPRITE_AP_GAUGE 3 /* gauge frame ui_buildApGauge sizes the bar by */
+#define UI_SPRITE_SMALL_DIGITS 0x22 /* '0'-'9', then '%' (10) and '/' (11) (ui_buildDigits) */
 void ui_drawLabel(s32, s32, s32, s32, s32);
 void ui_drawSmallDigits(s32, s32, s32, u8 *, s32);
 void text_drawBlock(s32, s32, s32, u8 *, s32);
@@ -2246,7 +2247,7 @@ typedef struct {
 extern Unk8 g_cdResult; /* last CD status/result bytes */
 
 s32 evt_callObjectFunc(EvtObject *, s32, s32, s32);
-extern s32 D_8007AE34;
+extern s32 g_evtBattleTriggerArg;
 extern CdlATV g_akaoCdAtv;
 void akao_markSeqDirty(); /* (AkaoSeq *, AkaoChannel *) */
 void card_rollStats(CardEntry *, u8);
@@ -2302,7 +2303,7 @@ extern struct EvtObject *g_evtCurObj; /* current script object */
 void evt_evalExpr(void);
 s32 evt_popResult(void);
 void evt_assignResult(s32);
-extern s32 D_8007B718;
+extern s32 g_evtHalted;
 void msg_update(void);
 void evt_updateIdleTimer(void);
 s32 evt_updateObjects(void); /* per-frame field object update */
@@ -2592,7 +2593,7 @@ void ui_drawGauge(s32, s32, s32, s32, s32, s32, u8);
 typedef struct {
     CVECTOR c[4];
 } GaugeColors;
-extern GaugeColors D_80068FD8[];
+extern GaugeColors g_gaugeColors[];
 /* o = f + (t - f) * n / d per channel (o is a CVECTOR, f/t point to CVECTORs) */
 #define CVECTOR_LERP(o, f, t, n, d)                         \
     (o).r = (f)->r + ((t)->r - (f)->r) * (n) / (d);         \
@@ -2659,7 +2660,7 @@ typedef struct {
     u8 y;
     u8 sprite; /* g_uiSprites index */
 } Unk8006BC0C;
-extern Unk8006BC0C D_8006BC0C[4];
+extern Unk8006BC0C g_dpadArrowSprites[4];
 u8 help_isOpen(void);
 void ui_drawRule(s32, s32, s32, s32, s32, s32);
 void menuList_down(MenuList *, u32);
@@ -2762,7 +2763,7 @@ static inline void msg_closeWindow_inline(MsgWindow *p) {
             win_close(p->window);
         }
         if (g_msgChoiceLine >= 0 && g_msgChoiceWindow == p->id) {
-            pad_setAnalogThresholds(&D_8007B99C);
+            pad_setAnalogThresholds(&g_msgSavedAnalogThresholds);
         }
         msg_closeAll_inline(p);
     }
@@ -2866,7 +2867,7 @@ extern s32 g_akaoOutputFlags;
 extern s32 g_akaoSeVolume; /* sound effect volume */
 extern s16 g_akaoMonoGain;
 extern s16 g_akaoPanCurve[]; /* pan curve, 256 entries */
-/* item icon sprites (D_800689B0) */
+/* item icon sprites (g_itemIconSprites) */
 typedef struct {
     u8 u; /* u */
     u8 v; /* v */
@@ -2875,7 +2876,7 @@ typedef struct {
     u8 h; /* h */
     u16 tpage; /* tpage */
 } UiSprite;
-extern UiSprite D_800689B0[];
+extern UiSprite g_itemIconSprites[];
 extern UiSprite g_winTailSprites[];
 u8 win_isVisible(Window *);
 void win_drawFrame(Window *);
@@ -2921,7 +2922,7 @@ typedef struct {
     s32 extRange; /* Font.extCode | extBase << 16 (msg_init) */
     s32 kanjiCode; /* first code of the second table (-1 = none) */
 } Unk8007BB98;
-extern Unk8007BB98 D_8007BB98;
+extern Unk8007BB98 g_penGlyphDecode;
 extern s32 g_msgChoiceDrawMask;
 void msg_renderText(MsgWindow *, u8 *); /* draw a window's text */
 extern DVECTOR *g_penStackPtr; /* pen position stack (pen_pushPos) */
@@ -2941,9 +2942,9 @@ typedef struct {
     u8 w; /* w */
     u8 h; /* h */
 } Unk80068790;
-extern Unk80068790 D_80068790;
+extern Unk80068790 g_hereIconSprite;
 extern s32 g_hereIconFlipped; /* balloon flipped (pen x < 24) */
-extern u8 D_8006E67C[];
+extern u8 g_msgIconSprites[];
 void pen_setX(s32);
 void pen_setLastSemiTrans(void);
 s32 msg_emitNumber(s32, s32);
@@ -3024,15 +3025,15 @@ typedef struct {
     u8 v; /* v */
     u16 clut; /* clut */
 } Unk80068788;
-extern Unk80068788 D_80068788;
+extern Unk80068788 g_bubbleSprite;
 extern s32 g_bubbleColor; /* colour */
 extern s32 g_bubbleHalfWidth; /* half width */
 extern s32 g_bubbleHeight; /* height */
 extern s32 g_bubbleLift;
 extern s32 g_evtCameraChanged;
-extern u8 D_8006E6D8[];
-extern u8 D_8006E690[];
-extern u8 D_8006E6F0[];
+extern u8 g_bubbleScriptOpenAlt[];
+extern u8 g_bubbleScriptOpen[];
+extern u8 g_bubbleScriptClose[];
 EvtObject *evt_getObject(s32);
 void evt_setDrawPosAtObject(EvtObject *, s32, s32);
 void msg_drawPlayerBubble(void);
@@ -3117,7 +3118,7 @@ typedef struct {
     s32 unk8;
 } Unk8006BD04;
 extern Unk8006BD04 g_fadeTypes[];
-extern u8 D_8006BCFC[]; /* window style -> colour */
+extern u8 g_winStyleOpenAnim[]; /* window style -> colour */
 typedef struct {
     u8 unk0[8];
 } Bytes8;
@@ -3142,7 +3143,7 @@ typedef struct {
     u16 mp; /* mp */
     u16 maxHp; /* max hp */
     u16 maxMp; /* max mp */
-    u8 stats[4]; /* stats: speed, strength, magic, spirit (capped by D_8006CAA0) */
+    u8 stats[4]; /* stats: speed, strength, magic, spirit (capped by g_chrStatCaps) */
     u16 defs[5]; /* attack (weapon), defense, evade, magicDef, magicEva (capped at 999) */
 } EquipStatsOut;
 EquipStatsOut *chr_calcEquipStats(EquipStatsIn *, EquipStatsOut *);
@@ -3173,7 +3174,7 @@ static inline void chr_updateStats_inline(Character *c) {
 }
 extern void (*g_fadeSeekFuncs[])(FadeState *, s32);
 extern s32 g_msgReady;
-extern u32 *D_8007BBCC;
+extern u32 *g_penGlyphs;
 extern s32 D_8007B94C;
 void win_closeAll(void);
 void msg_resetChoices(void);
@@ -3223,11 +3224,11 @@ typedef struct {
 extern UiSprite g_uiBackgroundSprite;
 extern UiSprite g_winFillSprite;
 /* window frame tables (win_buildBorder) */
-extern u32 D_80068FA4[2]; /* edge rgbc, by flag */
-extern u32 D_80068FAC[2]; /* corner rgbc, by flag */
-extern u8 D_80068FB4[][4]; /* corner sprites (g_uiSprites index) per style */
-extern u8 D_80068FC0[][2]; /* top/bottom edge sprites per style */
-extern u8 D_80068FC8[][2]; /* left/right edge sprites per style */
+extern u32 g_winEdgeRgbc[2]; /* edge rgbc, by flag */
+extern u32 g_winCornerRgbc[2]; /* corner rgbc, by flag */
+extern u8 g_winCornerSprites[][4]; /* corner sprites (g_uiSprites index) per style */
+extern u8 g_winHEdgeSprites[][2]; /* top/bottom edge sprites per style */
+extern u8 g_winVEdgeSprites[][2]; /* left/right edge sprites per style */
 extern u8 g_winRuleSprites[][3]; /* title bar sprites (left, right, middle) per style */
 typedef struct {
     u32 tag;
@@ -3503,7 +3504,7 @@ static inline void text_formatNumber_inline(s32 n, u8 *buf, s32 width, u8 ascii)
         *end = 0;
     }
 }
-extern s32 D_8006BBD4[];
+extern s32 g_hourHundredsGlyphs[];
 
 extern u8 D_80077878[2][0x200]; /* fade packet buffers, one per draw buffer */
 
@@ -3537,7 +3538,7 @@ typedef struct {
     u8 flags; /* bit 0: don't make it the current window */
 } WinLayout;
 s32 msg_overlapsRect(WinLayout *r);
-extern s32 D_8007BB90;
+extern s32 g_msgLayoutAltOpen;
 s32 msg_input(MsgWindow *, s32);
 void msg_drawWindowContent(Window *);
 void msg_drawChoiceCursor(Window *);
@@ -3545,9 +3546,9 @@ void msg_drawChoiceCursor(Window *);
 WinLayout *msg_getLayout(s32, s32 *, s32 *, s32 *);
 extern WinLayout g_msgLayout;
 void evt_placeBalloon(EvtObject *, WinLayout *, s32, s32);
-extern s32 D_8007AE5C;
-extern s32 D_8007AE60;
-extern s32 D_8007AE64;
+extern s32 g_evtBalloonOfsX;
+extern s32 g_evtBalloonOfsY;
+extern s32 g_evtBalloonOfsZ;
 
 
 s32 tween_step(WinDef *);
@@ -3809,10 +3810,10 @@ s32 evt_modelOpWorld(EvtObject *, s32);
 
 extern s32 g_evtPosSetThisFrame;
 extern EvtObject *g_evtLookTarget;
-extern s32 D_8007AE6C;
+extern s32 g_evtLookReleaseTimer;
 extern s32 g_msgSyncTag;
 extern s32 g_msgLine; /* message counter */
-extern u8 D_8006E688[]; /* text speed per config setting */
+extern u8 g_msgTextSpeeds[]; /* text speed per config setting */
 void evt_turnObject(EvtObject *, s32, s32, s32);
 s32 math_atan2(s32, s32);
 void msg_setNumber(u32, s32);
@@ -3854,8 +3855,8 @@ static inline s32 evt_getArg8_inline(void) {
 }
 
 extern s32 g_evtPlayerAnimCount;
-extern s32 D_8007AE24;
-extern s32 D_8007AE28;
+extern s32 g_evtLinePointX;
+extern s32 g_evtLinePointZ;
 void msg_close(s32);
 void msg_resetWindows(void);
 void win_closeAll(void);
@@ -3959,10 +3960,10 @@ Unk16D8 *evt_deleteObject(EvtObject *);
 EvtObject *evt_allocObject(s32);
 void evt_onAnimEnd(EvtObject *);
 
-extern s32 D_8007AE2C;
-extern s32 D_8007AE30;
-extern s32 D_8007AE38;
-extern s32 D_8007AE3C;
+extern s32 g_evtScreenX;
+extern s32 g_evtScreenY;
+extern s32 g_evtSoundVolume;
+extern s32 g_evtSoundPan;
 void msg_showPlayerBubble(s32);
 void msg_setAtePrompt(s32);
 void evt_onMenuOpen(void);
@@ -3989,8 +3990,8 @@ static inline s32 evt_getArg24_inline(void) {
     return v;
 }
 
-extern u8 D_8006E630[];
-extern u8 D_8006E63C[];
+extern u8 g_evtPartyOrderChars[];
+extern u8 g_evtCharPartyOrder[];
 s32 msg_getPartyMemberId(s32);
 void chr_join(s32, u8, s32);
 s32 chr_resetAp(s32, s32);
@@ -4016,7 +4017,7 @@ typedef struct {
     u8 reserve[8]; /* recruited characters not in the party, 0xFF-terminated */
     u8 fixed[9]; /* per character: can't leave the party (op 0xB2 bit mask) */
 } Unk8007AE70;
-extern Unk8007AE70 D_8007AE70;
+extern Unk8007AE70 g_evtPartyRequest;
 
 /* Inlined helper: rebuild g_evtState->unk16E4 from the current party. */
 static inline void evt_execInstr_party(void) {
@@ -4029,12 +4030,12 @@ static inline void evt_execInstr_party(void) {
     for (; i < 4; i++) {
         r = msg_getPartyMemberId(i);
         if (r >= 0) {
-            mask |= 1 << D_8006E63C[r];
+            mask |= 1 << g_evtCharPartyOrder[r];
         }
     }
     for (i = 0; mask != 0; i++) {
         if (mask & 1) {
-            *p++ = g_evtScriptCount - 9 + D_8006E630[i];
+            *p++ = g_evtScriptCount - 9 + g_evtPartyOrderChars[i];
         }
         mask >>= 1;
     }
@@ -4097,7 +4098,7 @@ static inline void evt_execInstr_window(EvtObject *obj, s32 b, s32 c) {
         }
         obj->balloonWindow = c;
         g_evtLookTarget = obj;
-        D_8007AE6C = 0;
+        g_evtLookReleaseTimer = 0;
     }
 }
 
@@ -4340,9 +4341,9 @@ static inline s32 evt_isInParty_find(s32 key, s32 slot) {
     return p < &g_gameState->gameData->party[4];
 }
 
-extern const u8 D_80010DC4[]; /* default character names: count, then {offset, length} entries */
-extern const u8 D_80011EFC[]; /* "ACTIVE TIME EVENT" window title */
-extern const u8 D_80011F10[]; /* "MOGNET" window title */
+extern const u8 g_chrDefaultNames[]; /* default character names: count, then {offset, length} entries */
+extern const u8 g_msgAteTitle[]; /* "ACTIVE TIME EVENT" window title */
+extern const u8 g_msgMognetTitle[]; /* "MOGNET" window title */
 
 /* sound driver (AKAO) routines used by akao_updateVoices */
 void akao_setReverbVoices(u32 x);

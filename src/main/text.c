@@ -17,7 +17,7 @@ s32 text_renderNameGlyph(s32 x, s32 hi, s32 c) {
     u8 t;
 
     dst = (u8 *)g_nameImage;
-    w = D_80010BD0[c];
+    w = g_nameGlyphSpans[c];
     start = w >> 4;
     width = (w & 0xF) + 1;
     src = (u8 *)g_nameGlyphs + (c << 6);
@@ -310,11 +310,11 @@ u8 *ui_buildLabel(s32 x, s32 y, u32 *ot, s32 str, s32 mode, u8 *pkt) {
         } else if ((u32)(c - '0') < 10) {
             g = &((SpriteDesc16 *)g_uiSprites)[*s - 2];
         } else if ((u8)c == '&') {
-            g = (SpriteDesc16 *)&D_80068890;
+            g = (SpriteDesc16 *)&g_uiSprites[UI_SPRITE_AMPERSAND];
         } else if ((u8)c == '.') {
-            g = (SpriteDesc16 *)&D_80068CE0;
+            g = (SpriteDesc16 *)&g_uiSprites[UI_SPRITE_PERIOD];
         } else if ((u8)c == '_') {
-            g = (SpriteDesc16 *)&D_80068DC8;
+            g = (SpriteDesc16 *)&g_uiSprites[UI_SPRITE_UNDERSCORE];
         }
         if (*s != ' ') {
             setlen(p, 4);
@@ -716,7 +716,7 @@ s32 text_formatTime(s32 frames, u8 *buf, s32 blink) {
         min = 59;
     }
     if (hr >= 100) {
-        r = D_8006BBD4[hr / 100];
+        r = g_hourHundredsGlyphs[hr / 100];
         hr %= 100;
     }
     if ((u8)blink) {
@@ -797,17 +797,17 @@ s32 ui_measureLabel(u8 *s) {
     g = NULL;
     while ((c = *s) != 0) {
         if (c >= 'A' && c <= 'Z') {
-            g = &D_80068690[*s];
+            g = (Glyph8 *)&g_uiSprites[*s - 8];
         } else if (c >= 'a' && c <= 'z') {
-            g = &D_80068690[*s - 32];
+            g = (Glyph8 *)&g_uiSprites[*s - 0x28];
         } else if (c >= '0' && c <= '9') {
-            g = &D_80068690[*s + 6];
+            g = (Glyph8 *)&g_uiSprites[*s - 2];
         } else if (c == '&') {
-            g = &D_80068890;
+            g = (Glyph8 *)&g_uiSprites[UI_SPRITE_AMPERSAND];
         } else if (c == '.') {
-            g = &D_80068CE0;
+            g = (Glyph8 *)&g_uiSprites[UI_SPRITE_PERIOD];
         } else if (c == '_') {
-            g = &D_80068DC8;
+            g = (Glyph8 *)&g_uiSprites[UI_SPRITE_UNDERSCORE];
         }
         if (*s == ' ') {
             adv = 5;
@@ -890,7 +890,7 @@ TextSize text_measure(u8 *s) {
             } else if (*s == TEXT_ITEM_ICON) {
                 s++;
                 if (*s == 0xFF) {
-                    w += g_uiSprites[D_8006A20E + 0x5C].w;
+                    w += g_uiSprites[g_itemTable[0xFF].icon + 0x5C].w;
                 }
             } else if (*s == TEXT_ARG_SPRITE) {
                 s++;
@@ -898,7 +898,7 @@ TextSize text_measure(u8 *s) {
             } else if (*s == TEXT_ARG_ITEM_ICON) {
                 s++;
                 if (g_textIconArgs[*s] == 0xFF) {
-                    w += g_uiSprites[D_8006A20E + 0x5C].w;
+                    w += g_uiSprites[g_itemTable[0xFF].icon + 0x5C].w;
                 }
             } else if (*s == TEXT_Y_DOWN) {
                 s++;
@@ -995,7 +995,7 @@ u8 *text_buildDigits(s32 x, s32 y, u32 *ot, u8 *s, s32 style, void *pkt) {
             p->rgbc = rgbc;
             p->xy = (x & 0xFFFF) | (y << 16);
             p->wh = 0xA0008;
-            p->uvclut = ((u & 0xFF) | 0x4000) | ((D_8006BBB4[style] + 0x3EE4) << 16);
+            p->uvclut = ((u & 0xFF) | 0x4000) | ((g_numberClutRows[style] + 0x3EE4) << 16);
             addPrim(ot, p);
             p++;
         }
@@ -1034,7 +1034,7 @@ u8 *text_buildDpad(s32 x, s32 y, u32 *ot, u32 mask, u8 b, s32 *c, u8 *pkt) {
     s32 i;
     for (i = 0; i < 4; i++) {
         if (mask & (1 << i)) {
-            pkt = ui_buildSprite(x + D_8006BC0C[i].x, y + D_8006BC0C[i].y, ot, D_8006BC0C[i].sprite, b, tmp, pkt);
+            pkt = ui_buildSprite(x + g_dpadArrowSprites[i].x, y + g_dpadArrowSprites[i].y, ot, g_dpadArrowSprites[i].sprite, b, tmp, pkt);
         }
     }
     return ui_buildSprite(x, y, ot, 0xC, b, c, pkt);
@@ -1217,7 +1217,7 @@ void text_setColor(s32 v) {
 
 s32 text_measureNumber(s32 n, s32 idx) {
     s32 r = 0;
-    s32 step = D_8006BBFC[idx];
+    s32 step = g_numberDigitWidths[idx];
 
     while (n != 0) {
         n /= 10;
@@ -1226,4 +1226,4 @@ s32 text_measureNumber(s32 n, s32 idx) {
     return r - 1;
 }
 
-INCLUDE_RODATA("asm/us/main/nonmatchings/text", D_80010BD0);
+INCLUDE_RODATA("asm/us/main/nonmatchings/text", g_nameGlyphSpans);

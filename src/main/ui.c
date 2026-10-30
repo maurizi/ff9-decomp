@@ -307,16 +307,16 @@ u8 *win_buildBorder(RECT *r, u32 *ot, u8 flag, u8 abe, s32 style, s32 pal, u8 *p
     }
     d = NULL;
     if (style != 2) {
-        clut = win_getClut(g_uiSprites[D_80068FB4[style][0]].uvclut >> 16, pal) << 16;
+        clut = win_getClut(g_uiSprites[g_winCornerSprites[style][0]].uvclut >> 16, pal) << 16;
     } else {
         clut = 0x3EA40000;
     }
     for (i = 0, y = r->y; i < 2; i++) {
         for (j = 0, x = r->x; j < 2; j++) {
             if (flag || i || !j) {
-                d = (UiSprite *)&g_uiSprites[D_80068FB4[style][i * 2 + j]];
+                d = (UiSprite *)&g_uiSprites[g_winCornerSprites[style][i * 2 + j]];
                 setlen(pkt, 3);
-                ((Sprt8Words *)pkt)->rgbc = D_80068FAC[flag] | semi;
+                ((Sprt8Words *)pkt)->rgbc = g_winCornerRgbc[flag] | semi;
                 ((Sprt8Words *)pkt)->xy = (u16)x | (y << 16);
                 ((Sprt8Words *)pkt)->uvclut = d->u | (d->v << 8) | clut;
                 addPrim(ot, pkt);
@@ -336,9 +336,9 @@ u8 *win_buildBorder(RECT *r, u32 *ot, u8 flag, u8 abe, s32 style, s32 pal, u8 *p
     if (r->w - 16 > 0) {
         y = r->y + r->h - 8;
         for (i = 0; i < n; i++) {
-            d = (UiSprite *)&g_uiSprites[D_80068FC0[style][i]];
+            d = (UiSprite *)&g_uiSprites[g_winHEdgeSprites[style][i]];
             setlen(pkt, 4);
-            ((SprtWords *)pkt)->rgbc = D_80068FA4[flag] | semi;
+            ((SprtWords *)pkt)->rgbc = g_winEdgeRgbc[flag] | semi;
             ((SprtWords *)pkt)->xy = ((r->x + 8) & 0xFFFF) | (y << 16);
             ((SprtWords *)pkt)->uvclut = clut;
             ((SprtWords *)pkt)->wh = (r->w - 16) | 0x80000;
@@ -359,9 +359,9 @@ u8 *win_buildBorder(RECT *r, u32 *ot, u8 flag, u8 abe, s32 style, s32 pal, u8 *p
     if (r->h - 16 > 0) {
         x = r->x;
         for (i = 0; i < n; i++) {
-            d = (UiSprite *)&g_uiSprites[D_80068FC8[style][i]];
+            d = (UiSprite *)&g_uiSprites[g_winVEdgeSprites[style][i]];
             setlen(pkt, 4);
-            ((SprtWords *)pkt)->rgbc = D_80068FA4[flag] | semi;
+            ((SprtWords *)pkt)->rgbc = g_winEdgeRgbc[flag] | semi;
             ((SprtWords *)pkt)->xy = (x & 0xFFFF) | ((r->y + 8) << 16);
             ((SprtWords *)pkt)->uvclut = clut;
             ((SprtWords *)pkt)->wh = ((r->h - 16) << 16) | 8;
@@ -454,7 +454,7 @@ void ui_drawGauge(s32 x, s32 y, s32 otz, s32 cur, s32 max, s32 style, u8 blink) 
     TileWords *t;
 
     w = cur * 36 / max;
-    e = &D_80068FD8[style];
+    e = &g_gaugeColors[style];
     if (cur != 0) {
         if (blink && cur >= max) {
             k = g_winLastVsync & 0x1F;
@@ -627,7 +627,7 @@ void ui_drawItemIcon(s32 arg0, s32 arg1, s32 otz, s32 arg3, u8 arg4) {
 
 u8 *ui_buildItemIcon(s32 x, s32 y, u32 *ot, s32 item, u8 flag, u8 *pkt) {
     ItemInfo *e = &g_itemTable[item];
-    UiSprite *d = &D_800689B0[e->icon];
+    UiSprite *d = &g_itemIconSprites[e->icon];
     s32 clut;
 
     clut = d->clut + (flag ? e->iconPalette << 6 : 0x3C0);
@@ -679,7 +679,7 @@ void ui_drawStatusIcons(s32 arg0, s32 arg1, s32 arg2, u8 arg3, s32 arg4) {
 
     for (i = 0; i < 7; i++) {
         if ((arg3 >> i) & 1) {
-            ui_drawSprite(arg0, arg1, arg2, D_80068F70[i], 0);
+            ui_drawSprite(arg0, arg1, arg2, g_statusIconSprites[i], 0);
             arg0 += 12;
         }
     }
@@ -711,7 +711,7 @@ u8 *ui_buildApGauge(s32 x, s32 y, u32 *ot, s32 cur, s32 max, u8 show, u8 flag, u
     s32 w;
     s32 t;
     u32 rgbc;
-    SpriteDef *d = &D_800686E8;
+    SpriteDef *d = &g_uiSprites[UI_SPRITE_AP_GAUGE];
 
     if (max < cur) {
         cur = max;
@@ -902,7 +902,7 @@ u8 *ui_buildDigits(s32 x, s32 y, u32 *ot, u8 *s, s32 unused, SprtWords *p) {
             setlen(p, 4);
             p->rgbc = GPU_RGBC(GPU_SPRT, 0x808080);
             p->xy = (x & 0xFFFF) | (y << 16);
-            g = &D_800687E0[idx];
+            g = &g_uiSprites[UI_SPRITE_SMALL_DIGITS + idx];
             p->wh = g->w | (g->h << 16);
             p->uvclut = g->uvclut;
             addPrim(ot, p);
@@ -921,7 +921,7 @@ u8 *ui_buildDigits(s32 x, s32 y, u32 *ot, u8 *s, s32 unused, SprtWords *p) {
 }
 
 void item_initNew(void) {
-    u8 *p = D_8006BB74;
+    u8 *p = g_newGameItems;
 
     item_clearAll();
     keyItem_clearAll();
@@ -1029,7 +1029,7 @@ s32 item_getEquipSlot(s32 arg0) {
     ItemInfo *e = &g_itemTable[arg0];
 
     for (i = 0; i < 5; i++) {
-        if (e->slots & D_8006BB84[i]) {
+        if (e->slots & g_equipSlotMasks[i]) {
             return i;
         }
     }
@@ -1208,7 +1208,7 @@ void ui_restorePortraits(void) {
 }
 
 s32 chr_getPortrait(s32 arg0) {
-    return D_8006BB8C[g_gameState->gameData->characters[arg0].info.b.kind];
+    return g_portraitByKind[g_gameState->gameData->characters[arg0].info.b.kind];
 }
 
 void ui_getPortraitRects(s32 arg0, RECT *clut, RECT *img) {
@@ -1269,7 +1269,7 @@ void ui_loadPartyPortraits(u8 *buf) {
         Character *p = d->party[i];
 
         if (p != NULL) {
-            ui_loadPartyPortrait(buf + D_8006BB8C[d->characters[p->info.b.id].info.b.kind] * 0x6C0, i);
+            ui_loadPartyPortrait(buf + g_portraitByKind[d->characters[p->info.b.id].info.b.kind] * 0x6C0, i);
         }
     }
 }
