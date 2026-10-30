@@ -69,10 +69,10 @@ s32 swirl_update(s16 arg0, s16 arg1) {
             gs->gameData->flags &= ~0x20;
             *(u32 *)&gs->drawEnv[0].isbg = *(u32 *)&gs->drawEnv[1].isbg = 1;
             g_swirlFlash = 0;
-            g_swirlFade = g_swirlParams->unkA;
-            g_swirlAngle = a = g_swirlParams->unk0;
-            g_swirlZoom = g_swirlParams->unk6;
-            D_8007BD22 = b = g_swirlParams->unk2;
+            g_swirlFade = g_swirlParams->fade;
+            g_swirlAngle = a = g_swirlParams->angle;
+            g_swirlZoom = g_swirlParams->zoom;
+            D_8007BD22 = b = g_swirlParams->angleStep;
             if ((arg0 ^ arg1) & 1) {
                 g_swirlAngle = -a;
                 D_8007BD22 = -b;
@@ -96,21 +96,21 @@ s32 swirl_update(s16 arg0, s16 arg1) {
         addPrim(g_swirlOt, g_swirlPkt);
         g_swirlPkt += 8;
         swirl_drawMesh();
-        if (g_swirlFrame >= g_swirlParams->unkC) {
-            g_swirlFade -= g_swirlParams->unkE;
+        if (g_swirlFrame >= g_swirlParams->fadeStart) {
+            g_swirlFade -= g_swirlParams->fadeStep;
             if ((s16)g_swirlFade < 0) {
                 g_swirlFade = 0;
             }
         }
-        if (g_swirlFrame >= g_swirlParams->unk10) {
+        if (g_swirlFrame >= g_swirlParams->flashStart) {
             swirl_drawFlash(x, y);
-            g_swirlFlash += g_swirlParams->unk12;
+            g_swirlFlash += g_swirlParams->flashStep;
             if ((s16)g_swirlFlash >= 0x1000) {
                 g_swirlFlash = 0xFFF;
             }
         }
         g_swirlAngle += D_8007BD22;
-        g_swirlZoom += g_swirlParams->unk8;
+        g_swirlZoom += g_swirlParams->zoomStep;
         if (g_swirlZoom > 0x1400) {
             g_swirlZoom = 0x1400;
         }
@@ -232,7 +232,7 @@ u32 *swirl_buildMesh(u32 *buf, s32 x, s32 y) {
     sv.vx = 0;
     sv.vz = (s16)g_swirlAngle >> 4;
     math_rotMatrixXYZ(&sv, &m);
-    v.vx = v.vy = g_swirlParams->unk4;
+    v.vx = v.vy = g_swirlParams->scale;
     v.vz = 0;
     ScaleMatrix(&m, &v);
     m.t[0] = x;

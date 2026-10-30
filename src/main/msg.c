@@ -778,15 +778,15 @@ static inline MsgWindow *msg_open_init(s32 id, WinLayout *l) {
     w->x = 0;
     w->id = 0;
     w->parent = parent;
-    if (l->unk0 != 0) {
-        w->x = l->unk0;
-        w->y = (u8)l->unk8;
+    if (l->x != 0) {
+        w->x = l->x;
+        w->y = (u8)l->y;
     } else {
-        w->x = 0xA0 - (l->unk2 >> 1);
-        w->y = 0x78 - (l->unk9 >> 1);
+        w->x = 0xA0 - (l->w >> 1);
+        w->y = 0x78 - (l->h >> 1);
     }
-    w->w = l->unk2;
-    w->h = l->unk9;
+    w->w = l->w;
+    w->h = l->h;
     w->flags = 0;
     w->msgId = 0;
     w->textPos = 0;
@@ -825,11 +825,11 @@ void msg_open(s32 msg, s32 id, WinLayout *l, s32 flags) {
     w->pageStart = 0;
     w->typeAccum = 8;
     w->pendingChars = 0;
-    w->tailOffset = l->unk4;
-    w->tailMode = l->unk6;
-    w->textWidth = l->unk2;
+    w->tailOffset = l->tailOffset;
+    w->tailMode = l->tailMode;
+    w->textWidth = l->w;
     w->flags |= 0x10;
-    if (!(l->unkB & 1)) {
+    if (!(l->flags & 1)) {
         g_msgFocus = w;
     }
     r.x = w->x;
@@ -837,9 +837,9 @@ void msg_open(s32 msg, s32 id, WinLayout *l, s32 flags) {
     r.w = w->w + 3;
     r.h = w->h + 3;
     style = 4;
-    if (!(l->unk6 & 0x10)) {
+    if (!(l->tailMode & 0x10)) {
         style = 3;
-        if (l->unk4 == 0 && !(flags & 4)) {
+        if (l->tailOffset == 0 && !(flags & 4)) {
             style = 2;
         }
     }
@@ -848,8 +848,8 @@ void msg_open(s32 msg, s32 id, WinLayout *l, s32 flags) {
         w->window->userData = (s32)w;
         win_setDrawContent(w->window, (void (*)(Window *))msg_drawWindowContent);
         win_setDrawOverlay(w->window, msg_drawChoiceCursor);
-        if (l->unk4 != 0 && !(flags & 4)) {
-            win_setTail(w->window, l->unk6 & 3, l->unk4);
+        if (l->tailOffset != 0 && !(flags & 4)) {
+            win_setTail(w->window, l->tailMode & 3, l->tailOffset);
         }
         if (D_8007BB90 != 0) {
             win_setOpenAnim(w->window, 3);
@@ -860,7 +860,7 @@ void msg_open(s32 msg, s32 id, WinLayout *l, s32 flags) {
             win_setTitle(w->window, (s32)D_80011F10);
         }
     }
-    if (!(l->unkB & 1)) {
+    if (!(l->flags & 1)) {
         g_msgChoiceLine = -1;
         n = g_msgChoiceDefault;
         g_msgChoiceDefault = 0;
@@ -898,8 +898,8 @@ static inline u8 *msg_getEntry_inline(s32 i, WinLayout *out) {
         e = (u8 *)g_msgTable->unk4;
         v = ((u32 *)e)[g_evtMode == 4 ? i : i * 2];
         if (out != NULL) {
-            out->unk2 = ((v >> 16) & 0xFFF) + 9;
-            out->unk9 = (g_evtMode == 4 ? (u32)v >> 28 : ((MsgEntry8 *)e)[i].unk6) * 14 + 6;
+            out->w = ((v >> 16) & 0xFFF) + 9;
+            out->h = (g_evtMode == 4 ? (u32)v >> 28 : ((MsgEntry8 *)e)[i].unk6) * 14 + 6;
         }
         e += v & 0xFFFF;
     }
@@ -919,8 +919,8 @@ WinLayout *msg_getLayout(s32 id, s32 *x, s32 *y, s32 *z) {
     if (p != NULL) {
         done = 0;
         D_8007BB90 = 0;
-        g_msgLayout.unkA = 0;
-        g_msgLayout.unkB = 0;
+        g_msgLayout.anchor = 0;
+        g_msgLayout.flags = 0;
         *x = 0;
         *y = 0;
         *z = 0;
@@ -943,7 +943,7 @@ WinLayout *msg_getLayout(s32 id, s32 *x, s32 *y, s32 *z) {
                     mask >>= 1;
                 }
                 g_msgChoiceCount = n;
-                g_msgLayout.unk9 -= (*p++ - n) * 14;
+                g_msgLayout.h -= (*p++ - n) * 14;
                 n = -1;
                 mask = g_msgChoiceEnabled;
                 cnt = *p++;
@@ -957,10 +957,10 @@ WinLayout *msg_getLayout(s32 id, s32 *x, s32 *y, s32 *z) {
                 g_msgChoiceCancel = n;
                 break;
             case 0x3:
-                g_msgLayout.unk0 = *p++;
-                g_msgLayout.unk0 |= *p++ << 8;
-                g_msgLayout.unk8 = *p++;
-                g_msgLayout.unkA = 0xFF;
+                g_msgLayout.x = *p++;
+                g_msgLayout.x |= *p++ << 8;
+                g_msgLayout.y = *p++;
+                g_msgLayout.anchor = 0xFF;
                 break;
             case 0x50:
             case 0x51:
@@ -973,7 +973,7 @@ WinLayout *msg_getLayout(s32 id, s32 *x, s32 *y, s32 *z) {
             case 0x5A:
             case 0x5B:
             case 0x5C:
-                g_msgLayout.unkA = p[-1];
+                g_msgLayout.anchor = p[-1];
                 break;
             case 0x5F:
                 *x = *p;
@@ -988,7 +988,7 @@ WinLayout *msg_getLayout(s32 id, s32 *x, s32 *y, s32 *z) {
                 D_8007BB90 = 1;
                 break;
             case 0x45:
-                g_msgLayout.unkB = 1;
+                g_msgLayout.flags = 1;
                 break;
             case 0xD:
                 for (;;) {
@@ -999,8 +999,8 @@ WinLayout *msg_getLayout(s32 id, s32 *x, s32 *y, s32 *z) {
                     v &= 0xFFF;
                     if (t == 0 || ((g_msgChoiceEnabled >> (t - 1)) & 1)) {
                         msg_measureLine(&p, &v);
-                        if (g_msgLayout.unk2 < v) {
-                            g_msgLayout.unk2 = v;
+                        if (g_msgLayout.w < v) {
+                            g_msgLayout.w = v;
                         }
                     } else {
                         while (*p++ != 0xFF) {

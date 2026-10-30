@@ -3633,14 +3633,14 @@ void sprAnim_drawScaledCell(s32, s32, s32, SprAnim *, AnimCell *);
 
 /* dialog window layout (msg_getLayout / evt_getMsgLayout) */
 typedef struct {
-    s16 unk0; /* x */
-    s16 unk2; /* w */
-    s16 unk4;
-    u16 unk6; /* flags */
-    s8 unk8;  /* y */
-    u8 unk9;  /* h */
-    u8 unkA;  /* anchor */
-    u8 unkB;  /* bit 0: don't make it the current window */
+    s16 x; /* x */
+    s16 w; /* w */
+    s16 tailOffset; /* MsgWindow.tailOffset (msg_open), the balloon tail x (evt_placeBalloon) */
+    u16 tailMode; /* flags: MsgWindow.tailMode, 0x10/0x20 from the message flags */
+    s8 y; /* y */
+    u8 h; /* h */
+    u8 anchor; /* anchor: evt_getMsgLayout placement, & 3 = balloon side */
+    u8 flags; /* bit 0: don't make it the current window */
 } WinLayout;
 extern s32 D_8007BB90;
 s32 msg_input(MsgWindow *, s32);
@@ -4250,16 +4250,16 @@ extern DVECTOR *g_swirlColumns; /* 9 texture columns/rows */
 extern WarpVert *g_swirlMesh;
 /* battle-entry swirl (swirl_update) */
 typedef struct {
-    s16 unk0; /* rotation */
-    s16 unk2; /* rotation speed */
-    s16 unk4; /* scale */
-    s16 unk6;
-    s16 unk8;
-    s16 unkA;
-    s16 unkC;
-    s16 unkE;
-    s16 unk10;
-    s16 unk12;
+    s16 angle; /* rotation: start angle (g_swirlAngle) */
+    s16 angleStep; /* rotation speed */
+    s16 scale; /* scale */
+    s16 zoom; /* start g_swirlZoom */
+    s16 zoomStep; /* added to g_swirlZoom per frame */
+    s16 fade; /* start g_swirlFade */
+    s16 fadeStart; /* frame the fade starts (g_swirlFrame) */
+    s16 fadeStep; /* subtracted from g_swirlFade per frame */
+    s16 flashStart; /* frame the flash starts */
+    s16 flashStep; /* added to g_swirlFlash per frame */
 } SwirlDef; /* 0x14 */
 extern SwirlDef D_8006F2E0[2];
 extern SwirlDef *g_swirlParams;

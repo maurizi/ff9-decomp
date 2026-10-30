@@ -507,7 +507,7 @@ static inline void evt_placeBalloon_pos(EvtObject *obj, s32 *x, s32 *y) {
 }
 
 static inline void evt_placeBalloon_x(WinLayout *w, s32 sx, s32 right, s32 *ptx) {
-    s32 width = w->unk2;
+    s32 width = w->w;
     s32 tx, l, r;
 
     if (right) {
@@ -538,11 +538,11 @@ static inline void evt_placeBalloon_x(WinLayout *w, s32 sx, s32 right, s32 *ptx)
     if (r > 312 - width) {
         r = 312 - width;
     }
-    w->unk0 = (l + r) >> 1;
+    w->x = (l + r) >> 1;
 }
 
 static inline void evt_placeBalloon_y(WinLayout *w, s32 sy, s32 *below, s32 fixed) {
-    s32 h = w->unk9;
+    s32 h = w->h;
     s32 ty;
 
     if (*below) {
@@ -563,7 +563,7 @@ static inline void evt_placeBalloon_y(WinLayout *w, s32 sy, s32 *below, s32 fixe
     } else if (ty > 212 - h) {
         ty = 212 - h;
     }
-    w->unk8 = ty;
+    w->y = ty;
 }
 
 void evt_placeBalloon(EvtObject *obj, WinLayout *w, s32 dir, s32 fixed) {
@@ -609,8 +609,8 @@ void evt_placeBalloon(EvtObject *obj, WinLayout *w, s32 dir, s32 fixed) {
         below ^= 1;
         evt_placeBalloon_y(w, sy, &below, 0);
     }
-    w->unk4 = tx - w->unk0;
-    w->unk6 = (below << 1) | right;
+    w->tailOffset = tx - w->x;
+    w->tailMode = (below << 1) | right;
 }
 
 /* bubble x/y targets for evt_followBalloon (evt_placeBalloon_x/_y without the flip logic) */
@@ -690,74 +690,74 @@ WinLayout *evt_getMsgLayout(EvtObject *obj, s32 id, s32 flags) {
     s32 ww;
     s32 wh;
 
-    w->unk4 = 0;
-    w->unk6 = 0;
-    if ((flags & 0x40) && w->unk2 < 0x72) {
-        w->unk2 = 0x72;
+    w->tailOffset = 0;
+    w->tailMode = 0;
+    if ((flags & 0x40) && w->w < 0x72) {
+        w->w = 0x72;
     }
     if (flags & 0x80) {
-        if (w->unk2 < 0x1D) {
-            w->unk2 = 0x1D;
+        if (w->w < 0x1D) {
+            w->w = 0x1D;
         }
-        switch (w->unkA) {
+        switch (w->anchor) {
         case 0x50:
         case 0x51:
         case 0x52:
         case 0x53:
-            evt_placeBalloon(obj, w, w->unkA & 3, 0);
+            evt_placeBalloon(obj, w, w->anchor & 3, 0);
             break;
         case 0x58:
         case 0x59:
         case 0x5A:
         case 0x5B:
-            evt_placeBalloon(obj, w, w->unkA & 3, 1);
+            evt_placeBalloon(obj, w, w->anchor & 3, 1);
             break;
         default:
             evt_placeBalloon(obj, w, -1, 0);
             break;
         }
     } else {
-        ww = w->unk2;
-        wh = w->unk9;
-        switch (w->unkA) {
+        ww = w->w;
+        wh = w->h;
+        switch (w->anchor) {
         case 0x53:
-            w->unk0 = 12;
-            w->unk8 = 12;
+            w->x = 12;
+            w->y = 12;
             break;
         case 0x55:
-            w->unk0 = 160 - (ww >> 1);
-            w->unk8 = 12;
+            w->x = 160 - (ww >> 1);
+            w->y = 12;
             break;
         case 0x52:
-            w->unk0 = 308 - ww;
-            w->unk8 = 12;
+            w->x = 308 - ww;
+            w->y = 12;
             break;
         case 0x5C:
-            w->unk0 = 160 - (ww >> 1);
-            w->unk8 = 74 - (wh >> 1);
+            w->x = 160 - (ww >> 1);
+            w->y = 74 - (wh >> 1);
             break;
         case 0x51:
-            w->unk0 = 12;
-            w->unk8 = -48 - wh;
+            w->x = 12;
+            w->y = -48 - wh;
             break;
         case 0x54:
-            w->unk0 = 160 - (ww >> 1);
-            w->unk8 = -48 - wh;
+            w->x = 160 - (ww >> 1);
+            w->y = -48 - wh;
             break;
         case 0x50:
-            w->unk0 = 308 - ww;
-            w->unk8 = -48 - wh;
+            w->x = 308 - ww;
+            w->y = -48 - wh;
             break;
         case 0:
-            w->unk0 = 160 - (ww >> 1);
-            w->unk8 = 110 - (wh >> 1);
+            w->x = 160 - (ww >> 1);
+            w->y = 110 - (wh >> 1);
             break;
         }
     }
-    if ((flags & 4) && w->unk2 < 0x1D) {
-        w->unk2 = 0x1D;
+    if ((flags & 4) && w->w < 0x1D) {
+        w->w = 0x1D;
     }
-    w->unk6 |= flags & 0x30;
+    w->tailMode |= flags & 0x30;
     return w;
 }
 
