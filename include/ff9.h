@@ -3106,16 +3106,10 @@ void msg_drawText(MsgWindow *);
 typedef struct {
     u32 unk0;
     u16 unk4;
-    u8 unk6;
+    u8 lines; /* text lines: window height = lines * 14 + 6 (msg_getEntry) */
     u8 unk7;
 } MsgEntry8;
 
-typedef struct {
-    u8 pad0[2];
-    s16 unk2;
-    u8 pad4[9 - 4];
-    u8 unk9;
-} MsgInfo;
 /* SPU hardware voice registers (0x1F801C00 + voice * 16) */
 typedef struct {
     u16 volL; /* volume left */
@@ -3245,10 +3239,10 @@ void msg_resetChoices(void);
 extern u8 *g_evtScripts; /* script data */
 /* 8-byte entry of the field script directory at g_evtScripts */
 typedef struct {
-    u16 unk0; /* offset from g_evtScripts */
-    u16 unk2; /* size */
-    u8 unk4;
-    u8 unk5; /* flags */
+    u16 offset; /* offset from g_evtScripts */
+    u16 size; /* size */
+    u8 varBytes; /* local-variable bytes of the object (evt_createObject: (varBytes + 3) >> 2 words) */
+    u8 flags; /* flags; bit 0 clear: evt_loadScripts compacts it */
     u8 pad6[2];
 } ScriptEntry;
 

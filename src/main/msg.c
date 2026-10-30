@@ -899,7 +899,7 @@ static inline u8 *msg_getEntry_inline(s32 i, WinLayout *out) {
         v = ((u32 *)e)[g_evtMode == 4 ? i : i * 2];
         if (out != NULL) {
             out->w = ((v >> 16) & 0xFFF) + 9;
-            out->h = (g_evtMode == 4 ? (u32)v >> 28 : ((MsgEntry8 *)e)[i].unk6) * 14 + 6;
+            out->h = (g_evtMode == 4 ? (u32)v >> 28 : ((MsgEntry8 *)e)[i].lines) * 14 + 6;
         }
         e += v & 0xFFFF;
     }
@@ -1233,7 +1233,7 @@ void msg_keepWindowsOnInit(void) {
     g_msgKeepWindows = 1;
 }
 
-u8 *msg_getEntry(s32 i, MsgInfo *out) {
+u8 *msg_getEntry(s32 i, WinLayout *out) {
     u8 *e = NULL;
     u16 *t;
     s32 v;
@@ -1243,8 +1243,8 @@ u8 *msg_getEntry(s32 i, MsgInfo *out) {
         e = (u8 *)g_msgTable->unk4;
         v = ((u32 *)e)[g_evtMode == 4 ? i : i * 2];
         if (out != NULL) {
-            out->unk2 = ((v >> 16) & 0xFFF) + 9;
-            out->unk9 = (g_evtMode == 4 ? (u32)v >> 28 : ((MsgEntry8 *)e)[i].unk6) * 14 + 6;
+            out->w = ((v >> 16) & 0xFFF) + 9;
+            out->h = (g_evtMode == 4 ? (u32)v >> 28 : ((MsgEntry8 *)e)[i].lines) * 14 + 6;
         }
         e += v & 0xFFFF;
     }

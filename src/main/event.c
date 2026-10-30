@@ -3289,23 +3289,23 @@ u8 *evt_loadScripts(u8 *p) {
     g_evtScripts = p + 0x80;
     g_evtScriptCount = n;
     if (g_evtScriptCount >= 10) {
-        dst = g_evtScripts + ((ScriptEntry *)g_evtScripts)[g_evtScriptCount - 9].unk0;
+        dst = g_evtScripts + ((ScriptEntry *)g_evtScripts)[g_evtScriptCount - 9].offset;
     } else {
         dst = g_evtScripts + g_evtScriptCount * 8;
     }
     bit = 1;
     for (e = &((ScriptEntry *)g_evtScripts)[g_evtScriptCount - 9]; e < &((ScriptEntry *)g_evtScripts)[g_evtScriptCount]; e++) {
-        if (!(e->unk5 & 1)) {
+        if (!(e->flags & 1)) {
             mask |= bit;
         }
         if (mask & bit) {
-            if (e->unk0 != 0) {
-                src = g_evtScripts + e->unk0;
-                if (src != dst && e->unk2 != 0) {
-                    memmove(dst, src, e->unk2);
-                    e->unk0 = dst - g_evtScripts;
+            if (e->offset != 0) {
+                src = g_evtScripts + e->offset;
+                if (src != dst && e->size != 0) {
+                    memmove(dst, src, e->size);
+                    e->offset = dst - g_evtScripts;
                 }
-                dst += e->unk2 & ~3;
+                dst += e->size & ~3;
             }
         }
         bit <<= 1;

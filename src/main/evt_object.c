@@ -78,7 +78,7 @@ EvtObject *evt_createObject(s32 idx, s32 id, s32 a2, s32 a3) {
         evt_deleteObject(o);
     }
     nw = (a2 + 3) >> 2;
-    nv = (((ScriptEntry *)g_evtScripts)[idx].unk4 + 3) >> 2;
+    nv = (((ScriptEntry *)g_evtScripts)[idx].varBytes + 3) >> 2;
     o = evt_allocObject(nw + nv + a3);
     end = (u32 *)o + nw + nv;
     for (p = (u32 *)o; p < end; p++) {
@@ -100,7 +100,7 @@ EvtObject *evt_createObject(s32 idx, s32 id, s32 a2, s32 a3) {
     o->uid = id;
     o->kind = 0;
     {
-        u8 *h = g_evtScripts + ((ScriptEntry *)g_evtScripts)[idx].unk0;
+        u8 *h = g_evtScripts + ((ScriptEntry *)g_evtScripts)[idx].offset;
         s32 c = *(u16 *)h >> 8;
         u16 *q = (u16 *)(h + 2);
 

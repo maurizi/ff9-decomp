@@ -5443,3 +5443,6 @@ D_800FE500 g_btlbgJitterBase2  # [code] btlbg_draw, background scene 7, group 2:
 # FIELDS include/ff9.h GameState: unk0=flags,unkA=prevMode [code] GS_* flag users; fld_exit/wm_exit set prevMode 1/3, evt_init/evt_createModels test 9; ovl_39 memory card slot; menuList_getView
 # FIELDS include/ff9.h MenuState: unk2=cardSlot [code] GS_* flag users; fld_exit/wm_exit set prevMode 1/3, evt_init/evt_createModels test 9; ovl_39 memory card slot; menuList_getView
 # FIELDS include/ff9.h MenuView: unk0=rows,unk1=first,unk2=y [code] GS_* flag users; fld_exit/wm_exit set prevMode 1/3, evt_init/evt_createModels test 9; ovl_39 memory card slot; menuList_getView
+# FIELDS include/ff9.h ScriptEntry: unk0=offset,unk2=size,unk4=varBytes,unk5=flags [code] evt_loadScripts / evt_createObject; msg_getEntry
+# FIELDS include/ff9.h MsgEntry8: unk6=lines [code] evt_loadScripts / evt_createObject; msg_getEntry
+# MERGED include/ff9.h MsgInfo into WinLayout (msg_getEntry fills w/h, like its inlined copy)
