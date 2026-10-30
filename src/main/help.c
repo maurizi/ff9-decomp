@@ -2,7 +2,7 @@
 
 void help_draw(void) {
     s32 otz;
-    Unk80035214 r;
+    HelpLayout r;
 
     otz = 1;
     if (g_menuHelp.cursorOnTop == 0) {
@@ -19,14 +19,14 @@ void help_draw(void) {
     func_8003573C();
     if (g_menuHelp.textShown != 0) {
         help_layout(&r);
-        ui_drawSprite(r.unk0.x + 8, r.unk0.y, otz, 0xB7, 0);
-        text_drawBlock(r.unk0.x + 6, r.unk0.y + 8, otz, g_menuHelp.text, 8);
-        win_drawHelpFrame(&r.unk0, otz, r.unk8, r.unkA);
+        ui_drawSprite(r.rect.x + 8, r.rect.y, otz, 0xB7, 0);
+        text_drawBlock(r.rect.x + 6, r.rect.y + 8, otz, g_menuHelp.text, 8);
+        win_drawHelpFrame(&r.rect, otz, r.style, r.tailX);
     }
 }
 
-void help_layout(Unk80035214 *w) {
-    RECT *r = &w->unk0;
+void help_layout(HelpLayout *w) {
+    RECT *r = &w->rect;
     RECT *c = &g_menuHelp.bounds;
     HelpState *m = &g_menuHelp;
     TextSize sz;
@@ -37,18 +37,18 @@ void help_layout(Unk80035214 *w) {
     s32 t;
 
     sz = text_measure(m->text);
-    w->unk0.w = sz.w + 12;
-    w->unk0.h = sz.h + 12;
-    if (w->unk0.w >= c->w) {
-        w->unk0.w = c->w;
+    w->rect.w = sz.w + 12;
+    w->rect.h = sz.h + 12;
+    if (w->rect.w >= c->w) {
+        w->rect.w = c->w;
     }
-    if (w->unk0.h >= c->h) {
-        w->unk0.h = c->h;
+    if (w->rect.h >= c->h) {
+        w->rect.h = c->h;
     }
     if (m->follow == 0) {
-        w->unk8 = 4;
-        w->unk0.x = m->x;
-        w->unk0.y = m->y;
+        w->style = 4;
+        w->rect.x = m->x;
+        w->rect.y = m->y;
         return;
     }
     v = m->y;
@@ -57,11 +57,11 @@ void help_layout(Unk80035214 *w) {
     d1 = c->y + c->h - 10;
     d1 -= v;
     if (d1 < d2) {
-        w->unk8 = 2;
-        w->unk0.y = m->y - (s16)(w->unk0.h + 16);
+        w->style = 2;
+        w->rect.y = m->y - (s16)(w->rect.h + 16);
     } else {
-        w->unk8 = 0;
-        w->unk0.y = m->y + 10;
+        w->style = 0;
+        w->rect.y = m->y + 10;
     }
     v = g_menuHelp.x;
     t = c->x + 19;
@@ -69,7 +69,7 @@ void help_layout(Unk80035214 *w) {
     d1 = c->x + c->w - 18;
     d1 -= v;
     if (d1 < d2) {
-        w->unk8 |= 1;
+        w->style |= 1;
         x = g_menuHelp.x - 19;
     } else {
         x = v + 18;
@@ -82,9 +82,9 @@ void help_layout(Unk80035214 *w) {
         r->x = c->x + c->w - r->w;
     }
     if (x - r->x < 8) {
-        w->unkA = 8;
+        w->tailX = 8;
     } else {
-        w->unkA = x - r->x;
+        w->tailX = x - r->x;
     }
 }
 

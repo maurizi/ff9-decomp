@@ -181,7 +181,7 @@ void msg_measureLine(u8 **pp, s32 *pw) {
                 if (n < 0x100) {
                     str = g_itemNames + g_itemTable[n].name;
                 } else if (n < 0x200) {
-                    str = g_keyItemNames + g_keyItemTable[n - 0x100].unk0;
+                    str = g_keyItemNames + g_keyItemTable[n - 0x100].name;
                 } else {
                     str = (u8 *)card_getName(n - 0x200);
                 }
@@ -1333,7 +1333,7 @@ s32 msg_emitItemName(s32 id, s32 n) {
     if (id < 0x100) {
         t = g_itemNames + g_itemTable[id].name;
     } else if (id < 0x200) {
-        t = g_keyItemNames + g_keyItemTable[id - 0x100].unk0;
+        t = g_keyItemNames + g_keyItemTable[id - 0x100].name;
     } else {
         t = (u8 *)card_getName(id - 0x200);
     }

@@ -761,7 +761,7 @@ void btlui_addLearnedAbilities(Unk80104F88Entry *arg0) {
             v = chr_findAbilitySlot(c->info.b.id, i);
             if (v >= 0) {
                 arg0->apCounters[i] = &c->ap[v];
-                arg0->apNeeded[i] = row[v].unk1;
+                arg0->apNeeded[i] = row[v].ap;
             }
         }
     }

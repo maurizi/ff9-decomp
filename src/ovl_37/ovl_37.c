@@ -367,7 +367,7 @@ void menuItem_updateHelp(void) {
         if (s_menuItem.tab != 0) {
             i = menuItem_getSlot(&s_menuItem.keyList);
             if (i < s_menuItem.keyCount) {
-                h->text = &s_menuItemKeyHelp[g_keyItemTable[s_menuItem.keyItems[i]].unk2];
+                h->text = &s_menuItemKeyHelp[g_keyItemTable[s_menuItem.keyItems[i]].help];
             }
             return;
         }
@@ -432,9 +432,9 @@ void menuItem_drawKeyItem(void) {
 
     if (m->keyView != 0) {
         x = m->keyViewX;
-        name = g_keyItemNames + g_keyItemTable[m->keyViewId].unk0;
+        name = g_keyItemNames + g_keyItemTable[m->keyViewId].name;
         text_drawBlock(x + ((0xB0 - text_measureWidth((s32)name)) >> 1), 0x50, 0x14, name, 8);
-        text_drawBlock(x + 0xD, 0x66, 0x14, s_menuItemKeyDesc + g_keyItemTable[m->keyViewId].unk6, 8);
+        text_drawBlock(x + 0xD, 0x66, 0x14, s_menuItemKeyDesc + g_keyItemTable[m->keyViewId].desc, 8);
         setlen(g_primPtr, 4);
         ((SprtWords *)g_primPtr)->rgbc = 0x64808080;
         ((SprtWords *)g_primPtr)->xy = (x & 0xFFFF) | 0x410000;
@@ -674,7 +674,7 @@ void menuItem_drawKeyRow(s32 col, s32 row, s32 i, MenuView *v) {
     s32 k = 0x2A;
     u8 *name;
     s32 w;
-    Unk8006B374 *t;
+    KeyItemInfo *t;
     u8 got;
 
     if (i < s_menuItem.keyCount) {
@@ -683,7 +683,7 @@ void menuItem_drawKeyRow(s32 col, s32 row, s32 i, MenuView *v) {
         got = keyItem_isSeen(id);
         x = col * 0x96 + 0x18;
         y = row * 0xF + (v->y + k);
-        name = g_keyItemNames + t->unk0;
+        name = g_keyItemNames + t->name;
         if (!got) {
             w = x + text_measureWidth((s32)name);
             ui_drawSprite(w + 5, y + 2, 0x1C, 0xB6, blink);

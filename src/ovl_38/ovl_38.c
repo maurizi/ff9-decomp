@@ -254,8 +254,8 @@ void menuStatus_drawAbilityRow(s32 x, s32 y, s32 z, s32 i, u8 draw) {
     if (ok && c->ap[i] == 0) {
         return;
     }
-    id = g_abilityRows[c->info.b.row][i].unk0;
-    max = g_abilityRows[c->info.b.row][i].unk1;
+    id = g_abilityRows[c->info.b.row][i].id;
+    max = g_abilityRows[c->info.b.row][i].ap;
     if (id == 0) {
         return;
     }
@@ -316,7 +316,7 @@ void menuStatus_setMember(s32 slot, s32 dir) {
     s_menuStatus.abilityCount = 0;
     if ((s32)(c->info.b.row) < 0x10) {
         for (i = 0; i < STATUS_ABILITY_MAX; i++) {
-            if (g_abilityRows[c->info.b.row][i].unk0 != 0) {
+            if (g_abilityRows[c->info.b.row][i].id != 0) {
                 s_menuStatus.abilityCount++;
             }
         }

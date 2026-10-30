@@ -886,7 +886,7 @@ void rewards_addAp(s32 arg0, u32 arg1) {
                     if (e->abilities[j] != 0) {
                         k = chr_findAbilitySlot(c->info.b.id, e->abilities[j]);
                         if (k >= 0) {
-                            need = g_abilityRows[c->info.b.row][k].unk1;
+                            need = g_abilityRows[c->info.b.row][k].ap;
                             have = c->ap[k];
                             if (have < need) {
                                 if (arg1 >= need - have) {
@@ -926,7 +926,7 @@ u8 rewards_willLearn(Character *c, s32 arg1) {
                     k = chr_findAbilitySlot(ch & 0xFF, e->abilities[j]);
                     if (k >= 0) {
                         have = c->ap[k];
-                        if (have < g_abilityRows[c->info.b.row][k].unk1) {
+                        if (have < g_abilityRows[c->info.b.row][k].ap) {
                             s_rewardsAbilityItems[k]++;
                         }
                     }
@@ -937,7 +937,7 @@ u8 rewards_willLearn(Character *c, s32 arg1) {
     for (i = 0; i < 0x30; i++) {
         if (s_rewardsAbilityItems[i] != 0) {
             have = c->ap[i];
-            if (s_rewardsAbilityItems[i] * arg1 >= g_abilityRows[c->info.b.row][i].unk1 - have) {
+            if (s_rewardsAbilityItems[i] * arg1 >= g_abilityRows[c->info.b.row][i].ap - have) {
                 ret = 1;
                 break;
             }

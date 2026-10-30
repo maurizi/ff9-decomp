@@ -2582,8 +2582,8 @@ s32 party_getPrevMember(s32);
 s32 party_getNextMember(s32);
 void ui_drawEtchedLine(s32, s32, s32, s32);
 typedef struct {
-    u8 unk0; /* ability id, 0 = none */
-    u8 unk1; /* ap needed? */
+    u8 id; /* ability id, 0 = none */
+    u8 ap; /* AP needed to learn it (chr_learnAbility, chr_getApNeeded) */
 } AbilityEntry;
 extern AbilityEntry g_abilityRows[16][0x30]; /* rows indexed by Character.info.b.row */
 
@@ -2599,7 +2599,7 @@ static inline s32 chr_findAbilitySlot_inline(s32 ch, s32 id) {
         return -1;
     }
     for (i = 0; i < 0x30; i++) {
-        if (g_abilityRows[row][i].unk0 == id) {
+        if (g_abilityRows[row][i].id == id) {
             return i;
         }
     }
@@ -2742,12 +2742,12 @@ extern s32 D_800704C0;
 extern u8 g_itemNames[]; /* item names */
 extern u8 g_keyItemNames[]; /* key item names */
 typedef struct {
-    s16 unk0; /* name offset into g_keyItemNames */
-    s16 unk2; /* help offset */
+    s16 name; /* name offset into g_keyItemNames */
+    s16 help; /* help offset: Key item help text (menuItem_updateHelp) */
     u8 pad4[2];
-    s16 unk6; /* description offset */
-} Unk8006B374;
-extern Unk8006B374 g_keyItemTable[];
+    s16 desc; /* description offset (menuItem_drawKeyItem) */
+} KeyItemInfo;
+extern KeyItemInfo g_keyItemTable[];
 Unk16D8 *evt_getObjectList(void);
 extern s32 D_8007046C;
 void SetBackColor(s32, s32, s32);
@@ -2811,11 +2811,11 @@ s32 evt_getSysVar(s32);
 extern u8 *D_800CF478;
 /* help-window rect plus frame style and x offset (help_layout) */
 typedef struct {
-    RECT unk0;
-    s16 unk8; /* style */
-    s16 unkA; /* x offset */
-} Unk80035214;
-void help_layout(Unk80035214 *);
+    RECT rect; /*  */
+    s16 style; /* style (win_drawHelpFrame) */
+    s16 tailX; /* x offset (win_drawHelpFrame) */
+} HelpLayout;
+void help_layout(HelpLayout *);
 void sprAnim_draw(s32, s32, s32, SprAnim *);
 s32 fade_stepClamp(s32, s32, s32);
 s32 fade_ease(s32, s32, s32);
@@ -3006,7 +3006,7 @@ static inline s32 chr_getApNeeded_inline(s32 ch, s32 id) {
     if (i < 0) {
         return 0;
     }
-    return g_abilityRows[c->info.b.row][i].unk1;
+    return g_abilityRows[c->info.b.row][i].ap;
 }
 void akao_setVoiceStartAddr(s32, s32);
 void akao_setVoiceDecay(s32, s32);
@@ -3476,10 +3476,10 @@ void chr_addMp(Character *, s32);
 
 /* 12-byte entry of a type-0x12 resource table (db_findModelInfo) */
 typedef struct {
-    u16 unk0; /* id */
+    u16 id; /* id */
     u16 unk2;
-    u32 unk4 : 24; /* data offset from the entry */
-    u32 unk7 : 8;
+    u32 dataOfs : 24; /* data offset from the entry */
+    u32 texCount : 8; /* texture count (db_getModelTexCount, db_getModelTexPos) */
     u32 unk8;
 } DbEntry12;
 
@@ -3577,10 +3577,10 @@ s32 tween_step(WinDef *);
 /* AKAO sequence header (akao_cmdPlaySeBank) */
 typedef struct {
     u8 pad0[4];
-    s32 unk4; /* track count */
-    s32 unk8; /* id */
+    s32 trackCount; /* track count */
+    s32 id; /* id */
     u8 padC[4];
-    u32 unk10[1]; /* track offsets */
+    u32 trackOfs[1]; /* track offsets */
 } AkaoSeqHdr;
 
 

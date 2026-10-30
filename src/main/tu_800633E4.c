@@ -14,7 +14,7 @@ u16 *db_findModelInfo(s32 id) {
             tab = (DbEntry12 *)(blk + 4);
             for (; j >= 0; j--) {
                 e = &tab[j];
-                if (e->unk0 == (u16)id) {
+                if (e->id == (u16)id) {
                     return (u16 *)e;
                 }
             }
@@ -35,7 +35,7 @@ u8 *db_getModelUvOffsets(s32 a) {
 
 u8 *db_getModelTexPos(s32 a) {
     DbEntry12 *p = (DbEntry12 *)db_findModelInfo(a);
-    s32 n = p->unk7;
-    u8 *q = (u8 *)p + p->unk4;
+    s32 n = p->texCount;
+    u8 *q = (u8 *)p + p->dataOfs;
     return (long long)n * 8 + q;
 }

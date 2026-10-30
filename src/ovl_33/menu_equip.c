@@ -466,11 +466,11 @@ void menuEquip_dropUnlearnedSupport(Character *c) {
         }
         a = g_abilityRows[c->info.b.row];
         for (i = 0; i < ABILITY_MAX; i++, a++) {
-            if (a->unk0 >= ABILITY_SUPPORT_FIRST && chr_hasSupportAbility(c->info.b.id, a->unk0)) {
-                if (s_menuEquipTaught[a->unk0 - ABILITY_SUPPORT_FIRST] == 0 && c->ap[i] < a->unk1) {
-                    chr_setSupportAbility(c->info.b.id, a->unk0, 0);
-                    if (c->maxStones - c->stones >= g_supportAbilities[a->unk0 - ABILITY_SUPPORT_FIRST].unk1) {
-                        c->stones += g_supportAbilities[a->unk0 - ABILITY_SUPPORT_FIRST].unk1;
+            if (a->id >= ABILITY_SUPPORT_FIRST && chr_hasSupportAbility(c->info.b.id, a->id)) {
+                if (s_menuEquipTaught[a->id - ABILITY_SUPPORT_FIRST] == 0 && c->ap[i] < a->ap) {
+                    chr_setSupportAbility(c->info.b.id, a->id, 0);
+                    if (c->maxStones - c->stones >= g_supportAbilities[a->id - ABILITY_SUPPORT_FIRST].unk1) {
+                        c->stones += g_supportAbilities[a->id - ABILITY_SUPPORT_FIRST].unk1;
                     } else {
                         c->stones = c->maxStones;
                     }

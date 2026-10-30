@@ -695,7 +695,7 @@ void akao_cmdPlaySe(AkaoArgs *p) {
 
 void akao_cmdPlaySeBank(AkaoArgs *s) {
     AkaoSeqHdr *h = (AkaoSeqHdr *)s->arg0;
-    u32 *offs = h->unk10;
+    u32 *offs = h->trackOfs;
     s32 i;
     u8 *base;
     u16 *p;
@@ -703,8 +703,8 @@ void akao_cmdPlaySeBank(AkaoArgs *s) {
     u8 *b;
     s32 n;
 
-    s->arg4 = func_8005A5FC(h->unk8);
-    n = h->unk4;
+    s->arg4 = func_8005A5FC(h->id);
+    n = h->trackCount;
     base = (u8 *)(offs + n);
     p = (u16 *)(base + offs[0]);
     if (*p != 0xFFFF) {

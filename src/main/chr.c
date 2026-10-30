@@ -551,7 +551,7 @@ s32 chr_learnAbility(s32 ch, s32 id) {
     if (i < 0) {
         return 0;
     }
-    c->ap[i] = g_abilityRows[c->info.b.row][i].unk1;
+    c->ap[i] = g_abilityRows[c->info.b.row][i].ap;
     return 1;
 }
 
@@ -648,7 +648,7 @@ u8 chr_getApNeeded(s32 ch, s32 id) {
     if (i < 0) {
         return 0;
     }
-    return g_abilityRows[c->info.b.row][i].unk1;
+    return g_abilityRows[c->info.b.row][i].ap;
 }
 
 s32 chr_countSupportStones(s32 ch) {

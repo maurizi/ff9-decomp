@@ -20,7 +20,7 @@ static inline s32 menuAbility_getSupportState_inline(s32 id, Character *c) {
         }
         if (func_80034A30(c)) {
             ap = c->ap[slot];
-            need = g_abilityRows[c->info.b.row][slot].unk1;
+            need = g_abilityRows[c->info.b.row][slot].ap;
             if (ap == 0) {
                 return 0;
             }
@@ -439,13 +439,13 @@ void menuAbility_setMember(s32 slot, s32 arg1) {
         slot = 0;
         a = g_abilityRows[c->info.b.row];
         for (; slot < ABILITY_MAX; slot++) {
-            if (a->unk0 != 0) {
-                if (a->unk0 < ABILITY_SUPPORT_FIRST) {
-                    s_menuAbility.actions[nItems].id = a->unk0;
-                    s_menuAbility.actions[nItems].cmd = menuAbility_findCommand(a->unk0, c);
+            if (a->id != 0) {
+                if (a->id < ABILITY_SUPPORT_FIRST) {
+                    s_menuAbility.actions[nItems].id = a->id;
+                    s_menuAbility.actions[nItems].cmd = menuAbility_findCommand(a->id, c);
                     nItems++;
                 } else {
-                    *(nAbils + m2->supports) = a->unk0;
+                    *(nAbils + m2->supports) = a->id;
                     nAbils++;
                 }
             }
@@ -487,7 +487,7 @@ s32 menuAbility_getActionState(s32 id, Character *c) {
         }
         if (func_80034A30(c)) {
             ap = c->ap[slot];
-            need = g_abilityRows[c->info.b.row][slot].unk1;
+            need = g_abilityRows[c->info.b.row][slot].ap;
             if (ap == 0) {
                 return 0;
             }
@@ -862,7 +862,7 @@ u32 menuAbility_getSupportState(s32 id, Character *c) {
         }
         if (func_80034A30(c)) {
             ap = c->ap[slot];
-            need = g_abilityRows[c->info.b.row][slot].unk1;
+            need = g_abilityRows[c->info.b.row][slot].ap;
             if (ap == 0) {
                 return 0;
             }
