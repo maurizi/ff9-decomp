@@ -3,7 +3,7 @@
 void btlfx_initCommonData(void) {
     u8 buf[0x40];
     RECT r;
-    g_btlfxCommonTable = D_800F78B4;
+    g_btlfxCommonTable = g_btlfxCommonData;
     D_80104DE8 = 1;
     g_btlfxEnv->prim = buf;
     btlfx_reloadCommonData(0);
@@ -843,7 +843,7 @@ void btlfx_startFadeBackground(s32 arg0, s32 arg1) {
     if (arg0 < 0) {
         v = 0x80;
     } else {
-        v = D_800F8D0C[arg0];
+        v = g_btlfxCastBgBrightness[arg0];
     }
     btlfx_spawnTask(0xA, -1, v, arg1);
 }
@@ -1193,11 +1193,11 @@ void btlfx_drawBgOffscreen(s32 x, s32 y, s32 w, s32 h, u32 *ot, s32 arg5, s32 ar
     ReadGeomOffset(&ox, &oy);
     SetGeomScreen(0x200);
     SetGeomOffset(w >> 1, h >> 1);
-    D_800F8D50.t[0] = -arg5;
-    D_800F8D50.t[1] = arg6;
-    D_800F8D50.t[2] = arg7 + 0x2900;
+    g_btlfxBgTopView.t[0] = -arg5;
+    g_btlfxBgTopView.t[1] = arg6;
+    g_btlfxBgTopView.t[2] = arg7 + 0x2900;
     btlbg_setLayerMask(2);
-    g_btlfxEnv->prim = btlbg_draw(&D_800F8D50, g_gameState->gameData->ctx.battle->work->bgData, (s32)g_btlfxEnv->prim, NULL, (s32)ot);
+    g_btlfxEnv->prim = btlbg_draw(&g_btlfxBgTopView, g_gameState->gameData->ctx.battle->work->bgData, (s32)g_btlfxEnv->prim, NULL, (s32)ot);
     btlbg_setLayerMask(0xF);
     EnterCriticalSection();
     DrawOTagEnv(ot, &e->env);
@@ -1764,7 +1764,7 @@ s32 *btlfx_swapModelData(s32 arg0, s32 *arg1) {
     return p;
 }
 
-void func_800E87C4(s32 arg0) {
+void btlfx_moveSummonToHeap(s32 arg0) {
     btl_unloadEnemyModels();
     btlfx_copyWords(g_gameState->gameData->ctx.battle->work->heapStart, g_btlfxLoader.summon->data[0], arg0 << 10);
     g_btlfxLoader.summon->data[0] = g_gameState->gameData->ctx.battle->work->heapStart;

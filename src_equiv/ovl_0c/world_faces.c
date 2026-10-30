@@ -6,7 +6,7 @@
  *
  * Each routine walks the faces of a mesh block `o` whose vertices a vertex-pass routine (world_verts.c,
  * wm_backdropVerts in wm_misc.c) has already projected: screen xy in the scratchpad (one word per vertex from
- * 0x1F800000), depths in D_800D29F8, lit colours in D_800D23F0 and fog colours in D_800D1FF0.
+ * 0x1F800000), depths in g_worldVtxDepth, lit colours in g_worldVtxLitColors and fog colours in g_worldVtxFogColors.
  *   o+0x02: face count (s16 in wm_backdropFaces, u16 elsewhere; read once, do-while, so 0 means 65536)
  *   o+0x08: faces, 16 bytes each: word 0 = the three vertex indices in bytes 0-2 (bit 24: depths + 0x200
  *           in the world-block routines); words 1-3 = the POLY_GT3 uv0|clut, uv1|tpage and uv2 words (bit 17 of
@@ -30,9 +30,9 @@
 #include "ovl_0c.h"
 #include "../src_equiv.h"
 
-extern u32 D_800D1FF0[]; /* per-vertex fog colours */
-extern u32 D_800D23F0[]; /* per-vertex lit colours */
-extern u16 D_800D29F8[]; /* per-vertex depth: u32 SZ or u16 SZ / 8, depending on the vertex routine */
+extern u32 g_worldVtxFogColors[]; /* per-vertex fog colours */
+extern u32 g_worldVtxLitColors[]; /* per-vertex lit colours */
+extern u16 g_worldVtxDepth[]; /* per-vertex depth: u32 SZ or u16 SZ / 8, depending on the vertex routine */
 
 #define WF_FIXED_OT 1   /* wm_backdropFaces: every face goes to OT slot 0xFA0, no depth test */
 #define WF_Z32 2        /* depth = max of the u32 depths (+ 0x200 if face bit 24), slot = depth >> 3 */
@@ -91,9 +91,9 @@ static u32 *wf_face(u32 *face, u32 *pkt, u32 *ot, s32 flags, s32 limit) {
     if (flags & WF_FIXED_OT) {
         otz = 0xFA0;
     } else if (flags & WF_Z16) {
-        z[0] = (s32)(s16)D_800D29F8[ix[0]] & ~0xF;
-        z[1] = (s32)(s16)D_800D29F8[ix[1]] & ~0xF;
-        z[2] = (s32)(s16)D_800D29F8[ix[2]] & ~0xF;
+        z[0] = (s32)(s16)g_worldVtxDepth[ix[0]] & ~0xF;
+        z[1] = (s32)(s16)g_worldVtxDepth[ix[1]] & ~0xF;
+        z[2] = (s32)(s16)g_worldVtxDepth[ix[2]] & ~0xF;
         otz = z[wf_max3(z[0], z[1], z[2])];
         if ((s32)otz <= 0 || (s32)otz >= limit) {
             return pkt;
@@ -103,7 +103,7 @@ static u32 *wf_face(u32 *face, u32 *pkt, u32 *ot, s32 flags, s32 limit) {
         u32 zg[3];
 
         for (k = 0; k < 3; k++) {
-            z[k] = ((u32 *)D_800D29F8)[ix[k]] + bias;
+            z[k] = ((u32 *)g_worldVtxDepth)[ix[k]] + bias;
             zg[k] = (z[k] >> 3) & ~0xF;
         }
         if (flags & WF_Z32_GRID) {
@@ -121,8 +121,8 @@ static u32 *wf_face(u32 *face, u32 *pkt, u32 *ot, s32 flags, s32 limit) {
     }
 
     for (k = 0; k < 3; k++) {
-        fg[k] = D_800D1FF0[ix[k]];
-        lt[k] = D_800D23F0[ix[k]];
+        fg[k] = g_worldVtxFogColors[ix[k]];
+        lt[k] = g_worldVtxLitColors[ix[k]];
     }
     fogOr = (fg[0] | fg[1] | fg[2]) & 0xFFFFFF;
     litOr = (lt[0] | lt[1] | lt[2]) & 0xFFFFFF;

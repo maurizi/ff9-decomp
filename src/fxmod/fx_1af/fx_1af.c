@@ -42,7 +42,7 @@ s32 fx_1af_op80(s32 mode, Fx1afWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
                 work->unk0 = 1;
                 entry->frame = -1;
                 ex->btlfx_fadeUnitById(0x10, 0);
-                ex->func_800E87C4(0x50);
+                ex->btlfx_moveSummonToHeap(0x50);
                 ex->btlfx_initEffModels(D_801E7F58, 5);
                 for (i = 0; i < 5; i++) {
                     work->unk40[i] = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, D_801E7EF4[i]), 0);

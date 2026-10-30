@@ -430,7 +430,7 @@ void fld_drawModels(void) {
         if (c != NULL) {
             m = c->model;
             o = c->obj;
-            if (m->flags & 1) {
+            if (m->flags & MDL_LOOK_AT) {
                 fldmdl_calcBoneMatricesLookAt(m, o->animFrame);
             } else {
                 fldmdl_calcBoneMatrices(m, o->animFrame);
@@ -688,7 +688,7 @@ void fld_applyModelCommands(FieldEvtCtx **arg0, s32 arg1) {
         vis = c->flags & FLD_OBJ_SEMITRANS;
         chg = (info->flags & 0x10000) ^ vis;
         f4 = c->flags & 0x40000;
-        f2 = c->flags & 0x20000;
+        f2 = c->flags & FLD_OBJ_SEMITRANS_AGAIN;
         if (chg || f4 || f2) {
             upd = 1;
         }
@@ -701,12 +701,12 @@ void fld_applyModelCommands(FieldEvtCtx **arg0, s32 arg1) {
             if (vis) {
                 fldmdl_setAbr(c->model, ((s32)(info->abr << 24) >> 19) & 0xFFE0);
             }
-            if (c->flags & 0x20000) {
-                c->flags &= ~0x20000;
+            if (c->flags & FLD_OBJ_SEMITRANS_AGAIN) {
+                c->flags &= ~FLD_OBJ_SEMITRANS_AGAIN;
             }
             c->flags &= ~0x40000;
             if (chg || f4) {
-                c->flags |= 0x20000;
+                c->flags |= FLD_OBJ_SEMITRANS_AGAIN;
             }
             info->flags = (info->flags & ~0x10000) | vis;
         }

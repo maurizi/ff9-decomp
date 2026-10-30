@@ -55,7 +55,7 @@ s32 btl_setKoMotion(BtlUnit *arg0) {
 void btl_loadPartyMotions(BtlUnit *arg0, s32 arg1, s32 arg2) {
     u32 i;
     for (i = 0; i < 0x22; i++) {
-        g_gameState->gameData->ctx.battle->partyMotions[arg2][i] = (s32)db_lookupRegistered(4, D_800F524C[arg1][i] | 0x30000, 0);
+        g_gameState->gameData->ctx.battle->partyMotions[arg2][i] = (s32)db_lookupRegistered(4, g_btlPartyMotionIds[arg1][i] | 0x30000, 0);
     }
     arg0->motions = g_gameState->gameData->ctx.battle->partyMotions[arg2];
 }

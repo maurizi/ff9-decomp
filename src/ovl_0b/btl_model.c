@@ -231,7 +231,7 @@ void btl_relocTexAnims(TexAnimSet *set, u16 (*ofs)[4]) {
 Battle11C020 *btl_initScene(void) {
     Battle *b;
     Battle11C020 *s = g_gameState->gameData->ctx.battle->work->encounter;
-    u16 *t = g_gameState->gameData->ctx.battle->work->sceneTables;
+    u16 *t = g_gameState->gameData->ctx.battle->work->bundle;
     s32 r;
     Battle132C *sc = &g_gameState->gameData->ctx.battle->scene;
     u8 n;

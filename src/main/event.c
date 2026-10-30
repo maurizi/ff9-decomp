@@ -1756,7 +1756,7 @@ s32 evt_execInstr(void) {
         return 0;
     case 0xE6:
         a = evt_getArg8_inline();
-        fldbg_setOverlayFlag1(a, evt_getArg8_inline());
+        fldbg_setOverlayScreen(a, evt_getArg8_inline());
         return 0;
     case EVT_OP_BG_ANIM_FRAME:
         a = evt_getArg8_inline();

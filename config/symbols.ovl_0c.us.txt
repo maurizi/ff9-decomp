@@ -609,3 +609,7 @@ s_menuMainStatusAbnormal = 0x800CE090; // [string] half-width kana "abnormal", t
 g_worldFormStoryThresholds = 0x800CD060; // [code] u16[11] story-counter thresholds, wm_applyStoryForms picks the status index of g_worldFormStatusTable from the first one <= the counter
 g_worldCameraEaseShift = 0x800CCB04; // [code] g_worldCameraEaseDiv = |dy| >> it in wm_cameraFollow
 wm_canCallChocobo = 0x800B8124; // type:func [code] returns 1 when the player stands on a chocobo-callable cell type (3/18/21/22/28) of actor types 1-2, checked before wm_callChocobo by ovl_37 menuItem_callChocobo
+g_worldNormalTable = 0x800CD794; // [code] 240 SVECTOR normals indexed by a vertex pad byte in all six vertex routines (NCT input)
+g_worldVtxLitColors = 0x800D23F0; // [code] per-vertex lit colours written by the world vertex pass
+g_worldVtxFogColors = 0x800D1FF0; // [code] per-vertex fog colours written by the world vertex pass
+g_worldVtxDepth = 0x800D29F8; // [code] per-vertex SZ written by the world vertex pass

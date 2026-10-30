@@ -325,7 +325,7 @@ For per-bone normal-cone culling at load: about two thirds of the polygons sit o
 that bone's cone. The remaining third joins bones, mostly a bone and its parent (61% of the spanning ones) or its
 grandparent (21%). Those need either a cone per bone pair or the per-polygon test.
 
-## Proposed names
+## Proposed names (applied)
 All `[code]` evidence, from the functions cited above. None applied (docs-only task).
 
 | symbol | proposed | evidence |

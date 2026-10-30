@@ -1797,7 +1797,7 @@ ovl_0a fldbg_getOverlayColor 0x5c 0x800c130c
 ovl_0a fldbg_setOverlayColor 0xc4 0x800c1368
 ovl_0a fldbg_showOverlay 0x50 0x800c142c
 ovl_0a fldbg_setOverlayLoop 0x60 0x800c147c
-ovl_0a fldbg_setOverlayFlag1 0x50 0x800c14dc
+ovl_0a fldbg_setOverlayScreen 0x50 0x800c14dc
 ovl_0a fldbg_setOverlaySkewLoop 0x90 0x800c152c
 ovl_0a fldbg_setOverlayParallax 0x58 0x800c15bc
 ovl_0a fldbg_setOverlayPos 0x54 0x800c1614
@@ -1820,7 +1820,7 @@ ovl_0a fldbg_getCameraCenter 0x50 0x800c1bb4
 ovl_0a fldbg_getClutFadeSize 0xc 0x800c1c04
 ovl_0a fldbg_allocWork 0x20 0x800c1c10
 ovl_0a fldbg_resetAllAnims 0x90 0x800c1c30
-ovl_0a func_800C1CC0 0x48 0x800c1cc0
+ovl_0a fldbg_scanEntries 0x48 0x800c1cc0
 ovl_0a func_800C1D08 0x8 0x800c1d08
 ovl_0a fldbg_setOverlaySpriteColor 0x9c 0x800c1d10
 ovl_0a func_800C1DAC 0x8 0x800c1dac
@@ -1969,7 +1969,7 @@ ovl_0b btl_unregisterFiles 0x5c 0x800ab26c
 ovl_0b btl_findBackgroundId 0x5c 0x800ab2c8
 ovl_0b btl_getDepSectors 0x68 0x800ab324
 ovl_0b btl_getLinkedDepSectors 0x58 0x800ab38c
-ovl_0b func_800AB3E4 0x2c 0x800ab3e4
+ovl_0b btl_swapPartyModel 0x2c 0x800ab3e4
 ovl_0b btl_reloadParty 0x2c 0x800ab410
 ovl_0b btl_unloadPartyModels 0xc0 0x800ab43c
 ovl_0b btl_unloadEnemyModels 0x84 0x800ab4fc
@@ -1983,7 +1983,7 @@ ovl_0b btl_swapPartyModelStep 0x680 0x800abbc4
 ovl_0b btl_getAnimFileId 0x3c 0x800ac244
 ovl_0b btl_getModelTexInfo 0xfc 0x800ac280
 ovl_0b btl_drawShadow 0x1130 0x800ac37c
-ovl_0b func_800AD4AC 0x38 0x800ad4ac
+ovl_0b btl_allocShadows 0x38 0x800ad4ac
 ovl_0b btl_calcShadowMatrix 0x428 0x800ad4e4
 ovl_0b btl_soundCmd 0xb70 0x800ad90c
 ovl_0b btl_getWeaponSound 0x80 0x800ae47c
@@ -2704,7 +2704,7 @@ ovl_0b func_800E8554 0x108 0x800e8554
 ovl_0b btlfx_isUnitKind 0x84 0x800e865c
 ovl_0b btlfx_copyWords 0x3c 0x800e86e0
 ovl_0b btlfx_swapModelData 0xa8 0x800e871c
-ovl_0b func_800E87C4 0x90 0x800e87c4
+ovl_0b btlfx_moveSummonToHeap 0x90 0x800e87c4
 ovl_0b btl_forEachModelVertex 0x12c 0x800e8854
 ovl_0b func_800E8980 0x50 0x800e8980
 ovl_0b btlfx_restorePartyLooks 0xb0 0x800e89d0
@@ -2764,10 +2764,10 @@ ovl_0b btlui_drawOTagEnv 0x38 0x800ea1f8
 ovl_0b btlui_drawOTag 0x38 0x800ea230
 ovl_0b func_800EA268 0x14 0x800ea268
 ovl_0b func_800EA27C 0x14 0x800ea27c
-ovl_0b func_800EA290 0x7c 0x800ea290
+ovl_0b btl_putDispEnvNoUi 0x7c 0x800ea290
 ovl_0b btlui_isPauseRequested 0x2c 0x800ea30c
 ovl_0b btlui_setPauseRequest 0x14 0x800ea338
-ovl_0b func_800EA34C 0x2c 0x800ea34c
+ovl_0b btlui_resumeFromPause 0x2c 0x800ea34c
 ovl_0b func_800EA378 0x88 0x800ea378
 ovl_0b btlui_input 0x40 0x800ea400
 ovl_0b btlui_drawWindows 0x58 0x800ea440

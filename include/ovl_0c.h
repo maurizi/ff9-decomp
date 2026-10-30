@@ -627,7 +627,7 @@ typedef struct {
 
 typedef struct {
     WmSky presets[16]; /* presets: [mode * 4 + flag * 2 + 0/1] */
-    WmSky work[7]; /* [0] current, [1]/[2] blended from [3]..[6] */
+    WmSky work[7]; /* [0] current, [1]/[2] low/high-altitude sky, [3]/[5] blend sources, [4]/[6] blend targets (wm_weatherUpdate, wm_setWeather) */
 } WmWeatherData;
 void wm_blendWeather(WmSky *, WmSky *, WmSky *, s32, s32);
 void wm_weatherAuto(void);

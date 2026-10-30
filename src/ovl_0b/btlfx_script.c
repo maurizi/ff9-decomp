@@ -137,7 +137,7 @@ void btlfx_runScript(void) {
         d->partyReload = 0;
         btlfx_restorePartyLooks();
     }
-    if (d->modelSwap != 0 && func_800AB3E4(d->modelSwap - 1, 0) == 0) {
+    if (d->modelSwap != 0 && btl_swapPartyModel(d->modelSwap - 1, 0) == 0) {
         d->modelSwap = 0;
         btlfx_restoreUnitLook(0x10);
     }
@@ -183,7 +183,7 @@ void btlfx_runScript(void) {
                 g_btlfxEnv->targets->kind |= 8;
             }
             btlfx_startCasterTask(k);
-            d->pc = D_800FF068;
+            d->pc = g_btlfxFileScript;
             d->phase = 3;
         }
         break;
@@ -340,7 +340,7 @@ void btlfx_runScript(void) {
                         cont = 0;
                     } else {
                         n = btlfx_getUnitSlot(b);
-                        func_800AB3E4(n, 1);
+                        btl_swapPartyModel(n, 1);
                         n++;
                         d->modelSwap = n;
                         cont = 0;
@@ -370,8 +370,8 @@ void btlfx_runScript(void) {
                     break;
                 case 15:
                     if (b == 0) {
-                        btlfx_copyWords(D_800FE530, (s32 *)btlfx_getFileData(d->file, a), 0x708);
-                        vib_init(D_800FE530);
+                        btlfx_copyWords(g_btlfxVibData, (s32 *)btlfx_getFileData(d->file, a), 0x708);
+                        vib_init(g_btlfxVibData);
                         vib_selectTrack(0, 0, 1);
                         vib_selectTrack(0, 1, 1);
                     } else {
@@ -400,7 +400,7 @@ void btlfx_initTasks(void) {
     s32 i;
     Unk80100C78Entry *p;
     g_btlfxTasks.count = 0;
-    btlfx_heapInit(&D_800FF470, 0x1800);
+    btlfx_heapInit(&g_btlfxTaskHeap, 0x1800);
     p = g_btlfxTasks.tasks;
     for (i = 10; i >= 0; i--) {
         p->state.w = 0;
@@ -421,8 +421,8 @@ s32 btlfx_allocTaskMem(Unk80100C78Entry *arg0, s32 arg1) {
             }
             arg0->sharedHeap = 0;
         } else {
-            if (btlfx_heapWrapIfFull(&D_800FF470, size) == 0) {
-                r = btlfx_heapAlloc(&D_800FF470, size);
+            if (btlfx_heapWrapIfFull(&g_btlfxTaskHeap, size) == 0) {
+                r = btlfx_heapAlloc(&g_btlfxTaskHeap, size);
                 break;
             }
             arg0->sharedHeap = 1;

@@ -462,7 +462,7 @@ python3 tools/battle_budget.py --json out.json       # adds backgrounds[].motion
   all-faces upper bound described above. Model bytes are whole sectors as read, so they are upper bounds of what
   stays resident: the heap cursor ends at the end of the model's 0x1B item.
 
-## Proposed names
+## Proposed names (applied)
 Evidence is the code cited above (tag `[code]`); none was checked at run time.
 
 | symbol | proposed | evidence |

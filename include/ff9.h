@@ -3762,7 +3762,7 @@ s32 fldbg_moveOverlay(s32, s16, s16, s16);
 s32 fldbg_setOverlayColor(s32, u8, u8, u8);
 s32 fldbg_showOverlay(s32, s32);
 s32 fldbg_setOverlayLoop(s32, s32, s32, s32);
-s32 fldbg_setOverlayFlag1(s32, s32);
+s32 fldbg_setOverlayScreen(s32, s32);
 s32 fldbg_setOverlaySkewLoop(s32, s32, s32, s32, s32);
 s32 fldbg_setOverlayParallax(s32, s32, s32, s32);
 s32 fldbg_setOverlayPos(s32, s32, s32);

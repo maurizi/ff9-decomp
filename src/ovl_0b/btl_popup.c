@@ -503,7 +503,7 @@ void btl_drawStatusCountdown(Unk800CCD00 *arg0) {
 void btl_showMessage(u32 arg0, ...) {
     u8 buf[0x50];
     va_list ap;
-    TextTbl *t = (TextTbl *)D_800F6CB4;
+    TextTbl *t = (TextTbl *)g_btlMessages;
     TextTblEnt *e;
     u8 *src;
     u8 *dst;
@@ -546,7 +546,7 @@ s32 btl_getElementName(u8 arg0) {
     while (arg0 >>= 1) {
         n++;
     }
-    return text_getFrom(D_800F6CB4, n + 1);
+    return text_getFrom(g_btlMessages, n + 1);
 }
 
 u8 *btl_getItemName(u8 arg0) {
@@ -587,18 +587,18 @@ void btl_updateScan(void) {
     switch (c->popups.scan.b[2]) {
     case 0:
         text_copy(buf, btl_getUnitName(s));
-        text_append(buf, (u8 *)text_getFrom(D_800F6FB8, 10));
+        text_append(buf, (u8 *)text_getFrom(g_btlScanTexts, 10));
         text_formatInt(s->level, buf + text_getLength(buf), 0);
         g_gameState->gameData->ctx.battle->popups.scan.b[2] = 1;
         break;
     case 1:
-        text_copy(buf, (u8 *)text_getFrom(D_800F6FB8, 11));
+        text_copy(buf, (u8 *)text_getFrom(g_btlScanTexts, 11));
         text_formatInt(s->hp, buf + text_getLength(buf), 0);
-        text_append(buf, (u8 *)text_getFrom(D_800F6FB8, 13));
+        text_append(buf, (u8 *)text_getFrom(g_btlScanTexts, 13));
         text_formatInt(s->max->maxHp, buf + text_getLength(buf), 0);
-        text_append(buf, (u8 *)text_getFrom(D_800F6FB8, 12));
+        text_append(buf, (u8 *)text_getFrom(g_btlScanTexts, 12));
         text_formatInt(s->mp, buf + text_getLength(buf), 0);
-        text_append(buf, (u8 *)text_getFrom(D_800F6FB8, 13));
+        text_append(buf, (u8 *)text_getFrom(g_btlScanTexts, 13));
         text_formatInt(s->max->maxMp, buf + text_getLength(buf), 0);
         g_gameState->gameData->ctx.battle->popups.scan.b[1] = 0;
         g_gameState->gameData->ctx.battle->popups.scan.b[2] = 2;
@@ -608,7 +608,7 @@ void btl_updateScan(void) {
             mask = c->enemies[(s->flags >> 1) & 0xF].type->category;
             while ((j = g_gameState->gameData->ctx.battle->popups.scan.b[1]++) < 8) {
                 if ((mask >> j) & 1) {
-                    text_copy(buf, (u8 *)text_getFrom(D_800F6FB8, j));
+                    text_copy(buf, (u8 *)text_getFrom(g_btlScanTexts, j));
                     goto show;
                 }
             }
@@ -619,7 +619,7 @@ void btl_updateScan(void) {
         mask = s->elemWeak & ~s->elemGuard;
         while ((k = g_gameState->gameData->ctx.battle->popups.scan.b[1]++) < 8) {
             if ((mask >> k) & 1) {
-                text_copy(buf, (u8 *)text_getFrom(D_800F6FB8, k + 14));
+                text_copy(buf, (u8 *)text_getFrom(g_btlScanTexts, k + 14));
                 goto show;
             }
         }
@@ -637,7 +637,7 @@ void btl_startDetect(BtlUnit *arg0) {
     if (!(arg0->flags & 1)) {
         g_gameState->gameData->ctx.battle->popups.detectEnemy = &g_gameState->gameData->ctx.battle->enemies[(arg0->flags >> 1) & 0xF];
         if (g_gameState->gameData->ctx.battle->popups.detectEnemy->steal.w == -1) {
-            btl_setBanner(text_getFrom(D_800F6FB8, 9), 2);
+            btl_setBanner(text_getFrom(g_btlScanTexts, 9), 2);
             g_gameState->gameData->ctx.battle->popups.detectSlot = 4;
             g_gameState->gameData->ctx.battle->popups.detectDelay = func_800F4FC8() - 1;
             return;
@@ -664,7 +664,7 @@ void btl_updateDetect(void) {
         id = g_gameState->gameData->ctx.battle->popups.detectEnemy->steal.b[3 - i];
         if (id != 0xFF) {
             g_gameState->gameData->ctx.battle->popups.detectDelay = func_800F4FC8() - 1;
-            text_copy(buf, (u8 *)text_getFrom(D_800F6FB8, 8));
+            text_copy(buf, (u8 *)text_getFrom(g_btlScanTexts, 8));
             text_append(buf, btl_getItemName(id));
             text_append(buf, D_800A7C20);
             s = buf;

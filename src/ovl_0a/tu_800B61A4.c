@@ -117,7 +117,7 @@ void fldmdl_initModel(ModelObj *arg0, u8 *arg1) {
     arg0->texAnims = NULL;
     pp = arg1 + size * 2;
     arg0->boneMatrices = pp;
-    arg0->flags |= 2;
+    arg0->flags |= MDL_SCALED;
     *(volatile u16 *)&arg0->flags = 0;
     arg0->groupOut = (WmModelOut *)(pp + m->boneCount * 32);
 }
@@ -684,7 +684,7 @@ void fldmdl_drawMeshC(ModelObj *arg0, u8 arg1) {
 void fldmdl_applyScale(ModelObj *arg0) {
     MATRIX m;
 
-    if (arg0->flags & 2) {
+    if (arg0->flags & MDL_SCALED) {
         *(s32 *)&m.m[0][0] = 0x1000;
         *(s32 *)&m.m[0][2] = 0;
         *(s32 *)&m.m[1][1] = 0x1000;
@@ -1643,7 +1643,7 @@ loop:
         m->m[2][0] = r0.vz;
         m->m[2][1] = r2.vz;
         m->m[2][2] = r1.vz;
-        if (arg0->flags & 2) {
+        if (arg0->flags & MDL_SCALED) {
             *(s32 *)&s.m[0][0] = 0x1000;
             *(s32 *)&s.m[0][2] = 0;
             *(s32 *)&s.m[1][1] = 0x1000;
@@ -2582,7 +2582,7 @@ s32 fldbg_initEffectList(void) {
             g_fieldBgCtx.entries[g_fieldBgCtx.entryCount].dataSize = 0;
             g_fieldBgCtx.workUsed += 0xC;
             g_fieldBgCtx.entryCount++;
-            if (trk[i].flags & 0x20) {
+            if (trk[i].flags & FLDBG_OVL_ANIM_GROUP) {
                 i += tbl->stepCount;
                 tbl++;
             }
@@ -2615,9 +2615,9 @@ s32 fldbg_updateOverlayAnims(void) {
             st = (BgAnimStep *)((u8 *)d + p->stepOffset);
             cnt = p->stepCount;
             for (j = 0; j < cnt; j++) {
-                objs[st[j].overlay].flags &= ~2;
+                objs[st[j].overlay].flags &= ~FLDBG_OVL_VISIBLE;
             }
-            objs[st[pos >> 8].overlay].flags |= 2;
+            objs[st[pos >> 8].overlay].flags |= FLDBG_OVL_VISIBLE;
             if (st[pos >> 8].delay < 0) {
                 st[pos >> 8].delay = 0;
                 p->delayCounter = 0;
@@ -3541,7 +3541,7 @@ BgSprt *fldbg_init(void) {
         anims[i].speed = 0x100;
         anims[i].delayCounter = 0;
         anims[i].flags = 1;
-        trk[*((u8 *)h + anims[i].stepOffset)].flags |= 2;
+        trk[*((u8 *)h + anims[i].stepOffset)].flags |= FLDBG_OVL_VISIBLE;
     }
     fldbg_initEffectList();
     fldbg_initFollowOverlays();
@@ -4146,9 +4146,9 @@ s32 fldbg_showOverlay(s32 arg0, s32 arg1) {
     u8 v;
 
     if (arg1 != 0) {
-        v = o->flags | 2;
+        v = o->flags | FLDBG_OVL_VISIBLE;
     } else {
-        v = o->flags & ~2;
+        v = o->flags & ~FLDBG_OVL_VISIBLE;
     }
     o->flags = v;
     return 1;
@@ -4169,14 +4169,14 @@ s32 fldbg_setOverlayLoop(s32 arg0, s32 arg1, s16 arg2, s16 arg3) {
     return 1;
 }
 
-s32 fldbg_setOverlayFlag1(s32 arg0, s32 arg1) {
+s32 fldbg_setOverlayScreen(s32 arg0, s32 arg1) {
     BgOverlay *o = fldbg_overlayPtr(arg0);
     u8 v;
 
     if (arg1 != 0) {
-        v = o->flags | 1;
+        v = o->flags | FLDBG_OVL_SCREEN;
     } else {
-        v = o->flags & ~1;
+        v = o->flags & ~FLDBG_OVL_SCREEN;
     }
     o->flags = v;
     return 1;
@@ -4256,9 +4256,9 @@ s32 fldbg_showAnimFrame(s32 arg0, s32 arg1) {
     objs = fldbg_overlayPtr(0);
     for (; i < p->stepCount; st++, i++) {
         if (i == arg1) {
-            objs[st->overlay].flags |= 2;
+            objs[st->overlay].flags |= FLDBG_OVL_VISIBLE;
         } else {
-            objs[st->overlay].flags &= ~2;
+            objs[st->overlay].flags &= ~FLDBG_OVL_VISIBLE;
         }
     }
     p->flags = 1;
@@ -4336,9 +4336,9 @@ s32 fldbg_resetAnim(s32 arg0, s32 arg1) {
     st = (BgAnimStep *)((u8 *)d + p->stepOffset);
     for (; i < p->stepCount; i++) {
         if (arg1 != 0 && i == 0) {
-            objs[st[i].overlay].flags |= 2;
+            objs[st[i].overlay].flags |= FLDBG_OVL_VISIBLE;
         } else {
-            objs[st[i].overlay].flags &= ~2;
+            objs[st[i].overlay].flags &= ~FLDBG_OVL_VISIBLE;
         }
     }
     return 1;
@@ -4425,12 +4425,12 @@ s32 fldbg_resetAllAnims(void) {
         p[i].delayCounter = 0;
         p[i].flags = 1;
         p[i].pos = 0;
-        objs[((BgAnimStep *)((u8 *)d + p[i].stepOffset))->overlay].flags |= 2;
+        objs[((BgAnimStep *)((u8 *)d + p[i].stepOffset))->overlay].flags |= FLDBG_OVL_VISIBLE;
     }
     return 1;
 }
 
-s32 func_800C1CC0(void) {
+s32 fldbg_scanEntries(void) {
     u32 i;
     s32 ret;
     s32 type;

@@ -316,13 +316,13 @@ void btlfx_updateLoader(void) {
             cont = 0;
             switch (st) {
             case 0:
-                cd_readAsync(d->sector, 0x800, D_800FEC68, NULL);
+                cd_readAsync(d->sector, 0x800, g_btlfxFileHeader, NULL);
                 d->state = 2;
                 d->sector++;
                 break;
             case 1:
                 if (cd_getState() == 0) {
-                    p = D_800FEC68;
+                    p = g_btlfxFileHeader;
                     cont = 1;
                     d->cmd = p + 1;
                     d->state = 3;

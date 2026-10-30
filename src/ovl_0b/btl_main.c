@@ -61,34 +61,34 @@ void btl_updatePause(void) {
             if (g_gameState->gameData->ctx.battle->flags & 0x20) {
                 g_padPortMask[0] |= 8;
             }
-            ClearOTag(D_800FDEB0, 1);
-            setlen(&D_800FDF18, 2);
-            D_800FDF18.code[0] = GPU_STP(0, 0);
-            D_800FDF18.code[1] = 0;
-            addPrim(D_800FDEB0, &D_800FDF18);
+            ClearOTag(g_btlPauseOt, 1);
+            setlen(&g_btlPauseStpOff, 2);
+            g_btlPauseStpOff.code[0] = GPU_STP(0, 0);
+            g_btlPauseStpOff.code[1] = 0;
+            addPrim(g_btlPauseOt, &g_btlPauseStpOff);
             if (g_gameState->gameData->ctx.battle->flags & 0x20) {
-                text_buildSmall(0x66, 0x6D, D_800FDEB0, "Disc Cover Open", 4, (u8 *)g_gameState->gameData->ctx.battle->work->prims[g_gameState->gameData->drawBuf]);
+                text_buildSmall(0x66, 0x6D, g_btlPauseOt, "Disc Cover Open", 4, (u8 *)g_gameState->gameData->ctx.battle->work->prims[g_gameState->gameData->drawBuf]);
             } else {
-                ui_buildSprite((0x140 - g_uiSprites[0xEB].w) / 2, (0xDA - g_uiSprites[0xEB].h) / 2, D_800FDEB0, 0xEB, 0, &w, D_800FDE60);
+                ui_buildSprite((0x140 - g_uiSprites[0xEB].w) / 2, (0xDA - g_uiSprites[0xEB].h) / 2, g_btlPauseOt, 0xEB, 0, &w, D_800FDE60);
             }
-            setlen(&D_800FDE98, 3);
-            D_800FDE98.code = 0x62;
-            D_800FDE98.r0 = 0x60;
-            D_800FDE98.g0 = 0x60;
-            D_800FDE98.b0 = 0x60;
-            D_800FDE98.w = 0x140;
-            D_800FDE98.h = 0xDA;
-            D_800FDE98.x0 = 0;
-            D_800FDE98.y0 = 0;
-            addPrim(D_800FDEB0, &D_800FDE98);
-            setlen(&D_800FDEA8, 1);
-            D_800FDEA8.code[0] = get_mode(0, 1, getTPage(0, 2, 0, 0));
-            addPrim(D_800FDEB0, &D_800FDEA8);
-            D_800FDF24.code[0] = GPU_STP(1, 0);
-            setlen(&D_800FDF24, 2);
-            D_800FDF24.code[1] = 0;
-            addPrim(D_800FDEB0, &D_800FDF24);
-            DrawOTag(D_800FDEB0);
+            setlen(&g_btlPauseDimTile, 3);
+            g_btlPauseDimTile.code = 0x62;
+            g_btlPauseDimTile.r0 = 0x60;
+            g_btlPauseDimTile.g0 = 0x60;
+            g_btlPauseDimTile.b0 = 0x60;
+            g_btlPauseDimTile.w = 0x140;
+            g_btlPauseDimTile.h = 0xDA;
+            g_btlPauseDimTile.x0 = 0;
+            g_btlPauseDimTile.y0 = 0;
+            addPrim(g_btlPauseOt, &g_btlPauseDimTile);
+            setlen(&g_btlPauseDrawMode, 1);
+            g_btlPauseDrawMode.code[0] = get_mode(0, 1, getTPage(0, 2, 0, 0));
+            addPrim(g_btlPauseOt, &g_btlPauseDrawMode);
+            g_btlPauseStpOn.code[0] = GPU_STP(1, 0);
+            setlen(&g_btlPauseStpOn, 2);
+            g_btlPauseStpOn.code[1] = 0;
+            addPrim(g_btlPauseOt, &g_btlPauseStpOn);
+            DrawOTag(g_btlPauseOt);
             g_gameState->gameData->flags |= 0x20;
             btlui_setPauseRequest(0);
             return;
@@ -99,7 +99,7 @@ void btl_updatePause(void) {
     game_resumeClock(0);
     akao_sendCmd98(0);
     g_padPortMask[0] &= ~8;
-    func_800EA34C();
+    btlui_resumeFromPause();
     g_gameState->gameData->flags &= ~0x20;
     btlui_setPauseRequest(0);
     g_gameState->gameData->flags &= ~0x100;
@@ -289,7 +289,7 @@ void btl_load(s32 arg0) {
         g_gameState->gameData->npcModels[i].model = (struct BtlUnit9C *)&g_gameState->gameData->npcModelObjs[i];
     }
     p->shadows = (struct BtlShadow *)g_modeHeap;
-    g_modeHeap = func_800AD4AC(g_modeHeap, g_gameState->gameData->npcCount + 9);
+    g_modeHeap = btl_allocShadows(g_modeHeap, g_gameState->gameData->npcCount + 9);
     p->freeHeap = g_modeHeap;
     btlui_reset();
     btl_startBattle();
@@ -349,8 +349,8 @@ void btl_allocBuffers(void) {
     g_gameState->gameData->ctx.battle->work = (Battle11C0 *)g_modeHeap;
     p = (Battle11C0 *)g_modeHeap;
     g_modeHeap = (s32)(p + 1);
-    p->sceneTables = (u16 *)((s32)g_gameState->gameData->ctx.battle + 0x5800);
-    p->bgData = (s32)p->sceneTables + 0x2800;
+    p->bundle = (u16 *)((s32)g_gameState->gameData->ctx.battle + 0x5800);
+    p->bgData = (s32)p->bundle + 0x2800;
     p->heapStart = (u8 *)(p->bgData + 0x6000);
     g_modeHeap = (s32)p->heapStart + 0x35800;
     for (i = 0; i < 4; i++) {
@@ -1171,7 +1171,7 @@ void btl_getLinkedDepSectors(s32 arg0, s32 *arg1, s32 *arg2) {
     btl_getDepSectors(dep_find(g_gameState->gameData->depTable, arg0)->unkC, arg1, arg2);
 }
 
-s32 func_800AB3E4(s32 arg0, s32 arg1) {
+s32 btl_swapPartyModel(s32 arg0, s32 arg1) {
     s32 v = 0x17;
     if (arg1 != 0) {
         v = 0x8017;
@@ -1647,7 +1647,7 @@ u8 *btl_drawShadow(BtlShadow *arg0, s32 arg1, s32 arg2, s32 arg3, u8 *prim) {
     return prim;
 }
 
-s32 func_800AD4AC(s32 arg0, s32 arg1) {
+s32 btl_allocShadows(s32 arg0, s32 arg1) {
     return func_80062E3C(arg0, 0x100, 0xFF, 0x200, 0xE0, arg1, 0);
 }
 
@@ -2131,14 +2131,14 @@ void btl_beginFrame(void) {
     ClearOTagR((u32 *)g_gameState->gameData->ctx.battle->work->ot[g_gameState->gameData->drawBuf], 0x100);
     ClearOTagR(fade_getOt(g_gameState->gameData->drawBuf), 1);
     ClearOTagR((u32 *)btl_getBannerOt(g_gameState->gameData->drawBuf), 1);
-    setlen(&D_800FDEB8[g_gameState->gameData->drawBuf].unk0, 2);
-    ((u32 *)&D_800FDEB8[g_gameState->gameData->drawBuf].unk0)[1] = GPU_STP(0, 0);
-    ((u32 *)&D_800FDEB8[g_gameState->gameData->drawBuf].unk0)[2] = 0;
-    addPrim(g_gameState->gameData->ot[g_gameState->gameData->drawBuf], &D_800FDEB8[g_gameState->gameData->drawBuf].unk0);
-    setlen(&D_800FDEB8[g_gameState->gameData->drawBuf].unkC, 2);
-    ((u32 *)&D_800FDEB8[g_gameState->gameData->drawBuf].unkC)[1] = GPU_STP(0, 0);
-    ((u32 *)&D_800FDEB8[g_gameState->gameData->drawBuf].unkC)[2] = 0;
-    addPrim((u32 *)g_gameState->gameData->ctx.battle->work->ot[g_gameState->gameData->drawBuf], &D_800FDEB8[g_gameState->gameData->drawBuf].unkC);
+    setlen(&g_btlFrameStartStp[g_gameState->gameData->drawBuf].unk0, 2);
+    ((u32 *)&g_btlFrameStartStp[g_gameState->gameData->drawBuf].unk0)[1] = GPU_STP(0, 0);
+    ((u32 *)&g_btlFrameStartStp[g_gameState->gameData->drawBuf].unk0)[2] = 0;
+    addPrim(g_gameState->gameData->ot[g_gameState->gameData->drawBuf], &g_btlFrameStartStp[g_gameState->gameData->drawBuf].unk0);
+    setlen(&g_btlFrameStartStp[g_gameState->gameData->drawBuf].unkC, 2);
+    ((u32 *)&g_btlFrameStartStp[g_gameState->gameData->drawBuf].unkC)[1] = GPU_STP(0, 0);
+    ((u32 *)&g_btlFrameStartStp[g_gameState->gameData->drawBuf].unkC)[2] = 0;
+    addPrim((u32 *)g_gameState->gameData->ctx.battle->work->ot[g_gameState->gameData->drawBuf], &g_btlFrameStartStp[g_gameState->gameData->drawBuf].unkC);
     addPrim(g_gameState->gameData->ot[g_gameState->gameData->drawBuf], fade_getOt(g_gameState->gameData->drawBuf));
     addPrim(g_gameState->gameData->ot[g_gameState->gameData->drawBuf], btl_getBannerOt(g_gameState->gameData->drawBuf));
     btlui_resetVsyncCount();
@@ -2149,15 +2149,15 @@ void btl_endFrame(void) {
         g_gameState->flags |= 1;
     }
     btlui_waitFrame();
-    setlen(&D_800FDED0[g_gameState->gameData->drawBuf].unk0, 2);
-    ((u32 *)&D_800FDED0[g_gameState->gameData->drawBuf].unk0)[1] = GPU_STP(1, 0);
-    ((u32 *)&D_800FDED0[g_gameState->gameData->drawBuf].unk0)[2] = 0;
-    addPrim(&g_gameState->gameData->ot[g_gameState->gameData->drawBuf][0xFFF], &D_800FDED0[g_gameState->gameData->drawBuf].unk0);
-    setlen(&D_800FDED0[g_gameState->gameData->drawBuf].unkC, 2);
-    ((u32 *)&D_800FDED0[g_gameState->gameData->drawBuf].unkC)[1] = GPU_STP(1, 0);
-    ((u32 *)&D_800FDED0[g_gameState->gameData->drawBuf].unkC)[2] = 0;
-    addPrim(&((u32 *)g_gameState->gameData->ctx.battle->work->ot[g_gameState->gameData->drawBuf])[0xFF], &D_800FDED0[g_gameState->gameData->drawBuf].unkC);
-    func_800EA290();
+    setlen(&g_btlFrameEndStp[g_gameState->gameData->drawBuf].unk0, 2);
+    ((u32 *)&g_btlFrameEndStp[g_gameState->gameData->drawBuf].unk0)[1] = GPU_STP(1, 0);
+    ((u32 *)&g_btlFrameEndStp[g_gameState->gameData->drawBuf].unk0)[2] = 0;
+    addPrim(&g_gameState->gameData->ot[g_gameState->gameData->drawBuf][0xFFF], &g_btlFrameEndStp[g_gameState->gameData->drawBuf].unk0);
+    setlen(&g_btlFrameEndStp[g_gameState->gameData->drawBuf].unkC, 2);
+    ((u32 *)&g_btlFrameEndStp[g_gameState->gameData->drawBuf].unkC)[1] = GPU_STP(1, 0);
+    ((u32 *)&g_btlFrameEndStp[g_gameState->gameData->drawBuf].unkC)[2] = 0;
+    addPrim(&((u32 *)g_gameState->gameData->ctx.battle->work->ot[g_gameState->gameData->drawBuf])[0xFF], &g_btlFrameEndStp[g_gameState->gameData->drawBuf].unkC);
+    btl_putDispEnvNoUi();
     if (!(g_gameState->gameData->flags & 0x100) && !(g_gameState->gameData->ctx.ovl65->unk0 & 0x200)) {
         btlui_drawOTagEnv(&((u32 *)g_gameState->gameData->ctx.battle->work->ot[g_gameState->gameData->drawBuf])[0xFF], &g_gameState->drawEnv[g_gameState->gameData->drawBuf]);
         DrawOTag(&g_gameState->gameData->ot[g_gameState->gameData->drawBuf][0xFFF]);

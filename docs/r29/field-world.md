@@ -336,7 +336,7 @@ exactly (same GTE arithmetic, same saturation).
   the camera target in the blend band, the story fog flag, a new data set (disc 1 / disc 4 maps), and nothing
   else. Block effects and the backdrop use their own matrices and do not disturb the block values.
 
-## Proposed names
+## Proposed names (applied)
 Code evidence only (`[code]`); none applied here (docs-only task).
 
 | symbol | proposed | evidence |

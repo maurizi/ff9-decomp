@@ -175,7 +175,7 @@ u8 *btl_getAbilityName(s32 arg0) {
     if (arg0 >= 0xC0) {
         return NULL;
     }
-    return g_gameState->gameData->ctx.battle->abilities[arg0].nameOfs + D_800F909C;
+    return g_gameState->gameData->ctx.battle->abilities[arg0].nameOfs + g_btlAbilityNames;
 }
 
 void btl_useReservedItem(s32 arg0) {
@@ -229,7 +229,7 @@ u8 func_800EA27C(void) {
     return g_btluiState.secondPort;
 }
 
-void func_800EA290(void) {
+void btl_putDispEnvNoUi(void) {
     if (g_btluiState.started == 0) {
         GameData *gd = g_gameState->gameData;
         if (!(gd->ctx.battle->flags & 0x100)) {
@@ -246,7 +246,7 @@ void btlui_setPauseRequest(s8 arg0) {
     g_btluiState.pauseReq = arg0;
 }
 
-void func_800EA34C(void) {
+void btlui_resumeFromPause(void) {
     u8 v = g_gameState->gameData->drawBuf;
     g_btluiState.skipFrames = 2;
     g_drawBufs.cur = v;
@@ -1994,7 +1994,7 @@ void btlui_drawAbilityRow(s32 arg0, s32 arg1, s32 arg2, MenuView *arg3) {
         a = &g_gameState->gameData->ctx.battle->abilities[k];
         y = r->y + arg1 * 15 + arg3->y - dy;
         c = (res != 2) * 2;
-        text_draw(x + 6, y, 7, D_800F909C + a->nameOfs, c);
+        text_draw(x + 6, y, 7, g_btlAbilityNames + a->nameOfs, c);
         if (a->mpCost != 0) {
             text_formatNumber(btl_getMpCost((BtlCmd8 *)a), buf, 3, 1);
             ui_drawSmallDigits(x + 0x60, y + 4, 7, buf, c);
@@ -2102,7 +2102,7 @@ char *btlui_getAbilityHelpText(void) {
     if (btlui_getAbilityState(k) == 0) {
         return NULL;
     }
-    return D_800F96E4 + D_800FB1F0[k].unk0;
+    return g_btlAbilityHelp + g_btlAbilityHelpOfs[k].unk0;
 }
 
 u8 *btlui_getItemHelpText(void) {
@@ -2111,7 +2111,7 @@ u8 *btlui_getItemHelpText(void) {
     if (e != NULL) {
         if (e->unk1 - btlui_getItemReserved(e->unk0) >= 0) {
             if (e->unk1 != btlui_getItemReserved(e->unk0)) {
-                return D_800FB4F0 + D_800FD36C[e->unk0];
+                return g_btlItemHelp + g_btlItemHelpOfs[e->unk0];
             }
             return NULL;
         }
@@ -2125,7 +2125,7 @@ u8 *btlui_getThrowHelpText(void) {
     if (e != NULL) {
         if (e->unk1 - btlui_getItemReserved(e->unk0) >= 0) {
             if (e->unk1 != btlui_getItemReserved(e->unk0)) {
-                return D_800FB4F0 + D_800FD36C[e->unk0];
+                return g_btlItemHelp + g_btlItemHelpOfs[e->unk0];
             }
             return NULL;
         }

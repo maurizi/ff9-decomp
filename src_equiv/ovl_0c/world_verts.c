@@ -7,20 +7,20 @@
  * They light and project the vertices of a mesh block `o` for the face pass (world_faces.c); wm_backdropVerts
  * in wm_misc.c is a sibling with its own fog formula.
  *   o+0x00: vertex count in the low byte (done three at a time, so effectively rounded up to a multiple of 3)
- *   o+0x04: vertices, SVECTORs; pad bits 0-7 = index into the normal table D_800CD794, pad bit 9 = which
+ *   o+0x04: vertices, SVECTORs; pad bits 0-7 = index into the normal table g_worldNormalTable, pad bit 9 = which
  *           of the two g_worldFogParams fog entries ({ colour, u16 fog offset, u16 lit offset }) applies.
  * For each group of three vertices:
  *   - RTPT on the raw vertices (current rotation/translation) for their depths SZ, then NCT on their normals;
  *   - colours, either
  *       fog (all but wm_blockVertsNear): each NCT colour is pulled toward the far colour with DPCS by
- *         depth(SZ, entry.unk6) into the lit colour D_800D23F0[i], and the entry's colour by
- *         4096 - depth(SZ, entry.unk4) into the fog colour D_800D1FF0[i], where
+ *         depth(SZ, entry.unk6) into the lit colour g_worldVtxLitColors[i], and the entry's colour by
+ *         4096 - depth(SZ, entry.unk4) into the fog colour g_worldVtxFogColors[i], where
  *         depth(sz, ofs) = clamp((sz - 0x8000 + ofs) >> 2, 0, 4096) (>> 1 in wm_blockVertsFar); or
- *       the NCT colour straight into D_800D23F0[i] (wm_blockVertsNear);
+ *       the NCT colour straight into g_worldVtxLitColors[i] (wm_blockVertsNear);
  *   - the world's curvature (all but wm_modelVertsFlat): y *= (4096 - (SZ/16 + SZ/64)) / 4096, by a multiply, or
  *     in wm_blockVertsFar by INTPL toward a zero red far colour (the original order of GTE loads is kept there);
  *   - RTPT again: screen xy into the scratchpad (one word per vertex from 0x1F800000) and the depth into
- *     D_800D29F8[i], as SZ (u32) or SZ / 8 (u16).
+ *     g_worldVtxDepth[i], as SZ (u32) or SZ / 8 (u16).
  * Like wm_backdropVerts the loop reads (but doesn't use) the six words after the last group.
  *
  * Equivalence: tools/equiv.py with GTE commands hashed (see the commit message for the trial counts).
@@ -28,10 +28,10 @@
 #include "ovl_0c.h"
 #include "../src_equiv.h"
 
-extern SVECTOR D_800CD794[]; /* normals, indexed by the low byte of a vertex's pad */
-extern u32 D_800D1FF0[];     /* per-vertex fog colours */
-extern u32 D_800D23F0[];     /* per-vertex lit colours */
-extern u16 D_800D29F8[];     /* per-vertex depth: u32 SZ or u16 SZ / 8, depending on the routine */
+extern SVECTOR g_worldNormalTable[]; /* normals, indexed by the low byte of a vertex's pad */
+extern u32 g_worldVtxFogColors[];     /* per-vertex fog colours */
+extern u32 g_worldVtxLitColors[];     /* per-vertex lit colours */
+extern u16 g_worldVtxDepth[];     /* per-vertex depth: u32 SZ or u16 SZ / 8, depending on the routine */
 
 #define WV_FOG 1        /* DPCS lit + fog colours (else: NCT colour to the lit colours only) */
 #define WV_DEPTH_HALF 2 /* depth factor (sz - 0x8000 + ofs) / 2 instead of / 4 */
@@ -73,11 +73,11 @@ static void wv_fog(u32 rgb, u32 sz, u32 attr, s32 flags, u32 *lit, u32 *fog) {
 static void wv_transform(u8 *o, s32 flags) {
     s32 n = *(u32 *)o & 0xFF;
     u32 *v = *(u32 **)(o + 4);
-    u32 *fog = D_800D1FF0;
-    u32 *lit = D_800D23F0;
+    u32 *fog = g_worldVtxFogColors;
+    u32 *lit = g_worldVtxLitColors;
     u32 *sxy = (u32 *)SCRATCHPAD;
-    u32 *zs32 = (u32 *)D_800D29F8;
-    u16 *zs16 = D_800D29F8;
+    u32 *zs32 = (u32 *)g_worldVtxDepth;
+    u16 *zs16 = g_worldVtxDepth;
     u32 w[6]; /* three vertices as raw words: w[2i] = x | y << 16, w[2i + 1] = z | pad << 16 */
     u32 sz[3];
     u32 rgb[3];
@@ -90,8 +90,8 @@ static void wv_transform(u8 *o, s32 flags) {
         }
         gte_ldv3c(w);
         gte_rtpt();
-        gte_ldv3(&D_800CD794[(w[1] >> 16) & 0xFF], &D_800CD794[(w[3] >> 16) & 0xFF],
-                 &D_800CD794[(w[5] >> 16) & 0xFF]);
+        gte_ldv3(&g_worldNormalTable[(w[1] >> 16) & 0xFF], &g_worldNormalTable[(w[3] >> 16) & 0xFF],
+                 &g_worldNormalTable[(w[5] >> 16) & 0xFF]);
         v += 6;
         n -= 3;
         gte_nct();

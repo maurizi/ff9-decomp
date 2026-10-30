@@ -5575,3 +5575,40 @@ D_800FE500 g_btlbgJitterBase2  # [code] btlbg_draw, background scene 7, group 2:
 # FIELDS include/ovl_38.h ActiveAbility: unkB=flags,unkE=nameOffset; StatusEntry: unk0=nameOffset; Unk8006E0E8: unk5=attack
 # FIELDS include/ovl_39.h SaveState: unk22=areaId; CardData (CardInventory + 4 bytes): unk0=wins,unk2=losses,unk4=draws,unk6=cards; SaveEvents: unk800=evtStepCount; SaveMisc: unk0=chocograph; SaveItems: unk240=config; SaveMenu: unk18=savedPortMask; GaugeIcon: unk0=u,unk1=v,unk2=clut,unk4=w,unk5=h [code] menuSave_* copy routines, menuSave_drawGauge
 # FIELDS include/ovl_65.h Ovl65Ability: unkE=nameOffset; include/ovl_14.h TmTimLike: unk0=id,unk4=flags; include/ovl_36.h Unk801F4DC4: unk0=repeatDelay,unk4=repeatInterval [code] pad_get/setRepeatDelay/Interval
+
+# R29 names (docs/r29): ovl_0a, ovl_0b, ovl_0c; fields/types: Battle11C0.sceneTables -> bundle, type Unk800FDED0 -> BtlStpPair
+fldbg_setOverlayFlag1 fldbg_setOverlayScreen
+D_800CD794 g_worldNormalTable
+D_800D23F0 g_worldVtxLitColors
+D_800D1FF0 g_worldVtxFogColors
+D_800D29F8 g_worldVtxDepth
+func_800C1CC0 fldbg_scanEntries
+fldbg_setOverlayFlag1 fldbg_setOverlayScreen
+func_800AB3E4 btl_swapPartyModel
+func_800EA34C btlui_resumeFromPause
+func_800EA290 btl_putDispEnvNoUi
+D_800FDEB0 g_btlPauseOt
+D_800FDE98 g_btlPauseDimTile
+D_800FDEA8 g_btlPauseDrawMode
+D_800FDF18 g_btlPauseStpOff
+D_800FDF24 g_btlPauseStpOn
+D_800FDEB8 g_btlFrameStartStp
+D_800FDED0 g_btlFrameEndStp
+D_800F524C g_btlPartyMotionIds
+D_800F6CB4 g_btlMessages
+D_800F6FB8 g_btlScanTexts
+D_800F78B4 g_btlfxCommonData
+D_800F909C g_btlAbilityNames
+D_800F96E4 g_btlAbilityHelp
+D_800FB1F0 g_btlAbilityHelpOfs
+D_800FB4F0 g_btlItemHelp
+D_800FD36C g_btlItemHelpOfs
+D_800F8D0C g_btlfxCastBgBrightness
+D_800F8D50 g_btlfxBgTopView
+D_800FE530 g_btlfxVibData
+D_800FEC68 g_btlfxFileHeader
+D_800FF068 g_btlfxFileScript
+D_800FF470 g_btlfxTaskHeap
+func_800AD4AC btl_allocShadows
+func_800E87C4 btlfx_moveSummonToHeap
+Unk800FDED0 BtlStpPair

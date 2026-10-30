@@ -94,6 +94,7 @@ typedef struct {
 #define FLD_OBJ_LIT 0x100 /* light colour applied (fld_applyLights) */
 #define FLD_OBJ_COLOR_SET 0x400 /* fld_setSlotColor; fld_applyLights keeps it */
 #define FLD_OBJ_SEMITRANS 0x10000 /* fld_modelCommand 0, applied by fld_applyModelCommands */
+#define FLD_OBJ_SEMITRANS_AGAIN 0x20000 /* fld_applyModelCommands: repeat the semi-transparency write for the other buffer */
 #define FLD_OBJ_CLIP_Y 0x100000 /* fld_modelCommand 4: fld_drawModels uses the ClipY mesh functions */
 
 /* 0x330-byte block, FieldMapObj.unk14 (allocated by fld_allocScene) */
@@ -403,8 +404,10 @@ typedef struct {
 } BgOverlay; /* 0x38 */
 /* BgOverlay.flags */
 #define FLDBG_OVL_SCREEN 0x1 /* fldbg_drawOverlay: placed in its viewport without scroll compensation */
+#define FLDBG_OVL_VISIBLE 0x2 /* fldbg_showOverlay; fldbg_draw draws it; flipbook steps move it between layers */
 #define FLDBG_OVL_LOOP 0x4 /* fldbg_setOverlayLoop: wraps by width/height, auto-scrolls */
 #define FLDBG_OVL_PARALLAX 0x8 /* fldbg_setOverlayParallax */
+#define FLDBG_OVL_ANIM_GROUP 0x20 /* flipbook step layer: fldbg_initEffectList skips the group's steps */
 #define FLDBG_OVL_ANIMATED 0x40 /* fldbg_initEffectList adds an effect entry */
 #define FLDBG_OVL_SKEW_LOOP 0x80 /* fldbg_setOverlaySkewLoop */
 
@@ -851,6 +854,8 @@ typedef struct ModelObj {
     s16 attachZ;
 } ModelObj;
 /* ModelObj.flags */
+#define MDL_LOOK_AT 0x1 /* fld_drawModels uses fldmdl_calcBoneMatricesLookAt */
+#define MDL_SCALED 0x2 /* fldmdl_applyScale and the look-at variant apply the scale */
 #define MDL_BEHIND_CAMERA 0x10 /* fldmdl_cullBehindCamera: origin SZ 0 or parent behind; colour/abr helpers skip it */
 /* WmSrc*.flags */
 #define WMSRC_SEMITRANS 0x1 /* fldmdl_buildPackets, fldmdl_setSemiTrans */

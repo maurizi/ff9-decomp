@@ -312,7 +312,7 @@ s32 fx_1b0_op80(s32 mode, Fx1b0Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             }
             if (frame == 0x3B) {
                 ex->btlfx_fadeUnitById(0x10, 0);
-                ex->func_800E87C4(0x64);
+                ex->btlfx_moveSummonToHeap(0x64);
                 ex->btlfx_initEffModels(D_801EBF44, 0xA);
                 for (j = 0; j < 8; j++) {
                     work->unk3C[j] = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, D_801E8CEC[j]), 0);
