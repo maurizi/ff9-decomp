@@ -1098,7 +1098,7 @@ s32 func_80052834(void) {
  * here: 1 jump, 2 jump if false, 3 jump if true, 4 evt_returnFromFunc, 5 expression, 6 / 0xB / 0xD switches,
  * 0x1C, 0x22 wait, 0x30/0x6C print, 0x31/0x6D printf, 0x32 print position. Everything else (including all
  * opcodes >= 0x6E) goes to evt_execInstr. */
-s32 evt_runScripts(Unk16D8 *n) {
+s32 evt_runScripts(EvtListNode *n) {
     u32 save_args = r_args;
     u8 *save_ip = r_ip;
     s32 *save_sp = r_sp;
@@ -1111,7 +1111,7 @@ s32 evt_runScripts(Unk16D8 *n) {
     s32 ret = 0;
 
     while (n != NULL) {
-        o = n->unk4;
+        o = n->obj;
         if (o->state == 0) {
             o->state = 2;
             goto next;
@@ -1268,7 +1268,7 @@ s32 evt_runScripts(Unk16D8 *n) {
             continue;
         }
     next:
-        n = n->unk0;
+        n = n->next;
     }
 out:
     r_args = save_args;

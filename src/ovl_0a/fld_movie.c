@@ -296,7 +296,7 @@ s32 fld_isModelTexAnimActive(ModelObj *arg0) {
 
 s32 fld_collectVisibleModels(FieldObjSlot **arg0) {
     s32 n;
-    Unk16D8 *e;
+    EvtListNode *e;
     FieldObjSlot *s;
     s32 i;
     WmModel *m;
@@ -308,8 +308,8 @@ s32 fld_collectVisibleModels(FieldObjSlot **arg0) {
     u16 *p;
 
     n = 0;
-    for (e = evt_getObjectList(); e != NULL; e = e->unk0) {
-        a = e->unk4;
+    for (e = evt_getObjectList(); e != NULL; e = e->next) {
+        a = e->obj;
         if (a->state == 1 && (a->flags & 1) && a->kind == 4) {
             s = (FieldObjSlot *)game_getModel(a->modelSlot);
             if (s->model->parent == NULL) {
@@ -317,8 +317,8 @@ s32 fld_collectVisibleModels(FieldObjSlot **arg0) {
             }
         }
     }
-    for (e = evt_getObjectList(); e != NULL; e = e->unk0) {
-        a = e->unk4;
+    for (e = evt_getObjectList(); e != NULL; e = e->next) {
+        a = e->obj;
         if (a->state == 1 && (a->flags & 1) && a->kind == 4) {
             s = (FieldObjSlot *)game_getModel(a->modelSlot);
             p = s->model->parent;

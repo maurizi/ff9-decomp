@@ -1505,7 +1505,7 @@ typedef struct LinkNode {
     u32 flags; /* BtlCmd.info.w */
 } LinkNode;
 void btl_linkCmd(LinkNode *, LinkNode **);
-Unk16D8 *evt_getBattleObjects(void);
+EvtListNode *evt_getBattleObjects(void);
 s16 btl_getEnemyModelId(s16);
 void btl_resetUnit(struct BtlUnit *, struct ModelSlot *);
 void btl_setupEnemies(void);

@@ -250,9 +250,11 @@ D_8007BD22 g_swirlAngleStep
 # D_80068690, D_80068890, D_80068CE0, D_80068DC8 (label font) are now g_uiSprites[c - 8], [UI_SPRITE_AMPERSAND], [UI_SPRITE_PERIOD], [UI_SPRITE_UNDERSCORE]
 # D_800686E8, D_800687E0 are now g_uiSprites[UI_SPRITE_AP_GAUGE], g_uiSprites[UI_SPRITE_SMALL_DIGITS + i]
 # MenuScreenDef.update is now a function pointer and needsMember a u8, as menuScreen_update / menuScreen_needsMember read them
+# type Unk16D8 renamed EvtListNode
 # FIELDS include/ff9.h AkaoStreamState: unk24=blocksWritten,unk28=blocksRead,unk34=readBlock,unk38=writeBlock,unk3C=ringBlocks
 # FIELDS include/ff9.h AkaoCrossfade: unkC=savedVolume
 # FIELDS include/ff9.h DrawBufs: unk1=uiMode
 # FIELDS include/ff9.h Unk11C0Slot: unk0_8=sizeX,unk0_20=sizeZ,unk4_0=fixedAngle,unk4_12=ofsX,unk4_22=ofsZ
 # FIELDS include/ff9.h Unk800703FC: unk3C=labelEnemy,unkA0=labelPlayer,unk84=labelNew,unk88=labelNo,unk8C=labelNormal,unk80=labelName,unk90=labelNotice
 # FIELDS include/ff9.h EvtObject: unkB=battleTurnState,unk70=talkTurnAngle,unk71=talkTurnWaitOp,unk72=talkTurnReturnOp
+# FIELDS include/ff9.h EvtListNode: unk0=next,unk4=obj

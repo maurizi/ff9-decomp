@@ -3,22 +3,22 @@
 void btl_initParty(Battle *arg0) {
     s16 n;
     s16 i;
-    Unk16D8 *p;
+    EvtListNode *p;
     Character *c;
     BtlUnit *u;
     s32 k;
 
     i = n = 0;
-    p = evt_getObjectList()->unk0;
+    p = evt_getObjectList()->next;
     for (; i < 4; i++) {
         c = g_gameState->gameData->party[i];
         if (c != NULL) {
             u = &arg0->units[n];
             u->modelId = g_btlCharModelIds[(c->info.w >> 4) & 0x1F];
-            btl_createObjModel(p->unk4, u->modelId);
+            btl_createObjModel(p->obj, u->modelId);
             btl_initPartyUnit(c, u, i, n);
             n++;
-            p = p->unk0;
+            p = p->next;
             btl_insertUnit(u);
         }
     }
@@ -46,7 +46,7 @@ void btl_initParty(Battle *arg0) {
 void btl_initEnemies(Battle *arg0) {
     s16 i = 0;
     s16 n = 4;
-    Unk16D8 *p = evt_getBattleObjects()->unk0;
+    EvtListNode *p = evt_getBattleObjects()->next;
     BtlUnit *prev = NULL;
     BtlEnemy *e;
     BtlUnit *u;
@@ -61,9 +61,9 @@ void btl_initEnemies(Battle *arg0) {
         if (m < 0) {
             e->flags |= 0x200;
         } else {
-            btl_createObjModel(p->unk4, m);
+            btl_createObjModel(p->obj, m);
             e->flags &= ~0x200;
-            p = p->unk0;
+            p = p->next;
         }
         k = i;
         u->unitBit = 0x10 << k;

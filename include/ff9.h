@@ -1194,10 +1194,11 @@ typedef struct EvtAllocNode {
     struct EvtAllocNode *next; /* next */
 } EvtAllocNode;
 
-typedef struct Unk16D8 {
-    struct Unk16D8 *unk0; /* next */
-    EvtObject *unk4;
-} Unk16D8;
+/* node of the script object lists (EvtState.objects, listFree, battleObjectsTail) */
+typedef struct EvtListNode {
+    struct EvtListNode *next;
+    EvtObject *obj;
+} EvtListNode;
 
 typedef struct {
     u8 fieldVars[0x50]; /* variable bank 1 (evt_getVarBank 1), cleared by evt_init */
@@ -1205,10 +1206,10 @@ typedef struct {
     EvtAllocNode allocNodes[32];
     EvtAllocNode *allocUsed; /* active list */
     EvtAllocNode *allocFree; /* free list */
-    Unk16D8 listNodes[32];
-    Unk16D8 *objects; /* object list the scheduler runs */
-    Unk16D8 *objectsTail; /* tail */
-    Unk16D8 *listFree; /* free list */
+    EvtListNode listNodes[32];
+    EvtListNode *objects; /* object list the scheduler runs */
+    EvtListNode *objectsTail; /* tail */
+    EvtListNode *listFree; /* free list */
     u8 partyUids[4]; /* party member object uids (uid - 19 = character in the Dali party) */
     s16 analogDirOfs; /* added to the stick direction (op 0x67) */
     s16 padDirOfs; /* added to the d-pad direction (op 0x67) */
@@ -1221,7 +1222,7 @@ typedef struct {
     u8 pad16F6[0x16F8 - 0x16F6];
     u8 walkOnly; /* op 0x6A sets, 0xF0 clears (runtime: walk anim only) */
     u8 pad16F9[0x16FC - 0x16F9];
-    Unk16D8 *battleObjectsTail; /* evt_init in battle, returned by evt_getBattleObjects */
+    EvtListNode *battleObjectsTail; /* evt_init in battle, returned by evt_getBattleObjects */
     s16 idleTimer; /* frames until the player's idle anim, -1 disabled (op 0x90), 0 off (op 0xEE) */
     u8 pad1702[0x17C8 - 0x1702];
 } EvtState; /* 0x17C8 */
@@ -1236,13 +1237,13 @@ void msg_resetPlayerBubble(void);
 
 /* Inlined copy of evt_getObject (find object by id). */
 static inline EvtObject *evt_getObject_inline(s32 id) {
-    Unk16D8 *n;
-    for (n = g_evtState->objects; n != NULL; n = n->unk0) {
-        if (n->unk4->uid == id) {
+    EvtListNode *n;
+    for (n = g_evtState->objects; n != NULL; n = n->next) {
+        if (n->obj->uid == id) {
             break;
         }
     }
-    return n != NULL ? n->unk4 : NULL;
+    return n != NULL ? n->obj : NULL;
 }
 
 
@@ -2304,7 +2305,7 @@ void evt_checkPlayerAction(EvtObject *);
 void evt_updateBattleObjects(void);
 void evt_stepAnim(EvtObject *);
 void msg_drawHereIcon(EvtObject *);
-s32 evt_runScripts(Unk16D8 *);
+s32 evt_runScripts(EvtListNode *);
 s32 math_length3(s32, s32, s32);
 s32 evt_updateActorWalkmesh(EvtObject *);
 s32 evt_rollEncounter(EvtObject *);
@@ -2715,7 +2716,7 @@ typedef struct {
     s16 desc; /* description offset (menuItem_drawKeyItem) */
 } KeyItemInfo;
 extern KeyItemInfo g_keyItemTable[];
-Unk16D8 *evt_getObjectList(void);
+EvtListNode *evt_getObjectList(void);
 extern s32 g_labelLocation;
 void SetBackColor(s32, s32, s32);
 void SetFarColor(s32, s32, s32);
@@ -3939,7 +3940,7 @@ void evt_setNextBattle(u16);
 void evt_setCardOpponent();
 void msg_startHereIcon(s32);
 void evt_skipVarRef(u8 **);
-Unk16D8 *evt_deleteObject(EvtObject *);
+EvtListNode *evt_deleteObject(EvtObject *);
 EvtObject *evt_allocObject(s32);
 void evt_onAnimEnd(EvtObject *);
 
@@ -4069,12 +4070,12 @@ static inline void evt_execInstr_newactor(s32 uid, s32 b) {
 
 /* Inlined helper: give the window opened by obj the focus (b = window flags). */
 static inline void evt_execInstr_window(EvtObject *obj, s32 b, s32 c) {
-    Unk16D8 *n;
+    EvtListNode *n;
     EvtObject *o;
 
     if ((b & 0xA0) == 0x80 && obj->kind == 4) {
-        for (n = g_evtState->objects; n != NULL; n = n->unk0) {
-            o = n->unk4;
+        for (n = g_evtState->objects; n != NULL; n = n->next) {
+            o = n->obj;
             if (o->kind == 4 && o->balloonWindow == c) {
                 o->balloonWindow = 0xFF;
             }

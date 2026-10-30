@@ -606,7 +606,7 @@ void wm_setMountPalette(void) {
     WmPalAnim *e;
     u16 *pal;
     u16 *dst;
-    Unk16D8 *n;
+    EvtListNode *n;
     EvtObject *a;
     s32 c;
     s32 i;
@@ -617,8 +617,8 @@ void wm_setMountPalette(void) {
     e = g_gameState->gameData->ctx.world->obj->palAnims;
     pal = w_framePackGetPtr(g_worldDataPack, 1);
     wm_mountPalettePre();
-    for (n = evt_getObjectList(); n != NULL; n = n->unk0) {
-        a = n->unk4;
+    for (n = evt_getObjectList(); n != NULL; n = n->next) {
+        a = n->obj;
         if (a->state == 1 && (a->flags & 1) && a->kind == 4) {
             if ((a->actorType >= 3 && a->actorType < 8)) {
                 id = a->modelId;
@@ -673,12 +673,12 @@ void wm_setMountPalette(void) {
 
 /* find the world map actors (vehicles) and sync the camera with the player */
 void wm_findVehicles(void) {
-    Unk16D8 *n;
+    EvtListNode *n;
     EvtObject *a;
 
-    for (n = evt_getObjectList(); n != NULL; n = n->unk0) {
-        if (n->unk4->kind == 4) {
-            a = n->unk4;
+    for (n = evt_getObjectList(); n != NULL; n = n->next) {
+        if (n->obj->kind == 4) {
+            a = n->obj;
             switch (a->actorType) {
             case 1:
             case 2:
@@ -728,15 +728,15 @@ void wm_drawActors(void) {
     s32 base;
     s32 d;
     s32 ang;
-    Unk16D8 *e;
+    EvtListNode *e;
     EvtObject *act;
     u8 f;
 
     VectorNormalS((VECTOR *)g_worldCameraDir, &n);
     base = (-ratan2(n.vz, n.vx) + 0x400) % 4096;
     pen_locate(10, 100);
-    for (e = evt_getObjectList(); e != NULL; e = e->unk0) {
-        act = e->unk4;
+    for (e = evt_getObjectList(); e != NULL; e = e->next) {
+        act = e->obj;
         if (act->kind == 4 && act->state == 1 && (act->flags & 1) && (u8)wm_worldToView((VECTOR *)&act->pos, &a, &b, &z)) {
             f = 1;
             dv.vx = act->pos.vx - (g_worldCameraEye[0] - n.vx);
@@ -988,7 +988,7 @@ void wm_updateActors(void) {
     s32 tmp;
     s32 h;
     s32 cell;
-    Unk16D8 *e;
+    EvtListNode *e;
     EvtObject *act;
     WmActorType *cc;
 
@@ -1002,8 +1002,8 @@ void wm_updateActors(void) {
         g_worldPlayer->prevPos.vy = g_worldPlayer->pos.vy;
         g_worldPlayer->prevPos.vz = g_worldPlayer->pos.vz;
     }
-    for (e = evt_getObjectList(); e != NULL; e = e->unk0) {
-        act = e->unk4;
+    for (e = evt_getObjectList(); e != NULL; e = e->next) {
+        act = e->obj;
         cc = &g_worldActorTypeInfo[act->actorType];
         if (act->kind == 4 && act->state == 1 && (act->flags & 1)) {
             switch (act->actorType) {
@@ -2032,7 +2032,7 @@ void wm_cameraAutoTurnVehicle(void) {
 }
 
 void wm_snapActorsToFloor(void) {
-    Unk16D8 *n;
+    EvtListNode *n;
     EvtObject *o;
     WmActorType *c;
     ActorPos pos;
@@ -2042,7 +2042,7 @@ void wm_snapActorsToFloor(void) {
     n = evt_getObjectList();
     if (n != NULL) {
         do {
-            o = n->unk4;
+            o = n->obj;
             if (o->kind == 4) {
                 pos = o->pos;
                 c = &g_worldActorTypeInfo[o->actorType];
@@ -2052,7 +2052,7 @@ void wm_snapActorsToFloor(void) {
                 wm_updateActorHeight(o);
                 o->prevPos = o->pos;
             }
-            n = n->unk0;
+            n = n->next;
         } while (n != NULL);
     }
 }

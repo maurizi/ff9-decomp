@@ -64,7 +64,7 @@ EvtObject *evt_allocObject(s32 n) {
 
 EvtObject *evt_createObject(s32 idx, s32 id, s32 a2, s32 a3) {
     EvtObject *o;
-    Unk16D8 *n;
+    EvtListNode *n;
     EvtState *d;
     s32 nw, nv;
     u32 *p;
@@ -86,16 +86,16 @@ EvtObject *evt_createObject(s32 idx, s32 id, s32 a2, s32 a3) {
     }
     d = g_evtState;
     n = d->listFree;
-    d->listFree = n->unk0;
+    d->listFree = n->next;
     if (d->objectsTail != NULL) {
-        d->objectsTail->unk0 = n;
+        d->objectsTail->next = n;
         d->objectsTail = n;
     } else {
         d->objects = n;
         d->objectsTail = n;
     }
-    n->unk0 = NULL;
-    n->unk4 = o;
+    n->next = NULL;
+    n->obj = o;
     o->scriptIdx = idx;
     o->uid = id;
     o->kind = 0;
@@ -126,32 +126,32 @@ EvtObject *evt_createObject(s32 idx, s32 id, s32 a2, s32 a3) {
     return o;
 }
 
-Unk16D8 *evt_deleteObject(EvtObject *obj) {
-    Unk16D8 *n;
-    Unk16D8 *prev;
-    Unk16D8 *next = NULL;
+EvtListNode *evt_deleteObject(EvtObject *obj) {
+    EvtListNode *n;
+    EvtListNode *prev;
+    EvtListNode *next = NULL;
 
     prev = NULL;
-    for (n = g_evtState->objects; n != NULL; n = n->unk0) {
-        if (n->unk4 == obj) {
+    for (n = g_evtState->objects; n != NULL; n = n->next) {
+        if (n->obj == obj) {
             break;
         }
         prev = n;
     }
     if (n != NULL) {
-        next = n->unk0;
+        next = n->next;
         if (prev != NULL) {
-            prev->unk0 = next;
+            prev->next = next;
         } else {
             g_evtState->objects = next;
         }
         if (g_evtState->objectsTail == n) {
             g_evtState->objectsTail = prev;
         }
-        n->unk0 = g_evtState->listFree;
+        n->next = g_evtState->listFree;
         g_evtState->listFree = n;
         evt_freeAllocNode_inline(obj);
-        if (g_evtState->playerUid == n->unk4->uid) {
+        if (g_evtState->playerUid == n->obj->uid) {
             g_evtState->playerUid = 0;
         }
     }
