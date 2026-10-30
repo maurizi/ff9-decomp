@@ -715,7 +715,7 @@ void btlfx_drawAnimQuads(u8 *arg0, SVECTOR *arg1, SVECTOR *arg2, s32 arg3, s32 a
         *(s32 *)&r.vx = 0;
         *(s32 *)&r.vz = 0;
     }
-    n = h->unk0 & 0x7FFF;
+    n = h->frameCount & 0x7FFF;
     i = arg4;
     if (i >= n) {
         i %= n;
@@ -725,20 +725,20 @@ void btlfx_drawAnimQuads(u8 *arg0, SVECTOR *arg1, SVECTOR *arg2, s32 arg3, s32 a
     pal = arg0 + n;
     p = (u16 *)pal;
     i = *p++;
-    c.unk0 = p;
-    c.unk4 = p + i + 1;
-    c.unk10 = h->unk2 | ((arg5 & 3) << 5);
-    c.unk14 = h->unk4;
-    c.unkC = (h->unk6 - 1) * 2;
-    c.unk8 = (h->unk7 - 1) * 2;
-    n = *(u16 *)((u8 *)h->unk8 + off);
-    c.unk1C = arg0[n++];
+    c.uvTab = p;
+    c.colTab = p + i + 1;
+    c.tpage = h->tpage | ((arg5 & 3) << 5);
+    c.clut = h->clut;
+    c.halfH = (h->h - 1) * 2;
+    c.halfW = (h->w - 1) * 2;
+    n = *(u16 *)((u8 *)h->frameOfs + off);
+    c.count = arg0[n++];
     arg0 += n;
     gte_SetRotMatrix(g_btlfxEnv->viewMatrix);
     gte_SetTransMatrix(g_btlfxEnv->viewMatrix);
     gte_ldv0(arg1);
     prim = g_btlfxEnv->prim;
-    g_btlfxEnv->prim = prim + c.unk1C * 40;
+    g_btlfxEnv->prim = prim + c.count * 40;
     gte_rtv0tr_nn();
     math_rotMatrixYXZ(arg2, &m);
     if (arg3 >= 0) {
@@ -753,10 +753,10 @@ void btlfx_drawAnimQuads(u8 *arg0, SVECTOR *arg1, SVECTOR *arg2, s32 arg3, s32 a
     }
     gte_SetRotMatrix(&m);
     gte_SetTransMatrix(&m);
-    c.unk24 = (arg5 == 0xFF) ? 0x2C : 0x2E;
-    c.unk18 = arg6;
-    c.unk20 = g_btlfxEnv->otZ;
-    if (c.unk1C != 0) {
+    c.code = (arg5 == 0xFF) ? 0x2C : 0x2E;
+    c.fade = arg6;
+    c.otZ = g_btlfxEnv->otZ;
+    if (c.count != 0) {
         btlfx_emitAnimQuads(arg0, &c, prim, g_btlfxEnv->ot);
     }
 }
@@ -783,7 +783,7 @@ void btlfx_drawSprites(u8 *arg0, SVECTOR *arg1, SVECTOR *arg2, s32 arg3, s32 arg
         *(s32 *)&r.vx = 0;
         *(s32 *)&r.vz = 0;
     }
-    n = h->unk0 & 0x7FFF;
+    n = h->frameCount & 0x7FFF;
     i = arg4;
     if (i >= n) {
         i %= n;
@@ -793,15 +793,15 @@ void btlfx_drawSprites(u8 *arg0, SVECTOR *arg1, SVECTOR *arg2, s32 arg3, s32 arg
     pal = arg0 + n;
     p = (u16 *)pal;
     i = *p++;
-    c.unk0 = p;
-    c.unk4 = p + i + 1;
-    mode = h->unk2;
-    c.unk14 = h->unk4;
-    c.unkC = h->unk6 - 1;
-    c.unk8 = h->unk7 - 1;
-    z = *(u16 *)&h->unk6;
-    n = *(u16 *)((u8 *)h->unk8 + off);
-    c.unk1C = arg0[n++];
+    c.uvTab = p;
+    c.colTab = p + i + 1;
+    mode = h->tpage;
+    c.clut = h->clut;
+    c.halfH = h->h - 1;
+    c.halfW = h->w - 1;
+    z = *(u16 *)&h->h;
+    n = *(u16 *)((u8 *)h->frameOfs + off);
+    c.count = arg0[n++];
     arg0 += n;
     gte_SetRotMatrix(g_btlfxEnv->viewMatrix);
     gte_SetTransMatrix(g_btlfxEnv->viewMatrix);
@@ -820,7 +820,7 @@ void btlfx_drawSprites(u8 *arg0, SVECTOR *arg1, SVECTOR *arg2, s32 arg3, s32 arg
         z = 0x64;
     }
     prim = g_btlfxEnv->prim;
-    g_btlfxEnv->prim = prim + size * c.unk1C;
+    g_btlfxEnv->prim = prim + size * c.count;
     gte_rtv0tr_nn();
     math_rotMatrixYXZ(arg2, &m);
     if (arg3 >= 0) {
@@ -834,7 +834,7 @@ void btlfx_drawSprites(u8 *arg0, SVECTOR *arg1, SVECTOR *arg2, s32 arg3, s32 arg
         z |= 2;
     }
     gte_rtps_nn();
-    c.unk24 = z;
+    c.code = z;
     tp = btlfx_allocDrMode(mode, arg5);
     gte_stszotz(&z);
     if (arg2->pad != 0) {
@@ -842,9 +842,9 @@ void btlfx_drawSprites(u8 *arg0, SVECTOR *arg1, SVECTOR *arg2, s32 arg3, s32 arg
     }
     gte_SetRotMatrix(&m);
     gte_SetTransMatrix(&m);
-    c.unk18 = arg6;
+    c.fade = arg6;
     z = (z - g_btlfxEnv->otZ) >> 2;
-    if ((u32)z < 0x1000 && c.unk1C != 0) {
+    if ((u32)z < 0x1000 && c.count != 0) {
         if (size == 0x14) {
             btlfx_emitSprites(arg0, &c, prim, &g_btlfxEnv->ot[z]);
         } else if (size == 0xC) {
@@ -1010,19 +1010,19 @@ void btlfx_drawFan(Unk800D2938 *arg0, SVECTOR *arg1, SVECTOR *arg2, s32 arg3, s3
         zero.w[0] = 0;
         zero.w[1] = 0;
     }
-    n = arg0->unk0 - 1;
+    n = arg0->frameCount - 1;
     if (n < arg4) {
         arg4 = n;
     }
-    k = arg0->unk6;
+    k = arg0->pointCount;
     if (n == 0) {
         t = 0;
     } else {
         t = arg4 * (k - 1) / n;
     }
     n++;
-    z = arg0->unk2 * 4;
-    if (arg0->unk4 == 0) {
+    z = arg0->otZ * 4;
+    if (arg0->gouraud == 0) {
         k *= 4;
     } else {
         k *= 8;
@@ -1052,24 +1052,24 @@ void btlfx_drawFan(Unk800D2938 *arg0, SVECTOR *arg1, SVECTOR *arg2, s32 arg3, s3
     gte_SetRotMatrix(&m);
     gte_SetTransMatrix(&m);
     arg0++;
-    if (arg0[-1].unk4 == 0) {
-        c1.unk10 = base + n * 2 + arg4;
-        c1.unk18 = (arg5 & 3) << 5;
-        c1.unk14 = t;
-        c1.unkC = z;
-        c1.unk0 = (arg5 != 0xFF) ? 0x2E000000 : 0x2C000000;
-        c1.unk8 = arg6;
-        c1.unk4 = g_btlfxEnv->otZ;
+    if (arg0[-1].gouraud == 0) {
+        c1.uv = base + n * 2 + arg4;
+        c1.abr = (arg5 & 3) << 5;
+        c1.count = t;
+        c1.z = z;
+        c1.code = (arg5 != 0xFF) ? 0x2E000000 : 0x2C000000;
+        c1.fade = arg6;
+        c1.otZ = g_btlfxEnv->otZ;
         prim = g_btlfxEnv->prim;
         g_btlfxEnv->prim = prim + 0x28;
         btlfx_emitFrameQuad((u8 *)arg0, &c1, prim, g_btlfxEnv->ot);
     } else {
-        c2.unkC = (arg5 & 3) << 5;
-        c2.unk14 = t;
-        c2.unk10 = z;
-        c2.unk0 = (arg5 != 0xFF) ? 0x32000000 : 0x30000000;
-        c2.unk8 = arg6;
-        c2.unk4 = g_btlfxEnv->otZ;
+        c2.tpage = (arg5 & 3) << 5;
+        c2.count = t;
+        c2.z = z;
+        c2.code = (arg5 != 0xFF) ? 0x32000000 : 0x30000000;
+        c2.fade = arg6;
+        c2.otZ = g_btlfxEnv->otZ;
         prim = g_btlfxEnv->prim;
         g_btlfxEnv->prim = prim + 0x5C;
         btlfx_emitFrameFan((u8 *)arg0, &c2, prim, g_btlfxEnv->ot);
@@ -1153,7 +1153,7 @@ void btlfx_drawBackdropSprite(u8 *arg0, s32 x, s32 y, s32 frame, s32 tp, s32 p) 
     s32 f;
     s32 clut;
 
-    n = h->unk0 & 0x7FFF;
+    n = h->frameCount & 0x7FFF;
     f = frame;
     if (f >= n) {
         f %= n;
@@ -1161,13 +1161,13 @@ void btlfx_drawBackdropSprite(u8 *arg0, s32 x, s32 y, s32 frame, s32 tp, s32 p) 
     n = n * 2 + 8;
     off = f * 2;
     q = (u16 *)(arg0 + n);
-    n = *(u16 *)((u8 *)h->unk8 + off);
+    n = *(u16 *)((u8 *)h->frameOfs + off);
     pal = q + 1;
     f = *q;
-    tpage = h->unk2;
-    clut = h->unk4 << 16;
-    hv = h->unk6 - 1;
-    wv = h->unk7 - 1;
+    tpage = h->tpage;
+    clut = h->clut << 16;
+    hv = h->h - 1;
+    wv = h->w - 1;
     num = arg0[n++];
     arg0 += n;
     prim = g_btlfxEnv->prim;
@@ -1400,39 +1400,39 @@ void btlfx_drawSpriteLine(u8 *arg0, SVECTOR *arg1, s32 arg2, s32 arg3) {
     gte_SetTransMatrix(g_btlfxEnv->viewMatrix);
     gte_ldv0(arg1);
     h = (Unk800D3B6C *)arg0;
-    e = h->unk18;
+    e = h->entries;
     gte_rtps_b();
-    t = (arg2 << 12) / h->unk0;
+    t = (arg2 << 12) / h->duration;
     gte_stsxy(sxy);
-    if (h->unk4 == 0) {
-        btlfx_lerpVec(h->unk8, h->unkC, t, p);
-        for (i = 0; i < h->unk2; i++, e++) {
-            btlfx_lerpVec(sxy, p, e->unk6 * 2, q);
-            if (arg2 >= e->unk8) {
-                d = arg2 - e->unk8;
-                if (d < e->unkA) {
-                    v = d * arg3 / e->unkA;
+    if (h->polar == 0) {
+        btlfx_lerpVec(h->from, h->to, t, p);
+        for (i = 0; i < h->count; i++, e++) {
+            btlfx_lerpVec(sxy, p, e->along * 2, q);
+            if (arg2 >= e->start) {
+                d = arg2 - e->start;
+                if (d < e->fadeIn) {
+                    v = d * arg3 / e->fadeIn;
                 } else {
                     v = arg3;
                 }
-                btlfx_drawSpriteAtOt(8, (u8 *)h + e->unk0, q[0], q[1], arg2, 1, v);
+                btlfx_drawSpriteAtOt(8, (u8 *)h + e->spriteOfs, q[0], q[1], arg2, 1, v);
             }
         }
     } else {
-        r = h->unk10 + (((h->unk12 - h->unk10) * btlfx_ease(arg2, h->unk0, h->unk6)) >> 12);
-        a = h->unk14 + (((h->unk16 - h->unk14) * btlfx_ease(arg2, h->unk0, h->unk7)) >> 12);
+        r = h->angle0 + (((h->angle1 - h->angle0) * btlfx_ease(arg2, h->duration, h->angleEase)) >> 12);
+        a = h->dist0 + (((h->dist1 - h->dist0) * btlfx_ease(arg2, h->duration, h->distEase)) >> 12);
         p[0] = sxy[0] + ((math_cos(r) * a) >> 12);
         p[1] = sxy[1] + ((math_sin(r) * a) >> 12);
-        for (i = 0; i < h->unk2; i++, e++) {
-            btlfx_lerpVec(sxy, p, e->unk6 * 2, q);
-            if (arg2 >= e->unk8) {
-                d = arg2 - e->unk8;
-                if (d < e->unkA) {
-                    v = d * arg3 / e->unkA;
+        for (i = 0; i < h->count; i++, e++) {
+            btlfx_lerpVec(sxy, p, e->along * 2, q);
+            if (arg2 >= e->start) {
+                d = arg2 - e->start;
+                if (d < e->fadeIn) {
+                    v = d * arg3 / e->fadeIn;
                 } else {
                     v = arg3;
                 }
-                btlfx_drawSpriteAtOt(8, (u8 *)h + e->unk0, q[0], q[1], arg2, 1, v);
+                btlfx_drawSpriteAtOt(8, (u8 *)h + e->spriteOfs, q[0], q[1], arg2, 1, v);
             }
         }
     }

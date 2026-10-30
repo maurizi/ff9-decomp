@@ -1670,25 +1670,25 @@ void btlfx_sampleGradient(u8 *, CVECTOR *, s32);
    unk8[count] a palette (u16 count, u16 entries[]) and per frame a byte count of
    3-byte sprites */
 typedef struct {
-    u16 unk0; /* frame count (& 0x7FFF) */
-    u16 unk2; /* tpage */
-    u16 unk4; /* clut */
-    u8 unk6;  /* height */
-    u8 unk7;  /* width */
-    u16 unk8[1];
+    u16 frameCount; /* frame count (& 0x7FFF) */
+    u16 tpage; /* tpage */
+    u16 clut; /* clut */
+    u8 h; /* height */
+    u8 w; /* width */
+    u16 frameOfs[1]; /* frame offsets */
 } Unk800D1D74Hdr;
 /* sprite set draw context (btlfx_drawAnimQuads, btlfx_drawSprites and their per-sprite workers) */
 typedef struct {
-    u16 *unk0; /* palette */
-    u16 *unk4; /* colour table */
-    s32 unk8;  /* from the width byte */
-    s32 unkC;  /* from the height byte */
-    s32 unk10; /* tpage */
-    s32 unk14; /* clut */
-    s32 unk18;
-    s32 unk1C; /* sprite count */
-    s32 unk20;
-    s32 unk24; /* code */
+    u16 *uvTab; /* palette / uv table */
+    u16 *colTab; /* colour table */
+    s32 halfW; /* from the width byte */
+    s32 halfH; /* from the height byte */
+    s32 tpage; /* tpage (abr bits added) */
+    s32 clut; /* clut */
+    s32 fade; /* fade */
+    s32 count; /* sprite count */
+    s32 otZ; /* g_btlfxEnv->otZ */
+    s32 code; /* primitive code */
 } Unk800D3ED4Ctx;
 void btlfx_emitAnimQuads(u8 *, Unk800D3ED4Ctx *, u8 *, s32 *);
 void btlfx_emitSprites(u8 *, Unk800D3ED4Ctx *, u8 *, s32 *);
@@ -2726,32 +2726,32 @@ void btlfx_drawAnimQuads(u8 *, SVECTOR *, SVECTOR *, s32, s32, s32, s32);
 void btlfx_drawSprites(u8 *, SVECTOR *, SVECTOR *, s32, s32, s32, s32);
 /* effect frame table (btlfx_drawFan) */
 typedef struct {
-    u16 unk0; /* frame count */
-    s16 unk2;
-    u16 unk4; /* gouraud flag */
-    u16 unk6;
+    u16 frameCount; /* frame count */
+    s16 otZ; /* ot z (x4) */
+    u16 gouraud; /* gouraud flag */
+    u16 pointCount; /* points per frame */
 } Unk800D2938;
 
 typedef struct {
-    s32 unk0; /* primitive code */
-    s32 unk4; /* ot base z */
-    s32 unk8;
-    s32 unkC;
-    u16 *unk10;
-    s32 unk14;
-    s32 unk18; /* tpage */
-    u32 unk1C; /* set by btlfx_emitFrameQuad: the quad's last corner (x word, z) */
-    u32 unk20;
+    s32 code; /* primitive code */
+    s32 otZ; /* g_btlfxEnv->otZ */
+    s32 fade; /* fade */
+    s32 z; /* ot base z */
+    u16 *uv; /* uv table of the frame */
+    s32 count;
+    s32 abr; /* abr << 5 (tpage bits) */
+    u32 lastXY; /* set by btlfx_emitFrameQuad: the quad's last corner (x word) */
+    u32 lastZ; /* last corner z */
     u8 pad24[0x28 - 0x24];
 } Unk800D57D0Ctx;
 
 typedef struct {
-    s32 unk0; /* primitive code */
-    s32 unk4; /* ot base z */
-    s32 unk8;
-    s32 unkC; /* tpage */
-    s32 unk10;
-    s32 unk14;
+    s32 code; /* primitive code */
+    s32 otZ; /* g_btlfxEnv->otZ */
+    s32 fade; /* fade */
+    s32 tpage; /* abr << 5 */
+    s32 z; /* ot base z */
+    s32 count;
 } Unk800D59D0Ctx;
 
 void btlfx_emitFrameQuad(u8 *, Unk800D57D0Ctx *, u8 *, s32 *);
@@ -3813,26 +3813,26 @@ void LoadAverageShort12(SVECTOR *, SVECTOR *, s32, s32, SVECTOR *);
 
 /* btlfx_drawSpriteLine: sprites placed along a path */
 typedef struct {
-    s32 unk0; /* offset of the sprite data */
+    s32 spriteOfs; /* offset of the sprite data */
     s16 unk4;
-    s16 unk6;
-    u16 unk8; /* start time */
-    u16 unkA; /* fade-in time */
+    s16 along; /* position along the path (x2, btlfx_lerpVec) */
+    u16 start; /* start time */
+    u16 fadeIn; /* fade-in time */
 } Unk800D3B6CEntry;
 
 typedef struct {
-    u16 unk0; /* duration */
-    u16 unk2; /* count */
-    u16 unk4; /* mode */
-    u8 unk6;
-    u8 unk7;
-    s16 unk8[2];
-    s16 unkC[2];
-    s16 unk10;
-    s16 unk12;
-    s16 unk14;
-    s16 unk16;
-    Unk800D3B6CEntry unk18[1];
+    u16 duration; /* duration */
+    u16 count; /* count */
+    u16 polar; /* 0: sprites along from..to; else around the point at angle/dist */
+    u8 angleEase; /* btlfx_ease mode of the angle */
+    u8 distEase; /* btlfx_ease mode of the distance */
+    s16 from[2];
+    s16 to[2];
+    s16 angle0;
+    s16 angle1;
+    s16 dist0;
+    s16 dist1;
+    Unk800D3B6CEntry entries[1];
 } Unk800D3B6C;
 
 /* sprite-strip context passed to btlfx_emitTrailRibbonScreen / btlfx_emitTrailRibbon3D */

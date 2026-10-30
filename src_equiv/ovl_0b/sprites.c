@@ -55,14 +55,14 @@ static u32 fxFade(u32 c, s32 fade) {
 /* POLY_FT4 per point: a w x h quad (ctx unk8/unkC = half sizes) around it, uvs from the uv table (u, v byte
  * pair) spanning half the size. */
 void btlfx_emitAnimQuads(u8 *pts, Unk800D3ED4Ctx *ctx, u8 *out, s32 *ot) {
-    s32 hw = ctx->unk8, hh = ctx->unkC;
-    u16 *uvTab = ctx->unk0;
-    u16 *colTab = ctx->unk4;
-    u32 tpage = ctx->unk10 << 16, clut = ctx->unk14 << 16;
-    s32 fade = ctx->unk18;
-    u32 n = ctx->unk1C;
-    s32 zbase = ctx->unk20;
-    u32 code = ctx->unk24 << 24;
+    s32 hw = ctx->halfW, hh = ctx->halfH;
+    u16 *uvTab = ctx->uvTab;
+    u16 *colTab = ctx->colTab;
+    u32 tpage = ctx->tpage << 16, clut = ctx->clut << 16;
+    s32 fade = ctx->fade;
+    u32 n = ctx->count;
+    s32 zbase = ctx->otZ;
+    u32 code = ctx->code << 24;
     s32 x, y;
     u32 x0, x1, y0, y1, b, uv, u, v, u1, v1, c, sz;
 
@@ -121,13 +121,13 @@ void btlfx_emitAnimQuads(u8 *pts, Unk800D3ED4Ctx *ctx, u8 *out, s32 *ot) {
 
 /* SPRT per point (w x h from ctx unk8/unkC, centered), all linked at *ot. */
 void btlfx_emitSprites(u8 *pts, Unk800D3ED4Ctx *ctx, u8 *out, s32 *ot) {
-    s32 w = ctx->unk8, h = ctx->unkC;
-    u16 *uvTab = ctx->unk0;
-    u16 *colTab = ctx->unk4;
-    u32 clut = ctx->unk14 << 16;
-    s32 fade = ctx->unk18;
-    u32 code = ctx->unk24 << 24;
-    u32 n = ctx->unk1C;
+    s32 w = ctx->halfW, h = ctx->halfH;
+    u16 *uvTab = ctx->uvTab;
+    u16 *colTab = ctx->colTab;
+    u32 clut = ctx->clut << 16;
+    s32 fade = ctx->fade;
+    u32 code = ctx->code << 24;
+    u32 n = ctx->count;
     u32 b, c, xy;
 
     GTE_MTC2(1, 0);
@@ -158,13 +158,13 @@ void btlfx_emitSprites(u8 *pts, Unk800D3ED4Ctx *ctx, u8 *out, s32 *ot) {
 
 /* Fixed-size SPRT (8x8 / 16x16 by the code) per point, centered by ctx unk8 / 2, linked at *ot. */
 void btlfx_emitFixedSprites(u8 *pts, Unk800D3ED4Ctx *ctx, u8 *out, s32 *ot) {
-    u16 *colTab = ctx->unk4;
-    u16 *uvTab = ctx->unk0;
-    u32 half = (u32)ctx->unk8 >> 1;
-    u32 clut = ctx->unk14 << 16;
-    s32 fade = ctx->unk18;
-    u32 code = ctx->unk24 << 24;
-    u32 n = ctx->unk1C;
+    u16 *colTab = ctx->colTab;
+    u16 *uvTab = ctx->uvTab;
+    u32 half = (u32)ctx->halfW >> 1;
+    u32 clut = ctx->clut << 16;
+    s32 fade = ctx->fade;
+    u32 code = ctx->code << 24;
+    u32 n = ctx->count;
     u32 b, c, xy;
 
     GTE_MTC2(1, 0);
@@ -192,10 +192,10 @@ void btlfx_emitFixedSprites(u8 *pts, Unk800D3ED4Ctx *ctx, u8 *out, s32 *ot) {
 
 /* TILE_1 dot per point, linked at *ot. */
 void btlfx_emitDots(u8 *pts, Unk800D3ED4Ctx *ctx, u8 *out, s32 *ot) {
-    u16 *colTab = ctx->unk4;
-    s32 fade = ctx->unk18;
-    u32 code = ctx->unk24 << 24;
-    u32 n = ctx->unk1C;
+    u16 *colTab = ctx->colTab;
+    s32 fade = ctx->fade;
+    u32 code = ctx->code << 24;
+    u32 n = ctx->count;
     u32 b, c;
 
     GTE_MTC2(1, 0);

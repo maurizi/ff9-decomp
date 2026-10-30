@@ -33,19 +33,19 @@ static void frameLinkZ(s32 *ot, u32 sz, s32 zbase, u8 *p, u32 len) {
  * tw x th, tpage | unk18, color entry unk14 | code unk0, DPCS-faded when unk8 >= 0. The corner words are
  * left in ctx unk1C / unk20. */
 void btlfx_emitFrameQuad(u8 *rec, Unk800D57D0Ctx *ctx, u8 *out, s32 *ot) {
-    u32 code = ctx->unk0;
-    s32 zbase = ctx->unk4;
-    s32 fade = ctx->unk8;
-    u8 *uvb = (u8 *)ctx->unk10;
+    u32 code = ctx->code;
+    s32 zbase = ctx->otZ;
+    s32 fade = ctx->fade;
+    u8 *uvb = (u8 *)ctx->uv;
     u32 hx, nx, c, z1, u0, v0, uR, vB, sz, col;
 
     GTE_CTC2(21, 0);
     GTE_CTC2(22, 0);
     GTE_CTC2(23, 0);
     hx = H(rec, 6) << 1;
-    c = -ctx->unkC;
+    c = -ctx->z;
     GTE_MTC2(4, hx);
-    ctx->unk1C = hx;
+    ctx->lastXY = hx;
     nx = -hx & 0xFFFF;
     GTE_MTC2(0, nx);
     GTE_MTC2(2, nx);
@@ -53,13 +53,13 @@ void btlfx_emitFrameQuad(u8 *rec, Unk800D57D0Ctx *ctx, u8 *out, s32 *ot) {
     GTE_MTC2(5, c);
     z1 = (H(rec, 4) << 2) + c;
     GTE_MTC2(3, z1);
-    ctx->unk20 = z1;
+    ctx->lastZ = z1;
     u0 = uvb[0];
     v0 = uvb[1];
     GTE_CMD(0x4A280030);
     W(out, 0xC) = (u0 | (v0 << 8)) | (H(rec, 2) << 16);
     uR = H(rec, 8) - 1 + u0;
-    W(out, 0x14) = ((H(rec, 0) | ctx->unk18) << 16) | uR | (v0 << 8);
+    W(out, 0x14) = ((H(rec, 0) | ctx->abr) << 16) | uR | (v0 << 8);
     vB = (v0 << 8) + ((H(rec, 0xA) - 1) << 8);
     H(out, 0x1C) = u0 | vB;
     H(out, 0x24) = uR | vB;
@@ -70,9 +70,9 @@ void btlfx_emitFrameQuad(u8 *rec, Unk800D57D0Ctx *ctx, u8 *out, s32 *ot) {
         return;
     }
     sz = GTE_MFC2(19);
-    GTE_MTC2(0, ctx->unk1C);
-    GTE_MTC2(1, ctx->unk20);
-    rec += 0xC + ctx->unk14 * 4;
+    GTE_MTC2(0, ctx->lastXY);
+    GTE_MTC2(1, ctx->lastZ);
+    rec += 0xC + ctx->count * 4;
     GTE_CMD(0x4A180001);
     frameLinkZ(ot, sz, zbase, out, 9);
     col = H(rec, 0) | (rec[2] << 16);
@@ -99,11 +99,11 @@ void btlfx_linkFrameTri(u8 *out, s32 *ot, u32 sz, s32 zbase) {
  * are code, 0, rim color, the last rim color, 0, center color. All three and the closing DR_MODE
  * (E1000200 | unkC) use the first triangle's SZ3 for the OT entry. */
 void btlfx_emitFrameFan(u8 *pts, Unk800D59D0Ctx *ctx, u8 *out, s32 *ot) {
-    u32 code = ctx->unk0;
-    s32 zbase = ctx->unk4;
-    s32 fade = ctx->unk8;
-    u32 tpage = ctx->unkC;
-    s32 c = -ctx->unk10;
+    u32 code = ctx->code;
+    s32 zbase = ctx->otZ;
+    s32 fade = ctx->fade;
+    u32 tpage = ctx->tpage;
+    s32 c = -ctx->z;
     s32 a, b, d, e, f;
     u32 ny0, py0, ny1, col0, col1, sz = 0;
     u8 *cp;
@@ -117,7 +117,7 @@ void btlfx_emitFrameFan(u8 *pts, Unk800D59D0Ctx *ctx, u8 *out, s32 *ot) {
     d = *(s16 *)(pts + 4) << 2;
     e = *(s16 *)(pts + 6) << 2;
     f = *(s16 *)(pts + 8) << 2;
-    cp = pts + 0xC + ctx->unk14 * 8;
+    cp = pts + 0xC + ctx->count * 8;
     col0 = H(cp, 0) | (cp[2] << 16) | code;
     col1 = H(cp, 4) | (cp[6] << 16) | code;
     if (fade >= 0) {
