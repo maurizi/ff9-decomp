@@ -3358,9 +3358,9 @@ void evt_init(u8 *data) {
     }
     g_evtState = &g_evtStateData;
     for (n = g_evtState->allocNodes; n < &g_evtState->allocNodes[31]; n++) {
-        n->unk8 = n + 1;
+        n->next = n + 1;
     }
-    n->unk8 = NULL;
+    n->next = NULL;
     g_evtState->allocFree = g_evtState->allocNodes;
     g_evtState->allocUsed = NULL;
     for (m = g_evtState->listNodes; m < &g_evtState->listNodes[31]; m++) {
@@ -3746,9 +3746,9 @@ void evt_resetIdleTimer(s32 a) {
 void func_8004B2A0(void) {
     EvtAllocNode *p = g_evtState->allocNodes;
     for (; p < &g_evtState->allocNodes[31]; p++) {
-        p->unk8 = p + 1;
+        p->next = p + 1;
     }
-    p->unk8 = NULL;
+    p->next = NULL;
     g_evtState->allocFree = g_evtState->allocNodes;
     g_evtState->allocUsed = NULL;
 }

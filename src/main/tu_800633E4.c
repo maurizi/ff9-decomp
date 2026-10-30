@@ -7,8 +7,8 @@ u16 *db_findModelInfo(s32 id) {
     DbEntry12 *tab;
     DbEntry12 *e;
 
-    for (i = g_dbList.unk2 - 1; i >= 0; i--) {
-        blk = (u8 *)db_lookup((s32)g_dbList.unk4[i], 2, 0x120000, 0);
+    for (i = g_dbList.count - 1; i >= 0; i--) {
+        blk = (u8 *)db_lookup((s32)g_dbList.dbs[i], 2, 0x120000, 0);
         if (blk != (u8 *)-1) {
             j = blk[1] - 1;
             tab = (DbEntry12 *)(blk + 4);

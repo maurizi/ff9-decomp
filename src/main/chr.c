@@ -99,7 +99,7 @@ EquipStatsOut *chr_calcEquipStats(EquipStatsIn *in, EquipStatsOut *out) {
     for (i = 0; i < 5; i++) {
         id = in->equip.unk0[i];
         if (id != 0xFF) {
-            e = g_equipStatBonus[g_itemTable[id].statBonus].unk0;
+            e = g_equipStatBonus[g_itemTable[id].statBonus].stats;
             out->stats[0] += e[0];
             out->stats[1] += e[1];
             out->stats[2] += e[2];
@@ -808,7 +808,7 @@ s32 chr_sumEquipBonus(u8 *eq, s32 k) {
 
     for (i = 0; i < 5; i++) {
         if (eq[i] != 0xFF) {
-            e = g_equipStatBonus[g_itemTable[eq[i]].statBonus].unk0;
+            e = g_equipStatBonus[g_itemTable[eq[i]].statBonus].stats;
             switch (k) {
             case 0:
                 sum += e[0];

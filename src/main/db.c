@@ -11,25 +11,25 @@ void db_clear(void) {
     s32 i;
 
     g_dbList.unk0 = 0;
-    g_dbList.unk2 = 0;
+    g_dbList.count = 0;
     for (i = 15; i >= 0; i--) {
-        g_dbList.unk4[i] = 0;
+        g_dbList.dbs[i] = 0;
     }
 }
 
 s32 db_register(s32 a, s32 b) {
-    g_dbList.unk4[g_dbList.unk2] = a;
-    g_dbList.unk2++;
+    g_dbList.dbs[g_dbList.count] = a;
+    g_dbList.count++;
     return 0;
 }
 
 s32 db_unregister(void *arg0) {
     s32 i;
 
-    for (i = g_dbList.unk2 - 1; i >= 0; i--) {
-        if (g_dbList.unk4[i] == arg0) {
-            g_dbList.unk4[i] = g_dbList.unk4[g_dbList.unk2 - 1];
-            g_dbList.unk2--;
+    for (i = g_dbList.count - 1; i >= 0; i--) {
+        if (g_dbList.dbs[i] == arg0) {
+            g_dbList.dbs[i] = g_dbList.dbs[g_dbList.count - 1];
+            g_dbList.count--;
             return 0;
         }
     }
@@ -41,8 +41,8 @@ void *db_lookupRegistered(s32 mode, s32 a1, s32 a2) {
     s32 r = -1;
     void *ret;
 
-    for (i = g_dbList.unk2 - 1; i >= 0; i--) {
-        r = db_lookup((s32)g_dbList.unk4[i], mode, a1, a2);
+    for (i = g_dbList.count - 1; i >= 0; i--) {
+        r = db_lookup((s32)g_dbList.dbs[i], mode, a1, a2);
         if (r != -1) {
             return (void *)r;
         }

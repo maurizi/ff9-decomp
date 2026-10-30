@@ -1034,7 +1034,7 @@ u8 *text_buildDpad(s32 x, s32 y, u32 *ot, u32 mask, u8 b, s32 *c, u8 *pkt) {
     s32 i;
     for (i = 0; i < 4; i++) {
         if (mask & (1 << i)) {
-            pkt = ui_buildSprite(x + D_8006BC0C[i].unk0, y + D_8006BC0C[i].unk1, ot, D_8006BC0C[i].unk2, b, tmp, pkt);
+            pkt = ui_buildSprite(x + D_8006BC0C[i].x, y + D_8006BC0C[i].y, ot, D_8006BC0C[i].sprite, b, tmp, pkt);
         }
     }
     return ui_buildSprite(x, y, ot, 0xC, b, c, pkt);

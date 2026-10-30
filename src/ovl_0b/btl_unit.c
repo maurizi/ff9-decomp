@@ -10,8 +10,8 @@ void btl_initEquipElements(Character *c, BtlUnit *u) {
     u->elemGuard = 0;
     for (i = 0; i < 5; i++) {
         if (c->equip[i] != 0xFF) {
-            func_800BDACC(&u->elemGuard, g_equipStatBonus[g_itemTable[c->equip[i]].statBonus].unk4);
-            u->elemBoost |= g_equipStatBonus[g_itemTable[c->equip[i]].statBonus].unk8;
+            func_800BDACC(&u->elemGuard, g_equipStatBonus[g_itemTable[c->equip[i]].statBonus].elemGuard);
+            u->elemBoost |= g_equipStatBonus[g_itemTable[c->equip[i]].statBonus].elemBoost;
         }
     }
 }

@@ -1207,9 +1207,9 @@ s32 math_isqrt(s32);
 s32 math_dist2(s32, s32, s32);
 
 typedef struct EvtAllocNode {
-    EvtObject *unk0; /* key = start of the block in unk50 */
-    u32 *unk4; /* end of the block */
-    struct EvtAllocNode *unk8; /* next */
+    EvtObject *start; /* key = start of the block in unk50 */
+    u32 *end; /* end of the block */
+    struct EvtAllocNode *next; /* next */
 } EvtAllocNode;
 
 typedef struct Unk16D8 {
@@ -1521,10 +1521,10 @@ void akao_onSpuTransferDone(void);
 
 typedef struct {
     s16 unk0;
-    s16 unk2; /* count */
-    void *unk4[16];
-} Unk80073C40;
-extern Unk80073C40 g_dbList;
+    s16 count; /* count */
+    void *dbs[16]; /* registered dbs (db_register / db_unregister) */
+} DbList;
+extern DbList g_dbList;
 
 typedef struct {
     u32 unk0;
@@ -1984,12 +1984,12 @@ void preload_onReadDone(u8 *);
 u8 cd_seekAsync(s32, void (*)(u8 *));
 void akao_stopSeChannel(AkaoChannel *, u32);
 typedef struct {
-    u8 unk0[4]; /* stat bonuses */
-    u8 unk4[4]; /* OR'd into BtlUnit.unk70[] (btl_initEquipElements) */
-    u8 unk8;    /* OR'd into BtlUnit.unk79 */
+    u8 stats[4]; /* stat bonuses: speed, strength, magic, spirit (chr_calcEquipStats) */
+    u8 elemGuard[4]; /* OR'd into BtlUnit.elemGuard (btl_initEquipElements) */
+    u8 elemBoost; /* OR'd into BtlUnit.elemBoost */
     u8 pad9[0xC - 9];
-} Unk8006D548;
-extern Unk8006D548 g_equipStatBonus[];
+} EquipBonus;
+extern EquipBonus g_equipStatBonus[];
 void chr_setRecruited(u32);
 void msg_setFocus(MsgWindow *);
 MsgWindow *msg_getFocus(void);
@@ -2675,9 +2675,9 @@ u8 *text_buildCode(s32, s32, u32 *, s32, s32 *, u8 *); /* draw a text control ic
 u8 *text_buildFontTpage(u32 *, DrTpageWords *);
 #endif
 typedef struct {
-    u8 unk0;
-    u8 unk1;
-    u8 unk2;
+    u8 x; /* x offset of the d-pad part sprite (text_buildDpad) */
+    u8 y;
+    u8 sprite; /* g_uiSprites index */
 } Unk8006BC0C;
 extern Unk8006BC0C D_8006BC0C[4];
 u8 help_isOpen(void);
@@ -2863,18 +2863,18 @@ static inline u8 *ui_buildSpriteDef_inline(s32 x, s32 y, u32 *ot, SpriteDef *d, 
 static inline void func_8004B2F4_inline(EvtObject *key) {
     EvtAllocNode *n;
     EvtAllocNode *prev = NULL;
-    for (n = g_evtState->allocUsed; n != NULL; n = n->unk8) {
-        if (n->unk0 == key) {
+    for (n = g_evtState->allocUsed; n != NULL; n = n->next) {
+        if (n->start == key) {
             break;
         }
         prev = n;
     }
     if (prev != NULL) {
-        prev->unk8 = n->unk8;
+        prev->next = n->next;
     } else {
-        g_evtState->allocUsed = n->unk8;
+        g_evtState->allocUsed = n->next;
     }
-    n->unk8 = g_evtState->allocFree;
+    n->next = g_evtState->allocFree;
     g_evtState->allocFree = n;
 }
 void win_drawScrollArrows(RECT *, s32, MenuList *);
