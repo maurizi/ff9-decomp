@@ -3250,7 +3250,7 @@ typedef struct {
 } Words2;
 /* stat calculation input (chr_calcEquipStats) */
 typedef struct {
-    Bytes8 base; /* = Character.unk2C..unk33: baseMaxHp, baseMaxMp, baseSpeed..baseSpirit */
+    Bytes8 base; /* = Character baseMaxHp, baseMaxMp, baseSpeed..baseSpirit */
     Words2 support; /* Character.supportAbilities (Auto HP/MP+ bits 0xC5-0xC8) */
     u16 hp;
     u16 mp;
