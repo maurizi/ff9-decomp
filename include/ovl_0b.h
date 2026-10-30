@@ -1592,60 +1592,60 @@ void btlfx_poolInit(struct Unk800DA1B8 *, Unk80100C78Entry *, s32, s32, s32);
 
 typedef struct {
     u16 unk0;
-    u16 unk2; /* tpage */
-    u16 unk4; /* clut */
+    u16 tpage; /* tpage (abr bits added) */
+    u16 clut; /* clut */
     u16 pad6;
-    u16 unk8; /* abr, 0xFF = opaque */
+    u16 abr; /* abr, 0xFF = opaque */
 } SprInfo; /* sprite texture info (btlfx_addSpriteQuad) */
 
 void btlfx_addPrim(u32, s32, void *);
 
 /* scrolling/waving 2D background layer (btlfx_drawBackdrop) */
 typedef struct {
-    u16 unk0; /* kind: 0 scroll, 1 horizontal wave, 2 fade, 3 vertical wave */
-    u16 unk2; /* tpage */
-    u16 unk4; /* clut */
-    u8 unk6;  /* u */
-    u8 unk7;  /* v */
-    u16 unk8; /* abr */
-    u16 unkA; /* palette frames */
-    s32 unkC; /* palette animation offset */
+    u16 kind; /* kind: 0 scroll, 1 horizontal wave, 2 fade, 3 vertical wave */
+    u16 tpage; /* tpage (SprInfo view) */
+    u16 clut; /* clut */
+    u8 u;  /* u */
+    u8 v;  /* v */
+    u16 abr; /* abr */
+    u16 gradFrames; /* colour gradient period (btlfx_sampleGradient) */
+    s32 gradOfs; /* colour gradient offset from the layer block, 0 = grey 0x80 */
     union {
         struct BtlBgScrollP {
-            u8 unk0; /* x: sine motion */
-            u8 unk1; /* y: sine motion */
+            u8 sineX; /* x: sine motion */
+            u8 sineY; /* y: sine motion */
             u8 pad2[2];
-            s16 unk4; /* x speed */
-            s16 unk6; /* y speed */
-            u16 unk8; /* x amplitude */
-            u16 unkA; /* y amplitude */
+            s16 speedX; /* x speed */
+            s16 speedY; /* y speed */
+            u16 ampX; /* x amplitude */
+            u16 ampY; /* y amplitude */
         } scroll;
         struct BtlBgWaveP {
-            u16 unk0; /* strip size */
-            u16 unk2; /* strip count */
-            u16 unk4; /* phase step */
-            u16 unk6; /* phase speed */
-            u16 unk8; /* amplitude */
-            s16 unkA; /* scroll speed */
+            u16 stripSize; /* strip size */
+            u16 stripCount; /* strip count */
+            u16 phaseStep; /* phase step per strip */
+            u16 phaseSpeed; /* phase step per frame */
+            u16 amplitude; /* amplitude */
+            s16 scrollSpeed; /* scroll speed */
         } wave;
         struct BtlBgFadeP {
-            s32 unk0; /* data offset */
+            s32 dataOfs; /* sprite set offset from the layer block (btlfx_drawBackdropSprite) */
             u8 pad4;
-            u8 unk5;  /* delay */
-            u16 unk6; /* duration */
-            s16 unk8;
-            s16 unkA;
+            u8 delay;  /* delay */
+            u16 duration; /* fade-in frames */
+            s16 x; /* sprite position */
+            s16 y;
         } fade;
-    } unk10;
+    } params; /* by kind */
 } BtlBgLayer;
 
 typedef struct {
-    u16 unk0; /* layer count */
-    u8 unk2;  /* width */
-    u8 unk3;  /* height */
-    u16 unk4; /* x */
-    u16 unk6; /* y */
-    s32 unk8[1]; /* layer offsets */
+    u16 count; /* layer count */
+    u8 w;  /* width */
+    u8 h;  /* height */
+    u16 x; /* x */
+    u16 y; /* y */
+    s32 layers[1]; /* layer offsets */
 } BtlBgLayers;
 
 

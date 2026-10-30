@@ -1092,12 +1092,12 @@ s32 arg10, arg11;
 
     p = (POLY_FT4 *)g_btlfxEnv->prim;
     g_btlfxEnv->prim = (u8 *)(p + 1);
-    p->code = (arg0->unk8 != 0xFF) ? 0x2E : 0x2C;
-    p->clut = arg0->unk4;
-    if (arg0->unk8 != 0xFF) {
-        arg0->unk2 |= (arg0->unk8 & 3) << 5;
+    p->code = (arg0->abr != 0xFF) ? 0x2E : 0x2C;
+    p->clut = arg0->clut;
+    if (arg0->abr != 0xFF) {
+        arg0->tpage |= (arg0->abr & 3) << 5;
     }
-    tp = arg0->unk2;
+    tp = arg0->tpage;
     p->x0 = arg1;
     c = arg5 + arg7 + arg10;
     p->x1 = arg1 + arg7 + arg10;
@@ -1224,11 +1224,11 @@ void btlfx_drawBackdrop(BtlBgLayers *arg0, s32 arg1) {
     struct BtlBgFadeP *fd;
 
     da = (DR_AREA *)g_btlfxEnv->prim;
-    n = arg0->unk0;
-    w = arg0->unk2;
-    h = arg0->unk3;
-    x = arg0->unk4;
-    y = arg0->unk6;
+    n = arg0->count;
+    w = arg0->w;
+    h = arg0->h;
+    x = arg0->x;
+    y = arg0->y;
     g_btlfxEnv->prim = (u8 *)(da + 2);
     r.x = x;
     r.y = y;
@@ -1252,103 +1252,103 @@ void btlfx_drawBackdrop(BtlBgLayers *arg0, s32 arg1) {
     btlfx_addPrim(0x01000000, 0xFFE, &tp[1]);
     btlfx_addPrim(0x02000000, 0xFFE, &da[1]);
     btlfx_addPrim(0x02000000, 0xFFE, &dofs[1]);
-    offs = arg0->unk8;
+    offs = arg0->layers;
     for (; i < n; i++) {
         L = (BtlBgLayer *)((u8 *)arg0 + offs[i]);
-        if (L->unkC != 0) {
-            btlfx_sampleGradient((u8 *)arg0 + L->unkC, &col, arg1 % L->unkA);
+        if (L->gradOfs != 0) {
+            btlfx_sampleGradient((u8 *)arg0 + L->gradOfs, &col, arg1 % L->gradFrames);
         } else {
             *(s32 *)&col = 0x808080;
         }
-        switch (L->unk0) {
+        switch (L->kind) {
         case 0:
-            sc = &L->unk10.scroll;
-            if (sc->unk0 == 0) {
-                wt = u = arg1 * sc->unk4;
+            sc = &L->params.scroll;
+            if (sc->sineX == 0) {
+                wt = u = arg1 * sc->speedX;
             } else {
-                wt = u = (math_sin(sc->unk4 * arg1) * sc->unk8) >> 12;
+                wt = u = (math_sin(sc->speedX * arg1) * sc->ampX) >> 12;
             }
             BG_WRAP(u, w);
-            if (sc->unk1 == 0) {
-                wt = v = arg1 * sc->unk6;
+            if (sc->sineY == 0) {
+                wt = v = arg1 * sc->speedY;
             } else {
-                wt = v = (math_sin(sc->unk6 * arg1) * sc->unkA) >> 12;
+                wt = v = (math_sin(sc->speedY * arg1) * sc->ampY) >> 12;
             }
             BG_WRAP(v, h);
-            btlfx_addSpriteQuad((SprInfo *)L, u, u, v, v, L->unk6, L->unk7, w, h, &col, 1, 1);
+            btlfx_addSpriteQuad((SprInfo *)L, u, u, v, v, L->u, L->v, w, h, &col, 1, 1);
             if (u != 0) {
-                btlfx_addSpriteQuad((SprInfo *)L, u - w, u - w, v, v, L->unk6, L->unk7, w, h, &col, 0, 1);
+                btlfx_addSpriteQuad((SprInfo *)L, u - w, u - w, v, v, L->u, L->v, w, h, &col, 0, 1);
             }
             if (v != 0) {
-                btlfx_addSpriteQuad((SprInfo *)L, u, u, v - h, v - h, L->unk6, L->unk7, w, h, &col, 1, 0);
+                btlfx_addSpriteQuad((SprInfo *)L, u, u, v - h, v - h, L->u, L->v, w, h, &col, 1, 0);
             }
             if (u != 0 && v != 0) {
-                btlfx_addSpriteQuad((SprInfo *)L, u - w, u - w, v - h, v - h, L->unk6, L->unk7, w, h, &col, 0, 0);
+                btlfx_addSpriteQuad((SprInfo *)L, u - w, u - w, v - h, v - h, L->u, L->v, w, h, &col, 0, 0);
             }
             break;
         case 1:
-            wv = &L->unk10.wave;
-            wt = v = arg1 * wv->unkA;
+            wv = &L->params.wave;
+            wt = v = arg1 * wv->scrollSpeed;
             BG_WRAP(v, h);
             cnt = 1;
             if (v != 0) {
                 cnt = 2;
             }
-            step = wv->unk4;
-            tw = wv->unk0;
-            a = arg1 * wv->unk6 + v * step / tw;
+            step = wv->phaseStep;
+            tw = wv->stripSize;
+            a = arg1 * wv->phaseSpeed + v * step / tw;
             do {
                 k = 0;
-                for (j = 0; j < wv->unk2; j++) {
-                    u = ((math_sin(a) * wv->unk8) >> 12) - (w >> 1);
+                for (j = 0; j < wv->stripCount; j++) {
+                    u = ((math_sin(a) * wv->amplitude) >> 12) - (w >> 1);
                     a += step;
-                    btlfx_addSpriteQuad((SprInfo *)L, u, ((math_sin(a) * wv->unk8) >> 12) - (w >> 1), v, v, L->unk6, L->unk7 + k, w * 2, tw, &col, 0, 0);
+                    btlfx_addSpriteQuad((SprInfo *)L, u, ((math_sin(a) * wv->amplitude) >> 12) - (w >> 1), v, v, L->u, L->v + k, w * 2, tw, &col, 0, 0);
                     v += tw;
                     k += tw;
                 }
                 cnt--;
                 v -= h * 2;
-                a -= step * wv->unk2 * 2;
+                a -= step * wv->stripCount * 2;
             } while (cnt != 0);
             break;
         case 2:
-            fd = &L->unk10.fade;
-            if (arg1 >= fd->unk5) {
+            fd = &L->params.fade;
+            if (arg1 >= fd->delay) {
                 s32 e, f;
-                e = arg1 - fd->unk5;
-                if (e < fd->unk6) {
-                    f = (e << 12) / fd->unk6;
+                e = arg1 - fd->delay;
+                if (e < fd->duration) {
+                    f = (e << 12) / fd->duration;
                 } else {
                     f = 0x1000;
                 }
-                if (fd->unk0 != 0) {
-                    btlfx_drawBackdropSprite((u8 *)arg0 + fd->unk0 + 4, fd->unk8, fd->unkA, e, L->unk8, f);
+                if (fd->dataOfs != 0) {
+                    btlfx_drawBackdropSprite((u8 *)arg0 + fd->dataOfs + 4, fd->x, fd->y, e, L->abr, f);
                 }
             }
             break;
         case 3:
-            wv3 = &L->unk10.wave;
-            wt = v = arg1 * wv3->unkA;
+            wv3 = &L->params.wave;
+            wt = v = arg1 * wv3->scrollSpeed;
             BG_WRAP(v, w);
             cnt = 1;
             if (v != 0) {
                 cnt = 2;
             }
-            step = wv3->unk4;
-            tw = wv3->unk0;
-            a = arg1 * wv3->unk6 + v * step / tw;
+            step = wv3->phaseStep;
+            tw = wv3->stripSize;
+            a = arg1 * wv3->phaseSpeed + v * step / tw;
             do {
                 k = 0;
-                for (j = 0; j < wv3->unk2; j++) {
-                    u = ((math_sin(a) * wv3->unk8) >> 12) - (h >> 1);
+                for (j = 0; j < wv3->stripCount; j++) {
+                    u = ((math_sin(a) * wv3->amplitude) >> 12) - (h >> 1);
                     a += step;
-                    btlfx_addSpriteQuad((SprInfo *)L, v, v, u, ((math_sin(a) * wv3->unk8) >> 12) - (h >> 1), L->unk6 + k, L->unk7, tw, h * 2, &col, 0, 0);
+                    btlfx_addSpriteQuad((SprInfo *)L, v, v, u, ((math_sin(a) * wv3->amplitude) >> 12) - (h >> 1), L->u + k, L->v, tw, h * 2, &col, 0, 0);
                     v += tw;
                     k += tw;
                 }
                 cnt--;
                 v -= w * 2;
-                a -= step * wv3->unk2 * 2;
+                a -= step * wv3->stripCount * 2;
             } while (cnt != 0);
             break;
         }
