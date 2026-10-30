@@ -12,21 +12,21 @@ s32 fx_011_op80(s32 mode, SVECTOR *work, Unk800F78A4 *env, Unk80100C78Entry *ent
         ex->btlfx_getUnitBodyPos(0, 0, (s16 *)work);
         p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 8), (s32)work);
         if (p != NULL) {
-            p->unk22 = ex->btlfx_addRadiusSixth(0, 0x80);
+            p->otZ = ex->btlfx_addRadiusSixth(0, 0x80);
         }
         p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 7), (s32)work);
         if (p != NULL) {
             p->unk14 = (s32)D_801E78FC;
             p->unk12 = 0x19;
             p->unkC = 0x34;
-            p->unk22 = ex->btlfx_addRadiusSixth(0, 0x80);
+            p->otZ = ex->btlfx_addRadiusSixth(0, 0x80);
         }
     } else {
         frame = entry->frame;
         if (frame == 6) {
             p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 9), (s32)work);
             if (p != NULL) {
-                p->unk22 = ex->btlfx_addRadiusSixth(0, 0x80);
+                p->otZ = ex->btlfx_addRadiusSixth(0, 0x80);
             }
         }
         return frame >= 0x30;

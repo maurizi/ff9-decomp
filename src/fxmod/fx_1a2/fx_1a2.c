@@ -332,7 +332,7 @@ s32 fx_1a2_op80(s32 mode, Fx1a2Work80 *w, Unk800F78A4 *env, Unk80100C78Entry *en
         if (frame == 0) {
             p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0x14), (s32)&w->unk18);
             if (p != NULL) {
-                p->unk22 = 0x40;
+                p->otZ = 0x40;
             }
         }
         if (frame >= 0x5D) {
@@ -353,11 +353,11 @@ s32 fx_1a2_op80(s32 mode, Fx1a2Work80 *w, Unk800F78A4 *env, Unk80100C78Entry *en
             if (frame == 4) {
                 p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 5), (s32)&w->unk8);
                 if (p != NULL) {
-                    p->unk22 = -0x40;
+                    p->otZ = -0x40;
                 }
                 p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 8), (s32)&w->unk8);
                 if (p != NULL) {
-                    p->unk22 = 0x40;
+                    p->otZ = 0x40;
                 }
             }
             if (frame < 7) {
@@ -403,7 +403,7 @@ s32 fx_1a2_op80(s32 mode, Fx1a2Work80 *w, Unk800F78A4 *env, Unk80100C78Entry *en
             if (frame == 0) {
                 p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0x15), (s32)&w->unk18);
                 if (p != NULL) {
-                    p->unk22 = 0x40;
+                    p->otZ = 0x40;
                 }
             }
             ex->btlfx_drawScrollMove(0, 0x280, 0x1E0, 0x40, 0x20, 0x2C0, ((frame & 7) << 5) + 0x100);
@@ -428,26 +428,26 @@ s32 fx_1a2_op80(s32 mode, Fx1a2Work80 *w, Unk800F78A4 *env, Unk80100C78Entry *en
                 p->unk14 = (s32)D_801EBA94;
                 p->unk12 = 0x10;
                 p->unkC = 0x4C;
-                p->unk22 = 0x40;
+                p->otZ = 0x40;
             }
             p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0xA), (s32)&w->unk8);
             if (p != NULL) {
                 p->unk14 = (s32)D_801EBF54;
                 p->unk12 = 8;
                 p->unkC = 0x4C;
-                p->unk22 = 0x40;
+                p->otZ = 0x40;
             }
             p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 7), (s32)(q = &w->unk8));
             if (p != NULL) {
-                p->unk22 = 0x40;
+                p->otZ = 0x40;
             }
             p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0xF), (s32)q);
             if (p != NULL) {
-                p->unk22 = 0x40;
+                p->otZ = 0x40;
             }
             p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0x17), (s32)&w->unk8);
             if (p != NULL) {
-                p->unk22 = 0x40;
+                p->otZ = 0x40;
             }
             /* Dead load (flow deletes it): q's last use comes after the 0x17 spawn's, so cse makes q the class
              * head for the 7/0xF spawns and keeps the single-set copy (sched1 places it after the call). */

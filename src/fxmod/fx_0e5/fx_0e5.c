@@ -19,7 +19,7 @@ s32 fx_0e5_op80(s32 mode, Fx0e5Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
         ex->btlfx_pointAhead((s16 *)&work->unk8, (s16 *)&work->unk20, 0xC8, (s16 *)&work->unk30);
         work->unk0 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 6), (s32)&work->unk30);
         if (work->unk0 != NULL) {
-            work->unk0->unk22 = ex->btlfx_addRadiusSixth(0, 0x80);
+            work->unk0->otZ = ex->btlfx_addRadiusSixth(0, 0x80);
         }
         ex->btlfx_aimAngles((s16 *)&work->unk8, (s16 *)&work->unk10, (s16 *)&work->unk28);
         work->unk42 = 0x1000;
@@ -29,7 +29,7 @@ s32 fx_0e5_op80(s32 mode, Fx0e5Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
         if (frame == 0xF) {
             work->unk4 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 8), (s32)&work->unk10);
             if (work->unk4 != NULL) {
-                work->unk4->unk22 = ex->btlfx_addRadiusSixth(0, 0x80);
+                work->unk4->otZ = ex->btlfx_addRadiusSixth(0, 0x80);
             }
         }
         if (frame >= 0xF && frame < 0x1C) {
@@ -49,9 +49,9 @@ s32 fx_0e5_op80(s32 mode, Fx0e5Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
                 work->unk0 = NULL;
             }
             if (work->unk0 != NULL) {
-                work->unk0->unk5C.vx = work->unk28.vx;
-                work->unk0->unk5C.vy = work->unk28.vy;
-                work->unk0->unk5C.vz = work->unk28.vz;
+                work->unk0->rot.vx = work->unk28.vx;
+                work->unk0->rot.vy = work->unk28.vy;
+                work->unk0->rot.vz = work->unk28.vz;
             }
         }
         if (frame >= 0xF) {
@@ -60,9 +60,9 @@ s32 fx_0e5_op80(s32 mode, Fx0e5Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
                     work->unk4 = NULL;
                 }
                 if (work->unk4 != NULL) {
-                    work->unk4->unk5C.vx = work->unk28.vx;
-                    work->unk4->unk5C.vy = work->unk28.vy;
-                    work->unk4->unk5C.vz = work->unk28.vz;
+                    work->unk4->rot.vx = work->unk28.vx;
+                    work->unk4->rot.vy = work->unk28.vy;
+                    work->unk4->rot.vz = work->unk28.vz;
                 }
             }
         }

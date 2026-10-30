@@ -93,7 +93,7 @@ s32 fx_0e7_op81(s32 mode, Fx0e7Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
             work->unk58.vy = -0xC8;
             work->unk4 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0xC), (s32)&work->unk58);
             if (work->unk4 != NULL) {
-                work->unk4->unk22 = 0x80;
+                work->unk4->otZ = 0x80;
             }
             break;
         case 0x32:
@@ -102,7 +102,7 @@ s32 fx_0e7_op81(s32 mode, Fx0e7Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
             work->unk60.vz = work->unk40.vz;
             work->unk8 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0xD), (s32)&work->unk60);
             if (work->unk8 != NULL) {
-                work->unk8->unk22 = ex->btlfx_addRadiusSixth(0, 0x80);
+                work->unk8->otZ = ex->btlfx_addRadiusSixth(0, 0x80);
             }
             break;
         case 0x10:

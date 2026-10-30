@@ -389,7 +389,7 @@ s32 func_801E8628(s32 mode, Fx0e0Obj *it, Unk800F78A4 *env, Unk80100C78Entry *en
                     ((s16 *)it)[-1] = -1;
                     it->unk20 = e = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0xD), (s32)&it->unkC);
                     if (e != NULL) {
-                        e->unk22 = 0x20;
+                        e->otZ = 0x20;
                     }
                 }
                 break;
@@ -402,9 +402,9 @@ s32 func_801E8628(s32 mode, Fx0e0Obj *it, Unk800F78A4 *env, Unk80100C78Entry *en
                 ex->btlfx_aimAngles((s16 *)&parent->unk8, (s16 *)&it->unkC, (s16 *)&ang);
                 ang.pad = 1;
                 if (it->unk20 != NULL) {
-                    it->unk20->unk5C.vx = ang.vx;
-                    it->unk20->unk5C.vy = ang.vy;
-                    it->unk20->unk5C.vz = ang.vz;
+                    it->unk20->rot.vx = ang.vx;
+                    it->unk20->rot.vy = ang.vy;
+                    it->unk20->rot.vz = ang.vz;
                 }
                 if (frame < 4) {
                     k = 0x1000 - ((frame << 12) >> 2);

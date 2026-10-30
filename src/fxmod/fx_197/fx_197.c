@@ -304,7 +304,7 @@ s32 func_801E81EC(s32 mode, Fx197Item81 *it, Unk800F78A4 *env, Unk80100C78Entry 
                 it->unkC.vy = 0;
                 q = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0xB), (s32)&it->unkC);
                 if (q != NULL) {
-                    q->unk22 = 0x80;
+                    q->otZ = 0x80;
                 }
                 break;
             }
@@ -514,36 +514,36 @@ s32 fx_197_op81(s32 mode, Fx197Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
             if (frame == 20) {
                 p = (Pool6CEntry *)ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0xC), (s32)&work->unk10);
                 if (p != NULL) {
-                    p->unk22 = 0x40;
+                    p->otZ = 0x40;
                 }
                 p = (Pool6CEntry *)ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0xE), (s32)&work->unk10);
                 if (p != NULL) {
-                    p->unk22 = 0x40;
+                    p->otZ = 0x40;
                 }
                 p = (Pool6CEntry *)ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0xD), (s32)&work->unk10);
                 if (p != NULL) {
                     p->unk14 = (s32)D_801E92D0;
                     p->unk12 = 0xC;
                     p->unkC = 0x4C;
-                    p->unk22 = 0x40;
+                    p->otZ = 0x40;
                 }
             }
             if (frame == 18) {
                 p = (Pool6CEntry *)ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0xF), (s32)&work->unk10);
                 if (p != NULL) {
-                    p->unk22 = 0x40;
+                    p->otZ = 0x40;
                 }
             }
             if (frame == 32) {
                 p = (Pool6CEntry *)ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 4), (s32)&work->unk10);
                 if (p != NULL) {
-                    p->unk22 = 0x40;
+                    p->otZ = 0x40;
                 }
             }
             if (frame == 44) {
                 p = (Pool6CEntry *)ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0x1A), (s32)&work->unk10);
                 if (p != NULL) {
-                    p->unk22 = 0x40;
+                    p->otZ = 0x40;
                 }
             }
             if (frame == 19) {

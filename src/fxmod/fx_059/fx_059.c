@@ -91,15 +91,15 @@ s32 fx_059_op81(s32 mode, Fx059Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
         ex->btlfx_getUnitBodyPos(0, 0, (s16 *)&work->unk4);
         p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 2), (s32)&work->unk4);
         if (p != NULL) {
-            p->unk22 = ex->btlfx_addRadiusSixth(0, 0x20);
+            p->otZ = ex->btlfx_addRadiusSixth(0, 0x20);
         }
         p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0x14), (s32)&work->unk4);
         if (p != NULL) {
-            p->unk22 = ex->btlfx_addRadiusSixth(0, 0x20);
+            p->otZ = ex->btlfx_addRadiusSixth(0, 0x20);
         }
         p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0x18), (s32)&work->unk4);
         if (p != NULL) {
-            p->unk22 = ex->btlfx_addRadiusSixth(0, 0x20);
+            p->otZ = ex->btlfx_addRadiusSixth(0, 0x20);
         }
     } else {
         s32 frame = entry->frame;
@@ -122,7 +122,7 @@ s32 fx_059_op82(s32 mode, Fx059Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
         ex->btlfx_getUnitBodyPos(0, 0, (s16 *)&work->unk4);
         p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0x13), (s32)&work->unk4);
         if (p != NULL) {
-            p->unk22 = ex->btlfx_addRadiusSixth(0, 0x20);
+            p->otZ = ex->btlfx_addRadiusSixth(0, 0x20);
         }
     } else {
         s32 frame = entry->frame;

@@ -328,13 +328,13 @@ s32 fx_1b0_op80(s32 mode, Fx1b0Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             if (frame == 0x10) {
                 p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 5), (s32)&work->unk28);
                 if (p != NULL) {
-                    p->unk22 = 0x140;
+                    p->otZ = 0x140;
                 }
             }
             if (frame == 0x28) {
                 p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 4), (s32)&work->unk28);
                 if (p != NULL) {
-                    p->unk22 = 0x140;
+                    p->otZ = 0x140;
                 }
             }
             if (frame == 0x31) {
@@ -344,17 +344,17 @@ s32 fx_1b0_op80(s32 mode, Fx1b0Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
                     p->unk14 = (s32)D_801E8D44;
                     p->unk12 = 0x20;
                     p->unkC = 0xAC;
-                    p->unk22 = 0x140;
+                    p->otZ = 0x140;
                 }
                 p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 6), (s32)&work->unk28);
                 if (p != NULL) {
-                    p->unk22 = 0x140;
+                    p->otZ = 0x140;
                 }
             }
             if (frame == 0x3C || frame == 0x46) {
                 p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 9), (s32)&work->unk28);
                 if (p != NULL) {
-                    p->unk22 = 0x140;
+                    p->otZ = 0x140;
                 }
             }
             if (frame == 0x59) {
@@ -396,15 +396,15 @@ s32 fx_1b0_op80(s32 mode, Fx1b0Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
                     p->unk14 = (s32)D_801EA2C4;
                     p->unk12 = 0x18;
                     p->unkC = 0x8C;
-                    p->unk22 = 0x140;
+                    p->otZ = 0x140;
                 }
                 p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0xD), (s32)&work->unk28);
                 if (p != NULL) {
-                    p->unk22 = 0x140;
+                    p->otZ = 0x140;
                 }
                 p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0xE), (s32)&work->unk28);
                 if (p != NULL) {
-                    p->unk22 = 0x140;
+                    p->otZ = 0x140;
                 }
             }
             if (frame == 1) {
@@ -413,7 +413,7 @@ s32 fx_1b0_op80(s32 mode, Fx1b0Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
                     p->unk14 = (s32)D_801EAFE4;
                     p->unk12 = 0x1C;
                     p->unkC = 0x8C;
-                    p->unk22 = 0x140;
+                    p->otZ = 0x140;
                 }
             }
             if (frame >= 0x80) {

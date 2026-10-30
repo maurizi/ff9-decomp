@@ -33,10 +33,10 @@ s32 fx_113_op80(s32 mode, Fx113Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
         }
         work->unk4 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 5), (s32)&work->unk10);
         if (work->unk0 != NULL) {
-            work->unk0->unk22 = ex->btlfx_addRadiusSixth(0, 0x80);
+            work->unk0->otZ = ex->btlfx_addRadiusSixth(0, 0x80);
         }
         if (work->unk4 != NULL) {
-            work->unk4->unk22 = ex->btlfx_addRadiusSixth(0, 0x80);
+            work->unk4->otZ = ex->btlfx_addRadiusSixth(0, 0x80);
         }
         return 0;
     } else {
@@ -59,7 +59,7 @@ s32 fx_113_op81(s32 mode, Fx113Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
             work->unk0->unk12 = 0xD;
             work->unk0->unkC = 0x50;
             if (work->unk0 != NULL) {
-                work->unk0->unk22 = ex->btlfx_addRadiusSixth(0, 0x80);
+                work->unk0->otZ = ex->btlfx_addRadiusSixth(0, 0x80);
             }
         }
         return 0;

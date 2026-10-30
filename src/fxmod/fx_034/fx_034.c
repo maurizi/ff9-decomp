@@ -146,7 +146,7 @@ s32 fx_034_op80(s32 mode, Fx034Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
             work->unk0->unk12 = 0x28;
             work->unk0->unkC = 0x30;
             if (work->unk0 != NULL) {
-                work->unk0->unk22 = ex->btlfx_addRadiusSixth(0, 0x80);
+                work->unk0->otZ = ex->btlfx_addRadiusSixth(0, 0x80);
             }
         }
         ex->btlfx_aimAngles((s16 *)&work->unk4C, (s16 *)&work->unk44, (s16 *)&work->unk54);
@@ -179,7 +179,7 @@ s32 fx_034_op80(s32 mode, Fx034Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
         case 15:
             work->unk4 = q = (Pool6CEntry *)ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 2), (s32)&work->unk64);
             if (q != NULL) {
-                q->unk22 = 0x80;
+                q->otZ = 0x80;
             }
             break;
         case 28:
@@ -191,9 +191,9 @@ s32 fx_034_op80(s32 mode, Fx034Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
                 work->unk0 = NULL;
             }
             if (work->unk0 != NULL) {
-                work->unk0->unk5C.vx = work->unk54.vx;
-                work->unk0->unk5C.vy = work->unk54.vy;
-                work->unk0->unk5C.vz = work->unk54.vz;
+                work->unk0->rot.vx = work->unk54.vx;
+                work->unk0->rot.vy = work->unk54.vy;
+                work->unk0->rot.vz = work->unk54.vz;
             }
         }
         if (frame >= 15 && work->unk4 != NULL) {
@@ -201,9 +201,9 @@ s32 fx_034_op80(s32 mode, Fx034Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
                 work->unk4 = NULL;
             }
             if (work->unk4 != NULL) {
-                work->unk4->unk5C.vx = work->unk5C.vx;
-                work->unk4->unk5C.vy = work->unk5C.vy;
-                work->unk4->unk5C.vz = work->unk5C.vz;
+                work->unk4->rot.vx = work->unk5C.vx;
+                work->unk4->rot.vy = work->unk5C.vy;
+                work->unk4->rot.vz = work->unk5C.vz;
             }
         }
         d = frame - 15;

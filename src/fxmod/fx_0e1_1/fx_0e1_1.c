@@ -21,15 +21,15 @@ s32 fx_0e1_1_op80(s32 mode, Fx0e11Work *work, Unk800F78A4 *env, Unk80100C78Entry
         D_801ECDD0 = env;
         p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 7), (s32)&work->unk8);
         if (p != NULL) {
-            p->unk22 = 0x20;
+            p->otZ = 0x20;
         }
         p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 1), (s32)&work->unk8);
         if (p != NULL) {
-            p->unk22 = 0x100;
+            p->otZ = 0x100;
         }
         p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 2), (s32)&work->unk8);
         if (p != NULL) {
-            p->unk22 = 0x12C;
+            p->otZ = 0x12C;
         }
         work->unk10 = 0;
     } else {
@@ -60,11 +60,11 @@ s32 fx_0e1_1_op80(s32 mode, Fx0e11Work *work, Unk800F78A4 *env, Unk80100C78Entry
                 env->camera->points[2].vz = v.vz;
                 work->unk30 = p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 4), (s32)&work->unk14);
                 if (p != NULL) {
-                    p->unk22 = 0x80;
+                    p->otZ = 0x80;
                 }
                 work->unk2C = p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 6), (s32)&work->unk1C);
                 if (p != NULL) {
-                    p->unk22 = 0x80;
+                    p->otZ = 0x80;
                 }
                 work->unk1C.vx = v.vx;
                 work->unk1C.vy = v.vy;

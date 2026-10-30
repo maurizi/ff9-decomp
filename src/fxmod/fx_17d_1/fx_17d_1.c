@@ -203,12 +203,12 @@ s32 fx_17d_1_op80(s32 mode, Fx17d1Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
                     work->unk74->unk12 = 0xE0;
                     work->unk74->unkC = 0x1C;
                     if (work->unk74 != NULL) {
-                        work->unk74->unk22 = 0x80;
+                        work->unk74->otZ = 0x80;
                     }
                 }
                 p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 8), (s32)&work->unk10);
                 if (p != NULL) {
-                    p->unk22 = 0x80;
+                    p->otZ = 0x80;
                 }
             } else if (frame >= 9) {
                 if (work->unk74 != NULL) {
@@ -216,9 +216,9 @@ s32 fx_17d_1_op80(s32 mode, Fx17d1Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
                         work->unk74 = NULL;
                     }
                     if (work->unk74 != NULL) {
-                        work->unk74->unk5C.vx = work->unk40.vx;
-                        work->unk74->unk5C.vy = work->unk40.vy;
-                        work->unk74->unk5C.vz = work->unk40.vz;
+                        work->unk74->rot.vx = work->unk40.vx;
+                        work->unk74->rot.vy = work->unk40.vy;
+                        work->unk74->rot.vz = work->unk40.vz;
                     }
                 }
             }
@@ -256,7 +256,7 @@ s32 fx_17d_1_op80(s32 mode, Fx17d1Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
                 p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0x9F), (s32)&work->unk10);
                 work->unk70 = p;
                 if (p != NULL) {
-                    p->unk22 = 0x80;
+                    p->otZ = 0x80;
                 }
                 work->unk48.vx = 0x400;
                 work->unk48.vy = 0;
@@ -282,9 +282,9 @@ s32 fx_17d_1_op80(s32 mode, Fx17d1Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
                     work->unk70 = NULL;
                 }
                 if (work->unk70 != NULL) {
-                    work->unk70->unk5C.vx = work->unk48.vx;
-                    work->unk70->unk5C.vy = work->unk48.vy;
-                    work->unk70->unk5C.vz = work->unk48.vz;
+                    work->unk70->rot.vx = work->unk48.vx;
+                    work->unk70->rot.vy = work->unk48.vy;
+                    work->unk70->rot.vz = work->unk48.vz;
                 }
             }
             ex->btlfx_drawScrollMove(frame * 12, 0x340, 0x100, 0x40, 0x80, 0x340, 0x180);

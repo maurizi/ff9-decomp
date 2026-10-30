@@ -34,7 +34,7 @@ s32 fx_036_op80(s32 mode, Fx036Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
             ex->btlfx_getUnitBonePos(0x10, 1, (u16 *)&work->unk1C);
             work->unk0 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 4), (s32)&work->unk1C);
             if (work->unk0 != NULL) {
-                work->unk0->unk22 = ex->btlfx_addRadiusSixth(0x10, 0x80);
+                work->unk0->otZ = ex->btlfx_addRadiusSixth(0x10, 0x80);
             }
             break;
         case 5:
@@ -51,7 +51,7 @@ s32 fx_036_op80(s32 mode, Fx036Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
             work->unk14 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0xB), (s32)&env->targets->centerX);
             work->unk18 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0xC), (s32)&env->targets->centerX);
             if (work->unk10 != NULL) {
-                work->unk10->unk22 = 0x100;
+                work->unk10->otZ = 0x100;
             }
             break;
         }

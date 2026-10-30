@@ -866,8 +866,8 @@ typedef struct {
     s16 file; /* effect file slot of the script (btlfx_getFileData) */
     union {
         struct {
-            u8 unk0[3];
-            u8 unk3; /* count of unk0 */
+            u8 ids[3]; /* camera choices added by btlfx_opAddCameraChoice */
+            u8 count; /* count of ids */
         } b;
         u16 h[2]; /* cleared as two halfwords (btlfx_opAddCameraChoice) */
     } cameras; /* camera choices of the effect (btlfx_opAddCameraChoice) */
@@ -1519,10 +1519,10 @@ typedef struct {
 
 
 typedef struct {
-    u8 unk0;
+    u8 flags; /* weapon table flags: 8 = the reach is along x (btl_getWeaponOffset) */
     u8 pad1[7];
-    u16 unk8;
-    u16 unkA;
+    u16 reach; /* tip offset along y (or x) in the weapon bone's space */
+    u16 offsetZ; /* tip offset along z */
 } Unk800BC1E0;
 
 typedef struct {
@@ -1899,7 +1899,7 @@ typedef struct Pool6CEntry {
     EffElem *elems; /* elements (btlfx_spawnEmitter relocates their textures) */
     s32 unk1C;
     s16 unk20;
-    s16 unk22;
+    s16 otZ; /* otZ of its particles (btlfx_updateParticles); btlfx_opDrawOnUnit / btlfx_startCastEmitter set it */
     EffTail *tail;
     SVECTOR *origin; /* emitter position (btlfx_moveEmitter shifts its particles with it) */
     s32 unk2C;
@@ -1918,9 +1918,9 @@ typedef struct Pool6CEntry {
     s16 unk50[3];
     s16 unk56;
     XY32 unk58;
-    SVECTOR unk5C;
-    SVECTOR *unk64;
-    SVECTOR *unk68;
+    SVECTOR rot; /* emitter rotation (from its EffAnim, or set every frame by the ops: btlfx_opBounce, btlfx_opDrawOnUnit); pad = floor height of the particles */
+    SVECTOR *fieldPos; /* centre of the force-field modes 1-9 (btlfx_updateParticles) */
+    SVECTOR *fieldRot; /* angles of the force field (modes 5, 6, 9: btlfx_toLocalPolar) */
 } Pool6CEntry; /* 0x6C */
 
 typedef struct {
@@ -2016,9 +2016,9 @@ extern char s_hiGetMdlVertexPtrErr[];
 typedef struct Unk800D8EA4 {
     u8 unit; /* unit id */
     u8 motion; /* motion slot */
-    u8 unk2;
+    u8 trimFrames; /* the hold variants end this many frames before the motion's end (op argument) */
     u8 pad3;
-    s32 lastFrame; /* frame the step ends at (motion length - 1, or minus unk2) */
+    s32 lastFrame; /* frame the step ends at (motion length - 1, or minus trimFrames) */
 } Unk800D8EA4;
 
 typedef struct Unk800D7E14 {
@@ -2686,12 +2686,12 @@ typedef struct {
 
 typedef struct {
     u8 pad0[0x27];
-    u8 unk27;
+    u8 bounceCount; /* BtlUnitList.bounceCount */
 } Unk800E4634Arg2C;
 
 typedef struct {
     u8 pad0[0xC];
-    Unk800E4634Arg2C *unkC;
+    Unk800E4634Arg2C *targets; /* g_btlfxEnv->targets */
 } Unk800E4634Arg2;
 
 void btlfx_moveEmitter(Pool30 *, s32, s32);
@@ -2795,7 +2795,7 @@ typedef struct {
     u8 unit; /* unit id moved */
     u8 target;
     u8 unk2;
-    u8 unk3;
+    u8 playMotion; /* btlfx_stepJumpHome plays the unit's motion 0x1E */
     s32 frames; /* move frames (the motion's length) */
     s16 from[4]; /* start position */
     s16 to[4]; /* destination (home) */
@@ -3331,7 +3331,7 @@ typedef struct {
     u8 unit; /* unit id moved (0x10 caster) */
     u8 target; /* unit id moved toward */
     u8 unk2;
-    u8 unk3;
+    u8 playMotion; /* btlfx_stepJumpForward plays the caster's motion 0x1D */
     s16 dist; /* distance ahead of the target (btlfx_pointAhead) */
     s16 dist2; /* second distance (btlfx_pointAhead) */
     s32 frames; /* move frames */
@@ -3342,7 +3342,7 @@ typedef struct {
 typedef struct {
     u8 unit; /* unit id turned */
     u8 target; /* unit id faced, 0xFF = its home */
-    u8 unk2;
+    u8 turnAway; /* 1: face away from the target (+0x800) */
     u8 unk3;
     s32 frames; /* turn frames */
     s32 unk8;
@@ -4255,11 +4255,11 @@ typedef struct {
     u8 unit; /* unit id, 0xFF = none (targets' centre) */
     s16 otBias; /* otZ for the unit (btlfx_addRadiusSixth) */
     s16 scale; /* sprite scale, -1 = none (btlfx_drawAnimQuads/btlfx_drawParticles arg 3) */
-    s16 unk6;
+    s16 roll; /* z rotation of the sprites (op argument b << 8) */
     s16 dataId; /* common data id of the sprite set (func_800E4530) */
     s16 emitterId; /* common data id of the emitter (kind 3) */
     s16 colorIdx; /* g_btlfxCommonCluts palette index */
-    s16 unkE; /* frame count */
+    s16 frames; /* frame count (kind 2: frame the emitter starts) */
     void *data; /* sprite set */
     s32 frame; /* frame */
     s16 offX; /* x offset (x4) */

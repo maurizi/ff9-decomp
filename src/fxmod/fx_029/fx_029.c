@@ -16,7 +16,7 @@ s32 fx_029_op80(s32 mode, Fx029Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
         ((s32 *)&work->unk8)[1] = t;
         work->unk4 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 7), (s32)&work->unk8);
         if (work->unk4 != NULL) {
-            work->unk4->unk22 = 0x80;
+            work->unk4->otZ = 0x80;
         }
     } else {
         frame = entry->frame;

@@ -17,14 +17,14 @@ void btl_initEquipElements(Character *c, BtlUnit *u) {
 }
 
 void btl_getWeaponOffset(Unk800BC1E0 *arg0, s16 *arg1) {
-    if (!(arg0->unk0 & 8)) {
+    if (!(arg0->flags & 8)) {
         arg1[0] = 0;
-        arg1[1] = arg0->unk8;
+        arg1[1] = arg0->reach;
     } else {
-        arg1[0] = arg0->unk8;
+        arg1[0] = arg0->reach;
         arg1[1] = 0;
     }
-    arg1[2] = arg0->unkA;
+    arg1[2] = arg0->offsetZ;
 }
 
 void btl_updateUnitModel(BtlUnit *u, s32 *ot) {

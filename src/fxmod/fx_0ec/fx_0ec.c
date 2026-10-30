@@ -434,11 +434,11 @@ s32 fx_0ec_op80(s32 mode, Fx0ecWork80 *work, Unk800F78A4 *env, Unk80100C78Entry 
         work->unk5C = k;
         p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 8), (s32)&work->unk18);
         if (p != NULL) {
-            p->unk22 = -0x40;
+            p->otZ = -0x40;
         }
         p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0xC), (s32)&work->unk20);
         if (p != NULL) {
-            p->unk22 = 0x80;
+            p->otZ = 0x80;
         }
         work->unk0 = 0;
         work->unk4 = 0;
@@ -571,7 +571,7 @@ s32 fx_0ec_op80(s32 mode, Fx0ecWork80 *work, Unk800F78A4 *env, Unk80100C78Entry 
                 setVector(&work->unk28[i], out.vx, out.vy, out.vz);
                 p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0xB), (s32)&work->unk28[i]);
                 if (p != NULL) {
-                    p->unk22 = 0x40;
+                    p->otZ = 0x40;
                 }
             }
         }
@@ -613,9 +613,9 @@ s32 fx_0ec_op80(s32 mode, Fx0ecWork80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             sv.vz = work->unk10.vz;
             sv.vy += 0x800;
             if (work->unk60 != NULL) {
-                work->unk60->unk5C.vx = sv.vx;
-                work->unk60->unk5C.vy = sv.vy;
-                work->unk60->unk5C.vz = sv.vz;
+                work->unk60->rot.vx = sv.vx;
+                work->unk60->rot.vy = sv.vy;
+                work->unk60->rot.vz = sv.vz;
             }
         }
         sv.vx = 0;

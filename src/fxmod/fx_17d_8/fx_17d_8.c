@@ -186,7 +186,7 @@ s32 fx_17d_8_op80(s32 mode, Fx17d8Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
                 p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0xB), (s32)&work->unk10);
                 if (p != NULL) {
                     p->unk2C = (s32)&work->unk18;
-                    p->unk22 = 0x80;
+                    p->otZ = 0x80;
                 }
             }
             cv.r = cv.g = cv.b = 0x84;

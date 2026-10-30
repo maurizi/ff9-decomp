@@ -25,15 +25,15 @@ s32 fx_087_op80(s32 mode, Fx087Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
                 work->unk4 = NULL;
             }
             if (work->unk4 != NULL) {
-                work->unk4->unk5C.vx = work->unk2C.vx;
-                work->unk4->unk5C.vy = work->unk2C.vy;
-                work->unk4->unk5C.vz = work->unk2C.vz;
+                work->unk4->rot.vx = work->unk2C.vx;
+                work->unk4->rot.vy = work->unk2C.vy;
+                work->unk4->rot.vz = work->unk2C.vz;
             }
         }
         if (frame == 8) {
             work->unk8 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 8), (s32)&work->unk14);
             if (work->unk8 != NULL) {
-                work->unk8->unk22 = ex->btlfx_addRadiusSixth(0, 0x20);
+                work->unk8->otZ = ex->btlfx_addRadiusSixth(0, 0x20);
             }
         }
         return frame >= 0x28;

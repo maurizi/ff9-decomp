@@ -136,19 +136,19 @@ s32 fx_1f3_op80(s32 mode, Fx1f3Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             ex->btlfx_getUnitBonePos(0x10, 0x2E, (u16 *)&work->unk64);
             work->unk40[0] = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0xE), (s32)&work->unk64);
             if (work->unk40[0] != NULL) {
-                work->unk40[0]->unk22 = 0x200;
+                work->unk40[0]->otZ = 0x200;
             }
             break;
         case 0x2A:
             p = work->unk40[1] = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0xF), (s32)&work->unk64);
             if (p != NULL) {
-                p->unk22 = 0x200;
+                p->otZ = 0x200;
             }
             break;
         case 0x52:
             p = work->unk40[3] = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 7), (s32)&work->unk5C);
             if (p != NULL) {
-                p->unk22 = 0x200;
+                p->otZ = 0x200;
             }
             break;
         case 0x62:
@@ -158,12 +158,12 @@ s32 fx_1f3_op80(s32 mode, Fx1f3Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
                 work->unk40[2]->unk12 = 0x24;
                 work->unk40[2]->unkC = 0xCC;
                 if (work->unk40[2] != NULL) {
-                    work->unk40[2]->unk22 = 0x200;
+                    work->unk40[2]->otZ = 0x200;
                 }
             }
             p = work->unk40[4] = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 4), (s32)&work->unk5C);
             if (p != NULL) {
-                p->unk22 = 0x200;
+                p->otZ = 0x200;
             }
             break;
         case 0x72:
@@ -172,14 +172,14 @@ s32 fx_1f3_op80(s32 mode, Fx1f3Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
         case 0x7E:
             p = work->unk40[6] = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 3), (s32)&work->unk5C);
             if (p != NULL) {
-                p->unk22 = 0x200;
+                p->otZ = 0x200;
             }
             break;
         case 0x92:
             ex->btlfx_stopEmitter(work->unk40[6]);
             p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0x12), (s32)&work->unk5C);
             if (p != NULL) {
-                p->unk22 = 0x200;
+                p->otZ = 0x200;
             }
             work->unk0[1] = 0x10;
             break;
@@ -201,7 +201,7 @@ s32 fx_1f3_op80(s32 mode, Fx1f3Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             work->unk0[4] = 0x60;
             p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0xB), (s32)&work->unk5C);
             if (p != NULL) {
-                p->unk22 = 0x200;
+                p->otZ = 0x200;
             }
             break;
         case 0xBE:

@@ -92,15 +92,15 @@ s32 fx_083_op80(s32 mode, Fx083Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
         case 0x30:
             e = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0xB), (s32)&work->unk160);
             if (e != NULL) {
-                e->unk22 = ex->btlfx_addRadiusSixth(0, 0x100);
+                e->otZ = ex->btlfx_addRadiusSixth(0, 0x100);
             }
             e = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0xC), (s32)&work->unk160);
             if (e != NULL) {
-                e->unk22 = ex->btlfx_addRadiusSixth(0, 0x100);
+                e->otZ = ex->btlfx_addRadiusSixth(0, 0x100);
             }
             e = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 7), (s32)&work->unk160);
             if (e != NULL) {
-                e->unk22 = ex->btlfx_addRadiusSixth(0, 0x100);
+                e->otZ = ex->btlfx_addRadiusSixth(0, 0x100);
             }
             break;
         case 0x34:

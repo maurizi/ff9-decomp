@@ -341,14 +341,14 @@ s32 fx_19f_op81(s32 mode, Fx19fWork81 *work, Unk800F78A4 *env, Unk80100C78Entry 
                 p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0xC), (s32)&work->unk10);
                 work->unk6C = p;
                 if (p != NULL) {
-                    p->unk22 = 0x96;
+                    p->otZ = 0x96;
                 }
             }
             if (frame == 14) {
                 p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0x16), (s32)&work->unk8);
                 work->unk68 = p;
                 if (p != NULL) {
-                    p->unk22 = -0x20;
+                    p->otZ = -0x20;
                 }
             }
             if (frame < 8) {
@@ -432,7 +432,7 @@ s32 fx_19f_op81(s32 mode, Fx19fWork81 *work, Unk800F78A4 *env, Unk80100C78Entry 
                 ex->btlfx_startFadeBackground(-1, 6);
                 p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0x2A), (s32)&work->unk10);
                 if (p != NULL) {
-                    p->unk22 = 0x96;
+                    p->otZ = 0x96;
                 }
             }
             break;

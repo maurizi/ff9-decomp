@@ -72,7 +72,7 @@ s32 fx_17d_3_op80(s32 mode, Fx17d3Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
                     p->unk14 = (s32)D_801EF084;
                     p->unk12 = 0x10;
                     p->unkC = 0xCC;
-                    p->unk22 = 0x40;
+                    p->otZ = 0x40;
                 }
             }
             sc.vx = sc.vz = 0x555;
@@ -144,7 +144,7 @@ s32 fx_17d_3_op80(s32 mode, Fx17d3Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
                     p->unk14 = (s32)D_801EF084;
                     p->unk12 = 0x10;
                     p->unkC = 0xCC;
-                    p->unk22 = 0x40;
+                    p->otZ = 0x40;
                 }
             }
             sc.vx = sc.vz = 0x555;
@@ -233,7 +233,7 @@ s32 fx_17d_3_op80(s32 mode, Fx17d3Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
                     work->unk78->unkC = 0x1C;
                 }
                 if (work->unk78 != NULL) {
-                    work->unk78->unk22 = 0x20;
+                    work->unk78->otZ = 0x20;
                 }
                 work->unk7C = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 1), (s32)&work->unk18);
                 if (work->unk7C != NULL) {
@@ -242,7 +242,7 @@ s32 fx_17d_3_op80(s32 mode, Fx17d3Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
                     work->unk7C->unkC = 0x1C;
                 }
                 if (work->unk7C != NULL) {
-                    work->unk7C->unk22 = 0x20;
+                    work->unk7C->otZ = 0x20;
                 }
             }
             v.vx = 0xA00;
@@ -253,9 +253,9 @@ s32 fx_17d_3_op80(s32 mode, Fx17d3Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
                     work->unk78 = NULL;
                 }
                 if (work->unk78 != NULL) {
-                    work->unk78->unk5C.vx = v.vx;
-                    work->unk78->unk5C.vy = v.vy;
-                    work->unk78->unk5C.vz = v.vz;
+                    work->unk78->rot.vx = v.vx;
+                    work->unk78->rot.vy = v.vy;
+                    work->unk78->rot.vz = v.vz;
                 }
             }
             if (work->unk7C != NULL) {
@@ -263,9 +263,9 @@ s32 fx_17d_3_op80(s32 mode, Fx17d3Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
                     work->unk7C = NULL;
                 }
                 if (work->unk7C != NULL) {
-                    work->unk7C->unk5C.vx = v.vx;
-                    work->unk7C->unk5C.vy = v.vy;
-                    work->unk7C->unk5C.vz = v.vz;
+                    work->unk7C->rot.vx = v.vx;
+                    work->unk7C->rot.vy = v.vy;
+                    work->unk7C->rot.vz = v.vz;
                 }
             }
             ex->btlfx_drawScrollMove(frame * 0x10, 0x2C0, 0x100, 0x40, 0x80, 0x2C0, 0x180);
@@ -317,7 +317,7 @@ s32 fx_17d_3_op80(s32 mode, Fx17d3Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
                     work->unk78->unkC = 0x1C;
                 }
                 if (work->unk78 != NULL) {
-                    work->unk78->unk22 = 0x20;
+                    work->unk78->otZ = 0x20;
                 }
                 work->unk7C = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 6), (s32)&work->unk18);
                 if (work->unk7C != NULL) {
@@ -326,7 +326,7 @@ s32 fx_17d_3_op80(s32 mode, Fx17d3Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
                     work->unk7C->unkC = 0x1C;
                 }
                 if (work->unk7C != NULL) {
-                    work->unk7C->unk22 = 0x20;
+                    work->unk7C->otZ = 0x20;
                 }
             }
             v.vx = 0xA00;
@@ -337,9 +337,9 @@ s32 fx_17d_3_op80(s32 mode, Fx17d3Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
                     work->unk78 = NULL;
                 }
                 if (work->unk78 != NULL) {
-                    work->unk78->unk5C.vx = v.vx;
-                    work->unk78->unk5C.vy = v.vy;
-                    work->unk78->unk5C.vz = v.vz;
+                    work->unk78->rot.vx = v.vx;
+                    work->unk78->rot.vy = v.vy;
+                    work->unk78->rot.vz = v.vz;
                 }
             }
             if (work->unk7C != NULL) {
@@ -347,9 +347,9 @@ s32 fx_17d_3_op80(s32 mode, Fx17d3Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
                     work->unk7C = NULL;
                 }
                 if (work->unk7C != NULL) {
-                    work->unk7C->unk5C.vx = v.vx;
-                    work->unk7C->unk5C.vy = v.vy;
-                    work->unk7C->unk5C.vz = v.vz;
+                    work->unk7C->rot.vx = v.vx;
+                    work->unk7C->rot.vy = v.vy;
+                    work->unk7C->rot.vz = v.vz;
                 }
             }
             ex->btlfx_drawScrollMove(frame * 0x10, 0x2C0, 0x100, 0x40, 0x80, 0x2C0, 0x180);
@@ -393,7 +393,7 @@ s32 fx_17d_3_op80(s32 mode, Fx17d3Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
                     work->unk78->unkC = 0x1C;
                 }
                 if (work->unk78 != NULL) {
-                    work->unk78->unk22 = 0x20;
+                    work->unk78->otZ = 0x20;
                 }
                 work->unk7C = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 6), (s32)&work->unk18);
                 if (work->unk7C != NULL) {
@@ -402,7 +402,7 @@ s32 fx_17d_3_op80(s32 mode, Fx17d3Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
                     work->unk7C->unkC = 0x1C;
                 }
                 if (work->unk7C != NULL) {
-                    work->unk7C->unk22 = 0x20;
+                    work->unk7C->otZ = 0x20;
                 }
             }
             v.vx = 0x400;
@@ -413,9 +413,9 @@ s32 fx_17d_3_op80(s32 mode, Fx17d3Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
                     work->unk78 = NULL;
                 }
                 if (work->unk78 != NULL) {
-                    work->unk78->unk5C.vx = v.vx;
-                    work->unk78->unk5C.vy = v.vy;
-                    work->unk78->unk5C.vz = v.vz;
+                    work->unk78->rot.vx = v.vx;
+                    work->unk78->rot.vy = v.vy;
+                    work->unk78->rot.vz = v.vz;
                 }
             }
             if (work->unk7C != NULL) {
@@ -423,9 +423,9 @@ s32 fx_17d_3_op80(s32 mode, Fx17d3Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
                     work->unk7C = NULL;
                 }
                 if (work->unk7C != NULL) {
-                    work->unk7C->unk5C.vx = v.vx;
-                    work->unk7C->unk5C.vy = v.vy;
-                    work->unk7C->unk5C.vz = v.vz;
+                    work->unk7C->rot.vx = v.vx;
+                    work->unk7C->rot.vy = v.vy;
+                    work->unk7C->rot.vz = v.vz;
                 }
             }
             ex->Hi_DrawEffModel(&work->unk34, (VECTOR *)work->unk28, (s32)work->unk3C, work->unk68);
@@ -473,11 +473,11 @@ s32 fx_17d_3_op80(s32 mode, Fx17d3Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
                     work->unk78->unkC = 0x1C;
                 }
                 if (work->unk78 != NULL) {
-                    work->unk78->unk22 = -0x80;
+                    work->unk78->otZ = -0x80;
                 }
                 ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0xE), (s32)&work->unk10);
                 if (work->unk78 != NULL) {
-                    work->unk78->unk22 = -0x80;
+                    work->unk78->otZ = -0x80;
                 }
             }
             v.vx = 0x400;
@@ -488,9 +488,9 @@ s32 fx_17d_3_op80(s32 mode, Fx17d3Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
                     work->unk78 = NULL;
                 }
                 if (work->unk78 != NULL) {
-                    work->unk78->unk5C.vx = v.vx;
-                    work->unk78->unk5C.vy = v.vy;
-                    work->unk78->unk5C.vz = v.vz;
+                    work->unk78->rot.vx = v.vx;
+                    work->unk78->rot.vy = v.vy;
+                    work->unk78->rot.vz = v.vz;
                 }
             }
             if (frame == 0) {
@@ -501,7 +501,7 @@ s32 fx_17d_3_op80(s32 mode, Fx17d3Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
                     work->unk7C->unkC = 0x1C;
                 }
                 if (work->unk7C != NULL) {
-                    work->unk7C->unk22 = 0x20;
+                    work->unk7C->otZ = 0x20;
                 }
             }
             v.vx = 0x400;
@@ -512,9 +512,9 @@ s32 fx_17d_3_op80(s32 mode, Fx17d3Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
                     work->unk7C = NULL;
                 }
                 if (work->unk7C != NULL) {
-                    work->unk7C->unk5C.vx = v.vx;
-                    work->unk7C->unk5C.vy = v.vy;
-                    work->unk7C->unk5C.vz = v.vz;
+                    work->unk7C->rot.vx = v.vx;
+                    work->unk7C->rot.vy = v.vy;
+                    work->unk7C->rot.vz = v.vz;
                 }
             }
             ex->Hi_DrawEffModel(&work->unk34, (VECTOR *)work->unk28, (s32)work->unk3C, work->unk68);
@@ -566,11 +566,11 @@ s32 fx_17d_3_op80(s32 mode, Fx17d3Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
                     work->unk78->unkC = 0x1C;
                 }
                 if (work->unk78 != NULL) {
-                    work->unk78->unk22 = -0x80;
+                    work->unk78->otZ = -0x80;
                 }
                 ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0xE), (s32)&work->unk10);
                 if (work->unk78 != NULL) {
-                    work->unk78->unk22 = -0x80;
+                    work->unk78->otZ = -0x80;
                 }
             }
             v.vx = 0x400;
@@ -581,9 +581,9 @@ s32 fx_17d_3_op80(s32 mode, Fx17d3Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
                     work->unk78 = NULL;
                 }
                 if (work->unk78 != NULL) {
-                    work->unk78->unk5C.vx = v.vx;
-                    work->unk78->unk5C.vy = v.vy;
-                    work->unk78->unk5C.vz = v.vz;
+                    work->unk78->rot.vx = v.vx;
+                    work->unk78->rot.vy = v.vy;
+                    work->unk78->rot.vz = v.vz;
                 }
             }
             if (frame == 0) {
@@ -594,7 +594,7 @@ s32 fx_17d_3_op80(s32 mode, Fx17d3Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
                     work->unk7C->unkC = 0x1C;
                 }
                 if (work->unk7C != NULL) {
-                    work->unk7C->unk22 = 0x20;
+                    work->unk7C->otZ = 0x20;
                 }
             }
             v.vx = 0x400;
@@ -605,9 +605,9 @@ s32 fx_17d_3_op80(s32 mode, Fx17d3Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
                     work->unk7C = NULL;
                 }
                 if (work->unk7C != NULL) {
-                    work->unk7C->unk5C.vx = v.vx;
-                    work->unk7C->unk5C.vy = v.vy;
-                    work->unk7C->unk5C.vz = v.vz;
+                    work->unk7C->rot.vx = v.vx;
+                    work->unk7C->rot.vy = v.vy;
+                    work->unk7C->rot.vz = v.vz;
                 }
             }
             ex->Hi_DrawEffModel(&work->unk34, (VECTOR *)work->unk28, (s32)work->unk3C, work->unk68);
@@ -657,7 +657,7 @@ s32 fx_17d_3_op80(s32 mode, Fx17d3Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
             if (frame == 0xA) {
                 work->unk78 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 9), (s32)&work->unk10);
                 if (work->unk78 != NULL) {
-                    work->unk78->unk22 = 0x80;
+                    work->unk78->otZ = 0x80;
                 }
             }
             v.vx = -0x270;
@@ -668,9 +668,9 @@ s32 fx_17d_3_op80(s32 mode, Fx17d3Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
                     work->unk78 = NULL;
                 }
                 if (work->unk78 != NULL) {
-                    work->unk78->unk5C.vx = v.vx;
-                    work->unk78->unk5C.vy = v.vy;
-                    work->unk78->unk5C.vz = v.vz;
+                    work->unk78->rot.vx = v.vx;
+                    work->unk78->rot.vy = v.vy;
+                    work->unk78->rot.vz = v.vz;
                 }
             }
             ex->Hi_DrawEffModel(&work->unk34, (VECTOR *)work->unk28, (s32)work->unk3C, work->unk68);

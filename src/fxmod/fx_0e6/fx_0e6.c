@@ -52,7 +52,7 @@ s32 fx_0e6_op80(s32 mode, Fx0e6Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
         if (frame == 4) {
             Pool6CEntry *p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 8), (s32)&work->unk34);
             if (p != NULL) {
-                p->unk22 = ex->btlfx_addRadiusSixth(0, 0x80);
+                p->otZ = ex->btlfx_addRadiusSixth(0, 0x80);
             }
         }
         return frame >= 0x1E;

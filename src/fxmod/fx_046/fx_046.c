@@ -17,11 +17,11 @@ s32 fx_046_op80(s32 mode, Fx046Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
         ((s32 *)&work->unk4)[1] = t;
         p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 2), (s32)&work->unk4);
         if (p != NULL) {
-            p->unk22 = ex->btlfx_addRadiusSixth(0, 0x20);
+            p->otZ = ex->btlfx_addRadiusSixth(0, 0x20);
         }
         p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 3), (s32)&work->unk4);
         if (p != NULL) {
-            p->unk22 = ex->btlfx_addRadiusSixth(0, 0x20);
+            p->otZ = ex->btlfx_addRadiusSixth(0, 0x20);
         }
     } else {
         frame = entry->frame;

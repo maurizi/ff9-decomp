@@ -431,15 +431,15 @@ s32 fx_195_op80(s32 mode, Fx195Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
                 ex->btlfx_drawScreenTint((u32 *)(env->ot + 1), 1, 0, 0x80, 0xFF);
                 p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0xF), (s32)&work->unk10);
                 if (p != NULL) {
-                    p->unk22 = 0x300;
+                    p->otZ = 0x300;
                 }
                 p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0xB), (s32)&work->unk10);
                 if (p != NULL) {
-                    p->unk22 = 0x300;
+                    p->otZ = 0x300;
                 }
                 p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0x17), (s32)&work->unk10);
                 if (p != NULL) {
-                    p->unk22 = 0x400;
+                    p->otZ = 0x400;
                 }
                 work->unk30 = ex->btlfx_playFileSound(0x22, entry->file, -1);
                 work->unk32 = ex->btlfx_playFileSound(0x23, entry->file, -1);
@@ -683,7 +683,7 @@ s32 fx_195_op80(s32 mode, Fx195Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
                 work->unk18.vy -= 0x400;
                 p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0x10), (s32)&work->unk18);
                 if (p != NULL) {
-                    p->unk22 = 0x180;
+                    p->otZ = 0x180;
                 }
             }
             env->otZ = 0x300;

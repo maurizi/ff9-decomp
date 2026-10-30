@@ -23,14 +23,14 @@ s32 fx_01e_op80(s32 mode, Fx01eWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
         frame = entry->frame;
         if (work->unk0 == 0) {
             if (work->unk4 != NULL) {
-                work->unk4->unk5C.vx = work->unk18.vx;
-                work->unk4->unk5C.vy = work->unk18.vy;
-                work->unk4->unk5C.vz = work->unk18.vz;
+                work->unk4->rot.vx = work->unk18.vx;
+                work->unk4->rot.vy = work->unk18.vy;
+                work->unk4->rot.vz = work->unk18.vz;
             }
             if (frame == 8) {
                 p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 4), (s32)&work->unk10);
                 if (p != NULL) {
-                    p->unk22 = ex->btlfx_addRadiusSixth(0, 0xC);
+                    p->otZ = ex->btlfx_addRadiusSixth(0, 0xC);
                 }
             }
             if (frame >= 0x3C) {

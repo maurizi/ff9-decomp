@@ -87,7 +87,7 @@ s32 fx_0a0_op80(s32 mode, Fx0a0Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
         ex->btlfx_getUnitBodyPos(0, 0, (s16 *)&work->unk14);
         work->unk1C = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 1), (s32)&work->unk14);
         if (work->unk1C != NULL) {
-            work->unk1C->unk22 = ex->btlfx_addRadiusSixth(0, 0x10);
+            work->unk1C->otZ = ex->btlfx_addRadiusSixth(0, 0x10);
         }
         if (work->unk1C != NULL) {
             work->unk1C->unk14 = (s32)D_801E7DA4;
@@ -97,7 +97,7 @@ s32 fx_0a0_op80(s32 mode, Fx0a0Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
         work->unk1C->elems->unk24 = func_801E78F8;
         work->unk20 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 2), (s32)&work->unkC);
         if (work->unk20 != NULL) {
-            work->unk20->unk22 = 0x20;
+            work->unk20->otZ = 0x20;
         }
     } else {
         frame = entry->frame;

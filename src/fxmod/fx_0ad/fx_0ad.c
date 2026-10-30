@@ -20,21 +20,21 @@ s32 fx_0ad_op80(s32 mode, Fx0adWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
             work->unk4->unkC = 0x5C;
         }
         if (work->unk4 != NULL) {
-            work->unk4->unk22 = 0x20;
+            work->unk4->otZ = 0x20;
         }
     } else {
         frame = entry->frame;
         switch (work->unk0) {
         case 0:
             if (work->unk4 != NULL) {
-                work->unk4->unk5C.vx = work->unk18.vx;
-                work->unk4->unk5C.vy = work->unk18.vy;
-                work->unk4->unk5C.vz = work->unk18.vz;
+                work->unk4->rot.vx = work->unk18.vx;
+                work->unk4->rot.vy = work->unk18.vy;
+                work->unk4->rot.vz = work->unk18.vz;
             }
             if (frame == 0x16) {
                 p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 1), (s32)&work->unk10);
                 if (p != NULL) {
-                    p->unk22 = ex->btlfx_addRadiusSixth(0, 0x10);
+                    p->otZ = ex->btlfx_addRadiusSixth(0, 0x10);
                 }
             }
             if (frame >= 0x28) {

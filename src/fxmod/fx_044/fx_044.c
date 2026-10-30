@@ -20,9 +20,9 @@ s32 fx_044_op80(s32 mode, Fx044Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
                 work->unk4 = NULL;
             }
             if (work->unk4 != NULL) {
-                work->unk4->unk5C.vx = work->unk18.vx;
-                work->unk4->unk5C.vy = work->unk18.vy;
-                work->unk4->unk5C.vz = work->unk18.vz;
+                work->unk4->rot.vx = work->unk18.vx;
+                work->unk4->rot.vy = work->unk18.vy;
+                work->unk4->rot.vz = work->unk18.vz;
             }
         }
         return frame >= 0x28;

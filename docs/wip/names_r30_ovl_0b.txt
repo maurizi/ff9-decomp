@@ -178,3 +178,13 @@ D_800A7C20 s_btlDetectItemSuffix
 # D_800FD6E0 = g_btlCmdTable[BTL_CMD_SWD_MAG]
 # FIELDS include/ovl_0b.h BtlUnitList: unk25=fxArgs
 # FIELDS include/ovl_0b.h BtlCmd: unk0_9=magicFailed
+# FIELDS include/ovl_0b.h Pool6CEntry: unk22=otZ,unk5C=rot,unk64=fieldPos,unk68=fieldRot
+# FIELDS include/ovl_0b.h Unk800E57B0: unk6=roll,unkE=frames
+# FIELDS include/ovl_0b.h Unk800E4634Arg2C: unk27=bounceCount
+# FIELDS include/ovl_0b.h Unk800E4634Arg2: unkC=targets
+# FIELDS include/ovl_0b.h Unk800BC1E0: unk0=flags,unk8=reach,unkA=offsetZ
+# FIELDS include/ovl_0b.h Unk800D7C9C: unk3=playMotion
+# FIELDS include/ovl_0b.h Unk800D955C: unk3=playMotion
+# FIELDS include/ovl_0b.h Unk800D8EA4: unk2=trimFrames
+# FIELDS include/ovl_0b.h Unk800D805C: unk2=turnAway
+# FIELDS include/ovl_0b.h Unk800FEC40: cameras.b.unk0=ids,cameras.b.unk3=count

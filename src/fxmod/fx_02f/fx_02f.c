@@ -46,15 +46,15 @@ s32 fx_02f_op80(s32 mode, Fx02fWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
         ex->btlfx_getUnitRot(0x10, (s16 *)&rot);
         work->unk0.vy += (((work->unk0.vy + 0x1000) & 0xFFF) - ((rot.vy + 0x1000) & 0xFFF)) * env->targets->fxArgs[1];
         if (work->unk20 != NULL) {
-            work->unk20->unk5C.vx = work->unk0.vx;
-            work->unk20->unk5C.vy = work->unk0.vy;
-            work->unk20->unk5C.vz = work->unk0.vz;
+            work->unk20->rot.vx = work->unk0.vx;
+            work->unk20->rot.vy = work->unk0.vy;
+            work->unk20->rot.vz = work->unk0.vz;
         }
         if (frame == 0x10) {
             for (i = 0; i < env->targets->targetCount; i++) {
                 p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 5), (s32)&D_801E7AFC[i]);
                 if (p != NULL) {
-                    p->unk22 = ex->btlfx_addRadiusSixth(i, 0x40);
+                    p->otZ = ex->btlfx_addRadiusSixth(i, 0x40);
                 }
             }
         }

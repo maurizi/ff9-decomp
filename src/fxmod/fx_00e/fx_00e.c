@@ -24,11 +24,11 @@ s32 fx_00e_op80(s32 mode, Fx00eWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
         work->unk24 = ex->Hi_RegisterTexEffModel((BtlUnit9C8 *)ex->btlfx_getFileData(entry->file, 4), 0x138, 0xFFFF, 0, 0x80);
         p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0xA), (s32)&work->unk8);
         if (p != NULL) {
-            p->unk22 = ex->btlfx_addRadiusSixth(0, 0x20);
+            p->otZ = ex->btlfx_addRadiusSixth(0, 0x20);
         }
         p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0xB), (s32)&work->unk8);
         if (p != NULL) {
-            p->unk22 = ex->btlfx_addRadiusSixth(0, 0x20);
+            p->otZ = ex->btlfx_addRadiusSixth(0, 0x20);
         }
     } else {
         frame = entry->frame;

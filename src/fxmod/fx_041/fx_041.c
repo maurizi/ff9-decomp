@@ -44,10 +44,10 @@ s32 fx_041_op80(s32 mode, Fx041Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             work->unk0 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 7), (s32)&work->unk28);
             work->unk4 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 2), (s32)&work->unk20);
             if (work->unk0 != NULL) {
-                work->unk0->unk22 = ex->btlfx_addRadiusSixth(0x10, 0x20);
+                work->unk0->otZ = ex->btlfx_addRadiusSixth(0x10, 0x20);
             }
             if (work->unk4 != NULL) {
-                work->unk4->unk22 = ex->btlfx_addRadiusSixth(0x10, 0x20);
+                work->unk4->otZ = ex->btlfx_addRadiusSixth(0x10, 0x20);
             }
             break;
         case 4:
@@ -55,17 +55,17 @@ s32 fx_041_op80(s32 mode, Fx041Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             work->unk8 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0xF), (s32)&work->unk18);
             work->unkC = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0x10), (s32)&work->unk18);
             if (work->unk8 != NULL) {
-                work->unk8->unk22 = ex->btlfx_addRadiusSixth(0, 0x20);
+                work->unk8->otZ = ex->btlfx_addRadiusSixth(0, 0x20);
             }
             if (work->unkC != NULL) {
-                work->unkC->unk22 = ex->btlfx_addRadiusSixth(0, 0x20);
+                work->unkC->otZ = ex->btlfx_addRadiusSixth(0, 0x20);
             }
             break;
         case 0xF:
             ex->btlfx_getUnitPos(0x10, (s16 *)&work->unk28);
             work->unk10 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 3), (s32)&work->unk28);
             if (work->unk10 != NULL) {
-                work->unk10->unk22 = ex->btlfx_addRadiusSixth(0x10, 0x20);
+                work->unk10->otZ = ex->btlfx_addRadiusSixth(0x10, 0x20);
             }
             break;
         case 0x12:

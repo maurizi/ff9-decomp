@@ -27,7 +27,7 @@ s32 fx_09c_op80(s32 mode, Fx09cWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
         if (frame == 4) {
             p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 1), (s32)&work->unk10);
             if (p != NULL) {
-                p->unk22 = ex->btlfx_addRadiusSixth(0, 0x80);
+                p->otZ = ex->btlfx_addRadiusSixth(0, 0x80);
             }
         }
         if (frame == 0xA) {
@@ -46,7 +46,7 @@ s32 fx_09c_op80(s32 mode, Fx09cWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
         if (frame == 0x12) {
             p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 2), (s32)&work->unk18);
             if (p != NULL) {
-                p->unk22 = ex->btlfx_addRadiusSixth(0, 0x80);
+                p->otZ = ex->btlfx_addRadiusSixth(0, 0x80);
             }
         }
         if (work->unk20 != NULL) {
@@ -54,9 +54,9 @@ s32 fx_09c_op80(s32 mode, Fx09cWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
                 work->unk20 = NULL;
             }
             if (work->unk20 != NULL) {
-                work->unk20->unk5C.vx = work->unk34.vx;
-                work->unk20->unk5C.vy = work->unk34.vy;
-                work->unk20->unk5C.vz = work->unk34.vz;
+                work->unk20->rot.vx = work->unk34.vx;
+                work->unk20->rot.vy = work->unk34.vy;
+                work->unk20->rot.vz = work->unk34.vz;
             }
         }
         if (work->unk3C != NULL) {
@@ -64,9 +64,9 @@ s32 fx_09c_op80(s32 mode, Fx09cWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
                 work->unk3C = NULL;
             }
             if (work->unk3C != NULL) {
-                work->unk3C->unk5C.vx = work->unk34.vx;
-                work->unk3C->unk5C.vy = work->unk34.vy;
-                work->unk3C->unk5C.vz = work->unk34.vz;
+                work->unk3C->rot.vx = work->unk34.vx;
+                work->unk3C->rot.vy = work->unk34.vy;
+                work->unk3C->rot.vz = work->unk34.vz;
             }
         }
         return frame >= 0x2D;

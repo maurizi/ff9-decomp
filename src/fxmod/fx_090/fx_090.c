@@ -28,7 +28,7 @@ s32 fx_090_op80(s32 mode, Fx090Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
             work->unk0->unkC = 0xA0;
         }
         if (work->unkC != NULL) {
-            work->unkC->unk22 = 0x180;
+            work->unkC->otZ = 0x180;
         }
         work->unk24.vx = 0;
         work->unk24.vy = 0;
@@ -50,7 +50,7 @@ s32 fx_090_op80(s32 mode, Fx090Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
             work->unk10 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0xC), (s32)&work->unk50);
             work->unk20 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0xF), (s32)&work->unk50);
             if (work->unk10 != NULL) {
-                work->unk10->unk22 = 0x180;
+                work->unk10->otZ = 0x180;
             }
             work->unk68 = 0x12;
             break;

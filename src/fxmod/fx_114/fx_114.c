@@ -785,7 +785,7 @@ s32 fx_114_op83(s32 mode, Fx114Work83 *work, Unk800F78A4 *env, Unk80100C78Entry 
             work->unkFC.vz = work->unk28.vz;
             work->unk8 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0xB), (s32)&work->unkFC);
             if (work->unk8 != NULL) {
-                work->unk8->unk22 = 0x100;
+                work->unk8->otZ = 0x100;
             }
             break;
         case 4:

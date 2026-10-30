@@ -82,10 +82,10 @@ s32 fx_1a6_op80(s32 mode, Fx1a6Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             ((EffMotion *)work->unk4->file)->unk8 = D_801E8244[work->unk48];
         }
         if (work->unk0 != NULL) {
-            work->unk0->unk22 = ex->btlfx_addRadiusSixth(0x10, 0x20);
+            work->unk0->otZ = ex->btlfx_addRadiusSixth(0x10, 0x20);
         }
         if (work->unk4 != NULL) {
-            work->unk4->unk22 = ex->btlfx_addRadiusSixth(0, 0x20);
+            work->unk4->otZ = ex->btlfx_addRadiusSixth(0, 0x20);
         }
     } else {
         frame = entry->frame;
@@ -102,10 +102,10 @@ s32 fx_1a6_op80(s32 mode, Fx1a6Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
                 work->unk8->unkC = 0x40;
             }
             if (work->unk8 != NULL) {
-                work->unk8->unk22 = ex->btlfx_addRadiusSixth(0, 0x80);
+                work->unk8->otZ = ex->btlfx_addRadiusSixth(0, 0x80);
             }
             if (work->unkC != NULL) {
-                work->unkC->unk22 = ex->btlfx_addRadiusSixth(0, 0x80);
+                work->unkC->otZ = ex->btlfx_addRadiusSixth(0, 0x80);
             }
             break;
         case 8:
@@ -119,9 +119,9 @@ s32 fx_1a6_op80(s32 mode, Fx1a6Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
                 work->unk0 = NULL;
             }
             if (work->unk0 != NULL) {
-                work->unk0->unk5C.vx = work->unk40.vx;
-                work->unk0->unk5C.vy = work->unk40.vy;
-                work->unk0->unk5C.vz = work->unk40.vz;
+                work->unk0->rot.vx = work->unk40.vx;
+                work->unk0->rot.vy = work->unk40.vy;
+                work->unk0->rot.vz = work->unk40.vz;
             }
         }
         if (frame >= 6) {
@@ -130,9 +130,9 @@ s32 fx_1a6_op80(s32 mode, Fx1a6Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
                     work->unkC = NULL;
                 }
                 if (work->unkC != NULL) {
-                    work->unkC->unk5C.vx = work->unk38.vx;
-                    work->unkC->unk5C.vy = work->unk38.vy;
-                    work->unkC->unk5C.vz = work->unk38.vz;
+                    work->unkC->rot.vx = work->unk38.vx;
+                    work->unkC->rot.vy = work->unk38.vy;
+                    work->unkC->rot.vz = work->unk38.vz;
                 }
             }
             if (frame >= 6 && work->unk48 != 2 && func_801E8120(0) != 0) {

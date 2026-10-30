@@ -31,7 +31,7 @@ s32 fx_0a5_op80(s32 mode, Fx0a5Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
                 work->unk0->unkC = 0x20;
             }
             if (work->unk0 != NULL) {
-                work->unk0->unk22 = 0x80;
+                work->unk0->otZ = 0x80;
             }
         }
         if (work->unk4 != NULL) {
@@ -39,9 +39,9 @@ s32 fx_0a5_op80(s32 mode, Fx0a5Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
                 work->unk4 = NULL;
             }
             if (work->unk4 != NULL) {
-                work->unk4->unk5C.vx = work->unk10.vx;
-                work->unk4->unk5C.vy = work->unk10.vy;
-                work->unk4->unk5C.vz = work->unk10.vz;
+                work->unk4->rot.vx = work->unk10.vx;
+                work->unk4->rot.vy = work->unk10.vy;
+                work->unk4->rot.vz = work->unk10.vz;
             }
         }
         if (frame >= 0x19) {

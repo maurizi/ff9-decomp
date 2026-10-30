@@ -715,13 +715,13 @@ s32 fx_0e3_0_op80(s32 mode, Fx0e30Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
         if (frame == 7) {
             p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0x83), (s32)&work->unk40);
             if (p != NULL) {
-                p->unk22 = 0x80;
+                p->otZ = 0x80;
             }
         }
         if (frame == 0xC) {
             p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 5), (s32)&work->unk40);
             if (p != NULL) {
-                p->unk22 = 0x80;
+                p->otZ = 0x80;
             }
         }
         ex->Hi_GetSummonBoneMatrix(SUMMON(env)->unk60, 0x3D, (BtlBone *)&ba);
@@ -731,13 +731,13 @@ s32 fx_0e3_0_op80(s32 mode, Fx0e30Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
         if (frame == 0xC) {
             work->unk4C = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0xA), (s32)&work->unk38);
             if (work->unk4C != NULL) {
-                work->unk4C->unk22 = 0x80;
+                work->unk4C->otZ = 0x80;
             }
         }
         if (work->unk4C != NULL) {
-            work->unk4C->unk5C.vx = v0.vx;
-            work->unk4C->unk5C.vy = v0.vy;
-            work->unk4C->unk5C.vz = v0.vz;
+            work->unk4C->rot.vx = v0.vx;
+            work->unk4C->rot.vy = v0.vy;
+            work->unk4C->rot.vz = v0.vz;
         }
         ex->Hi_GetSummonBonePos(SUMMON(env)->unk60, 0, (u16 *)&work->unk30);
         work->unk30.vy -= 0x200;

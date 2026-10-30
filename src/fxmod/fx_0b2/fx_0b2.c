@@ -283,7 +283,7 @@ s32 fx_0b2_op80(s32 mode, Fx0b2Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
                 entry->frame = -1;
                 p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 5), (s32)&work->unk10);
                 if (p != NULL) {
-                    p->unk22 = 0x58;
+                    p->otZ = 0x58;
                 }
             }
             break;

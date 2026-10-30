@@ -110,7 +110,7 @@ s32 func_801E7CEC(s32 mode, Fx0d7Bolt *it, Unk800F78A4 *env, Unk80100C78Entry *e
             if (frame == 0) {
                 it->unk1C = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 9), (s32)&it->unk0);
                 if (it->unk1C != NULL) {
-                    it->unk1C->unk22 = ex->btlfx_addRadiusSixth(0, 0x40);
+                    it->unk1C->otZ = ex->btlfx_addRadiusSixth(0, 0x40);
                 }
                 env->otZ = ex->btlfx_addRadiusSixth(0, 0x46);
                 ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->file, 8), &it->unk0, NULL, 0x1400, 4, 1, 0x1000);
@@ -120,7 +120,7 @@ s32 func_801E7CEC(s32 mode, Fx0d7Bolt *it, Unk800F78A4 *env, Unk80100C78Entry *e
             if (frame == 1) {
                 it->unk20 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 7), (s32)&it->unk0);
                 if (it->unk20 != NULL) {
-                    it->unk20->unk22 = ex->btlfx_addRadiusSixth(0, 0x40);
+                    it->unk20->otZ = ex->btlfx_addRadiusSixth(0, 0x40);
                 }
             }
             if (frame >= 6) {

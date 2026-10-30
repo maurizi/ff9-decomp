@@ -108,7 +108,7 @@ s32 fx_180_op80(s32 mode, Fx180Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
                 work->unk0[3]->unkC = 0x50;
             }
             if (work->unk0[0] != NULL) {
-                work->unk0[0]->unk22 = ex->btlfx_addRadiusSixth(0x10, 0x80);
+                work->unk0[0]->otZ = ex->btlfx_addRadiusSixth(0x10, 0x80);
             }
             break;
         case 0x12:
@@ -129,7 +129,7 @@ s32 fx_180_op80(s32 mode, Fx180Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
                 ((EffMotion *)work->unk0[7]->file)->unk8 = func_801E78E0;
             }
             if (work->unk0[7] != NULL) {
-                work->unk0[7]->unk22 = 0x600;
+                work->unk0[7]->otZ = 0x600;
             }
             break;
         case 0x4E:

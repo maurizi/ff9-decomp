@@ -107,7 +107,7 @@ s32 func_801EC704(s32 mode, Fx17d5Spark *w, Unk800F78A4 *env, Unk80100C78Entry *
             } else {
                 e = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0xA), (s32)&w->unk8);
                 if (e != NULL) {
-                    e->unk22 = 0x80;
+                    e->otZ = 0x80;
                 }
             }
             w->unk8.vy = 0;
@@ -276,13 +276,13 @@ s32 fx_17d_5_op80(s32 mode, Fx17d5Work80 *w, Unk800F78A4 *env, Unk80100C78Entry 
             if (frame == 0x1F) {
                 e = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 2), (s32)&w->unkC);
                 if (e != NULL) {
-                    e->unk22 = -0xF0;
+                    e->otZ = -0xF0;
                 }
             }
             if (frame == 0x1B) {
                 e = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 3), (s32)&w->unkC);
                 if (e != NULL) {
-                    e->unk22 = 0x80;
+                    e->otZ = 0x80;
                 }
             }
             u = frame - 0x20;

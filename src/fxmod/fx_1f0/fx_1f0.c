@@ -183,11 +183,11 @@ s32 fx_1f0_op80(s32 mode, Fx1f0Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
                     if (D_801E8558[i].unk0 == 8) {
                         D_801E8558[i].unk28 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 1), (s32)&D_801E8558[i].unk18);
                         if (D_801E8558[i].unk28 != NULL) {
-                            D_801E8558[i].unk28->unk22 = 0x80;
+                            D_801E8558[i].unk28->otZ = 0x80;
                         }
                         p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 4), (s32)&D_801E8558[i].unk20);
                         if (p != NULL) {
-                            p->unk22 = 0x80;
+                            p->otZ = 0x80;
                         }
                     }
                     if (D_801E8558[i].unk0 < 8 && D_801E8558[i].unk28 != NULL) {

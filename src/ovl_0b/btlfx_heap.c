@@ -130,22 +130,22 @@ s32 btlfx_updateParticles(Pool30 *pool) {
             }
             if (m->unk12 != 0) {
                 if (m->unk12 == 1) {
-                    if (owner->unk5C.pad - m->unk14 < pos.vy && e->unkE > 0) {
+                    if (owner->rot.pad - m->unk14 < pos.vy && e->unkE > 0) {
                         e->unkE = -e->unkE;
                         e->unkE = (e->unkE * m->unk16) >> 8;
                     }
-                } else if (owner->unk5C.pad - m->unk14 < pos.vy) {
+                } else if (owner->rot.pad - m->unk14 < pos.vy) {
                     if (e->unkE > 0) {
-                        s32 x = e->unkE * (owner->unk5C.pad - pos.vy);
+                        s32 x = e->unkE * (owner->rot.pad - pos.vy);
                         if (m->unk14 != 0) {
                             x /= m->unk14;
                         }
                         e->unkE = x;
                     }
-                    if (owner->unk5C.pad - (m->unk14 >> 1) < pos.vy) {
+                    if (owner->rot.pad - (m->unk14 >> 1) < pos.vy) {
                         e->unkE = (s16)(e->unkE - 0x40) - ((owner->unk4A * e->timeStep) >> 6);
                     }
-                    if (pos.vy > owner->unk5C.pad) {
+                    if (pos.vy > owner->rot.pad) {
                         e->unkE = 0;
                     }
                 }
@@ -243,57 +243,57 @@ s32 btlfx_updateParticles(Pool30 *pool) {
             case 1:
                 /* padded: a zero word follows the first jump table */
                 __asm__(".section .rodata\n\t.word 0\n\t.section .text");
-                cnt = btlfx_distance(&pos, owner->unk64);
+                cnt = btlfx_distance(&pos, owner->fieldPos);
                 if (cnt <= range) {
-                    d.vx = pos.vx - owner->unk64->vx;
-                    d.vy = pos.vy - owner->unk64->vy;
-                    d.vz = pos.vz - owner->unk64->vz;
+                    d.vx = pos.vx - owner->fieldPos->vx;
+                    d.vy = pos.vy - owner->fieldPos->vy;
+                    d.vz = pos.vz - owner->fieldPos->vz;
                     VectorNormalS(&d, &v);
                 }
                 break;
             case 2:
-                cnt = btlfx_distance(&pos, owner->unk64);
+                cnt = btlfx_distance(&pos, owner->fieldPos);
                 if (cnt <= range) {
-                    d.vx = owner->unk64->vx - pos.vx;
-                    d.vy = owner->unk64->vy - pos.vy;
-                    d.vz = owner->unk64->vz - pos.vz;
+                    d.vx = owner->fieldPos->vx - pos.vx;
+                    d.vy = owner->fieldPos->vy - pos.vy;
+                    d.vz = owner->fieldPos->vz - pos.vz;
                     VectorNormalS(&d, &v);
                 }
                 break;
             case 3:
             case 4:
                 *(s32 *)&v.vx = *(s32 *)&pos.vx;
-                v.vy = owner->unk64->vy;
+                v.vy = owner->fieldPos->vy;
                 *(s32 *)&v.vz = *(s32 *)&pos.vz;
-                cnt = btlfx_distance(&v, owner->unk64);
+                cnt = btlfx_distance(&v, owner->fieldPos);
                 ((s32 *)&v)[0] = 0;
                 v.vy = -0x1000;
                 break;
             case 5:
-                btlfx_toLocalPolar(&pos, owner->unk64, owner->unk68, (s32)&alpha, (s32)&cnt, &scale);
+                btlfx_toLocalPolar(&pos, owner->fieldPos, owner->fieldRot, (s32)&alpha, (s32)&cnt, &scale);
                 if (cnt <= range) {
-                    btlfx_rotateOffset(owner->unk68, 0x1000, (s32)&v);
+                    btlfx_rotateOffset(owner->fieldRot, 0x1000, (s32)&v);
                 }
                 break;
             case 6:
-                btlfx_toLocalPolar(&pos, owner->unk64, owner->unk68, (s32)&alpha, (s32)&cnt, &scale);
+                btlfx_toLocalPolar(&pos, owner->fieldPos, owner->fieldRot, (s32)&alpha, (s32)&cnt, &scale);
                 if (cnt <= range) {
                     ((s32 *)&v)[1] = 0;
                     ((s32 *)&v)[0] = 0;
-                    btlfx_offsetPoint(&v, (s32)&v, 0, (XY32 *)owner->unk68, 0x1000, scale);
+                    btlfx_offsetPoint(&v, (s32)&v, 0, (XY32 *)owner->fieldRot, 0x1000, scale);
                 }
                 break;
             case 7:
-                cnt = btlfx_distance(&pos, owner->unk64);
+                cnt = btlfx_distance(&pos, owner->fieldPos);
                 break;
             case 8:
                 *(s32 *)&v.vx = *(s32 *)&pos.vx;
-                v.vy = owner->unk64->vy;
+                v.vy = owner->fieldPos->vy;
                 *(s32 *)&v.vz = *(s32 *)&pos.vz;
-                cnt = btlfx_distance(&v, owner->unk64);
+                cnt = btlfx_distance(&v, owner->fieldPos);
                 break;
             case 9:
-                btlfx_toLocalPolar(&pos, owner->unk64, owner->unk68, (s32)&alpha, (s32)&cnt, &scale);
+                btlfx_toLocalPolar(&pos, owner->fieldPos, owner->fieldRot, (s32)&alpha, (s32)&cnt, &scale);
                 break;
             }
             if (cnt <= range) {
@@ -335,7 +335,7 @@ s32 btlfx_updateParticles(Pool30 *pool) {
                 ofs = 0;
             }
         }
-        g_btlfxEnv->otZ = owner->unk22;
+        g_btlfxEnv->otZ = owner->otZ;
         if (e->elem != 0xFF) {
             el = &owner->elems[e->elem];
             fl = el->unk3;
@@ -516,7 +516,7 @@ Pool6CEntry *btlfx_spawnEmitter(Pool30 *arg0, Pool6C *arg1, u8 *arg2, s32 arg3) 
             e->unk34.s.y = 0;
             e->unk14 = 0;
             e->unk3A = 0xFF;
-            e->unk22 = 0;
+            e->otZ = 0;
             e->file = (EffFileHdr *)p;
             if (*p != 0xFF) {
                 p += 0x28;
@@ -682,12 +682,12 @@ s32 btlfx_updateEmitters(Pool30 *arg0, Pool6C *arg1) {
         e->unk3A = y;
         e->unk32 = x;
         if (frame == 0) {
-            ((s32 *)&e->unk5C)[0] = ((s32 *)&an->unk28)[0];
-            ((s32 *)&e->unk5C)[1] = ((s32 *)&an->unk28)[1];
+            ((s32 *)&e->rot)[0] = ((s32 *)&an->unk28)[0];
+            ((s32 *)&e->rot)[1] = ((s32 *)&an->unk28)[1];
         } else {
-            e->unk5C.vx += an->unk30.vx;
-            e->unk5C.vy += an->unk30.vy;
-            e->unk5C.vz += an->unk30.vz;
+            e->rot.vx += an->unk30.vx;
+            e->rot.vy += an->unk30.vy;
+            e->rot.vz += an->unk30.vz;
         }
         hdr = (EffElemHdr *)e->elems - 1;
         if (hdr->weightAnim == 1) {
@@ -964,8 +964,8 @@ void btlfx_runEmitters(Pool30 *pool, Pool6C *list) {
                 base = e->origin;
                 break;
             case 2:
-                ((XY32 *)&ang)[0].w = ((XY32 *)&e->unk5C)[0].w;
-                ((XY32 *)&ang)[1].w = ((XY32 *)&e->unk5C)[1].w;
+                ((XY32 *)&ang)[0].w = ((XY32 *)&e->rot)[0].w;
+                ((XY32 *)&ang)[1].w = ((XY32 *)&e->rot)[1].w;
                 d58 = btlfx_rand();
                 acc = btlfx_randRange(e->unk40, e->unk42);
                 r = btlfx_randRange(e->unk3C, e->unk3E);
@@ -1004,8 +1004,8 @@ void btlfx_runEmitters(Pool30 *pool, Pool6C *list) {
                 break;
             case 4: {
                 s32 y4;
-                ((XY32 *)&ang)[0].w = ((XY32 *)&e->unk5C)[0].w;
-                ((XY32 *)&ang)[1].w = ((XY32 *)&e->unk5C)[1].w;
+                ((XY32 *)&ang)[0].w = ((XY32 *)&e->rot)[0].w;
+                ((XY32 *)&ang)[1].w = ((XY32 *)&e->rot)[1].w;
                 n = 1;
                 if (e->unk40 != 0) {
                     n = e->unk40;
@@ -1065,8 +1065,8 @@ void btlfx_runEmitters(Pool30 *pool, Pool6C *list) {
                 btlfx_randRotation(&rot);
                 break;
             case 3:
-                ((XY32 *)&rot)[0].w = ((XY32 *)&e->unk5C)[0].w;
-                ((XY32 *)&rot)[1].w = ((XY32 *)&e->unk5C)[1].w;
+                ((XY32 *)&rot)[0].w = ((XY32 *)&e->rot)[0].w;
+                ((XY32 *)&rot)[1].w = ((XY32 *)&e->rot)[1].w;
                 rot.vx += btlfx_randCentered(anim->unk30.pad);
                 rot.vy += btlfx_randCentered(anim->unk30.pad);
                 break;
@@ -1287,8 +1287,8 @@ void btlfx_runSubEmitter(Pool30 *pool, Pool30Entry *e, SVECTOR *pos, SVECTOR *ro
                     btlfx_randRotation(&ang);
                     break;
                 case 3:
-                    ((XY32 *)&ang)[0].w = ((XY32 *)&owner->unk5C)[0].w;
-                    ((XY32 *)&ang)[1].w = ((XY32 *)&owner->unk5C)[1].w;
+                    ((XY32 *)&ang)[0].w = ((XY32 *)&owner->rot)[0].w;
+                    ((XY32 *)&ang)[1].w = ((XY32 *)&owner->rot)[1].w;
                     ang.vx += btlfx_randCentered(sub->unkE);
                     ang.vy += btlfx_randCentered(sub->unkE);
                     break;

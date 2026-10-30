@@ -88,7 +88,7 @@ s32 fx_123_op80(s32 mode, Fx123Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
         for (i = 0; i < 6; i++) {
             work->unk0[i] = p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 9), (s32)&D_801E9BFC[i]);
             if (p != NULL) {
-                p->unk22 = 0x20;
+                p->otZ = 0x20;
             }
         }
         break;
@@ -96,7 +96,7 @@ s32 fx_123_op80(s32 mode, Fx123Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
         for (i = 0; i < 6; i++) {
             work->unk18[i] = p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 9), (s32)&D_801E9BFC[i]);
             if (p != NULL) {
-                p->unk22 = 0x20;
+                p->otZ = 0x20;
             }
         }
         break;
@@ -190,7 +190,7 @@ s32 fx_123_op81(s32 mode, Fx123Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
             work->unk140.vz = work->unk64.vz - 0x5F5;
             work->unk60 = p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0xF), (s32)&work->unk140);
             if (p != NULL) {
-                p->unk22 = 0x80;
+                p->otZ = 0x80;
             }
             break;
         case 11:
@@ -257,7 +257,7 @@ s32 fx_123_op81(s32 mode, Fx123Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
                         if (s->unk1A == t) {
                             work->unk30[i] = p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, D_801E9060[i]), (s32)&D_801E9C8C[i]);
                             if (p != NULL) {
-                                p->unk22 = 0x80;
+                                p->otZ = 0x80;
                                 if (work->unk30[i] != NULL) {
                                     work->unk30[i]->unk14 = (s32)D_801E96BC[i];
                                     work->unk30[i]->unk12 = 2;
@@ -278,7 +278,7 @@ s32 fx_123_op81(s32 mode, Fx123Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
                         work->unk110[i].vy += 0x154;
                         work->unk48[i] = p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0xA), (s32)&work->unk110[i]);
                         if (p != NULL) {
-                            p->unk22 = 0x80;
+                            p->otZ = 0x80;
                         }
                     }
                     copyVector(&D_801E968C[i], &work->unk9C[i]);

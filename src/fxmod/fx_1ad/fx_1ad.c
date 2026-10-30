@@ -67,7 +67,7 @@ s32 fx_1ad_op80(s32 mode, Fx1adWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
                     work->unk20->unkC = 0x3C;
                 }
                 if (work->unk20 != NULL) {
-                    work->unk20->unk22 = k;
+                    work->unk20->otZ = k;
                 }
                 if (work->unk20 != NULL) {
                     ((EffMotion *)work->unk20->file)->unk8 = func_801E7704;
@@ -77,7 +77,7 @@ s32 fx_1ad_op80(s32 mode, Fx1adWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
                     p->unk14 = (s32)D_801E8F4C;
                     p->unk12 = 0x10;
                     p->unkC = 0x6C;
-                    p->unk22 = 0x80;
+                    p->otZ = 0x80;
                 }
             }
             if (frame >= 0xC) {

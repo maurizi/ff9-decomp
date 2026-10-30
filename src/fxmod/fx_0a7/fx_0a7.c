@@ -29,10 +29,10 @@ s32 fx_0a7_op80(s32 mode, Fx0a7Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
             work->unk4->unkC = 0x18;
         }
         if (work->unk0 != NULL) {
-            work->unk0->unk22 = ex->btlfx_addRadiusSixth(0x10, 0x20);
+            work->unk0->otZ = ex->btlfx_addRadiusSixth(0x10, 0x20);
         }
         if (work->unk4 != NULL) {
-            work->unk4->unk22 = ex->btlfx_addRadiusSixth(0, 0x20);
+            work->unk4->otZ = ex->btlfx_addRadiusSixth(0, 0x20);
         }
     } else {
         frame = entry->frame;
@@ -46,10 +46,10 @@ s32 fx_0a7_op80(s32 mode, Fx0a7Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
                 work->unkC->unkC = 0x40;
             }
             if (work->unkC != NULL) {
-                work->unkC->unk22 = ex->btlfx_addRadiusSixth(0, 0x80);
+                work->unkC->otZ = ex->btlfx_addRadiusSixth(0, 0x80);
             }
             if (work->unk10 != NULL) {
-                work->unk10->unk22 = ex->btlfx_addRadiusSixth(0, 0x80);
+                work->unk10->otZ = ex->btlfx_addRadiusSixth(0, 0x80);
             }
             break;
         case 30:
@@ -61,9 +61,9 @@ s32 fx_0a7_op80(s32 mode, Fx0a7Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
                 work->unk0 = NULL;
             }
             if (work->unk0 != NULL) {
-                work->unk0->unk5C.vx = work->unk50.vx;
-                work->unk0->unk5C.vy = work->unk50.vy;
-                work->unk0->unk5C.vz = work->unk50.vz;
+                work->unk0->rot.vx = work->unk50.vx;
+                work->unk0->rot.vy = work->unk50.vy;
+                work->unk0->rot.vz = work->unk50.vz;
             }
         }
         if (work->unk4 != NULL) {
@@ -71,9 +71,9 @@ s32 fx_0a7_op80(s32 mode, Fx0a7Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
                 work->unk4 = NULL;
             }
             if (work->unk4 != NULL) {
-                work->unk4->unk5C.vx = work->unk48.vx;
-                work->unk4->unk5C.vy = work->unk48.vy;
-                work->unk4->unk5C.vz = work->unk48.vz;
+                work->unk4->rot.vx = work->unk48.vx;
+                work->unk4->rot.vy = work->unk48.vy;
+                work->unk4->rot.vz = work->unk48.vz;
             }
         }
         if (frame >= 0xC) {
@@ -82,9 +82,9 @@ s32 fx_0a7_op80(s32 mode, Fx0a7Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
                     work->unkC = NULL;
                 }
                 if (work->unkC != NULL) {
-                    work->unkC->unk5C.vx = work->unk48.vx;
-                    work->unkC->unk5C.vy = work->unk48.vy;
-                    work->unkC->unk5C.vz = work->unk48.vz;
+                    work->unkC->rot.vx = work->unk48.vx;
+                    work->unkC->rot.vy = work->unk48.vy;
+                    work->unkC->rot.vz = work->unk48.vz;
                 }
             }
             if (work->unk10 != NULL) {
@@ -92,9 +92,9 @@ s32 fx_0a7_op80(s32 mode, Fx0a7Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
                     work->unk10 = NULL;
                 }
                 if (work->unk10 != NULL) {
-                    work->unk10->unk5C.vx = work->unk48.vx;
-                    work->unk10->unk5C.vy = work->unk48.vy;
-                    work->unk10->unk5C.vz = work->unk48.vz;
+                    work->unk10->rot.vx = work->unk48.vx;
+                    work->unk10->rot.vy = work->unk48.vy;
+                    work->unk10->rot.vz = work->unk48.vz;
                 }
             }
         }
