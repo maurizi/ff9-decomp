@@ -846,7 +846,7 @@ void msg_open(s32 msg, s32 id, WinLayout *l, s32 flags) {
     w->window = win_open(&r, 2, style, id);
     if (w->window != NULL) {
         w->window->userData = (s32)w;
-        win_setDrawContent(w->window, (void (*)(Window *))msg_drawWindowContent);
+        win_setDrawContent(w->window, msg_drawWindowContent);
         win_setDrawOverlay(w->window, msg_drawChoiceCursor);
         if (l->tailOffset != 0 && !(flags & 4)) {
             win_setTail(w->window, l->tailMode & 3, l->tailOffset);
@@ -1123,11 +1123,11 @@ MsgWindow *msg_getLastModal(void) {
     return r;
 }
 
-s32 msg_overlapsRect(Unk8004EBC0 *r) {
+s32 msg_overlapsRect(WinLayout *r) {
     MsgWindow *p;
     for (p = g_msgWindows; p < g_msgWindows + 8; p++) {
-        if (p->open != 0 && r->unk0 < p->x + p->w && p->x < r->unk0 + r->unk2 &&
-            r->unk8 < p->y + p->h && p->y < r->unk8 + r->unk9) {
+        if (p->open != 0 && r->x < p->x + p->w && p->x < r->x + r->w &&
+            (u8)r->y < p->y + p->h && p->y < (u8)r->y + r->h) {
             return 1;
         }
     }
@@ -1194,7 +1194,7 @@ Window *msg_getWindow(s32 i) {
     return r;
 }
 
-MsgWindow *msg_allocWindow(Unk8004EBC0 *r, MsgWindow *a, s32 idx, s32 flag) {
+MsgWindow *msg_allocWindow(WinLayout *r, MsgWindow *a, s32 idx, s32 flag) {
     MsgWindow *e = &g_msgWindows[idx];
     e->open = 1;
     e->parent = a;
@@ -1203,15 +1203,15 @@ MsgWindow *msg_allocWindow(Unk8004EBC0 *r, MsgWindow *a, s32 idx, s32 flag) {
     e->y = 0;
     e->x = 0;
     e->id = 0;
-    if (r->unk0 != 0) {
-        e->x = r->unk0;
-        e->y = r->unk8;
+    if (r->x != 0) {
+        e->x = r->x;
+        e->y = (u8)r->y;
     } else {
-        e->x = 160 - (r->unk2 >> 1);
-        e->y = 120 - (r->unk9 >> 1);
+        e->x = 160 - (r->w >> 1);
+        e->y = 120 - (r->h >> 1);
     }
-    e->w = r->unk2;
-    e->h = r->unk9;
+    e->w = r->w;
+    e->h = r->h;
     if (flag != 0) {
         e->flags = 2;
     } else {
@@ -1406,14 +1406,14 @@ s32 msg_emitCharNameCaps(s32 ch, s32 n) {
     return i;
 }
 
-void msg_drawWindowContent(Unk8004F5D4 *p) {
+void msg_drawWindowContent(Window *p) {
     GameData *g = g_gameState->gameData;
 
-    g_penOt = g->ot[g->drawBuf] + p->unk18;
+    g_penOt = g->ot[g->drawBuf] + p->otz;
     pen_begin();
     pen_pushPos();
-    pen_setPos(p->unk0 + 2, p->unk2 + 2);
-    msg_drawText(p->unk50);
+    pen_setPos(p->x + 2, p->y + 2);
+    msg_drawText((MsgWindow *)p->userData);
     pen_popPos();
     pen_endFont();
 }

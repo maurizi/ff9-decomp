@@ -605,7 +605,7 @@ void evt_placeBalloon(EvtObject *obj, WinLayout *w, s32 dir, s32 fixed) {
     }
     evt_placeBalloon_x(w, sx, right, &tx);
     evt_placeBalloon_y(w, sy, &below, fixed);
-    if (fixed == 0 && msg_overlapsRect((Unk8004EBC0 *)w)) {
+    if (fixed == 0 && msg_overlapsRect(w)) {
         below ^= 1;
         evt_placeBalloon_y(w, sy, &below, 0);
     }

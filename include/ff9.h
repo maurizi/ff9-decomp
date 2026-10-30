@@ -1265,20 +1265,6 @@ static inline EvtObject *evt_getObject_inline(s32 id) {
 
 
 typedef struct {
-    u8 pad0[5];
-    u8 unk5;
-} Unk800659D0Sub;
-
-typedef struct {
-    u8 pad0[8];
-    Unk800659D0Sub *unk8;
-    u8 padC[0x12 - 0xC];
-    s16 unk12;
-    s16 unk14;
-    s16 unk16;
-} Unk800659D0;
-
-typedef struct {
     s32 unk0;
     s32 unk4;
 } Unk8007B988;
@@ -2028,14 +2014,6 @@ typedef struct {
 } Unk80010CD0;
 extern Unk80010CD0 D_80010CD0; /* min widths per window style */
 void func_80059414(void);
-typedef struct {
-    s16 unk0; /* x */
-    s16 unk2; /* w */
-    u8 pad4[4];
-    u8 unk8; /* y */
-    u8 unk9; /* h */
-} Unk8004EBC0;
-s32 msg_overlapsRect(Unk8004EBC0 *r);
 extern s32 D_8007F720[]; /* AKAO header copy (0x70 bytes) */
 extern u8 D_8006CACC[];
 void menu_onOverlayRead(u8 *);
@@ -3085,14 +3063,6 @@ static inline void fade_init_clear3(u8 *p) {
     p[1] = 0;
     p[2] = 0;
 }
-typedef struct {
-    s16 unk0;
-    s16 unk2;
-    u8 pad4[0x18 - 4];
-    s16 unk18;
-    u8 pad1A[0x50 - 0x1A];
-    MsgWindow *unk50;
-} Unk8004F5D4;
 void pen_endFont(void);
 void msg_drawText(MsgWindow *);
 /* 8-byte message-table entry (g_msgTable in modes other than 4) */
@@ -3588,9 +3558,10 @@ typedef struct {
     u8 anchor; /* anchor: evt_getMsgLayout placement, & 3 = balloon side */
     u8 flags; /* bit 0: don't make it the current window */
 } WinLayout;
+s32 msg_overlapsRect(WinLayout *r);
 extern s32 D_8007BB90;
 s32 msg_input(MsgWindow *, s32);
-void msg_drawWindowContent(Unk8004F5D4 *);
+void msg_drawWindowContent(Window *);
 void msg_drawChoiceCursor(Window *);
 
 WinLayout *msg_getLayout(s32, s32 *, s32 *, s32 *);
