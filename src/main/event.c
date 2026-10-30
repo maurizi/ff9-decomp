@@ -1237,7 +1237,7 @@ s32 evt_execInstr(void) {
         }
         return 0;
     case EVT_OP_ANIM_BACK:
-        ((Unk8E0 *)game_getModel(actor->modelSlot))->unk0 &= ~0x10;
+        ((ModelSlot *)game_getModel(actor->modelSlot))->flags &= ~0x10;
         actor->animEnd = 0xFF;
         actor->animFlags = 0;
         actor->animStart = actor->jumpAnimEnd + 1;
@@ -1255,7 +1255,7 @@ s32 evt_execInstr(void) {
             a = 8;
         }
         actor->moveFlags |= 8;
-        ((Unk8E0 *)game_getModel(actor->modelSlot))->unk0 |= 0x10;
+        ((ModelSlot *)game_getModel(actor->modelSlot))->flags |= 0x10;
         actor->animStart = actor->jumpAnimStart;
         actor->animEnd = actor->jumpAnimEnd;
         evt_execInstr_anim(actor, actor->jumpAnim);
@@ -1496,11 +1496,11 @@ s32 evt_execInstr(void) {
         }
         return 0;
     case EVT_OP_MODEL_FLAGS_SET: {
-        ((Unk8E0 *)game_getModel(po->modelSlot))->unk0 |= evt_getArg16_inline();
+        ((ModelSlot *)game_getModel(po->modelSlot))->flags |= evt_getArg16_inline();
         return 0;
     }
     case EVT_OP_MODEL_FLAGS_CLEAR: {
-        ((Unk8E0 *)game_getModel(po->modelSlot))->unk0 &= ~evt_getArg16_inline();
+        ((ModelSlot *)game_getModel(po->modelSlot))->flags &= ~evt_getArg16_inline();
         return 0;
     }
     case 0x4E:
@@ -2621,7 +2621,7 @@ void evt_updateLookAt(EvtObject *o) {
     s32 ok;
 
     save = 0;
-    mdl = (Unk80047B90 *)((Unk8E0 *)game_getModel(o->modelSlot))->unk8;
+    mdl = (Unk80047B90 *)((ModelSlot *)game_getModel(o->modelSlot))->model;
     tgt = NULL;
     if ((o->moveFlags & 4) && g_evtLookTarget != NULL && g_evtLookTarget != o &&
         math_dist2(o->pos.vx - g_evtLookTarget->pos.vx, o->pos.vz - g_evtLookTarget->pos.vz, 0) >= 1000) {

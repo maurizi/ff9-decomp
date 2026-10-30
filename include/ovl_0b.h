@@ -311,7 +311,7 @@ typedef struct BtlUnit9C {
     s16 attachZ;
 } BtlUnit9C;
 
-/* GameData.unk8E0 entry as btl_registerModel fills it (ff9.h's Unk8E0 has pad4) */
+/* GameData.unk8E0 entry as btl_registerModel fills it (ff9.h's ModelSlot has pad4) */
 typedef struct {
     s32 unk0; /* flags */
     s32 unk4; /* model id */
@@ -1513,7 +1513,7 @@ typedef struct LinkNode {
 void btl_linkCmd(LinkNode *, LinkNode **);
 Unk16D8 *evt_getBattleObjects(void);
 s16 btl_getEnemyModelId(s16);
-void btl_resetUnit(struct BtlUnit *, struct Unk8E0 *);
+void btl_resetUnit(struct BtlUnit *, struct ModelSlot *);
 void btl_setupEnemies(void);
 void btlseq_init(void);
 extern u8 D_800F5244[];

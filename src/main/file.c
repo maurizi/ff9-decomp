@@ -332,10 +332,10 @@ s32 game_getModel(s32 arg0) {
     return (s32)&g_gameState->gameData->npcModels[arg0 - 9];
 }
 
-void func_8001E3A4(Unk8001E3A4 *a) {
-    a->unk0 = 0;
+void func_8001E3A4(ModelSlot *a) {
+    a->flags = 0;
     a->unk4 = -1;
-    a->unk8 = 0;
-    a->unkC = 0;
-    a->unk10 = 0;
+    a->model = NULL;
+    a->actor = NULL;
+    a->unit = NULL;
 }

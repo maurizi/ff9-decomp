@@ -236,7 +236,7 @@ u32 *btl_initEnemyState(Battle *arg0, u32 *arg1) {
     return arg1;
 }
 
-void btl_resetUnit(BtlUnit *arg0, Unk8E0 *arg1) {
+void btl_resetUnit(BtlUnit *arg0, ModelSlot *arg1) {
     s32 i;
     u32 f;
     btl_initUnitCmds(arg0);
@@ -264,13 +264,13 @@ void btl_resetUnit(BtlUnit *arg0, Unk8E0 *arg1) {
     f &= ~0x8000000;
     f &= ~0x20000000;
     arg0->flags = f;
-    arg1->unk10 = arg0;
+    arg1->unit = arg0;
     if ((arg0->flags >> 23) & 1) {
-        arg0->model = g_gameState->gameData->npcModels->unk8;
-        arg0->obj = g_gameState->gameData->npcModels->unkC;
+        arg0->model = g_gameState->gameData->npcModels->model;
+        arg0->obj = g_gameState->gameData->npcModels->actor;
     } else {
-        arg0->model = arg1->unk8;
-        arg0->obj = arg1->unkC;
+        arg0->model = arg1->model;
+        arg0->obj = arg1->actor;
         arg0->model->texAnims[2].unk4 |= 1;
         arg0->model->texAnims[2].unkC = 0;
         arg0->model->texAnims[2].unk12 = 0x1000;

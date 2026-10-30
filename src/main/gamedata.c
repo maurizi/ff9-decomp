@@ -101,7 +101,7 @@ void game_resetData(void) {
     gd->soundHook = NULL;
     for (i = 8; i >= 0; i--) {
         func_8001E3A4(&gd->chrModels[i]);
-        gd->chrModels[i].unk8 = (struct BtlUnit9C *)&gd->chrModelObjs[i];
+        gd->chrModels[i].model = (struct BtlUnit9C *)&gd->chrModelObjs[i];
     }
     gd->npcModelObjs = NULL;
     gd->npcModels = NULL;

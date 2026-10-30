@@ -141,13 +141,13 @@ typedef struct {
 } Character; /* 0x90 */
 
 /* GameData.npcModels entry */
-typedef struct Unk8E0 {
-    s32 unk0; /* flags */
-    u8 pad4[8 - 4];
-    struct BtlUnit9C *unk8;
-    struct BtlUnitA0 *unkC;
-    struct BtlUnit *unk10;
-} Unk8E0;
+typedef struct ModelSlot {
+    s32 flags; /* flags: 1 cleared by fld_exit/btl_cleanup, 0x10 (event ops), others from op args */
+    s32 unk4; /* -1 after func_8001E3A4 */
+    struct BtlUnit9C *model; /* the model object (GameData.chrModelObjs / npcModelObjs entry; battle BtlUnit9C) */
+    struct BtlUnitA0 *actor; /* the EvtObject using the slot (FieldMap.playerObj's actor) */
+    struct BtlUnit *unit; /* battle unit (btl_resetUnit) */
+} ModelSlot;
 
 typedef struct {
     u8 pad0[4];
@@ -351,9 +351,9 @@ typedef struct {
     PreloadQueue *preloadQueue;
     u8 unk8CC[8];
     struct Unk8D4 *chrModelObjs; /* [9] model objects of the characters, bound to chrModels[i].model */
-    struct Unk8E0 *chrModels; /* [9] per character (game_getModel ids 0-8) */
+    struct ModelSlot *chrModels; /* [9] per character (game_getModel ids 0-8) */
     struct Unk8D4 *npcModelObjs; /* model objects of the NPCs (npcCount), bound to npcModels[i].model */
-    struct Unk8E0 *npcModels; /* per NPC (game_getModel ids 9+), indexed by FieldMap.playerObj */
+    struct ModelSlot *npcModels; /* per NPC (game_getModel ids 9+), indexed by FieldMap.playerObj */
     Unk8E4Ptr ctx; /* the running mode's context (field, world, battle, ...) */
 } GameData;
 
@@ -1263,14 +1263,6 @@ static inline EvtObject *evt_getObject_inline(s32 id) {
     return n != NULL ? n->unk4 : NULL;
 }
 
-
-typedef struct {
-    s32 unk0;
-    s32 unk4;
-    s32 unk8;
-    s32 unkC;
-    s32 unk10;
-} Unk8001E3A4;
 
 typedef struct {
     u8 pad0[5];
@@ -3434,7 +3426,7 @@ void pad_init(void);
 s32 game_loadCommonAkao(void);
 void game_allocData(void);
 void game_resetData(void);
-void func_8001E3A4(); /* (Unk8001E3A4 *); ovl_0b declares it with void * */
+void func_8001E3A4(); /* (ModelSlot *): resets a slot; ovl_0b declares it with void * */
 s32 game_loadCommonImages(void);
 s32 game_loadCommonDb(void);
 
@@ -3972,7 +3964,7 @@ typedef struct {
     s16 lastFrame; /* TexAnim.lastFrame: 0x1000 forces the next frame's upload */
 } Unk8004AFF0Sub; /* 0x14 */
 
-/* model object (Unk8E0.unk8): main's view of ovl_0a ModelObj / ovl_0b BtlUnit9C (docs/field-models.md) */
+/* model object (ModelSlot.unk8): main's view of ovl_0a ModelObj / ovl_0b BtlUnit9C (docs/field-models.md) */
 typedef struct Unk8004AFF0 {
     u16 flags; /* 1 look-at on (lookAtX-Z, fldmdl_calcBoneMatricesLookAt), 2 scaled (scaleX-Z), 0x10 behind the camera */
     u8 pad2[4 - 2];
@@ -3998,15 +3990,15 @@ typedef struct Unk8004AFF0 {
 
 /* Inlined copy of evt_getObjectModelData. */
 static inline Unk8004AFF0 *evt_getObjectModelData_inline(EvtObject *p) {
-    Unk8E0 *q;
+    ModelSlot *q;
 
     if (p != NULL) {
         if (p->modelId == 0xFFFF) {
             return NULL;
         }
-        q = (Unk8E0 *)game_getModel(p->modelSlot);
+        q = (ModelSlot *)game_getModel(p->modelSlot);
         if (q != NULL) {
-            return (Unk8004AFF0 *)q->unk8;
+            return (Unk8004AFF0 *)q->model;
         }
     }
     return NULL;

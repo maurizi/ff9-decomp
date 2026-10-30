@@ -388,17 +388,17 @@ void fld_load(s32 arg0) {
     msg_init();
     g_gameState->gameData->npcCount = evt_countNpcActors(0);
     g_gameState->gameData->npcModelObjs = (Unk8D4 *)g_modeHeap;
-    g_gameState->gameData->npcModels = (Unk8E0 *)(g_gameState->gameData->npcModelObjs + g_gameState->gameData->npcCount);
+    g_gameState->gameData->npcModels = (ModelSlot *)(g_gameState->gameData->npcModelObjs + g_gameState->gameData->npcCount);
     g_modeHeap = (s32)(g_gameState->gameData->npcModels + g_gameState->gameData->npcCount);
     g_gameState->gameData->unk9 = 0;
     for (i = 0; i < 9; i++) {
         func_8001E3A4(&g_gameState->gameData->chrModels[i]);
-        g_gameState->gameData->chrModels[i].unk8 = &g_gameState->gameData->chrModelObjs[i];
+        g_gameState->gameData->chrModels[i].model = &g_gameState->gameData->chrModelObjs[i];
     }
     g_gameState->gameData->npcModelSlots = 0;
     for (i = 0; i < g_gameState->gameData->npcCount; i++) {
         func_8001E3A4(&g_gameState->gameData->npcModels[i]);
-        g_gameState->gameData->npcModels[i].unk8 = &g_gameState->gameData->npcModelObjs[i];
+        g_gameState->gameData->npcModels[i].model = &g_gameState->gameData->npcModelObjs[i];
     }
     sc->shadows = (FieldObjPlace *)g_modeHeap;
     g_modeHeap = fld_initShadows(g_modeHeap, g_gameState->gameData->npcCount + 9,
@@ -426,13 +426,13 @@ void fld_exit(void) {
     fld_freeFieldFile(sc, g_gameState->gameData->fieldId);
     fld_freeModelBundles();
     for (i = 0; i < 9; i++) {
-        if (g_gameState->gameData->chrModels[i].unk0 & 1) {
-            g_gameState->gameData->chrModels[i].unk0 &= ~1;
+        if (g_gameState->gameData->chrModels[i].flags & 1) {
+            g_gameState->gameData->chrModels[i].flags &= ~1;
         }
     }
     for (i = 0; i < g_gameState->gameData->npcCount; i++) {
-        if (g_gameState->gameData->npcModels[i].unk0 & 1) {
-            g_gameState->gameData->npcModels[i].unk0 &= ~1;
+        if (g_gameState->gameData->npcModels[i].flags & 1) {
+            g_gameState->gameData->npcModels[i].flags &= ~1;
         }
     }
     for (i = 1; i >= 0; i--) {

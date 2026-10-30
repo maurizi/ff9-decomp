@@ -276,17 +276,17 @@ void btl_load(s32 arg0) {
     btl_setupBackground(p, arg0);
     g_gameState->gameData->npcCount = evt_countNpcActors(0);
     g_gameState->gameData->npcModelObjs = (struct Unk8D4 *)(p->weaponBufs + 4);
-    g_gameState->gameData->npcModels = (struct Unk8E0 *)&g_gameState->gameData->npcModelObjs[g_gameState->gameData->npcCount];
+    g_gameState->gameData->npcModels = (struct ModelSlot *)&g_gameState->gameData->npcModelObjs[g_gameState->gameData->npcCount];
     g_modeHeap = (s32)&g_gameState->gameData->npcModels[g_gameState->gameData->npcCount];
     g_gameState->gameData->unk9 = 0;
     for (i = 0; i < 9; i++) {
         func_8001E3A4(&g_gameState->gameData->chrModels[i]);
-        g_gameState->gameData->chrModels[i].unk8 = (struct BtlUnit9C *)&g_gameState->gameData->chrModelObjs[i];
+        g_gameState->gameData->chrModels[i].model = (struct BtlUnit9C *)&g_gameState->gameData->chrModelObjs[i];
     }
     g_gameState->gameData->npcModelSlots = 0;
     for (i = 0; i < g_gameState->gameData->npcCount; i++) {
         func_8001E3A4(&g_gameState->gameData->npcModels[i]);
-        g_gameState->gameData->npcModels[i].unk8 = (struct BtlUnit9C *)&g_gameState->gameData->npcModelObjs[i];
+        g_gameState->gameData->npcModels[i].model = (struct BtlUnit9C *)&g_gameState->gameData->npcModelObjs[i];
     }
     p->shadows = (struct BtlShadow *)g_modeHeap;
     g_modeHeap = func_800AD4AC(g_modeHeap, g_gameState->gameData->npcCount + 9);
@@ -310,13 +310,13 @@ void btl_cleanup(void) {
     btl_unregisterFiles(&g_gameState->gameData->ctx.battle->files->data[3], 0);
     btl_unregisterFiles(&g_gameState->gameData->ctx.battle->files->data[2], 0);
     for (i = 0; i < 9; i++) {
-        if (g_gameState->gameData->chrModels[i].unk0 & 1) {
-            g_gameState->gameData->chrModels[i].unk0 &= ~1;
+        if (g_gameState->gameData->chrModels[i].flags & 1) {
+            g_gameState->gameData->chrModels[i].flags &= ~1;
         }
     }
     for (i = 0; i < g_gameState->gameData->npcCount; i++) {
-        if (g_gameState->gameData->chrModels[i].unk0 & 1) {
-            g_gameState->gameData->chrModels[i].unk0 &= ~1;
+        if (g_gameState->gameData->chrModels[i].flags & 1) {
+            g_gameState->gameData->chrModels[i].flags &= ~1;
         }
     }
     switch (s->returnMode) {
@@ -442,7 +442,7 @@ s32 btl_reloadPartyStep(s32 arg0) {
     s32 i;
     Character *ch;
     s32 cid;
-    Unk8E0 *e;
+    ModelSlot *e;
     BtlUnit *u;
     s32 id;
     s32 k;
@@ -508,21 +508,21 @@ s32 btl_reloadPartyStep(s32 arg0) {
                 continue;
             }
             id = btl_getPartyModelId(i, arg0 & ~0x10);
-            e->unk8->header = db_lookupRegistered(4, id, 0);
+            e->model->header = db_lookupRegistered(4, id, 0);
             k = (id & 0xFFFFFF) | (cid << 24);
             pa = (s32 *)db_getModelTexPages(k);
             pb = (s32 *)db_getModelUvOffsets(k);
             pc = (s32 *)db_getModelTexPos(k);
-            btl_applyModelTextures(e->unk8, (s16 *)pa, (s16 *)pb);
+            btl_applyModelTextures(e->model, (s16 *)pa, (s16 *)pb);
             p = (s32)db_lookupRegistered(9, id, 0x190000);
             if (p != -1) {
                 v = (s32)db_lookupRegistered(4, p, 0);
             } else {
                 v = 0;
             }
-            e->unk8->texAnims = (BtlUnit9C50 *)v;
+            e->model->texAnims = (BtlUnit9C50 *)v;
             if (v != 0) {
-                btl_relocTexAnims((TexAnimSet *)e->unk8->texAnims, (u16 (*)[4])pc);
+                btl_relocTexAnims((TexAnimSet *)e->model->texAnims, (u16 (*)[4])pc);
             }
             btl_loadPartyMotions(u, g_gameState->gameData->party[i]->info.b.kind, u - g_gameState->gameData->ctx.battle->units);
             if (u->status & BTL_STATUS_KO) {
@@ -537,7 +537,7 @@ s32 btl_reloadPartyStep(s32 arg0) {
             } else {
                 u->model->motion = (BtlUnit9CC *)u->motions[(u->flags >> 18) & 1];
             }
-            e->unkC->frame = 0;
+            e->actor->frame = 0;
             m = u->weaponModel;
             save = m->parentBone;
             id2 = ((Unk8006E0E8 *)u->weapon)->unk2 | 0x20000;
@@ -545,7 +545,7 @@ s32 btl_reloadPartyStep(s32 arg0) {
             btl_getWeaponTexInfo(id2, i, &pa, &pb, &pc);
             btl_applyModelTextures(m, (s16 *)pa, (s16 *)pb);
             m->motion = 0;
-            m->parent = e->unk8;
+            m->parent = e->model;
             m->parentBone = save;
         }
     done:
@@ -1367,7 +1367,7 @@ s32 btl_swapPartyModelStep(s32 arg0, s32 arg1) {
     s32 h;
     s32 s;
     s32 cid;
-    Unk8E0 *ent;
+    ModelSlot *ent;
     BtlUnit *u;
     u8 *pa;
     u8 *pb;
@@ -1461,21 +1461,21 @@ s32 btl_swapPartyModelStep(s32 arg0, s32 arg1) {
         u = btl_getUnitBySlot(arg0);
         if (u != NULL) {
             id2 = btl_getPartyModelId(arg0, arg1 & ~0x10);
-            ent->unk8->header = db_lookupRegistered(4, id2, 0);
+            ent->model->header = db_lookupRegistered(4, id2, 0);
             k = (id2 & 0xFFFFFF) | (cid << 24);
             pa = db_getModelTexPages(k);
             pb = db_getModelUvOffsets(k);
             pc = db_getModelTexPos(k);
-            btl_applyModelTextures(ent->unk8, (s16 *)pa, (s16 *)pb);
+            btl_applyModelTextures(ent->model, (s16 *)pa, (s16 *)pb);
             p = (s32)db_lookupRegistered(9, id2, 0x190000);
             if (p != -1) {
                 anim = (s32)db_lookupRegistered(4, p, 0);
             } else {
                 anim = 0;
             }
-            ent->unk8->texAnims = (BtlUnit9C50 *)anim;
+            ent->model->texAnims = (BtlUnit9C50 *)anim;
             if (anim != 0) {
-                btl_relocTexAnims((TexAnimSet *)ent->unk8->texAnims, (u16 (*)[4])pc);
+                btl_relocTexAnims((TexAnimSet *)ent->model->texAnims, (u16 (*)[4])pc);
             }
             btl_loadPartyMotions(u, g_gameState->gameData->party[arg0]->info.b.kind,
                           u - g_gameState->gameData->ctx.battle->units);
@@ -1484,8 +1484,8 @@ s32 btl_swapPartyModelStep(s32 arg0, s32 arg1) {
             } else {
                 u->model->motion = (BtlUnit9CC *)u->motions[(u->flags >> 18) & 1];
             }
-            ent->unkC->frame = 0;
-            u->weaponModel->parent = ent->unk8;
+            ent->actor->frame = 0;
+            u->weaponModel->parent = ent->model;
         }
         *state = 0;
         break;

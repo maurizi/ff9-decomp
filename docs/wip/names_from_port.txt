@@ -5438,3 +5438,5 @@ D_800FE500 g_btlbgJitterBase2  # [code] btlbg_draw, background scene 7, group 2:
 # FIELDS include/ff9.h PadBuf: unk0=status,unk2=buttons,unk4=analog [code] text.c text_draw/text_buildBlock/text_buildPlain/text_measure, msg_init; pad.c pad_update
 # FIELDS include/ff9.h WinDef: unk0=delay,unk2=frame,unk4=rect,unkC=anim [code] tween.c tween_start/tween_step
 # FIELDS include/ff9.h TweenDef: unk0=delay,unk2=frames,unk4=dx,unk8=dy,unkC=onDone [code] tween.c tween_start/tween_step/tween_sumDeltas
+# FIELDS include/ff9.h Unk8E0 (type renamed ModelSlot; GameData.chrModels/npcModels): unk0=flags,unk8=model,unkC=actor,unk10=unit [code] game_getModel / game_resetData / fld_load / btl_resetUnit / event ops on the model flags
+# MERGED include/ff9.h Unk8001E3A4 into ModelSlot (func_8001E3A4 resets a slot: flags 0, unk4 -1, model/actor/unit NULL)
