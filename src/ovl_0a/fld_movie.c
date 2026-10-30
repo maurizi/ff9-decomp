@@ -1474,11 +1474,11 @@ void fld_updateEncounter(void) {
                 r.x = 0;
                 r.y = 0x100;
                 r.h = 0x100;
-                r.w = w = (u32)(e->unkC / r.h) >> 1;
-                if (e->unkC % r.h != 0) {
+                r.w = w = (u32)(e->loaded / r.h) >> 1;
+                if (e->loaded % r.h != 0) {
                     r.w = w + 1;
                 }
-                LoadImage(&r, (u32 *)e->unk8);
+                LoadImage(&r, (u32 *)e->dest);
                 DrawSync(0);
                 preload_setVramRect(e, r.x, r.y, r.w, r.h);
             } else {

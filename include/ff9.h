@@ -39,19 +39,19 @@
 /* ---- game state (g_gameState) ---- */
 
 typedef struct {
-    u16 unk0; /* flags */
-    u16 unk2;
+    u16 flags; /* flags: 1 reading, 2 read done, 0x20 kept in VRAM (vramX-h), 0x40 started (preload_next), 0x80 read failed */
+    u16 kind; /* 0 read into dest, 1 seek only (preload_startRead) */
     s32 fileId; /* id, -1 = none */
-    u32 unk8;
-    s32 unkC;
-    s32 unk10;
-    s32 unk14;
-    s32 unk18;
-    s32 unk1C;
-    s16 unk20;
-    s16 unk22;
-    s16 unk24;
-    s16 unk26;
+    u32 dest; /* RAM address the file is read to */
+    s32 loaded; /* bytes read so far */
+    s32 bufSize; /* room at dest (sector multiple) */
+    s32 chunkSize; /* most bytes per read */
+    s32 sector; /* CD sector of the next read (relative to GameState.imgSector) */
+    s32 readSize; /* bytes of the current read */
+    s16 vramX; /* VRAM rect the data was moved to (preload_setVramRect; game_loadModeOverlay StoreImage) */
+    s16 vramY;
+    s16 vramW;
+    s16 vramH;
 } PreloadEntry; /* element passed to preload_clearEntry */
 
 typedef struct PreloadQueue {
@@ -59,11 +59,12 @@ typedef struct PreloadQueue {
     u8 state; /* state */
     s8 count; /* count */
     s8 cur;
-    PreloadEntry unk4[7];
-    s32 (*unk11C)(struct PreloadQueue *); /* hook, nonzero = handled */
+    PreloadEntry entries[7]; /* [6] is the read in progress (preload_startRead) */
+    s32 (*hook)(struct PreloadQueue *); /* hook, nonzero = handled (preload_setHook; fld_preloadHook) */
 } PreloadQueue;
 PreloadEntry *preload_makeChunk(PreloadEntry *, PreloadEntry *);
 s32 preload_startRead(void);
+void preload_setVramRect(PreloadEntry *, s16, s16, s16, s16);
 
 typedef struct {
     u8 unk0;
@@ -234,15 +235,15 @@ typedef struct Unk8D4 {
 } Unk8D4;
 
 typedef struct CdReadCtx {
-    s32 unk0; /* start sector */
-    s32 unk4; /* total bytes */
-    u8 *unk8; /* destination */
-    s32 unkC; /* bytes done */
-    s32 unk10; /* chunk size, -1 = all */
-    void (*unk14)(struct CdReadCtx *); /* done callback */
+    s32 sector; /* start sector of the file (relative to GameState.imgSector) */
+    s32 size; /* total bytes of the file */
+    u8 *dest; /* destination of this chunk */
+    s32 offset; /* byte offset in the file this chunk starts at */
+    s32 chunk; /* chunk size, -1 = all in, bytes read out (cdRead_update) */
+    void (*onDone)(struct CdReadCtx *); /* done callback */
     s32 unk18;
-    s32 unk1C; /* state */
-    u8 *unk20;
+    s32 state; /* state: 1 wait for the drive, 2 start the read, 3 reading, 0 done */
+    u8 *end; /* dest + bytes read */
 } CdReadCtx; /* GameData.cdRead */
 
 /* runtime: menu_items shows Potion 46, Hi-Potion 10, Ether 12, Phoenix Down 14, ... = {236,46} {237,10} {238,12} {240,14} */

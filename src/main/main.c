@@ -68,11 +68,11 @@ void game_loadModeOverlay(s32 mode) {
     if (preload_isReady(id)) {
         e = preload_find(id);
         if (preload_isInVram(e)) {
-            StoreImage((RECT *)&e->unk20, addrs.unk0[mode]);
-        } else if ((s32)addrs.unk0[mode] != e->unk8) {
-            file_copyViaVram((s32)addrs.unk0[mode], e->unk8, e->unkC, NULL);
+            StoreImage((RECT *)&e->vramX, addrs.unk0[mode]);
+        } else if ((s32)addrs.unk0[mode] != e->dest) {
+            file_copyViaVram((s32)addrs.unk0[mode], e->dest, e->loaded, NULL);
         }
-        loaded = e->unkC >> 11;
+        loaded = e->loaded >> 11;
         preload_remove(id);
         DrawSync(0);
     }

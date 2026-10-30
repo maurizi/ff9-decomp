@@ -99,7 +99,7 @@ s32 battleEnd_loadDb(void) {
 
     if (preload_isReady(0x2713)) {
         f = preload_find(0x2713);
-        file_copyViaVram(g_modeHeap, f->unk8, f->unkC, 0);
+        file_copyViaVram(g_modeHeap, f->dest, f->loaded, 0);
         preload_remove(0x2713);
         DrawSync(0);
     } else {

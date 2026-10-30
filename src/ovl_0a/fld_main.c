@@ -222,7 +222,7 @@ s32 fld_loadCommon(void) {
 
     if (preload_isReady(0x2714) != 0) {
         p = preload_find(0x2714);
-        file_copyViaVram(g_modeHeap, p->unk8, p->unkC, NULL);
+        file_copyViaVram(g_modeHeap, p->dest, p->loaded, NULL);
         preload_remove(0x2714);
         DrawSync(0);
     } else {
@@ -313,15 +313,15 @@ s32 fld_readAreaFile(FieldMapObj *arg0, s32 arg1) {
     cd = gd->cdRead;
     if (preload_isReady(id) != 0) {
         e = preload_find(id);
-        g_gameState->gameData->cdRead->unk20 = (u8 *)(e->unk8 + e->unkC);
-        g_gameState->gameData->cdRead->unk10 = e->unkC;
-        g_gameState->gameData->cdRead->unk4 = e->unk1C;
-        file_copyViaVram(g_modeHeap, e->unk8, e->unkC, NULL);
+        g_gameState->gameData->cdRead->end = (u8 *)(e->dest + e->loaded);
+        g_gameState->gameData->cdRead->chunk = e->loaded;
+        g_gameState->gameData->cdRead->size = e->readSize;
+        file_copyViaVram(g_modeHeap, e->dest, e->loaded, NULL);
         preload_remove(id);
         DrawSync(0);
         g = g_gameState->gameData;
-        t = g->cdRead->unk10;
-        if (t < g->cdRead->unk4) {
+        t = g->cdRead->chunk;
+        if (t < g->cdRead->size) {
             cdRead_init(g->cdRead, g->sceneSector[0], g->sceneSectors[0] << 11, (void *)(g_modeHeap + t), t, -1, NULL);
             while (cdRead_update(g_gameState->gameData->cdRead) != 0) {
             }
@@ -661,7 +661,7 @@ void fld_refindSectors(void) {
             e--;
         } while (e >= start);
         fld_clearModelCache();
-        preload_discardRange((s32)g_gameState->gameData->cdRead[0].unk8, g_gameState->gameData->cdRead[0].unk10);
+        preload_discardRange((s32)g_gameState->gameData->cdRead[0].dest, g_gameState->gameData->cdRead[0].chunk);
     }
 }
 
@@ -769,10 +769,10 @@ s32 fld_loadFile(FieldScene *sc, s32 arg1) {
     id = (u16)arg1 | DB_FIELD;
     if (preload_isReady(id)) {
         e = preload_find(id);
-        g_gameState->gameData->cdRead[0].unk20 = (u8 *)(e->unk8 + e->unkC);
-        g_gameState->gameData->cdRead[0].unk10 = e->unkC;
-        g_gameState->gameData->cdRead[0].unk4 = e->unk1C;
-        file_copyViaVram(g_modeHeap, e->unk8, e->unkC, NULL);
+        g_gameState->gameData->cdRead[0].end = (u8 *)(e->dest + e->loaded);
+        g_gameState->gameData->cdRead[0].chunk = e->loaded;
+        g_gameState->gameData->cdRead[0].size = e->readSize;
+        file_copyViaVram(g_modeHeap, e->dest, e->loaded, NULL);
         preload_remove(id);
         DrawSync(0);
     } else {
@@ -781,20 +781,20 @@ s32 fld_loadFile(FieldScene *sc, s32 arg1) {
         while (cdRead_update(g_gameState->gameData->cdRead) != 0) {
         }
     }
-    fld_invalidateModelCache((s32)g_gameState->gameData->cdRead[0].unk20);
+    fld_invalidateModelCache((s32)g_gameState->gameData->cdRead[0].end);
     base = g_modeHeap;
     g_gameState->gameData->depTable = (FileTable *)db_lookup(base, 4, DB_DEP_TABLE, 0);
     id = db_lookup(base, 2, DB_PACK, 0);
     if (id != 0) {
         r = db_lookup(base, 5, DB_PACK, 0);
-        if ((u32)(g_modeHeap + g_gameState->gameData->cdRead[0].unk10) < (u32)(id + r)) {
-            rest = g_gameState->gameData->cdRead[0].unk10;
+        if ((u32)(g_modeHeap + g_gameState->gameData->cdRead[0].chunk) < (u32)(id + r)) {
+            rest = g_gameState->gameData->cdRead[0].chunk;
             cdRead_init(g_gameState->gameData->cdRead, g_gameState->gameData->sceneSector[1], g_gameState->gameData->sceneSectors[1] << 11,
-                          (void *)(g_modeHeap + rest), rest, size - g_gameState->gameData->cdRead[0].unk10, NULL);
+                          (void *)(g_modeHeap + rest), rest, size - g_gameState->gameData->cdRead[0].chunk, NULL);
             while (cdRead_update(g_gameState->gameData->cdRead) != 0) {
             }
-            g_gameState->gameData->cdRead[0].unk10 += rest;
-            fld_invalidateModelCache((s32)g_gameState->gameData->cdRead[0].unk20);
+            g_gameState->gameData->cdRead[0].chunk += rest;
+            fld_invalidateModelCache((s32)g_gameState->gameData->cdRead[0].end);
         }
         for (i = db_lookup(id, 1, DB_TIM, 0) - 1; i >= 0; i--) {
             k = db_lookup(id, 2, (u16)i | DB_TIM, 0);
@@ -811,13 +811,13 @@ s32 fld_loadFile(FieldScene *sc, s32 arg1) {
         DrawSync(0);
     }
     sc->fieldFile = (void *)db_lookup(base, 2, (DB_PACK | 1), 0);
-    size = g_gameState->gameData->cdRead[0].unk10 - ((s32)sc->fieldFile - base);
+    size = g_gameState->gameData->cdRead[0].chunk - ((s32)sc->fieldFile - base);
     file_copyViaVram(id, (s32)sc->fieldFile, size, NULL);
     DrawSync(0);
     sc->fieldFile = (void *)id;
-    if (g_gameState->gameData->cdRead[0].unk10 < g_gameState->gameData->cdRead[0].unk4) {
+    if (g_gameState->gameData->cdRead[0].chunk < g_gameState->gameData->cdRead[0].size) {
         cdRead_init(g_gameState->gameData->cdRead, g_gameState->gameData->sceneSector[1], g_gameState->gameData->sceneSectors[1] << 11,
-                      (void *)(id + size), g_gameState->gameData->cdRead[0].unk10, -1, NULL);
+                      (void *)(id + size), g_gameState->gameData->cdRead[0].chunk, -1, NULL);
         while (cdRead_update(g_gameState->gameData->cdRead) != 0) {
         }
     }

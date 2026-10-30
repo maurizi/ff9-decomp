@@ -627,7 +627,7 @@ loop:
         if (cdRead_update(cd) != 0) {
             break;
         }
-        func_8001DA78(&arg2->unk24, cd->unk10);
+        func_8001DA78(&arg2->unk24, cd->chunk);
         st->unk0 = arg2->unk2;
         goto loop;
     case 2:
@@ -663,7 +663,7 @@ loop:
         if (akao_getSpuTransferState() != 0) {
             break;
         }
-        h = db_lookup((s32)cd->unk8, 2, 0x90000, 0);
+        h = db_lookup((s32)cd->dest, 2, 0x90000, 0);
         if (arg2->unk4 == -1) {
             akao_loadBankRetry(h, 0);
         } else {
@@ -1931,13 +1931,13 @@ stream:
     case 3:
         if (cdRead_update(gd->cdRead) == 0 && akao_getSpuTransferState() == 0) {
             gf = g_gameState->gameData;
-            if (gf->cdRead[0].unkC + gf->cdRead[0].unk10 < gf->soundBankSize) {
-                gf->soundLoadDest = (s32)gf->cdRead[0].unk8;
+            if (gf->cdRead[0].offset + gf->cdRead[0].chunk < gf->soundBankSize) {
+                gf->soundLoadDest = (s32)gf->cdRead[0].dest;
                 gg = g_gameState->gameData;
                 m = (s32)(g_loadAreaEnd + 0x156F00) - gg->soundLoadDest;
                 m = m / 2048 * 2048;
-                cdRead_init(gg->cdRead, D_800F51F4, gg->cdRead[0].unk4, (void *)gg->soundLoadDest,
-                              gg->cdRead[0].unkC + gg->cdRead[0].unk10, m, btl_onSoundRead);
+                cdRead_init(gg->cdRead, D_800F51F4, gg->cdRead[0].size, (void *)gg->soundLoadDest,
+                              gg->cdRead[0].offset + gg->cdRead[0].chunk, m, btl_onSoundRead);
             } else if (D_800F51F2 == 7) {
                 if (D_800F51F8 != 9) {
                     gf->musicVolume[0] = 0x7F;
@@ -1950,27 +1950,27 @@ stream:
         }
         break;
     case 4:
-        n = gd->cdRead[0].unkC + gd->cdRead[0].unk10 - gd->soundBankSize;
+        n = gd->cdRead[0].offset + gd->cdRead[0].chunk - gd->soundBankSize;
         if (n > 0) {
-            memcpy(gd->musicSeq, (u8 *)(gd->soundLoadDest + (gd->soundBankSize - gd->cdRead[0].unkC)), n);
+            memcpy(gd->musicSeq, (u8 *)(gd->soundLoadDest + (gd->soundBankSize - gd->cdRead[0].offset)), n);
         }
         g_gameState->gameData->soundLoadDest = (s32)((u8 *)g_gameState->gameData->musicSeq + n);
         m2 = 0x6800 - n;
         m2 = m2 / 2048 * 2048;
         gh = g_gameState->gameData;
-        cdRead_init(gh->cdRead, D_800F51F4, gh->cdRead[0].unk4, (void *)gh->soundLoadDest,
-                      gh->cdRead[0].unkC + gh->cdRead[0].unk10, m2, NULL);
+        cdRead_init(gh->cdRead, D_800F51F4, gh->cdRead[0].size, (void *)gh->soundLoadDest,
+                      gh->cdRead[0].offset + gh->cdRead[0].chunk, m2, NULL);
         g_gameState->gameData->soundLoadState = 5;
         break;
     case 5:
         if (cdRead_update(gd->cdRead) == 0) {
             gi = g_gameState->gameData;
-            k1 = gi->cdRead[0].unkC + gi->cdRead[0].unk10;
-            if (k1 < gi->cdRead[0].unk4) {
+            k1 = gi->cdRead[0].offset + gi->cdRead[0].chunk;
+            if (k1 < gi->cdRead[0].size) {
                 k2 = k1 - gi->soundBankSize;
                 gi->soundLoadDest = (s32)((u8 *)gi->musicSeq + k2);
                 gj = g_gameState->gameData;
-                cdRead_init(gj->cdRead, D_800F51F4, gj->cdRead[0].unk4, (void *)gj->soundLoadDest, k2, 0x6800 - k2, NULL);
+                cdRead_init(gj->cdRead, D_800F51F4, gj->cdRead[0].size, (void *)gj->soundLoadDest, k2, 0x6800 - k2, NULL);
             } else {
                 func_800AE7C8((s32)gi->musicSeq);
                 g_gameState->gameData->flags |= 0x10000000;

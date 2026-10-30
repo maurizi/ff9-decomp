@@ -464,17 +464,17 @@ state:
         break;
     case 3:
         if (cdRead_update(g_gameState->gameData->cdRead) == 0 && akao_getSpuTransferState() == 0) {
-            fld_invalidateModelCache((s32)g_gameState->gameData->cdRead[0].unk20);
-            preload_discardRange((s32)g_gameState->gameData->cdRead[0].unk8, g_gameState->gameData->cdRead[0].unk10);
-            if (g_gameState->gameData->cdRead[0].unkC + g_gameState->gameData->cdRead[0].unk10 < g_gameState->gameData->soundBankSize) {
-                g_gameState->gameData->soundLoadDest = (s32)g_gameState->gameData->cdRead[0].unk8;
-                d = 0x156F00 - ((s32)g_gameState->gameData->cdRead[0].unk8 - (s32)g_loadAreaEnd);
+            fld_invalidateModelCache((s32)g_gameState->gameData->cdRead[0].end);
+            preload_discardRange((s32)g_gameState->gameData->cdRead[0].dest, g_gameState->gameData->cdRead[0].chunk);
+            if (g_gameState->gameData->cdRead[0].offset + g_gameState->gameData->cdRead[0].chunk < g_gameState->gameData->soundBankSize) {
+                g_gameState->gameData->soundLoadDest = (s32)g_gameState->gameData->cdRead[0].dest;
+                d = 0x156F00 - ((s32)g_gameState->gameData->cdRead[0].dest - (s32)g_loadAreaEnd);
                 if (!(g_gameState->gameData->ctx.field->flags & 4)) {
                     d -= 0x3000;
                 }
                 d = d / 2048 * 2048;
-                cdRead_init(g_gameState->gameData->cdRead, g_fieldSoundLoadSector, g_gameState->gameData->cdRead[0].unk4, (void *)g_gameState->gameData->soundLoadDest,
-                              g_gameState->gameData->cdRead[0].unkC + g_gameState->gameData->cdRead[0].unk10, d, fld_soundBankReadCallback);
+                cdRead_init(g_gameState->gameData->cdRead, g_fieldSoundLoadSector, g_gameState->gameData->cdRead[0].size, (void *)g_gameState->gameData->soundLoadDest,
+                              g_gameState->gameData->cdRead[0].offset + g_gameState->gameData->cdRead[0].chunk, d, fld_soundBankReadCallback);
             } else if (g_fieldSoundLoadKind == 7) {
                 if (g_fieldMusicRequest != 9) {
                     g_gameState->gameData->musicVolume[0] = 0x7F;
@@ -487,23 +487,23 @@ state:
         }
         break;
     case 4:
-        n = g_gameState->gameData->cdRead[0].unkC + g_gameState->gameData->cdRead[0].unk10 - g_gameState->gameData->soundBankSize;
+        n = g_gameState->gameData->cdRead[0].offset + g_gameState->gameData->cdRead[0].chunk - g_gameState->gameData->soundBankSize;
         if (n > 0) {
-            memcpy(g_gameState->gameData->musicSeq, (u8 *)g_gameState->gameData->soundLoadDest + (g_gameState->gameData->soundBankSize - g_gameState->gameData->cdRead[0].unkC), n);
+            memcpy(g_gameState->gameData->musicSeq, (u8 *)g_gameState->gameData->soundLoadDest + (g_gameState->gameData->soundBankSize - g_gameState->gameData->cdRead[0].offset), n);
         }
         t = 0x6800 - n;
         g_gameState->gameData->soundLoadDest = (s32)((u8 *)g_gameState->gameData->musicSeq + n);
         t = t / 2048 * 2048;
-        cdRead_init(g_gameState->gameData->cdRead, g_fieldSoundLoadSector, g_gameState->gameData->cdRead[0].unk4, (void *)g_gameState->gameData->soundLoadDest,
-                      g_gameState->gameData->cdRead[0].unkC + g_gameState->gameData->cdRead[0].unk10, t, NULL);
+        cdRead_init(g_gameState->gameData->cdRead, g_fieldSoundLoadSector, g_gameState->gameData->cdRead[0].size, (void *)g_gameState->gameData->soundLoadDest,
+                      g_gameState->gameData->cdRead[0].offset + g_gameState->gameData->cdRead[0].chunk, t, NULL);
         g_gameState->gameData->soundLoadState = 5;
         break;
     case 5:
         if (cdRead_update(g_gameState->gameData->cdRead) == 0) {
-            if (g_gameState->gameData->cdRead[0].unkC + g_gameState->gameData->cdRead[0].unk10 < g_gameState->gameData->cdRead[0].unk4) {
-                m = g_gameState->gameData->cdRead[0].unkC + g_gameState->gameData->cdRead[0].unk10 - g_gameState->gameData->soundBankSize;
+            if (g_gameState->gameData->cdRead[0].offset + g_gameState->gameData->cdRead[0].chunk < g_gameState->gameData->cdRead[0].size) {
+                m = g_gameState->gameData->cdRead[0].offset + g_gameState->gameData->cdRead[0].chunk - g_gameState->gameData->soundBankSize;
                 g_gameState->gameData->soundLoadDest = (s32)((u8 *)g_gameState->gameData->musicSeq + m);
-                cdRead_init(g_gameState->gameData->cdRead, g_fieldSoundLoadSector, g_gameState->gameData->cdRead[0].unk4, (void *)g_gameState->gameData->soundLoadDest, m, 0x6800 - m, NULL);
+                cdRead_init(g_gameState->gameData->cdRead, g_fieldSoundLoadSector, g_gameState->gameData->cdRead[0].size, (void *)g_gameState->gameData->soundLoadDest, m, 0x6800 - m, NULL);
             } else {
                 fld_unpackMusicSeq((s32)g_gameState->gameData->musicSeq);
                 g_gameState->gameData->flags |= GD_MUSIC_LOADED;
@@ -1327,11 +1327,11 @@ s32 fld_preloadRequest(s32 arg0, s32 arg1) {
             return -1;
         }
         e = preload_find(id);
-        if (e != NULL && e->unk2 == 0) {
+        if (e != NULL && e->kind == 0) {
             if (preload_isBusy(e)) {
                 return -1;
             }
-            if (!preload_isBusy(e) && (e->unk1C >> 2) < e->unkC) {
+            if (!preload_isBusy(e) && (e->readSize >> 2) < e->loaded) {
                 return -1;
             }
         }
@@ -1350,7 +1350,7 @@ s32 fld_preloadRequest(s32 arg0, s32 arg1) {
             preload_wait(e);
         }
         q = preload_find(id);
-        if (!flag && (q == NULL || q->unk2 != 0)) {
+        if (!flag && (q == NULL || q->kind != 0)) {
         clear:
             g_gameState->gameData->ctx.field->area->scene->flags &= ~FLD_SCN_PRELOADS_QUEUED;
         }

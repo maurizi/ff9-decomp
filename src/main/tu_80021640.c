@@ -46,15 +46,15 @@ void mbg_resetState(void) {
 CdReadCtx *cdRead_init(void *arg0, s32 a, s32 b, void *c, s32 d, s32 e, void (*f)(CdReadCtx *)) {
     CdReadCtx *p = arg0;
     if (p != NULL) {
-        p->unk0 = a;
-        p->unk4 = b;
-        p->unk8 = c;
-        p->unkC = d;
-        p->unk20 = c;
-        p->unk10 = e;
-        p->unk14 = f;
+        p->sector = a;
+        p->size = b;
+        p->dest = c;
+        p->offset = d;
+        p->end = c;
+        p->chunk = e;
+        p->onDone = f;
         p->unk18 = b;
-        p->unk1C = 1;
+        p->state = 1;
     }
     return p;
 }
@@ -64,36 +64,36 @@ s32 cdRead_update(void *arg0) {
     s32 n;
 
     if (p != NULL) {
-        switch (p->unk1C) {
+        switch (p->state) {
         case 1:
             if (cd_getState() == 0) {
-                p->unk1C = 2;
+                p->state = 2;
             }
             break;
         case 2:
-            n = p->unk4 - p->unkC;
-            if (p->unk10 != -1 && p->unk10 < n) {
-                n = p->unk10;
+            n = p->size - p->offset;
+            if (p->chunk != -1 && p->chunk < n) {
+                n = p->chunk;
             }
             if (n != 0) {
-                cd_readAsync(g_gameState->imgSector + p->unk0 + p->unkC / 2048, n, p->unk8, NULL);
+                cd_readAsync(g_gameState->imgSector + p->sector + p->offset / 2048, n, p->dest, NULL);
             }
-            p->unk10 = n;
-            p->unk1C = 3;
-            p->unk20 = p->unk8 + n;
+            p->chunk = n;
+            p->state = 3;
+            p->end = p->dest + n;
             return 3;
         case 3:
             if (cd_getState() == 0) {
-                if (p->unk14 != NULL) {
-                    p->unk14(p);
+                if (p->onDone != NULL) {
+                    p->onDone(p);
                 }
-                p->unk1C = 0;
+                p->state = 0;
             }
             break;
         default:
             return 0;
         }
-        return p->unk1C;
+        return p->state;
     }
     return 0;
 }
