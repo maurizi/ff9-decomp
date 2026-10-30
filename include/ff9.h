@@ -811,99 +811,99 @@ typedef struct {
 
 /* Sound sequencer channel (AKAO): unk0 is the byte-code read pointer. */
 typedef struct {
-    u8 *unk0;
-    u8 *unk4[4]; /* loop start addresses */
-    u8 *unk14; /* return address? */
-    u8 *unk18;
-    s32 (*unk1C)(u32); /* LFO wave functions (pitch, volume, pan) */
-    s32 (*unk20)(u32);
-    s32 (*unk24)(u32);
-    u32 unk28;
-    u32 unk2C;
-    s32 unk30;
-    u32 unk34; /* flags */
-    s32 unk38;
-    s32 unk3C;
-    s32 unk40;
-    s32 unk44;
-    s32 unk48;
-    s32 unk4C;
-    s32 unk50;
-    s32 unk54;
-    s32 unk58;
-    s32 unk5C;
-    s32 unk60;
-    s32 unk64;
-    u32 unk68;
-    s32 unk6C;
-    s32 unk70;
-    s32 unk74;
-    s32 unk78;
-    s32 unk7C;
-    s32 unk80;
-    u32 unk84;
-    s32 unk88;
-    s32 unk8C;
-    s32 unk90;
-    u16 unk94;
-    u16 unk96;
-    u16 unk98;
-    u16 unk9A;
-    u16 unk9C;
-    u16 unk9E;
-    u16 unkA0;
-    u16 unkA2[4]; /* loop counters */
-    u16 unkAA[4];
-    u16 unkB2;
-    u16 unkB4;
-    s16 unkB6;
-    s16 unkB8;
-    u16 unkBA;
-    s16 unkBC;
-    u16 unkBE;
-    u16 unkC0;
-    s16 unkC2;
-    u16 unkC4;
-    u16 unkC6;
-    u16 unkC8;
-    u16 unkCA;
-    s16 unkCC;
-    u16 unkCE;
-    u16 unkD0;
-    s16 unkD2;
-    u16 unkD4;
-    u16 unkD6;
-    s16 unkD8;
-    s16 unkDA;
-    u16 unkDC;
-    u16 unkDE;
-    s16 unkE0;
-    u16 unkE2;
-    s16 unkE4;
-    s16 unkE6;
-    u16 unkE8;
-    u16 unkEA;
-    s16 unkEC;
-    s16 unkEE;
-    u16 unkF0;
-    u16 unkF2;
-    u16 unkF4; /* loop depth */
-    u16 unkF6;
-    u16 unkF8;
-    s16 unkFA;
-    s16 unkFC;
-    s16 unkFE;
-    u16 unk100;
-    s16 unk102;
-    s16 unk104;
-    s16 unk106;
-    s16 unk108;
-    s16 unk10A;
-    s16 unk10C;
-    s16 unk10E;
-    s16 unk110;
-    s16 unk112;
-    s16 unk114;
+    u8 *pc; /* byte-code read pointer (akao_execChannel) */
+    u8 *loopStart[4]; /* loop start addresses (op C8, C9/CA jump back) */
+    u8 *returnAddr; /* return address of op FE call (akao_opFECall / akao_opFEReturn) */
+    u8 *regions; /* key-split regions (AkaoRegion[], op FE14; akao_applyKeySplit) */
+    s32 (*vibratoWave)(u32); /* LFO wave functions (pitch, volume, pan): pitch LFO wave (op B4, g_akaoLfoWaves) */
+    s32 (*tremoloWave)(u32); /* volume LFO wave (op B8) */
+    s32 (*panLfoWave)(u32); /* pan LFO wave (op BC) */
+    u32 seMask; /* sound-effect channel group bits (VoiceParams +4; akao_stopSeChannels, akao_getActiveSe), 0x2000000 = ignores SE volume/pan/pitch commands */
+    u32 pitch; /* pitch of the current note (akao_calcPitch), base of voicePitch and of the vibrato depth */
+    s32 pitchSlide; /* pitch offset of a running slide (<< 16), added to voicePitch */
+    u32 flags; /* 1 vibrato, 2 tremolo, 4 pan LFO, 8 drum kit (op FE04), 0x10/0x20 pitch/volume from the previous channel (ops D4-D7), 0x40 full gate (op FE1A), 0x1000 key split, 0x100000 stop only at the loop end (op E0): a stop request sets 0x200000 and op CA then ends the channel; 0x1000000/0x8000000/0x10000000 ADSR fields overridden (ops AD/B1/B2) */
+    s32 seBank; /* instrument bank offset of a sound effect (VoiceParams +0x10; func_8005EC8C in op Program) */
+    s32 vibratoPeriod; /* LFO period << 12 (op B4) */
+    s32 vibratoPeriodStep; /* (op E4) */
+    s32 vibratoPhase;
+    s32 vibratoRate; /* phase step, 0x1000000 / period */
+    s32 tremoloPeriod; /* (op B8) */
+    s32 tremoloPeriodStep; /* (op E5) */
+    s32 tremoloPhase;
+    s32 tremoloRate;
+    s32 panLfoPeriod; /* (op BC) */
+    s32 panLfoPeriodStep; /* (op E6) */
+    s32 panLfoPhase;
+    u32 panLfoRate;
+    s32 seHandle; /* sound effect this channel plays (akao_playSe handle; SE commands match it) */
+    s32 sePitch; /* SE pitch scale (<< 8, 0 = none; akao commands A4/A5/AC/AD), applied in akao_calcSeChannelVoice */
+    s32 sePitchStep;
+    s32 volume; /* channel volume << 16 (op A8), times expression */
+    s32 volumeStep; /* (op A9 slide) */
+    s32 pitchSlideStep;
+    u32 fineTuneOfs; /* pitch offset of fineTune (akao_calcPitch out), added to voicePitch */
+    s32 age; /* ticks since the sound effect started (akao_tick); akao_stopSeChannels drops the oldest */
+    s32 noteVolume; /* volume a slide restarts from on every key-on (op FE19) */
+    s32 noteVolumeStep;
+    u16 isSe; /* nonzero: sound-effect channel (akao_startSeChannel), 0: music */
+    u16 noteTicks; /* ticks to the next event (akao_tickChannels) */
+    u16 gateTicks; /* ticks to key-off */
+    u16 instrument; /* index into g_akaoInstruments (op Program, key split) */
+    u16 sePan; /* SE pan << 8 (akao commands A2/A3/AA/AB), added to pan */
+    u16 sePanSlideLen;
+    u16 opCount; /* commands executed (+1 per command; loops restore it) */
+    u16 loopCount[4]; /* loop counters */
+    u16 loopOpCount[4]; /* opCount at each loop start */
+    u16 expression; /* second volume factor << 8 (op A3), multiplies volume */
+    u16 expressionSlideLen; /* (op FE12) */
+    s16 sePitchSlideLen;
+    s16 volumeSlideLen; /* (op A9) */
+    u16 noteVolumeSlideLen; /* (op FE19), nonzero: restart the volume slide on every key-on */
+    s16 seVolumeSlideLen;
+    u16 pan; /* << 8, 0x40 = centre in the byte code (op AA) */
+    u16 panSlideLen; /* (op AB) */
+    s16 pitchSlideLeft; /* frames left of the pitch slide */
+    u16 octave; /* (ops Octave/OctaveUp/OctaveDown) */
+    u16 slideLen; /* pitch-slide length set by op A4 */
+    u16 prevKey; /* key of the previous note (portamento start) */
+    u16 portamentoLen; /* op DA (0 = off, op DB) */
+    s16 legato; /* 1 legato on (op CC), 2 this note is tied, 4 (op D0, sound effects) */
+    u16 vibratoDelay; /* frames before the vibrato starts (op B4) */
+    u16 vibratoDelayLeft;
+    s16 vibratoPeriodSlideLen;
+    u16 vibratoDepth; /* depth in pitch units, from vibratoDepthParam and pitch */
+    u16 vibratoDepthParam; /* op B5 (<< 8; 0x8000 = full scale) */
+    s16 vibratoDepthSlideLen; /* (op DD) */
+    s16 vibratoDepthStep;
+    u16 tremoloDelay; /* (op B8) */
+    u16 tremoloDelayLeft;
+    s16 tremoloPeriodSlideLen;
+    u16 tremoloDepth; /* (op B9) */
+    s16 tremoloDepthSlideLen; /* (op DE) */
+    s16 tremoloDepthStep;
+    u16 panLfoPeriodSlideLen;
+    u16 panLfoDepth; /* (op BD) */
+    s16 panLfoDepthSlideLen; /* (op DF) */
+    s16 panLfoDepthStep;
+    u16 noiseTimer; /* frames until the noise bit toggles (ops CE/CF) */
+    u16 pitchModTimer; /* frames until the pitch-modulation bit toggles (ops D2/D3) */
+    u16 loopDepth; /* loop depth */
+    u16 pitchRandom; /* op E1: random pitch variation per note (g_akaoLfoTableData[D_8008314C]) */
+    u16 noteLen; /* length of the last note */
+    s16 fixedLen; /* op DC: every note gets this length (0 = off) */
+    s16 expressionStep;
+    s16 sePanStep;
+    u16 seVolume; /* SE volume << 8 (akao_cmdSetSeVolume), multiplies the volume */
+    s16 seVolumeStep;
+    s16 panStep;
+    s16 transpose; /* (ops C0/C1) */
+    s16 fineTune; /* (ops D8/D9) */
+    s16 curKey; /* key of the current note (key split, portamento) */
+    s16 slideKeys; /* op A4: semitones the next note slides by */
+    s16 prevTranspose; /* transpose of the previous note */
+    s16 vibratoOut; /* current vibrato pitch offset */
+    s16 tremoloOut; /* current tremolo volume offset */
+    s16 panLfoOut; /* current pan LFO offset */
     u8 pad116[0x118 - 0x116];
     u32 voice; /* voice number */
     u32 voiceDirty;

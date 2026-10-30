@@ -153,27 +153,27 @@ void akao_initState(void) {
     } while (0); } while (0); } while (0); } while (0); } while (0);
 loop1:
     i++;
-    ((AkaoChannel *)(p - 0x88))->unk34 = 0;
+    ((AkaoChannel *)(p - 0x88))->flags = 0;
     v &= 0x7FFFFFFF; /* no code: combine turns it into a self-move, so v stays multi-set (no sched1 boost) */
     ((AkaoChannel *)(p - 0x88))->voice = v;
-    ((AkaoChannel *)(p - 0x88))->unk94 = 0;
-    ((AkaoChannel *)(p - 0x88))->unk88 = 0;
+    ((AkaoChannel *)(p - 0x88))->isSe = 0;
+    ((AkaoChannel *)(p - 0x88))->age = 0;
     p += sizeof(AkaoChannel);
     if (i < 32) {
         goto loop1;
     }
     c = g_akaoSeChannels;
     for (i = 8; i < 24;) {
-        c->unk34 = 0;
+        c->flags = 0;
         c->voice = i;
         i++;
-        c->unk94 = 1;
-        c->unk88 = 0;
-        c->unk100 = 0x7F00;
-        c->unkBC = 0;
-        c->unkB6 = 0;
-        c->unk70 = 0;
-        c->unkBA = 0;
+        c->isSe = 1;
+        c->age = 0;
+        c->seVolume = 0x7F00;
+        c->seVolumeSlideLen = 0;
+        c->sePitchSlideLen = 0;
+        c->sePitch = 0;
+        c->noteVolumeSlideLen = 0;
         c++;
     }
     g_akaoSeq->unk18 = 0;

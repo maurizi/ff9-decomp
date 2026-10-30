@@ -339,59 +339,59 @@ void akao_flushVoice(s32 v, AkaoVoiceRegs *p) {
 
 void akao_stepChannelSlides(AkaoChannel *c, u32 mask, s32 kind) {
     s32 nw;
-    if ((u16)c->unkB8 != 0) {
+    if ((u16)c->volumeSlideLen != 0) {
         s32 old;
-        c->unkB8 = (u16)c->unkB8 - 1;
-        old = c->unk78;
-        nw = old + c->unk7C;
+        c->volumeSlideLen = (u16)c->volumeSlideLen - 1;
+        old = c->volume;
+        nw = old + c->volumeStep;
         if ((nw & 0xFFE00000) != (old & 0xFFE00000)) {
             c->voiceDirty |= 3;
         }
-        c->unk78 = nw;
+        c->volume = nw;
     }
-    if (kind == 0 && c->unkB4 != 0) {
+    if (kind == 0 && c->expressionSlideLen != 0) {
         u16 old;
-        c->unkB4--;
-        old = c->unkB2;
-        nw = old + c->unkFC;
+        c->expressionSlideLen--;
+        old = c->expression;
+        nw = old + c->expressionStep;
         if ((nw & 0x7F00) != (old & 0x7F00)) {
             c->voiceDirty |= 3;
         }
-        c->unkB2 = nw;
+        c->expression = nw;
     }
-    if (c->unkC0 != 0) {
+    if (c->panSlideLen != 0) {
         u16 old;
-        c->unkC0--;
-        old = c->unkBE;
-        nw = old + c->unk104;
+        c->panSlideLen--;
+        old = c->pan;
+        nw = old + c->panStep;
         if ((nw & 0xFF00) != (old & 0xFF00)) {
             c->voiceDirty |= 3;
         }
-        c->unkBE = nw;
+        c->pan = nw;
     }
-    if (c->unkD0 != 0) {
-        c->unkD0--;
+    if (c->vibratoDelayLeft != 0) {
+        c->vibratoDelayLeft--;
     }
-    if (c->unkDE != 0) {
-        c->unkDE--;
+    if (c->tremoloDelayLeft != 0) {
+        c->tremoloDelayLeft--;
     }
-    if ((u16)c->unkD2 != 0) {
-        c->unkD2 = (u16)c->unkD2 - 1;
-        c->unk3C += c->unk40;
-        c->unk48 = 0x1000000 / ((u32)c->unk3C >> 12);
+    if ((u16)c->vibratoPeriodSlideLen != 0) {
+        c->vibratoPeriodSlideLen = (u16)c->vibratoPeriodSlideLen - 1;
+        c->vibratoPeriod += c->vibratoPeriodStep;
+        c->vibratoRate = 0x1000000 / ((u32)c->vibratoPeriod >> 12);
     }
-    if ((u16)c->unkE0 != 0) {
-        c->unkE0 = (u16)c->unkE0 - 1;
-        c->unk4C += c->unk50;
-        c->unk58 = 0x1000000 / ((u32)c->unk4C >> 12);
+    if ((u16)c->tremoloPeriodSlideLen != 0) {
+        c->tremoloPeriodSlideLen = (u16)c->tremoloPeriodSlideLen - 1;
+        c->tremoloPeriod += c->tremoloPeriodStep;
+        c->tremoloRate = 0x1000000 / ((u32)c->tremoloPeriod >> 12);
     }
-    if (c->unkE8 != 0) {
-        c->unkE8--;
-        c->unk5C += c->unk60;
-        c->unk68 = 0x1000000 / ((u32)c->unk5C >> 12);
+    if (c->panLfoPeriodSlideLen != 0) {
+        c->panLfoPeriodSlideLen--;
+        c->panLfoPeriod += c->panLfoPeriodStep;
+        c->panLfoRate = 0x1000000 / ((u32)c->panLfoPeriod >> 12);
     }
-    if (c->unkF0 != 0) {
-        if (--c->unkF0 == 0) {
+    if (c->noiseTimer != 0) {
+        if (--c->noiseTimer == 0) {
             if (kind == 0) {
                 g_akaoSeq->unk3C ^= mask;
             } else {
@@ -400,8 +400,8 @@ void akao_stepChannelSlides(AkaoChannel *c, u32 mask, s32 kind) {
             g_akaoFlags.unk8 |= 0x110;
         }
     }
-    if (c->unkF2 != 0) {
-        if (--c->unkF2 == 0) {
+    if (c->pitchModTimer != 0) {
+        if (--c->pitchModTimer == 0) {
             if (kind == 0) {
                 g_akaoSeq->unk44 ^= mask;
             } else {
@@ -410,36 +410,36 @@ void akao_stepChannelSlides(AkaoChannel *c, u32 mask, s32 kind) {
             g_akaoFlags.unk8 |= 0x100;
         }
     }
-    if ((u16)c->unkD8 != 0) {
+    if ((u16)c->vibratoDepthSlideLen != 0) {
         u32 v;
         u32 n;
-        c->unkD8 = (u16)c->unkD8 - 1;
-        v = c->unkD6 + (u16)c->unkDA;
-        c->unkD6 = v;
+        c->vibratoDepthSlideLen = (u16)c->vibratoDepthSlideLen - 1;
+        v = c->vibratoDepthParam + (u16)c->vibratoDepthStep;
+        c->vibratoDepthParam = v;
         n = (v & 0x7F00) >> 8;
         if (v & 0x8000) {
-            c->unkD4 = (n * c->unk2C) >> 7;
+            c->vibratoDepth = (n * c->pitch) >> 7;
         } else {
-            c->unkD4 = (n * ((c->unk2C * 15) >> 8)) >> 7;
+            c->vibratoDepth = (n * ((c->pitch * 15) >> 8)) >> 7;
         }
     }
-    if ((u16)c->unkE4 != 0) {
-        c->unkE4 = (u16)c->unkE4 - 1;
-        c->unkE2 += c->unkE6;
+    if ((u16)c->tremoloDepthSlideLen != 0) {
+        c->tremoloDepthSlideLen = (u16)c->tremoloDepthSlideLen - 1;
+        c->tremoloDepth += c->tremoloDepthStep;
     }
-    if ((u16)c->unkEC != 0) {
-        c->unkEC = (u16)c->unkEC - 1;
-        c->unkEA += c->unkEE;
+    if ((u16)c->panLfoDepthSlideLen != 0) {
+        c->panLfoDepthSlideLen = (u16)c->panLfoDepthSlideLen - 1;
+        c->panLfoDepth += c->panLfoDepthStep;
     }
-    if ((u16)c->unkC2 != 0) {
+    if ((u16)c->pitchSlideLeft != 0) {
         s32 old;
-        c->unkC2 = (u16)c->unkC2 - 1;
-        old = c->unk30;
-        nw = old + c->unk80;
+        c->pitchSlideLeft = (u16)c->pitchSlideLeft - 1;
+        old = c->pitchSlide;
+        nw = old + c->pitchSlideStep;
         if ((nw & 0xFFFF0000) != (old & 0xFFFF0000)) {
             c->voiceDirty |= 0x10;
         }
-        c->unk30 = nw;
+        c->pitchSlide = nw;
     }
 }
 
@@ -451,40 +451,40 @@ void akao_calcChannelVoice(AkaoChannel *c, u32 bit) {
     s32 pan;
     s32 pitch;
 
-    f = c->unk34;
-    vol = ((c->unk78 >> 16) * (c->unkB2 >> 8)) >> 7;
-    if ((f & 1) && c->unkD0 == 0) {
-        c->unk44 += c->unk48;
-        t = c->unk1C((u32)c->unk44 >> 16);
-        pan = (s16)((u32)(c->unkD4 * t) >> 16);
+    f = c->flags;
+    vol = ((c->volume >> 16) * (c->expression >> 8)) >> 7;
+    if ((f & 1) && c->vibratoDelayLeft == 0) {
+        c->vibratoPhase += c->vibratoRate;
+        t = c->vibratoWave((u32)c->vibratoPhase >> 16);
+        pan = (s16)((u32)(c->vibratoDepth * t) >> 16);
         x = pan;
         if (pan < 0) {
             x = pan >> 1;
         }
-        c->unk110 = x;
+        c->vibratoOut = x;
         c->voiceDirty |= 0x10;
     }
-    if ((f & 2) && c->unkDE == 0) {
-        c->unk54 += c->unk58;
-        t = c->unk20((u32)c->unk54 >> 16);
-        pan = (vol * (c->unkE2 >> 8)) << 9 >> 16;
+    if ((f & 2) && c->tremoloDelayLeft == 0) {
+        c->tremoloPhase += c->tremoloRate;
+        t = c->tremoloWave((u32)c->tremoloPhase >> 16);
+        pan = (vol * (c->tremoloDepth >> 8)) << 9 >> 16;
         c->voiceDirty |= 3;
-        c->unk112 = (pan * t) >> 16;
+        c->tremoloOut = (pan * t) >> 16;
     }
     if (f & 4) {
-        c->unk64 += c->unk68;
-        t = c->unk24((u32)c->unk64 >> 16);
+        c->panLfoPhase += c->panLfoRate;
+        t = c->panLfoWave((u32)c->panLfoPhase >> 16);
         c->voiceDirty |= 3;
-        c->unk114 = ((c->unkEA >> 8) * t) >> 16;
+        c->panLfoOut = ((c->panLfoDepth >> 8) * t) >> 16;
     }
     if (f & 0x20) {
         c->voiceDirty |= 3;
-        vol = ((s16)(c[-1].voicePitch << 1) * (c->unkB2 >> 8)) >> 7;
+        vol = ((s16)(c[-1].voicePitch << 1) * (c->expression >> 8)) >> 7;
     }
     if (c->voiceDirty & 3) {
-        vol += c->unk112;
+        vol += c->tremoloOut;
         vol = (vol * (s32)(((u32)g_akaoSeq->unk50 >> 16) & 0x7F)) >> 7;
-        pan = (c->unkBE >> 8) + c->unk114;
+        pan = (c->pan >> 8) + c->panLfoOut;
         pan = (pan + (g_akaoSeq->unk5C >> 16) - 0x40) & 0xFF;
         if (g_akaoOutputFlags & 2) {
             c->voiceVolL = c->voiceVolR = (vol * g_akaoMonoGain) >> 15;
@@ -494,7 +494,7 @@ void akao_calcChannelVoice(AkaoChannel *c, u32 bit) {
         }
     }
     if (f & 0x10) {
-        pitch = c[-1].voicePitch + c->unk110 + (c->unk30 >> 16);
+        pitch = c[-1].voicePitch + c->vibratoOut + (c->pitchSlide >> 16);
         pan = D_80083150 & 0xFF0000;
         if (pan != 0) {
             pan >>= 16;
@@ -504,10 +504,10 @@ void akao_calcChannelVoice(AkaoChannel *c, u32 bit) {
                 pitch = (pitch * pan) >> 8;
             }
         }
-        c->voicePitch = ((u16)c->unk84 + pitch) & 0x3FFF;
+        c->voicePitch = ((u16)c->fineTuneOfs + pitch) & 0x3FFF;
         c->voiceDirty |= 0x10;
     } else if (c->voiceDirty & 0x10) {
-        pitch = c->unk2C + c->unk110 + (c->unk30 >> 16);
+        pitch = c->pitch + c->vibratoOut + (c->pitchSlide >> 16);
         pan = D_80083150 & 0xFF0000;
         if (pan != 0) {
             pan >>= 16;
@@ -517,7 +517,7 @@ void akao_calcChannelVoice(AkaoChannel *c, u32 bit) {
                 pitch = (pitch * pan) >> 8;
             }
         }
-        c->voicePitch = ((u16)c->unk84 + pitch) & 0x3FFF;
+        c->voicePitch = ((u16)c->fineTuneOfs + pitch) & 0x3FFF;
     }
 }
 
@@ -530,41 +530,41 @@ void akao_calcSeChannelVoice(AkaoChannel *c, u32 bit) {
     s32 pitch;
     s32 k;
 
-    f = c->unk34;
-    vol = ((c->unk78 >> 16) * (c->unkB2 >> 8)) >> 7;
+    f = c->flags;
+    vol = ((c->volume >> 16) * (c->expression >> 8)) >> 7;
     if (f & 1) {
-        c->unk44 += c->unk48;
-        t = c->unk1C((u32)c->unk44 >> 16);
-        pan = (s16)((u32)(c->unkD4 * t) >> 16);
+        c->vibratoPhase += c->vibratoRate;
+        t = c->vibratoWave((u32)c->vibratoPhase >> 16);
+        pan = (s16)((u32)(c->vibratoDepth * t) >> 16);
         x = pan;
         if (pan < 0) {
             x = pan >> 1;
         }
-        c->unk110 = x;
+        c->vibratoOut = x;
         c->voiceDirty |= 0x10;
     }
     if (f & 2) {
-        c->unk54 += c->unk58;
-        t = c->unk20((u32)c->unk54 >> 16);
-        pan = (vol * (c->unkE2 >> 8)) << 9 >> 16;
+        c->tremoloPhase += c->tremoloRate;
+        t = c->tremoloWave((u32)c->tremoloPhase >> 16);
+        pan = (vol * (c->tremoloDepth >> 8)) << 9 >> 16;
         c->voiceDirty |= 3;
-        c->unk112 = (pan * t) >> 16;
+        c->tremoloOut = (pan * t) >> 16;
     }
     if (f & 4) {
-        c->unk64 += c->unk68;
-        t = c->unk24((u32)c->unk64 >> 16);
+        c->panLfoPhase += c->panLfoRate;
+        t = c->panLfoWave((u32)c->panLfoPhase >> 16);
         c->voiceDirty |= 3;
-        c->unk114 = ((c->unkEA >> 8) * t) >> 16;
+        c->panLfoOut = ((c->panLfoDepth >> 8) * t) >> 16;
     }
     if (f & 0x20) {
         c->voiceDirty |= 3;
-        vol = ((s16)(c[-1].voicePitch << 1) * (c->unkB2 >> 8)) >> 7;
+        vol = ((s16)(c[-1].voicePitch << 1) * (c->expression >> 8)) >> 7;
     }
     if (c->voiceDirty & 3) {
-        vol += c->unk112;
-        if (!(c->unk28 & 0x2000000)) {
-            vol = (vol * ((s16)c->unk100 >> 8)) >> 7;
-            pan = ((c->unkBE + c->unk9C) >> 8) + c->unk114 + 0x80;
+        vol += c->tremoloOut;
+        if (!(c->seMask & 0x2000000)) {
+            vol = (vol * ((s16)c->seVolume >> 8)) >> 7;
+            pan = ((c->pan + c->sePan) >> 8) + c->panLfoOut + 0x80;
             pan &= 0xFF;
         } else {
             pan = 0x80;
@@ -577,9 +577,9 @@ void akao_calcSeChannelVoice(AkaoChannel *c, u32 bit) {
         }
     }
     if (f & 0x10) {
-        pitch = c[-1].voicePitch + c->unk110 + (c->unk30 >> 16);
-        k = c->unk70 & 0xFF00;
-        if (!(c->unk28 & 0x2000000) && k != 0) {
+        pitch = c[-1].voicePitch + c->vibratoOut + (c->pitchSlide >> 16);
+        k = c->sePitch & 0xFF00;
+        if (!(c->seMask & 0x2000000) && k != 0) {
             k >>= 8;
             if (k < 0x80) {
                 pitch += (pitch * k) >> 7;
@@ -587,12 +587,12 @@ void akao_calcSeChannelVoice(AkaoChannel *c, u32 bit) {
                 pitch = (pitch * k) >> 8;
             }
         }
-        c->voicePitch = ((u16)c->unk84 + pitch) & 0x3FFF;
+        c->voicePitch = ((u16)c->fineTuneOfs + pitch) & 0x3FFF;
         c->voiceDirty |= 0x10;
     } else if (c->voiceDirty & 0x10) {
-        pitch = c->unk2C + c->unk110 + (c->unk30 >> 16);
-        k = c->unk70 & 0xFF00;
-        if (!(c->unk28 & 0x2000000) && k != 0) {
+        pitch = c->pitch + c->vibratoOut + (c->pitchSlide >> 16);
+        k = c->sePitch & 0xFF00;
+        if (!(c->seMask & 0x2000000) && k != 0) {
             k >>= 8;
             if (k < 0x80) {
                 pitch += (pitch * k) >> 7;
@@ -600,7 +600,7 @@ void akao_calcSeChannelVoice(AkaoChannel *c, u32 bit) {
                 pitch = (pitch * k) >> 8;
             }
         }
-        c->voicePitch = ((u16)c->unk84 + pitch) & 0x3FFF;
+        c->voicePitch = ((u16)c->fineTuneOfs + pitch) & 0x3FFF;
     }
 }
 
@@ -700,9 +700,9 @@ void akao_assignVoices(AkaoChannel *ch, u32 mask, u32 keep, u32 *used) {
                 } else if (ch->voice < 24) {
                     /* identical branches (jump2 merges them), as in math_buildRotMatrixZXY */
                     if (mask) {
-                        ((void (*)(s32, AkaoVoiceRegs *, u32))akao_flushVoice)(ch->voice, (AkaoVoiceRegs *)&ch->voice, ch->unk34);
+                        ((void (*)(s32, AkaoVoiceRegs *, u32))akao_flushVoice)(ch->voice, (AkaoVoiceRegs *)&ch->voice, ch->flags);
                     } else {
-                        ((void (*)(s32, AkaoVoiceRegs *, u32))akao_flushVoice)(ch->voice, (AkaoVoiceRegs *)&ch->voice, ch->unk34);
+                        ((void (*)(s32, AkaoVoiceRegs *, u32))akao_flushVoice)(ch->voice, (AkaoVoiceRegs *)&ch->voice, ch->flags);
                     }
                 }
             }
@@ -758,12 +758,12 @@ void akao_readEnvelopes(u32 extra) {
 
 void func_80058990(AkaoChannel *c) {
     s32 v;
-    D_80080A18.unkC = v = c->unk50;
+    D_80080A18.unkC = v = c->tremoloPeriodStep;
     v >>= 16;
     v *= D_80080A18.unk0 >> 8;
     v /= 127;
     v <<= 8;
-    c->unk50 = v;
+    c->tremoloPeriodStep = v;
 }
 
 void func_800589E0(Unk800589E0 *a) {
@@ -850,7 +850,7 @@ void akao_updateVoices(void) {
             if (m2 & bit) {
                 akao_calcSeChannelVoice(ch, bit);
                 if (ch->voiceDirty) {
-                    ((void (*)(s32, AkaoVoiceRegs *, u32))akao_flushVoice)(ch->voice, (AkaoVoiceRegs *)&ch->voice, ch->unk34);
+                    ((void (*)(s32, AkaoVoiceRegs *, u32))akao_flushVoice)(ch->voice, (AkaoVoiceRegs *)&ch->voice, ch->flags);
                 }
                 m2 &= ~bit;
             }
