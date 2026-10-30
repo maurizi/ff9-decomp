@@ -1820,28 +1820,28 @@ void akao_streamStart(s32 addr, s32 vol, s32 flag) {
     SpuSetIRQCallback(NULL);
     h = (StreamHeader *)addr;
     g_akaoStream.readPtr = (u8 *)h + 0x40;
-    g_akaoStream.bytesLeft = h->unk10;
+    g_akaoStream.bytesLeft = h->dataSize;
     mask = (1 << v) | (1 << (v + 1));
-    t = h->unk20;
+    t = h->loopLength;
     g_akaoStream.voice = v;
     g_akaoStream.voiceMask = mask;
     g_akaoStream.loopLength = t;
     akao_keyOff(mask);
-    g_akaoStream.flags = h->unk18;
-    g_akaoStream.pitch = h->unk1C;
+    g_akaoStream.flags = h->flags;
+    g_akaoStream.pitch = h->pitch;
     g_akaoStream.voice = v;
     g_akaoStream.voiceMask = mask;
     akao_keyOff(mask);
     SpuSetTransferMode(0);
     SpuSetTransferStartAddr(0x1100);
     g_akaoSpuBusy = 1;
-    g_akaoStream.loopPtr = (g_akaoStream.flags & 2) ? (s32)(g_akaoStream.readPtr + h->unk14) : 0;
+    g_akaoStream.loopPtr = (g_akaoStream.flags & 2) ? (s32)(g_akaoStream.readPtr + h->loopStart) : 0;
     if (g_akaoStream.flags & 1) {
-        g_akaoStream.loopBytes = (g_akaoStream.flags & 2) ? g_akaoStream.bytesLeft - (h->unk14 >> 1) : 0;
+        g_akaoStream.loopBytes = (g_akaoStream.flags & 2) ? g_akaoStream.bytesLeft - (h->loopStart >> 1) : 0;
         SpuSetTransferCallback(akao_streamStartStereo);
         size = 0x2000;
     } else {
-        g_akaoStream.loopBytes = (g_akaoStream.flags & 2) ? g_akaoStream.bytesLeft - h->unk14 : 0;
+        g_akaoStream.loopBytes = (g_akaoStream.flags & 2) ? g_akaoStream.bytesLeft - h->loopStart : 0;
         SpuSetTransferCallback(akao_streamUploadSecond);
         size = 0x800;
     }
@@ -2207,22 +2207,22 @@ void func_80061C1C(void) {
     SpuSetIRQ(0);
     SpuSetIRQCallback(NULL);
     h = (StreamHeader *)(g_akaoStream.spuAddr + 0x80);
-    if (h->unk28 != 0 && g_akaoStream.volumeFadeLen == 0) {
+    if (h->fadeIn != 0 && g_akaoStream.volumeFadeLen == 0) {
         vol = g_akaoStream.volume;
         g_akaoStream.volume = 0;
-        akao_sendCmdE5(h->unk28, vol >> 8);
+        akao_sendCmdE5(h->fadeIn, vol >> 8);
     }
     d = &g_akaoStream;
     g_akaoStream.readPtr = (u8 *)d->spuAddr;
-    d->bytesLeft = h->unk10;
-    d->loopLength = h->unk20;
+    d->bytesLeft = h->dataSize;
+    d->loopLength = h->loopLength;
     mask = (1 << v) | (1 << (v + 1));
     d->voice = v;
     d->voiceMask = mask;
     d->unk34 = 0;
     akao_keyOff(mask);
-    d->flags = h->unk18;
-    d->pitch = h->unk1C;
+    d->flags = h->flags;
+    d->pitch = h->pitch;
     SpuSetTransferMode(0);
     SpuSetTransferStartAddr(0x1100);
     g_akaoSpuBusy = 1;

@@ -532,15 +532,15 @@ extern Unk800686E8 D_800686E8;
 extern Unk800686E8 g_uiSprites[];
 extern Unk800686E8 D_800687E0[]; /* digit glyphs */
 
-/* 12-tick toggle timer (ui_initMemberSwitch/D08/D2C) */
+/* member header slide (ui_*MemberSwitch, ui_drawMemberHeader) */
 typedef struct {
-    u8 unk0; /* active */
-    u8 unk1;
-    u8 unk2;
-    u8 unk3;
-    s32 unk4; /* ticks */
-    void (*unk8)(void);
-} UnkBlink;
+    u8 active; /* active: the header is sliding to the next member (ui_startMemberSwitch) */
+    u8 dir; /* slide direction (ui_drawMemberHeader: 1 = from the other side) */
+    u8 member; /* party slot shown */
+    u8 nextMember; /* party slot sliding in */
+    s32 frame; /* ticks, 12 frames per switch */
+    void (*onDone)(void); /* (ui_initMemberSwitch) */
+} MemberSwitch;
 
 /* ---- misc globals ---- */
 
@@ -2592,9 +2592,9 @@ extern u8 g_randTableEnd[];
 void rand_refill(void);
 
 /* ---- hoisted for menu overlays ---- */
-void ui_initMemberSwitch(UnkBlink *, s32, void (*)(void));
-void ui_startMemberSwitch(UnkBlink *, s32, s32, s32);
-void ui_updateMemberSwitch(UnkBlink *);
+void ui_initMemberSwitch(MemberSwitch *, s32, void (*)(void));
+void ui_startMemberSwitch(MemberSwitch *, s32, s32, s32);
+void ui_updateMemberSwitch(MemberSwitch *);
 void text_setStringArg(s32, u8 *);
 void text_setIconArg(s32, s32);
 u8 help_getFollow(void);
@@ -2641,14 +2641,7 @@ extern GaugeColors D_80068FD8[];
     (o).g = (f)->g + ((t)->g - (f)->g) * (n) / (d);         \
     (o).b = (f)->b + ((t)->b - (f)->b) * (n) / (d)
 extern u8 D_8007AF00;
-typedef struct {
-    u8 unk0; /* show second character */
-    u8 unk1; /* slide direction */
-    u8 unk2; /* party slot */
-    u8 unk3; /* second party slot */
-    s32 unk4; /* slide step */
-} Unk80024428;
-void ui_drawMemberHeader(s32, s32, s32, Unk80024428 *);
+void ui_drawMemberHeader(s32, s32, s32, MemberSwitch *);
 void ui_drawStatusIcons(s32, s32, s32, u8, s32); /* arg4 unused, callers pass 0 */
 void ui_drawStones(s32, s32, s32, s32, s32);
 void chr_setDefaultName(u8 *, s32); /* default name by id */
@@ -2985,11 +2978,11 @@ typedef union {
 extern PenPos g_penPos; /* current pen position */
 /* "!" balloon sprite (msg_drawHereIcon) */
 typedef struct {
-    u8 unk0; /* u */
-    u8 unk1; /* v */
-    u16 unk2; /* clut */
-    u8 unk4; /* w */
-    u8 unk5; /* h */
+    u8 u; /* u */
+    u8 v; /* v */
+    u16 clut; /* clut */
+    u8 w; /* w */
+    u8 h; /* h */
 } Unk80068790;
 extern Unk80068790 D_80068790;
 extern s32 g_hereIconFlipped; /* balloon flipped (pen x < 24) */
@@ -4001,13 +3994,13 @@ static inline Unk8004AFF0 *evt_getObjectModelData_inline(EvtObject *p) {
 extern u8 g_swirlVariant;
 extern s32 g_evtEncounterChance;
 typedef struct {
-    s16 unk0;
-    s16 unk2;
-    s16 unk4;
-    s16 unk6;
-    u8 unk8;
-} Unk8007AE40;
-extern Unk8007AE40 g_evtEncounterTable;
+    s16 battle0; /* encounter battle ids by slot (op EVT_OP_ENCOUNTER_TABLE; evt_rollEncounter_pick picks one by g_encounterSlotThresholds) */
+    s16 battle1;
+    s16 battle2;
+    s16 battle3;
+    u8 pattern; /* & 3 selects the slot thresholds */
+} EncounterTable;
+extern EncounterTable g_evtEncounterTable;
 extern u8 D_8006E658[];
 void evt_setNextBattle(u16);
 void evt_setCardOpponent();
@@ -4240,14 +4233,14 @@ extern u8 D_8006F310[];
 /* sound stream header (g_akaoStream.unk2C + 0x80), func_80061C1C */
 typedef struct {
     u8 pad0[0x10];
-    s32 unk10;
-    u32 unk14;
-    s32 unk18;
-    u16 unk1C;
+    s32 dataSize; /* AkaoStreamState.bytesLeft */
+    u32 loopStart; /* loop offset (AkaoStreamState.loopPtr) */
+    s32 flags; /* AkaoStreamState.flags */
+    u16 pitch; /* AkaoStreamState.pitch */
     u8 pad1E[0x20 - 0x1E];
-    s32 unk20;
+    s32 loopLength; /* AkaoStreamState.loopLength */
     u8 pad24[0x28 - 0x24];
-    s32 unk28;
+    s32 fadeIn; /* nonzero: akao_sendCmdE5 fades the volume in over it (func_80061C1C) */
 } StreamHeader;
 
 void akao_sendCmdE5(s32 a, s32 b);
@@ -4307,7 +4300,7 @@ s32 msg_getChoiceIndex(void);
 #ifndef OVL_0C_H
 extern s32 g_evtEncounterDist;
 extern u8 g_encounterSlotThresholds[][4];
-Unk8007AE40 *wm_getEncounterEntry();
+EncounterTable *wm_getEncounterEntry();
 
 static inline s32 evt_rollEncounter_rand(void) {
     if (g_randPtr >= g_randTableEnd) {
@@ -4317,7 +4310,7 @@ static inline s32 evt_rollEncounter_rand(void) {
 }
 
 static inline u16 evt_rollEncounter_pick(void) {
-    Unk8007AE40 *t;
+    EncounterTable *t;
     s32 r;
     s32 i;
     u8 *tbl;
@@ -4328,7 +4321,7 @@ static inline u16 evt_rollEncounter_pick(void) {
         t = &g_evtEncounterTable;
     }
     r = evt_rollEncounter_rand();
-    tbl = g_encounterSlotThresholds[t->unk8 & 3];
+    tbl = g_encounterSlotThresholds[t->pattern & 3];
     if (r >= tbl[0]) {
         if (r >= tbl[1]) {
             i = 6;
@@ -4341,7 +4334,7 @@ static inline u16 evt_rollEncounter_pick(void) {
     } else {
         i = 0;
     }
-    return *(u16 *)((u8 *)t + i); /* i is a byte offset into unk0..unk6 */
+    return *(u16 *)((u8 *)t + i); /* i is a byte offset into battle0..battle3 */
 }
 #endif
 

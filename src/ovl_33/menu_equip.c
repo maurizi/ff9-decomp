@@ -123,7 +123,7 @@ void menuEquip_drawInfo(void) {
     ui_drawEtchedLine(r->x + 3, r->y + 0x3B, 0x1E, r->w - 6);
     ui_drawLabel(r->x + 6, r->y - 3, 0x1E, D_80070460, 0);
     win_drawBox(r, 0x1E, 1);
-    ui_drawMemberHeader(r->x + 8, r->y + 9, 0x1D, (Unk80024428 *)&s_menuEquip.header);
+    ui_drawMemberHeader(r->x + 8, r->y + 9, 0x1D, (MemberSwitch *)&s_menuEquip.header);
     cur.stats[0] = c->speed;
     cur.stats[1] = c->strength;
     cur.stats[2] = c->magic;
@@ -596,7 +596,7 @@ void menuEquip_updateAnims(void) {
     if (s_menuEquip.listWin.anim != 0) {
         tween_step(&s_menuEquip.listWin);
     }
-    if (s_menuEquip.header.unk0 != 0) {
+    if (s_menuEquip.header.active != 0) {
         ui_updateMemberSwitch(&s_menuEquip.header);
     }
 }

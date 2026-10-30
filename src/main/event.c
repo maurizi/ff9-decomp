@@ -1390,11 +1390,11 @@ s32 evt_execInstr(void) {
         }
         return 0;
     case EVT_OP_ENCOUNTER_TABLE:
-        g_evtEncounterTable.unk8 = evt_getArg8_inline();
-        g_evtEncounterTable.unk0 = evt_getArg16_inline();
-        g_evtEncounterTable.unk2 = evt_getArg16_inline();
-        g_evtEncounterTable.unk4 = evt_getArg16_inline();
-        g_evtEncounterTable.unk6 = evt_getArg16_inline();
+        g_evtEncounterTable.pattern = evt_getArg8_inline();
+        g_evtEncounterTable.battle0 = evt_getArg16_inline();
+        g_evtEncounterTable.battle1 = evt_getArg16_inline();
+        g_evtEncounterTable.battle2 = evt_getArg16_inline();
+        g_evtEncounterTable.battle3 = evt_getArg16_inline();
         return 0;
     case EVT_OP_SET_PLAYER:
         g_evtState->playerUid = g_evtCurObj->uid;

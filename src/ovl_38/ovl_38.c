@@ -70,7 +70,7 @@ void menuStatus_drawHeader(void) {
     y = w->y + 4;
     setRECT(&r, x, y, 0x5C, 0x12);
     ui_drawStones(x + 0x19, y + 0x14, 0x1E, c->stones, c->maxStones);
-    ui_drawMemberHeader(w->x + 8, w->y + 6, 0x1D, (Unk80024428 *)&s_menuStatus.header);
+    ui_drawMemberHeader(w->x + 8, w->y + 6, 0x1D, (MemberSwitch *)&s_menuStatus.header);
     ui_drawStatusIcons(r.x + 4, r.y + 4, 0x1D, c->status, 0);
     win_drawBox(&r, 0x1D, 0);
 }

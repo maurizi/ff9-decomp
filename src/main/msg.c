@@ -1469,19 +1469,19 @@ void msg_drawHereIcon(EvtObject *o) {
             p->x1 = p->x3 = p->x0;
             x = p->x0;
             if (g_hereIconFlipped) {
-                nx = x + s->unk4;
+                nx = x + s->w;
             } else {
-                nx = x - s->unk4;
+                nx = x - s->w;
             }
             p->x2 = p->x0 = nx;
             p->y2 = p->y3 = p->y0;
-            p->y1 = p->y0 = p->y0 - s->unk5;
-            p->u0 = p->u2 = s->unk0;
-            p->v0 = p->v1 = s->unk1;
-            p->u1 = p->u3 = s->unk0 + s->unk4 - (u8)g_hereIconFlipped;
-            p->v2 = p->v3 = s->unk1 + s->unk5;
+            p->y1 = p->y0 = p->y0 - s->h;
+            p->u0 = p->u2 = s->u;
+            p->v0 = p->v1 = s->v;
+            p->u1 = p->u3 = s->u + s->w - (u8)g_hereIconFlipped;
+            p->v2 = p->v3 = s->v + s->h;
             p->tpage = 0x5F;
-            p->clut = s->unk2;
+            p->clut = s->clut;
             pen_popPos();
             pen_end();
         }

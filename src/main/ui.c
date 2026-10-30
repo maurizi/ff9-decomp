@@ -29,23 +29,23 @@ void ui_drawCharStatus(s32 x, s32 y, s32 otz, Character *c) {
     ui_drawSmallDigits(x + 0x1D, y + 0x20, otz, buf, col);
 }
 
-void ui_drawMemberHeader(s32 x, s32 y, s32 otz, Unk80024428 *s) {
-    Character *a = g_gameState->gameData->party[s->unk2];
-    Character *b = g_gameState->gameData->party[s->unk3];
+void ui_drawMemberHeader(s32 x, s32 y, s32 otz, MemberSwitch *s) {
+    Character *a = g_gameState->gameData->party[s->member];
+    Character *b = g_gameState->gameData->party[s->nextMember];
     RECT r1;
     RECT r2;
     s32 d;
     s32 px;
     s32 t;
 
-    if (s->unk0 != 0) {
+    if (s->active != 0) {
         r1.w = 0x20;
         r1.x = x;
         r1.y = y;
         r1.h = 0x2E;
         win_setClip(NULL, otz, 4);
-        d = 11 - s->unk4;
-        if (s->unk1 == 1) {
+        d = 11 - s->frame;
+        if (s->dir == 1) {
             t = -(d * 3);
         } else {
             t = d * 3;
@@ -56,13 +56,13 @@ void ui_drawMemberHeader(s32 x, s32 y, s32 otz, Unk80024428 *s) {
         r2.w = 0x24;
         r2.h = 0x32;
         win_drawLineBorder(&r2, otz, 0, CONFIG_WINDOW_COLOR());
-        ui_drawPartyPortrait(px, y, otz, s->unk3, b->hp == 0);
+        ui_drawPartyPortrait(px, y, otz, s->nextMember, b->hp == 0);
         win_setClip(&r1, otz, 4);
-        ui_drawCharStatus(x + 0x26, y + 3, otz, g_gameState->gameData->party[s->unk3]);
+        ui_drawCharStatus(x + 0x26, y + 3, otz, g_gameState->gameData->party[s->nextMember]);
     } else {
         ui_drawCharStatus(x + 0x26, y + 3, otz, a);
     }
-    ui_drawPartyPortrait(x, y, otz, s->unk2, a->hp == 0);
+    ui_drawPartyPortrait(x, y, otz, s->member, a->hp == 0);
 }
 
 void win_drawShadowRect(RECT *r, s32 otz) {
@@ -1298,31 +1298,31 @@ void ui_savePartyPortrait(u8 *buf, s32 arg1) {
     DrawSync(0);
 }
 
-void ui_initMemberSwitch(UnkBlink *b, s32 arg1, void (*cb)(void)) {
-    b->unk0 = 0;
-    b->unk2 = arg1;
-    b->unk8 = cb;
+void ui_initMemberSwitch(MemberSwitch *b, s32 arg1, void (*cb)(void)) {
+    b->active = 0;
+    b->member = arg1;
+    b->onDone = cb;
 }
 
-void ui_startMemberSwitch(UnkBlink *b, s32 arg1, s32 arg2, s32 arg3) {
-    b->unk1 = arg3;
-    b->unk4 = 0;
+void ui_startMemberSwitch(MemberSwitch *b, s32 arg1, s32 arg2, s32 arg3) {
+    b->dir = arg3;
+    b->frame = 0;
     if (arg3 != 0) {
-        b->unk2 = arg1;
-        b->unk3 = arg2;
-        b->unk0 = 1;
+        b->member = arg1;
+        b->nextMember = arg2;
+        b->active = 1;
     }
 }
 
-void ui_updateMemberSwitch(UnkBlink *b) {
+void ui_updateMemberSwitch(MemberSwitch *b) {
     void (*cb)(void);
 
-    if (b->unk0 != 0) {
-        if (++b->unk4 >= 12) {
-            b->unk2 = b->unk3;
-            cb = b->unk8;
-            b->unk4 = 0;
-            b->unk0 = 0;
+    if (b->active != 0) {
+        if (++b->frame >= 12) {
+            b->member = b->nextMember;
+            cb = b->onDone;
+            b->frame = 0;
+            b->active = 0;
             if (cb != NULL) {
                 cb();
             }

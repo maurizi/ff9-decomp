@@ -86,7 +86,7 @@ void menuAbility_updateAnims(void) {
             m->animFrame = 0;
         }
     }
-    if (s_menuAbility.header.unk0 != 0) {
+    if (s_menuAbility.header.active != 0) {
         ui_updateMemberSwitch(&s_menuAbility.header);
     }
 }
@@ -208,7 +208,7 @@ void menuAbility_drawPlayer(void) {
 
     r = &s_menuAbility.playerRect;
     c = g_gameState->gameData->party[s_menuAbility.slot];
-    ui_drawMemberHeader(r->x + 8, r->y + 5, 0x1D, (Unk80024428 *)&s_menuAbility.header);
+    ui_drawMemberHeader(r->x + 8, r->y + 5, 0x1D, (MemberSwitch *)&s_menuAbility.header);
     box.w = 0x5B;
     box.h = 0x12;
     box.x = r->x + 0x72;
@@ -415,7 +415,7 @@ void menuAbility_drawCursor(void) {
 void menuAbility_setMember(s32 slot, s32 arg1) {
     AbilityMenu *m;
     AbilityMenu *m2;
-    UnkBlink *b;
+    MemberSwitch *b;
     Character *c;
     AbilityEntry *a;
     ItemInfo *it;
