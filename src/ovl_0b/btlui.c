@@ -2974,8 +2974,8 @@ void btlui_drawListCursors(Window *arg0) {
                 p = (SprtWords *)g_primPtr;
                 p->rgbc = c;
                 p->xy = x | (yy << 16);
-                p->uvclut = d->unk0;
-                p->wh = d->unk4 | (d->unk5 << 16);
+                p->uvclut = d->uvclut;
+                p->wh = d->w | (d->h << 16);
                 addPrim(&g_ot[arg0->unk18 - 1], p);
                 g_primPtr = (u8 *)(p + 1);
             }
@@ -3700,8 +3700,8 @@ void btlui_drawPortIcons(void) {
             setlen(&D_801050C0, 4);
             D_801050C0.rgbc = 0x64808080;
             D_801050C0.xy = 0x6012B;
-            D_801050C0.uvclut = s->unk0;
-            D_801050C0.wh = s->unk4 | (s->unk5 << 16);
+            D_801050C0.uvclut = s->uvclut;
+            D_801050C0.wh = s->w | (s->h << 16);
             addPrim(&D_801050D4, &D_801050C0);
         }
         if (D_80104E7D == 0) {
@@ -3712,11 +3712,11 @@ void btlui_drawPortIcons(void) {
         setlen(&D_801050A0, 4);
         D_801050A0.rgbc = 0x64808080;
         D_801050A0.xy = 0x60124;
-        D_801050A0.uvclut = s->unk0;
-        D_801050A0.wh = s->unk4 | (s->unk5 << 16);
+        D_801050A0.uvclut = s->uvclut;
+        D_801050A0.wh = s->w | (s->h << 16);
         addPrim(&D_801050D4, &D_801050A0);
         setlen(&D_80105080, 1);
-        D_80105080.code[0] = get_mode(1, 1, s->unk6);
+        D_80105080.code[0] = get_mode(1, 1, s->tpage);
         addPrim(&D_801050D4, &D_80105080);
         setlen(&D_80105090, 2);
         D_80105090.code[0] = GPU_STP(1, 0);

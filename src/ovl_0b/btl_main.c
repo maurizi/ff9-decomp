@@ -2039,25 +2039,25 @@ s16 func_800AE618(s32 arg0, BtlStepTask *arg1) {
     BtlAnimEvt *e;
     void **m;
 
-    switch (arg1->unk6) {
+    switch (arg1->step) {
     case 1:
-        return ++arg1->unk6;
+        return ++arg1->step;
     case 2:
         m = &g_gameState->gameData->unk8E4.battle->files->weaponFiles[arg0];
         l = (BtlAnimEvtList *)db_lookup((s32)*m, 2, 0x140000, 0);
-        e = l->unk4;
-        for (i = l->unk2 - 1; i >= 0; i--) {
+        e = l->events;
+        for (i = l->count - 1; i >= 0; i--) {
             if (e[i].unk0.b.unk2 == 9) {
                 btl_soundCmd(0x7700, e[i].unk0.w, arg0 + 4, 0, 0);
                 break;
             }
         }
-        return ++arg1->unk6;
+        return ++arg1->step;
     case 3:
         if (btl_soundCmd(0xC00, 0, 0, 0, 0) == 0) {
-            arg1->unk6 = 0;
+            arg1->step = 0;
         }
-        return arg1->unk6;
+        return arg1->step;
     }
     return 0;
 }

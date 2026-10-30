@@ -240,14 +240,14 @@ void btl_initTargetCursor(Battle *arg0) {
     s32 c;
     for (i = 0; i < 2; i++) {
         for (j = 0; j < 4; j++) {
-            gfx_initTpagePolyF3(&arg0->cursorPrims[i].unk0[j].unk0, GetTPage(0, 1, 0, 0));
+            gfx_initTpagePolyF3(&arg0->cursorPrims[i].faces[j].tpage, GetTPage(0, 1, 0, 0));
             if (j < 3) {
                 c = 0xBC - j * 0x3C;
             } else {
                 c = 0xA0;
             }
-            setRGB0(&arg0->cursorPrims[i].unk0[j].unk8, c, c, 0);
-            SetSemiTrans(&arg0->cursorPrims[i].unk0[j].unk8, 1);
+            setRGB0(&arg0->cursorPrims[i].faces[j].poly, c, c, 0);
+            SetSemiTrans(&arg0->cursorPrims[i].faces[j].poly, 1);
         }
     }
 }
@@ -1121,40 +1121,40 @@ void btl_drawActiveMarker(GameData *arg0, Battle *arg1, BtlUnit *arg2) {
     gte_rtpt();
     gte_stsxy3(&sxy[1], &sxy[2], &sxy[3]);
     if (NormalClip(sxy[0], sxy[1], sxy[2]) > 0) {
-        (arg1->cursorPrims + arg0->unk8)->unk0[0].unk8.x0 = sxy[0];
-        (arg1->cursorPrims + arg0->unk8)->unk0[0].unk8.y0 = sxy[0] >> 16;
-        (arg1->cursorPrims + arg0->unk8)->unk0[0].unk8.x1 = sxy[1];
-        (arg1->cursorPrims + arg0->unk8)->unk0[0].unk8.y1 = sxy[1] >> 16;
-        (arg1->cursorPrims + arg0->unk8)->unk0[0].unk8.x2 = sxy[2];
-        (arg1->cursorPrims + arg0->unk8)->unk0[0].unk8.y2 = sxy[2] >> 16;
-        addPrim(&arg0->unk10[arg0->unk8][2], &(arg1->cursorPrims + arg0->unk8)->unk0[0]);
+        (arg1->cursorPrims + arg0->unk8)->faces[0].poly.x0 = sxy[0];
+        (arg1->cursorPrims + arg0->unk8)->faces[0].poly.y0 = sxy[0] >> 16;
+        (arg1->cursorPrims + arg0->unk8)->faces[0].poly.x1 = sxy[1];
+        (arg1->cursorPrims + arg0->unk8)->faces[0].poly.y1 = sxy[1] >> 16;
+        (arg1->cursorPrims + arg0->unk8)->faces[0].poly.x2 = sxy[2];
+        (arg1->cursorPrims + arg0->unk8)->faces[0].poly.y2 = sxy[2] >> 16;
+        addPrim(&arg0->unk10[arg0->unk8][2], &(arg1->cursorPrims + arg0->unk8)->faces[0]);
     }
     if (NormalClip(sxy[0], sxy[2], sxy[3]) > 0) {
-        (arg1->cursorPrims + arg0->unk8)->unk0[1].unk8.x0 = sxy[0];
-        (arg1->cursorPrims + arg0->unk8)->unk0[1].unk8.y0 = sxy[0] >> 16;
-        (arg1->cursorPrims + arg0->unk8)->unk0[1].unk8.x1 = sxy[2];
-        (arg1->cursorPrims + arg0->unk8)->unk0[1].unk8.y1 = sxy[2] >> 16;
-        (arg1->cursorPrims + arg0->unk8)->unk0[1].unk8.x2 = sxy[3];
-        (arg1->cursorPrims + arg0->unk8)->unk0[1].unk8.y2 = sxy[3] >> 16;
-        addPrim(&arg0->unk10[arg0->unk8][2], &(arg1->cursorPrims + arg0->unk8)->unk0[1]);
+        (arg1->cursorPrims + arg0->unk8)->faces[1].poly.x0 = sxy[0];
+        (arg1->cursorPrims + arg0->unk8)->faces[1].poly.y0 = sxy[0] >> 16;
+        (arg1->cursorPrims + arg0->unk8)->faces[1].poly.x1 = sxy[2];
+        (arg1->cursorPrims + arg0->unk8)->faces[1].poly.y1 = sxy[2] >> 16;
+        (arg1->cursorPrims + arg0->unk8)->faces[1].poly.x2 = sxy[3];
+        (arg1->cursorPrims + arg0->unk8)->faces[1].poly.y2 = sxy[3] >> 16;
+        addPrim(&arg0->unk10[arg0->unk8][2], &(arg1->cursorPrims + arg0->unk8)->faces[1]);
     }
     if (NormalClip(sxy[0], sxy[3], sxy[1]) > 0) {
-        (arg1->cursorPrims + arg0->unk8)->unk0[2].unk8.x0 = sxy[0];
-        (arg1->cursorPrims + arg0->unk8)->unk0[2].unk8.y0 = sxy[0] >> 16;
-        (arg1->cursorPrims + arg0->unk8)->unk0[2].unk8.x1 = sxy[3];
-        (arg1->cursorPrims + arg0->unk8)->unk0[2].unk8.y1 = sxy[3] >> 16;
-        (arg1->cursorPrims + arg0->unk8)->unk0[2].unk8.x2 = sxy[1];
-        (arg1->cursorPrims + arg0->unk8)->unk0[2].unk8.y2 = sxy[1] >> 16;
-        addPrim(&arg0->unk10[arg0->unk8][2], &(arg1->cursorPrims + arg0->unk8)->unk0[2]);
+        (arg1->cursorPrims + arg0->unk8)->faces[2].poly.x0 = sxy[0];
+        (arg1->cursorPrims + arg0->unk8)->faces[2].poly.y0 = sxy[0] >> 16;
+        (arg1->cursorPrims + arg0->unk8)->faces[2].poly.x1 = sxy[3];
+        (arg1->cursorPrims + arg0->unk8)->faces[2].poly.y1 = sxy[3] >> 16;
+        (arg1->cursorPrims + arg0->unk8)->faces[2].poly.x2 = sxy[1];
+        (arg1->cursorPrims + arg0->unk8)->faces[2].poly.y2 = sxy[1] >> 16;
+        addPrim(&arg0->unk10[arg0->unk8][2], &(arg1->cursorPrims + arg0->unk8)->faces[2]);
     }
     if (NormalClip(sxy[1], sxy[3], sxy[2]) > 0) {
-        (arg1->cursorPrims + arg0->unk8)->unk0[3].unk8.x0 = sxy[1];
-        (arg1->cursorPrims + arg0->unk8)->unk0[3].unk8.y0 = sxy[1] >> 16;
-        (arg1->cursorPrims + arg0->unk8)->unk0[3].unk8.x1 = sxy[3];
-        (arg1->cursorPrims + arg0->unk8)->unk0[3].unk8.y1 = sxy[3] >> 16;
-        (arg1->cursorPrims + arg0->unk8)->unk0[3].unk8.x2 = sxy[2];
-        (arg1->cursorPrims + arg0->unk8)->unk0[3].unk8.y2 = sxy[2] >> 16;
-        addPrim(&arg0->unk10[arg0->unk8][2], &(arg1->cursorPrims + arg0->unk8)->unk0[3]);
+        (arg1->cursorPrims + arg0->unk8)->faces[3].poly.x0 = sxy[1];
+        (arg1->cursorPrims + arg0->unk8)->faces[3].poly.y0 = sxy[1] >> 16;
+        (arg1->cursorPrims + arg0->unk8)->faces[3].poly.x1 = sxy[3];
+        (arg1->cursorPrims + arg0->unk8)->faces[3].poly.y1 = sxy[3] >> 16;
+        (arg1->cursorPrims + arg0->unk8)->faces[3].poly.x2 = sxy[2];
+        (arg1->cursorPrims + arg0->unk8)->faces[3].poly.y2 = sxy[2] >> 16;
+        addPrim(&arg0->unk10[arg0->unk8][2], &(arg1->cursorPrims + arg0->unk8)->faces[3]);
     }
 }
 

@@ -187,15 +187,15 @@ typedef struct {
 
 /* double buffer used by the standalone display loop btlfx_halt */
 typedef struct {
-    DRAWENV unk0;
-    DISPENV unk5C;
-    s16 unk70;
+    DRAWENV draw;
+    DISPENV disp;
+    s16 index;
     u8 pad72[0x74 - 0x72];
 } Unk80100E30Buf; /* 0x74 */
 
 typedef struct {
-    Unk80100E30Buf unk0[2];
-    Unk80100E30Buf *unkE8; /* current */
+    Unk80100E30Buf bufs[2];
+    Unk80100E30Buf *cur; /* current */
 } Unk80100E30;
 extern Unk80100E30 g_btlfxHaltBufs;
 
@@ -213,14 +213,14 @@ typedef struct {
 
 typedef struct {
     u16 unk0;
-    u16 unk2; /* count */
-    BtlAnimEvt unk4[1];
+    u16 count; /* count */
+    BtlAnimEvt events[1];
 } BtlAnimEvtList;
 
 /* battle task with a step counter (func_800AE618) */
 typedef struct {
     u8 pad0[6];
-    s16 unk6; /* step */
+    s16 step; /* step */
 } BtlStepTask;
 
 /* work area of the effect step btlfx_opReturnHome */
@@ -260,8 +260,8 @@ extern Unk8006CB88 D_8006CB88[]; /* abilities */
 
 /* draw environment pair built in the primitive buffer by btlfx_drawBgOffscreen */
 typedef struct {
-    DRAWENV unk0;
-    DRAWENV unk5C; /* previous */
+    DRAWENV env;
+    DRAWENV prev; /* previous */
 } DrawEnvPair; /* 0xB8 */
 
 /* same as a GNU statement expression: the operand order around it differs
@@ -697,8 +697,8 @@ typedef struct BtlScript {
     s16 work[8]; /* per-op work area */
 } BtlScript;
 typedef struct {
-    void (*unk0)(BtlScript *, BtlUnit *);
-    s32 (*unk4)(BtlScript *, BtlUnit *);
+    void (*enter)(BtlScript *, BtlUnit *); /* on entry (pc moved) */
+    s32 (*step)(BtlScript *, BtlUnit *); /* per frame; 0 = next op */
 } BtlScriptOp; /* script opcode handlers: on entry, per frame */
 extern BtlScriptOp g_btlseqOps[];
 void btl_setUnitFade(BtlUnit *, s32);
@@ -1083,7 +1083,7 @@ typedef struct {
     u8 pad0;
     u8 tickScale; /* Venom/Poison/Regen tick period factor (btl_initDotTimer) */
     u16 timerScale; /* duration factor of the timed status (btl_addStatus, btl_initDoomCount) */
-    s32 unk4;
+    s32 removes; /* statuses adding this one removes (btl_addStatus) */
     u32 prevents; /* statuses this one keeps from being added (btl_addStatus) */
 } BtlStatusInfo; /* 0xC, one per status bit */
 
@@ -1320,13 +1320,13 @@ static inline void btl_clearCmd_inline(BtlCmd *arg0) {
 }
 
 typedef struct Battle108C {
-    DR_TPAGE unk0;
-    POLY_F3 unk8;
+    DR_TPAGE tpage;
+    POLY_F3 poly; /* cursor face */
 } Battle108C; /* 0x1C */
 
 /* target cursor: four faces per draw buffer */
 typedef struct Battle108CSet {
-    Battle108C unk0[4];
+    Battle108C faces[4];
 } Battle108CSet;
 
 /* battle scene data (Battle.scene) */
@@ -2059,14 +2059,14 @@ typedef struct BtlBgHeader {
 
 
 typedef struct {
-    u16 unk0; /* sound id, 0 = free */
-    s16 unk2; /* age */
-    s32 unk4; /* unit id */
+    u16 sound; /* sound id, 0 = free */
+    s16 age; /* age */
+    s32 unit; /* unit id (pan source, btl_soundPan) */
 } Unk80104E30Entry;
 
 typedef struct {
-    s32 unk0;
-    Unk80104E30Entry unk4[6];
+    s32 count; /* playing sounds */
+    Unk80104E30Entry slots[6];
 } Unk80104E30;
 extern Unk80104E30 D_80104E30;
 
@@ -2118,9 +2118,9 @@ typedef struct Unk80100DC054 {
 } Unk80100DC054;
 
 typedef struct {
-    u16 unk0;
+    u16 sound; /* sound id (btlfx_findSound) */
     u8 pad2[2];
-    s32 unk4;
+    s32 unit; /* unit id (pan source) */
 } Unk80104E34; /* 8 */
 extern Unk80104E34 D_80104E34[6];
 
@@ -2553,14 +2553,14 @@ typedef char *va_list;
 #define va_arg(AP, TYPE) (AP += __va_rounded_size(TYPE), *((TYPE *)(AP - __va_rounded_size(TYPE))))
 
 typedef struct {
-    s16 unk0; /* offset from unk4 */
+    s16 ofs; /* offset from the entry table */
     s16 unk2;
 } TextTblEnt;
 
 typedef struct {
-    u16 unk0; /* count */
+    u16 count; /* count */
     u16 pad2;
-    TextTblEnt unk4[1];
+    TextTblEnt entries[1];
 } TextTbl; /* message table (D_800F6CB4) */
 
 void text_formatInt(s32, u8 *, s32);
@@ -3125,10 +3125,10 @@ Battle1330 *btl_pickEnemyGroup(Battle11C020 *);
 u32 btl_findNearestFile(u32, u16 *, u16 *, u16 **, s32 *);
 s32 Hi_RegisterSummonModel(struct Unk80100DC054 *, s16 *);
 typedef struct {
-    u32 unk0; /* uv/clut */
-    u8 unk4;  /* w */
-    u8 unk5;  /* h */
-    u16 unk6; /* tpage */
+    u32 uvclut; /* uv/clut */
+    u8 w; /* w */
+    u8 h; /* h */
+    u16 tpage; /* tpage */
 } Unk80068EE8; /* sprite descriptor */
 extern Unk80068EE8 D_80068EE8[];
 extern u16 D_80068EEE; /* D_80068EE8[0].unk6 */
@@ -4268,21 +4268,21 @@ typedef struct {
 
 /* func_800E57B0 effect state (sprite sheet on a unit) */
 typedef struct {
-    u8 unk0; /* kind */
-    u8 unk1; /* unit id, 0xFF = none */
-    s16 unk2;
-    s16 unk4;
+    u8 kind; /* kind (resident op argument >> 6) */
+    u8 unit; /* unit id, 0xFF = none (targets' centre) */
+    s16 otBias; /* otZ for the unit (func_800E7CC4) */
+    s16 scale; /* sprite scale, -1 = none (btlfx_drawAnimQuads/btlfx_drawParticles arg 3) */
     s16 unk6;
-    s16 unk8;
-    s16 unkA;
-    s16 unkC;
+    s16 dataId; /* common data id of the sprite set (func_800E4530) */
+    s16 emitterId; /* common data id of the emitter (kind 3) */
+    s16 colorIdx; /* D_800F8CB4 palette index */
     s16 unkE; /* frame count */
-    void *unk10;
-    s32 unk14; /* frame */
-    s16 unk18;
-    s16 unk1A;
-    SVECTOR unk1C;
-    s16 unk24[3];
+    void *data; /* sprite set */
+    s32 frame; /* frame */
+    s16 offX; /* x offset (x4) */
+    s16 offY; /* y offset (x4) */
+    SVECTOR pos; /* position */
+    s16 rot[3]; /* rotation (btlfx_aimAngles) */
 } Unk800E57B0; /* 0x2C */
 
 extern u16 D_800F8D04[];

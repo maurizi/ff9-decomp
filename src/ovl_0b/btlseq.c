@@ -138,11 +138,11 @@ void btlseq_update(void) {
                 if ((s->flags & 1) && g_btlfxEnv->state->seqSync != 0) {
                     s->flags = (s->flags | 2) & ~1;
                 }
-                if (s->pc != s->prevPc && g_btlseqOps[op].unk0 != NULL) {
-                    g_btlseqOps[op].unk0(s, u);
+                if (s->pc != s->prevPc && g_btlseqOps[op].enter != NULL) {
+                    g_btlseqOps[op].enter(s, u);
                 }
                 s->prevPc = s->pc;
-            } while ((u16)g_btlseqOps[op].unk4(s, u));
+            } while ((u16)g_btlseqOps[op].step(s, u));
             if (s->turnFrames != 0) {
                 u->rot[1] = s->turnFrom + s->turnBy * s->turnFrame / s->turnFrames;
                 if (s->turnFrame++ >= s->turnFrames) {

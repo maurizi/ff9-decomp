@@ -513,13 +513,13 @@ void btl_showMessage(u32 arg0, ...) {
     s32 v;
 
     arg0 += 8;
-    if (arg0 < t->unk0) {
+    if (arg0 < t->count) {
         va_start(ap, arg0);
         dst = &buf[1];
-        e = t->unk4;
-        src = (u8 *)e + e[arg0].unk0;
+        e = t->entries;
+        src = (u8 *)e + e[arg0].ofs;
         kind = *src++;
-        special = (u8 *)e + t->unk4[0].unk0;
+        special = (u8 *)e + t->entries[0].ofs;
         c = buf[0] = *src++;
         while (c != 0xFF) {
             if (c == special[0]) {

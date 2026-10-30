@@ -632,99 +632,99 @@ s32 func_800E57B0(s32 arg0, Unk800E57B0 *arg1, Unk800F78A4 *arg2, s32 *arg3, s32
     } else if (arg0 == 1) {
         a = arg4[0];
         b = arg4[1];
-        arg1->unk0 = g_btlfxResArgs.unk0 >> 6;
-        arg1->unk4 = D_800F8D04[g_btlfxResArgs.unk0 & 0xF];
-        arg1->unk1 = g_btlfxResArgs2.unk0;
-        arg1->unk2 = g_btlfxResArgs2.unk1 * 8;
-        arg1->unk14 = 0;
-        if (arg1->unk1 != 0xFF) {
-            btlfx_getUnitBodyPos(arg1->unk1, 0, &arg1->unk1C.vx);
+        arg1->kind = g_btlfxResArgs.unk0 >> 6;
+        arg1->scale = D_800F8D04[g_btlfxResArgs.unk0 & 0xF];
+        arg1->unit = g_btlfxResArgs2.unk0;
+        arg1->otBias = g_btlfxResArgs2.unk1 * 8;
+        arg1->frame = 0;
+        if (arg1->unit != 0xFF) {
+            btlfx_getUnitBodyPos(arg1->unit, 0, &arg1->pos.vx);
         } else {
-            *(s32 *)&arg1->unk1C.vx = *(s32 *)&arg2->targets->centerX;
-            *(s32 *)&arg1->unk1C.vz = *(s32 *)&arg2->targets->centerZ;
-            arg1->unk1C.vy -= 0xC0;
+            *(s32 *)&arg1->pos.vx = *(s32 *)&arg2->targets->centerX;
+            *(s32 *)&arg1->pos.vz = *(s32 *)&arg2->targets->centerZ;
+            arg1->pos.vy -= 0xC0;
         }
-        switch (arg1->unk0) {
+        switch (arg1->kind) {
         case 0:
-            arg1->unk8 = g_btlfxResArgs.unk1;
-            arg1->unkC = a;
+            arg1->dataId = g_btlfxResArgs.unk1;
+            arg1->colorIdx = a;
             arg1->unk6 = (s8)b << 8;
-            arg1->unk10 = func_800E4530(arg1->unk8);
-            ((u16 *)arg1->unk10)[1] = D_800F8CB4[arg1->unkC];
-            arg1->unkE = *(u16 *)arg1->unk10 & 0x7FFF;
-            arg1->unk18 = (s8)g_btlfxResArgs.unk2 * 4;
-            arg1->unk1A = (s8)g_btlfxResArgs.unk3 * 4;
+            arg1->data = func_800E4530(arg1->dataId);
+            ((u16 *)arg1->data)[1] = D_800F8CB4[arg1->colorIdx];
+            arg1->unkE = *(u16 *)arg1->data & 0x7FFF;
+            arg1->offX = (s8)g_btlfxResArgs.unk2 * 4;
+            arg1->offY = (s8)g_btlfxResArgs.unk3 * 4;
             break;
         case 1:
-            arg1->unk8 = g_btlfxResArgs.unk1;
-            arg1->unkC = a;
+            arg1->dataId = g_btlfxResArgs.unk1;
+            arg1->colorIdx = a;
             arg1->unk6 = (s8)b << 8;
-            arg1->unk10 = func_800E4530(arg1->unk8);
-            ((u16 *)arg1->unk10)[2] = D_800F8CB4[arg1->unkC];
-            arg1->unkE = *(u16 *)arg1->unk10 & 0x7FFF;
+            arg1->data = func_800E4530(arg1->dataId);
+            ((u16 *)arg1->data)[2] = D_800F8CB4[arg1->colorIdx];
+            arg1->unkE = *(u16 *)arg1->data & 0x7FFF;
             break;
         case 2:
-            arg1->unkA = g_btlfxResArgs.unk1;
-            arg1->unk8 = a;
+            arg1->emitterId = g_btlfxResArgs.unk1;
+            arg1->dataId = a;
             arg1->unkE = g_btlfxResArgs.unk0 & 0xF;
-            arg1->unk4 = b;
+            arg1->scale = b;
             break;
         case 3:
-            arg1->unk8 = a;
+            arg1->dataId = a;
             arg1->unkE = g_btlfxResArgs.unk1;
-            arg1->unk10 = func_800E4530(arg1->unk8);
+            arg1->data = func_800E4530(arg1->dataId);
             arg1->unk6 = 0;
             break;
         default:
             return 0;
         }
     } else {
-        if (arg1->unk1 != 0xFF) {
-            arg2->otZ = func_800E7CC4(arg1->unk1, arg1->unk2);
-            rot.vy = btlfx_compareDepth(0x10, arg1->unk1) << 11;
+        if (arg1->unit != 0xFF) {
+            arg2->otZ = func_800E7CC4(arg1->unit, arg1->otBias);
+            rot.vy = btlfx_compareDepth(0x10, arg1->unit) << 11;
             rot.pad = 0;
             rot.vx = 0;
             rot.vz = arg1->unk6;
         }
-        switch (arg1->unk0) {
+        switch (arg1->kind) {
         case 0:
-            btlfx_drawParticles(arg1->unk10, &arg1->unk1C, &rot, arg1->unk4, arg1->unk14, 1, 0x1000, arg1->unk18, arg1->unk1A);
+            btlfx_drawParticles(arg1->data, &arg1->pos, &rot, arg1->scale, arg1->frame, 1, 0x1000, arg1->offX, arg1->offY);
             break;
         case 1:
-            btlfx_drawAnimQuads(arg1->unk10, &arg1->unk1C, &rot, arg1->unk4, arg1->unk14, 1, 0x1000);
+            btlfx_drawAnimQuads(arg1->data, &arg1->pos, &rot, arg1->scale, arg1->frame, 1, 0x1000);
             break;
         case 2:
-            if (arg1->unk14 == arg1->unkE) {
-                if (arg1->unk1 != 0xFF) {
-                    if (arg1->unk1 == 0x10) {
-                        btlfx_getWeaponPos(arg1->unk1, 1, &arg1->unk1C.vx);
+            if (arg1->frame == arg1->unkE) {
+                if (arg1->unit != 0xFF) {
+                    if (arg1->unit == 0x10) {
+                        btlfx_getWeaponPos(arg1->unit, 1, &arg1->pos.vx);
                         btlfx_getUnitBodyPos(0, 0, v);
-                        btlfx_aimAngles(&arg1->unk1C.vx, v, arg1->unk24);
-                        if (btl_getUnit(0) == btl_getUnit(arg1->unk1) && arg1->unkA == 0x36) {
+                        btlfx_aimAngles(&arg1->pos.vx, v, arg1->rot);
+                        if (btl_getUnit(0) == btl_getUnit(arg1->unit) && arg1->emitterId == 0x36) {
                             return 1;
                         }
                     } else {
-                        btlfx_getUnitBodyPos(arg1->unk1, 0, &arg1->unk1C.vx);
+                        btlfx_getUnitBodyPos(arg1->unit, 0, &arg1->pos.vx);
                     }
                 }
-                e = btlfx_startEmitter((s32)func_800E4530(arg1->unkA), (s32)&arg1->unk1C);
+                e = btlfx_startEmitter((s32)func_800E4530(arg1->emitterId), (s32)&arg1->pos);
                 if (e != NULL) {
-                    e->unk22 = arg1->unk2;
+                    e->unk22 = arg1->otBias;
                 }
-                p = func_800E4530(arg1->unk8);
+                p = func_800E4530(arg1->dataId);
                 if (e != NULL) {
                     e->elems->tex = (s32)p;
-                    e->elems->kind = arg1->unk4;
+                    e->elems->kind = arg1->scale;
                 }
                 e->elems->unk8 = *p & 0x7FFF; /* outside the NULL check in the original */
-                arg1->unk10 = e;
+                arg1->data = e;
             }
-            if (arg1->unkE < arg1->unk14) {
-                e = arg1->unk10;
-                if (arg1->unk1 == 0x10 && e != NULL) {
-                    e->unk5C.vx = arg1->unk24[0];
-                    e->unk5C.vy = arg1->unk24[1];
-                    e->unk5C.vz = arg1->unk24[2];
+            if (arg1->unkE < arg1->frame) {
+                e = arg1->data;
+                if (arg1->unit == 0x10 && e != NULL) {
+                    e->unk5C.vx = arg1->rot[0];
+                    e->unk5C.vy = arg1->rot[1];
+                    e->unk5C.vz = arg1->rot[2];
                 }
                 if (e->state == -1) {
                     return 1;
@@ -732,19 +732,19 @@ s32 func_800E57B0(s32 arg0, Unk800E57B0 *arg1, Unk800F78A4 *arg2, s32 *arg3, s32
             }
             goto next;
         case 3:
-            btlfx_drawRings(arg1->unk10, &arg1->unk1C, &rot, arg1->unk4, arg1->unk14, 1, math_cos((arg1->unk14 << 10) / arg1->unkE));
+            btlfx_drawRings(arg1->data, &arg1->pos, &rot, arg1->scale, arg1->frame, 1, math_cos((arg1->frame << 10) / arg1->unkE));
             break;
         default:
             arg2->otZ = 0;
             goto inc;
         }
-        if (arg1->unk14 >= arg1->unkE - 1) {
+        if (arg1->frame >= arg1->unkE - 1) {
             return 1;
         }
     next:
         arg2->otZ = 0;
     inc:
-        arg1->unk14++;
+        arg1->frame++;
     }
     return 0;
 }
@@ -1180,14 +1180,14 @@ void btlfx_drawBgOffscreen(s32 x, s32 y, s32 w, s32 h, u32 *ot, s32 arg5, s32 ar
     e = (DrawEnvPair *)g_btlfxEnv->prim;
     g_btlbgRainCount = 0;
     g_btlfxEnv->prim = (u8 *)(e + 1);
-    SetDefDrawEnv(&e->unk0, x, y, w, h);
-    e->unk0.isbg = 1;
-    e->unk0.dtd = 0;
-    e->unk0.dfe = 0;
-    e->unk0.r0 = 7;
-    e->unk0.g0 = 7;
-    e->unk0.b0 = 7;
-    e->unk5C = *(DRAWENV *)&g_btlfxEnv->drawEnv;
+    SetDefDrawEnv(&e->env, x, y, w, h);
+    e->env.isbg = 1;
+    e->env.dtd = 0;
+    e->env.dfe = 0;
+    e->env.r0 = 7;
+    e->env.g0 = 7;
+    e->env.b0 = 7;
+    e->prev = *(DRAWENV *)&g_btlfxEnv->drawEnv;
     ClearOTag(ot, 0x100);
     mode = ReadGeomScreen();
     ReadGeomOffset(&ox, &oy);
@@ -1200,8 +1200,8 @@ void btlfx_drawBgOffscreen(s32 x, s32 y, s32 w, s32 h, u32 *ot, s32 arg5, s32 ar
     g_btlfxEnv->prim = btlbg_draw(&D_800F8D50, g_gameState->gameData->unk8E4.battle->work->bgData, (s32)g_btlfxEnv->prim, NULL, (s32)ot);
     btlbg_setLayerMask(0xF);
     EnterCriticalSection();
-    DrawOTagEnv(ot, &e->unk0);
-    PutDrawEnv(&e->unk5C);
+    DrawOTagEnv(ot, &e->env);
+    PutDrawEnv(&e->prev);
     ExitCriticalSection();
     g_btlbgRainCount = save;
     SetGeomScreen(mode);
@@ -2060,9 +2060,9 @@ void btlfx_playBounceCamera(void) {
 
 void btlfx_initSounds(void) {
     s32 i;
-    D_80104E30.unk0 = 0;
+    D_80104E30.count = 0;
     for (i = 5; i >= 0; i--) {
-        D_80104E30.unk4[i].unk0 = 0;
+        D_80104E30.slots[i].sound = 0;
     }
 }
 
@@ -2070,19 +2070,19 @@ void btlfx_updateSounds(void) {
     s32 n = 0;
     s32 i;
     Unk80104E30 *p = &D_80104E30;
-    Unk80104E30Entry *e = p->unk4;
+    Unk80104E30Entry *e = p->slots;
     for (i = 0; i < 6; i++, e++) {
-        if (e->unk0 != 0) {
-            if (akao_isSePlaying(e->unk0) == 0) {
-                e->unk0 = 0;
+        if (e->sound != 0) {
+            if (akao_isSePlaying(e->sound) == 0) {
+                e->sound = 0;
             } else {
                 n++;
-                akao_sendCmdA2(0, e->unk0, btl_soundPan(e->unk4));
-                e->unk2++;
+                akao_sendCmdA2(0, e->sound, btl_soundPan(e->unit));
+                e->age++;
             }
         }
     }
-    p->unk0 = n;
+    p->count = n;
 }
 
 s32 btlfx_allocSound(s32 arg0) {
@@ -2091,14 +2091,14 @@ s32 btlfx_allocSound(s32 arg0) {
     s32 max = -1;
     s32 bit = 1;
     Unk80104E30 *p = &D_80104E30;
-    Unk80104E30Entry *e = p->unk4;
+    Unk80104E30Entry *e = p->slots;
     s32 i;
     for (i = 0; i < 6; i++, e++, bit <<= 1) {
-        if (e->unk0 == 0) {
+        if (e->sound == 0) {
             break;
         }
-        if (max < e->unk2) {
-            max = e->unk2;
+        if (max < e->age) {
+            max = e->age;
             best = e;
             bestbit = bit;
         }
@@ -2111,9 +2111,9 @@ s32 btlfx_allocSound(s32 arg0) {
         akao_stopSe(0, bit);
     }
     if (e != NULL) {
-        e->unk0 = bit;
-        e->unk4 = arg0;
-        e->unk2 = 0;
+        e->sound = bit;
+        e->unit = arg0;
+        e->age = 0;
     }
     return bit;
 }
@@ -2128,7 +2128,7 @@ Unk80104E34 *btlfx_findSound(s32 arg0) {
     if (arg0 != 0) {
         p = D_80104E34;
         for (i = 0; i < 6; i++, p++) {
-            if (p->unk0 == arg0) {
+            if (p->sound == arg0) {
                 return p;
             }
         }
@@ -2170,14 +2170,14 @@ void btlfx_stopSound(s32 arg0) {
     Unk80104E34 *p = btlfx_findSound(arg0);
     if (p != NULL) {
         akao_stopSe(0, arg0);
-        p->unk0 = 0;
+        p->sound = 0;
     }
 }
 
 void func_800E98C8(s32 arg0, s32 arg1) {
     Unk80104E34 *p = btlfx_findSound(arg0);
     if (p != NULL) {
-        p->unk4 = arg1;
+        p->unit = arg1;
     }
 }
 
@@ -2185,8 +2185,8 @@ void func_800E98F8(s32 arg0) {
     Unk80104E34 *p = D_80104E34;
     s32 i;
     for (i = 0; i < 6; i++, p++) {
-        if (p->unk0 != 0) {
-            p->unk4 = arg0;
+        if (p->sound != 0) {
+            p->unit = arg0;
         }
     }
 }

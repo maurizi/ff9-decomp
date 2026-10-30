@@ -182,7 +182,7 @@ u32 btl_addStatus(BtlUnit *u, u32 f) {
         }
         break;
     }
-    btl_removeStatuses(u, tbl[n].unk4);
+    btl_removeStatuses(u, tbl[n].removes);
     if (u->status & (BTL_STATUS_PETRIFY | BTL_STATUS_KO | BTL_STATUS_STOP | BTL_STATUS_JUMP)) {
         u->flags &= ~0x10000;
     }
