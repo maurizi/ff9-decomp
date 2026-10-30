@@ -3400,7 +3400,8 @@ typedef struct {
     u16 unk8;
     u8 padA[6];
 } Unk8001DE50b;
-/* PreloadEntry.unk4 split into its parts */
+
+/* PreloadEntry.fileId split into its parts */
 typedef struct {
     u16 unk0;
     u8 unk2;
