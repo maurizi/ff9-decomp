@@ -357,24 +357,6 @@ typedef struct {
     Unk8E4Ptr ctx; /* the running mode's context (field, world, battle, ...) */
 } GameData;
 
-typedef struct {
-    u8 pad0[8];
-    s32 unk8;
-    u8 padC[0x24 - 0xC];
-    s32 unk24;
-    s32 unk28;
-    u8 pad2C[0x34 - 0x2C];
-    s32 unk34;
-    s32 unk38;
-    u8 pad3C[0x44 - 0x3C];
-    s32 unk44;
-    s32 unk48;
-    u8 pad4C[0x94 - 0x4C];
-    s32 unk94;
-    s32 unk98;
-    u8 pad9C[0xDC - 0x9C];
-    s32 unkDC; /* battle data file start sector */
-} GameStateUnk14;
 
 typedef struct {
     u32 unk0; /* flags */
@@ -385,7 +367,7 @@ typedef struct {
     u8 disc;          /* disc bit (1 << disc - 1) of the SLUS file file_initImg found, 0xFF = none */
     DISPENV *dispEnv;    /* [2] */
     DRAWENV *drawEnv;   /* [2] */
-    GameStateUnk14 *dirs; /* FF9.IMG directory records (file_initImg) */
+    struct DirInfo *dirs; /* [15] FF9.IMG directory records (file_initImg) */
     void **dirTables; /* file tables per directory (file_loadDirTables) */
     GameData *gameData; /* the game data block (g_gameState->gameData) */
     s32 imgSector; /* FF9.IMG's first sector, added to file start sectors (file_initImg) */
@@ -1721,14 +1703,6 @@ typedef struct {
     s32 unk8;
     s32 unkC; /* end sector / next id */
 } FileEntry;
-
-/* g_gameState->dirs[i]: per-directory header (file_find) */
-typedef struct {
-    s32 unk0; /* 3 = flat u16 table at unk18[13] */
-    s32 unk4; /* entry count */
-    s32 unk8;
-    s32 unkC;
-} FileDirEntry;
 
 /* g_gameState->dirTables[i]: 8-byte {id, sector} entries searched by file_find */
 typedef struct {
@@ -3404,12 +3378,12 @@ typedef struct {
     u32 buttonMap; /* 8 x 4 bits: game button i -> pad button (GameState.padMap) */
 } GameConfig;
 
-/* GameState.unk14 viewed as its 15 directory records */
-typedef struct {
-    s32 unk0; /* kind; 3 = table of u16 ids */
-    s32 unk4; /* entry count */
-    s32 unk8;
-    s32 unkC;
+/* GameState.dirs[15]: FF9.IMG directory records, copied from the header (file_initImg) */
+typedef struct DirInfo {
+    s32 type; /* kind; 3 = table of u16 ids (docs/ff9img.md) */
+    s32 count; /* entry count */
+    s32 tableSector; /* sector of the directory's file table in FF9.IMG (file_loadDirTables reads the tables from sector 0 and indexes them by (tableSector - dirs[0].tableSector) << 11) */
+    s32 firstSector; /* first sector of the directory's files (dir 13: the battle data base, btl_initMode) */
 } DirInfo;
 
 /* file_loadDirTables: 8-byte entries of directory lists 8 and 11 */

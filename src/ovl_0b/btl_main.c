@@ -144,7 +144,7 @@ void btl_initMode(void) {
     g->npcModelSlots = 0;
     g->npcCount = 0;
     g->kanjiFont = 0;
-    b->dataSector = g_gameState->imgSector + g_gameState->dirs->unkDC;
+    b->dataSector = g_gameState->imgSector + g_gameState->dirs[13].firstSector;
     btl_loadCommonData();
     func_800A8F10();
     func_800A8F18();

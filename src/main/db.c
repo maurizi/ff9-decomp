@@ -185,7 +185,7 @@ void game_allocState(void) {
     g_gameState = PSX_RAM(GameState *, 0x8008B000);
     g_gameState->dispEnv = PSX_RAM(DISPENV *, 0x8008B044);
     g_gameState->drawEnv = PSX_RAM(DRAWENV *, 0x8008B06C);
-    g_gameState->dirs = PSX_RAM(GameStateUnk14 *, 0x8008B124);
+    g_gameState->dirs = PSX_RAM(DirInfo *, 0x8008B124);
     g_gameState->dirTables = PSX_RAM(void *, 0x8008B214);
     g_allocTop = (s32)PSX_RAM(u8 *, 0x8008B250);
 }
@@ -205,10 +205,10 @@ void game_resetState(void) {
     game_setScreenHeight(0xE0);
     gs->vsyncMode = 0;
     for (i = 14; i >= 0; i--) {
-        ((DirInfo *)gs->dirs)[i].unk0 = i;
-        ((DirInfo *)gs->dirs)[i].unk4 = 0;
-        ((DirInfo *)gs->dirs)[i].unk8 = 0;
-        ((DirInfo *)gs->dirs)[i].unkC = 0;
+        gs->dirs[i].type = i;
+        gs->dirs[i].count = 0;
+        gs->dirs[i].tableSector = 0;
+        gs->dirs[i].firstSector = 0;
         gs->dirTables[i] = NULL;
     }
     gs->dirCount = 0;

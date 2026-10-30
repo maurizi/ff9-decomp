@@ -198,8 +198,8 @@ void file_loadDirTables(void) {
     }
     cnt = 0;
     buf = g_loadAreaEnd + 0x14C700;
-    size = (((DirInfo *)gs->dirs)[13].unk8 << 11) + ((DirInfo *)gs->dirs)[13].unk4 * 2;
-    base = ((DirInfo *)gs->dirs)[0].unk8;
+    size = (gs->dirs[13].tableSector << 11) + gs->dirs[13].count * 2;
+    base = gs->dirs[0].tableSector;
     t = size & 0x800;
     if (t != 0) {
         size += 0x800 - t;
@@ -212,7 +212,7 @@ void file_loadDirTables(void) {
     buf += base << 11;
     do { } while (0); /* empty macro residue: ends cse1's block so the data copy below is kept */
 
-    size = (dir[0].unk4 + 1) * 8;
+    size = (dir[0].count + 1) * 8;
     /* data == buf; the redundant +/- keeps CSE from folding the copy (the
        original passes a copy of buf in s0 to the first two memmoves) */
     data = buf + (base << 11) - (base << 11);
@@ -220,27 +220,27 @@ void file_loadDirTables(void) {
     gs->dirTables[0] = top;
     memmove(gs->dirTables[0], data, size);
 
-    size = (dir[1].unk4 + 1) * 8;
+    size = (dir[1].count + 1) * 8;
     top -= size;
     gs->dirTables[1] = top;
-    memmove(gs->dirTables[1], data + ((dir[1].unk8 - base) << 11), size);
+    memmove(gs->dirTables[1], data + ((dir[1].tableSector - base) << 11), size);
 
-    size = (dir[10].unk4 + 1) * 8;
+    size = (dir[10].count + 1) * 8;
     top -= size;
     gs->dirTables[10] = top;
-    memmove(gs->dirTables[10], buf + ((dir[10].unk8 - base) << 11), size);
+    memmove(gs->dirTables[10], buf + ((dir[10].tableSector - base) << 11), size);
 
-    size = (dir[8].unk4 + 1) * 8;
+    size = (dir[8].count + 1) * 8;
     top -= size;
     gs->dirTables[8] = top;
-    memmove(gs->dirTables[8], buf + ((((DirInfo *)gs->dirs)[8].unk8 - base) << 11), size);
+    memmove(gs->dirTables[8], buf + ((gs->dirs[8].tableSector - base) << 11), size);
 
-    list8 = buf + ((dir[8].unk8 - base) << 11);
-    s = (Unk8001DE50 *)(list8 + dir[8].unk4 * 8) - 1;
-    list11 = buf + ((dir[11].unk8 - base) << 11);
+    list8 = buf + ((dir[8].tableSector - base) << 11);
+    s = (Unk8001DE50 *)(list8 + dir[8].count * 8) - 1;
+    list11 = buf + ((dir[11].tableSector - base) << 11);
     do {
         key = s->unk2;
-        e = (Unk8001DE50 *)(list11 + dir[11].unk4 * 8) - 1;
+        e = (Unk8001DE50 *)(list11 + dir[11].count * 8) - 1;
         do {
             if (e->unk0 == key) {
                 if (e->unk2 == 0) {
@@ -256,11 +256,11 @@ void file_loadDirTables(void) {
     size = cnt * 0x10;
     top -= size;
     gs->dirTables[11] = top;
-    s = (Unk8001DE50 *)(list8 + dir[8].unk4 * 8) - 1;
+    s = (Unk8001DE50 *)(list8 + dir[8].count * 8) - 1;
     dst = gs->dirTables[11];
     do {
         key2 = s->unk2;
-        e = (Unk8001DE50 *)(list11 + dir[11].unk4 * 8) - 1;
+        e = (Unk8001DE50 *)(list11 + dir[11].count * 8) - 1;
         do {
             if (e->unk0 == key2) {
                 if (e->unk2 == 1) {
@@ -275,31 +275,31 @@ void file_loadDirTables(void) {
         } while ((u8 *)e >= list11);
         s--;
     } while ((u8 *)s >= list8);
-    ((DirInfo *)gs->dirs)[11].unk4 = cnt * 2;
+    gs->dirs[11].count = cnt * 2;
 
-    size = (dir[12].unk4 + 1) * 8;
+    size = (dir[12].count + 1) * 8;
     top -= size;
     gs->dirTables[12] = top;
-    memmove(gs->dirTables[12], buf + ((dir[12].unk8 - base) << 11), size);
+    memmove(gs->dirTables[12], buf + ((dir[12].tableSector - base) << 11), size);
 
-    size = dir[13].unk4 * 2;
+    size = dir[13].count * 2;
     top -= size;
     gs->dirTables[13] = top;
-    memmove(gs->dirTables[13], buf + ((dir[13].unk8 - base) << 11), size);
+    memmove(gs->dirTables[13], buf + ((dir[13].tableSector - base) << 11), size);
     gs->unk0 &= ~GS_RELOAD_FILE_TABLES;
 }
 
 FileEntry *file_find(s32 a, s32 id) {
-    FileDirEntry *d = (FileDirEntry *)g_gameState->dirs + a;
+    DirInfo *d = g_gameState->dirs + a;
     FileIdEntry *base;
     FileIdEntry *e;
 
-    if (d->unk0 == 3) {
+    if (d->type == 3) {
         return (FileEntry *)((u16 *)g_gameState->dirTables[13] + id);
     }
     id &= 0xFFFF;
     base = g_gameState->dirTables[a];
-    e = base + d->unk4 - 1;
+    e = base + d->count - 1;
 loop:
     if (e->unk0 == id) {
         return (FileEntry *)e;

@@ -102,7 +102,7 @@ void opening_findSceneSectors(void) {
     GameState *gs = g_gameState;
     s32 mode = gs->mode;
     GameData *ctx = gs->gameData;
-    GameStateUnk14 *f;
+    DirInfo *f;
     s32 base;
     u8 *area;
     u8 *start;
@@ -113,16 +113,16 @@ void opening_findSceneSectors(void) {
     if (mode == 1 || mode == 3) {
         id = -1;
         f = gs->dirs;
-        base = f->unk8;
+        base = f[0].tableSector;
         area = g_loadAreaEnd + ((base << 11) + 0x14C700);
         if (mode == 1) {
             key = (s16)ctx->fieldId;
-            start = area + ((f->unk48 - base) << 11);
-            e = (SceneDirEntry *)start + f->unk44 - 1;
+            start = area + ((f[4].tableSector - base) << 11);
+            e = (SceneDirEntry *)start + f[4].count - 1;
         } else {
             key = ctx->worldId;
-            start = area + ((f->unk38 - base) << 11);
-            e = (SceneDirEntry *)start + f->unk34 - 1;
+            start = area + ((f[3].tableSector - base) << 11);
+            e = (SceneDirEntry *)start + f[3].count - 1;
         }
         for (;;) {
             if (e->id == key) {
@@ -136,8 +136,8 @@ void opening_findSceneSectors(void) {
                 break;
             }
         }
-        start = area + ((gs->dirs->unk28 - base) << 11);
-        e = (SceneDirEntry *)start + gs->dirs->unk24 - 1;
+        start = area + ((gs->dirs[2].tableSector - base) << 11);
+        e = (SceneDirEntry *)start + gs->dirs[2].count - 1;
         for (;;) {
             if (e->id == id) {
                 ctx->sceneSector[0] = e->sector;

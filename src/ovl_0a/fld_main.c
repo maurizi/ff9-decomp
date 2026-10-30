@@ -608,7 +608,7 @@ void fld_refindSectors(void) {
     GameData *gd2;
     s32 key;
     FieldMap *f;
-    GameStateUnk14 *g;
+    DirInfo *g;
     s32 id;
     s32 t;
     u8 *base;
@@ -623,10 +623,10 @@ void fld_refindSectors(void) {
         gs2 = gs;
         gd2 = gd;
         g = gs2->dirs;
-        t = g->unk8;
+        t = g[0].tableSector;
         base = g_loadAreaEnd + ((t << 11) + 0x14C700);
-        start = (FieldDirEnt *)(base + ((g->unk48 - t) << 11));
-        e = &start[g->unk44] - 1;
+        start = (FieldDirEnt *)(base + ((g[4].tableSector - t) << 11));
+        e = &start[g[4].count] - 1;
         key = f->area->scene->nextId;
         do {
             if (e->unk0 == key) {
@@ -637,8 +637,8 @@ void fld_refindSectors(void) {
             }
             e--;
         } while (e >= start);
-        start = (FieldDirEnt *)(base + ((gs2->dirs->unk28 - t) << 11));
-        e = &start[gs2->dirs->unk24] - 1;
+        start = (FieldDirEnt *)(base + ((gs2->dirs[2].tableSector - t) << 11));
+        e = &start[gs2->dirs[2].count] - 1;
         do {
             if (e->unk0 == id) {
                 gd2->sceneSector[0] = e->unk4;
@@ -650,8 +650,8 @@ void fld_refindSectors(void) {
         g_gameState->gameData->ctx.field->area->areaId = id;
         g_gameState->gameData->musicFileSector = -1;
         g_gameState->gameData->musicFileSectors = 0xFFFF;
-        start = (FieldDirEnt *)(base + ((gs2->dirs->unk98 - t) << 11));
-        e = &start[gs2->dirs->unk94] - 1;
+        start = (FieldDirEnt *)(base + ((gs2->dirs[9].tableSector - t) << 11));
+        e = &start[gs2->dirs[9].count] - 1;
         do {
             if (e->unk0 == g_gameState->gameData->musicId[0]) {
                 g_gameState->gameData->musicFileSector = e->unk4;
