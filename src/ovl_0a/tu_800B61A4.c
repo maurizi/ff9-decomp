@@ -1802,8 +1802,8 @@ void fldmdl_initTexAnims(TexAnimRelocSet *hdr, ModelTexOfs *ofs) {
             part[j].frames = p;
             if (ofs != NULL) {
                 for (k = 0; k < hdr->anims[i].frameCount; k++) {
-                    ((TexAnimRelocPos *)p)->unk0 += ofs[idx].srcX;
-                    ((TexAnimRelocPos *)p)->unk2 += ofs[idx].srcY;
+                    ((TexAnimRelocPos *)p)->x += ofs[idx].srcX;
+                    ((TexAnimRelocPos *)p)->y += ofs[idx].srcY;
                     p += sizeof(TexAnimRelocPos);
                 }
             }
@@ -2529,27 +2529,27 @@ s32 fldbg_buildOverlaySprites(BgOverlay *arg0, BgSprt *arg1, BgSprt **arg2) {
     for (; buf < 2; buf++) {
         for (i = 0; i < n; i++) {
             BgSprt *sp = &arg1[i];
-            setSprt16(&sp->unk8);
-            sp->unk8.r0 = 0x80;
-            sp->unk8.g0 = 0x80;
-            sp->unk8.b0 = 0x80;
-            sp->unk8.x0 = arg0->screenX + pos[i].x;
-            sp->unk8.y0 = arg0->screenY + pos[i].y;
-            sp->unk8.u0 = tile[i].u;
-            sp->unk8.v0 = tile[i].v;
+            setSprt16(&sp->sprt);
+            sp->sprt.r0 = 0x80;
+            sp->sprt.g0 = 0x80;
+            sp->sprt.b0 = 0x80;
+            sp->sprt.x0 = arg0->screenX + pos[i].x;
+            sp->sprt.y0 = arg0->screenY + pos[i].y;
+            sp->sprt.u0 = tile[i].u;
+            sp->sprt.v0 = tile[i].v;
             if (tile[i].trans) {
-                setSemiTrans(&sp->unk8, 1);
+                setSemiTrans(&sp->sprt, 1);
             } else {
-                setSemiTrans(&sp->unk8, 0);
+                setSemiTrans(&sp->sprt, 0);
             }
-            sp->unk8.clut = GetClut(tile[i].clutX << 4, tile[i].clutY);
+            sp->sprt.clut = GetClut(tile[i].clutX << 4, tile[i].clutY);
             if (tile[i].tp == 0) {
                 t = GetTPage(0, tile[i].abr, tile[i].tpX << 6, tile[i].tpY << 8);
             } else {
                 t = GetTPage(1, tile[i].abr, tile[i].tpX << 6, tile[i].tpY << 8);
             }
-            setDrawTPage(&sp->unk0, 1, 1, t);
-            MargePrim(&sp->unk0, &sp->unk8);
+            setDrawTPage(&sp->tpage, 1, 1, t);
+            MargePrim(&sp->tpage, &sp->sprt);
             x = tile[i].clutY;
             if (w < x) {
                 w = x;
@@ -2565,10 +2565,10 @@ s32 fldbg_buildOverlaySprites(BgOverlay *arg0, BgSprt *arg1, BgSprt **arg2) {
 s32 fldbg_initEffectList(void) {
     u32 n;
     u32 i;
-    BgOverlayAnimTbl *tbl;
+    BgOverlayAnim *tbl;
     BgOverlay *trk;
 
-    tbl = (BgOverlayAnimTbl *)((u8 *)g_fieldBgCtx.data + g_fieldBgCtx.data->overlayAnimOffset);
+    tbl = (BgOverlayAnim *)((u8 *)g_fieldBgCtx.data + g_fieldBgCtx.data->overlayAnimOffset);
     trk = (BgOverlay *)((u8 *)g_fieldBgCtx.data + g_fieldBgCtx.data->overlayOffset);
     n = g_fieldBgCtx.data->overlayCount;
     i = 0;
@@ -2583,7 +2583,7 @@ s32 fldbg_initEffectList(void) {
             g_fieldBgCtx.workUsed += 0xC;
             g_fieldBgCtx.entryCount++;
             if (trk[i].flags & 0x20) {
-                i += tbl->unk0 >> 8;
+                i += tbl->stepCount;
                 tbl++;
             }
         }
@@ -2629,19 +2629,19 @@ s32 fldbg_updateOverlayAnims(void) {
                 continue;
             }
             p->delayCounter = 0;
-            p->pos = pos + p->unk8;
+            p->pos = pos + p->speed;
             v = p->pos >> 8;
             if (v >= p->stepCount) {
                 if (p->flags & FLDBG_ANIM_PINGPONG) {
                     p->pos = (p->stepCount - 1) << 8;
-                    fldbg_setAnimSpeed(i, -p->unk8);
+                    fldbg_setAnimSpeed(i, -p->speed);
                 } else {
                     p->pos = 0;
                 }
             } else if (v < 0) {
                 if (p->flags & FLDBG_ANIM_PINGPONG) {
                     p->pos = 0;
-                    fldbg_setAnimSpeed(i, -p->unk8);
+                    fldbg_setAnimSpeed(i, -p->speed);
                 } else {
                     p->pos = (p->stepCount - 1) << 8;
                 }
@@ -2689,8 +2689,8 @@ s32 fldbg_drawFollowMask(BgFile *bg, BgOverlay *o, FieldBgState *st, BgFollowOve
     s16 w;
 
     ot = g_fieldBgCtx.ot[*g_fieldBgCtx.bufIndex];
-    x = o->x + bg->posX - (st->scroll.unk0 - 0xA0);
-    y = o->y + bg->posY - (st->scroll.unk2 - 0x70);
+    x = o->x + bg->posX - (st->scroll.x - 0xA0);
+    y = o->y + bg->posY - (st->scroll.y - 0x70);
     if (x > 0) {
         p = &f->quads[*g_fieldBgCtx.bufIndex][0];
         u = y;
@@ -2797,10 +2797,10 @@ s32 fldbg_updateFollowOverlays(void) {
         for (i = 0; i < g_fieldBgFollowOverlayCount; i++, f++) {
             o = (BgOverlay *)((u16)f->overlay * sizeof(BgOverlay) + (u32)objs);
             if ((o->flags & 2) && o->cameraId == st->cameraId) {
-                x = st->scroll.unk0 + (sx - bg->posX - (f->offsetX + 0xA0));
+                x = st->scroll.x + (sx - bg->posX - (f->offsetX + 0xA0));
                 y = f->offsetY;
                 o->x = x;
-                o->y = st->scroll.unk2 + (sy - bg->posX - (y + 0x70));
+                o->y = st->scroll.y + (sy - bg->posX - (y + 0x70));
                 if (f->abr >= 0) {
                     fldbg_drawFollowMask(bg, o, st, f);
                 }
@@ -2826,14 +2826,14 @@ s32 fldbg_initOverlays(u8 *arg0, BgSprt **arg1) {
     fldbg_setCamera(g_fieldBgState.cameraId);
     c = &((BgCamera *)((u8 *)h + h->cameraOffset))[g_fieldBgState.cameraId];
     x = (c->scrollMinX + c->scrollMaxX) / 2;
-    g_fieldBgState.scroll.unk0 = (g_fieldBgState.parallaxOriginX = x);
-    g_fieldBgState.scroll.unk2 = (g_fieldBgState.parallaxOriginY = (c->scrollMinY + c->scrollMaxY) / 2);
+    g_fieldBgState.scroll.x = (g_fieldBgState.parallaxOriginX = x);
+    g_fieldBgState.scroll.y = (g_fieldBgState.parallaxOriginY = (c->scrollMinY + c->scrollMaxY) / 2);
     x -= 160;
     h->screenX = h->posX - x;
     n = h->overlayCount;
     objs = (BgOverlay *)((u8 *)h + h->overlayOffset);
     size = n * 3;
-    y = g_fieldBgState.scroll.unk2 - 112;
+    y = g_fieldBgState.scroll.y - 112;
     h->screenY = h->posY - (s16)y;
     g_fieldBgCtx.overlayRgb = arg0;
     while (size / 4 * 4 != size) {
@@ -2914,8 +2914,8 @@ s32 fldbg_drawOverlay(BgOverlay *o, u8 *arg1) {
             ox = g_fieldBgState.viewportPos[o->viewport][0];
             oy = g_fieldBgState.viewportPos[o->viewport][1];
         } else {
-            ox = g_fieldBgState.viewportPos[o->viewport][0] + 0xA0 - g_fieldBgState.scroll.unk0;
-            oy = g_fieldBgState.viewportPos[o->viewport][1] + 0x70 - g_fieldBgState.scroll.unk2;
+            ox = g_fieldBgState.viewportPos[o->viewport][0] + 0xA0 - g_fieldBgState.scroll.x;
+            oy = g_fieldBgState.viewportPos[o->viewport][1] + 0x70 - g_fieldBgState.scroll.y;
         }
         wx = g_fieldBgState.viewportSize[o->viewport][0];
         wy = g_fieldBgState.viewportSize[o->viewport][1];
@@ -2963,8 +2963,8 @@ s32 fldbg_drawOverlay(BgOverlay *o, u8 *arg1) {
                 if (d < 8 || d >= 0xFF9) {
                     continue;
                 }
-                spr[i].unk8.x0 = tx + ox;
-                spr[i].unk8.y0 = ty + oy;
+                spr[i].sprt.x0 = tx + ox;
+                spr[i].sprt.y0 = ty + oy;
             } else {
                 tx = x + pos[i].x;
                 if (o->scrollX != 0) {
@@ -2976,12 +2976,12 @@ s32 fldbg_drawOverlay(BgOverlay *o, u8 *arg1) {
                     if (tx + (s16)ox < -15 || tx >= (s16)wx) {
                         continue;
                     }
-                    spr[i].unk8.x0 = tx + ox;
+                    spr[i].sprt.x0 = tx + ox;
                 } else {
                     if (tx < -15 || tx >= (s16)ox + (s16)wx) {
                         continue;
                     }
-                    spr[i].unk8.x0 = tx;
+                    spr[i].sprt.x0 = tx;
                 }
                 ty = y + pos[i].y;
                 if (o->scrollY != 0) {
@@ -2993,12 +2993,12 @@ s32 fldbg_drawOverlay(BgOverlay *o, u8 *arg1) {
                     if (ty + (s16)oy < -15 || ty >= (s16)wy) {
                         continue;
                     }
-                    spr[i].unk8.y0 = ty + oy;
+                    spr[i].sprt.y0 = ty + oy;
                 } else {
                     if (ty < -15 || ty >= (s16)oy + (s16)wy) {
                         continue;
                     }
-                    spr[i].unk8.y0 = ty;
+                    spr[i].sprt.y0 = ty;
                 }
                 d = z + pos[i].pad;
                 if (d < 8 || d >= 0xFF9) {
@@ -3017,8 +3017,8 @@ s32 fldbg_drawOverlay(BgOverlay *o, u8 *arg1) {
             ox = g_fieldBgState.viewportPos[o->viewport][0];
             oy = g_fieldBgState.viewportPos[o->viewport][1];
         } else {
-            ox = g_fieldBgState.viewportPos[o->viewport][0] + 0xA0 - g_fieldBgState.scroll.unk0;
-            oy = g_fieldBgState.viewportPos[o->viewport][1] + 0x70 - g_fieldBgState.scroll.unk2;
+            ox = g_fieldBgState.viewportPos[o->viewport][0] + 0xA0 - g_fieldBgState.scroll.x;
+            oy = g_fieldBgState.viewportPos[o->viewport][1] + 0x70 - g_fieldBgState.scroll.y;
         }
         wx = g_fieldBgState.viewportSize[o->viewport][0];
         wy = g_fieldBgState.viewportSize[o->viewport][1];
@@ -3047,8 +3047,8 @@ s32 fldbg_drawOverlay(BgOverlay *o, u8 *arg1) {
                 if (tx < -15 || tx >= (s16)ox + (s16)wx) {
                     continue;
                 }
-                spr[i].unk8.x0 = tx;
-                spr[i].unk8.y0 = ty + oy;
+                spr[i].sprt.x0 = tx;
+                spr[i].sprt.y0 = ty + oy;
             } else {
                 k = 0;
                 tx = x + pos[i].x;
@@ -3066,8 +3066,8 @@ s32 fldbg_drawOverlay(BgOverlay *o, u8 *arg1) {
                 if (ty < -15 || ty >= (s16)oy + (s16)wy) {
                     continue;
                 }
-                spr[i].unk8.x0 = tx + ox;
-                spr[i].unk8.y0 = ty;
+                spr[i].sprt.x0 = tx + ox;
+                spr[i].sprt.y0 = ty;
             }
             d = z + pos[i].pad;
             if (d < 8 || d >= 0xFF9) {
@@ -3093,8 +3093,8 @@ s32 fldbg_drawOverlay(BgOverlay *o, u8 *arg1) {
             if (d < 8 || d >= 0xFF9) {
                 continue;
             }
-            spr[i].unk8.y0 = ty;
-            spr[i].unk8.x0 = tx;
+            spr[i].sprt.y0 = ty;
+            spr[i].sprt.x0 = tx;
             addPrim(ot + d, &spr[i]);
         }
     }
@@ -3144,18 +3144,18 @@ s32 fldbg_updateOverlayScroll(BgFile *arg0) {
             }
         }
         if (o->flags & FLDBG_OVL_PARALLAX) {
-            v = (o->baseX << 8) + ((s16)g_fieldBgState.scroll.unk0 - g_fieldBgState.parallaxOriginX) * o->scrollX;
+            v = (o->baseX << 8) + ((s16)g_fieldBgState.scroll.x - g_fieldBgState.parallaxOriginX) * o->scrollX;
             o->x = v >> 8;
             o->fracX = v & 0xFF;
-            v = (o->baseY << 8) + ((s16)g_fieldBgState.scroll.unk2 - g_fieldBgState.parallaxOriginY) * o->scrollY;
+            v = (o->baseY << 8) + ((s16)g_fieldBgState.scroll.y - g_fieldBgState.parallaxOriginY) * o->scrollY;
             o->y = v >> 8;
             o->fracY = v & 0xFF;
         }
     }
     if (g_fieldBgState.flags & FLDBG_CAMERA_CHANGED) {
         g_fieldBgState.flags &= ~FLDBG_CAMERA_CHANGED;
-        g_fieldBgState.cameraScroll.unk0 = g_fieldBgState.scroll.unk0;
-        g_fieldBgState.cameraScroll.unk2 = g_fieldBgState.scroll.unk2;
+        g_fieldBgState.cameraScroll.x = g_fieldBgState.scroll.x;
+        g_fieldBgState.cameraScroll.y = g_fieldBgState.scroll.y;
     }
     return 1;
 }
@@ -3188,25 +3188,25 @@ s32 fldbg_updateScroll(void) {
     mode = flags & 7;
     smooth = flags & 8;
     if (mode == 1 || mode == 2 || mode == 3) {
-        ox = g_fieldBgState.scroll.unk0;
-        oy = g_fieldBgState.scroll.unk2;
+        ox = g_fieldBgState.scroll.x;
+        oy = g_fieldBgState.scroll.y;
         h = g_fieldBgData;
-        wx = g_fieldBgState.scrollToX - g_fieldBgState.scrollFrom.unk0;
-        wy = g_fieldBgState.scrollToY - g_fieldBgState.scrollFrom.unk2;
+        wx = g_fieldBgState.scrollToX - g_fieldBgState.scrollFrom.x;
+        wy = g_fieldBgState.scrollToY - g_fieldBgState.scrollFrom.y;
         cnt = g_fieldBgState.scrollFrame;
         dur = g_fieldBgState.scrollFrames;
         if (!smooth) {
-            g_fieldBgState.scroll.unk0 = g_fieldBgState.scrollFrom.unk0 + wx * cnt / dur;
-            g_fieldBgState.scroll.unk2 = g_fieldBgState.scrollFrom.unk2 + wy * cnt / dur;
+            g_fieldBgState.scroll.x = g_fieldBgState.scrollFrom.x + wx * cnt / dur;
+            g_fieldBgState.scroll.y = g_fieldBgState.scrollFrom.y + wy * cnt / dur;
         } else {
             y = math_cos(((cnt << 16) >> 5) / dur + 0x800) + 0x1000;
             ax = wx * y / 0x2000;
             ay = wy * y / 0x2000;
-            g_fieldBgState.scroll.unk0 = g_fieldBgState.scrollFrom.unk0 + ax;
-            g_fieldBgState.scroll.unk2 = g_fieldBgState.scrollFrom.unk2 + ay;
+            g_fieldBgState.scroll.x = g_fieldBgState.scrollFrom.x + ax;
+            g_fieldBgState.scroll.y = g_fieldBgState.scrollFrom.y + ay;
         }
-        ox = g_fieldBgState.scroll.unk0 - ox;
-        oy = g_fieldBgState.scroll.unk2 - oy;
+        ox = g_fieldBgState.scroll.x - ox;
+        oy = g_fieldBgState.scroll.y - oy;
         o = (BgOverlay *)((u8 *)h + h->overlayOffset);
         for (i = 0; i < h->overlayCount; o++, i++) {
             if (o->flags & FLDBG_OVL_LOOP) {
@@ -3275,9 +3275,9 @@ s32 fldbg_updateScroll(void) {
         s = (s32)h - -s; /* keeps the h + off operand order (plus h s) */
         s = s + g_fieldBgState.cameraId * sizeof(BgCamera);
         v = 160;
-        y = *(s16 *)&g_fieldBgState.scroll.unk0 - (((BgCamera *)s)->width >> 1);
+        y = *(s16 *)&g_fieldBgState.scroll.x - (((BgCamera *)s)->width >> 1);
         i = v - y;
-        t = 112 - (*(s16 *)&g_fieldBgState.scroll.unk2 - (((BgCamera *)s)->height >> 1));
+        t = 112 - (*(s16 *)&g_fieldBgState.scroll.y - (((BgCamera *)s)->height >> 1));
         g_fieldBgState.geomOffsetX = i;
         g_fieldBgState.geomOffsetY = t;
         if (mode == 1) {
@@ -3406,24 +3406,24 @@ s32 fldbg_followPlayer(void) {
     px = &dx;
     py = &dy;
     if (g_fieldBgState.flags & 0x40) {
-        ox = g_fieldBgState.scroll.unk0;
-        oy = g_fieldBgState.scroll.unk2;
+        ox = g_fieldBgState.scroll.x;
+        oy = g_fieldBgState.scroll.y;
         if ((s16)cx < c->scrollMinX) {
-            g_fieldBgState.scroll.unk0 = c->scrollMinX;
+            g_fieldBgState.scroll.x = c->scrollMinX;
         } else if (c->scrollMaxX < (s16)cx) {
-            g_fieldBgState.scroll.unk0 = c->scrollMaxX;
+            g_fieldBgState.scroll.x = c->scrollMaxX;
         } else {
-            g_fieldBgState.scroll.unk0 = cx;
+            g_fieldBgState.scroll.x = cx;
         }
         if ((s16)cy < c->scrollMinY) {
-            g_fieldBgState.scroll.unk2 = c->scrollMinY;
+            g_fieldBgState.scroll.y = c->scrollMinY;
         } else if (c->scrollMaxY < (s16)cy) {
-            g_fieldBgState.scroll.unk2 = c->scrollMaxY;
+            g_fieldBgState.scroll.y = c->scrollMaxY;
         } else {
-            g_fieldBgState.scroll.unk2 = cy;
+            g_fieldBgState.scroll.y = cy;
         }
-        *px = g_fieldBgState.scroll.unk0 - ox;
-        *py = g_fieldBgState.scroll.unk2 - oy;
+        *px = g_fieldBgState.scroll.x - ox;
+        *py = g_fieldBgState.scroll.y - oy;
     }
     o = (BgOverlay *)((u8 *)h + h->overlayOffset);
     for (i = 0; i < h->overlayCount; o++, i++) {
@@ -3537,11 +3537,11 @@ BgSprt *fldbg_init(void) {
     trk = (BgOverlay *)((u8 *)h + h->overlayOffset);
     n = h->overlayAnimCount;
     for (i = 0; i < n; i++) {
-        anims[i].unk4 &= 0xFF;
-        anims[i].unk8 = 0x100;
-        anims[i].unkA = 0;
-        anims[i].unk0 = 1;
-        trk[*((u8 *)h + anims[i].unkC)].flags |= 2;
+        anims[i].cameraPos &= 0xFF;
+        anims[i].speed = 0x100;
+        anims[i].delayCounter = 0;
+        anims[i].flags = 1;
+        trk[*((u8 *)h + anims[i].stepOffset)].flags |= 2;
     }
     fldbg_initEffectList();
     fldbg_initFollowOverlays();
@@ -3589,8 +3589,8 @@ s32 fldbg_draw(void) {
     fldbg_updateFollowOverlays();
     c = &g_fieldBgState;
     h = g_fieldBgCtx.data;
-    h->screenX = h->posX - (s16)(c->scroll.unk0 - 0xA0);
-    h->screenY = h->posY - (s16)(c->scroll.unk2 - 0x70);
+    h->screenX = h->posX - (s16)(c->scroll.x - 0xA0);
+    h->screenY = h->posY - (s16)(c->scroll.y - 0x70);
     o = (BgOverlay *)((u8 *)h + h->overlayOffset);
     for (j = 0; j < h->overlayCount; j++) {
         if ((o[j].flags & 2) && o[j].cameraId == c->cameraId) {
@@ -3749,7 +3749,7 @@ s32 fldbg_toggleOverlayColor(s32 arg0, u8 arg1, u8 arg2, u8 arg3) {
             off = n;
         }
         for (i = 0; i < n; i++) {
-            setRGB0(&s[i + off].unk8, arg1, arg2, arg3);
+            setRGB0(&s[i + off].sprt, arg1, arg2, arg3);
         }
         g_fieldBgCtx.overlayTinted[arg0] = 0;
         return 0;
@@ -3765,7 +3765,7 @@ s32 fldbg_toggleOverlayColor(s32 arg0, u8 arg1, u8 arg2, u8 arg3) {
         off = n;
     }
     for (i = 0; i < n; i++) {
-        setRGB0(&s[i + off].unk8, arg1, arg2, arg3);
+        setRGB0(&s[i + off].sprt, arg1, arg2, arg3);
     }
     g_fieldBgCtx.overlayTinted[arg0] = 1;
     return 1;
@@ -3893,8 +3893,8 @@ s32 fldbg_setCamera(s32 arg0) {
     g_fieldBgState.viewMatrix->t[0] = c->trans[0];
     g_fieldBgState.viewMatrix->t[1] = c->trans[1];
     g_fieldBgState.viewMatrix->t[2] = c->trans[2];
-    h->unk2A = c->scrollMaxX;
-    h->unk2E = c->scrollMaxY;
+    h->scrollMaxX = c->scrollMaxX;
+    h->scrollMaxY = c->scrollMaxY;
     g_fieldBgState.cameraId = arg0;
     g_fieldBgState.flags |= FLDBG_CAMERA_CHANGED;
     g_gameState->gameData->ctx.field->area->scene->otBias = c->otBias;
@@ -3969,8 +3969,8 @@ s32 fldbg_scrollTo(s16 arg0, s16 arg1, s16 arg2, s32 arg3) {
 }
 
 s32 fldbg_getScroll(u16 *arg0, u16 *arg1) {
-    *arg0 = g_fieldBgState.scroll.unk0;
-    *arg1 = g_fieldBgState.scroll.unk2;
+    *arg0 = g_fieldBgState.scroll.x;
+    *arg1 = g_fieldBgState.scroll.y;
     return 1;
 }
 
@@ -4136,7 +4136,7 @@ s32 fldbg_setOverlayColor(s32 arg0, u8 arg1, u8 arg2, u8 arg3) {
         off = n;
     }
     for (i = 0; i < n; i++) {
-        setRGB0(&s[i + off].unk8, arg1, arg2, arg3);
+        setRGB0(&s[i + off].sprt, arg1, arg2, arg3);
     }
     return 1;
 }
@@ -4279,7 +4279,7 @@ s32 fldbg_playAnim(s32 arg0, s32 arg1) {
 }
 
 s32 fldbg_setAnimSpeed(s32 arg0, s32 arg1) {
-    fldbg_overlayAnimPtr(arg0)->unk8 = arg1;
+    fldbg_overlayAnimPtr(arg0)->speed = arg1;
     return 1;
 }
 
@@ -4314,8 +4314,8 @@ s32 fldbg_playAnimRange(s32 arg0, u32 arg1, u32 arg2) {
     p->flags |= (FLDBG_ANIM_ACTIVE | FLDBG_ANIM_PLAY_ONCE);
     p->pos = arg1 << 8;
     st[arg2].delay = -1;
-    if ((p->unk8 > 0 && arg2 < arg1) || (p->unk8 < 0 && arg1 < arg2)) {
-        p->unk8 = -p->unk8;
+    if ((p->speed > 0 && arg2 < arg1) || (p->speed < 0 && arg1 < arg2)) {
+        p->speed = -p->speed;
     }
     return 1;
 }
@@ -4327,7 +4327,7 @@ s32 fldbg_resetAnim(s32 arg0, s32 arg1) {
     BgAnimStep *st;
     s32 i;
 
-    p->unk8 = 0x100;
+    p->speed = 0x100;
     i = 0;
     p->delayCounter = 0;
     p->flags = 1;
@@ -4345,7 +4345,7 @@ s32 fldbg_resetAnim(s32 arg0, s32 arg1) {
 }
 
 s32 fldbg_getEntryType(s32 arg0, u8 *arg1) {
-    *arg1 = g_fieldBgCtxEntries[arg0].unk0;
+    *arg1 = g_fieldBgCtxEntries[arg0].type;
     return 1;
 }
 
@@ -4421,7 +4421,7 @@ s32 fldbg_resetAllAnims(void) {
     objs = (BgOverlay *)((u8 *)d + d->overlayOffset);
     n = d->overlayAnimCount;
     for (; i < n; i++) {
-        p[i].unk8 = 0x100;
+        p[i].speed = 0x100;
         p[i].delayCounter = 0;
         p[i].flags = 1;
         p[i].pos = 0;
@@ -4458,8 +4458,8 @@ s32 fldbg_setOverlaySpriteColor(s32 arg0, u8 arg1, u8 arg2, u8 arg3) {
     u16 i;
 
     for (i = 0; i < n; i++) {
-        setRGB0(&s[i].unk8, arg1, arg2, arg3);
-        setRGB0(&s[i + n].unk8, arg1, arg2, arg3);
+        setRGB0(&s[i].sprt, arg1, arg2, arg3);
+        setRGB0(&s[i + n].sprt, arg1, arg2, arg3);
     }
     return 1;
 }

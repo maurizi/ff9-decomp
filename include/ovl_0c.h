@@ -248,8 +248,13 @@ typedef struct {
     s16 floorY;
 } WmActorType; /* 0x10 */
 
+/* camera preset, blended by wm_updateCameraPreset / wm_calcCameraPreset */
 typedef struct {
-    s16 unk0[5];
+    s16 projDist; /* GameData.unkA (SetGeomScreen) */
+    s16 distance; /* eye distance from the target (x/z, scaled by g_worldCameraDistScale) */
+    s16 eyeHeight; /* eye y offset */
+    s16 groundClearance; /* the eye stays at least this far above the ground under it (y up is negative) */
+    s16 targetHeight; /* g_worldCameraTargetHeight */
 } WmCameraParams; /* 10 bytes */
 
 /* movement mode table entry (g_worldMoveModes[], current one at g_worldMoveModeInfo) */
@@ -512,7 +517,7 @@ typedef struct {
 
 /* filled by w_musicGetID */
 typedef struct {
-    s32 unk0; /* volume mask */
+    s32 channelMask; /* third argument of wm_soundCommand, shifted right by one per sound (wm_sePlay) */
     s32 count; /* count */
     s32 seIds[3]; /* sound ids */
 } WmSeIds;
@@ -617,7 +622,7 @@ typedef struct {
     WmFog fog[3];
     s16 fxBackColor[3];
     u8 pad5A[2];
-    u16 unk5C;
+    u16 shadowShade; /* scales the actor shadows' shade (4096 = 1.0, wm_drawActorShadow) */
 } WmSky; /* 0x5E */
 
 typedef struct {
@@ -730,15 +735,15 @@ void w_movementChange(void);
 void w_musicUpdate(void);
 /* TIM image blocks */
 typedef struct {
-    u32 unk0; /* length */
-    RECT unk4;
-    u16 unk8[1];
+    u32 length;
+    RECT rect;
+    u16 data[1];
 } WmTimBlk;
 
 typedef struct {
-    u32 unk0; /* id */
-    u32 unk4; /* flags: 8 = has CLUT */
-    WmTimBlk unk8;
+    u32 id;
+    u32 flags; /* 8 = has CLUT */
+    WmTimBlk block;
 } WmTim;
 
 void wm_loadTim(u32 *, s32, s32, s32, s32, s32, s8);
@@ -975,11 +980,6 @@ extern SVECTOR g_worldBlockFx6RotA;
 extern SVECTOR g_worldBlockFx6RotB;
 extern SVECTOR g_worldBlockFx4PartRots[3];
 extern void **g_worldDataPack;
-typedef struct {
-    s32 unk0;
-    s32 unk4;
-    s32 unk8;
-} Unk800B8388;
 extern MATRIX *g_worldViewMatrix;
 void wm_drawBackdrop(s32, s32);
 extern u8 g_worldParkedSoundRectIdx;
@@ -1105,17 +1105,8 @@ typedef struct {
     RECT rects[1];
 } WmImagePackClut;
 
-/* text window contents passed to tween_start (as in ovl_38) */
-typedef struct {
-    s16 unk0;
-    s16 unk2;
-    u8 *unk4;
-    s32 unk8;
-    void (*unkC)(void);
-} TextWin;
-
 extern RECT s_menuMainPanelRects[6];
-extern TextWin s_menuMainSlideIn[4];
+extern TweenDef s_menuMainSlideIn[4];
 extern u8 s_menuMainExpText[16];
 extern u8 s_menuMainNextText[16];
 extern u8 s_menuMainExpLabel[];

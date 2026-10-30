@@ -135,9 +135,9 @@ void menuItem_selectItem(s32 idx, MenuList *l) {
         it = &g_itemTable[id];
         e = &D_8006B1F4[id - ITEM_FIRST_USABLE];
         if (it->slots & 1) {
-            s_menuItem.targetKind = e->unk0;
+            s_menuItem.targetKind = e->targetKind;
             ok = 1;
-            s_menuItem.targetMode = p->unk0 != 0xFB ? e->unk0_5 : 0;
+            s_menuItem.targetMode = p->unk0 != 0xFB ? e->targetMode : 0;
             if (s_menuItem.targetMode == 0) {
                 menuItem_useOnTarget(p->unk0);
             } else {
@@ -593,7 +593,7 @@ void menuItem_useOnTarget(s32 id) {
     i = id - ITEM_FIRST_USABLE;
     e = &D_8006B1F4[i];
     c = g_gameState->gameData->party[s_menuItem.slot];
-    if (item_useOnMember(c, c, e, e->unk4, 0)) {
+    if (item_useOnMember(c, c, e, e->effect, 0)) {
         snd_playSe(SE_USE_ITEM);
         item_remove(id, 1);
     } else {

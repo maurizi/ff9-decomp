@@ -503,7 +503,7 @@ void fld_allocScene(void) {
     FieldScene *sc;
 
     g_gameState->gameData->ctx.field->area->scene = sc = (FieldScene *)g_modeHeap;
-    sc->modelBundles = sc->unk6C;
+    sc->modelBundles = sc->modelBundleBuf;
     g_modeHeap += 0x90;
     sc->actorInfo = (FieldActorInfo *)g_modeHeap;
     g_modeHeap += 0x1E0;
@@ -583,7 +583,7 @@ void fld_initScene(void) {
         t = &sc->animSfx[i];
         t->uid = 0xFF;
         t->randomPitch = 0;
-        t->unk2 = 0xFFFF;
+        t->modelId = 0xFFFF;
         t->anim = 0xFFFF;
         t->frame = -1;
         t->sound[1] = 0xFFFF;
@@ -629,10 +629,10 @@ void fld_refindSectors(void) {
         e = &start[g[4].count] - 1;
         key = f->area->scene->nextId;
         do {
-            if (e->unk0 == key) {
-                id = e->unk2;
-                gd2->sceneSector[1] = e->unk4;
-                gd2->sceneSectors[1] = e[1].unk4 - e->unk4;
+            if (e->id == key) {
+                id = e->areaId;
+                gd2->sceneSector[1] = e->sector;
+                gd2->sceneSectors[1] = e[1].sector - e->sector;
                 break;
             }
             e--;
@@ -640,9 +640,9 @@ void fld_refindSectors(void) {
         start = (FieldDirEnt *)(base + ((gs2->dirs[2].tableSector - t) << 11));
         e = &start[gs2->dirs[2].count] - 1;
         do {
-            if (e->unk0 == id) {
-                gd2->sceneSector[0] = e->unk4;
-                gd2->sceneSectors[0] = e[1].unk4 - e->unk4;
+            if (e->id == id) {
+                gd2->sceneSector[0] = e->sector;
+                gd2->sceneSectors[0] = e[1].sector - e->sector;
                 break;
             }
             e--;
@@ -653,9 +653,9 @@ void fld_refindSectors(void) {
         start = (FieldDirEnt *)(base + ((gs2->dirs[9].tableSector - t) << 11));
         e = &start[gs2->dirs[9].count] - 1;
         do {
-            if (e->unk0 == g_gameState->gameData->musicId[0]) {
-                g_gameState->gameData->musicFileSector = e->unk4;
-                g_gameState->gameData->musicFileSectors = e[1].unk4 - e->unk4;
+            if (e->id == g_gameState->gameData->musicId[0]) {
+                g_gameState->gameData->musicFileSector = e->sector;
+                g_gameState->gameData->musicFileSectors = e[1].sector - e->sector;
                 break;
             }
             e--;
@@ -827,10 +827,10 @@ s32 fld_loadFile(FieldScene *sc, s32 arg1) {
 }
 
 s32 fld_getShadowTexPos(u16 *arg0, u16 *arg1) {
-    Unk800AA01C *p = db_lookupRegistered(4, 0x1C0000, 0);
+    FieldVramPos *p = db_lookupRegistered(4, 0x1C0000, 0);
 
-    *arg0 = p->unk30;
-    *arg1 = p->unk32;
+    *arg0 = p->shadowTexX;
+    *arg1 = p->shadowTexY;
     return 0;
 }
 

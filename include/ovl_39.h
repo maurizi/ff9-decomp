@@ -253,7 +253,7 @@ typedef struct {
     u8 unk1; /* GameState.unkA */
     u8 reserved2[0x20 - 2]; /* written as 0 */
     u16 fieldId;
-    u16 unk22; /* GameData.unk3A */
+    u16 areaId; /* GameData.unk3A (the field's area, ovl_0a fld_initArea) */
     u16 battleId;
     s16 unk26; /* GameData.unk848 */
     u16 unk28; /* GameData.unk7DC */
@@ -262,10 +262,10 @@ typedef struct {
 } SaveState;
 
 typedef struct {
-    u16 unk0;
-    u16 unk2;
-    u16 unk4;
-    CardEntry unk6[0x69];
+    u16 wins;
+    u16 losses;
+    u16 draws;
+    CardEntry cards[0x69];
     u16 unk27C;
     u16 unk27E;
 } CardData; /* Tetra Master card list, g_cards (card_getInventory) */
@@ -276,7 +276,7 @@ u16 fld_getDiscChangeAreaId(void);
 
 typedef struct {
     EventVars vars; /* g_evtGlobalVars */
-    s32 unk800; /* g_evtStepCount */
+    s32 evtStepCount; /* g_evtStepCount */
 } SaveEvents;
 
 #define SAVE_CHARACTERS 9 /* GameData.characters; also "no member" in SaveParty.party */
@@ -292,7 +292,7 @@ typedef struct {
 } SaveParty; /* 0x524 */
 
 typedef struct {
-    s32 unk0; /* GameData.unk844 */
+    s32 chocograph; /* GameData.chocograph */
     Unk880 unk4; /* GameData.unk880 */
     u8 unk14; /* GameData.unk892 */
 } SaveMisc;
@@ -300,7 +300,7 @@ typedef struct {
 typedef struct {
     ItemInventory items;
     ItemFlags flags; /* GameData.unk774 */
-    GameConfig unk240; /* GameState.unk24/unk28 */
+    GameConfig config; /* GameState.unk24/unk28 */
     u8 pad248[0x258 - 0x248];
 } SaveItems;
 
@@ -363,7 +363,7 @@ typedef struct {
     u32 newestCounter; /* highest SaveFile.counter */
     s32 newestFile;    /* row holding it */
     s32 savedFadeOtz; /* fade_setOtz (fade_setOtz in docs/runtime-findings.md) old value, restored by menuSave_close */
-    s32 unk18[2]; /* g_padPortMask[] restored by menuSave_exit */
+    s32 savedPortMask[2]; /* g_padPortMask[] restored by menuSave_exit */
     u8 *help; /* help text */
     MenuList list;
     SaveFile files[SAVE_FILES];
@@ -544,11 +544,11 @@ extern s32 g_evtStepCount;
 void lseek(s32, s32, s32);
 /* slider gauge pieces drawn by ui_drawSpriteDef: left cap, middle (repeated via DR_TWIN), right cap */
 typedef struct {
-    u8 unk0; /* texture window x */
-    u8 unk1; /* texture window y */
-    u16 unk2; /* uv */
-    u8 unk4; /* width */
-    u8 unk5; /* height */
+    u8 u; /* texture u (texture window x) */
+    u8 v; /* texture window y */
+    u16 clut; /* uv */
+    u8 w; /* width */
+    u8 h; /* height */
     u8 pad6[2];
 } GaugeIcon;
 extern GaugeIcon D_80068988[3];

@@ -714,12 +714,12 @@ FieldAnimSfx *fld_addAnimSfx(FieldEvtCtx *arg0, s32 arg1, s32 arg2) {
     sc->animSfxCount = n;
     e = &sc->animSfx[i];
     e->uid = arg0->obj->uid;
-    id = arg0->obj->unk34;
+    id = arg0->obj->modelId;
     e->anim = arg1;
     do {
         e->frame = arg2;
     } while (0);
-    e->unk2 = id;
+    e->modelId = id;
     return e;
 }
 
@@ -940,7 +940,7 @@ s32 fld_depGetFileSector(s32 arg0, s32 *arg1) {
     return e->sector;
 }
 
-s32 fld_soundBankReadCallback(Unk800B29F8 *arg0) {
+s32 fld_soundBankReadCallback(CdReadCtx *arg0) {
     s32 a;
     s32 id;
     s32 t;
@@ -951,9 +951,9 @@ s32 fld_soundBankReadCallback(Unk800B29F8 *arg0) {
     FieldScene *sc;
 
     r = 0;
-    a = arg0->unk8;
+    a = (s32)arg0->dest;
     id = g_gameState->gameData->soundLoadBank | DB_SOUND_BANK;
-    if (arg0->unkC == 0) {
+    if (arg0->offset == 0) {
         b = a;
         t = db_lookup(a, 2, DB_PACK, 0);
         if (t == -1) {
@@ -962,15 +962,15 @@ s32 fld_soundBankReadCallback(Unk800B29F8 *arg0) {
         } else {
             a = db_lookup(t, 4, id, 0);
             g_gameState->gameData->soundBankSize = db_lookup(b, 2, (DB_PACK | 1), 0) - g_gameState->gameData->soundLoadDest;
-            fld_dropSoundBankCache(g_gameState->gameData->soundBankSize - arg0->unkC);
+            fld_dropSoundBankCache(g_gameState->gameData->soundBankSize - arg0->offset);
         }
     }
     gd = g_gameState->gameData;
-    n = gd->soundBankSize - arg0->unkC;
-    if (arg0->unk10 < n) {
-        n = arg0->unk10;
+    n = gd->soundBankSize - arg0->offset;
+    if (arg0->chunk < n) {
+        n = arg0->chunk;
     }
-    n = arg0->unk8 + n - a;
+    n = (s32)arg0->dest + n - a;
     if ((id & 0xFFFF) != 0x84) {
         sc = gd->ctx.field->area->scene;
         if (sc->flags & 0x10) {
@@ -979,7 +979,7 @@ s32 fld_soundBankReadCallback(Unk800B29F8 *arg0) {
             r = akao_uploadBank(a, n, 0);
         }
     }
-    arg0->unk8 = a;
+    arg0->dest = (u8 *)a;
     return r;
 }
 
@@ -1062,9 +1062,9 @@ void fld_applyLights(FieldEvtCtx **arg0, s32 arg1) {
             if (!(c->flags & FLD_OBJ_COLOR_SET)) {
                 b = 0;
                 if (l != NULL) {
-                    a = l->unk4;
+                    a = l->color;
                 } else {
-                    a = def->unk4;
+                    a = def->color;
                 }
                 if (shade && dir != NULL) {
                     b = dir->color;
@@ -1231,7 +1231,7 @@ s32 fld_enableRain(s32 arg0, s32 arg1, s32 arg2) {
                     start = g_modeHeap;
                 }
                 if (preload_overlaps(start, 0x5000) != 0) {
-                    preload_remove(preload_waitCurrent()->unk4);
+                    preload_remove(preload_waitCurrent()->fileId);
                 }
                 if (g_gameState->gameData->ctx.field->area->scene->heapTop != 0) {
                     start = g_gameState->gameData->ctx.field->area->scene->heapTop;

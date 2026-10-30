@@ -169,7 +169,7 @@ void wm_applyEncounterEvents(void) {
 }
 
 void wm_drawMap(void) {
-    Unk800B8388 *p;
+    WmPack *p;
     MATRIX *o;
 
     SetBackColor(g_worldWeatherData.work[0].backColor.c[0], g_worldWeatherData.work[0].backColor.c[2], g_worldWeatherData.work[0].backColor.c[4]);
@@ -198,7 +198,7 @@ void wm_drawMap(void) {
         CompMatrix(&m1, &m2, o);
         SetRotMatrix(o);
         SetTransMatrix(o);
-        wm_drawBackdrop(p->unk8, 0);
+        wm_drawBackdrop((s32)p->entries[0], 0);
     }
 }
 

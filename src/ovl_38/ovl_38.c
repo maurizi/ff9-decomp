@@ -101,7 +101,7 @@ void menuStatus_drawCommands(void) {
         tp = t.v;
         y = i * 15 + 6;
         off = s_menuStatusCmds[i] * sizeof(StatusEntry);
-        k = ((StatusEntry *)((u8 *)tp + off))->unk0;
+        k = ((StatusEntry *)((u8 *)tp + off))->nameOffset;
         s_menuStatus.prim = text_buildBlock(r.x + 0xC, r.y + y, g_ot + 25, pool.s + k, 0, s_menuStatus.prim);
     }
     ui_drawLabel(r.x + 6, r.y - 3, 0x19, D_8007042C, 0);
@@ -136,7 +136,7 @@ void menuStatus_drawStats(void) {
     ui_drawSmallDigits(r->x + 0x58, r->y + 0x57, 0x1D, buf, 0);
     text_formatNumber(c->spirit, buf, 2, 1);
     ui_drawSmallDigits(r->x + 0x58, r->y + 0x64, 0x1D, buf, 0);
-    text_formatNumber(g_weaponTable[c->equip[0]].unk5, buf, 3, 1);
+    text_formatNumber(g_weaponTable[c->equip[0]].attack, buf, 3, 1);
     ui_drawSmallDigits(r->x + 0x51, r->y + 0x72, 0x1D, buf, 0);
     text_formatNumber(c->defense, buf, 3, 1);
     ui_drawSmallDigits(r->x + 0x51, r->y + 0x7F, 0x1D, buf, 0);
@@ -263,8 +263,8 @@ void menuStatus_drawAbilityRow(s32 x, s32 y, s32 z, s32 i, u8 draw) {
     icon = 0xBC;
     if (id < STATUS_SUPPORT_FIRST) {
         a = &s_menuStatusActionAbilities[id];
-        name = s_menuStatusActionNames + a->unkE;
-        flag = !(a->unkB & 2);
+        name = s_menuStatusActionNames + a->nameOffset;
+        flag = !(a->flags & 2);
     } else {
         sup = &g_supportAbilities[id - STATUS_SUPPORT_FIRST];
         name = s_menuStatusSupportNames + sup->unk2;

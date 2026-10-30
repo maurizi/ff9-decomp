@@ -69,57 +69,57 @@ s32 fld_loadModelBundle(s32 arg0) {
     ent = (FieldTexEnt *)(uv + hdr[7] * 2);
     for (i = 0; i < hdr[7]; i++) {
         img = db_lookup(pack2, 2, (i & 0xFFFF) | DB_TIM, 0);
-        e1 = ent[i].unk0;
+        e1 = ent[i].srcX;
         if (e1 & 1) {
-            x = vp->unk0;
-            y = vp->unk2;
-            if (vp->unk2 == 0x100) {
-                vp->unk0 += 0x40;
-                vp->unk2 = 0x180;
+            x = vp->pageX;
+            y = vp->pageY;
+            if (vp->pageY == 0x100) {
+                vp->pageX += 0x40;
+                vp->pageY = 0x180;
             } else {
-                vp->unk2 -= 0x80;
+                vp->pageY -= 0x80;
             }
-            if (vp->unk0 == vp->unk20) {
-                vp->unk0 += 0x40;
+            if (vp->pageX == vp->skipX) {
+                vp->pageX += 0x40;
             }
-            cy = vp->unkA;
-            cx = vp->unk8;
-            vp->unkA += 2;
+            cy = vp->clutY;
+            cx = vp->clutX;
+            vp->clutY += 2;
             tp[i * 2] = getTPage(1, 0, x, y);
             tp[i * 2 + 1] = getClut(cx, cy);
             uv[i * 2] = 0;
             uv[i * 2 + 1] = y % 256;
-            ent[i].unk4 = x;
-            ent[i].unk6 = y;
+            ent[i].destX = x;
+            ent[i].destY = y;
             file_setTimPos(img, cx, cy, x, y);
             file_loadTim(img);
         }
     }
     for (i = 0; i < hdr[7]; i++) {
         img = db_lookup(pack2, 2, (i & 0xFFFF) | DB_TIM, 0);
-        e = ent[i].unk0;
+        e = ent[i].srcX;
         if (!(e & 1)) {
-            x2 = vp->unk10;
-            y2 = vp->unk12;
-            if (vp->unk12 >= 0x1E0) {
-                vp->unk10 -= 0x40;
-                vp->unk12 = 0x100;
+            x2 = vp->stripX;
+            y2 = vp->stripY;
+            if (vp->stripY >= 0x1E0) {
+                vp->stripX -= 0x40;
+                vp->stripY = 0x100;
             } else {
-                vp->unk12 += 0x20;
+                vp->stripY += 0x20;
             }
-            cy2 = vp->unk1A;
-            cx2 = vp->unk18;
-            vp->unk1A += 2;
+            cy2 = vp->stripClutY;
+            cx2 = vp->stripClutX;
+            vp->stripClutY += 2;
             tp[i * 2] = getTPage(1, 0, x2, y2);
             tp[i * 2 + 1] = getClut(cx2, cy2);
             uv[i * 2] = 0;
             uv[i * 2 + 1] = y2 % 256 - ((e - 2) % 8 * 32 + 0x100) % 128;
-            ent[i].unk0 = x2;
-            ent[i].unk2 = y2;
+            ent[i].srcX = x2;
+            ent[i].srcY = y2;
             for (j = hdr[7] - 1; j >= 0; j--) {
-                if (ent[j].unk0 == e - 1) {
-                    ent[i].unk4 = ent[j].unk4;
-                    ent[i].unk6 = ent[j].unk6;
+                if (ent[j].srcX == e - 1) {
+                    ent[i].destX = ent[j].destX;
+                    ent[i].destY = ent[j].destY;
                     break;
                 }
             }
@@ -910,7 +910,7 @@ void fld_drawShadow(FieldObjPlace *arg0, s32 arg1) {
         if (t == NULL) {
             t = (Unk800B3294Bias *)fld_findLightColor(lt, -1);
         }
-        bias = t->unk7;
+        bias = t->shadowOtBias;
     }
     fld_calcShadowMatrix(&e->params, s, &m);
     u0 = (s16)(g_gameState->gameData->ctx.field->area->scene->shadowTexX % 64) * 2;
@@ -1184,7 +1184,7 @@ void fld_movieUpdate(void) {
         if (!(g_fieldMovieFlags & 8)) {
             g_gameState->gameData->ctx.field->area->scene->movieFile = cd_findFile(
                 g_mbgMovieLists[g_gameState->gameData->ctx.field->area->scene->movieList]
-                    .unk4[g_gameState->gameData->ctx.field->area->scene->movieEntry].unk0);
+                    .movies[g_gameState->gameData->ctx.field->area->scene->movieEntry].path);
             if (cd_getState() == 0) {
                 cd_seekStreamAsync(g_gameState->gameData->ctx.field->area->scene->movieFile);
                 g_gameState->gameData->ctx.field->area->scene->movieState = 4;
@@ -1482,7 +1482,7 @@ void fld_updateEncounter(void) {
                 DrawSync(0);
                 preload_setVramRect(e, r.x, r.y, r.w, r.h);
             } else {
-                preload_remove(preload_waitCurrent()->unk4);
+                preload_remove(preload_waitCurrent()->fileId);
             }
             preload_discardRange((s32)g_loadAreaEnd, 0x156F00);
             fld_soundCommand(0xD000, 0x27C, 0, 0x80, 0x7F);
@@ -1567,8 +1567,8 @@ void fld_togglePause(void) {
                 c = fade_getColor();
             }
             if (c.unk0[0] >= 200 && c.unk0[1] >= 200 && c.unk0[2] >= 200) {
-                setSemiTrans(&g_fieldPauseSprite.unk0, 1);
-                sp = &g_fieldPauseSprite.unk0;
+                setSemiTrans(&g_fieldPauseSprite.sprite, 1);
+                sp = &g_fieldPauseSprite.sprite;
                 sp++;
                 SetDrawTPage(sp, 1, 1,
                              getTPage(0, 2, tpage_getX((s16)g_uiSprites[235].tpage), tpage_getY((s16)g_uiSprites[235].tpage)));
@@ -1631,7 +1631,7 @@ void fld_spriteCommand(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4) {
         e->parent = evt_getModelSlot(arg2);
         e->bone = arg3;
     } else if (arg1 == 0x9B) {
-        e->unk7 = arg2;
+        e->brightness = arg2;
     } else if (arg1 == 0x9C) {
         e->abr = arg2;
     } else if (arg1 == 0xA0) {
@@ -1711,7 +1711,7 @@ void fld_drawSprites(void) {
             rot.vy = e->rot[1];
             rot.vz = e->rot[2];
             rot.pad = 0;
-            prim = fld_drawSprite3D(prim, e->sprite, e->pos, &rot, e->scale, e->frame >> 4, e->abr < 4 ? e->abr : 0xFF, e->unk7 << 4, &ot[e->otOffset]);
+            prim = fld_drawSprite3D(prim, e->sprite, e->pos, &rot, e->scale, e->frame >> 4, e->abr < 4 ? e->abr : 0xFF, e->brightness << 4, &ot[e->otOffset]);
             e->frame += (s8)e->speed;
             if (e->frame >= e->frameEnd) {
                 e->frame = 0;
@@ -1731,7 +1731,7 @@ void fld_resetSprite(FieldSprite *arg0) {
 
     arg0->scale = 0x1000;
     arg0->speed = 0x10;
-    arg0->unk7 = 0x80;
+    arg0->brightness = 0x80;
     arg0->flags = 1;
     arg0->abr = 0xF;
     arg0->spriteId = -1;

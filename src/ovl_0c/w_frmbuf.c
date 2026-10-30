@@ -323,7 +323,7 @@ void wm_blendWeather(WmSky *arg0, WmSky *arg1, WmSky *arg2, s32 arg3, s32 arg4) 
     d[0] = wm_lerpShift(a[0], b[0], arg3, 0xD);
     d[1] = wm_lerpShift(a[1], b[1], arg3, 0xD);
     d[2] = wm_lerpShift(a[2], b[2], arg3, 0xD);
-    arg0->unk5C = wm_lerpShift((s16)arg1->unk5C, (s16)arg2->unk5C, arg3, 0xD);
+    arg0->shadowShade = wm_lerpShift((s16)arg1->shadowShade, (s16)arg2->shadowShade, arg3, 0xD);
     d = &arg0->backColor.v.vx;
     a = &arg1->backColor.v.vx;
     b = &arg2->backColor.v.vx;

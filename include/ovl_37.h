@@ -95,11 +95,11 @@ extern RECT s_menuItemArrangeRect;
 void help_nullHandler(void); /* empty function, passed to help_setCallback as a no-op callback */
 extern s32 g_menuScreenFrame; /* = g_menuScreen.unk4, referenced by its own name */
 typedef struct {
-    unsigned int unk0 : 4;   /* target kind */
+    unsigned int targetKind : 4; /* target kind (s_menuItem.targetKind) */
     unsigned int unk0_4 : 1;
-    unsigned int unk0_5 : 3;
+    unsigned int targetMode : 3;
     unsigned int pad0_8 : 24;
-    u8 unk4;
+    u8 effect; /* calculation script, item_useOnMember's kind */
     u8 pad5[3];
     s32 unk8;
 } Unk8006B1F4; /* 0xC, items 0xE0.. (also in ovl_0b.h) */

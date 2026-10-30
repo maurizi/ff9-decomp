@@ -1,6 +1,6 @@
 #include "ovl_64.h"
 
-u8 *mbg_readFrame(Ovl64Out *out) {
+u8 *mbg_readFrame(Ovl64Dec *out) {
     RECT r;
     u8 *data;
     Ovl64RingHdr *hdr;
@@ -28,7 +28,7 @@ u8 *mbg_readFrame(Ovl64Out *out) {
     }
     if (info != NULL) {
         gte_SetGeomOffset((s16)info->ofsX + 0xA0, (s16)info->ofsY + 0x70);
-        if (g_mbgPlayer.unk6 != 0) {
+        if (g_mbgPlayer.firstFrame != 0) {
             g_mbgGeomOffset.x = (s16)info->ofsX + 0xA0;
             g_mbgGeomOffset.y = (s16)info->ofsY + 0x70;
             g_mbgStartCamera.m00 = info->m00;
@@ -44,7 +44,7 @@ u8 *mbg_readFrame(Ovl64Out *out) {
             g_mbgStartCamera.ty = info->ty;
             g_mbgStartCamera.tz = info->tz;
             g_mbgStartCameraId = info->id;
-            g_mbgPlayer.unk6 = 0;
+            g_mbgPlayer.firstFrame = 0;
         } else {
             g_gameState->gameData->viewMatrix.m[0][0] = info->m00;
             g_gameState->gameData->viewMatrix.m[0][1] = info->m01;
@@ -74,7 +74,7 @@ u8 *mbg_readFrame(Ovl64Out *out) {
     if (g_mbgFrame >= g_mbgMovie->lastFrame) {
         g_mbgPlayer.ended = 1;
     }
-    if (g_mbgPlayer.width != hdr->unk10 || g_mbgPlayer.height != hdr->unk12) {
+    if (g_mbgPlayer.width != hdr->width || g_mbgPlayer.height != hdr->height) {
         hi = g_mbgRgb24;
         if (hi) {
             r.x = 0;
@@ -82,18 +82,18 @@ u8 *mbg_readFrame(Ovl64Out *out) {
             r.w = 0x3C0;
             r.h = 0xE0;
         }
-        g_mbgPlayer.width = hdr->unk10;
-        g_mbgPlayer.height = hdr->unk12;
+        g_mbgPlayer.width = hdr->width;
+        g_mbgPlayer.height = hdr->height;
         if (hi) {
-            out->unk1C = g_mbgPlayer.width * 3 / 2;
-            out->unk24 = g_mbgPlayer.width * 3 / 2;
+            out->frameRect[0].w = g_mbgPlayer.width * 3 / 2;
+            out->frameRect[1].w = g_mbgPlayer.width * 3 / 2;
         } else {
-            out->unk1C = g_mbgPlayer.width;
-            out->unk24 = g_mbgPlayer.width;
+            out->frameRect[0].w = g_mbgPlayer.width;
+            out->frameRect[1].w = g_mbgPlayer.width;
         }
-        out->unk1E = g_mbgPlayer.height;
-        out->unk26 = g_mbgPlayer.height;
-        out->unk2E = g_mbgPlayer.height;
+        out->frameRect[0].h = g_mbgPlayer.height;
+        out->frameRect[1].h = g_mbgPlayer.height;
+        out->slice.h = g_mbgPlayer.height;
     }
     return data;
 }
@@ -107,7 +107,7 @@ void mbg_mdecOutCallback(void) {
         mbg_streamReadyCallback(2, res);
         g_mbgStreamDeferred = 0;
     }
-    if (g_mbgRgb24 == 0 && g_mbgMaskCursor.unk4 != 0) {
+    if (g_mbgRgb24 == 0 && g_mbgMaskCursor.size != 0) {
         mbg_applyMask(&g_mbgMaskCursor, g_mbgDecode.mdecOut[g_mbgDecode.outIdx], g_mbgMaskBit);
     }
     cur = g_mbgDecode.outIdx;
@@ -126,7 +126,7 @@ void mbg_mdecOutCallback(void) {
             DecDCTReset(1);
         }
         g_mbgDecode.frameDone = 1;
-        if ((s8)g_mbgPlayer.unk3 == 1) {
+        if ((s8)g_mbgPlayer.modeSwitch == 1) {
             if (g_mbgRgb24 == 1 && g_gameState->gameData->drawBuf == 0) {
                 g_mbgRgb24 = 0;
                 g_mbgPlayer.rgb24 = 0;
@@ -135,8 +135,8 @@ void mbg_mdecOutCallback(void) {
                 g_mbgDecode.frameRect[1].w = 0x140;
                 g_mbgDecode.slice.w = 0x10;
                 if (g_gameState->mode == 1 || g_gameState->mode == 5) {
-                    g_fieldFlagQueue.unk18 = 9;
-                    g_fieldFlagQueue.unk8 |= 0x14;
+                    g_fieldFlagQueue.mapFlags[1][0] = 9;
+                    g_fieldFlagQueue.gameFlags[1][0] |= 0x14;
                 }
                 D_8019DC97 = 2;
             }
@@ -213,10 +213,10 @@ s32 MBG_init(s32 mode, u8 **buf) {
     g_mbgState = 1;
     g_mbgFrame = 0;
     D_80071E30 = 0;
-    g_mbgPlayer.unk38 = 3;
-    g_mbgPlayer.unk3C = 4;
-    g_mbgPlayer.unk40 = 0x7F;
-    g_mbgPlayer.unk3 = 0;
+    g_mbgPlayer.volumeDelay = 3;
+    g_mbgPlayer.volumeFade = 4;
+    g_mbgPlayer.volume = 0x7F;
+    g_mbgPlayer.modeSwitch = 0;
     g_mbgPlayer.vlcTable = g_mbgVlcTable;
     return 1;
 
@@ -232,7 +232,7 @@ static inline s32 func_8019_decode_first(void) {
         tries = 1000;
         res = -1;
         do {
-            data = (u8 *)mbg_readFrame((Ovl64Out *)dec);
+            data = (u8 *)mbg_readFrame(dec);
             if (data != NULL) {
                 goto found;
             }
@@ -265,8 +265,8 @@ static inline s32 func_8019_decode_first(void) {
         if ((s8)g_mbgPlayer.ended != 0) {
             return 0;
         }
-        mbg_streamGetPos(&g_mbgPlayer.unk24);
-        mbg_streamSeek(&g_mbgPlayer.unk24);
+        mbg_streamGetPos(&g_mbgPlayer.streamPos);
+        mbg_streamSeek(&g_mbgPlayer.streamPos);
     }
     return 1;
 }
@@ -326,7 +326,7 @@ s32 mbg_play(u32 movie, s32 idx) {
         g_mbgDecode.mdecOut[0] = (u32 *)g_mbgPlayer.mdecOut0;
         g_mbgDecode.mdecOut[1] = (u32 *)g_mbgPlayer.mdecOut1;
     }
-    file = g_mbgMovie->unk0;
+    file = (s32)g_mbgMovie->path;
     cb = mbg_mdecOutCallback;
     DecDCTReset(0);
     DecDCToutCallback(cb);
@@ -336,7 +336,7 @@ s32 mbg_play(u32 movie, s32 idx) {
         ok = 0;
     } else {
         if (g_gameState->mode == 1 || g_gameState->mode == 5) {
-            mbg_streamSetBaseSector(((Ovl64Field8E4 *)g_gameState->gameData->ctx.ovl65)->unkC->unk14->unk44);
+            mbg_streamSetBaseSector(((Ovl64Field8E4 *)g_gameState->gameData->ctx.ovl65)->area->scene->movieFile);
         }
         ok = mbg_streamStart(file, g_mbgMovie->startFrame, 99999, NULL, 0) == 0;
     }
@@ -344,11 +344,11 @@ s32 mbg_play(u32 movie, s32 idx) {
         return 0;
     }
     st = &g_mbgPlayer;
-    g_mbgMaskCursor.unk0 = 0;
-    g_mbgMaskCursor.unk2 = 0;
-    g_mbgMaskCursor.unk4 = 0;
-    g_mbgMaskCursor.unk8 = 0;
-    g_mbgMaskCursor.unkC = 0;
+    g_mbgMaskCursor.runMasked = 0;
+    g_mbgMaskCursor.runLength = 0;
+    g_mbgMaskCursor.size = 0;
+    g_mbgMaskCursor.data = 0;
+    g_mbgMaskCursor.cursor = 0;
     if (st->vlcTable == NULL) {
         printf(g_mbgScratchpadMsg);
     }
@@ -358,9 +358,9 @@ s32 mbg_play(u32 movie, s32 idx) {
     st->ended = 0;
     st->pauseReq = 0;
     st->unk5 = 0;
-    st->unk6 = 1;
+    st->firstFrame = 1;
     st->unk8 = 0;
-    st->unk34 = 0;
+    st->audioFrames = 0;
     g_mbgState++;
     return func_8019_decode_first();
 }
@@ -399,31 +399,31 @@ s32 mbg_update(s32 arg0) {
         return 0;
     }
     if (mbg_streamPushAudio() == 0) {
-        if (st->unk34++ == st->unk38) {
-            akao_sendCmdE5(st->unk3C, st->unk40);
+        if (st->audioFrames++ == st->volumeDelay) {
+            akao_sendCmdE5(st->volumeFade, st->volume);
         }
     }
     st = &g_mbgPlayer;
-    if ((s8)st->unk3 == 2) {
+    if ((s8)st->modeSwitch == 2) {
         mbg_setGraphEnv(0xE0, g_mbgRgb24);
-        st->unk3 = 0;
+        st->modeSwitch = 0;
     }
-    st->unk24 = st->unkC;
+    st->streamPos = st->startPos;
     mode = g_gameState->mode;
     if (mode == 1 || mode == 5) {
-        fldbg_getCamera(&st->unk2);
-        st->unk28 = ((Ovl64Field8E4 *)g_gameState->gameData->ctx.ovl65)->unkC->unk14->unk30;
-        ((Ovl64Field8E4 *)g_gameState->gameData->ctx.ovl65)->unkC->unk14->unk30 = 0;
+        fldbg_getCamera(&st->savedCameraId);
+        st->savedOtBias = ((Ovl64Field8E4 *)g_gameState->gameData->ctx.ovl65)->area->scene->otBias;
+        ((Ovl64Field8E4 *)g_gameState->gameData->ctx.ovl65)->area->scene->otBias = 0;
     }
-    g_mbgMaskCursor.unk0 = 0;
-    g_mbgMaskCursor.unk2 = 0;
-    g_mbgMaskCursor.unk4 = g_mbgMaskSize[g_gameState->gameData->drawBuf];
-    g_mbgMaskCursor.unkC = g_mbgMaskCursor.unk8 = (s32)&g_mbgMaskData[g_gameState->gameData->drawBuf];
-    if (g_mbgRgb24 == 0 && g_mbgMaskCursor.unk4 != 0) {
+    g_mbgMaskCursor.runMasked = 0;
+    g_mbgMaskCursor.runLength = 0;
+    g_mbgMaskCursor.size = g_mbgMaskSize[g_gameState->gameData->drawBuf];
+    g_mbgMaskCursor.cursor = g_mbgMaskCursor.data = (s32)&g_mbgMaskData[g_gameState->gameData->drawBuf];
+    if (g_mbgRgb24 == 0 && g_mbgMaskCursor.size != 0) {
         Ovl64Stp *p = &D_8019F4A8[g_gameState->gameData->drawBuf];
-        p->unk3 = 2;
-        p->unk4 = 0xE6000002;
-        p->unk8 = 0;
+        p->len = 2;
+        p->code[0] = 0xE6000002;
+        p->code[1] = 0;
     }
     dec = &g_mbgDecode;
     dec->slice.x = dec->frameRect[g_gameState->gameData->drawBuf].x;
@@ -435,7 +435,7 @@ s32 mbg_update(s32 arg0) {
         tries = 1000;
         res = -1;
         do {
-            data = (u8 *)mbg_readFrame((Ovl64Out *)d);
+            data = (u8 *)mbg_readFrame(d);
             if (data != NULL) {
                 goto found;
             }
@@ -469,13 +469,13 @@ s32 mbg_update(s32 arg0) {
             func_8019_wait_frame(&g_mbgDecode);
             mode = g_gameState->mode;
             if (mode == 1 || mode == 5) {
-                ((Ovl64Field8E4 *)g_gameState->gameData->ctx.ovl65)->unkC->unk14->unk30 = g_mbgPlayer.unk28;
-                fldbg_setCamera((s8)g_mbgPlayer.unk2);
+                ((Ovl64Field8E4 *)g_gameState->gameData->ctx.ovl65)->area->scene->otBias = g_mbgPlayer.savedOtBias;
+                fldbg_setCamera((s8)g_mbgPlayer.savedCameraId);
             }
             return 1;
         }
-        mbg_streamGetPos(&g_mbgPlayer.unk24);
-        mbg_streamSeek(&g_mbgPlayer.unk24);
+        mbg_streamGetPos(&g_mbgPlayer.streamPos);
+        mbg_streamSeek(&g_mbgPlayer.streamPos);
     }
     func_8019_wait_frame(&g_mbgDecode);
     g_gameState->vsyncMode = 4;
@@ -515,7 +515,7 @@ s32 mbg_setRgb24(s32 on) {
         g_mbgPlayer.rgb24 = k;
         g_mbgDecode.frameRect[0].x = 0x1E0;
         g_mbgDecode.slice.w = 0x18;
-        g_mbgPlayer.unk3 = 2;
+        g_mbgPlayer.modeSwitch = 2;
     } else {
         g_mbgRgb24 = 0;
         g_mbgPlayer.rgb24 = 0;
@@ -646,19 +646,19 @@ s32 mbg_getFrame(void) {
 
 void func_8019AB98(s32 arg0, s32 arg1, s32 arg2) {
     if (arg0 < 0) {
-        g_mbgPlayer.unk38 = 3;
+        g_mbgPlayer.volumeDelay = 3;
     } else {
-        g_mbgPlayer.unk38 = arg0;
+        g_mbgPlayer.volumeDelay = arg0;
     }
     if (arg1 < 0) {
-        g_mbgPlayer.unk3C = 4;
+        g_mbgPlayer.volumeFade = 4;
     } else {
-        g_mbgPlayer.unk3C = arg1;
+        g_mbgPlayer.volumeFade = arg1;
     }
     if (arg2 < 0) {
-        g_mbgPlayer.unk40 = 0x7F;
+        g_mbgPlayer.volume = 0x7F;
     } else {
-        g_mbgPlayer.unk40 = arg2;
+        g_mbgPlayer.volume = arg2;
     }
 }
 
@@ -699,7 +699,7 @@ s32 mbg_getEntryName(s32 arg0, u32 arg1, s32 arg2) {
     if (arg1 >= 6 || arg2 < 0 || arg2 >= g_mbgMovieLists[arg1].count) {
         return 0;
     }
-    strcpy((char *)arg0, (char *)g_mbgMovieLists[arg1].entries[arg2].unk0);
+    strcpy((char *)arg0, g_mbgMovieLists[arg1].entries[arg2].path);
     return 1;
 }
 
@@ -714,7 +714,7 @@ s32 mbg_getLastFrame(void) {
 }
 
 s32 mbg_getStartCamera(Ovl64Header *arg0, u16 *arg1) {
-    if (g_mbgPlayer.unk6 != 0) {
+    if (g_mbgPlayer.firstFrame != 0) {
         return 0;
     }
     arg0->m00 = g_mbgStartCamera.m00;
@@ -734,7 +734,7 @@ s32 mbg_getStartCamera(Ovl64Header *arg0, u16 *arg1) {
 }
 
 s32 mbg_getGeomOffset(s32 *arg0, s32 *arg1) {
-    if (g_mbgPlayer.unk6 != 0) {
+    if (g_mbgPlayer.firstFrame != 0) {
         return 0;
     }
     *arg0 = g_mbgGeomOffset.x;

@@ -62,7 +62,7 @@ s32 w_musicGetID(s32 arg0, WmSeIds *arg1) {
         break;
     }
     if (s.seIds[0] != -1) {
-        s.unk0 = 0x800000;
+        s.channelMask = 0x800000;
         s.count = 1;
         *arg1 = s;
         return 1;
@@ -103,7 +103,7 @@ s32 w_musicGetID(s32 arg0, WmSeIds *arg1) {
             break;
         }
         if (s.seIds[0] != -1) {
-            s.unk0 = 0;
+            s.channelMask = 0;
             s.count = 1;
             *arg1 = s;
             return 1;
@@ -117,7 +117,7 @@ s32 w_musicGetID(s32 arg0, WmSeIds *arg1) {
                 break;
             }
             if (s.seIds[0] != -1) {
-                s.unk0 = 0x8000;
+                s.channelMask = 0x8000;
                 s.count = 1;
                 *arg1 = s;
                 return 1;
@@ -127,41 +127,41 @@ s32 w_musicGetID(s32 arg0, WmSeIds *arg1) {
                 switch (arg0) {
                 case 33:
                     s.seIds[0] = 0x37A;
-                    s.unk0 = 0;
+                    s.channelMask = 0;
                     s.seIds[1] = 0x37B;
                     break;
                 case 20:
-                    s.unk0 = 0x8000;
+                    s.channelMask = 0x8000;
                     s.seIds[0] = 0x374;
                     s.seIds[1] = 0x375;
                     break;
                 case 21:
-                    s.unk0 = 0x8000;
+                    s.channelMask = 0x8000;
                     s.seIds[0] = 0x376;
                     s.seIds[1] = 0x377;
                     break;
                 case 22:
-                    s.unk0 = 0x8000;
+                    s.channelMask = 0x8000;
                     s.seIds[0] = 0x378;
                     s.seIds[1] = 0x379;
                     break;
                 case 23:
-                    s.unk0 = 0x8000;
+                    s.channelMask = 0x8000;
                     s.seIds[0] = 0x554;
                     s.seIds[1] = 0x555;
                     break;
                 case 24:
-                    s.unk0 = 0x8000;
+                    s.channelMask = 0x8000;
                     s.seIds[0] = 0x5D9;
                     s.seIds[1] = 0x5DA;
                     break;
                 case 25:
-                    s.unk0 = 0x800;
+                    s.channelMask = 0x800;
                     s.seIds[0] = 0x37D;
                     s.seIds[1] = 0x37E;
                     break;
                 case 26:
-                    s.unk0 = 0x800;
+                    s.channelMask = 0x800;
                     s.seIds[0] = 0x37F;
                     s.seIds[1] = 0x380;
                     break;
@@ -244,7 +244,7 @@ void wm_stopAllSe(void) {
 
     for (i = 0; i < 7; i++) {
         if (w_musicGetID(i, &s) & 0xFF) {
-            m0 = s.unk0;
+            m0 = s.channelMask;
             for (j0 = 0; j0 < s.count; j0++) {
                 wm_soundCommand(SND_SE_STOP, s.seIds[j0], m0, 0, 0);
                 m0 >>= 1;
@@ -253,7 +253,7 @@ void wm_stopAllSe(void) {
     }
     for (i = 20; i < 26; i++) {
         if (w_musicGetID(i, &s) & 0xFF) {
-            m1 = s.unk0;
+            m1 = s.channelMask;
             for (j1 = 0; j1 < s.count; j1++) {
                 wm_soundCommand(SND_SE_STOP, s.seIds[j1], m1, 0, 0);
                 m1 >>= 1;
@@ -262,7 +262,7 @@ void wm_stopAllSe(void) {
     }
     for (i = 30; i < 42; i++) {
         if (w_musicGetID(i, &s) & 0xFF) {
-            m2 = s.unk0;
+            m2 = s.channelMask;
             for (j2 = 0; j2 < s.count; j2++) {
                 wm_soundCommand(SND_SE_STOP, s.seIds[j2], m2, 0, 0);
                 m2 >>= 1;
@@ -326,7 +326,7 @@ void wm_sePlay(s32 arg0, u8 arg1) {
     s32 v;
 
     if (w_musicGetID(arg0, &s) & 0xFF) {
-        v = s.unk0;
+        v = s.channelMask;
         for (i = 0; i < s.count; i++) {
             wm_soundCommand(SND_SE_PLAY, s.seIds[i], v, 0x7F, arg1);
             v >>= 1;
@@ -340,7 +340,7 @@ void wm_seSetVolume(s32 arg0, u8 arg1) {
     s32 v;
 
     if (g_worldMusicState == WM_MUSIC_READY && (w_musicGetID(arg0, &s) & 0xFF)) {
-        v = s.unk0;
+        v = s.channelMask;
         for (i = 0; i < s.count; i++) {
             wm_soundCommand(SND_SE_VOL, s.seIds[i], v, arg1, 0);
             v >>= 1;
@@ -354,7 +354,7 @@ void wm_seFadeVolume(s32 arg0, u16 arg1, u8 arg2) {
     s32 v;
 
     if (w_musicGetID(arg0, &s) & 0xFF) {
-        v = s.unk0;
+        v = s.channelMask;
         for (i = 0; i < s.count; i++) {
             wm_soundCommand(SND_SE_VOL_INTPL, s.seIds[i], v, arg1, arg2);
             v >>= 1;
@@ -368,7 +368,7 @@ void wm_seStop(s32 arg0) {
     s32 v;
 
     if (w_musicGetID(arg0, &s) & 0xFF) {
-        v = s.unk0;
+        v = s.channelMask;
         for (i = 0; i < s.count; i++) {
             wm_soundCommand(SND_SE_STOP, s.seIds[i], v, 0, 0);
             v >>= 1;
