@@ -383,7 +383,7 @@ x = *p++ << 11; rd += x; d->unk20 = PSX_RAM(u8 *, 0x801F1700) + x; dst = PSX_RAM
                 case 4:
                     d->unk50 = 1;
                     btl_unloadPartyModels();
-                    dst = (u8 *)g_gameState->gameData->unk8E4.battle->unk153C[0];
+                    dst = (u8 *)g_gameState->gameData->unk8E4.battle->partyBufs[0];
                     d->unk54 = (Unk80100DC054 *)dst;
                     ((Unk80100DC054 *)dst)->unk4C = 0;
                     for (i = 0; i < 16; i++) {
@@ -414,7 +414,7 @@ x = *p++ << 11; rd += x; d->unk20 = PSX_RAM(u8 *, 0x801F1700) + x; dst = PSX_RAM
                 case 9:
                     if (g_btlfxEnv->targets->kind & 8) {
                         btl_unloadPartyModels();
-                        dst = (u8 *)g_gameState->gameData->unk8E4.battle->unk153C[0];
+                        dst = (u8 *)g_gameState->gameData->unk8E4.battle->partyBufs[0];
                     } else {
                         dst = (u8 *)g_gameState->gameData->unk8E4.battle->work->loadBuf;
                     }
@@ -547,7 +547,7 @@ x = *p++ << 11; rd += x; d->unk20 = PSX_RAM(u8 *, 0x801F1700) + x; dst = PSX_RAM
                     d->unk53 = 1;
                     if (g_btlfxEnv->targets->kind & 8) {
                         btl_unloadPartyModels();
-                        base = (void *)g_gameState->gameData->unk8E4.battle->unk153C[0];
+                        base = (void *)g_gameState->gameData->unk8E4.battle->partyBufs[0];
                     } else {
                         base = (void *)g_gameState->gameData->unk8E4.battle->work->loadBuf;
                     }

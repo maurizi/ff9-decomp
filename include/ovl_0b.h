@@ -1053,8 +1053,8 @@ typedef struct {
     u8 unk32[6];
     u8 unk38[6];
     u8 unk3E[6];
-    u16 exp; /* exp */
-    u16 gil; /* gil */
+    u16 gil; /* gil (g_btlRewards.gil; an escape drops a tenth of the remaining enemies' gil, Flee-Gil gains it: btl_victory) */
+    u16 exp; /* exp (g_btlRewards.exp) */
     union {
         s32 w;
         u8 b[4]; /* item drops, rarest last */
@@ -1089,25 +1089,25 @@ typedef struct {
 
 typedef struct Battle1538 {
     u8 pad0[0x20];
-    s32 unk20;
-    s32 unk24;
+    s32 base; /* buffer start (btl_initReturnInfo) */
+    s32 cursor; /* next free byte; the event-script loader allocates from it (btl_getDepSectors kind 7) */
 } Battle1538;
 
 typedef struct {
-    s32 unk0;
-    struct BtlCmd *unk4;
-    s32 unk8;
-    s32 unkC;
-    s16 unk10;
-    s16 unk12;
-    s16 unk14;
-    u8 unk16;
-    u8 unk17;
+    s32 flags; /* BtlScript.flags */
+    struct BtlCmd *cmd; /* BtlCmd it runs for, NULL = free slot */
+    s32 pc; /* script pointer */
+    s32 prevPc;
+    s16 opFrame;
+    s16 waitLeft;
+    s16 frame;
+    u8 seqFlags;
+    u8 soundDelay;
     u8 pad18[0x21 - 0x18];
-    u8 unk21;
+    u8 turnFrames;
     u8 pad22[0x25 - 0x22];
-    u8 unk25;
-    u8 unk26;
+    u8 fxDelay;
+    u8 fadeFrames;
     u8 pad27[0x38 - 0x27];
 } Battle122C; /* 0x38 */
 
@@ -1125,23 +1125,23 @@ typedef struct Battle11C4 {
 } Battle11C4; /* 0x158 */
 
 typedef struct {
-    u8 unk0; /* enemy type */
-    u8 unk1;
+    u8 type; /* enemy type (Battle.enemyTypes index) */
+    u8 flags; /* 1 targetable (BtlUnit.flags bit 28), 2 shares the first enemy's model (btl_getEnemyModelId: -1; BtlEnemy.flags bit 8) */
     u8 pad2[2];
-    s16 unk4;
-    s16 unk6;
-    s16 unk8;
-    s16 unkA;
+    s16 x; /* position (btl_initEnemyUnit) */
+    s16 y;
+    s16 z;
+    s16 rotY; /* facing, plus D_800F5850[ambush] */
 } Unk800C9EE0;
 
 typedef struct {
-    u8 unk0; /* weight */
-    u8 unk1; /* count of unk8 */
-    u8 unk2;
+    u8 weight; /* chance out of 100 (btl_pickEnemyGroup) */
+    u8 enemyCount; /* count of enemies */
+    u8 cameraNo; /* Battle.cameraNo; 3 or more: random 0-2 (btl_initScene) */
     u8 pad3;
-    u16 unk4;
+    u16 ap; /* g_btlRewards.ap (func_800C972C) */
     u8 pad6[8 - 6];
-    Unk800C9EE0 unk8[4]; /* enemy placements */
+    Unk800C9EE0 enemies[4]; /* enemy placements */
 } Battle1330; /* 0x38 */
 
 /* enemy type record as the scene sees it (Unk800C9D1C is the same record) */
@@ -1149,18 +1149,18 @@ typedef struct {
     u8 pad0[0x1E];
     u16 modelId; /* model (Unk800C9D1C.modelId) */
     u8 pad20[0x62 - 0x20];
-    u16 unk62;
+    u16 entranceSound; /* btl_getEntranceSound (first enemy of the group) */
     u8 pad64[0x74 - 0x64];
 } Battle1334; /* 0x74 */
 
 typedef struct Battle11C020 {
     u8 unk0;
-    u8 unk1; /* count of unk8 */
-    u8 unk2; /* count of enemy records following unk8 */
-    u8 unk3; /* count of commands following the enemy records */
-    u16 unk4;
+    u8 groupCount; /* count of groups */
+    u8 typeCount; /* count of enemy type records following the groups */
+    u8 abilityCount; /* count of enemy abilities (BtlCmd8) following the enemy records */
+    u16 flags; /* Battle.scene.flags bits 2 and up (func_800C972C) */
     u8 pad6[8 - 6];
-    Battle1330 unk8[1];
+    Battle1330 groups[1]; /* enemy groups (btl_pickEnemyGroup) */
 } Battle11C020;
 
 /* battle command (queued action) */
@@ -1219,7 +1219,7 @@ typedef struct Battle11C0 {
     s16 returnId; /* field id or world position to return to (btl_initReturnInfo) */
     u8 returnMode; /* GameState mode before the battle (btl_cleanup) */
     u8 unk7[1];
-    s32 unk8;
+    s32 freeHeap; /* g_modeHeap once the shadows are allocated (btl_load) */
     s32 *loadBuf; /* loader work buffer (CD requests and step states at 0x9FA0/0x9FD8) */
     s32 unk10;
     u8 *texts; /* enemy and enemy-ability names (BtlEnemyType.nameOfs, btl_showCmdName) */
@@ -1330,11 +1330,12 @@ typedef struct Battle108CSet {
 
 /* battle scene data (Battle.unk132C) */
 typedef struct {
-    u32 unk0; /* flags */
-    Battle1330 *unk4;
-    Battle1334 *unk8;
-    u16 *unkC; /* model file table */
-    s16 *unk10; /* offset table, entries relative to its start */
+    u32 flags; /* bits 0-1 ambush (BTL_GETVAR_AMBUSH: 0 back attack, 1 preemptive, 2 normal, btl_rollAmbush); bits 2 and up
+                * are the encounter's Battle11C020.flags ^ 0x30, shifted left 2 (func_800C972C) */
+    Battle1330 *group; /* enemy group chosen by btl_pickEnemyGroup */
+    Battle1334 *enemyTypes; /* the encounter's enemy type records */
+    u16 *seqTable; /* enemy battle sequences: counts, offsets, animations (btlseq_init) */
+    s16 *sceneData; /* offset table, entries relative to its start (btl_getSceneData) */
 } Battle132C;
 
 typedef struct {
@@ -1346,7 +1347,7 @@ typedef struct {
 typedef struct Battle {
     u16 flags; /* 1 background loaded (btlbg_draw draws), 2 enemy models loaded, 4 party models loaded, 0x10 UI started, 0x20 disc cover open, 0x40 exit preloaded, 0x1000 battle over (btl_main) */
     u8 unk2[2];
-    s32 unk4;
+    s32 savedHeap; /* g_modeHeap after btl_initMode; btl_load allocates from here again */
     s32 partyMotions[4][0x22]; /* per party member: motion data addresses; BtlUnit.motions points here (btl_loadPartyMotions) */
     BtlModel weaponModels[4]; /* per party member: weapon model (BtlUnit.weaponModel, btl_initPartyUnit) */
     BtlEnemy enemies[4];
@@ -1374,20 +1375,20 @@ typedef struct Battle {
     u8 cmdPhase; /* curCmd's step in btl_processCmdQueue (0 check, 1 start effect, 2 wait, 3 finish) */
     u8 eidolonAbility; /* ability of the trance Eidolon follow-up (btl_startCmdEffect, BTL_CMD_EIDOLON) */
     s16 eidolonTimer; /* counts down by atbSpeed until BTL_CMD_TRANCE_EIDOLON */
-    u16 unk11BE;
+    u16 deathCryWait; /* frames until the next death cry may play: btl_playDeathCry sets 8, btl_drawScene counts down */
     struct Battle11C0 *work; /* battle work area: buffers, background, encounter, shadows (btl_allocBuffers) */
     struct Battle11C4 seq; /* enemy battle sequences (btlseq_*) */
-    u8 unk131C;
+    u8 cameraNo; /* camera variant (0-2) the camera scripts pick (btlcam: g_btlCamera.unkA8); btl_initScene from the group, btlseq_opSetCamera / btlseq_opPlayCamera set it */
     u8 pad131D[0x132C - 0x131D];
     Battle132C scene;
-    u8 unk1340;
+    u8 groupNo; /* enemy group index btl_pickEnemyGroup chose */
     u8 pad1341[0x1354 - 0x1341];
     BtlFiles *files;
     BtlPopupRing popups;
     s32 unk1530;
     s32 dataSector; /* battle data file sector */
-    struct Battle1538 **unk1538;
-    s32 unk153C[4];
+    struct Battle1538 **partyBufEnds; /* per party slot: allocation header in the last 0x28 bytes of partyBufs[i] */
+    s32 partyBufs[4]; /* per party slot: 0x13000-byte model file buffer (btl_allocBuffers); the effect loader reuses [0] for summons */
     BtlStatusInfo statusInfo[32];
     Battle16CC abilities[0xC0]; /* runtime: BtlCmd.ability = &abilities[subNo] (Attack 176, Focus 188) */
     s32 statusSets[64]; /* status masks indexed by ability/weapon status-set bytes (btl_applyAbilityStatus) */
@@ -1395,10 +1396,10 @@ typedef struct Battle {
 
 /* battle work area, allocated at g_loadAreaEnd + 0x61800 */
 typedef struct {
-    Battle unk0;
-    u8 unk23CC[0x240C - 0x23CC];
-    u8 unk240C[0x241C - 0x240C];
-    u8 unk241C[1]; /* becomes g_modeHeap */
+    Battle battle;
+    u8 filesBuf[0x240C - 0x23CC]; /* Battle.files */
+    u8 partyBufEndsBuf[0x241C - 0x240C]; /* Battle.partyBufEnds */
+    u8 heap[1]; /* becomes g_modeHeap */
 } BattleMem;
 
 typedef struct {
@@ -1474,14 +1475,14 @@ typedef struct Unk800FE3B8 {
 extern Unk800FE3B8 g_btlCamera;
 
 typedef struct {
-    s32 unk0;
-    s32 unk4;
-    s16 unk8;
-    u8 unkA;
+    s32 gil; /* gil (BtlEnemyType.gil of the defeated enemies; ovl_65 BattleResult.gil) */
+    s32 exp; /* exp (BtlEnemyType.exp; ovl_65 splits it among expMask) */
+    s16 ap; /* ap of the enemy group (Battle1330.ap, func_800C972C) */
+    u8 expMask; /* bit per party slot in the battle (btl_initPartyUnit), cleared when a unit leaves (btl_calcCmd 0x6A); ovl_65: receives exp */
     u8 unkB;
-    u8 unkC[16];
-    u8 unk1C;
-    u8 unk1D;
+    u8 items[16]; /* dropped item ids, 0xFF = none (btl_addEnemyRewards) */
+    u8 card; /* card won, 0xFF = none */
+    u8 fleeGil; /* set when Flee-Gil (support 0x4000) turned the escape into gil (btl_victory) */
 } Unk800FDF30;
 extern Unk800FDF30 g_btlRewards;
 
@@ -3723,7 +3724,7 @@ static inline u8 BtlUnitCanAct(BtlUnit *u) {
     if (u->hp == 0 || (u8)btl_hasStatus(u, (BTL_STATUS_PETRIFY | BTL_STATUS_VENOM | BTL_STATUS_KO | BTL_STATUS_CONFUSE | BTL_STATUS_BERSERK | BTL_STATUS_STOP | BTL_STATUS_SLEEP | BTL_STATUS_FREEZE | BTL_STATUS_JUMP)) != 0) {
         return 0;
     }
-    if ((g_btlRewards.unkA >> ((u8)u->flags >> 5)) & 1) {
+    if ((g_btlRewards.expMask >> ((u8)u->flags >> 5)) & 1) {
         return 1;
     }
     return 0;

@@ -142,7 +142,7 @@ void btlcam_loadScript(s32 arg) {
         case 2:
             switch ((*t >> 12) & 3) {
             case 0:
-                n = g_gameState->gameData->unk8E4.battle->scene.unk0 & 3;
+                n = g_gameState->gameData->unk8E4.battle->scene.flags & 3;
                 if (n == 2) {
                     g_btlCamera.unkA8 = n;
                 } else {
@@ -151,7 +151,7 @@ void btlcam_loadScript(s32 arg) {
                 g_btlCamScript.unk18 = g_btlCamera.unkA8;
                 break;
             case 1:
-                g_btlCamera.unkA8 = g_gameState->gameData->unk8E4.battle->unk131C;
+                g_btlCamera.unkA8 = g_gameState->gameData->unk8E4.battle->cameraNo;
                 break;
             case 2:
                 w = g_btlCamTargets.target;
@@ -179,10 +179,10 @@ void btlcam_loadScript(s32 arg) {
             case 3:
                 if (g_btlCamera.unkCC == NULL) {
                     g_btlCamera.unkA8 = 0;
-                } else if ((g_btlCamera.unkCC->status & (BTL_STATUS_PETRIFY | BTL_STATUS_VENOM | BTL_STATUS_KO | BTL_STATUS_STOP | BTL_STATUS_JUMP)) || !((g_btlRewards.unkA >> ((u8)g_btlCamera.unkCC->flags >> 5)) & 1)) {
+                } else if ((g_btlCamera.unkCC->status & (BTL_STATUS_PETRIFY | BTL_STATUS_VENOM | BTL_STATUS_KO | BTL_STATUS_STOP | BTL_STATUS_JUMP)) || !((g_btlRewards.expMask >> ((u8)g_btlCamera.unkCC->flags >> 5)) & 1)) {
                     g_btlCamera.unkA8 = 0;
                 } else {
-                    n = g_gameState->gameData->unk8E4.battle->scene.unk0 & 3;
+                    n = g_gameState->gameData->unk8E4.battle->scene.flags & 3;
                     if (n == 2) {
                         g_btlCamera.unkA8 = n;
                     } else {
@@ -405,7 +405,7 @@ s32 btlcam_step(void) {
     if (e == 1) {
         b = g_gameState->gameData->unk8E4.battle;
         if ((b->loadFlags & 7) == 7) {
-            if ((b->scene.unk0 >> 2) & 1) {
+            if ((b->scene.flags >> 2) & 1) {
                 b->phase = e;
             } else {
                 g_gameState->gameData->unk8E4.battle->phase = BTL_PHASE_ENTRANCE;
@@ -731,8 +731,8 @@ s32 func_800C4E84(s32 arg0, s16 *arg1, s16 *arg2, s32 *arg3) {
     }
     if (n == 0xB) {
         gs = g_gameState;
-        arg1[0] = gs->gameData->unk8E4.battle->scene.unk4->unk8[0].unk4;
-        arg1[2] = gs->gameData->unk8E4.battle->scene.unk4->unk8[0].unk8;
+        arg1[0] = gs->gameData->unk8E4.battle->scene.group->enemies[0].x;
+        arg1[2] = gs->gameData->unk8E4.battle->scene.group->enemies[0].z;
         return;
     }
     s = g_btlCamScript.casterAnchors;

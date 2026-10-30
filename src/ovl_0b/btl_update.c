@@ -30,7 +30,7 @@ s32 btl_update(void) {
                 btlui_enable(1);
                 btlui_setAtbEnabled(1);
             }
-            n = b->scene.unk0 & 3;
+            n = b->scene.flags & 3;
             if (n == 0) {
                 btl_showMessage(BTL_MSG_BACK_ATTACK);
             } else if (n == 1) {
@@ -109,7 +109,7 @@ s32 btl_updateUnits(GameData *arg0, Battle *arg1) {
                 }
             } else if (arg1->phase == BTL_PHASE_EXIT) {
                 f = u->flags;
-                if ((f & 1) && !(u->status & (BTL_STATUS_PETRIFY | BTL_STATUS_VENOM | BTL_STATUS_KO | BTL_STATUS_STOP)) && ((arg1->scene.unk0 >> 6) & 1) && (g_gameState->gameData->characters + ((f >> 1) & 0xF))->unk34.b.unkA) {
+                if ((f & 1) && !(u->status & (BTL_STATUS_PETRIFY | BTL_STATUS_VENOM | BTL_STATUS_KO | BTL_STATUS_STOP)) && ((arg1->scene.flags >> 6) & 1) && (g_gameState->gameData->characters + ((f >> 1) & 0xF))->unk34.b.unkA) {
                     m = u->model;
                     if (u->obj->frame >= m->motion->frameCount) {
                         m->motion = (BtlUnit9CC *)u->motions[19];
@@ -121,7 +121,7 @@ s32 btl_updateUnits(GameData *arg0, Battle *arg1) {
         }
         btl_updateKo(u);
     }
-    if (arg1->phase == BTL_PHASE_EXIT_DEFEAT && !((arg1->scene.unk0 >> 4) & 1) && (u8)btl_playVictoryMusic(arg0, 0x1E, 6) == 0) {
+    if (arg1->phase == BTL_PHASE_EXIT_DEFEAT && !((arg1->scene.flags >> 4) & 1) && (u8)btl_playVictoryMusic(arg0, 0x1E, 6) == 0) {
         r = 0;
     }
     btl_drawScene(arg0, arg1, sp);
@@ -132,7 +132,7 @@ void btl_victory(GameData *arg0, Battle *arg1) {
     s32 sp18;
     s32 done;
     BtlUnit *u;
-    u32 exp;
+    u32 gil;
 
     sp18 = arg1->work->prims[arg0->unk8];
     done = 1;
@@ -217,7 +217,7 @@ void btl_victory(GameData *arg0, Battle *arg1) {
         case BTL_END_SCRIPT_VICTORY:
             arg0->unk56F |= 0x40;
             arg0->battleResult = 1;
-            if ((arg1->scene.unk0 >> 6) & 1) {
+            if ((arg1->scene.flags >> 6) & 1) {
                 if ((u8)btl_playVictoryMusic(arg0, 0x1E, 5) == 0) {
                     break;
                 }
@@ -242,7 +242,7 @@ void btl_victory(GameData *arg0, Battle *arg1) {
                     }
                 }
                 btlcam_playScene(btl_getSceneData(2));
-            } else if ((arg1->scene.unk0 >> 14) & 1) {
+            } else if ((arg1->scene.flags >> 14) & 1) {
                 arg0->unk56F |= 8;
             }
             arg1->phase = BTL_PHASE_EXIT;
@@ -252,7 +252,7 @@ void btl_victory(GameData *arg0, Battle *arg1) {
             arg1->phase = BTL_PHASE_EXIT_DEFEAT;
             break;
         case BTL_END_STOPPED:
-            if ((arg1->scene.unk0 & 0x4040) == 0x4000) {
+            if ((arg1->scene.flags & 0x4040) == 0x4000) {
                 arg0->unk56F |= 8;
             }
             arg1->phase = BTL_PHASE_SCRIPT;
@@ -267,36 +267,36 @@ void btl_victory(GameData *arg0, Battle *arg1) {
             }
             break;
         case BTL_END_ESCAPE:
-            exp = g_btlRewards.unk0;
+            gil = g_btlRewards.gil;
             arg0->unk56F |= 0x40;
             for (u = arg1->unitList; u != NULL; u = u->next) {
                 if (!(u->flags & 1)) {
-                    exp += g_gameState->gameData->unk8E4.battle->enemies[(u->flags >> 1) & 0xF].type->exp;
+                    gil += g_gameState->gameData->unk8E4.battle->enemies[(u->flags >> 1) & 0xF].type->gil;
                 }
             }
-            if ((arg1->scene.unk0 & 0x4040) == 0x4000) {
+            if ((arg1->scene.flags & 0x4040) == 0x4000) {
                 arg0->unk56F |= 8;
             }
             arg0->battleResult = 4;
             arg1->phase = BTL_PHASE_EXIT_OTHER;
             btl_clearRewards();
             if (arg0->unk56F & 4) {
-                exp /= 10;
-                if (exp < arg0->gil) {
-                    arg0->gil -= exp;
+                gil /= 10;
+                if (gil < arg0->gil) {
+                    arg0->gil -= gil;
                 } else {
-                    exp = arg0->gil;
+                    gil = arg0->gil;
                     arg0->gil = 0;
                 }
-                btl_showMessage(BTL_MSG_DROPPED_GIL, exp);
+                btl_showMessage(BTL_MSG_DROPPED_GIL, gil);
             } else if ((u8)btl_partyHasSupport(1, 0x4000) != 0) {
-                g_btlRewards.unk1D = 1;
-                g_btlRewards.unk0 = exp / 10;
+                g_btlRewards.fleeGil = 1;
+                g_btlRewards.gil = gil / 10;
             }
             break;
         }
         if (arg1->phase != BTL_PHASE_END) {
-            if (arg1->phase == BTL_PHASE_EXIT && !((arg1->scene.unk0 >> 6) & 1)) {
+            if (arg1->phase == BTL_PHASE_EXIT && !((arg1->scene.flags >> 6) & 1)) {
                 arg1->subPhase = 1;
             } else {
                 arg1->subPhase = 0;

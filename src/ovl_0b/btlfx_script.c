@@ -90,7 +90,7 @@ void btlfx_swapVramPages(s32 arg0, u32 *arg1, s32 arg2) {
     s32 bit = 1;
     u32 *p;
     if (arg0 != 2) {
-        p = (u32 *)(g_gameState->gameData->unk8E4.battle->unk153C[0] + 0x50000);
+        p = (u32 *)(g_gameState->gameData->unk8E4.battle->partyBufs[0] + 0x50000);
     } else {
         arg2 = 1 << arg1[0x1FFF];
         p = arg1;

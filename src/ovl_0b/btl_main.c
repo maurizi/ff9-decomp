@@ -152,7 +152,7 @@ void btl_initMode(void) {
     func_800A902C();
     func_800A9090();
     btl_initBattleState();
-    b->unk4 = g_modeHeap;
+    b->savedHeap = g_modeHeap;
 }
 
 void btl_exitMode(void) {
@@ -168,23 +168,23 @@ void btl_allocBattle(void) {
     BattleMem *m;
     g_modeHeap = g_loadAreaEnd + 0x61800;
     m = (BattleMem *)g_modeHeap;
-    g_gameState->gameData->unk8E4.battle = &m->unk0;
-    g_modeHeap = (s32)m->unk241C;
-    m->unk0.files = (BtlFiles *)m->unk23CC;
-    m->unk0.unk1538 = (struct Battle1538 **)m->unk240C;
+    g_gameState->gameData->unk8E4.battle = &m->battle;
+    g_modeHeap = (s32)m->heap;
+    m->battle.files = (BtlFiles *)m->filesBuf;
+    m->battle.partyBufEnds = (struct Battle1538 **)m->partyBufEndsBuf;
 }
 
 void btl_clearBattle(void) {
     Battle *b = g_gameState->gameData->unk8E4.battle;
     s32 i;
     b->flags = 0;
-    b->unk4 = 0;
+    b->savedHeap = 0;
     for (i = 0; i < 16; i++) {
         *(b->files->data + i) = 0;
     }
     for (i = 0; i < 4; i++) {
-        b->unk153C[i] = 0;
-        b->unk1538[i] = 0;
+        b->partyBufs[i] = 0;
+        b->partyBufEnds[i] = 0;
     }
     b->unk1530 = 0;
     b->dataSector = -1;
@@ -261,7 +261,7 @@ void btl_load(s32 arg0) {
     Battle11C0 *p;
     s32 i;
 
-    g_modeHeap = g_gameState->gameData->unk8E4.battle->unk4;
+    g_modeHeap = g_gameState->gameData->unk8E4.battle->savedHeap;
     btl_allocBuffers();
     p = g_gameState->gameData->unk8E4.battle->work;
     btl_initReturnInfo();
@@ -290,7 +290,7 @@ void btl_load(s32 arg0) {
     }
     p->shadows = (struct BtlShadow *)g_modeHeap;
     g_modeHeap = func_800AD4AC(g_modeHeap, g_gameState->gameData->npcCount + 9);
-    p->unk8 = g_modeHeap;
+    p->freeHeap = g_modeHeap;
     btlui_reset();
     btl_startBattle();
 }
@@ -354,9 +354,9 @@ void btl_allocBuffers(void) {
     p->heapStart = (u8 *)(p->bgData + 0x6000);
     g_modeHeap = (s32)p->heapStart + 0x35800;
     for (i = 0; i < 4; i++) {
-        g_gameState->gameData->unk8E4.battle->unk153C[i] = g_modeHeap;
+        g_gameState->gameData->unk8E4.battle->partyBufs[i] = g_modeHeap;
         g_modeHeap += 0x13000;
-        g_gameState->gameData->unk8E4.battle->unk1538[i] = (Battle1538 *)(g_modeHeap - 0x28);
+        g_gameState->gameData->unk8E4.battle->partyBufEnds[i] = (Battle1538 *)(g_modeHeap - 0x28);
     }
     p->weaponBufs = (s32 *)(p + 1);
     for (i = 0; i < 4; i++) {
@@ -375,7 +375,7 @@ void btl_initReturnInfo(void) {
     Battle11C0 *p = g_gameState->gameData->unk8E4.battle->work;
     s32 i;
     p->unk0 = 0;
-    p->unk8 = 0;
+    p->freeHeap = 0;
     p->returnMode = g_gameState->unkA;
     if (g_gameState->unkA == 1) {
         p->returnId = g_gameState->gameData->fieldId;
@@ -395,7 +395,7 @@ void btl_initReturnInfo(void) {
         p->unk7[i] = 0;
     }
     for (i = 0; i < 4; i++) {
-        g_gameState->gameData->unk8E4.battle->unk1538[i]->unk20 = g_gameState->gameData->unk8E4.battle->unk1538[i]->unk24 = g_gameState->gameData->unk8E4.battle->unk153C[i];
+        g_gameState->gameData->unk8E4.battle->partyBufEnds[i]->base = g_gameState->gameData->unk8E4.battle->partyBufEnds[i]->cursor = g_gameState->gameData->unk8E4.battle->partyBufs[i];
     }
 }
 
@@ -631,7 +631,7 @@ loop:
         st->unk0 = arg2->unk2;
         goto loop;
     case 2:
-        arg2->unk24 = b->unk153C[0];
+        arg2->unk24 = b->partyBufs[0];
         arg2->unk8.w[0] = -1;
         arg2->unk8.w[1] = -1;
         arg2->unk8.w[2] = -1;
@@ -731,7 +731,7 @@ loop:
         ids = arg2->unk10.h;
         cnt = 0;
         arg2->unkA = 0;
-        arg2->unkC = b->unk153C[0];
+        arg2->unkC = b->partyBufs[0];
         arg2->unk10.w[0] = -1;
         arg2->unk10.w[1] = -1;
         first = (FileEntryX *)t->unk4;
@@ -882,7 +882,7 @@ loop:
                 req->unk0 = 0x1000;
                 req->unk4 = arg1->unk24;
                 req->unk8 = (sz << 11) - 0x1000;
-                req->unkC = b->unk153C[i];
+                req->unkC = b->partyBufs[i];
                 cd_readChunks(g_gameState->imgSector + n, req, 2, 0);
                 arg1->unk2 = 7;
                 st->unk0 = 1;
@@ -954,7 +954,7 @@ loop:
         st->unk0 = 5;
         goto loop;
     found:
-        req->unkC = b->unk153C[k];
+        req->unkC = b->partyBufs[k];
         goto done;
     case 5:
         h = (s16 *)arg1->unk10.h;
@@ -966,7 +966,7 @@ loop:
             p[0] = i;
             p[4] = i;
             arg1->unkA = p - h;
-            arg1->unk24 = b->unk153C[arg1->unkA];
+            arg1->unk24 = b->partyBufs[arg1->unkA];
             req->unkC = 0;
             if (btl_findNearestFile(0xA, (u16 *)h, (u16 *)q, (u16 **)&p2, &sz2) != i) {
                 q = (s16 *)&arg1->unk10.h[7];
@@ -1387,7 +1387,7 @@ s32 btl_swapPartyModelStep(s32 arg0, s32 arg1) {
     switch (*state) {
     case 1:
         k = arg0;
-        v = (void *)g_gameState->gameData->unk8E4.battle->unk153C[k];
+        v = (void *)g_gameState->gameData->unk8E4.battle->partyBufs[k];
         st->unk2 = 0;
         st->unk4 = 0;
         st->unk6 = 0;
@@ -1886,9 +1886,9 @@ s32 btl_soundCmd(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4) {
         case 7:
             if (arg2 >= 4) {
                 gc = g_gameState->gameData;
-                e = gc->unk8E4.battle->unk1538[arg2 % 4];
-                gc->unk8C0 = e->unk24;
-                g_gameState->gameData->unk878 = 0x12FD8 - (e->unk24 - e->unk20);
+                e = gc->unk8E4.battle->partyBufEnds[arg2 % 4];
+                gc->unk8C0 = e->cursor;
+                g_gameState->gameData->unk878 = 0x12FD8 - (e->cursor - e->base);
                 gx = g_gameState->gameData;
             } else {
                 g_gameState->gameData->unk8C0 = (s32)g_gameState->gameData->unk8E4.battle->work->heap;

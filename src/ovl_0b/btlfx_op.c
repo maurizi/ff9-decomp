@@ -1989,9 +1989,9 @@ void btlfx_updateCameraEnable(void) {
             r = 0;
         } else {
             if (b->flags & 1) {
-                v = g_gameState->gameData->unk8E4.battle->scene.unk0 >> 11;
+                v = g_gameState->gameData->unk8E4.battle->scene.flags >> 11;
             } else {
-                v = g_gameState->gameData->unk8E4.battle->scene.unk0 >> 12;
+                v = g_gameState->gameData->unk8E4.battle->scene.flags >> 12;
             }
             v &= 1;
             r = v == 0;

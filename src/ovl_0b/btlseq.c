@@ -3,7 +3,7 @@
 void btlseq_init(void) {
     Battle *b = g_gameState->gameData->unk8E4.battle;
     u16 i = 0;
-    u16 *h = b->scene.unkC;
+    u16 *h = b->scene.seqTable;
     Battle11C4 *t = &b->seq;
     u16 *p = h + 2;
     u32 *q;
@@ -32,7 +32,7 @@ void btlseq_init(void) {
     {
         Battle122C *c = t->slots;
         for (i = 4; i-- != 0;) {
-            c->unk4 = 0;
+            c->cmd = 0;
             c++;
         }
     }
@@ -52,7 +52,7 @@ Battle122C *btlseq_start(BtlCmd *arg0) {
     GameState *g;
     s16 i;
     for (i = 0; i < 4; i++, e++) {
-        if (e->unk4 == NULL) {
+        if (e->cmd == NULL) {
             break;
         }
     }
@@ -60,19 +60,19 @@ Battle122C *btlseq_start(BtlCmd *arg0) {
         return NULL;
     }
     g = g_gameState;
-    e->unk0 = 0;
-    e->unk4 = arg0;
-    e->unk8 = g->gameData->unk8E4.battle->seq.seqs[arg0->subNo];
-    e->unkC = 0;
-    e->unk10 = 0;
-    e->unk12 = 0;
-    e->unk14 = 0;
-    e->unk16 = g->gameData->unk8E4.battle->seq.seqFlags[arg0->subNo];
-    e->unk17 = 0;
-    e->unk21 = 0;
-    e->unk25 = 0;
-    e->unk26 = 0;
-    g_gameState->gameData->unk8E4.battle->unk131C = 0;
+    e->flags = 0;
+    e->cmd = arg0;
+    e->pc = g->gameData->unk8E4.battle->seq.seqs[arg0->subNo];
+    e->prevPc = 0;
+    e->opFrame = 0;
+    e->waitLeft = 0;
+    e->frame = 0;
+    e->seqFlags = g->gameData->unk8E4.battle->seq.seqFlags[arg0->subNo];
+    e->soundDelay = 0;
+    e->turnFrames = 0;
+    e->fxDelay = 0;
+    e->fadeFrames = 0;
+    g_gameState->gameData->unk8E4.battle->cameraNo = 0;
     return e;
 }
 
@@ -101,7 +101,7 @@ void btlseq_startDirect(u16 mask, s16 arg1, u16 id) {
         c->unk10.w = 0;
         e = btlseq_start(c);
         if (e != NULL) {
-            e->unk0 |= 8;
+            e->flags |= 8;
         }
     }
 }
@@ -110,7 +110,7 @@ s32 btlseq_isBusy(void) {
     s16 i;
     Battle122C *p = g_gameState->gameData->unk8E4.battle->seq.slots;
     for (i = 0; i < 4; i++, p++) {
-        if (p->unk4 != 0) {
+        if (p->cmd != 0) {
             return 1;
         }
     }
@@ -481,7 +481,7 @@ s32 btlseq_opSetStance(BtlScript *arg0, BtlUnit *arg1) {
 }
 
 s32 btlseq_opSetCamera(BtlScript *arg0) {
-    g_gameState->gameData->unk8E4.battle->unk131C = arg0->pc[1];
+    g_gameState->gameData->unk8E4.battle->cameraNo = arg0->pc[1];
     arg0->pc += 2;
     return 1;
 }
@@ -518,7 +518,7 @@ s32 btlseq_opPlayCamera(BtlScript *arg0, BtlUnit *arg1) {
     s->camCenterY = 0;
     s->camCaster = arg1;
     s->camTarget = (s32)btlseq_findUnit(arg0->cmd->targets);
-    g_gameState->gameData->unk8E4.battle->unk131C = arg0->pc[1];
+    g_gameState->gameData->unk8E4.battle->cameraNo = arg0->pc[1];
     btlcam_playSeq(g_gameState->gameData->unk8E4.battle->enemies[(arg1->flags >> 1) & 0xF].type->camera);
 end:
     arg0->pc += 2;

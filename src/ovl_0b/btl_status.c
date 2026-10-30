@@ -870,31 +870,31 @@ void btl_addEnemyRewards(BtlEnemyType *arg0) {
 
     n = 0;
     d = &g_btlRewards;
-    d->unk0 += arg0->exp;
-    d->unk4 += arg0->gil;
+    d->gil += arg0->gil;
+    d->exp += arg0->exp;
     for (; n < 16; n++) {
-        if (d->unkC[n] == 0xFF) {
+        if (d->items[n] == 0xFF) {
             break;
         }
     }
     if (n < 16) {
         if (rand8_inline() < 1 && (it = arg0->drops.b[3]) != 0xFF) {
-            d->unkC[n++] = it;
+            d->items[n++] = it;
             arg0->drops.b[3] = 0xFF;
         } else if (rand8_inline() < 0x20 && (it = arg0->drops.b[2]) != 0xFF) {
-            d->unkC[n++] = it;
+            d->items[n++] = it;
             arg0->drops.b[2] = 0xFF;
         } else if (rand8_inline() < 0x60 && (it = arg0->drops.b[1]) != 0xFF) {
-            d->unkC[n++] = it;
+            d->items[n++] = it;
             arg0->drops.b[1] = 0xFF;
         }
         if ((it = arg0->drops.b[0]) != 0xFF) {
-            d->unkC[n] = it;
+            d->items[n] = it;
         }
     }
-    if (d->unk1C == 0xFF && (u32)arg0->card < 100) {
+    if (d->card == 0xFF && (u32)arg0->card < 100) {
         if (rand8_inline() < 0x20) {
-            d->unk1C = arg0->card;
+            d->card = arg0->card;
         }
     }
 }
@@ -913,7 +913,7 @@ void btl_initState(void) {
     b->enemyBrightness = 0;
     b->eidolonAbility = 0;
     b->eidolonTimer = 0;
-    b->unk11BE = 0;
+    b->deathCryWait = 0;
     D_800FDF3A = 0;
     btl_clearRewards();
 }
@@ -926,15 +926,15 @@ void btl_clearRewards(void) {
     c = 0xFF;
     i = 15;
     p = (u8 *)&g_btlRewards + i;
-    g_btlRewards.unk0 = 0;
-    g_btlRewards.unk4 = 0;
-    g_btlRewards.unk8 = 0;
+    g_btlRewards.gil = 0;
+    g_btlRewards.exp = 0;
+    g_btlRewards.ap = 0;
     for (; i >= 0; i--) {
         p[12] = c; /* unkC[i] */
         p--;
     }
-    g_btlRewards.unk1C = 0xFF;
-    g_btlRewards.unk1D = 0;
+    g_btlRewards.card = 0xFF;
+    g_btlRewards.fleeGil = 0;
 }
 
 void btl_checkPartyDisabled(BtlUnit *arg0) {
@@ -982,7 +982,7 @@ void btl_checkEnemiesKO(void) {
 s32 btl_saveParty(Battle *arg0) {
     GameData *gd = g_gameState->gameData;
     u8 v = gd->battleResult;
-    if ((v == 3 || v == 6) && !((arg0->scene.unk0 >> 4) & 1)) {
+    if ((v == 3 || v == 6) && !((arg0->scene.flags >> 4) & 1)) {
         gd->battleResult = 6;
     } else {
         BtlUnit *u = g_gameState->gameData->unk8E4.battle->unitList;
@@ -1045,7 +1045,7 @@ void btl_insertUnit(BtlUnit *arg0) {
 void btl_tryEscape(u8 arg0) {
     Battle *b = g_gameState->gameData->unk8E4.battle;
     if (!(b->cmdFlags & 1)) {
-        if ((u8)b->scene.unk0 >> 7 == 0) {
+        if ((u8)b->scene.flags >> 7 == 0) {
             btl_showMessage(BTL_MSG_CANT_ESCAPE);
         } else if (arg0 && (btl_isAtbRunning() & 0xFF)) {
             btl_calcCmd(0, 0, 0, 0x38);
@@ -1214,8 +1214,8 @@ void btl_playHitSound(BtlUnit *arg0, BtlUnit *arg1) {
 
 void btl_playDeathCry(BtlUnit *arg0, u16 arg1) {
     Battle *b = g_gameState->gameData->unk8E4.battle;
-    if (b->unk11BE == 0 && !((arg0->flags >> 27) & 1)) {
-        b->unk11BE = 8;
+    if (b->deathCryWait == 0 && !((arg0->flags >> 27) & 1)) {
+        b->deathCryWait = 8;
         btl_playUnitSound(arg0, arg1, 0x7F);
         arg0->flags |= 0x08000000;
     }

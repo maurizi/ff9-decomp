@@ -509,7 +509,7 @@ BtlUnit *btlui_popMenuUnit(void) {
         u = g_btlUi->queue[g_btlUi->queueHead];
         g_btlUi->queueCount--;
         g_btlUi->queueHead = (g_btlUi->queueHead + 1) & 3;
-        if (u == NULL || u->hp == 0 || (btl_hasStatus(u, (BTL_STATUS_PETRIFY | BTL_STATUS_VENOM | BTL_STATUS_KO | BTL_STATUS_CONFUSE | BTL_STATUS_BERSERK | BTL_STATUS_STOP | BTL_STATUS_SLEEP | BTL_STATUS_FREEZE | BTL_STATUS_JUMP)) & 0xFF) || !((g_btlRewards.unkA >> ((u8)u->flags >> 5)) & 1)) {
+        if (u == NULL || u->hp == 0 || (btl_hasStatus(u, (BTL_STATUS_PETRIFY | BTL_STATUS_VENOM | BTL_STATUS_KO | BTL_STATUS_CONFUSE | BTL_STATUS_BERSERK | BTL_STATUS_STOP | BTL_STATUS_SLEEP | BTL_STATUS_FREEZE | BTL_STATUS_JUMP)) & 0xFF) || !((g_btlRewards.expMask >> ((u8)u->flags >> 5)) & 1)) {
             ok = 0;
         } else {
             ok = 1;
@@ -568,7 +568,7 @@ void btlui_initMenu(void) {
     p->menuState = BTLUI_MENU_NONE;
     p->cmdUnit = NULL;
     g_btlUi->tick = 0;
-    g_btlUi->ambush = g_gameState->gameData->unk8E4.battle->scene.unk0 & 3;
+    g_btlUi->ambush = g_gameState->gameData->unk8E4.battle->scene.flags & 3;
     g_btlUi->frozenSide = btlui_getFrozenSide();
     btlui_clearAbilityLists();
     btlui_initPartyEntries();
@@ -1866,7 +1866,7 @@ s32 btlui_getAbilityState(s32 arg0) {
         if ((u8)btl_hasStatus(g_btluiList.unit, BTL_STATUS_SILENCE)) {
             return 1;
         }
-        if ((g_gameState->gameData->unk8E4.battle->scene.unk0 >> 9) & 1) {
+        if ((g_gameState->gameData->unk8E4.battle->scene.flags >> 9) & 1) {
             return 1;
         }
     }

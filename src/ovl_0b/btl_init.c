@@ -27,7 +27,7 @@ void btl_initParty(Battle *arg0) {
     }
     arg0->loadFlags |= 0x10;
     btl_placeParty();
-    k = arg0->scene.unk0 & 3;
+    k = arg0->scene.flags & 3;
     if (k == 0) {
         for (u = arg0->unitList; u != NULL; u = u->next) {
             if (u->flags & 1) {
@@ -53,7 +53,7 @@ void btl_initEnemies(Battle *arg0) {
     s16 m;
     s32 k;
 
-    for (; i < g_gameState->gameData->unk8E4.battle->scene.unk4->unk1; i++, n++) {
+    for (; i < g_gameState->gameData->unk8E4.battle->scene.group->enemyCount; i++, n++) {
         e = &arg0->enemies[i];
         e->flags = (e->flags & ~0x3F) | 0x20;
         u = &arg0->units[n];
@@ -98,7 +98,7 @@ void btl_initPartyUnit(Character *c, BtlUnit *u, u16 slot, u16 n) {
     s32 i;
 
     u->unitBit = 1 << n;
-    g_btlRewards.unkA |= 1 << (s = slot);
+    g_btlRewards.expMask |= 1 << (s = slot);
     u->flags |= 1;
     u->flags = (u->flags & ~0x1E) | ((c->unk34.w & 0xF) << 1);
     u->flags |= 0x10000000;
@@ -126,7 +126,7 @@ void btl_initPartyUnit(Character *c, BtlUnit *u, u16 slot, u16 n) {
     btl_initDoomCount((Unk800C09D8 *)u);
     u->max->maxAtb = (0x3C - u->speed) * 160;
     btl_resetAtbSpeed((Unk800BD8F0 *)u);
-    k = g_gameState->gameData->unk8E4.battle->scene.unk0 & 3;
+    k = g_gameState->gameData->unk8E4.battle->scene.flags & 3;
     if (k == 0) {
         u->atb = 0;
     } else if (k == 1) {
@@ -180,7 +180,7 @@ u32 *btl_initEnemyState(Battle *arg0, u32 *arg1) {
     s32 i;
     BtlEnemyType *p;
 
-    for (i = 0; i < g_gameState->gameData->unk8E4.battle->scene.unk4->unk1; i++) {
+    for (i = 0; i < g_gameState->gameData->unk8E4.battle->scene.group->enemyCount; i++) {
         {
             p = arg0->enemies[i].type;
             u = &arg0->units[i + 4];

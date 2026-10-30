@@ -11,7 +11,7 @@ void btl_startBattle(void) {
     btl_initCmdQueue(b);
     btl_initTargetCursor(b);
     func_800C972C();
-    g_btlRewards.unkB = (b->scene.unk0 >> 13) & 1;
+    g_btlRewards.unkB = (b->scene.flags >> 13) & 1;
     msg_beginDraw();
     evt_update();
     btl_loadModelsStep(1);
@@ -50,8 +50,8 @@ void btl_updateCombat(GameData *arg0, Battle *arg1) {
 }
 
 void btl_drawScene(GameData *arg0, Battle *arg1, s32 arg2) {
-    if (arg1->unk11BE) {
-        arg1->unk11BE -= 1;
+    if (arg1->deathCryWait) {
+        arg1->deathCryWait -= 1;
     }
     btlseq_update();
     arg2 = (s32)btlbg_draw(&arg0->unk18, arg1->work->bgData, arg2, arg0->unk10[arg0->unk8],
@@ -533,7 +533,7 @@ s32 btl_checkCmdUsable(Battle *arg0, BtlCmd *arg1) {
     }
     switch (arg1->cmdNo) {
     case BTL_CMD_ATTACK:
-        if (((arg0->scene.unk0 >> 8) & 1) && (*u->weapon & 1) && (u16)arg1->targets >= 0x10) {
+        if (((arg0->scene.flags >> 8) & 1) && (*u->weapon & 1) && (u16)arg1->targets >= 0x10) {
             msg = 0x17;
             goto fail;
         }
@@ -615,7 +615,7 @@ s32 btl_checkCmdUsable(Battle *arg0, BtlCmd *arg1) {
             goto ret0;
         }
     case BTL_CMD_CHARGE_ATTACK:
-        if ((arg0->scene.unk0 >> 8) & 1) {
+        if ((arg0->scene.flags >> 8) & 1) {
             msg = 0x17;
             if (*u->weapon & 1) {
             fail:
@@ -2106,7 +2106,7 @@ void btl_calcCmd(BtlUnit *caster, BtlUnit *target, BtlCmd *cmd, s32 type) {
     case 0x36:
         {
             s32 v;
-            if ((target->flags & 1) || !((g_gameState->gameData->unk8E4.battle->scene.unk0 >> 2) & 1)) {
+            if ((target->flags & 1) || !((g_gameState->gameData->unk8E4.battle->scene.flags >> 2) & 1)) {
                 v = (caster->flags & 1) << 11;
                 target->rot[1] = v;
                 target->obj->rotY = v;
@@ -2609,7 +2609,7 @@ void btl_calcCmd(BtlUnit *caster, BtlUnit *target, BtlCmd *cmd, s32 type) {
             break;
         }
     case 0x6A:
-        g_btlRewards.unkA &= ~(1 << ((u8)target->flags >> 5));
+        g_btlRewards.expMask &= ~(1 << ((u8)target->flags >> 5));
         func_800B3DBC(target);
         btl_removeUnitCmds(target);
         btl_saveCharacter(target, 1);
@@ -3559,7 +3559,7 @@ void btl_applyAbilityElementBoost(BtlCalc *arg0) {
 }
 
 void func_800BA938(Unk800BA938 *arg0) {
-    if ((g_gameState->gameData->unk8E4.battle->scene.unk0 >> 10) & 1) {
+    if ((g_gameState->gameData->unk8E4.battle->scene.flags >> 10) & 1) {
         arg0->unkE = 0x3C - arg0->unkE;
         if (arg0->unkE <= 0) {
             arg0->unkE = 1;
@@ -3684,7 +3684,7 @@ void btl_payMpAttack(BtlCalc *arg0) {
 u8 btl_canFlee(BtlCalc *arg0) {
     Battle *b = g_gameState->gameData->unk8E4.battle;
     BtlUnit *u;
-    if ((u8)b->scene.unk0 >> 7 == 0) {
+    if ((u8)b->scene.flags >> 7 == 0) {
         return 0;
     }
     for (u = b->unitList; u != NULL; u = u->next) {

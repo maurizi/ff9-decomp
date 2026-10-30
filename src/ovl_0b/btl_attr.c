@@ -550,7 +550,7 @@ s32 btl_getBattleVar(s32 arg0) {
     s32 k;
     switch (arg0) {
     case BTL_GETVAR_AMBUSH:
-        r = b->scene.unk0 & 3;
+        r = b->scene.flags & 3;
         break;
     case BTL_GETVAR_GIL:
         r = g_gameState->gameData->gil;
@@ -628,7 +628,7 @@ void btl_setBattleVar(s32 arg0, s32 arg1) {
     case BTL_SETVAR_END:
         if (b->phase == BTL_PHASE_SCRIPT) {
             g_gameState->gameData->battleResult = arg1;
-            if (arg1 == 1 && ((b->scene.unk0 >> 6) & 1)) {
+            if (arg1 == 1 && ((b->scene.flags >> 6) & 1)) {
                 b->phase = BTL_PHASE_END;
                 b->subPhase = BTL_END_SCRIPT_VICTORY;
             } else {
@@ -649,11 +649,11 @@ void btl_setBattleVar(s32 arg0, s32 arg1) {
         break;
     case BTL_SETVAR_RESUME:
         if (b->phase == BTL_PHASE_SCRIPT) {
-            f = b->scene.unk0;
+            f = b->scene.flags;
             b->phase = BTL_PHASE_ENTRANCE;
             b->subPhase = 0;
             if ((f & 0xC) != 0xC) {
-                b->scene.unk0 = (f & ~3) | 2;
+                b->scene.flags = (f & ~3) | 2;
             }
         }
         break;
