@@ -22,7 +22,7 @@ tools/docker.sh make verify
 
 ## Progress
 
-All 3842 game functions and 1421 battle effect functions are decompiled to matching C, and all 20 binaries
+All 3828 game functions and 1421 battle effect functions are decompiled to matching C, and all 20 binaries
 and 380 battle effect modules are fully decompiled. PsyQ SDK library code is identified by signature and left as assembly.
 
 `make progress` prints the current per-binary numbers, and `docs/progress.csv` records them over time.
