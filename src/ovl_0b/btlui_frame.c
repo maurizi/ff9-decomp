@@ -76,7 +76,7 @@ void func_800F4E68(void) {
 
 u8 *btl_drawBanner(u8 *arg0) {
     if (g_btlBanner.active != 0) {
-        g_btlBanner.ot = (u32 *)btl_getBannerOt(g_gameState->gameData->unk8);
+        g_btlBanner.ot = (u32 *)btl_getBannerOt(g_gameState->gameData->drawBuf);
         arg0 = btl_buildBanner(arg0);
         if ((u32)++g_btlBanner.timer >= (u32)g_btlBanner.duration) {
             g_btlBanner.active = 0;

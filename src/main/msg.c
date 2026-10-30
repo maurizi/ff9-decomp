@@ -20,13 +20,13 @@ void msg_init(void) {
     D_8007BB98.unk8 = -1;
     switch (s->mode) {
     case 1:
-        g_msgTable = s->gameData->unk8E4.ovl65->unkC->unk8;
+        g_msgTable = s->gameData->ctx.ovl65->unkC->unk8;
         break;
     case 3:
-        g_msgTable = (Unk8007B954 *)s->gameData->unk8E4.ovl65->unk8->unk14;
+        g_msgTable = (Unk8007B954 *)s->gameData->ctx.ovl65->unk8->unk14;
         break;
     case 2:
-        g_msgTable = (Unk8007B954 *)s->gameData->unk8E4.ovl65->work->unk14;
+        g_msgTable = (Unk8007B954 *)s->gameData->ctx.ovl65->work->unk14;
         break;
     }
     g_msgReady = 1;
@@ -78,7 +78,7 @@ void msg_beginDraw(void) {
     if (s->mode == 2 || s->mode == 6) {
         D_8007B9A0 = 1;
         pp = &D_8007B9A8;
-        tbl = &D_8007B9B0[s->gameData->unk8];
+        tbl = &D_8007B9B0[s->gameData->drawBuf];
         g_penPktPtr = pp;
         D_8007B9A4 = D_8007B9A8 = (u8 *)tbl;
     } else {
@@ -88,7 +88,7 @@ void msg_beginDraw(void) {
         D_8007B9A4 = cur;
     }
     g = g_gameState->gameData;
-    g_penOt = g->unk10[g->unk8];
+    g_penOt = g->ot[g->drawBuf];
 }
 
 /* width of an embedded string, up to 0xF7 / 0xFF */
@@ -1019,7 +1019,7 @@ WinLayout *msg_getLayout(s32 id, s32 *x, s32 *y, s32 *z) {
 
 void msg_setOtz(s32 a) {
     GameData *d = g_gameState->gameData;
-    g_penOt = d->unk10[d->unk8] + a;
+    g_penOt = d->ot[d->drawBuf] + a;
 }
 
 s32 msg_getPartyMemberId(s32 i) {
@@ -1409,7 +1409,7 @@ s32 msg_emitCharNameCaps(s32 ch, s32 n) {
 void msg_drawWindowContent(Unk8004F5D4 *p) {
     GameData *g = g_gameState->gameData;
 
-    g_penOt = g->unk10[g->unk8] + p->unk18;
+    g_penOt = g->ot[g->drawBuf] + p->unk18;
     pen_begin();
     pen_pushPos();
     pen_setPos(p->unk0 + 2, p->unk2 + 2);
@@ -1424,7 +1424,7 @@ void msg_drawChoiceCursor(Window *w) {
 
     if (g_msgChoiceLine >= 0 && w->state == 3 && (((Window *)w->unk50)->animMode & 2)) {
         g = g_gameState->gameData;
-        g_penOt = g->unk10[g->unk8] + w->unk18;
+        g_penOt = g->ot[g->drawBuf] + w->unk18;
         pen_begin();
         pen_pushPos();
         ofs = 8;
@@ -1452,7 +1452,7 @@ void msg_drawHereIcon(EvtObject *o) {
         if (n == 0) {
             g_hereIconActive = 0;
         }
-        if (g_evtMode == 1 && !(g_gameState->gameData->unk0 & GD_HIDE_ALL) && n < 58) {
+        if (g_evtMode == 1 && !(g_gameState->gameData->flags & GD_HIDE_ALL) && n < 58) {
             s = &D_80068790;
             pen_begin();
             pen_pushPos();
@@ -1577,7 +1577,7 @@ void msg_updatePlayerBubble(void) {
         g_bubbleScript += 4;
     }
     draw:
-    if (!(g_gameState->gameData->unk0 & GD_HIDE_ALL)) {
+    if (!(g_gameState->gameData->flags & GD_HIDE_ALL)) {
         o = evt_getObject(g_evtState->playerUid);
         if (o != NULL && o->kind == 4) {
             pen_begin();
@@ -1599,7 +1599,7 @@ void msg_drawAtePrompt(void) {
         return;
     }
     g_atePromptTimer++;
-    if (g_gameState->gameData->unk0 & GD_HIDE_ALL) {
+    if (g_gameState->gameData->flags & GD_HIDE_ALL) {
         return;
     }
     pen_begin();
@@ -1679,27 +1679,27 @@ s32 evt_modelOpField(EvtObject *o, s32 op) {
     case EVT_OP_SHADOW_SIZE:
         a = evt_getArg8();
         b = evt_getArg8();
-        g_gameState->gameData->unk8E4.ovl65->unkC->unk14->unk2C[o->modelSlot].unk0_8 = a * 14;
-        g_gameState->gameData->unk8E4.ovl65->unkC->unk14->unk2C[o->modelSlot].unk0_20 = b * 12;
+        g_gameState->gameData->ctx.ovl65->unkC->unk14->unk2C[o->modelSlot].unk0_8 = a * 14;
+        g_gameState->gameData->ctx.ovl65->unkC->unk14->unk2C[o->modelSlot].unk0_20 = b * 12;
         return 0;
     case 0x82:
         a = evt_getArg16();
         b = evt_getArg16();
-        g_gameState->gameData->unk8E4.ovl65->unkC->unk14->unk2C[o->modelSlot].unk4_12 = a;
-        g_gameState->gameData->unk8E4.ovl65->unkC->unk14->unk2C[o->modelSlot].unk4_22 = b;
+        g_gameState->gameData->ctx.ovl65->unkC->unk14->unk2C[o->modelSlot].unk4_12 = a;
+        g_gameState->gameData->ctx.ovl65->unkC->unk14->unk2C[o->modelSlot].unk4_22 = b;
         return 0;
     case EVT_OP_SHADOW_FIXED:
         a = evt_getArg8();
         p = (u32 *)game_getModel(o->modelSlot);
         gs = g_gameState;
         *p |= 0x20;
-        gs->gameData->unk8E4.ovl65->unkC->unk14->unk2C[o->modelSlot].unk4_0 = a * 16;
+        gs->gameData->ctx.ovl65->unkC->unk14->unk2C[o->modelSlot].unk4_0 = a * 16;
         return 0;
     case EVT_OP_SHADOW_UNFIX:
         *(u32 *)game_getModel(o->modelSlot) &= ~0x20;
         return 0;
     case 0x85:
-        g_gameState->gameData->unk8E4.ovl65->unkC->unk14->unk2C[o->modelSlot].unk0_0 = evt_getArg8();
+        g_gameState->gameData->ctx.ovl65->unkC->unk14->unk2C[o->modelSlot].unk0_0 = evt_getArg8();
         return 0;
     case EVT_OP_RAIN:
         fld_enableRain(0, 0, 1);
@@ -1729,27 +1729,27 @@ s32 evt_modelOpBattle(EvtObject *o, s32 op) {
     case EVT_OP_SHADOW_SIZE:
         a = evt_getArg8();
         b = evt_getArg8();
-        g_gameState->gameData->unk8E4.ovl65->work->unk28[o->modelSlot].unk0_8 = a * 14;
-        g_gameState->gameData->unk8E4.ovl65->work->unk28[o->modelSlot].unk0_20 = b * 12;
+        g_gameState->gameData->ctx.ovl65->work->unk28[o->modelSlot].unk0_8 = a * 14;
+        g_gameState->gameData->ctx.ovl65->work->unk28[o->modelSlot].unk0_20 = b * 12;
         return 0;
     case 0x82:
         a = evt_getArg16();
         b = evt_getArg16();
-        g_gameState->gameData->unk8E4.ovl65->work->unk28[o->modelSlot].unk4_12 = a;
-        g_gameState->gameData->unk8E4.ovl65->work->unk28[o->modelSlot].unk4_22 = b;
+        g_gameState->gameData->ctx.ovl65->work->unk28[o->modelSlot].unk4_12 = a;
+        g_gameState->gameData->ctx.ovl65->work->unk28[o->modelSlot].unk4_22 = b;
         return 0;
     case EVT_OP_SHADOW_FIXED:
         a = evt_getArg8();
         p = (u32 *)game_getModel(o->modelSlot);
         gs = g_gameState;
         *p |= 0x20;
-        gs->gameData->unk8E4.ovl65->work->unk28[o->modelSlot].unk4_0 = a * 16;
+        gs->gameData->ctx.ovl65->work->unk28[o->modelSlot].unk4_0 = a * 16;
         return 0;
     case EVT_OP_SHADOW_UNFIX:
         *(u32 *)game_getModel(o->modelSlot) &= ~0x20;
         return 0;
     case 0x85:
-        g_gameState->gameData->unk8E4.ovl65->work->unk28[o->modelSlot].unk0_0 = evt_getArg8();
+        g_gameState->gameData->ctx.ovl65->work->unk28[o->modelSlot].unk0_0 = evt_getArg8();
         return 0;
     case EVT_OP_RAIN:
         a = evt_getArg8();
@@ -1778,27 +1778,27 @@ s32 evt_modelOpWorld(EvtObject *o, s32 op) {
     case EVT_OP_SHADOW_SIZE:
         a = evt_getArg8();
         b = evt_getArg8();
-        ((Unk11C0Slot *)g_gameState->gameData->unk8E4.ovl65->unk8->unk1C)[o->modelSlot].unk0_8 = a * 14;
-        ((Unk11C0Slot *)g_gameState->gameData->unk8E4.ovl65->unk8->unk1C)[o->modelSlot].unk0_20 = b * 12;
+        ((Unk11C0Slot *)g_gameState->gameData->ctx.ovl65->unk8->unk1C)[o->modelSlot].unk0_8 = a * 14;
+        ((Unk11C0Slot *)g_gameState->gameData->ctx.ovl65->unk8->unk1C)[o->modelSlot].unk0_20 = b * 12;
         return 0;
     case 0x82:
         a = evt_getArg16();
         b = evt_getArg16();
-        ((Unk11C0Slot *)g_gameState->gameData->unk8E4.ovl65->unk8->unk1C)[o->modelSlot].unk4_12 = a;
-        ((Unk11C0Slot *)g_gameState->gameData->unk8E4.ovl65->unk8->unk1C)[o->modelSlot].unk4_22 = b;
+        ((Unk11C0Slot *)g_gameState->gameData->ctx.ovl65->unk8->unk1C)[o->modelSlot].unk4_12 = a;
+        ((Unk11C0Slot *)g_gameState->gameData->ctx.ovl65->unk8->unk1C)[o->modelSlot].unk4_22 = b;
         return 0;
     case EVT_OP_SHADOW_FIXED:
         a = evt_getArg8();
         p = (u32 *)game_getModel(o->modelSlot);
         gs = g_gameState;
         *p |= 0x20;
-        ((Unk11C0Slot *)gs->gameData->unk8E4.ovl65->unk8->unk1C)[o->modelSlot].unk4_0 = a * 16;
+        ((Unk11C0Slot *)gs->gameData->ctx.ovl65->unk8->unk1C)[o->modelSlot].unk4_0 = a * 16;
         return 0;
     case EVT_OP_SHADOW_UNFIX:
         *(u32 *)game_getModel(o->modelSlot) &= ~0x20;
         return 0;
     case 0x85:
-        ((Unk11C0Slot *)g_gameState->gameData->unk8E4.ovl65->unk8->unk1C)[o->modelSlot].unk0_0 = evt_getArg8();
+        ((Unk11C0Slot *)g_gameState->gameData->ctx.ovl65->unk8->unk1C)[o->modelSlot].unk0_0 = evt_getArg8();
         return 0;
     case EVT_OP_RAIN:
         a = evt_getArg8();
@@ -1820,7 +1820,7 @@ s32 rain_draw(void) {
     GameData *gd;
     s32 n;
 
-    if (g_gameState->gameData->unk8 != 0) {
+    if (g_gameState->gameData->drawBuf != 0) {
         r += 0x22B0;
     }
     if (g_fieldRain.unk24 < 2) {
@@ -1833,9 +1833,9 @@ s32 rain_draw(void) {
     if (n != 0) {
         fldbg_applyGeomOffset();
         gd = g_gameState->gameData;
-        gte_SetRotMatrix(&gd->unk18);
-        gte_SetTransMatrix(&gd->unk18);
-        r = (u8 *)rain_drawDrops(n, gd->unk8, gd->unk10[gd->unk8] + 3, (s32)r);
+        gte_SetRotMatrix(&gd->viewMatrix);
+        gte_SetTransMatrix(&gd->viewMatrix);
+        r = (u8 *)rain_drawDrops(n, gd->drawBuf, gd->ot[gd->drawBuf] + 3, (s32)r);
         fldbg_resetGeomOffset();
     }
     return (s32)r;

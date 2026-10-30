@@ -215,7 +215,7 @@ typedef struct {
     s32 unkC;
 } Unk880; /* copied as a block by ovl_39 */
 
-/* GameData.unk8E4: per-module context; its layout depends on the loaded
+/* GameData.ctx: per-module context; its layout depends on the loaded
  * overlay. */
 struct WorldMap; /* ovl_0c, include/ovl_0c.h */
 struct FieldMap; /* ovl_0a, include/ovl_0a.h */
@@ -263,15 +263,15 @@ typedef struct {
 
 /* g_gameState->gameData: looks like the save-data block */
 typedef struct {
-    u32 unk0; /* flags */
+    u32 flags; /* flags: GD_* (menu open/disabled, hide all, paused, music/SE slot state) */
     u32 allocTop; /* allocator top (g_allocTop) after setup */
-    u8 unk8; /* draw buffer index (0/1) */
+    u8 drawBuf; /* draw buffer index (0/1): index into GameState drawEnv/dispEnv and ot[] */
     u8 unk9;
     u16 projDist; /* projection distance (SetFogNearFar); GTE geometry screen distance (SetGeomScreen), the battle camera's projDist */
     u16 fieldId; /* current field (runtime: Dali inn 351 -> street 350) */
     u16 battleId; /* next battle (encounter bundle id), set by evt_setNextBattle / the field and world exits */
-    u32 *unk10[2]; /* ordering tables, 0x1000 entries */
-    MATRIX unk18;
+    u32 *ot[2]; /* ordering tables, 0x1000 entries */
+    MATRIX viewMatrix; /* camera view matrix (gte_SetRotMatrix/SetTransMatrix before projecting; btlcam_lookAt, mbg_getStartCamera) */
     u8 npcCount; /* kind-4 objects below the character scripts (evt_countNpcActors in fld_load) */
     u8 npcModelSlots; /* NPC model slots used, NPC slot = 9 + this */
     u16 fieldAreaId; /* field area to load next (fld_runArea, fld_unloadArea from FieldMapObj.areaId, wm_exit from wm_depFindArea) */
@@ -353,7 +353,7 @@ typedef struct {
     struct Unk8E0 *chrModels; /* [9] per character (game_getModel ids 0-8) */
     struct Unk8D4 *npcModelObjs; /* model objects of the NPCs (npcCount), bound to npcModels[i].model */
     struct Unk8E0 *npcModels; /* per NPC (game_getModel ids 9+), indexed by FieldMap.playerObj */
-    Unk8E4Ptr unk8E4;
+    Unk8E4Ptr ctx; /* the running mode's context (field, world, battle, ...) */
 } GameData;
 
 typedef struct {
@@ -1858,7 +1858,7 @@ extern s32 g_padPortMask[];
 #define GS_WM_NEW_MAP 0x2000 /* wm_main loop ends without leaving wm_entry */
 #define GS_RELOAD_FILE_TABLES 0x100000 /* set at boot (game_resetState) and after a disc change; file_loadDirTables reloads, then clears it */
 
-/* GameData.unk0 flags */
+/* GameData.flags flags */
 #define GD_MENU_DISABLED 0x1 /* menu_doOpen refuses to open */
 #define GD_MENU_OPEN 0x2 /* set by menu_doOpen, cleared by menu_finish; the field/world event update is skipped */
 #define GD_HIDE_MODELS 0x4

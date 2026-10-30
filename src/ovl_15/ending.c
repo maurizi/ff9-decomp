@@ -37,7 +37,7 @@ void ending_main(void) {
 
 void ending_clearOt(void) {
     GameData *ctx = g_gameState->gameData;
-    ClearOTagR(ctx->unk10[ctx->unk8], 0x1000);
+    ClearOTagR(ctx->ot[ctx->drawBuf], 0x1000);
 }
 
 void ending_swapBuffers(void) {
@@ -47,10 +47,10 @@ void ending_swapBuffers(void) {
     DrawSync(0);
     VSync(g_gameState->vsyncMode);
     ResetGraph(1);
-    PutDispEnv(&g_gameState->dispEnv[g_gameState->gameData->unk8]);
+    PutDispEnv(&g_gameState->dispEnv[g_gameState->gameData->drawBuf]);
     ctx = g_gameState->gameData;
-    i = ctx->unk8;
-    DrawOTagEnv(ctx->unk10[i] + 0xFFF, &g_gameState->drawEnv[i]);
-    g_gameState->gameData->unk8 ^= 1;
-    gfx_setBuffer(g_gameState->gameData->unk8);
+    i = ctx->drawBuf;
+    DrawOTagEnv(ctx->ot[i] + 0xFFF, &g_gameState->drawEnv[i]);
+    g_gameState->gameData->drawBuf ^= 1;
+    gfx_setBuffer(g_gameState->gameData->drawBuf);
 }

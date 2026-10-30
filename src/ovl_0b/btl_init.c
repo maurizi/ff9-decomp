@@ -53,7 +53,7 @@ void btl_initEnemies(Battle *arg0) {
     s16 m;
     s32 k;
 
-    for (; i < g_gameState->gameData->unk8E4.battle->scene.unk4->unk1; i++, n++) {
+    for (; i < g_gameState->gameData->ctx.battle->scene.unk4->unk1; i++, n++) {
         e = &arg0->enemies[i];
         e->flags = (e->flags & ~0x3F) | 0x20;
         u = &arg0->units[n];
@@ -126,7 +126,7 @@ void btl_initPartyUnit(Character *c, BtlUnit *u, u16 slot, u16 n) {
     btl_initDoomCount((Unk800C09D8 *)u);
     u->max->maxAtb = (0x3C - u->speed) * 160;
     btl_resetAtbSpeed((Unk800BD8F0 *)u);
-    k = g_gameState->gameData->unk8E4.battle->scene.unk0 & 3;
+    k = g_gameState->gameData->ctx.battle->scene.unk0 & 3;
     if (k == 0) {
         u->atb = 0;
     } else if (k == 1) {
@@ -140,7 +140,7 @@ void btl_initPartyUnit(Character *c, BtlUnit *u, u16 slot, u16 n) {
         }
         u->atb = ((*g_randPtr << 8) | *g_randPtr++) % u->max->maxAtb;
     }
-    u->weaponModel = &g_gameState->gameData->unk8E4.battle->weaponModels[n].unk0;
+    u->weaponModel = &g_gameState->gameData->ctx.battle->weaponModels[n].unk0;
     btl_loadPartyMotions(u, (c->info.w >> 4) & 0x1F, n);
     btl_initWeapon(c, u);
     u->defense = c->defense;
@@ -180,7 +180,7 @@ u32 *btl_initEnemyState(Battle *arg0, u32 *arg1) {
     s32 i;
     BtlEnemyType *p;
 
-    for (i = 0; i < g_gameState->gameData->unk8E4.battle->scene.unk4->unk1; i++) {
+    for (i = 0; i < g_gameState->gameData->ctx.battle->scene.unk4->unk1; i++) {
         {
             p = arg0->enemies[i].type;
             u = &arg0->units[i + 4];

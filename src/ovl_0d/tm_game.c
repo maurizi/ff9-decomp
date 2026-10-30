@@ -17,20 +17,20 @@ void tm_mainLoop(void) {
         pad_update();
         tm_updatePad(&s);
         ctx = g_gameState->gameData;
-        p = TM_PRIM_BUF + ctx->unk8 * TM_PRIM_BUF_SIZE;
+        p = TM_PRIM_BUF + ctx->drawBuf * TM_PRIM_BUF_SIZE;
         if (s.showScore != 0) {
-            p = tm_drawScore(ctx->unk10[ctx->unk8], p, &s);
+            p = tm_drawScore(ctx->ot[ctx->drawBuf], p, &s);
         }
         if (s.showBlocks != 0) {
-            p = tm_drawBlocks(g_gameState->gameData->unk10[g_gameState->gameData->unk8], p, &s);
+            p = tm_drawBlocks(g_gameState->gameData->ot[g_gameState->gameData->drawBuf], p, &s);
         }
-        p = tm_drawBackground(g_gameState->gameData->unk10[g_gameState->gameData->unk8], p, &s);
+        p = tm_drawBackground(g_gameState->gameData->ot[g_gameState->gameData->drawBuf], p, &s);
         if (s.showBoard != 0 || s.task == TM_TASK_FIELD_FADE) {
-            p = tm_drawBoard(g_gameState->gameData->unk10[g_gameState->gameData->unk8], p, &s);
+            p = tm_drawBoard(g_gameState->gameData->ot[g_gameState->gameData->drawBuf], p, &s);
         }
-        p = tm_drawCards(g_gameState->gameData->unk10[g_gameState->gameData->unk8], p, &s);
-        p = tm_drawCombo(g_gameState->gameData->unk10[g_gameState->gameData->unk8], p, &s);
-        p = tm_drawBattleValues(g_gameState->gameData->unk10[g_gameState->gameData->unk8], p, &s);
+        p = tm_drawCards(g_gameState->gameData->ot[g_gameState->gameData->drawBuf], p, &s);
+        p = tm_drawCombo(g_gameState->gameData->ot[g_gameState->gameData->drawBuf], p, &s);
+        p = tm_drawBattleValues(g_gameState->gameData->ot[g_gameState->gameData->drawBuf], p, &s);
         switch (s.task) {
         case TM_TASK_ENEMY_SELECT:
             g_menuHelp.text = 0;
@@ -44,7 +44,7 @@ void tm_mainLoop(void) {
             tm_checkGameEnd(&s);
             if (s.autoPlay == 0) {
                 tm_debugPrint(&s, "PLAYER CARD SELECT\n");
-                tm_taskPlayerSelect(g_gameState->gameData->unk10[g_gameState->gameData->unk8], p, &s);
+                tm_taskPlayerSelect(g_gameState->gameData->ot[g_gameState->gameData->drawBuf], p, &s);
             } else {
                 tm_debugPrint(&s, "PLAYER AUTO SELECT\n");
                 tm_autoPlace(&s);
@@ -54,12 +54,12 @@ void tm_mainLoop(void) {
         case TM_TASK_PLAYER_SET:
             tm_debugPrint(&s, "PLAYER CARD SET\n");
             help_setCursorOnTop(0);
-            tm_taskPlayerSet(g_gameState->gameData->unk10[g_gameState->gameData->unk8], p, &s);
+            tm_taskPlayerSet(g_gameState->gameData->ot[g_gameState->gameData->drawBuf], p, &s);
             tm_layoutCards(&s);
             break;
         case TM_TASK_RESULT:
             g_menuHelp.text = 0;
-            tm_drawResult(g_gameState->gameData->unk10[g_gameState->gameData->unk8], p, &s);
+            tm_drawResult(g_gameState->gameData->ot[g_gameState->gameData->drawBuf], p, &s);
             tm_debugPrint(&s, "RESULT\n");
             tm_taskResult(&s);
             break;
@@ -72,20 +72,20 @@ void tm_mainLoop(void) {
             g_menuHelp.text = 0;
             tm_debugPrint(&s, "FLASH\n");
             tm_layoutCards(&s);
-            tm_drawFlash(g_gameState->gameData->unk10[g_gameState->gameData->unk8], p, &s);
+            tm_drawFlash(g_gameState->gameData->ot[g_gameState->gameData->drawBuf], p, &s);
             break;
         case TM_TASK_BATTLE_SELECT:
             tm_debugPrint(&s, "BATTLE SELECT\n");
             help_setCursorOnTop(0);
-            p = tm_taskBattleSelect(g_gameState->gameData->unk10[g_gameState->gameData->unk8], p, &s);
+            p = tm_taskBattleSelect(g_gameState->gameData->ot[g_gameState->gameData->drawBuf], p, &s);
             tm_layoutCards(&s);
-            tm_drawBattleSelect(g_gameState->gameData->unk10[g_gameState->gameData->unk8], p, &s);
+            tm_drawBattleSelect(g_gameState->gameData->ot[g_gameState->gameData->drawBuf], p, &s);
             break;
         case TM_TASK_BATTLE:
             g_menuHelp.text = 0;
             tm_debugPrint(&s, "BATTLE\n");
             tm_layoutCards(&s);
-            tm_taskBattle(g_gameState->gameData->unk10[g_gameState->gameData->unk8], p, &s);
+            tm_taskBattle(g_gameState->gameData->ot[g_gameState->gameData->drawBuf], p, &s);
             break;
         case TM_TASK_TURN:
             g_menuHelp.text = 0;
@@ -109,53 +109,53 @@ void tm_mainLoop(void) {
             tm_debugPrint(&s, "TRY AGAIN\n");
             help_setCursorOnTop(1);
             tm_taskTryAgain(&s);
-            tm_drawTryAgain(g_gameState->gameData->unk10[g_gameState->gameData->unk8], p, &s);
+            tm_drawTryAgain(g_gameState->gameData->ot[g_gameState->gameData->drawBuf], p, &s);
             break;
         case TM_TASK_CARD_CHANGE:
             g_menuHelp.text = 0;
             tm_debugPrint(&s, "CARD_CHANGE\n");
-            tm_taskCardChange(g_gameState->gameData->unk10[g_gameState->gameData->unk8], p, &s);
+            tm_taskCardChange(g_gameState->gameData->ot[g_gameState->gameData->drawBuf], p, &s);
             break;
         case TM_TASK_CARD_MOVE:
             g_menuHelp.text = 0;
             tm_debugPrint(&s, "CARD_MOVE\n");
-            tm_taskCardMove(g_gameState->gameData->unk10[g_gameState->gameData->unk8], p, &s);
+            tm_taskCardMove(g_gameState->gameData->ot[g_gameState->gameData->drawBuf], p, &s);
             break;
         case TM_TASK_FLASH2:
             g_menuHelp.text = 0;
             tm_debugPrint(&s, "FLASH2\n");
-            tm_drawFlash2(g_gameState->gameData->unk10[g_gameState->gameData->unk8], p, &s);
+            tm_drawFlash2(g_gameState->gameData->ot[g_gameState->gameData->drawBuf], p, &s);
             break;
         case TM_TASK_TRADE:
             g_menuHelp.text = 0;
             tm_debugPrint(&s, "TRADE\n");
             tm_taskTrade(&s);
-            tm_drawTradeBadge(g_gameState->gameData->unk10[g_gameState->gameData->unk8], p, &s);
+            tm_drawTradeBadge(g_gameState->gameData->ot[g_gameState->gameData->drawBuf], p, &s);
             break;
         case TM_TASK_CHANGE2:
             g_menuHelp.text = 0;
             tm_debugPrint(&s, "CHANGE2\n");
             help_setCursorOnTop(1);
-            tm_taskChange2(g_gameState->gameData->unk10[g_gameState->gameData->unk8], p, &s);
+            tm_taskChange2(g_gameState->gameData->ot[g_gameState->gameData->drawBuf], p, &s);
             break;
         case TM_TASK_CHOICE:
             tm_debugPrint(&s, "CHOICE\n");
             help_setCursorOnTop(1);
             tm_stockInput(&s);
-            tm_drawStock(g_gameState->gameData->unk10[g_gameState->gameData->unk8], p, &s);
+            tm_drawStock(g_gameState->gameData->ot[g_gameState->gameData->drawBuf], p, &s);
             tm_showStockCard(&s);
             tm_layoutCards(&s);
             break;
         case TM_TASK_GAME_QUIT:
             tm_debugPrint(&s, "GAME QUIT\n");
             tm_taskGameQuit(&s);
-            tm_drawStock(g_gameState->gameData->unk10[g_gameState->gameData->unk8], p, &s);
+            tm_drawStock(g_gameState->gameData->ot[g_gameState->gameData->drawBuf], p, &s);
             tm_showStockCard(&s);
             tm_layoutCards(&s);
             break;
         case TM_TASK_CHOICE2:
             tm_debugPrint(&s, "CHOICE2\n");
-            tm_drawStock(g_gameState->gameData->unk10[g_gameState->gameData->unk8], p, &s);
+            tm_drawStock(g_gameState->gameData->ot[g_gameState->gameData->drawBuf], p, &s);
             tm_showStockCard(&s);
             tm_taskChoice2(&s);
             tm_layoutCards(&s);
@@ -172,7 +172,7 @@ void tm_mainLoop(void) {
         case TM_TASK_AWAY_INFO:
             g_menuHelp.text = 0;
             tm_debugPrint(&s, "AWAY INFO\n");
-            tm_drawStock(g_gameState->gameData->unk10[g_gameState->gameData->unk8], p, &s);
+            tm_drawStock(g_gameState->gameData->ot[g_gameState->gameData->drawBuf], p, &s);
             tm_taskAwayInfo(&s);
             break;
         case TM_TASK_CARD_AWAY:
@@ -180,13 +180,13 @@ void tm_mainLoop(void) {
             help_setCursorOnTop(1);
             tm_stockInput(&s);
             tm_showStockCard(&s);
-            tm_drawStock(g_gameState->gameData->unk10[g_gameState->gameData->unk8], p, &s);
+            tm_drawStock(g_gameState->gameData->ot[g_gameState->gameData->drawBuf], p, &s);
             break;
         case TM_TASK_CARD_AWAY2:
             tm_debugPrint(&s, "CARD AWAY2\n");
             help_setCursorOnTop(1);
             tm_showStockCard(&s);
-            tm_drawStock(g_gameState->gameData->unk10[g_gameState->gameData->unk8], p, &s);
+            tm_drawStock(g_gameState->gameData->ot[g_gameState->gameData->drawBuf], p, &s);
             tm_taskCardAway2(&s);
             break;
         case TM_TASK_CARD_LESS5:
@@ -203,7 +203,7 @@ void tm_mainLoop(void) {
             g_menuHelp.text = 0;
             tm_debugPrint(&s, "END FADE\n");
             if (s.quitting != 0) {
-                tm_drawStock(g_gameState->gameData->unk10[g_gameState->gameData->unk8], p, &s);
+                tm_drawStock(g_gameState->gameData->ot[g_gameState->gameData->drawBuf], p, &s);
                 tm_showStockCard(&s);
             }
             tm_taskEndFade(&s);
@@ -211,7 +211,7 @@ void tm_mainLoop(void) {
         case TM_TASK_COIN:
             g_menuHelp.text = 0;
             tm_debugPrint(&s, "COIN\n");
-            tm_taskCoin(g_gameState->gameData->unk10[g_gameState->gameData->unk8], p, &s);
+            tm_taskCoin(g_gameState->gameData->ot[g_gameState->gameData->drawBuf], p, &s);
             tm_layoutCards(&s);
             break;
         case TM_TASK_FLASH_ARROW:
@@ -222,7 +222,7 @@ void tm_mainLoop(void) {
         case TM_TASK_ENEMY_THINK:
             g_menuHelp.text = 0;
             tm_debugPrint(&s, "ENEMY THINK\n");
-            tm_taskEnemyThink(g_gameState->gameData->unk10[g_gameState->gameData->unk8], p, &s);
+            tm_taskEnemyThink(g_gameState->gameData->ot[g_gameState->gameData->drawBuf], p, &s);
             tm_animEnemyThink(&s);
             break;
         case TM_TASK_ENEMY_APPEAR:
@@ -235,7 +235,7 @@ void tm_mainLoop(void) {
             g_menuHelp.text = 0;
             tm_debugPrint(&s, "GET SELECT\n");
             help_setCursorOnTop(0);
-            tm_taskGetSelect(g_gameState->gameData->unk10[g_gameState->gameData->unk8], p, &s);
+            tm_taskGetSelect(g_gameState->gameData->ot[g_gameState->gameData->drawBuf], p, &s);
             tm_layoutCards(&s);
             break;
         default:
@@ -284,7 +284,7 @@ void tm_mainLoop(void) {
 }
 
 void tm_clearOt(void) {
-    ClearOTagR(g_gameState->gameData->unk10[g_gameState->gameData->unk8], 0x1000);
+    ClearOTagR(g_gameState->gameData->ot[g_gameState->gameData->drawBuf], 0x1000);
 }
 
 void tm_endFrame(TmState *s) {
@@ -294,7 +294,7 @@ void tm_endFrame(TmState *s) {
         g_gameState->unk0 |= 1;
         s->task = TM_TASK_EXIT;
     }
-    if (&g_gameState->drawEnv[g_gameState->gameData->unk8].dfe != NULL) {
+    if (&g_gameState->drawEnv[g_gameState->gameData->drawBuf].dfe != NULL) {
         DrawSync(0);
         VSync(g_gameState->vsyncMode);
     } else {
@@ -302,12 +302,12 @@ void tm_endFrame(TmState *s) {
         VSync(g_gameState->vsyncMode);
         ResetGraph(1);
     }
-    PutDispEnv(&g_gameState->dispEnv[g_gameState->gameData->unk8]);
-    PutDrawEnv(&g_gameState->drawEnv[g_gameState->gameData->unk8]);
+    PutDispEnv(&g_gameState->dispEnv[g_gameState->gameData->drawBuf]);
+    PutDrawEnv(&g_gameState->drawEnv[g_gameState->gameData->drawBuf]);
     ctx = g_gameState->gameData;
-    DrawOTag(ctx->unk10[ctx->unk8] + 0xFFF);
-    g_gameState->gameData->unk8 ^= 1;
-    gfx_setBuffer(g_gameState->gameData->unk8);
+    DrawOTag(ctx->ot[ctx->drawBuf] + 0xFFF);
+    g_gameState->gameData->drawBuf ^= 1;
+    gfx_setBuffer(g_gameState->gameData->drawBuf);
 }
 
 void tm_setup(TmState *s) {

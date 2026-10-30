@@ -16,21 +16,21 @@ void opening_bootScreen(void) {
         } else if (t == 0x3C) {
             game_startFade(1, 1, 0x3C, 0xFFFFFF);
         }
-        setlen(&g_bootScreenSprite[g_gameState->gameData->unk8], 4);
-        g_bootScreenSprite[g_gameState->gameData->unk8].code = 0x64;
-        g_bootScreenSprite[g_gameState->gameData->unk8].r0 = 0x80;
-        g_bootScreenSprite[g_gameState->gameData->unk8].g0 = 0x80;
-        g_bootScreenSprite[g_gameState->gameData->unk8].b0 = 0x80;
-        g_bootScreenSprite[g_gameState->gameData->unk8].x0 = (0x140 - r->w) / 2;
-        g_bootScreenSprite[g_gameState->gameData->unk8].y0 = (0xE0 - r->h) / 2;
-        g_bootScreenSprite[g_gameState->gameData->unk8].u0 = 0;
-        g_bootScreenSprite[g_gameState->gameData->unk8].v0 = 0;
-        g_bootScreenSprite[g_gameState->gameData->unk8].w = r->w;
-        g_bootScreenSprite[g_gameState->gameData->unk8].h = r->h;
-        g_bootScreenSprite[g_gameState->gameData->unk8].clut = 0x3800;
-        addPrim(&g_gameState->gameData->unk10[g_gameState->gameData->unk8][SCREEN_OTZ], &g_bootScreenSprite[g_gameState->gameData->unk8]);
-        setDrawTPage(&g_bootScreenTpage[g_gameState->gameData->unk8], 1, 1, 0xA);
-        addPrim(&g_gameState->gameData->unk10[g_gameState->gameData->unk8][SCREEN_OTZ], &g_bootScreenTpage[g_gameState->gameData->unk8]);
+        setlen(&g_bootScreenSprite[g_gameState->gameData->drawBuf], 4);
+        g_bootScreenSprite[g_gameState->gameData->drawBuf].code = 0x64;
+        g_bootScreenSprite[g_gameState->gameData->drawBuf].r0 = 0x80;
+        g_bootScreenSprite[g_gameState->gameData->drawBuf].g0 = 0x80;
+        g_bootScreenSprite[g_gameState->gameData->drawBuf].b0 = 0x80;
+        g_bootScreenSprite[g_gameState->gameData->drawBuf].x0 = (0x140 - r->w) / 2;
+        g_bootScreenSprite[g_gameState->gameData->drawBuf].y0 = (0xE0 - r->h) / 2;
+        g_bootScreenSprite[g_gameState->gameData->drawBuf].u0 = 0;
+        g_bootScreenSprite[g_gameState->gameData->drawBuf].v0 = 0;
+        g_bootScreenSprite[g_gameState->gameData->drawBuf].w = r->w;
+        g_bootScreenSprite[g_gameState->gameData->drawBuf].h = r->h;
+        g_bootScreenSprite[g_gameState->gameData->drawBuf].clut = 0x3800;
+        addPrim(&g_gameState->gameData->ot[g_gameState->gameData->drawBuf][SCREEN_OTZ], &g_bootScreenSprite[g_gameState->gameData->drawBuf]);
+        setDrawTPage(&g_bootScreenTpage[g_gameState->gameData->drawBuf], 1, 1, 0xA);
+        addPrim(&g_gameState->gameData->ot[g_gameState->gameData->drawBuf][SCREEN_OTZ], &g_bootScreenTpage[g_gameState->gameData->drawBuf]);
         t--;
         game_updateFade();
         opening_bootSwap();
@@ -65,7 +65,7 @@ void opening_bootScreenFree(void) {
 
 void opening_bootClearOt(void) {
     GameData *ctx = g_gameState->gameData;
-    ClearOTagR(ctx->unk10[ctx->unk8], 0x1000);
+    ClearOTagR(ctx->ot[ctx->drawBuf], 0x1000);
 }
 
 void opening_bootSwap(void) {
@@ -76,12 +76,12 @@ void opening_bootSwap(void) {
     g_gameState->vsyncMode = 0;
     VSync(g_gameState->vsyncMode);
     ResetGraph(1);
-    PutDispEnv(&g_gameState->dispEnv[g_gameState->gameData->unk8]);
+    PutDispEnv(&g_gameState->dispEnv[g_gameState->gameData->drawBuf]);
     ctx = g_gameState->gameData;
-    i = ctx->unk8;
-    DrawOTagEnv(ctx->unk10[i] + 0xFFF, &g_gameState->drawEnv[i]);
-    g_gameState->gameData->unk8 ^= 1;
-    gfx_setBuffer(g_gameState->gameData->unk8);
+    i = ctx->drawBuf;
+    DrawOTagEnv(ctx->ot[i] + 0xFFF, &g_gameState->drawEnv[i]);
+    g_gameState->gameData->drawBuf ^= 1;
+    gfx_setBuffer(g_gameState->gameData->drawBuf);
 }
 
 void func_800AB1E4(void) {

@@ -98,26 +98,26 @@ s32 tm_soundCmd(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4) {
                 D_800B3664 = kind;
             }
             if (g_gameState->gameData->musicId[0] != arg1) {
-                if (g_gameState->gameData->unk0 & 0x20000000) {
+                if (g_gameState->gameData->flags & 0x20000000) {
                     akao_stopMusic(g_gameState->gameData->musicHandle[0]);
                 }
-                g_gameState->gameData->unk0 &= 0xCFFFFFFF;
+                g_gameState->gameData->flags &= 0xCFFFFFFF;
                 g_gameState->gameData->musicBank[0] = 0xE2;
                 g_gameState->gameData->musicId[0] = arg1;
                 g_gameState->gameData->musicVolume[0] = 0x7F;
             }
             g_gameState->gameData->musicHandle[0] = akao_playMusic(g_gameState->gameData->musicSeq);
             g = g_gameState->gameData;
-            if (!(g->unk0 & 0x20000000)) {
+            if (!(g->flags & 0x20000000)) {
                 akao_fadeMusicVolumeFrom(g->musicHandle[0], 0xA, 0, g->musicVolume[0]);
             }
             D_800B3664 = -1;
-            g_gameState->gameData->unk0 |= 0x30000000;
+            g_gameState->gameData->flags |= 0x30000000;
             return 0;
         case 1:
             akao_stopMusic(g_gameState->gameData->musicHandle[0]);
             g_gameState->gameData->musicVolume[0] = 0x7F;
-            g_gameState->gameData->unk0 &= 0xDFFFFFFF;
+            g_gameState->gameData->flags &= 0xDFFFFFFF;
             return 0;
         case 2:
             if ((arg0 & 0x3F) != 1) {

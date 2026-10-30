@@ -10,7 +10,7 @@ void btlui_vsync(void) {
         btlui_frameUpdate();
     }
     g = g_gameState->gameData;
-    if (!(g->unk0 & 0x100) && !(g->unk8E4.battle->flags & 0x20)) {
+    if (!(g->flags & 0x100) && !(g->ctx.battle->flags & 0x20)) {
         if (g_btluiState.unkC == 0 && (u8)btlui_isEnabled()) {
             func_800EB578(0xBA);
             btlui_beginFrame();
@@ -32,12 +32,12 @@ void btlui_vsync(void) {
 
 void btlui_frameUpdate(void) {
     func_800EA5C4();
-    g_drawBufs.cur = g_gameState->gameData->unk8 ^ 1;
+    g_drawBufs.cur = g_gameState->gameData->drawBuf ^ 1;
     if (g_btluiState.unk0 == 0) {
         btlui_applyEnable();
     }
-    if (!(g_gameState->gameData->unk0 & 0x100)) {
-        if (!(g_gameState->gameData->unk8E4.battle->flags & 0x20)) {
+    if (!(g_gameState->gameData->flags & 0x100)) {
+        if (!(g_gameState->gameData->ctx.battle->flags & 0x20)) {
             if (g_btluiState.unk0 != 0) {
                 g_btluiState.unk8 = (g_padHeld >> 19) & 1;
                 g_btluiState.unkD = g_btluiState.unk2;
@@ -49,7 +49,7 @@ void btlui_frameUpdate(void) {
                 win_reapClosed();
             }
         }
-        if (!(g_gameState->gameData->unk0 & 0x100) && !(g_gameState->gameData->unk8E4.battle->flags & 0x20) && g_btluiState.unkC != 0) {
+        if (!(g_gameState->gameData->flags & 0x100) && !(g_gameState->gameData->ctx.battle->flags & 0x20) && g_btluiState.unkC != 0) {
             g_btluiState.unkC--;
         }
     }
@@ -175,7 +175,7 @@ u8 *btl_getAbilityName(s32 arg0) {
     if (arg0 >= 0xC0) {
         return NULL;
     }
-    return g_gameState->gameData->unk8E4.battle->abilities[arg0].nameOfs + D_800F909C;
+    return g_gameState->gameData->ctx.battle->abilities[arg0].nameOfs + D_800F909C;
 }
 
 void btl_useReservedItem(s32 arg0) {
@@ -232,8 +232,8 @@ u8 func_800EA27C(void) {
 void func_800EA290(void) {
     if (g_btluiState.unk6 == 0) {
         GameData *gd = g_gameState->gameData;
-        if (!(gd->unk8E4.battle->flags & 0x100)) {
-            PutDispEnv(&g_gameState->dispEnv[gd->unk8]);
+        if (!(gd->ctx.battle->flags & 0x100)) {
+            PutDispEnv(&g_gameState->dispEnv[gd->drawBuf]);
         }
     }
 }
@@ -247,7 +247,7 @@ void btlui_setPauseRequest(s8 arg0) {
 }
 
 void func_800EA34C(void) {
-    u8 v = g_gameState->gameData->unk8;
+    u8 v = g_gameState->gameData->drawBuf;
     g_btluiState.unkC = 2;
     g_drawBufs.cur = v;
 }
@@ -257,7 +257,7 @@ void func_800EA378(void) {
     s32 r = 0;
     volatile Unk80104E68 *p = &g_btluiState;
     s32 f;
-    if (((g->gameData->unk8E4.battle->cmdFlags >> 1) ^ 1) & 1) {
+    if (((g->gameData->ctx.battle->cmdFlags >> 1) ^ 1) & 1) {
         r = 1;
     } else {
         do {
@@ -328,14 +328,14 @@ void btlui_applyEnable(void) {
 void func_800EA5C4(void) {
     if (g_btluiState.unkF != 0 && g_btluiState.unk6 != 0) {
         GameData *gd = g_gameState->gameData;
-        if (!(gd->unk8E4.battle->flags & 0x100)) {
-            PutDispEnv(&g_gameState->dispEnv[gd->unk8]);
+        if (!(gd->ctx.battle->flags & 0x100)) {
+            PutDispEnv(&g_gameState->dispEnv[gd->drawBuf]);
         }
     }
 }
 
 void btlui_initPartyEntries(void) {
-    BtlUnit *u = g_gameState->gameData->unk8E4.battle->unitList;
+    BtlUnit *u = g_gameState->gameData->ctx.battle->unitList;
     Unk80104F88Entry *e = g_btlUi->entries;
     s8 n = 0;
     s8 f;
@@ -438,7 +438,7 @@ void btl_updateAtb(void) {
     BtlUnit28 *s;
     BtlUnit24 *m;
 
-    u = g_gameState->gameData->unk8E4.battle->unitList;
+    u = g_gameState->gameData->ctx.battle->unitList;
     if (btl_isAtbRunning() == 0) {
         return;
     }
@@ -479,7 +479,7 @@ void btlui_checkSwdMagPartner(void) {
     BtlUnit *u;
     s32 slot;
 
-    u = g_gameState->gameData->unk8E4.battle->unitList;
+    u = g_gameState->gameData->ctx.battle->unitList;
     g_btlUi->swdMagPartner = 0;
     g_btlUi->swdMagBlocked.b[0] = 0;
     g_btlUi->swdMagBlocked.b[1] = 0;
@@ -568,7 +568,7 @@ void btlui_initMenu(void) {
     p->menuState = BTLUI_MENU_NONE;
     p->cmdUnit = NULL;
     g_btlUi->tick = 0;
-    g_btlUi->ambush = g_gameState->gameData->unk8E4.battle->scene.unk0 & 3;
+    g_btlUi->ambush = g_gameState->gameData->ctx.battle->scene.unk0 & 3;
     g_btlUi->frozenSide = btlui_getFrozenSide();
     btlui_clearAbilityLists();
     btlui_initPartyEntries();
@@ -661,7 +661,7 @@ void btlui_queueMenuUnit(BtlUnit *arg0) {
 }
 
 void btlui_resetMenuQueue(void) {
-    BtlUnit *u = g_gameState->gameData->unk8E4.battle->unitList;
+    BtlUnit *u = g_gameState->gameData->ctx.battle->unitList;
     btlui_clearMenuQueue();
     while (u != NULL) {
         if (u->flags & 1) {
@@ -799,7 +799,7 @@ s32 btlui_canOpenMenu(BtlUnit *arg0) {
 void btlui_applyTargetable(void) {
     BtlUnit *u;
     u8 c;
-    for (u = g_gameState->gameData->unk8E4.battle->unitList; u != 0; u = u->next) {
+    for (u = g_gameState->gameData->ctx.battle->unitList; u != 0; u = u->next) {
         c = u->unkB2;
         if (c >= 2) {
             if (c == 2) {
@@ -825,7 +825,7 @@ void btlui_pollEscape(void) {
     Unk80104E68 *p = (Unk80104E68 *)&g_btluiState;
     if (p->unk2 != 0) {
         if ((g_padHeld & (BTN_L1 | BTN_R1)) == 0x300000) {
-            g_gameState->gameData->unk8E4.battle->escapeHeld = 1;
+            g_gameState->gameData->ctx.battle->escapeHeld = 1;
             if (p->unk13++ >= 0x3D) {
                 p->unk13 = 0;
                 btl_tryEscape(1);
@@ -833,7 +833,7 @@ void btlui_pollEscape(void) {
                 btl_tryEscape(0);
             }
         } else {
-            g_gameState->gameData->unk8E4.battle->escapeHeld = 0;
+            g_gameState->gameData->ctx.battle->escapeHeld = 0;
         }
     }
 }
@@ -938,7 +938,7 @@ void btlui_closeHelp(void) {
 void btlui_updateHelpText(void) {
     s32 (*fn)(void);
     g_btluiHelp.unk4 = 0;
-    if (g_gameState->gameData->unk8E4.battle->escapeHeld != 0) {
+    if (g_gameState->gameData->ctx.battle->escapeHeld != 0) {
         g_btluiHelp.unk4 = (s32)text_get(4);
     } else {
         fn = g_btluiMenuHelp[g_btlUi->menuState];
@@ -1314,8 +1314,8 @@ void btlui_cacheCmdIcons(void) {
     s32 x = 0x3C0;
     s32 y = 0x1E0;
     s32 i = 0;
-    r.x += g_btluiDispOrigin[g_gameState->gameData->unk8 & 1][0];
-    r.y += g_btluiDispOrigin[g_gameState->gameData->unk8 & 1][1];
+    r.x += g_btluiDispOrigin[g_gameState->gameData->drawBuf & 1][0];
+    r.y += g_btluiDispOrigin[g_gameState->gameData->drawBuf & 1][1];
     do {
         SetDrawMove((DR_MOVE *)g_primPtr, &r, x, y);
         x += 0x10;
@@ -1581,7 +1581,7 @@ void btlui_selectDirectCmd(Unk800EDE6C *arg0) {
     Unk800EF80C s;
     Battle16CC *e;
     u8 b = g_btlCmdMenu.cmdIds[g_btlCmdMenu.cursor];
-    e = &g_gameState->gameData->unk8E4.battle->abilities[arg0->unk8];
+    e = &g_gameState->gameData->ctx.battle->abilities[arg0->unk8];
     s.unk6 = arg0->unk8;
     s.unk0 = 1;
     s.unk1 = b;
@@ -1766,7 +1766,7 @@ void btlui_listInput(void) {
         } else {
             menuList_up(l, g_padRepeat);
             menuList_down(l, g_padRepeat);
-            if (g_gameState->gameData->unk8E4.battle->escapeHeld == 0) {
+            if (g_gameState->gameData->ctx.battle->escapeHeld == 0) {
                 menuList_pageUp(l, g_padRepeat);
                 menuList_pageDown(l, g_padRepeat);
             }
@@ -1787,11 +1787,11 @@ s32 btlui_selectAbility(void) {
         s.unk0 = r;
         s.unk1 = g_btluiList.cmdNo;
         s.unk6 = btlui_resolveAbility(k);
-        s.unk2 = g_gameState->gameData->unk8E4.battle->abilities[k].unk0_0;
-        s.unk3 = g_gameState->gameData->unk8E4.battle->abilities[k].unk0_4;
-        s.unk4 = g_gameState->gameData->unk8E4.battle->abilities[k].unk0_31;
-        s.unk7 = g_gameState->gameData->unk8E4.battle->abilities[k].unk0_5;
-        s.unk5 = g_gameState->gameData->unk8E4.battle->abilities[k].unk0_29;
+        s.unk2 = g_gameState->gameData->ctx.battle->abilities[k].unk0_0;
+        s.unk3 = g_gameState->gameData->ctx.battle->abilities[k].unk0_4;
+        s.unk4 = g_gameState->gameData->ctx.battle->abilities[k].unk0_31;
+        s.unk7 = g_gameState->gameData->ctx.battle->abilities[k].unk0_5;
+        s.unk5 = g_gameState->gameData->ctx.battle->abilities[k].unk0_29;
         s.unk8 = g_btluiList.doubleCast;
         s.unk9 = g_btluiList.trance;
         btlui_startTargetSelect(&s);
@@ -1832,7 +1832,7 @@ s32 btlui_selectThrow(void) {
     MenuList *l = &g_btlUi->windows[2]->list;
     u8 r = 0;
     UnkPair *p = btlui_getThrowListEntry(l->cursor + l->top);
-    Battle16CC *e = &g_gameState->gameData->unk8E4.battle->abilities[g_btluiList.cmd->unk8];
+    Battle16CC *e = &g_gameState->gameData->ctx.battle->abilities[g_btluiList.cmd->unk8];
     s32 n;
 
     if (p == NULL) {
@@ -1857,7 +1857,7 @@ s32 btlui_selectThrow(void) {
 
 s32 btlui_getAbilityState(s32 arg0) {
     Unk80104F88Entry *e = g_btluiList.unit->menu;
-    Battle16CC *a = &g_gameState->gameData->unk8E4.battle->abilities[arg0];
+    Battle16CC *a = &g_gameState->gameData->ctx.battle->abilities[arg0];
 
     if (e->learns != 0 && e->fromEquip[arg0] == 0 && (s16)*e->apCounters[arg0] < (s16)e->apNeeded[arg0]) {
         return 0;
@@ -1866,7 +1866,7 @@ s32 btlui_getAbilityState(s32 arg0) {
         if ((u8)btl_hasStatus(g_btluiList.unit, BTL_STATUS_SILENCE)) {
             return 1;
         }
-        if ((g_gameState->gameData->unk8E4.battle->scene.unk0 >> 9) & 1) {
+        if ((g_gameState->gameData->ctx.battle->scene.unk0 >> 9) & 1) {
             return 1;
         }
     }
@@ -1991,7 +1991,7 @@ void btlui_drawAbilityRow(s32 arg0, s32 arg1, s32 arg2, MenuView *arg3) {
 
     if (res != 0) {
         x = r->x;
-        a = &g_gameState->gameData->unk8E4.battle->abilities[k];
+        a = &g_gameState->gameData->ctx.battle->abilities[k];
         y = r->y + arg1 * 15 + arg3->unk2 - dy;
         c = (res != 2) * 2;
         text_draw(x + 6, y, 7, D_800F909C + a->nameOfs, c);
@@ -2184,7 +2184,7 @@ void btlui_startTargetSelect(Unk800EF80C *arg0) {
 void btlui_setDefaultTargets(s32 arg0) {
     BtlUnit *u;
     if (g_btlTarget.targetType == 0xC) {
-        for (u = g_gameState->gameData->unk8E4.battle->unitList; u != 0; u = u->next) {
+        for (u = g_gameState->gameData->ctx.battle->unitList; u != 0; u = u->next) {
             if (((u->flags >> 28) & 1) && (!(u->status & BTL_STATUS_KO) || g_btlTarget.allowKo != 0)) {
                 u->flags |= 0x20000000;
             }
@@ -2217,7 +2217,7 @@ s32 btlui_cycleTarget(s32 arg0) {
     }
     memset((s32)list, 0, 0x10);
     n = 0;
-    for (p = g_gameState->gameData->unk8E4.battle->unitList; p != NULL; p = p->next) {
+    for (p = g_gameState->gameData->ctx.battle->unitList; p != NULL; p = p->next) {
         if (((p->flags >> 28) & 1) && (p->flags & 1) == g_btlTarget.side && (!(p->status & BTL_STATUS_KO) || g_btlTarget.allowKo != 0)) {
             list[n] = p;
             if (p == u) {
@@ -2255,7 +2255,7 @@ s32 btlui_switchTargetSide(u8 arg0) {
     u8 side;
     s32 k;
 
-    for (u = g_gameState->gameData->unk8E4.battle->unitList; u != NULL; u = u->next) {
+    for (u = g_gameState->gameData->ctx.battle->unitList; u != NULL; u = u->next) {
         if ((u->flags & 0x30000000) == 0x30000000) {
             cur = u;
             goto found;
@@ -2271,7 +2271,7 @@ found:
         g_btlTarget.side = side;
         memset(list, 0, sizeof(list));
         n = 0;
-        for (t = g_gameState->gameData->unk8E4.battle->unitList; t != NULL; t = t->next) {
+        for (t = g_gameState->gameData->ctx.battle->unitList; t != NULL; t = t->next) {
             if (((t->flags >> 28) & 1) && (t->flags & 1) == side) {
                 if (!(t->status & BTL_STATUS_KO) || g_btlTarget.allowKo) {
                     list[n++] = t;
@@ -2310,7 +2310,7 @@ void btlui_toggleTargetAll(void) {
             u->flags |= 0x20000000;
             g_btlTarget.targetAll = 0;
         } else {
-            p = g_gameState->gameData->unk8E4.battle->unitList;
+            p = g_gameState->gameData->ctx.battle->unitList;
             u = BtlFindTargetCursor();
             n = 0;
             g_btlTarget.unk24 = u;
@@ -2342,7 +2342,7 @@ s32 btlui_isCmdUsable(void) {
         return 0;
     }
     if (e->unk6 == 1) {
-        b = &g_gameState->gameData->unk8E4.battle->abilities[g_btlTarget.subNo];
+        b = &g_gameState->gameData->ctx.battle->abilities[g_btlTarget.subNo];
         cost = b->mpCost;
         if (g_btlTarget.halfMp != 0) {
             cost >>= 1;
@@ -2377,7 +2377,7 @@ s32 btlui_refreshTargets(void) {
         return 1;
     }
     if (g_btlTarget.targetType != 0xC) {
-        p = g_gameState->gameData->unk8E4.battle->unitList;
+        p = g_gameState->gameData->ctx.battle->unitList;
         n = 0;
         btlui_clearTargeted();
         while (p != NULL) {
@@ -2397,7 +2397,7 @@ s32 btlui_refreshTargets(void) {
 void btlui_confirmTarget(void) {
     s32 mask = 0;
     u8 ok = 1;
-    BtlUnit *u = g_gameState->gameData->unk8E4.battle->unitList;
+    BtlUnit *u = g_gameState->gameData->ctx.battle->unitList;
     Unk800FD56C *e = &g_btlCmdTable[g_btlTarget.cmdNo];
     Unk80104FF0 *d;
     for (; u != NULL; u = u->next) {
@@ -2437,7 +2437,7 @@ s32 btlui_confirmDoubleCast(s32 arg0) {
             v = 2;
         } else {
             n = 0;
-            for (u = g_gameState->gameData->unk8E4.battle->unitList; u != NULL; u = u->next) {
+            for (u = g_gameState->gameData->ctx.battle->unitList; u != NULL; u = u->next) {
                 if ((u->flags & 0x30000000) == 0x30000000) {
                     n++;
                 }
@@ -2455,7 +2455,7 @@ s32 btlui_confirmDoubleCast(s32 arg0) {
             v = 2;
         } else {
             n = 0;
-            for (u = g_gameState->gameData->unk8E4.battle->unitList; u != NULL; u = u->next) {
+            for (u = g_gameState->gameData->ctx.battle->unitList; u != NULL; u = u->next) {
                 if ((u->flags & 0x30000000) == 0x30000000) {
                     n++;
                 }
@@ -2483,7 +2483,7 @@ void btlui_cancelTarget(void) {
         }
         btlui_closeListWindow(g_btlTarget.returnState);
     }
-    for (u = g_gameState->gameData->unk8E4.battle->unitList; u != 0; u = u->next) {
+    for (u = g_gameState->gameData->ctx.battle->unitList; u != 0; u = u->next) {
         u->flags &= ~0x20000000;
     }
     for (i = 0; i < 2; i++) {
@@ -2517,7 +2517,7 @@ void btlui_updateTargetWindow(void) {
 void btlui_drawTargetList(Window *arg0) {
     s32 y1 = arg0->unk2 + 8;
     s32 y2 = y1;
-    BtlUnit *u = g_gameState->gameData->unk8E4.battle->unitList;
+    BtlUnit *u = g_gameState->gameData->ctx.battle->unitList;
     s32 m;
     u32 f;
     u8 *name;
@@ -2550,7 +2550,7 @@ void btlui_drawTargetList(Window *arg0) {
 void btlui_drawTargetListOverlay(Window *arg0) {
     Window *w = arg0;
     s32 n = 0;
-    BtlUnit *u = g_gameState->gameData->unk8E4.battle->unitList;
+    BtlUnit *u = g_gameState->gameData->ctx.battle->unitList;
     RECT *r = &arg0->unk8;
     BtlUnit *p;
     RECT rc;
@@ -2638,7 +2638,7 @@ void *btlui_getTargetHelpText(void) {
     } else if ((u8)(g_btlTarget.targetType - 3) < 3) {
         n = 0;
         k = g_btlTarget.targetType - 3;
-        for (u = g_gameState->gameData->unk8E4.battle->unitList; u != NULL; u = u->next) {
+        for (u = g_gameState->gameData->ctx.battle->unitList; u != NULL; u = u->next) {
             if ((u->flags >> 29) & 1) {
                 n++;
             }
@@ -2686,7 +2686,7 @@ void btlui_targetInput(void) {
         btlui_confirmTarget();
         return;
     }
-    if (g_gameState->gameData->unk8E4.battle->escapeHeld == 0 && (g_padRepeat & (BTN_L1 | BTN_R1))) {
+    if (g_gameState->gameData->ctx.battle->escapeHeld == 0 && (g_padRepeat & (BTN_L1 | BTN_R1))) {
         btlui_toggleTargetAll();
         return;
     }
@@ -2729,7 +2729,7 @@ s32 btlui_getTargetReturnState(void) {
 }
 
 s32 btlui_countTargeted(void) {
-    BtlUnit *u = g_gameState->gameData->unk8E4.battle->unitList;
+    BtlUnit *u = g_gameState->gameData->ctx.battle->unitList;
     s32 n = 0;
     while (u != NULL) {
         if ((u->flags >> 29) & 1) {
@@ -2741,7 +2741,7 @@ s32 btlui_countTargeted(void) {
 }
 
 void btlui_clearTargeted(void) {
-    BtlUnit *u = g_gameState->gameData->unk8E4.battle->unitList;
+    BtlUnit *u = g_gameState->gameData->ctx.battle->unitList;
     while (u != NULL) {
         u->flags &= ~0x20000000;
         u = u->next;
@@ -2754,7 +2754,7 @@ void btlui_collectCursorPositions(void) {
     BtlUnit *u;
     Unk80105020 *p;
     m = n = 0;
-    u = g_gameState->gameData->unk8E4.battle->unitList;
+    u = g_gameState->gameData->ctx.battle->unitList;
     p = &g_btluiCursors;
     if (D_80104E6A != 0) {
         for (; u != NULL; u = u->next) {
@@ -2817,7 +2817,7 @@ void btlui_targetPartySide(void) {
 }
 
 void btlui_targetFirst(u8 arg0, u8 arg1) {
-    BtlUnit *u = g_gameState->gameData->unk8E4.battle->unitList;
+    BtlUnit *u = g_gameState->gameData->ctx.battle->unitList;
     if (arg0 == 0xFF) {
         arg0 = g_btlTarget.side;
     }
@@ -2834,7 +2834,7 @@ void btlui_targetFirst(u8 arg0, u8 arg1) {
 }
 
 void btlui_targetDefault(u8 arg0, u8 arg1) {
-    BtlUnit *u = g_gameState->gameData->unk8E4.battle->unitList;
+    BtlUnit *u = g_gameState->gameData->ctx.battle->unitList;
     u8 found = 0;
     BtlUnit *t;
     u32 f;
@@ -2876,7 +2876,7 @@ void btlui_targetDefault(u8 arg0, u8 arg1) {
 
 BtlUnit *btlui_findKoUnit(u8 arg0) {
     BtlUnit *u;
-    for (u = g_gameState->gameData->unk8E4.battle->unitList; u != 0; u = u->next) {
+    for (u = g_gameState->gameData->ctx.battle->unitList; u != 0; u = u->next) {
         if (((u->flags >> 28) & 1) && (u->flags & 1) == arg0 && (u->status & BTL_STATUS_KO)) {
             return u;
         }
@@ -2931,7 +2931,7 @@ s32 btlui_getTargeting(void) {
         return 2;
     }
     n = 0;
-    for (u = g_gameState->gameData->unk8E4.battle->unitList; u != 0; u = u->next) {
+    for (u = g_gameState->gameData->ctx.battle->unitList; u != 0; u = u->next) {
         if ((u->flags & 0x30000000) == 0x30000000) {
             n++;
         }
@@ -2942,7 +2942,7 @@ s32 btlui_getTargeting(void) {
 void btlui_drawListCursors(Window *arg0) {
     Window *w = arg0;
     s32 n = 0;
-    BtlUnit *u = g_gameState->gameData->unk8E4.battle->unitList;
+    BtlUnit *u = g_gameState->gameData->ctx.battle->unitList;
     Unk80105020 *b = btlui_getCursorPositions();
     Unk80105078 *m = btlui_getPanel();
     u32 c;
@@ -3001,7 +3001,7 @@ void btlui_drawHpList(Window *arg0) {
     s32 y = arg0->unk2 + 6;
     s32 dy = arg0->unk6 - arg0->unk8.h;
     s32 c;
-    for (u = g_gameState->gameData->unk8E4.battle->unitList; u != 0 && (u->flags & 1); u = u->next) {
+    for (u = g_gameState->gameData->ctx.battle->unitList; u != 0 && (u->flags & 1); u = u->next) {
         c = 3;
         if (u->hp != 0) {
             c = ((u->status & BTL_STATUS_LOW_HP) != 0) * 4;
@@ -3020,7 +3020,7 @@ void btlui_drawMpList(Window *arg0) {
     u8 max[8];
     Window *w = arg0;
     s32 y = arg0->unk2 + 6;
-    BtlUnit *u = g_gameState->gameData->unk8E4.battle->unitList;
+    BtlUnit *u = g_gameState->gameData->ctx.battle->unitList;
     s32 dy = arg0->unk6 - arg0->unk8.h;
     s32 yy;
     s32 c;
@@ -3050,7 +3050,7 @@ void btlui_drawStatusList(Window *arg0) {
     u32 st;
     d -= 6;
     y = arg0->unk2 - d;
-    for (u = g_gameState->gameData->unk8E4.battle->unitList; u != 0; u = u->next) {
+    for (u = g_gameState->gameData->ctx.battle->unitList; u != 0; u = u->next) {
         if (u->flags & 1) {
             n = 0;
             st = u->status | u->autoStatus;
@@ -3079,7 +3079,7 @@ void btlui_drawStatusList2(Window *arg0) {
     u32 st;
     d -= 6;
     y = arg0->unk2 - d;
-    for (u = g_gameState->gameData->unk8E4.battle->unitList; u != 0; u = u->next) {
+    for (u = g_gameState->gameData->ctx.battle->unitList; u != 0; u = u->next) {
         if (u->flags & 1) {
             st = u->status | u->autoStatus;
             x = w->unk0 + 4;
@@ -3100,14 +3100,14 @@ void btlui_cacheHeader(void) {
 
     p = btlui_getPanel();
     setRECT(&r, 0xD0, p->y - 4, 0x40, 4);
-    r.x += g_btluiDispOrigin[g_gameState->gameData->unk8 & 1][0];
-    r.y += g_btluiDispOrigin[g_gameState->gameData->unk8 & 1][1];
+    r.x += g_btluiDispOrigin[g_gameState->gameData->drawBuf & 1][0];
+    r.y += g_btluiDispOrigin[g_gameState->gameData->drawBuf & 1][1];
     SetDrawMove((DR_MOVE *)g_primPtr, &r, 0x3C0, 0x1F8);
     addPrim(&g_ot[19], g_primPtr);
     g_primPtr += sizeof(DR_MOVE);
     setRECT(&r, 0x110, p->y - 4, 0x30, 4);
-    r.x += g_btluiDispOrigin[g_gameState->gameData->unk8 & 1][0];
-    r.y += g_btluiDispOrigin[g_gameState->gameData->unk8 & 1][1];
+    r.x += g_btluiDispOrigin[g_gameState->gameData->drawBuf & 1][0];
+    r.y += g_btluiDispOrigin[g_gameState->gameData->drawBuf & 1][1];
     SetDrawMove((DR_MOVE *)g_primPtr, &r, 0x3C0, 0x1FC);
     addPrim(&g_ot[19], g_primPtr);
     g_primPtr += sizeof(DR_MOVE);
@@ -3221,7 +3221,7 @@ void *btlui_alloc(s32 arg0) {
 }
 
 void btlui_updatePanel(void) {
-    BtlUnit *u = g_gameState->gameData->unk8E4.battle->unitList;
+    BtlUnit *u = g_gameState->gameData->ctx.battle->unitList;
     s32 n = 0;
     for (; u != NULL; u = u->next) {
         if (u->flags & 1) {
@@ -3340,7 +3340,7 @@ void btlui_updateGauges(void) {
     s32 a;
     s32 t;
 
-    for (u = g_gameState->gameData->unk8E4.battle->unitList; u != NULL; u = u->next) {
+    for (u = g_gameState->gameData->ctx.battle->unitList; u != NULL; u = u->next) {
         if (!(u->flags & 1)) {
             continue;
         }
@@ -3468,10 +3468,10 @@ void btlui_cacheRows(void) {
     RECT b = D_800A8594;
     s16 h;
     if (g_btluiPanel->shown != 0 && g_btluiPanel->rowCount != 0) {
-        a.x += g_btluiDispOrigin[g_gameState->gameData->unk8 & 1][0];
-        b.x += g_btluiDispOrigin[g_gameState->gameData->unk8 & 1][0];
-        a.y += g_btluiDispOrigin[g_gameState->gameData->unk8 & 1][1] + g_btluiPanel->y;
-        b.y += g_btluiDispOrigin[g_gameState->gameData->unk8 & 1][1] + g_btluiPanel->y;
+        a.x += g_btluiDispOrigin[g_gameState->gameData->drawBuf & 1][0];
+        b.x += g_btluiDispOrigin[g_gameState->gameData->drawBuf & 1][0];
+        a.y += g_btluiDispOrigin[g_gameState->gameData->drawBuf & 1][1] + g_btluiPanel->y;
+        b.y += g_btluiDispOrigin[g_gameState->gameData->drawBuf & 1][1] + g_btluiPanel->y;
         h = g_btluiPanel->rowCount * 12;
         b.h = h;
         a.h = h;
@@ -3668,7 +3668,7 @@ void btlui_drawPanelMp(BtlUnit *arg0, s32 arg1) {
 }
 
 void btlui_findHighlightRow(void) {
-    BtlUnit *u = g_gameState->gameData->unk8E4.battle->unitList;
+    BtlUnit *u = g_gameState->gameData->ctx.battle->unitList;
     s32 i = 0;
     if (g_btluiPanel->rowCount != 0 && D_80104E70 == 0) {
         for (; u != 0; u = u->next) {
@@ -3688,7 +3688,7 @@ void btlui_drawPortIcons(void) {
     Unk80068EE8 *s;
     s32 f;
 
-    if (!(g->unk0 & 0x100) && !(g->unk8E4.battle->flags & 0x20) && g_btluiState.unk0 != 0 &&
+    if (!(g->flags & 0x100) && !(g->ctx.battle->flags & 0x20) && g_btluiState.unk0 != 0 &&
         (f = (g_gameState->config >> 5) & 1) == 1) {
         ClearOTag(&D_801050D4, 1);
         if (g_btluiState.unk18 & 0x20) {
@@ -3804,7 +3804,7 @@ void btlui_initDrawBufs(void) {
     DRAWENV *e;
     gfx_init(a, a + 0x18, b, b + 0x2000);
     func_8002C064(2);
-    gfx_setBufferIndex(g_gameState->gameData->unk8);
+    gfx_setBufferIndex(g_gameState->gameData->drawBuf);
     g_btluiBuf = 0;
     g_ot = g_drawBufs.ots[0];
     g_primPtr = g_drawBufs.prims[0];

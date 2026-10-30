@@ -282,7 +282,7 @@ void game_setScreenHeight(s32 h) {
     draw[0].isbg = 1;
     VSync(0);
     if (g_gameState->gameData != NULL) {
-        PutDispEnv(&g_gameState->dispEnv[g_gameState->gameData->unk8]);
+        PutDispEnv(&g_gameState->dispEnv[g_gameState->gameData->drawBuf]);
     }
 }
 
@@ -294,9 +294,9 @@ void game_freezeScreen(void) {
 
     if (g_gameState->gameData != NULL) {
         VSync(0);
-        PutDispEnv(&g_gameState->dispEnv[g_gameState->gameData->unk8]);
+        PutDispEnv(&g_gameState->dispEnv[g_gameState->gameData->drawBuf]);
         fade = 0;
-        memmove(&g_freezeDrawEnv, &g_gameState->drawEnv[g_gameState->gameData->unk8 ^ 1], sizeof(DRAWENV));
+        memmove(&g_freezeDrawEnv, &g_gameState->drawEnv[g_gameState->gameData->drawBuf ^ 1], sizeof(DRAWENV));
         if (fade_isActive() || fade_isBusy()) {
             fade = 1;
         }

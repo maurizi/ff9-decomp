@@ -1482,7 +1482,7 @@ void wm_calcShadowMatrix(WmObjEnt *, WmObjSlot *, MATRIX *, s32, s32);
 #define SHADOW_ADD(k, q) \
     k >>= 3; \
     if (-g_worldOtBias < k && k < 0x1000 - g_worldOtBias) { \
-        addPrim(&g_gameState->gameData->unk10[g_gameState->gameData->unk8][k], e->prims[g_gameState->gameData->unk8][q]); \
+        addPrim(&g_gameState->gameData->ot[g_gameState->gameData->drawBuf][k], e->prims[g_gameState->gameData->drawBuf][q]); \
     }
 
 /* main exe: candidates for ff9.h */

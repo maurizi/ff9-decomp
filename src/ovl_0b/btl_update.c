@@ -2,7 +2,7 @@
 
 s32 btl_update(void) {
     GameData *g = g_gameState->gameData;
-    Battle *b = g->unk8E4.battle;
+    Battle *b = g->ctx.battle;
     BtlUnit *u;
     u16 id;
     s32 n;
@@ -84,7 +84,7 @@ s32 btl_update(void) {
 s32 btl_updateUnits(GameData *arg0, Battle *arg1) {
     BtlUnit *u = arg1->unitList;
     s32 r = 1;
-    s32 sp = arg1->work->prims[arg0->unk8];
+    s32 sp = arg1->work->prims[arg0->drawBuf];
     BtlUnit9C *m;
     BtlUnit9C *n;
     u32 f;
@@ -134,7 +134,7 @@ void btl_victory(GameData *arg0, Battle *arg1) {
     BtlUnit *u;
     u32 exp;
 
-    sp18 = arg1->work->prims[arg0->unk8];
+    sp18 = arg1->work->prims[arg0->drawBuf];
     done = 1;
     if (g_btlfxEnv->state->phase != -1 || arg1->cmdQueue.next != NULL || arg1->curCmd != NULL) {
         done = 0;
@@ -271,7 +271,7 @@ void btl_victory(GameData *arg0, Battle *arg1) {
             arg0->battleFlags |= 0x40;
             for (u = arg1->unitList; u != NULL; u = u->next) {
                 if (!(u->flags & 1)) {
-                    exp += g_gameState->gameData->unk8E4.battle->enemies[(u->flags >> 1) & 0xF].type->exp;
+                    exp += g_gameState->gameData->ctx.battle->enemies[(u->flags >> 1) & 0xF].type->exp;
                 }
             }
             if ((arg1->scene.unk0 & 0x4040) == 0x4000) {
@@ -314,7 +314,7 @@ void btl_updateIntro(GameData *arg0, Battle *arg1) {
     u8 f;
     u8 g;
 
-    ot = (u32 *)arg1->work->prims[arg0->unk8];
+    ot = (u32 *)arg1->work->prims[arg0->drawBuf];
     btl_loadModelsStep(0);
     if ((arg1->flags & 2) && (*(u32 *)&arg1->fleeBrightness & 0x2800) == 0x800) {
         btl_makeEnemyGreyCluts();
@@ -339,8 +339,8 @@ void btl_updateIntro(GameData *arg0, Battle *arg1) {
         btlseq_update();
     }
     if (arg1->flags & 1) {
-        ot = (u32 *)btlbg_draw(&arg0->unk18, arg1->work->bgData, (s32)ot, arg0->unk10[arg0->unk8],
-                                  arg1->work->ot[arg0->unk8]);
+        ot = (u32 *)btlbg_draw(&arg0->viewMatrix, arg1->work->bgData, (s32)ot, arg0->ot[arg0->drawBuf],
+                                  arg1->work->ot[arg0->drawBuf]);
     }
     ot = (u32 *)btl_drawBanner((u8 *)ot);
     if (arg1->flags & 2) {

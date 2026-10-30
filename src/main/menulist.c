@@ -293,7 +293,7 @@ void fade_update(void) {
     FadeState *f = &g_fade;
     FadeFn fn;
 
-    if (g_gameState->gameData->unk8 != 0) {
+    if (g_gameState->gameData->drawBuf != 0) {
         buf = D_80077878[1];
     }
     f->pkt = buf;

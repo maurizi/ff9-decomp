@@ -24,7 +24,7 @@ void menuStatus_init(void) {
     help_setCallback(menuStatus_updateHelp);
     s_menuStatus.primBufs[0] = PSX_RAM(u8 *, 0x801F5F00);
     s_menuStatus.primBufs[1] = PSX_RAM(u8 *, 0x801F9F00);
-    s_menuStatus.prim = s_menuStatus.primBufs[g_gameState->gameData->unk8];
+    s_menuStatus.prim = s_menuStatus.primBufs[g_gameState->gameData->drawBuf];
 }
 
 void menuStatus_inputMain(void) {
@@ -350,8 +350,8 @@ void menuStatus_input(void) {
 void menuStatus_draw(void) {
     u8 *p = s_menuStatus.prim - 0x4000;
 
-    s_menuStatus.primFree = s_menuStatus.primBufs[g_gameState->gameData->unk8 ^ 1] - p;
-    s_menuStatus.prim = s_menuStatus.primBufs[g_gameState->gameData->unk8];
+    s_menuStatus.primFree = s_menuStatus.primBufs[g_gameState->gameData->drawBuf ^ 1] - p;
+    s_menuStatus.prim = s_menuStatus.primBufs[g_gameState->gameData->drawBuf];
     menuStatus_drawFrame();
     menuStatus_drawHeader();
     menuStatus_drawCommands();

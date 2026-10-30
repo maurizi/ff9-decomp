@@ -110,10 +110,10 @@ s32 evt_getSysVar(s32 op) {
         r = (u8)D_8007AE34;
         break;
     case 30:
-        r = g_gameState->gameData->unk8E4.ovl65->phase;
+        r = g_gameState->gameData->ctx.ovl65->phase;
         break;
     case 31:
-        r = g_gameState->gameData->unk8E4.ovl65->unk1340;
+        r = g_gameState->gameData->ctx.ovl65->unk1340;
         break;
     default:
         if (op >= 0xC0) {
@@ -2816,7 +2816,7 @@ void evt_updateBattleObjects(void) {
     s32 m;
     Unk8007AED0 *o;
 
-    if (g_gameState->gameData->unk8E4.ovl65->phase != 0) {
+    if (g_gameState->gameData->ctx.ovl65->phase != 0) {
         i = 3;
         D_8007AE10[i] = btl_getUnitMask(1);
         m = (u16)D_8007AE10[i];
@@ -3589,8 +3589,8 @@ void evt_setDrawPosAtObject(EvtObject *o, s32 dx, s32 dy) {
         fldbg_applyGeomOffset();
     }
     gd = g_gameState->gameData;
-    gte_SetRotMatrix(&gd->unk18);
-    gte_SetTransMatrix(&gd->unk18);
+    gte_SetRotMatrix(&gd->viewMatrix);
+    gte_SetTransMatrix(&gd->viewMatrix);
     gte_ldv0(pv);
     gte_rtps();
     gte_stsxy((s32 *)&sxy);
@@ -3921,8 +3921,8 @@ void evt_projectToScreen(SVECTOR *v, s32 *x, s32 *y) {
             fldbg_applyGeomOffset();
         }
         gd = g_gameState->gameData;
-        gte_SetRotMatrix(&gd->unk18);
-        gte_SetTransMatrix(&gd->unk18);
+        gte_SetRotMatrix(&gd->viewMatrix);
+        gte_SetTransMatrix(&gd->viewMatrix);
         gte_ldv0(v);
         gte_rtps();
         gte_stsxy(&s);

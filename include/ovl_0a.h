@@ -1333,7 +1333,7 @@ static inline s32 fld_movieCommand_state(void) {
     s8 v;
 
     if (g_gameState->disc != 0xFF) {
-        v = g_gameState->gameData->unk8E4.field->area->scene->movieState;
+        v = g_gameState->gameData->ctx.field->area->scene->movieState;
         if (v != 0x11) {
             goto other;
         }
@@ -1419,9 +1419,9 @@ s32 mbg_getGeomOffset(s32 *, s32 *); /* ovl_64 */
 /* fld_drawShadow: link shadow quad q at its deepest corner */
 #define FIELD_SHADOW_ADD(k, q) \
     k = (k >> 2) + bias; \
-    if (-g_gameState->gameData->unk8E4.field->area->scene->otBias < k \
-        && k < 0x1000 - g_gameState->gameData->unk8E4.field->area->scene->otBias) { \
-        addPrim(&g_gameState->gameData->unk10[g_gameState->gameData->unk8][k], e->prims[g_gameState->gameData->unk8][q]); \
+    if (-g_gameState->gameData->ctx.field->area->scene->otBias < k \
+        && k < 0x1000 - g_gameState->gameData->ctx.field->area->scene->otBias) { \
+        addPrim(&g_gameState->gameData->ot[g_gameState->gameData->drawBuf][k], e->prims[g_gameState->gameData->drawBuf][q]); \
     }
 
 void fld_calcShadowMatrix(FieldObjEnt *, FieldObjSlot *, MATRIX *);
@@ -1559,7 +1559,7 @@ typedef struct {
     s32 unk828[2];
 } GameDataSfx;
 #define SFXH(i) (((GameDataSfx *)g_gameState->gameData)->unk828[i])
-#define SCENE (g_gameState->gameData->unk8E4.field->area->scene)
+#define SCENE (g_gameState->gameData->ctx.field->area->scene)
 
 s32 fld_initShadows(s32, s32, s32, s32); /* returns func_80062E3C's result (the next free address) */
 

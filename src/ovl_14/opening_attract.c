@@ -34,36 +34,36 @@ s32 opening_attract(s32 arg0) {
                     game_startFade(1, 1, 0xF0, 0);
                 } else if (timer != 0) {
                     pad = g_padPortPressed[0];
-                    setlen(&g_attractSprites[g_gameState->gameData->unk8][0], 4);
-                    g_attractSprites[g_gameState->gameData->unk8][0].code = 0x64;
-                    g_attractSprites[g_gameState->gameData->unk8][0].r0 = 0x80;
-                    g_attractSprites[g_gameState->gameData->unk8][0].g0 = 0x80;
-                    g_attractSprites[g_gameState->gameData->unk8][0].b0 = 0x80;
-                    g_attractSprites[g_gameState->gameData->unk8][0].x0 = 0;
-                    g_attractSprites[g_gameState->gameData->unk8][0].y0 = 0;
-                    g_attractSprites[g_gameState->gameData->unk8][0].u0 = 0;
-                    g_attractSprites[g_gameState->gameData->unk8][0].v0 = 0;
-                    g_attractSprites[g_gameState->gameData->unk8][0].w = 0xC0;
-                    g_attractSprites[g_gameState->gameData->unk8][0].h = 0xE0;
-                    g_attractSprites[g_gameState->gameData->unk8][0].clut = 0x3800;
-                    addPrim(&g_gameState->gameData->unk10[g_gameState->gameData->unk8][SCREEN_OTZ], &g_attractSprites[g_gameState->gameData->unk8][0]);
-                    setDrawTPage(&g_attractTpages[g_gameState->gameData->unk8][0], 1, 1, 0x10A);
-                    addPrim(&g_gameState->gameData->unk10[g_gameState->gameData->unk8][SCREEN_OTZ], &g_attractTpages[g_gameState->gameData->unk8][0]);
-                    setlen((g_attractSprites[g_gameState->gameData->unk8] + 1), 4);
-                    (g_attractSprites[g_gameState->gameData->unk8] + 1)->code = 0x64;
-                    (g_attractSprites[g_gameState->gameData->unk8] + 1)->r0 = 0x80;
-                    (g_attractSprites[g_gameState->gameData->unk8] + 1)->g0 = 0x80;
-                    (g_attractSprites[g_gameState->gameData->unk8] + 1)->b0 = 0x80;
-                    (g_attractSprites[g_gameState->gameData->unk8] + 1)->x0 = 0xC0;
-                    (g_attractSprites[g_gameState->gameData->unk8] + 1)->y0 = 0;
-                    (g_attractSprites[g_gameState->gameData->unk8] + 1)->u0 = 0;
-                    (g_attractSprites[g_gameState->gameData->unk8] + 1)->v0 = 0;
-                    (g_attractSprites[g_gameState->gameData->unk8] + 1)->w = 0x80;
-                    (g_attractSprites[g_gameState->gameData->unk8] + 1)->h = 0xE0;
-                    (g_attractSprites[g_gameState->gameData->unk8] + 1)->clut = 0x3800;
-                    addPrim(&g_gameState->gameData->unk10[g_gameState->gameData->unk8][SCREEN_OTZ], (g_attractSprites[g_gameState->gameData->unk8] + 1));
-                    setDrawTPage(g_attractTpages[g_gameState->gameData->unk8] + 1, 1, 1, 0x10D);
-                    addPrim(&g_gameState->gameData->unk10[g_gameState->gameData->unk8][SCREEN_OTZ], (g_attractTpages[g_gameState->gameData->unk8] + 1));
+                    setlen(&g_attractSprites[g_gameState->gameData->drawBuf][0], 4);
+                    g_attractSprites[g_gameState->gameData->drawBuf][0].code = 0x64;
+                    g_attractSprites[g_gameState->gameData->drawBuf][0].r0 = 0x80;
+                    g_attractSprites[g_gameState->gameData->drawBuf][0].g0 = 0x80;
+                    g_attractSprites[g_gameState->gameData->drawBuf][0].b0 = 0x80;
+                    g_attractSprites[g_gameState->gameData->drawBuf][0].x0 = 0;
+                    g_attractSprites[g_gameState->gameData->drawBuf][0].y0 = 0;
+                    g_attractSprites[g_gameState->gameData->drawBuf][0].u0 = 0;
+                    g_attractSprites[g_gameState->gameData->drawBuf][0].v0 = 0;
+                    g_attractSprites[g_gameState->gameData->drawBuf][0].w = 0xC0;
+                    g_attractSprites[g_gameState->gameData->drawBuf][0].h = 0xE0;
+                    g_attractSprites[g_gameState->gameData->drawBuf][0].clut = 0x3800;
+                    addPrim(&g_gameState->gameData->ot[g_gameState->gameData->drawBuf][SCREEN_OTZ], &g_attractSprites[g_gameState->gameData->drawBuf][0]);
+                    setDrawTPage(&g_attractTpages[g_gameState->gameData->drawBuf][0], 1, 1, 0x10A);
+                    addPrim(&g_gameState->gameData->ot[g_gameState->gameData->drawBuf][SCREEN_OTZ], &g_attractTpages[g_gameState->gameData->drawBuf][0]);
+                    setlen((g_attractSprites[g_gameState->gameData->drawBuf] + 1), 4);
+                    (g_attractSprites[g_gameState->gameData->drawBuf] + 1)->code = 0x64;
+                    (g_attractSprites[g_gameState->gameData->drawBuf] + 1)->r0 = 0x80;
+                    (g_attractSprites[g_gameState->gameData->drawBuf] + 1)->g0 = 0x80;
+                    (g_attractSprites[g_gameState->gameData->drawBuf] + 1)->b0 = 0x80;
+                    (g_attractSprites[g_gameState->gameData->drawBuf] + 1)->x0 = 0xC0;
+                    (g_attractSprites[g_gameState->gameData->drawBuf] + 1)->y0 = 0;
+                    (g_attractSprites[g_gameState->gameData->drawBuf] + 1)->u0 = 0;
+                    (g_attractSprites[g_gameState->gameData->drawBuf] + 1)->v0 = 0;
+                    (g_attractSprites[g_gameState->gameData->drawBuf] + 1)->w = 0x80;
+                    (g_attractSprites[g_gameState->gameData->drawBuf] + 1)->h = 0xE0;
+                    (g_attractSprites[g_gameState->gameData->drawBuf] + 1)->clut = 0x3800;
+                    addPrim(&g_gameState->gameData->ot[g_gameState->gameData->drawBuf][SCREEN_OTZ], (g_attractSprites[g_gameState->gameData->drawBuf] + 1));
+                    setDrawTPage(g_attractTpages[g_gameState->gameData->drawBuf] + 1, 1, 1, 0x10D);
+                    addPrim(&g_gameState->gameData->ot[g_gameState->gameData->drawBuf][SCREEN_OTZ], (g_attractTpages[g_gameState->gameData->drawBuf] + 1));
                     pad &= PAD_CROSS | PAD_START;
                     btn = pad;
                     if (!(g_attractFlags.bits & ATTRACT_FADING) || btn) {
@@ -160,7 +160,7 @@ s32 opening_attractFree(s32 arg0) {
 
 void opening_attractClearOt(void) {
     GameData *ctx = g_gameState->gameData;
-    ClearOTagR(ctx->unk10[ctx->unk8], 0x1000);
+    ClearOTagR(ctx->ot[ctx->drawBuf], 0x1000);
 }
 
 void opening_attractSwap(void) {
@@ -171,10 +171,10 @@ void opening_attractSwap(void) {
     g_gameState->vsyncMode = 0;
     VSync(g_gameState->vsyncMode);
     ResetGraph(1);
-    PutDispEnv(&g_gameState->dispEnv[g_gameState->gameData->unk8]);
+    PutDispEnv(&g_gameState->dispEnv[g_gameState->gameData->drawBuf]);
     ctx = g_gameState->gameData;
-    i = ctx->unk8;
-    DrawOTagEnv(ctx->unk10[i] + 0xFFF, &g_gameState->drawEnv[i]);
-    g_gameState->gameData->unk8 ^= 1;
-    gfx_setBuffer(g_gameState->gameData->unk8);
+    i = ctx->drawBuf;
+    DrawOTagEnv(ctx->ot[i] + 0xFFF, &g_gameState->drawEnv[i]);
+    g_gameState->gameData->drawBuf ^= 1;
+    gfx_setBuffer(g_gameState->gameData->drawBuf);
 }

@@ -48,10 +48,10 @@ void opening_init(void) {
     }
     akao_stopMusicNow();
     akao_stopAllSe();
-    if (g_gameState->gameData->unk0 & 0x100000) {
+    if (g_gameState->gameData->flags & 0x100000) {
         snd_init();
         opening_resetMusicSlots();
-        g_gameState->gameData->unk0 &= ~0x100000;
+        g_gameState->gameData->flags &= ~0x100000;
     }
     cd_checkShellOpen();
     g_gameState->gameData->soundHook = opening_soundCmd;
@@ -73,7 +73,7 @@ void opening_resetMusicSlots(void) {
         ctx->musicHandle[i] = 0;
         ctx->musicVolume[i] = 0x7F;
     }
-    ctx->unk0 &= 0xBFFFFF;
+    ctx->flags &= 0xBFFFFF;
 }
 
 void opening_exit(void) {
@@ -81,8 +81,8 @@ void opening_exit(void) {
 
     SetDispMask(0);
     ctx = g_gameState->gameData;
-    if (ctx->unk0 & 0x20000000) {
-        ctx->unk0 |= 0x400000;
+    if (ctx->flags & 0x20000000) {
+        ctx->flags |= 0x400000;
     }
 }
 
@@ -135,27 +135,27 @@ s32 opening_soundCmd(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4) {
                 g_openingSoundPending = kind;
             }
             if (g_gameState->gameData->musicId[0] != arg1) {
-                if (g_gameState->gameData->unk0 & 0x20000000) {
+                if (g_gameState->gameData->flags & 0x20000000) {
                     akao_stopMusic(g_gameState->gameData->musicHandle[0]);
                 }
-                g_gameState->gameData->unk0 &= 0xCFFFFFFF;
+                g_gameState->gameData->flags &= 0xCFFFFFFF;
                 g_gameState->gameData->musicBank[0] = 0x122;
                 g_gameState->gameData->musicId[0] = arg1;
                 g_gameState->gameData->musicVolume[0] = 0x7F;
             }
             g_gameState->gameData->musicHandle[0] = akao_playMusic(g_gameState->gameData->musicSeq);
             g = g_gameState->gameData;
-            if (!(g->unk0 & 0x20000000)) {
+            if (!(g->flags & 0x20000000)) {
                 akao_fadeMusicVolumeFrom(g->musicHandle[0], 0xA, 0, g->musicVolume[0]);
             }
             g_openingSoundPending = -1;
-            g_gameState->gameData->unk0 |= 0x30000000;
+            g_gameState->gameData->flags |= 0x30000000;
             return 0;
         case 1:
             if (g_gameState->gameData->musicId[0] == (u16)id) {
                 akao_stopMusic(g_gameState->gameData->musicHandle[0]);
                 g_gameState->gameData->musicVolume[0] = 0x7F;
-                g_gameState->gameData->unk0 &= 0xDFFFFFFF;
+                g_gameState->gameData->flags &= 0xDFFFFFFF;
             }
             return 0;
         case 2:

@@ -114,8 +114,8 @@ s32 file_copyViaVram(s32 dst, s32 src, s32 size, RECT *rc) {
                 r->w = rc->w;
                 r->h = rc->h;
             } else {
-                r->x = g_gameState->drawEnv[g_gameState->gameData->unk8].clip.x;
-                r->y = g_gameState->drawEnv[g_gameState->gameData->unk8].clip.y;
+                r->x = g_gameState->drawEnv[g_gameState->gameData->drawBuf].clip.x;
+                r->y = g_gameState->drawEnv[g_gameState->gameData->drawBuf].clip.y;
                 r->w = 320;
                 r->h = 218;
             }
@@ -314,13 +314,13 @@ loop:
 void game_setNextScene(u16 arg0) {
     switch (g_gameState->mode) {
     case 1:
-        g_gameState->gameData->unk8E4.ovl65->unkC->unk14->unkA = arg0;
+        g_gameState->gameData->ctx.ovl65->unkC->unk14->unkA = arg0;
         break;
     case 2:
-        g_gameState->gameData->unk8E4.ovl65->work->unk4 = arg0;
+        g_gameState->gameData->ctx.ovl65->work->unk4 = arg0;
         break;
     case 3:
-        g_gameState->gameData->unk8E4.ovl65->unk8->unk24 = arg0;
+        g_gameState->gameData->ctx.ovl65->unk8->unk24 = arg0;
         break;
     }
 }

@@ -44,10 +44,10 @@ void wm_systemInit(void) {
     D_800CF47E = 0;
     g_worldSuspended = 0;
     g_worldMapJump = 0;
-    g_worldBufIndex = &g_gameState->gameData->unk8;
-    g_worldOt[0] = (s32)g_gameState->gameData->unk10[0];
-    g_worldOt[1] = (s32)g_gameState->gameData->unk10[1];
-    g_worldViewMatrix = &g_gameState->gameData->unk18;
+    g_worldBufIndex = &g_gameState->gameData->drawBuf;
+    g_worldOt[0] = (s32)g_gameState->gameData->ot[0];
+    g_worldOt[1] = (s32)g_gameState->gameData->ot[1];
+    g_worldViewMatrix = &g_gameState->gameData->viewMatrix;
     ResetGraph(1);
     wm_musicInit();
     StoreImage(&r, (u32 *)g_worldClutBuf);
@@ -86,16 +86,16 @@ s32 wm_frameMain(void) {
     if (wm_getPadPressed() & BTN_TRIANGLE) {
         if (g_worldCdUser == WM_CD_FREE && g_worldMapLoaded != 0 && g_worldMusicState == WM_MUSIC_READY) {
             g_worldCdUser = WM_CD_SCRIPT;
-            g_gameState->gameData->unk0 |= GD_MENU_OPEN;
+            g_gameState->gameData->flags |= GD_MENU_OPEN;
             menu_open(0, 0);
             evt_onMenuOpen();
         }
     }
-    if (!(g_gameState->gameData->unk0 & GD_HIDE_ALL)) {
+    if (!(g_gameState->gameData->flags & GD_HIDE_ALL)) {
         g_worldPrimPtr = g_worldPrimBuffers[*g_worldBufIndex];
         msg_beginDraw();
         g_worldTimeLogic = VSync(1);
-        if (!(g_gameState->gameData->unk0 & GD_MENU_OPEN)) {
+        if (!(g_gameState->gameData->flags & GD_MENU_OPEN)) {
             wm_updateLogic();
         }
         if (g_worldFrameCount == 4 && g_worldState == WM_STATE_START) {
@@ -128,12 +128,12 @@ s32 wm_frameMain(void) {
     } else {
         g_worldSuspended = 1;
     }
-    if (!(g_gameState->gameData->unk0 & GD_MENU_DISABLED)) {
+    if (!(g_gameState->gameData->flags & GD_MENU_DISABLED)) {
         menu_update();
     }
     game_updateWindows();
     busy = g_worldEventResult != 0;
-    if (g_gameState->gameData->unk0 & GD_HIDE_ALL) {
+    if (g_gameState->gameData->flags & GD_HIDE_ALL) {
         busy = 1;
     }
     if (g_worldMogChoice != 0) {
@@ -187,7 +187,7 @@ void wm_updateLogic(void) {
     case 2:
         if (g_worldNaviMode != 2) {
             g_gameState->vsyncMode = 3;
-            g_gameState->gameData->unk8E4.world->flags &= ~WM_MAP_NAVI_SCREEN;
+            g_gameState->gameData->ctx.world->flags &= ~WM_MAP_NAVI_SCREEN;
             SetSpadStack(0x1F8003FC);
             wm_updateActors();
             ResetSpadStack();
@@ -202,7 +202,7 @@ void wm_updateLogic(void) {
             ResetSpadStack();
         } else {
             g_gameState->vsyncMode = 0;
-            g_gameState->gameData->unk8E4.world->flags |= WM_MAP_NAVI_SCREEN;
+            g_gameState->gameData->ctx.world->flags |= WM_MAP_NAVI_SCREEN;
             wm_seFadeVolume(0x26, 0x14, 0);
             wm_runEvents();
             wm_naviUpdate();
@@ -636,7 +636,7 @@ void wm_debugAdjustScreen(void) {
 void wm_finishLoad(void) {
     RECT r = g_worldVramParkRect;
 
-    g_gameState->gameData->unk0 &= ~0x400000;
+    g_gameState->gameData->flags &= ~0x400000;
     LoadImage(&r, (u32 *)g_worldClutBuf);
     DrawSync(0);
     w_movementChange();
@@ -749,7 +749,7 @@ void wm_runEvents(void) {
 
     g_worldTimeEvents = VSync(1);
     m = g_worldState;
-    if ((m == 0 || m == 2) && !(g_gameState->gameData->unk0 & GD_MENU_OPEN) && (m == 0 || m == 2)) {
+    if ((m == 0 || m == 2) && !(g_gameState->gameData->flags & GD_MENU_OPEN) && (m == 0 || m == 2)) {
         g_worldEventResult = evt_update(m);
     }
     g_worldTimeEvents = VSync(1) - g_worldTimeEvents;

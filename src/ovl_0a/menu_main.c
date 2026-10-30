@@ -504,8 +504,8 @@ u8 *fld_drawSprite3D(u8 *arg0, FieldSprHdr *h, SVECTOR *pos, SVECTOR *rot, s32 s
     n = *o;
     c.quadCount = ((u8 *)h)[n++];
     h = (FieldSprHdr *)((u8 *)h + n);
-    gte_SetRotMatrix(&g_gameState->gameData->unk18);
-    gte_SetTransMatrix(&g_gameState->gameData->unk18);
+    gte_SetRotMatrix(&g_gameState->gameData->viewMatrix);
+    gte_SetTransMatrix(&g_gameState->gameData->viewMatrix);
     gte_ldv0(pos);
     gte_rtv0tr();
     math_rotMatrixYXZ(rot, &m);

@@ -42,7 +42,7 @@ void wm_drawMesh(ModelObj *model, u8 group) {
     u8 *pkt = *(u8 **)(*(u8 **)(m + 0x44) + group * 12 + 4);
     u8 *poly = *(u8 **)(grp + 0x1C);
     GameData *gd = g_gameState->gameData;
-    u32 *ot = gd->unk10[gd->unk8];
+    u32 *ot = gd->ot[gd->drawBuf];
     s32 k;
     s32 n;
     const PrimKind *t;
@@ -52,7 +52,7 @@ void wm_drawMesh(ModelObj *model, u8 group) {
     u32 z;
     u32 *slot;
 
-    if (gd->unk8 != 0) {
+    if (gd->drawBuf != 0) {
         pkt += *(u16 *)grp;
     }
     ot -= (s8)grp[0x13];

@@ -15,7 +15,7 @@ void menuConfig_init(void) {
     m->rumbleTicks = 0;
     m->primBufs[0] = PSX_RAM(u8 *, 0x801F9F00);
     m->primBufs[1] = PSX_RAM(u8 *, 0x801FBF00);
-    m->prim = m->primBufs[g_gameState->gameData->unk8 ^ 1];
+    m->prim = m->primBufs[g_gameState->gameData->drawBuf ^ 1];
     m->charCount = 0;
     for (i = 0; i < 9; i++) {
         if (g_gameState->gameData->characters[i].info.b.recruited) {
@@ -485,8 +485,8 @@ void menuConfig_input(void) {
 void menuConfig_draw(void) {
     s32 k = 0x2000;
 
-    s_menuConfig.primFree = s_menuConfig.primBufs[g_gameState->gameData->unk8 ^ 1] - (s_menuConfig.prim - k);
-    s_menuConfig.prim = s_menuConfig.primBufs[g_gameState->gameData->unk8];
+    s_menuConfig.primFree = s_menuConfig.primBufs[g_gameState->gameData->drawBuf ^ 1] - (s_menuConfig.prim - k);
+    s_menuConfig.prim = s_menuConfig.primBufs[g_gameState->gameData->drawBuf];
     ui_drawLabel(0x10, 0x23, 0x16, D_80070430, 0);
     ui_drawRule(8, 0x26, 0x16, 0, 0x12C, (g_gameState->config >> CFG_BIT_WINDOW_COLOR) & 1);
     menuConfig_drawRows();

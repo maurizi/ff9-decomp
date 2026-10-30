@@ -270,7 +270,7 @@ void wm_stopAllSe(void) {
         }
     }
     if ((u8)wm_isMapSongPlaying() && g_worldEventResult != WM_EVT_BATTLE) {
-        g_gameState->gameData->unk0 |= 0x400000;
+        g_gameState->gameData->flags |= 0x400000;
     }
 }
 

@@ -5,10 +5,10 @@ void battleEnd_main(void) {
     GameData *ctx;
     u8 i;
 
-    s = g_gameState->gameData->unk8E4.ovl65->work;
+    s = g_gameState->gameData->ctx.ovl65->work;
     battleEnd_init();
     do {
-        ClearOTagR(g_gameState->gameData->unk10[g_gameState->gameData->unk8], 0x1000);
+        ClearOTagR(g_gameState->gameData->ot[g_gameState->gameData->drawBuf], 0x1000);
         pad_update();
         switch (battleEnd_update()) {
         case 1:
@@ -25,18 +25,18 @@ void battleEnd_main(void) {
         DrawSync(0);
         VSync(g_gameState->vsyncMode);
         ResetGraph(1);
-        PutDispEnv(&g_gameState->dispEnv[g_gameState->gameData->unk8]);
+        PutDispEnv(&g_gameState->dispEnv[g_gameState->gameData->drawBuf]);
         ctx = g_gameState->gameData;
-        i = ctx->unk8;
-        DrawOTagEnv(ctx->unk10[i] + 0xFFF, &g_gameState->drawEnv[i]);
-        g_gameState->gameData->unk8 ^= 1;
-        gfx_setBuffer(g_gameState->gameData->unk8);
+        i = ctx->drawBuf;
+        DrawOTagEnv(ctx->ot[i] + 0xFFF, &g_gameState->drawEnv[i]);
+        g_gameState->gameData->drawBuf ^= 1;
+        gfx_setBuffer(g_gameState->gameData->drawBuf);
     } while (g_gameState->mode == 8);
     battleEnd_exit();
 }
 
 void battleEnd_init(void) {
-    Unk11C0 *s = g_gameState->gameData->unk8E4.ovl65->work;
+    Unk11C0 *s = g_gameState->gameData->ctx.ovl65->work;
     FileEntry *e;
 
     game_freezeScreen();
@@ -71,8 +71,8 @@ void battleEnd_exit(void) {
     GameData *g = g_gameState->gameData;
     s32 i;
 
-    if (!(g->battleFlags & 8) && (g->unk0 & 0x20000000) && g->musicId[0] != 0xFFFF) {
-        g->unk0 |= 0x400000;
+    if (!(g->battleFlags & 8) && (g->flags & 0x20000000) && g->musicId[0] != 0xFFFF) {
+        g->flags |= 0x400000;
     }
     g_gameState->gameData->depTable = (FileTable *)-1;
     if (g_gameState->mode == 0) {
@@ -81,10 +81,10 @@ void battleEnd_exit(void) {
             VSync(0);
         }
         g = g_gameState->gameData;
-        g->unk0 &= ~0x400000;
+        g->flags &= ~0x400000;
         snd_quit(g);
         g_resetCount++;
-        g_gameState->gameData->unk0 |= 0x100000;
+        g_gameState->gameData->flags |= 0x100000;
     }
 }
 
@@ -108,16 +108,16 @@ s32 battleEnd_loadDb(void) {
         while (cdRead_update(g_gameState->gameData->cdRead)) {
         }
     }
-    g_gameState->gameData->unk8E4.ovl65->unk1354->unk4 = g_modeHeap;
-    db_register(g_gameState->gameData->unk8E4.ovl65->unk1354->unk4, 0);
+    g_gameState->gameData->ctx.ovl65->unk1354->unk4 = g_modeHeap;
+    db_register(g_gameState->gameData->ctx.ovl65->unk1354->unk4, 0);
     return 0;
 }
 
 s32 battleEnd_unloadDb(void) {
-    Unk1354 *p = g_gameState->gameData->unk8E4.ovl65->unk1354;
+    Unk1354 *p = g_gameState->gameData->ctx.ovl65->unk1354;
     if (p->unk4 != 0) {
         db_unregister((void *)p->unk4);
-        g_gameState->gameData->unk8E4.ovl65->unk1354->unk4 = 0;
+        g_gameState->gameData->ctx.ovl65->unk1354->unk4 = 0;
     }
     return 0;
 }
@@ -133,7 +133,7 @@ void battleEnd_preloadScene(void) {
     s32 sector;
     s32 k;
 
-    b = g_gameState->gameData->unk8E4.ovl65->work;
+    b = g_gameState->gameData->ctx.ovl65->work;
     preload_init();
     g_gameState->gameData->preloadRequest = NULL;
     if (g_gameState->gameData->battleResult == 6) {

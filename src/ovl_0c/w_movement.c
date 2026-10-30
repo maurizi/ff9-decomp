@@ -614,7 +614,7 @@ void wm_setMountPalette(void) {
 
     id = 0;
     k = 0;
-    e = g_gameState->gameData->unk8E4.world->obj->palAnims;
+    e = g_gameState->gameData->ctx.world->obj->palAnims;
     pal = w_framePackGetPtr(g_worldDataPack, 1);
     func_800B36AC();
     for (n = evt_getObjectList(); n != NULL; n = n->unk0) {
@@ -646,7 +646,7 @@ void wm_setMountPalette(void) {
         }
     }
     c = 0;
-    for (i = 0; i < g_gameState->gameData->unk8E4.world->obj->palAnimCount; i++, e++) {
+    for (i = 0; i < g_gameState->gameData->ctx.world->obj->palAnimCount; i++, e++) {
         if (e->modelId == id) {
             dst = e->srcPal;
             switch (c) {
@@ -798,7 +798,7 @@ void wm_setActorFog(EvtObject *arg0, s32 arg1) {
     RECT *r;
 
     id = arg0->modelId;
-    e = g_gameState->gameData->unk8E4.world->obj->palAnims;
+    e = g_gameState->gameData->ctx.world->obj->palAnims;
     t = -arg0->pos.vy;
     t -= 0xC1F;
     t <<= 12;
@@ -821,7 +821,7 @@ void wm_setActorFog(EvtObject *arg0, s32 arg1) {
     if (f >= 0x1000) {
         f = 0xFFF;
     }
-    for (i = 0; i < g_gameState->gameData->unk8E4.world->obj->palAnimCount; i++, e++) {
+    for (i = 0; i < g_gameState->gameData->ctx.world->obj->palAnimCount; i++, e++) {
         if (e->modelId == id) {
             r = (RECT *)g_worldPrimPtr;
             if (f < 0) {
@@ -943,13 +943,13 @@ void wm_drawActorShadow(EvtObject *arg0, SVECTOR *arg1, s32 arg2) {
         if (sz < 0) {
             sz = 0;
         }
-        g_gameState->gameData->unk8E4.world->obj->shadows[k].scaleX = sx * 14;
-        g_gameState->gameData->unk8E4.world->obj->shadows[k].scaleZ = sx * 12;
-        g_gameState->gameData->unk8E4.world->obj->shadows[k].shade = sz;
-        ot = g_gameState->gameData->unk10[g_gameState->gameData->unk8];
-        g_gameState->gameData->unk10[g_gameState->gameData->unk8] = ot + g_worldOtBias;
-        wm_drawShadow(g_gameState->gameData->unk8E4.world->obj->shadows, k, arg1->vy, c->shadowJoint);
-        g_gameState->gameData->unk10[g_gameState->gameData->unk8] = ot;
+        g_gameState->gameData->ctx.world->obj->shadows[k].scaleX = sx * 14;
+        g_gameState->gameData->ctx.world->obj->shadows[k].scaleZ = sx * 12;
+        g_gameState->gameData->ctx.world->obj->shadows[k].shade = sz;
+        ot = g_gameState->gameData->ot[g_gameState->gameData->drawBuf];
+        g_gameState->gameData->ot[g_gameState->gameData->drawBuf] = ot + g_worldOtBias;
+        wm_drawShadow(g_gameState->gameData->ctx.world->obj->shadows, k, arg1->vy, c->shadowJoint);
+        g_gameState->gameData->ot[g_gameState->gameData->drawBuf] = ot;
     } else {
         s = 0x7D0;
         if (g_worldFog != 0) {
@@ -973,14 +973,14 @@ void wm_drawActorShadow(EvtObject *arg0, SVECTOR *arg1, s32 arg2) {
         if (a < 0) {
             a = 0;
         }
-        g_gameState->gameData->unk8E4.world->obj->shadows[k].scaleX = 0x302;
-        g_gameState->gameData->unk8E4.world->obj->shadows[k].scaleZ = 0x294;
-        g_gameState->gameData->unk8E4.world->obj->shadows[k].shade = a;
-        ot = g_gameState->gameData->unk10[g_gameState->gameData->unk8];
+        g_gameState->gameData->ctx.world->obj->shadows[k].scaleX = 0x302;
+        g_gameState->gameData->ctx.world->obj->shadows[k].scaleZ = 0x294;
+        g_gameState->gameData->ctx.world->obj->shadows[k].shade = a;
+        ot = g_gameState->gameData->ot[g_gameState->gameData->drawBuf];
         g_worldOtBias = -0x46;
-        g_gameState->gameData->unk10[g_gameState->gameData->unk8] -= 0x46;
-        wm_drawShadow(g_gameState->gameData->unk8E4.world->obj->shadows, k, arg1->vy, c->shadowJoint);
-        g_gameState->gameData->unk10[g_gameState->gameData->unk8] = ot;
+        g_gameState->gameData->ot[g_gameState->gameData->drawBuf] -= 0x46;
+        wm_drawShadow(g_gameState->gameData->ctx.world->obj->shadows, k, arg1->vy, c->shadowJoint);
+        g_gameState->gameData->ot[g_gameState->gameData->drawBuf] = ot;
     }
 }
 

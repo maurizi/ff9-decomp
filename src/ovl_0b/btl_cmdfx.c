@@ -9,9 +9,9 @@ void btl_setShadowSize(BtlUnit *arg0, s32 arg1, u32 arg2) {
     }
     arg0->shadowW = (arg1 & 0xFFFF) / 14;
     arg0->shadowD = arg2 / 12;
-    g_gameState->gameData->unk8E4.battle->work->shadows[k].shade = 0;
-    g_gameState->gameData->unk8E4.battle->work->shadows[k].width = arg0->shadowW * 14;
-    g_gameState->gameData->unk8E4.battle->work->shadows[k].depth = arg0->shadowD * 12;
+    g_gameState->gameData->ctx.battle->work->shadows[k].shade = 0;
+    g_gameState->gameData->ctx.battle->work->shadows[k].width = arg0->shadowW * 14;
+    g_gameState->gameData->ctx.battle->work->shadows[k].depth = arg0->shadowD * 12;
 }
 
 void btl_setUnitFade(BtlUnit *arg0, s32 arg1) {
@@ -24,7 +24,7 @@ void btl_setUnitFade(BtlUnit *arg0, s32 arg1) {
 }
 
 void btl_playCmdEffect(BtlCmd *arg0, s32 arg1, s16 *arg2) {
-    Battle *b = g_gameState->gameData->unk8E4.battle;
+    Battle *b = g_gameState->gameData->ctx.battle;
     s32 sum[4];
     BtlUnitList *l;
     BtlUnit *u;
@@ -70,7 +70,7 @@ void btl_playCmdEffect(BtlCmd *arg0, s32 arg1, s16 *arg2) {
         }
         l->kind = 0x11;
     }
-    for (u = g_gameState->gameData->unk8E4.battle->unitList; u != NULL; u = u->next) {
+    for (u = g_gameState->gameData->ctx.battle->unitList; u != NULL; u = u->next) {
         if (u->unitBit & (u16)arg0->targets) {
             l->targets[l->targetCount++] = u;
             u->popupFlags = 0;
@@ -208,28 +208,28 @@ void btl_startCmdEffect(BtlCmd *cmd) {
     case BTL_CMD_EIDOLON:
         switch (cmd->subNo) {
         case 0x31:
-            g_gameState->gameData->unk8E4.battle->eidolonAbility = 0x99;
+            g_gameState->gameData->ctx.battle->eidolonAbility = 0x99;
             break;
         case 0x33:
-            g_gameState->gameData->unk8E4.battle->eidolonAbility = 0x9A;
+            g_gameState->gameData->ctx.battle->eidolonAbility = 0x9A;
             break;
         case 0x35:
-            g_gameState->gameData->unk8E4.battle->eidolonAbility = 0x9B;
+            g_gameState->gameData->ctx.battle->eidolonAbility = 0x9B;
             break;
         case 0x37:
-            g_gameState->gameData->unk8E4.battle->eidolonAbility = 0x9C;
+            g_gameState->gameData->ctx.battle->eidolonAbility = 0x9C;
             break;
         case 0x3A:
-            g_gameState->gameData->unk8E4.battle->eidolonAbility = 0x9D;
+            g_gameState->gameData->ctx.battle->eidolonAbility = 0x9D;
             break;
         case 0x3C:
-            g_gameState->gameData->unk8E4.battle->eidolonAbility = 0x9E;
+            g_gameState->gameData->ctx.battle->eidolonAbility = 0x9E;
             break;
         case 0x3E:
-            g_gameState->gameData->unk8E4.battle->eidolonAbility = 0x9F;
+            g_gameState->gameData->ctx.battle->eidolonAbility = 0x9F;
             break;
         case 0x40:
-            g_gameState->gameData->unk8E4.battle->eidolonAbility = 0xA0;
+            g_gameState->gameData->ctx.battle->eidolonAbility = 0xA0;
             break;
         }
     default:

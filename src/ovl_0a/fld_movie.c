@@ -9,8 +9,8 @@ s32 fld_queueModelBundle(s32 uid) {
     }
     id = fld_remapModelId(id);
     if (db_lookupRegistered(4, id, 0) == NULL) {
-        g_fieldModelQueue[g_gameState->gameData->unk8E4.field->area->scene->modelQueueCount] = id;
-        g_gameState->gameData->unk8E4.field->area->scene->modelQueueCount++;
+        g_fieldModelQueue[g_gameState->gameData->ctx.field->area->scene->modelQueueCount] = id;
+        g_gameState->gameData->ctx.field->area->scene->modelQueueCount++;
     }
     return 0;
 }
@@ -128,8 +128,8 @@ s32 fld_loadModelBundle(s32 arg0) {
         }
     }
     DrawSync(0);
-    g_gameState->gameData->unk8E4.field->area->scene->modelBundles[g_gameState->gameData->unk8E4.field->area->scene->modelBundleCount] = pack1;
-    g_gameState->gameData->unk8E4.field->area->scene->modelBundleCount++;
+    g_gameState->gameData->ctx.field->area->scene->modelBundles[g_gameState->gameData->ctx.field->area->scene->modelBundleCount] = pack1;
+    g_gameState->gameData->ctx.field->area->scene->modelBundleCount++;
     db_register(pack1, 0);
     g_modeHeap = pack1 + db_getSize(pack1);
     return 0;
@@ -138,10 +138,10 @@ s32 fld_loadModelBundle(s32 arg0) {
 s32 fld_freeModelBundles(void) {
     s32 i;
 
-    for (i = g_gameState->gameData->unk8E4.field->area->scene->modelBundleCount - 1; i >= 0; i--) {
-        db_unregister((void *)g_gameState->gameData->unk8E4.field->area->scene->modelBundles[i]);
+    for (i = g_gameState->gameData->ctx.field->area->scene->modelBundleCount - 1; i >= 0; i--) {
+        db_unregister((void *)g_gameState->gameData->ctx.field->area->scene->modelBundles[i]);
     }
-    g_gameState->gameData->unk8E4.field->area->scene->modelBundleCount = 0;
+    g_gameState->gameData->ctx.field->area->scene->modelBundleCount = 0;
     return 0;
 }
 
@@ -198,9 +198,9 @@ s32 fld_setupActorModel(s32 arg0, void *arg1) {
     }
     sum *= 2;
     sum += s->model->model->boneCount * 32 + s->model->model->groupCount * 12;
-    fldmdl_initModel(s->model, (u8 *)g_gameState->gameData->unk8E4.field->area->scene->heapTop);
+    fldmdl_initModel(s->model, (u8 *)g_gameState->gameData->ctx.field->area->scene->heapTop);
     fldmdl_buildPackets(s->model, (WmTexInfo *)tex, (s16(*)[2])uv);
-    g_gameState->gameData->unk8E4.field->area->scene->heapTop += sum;
+    g_gameState->gameData->ctx.field->area->scene->heapTop += sum;
     fld_trimModelCache();
     t = db_lookupRegistered(8, arg0, DB_MODEL_INFO);
     e = t->entries;
@@ -213,7 +213,7 @@ s32 fld_setupActorModel(s32 arg0, void *arg1) {
         s->model->texAnims = db_lookupRegistered(4, sprId, 0);
         fldmdl_initTexAnims((TexAnimRelocSet *)s->model->texAnims, (ModelTexOfs *)spr);
     }
-    if (g_gameState->gameData->unk8E4.field->area->scene->walkmesh != NULL) {
+    if (g_gameState->gameData->ctx.field->area->scene->walkmesh != NULL) {
         if (slot < 9) {
             bgi_bindActor(slot, s);
         } else {
@@ -221,7 +221,7 @@ s32 fld_setupActorModel(s32 arg0, void *arg1) {
         }
         bgi_setActorActive(slot, 1);
     }
-    g_gameState->gameData->unk8E4.field->area->scene->flags |= FLD_SCN_ACTORS_READY;
+    g_gameState->gameData->ctx.field->area->scene->flags |= FLD_SCN_ACTORS_READY;
     s->flags |= 1;
     return slot;
 }
@@ -332,7 +332,7 @@ s32 fld_collectVisibleModels(FieldObjSlot **arg0) {
             }
         }
     }
-    if (g_gameState->gameData->unk8E4.field->area->scene->movieState != 0) {
+    if (g_gameState->gameData->ctx.field->area->scene->movieState != 0) {
         for (i = 0; i < n; i++) {
             o = arg0[i]->model;
             m = o->model;
@@ -385,8 +385,8 @@ void fld_drawModels(void) {
         fldbg_applyGeomOffset();
     }
     i = 0;
-    ot = g_gameState->gameData->unk10[g_gameState->gameData->unk8];
-    g_gameState->gameData->unk10[g_gameState->gameData->unk8] = ot + g_gameState->gameData->unk8E4.field->area->scene->otBias;
+    ot = g_gameState->gameData->ot[g_gameState->gameData->drawBuf];
+    g_gameState->gameData->ot[g_gameState->gameData->drawBuf] = ot + g_gameState->gameData->ctx.field->area->scene->otBias;
     n = fld_collectVisibleModels((FieldObjSlot **)list);
     for (; i < n; i++) {
         c = list[i];
@@ -437,8 +437,8 @@ void fld_drawModels(void) {
             }
         }
     }
-    gte_SetRotMatrix(&g_gameState->gameData->unk18);
-    gte_SetTransMatrix(&g_gameState->gameData->unk18);
+    gte_SetRotMatrix(&g_gameState->gameData->viewMatrix);
+    gte_SetTransMatrix(&g_gameState->gameData->viewMatrix);
     for (i = 0; i < n; i++) {
         c = list[i];
         if (c != NULL) {
@@ -450,7 +450,7 @@ void fld_drawModels(void) {
             gte_rtps();
             gte_stsxy(&sxy);
             gte_stsz(&z);
-            z = z / 4 + g_gameState->gameData->unk8E4.field->area->scene->otBias;
+            z = z / 4 + g_gameState->gameData->ctx.field->area->scene->otBias;
             if (z < lim || z > 0x1000 - lim) {
                 list[i] = NULL;
             }
@@ -486,7 +486,7 @@ void fld_drawModels(void) {
     for (i = 0; i < n; i++) {
         c = list[i];
         if (c != NULL) {
-            fld_drawShadow(g_gameState->gameData->unk8E4.field->area->scene->shadows, c->obj->uid);
+            fld_drawShadow(g_gameState->gameData->ctx.field->area->scene->shadows, c->obj->uid);
         }
     }
     for (i = 0; i < n; i++) {
@@ -507,11 +507,11 @@ void fld_drawModels(void) {
         }
     }
     fld_applyLights(list, n);
-    if (!(g_gameState->gameData->unk0 & GD_MENU_OPEN)) {
+    if (!(g_gameState->gameData->flags & GD_MENU_OPEN)) {
         fld_playAnimSfx(list, n);
     }
     fld_applyModelCommands(list, n);
-    g_gameState->gameData->unk10[g_gameState->gameData->unk8] = ot;
+    g_gameState->gameData->ot[g_gameState->gameData->drawBuf] = ot;
     if (!(g_fieldMovieFlags & 0x40)) {
         fldbg_resetGeomOffset();
     }
@@ -533,7 +533,7 @@ s32 fld_modelCommand(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4) {
     s32 id;
     FieldAnimSfx *t;
 
-    info = &g_gameState->gameData->unk8E4.field->area->scene->actorInfo[arg0];
+    info = &g_gameState->gameData->ctx.field->area->scene->actorInfo[arg0];
     c = (FieldEvtCtx *)game_getModel(arg0);
     switch (arg1) {
     case 0:
@@ -561,7 +561,7 @@ s32 fld_modelCommand(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4) {
     case 11:
         x = info->mirror;
         if (x == NULL) {
-            x = info->mirror = (FieldActorExt *)g_gameState->gameData->unk8E4.field->area->scene->heapTop;
+            x = info->mirror = (FieldActorExt *)g_gameState->gameData->ctx.field->area->scene->heapTop;
             x->flags = 0;
             x->modelId = c->modelId;
             x->model = (ModelObj *)x->modelBuf;
@@ -575,7 +575,7 @@ s32 fld_modelCommand(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4) {
             x->mirrorNormal.v.vy = 0x1000;
             x->mirrorNormal.v.vz = 0;
             x->tint.w = 0;
-            g_gameState->gameData->unk8E4.field->area->scene->heapTop += sizeof(FieldActorExt);
+            g_gameState->gameData->ctx.field->area->scene->heapTop += sizeof(FieldActorExt);
         }
         y = x;
         if (!(x->flags & 1)) {
@@ -595,9 +595,9 @@ s32 fld_modelCommand(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4) {
             }
             sum *= 2;
             sum += y->model->model->boneCount * 32 + y->model->model->groupCount * 12;
-            fldmdl_initModel(y->model, (u8 *)g_gameState->gameData->unk8E4.field->area->scene->heapTop);
+            fldmdl_initModel(y->model, (u8 *)g_gameState->gameData->ctx.field->area->scene->heapTop);
             fldmdl_buildPackets(y->model, (WmTexInfo *)tex, (s16(*)[2])uv);
-            g_gameState->gameData->unk8E4.field->area->scene->heapTop += sum;
+            g_gameState->gameData->ctx.field->area->scene->heapTop += sum;
             id = (s32)db_lookupRegistered(9, y->modelId, DB_TEX_ANIM);
             if (id != -1) {
                 y->model->texAnims = db_lookupRegistered(4, id, 0);
@@ -684,7 +684,7 @@ void fld_applyModelCommands(FieldEvtCtx **arg0, s32 arg1) {
             continue;
         }
         upd = 0;
-        info = &g_gameState->gameData->unk8E4.field->area->scene->actorInfo[c->obj->uid];
+        info = &g_gameState->gameData->ctx.field->area->scene->actorInfo[c->obj->uid];
         vis = c->flags & FLD_OBJ_SEMITRANS;
         chg = (info->flags & 0x10000) ^ vis;
         f4 = c->flags & 0x40000;
@@ -716,7 +716,7 @@ void fld_applyModelCommands(FieldEvtCtx **arg0, s32 arg1) {
         if (c == NULL) {
             continue;
         }
-        info = &g_gameState->gameData->unk8E4.field->area->scene->actorInfo[c->obj->uid];
+        info = &g_gameState->gameData->ctx.field->area->scene->actorInfo[c->obj->uid];
         x = info->mirror;
         if (x != NULL && (x->flags & 0x01000000)) {
             fldmdl_reflectModel(x->model);
@@ -777,7 +777,7 @@ s32 fld_allocModelCache(s32 arg0, s32 arg1) {
 
     e = fld_findModelCache(arg0);
     min = fld_getModelCacheBottom(NULL);
-    lo = g_gameState->gameData->unk8E4.field->area->scene->heapTop;
+    lo = g_gameState->gameData->ctx.field->area->scene->heapTop;
     if (lo == 0) {
         lo = g_modeHeap;
     }
@@ -811,7 +811,7 @@ void fld_compactModelCache(void) {
         id = s->id;
         if (s->addr != 0) {
             found = 0;
-            for (j = g_gameState->gameData->unk8E4.field->area->scene->modelQueueCount - 1; j >= 0; j--) {
+            for (j = g_gameState->gameData->ctx.field->area->scene->modelQueueCount - 1; j >= 0; j--) {
                 if ((u16)g_fieldModelQueue[j] == id) {
                     found = 1;
                     break;
@@ -860,7 +860,7 @@ void fld_clearModelCache(void) {
 }
 
 void fld_trimModelCache(void) {
-    s32 v = g_gameState->gameData->unk8E4.field->area->scene->heapTop;
+    s32 v = g_gameState->gameData->ctx.field->area->scene->heapTop;
 
     if (v == 0) {
         v = g_modeHeap;
@@ -904,7 +904,7 @@ void fld_drawShadow(FieldObjPlace *arg0, s32 arg1) {
     if (s->flags & FLD_OBJ_NO_SHADOW) {
         return;
     }
-    lt = g_gameState->gameData->unk8E4.field->area->scene->lights;
+    lt = g_gameState->gameData->ctx.field->area->scene->lights;
     if (lt != NULL) {
         t = (Unk800B3294Bias *)fld_findLightColor(lt, s->modelId);
         if (t == NULL) {
@@ -913,24 +913,24 @@ void fld_drawShadow(FieldObjPlace *arg0, s32 arg1) {
         bias = t->unk7;
     }
     fld_calcShadowMatrix(&e->params, s, &m);
-    u0 = (s16)(g_gameState->gameData->unk8E4.field->area->scene->shadowTexX % 64) * 2;
-    v0 = (s16)(g_gameState->gameData->unk8E4.field->area->scene->shadowTexY % 256);
+    u0 = (s16)(g_gameState->gameData->ctx.field->area->scene->shadowTexX % 64) * 2;
+    v0 = (s16)(g_gameState->gameData->ctx.field->area->scene->shadowTexY % 256);
     for (i = 0; i < 4; i++) {
         mask = NULL;
-        if (g_gameState->gameData->unk8E4.field->flags & FLD_MAP_SHADOW_MASK) {
-            mask = e->prims[g_gameState->gameData->unk8][i];
+        if (g_gameState->gameData->ctx.field->flags & FLD_MAP_SHADOW_MASK) {
+            mask = e->prims[g_gameState->gameData->drawBuf][i];
             setlen(mask, 2);
             mask[1] = _get_mask(0, 1);
             mask[2] = 0;
             p[i] = (POLY_FT4 *)(mask + 3);
         } else {
-            p[i] = e->prims[g_gameState->gameData->unk8][i];
+            p[i] = e->prims[g_gameState->gameData->drawBuf][i];
         }
         setPolyFT4(p[i]);
         setSemiTrans(p[i], 1);
         setRGB0(p[i], e->params.shade, e->params.shade, e->params.shade);
-        p[i]->tpage = getTPage(1, 2, g_gameState->gameData->unk8E4.field->area->scene->shadowTexX,
-                               g_gameState->gameData->unk8E4.field->area->scene->shadowTexY);
+        p[i]->tpage = getTPage(1, 2, g_gameState->gameData->ctx.field->area->scene->shadowTexX,
+                               g_gameState->gameData->ctx.field->area->scene->shadowTexY);
         p[i]->clut = getClut(256, 255);
         switch (i) {
         case 0:
@@ -946,7 +946,7 @@ void fld_drawShadow(FieldObjPlace *arg0, s32 arg1) {
             setUV4(p[3], u0 + 31, v0 + 31, u0, v0 + 31, u0 + 31, v0, u0, v0);
             break;
         }
-        if (g_gameState->gameData->unk8E4.field->flags & FLD_MAP_SHADOW_MASK) {
+        if (g_gameState->gameData->ctx.field->flags & FLD_MAP_SHADOW_MASK) {
             mk = (u32 *)(p[i] + 1);
             setlen(mk, 2);
             mk[1] = _get_mask(0, 1);
@@ -955,8 +955,8 @@ void fld_drawShadow(FieldObjPlace *arg0, s32 arg1) {
             MargePrim(mask, p[i]);
         }
     }
-    gte_MulMatrix0(&g_gameState->gameData->unk18, &m, &m);
-    gte_SetTransMatrix(&g_gameState->gameData->unk18);
+    gte_MulMatrix0(&g_gameState->gameData->viewMatrix, &m, &m);
+    gte_SetTransMatrix(&g_gameState->gameData->viewMatrix);
     gte_ldlv0(m.t);
     gte_rtv0tr();
     gte_stir(m.t);
@@ -1139,7 +1139,7 @@ s32 fld_movieCommand(s32 arg0, s32 arg1, s32 arg2) {
     case 4:
         return mbg_getFrame();
     case 5:
-        g_gameState->gameData->unk8E4.field->area->scene->movieRgb24 = arg1;
+        g_gameState->gameData->ctx.field->area->scene->movieRgb24 = arg1;
         mbg_setRgb24(arg1);
         break;
     }
@@ -1148,13 +1148,13 @@ s32 fld_movieCommand(s32 arg0, s32 arg1, s32 arg2) {
 
 void fld_movieStart(s32 arg0, s32 arg1, s32 arg2) {
     g_fieldMovieFlags = 0;
-    g_gameState->gameData->unk8E4.field->area->scene->movieList = arg0;
-    g_gameState->gameData->unk8E4.field->area->scene->movieEntry = arg1;
-    g_gameState->gameData->unk8E4.field->area->scene->movieRgb24 = arg2;
+    g_gameState->gameData->ctx.field->area->scene->movieList = arg0;
+    g_gameState->gameData->ctx.field->area->scene->movieEntry = arg1;
+    g_gameState->gameData->ctx.field->area->scene->movieRgb24 = arg2;
     fld_clearModelCache();
     preload_reset();
-    g_gameState->gameData->unk8E4.field->flags |= FLD_MAP_NO_PRELOAD;
-    g_gameState->gameData->unk8E4.field->area->scene->movieState = 1;
+    g_gameState->gameData->ctx.field->flags |= FLD_MAP_NO_PRELOAD;
+    g_gameState->gameData->ctx.field->area->scene->movieState = 1;
 }
 
 void fld_movieUpdate(void) {
@@ -1163,7 +1163,7 @@ void fld_movieUpdate(void) {
     s32 t;
     s32 d;
 
-    switch (g_gameState->gameData->unk8E4.field->area->scene->movieState) {
+    switch (g_gameState->gameData->ctx.field->area->scene->movieState) {
     case 1:
         if (cd_getState() == 0) {
             if (cdRead_update(g_gameState->gameData->cdRead) == 0) {
@@ -1171,41 +1171,41 @@ void fld_movieUpdate(void) {
                 cdRead_init(g_gameState->gameData->cdRead, f->unk4, (f->unkC - f->unk4) << 11,
                               (void *)(g_loadAreaEnd + 0xF1700), 0, 0x15000, NULL);
             }
-            g_gameState->gameData->unk8E4.field->area->scene->movieState = 2;
+            g_gameState->gameData->ctx.field->area->scene->movieState = 2;
         }
         break;
     case 2:
         if (cdRead_update(g_gameState->gameData->cdRead) == 0) {
             g_fieldMovieFlags |= 8;
-            g_gameState->gameData->unk8E4.field->area->scene->movieState = 3;
+            g_gameState->gameData->ctx.field->area->scene->movieState = 3;
         }
         break;
     case 3:
         if (!(g_fieldMovieFlags & 8)) {
-            g_gameState->gameData->unk8E4.field->area->scene->movieFile = cd_findFile(
-                g_mbgMovieLists[g_gameState->gameData->unk8E4.field->area->scene->movieList]
-                    .unk4[g_gameState->gameData->unk8E4.field->area->scene->movieEntry].unk0);
+            g_gameState->gameData->ctx.field->area->scene->movieFile = cd_findFile(
+                g_mbgMovieLists[g_gameState->gameData->ctx.field->area->scene->movieList]
+                    .unk4[g_gameState->gameData->ctx.field->area->scene->movieEntry].unk0);
             if (cd_getState() == 0) {
-                cd_seekStreamAsync(g_gameState->gameData->unk8E4.field->area->scene->movieFile);
-                g_gameState->gameData->unk8E4.field->area->scene->movieState = 4;
+                cd_seekStreamAsync(g_gameState->gameData->ctx.field->area->scene->movieFile);
+                g_gameState->gameData->ctx.field->area->scene->movieState = 4;
             }
         }
         break;
     case 4:
         if (cd_getState() == 0) {
-            g_gameState->gameData->unk8E4.field->area->scene->movieState = 5;
+            g_gameState->gameData->ctx.field->area->scene->movieState = 5;
         }
         break;
     case 5:
         if (g_fieldMovieFlags & 1) {
             b = 1;
-            if (g_gameState->gameData->unk8 != 0) {
+            if (g_gameState->gameData->drawBuf != 0) {
                 b = 2;
             }
             g_fieldFlagQueue.mapFlags[0][b - 1] = 0x600;
             g_fieldFlagQueue.gameFlags[0][b - 1] = 0x19;
             g_fieldFlagQueue.mapFlags[0][b - 1] |= 0x800;
-            if (g_gameState->gameData->unk8E4.field->area->scene->movieRgb24 != 0) {
+            if (g_gameState->gameData->ctx.field->area->scene->movieRgb24 != 0) {
                 g_fieldFlagQueue.gameFlags[0][b - 1] |= 0x44;
                 g_fieldFlagQueue.mapFlags[0][b - 1] |= 1;
             }
@@ -1213,26 +1213,26 @@ void fld_movieUpdate(void) {
             g_fieldFlagQueue.movieFlags[1][b] = 0x40;
             g_fieldFlagQueue.movieFlags[0][b] = 2;
             if (!(g_padPortMask[0] & BTN_START)) {
-                g_gameState->gameData->unk8E4.field->area->scene->flags |= FLD_SCN_MOVIE_DISPMASK;
+                g_gameState->gameData->ctx.field->area->scene->flags |= FLD_SCN_MOVIE_DISPMASK;
                 g_padPortMask[0] |= BTN_START;
             }
             g_gameState->vsyncMode = 4;
             akao_sendCmdE4(0);
             akao_sendCmdE2();
             DrawSync(0);
-            MBG_init(1, &g_gameState->gameData->unk8E4.field->area->scene->movieWork);
-            mbg_setRgb24(g_gameState->gameData->unk8E4.field->area->scene->movieRgb24);
+            MBG_init(1, &g_gameState->gameData->ctx.field->area->scene->movieWork);
+            mbg_setRgb24(g_gameState->gameData->ctx.field->area->scene->movieRgb24);
             mbg_setEndCallback(fld_movieStop);
             g_fieldMovieLastFrame = g_mbgFrame;
-            func_8019AB98(2, 4, g_gameState->gameData->unk8E4.field->area->scene->movieSndVolume);
-            mbg_play(g_gameState->gameData->unk8E4.field->area->scene->movieList,
-                          g_gameState->gameData->unk8E4.field->area->scene->movieEntry);
-            g_gameState->gameData->unk8E4.field->area->scene->movieState = 6;
+            func_8019AB98(2, 4, g_gameState->gameData->ctx.field->area->scene->movieSndVolume);
+            mbg_play(g_gameState->gameData->ctx.field->area->scene->movieList,
+                          g_gameState->gameData->ctx.field->area->scene->movieEntry);
+            g_gameState->gameData->ctx.field->area->scene->movieState = 6;
         }
         break;
     case 6:
         if (g_fieldMovieFlags & 0x40) {
-            mbg_getStartCamera((void *)&g_gameState->gameData->unk18, &g_gameState->gameData->projDist);
+            mbg_getStartCamera((void *)&g_gameState->gameData->viewMatrix, &g_gameState->gameData->projDist);
         }
         if ((g_fieldMovieFlags & 2) && (mbg_getStatus() & 2)) {
             done = mbg_update(0);
@@ -1245,22 +1245,22 @@ void fld_movieUpdate(void) {
                 }
             }
             if (done != 0) {
-                setlen(&g_fieldMovieMaskPkt[g_gameState->gameData->unk8 ^ 1], 2);
-                g_fieldMovieMaskPkt[g_gameState->gameData->unk8 ^ 1].code[0] = _get_mask(0, 1);
-                g_fieldMovieMaskPkt[g_gameState->gameData->unk8 ^ 1].code[1] = 0;
-                addPrim(g_gameState->gameData->unk10[g_gameState->gameData->unk8 ^ 1],
-                        &g_fieldMovieMaskPkt[g_gameState->gameData->unk8 ^ 1]);
-                DrawOTag(g_gameState->gameData->unk10[g_gameState->gameData->unk8 ^ 1]);
-            } else if (g_gameState->gameData->unk8E4.field->area->scene->movieRgb24 != 0 && g_gameState->gameData->unk8 == 0) {
-                g_gameState->dispEnv[g_gameState->gameData->unk8].disp.x = 0x1E0;
+                setlen(&g_fieldMovieMaskPkt[g_gameState->gameData->drawBuf ^ 1], 2);
+                g_fieldMovieMaskPkt[g_gameState->gameData->drawBuf ^ 1].code[0] = _get_mask(0, 1);
+                g_fieldMovieMaskPkt[g_gameState->gameData->drawBuf ^ 1].code[1] = 0;
+                addPrim(g_gameState->gameData->ot[g_gameState->gameData->drawBuf ^ 1],
+                        &g_fieldMovieMaskPkt[g_gameState->gameData->drawBuf ^ 1]);
+                DrawOTag(g_gameState->gameData->ot[g_gameState->gameData->drawBuf ^ 1]);
+            } else if (g_gameState->gameData->ctx.field->area->scene->movieRgb24 != 0 && g_gameState->gameData->drawBuf == 0) {
+                g_gameState->dispEnv[g_gameState->gameData->drawBuf].disp.x = 0x1E0;
             }
             if ((g_mbgFrame >= t || g_fieldMovieLastFrame >= g_mbgFrame) && !(g_fieldMovieFlags & 0x100)) {
                 if (g_fieldMovieLastFrame >= g_mbgFrame) {
-                    ClearOTagR(g_gameState->gameData->unk10[g_gameState->gameData->unk8], 0x1000);
-                    g_gameState->gameData->unk0 &= ~(GD_MENU_DISABLED | GD_HIDE_ALL);
-                    g_gameState->gameData->unk8E4.field->flags &= ~0xE01;
-                    if (g_gameState->gameData->unk8E4.field->area->scene->movieRgb24 != 0 && g_gameState->gameData->unk8 == 0) {
-                        g_gameState->dispEnv[g_gameState->gameData->unk8].disp.x = 0x1E0;
+                    ClearOTagR(g_gameState->gameData->ot[g_gameState->gameData->drawBuf], 0x1000);
+                    g_gameState->gameData->flags &= ~(GD_MENU_DISABLED | GD_HIDE_ALL);
+                    g_gameState->gameData->ctx.field->flags &= ~0xE01;
+                    if (g_gameState->gameData->ctx.field->area->scene->movieRgb24 != 0 && g_gameState->gameData->drawBuf == 0) {
+                        g_gameState->dispEnv[g_gameState->gameData->drawBuf].disp.x = 0x1E0;
                     }
                     printf("Fr: %d\n", g_fieldMovieLastFrame);
                 } else {
@@ -1275,38 +1275,38 @@ void fld_movieUpdate(void) {
     case 7:
         if ((g_fieldMovieFlags & 4) && cd_getState() == 0) {
             fld_movieFinish();
-            g_gameState->gameData->unk8E4.field->area->scene->movieState = 8;
+            g_gameState->gameData->ctx.field->area->scene->movieState = 8;
         }
         break;
     }
 }
 
 void fld_movieStop(void) {
-    if (g_gameState->gameData->unk8E4.field->area->scene->flags & FLD_SCN_MOVIE_DISPMASK) {
+    if (g_gameState->gameData->ctx.field->area->scene->flags & FLD_SCN_MOVIE_DISPMASK) {
         g_padPortMask[0] &= ~BTN_START;
-        g_gameState->gameData->unk8E4.field->area->scene->flags &= ~FLD_SCN_MOVIE_DISPMASK;
+        g_gameState->gameData->ctx.field->area->scene->flags &= ~FLD_SCN_MOVIE_DISPMASK;
     }
     mbg_shutdown();
     cd_cancel();
     g_fieldMovieFlags |= 4;
-    g_gameState->gameData->unk8E4.field->area->scene->movieState = 7;
+    g_gameState->gameData->ctx.field->area->scene->movieState = 7;
 }
 
 void fld_movieFinish(void) {
     FieldMap *f;
 
-    g_gameState->gameData->unk0 &= ~0x5D;
-    f = g_gameState->gameData->unk8E4.field;
+    g_gameState->gameData->flags &= ~0x5D;
+    f = g_gameState->gameData->ctx.field;
     g_fieldMovieFlags &= 0xFE00;
     f->flags &= ~0x1E01;
     g_gameState->vsyncMode = 2;
     g_gameState->dispEnv[0].disp.x = 0x140;
     g_gameState->dispEnv[1].disp.x = 0;
-    fld_soundCommand(0x6201, -1, g_gameState->gameData->unk8E4.field->area->scene->sndVolume, 0, 0);
+    fld_soundCommand(0x6201, -1, g_gameState->gameData->ctx.field->area->scene->sndVolume, 0, 0);
 }
 
 s32 fld_isMoviePlaying(void) {
-    if ((u32)(g_gameState->gameData->unk8E4.field->area->scene->movieState - 6) < 2 && (g_fieldMovieFlags & 2)
+    if ((u32)(g_gameState->gameData->ctx.field->area->scene->movieState - 6) < 2 && (g_fieldMovieFlags & 2)
         && (mbg_getStatus() & 2)) {
         return 1;
     }
@@ -1326,14 +1326,14 @@ void fld_movieRequestStop(void) {
 }
 
 void fld_beginFrame(void) {
-    if (g_gameState->gameData->unk8E4.field->flags & FLD_MAP_SHADOW_MASK) {
-        ClearOTag(g_gameState->gameData->unk10[g_gameState->gameData->unk8], 0x1000);
-        setlen(&g_fieldMaskPkt[g_gameState->gameData->unk8 ^ 1], 2);
-        g_fieldMaskPkt[g_gameState->gameData->unk8 ^ 1].code[0] = _get_mask(0, 0);
-        g_fieldMaskPkt[g_gameState->gameData->unk8 ^ 1].code[1] = 0;
-        addPrim(&g_gameState->gameData->unk10[g_gameState->gameData->unk8 ^ 1][0xFFF], &g_fieldMaskPkt[g_gameState->gameData->unk8 ^ 1]);
+    if (g_gameState->gameData->ctx.field->flags & FLD_MAP_SHADOW_MASK) {
+        ClearOTag(g_gameState->gameData->ot[g_gameState->gameData->drawBuf], 0x1000);
+        setlen(&g_fieldMaskPkt[g_gameState->gameData->drawBuf ^ 1], 2);
+        g_fieldMaskPkt[g_gameState->gameData->drawBuf ^ 1].code[0] = _get_mask(0, 0);
+        g_fieldMaskPkt[g_gameState->gameData->drawBuf ^ 1].code[1] = 0;
+        addPrim(&g_gameState->gameData->ot[g_gameState->gameData->drawBuf ^ 1][0xFFF], &g_fieldMaskPkt[g_gameState->gameData->drawBuf ^ 1]);
     } else {
-        ClearOTagR(g_gameState->gameData->unk10[g_gameState->gameData->unk8], 0x1000);
+        ClearOTagR(g_gameState->gameData->ot[g_gameState->gameData->drawBuf], 0x1000);
     }
     msg_beginDraw();
 }
@@ -1349,7 +1349,7 @@ void fld_endFrame(void) {
     }
     DrawSync(0);
     if (!(mbg_getStatus() & 2)) {
-        if ((g_gameState->gameData->unk0 & GD_HIDE_ALL) == GD_HIDE_ALL && (g_gameState->gameData->unk8E4.field->flags & 4)) {
+        if ((g_gameState->gameData->flags & GD_HIDE_ALL) == GD_HIDE_ALL && (g_gameState->gameData->ctx.field->flags & 4)) {
             g_gameState->vsyncMode = 0;
         } else {
             g_gameState->vsyncMode = 2;
@@ -1363,30 +1363,30 @@ void fld_endFrame(void) {
         ExitCriticalSection();
         g_fieldMovieFlags &= ~8;
     }
-    if (!(g_gameState->gameData->unk8E4.field->flags & FLD_MAP_NO_DISPENV)) {
-        PutDispEnv(&g_gameState->dispEnv[g_gameState->gameData->unk8]);
+    if (!(g_gameState->gameData->ctx.field->flags & FLD_MAP_NO_DISPENV)) {
+        PutDispEnv(&g_gameState->dispEnv[g_gameState->gameData->drawBuf]);
     }
-    if (!(g_gameState->gameData->unk0 & GD_PAUSED)) {
-        f = g_gameState->gameData->unk8E4.field->flags;
+    if (!(g_gameState->gameData->flags & GD_PAUSED)) {
+        f = g_gameState->gameData->ctx.field->flags;
         if (!(f & FLD_MAP_NO_DRAW)) {
             if (f & FLD_MAP_CLEAR_ONLY) {
-                PutDrawEnv(&g_gameState->drawEnv[g_gameState->gameData->unk8]);
+                PutDrawEnv(&g_gameState->drawEnv[g_gameState->gameData->drawBuf]);
             } else if (f & 4) {
-                DrawOTagEnv(&g_gameState->gameData->unk10[g_gameState->gameData->unk8][0xFFF], &g_gameState->drawEnv[g_gameState->gameData->unk8]);
+                DrawOTagEnv(&g_gameState->gameData->ot[g_gameState->gameData->drawBuf][0xFFF], &g_gameState->drawEnv[g_gameState->gameData->drawBuf]);
             } else {
-                DrawOTag(g_gameState->gameData->unk10[g_gameState->gameData->unk8]);
+                DrawOTag(g_gameState->gameData->ot[g_gameState->gameData->drawBuf]);
             }
         }
     }
-    if (!(g_gameState->gameData->unk0 & GD_NO_FLIP)) {
-        g_gameState->gameData->unk8 ^= 1;
-        gfx_setBuffer(g_gameState->gameData->unk8);
+    if (!(g_gameState->gameData->flags & GD_NO_FLIP)) {
+        g_gameState->gameData->drawBuf ^= 1;
+        gfx_setBuffer(g_gameState->gameData->drawBuf);
     }
-    if (!(g_gameState->gameData->unk0 & GD_PAUSED)) {
-        g_gameState->gameData->unk0 |= g_fieldFlagQueue.gameFlags[0][0];
-        g_gameState->gameData->unk0 &= ~g_fieldFlagQueue.gameFlags[1][0];
-        g_gameState->gameData->unk8E4.field->flags |= g_fieldFlagQueue.mapFlags[0][0];
-        g_gameState->gameData->unk8E4.field->flags &= ~g_fieldFlagQueue.mapFlags[1][0];
+    if (!(g_gameState->gameData->flags & GD_PAUSED)) {
+        g_gameState->gameData->flags |= g_fieldFlagQueue.gameFlags[0][0];
+        g_gameState->gameData->flags &= ~g_fieldFlagQueue.gameFlags[1][0];
+        g_gameState->gameData->ctx.field->flags |= g_fieldFlagQueue.mapFlags[0][0];
+        g_gameState->gameData->ctx.field->flags &= ~g_fieldFlagQueue.mapFlags[1][0];
         g_fieldMovieFlags |= g_fieldFlagQueue.movieFlags[0][0];
         g_fieldMovieFlags &= ~g_fieldFlagQueue.movieFlags[1][0];
         for (i = 0; i < 2; i++) {
@@ -1403,7 +1403,7 @@ void fld_endFrame(void) {
 }
 
 void fld_startEncounter(void) {
-    g_gameState->gameData->unk8E4.field->area->scene->encounterStep = 0;
+    g_gameState->gameData->ctx.field->area->scene->encounterStep = 0;
     g_fieldFlagQueue.mapFlags[1][3] = 4;
     g_fieldFlagQueue.gameFlags[0][0] = 0x43;
     g_fieldFlagQueue.gameFlags[0][2] = 0x3C;
@@ -1419,40 +1419,40 @@ void fld_updateEncounter(void) {
     s32 i;
     s16 w;
 
-    if (g_gameState->gameData->unk8E4.field->area->scene->encounterStep == 0) {
+    if (g_gameState->gameData->ctx.field->area->scene->encounterStep == 0) {
         g_swirlFrame = 0;
         g_swirlBuf = g_loadAreaEnd + 0x153F00;
         fld_clearModelCache();
-        g_gameState->gameData->unk8E4.field->area->scene->heapTop = g_modeHeap;
+        g_gameState->gameData->ctx.field->area->scene->heapTop = g_modeHeap;
         a = evt_getPlayer();
         if (a != NULL) {
             fldbg_applyGeomOffset();
             v.vx = a->pos.vx;
             v.vy = a->pos.vy;
             v.vz = a->pos.vz;
-            gte_SetRotMatrix(&g_gameState->gameData->unk18);
-            gte_SetTransMatrix(&g_gameState->gameData->unk18);
+            gte_SetRotMatrix(&g_gameState->gameData->viewMatrix);
+            gte_SetTransMatrix(&g_gameState->gameData->viewMatrix);
             gte_ldv0(&v);
             gte_rtps();
-            gte_stsxy(&g_gameState->gameData->unk8E4.field->area->scene->encounterScreenX);
-            if ((u16)g_gameState->gameData->unk8E4.field->area->scene->encounterScreenX >= 320
-                || g_gameState->gameData->unk8E4.field->area->scene->encounterScreenY < 0
-                || g_gameState->gameData->unk8E4.field->area->scene->encounterScreenY >= 224) {
-                g_gameState->gameData->unk8E4.field->area->scene->encounterScreenX = 160;
-                g_gameState->gameData->unk8E4.field->area->scene->encounterScreenY = 112;
+            gte_stsxy(&g_gameState->gameData->ctx.field->area->scene->encounterScreenX);
+            if ((u16)g_gameState->gameData->ctx.field->area->scene->encounterScreenX >= 320
+                || g_gameState->gameData->ctx.field->area->scene->encounterScreenY < 0
+                || g_gameState->gameData->ctx.field->area->scene->encounterScreenY >= 224) {
+                g_gameState->gameData->ctx.field->area->scene->encounterScreenX = 160;
+                g_gameState->gameData->ctx.field->area->scene->encounterScreenY = 112;
             }
             fldbg_resetGeomOffset();
         }
         fld_findBattleMusic();
-        if (g_gameState->gameData->musicId[0] != g_gameState->gameData->unk8E4.field->area->scene->battleMusic
-            && (g_gameState->gameData->unk0 & GD_MUSIC_PLAYING)) {
+        if (g_gameState->gameData->musicId[0] != g_gameState->gameData->ctx.field->area->scene->battleMusic
+            && (g_gameState->gameData->flags & GD_MUSIC_PLAYING)) {
             akao_fadeMusicVolume(0, 0xF, 0);
-            g_gameState->gameData->unk8E4.field->area->scene->encounterMusicStep = 7;
+            g_gameState->gameData->ctx.field->area->scene->encounterMusicStep = 7;
         }
-        if (g_gameState->gameData->sfxSlotId[0] != 0xFFFF && (g_gameState->gameData->unk0 & GD_SFX0_PLAYING)) {
+        if (g_gameState->gameData->sfxSlotId[0] != 0xFFFF && (g_gameState->gameData->flags & GD_SFX0_PLAYING)) {
             akao_fadeSeVolume((s32)g_gameState->gameData->sfxSlotBuf0, 0x100000, 0xF, 0);
         }
-        if (g_gameState->gameData->sfxSlotId[1] != 0xFFFF && (g_gameState->gameData->unk0 & GD_SFX1_PLAYING)) {
+        if (g_gameState->gameData->sfxSlotId[1] != 0xFFFF && (g_gameState->gameData->flags & GD_SFX1_PLAYING)) {
             akao_fadeSeVolume((s32)g_gameState->gameData->sfxSlotBuf1, 0x200000, 0xF, 0);
         }
         for (i = 1; i >= 0; i--) {
@@ -1460,16 +1460,16 @@ void fld_updateEncounter(void) {
             g_padActuator[i].unk0 = 0;
         }
         akao_sendCmdE2();
-        g_gameState->gameData->unk8E4.field->area->scene->encounterStep++;
+        g_gameState->gameData->ctx.field->area->scene->encounterStep++;
     } else {
-        if (!(g_gameState->gameData->unk8E4.field->area->scene->flags & FLD_SCN_ENCOUNTER_LOADED)) {
+        if (!(g_gameState->gameData->ctx.field->area->scene->flags & FLD_SCN_ENCOUNTER_LOADED)) {
             if (preload_isReady(0x1000B) != 0) {
                 e = preload_find(0x1000B);
                 ClearOTag(&g_fieldTempOt, 1);
-                setlen(&g_fieldMaskPkt[g_gameState->gameData->unk8 ^ 1], 2);
-                g_fieldMaskPkt[g_gameState->gameData->unk8 ^ 1].code[0] = _get_mask(0, 0);
-                g_fieldMaskPkt[g_gameState->gameData->unk8 ^ 1].code[1] = 0;
-                addPrim(&g_fieldTempOt, &g_fieldMaskPkt[g_gameState->gameData->unk8]);
+                setlen(&g_fieldMaskPkt[g_gameState->gameData->drawBuf ^ 1], 2);
+                g_fieldMaskPkt[g_gameState->gameData->drawBuf ^ 1].code[0] = _get_mask(0, 0);
+                g_fieldMaskPkt[g_gameState->gameData->drawBuf ^ 1].code[1] = 0;
+                addPrim(&g_fieldTempOt, &g_fieldMaskPkt[g_gameState->gameData->drawBuf]);
                 DrawOTag(&g_fieldTempOt);
                 r.x = 0;
                 r.y = 0x100;
@@ -1488,44 +1488,44 @@ void fld_updateEncounter(void) {
             fld_soundCommand(0xD000, 0x27C, 0, 0x80, 0x7F);
             fld_soundCommand(0xD000, 0x27B, 0, 0x80, 0x7F);
             fld_soundCommand(0xD000, 0x27A, 0, 0x80, 0x7F);
-            g_gameState->gameData->unk8E4.field->area->scene->flags |= FLD_SCN_ENCOUNTER_LOADED;
+            g_gameState->gameData->ctx.field->area->scene->flags |= FLD_SCN_ENCOUNTER_LOADED;
         }
-        if (!(g_gameState->gameData->unk8E4.field->area->scene->flags & FLD_SCN_ENCOUNTER_DONE)
-            && swirl_update(g_gameState->gameData->unk8E4.field->area->scene->encounterScreenX,
-                             g_gameState->gameData->unk8E4.field->area->scene->encounterScreenY)) {
-            g_gameState->gameData->unk8E4.field->area->scene->flags |= FLD_SCN_ENCOUNTER_DONE;
+        if (!(g_gameState->gameData->ctx.field->area->scene->flags & FLD_SCN_ENCOUNTER_DONE)
+            && swirl_update(g_gameState->gameData->ctx.field->area->scene->encounterScreenX,
+                             g_gameState->gameData->ctx.field->area->scene->encounterScreenY)) {
+            g_gameState->gameData->ctx.field->area->scene->flags |= FLD_SCN_ENCOUNTER_DONE;
         }
-        if (g_gameState->gameData->unk8E4.field->area->scene->encounterMusicStep > 0) {
-            g_gameState->gameData->unk8E4.field->area->scene->encounterMusicStep--;
-        } else if (g_gameState->gameData->unk8E4.field->area->scene->encounterMusicStep == 0) {
-            if (g_gameState->gameData->unk8E4.field->area->scene->battleMusic != 0xFFFF
-                && g_gameState->gameData->unk8E4.field->area->scene->battleMusic != g_gameState->gameData->musicId[0]) {
-                if (g_gameState->gameData->unk0 & GD_MUSIC_PLAYING) {
+        if (g_gameState->gameData->ctx.field->area->scene->encounterMusicStep > 0) {
+            g_gameState->gameData->ctx.field->area->scene->encounterMusicStep--;
+        } else if (g_gameState->gameData->ctx.field->area->scene->encounterMusicStep == 0) {
+            if (g_gameState->gameData->ctx.field->area->scene->battleMusic != 0xFFFF
+                && g_gameState->gameData->ctx.field->area->scene->battleMusic != g_gameState->gameData->musicId[0]) {
+                if (g_gameState->gameData->flags & GD_MUSIC_PLAYING) {
                     fld_soundCommand(0x800, g_gameState->gameData->musicId[0], 0, 0, 0);
                 }
-                fld_soundCommand(0x700, g_gameState->gameData->unk8E4.field->area->scene->battleMusic, 0, 0, 0);
-                g_gameState->gameData->unk8E4.field->area->scene->encounterMusicStep = -1;
+                fld_soundCommand(0x700, g_gameState->gameData->ctx.field->area->scene->battleMusic, 0, 0, 0);
+                g_gameState->gameData->ctx.field->area->scene->encounterMusicStep = -1;
             } else {
-                g_gameState->gameData->unk8E4.field->area->scene->encounterMusicStep = -2;
+                g_gameState->gameData->ctx.field->area->scene->encounterMusicStep = -2;
             }
-        } else if (g_gameState->gameData->unk8E4.field->area->scene->encounterMusicStep == -1) {
+        } else if (g_gameState->gameData->ctx.field->area->scene->encounterMusicStep == -1) {
             if (fld_soundCommand(0xC00, -1, 0, 0, 0) == 0) {
-                g_gameState->gameData->unk8E4.field->area->scene->encounterMusicStep = -2;
+                g_gameState->gameData->ctx.field->area->scene->encounterMusicStep = -2;
             }
-        } else if (g_gameState->gameData->unk8E4.field->area->scene->encounterMusicStep == -2) {
+        } else if (g_gameState->gameData->ctx.field->area->scene->encounterMusicStep == -2) {
             fld_suspendResidentSfx();
-            if (g_gameState->gameData->unk8E4.field->area->scene->battleMusic != 0xFFFF
-                && !(g_gameState->gameData->unk0 & GD_MUSIC_PLAYING)) {
-                fld_soundCommand(0, g_gameState->gameData->unk8E4.field->area->scene->battleMusic, 0, 0, 0);
+            if (g_gameState->gameData->ctx.field->area->scene->battleMusic != 0xFFFF
+                && !(g_gameState->gameData->flags & GD_MUSIC_PLAYING)) {
+                fld_soundCommand(0, g_gameState->gameData->ctx.field->area->scene->battleMusic, 0, 0, 0);
                 akao_setMusicVolume(0, 0x7F);
             }
-            g_gameState->gameData->unk8E4.field->area->scene->encounterMusicStep = -3;
+            g_gameState->gameData->ctx.field->area->scene->encounterMusicStep = -3;
         }
     }
-    if ((g_gameState->gameData->unk8E4.field->area->scene->flags & FLD_SCN_ENCOUNTER_DONE)
-        && g_gameState->gameData->unk8E4.field->area->scene->encounterMusicStep == -3) {
-        g_gameState->gameData->unk0 &= ~0x7F;
-        g_gameState->gameData->unk8E4.field->flags &= ~0x1919;
+    if ((g_gameState->gameData->ctx.field->area->scene->flags & FLD_SCN_ENCOUNTER_DONE)
+        && g_gameState->gameData->ctx.field->area->scene->encounterMusicStep == -3) {
+        g_gameState->gameData->flags &= ~0x7F;
+        g_gameState->gameData->ctx.field->flags &= ~0x1919;
         g_padPortMask[0] &= ~BTN_START;
         g_gameState->unk0 |= GS_FLD_LEAVE;
     }
@@ -1542,8 +1542,8 @@ void fld_togglePause(void) {
     u32 a;
     SPRT *sp;
 
-    g_gameState->gameData->unk0 ^= GD_PAUSED;
-    if (g_gameState->gameData->unk0 & GD_PAUSED) {
+    g_gameState->gameData->flags ^= GD_PAUSED;
+    if (g_gameState->gameData->flags & GD_PAUSED) {
         akao_sendCmd99(0);
         game_resumeClock(1);
         for (i = 1; i >= 0; i--) {
@@ -1585,11 +1585,11 @@ void fld_togglePause(void) {
         setaddr(&g_fieldPauseDim, a), setaddr(&g_fieldTempOt, &g_fieldPauseDim);
         addPrim(&g_fieldTempOt, &g_fieldPauseTPage);
         DrawOTag(&g_fieldTempOt);
-        g_gameState->gameData->unk0 |= GD_NO_FLIP;
+        g_gameState->gameData->flags |= GD_NO_FLIP;
     } else {
         game_resumeClock(0);
         akao_sendCmd98(0);
-        g_gameState->gameData->unk0 &= ~GD_NO_FLIP;
+        g_gameState->gameData->flags &= ~GD_NO_FLIP;
     }
 }
 
@@ -1597,7 +1597,7 @@ void fld_spriteCommand(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4) {
     FieldSpriteSet *h;
     FieldSprite *e;
 
-    h = g_gameState->gameData->unk8E4.field->area->scene->sprites;
+    h = g_gameState->gameData->ctx.field->area->scene->sprites;
     if (h == NULL) {
         return;
     }
@@ -1652,7 +1652,7 @@ u8 *fld_initSprites(u8 *arg0) {
     s32 n;
     FieldSpriteSet *h;
 
-    fld_getBgKey(g_gameState->gameData->unk8E4.field->area->scene, (s16)g_gameState->gameData->fieldId);
+    fld_getBgKey(g_gameState->gameData->ctx.field->area->scene, (s16)g_gameState->gameData->fieldId);
     i = 0;
     n = 0x10;
     h = (FieldSpriteSet *)arg0;
@@ -1672,7 +1672,7 @@ u8 *fld_initSprites(u8 *arg0) {
     }
     h->primBufs[0] = arg0;
     h->primBufs[1] = arg0 + 0x3000;
-    g_gameState->gameData->unk8E4.field->area->scene->sprites = h;
+    g_gameState->gameData->ctx.field->area->scene->sprites = h;
     return arg0 + 0x6000;
 }
 
@@ -1686,7 +1686,7 @@ void fld_drawSprites(void) {
     u32 *ot;
     long *t;
 
-    h = g_gameState->gameData->unk8E4.field->area->scene->sprites;
+    h = g_gameState->gameData->ctx.field->area->scene->sprites;
     if (h == NULL) {
         return;
     }
@@ -1696,8 +1696,8 @@ void fld_drawSprites(void) {
     } else {
         fldbg_applyGeomOffset();
     }
-    prim = h->primBufs[g_gameState->gameData->unk8];
-    ot = &g_gameState->gameData->unk10[g_gameState->gameData->unk8][g_gameState->gameData->unk8E4.field->area->scene->otBias];
+    prim = h->primBufs[g_gameState->gameData->drawBuf];
+    ot = &g_gameState->gameData->ot[g_gameState->gameData->drawBuf][g_gameState->gameData->ctx.field->area->scene->otBias];
     for (i = 0; i < h->count; i++) {
         e = &h->entries[i];
         if (e->sprite != NULL && (e->flags & 1)) {

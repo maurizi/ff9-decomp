@@ -157,7 +157,7 @@ void fade_outAdditive(s32 a) {
 
 u32 *fade_getOt(s32 i) {
     if (g_gameState->mode != 2) {
-        return &g_gameState->gameData->unk10[i][g_fade.otz];
+        return &g_gameState->gameData->ot[i][g_fade.otz];
     }
     return &g_fadeBattleOt[i];
 }
@@ -358,7 +358,7 @@ void fadeWipe_draw(FadeState *arg0) {
     DR_TPAGE *tp;
 
     tpage = 64;
-    ot = fade_getOt(g_gameState->gameData->unk8);
+    ot = fade_getOt(g_gameState->gameData->drawBuf);
     if (arg0->subtract == 0) {
         tpage = 32;
     }

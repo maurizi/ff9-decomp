@@ -13,22 +13,22 @@ void btl_main(s32 arg0) {
     SetDispMask(1);
     do {
         btl_beginFrame();
-        if (!(g_gameState->gameData->unk8E4.battle->flags & 0x1000)) {
+        if (!(g_gameState->gameData->ctx.battle->flags & 0x1000)) {
             btl_checkDiscCover();
             if (btlui_isPauseRequested() != 0) {
                 btl_updatePause();
             }
-            if (!(g_gameState->gameData->unk0 & 0x100)) {
+            if (!(g_gameState->gameData->flags & 0x100)) {
                 if (btl_update() == 1) {
-                    g_gameState->gameData->unk8E4.battle->flags |= 0x1000;
+                    g_gameState->gameData->ctx.battle->flags |= 0x1000;
                 }
-                if (!(g_gameState->gameData->unk8E4.battle->flags & 0x10) && (g_gameState->gameData->unk8E4.battle->loadFlags & 7) == 7) {
+                if (!(g_gameState->gameData->ctx.battle->flags & 0x10) && (g_gameState->gameData->ctx.battle->loadFlags & 7) == 7) {
                     btlui_init();
-                    g_gameState->gameData->unk8E4.battle->flags |= 0x10;
+                    g_gameState->gameData->ctx.battle->flags |= 0x10;
                 }
-                if (!(g_gameState->gameData->unk8E4.battle->flags & 0x40) && (g_gameState->gameData->battleFlags & 0x40)) {
+                if (!(g_gameState->gameData->ctx.battle->flags & 0x40) && (g_gameState->gameData->battleFlags & 0x40)) {
                     btl_preloadExit();
-                    g_gameState->gameData->unk8E4.battle->flags |= 0x40;
+                    g_gameState->gameData->ctx.battle->flags |= 0x40;
                 }
                 game_updateTimer();
                 game_updateFade();
@@ -45,20 +45,20 @@ void btl_main(s32 arg0) {
 
 void btl_updatePause(void) {
     GameData *gd = g_gameState->gameData;
-    u16 f = gd->unk8E4.battle->flags;
+    u16 f = gd->ctx.battle->flags;
     s32 i;
     s32 w;
 
     if (!(f & 0x1000)) {
-        if (!(gd->unk0 & 0x100) || (f & 0x20)) {
-            gd->unk0 |= 0x100;
+        if (!(gd->flags & 0x100) || (f & 0x20)) {
+            gd->flags |= 0x100;
             akao_sendCmd99(0);
             game_resumeClock(1);
             for (i = 1; i >= 0; i--) {
                 g_padActuator[i].unk1 = 0;
                 g_padActuator[i].unk0 = 0;
             }
-            if (g_gameState->gameData->unk8E4.battle->flags & 0x20) {
+            if (g_gameState->gameData->ctx.battle->flags & 0x20) {
                 g_padPortMask[0] |= 8;
             }
             ClearOTag(D_800FDEB0, 1);
@@ -66,8 +66,8 @@ void btl_updatePause(void) {
             D_800FDF18.code[0] = GPU_STP(0, 0);
             D_800FDF18.code[1] = 0;
             addPrim(D_800FDEB0, &D_800FDF18);
-            if (g_gameState->gameData->unk8E4.battle->flags & 0x20) {
-                text_buildSmall(0x66, 0x6D, D_800FDEB0, "Disc Cover Open", 4, (u8 *)g_gameState->gameData->unk8E4.battle->work->prims[g_gameState->gameData->unk8]);
+            if (g_gameState->gameData->ctx.battle->flags & 0x20) {
+                text_buildSmall(0x66, 0x6D, D_800FDEB0, "Disc Cover Open", 4, (u8 *)g_gameState->gameData->ctx.battle->work->prims[g_gameState->gameData->drawBuf]);
             } else {
                 ui_buildSprite((0x140 - g_uiSprites[0xEB].unk4) / 2, (0xDA - g_uiSprites[0xEB].unk5) / 2, D_800FDEB0, 0xEB, 0, &w, D_800FDE60);
             }
@@ -89,7 +89,7 @@ void btl_updatePause(void) {
             D_800FDF24.code[1] = 0;
             addPrim(D_800FDEB0, &D_800FDF24);
             DrawOTag(D_800FDEB0);
-            g_gameState->gameData->unk0 |= 0x20;
+            g_gameState->gameData->flags |= 0x20;
             btlui_setPauseRequest(0);
             return;
         }
@@ -100,9 +100,9 @@ void btl_updatePause(void) {
     akao_sendCmd98(0);
     g_padPortMask[0] &= ~8;
     func_800EA34C();
-    g_gameState->gameData->unk0 &= ~0x20;
+    g_gameState->gameData->flags &= ~0x20;
     btlui_setPauseRequest(0);
-    g_gameState->gameData->unk0 &= ~0x100;
+    g_gameState->gameData->flags &= ~0x100;
 }
 
 void btl_checkDiscCover(void) {
@@ -110,18 +110,18 @@ void btl_checkDiscCover(void) {
     volatile s32 b;
     u16 f;
     a = cd_isShellOpen();
-    f = g_gameState->gameData->unk8E4.battle->flags;
+    f = g_gameState->gameData->ctx.battle->flags;
     if (f & 0x10) {
         if (!(f & 0x20)) {
             if (a != 0) {
                 btlui_setPauseRequest(1);
-                g_gameState->gameData->unk8E4.battle->flags |= 0x20;
+                g_gameState->gameData->ctx.battle->flags |= 0x20;
             }
         } else {
             b = cd_getState();
             if (b == 0) {
                 btlui_setPauseRequest(1);
-                g_gameState->gameData->unk8E4.battle->flags &= ~0x20;
+                g_gameState->gameData->ctx.battle->flags &= ~0x20;
             }
         }
     }
@@ -131,7 +131,7 @@ void btl_initMode(void) {
     GameData *g = g_gameState->gameData;
     Battle *b;
     btl_allocBattle();
-    b = g->unk8E4.battle;
+    b = g->ctx.battle;
     btl_clearBattle();
     g_gameState->vsyncMode = 4;
     game_setScreenHeight(0xDA);
@@ -168,14 +168,14 @@ void btl_allocBattle(void) {
     BattleMem *m;
     g_modeHeap = g_loadAreaEnd + 0x61800;
     m = (BattleMem *)g_modeHeap;
-    g_gameState->gameData->unk8E4.battle = &m->unk0;
+    g_gameState->gameData->ctx.battle = &m->unk0;
     g_modeHeap = (s32)m->unk241C;
     m->unk0.files = (BtlFiles *)m->unk23CC;
     m->unk0.unk1538 = (struct Battle1538 **)m->unk240C;
 }
 
 void btl_clearBattle(void) {
-    Battle *b = g_gameState->gameData->unk8E4.battle;
+    Battle *b = g_gameState->gameData->ctx.battle;
     s32 i;
     b->flags = 0;
     b->unk4 = 0;
@@ -232,7 +232,7 @@ s32 func_800A9090(void) {
 
 s32 btl_loadCommonData(void) {
     s32 p = g_modeHeap;
-    Battle *b = g_gameState->gameData->unk8E4.battle;
+    Battle *b = g_gameState->gameData->ctx.battle;
     FileEntry *f = file_find(1, 0x271B);
     s32 s = f->unk4;
     void *ctx = g_gameState->gameData->cdRead;
@@ -250,7 +250,7 @@ s32 btl_loadCommonData(void) {
 }
 
 s32 btl_unloadCommonData(void) {
-    BtlFiles *p = g_gameState->gameData->unk8E4.battle->files;
+    BtlFiles *p = g_gameState->gameData->ctx.battle->files;
     db_unregister(p->data[0]);
     p->data[0] = NULL;
     return 0;
@@ -261,9 +261,9 @@ void btl_load(s32 arg0) {
     Battle11C0 *p;
     s32 i;
 
-    g_modeHeap = g_gameState->gameData->unk8E4.battle->unk4;
+    g_modeHeap = g_gameState->gameData->ctx.battle->unk4;
     btl_allocBuffers();
-    p = g_gameState->gameData->unk8E4.battle->work;
+    p = g_gameState->gameData->ctx.battle->work;
     btl_initReturnInfo();
     g_gameState->unk0 &= ~0x30F;
     game_setClearColor(0, 0, 0);
@@ -301,14 +301,14 @@ void btl_cleanup(void) {
     s32 v;
     s32 w;
 
-    s = g_gameState->gameData->unk8E4.battle->work;
+    s = g_gameState->gameData->ctx.battle->work;
     DrawSync(0);
     btlui_exit();
     vib_clear();
     btl_unloadPartyModels();
-    btl_unregisterFiles(&g_gameState->gameData->unk8E4.battle->files->enemyModels[0], 2);
-    btl_unregisterFiles(&g_gameState->gameData->unk8E4.battle->files->data[3], 0);
-    btl_unregisterFiles(&g_gameState->gameData->unk8E4.battle->files->data[2], 0);
+    btl_unregisterFiles(&g_gameState->gameData->ctx.battle->files->enemyModels[0], 2);
+    btl_unregisterFiles(&g_gameState->gameData->ctx.battle->files->data[3], 0);
+    btl_unregisterFiles(&g_gameState->gameData->ctx.battle->files->data[2], 0);
     for (i = 0; i < 9; i++) {
         if (g_gameState->gameData->chrModels[i].unk0 & 1) {
             g_gameState->gameData->chrModels[i].unk0 &= ~1;
@@ -346,17 +346,17 @@ void btl_cleanup(void) {
 void btl_allocBuffers(void) {
     Battle11C0 *p;
     s32 i;
-    g_gameState->gameData->unk8E4.battle->work = (Battle11C0 *)g_modeHeap;
+    g_gameState->gameData->ctx.battle->work = (Battle11C0 *)g_modeHeap;
     p = (Battle11C0 *)g_modeHeap;
     g_modeHeap = (s32)(p + 1);
-    p->sceneTables = (u16 *)((s32)g_gameState->gameData->unk8E4.battle + 0x5800);
+    p->sceneTables = (u16 *)((s32)g_gameState->gameData->ctx.battle + 0x5800);
     p->bgData = (s32)p->sceneTables + 0x2800;
     p->heapStart = (u8 *)(p->bgData + 0x6000);
     g_modeHeap = (s32)p->heapStart + 0x35800;
     for (i = 0; i < 4; i++) {
-        g_gameState->gameData->unk8E4.battle->unk153C[i] = g_modeHeap;
+        g_gameState->gameData->ctx.battle->unk153C[i] = g_modeHeap;
         g_modeHeap += 0x13000;
-        g_gameState->gameData->unk8E4.battle->unk1538[i] = (Battle1538 *)(g_modeHeap - 0x28);
+        g_gameState->gameData->ctx.battle->unk1538[i] = (Battle1538 *)(g_modeHeap - 0x28);
     }
     p->weaponBufs = (s32 *)(p + 1);
     for (i = 0; i < 4; i++) {
@@ -372,7 +372,7 @@ void btl_allocBuffers(void) {
 }
 
 void btl_initReturnInfo(void) {
-    Battle11C0 *p = g_gameState->gameData->unk8E4.battle->work;
+    Battle11C0 *p = g_gameState->gameData->ctx.battle->work;
     s32 i;
     p->unk0 = 0;
     p->unk8 = 0;
@@ -395,7 +395,7 @@ void btl_initReturnInfo(void) {
         p->unk7[i] = 0;
     }
     for (i = 0; i < 4; i++) {
-        g_gameState->gameData->unk8E4.battle->unk1538[i]->unk20 = g_gameState->gameData->unk8E4.battle->unk1538[i]->unk24 = g_gameState->gameData->unk8E4.battle->unk153C[i];
+        g_gameState->gameData->ctx.battle->unk1538[i]->unk20 = g_gameState->gameData->ctx.battle->unk1538[i]->unk24 = g_gameState->gameData->ctx.battle->unk153C[i];
     }
 }
 
@@ -431,12 +431,12 @@ s32 btl_setupBackground(Battle11C0 *arg0, s32 arg1) {
         btl_relocTexAnims((TexAnimSet *)arg0->bgTexAnims, NULL);
     }
     DrawSync(0);
-    g_gameState->gameData->unk8E4.battle->flags |= 1;
+    g_gameState->gameData->ctx.battle->flags |= 1;
     return 0;
 }
 
 s32 btl_reloadPartyStep(s32 arg0) {
-    Battle *b = g_gameState->gameData->unk8E4.battle;
+    Battle *b = g_gameState->gameData->ctx.battle;
     s16 *state = (s16 *)&b->work->loadBuf[0x9FD8 / 4];
     Unk800AA958 *ld = (Unk800AA958 *)state - 1;
     s32 i;
@@ -524,14 +524,14 @@ s32 btl_reloadPartyStep(s32 arg0) {
             if (v != 0) {
                 btl_relocTexAnims((TexAnimSet *)e->unk8->texAnims, (u16 (*)[4])pc);
             }
-            btl_loadPartyMotions(u, g_gameState->gameData->party[i]->info.b.kind, u - g_gameState->gameData->unk8E4.battle->units);
+            btl_loadPartyMotions(u, g_gameState->gameData->party[i]->info.b.kind, u - g_gameState->gameData->ctx.battle->units);
             if (u->status & BTL_STATUS_KO) {
-                if (u != g_gameState->gameData->unk8E4.battle->curCmd->caster) {
+                if (u != g_gameState->gameData->ctx.battle->curCmd->caster) {
                     u->model->motion = (BtlUnit9CC *)u->motions[4];
                 } else {
                     goto use9;
                 }
-            } else if (u == g_gameState->gameData->unk8E4.battle->curCmd->caster || ((u->flags >> 19) & 1)) {
+            } else if (u == g_gameState->gameData->ctx.battle->curCmd->caster || ((u->flags >> 19) & 1)) {
             use9:
                 u->model->motion = (BtlUnit9CC *)u->motions[9];
             } else {
@@ -549,7 +549,7 @@ s32 btl_reloadPartyStep(s32 arg0) {
             m->parentBone = save;
         }
     done:
-        g_gameState->gameData->unk8E4.battle->flags |= 4;
+        g_gameState->gameData->ctx.battle->flags |= 4;
         *state = 0;
         break;
     }
@@ -560,7 +560,7 @@ s32 btl_loadEncounterFile(Unk800AA08C *arg0, s32 arg1) {
     s32 v = arg0->unk24;
     GameData *gd = g_gameState->gameData;
     u8 *cd = gd->cdRead;
-    Battle *b = gd->unk8E4.battle;
+    Battle *b = gd->ctx.battle;
     cdRead_init(cd, gd->sceneSector[0], gd->sceneSectors[0] << 11, (void *)arg0->unk24, 0, 0x2800, 0);
     while (cdRead_update(cd) != 0) {
     }
@@ -572,7 +572,7 @@ s32 btl_loadEncounterFile(Unk800AA08C *arg0, s32 arg1) {
 
 s32 btl_loadBackgroundStep(Battle11C0 *arg0, s32 arg1, Unk800AA08C *arg2) {
     GameData *gd = g_gameState->gameData;
-    Battle *b = gd->unk8E4.battle;
+    Battle *b = gd->ctx.battle;
     u8 *cd = gd->cdRead;
     Unk800AA08C *st;
     s32 v;
@@ -615,7 +615,7 @@ s32 btl_loadSoundsStep(s16 arg0, s32 arg1, Unk800AA24C *arg2) {
 
     st = arg2;
     gd = g_gameState->gameData;
-    b = gd->unk8E4.battle;
+    b = gd->ctx.battle;
     cd = gd->cdRead;
     if (arg1 & 0x8000) {
         b->flags &= ~2;
@@ -712,7 +712,7 @@ s32 btl_loadEnemyModelsStep(s32 arg0, s32 arg1, Unk800AA504 *arg2) {
     s32 cnt;
 
     st = arg2;
-    b = g_gameState->gameData->unk8E4.battle;
+    b = g_gameState->gameData->ctx.battle;
     req = (Unk800AA958Req *)&b->work->loadBuf[0x9FA0 / 4];
     if (arg1 & 0x8000) {
         b->flags &= ~2;
@@ -842,7 +842,7 @@ s32 btl_loadWeaponModelsStep(s32 arg0, Unk800AA958 *arg1) {
     GameData *gd;
 
     st = arg1;
-    b = g_gameState->gameData->unk8E4.battle;
+    b = g_gameState->gameData->ctx.battle;
     req = (Unk800AA958Req *)&b->work->loadBuf[0x9FA0 / 4];
     if (arg0 & 0x8000) {
         b->flags &= ~4;
@@ -926,7 +926,7 @@ s32 btl_loadPartyModelsStep(s32 arg0, Unk800AA958 *arg1) {
     FileEntry16 *f;
 
     st = arg1;
-    b = g_gameState->gameData->unk8E4.battle;
+    b = g_gameState->gameData->ctx.battle;
     req = (Unk800AA958Req *)&b->work->loadBuf[0x9FA0 / 4];
     if (arg0 & 0x8000) {
         b->flags &= ~4;
@@ -999,7 +999,7 @@ loop:
     case 7:
         j = arg1->unkA;
         v = btl_uploadModelTextures(arg1, req, j, 1);
-        pp = &g_gameState->gameData->unk8E4.battle->files->partyModels[j];
+        pp = &g_gameState->gameData->ctx.battle->files->partyModels[j];
         *pp = (void *)v;
         db_register(v, 0);
         st->unk0 = 5;
@@ -1188,25 +1188,25 @@ s32 btl_reloadParty(s32 arg1) {
 }
 
 void btl_unloadPartyModels(void) {
-    Battle *b = g_gameState->gameData->unk8E4.battle;
+    Battle *b = g_gameState->gameData->ctx.battle;
     BtlFiles *p = b->files;
     btl_unregisterFiles(p->weaponFiles, 3);
     btl_unregisterFiles(p->partyModels, 3);
-    btl_unregisterFiles(g_gameState->gameData->unk8E4.battle->files->partyModels, 3);
-    btl_unregisterFiles(g_gameState->gameData->unk8E4.battle->files->weaponFiles, 3);
+    btl_unregisterFiles(g_gameState->gameData->ctx.battle->files->partyModels, 3);
+    btl_unregisterFiles(g_gameState->gameData->ctx.battle->files->weaponFiles, 3);
     b->flags &= ~4;
 }
 
 void btl_unloadEnemyModels(void) {
-    Battle *b = g_gameState->gameData->unk8E4.battle;
+    Battle *b = g_gameState->gameData->ctx.battle;
     btl_unregisterFiles(b->files->enemyModels, 2);
-    btl_unregisterFiles(g_gameState->gameData->unk8E4.battle->files->enemyModels, 2);
+    btl_unregisterFiles(g_gameState->gameData->ctx.battle->files->enemyModels, 2);
     b->flags &= ~2;
 }
 
 s16 btl_loadModelsStep(s32 arg0) {
     GameData *g = g_gameState->gameData;
-    s16 *state = (s16 *)&g->unk8E4.battle->work->loadBuf[0x9FD8 / 4];
+    s16 *state = (s16 *)&g->ctx.battle->work->loadBuf[0x9FD8 / 4];
     s16 *st;
     s32 id = (s16)g->battleId;
     Unk800AA958 *ld;
@@ -1236,7 +1236,7 @@ s16 btl_loadModelsStep(s32 arg0) {
         }
     } else if (s == 4) {
         if (btl_loadPartyModelsStep(0x22, ld) == 0) {
-            g_gameState->gameData->unk8E4.battle->flags |= 4;
+            g_gameState->gameData->ctx.battle->flags |= 4;
             *state = 0;
         }
     }
@@ -1244,12 +1244,12 @@ s16 btl_loadModelsStep(s32 arg0) {
 }
 
 s32 btl_findWeaponModel(s32 arg0, s32 arg1) {
-    s32 v = g_gameState->gameData->unk8E4.battle->work->weaponBufs[arg1];
+    s32 v = g_gameState->gameData->ctx.battle->work->weaponBufs[arg1];
     return db_lookup(db_lookup(v, 2, 0x1B0000, 0), 4, arg0, 0);
 }
 
 void btl_getWeaponTexInfo(s32 arg0, s32 arg1, s32 **arg2, s32 **arg3, s32 **arg4) {
-    s32 v = g_gameState->gameData->unk8E4.battle->work->weaponBufs[arg1];
+    s32 v = g_gameState->gameData->ctx.battle->work->weaponBufs[arg1];
     Unk800AB758 *h = (Unk800AB758 *)(db_lookup(db_lookup(v, 2, 0x1B0000, 0), 2, 0x120000, 0) + 4);
     s32 *p = (s32 *)((u8 *)h + h->unk4);
     s32 n = h->unk7;
@@ -1339,7 +1339,7 @@ s32 btl_getPartyModelId(s32 arg0, s32 arg1) {
 }
 
 s32 btl_getWeaponModelHeader(s32 arg0) {
-    s32 v = g_gameState->gameData->unk8E4.battle->work->weaponBufs[arg0];
+    s32 v = g_gameState->gameData->ctx.battle->work->weaponBufs[arg0];
     return db_lookup(db_lookup(v, 2, 0x1B0000, 0), 2, 0x20000, 0);
 }
 
@@ -1378,16 +1378,16 @@ s32 btl_swapPartyModelStep(s32 arg0, s32 arg1) {
     s32 sz;
     s32 anim;
 
-    st = (Unk800AA958 *)&g_gameState->gameData->unk8E4.battle->work->loadBuf[0x9FD8 / 4];
+    st = (Unk800AA958 *)&g_gameState->gameData->ctx.battle->work->loadBuf[0x9FD8 / 4];
     state = &st->unk0;
-    req = (Unk800AA958Req *)&g_gameState->gameData->unk8E4.battle->work->loadBuf[0x9FA0 / 4];
+    req = (Unk800AA958Req *)&g_gameState->gameData->ctx.battle->work->loadBuf[0x9FA0 / 4];
     if (arg1 & 0x8000) {
         st->unk0 = 1;
     }
     switch (*state) {
     case 1:
         k = arg0;
-        v = (void *)g_gameState->gameData->unk8E4.battle->unk153C[k];
+        v = (void *)g_gameState->gameData->ctx.battle->unk153C[k];
         st->unk2 = 0;
         st->unk4 = 0;
         st->unk6 = 0;
@@ -1395,9 +1395,9 @@ s32 btl_swapPartyModelStep(s32 arg0, s32 arg1) {
         st->unkE = 0;
         st->unk24 = (s32)v;
         st->unk20 = (s32)v;
-        if (*(g_gameState->gameData->unk8E4.battle->files->partyModels + k) != NULL) {
-            db_unregister(*(g_gameState->gameData->unk8E4.battle->files->partyModels + k));
-            *(g_gameState->gameData->unk8E4.battle->files->partyModels + k) = NULL;
+        if (*(g_gameState->gameData->ctx.battle->files->partyModels + k) != NULL) {
+            db_unregister(*(g_gameState->gameData->ctx.battle->files->partyModels + k));
+            *(g_gameState->gameData->ctx.battle->files->partyModels + k) = NULL;
         }
         *state = 3;
         break;
@@ -1413,7 +1413,7 @@ s32 btl_swapPartyModelStep(s32 arg0, s32 arg1) {
         req->unk0 = f->unk2 << 11;
         req->unk4 = st->unk24;
         req->unk8 = (sz - f->unk2) << 11;
-        req->unkC = (s32)g_gameState->gameData->unk8E4.battle->work->loadBuf;
+        req->unkC = (s32)g_gameState->gameData->ctx.battle->work->loadBuf;
         cd_readChunks((s32)src, req, 2, 0);
         st->unk2 = 5;
         *state = 2;
@@ -1421,7 +1421,7 @@ s32 btl_swapPartyModelStep(s32 arg0, s32 arg1) {
     case 5:
         id = btl_getPartyModelId(arg0, arg1 & ~0x10);
         model = db_lookup(st->unk24, 2, 0x1B0000, 0);
-        img = (s32)g_gameState->gameData->unk8E4.battle->work->loadBuf;
+        img = (s32)g_gameState->gameData->ctx.battle->work->loadBuf;
         t = (Unk800ABBC4Tbl *)db_lookup(model, 2, 0x120000, 0);
         e = t->unk4;
         for (i = 0; i < t->unk1; i++) {
@@ -1451,7 +1451,7 @@ s32 btl_swapPartyModelStep(s32 arg0, s32 arg1) {
                 break;
             }
         }
-        *(g_gameState->gameData->unk8E4.battle->files->partyModels + arg0) = (void *)model;
+        *(g_gameState->gameData->ctx.battle->files->partyModels + arg0) = (void *)model;
         db_register(model, 0);
         *state = 6;
         break;
@@ -1478,7 +1478,7 @@ s32 btl_swapPartyModelStep(s32 arg0, s32 arg1) {
                 btl_relocTexAnims((TexAnimSet *)ent->unk8->texAnims, (u16 (*)[4])pc);
             }
             btl_loadPartyMotions(u, g_gameState->gameData->party[arg0]->info.b.kind,
-                          u - g_gameState->gameData->unk8E4.battle->units);
+                          u - g_gameState->gameData->ctx.battle->units);
             if (u->status & BTL_STATUS_KO) {
                 u->model->motion = (BtlUnit9CC *)u->motions[4];
             } else {
@@ -1512,10 +1512,10 @@ s32 btl_getModelTexInfo(u32 arg0, s32 **arg1, s32 **arg2, s32 **arg3) {
     *arg3 = *arg2 + h->unk7;
     if ((s32)(arg0 >> 24) >= 9) {
         n = h->unk7 * 4;
-        dst = g_gameState->gameData->unk8E4.battle->work->heap;
+        dst = g_gameState->gameData->ctx.battle->work->heap;
         memcpy(dst, (u8 *)*arg1, n);
         *arg1 = (s32 *)dst;
-        g_gameState->gameData->unk8E4.battle->work->heap += n;
+        g_gameState->gameData->ctx.battle->work->heap += n;
     }
     return 0;
 }
@@ -1549,8 +1549,8 @@ u8 *btl_drawShadow(BtlShadow *arg0, s32 arg1, s32 arg2, s32 arg3, u8 *prim) {
     }
     tu = 0;
     tv = 0xE0;
-    gte_MulMatrix0(&g_gameState->gameData->unk18, &m, &m);
-    gte_SetTransMatrix(&g_gameState->gameData->unk18);
+    gte_MulMatrix0(&g_gameState->gameData->viewMatrix, &m, &m);
+    gte_SetTransMatrix(&g_gameState->gameData->viewMatrix);
     gte_ldlv0(m.t);
     gte_rtv0tr();
     gte_stir(m.t);
@@ -1605,7 +1605,7 @@ u8 *btl_drawShadow(BtlShadow *arg0, s32 arg1, s32 arg2, s32 arg3, u8 *prim) {
         k = z[4];
     }
     setUV4(SHADOW_QUAD(0), tu, tv, tu + 0x1F, tv, tu, tv + 0x1F, tu + 0x1F, tv + 0x1F);
-    addPrim(&g_gameState->gameData->unk10[g_gameState->gameData->unk8][k >> 3], SHADOW_QUAD(0));
+    addPrim(&g_gameState->gameData->ot[g_gameState->gameData->drawBuf][k >> 3], SHADOW_QUAD(0));
     k = z[1];
     if (k < z[2]) {
         k = z[2];
@@ -1617,7 +1617,7 @@ u8 *btl_drawShadow(BtlShadow *arg0, s32 arg1, s32 arg2, s32 arg3, u8 *prim) {
         k = z[5];
     }
     setUV4(SHADOW_QUAD(1), tu + 0x1F, tv, tu, tv, tu + 0x1F, tv + 0x1F, tu, tv + 0x1F);
-    addPrim(&g_gameState->gameData->unk10[g_gameState->gameData->unk8][k >> 3], SHADOW_QUAD(1));
+    addPrim(&g_gameState->gameData->ot[g_gameState->gameData->drawBuf][k >> 3], SHADOW_QUAD(1));
     k = z[3];
     /* z[3] again where z[4] (the shared centre corner) was meant; CSE drops the test, but the branch
        still counts toward the cse path length, which keeps quad 2 out of quad 0's cse paths */
@@ -1631,7 +1631,7 @@ u8 *btl_drawShadow(BtlShadow *arg0, s32 arg1, s32 arg2, s32 arg3, u8 *prim) {
         k = z[7];
     }
     setUV4(SHADOW_QUAD(2), tu, tv + 0x1F, tu + 0x1F, tv + 0x1F, tu, tv, tu + 0x1F, tv);
-    addPrim(&g_gameState->gameData->unk10[g_gameState->gameData->unk8][k >> 3], SHADOW_QUAD(2));
+    addPrim(&g_gameState->gameData->ot[g_gameState->gameData->drawBuf][k >> 3], SHADOW_QUAD(2));
     k = z[4];
     if (k < z[5]) {
         k = z[5];
@@ -1643,7 +1643,7 @@ u8 *btl_drawShadow(BtlShadow *arg0, s32 arg1, s32 arg2, s32 arg3, u8 *prim) {
         k = z[8];
     }
     setUV4(SHADOW_QUAD(3), tu + 0x1F, tv + 0x1F, tu, tv + 0x1F, tu + 0x1F, tv, tu, tv);
-    addPrim(&g_gameState->gameData->unk10[g_gameState->gameData->unk8][k >> 3], SHADOW_QUAD(3));
+    addPrim(&g_gameState->gameData->ot[g_gameState->gameData->drawBuf][k >> 3], SHADOW_QUAD(3));
     return prim;
 }
 
@@ -1750,10 +1750,10 @@ s32 btl_soundCmd(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4) {
             r = btl_getDepLink(id);
             ga = g_gameState->gameData;
             if (ga->musicId[0] != arg1 || ga->musicBank[0] != (u16)r) {
-                if (ga->unk0 & 0x20000000) {
+                if (ga->flags & 0x20000000) {
                     akao_stopMusic(ga->musicHandle[0]);
                 }
-                g_gameState->gameData->unk0 &= 0xCFFFFFFF;
+                g_gameState->gameData->flags &= 0xCFFFFFFF;
                 g_gameState->gameData->musicBank[0] = r;
                 g_gameState->gameData->musicId[0] = arg1;
                 if ((id & 0xFFFF) != 5) {
@@ -1767,23 +1767,23 @@ s32 btl_soundCmd(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4) {
                 }
                 memmove(g_gameState->gameData->musicSeq, (void *)g_gameState->gameData->musicSeq2, 0x2000);
                 g_gameState->gameData->musicVolume[0] = 0x7F;
-                g_gameState->gameData->unk0 |= 0x10000000;
+                g_gameState->gameData->flags |= 0x10000000;
             }
         finish:
             if (D_800F51F8 != 7) {
                 g_gameState->gameData->musicHandle[0] = akao_playMusic(g_gameState->gameData->musicSeq);
                 gb = g_gameState->gameData;
-                if (!(gb->unk0 & 0x20000000)) {
+                if (!(gb->flags & 0x20000000)) {
                     akao_fadeMusicVolumeFrom(gb->musicHandle[0], 0x1E, 0, gb->musicVolume[0]);
                 }
-                g_gameState->gameData->unk0 |= 0x30000000;
+                g_gameState->gameData->flags |= 0x30000000;
             }
             D_800F51F8 = -1;
             return 0;
         case 1:
             akao_stopMusic(g_gameState->gameData->musicHandle[0]);
             g_gameState->gameData->musicVolume[0] = 0x7F;
-            g_gameState->gameData->unk0 &= 0xDFFFFFFF;
+            g_gameState->gameData->flags &= 0xDFFFFFFF;
             return 0;
         case 2:
             if ((arg0 & 0x3F) != 1) {
@@ -1886,14 +1886,14 @@ s32 btl_soundCmd(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4) {
         case 7:
             if (arg2 >= 4) {
                 gc = g_gameState->gameData;
-                e = gc->unk8E4.battle->unk1538[arg2 % 4];
+                e = gc->ctx.battle->unk1538[arg2 % 4];
                 gc->soundLoadDest = e->unk24;
                 g_gameState->gameData->soundLoadChunk = 0x12FD8 - (e->unk24 - e->unk20);
                 gx = g_gameState->gameData;
             } else {
-                g_gameState->gameData->soundLoadDest = (s32)g_gameState->gameData->unk8E4.battle->work->heap;
-                g_gameState->gameData->soundLoadChunk = g_gameState->gameData->unk8E4.battle->work->ot[0] -
-                                            (s32)g_gameState->gameData->unk8E4.battle->work->heap;
+                g_gameState->gameData->soundLoadDest = (s32)g_gameState->gameData->ctx.battle->work->heap;
+                g_gameState->gameData->soundLoadChunk = g_gameState->gameData->ctx.battle->work->ot[0] -
+                                            (s32)g_gameState->gameData->ctx.battle->work->heap;
                 gx = g_gameState->gameData;
             }
             k2 = gx->soundLoadChunk;
@@ -1973,7 +1973,7 @@ stream:
                 cdRead_init(gj->cdRead, D_800F51F4, gj->cdRead[0].unk4, (void *)gj->soundLoadDest, k2, 0x6800 - k2, NULL);
             } else {
                 func_800AE7C8((s32)gi->musicSeq);
-                g_gameState->gameData->unk0 |= 0x10000000;
+                g_gameState->gameData->flags |= 0x10000000;
                 g_gameState->gameData->soundLoadState = 0;
                 if (D_800F51F8 == 0) {
                     goto finish;
@@ -1993,7 +1993,7 @@ s32 btl_getWeaponSound(s32 arg0, u16 arg1) {
     if (g->party[arg0] == 0) {
         return -1;
     }
-    p = &g->unk8E4.battle->files->weaponFiles[arg0];
+    p = &g->ctx.battle->files->weaponFiles[arg0];
     f = (s32)*p;
     if (f == 0) {
         return -1;
@@ -2043,7 +2043,7 @@ s16 func_800AE618(s32 arg0, BtlStepTask *arg1) {
     case 1:
         return ++arg1->unk6;
     case 2:
-        m = &g_gameState->gameData->unk8E4.battle->files->weaponFiles[arg0];
+        m = &g_gameState->gameData->ctx.battle->files->weaponFiles[arg0];
         l = (BtlAnimEvtList *)db_lookup((s32)*m, 2, 0x140000, 0);
         e = l->unk4;
         for (i = l->unk2 - 1; i >= 0; i--) {
@@ -2127,43 +2127,43 @@ s32 func_800AEA08(void) {
 }
 
 void btl_beginFrame(void) {
-    ClearOTagR(g_gameState->gameData->unk10[g_gameState->gameData->unk8] - 8, 0x1010);
-    ClearOTagR((u32 *)g_gameState->gameData->unk8E4.battle->work->ot[g_gameState->gameData->unk8], 0x100);
-    ClearOTagR(fade_getOt(g_gameState->gameData->unk8), 1);
-    ClearOTagR((u32 *)btl_getBannerOt(g_gameState->gameData->unk8), 1);
-    setlen(&D_800FDEB8[g_gameState->gameData->unk8].unk0, 2);
-    ((u32 *)&D_800FDEB8[g_gameState->gameData->unk8].unk0)[1] = GPU_STP(0, 0);
-    ((u32 *)&D_800FDEB8[g_gameState->gameData->unk8].unk0)[2] = 0;
-    addPrim(g_gameState->gameData->unk10[g_gameState->gameData->unk8], &D_800FDEB8[g_gameState->gameData->unk8].unk0);
-    setlen(&D_800FDEB8[g_gameState->gameData->unk8].unkC, 2);
-    ((u32 *)&D_800FDEB8[g_gameState->gameData->unk8].unkC)[1] = GPU_STP(0, 0);
-    ((u32 *)&D_800FDEB8[g_gameState->gameData->unk8].unkC)[2] = 0;
-    addPrim((u32 *)g_gameState->gameData->unk8E4.battle->work->ot[g_gameState->gameData->unk8], &D_800FDEB8[g_gameState->gameData->unk8].unkC);
-    addPrim(g_gameState->gameData->unk10[g_gameState->gameData->unk8], fade_getOt(g_gameState->gameData->unk8));
-    addPrim(g_gameState->gameData->unk10[g_gameState->gameData->unk8], btl_getBannerOt(g_gameState->gameData->unk8));
+    ClearOTagR(g_gameState->gameData->ot[g_gameState->gameData->drawBuf] - 8, 0x1010);
+    ClearOTagR((u32 *)g_gameState->gameData->ctx.battle->work->ot[g_gameState->gameData->drawBuf], 0x100);
+    ClearOTagR(fade_getOt(g_gameState->gameData->drawBuf), 1);
+    ClearOTagR((u32 *)btl_getBannerOt(g_gameState->gameData->drawBuf), 1);
+    setlen(&D_800FDEB8[g_gameState->gameData->drawBuf].unk0, 2);
+    ((u32 *)&D_800FDEB8[g_gameState->gameData->drawBuf].unk0)[1] = GPU_STP(0, 0);
+    ((u32 *)&D_800FDEB8[g_gameState->gameData->drawBuf].unk0)[2] = 0;
+    addPrim(g_gameState->gameData->ot[g_gameState->gameData->drawBuf], &D_800FDEB8[g_gameState->gameData->drawBuf].unk0);
+    setlen(&D_800FDEB8[g_gameState->gameData->drawBuf].unkC, 2);
+    ((u32 *)&D_800FDEB8[g_gameState->gameData->drawBuf].unkC)[1] = GPU_STP(0, 0);
+    ((u32 *)&D_800FDEB8[g_gameState->gameData->drawBuf].unkC)[2] = 0;
+    addPrim((u32 *)g_gameState->gameData->ctx.battle->work->ot[g_gameState->gameData->drawBuf], &D_800FDEB8[g_gameState->gameData->drawBuf].unkC);
+    addPrim(g_gameState->gameData->ot[g_gameState->gameData->drawBuf], fade_getOt(g_gameState->gameData->drawBuf));
+    addPrim(g_gameState->gameData->ot[g_gameState->gameData->drawBuf], btl_getBannerOt(g_gameState->gameData->drawBuf));
     btlui_resetVsyncCount();
 }
 
 void btl_endFrame(void) {
-    if (!(g_gameState->gameData->unk0 & 0x100) && ((g_padPortHeld[0] & 0xF09) == 0xF09 || (g_padPortHeld[1] & 0xF09) == 0xF09)) {
+    if (!(g_gameState->gameData->flags & 0x100) && ((g_padPortHeld[0] & 0xF09) == 0xF09 || (g_padPortHeld[1] & 0xF09) == 0xF09)) {
         g_gameState->unk0 |= 1;
     }
     btlui_waitFrame();
-    setlen(&D_800FDED0[g_gameState->gameData->unk8].unk0, 2);
-    ((u32 *)&D_800FDED0[g_gameState->gameData->unk8].unk0)[1] = GPU_STP(1, 0);
-    ((u32 *)&D_800FDED0[g_gameState->gameData->unk8].unk0)[2] = 0;
-    addPrim(&g_gameState->gameData->unk10[g_gameState->gameData->unk8][0xFFF], &D_800FDED0[g_gameState->gameData->unk8].unk0);
-    setlen(&D_800FDED0[g_gameState->gameData->unk8].unkC, 2);
-    ((u32 *)&D_800FDED0[g_gameState->gameData->unk8].unkC)[1] = GPU_STP(1, 0);
-    ((u32 *)&D_800FDED0[g_gameState->gameData->unk8].unkC)[2] = 0;
-    addPrim(&((u32 *)g_gameState->gameData->unk8E4.battle->work->ot[g_gameState->gameData->unk8])[0xFF], &D_800FDED0[g_gameState->gameData->unk8].unkC);
+    setlen(&D_800FDED0[g_gameState->gameData->drawBuf].unk0, 2);
+    ((u32 *)&D_800FDED0[g_gameState->gameData->drawBuf].unk0)[1] = GPU_STP(1, 0);
+    ((u32 *)&D_800FDED0[g_gameState->gameData->drawBuf].unk0)[2] = 0;
+    addPrim(&g_gameState->gameData->ot[g_gameState->gameData->drawBuf][0xFFF], &D_800FDED0[g_gameState->gameData->drawBuf].unk0);
+    setlen(&D_800FDED0[g_gameState->gameData->drawBuf].unkC, 2);
+    ((u32 *)&D_800FDED0[g_gameState->gameData->drawBuf].unkC)[1] = GPU_STP(1, 0);
+    ((u32 *)&D_800FDED0[g_gameState->gameData->drawBuf].unkC)[2] = 0;
+    addPrim(&((u32 *)g_gameState->gameData->ctx.battle->work->ot[g_gameState->gameData->drawBuf])[0xFF], &D_800FDED0[g_gameState->gameData->drawBuf].unkC);
     func_800EA290();
-    if (!(g_gameState->gameData->unk0 & 0x100) && !(g_gameState->gameData->unk8E4.ovl65->unk0 & 0x200)) {
-        btlui_drawOTagEnv(&((u32 *)g_gameState->gameData->unk8E4.battle->work->ot[g_gameState->gameData->unk8])[0xFF], &g_gameState->drawEnv[g_gameState->gameData->unk8]);
-        DrawOTag(&g_gameState->gameData->unk10[g_gameState->gameData->unk8][0xFFF]);
+    if (!(g_gameState->gameData->flags & 0x100) && !(g_gameState->gameData->ctx.ovl65->unk0 & 0x200)) {
+        btlui_drawOTagEnv(&((u32 *)g_gameState->gameData->ctx.battle->work->ot[g_gameState->gameData->drawBuf])[0xFF], &g_gameState->drawEnv[g_gameState->gameData->drawBuf]);
+        DrawOTag(&g_gameState->gameData->ot[g_gameState->gameData->drawBuf][0xFFF]);
     }
-    if (!(g_gameState->gameData->unk0 & 0x20)) {
-        g_gameState->gameData->unk8 ^= 1;
+    if (!(g_gameState->gameData->flags & 0x20)) {
+        g_gameState->gameData->drawBuf ^= 1;
     }
 }
 
@@ -2177,7 +2177,7 @@ void btl_preloadExit(void) {
     s32 size;
     s32 *dst;
 
-    b = g_gameState->gameData->unk8E4.battle->work;
+    b = g_gameState->gameData->ctx.battle->work;
     preload_init();
     g_gameState->gameData->preloadRequest = NULL;
     f = file_find(0, 0x10065);

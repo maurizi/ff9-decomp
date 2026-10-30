@@ -7,7 +7,7 @@ void game_initData(void) {
     game_allocData();
     gd = g_gameState->gameData;
     game_resetData();
-    PutDispEnv(&g_gameState->dispEnv[gd->unk8]);
+    PutDispEnv(&g_gameState->dispEnv[gd->drawBuf]);
     preload_init();
     game_loadCommonDb();
     game_loadCommonAkao();
@@ -29,7 +29,7 @@ void game_allocData(void) {
     gd = g_gameState->gameData;
     q = (u8 *)(gd + 1);
     for (i = 0; i < 2; i++) {
-        gd->unk10[i] = (u32 *)(q + 0x20);
+        gd->ot[i] = (u32 *)(q + 0x20);
         q += 0x4040;
     }
     gd->chrModels = (void *)(q + 0x558);
@@ -51,21 +51,21 @@ void game_resetData(void) {
     s32 i;
 
     gd->projDist = 0x200;
-    gd->unk18.m[0][0] = gd->unk18.m[1][1] = gd->unk18.m[2][2] = 0x1000;
+    gd->viewMatrix.m[0][0] = gd->viewMatrix.m[1][1] = gd->viewMatrix.m[2][2] = 0x1000;
     gd->fieldAreaId = 1;
     gd->battleId = 0x235;
     gd->enemyGroup = -1;
     gd->worldId = 0x2331;
     gd->worldAreaId = 0x44;
-    gd->unk0 = 0;
+    gd->flags = 0;
     gd->allocTop = 0;
-    gd->unk8 = 0;
+    gd->drawBuf = 0;
     gd->unk9 = 0;
     gd->npcCount = 0;
     gd->npcModelSlots = 0;
-    gd->unk18.t[0] = gd->unk18.t[1] = gd->unk18.t[2] = 0;
-    gd->unk18.m[0][1] = gd->unk18.m[0][2] = gd->unk18.m[1][0] = gd->unk18.m[1][2] = gd->unk18.m[2][0] =
-        gd->unk18.m[2][1] = 0;
+    gd->viewMatrix.t[0] = gd->viewMatrix.t[1] = gd->viewMatrix.t[2] = 0;
+    gd->viewMatrix.m[0][1] = gd->viewMatrix.m[0][2] = gd->viewMatrix.m[1][0] = gd->viewMatrix.m[1][2] = gd->viewMatrix.m[2][0] =
+        gd->viewMatrix.m[2][1] = 0;
     gd->fieldId = 0;
     gd->font = NULL;
     gd->kanjiFont = NULL;
@@ -119,7 +119,7 @@ void game_resetData(void) {
     memset(&gd->worldCamera, 0, 0x28);
     gd->cardOpponent = 0;
     gd->preloadRequest = NULL;
-    gd->unk8E4.ovl65 = NULL;
+    gd->ctx.ovl65 = NULL;
     for (i = 0; i >= 0; i--) {
         gd->unk849[i] = 0;
     }

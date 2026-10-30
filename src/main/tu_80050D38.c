@@ -11,9 +11,9 @@ s32 wrain_draw(s32 r) {
     }
     if (g_worldRain.unk4 != 0) {
         gd = g_gameState->gameData;
-        gte_SetRotMatrix(&gd->unk18);
-        gte_SetTransMatrix(&gd->unk18);
-        r = wrain_drawDrops(g_worldRain.unk4, gd->unk8, gd->unk10[gd->unk8] + 3, r);
+        gte_SetRotMatrix(&gd->viewMatrix);
+        gte_SetTransMatrix(&gd->viewMatrix);
+        r = wrain_drawDrops(g_worldRain.unk4, gd->drawBuf, gd->ot[gd->drawBuf] + 3, r);
     }
     return r;
 }

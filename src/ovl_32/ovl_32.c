@@ -30,7 +30,7 @@ void menuChocograph_init(void) {
     if (g_gameState->gameData->chocograph != 0) {
         menuChocograph_scrollTo(g_gameState->gameData->chocograph - 1);
     }
-    s_menuChocograph.textPtr = s_menuChocograph.textBuf + (g_gameState->gameData->unk8 << 12);
+    s_menuChocograph.textPtr = s_menuChocograph.textBuf + (g_gameState->gameData->drawBuf << 12);
 }
 
 void menuChocograph_inputTabs(void) {
@@ -404,7 +404,7 @@ void menuChocograph_drawFrame(s32 x, s32 y, s32 otz, u8 dim) {
 }
 
 void menuChocograph_update(void) {
-    s_menuChocograph.textPtr = s_menuChocograph.textBuf + (g_gameState->gameData->unk8 << 12);
+    s_menuChocograph.textPtr = s_menuChocograph.textBuf + (g_gameState->gameData->drawBuf << 12);
     menuChocograph_input();
     menuChocograph_draw();
     menuChocograph_updateList();
