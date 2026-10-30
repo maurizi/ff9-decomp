@@ -420,52 +420,52 @@ s32 akao_uploadBank(s32 *buf, u32 size, s32 wait) {
     s32 slot;
 
     if (g_akaoFlags.bankUpload & 1) {
-        if (g_akaoUpload.unk4 == 0) {
+        if (g_akaoUpload.spuAddr == 0) {
             if (buf[0] == AKAO_MAGIC) {
                 akao_copy(buf, (u32 *)&g_akaoBankHeader, sizeof(AkaoBankHeader));
                 buf += 16;
                 size -= sizeof(AkaoBankHeader);
-                g_akaoUpload.unk4 = g_akaoBankHeader.spuAddr;
+                g_akaoUpload.spuAddr = g_akaoBankHeader.spuAddr;
                 g_akaoBankHeader.slot = slot = g_akaoBankHeader.slot;
-                g_akaoUpload.unk8 = g_akaoBankHeader.sampleSize;
-                g_akaoUpload.unk0 = &g_akaoInstruments[slot];
-                g_akaoUpload.unkC = g_akaoBankHeader.instCount * 16;
+                g_akaoUpload.sampleLeft = g_akaoBankHeader.sampleSize;
+                g_akaoUpload.instrDest = &g_akaoInstruments[slot];
+                g_akaoUpload.instrLeft = g_akaoBankHeader.instCount * 16;
             } else {
                 size = 0;
-                g_akaoUpload.unk8 = 0;
-                g_akaoUpload.unkC = 0;
+                g_akaoUpload.sampleLeft = 0;
+                g_akaoUpload.instrLeft = 0;
             }
         }
-        if (g_akaoUpload.unkC != 0) {
-            n = g_akaoUpload.unkC;
+        if (g_akaoUpload.instrLeft != 0) {
+            n = g_akaoUpload.instrLeft;
             if (size == 0) {
                 goto end;
             }
             if (n >= size) {
                 n = size;
             }
-            akao_copy(buf, g_akaoUpload.unk0, n);
+            akao_copy(buf, g_akaoUpload.instrDest, n);
             buf += n >> 2;
             size -= n;
-            g_akaoUpload.unk0 = (AkaoInstrument *)((s32 *)g_akaoUpload.unk0 + (n >> 2));
-            g_akaoUpload.unkC -= n;
-            if (g_akaoUpload.unkC == 0) {
+            g_akaoUpload.instrDest = (AkaoInstrument *)((s32 *)g_akaoUpload.instrDest + (n >> 2));
+            g_akaoUpload.instrLeft -= n;
+            if (g_akaoUpload.instrLeft == 0) {
                 akao_relocInstruments((s32 *)&g_akaoInstruments[g_akaoBankHeader.slot], &g_akaoInstruments[g_akaoBankHeader.slot], g_akaoBankHeader.spuAddr, g_akaoBankHeader.instCount);
             }
         }
         if (size != 0) {
-            if (g_akaoUpload.unk8 == 0) {
+            if (g_akaoUpload.sampleLeft == 0) {
                 goto clear;
             }
-            m = g_akaoUpload.unk8;
+            m = g_akaoUpload.sampleLeft;
             if (m >= size) {
                 m = size;
             }
             size = m;
-            SpuSetTransferStartAddr(g_akaoUpload.unk4);
+            SpuSetTransferStartAddr(g_akaoUpload.spuAddr);
             akao_spuWrite(buf, size);
-            g_akaoUpload.unk4 += size;
-            g_akaoUpload.unk8 -= size;
+            g_akaoUpload.spuAddr += size;
+            g_akaoUpload.sampleLeft -= size;
             if (wait != 0) {
                 akao_waitSpuTransfer();
             }

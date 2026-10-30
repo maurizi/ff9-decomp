@@ -499,7 +499,7 @@ void menuCard_calcCollectorPoints(s32 *out) {
     arrowPts = 0;
     for (i = 0; i < CARD_COUNT; i++) {
         if (s_menuCard.count[i] != 0) {
-            kinds += e[i].unk4;
+            kinds += e[i].points;
         }
     }
     memset(s_menuCardArrowsSeen, 0, 0x100);

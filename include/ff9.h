@@ -2736,11 +2736,11 @@ s32 card_countOf(); /* defined K&R-style: u8 param, callers pass ints unmasked *
 Unk6 *card_find(s32, s32);
 s32 card_remove(s32, s32);
 typedef struct {
-    u8 unk0; /* power (x2) */
-    u8 unk1; /* type */
-    u8 unk2; /* physical defence (x2) */
-    u8 unk3; /* magic defence (x2) */
-    u8 unk4; /* collector points */
+    u8 power; /* power (x2) */
+    u8 type; /* type */
+    u8 physDef; /* physical defence (x2) */
+    u8 magicDef; /* magic defence (x2) */
+    u8 points; /* collector points */
 } CardInfo; /* 5 bytes */
 extern CardInfo D_800121C8[]; /* card table */
 CardInfo *card_getInfoTable(void);
@@ -4323,12 +4323,12 @@ void func_80061EE4(void);
 
 /* AKAO sample stream state, akao_uploadBank */
 typedef struct {
-    AkaoInstrument *unk0; /* destination of the next sample-info copy */
-    u32 unk4;          /* SPU transfer address */
-    u32 unk8;          /* sample bytes left */
-    u32 unkC;          /* sample-info bytes left */
-} Unk80083228;
-extern Unk80083228 g_akaoUpload;
+    AkaoInstrument *instrDest; /* destination of the next sample-info copy */
+    u32 spuAddr; /* SPU transfer address */
+    u32 sampleLeft; /* sample bytes left */
+    u32 instrLeft; /* sample-info bytes left */
+} AkaoBankUpload;
+extern AkaoBankUpload g_akaoUpload;
 /* header of an AKAO instrument bank (akao_loadBankAt, akao_uploadBank); instrument entries follow, then the samples */
 #define AKAO_MAGIC 0x4F414B41 /* "AKAO" */
 typedef struct {

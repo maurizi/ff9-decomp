@@ -217,19 +217,19 @@ void card_rollStats(Unk6 *card, u8 id) {
     bits = D_800121C0;
     tbl = D_800121C8;
     card->unk0 = id;
-    v = tbl[id].unk0 >> 1;
+    v = tbl[id].power >> 1;
     if (v != 0) {
         card->unk2 = v + rand() % v;
     } else {
         card->unk2 = 0;
     }
-    v = tbl[id].unk2 >> 1;
+    v = tbl[id].physDef >> 1;
     if (v != 0) {
         card->unk4 = v + rand() % v;
     } else {
         card->unk4 = 0;
     }
-    v = tbl[id].unk3 >> 1;
+    v = tbl[id].magicDef >> 1;
     if (v != 0) {
         card->unk5 = v + rand() % v;
     } else {
@@ -266,7 +266,7 @@ void card_rollStats(Unk6 *card, u8 id) {
             }
         } while (!done);
     }
-    card->unk3 = tbl[id].unk1;
+    card->unk3 = tbl[id].type;
     if (!(rand() & 0x7F)) {
         card->unk3 = 2;
     }
