@@ -1679,21 +1679,21 @@ s32 evt_modelOpField(EvtObject *o, s32 op) {
     case EVT_OP_SHADOW_SIZE:
         a = evt_getArg8();
         b = evt_getArg8();
-        g_gameState->gameData->ctx.ovl65->unkC->unk14->unk2C[o->modelSlot].unk0_8 = a * 14;
-        g_gameState->gameData->ctx.ovl65->unkC->unk14->unk2C[o->modelSlot].unk0_20 = b * 12;
+        g_gameState->gameData->ctx.ovl65->unkC->unk14->unk2C[o->modelSlot].sizeX = a * 14;
+        g_gameState->gameData->ctx.ovl65->unkC->unk14->unk2C[o->modelSlot].sizeZ = b * 12;
         return 0;
     case 0x82:
         a = evt_getArg16();
         b = evt_getArg16();
-        g_gameState->gameData->ctx.ovl65->unkC->unk14->unk2C[o->modelSlot].unk4_12 = a;
-        g_gameState->gameData->ctx.ovl65->unkC->unk14->unk2C[o->modelSlot].unk4_22 = b;
+        g_gameState->gameData->ctx.ovl65->unkC->unk14->unk2C[o->modelSlot].ofsX = a;
+        g_gameState->gameData->ctx.ovl65->unkC->unk14->unk2C[o->modelSlot].ofsZ = b;
         return 0;
     case EVT_OP_SHADOW_FIXED:
         a = evt_getArg8();
         p = (u32 *)game_getModel(o->modelSlot);
         gs = g_gameState;
         *p |= 0x20;
-        gs->gameData->ctx.ovl65->unkC->unk14->unk2C[o->modelSlot].unk4_0 = a * 16;
+        gs->gameData->ctx.ovl65->unkC->unk14->unk2C[o->modelSlot].fixedAngle = a * 16;
         return 0;
     case EVT_OP_SHADOW_UNFIX:
         *(u32 *)game_getModel(o->modelSlot) &= ~0x20;
@@ -1729,21 +1729,21 @@ s32 evt_modelOpBattle(EvtObject *o, s32 op) {
     case EVT_OP_SHADOW_SIZE:
         a = evt_getArg8();
         b = evt_getArg8();
-        g_gameState->gameData->ctx.ovl65->work->unk28[o->modelSlot].unk0_8 = a * 14;
-        g_gameState->gameData->ctx.ovl65->work->unk28[o->modelSlot].unk0_20 = b * 12;
+        g_gameState->gameData->ctx.ovl65->work->unk28[o->modelSlot].sizeX = a * 14;
+        g_gameState->gameData->ctx.ovl65->work->unk28[o->modelSlot].sizeZ = b * 12;
         return 0;
     case 0x82:
         a = evt_getArg16();
         b = evt_getArg16();
-        g_gameState->gameData->ctx.ovl65->work->unk28[o->modelSlot].unk4_12 = a;
-        g_gameState->gameData->ctx.ovl65->work->unk28[o->modelSlot].unk4_22 = b;
+        g_gameState->gameData->ctx.ovl65->work->unk28[o->modelSlot].ofsX = a;
+        g_gameState->gameData->ctx.ovl65->work->unk28[o->modelSlot].ofsZ = b;
         return 0;
     case EVT_OP_SHADOW_FIXED:
         a = evt_getArg8();
         p = (u32 *)game_getModel(o->modelSlot);
         gs = g_gameState;
         *p |= 0x20;
-        gs->gameData->ctx.ovl65->work->unk28[o->modelSlot].unk4_0 = a * 16;
+        gs->gameData->ctx.ovl65->work->unk28[o->modelSlot].fixedAngle = a * 16;
         return 0;
     case EVT_OP_SHADOW_UNFIX:
         *(u32 *)game_getModel(o->modelSlot) &= ~0x20;
@@ -1778,21 +1778,21 @@ s32 evt_modelOpWorld(EvtObject *o, s32 op) {
     case EVT_OP_SHADOW_SIZE:
         a = evt_getArg8();
         b = evt_getArg8();
-        ((Unk11C0Slot *)g_gameState->gameData->ctx.ovl65->unk8->unk1C)[o->modelSlot].unk0_8 = a * 14;
-        ((Unk11C0Slot *)g_gameState->gameData->ctx.ovl65->unk8->unk1C)[o->modelSlot].unk0_20 = b * 12;
+        ((Unk11C0Slot *)g_gameState->gameData->ctx.ovl65->unk8->unk1C)[o->modelSlot].sizeX = a * 14;
+        ((Unk11C0Slot *)g_gameState->gameData->ctx.ovl65->unk8->unk1C)[o->modelSlot].sizeZ = b * 12;
         return 0;
     case 0x82:
         a = evt_getArg16();
         b = evt_getArg16();
-        ((Unk11C0Slot *)g_gameState->gameData->ctx.ovl65->unk8->unk1C)[o->modelSlot].unk4_12 = a;
-        ((Unk11C0Slot *)g_gameState->gameData->ctx.ovl65->unk8->unk1C)[o->modelSlot].unk4_22 = b;
+        ((Unk11C0Slot *)g_gameState->gameData->ctx.ovl65->unk8->unk1C)[o->modelSlot].ofsX = a;
+        ((Unk11C0Slot *)g_gameState->gameData->ctx.ovl65->unk8->unk1C)[o->modelSlot].ofsZ = b;
         return 0;
     case EVT_OP_SHADOW_FIXED:
         a = evt_getArg8();
         p = (u32 *)game_getModel(o->modelSlot);
         gs = g_gameState;
         *p |= 0x20;
-        ((Unk11C0Slot *)gs->gameData->ctx.ovl65->unk8->unk1C)[o->modelSlot].unk4_0 = a * 16;
+        ((Unk11C0Slot *)gs->gameData->ctx.ovl65->unk8->unk1C)[o->modelSlot].fixedAngle = a * 16;
         return 0;
     case EVT_OP_SHADOW_UNFIX:
         *(u32 *)game_getModel(o->modelSlot) &= ~0x20;

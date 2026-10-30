@@ -227,7 +227,7 @@ void menuStatus_drawAbilityPages(void) {
             ui_drawLabel(r->x + 6, r->y - 3, z, g_winLabelStrings.abilityList, 0);
             if (s_menuStatus.pageOnTop[i] != 0) {
                 s_menuStatusPageLabel[1] = i + 0x31;
-                ui_drawLabel(r->x + 0x90, r->y - 3, z, g_winLabelStrings.unk88, 0);
+                ui_drawLabel(r->x + 0x90, r->y - 3, z, g_winLabelStrings.labelNo, 0);
                 ui_drawLabel(r->x + 0x9A, r->y - 3, z, (s32)s_menuStatusPageLabel, 0);
             }
             win_drawBox(r, z, 2);

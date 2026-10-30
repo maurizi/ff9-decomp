@@ -169,14 +169,14 @@ typedef struct {
     struct Unk11C0Slot *unk28; /* per-object model slots, indexed by unk3B */
 } Unk11C0;
 
-/* Unk11C0.unk28 entry (0x28 bytes), written by script opcodes in evt_modelOpBattle */
+/* per-object shadow (0x28 bytes, Unk11C0.unk28), built by shadow_initSlots, set by the EVT_OP_SHADOW_* ops in evt_modelOp* */
 typedef struct Unk11C0Slot {
     u32 unk0_0 : 8;
-    u32 unk0_8 : 12;
-    u32 unk0_20 : 12;
-    u32 unk4_0 : 12;
-    u32 unk4_12 : 10;
-    u32 unk4_22 : 10;
+    u32 sizeX : 12; /* EVT_OP_SHADOW_SIZE x * 14 (0xE0 from shadow_initSlots) */
+    u32 sizeZ : 12; /* EVT_OP_SHADOW_SIZE z * 12 (0xC0) */
+    u32 fixedAngle : 12; /* EVT_OP_SHADOW_FIXED angle * 16, used with model flag 0x20 */
+    u32 ofsX : 10; /* event op 0x82 x offset */
+    u32 ofsZ : 10; /* event op 0x82 z offset */
     POLY_FT4 *unk8[2][4]; /* prims, filled by shadow_initSlots */
 } Unk11C0Slot;
 
@@ -1088,7 +1088,7 @@ typedef struct EvtObject {
     u8 varsOfs; /* header size in words, 5/14/43 for kinds 2/3/4 (g_evtObjVars = o + varsOfs * 4) */
     u8 stackOfs; /* varsOfs + local-variable words */
     u8 sp; /* call stack depth in words (2 per call) */
-    u8 unkB;
+    u8 battleTurnState; /* enemy turn: 2 requested (evt_battleTrigger BTL_CMD_ENEMY_TURN), 1 once the turn function runs, 0 after op 0x38 level 3 */
     u8 unkC;
     u8 wait; /* frames left of op 0x22, 0xFE waiting for its message window, 0xFF waiting for a called function */
     u8 state; /* 2 running the init function, 1 running, 3 suspended */
@@ -1141,10 +1141,10 @@ typedef struct EvtObject {
     u8 lookParam0; /* op 0x8B */
     u8 lookParam1; /* op 0x8B */
     u16 turnRate; /* rotation y step, 0x7FFF turns without a turn animation */
-    s16 talkTurnScript; /* 0xA7 turn toward the talker before the talk function (op 0x91), 4 don't */
-    u8 unk70;
-    u8 unk71;
-    u8 unk72;
+    s16 talkTurnScript; /* 0xA7 turn toward the talker before the talk function (op 0x91), 4 don't; the script "A7 00 angle 50 04" (turn, EVT_OP_WAIT_TURN, EVT_OP_RETURN) starts here */
+    u8 talkTurnAngle; /* its angle byte (evt_callTurnScript) */
+    u8 talkTurnWaitOp; /* EVT_OP_WAIT_TURN, set at object creation */
+    u8 talkTurnReturnOp; /* EVT_OP_RETURN */
     u8 turnSpeed; /* op 0x99, default 16 */
     u16 idleAnim; /* op 0x52 (runtime: 55) */
     u16 jumpAnim; /* op 0x94 */
@@ -1689,23 +1689,23 @@ typedef struct {
     u8 pad8[0x30 - 8];
     s32 command; /* title of the battle command window (btlui_drawCmdOverlay) */
     u8 pad34[0x3C - 0x34];
-    s32 unk3C;
+    s32 labelEnemy; /* "ENEMY" */
     u8 pad40[0x68 - 0x40];
     s32 itemList; /* title of item lists (menuItem_drawList, btlui_openItemList, shopBuy_drawList) */
     u8 pad6C[0x7C - 0x6C];
     s32 abilityCost; /* second title of ability lists (cost column) */
-    s32 unk80;
-    s32 unk84;
-    s32 unk88;
-    s32 unk8C;
-    s32 unk90;
+    s32 labelName; /* "NAME" (= g_labelName) */
+    s32 labelNew; /* "NEW" */
+    s32 labelNo; /* "NO" */
+    s32 labelNormal; /* "NORMAL" */
+    s32 labelNotice; /* "NOTICE" (= g_labelNotice) */
     s32 itemCount; /* right-aligned count-column title of item lists (btlui item/throw lists, menuEquip_drawList) */
     u8 pad98[0xA0 - 0x98];
-    s32 unkA0;
+    s32 labelPlayer; /* "PLAYER" (second copy) */
     s32 shopPrice; /* right-aligned price-column title (shopBuy_drawList, shopSynth_drawList) */
     u8 padA8[0xC0 - 0xA8];
     s32 throwList; /* title of the Throw list (btlui_openThrowList) */
-} Unk800703FC; /* text table? */
+} Unk800703FC; /* pointers to the window label strings ("ABILITY" .. "WRIST", +4 onwards); the fields are named by role or by their text */
 extern Unk800703FC g_winLabelStrings;
 
 extern u8 *g_loadAreaEnd; /* end of load area */
@@ -2495,13 +2495,13 @@ typedef struct {
     u32 loopLength; /* loop length (initial), header +0x20 */
     u32 loopBytes; /* bytesLeft reloaded at the loop point (akao_streamRefill) */
     s32 unk20;
-    s32 unk24;
-    s32 unk28;
-    s32 spuAddr; /* SPU address of the stream buffer (SpuSetTransferStartAddr, voice start/loop) */
+    s32 blocksWritten; /* ring stream: blocks the producer reported (akao_streamPushBlock) */
+    s32 blocksRead; /* ring stream: blocks consumed (akao_streamNextReadBlock) */
+    s32 spuAddr; /* SPU address of the stream buffer (SpuSetTransferStartAddr, voice start/loop); the ring in RAM for the ring stream */
     s32 unk30;
-    s32 unk34;
-    u32 unk38;
-    u32 unk3C;
+    s32 readBlock; /* ring stream: block the next upload reads (-1 before the start) */
+    u32 writeBlock; /* ring stream: block the producer fills next, akao_streamStartRing runs once it reaches 2 */
+    u32 ringBlocks; /* ring stream: blocks in the ring (sound command 0xE8 size >> 12) */
     s32 volume; /* volume (akao_cmdE4/E5, akao_streamSetVoice) */
     s32 volumeStep; /* (akao_cmdE5 fade) */
     s32 volumeFadeLen;
@@ -4051,8 +4051,8 @@ static inline void evt_execInstr_newactor(s32 uid, s32 b) {
     p->runSpeed = 0x1F;
     p->moveTurnRate = 0x10;
     p->talkTurnScript = 4;
-    p->unk71 = 0x50;
-    p->unk72 = 4;
+    p->talkTurnWaitOp = 0x50;
+    p->talkTurnReturnOp = 4;
     p->turnSpeed = 0x10;
     p->talkTarget = 0xFF;
     p->idleAnimSpeeds.w = 0x10101010;

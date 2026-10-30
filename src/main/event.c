@@ -1626,7 +1626,7 @@ s32 evt_execInstr(void) {
         case 3: {
             s32 x = (u16)g_evtBattleVars[1], z = (u16)g_evtBattleVars[0];
             btl_setEnemyCmd(x, z, BTL_CMD_ENEMY_TURN, evt_getArg8_inline());
-            g_evtCurObj->unkB = 0;
+            g_evtCurObj->battleTurnState = 0;
             break;
         }
         }
@@ -2492,7 +2492,7 @@ s32 evt_callTurnScript(EvtObject *p, s32 b) {
             ok = 0 < p->level;
         }
         if (ok) {
-            p->unk70 = b >> 4;
+            p->talkTurnAngle = b >> 4;
             sp = &((s32 *)p + p->stackOfs)[p->sp];
             sp[0] = p->ip - g_evtState->scriptBase;
             w = p->wait | (p->level << 8);
@@ -2960,8 +2960,8 @@ s32 evt_updateObjects(void) {
     if (world) {
         for (n = g_evtState->objects; n != NULL; n = n->unk0) {
             o = n->unk4;
-            if (o->unkB == 2 && evt_callObjectFunc(o, 3, 5, 0)) {
-                o->unkB = 1;
+            if (o->battleTurnState == 2 && evt_callObjectFunc(o, 3, 5, 0)) {
+                o->battleTurnState = 1;
             }
         }
     } else {
@@ -3541,7 +3541,7 @@ s32 evt_battleTrigger(s32 op, s32 bits, s32 v, s32 w) {
         o = g_evtUnitObjects[i];
         if (op == BTL_CMD_ENEMY_TURN) {
             if (o->level >= 4) {
-                o->unkB = 2;
+                o->battleTurnState = 2;
                 r = 1;
             }
         } else {

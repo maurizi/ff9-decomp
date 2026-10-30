@@ -16,12 +16,12 @@ s32 shadow_initSlots(s32 prim, s32 cx, s32 cy, s32 u, s32 v, s32 n, s32 flags) {
     prim += n * (s32)sizeof(Unk11C0Slot);
     for (i = 0; i < n; i++) {
         q = &s[i];
-        q->unk4_0 = 0;
-        q->unk0_8 = 0xE0;
-        q->unk0_20 = 0xC0;
+        q->fixedAngle = 0;
+        q->sizeX = 0xE0;
+        q->sizeZ = 0xC0;
         q->unk0_0 = 0x80;
-        q->unk4_12 = 0;
-        q->unk4_22 = 0;
+        q->ofsX = 0;
+        q->ofsZ = 0;
         for (j = 0; j < 2; j++) {
             for (k = 0; k < 4; k++) {
                 if (!(flags & 1)) {

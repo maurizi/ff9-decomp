@@ -2185,9 +2185,9 @@ void akao_cmdED(s32 *a) {
 s32 akao_streamNextReadBlock(p)
     s32 *p;
 {
-    g_akaoStream.unk28++;
+    g_akaoStream.blocksRead++;
     (*p)++;
-    if (g_akaoStream.unk3C - 1 < *p) {
+    if (g_akaoStream.ringBlocks - 1 < *p) {
         *p = 0;
     }
     return *p;
@@ -2219,7 +2219,7 @@ void akao_streamStartRing(void) {
     mask = (1 << v) | (1 << (v + 1));
     d->voice = v;
     d->voiceMask = mask;
-    d->unk34 = 0;
+    d->readBlock = 0;
     akao_keyOff(mask);
     d->flags = h->flags;
     d->pitch = h->pitch;
@@ -2229,15 +2229,15 @@ void akao_streamStartRing(void) {
     SpuSetTransferCallback(akao_streamStartRingVoices);
     if (d->flags & 0x400) {
         SpuWrite(g_akaoStream.readPtr + 0xD0, 0x4000);
-        akao_streamNextReadBlock(&d->unk34);
-        akao_streamNextReadBlock(&d->unk34);
-        akao_streamNextReadBlock(&d->unk34);
-        akao_streamNextReadBlock(&d->unk34);
+        akao_streamNextReadBlock(&d->readBlock);
+        akao_streamNextReadBlock(&d->readBlock);
+        akao_streamNextReadBlock(&d->readBlock);
+        akao_streamNextReadBlock(&d->readBlock);
         d->voiceMask |= (1 << (v - 2)) | (1 << (v - 1));
     } else {
         SpuWrite(g_akaoStream.readPtr + 0xD0, 0x2000);
-        akao_streamNextReadBlock(&d->unk34);
-        akao_streamNextReadBlock(&d->unk34);
+        akao_streamNextReadBlock(&d->readBlock);
+        akao_streamNextReadBlock(&d->readBlock);
     }
     g_akaoSeState.reverbMask &= ~g_akaoStreamVoices;
     g_akaoSeState.pitchModMask &= ~g_akaoStreamVoices;
@@ -2290,14 +2290,14 @@ s32 akao_streamRefillRing(s32 a, s32 b, s32 n, void (*cb)(void)) {
             SpuSetIRQ(0);
             SpuSetTransferStartAddr(a);
             akao_beginSpuTransfer();
-            akao_streamNextReadBlock(&g_akaoStream.unk34);
+            akao_streamNextReadBlock(&g_akaoStream.readBlock);
             SpuWrite(g_akaoStream.readPtr + 0xD0, n - 0xD0);
             g_akaoStream.unk20 = h->unk4;
             g_akaoStream.loopLength = h->loopLength;
             if (h->dataSize > h->loopLength) {
                 SpuSetIRQCallback(cb);
                 g_akaoStream.readPtr += n;
-                if (g_akaoStream.unk34 == 0) {
+                if (g_akaoStream.readBlock == 0) {
                     g_akaoStream.readPtr = (u8 *)g_akaoStream.spuAddr;
                 }
             } else {
@@ -2318,7 +2318,7 @@ void akao_streamRefillRingA(void) {
     s32 a;
     s32 b;
     if (g_akaoStream.flags & 0x400) {
-        akao_streamNextReadBlock(&g_akaoStream.unk34);
+        akao_streamNextReadBlock(&g_akaoStream.readBlock);
         a = akao_streamRefillRing(0x1100, 0x1900, 0x2000, akao_streamRefillRingB);
         b = 0x2900;
         if (a == 0x1030) {
@@ -2337,7 +2337,7 @@ void akao_streamRefillRingB(void) {
     s32 a;
     s32 b;
     if (g_akaoStream.flags & 0x400) {
-        akao_streamNextReadBlock(&g_akaoStream.unk34);
+        akao_streamNextReadBlock(&g_akaoStream.readBlock);
         a = akao_streamRefillRing(0x3100, 0x3900, 0x2000, akao_streamRefillRingA);
         b = 0x4900;
         if (a == 0x1030) {
@@ -2354,13 +2354,13 @@ void akao_streamRefillRingB(void) {
 
 void akao_cmdE8(s32 *a) {
     akao_streamStop();
-    g_akaoStream.unk34 = -1;
+    g_akaoStream.readBlock = -1;
     g_akaoStream.unk20 = 0;
-    g_akaoStream.unk24 = 0;
-    g_akaoStream.unk28 = 0;
-    g_akaoStream.unk38 = 0;
+    g_akaoStream.blocksWritten = 0;
+    g_akaoStream.blocksRead = 0;
+    g_akaoStream.writeBlock = 0;
     g_akaoStream.flags = 0x1000000;
-    g_akaoStream.unk3C = (u32)g_akaoArgs.arg1 >> 12;
+    g_akaoStream.ringBlocks = (u32)g_akaoArgs.arg1 >> 12;
     g_akaoStream.spuAddr = a[0];
     g_akaoStream.unk30 = a[1];
 }

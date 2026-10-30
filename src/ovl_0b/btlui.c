@@ -2564,8 +2564,8 @@ void btlui_drawTargetListOverlay(Window *arg0) {
     if (arg0->state != 3) {
         win_setClip(NULL, arg0->otz, 4);
     }
-    ui_drawLabel(w->x + 8, r->y - 3, arg0->otz, g_winLabelStrings.unk3C, 0);
-    ui_drawLabel(w->x + 0x76, r->y - 3, arg0->otz, g_winLabelStrings.unkA0, 0);
+    ui_drawLabel(w->x + 8, r->y - 3, arg0->otz, g_winLabelStrings.labelEnemy, 0);
+    ui_drawLabel(w->x + 0x76, r->y - 3, arg0->otz, g_winLabelStrings.labelPlayer, 0);
     if (arg0->state != 3) {
         rc.x = r->x;
         rc.y = r->y - 3;

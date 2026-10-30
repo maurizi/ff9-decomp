@@ -617,13 +617,13 @@ s32 akao_sendCmdE8(s32 a, s32 b) {
 }
 
 s32 akao_streamPushBlock(void *unused) { /* mbg_stream passes its stream state */
-    g_akaoStream.unk24++;
-    g_akaoStream.unk38++;
-    if (g_akaoStream.unk3C - 1 < g_akaoStream.unk38) {
-        g_akaoStream.unk38 = 0;
+    g_akaoStream.blocksWritten++;
+    g_akaoStream.writeBlock++;
+    if (g_akaoStream.ringBlocks - 1 < g_akaoStream.writeBlock) {
+        g_akaoStream.writeBlock = 0;
     }
-    if ((g_akaoStream.flags & 0x1000000) && g_akaoStream.unk38 >= 2) {
+    if ((g_akaoStream.flags & 0x1000000) && g_akaoStream.writeBlock >= 2) {
         akao_streamStartRing();
     }
-    return g_akaoStream.unk34;
+    return g_akaoStream.readBlock;
 }
