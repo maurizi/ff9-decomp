@@ -960,7 +960,7 @@ void rewards_drawLearnWin(Window *w) {
     s = &s_rewards.learnWins[slot];
     id = s->ids[s->shown];
     if (id < ABILITY_SUPPORT_FIRST) {
-        name = s_rewardsActionNames + s_rewardsActionTable[id].unkE;
+        name = s_rewardsActionNames + s_rewardsActionTable[id].nameOffset;
         ui_drawSprite(w->unk0 + 6, w->unk2 + 7, w->unk18, 0xBC, 0);
     } else {
         name = s_rewardsSupportNames + g_supportAbilities[id - ABILITY_SUPPORT_FIRST].unk2;

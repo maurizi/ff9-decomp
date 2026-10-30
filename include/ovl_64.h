@@ -31,7 +31,7 @@ extern volatile u32 *D_8019E008; /* MDEC1 register pointer */
 
 /* movie table entry (0x14 bytes) */
 typedef struct {
-    s32 unk0; /* file */
+    char *path; /* movie file name (cd_findFile, mbg_getEntryName) */
     u8 rgb24;
     u8 unk5;
     s16 startFrame;
@@ -56,23 +56,23 @@ extern Ovl64Size g_mbgGeomOffset;
 typedef struct {
     u8 ended;
     u8 rgb24;
-    u8 unk2;
-    u8 unk3;
+    u8 savedCameraId; /* field background camera at the start (fldbg_getCamera), restored at the end */
+    u8 modeSwitch; /* 1: switch rgb24 mode at the next frame end (mbg_setRgb24 while playing), 2: mbg_update resets the graph env */
     u8 pauseReq;
     u8 unk5;
-    s8 unk6;
+    s8 firstFrame; /* set by mbg_play; mbg_readFrame keeps the first frame's camera in g_mbgStartCamera and clears it */
     u8 pad7;
-    s32 unk8; /* current buffer */
-    CdlLOC unkC; /* stream start position */
+    s32 unk8; /* nonzero: mbg_update lowers vsyncMode once */
+    CdlLOC startPos; /* stream start position */
     u8 pad10[0x24 - 0x10];
-    CdlLOC unk24; /* stream position */
-    s32 unk28;
+    CdlLOC streamPos; /* stream position (seek target after a bad frame) */
+    s32 savedOtBias; /* the field scene's otBias, zeroed while the movie plays */
     s32 width; /* frame width */
     s32 height; /* frame height */
-    s32 unk34;
-    s32 unk38;
-    s32 unk3C;
-    s32 unk40;
+    s32 audioFrames; /* frames with audio pushed (mbg_streamPushAudio) */
+    s32 volumeDelay; /* at audioFrames == volumeDelay: akao_sendCmdE5(volumeFade, volume) (func_8019AB98, default 3) */
+    s32 volumeFade; /* default 4 */
+    s32 volume; /* default 0x7F; the field passes movieSndVolume */
     void *vlcTable;
     s32 mdecIn0;
     s32 mdecIn1;
@@ -121,22 +121,22 @@ extern s32 g_mbgVlcSize;
 
 /* CD stream ring (g_mbgStream) */
 typedef struct {
-    u16 unk0; /* flags: 0x1000 free, 0x8000 ready */
+    u16 status; /* low 12 bits kept; 0x1000 free, 0x2000/0x4000 being filled, 0x8000 ready (mbg_streamPeekFrame) */
     u8 pad2[2];
-    u16 unk4;
+    u16 firstSector; /* sector in the slot where the frame data starts */
     u8 pad6[2];
     u8 pad8[0x10 - 8];
-    u16 unk10; /* frame width */
-    u16 unk12; /* frame height */
+    u16 width; /* frame width */
+    u16 height; /* frame height */
     u8 pad14[0x20 - 0x14];
 } Ovl64RingHdr; /* 0x20 */
 
 /* sector header at the end of each ring slot */
 typedef struct {
     u16 unk0;
-    u16 unk2;
+    u16 type; /* 4: the frame's first sector, read for the mask info */
     u8 pad4[4];
-    s32 unk8;
+    s32 frame; /* frame number, must equal g_mbgStream.frame */
     u8 padC[0x1C - 0xC];
     union {
         u32 w;
@@ -144,7 +144,7 @@ typedef struct {
             u16 lo;
             u16 hi;
         } h;
-    } unk1C;
+    } maskInfo; /* bit 29: mask data present, low 16 bits its size, hi & 0xFFF its offset (g_mbgSlotMasks) */
 } Ovl64SectHdr;
 
 /* per-frame camera record copied out of the stream (g_mbgSlotCameras); mbg_readFrame applies it to the GTE and
@@ -164,10 +164,10 @@ typedef struct {
 /* 2 KB stream sector */
 typedef struct {
     u8 pad0[0x12];
-    u16 unk12;
-    Ovl64FrameInfo unk14[2];
-    s32 unk5C;
-    u32 unk60;
+    u16 hasCamera; /* 1: cameras[] valid */
+    Ovl64FrameInfo cameras[2]; /* selected by g_mbgStream.cameraSel */
+    s32 rumble; /* negative: vibration, bits 8-15 >= 0x80 on, low byte the level (g_mbgSlotRumble) */
+    u32 lastFrame; /* 0xEEEEEEEE: none */
 } Ovl64StreamSect;
 
 /* per ring slot: the pad vibration of the frame (frame header +0x5C), copied to the actuator bytes g_padActuator
@@ -179,41 +179,41 @@ typedef struct {
 
 typedef struct {
     u8 unk0;
-    u8 unk1;
-    u8 unk2;
-    u8 unk3;
-    void (*unk4)(u8 *, u8 *, Ovl64FrameInfo *);
-    void (*unk8)(void); /* sector callback */
+    u8 stalled; /* the ring was full: reading paused until mbg_streamFreeFrame */
+    u8 endState; /* 1 past lastFrame, 2 error (channel / frame mismatch, timeout); mbg_streamGetFrame then returns 5 */
+    u8 hasCamera; /* frames carry camera / mask data */
+    void (*frameInfoCallback)(u8 *, u8 *, Ovl64FrameInfo *);
+    void (*frameCallback)(void); /* called after each complete frame */
     s32 unkC;
     s32 cameraSel;
     s32 lastReadTime;
     s32 channel;
     s32 baseSector;
-    CdlLOC unk20;
+    CdlLOC startPos;
     u8 pad24[0x38 - 0x24];
-    s32 unk38;
+    s32 startFrame;
     u32 lastFrame;
-    s32 unk40;
+    s32 startSector;
     s32 sector;
-    u32 unk48;
-    u32 unk4C;
-    u32 unk50;
+    u32 frameSector; /* sector within the current frame */
+    u32 cycleSector; /* sector within the audio/video interleave; 0 and 1 are audio */
+    u32 cycleLength;
     u32 frameSectors;
     u32 frame;
-    u32 unk5C; /* sectors per slot */
-    u32 unk60;
-    s32 unk64;
-    s32 unk68;
+    u32 slotSectors; /* sectors per slot */
+    u32 ringSectors; /* ring size in sectors */
+    s32 slotSector; /* sector being written within the slot */
+    s32 writeSlot; /* slot being written (counts down) */
     u32 slotCount; /* slot count */
     u32 readSlot; /* current slot */
-    Ovl64RingHdr *unk74;
-    u8 *unk78; /* slot data, 0x8F4 bytes per sector */
-    u32 unk7C;
-    u32 unk80;
-    u32 unk84;
-    u32 unk88;
-    u32 unk8C;
-    u8 *unk90;
+    Ovl64RingHdr *ringHdrs; /* one per slot */
+    u8 *ringData; /* slot data, 0x8F4 bytes per sector */
+    u32 audioSectors; /* audio buffer size in sectors */
+    u32 audioWrite; /* next audio sector */
+    u32 audioLast; /* audio sector just written */
+    u32 audioPending; /* written, not yet pushed (mbg_streamPushAudio takes 2) */
+    u32 audioPendingMax;
+    u8 *audioBuf;
 } Ovl64Stream;
 extern s32 g_mbgSectorLogCount;
 extern Ovl64Stream g_mbgStream;
@@ -249,16 +249,6 @@ s32 mbg_streamSetPaused(s32);
 s32 mbg_streamClearRing(void);
 s32 mbg_update(s32);
 
-typedef struct {
-    u8 pad0[0x1C];
-    s16 unk1C;
-    s16 unk1E;
-    u8 pad20[4];
-    s16 unk24;
-    s16 unk26;
-    u8 pad28[6];
-    s16 unk2E;
-} Ovl64Out; /* mbg_readFrame output: frame size in RECTs at 0x18.. */
 extern Ovl64MovieInfo *g_mbgMovie;
 extern s32 g_mbgMaskSize[2];
 typedef struct {
@@ -282,23 +272,22 @@ typedef struct {
     : "$12", "$13")
 
 typedef struct {
-    u16 unk0;
-    u16 unk2;
-    s32 unk4;
-    s32 unk8;
-    s32 unkC;
+    u16 runMasked; /* current run: nonzero = pixels get the mask bit */
+    u16 runLength; /* pixels left in the current run */
+    s32 size; /* mask data size, 0 = none */
+    s32 data; /* mask data (g_mbgMaskData) */
+    s32 cursor; /* read position (mbg_applyMask) */
 } Ovl64Vlc4C8; /* argument block of mbg_applyMask */
 extern Ovl64Vlc4C8 g_mbgMaskCursor;
 extern u16 g_mbgMaskBit;
 extern u8 g_mbgLoadRectIdx;
 extern RECT g_mbgLoadRects[4];
-extern u8 D_8019DC97; /* = g_mbgPlayer.unk3, referenced by its own name */
+extern u8 D_8019DC97; /* = g_mbgPlayer.modeSwitch, referenced by its own name */
 void mbg_applyMask(void *, u32 *, u16);
 typedef struct {
     u8 pad0[3];
-    u8 unk3;
-    u32 unk4;
-    u32 unk8;
+    u8 len; /* packet length (2) */
+    u32 code[2]; /* 0xE6000002 (check mask), 0 */
 } Ovl64Stp;
 extern Ovl64Stp D_8019F4A8[2];
 extern s32 D_8019DC9C;
@@ -309,29 +298,30 @@ int DecDCTin(u32 *, int);
 int DecDCTinSync(int);
 int DecDCTout(u32 *, int);
 int DecDCTReset(int);
+/* ovl_0a's deferred flag queue ([0] set, [1] clear, one frame per entry), here to clear the flags the switch
+ * to rgb24 set */
 typedef struct {
-    u8 pad0[8];
-    u16 unk8;
-    u8 padA[0x18 - 0xA];
-    u16 unk18;
-} Ovl64Field; /* field overlay object touched when the movie switches modes */
+    u16 gameFlags[2][4]; /* GameData.unk0 */
+    u16 mapFlags[2][4]; /* FieldMap.flags */
+    u16 movieFlags[2][4];
+} Ovl64Field;
 extern Ovl64Field g_fieldFlagQueue;
 
 /* GameData.unk8E4 in field mode, as far as the movie player reads it */
 typedef struct {
     u8 pad0[0x30];
-    s16 unk30;
+    s16 otBias;
     u8 pad32[0x44 - 0x32];
-    s32 unk44;
-} Ovl64FieldC14;
+    s32 movieFile; /* stream base sector */
+} Ovl64FieldC14; /* ovl_0a FieldScene */
 typedef struct {
     u8 pad0[0x14];
-    Ovl64FieldC14 *unk14;
-} Ovl64FieldC;
+    Ovl64FieldC14 *scene;
+} Ovl64FieldC; /* ovl_0a FieldMapObj */
 typedef struct {
     u8 pad0[0xC];
-    Ovl64FieldC *unkC;
-} Ovl64Field8E4;
+    Ovl64FieldC *area;
+} Ovl64Field8E4; /* ovl_0a FieldMap */
 
 
 /* used by mbg_play */
@@ -366,7 +356,7 @@ static inline void mbg_streamReadyCallback_retry(void) {
     if (VSync(-1) - g_mbgStream.lastReadTime < limit) {
         cd_restartAt(g_mbgStream.sector);
     } else {
-        g_mbgStream.unk2 = 2;
+        g_mbgStream.endState = 2;
         cd_pause();
     }
 }

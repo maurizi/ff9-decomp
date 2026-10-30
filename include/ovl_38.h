@@ -71,9 +71,9 @@ extern void (*s_menuStatusInput[])(void);
 
 typedef struct {
     u8 pad0[0xB];
-    u8 unkB; /* bit 1 tested */
+    u8 flags; /* bit 1 clear: AP gauge flag */
     u8 padC[2];
-    u16 unkE; /* name offset into s_menuStatusActionNames */
+    u16 nameOffset; /* name offset into s_menuStatusActionNames */
 } ActiveAbility; /* 0x10 */
 extern ActiveAbility s_menuStatusActionAbilities[];
 extern u8 s_menuStatusActionNames[];
@@ -88,7 +88,7 @@ extern s32 s_menuStatusBattleStatText[5];      /* text ids */
 
 /* local copy of the battle command table (built on the stack from .rodata) */
 typedef struct {
-    u16 unk0; /* offset of the command name in the string pool */
+    u16 nameOffset; /* offset of the command name in the string pool */
     u16 unk2;
     s32 unk4;
     s32 unk8;
@@ -122,7 +122,7 @@ typedef struct {
     u8 pad1;
     u16 unk2;
     u8 pad4;
-    u8 unk5; /* attack power */
+    u8 attack; /* attack power */
     u8 pad6[0xC - 6];
 } Unk8006E0E8; /* weapon stats, 0xC (also in ovl_0b.h) */
 extern Unk8006E0E8 g_weaponTable[];

@@ -47,16 +47,16 @@ void wm_updateCamera(void) {
     if (g_worldCameraHold == 0) {
         wm_updateCameraPreset();
     }
-    g_gameState->gameData->unkA = g_worldCameraParams.unk0[0];
+    g_gameState->gameData->unkA = g_worldCameraParams.projDist;
     g_worldCamera->yaw &= 0xFFF;
-    g_worldCameraTargetHeight = g_worldCameraParams.unk0[4];
+    g_worldCameraTargetHeight = g_worldCameraParams.targetHeight;
     if ((u8)g_worldMoveMode == 8 || (u8)g_worldMoveMode == 9) {
         t = g_worldPlayer->pos.vy + 0x1518;
-        g_worldCameraTargetHeight = g_worldCameraParams.unk0[4] - (t > 0 ? t >> 3 : t / 6);
+        g_worldCameraTargetHeight = g_worldCameraParams.targetHeight - (t > 0 ? t >> 3 : t / 6);
     }
-    g_worldCameraEyeOffset.vx = math_sin(g_worldCamera->yaw) * (g_worldCameraParams.unk0[1] * g_worldCameraDistScale / 4096) >> 12;
-    g_worldCameraEyeOffset.vy = g_worldCameraParams.unk0[2];
-    g_worldCameraEyeOffset.vz = math_cos(g_worldCamera->yaw) * (g_worldCameraParams.unk0[1] * g_worldCameraDistScale / 4096) >> 12;
+    g_worldCameraEyeOffset.vx = math_sin(g_worldCamera->yaw) * (g_worldCameraParams.distance * g_worldCameraDistScale / 4096) >> 12;
+    g_worldCameraEyeOffset.vy = g_worldCameraParams.eyeHeight;
+    g_worldCameraEyeOffset.vz = math_cos(g_worldCamera->yaw) * (g_worldCameraParams.distance * g_worldCameraDistScale / 4096) >> 12;
     if (g_worldCameraHold == 0) {
         wm_cameraFollow();
     }
@@ -256,7 +256,7 @@ void wm_cameraFollow(void) {
         } else if (h < -0x251C) {
             h = -0x251C;
         }
-        if (g_worldCameraParams.unk0[3] + h < y2) {
+        if (g_worldCameraParams.groundClearance + h < y2) {
             k = ((u8)cell >> 2 == 0x31) * 2;
             if (g_worldCameraFastRise != 0) {
                 k = 2;
@@ -267,7 +267,7 @@ void wm_cameraFollow(void) {
             if (g_worldCamera->viewBlend != 0 && g_worldCamera->viewBlend != 0x1000) {
                 k = 3;
             }
-            y2 = g_worldCameraParams.unk0[3] + h;
+            y2 = g_worldCameraParams.groundClearance + h;
         }
         if (g_worldMoveModeInfo->controlType == 1 && y2 > -0x1194) {
             y2 = -0x1194;
@@ -391,11 +391,11 @@ void wm_updateCameraPreset(void) {
             g_worldCameraBlend = 0x1000;
         }
         wm_calcCameraPreset(-g_worldPlayer->pos.vy, g_worldCameraBlendRow, k, g_worldCamera->viewBlend, &tmp);
-        g_worldCameraParams.unk0[0] = wm_lerpShift(g_worldCameraParamsFrom.unk0[0], tmp.unk0[0], g_worldCameraBlend, 9);
-        g_worldCameraParams.unk0[1] = wm_lerpShift(g_worldCameraParamsFrom.unk0[1], tmp.unk0[1], g_worldCameraBlend, 0xF);
-        g_worldCameraParams.unk0[2] = wm_lerpShift(g_worldCameraParamsFrom.unk0[2], tmp.unk0[2], g_worldCameraBlend, 0xE);
-        g_worldCameraParams.unk0[3] = wm_lerpShift(g_worldCameraParamsFrom.unk0[3], tmp.unk0[3], g_worldCameraBlend, 0xE);
-        g_worldCameraParams.unk0[4] = wm_lerpShift(g_worldCameraParamsFrom.unk0[4], tmp.unk0[4], g_worldCameraBlend, 0xE);
+        g_worldCameraParams.projDist = wm_lerpShift(g_worldCameraParamsFrom.projDist, tmp.projDist, g_worldCameraBlend, 9);
+        g_worldCameraParams.distance = wm_lerpShift(g_worldCameraParamsFrom.distance, tmp.distance, g_worldCameraBlend, 0xF);
+        g_worldCameraParams.eyeHeight = wm_lerpShift(g_worldCameraParamsFrom.eyeHeight, tmp.eyeHeight, g_worldCameraBlend, 0xE);
+        g_worldCameraParams.groundClearance = wm_lerpShift(g_worldCameraParamsFrom.groundClearance, tmp.groundClearance, g_worldCameraBlend, 0xE);
+        g_worldCameraParams.targetHeight = wm_lerpShift(g_worldCameraParamsFrom.targetHeight, tmp.targetHeight, g_worldCameraBlend, 0xE);
         if (g_worldCameraBlend >= 0x1000) {
             g_worldCameraBlendSpeed = 0;
         }
@@ -415,16 +415,16 @@ void wm_calcCameraPreset(s32 arg0, s32 arg1, s32 arg2, s32 arg3, WmCameraParams 
     a = &g_worldCameraPresets[g_worldCameraPresetIndex[arg1][arg2][0]];
     b = &g_worldCameraPresets[g_worldCameraPresetIndex[arg1][arg2][1]];
     t = wm_cameraAltitudeBlend(arg0) & 0xFFFF;
-    tmp[0] = wm_lerpShift(a->unk0[0], b->unk0[0], t, 9);
-    tmp[1] = wm_lerpShift(a->unk0[1], b->unk0[1], t, 0xE);
-    tmp[2] = wm_lerpShift(a->unk0[2], b->unk0[2], t, 0xD);
-    tmp[3] = wm_lerpShift(a->unk0[3], b->unk0[3], t, 0xD);
-    tmp[4] = wm_lerpShift(a->unk0[4], b->unk0[4], t, 0xD);
-    arg4->unk0[0] = wm_lerpShift(tmp[0], c->unk0[0], arg3, 9);
-    arg4->unk0[1] = wm_lerpShift(tmp[1], c->unk0[1], arg3, 0xE);
-    arg4->unk0[2] = wm_lerpShift(tmp[2], c->unk0[2], arg3, 0xD);
-    arg4->unk0[3] = wm_lerpShift(tmp[3], c->unk0[3], arg3, 0xD);
-    arg4->unk0[4] = wm_lerpShift(tmp[4], c->unk0[4], arg3, 0xD);
+    tmp[0] = wm_lerpShift(a->projDist, b->projDist, t, 9);
+    tmp[1] = wm_lerpShift(a->distance, b->distance, t, 0xE);
+    tmp[2] = wm_lerpShift(a->eyeHeight, b->eyeHeight, t, 0xD);
+    tmp[3] = wm_lerpShift(a->groundClearance, b->groundClearance, t, 0xD);
+    tmp[4] = wm_lerpShift(a->targetHeight, b->targetHeight, t, 0xD);
+    arg4->projDist = wm_lerpShift(tmp[0], c->projDist, arg3, 9);
+    arg4->distance = wm_lerpShift(tmp[1], c->distance, arg3, 0xE);
+    arg4->eyeHeight = wm_lerpShift(tmp[2], c->eyeHeight, arg3, 0xD);
+    arg4->groundClearance = wm_lerpShift(tmp[3], c->groundClearance, arg3, 0xD);
+    arg4->targetHeight = wm_lerpShift(tmp[4], c->targetHeight, arg3, 0xD);
 }
 
 void wm_toggleCameraView(void) {
@@ -927,7 +927,7 @@ void wm_drawActorShadow(EvtObject *arg0, SVECTOR *arg1, s32 arg2) {
         sx = (c->shadowWidth * sx) >> 11;
         sz = (c->shadowDepth * sz) >> 12;
         f = (0x8000 - arg2) >> 3;
-        f *= g_worldWeatherData.work[0].unk5C;
+        f *= g_worldWeatherData.work[0].shadowShade;
         f >>= 12;
         if (f < 0) {
             f = 0;
@@ -956,7 +956,7 @@ void wm_drawActorShadow(EvtObject *arg0, SVECTOR *arg1, s32 arg2) {
             s = 0xAF0;
         }
         f = (0x7060 - arg2) >> 2;
-        f *= g_worldWeatherData.work[4].unk5C;
+        f *= g_worldWeatherData.work[4].shadowShade;
         f >>= 12;
         if (f < 0) {
             f = 0;

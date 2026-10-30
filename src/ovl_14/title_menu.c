@@ -106,7 +106,7 @@ void opening_titleLoadTims(s32 *pack) {
         file_loadTim((s32)tim);
         file_getTimRects(tim, &clut, &img);
         u = img->x & 0x3F;
-        mode = tim->unk4 & 3;
+        mode = tim->flags & 3;
         sh = 2 - mode;
         g_titleMenu.images[i].uvClut.s.u = u << sh;
         g_titleMenu.images[i].uvClut.s.v = img->y;

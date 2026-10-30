@@ -181,11 +181,11 @@ void menuAbility_useOnTarget(void) {
     l = &s_menuAbility.lists[s_menuAbility.tab];
     it = &s_menuAbilityActionTable[s_menuAbility.actions[(l->top + l->cursor) * 2 + l->col].id];
     if (!(s_menuAbility.target >> 7)) {
-        ok = item_useOnMember(c, g_gameState->gameData->party[s_menuAbility.target], it, it->unk4, 0);
+        ok = item_useOnMember(c, g_gameState->gameData->party[s_menuAbility.target], it, it->effect, 0);
     } else {
         for (i = 0; i < 4; i++) {
             if (g_gameState->gameData->party[i] != NULL) {
-                ok |= item_useOnMember(c, g_gameState->gameData->party[i], it, it->unk4, 1);
+                ok |= item_useOnMember(c, g_gameState->gameData->party[i], it, it->effect, 1);
             }
         }
     }
@@ -247,7 +247,7 @@ void menuAbility_drawInfo(void) {
     if (s_menuAbility.tab == ABILITY_TAB_ACTION) {
         id = s_menuAbility.actions[n].id;
         ok = menuAbility_getActionState(id, c);
-        flag = !(s_menuAbilityActionTable[id].unkB & 2);
+        flag = !(s_menuAbilityActionTable[id].flags & 2);
     } else {
         id = s_menuAbility.supports[n];
         ok = menuAbility_getSupportState(id, c);
@@ -499,7 +499,7 @@ s32 menuAbility_getActionState(s32 id, Character *c) {
     if (c->status & 9) {
         return ABILITY_GREYED;
     }
-    if (!(info->unkB & 1)) {
+    if (!(info->flags & 1)) {
         return ABILITY_GREYED;
     }
     if (menuAbility_getMpCost(info) > c->mp) {
@@ -520,7 +520,7 @@ void menuAbility_selectAction(void) {
         if (i < s_menuAbility.actionCount) {
             id = s_menuAbility.actions[i].id;
             if (menuAbility_getActionState(id, c) == ABILITY_USABLE) {
-                s_menuAbility.targetMode = s_menuAbilityActionTable[id].unk0_5;
+                s_menuAbility.targetMode = s_menuAbilityActionTable[id].targetMode;
                 s_menuAbility.canTargetAll = menuAbility_canTargetAll(id);
                 ls = s_menuAbility.lists + s_menuAbility.tab;
                 s_menuAbility.targetWin.unk4 = s_menuAbility.targetRect;
@@ -625,7 +625,7 @@ void menuAbility_updateHelp(void) {
         if (s_menuAbility.tab == ABILITY_TAB_ACTION) {
             id = s_menuAbility.actions[i].id;
             if (menuAbility_getActionState(id, c)) {
-                g_menuHelp.text = s_menuAbilityActionHelp + s_menuAbilityActionHelpOfs[id].unk0;
+                g_menuHelp.text = s_menuAbilityActionHelp + s_menuAbilityActionHelpOfs[id].helpOffset;
             }
         } else {
             id = s_menuAbility.supports[i];
@@ -789,8 +789,8 @@ void menuAbility_drawActionRow(s32 x, s32 y, s32 idx, Character *c) {
     st = menuAbility_getActionState(id, c);
     if (st != 0) {
         col = s_menuAbilityStateColor[st];
-        text_drawBlock(x + 8, y, 0x1C, s_menuAbilityActionNames + info->unkE, col);
-        if (info->unkA != 0) {
+        text_drawBlock(x + 8, y, 0x1C, s_menuAbilityActionNames + info->nameOffset, col);
+        if (info->mpCost != 0) {
             text_formatNumber(menuAbility_getMpCost(info), buf, 3, 1);
             ui_drawSmallDigits(x + 0x6C, y + 4, 0x1C, buf, col);
         }
@@ -895,7 +895,7 @@ void menuAbility_onTargetClosed(void) {
 }
 
 s32 menuAbility_canTargetAll(s32 id) {
-    s32 kind = s_menuAbilityActionTable[id].unk0;
+    s32 kind = s_menuAbilityActionTable[id].targetKind;
     s32 n = 0;
     s32 i;
 
@@ -950,8 +950,8 @@ s32 menuAbility_getSlot(MenuList *l) {
 s32 menuAbility_getMpCost(Unk801F34EC *p) {
     s32 v;
 
-    v = p->unkA;
-    if ((p->unkB & 4) && D_8007AF02 != 0) {
+    v = p->mpCost;
+    if ((p->flags & 4) && D_8007AF02 != 0) {
         v *= 4;
     }
     return v;

@@ -86,8 +86,8 @@ typedef struct {
 } CardFlip;
 
 typedef struct {
-    s32 unk0;
-    s32 unk4;
+    s32 repeatDelay; /* pad_getRepeatDelay */
+    s32 repeatInterval; /* pad_getRepeatInterval */
 } Unk801F4DC4;
 
 /* Run-length packed block (menuCard_decodeRle). */

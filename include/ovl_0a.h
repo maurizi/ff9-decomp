@@ -31,7 +31,7 @@ typedef struct {
     u32 bone : 8;
     s16 scale;
     u8 speed;
-    u8 unk7;
+    u8 brightness; /* colour scale: fld_drawSprite3D gets brightness << 4 (GPF, 4096 = 1.0); 0x80 default, sprite command 0x9B */
     s16 pos[3]; /* position */
     s16 frameEnd;
     s16 rot[3]; /* rotation */
@@ -55,7 +55,7 @@ typedef struct FieldSpriteSet {
 typedef struct FieldAnimSfx {
     u8 uid; /* object uid; low 2 bits also select a channel */
     u8 randomPitch;
-    u16 unk2;
+    u16 modelId; /* the object's modelId when added (fld_addAnimSfx) */
     u16 anim;
     s16 frame;
     u16 sound[2];
@@ -71,7 +71,7 @@ typedef struct {
     s16 rotY;
     s16 rotZ;
     u8 pad26[0x34 - 0x26];
-    u16 unk34;
+    u16 modelId; /* EvtObject.modelId */
     u16 anim;
     u8 pad38[2];
     u8 animFrame;
@@ -110,7 +110,7 @@ typedef struct {
     void *lights; /* light data, file 0x1Fxxxx (fld_applyLights) */
     s32 heapTop;
     void *fieldFile; /* container registered by fld_loadFile */
-    s32 *modelBundles; /* = unk6C, modelBundleCount entries (fld_loadModelBundle) */
+    s32 *modelBundles; /* = modelBundleBuf, modelBundleCount entries (fld_loadModelBundle) */
     struct FieldObjPlace *shadows; /* shadow entries (fld_initShadows, fld_drawShadow) */
     s16 otBias; /* added to projected depths before indexing the OT (camera unk30, fldbg_setCamera) */
     u8 pad32[0x34 - 0x32];
@@ -131,8 +131,8 @@ typedef struct {
     void *vibration; /* file 0x1Exxxx */
     s16 shadowTexX;
     s16 shadowTexY;
-    struct FieldActorInfo *actorInfo; /* = unk90 */
-    struct FieldAnimSfx *animSfx; /* = unk270 */
+    struct FieldActorInfo *actorInfo; /* = actorInfoBuf */
+    struct FieldAnimSfx *animSfx; /* = animSfxBuf */
     u8 sndVolume;
     u8 movieSndVolume;
     u8 soundBankSlot;
@@ -142,9 +142,9 @@ typedef struct {
     s16 unk62;
     s32 unk64;
     u8 unk68[4];
-    s32 unk6C[9];
-    u8 unk90[0x270 - 0x90];
-    u8 unk270[0x330 - 0x270];
+    s32 modelBundleBuf[9]; /* fld_allocScene */
+    u8 actorInfoBuf[0x270 - 0x90]; /* FieldActorInfo[24] (fld_allocScene) */
+    u8 animSfxBuf[0x330 - 0x270]; /* FieldAnimSfx[16] (fld_allocScene) */
 } FieldScene;
 /* FieldScene.flags */
 #define FLD_SCN_ENCOUNTER_DONE 0x1 /* encounter screen effect (func_80053A10) finished */
@@ -235,12 +235,6 @@ typedef struct BgiActor {
     EvtObject *actor;
 } BgiActor;
 
-/* 0xC-byte entries at g_fieldBgCtxEntries */
-typedef struct {
-    u8 unk0;
-    u8 pad1[0xB];
-} Unk800C9DCC;
-
 typedef struct {
     u8 mode;
     u8 discMask;
@@ -258,8 +252,8 @@ typedef struct {
 } FieldDiscMode; /* 0xC */
 
 typedef struct {
-    u16 unk0;
-    u16 unk2;
+    u16 x;
+    u16 y;
 } __attribute__((aligned(4))) BgPoint;
 
 /* field state (g_fieldBgState) */
@@ -324,9 +318,9 @@ typedef struct BgFile {
     u16 posX;
     u16 posY;
     u8 pad28[2];
-    u16 unk2A;
+    u16 scrollMaxX; /* the current camera's (fldbg_setCamera) */
     u8 pad2C[2];
-    u16 unk2E;
+    u16 scrollMaxY;
     u16 screenX; /* screen origin x */
     u16 screenY; /* screen origin y */
 } BgFile;
@@ -341,7 +335,7 @@ typedef struct {
     unsigned stepCount : 24; /* entries at unkC */
     unsigned cameraId : 8;
     signed pos : 24; /* position (8.8 step index) */
-    s16 unk8;
+    s16 speed; /* added to pos per step (8.8, 0x100 = one step; fldbg_setAnimSpeed, negated by FLDBG_ANIM_PINGPONG) */
     s16 delayCounter;
     s32 stepOffset; /* offset: BgAnimStep[] */
 } BgOverlayAnim; /* 0x10 */
@@ -353,8 +347,8 @@ typedef struct {
 
 /* background sprite: DR_TPAGE followed by a SPRT_16 (0x18 bytes) */
 typedef struct {
-    DR_TPAGE unk0;
-    SPRT_16 unk8;
+    DR_TPAGE tpage;
+    SPRT_16 sprt;
 } BgSprt;
 
 /* packed tile position: x in the top 10 bits, y below it */
@@ -436,22 +430,17 @@ typedef struct {
     u8 pad32[0x34 - 0x32];
 } BgCamera; /* 0x34 */
 
+/* the same 0x10-byte table, as animation state (BgOverlayAnim without the bitfields, fldbg_init) */
 typedef struct {
-    u32 unk0;
-    u8 pad4[0xC];
-} BgOverlayAnimTbl; /* 0x10 */
-
-/* the same 0x10-byte table, as animation state */
-typedef struct {
-    u8 unk0;
+    u8 flags;
     u8 pad1[3];
-    u32 unk4;
-    s16 unk8;
-    s16 unkA;
-    s32 unkC; /* offset: u8 track index */
+    u32 cameraPos; /* cameraId : 8, pos : 24 */
+    s16 speed;
+    s16 delayCounter;
+    s32 stepOffset; /* offset: BgAnimStep[] (first byte: the first step's overlay) */
 } BgOverlayAnimView;
 
-typedef struct {
+typedef struct BgEntry {
     u8 type;
     u8 overlay;
     u8 pad2[2];
@@ -491,7 +480,7 @@ typedef struct {
     u16 modelId; /* id */
     s8 shadowShade;
     s8 shadowSize;
-    u32 unk4; /* colour */
+    u32 color; /* colour; top byte: the shadow's OT bias (Unk800B3294Bias) */
 } Unk800B3294;
 
 typedef struct {
@@ -513,7 +502,7 @@ typedef struct BgiVertex {
 
 /* the same vertex viewed as an array (bgi_pointInTriangle) */
 typedef struct {
-    s16 unk0[3];
+    s16 xyz[3];
 } BgiVertexArr;
 
 /* header of the block g_fieldBgi.unk8 points to */
@@ -637,13 +626,6 @@ typedef struct {
     s16 speed; /* speed (8.8) */
     s32 accum;
 } BgiFloorMove; /* 0x18 */
-
-/* file 0x1C0000 header */
-typedef struct {
-    u8 pad0[0x30];
-    u16 unk30;
-    u16 unk32;
-} Unk800AA01C;
 
 /* deferred flag updates: [0] = set, [1] = clear, 4-frame queues for
  * GameData.unk0, FieldMap.unk0 and g_fieldMovieFlags */
@@ -799,10 +781,10 @@ typedef struct {
     u16 clut; /* clut */
 } WmTexInfo;
 
-/* EvtObject position (unk14) seen as an array, indexed by axis */
+/* EvtObject position (pos) seen as an array, indexed by axis */
 typedef struct {
     u8 pad0[0x14];
-    s32 unk14[3];
+    s32 pos[3];
 } ActorPosView;
 
 /* skeleton bone (WmModel.unkC, 4 bytes) */
@@ -974,8 +956,8 @@ typedef struct {
 
 /* pause screen (fld_togglePause) */
 typedef struct {
-    SPRT unk0;
-    DR_TPAGE unk14;
+    SPRT sprite; /* ui_buildSprite */
+    DR_TPAGE tpage;
     u8 pad1C[0x40 - 0x1C];
 } FieldPausePkt;
 extern DR_TPAGE g_fieldPauseTPage;
@@ -1029,7 +1011,7 @@ typedef struct FieldObjPlace {
 /* Unk800B3294 seen bytewise: the top byte of the colour is a depth bias (fld_drawShadow) */
 typedef struct {
     u8 pad0[7];
-    s8 unk7;
+    s8 shadowOtBias; /* added to the shadow quads' OT index (fld_drawShadow) */
 } Unk800B3294Bias;
 
 /* texture set tables (fld_loadModelBundle) */
@@ -1038,28 +1020,34 @@ typedef struct {
     s16 unk2;
 } FieldTexPair; /* tpage/clut or u/v */
 
+/* ModelTexOfs as fld_loadModelBundle fills it in (signed view, the loads must stay lh): on input srcX is a key,
+ * odd = the texture gets its own 128x128 page (dest = the page), even = a 32-row strip (src = the strip) that
+ * shares the page of the entry keyed srcX - 1 */
 typedef struct {
-    s16 unk0; /* flags: bit 0 = 8-bit */
-    s16 unk2;
-    s16 unk4; /* vram x */
-    s16 unk6; /* vram y */
+    s16 srcX;
+    s16 srcY;
+    s16 destX;
+    s16 destY;
 } FieldTexEnt;
 
-/* VRAM allocation cursor (file 0x1C0000) */
+/* VRAM allocation cursors (file 0x1C0000, fld_loadModelBundle) */
 typedef struct {
-    s16 unk0; /* 8-bit page x */
-    s16 unk2; /* 8-bit page y */
+    s16 pageX; /* next 128x128 page (odd-keyed textures): y 0x180, 0x100, then x += 0x40 */
+    s16 pageY;
     u8 pad4[4];
-    s16 unk8; /* 8-bit clut x */
-    s16 unkA; /* 8-bit clut y */
+    s16 clutX; /* their palettes, y += 2 */
+    s16 clutY;
     u8 padC[4];
-    s16 unk10; /* 4-bit page x */
-    s16 unk12; /* 4-bit page y */
+    s16 stripX; /* next 32-row strip (even-keyed textures): y += 0x20 up to 0x1E0, then x -= 0x40 */
+    s16 stripY;
     u8 pad14[4];
-    s16 unk18; /* 4-bit clut x */
-    s16 unk1A; /* 4-bit clut y */
+    s16 stripClutX; /* their palettes, y += 2 */
+    s16 stripClutY;
     u8 pad1C[4];
-    s16 unk20; /* x to skip */
+    s16 skipX; /* page column the page cursor skips */
+    u8 pad22[0x30 - 0x22];
+    u16 shadowTexX; /* shadow texture position (fld_getShadowTexPos) */
+    u16 shadowTexY;
 } FieldVramPos;
 
 s32 fld_allocModelCache(s32, s32);
@@ -1078,11 +1066,11 @@ typedef struct {
     void *actor; /* actor */
 } FieldObjSlot;
 
-/* field directory entry (fld_refindSectors): the next entry's unk4 ends this one */
+/* field directory entry (fld_refindSectors): the next entry's sector ends this one */
 typedef struct {
-    u16 unk0; /* id */
-    u16 unk2;
-    s32 unk4; /* sector */
+    u16 id;
+    u16 areaId; /* field directory: the field's area (fld_refindSectors) */
+    s32 sector;
 } FieldDirEnt;
 
 /* background sprite sets (fldmdl_initTexAnims); offsets from the header start */
@@ -1118,17 +1106,9 @@ typedef struct {
 
 /* sprite vertex (TexAnimRelocRect.unk8) */
 typedef struct {
-    u16 unk0;
-    u16 unk2;
+    u16 x;
+    u16 y;
 } TexAnimRelocPos;
-
-/* streamed sound bank request (fld_soundBankReadCallback, as ovl_0c wm_streamSoundChunk) */
-typedef struct {
-    u8 pad0[8];
-    s32 unk8; /* address */
-    s32 unkC; /* offset */
-    s32 unk10; /* size */
-} Unk800B29F8;
 
 /* ---- overlay functions ---- */
 void fld_dropSoundBankCache(s32);
@@ -1195,7 +1175,7 @@ extern s32 g_fieldBgCtxWork;
 extern u16 D_800C9DDE;
 extern u16 D_800C9DE0;
 extern BgiContext g_fieldBgi;
-extern Unk800C9DCC *g_fieldBgCtxEntries;
+extern struct BgEntry *g_fieldBgCtxEntries; /* = g_fieldBgCtx.entries */
 extern s32 g_fieldModelQueue[16];
 extern s8 g_fieldSoundBankSlots[5];
 extern s32 g_fieldSoundBankIds[5];
@@ -1228,11 +1208,7 @@ extern BgiActor g_fieldBgiActors[24];
 BgiTriangle *bgi_getPassableNeighbor(BgiActor *, BgiTriangle *, s32);
 s32 bgi_pointInTriangle(BgiHeader *, BgiFloor *, BgiTriangle *, s16 *);
 s32 bgi_pointInTriangleXZ(BgiHeader *, BgiFloor *, BgiTriangle *, SVECTOR *);
-typedef struct {
-    s32 unk0;
-    s32 unk4;
-} Unk8002208C;
-Unk8002208C *preload_waitCurrent(void);
+PreloadEntry *preload_waitCurrent(void);
 s32 preload_overlaps(s32, s32);
 s32 preload_discardRange(u32, s32);
 u8 *rain_init(void *);
@@ -1244,17 +1220,8 @@ extern u8 *s_menuMainEquipLabels[5];
 extern u8 s_menuMainText[]; /* text */
 extern RECT g_fieldDiscChangeRect;
 
-/* text window contents passed to tween_start (as in ovl_38) */
-typedef struct {
-    s16 unk0;
-    s16 unk2;
-    u8 *unk4;
-    s32 unk8;
-    void (*unkC)(void);
-} TextWin;
-
 extern RECT s_menuMainPanelRects[6];
-extern TextWin s_menuMainSlideIn[4];
+extern TweenDef s_menuMainSlideIn[4];
 extern u8 s_menuMainExpText[16];
 extern u8 s_menuMainNextText[16];
 extern u8 s_menuMainExpLabel[];
@@ -1432,15 +1399,17 @@ typedef struct {
     u32 tag;
     u32 code[5];
 } Unk800C9F6C; /* 0x18: mask-bit draw mode packet, per draw buffer */
+/* movie table (ovl_64's g_mbgMovieLists, as ovl_15 declares it) */
 typedef struct {
-    char *unk0; /* movie file name */
+    char *path; /* movie file name */
     s32 pad4[4];
-} Unk8019DC5CEnt; /* 0x14 */
+} MbgMovie; /* 0x14 */
 typedef struct {
-    s32 unk0;
-    Unk8019DC5CEnt *unk4;
-} Unk8019DC5C;
-extern Unk8019DC5C g_mbgMovieLists[]; /* overlay loaded at 0x80198000 */
+    s16 count;
+    s16 pad2;
+    MbgMovie *movies;
+} MbgMovieList;
+extern MbgMovieList g_mbgMovieLists[]; /* overlay loaded at 0x80198000 */
 extern u16 g_fieldMovieLastFrame;
 extern Unk800C9F6C g_fieldMovieMaskPkt[2];
 void fld_movieStop(void);
@@ -1520,7 +1489,7 @@ extern s8 g_fieldMusicRequest;
 extern s32 g_fieldSoundLoadId;
 extern u8 g_fieldSoundLoadKind;
 extern s32 g_fieldSoundLoadSector;
-s32 fld_soundBankReadCallback(Unk800B29F8 *arg0);
+s32 fld_soundBankReadCallback(CdReadCtx *arg0);
 /* main exe: candidates for ff9.h */
 s32 akao_playMusic(void *);
 void akao_stopMusic(s32);

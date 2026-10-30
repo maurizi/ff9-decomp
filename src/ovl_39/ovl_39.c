@@ -28,7 +28,7 @@ void menuSave_init(void) {
     menuSave_openCardEvents();
     func_801F5A60();
     for (i = 0; i < 2; i++) {
-        s_menuSave.unk18[i] = g_padPortMask[i];
+        s_menuSave.savedPortMask[i] = g_padPortMask[i];
         g_padPortMask[i] |= 0x300;
     }
 }
@@ -325,7 +325,7 @@ void menuSave_exit(void) {
     menuSave_restoreVram();
     menuSave_freeImage();
     for (i = 0; i < 2; i++) {
-        g_padPortMask[i] = s_menuSave.unk18[i];
+        g_padPortMask[i] = s_menuSave.savedPortMask[i];
     }
 }
 
@@ -1529,22 +1529,22 @@ void menuSave_drawGauge(s32 x, s32 y, s32 otz, s32 pos, s32 w) {
         }
     }
     ui_drawSpriteDef(x, y, otz, ic, 0);
-    ui_drawSpriteDef(x + width - ec->unk4, y, otz, ec, 0);
+    ui_drawSpriteDef(x + width - ec->w, y, otz, ec, 0);
     SetTexWindow(g_primPtr, &s_menuSaveGaugeTexWindow);
     addPrim(&g_ot[otz], g_primPtr);
     g_primPtr += 0xC;
     setlen(g_primPtr, 4);
     p = (SprtWords *)g_primPtr;
     p->rgbc = 0x64808080;
-    p->xy = ((x + ic->unk4) & 0xFFFF) | (y << 16);
-    p->uvclut = mid->unk2 << 16;
-    p->wh = (width - (ic->unk4 + ec->unk4)) | (mid->unk5 << 16);
+    p->xy = ((x + ic->w) & 0xFFFF) | (y << 16);
+    p->uvclut = mid->clut << 16;
+    p->wh = (width - (ic->w + ec->w)) | (mid->h << 16);
     addPrim(&g_ot[otz], p);
     g_primPtr = (u8 *)(p + 1);
-    r.x = mid->unk0;
-    r.y = mid->unk1;
-    r.w = mid->unk4;
-    r.h = mid->unk5;
+    r.x = mid->u;
+    r.y = mid->v;
+    r.w = mid->w;
+    r.h = mid->h;
     SetTexWindow(g_primPtr, &r);
     addPrim(&g_ot[otz], g_primPtr);
     g_primPtr += 0xC;
@@ -2134,10 +2134,10 @@ void menuSave_packState(SaveState *h) {
     }
     if (s_menuSave.mode == SAVE_MODE_NEXT_DISC) {
         h->fieldId = fld_getDiscChangeFieldId();
-        h->unk22 = fld_getDiscChangeAreaId();
+        h->areaId = fld_getDiscChangeAreaId();
     } else {
         h->fieldId = gd->fieldId;
-        h->unk22 = gd->unk3A;
+        h->areaId = gd->unk3A;
     }
     h->battleId = gd->battleId;
     h->unk26 = (s8)gd->unk848;
@@ -2156,7 +2156,7 @@ void menuSave_unpackState(SaveState *p) {
     gd = gs->gameData;
     g_gameState->unkA = p->unk1;
     gd->fieldId = p->fieldId;
-    gd->unk3A = p->unk22;
+    gd->unk3A = p->areaId;
     gd->battleId = p->battleId;
     gd->unk848 = p->unk26;
     gd->unk7DC = p->unk28;
@@ -2166,16 +2166,16 @@ void menuSave_unpackState(SaveState *p) {
 void menuSave_copyCards(CardData *d, CardData *s) {
     s32 i;
 
-    d->unk0 = s->unk0;
-    d->unk2 = s->unk2;
-    d->unk4 = s->unk4;
+    d->wins = s->wins;
+    d->losses = s->losses;
+    d->draws = s->draws;
     for (i = 0; i < 0x69; i++) {
-        d->unk6[i].unk0 = s->unk6[i].unk0;
-        d->unk6[i].unk1 = s->unk6[i].unk1;
-        d->unk6[i].unk2 = s->unk6[i].unk2;
-        d->unk6[i].unk3 = s->unk6[i].unk3;
-        d->unk6[i].unk4 = s->unk6[i].unk4;
-        d->unk6[i].unk5 = s->unk6[i].unk5;
+        d->cards[i].unk0 = s->cards[i].unk0;
+        d->cards[i].unk1 = s->cards[i].unk1;
+        d->cards[i].unk2 = s->cards[i].unk2;
+        d->cards[i].unk3 = s->cards[i].unk3;
+        d->cards[i].unk4 = s->cards[i].unk4;
+        d->cards[i].unk5 = s->cards[i].unk5;
     }
     d->unk27C = s->unk27C;
     d->unk27E = s->unk27E;
@@ -2191,35 +2191,35 @@ void menuSave_unpackCards(void *p) {
 
 void menuSave_packEvents(SaveEvents *d) {
     d->vars = g_evtGlobalVars;
-    d->unk800 = g_evtStepCount;
+    d->evtStepCount = g_evtStepCount;
 }
 
 void menuSave_unpackEvents(SaveEvents *s) {
     g_evtGlobalVars = s->vars;
-    g_evtStepCount = s->unk800;
+    g_evtStepCount = s->evtStepCount;
 }
 
 void menuSave_packItems(SaveItems *s) {
     s->items = g_gameState->gameData->items;
     s->flags = g_gameState->gameData->unk774;
-    s->unk240 = *(GameConfig *)&g_gameState->config;
+    s->config = *(GameConfig *)&g_gameState->config;
 }
 
 void menuSave_unpackItems(SaveItems *s) {
     g_gameState->gameData->items = s->items;
     g_gameState->gameData->unk774 = s->flags;
-    *(GameConfig *)&g_gameState->config = s->unk240;
+    *(GameConfig *)&g_gameState->config = s->config;
     config_apply();
 }
 
 void menuSave_packMisc(SaveMisc *p) {
-    p->unk0 = g_gameState->gameData->chocograph;
+    p->chocograph = g_gameState->gameData->chocograph;
     p->unk4 = g_gameState->gameData->unk880;
     p->unk14 = g_gameState->gameData->unk892;
 }
 
 void menuSave_unpackMisc(SaveMisc *p) {
-    g_gameState->gameData->chocograph = p->unk0;
+    g_gameState->gameData->chocograph = p->chocograph;
     g_gameState->gameData->unk880 = p->unk4;
     g_gameState->gameData->unk892 = p->unk14;
 }
