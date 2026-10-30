@@ -648,7 +648,7 @@ g_worldMusicReqIdKind = 0x800CCA12; // [code] byte 2 of g_worldMusicReqId, the i
 g_worldLandCellTypes = 0x800CCB18; // [code] 64-bit cell-type mask disjoint from g_worldWaterCellTypes, wm_tryStep with checkTransitions refuses steps between the two, move mode 7 refuses these cells
 g_worldCameraEaseBoost = 0x800CCB14; // [code] wm_cameraFollow scales the eye y step by (((0x200 - |step|) * this >> 12) + 0x800) * 2 / 4096, up to 2x for small steps, data 0x4000
 g_worldAutoTurnBoost = 0x800CCE2C; // [code] wm_cameraAutoTurnWalk scales the auto-turn by ((0x800 - |d|) * this >> 12) + 0x800, data 0x2000
-g_worldCellTriggersOn = 0x800CCE4D; // [code] w_movement calls evt_callWorldCellTrigger for the player cell only while nonzero, data 1, never written
+g_worldCellTriggersOn = 0x800CCE4D; // [code] wm_updateActors calls evt_callWorldCellTrigger for the player cell only while nonzero, data 1, never written
 g_worldTexAnim0Interval = 0x800CFEF8; // [code] g_worldTexScrolls[8].speed (pack entry 6 copy), wm_animTextures steps texture animation 0 when g_worldFrameCount % this == 0, 0 = off
 g_worldTexAnim1Interval = 0x800CFF02; // [code] g_worldTexScrolls[9].speed (pack entry 6 copy), wm_animTextures steps texture animation 1 when (g_worldFrameCount + 2) % this == 0, 0 = off
 wm_naviDrawChocograph = 0x800C16C0; // type:func [code] draws a 42x28 8-bit picture (the chocograph picture size of ovl_32) in a wm_naviDrawFrame frame at (0xF5, 0x5C) when GameData chocograph is set, minimap navi mode
