@@ -436,24 +436,24 @@ typedef struct {
     u8 pad1[3];
     s32 sector; /* start sector; runtime: 0x5FA for ovl_39 */
     s32 size;   /* bytes; runtime: 0xE800 (29 sectors) for ovl_39 */
-    CdChunk *unkC; /* chunk list; -1 = use unk1C */
+    CdChunk *chunks; /* chunk list; -1 = use unk1C: chunk list (cd_readChunks), -1 = the single chunk, NULL = seek only */
     void (*syncCallback)(u8, u8 *);
     void (*readyCallback)(u8, u8 *); /* data-ready handler */
     void (*doneCallback)(); /* callback */
-    CdChunk unk1C; /* single chunk */
+    CdChunk chunk; /* single chunk */
 } CdRequest;
 
 typedef struct {
     u8 state;
-    u8 unk1;
+    u8 errorCount; /* read errors of the request (cd_onDataReady / cd_onDiskError; reset by cd_submit) */
     u8 hasQueued;
-    u8 unk3;
+    u8 error; /* 1 after a read error (wrong sector or disk error) */
     s32 sectorsLeft; /* runtime: 29 -> 0 while ovl_39 loads */
-    CdlLOC unk8; /* current position */
+    CdlLOC pos; /* current position: CdlSetloc target (cd_startRequest) */
     s32 bytesRead;   /* runtime: +0x800 per sector */
     u32 chunkOfs;    /* offset in the current chunk */
     s32 chunkIndex;
-    s32 unk18;
+    s32 lastSector; /* last sector read (CdGetSector), 0 before the first */
     u8 pad1C[0x944 - 0x1C];
     CdRequest cur; /* current request */
     CdRequest queued; /* passed to cd_startRequest */

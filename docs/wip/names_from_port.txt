@@ -5446,3 +5446,5 @@ D_800FE500 g_btlbgJitterBase2  # [code] btlbg_draw, background scene 7, group 2:
 # FIELDS include/ff9.h ScriptEntry: unk0=offset,unk2=size,unk4=varBytes,unk5=flags [code] evt_loadScripts / evt_createObject; msg_getEntry
 # FIELDS include/ff9.h MsgEntry8: unk6=lines [code] evt_loadScripts / evt_createObject; msg_getEntry
 # MERGED include/ff9.h MsgInfo into WinLayout (msg_getEntry fills w/h, like its inlined copy)
+# FIELDS include/ff9.h CdLoadState: unk1=errorCount,unk3=error,unk8=pos,unk18=lastSector [code] cd.c cd_startRequest/cd_onDataReady/cd_onDiskError/cd_onSectorReady/cd_readAsync/cd_readChunks
+# FIELDS include/ff9.h CdRequest: unkC=chunks,unk1C=chunk [code] cd.c cd_startRequest/cd_onDataReady/cd_onDiskError/cd_onSectorReady/cd_readAsync/cd_readChunks
