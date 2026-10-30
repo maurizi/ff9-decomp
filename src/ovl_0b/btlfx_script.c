@@ -116,8 +116,8 @@ void btlfx_swapVramPages(s32 arg0, u32 *arg1, s32 arg2) {
 }
 
 void btlfx_callScript(s32 arg0) {
-    D_800FEC38 = 1;
-    D_800FEC3C = g_btlfxState.pc;
+    g_btlfxInCall = 1;
+    g_btlfxReturnPc = g_btlfxState.pc;
     g_btlfxState.pc = btlfx_findScript(arg0);
 }
 
@@ -149,7 +149,7 @@ void btlfx_runScript(void) {
         r.h = 0x10;
         btlfx_resetMaskBit();
         StoreImage(&r, PSX_RAM(u32 *, 0x801E7700));
-        D_800FEC38 = 0;
+        g_btlfxInCall = 0;
         d->phase = 1;
         break;
     case 1:
@@ -363,9 +363,9 @@ void btlfx_runScript(void) {
                     }
                     break;
                 case 14:
-                    if (D_800FEC38 != 0) {
-                        D_800FEC38 = 0;
-                        d->pc = D_800FEC3C;
+                    if (g_btlfxInCall != 0) {
+                        g_btlfxInCall = 0;
+                        d->pc = g_btlfxReturnPc;
                     }
                     break;
                 case 15:

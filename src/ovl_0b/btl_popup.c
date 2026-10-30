@@ -666,7 +666,7 @@ void btl_updateDetect(void) {
             g_gameState->gameData->ctx.battle->popups.detectDelay = btl_getBannerDuration() - 1;
             text_copy(buf, (u8 *)text_getFrom(g_btlScanTexts, 8));
             text_append(buf, btl_getItemName(id));
-            text_append(buf, D_800A7C20);
+            text_append(buf, s_btlDetectItemSuffix);
             s = buf;
             kind = 2;
             goto show;
@@ -721,4 +721,4 @@ void btl_showCmdName(BtlCmd *arg0) {
     }
 }
 
-INCLUDE_RODATA("asm/us/ovl_0b/nonmatchings/btl_popup", D_800A7C20);
+INCLUDE_RODATA("asm/us/ovl_0b/nonmatchings/btl_popup", s_btlDetectItemSuffix);

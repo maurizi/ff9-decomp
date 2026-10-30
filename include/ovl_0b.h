@@ -831,7 +831,7 @@ typedef struct {
     u8 enabled; /* UI running (btlui_applyEnable, btlui_enable(0) clears it) */
     u8 inVsync; /* inside btlui_vsync */
     u8 atbOn; /* ATB and menus run (btlui_setAtbEnabled, btl_isAtbRunning) */
-    s8 targetWindow; /* target select opens the target-name window (btlui_updateTargetFlags; read as D_80104E6B by btlui_startTargetSelect) */
+    s8 targetWindow; /* target select opens the target-name window (btlui_updateTargetFlags; read as g_btluiTargetWindow by btlui_startTargetSelect) */
     u8 multiTarget; /* two or more units are targeted (btlui_updateTargetFlags) */
     u8 unk5;
     u8 started; /* btlui_init ran */
@@ -842,7 +842,7 @@ typedef struct {
     s8 pauseReq; /* pause requested (Start, btlui_readPad; btlui_isPauseRequested) */
     u8 skipFrames; /* frames the vsync callback skips drawing (btlui_resumeFromPause sets 2) */
     u8 prevAtbOn; /* atbOn at the start of the frame (btlui_frameUpdate) */
-    u8 secondPort; /* a party member is on controller port 2 (btlui_anyOnSecondPort, stored through D_80104E76) */
+    u8 secondPort; /* a party member is on controller port 2 (btlui_anyOnSecondPort, stored through g_btluiSecondPort) */
     u8 frameReady; /* set by btlui_waitFrame: the next vsync runs btlui_frameUpdate */
     u8 drawing; /* inside DrawOTag/DrawOTagEnv (btlui_drawOTag): the vsync draw doesn't break in */
     u8 pad11;
@@ -1494,8 +1494,8 @@ typedef struct Unk800DA1B8 {
     s32 elems[1]; /* entries: s16 in use, s16, data */
 } Unk800DA1B8;
 
-extern s32 D_800FEC38;
-extern u8 *D_800FEC3C;
+extern s32 g_btlfxInCall;
+extern u8 *g_btlfxReturnPc;
 extern s16 g_btlfxWeaponScriptId;
 extern u16 g_btlfxWeaponScripts[];
 
@@ -1728,7 +1728,6 @@ typedef struct {
 extern Unk8010141C g_btlfxSummonModels[1];
 
 
-extern u8 D_800FE415;
 extern s32 g_btlfxDrawSyncState;
 extern u16 g_btlfxKindTimings[][19];
 extern u8 g_btlMessages[];
@@ -2009,7 +2008,6 @@ typedef struct {
 extern RECT g_btlClutRect;
 extern u16 g_btlClutBuf[][0x100]; /* CLUT rows */
 extern u32 *g_btlSavedCluts;
-extern s32 D_800FE490;
 
 
 extern u8 g_btlfxSoundSets[][4];
@@ -2060,7 +2058,6 @@ typedef struct {
 } Unk80104E30;
 extern Unk80104E30 g_btlfxSounds;
 
-extern u8 D_800FDF3B;
 void btlbg_init(struct BtlBgHeader *, BtlUnit9C50 *);
 void btl_initCmdQueue(struct Battle *);
 void btl_initTargetCursor(struct Battle *);
@@ -2136,7 +2133,7 @@ typedef struct {
     s32 frame; /* frames since it opened (slide-in: 7) */
 } Unk80104F90;
 extern volatile Unk80104F90 g_btluiHelp;
-extern u8 D_80104E75;
+extern u8 g_btluiPrevAtbOn;
 
 struct Unk800F412C;
 typedef struct Unk800F3F10 {
@@ -2205,7 +2202,7 @@ typedef struct {
     BtlUnit *unit; /* the unit choosing a command */
 } Unk80104FB0;
 extern Unk80104FB0 g_btlCmdMenu;
-extern Unk80104FC0 D_80104FC0; /* g_btlCmdMenu.sideCmd, also addressed by its own label */
+extern Unk80104FC0 g_btlSideCmd; /* g_btlCmdMenu.sideCmd, also addressed by its own label */
 extern void (*g_btluiMenuInput[])(void);
 
 
@@ -2325,7 +2322,7 @@ typedef struct {
     u8 shadowDirBone; /* BtlUnit.shadowDirBone */
     u8 pad6F[0x74 - 0x6F];
 } Unk800C9D1C;
-extern u32 D_80104E80;
+extern u32 g_btluiVsyncTick;
 typedef struct {
     SPRT cmdIcons[4][2]; /* command icon sprites (btlui_initCachedCmdIcons) */
     DR_TPAGE cmdIconsTpage[2];
@@ -3060,8 +3057,8 @@ s32 btlfx_opJumpHome(s32, Unk800D955C *, s32, s32 *, s32 *);
 s32 btlfx_opWaitSameSide(s32, u8 *, s32, s32 *, s32 *);
 
 
-extern u8 D_80104E6A;
-extern u8 D_80104E6B;
+extern u8 g_btluiAtbOn;
+extern u8 g_btluiTargetWindow;
 extern u8 g_btluiTargetAllByType[];
 extern u8 g_btlCharTranceCmds[][3];
 extern u8 g_btlCharCmds[][2];
@@ -3124,7 +3121,7 @@ extern Unk80068EE8 D_80068E90;
 extern Unk80068EE8 D_80068ED0;
 extern Unk80068EE8 D_80068ED8;
 extern Unk80068EE8 D_80068EE0;
-extern u8 D_80104E7D;
+extern u8 g_btluiPort;
 extern SprtWords g_btluiPortIconSprt;
 extern SprtWords g_btluiPortBlinkSprt;
 extern DR_TPAGE g_btluiPortIconTpage;
@@ -3377,7 +3374,7 @@ typedef struct {
     u8 pad48[0x4C - 0x48];
 } Unk800FE368;
 extern Unk800FE368 g_btlCamTargets;
-extern u8 D_80104E76;
+extern u8 g_btluiSecondPort;
 void bcopy(void *, void *, s32);
 struct Battle11C020 *btl_initScene(void);
 u8 pad_isRepeatEnabled(s32, s32);
@@ -3415,11 +3412,11 @@ extern s32 g_btlfxSavedSp;
 /* main exe: candidates for ff9.h */
 s32 vib_update(void);
 extern u8 g_btlScanTexts[];
-extern u8 D_800A7C20[]; /* "/\xFF" suffix string */
+extern u8 s_btlDetectItemSuffix[]; /* "/\xFF" suffix string */
 void btl_setBanner(s32, s32);
 void btl_setBannerAt(s32, s32);
 s32 btl_getBannerDuration(void);
-extern u8 D_80104E77;
+extern u8 g_btluiFrameReady;
 void btlui_onUnitUntargetable(BtlUnit *);
 void btlui_onUnitTargetable(BtlUnit *);
 u32 btl_registerModel(s32, s32);
@@ -3630,7 +3627,7 @@ void btlui_drawListOverlay(Window *);
 void btlui_onListOpened(void);
 s32 btlfx_isSameSide(s32, s32);
 s32 func_800DA064(u8 *, s32, s32);
-extern u8 D_80104E70;
+extern u8 g_btluiHideWindows;
 extern u8 g_btlCmdAbilities[];
 extern U16Pair g_btlAbilityHelpOfs[];
 extern char g_btlAbilityHelp[];
@@ -3647,7 +3644,7 @@ typedef struct Unk800D9134 {
     s16 to[4]; /* destination */
 } Unk800D9134;
 s32 btlfx_stepMoveToUnit(Unk800D9134 *, s32, s32 *);
-extern s32 D_80104DE8;
+extern s32 g_btlfxCommonInit;
 extern s32 g_btlfxCommonData[];
 extern u16 g_btlfxCommonCluts[];
 extern s32 (*g_btluiListConfirmFns[])(void);

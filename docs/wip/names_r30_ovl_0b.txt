@@ -158,6 +158,19 @@ D_80105100 g_btluiDrArea
 D_80105120 g_btluiDrMode
 D_80105140 g_btluiDrStp
 func_800C972C btl_initSceneFlags
+D_80104E6A g_btluiAtbOn
+D_80104E6B g_btluiTargetWindow
+D_80104E70 g_btluiHideWindows
+D_80104E75 g_btluiPrevAtbOn
+D_80104E76 g_btluiSecondPort
+D_80104E77 g_btluiFrameReady
+D_80104E7D g_btluiPort
+D_80104E80 g_btluiVsyncTick
+D_80104FC0 g_btlSideCmd
+D_800FEC38 g_btlfxInCall
+D_800FEC3C g_btlfxReturnPc
+D_80104DE8 g_btlfxCommonInit
+D_800A7C20 s_btlDetectItemSuffix
 # Aliases replaced by struct fields (externs removed): D_800FE470 = g_btlCamera.nextVariant, D_800FE484 = g_btlCamera.focusUnit,
 # D_800FEC65 = g_btlfxState.castEnded, D_800FEC42 = g_btlfxState.effectId, D_80100DCC = g_btlfxLoader.state,
 # D_80100E14 = g_btlfxLoader.summon, D_80105274 = g_btlBanner.duration, D_8010527C = g_btlBanner.active,

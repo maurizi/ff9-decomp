@@ -1,4 +1,4 @@
-s_btluiTranceLabel = 0x800A857C; // force_not_migration:True
+s_btluiTranceLabel = 0x800A857C; // force_not_migration:True [string] "TRANCE", btlui_drawCmdOverlay
 Hi_RegisterSolidEffModel = 0x800DB424; // type:func [string] error message names it
 Hi_RegisterGouEffModel = 0x800DB4EC; // type:func [string] error message names it
 Hi_RegisterTexEffModel = 0x800DB5B4; // type:func [string] error message names it
@@ -1233,3 +1233,16 @@ g_btluiDrArea = 0x80105100; // [code] per-buffer DR_AREA of btlui_submitOt
 g_btluiDrMode = 0x80105120; // [code] per-buffer DR_MODE of btlui_submitOt
 g_btluiDrStp = 0x80105140; // [code] per-buffer DR_STP of btlui_submitOt
 btl_initSceneFlags = 0x800C972C; // type:func [code] Battle.scene.flags = (encounter flags ^ 0x30) << 2 and g_btlRewards.ap = the enemy group's ap, btl_startBattle
+g_btluiAtbOn = 0x80104E6A; // [code] g_btluiState.atbOn (+2) by its own label, read by btlui_collectCursorPositions
+g_btluiTargetWindow = 0x80104E6B; // [code] g_btluiState.targetWindow (+3) by its own label (btlui_startTargetSelect, btlui_updateTargetWindow)
+g_btluiHideWindows = 0x80104E70; // [code] g_btluiState.hideWindows (+8) by its own label (btlui_drawCachedRows)
+g_btluiPrevAtbOn = 0x80104E75; // [code] g_btluiState.prevAtbOn (+0xD) by its own label (btlui_drawHelpWindow)
+g_btluiSecondPort = 0x80104E76; // [code] g_btluiState.secondPort (+0xE) by its own label (btlui_saveKeyRepeat)
+g_btluiFrameReady = 0x80104E77; // [code] g_btluiState.frameReady (+0xF) by its own label (btlui_drawPanelHighlight)
+g_btluiPort = 0x80104E7D; // [code] g_btluiState.port (+0x15) by its own label (btlui_drawPortIcons)
+g_btluiVsyncTick = 0x80104E80; // [code] g_btluiState.vsyncTick (+0x18) by its own label (cursor blinking)
+g_btlSideCmd = 0x80104FC0; // [code] g_btlCmdMenu.sideCmd by its own label (btlui_drawSideCmd, btlui_slideLeft)
+g_btlfxInCall = 0x800FEC38; // [code] set by btlfx_callScript, cleared by control op 14 (return) and at script start in btlfx_runScript
+g_btlfxReturnPc = 0x800FEC3C; // [code] script pc btlfx_callScript saves, control op 14 jumps back to it
+g_btlfxCommonInit = 0x80104DE8; // [code] set to 1 by btlfx_initCommonData, never read
+s_btlDetectItemSuffix = 0x800A7C20; // [code] text appended after the item name of each Detect popup (btl_updateDetect)

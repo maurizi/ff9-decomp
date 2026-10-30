@@ -853,7 +853,7 @@ void btlui_onCmdWindowClosed(Window *arg0) {
 void btlui_drawHelpWindow(void) {
     RECT r;
     s32 m;
-    if (g_btluiHelp.open != 0 && D_80104E75 != 0) {
+    if (g_btluiHelp.open != 0 && g_btluiPrevAtbOn != 0) {
         btlui_getHelpRect(&g_btluiHelpRect, &r);
         win_setClip(NULL, 2, 4);
         if (g_btluiHelp.opening == 0) {
@@ -889,7 +889,7 @@ void btlui_helpInput(void) {
 }
 
 void btlui_updateHelpSlide(void) {
-    if (g_btluiHelp.open != 0 && D_80104E75 != 0) {
+    if (g_btluiHelp.open != 0 && g_btluiPrevAtbOn != 0) {
         g_btluiHelp.frame++;
         if (g_btluiHelp.opening != 0 && g_btluiHelp.frame >= 7) {
             g_btluiHelp.opening = 0;
@@ -1170,7 +1170,7 @@ void btlui_drawCmdOverlay(Window *arg0) {
     s32 dy = 10;
     RECT rc;
     if (arg0->state == 3) {
-        if (btlui_getMenuState() == BTLUI_MENU_CMD || (btlui_getMenuState() == st && btlui_getTargetReturnState() == BTLUI_MENU_CMD && !(btlui_isTargetWindowOpen() & 0xFF) && (D_80104E80 & 1))) {
+        if (btlui_getMenuState() == BTLUI_MENU_CMD || (btlui_getMenuState() == st && btlui_getTargetReturnState() == BTLUI_MENU_CMD && !(btlui_isTargetWindowOpen() & 0xFF) && (g_btluiVsyncTick & 1))) {
             ui_drawHand(arg0->cur.x - 0xE, r->y + (g_btlCmdMenu.cursor * 15 + dy), arg0->otz - 1);
         }
     }
@@ -1200,7 +1200,7 @@ void btlui_drawSideCmd(Window *arg0) {
     s32 dx;
     s16 y;
     s32 x;
-    Unk80104FC0 *p = &D_80104FC0;
+    Unk80104FC0 *p = &g_btlSideCmd;
     Window *w = arg0;
 
     dx2 = 6;
@@ -1221,7 +1221,7 @@ void btlui_drawSideCmd(Window *arg0) {
     r.w = 0x3E;
     r.h = 0x11;
     r.y = y + 4;
-    text_draw(r.x + dx, r.y + 2, arg0->otz, text_get(g_btluiSideCmdTexts[D_80104FC0.side]), 0);
+    text_draw(r.x + dx, r.y + 2, arg0->otz, text_get(g_btluiSideCmdTexts[g_btlSideCmd.side]), 0);
     btlui_drawSideFrame(&r, arg0->otz);
 }
 
@@ -1648,26 +1648,26 @@ void btlui_onPassClosed(Window *arg0) {
 }
 
 void btlui_slideLeft(void) {
-    if (D_80104FC0.side == 2) {
-        if (D_80104FC0.slide == 1) {
-            if (++D_80104FC0.slideFrame >= 5) {
-                D_80104FC0.ready = 1;
-                D_80104FC0.slide = 0;
+    if (g_btlSideCmd.side == 2) {
+        if (g_btlSideCmd.slide == 1) {
+            if (++g_btlSideCmd.slideFrame >= 5) {
+                g_btlSideCmd.ready = 1;
+                g_btlSideCmd.slide = 0;
             }
-        } else if (D_80104FC0.slide == 2 && (g_padRepeat & PAD_LEFT)) {
+        } else if (g_btlSideCmd.slide == 2 && (g_padRepeat & PAD_LEFT)) {
             snd_playSe(0x417);
-            D_80104FC0.slide = 1;
-            D_80104FC0.side = 2;
-            D_80104FC0.ready = 0;
-            D_80104FC0.slideFrame = 0;
+            g_btlSideCmd.slide = 1;
+            g_btlSideCmd.side = 2;
+            g_btlSideCmd.ready = 0;
+            g_btlSideCmd.slideFrame = 0;
         }
-    } else if (D_80104FC0.side == 0) {
+    } else if (g_btlSideCmd.side == 0) {
         if (g_padRepeat & PAD_LEFT) {
             snd_playSe(0x417);
-            D_80104FC0.slide = 1;
-            D_80104FC0.side = 2;
-            D_80104FC0.ready = 0;
-            D_80104FC0.slideFrame = 0;
+            g_btlSideCmd.slide = 1;
+            g_btlSideCmd.side = 2;
+            g_btlSideCmd.ready = 0;
+            g_btlSideCmd.slideFrame = 0;
         }
     } else {
         btlui_slideBack();
@@ -1675,26 +1675,26 @@ void btlui_slideLeft(void) {
 }
 
 void btlui_slideRight(void) {
-    if (D_80104FC0.side == 1) {
-        if (D_80104FC0.slide == 1) {
-            if (++D_80104FC0.slideFrame >= 5) {
-                D_80104FC0.ready = 1;
-                D_80104FC0.slide = 0;
+    if (g_btlSideCmd.side == 1) {
+        if (g_btlSideCmd.slide == 1) {
+            if (++g_btlSideCmd.slideFrame >= 5) {
+                g_btlSideCmd.ready = 1;
+                g_btlSideCmd.slide = 0;
             }
-        } else if (D_80104FC0.slide == 2 && (g_padRepeat & PAD_RIGHT)) {
+        } else if (g_btlSideCmd.slide == 2 && (g_padRepeat & PAD_RIGHT)) {
             snd_playSe(0x417);
-            D_80104FC0.slide = 1;
-            D_80104FC0.side = 1;
-            D_80104FC0.ready = 0;
-            D_80104FC0.slideFrame = 0;
+            g_btlSideCmd.slide = 1;
+            g_btlSideCmd.side = 1;
+            g_btlSideCmd.ready = 0;
+            g_btlSideCmd.slideFrame = 0;
         }
-    } else if (D_80104FC0.side == 0) {
+    } else if (g_btlSideCmd.side == 0) {
         if (g_padRepeat & PAD_RIGHT) {
             snd_playSe(0x417);
-            D_80104FC0.slide = 1;
-            D_80104FC0.side = 1;
-            D_80104FC0.ready = 0;
-            D_80104FC0.slideFrame = 0;
+            g_btlSideCmd.slide = 1;
+            g_btlSideCmd.side = 1;
+            g_btlSideCmd.ready = 0;
+            g_btlSideCmd.slideFrame = 0;
         }
     } else {
         btlui_slideBack();
@@ -1888,7 +1888,7 @@ void btlui_drawListOverlay(Window *arg0) {
     if (g_btluiList.label2 != 0) {
         ui_drawLabel(arg0->cur.x - (g_btluiList.label2Width - dx), r->y - 4, arg0->otz, g_btluiList.label2, 0);
     }
-    if (btlui_getMenuState() == BTLUI_MENU_LIST || (btlui_getMenuState() == BTLUI_MENU_TARGET && btlui_getTargetReturnState() == BTLUI_MENU_LIST && !(btlui_isTargetWindowOpen() & 0xFF) && (D_80104E80 & 1))) {
+    if (btlui_getMenuState() == BTLUI_MENU_LIST || (btlui_getMenuState() == BTLUI_MENU_TARGET && btlui_getTargetReturnState() == BTLUI_MENU_LIST && !(btlui_isTargetWindowOpen() & 0xFF) && (g_btluiVsyncTick & 1))) {
         x = arg0->cur.x - 0x12;
         y = r->y + (arg0->list.cursor * 15 + dy);
         if (g_btluiList.cmdNo == BTL_CMD_DBL_BLK || g_btluiList.cmdNo == BTL_CMD_DBL_WHT) {
@@ -2164,13 +2164,13 @@ void btlui_startTargetSelect(Unk800EF80C *arg0) {
     btlui_clearTargeted();
     btlui_setDefaultTargets(1);
     if (g_btlTarget.listKind == 0) {
-        if (D_80104E6B == 0) {
+        if (g_btluiTargetWindow == 0) {
             btlui_setMenuState(BTLUI_MENU_TARGET);
         } else {
             btlui_openTargetWindow(3);
         }
     } else {
-        if (D_80104E6B != 0) {
+        if (g_btluiTargetWindow != 0) {
             btlui_openTargetWindow(5);
         }
         btlui_openListWindow(g_btlTarget.listKind);
@@ -2493,8 +2493,8 @@ void btlui_cancelTarget(void) {
 }
 
 void btlui_updateTargetWindow(void) {
-    if ((g_btlTarget.windowOpen == 0 || (u32)(g_btlUi->windows[0]->state - 1) >= 2) && g_btlTarget.windowOpen != D_80104E6B) {
-        if (D_80104E6B != 0) {
+    if ((g_btlTarget.windowOpen == 0 || (u32)(g_btlUi->windows[0]->state - 1) >= 2) && g_btlTarget.windowOpen != g_btluiTargetWindow) {
+        if (g_btluiTargetWindow != 0) {
             if (g_btlTarget.windowOpen == 0) {
                 btlui_setMenuState(BTLUI_MENU_CLOSING);
                 g_btlUi->windows[0] = win_open(&g_btluiTargetWindowRect, 5, 2, 0);
@@ -2573,7 +2573,7 @@ void btlui_drawTargetListOverlay(Window *arg0) {
         rc.h = 8;
         win_setClip(&rc, arg0->otz, 4);
     }
-    if (arg0->state == 3 && (n < 2 || !(D_80104E80 & 1))) {
+    if (arg0->state == 3 && (n < 2 || !(g_btluiVsyncTick & 1))) {
         yl = r->y + 0xC;
         yr = yl;
         for (; u != NULL; u = u->next) {
@@ -2602,7 +2602,7 @@ void btlui_drawTargetCursors(void) {
     s32 i;
     SprtWords *p;
     DR_TPAGE *t;
-    if (b->count >= 2 && !(D_80104E80 & 3)) {
+    if (b->count >= 2 && !(g_btluiVsyncTick & 3)) {
         c = 0x64404040;
     }
     for (i = 0; i < b->count; i++) {
@@ -2756,7 +2756,7 @@ void btlui_collectCursorPositions(void) {
     m = n = 0;
     u = g_gameState->gameData->ctx.battle->unitList;
     p = &g_btluiCursors;
-    if (D_80104E6A != 0) {
+    if (g_btluiAtbOn != 0) {
         for (; u != NULL; u = u->next) {
             if (((u->flags >> 28) & 1) && u->onScreen != 0) {
                 p->pos[n][0] = u->screenX - 0x18;
@@ -2958,7 +2958,7 @@ void btlui_drawListCursors(Window *arg0) {
         return;
     }
     c = 0x64808080;
-    if (b->partyCount >= 2 && !(D_80104E80 & 3)) {
+    if (b->partyCount >= 2 && !(g_btluiVsyncTick & 3)) {
         c = 0x64404040;
     }
     y = w->y + 5;
@@ -3424,7 +3424,7 @@ void btlui_drawPanelHighlight(void) {
     POLY_G4 *p;
     s32 y;
     s32 d = 4;
-    if (c != 0xFF && D_80104E77 != 0) {
+    if (c != 0xFF && g_btluiFrameReady != 0) {
         y = g_btluiPanel->y + (c * 12 + d);
         p = &g_btluiPrims->highlight[g_drawBufs.cur];
         p->y0 = p->y1 = y;
@@ -3593,7 +3593,7 @@ void btlui_slidePanelLabels(void) {
 
 void btlui_pulsePanelHighlight(void) {
     Unk80105078 *p = g_btluiPanel;
-    u32 v = D_80104E80 & 0x3F;
+    u32 v = g_btluiVsyncTick & 0x3F;
     p->pulse = v;
     if (v >= 0x20) {
         p->pulse = 0x3F - v;
@@ -3670,7 +3670,7 @@ void btlui_drawPanelMp(BtlUnit *arg0, s32 arg1) {
 void btlui_findHighlightRow(void) {
     BtlUnit *u = g_gameState->gameData->ctx.battle->unitList;
     s32 i = 0;
-    if (g_btluiPanel->rowCount != 0 && D_80104E70 == 0) {
+    if (g_btluiPanel->rowCount != 0 && g_btluiHideWindows == 0) {
         for (; u != 0; u = u->next) {
             if (u->flags & 1) {
                 if (g_btluiPanel->menuUnit == u) {
@@ -3704,7 +3704,7 @@ void btlui_drawPortIcons(void) {
             g_btluiPortBlinkSprt.wh = s->w | (s->h << 16);
             addPrim(&g_btluiPortIconOt, &g_btluiPortBlinkSprt);
         }
-        if (D_80104E7D == 0) {
+        if (g_btluiPort == 0) {
             s = &D_80068E90;
         } else {
             s = &D_80068ED0;
@@ -3744,7 +3744,7 @@ void btlui_saveKeyRepeat(void) {
         pad_setRepeatEnabled(i, 0xE, 1);
         pad_clearRepeats(i);
     }
-    D_80104E76 = btlui_anyOnSecondPort();
+    g_btluiSecondPort = btlui_anyOnSecondPort();
 }
 
 void btlui_restoreKeyRepeat(void) {

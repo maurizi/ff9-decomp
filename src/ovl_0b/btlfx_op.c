@@ -4,7 +4,7 @@ void btlfx_initCommonData(void) {
     u8 buf[0x40];
     RECT r;
     g_btlfxCommonTable = g_btlfxCommonData;
-    D_80104DE8 = 1;
+    g_btlfxCommonInit = 1;
     g_btlfxEnv->prim = buf;
     btlfx_reloadCommonData(0);
     while (btlfx_reloadCommonData(1) == 0) {
