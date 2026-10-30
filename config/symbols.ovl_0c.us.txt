@@ -656,3 +656,6 @@ wm_runSetupStep = 0x800B84E8; // type:func [code] no caller, the same sequence a
 wm_mountPalettePre = 0x800B36AC; // type:func [code] empty, first call of wm_setMountPalette
 wm_isDarkWeather = 0x800B8548; // type:func [runtime] weather mode 2 zone gives GameData.darkBattle, a night battle (docs/runtime-findings.md R30)
 g_worldAreaNames = 0x800CF478; // [runtime] world data pack entry 0, read by main evt_onMenuOpen (docs/runtime-findings.md R30)
+wm_keepEntryMusic = 0x800C45D8; // type:func [runtime] returns 1 for story 0x2600/0x26A5 or b[0xBE] 8/9, then wm_init doesn't fade the playing music out (docs/runtime-findings.md R30b)
+g_worldWalkerActor = 0x800CE3D8; // [runtime] on-foot leader actor (actorType 1/2), equals g_worldPlayer at the Ice Cavern exit (docs/runtime-findings.md R30b)
+g_worldMoogleActor = 0x800CE270; // [runtime] actorType 11 moogle called with Square on the world map (docs/runtime-findings.md R30b)

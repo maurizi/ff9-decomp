@@ -111,7 +111,7 @@ by the port, 2026-10-28): field cleanup to main's dispatcher, then `GameData.fie
 extents from FF9.IMG dirs 4/2 into `sceneSector`/`sceneSectors` (+0x7FC/+0x804), `GameData.unk3A` = area, and mode 1.
 It also measures VBlanks per drawn frame with a breakpoint-free vsync listener. Disc-4 state from that work:
 `ds_perf_disc4_treno` (card 1 FILE05, Treno, loaded through Continue).
-The field campaign's variant `build/rtf2/enter_field.py FIELD [--disc N] [--base-state S] [--frames N] [--save NAME]`
+The field campaign's variant `tools/rt/enter_field.py FIELD [--disc N] [--base-state S] [--frames N] [--save NAME]`
 (scratch) does the same but keeps the save's own party and event variables (no host export, nothing touches ff9-ds).
 The field then runs its scripts with that save's story flags, so it often plays a cutscene or a variant of one.
 Field states made with it from `field_dali_inn` (disc 1, Lv 50 Dali party): `field_burmecia_rain` (763, rain),
@@ -156,6 +156,40 @@ Coverage blind spot: `cov.py` skips every function in `config/library_funcs.us.t
 exclusion when they matter. Ablation screenshots only change after about 20 frames (4 frames showed nothing).
 To cover an overlay that loads where battle effect modules live (ovl_65 at 0x801EDF00), start coverage after main's
 `jal` into its entry (0x8001285C for battleEnd_main), and stop before the next overlay loads there.
+
+### Generating states
+
+Recipes from the R30b pass (2026-10-30) for reaching code that no save gets to. Scripts live in `tools/rt/` (promoted from the pass's scratch dir)
+(`build/rt3/run3.py` is the hang-safe action runner: `--pre LUA` pokes after the load, `--fn 'f=LUA'` runs Lua on
+every hit of a traced address with the registers in `r`, `--patch CMD,ABILITY[,TARGETS]` rewrites the first Attack).
+- **Story battle on disc 1** (party = the Dali save's Zidane/Dagger/Vivi/Steiner, Lv 50): `start --disc 1`, `frames 1800`,
+  then `tools/rt/enter_battle.py ENC --disc 1 --field 351 --base-state field_dali_inn --frames 900` works for any
+  encounter in disc 1's FF9.IMG (e.g. 21 Black Waltz 1 + Sealion, 337 the Prima Vista Steiner fight). States:
+  `r30b_enc21_start`, `r30b_enc337_start` (Steiner's command menu up). Enemy units are on `Battle.unitList`
+  (`GameData+0x8E4` -> Battle, `+0x6F8` list, BtlUnit `+0x28` hp, `+0x2E` atb speed, `+0xB0` unit bit); in 337 the
+  enemy with bit 0x10 is at 0x8010923C, the one with bit 0x20 at 0x8010930C.
+- **Force an enemy ability**: hook `btl_setEnemyCmd(unit, targets, cmd, ability)`, e.g.
+  `run3.py NAME --state r30b_enc21_start --nocalm --trace btl_setEnemyCmd --fn 'btl_setEnemyCmd=if tonumber(r.a0)==0x10
+  and tonumber(r.a2)==0x2F then r.a3=2 end'` (ability = index into the encounter's ability list). This bypasses the AI
+  script, so script waits that follow the ability in the AI don't run. To get the AI's own branch, set the state it
+  tests instead (337: enemy 0x10 HP to 500 with `--pre` makes its AI play effect 0x1A2 and end the battle).
+- **Which encounter / effect uses X**: `tools/rt/encscan.py IDS` (btlseq effect ops 0x06/0x08/0x1A in the
+  encounter files of all discs), `tools/rt/fxscan.py OPS` (effect-script instructions of every dir-13 file; the
+  script is sector 0 + 0x400, 3-byte `op, a, b`), `tools/rt/varscan.py bit:N|byte:OFS` (event-script references to
+  a global variable in field, world and battle scripts; var-ref byte 0x80 | 0x20 wide index | 0x10/0x08/0x04 type |
+  bank). Common (non-file) effect scripts are copied from VRAM to 0x801E7700 when `btlfx_findScript` runs; a dump
+  is `build/rtf2/common_fxscripts.bin`.
+- **Stall the effect loader** (sound pause): during a summon (`--patch 0x10,0x31,0x10` from `r30b_enc337_start`),
+  hold `g_btlfxLoader.summonDataState` (0x80100E12) at 1 for 90 effect frames once it reaches 2, from a `--fn` on
+  `btlfx_runScript`; the script's op 06 01 then retries and `btlfx_runFrame` freezes.
+- **World map with any story values**: `tools/rt/wm_enter.py [--poke ADDR=HEX ...] [--world 9000+k] [--save S]`
+  walks out of `field_ice_300` (hold Down), breaks at main's dispatcher 0x80012834 after the field cleanup, applies
+  the pokes there (the field can't react any more), then lets `wm_init` run and prints func_800C45D8's return value.
+  `--world` loads another world file (sector/length into `GameData+0x800/+0x808`); 9002 loads but its init script
+  stalls with the Lv 50 save. States: `r30b_wm_story2600` (story counter 0x2600), `r30b_wm_moogle` (Square pressed at
+  the Ice Cavern exit, the world-map moogle flying in). `tools/rt/actors.lua` (`tools/emu.py lua -f`) lists the
+  script objects (uid, kind, flags, actorType, modelId, position).
+- Story counter `g_evtGlobalVars.h[0]` is 0x8007AEF0 (u16), `b[n]` is 0x8007AEF0 + n.
 
 ### Speed and the debugger
 

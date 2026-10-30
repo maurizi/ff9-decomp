@@ -274,7 +274,7 @@ void wm_stopAllSe(void) {
     }
 }
 
-s32 func_800C45D8(void) {
+s32 wm_keepEntryMusic(void) {
     u16 sc = g_evtGlobalVars.h[0];
     u8 v = g_evtGlobalVars.b[0xBE];
 

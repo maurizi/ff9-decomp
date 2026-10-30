@@ -554,10 +554,10 @@ void wm_initMovement(void) {
     s32 j;
 
     g_worldPlayer = &g_worldDummyActor;
-    D_800CE3D8 = NULL;
+    g_worldWalkerActor = NULL;
     g_worldVehicleActor = NULL;
     g_worldMountActor = 0;
-    D_800CE270 = 0;
+    g_worldMoogleActor = 0;
     g_worldMoveMode = -1;
     g_worldMoveModeInfo = 0;
     g_worldPlayerPosChanged = 0;
@@ -682,7 +682,7 @@ void wm_findVehicles(void) {
             switch (a->actorType) {
             case 1:
             case 2:
-                D_800CE3D8 = a;
+                g_worldWalkerActor = a;
                 break;
             case 3:
             case 4:
@@ -1011,7 +1011,7 @@ void wm_updateActors(void) {
                 cc->flying = g_worldMoveMode == 6;
                 break;
             case 11:
-                D_800CE270 = act;
+                g_worldMoogleActor = act;
                 break;
             }
             if (act == g_worldPlayer && evt_isControlEnabled() != 0) {

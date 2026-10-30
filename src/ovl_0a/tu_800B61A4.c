@@ -3522,7 +3522,7 @@ BgSprt *fldbg_init(void) {
     *(s32 *)&g_fieldBgState.playerScreenX = 0;
     g_fieldBgState.cameraId = 0;
     g_fieldBgState.unk9C = 0;
-    g_fieldBgState.unkA0 = 0;
+    g_fieldBgState.clutRows = 0;
     g_fieldBgState.unkA1 = 0xFF;
     g_fieldBgState.unkA2 = 0xFF;
     g_fieldBgState.unkA3 = 0xFF;

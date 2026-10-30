@@ -136,7 +136,7 @@ s32 fx_180_op80(s32 mode, Fx180Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             ex->btlfx_stopEmitter(work->unk0[7]);
             break;
         case 0x14:
-            ex->func_800E83EC();
+            ex->btlfx_signalScriptCue();
             break;
         case 0x34:
             ex->btlfx_drawScreenTint((u32 *)env->ot, 1, 0xFF, 0xFF, 0xFF);
@@ -399,7 +399,7 @@ s32 fx_180_op83(s32 mode, Fx180Work83 *work, Unk800F78A4 *env, Unk80100C78Entry 
             work->unk38--;
             if (work->unk38 == -1) {
                 work->unk3A = 1;
-                ex->func_800E83EC();
+                ex->btlfx_signalScriptCue();
             }
         } else if (work->unk3A != 0) {
             ex->btlfx_drawScreenTint((u32 *)env->ot, 1, 0xFF, 0xFF, 0xFF);

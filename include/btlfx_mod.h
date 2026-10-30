@@ -229,7 +229,7 @@ typedef struct BtlfxExports {
     s32 (*btlfx_registerSummonModel)(Unk800E9000 *, s32 *, s32, Unk80100DC054 *); /* 0x340 */
     s32 (*btlfx_pollDrawSync)(void); /* 0x344 */
     s32 (*btlfx_replaceSound)(s32, s32, s32, s32); /* 0x348 */
-    s32 (*func_800E83EC)(void); /* 0x34C */
+    s32 (*btlfx_signalScriptCue)(void); /* 0x34C */
     s32 (*btlfx_stopSound)(s32); /* 0x350 */
     s32 (*btlfx_clearUnitStatus)(s32); /* 0x354 */
     s32 (*btlfx_moveSummonToHeap)(s32); /* 0x358 */

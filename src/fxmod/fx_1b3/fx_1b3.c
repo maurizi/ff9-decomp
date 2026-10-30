@@ -224,7 +224,7 @@ s32 fx_1b3_op80(s32 mode, Fx1b3Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
         frame = entry->frame;
         switch (frame) {
         case 0:
-            ex->func_800E83EC();
+            ex->btlfx_signalScriptCue();
             work->unk0[0] = 0x10;
             break;
         case 8:
@@ -550,7 +550,7 @@ s32 fx_1b3_op80(s32 mode, Fx1b3Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             work->unk0[12] = 0x20;
             break;
         case 0x29C:
-            ex->func_800E83EC();
+            ex->btlfx_signalScriptCue();
             return 1;
         }
         for (i = 0; i < 32; i++) {

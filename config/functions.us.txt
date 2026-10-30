@@ -2695,7 +2695,7 @@ ovl_0b btlfx_setUnitLight 0x70 0x800e80cc
 ovl_0b btlfx_fadeUnitGroup 0x138 0x800e813c
 ovl_0b btlfx_clearUnitStatus 0x58 0x800e8274
 ovl_0b btlfx_nextUnitPos 0x120 0x800e82cc
-ovl_0b func_800E83EC 0x1c 0x800e83ec
+ovl_0b btlfx_signalScriptCue 0x1c 0x800e83ec
 ovl_0b btlfx_reapplyMini 0x58 0x800e8408
 ovl_0b btlfx_reapplyVanish 0x38 0x800e8460
 ovl_0b btlfx_getScaledRadius 0x58 0x800e8498
@@ -3243,7 +3243,7 @@ ovl_0c w_musicUpdate 0x138 0x800c3eac
 ovl_0c w_musicGetID 0x2cc 0x800c3fe4
 ovl_0c w_musicRequestSend 0x140 0x800c42b0
 ovl_0c wm_stopAllSe 0x1e8 0x800c43f0
-ovl_0c func_800C45D8 0x44 0x800c45d8
+ovl_0c wm_keepEntryMusic 0x44 0x800c45d8
 ovl_0c wm_musicInit 0x30 0x800c461c
 ovl_0c wm_musicSetup 0x8 0x800c464c
 ovl_0c wm_musicTerm 0x8 0x800c4654

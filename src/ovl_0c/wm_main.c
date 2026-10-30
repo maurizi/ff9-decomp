@@ -77,7 +77,7 @@ void wm_init(void) {
     wm_afterLoadShadowTexture();
     wm_systemInit();
     game_initGfx();
-    if (func_800C45D8() == 0) {
+    if (wm_keepEntryMusic() == 0) {
         g_gameState->gameData->flags |= 0x400000;
     }
     if (g_gameState->gameData->flags & 0x400000) {

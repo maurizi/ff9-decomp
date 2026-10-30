@@ -1409,6 +1409,8 @@ extern EventVars g_evtGlobalVars;
 #define EVT_GB_SUMMON_MP_X4 0x12        /* summons marked flags & 4 cost 4x MP (Ramuh 22 -> 88) */
 #define EVT_GB_BATTLE_NO_HUD 0xC1       /* battle runs without the HUD (btl_update) */
 #define EVT_GB_NO_ACTION_ABILITIES 0xE3 /* action abilities unusable from the menu (menu_ability) */
+#define EVT_GB_BATTLE_AI_FLAGS 0xC7     /* battle AI script flags (encounters 337, 891) */
+#define EVT_GB_AI_EFFECT_CUE 0x10       /* EVT_GB_BATTLE_AI_FLAGS bit set by btlfx_signalScriptCue, the AI waits for it to end the battle */
 
 void config_applySound(void);
 void config_applyPadMapping(void);

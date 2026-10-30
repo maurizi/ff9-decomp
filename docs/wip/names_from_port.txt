@@ -6235,3 +6235,16 @@ D_800D32FC g_worldAmbientSeDist[1]
 # FIELDS include/ovl_0b.h Unk800FDF30: unkB=hasPostEvent
 # FIELDS include/ovl_0b.h Unk800D805C: unk3=snapToFront
 # FIELDS include/ovl_3c.h Unk8006D328: unk0=defense,unk1=evade,unk2=magicDef,unk3=magicEvade
+
+# ===== R30b runtime pass (docs/runtime-findings.md R30b) =====
+## ovl_0b
+func_800E83EC btlfx_signalScriptCue  # also BtlfxExports member
+g_evtGlobalVars.b[0xC7] g_evtGlobalVars.b[EVT_GB_BATTLE_AI_FLAGS]  # bit EVT_GB_AI_EFFECT_CUE 0x10
+# FIELDS include/ovl_0b.h Unk800D955C: unk2=skipIfParty
+# FIELDS include/ovl_0b.h Unk800D7C9C: unk2=skipIfParty
+## ovl_0c
+func_800C45D8 wm_keepEntryMusic
+D_800CE3D8 g_worldWalkerActor
+D_800CE270 g_worldMoogleActor
+## ovl_0a
+# FIELDS include/ovl_0a.h FieldBgState: unkA0=clutRows

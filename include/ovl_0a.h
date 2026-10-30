@@ -287,7 +287,7 @@ typedef struct {
     u8 pad7C[0x9C - 0x7C];
     s16 unk9C;
     u8 pad9E[2];
-    u8 unkA0;
+    u8 clutRows; /* same byte as g_fieldBgClutRows (fldbg_buildOverlaySprites reads and updates it there, runtime) */
     u8 unkA1;
     u8 unkA2;
     u8 unkA3;
@@ -1175,7 +1175,7 @@ extern s32 g_fieldPreloadCursor;
 extern FieldDiscMode g_fieldDiscChangeModes[];
 extern FieldBgCtx g_fieldBgCtx;
 extern BgFile *g_fieldBgData;
-extern u8 g_fieldBgClutRows; /* palette rows used from 0xE0 up (fldbg_buildOverlaySprites), never read */
+extern u8 g_fieldBgClutRows; /* palette rows used from 0xE0 up, read and updated by fldbg_buildOverlaySprites (= g_fieldBgState.clutRows, runtime) */
 extern s32 g_fieldBgCtxWork;
 extern u16 g_fieldBgiMoveTriCount;
 extern u16 g_fieldBgiMoveEdgeCount;

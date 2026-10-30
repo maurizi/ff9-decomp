@@ -578,7 +578,7 @@ s32 fx_1a2_op80(s32 mode, Fx1a2Work80 *w, Unk800F78A4 *env, Unk80100C78Entry *en
             }
         }
         if (frame == 0x4B) {
-            ex->func_800E83EC();
+            ex->btlfx_signalScriptCue();
         }
         if (frame >= 0x64) {
             ex->btlfx_poolClear((Unk800DA1B8 *)entry->pool);

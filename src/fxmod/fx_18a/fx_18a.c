@@ -152,7 +152,7 @@ s32 fx_18a_op80(s32 mode, Fx18aWork80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             }
             env->otZ = 0;
             if (frame == 0x1E) {
-                ex->func_800E83EC();
+                ex->btlfx_signalScriptCue();
             }
             if (frame < 4) {
                 g3 = ex->math_cos(frame << 8) * 0xFF;

@@ -341,7 +341,7 @@ s32 fx_1ec_op82(s32 mode, Fx1ecWork82 *work, Unk800F78A4 *env, Unk80100C78Entry 
             work->unk68--;
             if (work->unk68 == -1) {
                 work->unk6A = 1;
-                ex->func_800E83EC();
+                ex->btlfx_signalScriptCue();
             }
         } else if (work->unk6A != 0) {
             ex->btlfx_drawScreenTint((u32 *)env->ot, 1, 0xFF, 0xFF, 0xFF);

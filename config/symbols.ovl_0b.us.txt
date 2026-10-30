@@ -1258,3 +1258,4 @@ btlfx_opSyncOpposed = 0x800D8520; // type:func [runtime] unit op 0x7F (docs/runt
 btlfx_stepSyncOpposed = 0x800DA064; // type:func [runtime] step of unit op 0x7F (docs/runtime-findings.md R30)
 btlfx_getCommonSprite = 0x800E4530; // type:func [runtime] common effect file 0x2BF data read back from VRAM by StoreImage at effect start (docs/runtime-findings.md R30)
 g_btlfxSoundPaused = 0x800F78AC; // [code] sound paused while an effect waits for its data, resumed by btlfx_runFrame (docs/runtime-findings.md R30)
+btlfx_signalScriptCue = 0x800E83EC; // type:func [runtime] export 0x34C sets the battle AI cue bit that the encounter 337 and 891 AI scripts wait on before ending the battle (docs/runtime-findings.md R30b)

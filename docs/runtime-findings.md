@@ -2589,3 +2589,85 @@ same u16 `btl_initSceneFlags` reads; checked at runtime against `encounter->flag
   fixture battle (flags 0x21). [runtime] high.
 - **FieldBgState.unk74 / unk78 / unk9C / unkA0-A3: CONFIRMED unread** (300 frames of scrolling in `field_d1_101`).
   FieldMap.unk14/18, title-menu and Tetra Master fields not run.
+
+## R30b runtime pass (2026-10-30): rows left open by R30  (status: **applied**)
+Method: Redux disc 1, states generated instead of played to (recipes in `docs/emulator.md` "Generating states").
+Encounters entered with `tools/rt/enter_battle.py ENC --disc 1 --field 351 --base-state field_dali_inn --frames 900`
+(new states `r30b_enc21_start`, `r30b_enc337_start`), world map with `build/rtf2/wm_enter.py` (`r30b_wm_story2600`,
+`r30b_wm_moogle`). Runs use `build/rt3/run3.py` (outputs `build/rt3/r30b_*.json` and screenshots). Static scans:
+`build/rtf2/encscan.py`, `fxscan.py`, `varscan.py` (scratch, described in emulator.md).
+
+### ovl_0b
+
+- **func_800E83EC → btlfx_signalScriptCue [runtime] (the effect tells the battle AI script that its cue point played,
+  the AI waits for b[0xC7] bit 0x10 and then fades out and ends the battle). CONFIRMED.**
+  Correction to R30: the btlseq effect ops in the encounter files (`encscan.py`) give 0x1A2 in encounter 337 (disc 1,
+  the Prima Vista Steiner fight), 0x1EC and 0x18A in 891 (disc 3, Kuja), 0x180 in 937 and 0x1B3 in 938 (disc 4).
+  Encounter 21's "Tsunami" (Sealion ability 2, forced through a `btl_setEnemyCmd` hook) plays effect 0x198, which never
+  calls the export. Readers (`varscan.py byte:0xC7`): b[0xC7] is a per-battle flag byte of the battle AI scripts
+  (FF9.IMG dir 5). Bit 0x10 is used only by encounter 337 (entry 1) and 891 (entry 2): their init function (tag 0)
+  clears it (`05 d4c7 7defff 3d 7f`, b[0xC7] &= 0xFFEF), and their turn function (tag 1) runs BTLSEQ_START (op 0xE5),
+  then `while (!(b[0xC7] & 0x10)) wait 1`, then FADE (op 0xEC, 30 frames), waits and sets battle var 0x21 = 5.
+  Other encounters use other bits of the byte (336, 920/921, 84, 114/115, 57/211, 191). Runtime, `r30b_enc337_start`:
+  forcing the ability (`--fn 'btl_setEnemyCmd=... r.a3=1'`) played effect 0x1A2 and the export ran once at the effect's
+  last phase frame 0x4B (~1200 frames after btlfx_start, from 0x801E96B0 in fx_1a2_op80), but nothing read the byte
+  because the AI was not in that branch. With the AI's own branch (`--pre` enemy 0x10 HP = 500, `run3.py r30b_e337f`):
+  the AI started effect 0x1A2 itself (btlfx_start from the btlseq, no btl_setEnemyCmd), evt_readVar read 0x8007AFB7
+  (u8, var type 0x28) every 4 frames (268 reads) until the export set the bit at f23856, then the screen faded to
+  black and the game returned to the field (ovl_0a resident). high.
+  Suggested header constant: `EVT_GB_BATTLE_AI_FLAGS 0xC7` (per-battle flags of the battle AI scripts, bit 0x10 = effect
+  cue, set by btlfx_signalScriptCue).
+- **Unk800D7C9C.unk2 / Unk800D955C.unk2 (effect ops 0x6C/0x6D, btlfx_opJumpForward / btlfx_opJumpHome) → skipIfParty
+  [runtime] (with 1 the caster stays in place when the target is a party unit). CONFIRMED.** `fxscan.py 6c,6d`: unk2 is
+  1 in 25 effect files (Steiner's Sword Arts 0x5C/0x2E/0xD0/0xD1, Freya's 0xA8/0x128/0x53/0x1EB/0x183/0x1EA, 0xFE/0xFF,
+  0x116-0x124, ...) and 0 in Focus 0xC7 (common script too) and 0x3D. Runtime, `r30b_enc337_start`, Steiner's Attack
+  patched into Sword Art Armor Break (cmd 0x1E, ability 0x91, effect 0x5C): against the enemy (targets 0x10) op 0x6C
+  stepped 9 times (Steiner leaps to the enemy) and 0x6D 8 times, against Zidane (targets 1) both ops returned in
+  mode 1 with no step (Steiner hit Zidane from his own place, screenshots `build/rt3/r30b_jf_0x10_*`, `r30b_jf_0x1_*`).
+  high.
+- **D_800F78AC g_btlfxSoundPaused (applied): CONFIRMED at runtime.** Forced stall: Dagger's Shiva (`--patch
+  0x10,0x31,0x10`, short form effect 0x197) with `g_btlfxLoader.summonDataState` (0x80100E12) held at 1 for 90 effect
+  frames once it reached 2 (Lua on btlfx_runScript entry), so control op 06 01 retried. btlfx_copyDisplayToDraw ran 72
+  times (every stalled frame, f27000-f27284), akao_pause(2) once at f27000 with g_btlfxSoundPaused written 1 by
+  btlfx_copyDisplayToDraw+0xC0, and btlfx_runFrame+0xD8 wrote 0 and called akao_resume(2) at f27288, the first frame
+  after the stall (`build/rt3/r30b_stall.json`). high.
+
+### ovl_0c
+
+- **func_800C45D8 → wm_keepEntryMusic [runtime] (returns 1 when wm_init must not fade the music that is playing on
+  entry). CONFIRMED.** `wm_enter.py` pokes at the dispatcher break: story 0x0B18 / b[0xBE] 0 returns 0 and wm_init sends
+  SND_MUSIC_VOL_INTPL (0, 0x78, 0) at once, a 120-frame fade to volume 0 (wm_musicPlay's own call is (0, 0x3C, v), a fade
+  in to v). Story 0x2600 (inside 0x2580-0x26A1), 0x26A5 (inside 0x26A2-0x26B5), b[0xBE] (= g_worldMoveMode) 8 and 9 all
+  return 1, and no fade-out is sent: the next sound commands are song 0x5F (wm_soundCommand(0, 0x5F)) and its fade in
+  (0, 0x3C, 0x7D). Correction to R30: 0 means the carried-over music fades out, not in. high.
+- **D_800CE3D8 → g_worldWalkerActor [runtime] (the party leader on foot, actorType 1 or 2). CONFIRMED (type 1).**
+  World scripts (`op 0x3B` literal actorType then `0x2F` model, all discs): type 1 = model 310 in dir-3 world files 0, 3,
+  5, 7-12, type 2 = model 309 only in world file 2, type 11 = model 307 in most of them (file 0 is the one loaded at
+  the Ice Cavern exit, GameData+0x800 = its sector). At the Ice Cavern exit
+  (`field_worldmap_ice_exit`, `build/rtf2/actors.lua`) uid 11 is type 1, model 310, the Zidane sprite the pad moves, and
+  D_800CE3D8 = g_worldPlayer = that actor (0x800782C8). Type 2 not seen: world file 2 loads with `wm_enter.py --world 9002`
+  but its init script stalls with the Lv 50 save. Write-only in ovl_0c (wm_initMovement clears it, wm_findVehicles sets
+  it). medium-high.
+- **D_800CE270 → g_worldMoogleActor [runtime] (the world-map moogle, actorType 11). CONFIRMED.** uid 6 (type 11, model
+  307) exists hidden (flags 0x0E) at the Ice Cavern exit and D_800CE270 stays 0. Pressing Square calls the moogle: it
+  flies in (flags 0x07) and wm_updateActors+0x110 writes its address (0x800780BC) every frame from then on (state
+  `r30b_wm_moogle`). Forcing flags bit 0 and placing it next to Zidane shows a moogle model. Write-only in ovl_0c. high.
+
+### ovl_0a / ovl_14
+
+- **FieldScene.unk5F: NOT REACHABLE, write-only.** Its only writers are fld_soundCommand category 2 kind 0 (cleared when
+  a sound starts), kind 2 sub 12 (= arg2) and fld_main's init. No code reads it, no C caller passes a sub-12 command,
+  and no field or world script (all discs, ops 0xC5-0xC8 with literal arguments) sends one: the category-2 kind-2
+  commands on disc are only sub 1 (0x6201, sound volume) and sub 10 (0x620A, movie sound volume). Leave unnamed.
+- **FieldPalAnim.unk4: NOT REACHABLE.** fldbg_startClutFade, its only writer, has no caller in any binary, and the
+  background update loop never handles entry type 0x80 (fldbg_update / fldbg_scanEntries test only 0x10 and 0x40). It
+  is 1 for mode 2 (add with a flag) and 0 for add/subtract. Leave unnamed (dead code).
+- **FieldBgState.unkA0 is g_fieldBgClutRows (0x800CA108). CONFIRMED.** Watching it across a field entry
+  (`enter_field.py 101`, `run3.py r30b_bg_entry --noload`): fldbg_init clears unkA0-A3, then fldbg_buildOverlaySprites
+  (+0x28 / +0x264) reads and updates 0x800CA108 eight times each, the symbol g_fieldBgClutRows. Use one name (the struct
+  field `clutRows`, or keep the separate symbol and leave the field padding). unkA1-A3, unk74, unk9C and FieldMap
+  unk14/unk18 are only stored by fldbg_init / fld_initMap: 600 frames each of `field_d1_502` (scripted pan),
+  `field_opening_dark` and `field_d1_404` (cutscenes) gave no access at all. Leave unnamed.
+- **TitleMenu.unk0 / unk10 (g_titleMenu 0x800AB320 / +0x10): CONFIRMED unused** from `title_screen` through Down, Up
+  and Continue into the memory-card screen (ovl_39 loaded): no access. SceneMenu (ovl_15) and TmState (ovl_0d) not run
+  (no state reaches the ending, blackjack or a card game).

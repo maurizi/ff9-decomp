@@ -1679,8 +1679,8 @@ s32 btlfx_nextUnitPos(s32 id, s16 *arg1, BtlUnit **iter, s32 *out) {
     return r;
 }
 
-void func_800E83EC(void) {
-    g_evtGlobalVars.b[0xC7] |= 0x10;
+void btlfx_signalScriptCue(void) {
+    g_evtGlobalVars.b[EVT_GB_BATTLE_AI_FLAGS] |= EVT_GB_AI_EFFECT_CUE;
 }
 
 void btlfx_reapplyMini(BtlUnit *arg0) {
