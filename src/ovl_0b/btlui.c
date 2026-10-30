@@ -1339,52 +1339,52 @@ void btlui_drawCachedCmdIcons(void) {
 void btlui_drawSideFrame(RECT *r, s32 otz) {
     u32 *ot;
     u32 clut;
-    Unk800689B0 *d2;
-    Unk800689B0 *d1;
+    UiSprite *d2;
+    UiSprite *d1;
     RECT tw;
     RECT r2;
     u32 w;
 
     ot = &g_ot[otz];
-    clut = win_getPalClut(D_80068E78[0].unk2) << 16;
+    clut = win_getPalClut(D_80068E78[0].clut) << 16;
     d2 = &D_80068E78[2];
     setlen(g_primPtr, 4);
     d1 = &D_80068E78[1];
     ((SprtWords *)g_primPtr)->rgbc = 0x64808080;
     ((SprtWords *)g_primPtr)->xy = r->x | (r->y << 16);
-    w = D_80068E78[0].unk0;
-    w |= D_80068E78[0].unk1 << 8;
+    w = D_80068E78[0].u;
+    w |= D_80068E78[0].v << 8;
     ((SprtWords *)g_primPtr)->uvclut = w | clut;
-    ((SprtWords *)g_primPtr)->wh = D_80068E78[0].unk4 | (D_80068E78[0].unk5 << 16);
+    ((SprtWords *)g_primPtr)->wh = D_80068E78[0].w | (D_80068E78[0].h << 16);
     addPrim(ot, g_primPtr);
     g_primPtr += sizeof(SprtWords);
 
     setlen(g_primPtr, 4);
     ((SprtWords *)g_primPtr)->rgbc = 0x64808080;
-    ((SprtWords *)g_primPtr)->xy = (r->x + r->w - d2->unk4) | (r->y << 16);
-    ((SprtWords *)g_primPtr)->uvclut = D_80068E78[2].unk0 | (d2->unk1 << 8) | clut;
-    ((SprtWords *)g_primPtr)->wh = d2->unk4 | (d2->unk5 << 16);
+    ((SprtWords *)g_primPtr)->xy = (r->x + r->w - d2->w) | (r->y << 16);
+    ((SprtWords *)g_primPtr)->uvclut = D_80068E78[2].u | (d2->v << 8) | clut;
+    ((SprtWords *)g_primPtr)->wh = d2->w | (d2->h << 16);
     addPrim(ot, g_primPtr);
     g_primPtr += sizeof(SprtWords);
 
     tw.y = 0;
     tw.h = 0xFF;
-    tw.x = D_80068E78[1].unk0;
-    tw.w = d1->unk4;
+    tw.x = D_80068E78[1].u;
+    tw.w = d1->w;
     SetTexWindow(g_primPtr, &D_800F8E10);
     addPrim(ot, g_primPtr);
     g_primPtr += 0xC;
 
     setlen(g_primPtr, 4);
     ((SprtWords *)g_primPtr)->rgbc = 0x64808080;
-    ((SprtWords *)g_primPtr)->xy = (r->x + D_80068E78[0].unk4) | (r->y << 16);
-    ((SprtWords *)g_primPtr)->uvclut = (d1->unk1 << 8) | clut;
-    ((SprtWords *)g_primPtr)->wh = (r->w - (D_80068E78[0].unk4 + d2->unk4)) | (d1->unk5 << 16);
+    ((SprtWords *)g_primPtr)->xy = (r->x + D_80068E78[0].w) | (r->y << 16);
+    ((SprtWords *)g_primPtr)->uvclut = (d1->v << 8) | clut;
+    ((SprtWords *)g_primPtr)->wh = (r->w - (D_80068E78[0].w + d2->w)) | (d1->h << 16);
     addPrim(ot, g_primPtr);
     g_primPtr += sizeof(SprtWords);
 
     setlen(g_primPtr, 2);
-    ((DrMode2Words *)g_primPtr)->code[0] = get_mode(1, 1, d1->unk6);
+    ((DrMode2Words *)g_primPtr)->code[0] = get_mode(1, 1, d1->tpage);
     ((DrMode2Words *)g_primPtr)->code[1] = get_tw(&tw);
     addPrim(ot, g_primPtr);
     g_primPtr += sizeof(DrMode2Words);

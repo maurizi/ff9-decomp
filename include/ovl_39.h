@@ -265,7 +265,7 @@ typedef struct {
     u16 unk0;
     u16 unk2;
     u16 unk4;
-    Unk6 unk6[0x69];
+    CardEntry unk6[0x69];
     u16 unk27C;
     u16 unk27E;
 } CardData; /* Tetra Master card list, g_cards (card_getInventory) */

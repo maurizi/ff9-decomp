@@ -1013,7 +1013,7 @@ void tm_stockInput(TmState *s) {
     s32 x;
     s32 y;
     TmCard *c;
-    Unk6 *d;
+    CardEntry *d;
 
     ui_drawHand(s->stockCol * 15 + 3, s->stockRow * 15 + 0x30, 3);
     if (s->task == TM_TASK_CHOICE || s->task == TM_TASK_CARD_AWAY) {
@@ -1119,14 +1119,14 @@ void tm_stockInput(TmState *s) {
                 }
             }
             d = card_find(tm_getStockCursorId(s), s->copyIdx);
-            if (d != (Unk6 *)-1) {
+            if (d != (CardEntry *)-1) {
                 c = &s->cards[s->handCount];
-                c->id = d->unk0;
-                c->power = d->unk2;
-                c->type = d->unk3;
-                c->pdef = d->unk4;
-                c->mdef = d->unk5;
-                c->arrows = d->unk1;
+                c->id = d->id;
+                c->power = d->power;
+                c->type = d->type;
+                c->pdef = d->physDef;
+                c->mdef = d->magicDef;
+                c->arrows = d->arrows;
                 card_remove(tm_getStockCursorId(s), s->copyIdx);
                 s->copyIdx = 0;
                 tm_playSe(TM_SE_CARD);
@@ -2967,7 +2967,7 @@ void tm_showStockCard(TmState *s) {
     TmCard *c0;
     TmCard *p;
     TmCard *q;
-    Unk6 *d;
+    CardEntry *d;
     s32 i;
     s32 n;
     s32 m;
@@ -3028,16 +3028,16 @@ void tm_showStockCard(TmState *s) {
                 c->small = 0;
                 c->onBoard = 1;
                 c->owner = TM_PLAYER;
-                c->id = d->unk0;
+                c->id = d->id;
                 if (i == 0) {
-                    c0->arrows = d->unk1;
+                    c0->arrows = d->arrows;
                 } else {
                     c->arrows = 0;
                 }
-                c->power = d->unk2;
-                c->type = d->unk3;
-                c->pdef = d->unk4;
-                c->mdef = d->unk5;
+                c->power = d->power;
+                c->type = d->type;
+                c->pdef = d->physDef;
+                c->mdef = d->magicDef;
                 k++;
                 c->visible = 1;
                 if (k == n) {

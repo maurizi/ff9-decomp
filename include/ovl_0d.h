@@ -242,7 +242,7 @@ typedef struct {
 #define g_tmDecks     PSX_RAM(TmDeck *, 0x80103C00)     /* [64] */
 #define g_tmOpponents PSX_RAM(TmOpponent *, 0x80104000) /* [256] */
 
-/* Card stats as kept in the card stock (main's Unk6) */
+/* Card stats as kept in the card stock (main's CardEntry) */
 typedef struct {
     u8 id;
     u8 arrows;

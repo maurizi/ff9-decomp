@@ -491,7 +491,7 @@ void menuCard_calcCollectorPoints(s32 *out) {
     s32 i;
     s32 j;
     CardInfo *e;
-    Unk6 *c;
+    CardEntry *c;
 
     e = card_getInfoTable();
     kinds = 0;
@@ -506,8 +506,8 @@ void menuCard_calcCollectorPoints(s32 *out) {
     for (i = 0; i < CARD_COUNT; i++) {
         for (j = 0; j < s_menuCard.count[i]; j++) {
             c = card_find(i, j);
-            s_menuCardArrowsSeen[c->unk1] = 1;
-            typePts += s_menuCardTypePoints[c->unk3];
+            s_menuCardArrowsSeen[c->arrows] = 1;
+            typePts += s_menuCardTypePoints[c->type];
         }
     }
     for (i = 0; i < 0x100; i++) {
@@ -631,7 +631,7 @@ void menuCard_drawCardInfo(void) {
 }
 
 void menuCard_drawCard(s32 x, s32 y, s32 z, s32 id, s32 dim, u8 flag) {
-    Unk6 *card;
+    CardEntry *card;
     s32 c;
 
     if (flag) {
@@ -675,29 +675,29 @@ void menuCard_drawCell(s32 x, s32 y, s32 z, s32 id) {
     menuCard_drawSprite(x, y, 0x14, icon, 0x64808080);
 }
 
-void menuCard_drawArrows(s32 x, s32 y, s32 otz, Unk6 *card) {
+void menuCard_drawArrows(s32 x, s32 y, s32 otz, CardEntry *card) {
     u32 color;
     s32 i;
 
     color = menuCard_getStatsColor();
     for (i = 0; i < 8; i++) {
-        if ((card->unk1 >> i) & 1) {
+        if ((card->arrows >> i) & 1) {
             menuCard_drawSprite(x + s_menuCardArrows[i].x, y + s_menuCardArrows[i].y, otz, s_menuCardArrows[i].sprite, color);
         }
     }
 }
 
-void menuCard_drawStats(s32 x, s32 y, s32 otz, Unk6 *card) {
+void menuCard_drawStats(s32 x, s32 y, s32 otz, CardEntry *card) {
     u8 s[4];
     u32 color;
     s32 i;
     s32 dx;
 
     color = menuCard_getStatsColor();
-    s[0] = (card->unk2 >> 4) + CARD_SPR_HEX;
-    s[1] = card->unk3 + CARD_SPR_TYPE;
-    s[2] = (card->unk4 >> 4) + CARD_SPR_HEX;
-    s[3] = (card->unk5 >> 4) + CARD_SPR_HEX;
+    s[0] = (card->power >> 4) + CARD_SPR_HEX;
+    s[1] = card->type + CARD_SPR_TYPE;
+    s[2] = (card->physDef >> 4) + CARD_SPR_HEX;
+    s[3] = (card->magicDef >> 4) + CARD_SPR_HEX;
     for (i = 0; i < 4; i++) {
         menuCard_drawSprite(x + 9 + i * 6, y + 0x26, otz, s[i], color);
     }

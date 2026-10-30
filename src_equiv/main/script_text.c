@@ -1562,7 +1562,7 @@ long ratan2(long y, long x) {
 
 /* ============================================================ streak particles (two pools)
  *
- * Pool layout (Unk8007BC20): +0 free list, +4 live list, +8 particles to spawn per call, +0xC fall
+ * Pool layout (RainState): +0 free list, +4 live list, +8 particles to spawn per call, +0xC fall
  * offset per frame (applied to y, in the high half), +0x10/+0x18 the draw-mode word per buffer, +0x20 set
  * when the free list ran out, +0x24 nonzero = don't move (draw only). A node is {next, pos.xy, pos.z}.
  */
@@ -1575,11 +1575,11 @@ typedef struct Streak {
 
 /* Spawn pool->unk8 particles from the free list at random positions, y = random byte + y0. The random
  * pointer is aligned down to a word and consumes one word per particle (rand_refill first if needed). */
-static void streak_spawn(Unk8007BC20 *pool, s32 y0) {
-    Streak *head = (Streak *)pool->unk0;
+static void streak_spawn(RainState *pool, s32 y0) {
+    Streak *head = (Streak *)pool->freeList;
     Streak *f = head;
     Streak *last = NULL;
-    s32 k = pool->unk8;
+    s32 k = pool->count;
     u32 *r;
     u32 w;
 
@@ -1603,9 +1603,9 @@ static void streak_spawn(Unk8007BC20 *pool, s32 y0) {
     }
     g_randPtr = (u8 *)r;
     if (last != NULL) {
-        pool->unk0 = (Unk8007BC20Node *)last->next;
-        last->next = (Streak *)pool->unk4;
-        pool->unk4 = (s32)head;
+        pool->freeList = (RainNode *)last->next;
+        last->next = (Streak *)pool->active;
+        pool->active = (s32)head;
     }
 }
 
@@ -1649,12 +1649,12 @@ void wrain_stepDrop(Streak *s, s32 dy, s32 still) {
  * Streaks whose word at +6 (the y half of xy) has become positive go back to the free list. The chain is
  * closed with the pool's draw-mode word for buffer `buf` and linked into *ot. Returns the next free
  * primitive. */
-static u8 *streak_draw(Unk8007BC20 *pool, Streak *s, s32 buf, u32 *ot, u8 *pkt) {
+static u8 *streak_draw(RainState *pool, Streak *s, s32 buf, u32 *ot, u8 *pkt) {
     Streak *prev = NULL;
-    Streak *freel = (Streak *)pool->unk0;
-    Streak *live = (Streak *)pool->unk4;
-    s32 dy = pool->unkC;
-    s32 still = pool->unk24;
+    Streak *freel = (Streak *)pool->freeList;
+    Streak *live = (Streak *)pool->active;
+    s32 dy = pool->speed;
+    s32 still = pool->stopping;
     u32 link = *ot;
     u32 *mode = (u32 *)((u8 *)pool + buf * 8 + 0x10);
     u32 *p;
@@ -1715,8 +1715,8 @@ static u8 *streak_draw(Unk8007BC20 *pool, Streak *s, s32 buf, u32 *ot, u8 *pkt) 
     }
     mode[0] = 0x01000000 | link;
     link = (u32)mode & 0xFFFFFF;
-    pool->unk0 = (Unk8007BC20Node *)freel;
-    pool->unk4 = (s32)live;
+    pool->freeList = (RainNode *)freel;
+    pool->active = (s32)live;
     *ot = link;
     return pkt;
 }

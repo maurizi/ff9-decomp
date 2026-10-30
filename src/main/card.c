@@ -7,7 +7,7 @@ void card_initAll(void) {
     g_cards.losses = 0;
     g_cards.draws = 0;
     for (i = 0x68; i >= 0; i--) {
-        g_cards.cards[i].unk0 = v;
+        g_cards.cards[i].id = v;
     }
 }
 
@@ -22,7 +22,7 @@ s32 card_add(s32 a) {
         return -1;
     }
     for (i = 0; i < 100; i++) {
-        if (g_cards.cards[i].unk0 == 0xFF) {
+        if (g_cards.cards[i].id == 0xFF) {
             card_rollStats(&g_cards.cards[i], a);
             return card_countOf(a) == 1;
         }
@@ -33,13 +33,13 @@ s32 card_add(s32 a) {
 s32 card_addWithStats(u8 id, u8 a, u8 b, u8 c, u8 d, u8 e) {
     s32 i;
     for (i = 0; i < 0x69; i++) {
-        if (g_cards.cards[i].unk0 == 0xFF) {
-            g_cards.cards[i].unk0 = id;
-            g_cards.cards[i].unk1 = a;
-            g_cards.cards[i].unk2 = b;
-            g_cards.cards[i].unk3 = c;
-            g_cards.cards[i].unk4 = d;
-            g_cards.cards[i].unk5 = e;
+        if (g_cards.cards[i].id == 0xFF) {
+            g_cards.cards[i].id = id;
+            g_cards.cards[i].arrows = a;
+            g_cards.cards[i].power = b;
+            g_cards.cards[i].type = c;
+            g_cards.cards[i].physDef = d;
+            g_cards.cards[i].magicDef = e;
             return card_countOf(id) == 1;
         }
     }
@@ -82,32 +82,32 @@ s32 card_countOf(a)
     s32 n = 0;
     s32 i;
     for (i = 0; i < 0x69; i++) {
-        if (g_cards.cards[i].unk0 == a) {
+        if (g_cards.cards[i].id == a) {
             n++;
         }
     }
     return n;
 }
 
-Unk6 *card_find(s32 id, s32 n) {
+CardEntry *card_find(s32 id, s32 n) {
     s32 k = 0;
     s32 i;
     for (i = 0; i < 0x69; i++) {
-        if (g_cards.cards[i].unk0 == (u8)id) {
+        if (g_cards.cards[i].id == (u8)id) {
             if (n == k) {
                 return &g_cards.cards[i];
             }
             k++;
         }
     }
-    return (Unk6 *)-1;
+    return (CardEntry *)-1;
 }
 
 s32 card_countAll(void) {
     s32 n = 0;
     s32 i;
     for (i = 0; i < 0x69; i++) {
-        if (g_cards.cards[i].unk0 != 0xFF) {
+        if (g_cards.cards[i].id != 0xFF) {
             n++;
         }
     }
@@ -126,8 +126,8 @@ s32 card_countKinds(void) {
         *p-- = 0;
     }
     for (i = 0; i < 0x69; i++) {
-        if (g_cards.cards[i].unk0 != 0xFF) {
-            cnt[g_cards.cards[i].unk0]++;
+        if (g_cards.cards[i].id != 0xFF) {
+            cnt[g_cards.cards[i].id]++;
         }
     }
     n = 0;
@@ -143,9 +143,9 @@ s32 card_remove(s32 id, s32 n) {
     s32 k = 0;
     s32 i;
     for (i = 0; i < 0x69; i++) {
-        if (g_cards.cards[i].unk0 == (u8)id) {
+        if (g_cards.cards[i].id == (u8)id) {
             if (k == n) {
-                g_cards.cards[i].unk0 = 0xFF;
+                g_cards.cards[i].id = 0xFF;
                 return 0;
             }
             k++;
@@ -158,7 +158,7 @@ void card_clearAll(void) {
     s32 v = 0xFF;
     s32 i;
     for (i = 0x68; i >= 0; i--) {
-        g_cards.cards[i].unk0 = v;
+        g_cards.cards[i].id = v;
     }
 }
 
@@ -204,7 +204,7 @@ void *card_getInventory(void) {
     return &g_cards;
 }
 
-void card_rollStats(Unk6 *card, u8 id) {
+void card_rollStats(CardEntry *card, u8 id) {
     Bytes8 bits;
     u8 v;
     s32 r;
@@ -216,24 +216,24 @@ void card_rollStats(Unk6 *card, u8 id) {
 
     bits = D_800121C0;
     tbl = D_800121C8;
-    card->unk0 = id;
+    card->id = id;
     v = tbl[id].power >> 1;
     if (v != 0) {
-        card->unk2 = v + rand() % v;
+        card->power = v + rand() % v;
     } else {
-        card->unk2 = 0;
+        card->power = 0;
     }
     v = tbl[id].physDef >> 1;
     if (v != 0) {
-        card->unk4 = v + rand() % v;
+        card->physDef = v + rand() % v;
     } else {
-        card->unk4 = 0;
+        card->physDef = 0;
     }
     v = tbl[id].magicDef >> 1;
     if (v != 0) {
-        card->unk5 = v + rand() % v;
+        card->magicDef = v + rand() % v;
     } else {
-        card->unk5 = 0;
+        card->magicDef = 0;
     }
     r = rand() % 100;
     if (r <= 0) {
@@ -255,20 +255,20 @@ void card_rollStats(Unk6 *card, u8 id) {
     } else {
         n = 8;
     }
-    card->unk1 = 0;
+    card->arrows = 0;
     for (i = 0; i < n; i++) {
         done = 0;
         do {
             b = &bits.unk0[rand() & 7];
-            if (!(card->unk1 & *b)) {
-                card->unk1 |= *b;
+            if (!(card->arrows & *b)) {
+                card->arrows |= *b;
                 done = 1;
             }
         } while (!done);
     }
-    card->unk3 = tbl[id].type;
+    card->type = tbl[id].type;
     if (!(rand() & 0x7F)) {
-        card->unk3 = 2;
+        card->type = 2;
     }
 }
 

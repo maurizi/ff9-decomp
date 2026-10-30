@@ -2170,12 +2170,12 @@ void menuSave_copyCards(CardData *d, CardData *s) {
     d->unk2 = s->unk2;
     d->unk4 = s->unk4;
     for (i = 0; i < 0x69; i++) {
-        d->unk6[i].unk0 = s->unk6[i].unk0;
-        d->unk6[i].unk1 = s->unk6[i].unk1;
-        d->unk6[i].unk2 = s->unk6[i].unk2;
-        d->unk6[i].unk3 = s->unk6[i].unk3;
-        d->unk6[i].unk4 = s->unk6[i].unk4;
-        d->unk6[i].unk5 = s->unk6[i].unk5;
+        d->unk6[i].id = s->unk6[i].id;
+        d->unk6[i].arrows = s->unk6[i].arrows;
+        d->unk6[i].power = s->unk6[i].power;
+        d->unk6[i].type = s->unk6[i].type;
+        d->unk6[i].physDef = s->unk6[i].physDef;
+        d->unk6[i].magicDef = s->unk6[i].magicDef;
     }
     d->unk27C = s->unk27C;
     d->unk27E = s->unk27E;

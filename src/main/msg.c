@@ -1823,13 +1823,13 @@ s32 rain_draw(void) {
     if (g_gameState->gameData->drawBuf != 0) {
         r += 0x22B0;
     }
-    if (g_fieldRain.unk24 < 2) {
-        rain_spawn(g_fieldRain.unkC == 0xFF0 ? -0x1770 : -0xFA0);
+    if (g_fieldRain.stopping < 2) {
+        rain_spawn(g_fieldRain.speed == 0xFF0 ? -0x1770 : -0xFA0);
     }
-    if (g_fieldRain.unk24 != 0) {
-        g_fieldRain.unk24++;
+    if (g_fieldRain.stopping != 0) {
+        g_fieldRain.stopping++;
     }
-    n = g_fieldRain.unk4;
+    n = g_fieldRain.active;
     if (n != 0) {
         fldbg_applyGeomOffset();
         gd = g_gameState->gameData;
@@ -1841,37 +1841,37 @@ s32 rain_draw(void) {
     return (s32)r;
 }
 
-u8 *rain_init(Unk8007BC20Node *buf) {
-    Unk8007BC20Node *p = buf;
-    Unk8007BC20Node *end;
-    g_fieldRain.unk0 = buf;
+u8 *rain_init(RainNode *buf) {
+    RainNode *p = buf;
+    RainNode *end;
+    g_fieldRain.freeList = buf;
     if (buf != NULL) {
         end = buf + 222;
         for (; p < end; p++) {
-            p->unk0 = p + 1;
+            p->next = p + 1;
         }
-        p[-1].unk0 = NULL;
+        p[-1].next = NULL;
     }
-    g_fieldRain.unk4 = 0;
-    SetDrawTPage(&g_fieldRain.unk10, 0, 0, GetTPage(0, 3, 0, 0));
-    g_fieldRain.unk18 = g_fieldRain.unk10;
-    g_fieldRain.unk8 = 0;
-    g_fieldRain.unkC = 0;
-    g_fieldRain.unk24 = 0;
+    g_fieldRain.active = 0;
+    SetDrawTPage(&g_fieldRain.tpage, 0, 0, GetTPage(0, 3, 0, 0));
+    g_fieldRain.tpage2 = g_fieldRain.tpage;
+    g_fieldRain.count = 0;
+    g_fieldRain.speed = 0;
+    g_fieldRain.stopping = 0;
     g_fieldRainPrims = (u8 *)(buf + 222);
     return (u8 *)p + 0x4560;
 }
 
 void rain_set(s32 a, u32 b) {
     if (a != 0 && b != 0) {
-        Unk8007BC20 *p = &g_fieldRain;
+        RainState *p = &g_fieldRain;
 
         if (a < 0x83) {
-            p->unk8 = a;
+            p->count = a;
         } else {
-            p->unk8 = 0x82;
+            p->count = 0x82;
         }
     }
-    g_fieldRain.unkC = b * 16;
-    g_fieldRain.unk24 = a == 0 && b != 0;
+    g_fieldRain.speed = b * 16;
+    g_fieldRain.stopping = a == 0 && b != 0;
 }

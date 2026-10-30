@@ -1473,20 +1473,20 @@ extern AkaoArgs g_akaoCommandBlock; /* command block passed to the handlers */
 extern void (*g_akaoCommandHandlers[])(AkaoArgs *); /* sound command handlers */
 
 typedef struct {
-    u8 unk0; /* card id, 0xFF = none */
-    u8 unk1;
-    u8 unk2;
-    u8 unk3;
-    u8 unk4;
-    u8 unk5;
-} Unk6; /* card inventory entry */
+    u8 id; /* card id, 0xFF = none */
+    u8 arrows; /* arrow bits (card_rollStats; tm_game copies it to the board card) */
+    u8 power; /* (tm_game power, card_rollStats) */
+    u8 type; /* (tm_game type) */
+    u8 physDef; /* (tm_game pdef) */
+    u8 magicDef; /* (tm_game mdef) */
+} CardEntry; /* card inventory entry */
 
 /* Tetra Master card inventory (runtime field/menu campaign) */
 typedef struct {
     s16 wins;
     s16 losses;
     s16 draws;
-    Unk6 cards[105]; /* id 0xFF = empty */
+    CardEntry cards[105]; /* id 0xFF = empty */
 } CardInventory;
 extern CardInventory g_cards;
 
@@ -2095,24 +2095,24 @@ typedef struct {
     u16 unk2;
 } Unk8006DDD0;
 extern Unk8006DDD0 g_levelHpMp[];
-typedef struct Unk8007BC20Node {
-    struct Unk8007BC20Node *unk0; /* next */
+typedef struct RainNode {
+    struct RainNode *next; /* next */
     u8 pad4[0xC - 4];
-} Unk8007BC20Node;
+} RainNode;
 typedef struct {
-    Unk8007BC20Node *unk0; /* free list */
-    s32 unk4;
-    s32 unk8;
-    s32 unkC;
-    DR_TPAGE unk10;
-    DR_TPAGE unk18;
+    RainNode *freeList; /* free list */
+    s32 active; /* active drop list (rain_drawDrops) */
+    s32 count; /* drops spawned per frame, max 0x82 (rain_set) */
+    s32 speed; /* fall speed * 16 (rain_set); 0xFF0 spawns higher */
+    DR_TPAGE tpage; /*  */
+    DR_TPAGE tpage2; /* copy of tpage (second draw buffer) */
     u8 pad20[0x24 - 0x20];
-    s32 unk24;
-} Unk8007BC20;
+    s32 stopping; /* rain_set(0, speed): stop spawning and let the drops fall out */
+} RainState;
 extern u8 *g_fieldRainPrims;
 extern u8 *g_worldRainPrims;
-extern Unk8007BC20 g_fieldRain;
-extern Unk8007BC20 g_worldRain;
+extern RainState g_fieldRain;
+extern RainState g_worldRain;
 void rain_spawn(s32);  /* hand-written asm module */
 s32 rain_drawDrops(s32, u8, u32 *, s32);
 void wrain_spawn(s32);
@@ -2289,7 +2289,7 @@ s32 evt_callObjectFunc(EvtObject *, s32, s32, s32);
 extern s32 D_8007AE34;
 extern CdlATV g_akaoCdAtv;
 void akao_markSeqDirty(); /* (AkaoSeq *, AkaoChannel *) */
-void card_rollStats(Unk6 *, u8);
+void card_rollStats(CardEntry *, u8);
 extern s32 g_akaoLfoWaves[];
 
 typedef struct {
@@ -2678,7 +2678,7 @@ void pad_setRepeatDelay(s32, s32, s32);
 void pad_setRepeatInterval(s32, s32, s32);
 s32 cd_getState(void);
 s32 card_countOf(); /* defined K&R-style: u8 param, callers pass ints unmasked */
-Unk6 *card_find(s32, s32);
+CardEntry *card_find(s32, s32);
 s32 card_remove(s32, s32);
 typedef struct {
     u8 power; /* power (x2) */
@@ -2918,15 +2918,15 @@ extern s16 g_akaoMonoGain;
 extern s16 g_akaoPanCurve[]; /* pan curve, 256 entries */
 /* item icon sprites (D_800689B0) */
 typedef struct {
-    u8 unk0; /* u */
-    u8 unk1; /* v */
-    u16 unk2; /* clut */
-    u8 unk4; /* w */
-    u8 unk5; /* h */
-    u16 unk6; /* tpage */
-} Unk800689B0;
-extern Unk800689B0 D_800689B0[];
-extern Unk800689B0 g_winTailSprites[];
+    u8 u; /* u */
+    u8 v; /* v */
+    u16 clut; /* clut */
+    u8 w; /* w */
+    u8 h; /* h */
+    u16 tpage; /* tpage */
+} UiSprite;
+extern UiSprite D_800689B0[];
+extern UiSprite g_winTailSprites[];
 u8 win_isVisible(Window *);
 void win_drawFrame(Window *);
 void win_drawTitle(Window *);
@@ -3279,8 +3279,8 @@ typedef struct {
     u32 tag;
     u32 code[2];
 } DrMode2Words; /* DR_MODE / DR_TWIN */
-extern Unk800689B0 g_uiBackgroundSprite;
-extern Unk800689B0 g_winFillSprite;
+extern UiSprite g_uiBackgroundSprite;
+extern UiSprite g_winFillSprite;
 /* window frame tables (win_buildBorder) */
 extern u32 D_80068FA4[2]; /* edge rgbc, by flag */
 extern u32 D_80068FAC[2]; /* corner rgbc, by flag */

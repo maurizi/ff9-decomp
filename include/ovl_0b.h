@@ -2362,7 +2362,7 @@ typedef struct {
 s32 btlfx_fadeUnitGroup(u32, s32);
 
 /* main exe: candidates for ff9.h */
-extern Unk800689B0 D_80068E78[3];
+extern UiSprite D_80068E78[3];
 s32 win_getPalClut(s32);
 void SetTexWindow(void *, RECT *); /* PsyQ */
 void win_reapClosed(void);
