@@ -567,8 +567,8 @@ s32 w_frameGetParameter(s32 arg0) {
         return ((u16)g_worldPlayer->pos.rotY & 0xFFF) >> 4;
     case WM_PARAM_ZONE:
         return wm_getAreaZone(WM_ATTR_AREA(v));
-    case 0xD0:
-        return D_800CCD7C;
+    case WM_PARAM_TYPE11_RIDE_OFFSET:
+        return g_worldActorTypeInfo[11].rideOffset;
     case WM_PARAM_RUNNING:
         return g_worldState == WM_STATE_RUNNING;
     case WM_PARAM_TITLE_PHASE:

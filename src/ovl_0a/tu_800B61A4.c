@@ -4012,9 +4012,9 @@ s32 fldbg_resetGeomOffset(void) {
 
 s32 func_800C0FF4(s32 arg0) {
     if (arg0 == -1) {
-        D_800CA0E0 = 3600;
+        g_fieldBgState.unk78 = 3600;
     } else {
-        D_800CA0E0 = arg0 * arg0;
+        g_fieldBgState.unk78 = arg0 * arg0;
     }
     return 1;
 }

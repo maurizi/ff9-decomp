@@ -1184,7 +1184,6 @@ extern struct BgEntry *g_fieldBgCtxEntries; /* = g_fieldBgCtx.entries */
 extern s32 g_fieldModelQueue[16];
 extern s8 g_fieldSoundBankSlots[5];
 extern s32 g_fieldSoundBankIds[5];
-extern s32 D_800CA0E0;
 extern s32 g_fieldPreloadRequests[8];
 extern s32 g_fieldPreloadExcludes[8];
 extern u8 g_fieldPreloadRequestCount; /* g_fieldPreloadRequests count */

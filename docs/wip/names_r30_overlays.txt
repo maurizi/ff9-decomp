@@ -12,6 +12,7 @@ D_800C9DE0 g_fieldBgiMoveEdgeCount
 D_800CAAB8 g_fieldBgiMoveEdges
 func_800C77DC bgi_getMoveTris
 func_800C7914 bgi_getMoveEdges
+# D_800CA0E0 (g_fieldBgState + 0x78) is now written as g_fieldBgState.unk78 (func_800C0FF4)
 func_8019AB98 mbg_setVolume
 
 ## ovl_0c
@@ -56,6 +57,7 @@ D_800CFF02 g_worldTexAnim1Interval
 func_800C16C0 wm_naviDrawChocograph
 func_800B84E8 wm_runSetupStep
 func_800B36AC wm_mountPalettePre
+# D_800CCD7C (g_worldActorTypeInfo + 0xBC) is now g_worldActorTypeInfo[11].rideOffset (w_frameGetParameter 0xD0, WM_PARAM_TYPE11_RIDE_OFFSET)
 
 ## ovl_0d
 D_800B3664 g_tmMusicRequest

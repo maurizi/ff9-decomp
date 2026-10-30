@@ -64,6 +64,7 @@
 #define WM_PARAM_EVENT_BATTLE 0xCD /* 1 in g_worldEventBattleRate + 1 while walking on topography 0x24-0x26 */
 #define WM_PARAM_PLAYER_DIR 0xCE /* player rotY >> 4 */
 #define WM_PARAM_ZONE 0xCF /* wm_getAreaZone(area) */
+#define WM_PARAM_TYPE11_RIDE_OFFSET 0xD0 /* g_worldActorTypeInfo[11].rideOffset */
 #define WM_PARAM_RUNNING 0xD1 /* g_worldState == WM_STATE_RUNNING */
 #define WM_PARAM_TITLE_PHASE 0xD2 /* g_worldTitlePhase */
 #define WM_PARAM_NAVI_VISIBLE 0xD3 /* g_worldNaviVisible */
@@ -928,7 +929,6 @@ extern WmChunkPack *g_worldDefaultBlocks;
 extern s32 g_worldChunksW;
 extern MATRIX g_worldBlockMatrix;
 extern s32 g_worldMapDebugFlags; /* debug flags */
-extern s16 D_800CCD7C;
 extern u8 g_worldPlayerStepped;
 extern u16 g_worldEventBattleRate;
 extern s32 g_worldReqParams[4]; /* script request parameters */
