@@ -124,10 +124,10 @@ void btl_updateUnitModel(BtlUnit *u, s32 *ot) {
         id = (u->shadowDirBone << 8) | u->shadowBone;
         if (u->flags & 1) {
             if (!(g_gameState->gameData->unk8E4.battle->cmdFlags & 1)) {
-                if (u->unk7B != g_gameState->gameData->unk8E4.battle->escapeHeld) {
+                if (u->escapeStance != g_gameState->gameData->unk8E4.battle->escapeHeld) {
                     btl_setIdleMotion(u);
                 }
-                u->unk7B = g_gameState->gameData->unk8E4.battle->escapeHeld;
+                u->escapeStance = g_gameState->gameData->unk8E4.battle->escapeHeld;
             }
             *ot = (s32)btl_drawShadow(g_gameState->gameData->unk8E4.battle->work->shadows, (u->flags >> 1) & 0xF, 0, id, (u8 *)*ot);
         } else if (u->koState < 4) {
@@ -384,7 +384,7 @@ void btl_updateKo(BtlUnit *u) {
 s32 btl_waitHitMotions(BtlCmd *arg0) {
     BtlUnit *u;
     s32 r;
-    u32 bit = arg0->unk10.b.covered;
+    u32 bit = arg0->info.b.covered;
     do {
         r = 1;
         if (bit) {

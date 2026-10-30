@@ -20,10 +20,10 @@ void btlbg_init(BtlBgHeader *arg0, BtlUnit9C50 *arg1) {
             BtlUnit9C50 *a;
             BtlUnit9C50 *e;
             a = g_btlbgTexAnims + i;
-            a->unk4 |= 1;
+            a->flags |= 1;
             e = g_btlbgTexAnims + i;
-            e->unkC = 0;
-            e->unk12 = 0x1000;
+            e->pos = 0;
+            e->lastFrame = 0x1000;
         }
     }
     g_btlbgScrollCount = g_btlbgHeader->scrollCount;

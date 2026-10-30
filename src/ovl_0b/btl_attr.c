@@ -37,10 +37,10 @@ void btl_showWeapon(BtlUnit *arg0) {
 
 s32 btl_setKoMotion(BtlUnit *arg0) {
     arg0->model->motion = (BtlUnit9CC *)arg0->motions[4];
-    arg0->model->texAnims[2].unk4 &= ~3;
-    arg0->model->texAnims[0].unk4 |= 3;
-    arg0->model->texAnims[0].unkC = 0;
-    arg0->model->texAnims[0].unk12 = 0x1000;
+    arg0->model->texAnims[2].flags &= ~3;
+    arg0->model->texAnims[0].flags |= 3;
+    arg0->model->texAnims[0].pos = 0;
+    arg0->model->texAnims[0].lastFrame = 0x1000;
     arg0->obj->frame = 0;
     if (arg0->status & BTL_STATUS_AUTO_LIFE) {
         arg0->koState = 7;
@@ -449,12 +449,12 @@ void btl_setUnitAttr(BtlUnit *arg0, s32 arg1, u32 arg2) {
         break;
     case 0x34:
         if (g_gameState->gameData->unk8E4.battle->phase == BTL_PHASE_INTRO) {
-            arg0->unkB2 = 0;
+            arg0->targetableReq = 0;
             arg0->flags &= ~0x10000000;
             arg0->flags &= ~0x10000;
             arg0->flags &= ~0x20000000;
         } else {
-            arg0->unkB2 = arg2 + 2;
+            arg0->targetableReq = arg2 + 2;
         }
         break;
     case 0x35:
@@ -495,19 +495,19 @@ void btl_setUnitAttr(BtlUnit *arg0, s32 arg1, u32 arg2) {
         break;
     case 0x3D:
         off = arg2 * 20;
-        ((BtlUnit9C50 *)((u8 *)arg0->model->texAnims + off))->unk4 |= 1;
-        ((BtlUnit9C50 *)((u8 *)arg0->model->texAnims + off))->unkC = 0;
-        ((BtlUnit9C50 *)((u8 *)arg0->model->texAnims + off))->unk12 = 0x1000;
+        ((BtlUnit9C50 *)((u8 *)arg0->model->texAnims + off))->flags |= 1;
+        ((BtlUnit9C50 *)((u8 *)arg0->model->texAnims + off))->pos = 0;
+        ((BtlUnit9C50 *)((u8 *)arg0->model->texAnims + off))->lastFrame = 0x1000;
         break;
     case 0x3E:
         w = arg2 * 20;
-        ((BtlUnit9C50 *)((u8 *)arg0->model->texAnims + w))->unk4 &= ~3;
+        ((BtlUnit9C50 *)((u8 *)arg0->model->texAnims + w))->flags &= ~3;
         break;
     case 0x3F:
         x = arg2 * 20;
-        ((BtlUnit9C50 *)((u8 *)arg0->model->texAnims + x))->unk4 |= 3;
-        ((BtlUnit9C50 *)((u8 *)arg0->model->texAnims + x))->unkC = 0;
-        ((BtlUnit9C50 *)((u8 *)arg0->model->texAnims + x))->unk12 = 0x1000;
+        ((BtlUnit9C50 *)((u8 *)arg0->model->texAnims + x))->flags |= 3;
+        ((BtlUnit9C50 *)((u8 *)arg0->model->texAnims + x))->pos = 0;
+        ((BtlUnit9C50 *)((u8 *)arg0->model->texAnims + x))->lastFrame = 0x1000;
         break;
     case 0x45:
         arg0->flags = (arg0->flags & ~0x40000) | ((arg2 & 1) << 18);

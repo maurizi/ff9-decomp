@@ -126,59 +126,59 @@ void btl_updateTexAnims(TexAnimSet *arg0) {
     if (arg0 == NULL) {
         return;
     }
-    for (i = 0; i < arg0->unk0; i++) {
-        e = &arg0->unk4[i];
-        if (!(e->unk0 & 1)) {
+    for (i = 0; i < arg0->count; i++) {
+        e = &arg0->anims[i];
+        if (!(e->flags & 1)) {
             continue;
         }
-        if (e->unk1 != 0) {
-            pos = e->unk8;
+        if (e->frameCount != 0) {
+            pos = e->pos;
             frame = pos >> 12;
-            last = e->unkE;
+            last = e->lastFrame;
             if (frame >= 0) {
                 if (frame != last) {
-                    for (j = 0; j < e->unkC; j++) {
-                        t = &e->unk10[j];
-                        r.x = t->unk8[frame][0];
-                        r.y = t->unk8[frame][1];
-                        r.w = t->unk4;
-                        r.h = t->unk6;
-                        MoveImage(&r, t->unk0, t->unk2);
+                    for (j = 0; j < e->rectCount; j++) {
+                        t = &e->rects[j];
+                        r.x = t->src[frame][0];
+                        r.y = t->src[frame][1];
+                        r.w = t->w;
+                        r.h = t->h;
+                        MoveImage(&r, t->x, t->y);
                     }
-                    e->unkE = frame;
+                    e->lastFrame = frame;
                 }
-                pos += e->unk2;
+                pos += e->speed;
             } else {
                 pos += 0x1000;
             }
-            if ((pos >> 12) < e->unk1) {
-                e->unk8 = pos;
-            } else if (e->unk6 != 0) {
+            if ((pos >> 12) < e->frameCount) {
+                e->pos = pos;
+            } else if (e->waitRand != 0) {
                 if (g_randPtr >= g_randTableEnd) {
                     rand_refill();
                     if (g_randPtr >= g_randTableEnd) {
                         rand_refill();
                     }
                 }
-                e->unk8 = -((e->unk4 + (e->unk6 + 1) * ((*g_randPtr << 8) | *g_randPtr++) / 0x10000) << 12);
-            } else if (e->unk0 & 2) {
-                e->unk0 &= 0xFC;
+                e->pos = -((e->waitMin + (e->waitRand + 1) * ((*g_randPtr << 8) | *g_randPtr++) / 0x10000) << 12);
+            } else if (e->flags & 2) {
+                e->flags &= 0xFC;
             } else {
-                e->unk8 = 0;
+                e->pos = 0;
             }
-        } else if (e->unk0 & 4) {
-            pos = e->unk8;
+        } else if (e->flags & 4) {
+            pos = e->pos;
             frame = pos >> 12;
-            for (j = 0; j < e->unkC; j++) {
-                t = &e->unk10[j];
-                MoveImage((RECT *)t, t->unk0, t->unk2 - frame);
-                r.x = t->unk0;
-                r.y = t->unk2 - frame;
-                r.w = t->unk4;
+            for (j = 0; j < e->rectCount; j++) {
+                t = &e->rects[j];
+                MoveImage((RECT *)t, t->x, t->y - frame);
+                r.x = t->x;
+                r.y = t->y - frame;
+                r.w = t->w;
                 r.h = frame;
-                MoveImage(&r, t->unk0, t->unk2 + t->unk6 - frame);
+                MoveImage(&r, t->x, t->y + t->h - frame);
             }
-            e->unk8 = (pos & 0xFFF) + e->unk2;
+            e->pos = (pos & 0xFFF) + e->speed;
         }
     }
 }
@@ -195,29 +195,29 @@ void btl_relocTexAnims(TexAnimSet *set, u16 (*ofs)[4]) {
     if (set == NULL) {
         return;
     }
-    for (i = 0; i < set->unk0; i++) {
-        set->unk4[i].unkE = 1;
-        f = (u16 *)set->unk4[i].unk10;
+    for (i = 0; i < set->count; i++) {
+        set->anims[i].lastFrame = 1;
+        f = (u16 *)set->anims[i].rects;
         if ((u32)f > 0x80000000) {
             return;
         }
         if (f == NULL) {
             continue;
         }
-        idx = set->unk4[i].unkD;
+        idx = set->anims[i].relocIndex;
         f = (u16 *)((u8 *)f + (s32)set);
-        set->unk4[i].unk10 = (TexAnimRect *)f;
+        set->anims[i].rects = (TexAnimRect *)f;
         if (ofs != NULL) {
             f[0] += ofs[idx][2];
             f[1] += ofs[idx][3];
         }
         r = (TexAnimRect *)f;
-        for (j = 0; j < set->unk4[i].unkC; j++) {
-            f = (u16 *)r[j].unk8;
+        for (j = 0; j < set->anims[i].rectCount; j++) {
+            f = (u16 *)r[j].src;
             f = (u16 *)((u8 *)f + (s32)set);
-            r[j].unk8 = (void *)f;
+            r[j].src = (void *)f;
             if (ofs != NULL) {
-                for (k = 0; k < set->unk4[i].unk1; k++) {
+                for (k = 0; k < set->anims[i].frameCount; k++) {
                     g = f + 1;
                     *f += ofs[idx][0];
                     *g += ofs[idx][1];
@@ -329,7 +329,7 @@ void btl_setupEnemies(void) {
         en->nameOfs = ofs->unk0 + 4;
         ofs++;
         en->firstAbility = n;
-        n += rec->unk4F;
+        n += rec->abilityCount;
         en++;
         rec++;
     }
@@ -415,11 +415,11 @@ void btl_placeParty(void) {
         u->rot[2] = 0;
         tbl = D_800F57F0;
         e = &tbl[g_gameState->gameData->characters[(u->flags >> 1) & 0xF].unk34.b.unk4];
-        u->shadowBone = e->unk0;
-        u->shadowDirBone = e->unk1;
-        btl_setShadowSize(u, e->unk2, e->unk3);
+        u->shadowBone = e->shadowBone;
+        u->shadowDirBone = e->shadowDirBone;
+        btl_setShadowSize(u, e->shadowW, e->shadowD);
         x -= 0x278;
-        g_gameState->gameData->unk8E4.battle->work->shadows[(u->flags >> 1) & 0xF].unk4_22 = e->unk4;
+        g_gameState->gameData->unk8E4.battle->work->shadows[(u->flags >> 1) & 0xF].offsetZ = e->shadowZ;
         u = u->next;
     }
 }
@@ -427,16 +427,16 @@ void btl_placeParty(void) {
 void btl_initEnemyType(Unk800C9D1C *arg0, BtlEnemyType *arg1) {
     s16 i;
     BtlUnit9CC *h;
-    arg1->radius = arg0->unk1C;
-    arg1->category = arg0->unk41;
-    arg1->level = arg0->unk40;
-    arg1->eatAbility = arg0->unk47;
-    arg1->max.maxHp = arg0->unkC;
-    arg1->max.maxMp = arg0->unkE;
-    arg1->gil = arg0->unk10;
-    arg1->exp = arg0->unk12;
-    arg1->card = arg0->unk69;
-    arg1->drops.w = arg0->unk14;
+    arg1->radius = arg0->radius;
+    arg1->category = arg0->category;
+    arg1->level = arg0->level;
+    arg1->eatAbility = arg0->eatAbility;
+    arg1->max.maxHp = arg0->maxHp;
+    arg1->max.maxMp = arg0->maxMp;
+    arg1->gil = arg0->gil;
+    arg1->exp = arg0->exp;
+    arg1->card = arg0->card;
+    arg1->drops.w = arg0->drops;
     for (i = 0; i < 6; i++) {
         h = db_lookupRegistered(4, arg0->motionIds[i] | 0x30000, 0);
         arg1->motions[i] = h;
@@ -450,12 +450,12 @@ void btl_initEnemyType(Unk800C9D1C *arg0, BtlEnemyType *arg1) {
     for (i = 0; i < 3; i++) {
         arg1->bones[i] = arg0->bones[i];
     }
-    arg1->deathCry = arg0->unk4C;
-    arg1->confuseAbility = arg0->unk4E;
+    arg1->deathCry = arg0->deathCry;
+    arg1->confuseAbility = arg0->confuseAbility;
     for (i = 0; i < 6; i++) {
-        arg1->iconBones[i] = arg0->unk50[i];
-        arg1->iconY[i] = arg0->unk56[i];
-        arg1->iconZ[i] = arg0->unk5C[i];
+        arg1->iconBones[i] = arg0->iconBones[i];
+        arg1->iconY[i] = arg0->iconY[i];
+        arg1->iconZ[i] = arg0->iconZ[i];
     }
 }
 
@@ -491,32 +491,32 @@ void btl_setEnemyStats(Unk800C9D1C *arg0, BtlUnit *arg1) {
     BtlEnemy *s;
     BtlShadow *t;
 
-    arg1->statusImmune = arg0->unk0;
-    arg1->autoStatus = arg0->unk4;
-    arg1->status = arg0->unk8;
-    arg1->hp = arg0->unkC;
-    arg1->mp = arg0->unkE;
-    arg1->defense = arg0->unk43[0];
-    arg1->evade = arg0->unk43[1];
-    arg1->magicDef = arg0->unk43[2];
-    arg1->magicEva = arg0->unk43[3];
-    arg1->speed = arg0->unk34[0];
-    arg1->strength = arg0->unk34[1];
-    arg1->magic = arg0->unk34[2];
-    arg1->spirit = arg0->unk34[3];
-    *(s32 *)&arg1->elemGuard = arg0->unk3C;
+    arg1->statusImmune = arg0->statusImmune;
+    arg1->autoStatus = arg0->autoStatus;
+    arg1->status = arg0->status;
+    arg1->hp = arg0->maxHp;
+    arg1->mp = arg0->maxMp;
+    arg1->defense = arg0->defence[0];
+    arg1->evade = arg0->defence[1];
+    arg1->magicDef = arg0->defence[2];
+    arg1->magicEva = arg0->defence[3];
+    arg1->speed = arg0->stats[0];
+    arg1->strength = arg0->stats[1];
+    arg1->magic = arg0->stats[2];
+    arg1->spirit = arg0->stats[3];
+    *(s32 *)&arg1->elemGuard = arg0->elements;
     *(s32 *)&arg1->hiddenMeshes = arg0->meshMasks;
     arg1->baseBone = arg0->baseBone;
     s = &g_gameState->gameData->unk8E4.battle->enemies[(arg1->flags >> 1) & 0xF];
-    s->steal.w = arg0->unk18;
-    s->flags = (s->flags & ~0x40) | ((arg0->unk30 & 1) << 6);
-    s->flags = (s->flags & ~0x80) | ((arg0->unk30 << 6) & 0x80);
-    btl_setShadowSize(arg1, arg0->unk64, arg0->unk66);
+    s->steal.w = arg0->steal;
+    s->flags = (s->flags & ~0x40) | ((arg0->flags & 1) << 6);
+    s->flags = (s->flags & ~0x80) | ((arg0->flags << 6) & 0x80);
+    btl_setShadowSize(arg1, arg0->shadowW, arg0->shadowD);
     arg1->shadowBone = arg0->shadowBone;
     arg1->shadowDirBone = arg0->shadowDirBone;
     t = &g_gameState->gameData->unk8E4.battle->work->shadows[((arg1->flags >> 1) & 0xF) + 9];
-    t->unk4_12 = arg0->unk6A;
-    t->unk4_22 = arg0->unk6C;
+    t->offsetX = arg0->shadowX;
+    t->offsetZ = arg0->shadowZ;
 }
 
 void btl_copyAbility(BtlCmd8 *arg0, BtlCmd8 *arg1) {

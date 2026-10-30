@@ -241,7 +241,7 @@ void btl_resetUnit(BtlUnit *arg0, Unk8E0 *arg1) {
     u32 f;
     btl_initUnitCmds(arg0);
     btl_clearUnitStatus(arg0);
-    arg0->unk7B = 0;
+    arg0->escapeStance = 0;
     arg0->menu = NULL;
     arg0->inMenuQueue = 0;
     arg0->popupFlags = 0;
@@ -271,9 +271,9 @@ void btl_resetUnit(BtlUnit *arg0, Unk8E0 *arg1) {
     } else {
         arg0->model = arg1->unk8;
         arg0->obj = arg1->unkC;
-        arg0->model->texAnims[2].unk4 |= 1;
-        arg0->model->texAnims[2].unkC = 0;
-        arg0->model->texAnims[2].unk12 = 0x1000;
+        arg0->model->texAnims[2].flags |= 1;
+        arg0->model->texAnims[2].pos = 0;
+        arg0->model->texAnims[2].lastFrame = 0x1000;
         for (i = 0; i < arg0->model->header->meshCount; i++) {
             btl_setMeshRgb(arg0->model, i, 0, 0, 0);
         }

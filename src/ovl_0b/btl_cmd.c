@@ -259,7 +259,7 @@ void btl_initUnitCmds(BtlUnit *arg0) {
     s32 i;
     s32 j;
     if (b->phase == BTL_PHASE_INTRO) {
-        arg0->unkB2 = 1;
+        arg0->targetableReq = 1;
     }
     arg0->cmdIssued = 0;
     arg0->onScreen = 0;
@@ -329,12 +329,12 @@ void btl_setCmd(BtlCmd *arg0, u32 arg1, s32 arg2, s32 arg3, s32 arg4) {
     arg0->targets = arg3;
     arg0->cmdNo = arg1;
     arg0->subNo = arg2;
-    arg0->unk10.w = (arg0->unk10.w & ~3) | (arg4 & 3);
-    arg0->unk10.w &= ~0x20;
-    arg0->unk10.w &= ~0x40;
-    arg0->unk10.w &= ~0x180;
+    arg0->info.w = (arg0->info.w & ~3) | (arg4 & 3);
+    arg0->info.w &= ~0x20;
+    arg0->info.w &= ~0x40;
+    arg0->info.w &= ~0x180;
     if (arg1 >= 0x31) {
-        arg0->unk10.w |= 0x10;
+        arg0->info.w |= 0x10;
     } else {
         btl_removeStatus(u, BTL_STATUS_DEFEND);
     }
@@ -396,18 +396,18 @@ fail:
     c->cmdNo = arg2;
     c->subNo = arg3;
     if ((u32)(c->ability->targetType - 6) < 7) {
-        c->unk10.b.targeting = 1;
+        c->info.b.targeting = 1;
     } else {
-        c->unk10.b.targeting = 0;
+        c->info.b.targeting = 0;
     }
     if (arg2 > 0x30) {
-        c->unk10.b.automatic = 1;
+        c->info.b.automatic = 1;
     } else {
         btl_removeStatus(c->caster, BTL_STATUS_DEFEND);
     }
-    c->unk10.b.covered = 0;
-    c->unk10.b.dodged = 0;
-    c->unk10.b.reflect = 0;
+    c->info.b.covered = 0;
+    c->info.b.dodged = 0;
+    c->info.b.reflect = 0;
     u->flags |= 0x80000;
     btl_enqueueCmd(c);
 }
@@ -484,7 +484,7 @@ void btl_processCmdQueue(Battle *b) {
         b->cmdPhase++;
         break;
     case 2:
-        if ((u->flags & 1) || cmd->unk10.b.unk0_11) {
+        if ((u->flags & 1) || cmd->info.b.enemyBounce) {
             btl_updatePartyCmd(cmd);
         }
         break;
@@ -746,7 +746,7 @@ s32 btl_validateTargets(Battle *b, BtlCmd *cmd) {
             cmd->targets = mask;
             return 1;
         }
-        if (cmd->unk10.w & 3) {
+        if (cmd->info.w & 3) {
             return 0;
         }
         if (!f) {
@@ -851,7 +851,7 @@ void btl_execCmd(BtlUnit *arg0) {
         break;
     case BTL_CMD_JUMP:
     case BTL_CMD_JUMP_TRANCE:
-        u->unkB2 = 2;
+        u->targetableReq = 2;
         u->flags |= 0x400000;
         break;
     case BTL_CMD_ITEM:
@@ -898,7 +898,7 @@ void btl_finishCmd(Battle *b) {
             g_gameState->gameData->unk8E4.battle->cmdFlags &= ~0x10;
         } else if (cmd->cmdNo == BTL_CMD_SPEAR_TRANCE) {
             btl_addStatus(u, BTL_STATUS_JUMP);
-            u->unkB2 = 2;
+            u->targetableReq = 2;
             u->flags |= 0x400000;
             g_gameState->gameData->unk8E4.battle->cmdFlags &= ~0x10;
         }
@@ -923,7 +923,7 @@ void btl_finishCmd(Battle *b) {
     } else if (cmd->cmdNo < 0x35 && btl_isCmdPending(u->cmd)) {
         u->flags |= 0x80000;
     }
-    if (cmd->unk10.b.covered) {
+    if (cmd->info.b.covered) {
         for (u = g_gameState->gameData->unk8E4.battle->unitList; u != NULL; u = u->next) {
             if (u->flags & 1) {
                 u->pos[0] = u->home->pos[0];
@@ -936,7 +936,7 @@ void btl_finishCmd(Battle *b) {
             }
         }
     }
-    if (cmd->unk10.b.dodged) {
+    if (cmd->info.b.dodged) {
         u = btl_getUnitById(cmd->targets);
         u->flags &= ~0x4000000;
         if (u->flags & 1) {
@@ -1019,7 +1019,7 @@ void btl_enqueueCmd(BtlCmd *arg0) {
     u32 e;
 
     for (; p != NULL; p = p->next) {
-        if (arg0->unk10.b.automatic) {
+        if (arg0->info.b.automatic) {
             n = p->next;
             if (n == NULL) {
                 goto insert;
@@ -1040,7 +1040,7 @@ void btl_enqueueCmd(BtlCmd *arg0) {
                 btl_linkCmd((LinkNode *)arg0, (LinkNode **)&p->next);
                 return;
             }
-            c = n->unk10.b.automatic;
+            c = n->info.b.automatic;
         } else {
             c = (s32)p->next;
         }
@@ -1084,10 +1084,10 @@ s32 btl_applyReflect(BtlCmd *arg0) {
                 }
             }
             if ((u16)mask == (u16)arg0->targets) {
-                arg0->unk10.b.reflect = 1;
+                arg0->info.b.reflect = 1;
                 arg0->targets = btl_orTargets(arg0->caster->bounceMasks);
             } else {
-                arg0->unk10.b.reflect = 2;
+                arg0->info.b.reflect = 2;
                 arg0->targets &= ~mask;
             }
         }
@@ -1177,7 +1177,7 @@ void btl_autoAttack(BtlUnit *arg0) {
 void btl_onCmdEffectDone(void) {
     Battle *b = g_gameState->gameData->unk8E4.battle;
     BtlCmd *c = b->curCmd;
-    s8 k = c->unk10.b.reflect;
+    s8 k = c->info.b.reflect;
     BtlUnit *u;
     if (k == 2) {
         c->targets = btl_orTargets(c->caster->bounceMasks);
@@ -1197,15 +1197,15 @@ void btl_clearCmd(BtlCmd *arg0) {
     arg0->targets = 0;
     arg0->cmdNo = 0;
     arg0->subNo = 0;
-    arg0->unk10.b.targeting = 0;
-    arg0->unk10.b.unk0_2 = 0;
-    arg0->unk10.b.automatic = 0;
-    arg0->unk10.b.covered = 0;
-    arg0->unk10.b.dodged = 0;
-    arg0->unk10.b.reflect = 0;
-    arg0->unk10.b.unk0_9 = 0;
-    arg0->unk10.b.shortSummon = 0;
-    arg0->unk10.b.unk0_11 = 0;
+    arg0->info.b.targeting = 0;
+    arg0->info.b.unk0_2 = 0;
+    arg0->info.b.automatic = 0;
+    arg0->info.b.covered = 0;
+    arg0->info.b.dodged = 0;
+    arg0->info.b.reflect = 0;
+    arg0->info.b.unk0_9 = 0;
+    arg0->info.b.shortSummon = 0;
+    arg0->info.b.enemyBounce = 0;
 }
 
 void btl_queueAutoCmd(BtlUnit *arg0, s32 arg1, s32 arg2, s32 arg3) {
@@ -1343,8 +1343,8 @@ void btl_projectUnitPos(BtlUnit *arg0) {
 void btl_unlinkCmd(BtlCmd **arg0, u8 arg1) {
     BtlCmd *p = *arg0;
     *arg0 = p->next;
-    p->unk10.b.unk0_2 = 0;
-    p->unk10.b.automatic = 0;
+    p->info.b.unk0_2 = 0;
+    p->info.b.automatic = 0;
     if (arg1 && p->cmdNo == BTL_CMD_ESCAPE) {
         g_gameState->gameData->unk8E4.battle->cmdFlags &= ~1;
     }
@@ -1661,7 +1661,7 @@ void btl_calcCmd(BtlUnit *caster, BtlUnit *target, BtlCmd *cmd, s32 type) {
             break;
         }
     case 0x12:
-        if ((cmd->ability->effect != 0x38 || RAND8() < 0xAB) && (cmd->subNo != 0x2E || !cmd->unk10.b.unk0_9)) {
+        if ((cmd->ability->effect != 0x38 || RAND8() < 0xAB) && (cmd->subNo != 0x2E || !cmd->info.b.unk0_9)) {
             RAND_REFILL2();
             c.multiplier = RAND16() % (caster->magic + caster->level);
             c.power = cmd->ability->power;
@@ -2023,7 +2023,7 @@ void btl_calcCmd(BtlUnit *caster, BtlUnit *target, BtlCmd *cmd, s32 type) {
             s32 i;
             btl_clearCmd(&sub);
             sub.cmdNo = cmd->cmdNo;
-            sub.unk10.b.shortSummon = cmd->unk10.b.shortSummon;
+            sub.info.b.shortSummon = cmd->info.b.shortSummon;
             if (target->flags & 1) {
                 sub.subNo = 0x49;
                 i = 13;
@@ -3173,7 +3173,7 @@ void func_800B95BC(BtlCmd *arg0) {
         }
     }
     if ((arg0->caster->level >> 1) + arg0->caster->spirit < ((*g_randPtr << 8) | *g_randPtr++) % 100) {
-        arg0->unk10.b.unk0_9 = 1;
+        arg0->info.b.unk0_9 = 1;
     }
 }
 
@@ -3228,7 +3228,7 @@ void btl_rollShortSummon(BtlCmd *arg0) {
             r = r < 0xAA;
         }
         if (r) {
-            arg0->unk10.b.shortSummon = 1;
+            arg0->info.b.shortSummon = 1;
         }
     }
 }

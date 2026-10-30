@@ -162,11 +162,11 @@ typedef struct {
 
 typedef struct BtlUnit9C50 {
     u8 pad0[4];
-    u8 unk4;
+    u8 flags; /* TexAnim.flags (the entries seen 4 bytes early): 1 playing, 2 stop at the end */
     u8 pad5[0xC - 5];
-    s32 unkC;
+    s32 pos; /* TexAnim.pos */
     u8 pad10[0x12 - 0x10];
-    s16 unk12;
+    s16 lastFrame; /* TexAnim.lastFrame (0x1000 forces a redraw) */
 } BtlUnit9C50; /* 0x14 */
 
 /* texture word of a model, one per texture index (WmSrc*.tex): the model info entry's first table (ovl_0a WmTexInfo).
@@ -302,7 +302,7 @@ typedef struct BtlUnit9C {
     s16 scaleX; /* with flag 2 (btl_applyModelScale) */
     s16 scaleY;
     s16 scaleZ;
-    s16 unk5A;
+    s16 sliceY; /* y limit of the slice effect (Hi_DrawSliceEffModel, btlfx_projectSliceMesh) */
     BtlUnit9C8 *morph; /* morph target */
     void *unk60;
     u8 pad64[0x74 - 0x64];
@@ -332,10 +332,10 @@ typedef struct {
 
 /* current stats at BtlUnit.hp, parallel to BtlUnit24 */
 typedef struct {
-    u16 unk0; /* hp */
-    s16 unk2; /* mp */
-    s16 unk4; /* atb */
-    s8 unk6;  /* atb speed */
+    u16 hp; /* hp */
+    s16 mp; /* mp */
+    s16 atb; /* atb */
+    s8 atbSpeed;  /* atb speed */
 } BtlUnit28;
 
 /* battle unit; 8 of them at Battle.unk6FC, linked through unk0 */
@@ -598,7 +598,7 @@ typedef struct BtlUnit {
     u8 trance; /* gauge 0-0xFF (Character.trance; btl_gainTrance) */
     u8 elemBoost; /* element bits dealt x1.5 (btl_applyWeaponElementBoost) */
     u8 level; /* Character.level, enemy record level */
-    u8 unk7B;
+    u8 escapeStance; /* Battle.escapeHeld when the idle motion was last chosen (btl_updateUnits re-picks it on a change) */
     u8 baseBone; /* bone used as the unit position (btl_getBaseBonePos) */
     u8 koState; /* KO state machine step (btl_updateKo) */
     u16 popupFlags; /* btl_spawnPopups: BtlCalc.unk1B bits (1 hp, 2 heal, 4 critical, 8 mp, 0x10 mp heal), 0x20 miss, 0x40 killed, 0x80 guard */
@@ -615,7 +615,7 @@ typedef struct BtlUnit {
     u16 hiddenMeshes; /* BTL_ATTR_HIDE_MESHES / BTL_ATTR_SHOW_MESHES */
     u16 vanishMeshes; /* mesh groups Vanish hides */
     u16 unitBit; /* bit in target masks (BtlCmd.targets): party 0-3, enemies from 4 */
-    u8 unkB2;
+    u8 targetableReq; /* 2: become untargetable, 3: targetable (btlui_applyTargetable applies it next frame and leaves 0/1); BTL_ATTR 0x34, Jump, landing */
     u8 cmdIssued; /* set when the menu issues its command, cleared when it ends */
     struct Unk80104F88Entry *menu; /* party member menu data */
     s16 screenX;
@@ -625,7 +625,7 @@ typedef struct BtlUnit {
     u8 shadowDirBone; /* bone the shadow faces toward from shadowBone; = shadowBone: that bone's own axis */
     u8 shadowW; /* shadow width / 14 (btl_setShadowSize) */
     u8 shadowD; /* shadow depth / 12 */
-    u8 unkC1[3];
+    u8 tint[3]; /* status colour (Zombie, Berserk, Heat, Freeze) btl_updateUnitTint fills the models with */
     u32 *support; /* support-ability bits (Character.unk88) */
     s16 tickHeal; /* btl_tickRegen */
     s16 tickDamage; /* btl_tickPoison */
@@ -1166,7 +1166,8 @@ typedef struct Battle11C020 {
 /* battle command (queued action) */
 typedef struct BtlCmd8 {
     u32 targetType : 4; /* target type; 6-12 make enemy commands multi-target (btl_setEnemyCmd), 3-5 spread casts (btl_halveForSpread) */
-    u32 unk0_4 : 4;
+    u32 defaultSide : 1; /* target select starts on this side (Battle16CC.defaultSide) */
+    u32 listKind : 3; /* nonzero: targets are picked from a list window (Battle16CC.listKind) */
     u32 effect : 9; /* effect id (btl_startCmdEffect -> btl_playCmdEffect) */
     u32 unk0_17 : 15;
     u8 formula; /* btl_calcCmd formula */
@@ -1198,10 +1199,10 @@ typedef struct BtlCmd {
             u32 reflect : 2; /* 2 = bounce pending, 1 = bounced (btl_playCmdEffect, btl_onCmdEffectDone) */
             u32 unk0_9 : 1;
             u32 shortSummon : 1; /* plays the ability's altEffect (btl_rollShortSummon) */
-            u32 unk0_11 : 1;
+            u32 enemyBounce : 1; /* an enemy's reflected spell: btl_processCmdQueue steps it like a party command (btl_updatePartyCmd) */
         } b;
         u32 w; /* cleared as a word */
-    } unk10;
+    } info;
 } BtlCmd;
 
 typedef struct BtlShadow {
@@ -1209,8 +1210,8 @@ typedef struct BtlShadow {
     u32 width : 12; /* btl_setShadowSize */
     u32 depth : 12;
     u32 unk4_0 : 12;
-    u32 unk4_12 : 10;
-    u32 unk4_22 : 10;
+    u32 offsetX : 10; /* x offset of the shadow (Unk800AD4E4, btl_calcShadowMatrix) */
+    u32 offsetZ : 10; /* z offset */
     POLY_FT4 *unk8[2][4]; /* shadow quads, per draw buffer */
 } BtlShadow; /* 0x28 */
 
@@ -1237,15 +1238,15 @@ typedef struct Battle11C0 {
 } Battle11C0;
 
 typedef struct {
-    u32 unk0_0 : 4;
-    u32 unk0_4 : 1;
-    u32 unk0_5 : 3;
+    u32 targetType : 4; /* as BtlCmd8.targetType */
+    u32 defaultSide : 1; /* target select starts on this side (g_btlTarget.side) */
+    u32 listKind : 3; /* nonzero: targets are picked from a list window of this kind (btlui_openListWindow) */
     u32 unk0_8 : 21;
-    u32 unk0_29 : 1;
+    u32 allowKo : 1; /* KO units can be targeted */
     u32 unk0_30 : 1;
-    u32 unk0_31 : 1;
+    u32 koFirst : 1; /* the cursor starts on a KO unit (btlui_findKoUnit) */
     u8 pad4[8 - 4];
-    u8 unk8;
+    u8 flags; /* as BtlCmd8.flags (2 needs a voice) */
     u8 pad9;
     u8 mpCost; /* runtime: Fire 6, Fira 12, Sleep 10 as the spell list shows */
     u8 padB[0xE - 0xB];
@@ -1307,15 +1308,15 @@ static inline void btl_clearCmd_inline(BtlCmd *arg0) {
     arg0->targets = 0;
     arg0->cmdNo = 0;
     arg0->subNo = 0;
-    arg0->unk10.b.targeting = 0;
-    arg0->unk10.b.unk0_2 = 0;
-    arg0->unk10.b.automatic = 0;
-    arg0->unk10.b.covered = 0;
-    arg0->unk10.b.dodged = 0;
-    arg0->unk10.b.reflect = 0;
-    arg0->unk10.b.unk0_9 = 0;
-    arg0->unk10.b.shortSummon = 0;
-    arg0->unk10.b.unk0_11 = 0;
+    arg0->info.b.targeting = 0;
+    arg0->info.b.unk0_2 = 0;
+    arg0->info.b.automatic = 0;
+    arg0->info.b.covered = 0;
+    arg0->info.b.dodged = 0;
+    arg0->info.b.reflect = 0;
+    arg0->info.b.unk0_9 = 0;
+    arg0->info.b.shortSummon = 0;
+    arg0->info.b.enemyBounce = 0;
 }
 
 typedef struct Battle108C {
@@ -2195,22 +2196,22 @@ extern void *g_btluiHelpText;
 extern s32 (*g_btluiMenuHelp[])(void);
 
 typedef struct {
-    u8 unk0;
-    u8 unk1;
-    u8 unk2;
-    u8 unk3;
+    u8 ready; /* the slide finished: confirm runs it */
+    u8 side; /* 0 none, 1 right (Defend, command 4), 2 left (Change, command 7) */
+    u8 slide; /* 1 sliding out (btlui_slideLeft/Right), 2 sliding back (btlui_slideBack) */
+    u8 slideFrame; /* 0-5 */
 } Unk80104FC0; /* g_btlCmdMenu.unk10 */
 
 /* battle command menu (runtime: Vivi's menu -> Eiko's, docs/runtime-findings.md) */
 typedef struct {
     u8 cursor;    /* row: 0 Attack, 1, 2, 3 Item */
-    u8 unk1;
+    u8 trance; /* the unit is in trance (trance commands; btlui_buildCmdList) */
     u8 charIndex; /* GameData.characters index of the commanding member */
     u8 pad3;
     u8 cmdIds[4]; /* command per row: Attack 1, Blk Mag 22, Focus 13, Wht Mag 19, Summon 20, Item 14 */
-    u8 unk8[4];
-    u8 unkC[4];
-    Unk80104FC0 unk10;
+    u8 enabled[4]; /* per row: selectable (else drawn grey, btlui_confirmCmd refuses) */
+    u8 tranceRow[4]; /* per row: the trance command replacing the normal one (g_btlCharTranceCmds[2]) */
+    Unk80104FC0 sideCmd; /* Defend (right) / Change (left) slid out of the menu */
     u8 pad14[0x18 - 0x14];
     BtlUnit *unit; /* the unit choosing a command */
 } Unk80104FB0;
@@ -2233,22 +2234,22 @@ typedef struct {
     u8 returnState; /* menu state btlui_cancelTarget returns to */
     u8 cmdNo;
     u8 targetType; /* target type of the ability (D_800F8E84 / D_800F8E68 by type; 0xC all, 0xD self) */
-    u8 unk3;
-    u8 unk4;
+    u8 defaultSide; /* side the cursor starts on (ability) */
+    u8 koFirst; /* the cursor starts on a KO unit (btlui_setDefaultTargets) */
     u8 unk5;
     u8 targetAll; /* the whole side is marked */
     u8 unk7;
-    u8 unk8;
-    u8 unk9;
+    u8 canSwitchSide; /* target types 0, 3, 6, 9: left/right moves to the other side (btlui_switchTargetSide) */
+    u8 canToggleAll; /* target types 3-5: single/all toggles (btlui_toggleTargetAll) */
     u8 side; /* side the cursor is on (unit flag bit 0) */
     u8 allowKo; /* KO units can be targeted */
     u8 windowOpen; /* target-name window open (btlui_openTargetWindow) */
     u8 halfMp; /* the caster has support ability 0xE2 (MP costs halved, btlui_isCmdUsable) */
-    u8 unkE;
-    u8 unkF;
+    u8 trance; /* the menu was opened in trance (btlui_isCmdUsable: else a trance unit can't use it) */
+    u8 listKind; /* nonzero: targets are picked from a list window of this kind (btlui_openListWindow) */
     u8 doubleCast; /* Dbl Wht / Dbl Blk: the first pick is stored (btlui_confirmDoubleCast) */
-    u8 unk11;
-    s8 unk12;
+    u8 openState; /* menu state once the target window has opened */
+    s8 closeState; /* menu state once the target window has closed */
     u8 firstCmdNo; /* double cast: first pick */
     u8 firstTargeting;
     u8 pad15[0x18 - 0x15];
@@ -2256,7 +2257,7 @@ typedef struct {
     s16 subNo; /* ability or item id */
     s32 firstTargets;
     BtlUnit *unit; /* the unit choosing targets */
-    BtlUnit *unk24; /* last target */
+    BtlUnit *prevTarget; /* cursor unit before the whole side was marked (btlui_toggleTargetAll restores it) */
 } Unk80104FF0;
 extern Unk80104FF0 g_btlTarget;
 extern u8 D_800F8EE4[];
@@ -2294,44 +2295,44 @@ extern s16 D_800F5850[];
 /* enemy type record (btl_initEnemyType; 0x74 bytes, the encounter header's records after its groups; Battle1334 is the
  * same record) */
 typedef struct {
-    s32 unk0;
-    s32 unk4;
-    s32 unk8;
-    u16 unkC;
-    u16 unkE;
-    u16 unk10;
-    u16 unk12;
-    s32 unk14;
-    s32 unk18;
-    u16 unk1C;
+    s32 statusImmune; /* BtlUnit.statusImmune (btl_setEnemyStats) */
+    s32 autoStatus; /* BtlUnit.autoStatus */
+    s32 status; /* BtlUnit.status at the start */
+    u16 maxHp; /* max hp (BtlEnemyType.max, BtlUnit.hp) */
+    u16 maxMp;
+    u16 gil; /* BtlEnemyType.gil */
+    u16 exp; /* BtlEnemyType.exp */
+    s32 drops; /* BtlEnemyType.drops */
+    s32 steal; /* BtlEnemy.steal */
+    u16 radius; /* BtlEnemyType.radius */
     u16 modelId; /* model (key 0x02xxxx; FF9.IMG dir index 7, file id = model id): btl_getEnemyModelId via Battle1334 */
     u16 motionIds[6]; /* motions (keys 0x03xxxx, in the model file): BtlEnemyType.motions */
     s32 meshMasks; /* BtlUnit.hiddenMeshes | vanishMeshes << 16: mesh-group bits (btl_setEnemyStats) */
-    u16 unk30;
+    u16 flags; /* 1: its death triggers the event script (BtlEnemy.flags bit 6), 2: BtlEnemy.flags bit 7 (death motion and cry, btl_startHitMotion) */
     u8 pad32[0x34 - 0x32];
-    u8 unk34[4];
+    u8 stats[4]; /* speed, strength, magic, spirit (btl_setEnemyStats) */
     u8 pad38[0x3C - 0x38];
-    s32 unk3C;
-    u8 unk40;
-    u8 unk41;
+    s32 elements; /* BtlUnit.elemGuard, elemAbsorb, elemHalf, elemWeak as one word */
+    u8 level; /* BtlEnemyType.level */
+    u8 category; /* BtlEnemyType.category (BTL_ENEMY_*) */
     u8 pad42;
-    u8 unk43[4];
-    u8 unk47;
+    u8 defence[4]; /* defense, evade, magicDef, magicEva */
+    u8 eatAbility; /* BtlEnemyType.eatAbility */
     u8 bones[3]; /* BtlEnemyType.bones: camera/effect anchor bones */
     u8 baseBone; /* BtlUnit.baseBone */
-    u16 unk4C;
-    u8 unk4E;
-    u8 unk4F;
-    u8 unk50[6];
-    u8 unk56[6];
-    u8 unk5C[6];
+    u16 deathCry; /* BtlEnemyType.deathCry */
+    u8 confuseAbility; /* BtlEnemyType.confuseAbility */
+    u8 abilityCount; /* abilities of this type in Battle.enemyAbilities (btl_setupEnemies sums them into firstAbility) */
+    u8 iconBones[6]; /* BtlEnemyType.iconBones */
+    u8 iconY[6];
+    u8 iconZ[6];
     u8 pad62[0x64 - 0x62];
-    u16 unk64;
-    u16 unk66;
+    u16 shadowW; /* btl_setShadowSize */
+    u16 shadowD;
     u8 shadowBone; /* BtlUnit.shadowBone */
-    u8 unk69;
-    s16 unk6A;
-    s16 unk6C;
+    u8 card; /* BtlEnemyType.card */
+    s16 shadowX; /* BtlShadow.offsetX */
+    s16 shadowZ; /* BtlShadow.offsetZ */
     u8 shadowDirBone; /* BtlUnit.shadowDirBone */
     u8 pad6F[0x74 - 0x6F];
 } Unk800C9D1C;
@@ -3166,30 +3167,30 @@ void btl_setModelTransform(BtlUnit9C *, SVECTOR *, VECTOR *, VECTOR *);
 void Hi_GetSummonBoneMatrix(s32, s32, BtlBone *);
 /* texture (VRAM) animations */
 typedef struct {
-    s16 unk0; /* dest x */
-    s16 unk2; /* dest y */
-    s16 unk4; /* w */
-    s16 unk6; /* h */
-    s16 (*unk8)[2]; /* source x/y per frame */
+    s16 x; /* dest x */
+    s16 y; /* dest y */
+    s16 w; /* w */
+    s16 h; /* h */
+    s16 (*src)[2]; /* source x/y per frame */
 } TexAnimRect; /* 0xC */
 
 typedef struct {
-    u8 unk0; /* flags */
-    u8 unk1; /* frame count */
-    s16 unk2; /* speed (20.12) */
-    u16 unk4;
-    u16 unk6;
-    s32 unk8; /* position (20.12) */
-    u8 unkC; /* rect count */
-    u8 unkD; /* index into the offset table (btl_relocTexAnims) */
-    u16 unkE; /* last frame shown */
-    TexAnimRect *unk10;
+    u8 flags; /* 1 playing, 2 stop at the end (else loop), 4 vertical scroll (frameCount 0) */
+    u8 frameCount; /* frame count */
+    s16 speed; /* speed (20.12) */
+    u16 waitMin; /* frames to wait before looping again: waitMin + random(waitRand + 1) */
+    u16 waitRand;
+    s32 pos; /* position (20.12) */
+    u8 rectCount; /* rect count */
+    u8 relocIndex; /* index into the offset table (btl_relocTexAnims) */
+    u16 lastFrame; /* last frame shown */
+    TexAnimRect *rects;
 } TexAnim; /* 0x14 */
 
 typedef struct {
-    u16 unk0; /* count */
+    u16 count; /* count */
     u16 pad2;
-    TexAnim unk4[1];
+    TexAnim anims[1];
 } TexAnimSet;
 
 void btl_updateTexAnims(TexAnimSet *);
@@ -3488,11 +3489,11 @@ typedef struct {
 /* placement data passed to btl_calcShadowMatrix */
 typedef struct {
     u32 pad0_0 : 8;
-    u32 unk0_8 : 12;  /* x scale */
-    u32 unk0_20 : 12; /* z scale */
+    u32 width : 12; /* x scale (BtlShadow.width) */
+    u32 depth : 12; /* z scale (BtlShadow.depth) */
     s32 pad4_0 : 12;
-    s32 unk4_12 : 10; /* x offset */
-    s32 unk4_22 : 10; /* z offset */
+    s32 offsetX : 10; /* x offset */
+    s32 offsetZ : 10; /* z offset */
 } Unk800AD4E4;
 
 /* copies a MATRIX as eight words (the original doesn't use a struct assignment) */
@@ -3578,16 +3579,16 @@ s32 func_800D9350(Unk800D7C9C *, s32, s32 *);
 s32 math_sin(s32);
 
 typedef struct {
-    u8 unk0;
-    u8 unk1;
-    u8 unk2;
-    u8 unk3;
-    u8 unk4;
-    u8 unk5;
-    u8 unk6;
-    u8 unk7;
-    u8 unk8;
-    u8 unk9;
+    u8 returnState; /* g_btlTarget.returnState */
+    u8 cmdNo;
+    u8 targetType;
+    u8 defaultSide;
+    u8 koFirst;
+    u8 allowKo;
+    u8 subNo;
+    u8 listKind;
+    u8 doubleCast;
+    u8 trance;
 } Unk800EF80C;
 
 typedef struct {
@@ -4337,11 +4338,11 @@ typedef struct {
 } BtlUnit9C50Arr;
 /* btl_placeParty: per-character battle setup row (5 bytes, indexed by Character.unk34.b.unk4) */
 typedef struct {
-    u8 unk0;
-    u8 unk1;
-    u8 unk2;
-    u8 unk3;
-    u8 unk4;
+    u8 shadowBone; /* BtlUnit.shadowBone (btl_placeParty) */
+    u8 shadowDirBone;
+    u8 shadowW; /* btl_setShadowSize */
+    u8 shadowD;
+    u8 shadowZ; /* BtlShadow.offsetZ */
 } Unk800F57F0;
 extern Unk800F57F0 D_800F57F0[];
 void btl_setShadowSize(BtlUnit *, s32, u32);

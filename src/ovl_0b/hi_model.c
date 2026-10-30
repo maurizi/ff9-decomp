@@ -189,7 +189,7 @@ void Hi_DrawSliceEffModel(SVECTOR *arg0, VECTOR *arg1, s32 arg2, s32 arg3) {
     btl_setModelTransform(s->unk0, arg0, arg1, arg2);
     g_btlfxEnv->prim = btl_calcBoneMatrices(s->unk0, 0, g_btlfxEnv->prim);
     s->unk0->prims = 0;
-    s->unk0->unk5A = arg1->vy - s->unk24;
+    s->unk0->sliceY = arg1->vy - s->unk24;
     n = s->unk0->header->meshCount;
     for (i = 0; i < n; i++) {
         btlfx_projectSliceMesh(s->unk0, i);
@@ -578,19 +578,19 @@ void Hi_StartSummonTexAnim(s32 arg0, s32 arg1, u8 arg2) {
     if (arg2) {
         off = arg1 * 4;
         off = (off + arg1) * 4; /* arg1 * sizeof(BtlUnit9C50) */
-        ((BtlUnit9C50 *)((u8 *)p->unk0->texAnims + off))->unk4 |= 3;
+        ((BtlUnit9C50 *)((u8 *)p->unk0->texAnims + off))->flags |= 3;
     } else {
         off = arg1 * 4;
         off = (off + arg1) * 4;
-        ((BtlUnit9C50 *)((u8 *)p->unk0->texAnims + off))->unk4 |= 1;
+        ((BtlUnit9C50 *)((u8 *)p->unk0->texAnims + off))->flags |= 1;
     }
-    ((BtlUnit9C50 *)((u8 *)p->unk0->texAnims + off))->unkC = 0;
-    ((BtlUnit9C50 *)((u8 *)p->unk0->texAnims + off))->unk12 = 0x1000;
+    ((BtlUnit9C50 *)((u8 *)p->unk0->texAnims + off))->pos = 0;
+    ((BtlUnit9C50 *)((u8 *)p->unk0->texAnims + off))->lastFrame = 0x1000;
 }
 
 void Hi_StopSummonTexAnim(s32 arg0, s32 arg1) {
     BtlUnit9C50 *e = &btlfx_getSummonModel(arg0, "Hi_StopSummonTexAnim()\nid:%d cannot use!")->unk0->texAnims[arg1];
-    e->unk4 &= ~3;
+    e->flags &= ~3;
 }
 
 void Hi_ModifyEffModelAbr(s32 arg0, s32 arg1) {

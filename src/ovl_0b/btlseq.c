@@ -98,7 +98,7 @@ void btlseq_startDirect(u16 mask, s16 arg1, u16 id) {
         c->targets = arg1;
         c->caster = u;
         c->ability = &g_gameState->gameData->unk8E4.battle->enemyAbilities[id];
-        c->unk10.w = 0;
+        c->info.w = 0;
         e = btlseq_start(c);
         if (e != NULL) {
             e->flags |= 8;
@@ -609,11 +609,11 @@ s32 btlseq_stepScale(BtlScript *arg0, BtlUnit *arg1) {
 s32 btlseq_opPlayTexAnim(BtlScript *arg0, BtlUnit *arg1) {
     BtlUnit9C50 *g;
     BtlUnit9C50 *e = &arg1->model->texAnims[arg0->pc[1]];
-    e->unk4 |= 1;
+    e->flags |= 1;
     g = &arg1->model->texAnims[arg0->pc[1]];
-    g->unkC = 0;
+    g->pos = 0;
     e = &arg1->model->texAnims[arg0->pc[1]];
-    e->unk12 = 0x1000;
+    e->lastFrame = 0x1000;
     arg0->pc += 2;
     return 1;
 }
@@ -621,11 +621,11 @@ s32 btlseq_opPlayTexAnim(BtlScript *arg0, BtlUnit *arg1) {
 s32 btlseq_opLoopTexAnim(BtlScript *arg0, BtlUnit *arg1) {
     BtlUnit9C50 *g;
     BtlUnit9C50 *e = &arg1->model->texAnims[arg0->pc[1]];
-    e->unk4 |= 3;
+    e->flags |= 3;
     g = &arg1->model->texAnims[arg0->pc[1]];
-    g->unkC = 0;
+    g->pos = 0;
     e = &arg1->model->texAnims[arg0->pc[1]];
-    e->unk12 = 0x1000;
+    e->lastFrame = 0x1000;
     arg0->pc += 2;
     return 1;
 }
@@ -634,7 +634,7 @@ s32 btlseq_opStopTexAnim(BtlScript *arg0, BtlUnit *arg1) {
     u8 i = arg0->pc[1];
     BtlUnit9C *m = arg1->model;
     BtlUnit9C50 *e;
-    (*(e = m->texAnims + i)).unk4 &= 0xFC;
+    (*(e = m->texAnims + i)).flags &= 0xFC;
     arg0->pc += 2;
     return 1;
 }

@@ -47,7 +47,7 @@ void btlfx_projectSliceMesh(BtlUnit9C *m, u8 meshIdx) {
     mesh = &m->header->meshes[meshIdx];
     bone = (u8 *)m->bones;
     nb = m->header->boneCount;
-    ylim = m->unk5A;
+    ylim = m->sliceY;
     v = (u8 *)mesh->vertices;
     if (nb == 0) {
         return;

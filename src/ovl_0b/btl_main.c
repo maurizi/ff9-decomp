@@ -1701,19 +1701,19 @@ void btl_calcShadowMatrix(Unk800AD4E4 *arg0, BtlObj *arg1, MATRIX *arg2, s32 arg
     gte_ldopv2(&n);
     gte_op12();
     gte_stlvnl(&r);
-    arg2->m[0][0] = (r.vx * arg0->unk0_8) >> 12;
-    arg2->m[1][0] = (r.vy * arg0->unk0_8) >> 12;
-    arg2->m[2][0] = (r.vz * arg0->unk0_8) >> 12;
+    arg2->m[0][0] = (r.vx * arg0->width) >> 12;
+    arg2->m[1][0] = (r.vy * arg0->width) >> 12;
+    arg2->m[2][0] = (r.vz * arg0->width) >> 12;
     arg2->m[0][1] = up.vx;
     arg2->m[1][1] = up.vy;
     arg2->m[2][1] = up.vz;
-    arg2->m[0][2] = (n.vx * arg0->unk0_20) >> 12;
-    arg2->m[1][2] = (n.vy * arg0->unk0_20) >> 12;
-    arg2->m[2][2] = (n.vz * arg0->unk0_20) >> 12;
-    arg2->t[0] = (((r.vx << 1) * arg0->unk4_12 + (n.vx << 1) * arg0->unk4_22) >> 12) +
+    arg2->m[0][2] = (n.vx * arg0->depth) >> 12;
+    arg2->m[1][2] = (n.vy * arg0->depth) >> 12;
+    arg2->m[2][2] = (n.vz * arg0->depth) >> 12;
+    arg2->t[0] = (((r.vx << 1) * arg0->offsetX + (n.vx << 1) * arg0->offsetZ) >> 12) +
                  ((MATRIX *)arg1->unk8->bones)[arg4].t[0];
-    arg2->t[1] = (((r.vy << 1) * arg0->unk4_12 + (n.vy << 1) * arg0->unk4_22) >> 12) + arg3;
-    arg2->t[2] = (((r.vz << 1) * arg0->unk4_12 + (n.vz << 1) * arg0->unk4_22) >> 12) +
+    arg2->t[1] = (((r.vy << 1) * arg0->offsetX + (n.vy << 1) * arg0->offsetZ) >> 12) + arg3;
+    arg2->t[2] = (((r.vz << 1) * arg0->offsetX + (n.vz << 1) * arg0->offsetZ) >> 12) +
                  ((MATRIX *)arg1->unk8->bones)[arg4].t[2];
 }
 

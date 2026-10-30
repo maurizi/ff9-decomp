@@ -239,15 +239,15 @@ s32 btl_removeStatus(BtlUnit *u, u32 f) {
         m = u->model;
         a4 = u->motions;
         u->koState = 0;
-        u->unk7B = 0;
+        u->escapeStance = 0;
         u->flags &= ~0x20000;
         u->flags &= ~0x80000;
         u->flags &= ~0x100000;
         u->flags &= ~0x200000;
         if ((s32)m->motion == a4[4] || (s32)m->motion == a4[8]) {
-            m->texAnims[2].unk4 |= 1;
-            u->model->texAnims[2].unkC = 0;
-            u->model->texAnims[2].unk12 = 0x1000;
+            m->texAnims[2].flags |= 1;
+            u->model->texAnims[2].pos = 0;
+            u->model->texAnims[2].lastFrame = 0x1000;
             u->model->motion = (BtlUnit9CC *)u->motions[6];
             u->obj->frame = 0;
         }
@@ -299,7 +299,7 @@ s32 btl_removeStatus(BtlUnit *u, u32 f) {
         g_gameState->gameData->unk8E4.battle->work->shadows[btl_getModelSlot(u)].depth = u->shadowD * 12;
         break;
     case 0x40000000:
-        u->unkB2 = 3;
+        u->targetableReq = 3;
         u->atb = 0;
         u->cmdIssued = 0;
         u->flags |= 0x10000;
@@ -406,9 +406,9 @@ void btl_updateUnitTint(BtlUnit *arg0) {
     if (!((arg0->flags >> 22) & 1) && !(arg0->status & BTL_STATUS_PETRIFY)) {
         e = btlbg_getHeader();
         if (arg0->status & (BTL_STATUS_ZOMBIE | BTL_STATUS_BERSERK | BTL_STATUS_HEAT | BTL_STATUS_FREEZE)) {
-            btl_fillModelRgb(arg0->model, arg0->unkC1[0], arg0->unkC1[1], arg0->unkC1[2]);
+            btl_fillModelRgb(arg0->model, arg0->tint[0], arg0->tint[1], arg0->tint[2]);
             if (arg0->weaponModel != NULL) {
-                btl_fillModelRgb(arg0->weaponModel, arg0->unkC1[0], arg0->unkC1[1], arg0->unkC1[2]);
+                btl_fillModelRgb(arg0->weaponModel, arg0->tint[0], arg0->tint[1], arg0->tint[2]);
             }
         } else {
             if (arg0->status & (BTL_STATUS_SHELL | BTL_STATUS_PROTECT)) {
@@ -505,11 +505,11 @@ void btl_updateStatusColor(BtlUnit *arg0) {
     for (i = 0; i < 3; i++) {
         v = b[i] - a[i];
         if (v < 0) {
-            arg0->unkC1[i] = 0;
+            arg0->tint[i] = 0;
         } else if (v >= 0x100) {
-            arg0->unkC1[i] = 0xFF;
+            arg0->tint[i] = 0xFF;
         } else {
-            arg0->unkC1[i] = b[i] - a[i];
+            arg0->tint[i] = b[i] - a[i];
         }
     }
 }

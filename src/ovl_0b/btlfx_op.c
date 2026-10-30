@@ -1833,17 +1833,17 @@ void btlfx_setUnitTexAnim(s32 arg0, s32 arg1, s32 arg2) {
 
     switch (arg1) {
     case 0:
-        ((BtlUnit9C50Arr *)u->model->texAnims)->e[arg2 ? 1 : 0].unk4 |= 3;
-        ((BtlUnit9C50Arr *)u->model->texAnims)->e[arg2 ? 1 : 0].unkC = 0;
-        ((BtlUnit9C50Arr *)u->model->texAnims)->e[arg2 ? 1 : 0].unk12 = 0x1000;
+        ((BtlUnit9C50Arr *)u->model->texAnims)->e[arg2 ? 1 : 0].flags |= 3;
+        ((BtlUnit9C50Arr *)u->model->texAnims)->e[arg2 ? 1 : 0].pos = 0;
+        ((BtlUnit9C50Arr *)u->model->texAnims)->e[arg2 ? 1 : 0].lastFrame = 0x1000;
         break;
     case 1:
-        ((BtlUnit9C50Arr *)u->model->texAnims)->e[2].unk4 &= ~3;
+        ((BtlUnit9C50Arr *)u->model->texAnims)->e[2].flags &= ~3;
         break;
     case 2:
-        ((BtlUnit9C50Arr *)u->model->texAnims)->e[2].unk4 |= 1;
-        ((BtlUnit9C50Arr *)u->model->texAnims)->e[2].unkC = 0;
-        ((BtlUnit9C50Arr *)u->model->texAnims)->e[2].unk12 = 0x1000;
+        ((BtlUnit9C50Arr *)u->model->texAnims)->e[2].flags |= 1;
+        ((BtlUnit9C50Arr *)u->model->texAnims)->e[2].pos = 0;
+        ((BtlUnit9C50Arr *)u->model->texAnims)->e[2].lastFrame = 0x1000;
         break;
     }
 }

@@ -53,7 +53,7 @@ void btl_playCmdEffect(BtlCmd *arg0, s32 arg1, s16 *arg2) {
     c->popupFlags = 0;
     c->mpChange = 0;
     c->hpChange = 0;
-    if (arg0->unk10.b.reflect == 0) {
+    if (arg0->info.b.reflect == 0) {
         mask = btl_applyReflect(arg0);
         e = arg0->cmdNo;
         if (e == 0xE || e == 0x33) {
@@ -63,10 +63,10 @@ void btl_playCmdEffect(BtlCmd *arg0, s32 arg1, s16 *arg2) {
         } else if ((u8)(e - 0x39) < 2) {
             l->kind = 1;
         }
-    } else if (arg0->unk10.b.reflect == 2) {
-        arg0->unk10.b.reflect = 1;
+    } else if (arg0->info.b.reflect == 2) {
+        arg0->info.b.reflect = 1;
         if (!(arg0->caster->flags & 1)) {
-            arg0->unk10.b.unk0_11 = 1;
+            arg0->info.b.enemyBounce = 1;
         }
         l->kind = 0x11;
     }
@@ -186,11 +186,11 @@ void btl_startCmdEffect(BtlCmd *cmd) {
         }
         break;
     case BTL_CMD_ENEMY_TURN:
-        if ((u16)cmd->targets < 0x10 && (cmd->ability->flags & 8) && !cmd->unk10.b.targeting) {
+        if ((u16)cmd->targets < 0x10 && (cmd->ability->flags & 8) && !cmd->info.b.targeting) {
             t = btl_findCover((u16)cmd->targets);
             if (t) {
                 cmd->targets = t;
-                cmd->unk10.b.covered = 1;
+                cmd->info.b.covered = 1;
             }
         }
     case BTL_CMD_ENEMY_COUNTER:
@@ -233,7 +233,7 @@ void btl_startCmdEffect(BtlCmd *cmd) {
             break;
         }
     default:
-        if ((cmd->ability->targetType == 3 && !cmd->unk10.b.targeting) || (cmd->unk10.w & 0x600) ||
+        if ((cmd->ability->targetType == 3 && !cmd->info.b.targeting) || (cmd->info.w & 0x600) ||
             cmd->cmdNo == BTL_CMD_SEIKEN || cmd->cmdNo == BTL_CMD_SEIKEN2) {
             btl_playCmdEffect(cmd, cmd->ability->altEffect, 0);
         } else {
