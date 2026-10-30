@@ -5,11 +5,11 @@ void func_80053924(void) {
 
 void gamedata_resetEventFlags(void) {
     GameData *d = g_gameState->gameData;
-    d->unk568 = 0;
-    d->unk56A = 0;
-    d->unk56C = 0;
+    d->frogCount = 0;
+    d->stealCount = 0;
+    d->dragonKills = 0;
     d->battleResult = 0;
-    d->unk56F = 0;
+    d->battleFlags = 0;
     d->rainCount = 0;
     d->unk571 = 0;
 }
@@ -60,19 +60,19 @@ s32 swirl_update(s16 arg0, s16 arg1) {
     x = arg0;
     y = arg1;
     g_swirlParams = g_swirlVariant ? &D_8006F2E0[1] : &D_8006F2E0[0];
-    g_swirlOt = g_swirlPkt = g_swirlBuf + (g_gameState->gameData->unk8 << 10);
+    g_swirlOt = g_swirlPkt = g_swirlBuf + (g_gameState->gameData->drawBuf << 10);
     ClearOTag(g_swirlOt, 5);
     g_swirlPkt += 5;
     if (g_swirlFrame < 0x79) {
         if (g_swirlFrame == 0) {
             gs = g_gameState;
-            gs->gameData->unk0 &= ~0x20;
+            gs->gameData->flags &= ~0x20;
             *(u32 *)&gs->drawEnv[0].isbg = *(u32 *)&gs->drawEnv[1].isbg = 1;
             g_swirlFlash = 0;
-            g_swirlFade = g_swirlParams->unkA;
-            g_swirlAngle = a = g_swirlParams->unk0;
-            g_swirlZoom = g_swirlParams->unk6;
-            D_8007BD22 = b = g_swirlParams->unk2;
+            g_swirlFade = g_swirlParams->fade;
+            g_swirlAngle = a = g_swirlParams->angle;
+            g_swirlZoom = g_swirlParams->zoom;
+            D_8007BD22 = b = g_swirlParams->angleStep;
             if ((arg0 ^ arg1) & 1) {
                 g_swirlAngle = -a;
                 D_8007BD22 = -b;
@@ -91,26 +91,26 @@ s32 swirl_update(s16 arg0, s16 arg1) {
             y += c * (g_gameState->drawEnv->clip.h / 2 - y) / 4096;
         }
         g_swirlPkt = swirl_buildMesh(g_swirlPkt, x, y);
-        i = g_gameState->gameData->unk8;
+        i = g_gameState->gameData->drawBuf;
         SetDrawMove(g_swirlPkt, &g_gameState->dispEnv[i].disp, g_gameState->drawEnv[i].clip.x, g_gameState->drawEnv[i].clip.y);
         addPrim(g_swirlOt, g_swirlPkt);
         g_swirlPkt += 8;
         swirl_drawMesh();
-        if (g_swirlFrame >= g_swirlParams->unkC) {
-            g_swirlFade -= g_swirlParams->unkE;
+        if (g_swirlFrame >= g_swirlParams->fadeStart) {
+            g_swirlFade -= g_swirlParams->fadeStep;
             if ((s16)g_swirlFade < 0) {
                 g_swirlFade = 0;
             }
         }
-        if (g_swirlFrame >= g_swirlParams->unk10) {
+        if (g_swirlFrame >= g_swirlParams->flashStart) {
             swirl_drawFlash(x, y);
-            g_swirlFlash += g_swirlParams->unk12;
+            g_swirlFlash += g_swirlParams->flashStep;
             if ((s16)g_swirlFlash >= 0x1000) {
                 g_swirlFlash = 0xFFF;
             }
         }
         g_swirlAngle += D_8007BD22;
-        g_swirlZoom += g_swirlParams->unk8;
+        g_swirlZoom += g_swirlParams->zoomStep;
         if (g_swirlZoom > 0x1400) {
             g_swirlZoom = 0x1400;
         }
@@ -120,7 +120,7 @@ s32 swirl_update(s16 arg0, s16 arg1) {
         addPrim(g_swirlOt, g_swirlPkt);
         g_swirlPkt += 4;
     }
-    SetDrawEnv((DR_ENV *)g_swirlPkt, &g_gameState->drawEnv[g_gameState->gameData->unk8]);
+    SetDrawEnv((DR_ENV *)g_swirlPkt, &g_gameState->drawEnv[g_gameState->gameData->drawBuf]);
     addPrim(g_swirlOt, g_swirlPkt);
     g_swirlPkt += 16;
     setlen(g_swirlPkt, 2);
@@ -128,8 +128,8 @@ s32 swirl_update(s16 arg0, s16 arg1) {
     g_swirlPkt[2] = 0;
     addPrim(&g_swirlOt[3], g_swirlPkt);
     g_swirlPkt += 4;
-    setaddr(&g_swirlOt[4], getaddr(g_gameState->gameData->unk10[g_gameState->gameData->unk8]));
-    setaddr(g_gameState->gameData->unk10[g_gameState->gameData->unk8], g_swirlOt);
+    setaddr(&g_swirlOt[4], getaddr(g_gameState->gameData->ot[g_gameState->gameData->drawBuf]));
+    setaddr(g_gameState->gameData->ot[g_gameState->gameData->drawBuf], g_swirlOt);
     if (g_swirlFrame == 0) {
         DrawSync(0);
         setlen(g_swirlPkt, 2);
@@ -232,7 +232,7 @@ u32 *swirl_buildMesh(u32 *buf, s32 x, s32 y) {
     sv.vx = 0;
     sv.vz = (s16)g_swirlAngle >> 4;
     math_rotMatrixXYZ(&sv, &m);
-    v.vx = v.vy = g_swirlParams->unk4;
+    v.vx = v.vy = g_swirlParams->scale;
     v.vz = 0;
     ScaleMatrix(&m, &v);
     m.t[0] = x;
@@ -274,7 +274,7 @@ void swirl_drawMesh(void) {
     p += 10;
     for (i = 0; i < 8; i++) {
         v = &g_swirlMesh[i * 9];
-        tp = ((((g_swirlColumns[i].vx + g_gameState->dispEnv[g_gameState->gameData->unk8].disp.x) & 0x3FF) >> 6) | 0x100) << 16;
+        tp = ((((g_swirlColumns[i].vx + g_gameState->dispEnv[g_gameState->gameData->drawBuf].disp.x) & 0x3FF) >> 6) | 0x100) << 16;
         u0 = g_swirlColumns[i].vx & 0x3F;
         u1 = u0 + (g_swirlColumns[i + 1].vx - g_swirlColumns[i].vx) - 1;
         for (j = 0; j < 8; j++) {

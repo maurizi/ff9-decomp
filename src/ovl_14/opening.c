@@ -61,7 +61,7 @@ void opening_main(void) {
             break;
         }
     }
-    g_gameState->unk0 |= 0x100000;
+    g_gameState->flags |= 0x100000;
     file_loadDirTables(g_gameState);
     opening_findSceneSectors();
     scene_exit();
@@ -70,7 +70,7 @@ void opening_main(void) {
 
 void opening_clearOt(void) {
     GameData *ctx = g_gameState->gameData;
-    ClearOTagR(ctx->unk10[ctx->unk8], 0x1000);
+    ClearOTagR(ctx->ot[ctx->drawBuf], 0x1000);
 }
 
 void opening_swapBuffers(void) {
@@ -80,12 +80,12 @@ void opening_swapBuffers(void) {
     DrawSync(0);
     VSync(g_gameState->vsyncMode);
     ResetGraph(1);
-    PutDispEnv(&g_gameState->dispEnv[g_gameState->gameData->unk8]);
+    PutDispEnv(&g_gameState->dispEnv[g_gameState->gameData->drawBuf]);
     ctx = g_gameState->gameData;
-    i = ctx->unk8;
-    DrawOTagEnv(ctx->unk10[i] + 0xFFF, &g_gameState->drawEnv[i]);
-    g_gameState->gameData->unk8 ^= 1;
-    gfx_setBuffer(g_gameState->gameData->unk8);
+    i = ctx->drawBuf;
+    DrawOTagEnv(ctx->ot[i] + 0xFFF, &g_gameState->drawEnv[i]);
+    g_gameState->gameData->drawBuf ^= 1;
+    gfx_setBuffer(g_gameState->gameData->drawBuf);
 }
 
 void func_800A73B8(void) {
@@ -94,7 +94,7 @@ void func_800A73B8(void) {
     g_gameState->mode = 1;
     g_gameState->vsyncMode = 2;
     ctx->fieldId = 0;
-    ctx->unk3A = 1;
+    ctx->fieldAreaId = 1;
 }
 
 /* looks up the current area/field ids in the two directories at g_loadAreaEnd + 0x14C700 and stores their sector ranges */
@@ -102,7 +102,7 @@ void opening_findSceneSectors(void) {
     GameState *gs = g_gameState;
     s32 mode = gs->mode;
     GameData *ctx = gs->gameData;
-    GameStateUnk14 *f;
+    DirInfo *f;
     s32 base;
     u8 *area;
     u8 *start;
@@ -113,16 +113,16 @@ void opening_findSceneSectors(void) {
     if (mode == 1 || mode == 3) {
         id = -1;
         f = gs->dirs;
-        base = f->unk8;
+        base = f[0].tableSector;
         area = g_loadAreaEnd + ((base << 11) + 0x14C700);
         if (mode == 1) {
             key = (s16)ctx->fieldId;
-            start = area + ((f->unk48 - base) << 11);
-            e = (SceneDirEntry *)start + f->unk44 - 1;
+            start = area + ((f[4].tableSector - base) << 11);
+            e = (SceneDirEntry *)start + f[4].count - 1;
         } else {
-            key = ctx->unk7DC;
-            start = area + ((f->unk38 - base) << 11);
-            e = (SceneDirEntry *)start + f->unk34 - 1;
+            key = ctx->worldId;
+            start = area + ((f[3].tableSector - base) << 11);
+            e = (SceneDirEntry *)start + f[3].count - 1;
         }
         for (;;) {
             if (e->id == key) {
@@ -136,8 +136,8 @@ void opening_findSceneSectors(void) {
                 break;
             }
         }
-        start = area + ((gs->dirs->unk28 - base) << 11);
-        e = (SceneDirEntry *)start + gs->dirs->unk24 - 1;
+        start = area + ((gs->dirs[2].tableSector - base) << 11);
+        e = (SceneDirEntry *)start + gs->dirs[2].count - 1;
         for (;;) {
             if (e->id == id) {
                 ctx->sceneSector[0] = e->sector;
@@ -150,9 +150,9 @@ void opening_findSceneSectors(void) {
             }
         }
         if (mode == 1) {
-            ctx->unk3A = id;
+            ctx->fieldAreaId = id;
         } else {
-            ctx->unk7DE = id;
+            ctx->worldAreaId = id;
         }
     }
 }

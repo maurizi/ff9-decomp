@@ -304,8 +304,8 @@ void menuCard_drawCursor(void) {
         }
         if (s_menuCard.state == CARD_ST_DISCARD) {
             Window *w = s_menuCard.discardWin;
-            g_menuHelp.x = w->unk0 + 0x16;
-            g_menuHelp.y = w->unk2 + (s16)(s_menuCard.discardCursor * 15 + 0x32);
+            g_menuHelp.x = w->x + 0x16;
+            g_menuHelp.y = w->y + (s16)(s_menuCard.discardCursor * 15 + 0x32);
             g_menuHelp.otz = 9;
             help_drawCursor();
         }
@@ -491,7 +491,7 @@ void menuCard_calcCollectorPoints(s32 *out) {
     s32 i;
     s32 j;
     CardInfo *e;
-    Unk6 *c;
+    CardEntry *c;
 
     e = card_getInfoTable();
     kinds = 0;
@@ -499,15 +499,15 @@ void menuCard_calcCollectorPoints(s32 *out) {
     arrowPts = 0;
     for (i = 0; i < CARD_COUNT; i++) {
         if (s_menuCard.count[i] != 0) {
-            kinds += e[i].unk4;
+            kinds += e[i].points;
         }
     }
     memset(s_menuCardArrowsSeen, 0, 0x100);
     for (i = 0; i < CARD_COUNT; i++) {
         for (j = 0; j < s_menuCard.count[i]; j++) {
             c = card_find(i, j);
-            s_menuCardArrowsSeen[c->unk1] = 1;
-            typePts += s_menuCardTypePoints[c->unk3];
+            s_menuCardArrowsSeen[c->arrows] = 1;
+            typePts += s_menuCardTypePoints[c->type];
         }
     }
     for (i = 0; i < 0x100; i++) {
@@ -631,7 +631,7 @@ void menuCard_drawCardInfo(void) {
 }
 
 void menuCard_drawCard(s32 x, s32 y, s32 z, s32 id, s32 dim, u8 flag) {
-    Unk6 *card;
+    CardEntry *card;
     s32 c;
 
     if (flag) {
@@ -675,29 +675,29 @@ void menuCard_drawCell(s32 x, s32 y, s32 z, s32 id) {
     menuCard_drawSprite(x, y, 0x14, icon, 0x64808080);
 }
 
-void menuCard_drawArrows(s32 x, s32 y, s32 otz, Unk6 *card) {
+void menuCard_drawArrows(s32 x, s32 y, s32 otz, CardEntry *card) {
     u32 color;
     s32 i;
 
     color = menuCard_getStatsColor();
     for (i = 0; i < 8; i++) {
-        if ((card->unk1 >> i) & 1) {
+        if ((card->arrows >> i) & 1) {
             menuCard_drawSprite(x + s_menuCardArrows[i].x, y + s_menuCardArrows[i].y, otz, s_menuCardArrows[i].sprite, color);
         }
     }
 }
 
-void menuCard_drawStats(s32 x, s32 y, s32 otz, Unk6 *card) {
+void menuCard_drawStats(s32 x, s32 y, s32 otz, CardEntry *card) {
     u8 s[4];
     u32 color;
     s32 i;
     s32 dx;
 
     color = menuCard_getStatsColor();
-    s[0] = (card->unk2 >> 4) + CARD_SPR_HEX;
-    s[1] = card->unk3 + CARD_SPR_TYPE;
-    s[2] = (card->unk4 >> 4) + CARD_SPR_HEX;
-    s[3] = (card->unk5 >> 4) + CARD_SPR_HEX;
+    s[0] = (card->power >> 4) + CARD_SPR_HEX;
+    s[1] = card->type + CARD_SPR_TYPE;
+    s[2] = (card->physDef >> 4) + CARD_SPR_HEX;
+    s[3] = (card->magicDef >> 4) + CARD_SPR_HEX;
     for (i = 0; i < 4; i++) {
         menuCard_drawSprite(x + 9 + i * 6, y + 0x26, otz, s[i], color);
     }
@@ -829,9 +829,9 @@ void menuCard_onDiscardClosed(Window *w) {
 }
 
 void menuCard_drawDiscardWindow(Window *w) {
-    text_drawBlock(w->unk0 + 0xE, w->unk2 + 0xA, w->unk18, text_get(CARD_TEXT_DISCARD), 0);
-    text_drawBlock(w->unk0 + 0x30, w->unk2 + 0x2E, w->unk18, text_get(CARD_TEXT_DISCARD + 1), 0);
-    text_drawBlock(w->unk0 + 0x30, w->unk2 + 0x3D, w->unk18, text_get(CARD_TEXT_DISCARD + 2), 0);
+    text_drawBlock(w->x + 0xE, w->y + 0xA, w->otz, text_get(CARD_TEXT_DISCARD), 0);
+    text_drawBlock(w->x + 0x30, w->y + 0x2E, w->otz, text_get(CARD_TEXT_DISCARD + 1), 0);
+    text_drawBlock(w->x + 0x30, w->y + 0x3D, w->otz, text_get(CARD_TEXT_DISCARD + 2), 0);
 }
 
 void menuCard_initFlip(void) {

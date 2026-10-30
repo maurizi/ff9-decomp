@@ -12,8 +12,8 @@ void menuStatus_init(void) {
         s_menuStatus.pageOpen[i] = 0;
     }
     text_setBank(g_statusMenuText);
-    ui_initMemberSwitch(&s_menuStatus.header, g_menuScreen.unk3, menuStatus_onMemberSwitched);
-    menuStatus_setMember(g_menuScreen.unk3, 0);
+    ui_initMemberSwitch(&s_menuStatus.header, g_menuScreen.member, menuStatus_onMemberSwitched);
+    menuStatus_setMember(g_menuScreen.member, 0);
     r = &s_menuStatus.win;
     r->x = 8;
     r->y = 0x26;
@@ -24,7 +24,7 @@ void menuStatus_init(void) {
     help_setCallback(menuStatus_updateHelp);
     s_menuStatus.primBufs[0] = PSX_RAM(u8 *, 0x801F5F00);
     s_menuStatus.primBufs[1] = PSX_RAM(u8 *, 0x801F9F00);
-    s_menuStatus.prim = s_menuStatus.primBufs[g_gameState->gameData->unk8];
+    s_menuStatus.prim = s_menuStatus.primBufs[g_gameState->gameData->drawBuf];
 }
 
 void menuStatus_inputMain(void) {
@@ -70,7 +70,7 @@ void menuStatus_drawHeader(void) {
     y = w->y + 4;
     setRECT(&r, x, y, 0x5C, 0x12);
     ui_drawStones(x + 0x19, y + 0x14, 0x1E, c->stones, c->maxStones);
-    ui_drawMemberHeader(w->x + 8, w->y + 6, 0x1D, (Unk80024428 *)&s_menuStatus.header);
+    ui_drawMemberHeader(w->x + 8, w->y + 6, 0x1D, (MemberSwitch *)&s_menuStatus.header);
     ui_drawStatusIcons(r.x + 4, r.y + 4, 0x1D, c->status, 0);
     win_drawBox(&r, 0x1D, 0);
 }
@@ -95,8 +95,8 @@ void menuStatus_drawCommands(void) {
     r.h = 0x48;
     r.x = w->x + 0xE4;
     r.y = w->y + 8;
-    s_menuStatusCmds[1] = s_menuStatusCharCmds[c->unk34.b.row][0];
-    s_menuStatusCmds[2] = s_menuStatusCharCmds[c->unk34.b.row][1];
+    s_menuStatusCmds[1] = s_menuStatusCharCmds[c->info.b.row][0];
+    s_menuStatusCmds[2] = s_menuStatusCharCmds[c->info.b.row][1];
     for (i = 0; i < 4; i++) {
         tp = t.v;
         y = i * 15 + 6;
@@ -162,7 +162,7 @@ void menuStatus_drawExp(void) {
     c = g_gameState->gameData->party[st->slot];
     show = 0;
     if (D_8007AF00 != 0) {
-        bit = c->unkA & 0x10;
+        bit = c->classFlags & 0x10;
         show = bit == 0;
     }
     if (show) {
@@ -204,7 +204,7 @@ void menuStatus_drawEquipment(void) {
         id = c->equip[i];
         if (id != ITEM_NONE) {
             ui_drawItemIcon(r->x + 0x8D, r->y + 0x68 + i * 15 - 1, 0x1D, id, 1);
-            s_menuStatus.prim = text_buildBlock(r->x + 0x9D, r->y + 0x68 + i * 15 - 1, &g_ot[0x1D], g_itemNames + g_itemTable[id].unk0, 0, s_menuStatus.prim);
+            s_menuStatus.prim = text_buildBlock(r->x + 0x9D, r->y + 0x68 + i * 15 - 1, &g_ot[0x1D], g_itemNames + g_itemTable[id].name, 0, s_menuStatus.prim);
         }
     }
 }
@@ -217,14 +217,14 @@ void menuStatus_drawAbilityPages(void) {
 
     for (i = 0; i < s_menuStatus.pageCount; i++) {
         if (s_menuStatus.pageOpen[i] != 0) {
-            r = &s_menuStatus.pageWins[i].unk4;
+            r = &s_menuStatus.pageWins[i].rect;
             for (j = 0; j < STATUS_PAGE_ROWS; j++) {
                 if (base + j < s_menuStatus.abilityCount) {
                     menuStatus_drawAbilityRow(r->x + 0xA, r->y + 8 + j * 15, 0x14 - i, base + j, s_menuStatus.pageOnTop[i]);
                 }
             }
             z = 0x14 - i;
-            ui_drawLabel(r->x + 6, r->y - 3, z, g_winLabelStrings.unk4, 0);
+            ui_drawLabel(r->x + 6, r->y - 3, z, g_winLabelStrings.abilityList, 0);
             if (s_menuStatus.pageOnTop[i] != 0) {
                 s_menuStatusPageLabel[1] = i + 0x31;
                 ui_drawLabel(r->x + 0x90, r->y - 3, z, g_winLabelStrings.unk88, 0);
@@ -254,8 +254,8 @@ void menuStatus_drawAbilityRow(s32 x, s32 y, s32 z, s32 i, u8 draw) {
     if (ok && c->ap[i] == 0) {
         return;
     }
-    id = g_abilityRows[c->unk34.b.row][i].unk0;
-    max = g_abilityRows[c->unk34.b.row][i].unk1;
+    id = g_abilityRows[c->info.b.row][i].id;
+    max = g_abilityRows[c->info.b.row][i].ap;
     if (id == 0) {
         return;
     }
@@ -298,7 +298,7 @@ void menuStatus_openAbilityPage(void) {
     w = &s_menuStatus.pageWins[s_menuStatus.pagesOpen];
     s_menuStatus.pageOpen[s_menuStatus.pagesOpen] = 1;
     s_menuStatus.pageOnTop[s_menuStatus.pagesOpen] = 1;
-    w->unk4 = s_menuStatusPageRects[s_menuStatus.pagesOpen];
+    w->rect = s_menuStatusPageRects[s_menuStatus.pagesOpen];
     tween_start(w, &s_menuStatusPageOpenTween, 1);
 }
 
@@ -314,9 +314,9 @@ void menuStatus_setMember(s32 slot, s32 dir) {
     s_menuStatus.slot = slot;
     s_menuStatus.pageCount = 0;
     s_menuStatus.abilityCount = 0;
-    if ((s32)(c->unk34.b.row) < 0x10) {
+    if ((s32)(c->info.b.row) < 0x10) {
         for (i = 0; i < STATUS_ABILITY_MAX; i++) {
-            if (g_abilityRows[c->unk34.b.row][i].unk0 != 0) {
+            if (g_abilityRows[c->info.b.row][i].id != 0) {
                 s_menuStatus.abilityCount++;
             }
         }
@@ -350,8 +350,8 @@ void menuStatus_input(void) {
 void menuStatus_draw(void) {
     u8 *p = s_menuStatus.prim - 0x4000;
 
-    s_menuStatus.primFree = s_menuStatus.primBufs[g_gameState->gameData->unk8 ^ 1] - p;
-    s_menuStatus.prim = s_menuStatus.primBufs[g_gameState->gameData->unk8];
+    s_menuStatus.primFree = s_menuStatus.primBufs[g_gameState->gameData->drawBuf ^ 1] - p;
+    s_menuStatus.prim = s_menuStatus.primBufs[g_gameState->gameData->drawBuf];
     menuStatus_drawFrame();
     menuStatus_drawHeader();
     menuStatus_drawCommands();
@@ -366,7 +366,7 @@ void menuStatus_updateAnims(void) {
     s32 i;
 
     for (i = 0; i < 6; i++) {
-        if (s_menuStatus.pageOpen[i] != 0 && s_menuStatus.pageWins[i].unkC != 0) {
+        if (s_menuStatus.pageOpen[i] != 0 && s_menuStatus.pageWins[i].anim != 0) {
             tween_step(&s_menuStatus.pageWins[i]);
         }
     }

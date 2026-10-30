@@ -95,7 +95,7 @@ typedef struct {
     u8 targetMode;    /* target mode of the action (s_menuAbilityActionTable bits 5-7) */
     u8 partySize;
     u8 canTargetAll;  /* menuAbility_canTargetAll */
-    UnkBlink header;  /* member header (ui_initMemberSwitch) */
+    MemberSwitch header;  /* member header (ui_initMemberSwitch) */
 } AbilityMenu;
 extern AbilityMenu s_menuAbility;
 
@@ -130,7 +130,7 @@ typedef struct {
     RECT listRect;
     ItemSlot items[0x100]; /* items that fit the slot, best first */
     WinDef listWin;
-    UnkBlink header; /* member header (ui_initMemberSwitch) */
+    MemberSwitch header; /* member header (ui_initMemberSwitch) */
     u8 pad258[0x25C - 0x258];
     u8 initStones[4]; /* party members' magic stones when the screen opened */
     u8 listOpen;
@@ -298,7 +298,7 @@ void menuEquip_drawStatLabel(s32 x, s32 y, s32 z, u8 id, s32 color);
 extern u8 s_menuEquipArrow[]; /* arrow */
 extern u8 s_menuEquipBaseStatText[4]; /* stat names */
 extern u8 s_menuEquipBattleStatText[5]; /* attack/defence names */
-void menuEquip_drawStatCompare(Unk80032E84Out *cur, Unk80032E84Out *new);
+void menuEquip_drawStatCompare(EquipStatsOut *cur, EquipStatsOut *new);
 
 extern Unk801F34EC s_menuEquipActionTable[]; /* action abilities (ability menu), same layout as s_menuAbilityActionTable */
 extern u8 s_menuEquipActionNames[]; /* action ability names (ability menu) */

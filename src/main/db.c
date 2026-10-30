@@ -11,25 +11,25 @@ void db_clear(void) {
     s32 i;
 
     g_dbList.unk0 = 0;
-    g_dbList.unk2 = 0;
+    g_dbList.count = 0;
     for (i = 15; i >= 0; i--) {
-        g_dbList.unk4[i] = 0;
+        g_dbList.dbs[i] = 0;
     }
 }
 
 s32 db_register(s32 a, s32 b) {
-    g_dbList.unk4[g_dbList.unk2] = a;
-    g_dbList.unk2++;
+    g_dbList.dbs[g_dbList.count] = a;
+    g_dbList.count++;
     return 0;
 }
 
 s32 db_unregister(void *arg0) {
     s32 i;
 
-    for (i = g_dbList.unk2 - 1; i >= 0; i--) {
-        if (g_dbList.unk4[i] == arg0) {
-            g_dbList.unk4[i] = g_dbList.unk4[g_dbList.unk2 - 1];
-            g_dbList.unk2--;
+    for (i = g_dbList.count - 1; i >= 0; i--) {
+        if (g_dbList.dbs[i] == arg0) {
+            g_dbList.dbs[i] = g_dbList.dbs[g_dbList.count - 1];
+            g_dbList.count--;
             return 0;
         }
     }
@@ -41,8 +41,8 @@ void *db_lookupRegistered(s32 mode, s32 a1, s32 a2) {
     s32 r = -1;
     void *ret;
 
-    for (i = g_dbList.unk2 - 1; i >= 0; i--) {
-        r = db_lookup((s32)g_dbList.unk4[i], mode, a1, a2);
+    for (i = g_dbList.count - 1; i >= 0; i--) {
+        r = db_lookup((s32)g_dbList.dbs[i], mode, a1, a2);
         if (r != -1) {
             return (void *)r;
         }
@@ -185,7 +185,7 @@ void game_allocState(void) {
     g_gameState = PSX_RAM(GameState *, 0x8008B000);
     g_gameState->dispEnv = PSX_RAM(DISPENV *, 0x8008B044);
     g_gameState->drawEnv = PSX_RAM(DRAWENV *, 0x8008B06C);
-    g_gameState->dirs = PSX_RAM(GameStateUnk14 *, 0x8008B124);
+    g_gameState->dirs = PSX_RAM(DirInfo *, 0x8008B124);
     g_gameState->dirTables = PSX_RAM(void *, 0x8008B214);
     g_allocTop = (s32)PSX_RAM(u8 *, 0x8008B250);
 }
@@ -194,21 +194,21 @@ void game_resetState(void) {
     GameState *gs = g_gameState;
     s32 i;
 
-    gs->unk0 = GS_RELOAD_FILE_TABLES;
+    gs->flags = GS_RELOAD_FILE_TABLES;
     gs->disc = 0xFF;
     gs->allocTop = 0;
     gs->mode = 0;
-    gs->unkA = 0;
+    gs->prevMode = 0;
     gs->imgSector = -1;
     gs->gameData = NULL;
     game_setClearColor(0, 0, 0);
     game_setScreenHeight(0xE0);
     gs->vsyncMode = 0;
     for (i = 14; i >= 0; i--) {
-        ((DirInfo *)gs->dirs)[i].unk0 = i;
-        ((DirInfo *)gs->dirs)[i].unk4 = 0;
-        ((DirInfo *)gs->dirs)[i].unk8 = 0;
-        ((DirInfo *)gs->dirs)[i].unkC = 0;
+        gs->dirs[i].type = i;
+        gs->dirs[i].count = 0;
+        gs->dirs[i].tableSector = 0;
+        gs->dirs[i].firstSector = 0;
         gs->dirTables[i] = NULL;
     }
     gs->dirCount = 0;
@@ -282,7 +282,7 @@ void game_setScreenHeight(s32 h) {
     draw[0].isbg = 1;
     VSync(0);
     if (g_gameState->gameData != NULL) {
-        PutDispEnv(&g_gameState->dispEnv[g_gameState->gameData->unk8]);
+        PutDispEnv(&g_gameState->dispEnv[g_gameState->gameData->drawBuf]);
     }
 }
 
@@ -294,9 +294,9 @@ void game_freezeScreen(void) {
 
     if (g_gameState->gameData != NULL) {
         VSync(0);
-        PutDispEnv(&g_gameState->dispEnv[g_gameState->gameData->unk8]);
+        PutDispEnv(&g_gameState->dispEnv[g_gameState->gameData->drawBuf]);
         fade = 0;
-        memmove(&g_freezeDrawEnv, &g_gameState->drawEnv[g_gameState->gameData->unk8 ^ 1], sizeof(DRAWENV));
+        memmove(&g_freezeDrawEnv, &g_gameState->drawEnv[g_gameState->gameData->drawBuf ^ 1], sizeof(DRAWENV));
         if (fade_isActive() || fade_isBusy()) {
             fade = 1;
         }

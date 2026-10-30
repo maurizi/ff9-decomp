@@ -265,7 +265,7 @@ typedef struct {
     u16 wins;
     u16 losses;
     u16 draws;
-    Unk6 cards[0x69];
+    CardEntry cards[0x69];
     u16 unk27C;
     u16 unk27E;
 } CardData; /* Tetra Master card list, g_cards (card_getInventory) */

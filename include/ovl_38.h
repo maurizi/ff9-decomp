@@ -42,7 +42,7 @@ typedef struct {
     u8 *prim;        /* next free primitive */
     u8 *primBufs[2]; /* primitive buffers (0x4000 each), by frame */
     s32 primFree;    /* bytes left in last frame's buffer */
-    UnkBlink header; /* character name/level header (ui_initMemberSwitch, slides on L1/R1) */
+    MemberSwitch header; /* character name/level header (ui_initMemberSwitch, slides on L1/R1) */
 } StatusMenu;
 extern StatusMenu s_menuStatus;
 

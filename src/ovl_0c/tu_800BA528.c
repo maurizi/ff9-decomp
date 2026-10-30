@@ -212,7 +212,7 @@ void wm_updateMap(void) {
     s32 h;
     s32 v;
 
-    m = g_worldPlayer->unk11;
+    m = g_worldPlayer->actorType;
     flags = g_worldActorTypeInfo[m].cellAttr;
     if (g_worldMusicStarted != 0) {
         wm_updateChunks();
@@ -403,16 +403,16 @@ WmEncounter *wm_getEncounterEntry(void) {
     s32 f;
     s32 add;
 
-    area = WM_ATTR_AREA(g_worldActorTypeInfo[g_worldPlayer->unk11].cellAttr);
+    area = WM_ATTR_AREA(g_worldActorTypeInfo[g_worldPlayer->actorType].cellAttr);
     zone = g_worldAreaZone[area];
     lo = g_worldEncounterZoneStart[zone];
     hi = g_worldEncounterZoneStart[zone + 1];
     if (g_worldMapDebugFlags & WM_DEBUG_ENCOUNTER) {
         printf("- Encount Information -\n");
-        printf("Now Area :%d\n", WM_ATTR_AREA(g_worldActorTypeInfo[g_worldPlayer->unk11].cellAttr));
+        printf("Now Area :%d\n", WM_ATTR_AREA(g_worldActorTypeInfo[g_worldPlayer->actorType].cellAttr));
         printf("Now Zone :%d\n", zone);
         printf("Now Fog  :%d\n", g_worldFog);
-        printf("Topograph:%d\n", (u8)g_worldActorTypeInfo[g_worldPlayer->unk11].cellAttr >> 2);
+        printf("Topograph:%d\n", (u8)g_worldActorTypeInfo[g_worldPlayer->actorType].cellAttr >> 2);
     }
     for (i = lo; i < hi; i++) {
         t = g_worldEncounterTable[i].topoPattern >> 2;
@@ -420,7 +420,7 @@ WmEncounter *wm_getEncounterEntry(void) {
         if (g_worldMapDebugFlags & WM_DEBUG_ENCOUNTER) {
             printf("Matching:%d  ( T:%d / F:%d )\n", i, t, f);
         }
-        if (t == (u8)g_worldActorTypeInfo[g_worldPlayer->unk11].cellAttr >> 2 && f == g_worldFog) {
+        if (t == (u8)g_worldActorTypeInfo[g_worldPlayer->actorType].cellAttr >> 2 && f == g_worldFog) {
             if (g_worldMapDebugFlags & WM_DEBUG_ENCOUNTER) {
                 printf("Hit %d encount data\n", i);
             }

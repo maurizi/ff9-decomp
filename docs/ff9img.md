@@ -10,7 +10,7 @@ Reverse-engineered for this project. Reader: `tools/ff9img.py`. All values littl
 | 0x4 | u32 | 6 (unknown) |
 | 0x8 | u32 | number of directories (15) |
 | 0xC | u32 | 1 (unknown) |
-| 0x10 | dir[] | `{u32 type, u32 count, u32 dir_id, u32 first_sector}`; an entry with type 4 ends the list |
+| 0x10 | dir[] | `{u32 type, u32 count, u32 table_sector, u32 first_sector}`; an entry with type 4 ends the list. `table_sector` is the sector of the directory's file table (below); it is not a directory id: the values (1, 2, 3, 4, 5, 6, 8, ...) skip where a table spans two sectors (dir 5). The boot code copies these records to `GameState.dirs` (`DirInfo`: type, count, tableSector, firstSector) and `file_loadDirTables` finds each table at `(tableSector - dirs[0].tableSector) << 11` in the header read |
 
 The rest of sector 0 is padded with repeated `"FF9 "`.
 
@@ -23,7 +23,7 @@ Packed back to back from sector 1, one per directory in header order.
 
 ## Directories (disc 1)
 
-| idx | id | files | size | contents |
+| idx | table sector | files | size | contents |
 |---|---|---|---|---|
 | 0 | 1 | 21 | 1.4 MB | **code overlays** (19 code files + 2 small data files); identical on all 4 discs |
 | 1 | 2 | 34 | 5.2 MB | ? |

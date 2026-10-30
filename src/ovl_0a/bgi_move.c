@@ -43,7 +43,7 @@ BgiTriangle *bgi_getPassableNeighbor(BgiActor *arg0, BgiTriangle *arg1, s32 arg2
     if ((m = (n->flags >> 8) & g_fieldBgi.maskFilter) & (BGI_MASK_NO_PLAYER | BGI_MASK_NO_OTHERS)) {
         mode = g_gameState->mode;
         if (mode == 5) {
-            a = (EvtObject *)g_gameState->gameData->unk8E0[g_gameState->gameData->unk8E4.field->playerObj].unkC;
+            a = (EvtObject *)g_gameState->gameData->npcModels[g_gameState->gameData->ctx.field->playerObj].actor;
         } else if (mode == 1) {
             a = evt_getPlayer();
         } else {
@@ -657,7 +657,7 @@ BgiActor *bgi_findPlayerActor(s32 *arg0) {
     *arg0 = 0;
     mode = g_gameState->mode;
     if (mode == 5) {
-        a = (EvtObject *)g_gameState->gameData->unk8E0[g_gameState->gameData->unk8E4.field->playerObj].unkC;
+        a = (EvtObject *)g_gameState->gameData->npcModels[g_gameState->gameData->ctx.field->playerObj].actor;
     } else if (mode == 1) {
         a = evt_getPlayer();
     } else {
@@ -932,7 +932,7 @@ s16 bgi_getHeight(s16 arg0, s16 arg1) {
     if (g_fieldBgi.header == NULL) {
         if (g_gameState->mode == 5) {
             g = g_gameState->gameData;
-            return ((EvtObject *)g->unk8E0[g->unk8E4.field->playerObj].unkC)->pos.vy;
+            return ((EvtObject *)g->npcModels[g->ctx.field->playerObj].actor)->pos.vy;
         }
         if (g_gameState->mode == 1) {
             return evt_getPlayer()->pos.vy;

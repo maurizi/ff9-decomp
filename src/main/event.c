@@ -65,7 +65,7 @@ s32 evt_getSysVar(s32 op) {
         r = fld_movieCommand(3, 0, 0);
         break;
     case 16:
-        r = g_gameState->gameData->unk568;
+        r = g_gameState->gameData->frogCount;
         break;
     case 17:
         r = timer_getSeconds();
@@ -110,10 +110,10 @@ s32 evt_getSysVar(s32 op) {
         r = (u8)D_8007AE34;
         break;
     case 30:
-        r = g_gameState->gameData->unk8E4.ovl65->phase;
+        r = g_gameState->gameData->ctx.ovl65->phase;
         break;
     case 31:
-        r = g_gameState->gameData->unk8E4.ovl65->unk1340;
+        r = g_gameState->gameData->ctx.ovl65->unk1340;
         break;
     default:
         if (op >= 0xC0) {
@@ -485,7 +485,7 @@ s32 evt_rollEncounter(EvtObject *p) {
             }
             g_evtLastEncounter = id;
             evt_setNextBattle(id);
-            g_gameState->gameData->unk848 = -1;
+            g_gameState->gameData->enemyGroup = -1;
         }
     }
     return id != 0;
@@ -507,7 +507,7 @@ static inline void evt_placeBalloon_pos(EvtObject *obj, s32 *x, s32 *y) {
 }
 
 static inline void evt_placeBalloon_x(WinLayout *w, s32 sx, s32 right, s32 *ptx) {
-    s32 width = w->unk2;
+    s32 width = w->w;
     s32 tx, l, r;
 
     if (right) {
@@ -538,11 +538,11 @@ static inline void evt_placeBalloon_x(WinLayout *w, s32 sx, s32 right, s32 *ptx)
     if (r > 312 - width) {
         r = 312 - width;
     }
-    w->unk0 = (l + r) >> 1;
+    w->x = (l + r) >> 1;
 }
 
 static inline void evt_placeBalloon_y(WinLayout *w, s32 sy, s32 *below, s32 fixed) {
-    s32 h = w->unk9;
+    s32 h = w->h;
     s32 ty;
 
     if (*below) {
@@ -563,7 +563,7 @@ static inline void evt_placeBalloon_y(WinLayout *w, s32 sy, s32 *below, s32 fixe
     } else if (ty > 212 - h) {
         ty = 212 - h;
     }
-    w->unk8 = ty;
+    w->y = ty;
 }
 
 void evt_placeBalloon(EvtObject *obj, WinLayout *w, s32 dir, s32 fixed) {
@@ -605,12 +605,12 @@ void evt_placeBalloon(EvtObject *obj, WinLayout *w, s32 dir, s32 fixed) {
     }
     evt_placeBalloon_x(w, sx, right, &tx);
     evt_placeBalloon_y(w, sy, &below, fixed);
-    if (fixed == 0 && msg_overlapsRect((Unk8004EBC0 *)w)) {
+    if (fixed == 0 && msg_overlapsRect(w)) {
         below ^= 1;
         evt_placeBalloon_y(w, sy, &below, 0);
     }
-    w->unk4 = tx - w->unk0;
-    w->unk6 = (below << 1) | right;
+    w->tailOffset = tx - w->x;
+    w->tailMode = (below << 1) | right;
 }
 
 /* bubble x/y targets for evt_followBalloon (evt_placeBalloon_x/_y without the flip logic) */
@@ -671,18 +671,18 @@ void evt_followBalloon(EvtObject *obj, Window *w) {
     s32 right, below;
     s32 x, y;
 
-    ox = w->unk0;
-    oy = w->unk2;
+    ox = w->x;
+    oy = w->y;
     evt_placeBalloon_pos(obj, &sx, &sy);
     below = (w->tailMode >> 1) & 1;
     right = w->tailMode & 1;
-    x = evt_followBalloon_x(w->unk4 - 3, sx, right, &tx);
-    y = evt_followBalloon_y(w->unk6 - 3, &sy, below);
-    w->unk0 = (ox + x) >> 1;
-    w->unk2 = (oy + y) >> 1;
-    w->tailX = tx - w->unk0 - right * 16;
-    w->unk8.x += w->unk0 - ox;
-    w->unk8.y += w->unk2 - oy;
+    x = evt_followBalloon_x(w->w - 3, sx, right, &tx);
+    y = evt_followBalloon_y(w->h - 3, &sy, below);
+    w->x = (ox + x) >> 1;
+    w->y = (oy + y) >> 1;
+    w->tailX = tx - w->x - right * 16;
+    w->cur.x += w->x - ox;
+    w->cur.y += w->y - oy;
 }
 
 WinLayout *evt_getMsgLayout(EvtObject *obj, s32 id, s32 flags) {
@@ -690,74 +690,74 @@ WinLayout *evt_getMsgLayout(EvtObject *obj, s32 id, s32 flags) {
     s32 ww;
     s32 wh;
 
-    w->unk4 = 0;
-    w->unk6 = 0;
-    if ((flags & 0x40) && w->unk2 < 0x72) {
-        w->unk2 = 0x72;
+    w->tailOffset = 0;
+    w->tailMode = 0;
+    if ((flags & 0x40) && w->w < 0x72) {
+        w->w = 0x72;
     }
     if (flags & 0x80) {
-        if (w->unk2 < 0x1D) {
-            w->unk2 = 0x1D;
+        if (w->w < 0x1D) {
+            w->w = 0x1D;
         }
-        switch (w->unkA) {
+        switch (w->anchor) {
         case 0x50:
         case 0x51:
         case 0x52:
         case 0x53:
-            evt_placeBalloon(obj, w, w->unkA & 3, 0);
+            evt_placeBalloon(obj, w, w->anchor & 3, 0);
             break;
         case 0x58:
         case 0x59:
         case 0x5A:
         case 0x5B:
-            evt_placeBalloon(obj, w, w->unkA & 3, 1);
+            evt_placeBalloon(obj, w, w->anchor & 3, 1);
             break;
         default:
             evt_placeBalloon(obj, w, -1, 0);
             break;
         }
     } else {
-        ww = w->unk2;
-        wh = w->unk9;
-        switch (w->unkA) {
+        ww = w->w;
+        wh = w->h;
+        switch (w->anchor) {
         case 0x53:
-            w->unk0 = 12;
-            w->unk8 = 12;
+            w->x = 12;
+            w->y = 12;
             break;
         case 0x55:
-            w->unk0 = 160 - (ww >> 1);
-            w->unk8 = 12;
+            w->x = 160 - (ww >> 1);
+            w->y = 12;
             break;
         case 0x52:
-            w->unk0 = 308 - ww;
-            w->unk8 = 12;
+            w->x = 308 - ww;
+            w->y = 12;
             break;
         case 0x5C:
-            w->unk0 = 160 - (ww >> 1);
-            w->unk8 = 74 - (wh >> 1);
+            w->x = 160 - (ww >> 1);
+            w->y = 74 - (wh >> 1);
             break;
         case 0x51:
-            w->unk0 = 12;
-            w->unk8 = -48 - wh;
+            w->x = 12;
+            w->y = -48 - wh;
             break;
         case 0x54:
-            w->unk0 = 160 - (ww >> 1);
-            w->unk8 = -48 - wh;
+            w->x = 160 - (ww >> 1);
+            w->y = -48 - wh;
             break;
         case 0x50:
-            w->unk0 = 308 - ww;
-            w->unk8 = -48 - wh;
+            w->x = 308 - ww;
+            w->y = -48 - wh;
             break;
         case 0:
-            w->unk0 = 160 - (ww >> 1);
-            w->unk8 = 110 - (wh >> 1);
+            w->x = 160 - (ww >> 1);
+            w->y = 110 - (wh >> 1);
             break;
         }
     }
-    if ((flags & 4) && w->unk2 < 0x1D) {
-        w->unk2 = 0x1D;
+    if ((flags & 4) && w->w < 0x1D) {
+        w->w = 0x1D;
     }
-    w->unk6 |= flags & 0x30;
+    w->tailMode |= flags & 0x30;
     return w;
 }
 
@@ -789,7 +789,7 @@ void evt_turnObject(EvtObject *p, s32 d, s32 wrap, s32 speed) {
         speed = 0x10;
     }
     if (d < 0) {
-        frames = evt_getAnimFrameCount(p->modelId, (u16)p->prevPos.unk20);
+        frames = evt_getAnimFrameCount(p->modelId, (u16)p->prevPos.rotX);
         rate = frames * 16 / speed;
         if (-d < 0x400) {
             rate = rate * -d >> 10;
@@ -797,7 +797,7 @@ void evt_turnObject(EvtObject *p, s32 d, s32 wrap, s32 speed) {
         if (rate >= 6) {
             p->turnRate = (d + 0x400) / rate;
             p->animFlags = 0;
-            evt_execInstr_anim(p, (u16)p->prevPos.unk20);
+            evt_execInstr_anim(p, (u16)p->prevPos.rotX);
             if (p->uid == g_evtState->playerUid) {
                 g_evtPlayerAnimCount++;
             }
@@ -954,7 +954,7 @@ s32 evt_execInstr(void) {
         for (n = g_evtState->objects; n != NULL; n = n->unk0) {
             EvtObject *o = n->unk4;
             if (o->kind == 4) {
-                o->unk2C = o->flags;
+                o->savedFlags = o->flags;
                 if (!(o->flags & 0x20)) {
                     o->flags &= 0xFE;
                 }
@@ -966,7 +966,7 @@ s32 evt_execInstr(void) {
             EvtObject *o = n->unk4;
             if (o->kind == 4) {
                 o->flags &= 0xFE;
-                o->flags |= o->unk2C & 1;
+                o->flags |= o->savedFlags & 1;
             }
         }
         return 0;
@@ -994,7 +994,7 @@ s32 evt_execInstr(void) {
         po->collisionEllipse = evt_getArg8_inline();
         return 0;
     case 0x3B:
-        g_evtCurObj->unk11 = evt_getArg8_inline();
+        g_evtCurObj->actorType = evt_getArg8_inline();
         return 0;
     case EVT_OP_SET_POS_XZ_OBJ:
         po = evt_getObjectArg();
@@ -1043,8 +1043,8 @@ s32 evt_execInstr(void) {
         po->pos.rotY = evt_getArg8_inline() << 4;
         return 0;
     case EVT_OP_SET_ROT_XZ:
-        po->pos.unk20 = evt_getArg8_inline() << 4;
-        po->unk24 = evt_getArg8_inline() << 4;
+        po->pos.rotX = evt_getArg8_inline() << 4;
+        po->rotZ = evt_getArg8_inline() << 4;
         return 0;
     case EVT_OP_SET_LOOK:
         actor->lookParam0 = evt_getArg8_inline();
@@ -1237,7 +1237,7 @@ s32 evt_execInstr(void) {
         }
         return 0;
     case EVT_OP_ANIM_BACK:
-        ((Unk8E0 *)game_getModel(actor->modelSlot))->unk0 &= ~0x10;
+        ((ModelSlot *)game_getModel(actor->modelSlot))->flags &= ~0x10;
         actor->animEnd = 0xFF;
         actor->animFlags = 0;
         actor->animStart = actor->jumpAnimEnd + 1;
@@ -1255,7 +1255,7 @@ s32 evt_execInstr(void) {
             a = 8;
         }
         actor->moveFlags |= 8;
-        ((Unk8E0 *)game_getModel(actor->modelSlot))->unk0 |= 0x10;
+        ((ModelSlot *)game_getModel(actor->modelSlot))->flags |= 0x10;
         actor->animStart = actor->jumpAnimStart;
         actor->animEnd = actor->jumpAnimEnd;
         evt_execInstr_anim(actor, actor->jumpAnim);
@@ -1372,14 +1372,14 @@ s32 evt_execInstr(void) {
         return 8;
     case EVT_OP_BATTLE:
         g_swirlVariant = evt_getArg8_inline();
-        g_gameState->gameData->unk848 = -1;
+        g_gameState->gameData->enemyGroup = -1;
         a = evt_getArg16_inline();
         g_gameState->gameData->unk571 = (a >> 15) & 1;
         evt_setNextBattle(a & 0x7FFF);
         return 3;
     case 0x8C:
         g_swirlVariant = evt_getArg8_inline();
-        g_gameState->gameData->unk848 = evt_getArg8_inline();
+        g_gameState->gameData->enemyGroup = evt_getArg8_inline();
         a = evt_getArg16_inline();
         g_gameState->gameData->unk571 = (a >> 15) & 1;
         evt_setNextBattle(a & 0x7FFF);
@@ -1390,11 +1390,11 @@ s32 evt_execInstr(void) {
         }
         return 0;
     case EVT_OP_ENCOUNTER_TABLE:
-        g_evtEncounterTable.unk8 = evt_getArg8_inline();
-        g_evtEncounterTable.unk0 = evt_getArg16_inline();
-        g_evtEncounterTable.unk2 = evt_getArg16_inline();
-        g_evtEncounterTable.unk4 = evt_getArg16_inline();
-        g_evtEncounterTable.unk6 = evt_getArg16_inline();
+        g_evtEncounterTable.pattern = evt_getArg8_inline();
+        g_evtEncounterTable.battle0 = evt_getArg16_inline();
+        g_evtEncounterTable.battle1 = evt_getArg16_inline();
+        g_evtEncounterTable.battle2 = evt_getArg16_inline();
+        g_evtEncounterTable.battle3 = evt_getArg16_inline();
         return 0;
     case EVT_OP_SET_PLAYER:
         g_evtState->playerUid = g_evtCurObj->uid;
@@ -1496,11 +1496,11 @@ s32 evt_execInstr(void) {
         }
         return 0;
     case EVT_OP_MODEL_FLAGS_SET: {
-        ((Unk8E0 *)game_getModel(po->modelSlot))->unk0 |= evt_getArg16_inline();
+        ((ModelSlot *)game_getModel(po->modelSlot))->flags |= evt_getArg16_inline();
         return 0;
     }
     case EVT_OP_MODEL_FLAGS_CLEAR: {
-        ((Unk8E0 *)game_getModel(po->modelSlot))->unk0 &= ~evt_getArg16_inline();
+        ((ModelSlot *)game_getModel(po->modelSlot))->flags &= ~evt_getArg16_inline();
         return 0;
     }
     case 0x4E:
@@ -1525,7 +1525,7 @@ s32 evt_execInstr(void) {
         actor->runAnim = evt_getArg16_inline();
         return 0;
     case EVT_OP_SET_TURN_LEFT_ANIM:
-        actor->prevPos.unk20 = evt_getArg16_inline();
+        actor->prevPos.rotX = evt_getArg16_inline();
         return 0;
     case EVT_OP_SET_TURN_RIGHT_ANIM:
         actor->prevPos.rotY = evt_getArg16_inline();
@@ -1573,7 +1573,7 @@ s32 evt_execInstr(void) {
         g_evtArgRead = 1;
         return 1;
     case EVT_OP_ANIM_END:
-        evt_onAnimEnd((Unk8004B9B8 *)actor);
+        evt_onAnimEnd(actor);
         return 0;
     case 0xB5:
         obj = evt_getObjectArg();
@@ -1642,9 +1642,9 @@ s32 evt_execInstr(void) {
         return 0;
     case 0x1B:
         if (evt_getArg8_inline()) {
-            g_gameState->gameData->unk56F |= 8;
+            g_gameState->gameData->battleFlags |= 8;
         } else {
-            g_gameState->gameData->unk56F &= 0xF7;
+            g_gameState->gameData->battleFlags &= 0xF7;
         }
         return 0;
     case 0xE1:
@@ -1655,7 +1655,7 @@ s32 evt_execInstr(void) {
         a = evt_execInstr_chr(evt_getArg8_inline());
         if ((u32)a < 9) {
             u8 *src = msg_getText(evt_getArg16_inline());
-            u8 *dst = g_gameState->gameData->characters[a].unk0;
+            u8 *dst = g_gameState->gameData->characters[a].name;
             u8 *end = dst + 9;
             while (dst < end) {
                 *dst++ = *src++;
@@ -1668,7 +1668,7 @@ s32 evt_execInstr(void) {
     case 0xDB:
         a = evt_execInstr_chr(evt_getArg8_inline());
         if ((u32)a < 9) {
-            g_gameState->gameData->characters[a].unk34.w = (g_gameState->gameData->characters[a].unk34.w & ~0x400) | ((evt_getArg8_inline() & 1) << 10);
+            g_gameState->gameData->characters[a].info.w = (g_gameState->gameData->characters[a].info.w & ~0x400) | ((evt_getArg8_inline() & 1) << 10);
         }
         return 0;
     case EVT_OP_SET_DIR_OFFSETS:
@@ -1908,26 +1908,26 @@ s32 evt_execInstr(void) {
         return 0;
     case EVT_OP_SOUND:
         a = evt_getArg16_inline();
-        g_gameState->gameData->unk83C(a, evt_getArg16_inline(), 0, 0, 0);
+        g_gameState->gameData->soundHook(a, evt_getArg16_inline(), 0, 0, 0);
         return 0;
     case 0xC6:
         a = evt_getArg16_inline();
         b = evt_getArg16_inline();
         c = evt_getArg24_inline();
-        g_gameState->gameData->unk83C(a, b, c, 0, 0);
+        g_gameState->gameData->soundHook(a, b, c, 0, 0);
         return 0;
     case 0xC7:
         a = evt_getArg16_inline();
         b = evt_getArg16_inline();
         c = evt_getArg24_inline();
-        g_gameState->gameData->unk83C(a, b, c, evt_getArg8_inline(), 0);
+        g_gameState->gameData->soundHook(a, b, c, evt_getArg8_inline(), 0);
         return 0;
     case 0xC8:
         a = evt_getArg16_inline();
         b = evt_getArg16_inline();
         c = evt_getArg24_inline();
         d = evt_getArg8_inline();
-        g_gameState->gameData->unk83C(a, b, c, d, evt_getArg8_inline());
+        g_gameState->gameData->soundHook(a, b, c, d, evt_getArg8_inline());
         return 0;
     case EVT_OP_SOUND_POS: {
         u8 vol, pan;
@@ -2034,11 +2034,11 @@ s32 evt_execInstr(void) {
             Character *ch = &g_gameState->gameData->characters[a];
             d = evt_getArg8_inline();
             if (d != 0xFF) {
-                ch->unkA = d;
+                ch->classFlags = d;
             }
             d = evt_getArg8_inline();
             if (d != 0xFF) {
-                ch->unk34.w = (ch->unk34.w & 0xFFFE0FFF) | ((d & 0x1F) << 12);
+                ch->info.w = (ch->info.w & 0xFFFE0FFF) | ((d & 0x1F) << 12);
             }
             chr_join(a, b & 0xFF, c);
         } else {
@@ -2050,7 +2050,7 @@ s32 evt_execInstr(void) {
         a = evt_execInstr_chr(evt_getArg8_inline());
         for (i = 0; i < 4; i++) {
             Character *ch = g_gameState->gameData->party[i];
-            if (ch != NULL && (ch->unk34.w & 0xF) == a) {
+            if (ch != NULL && (ch->info.w & 0xF) == a) {
                 break;
             }
         }
@@ -2060,34 +2060,34 @@ s32 evt_execInstr(void) {
         }
         return 0;
     case 0xB2:
-        D_8007AE70.unk0 = evt_getArg8_inline();
+        D_8007AE70.size = evt_getArg8_inline();
         a = 0;
         for (i = 8; i >= 0; i--) {
             a <<= 1;
-            a |= (g_gameState->gameData->characters[i].unk34.w >> 11) & 1;
+            a |= (g_gameState->gameData->characters[i].info.w >> 11) & 1;
         }
         b = evt_getArg16_inline();
         for (i = 0; i < 9; i++) {
-            D_8007AE70.unk10[i] = b & 1;
+            D_8007AE70.fixed[i] = b & 1;
             b >>= 1;
         }
         for (i = 0; i < 4; i++) {
             Character *ch = g_gameState->gameData->party[i];
             if (ch != NULL) {
-                b = ch->unk34.w & 0xF;
+                b = ch->info.w & 0xF;
                 a &= ~(1 << b);
-                D_8007AE70.unk4[i] = b;
+                D_8007AE70.party[i] = b;
             } else {
-                D_8007AE70.unk4[i] = 0xFF;
+                D_8007AE70.party[i] = 0xFF;
             }
         }
         for (b = 0, i = 0; i < 9 && b < 8 && a != 0; i++, a >>= 1) {
             if (a & 1) {
-                D_8007AE70.unk8[b++] = i;
+                D_8007AE70.reserve[b++] = i;
             }
         }
         for (; b < 8; b++) {
-            D_8007AE70.unk8[b] = 0xFF;
+            D_8007AE70.reserve[b] = 0xFF;
         }
         menu_open(3, (s32)&D_8007AE70);
         return 1;
@@ -2131,12 +2131,12 @@ s32 evt_execInstr(void) {
     case 0x62:
         a = evt_execInstr_chr(evt_getArg8_inline());
         if ((u32)a < 9) {
-            g_gameState->gameData->characters[a].unk34.w = (g_gameState->gameData->characters[a].unk34.w & ~0x200) | ((evt_getArg8_inline() & 1) << 9);
+            g_gameState->gameData->characters[a].info.w = (g_gameState->gameData->characters[a].info.w & ~0x200) | ((evt_getArg8_inline() & 1) << 9);
         }
         return 0;
     case 0xE0:
-        if (g_gameState->gameData->unk568 < 0x7FFF) {
-            g_gameState->gameData->unk568++;
+        if (g_gameState->gameData->frogCount < 0x7FFF) {
+            g_gameState->gameData->frogCount++;
         }
         return 0;
     case 0xB0: {
@@ -2239,7 +2239,7 @@ s32 evt_execInstr(void) {
         return 0;
     case 0xFD:
         a = evt_getArg8_inline();
-        ((s32 (*)(s32, s32))g_gameState->gameData->unk8BC)(a & 0xFF, evt_getArg16_inline() & 0xFFFF);
+        ((s32 (*)(s32, s32))g_gameState->gameData->preloadRequest)(a & 0xFF, evt_getArg16_inline() & 0xFFFF);
         return 0;
     case 0xFF:
         /* padding between the two jump tables in the original rodata */
@@ -2621,7 +2621,7 @@ void evt_updateLookAt(EvtObject *o) {
     s32 ok;
 
     save = 0;
-    mdl = (Unk80047B90 *)((Unk8E0 *)game_getModel(o->modelSlot))->unk8;
+    mdl = (Unk80047B90 *)((ModelSlot *)game_getModel(o->modelSlot))->model;
     tgt = NULL;
     if ((o->moveFlags & 4) && g_evtLookTarget != NULL && g_evtLookTarget != o &&
         math_dist2(o->pos.vx - g_evtLookTarget->pos.vx, o->pos.vz - g_evtLookTarget->pos.vz, 0) >= 1000) {
@@ -2816,7 +2816,7 @@ void evt_updateBattleObjects(void) {
     s32 m;
     Unk8007AED0 *o;
 
-    if (g_gameState->gameData->unk8E4.ovl65->phase != 0) {
+    if (g_gameState->gameData->ctx.ovl65->phase != 0) {
         i = 3;
         D_8007AE10[i] = btl_getUnitMask(1);
         m = (u16)D_8007AE10[i];
@@ -3085,9 +3085,9 @@ s32 evt_updateObjects(void) {
                         p->pos.vx = p->prevPos.vx;
                         p->pos.vy = p->prevPos.vy;
                         p->pos.vz = p->prevPos.vz;
-                        p->savedWalkFloor = q->unk8;
-                        p->savedWalkTri = q->unkA;
-                        p->savedWalkFlags = q->unk0;
+                        p->savedWalkFloor = q->walkFloor;
+                        p->savedWalkTri = q->walkTri;
+                        p->savedWalkFlags = q->walkFlags;
                     }
                 }
             }
@@ -3100,38 +3100,38 @@ s32 evt_updateObjects(void) {
     return r;
 }
 
-void evt_onAnimEnd(Unk8004B9B8 *p) {
+void evt_onAnimEnd(EvtObject *p) {
     s32 v;
     u32 *q;
 
-    if (!(p->unk62 & 8)) {
-        v = p->unk54;
-        if (v != p->unk36) {
-            p->unk36 = v;
-            p->unk3A = 0;
-            p->unk64 = 0;
-            p->unk38 = evt_getAnimFrameCount(p->unk34, v);
-            p->unk5D = p->unk69;
+    if (!(p->animFlags & 8)) {
+        v = (u16)p->standAnim;
+        if (v != p->anim) {
+            p->anim = v;
+            p->animFrame = 0;
+            p->animSubFrame = 0;
+            p->animFrames = evt_getAnimFrameCount(p->modelId, v);
+            p->animSpeed = p->defaultAnimSpeed;
         }
-        p->unk3A = 0;
+        p->animFrame = 0;
         if (g_randPtr >= g_randTableEnd) {
             rand_refill();
         }
-        p->unk5D = p->unk7C[*g_randPtr++ & 3];
-        p->unk62 &= 0x39;
-        if (p->unkF & 0x80) {
+        p->animSpeed = p->idleAnimSpeeds.b[*g_randPtr++ & 3];
+        p->animFlags &= 0x39;
+        if (p->flags & 0x80) {
             func_8004B9B8_inline(p);
         }
-        if (p->unk50 & 8) {
-            p->unk50 &= ~8;
-            q = (u32 *)game_getModel(p->unk3B);
+        if (p->moveFlags & 8) {
+            p->moveFlags &= ~8;
+            q = (u32 *)game_getModel(p->modelSlot);
             *q &= ~0x10;
-            p->unk60 = 0;
-            p->unk61 = 0xFF;
+            p->animStart = 0;
+            p->animEnd = 0xFF;
         }
     } else {
-        p->unk62 = (p->unk62 | 4) & 0x7D;
-        p->unk3A = p->unk39;
+        p->animFlags = (p->animFlags | 4) & 0x7D;
+        p->animFrame = p->animPrevFrame;
     }
 }
 
@@ -3289,23 +3289,23 @@ u8 *evt_loadScripts(u8 *p) {
     g_evtScripts = p + 0x80;
     g_evtScriptCount = n;
     if (g_evtScriptCount >= 10) {
-        dst = g_evtScripts + ((ScriptEntry *)g_evtScripts)[g_evtScriptCount - 9].unk0;
+        dst = g_evtScripts + ((ScriptEntry *)g_evtScripts)[g_evtScriptCount - 9].offset;
     } else {
         dst = g_evtScripts + g_evtScriptCount * 8;
     }
     bit = 1;
     for (e = &((ScriptEntry *)g_evtScripts)[g_evtScriptCount - 9]; e < &((ScriptEntry *)g_evtScripts)[g_evtScriptCount]; e++) {
-        if (!(e->unk5 & 1)) {
+        if (!(e->flags & 1)) {
             mask |= bit;
         }
         if (mask & bit) {
-            if (e->unk0 != 0) {
-                src = g_evtScripts + e->unk0;
-                if (src != dst && e->unk2 != 0) {
-                    memmove(dst, src, e->unk2);
-                    e->unk0 = dst - g_evtScripts;
+            if (e->offset != 0) {
+                src = g_evtScripts + e->offset;
+                if (src != dst && e->size != 0) {
+                    memmove(dst, src, e->size);
+                    e->offset = dst - g_evtScripts;
                 }
-                dst += e->unk2 & ~3;
+                dst += e->size & ~3;
             }
         }
         bit <<= 1;
@@ -3358,9 +3358,9 @@ void evt_init(u8 *data) {
     }
     g_evtState = &g_evtStateData;
     for (n = g_evtState->allocNodes; n < &g_evtState->allocNodes[31]; n++) {
-        n->unk8 = n + 1;
+        n->next = n + 1;
     }
-    n->unk8 = NULL;
+    n->next = NULL;
     g_evtState->allocFree = g_evtState->allocNodes;
     g_evtState->allocUsed = NULL;
     for (m = g_evtState->listNodes; m < &g_evtState->listNodes[31]; m++) {
@@ -3416,8 +3416,8 @@ void evt_init(u8 *data) {
     }
     D_8007AE04 = 4;
     if ((g_evtMode == 1 && g_evtSavedState.mode == g_evtMode && g_evtSavedState.locationId == (s16)g_gameState->gameData->fieldId) ||
-        (g_evtMode == 3 && g_evtSavedState.mode == g_evtMode && g_evtSavedState.locationId == g_gameState->gameData->unk7DC) ||
-        (g_gameState->unkA == 9 && g_evtModelsPending != 0)) {
+        (g_evtMode == 3 && g_evtSavedState.mode == g_evtMode && g_evtSavedState.locationId == g_gameState->gameData->worldId) ||
+        (g_gameState->prevMode == 9 && g_evtModelsPending != 0)) {
         d = data - g_evtSavedState.scriptBase;
         g_evtStateData = g_evtSavedState;
         for (q = g_evtState->objects; q != NULL; q = q->unk0) {
@@ -3443,7 +3443,7 @@ void evt_init(u8 *data) {
     g_evtState->scriptBase = data;
     g_evtState->mode = g_evtMode;
     g_evtState->locationId = g_evtMode == 1   ? g_gameState->gameData->fieldId
-                          : g_evtMode == 3 ? g_gameState->gameData->unk7DC
+                          : g_evtMode == 3 ? g_gameState->gameData->worldId
                                             : 0;
 }
 
@@ -3452,7 +3452,7 @@ void evt_createModels(void) {
     EvtObject *o;
     s16 *q;
 
-    if ((g_evtMode == 1 || g_evtMode == 3 || g_gameState->unkA == 9) && g_evtModelsPending != 0) {
+    if ((g_evtMode == 1 || g_evtMode == 3 || g_gameState->prevMode == 9) && g_evtModelsPending != 0) {
         for (n = g_evtState->objects; n != NULL; n = n->unk0) {
             o = n->unk4;
             if (o->kind == 4 && o->modelId != 0xFFFF) {
@@ -3589,8 +3589,8 @@ void evt_setDrawPosAtObject(EvtObject *o, s32 dx, s32 dy) {
         fldbg_applyGeomOffset();
     }
     gd = g_gameState->gameData;
-    gte_SetRotMatrix(&gd->unk18);
-    gte_SetTransMatrix(&gd->unk18);
+    gte_SetRotMatrix(&gd->viewMatrix);
+    gte_SetTransMatrix(&gd->viewMatrix);
     gte_ldv0(pv);
     gte_rtps();
     gte_stsxy((s32 *)&sxy);
@@ -3746,9 +3746,9 @@ void evt_resetIdleTimer(s32 a) {
 void func_8004B2A0(void) {
     EvtAllocNode *p = g_evtState->allocNodes;
     for (; p < &g_evtState->allocNodes[31]; p++) {
-        p->unk8 = p + 1;
+        p->next = p + 1;
     }
-    p->unk8 = NULL;
+    p->next = NULL;
     g_evtState->allocFree = g_evtState->allocNodes;
     g_evtState->allocUsed = NULL;
 }
@@ -3857,7 +3857,7 @@ s32 evt_getObjectProp(EvtObject *o, s32 prop) {
     return r;
 }
 
-void evt_setObjectProp(Unk800219D8 *arg0, s32 arg1, s32 arg2) {
+void evt_setObjectProp(EvtObject *arg0, s32 arg1, s32 arg2) {
     s32 i;
     struct BtlUnit *(*fn)(u16);
     struct BtlUnit *r;
@@ -3865,7 +3865,7 @@ void evt_setObjectProp(Unk800219D8 *arg0, s32 arg1, s32 arg2) {
     if (arg0 != NULL) {
         i = 0;
         if (arg1 == 2) {
-            arg0->unk22 = arg2 * 16;
+            arg0->pos.rotY = arg2 * 16;
             return;
         }
         for (; i < 8; i++) {
@@ -3908,7 +3908,7 @@ s32 evt_getArg24(void) {
     return v;
 }
 
-void func_8004B9B8(Unk8004B9B8 *p) {
+void func_8004B9B8(EvtObject *p) {
     func_8004B9B8_inline(p);
 }
 
@@ -3921,8 +3921,8 @@ void evt_projectToScreen(SVECTOR *v, s32 *x, s32 *y) {
             fldbg_applyGeomOffset();
         }
         gd = g_gameState->gameData;
-        gte_SetRotMatrix(&gd->unk18);
-        gte_SetTransMatrix(&gd->unk18);
+        gte_SetRotMatrix(&gd->viewMatrix);
+        gte_SetTransMatrix(&gd->viewMatrix);
         gte_ldv0(v);
         gte_rtps();
         gte_stsxy(&s);

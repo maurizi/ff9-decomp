@@ -22,7 +22,7 @@ void menuName_init(void) {
     if (s_menuName.startDefault) {
         chr_setDefaultName(s_menuName.name, s_menuName.nameId);
     } else {
-        text_copy(s_menuName.name, g_gameState->gameData->characters[s_menuName.charIdx].unk0);
+        text_copy(s_menuName.name, g_gameState->gameData->characters[s_menuName.charIdx].name);
     }
     s_menuName.len = text_getLength(s_menuName.name);
     for (i = 0; i < 2; i++) {
@@ -123,7 +123,7 @@ void menuName_confirm(void) {
         case NAME_MENU_CONFIRM:
             if (s_menuName.len != 0) {
                 snd_playSe(SE_CURSOR);
-                memcpy(g_gameState->gameData->characters[s_menuName.charIdx].unk0, s_menuName.name, NAME_MAX_LEN);
+                memcpy(g_gameState->gameData->characters[s_menuName.charIdx].name, s_menuName.name, NAME_MAX_LEN);
                 menu_close();
             } else {
                 snd_playSe(SE_BUZZER);

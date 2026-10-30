@@ -29,18 +29,18 @@ s32 akao_setSeTables(u8 *a) {
 }
 
 s32 akao_playMusic(void *a) {
-    g_akaoArgs.unk0 = (s32)a;
+    g_akaoArgs.arg0 = (s32)a;
     return akao_command(0x10);
 }
 
 void akao_stopMusic(s32 a) {
-    g_akaoArgs.unk0 = a;
+    g_akaoArgs.arg0 = a;
     akao_command(0x11);
 }
 
 void akao_playMusicFrom(s32 a, s32 b) {
-    g_akaoArgs.unk0 = a;
-    g_akaoArgs.unk4 = b;
+    g_akaoArgs.arg0 = a;
+    g_akaoArgs.arg1 = b;
     akao_command(0x14);
 }
 
@@ -56,31 +56,31 @@ s32 func_80055330(void) {
 }
 
 void akao_pushMusic(s32 a, s32 b) {
-    g_akaoArgs.unk0 = a;
-    g_akaoArgs.unk4 = b & 0x7F;
+    g_akaoArgs.arg0 = a;
+    g_akaoArgs.arg1 = b & 0x7F;
     akao_command(0x19);
 }
 
 void akao_crossfadeMusic(s32 a, s32 b, s32 c) {
-    g_akaoArgs.unk0 = a;
-    g_akaoArgs.unk4 = b;
-    g_akaoArgs.unk8 = c & 0x7F;
+    g_akaoArgs.arg0 = a;
+    g_akaoArgs.arg1 = b;
+    g_akaoArgs.arg2 = c & 0x7F;
     akao_command(0x1A);
 }
 
 s32 akao_playMusicCount(void *a, s32 b) {
-    g_akaoArgs.unk0 = (s32)a;
-    g_akaoArgs.unk4 = b;
+    g_akaoArgs.arg0 = (s32)a;
+    g_akaoArgs.arg1 = b;
     return akao_command(0x12);
 }
 
 s32 akao_playSe(s32 a, s32 b, s32 c, s32 d) {
     s32 r;
 
-    g_akaoArgs.unk0 = a;
-    g_akaoArgs.unk4 = b & 0xFFFFFF;
-    g_akaoArgs.unk8 = c & 0xFF;
-    g_akaoArgs.unkC = d & 0x7F;
+    g_akaoArgs.arg0 = a;
+    g_akaoArgs.arg1 = b & 0xFFFFFF;
+    g_akaoArgs.arg2 = c & 0xFF;
+    g_akaoArgs.arg3 = d & 0x7F;
     if ((u32)a >= 0x400) {
         r = akao_checkHeader((s32 *)a);
         if (r != 0) {
@@ -93,18 +93,18 @@ s32 akao_playSe(s32 a, s32 b, s32 c, s32 d) {
 }
 
 void akao_stopSe(s32 a, s32 b) {
-    g_akaoArgs.unk0 = a;
-    g_akaoArgs.unk4 = b & 0xFFFFFF;
+    g_akaoArgs.arg0 = a;
+    g_akaoArgs.arg1 = b & 0xFFFFFF;
     akao_command(0x21);
 }
 
 void akao_playSeDefault(s32 a) {
-    g_akaoArgs.unk0 = a & 0x3FF;
+    g_akaoArgs.arg0 = a & 0x3FF;
     akao_command(0x30);
 }
 
 u32 akao_getActiveSe(void) {
-    u32 mask = g_akaoSeState.unk0;
+    u32 mask = g_akaoSeState.activeMask;
     AkaoChannel *c;
     u32 r;
     u32 bit;
@@ -116,7 +116,7 @@ u32 akao_getActiveSe(void) {
     r = 0;
     for (bit = 0x100; bit & 0xFFFFFF; bit <<= 1) {
         if (mask & bit) {
-            r |= c->unk28;
+            r |= c->seMask;
         }
         c++;
     }
@@ -131,13 +131,13 @@ s32 akao_isSePlaying(u32 id) {
     if (id == 0) {
         return 0;
     }
-    mask = g_akaoSeState.unk0;
+    mask = g_akaoSeState.activeMask;
     if (mask == 0) {
         return 0;
     }
     c = g_akaoSeChannels;
     for (bit = 0x100; bit & 0xFFFFFF; bit <<= 1) {
-        if ((mask & bit) && id == c->unk28) {
+        if ((mask & bit) && id == c->seMask) {
             return 1;
         }
         c++;
@@ -155,12 +155,12 @@ void akao_setOutputMode(s32 a) {
 }
 
 void akao_sendCmd90(s32 a) {
-    g_akaoArgs.unk0 = a;
+    g_akaoArgs.arg0 = a;
     akao_command(0x90);
 }
 
 void akao_sendCmd92(s32 a) {
-    g_akaoArgs.unk0 = a;
+    g_akaoArgs.arg0 = a;
     akao_command(0x92);
 }
 
@@ -203,186 +203,186 @@ void akao_sendCmd98(u32 x) {
 }
 
 void akao_setAllSeVolume(s32 a) {
-    g_akaoArgs.unk0 = a & 0x7F;
+    g_akaoArgs.arg0 = a & 0x7F;
     akao_command(0xA8);
 }
 
 void akao_fadeAllSeVolume(s32 a, s32 b) {
-    g_akaoArgs.unk0 = a;
-    g_akaoArgs.unk4 = b & 0x7F;
+    g_akaoArgs.arg0 = a;
+    g_akaoArgs.arg1 = b & 0x7F;
     akao_command(0xA9);
 }
 
 void akao_setSeVolume(s32 a, s32 b, s32 c) {
-    g_akaoArgs.unk0 = a;
-    g_akaoArgs.unk4 = b & 0xFFFFFF;
-    g_akaoArgs.unk8 = c & 0x7F;
+    g_akaoArgs.arg0 = a;
+    g_akaoArgs.arg1 = b & 0xFFFFFF;
+    g_akaoArgs.arg2 = c & 0x7F;
     akao_command(0xA0);
 }
 
 void akao_fadeSeVolume(s32 a, s32 b, s32 c, s32 d) {
-    g_akaoArgs.unk0 = a;
-    g_akaoArgs.unk4 = b & 0xFFFFFF;
-    g_akaoArgs.unk8 = c;
-    g_akaoArgs.unkC = d & 0x7F;
+    g_akaoArgs.arg0 = a;
+    g_akaoArgs.arg1 = b & 0xFFFFFF;
+    g_akaoArgs.arg2 = c;
+    g_akaoArgs.arg3 = d & 0x7F;
     akao_command(0xA1);
 }
 
 void akao_sendCmdAA(s32 a) {
-    g_akaoArgs.unk0 = a & 0xFF;
+    g_akaoArgs.arg0 = a & 0xFF;
     akao_command(0xAA);
 }
 
 void akao_sendCmdAB(s32 a, s32 b) {
-    g_akaoArgs.unk0 = a;
-    g_akaoArgs.unk4 = b & 0xFF;
+    g_akaoArgs.arg0 = a;
+    g_akaoArgs.arg1 = b & 0xFF;
     akao_command(0xAB);
 }
 
 void akao_sendCmdA2(s32 a, s32 b, u8 c) {
-    g_akaoArgs.unk0 = a;
-    g_akaoArgs.unk4 = b & 0xFFFFFF;
-    g_akaoArgs.unk8 = c;
+    g_akaoArgs.arg0 = a;
+    g_akaoArgs.arg1 = b & 0xFFFFFF;
+    g_akaoArgs.arg2 = c;
     akao_command(0xA2);
 }
 
 void akao_sendCmdA3(s32 a, s32 b, s32 c, u8 d) {
-    g_akaoArgs.unk0 = a;
-    g_akaoArgs.unk4 = b & 0xFFFFFF;
-    g_akaoArgs.unk8 = c;
-    g_akaoArgs.unkC = d;
+    g_akaoArgs.arg0 = a;
+    g_akaoArgs.arg1 = b & 0xFFFFFF;
+    g_akaoArgs.arg2 = c;
+    g_akaoArgs.arg3 = d;
     akao_command(0xA3);
 }
 
 void akao_sendCmdAC(s32 a) {
-    g_akaoArgs.unk0 = a & 0xFF;
+    g_akaoArgs.arg0 = a & 0xFF;
     akao_command(0xAC);
 }
 
 void akao_sendCmdAD(s32 a, s32 b) {
-    g_akaoArgs.unk0 = a;
-    g_akaoArgs.unk4 = b & 0xFF;
+    g_akaoArgs.arg0 = a;
+    g_akaoArgs.arg1 = b & 0xFF;
     akao_command(0xAD);
 }
 
 void akao_sendCmdA4(s32 a, s32 b, u8 c) {
-    g_akaoArgs.unk0 = a;
-    g_akaoArgs.unk4 = b & 0xFFFFFF;
-    g_akaoArgs.unk8 = c;
+    g_akaoArgs.arg0 = a;
+    g_akaoArgs.arg1 = b & 0xFFFFFF;
+    g_akaoArgs.arg2 = c;
     akao_command(0xA4);
 }
 
 void akao_sendCmdA5(s32 a, s32 b, s32 c, u8 d) {
-    g_akaoArgs.unk0 = a;
-    g_akaoArgs.unk4 = b & 0xFFFFFF;
-    g_akaoArgs.unk8 = c;
-    g_akaoArgs.unkC = d;
+    g_akaoArgs.arg0 = a;
+    g_akaoArgs.arg1 = b & 0xFFFFFF;
+    g_akaoArgs.arg2 = c;
+    g_akaoArgs.arg3 = d;
     akao_command(0xA5);
 }
 
 void akao_setMusicVolume(s32 a, s32 b) {
-    g_akaoArgs.unk0 = a;
-    g_akaoArgs.unk4 = b & 0x7F;
+    g_akaoArgs.arg0 = a;
+    g_akaoArgs.arg1 = b & 0x7F;
     akao_command(0xC0);
 }
 
 void akao_fadeMusicVolume(s32 a, s32 b, s32 c) {
-    g_akaoArgs.unk0 = a;
-    g_akaoArgs.unk4 = b;
-    g_akaoArgs.unk8 = c & 0x7F;
+    g_akaoArgs.arg0 = a;
+    g_akaoArgs.arg1 = b;
+    g_akaoArgs.arg2 = c & 0x7F;
     akao_command(0xC1);
 }
 
 void akao_fadeMusicVolumeFrom(s32 a, s32 b, s32 c, s32 d) {
-    g_akaoArgs.unk0 = a;
-    g_akaoArgs.unk4 = b;
-    g_akaoArgs.unk8 = c & 0x7F;
-    g_akaoArgs.unkC = d & 0x7F;
+    g_akaoArgs.arg0 = a;
+    g_akaoArgs.arg1 = b;
+    g_akaoArgs.arg2 = c & 0x7F;
+    g_akaoArgs.arg3 = d & 0x7F;
     akao_command(0xC2);
 }
 
 void akao_sendCmdC4(s32 a, s32 b) {
-    g_akaoArgs.unk0 = a;
-    g_akaoArgs.unk4 = b & 0x7F;
+    g_akaoArgs.arg0 = a;
+    g_akaoArgs.arg1 = b & 0x7F;
     akao_command(0xC4);
 }
 
 void akao_sendCmdC5(s32 a, s32 b, s32 c) {
-    g_akaoArgs.unk0 = a;
-    g_akaoArgs.unk4 = b;
-    g_akaoArgs.unk8 = c & 0x7F;
+    g_akaoArgs.arg0 = a;
+    g_akaoArgs.arg1 = b;
+    g_akaoArgs.arg2 = c & 0x7F;
     akao_command(0xC5);
 }
 
 void akao_setCdVolume(s32 a) {
-    g_akaoArgs.unk0 = a;
+    g_akaoArgs.arg0 = a;
     akao_command(0x70);
 }
 
 void akao_fadeCdVolume(s32 a, s32 b) {
-    g_akaoArgs.unk0 = a;
-    g_akaoArgs.unk4 = b;
+    g_akaoArgs.arg0 = a;
+    g_akaoArgs.arg1 = b;
     akao_command(0x71);
 }
 
 void akao_fadeCdVolumeFrom(s32 a, s32 b, s32 c) {
-    g_akaoArgs.unk0 = a;
-    g_akaoArgs.unk4 = b;
-    g_akaoArgs.unk8 = c;
+    g_akaoArgs.arg0 = a;
+    g_akaoArgs.arg1 = b;
+    g_akaoArgs.arg2 = c;
     akao_command(0x72);
 }
 
 void akao_sendCmdD0(s32 a) {
-    g_akaoArgs.unk0 = a & 0xFF;
+    g_akaoArgs.arg0 = a & 0xFF;
     akao_command(0xD0);
 }
 
 void akao_sendCmdD1(s32 a, s32 b) {
-    g_akaoArgs.unk0 = a;
-    g_akaoArgs.unk4 = b & 0xFF;
+    g_akaoArgs.arg0 = a;
+    g_akaoArgs.arg1 = b & 0xFF;
     akao_command(0xD1);
 }
 
 void akao_sendCmdD2(s32 a, s32 b, s32 c) {
-    g_akaoArgs.unk0 = a;
-    g_akaoArgs.unk4 = b & 0xFF;
-    g_akaoArgs.unk8 = c & 0xFF;
+    g_akaoArgs.arg0 = a;
+    g_akaoArgs.arg1 = b & 0xFF;
+    g_akaoArgs.arg2 = c & 0xFF;
     akao_command(0xD2);
 }
 
 void akao_sendCmdD4(s32 a) {
-    g_akaoArgs.unk0 = a & 0xFF;
+    g_akaoArgs.arg0 = a & 0xFF;
     akao_command(0xD4);
 }
 
 void akao_sendCmdD5(s32 a, s32 b) {
-    g_akaoArgs.unk0 = a;
-    g_akaoArgs.unk4 = b & 0xFF;
+    g_akaoArgs.arg0 = a;
+    g_akaoArgs.arg1 = b & 0xFF;
     akao_command(0xD5);
 }
 
 void akao_sendCmdD6(s32 a, s32 b, s32 c) {
-    g_akaoArgs.unk0 = a;
-    g_akaoArgs.unk4 = b & 0xFF;
-    g_akaoArgs.unk8 = c & 0xFF;
+    g_akaoArgs.arg0 = a;
+    g_akaoArgs.arg1 = b & 0xFF;
+    g_akaoArgs.arg2 = c & 0xFF;
     akao_command(0xD6);
 }
 
 void akao_sendCmdD8(s32 a) {
-    g_akaoArgs.unk0 = a & 0xFF;
+    g_akaoArgs.arg0 = a & 0xFF;
     akao_command(0xD8);
 }
 
 void akao_sendCmdD9(s32 a, s32 b) {
-    g_akaoArgs.unk0 = a;
-    g_akaoArgs.unk4 = b & 0xFF;
+    g_akaoArgs.arg0 = a;
+    g_akaoArgs.arg1 = b & 0xFF;
     akao_command(0xD9);
 }
 
 void akao_sendCmdDA(s32 a, s32 b, s32 c) {
-    g_akaoArgs.unk0 = a;
-    g_akaoArgs.unk4 = b & 0xFF;
-    g_akaoArgs.unk8 = c & 0xFF;
+    g_akaoArgs.arg0 = a;
+    g_akaoArgs.arg1 = b & 0xFF;
+    g_akaoArgs.arg2 = c & 0xFF;
     akao_command(0xDA);
 }
 
@@ -410,7 +410,7 @@ s32 akao_getSpuTransferState(void) {
 
 s32 akao_beginBankUpload(void) {
     D_8008322C = 0;
-    g_akaoFlags.unk0 |= 1;
+    g_akaoFlags.bankUpload |= 1;
     return 0;
 }
 
@@ -419,53 +419,53 @@ s32 akao_uploadBank(s32 *buf, u32 size, s32 wait) {
     u32 m;
     s32 slot;
 
-    if (g_akaoFlags.unk0 & 1) {
-        if (g_akaoUpload.unk4 == 0) {
+    if (g_akaoFlags.bankUpload & 1) {
+        if (g_akaoUpload.spuAddr == 0) {
             if (buf[0] == AKAO_MAGIC) {
                 akao_copy(buf, (u32 *)&g_akaoBankHeader, sizeof(AkaoBankHeader));
                 buf += 16;
                 size -= sizeof(AkaoBankHeader);
-                g_akaoUpload.unk4 = g_akaoBankHeader.spuAddr;
+                g_akaoUpload.spuAddr = g_akaoBankHeader.spuAddr;
                 g_akaoBankHeader.slot = slot = g_akaoBankHeader.slot;
-                g_akaoUpload.unk8 = g_akaoBankHeader.sampleSize;
-                g_akaoUpload.unk0 = &g_akaoInstruments[slot];
-                g_akaoUpload.unkC = g_akaoBankHeader.instCount * 16;
+                g_akaoUpload.sampleLeft = g_akaoBankHeader.sampleSize;
+                g_akaoUpload.instrDest = &g_akaoInstruments[slot];
+                g_akaoUpload.instrLeft = g_akaoBankHeader.instCount * 16;
             } else {
                 size = 0;
-                g_akaoUpload.unk8 = 0;
-                g_akaoUpload.unkC = 0;
+                g_akaoUpload.sampleLeft = 0;
+                g_akaoUpload.instrLeft = 0;
             }
         }
-        if (g_akaoUpload.unkC != 0) {
-            n = g_akaoUpload.unkC;
+        if (g_akaoUpload.instrLeft != 0) {
+            n = g_akaoUpload.instrLeft;
             if (size == 0) {
                 goto end;
             }
             if (n >= size) {
                 n = size;
             }
-            akao_copy(buf, g_akaoUpload.unk0, n);
+            akao_copy(buf, g_akaoUpload.instrDest, n);
             buf += n >> 2;
             size -= n;
-            g_akaoUpload.unk0 = (Unk8005EBB4 *)((s32 *)g_akaoUpload.unk0 + (n >> 2));
-            g_akaoUpload.unkC -= n;
-            if (g_akaoUpload.unkC == 0) {
+            g_akaoUpload.instrDest = (AkaoInstrument *)((s32 *)g_akaoUpload.instrDest + (n >> 2));
+            g_akaoUpload.instrLeft -= n;
+            if (g_akaoUpload.instrLeft == 0) {
                 akao_relocInstruments((s32 *)&g_akaoInstruments[g_akaoBankHeader.slot], &g_akaoInstruments[g_akaoBankHeader.slot], g_akaoBankHeader.spuAddr, g_akaoBankHeader.instCount);
             }
         }
         if (size != 0) {
-            if (g_akaoUpload.unk8 == 0) {
+            if (g_akaoUpload.sampleLeft == 0) {
                 goto clear;
             }
-            m = g_akaoUpload.unk8;
+            m = g_akaoUpload.sampleLeft;
             if (m >= size) {
                 m = size;
             }
             size = m;
-            SpuSetTransferStartAddr(g_akaoUpload.unk4);
+            SpuSetTransferStartAddr(g_akaoUpload.spuAddr);
             akao_spuWrite(buf, size);
-            g_akaoUpload.unk4 += size;
-            g_akaoUpload.unk8 -= size;
+            g_akaoUpload.spuAddr += size;
+            g_akaoUpload.sampleLeft -= size;
             if (wait != 0) {
                 akao_waitSpuTransfer();
             }
@@ -473,7 +473,7 @@ s32 akao_uploadBank(s32 *buf, u32 size, s32 wait) {
     end:
         if (D_80083230 == 0) {
         clear:
-            g_akaoFlags.unk0 &= ~1;
+            g_akaoFlags.bankUpload &= ~1;
         }
     }
     return D_80083230;
@@ -535,9 +535,9 @@ s32 akao_setCdMix(s32 vol) {
 
 void akao_sendCmdE0(s32 *a, s32 b, s32 c) {
     if (akao_checkHeader(a) == 0) {
-        g_akaoArgs.unk0 = (s32)a;
-        g_akaoArgs.unk4 = (b & 0xFF) << 8;
-        g_akaoArgs.unk8 = c;
+        g_akaoArgs.arg0 = (s32)a;
+        g_akaoArgs.arg1 = (b & 0xFF) << 8;
+        g_akaoArgs.arg2 = c;
         akao_command(0xE0);
     }
 }
@@ -547,18 +547,18 @@ void akao_sendCmdE2(void) {
 }
 
 void akao_sendCmdE4(s32 a) {
-    g_akaoArgs.unk0 = (a & 0x7F) << 8;
+    g_akaoArgs.arg0 = (a & 0x7F) << 8;
     akao_command(0xE4);
 }
 
 void akao_sendCmdE5(s32 a, s32 b) {
-    g_akaoArgs.unk0 = a;
-    g_akaoArgs.unk4 = (b & 0x7F) << 8;
+    g_akaoArgs.arg0 = a;
+    g_akaoArgs.arg1 = (b & 0x7F) << 8;
     akao_command(0xE5);
 }
 
 void akao_sendCmdE6(s32 a) {
-    g_akaoArgs.unk0 = (a & 0xFF) << 8;
+    g_akaoArgs.arg0 = (a & 0xFF) << 8;
     akao_command(0xE6);
 }
 
@@ -586,8 +586,8 @@ s32 akao_uploadSeBank(s32 *a, s32 b) {
 }
 
 void akao_sendCmdED(s32 a, s32 b) {
-    g_akaoArgs.unk0 = (a & 0xFF) << 8;
-    g_akaoArgs.unk4 = b;
+    g_akaoArgs.arg0 = (a & 0xFF) << 8;
+    g_akaoArgs.arg1 = b;
     akao_command(0xED);
 }
 
@@ -598,10 +598,10 @@ void akao_sendCmdEC(s32 *a, s32 b, s32 c, s32 d) {
         if (c == 0) {
             x = 0x4F100;
         }
-        g_akaoArgs.unk0 = (s32)a;
-        g_akaoArgs.unk4 = (b & 0xFF) << 8;
-        g_akaoArgs.unk8 = x;
-        g_akaoArgs.unkC = d;
+        g_akaoArgs.arg0 = (s32)a;
+        g_akaoArgs.arg1 = (b & 0xFF) << 8;
+        g_akaoArgs.arg2 = x;
+        g_akaoArgs.arg3 = d;
         akao_command(0xEC);
     }
 }
@@ -610,8 +610,8 @@ s32 akao_sendCmdE8(s32 a, s32 b) {
     if (b == 0) {
         return -1;
     }
-    g_akaoArgs.unk0 = a;
-    g_akaoArgs.unk4 = b;
+    g_akaoArgs.arg0 = a;
+    g_akaoArgs.arg1 = b;
     akao_command(0xE8);
     return 0;
 }
@@ -622,7 +622,7 @@ s32 func_80056488(void *unused) { /* mbg_stream passes its stream state */
     if (g_akaoStream.unk3C - 1 < g_akaoStream.unk38) {
         g_akaoStream.unk38 = 0;
     }
-    if ((g_akaoStream.unk8 & 0x1000000) && g_akaoStream.unk38 >= 2) {
+    if ((g_akaoStream.flags & 0x1000000) && g_akaoStream.unk38 >= 2) {
         func_80061C1C();
     }
     return g_akaoStream.unk34;

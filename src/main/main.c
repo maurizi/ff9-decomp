@@ -46,7 +46,7 @@ void game_main(void) {
                 ending_main();
                 break;
             }
-        } while (!(g_gameState->unk0 & GS_RESET));
+        } while (!(g_gameState->flags & GS_RESET));
         game_quitData();
         game_quitState();
         game_shutdown();
@@ -68,17 +68,17 @@ void game_loadModeOverlay(s32 mode) {
     if (preload_isReady(id)) {
         e = preload_find(id);
         if (preload_isInVram(e)) {
-            StoreImage((RECT *)&e->unk20, addrs.unk0[mode]);
-        } else if ((s32)addrs.unk0[mode] != e->unk8) {
-            file_copyViaVram((s32)addrs.unk0[mode], e->unk8, e->unkC, NULL);
+            StoreImage((RECT *)&e->vramX, addrs.unk0[mode]);
+        } else if ((s32)addrs.unk0[mode] != e->dest) {
+            file_copyViaVram((s32)addrs.unk0[mode], e->dest, e->loaded, NULL);
         }
-        loaded = e->unkC >> 11;
+        loaded = e->loaded >> 11;
         preload_remove(id);
         DrawSync(0);
     }
     f = file_find(0, id);
-    if (loaded < f->unkC - f->unk4) {
-        cd_readSync(g_gameState->imgSector + f->unk4 + loaded, (f->unkC - (f->unk4 + loaded)) << 11,
+    if (loaded < f->unkC - f->sector) {
+        cd_readSync(g_gameState->imgSector + f->sector + loaded, (f->unkC - (f->sector + loaded)) << 11,
                       (u8 *)addrs.unk0[mode] + (loaded << 11));
     }
     EnterCriticalSection();

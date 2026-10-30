@@ -114,8 +114,8 @@ s32 file_copyViaVram(s32 dst, s32 src, s32 size, RECT *rc) {
                 r->w = rc->w;
                 r->h = rc->h;
             } else {
-                r->x = g_gameState->drawEnv[g_gameState->gameData->unk8].clip.x;
-                r->y = g_gameState->drawEnv[g_gameState->gameData->unk8].clip.y;
+                r->x = g_gameState->drawEnv[g_gameState->gameData->drawBuf].clip.x;
+                r->y = g_gameState->drawEnv[g_gameState->gameData->drawBuf].clip.y;
                 r->w = 320;
                 r->h = 218;
             }
@@ -193,13 +193,13 @@ void file_loadDirTables(void) {
     s32 key2; /* s32, unlike key: no zero_extend in the second inner loop, so loop.c can still hoist the constant 2 */
 
     gs = g_gameState;
-    if (!(gs->unk0 & GS_RELOAD_FILE_TABLES)) {
+    if (!(gs->flags & GS_RELOAD_FILE_TABLES)) {
         return;
     }
     cnt = 0;
     buf = g_loadAreaEnd + 0x14C700;
-    size = (((DirInfo *)gs->dirs)[13].unk8 << 11) + ((DirInfo *)gs->dirs)[13].unk4 * 2;
-    base = ((DirInfo *)gs->dirs)[0].unk8;
+    size = (gs->dirs[13].tableSector << 11) + gs->dirs[13].count * 2;
+    base = gs->dirs[0].tableSector;
     t = size & 0x800;
     if (t != 0) {
         size += 0x800 - t;
@@ -212,7 +212,7 @@ void file_loadDirTables(void) {
     buf += base << 11;
     do { } while (0); /* empty macro residue: ends cse1's block so the data copy below is kept */
 
-    size = (dir[0].unk4 + 1) * 8;
+    size = (dir[0].count + 1) * 8;
     /* data == buf; the redundant +/- keeps CSE from folding the copy (the
        original passes a copy of buf in s0 to the first two memmoves) */
     data = buf + (base << 11) - (base << 11);
@@ -220,31 +220,31 @@ void file_loadDirTables(void) {
     gs->dirTables[0] = top;
     memmove(gs->dirTables[0], data, size);
 
-    size = (dir[1].unk4 + 1) * 8;
+    size = (dir[1].count + 1) * 8;
     top -= size;
     gs->dirTables[1] = top;
-    memmove(gs->dirTables[1], data + ((dir[1].unk8 - base) << 11), size);
+    memmove(gs->dirTables[1], data + ((dir[1].tableSector - base) << 11), size);
 
-    size = (dir[10].unk4 + 1) * 8;
+    size = (dir[10].count + 1) * 8;
     top -= size;
     gs->dirTables[10] = top;
-    memmove(gs->dirTables[10], buf + ((dir[10].unk8 - base) << 11), size);
+    memmove(gs->dirTables[10], buf + ((dir[10].tableSector - base) << 11), size);
 
-    size = (dir[8].unk4 + 1) * 8;
+    size = (dir[8].count + 1) * 8;
     top -= size;
     gs->dirTables[8] = top;
-    memmove(gs->dirTables[8], buf + ((((DirInfo *)gs->dirs)[8].unk8 - base) << 11), size);
+    memmove(gs->dirTables[8], buf + ((gs->dirs[8].tableSector - base) << 11), size);
 
-    list8 = buf + ((dir[8].unk8 - base) << 11);
-    s = (Unk8001DE50 *)(list8 + dir[8].unk4 * 8) - 1;
-    list11 = buf + ((dir[11].unk8 - base) << 11);
+    list8 = buf + ((dir[8].tableSector - base) << 11);
+    s = (Unk8001DE50 *)(list8 + dir[8].count * 8) - 1;
+    list11 = buf + ((dir[11].tableSector - base) << 11);
     do {
-        key = s->unk2;
-        e = (Unk8001DE50 *)(list11 + dir[11].unk4 * 8) - 1;
+        key = s->link;
+        e = (Unk8001DE50 *)(list11 + dir[11].count * 8) - 1;
         do {
-            if (e->unk0 == key) {
-                if (e->unk2 == 0) {
-                    e->unk2 = 1;
+            if (e->id == key) {
+                if (e->link == 0) {
+                    e->link = 1;
                     cnt++;
                 }
                 break;
@@ -256,18 +256,18 @@ void file_loadDirTables(void) {
     size = cnt * 0x10;
     top -= size;
     gs->dirTables[11] = top;
-    s = (Unk8001DE50 *)(list8 + dir[8].unk4 * 8) - 1;
+    s = (Unk8001DE50 *)(list8 + dir[8].count * 8) - 1;
     dst = gs->dirTables[11];
     do {
-        key2 = s->unk2;
-        e = (Unk8001DE50 *)(list11 + dir[11].unk4 * 8) - 1;
+        key2 = s->link;
+        e = (Unk8001DE50 *)(list11 + dir[11].count * 8) - 1;
         do {
-            if (e->unk0 == key2) {
-                if (e->unk2 == 1) {
+            if (e->id == key2) {
+                if (e->link == 1) {
                     memmove(dst, e, 0x10);
                     dst->unk8 = 0xFFFF;
                     dst++;
-                    e->unk2 = 2;
+                    e->link = 2;
                 }
                 break;
             }
@@ -275,33 +275,33 @@ void file_loadDirTables(void) {
         } while ((u8 *)e >= list11);
         s--;
     } while ((u8 *)s >= list8);
-    ((DirInfo *)gs->dirs)[11].unk4 = cnt * 2;
+    gs->dirs[11].count = cnt * 2;
 
-    size = (dir[12].unk4 + 1) * 8;
+    size = (dir[12].count + 1) * 8;
     top -= size;
     gs->dirTables[12] = top;
-    memmove(gs->dirTables[12], buf + ((dir[12].unk8 - base) << 11), size);
+    memmove(gs->dirTables[12], buf + ((dir[12].tableSector - base) << 11), size);
 
-    size = dir[13].unk4 * 2;
+    size = dir[13].count * 2;
     top -= size;
     gs->dirTables[13] = top;
-    memmove(gs->dirTables[13], buf + ((dir[13].unk8 - base) << 11), size);
-    gs->unk0 &= ~GS_RELOAD_FILE_TABLES;
+    memmove(gs->dirTables[13], buf + ((dir[13].tableSector - base) << 11), size);
+    gs->flags &= ~GS_RELOAD_FILE_TABLES;
 }
 
 FileEntry *file_find(s32 a, s32 id) {
-    FileDirEntry *d = (FileDirEntry *)g_gameState->dirs + a;
+    DirInfo *d = g_gameState->dirs + a;
     FileIdEntry *base;
     FileIdEntry *e;
 
-    if (d->unk0 == 3) {
+    if (d->type == 3) {
         return (FileEntry *)((u16 *)g_gameState->dirTables[13] + id);
     }
     id &= 0xFFFF;
     base = g_gameState->dirTables[a];
-    e = base + d->unk4 - 1;
+    e = base + d->count - 1;
 loop:
-    if (e->unk0 == id) {
+    if (e->id == id) {
         return (FileEntry *)e;
     }
     e--;
@@ -314,28 +314,28 @@ loop:
 void game_setNextScene(u16 arg0) {
     switch (g_gameState->mode) {
     case 1:
-        g_gameState->gameData->unk8E4.ovl65->unkC->unk14->unkA = arg0;
+        g_gameState->gameData->ctx.ovl65->unkC->unk14->unkA = arg0;
         break;
     case 2:
-        g_gameState->gameData->unk8E4.ovl65->work->unk4 = arg0;
+        g_gameState->gameData->ctx.ovl65->work->unk4 = arg0;
         break;
     case 3:
-        g_gameState->gameData->unk8E4.ovl65->unk8->unk24 = arg0;
+        g_gameState->gameData->ctx.ovl65->unk8->unk24 = arg0;
         break;
     }
 }
 
 s32 game_getModel(s32 arg0) {
     if (arg0 < 9) {
-        return (s32)&g_gameState->gameData->unk8D8[arg0];
+        return (s32)&g_gameState->gameData->chrModels[arg0];
     }
-    return (s32)&g_gameState->gameData->unk8E0[arg0 - 9];
+    return (s32)&g_gameState->gameData->npcModels[arg0 - 9];
 }
 
-void func_8001E3A4(Unk8001E3A4 *a) {
-    a->unk0 = 0;
+void func_8001E3A4(ModelSlot *a) {
+    a->flags = 0;
     a->unk4 = -1;
-    a->unk8 = 0;
-    a->unkC = 0;
-    a->unk10 = 0;
+    a->model = NULL;
+    a->actor = NULL;
+    a->unit = NULL;
 }

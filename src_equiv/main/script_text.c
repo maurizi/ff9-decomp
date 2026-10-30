@@ -47,7 +47,7 @@ extern u16 D_8006EAD0[];         /* atan table, 0x401 entries, 0 .. 0x200 (45 de
 s32 evt_getObjectProp(EvtObject *o, s32 prop);
 u16 func_8004B404(s32 arg0);
 EvtObject *evt_resolveObjectId(s32 id);
-void evt_setObjectProp(Unk800219D8 *arg0, s32 arg1, s32 arg2);
+void evt_setObjectProp(EvtObject *arg0, s32 arg1, s32 arg2);
 void func_8004B4A8(s32 i, s16 v);
 s32 evt_exprSpecial(s32 op);
 u32 msg_getPadPressed(void);
@@ -99,19 +99,19 @@ u32 pen_getGlyph(s32 c) {
     s32 d;
     s32 e;
 
-    if (g->unk0 != 0) {
-        c |= g->unk0 << 8;
-        g->unk0 = 0;
+    if (g->lead != 0) {
+        c |= g->lead << 8;
+        g->lead = 0;
     } else if (c - 0xFA >= 0) {
-        g->unk0 = c;
+        g->lead = c;
         return 0;
     }
-    range = g->unk4;
+    range = g->extRange;
     d = c - (s32)(range & 0xFFFF);
     if (d < 0) {
         return D_8007BBCC[c];
     }
-    e = c - (s32)(u16)g->unk8;
+    e = c - (s32)(u16)g->kanjiCode;
     if (e < 0) {
         return D_8007BBCC[d + (range >> 16)];
     }
@@ -757,7 +757,7 @@ void evt_popAssign(s32 v) {
 
     if (tag & 4) {
         if (tag & 2) {
-            evt_setObjectProp((Unk800219D8 *)g_evtExprObj, t & 0xFF, v);
+            evt_setObjectProp((EvtObject *)g_evtExprObj, t & 0xFF, v);
         } else if (tag & 1) {
             func_8004B4A8(t & 0xFF, v);
         }
@@ -1562,7 +1562,7 @@ long ratan2(long y, long x) {
 
 /* ============================================================ streak particles (two pools)
  *
- * Pool layout (Unk8007BC20): +0 free list, +4 live list, +8 particles to spawn per call, +0xC fall
+ * Pool layout (RainState): +0 free list, +4 live list, +8 particles to spawn per call, +0xC fall
  * offset per frame (applied to y, in the high half), +0x10/+0x18 the draw-mode word per buffer, +0x20 set
  * when the free list ran out, +0x24 nonzero = don't move (draw only). A node is {next, pos.xy, pos.z}.
  */
@@ -1575,11 +1575,11 @@ typedef struct Streak {
 
 /* Spawn pool->unk8 particles from the free list at random positions, y = random byte + y0. The random
  * pointer is aligned down to a word and consumes one word per particle (rand_refill first if needed). */
-static void streak_spawn(Unk8007BC20 *pool, s32 y0) {
-    Streak *head = (Streak *)pool->unk0;
+static void streak_spawn(RainState *pool, s32 y0) {
+    Streak *head = (Streak *)pool->freeList;
     Streak *f = head;
     Streak *last = NULL;
-    s32 k = pool->unk8;
+    s32 k = pool->count;
     u32 *r;
     u32 w;
 
@@ -1603,9 +1603,9 @@ static void streak_spawn(Unk8007BC20 *pool, s32 y0) {
     }
     g_randPtr = (u8 *)r;
     if (last != NULL) {
-        pool->unk0 = (Unk8007BC20Node *)last->next;
-        last->next = (Streak *)pool->unk4;
-        pool->unk4 = (s32)head;
+        pool->freeList = (RainNode *)last->next;
+        last->next = (Streak *)pool->active;
+        pool->active = (s32)head;
     }
 }
 
@@ -1649,12 +1649,12 @@ void wrain_stepDrop(Streak *s, s32 dy, s32 still) {
  * Streaks whose word at +6 (the y half of xy) has become positive go back to the free list. The chain is
  * closed with the pool's draw-mode word for buffer `buf` and linked into *ot. Returns the next free
  * primitive. */
-static u8 *streak_draw(Unk8007BC20 *pool, Streak *s, s32 buf, u32 *ot, u8 *pkt) {
+static u8 *streak_draw(RainState *pool, Streak *s, s32 buf, u32 *ot, u8 *pkt) {
     Streak *prev = NULL;
-    Streak *freel = (Streak *)pool->unk0;
-    Streak *live = (Streak *)pool->unk4;
-    s32 dy = pool->unkC;
-    s32 still = pool->unk24;
+    Streak *freel = (Streak *)pool->freeList;
+    Streak *live = (Streak *)pool->active;
+    s32 dy = pool->speed;
+    s32 still = pool->stopping;
     u32 link = *ot;
     u32 *mode = (u32 *)((u8 *)pool + buf * 8 + 0x10);
     u32 *p;
@@ -1715,8 +1715,8 @@ static u8 *streak_draw(Unk8007BC20 *pool, Streak *s, s32 buf, u32 *ot, u8 *pkt) 
     }
     mode[0] = 0x01000000 | link;
     link = (u32)mode & 0xFFFFFF;
-    pool->unk0 = (Unk8007BC20Node *)freel;
-    pool->unk4 = (s32)live;
+    pool->freeList = (RainNode *)freel;
+    pool->active = (s32)live;
     *ot = link;
     return pkt;
 }

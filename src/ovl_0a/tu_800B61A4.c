@@ -17,7 +17,7 @@ void fldmdl_projectMesh(ModelObj *arg0, u8 arg1) {
     s16 *c2;
 
     g = &arg0->model->groups[arg1];
-    gte_SetGeomScreen(g_gameState->gameData->unkA);
+    gte_SetGeomScreen(g_gameState->gameData->projDist);
     sxy = g_vtxScreenXY;
     sz = g_vtxScreenZ;
     k = 0;
@@ -26,8 +26,8 @@ void fldmdl_projectMesh(ModelObj *arg0, u8 arg1) {
     for (i = 0; i < cnt; bone++) {
         n = ((u16 *)g->boneVertexCounts)[i++];
         if (n != 0) {
-            gte_SetRotMatrix(&g_gameState->gameData->unk18);
-            gte_SetTransMatrix(&g_gameState->gameData->unk18);
+            gte_SetRotMatrix(&g_gameState->gameData->viewMatrix);
+            gte_SetTransMatrix(&g_gameState->gameData->viewMatrix);
             b = bone;
             gte_ldclmv(b);
             c1 = &b->m[0][1];
@@ -425,9 +425,9 @@ void fldmdl_drawMeshC(ModelObj *arg0, u8 arg1) {
     WmSrcF3 *sF3;
     POLY_F3 *pF3;
 
-    ot = g_gameState->gameData->unk10[g_gameState->gameData->unk8];
+    ot = g_gameState->gameData->ot[g_gameState->gameData->drawBuf];
     g = &arg0->model->groups[arg1];
-    if (g_gameState->gameData->unk8 != 0) {
+    if (g_gameState->gameData->drawBuf != 0) {
         prim = (u8 *)arg0->groupOut[arg1].prims + g->packetSize;
     } else {
         prim = arg0->groupOut[arg1].prims;
@@ -717,8 +717,8 @@ void fldmdl_cullBehindCamera(ModelObj *arg0) {
         v.vx = arg0->worldMatrix.t[0];
         v.vy = arg0->worldMatrix.t[1];
         v.vz = arg0->worldMatrix.t[2];
-        gte_SetRotMatrix(&g_gameState->gameData->unk18);
-        gte_SetTransMatrix(&g_gameState->gameData->unk18);
+        gte_SetRotMatrix(&g_gameState->gameData->viewMatrix);
+        gte_SetTransMatrix(&g_gameState->gameData->viewMatrix);
         gte_ldv0(&v);
         gte_rtps();
         gte_stsz(&sz);
@@ -997,7 +997,7 @@ void fldmdl_addGroupRgbCur(ModelObj *arg0, u8 arg1, s16 arg2, s16 arg3, s16 arg4
     }
     g = &arg0->model->groups[arg1];
     p = arg0->groupOut[arg1].prims;
-    if (g_gameState->gameData->unk8 != 0) {
+    if (g_gameState->gameData->drawBuf != 0) {
         p += g->packetSize;
     }
     for (j = 0; j < g->ft4Count; j++) {
@@ -1168,7 +1168,7 @@ void fldmdl_tintGroupCur(ModelObj *arg0, u8 arg1, s16 arg2, s16 arg3, s16 arg4) 
     g = &arg0->model->groups[arg1];
     p = arg0->groupOut[arg1].prims;
     s = g->prims;
-    if (g_gameState->gameData->unk8 != 0) {
+    if (g_gameState->gameData->drawBuf != 0) {
         p += g->packetSize;
     }
     for (j = 0; j < g->ft4Count; j++) {
@@ -1287,7 +1287,7 @@ void fldmdl_setGroupRgb(ModelObj *arg0, u8 arg1, s16 arg2, s16 arg3, s16 arg4) {
     }
     g = &arg0->model->groups[arg1];
     c = (arg4 << 16) | (arg3 << 8) | arg2;
-    if (g_gameState->gameData->unk8 != 0) {
+    if (g_gameState->gameData->drawBuf != 0) {
         p = arg0->groupOut[arg1].prims + g->packetSize;
     } else {
         p = arg0->groupOut[arg1].prims;
@@ -1363,7 +1363,7 @@ void fldmdl_setSemiTrans(ModelObj *arg0, u16 arg1) {
         g = &arg0->model->groups[i];
         s = g->prims;
         p = arg0->groupOut[i].prims;
-        if (g_gameState->gameData->unk8 != 0) {
+        if (g_gameState->gameData->drawBuf != 0) {
             p += g->packetSize;
         }
         for (j = 0; j < g->ft4Count; j++) {
@@ -1417,7 +1417,7 @@ void fldmdl_setAbr(ModelObj *arg0, u16 arg1) {
     for (i = 0; i < arg0->model->groupCount; i++) {
         g = &arg0->model->groups[i];
         p = arg0->groupOut[i].prims;
-        if (g_gameState->gameData->unk8 != 0) {
+        if (g_gameState->gameData->drawBuf != 0) {
             p += g->packetSize;
         }
         for (j = 0; j < g->ft4Count; j++) {
@@ -1824,7 +1824,7 @@ void fldmdl_projectMeshClipY(ModelObj *arg0, u8 arg1) {
     u32 cnt;
     s32 ymax;
 
-    gte_SetGeomScreen(g_gameState->gameData->unkA);
+    gte_SetGeomScreen(g_gameState->gameData->projDist);
     sxy = g_vtxScreenXY;
     sz = g_vtxScreenZ;
     k = 0;
@@ -1852,8 +1852,8 @@ void fldmdl_projectMeshClipY(ModelObj *arg0, u8 arg1) {
             } while (j < n);
             sxy = &g_vtxScreenXY[k];
             sz = &g_vtxScreenZ[k];
-            gte_SetRotMatrix(&g_gameState->gameData->unk18);
-            gte_SetTransMatrix(&g_gameState->gameData->unk18);
+            gte_SetRotMatrix(&g_gameState->gameData->viewMatrix);
+            gte_SetTransMatrix(&g_gameState->gameData->viewMatrix);
             j = 0;
             do {
                 gte_ldv3xyz(sxy, sz);
@@ -1898,8 +1898,8 @@ void fldmdl_drawMeshClipY(ModelObj *arg0, u8 arg1) {
     POLY_F3 *pF3;
 
     g = &arg0->model->groups[arg1];
-    ot = g_gameState->gameData->unk10[g_gameState->gameData->unk8];
-    if (g_gameState->gameData->unk8 != 0) {
+    ot = g_gameState->gameData->ot[g_gameState->gameData->drawBuf];
+    if (g_gameState->gameData->drawBuf != 0) {
         prim = (u8 *)arg0->groupOut[arg1].prims + g->packetSize;
     } else {
         prim = arg0->groupOut[arg1].prims;
@@ -2234,9 +2234,9 @@ void fldmdl_drawMeshMirrored(ModelObj *arg0, u8 arg1) {
     WmSrcF3 *sF3;
     POLY_F3 *pF3;
 
-    ot = g_gameState->gameData->unk10[g_gameState->gameData->unk8];
+    ot = g_gameState->gameData->ot[g_gameState->gameData->drawBuf];
     g = &arg0->model->groups[arg1];
-    if (g_gameState->gameData->unk8 != 0) {
+    if (g_gameState->gameData->drawBuf != 0) {
         prim = (u8 *)arg0->groupOut[arg1].prims + g->packetSize;
     } else {
         prim = arg0->groupOut[arg1].prims;
@@ -2769,7 +2769,7 @@ s32 fldbg_updateFollowOverlays(void) {
         objs = (BgOverlay *)((u8 *)bg + bg->overlayOffset);
         mode = g_gameState->mode;
         if (mode == 5) {
-            a = (EvtObject *)g_gameState->gameData->unk8E0[g_gameState->gameData->unk8E4.field->playerObj].unkC;
+            a = (EvtObject *)g_gameState->gameData->npcModels[g_gameState->gameData->ctx.field->playerObj].actor;
         } else if (mode == 1) {
             a = evt_getPlayer();
         } else {
@@ -3331,7 +3331,7 @@ s32 fldbg_followPlayer(void) {
     }
     mode = g_gameState->mode;
     if (mode == 5) {
-        a = (EvtObject *)g_gameState->gameData->unk8E0[g_gameState->gameData->unk8E4.field->playerObj].unkC;
+        a = (EvtObject *)g_gameState->gameData->npcModels[g_gameState->gameData->ctx.field->playerObj].actor;
     } else if (mode == 1) {
         a = evt_getPlayer();
     } else {
@@ -3622,7 +3622,7 @@ s32 fldbg_scrollToPlayer(s32 arg0, s32 arg1) {
     }
     mode = g_gameState->mode;
     if (mode == 5) {
-        a = (EvtObject *)g_gameState->gameData->unk8E0[g_gameState->gameData->unk8E4.field->playerObj].unkC;
+        a = (EvtObject *)g_gameState->gameData->npcModels[g_gameState->gameData->ctx.field->playerObj].actor;
     } else {
         a = NULL;
         if (mode == 1) {
@@ -3897,7 +3897,7 @@ s32 fldbg_setCamera(s32 arg0) {
     h->scrollMaxY = c->scrollMaxY;
     g_fieldBgState.cameraId = arg0;
     g_fieldBgState.flags |= FLDBG_CAMERA_CHANGED;
-    g_gameState->gameData->unk8E4.field->area->scene->otBias = c->otBias;
+    g_gameState->gameData->ctx.field->area->scene->otBias = c->otBias;
     return 1;
 }
 

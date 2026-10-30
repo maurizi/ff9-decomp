@@ -14,13 +14,13 @@ static inline s32 menuAbility_getSupportState_inline(s32 id, Character *c) {
         return ABILITY_EQUIPPED;
     }
     if (s_menuAbility.equipSlots[id] == 0) {
-        slot = chr_findAbilitySlot(c->unk34.b.id, id);
+        slot = chr_findAbilitySlot(c->info.b.id, id);
         if (slot < 0) {
             return 0;
         }
         if (func_80034A30(c)) {
             ap = c->ap[slot];
-            need = g_abilityRows[c->unk34.b.row][slot].unk1;
+            need = g_abilityRows[c->info.b.row][slot].ap;
             if (ap == 0) {
                 return 0;
             }
@@ -42,8 +42,8 @@ void menuAbility_init(void) {
     s_menuAbility.slot = MENU_NO_SLOT;
     s_menuAbility.state = ABILITY_STATE_TABS;
     s_menuAbility.tab = 0;
-    ui_initMemberSwitch(&s_menuAbility.header, g_menuScreen.unk3, menuAbility_onMemberSwitched);
-    menuAbility_setMember(g_menuScreen.unk3, 0);
+    ui_initMemberSwitch(&s_menuAbility.header, g_menuScreen.member, menuAbility_onMemberSwitched);
+    menuAbility_setMember(g_menuScreen.member, 0);
     s_menuAbility.animFrame = 0;
     s_menuAbility.animTick = 0;
     text_setBank(g_abilityMenuText);
@@ -77,7 +77,7 @@ void menuAbility_updateAnims(void) {
     if (m->state == ABILITY_STATE_LIST) {
         menuList_update(&s_menuAbility.lists[s_menuAbility.tab]);
     }
-    if (m->targetWin.unkC != 0) {
+    if (m->targetWin.anim != 0) {
         tween_step(&m->targetWin);
     }
     if (++m->animTick >= 7) {
@@ -86,7 +86,7 @@ void menuAbility_updateAnims(void) {
             m->animFrame = 0;
         }
     }
-    if (s_menuAbility.header.unk0 != 0) {
+    if (s_menuAbility.header.active != 0) {
         ui_updateMemberSwitch(&s_menuAbility.header);
     }
 }
@@ -208,7 +208,7 @@ void menuAbility_drawPlayer(void) {
 
     r = &s_menuAbility.playerRect;
     c = g_gameState->gameData->party[s_menuAbility.slot];
-    ui_drawMemberHeader(r->x + 8, r->y + 5, 0x1D, (Unk80024428 *)&s_menuAbility.header);
+    ui_drawMemberHeader(r->x + 8, r->y + 5, 0x1D, (MemberSwitch *)&s_menuAbility.header);
     box.w = 0x5B;
     box.h = 0x12;
     box.x = r->x + 0x72;
@@ -257,7 +257,7 @@ void menuAbility_drawInfo(void) {
         return;
     }
     if (func_80034A30(c)) {
-        ui_drawApGauge(r->x + 0x2D, r->y + 0xC, 0x1C, chr_getAp(c->unk34.b.id, id), chr_getApNeeded(c->unk34.b.id, id), flag, 0);
+        ui_drawApGauge(r->x + 0x2D, r->y + 0xC, 0x1C, chr_getAp(c->info.b.id, id), chr_getApNeeded(c->info.b.id, id), flag, 0);
     }
     if (s_menuAbility.equipSlots[id] != 0) {
         x = r->x;
@@ -303,16 +303,16 @@ void menuAbility_drawList(void) {
     RECT *r = &s_menuAbility.listRect;
 
     l = &s_menuAbility.lists[s_menuAbility.tab];
-    ui_drawLabel(r->x + 0xE, r->y - 3, 0x1C, g_winLabelStrings.unk4, 0);
-    ui_drawLabel(r->x + 0xA4, r->y - 3, 0x1C, g_winLabelStrings.unk4, 0);
-    ui_drawLabel(r->x + 0x7C, r->y - 3, 0x1C, g_winLabelStrings.unk7C, 0);
-    ui_drawLabel(r->x + 0x112, r->y - 3, 0x1C, g_winLabelStrings.unk7C, 0);
+    ui_drawLabel(r->x + 0xE, r->y - 3, 0x1C, g_winLabelStrings.abilityList, 0);
+    ui_drawLabel(r->x + 0xA4, r->y - 3, 0x1C, g_winLabelStrings.abilityList, 0);
+    ui_drawLabel(r->x + 0x7C, r->y - 3, 0x1C, g_winLabelStrings.abilityCost, 0);
+    ui_drawLabel(r->x + 0x112, r->y - 3, 0x1C, g_winLabelStrings.abilityCost, 0);
     win_drawListBox(r, 0x1D, 1, l);
     if (l->count != 0) {
         menuList_getView(l, &view);
         win_setClip(NULL, 0x1C, 1);
-        idx = view.unk1 * 2;
-        for (row = 0; row < view.unk0; row++) {
+        idx = view.first * 2;
+        for (row = 0; row < view.rows; row++) {
             for (col = 0; col < 2; col++) {
                 menuAbility_drawRow(col, row, idx++, &view);
             }
@@ -327,7 +327,7 @@ void menuAbility_drawList(void) {
 }
 
 void menuAbility_drawTargetWindow(void) {
-    RECT *r = &s_menuAbility.targetWin.unk4;
+    RECT *r = &s_menuAbility.targetWin.rect;
     AbilityMenu *m = &s_menuAbility;
     s32 i;
 
@@ -384,7 +384,7 @@ void menuAbility_drawCursor(void) {
         help_drawCursor();
     }
     if (s_menuAbility.state == ABILITY_STATE_TARGET) {
-        r = &s_menuAbility.targetWin.unk4;
+        r = &s_menuAbility.targetWin.rect;
         if (s_menuAbility.target & ABILITY_TARGET_ALL) {
             g_menuHelp.otz = 0x12;
             if (blink) {
@@ -401,7 +401,7 @@ void menuAbility_drawCursor(void) {
                 }
             }
         } else {
-            g_menuHelp.x = s_menuAbility.targetWin.unk4.x - 10;
+            g_menuHelp.x = s_menuAbility.targetWin.rect.x - 10;
             h3 = &g_menuHelp;
             k = s_menuAbility.target * 0x2B + 0x12;
             ry = r->y;
@@ -415,10 +415,10 @@ void menuAbility_drawCursor(void) {
 void menuAbility_setMember(s32 slot, s32 arg1) {
     AbilityMenu *m;
     AbilityMenu *m2;
-    UnkBlink *b;
+    MemberSwitch *b;
     Character *c;
     AbilityEntry *a;
-    Unk80069018 *it;
+    ItemInfo *it;
     s32 j;
     s32 nItems;
     s32 nAbils;
@@ -434,18 +434,18 @@ void menuAbility_setMember(s32 slot, s32 arg1) {
         m->state = ABILITY_STATE_SWITCH;
     }
     m->slot = slot;
-    if (c->unk34.b.row < 16) {
+    if (c->info.b.row < 16) {
         m2 = m;
         slot = 0;
-        a = g_abilityRows[c->unk34.b.row];
+        a = g_abilityRows[c->info.b.row];
         for (; slot < ABILITY_MAX; slot++) {
-            if (a->unk0 != 0) {
-                if (a->unk0 < ABILITY_SUPPORT_FIRST) {
-                    s_menuAbility.actions[nItems].id = a->unk0;
-                    s_menuAbility.actions[nItems].cmd = menuAbility_findCommand(a->unk0, c);
+            if (a->id != 0) {
+                if (a->id < ABILITY_SUPPORT_FIRST) {
+                    s_menuAbility.actions[nItems].id = a->id;
+                    s_menuAbility.actions[nItems].cmd = menuAbility_findCommand(a->id, c);
                     nItems++;
                 } else {
-                    *(nAbils + m2->supports) = a->unk0;
+                    *(nAbils + m2->supports) = a->id;
                     nAbils++;
                 }
             }
@@ -462,8 +462,8 @@ void menuAbility_setMember(s32 slot, s32 arg1) {
         if (id != 0xFF) {
             it = &g_itemTable[id];
             for (j = 0; j < 3; j++) {
-                s_menuAbility.equipSlots[it->unkC[j]] |= 1 << slot;
-                s_menuAbility.equipItems[it->unkC[j]][slot] = id;
+                s_menuAbility.equipSlots[it->abilities[j]] |= 1 << slot;
+                s_menuAbility.equipItems[it->abilities[j]][slot] = id;
             }
         }
     }
@@ -481,13 +481,13 @@ s32 menuAbility_getActionState(s32 id, Character *c) {
 
     info = &s_menuAbilityActionTable[id];
     if (s_menuAbility.equipSlots[id] == 0) {
-        slot = chr_findAbilitySlot(c->unk34.b.id, id);
+        slot = chr_findAbilitySlot(c->info.b.id, id);
         if (slot < 0) {
             return 0;
         }
         if (func_80034A30(c)) {
             ap = c->ap[slot];
-            need = g_abilityRows[c->unk34.b.row][slot].unk1;
+            need = g_abilityRows[c->info.b.row][slot].ap;
             if (ap == 0) {
                 return 0;
             }
@@ -523,12 +523,12 @@ void menuAbility_selectAction(void) {
                 s_menuAbility.targetMode = s_menuAbilityActionTable[id].targetMode;
                 s_menuAbility.canTargetAll = menuAbility_canTargetAll(id);
                 ls = s_menuAbility.lists + s_menuAbility.tab;
-                s_menuAbility.targetWin.unk4 = s_menuAbility.targetRect;
+                s_menuAbility.targetWin.rect = s_menuAbility.targetRect;
                 if (ls->col == 0) {
-                    s_menuAbility.targetWin.unk4.x = 0xA4;
+                    s_menuAbility.targetWin.rect.x = 0xA4;
                     tween_start(&s_menuAbility.targetWin, &s_menuAbilityTargetOpenL, 1);
                 } else {
-                    s_menuAbility.targetWin.unk4.x = 8;
+                    s_menuAbility.targetWin.rect.x = 8;
                     tween_start(&s_menuAbility.targetWin, &s_menuAbilityTargetOpenR, 1);
                 }
                 s_menuAbility.targetWinOpen = 1;
@@ -558,7 +558,7 @@ void menuAbility_toggleSupport(void) {
         sup = &g_supportAbilities[id - ABILITY_SUPPORT_FIRST];
         st = menuAbility_getSupportState_inline(id, c);
         if (st >= ABILITY_USABLE) {
-            chr_setSupportAbility(c->unk34.b.id, id, st == ABILITY_USABLE);
+            chr_setSupportAbility(c->info.b.id, id, st == ABILITY_USABLE);
             ap = c->stones;
             if (st == ABILITY_USABLE) {
                 c->stones = ap - sup->unk1;
@@ -603,7 +603,7 @@ void menuAbility_updateHelp(void) {
             if (func_80034A30(c)) {
                 goto end;
             }
-            if (c->unkA & 0x10) {
+            if (c->classFlags & 0x10) {
                 t = ABILITY_TEXT_CANNOT_EQUIP;
             } else {
                 t = ABILITY_TEXT_CANNOT_EQUIP_NOW;
@@ -754,8 +754,8 @@ void menuAbility_drawScrollRows(void) {
 
     row = 0;
     menuList_getPageView(&s_menuAbility.lists[s_menuAbility.tab], &v);
-    idx = v.unk1 * 2;
-    for (; row < v.unk0; row++) {
+    idx = v.first * 2;
+    for (; row < v.rows; row++) {
         for (col = 0; col < 2; col++) {
             menuAbility_drawRow(col, row, idx++, &v);
         }
@@ -769,7 +769,7 @@ void menuAbility_drawRow(s32 col, s32 row, s32 z, MenuView *v) {
     s32 dy = 0x5E;
 
     x = col * 0x96 + (s_menuAbility.listRect.x + dx);
-    y = row * 0xF + (v->unk2 + dy);
+    y = row * 0xF + (v->y + dy);
     if (s_menuAbility.tab == ABILITY_TAB_ACTION) {
         menuAbility_drawActionRow(x, y, z, c);
     } else {
@@ -830,7 +830,7 @@ u8 menuAbility_findCommand(s32 id, Character *c) {
     MenuCmd *e;
 
     for (i = 0; i < 2; i++) {
-        k = s_menuAbilityCharCmds[c->unk34.b.row][i];
+        k = s_menuAbilityCharCmds[c->info.b.row][i];
         e = &s_menuAbilityCmds[k];
         if (e->kind == MENU_CMD_ABILITIES) {
             for (j = 0; j < e->count; j++) {
@@ -856,13 +856,13 @@ u32 menuAbility_getSupportState(s32 id, Character *c) {
         return ABILITY_EQUIPPED;
     }
     if (s_menuAbility.equipSlots[id] == 0) {
-        slot = chr_findAbilitySlot(c->unk34.b.id, id);
+        slot = chr_findAbilitySlot(c->info.b.id, id);
         if (slot < 0) {
             return 0;
         }
         if (func_80034A30(c)) {
             ap = c->ap[slot];
-            need = g_abilityRows[c->unk34.b.row][slot].unk1;
+            need = g_abilityRows[c->info.b.row][slot].ap;
             if (ap == 0) {
                 return 0;
             }

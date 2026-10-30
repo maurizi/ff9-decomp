@@ -7,14 +7,14 @@ u16 *db_findModelInfo(s32 id) {
     DbEntry12 *tab;
     DbEntry12 *e;
 
-    for (i = g_dbList.unk2 - 1; i >= 0; i--) {
-        blk = (u8 *)db_lookup((s32)g_dbList.unk4[i], 2, 0x120000, 0);
+    for (i = g_dbList.count - 1; i >= 0; i--) {
+        blk = (u8 *)db_lookup((s32)g_dbList.dbs[i], 2, 0x120000, 0);
         if (blk != (u8 *)-1) {
             j = blk[1] - 1;
             tab = (DbEntry12 *)(blk + 4);
             for (; j >= 0; j--) {
                 e = &tab[j];
-                if (e->unk0 == (u16)id) {
+                if (e->id == (u16)id) {
                     return (u16 *)e;
                 }
             }
@@ -35,7 +35,7 @@ u8 *db_getModelUvOffsets(s32 a) {
 
 u8 *db_getModelTexPos(s32 a) {
     DbEntry12 *p = (DbEntry12 *)db_findModelInfo(a);
-    s32 n = p->unk7;
-    u8 *q = (u8 *)p + p->unk4;
+    s32 n = p->texCount;
+    u8 *q = (u8 *)p + p->dataOfs;
     return (long long)n * 8 + q;
 }

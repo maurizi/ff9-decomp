@@ -19,7 +19,7 @@ void menuMain_initPanels(void) {
     s_menuMainPanelRects[5].w = w;
     s_menuMainPanelRects[5].x = 0x134 - w;
     for (i = 0; i < 6; i++) {
-        s_menuMain.panels[i].unk4 = s_menuMainPanelRects[i];
+        s_menuMain.panels[i].rect = s_menuMainPanelRects[i];
         tween_start(&s_menuMain.panels[i], NULL, 0);
     }
     if (D_80077E51 != 0) {
@@ -46,7 +46,7 @@ void menuMain_inputCommand(void) {
 }
 
 void menuMain_inputMember(void) {
-    Unk80077E50 *m;
+    MenuScreen *m;
     s32 old;
     s32 new;
 
@@ -60,11 +60,11 @@ void menuMain_inputMember(void) {
         return;
     } else if (g_padRepeat & PAD_UP) {
         m = &g_menuScreen;
-        old = m->unk3;
+        old = m->member;
         new = party_getPrevMember(old);
     } else if (g_padRepeat & PAD_DOWN) {
         m = &g_menuScreen;
-        old = m->unk3;
+        old = m->member;
         new = party_getNextMember(old);
     } else {
         return;
@@ -72,7 +72,7 @@ void menuMain_inputMember(void) {
     if (old != new) {
         snd_playSe(0x67);
         old = new;
-        m->unk3 = old;
+        m->member = old;
     }
 }
 
@@ -119,15 +119,15 @@ void menuMain_reorder(s32 arg0, s32 arg1) {
     if (arg0 == arg1) {
         c = g_gameState->gameData->party[arg1];
         if (c != NULL) {
-            c->unk34.b.unk9 ^= 1;
+            c->info.b.battleRow ^= 1;
         }
     } else {
         t = g_gameState->gameData->party[s_menuMain.orderCursor];
         g_gameState->gameData->party[s_menuMain.orderCursor] = g_gameState->gameData->party[s_menuMain.orderTarget];
         g_gameState->gameData->party[s_menuMain.orderTarget] = t;
         menuMain_swapPortraits(arg0, arg1);
-        if (g_gameState->gameData->party[g_menuScreen.unk3] == NULL) {
-            g_menuScreen.unk3 = party_getFirstMember();
+        if (g_gameState->gameData->party[g_menuScreen.member] == NULL) {
+            g_menuScreen.member = party_getFirstMember();
         }
     }
 }
@@ -175,13 +175,13 @@ void menuMain_drawMember(s32 arg0) {
     s16 maxmp;
 
     c = g_gameState->gameData->party[arg0];
-    r = &s_menuMain.panels[arg0].unk4;
+    r = &s_menuMain.panels[arg0].rect;
     x = r->x + 8;
-    if (!c->unk34.b.unk9) {
+    if (!c->info.b.battleRow) {
         x = r->x + 0x16;
     }
     ui_drawPortrait(x, r->y + 1, 0x14, arg0, 0x2D, c->hp == 0);
-    text_drawBlock(r->x + 0x3C, r->y + 3, 0x14, c->unk0, 0);
+    text_drawBlock(r->x + 0x3C, r->y + 3, 0x14, c->name, 0);
     ui_drawStatusIcons(r->x + 0x86, r->y + 4, 0x14, c->status, 0);
     text_formatNumber(c->level, buf, 2, 1);
     ui_drawSprite(r->x + 0x3C, r->y + 0x12, 0x14, 0xB4, 0);
@@ -264,22 +264,22 @@ void menuMain_drawCursor(void) {
         }
         if (s_menuMain.state == 1) {
             g_menuHelp.otz = 0xC;
-            g_menuHelp.x = s_menuMain.panels[0].unk4.x - 0xE;
+            g_menuHelp.x = s_menuMain.panels[0].rect.x - 0xE;
             g_menuHelp.y = g_menuScreenMember * 0x2E + 0x20;
             help_drawCursor();
         }
         if (s_menuMain.state == 2) {
             if (s_menuMain.orderPicked == 1) {
                 g_menuHelp.otz = 0xB;
-                g_menuHelp.x = s_menuMain.panels[0].unk4.x - 0xA;
+                g_menuHelp.x = s_menuMain.panels[0].rect.x - 0xA;
                 g_menuHelp.y = s_menuMain.orderTarget * 0x2E + 0x24;
                 help_drawCursor();
                 if (blink) {
-                    ui_drawHand(s_menuMain.panels[0].unk4.x - 0xE, s_menuMain.orderCursor * 0x2E + 0x20, 0xC);
+                    ui_drawHand(s_menuMain.panels[0].rect.x - 0xE, s_menuMain.orderCursor * 0x2E + 0x20, 0xC);
                 }
             } else if (s_menuMain.orderPicked == 0) {
                 g_menuHelp.otz = 0xC;
-                g_menuHelp.x = s_menuMain.panels[0].unk4.x - 0xE;
+                g_menuHelp.x = s_menuMain.panels[0].rect.x - 0xE;
                 g_menuHelp.y = s_menuMain.orderCursor * 0x2E + 0x20;
                 help_drawCursor();
             }
@@ -318,7 +318,7 @@ void menuMain_setExpHelp(s32 arg0) {
         } else {
             next = g_levelExp[c->level];
         }
-        text_setStringArg(0, c->unk0);
+        text_setStringArg(0, c->name);
         text_formatNumber(c->exp, s_menuMainExpText, 7, 1);
         text_formatNumber(next - c->exp, s_menuMainNextText, 7, 1);
         text_setStringArg(1, s_menuMainExpLabel);
@@ -347,7 +347,7 @@ void menuMain_selectCommand(void) {
 }
 
 void menuMain_onSlideInDone(void) {
-    g_menuScreen.unk1 = 0;
+    g_menuScreen.slideIn = 0;
 }
 
 void menuMain_setEquipHelp(u8 arg0) {
@@ -363,7 +363,7 @@ void menuMain_setEquipHelp(u8 arg0) {
         text_setStringArg(i, s_menuMainEquipLabels[i]);
         id = c->equip[i];
         if (id != 0xFF) {
-            text_setStringArg(j, g_itemNames + g_itemTable[id].unk0);
+            text_setStringArg(j, g_itemNames + g_itemTable[id].name);
         } else {
             text_setStringArg(j, text_get(0xD));
         }
@@ -377,7 +377,7 @@ void menuMain_setEquipHelp(u8 arg0) {
 void menuMain_init(void) {
     RECT r;
 
-    if (g_menuScreen.unk1 != 0) {
+    if (g_menuScreen.slideIn != 0) {
         s_menuMain.cursor = 0;
         s_menuMain.orderCursor = 0;
     }
@@ -391,8 +391,8 @@ void menuMain_init(void) {
     help_setBounds(&r);
     help_setCallback(menuMain_updateHelp);
     help_setCursorOnTop(1);
-    if (g_gameState->gameData->party[g_menuScreen.unk3] == NULL) {
-        g_menuScreen.unk3 = party_getFirstMember();
+    if (g_gameState->gameData->party[g_menuScreen.member] == NULL) {
+        g_menuScreen.member = party_getFirstMember();
     }
 }
 
@@ -413,7 +413,7 @@ void menuMain_setCursor(u8 arg0) {
 }
 
 void menuMain_input(void) {
-    if (g_menuScreen.unk1 == 0 && fade_isBusy() == 0) {
+    if (g_menuScreen.slideIn == 0 && fade_isBusy() == 0) {
         if (s_menuMainInput[s_menuMain.state] != NULL) {
             s_menuMainInput[s_menuMain.state]();
         }
@@ -430,9 +430,9 @@ void menuMain_draw(void) {
 void menuMain_updatePanels(void) {
     s32 i;
 
-    if (g_menuScreen.unk1 != 0) {
+    if (g_menuScreen.slideIn != 0) {
         for (i = 0; i < 6; i++) {
-            if (s_menuMain.panels[i].unkC != 0) {
+            if (s_menuMain.panels[i].anim != 0) {
                 tween_step(&s_menuMain.panels[i]);
             }
         }
@@ -447,7 +447,7 @@ void menuMain_drawParty(void) {
 
     i = 0;
     do {
-        p = &s_menuMain.panels[i].unk4;
+        p = &s_menuMain.panels[i].rect;
         r.x = p->x + 0x82;
         y = p->y;
         r.w = 0x72;
@@ -504,8 +504,8 @@ u8 *fld_drawSprite3D(u8 *arg0, FieldSprHdr *h, SVECTOR *pos, SVECTOR *rot, s32 s
     n = *o;
     c.quadCount = ((u8 *)h)[n++];
     h = (FieldSprHdr *)((u8 *)h + n);
-    gte_SetRotMatrix(&g_gameState->gameData->unk18);
-    gte_SetTransMatrix(&g_gameState->gameData->unk18);
+    gte_SetRotMatrix(&g_gameState->gameData->viewMatrix);
+    gte_SetTransMatrix(&g_gameState->gameData->viewMatrix);
     gte_ldv0(pos);
     gte_rtv0tr();
     math_rotMatrixYXZ(rot, &m);

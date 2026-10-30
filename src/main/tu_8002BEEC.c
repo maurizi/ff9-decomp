@@ -10,7 +10,7 @@ void gfx_init(u32 *ot0, u32 *ot1, s32 pk0, s32 pk1) {
     g_drawBufs.dispPos[0].vy = gs->dispEnv[0].disp.y;
     g_drawBufs.dispPos[1].vx = gs->dispEnv[1].disp.x;
     g_drawBufs.dispPos[1].vy = gs->dispEnv[1].disp.y;
-    g_drawBufs.cur = gs->gameData->unk8;
+    g_drawBufs.cur = gs->gameData->drawBuf;
     g_primPtr = g_drawBufs.prims[g_drawBufs.cur];
     g_ot = g_drawBufs.ots[g_drawBufs.cur];
     pad_initRepeat();

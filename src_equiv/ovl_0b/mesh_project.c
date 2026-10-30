@@ -42,7 +42,7 @@ void btlfx_projectSliceMesh(BtlUnit9C *m, u8 meshIdx) {
     u32 nb, b, n, k, base, *xy, *z, y, w;
     s32 ylim;
 
-    GTE_CTC2(26, *(u16 *)&g_gameState->gameData->unkA);
+    GTE_CTC2(26, *(u16 *)&g_gameState->gameData->projDist);
     base = 0;
     mesh = &m->header->meshes[meshIdx];
     bone = (u8 *)m->bones;
@@ -82,7 +82,7 @@ void btlfx_projectSliceMesh(BtlUnit9C *m, u8 meshIdx) {
 
             xy = xyTab + base;
             z = zTab + base;
-            projLoadMatrix((u8 *)&g_gameState->gameData->unk18);
+            projLoadMatrix((u8 *)&g_gameState->gameData->viewMatrix);
             k = 0;
             do {
                 GTE_MTC2(0, xy[0]);
@@ -125,7 +125,7 @@ void btlfx_projectMorphMesh(BtlUnit9C *m, u8 meshIdx, u16 factor) {
 
     mesh = &m->header->meshes[meshIdx];
     morph = &m->morph->meshes[meshIdx];
-    GTE_CTC2(26, *(u16 *)&g_gameState->gameData->unkA);
+    GTE_CTC2(26, *(u16 *)&g_gameState->gameData->projDist);
     base = 0;
     nb = m->header->boneCount;
     bone = (u8 *)m->bones;
@@ -137,7 +137,7 @@ void btlfx_projectMorphMesh(BtlUnit9C *m, u8 meshIdx, u16 factor) {
         n = mesh->vertexCounts[b];
         b++;
         if (n != 0) {
-            cam = (u8 *)&g_gameState->gameData->unk18;
+            cam = (u8 *)&g_gameState->gameData->viewMatrix;
             projLoadMatrix(cam);
             for (k = 0; k < 3; k++) {
                 GTE_MTC2(9, H(bone, k * 2));

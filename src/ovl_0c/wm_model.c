@@ -17,7 +17,7 @@ void wm_projectMesh(ModelObj *arg0, u8 arg1) {
     s16 *c2;
 
     g = &arg0->model->groups[arg1];
-    gte_SetGeomScreen(g_gameState->gameData->unkA);
+    gte_SetGeomScreen(g_gameState->gameData->projDist);
     sxy = g_vtxScreenXY;
     sz = g_vtxScreenZ;
     k = 0;
@@ -26,8 +26,8 @@ void wm_projectMesh(ModelObj *arg0, u8 arg1) {
     for (i = 0; i < cnt; bone++) {
         n = ((u16 *)g->boneVertexCounts)[i++];
         if (n != 0) {
-            gte_SetRotMatrix(&g_gameState->gameData->unk18);
-            gte_SetTransMatrix(&g_gameState->gameData->unk18);
+            gte_SetRotMatrix(&g_gameState->gameData->viewMatrix);
+            gte_SetTransMatrix(&g_gameState->gameData->viewMatrix);
             b = bone;
             gte_ldclmv(b);
             c1 = &b->m[0][1];
@@ -425,9 +425,9 @@ void wm_drawMeshC(ModelObj *arg0, u8 arg1) {
     WmSrcF3 *sF3;
     POLY_F3 *pF3;
 
-    ot = g_gameState->gameData->unk10[g_gameState->gameData->unk8];
+    ot = g_gameState->gameData->ot[g_gameState->gameData->drawBuf];
     g = &arg0->model->groups[arg1];
-    if (g_gameState->gameData->unk8 != 0) {
+    if (g_gameState->gameData->drawBuf != 0) {
         prim = (u8 *)arg0->groupOut[arg1].prims + g->packetSize;
     } else {
         prim = arg0->groupOut[arg1].prims;
@@ -721,8 +721,8 @@ void wm_cullBehindCamera(ModelObj *arg0) {
         v.vx = arg0->worldMatrix.t[0];
         v.vy = arg0->worldMatrix.t[1];
         v.vz = arg0->worldMatrix.t[2];
-        gte_SetRotMatrix(&g_gameState->gameData->unk18);
-        gte_SetTransMatrix(&g_gameState->gameData->unk18);
+        gte_SetRotMatrix(&g_gameState->gameData->viewMatrix);
+        gte_SetTransMatrix(&g_gameState->gameData->viewMatrix);
         gte_ldv0(&v);
         gte_rtps();
         gte_stsz(&sz);
@@ -944,7 +944,7 @@ void wm_projectMeshClipY(ModelObj *arg0, u8 arg1) {
     u32 cnt;
     s32 ymax;
 
-    gte_SetGeomScreen(g_gameState->gameData->unkA);
+    gte_SetGeomScreen(g_gameState->gameData->projDist);
     sxy = g_vtxScreenXY;
     sz = g_vtxScreenZ;
     k = 0;
@@ -972,8 +972,8 @@ void wm_projectMeshClipY(ModelObj *arg0, u8 arg1) {
             } while (j < n);
             sxy = &g_vtxScreenXY[k];
             sz = &g_vtxScreenZ[k];
-            gte_SetRotMatrix(&g_gameState->gameData->unk18);
-            gte_SetTransMatrix(&g_gameState->gameData->unk18);
+            gte_SetRotMatrix(&g_gameState->gameData->viewMatrix);
+            gte_SetTransMatrix(&g_gameState->gameData->viewMatrix);
             j = 0;
             do {
                 gte_ldv3xyz(sxy, sz);
@@ -1018,8 +1018,8 @@ void wm_drawMeshClipY(ModelObj *arg0, u8 arg1) {
     POLY_F3 *pF3;
 
     g = &arg0->model->groups[arg1];
-    ot = g_gameState->gameData->unk10[g_gameState->gameData->unk8];
-    if (g_gameState->gameData->unk8 != 0) {
+    ot = g_gameState->gameData->ot[g_gameState->gameData->drawBuf];
+    if (g_gameState->gameData->drawBuf != 0) {
         prim = (u8 *)arg0->groupOut[arg1].prims + g->packetSize;
     } else {
         prim = arg0->groupOut[arg1].prims;
@@ -1329,8 +1329,8 @@ s32 wm_drawSprite3D(s32 arg0, WmSprHdr *h, SVECTOR *pos, SVECTOR *rot, s32 scale
     n = *o;
     c.quadCount = ((u8 *)h)[n++];
     h = (WmSprHdr *)((u8 *)h + n);
-    gte_SetRotMatrix(&g_gameState->gameData->unk18);
-    gte_SetTransMatrix(&g_gameState->gameData->unk18);
+    gte_SetRotMatrix(&g_gameState->gameData->viewMatrix);
+    gte_SetTransMatrix(&g_gameState->gameData->viewMatrix);
     gte_ldv0(pos);
     gte_rtv0tr();
     math_rotMatrixYXZ(rot, &m);

@@ -24,7 +24,7 @@ s32 ending_playMovie(s32 arg0, s32 arg1) {
             break;
         case MOVIE_ST_OPEN:
             i = 1;
-            if (g_gameState->gameData->unk8 != 0) {
+            if (g_gameState->gameData->drawBuf != 0) {
                 i = 2;
             }
             g_movieFlagQueue[0][i - 1] = MOVIE_NO_SCENES | MOVIE_NO_FADE | MOVIE_NO_OT;
@@ -42,9 +42,9 @@ s32 ending_playMovie(s32 arg0, s32 arg1) {
                 r = mbg_update(0);
                 mbg_getLastFrame();
                 if (r != 0) {
-                    DrawOTag(g_gameState->gameData->unk10[g_gameState->gameData->unk8 ^ 1] + 0xFFF);
-                } else if (timer == -1 && g_gameState->gameData->unk8 == 0) {
-                    g_gameState->dispEnv[g_gameState->gameData->unk8].disp.x = 0x1E0;
+                    DrawOTag(g_gameState->gameData->ot[g_gameState->gameData->drawBuf ^ 1] + 0xFFF);
+                } else if (timer == -1 && g_gameState->gameData->drawBuf == 0) {
+                    g_gameState->dispEnv[g_gameState->gameData->drawBuf].disp.x = 0x1E0;
                 }
             }
             break;
@@ -73,11 +73,11 @@ s32 ending_movieInit(s32 arg0, s32 arg1) {
     s32 i;
     s32 j;
 
-    while (cdRead_update(g_gameState->gameData->unk854) != 0) {
+    while (cdRead_update(g_gameState->gameData->cdRead) != 0) {
     }
     e = file_find(0, 0x64);
-    cdRead_init(g_gameState->gameData->unk854, e->unk4, (e->unkC - e->unk4) << 11, g_loadAreaEnd + 0xF1700, 0, 0x15000, 0);
-    while (cdRead_update(g_gameState->gameData->unk854) != 0) {
+    cdRead_init(g_gameState->gameData->cdRead, e->sector, (e->unkC - e->sector) << 11, g_loadAreaEnd + 0xF1700, 0, 0x15000, 0);
+    while (cdRead_update(g_gameState->gameData->cdRead) != 0) {
     }
     EnterCriticalSection();
     FlushCache();
@@ -104,7 +104,7 @@ s32 ending_movieInit(s32 arg0, s32 arg1) {
 
 void ending_movieClearOt(void) {
     GameData *ctx = g_gameState->gameData;
-    ClearOTagR(ctx->unk10[ctx->unk8], 0x1000);
+    ClearOTagR(ctx->ot[ctx->drawBuf], 0x1000);
 }
 
 void ending_movieSwap(void) {
@@ -119,16 +119,16 @@ void ending_movieSwap(void) {
     }
     VSync(g_gameState->vsyncMode);
     ResetGraph(1);
-    PutDispEnv(&g_gameState->dispEnv[g_gameState->gameData->unk8]);
+    PutDispEnv(&g_gameState->dispEnv[g_gameState->gameData->drawBuf]);
     if (g_movieFlags & MOVIE_NO_OT) {
-        PutDrawEnv(&g_gameState->drawEnv[g_gameState->gameData->unk8]);
+        PutDrawEnv(&g_gameState->drawEnv[g_gameState->gameData->drawBuf]);
     } else {
         ctx = g_gameState->gameData;
-        k = ctx->unk8;
-        DrawOTagEnv(ctx->unk10[k] + 0xFFF, &g_gameState->drawEnv[k]);
+        k = ctx->drawBuf;
+        DrawOTagEnv(ctx->ot[k] + 0xFFF, &g_gameState->drawEnv[k]);
     }
-    g_gameState->gameData->unk8 ^= 1;
-    gfx_setBuffer(g_gameState->gameData->unk8);
+    g_gameState->gameData->drawBuf ^= 1;
+    gfx_setBuffer(g_gameState->gameData->drawBuf);
     g_movieFlags |= g_movieFlagQueue[0][0];
     g_movieFlags &= ~g_movieFlagQueue[1][0];
     for (i = 0; i < 2; i++) {
@@ -154,7 +154,7 @@ s32 bj_drawResult(s32 kind, s32 c, s32 x, s32 y) {
 
     switch (kind) {
     case 0:
-        p = &g_bjSprites[g_gameState->gameData->unk8][g_bjSprtCount];
+        p = &g_bjSprites[g_gameState->gameData->drawBuf][g_bjSprtCount];
         setlen(p, 4);
         p->code = 0x66;
         p->x0 = x;
@@ -165,14 +165,14 @@ s32 bj_drawResult(s32 kind, s32 c, s32 x, s32 y) {
         p->w = 0x68;
         p->h = 0x28;
         p->clut = 0x3A40;
-        addPrim(&g_gameState->gameData->unk10[g_gameState->gameData->unk8][BJ_OTZ], p);
+        addPrim(&g_gameState->gameData->ot[g_gameState->gameData->drawBuf][BJ_OTZ], p);
         g_bjSprtCount++;
-        t = &g_bjTpages[g_gameState->gameData->unk8][g_bjTpageCount];
+        t = &g_bjTpages[g_gameState->gameData->drawBuf][g_bjTpageCount];
         setlen(t, 1);
         t->code[0] = (GetTPage(1, 1, 0x280, 0x100) & 0x9FF) | 0xE1000400;
-        addPrim(&g_gameState->gameData->unk10[g_gameState->gameData->unk8][BJ_OTZ], t);
+        addPrim(&g_gameState->gameData->ot[g_gameState->gameData->drawBuf][BJ_OTZ], t);
         g_bjTpageCount++;
-        p = &g_bjSprites[g_gameState->gameData->unk8][g_bjSprtCount];
+        p = &g_bjSprites[g_gameState->gameData->drawBuf][g_bjSprtCount];
         setlen(p, 4);
         p->code = 0x66;
         p->x0 = x;
@@ -183,17 +183,17 @@ s32 bj_drawResult(s32 kind, s32 c, s32 x, s32 y) {
         p->w = 0x70;
         p->h = 0x28;
         p->clut = 0x3A40;
-        addPrim(&g_gameState->gameData->unk10[g_gameState->gameData->unk8][BJ_OTZ], p);
+        addPrim(&g_gameState->gameData->ot[g_gameState->gameData->drawBuf][BJ_OTZ], p);
         g_bjSprtCount++;
-        t = &g_bjTpages[g_gameState->gameData->unk8][g_bjTpageCount];
+        t = &g_bjTpages[g_gameState->gameData->drawBuf][g_bjTpageCount];
         setlen(t, 1);
         t->code[0] = (GetTPage(1, 2, 0x280, 0x100) & 0x9FF) | 0xE1000400;
-        addPrim(&g_gameState->gameData->unk10[g_gameState->gameData->unk8][BJ_OTZ], t);
+        addPrim(&g_gameState->gameData->ot[g_gameState->gameData->drawBuf][BJ_OTZ], t);
         g_bjTpageCount++;
         break;
     case 1:
         x1 = x - 2;
-        p = &g_bjSprites[g_gameState->gameData->unk8][g_bjSprtCount];
+        p = &g_bjSprites[g_gameState->gameData->drawBuf][g_bjSprtCount];
         setlen(p, 4);
         p->code = 0x66;
         p->x0 = x1;
@@ -204,14 +204,14 @@ s32 bj_drawResult(s32 kind, s32 c, s32 x, s32 y) {
         p->h = 0x28;
         p->v0 = 0x28;
         p->clut = 0x3A40;
-        addPrim(&g_gameState->gameData->unk10[g_gameState->gameData->unk8][BJ_OTZ], p);
+        addPrim(&g_gameState->gameData->ot[g_gameState->gameData->drawBuf][BJ_OTZ], p);
         g_bjSprtCount++;
-        t = &g_bjTpages[g_gameState->gameData->unk8][g_bjTpageCount];
+        t = &g_bjTpages[g_gameState->gameData->drawBuf][g_bjTpageCount];
         setlen(t, 1);
         t->code[0] = (GetTPage(1, 1, 0x280, 0x100) & 0x9FF) | 0xE1000400;
-        addPrim(&g_gameState->gameData->unk10[g_gameState->gameData->unk8][BJ_OTZ], t);
+        addPrim(&g_gameState->gameData->ot[g_gameState->gameData->drawBuf][BJ_OTZ], t);
         g_bjTpageCount++;
-        p = &g_bjSprites[g_gameState->gameData->unk8][g_bjSprtCount];
+        p = &g_bjSprites[g_gameState->gameData->drawBuf][g_bjSprtCount];
         setlen(p, 4);
         p->code = 0x66;
         p->x0 = x1;
@@ -222,17 +222,17 @@ s32 bj_drawResult(s32 kind, s32 c, s32 x, s32 y) {
         p->v0 = 0x28;
         p->h = 0x28;
         p->clut = 0x3A40;
-        addPrim(&g_gameState->gameData->unk10[g_gameState->gameData->unk8][BJ_OTZ], p);
+        addPrim(&g_gameState->gameData->ot[g_gameState->gameData->drawBuf][BJ_OTZ], p);
         g_bjSprtCount++;
-        t = &g_bjTpages[g_gameState->gameData->unk8][g_bjTpageCount];
+        t = &g_bjTpages[g_gameState->gameData->drawBuf][g_bjTpageCount];
         setlen(t, 1);
         t->code[0] = (GetTPage(1, 2, 0x280, 0x100) & 0x9FF) | 0xE1000400;
-        addPrim(&g_gameState->gameData->unk10[g_gameState->gameData->unk8][BJ_OTZ], t);
+        addPrim(&g_gameState->gameData->ot[g_gameState->gameData->drawBuf][BJ_OTZ], t);
         g_bjTpageCount++;
         break;
     case 2:
         x2 = x - 0x10;
-        p = &g_bjSprites[g_gameState->gameData->unk8][g_bjSprtCount];
+        p = &g_bjSprites[g_gameState->gameData->drawBuf][g_bjSprtCount];
         setlen(p, 4);
         p->code = 0x66;
         p->x0 = x2;
@@ -243,14 +243,14 @@ s32 bj_drawResult(s32 kind, s32 c, s32 x, s32 y) {
         p->v0 = 0xA0;
         p->h = 0x28;
         p->clut = 0x3A40;
-        addPrim(&g_gameState->gameData->unk10[g_gameState->gameData->unk8][BJ_OTZ], p);
+        addPrim(&g_gameState->gameData->ot[g_gameState->gameData->drawBuf][BJ_OTZ], p);
         g_bjSprtCount++;
-        t = &g_bjTpages[g_gameState->gameData->unk8][g_bjTpageCount];
+        t = &g_bjTpages[g_gameState->gameData->drawBuf][g_bjTpageCount];
         setlen(t, 1);
         t->code[0] = (GetTPage(1, 1, 0x280, 0x100) & 0x9FF) | 0xE1000400;
-        addPrim(&g_gameState->gameData->unk10[g_gameState->gameData->unk8][BJ_OTZ], t);
+        addPrim(&g_gameState->gameData->ot[g_gameState->gameData->drawBuf][BJ_OTZ], t);
         g_bjTpageCount++;
-        p = &g_bjSprites[g_gameState->gameData->unk8][g_bjSprtCount];
+        p = &g_bjSprites[g_gameState->gameData->drawBuf][g_bjSprtCount];
         setlen(p, 4);
         p->code = 0x66;
         p->x0 = x2;
@@ -261,12 +261,12 @@ s32 bj_drawResult(s32 kind, s32 c, s32 x, s32 y) {
         p->w = 0x90;
         p->h = 0x28;
         p->clut = 0x3A40;
-        addPrim(&g_gameState->gameData->unk10[g_gameState->gameData->unk8][BJ_OTZ], p);
+        addPrim(&g_gameState->gameData->ot[g_gameState->gameData->drawBuf][BJ_OTZ], p);
         g_bjSprtCount++;
-        t = &g_bjTpages[g_gameState->gameData->unk8][g_bjTpageCount];
+        t = &g_bjTpages[g_gameState->gameData->drawBuf][g_bjTpageCount];
         setlen(t, 1);
         t->code[0] = (GetTPage(1, 2, 0x280, 0x100) & 0x9FF) | 0xE1000400;
-        addPrim(&g_gameState->gameData->unk10[g_gameState->gameData->unk8][BJ_OTZ], t);
+        addPrim(&g_gameState->gameData->ot[g_gameState->gameData->drawBuf][BJ_OTZ], t);
         g_bjTpageCount++;
         break;
     }
@@ -274,7 +274,7 @@ s32 bj_drawResult(s32 kind, s32 c, s32 x, s32 y) {
 }
 
 s32 bj_drawCardBack(s32 x, s32 y) {
-    SPRT *p = &g_bjSprites[g_gameState->gameData->unk8][g_bjSprtCount];
+    SPRT *p = &g_bjSprites[g_gameState->gameData->drawBuf][g_bjSprtCount];
 
     setlen(p, 4);
     p->code = 0x64;
@@ -286,7 +286,7 @@ s32 bj_drawCardBack(s32 x, s32 y) {
     p->h = 0x48;
     p->y0 = y;
     p->clut = 0x3940;
-    addPrim(&g_gameState->gameData->unk10[g_gameState->gameData->unk8][BJ_OTZ], p);
+    addPrim(&g_gameState->gameData->ot[g_gameState->gameData->drawBuf][BJ_OTZ], p);
     g_bjSprtCount++;
     return 0;
 }
@@ -298,7 +298,7 @@ s32 bj_drawCard(s32 rank, s32 suit, s32 x, s32 y) {
     s32 px;
     s32 py;
 
-    p = &g_bjSprites[g_gameState->gameData->unk8][g_bjSprtCount];
+    p = &g_bjSprites[g_gameState->gameData->drawBuf][g_bjSprtCount];
     setlen(p, 4);
     p->code = 0x64;
     setRGB0(p, 0x80, 0x80, 0x80);
@@ -309,10 +309,10 @@ s32 bj_drawCard(s32 rank, s32 suit, s32 x, s32 y) {
     p->w = 9;
     p->h = 0xE;
     p->clut = 0x3980;
-    addPrim(&g_gameState->gameData->unk10[g_gameState->gameData->unk8][BJ_OTZ], p);
+    addPrim(&g_gameState->gameData->ot[g_gameState->gameData->drawBuf][BJ_OTZ], p);
     g_bjSprtCount++;
 
-    p = &g_bjSprites[g_gameState->gameData->unk8][g_bjSprtCount];
+    p = &g_bjSprites[g_gameState->gameData->drawBuf][g_bjSprtCount];
     setlen(p, 4);
     p->code = 0x64;
     setRGB0(p, 0x80, 0x80, 0x80);
@@ -323,10 +323,10 @@ s32 bj_drawCard(s32 rank, s32 suit, s32 x, s32 y) {
     p->w = 9;
     p->h = 0xE;
     p->clut = 0x3980;
-    addPrim(&g_gameState->gameData->unk10[g_gameState->gameData->unk8][BJ_OTZ], p);
+    addPrim(&g_gameState->gameData->ot[g_gameState->gameData->drawBuf][BJ_OTZ], p);
     g_bjSprtCount++;
 
-    p = &g_bjSprites[g_gameState->gameData->unk8][g_bjSprtCount];
+    p = &g_bjSprites[g_gameState->gameData->drawBuf][g_bjSprtCount];
     p->x0 = x + 1;
     p->y0 = y + 0xF;
     setlen(p, 4);
@@ -337,10 +337,10 @@ s32 bj_drawCard(s32 rank, s32 suit, s32 x, s32 y) {
     p->w = 0xB;
     p->h = 0xB;
     p->clut = 0x3900;
-    addPrim(&g_gameState->gameData->unk10[g_gameState->gameData->unk8][BJ_OTZ], p);
+    addPrim(&g_gameState->gameData->ot[g_gameState->gameData->drawBuf][BJ_OTZ], p);
     g_bjSprtCount++;
 
-    p = &g_bjSprites[g_gameState->gameData->unk8][g_bjSprtCount];
+    p = &g_bjSprites[g_gameState->gameData->drawBuf][g_bjSprtCount];
     p->x0 = x + 0x2B;
     setlen(p, 4);
     p->code = 0x64;
@@ -351,13 +351,13 @@ s32 bj_drawCard(s32 rank, s32 suit, s32 x, s32 y) {
     p->w = 0xB;
     p->h = 0xB;
     p->clut = 0x3900;
-    addPrim(&g_gameState->gameData->unk10[g_gameState->gameData->unk8][BJ_OTZ], p);
+    addPrim(&g_gameState->gameData->ot[g_gameState->gameData->drawBuf][BJ_OTZ], p);
     g_bjSprtCount++;
 
     if (rank >= 9) {
         f = rank - 9;
         if (rank == 12) {
-            p = &g_bjSprites[g_gameState->gameData->unk8][g_bjSprtCount];
+            p = &g_bjSprites[g_gameState->gameData->drawBuf][g_bjSprtCount];
             setlen(p, 4);
             p->code = 0x64;
             setRGB0(p, 0x80, 0x80, 0x80);
@@ -368,10 +368,10 @@ s32 bj_drawCard(s32 rank, s32 suit, s32 x, s32 y) {
             p->w = 0xB;
             p->h = 0xB;
             p->clut = 0x3900;
-            addPrim(&g_gameState->gameData->unk10[g_gameState->gameData->unk8][BJ_OTZ], p);
+            addPrim(&g_gameState->gameData->ot[g_gameState->gameData->drawBuf][BJ_OTZ], p);
             g_bjSprtCount++;
         } else {
-            p = &g_bjSprites[g_gameState->gameData->unk8][g_bjSprtCount];
+            p = &g_bjSprites[g_gameState->gameData->drawBuf][g_bjSprtCount];
             p->x0 = x + 7;
             p->y0 = y + 0xA;
             setlen(p, 4);
@@ -390,14 +390,14 @@ s32 bj_drawCard(s32 rank, s32 suit, s32 x, s32 y) {
             p->w = 0x2A;
             p->h = 0x33;
             p->clut = (f + 0xE0) << 6;
-            addPrim(&g_gameState->gameData->unk10[g_gameState->gameData->unk8][BJ_OTZ], p);
+            addPrim(&g_gameState->gameData->ot[g_gameState->gameData->drawBuf][BJ_OTZ], p);
             g_bjSprtCount++;
         }
     } else {
         for (i = 0; i <= rank + 1; i++) {
             px = g_bjPips[rank][i].x;
             py = g_bjPips[rank][i].y;
-            p = &g_bjSprites[g_gameState->gameData->unk8][g_bjSprtCount];
+            p = &g_bjSprites[g_gameState->gameData->drawBuf][g_bjSprtCount];
             setlen(p, 4);
             p->code = 0x64;
             setRGB0(p, 0x80, 0x80, 0x80);
@@ -412,12 +412,12 @@ s32 bj_drawCard(s32 rank, s32 suit, s32 x, s32 y) {
             p->w = 0xB;
             p->h = 0xB;
             p->clut = 0x3900;
-            addPrim(&g_gameState->gameData->unk10[g_gameState->gameData->unk8][BJ_OTZ], p);
+            addPrim(&g_gameState->gameData->ot[g_gameState->gameData->drawBuf][BJ_OTZ], p);
             g_bjSprtCount++;
         }
     }
 
-    p = &g_bjSprites[g_gameState->gameData->unk8][g_bjSprtCount];
+    p = &g_bjSprites[g_gameState->gameData->drawBuf][g_bjSprtCount];
     setlen(p, 4);
     p->code = 0x64;
     setRGB0(p, 0x80, 0x80, 0x80);
@@ -428,7 +428,7 @@ s32 bj_drawCard(s32 rank, s32 suit, s32 x, s32 y) {
     p->x0 = x;
     p->y0 = y;
     p->clut = 0x3900;
-    addPrim(&g_gameState->gameData->unk10[g_gameState->gameData->unk8][BJ_OTZ], p);
+    addPrim(&g_gameState->gameData->ot[g_gameState->gameData->drawBuf][BJ_OTZ], p);
     g_bjSprtCount++;
     return 0;
 }
@@ -1191,7 +1191,7 @@ s32 bj_main(void) {
             }
         }
         bj_drawShoe(BJ_SHOE_X, BJ_SHOE_Y);
-        addPrim(g_gameState->gameData->unk10[g_gameState->gameData->unk8] + BJ_OTZ, &g_bjTpage);
+        addPrim(g_gameState->gameData->ot[g_gameState->gameData->drawBuf] + BJ_OTZ, &g_bjTpage);
         sprintf(buf, g_bjStrBankroll);
         ui_drawSmallDigits(0x10C - (text_measureSmall(buf) >> 1), 0x58, 0x10, buf, 4);
         sprintf(buf, g_bjFmtLong, g_bjBankroll);
@@ -1257,7 +1257,7 @@ s32 bj_init(void) {
     DrawSync(0);
     setlen(&g_bjTpage, 1);
     g_bjTpage.code = 0xE1000697;
-    if (!(g_gameState->gameData->unk0 & 0x20000000)) {
+    if (!(g_gameState->gameData->flags & 0x20000000)) {
         ending_soundCmd(0, ENDING_MUSIC, 0, 0, 0);
         ending_soundCmd(0xC401, ENDING_MUSIC, 0x5A, 0, 0x7F);
     }
@@ -1273,7 +1273,7 @@ s32 bj_exit(void) {
 
 void bj_clearOt(void) {
     GameData *ctx = g_gameState->gameData;
-    ClearOTagR(ctx->unk10[ctx->unk8], 0x1000);
+    ClearOTagR(ctx->ot[ctx->drawBuf], 0x1000);
     g_bjSprtCount = 0;
     g_bjTpageCount = 0;
 }
@@ -1286,10 +1286,10 @@ void bj_swapBuffers(void) {
     g_gameState->vsyncMode = 0;
     VSync(g_gameState->vsyncMode);
     ResetGraph(1);
-    PutDispEnv(&g_gameState->dispEnv[g_gameState->gameData->unk8]);
+    PutDispEnv(&g_gameState->dispEnv[g_gameState->gameData->drawBuf]);
     ctx = g_gameState->gameData;
-    i = ctx->unk8;
-    DrawOTagEnv(ctx->unk10[i] + 0xFFF, &g_gameState->drawEnv[i]);
-    g_gameState->gameData->unk8 ^= 1;
-    gfx_setBuffer(g_gameState->gameData->unk8);
+    i = ctx->drawBuf;
+    DrawOTagEnv(ctx->ot[i] + 0xFFF, &g_gameState->drawEnv[i]);
+    g_gameState->gameData->drawBuf ^= 1;
+    gfx_setBuffer(g_gameState->gameData->drawBuf);
 }

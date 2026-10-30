@@ -164,8 +164,8 @@ extern RECT s_menuCardSaveRect;
 extern RECT s_menuCardRestoreClutRect0;
 extern RECT s_menuCardRestoreClutRect1;
 extern RECT s_menuCardRestoreRect;
-void menuCard_drawArrows(s32, s32, s32, Unk6 *);
-void menuCard_drawStats(s32, s32, s32, Unk6 *);
+void menuCard_drawArrows(s32, s32, s32, CardEntry *);
+void menuCard_drawStats(s32, s32, s32, CardEntry *);
 void menuCard_drawFace(s32, s32, s32, s32);
 void menuCard_openDiscard(void);
 void menuCard_refresh(void);
@@ -260,7 +260,7 @@ static inline void menuCard_updateImageLoad_read(CardCache *c) {
         s_menuCard.cache.reading = 1;
         x = c->loading;
         s_menuCard.loadingId = x;
-        cd_readAsync(g_gameState->imgSector + s_menuCard.imageFile->unk4 + x, 0x800, s_menuCard.sectorBuf, NULL);
+        cd_readAsync(g_gameState->imgSector + s_menuCard.imageFile->sector + x, 0x800, s_menuCard.sectorBuf, NULL);
     }
 }
 

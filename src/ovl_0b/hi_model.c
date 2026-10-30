@@ -660,13 +660,13 @@ void btlfx_getCasterTexInfo(BtlTexInfo *arg0, BtlTexInfo *arg1, s32 arg2) {
     BtlTexInfo *a;
     BtlTexInfo *b;
     u16 i;
-    Unk8E0 *e;
+    ModelSlot *e;
 
     i = (btl_getUnit(0x10)->flags >> 1) & 0xF;
-    e = &g_gameState->gameData->unk8E0[i];
+    e = &g_gameState->gameData->npcModels[i];
     k = arg2 & 0xFFFF;
     k |= 0x20000;
-    k |= e->unkC->unk3B << 24;
+    k |= e->actor->unk3B << 24;
     a = (BtlTexInfo *)db_getModelTexPages(k);
     b = (BtlTexInfo *)db_getModelUvOffsets(k);
     *arg0 = *a;

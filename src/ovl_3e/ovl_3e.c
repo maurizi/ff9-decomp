@@ -154,7 +154,7 @@ void discChange_exit(void) {
     }
     dst = g_padPortMask;
     st = &s_discChange;
-    g_gameState->unk0 |= 0x100000;
+    g_gameState->flags |= 0x100000;
     for (i = 0; i < 2; i++) {
         dst[i] = st->savedFlags[i];
     }
@@ -194,7 +194,7 @@ void discChange_loadPicture(void) {
     s32 i;
     s32 sector;
 
-    sector = g_gameState->imgSector + file_find(1, s_discChangePictureFiles[s_discChange.disc & 3])->unk4;
+    sector = g_gameState->imgSector + file_find(1, s_discChangePictureFiles[s_discChange.disc & 3])->sector;
     size = DISC_PICTURE_HALF_BYTES;
     for (i = 0; i < 2; i++) {
         cd_readSync(sector, size, buf);

@@ -1237,7 +1237,7 @@ extern u32 g_portraitSavedVram[]; /* VRAM save buffer */
 extern u8 D_80077E51;
 extern u8 *g_menuHelpText;
 s32 text_measureStyle(u8 *, s32);
-extern s32 g_menuScreenFrame; /* overlaps Unk80077E50.unk4 in ff9.h */
+extern s32 g_menuScreenFrame; /* overlaps MenuScreen.unk4 in ff9.h */
 EvtObject *evt_getPlayer(void);
 void evt_resetIdleTimer(s32);
 
@@ -1473,7 +1473,7 @@ void wm_calcShadowMatrix(WmObjEnt *, WmObjSlot *, MATRIX *, s32, s32);
 #define SHADOW_ADD(k, q) \
     k >>= 3; \
     if (-g_worldOtBias < k && k < 0x1000 - g_worldOtBias) { \
-        addPrim(&g_gameState->gameData->unk10[g_gameState->gameData->unk8][k], e->prims[g_gameState->gameData->unk8][q]); \
+        addPrim(&g_gameState->gameData->ot[g_gameState->gameData->drawBuf][k], e->prims[g_gameState->gameData->drawBuf][q]); \
     }
 
 /* main exe: candidates for ff9.h */

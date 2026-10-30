@@ -11,7 +11,7 @@ void menuSave_init(void) {
     s_menuSave.showCursor = 1;
     s_menuSave.newestCounter = 0;
     s_menuSave.newestFile = 0;
-    g_menu.unk2 &= 1;
+    g_menu.cardSlot &= 1;
     menuSave_initCheck();
     menuSave_initMessage();
     menuSave_initSavedMsg();
@@ -34,10 +34,10 @@ void menuSave_init(void) {
 }
 
 void menuSave_drawHelp(void) {
-    u8 *s = text_get(g_menu.unk2 + SAVE_TEXT_SLOT1);
+    u8 *s = text_get(g_menu.cardSlot + SAVE_TEXT_SLOT1);
     s32 w = text_measureWidth((s32)s);
 
-    text_drawBlock(s_menuSaveSlotNameRect.x + ((s_menuSaveSlotNameRect.w - w) >> 1), s_menuSaveSlotNameRect.y + 2, 5, s, (menuSave_isSlotReady(g_menu.unk2, 1) == 0) * 2);
+    text_drawBlock(s_menuSaveSlotNameRect.x + ((s_menuSaveSlotNameRect.w - w) >> 1), s_menuSaveSlotNameRect.y + 2, 5, s, (menuSave_isSlotReady(g_menu.cardSlot, 1) == 0) * 2);
     if (s_menuSave.help != NULL) {
         text_drawBlock(s_menuSaveHelpRect.x + 0xA, s_menuSaveHelpRect.y + 6, 5, s_menuSave.help, 0);
     }
@@ -59,11 +59,11 @@ void menuSave_inputSlot(void) {
     }
     if (g_padRepeat & PAD_UP) {
         snd_playSe(SE_CURSOR);
-        g_menu.unk2 = g_menu.unk2 == 0 ? 1 : g_menu.unk2 - 1;
+        g_menu.cardSlot = g_menu.cardSlot == 0 ? 1 : g_menu.cardSlot - 1;
     }
     if (g_padRepeat & PAD_DOWN) {
         snd_playSe(SE_CURSOR);
-        g_menu.unk2 = g_menu.unk2 != 0 ? 0 : g_menu.unk2 + 1;
+        g_menu.cardSlot = g_menu.cardSlot != 0 ? 0 : g_menu.cardSlot + 1;
     }
     if (g_padRepeat & BTN_CROSS) {
         menuSave_selectSlot();
@@ -105,9 +105,9 @@ void menuSave_drawFileList(void) {
     r.h = SAVE_ROW_H;
     menuSave_getListView(l, &v);
     win_setClip(NULL, 0x2D, 4);
-    for (i = 0; i < v.unk0; i++) {
-        r.y = i * SAVE_ROW_H + (s16)(v.unk2 + SAVE_LIST_Y);
-        menuSave_drawFile(&r, 0x2D, v.unk1 + i);
+    for (i = 0; i < v.rows; i++) {
+        r.y = i * SAVE_ROW_H + (s16)(v.y + SAVE_LIST_Y);
+        menuSave_drawFile(&r, 0x2D, v.first + i);
     }
     if (l->scroll & 4) {
         a.x = SAVE_LIST_X;
@@ -193,7 +193,7 @@ void menuSave_drawCursor(void) {
         if (s_menuSave.state == SAVE_ST_SLOT) {
             g_menuHelp.x = 0x74;
             g_menuHelp.otz = 0x32;
-            g_menuHelp.y = g_menu.unk2 * 0x12 + 0x6D;
+            g_menuHelp.y = g_menu.cardSlot * 0x12 + 0x6D;
             help_drawCursor();
         } else if (s_menuSave.state == SAVE_ST_LIST || (s_menuSave.state == SAVE_ST_ACCESS && blink)) {
             g_menuHelp.x = 0;
@@ -211,7 +211,7 @@ void menuSave_updateFileList(void) {
     s32 v;
     s32 dec;
 
-    if (s_menuSave.cardStatus[g_menu.unk2] != CARD_RES_DONE) {
+    if (s_menuSave.cardStatus[g_menu.cardSlot] != CARD_RES_DONE) {
         menuSave_showNotice(SAVE_TEXT_NO_CARD);
         return;
     }
@@ -258,7 +258,7 @@ void menuSave_updateHelp(void) {
             if (s_menuSave.mode == st) {
                 v = SAVE_TEXT_LOADS_FROM;
             }
-            g_menuHelp.text = text_get(v + g_menu.unk2);
+            g_menuHelp.text = text_get(v + g_menu.cardSlot);
         } else if (st == SAVE_ST_LIST) {
             menuSave_setFileHelp();
         } else if (st == SAVE_ST_CONFIRM) {
@@ -432,9 +432,9 @@ void menuSave_drawScrollRows(void) {
     r.w = SAVE_LIST_W;
     r.y = 0;
     r.h = SAVE_ROW_H;
-    for (i = 0; i < v.unk0; i++) {
-        r.y = i * SAVE_ROW_H + (s16)(v.unk2 + SAVE_LIST_Y);
-        menuSave_drawFile(&r, 0x2D, v.unk1 + i);
+    for (i = 0; i < v.rows; i++) {
+        r.y = i * SAVE_ROW_H + (s16)(v.y + SAVE_LIST_Y);
+        menuSave_drawFile(&r, 0x2D, v.first + i);
         win_drawBox(&r, 0x2D, 0);
     }
 }
@@ -460,7 +460,7 @@ void menuSave_drawCorruptFile(RECT *r, s32 otz) {
 }
 
 void menuSave_selectSlot(void) {
-    if (!menuSave_isSlotReady_inline(g_menu.unk2, 1)) {
+    if (!menuSave_isSlotReady_inline(g_menu.cardSlot, 1)) {
         snd_playSe(SE_BUZZER);
         menuSave_showNotice(SAVE_TEXT_NO_CARD);
         return;
@@ -656,10 +656,10 @@ void menuSave_drawConfirm(Window *w) {
     if (b < (a & 0xFFF)) {
         b = a & 0xFFF;
     }
-    text_drawBlock(w->unk0 + 8, w->unk2 + 8, w->unk18, (u8 *)s_menuSaveConfirm.text, 0);
+    text_drawBlock(w->x + 8, w->y + 8, w->otz, (u8 *)s_menuSaveConfirm.text, 0);
     m = b;
-    text_drawBlock(w->unk0 + ((s32)(w->unk4 - m) >> 1), (w->unk2 - d1) + w->unk6, w->unk18, text_get(SAVE_TEXT_YES), 0);
-    text_drawBlock(w->unk0 + ((s32)(w->unk4 - m) >> 1), (w->unk2 - d2) + w->unk6, w->unk18, text_get(SAVE_TEXT_NO), 0);
+    text_drawBlock(w->x + ((s32)(w->w - m) >> 1), (w->y - d1) + w->h, w->otz, text_get(SAVE_TEXT_YES), 0);
+    text_drawBlock(w->x + ((s32)(w->w - m) >> 1), (w->y - d2) + w->h, w->otz, text_get(SAVE_TEXT_NO), 0);
 }
 
 void menuSave_drawConfirmCursor(Window *w) {
@@ -671,9 +671,9 @@ void menuSave_drawConfirmCursor(Window *w) {
         b = a & 0xFFF;
     }
     if (w->state == WIN_OPEN) {
-        g_menuHelp.x = w->unk0 + ((s32)(w->unk4 - b) >> 1) - 0x1A;
-        g_menuHelp.y = w->unk2 + (s16)(w->unk6 + (s16)(s_menuSaveConfirm.choice * 15 - 0x26)) + 3;
-        z = w->unk18;
+        g_menuHelp.x = w->x + ((s32)(w->w - b) >> 1) - 0x1A;
+        g_menuHelp.y = w->y + (s16)(w->h + (s16)(s_menuSaveConfirm.choice * 15 - 0x26)) + 3;
+        z = w->otz;
         g_menuHelp.otz = z;
         ui_drawHand(g_menuHelp.x, g_menuHelp.y, z - 1);
     }
@@ -706,7 +706,7 @@ void menuSave_inputConfirm(void) {
 }
 
 void menuSave_updateConfirm(void) {
-    u8 st = s_menuSave.cardStatus[g_menu.unk2];
+    u8 st = s_menuSave.cardStatus[g_menu.cardSlot];
 
     if (st != CARD_RES_DONE && st != CARD_RES_NEW) {
         win_setOnClosed(s_menuSaveConfirm.win, NULL);
@@ -782,17 +782,17 @@ void menuSave_openCheck(void) {
     win_setOnClosed(s_menuSaveCheck.win, menuSave_onCheckClosed);
     win_setTitle(s_menuSaveCheck.win, D_80070420);
     win_setShadow(s_menuSaveCheck.win, 1);
-    sl = g_menu.unk2;
+    sl = g_menu.cardSlot;
     switch (s_menuSave.cardStatus[sl]) {
     case CARD_RES_NEW:
         s_menuSaveCheck.step = CHECK_STEP_CLEAR;
-        if (menuSave_cardClearSync(CARD_CHAN(g_menu.unk2)) != CARD_RES_DONE) {
+        if (menuSave_cardClearSync(CARD_CHAN(g_menu.cardSlot)) != CARD_RES_DONE) {
             menuSave_checkError(SAVE_TEXT_CHECK_FAILED);
         }
         break;
     case CARD_RES_DONE:
         s_menuSaveCheck.step = CHECK_STEP_LOAD;
-        if (menuSave_cardLoad(CARD_CHAN(g_menu.unk2), menuSave_onCardLoaded) == 0) {
+        if (menuSave_cardLoad(CARD_CHAN(g_menu.cardSlot), menuSave_onCardLoaded) == 0) {
             menuSave_checkError(SAVE_TEXT_CHECK_FAILED);
         }
         break;
@@ -808,7 +808,7 @@ void menuSave_openCheck(void) {
 void menuSave_onCardLoaded(void) {
     s32 r;
 
-    r = menuSave_getCardResult(CARD_CHAN(g_menu.unk2));
+    r = menuSave_getCardResult(CARD_CHAN(g_menu.cardSlot));
 
     s_menuSaveCheck.tries++;
     s_menuSaveCheck.triesPerResult[r]++;
@@ -875,7 +875,7 @@ static inline void menuSave_readHeader_inline(s32 file) {
     s32 fd;
 
     s_menuSaveCheck.file = file;
-    fd = menuSave_openFile(CARD_CHAN(g_menu.unk2), (char *)s_menuSave.files[file].fileName.name.v);
+    fd = menuSave_openFile(CARD_CHAN(g_menu.cardSlot), (char *)s_menuSave.files[file].fileName.name.v);
     s_menuSaveCheck.fd = fd;
     if (fd < 0) {
         menuSave_checkError(SAVE_TEXT_CHECK_FAILED);
@@ -889,7 +889,7 @@ void menuSave_onHeaderRead(void) {
         menuSave_checkError(SAVE_TEXT_CHECK_FAILED);
         return;
     }
-    switch (menuSave_getCardResult(CARD_CHAN(g_menu.unk2))) {
+    switch (menuSave_getCardResult(CARD_CHAN(g_menu.cardSlot))) {
     case CARD_RES_TIMEOUT:
         menuSave_checkError(SAVE_TEXT_NO_CARD);
         return;
@@ -944,7 +944,7 @@ void menuSave_initCheck(void) {
 void menuSave_updateCheck(void) {
     void (*fn)(void);
 
-    if (!menuSave_isSlotReady(g_menu.unk2, 1)) {
+    if (!menuSave_isSlotReady(g_menu.cardSlot, 1)) {
         menuSave_checkError(SAVE_TEXT_NO_CARD);
         return;
     }
@@ -998,7 +998,7 @@ s32 menuSave_parseFileNumber(u8 *name) {
 void menuSave_checkWaitClear(void) {
     if (menuSave_isCardBusy() == 0) {
         s_menuSaveCheck.step++;
-        if (menuSave_cardLoad(CARD_CHAN(g_menu.unk2), menuSave_onCardLoaded) == 0) {
+        if (menuSave_cardLoad(CARD_CHAN(g_menu.cardSlot), menuSave_onCardLoaded) == 0) {
             menuSave_checkError(SAVE_TEXT_CHECK_FAILED);
         }
     }
@@ -1028,18 +1028,18 @@ void menuSave_onCardUnformatted(void) {
 void menuSave_retryCheck(s32 result) {
     if (result == CARD_RES_NEW) {
         s_menuSaveCheck.step = CHECK_STEP_CLEAR;
-        if (menuSave_cardClearSync(CARD_CHAN(g_menu.unk2)) == CARD_RES_DONE) {
+        if (menuSave_cardClearSync(CARD_CHAN(g_menu.cardSlot)) == CARD_RES_DONE) {
             return;
         }
-    } else if (menuSave_cardLoad(CARD_CHAN(g_menu.unk2), menuSave_onCardLoaded) != 0) {
+    } else if (menuSave_cardLoad(CARD_CHAN(g_menu.cardSlot), menuSave_onCardLoaded) != 0) {
         return;
     }
     menuSave_checkError(SAVE_TEXT_CHECK_FAILED);
 }
 
 void menuSave_drawCheck(Window *w) {
-    menuSave_drawBook(w->unk0 + 0xE, w->unk2 + 0x12, w->unk18);
-    text_drawBlock(w->unk0 + 0x4A, w->unk2 + 0xE, w->unk18, text_get(SAVE_TEXT_DO_NOT_REMOVE), 0);
+    menuSave_drawBook(w->x + 0xE, w->y + 0x12, w->otz);
+    text_drawBlock(w->x + 0x4A, w->y + 0xE, w->otz, text_get(SAVE_TEXT_DO_NOT_REMOVE), 0);
 }
 
 void menuSave_onCheckOpened(Window *w) {
@@ -1071,7 +1071,7 @@ s32 menuSave_countFiles(void) {
 
     prev = 0;
     n = 0;
-    port = CARD_CHAN(g_menu.unk2);
+    port = CARD_CHAN(g_menu.cardSlot);
     do {
         r = menuSave_readDirectory(port, (s32)s_menuSaveCheck.dir);
         if (n != 0 && prev != r) {
@@ -1110,7 +1110,7 @@ void menuSave_readHeader(s32 file) {
     s32 fd;
 
     s_menuSaveCheck.file = file;
-    fd = menuSave_openFile(CARD_CHAN(g_menu.unk2), (char *)s_menuSave.files[file].fileName.name.v);
+    fd = menuSave_openFile(CARD_CHAN(g_menu.cardSlot), (char *)s_menuSave.files[file].fileName.name.v);
     s_menuSaveCheck.fd = fd;
     if (fd < 0) {
         menuSave_checkError(SAVE_TEXT_CHECK_FAILED);
@@ -1180,7 +1180,7 @@ void menuSave_inputSavedMsg(void) {
 }
 
 void menuSave_updateSavedMsg(void) {
-    if (!menuSave_isSlotReady(g_menu.unk2, 0)) {
+    if (!menuSave_isSlotReady(g_menu.cardSlot, 0)) {
         win_closeNow(s_menuSaveSavedMsg.win);
         menuSave_showNotice(SAVE_TEXT_NO_CARD);
         return;
@@ -1207,7 +1207,7 @@ void menuSave_onSavedMsgClosed(Window *w) {
 void menuSave_drawSavedMsg(Window *w) {
     u8 *s = text_get(SAVE_TEXT_DATA_SAVED);
 
-    text_drawBlock(w->unk0 + ((w->unk4 - text_measureWidth((s32)s)) >> 1), w->unk2 + 8, w->unk18, s, 0);
+    text_drawBlock(w->x + ((w->w - text_measureWidth((s32)s)) >> 1), w->y + 8, w->otz, s, 0);
 }
 
 void menuSave_openMessage(s32 id, s32 title) {
@@ -1274,7 +1274,7 @@ u8 menuSave_isMessageActive(void) {
 }
 
 void menuSave_drawMessage(Window *w) {
-    text_drawBlock(w->unk0 + 8, w->unk2 + 8, w->unk18, s_menuSaveMessage.text, 0);
+    text_drawBlock(w->x + 8, w->y + 8, w->otz, s_menuSaveMessage.text, 0);
 }
 
 void menuSave_onMessageOpened(Window *w) {
@@ -1321,11 +1321,11 @@ u8 menuSave_getPortrait(Character *c) {
     if (c == NULL) {
         return PORTRAIT_NONE;
     }
-    m = chr_getPortrait(c->unk34.b.id);
+    m = chr_getPortrait(c->info.b.id);
     if (m == 0xFF) {
         return PORTRAIT_NONE;
     }
-    if (m == 2 && (s32)(c->unk34.b.unk4) >= 5) {
+    if (m == 2 && (s32)(c->info.b.kind) >= 5) {
         return 3;
     }
     return s_menuSavePortraitIds[m];
@@ -1460,14 +1460,14 @@ void menuSave_drawAccess(Window *w) {
         if (n >= 6) {
             n = 5;
         }
-        menuSave_drawBook(r->x + 0xE, r->y + 0x12, w->unk18);
-        text_drawBlock(r->x + 0x4A, r->y + 0xE, w->unk18, text_get(SAVE_TEXT_DO_NOT_REMOVE), 0);
-        menuSave_drawGauge(r->x + 0x1A, r->y + 0x44, w->unk18, st * ACCESS_GAUGE_STEP + n, ACCESS_GAUGE_W);
+        menuSave_drawBook(r->x + 0xE, r->y + 0x12, w->otz);
+        text_drawBlock(r->x + 0x4A, r->y + 0xE, w->otz, text_get(SAVE_TEXT_DO_NOT_REMOVE), 0);
+        menuSave_drawGauge(r->x + 0x1A, r->y + 0x44, w->otz, st * ACCESS_GAUGE_STEP + n, ACCESS_GAUGE_W);
         s_menuSaveAccess.lastProgress = st;
         return;
     }
-    text_drawBlock(r->x + 0x26, r->y + 0xC, w->unk18, text_get(SAVE_TEXT_FORMATTING_CARD), 0);
-    text_drawBlock(r->x + 0x32, r->y + 0x20, w->unk18, text_get(SAVE_TEXT_DO_NOT_REMOVE), 0);
+    text_drawBlock(r->x + 0x26, r->y + 0xC, w->otz, text_get(SAVE_TEXT_FORMATTING_CARD), 0);
+    text_drawBlock(r->x + 0x32, r->y + 0x20, w->otz, text_get(SAVE_TEXT_DO_NOT_REMOVE), 0);
 }
 
 u8 menuSave_writeFile(void) {
@@ -1475,7 +1475,7 @@ u8 menuSave_writeFile(void) {
     s32 port;
     s32 fd;
 
-    port = CARD_CHAN(g_menu.unk2);
+    port = CARD_CHAN(g_menu.cardSlot);
     sl = &s_menuSave.files[s_menuSave.file];
     /* not SAVE_FILE_CORRUPT or SAVE_FILE_USED: create a new file */
     if ((u32)(sl->state - SAVE_FILE_CORRUPT) >= 2) {
@@ -1558,7 +1558,7 @@ void menuSave_initAccess(void) {
 }
 
 void menuSave_updateAccess(void) {
-    if (!menuSave_isSlotReady(g_menu.unk2, 0)) {
+    if (!menuSave_isSlotReady(g_menu.cardSlot, 0)) {
         menuSave_abortAccess(SAVE_TEXT_NO_CARD);
         return;
     }
@@ -1607,7 +1607,7 @@ u8 menuSave_readFile(void) {
     s32 port;
     s32 fd;
 
-    port = CARD_CHAN(g_menu.unk2);
+    port = CARD_CHAN(g_menu.cardSlot);
     sl = &s_menuSave.files[s_menuSave.file];
     strcpy((char *)s_menuSaveAccess.fileName.name.v, sl->fileName.name.v);
     fd = menuSave_openFile(port, (char *)s_menuSaveAccess.fileName.name.v);
@@ -1621,11 +1621,11 @@ u8 menuSave_readFile(void) {
 }
 
 u8 menuSave_formatCard(void) {
-    if (menuSave_cardFormat(CARD_CHAN(g_menu.unk2)) == 0) {
+    if (menuSave_cardFormat(CARD_CHAN(g_menu.cardSlot)) == 0) {
         menuSave_abortAccess(SAVE_TEXT_FORMAT_FAILED);
         return 0;
     }
-    if (menuSave_cardLoad(CARD_CHAN(g_menu.unk2), menuSave_onFormatDone) != 0) {
+    if (menuSave_cardLoad(CARD_CHAN(g_menu.cardSlot), menuSave_onFormatDone) != 0) {
         return 1;
     }
     menuSave_abortAccess(SAVE_TEXT_SAVE_FAILED);
@@ -1633,7 +1633,7 @@ u8 menuSave_formatCard(void) {
 }
 
 void menuSave_onFileIo(void) {
-    s32 n = menuSave_getCardResult(CARD_CHAN(g_menu.unk2));
+    s32 n = menuSave_getCardResult(CARD_CHAN(g_menu.cardSlot));
 
     if (menuSave_closeFile(s_menuSaveAccess.fd) < 0) {
         menuSave_abortAccess(s_menuSave.mode == SAVE_MODE_LOAD ? SAVE_TEXT_LOAD_FAILED : SAVE_TEXT_SAVE_FAILED);
@@ -1739,27 +1739,27 @@ MenuView *menuSave_getListView(MenuList *l, MenuView *v) {
     if (f & 4) {
         if (f & 2) {
             d = l->height - l->scrollPos;
-            v->unk0 = (d + SAVE_ROW_H - 1) / SAVE_ROW_H;
-            v->unk1 = l->top + (l->visibleRows - v->unk0);
-            v->unk2 = (l->visibleRows - v->unk0) * SAVE_ROW_H;
+            v->rows = (d + SAVE_ROW_H - 1) / SAVE_ROW_H;
+            v->first = l->top + (l->visibleRows - v->rows);
+            v->y = (l->visibleRows - v->rows) * SAVE_ROW_H;
         } else {
             d = l->height - l->scrollPos;
-            v->unk0 = (d + SAVE_ROW_H - 1) / SAVE_ROW_H;
-            v->unk1 = l->top;
-            v->unk2 = 0;
+            v->rows = (d + SAVE_ROW_H - 1) / SAVE_ROW_H;
+            v->first = l->top;
+            v->y = 0;
         }
     } else if (f & 2) {
-        v->unk0 = l->visibleRows + 1;
-        v->unk1 = l->top - 1;
-        v->unk2 = l->scrollPos - SAVE_ROW_H;
+        v->rows = l->visibleRows + 1;
+        v->first = l->top - 1;
+        v->y = l->scrollPos - SAVE_ROW_H;
     } else if (f & 1) {
-        v->unk1 = l->top;
-        v->unk0 = l->visibleRows + 1;
-        v->unk2 = -l->scrollPos;
+        v->first = l->top;
+        v->rows = l->visibleRows + 1;
+        v->y = -l->scrollPos;
     } else {
-        v->unk1 = l->top;
-        v->unk0 = l->visibleRows;
-        v->unk2 = 0;
+        v->first = l->top;
+        v->rows = l->visibleRows;
+        v->y = 0;
     }
     return v;
 }
@@ -1768,14 +1768,14 @@ MenuView *menuSave_getScrollView(MenuList *l, MenuView *v) {
     s32 x;
 
     if (l->scroll & 2) {
-        v->unk0 = (l->scrollPos + SAVE_ROW_H - 1) / SAVE_ROW_H;
-        v->unk1 = l->pageTop + (l->visibleRows - v->unk0);
-        v->unk2 = l->scrollPos - v->unk0 * SAVE_ROW_H;
+        v->rows = (l->scrollPos + SAVE_ROW_H - 1) / SAVE_ROW_H;
+        v->first = l->pageTop + (l->visibleRows - v->rows);
+        v->y = l->scrollPos - v->rows * SAVE_ROW_H;
     } else {
         x = l->scrollPos;
-        v->unk2 = l->height - x;
-        v->unk0 = (x + SAVE_ROW_H - 1) / SAVE_ROW_H;
-        v->unk1 = l->pageTop;
+        v->y = l->height - x;
+        v->rows = (x + SAVE_ROW_H - 1) / SAVE_ROW_H;
+        v->first = l->pageTop;
     }
     return v;
 }
@@ -1859,14 +1859,14 @@ void menuSave_buildHeader(SaveBuf *buf) {
     h->windowColor = (g_gameState->config >> CFG_BIT_WINDOW_COLOR) & 1;
     h->counter = ++s_menuSave.newestCounter;
     h->cursor = s_menuSave.list.cursor;
-    h->name = *(SaveName *)g_gameState->gameData->characters[n].unk0;
+    h->name = *(SaveName *)g_gameState->gameData->characters[n].name;
     menuSave_getLocation((u8 *)&h->location);
     for (i = 0; i < 4; i++) {
         if (g_gameState->gameData->party[i] != NULL) {
             h->party[i].present = 1;
             h->party[i].portrait = menuSave_getPortrait(g_gameState->gameData->party[i]);
             h->party[i].level = g_gameState->gameData->party[i]->level;
-            *(Name10 *)h->party[i].name = *(Name10 *)g_gameState->gameData->party[i]->unk0;
+            *(Name10 *)h->party[i].name = *(Name10 *)g_gameState->gameData->party[i]->name;
         } else {
             h->party[i].present = 0;
             h->party[i].portrait = PORTRAIT_NONE;
@@ -1950,7 +1950,7 @@ void menuSave_saveFile(s32 file, s32 unused) {
     if (s_menuSave.formatted == 0) {
         snd_playSe(SE_CURSOR);
         menuSave_setConfirmCallback(menuSave_startSave);
-        menuSave_openConfirm(g_menu.unk2 + SAVE_TEXT_UNFORMATTED, SAVE_TEXT_FORMAT_YES, SAVE_TEXT_FORMAT_NO);
+        menuSave_openConfirm(g_menu.cardSlot + SAVE_TEXT_UNFORMATTED, SAVE_TEXT_FORMAT_YES, SAVE_TEXT_FORMAT_NO);
         return;
     }
     switch (s_menuSave.files[s_menuSave.file].state) {
@@ -2086,17 +2086,17 @@ void menuSave_packParty(SaveParty *s) {
     }
     for (i = 0; i < 4; i++) {
         if (gd->party[i] != NULL) {
-            s->party[i] = gd->party[i]->unk34.b.id;
+            s->party[i] = gd->party[i]->info.b.id;
         } else {
             s->party[i] = SAVE_CHARACTERS;
         }
     }
-    s->unk514 = gd->unk55C;
+    s->unk514 = gd->escapeCount;
     s->firstUseFxSeen = gd->firstUseFxSeen;
     s->gil = gd->gil;
-    s->unk51C = gd->unk568;
-    s->unk51E = gd->unk56A;
-    s->unk520 = gd->unk56C;
+    s->unk51C = gd->frogCount;
+    s->unk51E = gd->stealCount;
+    s->unk520 = gd->dragonKills;
 }
 
 void menuSave_unpackParty(SaveParty *s) {
@@ -2114,12 +2114,12 @@ void menuSave_unpackParty(SaveParty *s) {
             gd->party[i] = NULL;
         }
     }
-    gd->unk55C = s->unk514;
+    gd->escapeCount = s->unk514;
     gd->firstUseFxSeen = s->firstUseFxSeen;
     gd->gil = s->gil;
-    gd->unk568 = s->unk51C;
-    gd->unk56A = s->unk51E;
-    gd->unk56C = s->unk520;
+    gd->frogCount = s->unk51C;
+    gd->stealCount = s->unk51E;
+    gd->dragonKills = s->unk520;
 }
 
 void menuSave_packState(SaveState *h) {
@@ -2128,7 +2128,7 @@ void menuSave_packState(SaveState *h) {
 
     gd = g_gameState->gameData;
     h->mode = g_gameState->mode;
-    h->unk1 = g_gameState->unkA;
+    h->unk1 = g_gameState->prevMode;
     for (i = sizeof(h->reserved2) - 1; i >= 0; i--) {
         h->reserved2[i] = 0;
     }
@@ -2137,12 +2137,12 @@ void menuSave_packState(SaveState *h) {
         h->areaId = fld_getDiscChangeAreaId();
     } else {
         h->fieldId = gd->fieldId;
-        h->areaId = gd->unk3A;
+        h->areaId = gd->fieldAreaId;
     }
     h->battleId = gd->battleId;
-    h->unk26 = (s8)gd->unk848;
-    h->unk28 = gd->unk7DC;
-    h->unk2A = gd->unk7DE;
+    h->unk26 = (s8)gd->enemyGroup;
+    h->unk28 = gd->worldId;
+    h->unk2A = gd->worldAreaId;
     for (i = sizeof(h->reserved2C) - 1; i >= 0; i--) {
         h->reserved2C[i] = 0;
     }
@@ -2154,13 +2154,13 @@ void menuSave_unpackState(SaveState *p) {
 
     gs->mode = p->mode;
     gd = gs->gameData;
-    g_gameState->unkA = p->unk1;
+    g_gameState->prevMode = p->unk1;
     gd->fieldId = p->fieldId;
-    gd->unk3A = p->areaId;
+    gd->fieldAreaId = p->areaId;
     gd->battleId = p->battleId;
-    gd->unk848 = p->unk26;
-    gd->unk7DC = p->unk28;
-    gd->unk7DE = p->unk2A;
+    gd->enemyGroup = p->unk26;
+    gd->worldId = p->unk28;
+    gd->worldAreaId = p->unk2A;
 }
 
 void menuSave_copyCards(CardData *d, CardData *s) {
@@ -2170,12 +2170,12 @@ void menuSave_copyCards(CardData *d, CardData *s) {
     d->losses = s->losses;
     d->draws = s->draws;
     for (i = 0; i < 0x69; i++) {
-        d->cards[i].unk0 = s->cards[i].unk0;
-        d->cards[i].unk1 = s->cards[i].unk1;
-        d->cards[i].unk2 = s->cards[i].unk2;
-        d->cards[i].unk3 = s->cards[i].unk3;
-        d->cards[i].unk4 = s->cards[i].unk4;
-        d->cards[i].unk5 = s->cards[i].unk5;
+        d->cards[i].id = s->cards[i].id;
+        d->cards[i].arrows = s->cards[i].arrows;
+        d->cards[i].power = s->cards[i].power;
+        d->cards[i].type = s->cards[i].type;
+        d->cards[i].physDef = s->cards[i].physDef;
+        d->cards[i].magicDef = s->cards[i].magicDef;
     }
     d->unk27C = s->unk27C;
     d->unk27E = s->unk27E;
@@ -2201,26 +2201,26 @@ void menuSave_unpackEvents(SaveEvents *s) {
 
 void menuSave_packItems(SaveItems *s) {
     s->items = g_gameState->gameData->items;
-    s->flags = g_gameState->gameData->unk774;
+    s->flags = g_gameState->gameData->keyItems;
     s->config = *(GameConfig *)&g_gameState->config;
 }
 
 void menuSave_unpackItems(SaveItems *s) {
     g_gameState->gameData->items = s->items;
-    g_gameState->gameData->unk774 = s->flags;
+    g_gameState->gameData->keyItems = s->flags;
     *(GameConfig *)&g_gameState->config = s->config;
     config_apply();
 }
 
 void menuSave_packMisc(SaveMisc *p) {
     p->chocograph = g_gameState->gameData->chocograph;
-    p->unk4 = g_gameState->gameData->unk880;
+    p->unk4 = g_gameState->gameData->worldCamera;
     p->unk14 = g_gameState->gameData->unk892;
 }
 
 void menuSave_unpackMisc(SaveMisc *p) {
     g_gameState->gameData->chocograph = p->chocograph;
-    g_gameState->gameData->unk880 = p->unk4;
+    g_gameState->gameData->worldCamera = p->unk4;
     g_gameState->gameData->unk892 = p->unk14;
 }
 

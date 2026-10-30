@@ -1,11 +1,11 @@
 #include "ovl_0c.h"
 
 void wm_initCamera(void) {
-    void *p = &g_gameState->gameData->unk880;
+    void *p = &g_gameState->gameData->worldCamera;
 
     g_worldCameraFlags = p;
     g_worldCamera = p;
-    g_gameState->gameData->unkA = 0xDC;
+    g_gameState->gameData->projDist = 0xDC;
     SetGeomOffset(0xA0, 0x70);
     g_worldCameraUp.vx = 0;
     g_worldCameraUp.vy = -0x4E20;
@@ -14,7 +14,7 @@ void wm_initCamera(void) {
     g_worldCameraLookupFix = 0;
     g_worldCameraRoll = 0;
     D_800CE1E1 = 0;
-    if (g_gameState->unkA == 1 && g_gameState->gameData->unk890 == 0) {
+    if (g_gameState->prevMode == 1 && g_gameState->gameData->unk890 == 0) {
         g_worldCamera->viewBlend = 0;
         g_worldCamera->viewBlendSpeed = 0;
         g_worldCamera->viewForceNormal = 0;
@@ -47,7 +47,7 @@ void wm_updateCamera(void) {
     if (g_worldCameraHold == 0) {
         wm_updateCameraPreset();
     }
-    g_gameState->gameData->unkA = g_worldCameraParams.projDist;
+    g_gameState->gameData->projDist = g_worldCameraParams.projDist;
     g_worldCamera->yaw &= 0xFFF;
     g_worldCameraTargetHeight = g_worldCameraParams.targetHeight;
     if ((u8)g_worldMoveMode == 8 || (u8)g_worldMoveMode == 9) {
@@ -91,7 +91,7 @@ void wm_updateCamera(void) {
     g_worldCameraDir[0] = math_cos(a);
     g_worldCameraDir[2] = math_sin(a);
     VectorNormal((VECTOR *)g_worldCameraDir, (VECTOR *)g_worldCameraDir);
-    if (*g_worldStoryCounterPtr < 0x137E && WM_ATTR_AREA(g_worldActorTypeInfo[g_worldPlayer->unk11].cellAttr) == 0xC) {
+    if (*g_worldStoryCounterPtr < 0x137E && WM_ATTR_AREA(g_worldActorTypeInfo[g_worldPlayer->actorType].cellAttr) == 0xC) {
         g_worldCamera->viewForceNormal = 1;
     }
 }
@@ -431,7 +431,7 @@ void wm_toggleCameraView(void) {
     u8 r;
 
     if (g_worldCamera->viewForceNormal == 0
-        && (*g_worldStoryCounterPtr >= 0x137E || WM_ATTR_AREA(g_worldActorTypeInfo[g_worldPlayer->unk11].cellAttr) != 0xC)) {
+        && (*g_worldStoryCounterPtr >= 0x137E || WM_ATTR_AREA(g_worldActorTypeInfo[g_worldPlayer->actorType].cellAttr) != 0xC)) {
         r = 0;
         if (g_worldCamera->viewBlend == 0) {
             r = 1;
@@ -614,15 +614,15 @@ void wm_setMountPalette(void) {
 
     id = 0;
     k = 0;
-    e = g_gameState->gameData->unk8E4.world->obj->palAnims;
+    e = g_gameState->gameData->ctx.world->obj->palAnims;
     pal = w_framePackGetPtr(g_worldDataPack, 1);
     func_800B36AC();
     for (n = evt_getObjectList(); n != NULL; n = n->unk0) {
         a = n->unk4;
         if (a->state == 1 && (a->flags & 1) && a->kind == 4) {
-            if ((a->unk11 >= 3 && a->unk11 < 8)) {
+            if ((a->actorType >= 3 && a->actorType < 8)) {
                 id = a->modelId;
-                switch (a->unk11) {
+                switch (a->actorType) {
                 case 3:
                     k = 0;
                     break;
@@ -646,7 +646,7 @@ void wm_setMountPalette(void) {
         }
     }
     c = 0;
-    for (i = 0; i < g_gameState->gameData->unk8E4.world->obj->palAnimCount; i++, e++) {
+    for (i = 0; i < g_gameState->gameData->ctx.world->obj->palAnimCount; i++, e++) {
         if (e->modelId == id) {
             dst = e->srcPal;
             switch (c) {
@@ -679,7 +679,7 @@ void wm_findVehicles(void) {
     for (n = evt_getObjectList(); n != NULL; n = n->unk0) {
         if (n->unk4->kind == 4) {
             a = n->unk4;
-            switch (a->unk11) {
+            switch (a->actorType) {
             case 1:
             case 2:
                 D_800CE3D8 = a;
@@ -702,7 +702,7 @@ void wm_findVehicles(void) {
                 break;
             }
             if (a == evt_getPlayer()) {
-                if (g_gameState->unkA == 1 && g_gameState->gameData->unk892 == 0) {
+                if (g_gameState->prevMode == 1 && g_gameState->gameData->unk892 == 0) {
                     if (g_worldMoveModeInfo->cameraInFront != 0) {
                         g_worldCamera->yawOffset = 0x800;
                     } else {
@@ -768,15 +768,15 @@ void wm_drawActors(void) {
                 s.vz = a.vz;
                 wm_setActorFog(act, b.vz >> 3);
                 wm_drawActorModel(act, &s, z);
-                if (act->unk11 == 8) {
+                if (act->actorType == 8) {
                     f = 0;
                 }
-                if (act->unk11 == 1 || act->unk11 == 2) {
+                if (act->actorType == 1 || act->actorType == 2) {
                     if ((u8)g_worldMoveMode >= 1 && (u8)g_worldMoveMode <= 6) {
                         f = 0;
                     }
                 }
-                if (g_worldActorTypeInfo[act->unk11].rideOffset < 4 && f) {
+                if (g_worldActorTypeInfo[act->actorType].rideOffset < 4 && f) {
                     wm_drawActorShadow(act, &s, b.vz);
                 }
             }
@@ -798,7 +798,7 @@ void wm_setActorFog(EvtObject *arg0, s32 arg1) {
     RECT *r;
 
     id = arg0->modelId;
-    e = g_gameState->gameData->unk8E4.world->obj->palAnims;
+    e = g_gameState->gameData->ctx.world->obj->palAnims;
     t = -arg0->pos.vy;
     t -= 0xC1F;
     t <<= 12;
@@ -821,7 +821,7 @@ void wm_setActorFog(EvtObject *arg0, s32 arg1) {
     if (f >= 0x1000) {
         f = 0xFFF;
     }
-    for (i = 0; i < g_gameState->gameData->unk8E4.world->obj->palAnimCount; i++, e++) {
+    for (i = 0; i < g_gameState->gameData->ctx.world->obj->palAnimCount; i++, e++) {
         if (e->modelId == id) {
             r = (RECT *)g_worldPrimPtr;
             if (f < 0) {
@@ -852,13 +852,13 @@ s32 wm_drawActorModel(EvtObject *arg0, SVECTOR *arg1, s32 unused) { /* its calle
     s32 n;
     s32 i;
 
-    c = &g_worldActorTypeInfo[arg0->unk11];
+    c = &g_worldActorTypeInfo[arg0->actorType];
     s = (WmObjSlot *)game_getModel(arg0->modelSlot);
     m = s->obj;
     memset(&r, 0, 8);
-    r.vx = s->actor->pos.unk20;
+    r.vx = s->actor->pos.rotX;
     r.vy = s->actor->pos.rotY;
-    r.vz = s->actor->unk24;
+    r.vz = s->actor->rotZ;
     r2 = r;
     math_rotMatrixYXZ(&r2, &m->worldMatrix);
     m->worldMatrix.t[0] = arg1->vx;
@@ -875,7 +875,7 @@ s32 wm_drawActorModel(EvtObject *arg0, SVECTOR *arg1, s32 unused) { /* its calle
             }
         }
         wm_calcBoneMatrices(m, s->actor->animFrame);
-        if (arg0->unk11 != 0xE) {
+        if (arg0->actorType != 0xE) {
             n = m->model->groupCount;
             if (c->terrainClass != 0 && c->rideOffset > 0) {
                 m->clipY = arg1->vy - c->rideOffset + 100;
@@ -911,10 +911,10 @@ void wm_drawActorShadow(EvtObject *arg0, SVECTOR *arg1, s32 arg2) {
     s32 s;
     u32 *ot;
 
-    c = &g_worldActorTypeInfo[arg0->unk11];
+    c = &g_worldActorTypeInfo[arg0->actorType];
     k = arg0->modelSlot;
     sx = 0x1000;
-    if (arg0->unk11 != 0xE) {
+    if (arg0->actorType != 0xE) {
         d = c->floorY - arg0->pos.vy;
         arg1->vy += d;
         arg1->vy -= d / 8;
@@ -943,13 +943,13 @@ void wm_drawActorShadow(EvtObject *arg0, SVECTOR *arg1, s32 arg2) {
         if (sz < 0) {
             sz = 0;
         }
-        g_gameState->gameData->unk8E4.world->obj->shadows[k].scaleX = sx * 14;
-        g_gameState->gameData->unk8E4.world->obj->shadows[k].scaleZ = sx * 12;
-        g_gameState->gameData->unk8E4.world->obj->shadows[k].shade = sz;
-        ot = g_gameState->gameData->unk10[g_gameState->gameData->unk8];
-        g_gameState->gameData->unk10[g_gameState->gameData->unk8] = ot + g_worldOtBias;
-        wm_drawShadow(g_gameState->gameData->unk8E4.world->obj->shadows, k, arg1->vy, c->shadowJoint);
-        g_gameState->gameData->unk10[g_gameState->gameData->unk8] = ot;
+        g_gameState->gameData->ctx.world->obj->shadows[k].scaleX = sx * 14;
+        g_gameState->gameData->ctx.world->obj->shadows[k].scaleZ = sx * 12;
+        g_gameState->gameData->ctx.world->obj->shadows[k].shade = sz;
+        ot = g_gameState->gameData->ot[g_gameState->gameData->drawBuf];
+        g_gameState->gameData->ot[g_gameState->gameData->drawBuf] = ot + g_worldOtBias;
+        wm_drawShadow(g_gameState->gameData->ctx.world->obj->shadows, k, arg1->vy, c->shadowJoint);
+        g_gameState->gameData->ot[g_gameState->gameData->drawBuf] = ot;
     } else {
         s = 0x7D0;
         if (g_worldFog != 0) {
@@ -973,14 +973,14 @@ void wm_drawActorShadow(EvtObject *arg0, SVECTOR *arg1, s32 arg2) {
         if (a < 0) {
             a = 0;
         }
-        g_gameState->gameData->unk8E4.world->obj->shadows[k].scaleX = 0x302;
-        g_gameState->gameData->unk8E4.world->obj->shadows[k].scaleZ = 0x294;
-        g_gameState->gameData->unk8E4.world->obj->shadows[k].shade = a;
-        ot = g_gameState->gameData->unk10[g_gameState->gameData->unk8];
+        g_gameState->gameData->ctx.world->obj->shadows[k].scaleX = 0x302;
+        g_gameState->gameData->ctx.world->obj->shadows[k].scaleZ = 0x294;
+        g_gameState->gameData->ctx.world->obj->shadows[k].shade = a;
+        ot = g_gameState->gameData->ot[g_gameState->gameData->drawBuf];
         g_worldOtBias = -0x46;
-        g_gameState->gameData->unk10[g_gameState->gameData->unk8] -= 0x46;
-        wm_drawShadow(g_gameState->gameData->unk8E4.world->obj->shadows, k, arg1->vy, c->shadowJoint);
-        g_gameState->gameData->unk10[g_gameState->gameData->unk8] = ot;
+        g_gameState->gameData->ot[g_gameState->gameData->drawBuf] -= 0x46;
+        wm_drawShadow(g_gameState->gameData->ctx.world->obj->shadows, k, arg1->vy, c->shadowJoint);
+        g_gameState->gameData->ot[g_gameState->gameData->drawBuf] = ot;
     }
 }
 
@@ -1004,9 +1004,9 @@ void wm_updateActors(void) {
     }
     for (e = evt_getObjectList(); e != NULL; e = e->unk0) {
         act = e->unk4;
-        cc = &g_worldActorTypeInfo[act->unk11];
+        cc = &g_worldActorTypeInfo[act->actorType];
         if (act->kind == 4 && act->state == 1 && (act->flags & 1)) {
-            switch (act->unk11) {
+            switch (act->actorType) {
             case 7:
                 cc->flying = g_worldMoveMode == 6;
                 break;
@@ -1017,9 +1017,9 @@ void wm_updateActors(void) {
             if (act == g_worldPlayer && evt_isControlEnabled() != 0) {
                 wm_movePlayer(cc);
             } else {
-                cc = &g_worldActorTypeInfo[act->unk11];
+                cc = &g_worldActorTypeInfo[act->actorType];
                 wm_getGroundHeight((VECTOR *)&act->pos, &cc->cellAttr, &tmp, &g_worldPolyCache[cc->polyCache], (u16 *)&h);
-                if (act->unk11 == 8) {
+                if (act->actorType == 8) {
                     h = 0;
                 }
                 cc->floorY = h;
@@ -1041,39 +1041,39 @@ void wm_updateActors(void) {
         break;
     }
     if ((u8)g_worldMoveMode >= 1 && (u8)g_worldMoveMode <= 6) {
-        g_worldActorTypeInfo[1].rideOffset = g_worldActorTypeInfo[g_worldPlayer->unk11].rideOffset;
+        g_worldActorTypeInfo[1].rideOffset = g_worldActorTypeInfo[g_worldPlayer->actorType].rideOffset;
     }
     if (g_worldMountActor != NULL) {
-        if (g_worldMountActor->unk24 < 0) {
-            g_worldMountActor->unk24 += 10;
+        if (g_worldMountActor->rotZ < 0) {
+            g_worldMountActor->rotZ += 10;
         }
-        if (g_worldMountActor->unk24 > 0) {
-            g_worldMountActor->unk24 -= 10;
+        if (g_worldMountActor->rotZ > 0) {
+            g_worldMountActor->rotZ -= 10;
         }
-        if (g_worldMountActor->unk24 > -10 && g_worldMountActor->unk24 < 10) {
-            g_worldMountActor->unk24 = 0;
+        if (g_worldMountActor->rotZ > -10 && g_worldMountActor->rotZ < 10) {
+            g_worldMountActor->rotZ = 0;
         }
     }
     if (g_worldVehicleActor != NULL) {
         if (g_worldMoveModeInfo->controlType != 1) {
-            if (g_worldVehicleActor->unk24 < 14) {
-                g_worldVehicleActor->unk24 += 10;
+            if (g_worldVehicleActor->rotZ < 14) {
+                g_worldVehicleActor->rotZ += 10;
             }
-            if (g_worldVehicleActor->unk24 >= 15) {
-                g_worldVehicleActor->unk24 -= 10;
+            if (g_worldVehicleActor->rotZ >= 15) {
+                g_worldVehicleActor->rotZ -= 10;
             }
-            if (g_worldVehicleActor->unk24 >= 5 && g_worldVehicleActor->unk24 < 24) {
-                g_worldVehicleActor->unk24 = 14;
+            if (g_worldVehicleActor->rotZ >= 5 && g_worldVehicleActor->rotZ < 24) {
+                g_worldVehicleActor->rotZ = 14;
             }
         } else if (g_worldFlyTurning == 0) {
-            if (g_worldVehicleActor->unk24 < 14) {
-                g_worldVehicleActor->unk24 += 16;
+            if (g_worldVehicleActor->rotZ < 14) {
+                g_worldVehicleActor->rotZ += 16;
             }
-            if (g_worldVehicleActor->unk24 >= 15) {
-                g_worldVehicleActor->unk24 -= 16;
+            if (g_worldVehicleActor->rotZ >= 15) {
+                g_worldVehicleActor->rotZ -= 16;
             }
-            if (g_worldVehicleActor->unk24 >= -1 && g_worldVehicleActor->unk24 < 30) {
-                g_worldVehicleActor->unk24 = 14;
+            if (g_worldVehicleActor->rotZ >= -1 && g_worldVehicleActor->rotZ < 30) {
+                g_worldVehicleActor->rotZ = 14;
             }
         }
     }
@@ -1092,7 +1092,7 @@ void wm_updateActors(void) {
                 }
             }
         }
-        cc = &g_worldActorTypeInfo[g_worldPlayer->unk11];
+        cc = &g_worldActorTypeInfo[g_worldPlayer->actorType];
         if ((cc->cellAttr & 0xC000) && D_800CCE4D != 0) {
             wm_posToCell(g_worldPlayer->pos.vx, g_worldPlayer->pos.vz, &cell);
             evt_callWorldCellTrigger(cell % g_worldCellsW, cell / g_worldCellsW, (cc->cellAttr & 0xC000) >> 14);
@@ -1108,7 +1108,7 @@ void wm_updateActorHeight(EvtObject *arg0) {
     s16 d;
 
     if (g_worldMapLoaded != 0) {
-        c = &g_worldActorTypeInfo[arg0->unk11];
+        c = &g_worldActorTypeInfo[arg0->actorType];
         if (c->polyCache != 0xA) {
             h = wm_getTerrainHeightOffset(c->terrainClass, c->cellAttr, &flat);
             if (c->flying == 0) {
@@ -1337,13 +1337,13 @@ u8 wm_tryStep(VECTOR *arg0, s32 arg1, s32 arg2, s32 arg3, u32 *arg4, s32 *arg5) 
     u8 x;
     u8 y;
 
-    k = g_worldActorTypeInfo[g_worldPlayer->unk11].polyCache;
+    k = g_worldActorTypeInfo[g_worldPlayer->actorType].polyCache;
     mode = &g_worldMoveModes[arg2];
     v = *arg0;
     c = &g_worldPolyCache[k];
     v.vx += math_sin(g_worldPlayerHeading + (ang = arg1 + 0x800)) * arg3 >> 12;
     v.vz += math_cos(g_worldPlayerHeading + ang) * arg3 >> 12;
-    if ((u8)g_worldActorTypeInfo[g_worldPlayer->unk11].cellAttr >> 2 == 0x34 && g_worldMoveModeInfo->controlType != 1) {
+    if ((u8)g_worldActorTypeInfo[g_worldPlayer->actorType].cellAttr >> 2 == 0x34 && g_worldMoveModeInfo->controlType != 1) {
         wm_getGroundHeight(&v, &cell, &h, NULL, (u16 *)&v.vy);
     } else {
         wm_getGroundHeight(&v, &cell, &h, c, (u16 *)&v.vy);
@@ -1354,8 +1354,8 @@ u8 wm_tryStep(VECTOR *arg0, s32 arg1, s32 arg2, s32 arg3, u32 *arg4, s32 *arg5) 
             if (mode->checkTransitions != 0) {
                 a = wm_testCellType(g_worldWaterCellTypes, cell);
                 b = wm_testCellType(D_800CCB18, cell);
-                x = wm_testCellType(g_worldWaterCellTypes, g_worldActorTypeInfo[g_worldPlayer->unk11].cellAttr);
-                y = wm_testCellType(D_800CCB18, g_worldActorTypeInfo[g_worldPlayer->unk11].cellAttr);
+                x = wm_testCellType(g_worldWaterCellTypes, g_worldActorTypeInfo[g_worldPlayer->actorType].cellAttr);
+                y = wm_testCellType(D_800CCB18, g_worldActorTypeInfo[g_worldPlayer->actorType].cellAttr);
                 if (b & x) {
                     ok = 0;
                 }
@@ -1397,7 +1397,7 @@ u8 wm_findGetoffPos(ActorPos *out) {
 
     memset(&v, 0, sizeof(v));
     ok = 0;
-    if (D_800D32FC < 0x16 && ((u8)g_worldActorTypeInfo[g_worldPlayer->unk11].cellAttr >> 2) == 0x17) {
+    if (D_800D32FC < 0x16 && ((u8)g_worldActorTypeInfo[g_worldPlayer->actorType].cellAttr >> 2) == 0x17) {
         return 0;
     }
     g_worldFlyTurning = 0;
@@ -1624,19 +1624,19 @@ void wm_controlWalk(void) {
         g_worldPlayer->pos.rotY = (g_worldPlayer->pos.rotY + a / 3) & 0xFFF;
     }
     if (g_worldPlayerPosChanged != 0 && mv != 0) {
-        if (wm_testCellType_inline(g_worldWaterCellTypes, (u8)g_worldActorTypeInfo[g_worldPlayer->unk11].cellAttr >> 2)) {
+        if (wm_testCellType_inline(g_worldWaterCellTypes, (u8)g_worldActorTypeInfo[g_worldPlayer->actorType].cellAttr >> 2)) {
             wm_spawnEffect(g_worldPlayer->pos.vx, -100, g_worldPlayer->pos.vz, 22, 24000);
         }
         if (!(g_worldFrameCount & 3)) {
-            k = (u8)g_worldActorTypeInfo[g_worldPlayer->unk11].cellAttr >> 2;
+            k = (u8)g_worldActorTypeInfo[g_worldPlayer->actorType].cellAttr >> 2;
             if (k == 0x1E || k == 0x22 || k == 0x23) {
                 wm_spawnEffect(g_worldPlayer->pos.vx, g_worldPlayer->pos.vy, g_worldPlayer->pos.vz, 7, 0x900);
             }
-            if (((u8)g_worldActorTypeInfo[g_worldPlayer->unk11].cellAttr >> 2) == 0x29) {
+            if (((u8)g_worldActorTypeInfo[g_worldPlayer->actorType].cellAttr >> 2) == 0x29) {
                 wm_spawnEffect(g_worldPlayer->pos.vx, g_worldPlayer->pos.vy, g_worldPlayer->pos.vz, 27, 0x2000);
             }
         }
-        if (!(g_worldFrameCount & 1) && (u32)(((u8)g_worldActorTypeInfo[g_worldPlayer->unk11].cellAttr >> 2) - 0x24) < 3) {
+        if (!(g_worldFrameCount & 1) && (u32)(((u8)g_worldActorTypeInfo[g_worldPlayer->actorType].cellAttr >> 2) - 0x24) < 3) {
             if (g_randPtr >= g_randTableEnd) {
                 rand_refill();
             }
@@ -1873,22 +1873,22 @@ void wm_controlFly(void) {
     if (g_worldCameraRoll < -(s8)g_worldMoveModeInfo->maxRoll) {
         g_worldCameraRoll = -(s8)g_worldMoveModeInfo->maxRoll;
     }
-    if (g_worldPlayerTurn > 0 && -(ox * 2) < g_worldPlayer->unk24) {
-        g_worldPlayer->unk24 -= ox / 4;
+    if (g_worldPlayerTurn > 0 && -(ox * 2) < g_worldPlayer->rotZ) {
+        g_worldPlayer->rotZ -= ox / 4;
     }
-    if (g_worldPlayerTurn < 0 && g_worldPlayer->unk24 < -(ox * 2)) {
-        g_worldPlayer->unk24 -= ox / 4;
+    if (g_worldPlayerTurn < 0 && g_worldPlayer->rotZ < -(ox * 2)) {
+        g_worldPlayer->rotZ -= ox / 4;
     }
-    if (g_worldPlayer->unk24 > (s8)g_worldMoveModeInfo->maxRoll * 2) {
-        g_worldPlayer->unk24 = (s8)g_worldMoveModeInfo->maxRoll * 2;
+    if (g_worldPlayer->rotZ > (s8)g_worldMoveModeInfo->maxRoll * 2) {
+        g_worldPlayer->rotZ = (s8)g_worldMoveModeInfo->maxRoll * 2;
     }
-    if (g_worldPlayer->unk24 < -(s8)g_worldMoveModeInfo->maxRoll * 2) {
-        g_worldPlayer->unk24 = -(s8)g_worldMoveModeInfo->maxRoll * 2;
+    if (g_worldPlayer->rotZ < -(s8)g_worldMoveModeInfo->maxRoll * 2) {
+        g_worldPlayer->rotZ = -(s8)g_worldMoveModeInfo->maxRoll * 2;
     }
     if (g_worldFrameCount & 1) {
-        t = (u8)g_worldActorTypeInfo[g_worldPlayer->unk11].cellAttr >> 2;
+        t = (u8)g_worldActorTypeInfo[g_worldPlayer->actorType].cellAttr >> 2;
         f = wm_testCellType_inline2(g_worldWaterCellTypes, t);
-        switch (g_worldPlayer->unk11) {
+        switch (g_worldPlayer->actorType) {
         case 9:
         case 10:
             if (f && abs(g_worldPlayerSpeed) > 60) {
@@ -2045,7 +2045,7 @@ void wm_snapActorsToFloor(void) {
             o = n->unk4;
             if (o->kind == 4) {
                 pos = o->pos;
-                c = &g_worldActorTypeInfo[o->unk11];
+                c = &g_worldActorTypeInfo[o->actorType];
                 wm_getGroundHeight((VECTOR *)&pos, &c->cellAttr, &tmp, NULL, &h);
                 c->floorY = h;
                 c->rideOffset = wm_getTerrainHeightOffset(c->terrainClass, c->cellAttr, 0);

@@ -51,7 +51,7 @@ s32 text_renderNameGlyph(s32 x, s32 hi, s32 c) {
 }
 
 s32 text_drawChar(s32 x, s32 y, s32 otz, u8 c, s32 mode) {
-    u32 *tbl = g_gameState->gameData->unk7D4->unkC;
+    u32 *tbl = g_gameState->gameData->font->glyphs;
     u32 g;
     s32 w;
     SprtWords *p;
@@ -73,8 +73,8 @@ s32 text_drawChar(s32 x, s32 y, s32 otz, u8 c, s32 mode) {
 }
 
 void text_draw(s32 x, s32 y, s32 otz, u8 *s, s32 pal) {
-    Unk7D4 *f = g_gameState->gameData->unk7D4;
-    s32 th = f->unk4 >> 8;
+    Font *f = g_gameState->gameData->font;
+    s32 th = f->extCode >> 8;
     SprtWords *p = (SprtWords *)g_primPtr;
     u32 *ot = &g_ot[otz];
     s32 spacing;
@@ -86,10 +86,10 @@ void text_draw(s32 x, s32 y, s32 otz, u8 *s, s32 pal) {
 
     while ((c = *s) != TEXT_END) {
         if (c >= th) {
-            c = (c << 8) + s[1] - f->unk4 + f->unk6;
+            c = (c << 8) + s[1] - f->extCode + f->extBase;
             s++;
         }
-        g = *(f->unkC + c);
+        g = *(f->glyphs + c);
         setlen(p, 4);
         k = (g >> 20) & 3;
         p->rgbc = GPU_RGBC(GPU_SPRT, 0x808080);
@@ -114,14 +114,14 @@ u8 *text_buildBlock(s32 x, s32 y, u32 *ot, u8 *s, s32 mode, u8 *pkt) {
     s32 w;
     s32 x0;
     u8 th;
-    Unk7D4 *font;
+    Font *font;
     s32 c;
     s32 k;
 
-    font = g_gameState->gameData->unk7D4;
+    font = g_gameState->gameData->font;
     g_textColor = mode;
     x0 = x;
-    th = font->unk4 >> 8;
+    th = font->extCode >> 8;
     while ((c = *s) != TEXT_END) {
         if (c == TEXT_ESC) {
             s++;
@@ -192,7 +192,7 @@ u8 *text_buildBlock(s32 x, s32 y, u32 *ot, u8 *s, s32 mode, u8 *pkt) {
                 if (k != 0xFF) {
                     pkt = text_buildFontTpage(ot, (DrTpageWords *)pkt);
                     pkt = ui_buildItemIcon(x, y, ot, k, 1, pkt);
-                    x += g_uiSprites[g_itemTable[k].unk8 + 0x5C].unk4;
+                    x += g_uiSprites[g_itemTable[k].icon + 0x5C].w;
                 }
             } else if (*s == TEXT_ARG_SPRITE) {
                 pkt = text_buildFontTpage(ot, (DrTpageWords *)pkt);
@@ -204,7 +204,7 @@ u8 *text_buildBlock(s32 x, s32 y, u32 *ot, u8 *s, s32 mode, u8 *pkt) {
                 if (k != 0xFF) {
                     pkt = text_buildFontTpage(ot, (DrTpageWords *)pkt);
                     pkt = ui_buildItemIcon(x, y, ot, k, 1, pkt);
-                    x += g_uiSprites[g_itemTable[k].unk8 + 0x5C].unk4;
+                    x += g_uiSprites[g_itemTable[k].icon + 0x5C].w;
                 }
             } else {
                 pkt = text_buildCode(x, y, ot, *s, &w, pkt);
@@ -215,12 +215,12 @@ u8 *text_buildBlock(s32 x, s32 y, u32 *ot, u8 *s, s32 mode, u8 *pkt) {
             y += 15;
         } else {
             if (c >= th) {
-                c = (c << 8) + s[1] - font->unk4 + font->unk6;
+                c = (c << 8) + s[1] - font->extCode + font->extBase;
                 s++;
-                pkt = text_buildGlyph(x, y, ot, *(font->unkC + c), g_textColor, &w, (SprtWords *)pkt);
+                pkt = text_buildGlyph(x, y, ot, *(font->glyphs + c), g_textColor, &w, (SprtWords *)pkt);
                 x += w;
             } else {
-                pkt = text_buildGlyph(x, y, ot, *(font->unkC + c), g_textColor, &w, (SprtWords *)pkt);
+                pkt = text_buildGlyph(x, y, ot, *(font->glyphs + c), g_textColor, &w, (SprtWords *)pkt);
                 x += w;
             }
         }
@@ -237,37 +237,37 @@ u8 *text_buildPlain(s32 x, s32 y, u32 *ot, Character *ch, s32 *w, u8 *pkt) {
     s32 adv;
     s32 x0;
     u8 th;
-    Unk7D4 *font;
-    Unk7D4 *kanji;
+    Font *font;
+    Font *kanji;
     s32 th2;
     u8 *s;
     s32 c;
     s32 code;
 
-    font = g_gameState->gameData->unk7D4;
-    s = ch->unk0;
+    font = g_gameState->gameData->font;
+    s = ch->name;
     x0 = x;
-    th = font->unk4 >> 8;
-    kanji = g_gameState->gameData->unk84C;
+    th = font->extCode >> 8;
+    kanji = g_gameState->gameData->kanjiFont;
     th2 = 0;
     if (kanji != NULL) {
-        th2 = kanji->unk0 >> 8;
+        th2 = kanji->codeBase >> 8;
     }
     while ((c = *s) != TEXT_END) {
         if (kanji != NULL && c >= th2) {
             code = (c << 8) + s[1];
             s++;
-            c = code - kanji->unk0;
-            pkt = text_buildGlyph(x, y, ot, *(kanji->unkC + c), g_textColor, &adv, (SprtWords *)pkt);
+            c = code - kanji->codeBase;
+            pkt = text_buildGlyph(x, y, ot, *(kanji->glyphs + c), g_textColor, &adv, (SprtWords *)pkt);
             x += adv;
         } else if (c >= th) {
             code = (c << 8) + s[1];
             s++;
-            c = code - font->unk4 + font->unk6;
-            pkt = text_buildGlyph(x, y, ot, *(font->unkC + c), g_textColor, &adv, (SprtWords *)pkt);
+            c = code - font->extCode + font->extBase;
+            pkt = text_buildGlyph(x, y, ot, *(font->glyphs + c), g_textColor, &adv, (SprtWords *)pkt);
             x += adv;
         } else {
-            pkt = text_buildGlyph(x, y, ot, *(font->unkC + c), g_textColor, &adv, (SprtWords *)pkt);
+            pkt = text_buildGlyph(x, y, ot, *(font->glyphs + c), g_textColor, &adv, (SprtWords *)pkt);
             x += adv;
         }
         s++;
@@ -581,58 +581,58 @@ s32 text_getCodeWidth(s32 c) {
 
     switch (c & 0xFF) {
     case 0x30:
-        r = g_uiSprites[5].unk4;
+        r = g_uiSprites[5].w;
         break;
     case 0x31:
-        r = g_uiSprites[4].unk4;
+        r = g_uiSprites[4].w;
         break;
     case 0x32:
-        r = g_uiSprites[7].unk4;
+        r = g_uiSprites[7].w;
         break;
     case 0x33:
-        r = g_uiSprites[6].unk4;
+        r = g_uiSprites[6].w;
         break;
     case 0x34:
-        r = g_uiSprites[8].unk4;
+        r = g_uiSprites[8].w;
         break;
     case 0x35:
-        r = g_uiSprites[10].unk4;
+        r = g_uiSprites[10].w;
         break;
     case 0x36:
-        r = g_uiSprites[9].unk4;
+        r = g_uiSprites[9].w;
         break;
     case 0x37:
-        r = g_uiSprites[11].unk4;
+        r = g_uiSprites[11].w;
         break;
     case 0x60:
-        r = g_uiSprites[text_getButtonSprite(0)].unk4;
+        r = g_uiSprites[text_getButtonSprite(0)].w;
         break;
     case 0x61:
-        r = g_uiSprites[text_getButtonSprite(1)].unk4;
+        r = g_uiSprites[text_getButtonSprite(1)].w;
         break;
     case 0x62:
-        r = g_uiSprites[text_getButtonSprite(2)].unk4;
+        r = g_uiSprites[text_getButtonSprite(2)].w;
         break;
     case 0x63:
-        r = g_uiSprites[text_getButtonSprite(3)].unk4;
+        r = g_uiSprites[text_getButtonSprite(3)].w;
         break;
     case 0x64:
-        r = g_uiSprites[text_getButtonSprite(4)].unk4;
+        r = g_uiSprites[text_getButtonSprite(4)].w;
         break;
     case 0x65:
-        r = g_uiSprites[text_getButtonSprite(5)].unk4;
+        r = g_uiSprites[text_getButtonSprite(5)].w;
         break;
     case 0x66:
-        r = g_uiSprites[text_getButtonSprite(6)].unk4;
+        r = g_uiSprites[text_getButtonSprite(6)].w;
         break;
     case 0x67:
-        r = g_uiSprites[text_getButtonSprite(7)].unk4;
+        r = g_uiSprites[text_getButtonSprite(7)].w;
         break;
     case 0x38:
-        r = g_uiSprites[17].unk4;
+        r = g_uiSprites[17].w;
         break;
     case 0x39:
-        r = g_uiSprites[18].unk4;
+        r = g_uiSprites[18].w;
         break;
     case 0x3A:
     case 0x3B:
@@ -640,7 +640,7 @@ s32 text_getCodeWidth(s32 c) {
     case 0x3D:
     case 0x3E:
     case 0x3F:
-        r = g_uiSprites[12].unk4;
+        r = g_uiSprites[12].w;
         break;
     case TEXT_CHAR_NAME + 0:
         r = text_measureWidth((s32)&g_gameState->gameData->characters[0]);
@@ -758,7 +758,7 @@ u8 *text_append(u8 *dst, u8 *src) {
     ret = dst;
     s = ret;
     p = s;
-    th = g_gameState->gameData->unk7D4->unk4 >> 8;
+    th = g_gameState->gameData->font->extCode >> 8;
     while ((c = *p) != 0xFF) {
         p++;
         if (c == 0xF9) {
@@ -771,7 +771,7 @@ u8 *text_append(u8 *dst, u8 *src) {
         }
     }
     dst += p - s;
-    th2 = g_gameState->gameData->unk7D4->unk4 >> 8;
+    th2 = g_gameState->gameData->font->extCode >> 8;
     while ((c2 = *src) != 0xFF) {
         *dst++ = *src++;
         if (c2 == 0xF9) {
@@ -827,26 +827,26 @@ TextSize text_measure(u8 *s) {
     s32 h;
     s32 c;
     s32 code;
-    Unk7D4 *font;
-    Unk7D4 *kanji;
+    Font *font;
+    Font *kanji;
     u8 th;
     u8 th2;
     s32 idx;
-    Unk7D4 *tbl;
+    Font *tbl;
 
     memset(&r, 0, 4);
     w = 0;
     maxw = 0;
-    font = g_gameState->gameData->unk7D4;
-    kanji = g_gameState->gameData->unk84C;
+    font = g_gameState->gameData->font;
+    kanji = g_gameState->gameData->kanjiFont;
     h = 15;
     th2 = 0;
     if (s == NULL) {
         return r;
     }
-    th = font->unk4 >> 8;
+    th = font->extCode >> 8;
     if (kanji != NULL) {
-        th2 = kanji->unk0 >> 8;
+        th2 = kanji->codeBase >> 8;
     }
     while ((c = *s) != TEXT_END) {
         if (c == TEXT_ESC) {
@@ -886,19 +886,19 @@ TextSize text_measure(u8 *s) {
                 w += g_textMeasureFuncs[3](g_textStringArgs[*s]);
             } else if (*s == TEXT_SPRITE) {
                 s++;
-                w += g_uiSprites[*s].unk4;
+                w += g_uiSprites[*s].w;
             } else if (*s == TEXT_ITEM_ICON) {
                 s++;
                 if (*s == 0xFF) {
-                    w += g_uiSprites[D_8006A20E + 0x5C].unk4;
+                    w += g_uiSprites[D_8006A20E + 0x5C].w;
                 }
             } else if (*s == TEXT_ARG_SPRITE) {
                 s++;
-                w += g_uiSprites[g_textIconArgs[*s]].unk4;
+                w += g_uiSprites[g_textIconArgs[*s]].w;
             } else if (*s == TEXT_ARG_ITEM_ICON) {
                 s++;
                 if (g_textIconArgs[*s] == 0xFF) {
-                    w += g_uiSprites[D_8006A20E + 0x5C].unk4;
+                    w += g_uiSprites[D_8006A20E + 0x5C].w;
                 }
             } else if (*s == TEXT_Y_DOWN) {
                 s++;
@@ -917,16 +917,16 @@ TextSize text_measure(u8 *s) {
             w = 0;
         } else if (kanji != NULL && c >= th2) {
             code = (c << 8) + s[1];
-            c = code - kanji->unk0;
+            c = code - kanji->codeBase;
             s++;
-            w += 1 + (*(kanji->unkC + c) >> 28);
+            w += 1 + (*(kanji->glyphs + c) >> 28);
         } else if (c < th) {
-            w += 1 + (*(font->unkC + c) >> 28);
+            w += 1 + (*(font->glyphs + c) >> 28);
         } else {
             code = (c << 8) + s[1];
-            c = code - font->unk4 + font->unk6;
+            c = code - font->extCode + font->extBase;
             s++;
-            w += 1 + (*(font->unkC + c) >> 28);
+            w += 1 + (*(font->glyphs + c) >> 28);
         }
         s++;
     }
@@ -946,7 +946,7 @@ void text_renderPartyName(s32 arg0) {
     s32 x = (arg0 & 1) * 0x54;
     s32 y = arg0 >> 1;
     s32 i;
-    u8 *name = g_gameState->gameData->party[arg0]->unk0;
+    u8 *name = g_gameState->gameData->party[arg0]->name;
 
     for (i = 0; i < 7; i++) {
         if (*name == 0xFF) {
@@ -1034,7 +1034,7 @@ u8 *text_buildDpad(s32 x, s32 y, u32 *ot, u32 mask, u8 b, s32 *c, u8 *pkt) {
     s32 i;
     for (i = 0; i < 4; i++) {
         if (mask & (1 << i)) {
-            pkt = ui_buildSprite(x + D_8006BC0C[i].unk0, y + D_8006BC0C[i].unk1, ot, D_8006BC0C[i].unk2, b, tmp, pkt);
+            pkt = ui_buildSprite(x + D_8006BC0C[i].x, y + D_8006BC0C[i].y, ot, D_8006BC0C[i].sprite, b, tmp, pkt);
         }
     }
     return ui_buildSprite(x, y, ot, 0xC, b, c, pkt);
@@ -1154,7 +1154,7 @@ void text_formatInt(s32 v, u8 *buf, s32 ascii) {
 
 s32 text_getLength(u8 *s) {
     u8 *start = s;
-    u8 lim = g_gameState->gameData->unk7D4->unk4 >> 8;
+    u8 lim = g_gameState->gameData->font->extCode >> 8;
     s32 c;
 
     while ((c = *s) != TEXT_END) {
@@ -1173,7 +1173,7 @@ s32 text_getLength(u8 *s) {
 
 u8 *text_copy(u8 *dst, u8 *src) {
     u8 *start = dst;
-    u8 lim = g_gameState->gameData->unk7D4->unk4 >> 8;
+    u8 lim = g_gameState->gameData->font->extCode >> 8;
     s32 c;
 
     while ((c = *src) != TEXT_END) {

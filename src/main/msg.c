@@ -2,7 +2,7 @@
 
 void msg_init(void) {
     GameState *s;
-    Unk7D4 *f;
+    Font *f;
 
     if (g_msgKeepWindows != 0) {
         g_msgKeepWindows = 0;
@@ -12,21 +12,21 @@ void msg_init(void) {
     }
     s = g_gameState;
     g_msgReady = 0;
-    f = s->gameData->unk7D4;
-    D_8007BB98.unk0 = 0;
-    D_8007BBCC = f->unkC;
-    D_8007BB98.unk4 = *(s32 *)&f->unk4;
+    f = s->gameData->font;
+    D_8007BB98.lead = 0;
+    D_8007BBCC = f->glyphs;
+    D_8007BB98.extRange = *(s32 *)&f->extCode;
     D_8007B94C = f->unk8;
-    D_8007BB98.unk8 = -1;
+    D_8007BB98.kanjiCode = -1;
     switch (s->mode) {
     case 1:
-        g_msgTable = s->gameData->unk8E4.ovl65->unkC->unk8;
+        g_msgTable = s->gameData->ctx.ovl65->unkC->unk8;
         break;
     case 3:
-        g_msgTable = (Unk8007B954 *)s->gameData->unk8E4.ovl65->unk8->unk14;
+        g_msgTable = (Unk8007B954 *)s->gameData->ctx.ovl65->unk8->unk14;
         break;
     case 2:
-        g_msgTable = (Unk8007B954 *)s->gameData->unk8E4.ovl65->work->unk14;
+        g_msgTable = (Unk8007B954 *)s->gameData->ctx.ovl65->work->unk14;
         break;
     }
     g_msgReady = 1;
@@ -78,7 +78,7 @@ void msg_beginDraw(void) {
     if (s->mode == 2 || s->mode == 6) {
         D_8007B9A0 = 1;
         pp = &D_8007B9A8;
-        tbl = &D_8007B9B0[s->gameData->unk8];
+        tbl = &D_8007B9B0[s->gameData->drawBuf];
         g_penPktPtr = pp;
         D_8007B9A4 = D_8007B9A8 = (u8 *)tbl;
     } else {
@@ -88,7 +88,7 @@ void msg_beginDraw(void) {
         D_8007B9A4 = cur;
     }
     g = g_gameState->gameData;
-    g_penOt = g->unk10[g->unk8];
+    g_penOt = g->ot[g->drawBuf];
 }
 
 /* width of an embedded string, up to 0xF7 / 0xFF */
@@ -98,7 +98,7 @@ static inline s32 msg_measureLine_width(u8 *s) {
     s32 c;
     u32 g;
 
-    D_8007BB98.unk0 = 0;
+    D_8007BB98.lead = 0;
     c = *s++;
     while (c != 0xF7 && c != 0xFF) {
         do {
@@ -115,7 +115,7 @@ static inline s32 msg_measureLine_width(u8 *s) {
 
 /* copy character ch's name into g_msgNameBuf, converting the case */
 static inline void msg_measureLine_name(s32 ch) {
-    u8 *name = g_gameState->gameData->characters[ch].unk0;
+    u8 *name = g_gameState->gameData->characters[ch].name;
     s32 k;
     u32 c;
 
@@ -157,13 +157,13 @@ void msg_measureLine(u8 **pp, s32 *pw) {
             case 0x15:
             case 0x16:
             case 0x17:
-                w += msg_measureLine_width(g_gameState->gameData->characters[c - 0x10].unk0);
+                w += msg_measureLine_width(g_gameState->gameData->characters[c - 0x10].name);
                 break;
             case 0x18:
             case 0x19:
             case 0x1A:
             case 0x1B:
-                w += msg_measureLine_width(g_gameState->gameData->characters[evt_getPartyChrIndex(c - 0x18)].unk0);
+                w += msg_measureLine_width(g_gameState->gameData->characters[evt_getPartyChrIndex(c - 0x18)].name);
                 break;
             case 0x80:
             case 0x81:
@@ -179,9 +179,9 @@ void msg_measureLine(u8 **pp, s32 *pw) {
             case 0xE:
                 n = g_msgNumbers[*s++];
                 if (n < 0x100) {
-                    str = g_itemNames + g_itemTable[n].unk0;
+                    str = g_itemNames + g_itemTable[n].name;
                 } else if (n < 0x200) {
-                    str = g_keyItemNames + g_keyItemTable[n - 0x100].unk0;
+                    str = g_keyItemNames + g_keyItemTable[n - 0x100].name;
                 } else {
                     str = (u8 *)card_getName(n - 0x200);
                 }
@@ -687,7 +687,7 @@ void msg_drawText(MsgWindow *w) {
         if (w->textPos < w->pageStart) {
             w->textPos = w->pageStart;
         }
-        D_8007BB98.unk0 = 0;
+        D_8007BB98.lead = 0;
         g_msgChoiceDrawMask = g_msgChoiceEnabled;
         msg_renderText(w, e);
         if (w->waitFrames == 0) {
@@ -711,7 +711,7 @@ void msg_drawText(MsgWindow *w) {
     }
 }
 
-/* The sound callback returns s32 (GameData.unk83C), so each call is a call_value insn even with the
+/* The sound callback returns s32 (GameData.soundHook), so each call is a call_value insn even with the
    result ignored. That gives the function pointer a v0 preference in local-alloc, which the
    0x10000 path needs (pointer in v0, %hi(g_msgChoice) in v1). The 0x10000 path must come
    last in the chain so its call falls into the shared `return 1` and jump2 cross-jumps the
@@ -725,7 +725,7 @@ s32 msg_input(MsgWindow *w, s32 pad) {
             if (w->waitFrames == 0xFF) {
                 w->waitFrames = 1;
                 if (g_msgChoiceLine >= 0) {
-                    g_gameState->gameData->unk83C(0xD000, 0x67, 0x800000, 0x80, 0x7F);
+                    g_gameState->gameData->soundHook(0xD000, 0x67, 0x800000, 0x80, 0x7F);
                 }
                 return 1;
             }
@@ -745,19 +745,19 @@ s32 msg_input(MsgWindow *w, s32 pad) {
             } else {
                 g_msgChoice = g_msgChoiceCount - 1;
             }
-            g_gameState->gameData->unk83C(0xD000, 0x67, 0x800000, 0x80, 0x7F);
+            g_gameState->gameData->soundHook(0xD000, 0x67, 0x800000, 0x80, 0x7F);
         } else if (pad & 0x40) {
             if (g_msgChoice < g_msgChoiceCount - 1) {
                 g_msgChoice++;
             } else {
                 g_msgChoice = 0;
             }
-            g_gameState->gameData->unk83C(0xD000, 0x67, 0x800000, 0x80, 0x7F);
+            g_gameState->gameData->soundHook(0xD000, 0x67, 0x800000, 0x80, 0x7F);
         } else if (!(pad & 0x10000) || g_msgChoiceCancel < 0) {
             return 0;
         } else {
             g_msgChoice = g_msgChoiceCancel;
-            g_gameState->gameData->unk83C(0xD000, 0x65, 0x800000, 0x80, 0x7F);
+            g_gameState->gameData->soundHook(0xD000, 0x65, 0x800000, 0x80, 0x7F);
         }
         return 1;
     }
@@ -778,15 +778,15 @@ static inline MsgWindow *msg_open_init(s32 id, WinLayout *l) {
     w->x = 0;
     w->id = 0;
     w->parent = parent;
-    if (l->unk0 != 0) {
-        w->x = l->unk0;
-        w->y = (u8)l->unk8;
+    if (l->x != 0) {
+        w->x = l->x;
+        w->y = (u8)l->y;
     } else {
-        w->x = 0xA0 - (l->unk2 >> 1);
-        w->y = 0x78 - (l->unk9 >> 1);
+        w->x = 0xA0 - (l->w >> 1);
+        w->y = 0x78 - (l->h >> 1);
     }
-    w->w = l->unk2;
-    w->h = l->unk9;
+    w->w = l->w;
+    w->h = l->h;
     w->flags = 0;
     w->msgId = 0;
     w->textPos = 0;
@@ -825,11 +825,11 @@ void msg_open(s32 msg, s32 id, WinLayout *l, s32 flags) {
     w->pageStart = 0;
     w->typeAccum = 8;
     w->pendingChars = 0;
-    w->tailOffset = l->unk4;
-    w->tailMode = l->unk6;
-    w->textWidth = l->unk2;
+    w->tailOffset = l->tailOffset;
+    w->tailMode = l->tailMode;
+    w->textWidth = l->w;
     w->flags |= 0x10;
-    if (!(l->unkB & 1)) {
+    if (!(l->flags & 1)) {
         g_msgFocus = w;
     }
     r.x = w->x;
@@ -837,19 +837,19 @@ void msg_open(s32 msg, s32 id, WinLayout *l, s32 flags) {
     r.w = w->w + 3;
     r.h = w->h + 3;
     style = 4;
-    if (!(l->unk6 & 0x10)) {
+    if (!(l->tailMode & 0x10)) {
         style = 3;
-        if (l->unk4 == 0 && !(flags & 4)) {
+        if (l->tailOffset == 0 && !(flags & 4)) {
             style = 2;
         }
     }
     w->window = win_open(&r, 2, style, id);
     if (w->window != NULL) {
-        w->window->unk50 = (s32)w;
-        win_setDrawContent(w->window, (void (*)(Window *))msg_drawWindowContent);
+        w->window->userData = (s32)w;
+        win_setDrawContent(w->window, msg_drawWindowContent);
         win_setDrawOverlay(w->window, msg_drawChoiceCursor);
-        if (l->unk4 != 0 && !(flags & 4)) {
-            win_setTail(w->window, l->unk6 & 3, l->unk4);
+        if (l->tailOffset != 0 && !(flags & 4)) {
+            win_setTail(w->window, l->tailMode & 3, l->tailOffset);
         }
         if (D_8007BB90 != 0) {
             win_setOpenAnim(w->window, 3);
@@ -860,7 +860,7 @@ void msg_open(s32 msg, s32 id, WinLayout *l, s32 flags) {
             win_setTitle(w->window, (s32)D_80011F10);
         }
     }
-    if (!(l->unkB & 1)) {
+    if (!(l->flags & 1)) {
         g_msgChoiceLine = -1;
         n = g_msgChoiceDefault;
         g_msgChoiceDefault = 0;
@@ -898,8 +898,8 @@ static inline u8 *msg_getEntry_inline(s32 i, WinLayout *out) {
         e = (u8 *)g_msgTable->unk4;
         v = ((u32 *)e)[g_evtMode == 4 ? i : i * 2];
         if (out != NULL) {
-            out->unk2 = ((v >> 16) & 0xFFF) + 9;
-            out->unk9 = (g_evtMode == 4 ? (u32)v >> 28 : ((MsgEntry8 *)e)[i].unk6) * 14 + 6;
+            out->w = ((v >> 16) & 0xFFF) + 9;
+            out->h = (g_evtMode == 4 ? (u32)v >> 28 : ((MsgEntry8 *)e)[i].lines) * 14 + 6;
         }
         e += v & 0xFFFF;
     }
@@ -919,8 +919,8 @@ WinLayout *msg_getLayout(s32 id, s32 *x, s32 *y, s32 *z) {
     if (p != NULL) {
         done = 0;
         D_8007BB90 = 0;
-        g_msgLayout.unkA = 0;
-        g_msgLayout.unkB = 0;
+        g_msgLayout.anchor = 0;
+        g_msgLayout.flags = 0;
         *x = 0;
         *y = 0;
         *z = 0;
@@ -943,7 +943,7 @@ WinLayout *msg_getLayout(s32 id, s32 *x, s32 *y, s32 *z) {
                     mask >>= 1;
                 }
                 g_msgChoiceCount = n;
-                g_msgLayout.unk9 -= (*p++ - n) * 14;
+                g_msgLayout.h -= (*p++ - n) * 14;
                 n = -1;
                 mask = g_msgChoiceEnabled;
                 cnt = *p++;
@@ -957,10 +957,10 @@ WinLayout *msg_getLayout(s32 id, s32 *x, s32 *y, s32 *z) {
                 g_msgChoiceCancel = n;
                 break;
             case 0x3:
-                g_msgLayout.unk0 = *p++;
-                g_msgLayout.unk0 |= *p++ << 8;
-                g_msgLayout.unk8 = *p++;
-                g_msgLayout.unkA = 0xFF;
+                g_msgLayout.x = *p++;
+                g_msgLayout.x |= *p++ << 8;
+                g_msgLayout.y = *p++;
+                g_msgLayout.anchor = 0xFF;
                 break;
             case 0x50:
             case 0x51:
@@ -973,7 +973,7 @@ WinLayout *msg_getLayout(s32 id, s32 *x, s32 *y, s32 *z) {
             case 0x5A:
             case 0x5B:
             case 0x5C:
-                g_msgLayout.unkA = p[-1];
+                g_msgLayout.anchor = p[-1];
                 break;
             case 0x5F:
                 *x = *p;
@@ -988,7 +988,7 @@ WinLayout *msg_getLayout(s32 id, s32 *x, s32 *y, s32 *z) {
                 D_8007BB90 = 1;
                 break;
             case 0x45:
-                g_msgLayout.unkB = 1;
+                g_msgLayout.flags = 1;
                 break;
             case 0xD:
                 for (;;) {
@@ -999,8 +999,8 @@ WinLayout *msg_getLayout(s32 id, s32 *x, s32 *y, s32 *z) {
                     v &= 0xFFF;
                     if (t == 0 || ((g_msgChoiceEnabled >> (t - 1)) & 1)) {
                         msg_measureLine(&p, &v);
-                        if (g_msgLayout.unk2 < v) {
-                            g_msgLayout.unk2 = v;
+                        if (g_msgLayout.w < v) {
+                            g_msgLayout.w = v;
                         }
                     } else {
                         while (*p++ != 0xFF) {
@@ -1019,7 +1019,7 @@ WinLayout *msg_getLayout(s32 id, s32 *x, s32 *y, s32 *z) {
 
 void msg_setOtz(s32 a) {
     GameData *d = g_gameState->gameData;
-    g_penOt = d->unk10[d->unk8] + a;
+    g_penOt = d->ot[d->drawBuf] + a;
 }
 
 s32 msg_getPartyMemberId(s32 i) {
@@ -1027,7 +1027,7 @@ s32 msg_getPartyMemberId(s32 i) {
     if (p == NULL) {
         return -1;
     }
-    return p->unk34.b.id;
+    return p->info.b.id;
 }
 
 void msg_resetPad(void) {
@@ -1123,11 +1123,11 @@ MsgWindow *msg_getLastModal(void) {
     return r;
 }
 
-s32 msg_overlapsRect(Unk8004EBC0 *r) {
+s32 msg_overlapsRect(WinLayout *r) {
     MsgWindow *p;
     for (p = g_msgWindows; p < g_msgWindows + 8; p++) {
-        if (p->open != 0 && r->unk0 < p->x + p->w && p->x < r->unk0 + r->unk2 &&
-            r->unk8 < p->y + p->h && p->y < r->unk8 + r->unk9) {
+        if (p->open != 0 && r->x < p->x + p->w && p->x < r->x + r->w &&
+            (u8)r->y < p->y + p->h && p->y < (u8)r->y + r->h) {
             return 1;
         }
     }
@@ -1180,7 +1180,7 @@ void func_8004ED3C(void) {
     MsgWindow *p;
     for (p = g_msgWindows; p < g_msgWindows + 10; p++) {
         if (p->open != 0 && p->window != NULL) {
-            p->window->unk18 = 0;
+            p->window->otz = 0;
         }
     }
 }
@@ -1194,7 +1194,7 @@ Window *msg_getWindow(s32 i) {
     return r;
 }
 
-MsgWindow *msg_allocWindow(Unk8004EBC0 *r, MsgWindow *a, s32 idx, s32 flag) {
+MsgWindow *msg_allocWindow(WinLayout *r, MsgWindow *a, s32 idx, s32 flag) {
     MsgWindow *e = &g_msgWindows[idx];
     e->open = 1;
     e->parent = a;
@@ -1203,15 +1203,15 @@ MsgWindow *msg_allocWindow(Unk8004EBC0 *r, MsgWindow *a, s32 idx, s32 flag) {
     e->y = 0;
     e->x = 0;
     e->id = 0;
-    if (r->unk0 != 0) {
-        e->x = r->unk0;
-        e->y = r->unk8;
+    if (r->x != 0) {
+        e->x = r->x;
+        e->y = (u8)r->y;
     } else {
-        e->x = 160 - (r->unk2 >> 1);
-        e->y = 120 - (r->unk9 >> 1);
+        e->x = 160 - (r->w >> 1);
+        e->y = 120 - (r->h >> 1);
     }
-    e->w = r->unk2;
-    e->h = r->unk9;
+    e->w = r->w;
+    e->h = r->h;
     if (flag != 0) {
         e->flags = 2;
     } else {
@@ -1233,7 +1233,7 @@ void msg_keepWindowsOnInit(void) {
     g_msgKeepWindows = 1;
 }
 
-u8 *msg_getEntry(s32 i, MsgInfo *out) {
+u8 *msg_getEntry(s32 i, WinLayout *out) {
     u8 *e = NULL;
     u16 *t;
     s32 v;
@@ -1243,8 +1243,8 @@ u8 *msg_getEntry(s32 i, MsgInfo *out) {
         e = (u8 *)g_msgTable->unk4;
         v = ((u32 *)e)[g_evtMode == 4 ? i : i * 2];
         if (out != NULL) {
-            out->unk2 = ((v >> 16) & 0xFFF) + 9;
-            out->unk9 = (g_evtMode == 4 ? (u32)v >> 28 : ((MsgEntry8 *)e)[i].unk6) * 14 + 6;
+            out->w = ((v >> 16) & 0xFFF) + 9;
+            out->h = (g_evtMode == 4 ? (u32)v >> 28 : ((MsgEntry8 *)e)[i].lines) * 14 + 6;
         }
         e += v & 0xFFFF;
     }
@@ -1331,9 +1331,9 @@ s32 msg_emitItemName(s32 id, s32 n) {
     u8 *t;
 
     if (id < 0x100) {
-        t = g_itemNames + g_itemTable[id].unk0;
+        t = g_itemNames + g_itemTable[id].name;
     } else if (id < 0x200) {
-        t = g_keyItemNames + g_keyItemTable[id - 0x100].unk0;
+        t = g_keyItemNames + g_keyItemTable[id - 0x100].name;
     } else {
         t = (u8 *)card_getName(id - 0x200);
     }
@@ -1354,7 +1354,7 @@ s32 msg_emitItemName(s32 id, s32 n) {
 }
 
 s32 msg_emitCharName(s32 arg0, s32 n) {
-    u8 *name = g_gameState->gameData->characters[arg0].unk0;
+    u8 *name = g_gameState->gameData->characters[arg0].name;
     s32 len;
     s32 i;
 
@@ -1376,7 +1376,7 @@ s32 msg_emitCharNameCaps(s32 ch, s32 n) {
     s32 i;
     s32 j;
     s32 k;
-    u8 *name = g_gameState->gameData->characters[ch].unk0;
+    u8 *name = g_gameState->gameData->characters[ch].name;
     u32 c;
     u8 *buf;
 
@@ -1406,14 +1406,14 @@ s32 msg_emitCharNameCaps(s32 ch, s32 n) {
     return i;
 }
 
-void msg_drawWindowContent(Unk8004F5D4 *p) {
+void msg_drawWindowContent(Window *p) {
     GameData *g = g_gameState->gameData;
 
-    g_penOt = g->unk10[g->unk8] + p->unk18;
+    g_penOt = g->ot[g->drawBuf] + p->otz;
     pen_begin();
     pen_pushPos();
-    pen_setPos(p->unk0 + 2, p->unk2 + 2);
-    msg_drawText(p->unk50);
+    pen_setPos(p->x + 2, p->y + 2);
+    msg_drawText((MsgWindow *)p->userData);
     pen_popPos();
     pen_endFont();
 }
@@ -1422,13 +1422,13 @@ void msg_drawChoiceCursor(Window *w) {
     GameData *g;
     s32 ofs;
 
-    if (g_msgChoiceLine >= 0 && w->state == 3 && (((Window *)w->unk50)->animMode & 2)) {
+    if (g_msgChoiceLine >= 0 && w->state == 3 && (((Window *)w->userData)->animMode & 2)) {
         g = g_gameState->gameData;
-        g_penOt = g->unk10[g->unk8] + w->unk18;
+        g_penOt = g->ot[g->drawBuf] + w->otz;
         pen_begin();
         pen_pushPos();
         ofs = 8;
-        pen_setPos(w->unk0 - 3, w->unk2 + ((g_msgChoiceLine + g_msgChoice) * 14 + ofs));
+        pen_setPos(w->x - 3, w->y + ((g_msgChoiceLine + g_msgChoice) * 14 + ofs));
         pen_drawSprite(1);
         pen_popPos();
         pen_endSmall();
@@ -1452,7 +1452,7 @@ void msg_drawHereIcon(EvtObject *o) {
         if (n == 0) {
             g_hereIconActive = 0;
         }
-        if (g_evtMode == 1 && !(g_gameState->gameData->unk0 & GD_HIDE_ALL) && n < 58) {
+        if (g_evtMode == 1 && !(g_gameState->gameData->flags & GD_HIDE_ALL) && n < 58) {
             s = &D_80068790;
             pen_begin();
             pen_pushPos();
@@ -1469,19 +1469,19 @@ void msg_drawHereIcon(EvtObject *o) {
             p->x1 = p->x3 = p->x0;
             x = p->x0;
             if (g_hereIconFlipped) {
-                nx = x + s->unk4;
+                nx = x + s->w;
             } else {
-                nx = x - s->unk4;
+                nx = x - s->w;
             }
             p->x2 = p->x0 = nx;
             p->y2 = p->y3 = p->y0;
-            p->y1 = p->y0 = p->y0 - s->unk5;
-            p->u0 = p->u2 = s->unk0;
-            p->v0 = p->v1 = s->unk1;
-            p->u1 = p->u3 = s->unk0 + s->unk4 - (u8)g_hereIconFlipped;
-            p->v2 = p->v3 = s->unk1 + s->unk5;
+            p->y1 = p->y0 = p->y0 - s->h;
+            p->u0 = p->u2 = s->u;
+            p->v0 = p->v1 = s->v;
+            p->u1 = p->u3 = s->u + s->w - (u8)g_hereIconFlipped;
+            p->v2 = p->v3 = s->v + s->h;
             p->tpage = 0x5F;
-            p->clut = s->unk2;
+            p->clut = s->clut;
             pen_popPos();
             pen_end();
         }
@@ -1525,21 +1525,21 @@ void msg_drawPlayerBubble(void) {
     d = hw / 3;
     q->x0 = q->x2 = x - d;
     q->x1 = q->x3 = x + d;
-    p->u0 = p->u2 = s->unk0;
-    p->v0 = p->v1 = s->unk1;
-    p->u1 = p->u3 = s->unk0 + 0x18;
-    p->v2 = p->v3 = s->unk1 + 0x10;
-    q->u0 = q->u2 = s->unk0 + 8;
+    p->u0 = p->u2 = s->u;
+    p->v0 = p->v1 = s->v;
+    p->u1 = p->u3 = s->u + 0x18;
+    p->v2 = p->v3 = s->v + 0x10;
+    q->u0 = q->u2 = s->u + 8;
     /* identical branches (jump2 merges them), as in math_buildRotMatrixZXY */
     if (q) {
-        q->u1 = q->u3 = s->unk0 + 0x10;
+        q->u1 = q->u3 = s->u + 0x10;
     } else {
-        q->u1 = q->u3 = s->unk0 + 0x10;
+        q->u1 = q->u3 = s->u + 0x10;
     }
-    q->v0 = q->v1 = s->unk1 + 0x10;
-    q->v2 = q->v3 = s->unk1 + 0x18;
+    q->v0 = q->v1 = s->v + 0x10;
+    q->v2 = q->v3 = s->v + 0x18;
     q->tpage = p->tpage = 0x5F;
-    q->clut = p->clut = s->unk2;
+    q->clut = p->clut = s->clut;
 }
 
 void msg_updatePlayerBubble(void) {
@@ -1577,7 +1577,7 @@ void msg_updatePlayerBubble(void) {
         g_bubbleScript += 4;
     }
     draw:
-    if (!(g_gameState->gameData->unk0 & GD_HIDE_ALL)) {
+    if (!(g_gameState->gameData->flags & GD_HIDE_ALL)) {
         o = evt_getObject(g_evtState->playerUid);
         if (o != NULL && o->kind == 4) {
             pen_begin();
@@ -1599,7 +1599,7 @@ void msg_drawAtePrompt(void) {
         return;
     }
     g_atePromptTimer++;
-    if (g_gameState->gameData->unk0 & GD_HIDE_ALL) {
+    if (g_gameState->gameData->flags & GD_HIDE_ALL) {
         return;
     }
     pen_begin();
@@ -1679,27 +1679,27 @@ s32 evt_modelOpField(EvtObject *o, s32 op) {
     case EVT_OP_SHADOW_SIZE:
         a = evt_getArg8();
         b = evt_getArg8();
-        g_gameState->gameData->unk8E4.ovl65->unkC->unk14->unk2C[o->modelSlot].unk0_8 = a * 14;
-        g_gameState->gameData->unk8E4.ovl65->unkC->unk14->unk2C[o->modelSlot].unk0_20 = b * 12;
+        g_gameState->gameData->ctx.ovl65->unkC->unk14->unk2C[o->modelSlot].unk0_8 = a * 14;
+        g_gameState->gameData->ctx.ovl65->unkC->unk14->unk2C[o->modelSlot].unk0_20 = b * 12;
         return 0;
     case 0x82:
         a = evt_getArg16();
         b = evt_getArg16();
-        g_gameState->gameData->unk8E4.ovl65->unkC->unk14->unk2C[o->modelSlot].unk4_12 = a;
-        g_gameState->gameData->unk8E4.ovl65->unkC->unk14->unk2C[o->modelSlot].unk4_22 = b;
+        g_gameState->gameData->ctx.ovl65->unkC->unk14->unk2C[o->modelSlot].unk4_12 = a;
+        g_gameState->gameData->ctx.ovl65->unkC->unk14->unk2C[o->modelSlot].unk4_22 = b;
         return 0;
     case EVT_OP_SHADOW_FIXED:
         a = evt_getArg8();
         p = (u32 *)game_getModel(o->modelSlot);
         gs = g_gameState;
         *p |= 0x20;
-        gs->gameData->unk8E4.ovl65->unkC->unk14->unk2C[o->modelSlot].unk4_0 = a * 16;
+        gs->gameData->ctx.ovl65->unkC->unk14->unk2C[o->modelSlot].unk4_0 = a * 16;
         return 0;
     case EVT_OP_SHADOW_UNFIX:
         *(u32 *)game_getModel(o->modelSlot) &= ~0x20;
         return 0;
     case 0x85:
-        g_gameState->gameData->unk8E4.ovl65->unkC->unk14->unk2C[o->modelSlot].unk0_0 = evt_getArg8();
+        g_gameState->gameData->ctx.ovl65->unkC->unk14->unk2C[o->modelSlot].unk0_0 = evt_getArg8();
         return 0;
     case EVT_OP_RAIN:
         fld_enableRain(0, 0, 1);
@@ -1729,27 +1729,27 @@ s32 evt_modelOpBattle(EvtObject *o, s32 op) {
     case EVT_OP_SHADOW_SIZE:
         a = evt_getArg8();
         b = evt_getArg8();
-        g_gameState->gameData->unk8E4.ovl65->work->unk28[o->modelSlot].unk0_8 = a * 14;
-        g_gameState->gameData->unk8E4.ovl65->work->unk28[o->modelSlot].unk0_20 = b * 12;
+        g_gameState->gameData->ctx.ovl65->work->unk28[o->modelSlot].unk0_8 = a * 14;
+        g_gameState->gameData->ctx.ovl65->work->unk28[o->modelSlot].unk0_20 = b * 12;
         return 0;
     case 0x82:
         a = evt_getArg16();
         b = evt_getArg16();
-        g_gameState->gameData->unk8E4.ovl65->work->unk28[o->modelSlot].unk4_12 = a;
-        g_gameState->gameData->unk8E4.ovl65->work->unk28[o->modelSlot].unk4_22 = b;
+        g_gameState->gameData->ctx.ovl65->work->unk28[o->modelSlot].unk4_12 = a;
+        g_gameState->gameData->ctx.ovl65->work->unk28[o->modelSlot].unk4_22 = b;
         return 0;
     case EVT_OP_SHADOW_FIXED:
         a = evt_getArg8();
         p = (u32 *)game_getModel(o->modelSlot);
         gs = g_gameState;
         *p |= 0x20;
-        gs->gameData->unk8E4.ovl65->work->unk28[o->modelSlot].unk4_0 = a * 16;
+        gs->gameData->ctx.ovl65->work->unk28[o->modelSlot].unk4_0 = a * 16;
         return 0;
     case EVT_OP_SHADOW_UNFIX:
         *(u32 *)game_getModel(o->modelSlot) &= ~0x20;
         return 0;
     case 0x85:
-        g_gameState->gameData->unk8E4.ovl65->work->unk28[o->modelSlot].unk0_0 = evt_getArg8();
+        g_gameState->gameData->ctx.ovl65->work->unk28[o->modelSlot].unk0_0 = evt_getArg8();
         return 0;
     case EVT_OP_RAIN:
         a = evt_getArg8();
@@ -1778,27 +1778,27 @@ s32 evt_modelOpWorld(EvtObject *o, s32 op) {
     case EVT_OP_SHADOW_SIZE:
         a = evt_getArg8();
         b = evt_getArg8();
-        ((Unk11C0Slot *)g_gameState->gameData->unk8E4.ovl65->unk8->unk1C)[o->modelSlot].unk0_8 = a * 14;
-        ((Unk11C0Slot *)g_gameState->gameData->unk8E4.ovl65->unk8->unk1C)[o->modelSlot].unk0_20 = b * 12;
+        ((Unk11C0Slot *)g_gameState->gameData->ctx.ovl65->unk8->unk1C)[o->modelSlot].unk0_8 = a * 14;
+        ((Unk11C0Slot *)g_gameState->gameData->ctx.ovl65->unk8->unk1C)[o->modelSlot].unk0_20 = b * 12;
         return 0;
     case 0x82:
         a = evt_getArg16();
         b = evt_getArg16();
-        ((Unk11C0Slot *)g_gameState->gameData->unk8E4.ovl65->unk8->unk1C)[o->modelSlot].unk4_12 = a;
-        ((Unk11C0Slot *)g_gameState->gameData->unk8E4.ovl65->unk8->unk1C)[o->modelSlot].unk4_22 = b;
+        ((Unk11C0Slot *)g_gameState->gameData->ctx.ovl65->unk8->unk1C)[o->modelSlot].unk4_12 = a;
+        ((Unk11C0Slot *)g_gameState->gameData->ctx.ovl65->unk8->unk1C)[o->modelSlot].unk4_22 = b;
         return 0;
     case EVT_OP_SHADOW_FIXED:
         a = evt_getArg8();
         p = (u32 *)game_getModel(o->modelSlot);
         gs = g_gameState;
         *p |= 0x20;
-        ((Unk11C0Slot *)gs->gameData->unk8E4.ovl65->unk8->unk1C)[o->modelSlot].unk4_0 = a * 16;
+        ((Unk11C0Slot *)gs->gameData->ctx.ovl65->unk8->unk1C)[o->modelSlot].unk4_0 = a * 16;
         return 0;
     case EVT_OP_SHADOW_UNFIX:
         *(u32 *)game_getModel(o->modelSlot) &= ~0x20;
         return 0;
     case 0x85:
-        ((Unk11C0Slot *)g_gameState->gameData->unk8E4.ovl65->unk8->unk1C)[o->modelSlot].unk0_0 = evt_getArg8();
+        ((Unk11C0Slot *)g_gameState->gameData->ctx.ovl65->unk8->unk1C)[o->modelSlot].unk0_0 = evt_getArg8();
         return 0;
     case EVT_OP_RAIN:
         a = evt_getArg8();
@@ -1820,58 +1820,58 @@ s32 rain_draw(void) {
     GameData *gd;
     s32 n;
 
-    if (g_gameState->gameData->unk8 != 0) {
+    if (g_gameState->gameData->drawBuf != 0) {
         r += 0x22B0;
     }
-    if (g_fieldRain.unk24 < 2) {
-        rain_spawn(g_fieldRain.unkC == 0xFF0 ? -0x1770 : -0xFA0);
+    if (g_fieldRain.stopping < 2) {
+        rain_spawn(g_fieldRain.speed == 0xFF0 ? -0x1770 : -0xFA0);
     }
-    if (g_fieldRain.unk24 != 0) {
-        g_fieldRain.unk24++;
+    if (g_fieldRain.stopping != 0) {
+        g_fieldRain.stopping++;
     }
-    n = g_fieldRain.unk4;
+    n = g_fieldRain.active;
     if (n != 0) {
         fldbg_applyGeomOffset();
         gd = g_gameState->gameData;
-        gte_SetRotMatrix(&gd->unk18);
-        gte_SetTransMatrix(&gd->unk18);
-        r = (u8 *)rain_drawDrops(n, gd->unk8, gd->unk10[gd->unk8] + 3, (s32)r);
+        gte_SetRotMatrix(&gd->viewMatrix);
+        gte_SetTransMatrix(&gd->viewMatrix);
+        r = (u8 *)rain_drawDrops(n, gd->drawBuf, gd->ot[gd->drawBuf] + 3, (s32)r);
         fldbg_resetGeomOffset();
     }
     return (s32)r;
 }
 
-u8 *rain_init(Unk8007BC20Node *buf) {
-    Unk8007BC20Node *p = buf;
-    Unk8007BC20Node *end;
-    g_fieldRain.unk0 = buf;
+u8 *rain_init(RainNode *buf) {
+    RainNode *p = buf;
+    RainNode *end;
+    g_fieldRain.freeList = buf;
     if (buf != NULL) {
         end = buf + 222;
         for (; p < end; p++) {
-            p->unk0 = p + 1;
+            p->next = p + 1;
         }
-        p[-1].unk0 = NULL;
+        p[-1].next = NULL;
     }
-    g_fieldRain.unk4 = 0;
-    SetDrawTPage(&g_fieldRain.unk10, 0, 0, GetTPage(0, 3, 0, 0));
-    g_fieldRain.unk18 = g_fieldRain.unk10;
-    g_fieldRain.unk8 = 0;
-    g_fieldRain.unkC = 0;
-    g_fieldRain.unk24 = 0;
+    g_fieldRain.active = 0;
+    SetDrawTPage(&g_fieldRain.tpage, 0, 0, GetTPage(0, 3, 0, 0));
+    g_fieldRain.tpage2 = g_fieldRain.tpage;
+    g_fieldRain.count = 0;
+    g_fieldRain.speed = 0;
+    g_fieldRain.stopping = 0;
     g_fieldRainPrims = (u8 *)(buf + 222);
     return (u8 *)p + 0x4560;
 }
 
 void rain_set(s32 a, u32 b) {
     if (a != 0 && b != 0) {
-        Unk8007BC20 *p = &g_fieldRain;
+        RainState *p = &g_fieldRain;
 
         if (a < 0x83) {
-            p->unk8 = a;
+            p->count = a;
         } else {
-            p->unk8 = 0x82;
+            p->count = 0x82;
         }
     }
-    g_fieldRain.unkC = b * 16;
-    g_fieldRain.unk24 = a == 0 && b != 0;
+    g_fieldRain.speed = b * 16;
+    g_fieldRain.stopping = a == 0 && b != 0;
 }

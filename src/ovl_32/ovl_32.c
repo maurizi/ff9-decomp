@@ -30,7 +30,7 @@ void menuChocograph_init(void) {
     if (g_gameState->gameData->chocograph != 0) {
         menuChocograph_scrollTo(g_gameState->gameData->chocograph - 1);
     }
-    s_menuChocograph.textPtr = s_menuChocograph.textBuf + (g_gameState->gameData->unk8 << 12);
+    s_menuChocograph.textPtr = s_menuChocograph.textBuf + (g_gameState->gameData->drawBuf << 12);
 }
 
 void menuChocograph_inputTabs(void) {
@@ -133,8 +133,8 @@ void menuChocograph_drawList(void) {
     win_drawShadow(r, 0x1D, 1);
     menuList_getView(list, &view);
     win_setClip(NULL, 0x1C, 1);
-    for (i = 0; i < view.unk0; i++) {
-        menuChocograph_drawRow(0, i, view.unk1 + i, &view);
+    for (i = 0; i < view.rows; i++) {
+        menuChocograph_drawRow(0, i, view.first + i, &view);
     }
     if (list->scroll & 4) {
         menuList_getRowsRect(list, r, &sub);
@@ -404,7 +404,7 @@ void menuChocograph_drawFrame(s32 x, s32 y, s32 otz, u8 dim) {
 }
 
 void menuChocograph_update(void) {
-    s_menuChocograph.textPtr = s_menuChocograph.textBuf + (g_gameState->gameData->unk8 << 12);
+    s_menuChocograph.textPtr = s_menuChocograph.textBuf + (g_gameState->gameData->drawBuf << 12);
     menuChocograph_input();
     menuChocograph_draw();
     menuChocograph_updateList();
@@ -483,8 +483,8 @@ void menuChocograph_drawScrollRows(void) {
     s32 i;
 
     menuList_getPageView(&s_menuChocograph.list, &view);
-    for (i = 0; i < view.unk0; i++) {
-        menuChocograph_drawRow(0, i, view.unk1 + i, &view);
+    for (i = 0; i < view.rows; i++) {
+        menuChocograph_drawRow(0, i, view.first + i, &view);
     }
 }
 
@@ -500,7 +500,7 @@ void menuChocograph_drawRow(s32 col, s32 row, s32 id, MenuView *v) {
         got = (s_menuChocograph.found & (1 << id)) != 0;
         near = menuChocograph_getRequiredAbility(id) < s_menuChocograph.ability;
         x = 0xE;
-        y = row * 0xF + (v->unk2 + k);
+        y = row * 0xF + (v->y + k);
         if (got) {
             icon = near ? CHOCO_ICON_CHOCOGRAPH + 1 : CHOCO_ICON_CHOCOGRAPH + 3;
         } else {

@@ -25,7 +25,7 @@ s32 btlfx_reloadCommonData(s32 arg0) {
     u32 *p = PSX_RAM(u32 *, 0x801E7700);
     if (arg0 == 0) {
         FileEntry *e = file_find(1, 0x2BF);
-        cd_readAsync(g_gameState->imgSector + e->unk4, (e->unkC - e->unk4) << 11, PSX_RAM(void *, 0x801E7700), 0);
+        cd_readAsync(g_gameState->imgSector + e->sector, (e->unkC - e->sector) << 11, PSX_RAM(void *, 0x801E7700), 0);
     } else if (cd_getState() == 0) {
         btlfx_resetMaskBit();
         r.w = 0x40;
@@ -1197,7 +1197,7 @@ void btlfx_drawBgOffscreen(s32 x, s32 y, s32 w, s32 h, u32 *ot, s32 arg5, s32 ar
     D_800F8D50.t[1] = arg6;
     D_800F8D50.t[2] = arg7 + 0x2900;
     btlbg_setLayerMask(2);
-    g_btlfxEnv->prim = btlbg_draw(&D_800F8D50, g_gameState->gameData->unk8E4.battle->work->bgData, (s32)g_btlfxEnv->prim, NULL, (s32)ot);
+    g_btlfxEnv->prim = btlbg_draw(&D_800F8D50, g_gameState->gameData->ctx.battle->work->bgData, (s32)g_btlfxEnv->prim, NULL, (s32)ot);
     btlbg_setLayerMask(0xF);
     EnterCriticalSection();
     DrawOTagEnv(ot, &e->env);
@@ -1216,10 +1216,10 @@ void btlfx_initEnv(void) {
     GameData *gd;
     g_btlfxEnv->otZ = 0;
     gd = g_gameState->gameData;
-    g_btlfxEnv->ot = (s32 *)gd->unk10[gd->unk8];
-    g_btlfxEnv->dispEnv = &g_gameState->dispEnv[g_gameState->gameData->unk8];
-    g_btlfxEnv->drawEnv = &g_gameState->drawEnv[g_gameState->gameData->unk8];
-    g_btlfxEnv->viewMatrix = &g_gameState->gameData->unk18;
+    g_btlfxEnv->ot = (s32 *)gd->ot[gd->drawBuf];
+    g_btlfxEnv->dispEnv = &g_gameState->dispEnv[g_gameState->gameData->drawBuf];
+    g_btlfxEnv->drawEnv = &g_gameState->drawEnv[g_gameState->gameData->drawBuf];
+    g_btlfxEnv->viewMatrix = &g_gameState->gameData->viewMatrix;
 }
 
 void btlfx_beginPrims(u8 *arg0, s32 *arg1) {
@@ -1227,9 +1227,9 @@ void btlfx_beginPrims(u8 *arg0, s32 *arg1) {
     GameState *g = g_gameState;
     p->otZ = 0;
     p->ot = arg1;
-    p->dispEnv = &g->dispEnv[g->gameData->unk8];
-    p->drawEnv = &g->drawEnv[g->gameData->unk8];
-    p->viewMatrix = &g->gameData->unk18;
+    p->dispEnv = &g->dispEnv[g->gameData->drawBuf];
+    p->drawEnv = &g->drawEnv[g->gameData->drawBuf];
+    p->viewMatrix = &g->gameData->viewMatrix;
     p->prim = arg0;
 }
 
@@ -1279,7 +1279,7 @@ s32 btlfx_getUnitRadius(s32 arg0) {
     if ((f & 1) || flag != 0) {
         return u->model->header->radius;
     }
-    return g_gameState->gameData->unk8E4.battle->enemies[(f >> 1) & 0xF].type->radius;
+    return g_gameState->gameData->ctx.battle->enemies[(f >> 1) & 0xF].type->radius;
 }
 
 s32 btl_getUnitHeight(BtlUnit *arg0) {
@@ -1344,7 +1344,7 @@ void btl_getUnitBodyPos(BtlUnit *arg0, s32 arg1, s16 *arg2) {
     } else {
         btl_getBaseBonePos(arg0, (u16 *)arg2);
         if (arg1 == 1) {
-            arg2[1] = arg0->model->bones[g_gameState->gameData->unk8E4.battle->enemies[(arg0->flags >> 1) & 0xF].type->bones[2]].ty;
+            arg2[1] = arg0->model->bones[g_gameState->gameData->ctx.battle->enemies[(arg0->flags >> 1) & 0xF].type->bones[2]].ty;
         }
     }
 }
@@ -1518,7 +1518,7 @@ void btlfx_getWeaponPos(s32 arg0, s32 arg1, s16 *arg2) {
     SVECTOR v;
 
     u = btl_getUnit(arg0);
-    bone = (g_gameState->gameData->characters + ((u->flags >> 1) & 0xF))->unk21;
+    bone = (g_gameState->gameData->characters + ((u->flags >> 1) & 0xF))->weaponBone;
     if (arg1 == 0) {
         btlfx_getUnitBonePos(arg0, bone, (u16 *)arg2);
     } else {
@@ -1606,7 +1606,7 @@ void btlfx_setUnitLight(s32 arg0, s32 arg1) {
 s32 btlfx_fadeUnitGroup(u32 type, s32 arg1) {
     BtlUnit *u;
     s32 n = 0;
-    for (u = g_gameState->gameData->unk8E4.battle->unitList; u != NULL; u = u->next) {
+    for (u = g_gameState->gameData->ctx.battle->unitList; u != NULL; u = u->next) {
         switch (type) {
         case 0:
             if (u->flags & 1) {
@@ -1659,7 +1659,7 @@ s32 btlfx_nextUnitPos(s32 id, s16 *arg1, BtlUnit **iter, s32 *out) {
     s32 r = 0;
 
     if (*iter == (BtlUnit *)-1) {
-        u = g_gameState->gameData->unk8E4.battle->unitList;
+        u = g_gameState->gameData->ctx.battle->unitList;
     } else {
         if (*iter == NULL) {
             return -2;
@@ -1706,7 +1706,7 @@ s32 btlfx_getScaledRadius(s32 arg0) {
 
 s32 func_800E84F0(s32 arg0) {
     s32 ret = 0;
-    if (g_gameState->gameData->unk8E4.battle->curCmd->cmdNo == BTL_CMD_AUTO_POTION) {
+    if (g_gameState->gameData->ctx.battle->curCmd->cmdNo == BTL_CMD_AUTO_POTION) {
         ret = btl_isCmdPending(btl_getUnit(arg0)->cmd) != 0;
     }
     return ret;
@@ -1735,7 +1735,7 @@ s32 func_800E8554(s32 arg0, s32 arg1) {
 s32 btlfx_isUnitKind(s32 arg0, s32 arg1) {
     u32 f = btl_getUnit(arg0)->flags;
     u8 k = D_800F8D70[arg1];
-    return ((f & 1) ? g_gameState->gameData->characters[(f >> 1) & 0xF].unk34.b.unk4 : 0x13) == k;
+    return ((f & 1) ? g_gameState->gameData->characters[(f >> 1) & 0xF].info.b.kind : 0x13) == k;
 }
 
 void btlfx_copyWords(s32 *arg0, s32 *arg1, u32 arg2) {
@@ -1766,8 +1766,8 @@ s32 *btlfx_swapModelData(s32 arg0, s32 *arg1) {
 
 void func_800E87C4(s32 arg0) {
     btl_unloadEnemyModels();
-    btlfx_copyWords(g_gameState->gameData->unk8E4.battle->work->heapStart, g_btlfxLoader.summon->data[0], arg0 << 10);
-    g_btlfxLoader.summon->data[0] = g_gameState->gameData->unk8E4.battle->work->heapStart;
+    btlfx_copyWords(g_gameState->gameData->ctx.battle->work->heapStart, g_btlfxLoader.summon->data[0], arg0 << 10);
+    g_btlfxLoader.summon->data[0] = g_gameState->gameData->ctx.battle->work->heapStart;
 }
 
 void btl_forEachModelVertex(BtlUnit9C8 *arg0, void (*arg1)(SVECTOR *, s32)) {
@@ -1794,7 +1794,7 @@ void func_800E8980(s32 arg0) {
 }
 
 void btlfx_restorePartyLooks(void) {
-    BtlUnit *u = g_gameState->gameData->unk8E4.battle->unitList;
+    BtlUnit *u = g_gameState->gameData->ctx.battle->unitList;
     while (u != NULL) {
         if (u->flags & 1) {
             btl_reapplyStatusLook(u);
@@ -1818,7 +1818,7 @@ void btlfx_restoreUnitLook(s32 arg0) {
 }
 
 s32 btlfx_countVisibleParty(void) {
-    BtlUnit *u = g_gameState->gameData->unk8E4.battle->unitList;
+    BtlUnit *u = g_gameState->gameData->ctx.battle->unitList;
     s32 n = 0;
     while (u != NULL) {
         n += (u->flags & 0x400001) == 1;
@@ -1850,19 +1850,19 @@ void btlfx_setUnitTexAnim(s32 arg0, s32 arg1, s32 arg2) {
 
 void func_800E8C84(s32 arg0) {
     if (arg0 != 0) {
-        g_gameState->gameData->unk8E4.battle->cmdFlags |= 2;
+        g_gameState->gameData->ctx.battle->cmdFlags |= 2;
     } else {
-        g_gameState->gameData->unk8E4.battle->cmdFlags &= ~2;
+        g_gameState->gameData->ctx.battle->cmdFlags &= ~2;
     }
 }
 
 s32 func_800E8CE4(void) {
-    return (g_gameState->gameData->unk8E4.battle->cmdFlags >> 1) & 1;
+    return (g_gameState->gameData->ctx.battle->cmdFlags >> 1) & 1;
 }
 
 void btlfx_showCasterCmdName(void) {
     if (btlfx_isEnemyUnit(0x10) == 0) {
-        btl_showCmdName(g_gameState->gameData->unk8E4.battle->curCmd);
+        btl_showCmdName(g_gameState->gameData->ctx.battle->curCmd);
     }
 }
 
@@ -1989,9 +1989,9 @@ void btlfx_updateCameraEnable(void) {
             r = 0;
         } else {
             if (b->flags & 1) {
-                v = g_gameState->gameData->unk8E4.battle->scene.flags >> 11;
+                v = g_gameState->gameData->ctx.battle->scene.flags >> 11;
             } else {
-                v = g_gameState->gameData->unk8E4.battle->scene.flags >> 12;
+                v = g_gameState->gameData->ctx.battle->scene.flags >> 12;
             }
             v &= 1;
             r = v == 0;
@@ -2039,7 +2039,7 @@ void btlfx_playCmdCamera(s32 arg0) {
             msg = btlfx_getCommonData(D_800F8D78[1]);
         }
     } else {
-        msg = g_gameState->gameData->unk8E4.battle->enemies[(u->flags >> 1) & 0xF].type->camera;
+        msg = g_gameState->gameData->ctx.battle->enemies[(u->flags >> 1) & 0xF].type->camera;
     }
     if (msg != 0) {
         btlcam_play(msg);

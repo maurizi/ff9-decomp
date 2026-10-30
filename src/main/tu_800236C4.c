@@ -72,7 +72,7 @@ void config_applySound(void) {
 
 void game_initGfx(void) {
     GameData *d = g_gameState->gameData;
-    gfx_init(d->unk10[0], d->unk10[1], d->unk7E0, d->unk7E0 + 0x4000);
+    gfx_init(d->ot[0], d->ot[1], d->packetBuf, d->packetBuf + 0x4000);
 }
 
 void game_updateWindows(void) {
@@ -106,7 +106,7 @@ void timer_draw(void) {
     blink = 0;
     min = t->remaining / 60;
     hr = min / 60;
-    ot = g_gameState->gameData->unk10[g_gameState->gameData->unk8] + 1;
+    ot = g_gameState->gameData->ot[g_gameState->gameData->drawBuf] + 1;
     g_timerRect.x = 4;
     pkt = g_clock.pktPtr;
     min %= 60;
@@ -164,7 +164,7 @@ void timer_resetAll(void) {
 }
 
 void timer_update(void) {
-    g_clock.pktPtr = &g_clock.pkt[g_gameState->gameData->unk8 << 9];
+    g_clock.pktPtr = &g_clock.pkt[g_gameState->gameData->drawBuf << 9];
     if (timer_isEnabled() != 0) {
         timer_draw();
     }

@@ -8,7 +8,7 @@ void ui_drawCharStatus(s32 x, s32 y, s32 otz, Character *c) {
         return;
     }
     text_formatNumber(c->level, buf, 2, 1);
-    text_drawBlock(x, y, otz, c->unk0, 0);
+    text_drawBlock(x, y, otz, c->name, 0);
     ui_drawSmallDigits(x + 0x24, y + 0xE, otz, buf, 0);
     ui_drawSprite(x, y + 0xE, otz, 0xB4, 0);
     ui_drawSprite(x, y + 0x17, otz, 0xAF, 0);
@@ -29,23 +29,23 @@ void ui_drawCharStatus(s32 x, s32 y, s32 otz, Character *c) {
     ui_drawSmallDigits(x + 0x1D, y + 0x20, otz, buf, col);
 }
 
-void ui_drawMemberHeader(s32 x, s32 y, s32 otz, Unk80024428 *s) {
-    Character *a = g_gameState->gameData->party[s->unk2];
-    Character *b = g_gameState->gameData->party[s->unk3];
+void ui_drawMemberHeader(s32 x, s32 y, s32 otz, MemberSwitch *s) {
+    Character *a = g_gameState->gameData->party[s->member];
+    Character *b = g_gameState->gameData->party[s->nextMember];
     RECT r1;
     RECT r2;
     s32 d;
     s32 px;
     s32 t;
 
-    if (s->unk0 != 0) {
+    if (s->active != 0) {
         r1.w = 0x20;
         r1.x = x;
         r1.y = y;
         r1.h = 0x2E;
         win_setClip(NULL, otz, 4);
-        d = 11 - s->unk4;
-        if (s->unk1 == 1) {
+        d = 11 - s->frame;
+        if (s->dir == 1) {
             t = -(d * 3);
         } else {
             t = d * 3;
@@ -56,13 +56,13 @@ void ui_drawMemberHeader(s32 x, s32 y, s32 otz, Unk80024428 *s) {
         r2.w = 0x24;
         r2.h = 0x32;
         win_drawLineBorder(&r2, otz, 0, CONFIG_WINDOW_COLOR());
-        ui_drawPartyPortrait(px, y, otz, s->unk3, b->hp == 0);
+        ui_drawPartyPortrait(px, y, otz, s->nextMember, b->hp == 0);
         win_setClip(&r1, otz, 4);
-        ui_drawCharStatus(x + 0x26, y + 3, otz, g_gameState->gameData->party[s->unk3]);
+        ui_drawCharStatus(x + 0x26, y + 3, otz, g_gameState->gameData->party[s->nextMember]);
     } else {
         ui_drawCharStatus(x + 0x26, y + 3, otz, a);
     }
-    ui_drawPartyPortrait(x, y, otz, s->unk2, a->hp == 0);
+    ui_drawPartyPortrait(x, y, otz, s->member, a->hp == 0);
 }
 
 void win_drawShadowRect(RECT *r, s32 otz) {
@@ -194,10 +194,10 @@ void ui_drawBackground(void) {
     addPrim(&g_ot[0xFFF], g_primPtr);
     g_primPtr += sizeof(DrTpageWords);
 
-    tw.x = g_uiBackgroundSprite.unk0;
-    tw.y = g_uiBackgroundSprite.unk1;
-    tw.w = g_uiBackgroundSprite.unk4;
-    tw.h = g_uiBackgroundSprite.unk5;
+    tw.x = g_uiBackgroundSprite.u;
+    tw.y = g_uiBackgroundSprite.v;
+    tw.w = g_uiBackgroundSprite.w;
+    tw.h = g_uiBackgroundSprite.h;
 
     setlen(g_primPtr, 2);
     ((DrMode2Words *)g_primPtr)->code[0] = get_tw(&g_noTexWindow);
@@ -208,26 +208,26 @@ void ui_drawBackground(void) {
     setlen(g_primPtr, 4);
     ((SprtWords *)g_primPtr)->rgbc = GPU_RGBC(GPU_SPRT, 0x808080);
     ((SprtWords *)g_primPtr)->xy = 0;
-    ((SprtWords *)g_primPtr)->uvclut = g_uiBackgroundSprite.unk2 << 16;
+    ((SprtWords *)g_primPtr)->uvclut = g_uiBackgroundSprite.clut << 16;
     ((SprtWords *)g_primPtr)->wh = w | 0x800000;
     addPrim(&g_ot[0xFFF], g_primPtr);
     g_primPtr += sizeof(SprtWords);
 
     setlen(g_primPtr, 2);
-    ((DrMode2Words *)g_primPtr)->code[0] = get_mode(1, 1, g_uiBackgroundSprite.unk6);
+    ((DrMode2Words *)g_primPtr)->code[0] = get_mode(1, 1, g_uiBackgroundSprite.tpage);
     ((DrMode2Words *)g_primPtr)->code[1] = get_tw(&tw);
     addPrim(&g_ot[0xFFF], g_primPtr);
     g_primPtr += sizeof(DrMode2Words);
 }
 
 u8 *win_buildFill(RECT *r, u32 *ot, u8 u, u8 v, s32 pal, u8 *pkt) {
-    s32 clut = win_getClut(g_winFillSprite.unk2, pal);
+    s32 clut = win_getClut(g_winFillSprite.clut, pal);
     RECT tw;
 
-    tw.x = g_winFillSprite.unk0;
-    tw.y = g_winFillSprite.unk1;
-    tw.w = g_winFillSprite.unk4;
-    tw.h = g_winFillSprite.unk5;
+    tw.x = g_winFillSprite.u;
+    tw.y = g_winFillSprite.v;
+    tw.w = g_winFillSprite.w;
+    tw.h = g_winFillSprite.h;
 
     setlen(pkt, 2);
     ((DrMode2Words *)pkt)->code[0] = get_tw(&g_noTexWindow);
@@ -244,7 +244,7 @@ u8 *win_buildFill(RECT *r, u32 *ot, u8 u, u8 v, s32 pal, u8 *pkt) {
     pkt += sizeof(SprtWords);
 
     setlen(pkt, 2);
-    ((DrMode2Words *)pkt)->code[0] = get_mode(1, 1, g_winFillSprite.unk6);
+    ((DrMode2Words *)pkt)->code[0] = get_mode(1, 1, g_winFillSprite.tpage);
     ((DrMode2Words *)pkt)->code[1] = get_tw(&tw);
     addPrim(ot, pkt);
     return pkt + sizeof(DrMode2Words);
@@ -294,7 +294,7 @@ void win_drawLineBorder(RECT *r, s32 otz, u8 skip, s32 abr) {
 u8 *win_buildBorder(RECT *r, u32 *ot, u8 flag, u8 abe, s32 style, s32 pal, u8 *pkt) {
     s32 n = 1;
     s32 semi = (abe != 0) << 25;
-    Unk800689B0 *d;
+    UiSprite *d;
     s32 clut;
     s32 i;
     s32 j;
@@ -307,18 +307,18 @@ u8 *win_buildBorder(RECT *r, u32 *ot, u8 flag, u8 abe, s32 style, s32 pal, u8 *p
     }
     d = NULL;
     if (style != 2) {
-        clut = win_getClut(g_uiSprites[D_80068FB4[style][0]].unk0 >> 16, pal) << 16;
+        clut = win_getClut(g_uiSprites[D_80068FB4[style][0]].uvclut >> 16, pal) << 16;
     } else {
         clut = 0x3EA40000;
     }
     for (i = 0, y = r->y; i < 2; i++) {
         for (j = 0, x = r->x; j < 2; j++) {
             if (flag || i || !j) {
-                d = (Unk800689B0 *)&g_uiSprites[D_80068FB4[style][i * 2 + j]];
+                d = (UiSprite *)&g_uiSprites[D_80068FB4[style][i * 2 + j]];
                 setlen(pkt, 3);
                 ((Sprt8Words *)pkt)->rgbc = D_80068FAC[flag] | semi;
                 ((Sprt8Words *)pkt)->xy = (u16)x | (y << 16);
-                ((Sprt8Words *)pkt)->uvclut = d->unk0 | (d->unk1 << 8) | clut;
+                ((Sprt8Words *)pkt)->uvclut = d->u | (d->v << 8) | clut;
                 addPrim(ot, pkt);
                 pkt += sizeof(Sprt8Words);
                 x += r->w - 8;
@@ -336,7 +336,7 @@ u8 *win_buildBorder(RECT *r, u32 *ot, u8 flag, u8 abe, s32 style, s32 pal, u8 *p
     if (r->w - 16 > 0) {
         y = r->y + r->h - 8;
         for (i = 0; i < n; i++) {
-            d = (Unk800689B0 *)&g_uiSprites[D_80068FC0[style][i]];
+            d = (UiSprite *)&g_uiSprites[D_80068FC0[style][i]];
             setlen(pkt, 4);
             ((SprtWords *)pkt)->rgbc = D_80068FA4[flag] | semi;
             ((SprtWords *)pkt)->xy = ((r->x + 8) & 0xFFFF) | (y << 16);
@@ -344,10 +344,10 @@ u8 *win_buildBorder(RECT *r, u32 *ot, u8 flag, u8 abe, s32 style, s32 pal, u8 *p
             ((SprtWords *)pkt)->wh = (r->w - 16) | 0x80000;
             addPrim(ot, pkt);
             y -= r->h - 8;
-            tw.x = d->unk0;
-            tw.y = d->unk1;
-            tw.w = d->unk4;
-            tw.h = d->unk5;
+            tw.x = d->u;
+            tw.y = d->v;
+            tw.w = d->w;
+            tw.h = d->h;
             pkt += sizeof(SprtWords);
             setlen(pkt, 2);
             ((DrMode2Words *)pkt)->code[0] = get_tw(&tw);
@@ -359,7 +359,7 @@ u8 *win_buildBorder(RECT *r, u32 *ot, u8 flag, u8 abe, s32 style, s32 pal, u8 *p
     if (r->h - 16 > 0) {
         x = r->x;
         for (i = 0; i < n; i++) {
-            d = (Unk800689B0 *)&g_uiSprites[D_80068FC8[style][i]];
+            d = (UiSprite *)&g_uiSprites[D_80068FC8[style][i]];
             setlen(pkt, 4);
             ((SprtWords *)pkt)->rgbc = D_80068FA4[flag] | semi;
             ((SprtWords *)pkt)->xy = (x & 0xFFFF) | ((r->y + 8) << 16);
@@ -367,10 +367,10 @@ u8 *win_buildBorder(RECT *r, u32 *ot, u8 flag, u8 abe, s32 style, s32 pal, u8 *p
             ((SprtWords *)pkt)->wh = ((r->h - 16) << 16) | 8;
             addPrim(ot, pkt);
             x += r->w - 8;
-            tw.x = d->unk0;
-            tw.y = d->unk1;
-            tw.w = d->unk4;
-            tw.h = d->unk5;
+            tw.x = d->u;
+            tw.y = d->v;
+            tw.w = d->w;
+            tw.h = d->h;
             pkt += sizeof(SprtWords);
             setlen(pkt, 2);
             ((DrMode2Words *)pkt)->code[0] = get_tw(&tw);
@@ -380,29 +380,29 @@ u8 *win_buildBorder(RECT *r, u32 *ot, u8 flag, u8 abe, s32 style, s32 pal, u8 *p
         }
     }
     setlen(pkt, 1);
-    ((DrTpageWords *)pkt)->code = get_mode(1, 1, d->unk6);
+    ((DrTpageWords *)pkt)->code = get_mode(1, 1, d->tpage);
     addPrim(ot, pkt);
     return pkt + sizeof(DrTpageWords);
 }
 
 void ui_drawRule(s32 x, s32 y, s32 otz, s32 style, s32 w, s32 abr) {
-    Unk800689B0 *d;
+    UiSprite *d;
     u16 clut;
     s32 i;
     RECT tw;
-    Unk800689B0 *tbl;
-    Unk800689B0 *tbl2;
+    UiSprite *tbl;
+    UiSprite *tbl2;
     s32 yy;
 
     if (style == 1) {
-        tbl = (Unk800689B0 *)g_uiSprites;
-        clut = tbl[g_winRuleSprites[1][0]].unk2;
+        tbl = (UiSprite *)g_uiSprites;
+        clut = tbl[g_winRuleSprites[1][0]].clut;
     } else {
-        tbl2 = (Unk800689B0 *)g_uiSprites;
-        clut = win_getClut(tbl2[g_winRuleSprites[style][0]].unk2, abr);
+        tbl2 = (UiSprite *)g_uiSprites;
+        clut = win_getClut(tbl2[g_winRuleSprites[style][0]].clut, abr);
     }
     for (i = 0; i < 2; i++) {
-        d = &((Unk800689B0 *)g_uiSprites)[g_winRuleSprites[style][i]];
+        d = &((UiSprite *)g_uiSprites)[g_winRuleSprites[style][i]];
         setlen(g_primPtr, 4);
         yy = y << 16;
         ((SprtWords *)g_primPtr)->rgbc = GPU_RGBC(GPU_SPRT, 0x808080);
@@ -411,8 +411,8 @@ void ui_drawRule(s32 x, s32 y, s32 otz, s32 style, s32 w, s32 abr) {
         } else {
             ((SprtWords *)g_primPtr)->xy = (x & 0xFFFF) | yy;
         }
-        ((SprtWords *)g_primPtr)->uvclut = d->unk0 | (d->unk1 << 8) | (clut << 16);
-        ((SprtWords *)g_primPtr)->wh = d->unk4 | (d->unk5 << 16);
+        ((SprtWords *)g_primPtr)->uvclut = d->u | (d->v << 8) | (clut << 16);
+        ((SprtWords *)g_primPtr)->wh = d->w | (d->h << 16);
         addPrim(&g_ot[otz], g_primPtr);
         g_primPtr += sizeof(SprtWords);
     }
@@ -422,21 +422,21 @@ void ui_drawRule(s32 x, s32 y, s32 otz, s32 style, s32 w, s32 abr) {
         ((DrMode2Words *)g_primPtr)->code[1] = 0;
         addPrim(&g_ot[otz], g_primPtr);
         g_primPtr += sizeof(DrMode2Words);
-        d = &((Unk800689B0 *)g_uiSprites)[g_winRuleSprites[style][2]];
-        tw.x = d->unk0;
-        tw.y = d->unk1;
-        tw.w = d->unk4;
-        tw.h = d->unk5;
+        d = &((UiSprite *)g_uiSprites)[g_winRuleSprites[style][2]];
+        tw.x = d->u;
+        tw.y = d->v;
+        tw.w = d->w;
+        tw.h = d->h;
         setlen(g_primPtr, 4);
         ((SprtWords *)g_primPtr)->rgbc = GPU_RGBC(GPU_SPRT, 0x808080);
         ((SprtWords *)g_primPtr)->xy = ((x + 8) & 0xFFFF) | (y << 16);
         ((SprtWords *)g_primPtr)->uvclut = (style << 10) | (clut << 16);
-        ((SprtWords *)g_primPtr)->wh = (w - 0x10) | (d->unk5 << 16);
+        ((SprtWords *)g_primPtr)->wh = (w - 0x10) | (d->h << 16);
         addPrim(&g_ot[otz], g_primPtr);
         g_primPtr += sizeof(SprtWords);
     }
     setlen(g_primPtr, 2);
-    ((DrMode2Words *)g_primPtr)->code[0] = get_mode(1, 1, d->unk6);
+    ((DrMode2Words *)g_primPtr)->code[0] = get_mode(1, 1, d->tpage);
     ((DrMode2Words *)g_primPtr)->code[1] = get_tw(w > 0x10 ? &tw : &g_noTexWindow);
     addPrim(&g_ot[otz], g_primPtr);
     g_primPtr += sizeof(DrMode2Words);
@@ -506,13 +506,13 @@ void ui_drawGauge(s32 x, s32 y, s32 otz, s32 cur, s32 max, s32 style, u8 blink) 
 }
 
 void win_drawTailEdge(s16 x, s16 y, s32 otz, s32 idx, u8 flag, u8 mode) {
-    Unk800689B0 *g = &g_winTailSprites[idx];
+    UiSprite *g = &g_winTailSprites[idx];
     u32 clut;
     SprtWords *p;
     DrTpageWords *t;
 
     if (!mode) {
-        clut = (g->unk2 - CONFIG_WINDOW_COLOR() * 0xC0) << 16;
+        clut = (g->clut - CONFIG_WINDOW_COLOR() * 0xC0) << 16;
     } else {
         clut = 0x3EA40000;
     }
@@ -520,13 +520,13 @@ void win_drawTailEdge(s16 x, s16 y, s32 otz, s32 idx, u8 flag, u8 mode) {
     ((SprtWords *)g_primPtr)->rgbc = flag ? GPU_RGBC(GPU_SPRT | GPU_ABE, 0x808080) : GPU_RGBC(GPU_SPRT, 0x808080);
     p = (SprtWords *)g_primPtr;
     p->xy = x | (y << 16);
-    p->uvclut = g->unk0 | (g->unk1 << 8) | clut;
-    p->wh = g->unk4 | (g->unk5 << 16);
+    p->uvclut = g->u | (g->v << 8) | clut;
+    p->wh = g->w | (g->h << 16);
     addPrim(&g_ot[otz], p);
     g_primPtr = (u8 *)(p + 1);
     setlen(g_primPtr, 1);
     t = (DrTpageWords *)g_primPtr;
-    t->code = get_mode(1, 1, g->unk6);
+    t->code = get_mode(1, 1, g->tpage);
     addPrim(&g_ot[otz], t);
     g_primPtr = (u8 *)(t + 1);
 }
@@ -536,11 +536,11 @@ void win_drawTailFill(s32 x, s32 y, s32 otz, s32 shape, s32 u, s32 v) {
     Unk80068F48 *o;
     u16 clut;
 
-    clut = g_winFillSprite.unk2 - CONFIG_WINDOW_COLOR() * 0xC0;
-    tw.x = g_winFillSprite.unk0;
-    tw.y = g_winFillSprite.unk1;
-    tw.w = g_winFillSprite.unk4;
-    tw.h = g_winFillSprite.unk5;
+    clut = g_winFillSprite.clut - CONFIG_WINDOW_COLOR() * 0xC0;
+    tw.x = g_winFillSprite.u;
+    tw.y = g_winFillSprite.v;
+    tw.w = g_winFillSprite.w;
+    tw.h = g_winFillSprite.h;
 
     setlen(g_primPtr, 2);
     ((DrMode2Words *)g_primPtr)->code[0] = get_tw(&g_noTexWindow);
@@ -554,7 +554,7 @@ void win_drawTailFill(s32 x, s32 y, s32 otz, s32 shape, s32 u, s32 v) {
     ((PolyFT4Words *)g_primPtr)->xy0 = (x + o->x0) | ((y + o->y0) << 16);
     ((PolyFT4Words *)g_primPtr)->uv0clut = (u + o->x0) | ((v + o->y0) << 8) | (clut << 16);
     ((PolyFT4Words *)g_primPtr)->xy1 = (x + o->x1) | ((y + o->y1) << 16);
-    ((PolyFT4Words *)g_primPtr)->uv1tpage = (u + o->x1) | ((v + o->y1) << 8) | (g_winFillSprite.unk6 << 16);
+    ((PolyFT4Words *)g_primPtr)->uv1tpage = (u + o->x1) | ((v + o->y1) << 8) | (g_winFillSprite.tpage << 16);
     ((PolyFT4Words *)g_primPtr)->xy2 = (x + o->x2) | ((y + o->y2) << 16);
     ((PolyFT4Words *)g_primPtr)->uv2 = (u + o->x2) | ((v + o->y2) << 8);
     ((PolyFT4Words *)g_primPtr)->xy3 = (x + o->x3) | ((y + o->y3) << 16);
@@ -626,20 +626,20 @@ void ui_drawItemIcon(s32 arg0, s32 arg1, s32 otz, s32 arg3, u8 arg4) {
 }
 
 u8 *ui_buildItemIcon(s32 x, s32 y, u32 *ot, s32 item, u8 flag, u8 *pkt) {
-    Unk80069018 *e = &g_itemTable[item];
-    Unk800689B0 *d = &D_800689B0[e->unk8];
+    ItemInfo *e = &g_itemTable[item];
+    UiSprite *d = &D_800689B0[e->icon];
     s32 clut;
 
-    clut = d->unk2 + (flag ? e->unk9 << 6 : 0x3C0);
+    clut = d->clut + (flag ? e->iconPalette << 6 : 0x3C0);
     setlen(pkt, 4);
     ((SprtWords *)pkt)->rgbc = (flag == 0 ? GPU_RGBC(GPU_SPRT | GPU_ABE, 0x808080) : GPU_RGBC(GPU_SPRT, 0x808080));
     ((SprtWords *)pkt)->xy = (x & 0xFFFF) | (y << 16);
-    ((SprtWords *)pkt)->uvclut = d->unk0 | (d->unk1 << 8) | (clut << 16);
-    ((SprtWords *)pkt)->wh = d->unk4 | (d->unk5 << 16);
+    ((SprtWords *)pkt)->uvclut = d->u | (d->v << 8) | (clut << 16);
+    ((SprtWords *)pkt)->wh = d->w | (d->h << 16);
     addPrim(ot, pkt);
     pkt += sizeof(SprtWords);
     setlen(pkt, 1);
-    ((DrTpageWords *)pkt)->code = get_mode(1, 1, d->unk6);
+    ((DrTpageWords *)pkt)->code = get_mode(1, 1, d->tpage);
     addPrim(ot, pkt);
     return pkt + sizeof(DrTpageWords);
 }
@@ -711,7 +711,7 @@ u8 *ui_buildApGauge(s32 x, s32 y, u32 *ot, s32 cur, s32 max, u8 show, u8 flag, u
     s32 w;
     s32 t;
     u32 rgbc;
-    Unk800686E8 *d = &D_800686E8;
+    SpriteDef *d = &D_800686E8;
 
     if (max < cur) {
         cur = max;
@@ -725,7 +725,7 @@ u8 *ui_buildApGauge(s32 x, s32 y, u32 *ot, s32 cur, s32 max, u8 show, u8 flag, u
         pkt = ui_buildDigits(x + 3, y + 2, ot, buf, flag ? GPU_RGBC(GPU_SPRT | GPU_ABE, 0x606060) : GPU_RGBC(GPU_SPRT, 0x808080), (SprtWords *)pkt);
     }
     if (cur != 0) {
-        t = d->unk4 - 6;
+        t = d->w - 6;
         if (max != 0) {
             w = cur * t / max;
         } else {
@@ -802,7 +802,7 @@ void win_drawMsgTailEdge(arg0, arg1, arg2, arg3, arg4)
 
 s32 ui_drawSprite(s32 x, s32 y, s32 otz, s32 id, u8 flag) {
     s32 w;
-    Unk800686E8 *d = &g_uiSprites[id];
+    SpriteDef *d = &g_uiSprites[id];
 
     g_primPtr = ui_buildSpriteDef_inline(x, y, &g_ot[otz], d, flag, &w, (SprtWords *)g_primPtr);
     return w;
@@ -818,7 +818,7 @@ s32 ui_drawSpriteDef(s32 x, s32 y, s32 otz, void *d, u8 flag) {
 u8 *ui_buildSprite(s32 x, s32 y, u32 *ot, s32 i, u8 flag, s32 *out, void *pkt) {
     SprtWords *s = pkt;
     DrTpageWords *t;
-    Unk800686E8 *d;
+    SpriteDef *d;
     setlen(s, 4);
     d = &g_uiSprites[i];
     if (flag) {
@@ -827,19 +827,19 @@ u8 *ui_buildSprite(s32 x, s32 y, u32 *ot, s32 i, u8 flag, s32 *out, void *pkt) {
         s->rgbc = GPU_RGBC(GPU_SPRT, 0x808080);
     }
     s->xy = (x & 0xFFFF) | (y << 16);
-    s->uvclut = d->unk0;
-    s->wh = d->unk4 | (d->unk5 << 16);
+    s->uvclut = d->uvclut;
+    s->wh = d->w | (d->h << 16);
     addPrim(ot, s);
     s++;
     t = (DrTpageWords *)s;
     setlen(t, 1);
-    t->code = get_mode(1, 1, d->unk6);
+    t->code = get_mode(1, 1, d->tpage);
     addPrim(ot, t);
-    *out = d->unk4;
+    *out = d->w;
     return (u8 *)(t + 1);
 }
 
-u8 *ui_buildSpriteDef(s32 x, s32 y, u32 *ot, Unk800686E8 *d, u8 flag, s32 *out, SprtWords *s) {
+u8 *ui_buildSpriteDef(s32 x, s32 y, u32 *ot, SpriteDef *d, u8 flag, s32 *out, SprtWords *s) {
     DrTpageWords *t;
     setlen(s, 4);
     if (flag) {
@@ -848,15 +848,15 @@ u8 *ui_buildSpriteDef(s32 x, s32 y, u32 *ot, Unk800686E8 *d, u8 flag, s32 *out, 
         s->rgbc = GPU_RGBC(GPU_SPRT, 0x808080);
     }
     s->xy = (x & 0xFFFF) | (y << 16);
-    s->uvclut = d->unk0;
-    s->wh = d->unk4 | (d->unk5 << 16);
+    s->uvclut = d->uvclut;
+    s->wh = d->w | (d->h << 16);
     addPrim(ot, s);
     s++;
     t = (DrTpageWords *)s;
     setlen(t, 1);
-    t->code = get_mode(1, 1, d->unk6);
+    t->code = get_mode(1, 1, d->tpage);
     addPrim(ot, t);
-    *out = d->unk4;
+    *out = d->w;
     return (u8 *)(t + 1);
 }
 
@@ -869,7 +869,7 @@ void ui_drawCharStatuses(s32 x, s32 y, s32 otz, s32 slot) {
         return;
     }
     text_formatNumber(c->level, buf, 2, 1);
-    text_drawBlock(x, y, otz, c->unk0, 0);
+    text_drawBlock(x, y, otz, c->name, 0);
     ui_drawSmallDigits(x + 0x26, y + 0xE, otz, buf, 0);
     ui_drawSprite(x, y + 0xE, otz, 0xB4, 0);
     ui_drawStatusIcons(x, y + 0x1C, otz, c->status, 0);
@@ -883,7 +883,7 @@ void ui_drawCharStatuses(s32 x, s32 y, s32 otz, s32 slot) {
 u8 *ui_buildDigits(s32 x, s32 y, u32 *ot, u8 *s, s32 unused, SprtWords *p) {
     s32 idx;
     s32 adv;
-    Unk800686E8 *g;
+    SpriteDef *g;
     DrTpageWords *t;
 
     while (*s != 0) {
@@ -903,8 +903,8 @@ u8 *ui_buildDigits(s32 x, s32 y, u32 *ot, u8 *s, s32 unused, SprtWords *p) {
             p->rgbc = GPU_RGBC(GPU_SPRT, 0x808080);
             p->xy = (x & 0xFFFF) | (y << 16);
             g = &D_800687E0[idx];
-            p->wh = g->unk4 | (g->unk5 << 16);
-            p->uvclut = g->unk0;
+            p->wh = g->w | (g->h << 16);
+            p->uvclut = g->uvclut;
             addPrim(ot, p);
             p++;
         } else {
@@ -943,7 +943,7 @@ void keyItem_clearAll(void) {
     s32 i;
 
     for (i = 0; i < 0x40; i++) {
-        g_gameState->gameData->unk774.unk0[i] = 0;
+        g_gameState->gameData->keyItems.unk0[i] = 0;
     }
 }
 
@@ -1013,7 +1013,7 @@ s32 item_countEquipped(s32 id) {
     s32 n = 0;
 
     for (i = 0; i < 9; i++) {
-        if (g_gameState->gameData->characters[i].unk34.b.unkB) {
+        if (g_gameState->gameData->characters[i].info.b.recruited) {
             for (j = 0; j < 5; j++) {
                 if (id == g_gameState->gameData->characters[i].equip[j]) {
                     n++;
@@ -1026,10 +1026,10 @@ s32 item_countEquipped(s32 id) {
 
 s32 item_getEquipSlot(s32 arg0) {
     s32 i;
-    Unk80069018 *e = &g_itemTable[arg0];
+    ItemInfo *e = &g_itemTable[arg0];
 
     for (i = 0; i < 5; i++) {
-        if (e->unkF & D_8006BB84[i]) {
+        if (e->slots & D_8006BB84[i]) {
             return i;
         }
     }
@@ -1039,31 +1039,31 @@ s32 item_getEquipSlot(s32 arg0) {
 void keyItem_add(s32 id) {
     s32 idx = id >> 2;
 
-    g_gameState->gameData->unk774.unk0[idx] |= 1 << ((id & 3) * 2);
-    g_gameState->gameData->unk774.unk0[idx] &= ~(1 << ((id & 3) * 2 + 1));
+    g_gameState->gameData->keyItems.unk0[idx] |= 1 << ((id & 3) * 2);
+    g_gameState->gameData->keyItems.unk0[idx] &= ~(1 << ((id & 3) * 2 + 1));
 }
 
 void keyItem_remove(s32 id) {
     s32 idx = id >> 2;
 
-    g_gameState->gameData->unk774.unk0[idx] &= ~(1 << ((id & 3) * 2));
-    g_gameState->gameData->unk774.unk0[idx] &= ~(1 << ((id & 3) * 2 + 1));
+    g_gameState->gameData->keyItems.unk0[idx] &= ~(1 << ((id & 3) * 2));
+    g_gameState->gameData->keyItems.unk0[idx] &= ~(1 << ((id & 3) * 2 + 1));
 }
 
 void keyItem_setSeen(s32 id) {
-    g_gameState->gameData->unk774.unk0[id >> 2] |= 1 << ((id & 3) * 2 + 1);
+    g_gameState->gameData->keyItems.unk0[id >> 2] |= 1 << ((id & 3) * 2 + 1);
 }
 
 void keyItem_clearSeen(s32 id) {
-    g_gameState->gameData->unk774.unk0[id >> 2] &= ~(1 << ((id & 3) * 2 + 1));
+    g_gameState->gameData->keyItems.unk0[id >> 2] &= ~(1 << ((id & 3) * 2 + 1));
 }
 
 s32 keyItem_has(s32 arg0) {
-    return (g_gameState->gameData->unk774.unk0[arg0 >> 2] >> ((arg0 & 3) * 2)) & 1;
+    return (g_gameState->gameData->keyItems.unk0[arg0 >> 2] >> ((arg0 & 3) * 2)) & 1;
 }
 
 s32 keyItem_isSeen(s32 id) {
-    return (g_gameState->gameData->unk774.unk0[id >> 2] >> ((id & 3) * 2 + 1)) & 1;
+    return (g_gameState->gameData->keyItems.unk0[id >> 2] >> ((id & 3) * 2 + 1)) & 1;
 }
 
 void ui_drawPortraitId(s32 x, s32 y, s32 otz, s32 id, s32 h, u8 flag) {
@@ -1208,7 +1208,7 @@ void ui_restorePortraits(void) {
 }
 
 s32 chr_getPortrait(s32 arg0) {
-    return D_8006BB8C[g_gameState->gameData->characters[arg0].unk34.b.unk4];
+    return D_8006BB8C[g_gameState->gameData->characters[arg0].info.b.kind];
 }
 
 void ui_getPortraitRects(s32 arg0, RECT *clut, RECT *img) {
@@ -1269,7 +1269,7 @@ void ui_loadPartyPortraits(u8 *buf) {
         Character *p = d->party[i];
 
         if (p != NULL) {
-            ui_loadPartyPortrait(buf + D_8006BB8C[d->characters[p->unk34.b.id].unk34.b.unk4] * 0x6C0, i);
+            ui_loadPartyPortrait(buf + D_8006BB8C[d->characters[p->info.b.id].info.b.kind] * 0x6C0, i);
         }
     }
 }
@@ -1298,31 +1298,31 @@ void ui_savePartyPortrait(u8 *buf, s32 arg1) {
     DrawSync(0);
 }
 
-void ui_initMemberSwitch(UnkBlink *b, s32 arg1, void (*cb)(void)) {
-    b->unk0 = 0;
-    b->unk2 = arg1;
-    b->unk8 = cb;
+void ui_initMemberSwitch(MemberSwitch *b, s32 arg1, void (*cb)(void)) {
+    b->active = 0;
+    b->member = arg1;
+    b->onDone = cb;
 }
 
-void ui_startMemberSwitch(UnkBlink *b, s32 arg1, s32 arg2, s32 arg3) {
-    b->unk1 = arg3;
-    b->unk4 = 0;
+void ui_startMemberSwitch(MemberSwitch *b, s32 arg1, s32 arg2, s32 arg3) {
+    b->dir = arg3;
+    b->frame = 0;
     if (arg3 != 0) {
-        b->unk2 = arg1;
-        b->unk3 = arg2;
-        b->unk0 = 1;
+        b->member = arg1;
+        b->nextMember = arg2;
+        b->active = 1;
     }
 }
 
-void ui_updateMemberSwitch(UnkBlink *b) {
+void ui_updateMemberSwitch(MemberSwitch *b) {
     void (*cb)(void);
 
-    if (b->unk0 != 0) {
-        if (++b->unk4 >= 12) {
-            b->unk2 = b->unk3;
-            cb = b->unk8;
-            b->unk4 = 0;
-            b->unk0 = 0;
+    if (b->active != 0) {
+        if (++b->frame >= 12) {
+            b->member = b->nextMember;
+            cb = b->onDone;
+            b->frame = 0;
+            b->active = 0;
             if (cb != NULL) {
                 cb();
             }

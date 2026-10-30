@@ -179,7 +179,7 @@ void wm_weatherAuto(void) {
         wm_setWeather(id, wm_getStoryFog() & 0xFF, 0x80);
     }
     if (g_evtGlobalVars.b[0x66] == 0 && g_worldReadyFrameCount == 10) {
-        switch (WM_ATTR_AREA(g_worldActorTypeInfo[g_worldPlayer->unk11].cellAttr)) {
+        switch (WM_ATTR_AREA(g_worldActorTypeInfo[g_worldPlayer->actorType].cellAttr)) {
         case 9:
         case 12:
         case 13:

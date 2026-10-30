@@ -2,7 +2,7 @@
 
 s32 btl_update(void) {
     GameData *g = g_gameState->gameData;
-    Battle *b = g->unk8E4.battle;
+    Battle *b = g->ctx.battle;
     BtlUnit *u;
     u16 id;
     s32 n;
@@ -62,7 +62,7 @@ s32 btl_update(void) {
     case BTL_PHASE_EXIT_DEFEAT:
     case BTL_PHASE_EXIT_OTHER:
         if ((u8)btl_updateUnits(g, b)) {
-            g->unk56F |= 0x40;
+            g->battleFlags |= 0x40;
             if (b->subPhase == 0) {
                 if (g->battleResult != 5) {
                     fade_out(0x20);
@@ -84,7 +84,7 @@ s32 btl_update(void) {
 s32 btl_updateUnits(GameData *arg0, Battle *arg1) {
     BtlUnit *u = arg1->unitList;
     s32 r = 1;
-    s32 sp = arg1->work->prims[arg0->unk8];
+    s32 sp = arg1->work->prims[arg0->drawBuf];
     BtlUnit9C *m;
     BtlUnit9C *n;
     u32 f;
@@ -109,7 +109,7 @@ s32 btl_updateUnits(GameData *arg0, Battle *arg1) {
                 }
             } else if (arg1->phase == BTL_PHASE_EXIT) {
                 f = u->flags;
-                if ((f & 1) && !(u->status & (BTL_STATUS_PETRIFY | BTL_STATUS_VENOM | BTL_STATUS_KO | BTL_STATUS_STOP)) && ((arg1->scene.flags >> 6) & 1) && (g_gameState->gameData->characters + ((f >> 1) & 0xF))->unk34.b.unkA) {
+                if ((f & 1) && !(u->status & (BTL_STATUS_PETRIFY | BTL_STATUS_VENOM | BTL_STATUS_KO | BTL_STATUS_STOP)) && ((arg1->scene.flags >> 6) & 1) && (g_gameState->gameData->characters + ((f >> 1) & 0xF))->info.b.unkA) {
                     m = u->model;
                     if (u->obj->frame >= m->motion->frameCount) {
                         m->motion = (BtlUnit9CC *)u->motions[19];
@@ -134,7 +134,7 @@ void btl_victory(GameData *arg0, Battle *arg1) {
     BtlUnit *u;
     u32 gil;
 
-    sp18 = arg1->work->prims[arg0->unk8];
+    sp18 = arg1->work->prims[arg0->drawBuf];
     done = 1;
     if (g_btlfxEnv->state->phase != -1 || arg1->cmdQueue.next != NULL || arg1->curCmd != NULL) {
         done = 0;
@@ -215,7 +215,7 @@ void btl_victory(GameData *arg0, Battle *arg1) {
         switch (arg1->subPhase) {
         case BTL_END_VICTORY:
         case BTL_END_SCRIPT_VICTORY:
-            arg0->unk56F |= 0x40;
+            arg0->battleFlags |= 0x40;
             arg0->battleResult = 1;
             if ((arg1->scene.flags >> 6) & 1) {
                 if ((u8)btl_playVictoryMusic(arg0, 0x1E, 5) == 0) {
@@ -229,7 +229,7 @@ void btl_victory(GameData *arg0, Battle *arg1) {
                                 u->rot[1] = u->obj->rotY = (u->flags & 1) * 0x800;
                                 u->flags = (u->flags & ~0x40000) | ((btl_hasStatus(u, (BTL_STATUS_VENOM | BTL_STATUS_LOW_HP | BTL_STATUS_POISON | BTL_STATUS_SLEEP)) & 1) << 18);
                                 u->flags &= ~0x80000;
-                                if (((g_gameState->gameData->characters + ((u->flags >> 1) & 0xF))->unk34.w >> 10) & 1) {
+                                if (((g_gameState->gameData->characters + ((u->flags >> 1) & 0xF))->info.w >> 10) & 1) {
                                     u->model->motion = (BtlUnit9CC *)u->motions[0x12];
                                 } else {
                                     u->model->motion = (BtlUnit9CC *)u->motions[(u->flags >> 18) & 1];
@@ -243,7 +243,7 @@ void btl_victory(GameData *arg0, Battle *arg1) {
                 }
                 btlcam_playScene(btl_getSceneData(2));
             } else if ((arg1->scene.flags >> 14) & 1) {
-                arg0->unk56F |= 8;
+                arg0->battleFlags |= 8;
             }
             arg1->phase = BTL_PHASE_EXIT;
             break;
@@ -253,7 +253,7 @@ void btl_victory(GameData *arg0, Battle *arg1) {
             break;
         case BTL_END_STOPPED:
             if ((arg1->scene.flags & 0x4040) == 0x4000) {
-                arg0->unk56F |= 8;
+                arg0->battleFlags |= 8;
             }
             arg1->phase = BTL_PHASE_SCRIPT;
             btl_clearCmdQueue(arg1);
@@ -268,19 +268,19 @@ void btl_victory(GameData *arg0, Battle *arg1) {
             break;
         case BTL_END_ESCAPE:
             gil = g_btlRewards.gil;
-            arg0->unk56F |= 0x40;
+            arg0->battleFlags |= 0x40;
             for (u = arg1->unitList; u != NULL; u = u->next) {
                 if (!(u->flags & 1)) {
-                    gil += g_gameState->gameData->unk8E4.battle->enemies[(u->flags >> 1) & 0xF].type->gil;
+                    gil += g_gameState->gameData->ctx.battle->enemies[(u->flags >> 1) & 0xF].type->gil;
                 }
             }
             if ((arg1->scene.flags & 0x4040) == 0x4000) {
-                arg0->unk56F |= 8;
+                arg0->battleFlags |= 8;
             }
             arg0->battleResult = 4;
             arg1->phase = BTL_PHASE_EXIT_OTHER;
             btl_clearRewards();
-            if (arg0->unk56F & 4) {
+            if (arg0->battleFlags & 4) {
                 gil /= 10;
                 if (gil < arg0->gil) {
                     arg0->gil -= gil;
@@ -314,7 +314,7 @@ void btl_updateIntro(GameData *arg0, Battle *arg1) {
     u8 f;
     u8 g;
 
-    ot = (u32 *)arg1->work->prims[arg0->unk8];
+    ot = (u32 *)arg1->work->prims[arg0->drawBuf];
     btl_loadModelsStep(0);
     if ((arg1->flags & 2) && (*(u32 *)&arg1->fleeBrightness & 0x2800) == 0x800) {
         btl_makeEnemyGreyCluts();
@@ -339,8 +339,8 @@ void btl_updateIntro(GameData *arg0, Battle *arg1) {
         btlseq_update();
     }
     if (arg1->flags & 1) {
-        ot = (u32 *)btlbg_draw(&arg0->unk18, arg1->work->bgData, (s32)ot, arg0->unk10[arg0->unk8],
-                                  arg1->work->ot[arg0->unk8]);
+        ot = (u32 *)btlbg_draw(&arg0->viewMatrix, arg1->work->bgData, (s32)ot, arg0->ot[arg0->drawBuf],
+                                  arg1->work->ot[arg0->drawBuf]);
     }
     ot = (u32 *)btl_drawBanner((u8 *)ot);
     if (arg1->flags & 2) {
@@ -379,13 +379,13 @@ void btl_updateIntro(GameData *arg0, Battle *arg1) {
 void btl_initBattleState(void) {
     GameData *gd;
     s32 v;
-    g_gameState->gameData->unk56F = 0;
+    g_gameState->gameData->battleFlags = 0;
     gd = g_gameState->gameData;
     v = 7;
     if (gd->unk571 != 0) {
         v = 8;
     }
-    gd->characters[3].unk34.w = (gd->characters[3].unk34.w & ~0x1F0) | (v << 4);
+    gd->characters[3].info.w = (gd->characters[3].info.w & ~0x1F0) | (v << 4);
     g_gameState->gameData->battleResult = 0;
     btl_initState();
     btlfx_initAll();

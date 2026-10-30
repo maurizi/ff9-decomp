@@ -23,69 +23,69 @@ s32 ending_theEnd(void) {
                 timer = 0x21C;
                 game_startFade(1, 1, 0xB4, 0);
             } else if (timer != 0) {
-                setlen(&g_theEndSprites[g_gameState->gameData->unk8][0], 4);
-                g_theEndSprites[g_gameState->gameData->unk8][0].code = 0x64;
-                g_theEndSprites[g_gameState->gameData->unk8][0].r0 = 0x80;
-                g_theEndSprites[g_gameState->gameData->unk8][0].g0 = 0x80;
-                g_theEndSprites[g_gameState->gameData->unk8][0].b0 = 0x80;
-                g_theEndSprites[g_gameState->gameData->unk8][0].x0 = 0;
-                g_theEndSprites[g_gameState->gameData->unk8][0].y0 = 0;
-                g_theEndSprites[g_gameState->gameData->unk8][0].u0 = 0;
-                g_theEndSprites[g_gameState->gameData->unk8][0].v0 = 0;
-                g_theEndSprites[g_gameState->gameData->unk8][0].w = 0xC0;
-                g_theEndSprites[g_gameState->gameData->unk8][0].h = 0xE0;
-                g_theEndSprites[g_gameState->gameData->unk8][0].clut = 0x3800;
-                addPrim(&g_gameState->gameData->unk10[g_gameState->gameData->unk8][SCREEN_OTZ], &g_theEndSprites[g_gameState->gameData->unk8][0]);
-                setDrawTPage(&g_theEndTpages[g_gameState->gameData->unk8][0], 1, 1, 0x10A);
-                addPrim(&g_gameState->gameData->unk10[g_gameState->gameData->unk8][SCREEN_OTZ], &g_theEndTpages[g_gameState->gameData->unk8][0]);
-                setlen((g_theEndSprites[g_gameState->gameData->unk8] + 1), 4);
-                (g_theEndSprites[g_gameState->gameData->unk8] + 1)->code = 0x64;
-                (g_theEndSprites[g_gameState->gameData->unk8] + 1)->r0 = 0x80;
-                (g_theEndSprites[g_gameState->gameData->unk8] + 1)->g0 = 0x80;
-                (g_theEndSprites[g_gameState->gameData->unk8] + 1)->b0 = 0x80;
-                (g_theEndSprites[g_gameState->gameData->unk8] + 1)->x0 = 0xC0;
-                (g_theEndSprites[g_gameState->gameData->unk8] + 1)->y0 = 0;
-                (g_theEndSprites[g_gameState->gameData->unk8] + 1)->u0 = 0;
-                (g_theEndSprites[g_gameState->gameData->unk8] + 1)->v0 = 0;
-                (g_theEndSprites[g_gameState->gameData->unk8] + 1)->w = 0x80;
-                (g_theEndSprites[g_gameState->gameData->unk8] + 1)->h = 0xE0;
-                (g_theEndSprites[g_gameState->gameData->unk8] + 1)->clut = 0x3800;
-                addPrim(&g_gameState->gameData->unk10[g_gameState->gameData->unk8][SCREEN_OTZ], (g_theEndSprites[g_gameState->gameData->unk8] + 1));
-                setDrawTPage(g_theEndTpages[g_gameState->gameData->unk8] + 1, 1, 1, 0x10D);
-                addPrim(&g_gameState->gameData->unk10[g_gameState->gameData->unk8][SCREEN_OTZ], (g_theEndTpages[g_gameState->gameData->unk8] + 1));
+                setlen(&g_theEndSprites[g_gameState->gameData->drawBuf][0], 4);
+                g_theEndSprites[g_gameState->gameData->drawBuf][0].code = 0x64;
+                g_theEndSprites[g_gameState->gameData->drawBuf][0].r0 = 0x80;
+                g_theEndSprites[g_gameState->gameData->drawBuf][0].g0 = 0x80;
+                g_theEndSprites[g_gameState->gameData->drawBuf][0].b0 = 0x80;
+                g_theEndSprites[g_gameState->gameData->drawBuf][0].x0 = 0;
+                g_theEndSprites[g_gameState->gameData->drawBuf][0].y0 = 0;
+                g_theEndSprites[g_gameState->gameData->drawBuf][0].u0 = 0;
+                g_theEndSprites[g_gameState->gameData->drawBuf][0].v0 = 0;
+                g_theEndSprites[g_gameState->gameData->drawBuf][0].w = 0xC0;
+                g_theEndSprites[g_gameState->gameData->drawBuf][0].h = 0xE0;
+                g_theEndSprites[g_gameState->gameData->drawBuf][0].clut = 0x3800;
+                addPrim(&g_gameState->gameData->ot[g_gameState->gameData->drawBuf][SCREEN_OTZ], &g_theEndSprites[g_gameState->gameData->drawBuf][0]);
+                setDrawTPage(&g_theEndTpages[g_gameState->gameData->drawBuf][0], 1, 1, 0x10A);
+                addPrim(&g_gameState->gameData->ot[g_gameState->gameData->drawBuf][SCREEN_OTZ], &g_theEndTpages[g_gameState->gameData->drawBuf][0]);
+                setlen((g_theEndSprites[g_gameState->gameData->drawBuf] + 1), 4);
+                (g_theEndSprites[g_gameState->gameData->drawBuf] + 1)->code = 0x64;
+                (g_theEndSprites[g_gameState->gameData->drawBuf] + 1)->r0 = 0x80;
+                (g_theEndSprites[g_gameState->gameData->drawBuf] + 1)->g0 = 0x80;
+                (g_theEndSprites[g_gameState->gameData->drawBuf] + 1)->b0 = 0x80;
+                (g_theEndSprites[g_gameState->gameData->drawBuf] + 1)->x0 = 0xC0;
+                (g_theEndSprites[g_gameState->gameData->drawBuf] + 1)->y0 = 0;
+                (g_theEndSprites[g_gameState->gameData->drawBuf] + 1)->u0 = 0;
+                (g_theEndSprites[g_gameState->gameData->drawBuf] + 1)->v0 = 0;
+                (g_theEndSprites[g_gameState->gameData->drawBuf] + 1)->w = 0x80;
+                (g_theEndSprites[g_gameState->gameData->drawBuf] + 1)->h = 0xE0;
+                (g_theEndSprites[g_gameState->gameData->drawBuf] + 1)->clut = 0x3800;
+                addPrim(&g_gameState->gameData->ot[g_gameState->gameData->drawBuf][SCREEN_OTZ], (g_theEndSprites[g_gameState->gameData->drawBuf] + 1));
+                setDrawTPage(g_theEndTpages[g_gameState->gameData->drawBuf] + 1, 1, 1, 0x10D);
+                addPrim(&g_gameState->gameData->ot[g_gameState->gameData->drawBuf][SCREEN_OTZ], (g_theEndTpages[g_gameState->gameData->drawBuf] + 1));
             }
             break;
         case THEEND_ST_FADE:
-            setlen(&g_theEndSprites[g_gameState->gameData->unk8][0], 4);
-            g_theEndSprites[g_gameState->gameData->unk8][0].code = 0x64;
-            g_theEndSprites[g_gameState->gameData->unk8][0].r0 = 0x80;
-            g_theEndSprites[g_gameState->gameData->unk8][0].g0 = 0x80;
-            g_theEndSprites[g_gameState->gameData->unk8][0].b0 = 0x80;
-            g_theEndSprites[g_gameState->gameData->unk8][0].x0 = 0;
-            g_theEndSprites[g_gameState->gameData->unk8][0].y0 = 0;
-            g_theEndSprites[g_gameState->gameData->unk8][0].u0 = 0;
-            g_theEndSprites[g_gameState->gameData->unk8][0].v0 = 0;
-            g_theEndSprites[g_gameState->gameData->unk8][0].w = 0xC0;
-            g_theEndSprites[g_gameState->gameData->unk8][0].h = 0xE0;
-            g_theEndSprites[g_gameState->gameData->unk8][0].clut = 0x3800;
-            addPrim(&g_gameState->gameData->unk10[g_gameState->gameData->unk8][SCREEN_OTZ], &g_theEndSprites[g_gameState->gameData->unk8][0]);
-            setDrawTPage(&g_theEndTpages[g_gameState->gameData->unk8][0], 1, 1, 0x10A);
-            addPrim(&g_gameState->gameData->unk10[g_gameState->gameData->unk8][SCREEN_OTZ], &g_theEndTpages[g_gameState->gameData->unk8][0]);
-            setlen((g_theEndSprites[g_gameState->gameData->unk8] + 1), 4);
-            (g_theEndSprites[g_gameState->gameData->unk8] + 1)->code = 0x64;
-            (g_theEndSprites[g_gameState->gameData->unk8] + 1)->r0 = 0x80;
-            (g_theEndSprites[g_gameState->gameData->unk8] + 1)->g0 = 0x80;
-            (g_theEndSprites[g_gameState->gameData->unk8] + 1)->b0 = 0x80;
-            (g_theEndSprites[g_gameState->gameData->unk8] + 1)->x0 = 0xC0;
-            (g_theEndSprites[g_gameState->gameData->unk8] + 1)->y0 = 0;
-            (g_theEndSprites[g_gameState->gameData->unk8] + 1)->u0 = 0;
-            (g_theEndSprites[g_gameState->gameData->unk8] + 1)->v0 = 0;
-            (g_theEndSprites[g_gameState->gameData->unk8] + 1)->w = 0x80;
-            (g_theEndSprites[g_gameState->gameData->unk8] + 1)->h = 0xE0;
-            (g_theEndSprites[g_gameState->gameData->unk8] + 1)->clut = 0x3800;
-            addPrim(&g_gameState->gameData->unk10[g_gameState->gameData->unk8][SCREEN_OTZ], (g_theEndSprites[g_gameState->gameData->unk8] + 1));
-            setDrawTPage(g_theEndTpages[g_gameState->gameData->unk8] + 1, 1, 1, 0x10D);
-            addPrim(&g_gameState->gameData->unk10[g_gameState->gameData->unk8][SCREEN_OTZ], (g_theEndTpages[g_gameState->gameData->unk8] + 1));
+            setlen(&g_theEndSprites[g_gameState->gameData->drawBuf][0], 4);
+            g_theEndSprites[g_gameState->gameData->drawBuf][0].code = 0x64;
+            g_theEndSprites[g_gameState->gameData->drawBuf][0].r0 = 0x80;
+            g_theEndSprites[g_gameState->gameData->drawBuf][0].g0 = 0x80;
+            g_theEndSprites[g_gameState->gameData->drawBuf][0].b0 = 0x80;
+            g_theEndSprites[g_gameState->gameData->drawBuf][0].x0 = 0;
+            g_theEndSprites[g_gameState->gameData->drawBuf][0].y0 = 0;
+            g_theEndSprites[g_gameState->gameData->drawBuf][0].u0 = 0;
+            g_theEndSprites[g_gameState->gameData->drawBuf][0].v0 = 0;
+            g_theEndSprites[g_gameState->gameData->drawBuf][0].w = 0xC0;
+            g_theEndSprites[g_gameState->gameData->drawBuf][0].h = 0xE0;
+            g_theEndSprites[g_gameState->gameData->drawBuf][0].clut = 0x3800;
+            addPrim(&g_gameState->gameData->ot[g_gameState->gameData->drawBuf][SCREEN_OTZ], &g_theEndSprites[g_gameState->gameData->drawBuf][0]);
+            setDrawTPage(&g_theEndTpages[g_gameState->gameData->drawBuf][0], 1, 1, 0x10A);
+            addPrim(&g_gameState->gameData->ot[g_gameState->gameData->drawBuf][SCREEN_OTZ], &g_theEndTpages[g_gameState->gameData->drawBuf][0]);
+            setlen((g_theEndSprites[g_gameState->gameData->drawBuf] + 1), 4);
+            (g_theEndSprites[g_gameState->gameData->drawBuf] + 1)->code = 0x64;
+            (g_theEndSprites[g_gameState->gameData->drawBuf] + 1)->r0 = 0x80;
+            (g_theEndSprites[g_gameState->gameData->drawBuf] + 1)->g0 = 0x80;
+            (g_theEndSprites[g_gameState->gameData->drawBuf] + 1)->b0 = 0x80;
+            (g_theEndSprites[g_gameState->gameData->drawBuf] + 1)->x0 = 0xC0;
+            (g_theEndSprites[g_gameState->gameData->drawBuf] + 1)->y0 = 0;
+            (g_theEndSprites[g_gameState->gameData->drawBuf] + 1)->u0 = 0;
+            (g_theEndSprites[g_gameState->gameData->drawBuf] + 1)->v0 = 0;
+            (g_theEndSprites[g_gameState->gameData->drawBuf] + 1)->w = 0x80;
+            (g_theEndSprites[g_gameState->gameData->drawBuf] + 1)->h = 0xE0;
+            (g_theEndSprites[g_gameState->gameData->drawBuf] + 1)->clut = 0x3800;
+            addPrim(&g_gameState->gameData->ot[g_gameState->gameData->drawBuf][SCREEN_OTZ], (g_theEndSprites[g_gameState->gameData->drawBuf] + 1));
+            setDrawTPage(g_theEndTpages[g_gameState->gameData->drawBuf] + 1, 1, 1, 0x10D);
+            addPrim(&g_gameState->gameData->ot[g_gameState->gameData->drawBuf][SCREEN_OTZ], (g_theEndTpages[g_gameState->gameData->drawBuf] + 1));
             if (timer == -1) {
                 timer = 0x5A;
                 game_startFade(1, 1, timer, 0xFFFFFF);
@@ -141,7 +141,7 @@ s32 ending_theEndExit(void) {
 
 void ending_theEndClearOt(void) {
     GameData *ctx = g_gameState->gameData;
-    ClearOTagR(ctx->unk10[ctx->unk8], 0x1000);
+    ClearOTagR(ctx->ot[ctx->drawBuf], 0x1000);
 }
 
 void ending_theEndSwap(void) {
@@ -152,12 +152,12 @@ void ending_theEndSwap(void) {
     g_gameState->vsyncMode = 0;
     VSync(g_gameState->vsyncMode);
     ResetGraph(1);
-    PutDispEnv(&g_gameState->dispEnv[g_gameState->gameData->unk8]);
+    PutDispEnv(&g_gameState->dispEnv[g_gameState->gameData->drawBuf]);
     ctx = g_gameState->gameData;
-    i = ctx->unk8;
-    DrawOTagEnv(ctx->unk10[i] + 0xFFF, &g_gameState->drawEnv[i]);
-    g_gameState->gameData->unk8 ^= 1;
-    gfx_setBuffer(g_gameState->gameData->unk8);
+    i = ctx->drawBuf;
+    DrawOTagEnv(ctx->ot[i] + 0xFFF, &g_gameState->drawEnv[i]);
+    g_gameState->gameData->drawBuf ^= 1;
+    gfx_setBuffer(g_gameState->gameData->drawBuf);
 }
 
 s32 ending_soundCmd(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4) {
@@ -172,70 +172,70 @@ s32 ending_soundCmd(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4) {
         id = (arg1 & 0xFFFF) | 0x70000;
         switch (kind) {
         case 0:
-            if (g_gameState->gameData->unk851 != 0) {
+            if (g_gameState->gameData->soundLoadState != 0) {
                 return -1;
             }
             if (g_endingSoundPending == -1) {
                 g_endingSoundPending = kind;
             }
-            if (g_gameState->gameData->unk81C[0] != arg1) {
-                if (g_gameState->gameData->unk0 & 0x20000000) {
-                    akao_stopMusic(g_gameState->gameData->unk824[0]);
+            if (g_gameState->gameData->musicId[0] != arg1) {
+                if (g_gameState->gameData->flags & 0x20000000) {
+                    akao_stopMusic(g_gameState->gameData->musicHandle[0]);
                 }
-                g_gameState->gameData->unk0 &= 0xCFFFFFFF;
-                g_gameState->gameData->unk820[0] = 0x1F3;
-                g_gameState->gameData->unk81C[0] = arg1;
-                g_gameState->gameData->unk826[0] = 0x7F;
+                g_gameState->gameData->flags &= 0xCFFFFFFF;
+                g_gameState->gameData->musicBank[0] = 0x1F3;
+                g_gameState->gameData->musicId[0] = arg1;
+                g_gameState->gameData->musicVolume[0] = 0x7F;
             }
-            g_gameState->gameData->unk824[0] = akao_playMusic(g_gameState->gameData->unk814);
+            g_gameState->gameData->musicHandle[0] = akao_playMusic(g_gameState->gameData->musicSeq);
             g = g_gameState->gameData;
-            if (!(g->unk0 & 0x20000000)) {
-                akao_fadeMusicVolumeFrom(g->unk824[0], 0xA, 0, g->unk826[0]);
+            if (!(g->flags & 0x20000000)) {
+                akao_fadeMusicVolumeFrom(g->musicHandle[0], 0xA, 0, g->musicVolume[0]);
             }
             g_endingSoundPending = -1;
-            g_gameState->gameData->unk0 |= 0x30000000;
+            g_gameState->gameData->flags |= 0x30000000;
             return 0;
         case 1:
-            if (g_gameState->gameData->unk81C[0] == (u16)id) {
-                akao_stopMusic(g_gameState->gameData->unk824[0]);
-                g_gameState->gameData->unk826[0] = 0x7F;
-                g_gameState->gameData->unk0 &= 0xDFFFFFFF;
+            if (g_gameState->gameData->musicId[0] == (u16)id) {
+                akao_stopMusic(g_gameState->gameData->musicHandle[0]);
+                g_gameState->gameData->musicVolume[0] = 0x7F;
+                g_gameState->gameData->flags &= 0xDFFFFFFF;
             }
             return 0;
         case 2:
             if ((arg0 & 0x3F) != 1) {
                 break;
             }
-            akao_setMusicVolume(g_gameState->gameData->unk824[0], arg2);
-            g_gameState->gameData->unk826[0] = arg2;
+            akao_setMusicVolume(g_gameState->gameData->musicHandle[0], arg2);
+            g_gameState->gameData->musicVolume[0] = arg2;
             return 0;
         case 3:
             if ((arg0 & 0x3F) != 1) {
                 break;
             }
-            akao_fadeMusicVolume(g_gameState->gameData->unk824[0], arg2, arg3);
-            g_gameState->gameData->unk826[0] = arg3;
+            akao_fadeMusicVolume(g_gameState->gameData->musicHandle[0], arg2, arg3);
+            g_gameState->gameData->musicVolume[0] = arg3;
             return 0;
         case 4:
             if ((arg0 & 0x3F) != 1) {
                 break;
             }
-            akao_fadeMusicVolumeFrom(g_gameState->gameData->unk824[0], arg2, arg3, arg4);
-            g_gameState->gameData->unk826[0] = arg4;
+            akao_fadeMusicVolumeFrom(g_gameState->gameData->musicHandle[0], arg2, arg3, arg4);
+            g_gameState->gameData->musicVolume[0] = arg4;
             return 0;
         case 6:
             if ((arg0 & 0x3F) != 1) {
                 break;
             }
             akao_fadeMusicVolume(0, arg2, arg3);
-            g_gameState->gameData->unk826[0] = arg3;
+            g_gameState->gameData->musicVolume[0] = arg3;
             return 0;
         case 11:
             if ((arg0 & 0x3F) != 1) {
                 break;
             }
             akao_fadeMusicVolumeFrom(0, arg2, arg3, arg4);
-            g_gameState->gameData->unk826[0] = arg4;
+            g_gameState->gameData->musicVolume[0] = arg4;
             return 0;
         }
         return -1;
@@ -317,7 +317,7 @@ void ending_init(void) {
         g_padActuator[i].unk1 = 0;
         g_padActuator[i].unk0 = 0;
     }
-    g_gameState->gameData->unk83C = ending_soundCmd;
+    g_gameState->gameData->soundHook = ending_soundCmd;
     ending_loadData();
     ending_loadMusic();
     game_initGfx();
@@ -328,7 +328,7 @@ void ending_exit(void) {
     s32 i;
 
     SetDispMask(0);
-    if (g_gameState->gameData->unk0 & 0x20000000) {
+    if (g_gameState->gameData->flags & 0x20000000) {
         ending_soundCmd(0x8301, ENDING_MUSIC, 0x5A, 0, 0);
         for (i = 0x59; i >= 0; i--) {
             VSync(0);
@@ -345,7 +345,7 @@ void ending_loadMusic(void) {
 
     akao_stopMusic(0);
     a = (s32)db_lookupRegistered(4, ENDING_MUSIC, 0);
-    memmove(g_gameState->gameData->unk814, (void *)a, (s32)db_lookupRegistered(5, ENDING_MUSIC, 0));
+    memmove(g_gameState->gameData->musicSeq, (void *)a, (s32)db_lookupRegistered(5, ENDING_MUSIC, 0));
     a = (s32)db_lookupRegistered(4, ENDING_MUSIC_BANK, 0);
     b = (s32)db_lookupRegistered(5, ENDING_MUSIC_BANK, 0);
     akao_beginBankUpload();
@@ -358,8 +358,8 @@ void ending_loadData(void) {
 
     buf = g_loadAreaEnd + 0x10000;
     e = file_find(1, 0x2F44);
-    cdRead_init(g_gameState->gameData->unk854, e->unk4, (e->unkC - e->unk4) << 11, buf, 0, -1, 0);
-    while (cdRead_update(g_gameState->gameData->unk854) != 0) {
+    cdRead_init(g_gameState->gameData->cdRead, e->sector, (e->unkC - e->sector) << 11, buf, 0, -1, 0);
+    while (cdRead_update(g_gameState->gameData->cdRead) != 0) {
     }
     g_endingData = buf;
     db_register((s32)buf, 0);

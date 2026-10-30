@@ -94,10 +94,10 @@ FileEntry *dep_find(FileTable *t, s32 id) {
     FileEntry *end;
 
     id &= 0xFFFFFF;
-    e = t->unk4;
-    end = e + t->unk2;
+    e = t->entries;
+    end = e + t->count;
     for (; e < end; e++) {
-        if ((e->unk0 & 0xFFFFFF) == id) {
+        if ((e->id & 0xFFFFFF) == id) {
             return e;
         }
     }

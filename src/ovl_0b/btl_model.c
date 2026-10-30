@@ -230,19 +230,19 @@ void btl_relocTexAnims(TexAnimSet *set, u16 (*ofs)[4]) {
 
 Battle11C020 *btl_initScene(void) {
     Battle *b;
-    Battle11C020 *s = g_gameState->gameData->unk8E4.battle->work->encounter;
-    u16 *t = g_gameState->gameData->unk8E4.battle->work->sceneTables;
+    Battle11C020 *s = g_gameState->gameData->ctx.battle->work->encounter;
+    u16 *t = g_gameState->gameData->ctx.battle->work->sceneTables;
     s32 r;
-    Battle132C *sc = &g_gameState->gameData->unk8E4.battle->scene;
+    Battle132C *sc = &g_gameState->gameData->ctx.battle->scene;
     u8 n;
     u8 m;
 
     sc->seqTable = (u16 *)((u8 *)t + t[0]);
     sc->sceneData = (s16 *)((u8 *)t + t[1]);
-    sc->group = btl_pickEnemyGroup(g_gameState->gameData->unk8E4.battle->work->encounter);
-    sc->enemyTypes = (Battle1334 *)&g_gameState->gameData->unk8E4.battle->work->encounter->groups[s->groupCount];
+    sc->group = btl_pickEnemyGroup(g_gameState->gameData->ctx.battle->work->encounter);
+    sc->enemyTypes = (Battle1334 *)&g_gameState->gameData->ctx.battle->work->encounter->groups[s->groupCount];
     n = sc->group->cameraNo;
-    b = g_gameState->gameData->unk8E4.battle;
+    b = g_gameState->gameData->ctx.battle;
     if (n >= 3) {
         if (g_randPtr >= g_randTableEnd) {
             rand_refill();
@@ -274,7 +274,7 @@ Battle1330 *btl_pickEnemyGroup(Battle11C020 *arg0) {
         sum += e->weight;
         i++;
     }
-    v = g_gameState->gameData->unk848;
+    v = g_gameState->gameData->enemyGroup;
     if (v != -1) {
         i = v;
         if (i >= arg0->groupCount) {
@@ -282,14 +282,14 @@ Battle1330 *btl_pickEnemyGroup(Battle11C020 *arg0) {
         }
         e = &arg0->groups[i];
     }
-    g_gameState->gameData->unk8E4.battle->groupNo = i;
+    g_gameState->gameData->ctx.battle->groupNo = i;
     return e;
 }
 
 void func_800C972C(void) {
-    Battle *b = g_gameState->gameData->unk8E4.battle;
+    Battle *b = g_gameState->gameData->ctx.battle;
     b->scene.flags = (b->work->encounter->flags ^ 0x30) * 4;
-    D_800FDF38 = g_gameState->gameData->unk8E4.battle->scene.group->ap;
+    D_800FDF38 = g_gameState->gameData->ctx.battle->scene.group->ap;
 }
 
 void btl_setupEnemies(void) {
@@ -310,7 +310,7 @@ void btl_setupEnemies(void) {
     BtlUnit *u;
     Battle1330 *grp2;
 
-    b = g_gameState->gameData->unk8E4.battle;
+    b = g_gameState->gameData->ctx.battle;
     flags = &b->scene.flags;
     grp = b->scene.group;
     hdr = b->work->encounter;
@@ -320,8 +320,8 @@ void btl_setupEnemies(void) {
     grp2 = hdr->groups;
     recs = (Unk800C9D1C *)(grp2 + hdr->groupCount);
     rec = recs;
-    en = g_gameState->gameData->unk8E4.battle->enemyTypes;
-    ofs = (U16Pair *)(g_gameState->gameData->unk8E4.battle->work->texts + 4);
+    en = g_gameState->gameData->ctx.battle->enemyTypes;
+    ofs = (U16Pair *)(g_gameState->gameData->ctx.battle->work->texts + 4);
     src = (BtlCmd8 *)&recs[hdr->typeCount];
     for (; i < hdr->typeCount; i++) {
         btl_initEnemyType(rec, en);
@@ -333,14 +333,14 @@ void btl_setupEnemies(void) {
         en++;
         rec++;
     }
-    dst = g_gameState->gameData->unk8E4.battle->enemyAbilities;
+    dst = g_gameState->gameData->ctx.battle->enemyAbilities;
     for (i = 0, cmd = src; i < hdr->abilityCount; i++, cmd++) {
         btl_copyAbility(cmd, dst);
         dst->nameOfs = ofs->unk0 + 4;
         ofs++;
         dst++;
     }
-    u = g_gameState->gameData->unk8E4.battle->unitList;
+    u = g_gameState->gameData->ctx.battle->unitList;
     for (i = 0; i < grp->enemyCount; i++) {
         if (u == NULL) {
             break;
@@ -370,7 +370,7 @@ void btl_placeParty(void) {
     u32 m;
 
     n = 0;
-    b = g_gameState->gameData->unk8E4.battle;
+    b = g_gameState->gameData->ctx.battle;
     flags = &b->scene.flags;
     for (i = 0; i < 4; i++) {
         if (g_gameState->gameData->party[i] != NULL) {
@@ -380,13 +380,13 @@ void btl_placeParty(void) {
     x = (n - 1) * 0x13C;
     i = 0;
     rot = ((*flags & 3) != 0) << 11;
-    u = g_gameState->gameData->unk8E4.battle->unitList;
+    u = g_gameState->gameData->ctx.battle->unitList;
     for (; i < n; i++) {
         if (!(u->flags & 1)) {
             return;
         }
         m = u->flags & ~0x300;
-        m |= (g_gameState->gameData->characters[(u->flags >> 1) & 0xF].unk34.w >> 1) & 0x100;
+        m |= (g_gameState->gameData->characters[(u->flags >> 1) & 0xF].info.w >> 1) & 0x100;
         u->flags = m;
         if (!(*flags & 3)) {
             u->flags = (u->flags & ~0x300) | ((((u->flags >> 8) & 3) ^ 1) << 8);
@@ -414,12 +414,12 @@ void btl_placeParty(void) {
         u->obj->rotZ = 0;
         u->rot[2] = 0;
         tbl = D_800F57F0;
-        e = &tbl[g_gameState->gameData->characters[(u->flags >> 1) & 0xF].unk34.b.unk4];
+        e = &tbl[g_gameState->gameData->characters[(u->flags >> 1) & 0xF].info.b.kind];
         u->shadowBone = e->shadowBone;
         u->shadowDirBone = e->shadowDirBone;
         btl_setShadowSize(u, e->shadowW, e->shadowD);
         x -= 0x278;
-        g_gameState->gameData->unk8E4.battle->work->shadows[(u->flags >> 1) & 0xF].offsetZ = e->shadowZ;
+        g_gameState->gameData->ctx.battle->work->shadows[(u->flags >> 1) & 0xF].offsetZ = e->shadowZ;
         u = u->next;
     }
 }
@@ -460,13 +460,13 @@ void btl_initEnemyType(Unk800C9D1C *arg0, BtlEnemyType *arg1) {
 }
 
 void btl_initEnemyUnit(Unk800C9EE0 *arg0, BtlUnit *arg1, s32 *arg2, s32 arg3) {
-    Battle *b = g_gameState->gameData->unk8E4.battle;
+    Battle *b = g_gameState->gameData->ctx.battle;
     BtlEnemy *s = &b->enemies[(arg1->flags >> 1) & 0xF];
     BtlEnemyType *e;
     s16 r;
     s->type = &b->enemyTypes[arg0->type];
     arg1->flags = (((arg1->flags & ~0x10000000) | ((arg0->flags & 1) << 28)) & ~0x300) | 0x200;
-    e = &g_gameState->gameData->unk8E4.battle->enemyTypes[arg0->type];
+    e = &g_gameState->gameData->ctx.battle->enemyTypes[arg0->type];
     arg1->max = &e->max;
     arg1->hp = e->max.maxHp;
     arg1->mp = arg1->max->maxMp;
@@ -507,14 +507,14 @@ void btl_setEnemyStats(Unk800C9D1C *arg0, BtlUnit *arg1) {
     *(s32 *)&arg1->elemGuard = arg0->elements;
     *(s32 *)&arg1->hiddenMeshes = arg0->meshMasks;
     arg1->baseBone = arg0->baseBone;
-    s = &g_gameState->gameData->unk8E4.battle->enemies[(arg1->flags >> 1) & 0xF];
+    s = &g_gameState->gameData->ctx.battle->enemies[(arg1->flags >> 1) & 0xF];
     s->steal.w = arg0->steal;
     s->flags = (s->flags & ~0x40) | ((arg0->flags & 1) << 6);
     s->flags = (s->flags & ~0x80) | ((arg0->flags << 6) & 0x80);
     btl_setShadowSize(arg1, arg0->shadowW, arg0->shadowD);
     arg1->shadowBone = arg0->shadowBone;
     arg1->shadowDirBone = arg0->shadowDirBone;
-    t = &g_gameState->gameData->unk8E4.battle->work->shadows[((arg1->flags >> 1) & 0xF) + 9];
+    t = &g_gameState->gameData->ctx.battle->work->shadows[((arg1->flags >> 1) & 0xF) + 9];
     t->offsetX = arg0->shadowX;
     t->offsetZ = arg0->shadowZ;
 }
@@ -524,22 +524,22 @@ void btl_copyAbility(BtlCmd8 *arg0, BtlCmd8 *arg1) {
 }
 
 s32 btl_getSceneData(s32 arg0) {
-    s16 *t = g_gameState->gameData->unk8E4.battle->scene.sceneData;
+    s16 *t = g_gameState->gameData->ctx.battle->scene.sceneData;
     return (s32)t + t[arg0];
 }
 
 s16 btl_getEnemyModelId(s16 arg0) {
-    Unk800C9EE0 *e = &g_gameState->gameData->unk8E4.battle->scene.group->enemies[arg0];
+    Unk800C9EE0 *e = &g_gameState->gameData->ctx.battle->scene.group->enemies[arg0];
     s32 r;
     if (arg0 > 0 && (e->flags & 2)) {
         r = -1;
     } else {
-        r = g_gameState->gameData->unk8E4.battle->scene.enemyTypes[e->type].modelId;
+        r = g_gameState->gameData->ctx.battle->scene.enemyTypes[e->type].modelId;
     }
     return r;
 }
 
 u16 btl_getEntranceSound(void) {
-    Battle *b = g_gameState->gameData->unk8E4.battle;
+    Battle *b = g_gameState->gameData->ctx.battle;
     return b->scene.enemyTypes[b->scene.group->enemies[0].type].entranceSound;
 }

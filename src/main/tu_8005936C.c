@@ -1,26 +1,26 @@
 #include "ff9.h"
 
 u16 akao_shiftInstrumentUp(u32 flags, AkaoChannel *c) {
-    if ((flags & 0x20) && (u16)(c->unk9A - 0x20) < 0x60) {
+    if ((flags & 0x20) && (u16)(c->instrument - 0x20) < 0x60) {
         c->voiceStartAddr += 0x20000;
         c->voiceLoopAddr += 0x20000;
-        c->unk9A += 0x30;
+        c->instrument += 0x30;
     }
-    return c->unk9A;
+    return c->instrument;
 }
 
 u16 akao_shiftInstrumentDown(u32 flags, AkaoChannel *c) {
-    if ((flags & 0x20) && (u16)(c->unk9A - 0x20) < 0x60) {
+    if ((flags & 0x20) && (u16)(c->instrument - 0x20) < 0x60) {
         c->voiceStartAddr -= 0x20000;
         c->voiceLoopAddr -= 0x20000;
-        c->unk9A -= 0x30;
+        c->instrument -= 0x30;
     }
-    return c->unk9A;
+    return c->instrument;
 }
 
 void func_80059414(void) {
-    Unk80080A10 *a = g_akaoSubSeq;
-    Unk80080A10 *seq;
+    AkaoSeq *a = g_akaoSubSeq;
+    AkaoSeq *seq;
     u32 seq8, a8, seqC, aC;
     u32 seqBoth, aBoth;
     u32 mask;
@@ -35,10 +35,10 @@ void func_80059414(void) {
         lim = 0xFFFFFF;
         seq = g_akaoSeq;
         found = 0;
-        seq8 = seq->unk8;
-        a8 = a->unk8;
-        seqC = seq->unkC;
-        aC = a->unkC;
+        seq8 = seq->priorityMask;
+        a8 = a->priorityMask;
+        seqC = seq->keepVoiceMask;
+        aC = a->keepVoiceMask;
         seqBoth = seq8 & seqC;
         aBoth = a8 & aC;
         v = ~seqBoth | aBoth;
@@ -60,6 +60,6 @@ void func_80059414(void) {
                 mask &= ~(1 << v);
             }
         }
-        g_akaoSeState.unkC |= found & ~(g_akaoSeState.unk0 | g_akaoStreamVoices);
+        g_akaoSeState.keyOffMask |= found & ~(g_akaoSeState.activeMask | g_akaoStreamVoices);
     }
 }

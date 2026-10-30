@@ -311,7 +311,7 @@ typedef struct BtlUnit9C {
     s16 attachZ;
 } BtlUnit9C;
 
-/* GameData.unk8E0 entry as btl_registerModel fills it (ff9.h's Unk8E0 has pad4) */
+/* GameData.unk8E0 entry as btl_registerModel fills it (ff9.h's ModelSlot has pad4) */
 typedef struct {
     s32 flags; /* flags (1 loaded) */
     s32 modelId; /* model id */
@@ -1515,7 +1515,7 @@ typedef struct LinkNode {
 void btl_linkCmd(LinkNode *, LinkNode **);
 Unk16D8 *evt_getBattleObjects(void);
 s16 btl_getEnemyModelId(s16);
-void btl_resetUnit(struct BtlUnit *, struct Unk8E0 *);
+void btl_resetUnit(struct BtlUnit *, struct ModelSlot *);
 void btl_setupEnemies(void);
 void btlseq_init(void);
 extern u8 D_800F5244[];
@@ -2364,7 +2364,7 @@ typedef struct {
 s32 btlfx_fadeUnitGroup(u32, s32);
 
 /* main exe: candidates for ff9.h */
-extern Unk800689B0 D_80068E78[3];
+extern UiSprite D_80068E78[3];
 s32 win_getPalClut(s32);
 void SetTexWindow(void *, RECT *); /* PsyQ */
 void win_reapClosed(void);
@@ -2986,7 +2986,7 @@ typedef struct {
     u16 clut; /* clut (BtlPopup.clut), shifted into the uv word */
 } Unk800CCD00;
 
-void btl_drawPopupGlyph(Unk800CCD00 *, Unk800686E8 *);
+void btl_drawPopupGlyph(Unk800CCD00 *, SpriteDef *);
 void btl_drawPopupDigits(Unk800CCD00 *, u32);
 void btl_clampPopup(struct BtlPopup *, Unk800CCD00 *, s32, s32);
 extern void (*D_800F6A7C[])(struct BtlPopup *, Unk800CCD00 *);
@@ -3027,12 +3027,12 @@ void btl_updateDetect(void);
 extern u8 D_800F6A28[];
 extern u8 D_800F6A38[];
 /* main exe: candidates for ff9.h */
-extern Unk800686E8 D_80068BE8;
+extern SpriteDef D_80068BE8;
 s32 evt_battleTrigger(s32, s32, s32, s32);
 void math_rotMatrixXYZ(void *, void *); /* rotation -> matrix */
 s32 btlfx_transformPolar(SVECTOR *, s32, s32);
 void btlfx_transformPoint(s32, s32, s32);
-extern Unk800686E8 D_80068BF0[]; /* digits */
+extern SpriteDef D_80068BF0[]; /* digits */
 
 typedef struct {
     u8 *pc; /* camera script pointer (btlcam_step reads its commands) */
@@ -3559,7 +3559,7 @@ BtlUnit *btlui_findKoUnit(u8);
 /* first unit flagged as the current target (bits 28 and 29 of BtlUnit.flags) */
 static inline BtlUnit *find_target(void) {
     BtlUnit *u;
-    for (u = g_gameState->gameData->unk8E4.battle->unitList; u != NULL; u = u->next) {
+    for (u = g_gameState->gameData->ctx.battle->unitList; u != NULL; u = u->next) {
         if ((u->flags & 0x30000000) == 0x30000000) {
             return u;
         }
@@ -3693,7 +3693,7 @@ s32 chr_getDefaultSet(Character *);
 /* battle menu: unit under the target cursor (inlined by its callers) */
 static inline BtlUnit *BtlFindTargetCursor(void) {
     BtlUnit *p;
-    for (p = g_gameState->gameData->unk8E4.battle->unitList; p != NULL; p = p->next) {
+    for (p = g_gameState->gameData->ctx.battle->unitList; p != NULL; p = p->next) {
         if ((p->flags & 0x30000000) == 0x30000000) {
             return p;
         }
@@ -3709,7 +3709,7 @@ static inline s32 btlui_getTargeting_inline(void) {
         return 2;
     }
     n = 0;
-    for (u = g_gameState->gameData->unk8E4.battle->unitList; u != 0; u = u->next) {
+    for (u = g_gameState->gameData->ctx.battle->unitList; u != 0; u = u->next) {
         if ((u->flags & 0x30000000) == 0x30000000) {
             n++;
         }
@@ -3977,7 +3977,7 @@ extern RECT D_800FDE34;
     gte_rtps()
 
 /* btl_drawShadow: shadow quad q of entry e in the current buffer */
-#define SHADOW_QUAD(q) e->unk8[g_gameState->gameData->unk8][q]
+#define SHADOW_QUAD(q) e->unk8[g_gameState->gameData->drawBuf][q]
 
 typedef struct {
     u32 color; /* rgb */
@@ -4153,8 +4153,8 @@ s32 btl_loadEnemyModelsStep(s32, s32, Unk800AA504 *);
  * given type/kind to dst, skipping duplicates */
 static inline void btl_loadSoundsStep_collect(s16 *dst, u32 type, u32 kind) {
     FileTable *t = g_gameState->gameData->depTable;
-    FileEntryX *first = (FileEntryX *)t->unk4;
-    FileEntryX *e = &first[t->unk2] - 1;
+    FileEntryX *first = (FileEntryX *)t->entries;
+    FileEntryX *e = &first[t->count] - 1;
     s16 *q = dst;
     s16 *s;
     u32 w;

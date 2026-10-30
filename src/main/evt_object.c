@@ -6,58 +6,58 @@ EvtObject *evt_allocObject(s32 n) {
     EvtAllocNode *next;
 
     if (cur != NULL) {
-        if ((u32 *)cur->unk0 >= g_evtState->objPool + n) {
+        if ((u32 *)cur->start >= g_evtState->objPool + n) {
             nn = g_evtState->allocFree;
-            g_evtState->allocFree = nn->unk8;
-            nn->unk8 = g_evtState->allocUsed;
+            g_evtState->allocFree = nn->next;
+            nn->next = g_evtState->allocUsed;
             g_evtState->allocUsed = nn;
             {
                 u32 *p1 = g_evtState->objPool;
-                nn->unk0 = (EvtObject *)p1;
-                nn->unk4 = p1 + n;
+                nn->start = (EvtObject *)p1;
+                nn->end = p1 + n;
             }
         } else {
-            for (next = cur->unk8; next != NULL; next = cur->unk8) {
-                if ((u32 *)next->unk0 >= cur->unk4 + n) {
+            for (next = cur->next; next != NULL; next = cur->next) {
+                if ((u32 *)next->start >= cur->end + n) {
                     break;
                 }
                 cur = next;
             }
             if (next != NULL) {
                 nn = g_evtState->allocFree;
-                g_evtState->allocFree = nn->unk8;
-                nn->unk8 = cur->unk8;
-                cur->unk8 = nn;
+                g_evtState->allocFree = nn->next;
+                nn->next = cur->next;
+                cur->next = nn;
                 {
-                    u32 *p2 = cur->unk4;
-                    nn->unk0 = (EvtObject *)p2;
-                    nn->unk4 = p2 + n;
+                    u32 *p2 = cur->end;
+                    nn->start = (EvtObject *)p2;
+                    nn->end = p2 + n;
                 }
-            } else if (cur->unk4 + n <= g_evtState->objPool + 0x500) {
+            } else if (cur->end + n <= g_evtState->objPool + 0x500) {
                 nn = g_evtState->allocFree;
-                g_evtState->allocFree = nn->unk8;
-                nn->unk8 = NULL;
-                cur->unk8 = nn;
+                g_evtState->allocFree = nn->next;
+                nn->next = NULL;
+                cur->next = nn;
                 {
-                    u32 *p3 = cur->unk4;
-                    nn->unk0 = (EvtObject *)p3;
-                    nn->unk4 = p3 + n;
+                    u32 *p3 = cur->end;
+                    nn->start = (EvtObject *)p3;
+                    nn->end = p3 + n;
                 }
             }
         }
     } else if (n <= 0x500) {
         nn = g_evtState->allocFree;
-        g_evtState->allocFree = nn->unk8;
-        nn->unk8 = NULL;
+        g_evtState->allocFree = nn->next;
+        nn->next = NULL;
         g_evtState->allocUsed = nn;
         {
             u32 *p4 = g_evtState->objPool;
-            nn->unk0 = (EvtObject *)p4;
-            nn->unk4 = p4 + n;
+            nn->start = (EvtObject *)p4;
+            nn->end = p4 + n;
         }
     }
     if (nn != NULL) {
-        return nn->unk0;
+        return nn->start;
     }
     return NULL;
 }
@@ -78,7 +78,7 @@ EvtObject *evt_createObject(s32 idx, s32 id, s32 a2, s32 a3) {
         evt_deleteObject(o);
     }
     nw = (a2 + 3) >> 2;
-    nv = (((ScriptEntry *)g_evtScripts)[idx].unk4 + 3) >> 2;
+    nv = (((ScriptEntry *)g_evtScripts)[idx].varBytes + 3) >> 2;
     o = evt_allocObject(nw + nv + a3);
     end = (u32 *)o + nw + nv;
     for (p = (u32 *)o; p < end; p++) {
@@ -100,7 +100,7 @@ EvtObject *evt_createObject(s32 idx, s32 id, s32 a2, s32 a3) {
     o->uid = id;
     o->kind = 0;
     {
-        u8 *h = g_evtScripts + ((ScriptEntry *)g_evtScripts)[idx].unk0;
+        u8 *h = g_evtScripts + ((ScriptEntry *)g_evtScripts)[idx].offset;
         s32 c = *(u16 *)h >> 8;
         u16 *q = (u16 *)(h + 2);
 

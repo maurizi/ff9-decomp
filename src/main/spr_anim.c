@@ -1,35 +1,35 @@
 #include "ff9.h"
 
-void sprAnim_drawCell(s32 x, s32 y, s32 otz, s32 unused, Unk800357E0 *d) {
-    u32 t = d->unk4;
+void sprAnim_drawCell(s32 x, s32 y, s32 otz, s32 unused, SprCell *d) {
+    u32 t = d->clutTpage;
     SprtWords *s;
 
     setlen(g_primPtr, 4);
     s = (SprtWords *)g_primPtr;
     s->rgbc = GPU_RGBC(GPU_SPRT, 0x808080);
-    s->xy = ((x + d->unk2 - 0x80) & 0xFFFF) | ((y + d->unk3 - 0x80) << 16);
-    s->uvclut = d->unk0 | (d->unk1 << 8) | ((u16)d->unk4 << 16);
+    s->xy = ((x + d->x - 0x80) & 0xFFFF) | ((y + d->y - 0x80) << 16);
+    s->uvclut = d->u | (d->v << 8) | ((u16)d->clutTpage << 16);
     g_primPtr = (u8 *)(s + 1);
-    s->wh = d->unk8 | (d->unkA << 16);
+    s->wh = d->w | (d->h << 16);
     addPrim(&g_ot[otz], s);
     SetDrawTPage(g_primPtr, 1, 1, ((t >> 16) & 0x1F) | (((t >> 21) & 3) << 5) | (((t >> 23) & 3) << 7));
     addPrim(&g_ot[otz], g_primPtr);
     g_primPtr += 8;
 }
 
-void sprAnim_drawScaledCell(s32 x, s32 y, s32 otz, Unk80035B90 *unused, AnimCell *c) {
+void sprAnim_drawScaledCell(s32 x, s32 y, s32 otz, SprAnim *unused, AnimCell *c) {
     u32 t;
     s32 sw;
     u32 tp;
     s32 sh;
     PolyFT4Words *p;
 
-    t = c->unk0.unk4;
-    sw = (c->unk0.unk8 * c->unk10) >> 12;
+    t = c->cell.clutTpage;
+    sw = (c->cell.w * c->scaleX) >> 12;
     tp = ((t >> 16) & 0x1F) | (((t >> 21) & 3) << 5) | (((t >> 23) & 3) << 7);
-    sh = (c->unk0.unkA * c->unk12) >> 12;
-    x = x + c->unk0.unk2 - 0x80 + ((c->unk0.unk8 - sw) >> 1);
-    y = y + c->unk0.unk3 - 0x80 + ((c->unk0.unkA - sh) >> 1);
+    sh = (c->cell.h * c->scaleY) >> 12;
+    x = x + c->cell.x - 0x80 + ((c->cell.w - sw) >> 1);
+    y = y + c->cell.y - 0x80 + ((c->cell.h - sh) >> 1);
     setlen(g_primPtr, 9);
     p = (PolyFT4Words *)g_primPtr;
     p->rgbc = GPU_RGBC(GPU_POLY_FT4, 0x808080);
@@ -37,70 +37,70 @@ void sprAnim_drawScaledCell(s32 x, s32 y, s32 otz, Unk80035B90 *unused, AnimCell
     p->xy1 = ((x + sw) & 0xFFFF) | (y << 16);
     p->xy2 = (x & 0xFFFF) | ((y + sh) << 16);
     p->xy3 = ((x + sw) & 0xFFFF) | ((y + sh) << 16);
-    p->uv0clut = c->unk0.unk0 | (c->unk0.unk1 << 8) | ((u16)c->unk0.unk4 << 16);
-    p->uv1tpage = (c->unk0.unk0 + c->unk0.unk8 - 1) | (c->unk0.unk1 << 8) | (tp << 16);
-    p->uv2 = c->unk0.unk0 | ((c->unk0.unk1 + c->unk0.unkA - 1) << 8);
-    p->uv3 = (c->unk0.unk0 + c->unk0.unk8 - 1) | ((c->unk0.unk1 + c->unk0.unkA - 1) << 8);
+    p->uv0clut = c->cell.u | (c->cell.v << 8) | ((u16)c->cell.clutTpage << 16);
+    p->uv1tpage = (c->cell.u + c->cell.w - 1) | (c->cell.v << 8) | (tp << 16);
+    p->uv2 = c->cell.u | ((c->cell.v + c->cell.h - 1) << 8);
+    p->uv3 = (c->cell.u + c->cell.w - 1) | ((c->cell.v + c->cell.h - 1) << 8);
     addPrim(&g_ot[otz], p);
     g_primPtr = (u8 *)(p + 1);
 }
 
-void sprAnim_init(Unk80035B90 *a, Unk80035B90Data *d) {
-    a->unk4 = d;
-    a->unk8 = d->unk4;
-    a->unkC = &a->unk8[a->unk4->unk0];
-    a->unk10 = d;
-    a->unk0 = 0;
-    a->unk1 = 0;
-    a->unk2 = 0;
-    a->unk14 = 0;
-    a->unk3 = d->unk0;
+void sprAnim_init(SprAnim *a, SprAnimData *d) {
+    a->data = d;
+    a->frames = d->frames;
+    a->cellLists = &a->frames[a->data->frameCount];
+    a->base = d;
+    a->playing = 0;
+    a->frame = 0;
+    a->tick = 0;
+    a->onDone = 0;
+    a->frameCount = d->frameCount;
 }
 
-u8 sprAnim_setPlaying(Unk80035B90 *a, u8 b) {
-    u8 old = a->unk0;
-    a->unk0 = b;
+u8 sprAnim_setPlaying(SprAnim *a, u8 b) {
+    u8 old = a->playing;
+    a->playing = b;
     return old;
 }
 
-void sprAnim_setOnDone(Unk80035B90 *a, void (*b)()) {
-    a->unk14 = b;
+void sprAnim_setOnDone(SprAnim *a, void (*b)()) {
+    a->onDone = b;
 }
 
-void sprAnim_reset(Unk80035B90 *a) {
-    a->unk0 = 0;
-    a->unk1 = 0;
-    a->unk2 = 0;
-    a->unk14 = 0;
+void sprAnim_reset(SprAnim *a) {
+    a->playing = 0;
+    a->frame = 0;
+    a->tick = 0;
+    a->onDone = 0;
 }
 
-void sprAnim_update(Unk80035B90 *arg0) {
-    Unk80035B90Frame *f = &arg0->unk8[arg0->unk1];
+void sprAnim_update(SprAnim *arg0) {
+    SprAnimFrame *f = &arg0->frames[arg0->frame];
 
-    if (arg0->unk0 != 0) {
-        if (++arg0->unk2 >= f->unk2 - 1) {
-            arg0->unk2 = 0;
-            if (++arg0->unk1 >= arg0->unk3 - 1) {
-                arg0->unk0 = 0;
-                if (arg0->unk14 != NULL) {
-                    arg0->unk14(arg0);
+    if (arg0->playing != 0) {
+        if (++arg0->tick >= f->ticks - 1) {
+            arg0->tick = 0;
+            if (++arg0->frame >= arg0->frameCount - 1) {
+                arg0->playing = 0;
+                if (arg0->onDone != NULL) {
+                    arg0->onDone(arg0);
                 }
             }
         }
     }
 }
 
-void sprAnim_draw(s32 x, s32 y, s32 otz, Unk80035B90 *a) {
+void sprAnim_draw(s32 x, s32 y, s32 otz, SprAnim *a) {
     s32 i;
-    Unk80035B90Frame *f = &a->unk8[a->unk1];
-    AnimCellList *cl = &((AnimCellList *)a->unkC)[f->unk0];
-    AnimCell *c = (AnimCell *)((u8 *)a->unk10 + cl->unk2);
+    SprAnimFrame *f = &a->frames[a->frame];
+    AnimCellList *cl = &((AnimCellList *)a->cellLists)[f->cellList];
+    AnimCell *c = (AnimCell *)((u8 *)a->base + cl->offset);
 
-    for (i = 0; i < cl->unk0; i++) {
-        if (!((c->unk0.unk4 >> 26) & 1)) {
-            sprAnim_drawCell(x + f->unk4, y + f->unk6, otz, (s32)a, &c->unk0);
+    for (i = 0; i < cl->count; i++) {
+        if (!((c->cell.clutTpage >> 26) & 1)) {
+            sprAnim_drawCell(x + f->x, y + f->y, otz, (s32)a, &c->cell);
         } else {
-            sprAnim_drawScaledCell(x + f->unk4, y + f->unk6, otz, a, c);
+            sprAnim_drawScaledCell(x + f->x, y + f->y, otz, a, c);
         }
         c++;
     }

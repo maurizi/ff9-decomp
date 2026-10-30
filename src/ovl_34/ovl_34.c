@@ -15,11 +15,11 @@ void menuConfig_init(void) {
     m->rumbleTicks = 0;
     m->primBufs[0] = PSX_RAM(u8 *, 0x801F9F00);
     m->primBufs[1] = PSX_RAM(u8 *, 0x801FBF00);
-    m->prim = m->primBufs[g_gameState->gameData->unk8 ^ 1];
+    m->prim = m->primBufs[g_gameState->gameData->drawBuf ^ 1];
     m->charCount = 0;
     for (i = 0; i < 9; i++) {
-        if (g_gameState->gameData->characters[i].unk34.b.unkB) {
-            s_menuConfig.charPortBit[s_menuConfig.charCount] = chr_getClass(g_gameState->gameData->characters[i].unk34.b.row);
+        if (g_gameState->gameData->characters[i].info.b.recruited) {
+            s_menuConfig.charPortBit[s_menuConfig.charCount] = chr_getClass(g_gameState->gameData->characters[i].info.b.row);
             s_menuConfig.charIdx[s_menuConfig.charCount] = i;
             s_menuConfig.charCount++;
         }
@@ -149,13 +149,13 @@ void menuConfig_inputBattleControl(void) {
 }
 
 void menuConfig_drawPadMap(void) {
-    RECT *r = &s_menuConfig.wins[0].unk4;
+    RECT *r = &s_menuConfig.wins[0].rect;
     RECT *r2;
     s32 i = 0;
 
     ui_drawLabel(r->x + 0xB, r->y - 3, 0x11, g_winLabelStrings.unk84, 0);
     ui_drawLabel(r->x + 0x2D, r->y - 3, 0x11, g_winLabelStrings.unk8C, 0);
-    r2 = &s_menuConfig.wins[1].unk4;
+    r2 = &s_menuConfig.wins[1].rect;
     text_drawBlock(r2->x + 0x2A, r2->y + 8, 0x11, text_get(CONFIG_TEXT_PAD_EXIT), 0);
     for (; i < CONFIG_PAD_SLOTS; i++) {
         ui_drawSprite(r->x + 0x10, r->y + 0xB + i * 0x11, 0x11, s_menuConfigPadActions[(g_gameState->padMap >> (i * 4)) & 7].icon, 0);
@@ -166,16 +166,16 @@ void menuConfig_drawPadMap(void) {
 }
 
 void menuConfig_drawBattleControl(void) {
-    RECT *r = &s_menuConfig.wins[0].unk4;
+    RECT *r = &s_menuConfig.wins[0].rect;
     RECT *r2;
     s32 i;
     u8 on;
 
-    r2 = &s_menuConfig.wins[1].unk4;
+    r2 = &s_menuConfig.wins[1].rect;
     text_drawBlock(r2->x + 0x2A, r2->y + 8, 0x11, text_get(CONFIG_TEXT_PORT_EXIT), 0);
     for (i = 0; i < s_menuConfig.charCount; i++) {
         on = ((s32)(g_gameState->config >> CFG_SHIFT_CHAR_PORT) >> s_menuConfig.charPortBit[i]) & 1;
-        text_drawBlock(r->x + 0xE, r->y + 0xA + i * 0x11, 0x11, g_gameState->gameData->characters[s_menuConfig.charIdx[i]].unk0, 0);
+        text_drawBlock(r->x + 0xE, r->y + 0xA + i * 0x11, 0x11, g_gameState->gameData->characters[s_menuConfig.charIdx[i]].name, 0);
         menuConfig_drawIcon(r->x + 0x60, r->y + 0xA + i * 0x11, 0x11, 0xF8, on);
         menuConfig_drawIcon(r->x + 0x92, r->y + 0xA + i * 0x11, 0x11, 0x100, on == 0);
     }
@@ -316,7 +316,7 @@ void menuConfig_openSubWindow(void) {
         s_menuConfig.subCursor = 0;
         s_menuConfig.editing = 1;
         for (j = 0; j < 2; j++) {
-            s_menuConfig.wins[j].unk4 = s_menuConfigSubRects[j];
+            s_menuConfig.wins[j].rect = s_menuConfigSubRects[j];
             tween_start(&s_menuConfig.wins[j], &s_menuConfigSubOpen, 1);
         }
         snd_playSe(SE_CURSOR);
@@ -485,8 +485,8 @@ void menuConfig_input(void) {
 void menuConfig_draw(void) {
     s32 k = 0x2000;
 
-    s_menuConfig.primFree = s_menuConfig.primBufs[g_gameState->gameData->unk8 ^ 1] - (s_menuConfig.prim - k);
-    s_menuConfig.prim = s_menuConfig.primBufs[g_gameState->gameData->unk8];
+    s_menuConfig.primFree = s_menuConfig.primBufs[g_gameState->gameData->drawBuf ^ 1] - (s_menuConfig.prim - k);
+    s_menuConfig.prim = s_menuConfig.primBufs[g_gameState->gameData->drawBuf];
     ui_drawLabel(0x10, 0x23, 0x16, D_80070430, 0);
     ui_drawRule(8, 0x26, 0x16, 0, 0x12C, (g_gameState->config >> CFG_BIT_WINDOW_COLOR) & 1);
     menuConfig_drawRows();
@@ -663,8 +663,8 @@ void menuConfig_drawSubWindows(void) {
 
     i = s_menuConfig.list.top + s_menuConfig.list.cursor;
     if (s_menuConfig.editing != 0) {
-        win_drawBox(&s_menuConfig.wins[0].unk4, 0x12, 2);
-        win_drawBox(&s_menuConfig.wins[1].unk4, 0x12, 2);
+        win_drawBox(&s_menuConfig.wins[0].rect, 0x12, 2);
+        win_drawBox(&s_menuConfig.wins[1].rect, 0x12, 2);
         if (i == CONFIG_ROW_CONTROLLER) {
             menuConfig_drawPadMap();
             return;
@@ -733,10 +733,10 @@ void menuConfig_drawText(s32 x, s32 y, s32 otz, s32 text, s32 color) {
 }
 
 void menuConfig_stepWindows(void) {
-    if (s_menuConfig.wins[0].unkC != 0) {
+    if (s_menuConfig.wins[0].anim != 0) {
         tween_step(&s_menuConfig.wins[0]);
     }
-    if (s_menuConfig.wins[1].unkC != 0) {
+    if (s_menuConfig.wins[1].anim != 0) {
         tween_step(&s_menuConfig.wins[1]);
     }
 }
@@ -806,7 +806,7 @@ void menuConfig_closeSubWindow(void) {
 }
 
 u8 menuConfig_isWindowMoving(void) {
-    return s_menuConfig.wins[0].unkC != 0;
+    return s_menuConfig.wins[0].anim != 0;
 }
 
 u8 menuConfig_hasVibration(void) {

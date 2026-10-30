@@ -28,7 +28,7 @@ void menu_open(s32 a, s32 b) {
 void menu_doOpen(s32 a, s32 b) {
     GameState *st = g_gameState;
 
-    if (!(st->gameData->unk0 & GD_MENU_DISABLED) && g_menu.open == 0 && g_menu.state == 0 && (u32)a < 9) {
+    if (!(st->gameData->flags & GD_MENU_DISABLED) && g_menu.open == 0 && g_menu.state == 0 && (u32)a < 9) {
         g_menu.open = 1;
         g_menu.type = a;
         g_menu.arg = b;
@@ -41,9 +41,9 @@ void menu_doOpen(s32 a, s32 b) {
         g_menu.onClose = 0;
         g_menu.state = 1;
         if (st->mode == 1) {
-            st->gameData->unk8E4.ovl65->unk0 |= 0x1000;
+            st->gameData->ctx.ovl65->unk0 |= 0x1000;
         }
-        g_gameState->gameData->unk0 |= GD_MENU_OPEN;
+        g_gameState->gameData->flags |= GD_MENU_OPEN;
         help_init();
         menu_loadOverlay();
         menu_startFadeOut();
@@ -56,7 +56,7 @@ void menu_onFadedOut(void) {
 
     g_menu.fadingOut = 0;
     g = g_gameState;
-    g->gameData->unk0 |= GD_HIDE_ALL;
+    g->gameData->flags |= GD_HIDE_ALL;
     g_menu.savedVsyncMode = g->vsyncMode;
     g->vsyncMode = 0;
     g_menu.savedR = g_gameState->drawEnv[0].r0;
@@ -82,10 +82,10 @@ void menu_finish(void) {
     u8 idx;
 
     if (g_gameState->mode == 1) {
-        g_gameState->gameData->unk8E4.ovl65->unk0 &= ~0x1000;
+        g_gameState->gameData->ctx.ovl65->unk0 &= ~0x1000;
     }
-    g_gameState->gameData->unk0 &= ~GD_MENU_OPEN;
-    g_gameState->gameData->unk0 &= ~GD_HIDE_ALL;
+    g_gameState->gameData->flags &= ~GD_MENU_OPEN;
+    g_gameState->gameData->flags &= ~GD_HIDE_ALL;
     win_closeAllNow();
     g_gameState->vsyncMode = g_menu.savedVsyncMode;
     g_gameState->drawEnv[0].r0 = g_menu.savedR;
@@ -183,7 +183,7 @@ void menu_readOverlay(void) {
         g_menu.state = 2;
         g_menu.reading = 1;
         f = file_find(0, g_menuTypeOvl[g_menu.type]);
-        cd_readAsync(f->unk4 + g_gameState->imgSector, (f->unkC - f->unk4) << 11, PSX_RAM(void *, 0x801EDF00), menu_onOverlayRead);
+        cd_readAsync(f->sector + g_gameState->imgSector, (f->unkC - f->sector) << 11, PSX_RAM(void *, 0x801EDF00), menu_onOverlayRead);
 
     }
 }
@@ -198,7 +198,7 @@ void menu_readPortraits(void) {
         } else if (busy == 0 || g_gameState->mode != 3) {
             g_menu.reading = 1;
             f = file_find(1, 30);
-            if (cd_readAsync(g_gameState->imgSector + f->unk4, (f->unkC - f->unk4) << 11, PSX_RAM(void *, 0x801EDF00),
+            if (cd_readAsync(g_gameState->imgSector + f->sector, (f->unkC - f->sector) << 11, PSX_RAM(void *, 0x801EDF00),
                               menu_onPortraitsRead)) {
                 g_menu.state = 2;
             }
