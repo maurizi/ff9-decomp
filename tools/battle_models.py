@@ -99,12 +99,22 @@ def model_stats(data, mid):
     h = db_find(data, KIND_MODEL << 16 | mid, pack)
     if h is None:
         return None
+    return header_stats(data, h)
+
+
+def header_stats(data, h, tex_count=None):
+    """Counts and consistency checks of the model header (BtlUnit9C8 / ovl_0a WmModel) at data[h], offsets not yet
+    relocated. Shared with tools/field_models.py (field models have the same layout). With tex_count (the model
+    info entry's texture count), polygon texture indices are checked against it."""
     flags, nbones, nmesh, packet = struct.unpack_from('<HBBH', data, h)
     height, radius, bones_ofs, mesh_ofs = struct.unpack_from('<HHiI', data, h + 8)
     out = {'bones': nbones, 'meshes': [], 'packet_size': packet, 'height': height, 'radius': radius,
            'problems': []}
     psum = 0
+    # each group's colours run to the next group's vertexCounts (the last group's end is not stored)
+    vcs = [h + struct.unpack_from('<I', data, h + mesh_ofs + i * 0x28 + 0x14)[0] for i in range(nmesh)]
     for i in range(nmesh):
+        next_vc = vcs[i + 1] if i + 1 < nmesh else None
         m = h + mesh_ofs + i * 0x28
         msize = u16(data, m)
         counts = struct.unpack_from('<8H', data, m + 2)
@@ -139,7 +149,13 @@ def model_stats(data, mid):
             want += n * pkt
         mesh.update({'max_vertex_index': maxv, 'max_uv_index': maxuv, 'max_colour_index': maxc,
                      'textures': sorted(texs), 'prim_bytes': p - p_o, 'double_sided': double,
-                     'semi_transparent': semi})
+                     'semi_transparent': semi, 'colours': (next_vc - c_o) // 4 if next_vc else None})
+        if maxuv >= mesh['uvs']:
+            out['problems'].append(f'mesh {i}: uv index {maxuv} >= {mesh["uvs"]} uvs')
+        if next_vc and maxc >= mesh['colours']:
+            out['problems'].append(f'mesh {i}: colour index {maxc} >= {mesh["colours"]} colours')
+        if tex_count is not None and texs and max(texs) >= tex_count:
+            out['problems'].append(f'mesh {i}: texture index {max(texs)} >= {tex_count} textures')
         if p != uv_o:
             out['problems'].append(f'mesh {i}: sources end at {p - h:#x}, uvs start at {uv_o - h:#x}')
         if v_o + nv * 8 != p_o:

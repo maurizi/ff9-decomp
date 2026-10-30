@@ -154,20 +154,30 @@ def bone_matrices(anim, bonedefs, frame, base=None):
 
 
 class Model:
-    """A battle model file (FF9.IMG dir index 7, or any file whose block 0x1B item 0 is a model container)."""
+    """A battle model file (FF9.IMG dir index 7, or any file whose block 0x1B item 0 is a model container).
 
-    def __init__(self, data, model_id):
+    Field models (tools/field_models.py) use the same class: `pack` is the offset of the container that holds the
+    header (a field file's item 0x1B0001, or a dir-10 file's 0x1B0000), and `motion_sources` are further
+    (data, container offset) pairs whose 0x03xxxx items are motions too (the field game looks a motion up in every
+    registered container, db_lookupRegistered)."""
+
+    def __init__(self, data, model_id, pack=None, motion_sources=()):
         self.data, self.id = data, model_id
-        pack = db_find(data, KIND_PACK << 16)
+        if pack is None:
+            pack = db_find(data, KIND_PACK << 16)
         if pack is None:
             raise ValueError(f'model {model_id}: no block 0x1B')
-        self.motions = {}
+        self.motions = {}  # key -> (bytes, offset of the motion)
         h = None
         for k, off in db_items(data, pack):
             if k == KIND_MODEL << 16 | model_id:
                 h = off
             elif k >> 16 == KIND_MOTION:
-                self.motions[k] = off
+                self.motions[k] = (data, off)
+        for src, base in motion_sources:
+            for k, off in db_items(src, base):
+                if k >> 16 == KIND_MOTION:
+                    self.motions.setdefault(k, (src, off))
         if h is None:
             raise ValueError(f'model {model_id}: no header 0x{KIND_MODEL << 16 | model_id:06x}')
         self.header = h
@@ -190,7 +200,8 @@ class Model:
         """Bytes of motion item `key` (0x03xxxx) from its start (offsets inside are relative to it)."""
         if key not in self.motions:
             raise KeyError(f'model {self.id}: no motion 0x{key:06x}')
-        return memoryview(self.data)[self.motions[key]:]
+        src, off = self.motions[key]
+        return memoryview(src)[off:]
 
     def frame_count(self, key):
         return u16(self.motion(key), 2)
