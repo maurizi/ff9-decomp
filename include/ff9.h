@@ -2873,54 +2873,22 @@ static inline void msg_closeWindow_inline(MsgWindow *p) {
 }
 extern s32 g_msgPadRepeatTimer;
 
-/* actor-like object updated by func_8004B9B8 */
-typedef struct {
-    u8 pad0[0xF];
-    u8 unkF;
-    u8 pad10[0x22 - 0x10];
-    u16 unk22;
-    u8 pad24[0x34 - 0x24];
-    u16 unk34;
-    u16 unk36;
-    u8 unk38;
-    u8 unk39;
-    u8 unk3A;
-    u8 unk3B;
-    u8 pad3C[0x50 - 0x3C];
-    u16 unk50;
-    u16 unk52;
-    u16 unk54;
-    u8 pad56[0x5A - 0x56];
-    u16 unk5A;
-    u8 pad5C;
-    u8 unk5D;
-    u8 pad5E[0x60 - 0x5E];
-    u8 unk60;
-    u8 unk61;
-    u8 unk62; /* flags */
-    u8 unk63; /* timer */
-    u8 unk64;
-    u8 pad65[0x69 - 0x65];
-    u8 unk69;
-    u8 pad6A[0x7C - 0x6A];
-    u8 unk7C[4];
-} Unk8004B9B8;
 s32 evt_getAnimFrameCount();
 s32 game_getModel(s32);
 
 /* Inlined copy of func_8004B9B8. */
-static inline void func_8004B9B8_inline(Unk8004B9B8 *p) {
+static inline void func_8004B9B8_inline(EvtObject *p) {
     s32 v;
-    p->unk22 = p->unk52 & 0xFFF;
-    v = p->unk5A;
-    if (v != p->unk36) {
-        p->unk36 = v;
-        p->unk3A = 0;
-        p->unk64 = 0;
-        p->unk38 = evt_getAnimFrameCount(p->unk34, v);
-        p->unk5D = p->unk69;
+    p->pos.rotY = (u16)p->turnTarget & 0xFFF;
+    v = p->turnPrevAnim;
+    if (v != p->anim) {
+        p->anim = v;
+        p->animFrame = 0;
+        p->animSubFrame = 0;
+        p->animFrames = evt_getAnimFrameCount(p->modelId, v);
+        p->animSpeed = p->defaultAnimSpeed;
     }
-    p->unkF &= 0x7F;
+    p->flags &= 0x7F;
 }
 
 s32 evt_getSysVar(s32);
@@ -4020,12 +3988,12 @@ void win_closeAll(void);
 void func_8004ED3C(void);
 void *msg_getText(s32);
 s32 evt_moveObjectTo(s32, s32, s32, s32);
-void func_8004B9B8(Unk8004B9B8 *);
+void func_8004B9B8(EvtObject *);
 
-/* Inlined helper: start the animation set up in unk60/unk61/unk62. */
+/* Inlined helper: start the animation set up in animStart/animEnd/animFlags. */
 static inline void evt_execInstr_anim(EvtObject *p, s32 anim) {
     if ((p->animFlags & 0x80) && (p->flags & 0x80)) {
-        func_8004B9B8((Unk8004B9B8 *)p);
+        func_8004B9B8(p);
     }
     p->anim = anim;
     p->animFrame = p->animStart;
@@ -4115,7 +4083,7 @@ void msg_startHereIcon(s32);
 void func_80052D0C(u8 **);
 Unk16D8 *evt_deleteObject(EvtObject *);
 EvtObject *evt_allocObject(s32);
-void evt_onAnimEnd(Unk8004B9B8 *);
+void evt_onAnimEnd(EvtObject *);
 
 extern s32 D_8007AE2C;
 extern s32 D_8007AE30;

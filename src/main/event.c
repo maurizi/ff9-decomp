@@ -1573,7 +1573,7 @@ s32 evt_execInstr(void) {
         g_evtArgRead = 1;
         return 1;
     case EVT_OP_ANIM_END:
-        evt_onAnimEnd((Unk8004B9B8 *)actor);
+        evt_onAnimEnd(actor);
         return 0;
     case 0xB5:
         obj = evt_getObjectArg();
@@ -3100,38 +3100,38 @@ s32 evt_updateObjects(void) {
     return r;
 }
 
-void evt_onAnimEnd(Unk8004B9B8 *p) {
+void evt_onAnimEnd(EvtObject *p) {
     s32 v;
     u32 *q;
 
-    if (!(p->unk62 & 8)) {
-        v = p->unk54;
-        if (v != p->unk36) {
-            p->unk36 = v;
-            p->unk3A = 0;
-            p->unk64 = 0;
-            p->unk38 = evt_getAnimFrameCount(p->unk34, v);
-            p->unk5D = p->unk69;
+    if (!(p->animFlags & 8)) {
+        v = (u16)p->standAnim;
+        if (v != p->anim) {
+            p->anim = v;
+            p->animFrame = 0;
+            p->animSubFrame = 0;
+            p->animFrames = evt_getAnimFrameCount(p->modelId, v);
+            p->animSpeed = p->defaultAnimSpeed;
         }
-        p->unk3A = 0;
+        p->animFrame = 0;
         if (g_randPtr >= g_randTableEnd) {
             rand_refill();
         }
-        p->unk5D = p->unk7C[*g_randPtr++ & 3];
-        p->unk62 &= 0x39;
-        if (p->unkF & 0x80) {
+        p->animSpeed = p->idleAnimSpeeds.b[*g_randPtr++ & 3];
+        p->animFlags &= 0x39;
+        if (p->flags & 0x80) {
             func_8004B9B8_inline(p);
         }
-        if (p->unk50 & 8) {
-            p->unk50 &= ~8;
-            q = (u32 *)game_getModel(p->unk3B);
+        if (p->moveFlags & 8) {
+            p->moveFlags &= ~8;
+            q = (u32 *)game_getModel(p->modelSlot);
             *q &= ~0x10;
-            p->unk60 = 0;
-            p->unk61 = 0xFF;
+            p->animStart = 0;
+            p->animEnd = 0xFF;
         }
     } else {
-        p->unk62 = (p->unk62 | 4) & 0x7D;
-        p->unk3A = p->unk39;
+        p->animFlags = (p->animFlags | 4) & 0x7D;
+        p->animFrame = p->animPrevFrame;
     }
 }
 
@@ -3908,7 +3908,7 @@ s32 evt_getArg24(void) {
     return v;
 }
 
-void func_8004B9B8(Unk8004B9B8 *p) {
+void func_8004B9B8(EvtObject *p) {
     func_8004B9B8_inline(p);
 }
 
