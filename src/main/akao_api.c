@@ -104,7 +104,7 @@ void akao_playSeDefault(s32 a) {
 }
 
 u32 akao_getActiveSe(void) {
-    u32 mask = g_akaoSeState.unk0;
+    u32 mask = g_akaoSeState.activeMask;
     AkaoChannel *c;
     u32 r;
     u32 bit;
@@ -131,7 +131,7 @@ s32 akao_isSePlaying(u32 id) {
     if (id == 0) {
         return 0;
     }
-    mask = g_akaoSeState.unk0;
+    mask = g_akaoSeState.activeMask;
     if (mask == 0) {
         return 0;
     }
@@ -447,7 +447,7 @@ s32 akao_uploadBank(s32 *buf, u32 size, s32 wait) {
             akao_copy(buf, g_akaoUpload.unk0, n);
             buf += n >> 2;
             size -= n;
-            g_akaoUpload.unk0 = (Unk8005EBB4 *)((s32 *)g_akaoUpload.unk0 + (n >> 2));
+            g_akaoUpload.unk0 = (AkaoInstrument *)((s32 *)g_akaoUpload.unk0 + (n >> 2));
             g_akaoUpload.unkC -= n;
             if (g_akaoUpload.unkC == 0) {
                 akao_relocInstruments((s32 *)&g_akaoInstruments[g_akaoBankHeader.slot], &g_akaoInstruments[g_akaoBankHeader.slot], g_akaoBankHeader.spuAddr, g_akaoBankHeader.instCount);

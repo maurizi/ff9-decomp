@@ -395,7 +395,7 @@ void akao_stepChannelSlides(AkaoChannel *c, u32 mask, s32 kind) {
             if (kind == 0) {
                 g_akaoSeq->noiseMask ^= mask;
             } else {
-                g_akaoSeState.unk1C ^= mask;
+                g_akaoSeState.noiseMask ^= mask;
             }
             g_akaoFlags.unk8 |= 0x110;
         }
@@ -405,7 +405,7 @@ void akao_stepChannelSlides(AkaoChannel *c, u32 mask, s32 kind) {
             if (kind == 0) {
                 g_akaoSeq->pitchModMask ^= mask;
             } else {
-                g_akaoSeState.unk24 ^= mask;
+                g_akaoSeState.pitchModMask ^= mask;
             }
             g_akaoFlags.unk8 |= 0x100;
         }
@@ -609,7 +609,7 @@ s32 akao_stealVoice(s32 arg0) {
     s32 min;
     s32 best;
     u32 m;
-    Unk8007F798 *e;
+    AkaoVoiceEnv *e;
 
     if (arg0 != 0) {
         i = 0;
@@ -620,8 +620,8 @@ s32 akao_stealVoice(s32 arg0) {
     best = 24;
     e = &g_akaoVoiceEnv[i];
     do {
-        m = (u16)e->unk4;
-        if (e->unk4 < (s16)min) {
+        m = (u16)e->envelope;
+        if (e->envelope < (s16)min) {
             min = m;
             best = i;
         }
@@ -636,13 +636,13 @@ s32 akao_stealVoice(s32 arg0) {
 }
 
 s32 akao_findFreeVoice(s32 a) {
-    Unk8007F798 *p;
+    AkaoVoiceEnv *p;
     if (a != 0) {
         a = 0;
     } else {
         a = g_akaoSeq->firstVoice;
     }
-    while ((p = &g_akaoVoiceEnv[a])->unk4 != 0) {
+    while ((p = &g_akaoVoiceEnv[a])->envelope != 0) {
         a++;
         if (a >= 0x18) {
             break;
@@ -689,7 +689,7 @@ void akao_assignVoices(AkaoChannel *ch, u32 mask, u32 keep, u32 *used) {
                         } else {
                             *used |= 1 << v;
                             ch->voice = v;
-                            g_akaoVoiceEnv[v].unk4 = 0x7FFF;
+                            g_akaoVoiceEnv[v].envelope = 0x7FFF;
                         }
                     }
                     if (ch->voice < 24) {
@@ -740,16 +740,16 @@ void akao_detachVoice(c, voice)
 void akao_readEnvelopes(u32 extra) {
     u32 m = (g_akaoSeq->activeMask & g_akaoSeq->keepVoiceMask) | extra;
     u32 i;
-    Unk8007F798 *p;
+    AkaoVoiceEnv *p;
     if (g_akaoSubSeq != NULL) {
         m |= g_akaoSubSeq->activeMask & g_akaoSubSeq->keepVoiceMask;
     }
     for (i = 0, p = g_akaoVoiceEnv; i < 24; i++, p++) {
         if (m & (1 << i)) {
-            p->unk4 = 0x7FFF;
+            p->envelope = 0x7FFF;
         } else {
-            SpuGetVoiceEnvelope(i, &p->unk4);
-            if (p->unk4 == 0) {
+            SpuGetVoiceEnvelope(i, &p->envelope);
+            if (p->envelope == 0) {
                 akao_detachVoice(g_akaoChannels, i);
             }
         }
@@ -782,7 +782,7 @@ void akao_updateVoices(void) {
     AkaoSeq *s;
     AkaoSeq *t;
 
-    ex = g_akaoSeState.unk0 | g_akaoSeState.unk10 | g_akaoStreamVoices;
+    ex = g_akaoSeState.activeMask | g_akaoSeState.pausedMask | g_akaoStreamVoices;
     keyon = 0;
     if ((g_akaoSeq->activeMask & g_akaoSeq->keyOnMask) ||
         (g_akaoSubSeq != NULL && (g_akaoSubSeq->activeMask & g_akaoSubSeq->keyOnMask))) {
@@ -841,9 +841,9 @@ void akao_updateVoices(void) {
             g_akaoSeq->keyOnMask = 0;
         }
     }
-    m2 = g_akaoSeState.unk0 & g_akaoSeState.unk8;
+    m2 = g_akaoSeState.activeMask & g_akaoSeState.playingMask;
     if (m2) {
-        keyon |= g_akaoSeState.unk4;
+        keyon |= g_akaoSeState.keyOnMask;
         bit = 0x100;
         ch = g_akaoSeChannels;
         for (; m2 != 0; bit <<= 1, ch++) {
@@ -863,13 +863,13 @@ void akao_updateVoices(void) {
         g_akaoFlags.unk8 &= ~0x80;
     }
     if (m2 & 0x10) {
-        SpuSetNoiseClock(g_akaoSeState.unk0 ? g_akaoSeState.unk28 : g_akaoSeq->noiseClock);
+        SpuSetNoiseClock(g_akaoSeState.activeMask ? g_akaoSeState.noiseClock : g_akaoSeq->noiseClock);
         g_akaoFlags.unk8 &= ~0x10;
     }
     if (m2 & 0x100) {
-        func_80059140((u32 *)&D_80083238[1], g_akaoSubSeq->noiseMask, g_akaoSeq->noiseMask, g_akaoSeState.unk1C);
-        func_80059140((u32 *)&D_80083238[0], g_akaoSubSeq->reverbMask, g_akaoSeq->reverbMask, g_akaoSeState.unk20);
-        func_80059140((u32 *)&D_80083238[2], g_akaoSubSeq->pitchModMask, g_akaoSeq->pitchModMask, g_akaoSeState.unk24);
+        func_80059140((u32 *)&D_80083238[1], g_akaoSubSeq->noiseMask, g_akaoSeq->noiseMask, g_akaoSeState.noiseMask);
+        func_80059140((u32 *)&D_80083238[0], g_akaoSubSeq->reverbMask, g_akaoSeq->reverbMask, g_akaoSeState.reverbMask);
+        func_80059140((u32 *)&D_80083238[2], g_akaoSubSeq->pitchModMask, g_akaoSeq->pitchModMask, g_akaoSeState.pitchModMask);
         akao_setReverbVoices(D_80083238[0]);
         akao_setNoiseVoices(D_80083238[1]);
         akao_setPitchModVoices(D_80083238[2]);
@@ -904,7 +904,7 @@ void func_80058F94(void) {
 
     a = 0;
     out = 0;
-    keep = ~((g_akaoSeState.unk0 | g_akaoSeState.unk10) | g_akaoStreamVoices);
+    keep = ~((g_akaoSeState.activeMask | g_akaoSeState.pausedMask) | g_akaoStreamVoices);
     if (g_akaoSubSeq != NULL) {
         a = g_akaoSubSeq->keyOffMask;
         m = a & g_akaoSubSeq->priorityMask;
@@ -929,8 +929,8 @@ void func_80058F94(void) {
         func_80058F34(g_akaoChannels, &out, b, keep);
         g_akaoSeq->keyOffMask = 0;
     }
-    out |= g_akaoSeState.unkC;
-    g_akaoSeState.unkC = 0;
+    out |= g_akaoSeState.keyOffMask;
+    g_akaoSeState.keyOffMask = 0;
     if (out != 0) {
         akao_keyOff(out);
     }
@@ -943,7 +943,7 @@ void func_80059140(u32 *out, u32 m1, u32 m2, u32 extra) {
     u32 b;
     AkaoSeq *s;
 
-    keep = ~((g_akaoSeState.unk0 | g_akaoSeState.unk10) | g_akaoStreamVoices);
+    keep = ~((g_akaoSeState.activeMask | g_akaoSeState.pausedMask) | g_akaoStreamVoices);
     a = 0;
     r = 0;
     s = g_akaoSubSeq;

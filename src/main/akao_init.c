@@ -1,6 +1,6 @@
 #include "ff9.h"
 
-void akao_relocInstruments(s32 *src, Unk8005EBB4 *dst, u32 base, s32 n) {
+void akao_relocInstruments(s32 *src, AkaoInstrument *dst, u32 base, s32 n) {
     s32 *d = (s32 *)dst;
 
     do {
@@ -100,11 +100,11 @@ void akao_initState(void) {
     D_8007F8E0 = 1;
     g_akaoFlags.unk0 = 0;
     g_akaoFlags.unk4 = 1;
-    g_akaoSeState.unk0 = 0;
+    g_akaoSeState.activeMask = 0;
     g_akaoMainSeq.activeMask = 0;
     g_akaoMainSeq.priorityMask = 0;
     g_akaoMainSeq.musicId = 0;
-    g_akaoSeState.unk10 = 0;
+    g_akaoSeState.pausedMask = 0;
     g_akaoMainSeq.pausedMask = 0;
     g_akaoSavedSeq.musicId = 0;
     g_akaoSavedSeq.activeMask = 0;
@@ -120,11 +120,11 @@ void akao_initState(void) {
     g_akaoCdVolumeFadeTicks = 0;
     p = (u8 *)g_akaoChannels + 0x88;
     i = *cnt;
-    g_akaoSeState.unk1C = 0;
+    g_akaoSeState.noiseMask = 0;
     g_akaoMainSeq.noiseMask = 0;
-    g_akaoSeState.unk20 = 0;
+    g_akaoSeState.reverbMask = 0;
     g_akaoMainSeq.reverbMask = 0;
-    g_akaoSeState.unk24 = 0;
+    g_akaoSeState.pitchModMask = 0;
     g_akaoMainSeq.pitchModMask = 0;
     g_akaoMainSeq.ticksPerBeat = 0;
     g_akaoMainSeq.beat = 0;
@@ -179,11 +179,11 @@ loop1:
     g_akaoSeq->keyOffMask = 0;
     g_akaoSeq->playingMask = 0;
     g_akaoSeq->keyOnMask = 0;
-    g_akaoSeState.unk18 = 1;
-    g_akaoSeState.unk14.w = 0x66A80000;
-    g_akaoSeState.unkC = 0;
-    g_akaoSeState.unk8 = 0;
-    g_akaoSeState.unk4 = 0;
+    g_akaoSeState.tempoAcc = 1;
+    g_akaoSeState.tempo.w = 0x66A80000;
+    g_akaoSeState.keyOffMask = 0;
+    g_akaoSeState.playingMask = 0;
+    g_akaoSeState.keyOnMask = 0;
     g_akaoSeq->reverbDepth = 0x3FFF000;
     g_akaoSeq->reverbDepthStep = 0;
     g_akaoSeq->reverbDepthSlideLen = 0;

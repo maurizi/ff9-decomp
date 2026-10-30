@@ -920,25 +920,25 @@ void akao_calcChannelVoice(AkaoChannel *, u32); /* channel LFO / pitch update (a
 
 /* 8-byte key-split region of an AKAO instrument (AkaoChannel.unk18) */
 typedef struct {
-    u8 unk0; /* sample */
-    u8 unk1; /* low key */
-    u8 unk2; /* high key */
-    u8 unk3;
-    u8 unk4;
-    u8 unk5; /* 0 = end */
-    u8 unk6;
-    u8 unk7;
+    u8 sample; /* sample: instrument index (akao_remapInstrument) */
+    u8 lowKey; /* low key */
+    u8 highKey; /* high key */
+    u8 attack; /* ADSR1 attack bits (<< 8) */
+    u8 sustainRate; /* ADSR2 sustain rate (<< 6) */
+    u8 sustainMode; /* 0 = end; 3/5/7 set ADSR2 bits 14-15 */
+    u8 releaseRate; /* ADSR2 release (low 5 bits) */
+    u8 volume; /* voiceVolScale */
 } AkaoRegion;
 
 /* voice setup parameters for akao_startSeChannel */
 typedef struct {
-    s32 unk0;
-    s32 unk4;
-    u8 unk8;
+    s32 handle; /* AkaoChannel.seHandle */
+    s32 mask; /* AkaoChannel.seMask */
+    u8 pan; /* AkaoChannel.sePan */
     u8 pad9[0xC - 0x9];
-    u16 unkC;
+    u16 volume; /* AkaoChannel.seVolume */
     u8 padE[0x10 - 0xE];
-    s32 unk10;
+    s32 bank; /* AkaoChannel.seBank */
 } VoiceParams;
 
 /* frame animation (sprAnim_update) */
@@ -1595,16 +1595,16 @@ s32 CdSyncCallback(void (*)(u8, u8 *));
 void CdFlush(void);
 
 typedef struct {
-    s32 unk0;
-    s32 unk4;
-    s16 unk8; /* fine tune */
-    s16 unkA; /* base note */
-    u16 unkC;
-    u16 unkE;
-} Unk8005EBB4;
+    s32 startAddr; /* SPU sample start (voiceStartAddr) */
+    s32 loopAddr; /* SPU loop address (voiceLoopAddr) */
+    s16 fineTune; /* fine tune */
+    s16 baseNote; /* base note */
+    u16 adsr1; /* default ADSR1 (op B3) */
+    u16 adsr2; /* default ADSR2 */
+} AkaoInstrument;
 extern u32 g_akaoSemitonePitch[12]; /* semitone pitch table */
-extern Unk8005EBB4 g_akaoInstruments[];
-u16 akao_calcPitch(Unk8005EBB4 *p, s32 note, u8 fine, s32 *out);
+extern AkaoInstrument g_akaoInstruments[];
+u16 akao_calcPitch(AkaoInstrument *p, s32 note, u8 fine, s32 *out);
 extern u8 D_8006F374[]; /* operand length of opcodes 0xA0-0xFF, 0 = special */
 extern u8 D_8006F3D4[]; /* operand length of 0xFE xx opcodes */
 s32 func_8005DB40(AkaoChannel *c);
@@ -1614,16 +1614,16 @@ extern u16 D_8006F3F4[]; /* note lengths */
 
 /* drum kit key entry (func_8005E170) */
 typedef struct {
-    u8 unk0; /* sample */
-    u8 unk1; /* note */
-    u8 unk2;
-    u8 unk3;
-    u8 unk4;
-    u8 unk5;
-    u8 unk6;
-    u8 unk7; /* pan, bit 7: flag */
+    u8 sample; /* sample: instrument index */
+    u8 note; /* note */
+    u8 attack; /* ADSR1 attack bits (<< 8) */
+    u8 sustainRate; /* ADSR2 sustain rate (<< 6) */
+    u8 sustainMode; /* 3/5/7 set ADSR2 bits 14-15 */
+    u8 releaseRate; /* ADSR2 release (low 5 bits) */
+    u8 volume; /* voiceVolScale */
+    u8 pan; /* pan, bit 7: flag = reverb on */
 } AkaoDrumKey;
-void akao_setChannelInstrument(AkaoChannel *, Unk8005EBB4 *, s32);
+void akao_setChannelInstrument(AkaoChannel *, AkaoInstrument *, s32);
 
 typedef struct {
     void (*unk0)(void);
@@ -2075,7 +2075,7 @@ void help_draw(void);
 void help_toggle(void);
 void sprAnim_update(Unk80035B90 *);
 void menu_onPortraitsRead(u8 *);
-void akao_relocInstruments(s32 *, Unk8005EBB4 *, u32, s32);
+void akao_relocInstruments(s32 *, AkaoInstrument *, u32, s32);
 s32 akao_loadBankAt(s32 *, s32, s32, u32);
 typedef struct {
     s32 unk0[4];
@@ -2361,25 +2361,25 @@ extern AkaoChannel g_akaoSeChannels[];
 extern s32 D_800831C4;
 
 typedef struct {
-    s32 unk0;
-    u32 unk4;
-    u32 unk8;
-    u32 unkC;
-    s32 unk10;
+    s32 activeMask; /* sound-effect channels running (bits 0x100 << i) */
+    u32 keyOnMask;
+    u32 playingMask;
+    u32 keyOffMask;
+    s32 pausedMask; /* active channels set aside while D_800831C4 & 2 */
     union {
         u32 w;
         u16 h[2];
-    } unk14; /* tempo, 16.16 */
-    u32 unk18; /* tempo accumulator */
-    u32 unk1C;
-    u32 unk20;
-    u32 unk24;
-    u16 unk28;
-} Unk80080A70;
-extern Unk80080A70 g_akaoSeState;
+    } tempo; /* tempo, 16.16 */
+    u32 tempoAcc; /* tempo accumulator */
+    u32 noiseMask; /* (SE ops C4/C5) */
+    u32 reverbMask; /* (SE ops C2/C3) */
+    u32 pitchModMask; /* (SE ops C6/C7) */
+    u16 noiseClock; /* SpuSetNoiseClock while sound effects play (op AC) */
+} AkaoSeState;
+extern AkaoSeState g_akaoSeState;
 void akao_opC4(AkaoChannel *, u32);
 void akao_opC6(AkaoChannel *, u32);
-extern u16 D_80080A98; /* = g_akaoSeState.unk28 */
+extern u16 D_80080A98; /* = g_akaoSeState.noiseClock */
 extern s32 D_80080A80;
 
 
@@ -2517,10 +2517,10 @@ extern AkaoChannel *g_akaoSubChannels;
 
 typedef struct {
     u8 pad0[4];
-    s16 unk4;
+    s16 envelope; /* SpuGetVoiceEnvelope level; 0 = voice free (akao_findFreeVoice), 0x7FFF = reserved */
     u8 pad6[2];
-} Unk8007F798;
-extern Unk8007F798 g_akaoVoiceEnv[24];
+} AkaoVoiceEnv;
+extern AkaoVoiceEnv g_akaoVoiceEnv[24];
 void akao_detachVoice(); /* (AkaoChannel *, s32 voice) */
 
 typedef struct {
@@ -4354,7 +4354,7 @@ void func_80061EE4(void);
 
 /* AKAO sample stream state, akao_uploadBank */
 typedef struct {
-    Unk8005EBB4 *unk0; /* destination of the next sample-info copy */
+    AkaoInstrument *unk0; /* destination of the next sample-info copy */
     u32 unk4;          /* SPU transfer address */
     u32 unk8;          /* sample bytes left */
     u32 unkC;          /* sample-info bytes left */

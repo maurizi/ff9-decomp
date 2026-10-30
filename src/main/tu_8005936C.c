@@ -60,6 +60,6 @@ void func_80059414(void) {
                 mask &= ~(1 << v);
             }
         }
-        g_akaoSeState.unkC |= found & ~(g_akaoSeState.unk0 | g_akaoStreamVoices);
+        g_akaoSeState.keyOffMask |= found & ~(g_akaoSeState.activeMask | g_akaoStreamVoices);
     }
 }
