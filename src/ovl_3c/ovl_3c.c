@@ -334,9 +334,9 @@ void shopBuy_drawList(void) {
     MenuList *list;
     RECT *r = &s_shopBuy.listRect;
 
-    w = ui_measureLabel((u8 *)g_winLabelStrings.unkA4);
-    ui_drawLabel(r->x + 0xE, r->y - 3, 0x23, g_winLabelStrings.unk68, 0);
-    ui_drawLabel((r->x + 0xA6) - w, r->y - 3, 0x23, g_winLabelStrings.unkA4, 0);
+    w = ui_measureLabel((u8 *)g_winLabelStrings.shopPrice);
+    ui_drawLabel(r->x + 0xE, r->y - 3, 0x23, g_winLabelStrings.itemList, 0);
+    ui_drawLabel((r->x + 0xA6) - w, r->y - 3, 0x23, g_winLabelStrings.shopPrice, 0);
     list = &s_shopBuy.list;
     win_drawListBox(r, 0x23, 1, list);
     menuList_getView(list, &view);
@@ -767,9 +767,9 @@ void shopSynth_drawList(void) {
     MenuList *list;
     RECT *r = &s_shopSynth.listRect;
 
-    w = ui_measureLabel((u8 *)g_winLabelStrings.unkA4);
-    ui_drawLabel(r->x + 0xE, r->y - 3, 0x23, g_winLabelStrings.unk68, 0);
-    ui_drawLabel((r->x + 0xA6) - w, r->y - 3, 0x23, g_winLabelStrings.unkA4, 0);
+    w = ui_measureLabel((u8 *)g_winLabelStrings.shopPrice);
+    ui_drawLabel(r->x + 0xE, r->y - 3, 0x23, g_winLabelStrings.itemList, 0);
+    ui_drawLabel((r->x + 0xA6) - w, r->y - 3, 0x23, g_winLabelStrings.shopPrice, 0);
     list = &s_shopSynth.list;
     win_drawListBox(r, 0x23, 1, list);
     menuList_getView(list, &view);
@@ -1177,11 +1177,11 @@ void shopSell_drawList(void) {
     s32 idx;
     MenuList *list = &s_shopSell.list;
 
-    ui_drawLabel(s_shopSellListRectPtr->x + 0xE, s_shopSellListRectPtr->y - 3, 0x23, g_winLabelStrings.unk68, 0);
-    ui_drawLabel(s_shopSellListRectPtr->x + 0xA4, s_shopSellListRectPtr->y - 3, 0x23, g_winLabelStrings.unk68, 0);
-    w = ui_measureLabel((u8 *)g_winLabelStrings.unk94);
-    ui_drawLabel((s_shopSellListRectPtr->x + 0x8A) - w, s_shopSellListRectPtr->y - 3, 0x23, g_winLabelStrings.unk94, 0);
-    ui_drawLabel((s_shopSellListRectPtr->x + 0x120) - w, s_shopSellListRectPtr->y - 3, 0x23, g_winLabelStrings.unk94, 0);
+    ui_drawLabel(s_shopSellListRectPtr->x + 0xE, s_shopSellListRectPtr->y - 3, 0x23, g_winLabelStrings.itemList, 0);
+    ui_drawLabel(s_shopSellListRectPtr->x + 0xA4, s_shopSellListRectPtr->y - 3, 0x23, g_winLabelStrings.itemList, 0);
+    w = ui_measureLabel((u8 *)g_winLabelStrings.itemCount);
+    ui_drawLabel((s_shopSellListRectPtr->x + 0x8A) - w, s_shopSellListRectPtr->y - 3, 0x23, g_winLabelStrings.itemCount, 0);
+    ui_drawLabel((s_shopSellListRectPtr->x + 0x120) - w, s_shopSellListRectPtr->y - 3, 0x23, g_winLabelStrings.itemCount, 0);
     menuList_getView(list, &view);
     win_drawListBox(s_shopSellListRectPtr, 0x23, 1, list);
     idx = view.first * 2;

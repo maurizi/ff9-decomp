@@ -159,12 +159,12 @@ void menuItem_drawList(void) {
     s32 idx;
 
     il = &s_menuItemTabs[s_menuItem.tab];
-    ui_drawLabel(s_menuItemListRect->x + 0xE, s_menuItemListRect->y - 3, 0x1D, g_winLabelStrings.unk68, 0);
-    ui_drawLabel(s_menuItemListRect->x + 0xA4, s_menuItemListRect->y - 3, 0x1D, g_winLabelStrings.unk68, 0);
+    ui_drawLabel(s_menuItemListRect->x + 0xE, s_menuItemListRect->y - 3, 0x1D, g_winLabelStrings.itemList, 0);
+    ui_drawLabel(s_menuItemListRect->x + 0xA4, s_menuItemListRect->y - 3, 0x1D, g_winLabelStrings.itemList, 0);
     if (s_menuItem.tab != ITEM_TAB_KEY) {
-        w = ui_measureLabel((u8 *)g_winLabelStrings.unk94);
-        ui_drawLabel((s_menuItemListRect->x + 0x8A) - w, s_menuItemListRect->y - 3, 0x1D, g_winLabelStrings.unk94, 0);
-        ui_drawLabel((s_menuItemListRect->x + 0x120) - w, s_menuItemListRect->y - 3, 0x1D, g_winLabelStrings.unk94, 0);
+        w = ui_measureLabel((u8 *)g_winLabelStrings.itemCount);
+        ui_drawLabel((s_menuItemListRect->x + 0x8A) - w, s_menuItemListRect->y - 3, 0x1D, g_winLabelStrings.itemCount, 0);
+        ui_drawLabel((s_menuItemListRect->x + 0x120) - w, s_menuItemListRect->y - 3, 0x1D, g_winLabelStrings.itemCount, 0);
     }
     menuList_getView(il->list, &view);
     win_drawListBox(s_menuItemListRect, 0x1D, 1, il->list);

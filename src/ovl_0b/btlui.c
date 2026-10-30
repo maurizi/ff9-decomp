@@ -1178,7 +1178,7 @@ void btlui_drawCmdOverlay(Window *arg0) {
         win_setClip(NULL, arg0->otz, 4);
     }
     if (g_btlCmdMenu.unit != NULL && !(btl_hasStatus(g_btlCmdMenu.unit, BTL_STATUS_TRANCE) & 0xFF)) {
-        ui_drawLabel(arg0->x + 6, r->y - 3, arg0->otz, g_winLabelStrings.unk30, arg0->active ? 0 : 2);
+        ui_drawLabel(arg0->x + 6, r->y - 3, arg0->otz, g_winLabelStrings.command, arg0->active ? 0 : 2);
     } else if (arg0->active != 0) {
         btlui_drawTranceLabel(arg0->x + 6, r->y - 3, arg0->otz, D_800A857C);
     } else {
@@ -1601,8 +1601,8 @@ void btlui_openAbilityList(s32 arg0) {
     v.unk0 = g_btlCmdMenu.cmdIds[g_btlCmdMenu.cursor];
     v.unk4 = arg0;
     v.unk2 = g_btlCmdMenu.unk1;
-    v.unk8 = g_winLabelStrings.unk4;
-    v.unkC = g_winLabelStrings.unk7C;
+    v.unk8 = g_winLabelStrings.abilityList;
+    v.unkC = g_winLabelStrings.abilityCost;
     btlui_openList(&v);
 }
 
@@ -1611,8 +1611,8 @@ void btlui_openItemList(s32 arg0) {
     v.unk0 = g_btlCmdMenu.cmdIds[g_btlCmdMenu.cursor];
     v.unk4 = arg0;
     v.unk2 = g_btlCmdMenu.unk1;
-    v.unk8 = g_winLabelStrings.unk68;
-    v.unkC = g_winLabelStrings.unk94;
+    v.unk8 = g_winLabelStrings.itemList;
+    v.unkC = g_winLabelStrings.itemCount;
     btlui_openList(&v);
 }
 
@@ -1621,8 +1621,8 @@ void btlui_openThrowList(s32 arg0) {
     v.unk0 = g_btlCmdMenu.cmdIds[g_btlCmdMenu.cursor];
     v.unk4 = arg0;
     v.unk2 = g_btlCmdMenu.unk1;
-    v.unk8 = g_winLabelStrings.unkC0;
-    v.unkC = g_winLabelStrings.unk94;
+    v.unk8 = g_winLabelStrings.throwList;
+    v.unkC = g_winLabelStrings.itemCount;
     btlui_openList(&v);
 }
 

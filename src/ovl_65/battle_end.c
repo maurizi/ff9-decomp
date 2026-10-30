@@ -1446,11 +1446,11 @@ void rewards_openItemsWin(void) {
 }
 
 void rewards_drawItemsLabels(Window *w) {
-    s32 n = ui_measureLabel((u8 *)g_winLabelStrings.unk94);
+    s32 n = ui_measureLabel((u8 *)g_winLabelStrings.itemCount);
     s32 k = 0x97;
 
-    ui_drawLabel(w->x + 8, w->y - 3, w->otz - 1, g_winLabelStrings.unk68, 0);
-    ui_drawLabel(w->x - (n - k), w->y - 3, w->otz - 1, g_winLabelStrings.unk94, 0);
+    ui_drawLabel(w->x + 8, w->y - 3, w->otz - 1, g_winLabelStrings.itemList, 0);
+    ui_drawLabel(w->x - (n - k), w->y - 3, w->otz - 1, g_winLabelStrings.itemCount, 0);
 }
 
 void rewards_drawFullWarning(Window *arg0) {

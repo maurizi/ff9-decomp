@@ -303,10 +303,10 @@ void menuAbility_drawList(void) {
     RECT *r = &s_menuAbility.listRect;
 
     l = &s_menuAbility.lists[s_menuAbility.tab];
-    ui_drawLabel(r->x + 0xE, r->y - 3, 0x1C, g_winLabelStrings.unk4, 0);
-    ui_drawLabel(r->x + 0xA4, r->y - 3, 0x1C, g_winLabelStrings.unk4, 0);
-    ui_drawLabel(r->x + 0x7C, r->y - 3, 0x1C, g_winLabelStrings.unk7C, 0);
-    ui_drawLabel(r->x + 0x112, r->y - 3, 0x1C, g_winLabelStrings.unk7C, 0);
+    ui_drawLabel(r->x + 0xE, r->y - 3, 0x1C, g_winLabelStrings.abilityList, 0);
+    ui_drawLabel(r->x + 0xA4, r->y - 3, 0x1C, g_winLabelStrings.abilityList, 0);
+    ui_drawLabel(r->x + 0x7C, r->y - 3, 0x1C, g_winLabelStrings.abilityCost, 0);
+    ui_drawLabel(r->x + 0x112, r->y - 3, 0x1C, g_winLabelStrings.abilityCost, 0);
     win_drawListBox(r, 0x1D, 1, l);
     if (l->count != 0) {
         menuList_getView(l, &view);

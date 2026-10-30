@@ -5475,3 +5475,4 @@ D_800FE500 g_btlbgJitterBase2  # [code] btlbg_draw, background scene 7, group 2:
 # FIELDS include/ff9.h Unk8007BB98 (D_8007BB98, dialogue glyph lookup state): unk0=lead,unk4=extRange,unk8=kanjiCode [code] msg_init / pen_getGlyph (src_equiv); msg_drawPlayerBubble; evt_updateObjects saving the walkmesh state
 # FIELDS include/ff9.h Unk80068788: unk0=u,unk1=v,unk2=clut [code] msg_init / pen_getGlyph (src_equiv); msg_drawPlayerBubble; evt_updateObjects saving the walkmesh state
 # FIELDS include/ff9.h Unk800C748C (main's view of ovl_0a BgiActor): unk0=walkFlags,unk8=walkFloor,unkA=walkTri [code] msg_init / pen_getGlyph (src_equiv); msg_drawPlayerBubble; evt_updateObjects saving the walkmesh state
+# FIELDS include/ff9.h Unk800703FC (g_winLabelStrings): unk4=abilityList,unk30=command,unk68=itemList,unk7C=abilityCost,unk94=itemCount,unkA4=shopPrice,unkC0=throwList [code] where each label is drawn (window titles): menuAbility/menuItem/shop/btlui list openers

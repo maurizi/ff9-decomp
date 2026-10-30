@@ -1707,26 +1707,26 @@ typedef struct {
 
 typedef struct {
     s32 unk0[1]; /* indexed past its end: text table */
-    s32 unk4;
+    s32 abilityList; /* title of ability lists (menuAbility_drawList, btlui_openAbilityList, status ability pages) */
     u8 pad8[0x30 - 8];
-    s32 unk30;
+    s32 command; /* title of the battle command window (btlui_drawCmdOverlay) */
     u8 pad34[0x3C - 0x34];
     s32 unk3C;
     u8 pad40[0x68 - 0x40];
-    s32 unk68;
+    s32 itemList; /* title of item lists (menuItem_drawList, btlui_openItemList, shopBuy_drawList) */
     u8 pad6C[0x7C - 0x6C];
-    s32 unk7C;
+    s32 abilityCost; /* second title of ability lists (cost column) */
     s32 unk80;
     s32 unk84;
     s32 unk88;
     s32 unk8C;
     s32 unk90;
-    s32 unk94;
+    s32 itemCount; /* right-aligned count-column title of item lists (btlui item/throw lists, menuEquip_drawList) */
     u8 pad98[0xA0 - 0x98];
     s32 unkA0;
-    s32 unkA4;
+    s32 shopPrice; /* right-aligned price-column title (shopBuy_drawList, shopSynth_drawList) */
     u8 padA8[0xC0 - 0xA8];
-    s32 unkC0;
+    s32 throwList; /* title of the Throw list (btlui_openThrowList) */
 } Unk800703FC; /* text table? */
 extern Unk800703FC g_winLabelStrings;
 
