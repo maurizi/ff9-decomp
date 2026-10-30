@@ -138,3 +138,4 @@ g_shopSynthText = 0x801F3F08; // [code] text bank set by shopSynth_init
 g_shopSellText = 0x801F3F88; // [code] text bank set by shopSell_init
 s_shopBuyNoStat = 0x801F3FF8; // [code] "--" drawn for accessories, shopBuy_drawParty
 s_shopSynthNoStat = 0x801F3FFC; // [code] "--" drawn for accessories, shopSynth_drawParty
+shop_updateStub = 0x801F47F0; // type:func [code] empty, last call of shop_update when no shop mode is open

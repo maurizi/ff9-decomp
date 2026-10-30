@@ -523,13 +523,13 @@ s32 bgi_moveActor(BgiActor *arg0) {
     BgiFloor *t;
 
     ret = BGI_MOVE_OK;
-    D_800C9DDE = 0;
+    g_fieldBgiMoveTriCount = 0;
     for (k = 0; k < 10; k++) {
-        D_800CAA98[k] = -1;
+        g_fieldBgiMoveTris[k] = -1;
     }
-    D_800C9DE0 = 0;
+    g_fieldBgiMoveEdgeCount = 0;
     for (k = 0; k < 10; k++) {
-        D_800CAAB8[k] = -1;
+        g_fieldBgiMoveEdges[k] = -1;
     }
     cur.vx = arg0->actor->pos.vx;
     cur.vy = arg0->actor->pos.vy;

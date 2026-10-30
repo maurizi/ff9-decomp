@@ -1,8 +1,8 @@
 #include "ovl_0c.h"
 
-const char D_800A80BC[] = "w_frmbufRequest:reqover [%d/%d]\n";
-const char D_800A80E0[] = "==== ERROR ===== / %s";
-const char D_800A80F8[] = "-- w_framebufRequest Error --\n";
+const char s_wmStrFrmbufReqOver[] = "w_frmbufRequest:reqover [%d/%d]\n";
+const char s_wmStrFrmbufError[] = "==== ERROR ===== / %s";
+const char s_wmStrFrmbufRequestError[] = "-- w_framebufRequest Error --\n";
 
 s32 w_frmbufRequest(s16 arg0) {
     WmFrmbufSlot *p;
@@ -24,8 +24,8 @@ s32 w_frmbufRequest(s16 arg0) {
             if (p->texId == -1) {
                 g_worldFrmbufReqCount++;
                 if (g_worldFrmbufReqCount >= 3) {
-                    sprintf(g_worldMapErrorMsg, D_800A80BC, g_worldFrmbufReqCount, 2);
-                    printf(D_800A80E0, g_worldMapErrorMsg);
+                    sprintf(g_worldMapErrorMsg, s_wmStrFrmbufReqOver, g_worldFrmbufReqCount, 2);
+                    printf(s_wmStrFrmbufError, g_worldMapErrorMsg);
                     g_worldMapError = 1;
                 }
                 p->texId = arg0;
@@ -45,7 +45,7 @@ s32 w_frmbufRequest(s16 arg0) {
             }
         }
         if (i == 4) {
-            printf(D_800A80F8);
+            printf(s_wmStrFrmbufRequestError);
             return 0;
         }
     }
@@ -119,7 +119,7 @@ void wm_frmbufTransfer(void) {
         id = g_worldFrmbufTransfers[i].area;
         k = g_worldFrmbufTransfers[i].vramArea - 1;
         if (g_worldMapDebugFlags & WM_DEBUG_TEXTURE) {
-            printf(D_800A8118, (u8)(id + 0x60), g_worldFrmbufTransfers[i].pack, k);
+            printf(s_wmStrFrmbufTransfer, (u8)(id + 0x60), g_worldFrmbufTransfers[i].pack, k);
         }
         px = &g_worldFrmbufAreaX[k];
         py = &g_worldFrmbufAreaY[k];
@@ -275,7 +275,7 @@ void wm_setWeather(s32 mode, s32 flag, s32 arg2) {
             return;
         }
     }
-    printf(D_800A8178, mode);
+    printf(s_wmStrIllegalWeatherMode, mode);
 }
 
 /* blend the sky parameter blocks arg1 -> arg2 by arg3 (0..0x1000) into arg0 */
@@ -376,7 +376,7 @@ void wm_weatherInit(void) {
     g_worldWeatherSpeed = 0x80;
 }
 
-INCLUDE_RODATA("asm/us/ovl_0c/nonmatchings/w_frmbuf", D_800A8118);
+INCLUDE_RODATA("asm/us/ovl_0c/nonmatchings/w_frmbuf", s_wmStrFrmbufTransfer);
 
 void wm_weatherStart(void) {
     g_worldWeatherAutoMode = wm_getWeatherByPos();
@@ -389,4 +389,4 @@ s32 wm_getStoryFog(void) {
     return (u32)(*g_worldStoryCounterPtr - 0x1766) >= 0x13ED;
 }
 
-INCLUDE_RODATA("asm/us/ovl_0c/nonmatchings/w_frmbuf", D_800A8178);
+INCLUDE_RODATA("asm/us/ovl_0c/nonmatchings/w_frmbuf", s_wmStrIllegalWeatherMode);

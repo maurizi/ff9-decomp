@@ -1075,7 +1075,7 @@ state:
                 d = d / 2048 * 2048;
                 cdRead_init(g_gameState->gameData->cdRead, g_worldMusicSector, g_gameState->gameData->cdRead[0].size, (void *)g_gameState->gameData->soundLoadDest,
                               g_gameState->gameData->cdRead[0].offset + g_gameState->gameData->cdRead[0].chunk, d, wm_streamSoundChunk);
-            } else if (D_800CCA12 == 7) {
+            } else if (g_worldMusicReqIdKind == 7) {
                 if (g_worldMusicReqKind != 9) {
                     g_gameState->gameData->musicVolume[0] = 0x7F;
                 }

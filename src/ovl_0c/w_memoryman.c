@@ -59,7 +59,7 @@ void w_memorymanDestructor(void) {
         printf("w_memorymanDestructor:(Error) Memory leak can be found.\n");
     }
     if (g_worldMapDebugFlags & WM_DEBUG_MEMORY) {
-        printf(D_800A7CCC);
+        printf(s_wmStrMemorymanDone);
     }
 }
 
@@ -249,13 +249,13 @@ void wm_scrollTextures(void) {
 void wm_animTextures(void) {
     s32 t;
 
-    t = D_800CFEF8;
+    t = g_worldTexAnim0Interval;
     if (t != 0 && g_worldFrameCount % t == 0) {
         wm_loadTim(g_worldTexAnimPack, g_worldTexAnimSeq[g_worldTexAnimStep[0]] + 8, 0, 0, 0, 0, 0);
         wm_loadTim(g_worldTexAnimPack, g_worldTexAnimSeq[g_worldTexAnimStep[0]], 0, 0, 0, 0, 0);
         g_worldTexAnimStep[0] = (s8)(g_worldTexAnimStep[0] + 1) % 6;
     }
-    t = D_800CFF02;
+    t = g_worldTexAnim1Interval;
     if (t != 0 && (g_worldFrameCount + 2) % t == 0) {
         wm_loadTim(g_worldTexAnimPack, g_worldTexAnimSeq[g_worldTexAnimStep[1]] + 4, 0, 0, 0, 0, 0);
         wm_loadTim(g_worldTexAnimPack, g_worldTexAnimSeq[g_worldTexAnimStep[1]] + 12, 0, 0, 0, 0, 0);
@@ -363,7 +363,7 @@ void wm_updateFogParams(void) {
     g_worldBackdropFog.fogOffset2 = g_worldWeatherData.work[0].fog[2].fogOffset2;
 }
 
-INCLUDE_RODATA("asm/us/ovl_0c/nonmatchings/w_memoryman", D_800A7CCC);
+INCLUDE_RODATA("asm/us/ovl_0c/nonmatchings/w_memoryman", s_wmStrMemorymanDone);
 
 s32 wm_getBlockHeight(s32 cell, WmBlock *tex, VECTOR *pos, u32 *attr, s32 *idx, WmPolyCache *cache) {
     VECTOR v1;
@@ -570,7 +570,7 @@ s32 wm_getBlockHeight(s32 cell, WmBlock *tex, VECTOR *pos, u32 *attr, s32 *idx, 
         if (g_worldLoadedFrames >= 2) {
             sprintf(g_worldMapErrorMsg, "no polygon [ %d,%d,%d:%d ] \n", g_worldPlayer->pos.vx, g_worldPlayer->pos.vy,
                     g_worldPlayer->pos.vz, found);
-            printf(D_800A7D20, g_worldMapErrorMsg);
+            printf(s_wmStrMemorymanError, g_worldMapErrorMsg);
             if (g_worldMapError == 0) {
                 g_worldMapError = 1;
             }
@@ -662,4 +662,4 @@ void wm_drawModel(s32 arg0, s32 arg1, u32 arg2) {
     }
 }
 
-INCLUDE_RODATA("asm/us/ovl_0c/nonmatchings/w_memoryman", D_800A7D20);
+INCLUDE_RODATA("asm/us/ovl_0c/nonmatchings/w_memoryman", s_wmStrMemorymanError);

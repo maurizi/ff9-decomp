@@ -106,7 +106,7 @@ typedef struct {
 extern Unk8006B1F4 D_8006B1F4[];
 u8 item_useOnMember(Character *, Character *, Unk8006B1F4 *, s32, s32);
 extern s32 D_80070408;
-void func_801F3038(void);
+void menuItem_initStub(void);
 void menuItem_collectKeyItems(void);
 void menuItem_loadImages(void);
 void menuItem_drawScrollRows(void);
@@ -115,7 +115,7 @@ extern RECT s_menuItemScrollClip;
 
 extern u8 s_menuItemTargetOpen[2][0x10];
 extern RECT s_menuItemKwehRect;
-extern u8 D_801F3140[];
+extern u8 s_menuItemChocoboTitle[];
 extern RECT s_menuItemArrangeHelpBounds;
 extern u8 s_menuItemHelp[]; /* item help text */
 extern u8 s_menuItemKeyDesc[]; /* key item descriptions */
@@ -167,7 +167,7 @@ void menuItem_drawTargetWindow(void);
 void menuItem_drawRow(s32, s32, s32, MenuView *);
 void menuItem_drawKeyRow(s32, s32, s32, MenuView *);
 void menuItem_stepKweh(void);
-void func_801F2F30(void);
+void menuItem_exitStub(void);
 void menuItem_showKeyItem(s32);
 void menuItem_hideKeyItem(void);
 

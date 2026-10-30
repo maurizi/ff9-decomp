@@ -1,4 +1,4 @@
-D_801EE264 = 0x801EE264; // force_not_migration:True
+s_menuStatusColon = 0x801EE264; // force_not_migration:True
 g_statusMenuText = 0x801EE2A0; // [code] the text bank this overlay passes to text_setBank
 menuStatus_init = 0x801EE440; // type:func [code] main-menu entry Status (file 0x38 in main's D_8006E510) init of main's D_8006E530/D_8006E5B0 tables, text bank, first character, window, primitive buffers [runtime] docs/runtime-findings.md field/menu campaign, screen 4 at menu_status, high
 menuStatus_update = 0x801EF69C; // type:func [code] Status entry update of main's D_8006E530 (per frame), input, draw, animate [runtime] docs/runtime-findings.md field/menu campaign, high
@@ -40,3 +40,4 @@ s_menuStatusCmdTable = 0x801EDF04; // [code] battle command table (name offset f
 s_menuStatusCmdNames = 0x801EE144; // [code] battle command names ("Attack", "Steal", "Jump"...) indexed by s_menuStatusCmdTable
 s_menuStatusHelpArgs = 0x801F11CC; // [code] string and value arguments of help text 0 (func_8002BE44 / func_8002BE74), set by menuStatus_updateHelp
 s_menuStatusHelpArg7 = 0x801F1204; // [code] string argument 7 of help text 0
+menuStatus_drawStub = 0x801EF9B4; // type:func [code] calls fade_isBusy and drops the result, last call of menuStatus_draw

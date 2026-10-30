@@ -59,9 +59,9 @@ typedef struct {
     u8 unkB;
     u8 items[BTL_DROP_COUNT]; /* dropped item ids, ITEM_NONE = none */
     u8 card;       /* card won */
+    u8 fleeGil;    /* set when Flee-Gil turned the escape into gil (ovl_0b btl_victory), rewards_getKind shows the rewards after an escape */
 } BattleResult;
 extern BattleResult g_btlRewards;
-extern u8 D_800FDF4D;
 
 /* ---- overlay 0x65 ---- */
 
@@ -271,14 +271,13 @@ static inline void WinSlot_clear(WinSlot *s) {
 extern u8 s_rewardsAbilityItems[0x30]; /* per ability slot: equipped items teaching it */
 s32 chr_findAbilitySlot(s32, s32); /* main exe */
 
-void func_801EF28C(void);
 void gameover_initDisp(DispBuf *);
 void gameover_loadImage(s32);
 s32 battleEnd_update(void);
 void gameover_main(s32);
 void battleEnd_init(void);
 void battleEnd_exit(void);
-s32 func_801EF6D8(void);
+s32 battleEnd_loadPortraits(void);
 s32 battleEnd_loadDb(void);
 s32 battleEnd_unloadDb(void);
 void battleEnd_preloadScene(void);
@@ -357,7 +356,7 @@ u8 rewards_addItems(void);
 void rewards_drawItems(Window *);
 void rewards_resetFullWarning(void);
 u8 rewards_tryAddItems(void);
-void func_801F325C(void);
+void rewards_stepGilStub(void);
 void rewards_openItemsWin(void);
 void rewards_drawItemsLabels(Window *);
 void rewards_drawFullWarning(Window *);

@@ -34,7 +34,7 @@ void menuCard_init(void) {
     }
     s_menuCard.imageFile = file_find(1, CARD_IMAGE_FILE);
     for (i = 0; i < 4; i++) {
-        id = D_801F30D4[i];
+        id = s_menuCardRepeatIds[i];
         s_menuCard.saved[i].repeatDelay = pad_getRepeatDelay(0, id);
         s_menuCard.saved[i].repeatInterval = pad_getRepeatInterval(0, id);
         pad_setRepeatDelay(0, id, 0x10);
@@ -555,7 +555,7 @@ void menuCard_exit(void) {
     s32 id;
 
     for (i = 0; i < 4; i++) {
-        id = D_801F30E4[i];
+        id = s_menuCardRestoreRepeatIds[i];
         pad_setRepeatDelay(0, id, s_menuCard.saved[i].repeatDelay);
         pad_setRepeatInterval(0, id, s_menuCard.saved[i].repeatInterval);
     }

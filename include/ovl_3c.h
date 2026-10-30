@@ -221,7 +221,7 @@ void shop_drawMenu(void);
 void shop_setHelp(s32);
 void shop_drawTitle(void);
 void shop_drawMenuAll(void);
-void func_801F47F0(void);
+void shop_updateStub(void);
 void shop_drawMenuCursor(void);
 void shop_onModeLeft(void);
 s32 shop_countEntries(s32);

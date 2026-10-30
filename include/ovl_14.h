@@ -305,7 +305,7 @@ void opening_titleDraw(void);
 void opening_titleTick(void);
 void opening_titleLoadTims(s32 *);
 void opening_titleDecide(void);
-void func_800A8A8C(void);
+void opening_titleDrawStub(void);
 void opening_titleDrawBackground(void);
 void opening_titleDrawChoices(void);
 void opening_titleDrawCursor(void);

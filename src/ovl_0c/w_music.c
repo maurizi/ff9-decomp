@@ -179,42 +179,42 @@ s32 w_musicGetID(s32 arg0, WmSeIds *arg1) {
     }
 }
 
-const char D_800A832C[] = "w_musicRequestSend : Normal Song";
-const char D_800A8350[] = "w_musicRequestSend : Air Ship Song";
-const char D_800A8374[] = "w_musicRequestSend : Chocobo Song";
-const char D_800A8398[] = "w_musicRequestSend : Disc4 Song";
-const char D_800A83B8[] = "w_musicRequestSend : Field Song 1";
-const char D_800A83DC[] = "w_musicRequestSend : Field Song 2";
-const char D_800A8400[] = "w_musicRequestSend : Unknown Error";
-const char D_800A8424[] = "(Accepted)\n";
-const char D_800A8430[] = "(Denied / same request)\n";
+const char s_wmStrMusicNormalSong[] = "w_musicRequestSend : Normal Song";
+const char s_wmStrMusicAirShipSong[] = "w_musicRequestSend : Air Ship Song";
+const char s_wmStrMusicChocoboSong[] = "w_musicRequestSend : Chocobo Song";
+const char s_wmStrMusicDisc4Song[] = "w_musicRequestSend : Disc4 Song";
+const char s_wmStrMusicFieldSong1[] = "w_musicRequestSend : Field Song 1";
+const char s_wmStrMusicFieldSong2[] = "w_musicRequestSend : Field Song 2";
+const char s_wmStrMusicUnknownError[] = "w_musicRequestSend : Unknown Error";
+const char s_wmStrMusicAccepted[] = "(Accepted)\n";
+const char s_wmStrMusicDenied[] = "(Denied / same request)\n";
 /* padded: the jump table that follows is 8-aligned in its object */
-const char D_800A844C[0x38] = "w_musicRequestSend : music status is not ready now\n";
+const char s_wmStrMusicNotReady[0x38] = "w_musicRequestSend : music status is not ready now\n";
 
 void w_musicRequestSend(u32 arg0) {
     if (g_worldMusicState == WM_MUSIC_READY) {
         if (g_worldMapDebugFlags & WM_DEBUG_MUSIC) {
             switch (arg0) {
             case WM_SONG_NORMAL:
-                printf(D_800A832C);
+                printf(s_wmStrMusicNormalSong);
                 break;
             case WM_SONG_AIRSHIP:
-                printf(D_800A8350);
+                printf(s_wmStrMusicAirShipSong);
                 break;
             case WM_SONG_CHOCOBO:
-                printf(D_800A8374);
+                printf(s_wmStrMusicChocoboSong);
                 break;
             case WM_SONG_DISC4:
-                printf(D_800A8398);
+                printf(s_wmStrMusicDisc4Song);
                 break;
             case WM_SONG_FIELD1:
-                printf(D_800A83B8);
+                printf(s_wmStrMusicFieldSong1);
                 break;
             case WM_SONG_FIELD2:
-                printf(D_800A83DC);
+                printf(s_wmStrMusicFieldSong2);
                 break;
             default:
-                printf(D_800A8400);
+                printf(s_wmStrMusicUnknownError);
                 break;
             }
         }
@@ -222,13 +222,13 @@ void w_musicRequestSend(u32 arg0) {
             g_worldMusicState = WM_MUSIC_REQUESTED;
             g_worldMusicRequest = arg0;
             if (g_worldMapDebugFlags & WM_DEBUG_MUSIC) {
-                printf(D_800A8424);
+                printf(s_wmStrMusicAccepted);
             }
         } else if (g_worldMapDebugFlags & WM_DEBUG_MUSIC) {
-            printf(D_800A8430);
+            printf(s_wmStrMusicDenied);
         }
     } else if (g_worldMapDebugFlags & WM_DEBUG_MUSIC) {
-        printf(D_800A844C);
+        printf(s_wmStrMusicNotReady);
     }
 }
 

@@ -11,7 +11,7 @@ void menuItem_init(void) {
     s_menuItem.popupTimer = 0;
     s_menuItem.keyView = 0;
     s_menuItem.keyViewPhase = 0;
-    func_801F3038();
+    menuItem_initStub();
     menuItem_collectKeyItems();
     text_setBank(g_itemMenuText);
     help_setCallback(help_nullHandler);
@@ -329,7 +329,7 @@ s32 menuItem_callChocobo(void) {
             m->popup = win_openFree(&s_menuItemKwehRect, 0xF, 2);
             win_setOnOpened(m->popup, menuItem_onKwehOpened);
             win_setDrawContent(m->popup, menuItem_drawKweh);
-            win_setTitle(m->popup, (s32)D_801F3140);
+            win_setTitle(m->popup, (s32)s_menuItemChocoboTitle);
             win_setShadow(m->popup, 1);
             m->popupTimer = 1;
             m->state = ITEM_STATE_BUSY;
@@ -475,7 +475,7 @@ void menuItem_exit(void) {
     help_setLocked(0);
     help_setCursorOnTop(1);
     help_setCallback(NULL);
-    func_801F2F30();
+    menuItem_exitStub();
 }
 
 void menuItem_input(void) {
@@ -721,7 +721,7 @@ void menuItem_stepKweh(void) {
                 help_setLocked(0);
                 help_setCursorOnTop(1);
                 help_setCallback(NULL);
-                func_801F2F30();
+                menuItem_exitStub();
                 menuScreen_close();
             }
         }
@@ -806,7 +806,7 @@ void menuItem_loadImages(void) {
     DrawSync(0);
 }
 
-void func_801F2F30(void) {
+void menuItem_exitStub(void) {
 }
 
 void menuItem_showKeyItem(s32 id) {
@@ -843,7 +843,7 @@ s32 menuItem_getSlot(MenuList *l) {
     return (l->top + l->cursor) * 2 + l->col;
 }
 
-void func_801F3038(void) {
+void menuItem_initStub(void) {
 }
 
 INCLUDE_RODATA("asm/us/ovl_37/nonmatchings/ovl_37", s_menuItemKeyImage);

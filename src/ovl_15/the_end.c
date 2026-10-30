@@ -130,7 +130,7 @@ s32 ending_theEndInit(void) {
     ending_soundCmd(0xC401, ENDING_MUSIC, 0x5A, 0, 0x7F);
     game_startFade(1, 1, 0, 0xFFFFFF);
     g_theEndState = THEEND_ST_START;
-    D_800AE430 = 0;
+    g_theEndUnused = 0;
     g_padPortMask[0] = 0;
     return 0;
 }

@@ -148,3 +148,4 @@ g_tmCoinFrames = 0x800A74AC; // [code] coin toss animation frames (tm_taskCoin)
 tm_updatePad = 0x800A9B0C; // type:func [code] func_8002C308(0) each frame, main's key-repeat update that sets g_padRepeat from port 0
 tm_drawBattleSelect = 0x800ABEBC; // type:func [string] empty drawer tm_mainLoop runs in the "BATTLE SELECT" task
 tm_drawTryAgain = 0x800B3480; // type:func [string] empty drawer tm_mainLoop runs in the "TRY AGAIN" task
+g_tmMusicRequest = 0x800B3664; // [code] music start request kind, -1 = none, set and reset by tm_soundCmd case 0 like ovl_0a g_fieldMusicRequest

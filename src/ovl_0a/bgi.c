@@ -404,7 +404,7 @@ void bgi_dumpText(BgiHeader *arg0) {
     nrm = (BgiNormal *)((u8 *)arg0 + arg0->normalOffset);
     for (i = 0; i < arg0->normalCount; nrm++, i++) {
         printf("  %4d: (%lx,%lx,%lx)\n", i, nrm->nx, nrm->ny, nrm->nz);
-        printf(D_800A7814, nrm->invNy);
+        printf(s_bgiStrInvNy, nrm->invNy);
     }
 }
 
@@ -947,9 +947,9 @@ s32 bgi_setTriangleActive(s32 arg0, s32 arg1) {
     return 1;
 }
 
-s32 func_800C77DC(u16 *arg0, s16 **arg1) {
-    *arg0 = D_800C9DDE;
-    *arg1 = D_800CAA98;
+s32 bgi_getMoveTris(u16 *arg0, s16 **arg1) {
+    *arg0 = g_fieldBgiMoveTriCount;
+    *arg1 = g_fieldBgiMoveTris;
     return 1;
 }
 
@@ -975,9 +975,9 @@ s32 bgi_getTriangleFloor(s16 arg0, u16 *arg1) {
     return 1;
 }
 
-s32 func_800C7914(u16 *arg0, s16 **arg1) {
-    *arg0 = D_800C9DE0;
-    *arg1 = D_800CAAB8;
+s32 bgi_getMoveEdges(u16 *arg0, s16 **arg1) {
+    *arg0 = g_fieldBgiMoveEdgeCount;
+    *arg1 = g_fieldBgiMoveEdges;
     return 1;
 }
 
@@ -1256,4 +1256,4 @@ BgiFloorMove *bgi_getFloorMove(s32 arg0) {
     return &g_fieldBgiFloorMoves[arg0];
 }
 
-INCLUDE_RODATA("asm/us/ovl_0a/nonmatchings/bgi", D_800A7814);
+INCLUDE_RODATA("asm/us/ovl_0a/nonmatchings/bgi", s_bgiStrInvNy);

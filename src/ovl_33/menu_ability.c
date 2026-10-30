@@ -47,7 +47,7 @@ void menuAbility_init(void) {
     s_menuAbility.animFrame = 0;
     s_menuAbility.animTick = 0;
     text_setBank(g_abilityMenuText);
-    func_801F1148();
+    menuAbility_initStub();
     help_setCallback(help_nullHandler);
     help_setCursorOnTop(1);
     setRECT(&s_menuAbility.tabRect, 8, 8, 0xE4, 0x1A);
@@ -986,7 +986,7 @@ void menuAbility_initActionCursor(void) {
     l->cursor = row - l->top;
 }
 
-void func_801F1148(void) {
+void menuAbility_initStub(void) {
 }
 
 INCLUDE_RODATA("asm/us/ovl_33/nonmatchings/menu_ability", g_abilityMenuText);

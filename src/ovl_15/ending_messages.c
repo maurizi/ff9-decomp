@@ -123,7 +123,7 @@ s32 ending_messagesInit(void) {
     g_gameState->vsyncMode = 0;
     game_startFade(1, 1, 0, 0xFFFFFF);
     g_messagesState = MESSAGES_ST_START;
-    D_800AE4A8 = 0;
+    g_messagesUnused = 0;
     g_messagesFrame = 0;
     g_padPortMask[0] = 0;
     return 0;
@@ -148,7 +148,7 @@ void ending_messagesSwap(void) {
     DrawOTagEnv(ctx->ot[i] + 0xFFF, &g_gameState->drawEnv[i]);
     g_gameState->gameData->drawBuf ^= 1;
     gfx_setBuffer(g_gameState->gameData->drawBuf);
-    D_800AE4A8 = 0;
+    g_messagesUnused = 0;
     g_messagesFrame++;
 }
 

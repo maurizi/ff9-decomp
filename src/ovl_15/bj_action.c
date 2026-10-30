@@ -59,8 +59,8 @@ void bj_actionInput(void) {
 }
 
 void bj_actionDraw(void) {
-    func_800AB3C4();
-    func_800AB3CC();
+    bj_actionDrawStub1();
+    bj_actionDrawStub2();
     bj_actionDrawCursor();
 }
 
@@ -73,10 +73,10 @@ void bj_actionDecide(void) {
     scene_set(SCENE_CHOSEN);
 }
 
-void func_800AB3C4(void) {
+void bj_actionDrawStub1(void) {
 }
 
-void func_800AB3CC(void) {
+void bj_actionDrawStub2(void) {
 }
 
 void bj_actionDrawCursor(void) {

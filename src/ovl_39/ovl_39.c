@@ -26,7 +26,7 @@ void menuSave_init(void) {
     s_menuSave.cardStatus[1] = CARD_RES_ERROR;
     menuSave_cardInit();
     menuSave_openCardEvents();
-    func_801F5A60();
+    menuSave_initStub();
     for (i = 0; i < 2; i++) {
         s_menuSave.savedPortMask[i] = g_padPortMask[i];
         g_padPortMask[i] |= 0x300;
@@ -498,7 +498,7 @@ void menuSave_returnToSlots(void) {
     fade_inDefault();
 }
 
-void func_801F5A60(void) {
+void menuSave_initStub(void) {
 }
 
 void menuSave_drawBookIcon(s32 x, s32 y, s32 z, s32 idx) {
@@ -2091,12 +2091,12 @@ void menuSave_packParty(SaveParty *s) {
             s->party[i] = SAVE_CHARACTERS;
         }
     }
-    s->unk514 = gd->escapeCount;
+    s->escapeCount = gd->escapeCount;
     s->firstUseFxSeen = gd->firstUseFxSeen;
     s->gil = gd->gil;
-    s->unk51C = gd->frogCount;
-    s->unk51E = gd->stealCount;
-    s->unk520 = gd->dragonKills;
+    s->frogCount = gd->frogCount;
+    s->stealCount = gd->stealCount;
+    s->dragonKills = gd->dragonKills;
 }
 
 void menuSave_unpackParty(SaveParty *s) {
@@ -2114,12 +2114,12 @@ void menuSave_unpackParty(SaveParty *s) {
             gd->party[i] = NULL;
         }
     }
-    gd->escapeCount = s->unk514;
+    gd->escapeCount = s->escapeCount;
     gd->firstUseFxSeen = s->firstUseFxSeen;
     gd->gil = s->gil;
-    gd->frogCount = s->unk51C;
-    gd->stealCount = s->unk51E;
-    gd->dragonKills = s->unk520;
+    gd->frogCount = s->frogCount;
+    gd->stealCount = s->stealCount;
+    gd->dragonKills = s->dragonKills;
 }
 
 void menuSave_packState(SaveState *h) {
@@ -2128,7 +2128,7 @@ void menuSave_packState(SaveState *h) {
 
     gd = g_gameState->gameData;
     h->mode = g_gameState->mode;
-    h->unk1 = g_gameState->prevMode;
+    h->prevMode = g_gameState->prevMode;
     for (i = sizeof(h->reserved2) - 1; i >= 0; i--) {
         h->reserved2[i] = 0;
     }
@@ -2140,9 +2140,9 @@ void menuSave_packState(SaveState *h) {
         h->areaId = gd->fieldAreaId;
     }
     h->battleId = gd->battleId;
-    h->unk26 = (s8)gd->enemyGroup;
-    h->unk28 = gd->worldId;
-    h->unk2A = gd->worldAreaId;
+    h->enemyGroup = (s8)gd->enemyGroup;
+    h->worldId = gd->worldId;
+    h->worldAreaId = gd->worldAreaId;
     for (i = sizeof(h->reserved2C) - 1; i >= 0; i--) {
         h->reserved2C[i] = 0;
     }
@@ -2154,13 +2154,13 @@ void menuSave_unpackState(SaveState *p) {
 
     gs->mode = p->mode;
     gd = gs->gameData;
-    g_gameState->prevMode = p->unk1;
+    g_gameState->prevMode = p->prevMode;
     gd->fieldId = p->fieldId;
     gd->fieldAreaId = p->areaId;
     gd->battleId = p->battleId;
-    gd->enemyGroup = p->unk26;
-    gd->worldId = p->unk28;
-    gd->worldAreaId = p->unk2A;
+    gd->enemyGroup = p->enemyGroup;
+    gd->worldId = p->worldId;
+    gd->worldAreaId = p->worldAreaId;
 }
 
 void menuSave_copyCards(CardData *d, CardData *s) {
@@ -2214,13 +2214,13 @@ void menuSave_unpackItems(SaveItems *s) {
 
 void menuSave_packMisc(SaveMisc *p) {
     p->chocograph = g_gameState->gameData->chocograph;
-    p->unk4 = g_gameState->gameData->worldCamera;
+    p->worldCamera = g_gameState->gameData->worldCamera;
     p->unk14 = g_gameState->gameData->unk892;
 }
 
 void menuSave_unpackMisc(SaveMisc *p) {
     g_gameState->gameData->chocograph = p->chocograph;
-    g_gameState->gameData->worldCamera = p->unk4;
+    g_gameState->gameData->worldCamera = p->worldCamera;
     g_gameState->gameData->unk892 = p->unk14;
 }
 

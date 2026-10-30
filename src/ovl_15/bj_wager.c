@@ -55,8 +55,8 @@ void bj_wagerInput(void) {
 }
 
 void bj_wagerDraw(void) {
-    func_800AD380();
-    func_800AD388();
+    bj_wagerDrawStub1();
+    bj_wagerDrawStub2();
     bj_wagerDrawCursor();
 }
 
@@ -69,10 +69,10 @@ void bj_wagerDecide(void) {
     scene_set(SCENE_CHOSEN);
 }
 
-void func_800AD380(void) {
+void bj_wagerDrawStub1(void) {
 }
 
-void func_800AD388(void) {
+void bj_wagerDrawStub2(void) {
 }
 
 void bj_wagerDrawCursor(void) {
