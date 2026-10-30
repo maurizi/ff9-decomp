@@ -39,6 +39,7 @@ duplicated keys the tables contain (each battle appears twice: linked to its bac
 | 0x06 | 2 | area bundle |
 | 0x11 | 5 | encounter bundle (id = battle id); link = its background (0x0C) |
 | 0x02 | 7 | enemy model file (id = model id, `btl_loadEnemyModelsStep` loads every 0x02 key); 4th word = sectors of model data before the textures (docs/battle-models.md) |
+| 0x02 (field/world tables) | 10, or 0/0 = inside the field file | field model; 4th word = the script entry of the actor that loads it (docs/field-models.md) |
 | 0x0C | 6 | battle background (file id = background id); link points back to a battle |
 | 0x07, 0x09 | 9, 11 | linked pairs present in every battle's table (not needed here) |
 

@@ -35,7 +35,7 @@ Packed back to back from sector 1, one per directory in header order.
 | 7 | 9 | 101 | 12.3 MB | **battle models** (enemies; file id = model id, key 0x02xxxx; docs/battle-models.md) |
 | 8 | 10 | 85 | 1.0 MB | **weapon models** (file id word 0xFFFF << 16 \| model id; `btl_loadWeaponModelsStep`) |
 | 9 | 11 | 55 | 14.8 MB | ? |
-| 10 | 12 | 42 | 3.3 MB | **party models** (file id word = model-data sectors << 16 \| model id; `btl_loadPartyModelsStep`, ids from `g_btlCharModelIds`) |
+| 10 | 12 | 42 | 3.3 MB | **party models**, field and battle (file id word = model-data sectors << 16 \| model id; battle: `btl_loadPartyModelsStep`, ids from `g_btlCharModelIds`; field: `fld_loadModelBundle`, the ten `g_fieldModelCache` ids, docs/field-models.md) |
 | 11 | 13 | 427 | 50.6 MB | ? |
 | 12 | 15 | 2 | 11.4 MB | ? |
 | 13 | 16 | 511 | ~70 MB | **battle effect files** (type 3; 372 present): effect data, textures and an effect code module each |
