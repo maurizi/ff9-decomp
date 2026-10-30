@@ -62,7 +62,7 @@ typedef struct {
     u8 unk5;
     s8 firstFrame; /* set by mbg_play; mbg_readFrame keeps the first frame's camera in g_mbgStartCamera and clears it */
     u8 pad7;
-    s32 unk8; /* nonzero: mbg_update lowers vsyncMode once */
+    s32 shortFrame; /* set by mbg_update on every 50th movie frame, the next frame then waits vsyncMode 3 instead of 4 and clears it */
     CdlLOC startPos; /* stream start position */
     u8 pad10[0x24 - 0x10];
     CdlLOC streamPos; /* stream position (seek target after a bad frame) */
@@ -289,7 +289,6 @@ typedef struct {
     u32 code[2]; /* 0xE6000002 (check mask), 0 */
 } Ovl64Stp;
 extern Ovl64Stp g_mbgMaskStp[2];
-extern s32 g_mbgFrame50Flag;
 s32 mbg_stop(void);
 s32 mbg_streamPushAudio(void);
 /* PsyQ libpress */

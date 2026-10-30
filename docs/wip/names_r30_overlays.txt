@@ -97,6 +97,9 @@ D_801EE264 s_menuStatusColon
 
 ## ovl_39
 func_801F5A60 menuSave_initStub
+# FIELDS include/ovl_39.h SaveState: unk1=prevMode,unk26=enemyGroup,unk28=worldId,unk2A=worldAreaId
+# FIELDS include/ovl_39.h SaveParty: unk514=escapeCount,unk51C=frogCount,unk51E=stealCount,unk520=dragonKills
+# FIELDS include/ovl_39.h SaveMisc: unk4=worldCamera
 
 ## ovl_3c
 func_801F47F0 shop_updateStub
@@ -109,7 +112,8 @@ func_8019D36C mdec_timeout
 D_8019E008 g_mdec1Reg
 D_80198700 s_mbgTestMoviePaths
 D_8019F4A8 g_mbgMaskStp
-D_8019DC9C g_mbgFrame50Flag
+# D_8019DC9C (g_mbgPlayer + 8) is now written as g_mbgPlayer.shortFrame
+# FIELDS include/ovl_64.h Ovl64State: unk8=shortFrame
 # D_8019DC97 (byte 3 of g_mbgPlayer) is now written as g_mbgPlayer.modeSwitch
 
 ## ovl_65

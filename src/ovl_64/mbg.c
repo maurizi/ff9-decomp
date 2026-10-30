@@ -359,7 +359,7 @@ s32 mbg_play(u32 movie, s32 idx) {
     st->pauseReq = 0;
     st->unk5 = 0;
     st->firstFrame = 1;
-    st->unk8 = 0;
+    st->shortFrame = 0;
     st->audioFrames = 0;
     g_mbgState++;
     return func_8019_decode_first();
@@ -480,11 +480,11 @@ s32 mbg_update(s32 arg0) {
     func_8019_wait_frame(&g_mbgDecode);
     g_gameState->vsyncMode = 4;
     if (g_mbgFrame != 0 && g_mbgFrame % 50 == 0) {
-        g_mbgFrame50Flag = 1;
+        g_mbgPlayer.shortFrame = 1;
     }
-    if (g_mbgPlayer.unk8 != 0 && g_gameState->vsyncMode >= 4) {
+    if (g_mbgPlayer.shortFrame != 0 && g_gameState->vsyncMode >= 4) {
         g_gameState->vsyncMode--;
-        g_mbgPlayer.unk8 = 0;
+        g_mbgPlayer.shortFrame = 0;
     }
     if (arg0 != 0) {
         env = (DISPENV *)(g_gameState->gameData->drawBuf * 20 + (s32)g_gameState->dispEnv);

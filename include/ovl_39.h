@@ -250,14 +250,14 @@ typedef struct {
 /* game state part of the save data */
 typedef struct {
     u8 mode; /* GameState.mode */
-    u8 unk1; /* GameState.unkA */
+    u8 prevMode; /* GameState.prevMode */
     u8 reserved2[0x20 - 2]; /* written as 0 */
     u16 fieldId;
     u16 areaId; /* GameData.unk3A (the field's area, ovl_0a fld_initArea) */
     u16 battleId;
-    s16 unk26; /* GameData.unk848 */
-    u16 unk28; /* GameData.unk7DC */
-    u16 unk2A; /* GameData.unk7DE */
+    s16 enemyGroup; /* GameData.enemyGroup (stored as s8) */
+    u16 worldId; /* GameData.worldId */
+    u16 worldAreaId; /* GameData.worldAreaId */
     u8 reserved2C[0x14]; /* written as 0 */
 } SaveState;
 
@@ -283,17 +283,17 @@ typedef struct {
 typedef struct {
     Character characters[SAVE_CHARACTERS];
     u8 party[4]; /* character index, SAVE_CHARACTERS = none */
-    u16 unk514; /* GameData.unk55C */
+    u16 escapeCount; /* GameData.escapeCount */
     u16 firstUseFxSeen;
     u32 gil;
-    u16 unk51C;
-    u16 unk51E;
-    u16 unk520;
+    u16 frogCount; /* GameData.frogCount */
+    u16 stealCount; /* GameData.stealCount */
+    u16 dragonKills; /* GameData.dragonKills */
 } SaveParty; /* 0x524 */
 
 typedef struct {
     s32 chocograph; /* GameData.chocograph */
-    Unk880 unk4; /* GameData.unk880 */
+    Unk880 worldCamera; /* GameData.worldCamera */
     u8 unk14; /* GameData.unk892 */
 } SaveMisc;
 

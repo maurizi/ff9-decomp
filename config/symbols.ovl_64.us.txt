@@ -95,4 +95,3 @@ mdec_timeout = 0x8019D36C; // type:func [string] libpress internal, prints "%s t
 g_mdec1Reg = 0x8019E008; // [code] libpress pointer holding 0x1F801824 (MDEC1 control/status), read by mdec_getStatus, written by mdec_timeout
 s_mbgTestMoviePaths = 0x80198700; // [string] TEST FMV990.STR and the other TEST movie paths at the start of the overlay rodata
 g_mbgMaskStp = 0x8019F4A8; // [code] per draw buffer GP0 0xE6 mask-bit packet (0xE6000002 = draw only where the mask bit is clear) that mbg_update fills when a mask is active
-g_mbgFrame50Flag = 0x8019DC9C; // [code] set to 1 on every 50th movie frame by mbg_update, never read or cleared
