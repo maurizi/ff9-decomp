@@ -5616,3 +5616,585 @@ D_800FF470 g_btlfxTaskHeap
 func_800AD4AC btl_allocShadows
 func_800E87C4 btlfx_moveSummonToHeap
 Unk800FDED0 BtlStpPair
+
+# ===== R30 naming round: main (from docs/wip/names_r30_main.txt) =====
+# R30 main naming round: applied OLD NEW pairs (and # FIELDS lines)
+
+## main
+func_80058F34 akao_channelsToVoiceMask
+func_80058F94 akao_flushKeyOffs
+func_80059140 akao_buildVoiceModeMask
+D_80083238 g_akaoVoiceModeMasks
+func_8005D628 akao_tickCrossfade
+D_80080A18 g_akaoCrossfade
+D_800809B8 g_akaoSkipMeasures
+func_8005EB40 akao_initSlide
+func_8005A5FC akao_findBankSlot
+func_8005EC8C akao_remapSeInstrument
+func_80059414 akao_freeSubSeqVoices
+D_800809DC g_akaoSeTrackOfs
+D_800809E4 g_akaoSeBankIds
+D_80083148 g_akaoSeExtraCounts
+D_800809E8 g_akaoSeData
+func_8005DB40 akao_peekNextNote
+func_8005E170 akao_playDrumNote
+D_8006F374 g_akaoOpLengths
+D_8006F3D4 g_akaoFeOpLengths
+func_800615F8 akao_streamArmStop
+func_80061624 akao_streamOneShotStart
+func_800616F8 akao_streamPlayOneShot
+func_800618C0 akao_streamPlayResident
+D_8007F720 g_akaoResidentStream
+func_80061BC8 akao_streamNextReadBlock
+func_80056488 akao_streamPushBlock
+func_80061C1C akao_streamStartRing
+func_80061EE4 akao_streamStartRingVoices
+func_80061E1C akao_streamRingKeyOn
+func_80061FBC akao_streamRefillRing
+func_80062118 akao_streamRefillRingA
+func_800621D4 akao_streamRefillRingB
+func_80056048 akao_loadBankInSlot
+func_80055330 akao_clearSavedMusic
+D_8007F95A g_akaoSavedSeqMusicId
+D_80083150 g_akaoPitchScale
+D_8007F8E4 g_akaoPitchScaleStep
+D_8007F96C g_akaoPitchScaleLen
+D_80083154 g_akaoTempoScale
+D_80083156 g_akaoTempoScaleHi
+D_8007F8E8 g_akaoTempoScaleStep
+D_8007F96E g_akaoTempoScaleLen
+D_8008314C g_akaoRandIndex
+func_8004B2A0 evt_initAllocNodes
+func_8004B2F4 evt_freeAllocNode
+func_8004B9B8 evt_finishTurn
+func_8004B85C evt_isInParty
+func_800512B4 pen_setX
+func_80052D0C evt_skipVarRef
+func_800530A8 math_rotateSVector
+func_8005309C math_dirVector
+func_80047AB8 evt_callTurnScript
+D_8007AE10 g_evtBattleVars
+func_8004B404 evt_getBattleVar
+func_8004B4A8 evt_setBattleVar
+D_8007AE12 g_evtCurUnitMask
+func_8004BB30 evt_setCurUnit
+D_8007BCB0 g_penLineStart
+func_80064CDC pen_locate
+func_80064CA4 pen_setColorRGB
+func_80064C24 pen_setColorPreset
+func_80064BEC pen_beginOt
+func_80062E3C shadow_initSlots
+func_8001E3A4 game_clearModelSlot
+func_8001DA78 file_advanceLoadPtr
+func_80022FD0 cd_pauseAsync
+func_80026DCC ui_drawItemIcon2
+func_80051274 pen_glyphSinkNone
+func_80053384 pen_glyphSinkQuiet
+func_8003264C menu_clearCardSlot
+func_8004ED3C msg_clearWindowOtz
+func_80058990 akao_applyCrossfadeVolume
+func_800589E0 akao_restoreCrossfadeVolume
+D_80080A24 g_akaoCrossfadeSavedVolume
+D_800831C4 g_akaoPauseFlags
+D_80080AC4 g_akaoMuteMask
+D_80080990 g_akaoSpuMallocTable
+D_8006F334 g_akaoSilenceSample
+D_8006F3F4 g_akaoNoteLengths
+D_8006F40C g_akaoEmptyTrack
+D_8007AE24 g_evtLinePointX
+D_8007AE28 g_evtLinePointZ
+D_8007AE2C g_evtScreenX
+D_8007AE30 g_evtScreenY
+D_8007AE38 g_evtSoundVolume
+D_8007AE3C g_evtSoundPan
+D_8007AE34 g_evtBattleTriggerArg
+D_8007AE5C g_evtBalloonOfsX
+D_8007AE60 g_evtBalloonOfsY
+D_8007AE64 g_evtBalloonOfsZ
+D_8007AE6C g_evtLookReleaseTimer
+D_8007AEB8 g_evtWorldCamEyeObj
+D_8007AEBC g_evtWorldCamTargetObj
+D_8007B6FC g_evtResumeNode
+D_8007B718 g_evtHalted
+D_8007AE70 g_evtPartyRequest
+D_8007AE00 g_evtCharScriptMask
+D_8007BBCC g_penGlyphs
+D_8007BB98 g_penGlyphDecode
+D_8007B99C g_msgSavedAnalogThresholds
+D_80011A6C g_msgChoiceAnalogThresholds
+D_80011A44 g_evtDefaultAnalogThresholds
+D_8007BB90 g_msgLayoutAltOpen
+D_80011EFC g_msgAteTitle
+D_80011F10 g_msgMognetTitle
+D_8006E67C g_msgIconSprites
+D_8006E688 g_msgTextSpeeds
+D_80068790 g_hereIconSprite
+D_80068788 g_bubbleSprite
+D_8006E690 g_bubbleScriptOpen
+D_8006E6D8 g_bubbleScriptOpenAlt
+D_8006E6F0 g_bubbleScriptClose
+D_8006E63C g_evtCharPartyOrder
+D_8006E630 g_evtPartyOrderChars
+D_8006BB74 g_newGameItems
+D_80068F70 g_statusIconSprites
+D_800689B0 g_itemIconSprites
+D_8006BB84 g_equipSlotMasks
+D_8006BB8C g_portraitByKind
+D_80068FD8 g_gaugeColors
+D_8006BBB4 g_numberClutRows
+D_80068FB4 g_winCornerSprites
+D_80068FC0 g_winHEdgeSprites
+D_80068FC8 g_winVEdgeSprites
+D_80068FA4 g_winEdgeRgbc
+D_80068FAC g_winCornerRgbc
+D_8006BCFC g_winStyleOpenAnim
+D_80010CE0 g_winClipInsets
+D_80010CD0 g_winMinWidths
+D_8006CA78 g_chrInitInfo
+D_8006CA9C g_chrHpMpSupports
+D_8006CAA0 g_chrStatCaps
+D_8006CAA4 g_chrAppearanceTypes
+D_8006CAB8 g_chrDefaultSets
+D_8006CACC g_chrClassFlags
+D_8006CAD8 g_chrDefaultEquip
+D_8006D1C8 g_armorDefs
+D_80010DC4 g_chrDefaultNames
+D_8006BBD4 g_hourHundredsGlyphs
+D_8006BBFC g_numberDigitWidths
+D_8006BC0C g_dpadArrowSprites
+D_80010BD0 g_nameGlyphSpans
+D_80010034 g_modeOverlayAddrs
+D_80010E48 g_helpIconAnimData
+D_800110A0 g_menuScreenStrings
+D_800121C8 g_cardInfo
+D_800121C0 g_cardArrowBits
+D_8006FD60 g_cardNames
+D_80068234 g_vramCopyRectIdx
+D_80073CE8 g_vramCopyRects
+D_80068680 g_configButtons
+D_800686A0 g_configPadButtons
+D_800686C0 g_configExtraButtons
+D_800686C4 g_configExtraSlots
+D_8006BC38 g_partyNameRect
+D_8006E508 g_menuCmdRectInit
+D_8006F2E0 g_swirlParamSets
+D_8006F308 g_swirlFlashX
+D_8006F310 g_swirlFlashY
+D_80077878 g_fadePktBufs
+D_8007E3C8 g_akaoVsyncs
+D_8007E3D0 g_akaoTickPhase
+D_80070400 g_labelAbility
+D_80070408 g_labelArrange
+D_80070418 g_labelCardInfo
+D_8007041C g_labelCard
+D_80070420 g_labelCheck
+D_80070424 g_labelChocoboAbility
+D_80070428 g_labelChocograph
+D_8007042C g_labelCommand
+D_80070430 g_labelConfig
+D_8007043C g_labelEquipment
+D_80070440 g_labelError
+D_80070444 g_labelFile
+D_80070450 g_labelHelp
+D_80070454 g_labelHint
+D_80070460 g_labelInfo
+D_8007046C g_labelLocation
+D_8007047C g_labelName
+D_8007048C g_labelNotice
+D_80070494 g_labelParty
+D_80070498 g_labelPlayer
+D_800704A4 g_labelQuantity
+D_800704AC g_labelSelected
+D_800704B8 g_labelTarget
+D_800704C0 g_labelTimeAndGil
+D_800704C4 g_labelTrash
+D_800704C8 g_labelWarning
+D_800809F0 g_akaoOpSeArgs
+D_8006B1F4 g_usableItemTable
+func_80034A30 chr_canLearnAbilities
+func_8002F4D0 snd_stopPlayedSe
+func_8002FEB4 fade_reverseNoCallback
+func_8002C064 gfx_setUiMode
+func_800EA27C btlui_isSecondPortUsed
+# renamed real names (not placeholders)
+akao_cmdD0 akao_cmdSetTempoScale
+akao_cmdD1 akao_cmdFadeTempoScale
+akao_cmdD2 akao_cmdFadeTempoScaleFrom
+akao_cmdD4 akao_cmdSetPitchScale
+akao_cmdD5 akao_cmdFadePitchScale
+akao_cmdD6 akao_cmdFadePitchScaleFrom
+akao_sendCmdD0 akao_setTempoScale
+akao_sendCmdD1 akao_fadeTempoScale
+akao_sendCmdD2 akao_fadeTempoScaleFrom
+akao_sendCmdD4 akao_setPitchScale
+akao_sendCmdD5 akao_fadePitchScale
+akao_sendCmdD6 akao_fadePitchScaleFrom
+akao_sendCmd99 akao_pause
+akao_sendCmd98 akao_resume
+akao_cmd9B akao_cmdPauseMusic
+akao_cmd9A akao_cmdResumeMusic
+akao_cmd9D akao_cmdPauseSe
+akao_cmd9C akao_cmdResumeSe
+akao_cmd9F akao_cmdPauseStream
+akao_cmd9E akao_cmdResumeStream
+akao_sendCmd90 akao_setMuteMask
+akao_cmd90 akao_cmdSetMuteMask
+akao_sendCmd92 akao_setCondition
+akao_cmd92 akao_cmdSetCondition
+akao_sendCmdD8 akao_setTempoPitchScale
+akao_sendCmdD9 akao_fadeTempoPitchScale
+akao_sendCmdDA akao_fadeTempoPitchScaleFrom
+D_8007BD22 g_swirlAngleStep
+# aliases now written as the struct members / table entries they are
+# D_80077DB2 (g_menu + 2) is now g_menu.cardSlot (menu_clearCardSlot)
+# D_80077DB5 (g_menu + 5) is now g_menu.open (ovl_65 battle_end)
+# D_80077DCC (g_menu + 0x1C) is now g_menu.unk1C (func_80032A34)
+# D_80077DEC (g_menuHelp + 4) is now g_menuHelp.otz (ovl_3a, ovl_0a fld_disc)
+# D_80077E2C (g_menuScreenSwitch + 4) is now g_menuScreenSwitch.overlayLoading (menuScreen_onOverlayRead)
+# D_80077E2F (g_menuScreenSwitch + 7) is now g_menuScreenSwitch.target
+# D_80077E30 (g_menuScreenSwitch + 8) is now g_menuScreenSwitch.titleScroll
+# D_80077E44 (g_menuScreenSwitch + 0x1C) is now g_menuScreenSwitch.screens (MenuScreenDef, type Unk80077E44 removed)
+# D_80077E51 (g_menuScreen + 1) is now g_menuScreen.slideIn (ovl_0a/ovl_0c menu_main)
+# D_80077E58 (g_menuScreen + 8) is now g_menuScreen.savedOtz (menuScreen_close)
+# D_80080A74 (g_akaoSeState + 4) is now g_akaoSeState.keyOnMask (akao_updateVoices)
+# D_80080A80 (g_akaoSeState + 0x10) is now g_akaoSeState.pausedMask (akao_cmdResumeSe)
+# D_80080A98 (g_akaoSeState + 0x28) is now g_akaoSeState.noiseClock
+# D_800809D8 (g_akaoLoadedBanks + 0x18) is now g_akaoLoadedBanks[6] (akao_findBankSlot)
+# D_800831C0 (g_akaoStream + 0x58) is now g_akaoStream.pitch (akao_streamSetVoice)
+# D_8007F740 (g_akaoResidentStream + 0x20) is now g_akaoResidentStream[8] (akao_uploadSeBank)
+# D_8008322C (g_akaoUpload + 4) is now g_akaoUpload.spuAddr (akao_beginBankUpload)
+# D_80083230 (g_akaoUpload + 8) is now g_akaoUpload.sampleLeft (akao_uploadBank)
+# D_80080A24 (g_akaoCrossfade + 0xC) is read as g_akaoCrossfade.savedVolume (akao_restoreCrossfadeVolume), its symbol is g_akaoCrossfadeSavedVolume
+# D_8006A20E (g_itemTable[0xFF].icon) is now written as such (text_measure item icon)
+# D_80073939, D_8007393A, D_8007393B (g_padAnalog + 1..3) are now g_padAnalog[0].unk0[1..3] (ovl_0c w_movement stick readers)
+# D_80068690, D_80068890, D_80068CE0, D_80068DC8 (label font) are now g_uiSprites[c - 8], [UI_SPRITE_AMPERSAND], [UI_SPRITE_PERIOD], [UI_SPRITE_UNDERSCORE]
+# D_800686E8, D_800687E0 are now g_uiSprites[UI_SPRITE_AP_GAUGE], g_uiSprites[UI_SPRITE_SMALL_DIGITS + i]
+# MenuScreenDef.update is now a function pointer and needsMember a u8, as menuScreen_update / menuScreen_needsMember read them
+# type Unk16D8 renamed EvtListNode
+# FIELDS include/ff9.h AkaoStreamState: unk24=blocksWritten,unk28=blocksRead,unk34=readBlock,unk38=writeBlock,unk3C=ringBlocks
+# FIELDS include/ff9.h AkaoCrossfade: unkC=savedVolume
+# FIELDS include/ff9.h DrawBufs: unk1=uiMode
+# FIELDS include/ff9.h Unk11C0Slot: unk0_8=sizeX,unk0_20=sizeZ,unk4_0=fixedAngle,unk4_12=ofsX,unk4_22=ofsZ
+# FIELDS include/ff9.h Unk800703FC: unk3C=labelEnemy,unkA0=labelPlayer,unk84=labelNew,unk88=labelNo,unk8C=labelNormal,unk80=labelName,unk90=labelNotice
+# FIELDS include/ff9.h EvtObject: unkB=battleTurnState,unk70=talkTurnAngle,unk71=talkTurnWaitOp,unk72=talkTurnReturnOp
+# FIELDS include/ff9.h EvtListNode: unk0=next,unk4=obj
+
+# ===== R30 naming round: ovl_0b (from docs/wip/names_r30_ovl_0b.txt) =====
+# R30 ovl_0b names (OLD NEW per line), for re-applying after merges: python3 tools/rename.py --bin ovl_0b --from FILE
+# BtlfxExports members (include/btlfx_mod.h) and src/fxmod call sites follow the function names.
+func_800A8F18 btl_loadResidentMusic
+func_800A8F8C btl_loadSoundBanks
+func_800A902C btl_loadShadowTexture
+func_800A9090 btl_initPartyNames
+func_800E9D84 btlui_uploadPartyNames
+func_800AF1C8 btl_preloadRequest
+func_800AE9C8 btl_setMusicVolumeFade
+func_800AEA08 btl_isMusicFadingOut
+func_800AE7C8 btl_unpackMusic
+func_800AE4FC btl_getWeaponSoundBank
+func_800AE618 btl_loadWeaponSoundStep
+D_800F51E8 g_btlSoundBankIds
+D_800F51EC g_btlSoundLoadSlot
+D_800F51F0 g_btlSoundLoadId
+D_800F51F2 g_btlSoundLoadType
+D_800F51F4 g_btlSoundLoadSector
+D_800F51F8 g_btlSoundLoadKind
+func_800B3DBC btl_cancelTranceEidolon
+func_800B95BC btl_rollMagicFail
+func_800B9DDC btl_checkRevivable
+func_800BA308 btl_randomizeDefense
+func_800BA938 btl_applyInvertedPower
+func_800BBF30 btl_createObjModel
+func_800BC1E0 btl_getWeaponOffset
+func_800BDACC btl_orElements
+func_800C09D8 btl_saveCharStatus
+func_800C2DF4 btlcam_getNextVariant
+func_800C30B8 btlcam_focusCaster
+func_800C4E84 btlcam_resolveAnchor
+func_800C4DC4 btlcam_resolveAnchorPair
+func_800C4B9C btlcam_orbitAnchor
+func_800CBEFC btlseq_opSetBaseBone
+func_800CBF50 btlseq_opShowShadow
+func_800D044C btlfx_offsetPoint
+func_800D0580 btlfx_forwardAngles
+func_800D0674 btlfx_toLocalPolar
+func_800D7BA8 btlfx_opArcAtTarget
+func_800D9350 btlfx_stepArcAtTarget
+func_800DA4E8 btlfx_resetLoader
+func_800E0134 btlfx_getParticleTrail
+func_800E2F84 btlfx_runSubEmitter
+func_800E436C btlfx_turnUnitTowardFast
+func_800E4634 btlfx_opBounce
+func_800E4A3C btlfx_startCastEmitter
+func_800E4C54 btlfx_endCastIfNoBounce
+func_800E5714 btlfx_opSetSpriteClut
+func_800E57B0 btlfx_opDrawOnUnit
+func_800E5D48 btlfx_spawnDrawOnUnit
+func_800E7CC4 btlfx_addRadiusSixth
+func_800E84F0 btlfx_isCmdPendingOnAutoPotion
+func_800E8554 btlfx_resetIdleMotion
+func_800E8980 btlfx_setPartnerByArg
+func_800E8C84 btl_setMarkersVisible
+func_800E8CE4 btl_areMarkersVisible
+func_800E98C8 btlfx_setSoundUnit
+func_800E98F8 btlfx_setAllSoundsUnit
+func_800EA024 btlui_isMultiTarget
+func_800EA094 btl_isTargetWindowOpen
+func_800F1360 btlui_isTargetWindowOpen
+func_800F1388 btlui_isTargetFromList
+func_800EA378 btlui_updateTargetFlags
+func_800EA4D0 btlui_cacheFrame
+func_800EA518 btlui_drawCached
+func_800EA5C4 btlui_putDispEnvIfReady
+func_800EA908 btlui_linkSwdMagAbilities
+func_800EB580 btlui_getQueueCountPtr
+func_800F4FC8 btl_getBannerDuration
+func_800F4FD8 btl_isBannerActive
+D_800A7F34 s_hiSetSummonMotFrameErr
+D_800A7F60 s_hiraishiErrorFmt
+D_800A7F78 s_hiFreeEffModelErr
+D_800A81A8 s_hiSplitMdlVertexErr
+D_800A825C s_hiGetMdlVertexPtrErr
+D_800A857C s_btluiTranceLabel
+D_800A8584 s_btluiCmdIconsSrc
+D_800A858C s_btluiRowsSrcA
+D_800A8594 s_btluiRowsSrcB
+D_800F5244 g_btlEnemySupport
+D_800F5758 g_btlCamPartyPresets
+D_800F57F0 g_btlPartyShadows
+D_800F5850 g_btlEnemyRotByAmbush
+D_800F6A28 g_btlPopupBounce
+D_800F6A38 g_btlPopupBounceHeal
+D_800F6A54 g_btlTextPopups
+D_800F6A74 g_btlPowersOf10
+D_800F6A7C g_btlPopupDrawFns
+D_800F6B48 g_btlPartyIconBones
+D_800F6BBC g_btlPartyIconY
+D_800F6C30 g_btlPartyIconZ
+D_800F6CA4 g_btlStatusCountdowns
+D_800F7124 g_btlCmdNameMap
+D_800F71E4 g_btlCmdNameTexts
+D_800F7278 g_btlfxMaskResetBusy
+D_800F727C g_btlfxLargeTargetFx
+D_800F73A0 g_btlfxKindTimings
+D_800F7460 g_btlfxWeaponScripts
+D_800F8CB4 g_btlfxCommonCluts
+D_800F8CF4 g_btlfxSoundSets
+D_800F8D04 g_btlfxDrawScales
+D_800F8D70 g_btlfxUnitKinds
+D_800F8D78 g_btlfxCmdCameras
+D_800F8D80 g_btlfxBounceCameraParty
+D_800F8D81 g_btlfxBounceCameraEnemy
+D_800F8D84 g_btlSwdMagSourceAbilities
+D_800F8DBC g_btluiHelpRect
+D_800F8DDC g_btluiCmdWindowRect
+D_800F8DE4 g_btluiSideCmdTexts
+D_800F8DF0 g_btluiCmdConfirmFns
+D_800F8E00 g_btluiSideCmdConfirmFn
+D_800F8E04 g_btluiSideCmdIds
+D_800F8E10 g_btluiTitleTexWindow
+D_800F8E18 g_btluiHighlightLabel
+D_800F8E20 g_btluiHighlightColors
+D_800F8E30 g_btluiSelectListRect
+D_800F8E38 g_btluiListConfirmFns
+D_800F8E48 g_btluiListRowFns
+D_800F8E58 g_btluiListHelpFns
+D_800F8E68 g_btluiDefaultTargets
+D_800F8E84 g_btluiTargetAllByType
+D_800F8E94 g_btluiTargetMoveFns
+D_800F8EA4 g_btluiTargetMovePads
+D_800F8EE4 g_btluiRetargetOnAdd
+D_800F8EF4 g_btluiTargetWindowRect
+D_800F8EFC g_btluiListWindowRect
+D_800F8F04 g_btluiListWindowDrawFns
+D_800F8F18 g_btluiStatusIcons
+D_800F8F98 g_btluiStatusIcons2
+D_800F8FD8 g_btluiPanelLabels
+D_800F9028 g_btluiPanelY
+D_800F9038 g_btluiPanelColumnFns
+D_800F9048 g_btluiRowCluts
+D_800F9058 g_btluiListShowSlide
+D_800F9064 g_btluiListShowTitleSlide
+D_800F9070 g_btluiListTitles
+D_800F9084 g_btluiListHideSlide
+D_800F9090 g_btluiListHideTitleSlide
+D_800FDE34 g_btluiTexWindowRect
+D_800FDE3C g_btlBannerDurations
+D_800FDE58 g_btlBannerDefaultRect
+D_800FDE60 g_btlPauseSprite
+D_80100C70 g_btlfxModuleOps
+D_80100D8C g_btlfxWeaponScriptId
+D_80100D90 g_btlfxSummonTexPos
+D_801014B0 g_btlfxSavedOtZ
+D_80104E30 g_btlfxSounds
+D_80104E34 g_btlfxSoundSlots
+D_80104E94 g_btluiSavedRepeat
+D_80105058 g_btluiListWindow
+D_80105080 g_btluiPortIconTpage
+D_80105090 g_btluiPortIconStp
+D_801050A0 g_btluiPortIconSprt
+D_801050C0 g_btluiPortBlinkSprt
+D_801050D4 g_btluiPortIconOt
+D_801050E0 g_btluiDrOffset
+D_80105100 g_btluiDrArea
+D_80105120 g_btluiDrMode
+D_80105140 g_btluiDrStp
+func_800C972C btl_initSceneFlags
+D_80104E6A g_btluiAtbOn
+D_80104E6B g_btluiTargetWindow
+D_80104E70 g_btluiHideWindows
+D_80104E75 g_btluiPrevAtbOn
+D_80104E76 g_btluiSecondPort
+D_80104E77 g_btluiFrameReady
+D_80104E7D g_btluiPort
+D_80104E80 g_btluiVsyncTick
+D_80104FC0 g_btlSideCmd
+D_800FEC38 g_btlfxInCall
+D_800FEC3C g_btlfxReturnPc
+D_80104DE8 g_btlfxCommonInit
+D_800A7C20 s_btlDetectItemSuffix
+func_800EA268 btlui_getPort
+# Aliases replaced by struct fields (externs removed): D_800FE470 = g_btlCamera.nextVariant, D_800FE484 = g_btlCamera.focusUnit,
+# D_800FEC65 = g_btlfxState.castEnded, D_800FEC42 = g_btlfxState.effectId, D_80100DCC = g_btlfxLoader.state,
+# D_80100E14 = g_btlfxLoader.summon, D_80105274 = g_btlBanner.duration, D_8010527C = g_btlBanner.active,
+# D_800FDF34 = g_btlRewards.exp, D_800FDF38 = g_btlRewards.ap, D_800FDF3A = g_btlRewards.expMask,
+# D_800FD6E0 = g_btlCmdTable[BTL_CMD_SWD_MAG]
+# FIELDS include/ovl_0b.h BtlUnitList: unk25=fxArgs
+# FIELDS include/ovl_0b.h BtlCmd: unk0_9=magicFailed
+# FIELDS include/ovl_0b.h Pool6CEntry: unk22=otZ,unk5C=rot,unk64=fieldPos,unk68=fieldRot
+# FIELDS include/ovl_0b.h Unk800E57B0: unk6=roll,unkE=frames
+# FIELDS include/ovl_0b.h Unk800E4634Arg2C: unk27=bounceCount
+# FIELDS include/ovl_0b.h Unk800E4634Arg2: unkC=targets
+# FIELDS include/ovl_0b.h Unk800BC1E0: unk0=flags,unk8=reach,unkA=offsetZ
+# FIELDS include/ovl_0b.h Unk800D7C9C: unk3=playMotion
+# FIELDS include/ovl_0b.h Unk800D955C: unk3=playMotion
+# FIELDS include/ovl_0b.h Unk800D8EA4: unk2=trimFrames
+# FIELDS include/ovl_0b.h Unk800D805C: unk2=turnAway
+# FIELDS include/ovl_0b.h Unk800FEC40: cameras.b.unk0=ids,cameras.b.unk3=count
+# FIELDS include/ovl_0b.h BtlUnitList: unk42=fxParam
+
+# ===== R30 naming round: overlays (from docs/wip/names_r30_overlays.txt) =====
+# R30 overlay naming round: applied OLD NEW pairs (and # FIELDS lines) per binary
+
+## ovl_0a
+D_800A7814 s_bgiStrInvNy
+func_800B58A8 fld_discChangeMenu4Update
+func_800B58B0 fld_discChangeMenu4Leave
+func_800B5928 fld_discChangeMenu8Update
+func_800B5930 fld_discChangeMenu8Leave
+D_800C9DDE g_fieldBgiMoveTriCount
+D_800CAA98 g_fieldBgiMoveTris
+D_800C9DE0 g_fieldBgiMoveEdgeCount
+D_800CAAB8 g_fieldBgiMoveEdges
+func_800C77DC bgi_getMoveTris
+func_800C7914 bgi_getMoveEdges
+# D_800CA0E0 (g_fieldBgState + 0x78) is now written as g_fieldBgState.unk78 (func_800C0FF4)
+func_8019AB98 mbg_setVolume
+
+## ovl_0c
+D_800A71F4 s_wmStrFrameMapDestructor
+D_800A720C s_wmStrFrameSystemDestructor
+D_800A79D0 s_wmStrFrameExtructExtract
+D_800A7A0C s_wmStrFrameExtructAlready
+D_800A7A40 s_wmStrFramePackGetPtrRange
+D_800A7AE8 s_wmImageFileNames
+D_800A7BB8 s_wmStrImageTopSector
+D_800A7CCC s_wmStrMemorymanDone
+D_800A7D20 s_wmStrMemorymanError
+D_800A7F48 s_wmStrEncounterNoScene
+D_800A7F94 s_wmStrBlockNoForm
+D_800A8098 s_wmStrReadtxDone
+D_800A80BC s_wmStrFrmbufReqOver
+D_800A80E0 s_wmStrFrmbufError
+D_800A80F8 s_wmStrFrmbufRequestError
+D_800A8118 s_wmStrFrmbufTransfer
+D_800A8178 s_wmStrIllegalWeatherMode
+D_800A832C s_wmStrMusicNormalSong
+D_800A8350 s_wmStrMusicAirShipSong
+D_800A8374 s_wmStrMusicChocoboSong
+D_800A8398 s_wmStrMusicDisc4Song
+D_800A83B8 s_wmStrMusicFieldSong1
+D_800A83DC s_wmStrMusicFieldSong2
+D_800A8400 s_wmStrMusicUnknownError
+D_800A8424 s_wmStrMusicAccepted
+D_800A8430 s_wmStrMusicDenied
+D_800A844C s_wmStrMusicNotReady
+D_800A7164 s_wmStrMovementChangeSP2
+D_800A8644 s_menuMainEquipLabelStrs
+D_800CCF84 g_worldImageNamesDisc1
+D_800CCF98 g_worldImageNamesDisc4
+D_800CCA12 g_worldMusicReqIdKind
+D_800CCB18 g_worldLandCellTypes
+D_800CCB14 g_worldCameraEaseBoost
+D_800CCE2C g_worldAutoTurnBoost
+D_800CCE4D g_worldCellTriggersOn
+D_800CFEF8 g_worldTexAnim0Interval
+D_800CFF02 g_worldTexAnim1Interval
+func_800C16C0 wm_naviDrawChocograph
+func_800B84E8 wm_runSetupStep
+func_800B36AC wm_mountPalettePre
+# D_800CCD7C (g_worldActorTypeInfo + 0xBC) is now g_worldActorTypeInfo[11].rideOffset (w_frameGetParameter 0xD0, WM_PARAM_TYPE11_RIDE_OFFSET)
+
+## ovl_0d
+D_800B3664 g_tmMusicRequest
+
+## ovl_14
+func_800A8A8C opening_titleDrawStub
+
+## ovl_15
+func_800AD678 ending_menuDrawStub1
+func_800AD680 ending_menuDrawStub2
+func_800AD688 ending_menuDrawStub3
+func_800AD380 bj_wagerDrawStub1
+func_800AD388 bj_wagerDrawStub2
+func_800AB3C4 bj_actionDrawStub1
+func_800AB3CC bj_actionDrawStub2
+D_800AE4A8 g_messagesUnused
+D_800AE430 g_theEndUnused
+
+## ovl_32
+func_801F9660 menuChocograph_loadImagesStub
+D_801EF6FC s_menuChocographPictureImages
+
+## ovl_33
+D_801EE644 s_menuEquipColon
+func_801F1148 menuAbility_initStub
+
+## ovl_36
+D_801F30D4 s_menuCardRepeatIds
+D_801F30E4 s_menuCardRestoreRepeatIds
+
+## ovl_37
+func_801F2F30 menuItem_exitStub
+func_801F3038 menuItem_initStub
+D_801F3140 s_menuItemChocoboTitle
+
+## ovl_38
+func_801EF9B4 menuStatus_drawStub
+D_801EE264 s_menuStatusColon
+
+## ovl_39
+func_801F5A60 menuSave_initStub
+# FIELDS include/ovl_39.h SaveState: unk1=prevMode,unk26=enemyGroup,unk28=worldId,unk2A=worldAreaId
+# FIELDS include/ovl_39.h SaveParty: unk514=escapeCount,unk51C=frogCount,unk51E=stealCount,unk520=dragonKills
+# FIELDS include/ovl_39.h SaveMisc: unk4=worldCamera
+
+## ovl_3c
+func_801F47F0 shop_updateStub
+
+## ovl_64
+func_8019AB98 mbg_setVolume
+func_8019D3F0 DecDCTBufSize
+func_8019D354 mdec_getStatus
+func_8019D36C mdec_timeout
+D_8019E008 g_mdec1Reg
+D_80198700 s_mbgTestMoviePaths
+D_8019F4A8 g_mbgMaskStp
+# D_8019DC9C (g_mbgPlayer + 8) is now written as g_mbgPlayer.shortFrame
+# FIELDS include/ovl_64.h Ovl64State: unk8=shortFrame
+# D_8019DC97 (byte 3 of g_mbgPlayer) is now written as g_mbgPlayer.modeSwitch
+
+## ovl_65
+func_801F325C rewards_stepGilStub
+func_801EF6D8 battleEnd_loadPortraits
+# D_800FDF4D (byte 0x1D of g_btlRewards) is now g_btlRewards.fleeGil (new BattleResult field, ovl_0b Unk800FDF30.fleeGil)
