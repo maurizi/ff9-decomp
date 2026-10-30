@@ -239,10 +239,10 @@ s32 fx_07e_op80(s32 mode, Fx07eWork80 *work, Unk800F78A4 *env, Unk80100C78Entry 
     s32 r;
 
     if (mode == 0) {
-        ((EffInit *)arg4)->unk0 = sizeof(Fx07eWork80);
-        ((EffInit *)arg4)->unk8 = sizeof(Fx07ePart);
-        ((EffInit *)arg4)->unk14 = (s32)func_801E7EB8;
-        ((EffInit *)arg4)->unk4 = 0xB;
+        ((EffInit *)arg4)->workSize = sizeof(Fx07eWork80);
+        ((EffInit *)arg4)->elemSize = sizeof(Fx07ePart);
+        ((EffInit *)arg4)->elemFn = (s32)func_801E7EB8;
+        ((EffInit *)arg4)->poolCount = 0xB;
     } else if (mode == 1) {
         D_801E8AB8 = env;
         arg4 = (s32 *)*arg4;
@@ -351,11 +351,11 @@ s32 fx_07e_op81(s32 mode, Fx07eWork81 *work, Unk800F78A4 *env, Unk80100C78Entry 
         switch (work->unk0) {
         case 0:
             t = (frame << 12) / 12;
-            env->unk28 = work->unk8;
+            env->otZ = work->unk8;
             s = ex->math_sin(t >> 2);
             ex->btlfx_drawParticles((u8 *)ex->btlfx_getFileData(entry->file, 1), pos, NULL, 0x2000, 0, 1, s, 0, 0);
             ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->file, 2), pos, NULL, 0x2000, 0, 2, s);
-            env->unk28 = 0;
+            env->otZ = 0;
             if (frame >= 12) {
                 work->unk0 = 1;
                 entry->frame = -1;
@@ -369,10 +369,10 @@ s32 fx_07e_op81(s32 mode, Fx07eWork81 *work, Unk800F78A4 *env, Unk80100C78Entry 
             t = frame << 8;
             func_801E7704(1, xy.vx, xy.vy, 0x10, 6, 0xA, 0x80, 0x80, &r1, func_801E8498);
             D_801E8B90 = ex->math_sin(t >> 2) >> 1;
-            env->unk28 = work->unk8;
+            env->otZ = work->unk8;
             ex->btlfx_drawParticles((u8 *)ex->btlfx_getFileData(entry->file, 1), pos, NULL, 0x2000, 0, 1, 0x1000, 0, 0);
             ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->file, 2), pos, NULL, 0x2000, 0, 2, 0x1000);
-            env->unk28 = 0;
+            env->otZ = 0;
             if (frame >= 16) {
                 work->unk0 = 2;
                 entry->frame = -1;
@@ -387,12 +387,12 @@ s32 fx_07e_op81(s32 mode, Fx07eWork81 *work, Unk800F78A4 *env, Unk80100C78Entry 
             func_801E7704(1, xy.vx, xy.vy, 0x10, 6, 0xA, 0x80, 0x80, &r2, func_801E8498);
             a = t >> 2;
             D_801E8B90 = ex->math_cos(a) >> 1;
-            env->unk28 = work->unk8;
+            env->otZ = work->unk8;
             c = 0x1000 - ex->math_sin(a);
             s = ex->math_cos(a);
             ex->btlfx_drawParticles((u8 *)ex->btlfx_getFileData(entry->file, 1), pos, NULL, c * 2, 0, 1, s, 0, 0);
             ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->file, 2), pos, NULL, c * 2, 0, 2, s);
-            env->unk28 = 0;
+            env->otZ = 0;
             if (frame >= 12) {
                 return 1;
             }

@@ -408,7 +408,7 @@ s32 fx_195_op80(s32 mode, Fx195Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
                 func_801E78A4(entry, &D_801EAB08[i], &v1, &v2, r, r, ang, 0xC0, 0, ex->btlfx_randCentered(0x400) + 0xC00,
                               0x84);
             }
-            env->unk28 = 0x200;
+            env->otZ = 0x200;
             w1_200 = (ex->math_sin(t >> 2) << 1) + 0x1000;
             w2_202 = (ex->math_cos(t >> 2) >> 1) + 0x800;
             ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->file, 9), &work->unk10, NULL, w1_200, 0, 1, w2_202);
@@ -422,7 +422,7 @@ s32 fx_195_op80(s32 mode, Fx195Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
                 r3.pad = 1;
                 ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->file, 0xA), &work->unk10, &r3, 0x4000, k, 1, 0x1000);
             }
-            env->unk28 = 0;
+            env->otZ = 0;
             if (frame >= 14) {
                 work->unk0 = 5;
                 entry->frame = -1;
@@ -660,7 +660,7 @@ s32 fx_195_op80(s32 mode, Fx195Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
                 func_801E78A4(entry, &D_801EAEA0, &v1, &v2, (s_421 * 3) >> 2, s_421, -ang, 0xC0, 0, 0x1000, r);
             }
             s = 0x1000 - t;
-            env->unk28 = 0x300;
+            env->otZ = 0x300;
             ang = work->unk4 << 7;
             r = ((ex->math_cos(t >> 2) * 0xEB) >> 12) + 0x20;
             for (i = 0; i < 5; i++, ang += ex->btlfx_randCentered(0x20) + 0x333) {
@@ -677,7 +677,7 @@ s32 fx_195_op80(s32 mode, Fx195Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
                 v2.vy -= 0xF00;
                 func_801E7AA0(entry, &D_801EA808[i], &v2, &v1, 0x80, 0x200, ang, 0xFF, 0, ex->math_cos(t >> 2), r);
             }
-            env->unk28 = 0;
+            env->otZ = 0;
             if (frame == 0x31) {
                 BTLFX_COPY_SVEC(&work->unk18, &work->unk10);
                 work->unk18.vy -= 0x400;
@@ -686,7 +686,7 @@ s32 fx_195_op80(s32 mode, Fx195Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
                     p->unk22 = 0x180;
                 }
             }
-            env->unk28 = 0x300;
+            env->otZ = 0x300;
             rotG.vx = 0x400;
             rotG.vy = 0;
             rotG.vz = 0;
@@ -698,7 +698,7 @@ s32 fx_195_op80(s32 mode, Fx195Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             p1 = 0x5000 - (t << 1);
             p2 = ex->math_cos(a);
             ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->file, 2), &work->unk10, &rotG, p1, 0, 1, p2);
-            env->unk28 = 0;
+            env->otZ = 0;
             ex->btlfx_drawBackdrop((BtlBgLayers *)ex->btlfx_getFileData(entry->file, 7), frame);
             ex->btlfx_drawScrollMove(work->unk4 * 5, 0x200, 0x100, 0x20, 0xC0, 0x220, 0x100);
             if (frame >= 0x4D) {

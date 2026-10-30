@@ -733,20 +733,20 @@ typedef struct Unk800F78A40 {
     u32 flags;
     u8 retry; /* btlfx_retryOp: run the same op again next frame */
     u8 pad21[0x23 - 0x21];
-    u8 unk23;
+    u8 seqSync; /* Unk800FEC40.seqSync */
 } Unk800F78A40;
 
 typedef struct {
     u8 pad0[0xE];
-    s16 unkE;
+    s16 stage; /* Unk80100DC0.stage */
     u8 pad10[0x30 - 0x10];
-    s32 *unk30[8]; /* offset tables, entries relative to their start */
-    s16 unk50;
-    u8 unk52;
-    u8 unk53;
+    s32 *data[8]; /* offset tables, entries relative to their start */
+    s16 summonState;
+    u8 summonDataState;
+    u8 commonTexLoaded;
     u8 pad54[0x68 - 0x54];
-    u8 unk68;
-    u8 unk69;
+    u8 bufState;
+    u8 commonTexCount;
 } Unk800F78A44;
 
 typedef struct {
@@ -760,9 +760,9 @@ typedef struct {
     DRAWENV *drawEnv;
     s32 *ot; /* effect ordering table */
     u8 *prim; /* next free primitive */
-    s32 unk28;
+    s32 otZ; /* z subtracted before indexing the effect OT (>> 2); reset to 0 before each task, modules raise it to draw in front */
     struct Unk800FE3B8 *camera; /* g_btlCamera (btlcam_init) */
-    s32 unk30;
+    s32 workBuf; /* battle load buffer (Battle11C0.loadBuf; btlfx_start) */
 } Unk800F78A4;
 extern Unk800F78A4 *g_btlfxEnv;
 /* u16 table inside .text (0x800CFA80): 0x1000 * sqrt(64 / i) for i = 0x40-0xFF, the trail ribbons' normalization */
@@ -864,8 +864,8 @@ extern volatile Unk80104E68 g_btluiState;
 typedef struct {
     s16 phase; /* -1 idle, else the btlfx_runScript state (0 save VRAM .. 4 run ops) */
     s16 effectId; /* effect being played (btlfx_start, after btlfx_resolveFirstUse) */
-    s16 unk4;
-    s16 unk6;
+    s16 wait; /* frames left of control op 1 (a = 0) */
+    s16 fileId; /* effect file id of control op 5 (file = its slot) */
     s16 file; /* effect file slot of the script (btlfx_getFileData) */
     union {
         struct {
@@ -879,63 +879,63 @@ typedef struct {
     union {
         s32 w; /* cleared as a word */
         u8 b[4]; /* b[2]: done */
-    } unk10;
+    } signals; /* control op 2 sets b[a], op 1 waits for b[b] (b[2]: the caster task finished) */
     s8 motionDone; /* unit ops: the motion op waited for has ended (btlfx_stepPlayMotionWait) */
     s8 moveDone; /* unit ops: the move op has arrived (btlfx_opRunHome, btlfx_opJumpForward, ...) */
     s8 turnDone; /* unit ops: the turn op has finished (btlfx_opFaceTarget, btlfx_opFaceHome) */
-    s8 unk17; /* unit ops 0x79-0x7B */
+    s8 waitDone; /* unit ops 0x79-0x7B: the side/timing wait finished */
     u8 *pc; /* script pointer, 3-byte commands */
     s32 flags;
     u8 retry; /* btlfx_retryOp: run the same op again next frame */
-    u8 unk21;
-    u8 unk22;
-    u8 unk23;
-    u8 unk24;
+    u8 ending; /* end op: cleanup ran, waiting for btlfx_reloadCommonData */
+    u8 partyReload; /* control op 11: btl_reloadParty running */
+    u8 seqSync; /* control op 8 ran with an enemy caster (btlseq waits for it) */
+    u8 modelSwap; /* control op 13: unit slot + 1 whose model func_800AB3E4 swaps */
     u8 unk25;
 } Unk800FEC40;
 extern Unk800FEC40 g_btlfxState;
 
 typedef struct {
-    s32 unk0; /* CD sector */
-    s32 unk4;
-    s32 unk8; /* buffer index */
-    s16 unkC; /* state */
-    s16 unkE;
-    s16 unk10;
-    s16 unk12; /* commands left in the current block */
+    s32 sector; /* CD sector of the next read */
+    s32 effectId; /* effect file being loaded (btlfx_loadFile) */
+    s32 slot; /* buffer slot 0/1 of the current block */
+    s16 state; /* state machine step (btlfx_updateLoader), 0 idle */
+    s16 stage; /* 1 data read, 2 textures read, 3 module ready (control op 4 waits for it) */
+    s16 blockType; /* block header word 0: 1 loads into the second module buffer in slot 1 */
+    s16 cmdsLeft; /* commands left in the current block */
     u8 pad14[0x16 - 0x14];
-    u8 unk16; /* command kind */
-    u8 unk17;
-    u16 unk18; /* block count */
-    u16 unk1A;
-    u16 *unk1C; /* command pointer */
-    u8 *unk20;
-    s32 unk24;
-    u8 *unk28;
+    u8 cmdKind; /* command kind: 0/1 textures, 2 data, 3 module code, 4/5/6 summon, 7 sound bank, 8 load buffer, 9 common textures, 10 data ring */
+    u8 cmdArg; /* command argument (kind 2: ring size follows; kind 9: texture page mask) */
+    u16 blockCount; /* block count */
+    u16 block; /* block being loaded */
+    u16 *cmd; /* command pointer */
+    u8 *ringBase; /* data ring at 0x801F1700 (kind 2 with an argument) */
+    s32 ringSize;
+    u8 *ringCursor;
     union {
         s16 h[2];
         s32 w; /* set to -1 as a word */
-    } unk2C;
-    u8 *unk30[2];
-    s32 unk38;
-    struct Heap *unk3C[2];
-    RECT *unk44;
-    s16 unk48;
+    } slotBlock; /* per slot: block loaded there, -1 = none (btlfx_findFileSlot) */
+    u8 *data[2]; /* per slot: file data base (btlfx_getFileData) */
+    s32 modArg; /* data handed to the module's init (file data 0x40) */
+    struct Heap *heaps[2]; /* per slot: the file's heap (btlfx_allocTaskMem) */
+    RECT *texRects;
+    s16 texIndex;
     u8 pad4A[0x4C - 0x4A];
-    u32 *unk4C;
-    s16 unk50;
-    u8 unk52;
-    u8 unk53;
-    struct Unk80100DC054 *unk54;
-    s32 unk58;
-    s32 unk5C;
-    s32 unk60;
-    u8 unk64;
-    u8 unk65;
-    u8 unk66;
-    u8 unk67;
-    u8 unk68;
-    u8 unk69;
+    u32 *texData;
+    s16 summonState; /* kind 4: 1 reading, 2 summon model registered */
+    u8 summonDataState; /* kind 6: 1 reading, 2 read */
+    u8 commonTexLoaded; /* kind 9 loaded (control op 6 a=2 waits for it) */
+    struct Unk80100DC054 *summon; /* summon file in Battle.partyBufs[0] (D_80100E14) */
+    s32 workCursor; /* summon work area (btlfx_takeWork) */
+    s32 workLeft;
+    s32 summonModel; /* Hi_RegisterSummonModel result */
+    u8 soundState; /* kind 7: 1 reading, 2 read */
+    u8 soundBlocks; /* kind 7 blocks read */
+    u8 soundUploading; /* sound bank upload running (btlfx_waitSoundBank) */
+    u8 soundUploaded; /* btlfx_loadSoundBank ran: the loader may continue */
+    u8 bufState; /* kind 8: 1 reading, 2 read (control op 12 waits for it) */
+    u8 commonTexCount; /* kind 9 blocks loaded (control op 7 a=2 waits for b) */
 } Unk80100DC0;
 extern Unk80100DC0 g_btlfxLoader;
 
@@ -1491,15 +1491,15 @@ extern Unk800FDF30 g_btlRewards;
 
 typedef struct {
     u8 pad0[0xC];
-    s32 unkC;
+    s32 work; /* Unk80100C78Entry.work */
 } Unk800DA1B88;
 
 typedef struct Unk800DA1B8 {
-    s16 unk0; /* entry stride in bytes */
-    s16 unk2; /* entry count */
-    s32 (*unk4)(s32, void *, Unk800F78A4 *, Unk800DA1B88 *, s32, struct Unk800DA1B8 *, s32);
-    Unk800DA1B88 *unk8;
-    s32 unkC[1]; /* entries: s16 in use, s16, data */
+    s16 stride; /* entry stride in bytes */
+    s16 count; /* entry count */
+    s32 (*elemFn)(s32, void *, Unk800F78A4 *, Unk800DA1B88 *, s32, struct Unk800DA1B8 *, s32); /* per-entry step function (btlfx_poolUpdate) */
+    Unk800DA1B88 *task; /* task owning the pool */
+    s32 elems[1]; /* entries: s16 in use, s16, data */
 } Unk800DA1B8;
 
 extern s32 D_800FEC38;
@@ -1551,10 +1551,10 @@ typedef struct {
 
 
 typedef struct Heap {
-    u8 *unk0;
-    s32 unk4;
-    s32 unk8;
-    u8 unkC[1];
+    u8 *cursor; /* next free byte */
+    s32 free; /* bytes left before wrapping (btlfx_heapWrapIfFull) */
+    s32 size;
+    u8 data[1];
 } Heap;
 
 /* effect task (g_btlfxTasks, btlfx_spawnTask): an op handler called with mode 0 size query, 1 start, 2 step */
@@ -1565,7 +1565,7 @@ typedef struct {
         s16 h;
     } state; /* 0 free */
     s16 file; /* effect file slot the op came from */
-    s16 unkA; /* use the shared heap */
+    s16 sharedHeap; /* allocate from the effect file's heap (btlfx_allocTaskMem: else D_800FF470) */
     void *work; /* work data (size from mode 0) */
     struct Unk800DA1B8 *pool; /* element pool (btlfx_poolInit) */
     s32 (*handler)(s32, void *, Unk800F78A4 *, void *, void *);
@@ -1579,11 +1579,11 @@ extern EffFn g_btlfxUnitOps[];
 
 /* filled by an EffFn in mode 0 */
 typedef struct {
-    s32 unk0; /* work size */
-    s32 unk4;
-    s32 unk8;
+    s32 workSize; /* work size */
+    s32 poolCount; /* element pool entries (btlfx_poolInit) */
+    s32 elemSize; /* element size */
     s32 padC[2];
-    s32 unk14;
+    s32 elemFn; /* element step function */
 } EffInit;
 
 s32 btlfx_allocTaskMem(Unk80100C78Entry *, s32);
@@ -1699,8 +1699,8 @@ void btlfx_drawBackdropSprite(u8 *, s32, s32, s32, s32, s32);
 
 
 typedef struct {
-    s32 unk0;
-    Unk80100C78Entry unk4[11];
+    s32 count; /* running tasks */
+    Unk80100C78Entry tasks[11];
 } Unk80100C78;
 extern Unk80100C78 g_btlfxTasks;
 extern Heap D_800FF470; /* 0x1800 bytes */
@@ -2760,7 +2760,7 @@ void btlfx_emitFrameFan(u8 *, Unk800D59D0Ctx *, u8 *, s32 *);
 void btlfx_linkFrameTri(u8 *, s32 *, u32, s32);
 void btlfx_drawFan(Unk800D2938 *, SVECTOR *, SVECTOR *, s32, s32, s32, s32);
 void func_800E2F84(Pool30 *, Pool30Entry *, SVECTOR *, SVECTOR *);
-extern s32 D_801014B0; /* saved g_btlfxEnv->unk28 */
+extern s32 D_801014B0; /* saved g_btlfxEnv->otZ */
 /* main exe: candidates for ff9.h */
 MATRIX *MulMatrix2(MATRIX *, MATRIX *);
 s32 btlfx_updateEmitters(Pool30 *, Pool6C *);
@@ -3678,7 +3678,7 @@ s32 btl_pickRandomUnit(s32);
 s32 btlfx_stepSwingSound(u8 *, s32, s32);
 void btlui_closeList(void);
 extern u16 D_800F6A74[];
-extern struct Unk80100DC054 *D_80100E14; /* g_btlfxLoader.unk54 */
+extern struct Unk80100DC054 *D_80100E14; /* g_btlfxLoader.summon */
 s32 btlfx_stepWaitOtherSide(u8 *, s32, s32 *);
 u8 btlui_isListWindowOpen(void);
 void btlui_closeListWindow(s32);
@@ -3766,10 +3766,10 @@ s32 func_800EA094(void);
 
 typedef struct {
     u8 pad0[0x17];
-    u8 unk17;
+    u8 cmdArg; /* Unk80100DC0.cmdArg */
     u8 pad18[0x44 - 0x18];
-    RECT *unk44;
-    s16 unk48;
+    RECT *texRects;
+    s16 texIndex;
 } Unk800DA790;
 
 typedef struct {

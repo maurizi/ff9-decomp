@@ -57,10 +57,10 @@ s32 fx_04f_op80(s32 mode, Fx04fWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
     s32 q;
 
     if (mode == 0) {
-        init->unk0 = 0x54;
-        init->unk8 = 4;
-        init->unk14 = (s32)func_801E7704;
-        init->unk4 = 3;
+        init->workSize = 0x54;
+        init->elemSize = 4;
+        init->elemFn = (s32)func_801E7704;
+        init->poolCount = 3;
     } else {
         if (mode == 1) {
         D_801E7F18 = env;

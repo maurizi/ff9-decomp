@@ -43,14 +43,14 @@ s32 func_801E7704(s32 mode, Fx038Item *it, Unk800F78A4 *env, Unk80100C78Entry *e
         scale.vy = 0x199;
         scale.vx = 0x199;
         ex->Hi_DrawEffModel(&it->unkC, &pos, (s32)&scale, work->unk10);
-        env->unk28 = 0x100;
+        env->otZ = 0x100;
         BTLFX_COPY_SVEC(&b, &it->unk4);
         b.vy += 0x140;
         b.vz -= 0xA0;
         ex->btlfx_drawTrail((u8 *)ex->btlfx_getFileData(entry->file, 4), (s32)&b, NULL, 0, 0x6000, ex->math_cos(t >> 2) * 2 / 3 + 0x555, 1,
                           (u8 *)&D_801E857C[it->unk20], 0);
         ex->btlfx_drawParticles((u8 *)ex->btlfx_getFileData(entry->file, 1), &it->unk4, NULL, 0x1000, 0, 1, -1, 0, 0);
-        env->unk28 = 0;
+        env->otZ = 0;
         if (it->unk20 == 0) {
             env->camera->points[0].vx = it->unk4.vx;
             env->camera->points[0].vy = it->unk4.vy;
@@ -144,10 +144,10 @@ s32 fx_038_op80(s32 mode, Fx038Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
     Fx038Item *it;
 
     if (mode == 0) {
-        init->unk0 = 0x1C;
-        init->unk8 = 0x24;
-        init->unk14 = (s32)func_801E7704;
-        init->unk4 = 3;
+        init->workSize = 0x1C;
+        init->elemSize = 0x24;
+        init->elemFn = (s32)func_801E7704;
+        init->poolCount = 3;
     } else if (mode == 1) {
         work->unk0 = 0;
         work->unkC = 0;

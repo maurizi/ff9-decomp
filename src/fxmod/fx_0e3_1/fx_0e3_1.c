@@ -540,7 +540,7 @@ s32 fx_0e3_1_op80(s32 mode, Fx0e31Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
                 work->unk64->unk5C.vy = work->unk58.vy;
                 work->unk64->unk5C.vz = work->unk58.vz;
             }
-            env->unk28 = 0x80;
+            env->otZ = 0x80;
             t_s2 = ((frame << 12) / 48) >> 2;
             x1 = (ex->math_sin(t_s2) >> 1) + 0x800;
             q1 = ex->math_sin(t_s2);
@@ -561,7 +561,7 @@ s32 fx_0e3_1_op80(s32 mode, Fx0e31Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
                     p26->unk22 = 0x80;
                 }
             }
-            env->unk28 = 0;
+            env->otZ = 0;
             if (frame == 0x10) {
                 work->unk68 = p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0x17), (s32)&work->unk30);
                 if (p != NULL) {
@@ -676,7 +676,7 @@ s32 fx_0e3_1_op80(s32 mode, Fx0e31Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
                     r2.vz += 0x550;
                 }
             }
-            env->unk28 = 0x190;
+            env->otZ = 0x190;
             if (frame < 0x10 && frame != 1) {
                 x4 = (ex->math_cos(t >> 2) >> 2) + 0x555;
                 y1 = ex->math_cos((frame << 8) >> 2);
@@ -703,7 +703,7 @@ s32 fx_0e3_1_op80(s32 mode, Fx0e31Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
                 qa = ex->math_cos(k5);
                 ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->file, 0x1A), &work->unk30, NULL, x7, 0, 1, qa);
             }
-            env->unk28 = 0;
+            env->otZ = 0;
             if (frame >= 0x1C) {
                 work->unk0 = 3;
                 entry->frame = -1;
@@ -843,7 +843,7 @@ s32 fx_0e3_1_op80(s32 mode, Fx0e31Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
                 func_801ECAF8(entry, &D_801F0D14[i4], &a4, &b4, w2, w2, ang4, 0xC0, 0, ex->btlfx_randCentered(0x400) + 0xC00,
                               0x84);
             }
-            env->unk28 = 0x200;
+            env->otZ = 0x200;
             k8 = t >> 2;
             x10 = (ex->math_sin(k8) * 2) + 0x1000;
             y3 = (ex->math_cos(k8) >> 1) + 0x800;
@@ -865,7 +865,7 @@ s32 fx_0e3_1_op80(s32 mode, Fx0e31Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
                                       0x1000);
                 }
             }
-            env->unk28 = 0;
+            env->otZ = 0;
             if (frame >= 0xE) {
                 work->unk0 = 5;
                 entry->frame = -1;
@@ -1048,7 +1048,7 @@ s32 fx_0e3_1_op80(s32 mode, Fx0e31Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
                 func_801ECAF8(entry, &D_801F0D14[2], &f9, &t9, (x16 * 3) >> 2, x16, -ang, 0xC0, 0, 0x1000, y10);
             }
             x18 = 0x1000 - t;
-            env->unk28 = 0x300;
+            env->otZ = 0x300;
             ang = work->unk4 << 7;
             y11 = ((ex->math_cos(t >> 2) * 0xEB) >> 12) + 0x20;
             for (i5 = 0; i5 < 5; i5++, ang += 0x333 + ex->btlfx_randCentered(0x20)) {
@@ -1066,7 +1066,7 @@ s32 fx_0e3_1_op80(s32 mode, Fx0e31Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
                 func_801ECDEC(entry, (Fx0e31Bolt *)&D_801F0A14[i5], &t9, &f9, 0x80, 0x200, ang, 0xFF, 0,
                               ex->math_cos(t >> 2), y11);
             }
-            env->unk28 = 0;
+            env->otZ = 0;
             if (frame == 0x31) {
                 BTLFX_COPY_SVEC(&work->unk38, &work->unk30);
                 work->unk38.vy -= 0x400;
@@ -1075,7 +1075,7 @@ s32 fx_0e3_1_op80(s32 mode, Fx0e31Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
                     p->unk22 = 0x180;
                 }
             }
-            env->unk28 = 0x300;
+            env->otZ = 0x300;
             r9.vx = 0x400;
             r9.vy = 0;
             r9.vz = 0;
@@ -1087,7 +1087,7 @@ s32 fx_0e3_1_op80(s32 mode, Fx0e31Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
             x19 = 0x5000 - t * 2;
             y13 = ex->math_cos(k14);
             ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->file, 0x1B), &work->unk30, &r9, x19, 0, 1, y13);
-            env->unk28 = 0;
+            env->otZ = 0;
             ex->btlfx_drawBackdrop((BtlBgLayers *)ex->btlfx_getFileData(entry->file, 0x16), frame);
             ex->btlfx_drawScrollMove(work->unk4 * 8, 0x340, 0x100, 0x20, 0xC0, 0x360, 0x100);
             if (frame >= 0x4D) {

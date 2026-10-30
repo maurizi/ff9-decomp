@@ -353,7 +353,7 @@ void btl_drawStatusIcons(Unk800CCD00 *arg0) {
 
     r = &g_gameState->gameData->unk8E4.battle->popups;
     btlfx_beginPrims((u8 *)arg0->prim, g_gameState->gameData->unk10[g_gameState->gameData->unk8]);
-    g_btlfxEnv->unk28 = 0;
+    g_btlfxEnv->otZ = 0;
     rot.vx = 0;
     rot.vz = 0;
     rot.pad = 1;

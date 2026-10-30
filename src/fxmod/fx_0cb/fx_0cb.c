@@ -225,10 +225,10 @@ s32 fx_0cb_op80(s32 mode, Fx0cbWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
     s32 q;
 
     if (mode == 0) {
-        ((EffInit *)arg4)->unk0 = sizeof(Fx0cbWork);
-        ((EffInit *)arg4)->unk8 = sizeof(Fx0cbPart);
-        ((EffInit *)arg4)->unk14 = (s32)func_801E7EFC;
-        ((EffInit *)arg4)->unk4 = 6;
+        ((EffInit *)arg4)->workSize = sizeof(Fx0cbWork);
+        ((EffInit *)arg4)->elemSize = sizeof(Fx0cbPart);
+        ((EffInit *)arg4)->elemFn = (s32)func_801E7EFC;
+        ((EffInit *)arg4)->poolCount = 6;
     } else if (mode == 1) {
         work->unk0 = 0;
         work->unk4 = 0;
@@ -282,7 +282,7 @@ s32 fx_0cb_op80(s32 mode, Fx0cbWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
             v.pad = 0;
             q = t >> 2;
             c = ex->math_cos(q);
-            env->unk28 = work->unk8 + 0x46;
+            env->otZ = work->unk8 + 0x46;
             data = (u8 *)ex->btlfx_getFileData(entry->file, 5);
             ex->btlfx_drawRings(data, &work->unkC, &v, ex->math_cos(q) / 3 + 0x2AA, 0, 1, c);
             ex->btlfx_drawBackdrop((BtlBgLayers *)ex->btlfx_getFileData(entry->file, 0xF), work->unk4);
@@ -296,7 +296,7 @@ s32 fx_0cb_op80(s32 mode, Fx0cbWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
             v.vz = 0x80;
             v.pad = 1;
             ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->file, 0x11), &work->unkC, &v, t / 2 + 0x555, 0, 1, c);
-            env->unk28 = 0;
+            env->otZ = 0;
             if (frame >= 0x32) {
                 ex->btlfx_clearEffModels();
                 return 1;

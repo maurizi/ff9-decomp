@@ -687,7 +687,7 @@ s32 fx_17d_3_op80(s32 mode, Fx17d3Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
             break;
         }
         }
-        env->unk28 = 0;
+        env->otZ = 0;
         work->unk4++;
     }
     return 0;

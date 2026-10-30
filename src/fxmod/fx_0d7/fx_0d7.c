@@ -112,9 +112,9 @@ s32 func_801E7CEC(s32 mode, Fx0d7Bolt *it, Unk800F78A4 *env, Unk80100C78Entry *e
                 if (it->unk1C != NULL) {
                     it->unk1C->unk22 = ex->func_800E7CC4(0, 0x40);
                 }
-                env->unk28 = ex->func_800E7CC4(0, 0x46);
+                env->otZ = ex->func_800E7CC4(0, 0x46);
                 ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->file, 8), &it->unk0, NULL, 0x1400, 4, 1, 0x1000);
-                env->unk28 = 0;
+                env->otZ = 0;
                 ex->btlfx_drawScreenTint((u32 *)(env->ot + 1), 1, 0, 7, 0x20);
             }
             if (frame == 1) {
@@ -162,10 +162,10 @@ s32 fx_0d7_op83(s32 mode, Fx0d7Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
     SVECTOR b;
 
     if (mode == 0) {
-        init->unk0 = 0x10;
-        init->unk8 = 0x24;
-        init->unk14 = (s32)func_801E7CEC;
-        init->unk4 = 0xC;
+        init->workSize = 0x10;
+        init->elemSize = 0x24;
+        init->elemFn = (s32)func_801E7CEC;
+        init->poolCount = 0xC;
     } else if (mode == 1) {
         D_801E88C0 = env;
         ex->btlfx_getUnitBodyPos(0, 0, (s16 *)&work->unk0);
@@ -284,10 +284,10 @@ s32 fx_0d7_op84(s32 mode, Fx0d7Work84 *work, Unk800F78A4 *env, Unk80100C78Entry 
         rot.vy = 0;
         rot.vz = ry;
         rot.pad = 0;
-        env->unk28 = 0x80;
+        env->otZ = 0x80;
         ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->file, 0xF), &work->unk8, NULL, b / 3, 0, 1, a / 2);
         ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->file, 0x10), &work->unk8, &rot, c / 2, 0, 1, a * 2 / 3);
-        env->unk28 = 0;
+        env->otZ = 0;
         work->unk4++;
     }
     return 0;

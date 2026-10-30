@@ -363,10 +363,10 @@ s32 fx_0ec_op80(s32 mode, Fx0ecWork80 *work, Unk800F78A4 *env, Unk80100C78Entry 
     s32 k;
 
     if (mode == 0) {
-        init->unk0 = 0x64;
-        init->unk8 = 8;
-        init->unk14 = (s32)func_801E7704;
-        init->unk4 = 0x80;
+        init->workSize = 0x64;
+        init->elemSize = 8;
+        init->elemFn = (s32)func_801E7704;
+        init->poolCount = 0x80;
     } else if (mode == 1) {
         D_801E98A0 = env;
         ex->btlfx_getUnitPos(0, (s16 *)&work->unk8);

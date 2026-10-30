@@ -388,9 +388,9 @@ s32 fx_0ed_op81(s32 mode, Fx0edWork81 *work, Unk800F78A4 *env, Unk80100C78Entry 
             }
             break;
         case 1:
-            env->unk28 = 0x80;
+            env->otZ = 0x80;
             ex->btlfx_drawSprite((u8 *)ex->btlfx_getFileData(entry->file, 6), &work->unk10, 0, 0xFF, -1);
-            env->unk28 = 0;
+            env->otZ = 0;
             if (work->unk8 < 0x10) {
                 c = work->unk8 * 100 / 16;
             } else {

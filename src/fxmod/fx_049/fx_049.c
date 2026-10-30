@@ -194,10 +194,10 @@ s32 fx_049_op83(s32 mode, Fx049Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
     s32 c;
 
     if (mode == 0) {
-        init->unk0 = 0x10;
-        init->unk8 = 0x24;
-        init->unk14 = (s32)func_801E7F5C;
-        init->unk4 = 0xC;
+        init->workSize = 0x10;
+        init->elemSize = 0x24;
+        init->elemFn = (s32)func_801E7F5C;
+        init->poolCount = 0xC;
     } else if (mode == 1) {        work->unk0.vx = env->targets->centerX;
         work->unk0.vy = env->targets->centerY;
         work->unk0.vz = env->targets->centerZ;

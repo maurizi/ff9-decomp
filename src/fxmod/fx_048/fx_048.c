@@ -200,9 +200,9 @@ s32 fx_048_op80(s32 mode, Fx048Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
             rot.vy = 0;
             rot.pad = 1;
             rot.vx = 0x400;
-            env->unk28 = 0x200;
+            env->otZ = 0x200;
             ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->file, 0x10), &work->unk8, NULL, 0x1000, 0, 1, t);
-            env->unk28 = 0;
+            env->otZ = 0;
             if (frame >= 0x18) {
                 work->unk10 = 1;
                 entry->frame = -1;
@@ -230,11 +230,11 @@ s32 fx_048_op80(s32 mode, Fx048Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
                 }
             }
             bri = ex->math_cos(t >> 2);
-            env->unk28 = 0x200;
+            env->otZ = 0x200;
             scl = (t * 2) / 3 + 0x555;
             ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->file, 0x10), &work->unk8, NULL, 0x1000, 0, 1,
                               ex->math_cos(t >> 2));
-            env->unk28 = 0;
+            env->otZ = 0;
             if (frame >= 8) {
                 work->unk10 = 2;
                 entry->frame = -1;
@@ -284,10 +284,10 @@ s32 fx_048_op80(s32 mode, Fx048Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
                 ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->file, 0x13), &pos2, &rot, ex->math_sin(w) * 2 + 0x1800,
                                   0, 1, ex->math_cos(w));
             }
-            env->unk28 = 0x200;
+            env->otZ = 0x200;
             ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->file, 0x10), &work->unk8, NULL,
                               ex->math_cos(t >> 2) / 2 * 3 + 0x2000, 0, 1, ex->math_cos(t >> 2));
-            env->unk28 = 0;
+            env->otZ = 0;
             if (f29) {
                 ex->btlfx_drawScrollMove(z, 0x1E0, 0x180, 0x20, 0x80, 0x1E0, 0x100);
                 s = ((frame << 12) / 29) >> 2;
@@ -407,7 +407,7 @@ s32 fx_048_op80(s32 mode, Fx048Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
                     ex->Hi_DrawEffModel(&r3, &pos3, (s32)&sc2, work->unk14[i & 3]);
                     ex->Hi_ModifyEffModelRGB(work->unk14[i & 3], ((dc * ex->math_cos(sy)) >> 17) - 0x80, ((dc * (0x1000 - u)) >> 17) - 0x80, ((dc * (0x1000 - u)) >> 17) - 0x80);
                     if (!(ex->btlfx_rand() & 3) && cnt < 3) {
-                        env->unk28 = 0x100;
+                        env->otZ = 0x100;
                         p3.vx = pos3.vx;
                         p3.vy = pos3.vy;
                         p3.vz = pos3.vz;
@@ -416,7 +416,7 @@ s32 fx_048_op80(s32 mode, Fx048Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
                         p3.vz += ex->btlfx_randCentered(0x140);
                         ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->file, 0x12), &p3, NULL, 0x7000, 0, 1, dc);
                         cnt++;
-                        env->unk28 = 0;
+                        env->otZ = 0;
                     }
                 }
             }

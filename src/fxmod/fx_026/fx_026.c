@@ -159,10 +159,10 @@ s32 fx_026_op80(s32 mode, Fx026Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
     s32 t;
 
     if (mode == 0) {
-        init->unk0 = 0x70;
-        init->unk8 = 0x14;
-        init->unk14 = (s32)func_801E7A5C;
-        init->unk4 = 6;
+        init->workSize = 0x70;
+        init->elemSize = 0x14;
+        init->elemFn = (s32)func_801E7A5C;
+        init->poolCount = 6;
     } else {
     if (mode == 1) {
         work->unk0 = 0;
@@ -334,9 +334,9 @@ s32 fx_026_op80(s32 mode, Fx026Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
         if (work->unk4 & 1) {
             s = s * 9 >> 3;
         }
-        env->unk28 = 0x40;
+        env->otZ = 0x40;
         ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->file, 0xA0), &work->unk30, 0, s, 0, 1, k);
-        env->unk28 = 0;
+        env->otZ = 0;
     }
     work->unk4++;
     }
@@ -508,10 +508,10 @@ s32 fx_026_op82(s32 mode, Fx026Work82 *work, Unk800F78A4 *env, Unk80100C78Entry 
     s32 c;
 
     if (mode == 0) {
-        init->unk0 = 0x14;
-        init->unk8 = 0xC;
-        init->unk14 = (s32)func_801E8670;
-        init->unk4 = 0x18;
+        init->workSize = 0x14;
+        init->elemSize = 0xC;
+        init->elemFn = (s32)func_801E8670;
+        init->poolCount = 0x18;
     } else if (mode == 1) {
         work->unk8.vx = 0;
         work->unk8.vz = -2500;
@@ -849,8 +849,8 @@ s32 func_801E98BC(s32 mode, Fx026Item81 *it, Unk800F78A4 *env, Unk80100C78Entry 
             if (g != 0) {
                 it->unk0 = 2;
                 ((s16 *)it)[-1] = -1;
-                func_801E912C(it->unk2, 0x14, (Fx026Shatter *)((u8 *)env->unk30 + D_801EA7EC[it->unk2].unk0),
-                              (Fx026Tri *)((u8 *)env->unk30 + D_801EA7EC[it->unk2].unk4));
+                func_801E912C(it->unk2, 0x14, (Fx026Shatter *)((u8 *)env->workBuf + D_801EA7EC[it->unk2].unk0),
+                              (Fx026Tri *)((u8 *)env->workBuf + D_801EA7EC[it->unk2].unk4));
                 func_801E9170(it->unk2, work->unk18[it->unk2][2]);
                 return 0;
             }
@@ -947,10 +947,10 @@ s32 fx_026_op81(s32 mode, Fx026Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
     s32 c;
 
     if (mode == 0) {
-        init->unk0 = 0x88;
-        init->unk8 = 0x14;
-        init->unk14 = (s32)func_801E98BC;
-        init->unk4 = 0x4A;
+        init->workSize = 0x88;
+        init->elemSize = 0x14;
+        init->elemFn = (s32)func_801E98BC;
+        init->poolCount = 0x4A;
     } else if (mode == 1) {
         D_801EACCC = env;
         work->unk0 = 0;

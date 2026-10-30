@@ -105,10 +105,10 @@ s32 fx_17d_6_op80(s32 mode, Fx17d6Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
             ex->Hi_GetSummonBonePos(SUMMON(env)->unk60, D_801E9368[2], (u16 *)&work->unk30);
             BTLFX_COPY_SVEC(&D_801EB104, &work->unk28);
             BTLFX_COPY_SVEC(&D_801EB10C, &work->unk30);
-            env->unk28 = 0x80;
+            env->otZ = 0x80;
             ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->file, 6), &work->unk30, NULL, ex->math_sin(u >> 2) >> 3,
                               0, 1, ex->math_sin(u >> 2));
-            env->unk28 = 0;
+            env->otZ = 0;
             c = (((0x1000 - u) << 5) >> 12) + 0x89;
             col.r = col.g = col.b = c;
             vv.vy = vv.vx = 0x1080;
@@ -147,14 +147,14 @@ s32 fx_17d_6_op80(s32 mode, Fx17d6Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
             BTLFX_COPY_SVEC(&D_801EB10C, &work->unk30);
             ex->btlfx_lerpVec((s16 *)&work->unk28, (s16 *)&work->unk30, frame < 0x20 ? ex->math_sin(frame << 5) : 0x1000,
                               (s16 *)&work->unk8);
-            env->unk28 = 0x80;
+            env->otZ = 0x80;
             ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->file, 6), &work->unk30, NULL,
                               (ex->math_sin(u >> 2) >> 1) + 0x400, 0, 1, 0xAAA);
             ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->file, 6), &work->unk30, NULL,
                               (ex->math_sin(u >> 2) >> 2) + 0x80, 0, 1, 0x1000);
             ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->file, 0xA), &work->unk30, NULL,
                               ex->math_cos(u >> 2) / 3 + 0x5DC, 0, 1, u);
-            env->unk28 = 0;
+            env->otZ = 0;
             BTLFX_COPY_SVEC(&work->unk18, &work->unk8);
             env->camera->points[2].vx = work->unk18.vx;
             env->camera->points[2].vy = work->unk18.vy;
@@ -221,10 +221,10 @@ s32 fx_17d_6_op80(s32 mode, Fx17d6Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
                     ex->Hi_DrawEffModel(&ang, (VECTOR *)&work->unk38, (s32)&sc, work->unk80);
                 }
             }
-            env->unk28 = 0x9B;
+            env->otZ = 0x9B;
             ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->file, 0xB), &work->unk10, NULL, ex->math_sin(u >> 2) * 4,
                               0, 1, ex->math_sin(u >> 2));
-            env->unk28 = 0;
+            env->otZ = 0;
             ex->btlfx_drawSpriteLine((u8 *)ex->btlfx_getFileData(entry->file, 0xD), &work->unk10, (u >> 6) + 8, u / 2);
             ex->btlfx_drawScrollMove(0x3E8 - frame * 6, 0x280, 0x100, 0x20, 0x80, 0x2A0, 0x100);
             col.r = col.g = col.b = ((u * 0x58) >> 12) + 0x84U;
@@ -259,10 +259,10 @@ s32 fx_17d_6_op80(s32 mode, Fx17d6Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
                     p->unk22 = 0x80;
                 }
             }
-            env->unk28 = 0x80;
+            env->otZ = 0x80;
             ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->file, 0xB), &work->unk28, NULL,
                               ex->math_sin(u >> 2) + 0x555, 0, 1, ex->math_sin(u >> 2) / 2 + 0x800);
-            env->unk28 = 0;
+            env->otZ = 0;
             col.r = col.g = col.b = ((u << 7) >> 12) + 0x20;
             vv.vy = vv.vx = (u >> 3) + 0x1000;
             vv.vz = 0x1000;
@@ -285,7 +285,7 @@ s32 fx_17d_6_op80(s32 mode, Fx17d6Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
             }
             break;
         }
-        env->unk28 = 0;
+        env->otZ = 0;
         work->unk4++;
     }
     return 0;
@@ -325,9 +325,9 @@ void func_801E8B10(Unk80100C78Entry *entry, s32 file, s32 ot, Fx17d6Trail *trail
         pt->pad = pad;
         ang += dang + *noise++;
     }
-    env->unk28 = 0x80;
+    env->otZ = 0x80;
     ex->btlfx_drawTrail((u8 *)ex->btlfx_getFileData(entry->file, file), 0, NULL, type, 0x1000, alpha, 1, (u8 *)trail, ot);
-    env->unk28 = 0;
+    env->otZ = 0;
 }
 
 void func_801E8DBC(Unk80100C78Entry *entry, s32 file, s32 ot, Fx17d6Trail *path, Fx17d6Trail *trail, s32 n, s32 *noise,
@@ -381,12 +381,12 @@ s32 fx_17d_6_op83(s32 mode, Fx17d6Work83 *work, Unk800F78A4 *env, Fx17d6Inst *in
     Fx17d6Bolt *b;
 
     if (mode == 0) {
-        init->unk0 = 0xC;
-        init->unk8 = 0x1C;
-        init->unk14 = (s32)func_801E8ED4;
-        init->unk4 = 6;
+        init->workSize = 0xC;
+        init->elemSize = 0x1C;
+        init->elemFn = (s32)func_801E8ED4;
+        init->poolCount = 6;
     } else if (mode == 1) {
-        n = init->unk0;
+        n = init->workSize;
         D_801E93B4 = env;
         work->unk0 = D_801EB584[0];
         p = D_801EB584[0];

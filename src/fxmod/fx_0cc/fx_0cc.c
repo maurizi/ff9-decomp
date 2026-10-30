@@ -32,9 +32,9 @@ s32 func_801E7704(s32 mode, Fx0ccPart *part, Unk800F78A4 *env, Unk80100C78Entry 
             rot.vy = frame * 0x28;
             rot.vz = 0;
             ex->Hi_DrawEffModel(&rot, (VECTOR *)mpos, (s32)scale, work->unk10);
-            env->unk28 = 0x80;
+            env->otZ = 0x80;
             ex->btlfx_drawParticles((u8 *)ex->btlfx_getFileData(entry->file, 7), &part->unk4, NULL, 0x1000, 0, 1, -1, 0, 0);
-            env->unk28 = 0;
+            env->otZ = 0;
             if (frame >= 0x14) {
                 part->unk0 = 1;
                 ((s16 *)part)[-1] = -1;
@@ -52,16 +52,16 @@ s32 func_801E7704(s32 mode, Fx0ccPart *part, Unk800F78A4 *env, Unk80100C78Entry 
             rot.pad = 1;
             BTLFX_COPY_SVEC(&pos, &part->unk4);
             pos.vy -= frame * 4;
-            env->unk28 = 0x10;
+            env->otZ = 0x10;
             ex->btlfx_drawParticles((u8 *)ex->btlfx_getFileData(entry->file, 3), &pos, NULL, 0x3000, frame, 1, -1, 0, 0);
             if (frame < 0x10) {
-                env->unk28 = 0x64;
+                env->otZ = 0x64;
                 ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->file, 2), &pos, NULL, -1, frame, 1, -1);
-                env->unk28 = 0;
+                env->otZ = 0;
                 ex->btlfx_drawParticles((u8 *)ex->btlfx_getFileData(entry->file, 0xC), &part->unk4, &rot, 0x1000, frame, 1,
                                   -1, 0, 0);
             }
-            env->unk28 = 0;
+            env->otZ = 0;
             if (frame >= 0x18) {
                 return 1;
             }
@@ -77,10 +77,10 @@ s32 fx_0cc_op80(s32 mode, Fx0ccWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
     s32 frame;
 
     if (mode == 0) {
-        ((EffInit *)arg4)->unk0 = 0x14;
-        ((EffInit *)arg4)->unk8 = 0x18;
-        ((EffInit *)arg4)->unk14 = (s32)func_801E7704;
-        ((EffInit *)arg4)->unk4 = 0xB;
+        ((EffInit *)arg4)->workSize = 0x14;
+        ((EffInit *)arg4)->elemSize = 0x18;
+        ((EffInit *)arg4)->elemFn = (s32)func_801E7704;
+        ((EffInit *)arg4)->poolCount = 0xB;
     } else if (mode == 1) {
         work->unk0 = 0;
         work->unkC = 0;

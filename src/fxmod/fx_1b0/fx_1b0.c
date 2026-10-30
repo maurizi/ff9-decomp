@@ -248,7 +248,7 @@ s32 fx_1b0_op80(s32 mode, Fx1b0Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
         frame = entry->frame;
         switch (work->unk0) {
         case 0:
-            env->unk28 = 0xC8;
+            env->otZ = 0xC8;
             t = (frame << 12) / 90;
             if (frame < 0x3D) {
                 v.vz = 0;
@@ -269,7 +269,7 @@ s32 fx_1b0_op80(s32 mode, Fx1b0Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
                     v.vy += 0x200;
                 }
             }
-            env->unk28 = 0;
+            env->otZ = 0;
             if (frame == 0) {
                 ex->btlfx_drawScreenTint((u32 *)env->ot + 2, 2, 0x40, 0x40, 0x55);
             }

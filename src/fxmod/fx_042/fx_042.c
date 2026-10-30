@@ -152,10 +152,10 @@ s32 fx_042_op83(s32 mode, Fx042Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
     s32 frame;
 
     if (mode == 0) {
-        init->unk0 = 0x10;
-        init->unk8 = 0x24;
-        init->unk14 = (s32)func_801E7CEC;
-        init->unk4 = 0xC;
+        init->workSize = 0x10;
+        init->elemSize = 0x24;
+        init->elemFn = (s32)func_801E7CEC;
+        init->poolCount = 0xC;
     } else {
         if (mode == 1) {
             work->unk0.vx = env->targets->centerX;

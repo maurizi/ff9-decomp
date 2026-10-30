@@ -128,10 +128,10 @@ s32 fx_17d_7_op80(s32 mode, Fx17d7Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
     Fx17d7Rock *o1;
 
     if (mode == 0) {
-        arg4->unk0 = 0xA4;
-        arg4->unk8 = 0x24;
-        arg4->unk14 = (s32)func_801EC7C8;
-        arg4->unk4 = 0x28;
+        arg4->workSize = 0xA4;
+        arg4->elemSize = 0x24;
+        arg4->elemFn = (s32)func_801EC7C8;
+        arg4->poolCount = 0x28;
     } else if (mode == 1) {
         work->unk0 = 0;
         work->unk4 = 0;
@@ -405,10 +405,10 @@ s32 fx_17d_7_op80(s32 mode, Fx17d7Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
             if (frame >= 35) {
                 s32 yy;
 
-                env->unk28 = 0x100;
+                env->otZ = 0x100;
                 yy = ((frame - 35) << 12) / 35;
                 ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->file, 0x11), &work->unk8, NULL, yy + 0xAAA, 0, 1, yy);
-                env->unk28 = 0;
+                env->otZ = 0;
             }
             if (frame >= 58) {
                 c4 = (frame - 58) * 0xFF / 12;
@@ -554,7 +554,7 @@ s32 fx_17d_7_op80(s32 mode, Fx17d7Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
             break;
         }
         }
-        env->unk28 = 0;
+        env->otZ = 0;
         if (c3 != 0) {
             CVECTOR col;
             SVECTOR r2;
@@ -615,9 +615,9 @@ void func_801EE6E4(Unk80100C78Entry *entry, s32 file, s32 ot, Fx17d7Trail *trail
         pt->pad = pad;
         ang += dang + *noise++;
     }
-    env->unk28 = 0x80;
+    env->otZ = 0x80;
     ex->btlfx_drawTrail((u8 *)ex->btlfx_getFileData(entry->file, file), 0, NULL, type, 0x1000, alpha, 1, (u8 *)trail, ot);
-    env->unk28 = 0;
+    env->otZ = 0;
 }
 
 void func_801EE990(Unk80100C78Entry *entry, s32 file, s32 ot, Fx17d7Trail *path, Fx17d7Trail *trail, s32 n, s32 *noise,
@@ -695,12 +695,12 @@ s32 fx_17d_7_op83(s32 mode, Fx17d7Work83 *work, Unk800F78A4 *env, Fx17d7Inst *in
     Fx17d7Bolt *b;
 
     if (mode == 0) {
-        init->unk0 = 0xC;
-        init->unk8 = 0x1C;
-        init->unk14 = (s32)func_801EEAA8;
-        init->unk4 = 5;
+        init->workSize = 0xC;
+        init->elemSize = 0x1C;
+        init->elemFn = (s32)func_801EEAA8;
+        init->poolCount = 5;
     } else if (mode == 1) {
-        n = init->unk0;
+        n = init->workSize;
         D_801EF2DC = env;
         work->unk0 = D_801F019C[0];
         p = D_801F019C[0];

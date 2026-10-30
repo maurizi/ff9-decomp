@@ -12,7 +12,7 @@ s32 fx_0bf_op80(s32 mode, Fx0bfWork80 *work, Unk800F78A4 *env, Unk80100C78Entry 
         work->unkC = 0x80;
     } else {
         frame = entry->frame;
-        env->unk28 = 0x80;
+        env->otZ = 0x80;
         ex->btlfx_drawSprite((u8 *)ex->btlfx_getFileData(entry->file, 2), &work->unk4, frame, 1, -1);
         if (frame == 3) {
             work->unk0 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 1), (s32)&work->unk4);

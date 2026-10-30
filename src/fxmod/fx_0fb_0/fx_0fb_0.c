@@ -420,10 +420,10 @@ s32 fx_0fb_0_op80(s32 mode, Fx0fb0Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
     s32 t;
 
     if (mode == 0) {
-        init->unk0 = 0x128;
-        init->unk8 = 0x28;
-        init->unk14 = (s32)func_801E8540;
-        init->unk4 = 0x32;
+        init->workSize = 0x128;
+        init->elemSize = 0x28;
+        init->elemFn = (s32)func_801E8540;
+        init->poolCount = 0x32;
     } else if (mode == 1) {
         work->unk0 = 0;
         work->unk4 = 0;
@@ -756,10 +756,10 @@ s32 fx_0fb_0_op80(s32 mode, Fx0fb0Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
                 ex->btlfx_matrixPointAhead((MATRIX *)&m2, 0x46, (s32)&a);
                 ex->btlfx_drawTrail((u8 *)ex->btlfx_getFileData(entry->file, 9), (s32)&a, 0, 0, 0x800, 0x1000, 1,
                                     (u8 *)(pp = &D_801EB70C[i1]), 2);
-                env->unk28 = 0x18;
+                env->otZ = 0x18;
                 ex->btlfx_drawParticles((u8 *)ex->btlfx_getFileData(entry->file, 0x10), &a, NULL, c8 >> 1, 0, 1,
                                         ex->math_sin(t >> 2), 0, 0);
-                env->unk28 = 0;
+                env->otZ = 0;
                 j = 0;
                 s_0 = (s16 *)pp + 3;
                 for (j = 0; j < 16; j++) {
@@ -799,10 +799,10 @@ s32 fx_0fb_0_op80(s32 mode, Fx0fb0Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
             for (i11 = 0; i11 < 10; i11++) {
                 ex->Hi_GetSummonBoneMatrix(SUMMON0FB(env)->unk60, D_801EB260[i11], &m);
                 ex->btlfx_matrixPointAhead((MATRIX *)&m, 0x46, (s32)&a);
-                env->unk28 = 0x18;
+                env->otZ = 0x18;
                 ex->btlfx_drawParticles((u8 *)ex->btlfx_getFileData(entry->file, 0x10), &a, NULL, u, 0, 1,
                                         0x1000, 0, 0);
-                env->unk28 = 0;
+                env->otZ = 0;
                 if (i11 == 0) {
                     FX0FB_W(work->unk14, 0) = FX0FB_W(a, 0);
                     FX0FB_W(work->unk14, 1) = FX0FB_W(a, 1);
@@ -874,7 +874,7 @@ s32 fx_0fb_0_op80(s32 mode, Fx0fb0Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
             }
             ex->Hi_DrawSummonModel(&work->unk44, (VECTOR *)&work->unk2C, (s32)&work->unk38, SUMMON0FB(env)->unk60, 1);
             ex->Hi_DrawEffModel(&work->unk44, (VECTOR *)&work->unk2C, (s32)&work->unk38, work->unk11C);
-            env->unk28 = 0x40;
+            env->otZ = 0x40;
             for (i3 = 0; i3 < 10; i3++) {
                 ex->Hi_GetSummonBoneMatrix(SUMMON0FB(env)->unk60, D_801EB260[i3], (BtlBone *)&pos);
                 ex->btlfx_matrixPointAhead((MATRIX *)&pos, 0x46, (s32)&D_801EB3BC[i3]);
@@ -883,7 +883,7 @@ s32 fx_0fb_0_op80(s32 mode, Fx0fb0Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
                 ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->file, 0xA), &D_801EB3C4[i3 * 5], NULL, 0x1000, 0, 1,
                                   0x1000);
             }
-            env->unk28 = 0;
+            env->otZ = 0;
             if (frame >= 4) {
                 w = 0;
                 if (frame < 5) {
@@ -1005,7 +1005,7 @@ s32 fx_0fb_0_op80(s32 mode, Fx0fb0Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
             SVECTOR rot;
             VECTOR sc;
 
-            env->unk28 = -0x300;
+            env->otZ = -0x300;
             rot.vx = 0x400;
             sc.vx = 0x1000;
             rot.vz = 0x400;
@@ -1016,7 +1016,7 @@ s32 fx_0fb_0_op80(s32 mode, Fx0fb0Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
             pos.vx = D_801EB248.vx;
             pos.vy = D_801EB248.vy;
             func_801E7B90(&pos, &rot, &sc, ex->math_sin(a8 >> 2) >> 5, 0x118, 0xFFFF, 0x10, 0x90, 0x400, a8, 0x180, 1);
-            env->unk28 = 0;
+            env->otZ = 0;
         }
         if (ac != 0 || a8 != 0) {
             if (work->unk0 == 0 || (work->unk0 == 1 && frame < 0x10)) {

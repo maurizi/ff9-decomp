@@ -60,7 +60,7 @@ s32 fx_198_op80(s32 mode, Fx198Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
                 z = work->unk4;
                 r.vz = z << 5;
                 r.pad = 0;
-                env->unk28 = 0x180;
+                env->otZ = 0x180;
                 if (frame < 0x14) {
                     c = 0x1000;
                 } else {
@@ -93,7 +93,7 @@ s32 fx_198_op80(s32 mode, Fx198Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
                         r.vz += 0x40;
                     }
                 }
-                env->unk28 = 0;
+                env->otZ = 0;
             }
             if (frame >= 0x14) {
                 r.vx = 0;
@@ -101,7 +101,7 @@ s32 fx_198_op80(s32 mode, Fx198Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
                 z = work->unk4;
                 r.vz = z << 5;
                 r.pad = 0;
-                env->unk28 = 0x180;
+                env->otZ = 0x180;
                 t = ((frame - 0x14) << 12) / 20;
                 key2 = (Fx198Key *)(ex->btlfx_getFileData(entry->file, 0x18) + 4);
                 key2 += frame;
@@ -114,7 +114,7 @@ s32 fx_198_op80(s32 mode, Fx198Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
                     ex->btlfx_drawAnimQuads((u8 *)ex->btlfx_getFileData(entry->file, 6), &p, NULL, 0x1800, work->unk4 + i * 4 + i, 1, ex->math_cos(t >> 2));
                     r.vz += 0x40;
                 }
-                env->unk28 = 0;
+                env->otZ = 0;
             }
             if (frame >= 0x28) {
                 work->unk0 = 1;

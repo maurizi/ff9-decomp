@@ -58,10 +58,10 @@ s32 fx_17d_8_op80(s32 mode, Fx17d8Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
     s32 v;
 
     if (mode == 0) {
-        init->unk0 = 0xBC;
-        init->unk8 = 0x14;
-        init->unk14 = (s32)func_801E7718;
-        init->unk4 = 0x10;
+        init->workSize = 0xBC;
+        init->elemSize = 0x14;
+        init->elemFn = (s32)func_801E7718;
+        init->poolCount = 0x10;
     } else if (mode == 1) {
         work->unk0 = 0;
         work->unk4 = 0;
@@ -138,9 +138,9 @@ s32 fx_17d_8_op80(s32 mode, Fx17d8Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
                     o->unk2 = 0x1000;
                 }
             }
-            env->unk28 = 0x200;
+            env->otZ = 0x200;
             ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->file, 5), &work->unk54, NULL, t >> 1, 0, 1, t);
-            env->unk28 = 0;
+            env->otZ = 0;
             v = (((0x1000 - ex->math_sin((t >> 3) + 0x200)) << 6) >> 12) - 0x2C;
             ex->btlfx_drawSpriteAtOt(0xC00, (u8 *)ex->btlfx_getFileData(entry->file, 0x10), v, 0x78, 0, 0xFF, 0x1000);
             if (frame >= 0x20) {
@@ -196,10 +196,10 @@ s32 fx_17d_8_op80(s32 mode, Fx17d8Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
             sv.vz = 0;
             vv.vz = 0x1000;
             ex->btlfx_drawScreenGrid(1, 0xA0, 0x70, 0x50, 0x38, 4, 4, 2, 2, &sv, &vv, &cv, 0, NULL);
-            env->unk28 = 0x200;
+            env->otZ = 0x200;
             ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->file, 5), &work->unk54, NULL, (t >> 1) + 0x800, 0, 1,
                               ex->math_cos(t >> 2));
-            env->unk28 = 0;
+            env->otZ = 0;
             ex->btlfx_drawSpriteAtOt(0xC00, (u8 *)ex->btlfx_getFileData(entry->file, 0x10), -0x2C, 0x78, 0, 0xFF, 0x1000);
             if (frame >= 0x18) {
                 work->unk0 = 3;

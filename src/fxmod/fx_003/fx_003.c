@@ -112,9 +112,9 @@ s32 func_801E7CEC(s32 mode, Fx003Bolt *it, Unk800F78A4 *env, Unk80100C78Entry *e
                 if (it->unk1C != NULL) {
                     it->unk1C->unk22 = ex->func_800E7CC4(0, 0x40);
                 }
-                env->unk28 = ex->func_800E7CC4(0, 0x46);
+                env->otZ = ex->func_800E7CC4(0, 0x46);
                 ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->file, 0xB), &it->unk0, NULL, 0x1400, 4, 1, 0x1000);
-                env->unk28 = 0;
+                env->otZ = 0;
                 ex->btlfx_drawScreenTint((u32 *)(env->ot + 1), 1, 0, 7, 0x20);
             }
             if (frame == 1) {
@@ -162,10 +162,10 @@ s32 fx_003_op83(s32 mode, Fx003Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
     SVECTOR b;
 
     if (mode == 0) {
-        init->unk0 = 0x10;
-        init->unk8 = 0x24;
-        init->unk14 = (s32)func_801E7CEC;
-        init->unk4 = 0xC;
+        init->workSize = 0x10;
+        init->elemSize = 0x24;
+        init->elemFn = (s32)func_801E7CEC;
+        init->poolCount = 0xC;
     } else if (mode == 1) {
         D_801E8580 = env;
         ex->btlfx_getUnitBodyPos(0, 0, (s16 *)&work->unk0);

@@ -61,7 +61,7 @@ s32 btlfx_updateParticles(Pool30 *pool) {
     e = pool->unkC;
     amp = 0;
     i = 0;
-    D_801014B0 = g_btlfxEnv->unk28;
+    D_801014B0 = g_btlfxEnv->otZ;
     pool->unk4 = 0;
     for (; i <= pool->unk8; i++, e++) {
         if (e->unk1F == 0) {
@@ -335,7 +335,7 @@ s32 btlfx_updateParticles(Pool30 *pool) {
                 ofs = 0;
             }
         }
-        g_btlfxEnv->unk28 = owner->unk22;
+        g_btlfxEnv->otZ = owner->unk22;
         if (e->unk1C != 0xFF) {
             el = &owner->unk18[e->unk1C];
             fl = el->unk3;
@@ -470,7 +470,7 @@ s32 btlfx_updateParticles(Pool30 *pool) {
         e->unk1A = frame;
     }
     pool->unk8 = last;
-    g_btlfxEnv->unk28 = D_801014B0;
+    g_btlfxEnv->otZ = D_801014B0;
     return pool->unk4;
 }
 
@@ -1408,9 +1408,9 @@ void func_800E2F84(Pool30 *pool, Pool30Entry *e, SVECTOR *pos, SVECTOR *rot) {
 
 void btlfx_heapInit(Heap *arg0, s32 arg1) {
     s32 size = btlfx_align4(arg1) - 0xC;
-    arg0->unk0 = arg0->unkC;
-    arg0->unk4 = size;
-    arg0->unk8 = size;
+    arg0->cursor = arg0->data;
+    arg0->free = size;
+    arg0->size = size;
 }
 
 s32 btlfx_heapAlloc(Heap *h, s32 size) {
@@ -1419,14 +1419,14 @@ s32 btlfx_heapAlloc(Heap *h, s32 size) {
     s32 *q;
 
     sz = btlfx_align4(size);
-    if (h->unk4 < sz) {
-        q = (s32 *)h->unkC;
-        h->unk0 = (u8 *)q;
-        h->unk4 = h->unk8;
+    if (h->free < sz) {
+        q = (s32 *)h->data;
+        h->cursor = (u8 *)q;
+        h->free = h->size;
     }
-    p = h->unk0;
-    h->unk4 -= sz;
-    h->unk0 = p + sz;
+    p = h->cursor;
+    h->free -= sz;
+    h->cursor = p + sz;
     q = (s32 *)p;
     for (size = 0; size < sz >> 2; size++) {
         *q++ = 0;
@@ -1437,9 +1437,9 @@ s32 btlfx_heapAlloc(Heap *h, s32 size) {
 s32 btlfx_heapWrapIfFull(Heap *arg0, s32 arg1) {
     s32 size = btlfx_align4(arg1);
     s32 ret = 1;
-    if (arg0->unk4 < size) {
-        arg0->unk0 = arg0->unkC;
-        arg0->unk4 = arg0->unk8;
+    if (arg0->free < size) {
+        arg0->cursor = arg0->data;
+        arg0->free = arg0->size;
     } else {
         ret = 0;
     }

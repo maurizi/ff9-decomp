@@ -48,10 +48,10 @@ s32 fx_0f3_op80(s32 mode, Fx0f3Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
                 ex->btlfx_drawTrail((u8 *)ex->btlfx_getFileData(entry->file, 3), (s32)&work->unk10, 0, -1, 0, 0, 1,
                                   D_801E7CB0[work->unk4], 0);
             }
-            env->unk28 = 0x40;
+            env->otZ = 0x40;
             ex->btlfx_drawTrail((u8 *)ex->btlfx_getFileData(entry->file, 3), (s32)&work->unk10, 0, 0, 0x5000, 0x1000, 1,
                               D_801E7CB0[work->unk4], 0);
-            env->unk28 = 0;
+            env->otZ = 0;
             if (frame == 0) {
                 work->unk18.vx = work->unk10.vx;
                 work->unk18.vy = work->unk10.vy;
@@ -88,10 +88,10 @@ s32 fx_0f3_op80(s32 mode, Fx0f3Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
             return 0;
         case 1:
             t = (frame << 12) / 29;
-            env->unk28 = 0x40;
+            env->otZ = 0x40;
             ex->btlfx_drawTrail((u8 *)ex->btlfx_getFileData(entry->file, 3), (s32)&work->unk10, 0, 0, 0x5000,
                               ex->math_cos(t >> 2), 1, D_801E7CB0[work->unk4], 0);
-            env->unk28 = 0;
+            env->otZ = 0;
             if (frame < 0x1D) {
                 break;
             }

@@ -197,10 +197,10 @@ s32 fx_0dc_op80(s32 mode, Fx0dcWork80 *w, Unk800F78A4 *env, Unk80100C78Entry *en
     s32 r; /* spawn radius */
 
     if (mode == 0) {
-        init->unk0 = 0x88;
-        init->unk8 = 0x38;
-        init->unk14 = (s32)func_801E7788;
-        init->unk4 = 0x20;
+        init->workSize = 0x88;
+        init->elemSize = 0x38;
+        init->elemFn = (s32)func_801E7788;
+        init->poolCount = 0x20;
     } else if (mode == 1) {
         D_801E9354 = env;
         ex->btlfx_initEffModels(D_801E9364, 0x19);
@@ -445,10 +445,10 @@ s32 fx_0dc_op80(s32 mode, Fx0dcWork80 *w, Unk800F78A4 *env, Unk80100C78Entry *en
             rot2.vz = w->unk4 * 24 + 0x400;
             ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->file, 0x23), &w->unk58, &rot2, (w->unk4 << 6) + 0x15A9,
                               0, 1, k);
-            env->unk28 = 0x127;
+            env->otZ = 0x127;
             ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->file, 0x1B), &w->unk58, NULL, (w->unk4 << 5) + 0x15A9,
                               0, 1, k);
-            env->unk28 = 0;
+            env->otZ = 0;
         }
         w->unk4++;
     }
@@ -517,10 +517,10 @@ s32 fx_0dc_op84(s32 mode, Fx0dcWork84 *work, Unk800F78A4 *env, Unk80100C78Entry 
             rot.vy = 0;
             rot.vz = r;
             rot.pad = 0;
-            env->unk28 = 0x80;
+            env->otZ = 0x80;
             ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->file, 0x29), &work->unk8, NULL, b / 3, 0, 1, a / 2);
             ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->file, 0x28), &work->unk8, &rot, c, 0, 1, a * 2 / 3);
-            env->unk28 = 0;
+            env->otZ = 0;
             work->unk4++;
         }
     }

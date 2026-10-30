@@ -214,10 +214,10 @@ s32 fx_0dd_op84(s32 mode, Fx0ddWork84 *work, Unk800F78A4 *env, Unk80100C78Entry 
             rot.vy = 0;
             rot.vz = r;
             rot.pad = 0;
-            env->unk28 = 0x80;
+            env->otZ = 0x80;
             ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->file, 0x15), &work->unk8, NULL, b / 3, 0, 1, a / 2);
             ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->file, 0x16), &work->unk8, &rot, c / 2, 0, 1, a * 2 / 3);
-            env->unk28 = 0;
+            env->otZ = 0;
             work->unk4++;
         }
     }

@@ -227,14 +227,14 @@ void btlfx_linkPrimAbr(u32 code, u32 *ot, void *prim, s32 tpage) {
 }
 
 void btlfx_addPrim(u32 arg0, s32 arg1, void *arg2) {
-    s32 z = (arg1 - g_btlfxEnv->unk28) >> 2;
+    s32 z = (arg1 - g_btlfxEnv->otZ) >> 2;
     if ((u32)z < 0x1000) {
         addPrimLen(&g_btlfxEnv->ot[z], arg2, arg0);
     }
 }
 
 void btlfx_addPrimAbr(s32 arg0, s32 arg1, void *arg2, s32 arg3) {
-    u32 i = (arg1 - g_btlfxEnv->unk28) >> 2;
+    u32 i = (arg1 - g_btlfxEnv->otZ) >> 2;
     if (i < 0x1000) {
         ((void (*)())btlfx_linkPrimAbr)(arg0, &g_btlfxEnv->ot[i], arg2, arg3);
     }
@@ -361,7 +361,7 @@ void btlfx_drawTrail3D(s32 arg0, s32 *arg1, s32 n, s32 arg3, s32 arg4, s32 arg5,
         c.unk4 = arg0;
         c.unk14 = arg3;
         c.unk16 = arg5;
-        c.unk0 = g_btlfxEnv->unk28;
+        c.unk0 = g_btlfxEnv->otZ;
         c.unk2C = inv;
         btlfx_emitTrailRibbon3D(n, &c, prim, g_btlfxEnv->ot);
     }
@@ -406,7 +406,7 @@ void btlfx_drawTrailFlat(s32 arg0, s32 n, s32 arg2, s32 arg3, s32 arg4, s32 arg5
         c.unk4 = arg0;
         c.unk20 = inv;
         c.unk8 = inv;
-        c.unk0 = g_btlfxEnv->unk28;
+        c.unk0 = g_btlfxEnv->otZ;
         if (arg6 >= 0) {
             btlfx_emitTrailRibbonFlat(n, &c, prim, g_btlfxEnv->ot);
         } else {
@@ -444,7 +444,7 @@ void btlfx_drawTrailScreen(s32 arg0, s32 n, s32 arg2, s32 arg3, s32 arg4, s32 ar
         c.unk16 = arg4;
         c.unk20 = inv;
         c.unk8 = inv;
-        c.unk0 = g_btlfxEnv->unk28;
+        c.unk0 = g_btlfxEnv->otZ;
         btlfx_emitTrailRibbonScreen(n, &c, prim, g_btlfxEnv->ot);
     }
 }
@@ -585,7 +585,7 @@ void btlfx_drawParticles(u8 *arg0, SVECTOR *arg1, SVECTOR *arg2, s32 arg3, s32 a
     c.unkC = (arg5 & 3) << 5;
     c.unk4 = arg7;
     c.unk8 = arg8;
-    c.unk18 = g_btlfxEnv->unk28;
+    c.unk18 = g_btlfxEnv->otZ;
     btlfx_emitParticles(arg0, &c, prim, g_btlfxEnv->ot);
 }
 
@@ -640,7 +640,7 @@ void btlfx_drawSprite(u8 *arg0, SVECTOR *arg1, s32 arg2, s32 arg3, s32 arg4) {
     c.unk4 = sxy.vx;
     c.unk8 = sxy.vy;
     c.unk18 = g_btlfxEnv->prim;
-    z = (z - g_btlfxEnv->unk28) >> 2;
+    z = (z - g_btlfxEnv->otZ) >> 2;
     if ((u32)z < 0x1000) {
         g_btlfxEnv->prim = btlfx_emitScreenSprites(arg0, &c, prim, &g_btlfxEnv->ot[z]);
     }
@@ -755,7 +755,7 @@ void btlfx_drawAnimQuads(u8 *arg0, SVECTOR *arg1, SVECTOR *arg2, s32 arg3, s32 a
     gte_SetTransMatrix(&m);
     c.unk24 = (arg5 == 0xFF) ? 0x2C : 0x2E;
     c.unk18 = arg6;
-    c.unk20 = g_btlfxEnv->unk28;
+    c.unk20 = g_btlfxEnv->otZ;
     if (c.unk1C != 0) {
         btlfx_emitAnimQuads(arg0, &c, prim, g_btlfxEnv->ot);
     }
@@ -843,7 +843,7 @@ void btlfx_drawSprites(u8 *arg0, SVECTOR *arg1, SVECTOR *arg2, s32 arg3, s32 arg
     gte_SetRotMatrix(&m);
     gte_SetTransMatrix(&m);
     c.unk18 = arg6;
-    z = (z - g_btlfxEnv->unk28) >> 2;
+    z = (z - g_btlfxEnv->otZ) >> 2;
     if ((u32)z < 0x1000 && c.unk1C != 0) {
         if (size == 0x14) {
             btlfx_emitSprites(arg0, &c, prim, &g_btlfxEnv->ot[z]);
@@ -957,7 +957,7 @@ void btlfx_drawRings(u8 *arg0, SVECTOR *arg1, SVECTOR *arg2, s32 arg3, s32 arg4,
         ((u8 *)&c.unk0)[3] = (arg5 != 0xFF) ? 0x2E : 0x2C;
         c.unk24 = cnt;
         c.unk1C = w;
-        c.unk18 = g_btlfxEnv->unk28;
+        c.unk18 = g_btlfxEnv->otZ;
         btlfx_emitRingQuads(k, &c, prim, g_btlfxEnv->ot);
         break;
     case 2:
@@ -981,7 +981,7 @@ void btlfx_drawRings(u8 *arg0, SVECTOR *arg1, SVECTOR *arg2, s32 arg3, s32 arg4,
         d.unk24 = cnt;
         d.unk28 = (arg5 & 3) << 5;
         d.unk1C = w;
-        d.unk18 = g_btlfxEnv->unk28;
+        d.unk18 = g_btlfxEnv->otZ;
         btlfx_emitRingGouraud(m2, &d, prim, g_btlfxEnv->ot);
         break;
     }
@@ -1059,7 +1059,7 @@ void btlfx_drawFan(Unk800D2938 *arg0, SVECTOR *arg1, SVECTOR *arg2, s32 arg3, s3
         c1.unkC = z;
         c1.unk0 = (arg5 != 0xFF) ? 0x2E000000 : 0x2C000000;
         c1.unk8 = arg6;
-        c1.unk4 = g_btlfxEnv->unk28;
+        c1.unk4 = g_btlfxEnv->otZ;
         prim = g_btlfxEnv->prim;
         g_btlfxEnv->prim = prim + 0x28;
         btlfx_emitFrameQuad((u8 *)arg0, &c1, prim, g_btlfxEnv->ot);
@@ -1069,7 +1069,7 @@ void btlfx_drawFan(Unk800D2938 *arg0, SVECTOR *arg1, SVECTOR *arg2, s32 arg3, s3
         c2.unk10 = z;
         c2.unk0 = (arg5 != 0xFF) ? 0x32000000 : 0x30000000;
         c2.unk8 = arg6;
-        c2.unk4 = g_btlfxEnv->unk28;
+        c2.unk4 = g_btlfxEnv->otZ;
         prim = g_btlfxEnv->prim;
         g_btlfxEnv->prim = prim + 0x5C;
         btlfx_emitFrameFan((u8 *)arg0, &c2, prim, g_btlfxEnv->ot);

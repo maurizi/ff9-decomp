@@ -65,9 +65,9 @@ s32 func_801E7704(s32 mode, Fx058Item *it, Unk800F78A4 *env, Unk80100C78Entry *e
             a.pad = 1;
             BTLFX_COPY_SVEC(&d, &it->unkC);
             d.vy -= frame * 4;
-            env->unk28 = 0x40;
+            env->otZ = 0x40;
             ex->btlfx_drawParticles((u8 *)ex->btlfx_getFileData(entry->file, 9), &d, NULL, 0x4000, frame, 1, -1, 0, 0);
-            env->unk28 = 0;
+            env->otZ = 0;
             if (frame < 0x10) {
                 BTLFX_COPY_SVEC(&d, &it->unkC);
                 d.vy = 0;
@@ -91,10 +91,10 @@ s32 fx_058_op80(s32 mode, Fx058Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
     s16 j;
 
     if (mode == 0) {
-        init->unk0 = 0x28;
-        init->unk8 = 0x28;
-        init->unk14 = (s32)func_801E7704;
-        init->unk4 = 0x20;
+        init->workSize = 0x28;
+        init->elemSize = 0x28;
+        init->elemFn = (s32)func_801E7704;
+        init->poolCount = 0x20;
     } else if (mode == 1) {
         work->unk0 = 0;
         work->unk1C = 0;

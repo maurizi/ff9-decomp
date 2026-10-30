@@ -57,10 +57,10 @@ s32 fx_188_op80(s32 mode, Fx188Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
     s32 n;
 
     if (mode == 0) {
-        arg4->unk0 = 0x20;
-        arg4->unk8 = 0x28;
-        arg4->unk14 = (s32)func_801E7704;
-        arg4->unk4 = 0xC;
+        arg4->workSize = 0x20;
+        arg4->elemSize = 0x28;
+        arg4->elemFn = (s32)func_801E7704;
+        arg4->poolCount = 0xC;
     } else if (mode == 1) {
         work->unk0 = 0;
         work->unk1C = 0;
@@ -112,9 +112,9 @@ s32 fx_188_op80(s32 mode, Fx188Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
             v.vz = 0;
             v.vy = 0;
             v.pad = 1;
-            env->unk28 = 0x20;
+            env->otZ = 0x20;
             ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->file, 0x14), &work->unk4, &v, s, 0, 1, t);
-            env->unk28 = 0;
+            env->otZ = 0;
             ex->btlfx_drawBackdrop((BtlBgLayers *)ex->btlfx_getFileData(entry->file, 0xF), frame);
             if (frame >= 0x10) {
                 work->unk0 = 2;

@@ -224,11 +224,11 @@ s32 fx_17d_1_op80(s32 mode, Fx17d1Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
             }
             if (frame >= 5) {
                 ex->btlfx_rangeProgress(frame, 4, 0x14, 0, 0x1000, &k);
-                env->unk28 = 0x100;
+                env->otZ = 0x100;
                 work->unk10.vz += 0x258;
                 ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->file, 5), &work->unk10, NULL, 0x1000, 0, 1, k);
                 work->unk10.vz -= 0x258;
-                env->unk28 = 0;
+                env->otZ = 0;
             }
             if (frame >= 18) {
                 func_801EC944((u32 *)(env->ot + 0xFFE), 0xFF, 0, 0, 0x18, 0xC8);
@@ -274,9 +274,9 @@ s32 fx_17d_1_op80(s32 mode, Fx17d1Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
             work->unk10.vx = work->unk28.vx;
             work->unk10.vy = work->unk28.vy;
             work->unk10.vz = work->unk28.vz;
-            env->unk28 = 0x100;
+            env->otZ = 0x100;
             ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->file, 5), &work->unk10, NULL, 0x1000, 0, 1, -1);
-            env->unk28 = 0;
+            env->otZ = 0;
             if (work->unk70 != NULL) {
                 if (work->unk70->unk30 == -1) {
                     work->unk70 = NULL;
@@ -297,7 +297,7 @@ s32 fx_17d_1_op80(s32 mode, Fx17d1Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
             }
             break;
         }
-        env->unk28 = 0;
+        env->otZ = 0;
         work->unk4++;
     }
     return 0;

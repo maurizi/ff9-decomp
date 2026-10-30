@@ -532,11 +532,11 @@ s32 fx_0e1_0_op80(s32 mode, Fx0e10Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
             if (D_801E9DBC != 0) {
                 s32 d = ((ex->math_sin((frame << 11) / 159) * 3) >> 2) + 0x400;
 
-                env->unk28 = 0xF5;
+                env->otZ = 0xF5;
                 ex->Hi_GetSummonBonePos(((Fx0e10Summon *)env->loader)->unk60, 0, (u16 *)&work->unk34);
                 ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->file, 5), &work->unk34, NULL, 0x1000, 0, 1,
                                   d);
-                env->unk28 = 0;
+                env->otZ = 0;
             }
             if (frame == 0) {
                 p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0xD), (s32)&work->unk8);
@@ -679,7 +679,7 @@ s32 fx_0e1_0_op80(s32 mode, Fx0e10Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
             ex->btlfx_drawScrollMove(work->unk4 * 4, 0x2A0, 0x180, 0x10, 0x40, 0x2B0, 0x180);
         }
         if (rib != 0) {
-            env->unk28 = -0x80;
+            env->otZ = -0x80;
             if (work->unk4C != 0) {
                 work->unk4C = 0;
                 for (i = 0; i < 4; i++) {
@@ -694,7 +694,7 @@ s32 fx_0e1_0_op80(s32 mode, Fx0e10Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
                 func_801E7CB4((SVECTOR *)&sc, &b, 0x14, 0x1B, 0x3D05, 0xC0, 0, 0x40, 0x80, ((rib >> 5) * 2) / 3, D_801E9E48[i], 1,
                               10000 - work->unk4);
             }
-            env->unk28 = 0;
+            env->otZ = 0;
             ex->btlfx_drawScrollMove(10000 - work->unk4 * 4, 0x2F0, 0x100, 0x10, 0x80, 0x2E0, 0x100);
         }
         col2.r = col2.g = col2.b = 0x89;

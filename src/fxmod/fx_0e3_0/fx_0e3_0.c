@@ -231,10 +231,10 @@ s32 fx_0e3_0_op80(s32 mode, Fx0e30Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
     Fx0e30Puff *q;
 
     if (mode == 0) {
-        init->unk0 = 0xA8;
-        init->unk8 = 0x10;
-        init->unk14 = (s32)func_801E7F48;
-        init->unk4 = 0xC;
+        init->workSize = 0xA8;
+        init->elemSize = 0x10;
+        init->elemFn = (s32)func_801E7F48;
+        init->poolCount = 0xC;
     } else if (mode == 1) {
         work->unk0 = 0;
         work->unk4 = 0;
@@ -385,9 +385,9 @@ s32 fx_0e3_0_op80(s32 mode, Fx0e30Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
             }
             BTLFX_COPY_SVEC(&v0, &work->unk8);
             v0.vy -= 0x800;
-            env->unk28 = 0x80;
+            env->otZ = 0x80;
             ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->file, 0xC), &v0, NULL, 0x1800, 0, 1, ex->math_cos(t >> 2));
-            env->unk28 = 0;
+            env->otZ = 0;
         }
         if (frame >= 0x45) {
             work->unk0 = 10;
@@ -868,7 +868,7 @@ s32 fx_0e3_0_op80(s32 mode, Fx0e30Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
     SVECTOR bb;
 
     if (trail != 0) {
-        env->unk28 = -0x300;
+        env->otZ = -0x300;
         trail >>= 1;
         if (work->unk50 != 0) {
             work->unk50 = 0;
@@ -897,7 +897,7 @@ s32 fx_0e3_0_op80(s32 mode, Fx0e30Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
             ex->btlfx_drawTrail((u8 *)ex->btlfx_getFileData(entry->file, 1), (s32)&v0, 0, 0, 0x2000, trail, 1,
                                 D_801EAC38[j], 0);
         }
-        env->unk28 = 0;
+        env->otZ = 0;
     }
     if (fade != 0) {
         ex->Hi_DrawEffModel(&work->unk88, (VECTOR *)&work->unk90, (s32)&work->unk9C, work->unk5C);

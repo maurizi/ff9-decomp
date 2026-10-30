@@ -262,9 +262,9 @@ s32 fx_08f_op80(s32 mode, Fx08fWork80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             }
             ex->Hi_DrawEffModel(&rot, &pos, (s32)&scale, work->unk24);
             ex->Hi_DrawEffModel(&rot, &pos, (s32)&scale, work->unk28);
-            env->unk28 = 0x200;
+            env->otZ = 0x200;
             ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->file, 1), &work->unk14, NULL, s >> 1, 0, 1, 0x1000);
-            env->unk28 = 0;
+            env->otZ = 0;
             if (frame >= 13) {
                 w2 = ((ex->math_sin((((frame - 12) << 12) / 12) >> 2) << 6) >> 12) + 0x20;
                 c2.g = w2 >> 1;

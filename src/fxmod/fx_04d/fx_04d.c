@@ -180,10 +180,10 @@ s32 fx_04d_op80(s32 mode, Fx04dWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
     s32 c;
 
     if (mode == 0) {
-        init->unk0 = 0x34;
-        init->unk8 = 0x44;
-        init->unk14 = (s32)func_801E7704;
-        init->unk4 = 0xA;
+        init->workSize = 0x34;
+        init->elemSize = 0x44;
+        init->elemFn = (s32)func_801E7704;
+        init->poolCount = 0xA;
     } else if (mode == 1) {
         D_801E8610 = env;
         ex->btlfx_initEffModels(D_801E8620, 6);

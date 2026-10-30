@@ -189,14 +189,14 @@ s32 fx_19f_op81(s32 mode, Fx19fWork81 *work, Unk800F78A4 *env, Unk80100C78Entry 
                 SVECTOR rot;
 
                 ex->btlfx_rangeProgress(frame, 7, 8, 0, 0x1000, &spE8);
-                env->unk28 = -0x80;
+                env->otZ = -0x80;
                 rot.vx = 0x400;
                 rot.vy = 0;
                 rot.vz = frame * 0x18;
                 rot.pad = 1;
                 ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->file, 0x23), &work->unk8, &rot,
                                   ex->math_sin(spE8 >> 2), 0, 1, ex->math_cos(spE8 >> 2));
-                env->unk28 = 0;
+                env->otZ = 0;
                 c6 = ex->math_cos(spE8 >> 2) >> 1;
                 d7 = ex->math_sin(spE8 >> 2);
                 e = ex->math_sin(spE8 >> 2) >> 2;
@@ -320,7 +320,7 @@ s32 fx_19f_op81(s32 mode, Fx19fWork81 *work, Unk800F78A4 *env, Unk80100C78Entry 
                 } else {
                     D_801EA9B4 = 0xB86;
                 }
-                env->unk28 = 0x140;
+                env->otZ = 0x140;
                 if (frame >= 15) {
                     ex->btlfx_drawParticles((u8 *)ex->btlfx_getFileData(entry->file, 0x17), &work->unk10, NULL, h * 5 / 2,
                                             frame & 1, 1, ex->math_cos(t >> 2), 0, 0);
@@ -330,7 +330,7 @@ s32 fx_19f_op81(s32 mode, Fx19fWork81 *work, Unk800F78A4 *env, Unk80100C78Entry 
                 rot.pad = 0;
                 ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->file, 0x1F), &work->unk10, &rot,
                                   ex->btlfx_randCentered(0x1000) + 0x4000, 0, 1, 0x1000);
-                env->unk28 = 0;
+                env->otZ = 0;
             }
             if (frame >= 20) {
                 c7 = ((frame - 20) << 12) / 23;
@@ -542,7 +542,7 @@ s32 fx_19f_op81(s32 mode, Fx19fWork81 *work, Unk800F78A4 *env, Unk80100C78Entry 
                 func_801E7894(entry, &D_801EAA58, &a, &b, g, n3, 0xF0, work->unk4 & 7, f, 0x40);
             }
         }
-        env->unk28 = 0x1EA;
+        env->otZ = 0x1EA;
         if (alpha != 0) {
             for (k = 0; k < 3; k++) {
                 pad = 0x168;
@@ -609,7 +609,7 @@ s32 fx_19f_op81(s32 mode, Fx19fWork81 *work, Unk800F78A4 *env, Unk80100C78Entry 
                                     (work->unk4 + k2) & 7, arr90[k2], arr60[k2], 1, (u8 *)tc, 1);
             }
         }
-        env->unk28 = 0;
+        env->otZ = 0;
         work->unk4++;
     }
     return 0;
@@ -692,9 +692,9 @@ void func_801E9968(Unk80100C78Entry *entry, s32 file, s32 ot, Fx19fTrail *trail,
         pt->pad = pad;
         ang += dang + *noise++;
     }
-    env->unk28 = 0x80;
+    env->otZ = 0x80;
     ex->btlfx_drawTrail((u8 *)ex->btlfx_getFileData(entry->file, file), 0, NULL, type, 0x1000, alpha, 1, (u8 *)trail, ot);
-    env->unk28 = 0;
+    env->otZ = 0;
 }
 
 void func_801E9C08(Unk80100C78Entry *entry, s32 file, s32 ot, Fx19fTrail *path, Fx19fTrail *trail, s32 n, s32 *noise,
@@ -791,12 +791,12 @@ s32 fx_19f_op83(s32 mode, Fx19fWork83 *work, Unk800F78A4 *env, Fx19fInst *inst, 
     s32 k;
 
     if (mode == 0) {
-        init->unk0 = 0xC;
-        init->unk8 = 0x1C;
-        init->unk14 = (s32)func_801E9D20;
-        init->unk4 = 0x20;
+        init->workSize = 0xC;
+        init->elemSize = 0x1C;
+        init->elemFn = (s32)func_801E9D20;
+        init->poolCount = 0x20;
     } else if (mode == 1) {
-        i = init->unk0;
+        i = init->workSize;
         D_801EAA48 = env;
         work->unk0 = D_801EC9B8[0];
         np = D_801EC9B8[0];

@@ -71,10 +71,10 @@ s32 func_801EC704(s32 mode, Fx17d5Spark *w, Unk800F78A4 *env, Unk80100C78Entry *
             w->unk10 += (ex->math_sin(a + w->unk12) * k) >> 12;
             w->unk12 -= (ex->math_cos(a - w->unk10) * k) >> 12;
             ex->btlfx_pointAhead((s16 *)p, &w->unk10, w->unk2, (s16 *)p);
-            env->unk28 = 0xFF;
+            env->otZ = 0xFF;
             ex->btlfx_drawTrail((u8 *)ex->btlfx_getFileData(entry->file, 5), (s32)p, NULL, 0, w->unk22 - frame * 0x23A,
                                 0x1000, 1, w->unk18, 0);
-            env->unk28 = 0;
+            env->otZ = 0;
             if (w->unk6 == 1) {
                 env->camera->points[1].vx = w->unk8.vx;
                 env->camera->points[1].vy = w->unk8.vy;
@@ -119,14 +119,14 @@ s32 func_801EC704(s32 mode, Fx17d5Spark *w, Unk800F78A4 *env, Unk80100C78Entry *
             ex->btlfx_drawTrail((u8 *)ex->btlfx_getFileData(entry->file, 9), (s32)&w->unk8, NULL, 0, 0x1000, 0x1000, 1,
                                 w->unk18, 0);
         }
-        env->unk28 = 0x140;
+        env->otZ = 0x140;
         if (w->unk10 != 0) {
             ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->file, 4), &w->unk8, NULL, 0x1000, frame, 1, 0xAAA);
-            env->unk28 = 0;
+            env->otZ = 0;
         } else {
             ex->btlfx_drawParticles((u8 *)ex->btlfx_getFileData(entry->file, 8), &w->unk8, NULL, 0x1000, frame, 1, 0xC00,
                                     0, 0);
-            env->unk28 = 0;
+            env->otZ = 0;
         }
         if (w->unk10 != 0) {
             ang.vz = 0;
@@ -161,9 +161,9 @@ s32 func_801EC704(s32 mode, Fx17d5Spark *w, Unk800F78A4 *env, Unk80100C78Entry *
                 ex->btlfx_drawScreenTint((u32 *)(env->ot + 2), 1, g, g, g);
             }
         }
-        env->unk28 = 0x400;
+        env->otZ = 0x400;
         ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->file, 4), &w->unk8, NULL, 0x1800, frame, 1, 0x1000);
-        env->unk28 = 0;
+        env->otZ = 0;
         ang.vz = 0;
         ang.vx = 0;
         ang.vy = frame * 12;
@@ -216,10 +216,10 @@ s32 fx_17d_5_op80(s32 mode, Fx17d5Work80 *w, Unk800F78A4 *env, Unk80100C78Entry 
     s32 m;
 
     if (mode == 0) {
-        init->unk0 = 0x98;
-        init->unk8 = 0x24;
-        init->unk14 = (s32)func_801EC704;
-        init->unk4 = 0x39;
+        init->workSize = 0x98;
+        init->elemSize = 0x24;
+        init->elemFn = (s32)func_801EC704;
+        init->poolCount = 0x39;
     } else if (mode == 1) {
         w->unk0 = 0;
         w->unk4 = 0;
@@ -543,7 +543,7 @@ s32 fx_17d_5_op80(s32 mode, Fx17d5Work80 *w, Unk800F78A4 *env, Unk80100C78Entry 
             }
             break;
         }
-        env->unk28 = 0;
+        env->otZ = 0;
         if (fade != 0) {
             if (flag == 0) {
                 q = ((fade << 5) >> 12) + 0x89;

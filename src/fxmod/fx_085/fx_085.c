@@ -75,14 +75,14 @@ s32 fx_085_op80(s32 mode, Fx085Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
                 ex->btlfx_drawScreenTint((u32 *)(env->ot + 1), 1, 0x20, 0x40, 0xFF);
             }
             if (frame == 1) {
-                env->unk28 = 0x200;
+                env->otZ = 0x200;
                 ex->btlfx_drawParticles((u8 *)ex->btlfx_getFileData(entry->file, 0x11), &work->unk8, NULL, 0x3000, 0, 1,
                                         0x1000, 0, 0);
-                env->unk28 = 0;
+                env->otZ = 0;
             }
-            env->unk28 = 0x200;
+            env->otZ = 0x200;
             ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->file, 2), &work->unk8, NULL, 0x800, 0, 1, -1);
-            env->unk28 = 0;
+            env->otZ = 0;
             if (frame == 2) {
                 ex->btlfx_drawScreenTint((u32 *)(env->ot + 1), 2, 0x80, 0x80, 0xFF);
             }
@@ -110,21 +110,21 @@ s32 fx_085_op80(s32 mode, Fx085Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             }
             if (frame < 20) {
                 c = ex->math_cos((frame << 10) / 20);
-                env->unk28 = 0x200;
+                env->otZ = 0x200;
                 ex->btlfx_drawParticles((u8 *)ex->btlfx_getFileData(entry->file, 0x10), &work->unk8, NULL, 0x3000, 0, 1,
                                         c, 0, 0);
                 if (frame < 10) {
                     ex->btlfx_drawParticles((u8 *)ex->btlfx_getFileData(entry->file, 0x11), &work->unk8, NULL, 0x3000,
                                             0, 1, 0x1000 - (frame << 12) / 10, 0, 0);
                 }
-                env->unk28 = 0;
+                env->otZ = 0;
             }
             if (frame < 24) {
-                env->unk28 = 0x200;
+                env->otZ = 0x200;
                 t_1 = (frame << 12) / 24;
                 ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->file, 2), &work->unk8, NULL,
                                   ex->math_cos(t_1 >> 2) * 2 + 0x1000, 0, 1, ex->math_cos(t_1 >> 2));
-                env->unk28 = 0;
+                env->otZ = 0;
             }
             rot.vx = 0x400;
             rot.vz = 0;
@@ -176,7 +176,7 @@ s32 fx_085_op80(s32 mode, Fx085Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
                 ex->Hi_ModifyEffModelAbr(work->unk14, 1);
                 ex->Hi_ModifyEffModelRGB(work->unk14, (ex->math_cos(t) * 2 / 3 >> 5) - 0x80,
                                          (ex->math_cos(t) * 2 / 3 >> 5) - 0x80, (ex->math_cos(t) * 2 / 3 >> 5) - 0x80);
-                env->unk28 = 0x20;
+                env->otZ = 0x20;
                 c_5 = ex->math_cos(t);
                 for (j = frame, a = frame * 0x18, i = 0; i < 16; i++, j += 3) {
                     BTLFX_COPY_SVEC(&p, &work->unk8);
@@ -191,7 +191,7 @@ s32 fx_085_op80(s32 mode, Fx085Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
                                             0x3000 - ((i & 1) << 12), j & 7, 1, c_5, r0_, r1_);
                     }
                 }
-                env->unk28 = 0;
+                env->otZ = 0;
             }
             if (frame >= 50) {
                 work->unk10 = 2;
@@ -388,11 +388,11 @@ s32 fx_085_op83(s32 mode, Fx085Work83 *work, Unk800F78A4 *env, Unk80100C78Entry 
     s32 s;
 
     if (mode == 0) {
-        init->unk0 = 0x1C;
-        init->unk8 = 0x24;
-        init->unk14 = (s32)func_801E8880;
-        init->unk4 = 0x10;
-    } else if (mode == 1) {        kind = init->unk0;
+        init->workSize = 0x1C;
+        init->elemSize = 0x24;
+        init->elemFn = (s32)func_801E8880;
+        init->poolCount = 0x10;
+    } else if (mode == 1) {        kind = init->workSize;
         work->unk0.vx = env->targets->centerX;
         work->unk0.vy = env->targets->centerY;
         D_801E9DF4 = env;

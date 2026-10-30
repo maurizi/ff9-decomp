@@ -210,9 +210,9 @@ s32 fx_057_op80(s32 mode, Fx057Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             ex->Hi_ModifyEffModelRGB(work->unkC, (D_801EA708 >> 5) - 0x80, (D_801EA708 >> 5) - 0x80,
                                      (D_801EA708 >> 5) - 0x80);
             ex->btlfx_drawBackdrop((BtlBgLayers *)ex->btlfx_getFileData(entry->file, 0x18), work->unk4);
-            env->unk28 = 0x80;
+            env->otZ = 0x80;
             ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->file, 1), &work->unk10, NULL, 0x1600, 0, 1, D_801EA708);
-            env->unk28 = 0;
+            env->otZ = 0;
             ang.pad = 1;
             ang.vx = -0x200;
             ang.vy = work->unk4 * 0x18 + 0x580;
@@ -288,11 +288,11 @@ s32 fx_057_op81(s32 mode, Fx057Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
         d.pad = 0;
         t = (frame << 12) / 7;
         s = ex->math_sin(t >> 2);
-        env->unk28 = work->unk8 + 0x40;
+        env->otZ = work->unk8 + 0x40;
         ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->file, 0x23), &work->unkC, NULL, 0x13000, frame, 1, s);
         ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->file, 0x22), &work->unkC, NULL, (t >> 1) + 0x3000, 0, 1,
                           s);
-        env->unk28 = 0;
+        env->otZ = 0;
         ex->btlfx_drawSpriteLine((u8 *)ex->btlfx_getFileData(entry->file, 0x17), &work->unkC, work->unk4, ex->math_sin(t >> 2));
         if (frame >= 7) {
             work->unk0 = 1;
@@ -307,14 +307,14 @@ s32 fx_057_op81(s32 mode, Fx057Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
         d.vy = 0;
         d.vz = 0x400;
         d.pad = 0;
-        env->unk28 = work->unk8 + 0x40;
+        env->otZ = work->unk8 + 0x40;
         t = (frame << 12) / 7;
         ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->file, 0x10), &work->unkC, &d, 0x3000, frame, 1, 0x1000);
         ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->file, 0x23), &work->unkC, NULL, t + 0x13000, frame, 1,
                           0x1000);
         ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->file, 0x22), &work->unkC, NULL, (t >> 1) + 0x3800, 0, 1,
                           0x1000);
-        env->unk28 = 0;
+        env->otZ = 0;
         ex->btlfx_drawScreenTint((u32 *)(env->ot + 1), 1, 0, 0, 0x80);
         ex->btlfx_drawSpriteLine((u8 *)ex->btlfx_getFileData(entry->file, 0x17), &work->unkC, work->unk4, 0x1000);
         if (frame >= 7) {
@@ -352,7 +352,7 @@ s32 fx_057_op81(s32 mode, Fx057Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
         break;
     case 2:
         t = frame << 7;
-        env->unk28 = 0;
+        env->otZ = 0;
         if (frame < 6) {
             ex->btlfx_drawScreenTint((u32 *)(env->ot + 1), 1, (0xFF - frame * 0xFF / 6) >> 1,
                                      0xFF - frame * 0xFF / 6, 0xFF - frame * 0xFF / 6);

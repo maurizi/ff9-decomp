@@ -346,8 +346,8 @@ s32 func_801E81EC(s32 mode, Fx197Item81 *it, Unk800F78A4 *env, Unk80100C78Entry 
             if (on != 0) {
                 it->unk0 = 2;
                 ((s16 *)it)[-1] = -1;
-                func_801E7A5C(it->unk2, 0x14, (Fx197Shatter *)(env->unk30 + D_801E9194[it->unk2].unk0),
-                              (Fx197Tri *)(env->unk30 + D_801E9194[it->unk2].unk4));
+                func_801E7A5C(it->unk2, 0x14, (Fx197Shatter *)(env->workBuf + D_801E9194[it->unk2].unk0),
+                              (Fx197Tri *)(env->workBuf + D_801E9194[it->unk2].unk4));
                 func_801E7AA0(it->unk2, work->unk18[it->unk2][2]);
                 return 0;
             }
@@ -447,10 +447,10 @@ s32 fx_197_op81(s32 mode, Fx197Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
     s32 c;
 
     if (mode == 0) {
-        init->unk0 = 0x88;
-        init->unk8 = 0x14;
-        init->unk14 = (s32)func_801E81EC;
-        init->unk4 = 7;
+        init->workSize = 0x88;
+        init->elemSize = 0x14;
+        init->elemFn = (s32)func_801E81EC;
+        init->poolCount = 7;
     } else if (mode == 1) {
         work->unk0 = 0;
         work->unk4 = 0;

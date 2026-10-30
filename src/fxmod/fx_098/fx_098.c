@@ -476,10 +476,10 @@ s32 fx_098_op80(s32 mode, Fx098Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
     Pool6CEntry *p1;
 
     if (mode == 0) {
-        init->unk0 = 0x88;
-        init->unk8 = 0x38;
-        init->unk14 = (s32)func_801E82DC;
-        init->unk4 = 0x20;
+        init->workSize = 0x88;
+        init->elemSize = 0x38;
+        init->elemFn = (s32)func_801E82DC;
+        init->poolCount = 0x20;
     } else if (mode == 1) {
         D_801E9D1C = env;
         ex->btlfx_initEffModels(D_801E9D2C, 0x19);
@@ -750,10 +750,10 @@ s32 fx_098_op80(s32 mode, Fx098Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             r.vz = work->unk4 * 24 + 0x400;
             ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->file, 0x23), &work->unk58, &r, (work->unk4 << 6) + 0x1E00,
                               0, 1, c);
-            env->unk28 = 0x127;
+            env->otZ = 0x127;
             ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->file, 0x1B), &work->unk58, NULL, (work->unk4 << 5) + 0x1E00,
                               0, 1, c);
-            env->unk28 = 0;
+            env->otZ = 0;
         }
         work->unk4++;
     }

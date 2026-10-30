@@ -691,7 +691,7 @@ s32 fx_1b3_op80(s32 mode, Fx1b3Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
                 }
                 break;
             }
-            env->unk28 = 0x40;
+            env->otZ = 0x40;
             for (i = 0; i < 16; i++) {
                 if (D_801EB0C4[i].unk4C != 0) {
                     tr = &D_801EB0C4[i];
@@ -719,7 +719,7 @@ s32 fx_1b3_op80(s32 mode, Fx1b3Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
                     }
                 }
             }
-            env->unk28 = 0;
+            env->otZ = 0;
         }
         if (work->unk0[4] != 0) {
             work->unk0[4]--;

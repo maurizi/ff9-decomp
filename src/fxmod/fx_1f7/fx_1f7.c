@@ -100,12 +100,12 @@ s32 fx_1f7_op80(s32 mode, Fx1f7Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
                              * is not hoisted out of it. */
                             pc = 0;
                         }
-                        env->unk28 = 0x200;
+                        env->otZ = 0x200;
                         /* &D_801E8458[i] rather than tr: cse shares the address, so its base is worth hoisting and
                          * tr becomes a giv that loop.c reduces (the original's s1). */
                         ex->btlfx_drawTrail((u8 *)ex->btlfx_getFileData(entry->file, 3), 0, NULL, frame, 0x1000, al, 1,
                                             (u8 *)&D_801E8458[i], 0);
-                        env->unk28 = 0;
+                        env->otZ = 0;
                         tr->unk110 -= 4;
                         if (tr->unk110 < 0) {
                             tr->unk110 = 0x20;
@@ -130,10 +130,10 @@ s32 fx_1f7_op80(s32 mode, Fx1f7Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
                 sp = &D_801E8AE8[i];
                 if (sp->unk8 != 0) {
                     if (--sp->unk10 < 0) {
-                        env->unk28 = 0x200;
+                        env->otZ = 0x200;
                         ex->btlfx_drawParticles((u8 *)ex->btlfx_getFileData(entry->file, 5), &D_801E82D8[sp->unk0], NULL, 0x4000,
                                                 sp->unkC, 1, 0x1000, sp->unk4, 0);
-                        env->unk28 = 0;
+                        env->otZ = 0;
                         if (++sp->unkC >= 6) {
                             sp->unk0 = ex->btlfx_randRange(0, 0x2F);
                             sp->unk4 = ex->btlfx_randRange(-0x10, 0x10);

@@ -273,10 +273,10 @@ s32 fx_1a2_op80(s32 mode, Fx1a2Work80 *w, Unk800F78A4 *env, Unk80100C78Entry *en
     SVECTOR *q;
 
     if (mode == 0) {
-        init->unk0 = 0x54;
-        init->unk8 = 0x20;
-        init->unk14 = (s32)func_801E804C;
-        init->unk4 = 0x20;
+        init->workSize = 0x54;
+        init->elemSize = 0x20;
+        init->elemFn = (s32)func_801E804C;
+        init->poolCount = 0x20;
     } else if (mode == 1) {
         w->unk0 = 0;
         w->unk4 = 0;
@@ -319,14 +319,14 @@ s32 fx_1a2_op80(s32 mode, Fx1a2Work80 *w, Unk800F78A4 *env, Unk80100C78Entry *en
         func_801E7718(&a, &b, 0x1F, &D_801E97F0, &D_801E97F4, 0x1000, D_801EC1B4, 1);
         func_801E7718(&b, &c, 0x1F, &D_801E97F4, &D_801E97F8, 0x1000, D_801EC3B4, 1);
         func_801E7718(&c, &d, 0x1F, &D_801E97F8, &D_801E97F0, 0x1000, D_801EC5B4, 1);
-        env->unk28 = 0x20;
+        env->otZ = 0x20;
         ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->file, 0x13), &c, NULL, 0x400, 0, 1, ex->math_sin(t >> 2) >> 1);
         e.pad = 0;
         e.vy = 0;
         e.vx = 0;
         e.vz = frame << 4;
         ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->file, 0x12), &c, &e, 0x800, 0, 1, ex->math_sin(t >> 2));
-        env->unk28 = 0;
+        env->otZ = 0;
         ((s32 *)&w->unk18)[0] = ((s32 *)&c)[0];
         ((s32 *)&w->unk18)[1] = ((s32 *)&c)[1];
         if (frame == 0) {

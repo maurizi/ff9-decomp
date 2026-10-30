@@ -179,10 +179,10 @@ s32 fx_0db_op80(s32 mode, Fx0dbWork80 *work, Unk800F78A4 *env, Unk80100C78Entry 
     s16 *b;
 
     if (mode == 0) {
-        ((EffInit *)arg4)->unk0 = 0x34;
-        ((EffInit *)arg4)->unk8 = 0x44;
-        ((EffInit *)arg4)->unk14 = (s32)func_801E7704;
-        ((EffInit *)arg4)->unk4 = 0xA;
+        ((EffInit *)arg4)->workSize = 0x34;
+        ((EffInit *)arg4)->elemSize = 0x44;
+        ((EffInit *)arg4)->elemFn = (s32)func_801E7704;
+        ((EffInit *)arg4)->poolCount = 0xA;
     } else if (mode == 1) {
         D_801E894C = env;
         ex->btlfx_initEffModels(D_801E895C, 6);
@@ -348,10 +348,10 @@ s32 fx_0db_op84(s32 mode, Fx0dbWork84 *work, Unk800F78A4 *env, Unk80100C78Entry 
         rot.vy = 0;
         rot.vz = ry;
         rot.pad = 0;
-        env->unk28 = 0x80;
+        env->otZ = 0x80;
         ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->file, 0x1B), &work->unk8, NULL, b / 3, 0, 1, a / 2);
         ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->file, 0x1A), &work->unk8, &rot, c / 2, 0, 1, a * 2 / 3);
-        env->unk28 = 0;
+        env->otZ = 0;
         work->unk4++;
     }
     return 0;

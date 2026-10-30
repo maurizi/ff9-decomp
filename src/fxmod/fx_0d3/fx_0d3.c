@@ -737,10 +737,10 @@ s32 fx_0d3_op81(s32 mode, Fx0d3Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
         if (frame_119 >= 0x18) {
             k_181 = frame_119 - 0x18;
             a = (k_181 << 12) / 42;
-            env->unk28 = 0x80;
+            env->otZ = 0x80;
             f = (u8 *)ex->btlfx_getFileData(entry->file, 7);
             ex->btlfx_drawSpriteLine(f, &work->unk8, k_181, ex->math_sin(a >> 2));
-            env->unk28 = 0;
+            env->otZ = 0;
         }
         ex->btlfx_drawBackdrop((BtlBgLayers *)ex->btlfx_getFileData(entry->file, 0x15), frame_119);
         work->unk40.vy = work->unk10.vy;
@@ -1019,16 +1019,16 @@ s32 fx_0d3_op81(s32 mode, Fx0d3Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
         ex->Hi_DrawEffModel(&rot, &pos, (s32)&scale, work->unk54);
         ex->Hi_ModifyEffModelRGB(work->unk54, (ex->math_cos(a_457) >> 5) - 0x80, (ex->math_cos(a_457) >> 5) - 0x80,
                                  (ex->math_cos(a_457) >> 5) - 0x80);
-        env->unk28 = 0x302;
+        env->otZ = 0x302;
         rot.vx = 0x400;
         rot.vy = 0;
         rot.vz = 0;
         rot.pad = 1;
         func_801E7720(&D_801EB040, &rot, 0x11C, 0, 0, 4, frame_119 & 0x1F, 0x190, 0xC, 0xC, a_457 + 0x1000, ex->math_cos(a_457), 1,
                       D_801EDF54, 0);
-        env->unk28 = 0;
+        env->otZ = 0;
         ex->btlfx_drawScrollMove(0x3E8 - frame_119 * 3, 0x280, 0x100, 0x20, 0x80, 0x2A0, 0x100);
-        env->unk28 = -0x80;
+        env->otZ = -0x80;
         if (frame_119 == 0) {
             for (i = 0; i < 6; i++) {
                 ex->Hi_GetSummonBonePos(((Fx0d3Summon81 *)env->loader)->unk60, D_801EB054[i].unk0, (u16 *)&u.c.b0);
@@ -1042,7 +1042,7 @@ s32 fx_0d3_op81(s32 mode, Fx0d3Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
             func_801E8628(&u.c.b0, &u.c.b1, 0xB, 0x1C, 0x3D09, 0, 0x80, 0x40, 0x80, 0x80, D_801EDAC4[i], 1,
                           10000 - work->unk4);
         }
-        env->unk28 = 0;
+        env->otZ = 0;
         ex->btlfx_drawScrollMove(10000 - work->unk4 * 4, 0x300, 0x180, 0x10, 0x80, 0x310, 0x180);
         u.c.rot.vx = 0;
         u.c.rot.vy = 0;

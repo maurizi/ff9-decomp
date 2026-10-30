@@ -418,7 +418,7 @@ s32 fx_1ee_op81(s32 mode, void *work, Unk800F78A4 *env, Unk80100C78Entry *entry,
         }
         if (D_801EAFCC[0] != 0) {
             D_801EAFCC[0]--;
-            env->unk28 = 0x200;
+            env->otZ = 0x200;
             for (i = 0; i < 12; i++) {
                 for (j = 0; j < 4; j++) {
                     e = (Fx1eeSpark *)(i * 0x50 + j * 0x14 + (s32)D_801EB004);
@@ -436,7 +436,7 @@ s32 fx_1ee_op81(s32 mode, void *work, Unk800F78A4 *env, Unk80100C78Entry *entry,
                     }
                 }
             }
-            env->unk28 = 0;
+            env->otZ = 0;
         }
         return frame >= 0x40;
     }

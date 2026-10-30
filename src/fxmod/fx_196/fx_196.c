@@ -390,13 +390,13 @@ s32 fx_196_op85(s32 mode, Fx196Work85 *work, Unk800F78A4 *env, Unk80100C78Entry 
                     b = 0x80 - (((frame - 0x3D) << 5) / 20);
                 }
                 if (frame < 0x29) {
-                    env->unk28 = 0;
+                    env->otZ = 0;
                 } else {
-                    env->unk28 = -0x80;
+                    env->otZ = -0x80;
                 }
                 func_801E7AA0(&pos, &rot, &sc, b, a, 0x17, 0x3D04, 0, 0x80, 0x7D0, s * m, -0x140, r,
                               ex->math_cos(s >> 2) + 0x400, 0x100);
-                env->unk28 = 0x7C;
+                env->otZ = 0x7C;
                 for (i = 0; i < 18; i++) {
                     if (D_801E916C[i].pad != 0) {
                         b = (i & 1) << 12;
@@ -404,7 +404,7 @@ s32 fx_196_op85(s32 mode, Fx196Work85 *work, Unk800F78A4 *env, Unk80100C78Entry 
                                                 ((t * 3) >> 3) + 0x3800 + b, frame + i * 2, 1, 0x1000);
                     }
                 }
-                env->unk28 = 0x37;
+                env->otZ = 0x37;
                 if (frame >= 0x1D) {
                     for (i = 0; i < 7; i++) {
                         if (D_801E916C[i].pad != 0) {
@@ -413,7 +413,7 @@ s32 fx_196_op85(s32 mode, Fx196Work85 *work, Unk800F78A4 *env, Unk80100C78Entry 
                         }
                     }
                 }
-                env->unk28 = 0;
+                env->otZ = 0;
             }
             if (frame == 0x32) {
                 Pool6CEntry *e;

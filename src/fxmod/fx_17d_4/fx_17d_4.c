@@ -477,7 +477,7 @@ s32 fx_17d_4_op80(s32 mode, Fx17d4Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
                     p_c4->unk22 = 0x8C;
                 }
             }
-            env->unk28 = 0x10;
+            env->otZ = 0x10;
             w13_c6 = 0x1000;
             if (frame < 8) {
                 w13_c6 = frame << 9;
@@ -492,7 +492,7 @@ s32 fx_17d_4_op80(s32 mode, Fx17d4Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
             s.vy += ex->math_sin(r_c6 >> 2) >> 3;
             s.vz -= 0x400;
             func_801E7720((u8 *)ex->btlfx_getFileData(entry->file, 0x20), &s, &work->unk10, frame, c_5, 1, 0x18);
-            env->unk28 = 0;
+            env->otZ = 0;
             if (frame >= 0x14) {
                 work->unk0 = 5;
                 entry->frame = -1;
@@ -509,7 +509,7 @@ s32 fx_17d_4_op80(s32 mode, Fx17d4Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
             }
             break;
         case 5:
-            env->unk28 = 0x10;
+            env->otZ = 0x10;
             t_c5 = (frame << 12) / 24;
             c_1 = ex->math_cos(t_c5 >> 1) >> 1;
             g5 = ex->math_cos(t_c5 >> 2) >> 1;
@@ -523,7 +523,7 @@ s32 fx_17d_4_op80(s32 mode, Fx17d4Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
             b.vz = a.vz;
             ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->file, 3), &a, NULL, 0xAAA, 0, 1, t_c5);
             func_801E7720((u8 *)ex->btlfx_getFileData(entry->file, 0x20), &a, &b, frame, t_c5, 1, 0x20);
-            env->unk28 = 0;
+            env->otZ = 0;
             if (frame >= 0x18) {
                 work->unk0 = 6;
                 entry->frame = -1;
@@ -536,13 +536,13 @@ s32 fx_17d_4_op80(s32 mode, Fx17d4Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
             b2.vx = a2.vx;
             b2.vy = work->unk8.vy - 0x1000;
             b2.vz = a2.vz;
-            env->unk28 = 0x10;
+            env->otZ = 0x10;
             r_c2 = (frame << 12) / 51;
             c_6 = 0x1000 - r_c2;
             ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->file, 3), &a2, NULL, 0xAAA, 0, 1, c_6);
             func_801E7720((u8 *)ex->btlfx_getFileData(entry->file, 0x20), &a2, &b2, frame, c_6, 1,
                           (r_c2 >> 7) + 0x20);
-            env->unk28 = 0;
+            env->otZ = 0;
             rot2.vx = 0x400;
             rot2.vz = 0;
             rot2.vy = 0;
@@ -607,7 +607,7 @@ s32 fx_17d_4_op80(s32 mode, Fx17d4Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
             }
             break;
         }
-        env->unk28 = 0;
+        env->otZ = 0;
         work->unk4++;
     }
     return 0;

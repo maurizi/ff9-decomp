@@ -183,14 +183,14 @@ s32 func_801E7FE0(s32 mode, Fx17d0Part *p, Unk800F78A4 *env, Unk80100C78Entry *e
         p->unk0 = 0;
     } else {
         p->unk8.vz += p->unk2 + 0x186;
-        env->unk28 = -0x80;
+        env->otZ = -0x80;
         if (frame == 0) {
             ex->btlfx_drawTrail((u8 *)ex->btlfx_getFileData(entry->file, 0x22), (s32)&p->unk8, 0, -1, 0x800, 0x1000, 1,
                               D_801EBC90[p->unk4], 0);
         }
         ex->btlfx_drawTrail((u8 *)ex->btlfx_getFileData(entry->file, 0x22), (s32)&p->unk8, 0, 0, 0x800, 0x1000, 1,
                           D_801EBC90[p->unk4], 0);
-        env->unk28 = 0;
+        env->otZ = 0;
         if (frame >= 0x10) {
             return 1;
         }
@@ -213,10 +213,10 @@ s32 fx_17d_0_op80(s32 mode, Fx17d0Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
     s32 o;
 
     if (mode == 0) {
-        arg4->unk0 = 0xBC;
-        arg4->unk8 = 0x10;
-        arg4->unk14 = (s32)func_801E7FE0;
-        arg4->unk4 = 0x20;
+        arg4->workSize = 0xBC;
+        arg4->elemSize = 0x10;
+        arg4->elemFn = (s32)func_801E7FE0;
+        arg4->poolCount = 0x20;
     } else if (mode == 1) {
         work->unk0 = 0xA;
         work->unk4 = 0;

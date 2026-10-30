@@ -135,7 +135,7 @@ void btlseq_update(void) {
                 if (op >= 0x23) {
                     op = 0;
                 }
-                if ((s->flags & 1) && g_btlfxEnv->state->unk23 != 0) {
+                if ((s->flags & 1) && g_btlfxEnv->state->seqSync != 0) {
                     s->flags = (s->flags | 2) & ~1;
                 }
                 if (s->pc != s->prevPc && g_btlseqOps[op].unk0 != NULL) {

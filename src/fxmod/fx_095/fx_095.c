@@ -95,10 +95,10 @@ s32 fx_095_op80(s32 mode, Fx095Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
     s32 i;
 
     if (mode == 0) {
-        ((EffInit *)arg4)->unk0 = sizeof(Fx095Work80);
-        ((EffInit *)arg4)->unk8 = sizeof(Fx095Part);
-        ((EffInit *)arg4)->unk14 = (s32)func_801E7704;
-        ((EffInit *)arg4)->unk4 = 0xC;
+        ((EffInit *)arg4)->workSize = sizeof(Fx095Work80);
+        ((EffInit *)arg4)->elemSize = sizeof(Fx095Part);
+        ((EffInit *)arg4)->elemFn = (s32)func_801E7704;
+        ((EffInit *)arg4)->poolCount = 0xC;
     } else if (mode == 1) {
         D_801E8904 = env;
         ex->btlfx_getUnitBodyPos(0, 0, (s16 *)&D_801E890C);

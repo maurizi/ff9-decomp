@@ -562,7 +562,7 @@ s32 fx_1f2_op80(s32 mode, Fx1f2Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
                     }
                 }
             }
-            env->unk28 = 0x80;
+            env->otZ = 0x80;
             for (i = 0; i < 0x10; i++) {
                 tr_sp2 = &D_801EA690[i];
                 if (tr_sp2->unk4C != 0) {
@@ -588,7 +588,7 @@ s32 fx_1f2_op80(s32 mode, Fx1f2Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
                     }
                 }
             }
-            env->unk28 = 0;
+            env->otZ = 0;
         }
         if (work->unk4C != 0) {
             work->unk4C--;
@@ -674,7 +674,7 @@ s32 fx_1f2_op80(s32 mode, Fx1f2Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
                         sv++;
                         a = D_801EA690[i].unk50[a].pad;
                     }
-                    env->unk28 = 0x80;
+                    env->otZ = 0x80;
                     alpha_u4cn = 0xFFF;
                     if (i & 1) {
                         fd = ex->btlfx_getFileData(entry->file, 0xC);
@@ -682,13 +682,13 @@ s32 fx_1f2_op80(s32 mode, Fx1f2Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
                         fd = ex->btlfx_getFileData(entry->file, 6);
                     }
                     ex->btlfx_drawTrail((u8 *)fd, 0, NULL, frame, 0x1000, alpha_u4cn, 1, (u8 *)&D_801EA690[i], 0);
-                    env->unk28 = 0;
+                    env->otZ = 0;
                 }
             }
         }
         if (work->unk58 != 0) {
             work->unk58--;
-            env->unk28 = 0x40;
+            env->otZ = 0x40;
             k8 = 8;
             for (i = 0; i < env->targets->targetCount; i++) {
                 tr = &D_801EBB90[i];
@@ -730,7 +730,7 @@ s32 fx_1f2_op80(s32 mode, Fx1f2Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
                     }
                 }
             }
-            env->unk28 = 0;
+            env->otZ = 0;
         }
         D_801EA3E0.unk8.vy += 3;
         return 0;

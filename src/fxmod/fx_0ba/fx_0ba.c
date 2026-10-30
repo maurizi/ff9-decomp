@@ -210,10 +210,10 @@ s32 fx_0ba_op80(s32 mode, Fx0baWork80 *work, Unk800F78A4 *env, Unk80100C78Entry 
                 mpos.vy += 0x2F3;
                 mpos.vz += 0x400;
                 ex->Hi_DrawMorphEffModel(&work->unk68, &mpos, (s32)&scale, work->unk84, work->unk88, key);
-                env->unk28 = 0x100;
+                env->otZ = 0x100;
                 ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->file, 0x27), &work->unk10, NULL, fade * 3 + 0x1000,
                                   0, 1, ex->math_cos(fade >> 2));
-                env->unk28 = 0;
+                env->otZ = 0;
                 k_1 = ((fade * 3 / 4 + 0x400) >> 5) - 0x80;
                 ex->Hi_ModifySummonModelRGB(((Fx0baSummon *)env->loader)->unk60, k_1, k_1, k_1);
                 ex->btlfx_drawScrollMove(10000 - work->unk4 * 7, 0x240, 0x170, 0x38, 0x70, 0x240, 0x100);
@@ -440,14 +440,14 @@ s32 fx_0ba_op81(s32 mode, Fx0baPWork81 *work, Unk800F78A4 *env, Unk80100C78Entry
                 SVECTOR rot;
 
                 ex->btlfx_rangeProgress(frame, 7, 8, 0, 0x1000, &spE8);
-                env->unk28 = -0x80;
+                env->otZ = -0x80;
                 rot.vx = 0x400;
                 rot.vy = 0;
                 rot.vz = frame * 0x18;
                 rot.pad = 1;
                 ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->file, 0x21), &work->unk8, &rot,
                                   ex->math_sin(spE8 >> 2), 0, 1, ex->math_cos(spE8 >> 2));
-                env->unk28 = 0;
+                env->otZ = 0;
                 c6 = ex->math_cos(spE8 >> 2) >> 1;
                 d7 = ex->math_sin(spE8 >> 2);
                 e = ex->math_sin(spE8 >> 2) >> 2;
@@ -571,7 +571,7 @@ s32 fx_0ba_op81(s32 mode, Fx0baPWork81 *work, Unk800F78A4 *env, Unk80100C78Entry
                 } else {
                     D_801EC55C = 0xB86;
                 }
-                env->unk28 = 0x140;
+                env->otZ = 0x140;
                 if (frame >= 15) {
                     ex->btlfx_drawParticles((u8 *)ex->btlfx_getFileData(entry->file, 0x15), &work->unk10, NULL, h * 5 / 2,
                                             frame & 1, 1, ex->math_cos(t >> 2), 0, 0);
@@ -581,7 +581,7 @@ s32 fx_0ba_op81(s32 mode, Fx0baPWork81 *work, Unk800F78A4 *env, Unk80100C78Entry
                 rot.pad = 0;
                 ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->file, 0x1D), &work->unk10, &rot,
                                   ex->btlfx_randCentered(0x1000) + 0x4000, 0, 1, 0x1000);
-                env->unk28 = 0;
+                env->otZ = 0;
             }
             if (frame >= 20) {
                 c7 = ((frame - 20) << 12) / 31;
@@ -793,7 +793,7 @@ s32 fx_0ba_op81(s32 mode, Fx0baPWork81 *work, Unk800F78A4 *env, Unk80100C78Entry
                 func_801E8778(entry, (Fx0baStrip *)&D_801ECAC0, &a, &b, g, n3, 0xF0, work->unk4 & 7, f, 0x40);
             }
         }
-        env->unk28 = 0x1EA;
+        env->otZ = 0x1EA;
         if (alpha != 0) {
             for (k = 0; k < 3; k++) {
                 pad = 0x168;
@@ -860,7 +860,7 @@ s32 fx_0ba_op81(s32 mode, Fx0baPWork81 *work, Unk800F78A4 *env, Unk80100C78Entry
                                     (work->unk4 + k2) & 7, arr90[k2], arr60[k2], 1, (u8 *)tc, 1);
             }
         }
-        env->unk28 = 0;
+        env->otZ = 0;
         work->unk4++;
     }
     return 0;
@@ -941,9 +941,9 @@ void func_801EA850(Unk80100C78Entry *entry, s32 file, s32 a2, Fx0baStrip *buf, s
         v->pad = pad;
         s += step + *tab++;
     }
-    env->unk28 = 0x80;
+    env->otZ = 0x80;
     ex->btlfx_drawTrail((u8 *)ex->btlfx_getFileData(entry->file, file), 0, NULL, a12, 0x1000, a13, 1, (u8 *)buf, a2);
-    env->unk28 = 0;
+    env->otZ = 0;
 }
 
 void func_801EAAF0(Unk80100C78Entry *entry, s32 file, s32 a2, Fx0baStrip *path, Fx0baStrip *buf, s32 size, s32 *tab,
@@ -1025,20 +1025,20 @@ s32 func_801EAC08(s32 mode, Fx0baBolt *p, Unk800F78A4 *env, Unk80100C78Entry *en
                 ang.vy = 0x200;
                 ang.vx = 0;
                 ang.vz = 0;
-                env->unk28 = 0x400;
+                env->otZ = 0x400;
                 ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->file, 0x29), &p->unk0, NULL, (q >> 2) + 0x2000, 0, 1,
                                   0x1000 - q * 2 / 3);
-                env->unk28 = 0;
+                env->otZ = 0;
             }
             if ((u32)(frame - 3) < 3 && D_801EC550 != 0) {
                 q = ((frame - 2) << 12) / 3;
                 ang.vy = 0x200;
                 ang.vx = 0;
                 ang.vz = 0;
-                env->unk28 = 0x400;
+                env->otZ = 0x400;
                 ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->file, 0x29), &p->unk8, NULL, (q >> 2) + 0x2000, 0, 1,
                                   0x1000 - q * 2 / 3);
-                env->unk28 = 0;
+                env->otZ = 0;
             }
             if (frame < 2) {
                 ex->btlfx_lerpVec((s16 *)&p->unk0, (s16 *)&p->unk8, (frame + 1) << 11, (s16 *)&v);
@@ -1100,10 +1100,10 @@ s32 fx_0ba_op83(s32 mode, Fx0baWork83 *work, Unk800F78A4 *env, Unk80100C78Entry 
     s32 n;
 
     if (mode == 0) {
-        ((EffInit *)arg4)->unk0 = sizeof(Fx0baWork83);
-        ((EffInit *)arg4)->unk8 = sizeof(Fx0baBolt);
-        ((EffInit *)arg4)->unk14 = (s32)func_801EAC08;
-        ((EffInit *)arg4)->unk4 = 0x20;
+        ((EffInit *)arg4)->workSize = sizeof(Fx0baWork83);
+        ((EffInit *)arg4)->elemSize = sizeof(Fx0baBolt);
+        ((EffInit *)arg4)->elemFn = (s32)func_801EAC08;
+        ((EffInit *)arg4)->poolCount = 0x20;
     } else if (mode == 1) {
         n = *arg4;
         D_801EC5F0 = env;
@@ -1351,10 +1351,10 @@ s32 fx_0ba_op85(s32 mode, Fx0baWork85 *work, Unk800F78A4 *env, Unk80100C78Entry 
     SVECTOR c;
 
     if (mode == 0) {
-        ((EffInit *)arg4)->unk0 = sizeof(Fx0baWork85);
-        ((EffInit *)arg4)->unk8 = sizeof(Fx0baPart);
-        ((EffInit *)arg4)->unk14 = (s32)func_801EBFB8;
-        ((EffInit *)arg4)->unk4 = 0x55;
+        ((EffInit *)arg4)->workSize = sizeof(Fx0baWork85);
+        ((EffInit *)arg4)->elemSize = sizeof(Fx0baPart);
+        ((EffInit *)arg4)->elemFn = (s32)func_801EBFB8;
+        ((EffInit *)arg4)->poolCount = 0x55;
     } else if (mode == 1) {
         D_801EC5F0 = env;
         func_801EC124();

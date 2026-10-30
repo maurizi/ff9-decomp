@@ -36,10 +36,10 @@ s32 fx_1e9_op80(s32 mode, Fx1e9Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
     case 0:
         t0 = frame << 8;
         a0 = (ex->math_sin(t0 >> 2) * 0x10FF) >> 12;
-        env->unk28 = 0x7C;
+        env->otZ = 0x7C;
         ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->file, 0xA), &work->unk14, NULL, a0, 0, 1, t0);
         ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->file, 1), &work->unk14, NULL, 0x1000, 0, 1, t0);
-        env->unk28 = 0;
+        env->otZ = 0;
         rot.vx = 0x400;
         rot.vz = 0;
         rot.vy = 0;
@@ -64,10 +64,10 @@ s32 fx_1e9_op80(s32 mode, Fx1e9Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
         n = ++work->unk1C;
         t0 = ((n % 10) << 12) / 10;
         a1 = (ex->math_sin(t0) >> 4) + 0x10FF;
-        env->unk28 = 0x7C;
+        env->otZ = 0x7C;
         ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->file, 0xA), &work->unk14, NULL, a1, 0, 1, 0x1000);
         ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->file, 1), &work->unk14, NULL, 0x1000, 0, 1, 0x1000);
-        env->unk28 = 0;
+        env->otZ = 0;
         rot.vx = 0x400;
         rot.vz = 0;
         rot.vy = 0;
@@ -98,11 +98,11 @@ s32 fx_1e9_op80(s32 mode, Fx1e9Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
     case 2:
         t0 = (frame << 12) / 47;
         c = 0x1000 - t0;
-        env->unk28 = 0x7C;
+        env->otZ = 0x7C;
         a2 = t0 + 0x10FF;
         ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->file, 0xA), &work->unk14, NULL, a2, 0, 1, c);
         ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->file, 1), &work->unk14, NULL, 0x1000, 0, 1, c);
-        env->unk28 = 0;
+        env->otZ = 0;
         rot.vx = 0x400;
         rot.vz = 0;
         rot.vy = 0;
@@ -219,10 +219,10 @@ s32 fx_1e9_op82(s32 mode, Fx1e9Work82 *work, Unk800F78A4 *env, Fx1e9Inst *inst, 
     SVECTOR from;
 
     if (mode == 0) {
-        init->unk0 = 0x10;
-        init->unk8 = 0x1C;
-        init->unk14 = (s32)func_801E7FCC;
-        init->unk4 = 0x48;
+        init->workSize = 0x10;
+        init->elemSize = 0x1C;
+        init->elemFn = (s32)func_801E7FCC;
+        init->poolCount = 0x48;
     } else if (mode == 1) {
         D_801E8564 = env;
         func_801E810C();

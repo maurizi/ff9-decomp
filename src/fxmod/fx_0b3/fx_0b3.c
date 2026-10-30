@@ -818,7 +818,7 @@ s32 fx_0b3_op84(s32 mode, Fx0b3Work84 *work, Unk800F78A4 *env, Unk80100C78Entry 
                 }
                 func_801E8DF4(&a, &rot3, &scale3, 0x80, 0x17, 0x3D07, 0, 0x100, 0x400, 0x2BC, u * 3 / 2,
                               0x100, 0x400, u >> 1, 0x80);
-                env->unk28 = 0x80;
+                env->otZ = 0x80;
                 for (i = 0; i < 20; i++) {
                     BTLFX_COPY_SVEC(&a, &D_801EE2A0[i]);
                     ex->btlfx_drawAnimQuads((u8 *)ex->btlfx_getFileData(entry->file, 0x26), &a, NULL, ((i & 1) << 12) + 0x5000,
@@ -827,7 +827,7 @@ s32 fx_0b3_op84(s32 mode, Fx0b3Work84 *work, Unk800F78A4 *env, Unk80100C78Entry 
                     ex->btlfx_drawAnimQuads((u8 *)ex->btlfx_getFileData(entry->file, 0x24), &a, NULL, 0x7000, frame + i * 3, 1,
                                       0xC00);
                 }
-                env->unk28 = 0;
+                env->otZ = 0;
             }
             func_801E7704((u8 *)ex->btlfx_getFileData(entry->file, 0x27), frame, &work->unk28);
             work->unk28.vy = -0x100;
@@ -1185,14 +1185,14 @@ s32 fx_0b3_op85(s32 mode, Fx0b3Work85 *work, Unk800F78A4 *env, Unk80100C78Entry 
                     r = 0x80;
                 }
                 if (frame < 0x29) {
-                    env->unk28 = 0;
+                    env->otZ = 0;
                 } else {
-                    env->unk28 = -0x80;
+                    env->otZ = -0x80;
                 }
                 func_801E9DFC(&a, &b, &c, r, k, 0x17, 0x3D07, 0, 0x80, 0x7D0, f * m, -0x140, d,
                               ex->math_cos(f >> 2) + 0x400, 0x100);
                 g = (t * 3) >> 3;
-                env->unk28 = 0x7C;
+                env->otZ = 0x7C;
                 for (i = 0; i < 18; i++) {
                     if (D_801EE340[i].pad != 0) {
                         r = (i & 1) << 12; /* r reused: a global pseudo, so r + 0x3800 is not tied to it */
@@ -1200,7 +1200,7 @@ s32 fx_0b3_op85(s32 mode, Fx0b3Work85 *work, Unk800F78A4 *env, Unk80100C78Entry 
                                                 g + (s16)(r + 0x3800), frame + i * 2, 1, 0x1000);
                     }
                 }
-                env->unk28 = 0x37;
+                env->otZ = 0x37;
                 if (frame >= 0x1D) {
                     for (i = 0, j = frame; i < 7; j += 2, i++) {
                         if (D_801EE340[i].pad != 0) {
@@ -1209,7 +1209,7 @@ s32 fx_0b3_op85(s32 mode, Fx0b3Work85 *work, Unk800F78A4 *env, Unk80100C78Entry 
                         }
                     }
                 }
-                env->unk28 = 0;
+                env->otZ = 0;
             }
             if (frame < 0x10) {
                 func_801E7704((Fx0b3Track *)ex->btlfx_getFileData(entry->file, 0x16), frame, &q);
