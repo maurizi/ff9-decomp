@@ -1,36 +1,36 @@
 #include "fxmod/fx_179.h"
 
 static void fxm_shatterModel(s32 model, SVECTOR *center) {
-    Fx179Tri *t = D_801E8A1C;
-    Fx179Tri *u = D_801E8A1C;
+    Fx179Tri *t = fx_179_shatterTris;
+    Fx179Tri *u = fx_179_shatterTris;
     BtlfxExports *ex = BTLFX_EXPORTS(fx_179_env);
     Fx179Shard *s;
     SVECTOR d;
     s32 i;
 
-    ex->Hi_SplitMdlVertex(model, -1, (s32)D_801E8A1C);
-    s = D_801E991C;
+    ex->Hi_SplitMdlVertex(model, -1, (s32)fx_179_shatterTris);
+    s = fx_179_shatterPieces;
     for (i = 0; i < 160; i++, t++, u++, s++) {
-        s->unk18 = 0;
-        s->unk0 = (t->unk0[0].vx + u->unk0[1].vx + u->unk0[2].vx) / 3 << 12;
-        s->unk4 = (u->unk0[0].vy + u->unk0[1].vy + u->unk0[2].vy) / 3 << 12;
-        s->unk8 = (u->unk0[0].vz + u->unk0[1].vz + u->unk0[2].vz) / 3 << 12;
-        s->unk1A = 0;
+        s->frame18 = 0;
+        s->pos0 = (t->verts0[0].vx + u->verts0[1].vx + u->verts0[2].vx) / 3 << 12;
+        s->pos4 = (u->verts0[0].vy + u->verts0[1].vy + u->verts0[2].vy) / 3 << 12;
+        s->pos8 = (u->verts0[0].vz + u->verts0[1].vz + u->verts0[2].vz) / 3 << 12;
+        s->delay1A = 0;
         s->unk12 = 0x1000;
-        s->unk14 = ex->btlfx_randCentered(0x100);
-        s->unk16 = ex->btlfx_randCentered(0x200);
-        d.vx = (s->unk0 >> 12) - center->vx;
-        d.vy = (s->unk4 >> 12) - center->vy;
-        d.vz = (s->unk8 >> 12) - center->vz;
-        s->unkC = d.vx >> 4;
-        s->unkE = (d.vy >> 4) + 0x80;
-        s->unk10 = d.vz >> 4;
+        s->rot14 = ex->btlfx_randCentered(0x100);
+        s->rot16 = ex->btlfx_randCentered(0x200);
+        d.vx = (s->pos0 >> 12) - center->vx;
+        d.vy = (s->pos4 >> 12) - center->vy;
+        d.vz = (s->pos8 >> 12) - center->vz;
+        s->velC = d.vx >> 4;
+        s->velE = (d.vy >> 4) + 0x80;
+        s->vel10 = d.vz >> 4;
     }
 }
 
-void func_801E78E8(void) {
-    Fx179Tri *t = D_801E8A1C;
-    Fx179Shard *s = D_801E991C;
+void fxm_updateShatterPieces(void) {
+    Fx179Tri *t = fx_179_shatterTris;
+    Fx179Shard *s = fx_179_shatterPieces;
     BtlfxExports *ex;
     SVECTOR out;
     SVECTOR rot;
@@ -48,40 +48,40 @@ void func_801E78E8(void) {
     ex = BTLFX_EXPORTS(fx_179_env);
     sc.vx = sc.vy = sc.vz = 0xF00;
     for (i = 0; i < 160; i++, s++, t++) {
-        if (s->unk18 >= 0) {
-            if (s->unk18 >= s->unk1A) {
-                c.vx = s->unk0 >> 12;
-                c.vy = s->unk4 >> 12;
-                c.vz = s->unk8 >> 12;
+        if (s->frame18 >= 0) {
+            if (s->frame18 >= s->delay1A) {
+                c.vx = s->pos0 >> 12;
+                c.vy = s->pos4 >> 12;
+                c.vz = s->pos8 >> 12;
                 for (j = 0; j < 3; j++) {
-                    loc[j].vx = t->unk0[j].vx - c.vx;
-                    loc[j].vy = t->unk0[j].vy - c.vy;
-                    loc[j].vz = t->unk0[j].vz - c.vz;
+                    loc[j].vx = t->verts0[j].vx - c.vx;
+                    loc[j].vy = t->verts0[j].vy - c.vy;
+                    loc[j].vz = t->verts0[j].vz - c.vz;
                 }
                 ex->btlfx_stepModuleParticle((Pool6CEntry *)s, -8, (SVECTOR *)bias, &out);
-                rot.vx = s->unk14;
-                rot.vy = s->unk16;
+                rot.vx = s->rot14;
+                rot.vy = s->rot16;
                 rot.vz = 0;
                 ex->math_rotMatrixYXZ(&rot, &m);
                 ex->ScaleMatrix(&m, &sc);
-                m.t[0] = s->unk0 >> 12;
-                m.t[1] = s->unk4 >> 12;
-                m.t[2] = s->unk8 >> 12;
+                m.t[0] = s->pos0 >> 12;
+                m.t[1] = s->pos4 >> 12;
+                m.t[2] = s->pos8 >> 12;
                 ex->SetRotMatrix(&m);
                 ex->SetTransMatrix(&m);
                 for (j = 0; j < 3; j++) {
                     gte_ldv0(&loc[j]);
                     gte_rtv0tr();
                     gte_stlvnl(&v);
-                    t->unk0[j].vx = v.vx;
-                    t->unk0[j].vy = v.vy;
-                    t->unk0[j].vz = v.vz;
+                    t->verts0[j].vx = v.vx;
+                    t->verts0[j].vy = v.vy;
+                    t->verts0[j].vz = v.vz;
                 }
-                if (++s->unk18 >= 0x20) {
-                    s->unk18 = -1;
+                if (++s->frame18 >= 0x20) {
+                    s->frame18 = -1;
                 }
             } else {
-                s->unk18++;
+                s->frame18++;
             }
         }
     }
@@ -240,8 +240,8 @@ s32 fx_179_op80(s32 mode, Fx179Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
     if (mode == 0) {
         *arg4 = 0x20;
     } else if (mode == 1) {
-        work->unk0 = 0;
-        work->unk4 = 0;
+        work->state0 = 0;
+        work->frame4 = 0;
         work->pos10.vx = env->targets->centerX;
         work->pos10.vy = env->targets->centerY;
         work->pos10.vz = env->targets->centerZ;
@@ -250,7 +250,7 @@ s32 fx_179_op80(s32 mode, Fx179Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
         work->model18 = ex->Hi_RegisterTexEffModel((BtlUnit9C8 *)ex->btlfx_getFileData(entry->file, 2), 0x9A, 0x3D40, 0, 0);
     } else {
     frame = entry->frame;
-    switch (work->unk0) {
+    switch (work->state0) {
     case 0:
         a = (frame << 8) >> 2;
         pos.vz = work->pos10.vz + ex->math_cos(a) * 3 / 2;
@@ -279,15 +279,15 @@ s32 fx_179_op80(s32 mode, Fx179Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
         ex->Hi_DrawEffModel(&rot, &pos, (s32)&scale, work->model18);
         u.v.vx = u.v.vy = u.v.vz = 0xAAA;
         fxm_drawTexCylinder(&work->pos8, &rot, &u.v, 0x3E8, 0x2BC, 0x300, 0x398, 0x80, 0x17, 0x3D03, 0, 0x40,
-                      -(work->unk4 * 0x180), 0x2000, 1, 1);
+                      -(work->frame4 * 0x180), 0x2000, 1, 1);
         fxm_drawTexCylinder(&work->pos8, &rot, &u.v, 0x3E8, 0x2BC, 0x300, 0x400, 0x80, 0x17, 0x3D00, 0, 0x40,
-                      -(work->unk4 * 0x180) + 0x400, 0x2000, 1, 1);
+                      -(work->frame4 * 0x180) + 0x400, 0x2000, 1, 1);
         fxm_drawTexCylinder(&work->pos8, &rot, &u.v, 0x3E8, 0x2BC, 0x300, 0x300, 0x80, 0x17, 0x3D04, 0, 0x40,
-                      -(work->unk4 * 0x180) + 0x800, 0x2000, 1, 1);
+                      -(work->frame4 * 0x180) + 0x800, 0x2000, 1, 1);
         fxm_drawTexCylinder(&work->pos8, &rot, &u.v, 0x3E8, 0x2BC, 0x300, 0x300, 0x80, 0x17, 0x3D06, 0, 0x40,
-                      -(work->unk4 * 0x180) + 0xC00, 0x2000, 1, 1);
+                      -(work->frame4 * 0x180) + 0xC00, 0x2000, 1, 1);
         if (frame >= 0x10) {
-            work->unk0 = 1;
+            work->state0 = 1;
             entry->frame = -1;
             u.s.vx = 0;
             u.s.vy = 0;
@@ -299,7 +299,7 @@ s32 fx_179_op80(s32 mode, Fx179Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
             }
             p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 5), (s32)&work->pos8);
             if (p != NULL) {
-                p->trails = (s32)D_801EAB6C;
+                p->trails = (s32)fx_179_op80Trails;
                 p->trailSlots = 0xA;
                 p->trailStride = 0x5C;
                 p->otZ = 0x20;
@@ -347,14 +347,14 @@ s32 fx_179_op80(s32 mode, Fx179Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
         pos.vy = work->pos10.vy;
         pos.vz = work->pos10.vz;
         ex->Hi_DrawEffModel(&rot, &pos, (s32)&scale, work->model18);
-        func_801E78E8();
+        fxm_updateShatterPieces();
         if (frame >= 0x20) {
             ex->btlfx_clearEffModels();
             return 1;
         }
         break;
     }
-    work->unk4++;
+    work->frame4++;
     }
     return 0;
 }

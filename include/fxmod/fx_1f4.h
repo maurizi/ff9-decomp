@@ -1,17 +1,18 @@
 #ifndef FX_1F4_H
 #define FX_1F4_H
 
-/* Effect module fx_1f4 (dir 13 file 0x1f4). */
+/* Effect module fx_1f4 (dir 13 file 0x1f4): Vanish; enemy Vanish (Drakan, ...). Evidence: the static sweep of the ability, item
+ * and enemy-sequence effect ids (docs/effect-modules.md, tools/effect_labels.py). */
 #include "btlfx_mod.h"
 
 typedef struct {
-    s32 unk0; /* fade-out countdown */
-    s32 unk4; /* fade-in countdown */
+    s32 fadeOut0; /* fade-out countdown */
+    s32 fadeIn4; /* fade-in countdown */
     SVECTOR pos8;
 } Fx1f4Work;
 
 extern Unk800F78A4 *fx_1f4_env;
-extern s32 D_801E79C8[];
-extern s32 D_801E8C18[];
+extern s32 fx_1f4_op80Trails0[];
+extern s32 fx_1f4_op80Trails1[];
 
 #endif

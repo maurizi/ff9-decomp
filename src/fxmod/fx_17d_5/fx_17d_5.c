@@ -18,64 +18,64 @@ static s32 fx_17d_5_op80PoolTask(s32 mode, Fx17d5Spark *w, Unk800F78A4 *env, Unk
     s32 b;
 
     if (mode == 1) {
-        w->unk4 = 0x18;
+        w->turn4 = 0x18;
         return 0;
     }
-    switch (w->unk0) {
+    switch (w->state0) {
     case 0:
         if (frame == 0) {
-            ex->btlfx_drawTrail((u8 *)ex->btlfx_getFileData(entry->file, 5), (s32)&w->pos8, NULL, -1, 0, 0, 0, w->unk18, 0);
+            ex->btlfx_drawTrail((u8 *)ex->btlfx_getFileData(entry->file, 5), (s32)&w->pos8, NULL, -1, 0, 0, 0, w->trail18, 0);
         }
         if (frame < 20) {
-            w->unk2 += ex->math_cos((frame << 10) / 20) >> 7;
-            w->unk4 += 0x20;
+            w->speed2 += ex->math_cos((frame << 10) / 20) >> 7;
+            w->turn4 += 0x20;
         } else if (frame < 24) {
-            w->unk2 -= 0x20;
-            w->unk4 += 0x80;
+            w->speed2 -= 0x20;
+            w->turn4 += 0x80;
         } else {
-            w->unk2 += 0x20;
-            if (w->unk2 > 2000) {
-                w->unk2 = 2000;
+            w->speed2 += 0x20;
+            if (w->speed2 > 2000) {
+                w->speed2 = 2000;
             }
-            w->unk4 += 0x18;
-            if (w->unk4 > 0x991) {
-                w->unk4 = 0x992;
+            w->turn4 += 0x18;
+            if (w->turn4 > 0x991) {
+                w->turn4 = 0x992;
             }
         }
         p = &w->pos8;
-        if (w->unk14 == 0) {
-            ex->btlfx_aimAngles((s16 *)p, (s16 *)&parent->unk14, (s16 *)&ang);
-            ex->btlfx_turnToward((s16 *)&ang, &w->unk10, w->unk4);
+        if (w->flag14 == 0) {
+            ex->btlfx_aimAngles((s16 *)p, (s16 *)&parent->target14, (s16 *)&ang);
+            ex->btlfx_turnToward((s16 *)&ang, &w->unk10, w->turn4);
             k = frame * 12;
             if (k > 0xF5) {
                 k = 0xF5;
             }
-            a = w->unk6 * 0x9B + (frame << 7);
-            w->unk10 += (ex->math_sin(a + w->unk12) * k) >> 12;
-            w->unk12 -= (ex->math_cos(a - w->unk10) * k) >> 12;
-            ex->btlfx_pointAhead((s16 *)p, &w->unk10, w->unk2, (s16 *)p);
+            a = w->index6 * 0x9B + (frame << 7);
+            w->unk10 += (ex->math_sin(a + w->angle12) * k) >> 12;
+            w->angle12 -= (ex->math_cos(a - w->unk10) * k) >> 12;
+            ex->btlfx_pointAhead((s16 *)p, &w->unk10, w->speed2, (s16 *)p);
             ex->btlfx_drawTrail((u8 *)ex->btlfx_getFileData(entry->file, 5), (s32)p, NULL, 0, k * 16 + 0x140, 0x1000, 1,
-                                w->unk18, 0);
-            if (parent->unk0 > 0) {
-                w->unk14 = 1;
+                                w->trail18, 0);
+            if (parent->state0 > 0) {
+                w->flag14 = 1;
                 ((s16 *)w)[-1] = -1;
             }
         } else {
-            ex->btlfx_aimAngles((s16 *)p, (s16 *)&parent->unk14, (s16 *)&ang);
-            ex->btlfx_turnToward((s16 *)&ang, &w->unk10, w->unk4);
+            ex->btlfx_aimAngles((s16 *)p, (s16 *)&parent->target14, (s16 *)&ang);
+            ex->btlfx_turnToward((s16 *)&ang, &w->unk10, w->turn4);
             k = frame * 4;
             if (k > 0x80) {
                 k = 0x80;
             }
-            a = w->unk6 * 0x9B + frame * 24;
-            w->unk10 += (ex->math_sin(a + w->unk12) * k) >> 12;
-            w->unk12 -= (ex->math_cos(a - w->unk10) * k) >> 12;
-            ex->btlfx_pointAhead((s16 *)p, &w->unk10, w->unk2, (s16 *)p);
+            a = w->index6 * 0x9B + frame * 24;
+            w->unk10 += (ex->math_sin(a + w->angle12) * k) >> 12;
+            w->angle12 -= (ex->math_cos(a - w->unk10) * k) >> 12;
+            ex->btlfx_pointAhead((s16 *)p, &w->unk10, w->speed2, (s16 *)p);
             env->otZ = 0xFF;
-            ex->btlfx_drawTrail((u8 *)ex->btlfx_getFileData(entry->file, 5), (s32)p, NULL, 0, w->unk22 - frame * 0x23A,
-                                0x1000, 1, w->unk18, 0);
+            ex->btlfx_drawTrail((u8 *)ex->btlfx_getFileData(entry->file, 5), (s32)p, NULL, 0, w->width22 - frame * 0x23A,
+                                0x1000, 1, w->trail18, 0);
             env->otZ = 0;
-            if (w->unk6 == 1) {
+            if (w->index6 == 1) {
                 env->camera->points[1].vx = w->pos8.vx;
                 env->camera->points[1].vy = w->pos8.vy;
                 env->camera->points[1].vz = w->pos8.vz;
@@ -86,7 +86,7 @@ static s32 fx_17d_5_op80PoolTask(s32 mode, Fx17d5Spark *w, Unk800F78A4 *env, Unk
         break;
     case 1:
         if (frame == 0) {
-            ex->btlfx_drawTrail((u8 *)ex->btlfx_getFileData(entry->file, 9), (s32)&w->pos8, NULL, -1, 0, 0, 0, w->unk18, 0);
+            ex->btlfx_drawTrail((u8 *)ex->btlfx_getFileData(entry->file, 9), (s32)&w->pos8, NULL, -1, 0, 0, 0, w->trail18, 0);
         }
         m = 0x1800;
         w->pos8.vz += 0x300;
@@ -94,13 +94,13 @@ static s32 fx_17d_5_op80PoolTask(s32 mode, Fx17d5Spark *w, Unk800F78A4 *env, Unk
         if (w->unk10 == 2) {
             m = 0x5000;
         }
-        ex->btlfx_drawTrail((u8 *)ex->btlfx_getFileData(entry->file, 9), (s32)&w->pos8, NULL, 0, m, 0x1000, 1, w->unk18, 0);
+        ex->btlfx_drawTrail((u8 *)ex->btlfx_getFileData(entry->file, 9), (s32)&w->pos8, NULL, 0, m, 0x1000, 1, w->trail18, 0);
         if (frame >= 7) {
-            w->unk0 = 2;
+            w->state0 = 2;
             ((s16 *)w)[-1] = -1;
             if (w->unk10 == 2) {
                 ex->btlfx_drawScreenTint((u32 *)(env->ot + 2), 2, 0x40, 0x40, 0x40);
-                w->unk0 = 3;
+                w->state0 = 3;
             } else if (w->unk10 != 0) {
                 c = (ex->btlfx_rand() & 0x1F) + 0x28;
                 ex->btlfx_drawScreenTint((u32 *)(env->ot + 2), 1, c, c, c);
@@ -117,7 +117,7 @@ static s32 fx_17d_5_op80PoolTask(s32 mode, Fx17d5Spark *w, Unk800F78A4 *env, Unk
         t = (frame << 12) / 24;
         if (frame < 8) {
             ex->btlfx_drawTrail((u8 *)ex->btlfx_getFileData(entry->file, 9), (s32)&w->pos8, NULL, 0, 0x1000, 0x1000, 1,
-                                w->unk18, 0);
+                                w->trail18, 0);
         }
         env->otZ = 0x140;
         if (w->unk10 != 0) {
@@ -147,7 +147,7 @@ static s32 fx_17d_5_op80PoolTask(s32 mode, Fx17d5Spark *w, Unk800F78A4 *env, Unk
                                      (ex->math_cos(b) >> 5) - 0x80);
         }
         if (frame >= 24) {
-            w->unk0 = 2;
+            w->state0 = 2;
             return 1;
         }
         break;
@@ -155,7 +155,7 @@ static s32 fx_17d_5_op80PoolTask(s32 mode, Fx17d5Spark *w, Unk800F78A4 *env, Unk
         t = frame << 7;
         if (frame < 8) {
             ex->btlfx_drawTrail((u8 *)ex->btlfx_getFileData(entry->file, 9), (s32)&w->pos8, NULL, 0, 0x5000, 0x1000, 1,
-                                w->unk18, 0);
+                                w->trail18, 0);
             if (frame < 6) {
                 g = 0x80 - t / 6;
                 ex->btlfx_drawScreenTint((u32 *)(env->ot + 2), 1, g, g, g);
@@ -182,7 +182,7 @@ static s32 fx_17d_5_op80PoolTask(s32 mode, Fx17d5Spark *w, Unk800F78A4 *env, Unk
         ex->Hi_DrawEffModel(&ang, &pos, (s32)&scale, parent->model94);
         ex->Hi_DrawEffModel(&ang, &pos, (s32)&scale, parent->model8C);
         if (frame >= 32) {
-            w->unk0 = 2;
+            w->state0 = 2;
             return 1;
         }
         break;
@@ -221,9 +221,9 @@ s32 fx_17d_5_op80(s32 mode, Fx17d5Work80 *w, Unk800F78A4 *env, Unk80100C78Entry 
         init->elemFn = (s32)fx_17d_5_op80PoolTask;
         init->poolCount = 0x39;
     } else if (mode == 1) {
-        w->unk0 = 0;
-        w->unk4 = 0;
-        w->unk8 = 0;
+        w->state0 = 0;
+        w->frame4 = 0;
+        w->count8 = 0;
         fx_17d_5_env = env;
         ex->btlfx_initParticleSystem();
         ex->btlfx_initEffModels(fx_17d_5_effModels, 5);
@@ -232,45 +232,45 @@ s32 fx_17d_5_op80(s32 mode, Fx17d5Work80 *w, Unk800F78A4 *env, Unk80100C78Entry 
         w->model8C = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, 0x88), 1);
         w->model90 = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, 0x9B), 1);
         w->model94 = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, 0x91), 1);
-        ex->Hi_SetSummonMotion(((Fx17d5Summon *)env->loader)->unk54->motion1A4, ((Fx17d5Summon *)env->loader)->unk60);
-        ex->Hi_SetSummonMotFrame(((Fx17d5Summon *)env->loader)->unk60, 3);
-        w->unk64.vx = 0;
-        w->unk64.vy = -0x400;
-        w->unk64.vz = 0;
-        w->unk70.vx = w->unk70.vy = w->unk70.vz = 0x800;
-        w->posC.vx = w->unk64.vx;
-        w->posC.vy = w->unk64.vy;
-        w->posC.vz = w->unk64.vz;
-        w->unk14.vx = w->unk64.vx;
-        w->unk14.vy = w->unk64.vy;
-        w->unk14.vz = w->unk64.vz - 0xC00;
+        ex->Hi_SetSummonMotion(((Fx17d5Summon *)env->loader)->unk54->motion1A4, ((Fx17d5Summon *)env->loader)->model60);
+        ex->Hi_SetSummonMotFrame(((Fx17d5Summon *)env->loader)->model60, 3);
+        w->pos64.vx = 0;
+        w->pos64.vy = -0x400;
+        w->pos64.vz = 0;
+        w->scale70.vx = w->scale70.vy = w->scale70.vz = 0x800;
+        w->posC.vx = w->pos64.vx;
+        w->posC.vy = w->pos64.vy;
+        w->posC.vz = w->pos64.vz;
+        w->target14.vx = w->pos64.vx;
+        w->target14.vy = w->pos64.vy;
+        w->target14.vz = w->pos64.vz - 0xC00;
         w->rot7C.vx = 0;
         w->rot7C.vy = 0;
         w->rot7C.vz = 0;
         w->rot50.vx = 0;
         w->rot50.vy = 0;
         w->rot50.vz = 0;
-        w->unk44.vx = w->unk64.vx;
-        w->unk44.vy = w->unk64.vy;
-        w->unk44.vz = w->unk64.vz;
+        w->pos44.vx = w->pos64.vx;
+        w->pos44.vy = w->pos64.vy;
+        w->pos44.vz = w->pos64.vz;
         w->posC.vy -= 0x3CA;
-        w->unk44.vy += 0xC00;
-        w->unk58.vx = w->unk58.vz = w->unk58.vy = 0x1400;
-        w->unk3C.vx = w->posC.vx;
-        w->unk3C.vy = w->posC.vy;
-        w->unk3C.vz = w->posC.vz;
-        env->camera->points[3].vx = w->unk3C.vx;
-        env->camera->points[3].vy = w->unk3C.vy;
-        env->camera->points[3].vz = w->unk3C.vz;
+        w->pos44.vy += 0xC00;
+        w->scale58.vx = w->scale58.vz = w->scale58.vy = 0x1400;
+        w->pos3C.vx = w->posC.vx;
+        w->pos3C.vy = w->posC.vy;
+        w->pos3C.vz = w->posC.vz;
+        env->camera->points[3].vx = w->pos3C.vx;
+        env->camera->points[3].vy = w->pos3C.vy;
+        env->camera->points[3].vz = w->pos3C.vz;
     } else {
         fade = 0;
         flag = 0;
         frame = entry->frame;
-        switch (w->unk0) {
+        switch (w->state0) {
         case 0:
-            ex->Hi_DrawSummonModel(&w->rot7C, (VECTOR *)&w->unk64, (s32)&w->unk70, ((Fx17d5Summon *)env->loader)->unk60, 0);
+            ex->Hi_DrawSummonModel(&w->rot7C, (VECTOR *)&w->pos64, (s32)&w->scale70, ((Fx17d5Summon *)env->loader)->model60, 0);
             w->rot50.vy += 6;
-            ex->Hi_DrawEffModel(&w->rot50, (VECTOR *)&w->unk44, (s32)&w->unk58, w->model84);
+            ex->Hi_DrawEffModel(&w->rot50, (VECTOR *)&w->pos44, (s32)&w->scale58, w->model84);
             ex->Hi_ModifyEffModelAbr(w->model84, 1);
             ex->Hi_ModifyEffModelRGB(w->model84, 0, 0, 0);
             if (frame == 0x1F) {
@@ -299,153 +299,153 @@ s32 fx_17d_5_op80(s32 mode, Fx17d5Work80 *w, Unk800F78A4 *env, Unk80100C78Entry 
                 flag = 1;
                 fade = ((frame - 0x31) << 12) >> 4;
             }
-            if (frame >= 0x21 && w->unk8 < 0x39) {
+            if (frame >= 0x21 && w->count8 < 0x39) {
                 for (i = 0; i < 3; i++) {
-                    if (w->unk8 < 0x39) {
-                        w->unk8++;
+                    if (w->count8 < 0x39) {
+                        w->count8++;
                         sp = ex->btlfx_poolSpawn((s16 *)entry->pool);
                         if (sp != NULL) {
-                            sp->unk0 = 0;
+                            sp->state0 = 0;
                             BTLFX_COPY_SVEC(&sp->pos8, &w->posC);
-                            sp->unk1C = w->unk14.vx;
-                            sp->unk20 = w->unk14.vz;
-                            sp->unk1E = w->unk14.vy;
-                            sp->unk2 = 0x90;
+                            sp->pos1C = w->target14.vx;
+                            sp->unk20 = w->target14.vz;
+                            sp->unk1E = w->target14.vy;
+                            sp->speed2 = 0x90;
                             {
-                                s32 m = w->unk8 % 3;
-                                sp->unk12 = w->rot7C.vy + (m * 0x300 - 0x300);
-                                m = w->unk8 / 3;
+                                s32 m = w->count8 % 3;
+                                sp->angle12 = w->rot7C.vy + (m * 0x300 - 0x300);
+                                m = w->count8 / 3;
                                 sp->unk10 = w->rot7C.vx + 0x80 + m * 0x58;
                             }
-                            sp->unk14 = 0;
-                            sp->unk22 = 0x2800;
-                            sp->unk6 = w->unk8 - 1;
-                            sp->unk18 = D_801EE860[w->unk8];
+                            sp->flag14 = 0;
+                            sp->width22 = 0x2800;
+                            sp->index6 = w->count8 - 1;
+                            sp->trail18 = fx_17d_5_sparkTrails[w->count8];
                         }
                     }
                 }
             } else {
-                w->unk14.vy += 0xC;
+                w->target14.vy += 0xC;
             }
             if (frame >= 0x41) {
-                w->unk0 = 1;
+                w->state0 = 1;
                 entry->frame = -1;
                 ex->btlfx_initParticleSystem();
-                w->unk3C.vx = w->unk24.vx;
-                w->unk3C.vy = w->unk24.vy;
-                w->unk3C.vz = w->unk24.vz;
-                env->camera->points[3].vx = w->unk3C.vx;
-                env->camera->points[3].vy = w->unk3C.vy;
-                env->camera->points[3].vz = w->unk3C.vz;
+                w->pos3C.vx = w->pos24.vx;
+                w->pos3C.vy = w->pos24.vy;
+                w->pos3C.vz = w->pos24.vz;
+                env->camera->points[3].vx = w->pos3C.vx;
+                env->camera->points[3].vy = w->pos3C.vy;
+                env->camera->points[3].vz = w->pos3C.vz;
                 w->rot50.vx = 0;
                 w->rot50.vy = 0;
                 w->rot50.vz = 0;
-                w->unk8 = 0;
-                w->unk14.vz += 0x2000;
-                w->unk14.vy += 0x2000;
-                w->unk58.vx = w->unk58.vz = w->unk58.vy = 0x2000;
-                w->unk44.vx = w->unk14.vx;
-                w->unk44.vy = w->unk14.vy;
-                w->unk44.vz = w->unk14.vz;
+                w->count8 = 0;
+                w->target14.vz += 0x2000;
+                w->target14.vy += 0x2000;
+                w->scale58.vx = w->scale58.vz = w->scale58.vy = 0x2000;
+                w->pos44.vx = w->target14.vx;
+                w->pos44.vy = w->target14.vy;
+                w->pos44.vz = w->target14.vz;
             }
             break;
         case 1:
             w->rot50.vx += 0x20;
             w->rot50.vy += 0x20;
-            ex->Hi_DrawEffModel(&w->rot50, (VECTOR *)&w->unk44, (s32)&w->unk58, w->model84);
+            ex->Hi_DrawEffModel(&w->rot50, (VECTOR *)&w->pos44, (s32)&w->scale58, w->model84);
             ex->Hi_ModifyEffModelAbr(w->model84, 1);
             ex->Hi_ModifyEffModelRGB(w->model84, 0, 0, 0);
             if (frame >= 0x10) {
-                w->unk0 = 2;
+                w->state0 = 2;
                 entry->frame = -1;
                 ex->btlfx_initParticleSystem();
-                BTLFX_COPY_SVEC(&w->unk3C, &D_801EE4DC);
-                env->camera->points[3].vx = w->unk3C.vx;
-                env->camera->points[3].vy = w->unk3C.vy;
-                env->camera->points[3].vz = w->unk3C.vz;
-                w->unk24.vx = D_801EE4DC.vx;
-                w->unk24.vy = D_801EE4DC.vy;
-                w->unk24.vz = D_801EE4DC.vz;
-                w->unk24.vy -= 0x5000;
-                w->unk24.vz -= 0x5000;
-                w->posC.vx = w->unk24.vx;
-                w->posC.vy = w->unk24.vy;
-                w->posC.vz = w->unk24.vz;
-                ex->btlfx_aimAngles((s16 *)&w->posC, (s16 *)&D_801EE4DC, (s16 *)&w->unk1C);
-                BTLFX_COPY_SVEC(&w->unk3C, &w->unk24);
-                w->unk3C.vy += 0x200;
-                w->unk3C.vz += 0x200;
-                env->camera->points[2].vx = w->unk3C.vx;
-                env->camera->points[2].vy = w->unk3C.vy;
-                env->camera->points[2].vz = w->unk3C.vz;
-                w->unk8 = 0;
+                BTLFX_COPY_SVEC(&w->pos3C, &fx_17d_5_targetPos);
+                env->camera->points[3].vx = w->pos3C.vx;
+                env->camera->points[3].vy = w->pos3C.vy;
+                env->camera->points[3].vz = w->pos3C.vz;
+                w->pos24.vx = fx_17d_5_targetPos.vx;
+                w->pos24.vy = fx_17d_5_targetPos.vy;
+                w->pos24.vz = fx_17d_5_targetPos.vz;
+                w->pos24.vy -= 0x5000;
+                w->pos24.vz -= 0x5000;
+                w->posC.vx = w->pos24.vx;
+                w->posC.vy = w->pos24.vy;
+                w->posC.vz = w->pos24.vz;
+                ex->btlfx_aimAngles((s16 *)&w->posC, (s16 *)&fx_17d_5_targetPos, (s16 *)&w->angle1C);
+                BTLFX_COPY_SVEC(&w->pos3C, &w->pos24);
+                w->pos3C.vy += 0x200;
+                w->pos3C.vz += 0x200;
+                env->camera->points[2].vx = w->pos3C.vx;
+                env->camera->points[2].vy = w->pos3C.vy;
+                env->camera->points[2].vz = w->pos3C.vz;
+                w->count8 = 0;
             }
             break;
         case 2:
             t = frame << 7;
             if (frame == 0) {
-                BTLFX_COPY_SVEC(&w->unk14, &D_801EE4DC);
+                BTLFX_COPY_SVEC(&w->target14, &fx_17d_5_targetPos);
                 ex->btlfx_poolClear(entry->pool);
                 for (j = 0; j < 0x20; j++) {
-                    if (w->unk8 < 0x39) {
-                        w->unk8++;
+                    if (w->count8 < 0x39) {
+                        w->count8++;
                         sq = ex->btlfx_poolSpawn((s16 *)entry->pool);
                         if (sq != NULL) {
-                            sq->unk0 = 0;
+                            sq->state0 = 0;
                             BTLFX_COPY_SVEC(&sq->pos8, &w->posC);
-                            BTLFX_COPY_SVEC(&v, &w->unk1C);
-                            b = w->unk8 * 0x145 + 0x100;
+                            BTLFX_COPY_SVEC(&v, &w->angle1C);
+                            b = w->count8 * 0x145 + 0x100;
                             sq->pos8.vx += ex->math_cos(b) * 5 / 2;
                             sq->pos8.vy += ex->math_sin(b) * 5 / 2;
-                            v.vy += ((w->unk8 + 3) & 0xF) * 32 - 0x100;
-                            v.vx += (w->unk8 & 1) * 512 - 0x100;
-                            sq->unk1C = w->unk14.vx;
-                            sq->unk20 = w->unk14.vz;
-                            sq->unk1E = w->unk14.vy;
-                            sq->unk2 = 0x320;
+                            v.vy += ((w->count8 + 3) & 0xF) * 32 - 0x100;
+                            v.vx += (w->count8 & 1) * 512 - 0x100;
+                            sq->pos1C = w->target14.vx;
+                            sq->unk20 = w->target14.vz;
+                            sq->unk1E = w->target14.vy;
+                            sq->speed2 = 0x320;
                             sq->unk10 = v.vx;
-                            sq->unk12 = v.vy;
-                            sq->unk14 = 1;
-                            sq->unk22 = 0x5000;
-                            sq->unk6 = w->unk8 - 1;
-                            sq->unk18 = D_801EE860[w->unk8];
+                            sq->angle12 = v.vy;
+                            sq->flag14 = 1;
+                            sq->width22 = 0x5000;
+                            sq->index6 = w->count8 - 1;
+                            sq->trail18 = fx_17d_5_sparkTrails[w->count8];
                         }
                     }
                 }
             }
             a = t >> 2;
-            w->unk3C.vy += (ex->math_sin(a) * 600) >> 12;
-            w->unk3C.vz += (ex->math_sin(a) * 600) >> 12;
-            env->camera->points[2].vx = w->unk3C.vx;
-            env->camera->points[2].vy = w->unk3C.vy;
-            env->camera->points[2].vz = w->unk3C.vz;
+            w->pos3C.vy += (ex->math_sin(a) * 600) >> 12;
+            w->pos3C.vz += (ex->math_sin(a) * 600) >> 12;
+            env->camera->points[2].vx = w->pos3C.vx;
+            env->camera->points[2].vy = w->pos3C.vy;
+            env->camera->points[2].vz = w->pos3C.vz;
             if (frame != 0) {
                 rot.vx = 0x400;
                 rot.vz = 0;
                 rot.vy = 0;
                 rot.pad = 1;
-                ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->file, 0xB), &D_801EE4DC, &rot, 0x5000, 0, 1, -1);
+                ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->file, 0xB), &fx_17d_5_targetPos, &rot, 0x5000, 0, 1, -1);
             }
             if (frame >= 0x20) {
-                w->unk0 = 3;
+                w->state0 = 3;
                 entry->frame = -1;
                 ex->btlfx_initParticleSystem();
-                BTLFX_COPY_SVEC(&w->unk24, &D_801EE4DC);
-                w->unk24.vy -= 0x80;
-                w->unk44.vx = w->unk24.vx;
-                w->unk44.vy = w->unk24.vy;
-                w->unk44.vz = w->unk24.vz;
-                BTLFX_COPY_SVEC(&w->unk3C, &w->unk24);
+                BTLFX_COPY_SVEC(&w->pos24, &fx_17d_5_targetPos);
+                w->pos24.vy -= 0x80;
+                w->pos44.vx = w->pos24.vx;
+                w->pos44.vy = w->pos24.vy;
+                w->pos44.vz = w->pos24.vz;
+                BTLFX_COPY_SVEC(&w->pos3C, &w->pos24);
                 w->rot50.vx = 0;
                 w->rot50.vy = 0;
                 w->rot50.vz = 0;
-                w->unk3C.vx += 0x800;
-                w->unk3C.vy -= 0x20;
-                w->unk3C.vz = D_801EE4DC.vz;
-                env->camera->points[2].vx = w->unk3C.vx;
-                env->camera->points[2].vy = w->unk3C.vy;
-                env->camera->points[2].vz = w->unk3C.vz;
-                w->unk8 = 0;
+                w->pos3C.vx += 0x800;
+                w->pos3C.vy -= 0x20;
+                w->pos3C.vz = fx_17d_5_targetPos.vz;
+                env->camera->points[2].vx = w->pos3C.vx;
+                env->camera->points[2].vy = w->pos3C.vy;
+                env->camera->points[2].vz = w->pos3C.vz;
+                w->count8 = 0;
             }
             break;
         case 3:
@@ -453,44 +453,44 @@ s32 fx_17d_5_op80(s32 mode, Fx17d5Work80 *w, Unk800F78A4 *env, Unk80100C78Entry 
             if (frame == 0) {
                 ex->btlfx_poolClear(entry->pool);
             }
-            if (w->unk8 < 0x20) {
-                w->unk8++;
-                if (w->unk8 < 0x1F) {
+            if (w->count8 < 0x20) {
+                w->count8++;
+                if (w->count8 < 0x1F) {
                     sr = ex->btlfx_poolSpawn((s16 *)entry->pool);
                     if (sr != NULL) {
-                        sr->unk0 = 1;
-                        BTLFX_COPY_SVEC(&sr->unk1C, &w->unk24);
-                        sr->unk1C -= t * 3 / 2 - 0x800 + ex->btlfx_randCentered(1000);
+                        sr->state0 = 1;
+                        BTLFX_COPY_SVEC(&sr->pos1C, &w->pos24);
+                        sr->pos1C -= t * 3 / 2 - 0x800 + ex->btlfx_randCentered(1000);
                         sr->unk1E = 0;
-                        sr->unk20 += (w->unk8 % 3) * 1200 - 0x2B0 + ex->btlfx_randCentered(0x6A4);
-                        sr->pos8.vx = sr->unk1C;
+                        sr->unk20 += (w->count8 % 3) * 1200 - 0x2B0 + ex->btlfx_randCentered(0x6A4);
+                        sr->pos8.vx = sr->pos1C;
                         sr->pos8.vy = sr->unk1E - 0x1800;
                         sr->pos8.vz = sr->unk20 - 0x1800;
-                        sr->unk10 = w->unk8 & 1;
-                        sr->unk6 = w->unk8 - 1;
-                        sr->unk18 = D_801EE860[w->unk8];
+                        sr->unk10 = w->count8 & 1;
+                        sr->index6 = w->count8 - 1;
+                        sr->trail18 = fx_17d_5_sparkTrails[w->count8];
                     }
                 } else {
                     sr = ex->btlfx_poolSpawn((s16 *)entry->pool);
                     if (sr != NULL) {
-                        sr->unk0 = 1;
-                        BTLFX_COPY_SVEC(&sr->unk1C, &w->unk24);
+                        sr->state0 = 1;
+                        BTLFX_COPY_SVEC(&sr->pos1C, &w->pos24);
                         sr->unk1E = 0;
-                        sr->unk1C += 0x6A4 - t * 3 / 2;
+                        sr->pos1C += 0x6A4 - t * 3 / 2;
                         sr->unk10 = 2;
-                        sr->pos8.vx = sr->unk1C;
+                        sr->pos8.vx = sr->pos1C;
                         sr->unk20 += 0x400;
                         sr->pos8.vy = sr->unk1E - 0x1800;
                         sr->pos8.vz = sr->unk20 - 0x1800;
-                        sr->unk6 = w->unk8 - 1;
-                        sr->unk18 = D_801EE860[w->unk8];
+                        sr->index6 = w->count8 - 1;
+                        sr->trail18 = fx_17d_5_sparkTrails[w->count8];
                     }
                 }
             }
-            BTLFX_COPY_SVEC(&w->unk3C, &w->unk24);
-            w->unk3C.vx += 0x800 - t;
-            w->unk3C.vy -= 0x20;
-            w->unk3C.vz = D_801EE4DC.vz;
+            BTLFX_COPY_SVEC(&w->pos3C, &w->pos24);
+            w->pos3C.vx += 0x800 - t;
+            w->pos3C.vy -= 0x20;
+            w->pos3C.vz = fx_17d_5_targetPos.vz;
             if (frame >= 9 && frame < 0x31) {
                 if (frame < 0x28) {
                     k = (t >> 5) + 0x26;
@@ -499,19 +499,19 @@ s32 fx_17d_5_op80(s32 mode, Fx17d5Work80 *w, Unk800F78A4 *env, Unk80100C78Entry 
                 } else {
                     k = 0;
                 }
-                w->unk3C.vy += ex->btlfx_randCentered(k);
-                w->unk3C.vz += ex->btlfx_randCentered(k);
+                w->pos3C.vy += ex->btlfx_randCentered(k);
+                w->pos3C.vz += ex->btlfx_randCentered(k);
             }
-            env->camera->points[2].vx = w->unk3C.vx;
-            env->camera->points[2].vy = w->unk3C.vy;
-            env->camera->points[2].vz = w->unk3C.vz;
+            env->camera->points[2].vx = w->pos3C.vx;
+            env->camera->points[2].vy = w->pos3C.vy;
+            env->camera->points[2].vz = w->pos3C.vz;
             if (frame < 0x10) {
                 c = ex->math_cos((frame << 10) >> 4);
                 rot.vx = 0x400;
                 rot.vz = 0;
                 rot.vy = 0;
                 rot.pad = 1;
-                ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->file, 0xB), &D_801EE4DC, &rot, 0x5000, 0, 1, c);
+                ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->file, 0xB), &fx_17d_5_targetPos, &rot, 0x5000, 0, 1, c);
             }
             ex->btlfx_drawScrollMove(frame * 29, 0x200, 0x100, 0x40, 0x80, 0x200, 0x180);
             if (frame >= 0x38) {
@@ -519,25 +519,25 @@ s32 fx_17d_5_op80(s32 mode, Fx17d5Work80 *w, Unk800F78A4 *env, Unk80100C78Entry 
                 ex->btlfx_drawScreenTint((u32 *)(env->ot + 2), 1, r >> 4, (r >> 4) * 2 / 3, r >> 5);
             }
             if (frame >= 0x48) {
-                w->unk0 = 3;
+                w->state0 = 3;
                 entry->frame = -1;
                 ex->btlfx_initParticleSystem();
                 ex->btlfx_poolClear(entry->pool);
-                w->unk24.vx = 0;
-                w->unk24.vy = -0x800;
-                w->unk24.vz = 0;
+                w->pos24.vx = 0;
+                w->pos24.vy = -0x800;
+                w->pos24.vz = 0;
                 w->rot50.vx = 0;
                 w->rot50.vy = 0;
                 w->rot50.vz = 0;
-                w->unk44.vx = w->unk24.vx;
-                w->unk44.vy = w->unk24.vy;
-                w->unk44.vz = w->unk24.vz;
-                w->unk3C.vx = w->unk24.vx;
-                w->unk3C.vy = w->unk24.vy;
-                w->unk3C.vz = w->unk24.vz;
-                env->camera->points[3].vx = w->unk3C.vx;
-                env->camera->points[3].vy = w->unk3C.vy;
-                env->camera->points[3].vz = w->unk3C.vz;
+                w->pos44.vx = w->pos24.vx;
+                w->pos44.vy = w->pos24.vy;
+                w->pos44.vz = w->pos24.vz;
+                w->pos3C.vx = w->pos24.vx;
+                w->pos3C.vy = w->pos24.vy;
+                w->pos3C.vz = w->pos24.vz;
+                env->camera->points[3].vx = w->pos3C.vx;
+                env->camera->points[3].vy = w->pos3C.vy;
+                env->camera->points[3].vz = w->pos3C.vz;
                 ex->btlfx_clearEffModels();
                 return 1;
             }
@@ -557,8 +557,8 @@ s32 fx_17d_5_op80(s32 mode, Fx17d5Work80 *w, Unk800F78A4 *env, Unk80100C78Entry 
             scale.vx = scale.vy = scale.vz = (fade >> 7) + 0x1000;
             ex->btlfx_drawScreenGrid(1, 0xA0, 0x70, 0x50, 0x38, 4, 4, 2, 2, &rot, &scale, (CVECTOR *)&v, flag, 0);
         }
-        ex->btlfx_drawBackdrop((BtlBgLayers *)ex->btlfx_getFileData(entry->file, 1), w->unk4);
-        w->unk4++;
+        ex->btlfx_drawBackdrop((BtlBgLayers *)ex->btlfx_getFileData(entry->file, 1), w->frame4);
+        w->frame4++;
     }
     return 0;
 }

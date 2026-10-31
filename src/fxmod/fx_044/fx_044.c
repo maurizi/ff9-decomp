@@ -12,7 +12,7 @@ s32 fx_044_op80(s32 mode, Fx044Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
         ex->btlfx_getUnitArgBonePos(0x10, 0, (u16 *)&work->pos10);
         work->emit0 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 1), (s32)&work->pos10);
         work->emit4 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 2), (s32)&work->pos10);
-        ex->btlfx_aimAngles((s16 *)&work->pos10, (s16 *)&work->pos8, (s16 *)&work->unk18);
+        ex->btlfx_aimAngles((s16 *)&work->pos10, (s16 *)&work->pos8, (s16 *)&work->aim18);
     } else {
         frame = entry->frame;
         if (work->emit4 != NULL) {
@@ -20,9 +20,9 @@ s32 fx_044_op80(s32 mode, Fx044Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
                 work->emit4 = NULL;
             }
             if (work->emit4 != NULL) {
-                work->emit4->rot.vx = work->unk18.vx;
-                work->emit4->rot.vy = work->unk18.vy;
-                work->emit4->rot.vz = work->unk18.vz;
+                work->emit4->rot.vx = work->aim18.vx;
+                work->emit4->rot.vy = work->aim18.vy;
+                work->emit4->rot.vz = work->aim18.vz;
             }
         }
         return frame >= 0x28;
@@ -47,7 +47,7 @@ s32 fx_044_op81(s32 mode, Fx044Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
         work->emit4 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 4), (s32)&work->pos14);
         work->emit8 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 5), (s32)&work->posC);
         if (work->emit0 != NULL) {
-            work->emit0->trails = (s32)D_801E7A74;
+            work->emit0->trails = (s32)fx_044_trails;
             work->emit0->trailSlots = 0xD;
             work->emit0->trailStride = 0x90;
         }

@@ -156,20 +156,20 @@ s32 fx_007_op80(s32 mode, Fx007Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
         work->model28 = ex->Hi_RegisterTexEffModel((BtlUnit9C8 *)ex->btlfx_getFileData(entry->file, 9), 0x37, 0x3D06, 0x80, 0x80);
         p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0xC), (s32)&work->pos8);
         if (p != NULL) {
-            p->trails = (s32)D_801E93A8;
+            p->trails = (s32)fx_007_trails;
             p->trailSlots = 0x12;
             p->trailStride = 0x24;
             p->otZ = 0x20;
         }
         work->emit2C = NULL;
         work->emit30 = NULL;
-        work->unk34 = 0;
-        work->unk10 = 0;
+        work->frame34 = 0;
+        work->state10 = 0;
     } else {
         alpha = 0;
         size = 0;
         frame = entry->frame;
-        switch (work->unk10) {
+        switch (work->state10) {
         case 0:
             t = (frame << 12) / 24;
             alpha = t / 3;
@@ -184,7 +184,7 @@ s32 fx_007_op80(s32 mode, Fx007Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             if (frame >= 0x18) {
                 Pool6CEntry *p;
 
-                work->unk10 = 1;
+                work->state10 = 1;
                 entry->frame = -1;
                 p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0xA), (s32)work);
                 if (p != NULL) {
@@ -218,7 +218,7 @@ s32 fx_007_op80(s32 mode, Fx007Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
                               ex->math_cos(t >> 2));
             env->otZ = 0;
             if (frame >= 8) {
-                work->unk10 = 2;
+                work->state10 = 2;
                 entry->frame = -1;
             }
             break;
@@ -434,7 +434,7 @@ s32 fx_007_op80(s32 mode, Fx007Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
                     }
                 }
                 if (frame >= 0x2E) {
-                    work->unk10 = 3;
+                    work->state10 = 3;
                     entry->frame = -1;
                 }
             }
@@ -451,10 +451,10 @@ s32 fx_007_op80(s32 mode, Fx007Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             rot.vz = frame << 8;
             rot.pad = 1;
             rot.vy = 0;
-            fxm_drawTexelQuads(&work->pos8, &rot, 0x117, 0, 0x30, 2, work->unk34 & 7, 0x100, 0x10, 0x10, size, alpha, 1,
-                          D_801E9638, 0);
+            fxm_drawTexelQuads(&work->pos8, &rot, 0x117, 0, 0x30, 2, work->frame34 & 7, 0x100, 0x10, 0x10, size, alpha, 1,
+                          fx_007_texels, 0);
         }
-        work->unk34++;
+        work->frame34++;
     }
     return 0;
 }

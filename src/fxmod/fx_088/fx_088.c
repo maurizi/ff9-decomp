@@ -12,11 +12,11 @@ s32 fx_088_op80(s32 mode, Fx088Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
         ex->btlfx_getUnitBonePos(0x10, 0x17, (u16 *)&work->pos10);
         work->emit0 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 7), (s32)&work->pos10);
         if (work->emit0 != NULL) {
-            work->emit0->trails = (s32)D_801E7DB0;
+            work->emit0->trails = (s32)fx_088_trails;
             work->emit0->trailSlots = 0x19;
             work->emit0->trailStride = 0x30;
         }
-        ex->btlfx_aimAngles((s16 *)&work->pos8, &env->targets->centerX, (s16 *)&work->unk18);
+        ex->btlfx_aimAngles((s16 *)&work->pos8, &env->targets->centerX, (s16 *)&work->aim18);
     } else {
         frame = entry->frame;
         if (work->emit0 != NULL) {
@@ -24,9 +24,9 @@ s32 fx_088_op80(s32 mode, Fx088Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
                 work->emit0 = NULL;
             }
             if (work->emit0 != NULL) {
-                work->emit0->rot.vx = work->unk18.vx;
-                work->emit0->rot.vy = work->unk18.vy;
-                work->emit0->rot.vz = work->unk18.vz;
+                work->emit0->rot.vx = work->aim18.vx;
+                work->emit0->rot.vy = work->aim18.vy;
+                work->emit0->rot.vz = work->aim18.vz;
             }
         }
         if (frame == 0xC) {
@@ -46,13 +46,13 @@ s32 fx_088_op81(s32 mode, Fx088Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
     if (mode == 0) {
         *arg4 = 0x10;
     } else if (mode == 1) {
-        work->unk8.vx = env->targets->centerX;
-        work->unk8.vy = env->targets->centerY;
+        work->pos8.vx = env->targets->centerX;
+        work->pos8.vy = env->targets->centerY;
         fx_088_env = env;
-        work->unk8.vz = env->targets->centerZ;
+        work->pos8.vz = env->targets->centerZ;
     } else {
         frame = entry->frame;
-        return fxm_turnUnitBy(0x10, frame, 0xF, &work->unk8, &work->unk0) != 0;
+        return fxm_turnUnitBy(0x10, frame, 0xF, &work->pos8, &work->turn0) != 0;
     }
     return 0;
 }

@@ -8,11 +8,11 @@
 #include "btlfx_mod.h"
 
 typedef struct {
-    s32 unk0; /* state 0-3 */
-    s32 unk4; /* frame */
-    SVECTOR unk8; /* centre: env->targets->centerX */
+    s32 state0; /* state 0-3 */
+    s32 frame4; /* frame */
+    SVECTOR center8; /* centre: env->targets->centerX */
     SVECTOR pos10; /* position */
-    SVECTOR unk18;
+    SVECTOR rot18;
 } Fx0b2Work; /* 0x20 */
 
 typedef struct {
@@ -20,7 +20,7 @@ typedef struct {
     u8 unk1;
     u8 unk2;
     u8 pad3;
-    SVECTOR unk4[25];
+    SVECTOR pts4[25];
 } Fx0b2Trail; /* 0xCC */
 
 typedef struct {
@@ -31,11 +31,11 @@ typedef struct {
 } Fx0b2Rgbc; /* primitive colour word */
 
 extern Unk800F78A4 *fx_0b2_env;
-extern Fx0b2Trail D_801E90B0[3];
+extern Fx0b2Trail fx_0b2_trails[3];
 
 static void fxm_drawOffsetTrail(Unk80100C78Entry *entry, Fx0b2Trail *trail, SVECTOR *from, SVECTOR *to, s32 arg4, s32 arg5, s32 arg6,
                    s32 arg7, s32 arg8, s32 arg9, s32 arg10);
-void func_801E78FC(SVECTOR *arg0, SVECTOR *arg1, VECTOR *arg2, s32 arg3, s32 arg4, s32 arg5, s32 arg6, s32 arg7, s32 arg8,
+void fx_0b2_drawFunnel(SVECTOR *arg0, SVECTOR *arg1, VECTOR *arg2, s32 arg3, s32 arg4, s32 arg5, s32 arg6, s32 arg7, s32 arg8,
                    s32 arg9, s32 arg10, s32 arg11, s32 arg12, s32 arg13, s32 arg14, s32 arg15);
 
 #endif

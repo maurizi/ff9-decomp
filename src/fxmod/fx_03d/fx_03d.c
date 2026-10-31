@@ -58,7 +58,7 @@ s32 fx_03d_op81(s32 mode, Fx03dWork81 *work, Unk800F78A4 *env, Unk80100C78Entry 
         fx_03d_env = env;
         work->emit0 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 3), (s32)&work->pos18);
         if (work->emit0 != NULL) {
-            work->emit0->trails = (s32)D_801E8000;
+            work->emit0->trails = (s32)fx_03d_trails;
             work->emit0->trailSlots = 9;
             work->emit0->trailStride = 0x88;
         }
@@ -100,16 +100,16 @@ s32 fx_03d_op82(s32 mode, Fx03dWork82 *work, Unk800F78A4 *env, Unk80100C78Entry 
         work->scale28.vz = 0x1000;
         work->model40 = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, 0x17), 1);
         work->model42 = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, 0x16), 1);
-        work->unk3C = -1;
-        work->unk3E = -1;
+        work->fadeIn3C = -1;
+        work->fadeOut3E = -1;
     } else {
         frame = entry->frame;
         switch (frame) {
         case 0:
-            work->unk3C = 0xF;
+            work->fadeIn3C = 0xF;
             break;
         case 0x19:
-            work->unk3E = 0xF;
+            work->fadeOut3E = 0xF;
             break;
         }
         if (frame >= 0 && frame < 0x28) {
@@ -132,17 +132,17 @@ s32 fx_03d_op82(s32 mode, Fx03dWork82 *work, Unk800F78A4 *env, Unk80100C78Entry 
             }
             ex->Hi_DrawEffModel(&work->rot0, &work->pos8, (s32)&work->scale18, work->model40);
             ex->Hi_DrawEffModel(&work->rot0, &work->pos8, (s32)&work->scale28, work->model42);
-            if (work->unk3C >= 0 || work->unk3E >= 0) {
-                if (work->unk3C >= 0) {
-                    work->unk38 = fxm_lerpRatio(-0x80, 0, 0xF - work->unk3C, 0xF);
-                    work->unk3C--;
+            if (work->fadeIn3C >= 0 || work->fadeOut3E >= 0) {
+                if (work->fadeIn3C >= 0) {
+                    work->rgb38 = fxm_lerpRatio(-0x80, 0, 0xF - work->fadeIn3C, 0xF);
+                    work->fadeIn3C--;
                 }
-                if (work->unk3E >= 0) {
-                    work->unk38 = fxm_lerpRatio(0, -0x80, 0xF - work->unk3E, 0xF);
-                    work->unk3E--;
+                if (work->fadeOut3E >= 0) {
+                    work->rgb38 = fxm_lerpRatio(0, -0x80, 0xF - work->fadeOut3E, 0xF);
+                    work->fadeOut3E--;
                 }
-                ex->Hi_ModifyEffModelRGB(work->model40, work->unk38, work->unk38, work->unk38);
-                ex->Hi_ModifyEffModelRGB(work->model42, work->unk38, work->unk38, work->unk38);
+                ex->Hi_ModifyEffModelRGB(work->model40, work->rgb38, work->rgb38, work->rgb38);
+                ex->Hi_ModifyEffModelRGB(work->model42, work->rgb38, work->rgb38, work->rgb38);
             }
         }
         if (frame >= 0x3C) {

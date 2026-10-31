@@ -16,12 +16,12 @@ typedef struct {
     Pool6CEntry *emit4;
     SVECTOR pos8; /* caster body position */
     SVECTOR pos10; /* target position */
-    SVECTOR unk18; /* projectile position */
-    s32 unk20; /* projectile index (0..2) */
+    SVECTOR pos18; /* projectile position */
+    s32 proj20; /* projectile index (0..2) */
 } Fx039Work81; /* 0x24 */
 
 extern Unk800F78A4 *fx_039_env;
-extern s32 D_801E7BB0[][0x318];
-extern SVECTOR D_801EA0D0[];
+extern s32 fx_039_trails[][0x318];
+extern SVECTOR fx_039_emitPos[];
 
 #endif

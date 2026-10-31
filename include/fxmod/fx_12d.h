@@ -1,7 +1,8 @@
 #ifndef FX_12D_H
 #define FX_12D_H
 
-/* Effect module fx_12d (dir 13 file 0x12D). */
+/* Effect module fx_12d (dir 13 file 0x12D): enemy Death (Antlion). Evidence: the static sweep of the ability, item
+ * and enemy-sequence effect ids (docs/effect-modules.md, tools/effect_labels.py). */
 #include "btlfx_mod.h"
 
 typedef struct {
@@ -28,18 +29,18 @@ typedef struct {
     VECTOR scale18; /* model scale */
     s32 unk28;
     SVECTOR pos2C; /* caster position */
-    u16 unk34; /* model */
+    u16 model34; /* model */
 } Fx12dWork82;
 
-extern BtlTexInfo D_801E7CC0;
-extern s16 D_801E7CD8[6][2]; /* D_801E7CC0's entries in reverse order */
-extern BtlTexInfo D_801E7CF0;
-extern s16 D_801E7D08[6][2]; /* D_801E7CF0's entries in reverse order */
+extern BtlTexInfo fx_12d_casterTexPages;
+extern s16 fx_12d_texInfo[6][2]; /* fx_12d_casterTexPages's entries in reverse order */
+extern BtlTexInfo fx_12d_casterUvOffsets;
+extern s16 fx_12d_texPos[6][2]; /* fx_12d_casterUvOffsets's entries in reverse order */
 extern Unk800F78A4 *fx_12d_env;
 extern BtlModel fx_12d_effModels[];
-extern SVECTOR D_801E7E40;
-extern s32 D_801E7E48[];
-extern s32 D_801E8388[];
+extern SVECTOR fx_12d_casterPos;
+extern s32 fx_12d_op81Trails0[];
+extern s32 fx_12d_op81Trails1[];
 
 static void fxm_lerpSvec(SVECTOR *a, SVECTOR *b, s32 t, SVECTOR *out);
 static s32 fxm_lerpRatio(s32 from, s32 to, s32 t, s32 n);

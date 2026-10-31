@@ -6,16 +6,16 @@ s32 fx_113_op80(s32 mode, Fx113Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
     if (mode == 0) {
         *arg4 = 0x1C;
     } else if (mode == 1) {
-        work->unk18 = *arg4;
+        work->index18 = *arg4;
         fx_113_env = env;
-        if (work->unk18 >= 3) {
+        if (work->index18 >= 3) {
             return 1;
         }
         ex->btlfx_getUnitPos(0, (s16 *)&work->pos8);
         work->pos10.vx = work->pos8.vx;
         work->pos10.vy = work->pos8.vy;
         work->pos10.vz = work->pos8.vz;
-        switch (work->unk18) {
+        switch (work->index18) {
         case 0:
             work->pos10.vx += 0x64;
             work->pos10.vy -= 0x190;
@@ -55,7 +55,7 @@ s32 fx_113_op81(s32 mode, Fx113Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
         ex->btlfx_getUnitBodyPos(0, 0, (s16 *)&work->pos4);
         work->emit0 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 1), (s32)&work->pos4);
         if (work->emit0 != NULL) {
-            work->emit0->trails = (s32)D_801E7A84;
+            work->emit0->trails = (s32)fx_113_op81Trails;
             work->emit0->trailSlots = 0xD;
             work->emit0->trailStride = 0x50;
             if (work->emit0 != NULL) {

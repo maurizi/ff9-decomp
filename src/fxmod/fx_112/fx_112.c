@@ -32,20 +32,20 @@ s32 fx_112_op80(s32 mode, Fx112Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
         work->model20 = ex->Hi_RegisterTexEffModel((BtlUnit9C8 *)ex->btlfx_getFileData(entry->file, 1), 0x137, 0xFFFF, 0, 0);
         ex->btlfx_getUnitPos(0, (s16 *)&work->pos4);
         ex->btlfx_getUnitRot(0, (s16 *)&work->rotC);
-        ex->btlfx_getUnitScale(0, (VECTOR *)&work->unk14);
+        ex->btlfx_getUnitScale(0, (VECTOR *)&work->scale14);
         ex->btlfx_getUnitBodyPos(0, 1, (s16 *)&work->pos38);
         work->pos38.vy += 0x80;
         env->camera->points[3].vx = work->pos38.vx;
         env->camera->points[3].vy = work->pos38.vy;
         env->camera->points[3].vz = work->pos38.vz;
-        work->unk0 = 0;
+        work->state0 = 0;
     } else {
     frame = entry->frame;
-    switch (work->unk0) {
+    switch (work->state0) {
     case 0:
         if (frame == 0) {
-            u.s0.scale0.vx = u.s0.scale0.vz = work->unk14.vx;
-            u.s0.scale0.vy = work->unk14.vx + 0x1CC;
+            u.s0.scale0.vx = u.s0.scale0.vz = work->scale14.vx;
+            u.s0.scale0.vy = work->scale14.vx + 0x1CC;
             ex->btlfx_setUnitScale(0, (s32 *)&u.s0.scale0);
         }
         if (frame == 3) {
@@ -73,7 +73,7 @@ s32 fx_112_op80(s32 mode, Fx112Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
             ex->Hi_DrawEffModel(&u.s0.rot, &u.s0.pos, (s32)&u.s0.scale, work->model20);
         }
         if (frame >= 0x20) {
-            work->unk0 = 1;
+            work->state0 = 1;
             entry->frame = -1;
         }
         break;
@@ -92,7 +92,7 @@ s32 fx_112_op80(s32 mode, Fx112Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
         u.s1.tr.vz = u.s1.v.vz;
         ex->Hi_DrawEffModel(&u.s1.rot, &u.s1.tr, (s32)&u.s1.scale, work->model20);
         if (frame >= 9) {
-            work->unk0 = 2;
+            work->state0 = 2;
             entry->frame = -1;
         }
         break;
@@ -102,20 +102,20 @@ s32 fx_112_op80(s32 mode, Fx112Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
         if (frame == k * 5) {
             q = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 2), (s32)&work->pos48);
             if (q != NULL) {
-                q->trails = (s32)D_801E8130[k];
+                q->trails = (s32)fx_112_op80Trails[k];
                 q->trailSlots = 0x14;
                 q->trailStride = 0x24;
                 q->otZ = 0x80;
             }
         }
         if (frame >= 0x13) {
-            work->unk0 = 3;
+            work->state0 = 3;
             entry->frame = -1;
         }
         break;
     case 3:
         if (frame >= 0x10) {
-            work->unk0 = 4;
+            work->state0 = 4;
             entry->frame = -1;
             work->emit50 = p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 4), (s32)&work->pos48);
             if (p != NULL) {
@@ -140,7 +140,7 @@ s32 fx_112_op80(s32 mode, Fx112Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
             u.s4.v.vy -= ex->math_sin((frame << 12) / 12 >> 1) >> 3;
             ex->btlfx_setUnitPos(0, (s16 *)&u.s4.v);
             u.s4.scale.vx = u.s4.scale.vy = u.s4.scale.vz =
-                work->unk14.vx / 2 + ((work->unk14.vx / 2 * ((frame << 12) / 12)) >> 12);
+                work->scale14.vx / 2 + ((work->scale14.vx / 2 * ((frame << 12) / 12)) >> 12);
             ex->btlfx_setUnitScale(0, (s32 *)&u.s4.scale);
             u.s4.r.vx = work->rotC.vx + ((0x1000 - (frame << 12) / 12) >> 1);
             u.s4.r.vy = work->rotC.vy - (0x1000 - (frame << 12) / 12) / 3;

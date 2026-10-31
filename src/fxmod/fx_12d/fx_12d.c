@@ -9,9 +9,9 @@ s32 fx_12d_op80(s32 mode, Fx12dWork80 *work, Unk800F78A4 *env, Unk80100C78Entry 
     } else if (mode == 1) {
         fx_12d_env = env;
         ex->btlfx_getUnitPos(0x10, (s16 *)&work->posC);
-        D_801E7E40.vx = work->posC.vx;
-        D_801E7E40.vy = work->posC.vy;
-        D_801E7E40.vz = work->posC.vz;
+        fx_12d_casterPos.vx = work->posC.vx;
+        fx_12d_casterPos.vy = work->posC.vy;
+        fx_12d_casterPos.vz = work->posC.vz;
         work->emit4 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 1), (s32)&work->posC);
     } else {
         frame = entry->frame;
@@ -34,7 +34,7 @@ s32 fx_12d_op81(s32 mode, Fx12dWork81 *work, Unk800F78A4 *env, Unk80100C78Entry 
         ex->btlfx_getUnitPos(0x10, (s16 *)&work->pos10);
         work->emitC = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0xB), (s32)&work->pos10);
         if (work->emitC != NULL) {
-            work->emitC->trails = (s32)D_801E8388;
+            work->emitC->trails = (s32)fx_12d_op81Trails1;
             work->emitC->trailSlots = 8;
             work->emitC->trailStride = 0x60;
         }
@@ -45,7 +45,7 @@ s32 fx_12d_op81(s32 mode, Fx12dWork81 *work, Unk800F78A4 *env, Unk80100C78Entry 
             work->emit0 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 3), (s32)&work->pos10);
             work->emit8 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 4), (s32)&work->pos10);
             if (work->emit8 != NULL) {
-                work->emit8->trails = (s32)D_801E7E48;
+                work->emit8->trails = (s32)fx_12d_op81Trails0;
                 work->emit8->trailSlots = 0xC;
                 work->emit8->trailStride = 0x70;
             }
@@ -78,23 +78,23 @@ s32 fx_12d_op82(s32 mode, Fx12dWork82 *work, Unk800F78A4 *env, Unk80100C78Entry 
         ex->btlfx_getUnitScale(0x10, &work->scale18);
         work->pos8.vx -= 0x28;
         work->pos8.vz += 0x304;
-        ex->btlfx_getCasterTexInfo(&D_801E7CC0, &D_801E7CF0, 0x15E);
+        ex->btlfx_getCasterTexInfo(&fx_12d_casterTexPages, &fx_12d_casterUvOffsets, 0x15E);
         for (i = 0; i < 6; i++) {
-            D_801E7CD8[5 - i][0] = D_801E7CC0.pages[i][0];
-            D_801E7CD8[5 - i][1] = D_801E7CC0.pages[i][1];
-            D_801E7D08[5 - i][0] = D_801E7CF0.pages[i][0];
-            D_801E7D08[5 - i][1] = D_801E7CF0.pages[i][1];
+            fx_12d_texInfo[5 - i][0] = fx_12d_casterTexPages.pages[i][0];
+            fx_12d_texInfo[5 - i][1] = fx_12d_casterTexPages.pages[i][1];
+            fx_12d_texPos[5 - i][0] = fx_12d_casterUvOffsets.pages[i][0];
+            fx_12d_texPos[5 - i][1] = fx_12d_casterUvOffsets.pages[i][1];
         }
         /* passes three arguments; the fourth parameter keeps whatever is in $a3 */
-        work->unk34 = ((s32(*)())ex->Hi_RegisterTexListModel)(ex->btlfx_getFileData(entry->file, 0xE),
-                                                               D_801E7CD8, D_801E7D08);
+        work->model34 = ((s32(*)())ex->Hi_RegisterTexListModel)(ex->btlfx_getFileData(entry->file, 0xE),
+                                                               fx_12d_texInfo, fx_12d_texPos);
         ex->btlfx_setUnitVisible(0x10, 0);
         return 0;
     } else {
         frame = entry->frame;
         if (frame > 0) {
-            ex->Hi_SetEffModelSlice(work->unk34, work->pos8.vy);
-            ex->Hi_DrawSliceEffModel(&work->rot0, &work->pos8, (s32)&work->scale18, work->unk34);
+            ex->Hi_SetEffModelSlice(work->model34, work->pos8.vy);
+            ex->Hi_DrawSliceEffModel(&work->rot0, &work->pos8, (s32)&work->scale18, work->model34);
             if (frame - 1 >= 0xC) {
                 work->pos8.vy += 0xF;
             }

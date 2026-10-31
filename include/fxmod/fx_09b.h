@@ -1,7 +1,10 @@
 #ifndef FX_09B_H
 #define FX_09B_H
 
-/* Effect module fx_09b (dir 13 file 0x9B). */
+/* Effect module fx_09b (dir 13 file 0x9B): enemy Lava Gun (Grenade/Vepal). Five shots, each a model and an
+ * emitter whose particles are pinned to the shot (fxm_pinParticleN). Evidence: [data] the party ability / item
+ * tables and enemy sequences that play this file id (tools/effect_labels.py; docs/runtime-findings.md, "Round 31
+ * runtime pass"). */
 #include "btlfx_mod.h"
 
 typedef struct {
@@ -14,21 +17,21 @@ typedef struct {
     VECTOR pos1C; /* model position */
     VECTOR scale2C; /* model scale */
     SVECTOR pos3C; /* btlfx_getUnitArgBonePos(0x10, 0) */
-    SVECTOR pos44; /* unk64 moved -0xC8 along the angles from unk3C */
-    SVECTOR pos4C; /* unk64 on the ground */
+    SVECTOR pos44; /* pos64 moved -0xC8 along the angles from pos3C */
+    SVECTOR pos4C; /* pos64 on the ground */
     SVECTOR pos54; /* caster body position */
-    SVECTOR unk5C; /* copy of unk3C */
-    SVECTOR pos64; /* unk54 + random */
-    s32 unk6C; /* instance (0..4) */
+    SVECTOR fromPos5C; /* copy of pos3C */
+    SVECTOR pos64; /* pos54 + random */
+    s32 instance6C; /* instance (0..4) */
     u16 model70; /* model */
 } Fx09bWork;
 
-extern s32 D_801E80F4[5]; /* particle files */
+extern s32 fx_09b_shotBlocks[5]; /* particle files */
 extern s32 (*fx_09b_pinParticles[5])(); /* motion callbacks */
 extern BtlModel fx_09b_effModels[];
-extern s32 D_801E8564[5][0x10A];
-extern SVECTOR D_801E9A34[5]; /* particle positions */
-extern SVECTOR D_801E9A64[5];
+extern s32 fx_09b_trails[5][0x10A];
+extern SVECTOR fx_09b_shotPos[5]; /* particle positions */
+extern SVECTOR fx_09b_emitStartPos[5];
 
 s32 fxm_pinParticle0(Pool30Entry *pt, s32 arg1, SVECTOR *pos, s32 arg3, s32 frame, s32 n);
 s32 fxm_pinParticle1(Pool30Entry *pt, s32 arg1, SVECTOR *pos, s32 arg3, s32 frame, s32 n);

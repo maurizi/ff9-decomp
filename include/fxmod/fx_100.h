@@ -1,7 +1,8 @@
 #ifndef FX_100_H
 #define FX_100_H
 
-/* Effect module fx_100 (dir 13 file 0x100). */
+/* Effect module fx_100 (dir 13 file 0x100): enemy Solution (Blazer Beetle/Troll, ...). Evidence: the static sweep of the ability, item
+ * and enemy-sequence effect ids (docs/effect-modules.md, tools/effect_labels.py). */
 #include "btlfx_mod.h"
 
 typedef struct {
@@ -24,8 +25,8 @@ typedef struct {
 } Fx100Work81;
 
 extern Unk800F78A4 *fx_100_env;
-extern s32 D_801E7D6C[];
-extern s32 D_801E827C[];
+extern s32 fx_100_op80Trails[];
+extern s32 fx_100_op81Trails[];
 
 static void fxm_startUnitMotion(s32 unit, s32 motion);
 static s32 fxm_isMotionDone(s32 unit);

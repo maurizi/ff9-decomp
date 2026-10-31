@@ -8,3 +8,5 @@ fxm_lerpRatio = 0x801E7E70; // type:func [code] (from * (n - t) + to * t) / n, t
 fxm_tintScreenLerp = 0x801E7EC8; // type:func [code] btlfx_drawScreenTint with a grey level lerped from to over n frames (fxm_lerpRatio inline)
 fx_052_env = 0x801E7FA8; // [code] the effect env (Unk800F78A4) the op handlers store in mode 1, used by the helpers for BTLFX_EXPORTS
 fx_052_effModels = 0x801E7FB8; // [code] effect model buffers given to btlfx_initEffModels (BtlModel per slot)
+fx_052_trails = 0x801E8218; // [code] trail point buffer of the frame-0x1E emitter (Pool6CEntry trails, 0x14 slots of 0xB0 bytes), fx_052_op80
+fx_052_trails2 = 0x801E8FD8; // [code] trail point buffer of the frame-0x50 emitter (Pool6CEntry trails, 0x14 slots of 0xB0 bytes), fx_052_op80

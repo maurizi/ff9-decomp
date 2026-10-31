@@ -11,10 +11,10 @@ typedef struct {
 } Fx112Vec3;
 
 typedef struct {
-    u32 unk0; /* state */
+    u32 state0; /* state */
     SVECTOR pos4; /* caster position */
     SVECTOR rotC; /* caster rotation */
-    Fx112Vec3 unk14; /* caster scale */
+    Fx112Vec3 scale14; /* caster scale */
     s32 model20; /* model */
     u8 pad24[0x38 - 0x24];
     SVECTOR pos38; /* caster body position */
@@ -25,7 +25,7 @@ typedef struct {
 
 extern Unk800F78A4 *fx_112_env;
 extern BtlModel fx_112_effModels[];
-extern u8 D_801E8130[][0x2D0];
+extern u8 fx_112_op80Trails[][0x2D0];
 
 static void fxm_captureScreen(s32 x, s32 y, s32 w, s32 h, s32 dx, s32 dy);
 s32 fx_112_op80(s32 mode, Fx112Work *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *arg4);

@@ -1,7 +1,8 @@
 #ifndef FX_1A0_H
 #define FX_1A0_H
 
-/* Effect module fx_1a0 (dir 13 file 0x1a0). */
+/* Effect module fx_1a0 (dir 13 file 0x1a0): enemy Flame Slash (Maliris). Evidence: the static sweep of the ability, item
+ * and enemy-sequence effect ids (docs/effect-modules.md, tools/effect_labels.py). */
 #include "btlfx_mod.h"
 
 typedef struct {
@@ -10,18 +11,18 @@ typedef struct {
 
 typedef struct {
     s16 unk0;
-    u16 unk2; /* count */
-    Fx1a0Point *unk4;
+    u16 count2; /* count */
+    Fx1a0Point *keys4;
 } Fx1a0Path;
 
 typedef struct {
-    u16 unk0; /* bone */
-    u16 unk2; /* distance */
+    u16 bone0; /* bone */
+    u16 dist2; /* distance */
 } Fx1a0Bone;
 
 typedef struct {
     Pool6CEntry *emit0[6];
-    SVECTOR unk18[6];
+    SVECTOR pos18[6];
 } Fx1a0Work80; /* 0x48 */
 
 typedef struct {
@@ -29,8 +30,8 @@ typedef struct {
     Pool6CEntry *emit4;
     Pool6CEntry *emit8;
     SVECTOR posC; /* target body position */
-    s32 unk14; /* index */
-    s32 unk18;
+    s32 index14; /* index */
+    s32 flag18;
 } Fx1a0Work81; /* 0x1C */
 
 typedef struct {
@@ -38,17 +39,17 @@ typedef struct {
     SVECTOR pos4;
 } Fx1a0Work82;
 
-extern Fx1a0Bone D_801E7EF8[6];
-extern s16 D_801E7F10[6];
-extern s16 D_801E7F1C[6];
+extern Fx1a0Bone fx_1a0_op80Bones[6];
+extern s16 fx_1a0_op81EmitFileIds[6];
+extern s16 fx_1a0_pathFileIds[6];
 extern s32 (*fx_1a0_op81ParticleMotions[6])();
 extern Unk800F78A4 *fx_1a0_env;
-extern s32 D_801E7F98[6][0x1C];
-extern Fx1a0Path D_801E8238[6];
-extern s32 D_801E8268[6]; /* frames */
-extern SVECTOR D_801E8280;
-extern SVECTOR D_801E8288[6];
-extern SVECTOR D_801E82B8[6];
+extern s32 fx_1a0_op81Trails[6][0x1C];
+extern Fx1a0Path fx_1a0_posPaths[6];
+extern s32 fx_1a0_pathFrames[6]; /* frames */
+extern SVECTOR fx_1a0_pathOrigin;
+extern SVECTOR fx_1a0_emitPos[6];
+extern SVECTOR fx_1a0_emitPos1[6];
 
 s32 fx_1a0_op81ParticleMotion0(Pool30Entry *e, Pool6CEntry *owner, SVECTOR *pos, s32 arg3, s32 frame, s32 frames);
 s32 fx_1a0_op81ParticleMotion1(Pool30Entry *e, Pool6CEntry *owner, SVECTOR *pos, s32 arg3, s32 frame, s32 frames);

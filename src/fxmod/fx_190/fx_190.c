@@ -9,7 +9,7 @@ s32 fx_190_op80(s32 mode, Fx190Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
     if (mode == 0) {
         *arg4 = 0x74;
     } else if (mode == 1) {
-        work->unk0 = 0;
+        work->count0 = 0;
         fx_190_env = env;
         ex->btlfx_getUnitBonePos(0x10, 0x1C, (u16 *)&work->pos44);
         ex->btlfx_getUnitBonePos(0x10, 0x2C, (u16 *)&work->pos4C);
@@ -17,17 +17,17 @@ s32 fx_190_op80(s32 mode, Fx190Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
         work->pos3C.vx = env->targets->centerX;
         work->pos3C.vz = env->targets->centerZ;
         work->pos3C.vy = 0;
-        ex->btlfx_aimAngles((s16 *)&work->pos34, (s16 *)&work->pos3C, (s16 *)&work->unk4);
-        ex->btlfx_aimAngles((s16 *)&work->pos44, (s16 *)&work->pos3C, (s16 *)&work->unkC);
-        work->unk14[0].vy = 0x80;
-        work->unk14[1].vy = -0x80;
-        work->unk14[2].vy = 0xC0;
-        work->unk14[3].vy = -0xC0;
-        work->unk14[0].vx = 0x80;
-        work->unk14[1].vx = 0x40;
-        work->unk14[2].vx = 0x80;
-        work->unk14[3].vx = 0x40;
-        work->unkC.vy = work->unk4.vy;
+        ex->btlfx_aimAngles((s16 *)&work->pos34, (s16 *)&work->pos3C, (s16 *)&work->rot4);
+        ex->btlfx_aimAngles((s16 *)&work->pos44, (s16 *)&work->pos3C, (s16 *)&work->rotC);
+        work->rot14[0].vy = 0x80;
+        work->rot14[1].vy = -0x80;
+        work->rot14[2].vy = 0xC0;
+        work->rot14[3].vy = -0xC0;
+        work->rot14[0].vx = 0x80;
+        work->rot14[1].vx = 0x40;
+        work->rot14[2].vx = 0x80;
+        work->rot14[3].vx = 0x40;
+        work->rotC.vy = work->rot4.vy;
     } else {
         frame = entry->frame;
         switch (frame) {
@@ -35,18 +35,18 @@ s32 fx_190_op80(s32 mode, Fx190Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
         case 0x12:
         case 0x24:
         case 0x36:
-            work->emit54[work->unk0] = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 2), (s32)&work->pos44);
-            work->emit64[work->unk0] = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 1), (s32)&work->pos4C);
-            work->unk14[work->unk0].vy += work->unkC.vy;
-            work->unk14[work->unk0].vx += work->unkC.vx;
-            work->unk14[work->unk0].vz += work->unkC.vz;
-            work->unk0++;
+            work->emit54[work->count0] = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 2), (s32)&work->pos44);
+            work->emit64[work->count0] = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 1), (s32)&work->pos4C);
+            work->rot14[work->count0].vy += work->rotC.vy;
+            work->rot14[work->count0].vx += work->rotC.vx;
+            work->rot14[work->count0].vz += work->rotC.vz;
+            work->count0++;
             break;
         }
         if (frame == 0xF) {
             ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 4), (s32)&work->pos3C);
         }
-        for (i = 0; i < work->unk0; i++) {
+        for (i = 0; i < work->count0; i++) {
             if (work->emit54[i] != NULL && work->emit54[i]->state == BTLFX_EMIT_DONE) {
                 work->emit54[i] = NULL;
             }

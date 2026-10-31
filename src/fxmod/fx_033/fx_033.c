@@ -28,15 +28,15 @@ s32 fx_033_op80(s32 mode, Fx033Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
     if (mode == 0) {
         *arg4 = 0x30;
     } else if (mode == 1) {
-        work->unk0 = 0;
+        work->timer0 = 0;
         fx_033_env = env;
         ex->btlfx_getUnitArgBonePos(0x10, 0, (u16 *)&work->pos4);
         ex->btlfx_getUnitBodyPos(0, 0, (s16 *)&work->posC);
         ex->btlfx_getUnitHomePos(0, (s16 *)&work->pos14);
         work->emit2C = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 5), (s32)&work->pos4);
-        ex->btlfx_aimAngles((s16 *)&work->pos4, (s16 *)&work->posC, (s16 *)&work->unk24);
+        ex->btlfx_aimAngles((s16 *)&work->pos4, (s16 *)&work->posC, (s16 *)&work->aim24);
         if (work->emit2C != NULL) {
-            work->emit2C->trails = (s32)D_801E7AF4;
+            work->emit2C->trails = (s32)fx_033_trails;
             work->emit2C->trailSlots = 0x2E;
             work->emit2C->trailStride = 0x4C;
         }
@@ -47,19 +47,19 @@ s32 fx_033_op80(s32 mode, Fx033Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
                 work->emit2C = NULL;
             }
             if (work->emit2C != NULL) {
-                work->emit2C->rot.vx = work->unk24.vx;
-                work->emit2C->rot.vy = work->unk24.vy;
-                work->emit2C->rot.vz = work->unk24.vz;
+                work->emit2C->rot.vx = work->aim24.vx;
+                work->emit2C->rot.vy = work->aim24.vy;
+                work->emit2C->rot.vz = work->aim24.vz;
             }
         }
         if (frame == 0x18) {
-            work->unk0 = frame;
+            work->timer0 = frame;
         }
-        if (work->unk0 != 0) {
-            work->unk0--;
-            d = fxm_easeLerp(1, 0x18, work->unk0, 0, 0x2000);
-            work->pos1C.vx = work->pos14.vx + ((ex->math_sin(work->unk24.vy) * d) >> 12);
-            c = ex->math_cos(work->unk24.vy) * d;
+        if (work->timer0 != 0) {
+            work->timer0--;
+            d = fxm_easeLerp(1, 0x18, work->timer0, 0, 0x2000);
+            work->pos1C.vx = work->pos14.vx + ((ex->math_sin(work->aim24.vy) * d) >> 12);
+            c = ex->math_cos(work->aim24.vy) * d;
             work->pos1C.vy = work->pos14.vy - (d >> 6);
             work->pos1C.vz = work->pos14.vz + (c >> 12);
             ex->btlfx_setUnitPos(0, (s16 *)&work->pos1C);

@@ -8,7 +8,7 @@ s32 fx_1a5_op80(s32 mode, Fx1a5Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
         *arg4 = 0x14;
     } else if (mode == 1) {
         s32 unit = *arg4;
-        work->unk10 = unit;
+        work->unit10 = unit;
         fx_1a5_env = env;
         if (unit >= env->targets->targetCount) {
             fxm_setSignal(env, BTLFX_SIG_WAIT, 1);
@@ -18,17 +18,17 @@ s32 fx_1a5_op80(s32 mode, Fx1a5Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
         ex->btlfx_playFileSound(6, entry->file, -1);
         ex->btlfx_playFileSound(7, entry->file, -1);
         ex->btlfx_playFileSound(8, entry->file, -1);
-        ex->btlfx_getUnitPos(work->unk10, (s16 *)&work->pos8);
+        ex->btlfx_getUnitPos(work->unit10, (s16 *)&work->pos8);
         work->emit0 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 1), (s32)&work->pos8);
         if (work->emit0 != NULL) {
-            work->emit0->otZ = ex->btlfx_addRadiusSixth(work->unk10, 0x20);
+            work->emit0->otZ = ex->btlfx_addRadiusSixth(work->unit10, 0x20);
         }
     } else {
         frame = entry->frame;
         if (frame == 0xF) {
             work->emit4 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 2), (s32)&work->pos8);
             if (work->emit4 != NULL) {
-                work->emit4->otZ = ex->btlfx_addRadiusSixth(work->unk10, 0x20);
+                work->emit4->otZ = ex->btlfx_addRadiusSixth(work->unit10, 0x20);
             }
         }
         if (frame == 0xA) {

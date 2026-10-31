@@ -1,44 +1,45 @@
 #ifndef FX_196_H
 #define FX_196_H
 
-/* Effect module fx_196 (dir 13 file 0x196). */
+/* Effect module fx_196 (dir 13 file 0x196): Leviathan (short); Tsunami. Evidence: the static sweep of the ability, item
+ * and enemy-sequence effect ids (docs/effect-modules.md, tools/effect_labels.py). */
 #include "btlfx_mod.h"
 
 typedef struct {
     s16 unk0;
-    s16 unk2; /* count */
-    s16 unk4[1]; /* keys: 1, 3, 6 or 9 halfwords each */
+    s16 count2; /* count */
+    s16 keys4[1]; /* keys: 1, 3, 6 or 9 halfwords each */
 } Fx196Track;
 
 typedef struct {
-    u16 unk0;
-    u16 unk2;
-    u16 unk4;
+    u16 fileId0;
+    u16 fileId2;
+    u16 duration4;
     u16 unk6;
 } Fx196CamPath;
 
 typedef struct {
-    SVECTOR unk0[8]; /* unit positions */
-    s32 unk40; /* unit count */
+    SVECTOR pos0[8]; /* unit positions */
+    s32 count40; /* unit count */
 } Fx196Work86; /* 0x44 */
 
 typedef struct {
-    s32 unk0; /* state */
-    s32 unk4; /* frame */
+    s32 state0; /* state */
+    s32 frame4; /* frame */
     u8 pad8[0x10 - 0x8];
     SVECTOR pos10; /* position */
-    SVECTOR unk18; /* camera */
+    SVECTOR camPos18; /* camera */
     u8 pad20[0x48 - 0x20];
     Pool6CEntry *emit48;
 } Fx196Work85; /* 0x4C */
 
-extern CVECTOR D_801E90FC[];
+extern CVECTOR fx_196_rippleColors[];
 
-extern Fx196CamPath D_801E910C[];
+extern Fx196CamPath fx_196_camPaths[];
 extern Unk800F78A4 *fx_196_env;
 
 static void fxm_keyGetVec(Fx196Track *track, s32 t, SVECTOR *out);
-void func_801E7AA0(SVECTOR *pos, SVECTOR *rot, VECTOR *scale, s32 col, s32 col2, s32 tpage, s32 clut, s32 u, s32 v,
+void fx_196_drawWaveMesh(SVECTOR *pos, SVECTOR *rot, VECTOR *scale, s32 col, s32 col2, s32 tpage, s32 clut, s32 u, s32 v,
                    s32 amp, s32 ph, s32 step, s32 r, s32 ang, s32 d);
 
 /* copied */
@@ -48,8 +49,8 @@ extern Unk800F78A4 *fx_196_env;
 /* propagated */
 s32 func_801E7A5C(s32 a);
 
-extern s32 D_801E90F8;
-extern SVECTOR D_801E916C[];
+extern s32 fx_196_nextWavePoint;
+extern SVECTOR fx_196_wavePoints[];
 static s32 fxm_nextRingPoint(SVECTOR *v);
 
 #endif

@@ -15,27 +15,27 @@ static s32 fx_095_op80PoolTask(s32 mode, Fx095Part *part, Unk800F78A4 *env, Unk8
     s32 y;
 
     if (mode == 1) {
-        part->unk4 = 0;
+        part->state4 = 0;
         return 0;
     }
     bright = glow = a = scale = 0;
     glowFrame = 0;
     abr = scale;
-    switch (part->unk4) {
+    switch (part->state4) {
     case 0:
         t = frame << 9;
         scale = ((ex->math_cos(t >> 2) * 3) >> 1) + 0x1000;
-        a = part->unk0 + ((0x1000 - t) >> 1);
+        a = part->angle0 + ((0x1000 - t) >> 1);
         abr = 1;
         bright = 0x1000;
         if (frame >= 8) {
-            part->unk4 = 1;
+            part->state4 = 1;
             ((s16 *)part)[-1] = -1;
         }
         break;
     case 1:
         scale = 0x1000;
-        a = part->unk0;
+        a = part->angle0;
         abr = 1;
         bright = scale;
         if (frame < 5) {
@@ -43,8 +43,8 @@ static s32 fx_095_op80PoolTask(s32 mode, Fx095Part *part, Unk800F78A4 *env, Unk8
             glow = ex->math_cos(t >> 2);
             glowFrame = frame;
         }
-        if (ctl->unkC != 0) {
-            part->unk4 = 2;
+        if (ctl->releaseC != 0) {
+            part->state4 = 2;
             ((s16 *)part)[-1] = -1;
         }
         break;
@@ -54,9 +54,9 @@ static s32 fx_095_op80PoolTask(s32 mode, Fx095Part *part, Unk800F78A4 *env, Unk8
         ex->math_cos(t >> 2);
         abr = 0xFF;
         bright = scale;
-        a = part->unk0;
+        a = part->angle0;
         if (frame >= 16) {
-            part->unk4 = 3;
+            part->state4 = 3;
             ((s16 *)part)[-1] = -1;
         }
         break;
@@ -65,7 +65,7 @@ static s32 fx_095_op80PoolTask(s32 mode, Fx095Part *part, Unk800F78A4 *env, Unk8
         scale = 0x1000;
         bright = ex->math_cos(t >> 2);
         abr = 1;
-        a = part->unk0;
+        a = part->angle0;
         if (frame >= 8) {
             return 1;
         }
@@ -73,16 +73,16 @@ static s32 fx_095_op80PoolTask(s32 mode, Fx095Part *part, Unk800F78A4 *env, Unk8
     }
     t = (scale * 62) >> 12;
     a -= 0x400;
-    x = ctl->unk8 + ((ex->math_cos(a) * t) >> 12);
-    y = ctl->unkA + ((ex->math_sin(a) * t) >> 12);
+    x = ctl->screenX8 + ((ex->math_cos(a) * t) >> 12);
+    y = ctl->screenYA + ((ex->math_sin(a) * t) >> 12);
     /* One call per table: jump2 cross-jumps the identical tails, leaving only the table address in each arm. */
-    if (part->unk4 < 2) {
-        ex->btlfx_drawSpriteAtOt(3, (u8 *)ex->btlfx_getFileData(entry->file, D_801E882C[part->unk8]), x, y, 0, abr, bright);
+    if (part->state4 < 2) {
+        ex->btlfx_drawSpriteAtOt(3, (u8 *)ex->btlfx_getFileData(entry->file, fx_095_markBlocks[part->index8]), x, y, 0, abr, bright);
     } else {
-        ex->btlfx_drawSpriteAtOt(3, (u8 *)ex->btlfx_getFileData(entry->file, D_801E888C[part->unk8]), x, y, 0, abr, bright);
+        ex->btlfx_drawSpriteAtOt(3, (u8 *)ex->btlfx_getFileData(entry->file, fx_095_markBlocks2[part->index8]), x, y, 0, abr, bright);
     }
     if (glow != 0) {
-        ex->btlfx_drawSpriteAtOt(3, (u8 *)ex->btlfx_getFileData(entry->file, D_801E885C[part->unk8]), x, y, 0, 1, glow);
+        ex->btlfx_drawSpriteAtOt(3, (u8 *)ex->btlfx_getFileData(entry->file, fx_095_glowBlocks[part->index8]), x, y, 0, 1, glow);
         ex->btlfx_drawSpriteAtOt(2, (u8 *)ex->btlfx_getFileData(entry->file, 0x2C), x, y, glowFrame, 1, 0x1000);
     }
     return 0;
@@ -101,42 +101,42 @@ s32 fx_095_op80(s32 mode, Fx095Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
         ((EffInit *)arg4)->poolCount = 0xC;
     } else if (mode == 1) {
         fx_095_env = env;
-        ex->btlfx_getUnitBodyPos(0, 0, (s16 *)&D_801E890C);
-        work->unk4 = 0;
-        work->unk0 = 0;
-        work->unkC = 0;
+        ex->btlfx_getUnitBodyPos(0, 0, (s16 *)&fx_095_bodyPos);
+        work->spawnCount4 = 0;
+        work->state0 = 0;
+        work->releaseC = 0;
     } else {
         frame = entry->frame;
         gte_SetRotMatrix(env->viewMatrix);
         gte_SetTransMatrix(env->viewMatrix);
-        gte_ldv0(&D_801E890C);
+        gte_ldv0(&fx_095_bodyPos);
         gte_rtps();
-        gte_stsxy(&work->unk8);
-        switch (work->unk0) {
+        gte_stsxy(&work->screenXY8);
+        switch (work->state0) {
         case 0:
             for (i = 0; i < 2; i++) {
                 part = ex->btlfx_poolSpawn((s16 *)entry->pool);
                 if (part != NULL) {
-                    part->unk8 = work->unk4;
-                    part->unk0 = ((work->unk4 + 1) << 12) / 12;
+                    part->index8 = work->spawnCount4;
+                    part->angle0 = ((work->spawnCount4 + 1) << 12) / 12;
                 }
-                work->unk4++;
+                work->spawnCount4++;
             }
-            if (work->unk4 >= 12) {
-                work->unk0 = 1;
+            if (work->spawnCount4 >= 12) {
+                work->state0 = 1;
                 entry->frame = -1;
             }
             break;
         case 1:
             if (frame >= 16) {
-                work->unk0 = 2;
+                work->state0 = 2;
                 entry->frame = -1;
-                work->unkC = 1;
+                work->releaseC = 1;
             }
             break;
         case 2:
             if (frame >= 16) {
-                work->unk0 = 3;
+                work->state0 = 3;
                 entry->frame = -1;
             }
             break;
@@ -150,7 +150,7 @@ s32 fx_095_op80(s32 mode, Fx095Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
     return 0;
 }
 
-void func_801E7CBC(s32 n, s32 x, s32 y, u16 *buf, RECT *r) {
+void fx_095_greyScreenCopy(s32 n, s32 x, s32 y, u16 *buf, RECT *r) {
     BtlfxExports *ex = BTLFX_EXPORTS(fx_095_env);
     RECT a;
     RECT b;
@@ -211,7 +211,7 @@ void func_801E7CBC(s32 n, s32 x, s32 y, u16 *buf, RECT *r) {
     }
 }
 
-void func_801E7F48(s32 ot, s32 x, s32 y, s32 r, s32 c, RECT *rect) {
+void fx_095_drawTexDisc(s32 ot, s32 x, s32 y, s32 r, s32 c, RECT *rect) {
     BtlfxExports *ex;
     POLY_GT4 *gt4;
     POLY_FT3 *ft3;
@@ -346,7 +346,7 @@ s32 fx_095_op81(s32 mode, Fx095Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
         *arg4 = sizeof(Fx095Work81);
     } else if (mode == 1) {
         fx_095_env = env;
-        work->unk0 = 0;
+        work->state0 = 0;
         work->unk4 = 0;
     } else {
         frame = entry->frame;
@@ -356,14 +356,14 @@ s32 fx_095_op81(s32 mode, Fx095Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
         rect.h = 0xC0;
         gte_SetRotMatrix(env->viewMatrix);
         gte_SetTransMatrix(env->viewMatrix);
-        gte_ldv0(&D_801E890C);
+        gte_ldv0(&fx_095_bodyPos);
         gte_rtps();
         gte_stsxy(&xy);
-        switch (work->unk0) {
+        switch (work->state0) {
         case 0:
-            func_801E7CBC(frame, xy.vx, xy.vy, work->unk8, &rect);
+            fx_095_greyScreenCopy(frame, xy.vx, xy.vy, work->pixels8, &rect);
             if (frame >= 6) {
-                work->unk0 = 1;
+                work->state0 = 1;
                 entry->frame = -1;
                 ex->btlfx_drawScreenTint((u32 *)(env->ot + 2), 2, 0x9B, 0xFF, 0);
             }
@@ -372,16 +372,16 @@ s32 fx_095_op81(s32 mode, Fx095Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
             if (frame == 0) {
                 ex->btlfx_drawScreenTint((u32 *)(env->ot + 2), 1, 0x80, 0x80, 0xFF);
             }
-            func_801E7F48(8, xy.vx, xy.vy, 0x60, 0x80, &rect);
+            fx_095_drawTexDisc(8, xy.vx, xy.vy, 0x60, 0x80, &rect);
             ex->btlfx_drawSpriteAtOt(7, (u8 *)ex->btlfx_getFileData(entry->file, 0x20), xy.vx, xy.vy, 0, 1, 0x1000);
             if (frame >= 16) {
-                work->unk0 = 2;
+                work->state0 = 2;
                 entry->frame = -1;
             }
             break;
         case 2:
             c = 0x1000 - (frame << 9);
-            func_801E7F48(8, xy.vx, xy.vy, 0x60, c >> 5, &rect);
+            fx_095_drawTexDisc(8, xy.vx, xy.vy, 0x60, c >> 5, &rect);
             ex->btlfx_drawSpriteAtOt(7, (u8 *)ex->btlfx_getFileData(entry->file, 0x20), xy.vx, xy.vy, 0, 1, c);
             if (frame >= 8) {
                 return 1;

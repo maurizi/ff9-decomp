@@ -10,16 +10,16 @@ s32 fx_0a1_op80(s32 mode, Fx0a1Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
     if (mode == 0) {
         *arg4 = 0x30;
     } else if (mode == 1) {
-        work->unk0 = 0;
+        work->state0 = 0;
         work->unk4 = 0;
         fx_0a1_env = env;
         ex->btlfx_getUnitBodyPos(0, 0, (s16 *)&work->pos8);
         ex->btlfx_getUnitPos(0, (s16 *)&work->pos10);
         ex->btlfx_getUnitArgBonePos(0x10, 0, (u16 *)&work->pos18);
-        ex->btlfx_aimAngles((s16 *)&work->pos8, (s16 *)&work->pos18, (s16 *)&work->unk28);
+        ex->btlfx_aimAngles((s16 *)&work->pos8, (s16 *)&work->pos18, (s16 *)&work->aim28);
     } else {
         frame = entry->frame;
-        switch (work->unk0) {
+        switch (work->state0) {
         case 0:
             t = (frame << 12) / 10;
             ex->btlfx_getUnitArgBonePos(0x10, 0, (u16 *)&work->pos20);
@@ -32,12 +32,12 @@ s32 fx_0a1_op80(s32 mode, Fx0a1Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
             ex->btlfx_lerpVec((s16 *)&work->pos18, (s16 *)&work->pos8, 0x1000 - ex->math_cos(t >> 2),
                               (s16 *)&pos);
             if (frame == 0) {
-                ex->btlfx_drawTrail((u8 *)ex->btlfx_getFileData(entry->file, 0x10), 0, NULL, -1, 0x1000, 0, 1, D_801E7C70, 0);
+                ex->btlfx_drawTrail((u8 *)ex->btlfx_getFileData(entry->file, 0x10), 0, NULL, -1, 0x1000, 0, 1, fx_0a1_trail, 0);
             }
             ex->btlfx_drawTrail((u8 *)ex->btlfx_getFileData(entry->file, 0x10), (s32)&pos, NULL, 0, 0x1000, 0x1000, 1,
-                              D_801E7C70, 0);
+                              fx_0a1_trail, 0);
             if (frame >= 0xA) {
-                work->unk0 = 1;
+                work->state0 = 1;
                 entry->frame = -1;
                 p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 2), (s32)&work->pos8);
                 if (p != NULL) {
@@ -58,7 +58,7 @@ s32 fx_0a1_op80(s32 mode, Fx0a1Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
                 p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 5), (s32)&work->pos8);
                 if (p != NULL) {
                     p->otZ = ex->btlfx_addRadiusSixth(0, 0x40);
-                    p->trails = (s32)D_801E7CA0;
+                    p->trails = (s32)fx_0a1_trails;
                     p->trailSlots = 0x2D;
                     p->trailStride = 0x4C;
                 }
@@ -77,7 +77,7 @@ s32 fx_0a1_op80(s32 mode, Fx0a1Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
                 p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 7), (s32)&work->pos8);
                 if (p != NULL) {
                     p->otZ = ex->btlfx_addRadiusSixth(0, 0x40);
-                    p->trails = (s32)D_801E8A00;
+                    p->trails = (s32)fx_0a1_trails2;
                     p->trailSlots = 0x1E;
                     p->trailStride = 0x4C;
                 }

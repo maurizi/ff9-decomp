@@ -28,25 +28,25 @@ s32 fx_052_op80(s32 mode, Fx052Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
         work->model54 = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, 0xB), 1);
         work->model56 = ex->Hi_RegisterGouEffModel((BtlUnit9C8 *)ex->btlfx_getFileData(entry->file, 0xE));
         work->emit0 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 8), (s32)&work->pos48);
-        work->unk50 = -1;
+        work->fadeIn50 = -1;
     } else {
         frame = entry->frame;
         switch (frame) {
         case 0x1E:
             work->emit4 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 9), (s32)&work->pos48);
             if (work->emit4 != NULL) {
-                work->emit4->trails = (s32)D_801E8218;
+                work->emit4->trails = (s32)fx_052_trails;
                 work->emit4->trailSlots = 0x14;
                 work->emit4->trailStride = 0xB0;
             }
             break;
         case 0x37:
-            work->unk50 = 0x18;
+            work->fadeIn50 = 0x18;
             break;
         case 0x50:
             work->emit8 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0xA), (s32)&work->pos48);
             if (work->emit8 != NULL) {
-                work->emit8->trails = (s32)D_801E8FD8;
+                work->emit8->trails = (s32)fx_052_trails2;
                 work->emit8->trailSlots = 0x14;
                 work->emit8->trailStride = 0xB0;
             }
@@ -66,11 +66,11 @@ s32 fx_052_op80(s32 mode, Fx052Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             ex->Hi_DrawEffModel(&work->rotC, &work->pos1C, (s32)&work->scale2C, work->model56);
             ex->Hi_DrawEffModel(&work->rotC, &work->pos1C, (s32)&work->scale2C, work->model52);
             work->rotC.vy -= 0x10;
-            if (work->unk50 >= 0) {
-                work->unk3C = fxm_lerpRatio(-0x80, 0, 0x18 - work->unk50, 0x18);
-                work->unk50--;
-                ex->Hi_ModifyEffModelRGB(work->model52, work->unk3C, work->unk3C, work->unk3C);
-                ex->Hi_ModifyEffModelRGB(work->model56, work->unk3C, work->unk3C, work->unk3C);
+            if (work->fadeIn50 >= 0) {
+                work->rgb3C = fxm_lerpRatio(-0x80, 0, 0x18 - work->fadeIn50, 0x18);
+                work->fadeIn50--;
+                ex->Hi_ModifyEffModelRGB(work->model52, work->rgb3C, work->rgb3C, work->rgb3C);
+                ex->Hi_ModifyEffModelRGB(work->model56, work->rgb3C, work->rgb3C, work->rgb3C);
             }
         }
         ex->btlfx_drawBackdrop((BtlBgLayers *)ex->btlfx_getFileData(entry->file, 0xC), frame);
@@ -124,24 +124,24 @@ s32 fx_052_op82(s32 mode, Fx052Work82 *work, Unk800F78A4 *env, Unk80100C78Entry 
         *arg4 = 4;
     } else if (mode == 1) {
         fx_052_env = env;
-        work->unk2 = -1;
-        work->unk0 = -1;
+        work->fadeOut2 = -1;
+        work->fadeIn0 = -1;
     } else {
         frame = entry->frame;
         switch (frame) {
         case 0:
-            work->unk0 = 0x10;
+            work->fadeIn0 = 0x10;
             break;
         case 20:
-            work->unk2 = 0x10;
+            work->fadeOut2 = 0x10;
             break;
         }
-        if (work->unk0 >= 0) {
-            fxm_tintScreenLerp(0, 0xFF, 0x10 - work->unk0, 0x10, 1, 0);
-            work->unk0--;
-        } else if (work->unk2 >= 0) {
-            fxm_tintScreenLerp(0xFF, 0, 0x10 - work->unk2, 0x10, 1, 0);
-            work->unk2--;
+        if (work->fadeIn0 >= 0) {
+            fxm_tintScreenLerp(0, 0xFF, 0x10 - work->fadeIn0, 0x10, 1, 0);
+            work->fadeIn0--;
+        } else if (work->fadeOut2 >= 0) {
+            fxm_tintScreenLerp(0xFF, 0, 0x10 - work->fadeOut2, 0x10, 1, 0);
+            work->fadeOut2--;
         } else {
             ex->btlfx_drawScreenTint((u32 *)env->ot, 1, 0xFF, 0xFF, 0xFF);
         }

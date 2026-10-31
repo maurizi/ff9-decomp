@@ -31,15 +31,15 @@ s32 fx_02e_op80(s32 mode, Fx02eWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
             }
         }
         if (frame >= 0x24) {
-            ex->btlfx_aimAngles((s16 *)&env->camera->eye, (s16 *)&work->pos18, (s16 *)&work->unk20);
+            ex->btlfx_aimAngles((s16 *)&env->camera->eye, (s16 *)&work->pos18, (s16 *)&work->aim20);
             if (work->emit8 != NULL) {
                 if (work->emit8->state == BTLFX_EMIT_DONE) {
                     work->emit8 = NULL;
                 }
                 if (work->emit8 != NULL) {
-                    work->emit8->rot.vx = work->unk20.vx;
-                    work->emit8->rot.vy = work->unk20.vy;
-                    work->emit8->rot.vz = work->unk20.vz;
+                    work->emit8->rot.vx = work->aim20.vx;
+                    work->emit8->rot.vy = work->aim20.vy;
+                    work->emit8->rot.vz = work->aim20.vz;
                 }
             }
             if (work->emitC != NULL) {
@@ -47,9 +47,9 @@ s32 fx_02e_op80(s32 mode, Fx02eWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
                     work->emitC = NULL;
                 }
                 if (work->emitC != NULL) {
-                    work->emitC->rot.vx = work->unk20.vx;
-                    work->emitC->rot.vy = work->unk20.vy;
-                    work->emitC->rot.vz = work->unk20.vz;
+                    work->emitC->rot.vx = work->aim20.vx;
+                    work->emitC->rot.vy = work->aim20.vy;
+                    work->emitC->rot.vz = work->aim20.vz;
                 }
             }
         }

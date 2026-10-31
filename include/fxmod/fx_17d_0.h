@@ -7,27 +7,27 @@
 
 typedef struct {
     s16 unk0;
-    s16 unk2;
-    s32 unk4; /* line index */
-    SVECTOR unk8;
+    s16 speed2;
+    s32 index4; /* line index */
+    SVECTOR pos8;
     s16 unk10;
 } Fx17d0Part;
 
 typedef struct {
-    s16 unk0;
-    s16 unk2;
-    s16 unk4; /* key file */
-    s16 unk6; /* morph key file */
+    s16 file0;
+    s16 morphFile2;
+    s16 keys4; /* key file */
+    s16 morphKeys6; /* morph key file */
 } Fx17d0Piece;
 
-extern Fx17d0Piece D_801E9370[21];
+extern Fx17d0Piece fx_17d_0_pieceFiles[21];
 extern Unk800F78A4 *fx_17d_0_env;
-extern u8 D_801EBC90[][0x24];
+extern u8 fx_17d_0_partTrails[][0x24];
 
-void func_801E7704(u32 *ot, s32 abr, s32 h, s32 r, s32 g, s32 b);
+void fx_17d_0_drawCenterBandY(u32 *ot, s32 abr, s32 h, s32 r, s32 g, s32 b);
 static void fxm_randDiscPoints(s32 n, s32 r, SVECTOR *pts);
 static void fxm_drawStreakField(u32 *ot, s32 n, s32 h, s32 dz, SVECTOR *rot, SVECTOR *pts, CVECTOR *rgb, s32 p, s32 abr);
-void func_801E7D18(Unk80100C78Entry *entry, SVECTOR *origin, s32 frame, s32 models, s16 *morph, s32 scale);
+void fx_17d_0_drawPieces(Unk80100C78Entry *entry, SVECTOR *origin, s32 frame, s32 models, s16 *morph, s32 scale);
 s32 fx_17d_0_op82(s32 mode, void *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *arg4);
 static s32 fx_17d_0_op80PoolTask(s32 mode, Fx17d0Part *p, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 frame);
 
@@ -45,29 +45,29 @@ typedef struct {
 } Fx17d0Vec3;
 
 typedef struct {
-    s32 unk0; /* state */
-    s32 unk4; /* frame */
-    SVECTOR unk8; /* summon position */
-    SVECTOR unk10; /* pieces origin */
-    Fx17d0Vec3 unk18; /* model position */
+    s32 state0; /* state */
+    s32 frame4; /* frame */
+    SVECTOR pos8; /* summon position */
+    SVECTOR pos10; /* pieces origin */
+    Fx17d0Vec3 pos18; /* model position */
     u8 pad24[0x30 - 0x24];
     SVECTOR unk30;
     SVECTOR rot38; /* model rotation */
     SVECTOR pos40; /* spawn position */
-    SVECTOR unk48; /* camera */
+    SVECTOR pos48; /* camera */
     u8 pad50[0x58 - 0x50];
-    s32 unk58; /* spark count */
+    s32 count58; /* spark count */
     s16 model5C[21]; /* piece models */
-    s16 unk86[21]; /* piece morph models */
-    s16 unkB0[5]; /* body models */
+    s16 model86[21]; /* piece morph models */
+    s16 modelB0[5]; /* body models */
     s16 modelBA; /* model */
 } Fx17d0Work80; /* 0xBC */
 
 typedef struct {
     u8 pad0[0x18];
-    u16 unk18[6];
-    u16 unk24[6];
-    u16 unk30[6];
+    u16 texInfo18[6];
+    u16 texInfo24[6];
+    u16 texPos30[6];
 } Fx17d0SummonData;
 
 typedef struct {
@@ -75,11 +75,11 @@ typedef struct {
     Fx17d0SummonData *unk54;
 } Fx17d0Summon;
 
-extern SVECTOR D_801E9368;
-extern s16 D_801E9418[];
-extern s16 D_801E9424[];
-extern SVECTOR D_801E9480[];
+extern SVECTOR fx_17d_0_basePos;
+extern s16 fx_17d_0_texModelFileIds[];
+extern s16 fx_17d_0_texSlots[];
+extern SVECTOR fx_17d_0_streakPoints[];
 extern BtlModel fx_17d_0_effModels[];
-extern VECTOR D_801EBC80;
+extern VECTOR fx_17d_0_modelScale;
 
 #endif

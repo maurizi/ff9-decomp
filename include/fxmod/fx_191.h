@@ -1,7 +1,8 @@
 #ifndef FX_191_H
 #define FX_191_H
 
-/* Effect module fx_191 (dir 13 file 0x191). */
+/* Effect module fx_191 (dir 13 file 0x191): Lancer. Evidence: the static sweep of the ability, item
+ * and enemy-sequence effect ids (docs/effect-modules.md, tools/effect_labels.py). */
 #include "btlfx_mod.h"
 
 typedef struct {
@@ -10,15 +11,15 @@ typedef struct {
 
 typedef struct {
     s16 unk0;
-    u16 unk2; /* count */
-    Fx191Point *unk4;
+    u16 count2; /* count */
+    Fx191Point *keys4;
 } Fx191Path;
 
 typedef struct {
     Pool6CEntry *emit0[4];
     SVECTOR pos10; /* caster position */
     SVECTOR pos18; /* target position */
-    SVECTOR unk20; /* angles */
+    SVECTOR rot20; /* angles */
 } Fx191Work80; /* 0x28 */
 
 typedef struct {
@@ -31,29 +32,29 @@ typedef struct {
     SVECTOR pos18; /* target body position */
     u8 pad20[0x30 - 0x20];
     SVECTOR pos30; /* from, to, from, to */
-    SVECTOR unk38;
+    SVECTOR pos38;
     SVECTOR pos40;
-    SVECTOR unk48;
-    SVECTOR unk50; /* current */
-    SVECTOR unk58;
+    SVECTOR pos48;
+    SVECTOR target50; /* current */
+    SVECTOR target58;
 } Fx191Work81; /* 0x60 */
 
-extern u16 D_801E84DC[4]; /* files */
-extern SVECTOR D_801E84E4[4];
+extern u16 fx_191_emitFileIds[4]; /* files */
+extern SVECTOR fx_191_op80Offsets[4];
 extern s32 (*fx_191_op80ParticleMotions[4])();
 extern Unk800F78A4 *fx_191_env;
-extern Fx191Path D_801E8564;
-extern Fx191Path D_801E856C;
-extern SVECTOR D_801E8574;
-extern SVECTOR D_801E857C[4];
-extern SVECTOR D_801E859C;
-extern SVECTOR D_801E85CC;
-extern SVECTOR D_801E85D4;
-extern s32 D_801E85DC[4][0x60];
-extern s32 D_801E8BDC[];
-extern s32 D_801E8CBC[];
-extern s32 D_801E8D9C; /* op80 frame */
-extern s32 D_801E8DA0; /* op81 frame */
+extern Fx191Path fx_191_posPath0;
+extern Fx191Path fx_191_posPath1;
+extern SVECTOR fx_191_op80Origin;
+extern SVECTOR fx_191_op80Targets[4];
+extern SVECTOR fx_191_op81PathOrigin;
+extern SVECTOR fx_191_emitPos0;
+extern SVECTOR fx_191_emitPos1;
+extern s32 fx_191_op80Trails[4][0x60];
+extern s32 fx_191_op81Trails0[];
+extern s32 fx_191_op81Trails1[];
+extern s32 fx_191_op80Frame; /* op80 frame */
+extern s32 fx_191_op81Frame; /* op81 frame */
 
 s32 fx_191_op80ParticleMotion0(Pool30Entry *e, Pool6CEntry *owner, SVECTOR *pos, s32 arg3, s32 frame, s32 frames);
 s32 fx_191_op80ParticleMotion1(Pool30Entry *e, Pool6CEntry *owner, SVECTOR *pos, s32 arg3, s32 frame, s32 frames);

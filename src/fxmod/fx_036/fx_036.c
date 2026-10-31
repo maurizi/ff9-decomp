@@ -3,16 +3,16 @@
 static s32 fx_036_op80SpawnPoint(SVECTOR *out, SVECTOR *arg1, s32 arg2, s32 arg3) {
     BtlfxExports *ex = BTLFX_EXPORTS(fx_036_env);
 
-    out->vx = D_801E7BCC[D_801E7BDC];
-    out->vy = D_801E7C30.vy - ex->btlfx_rand() % 400;
-    out->vz = D_801E7C30.vz;
+    out->vx = fx_036_spawnX[fx_036_spawnCount];
+    out->vy = fx_036_targetPos.vy - ex->btlfx_rand() % 400;
+    out->vz = fx_036_targetPos.vz;
     if (ex->btlfx_rand() & 1) {
         out->vz += ex->btlfx_rand() % 600;
     } else {
         out->vz -= ex->btlfx_rand() % 600;
     }
     out->pad = 1;
-    D_801E7BDC++;
+    fx_036_spawnCount++;
     return 0;
 }
 
@@ -23,10 +23,10 @@ s32 fx_036_op80(s32 mode, Fx036Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
     if (mode == 0) {
         *arg4 = 0x2C;
     } else if (mode == 1) {
-        D_801E7C30.vx = env->targets->centerX;
-        D_801E7C30.vy = env->targets->centerY;
+        fx_036_targetPos.vx = env->targets->centerX;
+        fx_036_targetPos.vy = env->targets->centerY;
         fx_036_env = env;
-        D_801E7C30.vz = env->targets->centerZ;
+        fx_036_targetPos.vz = env->targets->centerZ;
     } else {
         frame = entry->frame;
         switch (frame) {

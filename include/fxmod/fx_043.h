@@ -17,15 +17,15 @@ typedef struct {
     SVECTOR pos8; /* target body position */
     SVECTOR pos10; /* target position */
     SVECTOR pos18;
-    SVECTOR unk20; /* angles from unk8 to D_801E7BD0 */
+    SVECTOR aim20; /* angles from pos8 to fx_043_particleFrom */
 } Fx043Work81; /* 0x28 */
 
 extern Unk800F78A4 *fx_043_env;
-extern SVECTOR D_801E7BD0; /* particle start */
-extern SVECTOR D_801E7BD8; /* particle end */
-extern SVECTOR D_801E7BE0;
-extern s32 D_801E7BE8[];
-extern s32 D_801E7D48[];
+extern SVECTOR fx_043_particleFrom; /* particle start */
+extern SVECTOR fx_043_particleTo; /* particle end */
+extern SVECTOR fx_043_emitPos;
+extern s32 fx_043_trails[];
+extern s32 fx_043_trails2[];
 
 static s32 fx_043_op80ParticleMotion(VECTOR *out, s32 arg1, SVECTOR *pos, s32 arg3, s32 t, s32 n);
 

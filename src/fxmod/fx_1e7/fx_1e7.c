@@ -1,11 +1,11 @@
 #include "fxmod/fx_1e7.h"
 
 static s32 fx_1e7_op80ParticleMotion0(Pool30Entry *pt, s32 arg1, SVECTOR *pos, s32 arg3, s32 frame, s32 n) {
-    return fxm_followPathParticle(pt, pos, &D_801E82E8[0], frame, n);
+    return fxm_followPathParticle(pt, pos, &fx_1e7_posPath0[0], frame, n);
 }
 
 static s32 fx_1e7_op80ParticleMotion1(Pool30Entry *pt, s32 arg1, SVECTOR *pos, s32 arg3, s32 frame, s32 n) {
-    return fxm_followPathParticle(pt, pos, &D_801E82E8[1], frame, n);
+    return fxm_followPathParticle(pt, pos, &fx_1e7_posPath0[1], frame, n);
 }
 
 static s32 fxm_followPathParticle(Pool30Entry *e, SVECTOR *pos, Fx1e7Path *path, s32 frame, s32 frames) {
@@ -15,18 +15,18 @@ static s32 fxm_followPathParticle(Pool30Entry *e, SVECTOR *pos, Fx1e7Path *path,
     SVECTOR v;
 
     fxm_posPathGet(path, frame * 4, &v);
-    if (path == D_801E82E8) {
+    if (path == fx_1e7_posPath0) {
         v.vx += 0x50;
     }
-    ex->math_rotMatrixYXZ(&D_801E84E0, &m);
+    ex->math_rotMatrixYXZ(&fx_1e7_op80PathRot, &m);
     gte_SetRotMatrix(&m);
     gte_ldtr0();
     gte_ldv0(&v);
     gte_rtv0tr();
     gte_stlvnl(&o);
-    o.vx += D_801E84D0.vx;
-    o.vy += D_801E84D0.vy;
-    o.vz += D_801E84D0.vz;
+    o.vx += fx_1e7_op80Origin.vx;
+    o.vy += fx_1e7_op80Origin.vy;
+    o.vz += fx_1e7_op80Origin.vz;
     pos->vx = o.vx;
     pos->vy = o.vy;
     pos->vz = o.vz;
@@ -40,37 +40,37 @@ static s32 fxm_followPathParticle(Pool30Entry *e, SVECTOR *pos, Fx1e7Path *path,
 }
 
 s32 fx_1e7_op81SpawnPoint0(SVECTOR *out, s32 arg1, s32 i) {
-    func_801E79BC(out, &D_801E8300[0], i);
+    fx_1e7_getSpawnPos(out, &fx_1e7_op81Paths[0], i);
     return 0;
 }
 
 s32 fx_1e7_op81SpawnPoint1(SVECTOR *out, s32 arg1, s32 i) {
-    func_801E79BC(out, &D_801E8300[1], i);
+    fx_1e7_getSpawnPos(out, &fx_1e7_op81Paths[1], i);
     return 0;
 }
 
 s32 fx_1e7_op81SpawnPoint2(SVECTOR *out, s32 arg1, s32 i) {
-    func_801E79BC(out, &D_801E8300[2], i);
+    fx_1e7_getSpawnPos(out, &fx_1e7_op81Paths[2], i);
     return 0;
 }
 
 s32 fx_1e7_op81SpawnPoint3(SVECTOR *out, s32 arg1, s32 i) {
-    func_801E79BC(out, &D_801E8300[3], i);
+    fx_1e7_getSpawnPos(out, &fx_1e7_op81Paths[3], i);
     return 0;
 }
 
 s32 fx_1e7_op81SpawnPoint4(SVECTOR *out, s32 arg1, s32 i) {
-    func_801E79BC(out, &D_801E8300[4], i);
+    fx_1e7_getSpawnPos(out, &fx_1e7_op81Paths[4], i);
     return 0;
 }
 
-void func_801E79BC(SVECTOR *out, Fx1e7Path *path, s32 t) {
+void fx_1e7_getSpawnPos(SVECTOR *out, Fx1e7Path *path, s32 t) {
     SVECTOR v;
 
     fxm_posPathGet(path, t, &v);
-    v.vx += D_801E84D8.vx;
-    v.vy += D_801E84D8.vy;
-    v.vz += D_801E84D8.vz;
+    v.vx += fx_1e7_op81Origin.vx;
+    v.vy += fx_1e7_op81Origin.vy;
+    v.vz += fx_1e7_op81Origin.vz;
     out->vx = v.vx;
     out->vy = v.vy;
     out->vz = v.vz;
@@ -86,19 +86,19 @@ s32 fx_1e7_op80(s32 mode, Fx1e7Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
         fx_1e7_env = env;
         ex->btlfx_getUnitPos(0, (s16 *)&work->pos8);
         work->pos8.vy -= 0x12C;
-        D_801E84D0.vx = work->pos8.vx;
-        D_801E84D0.vy = work->pos8.vy;
-        D_801E84D0.vz = work->pos8.vz;
-        fxm_posPathInit(&D_801E82E8[0], (u16 *)ex->btlfx_getFileData(entry->file, 0x13));
-        fxm_posPathInit(&D_801E82F0, (u16 *)ex->btlfx_getFileData(entry->file, 0x14));
+        fx_1e7_op80Origin.vx = work->pos8.vx;
+        fx_1e7_op80Origin.vy = work->pos8.vy;
+        fx_1e7_op80Origin.vz = work->pos8.vz;
+        fxm_posPathInit(&fx_1e7_posPath0[0], (u16 *)ex->btlfx_getFileData(entry->file, 0x13));
+        fxm_posPathInit(&fx_1e7_posPath, (u16 *)ex->btlfx_getFileData(entry->file, 0x14));
         work->unk10 = 0x1000;
     } else {
         frame = entry->frame;
         if (frame != 0) {
             if (frame == 3) {
-                work->emit0 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0x11), (s32)&D_801E84E8);
+                work->emit0 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0x11), (s32)&fx_1e7_emitPos0);
                 if (work->emit0 != NULL) {
-                    work->emit0->trails = (s32)D_801E8330;
+                    work->emit0->trails = (s32)fx_1e7_op80Trails0;
                     work->emit0->trailSlots = 1;
                     work->emit0->trailStride = 0xD0;
                 }
@@ -110,9 +110,9 @@ s32 fx_1e7_op80(s32 mode, Fx1e7Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
                 }
             }
         } else {
-            work->emit4 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0x12), (s32)&D_801E84E8);
+            work->emit4 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0x12), (s32)&fx_1e7_emitPos0);
             if (work->emit4 != NULL) {
-                work->emit4->trails = (s32)D_801E8400;
+                work->emit4->trails = (s32)fx_1e7_op80Trails1;
                 work->emit4->trailSlots = 1;
                 work->emit4->trailStride = 0xD0;
             }
@@ -127,7 +127,7 @@ s32 fx_1e7_op80(s32 mode, Fx1e7Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             ex->btlfx_stopEmitter(work->emit0);
             ex->btlfx_stopEmitter(work->emit4);
         }
-        ex->btlfx_aimAngles((s16 *)&env->camera->eye, (s16 *)&work->pos8, (s16 *)&D_801E84E0);
+        ex->btlfx_aimAngles((s16 *)&env->camera->eye, (s16 *)&work->pos8, (s16 *)&fx_1e7_op80PathRot);
         return frame >= 0x3C;
     }
     return 0;
@@ -144,9 +144,9 @@ s32 fx_1e7_op81(s32 mode, Fx1e7Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
         fx_1e7_env = env;
         ex->btlfx_getUnitBodyPos(0, 0, (s16 *)&work->pos20);
         ex->btlfx_getUnitPos(0, (s16 *)&work->pos28);
-        D_801E84D8.vx = work->pos28.vx;
-        D_801E84D8.vy = work->pos28.vy;
-        D_801E84D8.vz = work->pos28.vz;
+        fx_1e7_op81Origin.vx = work->pos28.vx;
+        fx_1e7_op81Origin.vy = work->pos28.vy;
+        fx_1e7_op81Origin.vz = work->pos28.vz;
         work->emit0 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 7), (s32)&work->pos28);
         work->emit18 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 8), (s32)&work->pos28);
         work->emit1C = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 1), (s32)&work->pos28);
@@ -157,24 +157,24 @@ s32 fx_1e7_op81(s32 mode, Fx1e7Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
             work->emit1C->otZ = ex->btlfx_addRadiusSixth(0, 0x20);
         }
         for (i = 0; i < 5; i++) {
-            fxm_posPathInit(&D_801E8300[i], (u16 *)ex->btlfx_getFileData(entry->file, D_801E8278[i]));
-            work->emit4[i] = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, D_801E826C[i]), (s32)&D_801E84F0[i]);
+            fxm_posPathInit(&fx_1e7_op81Paths[i], (u16 *)ex->btlfx_getFileData(entry->file, fx_1e7_op81PathFileIds[i]));
+            work->emit4[i] = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, fx_1e7_op81EmitFileIds[i]), (s32)&fx_1e7_emitPos1[i]);
             if (work->emit4[i] != NULL) {
                 work->emit4[i]->tail->shape = -1;
                 ((EffTailSpawn *)work->emit4[i]->tail)->spawnFn = fx_1e7_op81SpawnPoints[i];
             }
         }
         work->unk30 = 0;
-        work->unk34 = ex->btlfx_isUnitActive(0);
-        if (work->unk34 != 0) {
+        work->flag34 = ex->btlfx_isUnitActive(0);
+        if (work->flag34 != 0) {
             fxm_startHeavyHitMotionIfActive(0);
         }
     } else {
         frame = entry->frame;
-        D_801E82E4 = frame;
-        if (work->unk34 != 0 && ex->btlfx_isUnitActive(0) != 0 && fxm_isMotionDone(0) != 0) {
+        fx_1e7_op81Frame = frame;
+        if (work->flag34 != 0 && ex->btlfx_isUnitActive(0) != 0 && fxm_isMotionDone(0) != 0) {
             fxm_startUnitMotion(0, 4);
-            work->unk34 = 0;
+            work->flag34 = 0;
         }
         ex->btlfx_getUnitPos(0, (s16 *)&work->pos28);
         work->pos28.vz -= 0x64;
@@ -186,12 +186,12 @@ s32 fx_1e7_op81(s32 mode, Fx1e7Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
 
 static void fxm_posPathInit(Fx1e7Path *path, u16 *data) {
     data++;
-    path->unk2 = *data++;
-    path->unk4 = (Fx1e7Point *)data;
+    path->count2 = *data++;
+    path->keys4 = (Fx1e7Point *)data;
 }
 
 static s32 fxm_posPathGet(Fx1e7Path *path, s32 t, SVECTOR *out) {
-    s32 last = path->unk2 - 1;
+    s32 last = path->count2 - 1;
     s32 done = 1;
     Fx1e7Point *p;
 
@@ -200,7 +200,7 @@ static s32 fxm_posPathGet(Fx1e7Path *path, s32 t, SVECTOR *out) {
     } else {
         done = 0;
     }
-    p = &path->unk4[t];
+    p = &path->keys4[t];
     out->vx = p->x;
     out->vy = p->y;
     out->vz = p->z;

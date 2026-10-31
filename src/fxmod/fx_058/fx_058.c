@@ -9,51 +9,51 @@ static s32 fx_058_op80PoolTask(s32 mode, Fx058Item *it, Unk800F78A4 *env, Unk801
     VECTOR scale;
 
     if (mode == 1) {
-        it->unk0 = 0;
-        it->unk4 = (ex->btlfx_rand() & 0x1F) + 0x27;
-        it->unk8 = ex->btlfx_rand() & 0x1F;
-        it->unk20.pad = 0x249;
+        it->state0 = 0;
+        it->speed4 = (ex->btlfx_rand() & 0x1F) + 0x27;
+        it->turn8 = ex->btlfx_rand() & 0x1F;
+        it->target20.pad = 0x249;
     } else {
-        switch (it->unk0) {
+        switch (it->state0) {
         case 0:
             if (frame == 0) {
-                ex->btlfx_drawTrail((u8 *)ex->btlfx_getFileData(entry->file, 2), (s32)&it->unkC, NULL, -1, 0, 0, 0, it->unk1C,
+                ex->btlfx_drawTrail((u8 *)ex->btlfx_getFileData(entry->file, 2), (s32)&it->posC, NULL, -1, 0, 0, 0, it->trail1C,
                                   0);
             }
-            it->unk4 += 0x20;
-            if (it->unk4 > 0x300) {
-                it->unk4 = 0x300;
+            it->speed4 += 0x20;
+            if (it->speed4 > 0x300) {
+                it->speed4 = 0x300;
             }
-            it->unk8 += 0x66;
-            if (it->unk8 >= 0x1000) {
-                it->unk8 = 0x1000;
+            it->turn8 += 0x66;
+            if (it->turn8 >= 0x1000) {
+                it->turn8 = 0x1000;
             }
             /* The empty loop's notes end cse's block here, so the 1 passed to the second drawTrail below is loaded
              * with li instead of reusing the register holding the mode test's 1. */
             do {
             } while (0);
-            ex->btlfx_aimAngles((s16 *)&it->unkC, (s16 *)&it->unk20, (s16 *)&a);
-            ex->btlfx_turnToward((s16 *)&a, (s16 *)&it->rot14, it->unk8);
+            ex->btlfx_aimAngles((s16 *)&it->posC, (s16 *)&it->target20, (s16 *)&a);
+            ex->btlfx_turnToward((s16 *)&a, (s16 *)&it->rot14, it->turn8);
             a.vz = frame << 5;
-            ex->btlfx_pointAhead((s16 *)&it->unkC, (s16 *)&it->rot14, it->unk4, (s16 *)&it->unkC);
-            pos.vx = it->unkC.vx;
-            pos.vy = it->unkC.vy;
-            pos.vz = it->unkC.vz;
+            ex->btlfx_pointAhead((s16 *)&it->posC, (s16 *)&it->rot14, it->speed4, (s16 *)&it->posC);
+            pos.vx = it->posC.vx;
+            pos.vy = it->posC.vy;
+            pos.vz = it->posC.vz;
             scale.vx = scale.vy = 0x249;
-            scale.vz = it->unk20.pad;
-            it->unk20.pad += 0x97;
+            scale.vz = it->target20.pad;
+            it->target20.pad += 0x97;
             it->rot14.vx += 0x800;
             ex->Hi_DrawEffModel(&it->rot14, &pos, (s32)&scale, work->model24);
             it->rot14.vx -= 0x800;
-            ex->btlfx_drawTrail((u8 *)ex->btlfx_getFileData(entry->file, 2), (s32)&it->unkC, NULL, 0, 0x800, 0x1000, 1,
-                              it->unk1C, 0);
-            d.vx = work->pos4.vx - it->unkC.vx;
-            d.vy = work->pos4.vy - it->unkC.vy;
-            d.vz = work->pos4.vz - it->unkC.vz;
+            ex->btlfx_drawTrail((u8 *)ex->btlfx_getFileData(entry->file, 2), (s32)&it->posC, NULL, 0, 0x800, 0x1000, 1,
+                              it->trail1C, 0);
+            d.vx = work->pos4.vx - it->posC.vx;
+            d.vy = work->pos4.vy - it->posC.vy;
+            d.vz = work->pos4.vz - it->posC.vz;
             if (d.vx * d.vx + d.vy * d.vy + d.vz * d.vz < 0x40000 || frame >= 0x11) {
-                it->unk0 = 1;
+                it->state0 = 1;
                 ((s16 *)it)[-1] = -1;
-                if (work->unk20 & 1) {
+                if (work->frame20 & 1) {
                     ex->btlfx_drawScreenTint((u32 *)(env->ot + 1), 1, 0x20, 0x10, 0);
                 }
             }
@@ -63,18 +63,18 @@ static s32 fx_058_op80PoolTask(s32 mode, Fx058Item *it, Unk800F78A4 *env, Unk801
             a.vy = 0;
             a.vz = frame << 5;
             a.pad = 1;
-            BTLFX_COPY_SVEC(&d, &it->unkC);
+            BTLFX_COPY_SVEC(&d, &it->posC);
             d.vy -= frame * 4;
             env->otZ = 0x40;
             ex->btlfx_drawParticles((u8 *)ex->btlfx_getFileData(entry->file, 9), &d, NULL, 0x4000, frame, 1, -1, 0, 0);
             env->otZ = 0;
             if (frame < 0x10) {
-                BTLFX_COPY_SVEC(&d, &it->unkC);
+                BTLFX_COPY_SVEC(&d, &it->posC);
                 d.vy = 0;
                 ex->btlfx_drawParticles((u8 *)ex->btlfx_getFileData(entry->file, 8), &d, &a, 0x1800, frame, 1, -1, 0, 0);
             }
-            ex->btlfx_drawTrail((u8 *)ex->btlfx_getFileData(entry->file, 2), (s32)&it->unkC, NULL, 0, 0x800, 0x1000, 1,
-                              it->unk1C, 0);
+            ex->btlfx_drawTrail((u8 *)ex->btlfx_getFileData(entry->file, 2), (s32)&it->posC, NULL, 0, 0x800, 0x1000, 1,
+                              it->trail1C, 0);
             if (frame >= 0x18) {
                 return 1;
             }
@@ -97,8 +97,8 @@ s32 fx_058_op80(s32 mode, Fx058Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
         init->poolCount = 0x20;
     } else if (mode == 1) {
         work->unk0 = 0;
-        work->unk1C = 0;
-        work->unk20 = 0;
+        work->count1C = 0;
+        work->frame20 = 0;
         fx_058_env = env;
         ex->btlfx_getUnitBodyPos(0, 0, (s16 *)&work->pos4);
         ex->btlfx_getUnitBodyPos(0x10, 0, (s16 *)&work->posC);
@@ -107,25 +107,25 @@ s32 fx_058_op80(s32 mode, Fx058Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
         ex->btlfx_initEffModels(fx_058_effModels, 1);
         work->model24 = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, 0xA), 1);
     } else if (work->unk0 == 0) {
-        if (work->unk1C < 0x20) {
-            work->unk1C++;
+        if (work->count1C < 0x20) {
+            work->count1C++;
             it = ex->btlfx_poolSpawn((s16 *)entry->pool);
             if (it != NULL) {
-                BTLFX_COPY_SVEC(&it->unkC, &work->posC);
-                it->unk20.vx = work->pos4.vx;
-                it->unk20.vz = work->pos4.vz;
-                it->unk20.vy = work->pos4.vy;
-                k = work->unk1C & 3;
+                BTLFX_COPY_SVEC(&it->posC, &work->posC);
+                it->target20.vx = work->pos4.vx;
+                it->target20.vz = work->pos4.vz;
+                it->target20.vy = work->pos4.vy;
+                k = work->count1C & 3;
                 j = work->rot14.vy - 0x300;
                 it->rot14.vy = j + k * 0x200;
-                k = work->unk1C >> 2;
+                k = work->count1C >> 2;
                 it->rot14.vx = work->rot14.vx + k * 0xFF;
                 it->rot14.vz = 0;
-                it->unk1C = D_801E7EF0[work->unk1C];
+                it->trail1C = fx_058_trailBufs[work->count1C];
             }
         }
-        work->unk20++;
-        if (work->unk1C >= 0x20) {
+        work->frame20++;
+        if (work->count1C >= 0x20) {
             return 1;
         }
     }

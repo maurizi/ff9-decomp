@@ -8,11 +8,11 @@ typedef struct {
     Pool6CEntry *emit0;
     SVECTOR pos4; /* target position */
     SVECTOR posC; /* target body position */
-    u16 unk14;
-    u16 unk16;
+    u16 frame14;
+    u16 alpha16;
 } Fx008Work;
 
 extern Unk800F78A4 *fx_008_env;
-extern s32 D_801E78FC[];
+extern s32 fx_008_trails[];
 
 #endif

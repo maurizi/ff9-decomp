@@ -23,81 +23,81 @@ s32 fx_03a_op80(s32 mode, Fx03aWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
         work->pos20.vx = 0;
         work->pos20.vy = 0;
         work->pos20.vz = -0x550;
-        D_801E7DB8[0].unk0 = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, 9), 0xFF);
-        D_801E7DB8[1].unk0 = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, 2), 0xFF);
-        D_801E7DB8[2].unk0 = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, 3), 0xFF);
-        D_801E7DB8[3].unk0 = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, 4), 0xFF);
-        D_801E7DB8[4].unk0 = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, 5), 0xFF);
-        D_801E7DB8[5].unk0 = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, 6), 0xFF);
-        D_801E7DB8[6].unk0 = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, 7), 0xFF);
-        D_801E7DB8[7].unk0 = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, 8), 0xFF);
-        D_801E7DB8[8].unk0 = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, 1), 0xFF);
-        D_801E7DB8[9].unk0 = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, 0xE), 0xFF);
+        fx_03a_models[0].model0 = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, 9), 0xFF);
+        fx_03a_models[1].model0 = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, 2), 0xFF);
+        fx_03a_models[2].model0 = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, 3), 0xFF);
+        fx_03a_models[3].model0 = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, 4), 0xFF);
+        fx_03a_models[4].model0 = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, 5), 0xFF);
+        fx_03a_models[5].model0 = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, 6), 0xFF);
+        fx_03a_models[6].model0 = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, 7), 0xFF);
+        fx_03a_models[7].model0 = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, 8), 0xFF);
+        fx_03a_models[8].model0 = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, 1), 0xFF);
+        fx_03a_models[9].model0 = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, 0xE), 0xFF);
         for (i = 0; i < 9; i++) {
-            setVector(&D_801E7DB8[i].unk24, 0, 0, 0);
-            setVector(&D_801E7DB8[i].unk4, 0xF00, 0, 0xF00);
-            setVector(&D_801E7DB8[i].unk14, 0, 0, -0x550);
-            D_801E7DB8[i].unk2C = ex->btlfx_rand() & 0x3F;
-            D_801E7DB8[i].unk30 = -(ex->btlfx_rand() & 7);
+            setVector(&fx_03a_models[i].rot24, 0, 0, 0);
+            setVector(&fx_03a_models[i].scale4, 0xF00, 0, 0xF00);
+            setVector(&fx_03a_models[i].pos14, 0, 0, -0x550);
+            fx_03a_models[i].speed2C = ex->btlfx_rand() & 0x3F;
+            fx_03a_models[i].time30 = -(ex->btlfx_rand() & 7);
         }
-        D_801E7FC0 = 0;
+        fx_03a_bouncePower = 0;
     } else {
         frame = entry->frame;
         switch (frame) {
         case 0:
-            ex->btlfx_drawBgOffscreen(0x1C0, 0x100, 0x100, 0x100, D_801E8798, 0, -0x550, -0x1000);
+            ex->btlfx_drawBgOffscreen(0x1C0, 0x100, 0x100, 0x100, fx_03a_bgOt, 0, -0x550, -0x1000);
             break;
         case 1:
             p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0x10), (s32)&work->pos20);
             if (p != NULL) {
                 p->otZ = 0x100;
             }
-            work->unkC = 0x40;
-            work->unk0 = 0x40;
-            work->unk4 = 0x10;
+            work->gridC = 0x40;
+            work->bounce0 = 0x40;
+            work->powerUp4 = 0x10;
             break;
         case 33:
-            work->unk8 = 0x20;
+            work->powerDown8 = 0x20;
             break;
         }
-        if (work->unk4 != 0) {
-            work->unk4--;
-            D_801E7FC0 += 0x3C;
+        if (work->powerUp4 != 0) {
+            work->powerUp4--;
+            fx_03a_bouncePower += 0x3C;
         }
-        if (work->unk8 != 0) {
-            work->unk8--;
-            D_801E7FC0 -= 0x1E;
+        if (work->powerDown8 != 0) {
+            work->powerDown8--;
+            fx_03a_bouncePower -= 0x1E;
         }
-        if (work->unk0 != 0) {
-            work->unk0--;
+        if (work->bounce0 != 0) {
+            work->bounce0--;
             for (i = 0; i < 9; i++) {
-                t = ++D_801E7DB8[i].unk30;
+                t = ++fx_03a_models[i].time30;
                 if (t >= 0) {
-                    y = D_801E7DB8[i].unk2C * t - ((t * (t << 8)) >> 1);
+                    y = fx_03a_models[i].speed2C * t - ((t * (t << 8)) >> 1);
                     if (y < 0) {
                         y = 0;
-                        D_801E7DB8[i].unk2C = ex->btlfx_rand() % (D_801E7FC0 + 1);
-                        if (work->unk0 < 8) {
-                            D_801E7DB8[i].unk30 = -100;
+                        fx_03a_models[i].speed2C = ex->btlfx_rand() % (fx_03a_bouncePower + 1);
+                        if (work->bounce0 < 8) {
+                            fx_03a_models[i].time30 = -100;
                         } else {
-                            D_801E7DB8[i].unk30 = 0;
+                            fx_03a_models[i].time30 = 0;
                         }
                     }
-                    D_801E7DB8[i].unk4.vy = y;
-                    ex->Hi_DrawEffModel(&D_801E7DB8[i].unk24, &D_801E7DB8[i].unk14, (s32)&D_801E7DB8[i].unk4,
-                                        D_801E7DB8[i].unk0);
+                    fx_03a_models[i].scale4.vy = y;
+                    ex->Hi_DrawEffModel(&fx_03a_models[i].rot24, &fx_03a_models[i].pos14, (s32)&fx_03a_models[i].scale4,
+                                        fx_03a_models[i].model0);
                 }
             }
         }
-        if (work->unkC != 0) {
-            work->unkC--;
+        if (work->gridC != 0) {
+            work->gridC--;
             /* the assignment inside the sum keeps 0x1000 in one register for all three fields */
-            scale.vy = work->unkC * 2 + (scale.vx = 0x1000);
+            scale.vy = work->gridC * 2 + (scale.vx = 0x1000);
             scale.vz = 0x1000;
             rot.vx = 0;
             rot.vy = 0;
             rot.vz = 0;
-            c = D_801E7FC0 / 15;
+            c = fx_03a_bouncePower / 15;
             col.b = c;
             col.g = c;
             col.r = c;

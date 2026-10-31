@@ -5,15 +5,15 @@
 #include "btlfx_mod.h"
 
 typedef struct {
-    s32 unk0; /* state */
-    s32 unk4; /* frame counter */
+    s32 state0; /* state */
+    s32 frame4; /* frame counter */
     SVECTOR pos8; /* caster position on the ground */
     SVECTOR pos10; /* caster body position */
-    s32 unk18; /* model scale */
+    s32 scale18; /* model scale */
     s32 model1C; /* model */
-    SVECTOR unk20; /* model rotation */
-    s32 unk28[3]; /* model scale (VECTOR without its pad word) */
-    s32 unk34[3]; /* model position (VECTOR without its pad word) */
+    SVECTOR rot20; /* model rotation */
+    s32 scale28[3]; /* model scale (VECTOR without its pad word) */
+    s32 modelPos34[3]; /* model position (VECTOR without its pad word) */
 } Fx099Work;
 
 extern Unk800F78A4 *fx_099_env;

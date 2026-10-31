@@ -1,7 +1,8 @@
 #ifndef FX_12A_H
 #define FX_12A_H
 
-/* Effect module fx_12a (dir 13 file 0x12A). */
+/* Effect module fx_12a (dir 13 file 0x12A): enemy Jet Fire (Tiamat). Evidence: the static sweep of the ability, item
+ * and enemy-sequence effect ids (docs/effect-modules.md, tools/effect_labels.py). */
 #include "btlfx_mod.h"
 
 typedef struct {
@@ -17,10 +18,10 @@ typedef struct {
     SVECTOR pos28;
     SVECTOR pos30;
     SVECTOR pos38;
-    SVECTOR unk40; /* aim targets */
-    SVECTOR unk48;
-    SVECTOR unk50; /* aim angles */
-    SVECTOR unk58;
+    SVECTOR pos40; /* aim targets */
+    SVECTOR pos48;
+    SVECTOR rot50; /* aim angles */
+    SVECTOR rot58;
 } Fx12aWork80;
 
 typedef struct {
@@ -32,7 +33,7 @@ typedef struct {
     Pool6CEntry *emit0;
     s32 unk4;
     SVECTOR pos8;
-    s32 unk10; /* target index */
+    s32 unit10; /* target index */
 } Fx12aWork82;
 
 extern Unk800F78A4 *fx_12a_env;

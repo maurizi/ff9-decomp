@@ -1,7 +1,8 @@
 #ifndef FX_11A_H
 #define FX_11A_H
 
-/* Effect module fx_11a (dir 13 file 0x11A). */
+/* Effect module fx_11a (dir 13 file 0x11A): item Vaccine. Evidence: the static sweep of the ability, item
+ * and enemy-sequence effect ids (docs/effect-modules.md, tools/effect_labels.py). */
 #include "btlfx_mod.h"
 
 typedef struct {

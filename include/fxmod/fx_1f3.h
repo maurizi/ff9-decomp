@@ -1,7 +1,8 @@
 #ifndef FX_1F3_H
 #define FX_1F3_H
 
-/* Effect module fx_1f3 (dir 13 file 0x1f3). */
+/* Effect module fx_1f3 (dir 13 file 0x1f3): enemy Neutron Ring (Dummy/Necron). Evidence: the static sweep of the ability, item
+ * and enemy-sequence effect ids (docs/effect-modules.md, tools/effect_labels.py). */
 #include "btlfx_mod.h"
 
 /* copied */
@@ -19,75 +20,75 @@ typedef struct {
     u8 unk1;
     u8 unk2;
     u8 pad3;
-    SVECTOR unk4[33];
+    SVECTOR points4[33];
 } Fx1f3Line; /* 0x10C */
 
 typedef struct {
-    MATRIX unk0; /* bone matrix */
-    Fx1f3Line unk20;
-    s32 unk12C; /* timer */
-    s32 unk130; /* bone */
-    s32 unk134; /* angle */
-    s32 unk138; /* angle speed */
-    s32 unk13C; /* radius */
-    s32 unk140; /* angle step */
+    MATRIX matrix0; /* bone matrix */
+    Fx1f3Line trail20;
+    s32 timer12C; /* timer */
+    s32 bone130; /* bone */
+    s32 angle134; /* angle */
+    s32 spin138; /* angle speed */
+    s32 radius13C; /* radius */
+    s32 angleStep140; /* angle step */
 } Fx1f3Ring; /* 0x144 */
 
 typedef struct {
-    s32 unk0; /* model */
-    s32 unk4; /* spin */
-    SVECTOR unk8; /* rotation */
-    Fx1f3Vec3 unk10; /* scale */
+    s32 model0; /* model */
+    s32 spin4; /* spin */
+    SVECTOR rot8; /* rotation */
+    Fx1f3Vec3 scale10; /* scale */
     u8 pad1C[4];
-    Fx1f3Vec3 unk20; /* position */
+    Fx1f3Vec3 pos20; /* position */
     u8 pad2C[4];
 } Fx1f3Rock; /* 0x30 */
 
 typedef struct {
-    s32 unk0; /* bone */
-    s32 unk4; /* radius */
+    s32 bone0; /* bone */
+    s32 radius4; /* radius */
     s32 unk8;
 } Fx1f3RingDef;
 
 typedef struct {
-    s32 unk0[16]; /* timers */
+    s32 timer0[16]; /* timers */
     Pool6CEntry *emit40[7];
     SVECTOR pos5C; /* target position */
     SVECTOR pos64; /* bone position */
     s32 model6C; /* model */
-    Fx1f3Vec3 unk70; /* model position */
+    Fx1f3Vec3 pos70; /* model position */
     u8 pad7C[4];
-    Fx1f3Vec3 unk80; /* model scale */
+    Fx1f3Vec3 scale80; /* model scale */
     u8 pad8C[4];
     SVECTOR rot90; /* model rotation */
     s32 model98; /* models */
     s32 model9C;
     SVECTOR rotA0;
     SVECTOR rotA8;
-    Fx1f3Vec3 unkB0;
+    Fx1f3Vec3 scaleB0;
     u8 padBC[4];
     s32 modelC0;
     s32 modelC4;
     SVECTOR rotC8;
     SVECTOR rotD0;
-    Fx1f3Vec3 unkD8;
+    Fx1f3Vec3 scaleD8;
     u8 padE4[4];
     s32 modelE8;
     s32 modelEC;
     SVECTOR rotF0;
-    Fx1f3Vec3 unkF8;
+    Fx1f3Vec3 scaleF8;
     u8 pad104[4];
     SVECTOR pos108; /* camera */
     SVECTOR pos110;
     SVECTOR pos118;
 } Fx1f3Work80; /* 0x120 */
 
-extern Fx1f3RingDef D_801E8CA8[16];
+extern Fx1f3RingDef fx_1f3_ringDefs[16];
 extern BtlModel fx_1f3_effModels[];
-extern s32 D_801EA6C0[];
-extern Fx1f3Rock D_801EC370[8];
-extern Fx1f3Ring D_801EC4F0[16];
-extern Fx1f3Line D_801EC510;
+extern s32 fx_1f3_op80Trails[];
+extern Fx1f3Rock fx_1f3_spinModels[8];
+extern Fx1f3Ring fx_1f3_rings[16];
+extern Fx1f3Line fx_1f3_ringTrails;
 static void fxm_tintScreenRatio(s32 t, s32 n, s32 from, s32 to, s32 arg4, s32 ot);
 static s32 fxm_easeLerp(s32 curve, s32 n, s32 t, s32 from, s32 to);
 

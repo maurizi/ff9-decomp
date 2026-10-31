@@ -13,7 +13,7 @@ s32 fx_135_op80(s32 mode, Fx135Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
         work->pos8.vy -= 0xC8;
         fx_135_env = env;
         ex->btlfx_getUnitArgBonePos(0x10, 0, (u16 *)&work->pos10);
-        ex->btlfx_aimAngles((s16 *)&work->pos10, (s16 *)&work->pos8, (s16 *)&work->unk18);
+        ex->btlfx_aimAngles((s16 *)&work->pos10, (s16 *)&work->pos8, (s16 *)&work->rot18);
         work->emit0 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 7), (s32)&work->pos10);
     } else {
         frame = entry->frame;
@@ -28,9 +28,9 @@ s32 fx_135_op80(s32 mode, Fx135Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
                 work->emit0 = NULL;
             }
             if (work->emit0 != NULL) {
-                work->emit0->rot.vx = work->unk18.vx;
-                work->emit0->rot.vy = work->unk18.vy;
-                work->emit0->rot.vz = work->unk18.vz;
+                work->emit0->rot.vx = work->rot18.vx;
+                work->emit0->rot.vy = work->rot18.vy;
+                work->emit0->rot.vz = work->rot18.vz;
             }
         }
         return frame >= 0x46;

@@ -1,13 +1,14 @@
 #ifndef FX_184_H
 #define FX_184_H
 
-/* Effect module fx_184 (dir 13 file 0x184). */
+/* Effect module fx_184 (dir 13 file 0x184): Spear. Evidence: the static sweep of the ability, item
+ * and enemy-sequence effect ids (docs/effect-modules.md, tools/effect_labels.py). */
 #include "btlfx_mod.h"
 
 typedef struct {
     SVECTOR pos0; /* caster body position */
     SVECTOR pos8; /* target body position */
-    SVECTOR unk10; /* from */
+    SVECTOR pos10; /* from */
     SVECTOR rot18; /* model rotation */
     VECTOR pos20; /* model position */
     VECTOR scale30; /* model scale */
@@ -23,12 +24,12 @@ typedef struct {
     SVECTOR pos0;
     SVECTOR unk8;
     SVECTOR pos10; /* target position */
-    SVECTOR unk18; /* destination */
-    SVECTOR unk20; /* angles */
-    SVECTOR unk28;
-    s32 unk30; /* state */
-    s32 unk34; /* steps */
-    s32 unk38; /* step */
+    SVECTOR pos18; /* destination */
+    SVECTOR rot20; /* angles */
+    SVECTOR pos28;
+    s32 state30; /* state */
+    s32 duration34; /* steps */
+    s32 frame38; /* step */
 } Fx184Work82;
 
 extern Unk800F78A4 *fx_184_env;

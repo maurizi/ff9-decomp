@@ -10,8 +10,8 @@ typedef struct {
     SVECTOR pos8; /* target position */
 } Fx020Work;
 
-extern SVECTOR D_801E7894;
+extern SVECTOR fx_020_emitRot;
 extern Unk800F78A4 *fx_020_env;
-extern s32 D_801E78F4[];
+extern s32 fx_020_trails[];
 
 #endif

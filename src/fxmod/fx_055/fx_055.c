@@ -11,7 +11,7 @@ s32 fx_055_op80(s32 mode, Fx055Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
         ex->btlfx_getUnitPos(0, (s16 *)&work->pos8);
         work->emit0 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 7), (s32)&work->pos8);
         if (work->emit0 != NULL) {
-            work->emit0->trails = (s32)D_801E78CC;
+            work->emit0->trails = (s32)fx_055_trails;
             work->emit0->trailSlots = 0xA;
             work->emit0->trailStride = 0x90;
         }

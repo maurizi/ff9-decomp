@@ -7,7 +7,7 @@ static s32 fx_043_op80ParticleMotion(VECTOR *out, s32 arg1, SVECTOR *pos, s32 ar
     if (r > 0x1000) {
         r = 0x1000;
     }
-    ex->btlfx_lerpVec((s16 *)&D_801E7BD0, (s16 *)&D_801E7BD8, r, (s16 *)pos);
+    ex->btlfx_lerpVec((s16 *)&fx_043_particleFrom, (s16 *)&fx_043_particleTo, r, (s16 *)pos);
     out->vx = pos->vx << 12;
     out->vy = pos->vy << 12;
     out->vz = pos->vz << 12;
@@ -26,19 +26,19 @@ s32 fx_043_op80(s32 mode, Fx043Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
         fx_043_env = env;
         ex->btlfx_getUnitBodyPos(0, 0, (s16 *)&work->pos14);
         work->pos14.vy -= 0x64;
-        D_801E7BD8.vx = work->pos14.vx;
-        D_801E7BD8.vy = work->pos14.vy;
-        D_801E7BD8.vz = work->pos14.vz;
+        fx_043_particleTo.vx = work->pos14.vx;
+        fx_043_particleTo.vy = work->pos14.vy;
+        fx_043_particleTo.vz = work->pos14.vz;
         ex->btlfx_getUnitArgBonePos(0x10, 0, (u16 *)&work->posC);
-        D_801E7BD0.vx = work->posC.vx;
-        D_801E7BD0.vy = work->posC.vy;
-        D_801E7BD0.vz = work->posC.vz;
+        fx_043_particleFrom.vx = work->posC.vx;
+        fx_043_particleFrom.vy = work->posC.vy;
+        fx_043_particleFrom.vz = work->posC.vz;
         env->camera->points[0].vx = work->posC.vx;
         env->camera->points[0].vy = work->posC.vy;
         env->camera->points[0].vz = work->posC.vz;
-        work->emit0 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 2), (s32)&D_801E7BE0);
+        work->emit0 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 2), (s32)&fx_043_emitPos);
         if (work->emit0 != NULL) {
-            work->emit0->trails = (s32)D_801E7BE8;
+            work->emit0->trails = (s32)fx_043_trails;
             work->emit0->trailSlots = 0xB;
             work->emit0->trailStride = 0x20;
         }
@@ -61,12 +61,12 @@ s32 fx_043_op81(s32 mode, Fx043Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
         fx_043_env = env;
         ex->btlfx_getUnitBodyPos(0, 0, (s16 *)&work->pos8);
         ex->btlfx_getUnitPos(0, (s16 *)&work->pos10);
-        ex->btlfx_aimAngles((s16 *)&work->pos8, (s16 *)&D_801E7BD0, (s16 *)&work->unk20);
-        ex->btlfx_pointAhead((s16 *)&work->pos8, (s16 *)&work->unk20, 0xC8, (s16 *)&work->pos18);
+        ex->btlfx_aimAngles((s16 *)&work->pos8, (s16 *)&fx_043_particleFrom, (s16 *)&work->aim20);
+        ex->btlfx_pointAhead((s16 *)&work->pos8, (s16 *)&work->aim20, 0xC8, (s16 *)&work->pos18);
         work->pos18.vy -= 0x64;
         work->emit0 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 1), (s32)&work->pos18);
         if (work->emit0 != NULL) {
-            work->emit0->trails = (s32)D_801E7D48;
+            work->emit0->trails = (s32)fx_043_trails2;
             work->emit0->trailSlots = 0x34;
             work->emit0->trailStride = 0x20;
         }
@@ -81,9 +81,9 @@ s32 fx_043_op81(s32 mode, Fx043Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
                 work->emit0 = NULL;
             }
             if (work->emit0 != NULL) {
-                work->emit0->rot.vx = work->unk20.vx;
-                work->emit0->rot.vy = work->unk20.vy;
-                work->emit0->rot.vz = work->unk20.vz;
+                work->emit0->rot.vx = work->aim20.vx;
+                work->emit0->rot.vy = work->aim20.vy;
+                work->emit0->rot.vz = work->aim20.vz;
             }
         }
         return frame >= 0x28;

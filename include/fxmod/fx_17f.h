@@ -1,21 +1,22 @@
 #ifndef FX_17F_H
 #define FX_17F_H
 
-/* Effect module fx_17f (dir 13 file 0x17f). */
+/* Effect module fx_17f (dir 13 file 0x17f): enemy Melt (Zombie). Evidence: the static sweep of the ability, item
+ * and enemy-sequence effect ids (docs/effect-modules.md, tools/effect_labels.py). */
 #include "btlfx_mod.h"
 
 typedef struct {
-    s32 unk0[3]; /* target scale */
+    s32 scale0[3]; /* target scale */
     SVECTOR posC; /* target position */
     SVECTOR rot14; /* target rotation */
-    BtlUnit9C8 *unk1C;
+    BtlUnit9C8 *model1C;
     SVECTOR pos20; /* caster position */
 } Fx17fWork;
 
 extern Unk800F78A4 *fx_17f_env;
-extern s32 D_801E7C60[0x2BC];
-extern s32 D_801E88E0[];
+extern s32 fx_17f_vertexDrops[0x2BC];
+extern s32 fx_17f_modelBackup[];
 
-void func_801E7704(SVECTOR *v, s32 i);
+void fx_17f_op80MeltVertex(SVECTOR *v, s32 i);
 
 #endif

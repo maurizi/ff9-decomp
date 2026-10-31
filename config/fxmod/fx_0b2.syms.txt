@@ -3,3 +3,5 @@ fx_0b2_header = 0x801E9058; // [code] module header (0, init, ops), btlfx_update
 fx_0b2_op80 = 0x801E8178; // type:func [code] header op entry 0, effect script op 0x80 (btlfx_spawnTask)
 fx_0b2_env = 0x801E90A0; // [code] the effect env (Unk800F78A4) the op handlers store in mode 1, used by the helpers for BTLFX_EXPORTS
 fxm_drawOffsetTrail = 0x801E7704; // type:func [code] trail strip from to (points lerped along, pushed sideways by btlfx_offsetPoint after btlfx_aimAngles), drawn with btlfx_drawTrail
+fx_0b2_trails = 0x801E90B0; // [code] three 25-point strips (Fx0b2Trail) filled and drawn by fxm_drawOffsetTrail in fx_0b2_op80
+fx_0b2_drawFunnel = 0x801E78FC; // type:func [code] 7 rings of n POLY_FT4 / POLY_GT4 quads (gouraud first and last ring) whose radius lerps from r0 to r1 and centre circles, textured and scaled

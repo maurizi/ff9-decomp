@@ -11,6 +11,6 @@ typedef struct {
 } Fx055Work;
 
 extern Unk800F78A4 *fx_055_env;
-extern s32 D_801E78CC[];
+extern s32 fx_055_trails[];
 
 #endif

@@ -1,23 +1,24 @@
 #ifndef FX_194_H
 #define FX_194_H
 
-/* Effect module fx_194 (dir 13 file 0x194). */
+/* Effect module fx_194 (dir 13 file 0x194): enemy Shockwave (Nova Dragon, ...). Evidence: the static sweep of the ability, item
+ * and enemy-sequence effect ids (docs/effect-modules.md, tools/effect_labels.py). */
 #include "btlfx_mod.h"
 
 typedef struct {
-    s32 unk0; /* state */
+    s32 state0; /* state */
     SVECTOR pos4; /* caster body position */
     SVECTOR posC; /* caster position */
-    SVECTOR unk14;
+    SVECTOR camPos14;
 } Fx194Work;
 
-extern SVECTOR D_801E7D78[6];
-extern s16 D_801E7DA8[6];
+extern SVECTOR fx_194_shakeOffsets[6];
+extern s16 fx_194_flashLevels[6];
 extern Unk800F78A4 *fx_194_env;
-extern s32 D_801E7E00; /* wave amplitude */
-extern s32 D_801E7E04; /* wave phase */
+extern s32 fx_194_waveAmp; /* wave amplitude */
+extern s32 fx_194_wavePhase; /* wave phase */
 
 static void fx_194_op80GridVertex(SVECTOR *v);
-void func_801E77DC(s32 frame, s32 amp, SVECTOR *v);
+void fx_194_shakeCamPoint(s32 frame, s32 amp, SVECTOR *v);
 
 #endif

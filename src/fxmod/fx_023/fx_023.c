@@ -13,23 +13,23 @@ s32 fx_023_op80(s32 mode, Fx023Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
         fx_023_env = env;
         ex->btlfx_getUnitPos(0, (s16 *)&work->pos14);
         ex->btlfx_getUnitHomePos(0, (s16 *)&work->pos1C);
-        work->unk34 = -1;
-        work->unk36 = -1;
-        work->unk38 = 0;
+        work->rise34 = -1;
+        work->fall36 = -1;
+        work->held38 = 0;
         work->pos1C.vx = work->pos14.vx;
         work->pos1C.vz = work->pos14.vz;
     } else {
         frame = entry->frame;
         switch (frame) {
         case 5:
-            work->unk34 = 0x1E;
+            work->rise34 = 0x1E;
             work->pos24.vx = work->pos1C.vx;
             work->pos24.vy = work->pos1C.vy;
             work->pos24.vz = work->pos1C.vz;
-            work->unk2C.vx = work->pos1C.vx;
-            work->unk2C.vy = work->pos1C.vy;
-            work->unk2C.vz = work->pos1C.vz;
-            work->unk2C.vy = -1000;
+            work->target2C.vx = work->pos1C.vx;
+            work->target2C.vy = work->pos1C.vy;
+            work->target2C.vz = work->pos1C.vz;
+            work->target2C.vy = -1000;
             work->emit0 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 2), (s32)&work->pos24);
             work->emit4 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 1), (s32)&work->pos14);
             if (work->emit0 != NULL) {
@@ -37,33 +37,33 @@ s32 fx_023_op80(s32 mode, Fx023Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
             }
             break;
         case 40:
-            work->unk36 = 3;
-            work->unk38 = 0;
-            work->unk2C.vy = work->pos1C.vy;
+            work->fall36 = 3;
+            work->held38 = 0;
+            work->target2C.vy = work->pos1C.vy;
             work->emit8 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 3), (s32)&work->pos14);
             break;
         }
-        if (work->unk34 >= 0) {
+        if (work->rise34 >= 0) {
             ex->btlfx_getUnitPos(0, (s16 *)&a);
-            a.vy = fxm_lerpRatio(work->pos1C.vy, -1000, 0x1E - work->unk34, 0x1E);
+            a.vy = fxm_lerpRatio(work->pos1C.vy, -1000, 0x1E - work->rise34, 0x1E);
             ex->btlfx_setUnitPos(0, (s16 *)&a);
-            if (--work->unk34 == 0) {
-                work->unk38 = 1;
+            if (--work->rise34 == 0) {
+                work->held38 = 1;
             }
         }
-        if (work->unk38 != 0) {
+        if (work->held38 != 0) {
             ex->btlfx_getUnitPos(0, (s16 *)&b);
             b.vy = -1000;
             ex->btlfx_setUnitPos(0, (s16 *)&b);
         }
-        if (work->unk36 >= 0) {
+        if (work->fall36 >= 0) {
             ex->btlfx_getUnitPos(0, (s16 *)&c);
             ex->btlfx_getUnitHomePos(0, (s16 *)&work->pos1C);
             work->pos1C.vx = c.vx;
             work->pos1C.vz = c.vz;
-            c.vy = fxm_lerpRatio(-1000, work->pos1C.vy, 3 - work->unk36, 3);
+            c.vy = fxm_lerpRatio(-1000, work->pos1C.vy, 3 - work->fall36, 3);
             ex->btlfx_setUnitPos(0, (s16 *)&c);
-            if (--work->unk36 == 0) {
+            if (--work->fall36 == 0) {
                 ex->btlfx_setUnitPos(0, (s16 *)&work->pos14);
                 ex->btlfx_getUnitHomePos(0, (s16 *)&work->pos1C);
                 work->pos1C.vx = work->pos14.vx;
@@ -71,7 +71,7 @@ s32 fx_023_op80(s32 mode, Fx023Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
                 work->emitC = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 7), (s32)&work->pos14);
                 work->emit10 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 8), (s32)&work->pos14);
                 if (work->emit10 != NULL) {
-                    work->emit10->trails = (s32)D_801E7C40;
+                    work->emit10->trails = (s32)fx_023_trails;
                     work->emit10->trailSlots = 0x3C;
                     work->emit10->trailStride = 0x18;
                 }
@@ -82,7 +82,7 @@ s32 fx_023_op80(s32 mode, Fx023Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
                 work->emit0 = NULL;
             }
             if (work->emit0 != NULL) {
-                work->emit0->target = (s32)&work->unk2C;
+                work->emit0->target = (s32)&work->target2C;
             }
         }
         return frame >= 0x50;

@@ -1,7 +1,8 @@
 #ifndef FX_115_H
 #define FX_115_H
 
-/* Effect module fx_115 (dir 13 file 0x115). */
+/* Effect module fx_115 (dir 13 file 0x115): Throw pinwheel/rising sun. Evidence: the static sweep of the ability, item
+ * and enemy-sequence effect ids (docs/effect-modules.md, tools/effect_labels.py). */
 #include "btlfx_mod.h"
 
 typedef struct {
@@ -11,8 +12,8 @@ typedef struct {
     SVECTOR rot18; /* model rotation */
     VECTOR pos20; /* model position */
     VECTOR scale30; /* model scale */
-    SVECTOR unk40[4]; /* rotation trail */
-    VECTOR unk60[4]; /* position trail */
+    SVECTOR rot40[4]; /* rotation trail */
+    VECTOR pos60[4]; /* position trail */
     u16 modelA0; /* models */
     u16 modelA2;
 } Fx115Work80;

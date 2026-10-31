@@ -11,36 +11,36 @@ typedef struct {
 } Fx057Vec3;
 
 typedef struct {
-    s32 unk0;
-    s32 unk4; /* frame */
-    s32 unk8;
+    s32 state0;
+    s32 frame4; /* frame */
+    s32 otZ8;
     SVECTOR posC; /* position */
     SVECTOR pos14;
-    Fx057Vec3 unk1C;
+    Fx057Vec3 pos1C;
     s32 model28; /* model */
 } Fx057Work81; /* 0x2C */
 
 typedef struct {
-    s32 unk0; /* state */
-    s32 unk4; /* frame */
+    s32 state0; /* state */
+    s32 frame4; /* frame */
     s32 model8; /* model */
     s32 modelC; /* model */
     SVECTOR pos10; /* position */
-    Fx057Vec3 unk18; /* model position */
+    Fx057Vec3 pos18; /* model position */
     SVECTOR pos24;
     Pool6CEntry *emit2C;
     Pool6CEntry *emit30;
     Pool6CEntry *emit34;
 } Fx057Work80; /* 0x38 */
 
-extern SVECTOR D_801EA714;
-extern s32 D_801E8EB4[];
-extern s32 D_801EA708; /* fade */
+extern SVECTOR fx_057_targetPos;
+extern s32 fx_057_trails[];
+extern s32 fx_057_fade; /* fade */
 extern Pool6CEntry *fx_057_emitter1;
 extern BtlModel fx_057_effModels[];
 extern Unk800F78A4 *fx_057_env;
-extern SVECTOR D_801EA6F4; /* camera rest position */
-extern SVECTOR D_801EA6FC; /* particle head position */
+extern SVECTOR fx_057_camRest; /* camera rest position */
+extern SVECTOR fx_057_headPos; /* particle head position */
 extern Pool6CEntry *fx_057_emitter0;
 extern Unk80100C78Entry *fx_057_task;
 

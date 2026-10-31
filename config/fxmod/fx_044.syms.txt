@@ -3,3 +3,4 @@ fx_044_header = 0x801E7A1C; // [code] module header (0, init, ops), btlfx_update
 fx_044_op80 = 0x801E7704; // type:func [code] header op entry 0, effect script op 0x80 (btlfx_spawnTask)
 fx_044_op81 = 0x801E7890; // type:func [code] header op entry 1, effect script op 0x81 (btlfx_spawnTask)
 fx_044_env = 0x801E7A64; // [code] the effect env (Unk800F78A4) the op handlers store in mode 1, used by the helpers for BTLFX_EXPORTS
+fx_044_trails = 0x801E7A74; // [code] trail point buffer of the fx_044_op81 emitter (Pool6CEntry trails, 0xD slots of 0x90 bytes)

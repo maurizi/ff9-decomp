@@ -7,41 +7,41 @@
 #include "btlfx_mod.h"
 
 extern Unk800F78A4 *fx_1cc_env;
-extern s16 D_801E9BD0[];
+extern s16 fx_1cc_pieceDists[];
 
 typedef struct Fx1ccObj {
     s16 unk0; /* state / piece index */
-    s16 unk2; /* 0: main object, 1: piece */
-    s32 unk4; /* direction index */
-    s32 unk8; /* frame */
-    s32 unkC; /* position, 28.4 (low halves used by the main object) */
-    s32 unk10;
-    s32 unk14;
+    s16 kind2; /* 0: main object, 1: piece */
+    s32 index4; /* direction index */
+    s32 frame8; /* frame */
+    s32 posXC; /* position, 28.4 (low halves used by the main object) */
+    s32 posY10;
+    s32 posZ14;
     s16 unk18; /* velocity (main: SVECTOR position) */
     s16 unk1A;
     s16 unk1C;
     s16 unk1E;
     SVECTOR rot20; /* rotation */
-    s16 unk28; /* rotation speed */
-    s16 unk2A;
-    s32 unk2C; /* model */
-    s32 unk30; /* model */
+    s16 spin28; /* rotation speed */
+    s16 spin2A;
+    s32 model2C; /* model */
+    s32 model30; /* model */
     Pool6CEntry *emit34; /* particle */
 } Fx1ccObj;
 
 typedef struct {
     u8 pad0[0x20];
-    s32 unk20[14]; /* models */
+    s32 model20[14]; /* models */
     u8 pad58[0x78 - 0x58];
-    s16 unk78; /* burst */
+    s16 flag78; /* burst */
 } Fx1ccInst;
 
-extern SVECTOR D_801E9B68[];
-void func_801E8284(s16 *from, s16 *to, s32 i, s16 *out);
+extern SVECTOR fx_1cc_dirRots[];
+void fx_1cc_piecePos(s16 *from, s16 *to, s32 i, s16 *out);
 
 typedef struct {
-    s32 unk0; /* state */
-    s32 unk4; /* frame counter */
+    s32 state0; /* state */
+    s32 frame4; /* frame counter */
     s32 model8; /* models */
     s32 modelC;
     s32 model10;
@@ -53,14 +53,14 @@ typedef struct {
     SVECTOR pos60;
     SVECTOR pos68;
     SVECTOR unk70;
-    s16 unk78;
-    s16 unk7A; /* spawned directions */
-    s32 unk7C;
-    s32 unk80;
+    s16 flag78;
+    s16 index7A; /* spawned directions */
+    s32 frame7C;
+    s32 scroll80;
 } Fx1ccWork80; /* 0x84 */
 
 extern BtlModel fx_1cc_effModels[];
-extern s32 D_801E9B98[14];
+extern s32 fx_1cc_pieceFileIds[14];
 static s32 fx_1cc_op80PoolTask(s32 mode, Fx1ccObj *o, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 frame, s32 arg5,
                   Fx1ccInst *inst);
 

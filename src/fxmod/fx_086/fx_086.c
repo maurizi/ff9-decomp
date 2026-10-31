@@ -244,9 +244,9 @@ s32 fx_086_op80(s32 mode, Fx086Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
         *arg4 = 0x48;
     } else if (mode == 1) {
         fx_086_env = env;
-        work->unk0 = 1;
-        work->unk4 = 0;
-        fxm_randDiscPoints(0x180, 0x400, D_801EA3BC);
+        work->state0 = 1;
+        work->frame4 = 0;
+        fxm_randDiscPoints(0x180, 0x400, fx_086_streakPts);
         work->unk8[0] = 0xA0;
         work->unk8[1] = 0x78;
         work->unk8[2] = 0;
@@ -264,7 +264,7 @@ s32 fx_086_op80(s32 mode, Fx086Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
         work->model40 = ex->Hi_RegisterTexEffModel((BtlUnit9C8 *)ex->btlfx_getFileData(entry->file, 0xF), 0x97, 0x3D80, 0, 0);
     } else {
         frame = entry->frame;
-        switch (work->unk0) {
+        switch (work->state0) {
         case 1: {
         {
             SVECTOR v;
@@ -303,7 +303,7 @@ s32 fx_086_op80(s32 mode, Fx086Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             env->camera->points[3].vz += frame * 900 / 49 - 0x100;
             env->camera->points[3].vy += 0x180 - frame * 900 / 49;
             ex->Hi_DrawEffModel(&rot, &pos, (s32)&scale, work->model24);
-            ex->btlfx_drawScrollMove(work->unk4 * 8, 0x1C0, 0x100, 0x40, 0x80, 0x200, 0x100);
+            ex->btlfx_drawScrollMove(work->frame4 * 8, 0x1C0, 0x100, 0x40, 0x80, 0x200, 0x100);
             scale.vz = scale.vz * 3 / 2;
             ex->Hi_DrawEffModel(&rot, &pos, (s32)&scale, work->model40);
             scale.vz = scale.vz * 2 / 3;
@@ -316,7 +316,7 @@ s32 fx_086_op80(s32 mode, Fx086Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
                 ex->Hi_DrawEffModel(&rot, &pos, (s32)&scale, work->model28);
                 ex->Hi_ModifyEffModelAbr(work->model28, 1);
                 ex->Hi_ModifyEffModelRGB(work->model28, (c41 >> 5) - 0x80, (c41 >> 5) - 0x80, (c41 >> 5) - 0x80);
-                ex->btlfx_drawBackdrop((BtlBgLayers *)ex->btlfx_getFileData(entry->file, 7), work->unk4);
+                ex->btlfx_drawBackdrop((BtlBgLayers *)ex->btlfx_getFileData(entry->file, 7), work->frame4);
             }
             z = -0x64;
             col.r = 0x20;
@@ -328,7 +328,7 @@ s32 fx_086_op80(s32 mode, Fx086Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             if (frame < 0x18) {
                 z = -0x46;
             }
-            fxm_drawStreakField((u32 *)(env->ot + 8), 0x180, 0x80, z, &v, D_801EA3BC, &col,
+            fxm_drawStreakField((u32 *)(env->ot + 8), 0x180, 0x80, z, &v, fx_086_streakPts, &col,
                           ex->math_cos((frame << 10) / 49) * 3 / 4 + 0x400, 1);
             if (frame == 2) {
                 work->emit44 = p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0xB), (s32)&work->pos14);
@@ -365,7 +365,7 @@ s32 fx_086_op80(s32 mode, Fx086Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
                 env->camera->points[3].vx += 0x1800;
                 env->camera->points[3].vx -= 0x1000;
                 ex->btlfx_startScreenFade(1, 1);
-                work->unk0 = 2;
+                work->state0 = 2;
                 entry->frame = -1;
             }
         }
@@ -430,23 +430,23 @@ s32 fx_086_op80(s32 mode, Fx086Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
 
             sc.vx = sc.vy = sc.vz = s / 2;
             fxm_drawTexCylinder(&work->pos14, &rot, &sc, 0x4B0, 0x2BC, 0x300, 0x398, 0x80, 0x1C, 0x3D05, 0x80, 0x80,
-                          -(work->unk4 * 0x180), 0x2000, 1, 1);
+                          -(work->frame4 * 0x180), 0x2000, 1, 1);
             fxm_drawTexCylinder(&work->pos14, &rot, &sc, 0x4B0, 0x2BC, 0x300, 0x400, 0x80, 0x1C, 0x3D05, 0x80, 0x80,
-                          -(work->unk4 * 0x180) + 0x550, 0x2000, 1, 1);
+                          -(work->frame4 * 0x180) + 0x550, 0x2000, 1, 1);
             fxm_drawTexCylinder(&work->pos14, &rot, &sc, 0x4B0, 0x2BC, 0x300, 0x300, 0x80, 0x1C, 0x3D05, 0x80, 0x80,
-                          -(work->unk4 * 0x180) + 0xAA0, 0x2000, 1, 1);
+                          -(work->frame4 * 0x180) + 0xAA0, 0x2000, 1, 1);
             fxm_drawTexCylinder(&work->pos14, &rot, &sc, 0x4B0, 0x2BC, 0x300, 0x398, 0x80, 0x1C, 0x3D05, 0x80, 0x80,
-                          work->unk4 << 9, 0x2000, 1, -1);
+                          work->frame4 << 9, 0x2000, 1, -1);
             fxm_drawTexCylinder(&work->pos14, &rot, &sc, 0x4B0, 0x2BC, 0x300, 0x400, 0x80, 0x1C, 0x3D05, 0x80, 0x80,
-                          (work->unk4 << 9) + 0x550, 0x2000, 1, -1);
+                          (work->frame4 << 9) + 0x550, 0x2000, 1, -1);
             fxm_drawTexCylinder(&work->pos14, &rot, &sc, 0x4B0, 0x2BC, 0x300, 0x300, 0x80, 0x1C, 0x3D05, 0x80, 0x80,
-                          (work->unk4 << 9) + 0xAA0, 0x2000, 1, -1);
-            ex->btlfx_drawBackdrop((BtlBgLayers *)ex->btlfx_getFileData(entry->file, 7), work->unk4);
+                          (work->frame4 << 9) + 0xAA0, 0x2000, 1, -1);
+            ex->btlfx_drawBackdrop((BtlBgLayers *)ex->btlfx_getFileData(entry->file, 7), work->frame4);
             if (frame >= 12) {
                 SVECTOR d;
                 SVECTOR out;
 
-                work->unk0 = 3;
+                work->state0 = 3;
                 entry->frame = -1;
                 ex->btlfx_drawScreenTint((u32 *)(env->ot + 1), 1, 0xC8, 0xC8, 0x64);
                 d.vx = 0x4E0;
@@ -457,8 +457,8 @@ s32 fx_086_op80(s32 mode, Fx086Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
                     out.vx += ex->btlfx_randCentered(0x180);
                     out.vy += ex->btlfx_randCentered(0x180);
                     out.vz += ex->btlfx_randCentered(0x180);
-                    BTLFX_COPY_SVEC(&D_801EB5BC[i], &out);
-                    D_801EB5BC[i].pad = i >> 2;
+                    BTLFX_COPY_SVEC(&fx_086_spritePos[i], &out);
+                    fx_086_spritePos[i].pad = i >> 2;
                 }
             }
             }
@@ -540,11 +540,11 @@ s32 fx_086_op80(s32 mode, Fx086Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             if (frame < 13) {
                 cc = ex->math_cos((frame << 10) / 12);
                 for (i = 0; i < 20; i++) {
-                    D_801EB5BC[i * 3].pad++;
-                    BTLFX_COPY_SVEC(&v, &D_801EB5BC[i * 3]);
+                    fx_086_spritePos[i * 3].pad++;
+                    BTLFX_COPY_SVEC(&v, &fx_086_spritePos[i * 3]);
                     v.pad = 0;
                     ex->btlfx_drawSprites((u8 *)ex->btlfx_getFileData(entry->file, 0x13), &v, NULL, 0x3000,
-                                          D_801EB5BC[i * 3].pad, 1, cc);
+                                          fx_086_spritePos[i * 3].pad, 1, cc);
                 }
             }
             if (frame >= 4) {
@@ -613,7 +613,7 @@ s32 fx_086_op80(s32 mode, Fx086Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
                     rot.vx = 0;
                     rot.vy = ex->math_cos(a41) >> 2;
                     rot.vz = 0;
-                    ex->btlfx_drawScrollMove(work->unk4 * 8, 0x240, 0x100, 0x40, 0x80, 0x300, 0x100);
+                    ex->btlfx_drawScrollMove(work->frame4 * 8, 0x240, 0x100, 0x40, 0x80, 0x300, 0x100);
                     if (k < 3) {
                         c41b = 0x1C00;
                     }
@@ -633,7 +633,7 @@ s32 fx_086_op80(s32 mode, Fx086Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             break;
         }
         }
-        work->unk4++;
+        work->frame4++;
     }
     return 0;
 }

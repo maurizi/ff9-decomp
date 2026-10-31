@@ -51,7 +51,7 @@ static void fxm_drawOffsetTrail(Unk80100C78Entry *entry, Fx19fTrail *trail, SVEC
 
     ex->btlfx_aimAngles((s16 *)from, (s16 *)to, (s16 *)&rot);
     i = 0;
-    p = trail->unk4;
+    p = trail->points4;
     trail->unk0 = trail->unk2 = 0x18;
     trail->unk1 = 0;
     do {
@@ -144,8 +144,8 @@ s32 fx_19f_op81(s32 mode, Fx19fWork81 *work, Unk800F78A4 *env, Unk80100C78Entry 
     if (mode == 0) {
         *arg4 = 0x84;
     } else if (mode == 1) {
-        work->unk0 = 0;
-        work->unk4 = 0;
+        work->state0 = 0;
+        work->frame4 = 0;
         fx_19f_env = env;
         ex->btlfx_initEffModels(fx_19f_effModels, 5);
         work->model70 = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, 0x21), 1);
@@ -173,18 +173,18 @@ s32 fx_19f_op81(s32 mode, Fx19fWork81 *work, Unk800F78A4 *env, Unk80100C78Entry 
         f = 0;
         arr60[0] = arr60[1] = arr60[2] = 0;
         g = 0;
-        switch (work->unk0) {
+        switch (work->state0) {
         case 0: {
             key = (Fx19fKey12 *)((u8 *)ex->btlfx_getFileData(entry->file, 0x1C) + (frame * 12 + 4));
-            work->unk48[0] = key->x + work->pos8.vx;
-            work->unk48[1] = key->y + work->pos8.vy;
-            work->unk48[2] = key->z + work->pos8.vz;
+            work->pos48[0] = key->x + work->pos8.vx;
+            work->pos48[1] = key->y + work->pos8.vy;
+            work->pos48[2] = key->z + work->pos8.vz;
             work->rot60.vx = key->rx;
             work->rot60.vy = key->ry;
             work->rot60.vz = key->rz;
-            work->unk54[0] = 0x2000;
-            work->unk54[1] = 0x2000;
-            work->unk54[2] = 0x2000;
+            work->scale54[0] = 0x2000;
+            work->scale54[1] = 0x2000;
+            work->scale54[2] = 0x2000;
             if (frame >= 7) {
                 SVECTOR rot;
 
@@ -204,7 +204,7 @@ s32 fx_19f_op81(s32 mode, Fx19fWork81 *work, Unk800F78A4 *env, Unk80100C78Entry 
                 c6 = (ex->math_cos((frame << 10) / 7) >> 1) + 0x800;
             }
             if (frame >= 15) {
-                work->unk0 = 1;
+                work->state0 = 1;
                 entry->frame = -1;
             }
         } break;
@@ -225,7 +225,7 @@ s32 fx_19f_op81(s32 mode, Fx19fWork81 *work, Unk800F78A4 *env, Unk80100C78Entry 
                 ex->btlfx_startFadeBackground(1, 6);
             }
             if (frame >= 9) {
-                work->unk0 = 2;
+                work->state0 = 2;
                 entry->frame = -1;
                 ex->btlfx_drawScreenTint((u32 *)(env->ot + 2), 2, 0xFF, 0xFF, 0);
                 ex->btlfx_startFadeBackground(-1, 2);
@@ -311,14 +311,14 @@ s32 fx_19f_op81(s32 mode, Fx19fWork81 *work, Unk800F78A4 *env, Unk80100C78Entry 
                 } else {
                     work->pos10.vy -= 0x56E;
                 }
-                FX19F_W(D_801EA9AC, 0) = FX19F_W(work->pos10, 0);
-                FX19F_W(D_801EA9AC, 1) = FX19F_W(work->pos10, 1);
+                FX19F_W(fx_19f_boltCenter, 0) = FX19F_W(work->pos10, 0);
+                FX19F_W(fx_19f_boltCenter, 1) = FX19F_W(work->pos10, 1);
                 if (frame < 24) {
-                    D_801EA9B4 = 0x1000;
+                    fx_19f_boltLength = 0x1000;
                 } else if (frame < 32) {
-                    D_801EA9B4 = (h * 0x44C) >> 12;
+                    fx_19f_boltLength = (h * 0x44C) >> 12;
                 } else {
-                    D_801EA9B4 = 0xB86;
+                    fx_19f_boltLength = 0xB86;
                 }
                 env->otZ = 0x140;
                 if (frame >= 15) {
@@ -427,7 +427,7 @@ s32 fx_19f_op81(s32 mode, Fx19fWork81 *work, Unk800F78A4 *env, Unk80100C78Entry 
                 }
             }
             if (frame >= 43) {
-                work->unk0 = 3;
+                work->state0 = 3;
                 entry->frame = -1;
                 ex->btlfx_startFadeBackground(-1, 6);
                 p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0x2A), (s32)&work->pos10);
@@ -440,7 +440,7 @@ s32 fx_19f_op81(s32 mode, Fx19fWork81 *work, Unk800F78A4 *env, Unk80100C78Entry 
             t = (frame << 12) / 20;
             if (frame < 12) {
                 f5 = 0xFF - (frame << 5) / 12;
-                fxm_drawCenterBand(env->ot + 2, 1, D_801EA9B8[frame], 0xC8 - frame * 0xC8 / 12, 0xC8 - frame * 0xC8 / 12,
+                fxm_drawCenterBand(env->ot + 2, 1, fx_19f_bandWidths[frame], 0xC8 - frame * 0xC8 / 12, 0xC8 - frame * 0xC8 / 12,
                               f5);
             }
             if (frame == 0) {
@@ -485,15 +485,15 @@ s32 fx_19f_op81(s32 mode, Fx19fWork81 *work, Unk800F78A4 *env, Unk80100C78Entry 
                 ex->btlfx_drawScreenGrid(2, 0xA0, 0x78, 0x50, 0x3C, 4, 4, 2, 2, &rot, &sc, &col, 0, 0);
             }
             key = (Fx19fKey12 *)((u8 *)ex->btlfx_getFileData(entry->file, 0x1B) + (frame * 12 + 4));
-            work->unk48[0] = key->x + work->pos8.vx;
-            work->unk48[1] = key->y + work->pos8.vy - 0x2EE;
-            work->unk48[2] = key->z + work->pos8.vz;
-            work->unk54[0] = key->rx * 2;
-            work->unk54[1] = key->ry * 2;
-            work->unk54[2] = key->rz * 2;
+            work->pos48[0] = key->x + work->pos8.vx;
+            work->pos48[1] = key->y + work->pos8.vy - 0x2EE;
+            work->pos48[2] = key->z + work->pos8.vz;
+            work->scale54[0] = key->rx * 2;
+            work->scale54[1] = key->ry * 2;
+            work->scale54[2] = key->rz * 2;
             work->rot60.vx = work->rot60.vy = work->rot60.vz = 0;
             if (frame >= 20) {
-                work->unk0 = 3;
+                work->state0 = 3;
                 entry->frame = -1;
                 ex->btlfx_clearEffModels();
                 return 1;
@@ -506,31 +506,31 @@ s32 fx_19f_op81(s32 mode, Fx19fWork81 *work, Unk800F78A4 *env, Unk80100C78Entry 
             SVECTOR a;
             SVECTOR b;
 
-            pos.vx = work->unk48[0];
-            pos.vy = work->unk48[1];
-            pos.vz = work->unk48[2];
-            pos.vy += ex->math_cos(work->unk4 * 0x70) >> 6;
-            pos.vy += ex->math_sin(work->unk4 << 7) >> 6;
-            ex->Hi_DrawEffModel(&work->rot60, &pos, (s32)work->unk54, work->model78);
+            pos.vx = work->pos48[0];
+            pos.vy = work->pos48[1];
+            pos.vz = work->pos48[2];
+            pos.vy += ex->math_cos(work->frame4 * 0x70) >> 6;
+            pos.vy += ex->math_sin(work->frame4 << 7) >> 6;
+            ex->Hi_DrawEffModel(&work->rot60, &pos, (s32)work->scale54, work->model78);
             if (c6 != 0) {
-                sc.vx = work->unk54[0];
-                sc.vy = work->unk54[1];
-                sc.vz = work->unk54[2];
+                sc.vx = work->scale54[0];
+                sc.vy = work->scale54[1];
+                sc.vz = work->scale54[2];
                 sc.vx += d7;
                 sc.vy += e;
                 sc.vz += d7;
                 ex->Hi_DrawEffModel(&work->rot60, &pos, (s32)&sc, work->model7C);
                 c12 = (c6 >> 5) - 0x80;
                 ex->Hi_ModifyEffModelRGB(work->model7C, c12, c12, c12);
-                ex->btlfx_drawScrollMove(work->unk4 * 5, 0x260, 0x100, 0x20, 0x80, 0x240, 0x100);
+                ex->btlfx_drawScrollMove(work->frame4 * 5, 0x260, 0x100, 0x20, 0x80, 0x240, 0x100);
             }
             if (m != 0) {
-                ex->Hi_DrawEffModel(&work->rot60, &pos, (s32)work->unk54, work->model80);
+                ex->Hi_DrawEffModel(&work->rot60, &pos, (s32)work->scale54, work->model80);
                 c13 = (((m * 2) - 0x1000) >> 5) - 0x80;
                 ex->Hi_ModifyEffModelRGB(work->model80, c13, c13, c13);
             }
             if (f != 0) {
-                n3 = work->unk4 * 0x29E;
+                n3 = work->frame4 * 0x29E;
                 a.vx = pos.vx;
                 a.vy = pos.vy;
                 a.vz = pos.vz;
@@ -539,29 +539,29 @@ s32 fx_19f_op81(s32 mode, Fx19fWork81 *work, Unk800F78A4 *env, Unk80100C78Entry 
                 work->rot60.vx -= 0x400;
                 ex->btlfx_pointAhead((s16 *)&a, (s16 *)&work->rot60, 0x5DC, (s16 *)&a);
                 work->rot60.vx += 0x400;
-                fxm_drawOffsetTrail(entry, &D_801EAA58, &a, &b, g, n3, 0xF0, work->unk4 & 7, f, 0x40);
+                fxm_drawOffsetTrail(entry, &fx_19f_offsetTrail, &a, &b, g, n3, 0xF0, work->frame4 & 7, f, 0x40);
             }
         }
         env->otZ = 0x1EA;
         if (alpha != 0) {
             for (k = 0; k < 3; k++) {
                 pad = 0x168;
-                s1p = (s16 *)ex->btlfx_getFileData(entry->file, D_801EA9D0[k]) + 2;
-                s2p = (s16 *)ex->btlfx_getFileData(entry->file, D_801EA9DC[k]) + 2;
+                s1p = (s16 *)ex->btlfx_getFileData(entry->file, fx_19f_stripFromFileIds0[k]) + 2;
+                s2p = (s16 *)ex->btlfx_getFileData(entry->file, fx_19f_stripToFileIds0[k]) + 2;
                 if (k != 0) {
                     pad = 0x80;
                     if (k == 1) {
                         pad = 0x58;
                     }
                 }
-                ta = &D_801EAF18[k * 2];
-                pt = ta->unk4;
+                ta = &fx_19f_stripTrails0[k * 2];
+                pt = ta->points4;
                 ta->unk0 = ta->unk2 = 0x10;
                 ta->unk1 = 0;
-                tb = &D_801EAF18[k * 2 + 1];
+                tb = &fx_19f_stripTrails0[k * 2 + 1];
                 tb->unk0 = tb->unk2 = 0x10;
                 tb->unk1 = 0;
-                pb = tb->unk4;
+                pb = tb->points4;
                 for (j = n = 0; j < 34; j++, n++) {
                     if (j == 17) {
                         pt = pb;
@@ -578,21 +578,21 @@ s32 fx_19f_op81(s32 mode, Fx19fWork81 *work, Unk800F78A4 *env, Unk80100C78Entry 
                     pt->pad = pad;
                     pt++;
                 }
-                ex->btlfx_drawTrail((u8 *)ex->btlfx_getFileData(entry->file, 6), 0, NULL, (work->unk4 + k) & 7, type, alpha,
+                ex->btlfx_drawTrail((u8 *)ex->btlfx_getFileData(entry->file, 6), 0, NULL, (work->frame4 + k) & 7, type, alpha,
                                     1, (u8 *)ta, 2);
-                ex->btlfx_drawTrail((u8 *)ex->btlfx_getFileData(entry->file, 0xF), 0, NULL, (work->unk4 + k) & 7, type,
+                ex->btlfx_drawTrail((u8 *)ex->btlfx_getFileData(entry->file, 0xF), 0, NULL, (work->frame4 + k) & 7, type,
                                     alpha, 1, (u8 *)tb, 2);
             }
         }
         for (k2 = 0; k2 < 3; k2++) {
             if (arr60[k2] != 0) {
-                q1 = (s16 *)ex->btlfx_getFileData(entry->file, D_801EA9E8[k2]) + 8;
-                q2 = (s16 *)ex->btlfx_getFileData(entry->file, D_801EA9F4[k2]);
+                q1 = (s16 *)ex->btlfx_getFileData(entry->file, fx_19f_stripFromFileIds1[k2]) + 8;
+                q2 = (s16 *)ex->btlfx_getFileData(entry->file, fx_19f_stripToFileIds1[k2]);
                 q2 += 8;
-                tc = &D_801EB268[k2];
+                tc = &fx_19f_stripTrails1[k2];
                 tc->unk0 = tc->unk2 = 0xC;
                 tc->unk1 = 0;
-                pt2 = tc->unk4;
+                pt2 = tc->points4;
                 for (j2 = 0; j2 < 13; j2++) {
                     i2 = arr70[k2] - j2;
                     if (i2 < 0) {
@@ -606,11 +606,11 @@ s32 fx_19f_op81(s32 mode, Fx19fWork81 *work, Unk800F78A4 *env, Unk80100C78Entry 
                     pt2++;
                 }
                 ex->btlfx_drawTrail((u8 *)ex->btlfx_getFileData(entry->file, 0x18), 0, (s32 *)&work->pos8,
-                                    (work->unk4 + k2) & 7, arr90[k2], arr60[k2], 1, (u8 *)tc, 1);
+                                    (work->frame4 + k2) & 7, arr90[k2], arr60[k2], 1, (u8 *)tc, 1);
             }
         }
         env->otZ = 0;
-        work->unk4++;
+        work->frame4++;
     }
     return 0;
 }
@@ -676,7 +676,7 @@ static void fxm_drawJaggedTrail(Unk80100C78Entry *entry, s32 file, s32 ot, Fx19f
     cnt = (n - 4) / 8;
     trail->unk0 = trail->unk2 = cnt - 1;
     trail->unk1 = 0;
-    pt = trail->unk4;
+    pt = trail->points4;
     for (i = 0; i < cnt; i++, pt++) {
         t = 0x1000 - (i << 12) / (cnt - 1);
         t += *noise++ * 2 / 3;
@@ -699,7 +699,7 @@ static void fxm_drawJaggedTrail(Unk80100C78Entry *entry, s32 file, s32 ot, Fx19f
 
 static void fxm_drawJaggedTrailBranch(Unk80100C78Entry *entry, s32 file, s32 ot, Fx19fTrail *path, Fx19fTrail *trail, s32 n, s32 *noise,
                    s32 i, s32 type, s32 alpha, s32 pad) {
-    SVECTOR *pt = path->unk4;
+    SVECTOR *pt = path->points4;
     BtlfxExports *ex = BTLFX_EXPORTS(fx_19f_env);
     SVECTOR mid;
 
@@ -719,20 +719,20 @@ static s32 fx_19f_op83PoolTask(s32 mode, Fx19fBolt *b, Unk800F78A4 *env, Unk8010
     Fx19fTrail *tr2;
 
     if (mode != 1) {
-        kind = b->unk11;
+        kind = b->kind11;
         if (kind < 2) {
             if (kind < 0) {
                 return 0;
             }
             t = frame << 9;
             c = ex->math_cos(t >> 2);
-            tr = (Fx19fTrail *)&D_801EB3B8[b->unk10];
-            tr2 = (Fx19fTrail *)&D_801EC538[b->unk10];
-            if (b->unk11 == 0) {
-                b->unk8.vx = D_801EA9AC.vx;
-                b->unk8.vy = D_801EA9AC.vy;
-                b->unk8.vz = D_801EA9AC.vz;
-                fxm_drawJaggedTrail(entry, 0x1E, 0, tr, 0x8C, b->unk18, &b->unk0, &b->unk8, 0, 0x180, frame * 0x97, 0x140, frame,
+            tr = (Fx19fTrail *)&fx_19f_boltTrails[b->index10];
+            tr2 = (Fx19fTrail *)&fx_19f_branchTrails[b->index10];
+            if (b->kind11 == 0) {
+                b->pos8.vx = fx_19f_boltCenter.vx;
+                b->pos8.vy = fx_19f_boltCenter.vy;
+                b->pos8.vz = fx_19f_boltCenter.vz;
+                fxm_drawJaggedTrail(entry, 0x1E, 0, tr, 0x8C, b->noise18, &b->pos0, &b->pos8, 0, 0x180, frame * 0x97, 0x140, frame,
                               c, ((0x1000 - t) * b->unk15) >> 12, ((t * 3 * 128) >> 12) + 0x80);
             } else {
                 if (frame == 0) {
@@ -746,9 +746,9 @@ static s32 fx_19f_op83PoolTask(s32 mode, Fx19fBolt *b, Unk800F78A4 *env, Unk8010
                 if (frame == 0) {
                     s = (s * 3) >> 1;
                 }
-                fxm_drawJaggedTrail(entry, 2, 0, tr, 0x8C, b->unk18 + frame * k, &b->unk0, &b->unk8, 0, 0x180, frame * 0xC0,
+                fxm_drawJaggedTrail(entry, 2, 0, tr, 0x8C, b->noise18 + frame * k, &b->pos0, &b->pos8, 0, 0x180, frame * 0xC0,
                               0x168, frame, c, s, 0);
-                fxm_drawJaggedTrailBranch(entry, 3, 0, tr, tr2, 0x24, b->unk18, b->unk12, frame, c, s >> 2);
+                fxm_drawJaggedTrailBranch(entry, 3, 0, tr, tr2, 0x24, b->noise18, b->index12, frame, c, s >> 2);
             }
             if (frame >= 8) {
                 return 1;
@@ -760,7 +760,7 @@ static s32 fx_19f_op83PoolTask(s32 mode, Fx19fBolt *b, Unk800F78A4 *env, Unk8010
 
 static s32 fxm_randStripPoint32(SVECTOR *out, SVECTOR *arg1, s32 arg2, s32 arg3) {
     BtlfxExports *ex = BTLFX_EXPORTS(fx_19f_env);
-    SVECTOR *p = D_801EB3BC[ex->btlfx_rand() % 32].unk0;
+    SVECTOR *p = fx_19f_boltTrailPoints[ex->btlfx_rand() % 32].points0;
 
     p += ex->btlfx_rand() % 17;
 
@@ -798,70 +798,70 @@ s32 fx_19f_op83(s32 mode, Fx19fWork83 *work, Unk800F78A4 *env, Fx19fInst *inst, 
     } else if (mode == 1) {
         i = init->workSize;
         fx_19f_env = env;
-        work->unk0 = D_801EC9B8[0];
-        np = D_801EC9B8[0];
+        work->noise0 = fx_19f_noise[0];
+        np = fx_19f_noise[0];
         for (n = 0; n < 64; n++) {
             *np++ = ex->btlfx_randCentered(0xD2);
             *np++ = ex->btlfx_randCentered(0x1C3);
             *np++ = ex->btlfx_randCentered(0xDC);
         }
-        work->unk8 = i;
-        work->unk4 = 0;
+        work->kind8 = i;
+        work->count4 = 0;
     } else {
-        frame = inst->unk0;
-        switch (work->unk8) {
+        frame = inst->frame0;
+        switch (work->kind8) {
         case 0:
-            FX19F_W(base, 0) = FX19F_W(D_801EA9AC, 0);
-            FX19F_W(base, 1) = FX19F_W(D_801EA9AC, 1);
+            FX19F_W(base, 0) = FX19F_W(fx_19f_boltCenter, 0);
+            FX19F_W(base, 1) = FX19F_W(fx_19f_boltCenter, 1);
             if (frame >= 0x14) {
                 return 1;
             }
-            work->unk4++;
+            work->count4++;
             FX19F_W(p, 0) = FX19F_W(base, 0);
             p.vy = 0;
             FX19F_W(p, 1) = FX19F_W(base, 1);
             FX19F_W(q, 0) = FX19F_W(base, 0);
             FX19F_W(q, 1) = FX19F_W(base, 1);
-            b = ex->btlfx_poolSpawn(inst->unk10);
+            b = ex->btlfx_poolSpawn(inst->pool10);
             if (b != NULL) {
                 r = ex->btlfx_randCentered(0x200) + 0x7D0;
                 k = ex->btlfx_randCentered(0x200) - 0x200;
-                a = ((work->unk4 / 2) << 10) + k;
+                a = ((work->count4 / 2) << 10) + k;
                 p.vx += (ex->math_cos(a) * r) >> 12;
                 p.vz += (ex->math_sin(a) * r) >> 12;
-                ((s32 *)&b->unk0)[0] = FX19F_W(p, 0);
-                ((s32 *)&b->unk0)[1] = FX19F_W(p, 1);
-                ((s32 *)&b->unk8)[0] = FX19F_W(q, 0);
-                ((s32 *)&b->unk8)[1] = FX19F_W(q, 1);
-                b->unk11 = 0;
-                b->unk10 = work->unk4 % 32;
-                b->unk18 = work->unk0 + (ex->btlfx_rand() & 0x1F);
-                b->unk12 = ex->btlfx_rand() % 15;
+                ((s32 *)&b->pos0)[0] = FX19F_W(p, 0);
+                ((s32 *)&b->pos0)[1] = FX19F_W(p, 1);
+                ((s32 *)&b->pos8)[0] = FX19F_W(q, 0);
+                ((s32 *)&b->pos8)[1] = FX19F_W(q, 1);
+                b->kind11 = 0;
+                b->index10 = work->count4 % 32;
+                b->noise18 = work->noise0 + (ex->btlfx_rand() & 0x1F);
+                b->index12 = ex->btlfx_rand() % 15;
                 b->unk13 = ex->btlfx_rand() % 15;
                 b->unk15 = 0x3E;
                 b->unk14 = 0;
             }
-            work->unk4++;
+            work->count4++;
             FX19F_W(p, 0) = FX19F_W(base, 0);
             FX19F_W(q, 0) = FX19F_W(base, 0);
             p.vy = 0;
             FX19F_W(p, 1) = FX19F_W(base, 1);
             FX19F_W(q, 1) = FX19F_W(base, 1);
             if (frame >= 0xB) {
-                b = ex->btlfx_poolSpawn(inst->unk10);
+                b = ex->btlfx_poolSpawn(inst->pool10);
                 if (b != NULL) {
                     r = ex->btlfx_randCentered(0x100) + 0x3E8;
-                    a = ((work->unk4 / 2) << 10) + ex->btlfx_randCentered(0x200);
+                    a = ((work->count4 / 2) << 10) + ex->btlfx_randCentered(0x200);
                     p.vx += (ex->math_cos(a) * r) >> 12;
                     p.vz += (ex->math_sin(a) * r) >> 12;
-                    ((s32 *)&b->unk0)[0] = FX19F_W(p, 0);
-                    ((s32 *)&b->unk0)[1] = FX19F_W(p, 1);
-                    ((s32 *)&b->unk8)[0] = FX19F_W(q, 0);
-                    ((s32 *)&b->unk8)[1] = FX19F_W(q, 1);
-                    b->unk11 = 0;
-                    b->unk10 = work->unk4 % 32;
-                    b->unk18 = work->unk0 + (ex->btlfx_rand() & 0xF) * 3;
-                    b->unk12 = ex->btlfx_rand() % 15;
+                    ((s32 *)&b->pos0)[0] = FX19F_W(p, 0);
+                    ((s32 *)&b->pos0)[1] = FX19F_W(p, 1);
+                    ((s32 *)&b->pos8)[0] = FX19F_W(q, 0);
+                    ((s32 *)&b->pos8)[1] = FX19F_W(q, 1);
+                    b->kind11 = 0;
+                    b->index10 = work->count4 % 32;
+                    b->noise18 = work->noise0 + (ex->btlfx_rand() & 0xF) * 3;
+                    b->index12 = ex->btlfx_rand() % 15;
                     b->unk13 = ex->btlfx_rand() % 15;
                     b->unk15 = 0x32;
                     b->unk14 = 0;
@@ -872,33 +872,33 @@ s32 fx_19f_op83(s32 mode, Fx19fWork83 *work, Unk800F78A4 *env, Fx19fInst *inst, 
             }
             break;
         case 1:
-            FX19F_W(p, 0) = FX19F_W(D_801EA9AC, 0);
-            FX19F_W(p, 1) = FX19F_W(D_801EA9AC, 1);
+            FX19F_W(p, 0) = FX19F_W(fx_19f_boltCenter, 0);
+            FX19F_W(p, 1) = FX19F_W(fx_19f_boltCenter, 1);
             if (frame < 0x18) {
-                col = D_801EA9B4 * 100 / 2048 + 0x3C;
+                col = fx_19f_boltLength * 100 / 2048 + 0x3C;
                 if (col >= 0x100) {
                     col = 0xFF;
                 }
                 for (i = 0; i < 2; i++) {
-                    work->unk4++;
+                    work->count4++;
                     FX19F_W(c, 0) = FX19F_W(p, 0);
                     FX19F_W(d, 0) = FX19F_W(p, 0);
                     FX19F_W(c, 1) = FX19F_W(p, 1);
                     FX19F_W(d, 1) = FX19F_W(p, 1);
-                    b2 = ex->btlfx_poolSpawn(inst->unk10);
+                    b2 = ex->btlfx_poolSpawn(inst->pool10);
                     if (b2 != NULL) {
-                        dist = D_801EA9B4;
+                        dist = fx_19f_boltLength;
                         ex->btlfx_randRotation(&q);
                         ex->btlfx_pointAhead((s16 *)&d, (s16 *)&q, 0x180, (s16 *)&c);
                         ex->btlfx_pointAhead((s16 *)&d, (s16 *)&q, dist + 0x180, (s16 *)&d);
-                        ((s32 *)&b2->unk0)[0] = FX19F_W(c, 0);
-                        ((s32 *)&b2->unk0)[1] = FX19F_W(c, 1);
-                        ((s32 *)&b2->unk8)[0] = FX19F_W(d, 0);
-                        ((s32 *)&b2->unk8)[1] = FX19F_W(d, 1);
-                        b2->unk11 = 1;
-                        b2->unk10 = work->unk4 % 32;
-                        b2->unk18 = work->unk0 + (ex->btlfx_rand() & 0x1F);
-                        b2->unk12 = ex->btlfx_rand() % 15;
+                        ((s32 *)&b2->pos0)[0] = FX19F_W(c, 0);
+                        ((s32 *)&b2->pos0)[1] = FX19F_W(c, 1);
+                        ((s32 *)&b2->pos8)[0] = FX19F_W(d, 0);
+                        ((s32 *)&b2->pos8)[1] = FX19F_W(d, 1);
+                        b2->kind11 = 1;
+                        b2->index10 = work->count4 % 32;
+                        b2->noise18 = work->noise0 + (ex->btlfx_rand() & 0x1F);
+                        b2->index12 = ex->btlfx_rand() % 15;
                         b2->unk13 = ex->btlfx_rand() % 15;
                         b2->unk15 = col;
                         b2->unk14 = 0;
@@ -906,25 +906,25 @@ s32 fx_19f_op83(s32 mode, Fx19fWork83 *work, Unk800F78A4 *env, Fx19fInst *inst, 
                 }
                 if (frame >= 0xD) {
                     for (i = 0; i < 2; i++) {
-                        work->unk4++;
+                        work->count4++;
                         FX19F_W(c, 0) = FX19F_W(p, 0);
                         FX19F_W(d, 0) = FX19F_W(p, 0);
                         FX19F_W(c, 1) = FX19F_W(p, 1);
                         FX19F_W(d, 1) = FX19F_W(p, 1);
-                        b2 = ex->btlfx_poolSpawn(inst->unk10);
+                        b2 = ex->btlfx_poolSpawn(inst->pool10);
                         if (b2 != NULL) {
-                            dist = D_801EA9B4;
+                            dist = fx_19f_boltLength;
                             ex->btlfx_randRotation(&q);
                             ex->btlfx_pointAhead((s16 *)&d, (s16 *)&q, 0x180, (s16 *)&c);
                             ex->btlfx_pointAhead((s16 *)&d, (s16 *)&q, dist + 0x180, (s16 *)&d);
-                            ((s32 *)&b2->unk0)[0] = FX19F_W(c, 0);
-                            ((s32 *)&b2->unk0)[1] = FX19F_W(c, 1);
-                            ((s32 *)&b2->unk8)[0] = FX19F_W(d, 0);
-                            ((s32 *)&b2->unk8)[1] = FX19F_W(d, 1);
-                            b2->unk11 = 1;
-                            b2->unk10 = work->unk4 % 32;
-                            b2->unk18 = work->unk0 + (ex->btlfx_rand() & 0xF) * 3;
-                            b2->unk12 = ex->btlfx_rand() % 15;
+                            ((s32 *)&b2->pos0)[0] = FX19F_W(c, 0);
+                            ((s32 *)&b2->pos0)[1] = FX19F_W(c, 1);
+                            ((s32 *)&b2->pos8)[0] = FX19F_W(d, 0);
+                            ((s32 *)&b2->pos8)[1] = FX19F_W(d, 1);
+                            b2->kind11 = 1;
+                            b2->index10 = work->count4 % 32;
+                            b2->noise18 = work->noise0 + (ex->btlfx_rand() & 0xF) * 3;
+                            b2->index12 = ex->btlfx_rand() % 15;
                             b2->unk13 = ex->btlfx_rand() % 15;
                             b2->unk15 = col - 0x32;
                             b2->unk14 = 0;

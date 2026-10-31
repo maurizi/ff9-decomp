@@ -39,8 +39,8 @@ s32 fx_1ab_op80(s32 mode, Fx1abWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
         work->unk60.vz = 0;
         work->model84 = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, 2), 1);
         work->model86 = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, 1), 1);
-        work->unk80 = -1;
-        work->unk82 = -1;
+        work->timer80 = -1;
+        work->timer82 = -1;
     } else {
         frame = entry->frame;
         switch (frame) {
@@ -58,10 +58,10 @@ s32 fx_1ab_op80(s32 mode, Fx1abWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
             work->emit8 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 8), (s32)&work->pos78);
             break;
         case 15:
-            work->unk80 = 3;
+            work->timer80 = 3;
             break;
         case 47:
-            work->unk82 = 0x10;
+            work->timer82 = 0x10;
             break;
         }
         if (frame >= 0xF && frame < 0x3F) {
@@ -69,17 +69,17 @@ s32 fx_1ab_op80(s32 mode, Fx1abWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
             ex->Hi_SetEffModelSlice(work->model84, work->pos14.vy);
             ex->Hi_DrawSliceEffModel(&work->rotC, &work->pos14, (s32)&work->scale24, work->model84);
             ex->Hi_DrawEffModel(&work->rot38, &work->pos40, (s32)&work->scale50, work->model86);
-            if (work->unk80 >= 0 || work->unk82 >= 0) {
-                if (work->unk80 >= 0) {
-                    work->unk34 = fxm_lerpRatio(-0x80, 0, 3 - work->unk80, 3);
-                    work->unk80--;
+            if (work->timer80 >= 0 || work->timer82 >= 0) {
+                if (work->timer80 >= 0) {
+                    work->color34 = fxm_lerpRatio(-0x80, 0, 3 - work->timer80, 3);
+                    work->timer80--;
                 }
-                if (work->unk82 >= 0) {
-                    work->unk34 = fxm_lerpRatio(0, -0x80, 0x10 - work->unk82, 0x10);
-                    work->unk82--;
+                if (work->timer82 >= 0) {
+                    work->color34 = fxm_lerpRatio(0, -0x80, 0x10 - work->timer82, 0x10);
+                    work->timer82--;
                 }
-                ex->Hi_ModifyEffModelRGB(work->model84, work->unk34, work->unk34, work->unk34);
-                ex->Hi_ModifyEffModelRGB(work->model86, work->unk34, work->unk34, work->unk34);
+                ex->Hi_ModifyEffModelRGB(work->model84, work->color34, work->color34, work->color34);
+                ex->Hi_ModifyEffModelRGB(work->model86, work->color34, work->color34, work->color34);
             }
             if (t < 8) {
                 work->pos14.vy -= 0x145;

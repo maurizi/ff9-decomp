@@ -28,28 +28,28 @@ typedef struct {
 /* one bolt, a pool item */
 typedef struct {
     SVECTOR pos0; /* from */
-    SVECTOR unk8; /* to */
-    u8 unk10; /* bolt index */
-    u8 unk11; /* state */
-    u8 unk12; /* branch points */
-    u8 unk13;
-    s16 unk14; /* kind */
-    s32 *unk18; /* jitter table */
+    SVECTOR pos8; /* to */
+    u8 strip10; /* bolt index */
+    u8 state11; /* state */
+    u8 branchAt12; /* branch points */
+    u8 branchAt13;
+    s16 kind14; /* kind */
+    s32 *jitter18; /* jitter table */
     Pool6CEntry *emit1C;
 } Fx042Bolt;
 
 typedef struct {
-    SVECTOR unk0; /* origin */
-    s32 *unk8; /* jitter table */
-    s32 unkC; /* bolts spawned */
+    SVECTOR pos0; /* origin */
+    s32 *jitter8; /* jitter table */
+    s32 boltCountC; /* bolts spawned */
 } Fx042Work; /* 0x10 */
 
-extern s32 D_801E8F0C[];
-extern u16 D_801E8514[];
-extern u16 D_801E851C[];
+extern s32 fx_042_jitter[];
+extern u16 fx_042_strip16Blocks[];
+extern u16 fx_042_strip4Blocks[];
 extern Unk800F78A4 *fx_042_env;
-extern Fx042Strip D_801E857C[];
-extern Fx042Branch D_801E8BAC[];
+extern Fx042Strip fx_042_strips[];
+extern Fx042Branch fx_042_branches[];
 
 static void fxm_drawJaggedStrip16(Unk80100C78Entry *entry, Fx042Strip *strip, s32 *tbl, SVECTOR *from, SVECTOR *to, s32 from1, s32 to1,
                    s32 width, s32 dwidth, s32 frame, s32 arg10, s32 arg11, s32 kind);

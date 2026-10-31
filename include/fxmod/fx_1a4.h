@@ -1,7 +1,8 @@
 #ifndef FX_1A4_H
 #define FX_1A4_H
 
-/* Effect module fx_1a4 (dir 13 file 0x1a4). */
+/* Effect module fx_1a4 (dir 13 file 0x1a4): enemy Death0 (Deathguise). Evidence: the static sweep of the ability, item
+ * and enemy-sequence effect ids (docs/effect-modules.md, tools/effect_labels.py). */
 #include "btlfx_mod.h"
 
 typedef struct {
@@ -13,12 +14,12 @@ typedef struct {
     SVECTOR pos14;
     SVECTOR pos1C;
     SVECTOR pos24; /* caster position */
-    SVECTOR unk2C;
-    s32 unk34; /* brightness */
-    s32 unk38; /* flag */
-    s16 unk3C; /* countdowns */
-    s16 unk3E;
-    s16 unk40;
+    SVECTOR pos2C;
+    s32 fade34; /* brightness */
+    s32 flag38; /* flag */
+    s16 timer3C; /* countdowns */
+    s16 timer3E;
+    s16 timer40;
 } Fx1a4Work80; /* 0x44 */
 
 typedef struct {
@@ -29,12 +30,12 @@ typedef struct {
     SVECTOR rot18;
     VECTOR pos20; /* model position */
     VECTOR scale30; /* model scale */
-    s32 unk40; /* brightness */
+    s32 color40; /* brightness */
     SVECTOR pos44; /* caster body position */
-    s16 unk4C; /* counter */
-    s16 unk4E;
-    s16 unk50;
-    s16 unk52; /* fade countdown */
+    s16 frame4C; /* counter */
+    s16 speed4E;
+    s16 speed50;
+    s16 timer52; /* fade countdown */
     u16 model54; /* models */
     u16 model56;
     u16 model58;
@@ -42,8 +43,8 @@ typedef struct {
 
 extern Unk800F78A4 *fx_1a4_env;
 extern BtlModel fx_1a4_effModels[];
-extern SVECTOR D_801E83D0;
-extern SVECTOR D_801E83D8;
+extern SVECTOR fx_1a4_emitPos0;
+extern SVECTOR fx_1a4_emitPos1;
 
 static void fxm_lerpSvec(SVECTOR *a, SVECTOR *b, s32 t, SVECTOR *out);
 static s32 fxm_lerpRatio(s32 from, s32 to, s32 t, s32 n);

@@ -1,7 +1,8 @@
 #ifndef FX_136_H
 #define FX_136_H
 
-/* Effect module fx_136 (dir 13 file 0x136). */
+/* Effect module fx_136 (dir 13 file 0x136): enemy Absorb (Malboro). Evidence: the static sweep of the ability, item
+ * and enemy-sequence effect ids (docs/effect-modules.md, tools/effect_labels.py). */
 #include "btlfx_mod.h"
 
 typedef struct {
