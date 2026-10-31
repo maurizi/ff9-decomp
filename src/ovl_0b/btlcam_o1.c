@@ -16,7 +16,7 @@ void btlcam_beginEffect(void) {
     bcopy(g_btlfxEnv->targets, &g_btlCamTargets, 0x4C);
     g_btlCamera.flags = 0;
     g_btlCamera.effectPick = btlfx_rand() & 1;
-    if (g_btlfxEnv->state->flags & 4) {
+    if (g_btlfxEnv->state->flags & BTLFX_HDR_PARTNER) {
         btlcam_getUnitAnchors(g_btlCamTargets.partner, g_btlCamScript.partnerAnchors);
     }
     btlcam_getUnitAnchors(g_btlCamTargets.caster, g_btlCamScript.casterAnchors);
@@ -888,7 +888,7 @@ void btlcam_applyTargetView(SVECTOR *arg0, SVECTOR *arg1) {
             bcopy(arg0, &g_btlCamera.viewFromEye, 8);
             bcopy(arg1, &g_btlCamera.viewFromAt, 8);
         }
-        if (g_btlCamera.targetView == 1 && ((g_btlCamera.mode == BTLCAM_MODE_EFFECT && !(g_btlfxEnv->state->flags & 8)) || g_btlCamera.mode == BTLCAM_MODE_SEQ)) {
+        if (g_btlCamera.targetView == 1 && ((g_btlCamera.mode == BTLCAM_MODE_EFFECT && !(g_btlfxEnv->state->flags & BTLFX_HDR_CAMERA)) || g_btlCamera.mode == BTLCAM_MODE_SEQ)) {
             if (g_btlCamera.viewState != 2) {
                 if (g_btlCamera.prevViewState != 0 || g_btlCamera.viewBlend == 0) {
                     bcopy(&g_btlCamera.points[4], arg0, 8);

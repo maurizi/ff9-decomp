@@ -1861,7 +1861,7 @@ s32 btlui_getAbilityState(s32 arg0) {
     if (e->learns != 0 && e->fromEquip[arg0] == 0 && (s16)*e->apCounters[arg0] < (s16)e->apNeeded[arg0]) {
         return 0;
     }
-    if (a->flags & 2) {
+    if (a->flags & BTL_ABIL_VOICE) {
         if ((u8)btl_hasStatus(g_btluiList.unit, BTL_STATUS_SILENCE)) {
             return 1;
         }
@@ -2083,7 +2083,7 @@ s32 btlui_resolveAbility(s32 arg0) {
 
 s32 btl_getMpCost(BtlCmd8 *arg0) {
     s32 cost = arg0->mpCost;
-    if (arg0->unkB & 4) {
+    if (arg0->flags2 & BTL_ABIL2_SUMMON) {
         if (g_evtGlobalVars.b[EVT_GB_SUMMON_MP_X4] != 0) {
             cost *= 4;
         }
@@ -2182,13 +2182,13 @@ void btlui_startTargetSelect(Unk800EF80C *arg0) {
 
 void btlui_setDefaultTargets(s32 arg0) {
     BtlUnit *u;
-    if (g_btlTarget.targetType == 0xC) {
+    if (g_btlTarget.targetType == BTL_TGT_EVERYONE) {
         for (u = g_gameState->gameData->ctx.battle->unitList; u != 0; u = u->next) {
             if (((u->flags >> BTL_UNIT_TARGETABLE_BIT) & 1) && (!(u->status & BTL_STATUS_KO) || g_btlTarget.allowKo != 0)) {
                 u->flags |= BTL_UNIT_TARGETED;
             }
         }
-    } else if (g_btlTarget.targetType == 0xD) {
+    } else if (g_btlTarget.targetType == BTL_TGT_SELF) {
         g_btlTarget.unit->flags |= BTL_UNIT_TARGETED;
     } else if (arg0 & 0xFF) {
         btlui_targetDefault(g_btluiDefaultTargets[g_btlTarget.targetType][0], g_btluiDefaultTargets[g_btlTarget.targetType][1]);
@@ -2207,7 +2207,7 @@ s32 btlui_cycleTarget(s32 arg0) {
     if (g_btlTarget.targetAll != 0) {
         return 0;
     }
-    if (g_btlTarget.targetType == 0xD) {
+    if (g_btlTarget.targetType == BTL_TGT_SELF) {
         return 0;
     }
     u = BtlFindTargetCursor();
@@ -2349,7 +2349,7 @@ s32 btlui_isCmdUsable(void) {
         if (g_btlTarget.unit->mp < cost) {
             return 0;
         }
-        if ((b->flags & 2) && (btl_hasStatus(g_btlTarget.unit, BTL_STATUS_SILENCE) & 0xFF)) {
+        if ((b->flags & BTL_ABIL_VOICE) && (btl_hasStatus(g_btlTarget.unit, BTL_STATUS_SILENCE) & 0xFF)) {
             return 0;
         }
     }
@@ -2375,7 +2375,7 @@ s32 btlui_refreshTargets(void) {
         }
         return 1;
     }
-    if (g_btlTarget.targetType != 0xC) {
+    if (g_btlTarget.targetType != BTL_TGT_EVERYONE) {
         p = g_gameState->gameData->ctx.battle->unitList;
         n = 0;
         btlui_clearTargeted();

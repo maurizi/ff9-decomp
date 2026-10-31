@@ -12,7 +12,7 @@ u16 Hi_RegisterSolidEffModel(BtlUnit9C8 *arg0) {
     }
     p->used = 1;
     p->slice = 0;
-    p->kind = 0;
+    p->kind = HI_EFFMODEL_SOLID;
     p->otOffset = 0;
     p->sliceY = 0;
     p->model->header = arg0;
@@ -33,7 +33,7 @@ u16 Hi_RegisterGouEffModel(BtlUnit9C8 *arg0) {
     }
     p->used = 1;
     p->slice = 0;
-    p->kind = 1;
+    p->kind = HI_EFFMODEL_GOU;
     p->otOffset = 0;
     p->sliceY = 0;
     p->model->header = arg0;
@@ -55,7 +55,7 @@ u16 Hi_RegisterTexEffModel(BtlUnit9C8 *arg0, s16 arg1, s16 arg2, s32 arg3, s32 a
     }
     p->used = 1;
     p->slice = 0;
-    p->kind = 2;
+    p->kind = HI_EFFMODEL_TEX;
     p->otOffset = 0;
     p->sliceY = 0;
     p->model->header = arg0;
@@ -80,7 +80,7 @@ u16 Hi_RegisterTexListModel(BtlUnit9C8 *arg0, BtlTexInfo *arg1, s16 *arg2, s32 a
     }
     p->used = 1;
     p->slice = 0;
-    p->kind = 2;
+    p->kind = HI_EFFMODEL_TEX;
     p->otOffset = 0;
     p->sliceY = 0;
     p->model->header = arg0;
@@ -102,7 +102,7 @@ u16 Hi_RegisterTexPtrModel(BtlUnit9C8 *arg0, s16 *arg1, s16 *arg2) {
     }
     p->used = 1;
     p->slice = 0;
-    p->kind = 2;
+    p->kind = HI_EFFMODEL_TEX;
     p->otOffset = 0;
     p->sliceY = 0;
     p->model->header = arg0;
@@ -170,11 +170,11 @@ void Hi_DrawEffModel(SVECTOR *arg0, VECTOR *arg1, s32 arg2, s32 arg3) {
             g_btlfxEnv->prim = btl_drawMeshOffset(s->model, i, g_btlfxEnv->prim, s->otOffset);
         } else {
             switch ((u16)s->kind) {
-            case 0:
-            case 2:
+            case HI_EFFMODEL_SOLID:
+            case HI_EFFMODEL_TEX:
                 g_btlfxEnv->prim = btl_drawMesh(s->model, i, g_btlfxEnv->prim);
                 break;
-            case 1:
+            case HI_EFFMODEL_GOU:
                 g_btlfxEnv->prim = btl_drawMeshOffset(s->model, i, g_btlfxEnv->prim, 0);
                 break;
             }
@@ -215,11 +215,11 @@ void Hi_DrawEffModelByBone(s32 arg0, s32 arg1, s32 arg2, s32 arg3) {
             g_btlfxEnv->prim = btl_drawMeshOffset(s->model, i, g_btlfxEnv->prim, s->otOffset);
         } else {
             switch ((u16)s->kind) {
-            case 0:
-            case 2:
+            case HI_EFFMODEL_SOLID:
+            case HI_EFFMODEL_TEX:
                 g_btlfxEnv->prim = btl_drawMesh(s->model, i, g_btlfxEnv->prim);
                 break;
-            case 1:
+            case HI_EFFMODEL_GOU:
                 g_btlfxEnv->prim = btl_drawMeshOffset(s->model, i, g_btlfxEnv->prim, 0);
                 break;
             }
@@ -243,11 +243,11 @@ void Hi_DrawMorphEffModel(SVECTOR *arg0, VECTOR *arg1, s32 arg2, s32 arg3, s32 a
             g_btlfxEnv->prim = btl_drawMeshOffset(s->model, i, g_btlfxEnv->prim, s->otOffset);
         } else {
             switch ((u16)s->kind) {
-            case 0:
-            case 2:
+            case HI_EFFMODEL_SOLID:
+            case HI_EFFMODEL_TEX:
                 g_btlfxEnv->prim = btl_drawMesh(s->model, i, g_btlfxEnv->prim);
                 break;
-            case 1:
+            case HI_EFFMODEL_GOU:
                 g_btlfxEnv->prim = btl_drawMeshOffset(s->model, i, g_btlfxEnv->prim, 0);
                 break;
             }
@@ -274,11 +274,11 @@ void Hi_DrawMorphModelByBone(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, s
             g_btlfxEnv->prim = btl_drawMeshOffset(s->model, i, g_btlfxEnv->prim, s->otOffset);
         } else {
             switch ((u16)s->kind) {
-            case 0:
-            case 2:
+            case HI_EFFMODEL_SOLID:
+            case HI_EFFMODEL_TEX:
                 g_btlfxEnv->prim = btl_drawMesh(s->model, i, g_btlfxEnv->prim);
                 break;
-            case 1:
+            case HI_EFFMODEL_GOU:
                 g_btlfxEnv->prim = btl_drawMeshOffset(s->model, i, g_btlfxEnv->prim, 0);
                 break;
             }

@@ -49,9 +49,14 @@ typedef struct {
     u8 rgb[3]; /* colour (with the code byte: the packet's rgb word) */
     u8 tex; /* texture: BtlUnit9C.texPages index, model info uv offsets */
     u8 unk14;
-    u8 flags; /* flags: 1 semi-transparent (abr = flags & 0xE0), 2 double-sided (no NCLIP) */
+    u8 flags; /* WMSRC_* */
     u8 pad16[2];
 } WmSrcFT4; /* 0x18 */
+
+/* WmSrc*.flags (btl_drawMesh and its asm twin; the same bits as ovl_0a/0c's WMSRC_*). Evidence: [code] */
+#define WMSRC_SEMITRANS    0x01 /* semi-transparent: the packet gets its abr from WMSRC_TPAGE_BITS */
+#define WMSRC_DOUBLE_SIDED 0x02 /* no nclip backface test */
+#define WMSRC_TPAGE_BITS   0xE0 /* with WMSRC_SEMITRANS: ORed into the tpage (abr bits 5-6, and bit 7) */
 
 typedef struct {
     u16 vtx[3]; /* vertex indices */
@@ -126,7 +131,7 @@ typedef struct {
 /* model header (DB item 0x02xxxx: battle model files in FF9.IMG dir index 7, file id = model id; weapon and effect
  * models use the same format; ovl_0a WmModel). Layout and users: docs/battle-models.md */
 typedef struct BtlUnit9C8 {
-    u16 flags; /* 1 = relocated (btl_applyModelTextures turns the offsets below into pointers once) */
+    u16 flags; /* BTL_MODELHDR_* */
     u8 boneCount; /* bones: BtlMesh.vertexCounts entries, motion keys per frame (btl_projectMesh, btl_calcBoneMatrices) */
     u8 meshCount; /* mesh groups (meshes); bit i of BtlUnit9C.hiddenMeshes hides group i */
     u16 packetSize; /* sum of the groups' BtlMesh.packetSize */
@@ -137,6 +142,9 @@ typedef struct BtlUnit9C8 {
     s32 bones; /* BtlBoneDef[boneCount]: offset from the header, relocated on load (btl_applyModelTextures) */
     BtlMesh *meshes; /* meshCount groups: offset from the header, relocated on load */
 } BtlUnit9C8;
+
+/* BtlUnit9C8.flags. Evidence: [code] */
+#define BTL_MODELHDR_RELOCATED 0x01 /* the offsets were turned into pointers (btl_applyModelTextures) */
 
 /* motion (DB item 0x03xxxx, in the model file next to the model header; btl_calcBoneMatrices; ovl_0a WmAnim).
  * One key per bone of the model it plays on (BtlUnit9C8.boneCount), in bone order */
@@ -185,9 +193,9 @@ typedef struct {
 typedef struct {
     u16 unk0;
     u16 unk2;
-    s32 unk4;
+    s32 sector; /* start sector (FileEntry.sector) */
     s32 unk8;
-    s32 unkC;
+    s32 endSector; /* the next entry's start: size in sectors = endSector - sector (btl_reloadPartyStep) */
 } FileEntry16;
 
 /* double buffer used by the standalone display loop btlfx_halt */
@@ -210,7 +218,7 @@ typedef struct {
         s32 w; /* sound id */
         struct {
             u8 pad0[2];
-            u8 unk2; /* kind */
+            u8 kind; /* kind: 9 = the sound bank of a weapon model (btl_loadWeaponSoundStep loads data.w) */
         } b;
     } data;
     u8 pad4[0x10 - 4];
@@ -235,8 +243,8 @@ typedef struct {
     u8 unit; /* unit id */
     u8 stopped; /* the unit has Stop: moves home without its motion (btlfx_moveUnitHome) */
     u8 pad4[0xC - 4];
-    s16 unkC[8];
-    s16 unk1C[6];
+    s16 startPos[8]; /* the unit's position when the walk home starts (btlfx_moveUnitHome) */
+    s16 startRot[6]; /* its rotation when the final turn starts (btlfx_turnUnitTowardFast) */
 } Unk800E5538; /* 0x28 */
 
 void btlfx_turnUnitTowardFast(s32, s16 *, s32, s32, s32);
@@ -716,7 +724,7 @@ typedef struct {
 #define BTL_FXK_NO_CAST 0x01 /* the caster doesn't step out and cast (btlfx caster task), no command camera: BTL_CMD_TRANCE_EIDOLON, BTL_CMD_REBIRTH_FLAME, bounces, btlseq op 0x1A */
 #define BTL_FXK_ITEM    0x02 /* BTL_CMD_ITEM / BTL_CMD_AUTO_POTION: the item motion, no command camera */
 #define BTL_FXK_SWD_MAG 0x04 /* BTL_CMD_SWD_MAG: the partner (unit 0x11) is the effect's caster */
-/* 0x08: set by btlfx_runScript for effect headers with caster kind 1, tested by the btlfx pool; meaning unknown */
+#define BTL_FXK_PARTY_UNLOAD 0x08 /* set by btlfx_runScript for effects whose caster task kind (BTLFX_HDR_CASTER) is 1: the loader waits until no party member is visible, unloads the party models and loads summon / common texture blocks into their buffers (btlfx_updateLoader) */
 #define BTL_FXK_BOUNCE  0x10 /* a Reflect bounce (with NO_CAST); control op 8 doesn't wait for the enemy sequence */
 
 typedef struct Unk800F78A40 {
@@ -735,6 +743,11 @@ typedef struct Unk800F78A40 {
 
 /* Unk800F78A40.phase / Unk800FEC40.phase (g_btlfxState): btlfx_runScript state */
 #define BTLFX_PHASE_IDLE (-1) /* no effect playing */
+#define BTLFX_PHASE_SAVE_VRAM 0 /* btlfx_start: save the VRAM strip at (0x300, 0x140) */
+#define BTLFX_PHASE_START     1 /* read the effect's header word (BTLFX_HDR_*), start the file load */
+#define BTLFX_PHASE_RESIDENT  2 /* BTLFX_HDR_RESIDENT: the script is in the loaded module (btlfx_findScript) */
+#define BTLFX_PHASE_LOADING   3 /* wait for the effect file's module (g_btlfxLoader.stage 3) */
+#define BTLFX_PHASE_RUN       4 /* run the script ops */
 
 typedef struct {
     u8 pad0[0xE];
@@ -893,6 +906,21 @@ typedef struct {
     u8 modelSwap; /* control op 13: unit slot + 1 whose model btl_swapPartyModel swaps */
     u8 castEnded; /* the cast op (btlfx_opCast) finished its caster motion; the loader holds common texture blocks (kind 9) until then */
 } Unk800FEC40;
+
+/* Unk800FEC40.flags (g_btlfxState): the effect's header word (RAM_BTLFX_MODULE u16 table, btlfx_runScript phase 1)
+ * without bit 0. Evidence: [code] */
+#define BTLFX_HDR_COMMON_VRAM  0x0001 /* runtime: a block overwrote the common textures (btlfx_markCommonVram); the end op reloads them */
+#define BTLFX_HDR_PARTNER      0x0004 /* the camera also takes the partner's anchors (btlcam_beginEffect) */
+#define BTLFX_HDR_CAMERA       0x0008 /* the effect camera runs whatever the camera option (btlfx_updateCameraEnable); the cast op hides the target markers */
+#define BTLFX_HDR_CASTER       0x00F0 /* caster task kind (btlfx_startCasterTask) */
+#define BTLFX_HDR_CASTER_SHIFT 4
+#define BTLFX_HDR_BG_FADE      0x0300 /* background fade of the cast op (btlfx_startFadeBackground), 3 = none */
+#define BTLFX_HDR_BG_FADE_SHIFT 8
+#define BTLFX_HDR_VRAM_SWAP    0x0C00 /* btlfx_swapVramPages mode before and after the effect, 0 = none */
+#define BTLFX_HDR_VRAM_SWAP_SHIFT 10
+#define BTLFX_HDR_CAST_MODE    0x3000 /* cast op castMode */
+#define BTLFX_HDR_CAST_MODE_SHIFT 12
+#define BTLFX_HDR_RESIDENT     0x8000 /* the script is in the resident module: no file to load (BTLFX_PHASE_RESIDENT) */
 extern Unk800FEC40 g_btlfxState;
 
 typedef struct {
@@ -1185,7 +1213,7 @@ typedef struct BtlCmd8 {
     u8 flags; /* BTL_ABIL_* */
     u8 statusSet; /* index into Battle.statusSets */
     u8 mpCost; /* runtime: Fire 6, Fira 12, Sleep 10 as the spell list shows */
-    u8 unkB;
+    u8 flags2; /* BTL_ABIL2_*; 0x81 together: party targets play hit motion 3 instead of 2 (btl_startHitMotion) */
     u16 altEffect; /* effect played for short summons, Seiken and single-target casts (btl_startCmdEffect) */
     u16 nameOfs; /* name text offset (runtime: Fire 161, Fira 166, Firaga 171, Sleep 178 - steps = name lengths + 1) */
 } BtlCmd8;
@@ -1197,6 +1225,13 @@ typedef struct BtlCmd8 {
 #define BTL_ABIL_DISPELS_VANISH 0x10 /* a hit removes Vanish (btl_applyCalcResult) */
 #define BTL_ABIL_NO_HIT_MOTION  0x40 /* the target plays no hit motion (btl_canAddHitStatus) */
 #define BTL_ABIL_RETURNABLE     0x80 /* answered by Return Magic */
+
+/* BtlCmd8.flags2. Evidence: [code] */
+#define BTL_ABIL2_SUMMON 0x04 /* costs 4x MP while EVT_GB_SUMMON_MP_X4 is set (btl_payMpCost, btl_getMpCost) */
+
+/* BtlCmd8.targetType / Battle16CC.targetType values. Evidence: [code] */
+#define BTL_TGT_EVERYONE 0xC /* every targetable unit is marked (btlui_setDefaultTargets) */
+#define BTL_TGT_SELF     0xD /* the user only: no cursor (btlui_setDefaultTargets, btlui_cycleTarget) */
 
 typedef struct BtlCmd {
     struct BtlCmd *next; /* queue link */
@@ -1241,7 +1276,7 @@ typedef struct BtlShadow {
     u32 unk4_0 : 12;
     u32 offsetX : 10; /* x offset of the shadow (Unk800AD4E4, btl_calcShadowMatrix) */
     u32 offsetZ : 10; /* z offset */
-    POLY_FT4 *unk8[2][4]; /* shadow quads, per draw buffer */
+    POLY_FT4 *quads[2][4]; /* shadow quads, per draw buffer */
 } BtlShadow; /* 0x28 */
 
 typedef struct Battle11C0 {
@@ -1401,6 +1436,8 @@ typedef struct {
 #define BTL_SCENE_NO_ENEMY_FX_CAMERA (1 << BTL_SCENE_NO_ENEMY_FX_CAMERA_BIT)
 #define BTL_SCENE_POST_EVENT_BIT 13 /* g_btlRewards.hasPostEvent (btl_startBattle) */
 #define BTL_SCENE_POST_EVENT    (1 << BTL_SCENE_POST_EVENT_BIT)
+#define BTL_SCENE_KEEP_MUSIC_BIT 14 /* the battle music goes on after the battle (GD_BTL_KEEP_MUSIC; not after the victory music) (btl_update) */
+#define BTL_SCENE_KEEP_MUSIC    (1 << BTL_SCENE_KEEP_MUSIC_BIT)
 /* bit 14: without VICTORY, a victory, stop or escape sets GameData.battleFlags 8 */
 
 typedef struct {
@@ -1820,11 +1857,16 @@ typedef struct {
     u8 used; /* in use */
     u8 slice; /* drawn sliced (Hi_SetEffModelSlice) */
     s16 id; /* index */
-    s16 kind; /* 0 solid, 1 gouraud, 2 textured (Hi_RegisterSolid/Gou/Tex*EffModel) */
+    s16 kind; /* HI_EFFMODEL_* */
     s16 otOffset; /* OT offset when drawn (Hi_SetEffModelOffset, btl_drawMeshOffset) */
     s16 sliceY; /* slice height (Hi_SetEffModelSlice) */
     u8 pad26[0x28 - 0x26];
 } BtlObjSlot; /* 0x28 */
+
+/* BtlObjSlot.kind, by the registering function's name. Evidence: [string] */
+#define HI_EFFMODEL_SOLID 0 /* Hi_RegisterSolidEffModel */
+#define HI_EFFMODEL_GOU   1 /* Hi_RegisterGouEffModel: drawn with btl_drawMeshOffset */
+#define HI_EFFMODEL_TEX   2 /* Hi_RegisterTex*EffModel */
 extern BtlObjSlot g_btlfxEffModels[32];
 
 
@@ -1880,6 +1922,19 @@ typedef struct EffElem {
 #define BTLFX_ELEM_SPIN_X      0x10 /* the particle's spin turns the x rotation */
 #define BTLFX_ELEM_SPIN_Y      0x20
 #define BTLFX_ELEM_SPIN_Z      0x40
+
+/* EffElem.kind / kind2 (btlfx_updateParticles). Evidence: [code] */
+#define BTLFX_ELEMK_PARTICLES    0 /* btlfx_drawParticles */
+#define BTLFX_ELEMK_SPRITE       1 /* btlfx_drawSprite */
+#define BTLFX_ELEMK_ANIM_QUADS   2 /* btlfx_drawAnimQuads */
+#define BTLFX_ELEMK_SPRITES      3 /* btlfx_drawSprites */
+#define BTLFX_ELEMK_TRAIL_3D     4 /* btlfx_drawTrail mode 1 (btlfx_drawTrail3D, from the emitter origin) */
+#define BTLFX_ELEMK_TRAIL_FLAT   5 /* btlfx_drawTrail mode 2 (btlfx_drawTrailFlat) */
+#define BTLFX_ELEMK_RINGS        6 /* btlfx_drawRings */
+#define BTLFX_ELEMK_FAN          7 /* btlfx_drawFan */
+#define BTLFX_ELEMK_TRAIL_SCREEN 8 /* btlfx_drawTrail mode 0 (btlfx_drawTrailScreen) */
+#define BTLFX_ELEMK_CALLBACK     9 /* EffElem.draw, no texture */
+#define BTLFX_ELEMK_NONE         0xFF /* kind2 only: no second draw */
 
 /* element table header, just before the EffElems (btlfx_spawnEmitter, btlfx_updateEmitters) */
 typedef struct {
@@ -2520,13 +2575,13 @@ s32 akao_playSe(s32, s32, s32, s32);
 s32 item_getCount(s32); /* main.c defines it returning u8 */
 typedef struct {
     u32 unk0_0 : 8;
-    u32 unk0_8 : 9;
+    u32 effect : 9; /* effect played (btl_playCmdEffect), as BtlCmd8.effect */
     u32 unk0_17 : 15;
-    u8 unk4;
-    u8 unk5;
+    u8 formula; /* btl_calcCmd formula, as BtlCmd8.formula */
+    u8 power; /* as BtlCmd8.power (heal amount per item count + 1 for some formulas) */
     u8 unk6;
-    u8 unk7;
-    s32 unk8;
+    u8 rate; /* status hit rate in percent */
+    s32 statuses; /* statuses added or removed (btl_addStatuses, btl_removeStatuses) */
 } Unk8006B1F4; /* 0xC */
 extern Unk8006B1F4 g_usableItemTable[];
 void SetGeomScreen(s32);
@@ -2958,7 +3013,7 @@ typedef struct {
     u16 nextState; /* next state */
     u8 pad4[0x10 - 4];
     s32 script; /* battle event script (dependency 0x05xxxx; evt_init) */
-    s32 unk14;
+    s32 area; /* the encounter bundle's DB_AREA item (btl_initEncounter) */
     u8 pad18[0x1C - 0x18];
     s32 unk1C;
     s32 unk20;
@@ -3720,10 +3775,10 @@ typedef struct {
 } Unk800EDE6C;
 
 typedef struct {
-    u32 unk0; /* tag */
-    u32 unk4;
-    u32 unk8;
-    u32 unkC; /* ordering table */
+    u32 tag; /* tag */
+    u32 stp; /* DR_STP words: GPU_STP(0, 0) clears the mask bit settings */
+    u32 nop;
+    u32 ot; /* ordering table */
 } Unk800D0940;
 
 extern s32 g_btlfxMaskResetBusy;
@@ -3994,8 +4049,8 @@ typedef struct {
     s32 fadeStep; /* 0x1000 / count */
     s16 u0; /* u << 8 */
     s16 u1; /* (u + width) << 8 */
-    s32 unk28;
-    s32 unk2C;
+    s32 anchorXY; /* btlfx_drawTrail arg 2 (an SVECTOR as two words): the emitter origin for element kind 4 */
+    s32 anchorZ;
     u8 pad30[0x60 - 0x30];
 } Unk800D50A0Ctx;
 void btlfx_emitTrailRibbon3D(s32, Unk800D50A0Ctx *, u8 *, s32 *);
@@ -4025,13 +4080,13 @@ void btlfx_emitTrailLines(s32, Unk800D4D6CCtx *, u8 *, s32 *);
 
 /* sprite animation header (btlfx_drawTrail); followed by u32 frame entries and colors */
 typedef struct {
-    u16 unk0; /* frame count */
-    u16 unk2;
-    s16 unk4;
-    u16 unk6;
-    u8 unk8;
-    u8 unk9;
-    u16 unkA; /* first frame entry, in 8-byte units */
+    u16 frameCount; /* frame count */
+    u16 length; /* trail points kept (frame -1 resets the trail to this many) */
+    s16 tpage;
+    u16 clut;
+    u8 h; /* texture height (v extent = h - 1) */
+    u8 w; /* texture width (u extent = w - 1) */
+    u16 frameOfs; /* first frame entry, in 8-byte units */
 } Unk800D1494;
 
 s32 btlfx_pushTrailPoint(u8 *, s32, s32, s32);
@@ -4055,6 +4110,12 @@ typedef struct {
     s32 frame; /* frame word: 0x8000 colour from the data, 0x4000 skips a word */
     u8 *prim;
 } Unk800D1BC4Ctx;
+
+/* sprite frame word (the first u16 of a frame in the sprite data: btlfx_drawParticles, btlfx_drawSprite,
+ * btlfx_drawSpriteAtOt). Evidence: [code] */
+#define BTLFX_SPRF_COLOR 0x8000 /* an rgb word follows (else grey from the alpha) */
+#define BTLFX_SPRF_SCALE 0x4000 /* a u16 x, y scale word follows (btlfx_drawParticles; the screen sprites skip it) */
+#define BTLFX_SPRF_COUNT 0x3FFF /* sprites in the frame */
 
 u8 *btlfx_emitScreenSprites(u8 *, Unk800D1BC4Ctx *, u8 *, s32 *);
 
@@ -4098,7 +4159,7 @@ extern RECT g_btluiTexWindowRect;
     gte_rtps()
 
 /* btl_drawShadow: shadow quad q of entry e in the current buffer */
-#define SHADOW_QUAD(q) e->unk8[g_gameState->gameData->drawBuf][q]
+#define SHADOW_QUAD(q) e->quads[g_gameState->gameData->drawBuf][q]
 
 typedef struct {
     u32 color; /* rgb */
@@ -4146,8 +4207,8 @@ void btlfx_emitParticles(u8 *, Unk800D1680Ctx *, u8 *, s32 *);
     : : "r"(len), "r"(p), "r"(ot) : "$14", "$15", "memory")
 
 typedef struct {
-    DR_STP unk0;
-    DR_STP unkC;
+    DR_STP mainStp; /* in the main OT (GameData.ot) */
+    DR_STP bgStp; /* in the battle background OT (work->ot) */
     u8 pad18[0x30 - 0x18];
 } BtlStpPair;
 extern BtlStpPair g_btlFrameEndStp[2];
@@ -4313,15 +4374,20 @@ typedef struct {
     u16 frameCount; /* frame count */
     u8 unk2;
     u8 unk3;
-    u8 flags; /* 2: gouraud colours */
+    u8 flags; /* BTLFX_RINGS_SCALED */
+
     u8 type; /* ring type */
     u8 count; /* rings */
     u8 w;
 } Unk800D23D8Hdr;
 
+/* Unk800D23D8Hdr.flags (btlfx_drawRings). Evidence: [code] */
+#define BTLFX_RINGS_SCALED 0x02 /* a per-frame x, y scale table (Unk800D23D8Scale) follows the header */
+
+
 typedef struct {
-    u16 unk0;
-    u16 unk2;
+    u16 x; /* per-frame x / y scale (with Unk800D23D8Hdr.flags BTLFX_RINGS_SCALED) */
+    u16 y;
 } Unk800D23D8Scale;
 
 typedef struct {
@@ -4383,7 +4449,7 @@ typedef struct {
     s32 loopFrames; /* cast motion length */
     s16 pos[4]; /* emitter position */
     s16 pos2[4];
-    s16 unk1C[4];
+    s16 startRot[4];
     Pool6CEntry *emitter; /* cast emitter */
 } Unk800E4C88; /* 0x28 */
 

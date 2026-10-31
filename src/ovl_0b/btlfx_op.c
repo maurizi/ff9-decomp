@@ -338,7 +338,7 @@ s32 btlfx_opCast(s32 arg0, Unk800E4C88 *arg1, Unk800F78A4 *arg2, s32 *arg3, s32 
         arg1->unit = (q[1] & 0xF) + 0x10;
         arg1->target = q[0];
         arg1->emitter = NULL;
-        if (arg2->state->flags & 8) {
+        if (arg2->state->flags & BTLFX_HDR_CAMERA) {
             btl_setMarkersVisible(0);
         }
         if (arg2->targets->bounceCount != 0 && arg1->target != 0xFF) {
@@ -353,7 +353,7 @@ s32 btlfx_opCast(s32 arg0, Unk800E4C88 *arg1, Unk800F78A4 *arg2, s32 *arg3, s32 
             arg1->target = 0x10;
         }
         arg1->kind = (u8)q[1] >> 4;
-        arg1->castMode = ((u32)g_btlfxState.flags & 0x3000) >> 12;
+        arg1->castMode = ((u32)g_btlfxState.flags & BTLFX_HDR_CAST_MODE) >> BTLFX_HDR_CAST_MODE_SHIFT;
         g_btlfxState.signals.b[2] = 0;
         g_btlfxState.signals.b[3] = 0;
         a = arg2->targets->kind & BTL_FXK_NO_CAST;
@@ -398,7 +398,7 @@ s32 btlfx_opCast(s32 arg0, Unk800E4C88 *arg1, Unk800F78A4 *arg2, s32 *arg3, s32 
     case 1:
         if (arg1->target != 0xFF && g_btlfxState.effectId != 0xED) {
             btlfx_getUnitPos(arg1->target, v);
-            btlfx_turnUnitTowardFast(arg1->unit, v, (s32)arg1->unk1C, t, 0);
+            btlfx_turnUnitTowardFast(arg1->unit, v, (s32)arg1->startRot, t, 0);
         }
         if (t >= btlfx_getMotionLength(arg1->unit) - 1) {
             btlfx_playUnitMotion(arg1->unit, 0x1B);
@@ -415,7 +415,7 @@ s32 btlfx_opCast(s32 arg0, Unk800E4C88 *arg1, Unk800F78A4 *arg2, s32 *arg3, s32 
             arg1->emitter = NULL;
         }
         if (t == 0) {
-            k = ((u32)g_btlfxState.flags & 0x300) >> 8;
+            k = ((u32)g_btlfxState.flags & BTLFX_HDR_BG_FADE) >> BTLFX_HDR_BG_FADE_SHIFT;
             if (k != 3) {
                 btlfx_startFadeBackground(k, arg1->kind == 1 ? 0xC : 0x14);
             }
@@ -517,7 +517,7 @@ s32 btlfx_opCast(s32 arg0, Unk800E4C88 *arg1, Unk800F78A4 *arg2, s32 *arg3, s32 
             g_btlfxState.signals.b[3] = 1;
             if (arg1->target != 0xFF) {
                 btlfx_getUnitPos(arg1->target, v);
-                btlfx_turnUnitTowardFast(arg1->unit, v, (s32)arg1->unk1C, t, 0);
+                btlfx_turnUnitTowardFast(arg1->unit, v, (s32)arg1->startRot, t, 0);
             }
         }
     skip:
@@ -568,7 +568,7 @@ s32 btlfx_opReturnHome(s32 arg0, Unk800E5538 *arg1, Unk800F78A4 *arg2, s32 *arg3
     }
     t = *arg3;
     if (arg1->phase == 0) {
-        if (btlfx_moveUnitHome(arg1->unit, t, arg1->unkC, arg1->stopped) != 0) {
+        if (btlfx_moveUnitHome(arg1->unit, t, arg1->startPos, arg1->stopped) != 0) {
             t = -1;
             arg1->phase = 1;
             if (btlfx_isCmdPendingOnAutoPotion(arg1->unit) != 0) {
@@ -580,7 +580,7 @@ s32 btlfx_opReturnHome(s32 arg0, Unk800E5538 *arg1, Unk800F78A4 *arg2, s32 *arg3
             }
         }
     } else {
-        btlfx_turnUnitTowardFast(arg1->unit, NULL, (s32)arg1->unk1C, t, 1);
+        btlfx_turnUnitTowardFast(arg1->unit, NULL, (s32)arg1->startRot, t, 1);
         if (t >= btlfx_getMotionLength(arg1->unit) - 1) {
             btlfx_resetUnitMotion(arg1->unit, 1);
             return 1;
@@ -1979,7 +1979,7 @@ void btlfx_updateCameraEnable(void) {
     BtlUnit *b;
     s32 f;
     u32 v;
-    if (g_btlfxEnv->state->flags & 8) {
+    if (g_btlfxEnv->state->flags & BTLFX_HDR_CAMERA) {
         r = 1;
     } else {
         a = btl_getUnit(0x10);

@@ -205,7 +205,7 @@ void btl_startHitMotion(BtlUnit *arg0) {
     }
     f = arg0->flags;
     if (f & BTL_UNIT_PARTY) {
-        if ((g_gameState->gameData->ctx.battle->curCmd->ability->unkB & 0x81) == 0x81) {
+        if ((g_gameState->gameData->ctx.battle->curCmd->ability->flags2 & 0x81) == 0x81) {
             arg0->model->motion = (BtlUnit9CC *)arg0->motions[3];
         } else {
             arg0->model->motion = (BtlUnit9CC *)arg0->motions[2];

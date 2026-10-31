@@ -409,7 +409,7 @@ s32 btlfx_updateParticles(Pool30 *pool) {
                     mode = el->tex2;
                 }
                 switch (rs) {
-                case 9:
+                case BTLFX_ELEMK_CALLBACK:
                     if (vp == NULL) {
                         vp = &v;
                         ((s32 *)&v)[0] = 0;
@@ -417,35 +417,35 @@ s32 btlfx_updateParticles(Pool30 *pool) {
                     }
                     el->draw(e, owner, &pos, vp, &scale, &alpha, &cnt, frame, frames);
                     break;
-                case 0:
+                case BTLFX_ELEMK_PARTICLES:
                     btlfx_drawParticles((u8 *)mode, &pos, vp, scale, e->elemFrame, cnt, alpha, 0, 0);
                     break;
-                case 1:
+                case BTLFX_ELEMK_SPRITE:
                     btlfx_drawSprite((u8 *)mode, &pos, e->elemFrame, cnt, alpha);
                     break;
-                case 2:
+                case BTLFX_ELEMK_ANIM_QUADS:
                     btlfx_drawAnimQuads((u8 *)mode, &pos, vp, scale, e->elemFrame, cnt, alpha);
                     break;
-                case 3:
+                case BTLFX_ELEMK_SPRITES:
                     btlfx_drawSprites((u8 *)mode, &pos, vp, scale, e->elemFrame, cnt, alpha);
                     break;
-                case 4:
+                case BTLFX_ELEMK_TRAIL_3D:
                     btlfx_drawTrail((u8 *)mode, (s32)&pos, (s32 *)owner->origin, e->elemFrame, scale, alpha, cnt, (u8 *)btlfx_getParticleTrail(e, owner), 1);
                     break;
-                case 5:
+                case BTLFX_ELEMK_TRAIL_FLAT:
                     btlfx_drawTrail((u8 *)mode, (s32)&pos, NULL, e->elemFrame, scale, alpha, cnt, (u8 *)btlfx_getParticleTrail(e, owner), 2);
                     break;
-                case 6:
+                case BTLFX_ELEMK_RINGS:
                     btlfx_drawRings((u8 *)mode, &pos, vp, scale, e->elemFrame, cnt, alpha);
                     break;
-                case 7:
+                case BTLFX_ELEMK_FAN:
                     btlfx_drawFan((Unk800D2938 *)mode, &pos, vp, scale, e->elemFrame, cnt, alpha);
                     break;
-                case 8:
+                case BTLFX_ELEMK_TRAIL_SCREEN:
                     btlfx_drawTrail((u8 *)mode, (s32)&pos, NULL, e->elemFrame, scale, alpha, cnt, (u8 *)btlfx_getParticleTrail(e, owner), 0);
                     break;
                 }
-                if (el->kind2 == 0xFF) {
+                if (el->kind2 == BTLFX_ELEMK_NONE) {
                     break;
                 }
             }
@@ -537,12 +537,12 @@ Pool6CEntry *btlfx_spawnEmitter(Pool30 *arg0, Pool6C *arg1, u8 *arg2, s32 arg3) 
             i = 0;
             p += h->elemCount * 0x28;
             for (; i < h->elemCount; i++, el++) {
-                if (el->kind != 9) {
+                if (el->kind != BTLFX_ELEMK_CALLBACK) {
                     if (el->tex != -1 && !(el->tex & 0x80000000)) {
                         el->tex = (s32)arg2 + el->tex;
                     }
                 }
-                if (el->kind2 != 0xFF) {
+                if (el->kind2 != BTLFX_ELEMK_NONE) {
                     if (el->tex2 != -1 && !(el->tex2 & 0x80000000)) {
                         el->tex2 = (s32)arg2 + el->tex2;
                     }
@@ -1150,7 +1150,7 @@ void btlfx_runEmitters(Pool30 *pool, Pool6C *list) {
                 break;
             }
             }
-            if (el != NULL && ((u32)(el->kind - 4) < 2 || el->kind == 8 || el->kind2 == 4 || el->kind2 == 5 || el->kind2 == 8)) {
+            if (el != NULL && ((u32)(el->kind - BTLFX_ELEMK_TRAIL_3D) < 2 || el->kind == BTLFX_ELEMK_TRAIL_SCREEN || el->kind2 == BTLFX_ELEMK_TRAIL_3D || el->kind2 == BTLFX_ELEMK_TRAIL_FLAT || el->kind2 == BTLFX_ELEMK_TRAIL_SCREEN)) {
                 tmp.vx = p->pos.vx >> 12;
                 tmp.vy = p->pos.vy >> 12;
                 tmp.vz = p->pos.vz >> 12;
@@ -1395,7 +1395,7 @@ void btlfx_runSubEmitter(Pool30 *pool, Pool30Entry *e, SVECTOR *pos, SVECTOR *ro
                     break;
                     }
                 }
-                if (el != NULL && ((u32)(el->kind - 4) < 2 || el->kind == 8 || el->kind2 == 4 || el->kind2 == 5 || el->kind2 == 8)) {
+                if (el != NULL && ((u32)(el->kind - BTLFX_ELEMK_TRAIL_3D) < 2 || el->kind == BTLFX_ELEMK_TRAIL_SCREEN || el->kind2 == BTLFX_ELEMK_TRAIL_3D || el->kind2 == BTLFX_ELEMK_TRAIL_FLAT || el->kind2 == BTLFX_ELEMK_TRAIL_SCREEN)) {
                     dir.vx = p->pos.vx >> 12;
                     dir.vy = p->pos.vy >> 12;
                     dir.vz = p->pos.vz >> 12;

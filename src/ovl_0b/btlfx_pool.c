@@ -218,7 +218,7 @@ s32 btlfx_waitSoundBank(s32 arg0, s32 arg1) {
 void btlfx_markCommonVram(RECT *arg0) {
     if (arg0->x >= 0x300 && arg0->x + arg0->w < 0x381) {
         if (arg0->y >= 0x100 && arg0->y + arg0->h < 0x201) {
-            g_btlfxState.flags |= 1;
+            g_btlfxState.flags |= BTLFX_HDR_COMMON_VRAM;
         }
     }
 }
@@ -341,7 +341,7 @@ p = d->cmd; cont = 1; d->blockType = p[0]; d->cmdsLeft = p[1]; d->cmd += 2; d->s
                 p = d->cmd;
                 d->cmdKind = ((u8 *)p)[0];
                 d->cmdArg = ((u8 *)p)[1];
-                if (g_btlfxEnv->targets->kind & 8) {
+                if (g_btlfxEnv->targets->kind & BTL_FXK_PARTY_UNLOAD) {
                     if (d->cmdKind == 4 || d->cmdKind == 9) {
                         if (btlfx_countVisibleParty() != 0) {
                             break;
@@ -412,7 +412,7 @@ x = *p++ << 11; rd += x; d->ringBase = RAM_BTLFX_RING(u8 *) + x; dst = RAM_BTLFX
                     dst = (u8 *)g_gameState->gameData->ctx.battle->work->loadBuf;
                     break;
                 case 9:
-                    if (g_btlfxEnv->targets->kind & 8) {
+                    if (g_btlfxEnv->targets->kind & BTL_FXK_PARTY_UNLOAD) {
                         btl_unloadPartyModels();
                         dst = (u8 *)g_gameState->gameData->ctx.battle->partyBufs[0];
                     } else {
@@ -545,7 +545,7 @@ x = *p++ << 11; rd += x; d->ringBase = RAM_BTLFX_RING(u8 *) + x; dst = RAM_BTLFX
                 case 9:
                     m = 1;
                     d->commonTexLoaded = 1;
-                    if (g_btlfxEnv->targets->kind & 8) {
+                    if (g_btlfxEnv->targets->kind & BTL_FXK_PARTY_UNLOAD) {
                         btl_unloadPartyModels();
                         base = (void *)g_gameState->gameData->ctx.battle->partyBufs[0];
                     } else {

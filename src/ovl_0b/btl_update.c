@@ -242,7 +242,7 @@ void btl_victory(GameData *arg0, Battle *arg1) {
                     }
                 }
                 btlcam_playScene(btl_getSceneData(2));
-            } else if ((arg1->scene.flags >> 14) & 1) {
+            } else if ((arg1->scene.flags >> BTL_SCENE_KEEP_MUSIC_BIT) & 1) {
                 arg0->battleFlags |= GD_BTL_KEEP_MUSIC;
             }
             arg1->phase = BTL_PHASE_EXIT;
@@ -252,7 +252,7 @@ void btl_victory(GameData *arg0, Battle *arg1) {
             arg1->phase = BTL_PHASE_EXIT_DEFEAT;
             break;
         case BTL_END_STOPPED:
-            if ((arg1->scene.flags & 0x4040) == 0x4000) {
+            if ((arg1->scene.flags & (BTL_SCENE_KEEP_MUSIC | BTL_SCENE_VICTORY)) == BTL_SCENE_KEEP_MUSIC) {
                 arg0->battleFlags |= GD_BTL_KEEP_MUSIC;
             }
             arg1->phase = BTL_PHASE_SCRIPT;
@@ -274,7 +274,7 @@ void btl_victory(GameData *arg0, Battle *arg1) {
                     gil += g_gameState->gameData->ctx.battle->enemies[BTL_UNIT_INDEX(u->flags)].type->gil;
                 }
             }
-            if ((arg1->scene.flags & 0x4040) == 0x4000) {
+            if ((arg1->scene.flags & (BTL_SCENE_KEEP_MUSIC | BTL_SCENE_VICTORY)) == BTL_SCENE_KEEP_MUSIC) {
                 arg0->battleFlags |= GD_BTL_KEEP_MUSIC;
             }
             arg0->battleResult = 4;
