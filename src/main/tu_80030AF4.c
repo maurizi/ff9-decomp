@@ -291,9 +291,9 @@ void fadeFlat_start(FadeState *p) {
     if (p->frames == 0) {
         p->frames = 16;
     }
-    g_fadeFlat.color.r = g_fadeFlat.startR = p->color.unk0[0];
-    g_fadeFlat.color.g = g_fadeFlat.startG = p->color.unk0[1];
-    g_fadeFlat.color.b = g_fadeFlat.startB = p->color.unk0[2];
+    g_fadeFlat.color.r = g_fadeFlat.startR = p->color.b[0];
+    g_fadeFlat.color.g = g_fadeFlat.startG = p->color.b[1];
+    g_fadeFlat.color.b = g_fadeFlat.startB = p->color.b[2];
     g_fadeFlat.endR = p->endR;
     g_fadeFlat.endG = p->endG;
     g_fadeFlat.endB = p->endB;
@@ -328,9 +328,9 @@ void fadeFlat_update(FadeState *p) {
     } else {
         g_fadeFlat.out = g_fadeFlat.color;
     }
-    p->color.unk0[0] = g_fadeFlat.out.r;
-    p->color.unk0[1] = g_fadeFlat.out.g;
-    p->color.unk0[2] = g_fadeFlat.out.b;
+    p->color.b[0] = g_fadeFlat.out.r;
+    p->color.b[1] = g_fadeFlat.out.g;
+    p->color.b[2] = g_fadeFlat.out.b;
 }
 
 void fadeFlat_seek(FadeState *p, s32 n) {
@@ -344,9 +344,9 @@ void fadeFlat_seek(FadeState *p, s32 n) {
     } else {
         g_fadeFlat.out = g_fadeFlat.color;
     }
-    p->color.unk0[0] = g_fadeFlat.out.r;
-    p->color.unk0[1] = g_fadeFlat.out.g;
-    p->color.unk0[2] = g_fadeFlat.out.b;
+    p->color.b[0] = g_fadeFlat.out.r;
+    p->color.b[1] = g_fadeFlat.out.g;
+    p->color.b[2] = g_fadeFlat.out.b;
 }
 
 void fadeFlat_draw(FadeState *p) {

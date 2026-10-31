@@ -88,7 +88,7 @@ the heap to its end (the TIM part is not kept). The motions an actor plays are m
 |---|---|
 | model of an actor | the dependency entry whose link = the actor's script entry (`EvtObject.scriptIdx`); at run time `EvtObject.modelId` (op 0x2F) |
 | model slot | `EvtObject.modelSlot`: 0-8 = party character (`evt_getObjectChrIndex` = `scriptIdx + 9 - scriptCount`), 9 + n for NPCs (`GameData.npcModelSlots`) |
-| per-slot record | `game_getModel(slot)`: `Unk8E0`/`FieldEvtCtx` `{flags, modelId, ModelObj *model, FieldEvtObj *obj}` in `GameData.unk8D8[9]` / `unk8E0[npcCount]` |
+| per-slot record | `game_getModel(slot)`: `ModelSlot` (ovl_0a `FieldObjSlot`, ovl_0c `WmObjSlot`) `{flags, modelId, model, EvtObject *actor}` in `GameData.chrModels[9]` / `npcModels[npcCount]` |
 | the model object | `ModelObj` (0x98-byte records `GameData.unk8D4` / `unk8DC`; main sees it as `Unk8004AFF0`) |
 
 ## 2. The layout as loaded
@@ -191,7 +191,7 @@ R_i = sat16(R_p · Rot_i >> 12)        T_i = T_p + (R_p · (0, 0, length_i)) >> 
 with the same GTE rounding. `W` is built by `fld_drawModels` each frame: `math_rotMatrixZYX(rotX, rotY, rotZ)`
 (or `math_rotMatrixZXY` with the floor tilt when `FLD_OBJ_TILT`), translation = actor position, then
 `fldmdl_applyScale` multiplies its columns by `scaleX/Y/Z` (`ModelObj.flags` bit 1, set by op 0x9F with
-`scale = (s8)arg << 6`). The frame is `FieldEvtObj.animFrame` (u8; the matrices in RAM belong to the frame value
+`scale = (s8)arg << 6`). The frame is `EvtObject.animFrame` (u8; the matrices in RAM belong to the frame value
 shown, not frame - 1 as in battle). Only these differ from battle:
 
 - **Look-at** (`ModelObj.flags` bit 0, set by main `evt_relaxLookAt` / `evt_updateLookAt*` with
@@ -216,7 +216,7 @@ shown, not frame - 1 as in battle). Only these differ from battle:
   exactly the relocated words changed (`flags` bit 0, `bones`, `groups`, the five group pointers = header +
   file offset). `GameData.unk8D8[0]` holds model id 98 for character 0.
 - Bone matrices (`ModelObj.boneMatrices`) of Zidane (27 bones, motion 0x0300C8 frame 2), 115 (frame 19) and 179
-  (frame 8) equal `battle_pose` with `base = ModelObj.worldMatrix` and `frame = FieldEvtObj.animFrame`: max
+  (frame 8) equal `battle_pose` with `base = ModelObj.worldMatrix` and `frame = EvtObject.animFrame`: max
   error 0. Model 220 has look-at on: only its look-at bone (11) and its children differ.
 - `disc3_pandemonium_lv99_field` (disc 3, field 2714): Zidane again (look-at on; only bone 8, his look-at bone,
   differs), three actors sharing local model 91 (frame 0, error 0).

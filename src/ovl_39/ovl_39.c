@@ -2215,13 +2215,13 @@ void menuSave_unpackItems(SaveItems *s) {
 void menuSave_packMisc(SaveMisc *p) {
     p->chocograph = g_gameState->gameData->chocograph;
     p->worldCamera = g_gameState->gameData->worldCamera;
-    p->unk14 = g_gameState->gameData->inWorldFrame;
+    p->inWorldFrame = g_gameState->gameData->inWorldFrame;
 }
 
 void menuSave_unpackMisc(SaveMisc *p) {
     g_gameState->gameData->chocograph = p->chocograph;
     g_gameState->gameData->worldCamera = p->worldCamera;
-    g_gameState->gameData->inWorldFrame = p->unk14;
+    g_gameState->gameData->inWorldFrame = p->inWorldFrame;
 }
 
 void menuSave_cardInit(void) {

@@ -577,19 +577,19 @@ u32 wm_loadActorModel(s32 arg0, EvtObject *arg1) {
         g_gameState->gameData->npcModelSlots++;
     }
     o->modelId = arg0;
-    o->obj->model = db_lookupRegistered(DB_GET_ADDR, arg0, 0);
-    if ((o->obj->anim = db_lookupRegistered(DB_GET_ADDR, wm_findDefaultAnim(o->modelId), 0)) != NULL) {
-        h = o->obj->anim;
+    o->model->model = db_lookupRegistered(DB_GET_ADDR, arg0, 0);
+    if ((o->model->anim = db_lookupRegistered(DB_GET_ADDR, wm_findDefaultAnim(o->modelId), 0)) != NULL) {
+        h = o->model->anim;
         if (IS_OFFSET(h->rotKeys)) {
             t = h->rotKeysLo;
             h->rotKeys = (s32)h + h->rotKeys;
             if (t != 0) {
-                h->rotKeysLo = (s32)o->obj->anim + t;
+                h->rotKeysLo = (s32)o->model->anim + t;
             }
         }
     }
     o->actor = arg1;
-    m = o->obj->model;
+    m = o->model->model;
     g = m->groups;
     n = 0;
     if (IS_OFFSET(g)) {
@@ -599,9 +599,9 @@ u32 wm_loadActorModel(s32 arg0, EvtObject *arg1) {
         n += g[i].packetSize;
     }
     n *= 2;
-    n += (o->obj->model->boneCount << 5) + o->obj->model->groupCount * 12;
-    wm_initModel(o->obj, g_gameState->gameData->ctx.world->obj->primCursor);
-    wm_buildPackets(o->obj, db_getModelTexPages(o->modelId), db_getModelUvOffsets(o->modelId));
+    n += (o->model->model->boneCount << 5) + o->model->model->groupCount * 12;
+    wm_initModel(o->model, g_gameState->gameData->ctx.world->obj->primCursor);
+    wm_buildPackets(o->model, db_getModelTexPages(o->modelId), db_getModelUvOffsets(o->modelId));
     g_gameState->gameData->ctx.world->obj->primCursor += n;
     o->flags |= WM_SLOT_LOADED;
     return id;
@@ -743,7 +743,7 @@ void wm_calcShadowMatrix(WmObjEnt *arg0, WmObjSlot *arg1, MATRIX *arg2, s32 arg3
 
     /* word-wise copy of the joint matrix */
     d = (s32 *)&m;
-    s = (s32 *)&((MATRIX *)arg1->obj->boneMatrices)[arg4];
+    s = (s32 *)&((MATRIX *)arg1->model->boneMatrices)[arg4];
     d[0] = s[0];
     d[1] = s[1];
     d[2] = s[2];
@@ -784,9 +784,9 @@ void wm_calcShadowMatrix(WmObjEnt *arg0, WmObjSlot *arg1, MATRIX *arg2, s32 arg3
     arg2->m[0][2] = fwd.vx * arg0->scaleZ >> 12;
     arg2->m[1][2] = fwd.vy * arg0->scaleZ >> 12;
     arg2->m[2][2] = fwd.vz * arg0->scaleZ >> 12;
-    arg2->t[0] = ((side.vx * arg0->offsetX + fwd.vx * arg0->offsetZ) >> 12) + ((MATRIX *)arg1->obj->boneMatrices)[arg4].t[0];
+    arg2->t[0] = ((side.vx * arg0->offsetX + fwd.vx * arg0->offsetZ) >> 12) + ((MATRIX *)arg1->model->boneMatrices)[arg4].t[0];
     arg2->t[1] = ((side.vy * arg0->offsetX + fwd.vy * arg0->offsetZ) >> 12) + arg3;
-    arg2->t[2] = ((side.vz * arg0->offsetX + fwd.vz * arg0->offsetZ) >> 12) + ((MATRIX *)arg1->obj->boneMatrices)[arg4].t[2];
+    arg2->t[2] = ((side.vz * arg0->offsetX + fwd.vz * arg0->offsetZ) >> 12) + ((MATRIX *)arg1->model->boneMatrices)[arg4].t[2];
 }
 
 /* world map music/sound request handler (GameData.unk83C); unk851 drives the streamed music load */
@@ -1303,9 +1303,9 @@ void wm_startBattleTransition(void) {
     o->swirlFrames = 0;
     a = evt_getPlayer();
     if (a != NULL && (s = (WmObjSlot *)game_getModel(a->modelSlot)) != NULL) {
-        v.vx = ((MATRIX *)s->obj->boneMatrices)[1].t[0];
-        v.vy = ((MATRIX *)s->obj->boneMatrices)[1].t[1];
-        v.vz = ((MATRIX *)s->obj->boneMatrices)[1].t[2];
+        v.vx = ((MATRIX *)s->model->boneMatrices)[1].t[0];
+        v.vy = ((MATRIX *)s->model->boneMatrices)[1].t[1];
+        v.vz = ((MATRIX *)s->model->boneMatrices)[1].t[2];
         gte_SetRotMatrix(&g_gameState->gameData->viewMatrix);
         gte_SetTransMatrix(&g_gameState->gameData->viewMatrix);
         gte_ldv0(&v);

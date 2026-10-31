@@ -124,23 +124,23 @@ extern SceneMode g_sceneModes[SCENE_COUNT];
 
 typedef struct {
     u8 cur; /* scene id */
-    u8 unk1;
-    u8 unk2;
+    u8 unk1; /* not used by C */
+    u8 unk2; /* write-only (cleared) */
     u8 fadeScreen; /* ending_menuStartFadeIn: 0 fades the menu in, 1 shows it and fades the screen in */
 } SceneState;
 extern SceneState g_scene;
 
 /* State of a menu scene (g_bjAction, g_bjWagerMenu, g_endingMenu), one template. */
 typedef struct {
-    u8 unk0;
+    u8 unk0; /* write-only (set to 1) */
     u8 shown;    /* input and cursor on */
     u8 fadingIn; /* no input while set */
     u8 cursor;
     u8 pad4[2];
-    u8 unk6;
-    u8 unk7;
+    u8 unk6; /* write-only (cleared) */
+    u8 unk7; /* write-only (cleared) */
     s32 fadeFrames; /* the fade-in ends after SCENE_MENU_FADE_FRAMES */
-    s32 unkC;
+    s32 unkC; /* write-only (cleared) */
 } SceneMenu;
 #define SCENE_MENU_FADE_FRAMES 48
 extern SceneMenu g_bjAction;

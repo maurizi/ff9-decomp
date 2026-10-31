@@ -261,8 +261,8 @@ typedef struct {
     u16 losses;
     u16 draws;
     CardEntry cards[0x69];
-    u16 unk27C;
-    u16 unk27E;
+    u16 unk27C; /* only copied with the card list (menuSave_copyCards) */
+    u16 unk27E; /* only copied with the card list (menuSave_copyCards) */
 } CardData; /* Tetra Master card list, g_cards (card_getInventory) */
 
 /* other overlay */
@@ -288,8 +288,8 @@ typedef struct {
 
 typedef struct {
     s32 chocograph; /* GameData.chocograph */
-    Unk880 worldCamera; /* GameData.worldCamera */
-    u8 unk14; /* GameData.inWorldFrame */
+    WmCameraState worldCamera; /* GameData.worldCamera */
+    u8 inWorldFrame; /* GameData.inWorldFrame */
 } SaveMisc;
 
 typedef struct {
@@ -430,7 +430,7 @@ extern SaveMessage s_menuSaveMessage;
 /* Format / save / load (s_menuSaveAccess). */
 typedef struct {
     u8 active;
-    u8 unk1;
+    u8 unk1; /* write-only (cleared) */
     u8 stage; /* ACCESS_STAGE_* */
     u8 mode;  /* ACCESS_SAVE / ACCESS_LOAD */
     u8 lastProgress;  /* sectors done at the last draw */

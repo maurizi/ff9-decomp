@@ -1,0 +1,29 @@
+# Round 33 (main exe and overlays except ovl_0b): field and type renames, one struct per FIELDS line.
+# Fields that are only initialised or never accessed got a "write-only" / "not read by C" / "not used by C" comment
+# in their header instead of a name.
+# FIELDS include/ff9.h ItemFlags: unk0=bits
+# FIELDS include/ff9.h Unk4: unk0=b
+# FIELDS include/ff9.h Unk8: unk0=b
+# FIELDS include/ff9.h Bytes8: unk0=b
+# FIELDS include/ff9.h Bytes5: unk0=b
+# FIELDS include/ff9.h Words2: unk0=w
+# FIELDS include/ff9.h Unk8001A084: unk24=cmdArg, unk2C=cmdArgs, unk36=cmdHasArg, unk37=cmd, unk38=prevCmd
+# FIELDS include/ff9.h EvtObject: unkC=stackWords
+# FIELDS include/ff9.h WmCameraState (was Unk880): unk0=stickSide + viewBlend (s16 pair), unk4=viewBlendSpeed, unk8=viewForceNormal, unkC=yaw + yawOffset (u16 pair)
+# FIELDS include/ovl_64.h Ovl64MovieInfo: unk5=background
+# FIELDS include/ovl_39.h SaveMisc: unk14=inWorldFrame
+Unk880 WmCameraState
+# ModelSlot views (batch 2): ovl_0a FieldEvtCtx merged into FieldObjSlot {flags, modelId, ModelObj *model, EvtObject *actor};
+# ovl_0c WmObjSlot keeps its type with the same field names. FLD_OBJ_LOADED / FLD_OBJ_NO_SHADOW / WM_SLOT_* = MODEL_SLOT_*.
+FieldEvtCtx FieldObjSlot
+# FIELDS include/ff9.h ModelSlot: modelKey=modelId
+# FIELDS include/ovl_0a.h FieldObjSlot (was FieldEvtCtx): obj=actor (type FieldEvtObj * -> EvtObject *, so obj->uid -> actor->modelSlot, obj->rotX/rotY -> actor->pos.rotX/rotY)
+# FIELDS include/ovl_0a.h FieldEvtObj: uid=modelSlot (offset 0x3B is EvtObject.modelSlot, not the uid)
+# FIELDS include/ovl_0a.h FieldAnimSfx: uid=modelSlot
+# FIELDS include/ovl_0a.h FieldActorExt: obj=actor
+# FIELDS include/ovl_0c.h WmObjSlot: obj=model
+# CONSTANTS FLD_OBJ_COLOR_WAIT 0x800 (ovl_0a.h), MAINCALC_RESULT_MISS 0x20 (ff9.h)
+# batch 3: Unk80047B90 (evt_relaxLookAt's subset view of the model object) merged into Unk8004AFF0 (same offsets)
+Unk80047B90 Unk8004AFF0
+# CONSTANTS FLD_EXIT_ENDING 4, FLD_NEXT_ENDING 0x3E80 (ovl_0a.h; fld_main sends a field change to 16000 to GS_MODE_ENDING)
+# CONSTANTS WM_BLOCK_NONE 0, WM_BLOCK_SET 2 (ovl_0c.h WmBlockNode.state)
