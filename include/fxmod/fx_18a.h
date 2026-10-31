@@ -42,7 +42,7 @@ extern Fx18aTrail fx_18a_trails[12];
 extern s32 fx_18a_nextTrail;
 
 static s32 fx_18a_op82PoolTask(s32 mode, Fx18aSpark *e, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 frame);
-void func_801E85A4(void);
+void fx_18a_resetTrails(void);
 void fx_18a_spawnTrail(Fx18aInst *inst, SVECTOR *origin, s32 h, SVECTOR *from, SVECTOR *to);
 
 #define TRAIL(e) ((Fx18aTrail *)((e)->point18 - 2))

@@ -232,7 +232,7 @@ static void fxm_drawTexCylinder(SVECTOR *pos, SVECTOR *rot, VECTOR *scale, s32 r
     }
 }
 
-void func_801E83BC(VECTOR *pos, SVECTOR *rot) {
+void fxm_rollTowardEye(VECTOR *pos, SVECTOR *rot) {
     Unk800F78A4 *env = fx_195_env;
     BtlfxExports *ex = BTLFX_EXPORTS(env);
     SVECTOR v;
@@ -370,7 +370,7 @@ s32 fx_195_op80(s32 mode, Fx195Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
                 env->camera->points[3].vz = work->camPos20.vz;
             }
             if (work->scale6C.vx != 0) {
-                func_801E83BC((VECTOR *)&work->pos60, &work->rot78);
+                fxm_rollTowardEye((VECTOR *)&work->pos60, &work->rot78);
                 ex->Hi_DrawEffModel(&work->rot78, (VECTOR *)&work->pos60, (s32)&work->scale6C, work->model5C);
             }
             if (frame >= 4) {
@@ -553,7 +553,7 @@ s32 fx_195_op80(s32 mode, Fx195Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
                     ex->btlfx_drawScreenTint((u32 *)(env->ot + 0x400), 1, 0, c_321 >> 14, c_321 >> 12);
                 }
                 work->scale6C.vx = work->scale6C.vy = s;
-                func_801E83BC((VECTOR *)&work->pos60, &work->rot78);
+                fxm_rollTowardEye((VECTOR *)&work->pos60, &work->rot78);
                 work->rot78.vz -= 0x400;
                 ex->Hi_DrawEffModel(&work->rot78, (VECTOR *)&work->pos60, (s32)&work->scale6C, work->model88);
                 ex->Hi_DrawEffModel(&work->rot78, (VECTOR *)&work->pos60, (s32)&work->scale6C, work->model8C);
@@ -561,7 +561,7 @@ s32 fx_195_op80(s32 mode, Fx195Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             if (frame >= 0x3B) {
                 a_331 = ((frame - 0x3B) << 12) / 18;
                 work->scale6C.vx = work->scale6C.vy = 0x1000;
-                func_801E83BC((VECTOR *)&work->pos60, &work->rot78);
+                fxm_rollTowardEye((VECTOR *)&work->pos60, &work->rot78);
                 work->rot78.vz += 0x400;
                 ex->Hi_DrawEffModel(&work->rot78, (VECTOR *)&work->pos60, (s32)&work->scale6C, work->model90);
                 ex->Hi_ModifyEffModelRGB(work->model90, (ex->math_cos(a_331 >> 2) >> 5) - 0x80,

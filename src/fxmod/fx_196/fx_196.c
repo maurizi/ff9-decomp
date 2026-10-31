@@ -90,7 +90,7 @@ static void fxm_drawScrollMoveX(s32 x, s32 dx, s32 dy, s32 w, s32 h, s32 sx, s32
     }
 }
 
-s32 func_801E7A5C(s32 a) {
+s32 fxm_sinHalfNeg(s32 a) {
     s32 v = BTLFX_EXPORTS(fx_196_env)->math_sin(a);
 
     if (v < 0) {
@@ -187,8 +187,8 @@ void fx_196_drawWaveMesh(SVECTOR *pos, SVECTOR *rot, VECTOR *scale, s32 col, s32
             x += (t * amp) >> 12;
             vs[2].vx = x;
             vs[3].vx = x + 0x41A;
-            vs[0].vz = vs[2].vz = (func_801E7A5C(ang + j * d) * r) >> 12;
-            vs[1].vz = vs[3].vz = (func_801E7A5C(ang + (j + 1) * d) * r) >> 12;
+            vs[0].vz = vs[2].vz = (fxm_sinHalfNeg(ang + j * d) * r) >> 12;
+            vs[1].vz = vs[3].vz = (fxm_sinHalfNeg(ang + (j + 1) * d) * r) >> 12;
             gte_ldv3c(vs);
             gte_rtpt();
             u0 = u + ((j & 3) << 5);

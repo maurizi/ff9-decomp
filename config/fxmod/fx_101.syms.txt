@@ -9,3 +9,4 @@ fx_101_bolts = 0x801E86DC; // [code] Fx101Bolt[8] ring buffer filled by fx_101_s
 fx_101_nextBolt = 0x801E89FC; // [code] index into fx_101_bolts used by fx_101_spawnBolt, incremented mod 8, reset by func_801E8188
 fx_101_op82PoolTask = 0x801E8048; // type:func [code] pool element function installed by fx_101_op82 (cfg->unk14), steps the spark with btlfx_stepModuleParticle and draws the bolt trail from the tip spark
 fx_101_spawnBolt = 0x801E8194; // type:func [code] fills the 12 points of fx_101_bolts[fx_101_nextBolt] (lerp from-to plus btlfx_pointAhead from origin) and spawns one pool spark per point, then advances fx_101_nextBolt
+fx_101_resetBolts = 0x801E8188; // type:func [code] sets fx_101_nextBolt to 0 before fx_101_spawnBolt

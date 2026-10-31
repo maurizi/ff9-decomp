@@ -9,3 +9,4 @@ fx_1e9_stopBolts = 0x801E8518; // [code] 0 in op80 mode 1, set to 1 when op80 en
 fx_1e9_bolts = 0x801E8644; // [code] 8 Fx1e9Trail point buffers, fx_1e9_spawnBolt fills entry nextBolt and its sparks point into it
 fx_1e9_nextBolt = 0x801E88A4; // [code] index into fx_1e9_bolts, incremented mod 8 by fx_1e9_spawnBolt, reset by func_801E810C
 fx_1e9_spawnBolt = 0x801E8118; // type:func [code] fills bolts[nextBolt] with 9 jittered btlfx_pointAhead points between two angle sets and btlfx_poolSpawns a spark per point
+fx_1e9_resetBolts = 0x801E810C; // type:func [code] sets fx_1e9_nextBolt to 0 before fx_1e9_spawnBolt

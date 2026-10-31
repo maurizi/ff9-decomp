@@ -181,7 +181,7 @@ s32 fx_101_op82PoolTask(s32 mode, Fx101Spark *p, Unk800F78A4 *env, Unk80100C78En
     return 0;
 }
 
-void func_801E8188(void) {
+void fx_101_resetBolts(void) {
     fx_101_nextBolt = 0;
 }
 
@@ -235,7 +235,7 @@ s32 fx_101_op82(s32 mode, Fx101Work82 *work, Unk800F78A4 *env, Unk80100C78Entry 
         cfg->poolCount4 = 0x60;
     } else if (mode == 1) {
         fx_101_env = env;
-        func_801E8188();
+        fx_101_resetBolts();
         ex->btlfx_getUnitBodyPos(0x10, 0, (s16 *)&work->pos0);
         work->angle8.vx = 0;
         work->angle8.vy = 0;

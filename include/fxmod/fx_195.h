@@ -24,7 +24,7 @@ typedef struct {
 extern Unk800F78A4 *fx_195_env;
 
 /* propagated */
-void func_801E83BC(VECTOR *pos, SVECTOR *rot);
+void fxm_rollTowardEye(VECTOR *pos, SVECTOR *rot);
 
 typedef struct {
     u8 r;

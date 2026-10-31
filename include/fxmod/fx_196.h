@@ -47,7 +47,7 @@ extern Unk800F78A4 *fx_196_env;
 /* end copied */
 
 /* propagated */
-s32 func_801E7A5C(s32 a);
+s32 fxm_sinHalfNeg(s32 a);
 
 extern s32 fx_196_nextWavePoint;
 extern SVECTOR fx_196_wavePoints[];

@@ -1,6 +1,6 @@
 #include "fxmod/fx_1fd.h"
 
-void func_801E7704(void *trackA, void *trackB, s32 arg2, s32 arg3, SVECTOR *scale, s32 w, s32 t, s32 rotY, s32 twist) {
+void fxm_projectEdgesBlend(void *trackA, void *trackB, s32 arg2, s32 arg3, SVECTOR *scale, s32 w, s32 t, s32 rotY, s32 twist) {
     Unk800F78A4 *env = fx_1fd_env;
     Fx1fdEdge *e = fx_1fd_ribbonEdges;
     BtlfxExports *ex = BTLFX_EXPORTS(env);
@@ -78,7 +78,7 @@ void func_801E7704(void *trackA, void *trackB, s32 arg2, s32 arg3, SVECTOR *scal
     }
 }
 
-void func_801E7AF8(void *track, s32 arg1, s32 arg2, SVECTOR *scale, s32 w, s32 rotY) {
+void fxm_projectEdges(void *track, s32 arg1, s32 arg2, SVECTOR *scale, s32 w, s32 rotY) {
     Unk800F78A4 *env = fx_1fd_env;
     Fx1fdEdge *e = fx_1fd_ribbonEdges;
     BtlfxExports *ex = BTLFX_EXPORTS(env);
@@ -134,7 +134,7 @@ void func_801E7AF8(void *track, s32 arg1, s32 arg2, SVECTOR *scale, s32 w, s32 r
     }
 }
 
-void func_801E7E18(s32 n, s32 c, s32 tpage, s32 clut, u16 v0, u16 v1) {
+void fxm_drawEdgeQuads(s32 n, s32 c, s32 tpage, s32 clut, u16 v0, u16 v1) {
     Fx1fdEdge *e = fx_1fd_ribbonEdges;
     POLY_GT4 *p;
     BtlfxExports *ex;
@@ -409,9 +409,9 @@ s32 fx_1fd_op82(s32 mode, Fx1fdWork82 *work, Unk800F78A4 *env, Unk80100C78Entry 
             for (i = 0; i < 6; i++) {
                 fxm_posPathInit(&fx_1fd_ribbon0.path0, (u16 *)fxm_offsetTableEntry((u8 *)ex->btlfx_getFileData(entry->file, 3), a + i));
                 fxm_posPathInit(&fx_1fd_ribbon0.path8, (u16 *)fxm_offsetTableEntry((u8 *)ex->btlfx_getFileData(entry->file, 3), b + i));
-                func_801E7704(&fx_1fd_ribbon0.path0, &fx_1fd_ribbon0.path8, fx_1fd_ribbon0.unk18, fx_1fd_ribbon0.count1A, &fx_1fd_ribbon0.scale10,
+                fxm_projectEdgesBlend(&fx_1fd_ribbon0.path0, &fx_1fd_ribbon0.path8, fx_1fd_ribbon0.unk18, fx_1fd_ribbon0.count1A, &fx_1fd_ribbon0.scale10,
                               fx_1fd_ribbon0.width1E, fx_1fd_ribbon0.blend20, fx_1fd_ribbon0.angle22, 1);
-                func_801E7E18(fx_1fd_ribbon0.count1A, fx_1fd_ribbon0.bright1C, 0x97, 0x3D80, 0x80, 0xC0);
+                fxm_drawEdgeQuads(fx_1fd_ribbon0.count1A, fx_1fd_ribbon0.bright1C, 0x97, 0x3D80, 0x80, 0xC0);
             }
         }
         if (frame >= 0 && frame < 60) {
@@ -453,9 +453,9 @@ s32 fx_1fd_op82(s32 mode, Fx1fdWork82 *work, Unk800F78A4 *env, Unk80100C78Entry 
             for (i = 0; i < 3; i++) {
                 fxm_posPathInit(&fx_1fd_ribbon1.path0, (u16 *)fxm_offsetTableEntry((u8 *)ex->btlfx_getFileData(entry->file, 4), a2 + i));
                 fxm_posPathInit(&fx_1fd_ribbon1.path8, (u16 *)fxm_offsetTableEntry((u8 *)ex->btlfx_getFileData(entry->file, 4), b2 + i));
-                func_801E7704(&fx_1fd_ribbon1.path0, &fx_1fd_ribbon1.path8, fx_1fd_ribbon1.unk18, fx_1fd_ribbon1.count1A, &fx_1fd_ribbon1.scale10,
+                fxm_projectEdgesBlend(&fx_1fd_ribbon1.path0, &fx_1fd_ribbon1.path8, fx_1fd_ribbon1.unk18, fx_1fd_ribbon1.count1A, &fx_1fd_ribbon1.scale10,
                               fx_1fd_ribbon1.width1E, fx_1fd_ribbon1.blend20, fx_1fd_ribbon1.angle22, 1);
-                func_801E7E18(fx_1fd_ribbon1.count1A, fx_1fd_ribbon1.bright1C, 0x99, 0x3C80, 0x80, 0xBF);
+                fxm_drawEdgeQuads(fx_1fd_ribbon1.count1A, fx_1fd_ribbon1.bright1C, 0x99, 0x3C80, 0x80, 0xBF);
             }
         }
         if (frame >= 0 && frame < 16) {
@@ -472,9 +472,9 @@ s32 fx_1fd_op82(s32 mode, Fx1fdWork82 *work, Unk800F78A4 *env, Unk80100C78Entry 
                     fxm_posPathInit(&fx_1fd_ribbon3.path0, (u16 *)fxm_offsetTableEntry((u8 *)ex->btlfx_getFileData(entry->file, 0x15), 0));
                 }
                 fx_1fd_ribbon3.angle18 = i * 0x333;
-                func_801E7AF8(&fx_1fd_ribbon3.path0, fx_1fd_ribbon3.unk10, fx_1fd_ribbon3.count12, &fx_1fd_ribbon3.scale8, fx_1fd_ribbon3.width16,
+                fxm_projectEdges(&fx_1fd_ribbon3.path0, fx_1fd_ribbon3.unk10, fx_1fd_ribbon3.count12, &fx_1fd_ribbon3.scale8, fx_1fd_ribbon3.width16,
                               fx_1fd_ribbon3.angle18);
-                func_801E7E18(fx_1fd_ribbon3.count12, fx_1fd_ribbon3.bright14, 0x97, 0x3D80, 0x80, 0xC0);
+                fxm_drawEdgeQuads(fx_1fd_ribbon3.count12, fx_1fd_ribbon3.bright14, 0x97, 0x3D80, 0x80, 0xC0);
             }
         }
         if (frame >= 16 && frame < 60) {
@@ -513,9 +513,9 @@ s32 fx_1fd_op82(s32 mode, Fx1fdWork82 *work, Unk800F78A4 *env, Unk80100C78Entry 
                     fxm_posPathInit(&fx_1fd_ribbon2.path8, (u16 *)fxm_offsetTableEntry((u8 *)ex->btlfx_getFileData(entry->file, 0x15), b3));
                 }
                 fx_1fd_ribbon2.angle22 = j * 0x333;
-                func_801E7704(&fx_1fd_ribbon2.path0, &fx_1fd_ribbon2.path8, fx_1fd_ribbon2.unk18, fx_1fd_ribbon2.count1A, &fx_1fd_ribbon2.scale10,
+                fxm_projectEdgesBlend(&fx_1fd_ribbon2.path0, &fx_1fd_ribbon2.path8, fx_1fd_ribbon2.unk18, fx_1fd_ribbon2.count1A, &fx_1fd_ribbon2.scale10,
                               fx_1fd_ribbon2.width1E, fx_1fd_ribbon2.blend20, fx_1fd_ribbon2.angle22, 0);
-                func_801E7E18(fx_1fd_ribbon2.count1A, fx_1fd_ribbon2.bright1C, 0x97, 0x3D80, 0x80, 0xC0);
+                fxm_drawEdgeQuads(fx_1fd_ribbon2.count1A, fx_1fd_ribbon2.bright1C, 0x97, 0x3D80, 0x80, 0xC0);
             }
         }
         if (frame >= 8 && frame < 60) {

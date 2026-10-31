@@ -33,3 +33,6 @@ fx_1fd_ribbonEdges = 0x801EB80C; // [code] Fx1fdEdge[60] written by the two edge
 fx_1fd_unitOrbits = 0x801EBADC; // [code] Fx1fdOrbit per target, units circled around the work point and raised in fx_1fd_op83, rot8 restored in fx_1fd_op84
 fx_1fd_camKeys = 0x801ED73C; // [code] Fx1fdTrack[64] slots of fxm_camChanReset, fxm_camChanAdd and fxm_camChanUpdate
 fx_1fd_camChanFrames = 0x801EDB3C; // [code] s32[4] per-channel frame counters zeroed by fxm_camChanReset, incremented by fxm_camChanUpdate
+fxm_projectEdgesBlend = 0x801E7704; // type:func [code] byte-identical copy of fx_0e2 fxm_projectEdgesBlend (round 33 slice D)
+fxm_projectEdges = 0x801E7AF8; // type:func [code] byte-identical copy of fx_0e2 fxm_projectEdges
+fxm_drawEdgeQuads = 0x801E7E18; // type:func [code] byte-identical copy of fx_0e2 fxm_drawEdgeQuads

@@ -15,3 +15,4 @@ fx_196_rippleColors = 0x801E90FC; // [code] CVECTOR table given to btlfx_drawRip
 fx_196_camPaths = 0x801E910C; // [code] Fx196CamPath table indexed by the op argument in fx_196_op87 (track files for camera points[0] and [1], end frame)
 fx_196_wavePoints = 0x801E916C; // [code] world position of the first column of each mesh row stored by fx_196_drawWaveMesh (pad = on screen), drawn by btlfx_drawAnimQuads in fx_196_op85 and handed out by fxm_nextRingPoint
 fx_196_drawWaveMesh = 0x801E7AA0; // type:func [code] draws an 18x19 grid of textured quads displaced by sin (amp, phase step) with POLY_GT4/FT4 plus G4/F4 overlays and records fx_196_wavePoints, called by fx_196_op85
+fxm_sinHalfNeg = 0x801E7A5C; // type:func [code] copy of fx_0b3 fxm_sinHalfNeg, math_sin with the negative half halved

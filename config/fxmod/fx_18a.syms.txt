@@ -9,3 +9,4 @@ fx_18a_op80Done = 0x801E89D8; // [code] zeroed in fx_18a_op80 mode 1, set to 1 w
 fx_18a_trails = 0x801E8B04; // [code] 12 trails of 15 points filled round-robin by fx_18a_spawnTrail, drawn via the sparks' point pointers in fx_18a_op82PoolTask
 fx_18a_nextTrail = 0x801E90D4; // [code] ring index into fx_18a_trails, zeroed by func_801E85A4 and advanced mod 12 by fx_18a_spawnTrail
 fx_18a_spawnTrail = 0x801E85B0; // type:func [code] fills the next fx_18a_trails entry with 15 points between the from/to angles and spawns one spark per point, called each frame by fx_18a_op82
+fx_18a_resetTrails = 0x801E85A4; // type:func [code] sets fx_18a_nextTrail to 0 before fx_18a_spawnTrail

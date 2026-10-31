@@ -704,7 +704,7 @@ fx_100 fxm_startHitMotionIfActive 0x4c 0x801e7c7c
 fx_100 fxm_startHeavyHitMotionIfActive 0x4c 0x801e7cc8
 fx_101 fx_101_op80 0x944 0x801e7704
 fx_101 fx_101_op82PoolTask 0x140 0x801e8048
-fx_101 func_801E8188 0xc 0x801e8188
+fx_101 fx_101_resetBolts 0xc 0x801e8188
 fx_101 fx_101_spawnBolt 0x2c4 0x801e8194
 fx_101 fx_101_op82 0x158 0x801e8458
 fx_102 fx_102_op80 0x220 0x801e7704
@@ -989,7 +989,7 @@ fx_188 fx_188_op80PoolTask 0x2ac 0x801e7704
 fx_188 fx_188_op80 0x490 0x801e79b0
 fx_18a fx_18a_op80 0xd48 0x801e7704
 fx_18a fx_18a_op82PoolTask 0x158 0x801e844c
-fx_18a func_801E85A4 0xc 0x801e85a4
+fx_18a fx_18a_resetTrails 0xc 0x801e85a4
 fx_18a fx_18a_spawnTrail 0x2cc 0x801e85b0
 fx_18a fx_18a_op82 0x15c 0x801e887c
 fx_18b fxm_drawRadialScreenGrid 0x7b4 0x801e7704
@@ -1028,14 +1028,14 @@ fx_195 fx_195_buildOffsetTrail 0x1a0 0x801e7704
 fx_195 fxm_drawOffsetTrail0 0x1fc 0x801e78a4
 fx_195 fxm_drawOffsetTrail1 0x1f8 0x801e7aa0
 fx_195 fxm_drawTexCylinder 0x724 0x801e7c98
-fx_195 func_801E83BC 0x84 0x801e83bc
+fx_195 fxm_rollTowardEye 0x84 0x801e83bc
 fx_195 fx_195_op80 0x1de8 0x801e8440
 fx_196 fxm_keyGetVec 0x50 0x801e7704
 fx_196 fxm_keyGetVec2 0x88 0x801e7754
 fx_196 fxm_keyGetVec3 0xb4 0x801e77dc
 fx_196 fxm_keyGetValue 0x2c 0x801e7890
 fx_196 fxm_drawScrollMoveX 0x1a0 0x801e78bc
-fx_196 func_801E7A5C 0x44 0x801e7a5c
+fx_196 fxm_sinHalfNeg 0x44 0x801e7a5c
 fx_196 fx_196_drawWaveMesh 0x8d0 0x801e7aa0
 fx_196 fxm_nextRingPoint 0x60 0x801e8370
 fx_196 fx_196_op85 0xa54 0x801e83d0
@@ -1291,7 +1291,7 @@ fx_1e7 fxm_startHeavyHitMotionIfActive 0x4c 0x801e820c
 fx_1e7 fxm_setSignal 0x14 0x801e8258
 fx_1e9 fx_1e9_op80 0x8c8 0x801e7704
 fx_1e9 fx_1e9_op82PoolTask 0x140 0x801e7fcc
-fx_1e9 func_801E810C 0xc 0x801e810c
+fx_1e9 fx_1e9_resetBolts 0xc 0x801e810c
 fx_1e9 fx_1e9_spawnBolt 0x2a8 0x801e8118
 fx_1e9 fx_1e9_op82 0x158 0x801e83c0
 fx_1ea fx_1ea_buildTrail 0x1cc 0x801e7804
@@ -1395,9 +1395,9 @@ fx_1fc fxm_moveUnitHome 0xcc 0x801e89ec
 fx_1fc fxm_camChanReset 0x4c 0x801e8ab8
 fx_1fc fxm_camChanAdd 0x5c 0x801e8b04
 fx_1fc fxm_camChanUpdate 0x160 0x801e8b60
-fx_1fd func_801E7704 0x3f4 0x801e7704
-fx_1fd func_801E7AF8 0x320 0x801e7af8
-fx_1fd func_801E7E18 0x30c 0x801e7e18
+fx_1fd fxm_projectEdgesBlend 0x3f4 0x801e7704
+fx_1fd fxm_projectEdges 0x320 0x801e7af8
+fx_1fd fxm_drawEdgeQuads 0x30c 0x801e7e18
 fx_1fd fx_1fd_op80 0x288 0x801e8124
 fx_1fd fx_1fd_op81 0x38 0x801e83ac
 fx_1fd fx_1fd_op82 0xd54 0x801e83e4

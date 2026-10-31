@@ -224,7 +224,7 @@ static s32 fx_18a_op82PoolTask(s32 mode, Fx18aSpark *e, Unk800F78A4 *env, Unk801
     return 0;
 }
 
-void func_801E85A4(void) {
+void fx_18a_resetTrails(void) {
     fx_18a_nextTrail = 0;
 }
 
@@ -277,7 +277,7 @@ s32 fx_18a_op82(s32 mode, Fx18aWork82 *work, Unk800F78A4 *env, Fx18aInst *inst, 
         init->poolCount = 0xB4;
     } else if (mode == 1) {
         fx_18a_env = env;
-        func_801E85A4();
+        fx_18a_resetTrails();
         ex->btlfx_getUnitBodyPos(0x10, 0, (s16 *)&work->pos0);
         work->rot8.vx = 0;
         work->rot8.vy = 0;

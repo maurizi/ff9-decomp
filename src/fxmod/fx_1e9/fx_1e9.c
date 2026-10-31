@@ -173,7 +173,7 @@ static s32 fx_1e9_op82PoolTask(s32 mode, Fx1e9Spark *e, Unk800F78A4 *env, Unk801
     return 0;
 }
 
-void func_801E810C(void) {
+void fx_1e9_resetBolts(void) {
     fx_1e9_nextBolt = 0;
 }
 
@@ -225,7 +225,7 @@ s32 fx_1e9_op82(s32 mode, Fx1e9Work82 *work, Unk800F78A4 *env, Fx1e9Inst *inst, 
         init->poolCount = 0x48;
     } else if (mode == 1) {
         fx_1e9_env = env;
-        func_801E810C();
+        fx_1e9_resetBolts();
         ex->btlfx_getUnitBodyPos(0x10, 0, (s16 *)&work->pos0);
         work->angle8.vx = 0;
         work->angle8.vy = 0;
