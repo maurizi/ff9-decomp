@@ -11046,3 +11046,6 @@ fx_1f2 fx_1f2_unitTrails[4] fx_1f2_unitTrails[16]  # declaration only
 
 # ===== R32c =====
 # new: EVT_OP_CALL_CALLER/_WAIT_FREE/_SYNC 0x16/0x18/0x1A, MENU_MAIN/NAME/SHOP/PARTY/SAVE/CHOCOGRAPH/DISC (MENU_SAVE/MENU_DISC moved from ovl_14.h to ff9.h)
+
+# ===== R32e (Mognet) =====
+# new: EVT_GB_MOGNET_* (script-only variables); tools/evtscript/edis.py (infix disassembler)

@@ -1684,6 +1684,15 @@ extern EventVars g_evtGlobalVars;
 #define EVT_GB_ATE_CHOICE_MASK 0xF1     /* s16 (unaligned): enabled choices of the ATE window (EVT_OP_MSG_CHOICE_MASK) */
 #define EVT_GB_NAVI_PLACE 0x67  /* u8: navi map place under the cursor + 1, 0 = none (wm_naviUpdate; the world script names it, wm autopilot reads it) */
 #define EVT_GB_NAVI_KNOWN 0x5C  /* u16[4] (h[0x2E..0x31]): navi map places known, bit i&15 of h[0x2E + i/16] (wm_naviDraw) */
+/* Mognet state, read only by the field scripts (docs/r32/3ds-requests-5-mognet.md) */
+#define EVT_GB_MOGNET_VERSION 0x400     /* u8: Mognet data version (1) */
+#define EVT_GB_MOGNET_GIVE_COUNT 0x408  /* u8: +1 on each "Give a letter" (medium) */
+#define EVT_GB_MOGNET_SLOTS 0x40A       /* carried letters, 3 x {used, letter, from, to} */
+#define EVT_GB_MOGNET_TAKEN 0x417       /* u8[8]: letter L taken from its sender, byte L/8 mask 0x80 >> L%8 */
+#define EVT_GB_MOGNET_RECEIVED 0x41F    /* u8[8]: letter L received by its recipient, same layout */
+#define EVT_GB_MOGNET_INTRO 0x427       /* bit 7: Mognet intro heard */
+#define EVT_GB_MOGNET_LIST_LETTER 0x428 /* u8[15]: letter id of read-mail list row k */
+#define EVT_GB_MOGNET_LIST_SENDER 0x437 /* u8[15]: sender (Moogle id) of list row k */
 
 void config_applySound(void);
 void config_applyPadMapping(void);
