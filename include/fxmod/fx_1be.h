@@ -1,7 +1,7 @@
 #ifndef FX_1BE_H
 #define FX_1BE_H
 
-/* Effect module fx_1be (dir 13 file 0x1be). */
+/* Effect module fx_1be (dir 13 file 0x1be): Atomos, short summon. Evidence: btlfx_start and btlfx_loadFile get the same id for summons (docs/runtime-findings.md). */
 #include "btlfx_mod.h"
 
 typedef struct {

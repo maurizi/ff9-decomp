@@ -1,7 +1,7 @@
 #ifndef FX_07E_H
 #define FX_07E_H
 
-/* Effect module fx_07e (dir 13 file 0x7E). */
+/* Effect module fx_07e (dir 13 file 0x7E): Slow. Evidence: the file btlfx_loadFile loads for the spell (docs/runtime-findings.md, btlfx_loadFile). */
 #include "btlfx_mod.h"
 
 typedef struct {

@@ -1,7 +1,7 @@
 #ifndef FX_197_H
 #define FX_197_H
 
-/* Effect module fx_197 (dir 13 file 0x197). */
+/* Effect module fx_197 (dir 13 file 0x197): Shiva, short summon. Evidence: btlfx_start and btlfx_loadFile get the same id for summons (docs/runtime-findings.md). */
 #include "btlfx_mod.h"
 
 typedef struct {

@@ -1,7 +1,7 @@
 #ifndef FX_026_H
 #define FX_026_H
 
-/* Effect module fx_026 (dir 13 file 0x26). */
+/* Effect module fx_026 (dir 13 file 0x26): Shiva, full summon. Evidence: btlfx_start and btlfx_loadFile get the same id for summons (docs/runtime-findings.md). */
 #include "btlfx_mod.h"
 
 /* keyframe track read from the effect file: count, then the keys */

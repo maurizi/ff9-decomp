@@ -1,7 +1,7 @@
 #ifndef FX_17D_4_H
 #define FX_17D_4_H
 
-/* Effect module fx_17d_4 (dir 13 file 0x17d). */
+/* Effect module fx_17d_4 (dir 13 file 0x17d): Ark, full summon (load group 4). Evidence: btlfx_start and btlfx_loadFile get the same id for summons (docs/runtime-findings.md). */
 #include "btlfx_mod.h"
 
 extern Unk800F78A4 *fx_17d_4_env;

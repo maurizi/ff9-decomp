@@ -1,7 +1,7 @@
 #ifndef FX_07F_H
 #define FX_07F_H
 
-/* Effect module fx_07f (dir 13 file 0x7F). */
+/* Effect module fx_07f (dir 13 file 0x7F): Silence. Evidence: the file btlfx_loadFile loads for the spell (docs/runtime-findings.md, btlfx_loadFile). */
 #include "btlfx_mod.h"
 
 typedef struct {

@@ -1,7 +1,7 @@
 #ifndef FX_114_H
 #define FX_114_H
 
-/* Effect module fx_114 (dir 13 file 0x114). */
+/* Effect module fx_114 (dir 13 file 0x114): Ifrit, full summon. Evidence: btlfx_start and btlfx_loadFile get the same id for summons (docs/runtime-findings.md). */
 #include "btlfx_mod.h"
 
 typedef struct {

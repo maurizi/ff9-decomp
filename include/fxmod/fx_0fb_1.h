@@ -1,7 +1,7 @@
 #ifndef FX_0FB_1_H
 #define FX_0FB_1_H
 
-/* Effect module fx_0fb_1 (dir 13 file 0x0FB). */
+/* Effect module fx_0fb_1 (dir 13 file 0x0FB): Madeen, full summon (load group 1). Evidence: btlfx_start and btlfx_loadFile get the same id for summons (docs/runtime-findings.md). */
 #include "btlfx_mod.h"
 
 typedef struct {

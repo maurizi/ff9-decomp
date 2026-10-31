@@ -1,7 +1,7 @@
 #ifndef FX_07C_H
 #define FX_07C_H
 
-/* Effect module fx_07c (dir 13 file 0x7C). */
+/* Effect module fx_07c (dir 13 file 0x7C): Mini. Evidence: the file btlfx_loadFile loads for the spell (docs/runtime-findings.md, btlfx_loadFile). */
 #include "btlfx_mod.h"
 
 typedef struct {

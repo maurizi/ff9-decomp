@@ -1,7 +1,7 @@
 #ifndef FX_095_H
 #define FX_095_H
 
-/* Effect module fx_095 (dir 13 file 0x95). */
+/* Effect module fx_095 (dir 13 file 0x95): Stop. Evidence: the file btlfx_loadFile loads for the spell (docs/runtime-findings.md, btlfx_loadFile). */
 #include "btlfx_mod.h"
 
 typedef struct {

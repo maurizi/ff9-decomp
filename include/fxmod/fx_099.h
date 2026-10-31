@@ -1,7 +1,7 @@
 #ifndef FX_099_H
 #define FX_099_H
 
-/* Effect module fx_099 (dir 13 file 0x99). */
+/* Effect module fx_099 (dir 13 file 0x99): Break. Evidence: the file btlfx_loadFile loads for the spell (docs/runtime-findings.md, btlfx_loadFile). */
 #include "btlfx_mod.h"
 
 typedef struct {

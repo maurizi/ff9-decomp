@@ -1,7 +1,7 @@
 #ifndef FX_1BD_H
 #define FX_1BD_H
 
-/* Effect module fx_1bd (dir 13 file 0x1bd). */
+/* Effect module fx_1bd (dir 13 file 0x1bd): Ifrit, short summon. Evidence: btlfx_start and btlfx_loadFile get the same id for summons (docs/runtime-findings.md). */
 #include "btlfx_mod.h"
 
 typedef struct {

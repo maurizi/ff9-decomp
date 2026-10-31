@@ -1,7 +1,7 @@
 #ifndef FX_0B3_H
 #define FX_0B3_H
 
-/* Effect module fx_0b3 (dir 13 file 0xB3). */
+/* Effect module fx_0b3 (dir 13 file 0xB3): Leviathan, full summon. Evidence: btlfx_start and btlfx_loadFile get the same id for summons (docs/runtime-findings.md). */
 #include "btlfx_mod.h"
 
 typedef struct {

@@ -1,7 +1,7 @@
 #ifndef FX_17D_5_H
 #define FX_17D_5_H
 
-/* Effect module fx_17d_5 (dir 13 file 0x17d, group 5). */
+/* Effect module fx_17d_5 (dir 13 file 0x17d): Ark, full summon (load group 5). Evidence: btlfx_start and btlfx_loadFile get the same id for summons (docs/runtime-findings.md). */
 #include "btlfx_mod.h"
 
 typedef struct {

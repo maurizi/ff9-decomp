@@ -1,7 +1,7 @@
 #ifndef FX_0EC_H
 #define FX_0EC_H
 
-/* Effect module fx_0ec (dir 13 file 0x0EC). */
+/* Effect module fx_0ec (dir 13 file 0x0EC): Doom. Evidence: the file btlfx_loadFile loads for the spell (docs/runtime-findings.md, btlfx_loadFile). */
 #include "btlfx_mod.h"
 
 typedef struct {

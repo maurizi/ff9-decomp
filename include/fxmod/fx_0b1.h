@@ -1,7 +1,7 @@
 #ifndef FX_0B1_H
 #define FX_0B1_H
 
-/* Effect module fx_0b1 (dir 13 file 0xB1). */
+/* Effect module fx_0b1 (dir 13 file 0xB1): Carbuncle, full summon. Evidence: btlfx_start and btlfx_loadFile get the same id for summons (docs/runtime-findings.md). */
 #include "btlfx_mod.h"
 
 typedef struct {
