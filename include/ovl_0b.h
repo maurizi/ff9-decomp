@@ -379,9 +379,18 @@ typedef struct {
 #define BTL_SETVAR_NEXT_LOCATION  37 /* evt_setNextLocation(n) */
 #define BTL_SETVAR_ADD_GIL        38 /* gil += n, at most 9999999 */
 
-/* btl_hasEnemyFlag categories (enemy type record unk2) */
-#define BTL_ENEMY_UNDEAD 0x10 /* code: Regen and healing hurt it like Zombie (btl_tickRegen, btl_calcHeal) */
-#define BTL_ENEMY_FLYING 0x80 /* code: Earth attacks miss it (btl_missIfAirborne) */
+/* BtlEnemyType.category bits (btl_hasEnemyFlag). Names: bit j is Scan's text g_btlScanTexts[j] (btl_updateScan
+ * prints one line per set bit); the Killer supports pair with them in btl_applyKillerBonus (SA_*_KILLER). */
+#define BTL_ENEMY_HUMANOID 0x01 /* [text btl scan] "Humanoid"; SA_MAN_EATER; Eat fails on it */
+#define BTL_ENEMY_BEAST    0x02 /* [text btl scan] "Beast"; SA_BEAST_KILLER */
+#define BTL_ENEMY_DEMON    0x04 /* [text btl scan] "Demon"; SA_DEVIL_KILLER */
+#define BTL_ENEMY_DRAGON   0x08 /* [text btl scan] "Dragon"; SA_DRAGON_KILLER; kills count GameData.dragonKills */
+#define BTL_ENEMY_UNDEAD   0x10 /* [text btl scan] "Undead"; SA_UNDEAD_KILLER; code: Regen and healing hurt it like
+                                 * Zombie (btl_tickRegen, btl_calcHeal) */
+#define BTL_ENEMY_STONE    0x20 /* [text btl scan] "Stone"; SA_STONE_KILLER; Soft kills it ("too soft") */
+#define BTL_ENEMY_INSECT   0x40 /* [text btl scan] "Insect"; SA_BUG_KILLER */
+#define BTL_ENEMY_AERIAL   0x80 /* [text btl scan] "Aerial"; SA_BIRD_KILLER; code: Earth attacks miss it
+                                 * (btl_missIfAirborne) */
 
 /* btl_showMessage ids: entry id + 8 of the message table g_btlMessages (its first 8 entries are the element names);
  * the names are the US texts */
@@ -533,6 +542,12 @@ typedef struct BtlUnit {
     u8 tickFlags; /* BTL_TICK_*: popups btl_spawnTickPopups shows */
     u8 inMenuQueue; /* waiting for its command menu (btlui_queueMenuUnit) */
 } BtlUnit; /* 0xD0 */
+
+/* BtlUnit.motions slots (btl_startHitMotion). Runtime: Zidane's model poked to each slot. 0x17, 0x19, 0x1D, 0x1E are
+ * other slots the effect ops play. */
+#define BTL_MOTION_HIT       2 /* short flinch, head back */
+#define BTL_MOTION_HIT_HEAVY 3 /* party: knocked off the feet backwards (abilities with flags2 0x81); enemies: the death
+                                * motion, or the hit in weak stance */
 
 /* BtlUnit.flags (bitfields in Square's source: single bits are read as (flags >> NAME_BIT) & 1). Evidence: [code] */
 #define BTL_UNIT_PARTY             (1 << 0) /* party member, else enemy: the side (btl_initPartyUnit sets it, btl_initEnemies clears it) */
@@ -734,7 +749,9 @@ typedef struct Unk800F78A40 {
     s16 file; /* effect file slot of the script (btlfx_getFileData) */
     u8 padA[0xF - 0xA];
     u8 seqRelease; /* set by btlseq op 0A; control op 8 waits for it with an enemy caster */
-    u8 pad10[0x1C - 0x10];
+    u8 signals[8]; /* script signals (BTLFX_SIG_*): Unk800FEC40.signals.b[0-3], then motionDone, moveDone, turnDone,
+                    * waitDone */
+    u8 pad18[0x1C - 0x18];
     u32 flags; /* BTLFX_HDR_* (as Unk800FEC40.flags) */
     u8 retry; /* btlfx_retryOp: run the same op again next frame */
     u8 pad21[0x23 - 0x21];
@@ -890,13 +907,15 @@ typedef struct {
     u8 cameraPick; /* camera choice picked (btlfx_opPlayCamera) */
     u8 seqRelease; /* set by btlseq op 0A; control op 8 waits for it with an enemy caster */
     union {
-        s32 w; /* cleared as a word */
+        s32 w; /* cleared as a word (only signals 0-3) */
         u8 b[4]; /* b[2]: done */
-    } signals; /* control op 2 sets b[a], op 1 waits for b[b] (b[2]: the caster task finished) */
-    s8 motionDone; /* unit ops: the motion op waited for has ended (btlfx_stepPlayMotionWait) */
-    s8 moveDone; /* unit ops: the move op has arrived (btlfx_opRunHome, btlfx_opJumpForward, ...) */
-    s8 turnDone; /* unit ops: the turn op has finished (btlfx_opFaceTarget, btlfx_opFaceHome) */
-    s8 waitDone; /* unit ops 0x79-0x7B: the side/timing wait finished */
+    } signals; /* control op 2 sets signal a, op 1 waits for signal b (b[2]: the caster task finished). Signals 4-7
+                * (BTLFX_SIG_*) are the four done flags below: op 1 indexes b[] up to 7 (runtime: `01 01 07`
+                * polls waitDone); the modules' view (Unk800F78A40.signals) is one u8[8] */
+    s8 motionDone; /* signal 4: the motion op waited for has ended (btlfx_stepPlayMotionWait) */
+    s8 moveDone; /* signal 5: the move op has arrived (btlfx_opRunHome, btlfx_opJumpForward, ...) */
+    s8 turnDone; /* signal 6: the turn op has finished (btlfx_opFaceTarget, btlfx_opFaceHome) */
+    s8 waitDone; /* signal 7: unit ops 0x79-0x7B (side/timing wait); modules set it too (fxm_setSignal) */
     u8 *pc; /* script pointer, 3-byte commands */
     s32 flags; /* BTLFX_HDR_* */
     u8 retry; /* btlfx_retryOp: run the same op again next frame */
@@ -906,6 +925,13 @@ typedef struct {
     u8 modelSwap; /* control op 13: unit slot + 1 whose model btl_swapPartyModel swaps */
     u8 castEnded; /* the cast op (btlfx_opCast) finished its caster motion; the loader holds common texture blocks (kind 9) until then */
 } Unk800FEC40;
+
+/* Script signals (Unk800FEC40.signals.b[n] / Unk800F78A40.signals[n]): control op 2 sets one, op 1 waits for one.
+ * 0-3 are free for the script (2: the caster task finished); 4-7 are set by the unit ops and polled with op 1. */
+#define BTLFX_SIG_MOTION 4 /* Unk800FEC40.motionDone */
+#define BTLFX_SIG_MOVE   5 /* Unk800FEC40.moveDone */
+#define BTLFX_SIG_TURN   6 /* Unk800FEC40.turnDone */
+#define BTLFX_SIG_WAIT   7 /* Unk800FEC40.waitDone; runtime: Mighty Guard's module sets it, the script's `01 01 07` waits */
 
 /* Unk800FEC40.flags (g_btlfxState): the effect's header word (RAM_BTLFX_MODULE u16 table, btlfx_runScript phase 1)
  * without bit 0. Evidence: [code] */
@@ -920,7 +946,12 @@ typedef struct {
 #define BTLFX_HDR_VRAM_SWAP_SHIFT 10
 #define BTLFX_HDR_CAST_MODE    0x3000 /* cast op castMode */
 #define BTLFX_HDR_CAST_MODE_SHIFT 12
-#define BTLFX_HDR_RESIDENT     0x8000 /* the script is in the resident module: no file to load (BTLFX_PHASE_RESIDENT) */
+#define BTLFX_HDR_RESIDENT     0x8000 /* the script is in the resident module: no file to load (BTLFX_PHASE_RESIDENT).
+                                       * Runtime (header table dumped at btlfx_loadFile): 118 ids, all with header 0x83FF
+                                       * and no dir-13 file, the weapon and physical-hit scripts: party Attacks
+                                       * 0x64-0x76, enemy/Marcus Attack 0x77, Steal 0xC8 / 0x111 / 0x13 / 0x14, Jump
+                                       * 0x189, enemy melee 0x139-0x178 and 0x1CD-0x1E5 (Tail, Claws, Fang, ...),
+                                       * 0x10 / 0x12 / 0x25 / 0x27 */
 extern Unk800FEC40 g_btlfxState;
 
 typedef struct {
@@ -1310,8 +1341,8 @@ typedef struct Battle11C0 {
     u8 unk7[1];
     s32 freeHeap; /* g_modeHeap once the shadows are allocated (btl_load, btl_initReturnInfo); never read */
     s32 *loadBuf; /* loader work buffer (CD requests and step states at 0x9FA0/0x9FD8) */
-    s32 unk10;
-    u8 *texts; /* enemy and enemy-ability names (BtlEnemyType.nameOfs, btl_showCmdName) */
+    u8 *script; /* battle event script (dependency 0x05xxxx; btl_initEncounter, evt_init) */
+    u8 *texts; /* enemy and enemy-ability names (BtlEnemyType.nameOfs, btl_showCmdName); the bundle's DB_AREA item */
     struct BtlBgHeader *bgHeader; /* background header (btlbg_init) */
     s32 bgData; /* background groups (btlbg_draw) */
     Battle11C020 *encounter; /* encounter header: groups, enemy records, abilities (btl_initScene) */
@@ -3032,16 +3063,12 @@ typedef struct {
     Unk800E8F50Entry tex[1];
 } Unk800E8F50;
 
+/* btl_loadBackgroundStep's step state (a local of btl_load). Same layout as the other load steps' states. */
 typedef struct {
     s16 state; /* state */
     u16 nextState; /* next state */
-    u8 pad4[0x10 - 4];
-    s32 script; /* battle event script (dependency 0x05xxxx; evt_init) */
-    s32 area; /* the encounter bundle's DB_AREA item (btl_initEncounter) */
-    u8 pad18[0x1C - 0x18];
-    s32 unk1C;
-    s32 unk20;
-    s32 sceneBuf; /* encounter scene file buffer (btl_initEncounter) */
+    u8 pad4[0x24 - 4];
+    s32 sceneBuf; /* file buffer being read (the background, Battle11C0.bgData) */
 } Unk800AA08C;
 
 typedef struct {
@@ -3570,11 +3597,18 @@ typedef struct {
 typedef struct {
     u8 unit; /* unit id turned */
     u8 target;
-    u8 unk2;
+    u8 partyMode; /* BTLFX_FACE_*: what a party-member target does (unit op 0x50 b, g_btlfxOpArgs.unk1) */
     u8 unk3;
     s32 frames; /* turn frames */
     s16 delta[3]; /* rotation delta back to its start rotation (btlfx_stepFaceHome) */
 } Unk800D8124;
+
+/* Unk800D8124.partyMode (unit op 0x72, btlfx_opFaceHome / btlfx_stepFaceHome). Runtime: Throw dagger at Vivi snaps
+ * in one frame, at the Malboro turns over 4 frames; scripts use 0 in items and some abilities, 1 in Throw, Sword
+ * Magic, Sword Arts, Flair and Seiken, 2 only in the resident racket attacks (0x68, 0x6A, 0x6F) and 0x27. */
+#define BTLFX_FACE_ALWAYS     0 /* turn back over the frames whatever the target */
+#define BTLFX_FACE_SNAP_PARTY 1 /* party target: snap back to the start rotation at once */
+#define BTLFX_FACE_SKIP_PARTY 2 /* party target: the op ends at once without turning */
 
 s32 btlfx_stepJumpForward(Unk800D7C9C *, s32, s32 *);
 s32 btlfx_stepFaceTarget(Unk800D805C *, s32, s32 *);
@@ -3662,7 +3696,7 @@ void btl_initDoomCount(Unk800C09D8 *);
 void math_rotMatrixZYX(SVECTOR *, MATRIX *);
 
 s32 btl_setupBackground(Battle11C0 *, s32);
-s32 btl_loadEncounterFile(Unk800AA08C *, s32);
+s32 btl_loadEncounterFile(Battle11C0 *, s32);
 void btl_beginFrame(void);
 void btl_checkDiscCover(void);
 u8 btlui_isPauseRequested(void);
@@ -4602,7 +4636,7 @@ void btl_copyStats(Unk800BD8C0 *arg0, Unk800BD8C0 *arg1);
 s32 btl_getAnimFileId(s32 arg0);
 u16 btl_getEntranceSound(void);
 void btl_initBattleState(void);
-s32 btl_initEncounter(Unk800AA08C *arg0, s32 arg1);
+s32 btl_initEncounter(Battle11C0 *arg0, s32 arg1);
 void btl_initEnemies(Battle *arg0);
 void btl_initEquipElements(Character *c, BtlUnit *u);
 void btl_initReturnInfo(void);

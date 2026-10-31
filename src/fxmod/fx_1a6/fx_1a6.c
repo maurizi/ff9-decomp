@@ -92,7 +92,7 @@ s32 fx_1a6_op80(s32 mode, Fx1a6Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
         switch (frame) {
         case 6:
             if (work->unk48 != 2) {
-                fxm_startMotion2IfActive(0);
+                fxm_startHitMotionIfActive(0);
             }
             work->emit8 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 6), (s32)&work->pos18);
             work->emitC = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 5), (s32)&work->pos18);
@@ -179,15 +179,15 @@ static s32 fxm_isMotionDone(s32 unit) {
     return r;
 }
 
-static void fxm_startMotion2IfActive(s32 unit) {
+static void fxm_startHitMotionIfActive(s32 unit) {
     if (BTLFX_EXPORTS(fx_1a6_env)->btlfx_isUnitActive(unit)) {
-        fxm_startUnitMotion(unit, 2);
+        fxm_startUnitMotion(unit, BTL_MOTION_HIT);
     }
 }
 
-static void fxm_startMotion3IfActive(s32 unit) {
+static void fxm_startHeavyHitMotionIfActive(s32 unit) {
     if (BTLFX_EXPORTS(fx_1a6_env)->btlfx_isUnitActive(unit)) {
-        fxm_startUnitMotion(unit, 3);
+        fxm_startUnitMotion(unit, BTL_MOTION_HIT_HEAVY);
     }
 }
 

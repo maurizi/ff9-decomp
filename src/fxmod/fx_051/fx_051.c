@@ -12,10 +12,10 @@ s32 fx_051_op80(s32 mode, Fx051Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
         work->unk18 = n;
         fx_051_env = env;
         if (n >= env->targets->targetCount) {
-            fxm_setSignal(env, 7, 1);
+            fxm_setSignal(env, BTLFX_SIG_WAIT, 1);
             return 1;
         }
-        fxm_setSignal(env, 7, 0);
+        fxm_setSignal(env, BTLFX_SIG_WAIT, 0);
         ex->btlfx_playFileSound(1, entry->file, -1);
         ex->btlfx_playFileSound(5, entry->file, -1);
         ex->btlfx_playFileSound(6, entry->file, -1);
@@ -45,7 +45,7 @@ s32 fx_051_op80(s32 mode, Fx051Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
             }
         }
         if (frame == 0xC) {
-            fxm_setSignal(env, 7, 1);
+            fxm_setSignal(env, BTLFX_SIG_WAIT, 1);
         }
         return frame >= 0x32;
     }
@@ -53,7 +53,7 @@ s32 fx_051_op80(s32 mode, Fx051Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
 }
 
 static void fxm_setSignal(Unk800F78A4 *env, s32 i, s32 v) {
-    *((u8 *)env->state + i + 0x10) = v;
+    env->state->signals[i] = v;
 }
 
 INCLUDE_RODATA("asm/us/fx_051/nonmatchings/fx_051", fx_051_headerPtr);

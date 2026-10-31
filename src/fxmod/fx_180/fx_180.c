@@ -308,7 +308,7 @@ s32 fx_180_op82(s32 mode, Fx180Work82 *work, Unk800F78A4 *env, Unk80100C78Entry 
             break;
         case 32:
             for (i = 0; i < env->targets->targetCount; i++) {
-                fxm_startMotion3IfActive(i);
+                fxm_startHeavyHitMotionIfActive(i);
             }
             break;
         case 42:
@@ -470,15 +470,15 @@ static s32 fxm_isMotionDone(s32 unit) {
     return r;
 }
 
-static void fxm_startMotion2IfActive(s32 unit) {
+static void fxm_startHitMotionIfActive(s32 unit) {
     if (BTLFX_EXPORTS(fx_180_env)->btlfx_isUnitActive(unit)) {
-        fxm_startUnitMotion(unit, 2);
+        fxm_startUnitMotion(unit, BTL_MOTION_HIT);
     }
 }
 
-static void fxm_startMotion3IfActive(s32 unit) {
+static void fxm_startHeavyHitMotionIfActive(s32 unit) {
     if (BTLFX_EXPORTS(fx_180_env)->btlfx_isUnitActive(unit)) {
-        fxm_startUnitMotion(unit, 3);
+        fxm_startUnitMotion(unit, BTL_MOTION_HIT_HEAVY);
     }
 }
 

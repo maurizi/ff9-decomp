@@ -47,7 +47,7 @@ s32 fx_1b2_op80(s32 mode, Fx1b2Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             }
             for (i = 0; i < env->targets->targetCount; i++) {
                 if (work->unk64 != 2) {
-                    fxm_startMotion2IfActive(i);
+                    fxm_startHitMotionIfActive(i);
                 }
             }
             work->unk64++;
@@ -287,15 +287,15 @@ static s32 fxm_isMotionDone(s32 unit) {
     return r;
 }
 
-static void fxm_startMotion2IfActive(s32 unit) {
+static void fxm_startHitMotionIfActive(s32 unit) {
     if (BTLFX_EXPORTS(fx_1b2_env)->btlfx_isUnitActive(unit)) {
-        fxm_startUnitMotion(unit, 2);
+        fxm_startUnitMotion(unit, BTL_MOTION_HIT);
     }
 }
 
-static void fxm_startMotion3IfActive(s32 unit) {
+static void fxm_startHeavyHitMotionIfActive(s32 unit) {
     if (BTLFX_EXPORTS(fx_1b2_env)->btlfx_isUnitActive(unit)) {
-        fxm_startUnitMotion(unit, 3);
+        fxm_startUnitMotion(unit, BTL_MOTION_HIT_HEAVY);
     }
 }
 

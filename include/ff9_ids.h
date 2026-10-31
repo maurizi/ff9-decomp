@@ -106,6 +106,14 @@
 #define SA_DISTRACT       0xCA /* [text support] "Distract" */
 #define SA_LONG_REACH     0xCB /* [text support] "Long Reach" */
 #define SA_MP_ATTACK      0xCC /* [text support] "MP Attack" */
+#define SA_BIRD_KILLER    0xCD /* [text support] "Bird Killer"; BTL_ENEMY_AERIAL (btl_applyKillerBonus) */
+#define SA_BUG_KILLER     0xCE /* [text support] "Bug Killer"; BTL_ENEMY_INSECT */
+#define SA_STONE_KILLER   0xCF /* [text support] "Stone Killer"; BTL_ENEMY_STONE */
+#define SA_UNDEAD_KILLER  0xD0 /* [text support] "Undead Killer"; BTL_ENEMY_UNDEAD */
+#define SA_DRAGON_KILLER  0xD1 /* [text support] "Dragon Killer"; BTL_ENEMY_DRAGON */
+#define SA_DEVIL_KILLER   0xD2 /* [text support] "Devil Killer"; BTL_ENEMY_DEMON */
+#define SA_BEAST_KILLER   0xD3 /* [text support] "Beast Killer"; BTL_ENEMY_BEAST */
+#define SA_MAN_EATER      0xD4 /* [text support] "Man Eater"; BTL_ENEMY_HUMANOID */
 #define SA_HIGH_JUMP      0xD5 /* [text support] "High Jump" */
 #define SA_MASTER_THIEF   0xD6 /* [text support] "Master Thief" */
 #define SA_STEAL_GIL      0xD7 /* [text support] "Steal Gil" */

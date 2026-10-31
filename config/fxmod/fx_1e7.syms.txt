@@ -7,8 +7,8 @@ fxm_posPathInit = 0x801E8054; // type:func [code] sets up the fxm_posPathGet dat
 fxm_setSignal = 0x801E8258; // type:func [code] byte i of the btlfx state from signals (offset 0x10), every caller passes 7 = waitDone
 fxm_startUnitMotion = 0x801E80D0; // type:func [code] btlfx_setUnitMotion with the unit motion slot, frame 0
 fxm_isMotionDone = 0x801E813C; // type:func [code] unit active (btlfx_isUnitActive) and its motion frame is the last one
-fxm_startMotion2IfActive = 0x801E81C0; // type:func [code] fxm_startUnitMotion(unit, 2) when btlfx_isUnitActive
-fxm_startMotion3IfActive = 0x801E820C; // type:func [code] fxm_startUnitMotion(unit, 3) when btlfx_isUnitActive
+fxm_startHitMotionIfActive = 0x801E81C0; // type:func [code] fxm_startUnitMotion(unit, BTL_MOTION_HIT) when btlfx_isUnitActive, [runtime] slot 2 = hit flinch
+fxm_startHeavyHitMotionIfActive = 0x801E820C; // type:func [code] fxm_startUnitMotion(unit, BTL_MOTION_HIT_HEAVY) when btlfx_isUnitActive, [runtime] slot 3 = knock-down
 fx_1e7_op81SpawnPoint0 = 0x801E7908; // type:func [code] particle spawn callback (EffTailSpawn kind -1, btlfx_runEmitters, fills the spawn offset and rotation), installed by fx_1e7_op81 through D_801E8284
 fx_1e7_op81SpawnPoint1 = 0x801E792C; // type:func [code] particle spawn callback (EffTailSpawn kind -1, btlfx_runEmitters, fills the spawn offset and rotation), installed by fx_1e7_op81 through D_801E8284
 fx_1e7_op81SpawnPoint2 = 0x801E7950; // type:func [code] particle spawn callback (EffTailSpawn kind -1, btlfx_runEmitters, fills the spawn offset and rotation), installed by fx_1e7_op81 through D_801E8284

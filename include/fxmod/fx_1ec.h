@@ -69,7 +69,7 @@ static s32 fxm_lerpRatio(s32 from, s32 to, s32 t, s32 n);
 static void fxm_tintScreenLerp(s32 from, s32 to, s32 t, s32 n, s32 arg4, s32 ot);
 static void fxm_posPathInit(Fx1ecPath *path, u16 *data);
 static s32 fxm_isMotionDone(s32 unit);
-static void fxm_startMotion3IfActive(s32 unit);
+static void fxm_startHeavyHitMotionIfActive(s32 unit);
 
 /* copied */
 extern Unk800F78A4 *fx_1ec_env;

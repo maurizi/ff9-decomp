@@ -47,7 +47,7 @@ static void fxm_posPathInit(Fx041Path *path, u16 *data);
 static s32 fxm_posPathGet(Fx041Path *path, s32 t, SVECTOR *out);
 static void fxm_startUnitMotion(s32 unit, s32 motion);
 static s32 fxm_isMotionDone(s32 unit);
-static void fxm_startMotion2IfActive(s32 unit);
-static void fxm_startMotion3IfActive(s32 unit);
+static void fxm_startHitMotionIfActive(s32 unit);
+static void fxm_startHeavyHitMotionIfActive(s32 unit);
 
 #endif

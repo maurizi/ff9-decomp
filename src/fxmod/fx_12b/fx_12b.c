@@ -215,7 +215,7 @@ s32 fx_12b_op80(s32 mode, Fx12bWork80 *work, Unk800F78A4 *env, Unk80100C78Entry 
         *arg4 = 0x18;
     } else if (mode == 1) {
         fx_12b_env = env;
-        fxm_setSignal(env, 7, 0);
+        fxm_setSignal(env, BTLFX_SIG_WAIT, 0);
         ex->btlfx_getUnitBodyPos(0, 0, &work->unk10.vx);
         for (i = 0, a = D_801E97BC, b = D_801E9894, q = D_801E97BC, r = D_801E9894; i < 6; i++, a++, b++, q++, r++) {
             q->unk18 = i * 4;
@@ -327,7 +327,7 @@ s32 fx_12b_op80(s32 mode, Fx12bWork80 *work, Unk800F78A4 *env, Unk80100C78Entry 
                      * global-alloc (j in s4) */
                     do {
                         if (j == 5) {
-                            fxm_setSignal(env, 7, 1);
+                            fxm_setSignal(env, BTLFX_SIG_WAIT, 1);
                         }
                     } while (0);
                 }
@@ -514,7 +514,7 @@ static s32 fxm_posPathGet(Fx12bPath *path, s32 t, SVECTOR *out) {
 }
 
 static void fxm_setSignal(Unk800F78A4 *env, s32 i, s32 v) {
-    *((u8 *)env->state + i + 0x10) = v;
+    env->state->signals[i] = v;
 }
 
 INCLUDE_RODATA("asm/us/fx_12b/nonmatchings/fx_12b", fx_12b_headerPtr);

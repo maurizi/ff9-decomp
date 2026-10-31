@@ -11,10 +11,10 @@ s32 fx_0c6_op80(s32 mode, Fx0c6Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
         work->unk10 = n;
         fx_0c6_env = env;
         if (n >= env->targets->targetCount) {
-            fxm_setSignal(env, 7, 1);
+            fxm_setSignal(env, BTLFX_SIG_WAIT, 1);
             return 1;
         }
-        fxm_setSignal(env, 7, 0);
+        fxm_setSignal(env, BTLFX_SIG_WAIT, 0);
         ex->btlfx_playFileSound(4, entry->file, -1);
         ex->btlfx_playFileSound(6, entry->file, -1);
         ex->btlfx_playFileSound(7, entry->file, -1);
@@ -32,7 +32,7 @@ s32 fx_0c6_op80(s32 mode, Fx0c6Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
             }
         }
         if (frame == 0xC) {
-            fxm_setSignal(env, 7, 1);
+            fxm_setSignal(env, BTLFX_SIG_WAIT, 1);
         }
         return frame >= 0x3C;
     }
@@ -40,7 +40,7 @@ s32 fx_0c6_op80(s32 mode, Fx0c6Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
 }
 
 static void fxm_setSignal(Unk800F78A4 *env, s32 i, s32 v) {
-    *((u8 *)env->state + i + 0x10) = v;
+    env->state->signals[i] = v;
 }
 
 INCLUDE_RODATA("asm/us/fx_0c6/nonmatchings/fx_0c6", fx_0c6_headerPtr);

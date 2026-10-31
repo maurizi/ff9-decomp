@@ -12,11 +12,6 @@ typedef struct {
     SVECTOR unk10; /* target position */
 } Fx0edWork81; /* 0x18 */
 
-/* View of Unk800F78A40 up to the byte fx_0ed writes (ovl_0b.h has it as padding). */
-typedef struct {
-    u8 pad0[0x10];
-    u8 unk10;
-} Fx0edBattleState;
 
 extern Unk800F78A4 *fx_0ed_env;
 

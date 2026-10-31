@@ -268,8 +268,8 @@ void btl_load(s32 arg0) {
     g_gameState->flags &= ~GS_EXIT_BITS;
     game_setClearColor(0, 0, 0);
     g_gameState->gameData->battleId = arg0;
-    btl_loadEncounterFile((Unk800AA08C *)p, arg0);
-    btl_initEncounter((Unk800AA08C *)p, arg0);
+    btl_loadEncounterFile(p, arg0);
+    btl_initEncounter(p, arg0);
     btl_loadBackgroundStep(p, -1, &st);
     do {
     } while (btl_loadBackgroundStep(p, arg0, &st) != 0);
@@ -385,7 +385,7 @@ void btl_initReturnInfo(void) {
         p->returnId = -1;
     }
     p->encounter = NULL;
-    p->unk10 = 0;
+    p->script = NULL;
     p->texts = NULL;
     p->bgHeader = 0;
     p->bgTexAnims = NULL;
@@ -399,14 +399,14 @@ void btl_initReturnInfo(void) {
     }
 }
 
-s32 btl_initEncounter(Unk800AA08C *arg0, s32 arg1) {
+s32 btl_initEncounter(Battle11C0 *arg0, s32 arg1) {
     s32 id = (arg1 & 0xFFFF) | DB_BATTLE;
-    arg0->sceneBuf = (s32)db_lookupRegistered(DB_GET_ADDR, id, 0);
-    arg0->unk20 = (s32)db_lookupRegistered(DB_GET_ADDR, (s32)db_lookupRegistered(DB_GET_KEY_AT_IN, id, 0x100000), 0);
-    arg0->script = (s32)db_lookupRegistered(DB_GET_ADDR, (s32)db_lookupRegistered(DB_GET_KEY_AT_IN, id, DB_FIELD), 0);
-    arg0->area = (s32)db_lookupRegistered(DB_GET_ADDR, (s32)db_lookupRegistered(DB_GET_KEY_AT_IN, id, DB_AREA), 0);
+    arg0->bundle = (u16 *)db_lookupRegistered(DB_GET_ADDR, id, 0);
+    arg0->encounter = (Battle11C020 *)db_lookupRegistered(DB_GET_ADDR, (s32)db_lookupRegistered(DB_GET_KEY_AT_IN, id, 0x100000), 0);
+    arg0->script = (u8 *)db_lookupRegistered(DB_GET_ADDR, (s32)db_lookupRegistered(DB_GET_KEY_AT_IN, id, DB_FIELD), 0);
+    arg0->texts = (u8 *)db_lookupRegistered(DB_GET_ADDR, (s32)db_lookupRegistered(DB_GET_KEY_AT_IN, id, DB_AREA), 0);
     btl_initScene();
-    evt_init((u8 *)arg0->script);
+    evt_init(arg0->script);
     msg_init();
     return 0;
 }
@@ -556,12 +556,12 @@ s32 btl_reloadPartyStep(s32 arg0) {
     return *state;
 }
 
-s32 btl_loadEncounterFile(Unk800AA08C *arg0, s32 arg1) {
-    s32 v = arg0->sceneBuf;
+s32 btl_loadEncounterFile(Battle11C0 *arg0, s32 arg1) {
+    s32 v = (s32)arg0->bundle;
     GameData *gd = g_gameState->gameData;
     u8 *cd = gd->cdRead;
     Battle *b = gd->ctx.battle;
-    cdRead_init(cd, gd->sceneSector[0], gd->sceneSectors[0] << 11, (void *)arg0->sceneBuf, 0, 0x2800, 0);
+    cdRead_init(cd, gd->sceneSector[0], gd->sceneSectors[0] << 11, arg0->bundle, 0, 0x2800, 0);
     while (cdRead_update(cd) != 0) {
     }
     b->files->data[2] = (void *)v;

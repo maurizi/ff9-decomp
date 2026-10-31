@@ -29,7 +29,7 @@ extern s32 D_801E827C[];
 
 static void fxm_startUnitMotion(s32 unit, s32 motion);
 static s32 fxm_isMotionDone(s32 unit);
-static void fxm_startMotion2IfActive(s32 unit);
-static void fxm_startMotion3IfActive(s32 unit);
+static void fxm_startHitMotionIfActive(s32 unit);
+static void fxm_startHeavyHitMotionIfActive(s32 unit);
 
 #endif

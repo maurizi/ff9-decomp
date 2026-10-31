@@ -7,8 +7,8 @@ fx_0c2_op83 = 0x801E7E1C; // type:func [code] header op entry 3, effect script o
 fxm_setSignal = 0x801E8420; // type:func [code] byte i of the btlfx state from signals (offset 0x10), every caller passes 7 = waitDone
 fxm_startUnitMotion = 0x801E8298; // type:func [code] btlfx_setUnitMotion with the unit motion slot, frame 0
 fxm_isMotionDone = 0x801E8304; // type:func [code] unit active (btlfx_isUnitActive) and its motion frame is the last one
-fxm_startMotion2IfActive = 0x801E8388; // type:func [code] fxm_startUnitMotion(unit, 2) when btlfx_isUnitActive
-fxm_startMotion3IfActive = 0x801E83D4; // type:func [code] fxm_startUnitMotion(unit, 3) when btlfx_isUnitActive
+fxm_startHitMotionIfActive = 0x801E8388; // type:func [code] fxm_startUnitMotion(unit, BTL_MOTION_HIT) when btlfx_isUnitActive, [runtime] slot 2 = hit flinch
+fxm_startHeavyHitMotionIfActive = 0x801E83D4; // type:func [code] fxm_startUnitMotion(unit, BTL_MOTION_HIT_HEAVY) when btlfx_isUnitActive, [runtime] slot 3 = knock-down
 fxm_turnUnitBy = 0x801E7EC4; // type:func [code] adds delta / n to the unit rotation each frame, returns 1 on frame n - 1
 fxm_turnUnitToward = 0x801E8040; // type:func [code] on frame 0 aims unit at target (optionally relative and turned back), then turns by 1/n of it per frame
 fx_0c2_op81ParticleMotion = 0x801E7804; // type:func [code] particle motion callback (EffMotion kind 0xFF, called by btlfx_updateParticles, nonzero ends the particle), installed by fx_0c2_op81

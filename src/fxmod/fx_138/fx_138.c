@@ -67,7 +67,7 @@ s32 fx_138_op80(s32 mode, Fx138Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
         *arg4 = 0xA0;
     } else if (mode == 1) {
         fx_138_env = env;
-        fxm_setSignal(env, 7, 0);
+        fxm_setSignal(env, BTLFX_SIG_WAIT, 0);
         ex->btlfx_initEffModels(fx_138_effModels, 4);
         ex->btlfx_getUnitPos(0, &work->unk70.vx);
         ex->btlfx_getUnitRot(0, &work->unk78.vx);
@@ -131,7 +131,7 @@ s32 fx_138_op80(s32 mode, Fx138Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             if (--work->unk92 == 0) {
                 work->unk8E = 0x1A;
                 work->unk90 = 0;
-                fxm_setSignal(env, 7, 1);
+                fxm_setSignal(env, BTLFX_SIG_WAIT, 1);
             }
         }
         fxm_drawScrollMoveX(0x280 - (work->unk94 << 4), 0x280, 0x180, 0x40, 0x80, 0x240, 0x180);
@@ -241,7 +241,7 @@ static s32 fxm_posPathGet(Fx138Path *path, s32 t, SVECTOR *out) {
 }
 
 static void fxm_setSignal(Unk800F78A4 *env, s32 i, s32 v) {
-    *((u8 *)env->state + i + 0x10) = v;
+    env->state->signals[i] = v;
 }
 
 static void fxm_drawScrollMoveX(s32 x, s32 dx, s32 dy, s32 w, s32 h, s32 sx, s32 sy) {

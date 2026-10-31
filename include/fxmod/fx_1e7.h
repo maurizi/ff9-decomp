@@ -53,7 +53,7 @@ static void fxm_posPathInit(Fx1e7Path *path, u16 *data);
 static s32 fxm_posPathGet(Fx1e7Path *path, s32 t, SVECTOR *out);
 static void fxm_startUnitMotion(s32 unit, s32 motion);
 static s32 fxm_isMotionDone(s32 unit);
-static void fxm_startMotion3IfActive(s32 unit);
+static void fxm_startHeavyHitMotionIfActive(s32 unit);
 
 /* propagated */
 extern Fx1e7Path D_801E82E8[];

@@ -7325,3 +7325,21 @@ fxm_shatterModel  <-  fx_179:func_801E7704 fx_1a2:func_801E7B88 fx_0ec:func_801E
 # MACROS include/ovl_0b.h Unk800D23D8Hdr.flags: BTLFX_RINGS_SCALED
 # MACROS include/ovl_0b.h Unk80100DC0.state: BTLFX_LD_IDLE READ_HEADER WAIT_HEADER NEXT_BLOCK NEXT_CMD WAIT_CMD WAIT_SPU WAIT_SOUND
 # MACROS include/ovl_0b.h Unk80100DC0.cmdKind: BTLFX_LDCMD_TEX TEX_MORE DATA CODE SUMMON_TEX SUMMON_MODEL SUMMON_DATA SOUND LOADBUF COMMON_TEX RING
+
+# ===== round 31 runtime pass =====
+# Applied from docs/runtime-findings.md "Round 31 runtime pass (2026-10-31)". Evidence tags as in the headers.
+## ovl_0b
+BTL_ENEMY_FLYING BTL_ENEMY_AERIAL  # [text btl scan] g_btlScanTexts[7] "Aerial"; the category bits take Scan's names
+# MACROS include/ovl_0b.h BtlEnemyType.category: BTL_ENEMY_HUMANOID 0x01 BTL_ENEMY_BEAST 0x02 BTL_ENEMY_DEMON 0x04 BTL_ENEMY_DRAGON 0x08 BTL_ENEMY_STONE 0x20 BTL_ENEMY_INSECT 0x40 (UNDEAD 0x10 kept)
+# MACROS include/ff9_ids.h support: SA_BIRD_KILLER 0xCD SA_BUG_KILLER SA_STONE_KILLER SA_UNDEAD_KILLER SA_DRAGON_KILLER SA_DEVIL_KILLER SA_BEAST_KILLER SA_MAN_EATER 0xD4 (btl_applyKillerBonus)
+# FIELDS include/ovl_0b.h Unk800D8124: unk2=partyMode
+# MACROS include/ovl_0b.h Unk800D8124.partyMode: BTLFX_FACE_ALWAYS 0 BTLFX_FACE_SNAP_PARTY 1 BTLFX_FACE_SKIP_PARTY 2
+# MACROS include/ovl_0b.h script signals: BTLFX_SIG_MOTION 4 BTLFX_SIG_MOVE 5 BTLFX_SIG_TURN 6 BTLFX_SIG_WAIT 7
+# FIELDS include/ovl_0b.h Unk800F78A40: pad10[8]=signals (u8[8])
+# FIELDS include/ovl_0b.h Battle11C0: unk10=script
+# Unk800AA08C as a view of Battle11C0 dropped: btl_loadEncounterFile / btl_initEncounter take Battle11C0 * (unk20 = encounter, area = texts, sceneBuf = bundle); Unk800AA08C stays as btl_loadBackgroundStep's step state
+# MACROS include/ovl_0b.h BtlUnit.motions slots: BTL_MOTION_HIT 2 BTL_MOTION_HIT_HEAVY 3
+## fxmod
+fxm_startMotion2IfActive fxm_startHitMotionIfActive  # fx_041 fx_09b fx_0c2 fx_100 fx_180 fx_1a6 fx_1b2 fx_1e7 fx_1ec
+fxm_startMotion3IfActive fxm_startHeavyHitMotionIfActive  # same modules
+# fx_0ed: local view Fx0edBattleState dropped (env->state->signals[0])

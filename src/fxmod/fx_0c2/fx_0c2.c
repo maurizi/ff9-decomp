@@ -43,10 +43,10 @@ s32 fx_0c2_op81(s32 mode, Fx0c2Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
         work->unk4C = n;
         fx_0c2_env = env;
         if (n >= env->targets->targetCount) {
-            fxm_setSignal(env, 7, 1);
+            fxm_setSignal(env, BTLFX_SIG_WAIT, 1);
             return 1;
         }
-        fxm_setSignal(env, 7, 0);
+        fxm_setSignal(env, BTLFX_SIG_WAIT, 0);
         fxm_startUnitMotion(0x10, 0x1C);
         ex->btlfx_getUnitPos(0x10, (s16 *)&work->posC);
         ex->btlfx_getUnitRot(0x10, (s16 *)&work->rot14);
@@ -120,7 +120,7 @@ s32 fx_0c2_op81(s32 mode, Fx0c2Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
             fxm_startUnitMotion(0x10, 9);
         }
         if (frame >= 0x14) {
-            fxm_setSignal(env, 7, 1);
+            fxm_setSignal(env, BTLFX_SIG_WAIT, 1);
             return 1;
         }
     }
@@ -235,20 +235,20 @@ static s32 fxm_isMotionDone(s32 unit) {
     return r;
 }
 
-static void fxm_startMotion2IfActive(s32 unit) {
+static void fxm_startHitMotionIfActive(s32 unit) {
     if (BTLFX_EXPORTS(fx_0c2_env)->btlfx_isUnitActive(unit)) {
-        fxm_startUnitMotion(unit, 2);
+        fxm_startUnitMotion(unit, BTL_MOTION_HIT);
     }
 }
 
-static void fxm_startMotion3IfActive(s32 unit) {
+static void fxm_startHeavyHitMotionIfActive(s32 unit) {
     if (BTLFX_EXPORTS(fx_0c2_env)->btlfx_isUnitActive(unit)) {
-        fxm_startUnitMotion(unit, 3);
+        fxm_startUnitMotion(unit, BTL_MOTION_HIT_HEAVY);
     }
 }
 
 static void fxm_setSignal(Unk800F78A4 *env, s32 i, s32 v) {
-    *((u8 *)env->state + i + 0x10) = v;
+    env->state->signals[i] = v;
 }
 
 INCLUDE_RODATA("asm/us/fx_0c2/nonmatchings/fx_0c2", fx_0c2_headerPtr);

@@ -33,7 +33,7 @@ s32 fx_100_op80(s32 mode, Fx100Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             }
             break;
         case 0xE:
-            fxm_startMotion2IfActive(0);
+            fxm_startHitMotionIfActive(0);
             work->emit8 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 3), (s32)&work->pos1C);
             work->emitC = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 4), (s32)&work->pos1C);
             work->emit10 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 5), (s32)&work->pos1C);
@@ -108,15 +108,15 @@ static s32 fxm_isMotionDone(s32 unit) {
     return r;
 }
 
-static void fxm_startMotion2IfActive(s32 unit) {
+static void fxm_startHitMotionIfActive(s32 unit) {
     if (BTLFX_EXPORTS(fx_100_env)->btlfx_isUnitActive(unit)) {
-        fxm_startUnitMotion(unit, 2);
+        fxm_startUnitMotion(unit, BTL_MOTION_HIT);
     }
 }
 
-static void fxm_startMotion3IfActive(s32 unit) {
+static void fxm_startHeavyHitMotionIfActive(s32 unit) {
     if (BTLFX_EXPORTS(fx_100_env)->btlfx_isUnitActive(unit)) {
-        fxm_startUnitMotion(unit, 3);
+        fxm_startUnitMotion(unit, BTL_MOTION_HIT_HEAVY);
     }
 }
 

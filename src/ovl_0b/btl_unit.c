@@ -206,18 +206,18 @@ void btl_startHitMotion(BtlUnit *arg0) {
     f = arg0->flags;
     if (f & BTL_UNIT_PARTY) {
         if ((g_gameState->gameData->ctx.battle->curCmd->ability->flags2 & 0x81) == 0x81) {
-            arg0->model->motion = (BtlUnit9CC *)arg0->motions[3];
+            arg0->model->motion = (BtlUnit9CC *)arg0->motions[BTL_MOTION_HIT_HEAVY];
         } else {
-            arg0->model->motion = (BtlUnit9CC *)arg0->motions[2];
+            arg0->model->motion = (BtlUnit9CC *)arg0->motions[BTL_MOTION_HIT];
         }
     } else if (arg0->hp == 0 && (u8)(g_gameState->gameData->ctx.battle->enemies + BTL_UNIT_INDEX(f))->flags >> BTL_ENEMYF_DEATH_MOTION_BIT) {
-        arg0->model->motion = (BtlUnit9CC *)arg0->motions[3];
+        arg0->model->motion = (BtlUnit9CC *)arg0->motions[BTL_MOTION_HIT_HEAVY];
         btl_playDeathCry(arg0, g_gameState->gameData->ctx.battle->enemies[BTL_UNIT_INDEX(arg0->flags)].type->deathCry);
     } else {
         if ((arg0->flags >> BTL_UNIT_MODEL_PART_BIT) & 1) {
             arg0 = btl_findBodyUnit();
         }
-        arg0->model->motion = (BtlUnit9CC *)arg0->motions[((arg0->flags >> BTL_UNIT_WEAK_STANCE_BIT) & 1) + 2];
+        arg0->model->motion = (BtlUnit9CC *)arg0->motions[((arg0->flags >> BTL_UNIT_WEAK_STANCE_BIT) & 1) + BTL_MOTION_HIT];
     }
     arg0->flags |= BTL_UNIT_HIT_MOTION;
     arg0->obj->frame = 0;
@@ -320,7 +320,7 @@ void btl_updateKo(BtlUnit *u) {
             e->flags = (e->flags & ~BTL_ENEMYF_FADE) | (((e->flags & BTL_ENEMYF_FADE) - 2) & BTL_ENEMYF_FADE);
             return;
         case BTL_KO_ENEMY_REMOVE:
-            if (btl_hasEnemyFlag(u, 8) != 0) {
+            if (btl_hasEnemyFlag(u, BTL_ENEMY_DRAGON) != 0) {
                 if (g_gameState->gameData->dragonKills < 9999) {
                     g_gameState->gameData->dragonKills++;
                 }

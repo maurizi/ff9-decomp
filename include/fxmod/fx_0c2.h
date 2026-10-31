@@ -43,9 +43,9 @@ static s32 fx_0c2_op81ParticleMotion(Pool30Entry *pt, s32 arg1, SVECTOR *pos, s3
 static s32 fxm_turnUnitBy(s32 unit, s32 frame, s32 n, SVECTOR *arg3, SVECTOR *delta);
 static s32 fxm_turnUnitToward(s32 unit, s32 target, s32 frame, s32 n, s32 turnBack, s32 relative, SVECTOR *ang);
 void func_801E7D6C(s32 unit, s32 motion);
-static void fxm_startMotion2IfActive(s32 unit);
+static void fxm_startHitMotionIfActive(s32 unit);
 static void fxm_startUnitMotion(s32 unit, s32 motion);
-static void fxm_startMotion3IfActive(s32 unit);
+static void fxm_startHeavyHitMotionIfActive(s32 unit);
 static void fxm_setSignal(Unk800F78A4 *env, s32 i, s32 v);
 extern Unk800F78A4 *fx_0c2_env;
 static s32 fxm_isMotionDone(s32 unit);

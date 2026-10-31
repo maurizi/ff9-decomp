@@ -11,8 +11,8 @@ fxm_lerpRatio = 0x801E8E00; // type:func [code] (from * (n - t) + to * t) / n, t
 fxm_tintScreenLerp = 0x801E8E58; // type:func [code] btlfx_drawScreenTint with a grey level lerped from to over n frames (fxm_lerpRatio inline)
 fxm_startUnitMotion = 0x801E8F6C; // type:func [code] btlfx_setUnitMotion with the unit motion slot, frame 0
 fxm_isMotionDone = 0x801E8FD8; // type:func [code] unit active (btlfx_isUnitActive) and its motion frame is the last one
-fxm_startMotion2IfActive = 0x801E905C; // type:func [code] fxm_startUnitMotion(unit, 2) when btlfx_isUnitActive
-fxm_startMotion3IfActive = 0x801E90A8; // type:func [code] fxm_startUnitMotion(unit, 3) when btlfx_isUnitActive
+fxm_startHitMotionIfActive = 0x801E905C; // type:func [code] fxm_startUnitMotion(unit, BTL_MOTION_HIT) when btlfx_isUnitActive, [runtime] slot 2 = hit flinch
+fxm_startHeavyHitMotionIfActive = 0x801E90A8; // type:func [code] fxm_startUnitMotion(unit, BTL_MOTION_HIT_HEAVY) when btlfx_isUnitActive, [runtime] slot 3 = knock-down
 fxm_offsetTableEntry = 0x801E8DA4; // type:func [code] base + ((s32 *)base)[i + 1], an entry of an offset table relative to its start
 fxm_moveUnitArc = 0x801E90F4; // type:func [code] moves the unit from its frame-0 position to dst over n frames, lifted by a sine arc of the given height
 fx_180_op80ParticleMotion = 0x801E78E0; // type:func [code] particle motion callback (EffMotion kind 0xFF, called by btlfx_updateParticles, nonzero ends the particle), installed by fx_180_op80

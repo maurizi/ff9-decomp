@@ -1938,7 +1938,7 @@ void btl_calcCmd(BtlUnit *caster, BtlUnit *target, BtlCmd *cmd, s32 type) {
                 }
                 btl_applyCasterStatusMod(&c);
                 btl_applyTargetStatusMod(&c);
-                if (btl_hasEnemyFlag(target, BTL_ENEMY_FLYING) != 0) {
+                if (btl_hasEnemyFlag(target, BTL_ENEMY_AERIAL) != 0) {
                     c.multiplier = c.multiplier * 3 >> 1;
                 }
                 btl_finishPhysDamage(&c);
@@ -2219,7 +2219,7 @@ void btl_calcCmd(BtlUnit *caster, BtlUnit *target, BtlCmd *cmd, s32 type) {
             return;
         }
     case 0x3E:
-        if (btl_hasEnemyFlag(target, 0x20) != 0) {
+        if (btl_hasEnemyFlag(target, BTL_ENEMY_STONE) != 0) {
             if (btl_checkTargetAlive(&c)) {
                 btl_killUnit(target);
                 btl_showMessage(BTL_MSG_TOO_SOFT);
@@ -2245,7 +2245,7 @@ void btl_calcCmd(BtlUnit *caster, BtlUnit *target, BtlCmd *cmd, s32 type) {
     case 0x41:
         {
             u8 i;
-            if (btl_missIfDeathImmune(&c) && btl_checkTargetAlive(&c) && btl_hasEnemyFlag(target, 1) == 0) {
+            if (btl_missIfDeathImmune(&c) && btl_checkTargetAlive(&c) && btl_hasEnemyFlag(target, BTL_ENEMY_HUMANOID) == 0) {
                 if (target->max->maxHp / cmd->ability->power < target->hp) {
                     btl_showMessage(BTL_MSG_CANT_EAT_YET);
                 } else {
@@ -2958,7 +2958,14 @@ void btl_applyKillerBonus(BtlCalc *arg0) {
     if (!(f & BTL_UNIT_PARTY)) {
         c = arg0->caster->support[0];
         e = g_gameState->gameData->ctx.battle->enemies[BTL_UNIT_INDEX(f)].type;
-        if (((c & 0x2000) && (e->category & 0x80)) || ((c & 0x4000) && (e->category & 0x40)) || ((c & 0x8000) && (e->category & 0x20)) || ((c & 0x10000) && (e->category & 0x10)) || ((c & 0x20000) && (e->category & 8)) || ((c & 0x40000) && (e->category & 4)) || ((c & 0x80000) && (e->category & 2)) || ((c & 0x100000) && (e->category & 1))) {
+        if (((c & SA_BIT(SA_BIRD_KILLER)) && (e->category & BTL_ENEMY_AERIAL))
+            || ((c & SA_BIT(SA_BUG_KILLER)) && (e->category & BTL_ENEMY_INSECT))
+            || ((c & SA_BIT(SA_STONE_KILLER)) && (e->category & BTL_ENEMY_STONE))
+            || ((c & SA_BIT(SA_UNDEAD_KILLER)) && (e->category & BTL_ENEMY_UNDEAD))
+            || ((c & SA_BIT(SA_DRAGON_KILLER)) && (e->category & BTL_ENEMY_DRAGON))
+            || ((c & SA_BIT(SA_DEVIL_KILLER)) && (e->category & BTL_ENEMY_DEMON))
+            || ((c & SA_BIT(SA_BEAST_KILLER)) && (e->category & BTL_ENEMY_BEAST))
+            || ((c & SA_BIT(SA_MAN_EATER)) && (e->category & BTL_ENEMY_HUMANOID))) {
             arg0->multiplier = arg0->multiplier * 3 >> 1;
         }
     }
@@ -3042,7 +3049,7 @@ void btl_finishPhysDamage(BtlCalc *arg0) {
     if (!(arg0->flags & BTL_CALC_ABSORB)) {
         u = arg0->caster;
         if ((u->flags & BTL_UNIT_PARTY) && ((*u->support & SA_BIT(SA_HEALER)) || g_gameState->gameData->characters[BTL_UNIT_INDEX(u->flags)].equip[0] == ITEM_HEALING_ROD)) {
-            if (!(arg0->target->status & BTL_STATUS_ZOMBIE) && btl_hasEnemyFlag(arg0->target, 0x10) == 0) {
+            if (!(arg0->target->status & BTL_STATUS_ZOMBIE) && btl_hasEnemyFlag(arg0->target, BTL_ENEMY_UNDEAD) == 0) {
                 t = arg0->target;
                 t->rot[1] = t->obj->rotY = (t->flags & BTL_UNIT_PARTY) * 0x800;
                 arg0->targetResult |= BTL_POPUP_HEAL;
@@ -3535,7 +3542,7 @@ u8 btl_applyWeaponElement(BtlCalc *arg0) {
 }
 
 u8 btl_missIfAirborne(BtlCalc *arg0) {
-    if ((btl_hasStatus(arg0->target, BTL_STATUS_FLOAT) & 0xFF) || btl_hasEnemyFlag(arg0->target, BTL_ENEMY_FLYING) != 0) {
+    if ((btl_hasStatus(arg0->target, BTL_STATUS_FLOAT) & 0xFF) || btl_hasEnemyFlag(arg0->target, BTL_ENEMY_AERIAL) != 0) {
         if (arg0->cmd->ability->element & ELEM_EARTH) {
             arg0->flags |= BTL_CALC_MISS;
             return 0;

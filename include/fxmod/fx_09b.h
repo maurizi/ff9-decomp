@@ -37,9 +37,9 @@ s32 fxm_pinParticle3(Pool30Entry *pt, s32 arg1, SVECTOR *pos, s32 arg3, s32 fram
 s32 fxm_pinParticle4(Pool30Entry *pt, s32 arg1, SVECTOR *pos, s32 arg3, s32 frame, s32 n);
 static s32 fxm_pinParticle(Pool30Entry *pt, SVECTOR *pos, SVECTOR *src, s32 frame, s32 n);
 static s32 fxm_isMotionDone(s32 unit);
-static void fxm_startMotion2IfActive(s32 unit);
+static void fxm_startHitMotionIfActive(s32 unit);
 extern Unk800F78A4 *fx_09b_env;
 static void fxm_startUnitMotion(s32 unit, s32 motion);
-static void fxm_startMotion3IfActive(s32 unit);
+static void fxm_startHeavyHitMotionIfActive(s32 unit);
 
 #endif

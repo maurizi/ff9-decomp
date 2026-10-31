@@ -126,7 +126,7 @@ s32 fx_09a_op80(s32 mode, Fx09aWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
         work->unk8 = -1;
         work->unkC = -1;
         work->unk10 = env->targets->targetCount;
-        env->state->pad10[0] = 0;
+        env->state->signals[0] = 0;
     } else {
         frame = entry->frame;
         k = 0;
@@ -274,7 +274,7 @@ s32 fx_09a_op80(s32 mode, Fx09aWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
             break;
         case 4:
             if (frame >= 8) {
-                env->state->pad10[0] = 1;
+                env->state->signals[0] = 1;
                 return 1;
             }
             break;

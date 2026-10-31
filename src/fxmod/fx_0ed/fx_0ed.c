@@ -347,7 +347,7 @@ s32 fx_0ed_op81(s32 mode, Fx0edWork81 *work, Unk800F78A4 *env, Unk80100C78Entry 
         work->unkC = (BtlUnit *)-1;
         work->unk8 = 0;
         fx_0ed_env = env;
-        ((Fx0edBattleState *)env->state)->unk10 = 0;
+        env->state->signals[0] = 0;
     } else {
         frame = entry->frame;
         c = 0;
@@ -402,7 +402,7 @@ s32 fx_0ed_op81(s32 mode, Fx0edWork81 *work, Unk800F78A4 *env, Unk80100C78Entry 
             }
             break;
         case 2:
-            ((Fx0edBattleState *)env->state)->unk10 = 1;
+            env->state->signals[0] = 1;
             env->camera->paused = 0;
             return 1;
         }

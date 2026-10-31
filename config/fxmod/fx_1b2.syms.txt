@@ -11,7 +11,7 @@ fxm_lerpRatio = 0x801E81B0; // type:func [code] (from * (n - t) + to * t) / n, t
 fxm_tintScreenLerp = 0x801E8284; // type:func [code] btlfx_drawScreenTint with a grey level lerped from to over n frames (fxm_lerpRatio inline)
 fxm_startUnitMotion = 0x801E831C; // type:func [code] btlfx_setUnitMotion with the unit motion slot, frame 0
 fxm_isMotionDone = 0x801E8388; // type:func [code] unit active (btlfx_isUnitActive) and its motion frame is the last one
-fxm_startMotion2IfActive = 0x801E840C; // type:func [code] fxm_startUnitMotion(unit, 2) when btlfx_isUnitActive
-fxm_startMotion3IfActive = 0x801E8458; // type:func [code] fxm_startUnitMotion(unit, 3) when btlfx_isUnitActive
+fxm_startHitMotionIfActive = 0x801E840C; // type:func [code] fxm_startUnitMotion(unit, BTL_MOTION_HIT) when btlfx_isUnitActive, [runtime] slot 2 = hit flinch
+fxm_startHeavyHitMotionIfActive = 0x801E8458; // type:func [code] fxm_startUnitMotion(unit, BTL_MOTION_HIT_HEAVY) when btlfx_isUnitActive, [runtime] slot 3 = knock-down
 fx_1b2_env = 0x801E84EC; // [code] the effect env (Unk800F78A4) the op handlers store in mode 1, used by the helpers for BTLFX_EXPORTS
 fx_1b2_effModels = 0x801E84FC; // [code] effect model buffers given to btlfx_initEffModels (BtlModel per slot)

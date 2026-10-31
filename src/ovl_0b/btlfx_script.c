@@ -938,8 +938,8 @@ s32 btlfx_opFaceHome(s32 arg0, Unk800D8124 *arg1, s32 arg2, s32 *arg3, s32 *arg4
         arg1->unit = arg4[0];
         arg1->target = arg4[1];
         arg1->frames = g_btlfxOpArgs.unk0;
-        arg1->unk2 = g_btlfxOpArgs.unk1;
-        if (arg1->unk2 == 2 && btlfx_isPartyUnit(arg1->target) != 0) {
+        arg1->partyMode = g_btlfxOpArgs.unk1;
+        if (arg1->partyMode == BTLFX_FACE_SKIP_PARTY && btlfx_isPartyUnit(arg1->target) != 0) {
             g_btlfxState.turnDone = arg0;
             return 1;
         }
@@ -1652,7 +1652,7 @@ s32 btlfx_stepFaceHome(Unk800D8124 *arg0, s32 arg1, s32 *arg2) {
     BtlUnitA0 *a;
 
     u = btl_getUnit(arg0->unit);
-    if (arg0->unk2 == 0 || btlfx_isPartyUnit(arg0->target) == 0) {
+    if (arg0->partyMode == BTLFX_FACE_ALWAYS || btlfx_isPartyUnit(arg0->target) == 0) {
         if (v == 0) {
             arg0->delta[0] = u->obj->rotX - u->rot[0];
             arg0->delta[1] = u->obj->rotY - u->rot[1];

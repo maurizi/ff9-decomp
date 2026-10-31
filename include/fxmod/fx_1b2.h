@@ -78,7 +78,7 @@ static void fxm_vecPathInit(Fx1b2Path *path, u16 *data);
 static s32 fxm_vecPathGet(Fx1b2Track6 *track, s32 t, VECTOR *out);
 static void fxm_startUnitMotion(s32 unit, s32 motion);
 static s32 fxm_isMotionDone(s32 unit);
-static void fxm_startMotion2IfActive(s32 unit);
+static void fxm_startHitMotionIfActive(s32 unit);
 
 /* copied */
 extern Unk800F78A4 *fx_1b2_env;

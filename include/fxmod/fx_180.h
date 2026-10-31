@@ -90,7 +90,7 @@ static void fxm_posPathInit(Fx180Path *path, u16 *data);
 static s32 fxm_posPathGet(Fx180Path *path, s32 t, SVECTOR *out);
 static void fxm_startUnitMotion(s32 unit, s32 motion);
 static s32 fxm_isMotionDone(s32 unit);
-static void fxm_startMotion3IfActive(s32 unit);
+static void fxm_startHeavyHitMotionIfActive(s32 unit);
 
 /* copied */
 extern Unk800F78A4 *fx_180_env;

@@ -51,7 +51,7 @@ s32 fx_1e9_op80(s32 mode, Fx1e9Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
         if (frame >= 0x10) {
             work->unk0 = 1;
             entry->frame = -1;
-            env->state->pad10[0] = 0;
+            env->state->signals[0] = 0;
             ex->btlfx_fadeUnitById(0x10, 0);
             work->emit8 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 5), (s32)&work->pos14);
             if (work->emit8 != NULL) {
@@ -79,7 +79,7 @@ s32 fx_1e9_op80(s32 mode, Fx1e9Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
         if (work->emit8 != NULL && work->emit8->state == BTLFX_EMIT_DONE) {
             work->emit8 = NULL;
         }
-        if (frame != 0 && t0 == 0 && env->state->pad10[0] != 0) {
+        if (frame != 0 && t0 == 0 && env->state->signals[0] != 0) {
             work->unk0 = 2;
             entry->frame = -1;
             env->camera->paused = 0;
