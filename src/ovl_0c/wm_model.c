@@ -117,7 +117,7 @@ void wm_initModel(ModelObj *arg0, u8 *arg1) {
     arg0->texAnims = NULL;
     pp = arg1 + size * 2;
     arg0->boneMatrices = pp;
-    arg0->flags |= 2;
+    arg0->flags |= MDL_SCALED;
     *(volatile u16 *)&arg0->flags = 0;
     arg0->groupOut = (WmModelOut *)(pp + m->boneCount * 32);
 }
@@ -688,7 +688,7 @@ void wm_drawMeshC(ModelObj *arg0, u8 arg1) {
 void wm_applyScale(ModelObj *arg0) {
     MATRIX m;
 
-    if (arg0->flags & 2) {
+    if (arg0->flags & MDL_SCALED) {
         *(s32 *)&m.m[0][0] = ONE;
         *(s32 *)&m.m[0][2] = 0;
         *(s32 *)&m.m[1][1] = ONE;

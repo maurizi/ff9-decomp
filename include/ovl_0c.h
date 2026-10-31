@@ -177,10 +177,15 @@ typedef struct {
     void *files[2]; /* [1] freed by wm_freeFile */
     u8 unk3C[16];
 } WorldMapObj;
+/* WorldMapObj.flags */
+#define WM_OBJ_SWIRL_DONE 0x1 /* wm_updateBattleTransition: swirl_update finished; the battle starts once loaded */
+/* WorldMapObj.battleStep: counts down from 5 (wm_startBattleTransition), at 0 starts loading, then */
+#define WM_BTLSTEP_MUSIC -1 /* waiting for the battle music load */
+#define WM_BTLSTEP_SWIRL -2 /* waiting for WM_OBJ_SWIRL_DONE */
 
 /* world map context, GameData.unk8E4.world */
 typedef struct WorldMap {
-    u32 flags; /* flags: 0x100 0x200 0x400 0x800 skip per-frame updates */
+    u32 flags; /* WM_MAP_* */
     u8 *mapHeapBase; /* end of the load area */
     WorldMapObj *obj; /* = &unk48 */
     void *worldData; /* allocation, freed by wm_freeWorldData */
@@ -191,7 +196,9 @@ typedef struct WorldMap {
 /* WorldMap.flags */
 #define WM_MAP_LOADING 0x1 /* set at the start of wm_init, cleared at the end of wm_load */
 #define WM_MAP_NO_FRAME 0x100 /* wm_main skips wm_frameMain (wm_startBattleTransition) */
+#define WM_MAP_NO_FADE 0x200 /* wm_main skips game_updateFade (also set by wm_startBattleTransition) */
 #define WM_MAP_NO_TRANSITION 0x400 /* set by wm_load; while clear wm_main runs wm_updateBattleTransition */
+#define WM_MAP_NO_TIMER 0x800 /* wm_main skips game_updateTimer */
 #define WM_MAP_NAVI_SCREEN 0x1000 /* w_frame: set while g_worldNaviMode == 2 */
 
 typedef struct {
@@ -484,15 +491,19 @@ typedef struct ModelObj {
     u16 attachZ;
 } ModelObj;
 /* ModelObj.flags */
+#define MDL_SCALED 0x2 /* wm_applyScale applies the scale (as ovl_0a) */
 #define MDL_BEHIND_CAMERA 0x10 /* wm_cullBehindCamera: origin SZ 0 or parent behind */
 
 /* model slot (game_getModel) */
 typedef struct {
-    s32 flags; /* flags: 1 = loaded */
+    s32 flags; /* WM_SLOT_* */
     s32 modelId; /* file id */
     ModelObj *obj;
     EvtObject *actor;
 } WmObjSlot;
+/* WmObjSlot.flags */
+#define WM_SLOT_LOADED 0x1 /* wm_loadActorModel built the model */
+#define WM_SLOT_NO_SHADOW 0x10 /* wm_drawShadow skips the object (FLD_OBJ_NO_SHADOW in the field) */
 s32 evt_getObjectChrIndex(EvtObject *);
 void wm_drawMesh(ModelObj *, u8);
 void wm_projectMesh(ModelObj *, u8);
@@ -624,6 +635,10 @@ typedef struct WmChunkSlot {
     u8 hasData;
     u8 pad11[3];
 } WmChunkSlot; /* 0x14 */
+/* WmChunkSlot.state */
+#define WM_CHUNK_WANTED 0 /* wm_chunkRequest took the slot; wm_findChunkRun picks runs of these */
+#define WM_CHUNK_READING 1 /* in the run wm_readChunks is reading */
+#define WM_CHUNK_READY 2 /* wm_chunksLoaded relocated the pack; blocks can use it */
 
 /* colour + 2 values (8 bytes) */
 typedef struct {
