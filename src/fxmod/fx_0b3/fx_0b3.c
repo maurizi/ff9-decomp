@@ -170,7 +170,7 @@ s32 fx_0b3_op80(s32 mode, Fx0b3Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
                 ang.vy = 0x800;
                 ang.vz = 0;
                 if (work->unk68 != NULL) {
-                    if (work->unk68->state == -1) {
+                    if (work->unk68->state == BTLFX_EMIT_DONE) {
                         work->unk68 = NULL;
                     }
                     if (work->unk68 != NULL) {
@@ -304,7 +304,7 @@ s32 fx_0b3_op81(s32 mode, Fx0b3Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
             rot.vy = 0x800;
             rot.vz = 0;
             if (work->unk80 != NULL) {
-                if (work->unk80->state == -1) {
+                if (work->unk80->state == BTLFX_EMIT_DONE) {
                     work->unk80 = NULL;
                 }
                 if (work->unk80 != NULL) {

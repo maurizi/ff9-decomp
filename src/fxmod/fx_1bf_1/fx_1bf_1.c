@@ -281,7 +281,7 @@ s32 fx_1bf_1_op80(s32 mode, Fx1bf1Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
             if (frame < 5) {
                 q = 0x800;
                 m = (frame << 12) / 5;
-                if (work->unk68 != NULL && work->unk68->state == -1) {
+                if (work->unk68 != NULL && work->unk68->state == BTLFX_EMIT_DONE) {
                     work->unk68 = NULL;
                 }
                 BTLFX_COPY_SVEC(&p60, &work->unk8);
@@ -445,7 +445,7 @@ s32 fx_1bf_1_op80(s32 mode, Fx1bf1Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
                     work->unk6C->otZ = 0x200;
                 }
             }
-            if (work->unk6C != NULL && work->unk6C->state == -1) {
+            if (work->unk6C != NULL && work->unk6C->state == BTLFX_EMIT_DONE) {
                 work->unk6C = NULL;
             }
             if (frame >= 70) {
@@ -462,7 +462,7 @@ s32 fx_1bf_1_op80(s32 mode, Fx1bf1Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
 
             t = (frame << 12) / 41;
             if (work->unk6C != NULL) {
-                if (work->unk6C->state == -1) {
+                if (work->unk6C->state == BTLFX_EMIT_DONE) {
                     work->unk6C = NULL;
                 }
                 if (work->unk6C != NULL) {

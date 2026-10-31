@@ -162,12 +162,17 @@ typedef struct {
 
 typedef struct BtlUnit9C50 {
     u8 pad0[4];
-    u8 flags; /* TexAnim.flags (the entries seen 4 bytes early): 1 playing, 2 stop at the end */
+    u8 flags; /* TexAnim.flags (the entries seen 4 bytes early): BTL_TEXANIM_* */
     u8 pad5[0xC - 5];
     s32 pos; /* TexAnim.pos */
     u8 pad10[0x12 - 0x10];
     s16 lastFrame; /* TexAnim.lastFrame (0x1000 forces a redraw) */
 } BtlUnit9C50; /* 0x14 */
+
+/* TexAnim.flags (btl_updateTexAnims). Evidence: [code] */
+#define BTL_TEXANIM_PLAY    0x01 /* playing */
+#define BTL_TEXANIM_ONCE    0x02 /* stop at the end (else loop) */
+#define BTL_TEXANIM_VSCROLL 0x04 /* vertical scroll (frameCount 0) */
 
 /* texture word of a model, one per texture index (WmSrc*.tex): the model info entry's first table (ovl_0a WmTexInfo).
  * btl_drawMesh puts clut in the first uv word and tpage in the second; btl_setStoneClut moves clut */
@@ -268,7 +273,7 @@ typedef union {
 } BtlPrim;
 
 typedef struct BtlUnit9C {
-    u16 flags; /* 2 scaled (scaleX-Z, btl_applyModelScale), 0x10 off screen (btl_updateModelVisibility) */
+    u16 flags; /* BTL_MODEL_* */
     u8 pad2[4 - 2];
     u8 parentBone; /* weapon models: the bone of the parent model they follow (Character.unk21, btl_initWeapon) */
     u8 abr; /* semi-transparency mode (btl_setModelAbr) */
@@ -295,6 +300,11 @@ typedef struct BtlUnit9C {
     s16 attachY;
     s16 attachZ;
 } BtlUnit9C;
+
+/* BtlUnit9C.flags (unit and weapon models). Evidence: [code] */
+#define BTL_MODEL_SCALED    0x02 /* scaleX-Z apply (btl_applyModelScale; Mini, btlseq_opScale) */
+#define BTL_MODEL_OFFSCREEN 0x10 /* behind the camera (btl_updateModelVisibility; a child takes its parent's): not drawn, no popups */
+#define BTL_MODEL_DRAWN     0x20 /* a mesh group was drawn this frame (btl_updateUnitModel) */
 
 /* GameData.unk8E0 entry as btl_registerModel fills it (ff9.h's ModelSlot has pad4) */
 typedef struct {
@@ -467,7 +477,7 @@ typedef struct BtlUnit {
     s16 dotTimers[3]; /* Venom/Poison/Regen tick timers (btl_initDotTimer) */
     s16 statusTimers[16]; /* per timed status bit 16-31 (btl_tickStatusTimers) */
     s16 countdownStep; /* timer units per number of the Doom/petrify countdown (btl_initDoomCount, btl_drawStatusCountdown) */
-    u32 flags; /* bit 0 party, 1-4 slot, 5-7 id, 8-9 row, 16 ATB fills, 18 weak stance, 21 motion held, 22 hidden, 23 model part, 24 shadow shown (btlseq_opShowShadow), 28 targetable, 29 targeted */
+    u32 flags; /* BTL_UNIT_* below */
     u8 defense; /* Character.defense (btl_initPartyUnit) */
     u8 evade;
     u8 magicDef;
@@ -482,8 +492,8 @@ typedef struct BtlUnit {
     u8 level; /* Character.level, enemy record level */
     u8 escapeStance; /* Battle.escapeHeld when the idle motion was last chosen (btl_updateUnits re-picks it on a change) */
     u8 baseBone; /* bone used as the unit position (btl_getBaseBonePos) */
-    u8 koState; /* KO state machine step (btl_updateKo) */
-    u16 popupFlags; /* btl_spawnPopups: BtlCalc.targetResult bits (1 hp, 2 heal, 4 critical, 8 mp, 0x10 mp heal), 0x20 miss, 0x40 killed, 0x80 guard */
+    u8 koState; /* BTL_KO_*: KO state machine step (btl_updateKo) */
+    u16 popupFlags; /* BTL_POPUP_*: what btl_spawnPopups shows (BtlCalc.targetResult/casterResult or-ed in) */
     s16 hpChange; /* damage or heal shown by btl_spawnPopups */
     s16 mpChange;
     u16 modelId;
@@ -497,7 +507,7 @@ typedef struct BtlUnit {
     u16 hiddenMeshes; /* BTL_ATTR_HIDE_MESHES / BTL_ATTR_SHOW_MESHES */
     u16 vanishMeshes; /* mesh groups Vanish hides */
     u16 unitBit; /* bit in target masks (BtlCmd.targets): party 0-3, enemies from 4 */
-    u8 targetableReq; /* 2: become untargetable, 3: targetable (btlui_applyTargetable applies it next frame and leaves 0/1); BTL_ATTR 0x34, Jump, landing */
+    u8 targetableReq; /* BTL_TGTREQ_*: BTL_ATTR_TARGETABLE, Jump, landing */
     u8 cmdIssued; /* set when the menu issues its command, cleared when it ends */
     struct Unk80104F88Entry *menu; /* party member menu data */
     s16 screenX;
@@ -512,9 +522,89 @@ typedef struct BtlUnit {
     s16 tickHeal; /* btl_tickRegen */
     s16 tickDamage; /* btl_tickPoison */
     s16 tickMpDamage; /* btl_tickVenomMp */
-    u8 tickFlags; /* 1 regen, 2 poison, 4 venom, 8 regen hurts */
+    u8 tickFlags; /* BTL_TICK_*: popups btl_spawnTickPopups shows */
     u8 inMenuQueue; /* waiting for its command menu (btlui_queueMenuUnit) */
 } BtlUnit; /* 0xD0 */
+
+/* BtlUnit.flags (bitfields in Square's source: single bits are read as (flags >> NAME_BIT) & 1). Evidence: [code] */
+#define BTL_UNIT_PARTY             (1 << 0) /* party member, else enemy: the side (btl_initPartyUnit sets it, btl_initEnemies clears it) */
+#define BTL_UNIT_INDEX_SHIFT       1 /* bits 1-4: character id (CHR_*, GameData.characters) or Battle.enemies index */
+#define BTL_UNIT_INDEX_MASK        (0xF << BTL_UNIT_INDEX_SHIFT)
+#define BTL_UNIT_INDEX(f)          (((f) >> BTL_UNIT_INDEX_SHIFT) & 0xF)
+#define BTL_UNIT_SLOT_SHIFT        5 /* bits 5-7: unit slot, party 0-3 and enemies 4-7 (btl_getUnitBySlot, expMask bit, command slots) */
+#define BTL_UNIT_SLOT_MASK         (7 << BTL_UNIT_SLOT_SHIFT)
+#define BTL_UNIT_SLOT(f)           (((f) >> BTL_UNIT_SLOT_SHIFT) & 7)
+#define BTL_UNIT_ROW_SHIFT         8 /* bits 8-9: row, Character battleRow for the party (btl_toggleRow, btl_applyRowMod), 2 for enemies */
+#define BTL_UNIT_ROW_MASK          (3 << BTL_UNIT_ROW_SHIFT)
+#define BTL_UNIT_ROW(f)            (((f) >> BTL_UNIT_ROW_SHIFT) & 3)
+#define BTL_UNIT_ATB_ACTIVE_BIT    16 /* the ATB gauge fills and status timers tick (btl_updateAtb, btl_updateUnitStatus); cleared by KO, Petrify, Stop, Jump and cancelled commands */
+#define BTL_UNIT_ATB_ACTIVE        (1 << BTL_UNIT_ATB_ACTIVE_BIT)
+#define BTL_UNIT_HIT_MOTION_BIT    17 /* hit reaction playing (btl_startHitMotion .. btl_end*HitMotion); btl_setIdleMotion leaves the unit alone */
+#define BTL_UNIT_HIT_MOTION        (1 << BTL_UNIT_HIT_MOTION_BIT)
+#define BTL_UNIT_WEAK_STANCE_BIT   18 /* idle motion 1 instead of 0: Venom, Low HP, Poison or Sleep (btl_updateHpStatus, btlseq_opSetStance) */
+#define BTL_UNIT_WEAK_STANCE       (1 << BTL_UNIT_WEAK_STANCE_BIT)
+#define BTL_UNIT_CMD_WAITING_BIT   19 /* a command is queued and the unit holds its ready motion (btl_setCmd, btl_setEnemyCmd; cleared when it leaves the queue) */
+#define BTL_UNIT_CMD_WAITING       (1 << BTL_UNIT_CMD_WAITING_BIT)
+#define BTL_UNIT_KILLED_BIT        20 /* hp set to 0 outright (btl_killUnit, btl_setTargetHp, btl_checkFrozenShatter): the KO skips the dying steps */
+#define BTL_UNIT_KILLED            (1 << BTL_UNIT_KILLED_BIT)
+#define BTL_UNIT_MOTION_HELD_BIT   21 /* motion frame not advanced (btl_updateUnitModel; btlfx_setMotionHeld, btlfx_holdMotion) */
+#define BTL_UNIT_MOTION_HELD       (1 << BTL_UNIT_MOTION_HELD_BIT)
+#define BTL_UNIT_HIDDEN_BIT        22 /* not drawn, no popups or status icons (BTL_ATTR_HIDDEN, btlfx_setUnitVisible, btl_setUnitFade) */
+#define BTL_UNIT_HIDDEN            (1 << BTL_UNIT_HIDDEN_BIT)
+#define BTL_UNIT_MODEL_PART_BIT    23 /* enemy without a model of its own, a part of another unit's (BtlEnemy flag 0x200; btl_isModelPart, btl_findBodyUnit) */
+#define BTL_UNIT_MODEL_PART        (1 << BTL_UNIT_MODEL_PART_BIT)
+#define BTL_UNIT_SHADOW_BIT        24 /* shadow drawn (BTL_ATTR_SHADOW, btlseq_opShowShadow, btl_updateUnitModel) */
+#define BTL_UNIT_SHADOW            (1 << BTL_UNIT_SHADOW_BIT)
+#define BTL_UNIT_COVERING_BIT      25 /* stepped in front of the target with Cover / Protect Girls (btl_findCover); the attack can't be dodged (btl_rollHit) */
+#define BTL_UNIT_COVERING          (1 << BTL_UNIT_COVERING_BIT)
+#define BTL_UNIT_DODGED_BIT        26 /* dodged the current command and stepped back (btl_applyCalcResult; btl_finishCmd moves it home) */
+#define BTL_UNIT_DODGED            (1 << BTL_UNIT_DODGED_BIT)
+#define BTL_UNIT_DEATH_CRY_BIT     27 /* death cry played once (btl_playDeathCry) */
+#define BTL_UNIT_DEATH_CRY         (1 << BTL_UNIT_DEATH_CRY_BIT)
+#define BTL_UNIT_TARGETABLE_BIT    28 /* can be targeted (BTL_ATTR_TARGETABLE, btlui_applyTargetable) */
+#define BTL_UNIT_TARGETABLE        (1 << BTL_UNIT_TARGETABLE_BIT)
+#define BTL_UNIT_TARGETED_BIT      29 /* under the target cursor (btlui_setDefaultTargets, btlui_cycleTarget, btlui_clearTargeted) */
+#define BTL_UNIT_TARGETED          (1 << BTL_UNIT_TARGETED_BIT)
+#define BTL_UNIT_TRANCE_ENABLED_BIT 30 /* the trance gauge fills (btl_gainTrance) and shows (btlui_updatePanel); party only, off before the story allows it */
+#define BTL_UNIT_TRANCE_ENABLED    (1 << BTL_UNIT_TRANCE_ENABLED_BIT)
+
+/* BtlUnit.koState (btl_updateKo; enemies and party units step differently). Evidence: [code] */
+#define BTL_KO_NONE           0
+#define BTL_KO_START          1 /* BTL_CMD_KO ran (btl_checkCmdUsable) or the hit motion ended KO */
+#define BTL_KO_ENEMY_DYING    2 /* the death motion plays, then is held on its last frame */
+#define BTL_KO_ENEMY_SOUND    3 /* death sounds (also the start for BTL_UNIT_KILLED enemies) */
+#define BTL_KO_ENEMY_FADE     4 /* fades out by the BtlEnemy fade level; no shadow from here on (btl_updateUnitModel) */
+#define BTL_KO_ENEMY_REMOVE   5 /* rewards, btl_checkSideDefeated, btl_unlinkUnit */
+#define BTL_KO_PARTY_FALL     2 /* picks the collapse motion (7, or 8 straight away in the weak stance) */
+#define BTL_KO_PARTY_COLLAPSE 3 /* motion 7 plays, then motion 8 */
+#define BTL_KO_PARTY_DOWN     4 /* motion 8 plays */
+#define BTL_KO_PARTY_SET      5 /* btl_setKoMotion: the KO motion (4), then DONE or REVIVING */
+#define BTL_KO_DONE           6 /* down for good (btl_checkSideDefeated waits for it on the whole side) */
+#define BTL_KO_REVIVING       7 /* Auto-Life queued its revive command (btl_setKoMotion) */
+
+/* BtlUnit.targetableReq: BTL_UNIT_TARGETABLE change requested for btlui_applyTargetable (next frame) */
+#define BTL_TGTREQ_OFF     0 /* untargetable (applied) */
+#define BTL_TGTREQ_ON      1 /* targetable (applied) */
+#define BTL_TGTREQ_SET_OFF 2 /* make it untargetable */
+#define BTL_TGTREQ_SET_ON  3 /* make it targetable */
+
+/* BtlUnit.tickFlags: status tick popups (btl_spawnTickPopups). Evidence: [code] */
+#define BTL_TICK_REGEN       0x01 /* btl_tickRegen: tickHeal */
+#define BTL_TICK_POISON      0x02 /* btl_tickPoison: tickDamage */
+#define BTL_TICK_VENOM_MP    0x04 /* btl_tickVenomMp: tickMpDamage */
+#define BTL_TICK_REGEN_HURTS 0x08 /* Regen damaged a Zombie or undead unit: the heal number is shown as damage */
+
+/* BtlUnit.popupFlags, BtlCalc.targetResult / casterResult (bits 0-4): what btl_spawnPopups shows. Text popups index
+ * g_btlTextPopups: 0 miss, 1 death, 2 guard, 3 critical. Evidence: [code] */
+#define BTL_POPUP_HP       0x01 /* hp number (hpChange; btl_damageHp / btl_healHp in btl_applyCalcResult) */
+#define BTL_POPUP_HEAL     0x02 /* the hp number heals (clut 0xC0; also absorbed damage, btl_finishMagicDamage) */
+#define BTL_POPUP_CRITICAL 0x04 /* "Critical" text (btl_rollCritical); btl_startHitMotion knocks the unit back */
+#define BTL_POPUP_MP       0x08 /* mp number (mpChange) */
+#define BTL_POPUP_MP_HEAL  0x10 /* the mp number heals */
+#define BTL_POPUP_MISS     0x20 /* "Miss" text: BTL_CALC_MISS, or the target is KO (btl_damageHp); no hit sound (btl_playHitSound) */
+#define BTL_POPUP_DEATH    0x40 /* "Death" text: KO added to a unit with hp left (btl_addStatus) */
+#define BTL_POPUP_GUARD    0x80 /* "Guard" text: BTL_CALC_GUARD; shown alone */
+#define BTL_POPUP_TROUBLE  0x100 /* the target has Trouble (btl_markTrouble): btl_spawnPopups spreads half the damage to its side (btl_spreadTroubleDamage) */
 
 /* ability/command calculation context */
 /* BtlCmd seen by the formulas (btl_calcCmd's sub = the BtlCmd; flags = BtlCmd.info.w) */
@@ -537,14 +627,23 @@ typedef struct BtlCalc {
     s16 evade; /* target evade % */
     s16 multiplier;
     s16 hitRate; /* hit % */
-    u16 flags; /* 1 miss, 2 dodged, 8 absorbed, 0x40 guard, 0x80 hit without damage, 0x100 add the weapon status */
-    u8 casterResult; /* caster popup flags (BtlUnit.popupFlags) */
-    u8 targetResult; /* target popup flags: 1 hp, 2 heal, 4 critical, 8 mp, 0x10 mp heal */
+    u16 flags; /* BTL_CALC_* */
+    u8 casterResult; /* caster popup flags (BTL_POPUP_*) */
+    u8 targetResult; /* target popup flags (BTL_POPUP_*) */
     s16 casterHpChange; /* caster hp change */
     s16 targetHpChange; /* target hp change */
     s16 casterMpChange; /* caster mp change */
     s16 targetMpChange; /* target mp change */
 } BtlCalc;
+
+/* BtlCalc.flags: outcome of the formulas, applied by btl_applyCalcResult. Evidence: [code] */
+#define BTL_CALC_MISS          0x01 /* missed (hit/evade rolls, formula checks such as btl_checkTargetAlive): BTL_POPUP_MISS */
+#define BTL_CALC_DODGED        0x02 /* with MISS: evaded, the target plays its dodge motion (btl_rollHit; not when covered) */
+#define BTL_CALC_MP_ATTACK     0x04 /* MP Attack raised the damage: btl_payMpAttack takes the caster's mp */
+#define BTL_CALC_ABSORB        0x08 /* the target absorbs the element: the damage heals (btl_apply*Element) */
+#define BTL_CALC_GUARD         0x40 /* nullified: element guard (btl_apply*Element) or immunity (btl_guardIfDeathImmune): BTL_POPUP_GUARD */
+#define BTL_CALC_NO_DAMAGE     0x80 /* hit without damage numbers: hit motion and trance only (btl_applyCalcResult) */
+#define BTL_CALC_WEAPON_STATUS 0x100 /* add the caster's weapon status set (weapon[1]) on a hit */
 
 /* BtlCmd as the sequence interpreter reads it (BtlScript.cmd) */
 typedef struct {
@@ -555,7 +654,7 @@ typedef struct {
 } BtlScript4;
 
 typedef struct BtlScript {
-    u32 flags; /* 1 waiting for the effect hit, 2 hit seen, 4 end motion done, 8 started without a command (btlseq_startDirect) */
+    u32 flags; /* BTLSEQ_F_* */
     BtlScript4 *cmd; /* command it runs for, NULL = free slot */
     u8 *pc; /* script pointer */
     u8 *prevPc; /* an op's enter handler runs when pc moved */
@@ -578,6 +677,15 @@ typedef struct BtlScript {
     u8 fadeLeft;
     s16 work[8]; /* per-op work area */
 } BtlScript;
+
+/* BtlScript.flags (Battle122C.flags). Evidence: [code] */
+#define BTLSEQ_F_WAIT_HIT       0x01 /* btlseq_opEffect started an effect; the effect's seqSync turns it into HIT */
+#define BTLSEQ_F_HIT_BIT        1
+#define BTLSEQ_F_HIT            (1 << BTLSEQ_F_HIT_BIT) /* the effect hit (btlseq_opWaitEffectHit goes on) */
+#define BTLSEQ_F_END_MOTION_BIT 2
+#define BTLSEQ_F_END_MOTION     (1 << BTLSEQ_F_END_MOTION_BIT) /* btlseq_opEnd put the idle motion back */
+#define BTLSEQ_F_DIRECT_BIT     3
+#define BTLSEQ_F_DIRECT         (1 << BTLSEQ_F_DIRECT_BIT) /* started without a command (btlseq_startDirect): no btl_onCmdEffectDone at the end */
 typedef struct {
     void (*enter)(BtlScript *, BtlUnit *); /* on entry (pc moved) */
     s32 (*step)(BtlScript *, BtlUnit *); /* per frame; 0 = next op */
@@ -598,11 +706,18 @@ typedef struct {
     s16 centerY;
     s16 centerZ;
     u8 pad3E[0x40 - 0x3E];
-    u16 kind; /* btl_playCmdEffect: 1 Eidolon follow-up, 2 item, 4 Swd Mag, 0x11 bounce */
+    u16 kind; /* BTL_FXK_* (btl_playCmdEffect: from the command, or arg2[3]) */
     u16 fxParam; /* btl_playCmdEffect arg2[2] (fx_031: distance ahead of the fxArgs bones) */
     BtlUnit *partner; /* id 0x11: the Swd Mag partner (character kind 2) */
     u8 pad48[0x4C - 0x48];
 } BtlUnitList; /* 0x4C */
+
+/* BtlUnitList.kind. Evidence: [code] */
+#define BTL_FXK_NO_CAST 0x01 /* the caster doesn't step out and cast (btlfx caster task), no command camera: BTL_CMD_TRANCE_EIDOLON, BTL_CMD_REBIRTH_FLAME, bounces, btlseq op 0x1A */
+#define BTL_FXK_ITEM    0x02 /* BTL_CMD_ITEM / BTL_CMD_AUTO_POTION: the item motion, no command camera */
+#define BTL_FXK_SWD_MAG 0x04 /* BTL_CMD_SWD_MAG: the partner (unit 0x11) is the effect's caster */
+/* 0x08: set by btlfx_runScript for effect headers with caster kind 1, tested by the btlfx pool; meaning unknown */
+#define BTL_FXK_BOUNCE  0x10 /* a Reflect bounce (with NO_CAST); control op 8 doesn't wait for the enemy sequence */
 
 typedef struct Unk800F78A40 {
     s16 phase; /* -1 idle, else the btlfx_runScript state (0 save VRAM .. 4 run ops) */
@@ -617,6 +732,9 @@ typedef struct Unk800F78A40 {
     u8 pad21[0x23 - 0x21];
     u8 seqSync; /* Unk800FEC40.seqSync */
 } Unk800F78A40;
+
+/* Unk800F78A40.phase / Unk800FEC40.phase (g_btlfxState): btlfx_runScript state */
+#define BTLFX_PHASE_IDLE (-1) /* no effect playing */
 
 typedef struct {
     u8 pad0[0xE];
@@ -942,13 +1060,25 @@ typedef struct {
 
 typedef struct {
     BtlEnemyType *type;
-    u32 flags; /* bit 6 its death triggers the event script (btl_applyCalcResult), 8 model owner (btl_findBodyUnit), 9 no model */
+    u32 flags; /* BTL_ENEMYF_* */
     union {
         s32 w;
         u8 b[4]; /* items to steal, 0xFF = none (btl_calcSteal) */
     } steal;
     u8 home[0x18 - 0xC]; /* home position block (BtlUnit.home) */
 } BtlEnemy; /* 0x18 */
+
+/* BtlEnemy.flags (set from the group record, Unk800C9EE0 / Unk800C9D1C, by btl_initEnemyUnit). Evidence: [code] */
+#define BTL_ENEMYF_FADE              0x3F /* bits 0-5: fade level for btl_setUnitFade, 0 gone */
+#define BTL_ENEMYF_FADE_OPAQUE       0x20 /* start level (btl_initEnemies); the KO fade steps it down by 2 */
+#define BTL_ENEMYF_SCRIPT_DEATH_BIT  6
+#define BTL_ENEMYF_SCRIPT_DEATH      (1 << BTL_ENEMYF_SCRIPT_DEATH_BIT) /* its death is an event-script trigger (0x36) instead of the normal KO (btl_endEnemyHitMotion) */
+#define BTL_ENEMYF_DEATH_MOTION_BIT  7
+#define BTL_ENEMYF_DEATH_MOTION      (1 << BTL_ENEMYF_DEATH_MOTION_BIT) /* a killing hit plays motion 3 and the death cry (btl_startHitMotion) */
+#define BTL_ENEMYF_SHARED_MODEL_BIT  8
+#define BTL_ENEMYF_SHARED_MODEL      (1 << BTL_ENEMYF_SHARED_MODEL_BIT) /* the group's enemies share the first one's model; its owner is the body (btl_findBodyUnit) */
+#define BTL_ENEMYF_NO_MODEL_BIT      9
+#define BTL_ENEMYF_NO_MODEL          (1 << BTL_ENEMYF_NO_MODEL_BIT) /* no model of its own (btl_getEnemyModelId -1): BTL_UNIT_MODEL_PART */
 
 typedef struct {
     void *data[4]; /* registered battle files: [0] common data, [2] encounter, [3] background */
@@ -1052,13 +1182,21 @@ typedef struct BtlCmd8 {
     u8 power; /* power, or the formula's parameter (an item id, a divisor) */
     u8 element; /* element bits */
     u8 rate; /* hit/status rate */
-    u8 flags; /* 1 reflectable, 2 needs a voice (Silence blocks it), 8 Counter answers it, 0x80 Return Magic answers it */
+    u8 flags; /* BTL_ABIL_* */
     u8 statusSet; /* index into Battle.statusSets */
     u8 mpCost; /* runtime: Fire 6, Fira 12, Sleep 10 as the spell list shows */
     u8 unkB;
     u16 altEffect; /* effect played for short summons, Seiken and single-target casts (btl_startCmdEffect) */
     u16 nameOfs; /* name text offset (runtime: Fire 161, Fira 166, Firaga 171, Sleep 178 - steps = name lengths + 1) */
 } BtlCmd8;
+
+/* BtlCmd8.flags (ability flags). Evidence: [code] */
+#define BTL_ABIL_REFLECTABLE    0x01 /* Reflect bounces it (btl_applyReflect) */
+#define BTL_ABIL_VOICE          0x02 /* needs a voice: Silence blocks it */
+#define BTL_ABIL_PHYSICAL       0x08 /* answered by Counter (btl_tryCounter), Cover steps in (BTL_CMD_ENEMY_TURN), a hit wakes Sleep and Confuse */
+#define BTL_ABIL_DISPELS_VANISH 0x10 /* a hit removes Vanish (btl_applyCalcResult) */
+#define BTL_ABIL_NO_HIT_MOTION  0x40 /* the target plays no hit motion (btl_canAddHitStatus) */
+#define BTL_ABIL_RETURNABLE     0x80 /* answered by Return Magic */
 
 typedef struct BtlCmd {
     struct BtlCmd *next; /* queue link */
@@ -1079,9 +1217,22 @@ typedef struct BtlCmd {
             u32 shortSummon : 1; /* plays the ability's altEffect (btl_rollShortSummon) */
             u32 enemyBounce : 1; /* an enemy's reflected spell: btl_processCmdQueue steps it like a party command (btl_updatePartyCmd) */
         } b;
-        u32 w; /* cleared as a word */
+        u32 w; /* cleared as a word; BTL_CMDINFO_* */
     } info;
 } BtlCmd;
+
+/* BtlCmd.info.b as a word (info.w; BtlCalc8.flags) */
+#define BTL_CMDINFO_TARGETING         0x003 /* info.b.targeting */
+#define BTL_CMDINFO_AUTOMATIC         0x010 /* info.b.automatic */
+#define BTL_CMDINFO_COVERED_BIT       5
+#define BTL_CMDINFO_COVERED           (1 << BTL_CMDINFO_COVERED_BIT) /* info.b.covered */
+#define BTL_CMDINFO_DODGED            0x040 /* info.b.dodged */
+#define BTL_CMDINFO_REFLECT_SHIFT     7
+#define BTL_CMDINFO_REFLECT           (3 << BTL_CMDINFO_REFLECT_SHIFT) /* info.b.reflect */
+#define BTL_CMDINFO_MAGIC_FAILED      0x200 /* info.b.magicFailed */
+#define BTL_CMDINFO_SHORT_SUMMON_BIT  10
+#define BTL_CMDINFO_SHORT_SUMMON      (1 << BTL_CMDINFO_SHORT_SUMMON_BIT) /* info.b.shortSummon */
+#define BTL_CMDINFO_ENEMY_BOUNCE      0x800 /* info.b.enemyBounce */
 
 typedef struct BtlShadow {
     u32 shade : 8; /* grey level of the shadow quads (btl_drawShadow) */
@@ -1150,7 +1301,7 @@ typedef struct BtlPopup {
         struct {
             u8 delay; /* frames before it shows (btl_drawPopups) */
             s8 yOfs; /* y offset that keeps it on screen, fixed in its first frame (btl_clampPopup) */
-            u8 kind; /* 0 hp, 1 mp (btl_popupHp/Mp), 2 text (btl_popupText): g_btlPopupDrawFns draw handler; 3+ removes it */
+            u8 kind; /* BTL_POPKIND_*: g_btlPopupDrawFns draw handler */
             u8 noClamp; /* status-tick popups (btl_spawnTickPopups): keep yOfs, no clamping */
         } b;
     } info;
@@ -1161,6 +1312,12 @@ typedef struct BtlPopup {
     u16 clut;
     u8 pad1A[0x1C - 0x1A];
 } BtlPopup; /* 0x1C */
+
+/* BtlPopup.info.b.kind: g_btlPopupDrawFns index */
+#define BTL_POPKIND_HP   0 /* btl_popupHp */
+#define BTL_POPKIND_MP   1 /* btl_popupMp */
+#define BTL_POPKIND_TEXT 2 /* btl_popupText */
+#define BTL_POPKIND_DONE 3 /* and up: the popup is removed */
 
 typedef struct {
     BtlPopup entries[16];
@@ -1209,13 +1366,42 @@ typedef struct Battle108CSet {
 
 /* battle scene data (Battle.scene) */
 typedef struct {
-    u32 flags; /* bits 0-1 ambush (BTL_GETVAR_AMBUSH: 0 back attack, 1 preemptive, 2 normal, btl_rollAmbush); bits 2 and up
+    u32 flags; /* BTL_SCENE_*: bits 0-1 ambush (BTL_GETVAR_AMBUSH: 0 back attack, 1 preemptive, 2 normal, btl_rollAmbush); bits 2 and up
                 * are the encounter's Battle11C020.flags ^ 0x30, shifted left 2 (btl_initSceneFlags) */
     Battle1330 *group; /* enemy group chosen by btl_pickEnemyGroup */
     Battle1334 *enemyTypes; /* the encounter's enemy type records */
     u16 *seqTable; /* enemy battle sequences: counts, offsets, animations (btlseq_init) */
     s16 *sceneData; /* offset table, entries relative to its start (btl_getSceneData) */
 } Battle132C;
+
+/* Battle132C (Battle.scene).flags: bits 0-1 the ambush, bits 2 and up the encounter flags (btl_initSceneFlags).
+ * Evidence: [code] */
+#define BTL_SCENE_AMBUSH        0x03 /* BTL_AMBUSH_* (btl_rollAmbush, BTL_GETVAR_AMBUSH) */
+#define BTL_AMBUSH_BACK         0 /* back attack: the party starts with empty ATB, "Back attack!" */
+#define BTL_AMBUSH_PREEMPTIVE   1 /* preemptive strike: the enemies start with empty ATB, the party's are full */
+#define BTL_AMBUSH_NORMAL       2
+#define BTL_SCENE_SCRIPT_START_BIT 2 /* the intro hands over to the event script (BTL_PHASE_SCRIPT, btlcam_step) */
+#define BTL_SCENE_SCRIPT_START  (1 << BTL_SCENE_SCRIPT_START_BIT)
+/* bit 3: BTL_SETVAR_RESUME resets the ambush to normal unless bits 2 and 3 are both set */
+#define BTL_SCENE_NO_GAMEOVER_BIT 4 /* a defeat plays no defeat music and keeps battleResult 3 (else 6; btl_saveParty) */
+#define BTL_SCENE_NO_GAMEOVER   (1 << BTL_SCENE_NO_GAMEOVER_BIT)
+#define BTL_SCENE_VICTORY_BIT   6 /* victory music, poses and rewards (btl_victory); BTL_SETVAR_END 1 goes through it */
+#define BTL_SCENE_VICTORY       (1 << BTL_SCENE_VICTORY_BIT)
+#define BTL_SCENE_CAN_ESCAPE_BIT 7 /* clear: "Can't escape!" (btl_tryEscape, btl_canFlee) */
+#define BTL_SCENE_CAN_ESCAPE    (1 << BTL_SCENE_CAN_ESCAPE_BIT)
+#define BTL_SCENE_OUT_OF_REACH_BIT 8 /* the enemies are out of reach of weapons with weapon[0] bit 0: "Can't reach!" (btl_checkCmdUsable) */
+#define BTL_SCENE_OUT_OF_REACH  (1 << BTL_SCENE_OUT_OF_REACH_BIT)
+#define BTL_SCENE_NO_VOICE_BIT  9 /* abilities needing a voice (BTL_ABIL_VOICE) are greyed out as under Silence (btlui_getAbilityState) */
+#define BTL_SCENE_NO_VOICE      (1 << BTL_SCENE_NO_VOICE_BIT)
+#define BTL_SCENE_INVERT_POWER_BIT 10 /* btl_applyInvertedPower: power = 60 - power */
+#define BTL_SCENE_INVERT_POWER  (1 << BTL_SCENE_INVERT_POWER_BIT)
+#define BTL_SCENE_NO_PARTY_FX_CAMERA_BIT 11 /* no effect camera when the first target is a party unit (btlfx_updateCameraEnable) */
+#define BTL_SCENE_NO_PARTY_FX_CAMERA (1 << BTL_SCENE_NO_PARTY_FX_CAMERA_BIT)
+#define BTL_SCENE_NO_ENEMY_FX_CAMERA_BIT 12 /* the same for enemy targets */
+#define BTL_SCENE_NO_ENEMY_FX_CAMERA (1 << BTL_SCENE_NO_ENEMY_FX_CAMERA_BIT)
+#define BTL_SCENE_POST_EVENT_BIT 13 /* g_btlRewards.hasPostEvent (btl_startBattle) */
+#define BTL_SCENE_POST_EVENT    (1 << BTL_SCENE_POST_EVENT_BIT)
+/* bit 14: without VICTORY, a victory, stop or escape sets GameData.battleFlags 8 */
 
 typedef struct {
     BtlUnit9C model;
@@ -1224,7 +1410,7 @@ typedef struct {
 
 /* GameData.unk8E4 while in battle */
 typedef struct Battle {
-    u16 flags; /* 1 background loaded (btlbg_draw draws), 2 enemy models loaded, 4 party models loaded, 0x10 UI started, 0x20 disc cover open, 0x40 exit preloaded, 0x1000 battle over (btl_main) */
+    u16 flags; /* BTL_FLAG_* */
     u8 unk2[2];
     s32 savedHeap; /* g_modeHeap after btl_initMode; btl_load allocates from here again */
     s32 partyMotions[4][0x22]; /* per party member: motion data addresses; BtlUnit.motions points here (btl_loadPartyMotions) */
@@ -1240,7 +1426,7 @@ typedef struct Battle {
     u8 exitTimer; /* exit phases: frames of the fade before btl_saveParty */
     u8 escapeHeld; /* runtime: 1 while L1+R1 are held (btlui_pollEscape), units take the run-away stance */
     u8 fleeBrightness; /* escaping units' brightness, -2 per tick (btl_victory) */
-    u8 loadFlags; /* 1/2/4 setup steps (btlui_init runs once all three are set), 8 btl_initEnemies, 0x10 btl_initParty */
+    u8 loadFlags; /* BTL_LOAD_*: battle start steps */
     u8 partyBrightness; /* intro fade-in, +4 per tick to 0x20 (btl_updateIntro) */
     u8 enemyBrightness; /* intro fade-in, +4 per tick to 0x20 */
     u8 padD88[0xD90 - 0xD88];
@@ -1250,7 +1436,7 @@ typedef struct Battle {
     BtlCmd *curCmd; /* runtime: Vivi's command while her Attack executes */
     struct Battle108CSet cursorPrims[2]; /* target cursor, per draw buffer */
     BtlUnitList fxTargets; /* effect target list (btl_playCmdEffect -> btlfx_setTargets) */
-    u16 cmdFlags; /* 1 escape queued, 2 active marker and target projection on (btl_setMarkersVisible), 4/8 trance Eidolon timer running/fired, 0x10 Spear pending */
+    u16 cmdFlags; /* BTL_CMDF_* */
     u8 cmdPhase; /* curCmd's step in btl_processCmdQueue (0 check, 1 start effect, 2 wait, 3 finish) */
     u8 eidolonAbility; /* ability of the trance Eidolon follow-up (btl_startCmdEffect, BTL_CMD_EIDOLON) */
     s16 eidolonTimer; /* counts down by atbSpeed until BTL_CMD_TRANCE_EIDOLON */
@@ -1272,6 +1458,34 @@ typedef struct Battle {
     Battle16CC abilities[0xC0]; /* runtime: BtlCmd.ability = &abilities[subNo] (Attack 176, Focus 188) */
     s32 statusSets[64]; /* status masks indexed by ability/weapon status-set bytes (btl_applyAbilityStatus) */
 } Battle; /* 0x23CC */
+
+/* Battle.flags. Evidence: [code] */
+#define BTL_FLAG_BG_LOADED       0x01 /* background loaded: btl_updateIntro draws it (btl_loadBackgroundStep) */
+#define BTL_FLAG_ENEMIES_LOADED  0x02 /* enemy models loaded (btl_loadEnemyModelsStep); btl_updateIntro initialises the enemies */
+#define BTL_FLAG_PARTY_LOADED    0x04 /* party models loaded (btl_loadModelsStep, btl_reloadPartyStep); btl_updateIntro initialises the party */
+#define BTL_FLAG_UI_STARTED      0x10 /* btlui_init ran (btl_main, once loadFlags is BTL_LOAD_READY); the disc cover check runs from here on */
+#define BTL_FLAG_DISC_COVER_OPEN 0x20 /* btl_checkDiscCover: shell open, the pause screen shows "Disc Cover Open" */
+#define BTL_FLAG_EXIT_PRELOADED  0x40 /* btl_preloadExit ran (btl_main) */
+/* 0x100: tested before PutDispEnv (btl_putDispEnvNoUi, btlui_putDispEnvIfReady), never set by the C */
+#define BTL_FLAG_OVER            0x1000 /* btl_update returned 1: btl_main leaves (mode 8) */
+
+/* Battle.loadFlags: battle start steps (btl_updateIntro). Evidence: [code] */
+#define BTL_LOAD_STARTED       0x01 /* btl_startBattle ran */
+#define BTL_LOAD_ENEMIES_SHOWN 0x02 /* the enemies have faded in; btlseq_update runs from here on */
+#define BTL_LOAD_PARTY_SHOWN   0x04 /* the party has faded in */
+#define BTL_LOAD_READY         (BTL_LOAD_STARTED | BTL_LOAD_ENEMIES_SHOWN | BTL_LOAD_PARTY_SHOWN) /* btl_main starts the UI, btlcam_step goes on */
+#define BTL_LOAD_ENEMIES_INIT  0x08 /* btl_initEnemies ran */
+#define BTL_LOAD_PARTY_INIT    0x10 /* btl_initParty ran */
+#define BTL_LOAD_ENEMY_GREY    0x20 /* btl_makeEnemyGreyCluts ran: the enemy fade-in starts */
+#define BTL_LOAD_PARTY_GREY    0x40 /* btl_makePartyGreyCluts ran: the party fade-in starts */
+
+/* Battle.cmdFlags. Evidence: [code] */
+#define BTL_CMDF_ESCAPE         0x01 /* an escape (BTL_CMD_ESCAPE) is queued (btl_setCmd): no other command is accepted, units take the flee stance */
+#define BTL_CMDF_MARKERS_BIT    1
+#define BTL_CMDF_MARKERS        (1 << BTL_CMDF_MARKERS_BIT) /* active-unit marker and target projection on (btl_setMarkersVisible; set by btl_initCmdQueue) */
+#define BTL_CMDF_EIDOLON_TIMER  0x04 /* trance Dagger's Eidolon follow-up timer runs (btl_finishCmd after BTL_CMD_EIDOLON) */
+#define BTL_CMDF_EIDOLON_QUEUED 0x08 /* the timer ran out and BTL_CMD_TRANCE_EIDOLON is queued (btl_updateUnitStatus) */
+#define BTL_CMDF_SPEAR          0x10 /* a Spear (BTL_CMD_SPEAR*) is queued: jumping units' timers stop (btl_updateUnitStatus) */
 
 /* battle work area, allocated at g_loadAreaEnd + 0x61800 */
 typedef struct {
@@ -1313,7 +1527,7 @@ typedef struct {
 
 typedef struct {
     Unk800C412C0 keys[2]; /* from [0] and to [1] (btlcam_setPathKey shifts them) */
-    u8 mode; /* 0 off, 1 hold the key, 2 lerp, 3 lerp between anchored points, 4 cubic over g_btlCamera.points */
+    u8 mode; /* BTLCAM_PATH_* */
     u8 wrapModes; /* per axis, 2 bits: how angles wrap while lerping */
     u8 easeModes; /* 2 bits per weight: 0 linear, 1 ease out, 2 ease in (g_btlCamScript.accel) */
     u8 locked; /* keys set by camera flag 0x8000: the next command doesn't replace the mode or timing */
@@ -1322,6 +1536,13 @@ typedef struct {
     u8 pad1E[0x20 - 0x1E];
 } Unk800C412C; /* 0x20 */
 
+/* Unk800C412C.mode (g_btlCamera.paths[]; set from camera script op bits 5-6) */
+#define BTLCAM_PATH_OFF      0
+#define BTLCAM_PATH_HOLD     1 /* hold the key */
+#define BTLCAM_PATH_LERP     2
+#define BTLCAM_PATH_ANCHORED 3 /* lerp between anchored points */
+#define BTLCAM_PATH_CUBIC    4 /* cubic over g_btlCamera.points */
+
 typedef struct Unk800FE3B8 {
     SVECTOR points[6]; /* camera path control points (cubic, btlcam_step); [4]/[5] keep the eye/target for script flag 0x80 */
     SVECTOR pointRots[4]; /* rotations kept with points[0-3] (zeroed by btlcam_loadScript; btlcam_resolveAnchor anchors 0x15+) */
@@ -1329,7 +1550,7 @@ typedef struct Unk800FE3B8 {
     u8 paused; /* script frame stops counting (camera flag 0x100100); effect steps resume it */
     u8 effectPick; /* camera choice btlfx_opPlayCamera mode 3 plays: random 0/1 per effect, or the variant (camera flag 0x2000) */
     SVECTOR eye; /* eye position given to btlcam_lookAt */
-    u8 flags; /* 1 a camera script took over (projDist reset), 2 the effect script started (btlfx_runScript) */
+    u8 flags; /* 1 a camera script took over (projDist reset), BTLCAM_F_EFFECT_RUNNING */
     u8 stepped; /* the effect frame already stepped the camera: btlcam_update skips this frame */
     u16 projDist; /* projection distance (SetGeomScreen through GameData.unkA) */
     u16 baseProjDist; /* default projection distance (0x200) */
@@ -1343,13 +1564,20 @@ typedef struct Unk800FE3B8 {
     s32 idleSwayPhase;
     s32 viewBlend; /* frames left of the blend into the target view (btlcam_applyTargetView) */
     u8 nextVariant; /* variant chosen by a header with flag 0x200 for the next script (2 bits per variant) */
-    u8 mode; /* 0 scene (btlcam_playScene), 1 effect (btlcam_play), 2 enemy sequence (btlcam_playSeq) */
+    u8 mode; /* BTLCAM_MODE_* */
     u8 targetView; /* 1 while the target-select view is on */
     u8 viewState; /* 2: at the target view; btlcam_evalPath counts anchors 0x19/0x1A up to it */
     SVECTOR viewFromEye; /* eye when the target view started */
     SVECTOR viewFromAt; /* target when the target view started */
     BtlUnit *focusUnit; /* unit the scene camera follows (anchor 0xA; btlcam_loadScript variant from its state) */
 } Unk800FE3B8;
+
+/* Unk800FE3B8 (g_btlCamera).mode: what the camera plays. Evidence: [code] */
+#define BTLCAM_MODE_SCENE  0 /* btlcam_playScene */
+#define BTLCAM_MODE_EFFECT 1 /* btlcam_play */
+#define BTLCAM_MODE_SEQ    2 /* enemy sequence (btlcam_playSeq) */
+/* Unk800FE3B8.flags */
+#define BTLCAM_F_EFFECT_RUNNING 0x02 /* the effect script runs its ops (btlfx_runScript phase 4); btlcam_play clears the flags then */
 extern Unk800FE3B8 g_btlCamera;
 
 typedef struct {
@@ -1788,7 +2016,7 @@ typedef struct Pool6CEntry {
     EffTail *tail;
     SVECTOR *origin; /* emitter position (btlfx_moveEmitter shifts its particles with it) */
     s32 unk2C;
-    s16 state; /* in use, -1 = release */
+    s16 state; /* BTLFX_EMIT_* */
     s16 unk32;
     XY32 unk34; /* live particle counts (s.x, s.y) */
     s16 frame; /* frame */
@@ -1807,6 +2035,11 @@ typedef struct Pool6CEntry {
     SVECTOR *fieldPos; /* centre of the force-field modes 1-9 (btlfx_updateParticles) */
     SVECTOR *fieldRot; /* angles of the force field (modes 5, 6, 9: btlfx_toLocalPolar) */
 } Pool6CEntry; /* 0x6C */
+
+/* Pool6CEntry.state (btlfx_spawnEmitter, the emitter updates). Evidence: [code] */
+#define BTLFX_EMIT_FREE 0
+#define BTLFX_EMIT_LIVE 1
+#define BTLFX_EMIT_DONE (-1) /* finished: freed by the next update; effect code polls it to drop its pointer */
 
 typedef struct {
     s32 capacity; /* entries */
@@ -3045,7 +3278,7 @@ typedef struct {
 } TexAnimRect; /* 0xC */
 
 typedef struct {
-    u8 flags; /* 1 playing, 2 stop at the end (else loop), 4 vertical scroll (frameCount 0) */
+    u8 flags; /* BTL_TEXANIM_* */
     u8 frameCount; /* frame count */
     s16 speed; /* speed (20.12) */
     u16 waitMin; /* frames to wait before looping again: waitMin + random(waitRand + 1) */
@@ -3429,7 +3662,7 @@ BtlUnit *btlui_findKoUnit(u8);
 static inline BtlUnit *find_target(void) {
     BtlUnit *u;
     for (u = g_gameState->gameData->ctx.battle->unitList; u != NULL; u = u->next) {
-        if ((u->flags & 0x30000000) == 0x30000000) {
+        if ((u->flags & (BTL_UNIT_TARGETABLE | BTL_UNIT_TARGETED)) == (BTL_UNIT_TARGETABLE | BTL_UNIT_TARGETED)) {
             return u;
         }
     }
@@ -3561,7 +3794,7 @@ s32 chr_getDefaultSet(Character *);
 static inline BtlUnit *BtlFindTargetCursor(void) {
     BtlUnit *p;
     for (p = g_gameState->gameData->ctx.battle->unitList; p != NULL; p = p->next) {
-        if ((p->flags & 0x30000000) == 0x30000000) {
+        if ((p->flags & (BTL_UNIT_TARGETABLE | BTL_UNIT_TARGETED)) == (BTL_UNIT_TARGETABLE | BTL_UNIT_TARGETED)) {
             return p;
         }
     }
@@ -3577,7 +3810,7 @@ static inline s32 btlui_getTargeting_inline(void) {
     }
     n = 0;
     for (u = g_gameState->gameData->ctx.battle->unitList; u != 0; u = u->next) {
-        if ((u->flags & 0x30000000) == 0x30000000) {
+        if ((u->flags & (BTL_UNIT_TARGETABLE | BTL_UNIT_TARGETED)) == (BTL_UNIT_TARGETABLE | BTL_UNIT_TARGETED)) {
             n++;
         }
     }
@@ -3592,7 +3825,7 @@ static inline u8 BtlUnitCanAct(BtlUnit *u) {
     if (u->hp == 0 || (u8)btl_hasStatus(u, (BTL_STATUS_PETRIFY | BTL_STATUS_VENOM | BTL_STATUS_KO | BTL_STATUS_CONFUSE | BTL_STATUS_BERSERK | BTL_STATUS_STOP | BTL_STATUS_SLEEP | BTL_STATUS_FREEZE | BTL_STATUS_JUMP)) != 0) {
         return 0;
     }
-    if ((g_btlRewards.expMask >> ((u8)u->flags >> 5)) & 1) {
+    if ((g_btlRewards.expMask >> ((u8)u->flags >> BTL_UNIT_SLOT_SHIFT)) & 1) {
         return 1;
     }
     return 0;
@@ -4241,7 +4474,7 @@ s32 vib_init(void *);
 
 /* the command's caster can't act (status 8 with flag 2): prints message 0x15 */
 static inline u8 btl_checkCmdUsable_can(BtlCmd *arg1) {
-    if ((arg1->caster->status & BTL_STATUS_SILENCE) && (arg1->ability->flags & 2)) {
+    if ((arg1->caster->status & BTL_STATUS_SILENCE) && (arg1->ability->flags & BTL_ABIL_VOICE)) {
         btl_showMessage(0x15);
         return 0;
     }

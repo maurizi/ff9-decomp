@@ -107,13 +107,13 @@ s32 fx_081_op80(s32 mode, Fx081Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
         case 0:
             b = 0x1000;
             t = (frame << 12) / 22;
-            if (work->unk2C != NULL && work->unk2C->state == -1) {
+            if (work->unk2C != NULL && work->unk2C->state == BTLFX_EMIT_DONE) {
                 work->unk2C = NULL;
             }
-            if (work->unk30 != NULL && work->unk30->state == -1) {
+            if (work->unk30 != NULL && work->unk30->state == BTLFX_EMIT_DONE) {
                 work->unk30 = NULL;
             }
-            if (work->unk34 != NULL && work->unk34->state == -1) {
+            if (work->unk34 != NULL && work->unk34->state == BTLFX_EMIT_DONE) {
                 work->unk34 = NULL;
             }
             if (work->unk2C != NULL) {
@@ -140,13 +140,13 @@ s32 fx_081_op80(s32 mode, Fx081Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             b = 0x1000 - t;
             sc = 0x1000;
             D_801EA73C = t;
-            if (work->unk2C != NULL && work->unk2C->state == -1) {
+            if (work->unk2C != NULL && work->unk2C->state == BTLFX_EMIT_DONE) {
                 work->unk2C = NULL;
             }
-            if (work->unk30 != NULL && work->unk30->state == -1) {
+            if (work->unk30 != NULL && work->unk30->state == BTLFX_EMIT_DONE) {
                 work->unk30 = NULL;
             }
-            if (work->unk34 != NULL && work->unk34->state == -1) {
+            if (work->unk34 != NULL && work->unk34->state == BTLFX_EMIT_DONE) {
                 work->unk34 = NULL;
             }
             if (work->unk2C != NULL) {
@@ -169,7 +169,7 @@ s32 fx_081_op80(s32 mode, Fx081Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
         case 2:
             D_801EA73C = 0x1000;
             if (work->unk2C != NULL) {
-                if (work->unk2C->state == -1) {
+                if (work->unk2C->state == BTLFX_EMIT_DONE) {
                     work->unk2C = NULL;
                 }
                 if (work->unk2C != NULL) {

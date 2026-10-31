@@ -77,7 +77,7 @@ s32 fx_043_op81(s32 mode, Fx043Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
     } else {
         frame = entry->frame;
         if (work->unk0 != NULL) {
-            if (work->unk0->state == -1) {
+            if (work->unk0->state == BTLFX_EMIT_DONE) {
                 work->unk0 = NULL;
             }
             if (work->unk0 != NULL) {

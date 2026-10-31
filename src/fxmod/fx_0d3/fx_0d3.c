@@ -787,10 +787,10 @@ s32 fx_0d3_op81(s32 mode, Fx0d3Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
                 p2->otZ = 0x80;
             }
         }
-        if (work->unk4C != NULL && work->unk4C->state == -1) {
+        if (work->unk4C != NULL && work->unk4C->state == BTLFX_EMIT_DONE) {
             work->unk4C = NULL;
         }
-        if (work->unk50 != NULL && work->unk50->state == -1) {
+        if (work->unk50 != NULL && work->unk50->state == BTLFX_EMIT_DONE) {
             work->unk50 = NULL;
         }
         if (frame_119 >= 0x25) {

@@ -8,7 +8,7 @@ s32 func_801E7704(VECTOR *out, s32 arg1, SVECTOR *pos, s32 arg3, s32 frame, s32 
     D_801E8308.vy = 0;
     D_801E8308.vz = pos->vz;
     if (D_801E8340 != NULL) {
-        if (D_801E8340->state == -1) {
+        if (D_801E8340->state == BTLFX_EMIT_DONE) {
             D_801E8340 = NULL;
         }
     }
@@ -118,15 +118,15 @@ s32 fx_127_op80(s32 mode, Fx127Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             break;
         }
         if (frame >= 0xA && frame < 0xE) {
-            if (work->unk0 != NULL && work->unk0->state == -1) {
+            if (work->unk0 != NULL && work->unk0->state == BTLFX_EMIT_DONE) {
                 work->unk0 = NULL;
             }
             ex->btlfx_moveEmitterTo((s32)work->unk0, (s32)&work->unk44);
-            if (work->unk4 != NULL && work->unk4->state == -1) {
+            if (work->unk4 != NULL && work->unk4->state == BTLFX_EMIT_DONE) {
                 work->unk4 = NULL;
             }
             ex->btlfx_moveEmitterTo((s32)work->unk4, (s32)&work->unk44);
-            if (work->unk8 != NULL && work->unk8->state == -1) {
+            if (work->unk8 != NULL && work->unk8->state == BTLFX_EMIT_DONE) {
                 work->unk8 = NULL;
             }
             ex->btlfx_moveEmitterTo((s32)work->unk8, (s32)&work->unk44);
@@ -138,7 +138,7 @@ s32 fx_127_op80(s32 mode, Fx127Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
         }
         if (frame >= 0xA) {
             if (work->unk0 != NULL) {
-                if (work->unk0->state == -1) {
+                if (work->unk0->state == BTLFX_EMIT_DONE) {
                     work->unk0 = NULL;
                 }
                 if (work->unk0 != NULL) {
@@ -148,7 +148,7 @@ s32 fx_127_op80(s32 mode, Fx127Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
                 }
             }
             if (work->unk4 != NULL) {
-                if (work->unk4->state == -1) {
+                if (work->unk4->state == BTLFX_EMIT_DONE) {
                     work->unk4 = NULL;
                 }
                 if (work->unk4 != NULL) {
@@ -158,7 +158,7 @@ s32 fx_127_op80(s32 mode, Fx127Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
                 }
             }
             if (work->unk8 != NULL) {
-                if (work->unk8->state == -1) {
+                if (work->unk8->state == BTLFX_EMIT_DONE) {
                     work->unk8 = NULL;
                 }
                 if (work->unk8 != NULL) {
@@ -215,7 +215,7 @@ s32 fx_127_op81(s32 mode, Fx127Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
         }
         if (frame >= 0) {
             if (work->unk0 != NULL) {
-                if (work->unk0->state == -1) {
+                if (work->unk0->state == BTLFX_EMIT_DONE) {
                     work->unk0 = NULL;
                 }
                 if (work->unk0 != NULL) {

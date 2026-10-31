@@ -276,7 +276,7 @@ s32 fx_1b7_op80(s32 mode, Fx1b7Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
                     work->unk40->otZ = 0x140;
                 }
             }
-            if (work->unk40 != NULL && work->unk40->state == -1) {
+            if (work->unk40 != NULL && work->unk40->state == BTLFX_EMIT_DONE) {
                 work->unk40 = NULL;
             }
             if (frame == 1 || frame == 0xF || frame == 0x14 || frame == 0x24) {

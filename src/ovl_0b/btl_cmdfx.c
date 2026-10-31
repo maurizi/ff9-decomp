@@ -2,9 +2,9 @@
 
 void btl_setShadowSize(BtlUnit *arg0, s32 arg1, u32 arg2) {
     s32 k;
-    k = arg0->flags >> 1;
+    k = arg0->flags >> BTL_UNIT_INDEX_SHIFT;
     k &= 0xF;
-    if (!(arg0->flags & 1)) {
+    if (!(arg0->flags & BTL_UNIT_PARTY)) {
         k += 9;
     }
     arg0->shadowW = (arg1 & 0xFFFF) / 14;
@@ -19,7 +19,7 @@ void btl_setUnitFade(BtlUnit *arg0, s32 arg1) {
     btl_setModelAbr(arg0->model, 0x60);
     btl_fillModelRgb(arg0->model, (p->lightR * arg1) << 11 >> 16, (p->lightG * arg1) << 11 >> 16, (p->lightB * arg1) << 11 >> 16);
     if (arg1 == 0) {
-        arg0->flags |= 0x400000;
+        arg0->flags |= BTL_UNIT_HIDDEN;
     }
 }
 
@@ -57,18 +57,18 @@ void btl_playCmdEffect(BtlCmd *arg0, s32 arg1, s16 *arg2) {
         mask = btl_applyReflect(arg0);
         e = arg0->cmdNo;
         if (e == 0xE || e == 0x33) {
-            l->kind = 2;
+            l->kind = BTL_FXK_ITEM;
         } else if (e == 0x1F) {
-            l->kind = 4;
+            l->kind = BTL_FXK_SWD_MAG;
         } else if ((u8)(e - 0x39) < 2) {
-            l->kind = 1;
+            l->kind = BTL_FXK_NO_CAST;
         }
     } else if (arg0->info.b.reflect == 2) {
         arg0->info.b.reflect = 1;
-        if (!(arg0->caster->flags & 1)) {
+        if (!(arg0->caster->flags & BTL_UNIT_PARTY)) {
             arg0->info.b.enemyBounce = 1;
         }
-        l->kind = 0x11;
+        l->kind = (BTL_FXK_NO_CAST | BTL_FXK_BOUNCE);
     }
     for (u = g_gameState->gameData->ctx.battle->unitList; u != NULL; u = u->next) {
         if (u->unitBit & (u16)arg0->targets) {
@@ -82,7 +82,7 @@ void btl_playCmdEffect(BtlCmd *arg0, s32 arg1, s16 *arg2) {
         if (u->unitBit & mask) {
             l->bounced[l->bounceCount++] = u;
         }
-        if (arg0->cmdNo == BTL_CMD_SWD_MAG && (u->flags & 1) && g_gameState->gameData->characters[(u->flags >> 1) & 0xF].info.b.kind == 2) {
+        if (arg0->cmdNo == BTL_CMD_SWD_MAG && (u->flags & BTL_UNIT_PARTY) && g_gameState->gameData->characters[BTL_UNIT_INDEX(u->flags)].info.b.kind == 2) {
             l->partner = u;
         }
     }
@@ -104,16 +104,16 @@ void btl_startCmdEffect(BtlCmd *cmd) {
     case BTL_CMD_ATTACK:
     case BTL_CMD_COUNTER:
     case BTL_CMD_CHARGE_ATTACK:
-        if (u->flags & 1) {
-            id = g_gameState->gameData->characters[(u->flags >> 1) & 0xF].info.b.kind + 0x64;
+        if (u->flags & BTL_UNIT_PARTY) {
+            id = g_gameState->gameData->characters[BTL_UNIT_INDEX(u->flags)].info.b.kind + 0x64;
         } else {
             id = 0x77;
         }
         btl_playCmdEffect(cmd, id, 0);
         break;
     case BTL_CMD_STEAL:
-        if (u->flags & 1) {
-            k = g_gameState->gameData->characters[(u->flags >> 1) & 0xF].info.b.kind;
+        if (u->flags & BTL_UNIT_PARTY) {
+            k = g_gameState->gameData->characters[BTL_UNIT_INDEX(u->flags)].info.b.kind;
         } else {
             k = 0x13;
         }
@@ -186,7 +186,7 @@ void btl_startCmdEffect(BtlCmd *cmd) {
         }
         break;
     case BTL_CMD_ENEMY_TURN:
-        if ((u16)cmd->targets < 0x10 && (cmd->ability->flags & 8) && !cmd->info.b.targeting) {
+        if ((u16)cmd->targets < 0x10 && (cmd->ability->flags & BTL_ABIL_PHYSICAL) && !cmd->info.b.targeting) {
             t = btl_findCover((u16)cmd->targets);
             if (t) {
                 cmd->targets = t;
@@ -233,7 +233,7 @@ void btl_startCmdEffect(BtlCmd *cmd) {
             break;
         }
     default:
-        if ((cmd->ability->targetType == 3 && !cmd->info.b.targeting) || (cmd->info.w & 0x600) ||
+        if ((cmd->ability->targetType == 3 && !cmd->info.b.targeting) || (cmd->info.w & (BTL_CMDINFO_MAGIC_FAILED | BTL_CMDINFO_SHORT_SUMMON)) ||
             cmd->cmdNo == BTL_CMD_SEIKEN || cmd->cmdNo == BTL_CMD_SEIKEN2) {
             btl_playCmdEffect(cmd, cmd->ability->altEffect, 0);
         } else {

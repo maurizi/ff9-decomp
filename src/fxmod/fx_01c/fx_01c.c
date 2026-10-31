@@ -45,7 +45,7 @@ s32 fx_01c_op80(s32 mode, Fx01cWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
             break;
         }
         if (work->unk0 != NULL) {
-            if (work->unk0->state == -1) {
+            if (work->unk0->state == BTLFX_EMIT_DONE) {
                 work->unk0 = NULL;
             }
             if (work->unk0 != NULL) {
@@ -56,7 +56,7 @@ s32 fx_01c_op80(s32 mode, Fx01cWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
         }
         if (frame >= 0x1E) {
             if (work->unk8 != NULL) {
-                if (work->unk8->state == -1) {
+                if (work->unk8->state == BTLFX_EMIT_DONE) {
                     work->unk8 = NULL;
                 }
                 if (work->unk8 != NULL) {
@@ -66,7 +66,7 @@ s32 fx_01c_op80(s32 mode, Fx01cWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
                 }
             }
             if (work->unkC != NULL) {
-                if (work->unkC->state == -1) {
+                if (work->unkC->state == BTLFX_EMIT_DONE) {
                     work->unkC = NULL;
                 }
                 if (work->unkC != NULL) {

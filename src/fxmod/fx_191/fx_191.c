@@ -264,7 +264,7 @@ s32 fx_191_op81(s32 mode, Fx191Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
                 t = 0x1000;
             }
             ex->btlfx_lerpVec((s16 *)&work->unk30, (s16 *)&work->unk38, t, (s16 *)&work->unk50);
-            if (work->unk8 != NULL && work->unk8->state == -1) {
+            if (work->unk8 != NULL && work->unk8->state == BTLFX_EMIT_DONE) {
                 work->unk8 = NULL;
             }
             if (work->unk8 != NULL) {
@@ -277,7 +277,7 @@ s32 fx_191_op81(s32 mode, Fx191Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
                 t = 0x1000;
             }
             ex->btlfx_lerpVec((s16 *)&work->unk40, (s16 *)&work->unk48, t, (s16 *)&work->unk58);
-            if (work->unk10 != NULL && work->unk10->state == -1) {
+            if (work->unk10 != NULL && work->unk10->state == BTLFX_EMIT_DONE) {
                 work->unk10 = NULL;
             }
             if (work->unk10 != NULL) {

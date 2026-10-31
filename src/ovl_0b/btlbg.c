@@ -20,7 +20,7 @@ void btlbg_init(BtlBgHeader *arg0, BtlUnit9C50 *arg1) {
             BtlUnit9C50 *a;
             BtlUnit9C50 *e;
             a = g_btlbgTexAnims + i;
-            a->flags |= 1;
+            a->flags |= BTL_TEXANIM_PLAY;
             e = g_btlbgTexAnims + i;
             e->pos = 0;
             e->lastFrame = 0x1000;

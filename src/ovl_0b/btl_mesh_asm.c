@@ -38,7 +38,7 @@ u8 *btlfx_drawSliceMesh(BtlUnit9C *arg0, u8 arg1, u8 *prim) {
     WmSrcF3 *sF3;
     POLY_F3 *pF3;
 
-    if (arg0->flags & 0x10) {
+    if (arg0->flags & BTL_MODEL_OFFSCREEN) {
         return prim;
     }
     g = &arg0->header->meshes[arg1];

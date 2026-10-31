@@ -105,7 +105,7 @@ s32 fx_0a0_op80(s32 mode, Fx0a0Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
         BTLFX_COPY_SVEC(&D_801E8864, &work->unk4);
         switch (work->unk0) {
         case 0:
-            if (work->unk20 != NULL && work->unk20->state == -1) {
+            if (work->unk20 != NULL && work->unk20->state == BTLFX_EMIT_DONE) {
                 work->unk20 = NULL;
             }
             ex->btlfx_moveEmitterTo((s32)work->unk20, (s32)&work->unk4);

@@ -100,7 +100,7 @@ u8 *btl_buildMeshPrims(BtlUnit9C *arg0, u8 arg1, u8 *prim) {
     WmSrcF3 *sF3;
     POLY_F3 *pF3;
 
-    if (arg0->flags & 0x10) {
+    if (arg0->flags & BTL_MODEL_OFFSCREEN) {
         return prim;
     }
     g = &arg0->header->meshes[arg1];
@@ -523,7 +523,7 @@ void btl_applyModelTextures(BtlUnit9C *arg0, s16 *arg1, s16 *arg2) {
     arg0->scaleX = 0x1000;
     arg0->scaleY = 0x1000;
     arg0->scaleZ = 0x1000;
-    arg0->flags |= 2;
+    arg0->flags |= BTL_MODEL_SCALED;
     h = arg0->header;
     arg0->texPages = (BtlUnit9C18 *)arg1;
     arg0->parent = NULL;
@@ -621,7 +621,7 @@ void btl_applyModelScale(BtlUnit9C *arg0) {
     } s;
     s16 x;
 
-    if (arg0->flags & 2) {
+    if (arg0->flags & BTL_MODEL_SCALED) {
         x = arg0->scaleX;
         s.w[0] = 0x1000;
         s.w[1] = 0;
@@ -648,9 +648,9 @@ void btl_updateModelVisibility(BtlUnit9C *arg0) {
     SVECTOR v;
     s32 z;
 
-    arg0->flags &= ~0x10;
+    arg0->flags &= ~BTL_MODEL_OFFSCREEN;
     if (arg0->parent != NULL) {
-        arg0->flags |= arg0->parent->flags & 0x10;
+        arg0->flags |= arg0->parent->flags & BTL_MODEL_OFFSCREEN;
         return;
     }
     v.vx = arg0->matrix.t[0];
@@ -662,7 +662,7 @@ void btl_updateModelVisibility(BtlUnit9C *arg0) {
     gte_rtps();
     gte_stsz(&z);
     if (z == 0) {
-        arg0->flags |= 0x10;
+        arg0->flags |= BTL_MODEL_OFFSCREEN;
     }
 }
 
@@ -673,7 +673,7 @@ void btl_setModelRgb(BtlUnit9C *arg0, s32 r, s32 g, s32 b) {
     BtlPrim *p;
     u8 code;
 
-    if (!(arg0->flags & 0x10)) {
+    if (!(arg0->flags & BTL_MODEL_OFFSCREEN)) {
     i = 0;
     p = (BtlPrim *)arg0->prims;
     if (arg0->header->meshCount != 0) {
@@ -751,7 +751,7 @@ void btl_fillModelRgb(BtlUnit9C *arg0, s32 r, s32 g, s32 b) {
     u8 code;
 
     i = 0;
-    if (!(arg0->flags & 0x10)) {
+    if (!(arg0->flags & BTL_MODEL_OFFSCREEN)) {
     col = (b << 16) | ((g << 16) >> 8) | (s16)r;
     p = (BtlPrim *)arg0->prims;
     if (arg0->header->meshCount != 0) {

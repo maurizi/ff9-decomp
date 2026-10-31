@@ -122,7 +122,7 @@ s32 fx_0b4_op80(s32 mode, Fx0b4Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
         }
         if (frame >= 0) {
             if (work->unk1C != NULL) {
-                if (work->unk1C->state == -1) {
+                if (work->unk1C->state == BTLFX_EMIT_DONE) {
                     work->unk1C = NULL;
                 }
                 if (work->unk1C != NULL) {
@@ -134,7 +134,7 @@ s32 fx_0b4_op80(s32 mode, Fx0b4Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
         }
         if (frame >= 8) {
             if (work->unk20 != NULL) {
-                if (work->unk20->state == -1) {
+                if (work->unk20->state == BTLFX_EMIT_DONE) {
                     work->unk20 = NULL;
                 }
                 if (work->unk20 != NULL) {
@@ -146,7 +146,7 @@ s32 fx_0b4_op80(s32 mode, Fx0b4Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
         }
         if (frame >= 0x14) {
             if (work->unk18 != NULL) {
-                if (work->unk18->state == -1) {
+                if (work->unk18->state == BTLFX_EMIT_DONE) {
                     work->unk18 = NULL;
                 }
                 if (work->unk18 != NULL) {
@@ -158,7 +158,7 @@ s32 fx_0b4_op80(s32 mode, Fx0b4Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
         }
         if (frame >= 0x2D) {
             if (work->unk28 != NULL) {
-                if (work->unk28->state == -1) {
+                if (work->unk28->state == BTLFX_EMIT_DONE) {
                     work->unk28 = NULL;
                 }
                 if (work->unk28 != NULL) {

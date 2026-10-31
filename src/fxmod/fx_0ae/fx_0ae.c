@@ -32,7 +32,7 @@ s32 fx_0ae_op80(s32 mode, Fx0aeWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
             ex->btlfx_getUnitBoneMatrix(0x10, env->targets->fxArgs[0], &bone);
             ex->btlfx_matrixPointAhead((MATRIX *)&bone, (s16)env->targets->fxParam, (s32)&work->unk8);
             if (work->unk4 != NULL) {
-                if (work->unk4->state == -1) {
+                if (work->unk4->state == BTLFX_EMIT_DONE) {
                     work->unk4 = NULL;
                 }
                 if (work->unk4 != NULL) {

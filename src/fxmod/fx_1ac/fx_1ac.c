@@ -46,19 +46,19 @@ s32 fx_1ac_op80(s32 mode, Fx1acWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
         work->unk4C[4] = NULL;
     } else {
         frame = entry->frame;
-        if (work->unk4C[0] != NULL && work->unk4C[0]->state == -1) {
+        if (work->unk4C[0] != NULL && work->unk4C[0]->state == BTLFX_EMIT_DONE) {
             work->unk4C[0] = NULL;
         }
-        if (work->unk4C[1] != NULL && work->unk4C[1]->state == -1) {
+        if (work->unk4C[1] != NULL && work->unk4C[1]->state == BTLFX_EMIT_DONE) {
             work->unk4C[1] = NULL;
         }
-        if (work->unk4C[2] != NULL && work->unk4C[2]->state == -1) {
+        if (work->unk4C[2] != NULL && work->unk4C[2]->state == BTLFX_EMIT_DONE) {
             work->unk4C[2] = NULL;
         }
-        if (work->unk4C[3] != NULL && work->unk4C[3]->state == -1) {
+        if (work->unk4C[3] != NULL && work->unk4C[3]->state == BTLFX_EMIT_DONE) {
             work->unk4C[3] = NULL;
         }
-        if (work->unk4C[4] != NULL && work->unk4C[4]->state == -1) {
+        if (work->unk4C[4] != NULL && work->unk4C[4]->state == BTLFX_EMIT_DONE) {
             work->unk4C[4] = NULL;
         }
         ex->btlfx_getUnitBonePos(0x10, 4, (u16 *)&work->unk30);
