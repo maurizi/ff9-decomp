@@ -1,18 +1,18 @@
 #include "fxmod/fx_114.h"
 
-s32 func_801E777C(Pool30Entry *pt, s32 arg1, SVECTOR *pos, s32 arg3, s32 frame, s32 n) {
+static s32 fxm_pinParticle0(Pool30Entry *pt, s32 arg1, SVECTOR *pos, s32 arg3, s32 frame, s32 n) {
     return fxm_pinParticle(pt, pos, &D_801EF268[0], frame, n);
 }
 
-s32 func_801E77B0(Pool30Entry *pt, s32 arg1, SVECTOR *pos, s32 arg3, s32 frame, s32 n) {
+static s32 fxm_pinParticle1(Pool30Entry *pt, s32 arg1, SVECTOR *pos, s32 arg3, s32 frame, s32 n) {
     return fxm_pinParticle(pt, pos, &D_801EF268[1], frame, n);
 }
 
-s32 func_801E77E4(Pool30Entry *pt, s32 arg1, SVECTOR *pos, s32 arg3, s32 frame, s32 n) {
+static s32 fxm_pinParticle2(Pool30Entry *pt, s32 arg1, SVECTOR *pos, s32 arg3, s32 frame, s32 n) {
     return fxm_pinParticle(pt, pos, &D_801EF268[2], frame, n);
 }
 
-s32 func_801E7818(Pool30Entry *pt, s32 arg1, SVECTOR *pos, s32 arg3, s32 frame, s32 n) {
+static s32 fxm_pinParticle3(Pool30Entry *pt, s32 arg1, SVECTOR *pos, s32 arg3, s32 frame, s32 n) {
     return fxm_pinParticle(pt, pos, &D_801EF268[3], frame, n);
 }
 
@@ -279,16 +279,16 @@ s32 fx_114_op80(s32 mode, Fx114Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             work->unk1C->unkC = 0xD0;
         }
         if (work->unk10 != NULL) {
-            ((EffMotion *)work->unk10->file)->unk8 = func_801E777C;
+            ((EffMotion *)work->unk10->file)->unk8 = fxm_pinParticle0;
         }
         if (work->unk14 != NULL) {
-            ((EffMotion *)work->unk14->file)->unk8 = func_801E77B0;
+            ((EffMotion *)work->unk14->file)->unk8 = fxm_pinParticle1;
         }
         if (work->unk18 != NULL) {
-            ((EffMotion *)work->unk18->file)->unk8 = func_801E77E4;
+            ((EffMotion *)work->unk18->file)->unk8 = fxm_pinParticle2;
         }
         if (work->unk1C != NULL) {
-            ((EffMotion *)work->unk1C->file)->unk8 = func_801E7818;
+            ((EffMotion *)work->unk1C->file)->unk8 = fxm_pinParticle3;
         }
         break;
     case 0x2C:
@@ -364,7 +364,7 @@ s32 fx_114_op80(s32 mode, Fx114Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
                 if (q1 >= 9) {
                     t1 = 0x1000 - ((q1 - 8) << 9);
                 }
-                func_801EABB4(&work->unk54, &work->unk4C, 0x11A, 0, 0xC0, 2, k1, 0x100, 0x10, 0x10, work->unk5C, t1, 1,
+                fxm_drawTexelQuadsB(&work->unk54, &work->unk4C, 0x11A, 0, 0xC0, 2, k1, 0x100, 0x10, 0x10, work->unk5C, t1, 1,
                               D_801EEA68, 0);
             }
         }
@@ -1165,7 +1165,7 @@ static void fxm_camChanUpdate(s32 ch) {
     D_801EF6B8[ch]++;
 }
 
-void func_801EABB4(SVECTOR *pos, SVECTOR *rot, s32 tp, s32 x, s32 y, s32 div, s32 idx, s32 size, s32 w, s32 h,
+static void fxm_drawTexelQuadsB(SVECTOR *pos, SVECTOR *rot, s32 tp, s32 x, s32 y, s32 div, s32 idx, s32 size, s32 w, s32 h,
                    s32 scale, s32 bright, s32 abr, u16 *colors, s32 skip) {
     Unk800F78A4 *env = D_801EB768;
     RECT rect;

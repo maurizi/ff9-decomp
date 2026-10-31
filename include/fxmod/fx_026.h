@@ -201,7 +201,7 @@ static void fxm_drawScrollMoveX(s32 x, s32 dx, s32 dy, s32 w, s32 h, s32 sx, s32
 static void fxm_shatterInit(s32 i, s32 n, Fx026Shatter *buf, Fx026Tri *tris);
 static s32 fxm_shatterAddModel(s32 i, s32 model);
 static Fx026Shard *fxm_shatterFreeShard(s32 i);
-void func_801E9564(s32 i);
+static void fxm_shatterUpdate(s32 i);
 static s32 fxm_shatterRelease(s32 i);
 s32 func_801E98BC(s32 mode, Fx026Item81 *it, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 frame,
                   Unk800DA1B8 *pool, Fx026Work81 *work);

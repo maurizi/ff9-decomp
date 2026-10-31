@@ -4,3 +4,4 @@ fx_105_op80 = 0x801E7EF4; // type:func [code] header op entry 0, effect script o
 fxm_camKeyReset = 0x801E7B74; // type:func [code] frees the 16 camera key slots and zeroes the frame counter
 fxm_camKeyAdd = 0x801E7BA8; // type:func [code] takes a free camera key slot (start frame, destination nibbles, source nibbles, key data)
 fxm_camKeyUpdate = 0x801E7BF8; // type:func [code] copies keys into camera points or a module array (nibble 10+), optionally offset by a source point, counts frames
+fxm_drawRibbonTrail = 0x801E7704; // type:func [code] pushes the a-b edge into a history of n edges and draws POLY_G4 between them, colours fading along it (n >= 1000 clears)

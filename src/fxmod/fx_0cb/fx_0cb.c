@@ -1,6 +1,6 @@
 #include "fxmod/fx_0cb.h"
 
-void func_801E7704(u32 ot, s32 x, s32 y, s32 n, s32 m, s32 dr, s32 from, s32 to, RECT *src,
+static void fxm_drawRadialScreenGrid(u32 ot, s32 x, s32 y, s32 n, s32 m, s32 dr, s32 from, s32 to, RECT *src,
                    void (*fn)(s32, s32, s32, s32, DVECTOR *)) {
     DVECTOR pts[2][18];
     DVECTOR a;

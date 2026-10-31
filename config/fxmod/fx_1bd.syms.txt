@@ -21,3 +21,4 @@ fxm_camChanReset = 0x801E90CC; // type:func [code] frees the 64 camera key slots
 fxm_camChanAdd = 0x801E9118; // type:func [code] takes a free camera key slot (start frame, destination point nibbles, channel, key data)
 fxm_camChanUpdate = 0x801E9174; // type:func [code] steps channel ch, slots whose start frame is reached copy keys into camera points (env camera, nibble = point + 1)
 fxm_buildPathTrail = 0x801E77C0; // type:func [code] fills a trail strip with the last n posPath keys up to start, fading pad from to
+fxm_drawTexelQuadsB = 0x801E92D4; // type:func [code] variant of fxm_drawTexelQuads, a 3D POLY_G4 grid coloured by texels, StoreImage reads the next cell

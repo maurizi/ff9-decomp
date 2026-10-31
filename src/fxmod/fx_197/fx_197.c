@@ -176,7 +176,7 @@ static s32 fxm_shatterRelease(s32 i) {
     return n;
 }
 
-void func_801E7E94(s32 i) {
+static void fxm_shatterUpdate(s32 i) {
     SVECTOR a;
     SVECTOR rot;
     SVECTOR c;
@@ -374,7 +374,7 @@ s32 func_801E81EC(s32 mode, Fx197Item81 *it, Unk800F78A4 *env, Unk80100C78Entry 
                 ex->Hi_ModifyEffModelRGB(work->unk18[it->unk2][2], c, c, c);
             }
             fxm_shatterRelease(it->unk2);
-            func_801E7E94(it->unk2);
+            fxm_shatterUpdate(it->unk2);
             if (frame < 0x14) {
                 break;
             }
@@ -425,7 +425,7 @@ s32 func_801E81EC(s32 mode, Fx197Item81 *it, Unk800F78A4 *env, Unk80100C78Entry 
                 ex->Hi_ModifyEffModelRGB(work->unk6C[6], c1, c1, c1);
             }
             fxm_shatterRelease(6);
-            func_801E7E94(6);
+            fxm_shatterUpdate(6);
             if (frame >= 0x57) {
                 return 1;
             }

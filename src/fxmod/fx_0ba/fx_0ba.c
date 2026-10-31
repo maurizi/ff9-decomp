@@ -910,7 +910,7 @@ s32 fx_0ba_op82(s32 mode, void *work, Unk800F78A4 *env, Unk80100C78Entry *entry,
     return 0;
 }
 
-void func_801EA850(Unk80100C78Entry *entry, s32 file, s32 a2, Fx0baStrip *buf, s32 size, s32 *tab, SVECTOR *from,
+static void fxm_drawJaggedTrail(Unk80100C78Entry *entry, s32 file, s32 a2, Fx0baStrip *buf, s32 size, s32 *tab, SVECTOR *from,
                    SVECTOR *to, s32 r0, s32 r1, s32 s, s32 step, s32 a12, s32 a13, s32 pad, s32 wave) {
     Unk800F78A4 *env = D_801EC5F0;
     BtlfxExports *ex = BTLFX_EXPORTS(env);
@@ -946,7 +946,7 @@ void func_801EA850(Unk80100C78Entry *entry, s32 file, s32 a2, Fx0baStrip *buf, s
     env->otZ = 0;
 }
 
-void func_801EAAF0(Unk80100C78Entry *entry, s32 file, s32 a2, Fx0baStrip *path, Fx0baStrip *buf, s32 size, s32 *tab,
+static void fxm_drawJaggedTrailBranch(Unk80100C78Entry *entry, s32 file, s32 a2, Fx0baStrip *path, Fx0baStrip *buf, s32 size, s32 *tab,
                    s32 i, s32 a12, s32 a13, s32 pad) {
     SVECTOR *v;
     BtlfxExports *ex;
@@ -956,7 +956,7 @@ void func_801EAAF0(Unk80100C78Entry *entry, s32 file, s32 a2, Fx0baStrip *path, 
     v += i;
     ex = BTLFX_EXPORTS(D_801EC5F0);
     ex->btlfx_lerpVec((s16 *)(v + 1), (s16 *)v, 0x4000, (s16 *)&to);
-    func_801EA850(entry, file, a2, buf, size, tab, v, &to, 0, 0x20, ex->btlfx_rand(), 0x33, a12, a13, pad, 0);
+    fxm_drawJaggedTrail(entry, file, a2, buf, size, tab, v, &to, 0, 0x20, ex->btlfx_rand(), 0x33, a12, a13, pad, 0);
 }
 
 s32 func_801EAC08(s32 mode, Fx0baBolt *p, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 frame) {
@@ -991,7 +991,7 @@ s32 func_801EAC08(s32 mode, Fx0baBolt *p, Unk800F78A4 *env, Unk80100C78Entry *en
                 p->unk8.vx = D_801EC554.vx;
                 p->unk8.vy = D_801EC554.vy;
                 p->unk8.vz = D_801EC554.vz;
-                func_801EA850(entry, 0x1C, 0, (Fx0baStrip *)trail, 0x8C, p->unk18, &p->unk0, &p->unk8, 0, 0x180,
+                fxm_drawJaggedTrail(entry, 0x1C, 0, (Fx0baStrip *)trail, 0x8C, p->unk18, &p->unk0, &p->unk8, 0, 0x180,
                               frame * 0x97, 0x140, frame, c, ((0x1000 - t) * p->unk15) >> 12,
                               ((((frame << 10) + t) << 7) >> 12) + 0x80);
             } else {
@@ -1006,9 +1006,9 @@ s32 func_801EAC08(s32 mode, Fx0baBolt *p, Unk800F78A4 *env, Unk80100C78Entry *en
                 if (frame == 0) {
                     a = (a * 3) >> 1;
                 }
-                func_801EA850(entry, 2, 0, (Fx0baStrip *)trail, 0x8C, p->unk18 + frame * k, &p->unk0, &p->unk8, 0,
+                fxm_drawJaggedTrail(entry, 2, 0, (Fx0baStrip *)trail, 0x8C, p->unk18 + frame * k, &p->unk0, &p->unk8, 0,
                               0x180, frame * 0xC0, 0x168, frame, c, a, 0);
-                func_801EAAF0(entry, 3, 0, (Fx0baStrip *)trail, (Fx0baStrip *)strip, 0x24, p->unk18, p->unk12, frame, c,
+                fxm_drawJaggedTrailBranch(entry, 3, 0, (Fx0baStrip *)trail, (Fx0baStrip *)strip, 0x24, p->unk18, p->unk12, frame, c,
                               a >> 2);
             }
             if (frame >= 8) {
@@ -1052,9 +1052,9 @@ s32 func_801EAC08(s32 mode, Fx0baBolt *p, Unk800F78A4 *env, Unk80100C78Entry *en
             /* No code (only m * 4 is used), but m is then set twice, so sched1 does not delay the multiply to its
              * use and the product stays in a caller-saved register. */
             m &= 0x3FFFFFFF;
-            func_801EA850(entry, 2, 0, (Fx0baStrip *)trail2, 0x8C, p->unk18 + m, &p->unk0, &v, 0,
+            fxm_drawJaggedTrail(entry, 2, 0, (Fx0baStrip *)trail2, 0x8C, p->unk18 + m, &p->unk0, &v, 0,
                           0x227, frame * 0xC0, 0x168, frame, c2, (w = (0x1000 - t2) * amp) / 1500, 0);
-            func_801EAAF0(entry, 3, 0, (Fx0baStrip *)trail2, (Fx0baStrip *)strip2, 0x24, p->unk18, p->unk12, frame, c2,
+            fxm_drawJaggedTrailBranch(entry, 3, 0, (Fx0baStrip *)trail2, (Fx0baStrip *)strip2, 0x24, p->unk18, p->unk12, frame, c2,
                           w >> 11);
             if (frame >= 8) {
                 return 1;
@@ -1065,7 +1065,7 @@ s32 func_801EAC08(s32 mode, Fx0baBolt *p, Unk800F78A4 *env, Unk80100C78Entry *en
     return 0;
 }
 
-s32 func_801EB1CC(SVECTOR *v) {
+static s32 fxm_randStripPoint32(SVECTOR *v) {
     BtlfxExports *ex = BTLFX_EXPORTS(D_801EC5F0);
     SVECTOR *p = D_801ED424[ex->btlfx_rand() % 32].unk0;
 

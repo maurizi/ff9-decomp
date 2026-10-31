@@ -1,3 +1,4 @@
 fx_18b_headerPtr = 0x801E7700; // type:u32 size:0x4 [code] word 0 of a module, read by btlfx_updateLoader
 fx_18b_header = 0x801E8234; // [code] module header (0, init, ops), btlfx_updateLoader
 fx_18b_op80 = 0x801E7FA0; // type:func [code] header op entry 0, effect script op 0x80 (btlfx_spawnTask)
+fxm_drawRadialScreenGrid = 0x801E7704; // type:func [code] rings of POLY_GT4 around a screen point textured with the screen (a DR_MOVE copy into src, or the display), vertex callback fn

@@ -62,3 +62,40 @@ fxm_waveVertexX  <-  fx_0d3:func_801E90D4 fx_1fe:func_801E7CA0
 fxm_drawMirrorSprite  <-  fx_0e0:func_801E7718 fx_134:func_801E7748
 fxm_randRingPoint  <-  fx_17d_7:func_801EC704 fx_1bf_1:func_801EC704
 fxm_splitModelAdd  <-  fx_1b0:func_801E774C fx_1b7:func_801E774C
+
+## Batch 2: strip, trail and grid drawers, shatter, pinned particle callbacks
+fxm_drawJaggedStrip16  <-  fx_003:func_801E7704 fx_005:func_801E7704 fx_042:func_801E7704 fx_049:func_801E7704 fx_0d7:func_801E7704 fx_0d8:func_801E7704
+fxm_drawJaggedStrip4  <-  fx_003:func_801E796C fx_005:func_801E796C fx_042:func_801E796C fx_049:func_801E796C fx_0d7:func_801E796C fx_0d8:func_801E796C
+fxm_drawJaggedBranch4  <-  fx_003:func_801E7BF8 fx_005:func_801E7BF8 fx_042:func_801E7BF8 fx_049:func_801E7BF8 fx_0d7:func_801E7BF8 fx_0d8:func_801E7BF8
+fxm_drawJaggedStrip15  <-  fx_018:func_801E82FC fx_085:func_801E82A0 fx_0d9:func_801E8188
+fxm_drawJaggedStrip3  <-  fx_018:func_801E8564 fx_085:func_801E8508 fx_0d9:func_801E83F0
+fxm_drawJaggedBranch3  <-  fx_018:func_801E87E8 fx_085:func_801E878C fx_0d9:func_801E8674
+fxm_jaggedStripTask  <-  fx_018:func_801E88DC fx_085:func_801E8880 fx_0d9:func_801E8768
+fxm_randStripPoint  <-  fx_018:func_801E8C84 fx_085:func_801E8C28 fx_0d9:func_801E8B10
+fxm_randStripPoint32  <-  fx_0ba:func_801EB1CC fx_19f:func_801E9FC4
+fxm_drawArcTrail  <-  fx_17d_6:func_801E8B10 fx_17d_7:func_801EE6E4 fx_1bf_1:func_801EE6BC
+fxm_drawArcTrailBranch  <-  fx_17d_6:func_801E8DBC fx_1bf_1:func_801EE968
+fxm_drawJaggedTrail  <-  fx_0ba:func_801EA850 fx_19f:func_801E9968
+fxm_drawJaggedTrailBranch  <-  fx_0ba:func_801EAAF0 fx_17d_7:func_801EE990 fx_19f:func_801E9C08
+fxm_drawRibbonTrail  <-  fx_05e:func_801E7704 fx_09a:func_801E7704 fx_0ed:func_801E7704 fx_0fb_0:func_801E7720 fx_105:func_801E7704 fx_1a2:func_801E7718
+fxm_drawRadialScreenGrid  <-  fx_07d:func_801E7718 fx_07e:func_801E7704 fx_0cb:func_801E7704 fx_0d3:func_801E7CBC fx_0df:func_801E7704 fx_18b:func_801E7704
+fxm_drawBulgeGrid14  <-  fx_097:func_801E7CBC fx_098:func_801E7CBC fx_1cc:func_801E7CBC
+fxm_drawBulgeGrid24  <-  fx_0e0:func_801E7E18 fx_134:func_801E7E48
+fxm_twistVertex  <-  fx_07d:func_801E7FF4 fx_0df:func_801E7FE0
+fxm_shatterUpdate  <-  fx_026:func_801E9564 fx_197:func_801E7E94
+fxm_drawStreakField  <-  fx_086:func_801E7F6C fx_08f:func_801E7858
+fxm_drawSprite3D  <-  fx_0e0:func_801E7B08 fx_134:func_801E7B38
+fxm_drawTiledStrip  <-  fx_0e0:func_801E7910 fx_134:func_801E7940
+fxm_drawTexelQuadsB  <-  fx_114:func_801EABB4 fx_1bd:func_801E92D4
+fxm_pinParticle0  <-  fx_09b:func_801E7704 fx_114:func_801E777C fx_123:func_801E77B4
+fxm_pinParticle1  <-  fx_09b:func_801E7738 fx_114:func_801E77B0 fx_123:func_801E77E8
+fxm_pinParticle2  <-  fx_09b:func_801E776C fx_114:func_801E77E4 fx_123:func_801E781C
+fxm_pinParticle3  <-  fx_09b:func_801E77A0 fx_114:func_801E7818 fx_123:func_801E7850
+fxm_pinParticle4  <-  fx_09b:func_801E77D4 fx_123:func_801E7884
+fxm_pinParticle5  <-  fx_123:func_801E78B8
+fxm_pinParticle6  <-  fx_123:func_801E78EC
+fxm_pinParticle7  <-  fx_123:func_801E7920
+fxm_pinParticle8  <-  fx_123:func_801E7954
+fxm_pinParticle9  <-  fx_123:func_801E7988
+fxm_pinParticle10  <-  fx_123:func_801E79BC
+fxm_pinParticle11  <-  fx_123:func_801E79F0

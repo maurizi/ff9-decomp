@@ -1,3 +1,6 @@
 fx_042_headerPtr = 0x801E7700; // type:u32 size:0x4 [code] word 0 of a module, read by btlfx_updateLoader
 fx_042_header = 0x801E8524; // [code] module header (0, init, ops), btlfx_updateLoader
 fx_042_op83 = 0x801E8074; // type:func [code] header op entry 3, effect script op 0x83 (btlfx_spawnTask)
+fxm_drawJaggedStrip16 = 0x801E7704; // type:func [code] 16-point jagged strip from to (noise table jitters t, side offset and width), drawn with btlfx_drawTrail
+fxm_drawJaggedStrip4 = 0x801E796C; // type:func [code] 4-point jagged strip from to (noise table, sine bulge amp), drawn with btlfx_drawTrail
+fxm_drawJaggedBranch4 = 0x801E7BF8; // type:func [code] fxm_drawJaggedStrip4 branching off point i of a strip with a random width

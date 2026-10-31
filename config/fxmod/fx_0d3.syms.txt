@@ -10,3 +10,4 @@ fxm_keyGetVec2 = 0x801E84C0; // type:func [code] two SVECTORs of key t (clamped)
 fxm_keyGetVec3 = 0x801E8548; // type:func [code] three SVECTORs of key t (clamped), outputs may be NULL
 fxm_keyGetValue = 0x801E85FC; // type:func [code] s16 key t (clamped) of a key list
 fxm_waveVertexX = 0x801E90D4; // type:func [code] btlfx_drawScreenGrid vertex callback, shifts x by a sine of y
+fxm_drawRadialScreenGrid = 0x801E7CBC; // type:func [code] rings of POLY_GT4 around a screen point textured with the screen (a DR_MOVE copy into src, or the display), vertex callback fn

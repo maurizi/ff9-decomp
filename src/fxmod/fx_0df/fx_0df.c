@@ -1,6 +1,6 @@
 #include "fxmod/fx_0df.h"
 
-void func_801E7704(u32 ot, s32 x, s32 y, s32 n, s32 m, s32 dr, s32 from, s32 to, RECT *src,
+static void fxm_drawRadialScreenGrid(u32 ot, s32 x, s32 y, s32 n, s32 m, s32 dr, s32 from, s32 to, RECT *src,
                    void (*fn)(s32, s32, s32, s32, DVECTOR *)) {
     DVECTOR pts[2][18];
     DVECTOR a;
@@ -167,7 +167,7 @@ void func_801E7EB8(s32 arg0, s32 arg1, SVECTOR *pos, SVECTOR *arg3, s32 *arg4, s
     D_801EA410 = (D_801EA410 + 1) % 24;
 }
 
-void func_801E7FE0(s32 r, s32 a1, s32 a, s32 a3, s16 *out) {
+static void fxm_twistVertex(s32 r, s32 a1, s32 a, s32 a3, s16 *out) {
     BtlfxExports *ex;
     s32 t;
     s32 x;
@@ -309,8 +309,8 @@ s32 fx_0df_op80(s32 mode, Fx0dfWork80 *work, Unk800F78A4 *env, Unk80100C78Entry 
                 gte_ldv0(&work->unkC);
                 gte_rtps();
                 gte_stsxy(&sxy);
-                func_801E7704(1, sxy.vx, sxy.vy, 0x10, 7, 0x12, w, 0, NULL,
-                              (void (*)(s32, s32, s32, s32, DVECTOR *))func_801E7FE0);
+                fxm_drawRadialScreenGrid(1, sxy.vx, sxy.vy, 0x10, 7, 0x12, w, 0, NULL,
+                              (void (*)(s32, s32, s32, s32, DVECTOR *))fxm_twistVertex);
                 rot.vy = 0;
                 rot.vx = 0;
                 rot.vz = 0;

@@ -680,7 +680,7 @@ static s32 fxm_shatterRelease(s32 i) {
 }
 
 /* move the flying shards of shatter i and write their triangles back */
-void func_801E9564(s32 i) {
+static void fxm_shatterUpdate(s32 i) {
     SVECTOR a;
     SVECTOR rot;
     SVECTOR c;
@@ -877,7 +877,7 @@ s32 func_801E98BC(s32 mode, Fx026Item81 *it, Unk800F78A4 *env, Unk80100C78Entry 
                 ex->Hi_ModifyEffModelRGB(work->unk18[it->unk2][2], c, c, c);
             }
             fxm_shatterRelease(it->unk2);
-            func_801E9564(it->unk2);
+            fxm_shatterUpdate(it->unk2);
             if (frame >= 20) {
                 return 1;
             }
@@ -925,7 +925,7 @@ s32 func_801E98BC(s32 mode, Fx026Item81 *it, Unk800F78A4 *env, Unk80100C78Entry 
                                      ((0x1000 - (((frame - 55) << 12) >> 5)) >> 5) - 0x80);
         }
         fxm_shatterRelease(6);
-        func_801E9564(6);
+        fxm_shatterUpdate(6);
         if (frame >= 87) {
             return 1;
         }

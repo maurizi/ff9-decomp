@@ -131,7 +131,7 @@ static void fxm_drawTexelQuads(SVECTOR *pos, SVECTOR *rot, s32 tp, s32 x, s32 y,
     ex->StoreImage(&rect, (u32 *)colors);
 }
 
-void func_801E7CBC(u32 ot, s32 x, s32 y, s32 n, s32 m, s32 dr, s32 from, s32 to, RECT *src,
+static void fxm_drawRadialScreenGrid(u32 ot, s32 x, s32 y, s32 n, s32 m, s32 dr, s32 from, s32 to, RECT *src,
                    void (*fn)(s32, s32, s32, s32, DVECTOR *)) {
     DVECTOR pts[2][18];
     DVECTOR a;
@@ -548,7 +548,7 @@ s32 fx_0d3_op80(s32 mode, Fx0d3Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             work->unk68 += t >> 9;
             ex->btlfx_drawScrollMove(work->unk68, 0x240, 0x100, 0x1C, 0x70, 0x25C, 0x100);
             ex->btlfx_drawScrollMove(work->unk68 * 2 / 3, 0x240, 0x170, 0x1C, 0x70, 0x25C, 0x170);
-            func_801E7CBC(2, 0xA0, 0x78, 0x10, 4, 0x29, ((ex->math_sin(t >> 2) << 5) >> 12) + 0x40, 0, 0,
+            fxm_drawRadialScreenGrid(2, 0xA0, 0x78, 0x10, 4, 0x29, ((ex->math_sin(t >> 2) << 5) >> 12) + 0x40, 0, 0,
                           func_801E8A10);
             if (frame >= 0x4B) {
                 ex->btlfx_initParticleSystem();

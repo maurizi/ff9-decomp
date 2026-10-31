@@ -3,3 +3,5 @@ fx_17d_7_header = 0x801EF294; // [code] module header (0, init, ops), btlfx_upda
 fx_17d_7_op80 = 0x801ECC50; // type:func [code] header op entry 0, effect script op 0x80 (btlfx_spawnTask)
 fx_17d_7_op83 = 0x801EED94; // type:func [code] header op entry 3, effect script op 0x83 (btlfx_spawnTask)
 fxm_randRingPoint = 0x801EC704; // type:func [code] random point on a horizontal ring of the module radius, rot vy = its angle
+fxm_drawArcTrail = 0x801EE6E4; // type:func [code] fills a trail strip from to (noise table, side offset lerped along a sine, optional dip) and draws it at otZ 0x80
+fxm_drawJaggedTrailBranch = 0x801EE990; // type:func [code] fxm_drawJaggedTrail branching off point i of a strip with a random width

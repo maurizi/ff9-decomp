@@ -291,7 +291,7 @@ s32 fx_17d_6_op80(s32 mode, Fx17d6Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
     return 0;
 }
 
-void func_801E8B10(Unk80100C78Entry *entry, s32 file, s32 ot, Fx17d6Trail *trail, s32 n, s32 *noise, SVECTOR *from,
+static void fxm_drawArcTrail(Unk80100C78Entry *entry, s32 file, s32 ot, Fx17d6Trail *trail, s32 n, s32 *noise, SVECTOR *from,
                    SVECTOR *to, s32 h0, s32 h1, s32 ang, s32 dang, s32 type, s32 alpha, s32 pad, s32 dip) {
     Unk800F78A4 *env = D_801E93B4;
     BtlfxExports *ex = BTLFX_EXPORTS(env);
@@ -330,7 +330,7 @@ void func_801E8B10(Unk80100C78Entry *entry, s32 file, s32 ot, Fx17d6Trail *trail
     env->otZ = 0;
 }
 
-void func_801E8DBC(Unk80100C78Entry *entry, s32 file, s32 ot, Fx17d6Trail *path, Fx17d6Trail *trail, s32 n, s32 *noise,
+static void fxm_drawArcTrailBranch(Unk80100C78Entry *entry, s32 file, s32 ot, Fx17d6Trail *path, Fx17d6Trail *trail, s32 n, s32 *noise,
                    s32 i, s32 type, s32 alpha, s32 pad) {
     SVECTOR *pt = path->unk4;
     BtlfxExports *ex = BTLFX_EXPORTS(D_801E93B4);
@@ -338,7 +338,7 @@ void func_801E8DBC(Unk80100C78Entry *entry, s32 file, s32 ot, Fx17d6Trail *path,
 
     pt += i;
     ex->btlfx_lerpVec((s16 *)(pt + 1), (s16 *)pt, 0x4000, (s16 *)&mid);
-    func_801E8B10(entry, file, ot, trail, n, noise, &mid, pt, 0, 0x20, ex->btlfx_rand(), 0x33, type, alpha, pad, 0);
+    fxm_drawArcTrail(entry, file, ot, trail, n, noise, &mid, pt, 0, 0x20, ex->btlfx_rand(), 0x33, type, alpha, pad, 0);
 }
 
 s32 func_801E8ED4(s32 mode, Fx17d6Bolt *b, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 frame) {
@@ -362,9 +362,9 @@ s32 func_801E8ED4(s32 mode, Fx17d6Bolt *b, Unk800F78A4 *env, Unk80100C78Entry *e
         tr = (Fx17d6Trail *)&D_801EB124[i];
         tr2 = (Fx17d6Trail *)&D_801EB474[i];
         b->unk14 += 3;
-        func_801E8B10(entry, 8, 0, tr, 0x8C, b->unk18 + frame * k, &b->unk8, &b->unk0, 0, 0xDC, b->unk14 * 16, 0xF0,
+        fxm_drawArcTrail(entry, 8, 0, tr, 0x8C, b->unk18 + frame * k, &b->unk8, &b->unk0, 0, 0xDC, b->unk14 * 16, 0xF0,
                       frame, c, a * u / 1500, 0);
-        func_801E8DBC(entry, 7, 0, tr, tr2, 0x2C, b->unk18, b->unk12, frame, c, (a * u) >> 12);
+        fxm_drawArcTrailBranch(entry, 7, 0, tr, tr2, 0x2C, b->unk18, b->unk12, frame, c, (a * u) >> 12);
         if (frame >= 6) {
             return 1;
         }

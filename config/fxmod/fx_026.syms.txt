@@ -13,3 +13,4 @@ fxm_shatterInit = 0x801E912C; // type:func [code] sets up shatter set i (header,
 fxm_shatterAddModel = 0x801E9170; // type:func [code] splits a model into triangles (Hi_SplitMdlVertex) into shatter set i, returns its triangle count
 fxm_shatterFreeShard = 0x801E928C; // type:func [code] first free shard of shatter set i, or NULL
 fxm_shatterRelease = 0x801E92EC; // type:func [code] turns triangles below the module height threshold into flying shards, returns how many
+fxm_shatterUpdate = 0x801E9564; // type:func [code] moves and spins every live shard of shatter set i (btlfx_stepModuleParticle), clears it at the end of its life

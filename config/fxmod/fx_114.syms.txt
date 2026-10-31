@@ -25,3 +25,8 @@ fxm_camChanAdd = 0x801EA9F8; // type:func [code] takes a free camera key slot (s
 fxm_camChanUpdate = 0x801EAA54; // type:func [code] steps channel ch, slots whose start frame is reached copy keys into camera points (env camera, nibble = point + 1)
 fxm_pinParticle = 0x801E784C; // type:func [code] particle motion callback core, holds the particle at src until frame n (returns -1 then)
 fxm_buildPathTrail = 0x801E78AC; // type:func [code] fills a trail strip with the last n posPath keys up to start, fading pad from to
+fxm_drawTexelQuadsB = 0x801EABB4; // type:func [code] variant of fxm_drawTexelQuads, a 3D POLY_G4 grid coloured by texels, StoreImage reads the next cell
+fxm_pinParticle0 = 0x801E777C; // type:func [code] particle motion callback (EffMotion kind 0xFF), fxm_pinParticle at its own module point
+fxm_pinParticle1 = 0x801E77B0; // type:func [code] particle motion callback (EffMotion kind 0xFF), fxm_pinParticle at its own module point
+fxm_pinParticle2 = 0x801E77E4; // type:func [code] particle motion callback (EffMotion kind 0xFF), fxm_pinParticle at its own module point
+fxm_pinParticle3 = 0x801E7818; // type:func [code] particle motion callback (EffMotion kind 0xFF), fxm_pinParticle at its own module point

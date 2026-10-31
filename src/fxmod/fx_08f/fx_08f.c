@@ -20,7 +20,7 @@ static void fxm_randDiscPoints(s32 n, s32 r, SVECTOR *pts) {
     }
 }
 
-void func_801E7858(u32 *ot, s32 n, s32 h, s32 dz, void *src, SVECTOR *pt, CVECTOR *col, s32 p, s32 abr) {
+static void fxm_drawStreakField(u32 *ot, s32 n, s32 h, s32 dz, void *src, SVECTOR *pt, CVECTOR *col, s32 p, s32 abr) {
     Unk800F78A4 *env = D_801E8A04;
     CVECTOR c;
     MATRIX m;
@@ -198,7 +198,7 @@ s32 fx_08f_op80(s32 mode, Fx08fWork80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             if (frame < 0x18) {
                 y0 = -0x46;
             }
-            func_801E7858((u32 *)(env->ot + 8), 0x180, 0x80, y0, &rot2, D_801E9054, &c,
+            fxm_drawStreakField((u32 *)(env->ot + 8), 0x180, 0x80, y0, &rot2, D_801E9054, &c,
                           ex->math_cos((frame << 10) / 49) * 3 / 4 + 0x400, 1);
             if (frame == 2) {
                 p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0xB), (s32)&work->unk14);

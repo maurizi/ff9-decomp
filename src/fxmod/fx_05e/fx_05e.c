@@ -1,7 +1,7 @@
 #include "fxmod/fx_05e.h"
 
 /* ribbon trail: push a new pair of edge points and draw the quads between steps, fading out */
-void func_801E7704(SVECTOR *a, SVECTOR *b, u32 n, CVECTOR *ca, CVECTOR *cb, s32 p, Fx05eSeg *buf, s32 abr) {
+static void fxm_drawRibbonTrail(SVECTOR *a, SVECTOR *b, u32 n, CVECTOR *ca, CVECTOR *cb, s32 p, Fx05eSeg *buf, s32 abr) {
     Unk800F78A4 *env = D_801E8E74;
     CVECTOR c0;
     CVECTOR c1;
@@ -297,11 +297,11 @@ s32 fx_05e_op80(s32 mode, Fx05eWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
             fxm_getSummonBonePoint(((Fx05eSummon *)env->loader)->unk60, 9, &D_801E887C, &b);
             fxm_getSummonBonePoint(((Fx05eSummon *)env->loader)->unk60, 9, &D_801E8884, &c);
             if (amp < 0) {
-                func_801E7704(&a, &b, 0x3F8, (CVECTOR *)&D_801E8868, (CVECTOR *)&D_801E886C, 0, D_801E9744, 1);
-                func_801E7704(&b, &c, 0x3F8, (CVECTOR *)&D_801E886C, (CVECTOR *)&D_801E8870, 0, D_801E9854, 1);
+                fxm_drawRibbonTrail(&a, &b, 0x3F8, (CVECTOR *)&D_801E8868, (CVECTOR *)&D_801E886C, 0, D_801E9744, 1);
+                fxm_drawRibbonTrail(&b, &c, 0x3F8, (CVECTOR *)&D_801E886C, (CVECTOR *)&D_801E8870, 0, D_801E9854, 1);
             } else {
-                func_801E7704(&a, &b, 0x10, (CVECTOR *)&D_801E8868, (CVECTOR *)&D_801E886C, amp, D_801E9744, 1);
-                func_801E7704(&b, &c, 0x10, (CVECTOR *)&D_801E886C, (CVECTOR *)&D_801E8870, amp, D_801E9854, 1);
+                fxm_drawRibbonTrail(&a, &b, 0x10, (CVECTOR *)&D_801E8868, (CVECTOR *)&D_801E886C, amp, D_801E9744, 1);
+                fxm_drawRibbonTrail(&b, &c, 0x10, (CVECTOR *)&D_801E886C, (CVECTOR *)&D_801E8870, amp, D_801E9854, 1);
                 BTLFX_COPY_SVEC(&work->unk20, &a);
                 {
                     s32 o;

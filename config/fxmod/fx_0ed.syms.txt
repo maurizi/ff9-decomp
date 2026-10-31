@@ -3,3 +3,4 @@ fx_0ed_header = 0x801E8C3C; // [code] module header (0, init, ops), btlfx_update
 fx_0ed_op80 = 0x801E7C98; // type:func [code] header op entry 0, effect script op 0x80 (btlfx_spawnTask)
 fx_0ed_op81 = 0x801E8860; // type:func [code] header op entry 1, effect script op 0x81 (btlfx_spawnTask)
 fxm_getSummonBonePoint = 0x801E7B74; // type:func [code] transforms in by Hi_GetSummonBoneMatrix(model, bone) to out, restores the view matrix
+fxm_drawRibbonTrail = 0x801E7704; // type:func [code] pushes the a-b edge into a history of n edges and draws POLY_G4 between them, colours fading along it (n >= 1000 clears)

@@ -1,6 +1,6 @@
 #include "fxmod/fx_0fb_0.h"
 
-void func_801E7720(SVECTOR *a, SVECTOR *b, u32 n, CVECTOR *ca, CVECTOR *cb, s32 p, Fx0fb0Seg *buf, s32 abr) {
+static void fxm_drawRibbonTrail(SVECTOR *a, SVECTOR *b, u32 n, CVECTOR *ca, CVECTOR *cb, s32 p, Fx0fb0Seg *buf, s32 abr) {
     Unk800F78A4 *env = D_801EB3AC;
     CVECTOR c0;
     CVECTOR c1;
@@ -730,7 +730,7 @@ s32 fx_0fb_0_op80(s32 mode, Fx0fb0Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
                 for (i1 = 0; i1 < 4; i1++) {
                     ex->Hi_GetSummonBonePos(SUMMON0FB(env)->unk60, D_801EB250[i1][0], (u16 *)&a);
                     ex->Hi_GetSummonBonePos(SUMMON0FB(env)->unk60, D_801EB250[i1][1], (u16 *)&b);
-                    func_801E7720(&a, &b, 0x3F3, &D_801EB358[i1 & 1], &D_801EB358[(i1 & 1) + 1], 0, D_801EB40C[i1].seg, 1);
+                    fxm_drawRibbonTrail(&a, &b, 0x3F3, &D_801EB358[i1 & 1], &D_801EB358[(i1 & 1) + 1], 0, D_801EB40C[i1].seg, 1);
                 }
                 for (i2 = 0; i2 < 10; i2++) {
                     ex->Hi_GetSummonBoneMatrix(SUMMON0FB(env)->unk60, D_801EB260[i2], &m);
@@ -742,7 +742,7 @@ s32 fx_0fb_0_op80(s32 mode, Fx0fb0Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
             for (i1 = 0; i1 < 4; i1++) {
                 ex->Hi_GetSummonBonePos(SUMMON0FB(env)->unk60, D_801EB250[i1][0], (u16 *)&a);
                 ex->Hi_GetSummonBonePos(SUMMON0FB(env)->unk60, D_801EB250[i1][1], (u16 *)&b);
-                func_801E7720(&a, &b, 0xB, &D_801EB358[i1 & 1], &D_801EB358[(i1 & 1) + 1], 0x1000, D_801EB40C[i1].seg, 1);
+                fxm_drawRibbonTrail(&a, &b, 0xB, &D_801EB358[i1 & 1], &D_801EB358[(i1 & 1) + 1], 0x1000, D_801EB40C[i1].seg, 1);
             }
             if (frame >= 0x26) {
                 c8 = ((((frame - 0x26) << 12) / 6) * 2) + 0x1000;

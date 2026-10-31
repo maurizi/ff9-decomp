@@ -1,6 +1,6 @@
 #include "fxmod/fx_07d.h"
 
-void func_801E7718(u32 ot, s32 x, s32 y, s32 n, s32 m, s32 dr, s32 from, s32 to, RECT *src,
+static void fxm_drawRadialScreenGrid(u32 ot, s32 x, s32 y, s32 n, s32 m, s32 dr, s32 from, s32 to, RECT *src,
                    void (*fn)(s32, s32, s32, s32, DVECTOR *)) {
     DVECTOR pts[2][18];
     DVECTOR a;
@@ -168,7 +168,7 @@ void func_801E7ECC(Pool30Entry *pt, Pool6CEntry *p, SVECTOR *pos, s32 a3, s32 *a
     D_801EA530 = (D_801EA530 + 1) % 24;
 }
 
-void func_801E7FF4(s32 r, s32 a1, s32 a, s32 a3, s16 *out) {
+static void fxm_twistVertex(s32 r, s32 a1, s32 a, s32 a3, s16 *out) {
     BtlfxExports *ex;
     s32 t;
     s32 x;
@@ -331,8 +331,8 @@ s32 fx_07d_op80(s32 mode, Fx07dWork80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             if (sxy0.vy >= 0x74) {
                 sxy0.vy = 0x73;
             }
-            func_801E7718(1, sxy0.vx, sxy0.vy, 0x10, 7, 0x11, q, 0, NULL,
-                          (void (*)(s32, s32, s32, s32, DVECTOR *))func_801E7FF4);
+            fxm_drawRadialScreenGrid(1, sxy0.vx, sxy0.vy, 0x10, 7, 0x11, q, 0, NULL,
+                          (void (*)(s32, s32, s32, s32, DVECTOR *))fxm_twistVertex);
             ex->btlfx_drawBackdrop((BtlBgLayers *)ex->btlfx_getFileData(entry->file, 0x15), work->unk4);
             if (frame == 14) {
                 p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0x12), (s32)&work->unkC);
@@ -388,8 +388,8 @@ s32 fx_07d_op80(s32 mode, Fx07dWork80 *work, Unk800F78A4 *env, Unk80100C78Entry 
                 if (sxy.vy >= 0x74) {
                     sxy.vy = 0x73;
                 }
-                func_801E7718(1, sxy.vx, sxy.vy, 0x10, 7, 0x11, w, 0, NULL,
-                              (void (*)(s32, s32, s32, s32, DVECTOR *))func_801E7FF4);
+                fxm_drawRadialScreenGrid(1, sxy.vx, sxy.vy, 0x10, 7, 0x11, w, 0, NULL,
+                              (void (*)(s32, s32, s32, s32, DVECTOR *))fxm_twistVertex);
                 rot.vy = 0;
                 rot.vx = 0;
                 rot.vz = 0;

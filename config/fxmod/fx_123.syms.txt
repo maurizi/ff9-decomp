@@ -10,3 +10,15 @@ fxm_lerpSvec = 0x801E8D84; // type:func [code] out = a + (b - a) * t / 0x1000 (L
 fxm_lerpRatio = 0x801E8DC8; // type:func [code] (from * (n - t) + to * t) / n, the module copy of btlfx_lerpRatio
 fxm_tintScreenLerp = 0x801E8ECC; // type:func [code] btlfx_drawScreenTint with a grey level lerped from to over n frames (fxm_lerpRatio inline)
 fxm_pinParticle = 0x801E7A24; // type:func [code] particle motion callback core, holds the particle at src until frame n (returns -1 then)
+fxm_pinParticle0 = 0x801E77B4; // type:func [code] particle motion callback (EffMotion kind 0xFF), fxm_pinParticle at its own module point
+fxm_pinParticle1 = 0x801E77E8; // type:func [code] particle motion callback (EffMotion kind 0xFF), fxm_pinParticle at its own module point
+fxm_pinParticle2 = 0x801E781C; // type:func [code] particle motion callback (EffMotion kind 0xFF), fxm_pinParticle at its own module point
+fxm_pinParticle3 = 0x801E7850; // type:func [code] particle motion callback (EffMotion kind 0xFF), fxm_pinParticle at its own module point
+fxm_pinParticle4 = 0x801E7884; // type:func [code] particle motion callback (EffMotion kind 0xFF), fxm_pinParticle at its own module point
+fxm_pinParticle5 = 0x801E78B8; // type:func [code] particle motion callback (EffMotion kind 0xFF), fxm_pinParticle at its own module point
+fxm_pinParticle6 = 0x801E78EC; // type:func [code] particle motion callback (EffMotion kind 0xFF), fxm_pinParticle at its own module point
+fxm_pinParticle7 = 0x801E7920; // type:func [code] particle motion callback (EffMotion kind 0xFF), fxm_pinParticle at its own module point
+fxm_pinParticle8 = 0x801E7954; // type:func [code] particle motion callback (EffMotion kind 0xFF), fxm_pinParticle at its own module point
+fxm_pinParticle9 = 0x801E7988; // type:func [code] particle motion callback (EffMotion kind 0xFF), fxm_pinParticle at its own module point
+fxm_pinParticle10 = 0x801E79BC; // type:func [code] particle motion callback (EffMotion kind 0xFF), fxm_pinParticle at its own module point
+fxm_pinParticle11 = 0x801E79F0; // type:func [code] particle motion callback (EffMotion kind 0xFF), fxm_pinParticle at its own module point

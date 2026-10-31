@@ -6,3 +6,6 @@ fx_0ba_op82 = 0x801EA6A8; // type:func [code] header op entry 2, effect script o
 fx_0ba_op83 = 0x801EB2BC; // type:func [code] header op entry 3, effect script op 0x83 (btlfx_spawnTask)
 fx_0ba_op85 = 0x801EC3E8; // type:func [code] header op entry 5, effect script op 0x85 (btlfx_spawnTask)
 fxm_drawCenterBand = 0x801E7704; // type:func [code] four POLY_G4, a horizontal colour band w wide fading out from the screen centre
+fxm_randStripPoint32 = 0x801EB1CC; // type:func [code] random point of a random one of the 32 module strips (17 points each), pad 1, returns 0
+fxm_drawJaggedTrail = 0x801EA850; // type:func [code] fills a trail strip from to (noise table, lerped side offset, optional dip) and draws it at otZ 0x80
+fxm_drawJaggedTrailBranch = 0x801EAAF0; // type:func [code] fxm_drawJaggedTrail branching off point i of a strip with a random width

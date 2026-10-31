@@ -203,7 +203,7 @@ s32 fx_085_op80(s32 mode, Fx085Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
     return 0;
 }
 
-void func_801E82A0(Unk80100C78Entry *entry, Fx085Strip *strip, s32 *tbl, SVECTOR *from, SVECTOR *to, s32 from1, s32 to1,
+static void fxm_drawJaggedStrip15(Unk80100C78Entry *entry, Fx085Strip *strip, s32 *tbl, SVECTOR *from, SVECTOR *to, s32 from1, s32 to1,
                    s32 width, s32 dwidth, s32 frame, s32 arg10, s32 arg11, s32 kind) {
     BtlfxExports *ex = BTLFX_EXPORTS(D_801E9DF4);
     SVECTOR v;
@@ -239,7 +239,7 @@ void func_801E82A0(Unk80100C78Entry *entry, Fx085Strip *strip, s32 *tbl, SVECTOR
     }
 }
 
-void func_801E8508(Unk80100C78Entry *entry, Fx085Strip *strip, s32 *tbl, SVECTOR *from, SVECTOR *to, s32 amp,
+static void fxm_drawJaggedStrip3(Unk80100C78Entry *entry, Fx085Strip *strip, s32 *tbl, SVECTOR *from, SVECTOR *to, s32 amp,
                    s32 width, s32 dwidth, s32 frame, s32 arg9, s32 arg10, s32 kind) {
     BtlfxExports *ex = BTLFX_EXPORTS(D_801E9DF4);
     SVECTOR v;
@@ -276,7 +276,7 @@ void func_801E8508(Unk80100C78Entry *entry, Fx085Strip *strip, s32 *tbl, SVECTOR
     }
 }
 
-void func_801E878C(Unk80100C78Entry *entry, Fx085Strip *strip, Fx085Strip *out, s32 *tbl, s32 i, s32 arg5, s32 arg6,
+static void fxm_drawJaggedBranch3(Unk80100C78Entry *entry, Fx085Strip *strip, Fx085Strip *out, s32 *tbl, s32 i, s32 arg5, s32 arg6,
                    s32 kind) {
     BtlfxExports *ex;
     SVECTOR *p = strip->unk4;
@@ -285,10 +285,10 @@ void func_801E878C(Unk80100C78Entry *entry, Fx085Strip *strip, Fx085Strip *out, 
     p += i;
     ex = BTLFX_EXPORTS(D_801E9DF4);
     ex->btlfx_lerpVec((s16 *)p, (s16 *)(p + 1), 0x4000, (s16 *)&v);
-    func_801E8508(entry, out, tbl, p, &v, 0x80, ex->btlfx_rand(), 0x33, 0, arg5, arg6, kind);
+    fxm_drawJaggedStrip3(entry, out, tbl, p, &v, 0x80, ex->btlfx_rand(), 0x33, 0, arg5, arg6, kind);
 }
 
-s32 func_801E8880(s32 mode, Fx085Bolt *it, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 frame) {
+static s32 fxm_jaggedStripTask(s32 mode, Fx085Bolt *it, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 frame) {
     BtlfxExports *ex = BTLFX_EXPORTS(env);
     Fx085Strip *strip;
     Fx085Strip *br;
@@ -309,11 +309,11 @@ s32 func_801E8880(s32 mode, Fx085Bolt *it, Unk800F78A4 *env, Unk80100C78Entry *e
             c = ex->math_cos(t >> 2);
             strip = &D_801E9F9C[it->unk10];
             br = (Fx085Strip *)&D_801EA75C[it->unk10];
-            func_801E82A0(entry, strip, it->unk18, &it->unk0, &it->unk8, 0, 0x200, frame * 0x97, 0x186, frame, c,
+            fxm_drawJaggedStrip15(entry, strip, it->unk18, &it->unk0, &it->unk8, 0, 0x200, frame * 0x97, 0x186, frame, c,
                           ((0x1000 - t) * (it->unk15 * 2 + 0x97)) >> 12, it->unk14);
-            func_801E878C(entry, strip, br, it->unk18, it->unk12, c, ((0x1000 - t) * (it->unk15 * 2 + 0x97)) >> 13,
+            fxm_drawJaggedBranch3(entry, strip, br, it->unk18, it->unk12, c, ((0x1000 - t) * (it->unk15 * 2 + 0x97)) >> 13,
                           it->unk14);
-            func_801E878C(entry, strip, br, it->unk18 + 3, it->unk13, c,
+            fxm_drawJaggedBranch3(entry, strip, br, it->unk18 + 3, it->unk13, c,
                           ((0x1000 - t) * (it->unk15 * 2 + 0x97)) >> 13, it->unk14);
             if (frame >= n) {
                 it->unk11 = 1;
@@ -328,10 +328,10 @@ s32 func_801E8880(s32 mode, Fx085Bolt *it, Unk800F78A4 *env, Unk80100C78Entry *e
             c = ex->math_cos(t >> 2);
             strip = &D_801E9F9C[it->unk10];
             br = (Fx085Strip *)&D_801EA75C[it->unk10];
-            func_801E82A0(entry, strip, it->unk18, &it->unk0, &it->unk8, 0, 0x200, frame << 6, 0x186, frame, c,
+            fxm_drawJaggedStrip15(entry, strip, it->unk18, &it->unk0, &it->unk8, 0, 0x200, frame << 6, 0x186, frame, c,
                           ((0x1000 - t) * 0xAA) >> 12, it->unk14);
-            func_801E878C(entry, strip, br, it->unk18, it->unk12, c, (0x1000 - t) >> 6, it->unk14);
-            func_801E878C(entry, strip, br, it->unk18 + 3, it->unk13, c, (0x1000 - t) >> 6, it->unk14);
+            fxm_drawJaggedBranch3(entry, strip, br, it->unk18, it->unk12, c, (0x1000 - t) >> 6, it->unk14);
+            fxm_drawJaggedBranch3(entry, strip, br, it->unk18 + 3, it->unk13, c, (0x1000 - t) >> 6, it->unk14);
             if (frame >= n) {
                 it->unk11 = 1;
                 return 1;
@@ -341,7 +341,7 @@ s32 func_801E8880(s32 mode, Fx085Bolt *it, Unk800F78A4 *env, Unk80100C78Entry *e
     return 0;
 }
 
-s32 func_801E8C28(SVECTOR *out, SVECTOR *arg1, s32 arg2, s32 arg3) {
+static s32 fxm_randStripPoint(SVECTOR *out, SVECTOR *arg1, s32 arg2, s32 arg3) {
     BtlfxExports *ex = BTLFX_EXPORTS(D_801E9DF4);
     SVECTOR *p = FX_085_STRIPS[ex->btlfx_rand() % 16].unk4;
 
@@ -390,7 +390,7 @@ s32 fx_085_op83(s32 mode, Fx085Work83 *work, Unk800F78A4 *env, Unk80100C78Entry 
     if (mode == 0) {
         init->workSize = 0x1C;
         init->elemSize = 0x24;
-        init->elemFn = (s32)func_801E8880;
+        init->elemFn = (s32)fxm_jaggedStripTask;
         init->poolCount = 0x10;
     } else if (mode == 1) {        kind = init->workSize;
         work->unk0.vx = env->targets->centerX;
@@ -532,7 +532,7 @@ s32 fx_085_op83(s32 mode, Fx085Work83 *work, Unk800F78A4 *env, Unk80100C78Entry 
                 p = (Pool6CEntry *)ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 1), (s32)&work->unk0);
                 if (p != NULL) {
                     p->tail->unk0 = -1;
-                    ((EffTailSpawn *)p->tail)->unk3C = func_801E8C28;
+                    ((EffTailSpawn *)p->tail)->unk3C = fxm_randStripPoint;
                     p->otZ = 0x20;
                 }
             }

@@ -1,6 +1,6 @@
 #include "fxmod/fx_0d8.h"
 
-void func_801E7704(Unk80100C78Entry *entry, Fx0d8Strip *strip, s32 *tbl, SVECTOR *from, SVECTOR *to, s32 from1, s32 to1,
+static void fxm_drawJaggedStrip16(Unk80100C78Entry *entry, Fx0d8Strip *strip, s32 *tbl, SVECTOR *from, SVECTOR *to, s32 from1, s32 to1,
                    s32 width, s32 dwidth, s32 frame, s32 arg10, s32 arg11, s32 kind) {
     BtlfxExports *ex = BTLFX_EXPORTS(D_801E8FA0);
     SVECTOR v;
@@ -36,7 +36,7 @@ void func_801E7704(Unk80100C78Entry *entry, Fx0d8Strip *strip, s32 *tbl, SVECTOR
     }
 }
 
-void func_801E796C(Unk80100C78Entry *entry, Fx0d8Strip *strip, s32 *tbl, SVECTOR *from, SVECTOR *to, s32 amp,
+static void fxm_drawJaggedStrip4(Unk80100C78Entry *entry, Fx0d8Strip *strip, s32 *tbl, SVECTOR *from, SVECTOR *to, s32 amp,
                    s32 width, s32 dwidth, s32 frame, s32 arg9, s32 arg10, s32 kind) {
     BtlfxExports *ex = BTLFX_EXPORTS(D_801E8FA0);
     SVECTOR v;
@@ -73,7 +73,7 @@ void func_801E796C(Unk80100C78Entry *entry, Fx0d8Strip *strip, s32 *tbl, SVECTOR
     }
 }
 
-void func_801E7BF8(Unk80100C78Entry *entry, Fx0d8Strip *strip, Fx0d8Strip *out, s32 *tbl, s32 i, s32 arg5, s32 arg6,
+static void fxm_drawJaggedBranch4(Unk80100C78Entry *entry, Fx0d8Strip *strip, Fx0d8Strip *out, s32 *tbl, s32 i, s32 arg5, s32 arg6,
                    s32 kind) {
     BtlfxExports *ex;
     SVECTOR *p = strip->unk4;
@@ -82,7 +82,7 @@ void func_801E7BF8(Unk80100C78Entry *entry, Fx0d8Strip *strip, Fx0d8Strip *out, 
     p += i;
     ex = BTLFX_EXPORTS(D_801E8FA0);
     ex->btlfx_lerpVec((s16 *)p, (s16 *)(p + 1), 0x4000, (s16 *)&v);
-    func_801E796C(entry, out, tbl, p, &v, 0x80, ex->btlfx_rand(), 0x37, 0, arg5, arg6, kind);
+    fxm_drawJaggedStrip4(entry, out, tbl, p, &v, 0x80, ex->btlfx_rand(), 0x37, 0, arg5, arg6, kind);
 }
 
 void func_801E7CEC(Pool30Entry *pt, Pool6CEntry *p, SVECTOR *pos, SVECTOR *rot, s32 *scale, s32 *arg5, s32 arg6,
@@ -123,10 +123,10 @@ s32 func_801E7F80(s32 mode, Fx0d8Part *part, Unk800F78A4 *env, Unk80100C78Entry 
             c = ex->math_cos(t >> 2);
             strip = (Fx0d8Strip *)D_801E8FB0[part->unk10];
             br = (Fx0d8Strip *)D_801E95E0[part->unk10];
-            func_801E7704(entry, strip, part->unk18, &part->unk0, &part->unk8, 0, 0x200, frame * 0x97, 0x186, frame, c,
+            fxm_drawJaggedStrip16(entry, strip, part->unk18, &part->unk0, &part->unk8, 0, 0x200, frame * 0x97, 0x186, frame, c,
                           ((0x1000 - t) * (part->unk15 + 0xFB)) >> 12, part->unk14);
-            func_801E7BF8(entry, strip, br, part->unk18, part->unk12, c, (0x1000 - t) >> 6, part->unk14);
-            func_801E7BF8(entry, strip, br, part->unk18 + 3, part->unk13, c, (0x1000 - t) >> 6, part->unk14);
+            fxm_drawJaggedBranch4(entry, strip, br, part->unk18, part->unk12, c, (0x1000 - t) >> 6, part->unk14);
+            fxm_drawJaggedBranch4(entry, strip, br, part->unk18 + 3, part->unk13, c, (0x1000 - t) >> 6, part->unk14);
             if (frame == 0) {
                 part->unk1C = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0x18), (s32)&part->unk0);
                 if (part->unk1C != NULL) {
@@ -149,10 +149,10 @@ s32 func_801E7F80(s32 mode, Fx0d8Part *part, Unk800F78A4 *env, Unk80100C78Entry 
             c = ex->math_cos(t >> 2);
             strip = (Fx0d8Strip *)D_801E8FB0[part->unk10];
             br = (Fx0d8Strip *)D_801E95E0[part->unk10];
-            func_801E7704(entry, strip, part->unk18, &part->unk0, &part->unk8, 0, 0x200, frame << 6, 0x186, frame, c,
+            fxm_drawJaggedStrip16(entry, strip, part->unk18, &part->unk0, &part->unk8, 0, 0x200, frame << 6, 0x186, frame, c,
                           ((0x1000 - t) * 0xAA) >> 12, part->unk14);
-            func_801E7BF8(entry, strip, br, part->unk18, part->unk12, c, (0x1000 - t) >> 6, part->unk14);
-            func_801E7BF8(entry, strip, br, part->unk18 + 3, part->unk13, c, (0x1000 - t) >> 6, part->unk14);
+            fxm_drawJaggedBranch4(entry, strip, br, part->unk18, part->unk12, c, (0x1000 - t) >> 6, part->unk14);
+            fxm_drawJaggedBranch4(entry, strip, br, part->unk18 + 3, part->unk13, c, (0x1000 - t) >> 6, part->unk14);
             if (frame == 0) {
                 part->unk1C = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0x18), (s32)&part->unk0);
                 if (part->unk1C != NULL) {

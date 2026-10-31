@@ -4,3 +4,5 @@ fx_0df_op80 = 0x801E8494; // type:func [code] header op entry 0, effect script o
 fx_0df_op83 = 0x801E96D8; // type:func [code] header op entry 3, effect script op 0x83 (btlfx_spawnTask)
 fx_0df_op84 = 0x801E9B28; // type:func [code] header op entry 4, effect script op 0x84 (btlfx_spawnTask)
 fxm_anglesFromEye = 0x801E80B0; // type:func [code] btlfx_aimAngles from the camera eye to a
+fxm_drawRadialScreenGrid = 0x801E7704; // type:func [code] rings of POLY_GT4 around a screen point textured with the screen (a DR_MOVE copy into src, or the display), vertex callback fn
+fxm_twistVertex = 0x801E7FE0; // type:func [code] fxm_drawRadialScreenGrid vertex callback, polar point turned by an angle that grows toward the centre

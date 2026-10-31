@@ -1,6 +1,6 @@
 #include "fxmod/fx_105.h"
 
-void func_801E7704(SVECTOR *a, SVECTOR *b, u32 n, CVECTOR *ca, CVECTOR *cb, s32 p, Fx105Seg *buf, s32 abr) {
+static void fxm_drawRibbonTrail(SVECTOR *a, SVECTOR *b, u32 n, CVECTOR *ca, CVECTOR *cb, s32 p, Fx105Seg *buf, s32 abr) {
     Unk800F78A4 *env = D_801EAB18;
     CVECTOR c0;
     CVECTOR c1;
@@ -340,7 +340,7 @@ s32 fx_105_op80(s32 mode, Fx105Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
         work->unk11C.r = 0;
         work->unk120.r = 0;
         work->unk120.b = 0x10;
-        func_801E7704(&work->unk10C, &work->unk114, 0x408, &work->unk11C, &work->unk120, 0x1000, D_801EAC98, 1);
+        fxm_drawRibbonTrail(&work->unk10C, &work->unk114, 0x408, &work->unk11C, &work->unk120, 0x1000, D_801EAC98, 1);
         func_801E9E1C();
         fxm_camKeyReset();
         fxm_camKeyAdd(0, 3, 0, (s16 *)ex->btlfx_getFileData(entry->file, 5));
@@ -644,7 +644,7 @@ s32 fx_105_op80(s32 mode, Fx105Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             if (work->unk4 < 4) {
                 s4 = work->unk4 << 10;
             }
-            func_801E7704(&work->unk10C, &work->unk114, 0x10, &work->unk11C, &work->unk120, s4, D_801EAC98, 1);
+            fxm_drawRibbonTrail(&work->unk10C, &work->unk114, 0x10, &work->unk11C, &work->unk120, s4, D_801EAC98, 1);
         }
         if (work->unk10 != 0) {
             work->unk158[0] = env->camera->points[3].vx;

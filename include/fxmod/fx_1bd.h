@@ -190,7 +190,7 @@ static s32 fxm_vecTrackGet(Fx1bdTrack6 *track, s32 t, VECTOR *out);
     : : "r"(r0))
 /* gte_rtps_b with a memory clobber: fx_114's copy of the fx_007 colour grid reloads c3 after it */
 #define gte_rtps_bm() __asm__ volatile(".word\t0x4A180001" : : : "memory")
-void func_801E92D4(SVECTOR *pos, SVECTOR *rot, s32 tp, s32 x, s32 y, s32 div, s32 idx, s32 size, s32 w, s32 h,
+static void fxm_drawTexelQuadsB(SVECTOR *pos, SVECTOR *rot, s32 tp, s32 x, s32 y, s32 div, s32 idx, s32 size, s32 w, s32 h,
                    s32 scale, s32 bright, s32 abr, u16 *colors, s32 skip);
 
 #endif

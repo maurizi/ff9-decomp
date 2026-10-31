@@ -1,6 +1,6 @@
 #include "fxmod/fx_09a.h"
 
-void func_801E7704(SVECTOR *a, SVECTOR *b, u32 n, CVECTOR *ca, CVECTOR *cb, s32 p, Fx09aSeg *buf, s32 abr) {
+static void fxm_drawRibbonTrail(SVECTOR *a, SVECTOR *b, u32 n, CVECTOR *ca, CVECTOR *cb, s32 p, Fx09aSeg *buf, s32 abr) {
     Unk800F78A4 *env = D_801E8858;
     CVECTOR c0;
     CVECTOR c1;
@@ -284,11 +284,11 @@ s32 fx_09a_op80(s32 mode, Fx09aWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
             fxm_getSummonBonePoint(((Fx09aSummon *)env->loader)->unk60, 9, &D_801E8800, &b);
             fxm_getSummonBonePoint(((Fx09aSummon *)env->loader)->unk60, 9, &D_801E8808, &c);
             if (k < 0) {
-                func_801E7704(&a, &b, 0x3F8, (CVECTOR *)&D_801E87EC, (CVECTOR *)&D_801E87F0, 0, D_801E9058, 1);
-                func_801E7704(&b, &c, 0x3F8, (CVECTOR *)&D_801E87F0, (CVECTOR *)&D_801E87F4, 0, D_801E9168, 1);
+                fxm_drawRibbonTrail(&a, &b, 0x3F8, (CVECTOR *)&D_801E87EC, (CVECTOR *)&D_801E87F0, 0, D_801E9058, 1);
+                fxm_drawRibbonTrail(&b, &c, 0x3F8, (CVECTOR *)&D_801E87F0, (CVECTOR *)&D_801E87F4, 0, D_801E9168, 1);
             } else {
-                func_801E7704(&a, &b, 0x10, (CVECTOR *)&D_801E87EC, (CVECTOR *)&D_801E87F0, k, D_801E9058, 1);
-                func_801E7704(&b, &c, 0x10, (CVECTOR *)&D_801E87F0, (CVECTOR *)&D_801E87F4, k, D_801E9168, 1);
+                fxm_drawRibbonTrail(&a, &b, 0x10, (CVECTOR *)&D_801E87EC, (CVECTOR *)&D_801E87F0, k, D_801E9058, 1);
+                fxm_drawRibbonTrail(&b, &c, 0x10, (CVECTOR *)&D_801E87F0, (CVECTOR *)&D_801E87F4, k, D_801E9168, 1);
                 BTLFX_COPY_SVEC(&work->unk2C, &a);
                 {
                     s32 o;

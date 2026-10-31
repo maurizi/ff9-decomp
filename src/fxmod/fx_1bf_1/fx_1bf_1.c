@@ -581,7 +581,7 @@ s32 fx_1bf_1_op80(s32 mode, Fx1bf1Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
     return 0;
 }
 
-void func_801EE6BC(Unk80100C78Entry *entry, s32 file, s32 ot, Fx1bf1Trail *trail, s32 n, s32 *noise, SVECTOR *from,
+static void fxm_drawArcTrail(Unk80100C78Entry *entry, s32 file, s32 ot, Fx1bf1Trail *trail, s32 n, s32 *noise, SVECTOR *from,
                    SVECTOR *to, s32 h0, s32 h1, s32 ang, s32 dang, s32 type, s32 alpha, s32 pad, s32 dip) {
     Unk800F78A4 *env = D_801EF2D8;
     BtlfxExports *ex = BTLFX_EXPORTS(env);
@@ -620,7 +620,7 @@ void func_801EE6BC(Unk80100C78Entry *entry, s32 file, s32 ot, Fx1bf1Trail *trail
     env->otZ = 0;
 }
 
-void func_801EE968(Unk80100C78Entry *entry, s32 file, s32 ot, Fx1bf1Trail *path, Fx1bf1Trail *trail, s32 n, s32 *noise,
+static void fxm_drawArcTrailBranch(Unk80100C78Entry *entry, s32 file, s32 ot, Fx1bf1Trail *path, Fx1bf1Trail *trail, s32 n, s32 *noise,
                    s32 i, s32 type, s32 alpha, s32 pad) {
     SVECTOR *pt = path->unk4;
     BtlfxExports *ex = BTLFX_EXPORTS(D_801EF2D8);
@@ -628,7 +628,7 @@ void func_801EE968(Unk80100C78Entry *entry, s32 file, s32 ot, Fx1bf1Trail *path,
 
     pt += i;
     ex->btlfx_lerpVec((s16 *)(pt + 1), (s16 *)pt, 0x4000, (s16 *)&mid);
-    func_801EE6BC(entry, file, ot, trail, n, noise, &mid, pt, 0, 0x20, ex->btlfx_rand(), 0x33, type, alpha, pad, 0);
+    fxm_drawArcTrail(entry, file, ot, trail, n, noise, &mid, pt, 0, 0x20, ex->btlfx_rand(), 0x33, type, alpha, pad, 0);
 }
 
 s32 func_801EEA80(s32 mode, Fx1bf1Bolt *b, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 frame) {
@@ -662,18 +662,18 @@ s32 func_801EEA80(s32 mode, Fx1bf1Bolt *b, Unk800F78A4 *env, Unk80100C78Entry *e
             k = frame < 3;
             if (b->unk11 == 0) {
                 a = 0x1000 - t;
-                func_801EE6BC(entry, 0xB, 0, tr, 0x8C, b->unk18 + frame * k, &b->unk8, &b->unk0, 0, 0x3E8,
+                fxm_drawArcTrail(entry, 0xB, 0, tr, 0x8C, b->unk18 + frame * k, &b->unk8, &b->unk0, 0, 0x3E8,
                               b->unk14 * 16, 0xF0, frame, c, a * u / 1500, 0);
-                func_801EE968(entry, 0x12, 0, tr, tr2, 0x2C, b->unk18, b->unk12, frame, c, (a * u) >> 12);
+                fxm_drawArcTrailBranch(entry, 0x12, 0, tr, tr2, 0x2C, b->unk18, b->unk12, frame, c, (a * u) >> 12);
                 if (frame >= 0x10) {
                     return 1;
                 }
             } else {
                 t += frame << 9;
                 c = 0x1000 - t;
-                func_801EE6BC(entry, 0x11, 0, tr, 0x8C, b->unk18 + frame * k, &b->unk8, &b->unk0, 0, 0x12C,
+                fxm_drawArcTrail(entry, 0x11, 0, tr, 0x8C, b->unk18 + frame * k, &b->unk8, &b->unk0, 0, 0x12C,
                               b->unk14 << 6, 0x14A, frame, c, (0x1000 - t / 2) * u / 1500, 0);
-                func_801EE968(entry, 0x12, 0, tr, tr2, 0x2C, b->unk18, b->unk12, frame, c, (c * u) >> 12);
+                fxm_drawArcTrailBranch(entry, 0x12, 0, tr, tr2, 0x2C, b->unk18, b->unk12, frame, c, (c * u) >> 12);
                 if (frame >= 5) {
                     return 1;
                 }

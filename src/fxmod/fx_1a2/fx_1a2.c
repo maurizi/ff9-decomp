@@ -1,6 +1,6 @@
 #include "fxmod/fx_1a2.h"
 
-void func_801E7718(SVECTOR *a, SVECTOR *b, u32 n, CVECTOR *ca, CVECTOR *cb, s32 p, Fx1a2Seg *buf, s32 abr) {
+static void fxm_drawRibbonTrail(SVECTOR *a, SVECTOR *b, u32 n, CVECTOR *ca, CVECTOR *cb, s32 p, Fx1a2Seg *buf, s32 abr) {
     Unk800F78A4 *env = D_801E9844;
     CVECTOR c0;
     CVECTOR c1;
@@ -312,13 +312,13 @@ s32 fx_1a2_op80(s32 mode, Fx1a2Work80 *w, Unk800F78A4 *env, Unk80100C78Entry *en
         ex->btlfx_getUnitBoneMatrix(0x10, 0x10, (BtlBone *)&m3);
         ex->btlfx_matrixPointAhead(&m3, 0x155, (s32)&d);
         if (frame == 0) {
-            func_801E7718(&a, &b, 0x407, &D_801E97F0, &D_801E97F4, 0, D_801EC1B4, 1);
-            func_801E7718(&b, &c, 0x407, &D_801E97F4, &D_801E97F8, 0, D_801EC3B4, 1);
-            func_801E7718(&c, &d, 0x407, &D_801E97F8, &D_801E97F0, 0, D_801EC5B4, 1);
+            fxm_drawRibbonTrail(&a, &b, 0x407, &D_801E97F0, &D_801E97F4, 0, D_801EC1B4, 1);
+            fxm_drawRibbonTrail(&b, &c, 0x407, &D_801E97F4, &D_801E97F8, 0, D_801EC3B4, 1);
+            fxm_drawRibbonTrail(&c, &d, 0x407, &D_801E97F8, &D_801E97F0, 0, D_801EC5B4, 1);
         }
-        func_801E7718(&a, &b, 0x1F, &D_801E97F0, &D_801E97F4, 0x1000, D_801EC1B4, 1);
-        func_801E7718(&b, &c, 0x1F, &D_801E97F4, &D_801E97F8, 0x1000, D_801EC3B4, 1);
-        func_801E7718(&c, &d, 0x1F, &D_801E97F8, &D_801E97F0, 0x1000, D_801EC5B4, 1);
+        fxm_drawRibbonTrail(&a, &b, 0x1F, &D_801E97F0, &D_801E97F4, 0x1000, D_801EC1B4, 1);
+        fxm_drawRibbonTrail(&b, &c, 0x1F, &D_801E97F4, &D_801E97F8, 0x1000, D_801EC3B4, 1);
+        fxm_drawRibbonTrail(&c, &d, 0x1F, &D_801E97F8, &D_801E97F0, 0x1000, D_801EC5B4, 1);
         env->otZ = 0x20;
         ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->file, 0x13), &c, NULL, 0x400, 0, 1, ex->math_sin(t >> 2) >> 1);
         e.pad = 0;

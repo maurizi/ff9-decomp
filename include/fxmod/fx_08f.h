@@ -16,7 +16,7 @@
     "sw\t$12, 0(%0)" \
     : : "r"(r0) : "$12", "memory")
 extern Unk800F78A4 *D_801E8A04;
-void func_801E7858(u32 *ot, s32 n, s32 h, s32 dz, void *src, SVECTOR *pts, CVECTOR *col, s32 p, s32 abr);
+static void fxm_drawStreakField(u32 *ot, s32 n, s32 h, s32 dz, void *src, SVECTOR *pts, CVECTOR *col, s32 p, s32 abr);
 typedef struct {
     s32 unk0; /* state */
     s32 unk4; /* frame */

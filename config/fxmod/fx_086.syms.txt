@@ -2,3 +2,4 @@ fx_086_headerPtr = 0x801E7700; // type:u32 size:0x4 [code] word 0 of a module, r
 fx_086_header = 0x801E9D24; // [code] module header (0, init, ops), btlfx_updateLoader
 fx_086_op80 = 0x801E829C; // type:func [code] header op entry 0, effect script op 0x80 (btlfx_spawnTask)
 fxm_randDiscPoints = 0x801E7E18; // type:func [code] n random points in a disc of radius r/4..r/2 with random depth, previous-position words reset
+fxm_drawStreakField = 0x801E7F6C; // type:func [code] fxm_randDiscPoints points streaming in z, LINE_G2 from the previous screen position, faded by depth
