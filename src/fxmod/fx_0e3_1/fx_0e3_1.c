@@ -1,6 +1,6 @@
 #include "fxmod/fx_0e3_1.h"
 
-void func_801EC71C(Unk80100C78Entry *entry, Fx0e31Bolt *bolt, SVECTOR *from, SVECTOR *to, s32 amp0, s32 amp1, s32 ang,
+static void fxm_drawOffsetTrail0(Unk80100C78Entry *entry, Fx0e31Bolt *bolt, SVECTOR *from, SVECTOR *to, s32 amp0, s32 amp1, s32 ang,
                    s32 dang, s32 arg8, s32 arg9) {
     BtlfxExports *ex = BTLFX_EXPORTS(fx_0e3_1_env);
     SVECTOR p;
@@ -30,7 +30,7 @@ void func_801EC71C(Unk80100C78Entry *entry, Fx0e31Bolt *bolt, SVECTOR *from, SVE
     ex->btlfx_drawTrail((u8 *)ex->btlfx_getFileData(entry->file, 0x15), 0, 0, arg8, 0x1000, arg9, 1, (u8 *)bolt, 0);
 }
 
-void func_801EC910(Unk80100C78Entry *entry, Fx0e31Bolt *bolt, SVECTOR *from, SVECTOR *to, s32 amp, s32 ang, s32 dang,
+static void fxm_drawOffsetTrail1(Unk80100C78Entry *entry, Fx0e31Bolt *bolt, SVECTOR *from, SVECTOR *to, s32 amp, s32 ang, s32 dang,
                    s32 arg7, s32 arg8) {
     BtlfxExports *ex = BTLFX_EXPORTS(fx_0e3_1_env);
     SVECTOR p;
@@ -60,7 +60,7 @@ void func_801EC910(Unk80100C78Entry *entry, Fx0e31Bolt *bolt, SVECTOR *from, SVE
     ex->btlfx_drawTrail((u8 *)ex->btlfx_getFileData(entry->file, 0x11), 0, 0, arg7, 0x1000, arg8, 1, (u8 *)bolt, 0);
 }
 
-void func_801ECAF8(Unk80100C78Entry *entry, Fx0e31Bolt *bolt, SVECTOR *from, SVECTOR *to, s32 amp0, s32 amp1, s32 ang,
+static void fxm_drawOffsetTrail2(Unk80100C78Entry *entry, Fx0e31Bolt *bolt, SVECTOR *from, SVECTOR *to, s32 amp0, s32 amp1, s32 ang,
                    s32 dang, s32 arg8, s32 arg9, s32 col) {
     BtlfxExports *ex = BTLFX_EXPORTS(fx_0e3_1_env);
     SVECTOR p;
@@ -98,10 +98,10 @@ void func_801ECCF4(Unk80100C78Entry *entry, Fx0e31Bolt *src, Fx0e31Bolt *dst, s3
     a += ex->btlfx_rand() % 56;
 
     ex->btlfx_lerpVec((s16 *)a, (s16 *)(a + 1), 0x4000, (s16 *)&p);
-    func_801EC910(entry, dst, a, &p, 0x80, ex->btlfx_rand(), 0x37, 0, arg3);
+    fxm_drawOffsetTrail1(entry, dst, a, &p, 0x80, ex->btlfx_rand(), 0x37, 0, arg3);
 }
 
-void func_801ECDEC(Unk80100C78Entry *entry, Fx0e31Bolt *bolt, SVECTOR *from, SVECTOR *to, s32 amp0, s32 amp1, s32 ang,
+static void fxm_drawOffsetTrail3(Unk80100C78Entry *entry, Fx0e31Bolt *bolt, SVECTOR *from, SVECTOR *to, s32 amp0, s32 amp1, s32 ang,
                    s32 dang, s32 arg8, s32 arg9, s32 col) {
     BtlfxExports *ex = BTLFX_EXPORTS(fx_0e3_1_env);
     SVECTOR p;
@@ -131,7 +131,7 @@ void func_801ECDEC(Unk80100C78Entry *entry, Fx0e31Bolt *bolt, SVECTOR *from, SVE
     ex->btlfx_drawTrail((u8 *)ex->btlfx_getFileData(entry->file, 0x23), 0, 0, arg8, 0x1000, arg9, 1, (u8 *)bolt, 0);
 }
 
-void func_801ECFE4(SVECTOR *pos, SVECTOR *rot, VECTOR *scale, s32 r0, s32 r1, s32 w0, s32 w1, s32 c, s32 tpage,
+static void fxm_drawTexCylinder(SVECTOR *pos, SVECTOR *rot, VECTOR *scale, s32 r0, s32 r1, s32 w0, s32 w1, s32 c, s32 tpage,
                    s32 clut, s32 u, s32 v, s32 ang, s32 dy, s32 abr, s32 dang) {
     BtlfxExports *ex = BTLFX_EXPORTS(fx_0e3_1_env);
     Fx0e31Rgbc c0;
@@ -518,7 +518,7 @@ s32 fx_0e3_1_op80(s32 mode, Fx0e31Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
                     to.vz = work->pos30.vz;
                     to.vy += ex->math_sin(k1) >> 2;
                     to.vx += ex->math_cos(k1) >> 2;
-                    func_801EC71C(entry, (Fx0e31Bolt *)&D_801F0A14[i], &from, &to, w1, w1, ang1, 0xFF, 0, tA);
+                    fxm_drawOffsetTrail0(entry, (Fx0e31Bolt *)&D_801F0A14[i], &from, &to, w1, w1, ang1, 0xFF, 0, tA);
                 }
             }
             ex->Hi_GetSummonBoneMatrix(SUMMON(env)->unk60, 0x3D, (BtlBone *)&m4);
@@ -646,7 +646,7 @@ s32 fx_0e3_1_op80(s32 mode, Fx0e31Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
             ex->btlfx_pointAhead(&u1.v.a1.vx, &work->rotBC.vx, -(t + 0x1000), &b1.vx);
             for (kk = 0, ang3 = -work->unk4 << 7; kk < 3; kk++, ang3 += 0x554) {
                 g1 = ex->btlfx_randCentered(0x400) + 0xC00;
-                func_801ECAF8(entry, &D_801F0D14[kk], &u1.v.a1, &b1, 0x7C, 0x200, ang3, 0xC0, 0, g1, 0x1D);
+                fxm_drawOffsetTrail2(entry, &D_801F0D14[kk], &u1.v.a1, &b1, 0x7C, 0x200, ang3, 0xC0, 0, g1, 0x1D);
                 for (j1 = 0; j1 < 4; j1++) {
                     func_801ECCF4(entry, &D_801F0D14[kk], (Fx0e31Bolt *)((Fx0e31Bolt5 *)D_801F0A14 + j1), g1);
                 }
@@ -740,7 +740,7 @@ s32 fx_0e3_1_op80(s32 mode, Fx0e31Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
             ex->btlfx_pointAhead(&a2.vx, &work->rotBC.vx, -0x2800, &b2.vx);
             for (k2k = 0, ang2 = -work->unk4 << 7; k2k < 3; k2k++, ang2 += 0x554) {
                 g2 = ex->btlfx_randCentered(0x400) + 0xC00;
-                func_801ECAF8(entry, &D_801F0D14[k2k], &a2, &b2, 0x400, 0x528, ang2, 0xC0, 0, g2, 0x84);
+                fxm_drawOffsetTrail2(entry, &D_801F0D14[k2k], &a2, &b2, 0x400, 0x528, ang2, 0xC0, 0, g2, 0x84);
                 for (j2 = 0; j2 < 4; j2++) {
                     func_801ECCF4(entry, &D_801F0D14[k2k], (Fx0e31Bolt *)((Fx0e31Bolt5 *)D_801F0A14 + j2), g2);
                 }
@@ -840,7 +840,7 @@ s32 fx_0e3_1_op80(s32 mode, Fx0e31Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
             ex->btlfx_pointAhead(&a4.vx, &work->rotBC.vx, t - 0x2800, &b4.vx);
             w2 = (t >> 2) + 0x400;
             for (i4 = 0, ang4 = work->unk4 << 8; i4 < 3; i4++, ang4 += 0x554) {
-                func_801ECAF8(entry, &D_801F0D14[i4], &a4, &b4, w2, w2, ang4, 0xC0, 0, ex->btlfx_randCentered(0x400) + 0xC00,
+                fxm_drawOffsetTrail2(entry, &D_801F0D14[i4], &a4, &b4, w2, w2, ang4, 0xC0, 0, ex->btlfx_randCentered(0x400) + 0xC00,
                               0x84);
             }
             env->otZ = 0x200;
@@ -971,8 +971,8 @@ s32 fx_0e3_1_op80(s32 mode, Fx0e31Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
             r5.vz = 0;
             n2 = (((t >> 3) + 0x500) * 4) / 3;
             y6_l = ex->math_cos(k10) >> 5;
-            func_801ECFE4(&work->pos30, &r5, &ss, z1, k10 + 0xA00, g3 >> 1, g3, y6_l, 0x1D, 0x3E81, 0, 0xC0, -frame << 7, n2, 1, 1);
-            func_801ECFE4(&work->pos30, &r5, &ss, z1, k10 + 0xA00, g3 >> 1, g3, y6_l, 0x1D, 0x3E81, 0, 0xC0, frame * 0xA0, n2, 1, -1);
+            fxm_drawTexCylinder(&work->pos30, &r5, &ss, z1, k10 + 0xA00, g3 >> 1, g3, y6_l, 0x1D, 0x3E81, 0, 0xC0, -frame << 7, n2, 1, 1);
+            fxm_drawTexCylinder(&work->pos30, &r5, &ss, z1, k10 + 0xA00, g3 >> 1, g3, y6_l, 0x1D, 0x3E81, 0, 0xC0, frame * 0xA0, n2, 1, -1);
             if (frame < 0x41) {
                 k11 = (frame << 6) >> 2;
                 y7 = ex->math_cos(k11) - 0x5DC;
@@ -1040,12 +1040,12 @@ s32 fx_0e3_1_op80(s32 mode, Fx0e31Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
             ang = (work->unk4 << 9) + (ex->btlfx_rand() & 0x1FF);
             y10 = (ex->math_cos(t >> 2) * 0xF5) >> 12;
             for (i5 = 0; i5 < 2; i5++, ang += 0x800) {
-                func_801ECAF8(entry, &D_801F0D14[i5], &f9, &t9, (x16 * 3) >> 2, x16, ang, 0xC0, 0, 0x1000, y10);
+                fxm_drawOffsetTrail2(entry, &D_801F0D14[i5], &f9, &t9, (x16 * 3) >> 2, x16, ang, 0xC0, 0, 0x1000, y10);
             }
             if (frame < 0x26) {
                 x16 = (x16 * 3) >> 1;
                 y10 = (ex->math_cos(t >> 1) * 0xF5) >> 12;
-                func_801ECAF8(entry, &D_801F0D14[2], &f9, &t9, (x16 * 3) >> 2, x16, -ang, 0xC0, 0, 0x1000, y10);
+                fxm_drawOffsetTrail2(entry, &D_801F0D14[2], &f9, &t9, (x16 * 3) >> 2, x16, -ang, 0xC0, 0, 0x1000, y10);
             }
             x18 = 0x1000 - t;
             env->otZ = 0x300;
@@ -1063,7 +1063,7 @@ s32 fx_0e3_1_op80(s32 mode, Fx0e31Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
                 t9.vx += ex->math_sin(ang);
                 t9.vz += ex->math_cos(ang);
                 t9.vy -= 0xF00;
-                func_801ECDEC(entry, (Fx0e31Bolt *)&D_801F0A14[i5], &t9, &f9, 0x80, 0x200, ang, 0xFF, 0,
+                fxm_drawOffsetTrail3(entry, (Fx0e31Bolt *)&D_801F0A14[i5], &t9, &f9, 0x80, 0x200, ang, 0xFF, 0,
                               ex->math_cos(t >> 2), y11);
             }
             env->otZ = 0;
@@ -1100,7 +1100,7 @@ s32 fx_0e3_1_op80(s32 mode, Fx0e31Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
             k15 = work->unk4 << 8;
             ex->Hi_GetSummonBonePos(SUMMON(env)->unk60, ex->btlfx_rand() % 92, (u16 *)&m);
             ex->Hi_GetSummonBonePos(SUMMON(env)->unk60, ex->btlfx_rand() % 92, (u16 *)((SVECTOR *)&m + 1));
-            func_801EC71C(entry, (Fx0e31Bolt *)D_801F0A14, (SVECTOR *)&m, (SVECTOR *)&m + 1, a, a, k15, 0x100, 0,
+            fxm_drawOffsetTrail0(entry, (Fx0e31Bolt *)D_801F0A14, (SVECTOR *)&m, (SVECTOR *)&m + 1, a, a, k15, 0x100, 0,
                           ex->btlfx_randCentered(0x400) + 0xC00);
         }
         if (fade != 0) {

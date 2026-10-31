@@ -7,7 +7,7 @@ s32 fx_191_op80ParticleMotion0(Pool30Entry *e, Pool6CEntry *owner, SVECTOR *pos,
     z.vy = 0;
     z.vz = 0;
     D_801E84E4[0].vx -= 0x96;
-    return func_801E7870(e, pos, &D_801E84E4[0], &D_801E857C[0], frame, frames);
+    return fxm_lerpParticle(e, pos, &D_801E84E4[0], &D_801E857C[0], frame, frames);
 }
 
 s32 fx_191_op80ParticleMotion1(Pool30Entry *e, Pool6CEntry *owner, SVECTOR *pos, s32 arg3, s32 frame, s32 frames) {
@@ -17,7 +17,7 @@ s32 fx_191_op80ParticleMotion1(Pool30Entry *e, Pool6CEntry *owner, SVECTOR *pos,
     z.vy = 0;
     z.vz = 0;
     D_801E84E4[1].vx += 0x96;
-    return func_801E7870(e, pos, &D_801E84E4[1], &D_801E857C[1], frame, frames);
+    return fxm_lerpParticle(e, pos, &D_801E84E4[1], &D_801E857C[1], frame, frames);
 }
 
 s32 fx_191_op80ParticleMotion2(Pool30Entry *e, Pool6CEntry *owner, SVECTOR *pos, s32 arg3, s32 frame, s32 frames) {
@@ -27,7 +27,7 @@ s32 fx_191_op80ParticleMotion2(Pool30Entry *e, Pool6CEntry *owner, SVECTOR *pos,
     z.vy = 0;
     z.vz = 0;
     D_801E84E4[2].vx -= 0x32;
-    return func_801E7870(e, pos, &D_801E84E4[2], &D_801E857C[2], frame, frames);
+    return fxm_lerpParticle(e, pos, &D_801E84E4[2], &D_801E857C[2], frame, frames);
 }
 
 s32 fx_191_op80ParticleMotion3(Pool30Entry *e, Pool6CEntry *owner, SVECTOR *pos, s32 arg3, s32 frame, s32 frames) {
@@ -37,10 +37,10 @@ s32 fx_191_op80ParticleMotion3(Pool30Entry *e, Pool6CEntry *owner, SVECTOR *pos,
     z.vy = 0;
     z.vz = 0;
     D_801E84E4[3].vx += 0x32;
-    return func_801E7870(e, pos, &D_801E84E4[3], &D_801E857C[3], frame, frames);
+    return fxm_lerpParticle(e, pos, &D_801E84E4[3], &D_801E857C[3], frame, frames);
 }
 
-s32 func_801E7870(Pool30Entry *e, SVECTOR *pos, SVECTOR *base, SVECTOR *to, s32 frame, s32 frames) {
+static s32 fxm_lerpParticle(Pool30Entry *e, SVECTOR *pos, SVECTOR *base, SVECTOR *to, s32 frame, s32 frames) {
     BtlfxExports *ex = BTLFX_EXPORTS(fx_191_env);
     SVECTOR a;
     SVECTOR b;
@@ -69,7 +69,7 @@ static s32 fx_191_op81ParticleMotion0(Pool30Entry *e, Pool6CEntry *owner, SVECTO
     z.vx = 0;
     z.vy = 0;
     z.vz = 0;
-    return func_801E7A00(e, pos, &z, frame, frames);
+    return fxm_followPathParticle0(e, pos, &z, frame, frames);
 }
 
 static s32 fx_191_op81ParticleMotion1(Pool30Entry *e, Pool6CEntry *owner, SVECTOR *pos, s32 arg3, s32 frame, s32 frames) {
@@ -78,10 +78,10 @@ static s32 fx_191_op81ParticleMotion1(Pool30Entry *e, Pool6CEntry *owner, SVECTO
     z.vx = 0;
     z.vy = 0;
     z.vz = 0;
-    return func_801E7B24(e, pos, &z, frame, frames);
+    return fxm_followPathParticle1(e, pos, &z, frame, frames);
 }
 
-s32 func_801E7A00(Pool30Entry *e, SVECTOR *pos, SVECTOR *ofs, s32 frame, s32 frames) {
+static s32 fxm_followPathParticle0(Pool30Entry *e, SVECTOR *pos, SVECTOR *ofs, s32 frame, s32 frames) {
     SVECTOR v;
 
     fxm_posPathGet(&D_801E8564, D_801E8DA0 * 3, &v);
@@ -103,7 +103,7 @@ s32 func_801E7A00(Pool30Entry *e, SVECTOR *pos, SVECTOR *ofs, s32 frame, s32 fra
     return 0;
 }
 
-s32 func_801E7B24(Pool30Entry *e, SVECTOR *pos, SVECTOR *ofs, s32 frame, s32 frames) {
+static s32 fxm_followPathParticle1(Pool30Entry *e, SVECTOR *pos, SVECTOR *ofs, s32 frame, s32 frames) {
     SVECTOR v;
 
     fxm_posPathGet(&D_801E856C, (D_801E8DA0 - 5) * 3, &v);

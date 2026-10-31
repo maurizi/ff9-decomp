@@ -2,7 +2,7 @@
 
 static s32 fx_127_op80ParticleMotion0(VECTOR *out, s32 arg1, SVECTOR *pos, s32 arg3, s32 frame, s32 n) {
     BtlfxExports *ex = BTLFX_EXPORTS(fx_127_env);
-    s32 ret = func_801E7818(out, pos, &D_801E82F8, &D_801E8300, 5, frame, n);
+    s32 ret = fxm_lerpParticle(out, pos, &D_801E82F8, &D_801E8300, 5, frame, n);
 
     D_801E8308.vx = pos->vx;
     D_801E8308.vy = 0;
@@ -17,10 +17,10 @@ static s32 fx_127_op80ParticleMotion0(VECTOR *out, s32 arg1, SVECTOR *pos, s32 a
 }
 
 static s32 fx_127_op80ParticleMotion1(VECTOR *out, s32 arg1, SVECTOR *pos, s32 arg3, s32 frame, s32 n) {
-    return func_801E7818(out, pos, &D_801E82F8, &D_801E8300, 5, frame, n);
+    return fxm_lerpParticle(out, pos, &D_801E82F8, &D_801E8300, 5, frame, n);
 }
 
-s32 func_801E7818(VECTOR *out, SVECTOR *pos, SVECTOR *from, SVECTOR *to, s32 len, s32 frame, s32 n) {
+static s32 fxm_lerpParticle(VECTOR *out, SVECTOR *pos, SVECTOR *from, SVECTOR *to, s32 len, s32 frame, s32 n) {
     BTLFX_EXPORTS(fx_127_env)->btlfx_lerpVec((s16 *)from, (s16 *)to, (frame << 12) / len, (s16 *)pos);
     out->vx = pos->vx << 12;
     out->vy = pos->vy << 12;

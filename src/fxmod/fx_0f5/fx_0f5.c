@@ -1,6 +1,6 @@
 #include "fxmod/fx_0f5.h"
 
-void func_801E7704(SVECTOR *pos, SVECTOR *rot, VECTOR *scale, s32 r0, s32 r1, s32 c, s32 tpage, s32 clut, s32 u, s32 v,
+static void fxm_drawTexCylinder(SVECTOR *pos, SVECTOR *rot, VECTOR *scale, s32 r0, s32 r1, s32 c, s32 tpage, s32 clut, s32 u, s32 v,
                    s32 dr, s32 ang, s32 dang, s32 dseg, s32 abr, s32 flicker) {
     Unk800F78A4 *env = fx_0f5_env;
     BtlfxExports *ex = BTLFX_EXPORTS(env);
@@ -218,11 +218,11 @@ s32 fx_0f5_op80(s32 mode, Fx0f5Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             t = (frame << 12) / 12;
             scale.vz = 0x2000;
             scale.vx = scale.vy = t;
-            func_801E7704(&work->pos10, &work->unk18, &scale, 0xC8, 0x180, 0x80, 0x97, 0x3D40, 0, 0, t >> 6, work->unk4 * 40, 300,
+            fxm_drawTexCylinder(&work->pos10, &work->unk18, &scale, 0xC8, 0x180, 0x80, 0x97, 0x3D40, 0, 0, t >> 6, work->unk4 * 40, 300,
                           0xC8, 1, 0);
             scale.vx = scale.vy = 0x2000;
             scale.vz = ex->math_sin(t >> 2) * 2;
-            func_801E7704(&work->pos10, &work->unk18, &scale, (ex->math_cos(t >> 2) >> 4) + 0x1C8, 0x280, t >> 5, 0x17, 0x3D00, 0, 0x80, t >> 6,
+            fxm_drawTexCylinder(&work->pos10, &work->unk18, &scale, (ex->math_cos(t >> 2) >> 4) + 0x1C8, 0x280, t >> 5, 0x17, 0x3D00, 0, 0x80, t >> 6,
                           work->unk4 * 40, 300, 0x80, 1, 1);
             scale.vx = scale.vz = t;
             scale.vy = 0x1000 - ex->math_cos(t >> 2);
@@ -241,10 +241,10 @@ s32 fx_0f5_op80(s32 mode, Fx0f5Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             t = (frame << 12) / 12;
             scale.vz = 0x2000;
             scale.vx = scale.vy = t + 0x1000;
-            func_801E7704(&work->pos10, &work->unk18, &scale, 0xC8, 0x180, 0x80, 0x97, 0x3D40, 0, 0, (t >> 5) + 0x40, work->unk4 * 40, 300,
+            fxm_drawTexCylinder(&work->pos10, &work->unk18, &scale, 0xC8, 0x180, 0x80, 0x97, 0x3D40, 0, 0, (t >> 5) + 0x40, work->unk4 * 40, 300,
                           0xC8, 1, 0);
             scale.vx = scale.vy = 0x2000;
-            func_801E7704(&work->pos10, &work->unk18, &scale, 0x1C8 - (t >> 5), 0x280, 0x80, 0x17, 0x3D00, 0, 0x80, (t >> 5) + 0x40,
+            fxm_drawTexCylinder(&work->pos10, &work->unk18, &scale, 0x1C8 - (t >> 5), 0x280, 0x80, 0x17, 0x3D00, 0, 0x80, (t >> 5) + 0x40,
                           work->unk4 * 40, 300, 0x80, 1, 1);
             pos.vx = work->pos10.vx;
             pos.vy = work->pos10.vy;
@@ -264,10 +264,10 @@ s32 fx_0f5_op80(s32 mode, Fx0f5Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             t = frame << 7;
             scale.vx = scale.vy = scale.vz = (t >> 1) + 0x2000;
             d = (t >> 5) + 0xC0;
-            func_801E7704(&work->pos10, &work->unk18, &scale, 0xC8 - (t >> 6), 0x180, 0x80, 0x97, 0x3D40, 0, 0, d,
+            fxm_drawTexCylinder(&work->pos10, &work->unk18, &scale, 0xC8 - (t >> 6), 0x180, 0x80, 0x97, 0x3D40, 0, 0, d,
                           work->unk4 * 40, 300, (t >> 5) + 0xA0, 1, 0);
             scale.vx = scale.vy = scale.vz = (t >> 1) + 0x2000;
-            func_801E7704(&work->pos10, &work->unk18, &scale, 0x148, 0x280, 0x80, 0x17, 0x3D00, 0, 0x80, d, work->unk4 * 40,
+            fxm_drawTexCylinder(&work->pos10, &work->unk18, &scale, 0x148, 0x280, 0x80, 0x17, 0x3D00, 0, 0x80, d, work->unk4 * 40,
                           300, 0x80, 1, 1);
             pos.vx = work->pos10.vx;
             pos.vy = work->pos10.vy;
@@ -282,10 +282,10 @@ s32 fx_0f5_op80(s32 mode, Fx0f5Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
         case 3:
             scale.vx = scale.vy = scale.vz = 0x2800;
             t = frame << 8;
-            func_801E7704(&work->pos10, &work->unk18, &scale, 0x88, 0x180, ex->math_cos(t >> 2) >> 5, 0x97, 0x3D40, 0, 0, 0x140,
+            fxm_drawTexCylinder(&work->pos10, &work->unk18, &scale, 0x88, 0x180, ex->math_cos(t >> 2) >> 5, 0x97, 0x3D40, 0, 0, 0x140,
                           work->unk4 * 40, 300, 0x120, 1, 0);
             scale.vx = scale.vy = scale.vz = 0x2800;
-            func_801E7704(&work->pos10, &work->unk18, &scale, 0x148, 0x280, ex->math_cos(t >> 2) >> 5, 0x17, 0x3D00, 0, 0x80, 0x140,
+            fxm_drawTexCylinder(&work->pos10, &work->unk18, &scale, 0x148, 0x280, ex->math_cos(t >> 2) >> 5, 0x17, 0x3D00, 0, 0x80, 0x140,
                           work->unk4 * 40, 300, 0x80, 1, 1);
             scale.vx = scale.vz = 0x1000;
             scale.vy = ex->math_cos(t >> 2);

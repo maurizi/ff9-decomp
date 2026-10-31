@@ -50,7 +50,7 @@ static void fx_1a8_op80ElemDraw1(s32 arg0, s32 arg1, SVECTOR *pos, SVECTOR *rot,
     }
 }
 
-void func_801E7950(SVECTOR *pos, SVECTOR *rot, VECTOR *scale, s32 r0, s32 r1, s32 z0, s32 z1, s32 col, s32 tpage,
+static void fxm_drawTexCylinder(SVECTOR *pos, SVECTOR *rot, VECTOR *scale, s32 r0, s32 r1, s32 z0, s32 z1, s32 col, s32 tpage,
                    s32 clut, s32 u, s32 v, s32 ang, s32 h, s32 abr, s32 step) {
     Unk800F78A4 *env = fx_1a8_env;
     BtlfxExports *ex = BTLFX_EXPORTS(env);
@@ -482,13 +482,13 @@ s32 fx_1a8_op80(s32 mode, Fx1a8Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
 
             sc.vx = sc.vy = sc.vz = size;
             c = alpha >> 5;
-            func_801E7950(&work->unk20, &work->rot2C, &sc, 0x100, 0xA0, 0x200, 0x200, c, 0x19, 0x3D02, 0, 0,
+            fxm_drawTexCylinder(&work->unk20, &work->rot2C, &sc, 0x100, 0xA0, 0x200, 0x200, c, 0x19, 0x3D02, 0, 0,
                           work->unk4 << 8, 0xC00, 1, 1);
-            func_801E7950(&work->unk20, &work->rot2C, &sc, 0x100, 0xA0, 0x100, 0x100, c, 0x19, 0x3D02, 0, 0,
+            fxm_drawTexCylinder(&work->unk20, &work->rot2C, &sc, 0x100, 0xA0, 0x100, 0x100, c, 0x19, 0x3D02, 0, 0,
                           (work->unk4 << 8) + 0x800, 0xC00, 1, 1);
-            func_801E7950(&work->unk20, &work->rot2C, &sc, 0x100, 0xA0, 0x200, 0x200, c, 0x19, 0x3D02, 0, 0,
+            fxm_drawTexCylinder(&work->unk20, &work->rot2C, &sc, 0x100, 0xA0, 0x200, 0x200, c, 0x19, 0x3D02, 0, 0,
                           -work->unk4 << 8, 0xC00, 1, -1);
-            func_801E7950(&work->unk20, &work->rot2C, &sc, 0x100, 0xA0, 0x100, 0x100, c, 0x19, 0x3D02, 0, 0,
+            fxm_drawTexCylinder(&work->unk20, &work->rot2C, &sc, 0x100, 0xA0, 0x100, 0x100, c, 0x19, 0x3D02, 0, 0,
                           (-work->unk4 << 8) - 0x800, 0xC00, 1, -1);
             ex->btlfx_drawScrollMove(10000 - (work->unk4 << 4), 0x240, 0x100, 0x20, 0x40, 0x260, 0x100);
         }

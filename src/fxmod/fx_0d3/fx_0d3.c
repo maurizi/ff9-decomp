@@ -350,7 +350,7 @@ static s32 fxm_keyGetValue(Fx0d3Track *track, s32 t) {
     return (track->unk4 + t)[0];
 }
 
-void func_801E8628(SVECTOR *a, SVECTOR *b, s32 n, s32 tpage, s32 clut, s32 u, s32 v, s32 w, s32 h, s32 p,
+static void fxm_drawTexRibbonTrail(SVECTOR *a, SVECTOR *b, s32 n, s32 tpage, s32 clut, s32 u, s32 v, s32 w, s32 h, s32 p,
                    Fx0d3Seg *buf, s32 abr, s32 phase) {
     Unk800F78A4 *env = fx_0d3_env;
     BtlfxExports *ex = BTLFX_EXPORTS(env);
@@ -1033,13 +1033,13 @@ s32 fx_0d3_op81(s32 mode, Fx0d3Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
             for (i = 0; i < 6; i++) {
                 ex->Hi_GetSummonBonePos(((Fx0d3Summon81 *)env->loader)->unk60, D_801EB054[i].unk0, (u16 *)&u.c.b0);
                 ex->Hi_GetSummonBonePos(((Fx0d3Summon81 *)env->loader)->unk60, D_801EB054[i].unk4, (u16 *)&u.c.b1);
-                func_801E8628(&u.c.b0, &u.c.b1, 0x3F3, 0, 0, 0, 0, 0, 0, 0, D_801EDAC4[i], 1, 0);
+                fxm_drawTexRibbonTrail(&u.c.b0, &u.c.b1, 0x3F3, 0, 0, 0, 0, 0, 0, 0, D_801EDAC4[i], 1, 0);
             }
         }
         for (i = 0; i < 6; i++) {
             ex->Hi_GetSummonBonePos(((Fx0d3Summon81 *)env->loader)->unk60, D_801EB054[i].unk0, (u16 *)&u.c.b0);
             ex->Hi_GetSummonBonePos(((Fx0d3Summon81 *)env->loader)->unk60, D_801EB054[i].unk4, (u16 *)&u.c.b1);
-            func_801E8628(&u.c.b0, &u.c.b1, 0xB, 0x1C, 0x3D09, 0, 0x80, 0x40, 0x80, 0x80, D_801EDAC4[i], 1,
+            fxm_drawTexRibbonTrail(&u.c.b0, &u.c.b1, 0xB, 0x1C, 0x3D09, 0, 0x80, 0x40, 0x80, 0x80, D_801EDAC4[i], 1,
                           10000 - work->unk4);
         }
         env->otZ = 0;

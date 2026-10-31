@@ -1,6 +1,6 @@
 #include "fxmod/fx_179.h"
 
-void func_801E7704(s32 model, SVECTOR *center) {
+static void fxm_shatterModel(s32 model, SVECTOR *center) {
     Fx179Tri *t = D_801E8A1C;
     Fx179Tri *u = D_801E8A1C;
     BtlfxExports *ex = BTLFX_EXPORTS(fx_179_env);
@@ -87,7 +87,7 @@ void func_801E78E8(void) {
     }
 }
 
-void func_801E7B68(SVECTOR *pos, SVECTOR *rot, VECTOR *scale, s32 r0, s32 r1, s32 w0, s32 w1, s32 c, s32 tpage,
+static void fxm_drawTexCylinder(SVECTOR *pos, SVECTOR *rot, VECTOR *scale, s32 r0, s32 r1, s32 w0, s32 w1, s32 c, s32 tpage,
                    s32 clut, s32 u, s32 v, s32 ang, s32 dy, s32 abr, s32 dang) {
     BtlfxExports *ex = BTLFX_EXPORTS(fx_179_env);
     Fx179Rgbc c0;
@@ -278,13 +278,13 @@ s32 fx_179_op80(s32 mode, Fx179Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
         }
         ex->Hi_DrawEffModel(&rot, &pos, (s32)&scale, work->model18);
         u.v.vx = u.v.vy = u.v.vz = 0xAAA;
-        func_801E7B68(&work->pos8, &rot, &u.v, 0x3E8, 0x2BC, 0x300, 0x398, 0x80, 0x17, 0x3D03, 0, 0x40,
+        fxm_drawTexCylinder(&work->pos8, &rot, &u.v, 0x3E8, 0x2BC, 0x300, 0x398, 0x80, 0x17, 0x3D03, 0, 0x40,
                       -(work->unk4 * 0x180), 0x2000, 1, 1);
-        func_801E7B68(&work->pos8, &rot, &u.v, 0x3E8, 0x2BC, 0x300, 0x400, 0x80, 0x17, 0x3D00, 0, 0x40,
+        fxm_drawTexCylinder(&work->pos8, &rot, &u.v, 0x3E8, 0x2BC, 0x300, 0x400, 0x80, 0x17, 0x3D00, 0, 0x40,
                       -(work->unk4 * 0x180) + 0x400, 0x2000, 1, 1);
-        func_801E7B68(&work->pos8, &rot, &u.v, 0x3E8, 0x2BC, 0x300, 0x300, 0x80, 0x17, 0x3D04, 0, 0x40,
+        fxm_drawTexCylinder(&work->pos8, &rot, &u.v, 0x3E8, 0x2BC, 0x300, 0x300, 0x80, 0x17, 0x3D04, 0, 0x40,
                       -(work->unk4 * 0x180) + 0x800, 0x2000, 1, 1);
-        func_801E7B68(&work->pos8, &rot, &u.v, 0x3E8, 0x2BC, 0x300, 0x300, 0x80, 0x17, 0x3D06, 0, 0x40,
+        fxm_drawTexCylinder(&work->pos8, &rot, &u.v, 0x3E8, 0x2BC, 0x300, 0x300, 0x80, 0x17, 0x3D06, 0, 0x40,
                       -(work->unk4 * 0x180) + 0xC00, 0x2000, 1, 1);
         if (frame >= 0x10) {
             work->unk0 = 1;
@@ -292,7 +292,7 @@ s32 fx_179_op80(s32 mode, Fx179Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
             u.s.vx = 0;
             u.s.vy = 0;
             u.s.vz = 0;
-            func_801E7704(work->model18, &u.s);
+            fxm_shatterModel(work->model18, &u.s);
             p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 1), (s32)&work->pos10);
             if (p != NULL) {
                 p->otZ = 0x20;

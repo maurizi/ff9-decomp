@@ -4,17 +4,17 @@ static s32 fx_11d_op80ParticleMotion0(VECTOR *out, s32 arg1, SVECTOR *pos, s32 a
     if (frame >= 4) {
         frame = 3;
     }
-    return func_801E77A4(out, pos, &D_801E7D24[frame], frame, n);
+    return fxm_boneLerpParticle(out, pos, &D_801E7D24[frame], frame, n);
 }
 
 static s32 fx_11d_op80ParticleMotion1(VECTOR *out, s32 arg1, SVECTOR *pos, s32 arg3, s32 frame, s32 n) {
     if (frame >= 4) {
         frame = 3;
     }
-    return func_801E77A4(out, pos, &D_801E7D3C[frame], frame, n);
+    return fxm_boneLerpParticle(out, pos, &D_801E7D3C[frame], frame, n);
 }
 
-s32 func_801E77A4(VECTOR *out, SVECTOR *pos, Fx11dPathKey *key, s32 frame, s32 n) {
+static s32 fxm_boneLerpParticle(VECTOR *out, SVECTOR *pos, Fx11dPathKey *key, s32 frame, s32 n) {
     BtlfxExports *ex = BTLFX_EXPORTS(fx_11d_env);
     SVECTOR a;
     SVECTOR b;

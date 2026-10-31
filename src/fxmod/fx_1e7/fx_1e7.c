@@ -1,14 +1,14 @@
 #include "fxmod/fx_1e7.h"
 
 static s32 fx_1e7_op80ParticleMotion0(Pool30Entry *pt, s32 arg1, SVECTOR *pos, s32 arg3, s32 frame, s32 n) {
-    return func_801E776C(pt, pos, &D_801E82E8[0], frame, n);
+    return fxm_followPathParticle(pt, pos, &D_801E82E8[0], frame, n);
 }
 
 static s32 fx_1e7_op80ParticleMotion1(Pool30Entry *pt, s32 arg1, SVECTOR *pos, s32 arg3, s32 frame, s32 n) {
-    return func_801E776C(pt, pos, &D_801E82E8[1], frame, n);
+    return fxm_followPathParticle(pt, pos, &D_801E82E8[1], frame, n);
 }
 
-s32 func_801E776C(Pool30Entry *e, SVECTOR *pos, Fx1e7Path *path, s32 frame, s32 frames) {
+static s32 fxm_followPathParticle(Pool30Entry *e, SVECTOR *pos, Fx1e7Path *path, s32 frame, s32 frames) {
     BtlfxExports *ex = BTLFX_EXPORTS(fx_1e7_env);
     MATRIX m;
     VECTOR o;

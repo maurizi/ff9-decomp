@@ -47,7 +47,7 @@ extern SVECTOR D_801E84E0; /* angles */
 extern SVECTOR D_801E84E8;
 extern SVECTOR D_801E84F0[5];
 
-s32 func_801E776C(Pool30Entry *e, SVECTOR *pos, Fx1e7Path *path, s32 frame, s32 frames);
+static s32 fxm_followPathParticle(Pool30Entry *e, SVECTOR *pos, Fx1e7Path *path, s32 frame, s32 frames);
 void func_801E79BC(SVECTOR *out, Fx1e7Path *path, s32 t);
 static void fxm_posPathInit(Fx1e7Path *path, u16 *data);
 static s32 fxm_posPathGet(Fx1e7Path *path, s32 t, SVECTOR *out);

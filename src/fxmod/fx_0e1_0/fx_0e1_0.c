@@ -131,7 +131,7 @@ static void fxm_drawTexelQuads(SVECTOR *pos, SVECTOR *rot, s32 tp, s32 x, s32 y,
     ex->StoreImage(&rect, (u32 *)colors);
 }
 
-void func_801E7CB4(SVECTOR *a, SVECTOR *b, s32 n, s32 tpage, s32 clut, s32 u, s32 v, s32 w, s32 h, s32 p,
+static void fxm_drawTexRibbonTrail(SVECTOR *a, SVECTOR *b, s32 n, s32 tpage, s32 clut, s32 u, s32 v, s32 w, s32 h, s32 p,
                    Fx0e10Seg *buf, s32 abr, s32 phase) {
     Unk800F78A4 *env = fx_0e1_0_env;
     BtlfxExports *ex = BTLFX_EXPORTS(env);
@@ -685,13 +685,13 @@ s32 fx_0e1_0_op80(s32 mode, Fx0e10Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
                 for (i = 0; i < 4; i++) {
                     ex->Hi_GetSummonBonePos(((Fx0e10Summon *)env->loader)->unk60, D_801E9D98[i].unk0, (u16 *)&sc);
                     ex->Hi_GetSummonBonePos(((Fx0e10Summon *)env->loader)->unk60, D_801E9D98[i].unk4, (u16 *)&b);
-                    func_801E7CB4((SVECTOR *)&sc, &b, 0x3FC, 0, 0, 0, 0, 0, 0, 0, D_801E9E48[i], 1, 0);
+                    fxm_drawTexRibbonTrail((SVECTOR *)&sc, &b, 0x3FC, 0, 0, 0, 0, 0, 0, 0, D_801E9E48[i], 1, 0);
                 }
             }
             for (i = 0; i < 4; i++) {
                 ex->Hi_GetSummonBonePos(((Fx0e10Summon *)env->loader)->unk60, D_801E9D98[i].unk0, (u16 *)&sc);
                 ex->Hi_GetSummonBonePos(((Fx0e10Summon *)env->loader)->unk60, D_801E9D98[i].unk4, (u16 *)&b);
-                func_801E7CB4((SVECTOR *)&sc, &b, 0x14, 0x1B, 0x3D05, 0xC0, 0, 0x40, 0x80, ((rib >> 5) * 2) / 3, D_801E9E48[i], 1,
+                fxm_drawTexRibbonTrail((SVECTOR *)&sc, &b, 0x14, 0x1B, 0x3D05, 0xC0, 0, 0x40, 0x80, ((rib >> 5) * 2) / 3, D_801E9E48[i], 1,
                               10000 - work->unk4);
             }
             env->otZ = 0;

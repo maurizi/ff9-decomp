@@ -9,3 +9,4 @@ fxm_drawTiledStrip = 0x801E7910; // type:func [code] two (flip four) POLY_FT4 ti
 fx_0e0_op80PoolTask = 0x801E8628; // type:func [code] btlfx pool element function (btlfx_poolInit elemFn, run by btlfx_poolUpdate with mode, element, env, task, frame), installed by fx_0e0_op80
 fx_0e0_env = 0x801EA918; // [code] the effect env (Unk800F78A4) the op handlers store in mode 1, used by the helpers for BTLFX_EXPORTS
 fx_0e0_effModels = 0x801EAB98; // [code] effect model buffers given to btlfx_initEffModels (BtlModel per slot)
+fxm_drawOffsetTrail = 0x801E8430; // type:func [code] trail strip from to (points lerped along, pushed sideways by btlfx_offsetPoint after btlfx_aimAngles), drawn with btlfx_drawTrail

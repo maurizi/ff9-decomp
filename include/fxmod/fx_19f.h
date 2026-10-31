@@ -127,7 +127,7 @@ extern Fx19fTrail D_801EAA58;
 extern BtlModel fx_19f_effModels[];
 extern Fx19fTrail17 D_801EAF18[6];
 extern Fx19fTrail13 D_801EB268[3];
-void func_801E7894(Unk80100C78Entry *entry, Fx19fTrail *trail, SVECTOR *from, SVECTOR *to, s32 amp, s32 arg5, s32 arg6,
+static void fxm_drawOffsetTrail(Unk80100C78Entry *entry, Fx19fTrail *trail, SVECTOR *from, SVECTOR *to, s32 amp, s32 arg5, s32 arg6,
                    s32 arg7, s32 arg8, s32 arg9);
 
 /* copied */

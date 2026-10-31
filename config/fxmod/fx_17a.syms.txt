@@ -4,3 +4,4 @@ fx_17a_op80 = 0x801E7D2C; // type:func [code] header op entry 0, effect script o
 fx_17a_op80PoolTask = 0x801E7BC0; // type:func [code] btlfx pool element function (btlfx_poolInit elemFn, run by btlfx_poolUpdate with mode, element, env, task, frame), installed by fx_17a_op80
 fx_17a_env = 0x801E9F5C; // [code] the effect env (Unk800F78A4) the op handlers store in mode 1, used by the helpers for BTLFX_EXPORTS
 fx_17a_effModels = 0x801E9F64; // [code] effect model buffers given to btlfx_initEffModels (BtlModel per slot)
+fxm_drawTexCylinder = 0x801E7718; // type:func [code] textured quads around a circle (cos/sin of an advancing angle times a radius) in rows, at pos rotated and scaled

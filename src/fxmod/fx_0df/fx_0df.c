@@ -524,7 +524,7 @@ s32 fx_0df_op80(s32 mode, Fx0dfWork80 *work, Unk800F78A4 *env, Unk80100C78Entry 
     return 0;
 }
 
-void func_801E93F4(Unk80100C78Entry *entry, Fx0dfBolt *bolt, s32 *jitter, SVECTOR *from, SVECTOR *to, s32 amp0, s32 amp1,
+static void fxm_drawOffsetTrail(Unk80100C78Entry *entry, Fx0dfBolt *bolt, s32 *jitter, SVECTOR *from, SVECTOR *to, s32 amp0, s32 amp1,
                    s32 ang, s32 dang, s32 arg9, s32 arg10, s32 pad) {
     Unk800F78A4 *env = fx_0df_env;
     BtlfxExports *ex = BTLFX_EXPORTS(env);
@@ -559,7 +559,7 @@ void func_801E93F4(Unk80100C78Entry *entry, Fx0dfBolt *bolt, s32 *jitter, SVECTO
 
 static s32 fx_0df_op83PoolTask(s32 mode, Fx0dfArc *arc, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 frame) {
     if (mode != 1) {
-        func_801E93F4(entry, &D_801EA420[arc->unk10], arc->unk14, &arc->unk0, &arc->unk8, 0, 0x200, frame * 0x9B, 0x186,
+        fxm_drawOffsetTrail(entry, &D_801EA420[arc->unk10], arc->unk14, &arc->unk0, &arc->unk8, 0, 0x200, frame * 0x9B, 0x186,
                       2, 0x1000, ((0x1000 - (frame << 12) / 5) << 6) >> 12);
         if (frame >= 5) {
             return 1;

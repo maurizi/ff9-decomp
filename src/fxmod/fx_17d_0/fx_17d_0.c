@@ -39,7 +39,7 @@ void func_801E7704(u32 *ot, s32 abr, s32 h, s32 r, s32 g, s32 b) {
     }
 }
 
-void func_801E7894(s32 n, s32 r, SVECTOR *pts) {
+static void fxm_randDiscPoints(s32 n, s32 r, SVECTOR *pts) {
     SVECTOR *q;
     u32 *col = (u32 *)(pts + n);
     BtlfxExports *ex = BTLFX_EXPORTS(fx_17d_0_env);
@@ -57,7 +57,7 @@ void func_801E7894(s32 n, s32 r, SVECTOR *pts) {
     }
 }
 
-void func_801E79E8(u32 *ot, s32 n, s32 h, s32 dz, SVECTOR *rot, SVECTOR *pts, CVECTOR *rgb, s32 p, s32 abr) {
+static void fxm_drawStreakField(u32 *ot, s32 n, s32 h, s32 dz, SVECTOR *rot, SVECTOR *pts, CVECTOR *rgb, s32 p, s32 abr) {
     Unk800F78A4 *env = fx_17d_0_env;
     BtlfxExports *ex = BTLFX_EXPORTS(env);
     LINE_G2 *prim;
@@ -238,7 +238,7 @@ s32 fx_17d_0_op80(s32 mode, Fx17d0Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
         env->camera->points[3].vx = work->unk48.vx;
         env->camera->points[3].vy = work->unk48.vy;
         env->camera->points[3].vz = work->unk48.vz;
-        func_801E7894(0x140, 0x200, D_801E9480);
+        fxm_randDiscPoints(0x140, 0x200, D_801E9480);
         work->unk58 = 0;
     } else {
         sx = 0;
@@ -265,7 +265,7 @@ s32 fx_17d_0_op80(s32 mode, Fx17d0Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
             work->rot38.vx = rot.vx >> 1;
             work->rot38.vy = rot.vy >> 1;
             work->rot38.vz = rot.vz >> 1;
-            func_801E79E8((u32 *)env->ot + 8, 0x140, 0x80, ((ex->math_sin(h) * 0x18) >> 12) - 1, &rot, D_801E9480,
+            fxm_drawStreakField((u32 *)env->ot + 8, 0x140, 0x80, ((ex->math_sin(h) * 0x18) >> 12) - 1, &rot, D_801E9480,
                           &col, t, 1);
             if (frame >= 0x19) {
                 code = 1;
@@ -300,7 +300,7 @@ s32 fx_17d_0_op80(s32 mode, Fx17d0Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
             work->rot38.vx = rot.vx >> 1;
             work->rot38.vy = rot.vy >> 1;
             work->rot38.vz = rot.vz >> 1;
-            func_801E79E8((u32 *)env->ot + 8, 0x140, 0x80, ~((t * 20) >> 12), &rot, D_801E9480, &col, 0x1000, 1);
+            fxm_drawStreakField((u32 *)env->ot + 8, 0x140, 0x80, ~((t * 20) >> 12), &rot, D_801E9480, &col, 0x1000, 1);
             code = 1;
             abr = 1;
             a = ((0x1000 - ex->math_sin(q)) >> 5) + 0xA0;
@@ -365,7 +365,7 @@ s32 fx_17d_0_op80(s32 mode, Fx17d0Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
             rot.vy = 0;
             rot.vz = work->unk4 * 4;
             d = (t >> 8) + 0x14;
-            func_801E79E8((u32 *)env->ot + 0x400, 0x140, 0x80, -d, &rot, D_801E9480, &col,
+            fxm_drawStreakField((u32 *)env->ot + 0x400, 0x140, 0x80, -d, &rot, D_801E9480, &col,
                           (ex->math_cos(q) >> 1) + 0x800, 1);
             b = 0x1000 - ex->math_cos(q);
             b = 0x1000 - ex->math_cos(b >> 2);

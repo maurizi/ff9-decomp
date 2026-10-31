@@ -1,6 +1,6 @@
 #include "fxmod/fx_086.h"
 
-void func_801E7704(SVECTOR *pos, SVECTOR *rot, VECTOR *scale, s32 r0, s32 r1, s32 w0, s32 w1, s32 c, s32 tpage,
+static void fxm_drawTexCylinder(SVECTOR *pos, SVECTOR *rot, VECTOR *scale, s32 r0, s32 r1, s32 w0, s32 w1, s32 c, s32 tpage,
                    s32 clut, s32 u, s32 v, s32 ang, s32 dy, s32 abr, s32 dang) {
     BtlfxExports *ex = BTLFX_EXPORTS(fx_086_env);
     Fx086Rgbc c0;
@@ -429,17 +429,17 @@ s32 fx_086_op80(s32 mode, Fx086Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             VECTOR sc;
 
             sc.vx = sc.vy = sc.vz = s / 2;
-            func_801E7704(&work->pos14, &rot, &sc, 0x4B0, 0x2BC, 0x300, 0x398, 0x80, 0x1C, 0x3D05, 0x80, 0x80,
+            fxm_drawTexCylinder(&work->pos14, &rot, &sc, 0x4B0, 0x2BC, 0x300, 0x398, 0x80, 0x1C, 0x3D05, 0x80, 0x80,
                           -(work->unk4 * 0x180), 0x2000, 1, 1);
-            func_801E7704(&work->pos14, &rot, &sc, 0x4B0, 0x2BC, 0x300, 0x400, 0x80, 0x1C, 0x3D05, 0x80, 0x80,
+            fxm_drawTexCylinder(&work->pos14, &rot, &sc, 0x4B0, 0x2BC, 0x300, 0x400, 0x80, 0x1C, 0x3D05, 0x80, 0x80,
                           -(work->unk4 * 0x180) + 0x550, 0x2000, 1, 1);
-            func_801E7704(&work->pos14, &rot, &sc, 0x4B0, 0x2BC, 0x300, 0x300, 0x80, 0x1C, 0x3D05, 0x80, 0x80,
+            fxm_drawTexCylinder(&work->pos14, &rot, &sc, 0x4B0, 0x2BC, 0x300, 0x300, 0x80, 0x1C, 0x3D05, 0x80, 0x80,
                           -(work->unk4 * 0x180) + 0xAA0, 0x2000, 1, 1);
-            func_801E7704(&work->pos14, &rot, &sc, 0x4B0, 0x2BC, 0x300, 0x398, 0x80, 0x1C, 0x3D05, 0x80, 0x80,
+            fxm_drawTexCylinder(&work->pos14, &rot, &sc, 0x4B0, 0x2BC, 0x300, 0x398, 0x80, 0x1C, 0x3D05, 0x80, 0x80,
                           work->unk4 << 9, 0x2000, 1, -1);
-            func_801E7704(&work->pos14, &rot, &sc, 0x4B0, 0x2BC, 0x300, 0x400, 0x80, 0x1C, 0x3D05, 0x80, 0x80,
+            fxm_drawTexCylinder(&work->pos14, &rot, &sc, 0x4B0, 0x2BC, 0x300, 0x400, 0x80, 0x1C, 0x3D05, 0x80, 0x80,
                           (work->unk4 << 9) + 0x550, 0x2000, 1, -1);
-            func_801E7704(&work->pos14, &rot, &sc, 0x4B0, 0x2BC, 0x300, 0x300, 0x80, 0x1C, 0x3D05, 0x80, 0x80,
+            fxm_drawTexCylinder(&work->pos14, &rot, &sc, 0x4B0, 0x2BC, 0x300, 0x300, 0x80, 0x1C, 0x3D05, 0x80, 0x80,
                           (work->unk4 << 9) + 0xAA0, 0x2000, 1, -1);
             ex->btlfx_drawBackdrop((BtlBgLayers *)ex->btlfx_getFileData(entry->file, 7), work->unk4);
             if (frame >= 12) {

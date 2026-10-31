@@ -47,7 +47,7 @@ typedef struct {
 extern BtlModel fx_086_effModels[];
 extern SVECTOR D_801EA3BC[];
 extern SVECTOR D_801EB5BC[64];
-void func_801E7704(SVECTOR *pos, SVECTOR *rot, VECTOR *scale, s32 r0, s32 r1, s32 w0, s32 w1, s32 c, s32 tpage,
+static void fxm_drawTexCylinder(SVECTOR *pos, SVECTOR *rot, VECTOR *scale, s32 r0, s32 r1, s32 w0, s32 w1, s32 c, s32 tpage,
                    s32 clut, s32 u, s32 v, s32 ang, s32 dy, s32 abr, s32 dang);
 
 #endif

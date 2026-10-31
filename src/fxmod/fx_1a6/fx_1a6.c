@@ -1,18 +1,18 @@
 #include "fxmod/fx_1a6.h"
 
 s32 fx_1a6_op80ParticleMotion0(Pool30Entry *pt, s32 arg1, SVECTOR *pos, s32 arg3, s32 frame, s32 n) {
-    return func_801E77C4(pt, pos, &D_801EDD28[0], &D_801EDD48[0], frame, n);
+    return fxm_lerpParticle(pt, pos, &D_801EDD28[0], &D_801EDD48[0], frame, n);
 }
 
 s32 fx_1a6_op80ParticleMotion1(Pool30Entry *pt, s32 arg1, SVECTOR *pos, s32 arg3, s32 frame, s32 n) {
-    return func_801E77C4(pt, pos, &D_801EDD28[1], &D_801EDD48[1], frame, n);
+    return fxm_lerpParticle(pt, pos, &D_801EDD28[1], &D_801EDD48[1], frame, n);
 }
 
 s32 fx_1a6_op80ParticleMotion2(Pool30Entry *pt, s32 arg1, SVECTOR *pos, s32 arg3, s32 frame, s32 n) {
-    return func_801E77C4(pt, pos, &D_801EDD28[2], &D_801EDD48[2], frame, n);
+    return fxm_lerpParticle(pt, pos, &D_801EDD28[2], &D_801EDD48[2], frame, n);
 }
 
-s32 func_801E77C4(Pool30Entry *e, SVECTOR *pos, SVECTOR *from, SVECTOR *to, s32 frame, s32 frames) {
+static s32 fxm_lerpParticle(Pool30Entry *e, SVECTOR *pos, SVECTOR *from, SVECTOR *to, s32 frame, s32 frames) {
     BtlfxExports *ex = BTLFX_EXPORTS(fx_1a6_env);
     s32 t = frame << 9;
 

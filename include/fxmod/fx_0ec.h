@@ -54,10 +54,10 @@ extern Fx0ecShard D_801ECAB0[300];
 
 static s32 fx_0ec_op80PoolTask(s32 mode, SVECTOR *pos, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 frame);
 void func_801E77FC(SVECTOR *pos);
-void func_801E798C(s32 model, SVECTOR *center);
+static void fxm_shatterModel(s32 model, SVECTOR *center);
 void func_801E7B84(void);
 s32 func_801E7F00(u8 *buf);
-s32 func_801E7F40(s32 model);
+static s32 fxm_splitModelAdd(s32 model);
 Fx0ecShard *func_801E802C(void);
 s32 func_801E8064(s32 y, SVECTOR *center);
 void func_801E82D8(void);

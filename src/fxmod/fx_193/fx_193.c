@@ -1,14 +1,14 @@
 #include "fxmod/fx_193.h"
 
 static s32 fx_193_op80ParticleMotion0(Pool30Entry *e, Pool6CEntry *owner, SVECTOR *pos, s32 arg3, s32 frame, s32 frames) {
-    return func_801E7794(e, pos, &D_801E7CBC, &D_801E7CC4, -0x320, frame, frames);
+    return fxm_wobbleParticle(e, pos, &D_801E7CBC, &D_801E7CC4, -0x320, frame, frames);
 }
 
 static s32 fx_193_op80ParticleMotion1(Pool30Entry *e, Pool6CEntry *owner, SVECTOR *pos, s32 arg3, s32 frame, s32 frames) {
-    return func_801E7794(e, pos, &D_801E7CCC, &D_801E7CD4, 0x320, frame, frames);
+    return fxm_wobbleParticle(e, pos, &D_801E7CCC, &D_801E7CD4, 0x320, frame, frames);
 }
 
-s32 func_801E7794(Pool30Entry *e, SVECTOR *pos, SVECTOR *from, SVECTOR *to, s32 amp, s32 frame, s32 frames) {
+static s32 fxm_wobbleParticle(Pool30Entry *e, SVECTOR *pos, SVECTOR *from, SVECTOR *to, s32 amp, s32 frame, s32 frames) {
     s32 t = (frame << 12) / 7;
     BtlfxExports *ex = BTLFX_EXPORTS(fx_193_env);
 

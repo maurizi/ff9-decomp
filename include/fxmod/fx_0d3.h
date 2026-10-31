@@ -36,7 +36,7 @@ typedef struct {
     "sw\t$12, 0(%0)" \
     : : "r"(r0) : "$12", "memory")
 
-void func_801E8628(SVECTOR *a, SVECTOR *b, s32 n, s32 tpage, s32 clut, s32 u, s32 v, s32 w, s32 h, s32 p,
+static void fxm_drawTexRibbonTrail(SVECTOR *a, SVECTOR *b, s32 n, s32 tpage, s32 clut, s32 u, s32 v, s32 w, s32 h, s32 p,
                    Fx0d3Seg *buf, s32 abr, s32 k);
 typedef struct {
     s32 vx;

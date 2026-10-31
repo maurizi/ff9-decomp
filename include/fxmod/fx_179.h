@@ -43,9 +43,9 @@ extern u8 D_801EAB6C[];
 extern Fx179Tri D_801E8A1C[160];
 extern Fx179Shard D_801E991C[160];
 
-void func_801E7704(s32 model, SVECTOR *center);
+static void fxm_shatterModel(s32 model, SVECTOR *center);
 void func_801E78E8(void);
-void func_801E7B68(SVECTOR *pos, SVECTOR *rot, VECTOR *scale, s32 r0, s32 r1, s32 w0, s32 w1, s32 c, s32 tpage,
+static void fxm_drawTexCylinder(SVECTOR *pos, SVECTOR *rot, VECTOR *scale, s32 r0, s32 r1, s32 w0, s32 w1, s32 c, s32 tpage,
                    s32 clut, s32 u, s32 v, s32 ang, s32 dy, s32 abr, s32 dang);
 s32 fx_179_op80(s32 mode, Fx179Work *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *arg4);
 

@@ -48,7 +48,7 @@ void func_801E77FC(SVECTOR *pos) {
     }
 }
 
-void func_801E798C(s32 model, SVECTOR *center) {
+static void fxm_shatterModel(s32 model, SVECTOR *center) {
     Fx0ecTri *t = D_801EB3D0;
     Fx0ecTri *u = D_801EB3D0;
     BtlfxExports *ex = BTLFX_EXPORTS(fx_0ec_env);
@@ -191,7 +191,7 @@ s32 func_801E7F00(u8 *buf) {
     }
 }
 
-s32 func_801E7F40(s32 model) {
+static s32 fxm_splitModelAdd(s32 model) {
     BtlfxExports *ex = BTLFX_EXPORTS(fx_0ec_env);
     Fx0ecSplit *sp = &D_801ECA90;
     Fx0ecVertex *v = (Fx0ecVertex *)sp->unk10;
@@ -580,12 +580,12 @@ s32 fx_0ec_op80(s32 mode, Fx0ecWork80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             entry->frame = -1;
             ex->btlfx_drawScreenTint((u32 *)env->ot + 2, 2, 100, 100, 0);
             func_801E7F00(D_801E98D0);
-            func_801E7F40(work->model38);
-            func_801E7F40(work->model3C);
+            fxm_splitModelAdd(work->model38);
+            fxm_splitModelAdd(work->model3C);
             c[0].vx = 0;
             c[0].vy = 0;
             c[0].vz = 0;
-            func_801E798C(work->model4C, c);
+            fxm_shatterModel(work->model4C, c);
         }
         break;
     case 3:

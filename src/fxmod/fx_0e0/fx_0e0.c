@@ -299,7 +299,7 @@ static void fxm_drawBulgeGrid24(SVECTOR *pos, SVECTOR *rot, s32 scale, s32 c, s3
     }
 }
 
-void func_801E8430(Unk80100C78Entry *entry, Fx0e0Bolt *bolt, SVECTOR *from, SVECTOR *to, s32 amp0, s32 amp1, s32 ang,
+static void fxm_drawOffsetTrail(Unk80100C78Entry *entry, Fx0e0Bolt *bolt, SVECTOR *from, SVECTOR *to, s32 amp0, s32 amp1, s32 ang,
                    s32 dang, s32 arg8, s32 arg9, s32 pad) {
     BtlfxExports *ex = BTLFX_EXPORTS(fx_0e0_env);
     SVECTOR p;
@@ -677,7 +677,7 @@ s32 fx_0e0_op80(s32 mode, Fx0e0Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
                 ((s32 *)&to)[0] = work->unk24.vx;
                 ((s32 *)&to)[1] = work->unk24.vy;
                 ex->btlfx_offsetPoint(&from, (s32)&to, 0x1000, (XY32 *)&work->rot3C, 0x3000, r2);
-                func_801E8430(entry, &D_801EA928[i], &from, &to, 0x100, 0x200, r2, 0xC0, 0, d1, (ex->btlfx_rand() & 0x1F) + 0x58);
+                fxm_drawOffsetTrail(entry, &D_801EA928[i], &from, &to, 0x100, 0x200, r2, 0xC0, 0, d1, (ex->btlfx_rand() & 0x1F) + 0x58);
             }
             if (frame >= 0x42) {
                 work->unk0 = 7;

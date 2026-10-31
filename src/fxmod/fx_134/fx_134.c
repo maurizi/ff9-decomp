@@ -299,7 +299,7 @@ static void fxm_drawBulgeGrid24(SVECTOR *pos, SVECTOR *rot, s32 scale, s32 c, s3
     }
 }
 
-void func_801E8460(Unk80100C78Entry *entry, Fx134Bolt *bolt, SVECTOR *from, SVECTOR *to, s32 amp0, s32 amp1, s32 ang,
+static void fxm_drawOffsetTrail(Unk80100C78Entry *entry, Fx134Bolt *bolt, SVECTOR *from, SVECTOR *to, s32 amp0, s32 amp1, s32 ang,
                    s32 dang, s32 arg8, s32 arg9, s32 pad) {
     BtlfxExports *ex = BTLFX_EXPORTS(fx_134_env);
     SVECTOR p;
@@ -1112,7 +1112,7 @@ s32 fx_134_op80(s32 mode, Fx134Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
                     BTLFX_COPY_SVEC(&to, &work->pos8);
                     to.vx += ex->math_cos(k_c5_p2) >> 1;
                     to.vz += ex->math_sin(k_c5_p2) >> 1;
-                    func_801E8460(entry, bolt, &from, &to, 0x100, 0x200, k_c5_p2, 0xC0, 0, n_c5, (ex->btlfx_rand() & 0xF) + 0xF);
+                    fxm_drawOffsetTrail(entry, bolt, &from, &to, 0x100, 0x200, k_c5_p2, 0xC0, 0, n_c5, (ex->btlfx_rand() & 0xF) + 0xF);
                     k_c5_p2 += 0x554 + (ex->btlfx_rand() & 0xFF);
                 }
                 rot2.vx = -0x400;
@@ -1244,7 +1244,7 @@ s32 fx_134_op80(s32 mode, Fx134Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
                     ((s32 *)&to)[0] = work->unk24.vx;
                     ((s32 *)&to)[1] = work->unk24.vy;
                     ex->btlfx_offsetPoint(&from, (s32)&to, 0x1000, (XY32 *)&work->rot3C, 0x3000, r6);
-                    func_801E8460(entry, &D_801EC8F4[i_c6], &from, &to, 0x100, 0x200, r6, 0xC0, 0, d6, (ex->btlfx_rand() & 0x1F) + 0x58);
+                    fxm_drawOffsetTrail(entry, &D_801EC8F4[i_c6], &from, &to, 0x100, 0x200, r6, 0xC0, 0, d6, (ex->btlfx_rand() & 0x1F) + 0x58);
                 }
                 if (frame >= 0x38) {
                     work->unk0 = 7;

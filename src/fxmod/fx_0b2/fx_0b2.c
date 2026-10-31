@@ -1,6 +1,6 @@
 #include "fxmod/fx_0b2.h"
 
-void func_801E7704(Unk80100C78Entry *entry, Fx0b2Trail *trail, SVECTOR *from, SVECTOR *to, s32 arg4, s32 arg5, s32 arg6,
+static void fxm_drawOffsetTrail(Unk80100C78Entry *entry, Fx0b2Trail *trail, SVECTOR *from, SVECTOR *to, s32 arg4, s32 arg5, s32 arg6,
                    s32 arg7, s32 arg8, s32 arg9, s32 arg10) {
     BtlfxExports *ex = BTLFX_EXPORTS(fx_0b2_env);
     SVECTOR pos;
@@ -372,7 +372,7 @@ s32 fx_0b2_op80(s32 mode, Fx0b2Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
                 to.vx += (ex->math_cos(ang) * d) >> 12;
                 to.vz += (ex->math_sin(ang) * d) >> 12;
                 e = ang + ex->btlfx_rand();
-                func_801E7704(entry, p, &from, &to, 0x100, 0x180, e, 0x100, 0, h, (ex->btlfx_rand() & 0xF) + 0xF);
+                fxm_drawOffsetTrail(entry, p, &from, &to, 0x100, 0x180, e, 0x100, 0, h, (ex->btlfx_rand() & 0xF) + 0xF);
                 p++;
                 ang += 0x300 + (ex->btlfx_rand() & 0x3FF);
             } while (i < 3);

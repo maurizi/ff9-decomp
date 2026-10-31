@@ -34,7 +34,7 @@ extern SVECTOR D_801EDD28[3]; /* from */
 extern SVECTOR D_801EDD48[3]; /* to */
 extern SVECTOR D_801EDD68[3];
 
-s32 func_801E77C4(Pool30Entry *e, SVECTOR *pos, SVECTOR *from, SVECTOR *to, s32 frame, s32 frames);
+static s32 fxm_lerpParticle(Pool30Entry *e, SVECTOR *pos, SVECTOR *from, SVECTOR *to, s32 frame, s32 frames);
 static void fxm_startUnitMotion(s32 unit, s32 motion);
 static s32 fxm_isMotionDone(s32 unit);
 static void fxm_startMotion2IfActive(s32 unit);

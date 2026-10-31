@@ -30,7 +30,7 @@ void func_801E7704(Unk80100C78Entry *entry, Fx195Trail *trail, SVECTOR *from, SV
     } while (i < 13);
 }
 
-void func_801E78A4(Unk80100C78Entry *entry, Fx195Trail57 *trail, SVECTOR *from, SVECTOR *to, s32 arg4, s32 arg5,
+static void fxm_drawOffsetTrail0(Unk80100C78Entry *entry, Fx195Trail57 *trail, SVECTOR *from, SVECTOR *to, s32 arg4, s32 arg5,
                    s32 arg6, s32 arg7, s32 arg8, s32 arg9, s32 arg10) {
     BtlfxExports *ex = BTLFX_EXPORTS(fx_195_env);
     SVECTOR pos;
@@ -61,7 +61,7 @@ void func_801E78A4(Unk80100C78Entry *entry, Fx195Trail57 *trail, SVECTOR *from, 
     ex->btlfx_drawTrail((u8 *)ex->btlfx_getFileData(entry->file, 0x18), 0, NULL, arg8, 0x1000, arg9, 1, (u8 *)trail, 0);
 }
 
-void func_801E7AA0(Unk80100C78Entry *entry, Fx195Trail *trail, SVECTOR *from, SVECTOR *to, s32 arg4, s32 arg5, s32 arg6,
+static void fxm_drawOffsetTrail1(Unk80100C78Entry *entry, Fx195Trail *trail, SVECTOR *from, SVECTOR *to, s32 arg4, s32 arg5, s32 arg6,
                    s32 arg7, s32 arg8, s32 arg9, s32 arg10) {
     BtlfxExports *ex = BTLFX_EXPORTS(fx_195_env);
     SVECTOR pos;
@@ -92,7 +92,7 @@ void func_801E7AA0(Unk80100C78Entry *entry, Fx195Trail *trail, SVECTOR *from, SV
     ex->btlfx_drawTrail((u8 *)ex->btlfx_getFileData(entry->file, 0x19), 0, NULL, arg8, 0x1000, arg9, 1, (u8 *)trail, 0);
 }
 
-void func_801E7C98(SVECTOR *pos, SVECTOR *rot, VECTOR *scale, s32 r0, s32 r1, s32 w0, s32 w1, s32 c, s32 tpage,
+static void fxm_drawTexCylinder(SVECTOR *pos, SVECTOR *rot, VECTOR *scale, s32 r0, s32 r1, s32 w0, s32 w1, s32 c, s32 tpage,
                    s32 clut, s32 u, s32 v, s32 ang, s32 dy, s32 abr, s32 dang) {
     BtlfxExports *ex = BTLFX_EXPORTS(fx_195_env);
     Fx195Rgbc c0;
@@ -405,7 +405,7 @@ s32 fx_195_op80(s32 mode, Fx195Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             ex->btlfx_pointAhead((s16 *)&v1, (s16 *)&work->rot78, t - 0x2800, (s16 *)&v2);
             r = (t >> 2) + 0x400;
             for (i = 0, ang = work->unk4 << 8; i < 3; i++, ang += 0x554) {
-                func_801E78A4(entry, &D_801EAB08[i], &v1, &v2, r, r, ang, 0xC0, 0, ex->btlfx_randCentered(0x400) + 0xC00,
+                fxm_drawOffsetTrail0(entry, &D_801EAB08[i], &v1, &v2, r, r, ang, 0xC0, 0, ex->btlfx_randCentered(0x400) + 0xC00,
                               0x84);
             }
             env->otZ = 0x200;
@@ -579,9 +579,9 @@ s32 fx_195_op80(s32 mode, Fx195Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             r3.vz = 0;
             d = (((t >> 3) + 0x500) * 4) / 3;
             f = ex->math_cos(a_340) >> 5;
-            func_801E7C98(&work->pos10, &r3, &sc, b, a_340 + 0xA00, e >> 1, e, f, 0x18, 0x3E81, 0, 0xC0, -frame << 7, d, 1,
+            fxm_drawTexCylinder(&work->pos10, &r3, &sc, b, a_340 + 0xA00, e >> 1, e, f, 0x18, 0x3E81, 0, 0xC0, -frame << 7, d, 1,
                           1);
-            func_801E7C98(&work->pos10, &r3, &sc, b, a_340 + 0xA00, e >> 1, e, f, 0x18, 0x3E81, 0, 0xC0, frame * 0xA0, d, 1,
+            fxm_drawTexCylinder(&work->pos10, &r3, &sc, b, a_340 + 0xA00, e >> 1, e, f, 0x18, 0x3E81, 0, 0xC0, frame * 0xA0, d, 1,
                           -1);
             if (frame < 0x41) {
                 g_356 = frame << 6;
@@ -652,12 +652,12 @@ s32 fx_195_op80(s32 mode, Fx195Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             ang = (work->unk4 << 9) + (ex->btlfx_rand() & 0x1FF);
             r = (ex->math_cos(t >> 2) * 0xF5) >> 12;
             for (i = 0; i < 2; i++, ang += 0x800) {
-                func_801E78A4(entry, &D_801EAB08[i], &v1, &v2, (s_421 * 3) >> 2, s_421, ang, 0xC0, 0, 0x1000, r);
+                fxm_drawOffsetTrail0(entry, &D_801EAB08[i], &v1, &v2, (s_421 * 3) >> 2, s_421, ang, 0xC0, 0, 0x1000, r);
             }
             if (frame < 0x26) {
                 s_421 = (s_421 * 3) >> 1;
                 r = (ex->math_cos(t >> 1) * 0xF5) >> 12;
-                func_801E78A4(entry, &D_801EAEA0, &v1, &v2, (s_421 * 3) >> 2, s_421, -ang, 0xC0, 0, 0x1000, r);
+                fxm_drawOffsetTrail0(entry, &D_801EAEA0, &v1, &v2, (s_421 * 3) >> 2, s_421, -ang, 0xC0, 0, 0x1000, r);
             }
             s = 0x1000 - t;
             env->otZ = 0x300;
@@ -675,7 +675,7 @@ s32 fx_195_op80(s32 mode, Fx195Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
                 v2.vx += ex->math_sin(ang);
                 v2.vz += ex->math_cos(ang);
                 v2.vy -= 0xF00;
-                func_801E7AA0(entry, &D_801EA808[i], &v2, &v1, 0x80, 0x200, ang, 0xFF, 0, ex->math_cos(t >> 2), r);
+                fxm_drawOffsetTrail1(entry, &D_801EA808[i], &v2, &v1, 0x80, 0x200, ang, 0xFF, 0, ex->math_cos(t >> 2), r);
             }
             env->otZ = 0;
             if (frame == 0x31) {

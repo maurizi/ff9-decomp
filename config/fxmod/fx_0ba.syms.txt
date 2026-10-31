@@ -14,3 +14,4 @@ fx_0ba_op85PoolTask = 0x801EBFB8; // type:func [code] btlfx pool element functio
 fx_0ba_env = 0x801EC5F0; // [code] the effect env (Unk800F78A4) the op handlers store in mode 1, used by the helpers for BTLFX_EXPORTS
 fx_0ba_effModels0 = 0x801EC600; // [code] effect model buffers given to btlfx_initEffModels (BtlModel per slot)
 fx_0ba_effModels1 = 0x801ECB90; // [code] effect model buffers given to btlfx_initEffModels (BtlModel per slot)
+fxm_drawOffsetTrail = 0x801E8778; // type:func [code] trail strip from to (points lerped along, pushed sideways by btlfx_offsetPoint after btlfx_aimAngles), drawn with btlfx_drawTrail

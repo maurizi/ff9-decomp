@@ -5,3 +5,4 @@ fx_193_op81 = 0x801E7AD0; // type:func [code] header op entry 1, effect script o
 fx_193_op80ParticleMotion0 = 0x801E7704; // type:func [code] particle motion callback (EffMotion kind 0xFF, called by btlfx_updateParticles, nonzero ends the particle), installed by fx_193_op80
 fx_193_op80ParticleMotion1 = 0x801E774C; // type:func [code] particle motion callback (EffMotion kind 0xFF, called by btlfx_updateParticles, nonzero ends the particle), installed by fx_193_op80
 fx_193_env = 0x801E7CB4; // [code] the effect env (Unk800F78A4) the op handlers store in mode 1, used by the helpers for BTLFX_EXPORTS
+fxm_wobbleParticle = 0x801E7794; // type:func [code] particle motion core, from to over 7 frames with a sine sway in x (halved from frame 4)

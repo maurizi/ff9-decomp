@@ -432,7 +432,7 @@ s32 fx_0b8_op80(s32 mode, Fx0b8Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
         if (work->unk0[0x12] != 0) {
             work->unk0[0x12]--;
             if (work->unk0[0x12] >= 0x29) {
-                func_801EA4E0(0, 0xD0, work->unk0[0x12] - 0x28, 8, 1, 0);
+                fxm_tintScreenLerp(0, 0xD0, work->unk0[0x12] - 0x28, 8, 1, 0);
             }
             for (i = 0; i < 4; i++) {
                 bd = &D_801EA6D8[i];
@@ -714,7 +714,7 @@ s32 fx_0b8_op80(s32 mode, Fx0b8Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
         }
         if (work->unk0[7] != 0) {
             work->unk0[7]--;
-            func_801EA4E0(0xFF, 0, work->unk0[7], 8, 1, 0);
+            fxm_tintScreenLerp(0xFF, 0, work->unk0[7], 8, 1, 0);
         }
         if (work->unk0[0xD] != 0) {
             s32 sh;
@@ -882,7 +882,7 @@ void func_801EA424(s32 ot) {
     ex->btlfx_addPrim(0x08000000, ot * 4, p);
 }
 
-void func_801EA4E0(s32 a, s32 b, s32 t, s32 n, s32 mode, s32 ot) {
+static void fxm_tintScreenLerp(s32 a, s32 b, s32 t, s32 n, s32 mode, s32 ot) {
     Unk800F78A4 *env = fx_0b8_env;
     BtlfxExports *ex = BTLFX_EXPORTS(env);
     s32 v = ex->btlfx_lerpRatio(a, b, t, n);

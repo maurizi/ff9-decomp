@@ -1,22 +1,22 @@
 #include "fxmod/fx_0ea.h"
 
 s32 fx_0ea_op81ParticleMotion0(Pool30Entry *pt, s32 arg1, SVECTOR *pos, s32 arg3, s32 frame, s32 n) {
-    return func_801E77D4(pt, pos, &D_801E7E64[0], frame, n);
+    return fxm_arcParticle(pt, pos, &D_801E7E64[0], frame, n);
 }
 
 s32 fx_0ea_op81ParticleMotion1(Pool30Entry *pt, s32 arg1, SVECTOR *pos, s32 arg3, s32 frame, s32 n) {
-    return func_801E77D4(pt, pos, &D_801E7E64[1], frame, n);
+    return fxm_arcParticle(pt, pos, &D_801E7E64[1], frame, n);
 }
 
 s32 fx_0ea_op81ParticleMotion2(Pool30Entry *pt, s32 arg1, SVECTOR *pos, s32 arg3, s32 frame, s32 n) {
-    return func_801E77D4(pt, pos, &D_801E7E64[2], frame, n);
+    return fxm_arcParticle(pt, pos, &D_801E7E64[2], frame, n);
 }
 
 s32 fx_0ea_op81ParticleMotion3(Pool30Entry *pt, s32 arg1, SVECTOR *pos, s32 arg3, s32 frame, s32 n) {
-    return func_801E77D4(pt, pos, &D_801E7E64[3], frame, n);
+    return fxm_arcParticle(pt, pos, &D_801E7E64[3], frame, n);
 }
 
-s32 func_801E77D4(Pool30Entry *pt, SVECTOR *pos, SVECTOR *to, s32 frame, s32 n) {
+static s32 fxm_arcParticle(Pool30Entry *pt, SVECTOR *pos, SVECTOR *to, s32 frame, s32 n) {
     BtlfxExports *ex = BTLFX_EXPORTS(fx_0ea_env);
     s32 t = (frame << 12) / 18;
 

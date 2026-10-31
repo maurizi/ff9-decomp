@@ -53,7 +53,7 @@ extern s32 D_801EE0F4[];
 extern SVECTOR D_801EF174; /* origin */
 extern SVECTOR D_801EF17C;
 
-s32 func_801E78A4(Pool30Entry *e, SVECTOR *pos, Fx1b4Path *path, s32 frame, s32 frames);
+static s32 fxm_followPathParticle(Pool30Entry *e, SVECTOR *pos, Fx1b4Path *path, s32 frame, s32 frames);
 static void fxm_posPathInit(Fx1b4Path *path, u16 *data);
 static s32 fxm_posPathGet(Fx1b4Path *path, s32 t, SVECTOR *out);
 

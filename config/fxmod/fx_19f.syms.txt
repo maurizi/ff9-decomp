@@ -10,3 +10,4 @@ fxm_drawJaggedTrailBranch = 0x801E9C08; // type:func [code] fxm_drawJaggedTrail 
 fx_19f_op83PoolTask = 0x801E9D20; // type:func [code] btlfx pool element function (btlfx_poolInit elemFn, run by btlfx_poolUpdate with mode, element, env, task, frame), installed by fx_19f_op83
 fx_19f_env = 0x801EAA48; // [code] the effect env (Unk800F78A4) the op handlers store in mode 1, used by the helpers for BTLFX_EXPORTS
 fx_19f_effModels = 0x801EAB28; // [code] effect model buffers given to btlfx_initEffModels (BtlModel per slot)
+fxm_drawOffsetTrail = 0x801E7894; // type:func [code] trail strip from to (points lerped along, pushed sideways by btlfx_offsetPoint after btlfx_aimAngles), drawn with btlfx_drawTrail

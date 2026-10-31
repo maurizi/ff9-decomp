@@ -1,6 +1,6 @@
 #include "fxmod/fx_0fb_1.h"
 
-void func_801EC738(SVECTOR *pos, SVECTOR *rot, VECTOR *scale, s32 r, s32 p, CVECTOR *rgb, s32 tpage, s32 clut, s32 u,
+static void fxm_drawTexCylinder(SVECTOR *pos, SVECTOR *rot, VECTOR *scale, s32 r, s32 p, CVECTOR *rgb, s32 tpage, s32 clut, s32 u,
                    s32 v, s32 dang, s32 abr) {
     Unk800F78A4 *env = fx_0fb_1_env;
     BtlfxExports *ex = BTLFX_EXPORTS(env);
@@ -849,7 +849,7 @@ s32 fx_0fb_1_op80(s32 mode, Fx0fb1Op80Work *work, Unk800F78A4 *env, Unk80100C78E
         work->rot8C.vz += 0x18;
         ex->btlfx_sampleGradient(D_801F0834, &col, frame);
         f6 = t >> 2;
-        func_801EC738(&work->unkC, &work->rot8C, (VECTOR *)&work->unk80, 0x1C00, 0x1800, &col, 0x1B, 0x3E80, 0, 0,
+        fxm_drawTexCylinder(&work->unkC, &work->rot8C, (VECTOR *)&work->unk80, 0x1C00, 0x1800, &col, 0x1B, 0x3E80, 0, 0,
                       ((ex->math_sin(f6) * 0x58) >> 12) + 0x40, 0xFF);
         ex->btlfx_drawScrollMove(work->unk4 * 7, 0x2C0, 0x100, 0x20, 0x80, 0x360, 0x100);
         if (frame < 0x20) {

@@ -6,3 +6,4 @@ fxm_drawRibbonTrail = 0x801E7718; // type:func [code] pushes the a-b edge into a
 fx_1a2_op80PoolTask = 0x801E804C; // type:func [code] btlfx pool element function (btlfx_poolInit elemFn, run by btlfx_poolUpdate with mode, element, env, task, frame), installed by fx_1a2_op80
 fx_1a2_env = 0x801E9844; // [code] the effect env (Unk800F78A4) the op handlers store in mode 1, used by the helpers for BTLFX_EXPORTS
 fx_1a2_effModels = 0x801EB2C4; // [code] effect model buffers given to btlfx_initEffModels (BtlModel per slot)
+fxm_shatterModel = 0x801E7B88; // type:func [code] splits a model into triangles and starts one flying piece per triangle, moving away from center

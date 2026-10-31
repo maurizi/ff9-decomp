@@ -1,14 +1,14 @@
 #include "fxmod/fx_0aa.h"
 
 static s32 fx_0aa_op80ParticleMotion0(Pool30Entry *pt, s32 arg1, SVECTOR *pos, s32 arg3, s32 frame, s32 n) {
-    return func_801E7784(pt, pos, &D_801E9088, &D_801E9098, frame, n);
+    return fxm_lerpParticle(pt, pos, &D_801E9088, &D_801E9098, frame, n);
 }
 
 static s32 fx_0aa_op80ParticleMotion1(Pool30Entry *pt, s32 arg1, SVECTOR *pos, s32 arg3, s32 frame, s32 n) {
-    return func_801E7784(pt, pos, &D_801E9090, &D_801E90A0, frame, n);
+    return fxm_lerpParticle(pt, pos, &D_801E9090, &D_801E90A0, frame, n);
 }
 
-s32 func_801E7784(Pool30Entry *pt, SVECTOR *pos, SVECTOR *from, SVECTOR *to, s32 frame, s32 n) {
+static s32 fxm_lerpParticle(Pool30Entry *pt, SVECTOR *pos, SVECTOR *from, SVECTOR *to, s32 frame, s32 n) {
     BTLFX_EXPORTS(fx_0aa_env)->btlfx_lerpVec((s16 *)from, (s16 *)to, frame << 9, (s16 *)pos);
     pt->pos.vx = pos->vx << 12;
     pt->pos.vy = pos->vy << 12;

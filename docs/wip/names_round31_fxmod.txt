@@ -921,3 +921,28 @@ fx_1ef_emitter7  <-  fx_1ef:D_801EA8C4
 fx_1ef_emitter8  <-  fx_1ef:D_801EA8D4
 fx_1ef_emitter9  <-  fx_1ef:D_801EA8E4
 fx_1ef_emitter10  <-  fx_1ef:D_801EA8F4
+
+## Batch 8: particle motion cores
+fxm_lerpParticle  <-  fx_0aa:func_801E7784 fx_1a6:func_801E77C4 fx_127:func_801E7818 fx_191:func_801E7870
+fxm_arcParticle  <-  fx_0ea:func_801E77D4
+fxm_wobbleParticle  <-  fx_193:func_801E7794
+fxm_followPathParticle  <-  fx_1b4:func_801E78A4 fx_1a0:func_801E789C fx_1e7:func_801E776C fx_0b4:func_801E793C
+fxm_followPathParticle0  <-  fx_191:func_801E7A00
+fxm_followPathParticle1  <-  fx_191:func_801E7B24
+fxm_boneLerpParticle  <-  fx_11d:func_801E77A4
+fxm_lineOrbitParticle0  <-  fx_1a7:func_801E7968
+fxm_lineOrbitParticle1  <-  fx_1a7:func_801E7D18
+
+## Batch 9: trail, ribbon and cylinder drawers, shatter helpers
+fxm_drawOffsetTrail  <-  fx_07d:func_801E9834 fx_0b2:func_801E7704 fx_0ba:func_801E8778 fx_0df:func_801E93F4 fx_0e0:func_801E8430 fx_134:func_801E8460 fx_19f:func_801E7894
+fxm_drawOffsetTrail0  <-  fx_0e3_0:func_801E7B40 fx_0e3_1:func_801EC71C fx_195:func_801E78A4
+fxm_drawOffsetTrail1  <-  fx_0e3_0:func_801E7D40 fx_0e3_1:func_801EC910 fx_195:func_801E7AA0
+fxm_drawOffsetTrail2  <-  fx_0e3_1:func_801ECAF8
+fxm_drawOffsetTrail3  <-  fx_0e3_1:func_801ECDEC
+fxm_drawTexRibbonTrail  <-  fx_0d3:func_801E8628 fx_0e1_0:func_801E7CB4 fx_0e3_0:func_801E7730
+fxm_drawTexCylinder  <-  fx_086:func_801E7704 fx_0e3_1:func_801ECFE4 fx_0f5:func_801E7704 fx_179:func_801E7B68 fx_195:func_801E7C98 fx_1a8:func_801E7950 fx_0fb_1:func_801EC738 fx_17a:func_801E7718
+fxm_tintScreenLerp  <-  fx_0b8:func_801EA4E0
+fxm_randDiscPoints  <-  fx_17d_0:func_801E7894
+fxm_drawStreakField  <-  fx_17d_0:func_801E79E8
+fxm_splitModelAdd  <-  fx_0ec:func_801E7F40 fx_1b6:func_801E774C
+fxm_shatterModel  <-  fx_179:func_801E7704 fx_1a2:func_801E7B88 fx_0ec:func_801E798C

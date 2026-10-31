@@ -82,7 +82,7 @@ static void fxm_drawRibbonTrail(SVECTOR *a, SVECTOR *b, u32 n, CVECTOR *ca, CVEC
     }
 }
 
-void func_801E7B88(s32 model, SVECTOR *center) {
+static void fxm_shatterModel(s32 model, SVECTOR *center) {
     BtlfxExports *ex = BTLFX_EXPORTS(fx_1a2_env);
     SVECTOR v;
     Fx1a2Tri *t;
@@ -480,7 +480,7 @@ s32 fx_1a2_op80(s32 mode, Fx1a2Work80 *w, Unk800F78A4 *env, Unk80100C78Entry *en
                 ((SVECTOR *)&m)->vx = 0;
                 ((SVECTOR *)&m)->vy = 0;
                 ((SVECTOR *)&m)->vz = 0;
-                func_801E7B88(w->model4C, (SVECTOR *)&m);
+                fxm_shatterModel(w->model4C, (SVECTOR *)&m);
                 w->unk22 = w->pos8.vy;
                 w->unk28 = -0x28;
                 w->unk20 = w->pos8.vx;

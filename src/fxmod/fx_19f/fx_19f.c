@@ -38,7 +38,7 @@ static void fxm_drawCenterBand(u32 *ot, s32 tpage, s32 w, s32 r, s32 g, s32 b) {
     }
 }
 
-void func_801E7894(Unk80100C78Entry *entry, Fx19fTrail *trail, SVECTOR *from, SVECTOR *to, s32 amp, s32 arg5, s32 arg6,
+static void fxm_drawOffsetTrail(Unk80100C78Entry *entry, Fx19fTrail *trail, SVECTOR *from, SVECTOR *to, s32 amp, s32 arg5, s32 arg6,
                    s32 arg7, s32 arg8, s32 arg9) {
     BtlfxExports *ex = BTLFX_EXPORTS(fx_19f_env);
     SVECTOR pos;
@@ -539,7 +539,7 @@ s32 fx_19f_op81(s32 mode, Fx19fWork81 *work, Unk800F78A4 *env, Unk80100C78Entry 
                 work->rot60.vx -= 0x400;
                 ex->btlfx_pointAhead((s16 *)&a, (s16 *)&work->rot60, 0x5DC, (s16 *)&a);
                 work->rot60.vx += 0x400;
-                func_801E7894(entry, &D_801EAA58, &a, &b, g, n3, 0xF0, work->unk4 & 7, f, 0x40);
+                fxm_drawOffsetTrail(entry, &D_801EAA58, &a, &b, g, n3, 0xF0, work->unk4 & 7, f, 0x40);
             }
         }
         env->otZ = 0x1EA;
