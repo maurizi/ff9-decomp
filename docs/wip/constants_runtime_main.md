@@ -1,5 +1,7 @@
 # Main-exe constants that need a runtime check
 
+Runtime results: docs/runtime-findings.md, "Constants runtime pass (2026-10-31)" (applied; the rows it left literal are listed there).
+
 Values left as literals (or named only partly) because the code alone doesn't show what they mean.
 Each entry: value, field, hypothesis, how to observe it. The emulator wasn't used for any of the names in
 `include/ff9.h`; everything named there is from the code.

@@ -2706,3 +2706,136 @@ Encounters entered with `tools/rt/enter_battle.py ENC --disc 1 --field 351 --bas
 - Cross on Attack: the enemy gets 0x20000000 (BTL_UNIT_TARGETED, cursor on it); confirming clears it. About 80 frames
   later the enemy has 0x20000 (BTL_UNIT_HIT_MOTION) and popupFlags 1 (BTL_POPUP_HP, damage number), then 0x80000
   (BTL_UNIT_CMD_WAITING: its own command queued); all three are clear again 40-60 frames later. confidence: high.
+
+## Constants runtime pass (2026-10-31): rows of docs/wip/constants_runtime_{main,overlays}.md  (status: **applied**)
+Applied: CFG_SHIFT_BTL_MSG_SPEED, AKAO_MODE_STEREO/MONO, AKAO_LEGATO/_TIED/_SE, TEXT_PAL_*, DIGITS_*, UI_LABEL_*,
+UI_SPRITE_<button>, TEXT_BTN_* (plus TEXT_BTN_START 0x38 / TEXT_BTN_SELECT 0x39, which text_buildCode maps to the
+START / SELECT sprites) and MODEL_SLOT_LOADED/NO_SHADOW in ff9.h; FLD_MAP_ACTIVE (named instead of FLD_MAP_NORMAL)
+and FLD_OBJ_NO_IDLE_TEXANIM in ovl_0a.h; WM_ACTOR_NONE/BOAT/AIRSHIP/AIRSHIP2, WmActorType.rideMode (was unk4) and
+WM_MOVE_CHOCOBO_FIELD/REEF/MOUNTAIN/OCEAN/SKY, WM_MOVE_BOAT/HILDA_GARDE/INVINCIBLE in ovl_0c.h (renamed from
+WM_MOVE_CHOCOBO/STEER/AIRSHIP/AIRSHIP2). Left literal: GameState.mode 5/6, GameData.flags 0x40, FieldEvtCtx.flags
+0x800, FieldActorExt.flags 0x02000000, BgiFloorMove/BgiAnim 0x2, BgEntry.type 0x40.
+Follow-up: ModelSlot (ff9.h) is the same record as ovl_0a's FieldEvtCtx / FieldObjSlot, ovl_0c's WmObjSlot and ovl_0b's
+BtlObj / Unk8E0Ld; the types (and FLD_OBJ_* / WM_SLOT_* / MODEL_SLOT_*) are not merged yet.
+Redux, LuaJIT off. Value polling used a per-VBlank Lua listener (`GPU::Vsync`, records value changes of
+GameState.mode 0x8008B008, FieldMap.flags, GameData.flags 0x8008B250); read PCs came from a Lua `Read` breakpoint
+collecting distinct PCs, mapped through `mips-linux-gnu-objdump -d build/us/*.elf`. GameState is 0x8008B000,
+GameData 0x8008B250, FieldMap (`ctx.field`) 0x800D1000 in every disc-1 field state.
+New states: disc 3 `cpass_eiko_trance_menu` (Malboro fight, Eiko in Trance, her command menu up, so the TRANCE
+title is drawn), `cpass_wm_hadris` (card 1 FILE03 loaded: world map at Hadris Basin next to Ipsen's Castle, gold
+chocobo uid 5 and the type-9 airship uid 6 on the map), `cpass_wm_airship9` (just boarded the type-9 airship, move
+mode 8).
+
+### main
+- **GameState.mode 5 / 6: NOT REACHED (no writer).** Polled the mode byte through `field_burmecia_btl47` (battle, 2) →
+  victory (8) → field (1), `field_ice_300` walked out to the world (3, written by wm code at 0x800A9134),
+  `title_screen`/`intro_test` (0), `field_d1_502` (FMV field, 1), `r30b_wm_moogle` (3), `menu_main` (1). 5 and 6 never
+  appear. The only writers of GameState.mode in C store 0,1,2,3,4,7,8,9 or a saved/return mode (ovl_39 restore,
+  ovl_65 `s->unk6`, wm_main's exit kind). Proposal: keep them unnamed, or `GS_MODE_UNUSED5` / `GS_MODE_UNUSED6` with
+  the existing comment (field-like / battle-like leftovers). medium.
+- **GameState.config bits 11-13: CONFIRMED battle message speed, but REFUTED "a Config row".** `menu_config`
+  (disc 1): config 0x00019AC0; Right on Sound → 0x19AC1; Left on Field Message → 0x15AC0 (bits 14-16, 6 → 5). The
+  NTSC-U Config screen has no Battle Message row (rows: Sound, Controller, Cursor, ATB, Battle Camera, Battle Control,
+  Movement, Battle Speed, Field Message, HERE Icon, Window Color, Target Window, Vibration; screenshots), and ovl_34
+  writes only CFG_SHIFT_BTL_SPEED and CFG_SHIFT_MSG_SPEED. Bits 11-13 are only set by config_reset (3) and read by
+  btl_initBanner (g_btlBannerDurations). Proposed `CFG_SHIFT_BTL_MSG_SPEED 11` (3 bits, fixed at 3, no Config row).
+  high.
+- **AkaoFlags.mode 1 / 2: CONFIRMED.** `menu_config`: g_akaoFlags (0x80083158) words bankUpload 1, mode 1, dirty 0; Right on the Sound
+  row (Mono) → mode 2; Left (Stereo) → 1. Proposed `AKAO_MODE_STEREO 1`, `AKAO_MODE_MONO 2`. high.
+- **Text palettes 0-9: CONFIRMED (colours).** g_textPalettes = 3827 38A7 3927 39A7 3A27 3AA7 3B27 3BA7 3F26 3FA6.
+  Method: `menu_main`, write g_textPalettes[0] := palette n, 4 frames, screenshot (every palette-0 text and the
+  menu digits redraw in palette n). Colours (fill / outline): 0 white with dark outline, 1 white without the dark
+  outline, 2 grey (148,148,148; the "not available" grey of `ok ? 0 : 2` callers), 3 red, 4 yellow, 5 cyan,
+  6 purple, 7 green, 8 pale steel blue (131,148,172; help text: help_draw and the key-item description use it),
+  9 orange-red (172,82,57) with a lavender outline (the help-window red). Proposed `TEXT_PAL_WHITE 0`,
+  `TEXT_PAL_PLAIN 1` (no outline), `TEXT_PAL_GREY 2`, `TEXT_PAL_RED 3`, `TEXT_PAL_YELLOW 4`, `TEXT_PAL_CYAN 5`,
+  `TEXT_PAL_PURPLE 6`, `TEXT_PAL_GREEN 7`, `TEXT_PAL_HELP 8`, `TEXT_PAL_HELP_RED 9`. high for the colours, medium
+  for the HELP pair's role.
+- **ui_drawDigits / text_buildDigits styles: CONFIRMED.** `r30b_enc337_start` (party HP/MP panel), write
+  g_numberClutRows[0] (0x8006BBB4) := 0x40 / 0x80 / 0xC0: the style-0 digits turn red / yellow / green. Table
+  0,0,0,0x40,0x80,0,0,0xC0, so styles 0, 1, 5, 6 are white, 3 red, 4 yellow, 7 green, and 2 is white drawn dim and
+  semi-transparent (code). Callers: 3 = KO (hp 0), 4 = low HP/MP (BTL_STATUS_LOW_HP, mp < max/6; ui_drawStones uses 4
+  for 0 stones). Proposed `DIGITS_WHITE 0`, `DIGITS_DIM 2`, `DIGITS_RED 3` (KO), `DIGITS_YELLOW 4` (low),
+  `DIGITS_GREEN 7`. high.
+- **ui_drawLabel mode 1: CONFIRMED (gradient mask).** Only caller: btlui_drawTranceLabel, the command-window title
+  of a unit in Trance. `cpass_eiko_trance_menu`: the "TRANCE" title letters show the pulsing red-to-yellow gradient
+  (screenshots 3 frames apart change colour), i.e. mode 1 draws the glyphs black/semi-transparent with the CLUT 0x40
+  rows down inside the mask-bit packets so only the gradient shows through the letters. Proposed `UI_LABEL_NORMAL 0`,
+  `UI_LABEL_MASK 1`, `UI_LABEL_DIM 2`. high (look), medium (mechanism wording).
+- **Button glyphs, text codes 0x30-0x37 / ui_drawSprite ids: CONFIRMED.** `menu_main`, Lua exec breakpoint on
+  ui_drawSprite rewriting a3 (sprite id) of the stone/clock icons to 4..19, screenshots: 4 Cross, 5 Circle, 6 Square,
+  7 Triangle, 8 L1, 9 L2, 10 R1, 11 R2, 12 d-pad, 13-16 small arrows, 17 START, 18 SELECT. g_buttonSprites = 4,5,7,6.
+  So text codes 0x30 Circle, 0x31 Cross, 0x32 Triangle, 0x33 Square, 0x34 L1, 0x35 R1, 0x36 L2, 0x37 R2. Proposed
+  `UI_SPRITE_CROSS 4`, `_CIRCLE 5`, `_SQUARE 6`, `_TRIANGLE 7`, `_L1 8`, `_L2 9`, `_R1 10`, `_R2 11`, `_DPAD 12`,
+  `_START 17`, `_SELECT 18`, and `TEXT_BTN_CIRCLE 0x30`, `TEXT_BTN_CROSS 0x31`, `TEXT_BTN_TRIANGLE 0x32`,
+  `TEXT_BTN_SQUARE 0x33`, `TEXT_BTN_L1 0x34`, `TEXT_BTN_R1 0x35`, `TEXT_BTN_L2 0x36`, `TEXT_BTN_R2 0x37`. high.
+- **ModelSlot.flags 1 / 0x10: CONFIRMED, and ModelSlot is the same record as ovl_0a's FieldEvtCtx.** Slots
+  (chrModels 0x80094110, stride 0x14): every slot with a model has bit 1 (field 0x101, battle 1, world 1), empty ones
+  0 with modelKey -1. A read breakpoint on chrModels[1].flags (0x80094124, Zidane) in `field_d1_101` is hit by
+  fld_drawModels (andi 0x2, 0x1000), fld_drawShadow (andi 0x10), fld_calcShadowMatrix (0x20), fld_playAnimSfx (0x40),
+  fld_applyLights (0x4, 0x100, 0x400): the FLD_OBJ_* bits. So 1 = FLD_OBJ_LOADED and 0x10 = FLD_OBJ_NO_SHADOW (the
+  jump op hides the shadow for the jump). Proposed: one shared set (move FLD_OBJ_* to ff9.h as `MODEL_SLOT_*`, or use
+  FLD_OBJ_LOADED / FLD_OBJ_NO_SHADOW in event.c/btl/wm), and make ModelSlot and FieldEvtCtx one type. high.
+- **GameData.flags 0x40: INCONCLUSIVE (write-only).** Set by fld_startEncounter (gameFlags queue 0x43; polled:
+  GameData.flags 0x3F000000 → 0x3F000043 → 0x3F00007F → 0x3F00005F during the encounter swirl, cleared 0x35000000
+  before the battle) and by a 24-bit field movie (0x44); cleared by fld_movieFinish / the swirl end. A read
+  breakpoint on 0x8008B250 over 1000 frames of `field_burmecia_rain` (walk, encounter, swirl, battle start) found
+  no instruction testing 0x40 (all readers test 0x1/0x2/0x4/0x8/0x10/0x1C/0x20/0x100); forcing the bit in
+  `field_d1_101` changed nothing visible (walking, menu). Proposed `GD_FIELD_SUSPENDED 0x40` (set while the field
+  scene is replaced by the encounter swirl or a full-screen movie), low; leaving it a literal is also fine.
+- **AkaoChannel.legato 4: CONFIRMED SE-only.** `r30b_enc337_start`, log breakpoints on akao_opD0 / akao_opCC /
+  akao_opDA over 10 Cross presses (Steiner attacks): opD0 2 hits, a0 = 0x8007F248 / 0x8007F37C = g_akaoSeChannels[12]
+  and [13] (0x8007E3D8 + n*0x134); opCC 7 hits on SE channels; opDA 0. With the code (1 set by CC/DA, 2 = previous
+  note tied, copied from bit 1 after each note, `& 5` suppresses the 2-tick gate cut): proposed `AKAO_LEGATO 1`,
+  `AKAO_LEGATO_TIED 2`, `AKAO_LEGATO_SE 4`. high.
+
+### overlays
+- **ovl_0a FieldMap.flags 0x4: REFUTED "loading"; it is "normal field running / no encounter transition".** It is
+  set (0x4) in every disc-1 field state checked (10 states, incl. ones with control and random encounters).
+  Polling FieldMap.flags in `field_burmecia_rain` while walking until a random encounter: 4 → 0x191D (fld_startEncounter's
+  set-queue 0x1919) → 0x1919 one frame later (its clear-queue `mapFlags[1][3] = 4`) → 0 at the exit → mode 2. So the
+  bit is cleared exactly when the encounter swirl starts, and fld_main then runs fld_updateEncounter (the swirl/battle
+  preload, not the random-encounter roll), fld_endFrame draws with DrawOTag instead of DrawOTagEnv (no clear: the
+  swirl reuses the last frame) and the sound loader keeps 0x3000 bytes back (the swirl buffer). Proposed
+  `FLD_MAP_NORMAL 0x4` (or `FLD_MAP_NO_ENCOUNTER_FX`): set by fld_load, cleared to start the encounter transition.
+  high.
+- **ovl_0a FieldEvtCtx.flags 0x1000: CONFIRMED "no idle texture animation restart".** `field_d1_101`, exec breakpoint
+  at fld_drawModels 0x800AB984 (the `|= TEXANIM_ACTIVE` of texture animation 2), 600 frames: NPC models 0x80129AA4 /
+  BD4 / C6C / D04 restarted 300 / 124 / 199 / 255 times. With 0x1000 or'ed into the slot of model 0x80129AA4
+  (npcModels[0] flags 0x101 → 0x1101): that model 0 times, the others unchanged. Proposed `FLD_OBJ_NO_IDLE_TEXANIM
+  0x1000` (texture animation 2, probably the blink; not verified visually). high (mechanism).
+- **ovl_0a FieldEvtCtx.flags 0x800: NOT REACHED.** fld_setSlotColor was called 0 times in 600 frames each of
+  `field_d1_502`, `field_d1_404`, `field_d1_501`, `field_dali_359`, `field_opening_dark`, `field_alex_100`. From the
+  code: its only caller is EVT_OP_OBJ_COLOR, which re-executes while the function returns 1; the first call sets the
+  colour and 0xC00, the second clears 0x800 and returns 0, so the op always takes two frames. Proposed
+  `FLD_OBJ_COLOR_WAIT 0x800` (one-frame wait latch of EVT_OP_OBJ_COLOR), medium (code).
+- **ovl_0a FieldActorExt.flags 0x02000000: NOT REACHED** (no mirror scene in the available states). Leave unnamed.
+- **ovl_0a BgiFloorMove.flags 0x2: CONFIRMED write-only.** g_fieldBgiFloorMoves[0].flags reads 0x0002 in `field_d1_404`
+  and `field_d1_456`; a read breakpoint over 300 frames each is hit only by bgi_updateFloorMoves+0x40 (0x800C7140),
+  which tests 0x1 and 0xC. 0x2 is the reset value and is never tested (BgiAnim's 2 likewise has no reader in C/asm).
+  Proposed: leave a literal, or `BGI_ANIM_RESET 0x2` with "never tested". medium.
+- **ovl_0a BgEntry.type 0x40: NOT REACHED** (as in R30b).
+- **ovl_0c actorType 0: CONFIRMED "not a world actor".** `r30b_wm_story2600` (disc 1) and `cpass_wm_hadris` (disc 3),
+  `tools/rt/actors.lua`: every kind-2 (code-only) script object has actorType 0; every kind-4 actor has 1, 7, 9, 11,
+  12, 13 or 14. Proposed `WM_ACTOR_NONE 0`. high.
+- **ovl_0c actorType 9: CONFIRMED airship (Hilda Garde 3 on disc 3); 8 boat and 10 second airship by data.**
+  `cpass_wm_hadris`: uid 6 type 9 model 320 is g_worldVehicleActor (0x800781D8). Teleported Zidane next to it,
+  Cross: g_worldMoveMode = b[0xBE] = 8 and the ship takes off (y -2070 and rising; `cpass_wm_airship9`). The disc-3
+  save (17:04, before Pandemonium) only has the Hilda Garde 3, so 9 = Hilda Garde 3. g_worldActorTypeInfo
+  (0x800CCCC0): type 8 flying 0 (with the code: floorY forced 0, no shadow, so a sea vehicle), types 9 and 10
+  flying 1; their unk4 bytes are 7, 8, 9 = the move modes of WM_MOVE_STEER / AIRSHIP / AIRSHIP2 (and types 3-7 have
+  unk4 1-5 = the chocobo modes), so unk4 looks like the actor type's ride mode. Boarding is decided by the world
+  script, not by actorType (poking uid 6 to type 10 still gave mode 8; to type 8 no boarding). Proposed
+  `WM_ACTOR_BOAT 8` (Blue Narciss, medium), `WM_ACTOR_AIRSHIP 9` (Hilda Garde 3, high), `WM_ACTOR_AIRSHIP2 10`
+  (Invincible, medium: disc 4 not reached, a forced Treno → world exit stalled in wm init).
+- **ovl_0c g_worldMoveMode 1-5: CONFIRMED = chocobo ability count.** `cpass_wm_hadris`, moved the gold chocobo
+  (uid 5, type 7) and Zidane away from the castle entrance, Cross to ride: mode 5 with b[0xBF] (chocobo ability count)
+  = 5; with b[0xBF] poked to 1, 2, 3, 4 before riding: modes 1, 2, 3, 4 (actorType stays 7). The move mode table's
+  allowed-cell masks grow with the mode: 1 0x0010667F (= walking), 2 0x20F8667F, 3 0x20FE667F, 4 and 5 0x23FF667F,
+  6 flying. Proposed `WM_MOVE_CHOCOBO_FIELD 1`, `WM_MOVE_CHOCOBO_REEF 2`, `WM_MOVE_CHOCOBO_MOUNTAIN 3`,
+  `WM_MOVE_CHOCOBO_OCEAN 4`, `WM_MOVE_CHOCOBO_SKY 5` (gold chocobo on the ground; 6 stays WM_MOVE_CHOCOBO_FLY). high.
+- **ovl_0c g_worldMoveMode 7: NOT REACHED** (no Blue Narciss state). Data: WM_CTRL_STEER, speed 0xF0, loop SE 24,
+  ride mode of actor type 8. Proposed `WM_MOVE_BOAT 7`, medium (data).
+- **ovl_0c g_worldMoveMode 8 / 9: 8 CONFIRMED (Hilda Garde 3), 9 inferred.** Mode 8 observed above. Modes 8 and 9
+  share the flight parameters and differ in loop SE (23 / 22) and get-off distance (0x280 / 0x2D0). Proposed
+  `WM_MOVE_HILDA_GARDE 8` (or keep WM_MOVE_AIRSHIP), `WM_MOVE_INVINCIBLE 9` (medium).

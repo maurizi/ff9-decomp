@@ -1,5 +1,7 @@
 # Overlay constants that need a runtime check
 
+Runtime results: docs/runtime-findings.md, "Constants runtime pass (2026-10-31)" (applied; the rows it left literal are listed there).
+
 Flag bits and state values in the overlays (not ovl_0b) that the code alone doesn't pin down, so they stay
 literals for now. Each entry: value, field, hypothesis, and how to observe it in the emulator.
 
