@@ -363,8 +363,7 @@ typedef struct {
     u16 musicBank[2]; /* its sound bank (dep link of the music file) */
     u8 musicHandle[2]; /* akao_playMusic handle per slot */
     u8 musicVolume[2]; /* per slot, 0x7F = full */
-    void *sfxSlotBuf0; /* resident sound effect slot 0 data (0x800 bytes), akao_playSe handle, channel mask 0x100000 */
-    void *sfxSlotBuf1; /* slot 1 (0x800 bytes), mask 0x200000 */
+    void *sfxSlotBuf[2]; /* resident sound effect slot data (0x800 bytes each), the akao_playSe handle; channel mask 0x100000 << slot */
     u16 sfxSlotId[2]; /* sound effect loaded in each slot, 0xFFFF = none */
     u16 worldBankReq; /* last sound bank requested by the world map (wm_soundCommand class 3 kind 7 skips a repeat) */
     u16 unk836;

@@ -1583,12 +1583,8 @@ s32 akao_getSpuTransferState(void);
 void akao_sendCmdE0(s32 *, s32, s32);
 void akao_sendCmdE6(s32);
 
-/* GameData.unk828/unk82C as an array (the slot index needs `base + slot*4`) until ff9.h has it */
-typedef struct {
-    u8 pad[0x828];
-    s32 unk828[2];
-} GameDataSfx;
-#define SFXH(i) (((GameDataSfx *)g_gameState->gameData)->unk828[i])
+/* resident SE slot i's buffer as the akao handle (GameData.sfxSlotBuf) */
+#define SFXH(i) ((s32)g_gameState->gameData->sfxSlotBuf[i])
 #define SCENE (g_gameState->gameData->ctx.field->area->scene)
 
 s32 fld_initShadows(s32, s32, s32, s32); /* returns shadow_initSlots's result (the next free address) */

@@ -41,8 +41,8 @@ void game_allocData(void) {
     gd->musicSeq = (void *)g_allocTop;
     w = g_allocTop + 0x6800;
     gd->musicSeq2 = w;
-    gd->sfxSlotBuf0 = (void *)(w + 0x2000);
-    gd->sfxSlotBuf1 = (void *)(w + 0x2800);
+    gd->sfxSlotBuf[0] = (void *)(w + 0x2000);
+    gd->sfxSlotBuf[1] = (void *)(w + 0x2800);
     g_allocTop = w + 0x3000;
 }
 

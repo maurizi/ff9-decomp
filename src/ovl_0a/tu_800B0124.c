@@ -265,10 +265,10 @@ s32 fld_soundCommand(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4) {
         case 1:
             if ((arg0 & 0x3F) == 9 && fp) {
                 if (g_gameState->gameData->flags & GD_SFX0_PLAYING) {
-                    akao_stopSe((s32)g_gameState->gameData->sfxSlotBuf0, 0x100000);
+                    akao_stopSe((s32)g_gameState->gameData->sfxSlotBuf[0], 0x100000);
                 }
                 if (g_gameState->gameData->flags & GD_SFX1_PLAYING) {
-                    akao_stopSe((s32)g_gameState->gameData->sfxSlotBuf1, 0x200000);
+                    akao_stopSe((s32)g_gameState->gameData->sfxSlotBuf[1], 0x200000);
                 }
                 g_gameState->gameData->flags &= ~(GD_SFX0_PLAYING | GD_SFX1_PLAYING);
             } else {
