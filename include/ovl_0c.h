@@ -116,10 +116,11 @@
 #define WM_WEATHER_AUTO 4 /* WM_REQ_WEATHER: turn auto weather on */
 #define WM_WEATHER_KEEP 5
 
-/* movement mode control types (WmMoveMode.unk0, wm_controlPlayer) */
+/* WmMoveMode.controlType (wm_controlPlayer: wm_controlWalk / wm_controlFly / wm_controlSteer) */
 #define WM_CTRL_WALK 0
 #define WM_CTRL_FLY 1
 #define WM_CTRL_STEER 2
+#define WM_CTRL_WALK_FAST 3 /* WM_MOVE_FAST_WALK; handled like WM_CTRL_WALK by the camera */
 
 /* songs (w_musicRequestSend strings) */
 #define WM_SONG_NORMAL 0 /* "Normal Song" */

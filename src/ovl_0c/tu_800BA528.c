@@ -1144,10 +1144,10 @@ void wm_updateVisibleBlocks(void) {
                 hit = 0;
                 if (m.t[2] >= -0x1D4B) {
                     k = (wm_getCameraViewState() == 0) * 2;
-                    if (g_worldMoveModeInfo->controlType == 1) {
+                    if (g_worldMoveModeInfo->controlType == WM_CTRL_FLY) {
                         k += 4;
                     }
-                    if (g_worldMoveModeInfo->controlType == 2) {
+                    if (g_worldMoveModeInfo->controlType == WM_CTRL_STEER) {
                         k += 8;
                     }
                     verts = e->verts;
