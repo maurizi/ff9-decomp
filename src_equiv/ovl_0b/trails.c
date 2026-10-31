@@ -44,11 +44,11 @@ static void trailFarColor(u32 far) {
 #define TRAIL_NEXT(i, size) ((i) + 1 == (size) ? 0 : (i) + 1)
 
 /* GT4 ribbon along a flat (y-fixed) direction: each point is offset by +-(direction * width >> 12), the
- * direction being the packed s16 pair (x, z) in ctx unk28. The first segment projects both edges of its
+ * direction being the packed s16 pair (x, z) in ctx mode.sinCos. The first segment projects both edges of its
  * start point; later ones reuse the previous end's projected edges. */
 void btlfx_emitTrailRibbonFlat(s32 count, Unk800D4D6CCtx *ctx, u8 *out, s32 *ot) {
     s32 zbase = ctx->otZ;
-    u32 dir = ctx->unk28;
+    u32 dir = ctx->mode.sinCos;
     u8 *ring = (u8 *)ctx->ring;
     s32 fade = ctx->fade;
     u32 color = ctx->color.w;
@@ -307,12 +307,12 @@ void btlfx_emitTrailRibbon3D(s32 count, Unk800D50A0Ctx *ctx, u8 *out, s32 *ot) {
     } while (k < count);
 }
 
-/* LINE_G2 per segment, each after a DR_MODE (E1000200 | ctx unk28) linked behind it at the same depth (the
+/* LINE_G2 per segment, each after a DR_MODE (E1000200 | ctx mode.abr) linked behind it at the same depth (the
  * previous point's SZ, SZ2 after the new point's RTPS). The start point is the previous projected point
  * moved one pixel toward the new one on each axis where they differ. */
 void btlfx_emitTrailLines(s32 count, Unk800D4D6CCtx *ctx, u8 *out, s32 *ot) {
     s32 zbase = ctx->otZ;
-    u32 mode = ctx->unk28;
+    u32 mode = ctx->mode.abr;
     u8 *ring = (u8 *)ctx->ring;
     s32 fade = ctx->fade;
     u32 color = ctx->color.w;

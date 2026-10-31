@@ -493,7 +493,7 @@ s32 btlseq_opPlayCamera(BtlScript *arg0, BtlUnit *arg1) {
     u32 f;
     s32 r;
     s8 one;
-    if (arg0->pc[0] != 0x20 && !((arg0->cmd->ability->unk0_17 >> 13) & 1)) {
+    if (arg0->pc[0] != 0x20 && !arg0->cmd->ability->forceCamera) {
         if (((g_gameState->config >> CFG_BIT_CAMERA) & (one = 1)) == one) {
             goto end;
         }
@@ -503,7 +503,7 @@ s32 btlseq_opPlayCamera(BtlScript *arg0, BtlUnit *arg1) {
                 f |= u->status;
             }
         }
-        if (f & 0x14000000) {
+        if (f & (BTL_STATUS_VANISH | BTL_STATUS_MINI)) {
             goto end;
         }
         if (g_randPtr >= g_randTableEnd) {

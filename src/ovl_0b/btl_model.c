@@ -326,7 +326,7 @@ void btl_setupEnemies(void) {
     for (; i < hdr->typeCount; i++) {
         btl_initEnemyType(rec, en);
         en->camera = btl_getSceneData(i + 5);
-        en->nameOfs = ofs->unk0 + 4;
+        en->nameOfs = ofs->text + 4;
         ofs++;
         en->firstAbility = n;
         n += rec->abilityCount;
@@ -336,7 +336,7 @@ void btl_setupEnemies(void) {
     dst = g_gameState->gameData->ctx.battle->enemyAbilities;
     for (i = 0, cmd = src; i < hdr->abilityCount; i++, cmd++) {
         btl_copyAbility(cmd, dst);
-        dst->nameOfs = ofs->unk0 + 4;
+        dst->nameOfs = ofs->text + 4;
         ofs++;
         dst++;
     }

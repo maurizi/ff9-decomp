@@ -986,9 +986,9 @@ loop:
             if (req->dst1 == 0) {
                 req->dst1 = (s32)b->work->loadBuf;
             }
-            req->size0 = f->unk2 << 11;
+            req->size0 = f->idHi << 11;
             req->dst0 = arg1->buf;
-            req->size1 = (sz - f->unk2) << 11;
+            req->size1 = (sz - f->idHi) << 11;
             cd_readChunks(g_gameState->imgSector + n, req, 2, 0);
             arg1->nextState = 7;
             st->state = 2;
@@ -1410,9 +1410,9 @@ s32 btl_swapPartyModelStep(s32 arg0, s32 arg1) {
         f = (FileEntry16 *)file_find(DIR_CHAR_MODELS, btl_getPartyModelId(arg0, arg1 & ~0x10));
         src = g_gameState->imgSector + f->sector;
         sz = f->endSector - f->sector;
-        req->size0 = f->unk2 << 11;
+        req->size0 = f->idHi << 11;
         req->dst0 = st->buf;
-        req->size1 = (sz - f->unk2) << 11;
+        req->size1 = (sz - f->idHi) << 11;
         req->dst1 = (s32)g_gameState->gameData->ctx.battle->work->loadBuf;
         cd_readChunks((s32)src, req, 2, 0);
         st->nextState = 5;
@@ -2012,7 +2012,7 @@ s32 btl_getWeaponSoundBank(s32 arg0) {
             } while (0);
         } while (0);
     }
-    return ((FileEntry16 *)file_find(DIR_WEAPON_MODELS, g_weaponTable[c->equip[0]].modelId))->unk2 | DB_SOUND_BANK;
+    return ((FileEntry16 *)file_find(DIR_WEAPON_MODELS, g_weaponTable[c->equip[0]].modelId))->idHi | DB_SOUND_BANK;
 }
 
 s32 btl_getSoundFileSectors(s32 arg0, s32 *arg1) {

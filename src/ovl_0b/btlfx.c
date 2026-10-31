@@ -386,7 +386,7 @@ void btlfx_drawTrailFlat(s32 arg0, s32 n, s32 arg2, s32 arg3, s32 arg4, s32 arg5
         c.u1 = (arg3 + arg5) << 8;
         c.u0 = arg3 << 8;
         s = math_sin(-g_btlfxEnv->camera->yaw + 0x400);
-        c.unk28 = (s & 0xFFFF) | (math_cos(-g_btlfxEnv->camera->yaw + 0x400) << 16);
+        c.mode.sinCos = (s & 0xFFFF) | (math_cos(-g_btlfxEnv->camera->yaw + 0x400) << 16);
         c.color.b[3] = (tp != 0xFF) ? 0x3E : 0x3C;
         c.tpage = (((tp & 3) << 5) | arg6) << 16;
         c.clut = arg7 << 16;
@@ -395,7 +395,7 @@ void btlfx_drawTrailFlat(s32 arg0, s32 n, s32 arg2, s32 arg3, s32 arg4, s32 arg5
     } else {
         prim = g_btlfxEnv->prim;
         g_btlfxEnv->prim = prim + n * 0x1C;
-        c.unk28 = (tp & 3) << 5;
+        c.mode.abr = (tp & 3) << 5;
         c.color.b[3] = (tp == 0xFF) ? 0x50 : 0x52;
     }
     gte_strgb(&c.farColor);
