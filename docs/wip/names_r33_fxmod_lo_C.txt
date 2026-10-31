@@ -304,3 +304,6 @@ fx_0d3 Fx0d3Summon unk60=model60
 fx_0d3 Fx0d3Work81 unk0=state0 unk4=frame4 unk10=summonPos10 unk1C=summonScale1C unk40=camAt40 unk60=model60
 fx_0d3 Fx0d3Summon81 unk60=model60
 fx_0d3 Fx0d3BonePair unk0=bone0 unk4=bone4
+
+## fx_0d2
+fx_0d2 Fx0d2Work80 unk94=motion94 unk98=loop98

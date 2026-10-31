@@ -1,9 +1,9 @@
 #ifndef FX_0DB_H
 #define FX_0DB_H
 
-/* Effect module fx_0db (dir 13 file 0xDB): Sword Magic Blizzara. Evidence: [data] the party ability / item tables
- * and enemy sequences that play this file id (tools/effect_labels.py; docs/runtime-findings.md, "Round 31 runtime
- * pass"). */
+/* Effect module fx_0db (dir 13 file 0xDB): Sword Magic Blizzara. Ice shards (pool items) that grow out of the
+ * caster and split in three. Evidence: [data] the party ability / item tables and enemy sequences that play this
+ * file id (tools/effect_labels.py; docs/runtime-findings.md, "Round 31 runtime pass"). */
 #include "btlfx_mod.h"
 
 typedef struct {

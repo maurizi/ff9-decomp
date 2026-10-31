@@ -1,9 +1,10 @@
 #ifndef FX_0DF_H
 #define FX_0DF_H
 
-/* Effect module fx_0df (dir 13 file 0xDF): Sword Magic Flare. Evidence: [data] the party ability / item tables and
- * enemy sequences that play this file id (tools/effect_labels.py; docs/runtime-findings.md, "Round 31 runtime
- * pass"). */
+/* Effect module fx_0df (dir 13 file 0xDF): Sword Magic Flare. Arcs between recent particle positions
+ * (fxm_drawOffsetTrail, fx_0df_recentPos) and a twisted radial screen grid. Evidence: [data] the party ability /
+ * item tables and enemy sequences that play this file id (tools/effect_labels.py; docs/runtime-findings.md, "Round
+ * 31 runtime pass"). */
 #include "btlfx_mod.h"
 
 typedef struct {

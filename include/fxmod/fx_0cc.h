@@ -1,9 +1,9 @@
 #ifndef FX_0CC_H
 #define FX_0CC_H
 
-/* Effect module fx_0cc (dir 13 file 0xCC): enemy Meteorite (Thorn/Zorn). Evidence: [data] the party ability / item
- * tables and enemy sequences that play this file id (tools/effect_labels.py; docs/runtime-findings.md, "Round 31
- * runtime pass"). */
+/* Effect module fx_0cc (dir 13 file 0xCC): enemy Meteorite (Thorn/Zorn). Falling models (pool items) that burst on
+ * the ground. Evidence: [data] the party ability / item tables and enemy sequences that play this file id
+ * (tools/effect_labels.py; docs/runtime-findings.md, "Round 31 runtime pass"). */
 #include "btlfx_mod.h"
 
 typedef struct {

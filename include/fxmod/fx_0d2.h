@@ -1,7 +1,9 @@
 #ifndef FX_0D2_H
 #define FX_0D2_H
 
-/* Effect module fx_0d2 (dir 13 file 0xD2): Fenrir, full summon. Evidence: btlfx_start and btlfx_loadFile get the same id for summons (docs/runtime-findings.md). */
+/* Effect module fx_0d2 (dir 13 file 0xD2): Fenrir, full summon. Slice models on key paths, path trails
+ * (fxm_buildPathTrail) and camera key channels (fxm_camChanUpdate). Evidence: btlfx_start and btlfx_loadFile get
+ * the same id for summons (docs/runtime-findings.md). */
 #include "btlfx_mod.h"
 
 typedef struct {
@@ -162,8 +164,8 @@ typedef struct {
     SVECTOR pos7C;
     SVECTOR pos84;
     SVECTOR pos8C;
-    s32 unk94;
-    s32 unk98;
+    s32 motion94;
+    s32 loop98;
     s32 pathFrame9C; /* path step */
     s32 padA0;
     u16 modelA4; /* slice model */

@@ -90,20 +90,20 @@ s32 fx_0d2_op80(s32 mode, Fx0d2Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
         frame = entry->frame;
         switch (frame) {
         case 1:
-            work->unk94 = 0;
-            work->unk98 = frame;
+            work->motion94 = 0;
+            work->loop98 = frame;
             ex->Hi_SetSummonMotion(((Fx0d2Summon *)env->loader)->unk54->motion180, ((Fx0d2Summon *)env->loader)->model60);
             work->pathFrame9C = frame;
             fxm_posPathInit((Fx0d2Path *)&fx_0d2_summonPath, (u16 *)ex->btlfx_getFileData(entry->file, 0x92));
             break;
         case 0x29:
-            work->unk94 = 1;
-            work->unk98 = 0;
+            work->motion94 = 1;
+            work->loop98 = 0;
             ex->Hi_SetSummonMotion(((Fx0d2Summon *)env->loader)->unk54->motion184, ((Fx0d2Summon *)env->loader)->model60);
             break;
         case 0x51:
-            work->unk94 = 2;
-            work->unk98 = 1;
+            work->motion94 = 2;
+            work->loop98 = 1;
             ex->Hi_SetSummonMotion(((Fx0d2Summon *)env->loader)->unk54->motion188, ((Fx0d2Summon *)env->loader)->model60);
             break;
         case 0x69:
@@ -162,7 +162,7 @@ s32 fx_0d2_op80(s32 mode, Fx0d2Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             work->summonPos1C.vy = v.vy;
             work->summonPos1C.vz = v.vz;
             ex->Hi_DrawSummonModel(&work->rot14, (VECTOR *)&work->summonPos1C, (s32)&work->summonScale2C,
-                                   ((Fx0d2Summon *)env->loader)->model60, work->unk98);
+                                   ((Fx0d2Summon *)env->loader)->model60, work->loop98);
             work->pathFrame9C++;
         }
         if ((u32)k < 0xDE) {
