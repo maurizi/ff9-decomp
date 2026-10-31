@@ -499,7 +499,7 @@ s32 menuAbility_getActionState(s32 id, Character *c) {
     if (c->status & (CHR_STATUS_PETRIFY | CHR_STATUS_SILENCE)) {
         return ABILITY_GREYED;
     }
-    if (!(info->flags & 1)) {
+    if (!(info->flags & ABILITY_ACT_MENU)) {
         return ABILITY_GREYED;
     }
     if (menuAbility_getMpCost(info) > c->mp) {
@@ -951,7 +951,7 @@ s32 menuAbility_getMpCost(Unk801F34EC *p) {
     s32 v;
 
     v = p->mpCost;
-    if ((p->flags & 4) && g_evtGlobalVars.b[EVT_GB_SUMMON_MP_X4] != 0) {
+    if ((p->flags & ABILITY_ACT_MP_X4) && g_evtGlobalVars.b[EVT_GB_SUMMON_MP_X4] != 0) {
         v *= 4;
     }
     return v;

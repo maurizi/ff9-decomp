@@ -143,10 +143,13 @@ typedef struct {
     u8 effect; /* calculation script, item_useOnMember's kind */
     u8 pad5[0xA - 5];
     u8 mpCost; /* menuAbility_getMpCost */
-    u8 flags; /* bit 0: usable from the menu; bit 1: clear = AP gauge flag; bit 2: mpCost x4 when g_evtGlobalVars.b[EVT_GB_SUMMON_MP_X4] */
+    u8 flags; /* ABILITY_ACT_*; bit 1 clear: ui_drawApGauge's flag argument */
     u8 padC[2];
     u16 nameOffset; /* name offset into s_menuAbilityActionNames */
 } Unk801F34EC; /* 0x10 */
+/* Unk801F34EC.flags */
+#define ABILITY_ACT_MENU 0x1 /* usable from the menu (menuAbility_getActionState greys it out otherwise) */
+#define ABILITY_ACT_MP_X4 0x4 /* menuAbility_getMpCost: mpCost x4 while g_evtGlobalVars.b[EVT_GB_SUMMON_MP_X4] is set */
 extern Unk801F34EC s_menuAbilityActionTable[];
 
 extern void (*s_menuAbilityInput[])(void);
