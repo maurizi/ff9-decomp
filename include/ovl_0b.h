@@ -483,7 +483,7 @@ typedef struct BtlUnit {
     u8 escapeStance; /* Battle.escapeHeld when the idle motion was last chosen (btl_updateUnits re-picks it on a change) */
     u8 baseBone; /* bone used as the unit position (btl_getBaseBonePos) */
     u8 koState; /* KO state machine step (btl_updateKo) */
-    u16 popupFlags; /* btl_spawnPopups: BtlCalc.targetResult bits (1 hp, 2 heal, 4 critical, 8 mp, 0x10 mp heal), 0x20 miss, 0x40 killed, 0x80 guard */
+    u16 popupFlags; /* BTL_POPUP_*: what btl_spawnPopups shows (BtlCalc.targetResult/casterResult or-ed in) */
     s16 hpChange; /* damage or heal shown by btl_spawnPopups */
     s16 mpChange;
     u16 modelId;
@@ -558,6 +558,18 @@ typedef struct BtlUnit {
 #define BTL_UNIT_TRANCE_ENABLED_BIT 30 /* the trance gauge fills (btl_gainTrance) and shows (btlui_updatePanel); party only, off before the story allows it */
 #define BTL_UNIT_TRANCE_ENABLED    (1 << BTL_UNIT_TRANCE_ENABLED_BIT)
 
+/* BtlUnit.popupFlags, BtlCalc.targetResult / casterResult (bits 0-4): what btl_spawnPopups shows. Text popups index
+ * g_btlTextPopups: 0 miss, 1 death, 2 guard, 3 critical. Evidence: [code] */
+#define BTL_POPUP_HP       0x01 /* hp number (hpChange; btl_damageHp / btl_healHp in btl_applyCalcResult) */
+#define BTL_POPUP_HEAL     0x02 /* the hp number heals (green; also absorbed damage, btl_finishMagicDamage) */
+#define BTL_POPUP_CRITICAL 0x04 /* "Critical" text (btl_rollCritical); btl_startHitMotion knocks the unit back */
+#define BTL_POPUP_MP       0x08 /* mp number (mpChange) */
+#define BTL_POPUP_MP_HEAL  0x10 /* the mp number heals */
+#define BTL_POPUP_MISS     0x20 /* "Miss" text: BTL_CALC_MISS, or the target is KO (btl_damageHp); no hit sound (btl_playHitSound) */
+#define BTL_POPUP_DEATH    0x40 /* "Death" text: KO added to a unit with hp left (btl_addStatus) */
+#define BTL_POPUP_GUARD    0x80 /* "Guard" text: BTL_CALC_GUARD; shown alone */
+#define BTL_POPUP_TROUBLE  0x100 /* the target has Trouble (btl_markTrouble): btl_spawnPopups spreads half the damage to its side (btl_spreadTroubleDamage) */
+
 /* ability/command calculation context */
 /* BtlCmd seen by the formulas (btl_calcCmd's sub = the BtlCmd; flags = BtlCmd.info.w) */
 typedef struct BtlCalc8 {
@@ -579,14 +591,23 @@ typedef struct BtlCalc {
     s16 evade; /* target evade % */
     s16 multiplier;
     s16 hitRate; /* hit % */
-    u16 flags; /* 1 miss, 2 dodged, 8 absorbed, 0x40 guard, 0x80 hit without damage, 0x100 add the weapon status */
-    u8 casterResult; /* caster popup flags (BtlUnit.popupFlags) */
-    u8 targetResult; /* target popup flags: 1 hp, 2 heal, 4 critical, 8 mp, 0x10 mp heal */
+    u16 flags; /* BTL_CALC_* */
+    u8 casterResult; /* caster popup flags (BTL_POPUP_*) */
+    u8 targetResult; /* target popup flags (BTL_POPUP_*) */
     s16 casterHpChange; /* caster hp change */
     s16 targetHpChange; /* target hp change */
     s16 casterMpChange; /* caster mp change */
     s16 targetMpChange; /* target mp change */
 } BtlCalc;
+
+/* BtlCalc.flags: outcome of the formulas, applied by btl_applyCalcResult. Evidence: [code] */
+#define BTL_CALC_MISS          0x01 /* missed (hit/evade rolls, formula checks such as btl_checkTargetAlive): BTL_POPUP_MISS */
+#define BTL_CALC_DODGED        0x02 /* with MISS: evaded, the target plays its dodge motion (btl_rollHit; not when covered) */
+#define BTL_CALC_MP_ATTACK     0x04 /* MP Attack raised the damage: btl_payMpAttack takes the caster's mp */
+#define BTL_CALC_ABSORB        0x08 /* the target absorbs the element: the damage heals (btl_apply*Element) */
+#define BTL_CALC_GUARD         0x40 /* nullified: element guard (btl_apply*Element) or immunity (btl_guardIfDeathImmune): BTL_POPUP_GUARD */
+#define BTL_CALC_NO_DAMAGE     0x80 /* hit without damage numbers: hit motion and trance only (btl_applyCalcResult) */
+#define BTL_CALC_WEAPON_STATUS 0x100 /* add the caster's weapon status set (weapon[1]) on a hit */
 
 /* BtlCmd as the sequence interpreter reads it (BtlScript.cmd) */
 typedef struct {

@@ -200,7 +200,7 @@ s32 btl_setIdleMotion(BtlUnit *u) {
 
 void btl_startHitMotion(BtlUnit *arg0) {
     u32 f;
-    if (arg0->popupFlags & 4) {
+    if (arg0->popupFlags & BTL_POPUP_CRITICAL) {
         arg0->pos[2] += (arg0->obj->rotY == 0) ? 0xC80000 : 0xFF380000;
     }
     f = arg0->flags;

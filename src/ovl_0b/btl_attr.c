@@ -66,10 +66,10 @@ void btl_spreadTroubleDamage(BtlUnit *arg0) {
     s32 v;
     for (u = g_gameState->gameData->ctx.battle->unitList; u != 0; u = u->next) {
         if ((u->flags & BTL_UNIT_PARTY) == (arg0->flags & BTL_UNIT_PARTY) && u != arg0 && ((u->flags >> BTL_UNIT_TARGETABLE_BIT) & 1)) {
-            u->popupFlags = 1;
+            u->popupFlags = BTL_POPUP_HP;
             d = arg0->hpChange >> 1;
             if (u->status & BTL_STATUS_KO) {
-                u->popupFlags = 0x20;
+                u->popupFlags = BTL_POPUP_MISS;
             } else if (u->status & BTL_STATUS_PETRIFY) {
                 u->hpChange = 0;
             } else {
@@ -162,7 +162,7 @@ void btl_orElements(u8 *arg0, u8 *arg1) {
 void btl_damageHp(BtlUnit *arg0, s32 arg1, u8 arg2) {
     s32 v;
     if (arg0->status & BTL_STATUS_KO) {
-        arg0->popupFlags = 0x20;
+        arg0->popupFlags = BTL_POPUP_MISS;
         return;
     }
     if (arg0->status & BTL_STATUS_PETRIFY) {
@@ -191,7 +191,7 @@ void btl_damageHp(BtlUnit *arg0, s32 arg1, u8 arg2) {
 
 void btl_healHp(BtlUnit *arg0, s32 arg1) {
     if (arg0->status & BTL_STATUS_KO) {
-        arg0->popupFlags = 0x20;
+        arg0->popupFlags = BTL_POPUP_MISS;
     } else if (arg0->status & BTL_STATUS_PETRIFY) {
         arg1 = 0;
     } else {
@@ -208,7 +208,7 @@ void btl_healHp(BtlUnit *arg0, s32 arg1) {
 
 void btl_damageMp(BtlUnit *arg0, s32 arg1) {
     if (arg0->status & BTL_STATUS_KO) {
-        arg0->popupFlags = 0x20;
+        arg0->popupFlags = BTL_POPUP_MISS;
     } else if (arg0->status & BTL_STATUS_PETRIFY) {
         arg1 = 0;
     } else if (arg1 < arg0->mp) {
@@ -221,7 +221,7 @@ void btl_damageMp(BtlUnit *arg0, s32 arg1) {
 
 void btl_healMp(BtlUnit *arg0, s32 arg1) {
     if (arg0->status & BTL_STATUS_KO) {
-        arg0->popupFlags = 0x20;
+        arg0->popupFlags = BTL_POPUP_MISS;
     } else if (arg0->status & BTL_STATUS_PETRIFY) {
         arg1 = 0;
     } else if (arg0->mp + arg1 < arg0->max->maxMp) {

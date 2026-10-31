@@ -4,36 +4,36 @@ void btl_spawnPopups(BtlUnit *arg0) {
     u16 f = arg0->popupFlags;
     u8 n = 0;
     if (!((arg0->flags >> BTL_UNIT_HIDDEN_BIT) & 1)) {
-        if (f & 0x100) {
+        if (f & BTL_POPUP_TROUBLE) {
             btl_spreadTroubleDamage(arg0);
         }
-        if (f & 0x80) {
+        if (f & BTL_POPUP_GUARD) {
             btl_popupText((s32)arg0, 2, 0, 0);
             arg0->popupFlags = 0;
-        } else if (f & 0x60) {
-            if (f & 0x20) {
+        } else if (f & (BTL_POPUP_MISS | BTL_POPUP_DEATH)) {
+            if (f & BTL_POPUP_MISS) {
                 btl_popupText((s32)arg0, 0, 0, 0);
                 n = 2;
             }
-            if (f & 0x40) {
+            if (f & BTL_POPUP_DEATH) {
                 btl_popupText((s32)arg0, 1, 0, n);
             }
             arg0->popupFlags = 0;
         } else {
-            if (f & 1) {
-                if (f & 4) {
+            if (f & BTL_POPUP_HP) {
+                if (f & BTL_POPUP_CRITICAL) {
                     btl_popupText((s32)arg0, 3, 0x80, 0);
                     n = 2;
                 }
-                if (f & 2) {
+                if (f & BTL_POPUP_HEAL) {
                     btl_popupHp((s32)arg0, arg0->hpChange, 0xC0, n);
                 } else {
                     btl_popupHp((s32)arg0, arg0->hpChange, 0, n);
                 }
                 n += 4;
             }
-            if (f & 8) {
-                if (f & 0x10) {
+            if (f & BTL_POPUP_MP) {
+                if (f & BTL_POPUP_MP_HEAL) {
                     btl_popupMp((s32)arg0, arg0->mpChange, 0xC0, n);
                 } else {
                     btl_popupMp((s32)arg0, arg0->mpChange, 0, n);

@@ -126,7 +126,7 @@ u32 btl_addStatus(BtlUnit *u, u32 f) {
         break;
     case 8:
         if (u->hp != 0) {
-            u->popupFlags |= 0x40;
+            u->popupFlags |= BTL_POPUP_DEATH;
             btl_killUnit(u);
         } else {
             u->hp = 0;
@@ -751,7 +751,7 @@ void btl_tickStatusTimers(BtlUnit *arg0) {
             if (bit < 0) {
                 if (!btl_isCmdPending(arg0->koCmd) && btl_addStatus(arg0, BTL_STATUS_PETRIFY) != 2) {
                     btl_removeStatus(arg0, BTL_STATUS_GRADUAL_PETRIFY);
-                    arg0->popupFlags |= 0x20;
+                    arg0->popupFlags |= BTL_POPUP_MISS;
                     btl_spawnPopups(arg0);
                 }
             } else if (bit & 0x08000000) {
@@ -1207,7 +1207,7 @@ s32 btl_playVictoryMusic(GameData *arg0, u32 arg1, s32 arg2) {
 }
 
 void btl_playHitSound(BtlUnit *arg0, BtlUnit *arg1) {
-    if (!(arg1->popupFlags & 0x20)) {
+    if (!(arg1->popupFlags & BTL_POPUP_MISS)) {
         btl_playUnitSound(arg0, (u16)btl_getWeaponSound((u8)arg0->flags >> BTL_UNIT_SLOT_SHIFT, 1), 0x7F);
     }
 }
