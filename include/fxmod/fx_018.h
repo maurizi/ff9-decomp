@@ -27,22 +27,22 @@ typedef struct {
 
 /* one bolt, a pool item */
 typedef struct {
-    SVECTOR unk0; /* from */
-    SVECTOR unk8; /* to */
-    u8 unk10; /* bolt index */
-    u8 unk11; /* state */
-    u8 unk12; /* branch points */
-    u8 unk13;
-    u8 unk14; /* kind */
-    s8 unk15; /* extra width */
+    SVECTOR pos0; /* from */
+    SVECTOR pos8; /* to */
+    u8 strip10; /* bolt index */
+    u8 state11; /* state */
+    u8 branchAt12; /* branch points */
+    u8 branchAt13;
+    u8 kind14; /* kind */
+    s8 width15; /* extra width */
     u8 pad16[2];
-    s32 *unk18; /* jitter table */
+    s32 *jitter18; /* jitter table */
 } Fx018Bolt;
 
 typedef struct {
     SVECTOR pos0; /* target body */
     SVECTOR pos8; /* target */
-    s32 unk10; /* state */
+    s32 state10; /* state */
     s32 model14; /* models */
     s32 model18;
     Pool6CEntry *emit1C;
@@ -52,22 +52,22 @@ typedef struct {
 typedef struct {
     SVECTOR pos0; /* target body */
     SVECTOR pos8; /* target */
-    s32 *unk10; /* jitter table */
-    s32 unk14; /* bolts spawned */
-    s32 unk18; /* kind */
+    s32 *jitter10; /* jitter table */
+    s32 boltCount14; /* bolts spawned */
+    s32 kind18; /* kind */
 } Fx018Work83; /* 0x1C */
 
 extern BtlModel fx_018_effModels[];
-extern SVECTOR D_801E9CE0; /* previous bolt end */
+extern SVECTOR fx_018_prevBoltEnd; /* previous bolt end */
 extern Unk80100C78Entry *fx_018_task;
-extern s32 D_801EA9E0[];
-extern s32 D_801E9E80; /* ring radius */
-extern u16 D_801E9C88[];
-extern u16 D_801E9C90[];
+extern s32 fx_018_jitter[];
+extern s32 fx_018_ringRadius; /* ring radius */
+extern u16 fx_018_strip15Blocks[];
+extern u16 fx_018_strip3Blocks[];
 extern Unk800F78A4 *fx_018_env;
-extern Fx018Strip D_801E9E90[];
-extern Fx018Branch D_801EA650[];
-extern s32 D_801EA9D0; /* faster bolts */
+extern Fx018Strip fx_018_strips[];
+extern Fx018Branch fx_018_branches[];
+extern s32 fx_018_fastBolts; /* faster bolts */
 
 static void fxm_drawJaggedStrip15(Unk80100C78Entry *entry, Fx018Strip *strip, s32 *tbl, SVECTOR *from, SVECTOR *to, s32 from1, s32 to1,
                    s32 width, s32 dwidth, s32 frame, s32 arg10, s32 arg11, s32 kind);

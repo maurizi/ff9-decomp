@@ -9,7 +9,7 @@ s32 fx_009_op80(s32 mode, Fx009Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
         fx_009_env = env;
         work->emit0 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 3), (s32)&env->targets->centerX);
         if (work->emit0 != NULL) {
-            work->emit0->trails = (s32)D_801E7828;
+            work->emit0->trails = (s32)fx_009_trails;
             work->emit0->trailSlots = 0x17;
             work->emit0->trailStride = 0x70;
         }

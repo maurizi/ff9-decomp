@@ -5,6 +5,6 @@
 #include "btlfx_mod.h"
 
 extern Unk800F78A4 *fx_011_env;
-extern s32 D_801E78FC[];
+extern s32 fx_011_trails[];
 
 #endif

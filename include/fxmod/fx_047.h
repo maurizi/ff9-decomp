@@ -6,12 +6,12 @@
 
 typedef struct {
     s32 unk0;
-    SVECTOR pos4; /* above unkC */
+    SVECTOR pos4; /* above posC */
     SVECTOR posC; /* target on the ground */
     Pool6CEntry *emit14;
 } Fx047Work;
 
 extern Unk800F78A4 *fx_047_env;
-extern s32 D_801E797C[];
+extern s32 fx_047_trails[];
 
 #endif

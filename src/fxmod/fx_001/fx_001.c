@@ -30,7 +30,7 @@ s32 fx_001_op80(s32 mode, Fx001Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
         ex->btlfx_initEffModels(fx_001_effModels, 2);
         work->model6C = ex->Hi_RegisterTexEffModel((BtlUnit9C8 *)ex->btlfx_getFileData(entry->file, 0xE), 0x1B, 0x3D09, 0, 0);
         work->model6E = ex->Hi_RegisterTexEffModel((BtlUnit9C8 *)ex->btlfx_getFileData(entry->file, 0xF), 0x1B, 0x3D09, 0, 0);
-        work->unk68 = work->unk64 = -1;
+        work->fadeOut68 = work->fadeIn64 = -1;
     } else {
         frame = entry->frame;
         switch (frame) {
@@ -38,7 +38,7 @@ s32 fx_001_op80(s32 mode, Fx001Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
             work->emit4 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 7), (s32)&work->pos5C);
             work->emitC = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 5), (s32)&work->pos5C);
             if (work->emit4 != NULL) {
-                work->emit4->trails = (s32)D_801E7FC0;
+                work->emit4->trails = (s32)fx_001_trails;
                 work->emit4->trailSlots = 9;
                 work->emit4->trailStride = 0xA0;
             }
@@ -46,7 +46,7 @@ s32 fx_001_op80(s32 mode, Fx001Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
         case 22:
             work->emit10 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 3), (s32)&work->pos5C);
             work->emit1C = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0x10), (s32)&work->pos5C);
-            work->unk64 = 0x12;
+            work->fadeIn64 = 0x12;
             break;
         case 28:
             work->emit14 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 1), (s32)&work->pos54);
@@ -55,32 +55,32 @@ s32 fx_001_op80(s32 mode, Fx001Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
             work->emit18 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0xD), (s32)&work->pos4C);
             break;
         case 36:
-            work->unk68 = 0x18;
+            work->fadeOut68 = 0x18;
             break;
         }
-        if (work->unk64 >= 0) {
-            work->unk48 = fxm_lerpRatio(-0x80, 0, 0x12 - work->unk64, 0x12);
-            work->unk64--;
+        if (work->fadeIn64 >= 0) {
+            work->rgb48 = fxm_lerpRatio(-0x80, 0, 0x12 - work->fadeIn64, 0x12);
+            work->fadeIn64--;
         }
-        if (work->unk68 >= 0) {
-            work->unk48 = fxm_lerpRatio(0, -0x80, 0x18 - work->unk68, 0x18);
-            work->unk68--;
+        if (work->fadeOut68 >= 0) {
+            work->rgb48 = fxm_lerpRatio(0, -0x80, 0x18 - work->fadeOut68, 0x18);
+            work->fadeOut68--;
         }
         if (frame >= 0x16 && frame < 0x20) {
             s32 t = ((frame - 0x16) << 12) / 10;
             work->scale38.vy = t / 2;
             ex->Hi_DrawEffModel(&work->rot20, &work->pos28, (s32)&work->scale38, work->model6C);
             ex->Hi_ModifyEffModelAbr(work->model6C, 1);
-            ex->Hi_ModifyEffModelRGB(work->model6C, work->unk48, work->unk48, work->unk48);
+            ex->Hi_ModifyEffModelRGB(work->model6C, work->rgb48, work->rgb48, work->rgb48);
         }
         if (frame >= 0x20 && frame < 0x38) {
             ex->Hi_DrawMorphEffModel(&work->rot20, &work->pos28, (s32)&work->scale38, work->model6C, work->model6E,
                                      0x1000 - ((frame - 0x20) << 12) / 24);
             ex->Hi_ModifyEffModelAbr(work->model6C, 1);
-            ex->Hi_ModifyEffModelRGB(work->model6C, work->unk48, work->unk48, work->unk48);
+            ex->Hi_ModifyEffModelRGB(work->model6C, work->rgb48, work->rgb48, work->rgb48);
         }
         if (frame >= 0x16) {
-            s16 *p = D_801E7D9C[frame % 15];
+            s16 *p = fx_001_texAnimXY[frame % 15];
             r.x = p[0];
             r.y = p[1];
             r.w = 0x20;

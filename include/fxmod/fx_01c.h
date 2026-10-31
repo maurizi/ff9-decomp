@@ -12,10 +12,10 @@ typedef struct {
     Pool6CEntry *emit10;
     SVECTOR pos14; /* caster body position */
     SVECTOR pos1C; /* target (body) position */
-    SVECTOR unk24; /* angles from unk14 to unk1C */
+    SVECTOR aim24; /* angles from pos14 to pos1C */
 } Fx01cWork; /* 0x2C */
 
 extern Unk800F78A4 *fx_01c_env;
-extern s32 D_801E7B48[];
+extern s32 fx_01c_trails[];
 
 #endif

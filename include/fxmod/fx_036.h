@@ -16,10 +16,10 @@ typedef struct {
     SVECTOR pos24;
 } Fx036Work; /* 0x2C */
 
-extern s16 D_801E7BCC[];
-extern s32 D_801E7BDC; /* particles spawned */
+extern s16 fx_036_spawnX[];
+extern s32 fx_036_spawnCount; /* particles spawned */
 extern Unk800F78A4 *fx_036_env;
-extern SVECTOR D_801E7C30; /* target position */
+extern SVECTOR fx_036_targetPos; /* target position */
 
 static s32 fx_036_op80SpawnPoint(SVECTOR *out, SVECTOR *arg1, s32 arg2, s32 arg3);
 

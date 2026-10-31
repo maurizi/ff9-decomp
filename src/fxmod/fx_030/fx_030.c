@@ -10,11 +10,11 @@ s32 fx_030_op80(s32 mode, Fx030Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
     } else if (mode == 1) {
         fx_030_env = env;
         ex->btlfx_getUnitArgBonePos(0x10, 0, (u16 *)&work->pos0);
-        work->unk8.vx = env->targets->centerX;
-        work->unk8.vz = env->targets->centerZ + 0x1F4;
-        work->unk8.vy = 0;
-        ex->btlfx_aimAngles((s16 *)&work->pos0, (s16 *)&work->unk8, (s16 *)&work->unk10);
-        ex->btlfx_aimAngles((s16 *)&work->unk8, (s16 *)&work->pos0, (s16 *)&work->unk18);
+        work->pos8.vx = env->targets->centerX;
+        work->pos8.vz = env->targets->centerZ + 0x1F4;
+        work->pos8.vy = 0;
+        ex->btlfx_aimAngles((s16 *)&work->pos0, (s16 *)&work->pos8, (s16 *)&work->aim10);
+        ex->btlfx_aimAngles((s16 *)&work->pos8, (s16 *)&work->pos0, (s16 *)&work->aim18);
         work->emit20 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 3), (s32)&work->pos0);
         work->emit24 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 1), (s32)&work->pos0);
         work->emit28 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 8), (s32)&work->pos0);
@@ -30,24 +30,24 @@ s32 fx_030_op80(s32 mode, Fx030Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
             work->emit28 = NULL;
         }
         if (work->emit20 != NULL) {
-            work->emit20->rot.vx = work->unk10.vx;
-            work->emit20->rot.vy = work->unk10.vy;
-            work->emit20->rot.vz = work->unk10.vz;
+            work->emit20->rot.vx = work->aim10.vx;
+            work->emit20->rot.vy = work->aim10.vy;
+            work->emit20->rot.vz = work->aim10.vz;
         }
         if (work->emit24 != NULL) {
-            work->emit24->rot.vx = work->unk18.vx;
-            work->emit24->rot.vy = work->unk18.vy;
-            work->emit24->rot.vz = work->unk18.vz;
+            work->emit24->rot.vx = work->aim18.vx;
+            work->emit24->rot.vy = work->aim18.vy;
+            work->emit24->rot.vz = work->aim18.vz;
         }
         if (work->emit28 != NULL) {
-            work->emit28->rot.vx = work->unk10.vx;
-            work->emit28->rot.vy = work->unk10.vy;
-            work->emit28->rot.vz = work->unk10.vz;
+            work->emit28->rot.vx = work->aim10.vx;
+            work->emit28->rot.vy = work->aim10.vy;
+            work->emit28->rot.vz = work->aim10.vz;
         }
         if (frame == 6) {
             for (i = 0; i < env->targets->targetCount; i++) {
-                ex->btlfx_getUnitBodyPos(i, 0, (s16 *)&work->unk2C[i]);
-                ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 2), (s32)&work->unk2C[i]);
+                ex->btlfx_getUnitBodyPos(i, 0, (s16 *)&work->pos2C[i]);
+                ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 2), (s32)&work->pos2C[i]);
             }
         }
         return frame >= 0x32;

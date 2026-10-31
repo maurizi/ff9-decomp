@@ -90,10 +90,10 @@ fx_031 fx_031_op80 0x39c 0x801e7704
 fx_032 fx_032_op80 0x514 0x801e7704
 fx_033 fxm_easeLerp 0x138 0x801e7704
 fx_033 fx_033_op80 0x260 0x801e783c
-fx_034 func_801E7744 0xcc 0x801e7744
-fx_034 func_801E7810 0x1f0 0x801e7810
-fx_034 func_801E7A00 0x11c 0x801e7a00
-fx_034 func_801E7B1C 0x180 0x801e7b1c
+fx_034 fx_034_explodeModel 0xcc 0x801e7744
+fx_034 fx_034_pushPrims 0x1f0 0x801e7810
+fx_034 fx_034_splitModel 0x11c 0x801e7a00
+fx_034 fx_034_calcPrimCentres 0x180 0x801e7b1c
 fx_034 fx_034_op80 0x5bc 0x801e7c9c
 fx_035 fx_035_op80 0x1b0 0x801e7704
 fx_036 fx_036_op80SpawnPoint 0x190 0x801e7704
@@ -118,7 +118,7 @@ fx_040 fx_040_op80ParticleMotion0 0x58 0x801e7704
 fx_040 fx_040_op80ParticleMotion1 0x58 0x801e775c
 fx_040 fx_040_op80ParticleMotion2 0x58 0x801e77b4
 fx_040 fx_040_op80ParticleMotion3 0x58 0x801e780c
-fx_040 func_801E7864 0x304 0x801e7864
+fx_040 fx_040_flyToTarget 0x304 0x801e7864
 fx_040 fx_040_op80 0x330 0x801e7b68
 fx_041 fx_041_op80ParticleMotion 0xe8 0x801e7704
 fx_041 fx_041_op80 0x3c8 0x801e77ec

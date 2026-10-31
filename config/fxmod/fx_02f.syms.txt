@@ -2,3 +2,5 @@ fx_02f_headerPtr = 0x801E7700; // type:u32 size:0x4 [code] word 0 of a module, r
 fx_02f_header = 0x801E7AA4; // [code] module header (0, init, ops), btlfx_updateLoader
 fx_02f_op80 = 0x801E7704; // type:func [code] header op entry 0, effect script op 0x80 (btlfx_spawnTask)
 fx_02f_env = 0x801E7AEC; // [code] the effect env (Unk800F78A4) the op handlers store in mode 1, used by the helpers for BTLFX_EXPORTS
+fx_02f_targetPos = 0x801E7AFC; // [code] body position per target, filled by fx_02f_op80 mode 1, origins of the frame-0x10 emitters
+fx_02f_trails = 0x801E7B3C; // [code] trail point buffer of the beam emitter (Pool6CEntry trails, 0x40 slots of 0x60 bytes), fx_02f_op80

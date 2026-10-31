@@ -8,9 +8,9 @@ typedef struct {
     SVECTOR pos0; /* target body position */
     SVECTOR pos8;
     SVECTOR pos10;
-    SVECTOR unk18;
+    SVECTOR pos18;
     SVECTOR pos20;
-    SVECTOR unk28;
+    SVECTOR pos28;
     Pool6CEntry *emit30;
     Pool6CEntry *emit34;
 } Fx031Work; /* 0x38 */

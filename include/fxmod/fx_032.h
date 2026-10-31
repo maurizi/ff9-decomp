@@ -7,13 +7,13 @@
 typedef struct {
     SVECTOR pos0; /* target body position */
     SVECTOR pos8;
-    SVECTOR unk10;
+    SVECTOR pos10;
     SVECTOR pos18;
-    SVECTOR unk20;
+    SVECTOR pos20;
     SVECTOR pos28;
-    SVECTOR unk30;
+    SVECTOR pos30;
     SVECTOR pos38;
-    SVECTOR unk40;
+    SVECTOR pos40;
     Pool6CEntry *emit48;
     Pool6CEntry *emit4C;
     Pool6CEntry *emit50;

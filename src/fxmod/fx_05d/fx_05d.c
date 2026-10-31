@@ -28,30 +28,30 @@ s32 fx_05d_op80(s32 mode, Fx05dWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
         work->scale30.vy = 0x1000;
         work->scale30.vz = 0x1000;
         for (i = 0; i < 6; i++) {
-            work->model5C[i] = ex->Hi_RegisterTexEffModel((BtlUnit9C8 *)ex->btlfx_getFileData(entry->file, D_801E8048[i]),
+            work->model5C[i] = ex->Hi_RegisterTexEffModel((BtlUnit9C8 *)ex->btlfx_getFileData(entry->file, fx_05d_morphBlocks[i]),
                                                         0x97, 0x3D40, 0, 0);
         }
-        fxm_rotPosTrackInit(&D_801E8DA0, (u16 *)ex->btlfx_getFileData(entry->file, 1));
-        fxm_rotPosTrackInit(&D_801E8DA8, (u16 *)ex->btlfx_getFileData(entry->file, 0x10));
-        fxm_vecTrackInit(&D_801E8DB0, (u16 *)ex->btlfx_getFileData(entry->file, 2));
-        fxm_vecTrackInit(&D_801E8DB8, (u16 *)ex->btlfx_getFileData(entry->file, 0xF));
+        fxm_rotPosTrackInit(&fx_05d_rotPosKeys, (u16 *)ex->btlfx_getFileData(entry->file, 1));
+        fxm_rotPosTrackInit(&fx_05d_rotPosKeys2, (u16 *)ex->btlfx_getFileData(entry->file, 0x10));
+        fxm_vecTrackInit(&fx_05d_scaleKeys, (u16 *)ex->btlfx_getFileData(entry->file, 2));
+        fxm_vecTrackInit(&fx_05d_scaleKeys2, (u16 *)ex->btlfx_getFileData(entry->file, 0xF));
         work->unk58 = -1;
     } else {
         frame = entry->frame;
         switch (frame) {
         case 0:
-            work->emit4 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0x14), (s32)&D_801E8DC0);
+            work->emit4 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0x14), (s32)&fx_05d_emitPos);
             work->emit0 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0x12), (s32)&work->pos10);
             break;
         case 0x23:
-            fxm_rotPosTrackGet(&D_801E8DA0, 0x23, NULL, &work->pos4C);
+            fxm_rotPosTrackGet(&fx_05d_rotPosKeys, 0x23, NULL, &work->pos4C);
             work->pos4C.vx += work->pos10.vx;
             work->pos4C.vy += work->pos10.vy;
             work->pos4C.vz += work->pos10.vz;
             work->emit8 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0x11), (s32)&work->pos4C);
             work->emitC = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0x13), (s32)&work->pos4C);
             if (work->emit8 != NULL) {
-                work->emit8->trails = (s32)D_801E8558;
+                work->emit8->trails = (s32)fx_05d_trails;
                 work->emit8->trailSlots = 0x35;
                 work->emit8->trailStride = 0x28;
             }
@@ -70,7 +70,7 @@ s32 fx_05d_op80(s32 mode, Fx05dWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
             case 4:
             case 6:
             case 8:
-                work->unk54 = 0;
+                work->morphFrame54 = 0;
                 break;
             case 30:
                 break;
@@ -102,12 +102,12 @@ s32 fx_05d_op80(s32 mode, Fx05dWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
             }
             if (a == b) {
                 w = 0x1000;
-            } else if (n < work->unk54) {
+            } else if (n < work->morphFrame54) {
                 w = 0;
             } else {
-                w = 0x1000 - (work->unk54 << 12) / n;
+                w = 0x1000 - (work->morphFrame54 << 12) / n;
             }
-            fxm_rotPosTrackGet(&D_801E8DA0, frame, &work->rot18, &p);
+            fxm_rotPosTrackGet(&fx_05d_rotPosKeys, frame, &work->rot18, &p);
             work->pos20.vx = p.vx;
             work->pos20.vy = p.vy;
             work->pos20.vz = p.vz;
@@ -117,36 +117,36 @@ s32 fx_05d_op80(s32 mode, Fx05dWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
             env->camera->points[0].vx = work->pos20.vx;
             env->camera->points[0].vy = work->pos20.vy;
             env->camera->points[0].vz = work->pos20.vz;
-            fxm_vecTrackGet(&D_801E8DB0, frame, &work->scale30);
+            fxm_vecTrackGet(&fx_05d_scaleKeys, frame, &work->scale30);
             work->scale30.vx = work->scale30.vx * 2 / 3;
             work->scale30.vy = work->scale30.vy * 2 / 3;
             work->scale30.vz = work->scale30.vz * 2 / 3;
             ex->Hi_DrawMorphEffModel(&work->rot18, &work->pos20, (s32)&work->scale30, work->model5C[a], work->model5C[b], w);
             ex->Hi_ModifyEffModelAbr(work->model5C[a], 1);
-            fxm_rotPosTrackGet(&D_801E8DA8, frame, &work->rot18, &p);
+            fxm_rotPosTrackGet(&fx_05d_rotPosKeys2, frame, &work->rot18, &p);
             work->pos20.vx = p.vx;
             work->pos20.vy = p.vy;
             work->pos20.vz = p.vz;
             work->pos20.vx += work->pos10.vx;
             work->pos20.vy += work->pos10.vy;
             work->pos20.vz += work->pos10.vz;
-            fxm_vecTrackGet(&D_801E8DB8, frame, &work->scale30);
+            fxm_vecTrackGet(&fx_05d_scaleKeys2, frame, &work->scale30);
             work->rot18.vx -= 0x400;
             work->scale30.vx = work->scale30.vx * 2 / 3;
             work->scale30.vy = work->scale30.vy * 2 / 3;
             work->scale30.vz = work->scale30.vz * 2 / 3;
             ex->Hi_DrawMorphEffModel(&work->rot18, &work->pos20, (s32)&work->scale30, work->model5C[a], work->model5C[b], w);
             ex->Hi_ModifyEffModelAbr(work->model5C[a], 1);
-            work->unk44.vx = work->pos20.vx;
-            work->unk44.vy = work->pos20.vy;
-            work->unk44.vz = work->pos20.vz;
+            work->pos44.vx = work->pos20.vx;
+            work->pos44.vy = work->pos20.vy;
+            work->pos44.vz = work->pos20.vz;
             if (frame >= 0) {
                 if (work->emit4 != NULL && work->emit4->state == BTLFX_EMIT_DONE) {
                     work->emit4 = NULL;
                 }
-                ex->btlfx_moveEmitterTo((s32)work->emit4, (s32)&work->unk44);
+                ex->btlfx_moveEmitterTo((s32)work->emit4, (s32)&work->pos44);
             }
-            work->unk54++;
+            work->morphFrame54++;
         }
         if (frame >= 0x3C) {
             ex->btlfx_clearEffModels();
@@ -157,12 +157,12 @@ s32 fx_05d_op80(s32 mode, Fx05dWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
 }
 
 static void fxm_rotPosTrackInit(Fx05dTrack12 *track, u16 *data) {
-    track->unk0 = *data++;
-    track->unk4 = (Fx05dKey12 *)data;
+    track->count0 = *data++;
+    track->keys4 = (Fx05dKey12 *)data;
 }
 
 static s32 fxm_rotPosTrackGet(Fx05dTrack12 *track, s32 t, SVECTOR *rot, SVECTOR *pos) {
-    s32 last = track->unk0 - 1;
+    s32 last = track->count0 - 1;
     s32 done = 1;
     Fx05dKey12 *k;
 
@@ -171,27 +171,27 @@ static s32 fxm_rotPosTrackGet(Fx05dTrack12 *track, s32 t, SVECTOR *rot, SVECTOR 
     } else {
         done = 0;
     }
-    k = &track->unk4[t];
+    k = &track->keys4[t];
     if (rot != NULL) {
-        rot->vx = k->unk6;
-        rot->vy = k->unk8;
-        rot->vz = k->unkA;
+        rot->vx = k->rx6;
+        rot->vy = k->ry8;
+        rot->vz = k->rzA;
     }
     if (pos != NULL) {
-        pos->vx = -k->unk0;
-        pos->vy = k->unk2;
-        pos->vz = -k->unk4;
+        pos->vx = -k->px0;
+        pos->vy = k->py2;
+        pos->vz = -k->pz4;
     }
     return done;
 }
 
 static void fxm_vecTrackInit(Fx05dTrack6 *track, u16 *data) {
-    track->unk0 = *data++;
-    track->unk4 = (Fx05dKey6 *)data;
+    track->count0 = *data++;
+    track->keys4 = (Fx05dKey6 *)data;
 }
 
 static s32 fxm_vecTrackGet(Fx05dTrack6 *track, s32 t, VECTOR *out) {
-    s32 last = track->unk0 - 1;
+    s32 last = track->count0 - 1;
     s32 done = 1;
     Fx05dKey6 *k;
 
@@ -200,7 +200,7 @@ static s32 fxm_vecTrackGet(Fx05dTrack6 *track, s32 t, VECTOR *out) {
     } else {
         done = 0;
     }
-    k = &track->unk4[t];
+    k = &track->keys4[t];
     out->vx = k->x;
     out->vy = k->y;
     out->vz = k->z;

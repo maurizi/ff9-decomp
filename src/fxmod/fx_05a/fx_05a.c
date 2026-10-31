@@ -19,7 +19,7 @@ s32 fx_05a_op80(s32 mode, Fx05aWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
         work->pos10.vz = work->pos8.vz;
         work->emit0 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 8), (s32)&work->pos8);
         if (work->emit0 != NULL) {
-            work->emit0->trails = (s32)D_801E7BF0;
+            work->emit0->trails = (s32)fx_05a_trails;
             work->emit0->trailSlots = 0xA;
             work->emit0->trailStride = 0xB0;
         }
@@ -52,8 +52,8 @@ s32 fx_05a_op80(s32 mode, Fx05aWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
             work->scale30.vz = 0x155;
         }
         work->model44 = ex->Hi_RegisterTexEffModel((BtlUnit9C8 *)ex->btlfx_getFileData(entry->file, 0xA), 0x117, 0, 0, 0xC0);
-        work->unk40 = -0x14;
-        work->unk42 = 0xFF;
+        work->rgb40 = -0x14;
+        work->tint42 = 0xFF;
     } else {
         frame = entry->frame;
         if (frame == 0x19) {
@@ -68,14 +68,14 @@ s32 fx_05a_op80(s32 mode, Fx05aWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
             work->rot18.vy += 0x40;
             t = frame - 0x19;
             if (frame >= 0x2D) {
-                ex->Hi_ModifyEffModelRGB(work->model44, work->unk40, work->unk40, work->unk40);
-                work->unk40 -= 4;
+                ex->Hi_ModifyEffModelRGB(work->model44, work->rgb40, work->rgb40, work->rgb40);
+                work->rgb40 -= 4;
             }
             ex->btlfx_drawBackdrop((BtlBgLayers *)ex->btlfx_getFileData(entry->file, 7), t);
         }
         if (frame >= 0x19 && frame < 0x21) {
-            ex->btlfx_drawScreenTint((u32 *)env->ot, 1, work->unk42, work->unk42, work->unk42);
-            work->unk42 -= 0x1F;
+            ex->btlfx_drawScreenTint((u32 *)env->ot, 1, work->tint42, work->tint42, work->tint42);
+            work->tint42 -= 0x1F;
         }
         if (frame >= 0x3C) {
             ex->btlfx_clearEffModels();

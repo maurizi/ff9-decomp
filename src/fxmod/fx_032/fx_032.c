@@ -42,8 +42,8 @@ s32 fx_032_op80(s32 mode, Fx032Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
                 }
                 if (work->emit48 != NULL) {
                     ex->btlfx_getUnitBoneMatrix(0x10, env->targets->fxArgs[1], (BtlBone *)&m4);
-                    ex->btlfx_matrixPointAhead(&m4, (s16)env->targets->fxParam, (s32)&work->unk10);
-                    ex->btlfx_moveEmitterTo((s32)work->emit48, (s32)&work->unk10);
+                    ex->btlfx_matrixPointAhead(&m4, (s16)env->targets->fxParam, (s32)&work->pos10);
+                    ex->btlfx_moveEmitterTo((s32)work->emit48, (s32)&work->pos10);
                 }
             }
             if (work->emit4C != NULL) {
@@ -52,8 +52,8 @@ s32 fx_032_op80(s32 mode, Fx032Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
                 }
                 if (work->emit4C != NULL) {
                     ex->btlfx_getUnitBoneMatrix(0x10, env->targets->fxArgs[1], (BtlBone *)&m5);
-                    ex->btlfx_matrixPointAhead(&m5, (s16)env->targets->fxParam, (s32)&work->unk20);
-                    ex->btlfx_moveEmitterTo((s32)work->emit4C, (s32)&work->unk20);
+                    ex->btlfx_matrixPointAhead(&m5, (s16)env->targets->fxParam, (s32)&work->pos20);
+                    ex->btlfx_moveEmitterTo((s32)work->emit4C, (s32)&work->pos20);
                 }
             }
             if (work->emit50 != NULL) {
@@ -62,8 +62,8 @@ s32 fx_032_op80(s32 mode, Fx032Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
                 }
                 if (work->emit50 != NULL) {
                     ex->btlfx_getUnitBoneMatrix(0x10, env->targets->fxArgs[0], (BtlBone *)&m6);
-                    ex->btlfx_matrixPointAhead(&m6, (s16)env->targets->fxParam, (s32)&work->unk30);
-                    ex->btlfx_moveEmitterTo((s32)work->emit50, (s32)&work->unk30);
+                    ex->btlfx_matrixPointAhead(&m6, (s16)env->targets->fxParam, (s32)&work->pos30);
+                    ex->btlfx_moveEmitterTo((s32)work->emit50, (s32)&work->pos30);
                 }
             }
             if (work->emit54 != NULL) {
@@ -72,8 +72,8 @@ s32 fx_032_op80(s32 mode, Fx032Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
                 }
                 if (work->emit54 != NULL) {
                     ex->btlfx_getUnitBoneMatrix(0x10, env->targets->fxArgs[0], (BtlBone *)&m7);
-                    ex->btlfx_matrixPointAhead(&m7, (s16)env->targets->fxParam, (s32)&work->unk40);
-                    ex->btlfx_moveEmitterTo((s32)work->emit54, (s32)&work->unk40);
+                    ex->btlfx_matrixPointAhead(&m7, (s16)env->targets->fxParam, (s32)&work->pos40);
+                    ex->btlfx_moveEmitterTo((s32)work->emit54, (s32)&work->pos40);
                 }
             }
         }
