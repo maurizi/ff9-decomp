@@ -13,9 +13,9 @@ s32 fx_0f6_op80(s32 mode, Fx0f6Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
         work->pos8.vx = env->targets->centerX;
         work->pos8.vy = env->targets->centerY;
         work->pos8.vz = env->targets->centerZ;
-        work->unk10.vx = env->targets->centerX;
-        work->unk10.vy = env->targets->centerY;
-        work->unk10.vz = env->targets->centerZ;
+        work->linePos10.vx = env->targets->centerX;
+        work->linePos10.vy = env->targets->centerY;
+        work->linePos10.vz = env->targets->centerZ;
         fx_0f6_env = env;
         work->emit0 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0xD), (s32)&work->pos8);
         if (work->emit0 != NULL) {
@@ -23,17 +23,17 @@ s32 fx_0f6_op80(s32 mode, Fx0f6Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
         }
     } else {
         frame = entry->frame;
-        q = D_801E7984;
-        p = D_801E7984;
+        q = fx_0f6_lines;
+        p = fx_0f6_lines;
         for (i = 0; i < 4; i++, p++, q++) {
-            if (p->unk2 == 0 && frame >= p->unk4 && frame < p->unk6) {
-                ex->btlfx_drawSpriteLine((u8 *)ex->btlfx_getFileData(entry->file, q->unk0), &work->unk10, p->unk8,
-                                  p->unkA);
-                p->unkA -= 0x1000 / (p->unk6 - p->unk4);
-                if (frame == p->unk6 - 1) {
-                    p->unk2 = 1;
+            if (p->done2 == 0 && frame >= p->start4 && frame < p->end6) {
+                ex->btlfx_drawSpriteLine((u8 *)ex->btlfx_getFileData(entry->file, q->block0), &work->linePos10, p->frame8,
+                                  p->alphaA);
+                p->alphaA -= 0x1000 / (p->end6 - p->start4);
+                if (frame == p->end6 - 1) {
+                    p->done2 = 1;
                 }
-                p->unk8++;
+                p->frame8++;
             }
         }
         if (frame == 0x14) {

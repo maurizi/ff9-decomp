@@ -62,7 +62,7 @@ s32 fx_0fa_op80(s32 mode, Fx0faWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
         work->rot3C.vy = 0;
         work->rot3C.vz = 0;
         ex->btlfx_getUnitBodyPos(0x10, 0, &work->pos44.vx);
-        ex->btlfx_getUnitBodyPos(0x10, 0, &work->unk28.vx);
+        ex->btlfx_getUnitBodyPos(0x10, 0, &work->homePos28.vx);
         work->pos4C.vx = work->pos44.vx;
         work->pos4C.vy = work->pos44.vy;
         work->pos4C.vz = work->pos44.vz;
@@ -98,25 +98,25 @@ s32 fx_0fa_op80(s32 mode, Fx0faWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
         }
         if (work->unk0[0] != 0) {
             work->unk0[0]--;
-            work->pos4C.vx = work->pos44.vx = work->unk28.vx;
-            work->pos4C.vy = work->pos44.vy = work->unk28.vy - ((ex->math_sin(work->unk0[0] << 7) * (0x10 - work->unk0[0])) >> 7);
-            work->pos4C.vz = work->pos44.vz = work->unk28.vz + ((ex->math_cos(work->unk0[0] << 7) * (0x10 - work->unk0[0])) >> 7);
+            work->pos4C.vx = work->pos44.vx = work->homePos28.vx;
+            work->pos4C.vy = work->pos44.vy = work->homePos28.vy - ((ex->math_sin(work->unk0[0] << 7) * (0x10 - work->unk0[0])) >> 7);
+            work->pos4C.vz = work->pos44.vz = work->homePos28.vz + ((ex->math_cos(work->unk0[0] << 7) * (0x10 - work->unk0[0])) >> 7);
             ex->btlfx_aimAngles(&work->pos30.vx, &work->pos44.vx, &work->rot3C.vx);
-            ex->btlfx_aimAngles(&work->pos44.vx, &work->pos30.vx, &work->unk6C.vx);
+            ex->btlfx_aimAngles(&work->pos44.vx, &work->pos30.vx, &work->aimRot6C.vx);
             work->scale5C.vx = work->scale5C.vy = work->scale5C.vz = ex->math_cos(work->unk0[0] << 6) / 5;
         }
         if (work->unk0[1] != 0) {
             work->unk0[1]--;
-            work->pos4C.vx = work->pos44.vx = work->unk28.vx;
-            work->pos4C.vy = work->pos44.vy = work->unk28.vy - ((ex->math_sin((0x10 - work->unk0[1]) << 7) * work->unk0[1]) >> 7);
-            work->pos4C.vz = work->pos44.vz = work->unk28.vz + ((ex->math_cos((0x10 - work->unk0[1]) << 7) * work->unk0[1]) >> 7);
+            work->pos4C.vx = work->pos44.vx = work->homePos28.vx;
+            work->pos4C.vy = work->pos44.vy = work->homePos28.vy - ((ex->math_sin((0x10 - work->unk0[1]) << 7) * work->unk0[1]) >> 7);
+            work->pos4C.vz = work->pos44.vz = work->homePos28.vz + ((ex->math_cos((0x10 - work->unk0[1]) << 7) * work->unk0[1]) >> 7);
             work->rot3C.vx -= work->unk0[1] * work->unk0[1] * 4;
             work->scale5C.vx = work->scale5C.vy = work->scale5C.vz = ex->math_cos((0x10 - work->unk0[1]) << 6) / 5;
         }
         if (work->unk0[6] != 0 && work->emit74 != NULL) {
-            work->emit74->rot.vx = work->unk6C.vx;
-            work->emit74->rot.vy = work->unk6C.vy;
-            work->emit74->rot.vz = work->unk6C.vz;
+            work->emit74->rot.vx = work->aimRot6C.vx;
+            work->emit74->rot.vy = work->aimRot6C.vy;
+            work->emit74->rot.vz = work->aimRot6C.vz;
         }
         if (work->unk0[2] != 0) {
             work->unk0[2]--;
@@ -125,12 +125,12 @@ s32 fx_0fa_op80(s32 mode, Fx0faWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
         }
         if (work->unk0[4] != 0) {
             work->unk0[4]--;
-            ex->btlfx_drawScrollMove(0, 0x2C0, 0x180, 0x40, 0x40, D_801E7FAC[work->unk0[4] >> 1].unk0,
-                              D_801E7FAC[work->unk0[4] >> 1].unk4);
+            ex->btlfx_drawScrollMove(0, 0x2C0, 0x180, 0x40, 0x40, fx_0fa_scrollSrc0[work->unk0[4] >> 1].srcX0,
+                              fx_0fa_scrollSrc0[work->unk0[4] >> 1].srcY4);
         }
         if (work->unk0[5] != 0) {
             work->unk0[5]--;
-            ex->btlfx_drawScrollMove(0, 0x2C0, 0x180, 0x40, 0x40, D_801E7FCC[work->unk0[5]].unk0, D_801E7FCC[work->unk0[5]].unk4);
+            ex->btlfx_drawScrollMove(0, 0x2C0, 0x180, 0x40, 0x40, fx_0fa_scrollSrc1[work->unk0[5]].srcX0, fx_0fa_scrollSrc1[work->unk0[5]].srcY4);
         } else if (frame > 0x20) {
             if (!(ex->btlfx_rand() & 7)) {
                 work->unk0[5] = 4;

@@ -1,19 +1,22 @@
 #ifndef FX_0F5_H
 #define FX_0F5_H
 
-/* Effect module fx_0f5 (dir 13 file 0x0F5). */
+/* Effect module fx_0f5 (dir 13 file 0x0F5): Stellar Circle 5. Textured cylinders (fxm_drawTexCylinder) around a
+ * model at the target centre, with scrolling textures (btlfx_drawScrollMove). Evidence: [data] the party ability /
+ * item tables and enemy sequences that play this file id (tools/effect_labels.py; docs/runtime-findings.md, "Round
+ * 31 runtime pass"). */
 #include "btlfx_mod.h"
 
 extern Unk800F78A4 *fx_0f5_env;
-extern s32 D_801E8A28; /* flicker phase */
-extern u8 D_801E89F8[];
+extern s32 fx_0f5_flickerPhase; /* flicker phase */
+extern u8 fx_0f5_flickerGradient[];
 
 typedef struct {
-    s32 unk0; /* state */
-    s32 unk4; /* frame */
-    SVECTOR unk8; /* base position */
+    s32 state0; /* state */
+    s32 frame4; /* frame */
+    SVECTOR center8; /* base position */
     SVECTOR pos10; /* position */
-    SVECTOR unk18; /* rotation */
+    SVECTOR rot18; /* rotation */
     s32 model20; /* model */
 } Fx0f5Work80; /* 0x24 */
 

@@ -1,7 +1,9 @@
 #ifndef FX_0E6_H
 #define FX_0E6_H
 
-/* Effect module fx_0e6 (dir 13 file 0x0E6). */
+/* Effect module fx_0e6 (dir 13 file 0x0E6): enemy Stone (Mu). A model and a 25-point strip (btlfx_drawTrail) flying
+ * from the caster to the target. Evidence: [data] the party ability / item tables and enemy sequences that play
+ * this file id (tools/effect_labels.py; docs/runtime-findings.md, "Round 31 runtime pass"). */
 #include "btlfx_mod.h"
 
 typedef struct {
@@ -23,6 +25,6 @@ typedef struct {
 
 extern Unk800F78A4 *fx_0e6_env;
 extern BtlModel fx_0e6_effModels[];
-extern Fx0e6Line D_801E7B68;
+extern Fx0e6Line fx_0e6_strip;
 
 #endif

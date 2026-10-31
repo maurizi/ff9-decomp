@@ -5,3 +5,4 @@ fx_0ef_op81 = 0x801E7928; // type:func [code] header op entry 1, effect script o
 fxm_posPathGet = 0x801E7A64; // type:func [code] key i of a path of SVECTOR positions (count at +2), clamped to the last key, returns 1 past the end
 fxm_posPathInit = 0x801E7A4C; // type:func [code] sets up the fxm_posPathGet data (path data skips a header halfword, then count and keys), paired with the getter that follows it
 fx_0ef_env = 0x801E7B4C; // [code] the effect env (Unk800F78A4) the op handlers store in mode 1, used by the helpers for BTLFX_EXPORTS
+fx_0ef_spawns = 0x801E7AC8; // [code] five emitter spawns (Fx0efSpawn, block, frame and offset from the target body) run by fx_0ef_op80

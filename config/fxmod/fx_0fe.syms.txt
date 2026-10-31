@@ -5,3 +5,5 @@ fxm_lerpSvec = 0x801E7B58; // type:func [code] out = a + (b - a) * t / 0x1000 (L
 fxm_lerpRatio = 0x801E7B9C; // type:func [code] (from * (n - t) + to * t) / n, the module copy of btlfx_lerpRatio
 fx_0fe_env = 0x801E7C44; // [code] the effect env (Unk800F78A4) the op handlers store in mode 1, used by the helpers for BTLFX_EXPORTS
 fx_0fe_effModels = 0x801E7C54; // [code] effect model buffers given to btlfx_initEffModels (BtlModel per slot)
+fx_0fe_modelBlocks = 0x801E7BF4; // [code] effect file blocks of the three models, btlfx_getFileData then btlfx_registerEffectModel in fx_0fe_op80
+fx_0fe_orbits = 0x801E7EB4; // [code] six model orbits (Fx0feOrbit radius and angle) around the target, btlfx_pointAhead in fx_0fe_op80

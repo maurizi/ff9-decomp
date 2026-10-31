@@ -1,7 +1,9 @@
 #ifndef FX_0EB_H
 #define FX_0EB_H
 
-/* Effect module fx_0eb (dir 13 file 0x0EB). */
+/* Effect module fx_0eb (dir 13 file 0x0EB): enemy Psychokinesis (Nova Dragon, ...). The target is lifted, held and
+ * dropped back (btlfx_setUnitPos) among emitters. Evidence: [data] the party ability / item tables and enemy
+ * sequences that play this file id (tools/effect_labels.py; docs/runtime-findings.md, "Round 31 runtime pass"). */
 #include "btlfx_mod.h"
 
 typedef struct {
@@ -13,14 +15,14 @@ typedef struct {
     SVECTOR pos14; /* target position */
     SVECTOR pos1C; /* target home position */
     SVECTOR pos24;
-    SVECTOR unk2C;
-    s16 unk34; /* lift countdown */
-    s16 unk36; /* drop countdown */
-    s16 unk38; /* hold up */
+    SVECTOR emitTarget2C;
+    s16 liftTimer34; /* lift countdown */
+    s16 dropTimer36; /* drop countdown */
+    s16 hold38; /* hold up */
 } Fx0ebWork;
 
 extern Unk800F78A4 *fx_0eb_env;
-extern s32 D_801E7C34[];
+extern s32 fx_0eb_op80Trails[];
 
 static void fxm_lerpSvec(SVECTOR *a, SVECTOR *b, s32 t, SVECTOR *out);
 static s32 fxm_lerpRatio(s32 from, s32 to, s32 t, s32 n);

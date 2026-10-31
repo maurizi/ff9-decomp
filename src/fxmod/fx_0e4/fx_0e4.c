@@ -28,33 +28,33 @@ s32 fx_0e4_op80(s32 mode, Fx0e4Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
         work->pos10.vx = pos.vx;
         work->pos10.vy = pos.vy;
         work->pos10.vz = pos.vz;
-        work->unk64 = 0;
+        work->state64 = 0;
         work->scale20.vx = 0x5000;
         work->scale20.vy = 0x6000;
         work->scale20.vz = 0x5000;
         for (i = 0; i < 3; i++) {
-            work->model68[i] = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, D_801E7CF8[i]), 1);
+            work->model68[i] = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, fx_0e4_modelBlocks[i]), 1);
         }
-        work->unk54.vx = 0x400;
-        work->unk5E = 0x1000;
-        work->unk60 = 8;
-        work->unk54.vy = 0;
-        work->unk54.vz = 0;
-        work->unk5C = 0;
-        work->unk62 = -1;
-        work->unk4C.vx = work->pos10.vx;
-        work->unk4C.vy = work->pos10.vy;
-        work->unk4C.vz = work->pos10.vz;
+        work->ringRot54.vx = 0x400;
+        work->ringAlpha5E = 0x1000;
+        work->dropTimer60 = 8;
+        work->ringRot54.vy = 0;
+        work->ringRot54.vz = 0;
+        work->ringScale5C = 0;
+        work->fadeTimer62 = -1;
+        work->ringPos4C.vx = work->pos10.vx;
+        work->ringPos4C.vy = work->pos10.vy;
+        work->ringPos4C.vz = work->pos10.vz;
     } else {
         frame = entry->frame;
         if (frame == 0xC) {
-            work->unk62 = 0x10;
+            work->fadeTimer62 = 0x10;
         }
         if (frame >= 0 && frame < 0x1C) {
             f = frame;
-            if (work->unk60 >= 0) {
-                work->pos10.vy = fxm_lerpRatio(-0xFA0, 0, 8 - work->unk60, 8);
-                if (--work->unk60 == 0) {
+            if (work->dropTimer60 >= 0) {
+                work->pos10.vy = fxm_lerpRatio(-0xFA0, 0, 8 - work->dropTimer60, 8);
+                if (--work->dropTimer60 == 0) {
                     work->pos44.vx = work->pos10.vx;
                     work->pos44.vy = work->pos10.vy;
                     work->pos44.vz = work->pos10.vz;
@@ -63,15 +63,15 @@ s32 fx_0e4_op80(s32 mode, Fx0e4Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
                     work->emit4 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 5), (s32)&work->pos34);
                 }
             }
-            work->unk5C += 0x200;
-            n = work->unk5C;
+            work->ringScale5C += 0x200;
+            n = work->ringScale5C;
             if (n > 0x1000) {
                 n = 0x1000;
             }
-            work->unk5C = n;
-            ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->file, 6), &work->unk4C, &work->unk54, work->unk5C,
-                              f, 2, work->unk5E);
-            switch (work->unk64) {
+            work->ringScale5C = n;
+            ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->file, 6), &work->ringPos4C, &work->ringRot54, work->ringScale5C,
+                              f, 2, work->ringAlpha5E);
+            switch (work->state64) {
             case 0:
                 if (f < 6) {
                     m = 0;
@@ -99,14 +99,14 @@ s32 fx_0e4_op80(s32 mode, Fx0e4Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
                 ex->Hi_DrawSliceEffModel(&work->rot8, &work->pos10, (s32)&work->scale20, m);
                 break;
             }
-            if (work->unk62 >= 0) {
-                work->unk30 = fxm_lerpRatio(0, -0x80, 0x10 - work->unk62, 0x10);
-                work->unk62--;
+            if (work->fadeTimer62 >= 0) {
+                work->rgb30 = fxm_lerpRatio(0, -0x80, 0x10 - work->fadeTimer62, 0x10);
+                work->fadeTimer62--;
                 ex->Hi_ModifyEffModelAbr(m, 1);
-                ex->Hi_ModifyEffModelRGB(m, work->unk30, work->unk30, work->unk30);
+                ex->Hi_ModifyEffModelRGB(m, work->rgb30, work->rgb30, work->rgb30);
                 work->pos10.vy += 0xA;
                 work->scale20.vy -= 0x100;
-                work->unk5E -= 0x100;
+                work->ringAlpha5E -= 0x100;
             }
         }
         if (frame >= 0x41) {

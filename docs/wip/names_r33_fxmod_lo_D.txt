@@ -1,0 +1,113 @@
+# Round 33: effect-module names, slice D (fx_0e1_0-fx_0ff), old -> new. Evidence [code]; the reason is in each
+# module's config/fxmod/fx_XXX.syms.txt entry. Data/functions as 'fx_XXX OLD NEW  # why', fields as
+# 'fx_XXX Struct old=new ...' (original unk names).
+
+## fx_0e1_1
+fx_0e1_1 D_801ECD70 fx_0e1_1_origin  # [code] effect origin copied into the op80 work (pos8), the emitter position of the three start emitters
+fx_0e1_1 D_801ECD78 fx_0e1_1_camPos  # [code] base camera point, minus 0x800 in y becomes camera point 2 in fx_0e1_1_op80 state 1 (cos bob around its y)
+fx_0e1_1 D_801ECD80 fx_0e1_1_rippleRgb  # [code] CVECTOR colour passed to btlfx_drawRippleGrid by fx_0e1_1_op80
+fx_0e1_1 Fx0e11Work unk0=state0 unk4=frame4 unk24=camPos24 unk34=swayAmp34 unk38=fadeOut38 unk3C=alpha3C
+
+## fx_0e4
+fx_0e4 D_801E7CF8 fx_0e4_modelBlocks  # [code] effect file blocks of the three models, btlfx_getFileData then btlfx_registerEffectModel in fx_0e4_op80
+fx_0e4 Fx0e4Work unk30=rgb30 unk4C=ringPos4C unk54=ringRot54 unk5C=ringScale5C unk5E=ringAlpha5E unk60=dropTimer60 unk62=fadeTimer62 unk64=state64
+
+## fx_0e5
+fx_0e5 Fx0e5Work unk28=aimRot28 unk38=linePos38 unk40=lineFrame40 unk42=lineAlpha42
+
+## fx_0e6
+fx_0e6 D_801E7B68 fx_0e6_strip  # [code] 25-point strip buffer (Fx0e6Line) filled by btlfx_lerpVec and drawn with btlfx_drawTrail in fx_0e6_op80
+
+## fx_0e7
+fx_0e7 D_801E7EFC fx_0e7_texPages  # [code] tpage and clut pairs (BtlTexInfo arg) passed to Hi_RegisterTexListModel in fx_0e7_op81
+fx_0e7 D_801E7F04 fx_0e7_texPos  # [code] texture positions (btl_applyModelTextures arg) passed to Hi_RegisterTexListModel in fx_0e7_op81
+fx_0e7 Fx0e7Work80 unkC=linePosC unk14=lineFrame14 unk16=lineAlpha16
+fx_0e7 Fx0e7Work81 unk3C=rgb3C unk6C=fadeTimer6C unk70=dropTimer70 unk74=tiltTimer74 unk78=model78 unk7A=model7A
+
+## fx_0e8
+fx_0e8 D_801E7A80 fx_0e8_op80Trails  # [code] trail point buffer (Pool6CEntry.trails) of an emitter started by the op80 handler
+fx_0e8 Fx0e8Work unk2C=scale2C
+
+## fx_0e9
+fx_0e9 D_801E7D0C fx_0e9_orbit  # [code] orbit state (Fx0e9Orbit) set up by fx_0e9_op80, advanced each frame by fx_0e9_op80ParticleMotion
+fx_0e9 D_801E7D1C fx_0e9_startPos  # [code] point 0xC8 ahead of the caster (btlfx_pointAhead), the particle path start in fx_0e9_op80ParticleMotion
+fx_0e9 D_801E7D24 fx_0e9_orbitStart  # [code] point 0x348 ahead of the caster, its distance and angle from the target give the orbit radius and start angle
+fx_0e9 D_801E7D2C fx_0e9_orbitCenter  # [code] target position, the centre the particle orbits in fx_0e9_op80ParticleMotion
+fx_0e9 D_801E7D34 fx_0e9_emitPos  # [code] emitter origin, passed to btlfx_startEmitter
+fx_0e9 Fx0e9Orbit unk0=radius0 unk2=radius2 unk4=dir4 unk6=angle6 unk8=wobble8 unkA=timerA
+fx_0e9 Fx0e9EffHdr unk8=motion8
+
+## fx_0ea
+fx_0ea D_801E7DF4 fx_0ea_emitBlocks  # [code] effect file block per target index, the emitter btlfx_startEmitter starts in fx_0ea_op81
+fx_0ea D_801E7E5C fx_0ea_arcFrom  # [code] caster body position, the start of every fxm_arcParticle path
+fx_0ea D_801E7E64 fx_0ea_arcTo  # [code] target body position per target index, the end of the fxm_arcParticle path of fx_0ea_op81ParticleMotionN
+fx_0ea D_801E7E84 fx_0ea_emitPos  # [code] emitter origin, passed to btlfx_startEmitter
+fx_0ea Fx0eaWork80 unk10=linePos10 unk18=lineFrame18 unk1A=lineAlpha1A
+fx_0ea Fx0eaWork81 unk20=target20
+fx_0ea Fx0eaEffHdr unk8=motion8
+
+## fx_0eb
+fx_0eb D_801E7C34 fx_0eb_op80Trails  # [code] trail point buffer (Pool6CEntry.trails) of an emitter started by the op80 handler
+fx_0eb Fx0ebWork unk2C=emitTarget2C unk34=liftTimer34 unk36=dropTimer36 unk38=hold38
+
+## fx_0ef
+fx_0ef D_801E7AC8 fx_0ef_spawns  # [code] five emitter spawns (Fx0efSpawn, block, frame and offset from the target body) run by fx_0ef_op80
+fx_0ef Fx0efWork80 unk40=emitPos40
+fx_0ef Fx0efSpawn unk0=block0 unk2=frame2 unk4=offset4
+fx_0ef Fx0efPath unk2=count2 unk4=keys4
+
+## fx_0f0
+fx_0f0 D_801E7C30 fx_0f0_op80Trails0  # [code] trail point buffer (Pool6CEntry.trails) of an emitter started by the op80 handler
+fx_0f0 D_801E8D40 fx_0f0_op80Trails1  # [code] trail point buffer (Pool6CEntry.trails) of an emitter started by the op80 handler
+fx_0f0 D_801E9E50 fx_0f0_op80Trails2  # [code] trail point buffer (Pool6CEntry.trails) of an emitter started by the op80 handler
+
+## fx_0f2
+fx_0f2 Fx0f2Work unk30=rgb30 unk34=speed34 unk40=startPos40 unk50=isEnemy50 unk54=fadeInTimer54 unk56=fadeOutTimer56
+
+## fx_0f3
+fx_0f3 D_801E7CB0 fx_0f3_strips  # [code] per-variant strip buffers drawn with btlfx_drawTrail (the moving head as anchor) in fx_0f3_op80
+fx_0f3 D_801E7F80 fx_0f3_op80Trails  # [code] trail point buffer (Pool6CEntry.trails) per variant of an emitter started by the op80 handler
+fx_0f3 Fx0f3Work unk0=state0 unk4=variant4 unk10=headPos10
+
+## fx_0f4
+fx_0f4 Fx0f4Work unk3C=rgb3C unk60=startPos60 unk68=fadeInTimer68 unk6A=fadeOutTimer6A
+
+## fx_0f5
+fx_0f5 D_801E8A28 fx_0f5_flickerPhase  # [code] gradient position (masked to 0x1F, advanced per call) for btlfx_sampleGradient in fxm_drawTexCylinder flicker mode
+fx_0f5 D_801E89F8 fx_0f5_flickerGradient  # [code] colour gradient sampled by btlfx_sampleGradient in fxm_drawTexCylinder flicker mode
+fx_0f5 Fx0f5Work80 unk0=state0 unk4=frame4 unk8=center8 unk18=rot18
+
+## fx_0f6
+fx_0f6 D_801E7984 fx_0f6_lines  # [code] four sprite-line layers (Fx0f6Layer, block, start and end frame, frame, alpha) drawn with btlfx_drawSpriteLine by fx_0f6_op80
+fx_0f6 Fx0f6Work unk10=linePos10
+fx_0f6 Fx0f6Layer unk0=block0 unk2=done2 unk4=start4 unk6=end6 unk8=frame8 unkA=alphaA
+
+## fx_0f7
+fx_0f7 D_801E7AE0 fx_0f7_sparks  # [code] four screen sprites (Fx0f7Spark) drawn with btlfx_drawSpriteAtOt, x advanced by a speed, faded in by age
+fx_0f7 Fx0f7Work unk0=timer0
+fx_0f7 Fx0f7Spark unk0=delay0 unk4=kind4 unk8=ot8 unkC=alphaC unk10=x10 unk14=y14 unk18=speedX18 unk1C=age1C
+# Fx0f7Work: the 'Pool6CEntry *emit4; s32 unk8;' pair was the SVECTOR the body position is written into (getUnitBodyPos, emitter origin), retyped as SVECTOR pos4
+
+## fx_0f8
+fx_0f8 D_801E7B78 fx_0f8_spawns  # [code] four emitter spawns (Fx0f8Spawn, block and frame) run by fx_0f8_op81
+fx_0f8 Fx0f8Work80 unkC=centerC unk14=aimRot14
+fx_0f8 Fx0f8Work81 unk30=emitPos30
+fx_0f8 Fx0f8Spawn unk0=block0 unk2=frame2
+
+## fx_0fa
+fx_0fa D_801E7FAC fx_0fa_scrollSrc0  # [code] VRAM source x y per step, the last two btlfx_drawScrollMove args of the work[4] countdown in fx_0fa_op80
+fx_0fa D_801E7FCC fx_0fa_scrollSrc1  # [code] VRAM source x y per step, the last two btlfx_drawScrollMove args of the random work[5] countdown in fx_0fa_op80
+fx_0fa Fx0faWork unk28=homePos28 unk6C=aimRot6C
+fx_0fa Fx0faFlash unk0=srcX0 unk4=srcY4
+
+## fx_0fe
+fx_0fe D_801E7BF4 fx_0fe_modelBlocks  # [code] effect file blocks of the three models, btlfx_getFileData then btlfx_registerEffectModel in fx_0fe_op80
+fx_0fe D_801E7EB4 fx_0fe_orbits  # [code] six model orbits (Fx0feOrbit radius and angle) around the target, btlfx_pointAhead in fx_0fe_op80
+fx_0fe Fx0feWork unk4=rot4 unk34=pos34 unkA4=rgbA4 unkB0=fadeInTimerB0 unkB4=fadeOutTimerB4
+fx_0fe Fx0feOrbit unk0=radius0 unk2=angle2 unk4=spin4
+
+## fx_0ff
+fx_0ff D_801E7C68 fx_0ff_modelBlocks  # [code] effect file blocks of the three models, btlfx_getFileData then btlfx_registerEffectModel in fx_0ff_op80
+fx_0ff D_801E7F28 fx_0ff_orbits  # [code] six model orbits (Fx0ffOrbit radius and angle) around the target, btlfx_pointAhead in fx_0ff_op80
+fx_0ff Fx0ffWork unk8=rot8 unk38=pos38 unkA8=rgbA8 unkBC=fadeInTimerBC unkC0=fadeOutTimerC0
+fx_0ff Fx0ffOrbit unk0=radius0 unk2=angle2 unk4=spin4

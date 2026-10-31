@@ -10,26 +10,26 @@ s32 fx_0e7_op80(s32 mode, Fx0e7Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
     } else if (mode == 1) {
         fx_0e7_env = env;
         ex->btlfx_getUnitBodyPos(0x10, 1, (s16 *)&work->pos4);
-        work->unkC.vx = work->pos4.vx;
-        work->unkC.vy = work->pos4.vy;
-        work->unkC.vz = work->pos4.vz;
-        work->unkC.vy = -0x9C4;
+        work->linePosC.vx = work->pos4.vx;
+        work->linePosC.vy = work->pos4.vy;
+        work->linePosC.vz = work->pos4.vz;
+        work->linePosC.vy = -0x9C4;
         work->emit0 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 4), (s32)&work->pos4);
-        work->unk16 = 0x1000;
-        work->unk14 = 0;
+        work->lineAlpha16 = 0x1000;
+        work->lineFrame14 = 0;
     } else {
         frame = entry->frame;
         if (frame >= 0x23 && frame < 0x30) {
-            ex->btlfx_drawSpriteLine((u8 *)ex->btlfx_getFileData(entry->file, 3), &work->unkC, work->unk14, work->unk16);
+            ex->btlfx_drawSpriteLine((u8 *)ex->btlfx_getFileData(entry->file, 3), &work->linePosC, work->lineFrame14, work->lineAlpha16);
             if (frame - 0x23 >= 5) {
-                work->unk16 -= 0x200;
+                work->lineAlpha16 -= 0x200;
             }
-            work->unk14++;
-            n = work->unk14;
+            work->lineFrame14++;
+            n = work->lineFrame14;
             if (n >= 6) {
                 n = 5;
             }
-            work->unk14 = n;
+            work->lineFrame14 = n;
         }
         return frame >= 0x32;
     }
@@ -64,19 +64,19 @@ s32 fx_0e7_op81(s32 mode, Fx0e7Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
         work->scale2C.vy = 0x2000;
         work->scale2C.vz = 0x2000;
         /* passes three arguments; the fourth parameter keeps whatever is in $a3 */
-        work->unk78 = ((s32(*)())ex->Hi_RegisterTexListModel)(ex->btlfx_getFileData(entry->file, 2), D_801E7EFC,
-                                                               D_801E7F04);
-        work->unk7A = ((s32(*)())ex->Hi_RegisterTexListModel)(ex->btlfx_getFileData(entry->file, 1), D_801E7EFC,
-                                                               D_801E7F04);
+        work->model78 = ((s32(*)())ex->Hi_RegisterTexListModel)(ex->btlfx_getFileData(entry->file, 2), fx_0e7_texPages,
+                                                               fx_0e7_texPos);
+        work->model7A = ((s32(*)())ex->Hi_RegisterTexListModel)(ex->btlfx_getFileData(entry->file, 1), fx_0e7_texPages,
+                                                               fx_0e7_texPos);
         work->unk68 = -1;
-        work->unk6C = -1;
-        work->unk70 = -1;
-        work->unk74 = -1;
+        work->fadeTimer6C = -1;
+        work->dropTimer70 = -1;
+        work->tiltTimer74 = -1;
     } else {
         frame = entry->frame;
         switch (frame) {
         case 0:
-            work->unk70 = 6;
+            work->dropTimer70 = 6;
             break;
         case 4:
             work->pos50.vx = work->pos1C.vx;
@@ -86,7 +86,7 @@ s32 fx_0e7_op81(s32 mode, Fx0e7Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
             work->emit0 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 5), (s32)&work->pos50);
             break;
         case 8:
-            work->unk74 = 8;
+            work->tiltTimer74 = 8;
             work->pos58.vx = work->pos1C.vx;
             work->pos58.vy = work->pos1C.vy;
             work->pos58.vz = work->pos1C.vz;
@@ -106,40 +106,40 @@ s32 fx_0e7_op81(s32 mode, Fx0e7Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
             }
             break;
         case 0x10:
-            work->unk6C = 0x10;
+            work->fadeTimer6C = 0x10;
             break;
         }
         if (frame >= 0 && frame < 0x20) {
             if (frame < 0) {
                 work->pos1C.vy = -0xBB8;
-            } else if (work->unk70 >= 0) {
-                work->pos1C.vy = fxm_lerpRatio(-0xBB8, -0x96, 6 - work->unk70, 6);
-                work->unk70--;
+            } else if (work->dropTimer70 >= 0) {
+                work->pos1C.vy = fxm_lerpRatio(-0xBB8, -0x96, 6 - work->dropTimer70, 6);
+                work->dropTimer70--;
             } else {
                 work->pos1C.vy = -0x96;
             }
             if (frame < 8) {
                 work->rotC.vx = 0x400;
-            } else if (work->unk74 >= 0) {
-                work->rotC.vx = fxm_lerpRatio(0x400, 0, 8 - work->unk74, 8);
-                work->unk74--;
+            } else if (work->tiltTimer74 >= 0) {
+                work->rotC.vx = fxm_lerpRatio(0x400, 0, 8 - work->tiltTimer74, 8);
+                work->tiltTimer74--;
             } else {
                 work->rotC.vx = 0;
             }
-            ex->Hi_DrawEffModel(&work->rotC, &work->pos1C, (s32)&work->scale2C, work->unk78);
-            ex->Hi_DrawEffModel(&work->rot14, &work->pos1C, (s32)&work->scale2C, work->unk7A);
+            ex->Hi_DrawEffModel(&work->rotC, &work->pos1C, (s32)&work->scale2C, work->model78);
+            ex->Hi_DrawEffModel(&work->rot14, &work->pos1C, (s32)&work->scale2C, work->model7A);
             env->camera->points[0].vx = work->pos1C.vx;
             env->camera->points[0].vy = work->pos1C.vy;
             env->camera->points[0].vz = work->pos1C.vz;
-            if (work->unk68 >= 0 || work->unk6C >= 0) {
-                if (work->unk6C >= 0) {
-                    work->unk3C = fxm_lerpRatio(0, -0x80, 0x10 - work->unk6C, 0x10);
-                    work->unk6C--;
+            if (work->unk68 >= 0 || work->fadeTimer6C >= 0) {
+                if (work->fadeTimer6C >= 0) {
+                    work->rgb3C = fxm_lerpRatio(0, -0x80, 0x10 - work->fadeTimer6C, 0x10);
+                    work->fadeTimer6C--;
                 }
-                ex->Hi_ModifyEffModelAbr(work->unk7A, 1);
-                ex->Hi_ModifyEffModelAbr(work->unk78, 1);
-                ex->Hi_ModifyEffModelRGB(work->unk7A, work->unk3C, work->unk3C, work->unk3C);
-                ex->Hi_ModifyEffModelRGB(work->unk78, work->unk3C, work->unk3C, work->unk3C);
+                ex->Hi_ModifyEffModelAbr(work->model7A, 1);
+                ex->Hi_ModifyEffModelAbr(work->model78, 1);
+                ex->Hi_ModifyEffModelRGB(work->model7A, work->rgb3C, work->rgb3C, work->rgb3C);
+                ex->Hi_ModifyEffModelRGB(work->model78, work->rgb3C, work->rgb3C, work->rgb3C);
             }
         }
         if (frame >= 0x5A) {
