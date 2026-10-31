@@ -1848,11 +1848,14 @@ extern s32 g_padPortMask[];
 #define PAD_ID_DIGITAL 4 /* controller-type nibble ((PadBuf.unk0 >> 12) & 0xF) pad_update accepts */
 #define PAD_ID_ANALOG 7 /* pad_update reads the stick bytes only for this type */
 
-/* GameState.unk0 flags. Each mode loop runs until its exit bits are set (battle: 0x100/0x200 in ovl_0b). */
+/* GameState.flags. Each mode loop runs until its exit bits are set. */
 #define GS_RESET 0x1 /* game_main's inner loop ends: soft reset (PAD_SOFT_RESET) or restart */
 #define GS_FLD_LEAVE 0x2 /* fld_entry loop ends */
 #define GS_FLD_NEW_AREA 0x4 /* fld_runArea loop ends: next field in another area */
 #define GS_FLD_NEW_FIELD 0x8 /* fld_main loop ends: next field in the same area */
+#define GS_BTL_LEAVE 0x100 /* btl_entry loop ends (set with GS_MODE_BATTLE_END when the battle is over) */
+#define GS_BTL_NEXT 0x200 /* btl_main loop ends without leaving btl_entry (nothing decompiled sets it) */
+#define GS_EXIT_BITS (GS_RESET | GS_FLD_LEAVE | GS_FLD_NEW_AREA | GS_FLD_NEW_FIELD | GS_BTL_LEAVE | GS_BTL_NEXT) /* 0x30F, cleared by fld_main/btl_load */
 #define GS_WM_LEAVE 0x1000 /* wm_entry loop ends */
 #define GS_WM_NEW_MAP 0x2000 /* wm_main loop ends without leaving wm_entry */
 #define GS_RELOAD_FILE_TABLES 0x100000 /* set at boot (game_resetState) and after a disc change; file_loadDirTables reloads, then clears it */

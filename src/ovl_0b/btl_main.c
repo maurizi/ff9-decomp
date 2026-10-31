@@ -4,7 +4,7 @@ void btl_entry(void) {
     btl_initMode();
     do {
         btl_main((s16)g_gameState->gameData->battleId);
-    } while (!(g_gameState->flags & 0x101));
+    } while (!(g_gameState->flags & (GS_RESET | GS_BTL_LEAVE)));
     btl_exitMode();
 }
 
@@ -36,10 +36,10 @@ void btl_main(s32 arg0) {
             }
         } else {
             g_gameState->mode = GS_MODE_BATTLE_END;
-            g_gameState->flags |= 0x100;
+            g_gameState->flags |= GS_BTL_LEAVE;
         }
         btl_endFrame();
-    } while (!(g_gameState->flags & 0x301));
+    } while (!(g_gameState->flags & (GS_RESET | GS_BTL_LEAVE | GS_BTL_NEXT)));
     btl_cleanup();
 }
 
@@ -265,7 +265,7 @@ void btl_load(s32 arg0) {
     btl_allocBuffers();
     p = g_gameState->gameData->ctx.battle->work;
     btl_initReturnInfo();
-    g_gameState->flags &= ~0x30F;
+    g_gameState->flags &= ~GS_EXIT_BITS;
     game_setClearColor(0, 0, 0);
     g_gameState->gameData->battleId = arg0;
     btl_loadEncounterFile((Unk800AA08C *)p, arg0);
@@ -2145,8 +2145,8 @@ void btl_beginFrame(void) {
 }
 
 void btl_endFrame(void) {
-    if (!(g_gameState->gameData->flags & GD_PAUSED) && ((g_padPortHeld[0] & 0xF09) == 0xF09 || (g_padPortHeld[1] & 0xF09) == 0xF09)) {
-        g_gameState->flags |= 1;
+    if (!(g_gameState->gameData->flags & GD_PAUSED) && ((g_padPortHeld[0] & PAD_SOFT_RESET) == PAD_SOFT_RESET || (g_padPortHeld[1] & PAD_SOFT_RESET) == PAD_SOFT_RESET)) {
+        g_gameState->flags |= GS_RESET;
     }
     btlui_waitFrame();
     setlen(&g_btlFrameEndStp[g_gameState->gameData->drawBuf].unk0, 2);

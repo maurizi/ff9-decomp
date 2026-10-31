@@ -354,7 +354,7 @@ void fld_load(s32 arg0) {
     sc = g_gameState->gameData->ctx.field->area->scene;
     fld_initScene();
     game_freezeScreen();
-    g_gameState->flags &= ~0x30F;
+    g_gameState->flags &= ~GS_EXIT_BITS;
     g_gameState->gameData->flags |= GD_NO_FLIP;
     g_gameState->gameData->ctx.field->flags |= 4;
     game_setClearColor(0, 0, 0);

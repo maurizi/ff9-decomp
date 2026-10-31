@@ -290,8 +290,8 @@ void tm_clearOt(void) {
 void tm_endFrame(TmState *s) {
     GameData *ctx;
 
-    if ((g_padHeld & (PAD_L2 | PAD_R2 | PAD_L1 | PAD_R1 | PAD_START | PAD_SELECT)) == (PAD_L2 | PAD_R2 | PAD_L1 | PAD_R1 | PAD_START | PAD_SELECT)) {
-        g_gameState->flags |= 1;
+    if ((g_padHeld & PAD_SOFT_RESET) == PAD_SOFT_RESET) {
+        g_gameState->flags |= GS_RESET;
         s->task = TM_TASK_EXIT;
     }
     if (&g_gameState->drawEnv[g_gameState->gameData->drawBuf].dfe != NULL) {
