@@ -1546,14 +1546,14 @@ void btlfx_setUnitBrightness(BtlUnit *arg0, s32 arg1) {
     } else {
         f = 1;
     }
-    if ((arg0->flags & BTL_UNIT_PARTY) && arg0->weaponModel != NULL && f && (*(u32 *)arg0->weaponModel & 0x30) == 0x20) {
+    if ((arg0->flags & BTL_UNIT_PARTY) && arg0->weaponModel != NULL && f && (*(u32 *)arg0->weaponModel & (BTL_MODEL_OFFSCREEN | BTL_MODEL_DRAWN)) == BTL_MODEL_DRAWN) {
         v = arg1 - 0x80;
         btl_setModelRgb(arg0->weaponModel, v, v, v);
         if (arg1 < 0x46) {
             btl_setModelAbr(arg0->weaponModel, 0x20);
         }
     }
-    if ((*(u32 *)arg0->model & 0x30) == 0x20) {
+    if ((*(u32 *)arg0->model & (BTL_MODEL_OFFSCREEN | BTL_MODEL_DRAWN)) == BTL_MODEL_DRAWN) {
         v = arg1 - 0x80;
         btl_setModelRgb(arg0->model, v, v, v);
         if (arg1 < 0x46) {

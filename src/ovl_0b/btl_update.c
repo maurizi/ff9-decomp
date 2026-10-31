@@ -316,10 +316,10 @@ void btl_updateIntro(GameData *arg0, Battle *arg1) {
 
     ot = (u32 *)arg1->work->prims[arg0->drawBuf];
     btl_loadModelsStep(0);
-    if ((arg1->flags & BTL_FLAG_ENEMIES_LOADED) && (*(u32 *)&arg1->fleeBrightness & 0x2800) == 0x800) {
+    if ((arg1->flags & BTL_FLAG_ENEMIES_LOADED) && (*(u32 *)&arg1->fleeBrightness & ((BTL_LOAD_ENEMIES_INIT | BTL_LOAD_ENEMY_GREY) << 8)) == BTL_LOAD_ENEMIES_INIT << 8) {
         btl_makeEnemyGreyCluts();
         arg1->loadFlags |= BTL_LOAD_ENEMY_GREY;
-    } else if ((arg1->flags & BTL_FLAG_PARTY_LOADED) && (*(u32 *)&arg1->fleeBrightness & 0x5000) == 0x1000) {
+    } else if ((arg1->flags & BTL_FLAG_PARTY_LOADED) && (*(u32 *)&arg1->fleeBrightness & ((BTL_LOAD_PARTY_INIT | BTL_LOAD_PARTY_GREY) << 8)) == BTL_LOAD_PARTY_INIT << 8) {
         btl_makePartyGreyCluts();
         arg1->loadFlags |= BTL_LOAD_PARTY_GREY;
     }
