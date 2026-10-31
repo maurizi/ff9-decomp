@@ -3254,3 +3254,22 @@ says "code" or "static" and gives the evidence.
   0x18-stride loop that tests its 0x2 bit (WMSRC_DOUBLE_SIDED), which looks like a different source type's flags byte, not
   FT4's unk14. btl_calcBoneMatrices reads byte 2 of the header (`lbu 0x2` after `lw 0x8(s4)`), not of a bone. A
   per-loop mapping of the source types is needed.
+
+## R32c 3DS requests: shopkeeper talk, call hand-off and MENU (status: proposed; answers in docs/r32/3ds-requests-3.md)
+- binary: main (event script interpreter `evt_execInstr`, `evt_callObjectFunc`, `evt_checkPlayerAction`, `menu_open`)
+- evidence (disc 1, `tools/rt/enter_field.py 354` / `355` from `field_dali_inn`, controlEnabled `EvtState+0x16EC` poked
+  to 1, exec breakpoints on evt_execInstr / evt_callObjectFunc / menu_open, scratch `build/3ds3/optrace.lua`; new states
+  `3ds3_f354`, `3ds3_f354_counter`, `3ds3_f355_counter`):
+  - 354 (Dali weapon shop): `playerUid` 11 = entry 11 (model 98, Zidane); the shopkeeper is uid/entry 3 (model 55).
+    Cross → `evt_callObjectFunc(uid 3, 1, 3, 0)` from evt_checkPlayerAction; uid 3 runs MSG_WAIT 0x149 "Welcome!",
+    then `75 00 02 00` in its own tag 3 (+0x9A) → `menu_open(2, 0)`, ovl_3c "Weapons". No call op in between.
+  - 355 (Dali item shop): Cross inside region uid 16 → its tag 3 runs `12 00 06 fa 0d` (player tag 13) and
+    `14 00 02 05 12` → `evt_callObjectFunc(uid 5, lv 2, tag 18, save 1)`; the region then sits at wait 0xFF
+    (EVT_WAIT_CALL) while uid 5 runs its own tag 18 at level 2, which executes `75 00 02 19` → `menu_open(2, 25)`
+    (Potion, Phoenix Down, ...).
+  - Static: a disassembler built from evt_execInstr's cases decodes every field script on the 4 discs. MENU flags are
+    always 00 except the Moogles' `75 02 02 d2 01 7f` (shop id from the Moogle's local s8 var 1). Byte-search hits such
+    as `75 04 20 00` (SWITCH offset + MSG op) and `75 01 05 d9` (text id 0x175 + EXPR) are not MENU instructions.
+- proposed: `EVT_OP_CALL_CALLER 0x16`, `EVT_OP_CALL_CALLER_WAIT_FREE 0x18`, `EVT_OP_CALL_CALLER_SYNC 0x1A`;
+  `MENU_TYPE_MAIN 0 / NAME 1 / SHOP 2 / PARTY 3 / SAVE 4 / CHOCOGRAPH 5 / DISC 8` for `menu_open`'s first argument.
+- confidence: high for the call semantics and MENU encoding (C plus runtime); the 0x16-0x1A ops were not run.
