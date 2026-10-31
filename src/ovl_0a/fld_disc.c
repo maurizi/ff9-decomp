@@ -27,7 +27,7 @@ s16 fld_getDiscChangeAreaId(void) {
 
 void fld_runDiscChange(void) {
     fld_discChangeEnter();
-    while (g_fieldDiscChange.mode != 4) {
+    while (g_fieldDiscChange.mode != FLD_DISC_DONE) {
         fld_discChangeBeginFrame();
         fld_discChangeUpdate();
         fld_discChangeEndFrame();
@@ -43,7 +43,7 @@ void fld_discChangeEnter(void) {
         g_fieldDiscChange.savedFlags[i] = g_padPortMask[i];
         g_padPortMask[i] = (BTN_START | PAD_R2 | PAD_L2);
     }
-    g_fieldDiscChange.mode = 1;
+    g_fieldDiscChange.mode = FLD_DISC_PROMPT;
     g_fieldDiscChange.cursor = 0;
     g_gameState->gameData->ctx.field->flags = 0;
     win_closeAllNow();
@@ -176,9 +176,9 @@ void fld_discPromptDraw(void) {
 
 void fld_discPromptSelect(void) {
     if (g_fieldDiscChange.cursor == 0) {
-        fld_discChangeSetMode(2);
+        fld_discChangeSetMode(FLD_DISC_SAVE);
     } else {
-        fld_discChangeSetMode(3);
+        fld_discChangeSetMode(FLD_DISC_SWAP);
     }
 }
 
@@ -217,7 +217,7 @@ void fld_discChangeMenu4Leave(void) {
 }
 
 void fld_discChangeBackToPrompt(void) {
-    fld_discChangeSetMode(1);
+    fld_discChangeSetMode(FLD_DISC_PROMPT);
 }
 
 void fld_discChangeOpenMenu8(void) {
@@ -233,7 +233,7 @@ void fld_discChangeMenu8Leave(void) {
 }
 
 void fld_discChangeFinish(void) {
-    fld_discChangeSetMode(4);
+    fld_discChangeSetMode(FLD_DISC_DONE);
 }
 
 INCLUDE_RODATA("asm/us/ovl_0a/nonmatchings/fld_disc", g_fieldDiscChangeText);

@@ -136,7 +136,7 @@ void battleEnd_preloadScene(void) {
     b = g_gameState->gameData->ctx.ovl65->work;
     preload_init();
     g_gameState->gameData->preloadRequest = NULL;
-    if (g_gameState->gameData->battleResult == 6) {
+    if (g_gameState->gameData->battleResult == BATTLE_END_GAME_OVER) {
         return;
     }
     id = OVL_KEY(OVL_WORLD);

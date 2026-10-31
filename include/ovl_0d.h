@@ -374,11 +374,16 @@ extern TmCoinFrames g_tmCoinFrames;
 
 typedef struct {
     u32 id;
-    s32 flags;    /* bpp in the low bits */
+    s32 flags;    /* TM_TIM_PMODE: pixel mode */
     u32 clutLen;  /* clut block length */
     s16 clutRect[4];
     u32 clut[1];
 } TmTim; /* TIM image */
+/* TmTim.flags: TIM pixel mode (tm_loadTim passes it to LoadTPage as the colour mode) */
+#define TM_TIM_PMODE 0x3
+#define TM_TIM_4BIT 0 /* LoadTPage tp 0, width w << 2, with a CLUT */
+#define TM_TIM_8BIT 1 /* tp 1, width w << 1, with a CLUT */
+#define TM_TIM_16BIT 2 /* not loaded by tm_loadTim */
 
 typedef struct {
     u32 len;

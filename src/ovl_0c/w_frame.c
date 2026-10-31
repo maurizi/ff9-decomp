@@ -185,7 +185,7 @@ void wm_updateLogic(void) {
         break;
     case 1:
     case 2:
-        if (g_worldNaviMode != 2) {
+        if (g_worldNaviMode != WM_NAVI_FULL) {
             g_gameState->vsyncMode = 3;
             g_gameState->gameData->ctx.world->flags &= ~WM_MAP_NAVI_SCREEN;
             SetSpadStack(0x1F8003FC);
@@ -243,7 +243,7 @@ void wm_updateDraw(void) {
             g_worldDebugStep = 0x67;
             wm_drawEffects();
             g_worldDebugStep = 0x68;
-            if (g_worldPointFxOn != 0 && g_worldNaviMode != 2) {
+            if (g_worldPointFxOn != 0 && g_worldNaviMode != WM_NAVI_FULL) {
                 g_worldPrimPtr = wrain_draw(g_worldPrimPtr);
             }
         } else {
@@ -264,12 +264,12 @@ void w_frameSetParameter(u32 arg0, s32 arg1) {
         w_movementChange();
         break;
     case WM_REQ_WEATHER:
-        if (arg1 == 4) {
+        if (arg1 == WM_WEATHER_AUTO) {
             g_worldWeatherAuto = 1;
             g_worldWeatherAutoMode = -1;
         } else {
             g_worldWeatherAuto = 0;
-            wm_setWeather(arg1, 2, g_worldReqParams[0]);
+            wm_setWeather(arg1, WM_FOG_KEEP, g_worldReqParams[0]);
         }
         break;
     case WM_REQ_NAVI_MODE:
@@ -519,7 +519,7 @@ s32 w_frameGetParameter(s32 arg0) {
     case WM_PARAM_TOPOGRAPHY:
         return WM_ATTR_TOPOGRAPHY(v);
     case 0xC2:
-        if (g_worldMoveMode == 6) {
+        if (g_worldMoveMode == WM_MOVE_CHOCOBO_FLY) {
             return g_worldActorTypeInfo[g_worldPlayer->actorType].floorY + 400;
         }
         return g_worldActorTypeInfo[g_worldPlayer->actorType].floorY + g_worldActorTypeInfo[g_worldPlayer->actorType].rideOffset;
@@ -684,7 +684,7 @@ INCLUDE_RODATA("asm/us/ovl_0c/nonmatchings/w_frame", s_wmStrFramePackGetPtrRange
 
 s32 wm_canCallChocobo(void) {
     s32 n = g_worldPlayer->actorType;
-    if (n < 3 && n != 0) {
+    if (n < WM_ACTOR_CHOCOBO0 && n != 0) {
         switch ((u8)g_worldActorTypeInfo[n].cellAttr >> 2) {
         case 3:
         case 18:

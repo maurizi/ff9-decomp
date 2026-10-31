@@ -33,13 +33,13 @@ void wm_main(s32 arg0) {
                     break;
                 }
             }
-            if (!(g_gameState->gameData->ctx.world->flags & 0x200)) {
+            if (!(g_gameState->gameData->ctx.world->flags & WM_MAP_NO_FADE)) {
                 game_updateFade();
             }
             if (!(g_gameState->gameData->ctx.world->flags & WM_MAP_NO_TRANSITION)) {
                 wm_updateBattleTransition();
             }
-            if (!(g_gameState->gameData->ctx.world->flags & 0x800)) {
+            if (!(g_gameState->gameData->ctx.world->flags & WM_MAP_NO_TIMER)) {
                 game_updateTimer();
             }
         }
@@ -603,7 +603,7 @@ u32 wm_loadActorModel(s32 arg0, EvtObject *arg1) {
     wm_initModel(o->obj, g_gameState->gameData->ctx.world->obj->primCursor);
     wm_buildPackets(o->obj, db_getModelTexPages(o->modelId), db_getModelUvOffsets(o->modelId));
     g_gameState->gameData->ctx.world->obj->primCursor += n;
-    o->flags |= 1;
+    o->flags |= WM_SLOT_LOADED;
     return id;
 }
 
@@ -633,7 +633,7 @@ void wm_drawShadow(WmObjEnt *arg0, s32 arg1, s32 arg2, s32 arg3) {
 
     e = &arg0[arg1];
     s = (WmObjSlot *)game_getModel(arg1);
-    if (s->flags & 0x10) {
+    if (s->flags & WM_SLOT_NO_SHADOW) {
         return;
     }
     wm_calcShadowMatrix(e, s, &m, arg2, arg3);
@@ -1330,7 +1330,7 @@ void wm_startBattleTransition(void) {
     wm_soundCommand(SND_SE_PLAY, SE_ENCOUNTER_2, 0, SND_PAN_CENTER, SND_VOL_MAX);
     wm_soundCommand(SND_SE_PLAY, SE_ENCOUNTER_3, 0, SND_PAN_CENTER, SND_VOL_MAX);
     g_gameState->gameData->flags |= (GD_MENU_DISABLED | GD_MENU_OPEN | GD_HIDE_MODELS | GD_HIDE_BG | GD_NO_FLIP);
-    g_gameState->gameData->ctx.world->flags |= 0x300;
+    g_gameState->gameData->ctx.world->flags |= WM_MAP_NO_FADE | WM_MAP_NO_FRAME;
     g_gameState->vsyncMode = 0;
     g_padPortMask[0] |= BTN_START;
 }
@@ -1343,10 +1343,10 @@ void wm_updateBattleTransition(void) {
     s32 size;
 
     w = g_gameState->gameData->ctx.world->obj;
-    if (!(w->flags & 1)) {
+    if (!(w->flags & WM_OBJ_SWIRL_DONE)) {
         if (w->swirlFrames >= 2) {
             if ((u8)swirl_update(w->swirlX, w->swirlY)) {
-                g_gameState->gameData->ctx.world->obj->flags |= 1;
+                g_gameState->gameData->ctx.world->obj->flags |= WM_OBJ_SWIRL_DONE;
             }
         } else {
             w->swirlFrames++;
@@ -1364,21 +1364,21 @@ void wm_updateBattleTransition(void) {
                 wm_soundCommand(SND_MUSIC_SUSPEND, g_gameState->gameData->musicId[0], 0, 0, 0);
             }
             wm_soundCommand(SND_MUSIC_LOAD, g_gameState->gameData->ctx.world->obj->battleMusic, 0, 0, 0);
-            g_gameState->gameData->ctx.world->obj->battleStep = -1;
+            g_gameState->gameData->ctx.world->obj->battleStep = WM_BTLSTEP_MUSIC;
         } else {
             cd_seekAsync(g_gameState->imgSector + file_find(DIR_OVERLAYS, OVL_KEY(OVL_BATTLE))->sector, 0);
-            g_gameState->gameData->ctx.world->obj->battleStep = -2;
+            g_gameState->gameData->ctx.world->obj->battleStep = WM_BTLSTEP_SWIRL;
         }
-    } else if (o->battleStep == -1) {
+    } else if (o->battleStep == WM_BTLSTEP_MUSIC) {
         if (wm_soundCommand(SND_GET_STATE, 0, 0, 0, 0) == 0) {
             cd_seekAsync(g_gameState->imgSector + file_find(DIR_OVERLAYS, OVL_KEY(OVL_BATTLE))->sector, 0);
             wm_soundCommand(SND_MUSIC_PLAY, g_gameState->gameData->ctx.world->obj->battleMusic, 0, 0, 0);
             akao_setMusicVolume(0, 0x7F);
-            g_gameState->gameData->ctx.world->obj->battleStep = -2;
+            g_gameState->gameData->ctx.world->obj->battleStep = WM_BTLSTEP_SWIRL;
         }
-    } else if (o->battleStep == -2 && (o->flags & 1)) {
+    } else if (o->battleStep == WM_BTLSTEP_SWIRL && (o->flags & WM_OBJ_SWIRL_DONE)) {
         gd->flags &= ~(GD_MENU_DISABLED | GD_MENU_OPEN | GD_HIDE_MODELS | GD_HIDE_BG | GD_NO_FLIP);
-        g_gameState->gameData->ctx.world->flags &= ~0x300;
+        g_gameState->gameData->ctx.world->flags &= ~(WM_MAP_NO_FADE | WM_MAP_NO_FRAME);
         g_padPortMask[0] &= ~BTN_START;
         g_gameState->flags |= GS_WM_LEAVE;
     }

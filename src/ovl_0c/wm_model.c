@@ -79,9 +79,9 @@ void wm_initModel(ModelObj *arg0, u8 *arg1) {
     WmModelGroup *g2;
 
     m = arg0->model;
-    if (!(m->flags & 1)) {
+    if (!(m->flags & WMMODEL_RELOCATED)) {
         i = 0;
-        m->flags |= 1;
+        m->flags |= WMMODEL_RELOCATED;
         m->bones = (s32)m + m->bones;
         g = (WmModelGroup *)((u8 *)m + (s32)m->groups);
         m->groups = g;
@@ -117,7 +117,7 @@ void wm_initModel(ModelObj *arg0, u8 *arg1) {
     arg0->texAnims = NULL;
     pp = arg1 + size * 2;
     arg0->boneMatrices = pp;
-    arg0->flags |= 2;
+    arg0->flags |= MDL_SCALED;
     *(volatile u16 *)&arg0->flags = 0;
     arg0->groupOut = (WmModelOut *)(pp + m->boneCount * 32);
 }
@@ -184,8 +184,8 @@ void wm_buildPackets(ModelObj *arg0, WmTexInfo *arg1, s16 (*arg2)[2]) {
                 pFT4->v3 = g->uvs[sFT4->uvs[3]][1];
                 pFT4->clut = arg0->texInfo[sFT4->texture].clut;
                 pFT4->tpage = tp = arg0->texInfo[sFT4->texture].tpage & ~0x20;
-                if (sFT4->flags & 1) {
-                    pFT4->tpage = tp | (sFT4->flags & 0xE0);
+                if (sFT4->flags & WMSRC_SEMITRANS) {
+                    pFT4->tpage = tp | (sFT4->flags & WMSRC_TPAGE_BITS);
                     setSemiTrans(pFT4, 1);
                 }
                 prim += sizeof(POLY_FT4);
@@ -218,8 +218,8 @@ void wm_buildPackets(ModelObj *arg0, WmTexInfo *arg1, s16 (*arg2)[2]) {
                 pFT3->v2 = g->uvs[sFT3->uvs[2]][1];
                 pFT3->clut = arg0->texInfo[sFT3->texture].clut;
                 pFT3->tpage = tp = arg0->texInfo[sFT3->texture].tpage & ~0x20;
-                if (sFT3->flags & 1) {
-                    pFT3->tpage = tp | (sFT3->flags & 0xE0);
+                if (sFT3->flags & WMSRC_SEMITRANS) {
+                    pFT3->tpage = tp | (sFT3->flags & WMSRC_TPAGE_BITS);
                     setSemiTrans(pFT3, 1);
                 }
                 prim += sizeof(POLY_FT3);
@@ -265,8 +265,8 @@ void wm_buildPackets(ModelObj *arg0, WmTexInfo *arg1, s16 (*arg2)[2]) {
                 pGT4->v3 = g->uvs[sGT4->uvs[3]][1];
                 pGT4->clut = arg0->texInfo[sGT4->texture].clut;
                 pGT4->tpage = tp = arg0->texInfo[sGT4->texture].tpage & ~0x20;
-                if (sGT4->flags & 1) {
-                    pGT4->tpage = tp | (sGT4->flags & 0xE0);
+                if (sGT4->flags & WMSRC_SEMITRANS) {
+                    pGT4->tpage = tp | (sGT4->flags & WMSRC_TPAGE_BITS);
                     setSemiTrans(pGT4, 1);
                 }
                 prim += sizeof(POLY_GT4);
@@ -308,8 +308,8 @@ void wm_buildPackets(ModelObj *arg0, WmTexInfo *arg1, s16 (*arg2)[2]) {
                 pGT3->v2 = g->uvs[sGT3->uvs[2]][1];
                 pGT3->clut = arg0->texInfo[sGT3->texture].clut;
                 pGT3->tpage = tp = arg0->texInfo[sGT3->texture].tpage & ~0x20;
-                if (sGT3->flags & 1) {
-                    pGT3->tpage = tp | (sGT3->flags & 0xE0);
+                if (sGT3->flags & WMSRC_SEMITRANS) {
+                    pGT3->tpage = tp | (sGT3->flags & WMSRC_TPAGE_BITS);
                     setSemiTrans(pGT3, 1);
                 }
                 prim += sizeof(POLY_GT3);
@@ -448,7 +448,7 @@ void wm_drawMeshC(ModelObj *arg0, u8 arg1) {
         xy1 = g_vtxScreenXY[i1];
         xy2 = g_vtxScreenXY[i2];
         i++;
-        if (!(sFT4->flags & 2)) {
+        if (!(sFT4->flags & WMSRC_DOUBLE_SIDED)) {
             gte_ldsxy3(xy0, xy1, xy2);
             setaddr(pFT4, 0);
             gte_nclip_b();
@@ -477,7 +477,7 @@ void wm_drawMeshC(ModelObj *arg0, u8 arg1) {
         xy1 = g_vtxScreenXY[i1];
         xy2 = g_vtxScreenXY[i2];
         i++;
-        if (!(sFT3->flags & 2)) {
+        if (!(sFT3->flags & WMSRC_DOUBLE_SIDED)) {
             gte_ldsxy3(xy0, xy1, xy2);
             setaddr(pFT3, 0);
             gte_nclip_b();
@@ -510,7 +510,7 @@ void wm_drawMeshC(ModelObj *arg0, u8 arg1) {
         xy1 = g_vtxScreenXY[i1];
         xy2 = g_vtxScreenXY[i2];
         i++;
-        if (!(sGT4->flags & 2)) {
+        if (!(sGT4->flags & WMSRC_DOUBLE_SIDED)) {
             gte_ldsxy3(xy0, xy1, xy2);
             setaddr(pGT4, 0);
             gte_nclip_b();
@@ -540,7 +540,7 @@ void wm_drawMeshC(ModelObj *arg0, u8 arg1) {
         xy1 = g_vtxScreenXY[i1];
         xy2 = g_vtxScreenXY[i2];
         i++;
-        if (!(sGT3->flags & 2)) {
+        if (!(sGT3->flags & WMSRC_DOUBLE_SIDED)) {
             gte_ldsxy3(xy0, xy1, xy2);
             setaddr(pGT3, 0);
             gte_nclip_b();
@@ -573,7 +573,7 @@ void wm_drawMeshC(ModelObj *arg0, u8 arg1) {
         xy1 = g_vtxScreenXY[i1];
         xy2 = g_vtxScreenXY[i2];
         i++;
-        if (!(sG4->flags & 2)) {
+        if (!(sG4->flags & WMSRC_DOUBLE_SIDED)) {
             gte_ldsxy3(xy0, xy1, xy2);
             setaddr(pG4, 0);
             gte_nclip_b();
@@ -602,7 +602,7 @@ void wm_drawMeshC(ModelObj *arg0, u8 arg1) {
         xy1 = g_vtxScreenXY[i1];
         xy2 = g_vtxScreenXY[i2];
         i++;
-        if (!(sG3->flags & 2)) {
+        if (!(sG3->flags & WMSRC_DOUBLE_SIDED)) {
             gte_ldsxy3(xy0, xy1, xy2);
             setaddr(pG3, 0);
             gte_nclip_b();
@@ -635,7 +635,7 @@ void wm_drawMeshC(ModelObj *arg0, u8 arg1) {
         xy1 = g_vtxScreenXY[i1];
         xy2 = g_vtxScreenXY[i2];
         i++;
-        if (!(sF4->flags & 2)) {
+        if (!(sF4->flags & WMSRC_DOUBLE_SIDED)) {
             gte_ldsxy3(xy0, xy1, xy2);
             setaddr(pF4, 0);
             gte_nclip_b();
@@ -665,7 +665,7 @@ void wm_drawMeshC(ModelObj *arg0, u8 arg1) {
         xy1 = g_vtxScreenXY[i1];
         xy2 = g_vtxScreenXY[i2];
         i++;
-        if (!(sF3->flags & 2)) {
+        if (!(sF3->flags & WMSRC_DOUBLE_SIDED)) {
             gte_ldsxy3(xy0, xy1, xy2);
             setaddr(pF3, 0);
             gte_nclip_b();
@@ -688,7 +688,7 @@ void wm_drawMeshC(ModelObj *arg0, u8 arg1) {
 void wm_applyScale(ModelObj *arg0) {
     MATRIX m;
 
-    if (arg0->flags & 2) {
+    if (arg0->flags & MDL_SCALED) {
         *(s32 *)&m.m[0][0] = ONE;
         *(s32 *)&m.m[0][2] = 0;
         *(s32 *)&m.m[1][1] = ONE;
@@ -1041,7 +1041,7 @@ void wm_drawMeshClipY(ModelObj *arg0, u8 arg1) {
         if (otz > 0x3FFFFFFF) {
             continue;
         }
-        if (!(sFT4->flags & 2)) {
+        if (!(sFT4->flags & WMSRC_DOUBLE_SIDED)) {
             gte_ldsxy3(xy0, xy1, xy2);
             setaddr(pFT4, 0);
             gte_nclip_b();
@@ -1074,7 +1074,7 @@ void wm_drawMeshClipY(ModelObj *arg0, u8 arg1) {
         if (otz > 0x2FFFFFFF) {
             continue;
         }
-        if (!(sFT3->flags & 2)) {
+        if (!(sFT3->flags & WMSRC_DOUBLE_SIDED)) {
             gte_ldsxy3(xy0, xy1, xy2);
             setaddr(pFT3, 0);
             gte_nclip_b();
@@ -1106,7 +1106,7 @@ void wm_drawMeshClipY(ModelObj *arg0, u8 arg1) {
         if (otz > 0x3FFFFFFF) {
             continue;
         }
-        if (!(sGT4->flags & 2)) {
+        if (!(sGT4->flags & WMSRC_DOUBLE_SIDED)) {
             gte_ldsxy3(xy0, xy1, xy2);
             setaddr(pGT4, 0);
             gte_nclip_b();
@@ -1139,7 +1139,7 @@ void wm_drawMeshClipY(ModelObj *arg0, u8 arg1) {
         if (otz > 0x2FFFFFFF) {
             continue;
         }
-        if (!(sGT3->flags & 2)) {
+        if (!(sGT3->flags & WMSRC_DOUBLE_SIDED)) {
             gte_ldsxy3(xy0, xy1, xy2);
             setaddr(pGT3, 0);
             gte_nclip_b();
@@ -1171,7 +1171,7 @@ void wm_drawMeshClipY(ModelObj *arg0, u8 arg1) {
         if (otz > 0x3FFFFFFF) {
             continue;
         }
-        if (!(sG4->flags & 2)) {
+        if (!(sG4->flags & WMSRC_DOUBLE_SIDED)) {
             gte_ldsxy3(xy0, xy1, xy2);
             setaddr(pG4, 0);
             gte_nclip_b();
@@ -1204,7 +1204,7 @@ void wm_drawMeshClipY(ModelObj *arg0, u8 arg1) {
         if (otz > 0x2FFFFFFF) {
             continue;
         }
-        if (!(sG3->flags & 2)) {
+        if (!(sG3->flags & WMSRC_DOUBLE_SIDED)) {
             gte_ldsxy3(xy0, xy1, xy2);
             setaddr(pG3, 0);
             gte_nclip_b();
@@ -1236,7 +1236,7 @@ void wm_drawMeshClipY(ModelObj *arg0, u8 arg1) {
         if (otz > 0x3FFFFFFF) {
             continue;
         }
-        if (!(sF4->flags & 2)) {
+        if (!(sF4->flags & WMSRC_DOUBLE_SIDED)) {
             gte_ldsxy3(xy0, xy1, xy2);
             setaddr(pF4, 0);
             gte_nclip_b();
@@ -1269,7 +1269,7 @@ void wm_drawMeshClipY(ModelObj *arg0, u8 arg1) {
         if (otz > 0x2FFFFFFF) {
             continue;
         }
-        if (!(sF3->flags & 2)) {
+        if (!(sF3->flags & WMSRC_DOUBLE_SIDED)) {
             gte_ldsxy3(xy0, xy1, xy2);
             setaddr(pF3, 0);
             gte_nclip_b();

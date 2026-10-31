@@ -57,7 +57,7 @@ typedef struct {
     u8 ended;
     u8 rgb24;
     u8 savedCameraId; /* field background camera at the start (fldbg_getCamera), restored at the end */
-    u8 modeSwitch; /* 1: switch rgb24 mode at the next frame end (mbg_setRgb24 while playing), 2: mbg_update resets the graph env */
+    u8 modeSwitch; /* MBG_SWITCH_* */
     u8 pauseReq;
     u8 unk5;
     s8 firstFrame; /* set by mbg_play; mbg_readFrame keeps the first frame's camera in g_mbgStartCamera and clears it */
@@ -83,6 +83,10 @@ typedef struct {
     void (*endCallback)(); /* end callback (called without arguments) */
     s32 unk64;
 } Ovl64State;
+/* Ovl64State.modeSwitch */
+#define MBG_SWITCH_NONE 0
+#define MBG_SWITCH_PENDING 1 /* mbg_setRgb24 while playing: switch the rgb24 mode at the next frame end */
+#define MBG_SWITCH_RESET_ENV 2 /* switched: mbg_update calls mbg_setGraphEnv and clears it */
 extern Ovl64State g_mbgPlayer;
 
 /* a frame's camera, laid out like a MATRIX (mbg_readFrame copies it into GameData.unk18) */
@@ -121,7 +125,7 @@ extern s32 g_mbgVlcSize;
 
 /* CD stream ring (g_mbgStream) */
 typedef struct {
-    u16 status; /* low 12 bits kept; 0x1000 free, 0x2000/0x4000 being filled, 0x8000 ready (mbg_streamPeekFrame) */
+    u16 status; /* MBG_RING_*; the low 12 bits are kept */
     u8 pad2[2];
     u16 firstSector; /* sector in the slot where the frame data starts */
     u8 pad6[2];
@@ -130,6 +134,11 @@ typedef struct {
     u16 height; /* frame height */
     u8 pad14[0x20 - 0x14];
 } Ovl64RingHdr; /* 0x20 */
+/* Ovl64RingHdr.status (mbg_streamPeekFrame reports free 0, ready 1, filling 2, busy 3) */
+#define MBG_RING_FREE 0x1000 /* mbg_streamSetRing / mbg_streamClearRing / mbg_streamFreeFrame */
+#define MBG_RING_FILLING 0x2000 /* with MBG_RING_BUSY: the reader started writing sectors into the slot */
+#define MBG_RING_BUSY 0x4000 /* in use (filling or ready) */
+#define MBG_RING_READY 0x8000 /* with MBG_RING_BUSY: a complete frame; mbg_streamGetFrame hands it out */
 
 /* sector header at the end of each ring slot */
 typedef struct {
@@ -180,7 +189,7 @@ typedef struct {
 typedef struct {
     u8 unk0;
     u8 stalled; /* the ring was full: reading paused until mbg_streamFreeFrame */
-    u8 endState; /* 1 past lastFrame, 2 error (channel / frame mismatch, timeout); mbg_streamGetFrame then returns 5 */
+    u8 endState; /* MBG_END_*; when set, mbg_streamGetFrame returns 5 instead of 3 for an empty ring */
     u8 hasCamera; /* frames carry camera / mask data */
     void (*frameInfoCallback)(u8 *, u8 *, Ovl64FrameInfo *);
     void (*frameCallback)(void); /* called after each complete frame */
@@ -215,6 +224,10 @@ typedef struct {
     u32 audioPendingMax;
     u8 *audioBuf;
 } Ovl64Stream;
+/* Ovl64Stream.endState */
+#define MBG_END_NONE 0
+#define MBG_END_LAST_FRAME 1 /* the frame counter passed lastFrame */
+#define MBG_END_ERROR 2 /* channel or frame mismatch, or the read timed out */
 extern s32 g_mbgSectorLogCount;
 extern Ovl64Stream g_mbgStream;
 
@@ -354,7 +367,7 @@ static inline void mbg_streamReadyCallback_retry(void) {
     if (VSync(-1) - g_mbgStream.lastReadTime < limit) {
         cd_restartAt(g_mbgStream.sector);
     } else {
-        g_mbgStream.endState = 2;
+        g_mbgStream.endState = MBG_END_ERROR;
         cd_pause();
     }
 }

@@ -126,7 +126,7 @@ void mbg_mdecOutCallback(void) {
             DecDCTReset(1);
         }
         g_mbgDecode.frameDone = 1;
-        if ((s8)g_mbgPlayer.modeSwitch == 1) {
+        if ((s8)g_mbgPlayer.modeSwitch == MBG_SWITCH_PENDING) {
             if (g_mbgRgb24 == 1 && g_gameState->gameData->drawBuf == 0) {
                 g_mbgRgb24 = 0;
                 g_mbgPlayer.rgb24 = 0;
@@ -138,7 +138,7 @@ void mbg_mdecOutCallback(void) {
                     g_fieldFlagQueue.mapFlags[1][0] = 9;
                     g_fieldFlagQueue.gameFlags[1][0] |= 0x14;
                 }
-                g_mbgPlayer.modeSwitch = 2;
+                g_mbgPlayer.modeSwitch = MBG_SWITCH_RESET_ENV;
             }
             if (g_mbgRgb24 == 0 && g_gameState->gameData->drawBuf == 1) {
                 g_mbgPlayer.rgb24 = 1;
@@ -151,7 +151,7 @@ void mbg_mdecOutCallback(void) {
                 if (g_gameState->mode == GS_MODE_FIELD || g_gameState->mode == 5) {
                     g_gameState->gameData->ctx.ovl65->unk0 |= 9;
                 }
-                g_mbgPlayer.modeSwitch = 2;
+                g_mbgPlayer.modeSwitch = MBG_SWITCH_RESET_ENV;
             }
         }
         if ((s8)g_mbgPlayer.pauseReq != 0) {
@@ -216,7 +216,7 @@ s32 MBG_init(s32 mode, u8 **buf) {
     g_mbgPlayer.volumeDelay = 3;
     g_mbgPlayer.volumeFade = 4;
     g_mbgPlayer.volume = 0x7F;
-    g_mbgPlayer.modeSwitch = 0;
+    g_mbgPlayer.modeSwitch = MBG_SWITCH_NONE;
     g_mbgPlayer.vlcTable = g_mbgVlcTable;
     return 1;
 
@@ -404,9 +404,9 @@ s32 mbg_update(s32 arg0) {
         }
     }
     st = &g_mbgPlayer;
-    if ((s8)st->modeSwitch == 2) {
+    if ((s8)st->modeSwitch == MBG_SWITCH_RESET_ENV) {
         mbg_setGraphEnv(0xE0, g_mbgRgb24);
-        st->modeSwitch = 0;
+        st->modeSwitch = MBG_SWITCH_NONE;
     }
     st->streamPos = st->startPos;
     mode = g_gameState->mode;
@@ -508,14 +508,14 @@ s32 mbg_setRgb24(s32 on) {
         }
     }
     if (mbg_getStatus() & 2) {
-        g_mbgPlayer.modeSwitch = 1;
+        g_mbgPlayer.modeSwitch = MBG_SWITCH_PENDING;
     } else if (on != 0) {
         k = 1;
         g_mbgRgb24 = k;
         g_mbgPlayer.rgb24 = k;
         g_mbgDecode.frameRect[0].x = 0x1E0;
         g_mbgDecode.slice.w = 0x18;
-        g_mbgPlayer.modeSwitch = 2;
+        g_mbgPlayer.modeSwitch = MBG_SWITCH_RESET_ENV;
     } else {
         g_mbgRgb24 = 0;
         g_mbgPlayer.rgb24 = 0;

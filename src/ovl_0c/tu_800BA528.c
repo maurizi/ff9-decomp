@@ -607,8 +607,8 @@ void wm_updateChunks(void) {
     s32 a;
     s32 b;
 
-    if (g_worldMoveMode < 10) {
-        if (g_worldMoveMode >= 8) {
+    if (g_worldMoveMode < WM_MOVE_FAST_WALK) {
+        if (g_worldMoveMode >= WM_MOVE_AIRSHIP) {
             t = g_worldPlayerSpeed;
             if (t >= 0x200) {
                 t = 0x1FF;
@@ -701,7 +701,7 @@ s32 wm_chunkRequest(s16 arg0) {
 
     n = 0;
     prev = &g_worldChunkHead;
-    while (prev->next->state == 1) {
+    while (prev->next->state == WM_CHUNK_READING) {
         if (prev->next->chunkId == arg0) {
             return 0;
         }
@@ -722,7 +722,7 @@ s32 wm_chunkRequest(s16 arg0) {
                 prev->next = p;
             } else {
                 p->chunkId = arg0;
-                p->state = 0;
+                p->state = WM_CHUNK_WANTED;
             }
             break;
         }
@@ -773,7 +773,7 @@ void wm_readChunks(void) {
             cell = &g_worldChunkFlags[id];
             h->next->prev = n;
             h->next = n;
-            n->state = 1;
+            n->state = WM_CHUNK_READING;
             if (g_worldChunkRunDir[g_worldChunkRunSlot] == 1) {
                 wm_getChunkEntry(id, 0, &a);
                 wm_getChunkEntry(id, 1, &b);
@@ -875,14 +875,14 @@ u8 wm_findChunkRun(WmChunkSlot **out, s32 *count, s32 *dir) {
     vhi = 4;
     vlo = 4;
     for (p = g_worldChunkHead.next; p->pack != NULL; p = p->next) {
-        if (p->state == 0 && p->chunkId != -1 && p->generation == g_worldChunkRunGeneration) {
+        if (p->state == WM_CHUNK_WANTED && p->chunkId != -1 && p->generation == g_worldChunkRunGeneration) {
             h[hlo] = p;
             h[hhi] = p;
             v[vlo] = p;
             v[vhi] = p;
             for (i = 0; i < 4; i++) {
                 for (p = g_worldChunkHead.next; p->pack != NULL; p = p->next) {
-                    if (p->state == 0) {
+                    if (p->state == WM_CHUNK_WANTED) {
                         if (h[hlo]->chunkId - 1 == p->chunkId) {
                             h[--hlo] = p;
                         }
@@ -923,8 +923,8 @@ void wm_chunksLoaded(void) {
 
     for (i = 0; i < g_worldChunkRunCount[g_worldChunkRunSlot]; i++) {
         st = g_worldChunkRun[i]->state;
-        if (st == 1) {
-            g_worldChunkRun[i]->state = 2;
+        if (st == WM_CHUNK_READING) {
+            g_worldChunkRun[i]->state = WM_CHUNK_READY;
             if (g_worldChunkRunPacks[i] != NULL) {
                 wm_relocatePack(g_worldChunkRunPacks[i]);
             }
@@ -1121,7 +1121,7 @@ void wm_updateVisibleBlocks(void) {
     wm_blockListInit();
     pen_locate(10, 10);
     n = 0;
-    if (g_worldMoveMode < 6) {
+    if (g_worldMoveMode < WM_MOVE_CHOCOBO_FLY) {
         if (g_worldPlayer->pos.vy >= -0x9C3) {
             g_worldBlockCullRects[1].y0 = g_worldBlockCullRects[0].y0 = -0x3C;
         } else {
@@ -1144,10 +1144,10 @@ void wm_updateVisibleBlocks(void) {
                 hit = 0;
                 if (m.t[2] >= -0x1D4B) {
                     k = (wm_getCameraViewState() == 0) * 2;
-                    if (g_worldMoveModeInfo->controlType == 1) {
+                    if (g_worldMoveModeInfo->controlType == WM_CTRL_FLY) {
                         k += 4;
                     }
-                    if (g_worldMoveModeInfo->controlType == 2) {
+                    if (g_worldMoveModeInfo->controlType == WM_CTRL_STEER) {
                         k += 8;
                     }
                     verts = e->verts;
@@ -1206,7 +1206,7 @@ void wm_updateVisibleBlocks(void) {
         }
     }
     lim = 16;
-    if (g_worldMoveMode == 7) {
+    if (g_worldMoveMode == WM_MOVE_STEER) {
         lim = 14;
     }
     if (g_worldFog == 0) {
@@ -1304,7 +1304,7 @@ void wm_blockListResolve(void) {
         p = g_worldChunkHead.next;
         for (j = 0; j < 16; j++, p = p->next) {
             if (id == p->chunkId) {
-                if (p->state == 2) {
+                if (p->state == WM_CHUNK_READY) {
                     n->state = 2;
                     wm_cellToPos(n->cell, &n->pos->pos[0], &n->pos->pos[2]);
                     n->pos->pos[1] = 0;
@@ -1341,7 +1341,7 @@ s32 wm_getCellBlock(s16 arg0, u8 *arg1) {
     p = g_worldChunkHead.next;
     wm_cellToChunk(arg0, &id);
     for (i = 0; i < 16; i++, p = p->next) {
-        if (id == p->chunkId && p->state == 2) {
+        if (id == p->chunkId && p->state == WM_CHUNK_READY) {
             if (arg1 != NULL) {
                 *arg1 = 0;
             }
@@ -1480,16 +1480,16 @@ void wm_naviDraw(void) {
     }
     page = g_worldNaviPage;
     switch (g_worldNaviMode) {
-    case 1:
+    case WM_NAVI_MINI:
         if (g_worldVehicleActor != NULL && g_worldVehicleActor->state == EVT_STATE_RUNNING && (g_worldVehicleActor->flags & EVT_OBJ_ENABLED) &&
-            !((u8)g_worldMoveMode >= 7 && (u8)g_worldMoveMode < 10)) {
+            !((u8)g_worldMoveMode >= WM_MOVE_STEER && (u8)g_worldMoveMode < WM_MOVE_FAST_WALK)) {
             CVECTOR c0 = g_worldNaviVehicleColorA;
             CVECTOR c1 = g_worldNaviVehicleColorB;
             wm_naviWorldToMap(g_worldVehicleActor->pos.vx, g_worldVehicleActor->pos.vz, &x, &z, page * 2);
             wm_naviDrawMarker(x, z, 1, 1, c0, c1, 0x40, 0xC8, 0x82, 1);
         }
         if (g_worldMountActor != NULL && g_worldMountActor->state == EVT_STATE_RUNNING && (g_worldMountActor->flags & EVT_OBJ_ENABLED) &&
-            !((u8)g_worldMoveMode >= 1 && (u8)g_worldMoveMode < 7)) {
+            !((u8)g_worldMoveMode >= WM_MOVE_CHOCOBO && (u8)g_worldMoveMode < WM_MOVE_STEER)) {
             CVECTOR c0 = g_worldNaviMountColorA;
             CVECTOR c2 = g_worldNaviMountColorB;
             wm_naviWorldToMap(g_worldMountActor->pos.vx, g_worldMountActor->pos.vz, &x, &z, page * 2);
@@ -1500,17 +1500,17 @@ void wm_naviDraw(void) {
             wm_naviDrawChocograph();
         }
         break;
-    case 2:
+    case WM_NAVI_FULL:
         if (g_worldNaviVisible != 0) {
             if (g_worldVehicleActor != NULL && g_worldVehicleActor->state == EVT_STATE_RUNNING && (g_worldVehicleActor->flags & EVT_OBJ_ENABLED) &&
-                !((u8)g_worldMoveMode >= 7 && (u8)g_worldMoveMode < 10)) {
+                !((u8)g_worldMoveMode >= WM_MOVE_STEER && (u8)g_worldMoveMode < WM_MOVE_FAST_WALK)) {
                 CVECTOR c0 = g_worldNaviVehicleColorA;
                 CVECTOR c3 = g_worldNaviVehicleColorB;
                 wm_naviWorldToMap(g_worldVehicleActor->pos.vx, g_worldVehicleActor->pos.vz, &x, &z, page * 2 + 1);
                 wm_naviDrawMarker(x, z, 1, 1, c0, c3, 0x40, 0x28, 9, 1);
             }
             if (g_worldMountActor != NULL && g_worldMountActor->state == EVT_STATE_RUNNING && (g_worldMountActor->flags & EVT_OBJ_ENABLED) &&
-                !((u8)g_worldMoveMode >= 1 && (u8)g_worldMoveMode < 7)) {
+                !((u8)g_worldMoveMode >= WM_MOVE_CHOCOBO && (u8)g_worldMoveMode < WM_MOVE_STEER)) {
                 CVECTOR c0 = g_worldNaviMountColorA;
                 CVECTOR c1 = g_worldNaviMountColorB;
                 wm_naviWorldToMap(g_worldMountActor->pos.vx, g_worldMountActor->pos.vz, &x, &z, page * 2 + 1);
@@ -1549,11 +1549,11 @@ void wm_naviUpdate(void) {
 
     if (g_worldNaviActive != 0) {
         pad = 0;
-        if (g_worldNaviMode == 2) {
+        if (g_worldNaviMode == WM_NAVI_FULL) {
             dir = 1;
             stick.vx = 0;
             stick.vy = 0;
-            if (g_worldNaviPrevMode == 1) {
+            if (g_worldNaviPrevMode == WM_NAVI_MINI) {
                 wm_naviWorldToMap(g_worldPlayer->pos.vx, g_worldPlayer->pos.vz, &g_worldNaviCursorX, &g_worldNaviCursorY, g_worldNaviPage * 2 + 1);
                 g_worldNaviCursorX <<= 12;
                 g_worldNaviCursorY <<= 12;
