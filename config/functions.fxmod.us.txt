@@ -392,9 +392,9 @@ fx_0b6 fx_0b6_op80 0x170 0x801e7704
 fx_0b7 fx_0b7_op80 0x120 0x801e7704
 fx_0b8 fxm_easeLerp 0x138 0x801e7704
 fx_0b8 fx_0b8_op80 0x2544 0x801e783c
-fx_0b8 func_801E9D80 0x460 0x801e9d80
-fx_0b8 func_801EA1E0 0x244 0x801ea1e0
-fx_0b8 func_801EA424 0xbc 0x801ea424
+fx_0b8 fx_0b8_drawGradientPlane 0x460 0x801e9d80
+fx_0b8 fx_0b8_drawScreenBand 0x244 0x801ea1e0
+fx_0b8 fx_0b8_drawScreenGradient 0xbc 0x801ea424
 fx_0b8 fxm_tintScreenLerp 0x78 0x801ea4e0
 fx_0b8 fx_0b8_op80ParticleMotion 0x128 0x801ea558
 fx_0b9 fx_0b9_op80 0x2b4 0x801e7704

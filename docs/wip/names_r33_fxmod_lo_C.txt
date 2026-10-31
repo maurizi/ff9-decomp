@@ -213,3 +213,20 @@ fx_0ba Fx0baWork83 unk0=jitter0 unk4=boltCount4 unk8=kind8
 fx_0ba Fx0baSummon unk60=model60
 fx_0ba Fx0baWork80 unk0=state0 unk4=frame4 unk28=pos28 unk34=scale34 unk48=summonPos48 unk54=summonScale54 unk70=scale70
 fx_0ba Fx0baPWork81 unk0=state0 unk4=frame4 unk18=camAt18 unk48=pos48 unk54=scale54
+
+## fx_0b8
+fx_0b8 func_801E9D80 fx_0b8_drawGradientPlane  # [code] 4x8 grid of textured POLY_GT4 in a flat plane at pos rotated by rot (math_rotMatrixYXZ), row colours from fx_0b8_planeColors faded by n, fx_0b8_op80
+fx_0b8 func_801EA1E0 fx_0b8_drawScreenBand  # [code] a full-width screen band of 3 textured POLY_GT4 (y, h, scrolled u x, colours c0 c1) over 3 POLY_F4 below it, fx_0b8_op80
+fx_0b8 func_801EA424 fx_0b8_drawScreenGradient  # [code] one full-screen (320x240) POLY_G4 with fixed warm colours at ot, fx_0b8_op80
+fx_0b8 D_801EA680 fx_0b8_planeColors  # [code] SVECTOR rgb per row (9) of fx_0b8_drawGradientPlane
+fx_0b8 D_801EA7B0 fx_0b8_particleFrom  # [code] 32 start points on a circle set by fx_0b8_op80, fx_0b8_op80ParticleMotion lerps particle slot i from entry i to a fixed point
+fx_0b8 D_801EA6D8 fx_0b8_bands  # [code] 4 Fx0b8Band (y, h, x, colours, speeds) moved and drawn with fx_0b8_drawScreenBand by fx_0b8_op80
+fx_0b8 D_801EC1C0 fx_0b8_bolts  # [code] 8 9-point trails (Fx0b8Bolt) with per-point positions and speeds, drawn with btlfx_drawTrail by fx_0b8_op80
+fx_0b8 D_801EC8C0 fx_0b8_units  # [code] per battle unit (Fx0b8Unit) the saved scale and rotation, spin angles and speeds, fx_0b8_op80 lifts and spins the units and restores them
+fx_0b8 D_801ECA60 fx_0b8_trails  # [code] particle trail buffer of the file block 0xE emitter (0x28 slots of 0x5C bytes), fx_0b8_op80
+fx_0b8 D_801ED8C0 fx_0b8_gridShift  # [code] shift applied to the fading btlfx_drawScreenGrid colour (n << shift) in fx_0b8_op80, set to 4
+fx_0b8 Fx0b8Work80 unk124=scale124 unk1E4=scroll1E4 unk1E8=scrollSpeed1E8
+fx_0b8 Fx0b8Bolt unk4C=x4C unk70=y70 unk94=dx94 unkB8=dyB8 unkDC=timerDC
+fx_0b8 Fx0b8Unit unk0=rot0 unk8=scale8 unk14=pos14 unk1C=pitch1C unk1E=yaw1E unk24=rot24 unk2C=spinX2C unk2E=spinY2E unk30=spinZ30
+fx_0b8 Fx0b8Band unk0=y0 unk4=h4 unk8=x8 unkC=colorC unk10=color10 unk14=dx14 unk18=dy18
+fx_0b8 Fx0b8Summon unk60=model60
