@@ -404,11 +404,11 @@ s32 akao_peekNextNote(AkaoChannel *c) {
             }
             return *p;
         }
-        if (*p < 0xA0) {
-            return 0xA0;
+        if (*p < AKAO_OP_FIRST_CMD) {
+            return AKAO_OP_END;
         }
         op = *p;
-        len = g_akaoOpLengths[op - 0xA0];
+        len = g_akaoOpLengths[op - AKAO_OP_FIRST_CMD];
         if (len != 0) {
             p += len;
             continue;
@@ -431,7 +431,7 @@ s32 akao_peekNextNote(AkaoChannel *c) {
             return 0x84;
         case 0xFD:
             return 0x8F;
-        case 0xFE:
+        case AKAO_OP_EXT:
             p++;
             op = *p;
             len = g_akaoFeOpLengths[op];
@@ -453,13 +453,13 @@ s32 akao_peekNextNote(AkaoChannel *c) {
                 }
                 p += 3;
                 continue;
-            case 0x6:
-            case 0xE:
+            case AKAO_OPFE_JUMP:
+            case AKAO_OPFE_CALL:
                 p++;
                 op = p[0] + (p[1] << 8);
                 p += (s16)op;
                 continue;
-            case 0x7:
+            case AKAO_OPFE_JUMP_IF_GE:
                 p++;
                 if (*p++ <= g_akaoSeq->condition) {
                     op = p[0] + (p[1] << 8);
@@ -468,7 +468,7 @@ s32 akao_peekNextNote(AkaoChannel *c) {
                 }
                 p += 2;
                 continue;
-            case 0xF:
+            case AKAO_OPFE_RETURN:
                 p = c->returnAddr;
                 continue;
             }
@@ -499,7 +499,7 @@ s32 akao_peekNextNote(AkaoChannel *c) {
         default:
         end:
             c->legato = (u16)c->legato & ~5;
-            return 0xA0;
+            return AKAO_OP_END;
         }
     }
 }
@@ -678,8 +678,8 @@ void akao_execChannel(AkaoChannel *c, u32 mask) {
 
     do {
         op = *c->pc++;
-        if (op >= 0xA0) {
-            if (op == 0xFE) {
+        if (op >= AKAO_OP_FIRST_CMD) {
+            if (op == AKAO_OP_EXT) {
                 vel = *c->pc++;
                 /* Not bounded, as in the original: g_akaoOpsFE has 0x20 handlers, but any byte the sequence holds
                  * indexes it. A channel reading garbage (e.g. a replaced overlay, ff9-ds d1_f0310: 0xFE 0x4F) jumps
@@ -691,17 +691,17 @@ void akao_execChannel(AkaoChannel *c, u32 mask) {
                 c->noteTicks = *c->pc++;
             } else {
                 if (op == 0xFF) {
-                    op = 0xA0;
+                    op = AKAO_OP_END;
                 } else if (op == 0xCA && (c->flags & 0x200000)) {
-                    op = 0xA0;
+                    op = AKAO_OP_END;
                     g_akaoSeState.keyOffMask |= mask;
                 }
-                g_akaoOps[op - 0xA0](c, mask);
+                g_akaoOps[op - AKAO_OP_FIRST_CMD](c, mask);
             }
         }
         c->opCount++;
-    } while (op > 0xA0);
-    if (op == 0xA0) {
+    } while (op > AKAO_OP_END);
+    if (op == AKAO_OP_END) {
         if (c->isSe == 0) {
             g_akaoSeq->keyOffMask |= mask;
         }

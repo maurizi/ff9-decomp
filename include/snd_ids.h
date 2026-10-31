@@ -70,6 +70,23 @@
 #define AKAO_CMD_STOP_MUSIC_NOW        0xF0 /* akao_cmdStopMusicNow */
 #define AKAO_CMD_STOP_ALL_SE           0xF1 /* akao_cmdStopAllSe */
 
+/* AKAO sequence opcodes (akao_execChannel, akao_peekNextNote). Bytes from AKAO_OP_FIRST_CMD up are commands run
+ * through g_akaoOps[op - 0xA0] (lengths g_akaoOpLengths); AKAO_OP_EXT takes a second byte that indexes
+ * g_akaoOpsFE. Only opcodes whose handler is named have a macro. */
+#define AKAO_OP_FIRST_CMD 0xA0
+#define AKAO_OP_END       0xA0 /* akao_opEnd; akao_peekNextNote's "no further note" result */
+#define AKAO_OP_PROGRAM   0xA1 /* akao_opProgram */
+#define AKAO_OP_OCTAVE    0xA5 /* akao_opOctave */
+#define AKAO_OP_OCTAVE_UP 0xA6 /* akao_opOctaveUp */
+#define AKAO_OP_OCTAVE_DOWN 0xA7 /* akao_opOctaveDown */
+#define AKAO_OP_EXT       0xFE /* prefix of the g_akaoOpsFE opcodes */
+#define AKAO_OPFE_TEMPO       0x00 /* akao_opFETempo */
+#define AKAO_OPFE_TEMPO_SLIDE 0x01 /* akao_opFETempoSlide */
+#define AKAO_OPFE_JUMP        0x06 /* akao_opFEJump */
+#define AKAO_OPFE_JUMP_IF_GE  0x07 /* akao_opFEJumpIfGe (AKAO_CMD_SET_CONDITION's value) */
+#define AKAO_OPFE_CALL        0x0E /* akao_opFECall */
+#define AKAO_OPFE_RETURN      0x0F /* akao_opFEReturn */
+
 /* Sound command words for the mode's sound handler (GameData.soundHook: fld_soundCommand, wm_soundCommand,
  * btl_soundCmd, and the mode-local opening_soundCmd / tm_soundCmd / ending_soundCmd, which decode them the same way).
  * Bits 12-13 type (0 music, 1 SE, 2 stream, 3 bank), 8-11 kind, 0-5 sub-command, 7 resident SE slot, 6 slot index.

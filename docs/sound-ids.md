@@ -18,6 +18,11 @@ for each one. Sound-effect ids are only named where their meaning is known; othe
    `akao_streamStart`/`Stop`/`PlayOneShot`/`PlayResident`. 0x98/0x99 and 0xD8-0xDA are combined commands that
    `akao_command` expands into two handler calls.
 
+## Sequence opcodes
+`AKAO_OP_*` / `AKAO_OPFE_*` cover only the sequence opcodes whose handler in `g_akaoOps` / `g_akaoOpsFE` has a name
+(end, program, octave, tempo, jump, conditional jump, call, return). The others stay literals until their
+handlers are named.
+
 ## SE play arguments
 In `SND_SE_PLAY` the third argument is a channel mask (`snd_playSe` passes 0x800000). The fourth is the pan
 (`VoiceParams.pan`, `SND_PAN_CENTER` 0x80) and the fifth is the volume (`& 0x7F`, `SND_VOL_MAX`).
