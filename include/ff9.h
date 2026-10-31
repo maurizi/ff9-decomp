@@ -1737,11 +1737,11 @@ typedef struct MsgWindow {
     u8 tailMode; /* from the layout, passed to win_setTail */
 } MsgWindow;
 /* MsgWindow / WinLayout tailMode: bits 0-1 are win_setTail's mode (evt_placeBalloon: below << 1 | right),
- * 0x10/0x20 come from the message flags (evt_openMessage); 0x20 has no reader in main */
+ * 0x10/0x20 come from the message flags (evt_getMsgLayout); 0x20 has no reader in main */
 #define MSG_TAIL_RIGHT 0x1
 #define MSG_TAIL_BELOW 0x2
 #define MSG_TAIL_DIR (MSG_TAIL_RIGHT | MSG_TAIL_BELOW) /* passed to win_setTail */
-#define MSG_TAIL_FRAMELESS 0x10 /* msg_openWindow opens the window WIN_STYLE_FRAMELESS (no balloon or bevel) */
+#define MSG_TAIL_FRAMELESS 0x10 /* msg_open opens the window WIN_STYLE_FRAMELESS (no balloon or bevel) */
 extern MsgWindow g_msgWindows[];
 /* MsgWindow.flags */
 #define MSGW_WAIT_INPUT 0xFF /* MsgWindow.waitFrames: waiting for Cross (msg_input); text codes FE/FF/F9 09 */
