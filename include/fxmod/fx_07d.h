@@ -44,10 +44,10 @@ typedef struct {
     s32 unk14; /* caster body position, words */
     s32 unk18;
     s32 unk1C;
-    s32 unk20; /* glow model */
-    s32 unk24; /* model */
-    s32 unk28; /* model */
-    s32 unk2C; /* model */
+    s32 model20; /* glow model */
+    s32 model24; /* model */
+    s32 model28; /* model */
+    s32 model2C; /* model */
     s32 pad30;
     s32 unk34; /* backdrop scroll */
     s32 unk38; /* yaw offset */

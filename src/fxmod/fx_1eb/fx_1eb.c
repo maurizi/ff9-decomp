@@ -87,9 +87,9 @@ s32 fx_1eb_op82(s32 mode, Fx1ebWork82 *work, Unk800F78A4 *env, Unk80100C78Entry 
         fxm_valuePathInit(&D_801E8740, (u16 *)ex->btlfx_getFileData(entry->file, 7));
         for (j = 0; j < 3; j++) {
             fxm_rotPosPathInit(&D_801E8728[j], (u16 *)ex->btlfx_getFileData(entry->file, D_801E8218[j]));
-            work->unk52[j] = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, D_801E8210[j]), 1);
+            work->model52[j] = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, D_801E8210[j]), 1);
         }
-        work->unk58 = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, 6), 1);
+        work->model58 = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, 6), 1);
         work->unk4C = -1;
     } else {
         frame = entry->frame;
@@ -134,17 +134,17 @@ s32 fx_1eb_op82(s32 mode, Fx1ebWork82 *work, Unk800F78A4 *env, Unk80100C78Entry 
                 work->unk20.vz += work->unk44.vz;
                 if (i == 0 && t >= 0x16) {
                     fxm_valuePathGet(&D_801E8740, t - 0x16, &m);
-                    ex->Hi_DrawMorphEffModel(&work->unk18, &work->unk20, (s32)&work->unk30, work->unk52[i],
-                                             work->unk58, m);
+                    ex->Hi_DrawMorphEffModel(&work->unk18, &work->unk20, (s32)&work->unk30, work->model52[i],
+                                             work->model58, m);
                 } else {
-                    ex->Hi_SetEffModelSlice(work->unk52[i], work->unk20.vy);
-                    ex->Hi_DrawSliceEffModel(&work->unk18, &work->unk20, (s32)&work->unk30, work->unk52[i]);
+                    ex->Hi_SetEffModelSlice(work->model52[i], work->unk20.vy);
+                    ex->Hi_DrawSliceEffModel(&work->unk18, &work->unk20, (s32)&work->unk30, work->model52[i]);
                 }
                 if (work->unk4C >= 0) {
-                    ex->Hi_ModifyEffModelAbr(work->unk52[i], 1);
-                    ex->Hi_ModifyEffModelRGB(work->unk52[i], work->unk40, work->unk40, work->unk40);
+                    ex->Hi_ModifyEffModelAbr(work->model52[i], 1);
+                    ex->Hi_ModifyEffModelRGB(work->model52[i], work->unk40, work->unk40, work->unk40);
                 } else {
-                    ex->Hi_ModifyEffModelAbr(work->unk52[i], 0);
+                    ex->Hi_ModifyEffModelAbr(work->model52[i], 0);
                 }
             }
         }

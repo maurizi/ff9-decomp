@@ -222,24 +222,24 @@ static s32 fx_07d_op80PoolTask(s32 mode, Fx07dOrb *p, Unk800F78A4 *env, Unk80100
         } else {
             c = ex->math_cos(((frame - 3) << 10) / 9);
         }
-        ex->Hi_DrawEffModel(&rot, &pos, (s32)&scale, work->unk28);
+        ex->Hi_DrawEffModel(&rot, &pos, (s32)&scale, work->model28);
         s = c >> 5;
         s -= 0x80;
-        ex->Hi_ModifyEffModelRGB(work->unk28, s, s, s);
-        ex->Hi_DrawEffModel(&rot, &pos, (s32)&scale, work->unk2C);
+        ex->Hi_ModifyEffModelRGB(work->model28, s, s, s);
+        ex->Hi_DrawEffModel(&rot, &pos, (s32)&scale, work->model2C);
         s = c * 2;
         s -= 0x1000;
         s >>= 5;
         s -= 0x80;
-        ex->Hi_ModifyEffModelRGB(work->unk2C, s, s, s);
+        ex->Hi_ModifyEffModelRGB(work->model2C, s, s, s);
         if (frame < 8) {
             p->unkC.vz += 0xFF;
             scale.vx = scale.vy = scale.vx / 5;
             scale.vz = scale.vx / 7;
-            ex->Hi_DrawEffModel(&p->unkC, &pos, (s32)&scale, work->unk20);
+            ex->Hi_DrawEffModel(&p->unkC, &pos, (s32)&scale, work->model20);
             a = frame << 10;
             a >>= 3;
-            ex->Hi_ModifyEffModelRGB(work->unk20, (ex->math_cos(a) >> 5) - 0x80, (ex->math_cos(a) >> 5) - 0x80,
+            ex->Hi_ModifyEffModelRGB(work->model20, (ex->math_cos(a) >> 5) - 0x80, (ex->math_cos(a) >> 5) - 0x80,
                                      (ex->math_cos(a) >> 5) - 0x80);
         }
         env->otZ = 0x200;
@@ -349,13 +349,13 @@ s32 fx_07d_op80(s32 mode, Fx07dWork80 *work, Unk800F78A4 *env, Unk80100C78Entry 
                 entry->frame = -1;
                 ex->btlfx_drawScreenTint((u32 *)(env->ot + 1), 2, 0x80, 0xFF, 0xFF);
                 ex->btlfx_initEffModels(fx_07d_effModels, 6);
-                work->unk20 = ex->Hi_RegisterTexEffModel((BtlUnit9C8 *)ex->btlfx_getFileData(entry->file, 2), 0x139,
+                work->model20 = ex->Hi_RegisterTexEffModel((BtlUnit9C8 *)ex->btlfx_getFileData(entry->file, 2), 0x139,
                                                          0xFFFF, 0, 0x80);
-                work->unk24 = ex->Hi_RegisterTexEffModel((BtlUnit9C8 *)ex->btlfx_getFileData(entry->file, 0x16), 0x38,
+                work->model24 = ex->Hi_RegisterTexEffModel((BtlUnit9C8 *)ex->btlfx_getFileData(entry->file, 0x16), 0x38,
                                                          0x3E83, 0, 0);
-                work->unk28 = ex->Hi_RegisterTexEffModel((BtlUnit9C8 *)ex->btlfx_getFileData(entry->file, 0x1E), 0x13C,
+                work->model28 = ex->Hi_RegisterTexEffModel((BtlUnit9C8 *)ex->btlfx_getFileData(entry->file, 0x1E), 0x13C,
                                                          0xFFFF, 0x10, 0x80);
-                work->unk2C = ex->Hi_RegisterGouEffModel((BtlUnit9C8 *)ex->btlfx_getFileData(entry->file, 0xF));
+                work->model2C = ex->Hi_RegisterGouEffModel((BtlUnit9C8 *)ex->btlfx_getFileData(entry->file, 0xF));
             }
                 break;
         case 1:
@@ -454,7 +454,7 @@ s32 fx_07d_op80(s32 mode, Fx07dWork80 *work, Unk800F78A4 *env, Unk80100C78Entry 
                 fxm_anglesFromEye(&work->unkC.vx, &rot2.vx);
                 rot2.vx = work->unk38 + (s16)(rot2.vx + 0x400);
                 rot2.vz = 0;
-                ex->Hi_DrawEffModel(&rot2, &pos, (s32)&scale, work->unk24);
+                ex->Hi_DrawEffModel(&rot2, &pos, (s32)&scale, work->model24);
                 if (frame == 10) {
                     ex->btlfx_drawScreenTint((u32 *)(env->ot + 2), 1, 0x64, 0x40, 0);
                 }
@@ -501,7 +501,7 @@ s32 fx_07d_op80(s32 mode, Fx07dWork80 *work, Unk800F78A4 *env, Unk80100C78Entry 
                 fxm_anglesFromEye(&work->unkC.vx, &rot2.vx);
                 rot2.vx = work->unk38 + (s16)(rot2.vx + 0x400);
                 rot2.vz = 0;
-                ex->Hi_DrawEffModel(&rot2, &pos, (s32)&scale, work->unk24);
+                ex->Hi_DrawEffModel(&rot2, &pos, (s32)&scale, work->model24);
                 rot3.vy = 0;
                 rot3.vx = 0;
                 rot3.vz = 0;

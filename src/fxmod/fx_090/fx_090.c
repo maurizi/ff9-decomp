@@ -40,8 +40,8 @@ s32 fx_090_op80(s32 mode, Fx090Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
         work->unk3C.vy = 0x1000;
         work->unk3C.vz = 0x1000;
         ex->btlfx_initEffModels(fx_090_effModels, 2);
-        work->unk70 = ex->Hi_RegisterTexEffModel((BtlUnit9C8 *)ex->btlfx_getFileData(entry->file, 0xB), 0x1B, 0x3D09, 0, 0);
-        work->unk72 = ex->Hi_RegisterTexEffModel((BtlUnit9C8 *)ex->btlfx_getFileData(entry->file, 0xD), 0x1B, 0x3D09, 0, 0);
+        work->model70 = ex->Hi_RegisterTexEffModel((BtlUnit9C8 *)ex->btlfx_getFileData(entry->file, 0xB), 0x1B, 0x3D09, 0, 0);
+        work->model72 = ex->Hi_RegisterTexEffModel((BtlUnit9C8 *)ex->btlfx_getFileData(entry->file, 0xD), 0x1B, 0x3D09, 0, 0);
         work->unk6C = work->unk68 = -1;
     } else {
         frame = entry->frame;
@@ -75,15 +75,15 @@ s32 fx_090_op80(s32 mode, Fx090Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
         }
         if (frame >= 0x12 && frame < 0x18) {
             work->unk3C.vy = ((frame - 0x12) << 12) / 6;
-            ex->Hi_DrawEffModel(&work->unk24, &work->unk2C, (s32)&work->unk3C, work->unk70);
-            ex->Hi_ModifyEffModelAbr(work->unk70, 1);
-            ex->Hi_ModifyEffModelRGB(work->unk70, work->unk4C, work->unk4C, work->unk4C);
+            ex->Hi_DrawEffModel(&work->unk24, &work->unk2C, (s32)&work->unk3C, work->model70);
+            ex->Hi_ModifyEffModelAbr(work->model70, 1);
+            ex->Hi_ModifyEffModelRGB(work->model70, work->unk4C, work->unk4C, work->unk4C);
         }
         if (frame >= 0x18 && frame < 0x32) {
-            ex->Hi_DrawMorphEffModel(&work->unk24, &work->unk2C, (s32)&work->unk3C, work->unk70, work->unk72,
+            ex->Hi_DrawMorphEffModel(&work->unk24, &work->unk2C, (s32)&work->unk3C, work->model70, work->model72,
                                      0x1000 - ((frame - 0x18) << 12) / 26);
-            ex->Hi_ModifyEffModelAbr(work->unk70, 1);
-            ex->Hi_ModifyEffModelRGB(work->unk70, work->unk4C, work->unk4C, work->unk4C);
+            ex->Hi_ModifyEffModelAbr(work->model70, 1);
+            ex->Hi_ModifyEffModelRGB(work->model70, work->unk4C, work->unk4C, work->unk4C);
         }
         if (frame >= 0x12) {
             s16 *p = D_801E7DB4[frame % 15];

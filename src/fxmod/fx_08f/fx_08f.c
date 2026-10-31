@@ -132,14 +132,14 @@ s32 fx_08f_op80(s32 mode, Fx08fWork80 *work, Unk800F78A4 *env, Unk80100C78Entry 
         work->unk8[4] = 0xC8;
         work->unk8[5] = 0x78;
         ex->btlfx_initEffModels(fx_08f_effModels, 8);
-        work->unk24 = ex->Hi_RegisterTexEffModel((BtlUnit9C8 *)ex->btlfx_getFileData(entry->file, 0x11), 0x9A, 0x3E00, 0, 0);
-        work->unk28 = ex->Hi_RegisterTexEffModel((BtlUnit9C8 *)ex->btlfx_getFileData(entry->file, 4), 0x139, 0xFFFF, 0, 0x80);
-        work->unk2C = ex->Hi_RegisterTexEffModel((BtlUnit9C8 *)ex->btlfx_getFileData(entry->file, 0x1A), 0xB9, 0x3D40, 0, 0);
-        work->unk30 = ex->Hi_RegisterTexEffModel((BtlUnit9C8 *)ex->btlfx_getFileData(entry->file, 0xC), 0x3C, 0x3D04, 0, 0x80);
-        work->unk34 = ex->Hi_RegisterGouEffModel((BtlUnit9C8 *)ex->btlfx_getFileData(entry->file, 0x17));
-        work->unk38 = ex->Hi_RegisterGouEffModel((BtlUnit9C8 *)ex->btlfx_getFileData(entry->file, 0x18));
-        work->unk3C = ex->Hi_RegisterGouEffModel((BtlUnit9C8 *)ex->btlfx_getFileData(entry->file, 0x19));
-        work->unk40 = ex->Hi_RegisterTexEffModel((BtlUnit9C8 *)ex->btlfx_getFileData(entry->file, 0xF), 0x97, 0x3D80, 0, 0);
+        work->model24 = ex->Hi_RegisterTexEffModel((BtlUnit9C8 *)ex->btlfx_getFileData(entry->file, 0x11), 0x9A, 0x3E00, 0, 0);
+        work->model28 = ex->Hi_RegisterTexEffModel((BtlUnit9C8 *)ex->btlfx_getFileData(entry->file, 4), 0x139, 0xFFFF, 0, 0x80);
+        work->model2C = ex->Hi_RegisterTexEffModel((BtlUnit9C8 *)ex->btlfx_getFileData(entry->file, 0x1A), 0xB9, 0x3D40, 0, 0);
+        work->model30 = ex->Hi_RegisterTexEffModel((BtlUnit9C8 *)ex->btlfx_getFileData(entry->file, 0xC), 0x3C, 0x3D04, 0, 0x80);
+        work->model34 = ex->Hi_RegisterGouEffModel((BtlUnit9C8 *)ex->btlfx_getFileData(entry->file, 0x17));
+        work->model38 = ex->Hi_RegisterGouEffModel((BtlUnit9C8 *)ex->btlfx_getFileData(entry->file, 0x18));
+        work->model3C = ex->Hi_RegisterGouEffModel((BtlUnit9C8 *)ex->btlfx_getFileData(entry->file, 0x19));
+        work->model40 = ex->Hi_RegisterTexEffModel((BtlUnit9C8 *)ex->btlfx_getFileData(entry->file, 0xF), 0x97, 0x3D80, 0, 0);
     } else {
         frame = entry->frame;
         switch (work->unk0) {
@@ -174,18 +174,18 @@ s32 fx_08f_op80(s32 mode, Fx08fWork80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             env->camera->points[3].vz = k2 + d2;
             k3 = (u16)env->camera->points[3].vy + 0x180;
             env->camera->points[3].vy = k3 - d2;
-            ex->Hi_DrawEffModel(&rot, &pos, (s32)&scale, work->unk24);
+            ex->Hi_DrawEffModel(&rot, &pos, (s32)&scale, work->model24);
             ex->btlfx_drawScrollMove(work->unk4 * 8, 0x1C0, 0x100, 0x40, 0x80, 0x200, 0x100);
-            ex->Hi_DrawEffModel(&rot, &pos, (s32)&scale, work->unk40);
-            ex->Hi_ModifyEffModelRGB(work->unk40, (s >> 5) - 0x80, (s >> 5) - 0x80, (s >> 5) - 0x80);
+            ex->Hi_DrawEffModel(&rot, &pos, (s32)&scale, work->model40);
+            ex->Hi_ModifyEffModelRGB(work->model40, (s >> 5) - 0x80, (s >> 5) - 0x80, (s >> 5) - 0x80);
             if (!near) {
                 t2 = ((frame - 8) << 12) / 41;
                 rot.vx = 0x200;
                 rot.vy = 0;
                 rot.vz = 0;
-                ex->Hi_DrawEffModel(&rot, &pos, (s32)&scale, work->unk28);
-                ex->Hi_ModifyEffModelAbr(work->unk28, 1);
-                ex->Hi_ModifyEffModelRGB(work->unk28, (t2 >> 5) - 0x80, (t2 >> 5) - 0x80, (t2 >> 5) - 0x80);
+                ex->Hi_DrawEffModel(&rot, &pos, (s32)&scale, work->model28);
+                ex->Hi_ModifyEffModelAbr(work->model28, 1);
+                ex->Hi_ModifyEffModelRGB(work->model28, (t2 >> 5) - 0x80, (t2 >> 5) - 0x80, (t2 >> 5) - 0x80);
                 ex->btlfx_drawBackdrop((BtlBgLayers *)ex->btlfx_getFileData(entry->file, 7), work->unk4);
             }
             y0 = -0x64;
@@ -260,8 +260,8 @@ s32 fx_08f_op80(s32 mode, Fx08fWork80 *work, Unk800F78A4 *env, Unk80100C78Entry 
                     p->otZ = 0x5C;
                 }
             }
-            ex->Hi_DrawEffModel(&rot, &pos, (s32)&scale, work->unk24);
-            ex->Hi_DrawEffModel(&rot, &pos, (s32)&scale, work->unk28);
+            ex->Hi_DrawEffModel(&rot, &pos, (s32)&scale, work->model24);
+            ex->Hi_DrawEffModel(&rot, &pos, (s32)&scale, work->model28);
             env->otZ = 0x200;
             ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->file, 1), &work->unk14, NULL, s >> 1, 0, 1, 0x1000);
             env->otZ = 0;

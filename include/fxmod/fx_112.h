@@ -13,7 +13,7 @@ typedef struct {
     SVECTOR unk4; /* caster position */
     SVECTOR unkC; /* caster rotation */
     Fx112Vec3 unk14; /* caster scale */
-    s32 unk20; /* model */
+    s32 model20; /* model */
     u8 pad24[0x38 - 0x24];
     SVECTOR unk38; /* caster body position */
     SVECTOR unk40;

@@ -24,9 +24,9 @@ s32 fx_052_op80(s32 mode, Fx052Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
         work->unk1C.vx = work->unk40.vx;
         work->unk1C.vy = work->unk40.vy;
         work->unk1C.vz = work->unk40.vz;
-        work->unk52 = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, 7), 1);
-        work->unk54 = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, 0xB), 1);
-        work->unk56 = ex->Hi_RegisterGouEffModel((BtlUnit9C8 *)ex->btlfx_getFileData(entry->file, 0xE));
+        work->model52 = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, 7), 1);
+        work->model54 = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, 0xB), 1);
+        work->model56 = ex->Hi_RegisterGouEffModel((BtlUnit9C8 *)ex->btlfx_getFileData(entry->file, 0xE));
         work->emit0 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 8), (s32)&work->unk48);
         work->unk50 = -1;
     } else {
@@ -60,17 +60,17 @@ s32 fx_052_op80(s32 mode, Fx052Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
                     work->unk2C.vy -= 0x100;
                     work->unk2C.vz -= 0x100;
                 }
-                ex->Hi_DrawEffModel(&work->unk14, &work->unk1C, (s32)&work->unk2C, work->unk54);
+                ex->Hi_DrawEffModel(&work->unk14, &work->unk1C, (s32)&work->unk2C, work->model54);
                 work->unk14.vy += 0x10;
             }
-            ex->Hi_DrawEffModel(&work->unkC, &work->unk1C, (s32)&work->unk2C, work->unk56);
-            ex->Hi_DrawEffModel(&work->unkC, &work->unk1C, (s32)&work->unk2C, work->unk52);
+            ex->Hi_DrawEffModel(&work->unkC, &work->unk1C, (s32)&work->unk2C, work->model56);
+            ex->Hi_DrawEffModel(&work->unkC, &work->unk1C, (s32)&work->unk2C, work->model52);
             work->unkC.vy -= 0x10;
             if (work->unk50 >= 0) {
                 work->unk3C = fxm_lerpRatio(-0x80, 0, 0x18 - work->unk50, 0x18);
                 work->unk50--;
-                ex->Hi_ModifyEffModelRGB(work->unk52, work->unk3C, work->unk3C, work->unk3C);
-                ex->Hi_ModifyEffModelRGB(work->unk56, work->unk3C, work->unk3C, work->unk3C);
+                ex->Hi_ModifyEffModelRGB(work->model52, work->unk3C, work->unk3C, work->unk3C);
+                ex->Hi_ModifyEffModelRGB(work->model56, work->unk3C, work->unk3C, work->unk3C);
             }
         }
         ex->btlfx_drawBackdrop((BtlBgLayers *)ex->btlfx_getFileData(entry->file, 0xC), frame);

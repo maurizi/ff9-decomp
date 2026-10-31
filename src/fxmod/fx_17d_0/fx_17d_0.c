@@ -222,7 +222,7 @@ s32 fx_17d_0_op80(s32 mode, Fx17d0Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
         work->unk4 = 0;
         fx_17d_0_env = env;
         ex->btlfx_initEffModels(fx_17d_0_effModels, 0x20);
-        work->unkBA = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, 0x1C), 0);
+        work->modelBA = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, 0x1C), 0);
         BTLFX_COPY_SVEC(&work->unk8, &D_801E9368);
         work->unk18.vy = -0x1000;
         work->unk18.vx = 0;
@@ -314,7 +314,7 @@ s32 fx_17d_0_op80(s32 mode, Fx17d0Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
                     s32 k;
                     s32 v;
 
-                    work->unk5C[i0] = ex->btlfx_registerEffectModel(
+                    work->model5C[i0] = ex->btlfx_registerEffectModel(
                         (Unk800E8F50 *)ex->btlfx_getFileData(entry->file, ((s16 *)D_801E9370)[i0 * 4]), 0);
                     o = i0 * 8 + 2; /* byte offset: a separate 8i + 2 giv added to the table base */
                     k = *(s16 *)((u8 *)D_801E9370 + o);
@@ -372,7 +372,7 @@ s32 fx_17d_0_op80(s32 mode, Fx17d0Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
             if (t > 0xC00) {
                 b = b - (ex->math_cos(t - 0xC00) - 0x1000);
             }
-            func_801E7D18(entry, &work->unk10, frame % 10, (s32)work->unk5C, work->unk86, b);
+            func_801E7D18(entry, &work->unk10, frame % 10, (s32)work->model5C, work->unk86, b);
             if (frame < 0x58) {
                 e = (frame >> 2) + 0x6E;
                 ex->btlfx_drawSpriteAtOt(0xC00, (u8 *)ex->btlfx_getFileData(entry->file, 0x1D), 0xA0, e, 0, 0xFF, alpha);
@@ -411,7 +411,7 @@ s32 fx_17d_0_op80(s32 mode, Fx17d0Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
             alpha = 0x1000;
             work->unk38.vx += 0xC;
             work->unk38.vy += 6;
-            func_801E7D18(entry, &work->unk10, frame, (s32)work->unk5C, work->unk86, 0x1000);
+            func_801E7D18(entry, &work->unk10, frame, (s32)work->model5C, work->unk86, 0x1000);
             if (frame >= 0x79) {
                 s32 a;
                 s32 b;
@@ -536,9 +536,9 @@ s32 fx_17d_0_op80(s32 mode, Fx17d0Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
                 s = 0xAAA;
             }
             sc.vx = sc.vy = sc.vz = s;
-            ex->Hi_DrawEffModel(&work->unk38, &pos, (s32)&sc, work->unkBA);
+            ex->Hi_DrawEffModel(&work->unk38, &pos, (s32)&sc, work->modelBA);
             k = (alpha >> 5) - 0x80;
-            ex->Hi_ModifyEffModelRGB(work->unkBA, k, k, k);
+            ex->Hi_ModifyEffModelRGB(work->modelBA, k, k, k);
         }
         work->unk4++;
     }

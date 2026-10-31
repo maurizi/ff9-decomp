@@ -28,9 +28,9 @@ s32 fx_0d9_op80(s32 mode, Fx0d9Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
         ex->btlfx_getUnitBodyPos(0, 0, (s16 *)&work->unk0);
         ex->btlfx_getUnitPos(0, (s16 *)&work->unk8);
         ex->btlfx_initEffModels(fx_0d9_effModels, 2);
-        work->unk14 = ex->Hi_RegisterTexEffModel((BtlUnit9C8 *)ex->btlfx_getFileData(entry->file, 0xE), 0xB8, 0x3E40, 0,
+        work->model14 = ex->Hi_RegisterTexEffModel((BtlUnit9C8 *)ex->btlfx_getFileData(entry->file, 0xE), 0xB8, 0x3E40, 0,
                                                  0x80);
-        work->unk18 = ex->Hi_RegisterTexEffModel((BtlUnit9C8 *)ex->btlfx_getFileData(entry->file, 0xD), 0x119, 0xFFFF,
+        work->model18 = ex->Hi_RegisterTexEffModel((BtlUnit9C8 *)ex->btlfx_getFileData(entry->file, 0xD), 0x119, 0xFFFF,
                                                  0, 0x80);
         work->unk10 = 1;
         e = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0x21), (s32)&work->unk8);
@@ -142,9 +142,9 @@ s32 fx_0d9_op80(s32 mode, Fx0d9Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
                 s = ((ex->math_sin(t) * 0x5DC) >> 12) + 0x140;
                 scale.vx = scale.vy = scale.vz = s;
                 D_801EA038 = (s * 0x708) >> 12;
-                ex->Hi_DrawEffModel(&ang, &pos, (s32)&scale, work->unk14);
-                ex->Hi_ModifyEffModelAbr(work->unk14, 1);
-                ex->Hi_ModifyEffModelRGB(work->unk14, (ex->math_cos(t) * 2 / 3 >> 5) - 0x80,
+                ex->Hi_DrawEffModel(&ang, &pos, (s32)&scale, work->model14);
+                ex->Hi_ModifyEffModelAbr(work->model14, 1);
+                ex->Hi_ModifyEffModelRGB(work->model14, (ex->math_cos(t) * 2 / 3 >> 5) - 0x80,
                                          (ex->math_cos(t) * 2 / 3 >> 5) - 0x80, (ex->math_cos(t) * 2 / 3 >> 5) - 0x80);
                 env->otZ = 0x20;
                 c_5 = ex->math_cos(t);

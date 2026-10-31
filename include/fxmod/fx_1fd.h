@@ -134,8 +134,8 @@ typedef struct {
     s32 unk60;
     s16 unk64;
     s16 unk66;
-    u16 unk68; /* models */
-    u16 unk6A;
+    u16 model68; /* models */
+    u16 model6A;
 } Fx1fdWork82; /* 0x6C */
 
 extern Fx1fdRibbon D_801EB75C;

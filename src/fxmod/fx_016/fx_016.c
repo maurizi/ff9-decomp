@@ -22,14 +22,14 @@ s32 fx_016_op80(s32 mode, Fx016Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
         ex->btlfx_getUnitBodyPos(0, 0, (s16 *)&work->unk4);
         ex->btlfx_getUnitPos(0, (s16 *)&work->unkC);
         ex->btlfx_initEffModels(fx_016_effModels, 8);
-        work->unk14 = ex->Hi_RegisterTexEffModel((BtlUnit9C8 *)ex->btlfx_getFileData(entry->file, 5), 0x39, 0x3D00, 0, 0x80);
-        work->unk18 = ex->Hi_RegisterTexEffModel((BtlUnit9C8 *)ex->btlfx_getFileData(entry->file, 2), 0x39, 0x3D00, 0, 0x80);
-        work->unk1C = ex->Hi_RegisterTexEffModel((BtlUnit9C8 *)ex->btlfx_getFileData(entry->file, 3), 0x39, 0x3D00, 0, 0x80);
-        work->unk20 = ex->Hi_RegisterTexEffModel((BtlUnit9C8 *)ex->btlfx_getFileData(entry->file, 4), 0x39, 0x3D00, 0, 0x80);
-        work->unk24 = ex->Hi_RegisterTexEffModel((BtlUnit9C8 *)ex->btlfx_getFileData(entry->file, 0xE), 0x39, 0x3D00, 0, 0x80);
-        work->unk28 = ex->Hi_RegisterTexEffModel((BtlUnit9C8 *)ex->btlfx_getFileData(entry->file, 8), 0x3B, 0x3D01, 0, 0x80);
-        work->unk2C = ex->Hi_RegisterTexEffModel((BtlUnit9C8 *)ex->btlfx_getFileData(entry->file, 7), 0x3B, 0x3D01, 0, 0x80);
-        work->unk30 = ex->Hi_RegisterTexEffModel((BtlUnit9C8 *)ex->btlfx_getFileData(entry->file, 9), 0x39, 0x3D00, 0, 0x80);
+        work->model14 = ex->Hi_RegisterTexEffModel((BtlUnit9C8 *)ex->btlfx_getFileData(entry->file, 5), 0x39, 0x3D00, 0, 0x80);
+        work->model18 = ex->Hi_RegisterTexEffModel((BtlUnit9C8 *)ex->btlfx_getFileData(entry->file, 2), 0x39, 0x3D00, 0, 0x80);
+        work->model1C = ex->Hi_RegisterTexEffModel((BtlUnit9C8 *)ex->btlfx_getFileData(entry->file, 3), 0x39, 0x3D00, 0, 0x80);
+        work->model20 = ex->Hi_RegisterTexEffModel((BtlUnit9C8 *)ex->btlfx_getFileData(entry->file, 4), 0x39, 0x3D00, 0, 0x80);
+        work->model24 = ex->Hi_RegisterTexEffModel((BtlUnit9C8 *)ex->btlfx_getFileData(entry->file, 0xE), 0x39, 0x3D00, 0, 0x80);
+        work->model28 = ex->Hi_RegisterTexEffModel((BtlUnit9C8 *)ex->btlfx_getFileData(entry->file, 8), 0x3B, 0x3D01, 0, 0x80);
+        work->model2C = ex->Hi_RegisterTexEffModel((BtlUnit9C8 *)ex->btlfx_getFileData(entry->file, 7), 0x3B, 0x3D01, 0, 0x80);
+        work->model30 = ex->Hi_RegisterTexEffModel((BtlUnit9C8 *)ex->btlfx_getFileData(entry->file, 9), 0x39, 0x3D00, 0, 0x80);
         r = (ex->btlfx_getUnitRadius(0) << 12) / 720;
         if (r < 0x400) {
             r = 0x6A4;
@@ -56,16 +56,16 @@ s32 fx_016_op80(s32 mode, Fx016Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
                 scale.vz = v;
                 scale.vx = v;
                 if (m > 0x3000) {
-                    ex->Hi_DrawMorphEffModel(&rot, &pos, (s32)&scale, work->unk14, work->unk18, m - 0x3000);
+                    ex->Hi_DrawMorphEffModel(&rot, &pos, (s32)&scale, work->model14, work->model18, m - 0x3000);
                 } else if (m > 0x2000) {
-                    ex->Hi_DrawMorphEffModel(&rot, &pos, (s32)&scale, work->unk18, work->unk1C, m - 0x2000);
+                    ex->Hi_DrawMorphEffModel(&rot, &pos, (s32)&scale, work->model18, work->model1C, m - 0x2000);
                 } else if (m > 0x1000) {
-                    ex->Hi_DrawMorphEffModel(&rot, &pos, (s32)&scale, work->unk1C, work->unk20, m - 0x1000);
+                    ex->Hi_DrawMorphEffModel(&rot, &pos, (s32)&scale, work->model1C, work->model20, m - 0x1000);
                 } else {
-                    ex->Hi_DrawMorphEffModel(&rot, &pos, (s32)&scale, work->unk20, work->unk24, m);
+                    ex->Hi_DrawMorphEffModel(&rot, &pos, (s32)&scale, work->model20, work->model24, m);
                 }
-                ex->Hi_DrawEffModel(&rot, &pos, (s32)&scale, work->unk30);
-                ex->Hi_ModifyEffModelRGB(work->unk30, (ex->math_sin(a >> 2) >> 5) - 0x80,
+                ex->Hi_DrawEffModel(&rot, &pos, (s32)&scale, work->model30);
+                ex->Hi_ModifyEffModelRGB(work->model30, (ex->math_sin(a >> 2) >> 5) - 0x80,
                                          (ex->math_sin(a >> 2) >> 5) - 0x80, (ex->math_sin(a >> 2) >> 5) - 0x80);
             } else {
                 /* m (not q) takes the division: the copy q = m >> 2 into a block-local pseudo (s2) gives m a
@@ -82,12 +82,12 @@ s32 fx_016_op80(s32 mode, Fx016Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
                 scale.vz = w;
                 scale.vx = w;
                 scale.vy = (w * 3) >> 2;
-                ex->Hi_DrawEffModel(&rot, &pos, (s32)&scale, work->unk24);
+                ex->Hi_DrawEffModel(&rot, &pos, (s32)&scale, work->model24);
                 q = m >> 2;
-                ex->Hi_ModifyEffModelRGB(work->unk24, (ex->math_cos(q) >> 5) - 0x80,
+                ex->Hi_ModifyEffModelRGB(work->model24, (ex->math_cos(q) >> 5) - 0x80,
                                          (ex->math_cos(q) >> 5) - 0x80, (ex->math_cos(q) >> 5) - 0x80);
-                ex->Hi_DrawEffModel(&rot, &pos, (s32)&scale, work->unk30);
-                ex->Hi_ModifyEffModelRGB(work->unk30, (ex->math_cos(q) >> 5) - 0x80,
+                ex->Hi_DrawEffModel(&rot, &pos, (s32)&scale, work->model30);
+                ex->Hi_ModifyEffModelRGB(work->model30, (ex->math_cos(q) >> 5) - 0x80,
                                          (ex->math_cos(q) >> 5) - 0x80, (ex->math_cos(q) >> 5) - 0x80);
             }
             ex->btlfx_drawScrollMove(frame, 0x240, 0x180, 0x10, 0x40, D_801E82B0[frame % 23 + 1].unk0,
@@ -102,8 +102,8 @@ s32 fx_016_op80(s32 mode, Fx016Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
                 rot.vz = 0;
                 rot.vx = 0;
                 rot.vy = -frame * 0x40;
-                ex->Hi_DrawMorphEffModel(&rot, &pos, (s32)&scale, work->unk28, work->unk2C, 0x1000 - a);
-                ex->Hi_ModifyEffModelRGB(work->unk28, (ex->math_sin(a >> 1) >> 5) - 0x80,
+                ex->Hi_DrawMorphEffModel(&rot, &pos, (s32)&scale, work->model28, work->model2C, 0x1000 - a);
+                ex->Hi_ModifyEffModelRGB(work->model28, (ex->math_sin(a >> 1) >> 5) - 0x80,
                                          (ex->math_sin(a >> 1) >> 5) - 0x80, (ex->math_sin(a >> 1) >> 5) - 0x80);
             }
             if (frame == 16) {

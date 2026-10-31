@@ -63,10 +63,10 @@ s32 fx_122_op80(s32 mode, Fx122Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
         work->unk48 = -1;
         work->unk4A = -1;
         ex->btlfx_initEffModels(fx_122_effModels, 1);
-        work->unk4C = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, 1), 1);
+        work->model4C = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, 1), 1);
     } else {
         frame = entry->frame;
-        ex->Hi_DrawEffModel(&work->unk4, &work->unkC, (s32)&work->unk1C, work->unk4C);
+        ex->Hi_DrawEffModel(&work->unk4, &work->unkC, (s32)&work->unk1C, work->model4C);
         if (frame >= 0x19 && frame < 0x28) {
             if ((frame & 1) && (ex->btlfx_rand() & 1)) {
                 work->unkC.vx = work->unk30.vx + (ex->btlfx_rand() % 4 + 4);
@@ -104,8 +104,8 @@ s32 fx_122_op80(s32 mode, Fx122Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
             work->unk4A--;
         }
         if (fade) {
-            ex->Hi_ModifyEffModelAbr(work->unk4C, 1);
-            ex->Hi_ModifyEffModelRGB(work->unk4C, work->unk2C, work->unk2C, work->unk2C);
+            ex->Hi_ModifyEffModelAbr(work->model4C, 1);
+            ex->Hi_ModifyEffModelRGB(work->model4C, work->unk2C, work->unk2C, work->unk2C);
         }
         if (frame >= 0x4F) {
             ex->btlfx_clearEffModels();

@@ -45,7 +45,7 @@ s32 fx_1af_op80(s32 mode, Fx1afWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
                 ex->btlfx_moveSummonToHeap(0x50);
                 ex->btlfx_initEffModels(fx_1af_effModels, 5);
                 for (i = 0; i < 5; i++) {
-                    work->unk40[i] = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, D_801E7EF4[i]), 0);
+                    work->model40[i] = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, D_801E7EF4[i]), 0);
                 }
                 ex->btlfx_drawScreenTint((u32 *)(env->ot + 2), 1, 0x80, 0x80, 0xAA);
             }
@@ -87,8 +87,8 @@ s32 fx_1af_op80(s32 mode, Fx1afWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
                 work->unk30.vz = pos.vz;
                 work->unk30.vx += t >> 4;
                 for (j = 0; j < 5; j++) {
-                    ex->Hi_SetEffModelSlice(work->unk40[j], y);
-                    ex->Hi_DrawSliceEffModel(&work->unk14, &pos, (s32)work->unk1C, work->unk40[j]);
+                    ex->Hi_SetEffModelSlice(work->model40[j], y);
+                    ex->Hi_DrawSliceEffModel(&work->unk14, &pos, (s32)work->unk1C, work->model40[j]);
                 }
             }
             if (frame == 0xA) {

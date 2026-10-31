@@ -89,7 +89,7 @@ typedef struct {
     SVECTOR unk90;
     s32 unk98; /* fade-in countdown */
     s32 unk9C; /* fade-out countdown */
-    u16 unkA0[8]; /* models */
+    u16 modelA0[8]; /* models */
 } Fx128Work81; /* 0xB0 */
 
 extern u16 D_801E8974[];

@@ -16,9 +16,9 @@ typedef struct {
     SVECTOR unk40; /* target body position */
     SVECTOR unk48; /* target position */
     s16 unk50; /* fade-in countdown */
-    u16 unk52; /* models */
-    u16 unk54;
-    u16 unk56;
+    u16 model52; /* models */
+    u16 model54;
+    u16 model56;
 } Fx052Work80; /* 0x58 */
 
 typedef struct {

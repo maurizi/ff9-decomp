@@ -63,7 +63,7 @@ typedef struct {
     SVECTOR unk10;
     s32 unk18[6][3]; /* models of the six pieces */
     s32 pad60[3];
-    s32 unk6C[7];
+    s32 model6C[7];
 } Fx197Work81; /* 0x88 */
 
 typedef struct {

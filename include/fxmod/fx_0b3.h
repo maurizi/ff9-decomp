@@ -40,7 +40,7 @@ typedef struct {
     Fx0b3Vec3 unk54; /* model scale */
     SVECTOR unk60; /* model rotation */
     Pool6CEntry *emit68;
-    s32 unk6C; /* model */
+    s32 model6C; /* model */
     s32 unk70; /* morph frame */
     s32 unk74; /* morph weight */
 } Fx0b3Work80; /* 0x78 */
@@ -79,7 +79,7 @@ typedef struct {
     SVECTOR unk78;
     Pool6CEntry *emit80;
     Pool6CEntry *emit84;
-    s32 unk88[4]; /* models */
+    s32 model88[4]; /* models */
     s32 unk98; /* morph frame */
     s32 unk9C; /* morph weight */
 } Fx0b3Work81; /* 0xA0 */
@@ -103,8 +103,8 @@ typedef struct {
     Fx0b3Vec3 unk68;
     Fx0b3Vec3 unk74;
     SVECTOR unk80;
-    s32 unk88; /* model */
-    s32 unk8C; /* model */
+    s32 model88; /* model */
+    s32 model8C; /* model */
 } Fx0b3Work84; /* 0x90 */
 
 void func_801E8DF4(SVECTOR *pos, SVECTOR *rot, Fx0b3Vec3 *scale, s32 a3, s32 a4, s32 a5, s32 a6, s32 a7, s32 a8, s32 a9,
@@ -123,7 +123,7 @@ typedef struct {
     Fx0b3Vec3 unk58;
     Fx0b3Vec3 unk64;
     SVECTOR unk70;
-    s32 unk78[4]; /* models */
+    s32 model78[4]; /* models */
 } Fx0b3Work83; /* 0x88 */
 extern s32 D_801EB5AC[4]; /* start frames */
 extern s32 D_801EB5BC[4]; /* file ids */

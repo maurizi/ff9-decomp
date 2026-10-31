@@ -13,8 +13,8 @@ typedef struct {
     VECTOR unk30; /* model scale */
     SVECTOR unk40[2]; /* rotation trail */
     VECTOR unk50[2]; /* position trail */
-    u16 unk70; /* models */
-    u16 unk72;
+    u16 model70; /* models */
+    u16 model72;
 } Fx10bWork80;
 
 typedef struct {

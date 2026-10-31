@@ -140,12 +140,12 @@ typedef struct {
     SVECTOR unk60; /* summon rotation */
     SVECTOR unk68; /* model rotation */
     Fx0baVec3 unk70; /* model scale */
-    s32 unk7C;
-    s32 unk80;
-    s32 unk84;
-    s32 unk88;
-    s32 unk8C;
-    s32 unk90;
+    s32 model7C;
+    s32 model80;
+    s32 model84;
+    s32 model88;
+    s32 model8C;
+    s32 model90;
     s16 unk94;
     s16 unk96;
     s16 unk98;
@@ -197,11 +197,11 @@ typedef struct {
     SVECTOR unk60; /* model rotation */
     Pool6CEntry *emit68;
     Pool6CEntry *emit6C;
-    s32 unk70; /* models */
-    s32 unk74;
-    s32 unk78;
-    s32 unk7C;
-    s32 unk80;
+    s32 model70; /* models */
+    s32 model74;
+    s32 model78;
+    s32 model7C;
+    s32 model80;
 } Fx0baPWork81; /* 0x84 */
 
 typedef struct {

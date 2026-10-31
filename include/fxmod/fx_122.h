@@ -16,7 +16,7 @@ typedef struct {
     SVECTOR unk40;
     s16 unk48; /* fade-in countdown */
     s16 unk4A; /* fade-out countdown */
-    u16 unk4C; /* model */
+    u16 model4C; /* model */
 } Fx122Work;
 
 typedef struct {

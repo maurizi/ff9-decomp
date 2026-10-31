@@ -14,7 +14,7 @@ typedef struct {
     SVECTOR unk8; /* base position */
     SVECTOR unk10; /* position */
     SVECTOR unk18; /* rotation */
-    s32 unk20; /* model */
+    s32 model20; /* model */
 } Fx0f5Work80; /* 0x24 */
 
 extern BtlModel fx_0f5_effModels[];

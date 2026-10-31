@@ -42,12 +42,12 @@ typedef struct {
     Fx1bf2Vec3 unk48; /* spawn position */
     SVECTOR unk54;
     SVECTOR unk5C; /* model rotation */
-    s32 unk64; /* models */
-    s32 unk68;
-    s32 unk6C;
-    s32 unk70;
-    s32 unk74;
-    s32 unk78;
+    s32 model64; /* models */
+    s32 model68;
+    s32 model6C;
+    s32 model70;
+    s32 model74;
+    s32 model78;
     MATRIX unk7C; /* saved matrices */
     MATRIX unk9C;
 } Fx1bf2Work80; /* 0xBC */

@@ -22,8 +22,8 @@ typedef struct {
     SVECTOR unk48; /* target body position */
     SVECTOR unk50;
     s32 unk58; /* target */
-    u16 unk5C; /* models */
-    u16 unk5E;
+    u16 model5C; /* models */
+    u16 model5E;
 } Fx11eWork; /* 0x60 */
 extern s32 D_801E7F84; /* models registered */
 extern Unk800F78A4 *fx_11e_env;

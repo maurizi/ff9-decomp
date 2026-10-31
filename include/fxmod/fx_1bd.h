@@ -59,8 +59,8 @@ typedef struct {
     s16 unk60; /* fade-in countdown */
     s16 unk62; /* fade-out countdown */
     u16 unk64; /* frame */
-    u16 unk66; /* model */
-    u16 unk68; /* model */
+    u16 model66; /* model */
+    u16 model68; /* model */
 } Fx1bdWork82; /* 0x6C */
 
 extern Fx1bdLine D_801EB764;
@@ -127,8 +127,8 @@ typedef struct {
     s16 unk116;
     u16 unk118[24]; /* models */
     u16 unk148;
-    u16 unk14A;
-    u16 unk14C;
+    u16 model14A;
+    u16 model14C;
 } Fx1bdWork83; /* 0x150 */
 
 typedef struct {

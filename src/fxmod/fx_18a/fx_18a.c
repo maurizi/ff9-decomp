@@ -36,7 +36,7 @@ s32 fx_18a_op80(s32 mode, Fx18aWork80 *work, Unk800F78A4 *env, Unk80100C78Entry 
         work->unk4 = 0;
         D_801E89D8 = 0;
         ex->btlfx_initEffModels(fx_18a_effModels, 1);
-        work->unk24 = ex->Hi_RegisterTexEffModel((BtlUnit9C8 *)ex->btlfx_getFileData(entry->file, 1), 0xB7, 0x3D80, 0, 0);
+        work->model24 = ex->Hi_RegisterTexEffModel((BtlUnit9C8 *)ex->btlfx_getFileData(entry->file, 1), 0xB7, 0x3D80, 0, 0);
     } else {
         c = 0;
         state = work->unk0;
@@ -184,12 +184,12 @@ s32 fx_18a_op80(s32 mode, Fx18aWork80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             rot.vx = 0;
             rot.vy = work->unk4 * 32;
             rot.vz = 0;
-            ex->Hi_DrawEffModel(&rot, &pos, (s32)&sc, work->unk24);
-            ex->Hi_ModifyEffModelRGB(work->unk24, (c >> 5) - 0x80, (c >> 5) - 0x80, (c >> 5) - 0x80);
+            ex->Hi_DrawEffModel(&rot, &pos, (s32)&sc, work->model24);
+            ex->Hi_ModifyEffModelRGB(work->model24, (c >> 5) - 0x80, (c >> 5) - 0x80, (c >> 5) - 0x80);
             sc.vy >>= 1;
             sc.vx = sc.vz = sc.vx * 3 / 2;
-            ex->Hi_DrawEffModel(&rot, &pos, (s32)&sc, work->unk24);
-            ex->Hi_ModifyEffModelRGB(work->unk24, (c >> 5) - 0x80, (c >> 5) - 0x80, (c >> 5) - 0x80);
+            ex->Hi_DrawEffModel(&rot, &pos, (s32)&sc, work->model24);
+            ex->Hi_ModifyEffModelRGB(work->model24, (c >> 5) - 0x80, (c >> 5) - 0x80, (c >> 5) - 0x80);
         }
         ex->btlfx_drawScrollMove(work->unk4 * 4, 0x1C0, 0x120, 0x20, 0x40, 0x1E0, 0x120);
         work->unk4++;

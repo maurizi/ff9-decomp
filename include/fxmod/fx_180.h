@@ -47,8 +47,8 @@ typedef struct {
     SVECTOR unk54;
     SVECTOR unk5C;
     s32 unk64; /* fade countdown */
-    u16 unk68; /* models */
-    u16 unk6A;
+    u16 model68; /* models */
+    u16 model6A;
 } Fx180Work82; /* 0x6C */
 
 typedef struct {

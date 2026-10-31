@@ -20,7 +20,7 @@ typedef struct {
     SVECTOR unk5C; /* copy of unk3C */
     SVECTOR unk64; /* unk54 + random */
     s32 unk6C; /* instance (0..4) */
-    u16 unk70; /* model */
+    u16 model70; /* model */
 } Fx09bWork;
 
 extern s32 D_801E80F4[5]; /* particle files */

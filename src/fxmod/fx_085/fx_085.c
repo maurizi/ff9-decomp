@@ -32,9 +32,9 @@ s32 fx_085_op80(s32 mode, Fx085Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
         BTLFX_COPY_SVEC(&work->unk8, &work->unk0);
         work->unk8.vy = 0;
         ex->btlfx_initEffModels(fx_085_effModels, 2);
-        work->unk14 = ex->Hi_RegisterTexEffModel((BtlUnit9C8 *)ex->btlfx_getFileData(entry->file, 6), 0xB8, 0x3E40, 0,
+        work->model14 = ex->Hi_RegisterTexEffModel((BtlUnit9C8 *)ex->btlfx_getFileData(entry->file, 6), 0xB8, 0x3E40, 0,
                                                  0x80);
-        work->unk18 = ex->Hi_RegisterTexEffModel((BtlUnit9C8 *)ex->btlfx_getFileData(entry->file, 0xF), 0x119, 0xFFFF,
+        work->model18 = ex->Hi_RegisterTexEffModel((BtlUnit9C8 *)ex->btlfx_getFileData(entry->file, 0xF), 0x119, 0xFFFF,
                                                  0, 0x80);
         work->unk10 = 0;
     } else {
@@ -172,9 +172,9 @@ s32 fx_085_op80(s32 mode, Fx085Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
                 s = ((ex->math_sin(t) * 3) >> 2) + 0x100;
                 scale.vx = scale.vy = scale.vz = s;
                 D_801E9F8C = (s * 0x708) >> 12;
-                ex->Hi_DrawEffModel(&ang, &pos, (s32)&scale, work->unk14);
-                ex->Hi_ModifyEffModelAbr(work->unk14, 1);
-                ex->Hi_ModifyEffModelRGB(work->unk14, (ex->math_cos(t) * 2 / 3 >> 5) - 0x80,
+                ex->Hi_DrawEffModel(&ang, &pos, (s32)&scale, work->model14);
+                ex->Hi_ModifyEffModelAbr(work->model14, 1);
+                ex->Hi_ModifyEffModelRGB(work->model14, (ex->math_cos(t) * 2 / 3 >> 5) - 0x80,
                                          (ex->math_cos(t) * 2 / 3 >> 5) - 0x80, (ex->math_cos(t) * 2 / 3 >> 5) - 0x80);
                 env->otZ = 0x20;
                 c_5 = ex->math_cos(t);

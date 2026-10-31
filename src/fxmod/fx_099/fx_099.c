@@ -20,7 +20,7 @@ s32 fx_099_op80(s32 mode, Fx099Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
         work->unk8.vy = 0;
         ex->btlfx_getUnitBodyPos(0, 0, (s16 *)&work->unk10);
         ex->btlfx_initEffModels(fx_099_effModels, 1);
-        work->unk1C = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, 1), 0);
+        work->model1C = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, 1), 0);
         r = (ex->btlfx_getUnitRadius(0) << 12) / 720;
         if (r < 0x800) {
             r = 0x800;
@@ -59,8 +59,8 @@ s32 fx_099_op80(s32 mode, Fx099Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
                     rot.vz = work->unk20.vz;
                     rot.vy += (i << 12) / 5;
                     rot.vx += 0x200 - (ex->math_sin(t >> 2) >> 3);
-                    ex->Hi_SetEffModelSlice(work->unk1C, 0);
-                    ex->Hi_DrawSliceEffModel(&rot, (VECTOR *)work->unk34, (s32)work->unk28, work->unk1C);
+                    ex->Hi_SetEffModelSlice(work->model1C, 0);
+                    ex->Hi_DrawSliceEffModel(&rot, (VECTOR *)work->unk34, (s32)work->unk28, work->model1C);
                 }
             }
             if (frame >= 0x17) {
@@ -81,10 +81,10 @@ s32 fx_099_op80(s32 mode, Fx099Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
                         rot.vy = work->unk20.vy;
                         rot.vz = work->unk20.vz;
                         rot.vy += (i << 12) / 5;
-                        ex->Hi_SetEffModelSlice(work->unk1C, 0);
-                        ex->Hi_DrawSliceEffModel(&rot, (VECTOR *)work->unk34, (s32)work->unk28, work->unk1C);
-                        ex->Hi_ModifyEffModelAbr(work->unk1C, 1);
-                        ex->Hi_ModifyEffModelRGB(work->unk1C, c, c, c);
+                        ex->Hi_SetEffModelSlice(work->model1C, 0);
+                        ex->Hi_DrawSliceEffModel(&rot, (VECTOR *)work->unk34, (s32)work->unk28, work->model1C);
+                        ex->Hi_ModifyEffModelAbr(work->model1C, 1);
+                        ex->Hi_ModifyEffModelRGB(work->model1C, c, c, c);
                     }
                 }
             }

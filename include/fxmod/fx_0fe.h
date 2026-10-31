@@ -13,7 +13,7 @@ typedef struct {
     SVECTOR unkA8; /* target body position */
     s32 unkB0; /* fade-in countdown */
     s32 unkB4; /* fade-out countdown */
-    u16 unkB8[3]; /* models */
+    u16 modelB8[3]; /* models */
 } Fx0feWork;
 
 typedef struct {

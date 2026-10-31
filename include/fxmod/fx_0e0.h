@@ -71,13 +71,13 @@ typedef struct {
     Fx0e0Vec3 unk44; /* scale */
     SVECTOR unk50; /* rotation */
     u8 pad58[4];
-    s32 unk5C; /* models */
-    s32 unk60;
-    s32 unk64;
-    s32 unk68;
-    s32 unk6C;
-    s32 unk70;
-    s32 unk74;
+    s32 model5C; /* models */
+    s32 model60;
+    s32 model64;
+    s32 model68;
+    s32 model6C;
+    s32 model70;
+    s32 model74;
     u8 pad78[0xC];
 } Fx0e0Work80; /* 0x84 */
 

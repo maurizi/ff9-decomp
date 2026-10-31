@@ -132,7 +132,7 @@ s32 fx_17d_1_op80(s32 mode, Fx17d1Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
         work->unk4 = 0;
         fx_17d_1_env = env;
         ex->btlfx_initEffModels(fx_17d_1_effModels, 2);
-        work->unk78 = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, 0x9E), 1);
+        work->model78 = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, 0x9E), 1);
         ex->Hi_SetSummonMotion(((Fx17d1Summon *)env->loader)->unk54->unk180, ((Fx17d1Summon *)env->loader)->unk60);
         work->unk28.vx = 0;
         work->unk28.vy = 0;
@@ -178,8 +178,8 @@ s32 fx_17d_1_op80(s32 mode, Fx17d1Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
             work->unk10.vx = work->unk28.vx;
             work->unk10.vy = work->unk28.vy;
             work->unk10.vz = work->unk28.vz - 0x258;
-            ex->Hi_DrawEffModel(&work->unk40, (VECTOR *)&work->unk28, (s32)&work->unk34, work->unk78);
-            ex->Hi_ModifyEffModelRGB(work->unk78, (t >> 6) - 0x80, (t >> 6) - 0x80, (t >> 6) - 0x80);
+            ex->Hi_DrawEffModel(&work->unk40, (VECTOR *)&work->unk28, (s32)&work->unk34, work->model78);
+            ex->Hi_ModifyEffModelRGB(work->model78, (t >> 6) - 0x80, (t >> 6) - 0x80, (t >> 6) - 0x80);
             env->camera->points[1].vx = work->unk50.vx;
             env->camera->points[1].vy = work->unk50.vy;
             env->camera->points[1].vz = work->unk50.vz;
@@ -268,9 +268,9 @@ s32 fx_17d_1_op80(s32 mode, Fx17d1Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
             work->unk28.vy += 0x58;
             sc.vx = sc.vy = work->unk34.vx * 2 / 3;
             sc.vz = work->unk34.vz;
-            ex->Hi_DrawEffModel(&work->unk40, (VECTOR *)&work->unk28, (s32)&sc, work->unk78);
-            ex->Hi_DrawEffModel(&work->unk40, (VECTOR *)&work->unk28, (s32)&work->unk34, work->unk78);
-            ex->Hi_ModifyEffModelRGB(work->unk78, -0x40, -0x40, -0x40);
+            ex->Hi_DrawEffModel(&work->unk40, (VECTOR *)&work->unk28, (s32)&sc, work->model78);
+            ex->Hi_DrawEffModel(&work->unk40, (VECTOR *)&work->unk28, (s32)&work->unk34, work->model78);
+            ex->Hi_ModifyEffModelRGB(work->model78, -0x40, -0x40, -0x40);
             work->unk10.vx = work->unk28.vx;
             work->unk10.vy = work->unk28.vy;
             work->unk10.vz = work->unk28.vz;

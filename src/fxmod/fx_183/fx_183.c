@@ -68,7 +68,7 @@ s32 fx_183_op81(s32 mode, Fx183Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
         work->unk38.vx = 0x1000;
         work->unk38.vy = 0x1000;
         work->unk38.vz = 0x1000;
-        work->unk48 = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, 0x1D), 1);
+        work->model48 = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, 0x1D), 1);
     } else {
         frame = entry->frame;
         if (frame == 4) {
@@ -83,8 +83,8 @@ s32 fx_183_op81(s32 mode, Fx183Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
             work->unk28.vx = v.vx;
             work->unk28.vy = v.vy;
             work->unk28.vz = v.vz;
-            ex->Hi_SetEffModelSlice(work->unk48, work->unk28.vy);
-            ex->Hi_DrawSliceEffModel(&work->unk20, &work->unk28, (s32)&work->unk38, work->unk48);
+            ex->Hi_SetEffModelSlice(work->model48, work->unk28.vy);
+            ex->Hi_DrawSliceEffModel(&work->unk20, &work->unk28, (s32)&work->unk38, work->model48);
         }
         return frame >= 0x3C;
     }
@@ -121,7 +121,7 @@ s32 fx_183_op82(s32 mode, Fx183Work82 *work, Unk800F78A4 *env, Unk80100C78Entry 
         work->unk2C.vz = 0x1800;
         for (j = 0; j < 6; j++) {
             fxm_rotPosPathInit(&D_801E8878[j], (u16 *)ex->btlfx_getFileData(entry->file, D_801E8294[j]));
-            work->unk50[j] = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, D_801E8288[j]), 1);
+            work->model50[j] = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, D_801E8288[j]), 1);
         }
         work->unk48 = -1;
         work->unk4C = -1;
@@ -170,10 +170,10 @@ s32 fx_183_op82(s32 mode, Fx183Work82 *work, Unk800F78A4 *env, Unk80100C78Entry 
                     sc.vy = work->unk2C.vy;
                     sc.vz = work->unk2C.vz;
                 }
-                ex->Hi_SetEffModelSlice(work->unk50[i], work->unkC.vy);
-                ex->Hi_DrawSliceEffModel(&work->unk4, &work->unkC, (s32)&sc, work->unk50[i]);
+                ex->Hi_SetEffModelSlice(work->model50[i], work->unkC.vy);
+                ex->Hi_DrawSliceEffModel(&work->unk4, &work->unkC, (s32)&sc, work->model50[i]);
                 if (work->unk48 >= 0 || work->unk4C >= 0) {
-                    ex->Hi_ModifyEffModelRGB(work->unk50[i], work->unk3C, work->unk3C, work->unk3C);
+                    ex->Hi_ModifyEffModelRGB(work->model50[i], work->unk3C, work->unk3C, work->unk3C);
                 }
             }
         }

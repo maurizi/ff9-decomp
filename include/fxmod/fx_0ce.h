@@ -10,7 +10,7 @@ typedef struct {
     SVECTOR unk8; /* caster body position, raised by 0x80 */
     SVECTOR unk10; /* caster position */
     SVECTOR unk18; /* btlfx_getUnitArgBonePos(0x10, 0) */
-    s32 unk20; /* model */
+    s32 model20; /* model */
     SVECTOR unk24; /* angles from unk18 to unk8 */
     Pool6CEntry *emit2C;
 } Fx0ceWork;

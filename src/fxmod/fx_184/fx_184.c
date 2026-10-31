@@ -22,7 +22,7 @@ s32 fx_184_op80(s32 mode, Fx184Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
         work->unk30.vy = 0x1000;
         work->unk30.vz = 0x1000;
         ex->btlfx_setWeaponVisible(0x10, 0);
-        work->unk40 = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, 2), 1);
+        work->model40 = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, 2), 1);
     } else {
         frame = entry->frame;
         if (frame < 6) {
@@ -31,8 +31,8 @@ s32 fx_184_op80(s32 mode, Fx184Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             work->unk20.vy = v.vy;
             work->unk20.vz = v.vz;
         }
-        ex->Hi_SetEffModelSlice(work->unk40, work->unk20.vy);
-        ex->Hi_DrawSliceEffModel(&work->unk18, &work->unk20, (s32)&work->unk30, work->unk40);
+        ex->Hi_SetEffModelSlice(work->model40, work->unk20.vy);
+        ex->Hi_DrawSliceEffModel(&work->unk18, &work->unk20, (s32)&work->unk30, work->model40);
         if (frame >= 4) {
             ex->btlfx_clearEffModels();
             return 1;

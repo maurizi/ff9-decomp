@@ -21,7 +21,7 @@ typedef struct {
     s16 unk60; /* drop countdown */
     s16 unk62; /* fade countdown */
     s32 unk64; /* state */
-    u16 unk68[3]; /* models */
+    u16 model68[3]; /* models */
 } Fx0e4Work;
 
 extern u16 D_801E7CF8[3];

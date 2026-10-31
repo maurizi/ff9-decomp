@@ -25,7 +25,7 @@ s32 fx_08c_op80(s32 mode, Fx08cWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
         work->unk18[2] = work->unk8.vz;
         fx_08c_env = env;
         ex->btlfx_initEffModels(fx_08c_effModels, 2);
-        work->unk24 = ex->Hi_RegisterTexEffModel((BtlUnit9C8 *)ex->btlfx_getFileData(entry->file, 3), 0x138, 0xFFFF, 0, 0x80);
+        work->model24 = ex->Hi_RegisterTexEffModel((BtlUnit9C8 *)ex->btlfx_getFileData(entry->file, 3), 0x138, 0xFFFF, 0, 0x80);
         p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 8), (s32)&work->unk8);
         if (p != NULL) {
             p->otZ = 0x80;
@@ -46,13 +46,13 @@ s32 fx_08c_op80(s32 mode, Fx08cWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
             scale.vx = ((a + 0x2800) * 4) / 3;
             scale.vz = scale.vx;
             scale.vy = ((frame << 9) + 0x2000) / 3;
-            ex->Hi_DrawEffModel(&rot, (VECTOR *)work->unk18, (s32)&scale, work->unk24);
-            ex->Hi_ModifyEffModelAbr(work->unk24, 1);
-            ex->Hi_ModifyEffModelRGB(work->unk24, (c >> 5) - 0x80, (c >> 5) - 0x80, (c >> 5) - 0x80);
+            ex->Hi_DrawEffModel(&rot, (VECTOR *)work->unk18, (s32)&scale, work->model24);
+            ex->Hi_ModifyEffModelAbr(work->model24, 1);
+            ex->Hi_ModifyEffModelRGB(work->model24, (c >> 5) - 0x80, (c >> 5) - 0x80, (c >> 5) - 0x80);
             scale.vy >>= 1;
-            ex->Hi_DrawEffModel(&rot, (VECTOR *)work->unk18, (s32)&scale, work->unk24);
-            ex->Hi_ModifyEffModelAbr(work->unk24, 1);
-            ex->Hi_ModifyEffModelRGB(work->unk24, (c >> 5) - 0x80, (c >> 5) - 0x80, (c >> 5) - 0x80);
+            ex->Hi_DrawEffModel(&rot, (VECTOR *)work->unk18, (s32)&scale, work->model24);
+            ex->Hi_ModifyEffModelAbr(work->model24, 1);
+            ex->Hi_ModifyEffModelRGB(work->model24, (c >> 5) - 0x80, (c >> 5) - 0x80, (c >> 5) - 0x80);
             if (frame >= 0x20) {
                 ex->btlfx_clearEffModels();
                 return 1;

@@ -43,7 +43,7 @@ static s32 fx_058_op80PoolTask(s32 mode, Fx058Item *it, Unk800F78A4 *env, Unk801
             scale.vz = it->unk20.pad;
             it->unk20.pad += 0x97;
             it->unk14.vx += 0x800;
-            ex->Hi_DrawEffModel(&it->unk14, &pos, (s32)&scale, work->unk24);
+            ex->Hi_DrawEffModel(&it->unk14, &pos, (s32)&scale, work->model24);
             it->unk14.vx -= 0x800;
             ex->btlfx_drawTrail((u8 *)ex->btlfx_getFileData(entry->file, 2), (s32)&it->unkC, NULL, 0, 0x800, 0x1000, 1,
                               it->unk1C, 0);
@@ -105,7 +105,7 @@ s32 fx_058_op80(s32 mode, Fx058Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
         ex->btlfx_getUnitRot(0x10, (s16 *)&work->unk14);
         work->unk14.vy += 0x800;
         ex->btlfx_initEffModels(fx_058_effModels, 1);
-        work->unk24 = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, 0xA), 1);
+        work->model24 = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, 0xA), 1);
     } else if (work->unk0 == 0) {
         if (work->unk1C < 0x20) {
             work->unk1C++;

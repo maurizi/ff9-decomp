@@ -13,7 +13,7 @@ typedef struct {
     s32 unk1C; /* radius */
     s32 unk20; /* scale */
     s32 unk24; /* shrink done */
-    s32 unk28; /* model */
+    s32 model28; /* model */
 } Fx07eWork80; /* 0x2C */
 
 typedef struct {

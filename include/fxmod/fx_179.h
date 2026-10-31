@@ -27,7 +27,7 @@ typedef struct {
     s32 unk4; /* frame counter */
     SVECTOR unk8; /* orb position */
     SVECTOR unk10; /* caster position */
-    s32 unk18; /* model */
+    s32 model18; /* model */
 } Fx179Work;
 
 typedef struct {

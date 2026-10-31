@@ -93,7 +93,7 @@ s32 fx_138_op80(s32 mode, Fx138Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             r->unk0.vx = D_801E8E68.vx;
             q->unk0.vy = D_801E8E68.vy;
             q->unk0.vz = D_801E8E68.vz;
-            work->unk96[i] = ex->Hi_RegisterTexEffModel((BtlUnit9C8 *)ex->btlfx_getFileData(entry->file, D_801E8480[i]), 0x99, 0x3D40, 0, 0);
+            work->model96[i] = ex->Hi_RegisterTexEffModel((BtlUnit9C8 *)ex->btlfx_getFileData(entry->file, D_801E8480[i]), 0x99, 0x3D40, 0, 0);
         }
         work->unk48.vx = D_801E8E68.vx;
         work->unk48.vy = D_801E8E68.vy;
@@ -104,7 +104,7 @@ s32 fx_138_op80(s32 mode, Fx138Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
         work->unk60.vx = 0x800;
         work->unk60.vy = 0x800;
         work->unk60.vz = 0x800;
-        work->unk9C = ex->Hi_RegisterTexEffModel((BtlUnit9C8 *)ex->btlfx_getFileData(entry->file, 0x1B), 0x9A, 0x3E40, 0, 0x80);
+        work->model9C = ex->Hi_RegisterTexEffModel((BtlUnit9C8 *)ex->btlfx_getFileData(entry->file, 0x1B), 0x9A, 0x3E40, 0, 0x80);
         work->unk88 = 0;
         work->unk8A = sel[3];
         for (i = 0; i < 6; i++) {
@@ -125,9 +125,9 @@ s32 fx_138_op80(s32 mode, Fx138Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             work->unk92 = 4;
         }
         if (work->unk90 != 0 && work->unk92 >= 0) {
-            ex->Hi_DrawEffModel(&work->unk48, &work->unk50, (s32)&work->unk60, work->unk9C);
-            ex->Hi_ModifyEffModelAbr(work->unk9C, 1);
-            ex->Hi_ModifyEffModelRGB(work->unk9C, -0x60, -0x60, -0x60);
+            ex->Hi_DrawEffModel(&work->unk48, &work->unk50, (s32)&work->unk60, work->model9C);
+            ex->Hi_ModifyEffModelAbr(work->model9C, 1);
+            ex->Hi_ModifyEffModelRGB(work->model9C, -0x60, -0x60, -0x60);
             if (--work->unk92 == 0) {
                 work->unk8E = 0x1A;
                 work->unk90 = 0;

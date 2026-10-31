@@ -53,7 +53,7 @@ typedef struct {
     Pool6CEntry *emit0[7];
     Fx0d2Model unk1C[4];
     SVECTOR unkBC[7];
-    u16 unkF4[10]; /* models: 0 ring, 1-2 morph pair, 3-8 slices, 9 */
+    u16 modelF4[10]; /* models: 0 ring, 1-2 morph pair, 3-8 slices, 9 */
 } Fx0d2Work82; /* 0x108 */
 
 extern Fx0d2Keys D_801EF240;
@@ -128,7 +128,7 @@ typedef struct {
     s32 pad30;
     SVECTOR unk34;
     SVECTOR unk3C;
-    u16 unk44[6]; /* slice models */
+    u16 model44[6]; /* slice models */
 } Fx0d2Work81; /* 0x50 */
 
 extern Fx0d2Trail D_801EF1F0;
@@ -164,7 +164,7 @@ typedef struct {
     s32 unk98;
     s32 unk9C; /* path step */
     s32 padA0;
-    u16 unkA4; /* slice model */
+    u16 modelA4; /* slice model */
 } Fx0d2Work80; /* 0xA8 */
 
 /* the summon slot behind env->unk4 */
@@ -208,7 +208,7 @@ typedef struct {
     s16 unk130; /* fade counters */
     s16 unk132;
     s16 unk134;
-    u16 unk136[9]; /* models */
+    u16 model136[9]; /* models */
 } Fx0d2Work83; /* 0x148 */
 
 extern u16 D_801EA44C[3];

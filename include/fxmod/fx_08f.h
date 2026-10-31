@@ -23,14 +23,14 @@ typedef struct {
     s16 unk8[6];
     SVECTOR unk14; /* summon position */
     SVECTOR unk1C;
-    s32 unk24; /* models */
-    s32 unk28;
-    s32 unk2C;
-    s32 unk30;
-    s32 unk34;
-    s32 unk38;
-    s32 unk3C;
-    s32 unk40;
+    s32 model24; /* models */
+    s32 model28;
+    s32 model2C;
+    s32 model30;
+    s32 model34;
+    s32 model38;
+    s32 model3C;
+    s32 model40;
     Pool6CEntry *emit44;
 } Fx08fWork80; /* 0x48 */
 

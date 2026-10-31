@@ -22,7 +22,7 @@ typedef struct {
     SVECTOR unk14; /* caster rotation */
     s32 unk1C; /* particles spawned */
     s32 unk20; /* frame */
-    s32 unk24; /* model */
+    s32 model24; /* model */
 } Fx058Work; /* 0x28 */
 
 extern Unk800F78A4 *fx_058_env;

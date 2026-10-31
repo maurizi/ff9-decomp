@@ -54,26 +54,26 @@ typedef struct {
     Pool6CEntry *emit40[7];
     SVECTOR unk5C; /* target position */
     SVECTOR unk64; /* bone position */
-    s32 unk6C; /* model */
+    s32 model6C; /* model */
     Fx1f3Vec3 unk70; /* model position */
     u8 pad7C[4];
     Fx1f3Vec3 unk80; /* model scale */
     u8 pad8C[4];
     SVECTOR unk90; /* model rotation */
-    s32 unk98; /* models */
-    s32 unk9C;
+    s32 model98; /* models */
+    s32 model9C;
     SVECTOR unkA0;
     SVECTOR unkA8;
     Fx1f3Vec3 unkB0;
     u8 padBC[4];
-    s32 unkC0;
-    s32 unkC4;
+    s32 modelC0;
+    s32 modelC4;
     SVECTOR unkC8;
     SVECTOR unkD0;
     Fx1f3Vec3 unkD8;
     u8 padE4[4];
-    s32 unkE8;
-    s32 unkEC;
+    s32 modelE8;
+    s32 modelEC;
     SVECTOR unkF0;
     Fx1f3Vec3 unkF8;
     u8 pad104[4];

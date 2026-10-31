@@ -62,16 +62,16 @@ typedef struct {
     u8 pad48[0x54 - 0x48];
     Pool6CEntry *emit54;
     Pool6CEntry *emit58;
-    s32 unk5C; /* model */
+    s32 model5C; /* model */
     Fx195Vec3 unk60; /* model position */
     Fx195Vec3 unk6C; /* model scale */
     SVECTOR unk78; /* model rotation */
-    s32 unk80; /* models */
-    s32 unk84;
-    s32 unk88;
-    s32 unk8C;
-    s32 unk90;
-    s32 unk94;
+    s32 model80; /* models */
+    s32 model84;
+    s32 model88;
+    s32 model8C;
+    s32 model90;
+    s32 model94;
 } Fx195Work80; /* 0x98 */
 
 extern BtlModel fx_195_effModels[];

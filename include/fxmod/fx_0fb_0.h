@@ -58,17 +58,17 @@ typedef struct {
     SVECTOR unk54;
     SVECTOR unk5C; /* summon position */
     SVECTOR unk64;
-    s32 unk6C[27]; /* rock models */
+    s32 model6C[27]; /* rock models */
     Fx0fbVec3 unkD8;
     Fx0fbVec3 unkE4;
     SVECTOR unkF0;
     Fx0fbVec3 unkF8;
     Fx0fbVec3 unk104;
     SVECTOR unk110;
-    s32 unk118; /* models */
-    s32 unk11C;
-    s32 unk120;
-    s32 unk124;
+    s32 model118; /* models */
+    s32 model11C;
+    s32 model120;
+    s32 model124;
 } Fx0fb0Work80; /* 0x128 */
 
 typedef struct {

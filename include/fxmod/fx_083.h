@@ -12,14 +12,14 @@ typedef struct {
 
 typedef struct {
     s32 unk0[10]; /* countdowns */
-    s32 unk28[4]; /* ring models */
+    s32 model28[4]; /* ring models */
     SVECTOR unk38[4]; /* ring rotations */
     VECTOR unk58[4]; /* ring positions */
     Fx083Vec3 unk98; /* ring scale */
     s32 unkA4;
     s32 unkA8; /* ring radius offset */
     s32 unkAC; /* ring height */
-    s32 unkB0[5]; /* pillar models */
+    s32 modelB0[5]; /* pillar models */
     s32 unkC4[5]; /* pillar active */
     s32 unkD8[5]; /* pillar fade */
     VECTOR unkEC[5]; /* pillar positions */

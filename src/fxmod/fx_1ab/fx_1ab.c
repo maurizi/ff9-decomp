@@ -37,8 +37,8 @@ s32 fx_1ab_op80(s32 mode, Fx1abWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
         work->unk60.vx = 0;
         work->unk60.vy = 0;
         work->unk60.vz = 0;
-        work->unk84 = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, 2), 1);
-        work->unk86 = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, 1), 1);
+        work->model84 = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, 2), 1);
+        work->model86 = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, 1), 1);
         work->unk80 = -1;
         work->unk82 = -1;
     } else {
@@ -66,9 +66,9 @@ s32 fx_1ab_op80(s32 mode, Fx1abWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
         }
         if (frame >= 0xF && frame < 0x3F) {
             t = frame - 0xF;
-            ex->Hi_SetEffModelSlice(work->unk84, work->unk14.vy);
-            ex->Hi_DrawSliceEffModel(&work->unkC, &work->unk14, (s32)&work->unk24, work->unk84);
-            ex->Hi_DrawEffModel(&work->unk38, &work->unk40, (s32)&work->unk50, work->unk86);
+            ex->Hi_SetEffModelSlice(work->model84, work->unk14.vy);
+            ex->Hi_DrawSliceEffModel(&work->unkC, &work->unk14, (s32)&work->unk24, work->model84);
+            ex->Hi_DrawEffModel(&work->unk38, &work->unk40, (s32)&work->unk50, work->model86);
             if (work->unk80 >= 0 || work->unk82 >= 0) {
                 if (work->unk80 >= 0) {
                     work->unk34 = fxm_lerpRatio(-0x80, 0, 3 - work->unk80, 3);
@@ -78,8 +78,8 @@ s32 fx_1ab_op80(s32 mode, Fx1abWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
                     work->unk34 = fxm_lerpRatio(0, -0x80, 0x10 - work->unk82, 0x10);
                     work->unk82--;
                 }
-                ex->Hi_ModifyEffModelRGB(work->unk84, work->unk34, work->unk34, work->unk34);
-                ex->Hi_ModifyEffModelRGB(work->unk86, work->unk34, work->unk34, work->unk34);
+                ex->Hi_ModifyEffModelRGB(work->model84, work->unk34, work->unk34, work->unk34);
+                ex->Hi_ModifyEffModelRGB(work->model86, work->unk34, work->unk34, work->unk34);
             }
             if (t < 8) {
                 work->unk14.vy -= 0x145;

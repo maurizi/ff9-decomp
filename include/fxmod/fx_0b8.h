@@ -22,12 +22,12 @@ static s32 fxm_easeLerp(s32 curve, s32 n, s32 t, s32 from, s32 to);
 
 typedef struct {
     u8 unk0[0x28]; /* flags and timers */
-    s32 unk28; /* model */
+    s32 model28; /* model */
     SVECTOR unk2C; /* rotation */
     VECTOR unk34; /* scale */
     VECTOR unk44; /* position */
-    s32 unk54; /* models */
-    s32 unk58;
+    s32 model54; /* models */
+    s32 model58;
     SVECTOR unk5C;
     SVECTOR unk64;
     VECTOR unk6C;
@@ -37,33 +37,33 @@ typedef struct {
     VECTOR unkAC;
     SVECTOR unkBC;
     SVECTOR unkC4;
-    s32 unkCC; /* models */
-    s32 unkD0;
-    s32 unkD4;
+    s32 modelCC; /* models */
+    s32 modelD0;
+    s32 modelD4;
     VECTOR unkD8;
-    s32 unkE8; /* models */
-    s32 unkEC;
-    s32 unkF0;
-    s32 unkF4;
-    s32 unkF8;
+    s32 modelE8; /* models */
+    s32 modelEC;
+    s32 modelF0;
+    s32 modelF4;
+    s32 modelF8;
     VECTOR unkFC;
     VECTOR unk10C;
     SVECTOR unk11C;
     s32 unk124;
-    s32 unk128; /* models */
-    s32 unk12C;
-    s32 unk130;
-    s32 unk134;
-    s32 unk138;
+    s32 model128; /* models */
+    s32 model12C;
+    s32 model130;
+    s32 model134;
+    s32 model138;
     VECTOR unk13C;
     VECTOR unk14C;
     SVECTOR unk15C;
     SVECTOR unk164;
-    s32 unk16C; /* models */
-    s32 unk170;
+    s32 model16C; /* models */
+    s32 model170;
     SVECTOR unk174;
-    s32 unk17C;
-    s32 unk180;
+    s32 model17C;
+    s32 model180;
     Pool6CEntry *emit184;
     SVECTOR unk188;
     Pool6CEntry *emit190;

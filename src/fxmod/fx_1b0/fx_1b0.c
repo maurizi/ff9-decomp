@@ -315,14 +315,14 @@ s32 fx_1b0_op80(s32 mode, Fx1b0Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
                 ex->btlfx_moveSummonToHeap(0x64);
                 ex->btlfx_initEffModels(fx_1b0_effModels, 0xA);
                 for (j = 0; j < 8; j++) {
-                    work->unk3C[j] = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, D_801E8CEC[j]), 0);
+                    work->model3C[j] = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, D_801E8CEC[j]), 0);
                 }
             }
             if (frame >= 0x3C) {
                 work->unk14.vy += t >> 2;
                 for (i = 0; i < 8; i++) {
-                    ex->Hi_DrawEffModel(&work->unk14, (VECTOR *)work->unk8, (s32)work->unk1C, work->unk3C[i]);
-                    ex->Hi_ModifyEffModelRGB(work->unk3C[i], work->unk38.r - 0x80, work->unk38.g - 0x80, work->unk38.b);
+                    ex->Hi_DrawEffModel(&work->unk14, (VECTOR *)work->unk8, (s32)work->unk1C, work->model3C[i]);
+                    ex->Hi_ModifyEffModelRGB(work->model3C[i], work->unk38.r - 0x80, work->unk38.g - 0x80, work->unk38.b);
                 }
             }
             if (frame == 0x10) {
@@ -366,7 +366,7 @@ s32 fx_1b0_op80(s32 mode, Fx1b0Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
                 buf = ((Fx1b0Summon *)env->loader)->unk54->unk50 + 0x19000;
                 func_801E7704((Fx1b0Split *)buf, (SVECTOR (*)[3])(buf + 0xDB88));
                 for (i = 0; i < 8; i++) {
-                    fxm_splitModelAdd(work->unk3C[i]);
+                    fxm_splitModelAdd(work->model3C[i]);
                 }
                 ex->btlfx_initParticleSystem();
             }
@@ -380,7 +380,7 @@ s32 fx_1b0_op80(s32 mode, Fx1b0Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             }
             work->unk14.vy += 0x18;
             for (i = 0; i < 8; i++) {
-                ex->Hi_DrawEffModel(&work->unk14, (VECTOR *)work->unk8, (s32)work->unk1C, work->unk3C[i]);
+                ex->Hi_DrawEffModel(&work->unk14, (VECTOR *)work->unk8, (s32)work->unk1C, work->model3C[i]);
             }
             func_801E7B04();
             if (frame == 0) {

@@ -11,8 +11,8 @@ typedef struct {
     SVECTOR unk10; /* unk8 raised by 0x180 */
     s32 unk18[3]; /* model position (VECTOR without its pad word) */
     SVECTOR unk24; /* model rotation */
-    s32 unk2C; /* model */
-    s32 unk30; /* model */
+    s32 model2C; /* model */
+    s32 model30; /* model */
 } Fx07fWork;
 
 extern Unk800F78A4 *fx_07f_env;

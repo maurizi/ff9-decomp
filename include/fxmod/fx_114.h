@@ -14,7 +14,7 @@ typedef struct {
     SVECTOR unk34; /* summon bone position */
     SVECTOR unk3C;
     s16 unk44; /* fade-in countdown */
-    u16 unk46; /* model */
+    u16 model46; /* model */
 } Fx114Work81; /* 0x48 */
 
 /* View of Unk800F78A44 up to the word fx_114 reads (ovl_0b.h has it as padding). */
@@ -36,8 +36,8 @@ typedef struct {
     s16 unk60; /* fade-in countdown */
     s16 unk62; /* fade-out countdown */
     u16 unk64; /* frame */
-    u16 unk66; /* model */
-    u16 unk68; /* model */
+    u16 model66; /* model */
+    u16 model68; /* model */
 } Fx114Work82; /* 0x6C */
 
 
@@ -210,8 +210,8 @@ typedef struct {
     s16 unk116;
     u16 unk118[24]; /* models */
     u16 unk148;
-    u16 unk14A;
-    u16 unk14C;
+    u16 model14A;
+    u16 model14C;
 } Fx114Work83; /* 0x150 */
 
 typedef struct {
@@ -319,11 +319,11 @@ typedef struct {
     s16 unk172;
     s16 unk174;
     s16 unk176;
-    u16 unk178;
-    u16 unk17A;
+    u16 model178;
+    u16 model17A;
     u16 unk17C;
-    u16 unk17E;
-    u16 unk180;
+    u16 model17E;
+    u16 model180;
     u8 pad182[0x198 - 0x182];
 } Fx114Work80; /* 0x198 */
 

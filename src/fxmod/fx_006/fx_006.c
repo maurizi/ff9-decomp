@@ -15,10 +15,10 @@ s32 fx_006_op80(s32 mode, Fx006Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
     } else if (mode == 1) {
         fx_006_env = env;
         ex->btlfx_initEffModels(fx_006_effModels, 4);
-        work->unk8 = (s16)ex->Hi_RegisterTexEffModel((BtlUnit9C8 *)ex->btlfx_getFileData(entry->file, 3), 0xBA, 0x3DC0, 0, 0);
-        work->unkC = (s16)ex->Hi_RegisterTexEffModel((BtlUnit9C8 *)ex->btlfx_getFileData(entry->file, 4), 0xBA, 0x3DC0, 0, 0);
-        work->unk10 = (s16)ex->Hi_RegisterTexEffModel((BtlUnit9C8 *)ex->btlfx_getFileData(entry->file, 5), 0xBA, 0x3DC0, 0, 0);
-        work->unk4 =
+        work->model8 = (s16)ex->Hi_RegisterTexEffModel((BtlUnit9C8 *)ex->btlfx_getFileData(entry->file, 3), 0xBA, 0x3DC0, 0, 0);
+        work->modelC = (s16)ex->Hi_RegisterTexEffModel((BtlUnit9C8 *)ex->btlfx_getFileData(entry->file, 4), 0xBA, 0x3DC0, 0, 0);
+        work->model10 = (s16)ex->Hi_RegisterTexEffModel((BtlUnit9C8 *)ex->btlfx_getFileData(entry->file, 5), 0xBA, 0x3DC0, 0, 0);
+        work->model4 =
             (s16)ex->Hi_RegisterTexEffModel((BtlUnit9C8 *)ex->btlfx_getFileData(entry->file, 2), 0xB8, 0x3D40, 0x80, 0x80);
         work->unk0 = 0;
         work->unk24 = 0;
@@ -51,10 +51,10 @@ s32 fx_006_op80(s32 mode, Fx006Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
             pos.vx = work->unk14.vx;
             pos.vy = work->unk14.vy;
             pos.vz = work->unk14.vz;
-            ex->Hi_SetEffModelOffset(work->unk8, 2);
-            ex->Hi_DrawEffModel(&rot, &pos, (s32)&scale, work->unk8);
-            ex->Hi_ModifyEffModelAbr(work->unk8, 0);
-            ex->Hi_ModifyEffModelRGB(work->unk8, 0, 0, 0);
+            ex->Hi_SetEffModelOffset(work->model8, 2);
+            ex->Hi_DrawEffModel(&rot, &pos, (s32)&scale, work->model8);
+            ex->Hi_ModifyEffModelAbr(work->model8, 0);
+            ex->Hi_ModifyEffModelRGB(work->model8, 0, 0, 0);
             if (frame >= 4) {
                 work->unk0 = 2;
                 entry->frame = -1;
@@ -71,13 +71,13 @@ s32 fx_006_op80(s32 mode, Fx006Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
             pos.vy = work->unk14.vy;
             pos.vz = work->unk14.vz;
             t = frame << 8;
-            ex->Hi_SetEffModelOffset(work->unk8, 2);
-            ex->Hi_DrawEffModel(&rot, &pos, (s32)&scale, work->unk8);
-            ex->Hi_ModifyEffModelAbr(work->unk8, 0);
-            ex->Hi_ModifyEffModelRGB(work->unk8, 0, 0, 0);
-            ex->Hi_DrawEffModel(&rot, &pos, (s32)&scale, work->unk4);
-            ex->Hi_ModifyEffModelAbr(work->unk4, 1);
-            ex->Hi_ModifyEffModelRGB(work->unk4, (ex->math_sin(t >> 1) >> 5) - 0x80, (ex->math_sin(t >> 1) >> 5) - 0x80,
+            ex->Hi_SetEffModelOffset(work->model8, 2);
+            ex->Hi_DrawEffModel(&rot, &pos, (s32)&scale, work->model8);
+            ex->Hi_ModifyEffModelAbr(work->model8, 0);
+            ex->Hi_ModifyEffModelRGB(work->model8, 0, 0, 0);
+            ex->Hi_DrawEffModel(&rot, &pos, (s32)&scale, work->model4);
+            ex->Hi_ModifyEffModelAbr(work->model4, 1);
+            ex->Hi_ModifyEffModelRGB(work->model4, (ex->math_sin(t >> 1) >> 5) - 0x80, (ex->math_sin(t >> 1) >> 5) - 0x80,
                                      (ex->math_sin(t >> 1) >> 5) - 0x80);
             ex->btlfx_drawScrollMove(((0x1000 - ex->math_cos(t >> 1)) >> 9) + frame * 5, 0x240, 0x180, 0x40, 0x80, 0x240, 0x100);
             if (frame >= 0x10) {
@@ -118,11 +118,11 @@ s32 fx_006_op80(s32 mode, Fx006Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
                 s = 0x1000 - ((frame - 2) << 12) / 14;
             }
             if (s > 0x1000) {
-                ex->Hi_DrawMorphEffModel(&rot, &pos, (s32)&scale, work->unk8, work->unkC, s - 0x1000);
-                ex->Hi_ModifyEffModelRGB(work->unk8, -0x40, -0x40, -0x40);
+                ex->Hi_DrawMorphEffModel(&rot, &pos, (s32)&scale, work->model8, work->modelC, s - 0x1000);
+                ex->Hi_ModifyEffModelRGB(work->model8, -0x40, -0x40, -0x40);
             } else {
-                ex->Hi_DrawMorphEffModel(&rot, &pos, (s32)&scale, work->unkC, work->unk10, s);
-                ex->Hi_ModifyEffModelRGB(work->unkC, ((s - 0x800) >> 5) - 0x80, ((s - 0x800) >> 5) - 0x80,
+                ex->Hi_DrawMorphEffModel(&rot, &pos, (s32)&scale, work->modelC, work->model10, s);
+                ex->Hi_ModifyEffModelRGB(work->modelC, ((s - 0x800) >> 5) - 0x80, ((s - 0x800) >> 5) - 0x80,
                                          ((s - 0x800) >> 5) - 0x80);
             }
             if (frame == 1) {

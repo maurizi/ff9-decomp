@@ -15,7 +15,7 @@ typedef struct {
     SVECTOR unkB4; /* target position */
     s32 unkBC; /* fade-in countdown */
     s32 unkC0; /* fade-out countdown */
-    u16 unkC4[3]; /* models */
+    u16 modelC4[3]; /* models */
 } Fx0ffWork;
 
 typedef struct {

@@ -54,7 +54,7 @@ typedef struct {
     Pool6CEntry *emit30;
     Pool6CEntry *emit34;
     u8 pad38[0x60 - 0x38];
-    s32 unk60; /* models */
+    s32 model60; /* models */
     s32 unk64;
     s32 unk68; /* tint */
 } Fx0d3Work80; /* 0x6C */
@@ -89,9 +89,9 @@ typedef struct {
     u8 pad48[4];
     Pool6CEntry *emit4C;
     Pool6CEntry *emit50;
-    s32 unk54; /* models */
-    s32 unk58;
-    s32 unk5C;
+    s32 model54; /* models */
+    s32 model58;
+    s32 model5C;
     s32 unk60;
 } Fx0d3Work81; /* 0x64 */
 

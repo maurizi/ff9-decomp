@@ -40,9 +40,9 @@ typedef struct {
     SVECTOR unk8; /* position */
     SVECTOR unk10;
     Pool6CEntry *emit18;
-    s32 unk1C[10]; /* rock models */
-    s32 unk44; /* model */
-    s32 unk48; /* model */
+    s32 model1C[10]; /* rock models */
+    s32 model44; /* model */
+    s32 model48; /* model */
 } Fx186Work80; /* 0x4C */
 
 extern s16 D_801E9B84[]; /* StoreImage buffer */

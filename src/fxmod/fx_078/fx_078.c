@@ -25,7 +25,7 @@ s32 fx_078_op80(s32 mode, Fx078Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
         work->unk30.vy = 0x1000;
         work->unk30.vz = 0x1000;
         for (i = 0; i < 10; i++) {
-            work->unk4C[i] = ex->Hi_RegisterTexEffModel((BtlUnit9C8 *)ex->btlfx_getFileData(entry->file, D_801E7D18[i]),
+            work->model4C[i] = ex->Hi_RegisterTexEffModel((BtlUnit9C8 *)ex->btlfx_getFileData(entry->file, D_801E7D18[i]),
                                                         0x97, 0x3D40, 0, 0);
         }
         fxm_rotPosTrackInit(&D_801E8EAC, (u16 *)ex->btlfx_getFileData(entry->file, 0xD));
@@ -64,8 +64,8 @@ s32 fx_078_op80(s32 mode, Fx078Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
             work->unk20.vz += work->unk10.vz;
             fxm_vecTrackGet(&D_801E8EB4, frame, &work->unk30);
             k = frame % 10;
-            ex->Hi_DrawEffModel(&work->unk18, &work->unk20, (s32)&work->unk30, work->unk4C[k]);
-            ex->Hi_ModifyEffModelAbr(work->unk4C[k], 1);
+            ex->Hi_DrawEffModel(&work->unk18, &work->unk20, (s32)&work->unk30, work->model4C[k]);
+            ex->Hi_ModifyEffModelAbr(work->model4C[k], 1);
         }
         fxm_posTrackGet(&D_801E8EBC, frame, &work->unk44);
         work->unk44.vx += work->unk10.vx;

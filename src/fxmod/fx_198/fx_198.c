@@ -27,7 +27,7 @@ s32 fx_198_op80(s32 mode, Fx198Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
         ex->btlfx_getUnitPos(0x10, (s16 *)&work->unkC);
         ex->btlfx_initEffModels(fx_198_effModels, 5);
         key = (Fx198Key *)ex->btlfx_getFileData(entry->file, 0x15);
-        work->unk1C = (s16)ex->Hi_RegisterTexEffModel((BtlUnit9C8 *)key, 0x137, 0xFFFF, 0, 0x80);
+        work->model1C = (s16)ex->Hi_RegisterTexEffModel((BtlUnit9C8 *)key, 0x137, 0xFFFF, 0, 0x80);
         work->unk14 = 0;
         work->unk16 = 0;
         work->unk18 = 0;
@@ -52,9 +52,9 @@ s32 fx_198_op80(s32 mode, Fx198Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
                 } else {
                     b = ex->math_cos(((frame - 0x18) << 10) / 6);
                 }
-                ex->Hi_SetEffModelSlice(work->unk1C, 0);
-                ex->Hi_DrawSliceEffModel(&rot, &pos, (s32)&scale, work->unk1C);
-                ex->Hi_ModifyEffModelRGB(work->unk1C, (b >> 5) - 0x80, (b >> 5) - 0x80, (b >> 5) - 0x80);
+                ex->Hi_SetEffModelSlice(work->model1C, 0);
+                ex->Hi_DrawSliceEffModel(&rot, &pos, (s32)&scale, work->model1C);
+                ex->Hi_ModifyEffModelRGB(work->model1C, (b >> 5) - 0x80, (b >> 5) - 0x80, (b >> 5) - 0x80);
                 r.vx = 0;
                 r.vy = 0;
                 z = work->unk4;

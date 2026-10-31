@@ -41,7 +41,7 @@ typedef struct {
     s32 unk60; /* fade countdown */
     s32 unk64;
     s32 unk68;
-    u16 unk6C; /* model */
+    u16 model6C; /* model */
 } Fx1b2Work80; /* 0x70 */
 
 typedef struct {
@@ -60,7 +60,7 @@ typedef struct {
     s32 unk28; /* brightness */
     s32 unk2C; /* fade-in countdown */
     s32 unk30; /* fade-out countdown */
-    u16 unk34; /* model */
+    u16 model34; /* model */
 } Fx1b2Work82; /* 0x38 */
 
 extern Unk800F78A4 *fx_1b2_env;

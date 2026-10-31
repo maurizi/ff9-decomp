@@ -38,7 +38,7 @@ s32 fx_0f2_op80(s32 mode, Fx0f2Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
         work->unk20.vx = 0xAAA;
         work->unk20.vy = 0xAAA;
         work->unk20.vz = 0xAAA;
-        work->unk58 = ex->Hi_RegisterTexEffModel((BtlUnit9C8 *)ex->btlfx_getFileData(entry->file, 2), 0x11A, 0, 0, 0x80);
+        work->model58 = ex->Hi_RegisterTexEffModel((BtlUnit9C8 *)ex->btlfx_getFileData(entry->file, 2), 0x11A, 0, 0, 0x80);
         work->unk40.vx = work->unk10.vx;
         work->unk40.vy = work->unk10.vy;
         work->unk40.vz = work->unk10.vz;
@@ -61,8 +61,8 @@ s32 fx_0f2_op80(s32 mode, Fx0f2Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
         }
         if (frame >= 0x11 && frame < 0x25) {
             t = frame - 0x11;
-            ex->Hi_DrawEffModel(&work->unk8, &work->unk10, (s32)&work->unk20, work->unk58);
-            ex->Hi_ModifyEffModelAbr(work->unk58, 1);
+            ex->Hi_DrawEffModel(&work->unk8, &work->unk10, (s32)&work->unk20, work->model58);
+            ex->Hi_ModifyEffModelAbr(work->model58, 1);
             if (work->unk54 >= 0 || work->unk56 >= 0) {
                 if (work->unk54 >= 0) {
                     work->unk30 = fxm_lerpRatio(-0x80, 0, 3 - work->unk54, 3);
@@ -72,7 +72,7 @@ s32 fx_0f2_op80(s32 mode, Fx0f2Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
                     work->unk30 = fxm_lerpRatio(0, -0xC0, 0x10 - work->unk56, 0x10);
                     work->unk56--;
                 }
-                ex->Hi_ModifyEffModelRGB(work->unk58, work->unk30, work->unk30, work->unk30);
+                ex->Hi_ModifyEffModelRGB(work->model58, work->unk30, work->unk30, work->unk30);
             }
             work->unk10.vz += work->unk34;
             work->unk20.vz += 0x100;

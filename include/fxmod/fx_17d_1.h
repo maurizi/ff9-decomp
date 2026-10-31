@@ -41,7 +41,7 @@ typedef struct {
     SVECTOR unk68; /* summon rotation */
     Pool6CEntry *emit70;
     Pool6CEntry *emit74;
-    s32 unk78; /* model */
+    s32 model78; /* model */
 } Fx17d1Work80; /* 0x7C */
 
 extern BtlModel fx_17d_1_effModels[];

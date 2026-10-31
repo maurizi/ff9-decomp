@@ -25,8 +25,8 @@ s32 fx_17d_6_op80(s32 mode, Fx17d6Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
         fx_17d_6_env = env;
         ex->btlfx_initParticleSystem();
         ex->btlfx_initEffModels(fx_17d_6_effModels, 3);
-        work->unk7C = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, 0x8B), 1);
-        work->unk80 = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, 0x8D), 2);
+        work->model7C = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, 0x8B), 1);
+        work->model80 = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, 0x8D), 2);
         ex->Hi_SetSummonMotion(SUMMON(env)->unk54->unk1A8, SUMMON(env)->unk60);
         work->unk70.vx = 0x100;
         work->unk70.vy = 0x780;
@@ -95,9 +95,9 @@ s32 fx_17d_6_op80(s32 mode, Fx17d6Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
                 BTLFX_COPY_SVEC(&ang, &work->unk44);
                 ang.vy = ang.vy * (n1 + 2) / 3;
                 if (n1 != 2) {
-                    ex->Hi_DrawEffModel(&ang, (VECTOR *)&work->unk38, (s32)&sc, work->unk7C);
+                    ex->Hi_DrawEffModel(&ang, (VECTOR *)&work->unk38, (s32)&sc, work->model7C);
                 } else {
-                    ex->Hi_DrawEffModel(&ang, (VECTOR *)&work->unk38, (s32)&sc, work->unk80);
+                    ex->Hi_DrawEffModel(&ang, (VECTOR *)&work->unk38, (s32)&sc, work->model80);
                 }
             }
             ex->btlfx_drawScrollMove(0x3E8 - frame * 6, 0x280, 0x100, 0x20, 0x80, 0x2A0, 0x100);
@@ -213,12 +213,12 @@ s32 fx_17d_6_op80(s32 mode, Fx17d6Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
                 BTLFX_COPY_SVEC(&ang, &work->unk44);
                 ang.vy = ang.vy * (i + 2) / 3;
                 if (i != 2) {
-                    ex->Hi_DrawEffModel(&ang, (VECTOR *)&work->unk38, (s32)&sc, work->unk7C);
-                    ex->Hi_ModifyEffModelRGB(work->unk7C, ((ex->math_cos(u >> 2) * 2 / 3) >> 5) - 0x80,
+                    ex->Hi_DrawEffModel(&ang, (VECTOR *)&work->unk38, (s32)&sc, work->model7C);
+                    ex->Hi_ModifyEffModelRGB(work->model7C, ((ex->math_cos(u >> 2) * 2 / 3) >> 5) - 0x80,
                                              ((ex->math_cos(u >> 2) * 2 / 3) >> 5) - 0x80,
                                              ((ex->math_cos(u >> 2) * 2 / 3) >> 5) - 0x80);
                 } else {
-                    ex->Hi_DrawEffModel(&ang, (VECTOR *)&work->unk38, (s32)&sc, work->unk80);
+                    ex->Hi_DrawEffModel(&ang, (VECTOR *)&work->unk38, (s32)&sc, work->model80);
                 }
             }
             env->otZ = 0x9B;

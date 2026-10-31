@@ -102,16 +102,16 @@ typedef struct {
     Pool6CEntry *emit124;
     SVECTOR unk128;
     SVECTOR unk130;
-    s32 unk138[8]; /* models */
+    s32 model138[8]; /* models */
     s32 unk158[3];
     s32 pad164;
     SVECTOR unk168;
     s32 unk170[3];
     s32 pad17C;
-    s32 unk180;
-    s32 unk184;
-    s32 unk188;
-    s32 unk18C;
+    s32 model180;
+    s32 model184;
+    s32 model188;
+    s32 model18C;
     SVECTOR unk190;
     s32 unk198[3];
     s32 pad1A4;

@@ -29,7 +29,7 @@ s32 fx_112_op80(s32 mode, Fx112Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
     } else if (mode == 1) {
         fx_112_env = env;
         ex->btlfx_initEffModels(fx_112_effModels, 1);
-        work->unk20 = ex->Hi_RegisterTexEffModel((BtlUnit9C8 *)ex->btlfx_getFileData(entry->file, 1), 0x137, 0xFFFF, 0, 0);
+        work->model20 = ex->Hi_RegisterTexEffModel((BtlUnit9C8 *)ex->btlfx_getFileData(entry->file, 1), 0x137, 0xFFFF, 0, 0);
         ex->btlfx_getUnitPos(0, (s16 *)&work->unk4);
         ex->btlfx_getUnitRot(0, (s16 *)&work->unkC);
         ex->btlfx_getUnitScale(0, (VECTOR *)&work->unk14);
@@ -70,7 +70,7 @@ s32 fx_112_op80(s32 mode, Fx112Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
             u.s0.scale.vx = ((ex->math_sin(t * 5 + 0x400) / 3 + 0x1400) * (0x1000 - (t >> 1))) >> 12;
             u.s0.scale.vy = ((ex->math_sin(t * 5) / 3 + 0x1400) * (0x1000 - (t >> 1))) >> 12;
             u.s0.scale.vz = ((ex->math_cos(t * 6) / 3 + 0x1400) * (0x1000 - (t >> 1))) >> 12;
-            ex->Hi_DrawEffModel(&u.s0.rot, &u.s0.pos, (s32)&u.s0.scale, work->unk20);
+            ex->Hi_DrawEffModel(&u.s0.rot, &u.s0.pos, (s32)&u.s0.scale, work->model20);
         }
         if (frame >= 0x20) {
             work->unk0 = 1;
@@ -90,7 +90,7 @@ s32 fx_112_op80(s32 mode, Fx112Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
         u.s1.tr.vx = u.s1.v.vx;
         u.s1.tr.vy = u.s1.v.vy;
         u.s1.tr.vz = u.s1.v.vz;
-        ex->Hi_DrawEffModel(&u.s1.rot, &u.s1.tr, (s32)&u.s1.scale, work->unk20);
+        ex->Hi_DrawEffModel(&u.s1.rot, &u.s1.tr, (s32)&u.s1.scale, work->model20);
         if (frame >= 9) {
             work->unk0 = 2;
             entry->frame = -1;

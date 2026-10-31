@@ -10,7 +10,7 @@ typedef struct {
     SVECTOR unk8; /* caster position on the ground */
     SVECTOR unk10; /* caster body position */
     s32 unk18; /* model scale */
-    s32 unk1C; /* model */
+    s32 model1C; /* model */
     SVECTOR unk20; /* model rotation */
     s32 unk28[3]; /* model scale (VECTOR without its pad word) */
     s32 unk34[3]; /* model position (VECTOR without its pad word) */

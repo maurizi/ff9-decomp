@@ -6,10 +6,10 @@
 
 typedef struct {
     s32 unk0; /* state */
-    s32 unk4; /* models */
+    s32 model4; /* models */
     s32 unk8;
-    s32 unkC;
-    s32 unk10;
+    s32 modelC;
+    s32 model10;
     SVECTOR unk14; /* in front of the target */
     SVECTOR unk1C;
     SVECTOR unk24;

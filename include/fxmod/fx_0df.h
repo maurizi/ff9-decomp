@@ -85,10 +85,10 @@ typedef struct {
     s32 unk14; /* caster body position, words */
     s32 unk18;
     s32 unk1C;
-    s32 unk20; /* models */
-    s32 unk24;
-    s32 unk28;
-    s32 unk2C;
+    s32 model20; /* models */
+    s32 model24;
+    s32 model28;
+    s32 model2C;
     s32 pad30;
     s32 unk34; /* scroll */
     s32 unk38; /* yaw offset */

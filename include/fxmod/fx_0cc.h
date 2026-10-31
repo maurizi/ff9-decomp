@@ -15,7 +15,7 @@ typedef struct {
     s32 unk0; /* state */
     SVECTOR unk4; /* position: env->targets->centerX, 0, centerZ */
     s32 unkC; /* particles spawned */
-    s32 unk10; /* model */
+    s32 model10; /* model */
 } Fx0ccWork;
 
 extern Unk800F78A4 *fx_0cc_env;

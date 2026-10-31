@@ -112,7 +112,7 @@ typedef struct {
     s16 unk130; /* fade counters */
     s16 unk132;
     s16 unk134;
-    u16 unk136[9]; /* models */
+    u16 model136[9]; /* models */
 } Fx1fcWork83; /* 0x148 */
 
 extern u16 D_801E8CC0[3];

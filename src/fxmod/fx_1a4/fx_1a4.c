@@ -121,9 +121,9 @@ s32 fx_1a4_op81(s32 mode, Fx1a4Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
         work->unk20.vx = work->unk44.vx;
         work->unk20.vy = work->unk44.vy;
         work->unk20.vz = work->unk44.vz;
-        work->unk54 = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, 7), 1);
-        work->unk56 = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, 0xE), 1);
-        work->unk58 = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, 0xF), 1);
+        work->model54 = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, 7), 1);
+        work->model56 = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, 0xE), 1);
+        work->model58 = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, 0xF), 1);
         work->unk52 = -1;
         work->unk4E = 8;
         work->unk4C = 0;
@@ -146,14 +146,14 @@ s32 fx_1a4_op81(s32 mode, Fx1a4Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
             break;
         }
         if (frame >= 0 && frame < 0x42) {
-            ex->Hi_DrawEffModel(&work->unk8, &work->unk20, (s32)&work->unk30, work->unk54);
-            ex->Hi_DrawEffModel(&work->unk10, &work->unk20, (s32)&work->unk30, work->unk56);
-            ex->Hi_DrawEffModel(&work->unk18, &work->unk20, (s32)&work->unk30, work->unk58);
+            ex->Hi_DrawEffModel(&work->unk8, &work->unk20, (s32)&work->unk30, work->model54);
+            ex->Hi_DrawEffModel(&work->unk10, &work->unk20, (s32)&work->unk30, work->model56);
+            ex->Hi_DrawEffModel(&work->unk18, &work->unk20, (s32)&work->unk30, work->model58);
             if (work->unk52 >= 0) {
                 work->unk40 = fxm_lerpRatio(0, -0x80, 0x15 - work->unk52, 0x15);
-                ex->Hi_ModifyEffModelRGB(work->unk54, work->unk40, work->unk40, work->unk40);
-                ex->Hi_ModifyEffModelRGB(work->unk56, work->unk40, work->unk40, work->unk40);
-                ex->Hi_ModifyEffModelRGB(work->unk58, work->unk40, work->unk40, work->unk40);
+                ex->Hi_ModifyEffModelRGB(work->model54, work->unk40, work->unk40, work->unk40);
+                ex->Hi_ModifyEffModelRGB(work->model56, work->unk40, work->unk40, work->unk40);
+                ex->Hi_ModifyEffModelRGB(work->model58, work->unk40, work->unk40, work->unk40);
                 work->unk52--;
             }
             work->unk8.vy += 0x80;

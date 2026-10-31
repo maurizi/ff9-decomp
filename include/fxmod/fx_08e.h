@@ -21,8 +21,8 @@ typedef struct {
     SVECTOR unk58; /* caster position */
     s32 unk60; /* fade-in countdown */
     s32 unk64; /* fade-out countdown */
-    u16 unk68; /* models */
-    u16 unk6A;
+    u16 model68; /* models */
+    u16 model6A;
 } Fx08eWork; /* 0x6C */
 
 extern Unk800F78A4 *fx_08e_env;

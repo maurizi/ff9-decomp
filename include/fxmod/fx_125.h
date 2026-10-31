@@ -10,8 +10,8 @@ typedef struct {
     SVECTOR unkC;
     SVECTOR unk14; /* target body position */
     SVECTOR unk1C;
-    s32 unk24; /* models */
-    s32 unk28[2];
+    s32 model24; /* models */
+    s32 model28[2];
 } Fx125Work;
 
 extern Unk800F78A4 *fx_125_env;

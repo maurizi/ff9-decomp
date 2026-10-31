@@ -43,8 +43,8 @@ s32 fx_1f1_op80(s32 mode, s32 *work, Unk800F78A4 *env, Unk80100C78Entry *entry, 
         }
         for (i = 0; i < env->targets->targetCount; i++) {
             u = &D_801E7F14[i];
-            u->unk18 = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, 2), 1);
-            u->unk1C = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, 4), 1);
+            u->model18 = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, 2), 1);
+            u->model1C = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, 4), 1);
             ex->btlfx_getUnitPos(i, (s16 *)&D_801E7F14[i].unkC);
             setVector(&D_801E7F14[i].unk20, 0, 0, 0);
             setVector(&D_801E7F14[i].unk28, 0, 0, 0);
@@ -85,12 +85,12 @@ s32 fx_1f1_op80(s32 mode, s32 *work, Unk800F78A4 *env, Unk80100C78Entry *entry, 
                         mm = D_801E7F34;
                         q = &D_801E7F34[i].unk30;
                         m = D_801E7F34[i].unk10;
-                        ex->Hi_DrawEffModel(mm[i].unk0, q, (s32)m, u->unk18);
-                        ex->Hi_DrawEffModel(mm[i].unk0 + 1, q, (s32)(m + 1), u->unk1C);
+                        ex->Hi_DrawEffModel(mm[i].unk0, q, (s32)m, u->model18);
+                        ex->Hi_DrawEffModel(mm[i].unk0 + 1, q, (s32)(m + 1), u->model1C);
                         if (u->unk4 >= 0x10) {
                             c = (0x10 - u->unk4) * 0x10;
-                            ex->Hi_ModifyEffModelRGB(u->unk18, c, c, c);
-                            ex->Hi_ModifyEffModelRGB(u->unk1C, c, c, c);
+                            ex->Hi_ModifyEffModelRGB(u->model18, c, c, c);
+                            ex->Hi_ModifyEffModelRGB(u->model1C, c, c, c);
                             u->unk50.vy = fxm_easeLerp(2, 0x10, u->unk4 - 0x10, -0x800, 0);
                             v.vy = fxm_easeLerp(2, 0x10, u->unk4 - 0x10, u->unk8, 0);
                             v.vx = u->unkC.vx;
@@ -99,8 +99,8 @@ s32 fx_1f1_op80(s32 mode, s32 *work, Unk800F78A4 *env, Unk80100C78Entry *entry, 
                         }
                         if (u->unk4 < 0x10) {
                             c = (u->unk4 - 0x10) * 0x10;
-                            ex->Hi_ModifyEffModelRGB(u->unk18, c, c, c);
-                            ex->Hi_ModifyEffModelRGB(u->unk1C, c, c, c);
+                            ex->Hi_ModifyEffModelRGB(u->model18, c, c, c);
+                            ex->Hi_ModifyEffModelRGB(u->model1C, c, c, c);
                             ex->btlfx_fadeUnitById(i, u->unk4 * 8);
                             v.vy = u->unk50.vy = fxm_easeLerp(1, 0x10, u->unk4, 0, -0x800);
                             v.vx = u->unk50.vx;

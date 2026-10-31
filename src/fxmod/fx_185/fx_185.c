@@ -35,7 +35,7 @@ s32 fx_185_op80(s32 mode, Fx185Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
         work->unk18.vx = work->unk0.vx;
         work->unk18.vy = work->unk0.vy;
         work->unk18.vz = work->unk0.vz;
-        work->unk3C = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, 0xB), 1);
+        work->model3C = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, 0xB), 1);
     } else {
         frame = entry->frame;
         if (frame < 6) {
@@ -44,8 +44,8 @@ s32 fx_185_op80(s32 mode, Fx185Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             work->unk18.vy = v.vy;
             work->unk18.vz = v.vz;
         }
-        ex->Hi_SetEffModelSlice(work->unk3C, work->unk18.vy);
-        ex->Hi_DrawSliceEffModel(&work->unk10, &work->unk18, (s32)&work->unk28, work->unk3C);
+        ex->Hi_SetEffModelSlice(work->model3C, work->unk18.vy);
+        ex->Hi_DrawSliceEffModel(&work->unk10, &work->unk18, (s32)&work->unk28, work->model3C);
         if (frame >= 4) {
             if (work->unk38 == 0xF) {
                 ex->btlfx_clearEffModels();

@@ -172,8 +172,8 @@ s32 fx_096_op81(s32 mode, Fx096Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
         work->unk24.vy = work->unk58.vy;
         work->unk24.vz = work->unk58.vz;
         work->unk14.vy = -0x258;
-        work->unk62 = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, 0xA), 1);
-        work->unk64 = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, 0xB), 1);
+        work->model62 = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, 0xA), 1);
+        work->model64 = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, 0xB), 1);
         work->unk60 = -1;
     } else {
         frame = entry->frame;
@@ -185,7 +185,7 @@ s32 fx_096_op81(s32 mode, Fx096Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
             }
             break;
         case 0:
-            func_801E7A74(work->unk62, 0, D_801E84BC, D_801EAD5C);
+            func_801E7A74(work->model62, 0, D_801E84BC, D_801EAD5C);
             for (i = 0; i < 0xA28; i++) {
                 D_801E990C[i] = D_801E84BC[i];
             }
@@ -207,16 +207,16 @@ s32 fx_096_op81(s32 mode, Fx096Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
                 for (i = 0; i < 0xA28; i++) {
                     D_801E84BC[i] = D_801E990C[i];
                 }
-                func_801E7744(work->unk62, 0, 5 - t, D_801E84BC, D_801EAD5C);
+                func_801E7744(work->model62, 0, 5 - t, D_801E84BC, D_801EAD5C);
                 work->unk4.vy += 0x200;
             }
-            ex->Hi_DrawEffModel(&work->unk4, &work->unk14, (s32)&work->unk34, work->unk62);
-            ex->Hi_DrawEffModel(&work->unkC, &work->unk24, (s32)&work->unk44, work->unk64);
+            ex->Hi_DrawEffModel(&work->unk4, &work->unk14, (s32)&work->unk34, work->model62);
+            ex->Hi_DrawEffModel(&work->unkC, &work->unk24, (s32)&work->unk44, work->model64);
             if (work->unk60 >= 0) {
                 work->unk54 = fxm_lerpRatio(0, -0x80, 0x10 - work->unk60, 0x10);
                 work->unk60--;
-                ex->Hi_ModifyEffModelRGB(work->unk62, work->unk54, work->unk54, work->unk54);
-                ex->Hi_ModifyEffModelRGB(work->unk64, work->unk54, work->unk54, work->unk54);
+                ex->Hi_ModifyEffModelRGB(work->model62, work->unk54, work->unk54, work->unk54);
+                ex->Hi_ModifyEffModelRGB(work->model64, work->unk54, work->unk54, work->unk54);
             }
         }
         ex->btlfx_drawBackdrop((BtlBgLayers *)ex->btlfx_getFileData(entry->file, 0xC), frame);

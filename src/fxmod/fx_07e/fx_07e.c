@@ -197,9 +197,9 @@ static s32 fx_07e_op80PoolTask(s32 mode, Fx07ePart *part, Unk800F78A4 *env, Unk8
     switch (part->unk4) {
     case 0:
         s = frame << 9;
-        ex->Hi_DrawEffModel(&rot, &pos, (s32)&scale, work->unk28);
-        ex->Hi_ModifyEffModelAbr(work->unk28, 1);
-        ex->Hi_ModifyEffModelRGB(work->unk28, (s >> 5) - 0x80, (s >> 5) - 0x80, (s >> 5) - 0x80);
+        ex->Hi_DrawEffModel(&rot, &pos, (s32)&scale, work->model28);
+        ex->Hi_ModifyEffModelAbr(work->model28, 1);
+        ex->Hi_ModifyEffModelRGB(work->model28, (s >> 5) - 0x80, (s >> 5) - 0x80, (s >> 5) - 0x80);
         ex->btlfx_drawParticles((u8 *)ex->btlfx_getFileData(entry->file, 5), &out, NULL, 0x1400, frame, 1, 0x1000, 0, 0);
         ex->btlfx_drawParticles((u8 *)ex->btlfx_getFileData(entry->file, 3), &out, NULL, 0x1400, frame, 1, 0x1000, 0, 0);
         if (frame >= 8) {
@@ -208,9 +208,9 @@ static s32 fx_07e_op80PoolTask(s32 mode, Fx07ePart *part, Unk800F78A4 *env, Unk8
         }
         break;
     case 1:
-        ex->Hi_DrawEffModel(&rot, &pos, (s32)&scale, work->unk28);
-        ex->Hi_ModifyEffModelAbr(work->unk28, 1);
-        ex->Hi_ModifyEffModelRGB(work->unk28, 0, 0, 0);
+        ex->Hi_DrawEffModel(&rot, &pos, (s32)&scale, work->model28);
+        ex->Hi_ModifyEffModelAbr(work->model28, 1);
+        ex->Hi_ModifyEffModelRGB(work->model28, 0, 0, 0);
         if (work->unk24 != 0) {
             part->unk4 = 2;
             ((s16 *)part)[-1] = -1;
@@ -219,10 +219,10 @@ static s32 fx_07e_op80PoolTask(s32 mode, Fx07ePart *part, Unk800F78A4 *env, Unk8
     case 2:
         s = frame << 8;
         n1 = ex->math_cos(s >> 2);
-        ex->Hi_DrawEffModel(&rot, &pos, (s32)&scale, work->unk28);
-        ex->Hi_ModifyEffModelAbr(work->unk28, 1);
+        ex->Hi_DrawEffModel(&rot, &pos, (s32)&scale, work->model28);
+        ex->Hi_ModifyEffModelAbr(work->model28, 1);
         n2 = (n1 >> 5) - 0x80;
-        ex->Hi_ModifyEffModelRGB(work->unk28, n2, n2, n2);
+        ex->Hi_ModifyEffModelRGB(work->model28, n2, n2, n2);
         if (frame >= 16) {
             return 1;
         }
@@ -263,7 +263,7 @@ s32 fx_07e_op80(s32 mode, Fx07eWork80 *work, Unk800F78A4 *env, Unk80100C78Entry 
         } while (0);
         work->unk14.vz = 0;
         ex->btlfx_initEffModels(fx_07e_effModels, 1);
-        work->unk28 = ex->Hi_RegisterTexEffModel((BtlUnit9C8 *)ex->btlfx_getFileData(entry->file, 0xC), 0xBB, 0x3E40, 0,
+        work->model28 = ex->Hi_RegisterTexEffModel((BtlUnit9C8 *)ex->btlfx_getFileData(entry->file, 0xC), 0xBB, 0x3E40, 0,
                                                  0x80);
     } else {
         frame = entry->frame;

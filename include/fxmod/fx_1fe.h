@@ -12,9 +12,9 @@ typedef struct {
     SVECTOR unk18;
     SVECTOR unk20; /* camera target */
     u8 pad28[0x34 - 0x28];
-    s32 unk34; /* model */
-    s32 unk38; /* model */
-    s32 unk3C; /* model */
+    s32 model34; /* model */
+    s32 model38; /* model */
+    s32 model3C; /* model */
 } Fx1feWork81; /* 0x40 */
 
 extern BtlModel fx_1fe_effModels[];

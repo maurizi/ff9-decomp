@@ -13,7 +13,7 @@ typedef struct {
     SVECTOR unk28;
     SVECTOR unk30;
     SVECTOR unk38;
-    s32 unk40[5]; /* models */
+    s32 model40[5]; /* models */
 } Fx1afWork; /* 0x54 */
 
 extern s16 D_801E7EF4[5]; /* model files */

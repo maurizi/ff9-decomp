@@ -21,16 +21,16 @@ extern Unk800F78A4 *fx_1be_env;
 typedef struct {
     u8 unk0[0x20]; /* counters */
     Pool6CEntry *emit20[16];
-    s32 unk60; /* model */
+    s32 model60; /* model */
     VECTOR unk64; /* position */
     VECTOR unk74; /* scale */
     SVECTOR unk84; /* rotation */
     SVECTOR unk8C;
-    s32 unk94; /* models */
-    s32 unk98;
+    s32 model94; /* models */
+    s32 model98;
     SVECTOR unk9C;
-    s32 unkA4;
-    s32 unkA8;
+    s32 modelA4;
+    s32 modelA8;
     VECTOR unkAC;
     SVECTOR unkBC;
     SVECTOR unkC4;

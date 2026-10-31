@@ -25,8 +25,8 @@ s32 fx_082_op80(s32 mode, Fx082Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
         work->unk18.vy -= 0x145;
         BTLFX_COPY_SVEC(&work->unk28, &work->unk20);
         ex->btlfx_initEffModels(fx_082_effModels, 2);
-        work->unk30 = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, 5), 0);
-        work->unk34 = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, 5), 0);
+        work->model30 = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, 5), 0);
+        work->model34 = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, 5), 0);
         env->camera->points[0].vx = work->unk18.vx;
         env->camera->points[0].vy = work->unk18.vy;
         env->camera->points[0].vz = work->unk18.vz;
@@ -121,11 +121,11 @@ s32 fx_082_op80(s32 mode, Fx082Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             scale[0] = sc;
             scale[1] = sc;
             scale[2] = sc;
-            ex->Hi_DrawMorphEffModel(&work->unk28, (VECTOR *)mpos, (s32)scale, work->unk30, work->unk34, 0x1000 - morph);
+            ex->Hi_DrawMorphEffModel(&work->unk28, (VECTOR *)mpos, (s32)scale, work->model30, work->model34, 0x1000 - morph);
             if (bright < 0x1000) {
-                ex->Hi_ModifyEffModelAbr(work->unk30, 1);
+                ex->Hi_ModifyEffModelAbr(work->model30, 1);
                 c = (bright >> 5) - 0x80;
-                ex->Hi_ModifyEffModelRGB(work->unk30, c, c, c);
+                ex->Hi_ModifyEffModelRGB(work->model30, c, c, c);
             }
         }
     }

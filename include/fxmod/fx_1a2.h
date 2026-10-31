@@ -57,13 +57,13 @@ typedef struct {
     s16 unk26;
     s32 unk28; /* bouncing rock velocity */
     s32 unk2C; /* scale */
-    s32 unk30[3]; /* models */
-    s32 unk3C;
-    s32 unk40;
-    s32 unk44;
+    s32 model30[3]; /* models */
+    s32 model3C;
+    s32 model40;
+    s32 model44;
     s32 unk48;
-    s32 unk4C;
-    s32 unk50;
+    s32 model4C;
+    s32 model50;
 } Fx1a2Work80; /* 0x54 */
 
 extern BtlModel fx_1a2_effModels[];

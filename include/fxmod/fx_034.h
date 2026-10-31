@@ -23,8 +23,8 @@ typedef struct {
     SVECTOR unk5C;
     SVECTOR unk64;
     s16 unk6C;
-    u16 unk6E; /* models */
-    u16 unk70;
+    u16 model6E; /* models */
+    u16 model70;
 } Fx034Work; /* 0x74 */
 
 extern BtlModel fx_034_effModels[];

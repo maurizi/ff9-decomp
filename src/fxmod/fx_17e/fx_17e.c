@@ -22,7 +22,7 @@ s32 fx_17e_op80(s32 mode, Fx17eWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
         work->unk8.vx = 0x1000;
         work->unk8.vy = 0x1000;
         work->unk8.vz = 0x1000;
-        work->unk0 = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, 9), 0xFF);
+        work->model0 = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, 9), 0xFF);
         work->unk4 = 0;
         ex->btlfx_getUnitBodyPos(0, 0, (s16 *)&work->unk38);
     } else {
@@ -74,11 +74,11 @@ s32 fx_17e_op80(s32 mode, Fx17eWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
         }
         if (work->unk40[3] != 0) {
             work->unk40[3]--;
-            ex->Hi_DrawEffModel(&work->unk28, &work->unk18, (s32)&work->unk8, work->unk0);
+            ex->Hi_DrawEffModel(&work->unk28, &work->unk18, (s32)&work->unk8, work->model0);
             if (work->unk4 != 0x80) {
                 c = work->unk4 - 0x80;
-                ex->Hi_ModifyEffModelAbr(work->unk0, 1);
-                ex->Hi_ModifyEffModelRGB(work->unk0, c, c, c);
+                ex->Hi_ModifyEffModelAbr(work->model0, 1);
+                ex->Hi_ModifyEffModelRGB(work->model0, c, c, c);
             }
         }
         return frame >= 0x42;

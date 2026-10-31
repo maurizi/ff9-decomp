@@ -49,11 +49,11 @@ typedef struct {
     Fx17d4Vec3 unk48; /* summon position */
     Fx17d4Vec3 unk54; /* summon scale */
     SVECTOR unk60; /* summon rotation */
-    s32 unk68; /* models */
-    s32 unk6C;
-    s32 unk70;
-    s32 unk74;
-    s32 unk78;
+    s32 model68; /* models */
+    s32 model6C;
+    s32 model70;
+    s32 model74;
+    s32 model78;
     u8 pad7C[8];
 } Fx17d4Work80; /* 0x84 */
 

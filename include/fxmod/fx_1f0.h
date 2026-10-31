@@ -17,10 +17,10 @@ typedef struct {
 typedef struct {
     s32 unk0[16]; /* timers */
     SVECTOR unk40[4]; /* curve control points */
-    s32 unk60; /* models */
-    s32 unk64;
-    s32 unk68;
-    s32 unk6C;
+    s32 model60; /* models */
+    s32 model64;
+    s32 model68;
+    s32 model6C;
     VECTOR unk70; /* model position */
     VECTOR unk80; /* model scale */
     VECTOR unk90;

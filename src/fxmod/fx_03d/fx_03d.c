@@ -98,8 +98,8 @@ s32 fx_03d_op82(s32 mode, Fx03dWork82 *work, Unk800F78A4 *env, Unk80100C78Entry 
         work->unk28.vx = 0x1000;
         work->unk28.vy = 0x1000;
         work->unk28.vz = 0x1000;
-        work->unk40 = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, 0x17), 1);
-        work->unk42 = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, 0x16), 1);
+        work->model40 = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, 0x17), 1);
+        work->model42 = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, 0x16), 1);
         work->unk3C = -1;
         work->unk3E = -1;
     } else {
@@ -130,8 +130,8 @@ s32 fx_03d_op82(s32 mode, Fx03dWork82 *work, Unk800F78A4 *env, Unk80100C78Entry 
                 work->unk28.vx = s;
                 work->unk28.vz = s;
             }
-            ex->Hi_DrawEffModel(&work->unk0, &work->unk8, (s32)&work->unk18, work->unk40);
-            ex->Hi_DrawEffModel(&work->unk0, &work->unk8, (s32)&work->unk28, work->unk42);
+            ex->Hi_DrawEffModel(&work->unk0, &work->unk8, (s32)&work->unk18, work->model40);
+            ex->Hi_DrawEffModel(&work->unk0, &work->unk8, (s32)&work->unk28, work->model42);
             if (work->unk3C >= 0 || work->unk3E >= 0) {
                 if (work->unk3C >= 0) {
                     work->unk38 = fxm_lerpRatio(-0x80, 0, 0xF - work->unk3C, 0xF);
@@ -141,8 +141,8 @@ s32 fx_03d_op82(s32 mode, Fx03dWork82 *work, Unk800F78A4 *env, Unk80100C78Entry 
                     work->unk38 = fxm_lerpRatio(0, -0x80, 0xF - work->unk3E, 0xF);
                     work->unk3E--;
                 }
-                ex->Hi_ModifyEffModelRGB(work->unk40, work->unk38, work->unk38, work->unk38);
-                ex->Hi_ModifyEffModelRGB(work->unk42, work->unk38, work->unk38, work->unk38);
+                ex->Hi_ModifyEffModelRGB(work->model40, work->unk38, work->unk38, work->unk38);
+                ex->Hi_ModifyEffModelRGB(work->model42, work->unk38, work->unk38, work->unk38);
             }
         }
         if (frame >= 0x3C) {

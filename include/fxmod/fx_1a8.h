@@ -25,15 +25,15 @@ typedef struct {
     SVECTOR unk10;
     u8 pad18[0x20 - 0x18];
     SVECTOR unk20; /* ring position */
-    s32 unk28; /* model */
+    s32 model28; /* model */
     SVECTOR unk2C; /* rotation */
     Fx1a8Vec3 unk34; /* scale */
     Fx1a8Vec3 unk40; /* position */
-    s32 unk4C[4]; /* models */
-    s32 unk5C;
-    s32 unk60;
-    s32 unk64;
-    s32 unk68;
+    s32 model4C[4]; /* models */
+    s32 model5C;
+    s32 model60;
+    s32 model64;
+    s32 model68;
     u8 pad6C[0x74 - 0x6C];
 } Fx1a8Work80; /* 0x74 */
 

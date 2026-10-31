@@ -70,13 +70,13 @@ typedef struct {
     SVECTOR unk18; /* summon position */
     SVECTOR unk20;
     SVECTOR unk28[2];
-    s32 unk38; /* models */
-    s32 unk3C;
-    s32 unk40[3];
-    s32 unk4C;
-    s32 unk50;
-    s32 unk54;
-    s32 unk58;
+    s32 model38; /* models */
+    s32 model3C;
+    s32 model40[3];
+    s32 model4C;
+    s32 model50;
+    s32 model54;
+    s32 model58;
     s32 unk5C; /* scale */
     Pool6CEntry *emit60;
 } Fx0ecWork80; /* 0x64 */

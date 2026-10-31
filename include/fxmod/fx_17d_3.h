@@ -27,10 +27,10 @@ typedef struct {
     s32 unk48[3]; /* summon position */
     s32 unk54[3]; /* summon scale */
     SVECTOR unk60;
-    s32 unk68; /* models */
-    s32 unk6C;
-    s32 unk70;
-    s32 unk74;
+    s32 model68; /* models */
+    s32 model6C;
+    s32 model70;
+    s32 model74;
     Pool6CEntry *emit78;
     Pool6CEntry *emit7C;
 } Fx17d3Work80; /* 0x80 */

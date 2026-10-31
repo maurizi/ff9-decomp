@@ -85,7 +85,7 @@ typedef struct {
     SVECTOR unk58; /* summon rotation */
     u8 pad60[4];
     s32 unk64;
-    s32 unk68; /* models */
+    s32 model68; /* models */
     s32 unk6C;
 } Fx026Work80; /* 0x70 */
 
@@ -105,7 +105,7 @@ typedef struct {
     s32 unk0;
     s32 unk4; /* frame */
     SVECTOR unk8; /* position */
-    s32 unk10; /* model */
+    s32 model10; /* model */
 } Fx026Work82; /* 0x14 */
 
 /* pool item of fx_026_op82PoolTask */
@@ -152,7 +152,7 @@ typedef struct {
     SVECTOR unk10;
     s32 unk18[6][3]; /* models of the six pieces */
     s32 pad60[3];
-    s32 unk6C[7];
+    s32 model6C[7];
 } Fx026Work81; /* 0x88 */
 
 /* pool item of fx_026_op81PoolTask */

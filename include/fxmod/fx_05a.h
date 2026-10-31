@@ -14,7 +14,7 @@ typedef struct {
     VECTOR unk30; /* model scale */
     s16 unk40; /* model brightness */
     s16 unk42; /* screen tint */
-    u16 unk44; /* model */
+    u16 model44; /* model */
 } Fx05aWork; /* 0x48 */
 
 extern Unk800F78A4 *fx_05a_env;

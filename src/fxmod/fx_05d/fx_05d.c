@@ -28,7 +28,7 @@ s32 fx_05d_op80(s32 mode, Fx05dWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
         work->unk30.vy = 0x1000;
         work->unk30.vz = 0x1000;
         for (i = 0; i < 6; i++) {
-            work->unk5C[i] = ex->Hi_RegisterTexEffModel((BtlUnit9C8 *)ex->btlfx_getFileData(entry->file, D_801E8048[i]),
+            work->model5C[i] = ex->Hi_RegisterTexEffModel((BtlUnit9C8 *)ex->btlfx_getFileData(entry->file, D_801E8048[i]),
                                                         0x97, 0x3D40, 0, 0);
         }
         fxm_rotPosTrackInit(&D_801E8DA0, (u16 *)ex->btlfx_getFileData(entry->file, 1));
@@ -121,8 +121,8 @@ s32 fx_05d_op80(s32 mode, Fx05dWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
             work->unk30.vx = work->unk30.vx * 2 / 3;
             work->unk30.vy = work->unk30.vy * 2 / 3;
             work->unk30.vz = work->unk30.vz * 2 / 3;
-            ex->Hi_DrawMorphEffModel(&work->unk18, &work->unk20, (s32)&work->unk30, work->unk5C[a], work->unk5C[b], w);
-            ex->Hi_ModifyEffModelAbr(work->unk5C[a], 1);
+            ex->Hi_DrawMorphEffModel(&work->unk18, &work->unk20, (s32)&work->unk30, work->model5C[a], work->model5C[b], w);
+            ex->Hi_ModifyEffModelAbr(work->model5C[a], 1);
             fxm_rotPosTrackGet(&D_801E8DA8, frame, &work->unk18, &p);
             work->unk20.vx = p.vx;
             work->unk20.vy = p.vy;
@@ -135,8 +135,8 @@ s32 fx_05d_op80(s32 mode, Fx05dWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
             work->unk30.vx = work->unk30.vx * 2 / 3;
             work->unk30.vy = work->unk30.vy * 2 / 3;
             work->unk30.vz = work->unk30.vz * 2 / 3;
-            ex->Hi_DrawMorphEffModel(&work->unk18, &work->unk20, (s32)&work->unk30, work->unk5C[a], work->unk5C[b], w);
-            ex->Hi_ModifyEffModelAbr(work->unk5C[a], 1);
+            ex->Hi_DrawMorphEffModel(&work->unk18, &work->unk20, (s32)&work->unk30, work->model5C[a], work->model5C[b], w);
+            ex->Hi_ModifyEffModelAbr(work->model5C[a], 1);
             work->unk44.vx = work->unk20.vx;
             work->unk44.vy = work->unk20.vy;
             work->unk44.vz = work->unk20.vz;

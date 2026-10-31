@@ -25,11 +25,11 @@ typedef struct {
     s32 unk48[3]; /* model 2 position */
     SVECTOR unk54; /* model 2 rotation */
     s32 unk5C[3]; /* model 2 scale */
-    s32 unk68; /* models */
-    s32 unk6C;
-    s32 unk70;
-    s32 unk74;
-    s32 unk78;
+    s32 model68; /* models */
+    s32 model6C;
+    s32 model70;
+    s32 model74;
+    s32 model78;
     Pool6CEntry *emit7C;
 } Fx17d2Work; /* 0x80 */
 

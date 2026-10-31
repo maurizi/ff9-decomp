@@ -51,7 +51,7 @@ s32 fx_05a_op80(s32 mode, Fx05aWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
             work->unk30.vy = 0x155;
             work->unk30.vz = 0x155;
         }
-        work->unk44 = ex->Hi_RegisterTexEffModel((BtlUnit9C8 *)ex->btlfx_getFileData(entry->file, 0xA), 0x117, 0, 0, 0xC0);
+        work->model44 = ex->Hi_RegisterTexEffModel((BtlUnit9C8 *)ex->btlfx_getFileData(entry->file, 0xA), 0x117, 0, 0, 0xC0);
         work->unk40 = -0x14;
         work->unk42 = 0xFF;
     } else {
@@ -63,12 +63,12 @@ s32 fx_05a_op80(s32 mode, Fx05aWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
             }
         }
         if (frame >= 0x19) {
-            ex->Hi_DrawEffModel(&work->unk18, &work->unk20, (s32)&work->unk30, work->unk44);
-            ex->Hi_ModifyEffModelAbr(work->unk44, 1);
+            ex->Hi_DrawEffModel(&work->unk18, &work->unk20, (s32)&work->unk30, work->model44);
+            ex->Hi_ModifyEffModelAbr(work->model44, 1);
             work->unk18.vy += 0x40;
             t = frame - 0x19;
             if (frame >= 0x2D) {
-                ex->Hi_ModifyEffModelRGB(work->unk44, work->unk40, work->unk40, work->unk40);
+                ex->Hi_ModifyEffModelRGB(work->model44, work->unk40, work->unk40, work->unk40);
                 work->unk40 -= 4;
             }
             ex->btlfx_drawBackdrop((BtlBgLayers *)ex->btlfx_getFileData(entry->file, 7), t);

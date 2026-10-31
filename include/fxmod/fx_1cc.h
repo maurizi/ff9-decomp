@@ -40,13 +40,13 @@ void func_801E8284(s16 *from, s16 *to, s32 i, s16 *out);
 typedef struct {
     s32 unk0; /* state */
     s32 unk4; /* frame counter */
-    s32 unk8; /* models */
-    s32 unkC;
-    s32 unk10;
-    s32 unk14;
-    s32 unk18;
-    s32 unk1C;
-    s32 unk20[14]; /* piece models */
+    s32 model8; /* models */
+    s32 modelC;
+    s32 model10;
+    s32 model14;
+    s32 model18;
+    s32 model1C;
+    s32 model20[14]; /* piece models */
     SVECTOR unk58; /* position */
     SVECTOR unk60;
     SVECTOR unk68;

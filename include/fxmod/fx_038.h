@@ -25,9 +25,9 @@ typedef struct {
     s32 unk0;
     SVECTOR unk4; /* target position */
     s32 unkC; /* items spawned */
-    s32 unk10; /* models */
-    s32 unk14;
-    s32 unk18;
+    s32 model10; /* models */
+    s32 model14;
+    s32 model18;
 } Fx038Work; /* 0x1C */
 
 extern u8 D_801E82AC[0x18]; /* spawn frames */

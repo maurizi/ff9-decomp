@@ -22,7 +22,7 @@ typedef struct {
     VECTOR unk2C; /* model position */
     VECTOR unk3C; /* model scale */
     SVECTOR unk4C;
-    u16 unk54; /* model */
+    u16 model54; /* model */
 } Fx0c9Work81;
 
 extern Unk800F78A4 *fx_0c9_env;

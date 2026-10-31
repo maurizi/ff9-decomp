@@ -42,8 +42,8 @@ typedef struct {
     s16 unk90; /* model shown */
     s16 unk92; /* model countdown */
     s16 unk94; /* frame */
-    u16 unk96[3]; /* ring models */
-    u16 unk9C; /* model */
+    u16 model96[3]; /* ring models */
+    u16 model9C; /* model */
 } Fx138Work80; /* 0xA0 */
 
 typedef struct {

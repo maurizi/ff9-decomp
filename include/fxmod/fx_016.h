@@ -15,14 +15,14 @@ typedef struct {
     s32 unk0;
     SVECTOR unk4; /* target body */
     SVECTOR unkC; /* target */
-    s32 unk14; /* models */
-    s32 unk18;
-    s32 unk1C;
-    s32 unk20;
-    s32 unk24;
-    s32 unk28;
-    s32 unk2C;
-    s32 unk30;
+    s32 model14; /* models */
+    s32 model18;
+    s32 model1C;
+    s32 model20;
+    s32 model24;
+    s32 model28;
+    s32 model2C;
+    s32 model30;
     s32 unk34; /* scale */
 } Fx016Work80; /* 0x38 */
 

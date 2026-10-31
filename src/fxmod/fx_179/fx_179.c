@@ -247,7 +247,7 @@ s32 fx_179_op80(s32 mode, Fx179Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
         work->unk10.vz = env->targets->centerZ;
         fx_179_env = env;
         ex->btlfx_initEffModels(fx_179_effModels, 1);
-        work->unk18 = ex->Hi_RegisterTexEffModel((BtlUnit9C8 *)ex->btlfx_getFileData(entry->file, 2), 0x9A, 0x3D40, 0, 0);
+        work->model18 = ex->Hi_RegisterTexEffModel((BtlUnit9C8 *)ex->btlfx_getFileData(entry->file, 2), 0x9A, 0x3D40, 0, 0);
     } else {
     frame = entry->frame;
     switch (work->unk0) {
@@ -276,7 +276,7 @@ s32 fx_179_op80(s32 mode, Fx179Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
             env->camera->points[3].vy = out.vy;
             env->camera->points[3].vz = out.vz;
         }
-        ex->Hi_DrawEffModel(&rot, &pos, (s32)&scale, work->unk18);
+        ex->Hi_DrawEffModel(&rot, &pos, (s32)&scale, work->model18);
         u.v.vx = u.v.vy = u.v.vz = 0xAAA;
         func_801E7B68(&work->unk8, &rot, &u.v, 0x3E8, 0x2BC, 0x300, 0x398, 0x80, 0x17, 0x3D03, 0, 0x40,
                       -(work->unk4 * 0x180), 0x2000, 1, 1);
@@ -292,7 +292,7 @@ s32 fx_179_op80(s32 mode, Fx179Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
             u.s.vx = 0;
             u.s.vy = 0;
             u.s.vz = 0;
-            func_801E7704(work->unk18, &u.s);
+            func_801E7704(work->model18, &u.s);
             p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 1), (s32)&work->unk10);
             if (p != NULL) {
                 p->otZ = 0x20;
@@ -346,7 +346,7 @@ s32 fx_179_op80(s32 mode, Fx179Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
         pos.vx = work->unk10.vx;
         pos.vy = work->unk10.vy;
         pos.vz = work->unk10.vz;
-        ex->Hi_DrawEffModel(&rot, &pos, (s32)&scale, work->unk18);
+        ex->Hi_DrawEffModel(&rot, &pos, (s32)&scale, work->model18);
         func_801E78E8();
         if (frame >= 0x20) {
             ex->btlfx_clearEffModels();

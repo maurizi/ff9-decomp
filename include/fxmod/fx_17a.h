@@ -41,10 +41,10 @@ typedef struct {
     Fx17aVec3 unk60;
     SVECTOR unk6C;
     u8 pad74[0xC];
-    s32 unk80; /* models */
-    s32 unk84;
-    s32 unk88;
-    s32 unk8C;
+    s32 model80; /* models */
+    s32 model84;
+    s32 model88;
+    s32 model8C;
     SVECTOR unk90[4];
     Pool6CEntry *emitB0;
 } Fx17aWork80; /* 0xB4 */

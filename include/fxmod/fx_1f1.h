@@ -10,8 +10,8 @@ typedef struct {
     s32 unk8; /* saved height */
     SVECTOR unkC; /* unit position */
     s32 unk14;
-    s32 unk18; /* models */
-    s32 unk1C;
+    s32 model18; /* models */
+    s32 model1C;
     SVECTOR unk20; /* model rotations */
     SVECTOR unk28;
     VECTOR unk30; /* model scales */

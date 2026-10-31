@@ -20,8 +20,8 @@ typedef struct {
     SVECTOR unk78;
     s16 unk80; /* fade-in countdown */
     s16 unk82; /* fade-out countdown */
-    u16 unk84; /* models */
-    u16 unk86;
+    u16 model84; /* models */
+    u16 model86;
 } Fx1abWork; /* 0x88 */
 
 extern Unk800F78A4 *fx_1ab_env;

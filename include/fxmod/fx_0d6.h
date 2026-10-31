@@ -16,9 +16,9 @@ typedef struct {
     SVECTOR unk0; /* caster body position */
     SVECTOR unk8; /* caster position */
     s32 unk10; /* state */
-    s32 unk14[4]; /* models */
-    s32 unk24; /* model */
-    s32 unk28; /* model */
+    s32 model14[4]; /* models */
+    s32 model24; /* model */
+    s32 model28; /* model */
     Pool6CEntry *emit2C;
     Pool6CEntry *emit30;
     s32 unk34; /* frame counter */

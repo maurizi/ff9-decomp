@@ -23,8 +23,8 @@ typedef struct {
     SVECTOR unk60; /* unk50 raised by 0x4B0 */
     s32 unk68; /* fade-in countdown */
     s32 unk6C; /* fade-out countdown */
-    u16 unk70; /* models */
-    u16 unk72;
+    u16 model70; /* models */
+    u16 model72;
 } Fx090Work; /* 0x74 */
 
 extern s16 D_801E7DB4[][2];

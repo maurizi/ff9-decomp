@@ -33,7 +33,7 @@ s32 fx_0e4_op80(s32 mode, Fx0e4Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
         work->unk20.vy = 0x6000;
         work->unk20.vz = 0x5000;
         for (i = 0; i < 3; i++) {
-            work->unk68[i] = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, D_801E7CF8[i]), 1);
+            work->model68[i] = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, D_801E7CF8[i]), 1);
         }
         work->unk54.vx = 0x400;
         work->unk5E = 0x1000;
@@ -79,8 +79,8 @@ s32 fx_0e4_op80(s32 mode, Fx0e4Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
                 } else if (f >= 6 && f < 9) {
                     d = 0x1000 - ((f - 6) << 12) / 3;
                     t = d > 0x1000 ? 0x1000 : d;
-                    ex->Hi_DrawMorphEffModel(&work->unk8, &work->unk10, (s32)&work->unk20, work->unk68[0],
-                                             work->unk68[1], t);
+                    ex->Hi_DrawMorphEffModel(&work->unk8, &work->unk10, (s32)&work->unk20, work->model68[0],
+                                             work->model68[1], t);
                 } else {
                     m = 1;
                     ex->Hi_SetEffModelSlice(m, work->unk10.vy);

@@ -10,7 +10,7 @@ typedef struct {
     s32 unk0[10]; /* countdowns and flags */
     SVECTOR unk28; /* model home position */
     SVECTOR unk30; /* target position */
-    s32 unk38; /* model */
+    s32 model38; /* model */
     SVECTOR unk3C; /* model rotation */
     SVECTOR unk44; /* model position */
     VECTOR unk4C; /* model position */

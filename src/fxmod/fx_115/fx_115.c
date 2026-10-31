@@ -24,8 +24,8 @@ s32 fx_115_op80(s32 mode, Fx115Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
         work->unk20.vx = work->unk10.vx;
         work->unk20.vy = work->unk10.vy;
         work->unk20.vz = work->unk10.vz;
-        work->unkA0 = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, 5), 1);
-        work->unkA2 = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, 5), 1);
+        work->modelA0 = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, 5), 1);
+        work->modelA2 = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, 5), 1);
     } else {
         frame = entry->frame;
         if (frame < 8) {
@@ -36,13 +36,13 @@ s32 fx_115_op80(s32 mode, Fx115Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             work->unk20.vz = pos.vz;
             ex->math_sin(t >> 1);
         }
-        ex->Hi_DrawEffModel(&work->unk18, &work->unk20, (s32)&work->unk30, work->unkA0);
+        ex->Hi_DrawEffModel(&work->unk18, &work->unk20, (s32)&work->unk30, work->modelA0);
         for (i = 0; i < 4; i++) {
             if (frame >= i + 1) {
                 c = -(i * 20);
-                ex->Hi_DrawEffModel(&work->unk40[i], &work->unk60[i], (s32)&work->unk30, work->unkA2);
-                ex->Hi_ModifyEffModelAbr(work->unkA2, 3);
-                ex->Hi_ModifyEffModelRGB(work->unkA2, c, c, c);
+                ex->Hi_DrawEffModel(&work->unk40[i], &work->unk60[i], (s32)&work->unk30, work->modelA2);
+                ex->Hi_ModifyEffModelAbr(work->modelA2, 3);
+                ex->Hi_ModifyEffModelRGB(work->modelA2, c, c, c);
             }
         }
         work->unk40[3].vx = work->unk40[2].vx;

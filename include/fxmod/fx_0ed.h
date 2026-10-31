@@ -36,7 +36,7 @@ typedef struct {
     SVECTOR unk10; /* unit rotation */
     SVECTOR unk18; /* model position */
     SVECTOR unk20;
-    s32 unk28; /* model */
+    s32 model28; /* model */
     SVECTOR unk2C; /* model rotation */
     s32 unk34[3]; /* model scale */
 } Fx0edWork80; /* 0x40 */

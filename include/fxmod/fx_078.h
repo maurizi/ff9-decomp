@@ -35,7 +35,7 @@ typedef struct {
     VECTOR unk30; /* model scale */
     s32 unk40;
     SVECTOR unk44; /* trail position */
-    u16 unk4C[10]; /* models */
+    u16 model4C[10]; /* models */
 } Fx078Work; /* 0x60 */
 
 extern u8 D_801E7D18[10];

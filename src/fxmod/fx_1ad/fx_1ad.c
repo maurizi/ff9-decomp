@@ -47,7 +47,7 @@ s32 fx_1ad_op80(s32 mode, Fx1adWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
         fx_1ad_env = env;
         ex->btlfx_initEffModels(fx_1ad_effModels, 1);
         ex->btlfx_getUnitBodyPos(0, 0, (s16 *)&work->unk10);
-        work->unk24 = (s16)ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, 2), 1);
+        work->model24 = (s16)ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, 2), 1);
     } else {
         frame = entry->frame;
         ex->btlfx_getUnitBonePos(0x10, 0xF, (u16 *)&work->unk8);
@@ -87,8 +87,8 @@ s32 fx_1ad_op80(s32 mode, Fx1adWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
                 scale.vx = scale.vy = c / 3 + 0x1800;
                 ex->btlfx_getUnitBoneMatrix(0x10, 0x10, (BtlBone *)&m);
                 ex->btlfx_matrixAngles(&m, (s16 *)&rot);
-                ex->Hi_DrawEffModel(&rot, &pos, (s32)&scale, work->unk24);
-                ex->Hi_ModifyEffModelRGB(work->unk24, (ex->math_sin(t >> 1) >> 5) - 0x80,
+                ex->Hi_DrawEffModel(&rot, &pos, (s32)&scale, work->model24);
+                ex->Hi_ModifyEffModelRGB(work->model24, (ex->math_sin(t >> 1) >> 5) - 0x80,
                                          (ex->math_sin(t >> 1) >> 5) - 0x80, (ex->math_sin(t >> 1) >> 5) - 0x80);
             }
             if (frame >= 0x45) {

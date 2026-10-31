@@ -62,7 +62,7 @@ typedef struct {
     VECTOR unk84[4]; /* block positions */
     VECTOR unkC4[4]; /* block scales */
     SVECTOR unk104[4]; /* effect positions */
-    u16 unk124[12]; /* models: 3 tower stages, 5 pieces, 4 blocks */
+    u16 model124[12]; /* models: 3 tower stages, 5 pieces, 4 blocks */
 } Fx0e2Work81; /* 0x13C */
 
 extern u16 D_801ECB68[3];
@@ -143,7 +143,7 @@ typedef struct {
     s32 unk148;
     s16 unk14C;
     s16 unk14E;
-    u16 unk150[14]; /* models */
+    u16 model150[14]; /* models */
 } Fx0e2Work80; /* 0x16C */
 
 typedef struct {
@@ -239,8 +239,8 @@ typedef struct {
     s32 unk60;
     s16 unk64;
     s16 unk66;
-    u16 unk68; /* models */
-    u16 unk6A;
+    u16 model68; /* models */
+    u16 model6A;
 } Fx0e2Work82; /* 0x6C */
 
 extern Fx0e2Ribbon D_801EE57C;

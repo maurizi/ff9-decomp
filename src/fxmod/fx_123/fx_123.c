@@ -176,10 +176,10 @@ s32 fx_123_op81(s32 mode, Fx123Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
             fxm_rotPosPathInit((Fx123Path *)&D_801E965C[n], (u16 *)ex->btlfx_getFileData(entry->file, D_801E9054[n]));
             setVector(&work->unk6C[n], 0, 0, 0);
             setVector(&work->unk9C[n], 0, 0, 0);
-            work->unk17A[n] = ex->Hi_RegisterTexEffModel((BtlUnit9C8 *)ex->btlfx_getFileData(entry->file, 7), 0x97, 0x3D40, 0x80, 0);
+            work->model17A[n] = ex->Hi_RegisterTexEffModel((BtlUnit9C8 *)ex->btlfx_getFileData(entry->file, 7), 0x97, 0x3D40, 0x80, 0);
         }
         setVector(&work->unkFC, 0x1000, 0x1000, 0x1000);
-        work->unk186 = ex->Hi_RegisterTexEffModel((BtlUnit9C8 *)ex->btlfx_getFileData(entry->file, 5), 0x97, 0x3D40, 0x80, 0);
+        work->model186 = ex->Hi_RegisterTexEffModel((BtlUnit9C8 *)ex->btlfx_getFileData(entry->file, 5), 0x97, 0x3D40, 0x80, 0);
         work->unk178 = -1;
     } else {
         frame = entry->frame;
@@ -230,7 +230,7 @@ s32 fx_123_op81(s32 mode, Fx123Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
                 pos.vy = work->unk64.vy - 0x1013;
                 pos.vz = work->unk64.vz - 0x5F5;
                 setVector(&rot, 0, 0, 0);
-                ex->Hi_DrawEffModel(&rot, &pos, (s32)&work->unkFC, work->unk186);
+                ex->Hi_DrawEffModel(&rot, &pos, (s32)&work->unkFC, work->model186);
                 for (i = 0; i < 6; i++) {
                     fxm_rotPosPathGet(&D_801E965C[i], 3, &work->unk6C[i], &work->unk148[i]);
                     addVector(&work->unk148[i], &work->unk64);
@@ -286,10 +286,10 @@ s32 fx_123_op81(s32 mode, Fx123Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
                         s->unk1E = 4;
                     }
                     if (k >= s->unk1A + 16) {
-                        ex->Hi_SetEffModelSlice(work->unk17A[i], work->unk9C[i].vy - 100);
-                        ex->Hi_DrawSliceEffModel(&work->unk6C[i], &work->unk9C[i], (s32)&work->unkFC, work->unk17A[i]);
+                        ex->Hi_SetEffModelSlice(work->model17A[i], work->unk9C[i].vy - 100);
+                        ex->Hi_DrawSliceEffModel(&work->unk6C[i], &work->unk9C[i], (s32)&work->unkFC, work->model17A[i]);
                     } else {
-                        ex->Hi_DrawEffModel(&work->unk6C[i], &work->unk9C[i], (s32)&work->unkFC, work->unk17A[i]);
+                        ex->Hi_DrawEffModel(&work->unk6C[i], &work->unk9C[i], (s32)&work->unkFC, work->model17A[i]);
                     }
                     if (s->unk1E >= 0) {
                         work->unk10C = fxm_lerpRatio(0, -0x80, 4 - s->unk1E, 4);
@@ -298,8 +298,8 @@ s32 fx_123_op81(s32 mode, Fx123Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
                         } else {
                             s->unk1E--;
                         }
-                        ex->Hi_ModifyEffModelAbr(work->unk17A[i], 1);
-                        ex->Hi_ModifyEffModelRGB(work->unk17A[i], work->unk10C, work->unk10C, work->unk10C);
+                        ex->Hi_ModifyEffModelAbr(work->model17A[i], 1);
+                        ex->Hi_ModifyEffModelRGB(work->model17A[i], work->unk10C, work->unk10C, work->unk10C);
                     }
                 }
             }

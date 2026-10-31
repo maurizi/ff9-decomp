@@ -28,8 +28,8 @@ typedef struct {
     s32 unk38; /* model brightness */
     s16 unk3C; /* fade-in countdown */
     s16 unk3E; /* fade-out countdown */
-    u16 unk40; /* models */
-    u16 unk42;
+    u16 model40; /* models */
+    u16 model42;
 } Fx03dWork82; /* 0x44 */
 
 extern Unk800F78A4 *fx_03d_env;

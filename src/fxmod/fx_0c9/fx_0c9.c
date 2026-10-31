@@ -63,7 +63,7 @@ s32 fx_0c9_op81(s32 mode, Fx0c9Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
         work->unk3C.vx = 0x1B;
         work->unk3C.vy = 0x1B;
         work->unk3C.vz = 0x1B;
-        work->unk54 = ex->Hi_RegisterTexEffModel((BtlUnit9C8 *)ex->btlfx_getFileData(entry->file, 1), 0x117, 0, 0, 0xC0);
+        work->model54 = ex->Hi_RegisterTexEffModel((BtlUnit9C8 *)ex->btlfx_getFileData(entry->file, 1), 0x117, 0, 0, 0xC0);
     } else {
         frame = entry->frame;
         switch (frame) {
@@ -95,8 +95,8 @@ s32 fx_0c9_op81(s32 mode, Fx0c9Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
                 work->unk2C.vy = work->unk1C.vy;
                 work->unk2C.vz = work->unk1C.vz;
             }
-            ex->Hi_DrawEffModel(&work->unk24, &work->unk2C, (s32)&work->unk3C, work->unk54);
-            ex->Hi_ModifyEffModelAbr(work->unk54, 1);
+            ex->Hi_DrawEffModel(&work->unk24, &work->unk2C, (s32)&work->unk3C, work->model54);
+            ex->Hi_ModifyEffModelAbr(work->model54, 1);
             if (f < 0xC) {
                 work->unk3C.vx++;
                 work->unk3C.vy++;

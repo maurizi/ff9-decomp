@@ -296,12 +296,12 @@ s32 fx_1b7_op80(s32 mode, Fx1b7Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
                 ex->btlfx_moveSummonToHeap(0x6E);
                 ex->btlfx_initEffModels(fx_1b7_effModels, 8);
                 for (i = 0; i < 8; i++) {
-                    work->unk44[i] = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, D_801E8788[i]), 0);
+                    work->model44[i] = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, D_801E8788[i]), 0);
                 }
                 buf = ((Fx1b7Summon *)env->loader)->unk54->unk50 + 0x1B800;
                 func_801E7704((Fx1b7Split *)buf, (SVECTOR (*)[3])(buf + 0xDBD8));
                 for (i = 0; i < 8; i++) {
-                    fxm_splitModelAdd(work->unk44[i]);
+                    fxm_splitModelAdd(work->model44[i]);
                 }
                 ex->btlfx_drawScreenTint((u32 *)env->ot + 2, 1, 0xC0, 0xAA, 0x20);
             }
@@ -339,8 +339,8 @@ s32 fx_1b7_op80(s32 mode, Fx1b7Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
                 g = ex->math_cos(a);
                 b = t + 0x1000;
                 for (i = 0; i < 8; i++) {
-                    ex->Hi_DrawEffModel(&work->unk14, (VECTOR *)work->unk8, (s32)work->unk1C, work->unk44[i]);
-                    ex->Hi_ModifyEffModelRGB(work->unk44[i], r - 0x80, ((g * 3 / 2) >> 5) - 0x80, (b >> 5) - 0x80);
+                    ex->Hi_DrawEffModel(&work->unk14, (VECTOR *)work->unk8, (s32)work->unk1C, work->model44[i]);
+                    ex->Hi_ModifyEffModelRGB(work->model44[i], r - 0x80, ((g * 3 / 2) >> 5) - 0x80, (b >> 5) - 0x80);
                 }
                 D_801E87F0 = 0x898 - ((t << 12) >> 12);
                 FX1B7_SPAD_STACK(&sp);

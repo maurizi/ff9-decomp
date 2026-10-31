@@ -30,8 +30,8 @@ s32 fx_0f4_op80(s32 mode, Fx0f4Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
         work->unk40.vy = 0x200;
         work->unk1C.vx = work->unk58.vx;
         work->unk1C.vz = work->unk58.vz;
-        work->unk6C = ex->Hi_RegisterTexEffModel((BtlUnit9C8 *)ex->btlfx_getFileData(entry->file, 0xA), 0x11A, 0, 0, 0x80);
-        work->unk6E = ex->Hi_RegisterTexEffModel((BtlUnit9C8 *)ex->btlfx_getFileData(entry->file, 0xB), 0x11A, 0, 0, 0x80);
+        work->model6C = ex->Hi_RegisterTexEffModel((BtlUnit9C8 *)ex->btlfx_getFileData(entry->file, 0xA), 0x11A, 0, 0, 0x80);
+        work->model6E = ex->Hi_RegisterTexEffModel((BtlUnit9C8 *)ex->btlfx_getFileData(entry->file, 0xB), 0x11A, 0, 0, 0x80);
         work->unk60.vx = work->unk1C.vx;
         work->unk60.vy = work->unk1C.vy;
         work->unk60.vz = work->unk1C.vz;
@@ -67,11 +67,11 @@ s32 fx_0f4_op80(s32 mode, Fx0f4Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
         if ((u32)(frame - 0x32) < 0x30) {
             t = frame - 0x32;
             if (t >= 4) {
-                ex->Hi_DrawEffModel(&work->unk14, &work->unk1C, (s32)&work->unk2C, work->unk6C);
-                ex->Hi_ModifyEffModelAbr(work->unk6C, 1);
+                ex->Hi_DrawEffModel(&work->unk14, &work->unk1C, (s32)&work->unk2C, work->model6C);
+                ex->Hi_ModifyEffModelAbr(work->model6C, 1);
             }
-            ex->Hi_DrawEffModel(&work->unk40, &work->unk1C, (s32)&work->unk48, work->unk6E);
-            ex->Hi_ModifyEffModelAbr(work->unk6E, 1);
+            ex->Hi_DrawEffModel(&work->unk40, &work->unk1C, (s32)&work->unk48, work->model6E);
+            ex->Hi_ModifyEffModelAbr(work->model6E, 1);
             if (work->unk68 >= 0 || work->unk6A >= 0) {
                 if (work->unk68 >= 0) {
                     work->unk3C = fxm_lerpRatio(-0x80, 0, 3 - work->unk68, 3);
@@ -82,9 +82,9 @@ s32 fx_0f4_op80(s32 mode, Fx0f4Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
                     work->unk6A--;
                 }
                 if (t >= 4) {
-                    ex->Hi_ModifyEffModelRGB(work->unk6C, work->unk3C, work->unk3C, work->unk3C);
+                    ex->Hi_ModifyEffModelRGB(work->model6C, work->unk3C, work->unk3C, work->unk3C);
                 }
-                ex->Hi_ModifyEffModelRGB(work->unk6E, work->unk3C, work->unk3C, work->unk3C);
+                ex->Hi_ModifyEffModelRGB(work->model6E, work->unk3C, work->unk3C, work->unk3C);
             }
             if (t >= 4) {
                 work->unk2C.vx += 0x40;

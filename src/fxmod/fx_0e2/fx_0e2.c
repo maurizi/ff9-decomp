@@ -436,10 +436,10 @@ s32 fx_0e2_op80(s32 mode, Fx0e2Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
         work->unk64.vz = 0x800;
         work->unk130 = 0;
         work->unk134 = 0;
-        work->unk150[0] = ((Fx0e2RegTexList)ex->Hi_RegisterTexListModel)((BtlUnit9C8 *)ex->btlfx_getFileData(entry->file, 0x84), D_801ECBA4, D_801ECBB4);
-        work->unk150[1] = ((Fx0e2RegTexList)ex->Hi_RegisterTexListModel)((BtlUnit9C8 *)ex->btlfx_getFileData(entry->file, 0x85), D_801ECBA4, D_801ECBB4);
-        work->unk150[2] = ((Fx0e2RegTexList)ex->Hi_RegisterTexListModel)((BtlUnit9C8 *)ex->btlfx_getFileData(entry->file, 0x83), D_801ECBA4, D_801ECBB4);
-        work->unk150[3] = ((Fx0e2RegTexList)ex->Hi_RegisterTexListModel)((BtlUnit9C8 *)ex->btlfx_getFileData(entry->file, 0x82), D_801ECBA4, D_801ECBB4);
+        work->model150[0] = ((Fx0e2RegTexList)ex->Hi_RegisterTexListModel)((BtlUnit9C8 *)ex->btlfx_getFileData(entry->file, 0x84), D_801ECBA4, D_801ECBB4);
+        work->model150[1] = ((Fx0e2RegTexList)ex->Hi_RegisterTexListModel)((BtlUnit9C8 *)ex->btlfx_getFileData(entry->file, 0x85), D_801ECBA4, D_801ECBB4);
+        work->model150[2] = ((Fx0e2RegTexList)ex->Hi_RegisterTexListModel)((BtlUnit9C8 *)ex->btlfx_getFileData(entry->file, 0x83), D_801ECBA4, D_801ECBB4);
+        work->model150[3] = ((Fx0e2RegTexList)ex->Hi_RegisterTexListModel)((BtlUnit9C8 *)ex->btlfx_getFileData(entry->file, 0x82), D_801ECBA4, D_801ECBB4);
         work->unk138 = 0;
         work->unk13C = 0;
         work->unk140 = -1;
@@ -457,10 +457,10 @@ s32 fx_0e2_op80(s32 mode, Fx0e2Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
         work->unkA4.vx = 0x1000;
         work->unkA4.vy = 0x1000;
         work->unkA4.vz = 0x1000;
-        work->unk150[4] = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, 0x95), 1);
-        work->unk150[5] = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, 0x94), 1);
-        work->unk150[6] = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, 0x21), 1);
-        work->unk150[7] = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, 0x1F), 1);
+        work->model150[4] = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, 0x95), 1);
+        work->model150[5] = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, 0x94), 1);
+        work->model150[6] = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, 0x21), 1);
+        work->model150[7] = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, 0x1F), 1);
         D_801EE51C.unk10 = 0;
         D_801EE51C.unk12 = 0x1000;
         D_801EE51C.unk14 = 0x1000;
@@ -484,9 +484,9 @@ s32 fx_0e2_op80(s32 mode, Fx0e2Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
         work->unkD0.vx = 0x800;
         work->unkD0.vy = 0x800;
         work->unkD0.vz = 0x800;
-        work->unk150[8] = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, 0x81), 1);
-        work->unk150[9] = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, 0x87), 1);
-        work->unk150[10] = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, 0x93), 1);
+        work->model150[8] = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, 0x81), 1);
+        work->model150[9] = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, 0x87), 1);
+        work->model150[10] = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, 0x93), 1);
         work->unkE0.vx = 0;
         work->unkE0.vy = 0;
         work->unkE0.vz = 0;
@@ -500,7 +500,7 @@ s32 fx_0e2_op80(s32 mode, Fx0e2Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             dm->unk20[2] = dm->unk30[2] + 0x4E20;
         }
         for (i0 = 0; i0 < 3; i0++) {
-            work->unk150[i0 + 11] = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, D_801ECB7C[i0]), 1);
+            work->model150[i0 + 11] = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, D_801ECB7C[i0]), 1);
         }
         work->unk14C = 0;
         work->unk14E = 4;
@@ -614,20 +614,20 @@ s32 fx_0e2_op80(s32 mode, Fx0e2Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
         }
         switch (frame) {
         case 0x97:
-            ex->Hi_FreeEffModel(work->unk150[8]);
-            ex->Hi_FreeEffModel(work->unk150[9]);
-            ex->Hi_FreeEffModel(work->unk150[10]);
+            ex->Hi_FreeEffModel(work->model150[8]);
+            ex->Hi_FreeEffModel(work->model150[9]);
+            ex->Hi_FreeEffModel(work->model150[10]);
             break;
         case 0xBD:
-            ex->Hi_FreeEffModel(work->unk150[0]);
-            ex->Hi_FreeEffModel(work->unk150[1]);
-            ex->Hi_FreeEffModel(work->unk150[2]);
-            ex->Hi_FreeEffModel(work->unk150[3]);
+            ex->Hi_FreeEffModel(work->model150[0]);
+            ex->Hi_FreeEffModel(work->model150[1]);
+            ex->Hi_FreeEffModel(work->model150[2]);
+            ex->Hi_FreeEffModel(work->model150[3]);
             break;
         case 0xF0:
-            ex->Hi_FreeEffModel(work->unk150[11]);
-            ex->Hi_FreeEffModel(work->unk150[12]);
-            ex->Hi_FreeEffModel(work->unk150[13]);
+            ex->Hi_FreeEffModel(work->model150[11]);
+            ex->Hi_FreeEffModel(work->model150[12]);
+            ex->Hi_FreeEffModel(work->model150[13]);
             break;
         }
         if (frame < 0x10E) {
@@ -676,11 +676,11 @@ s32 fx_0e2_op80(s32 mode, Fx0e2Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             } else {
                 t = 0x1000;
             }
-            ex->Hi_DrawMorphEffModel(&work->unk3C, (VECTOR *)&work->unk54, (s32)&work->unk64, work->unk150[0],
-                                     work->unk150[1], t);
-            ex->Hi_ModifyEffModelAbr(work->unk150[0], 1);
+            ex->Hi_DrawMorphEffModel(&work->unk3C, (VECTOR *)&work->unk54, (s32)&work->unk64, work->model150[0],
+                                     work->model150[1], t);
+            ex->Hi_ModifyEffModelAbr(work->model150[0], 1);
             if (work->unk148 >= 0 || work->unk144 >= 0) {
-                ex->Hi_ModifyEffModelRGB(work->unk150[0], work->unk78, work->unk78, work->unk78);
+                ex->Hi_ModifyEffModelRGB(work->model150[0], work->unk78, work->unk78, work->unk78);
             }
         }
         if (frame >= 0xA1 && frame < 0xBD) {
@@ -691,11 +691,11 @@ s32 fx_0e2_op80(s32 mode, Fx0e2Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             } else {
                 t = 0x1000;
             }
-            ex->Hi_DrawMorphEffModel(&work->unk3C, (VECTOR *)&work->unk54, (s32)&work->unk64, work->unk150[2],
-                                     work->unk150[3], t);
-            ex->Hi_ModifyEffModelAbr(work->unk150[2], 1);
+            ex->Hi_DrawMorphEffModel(&work->unk3C, (VECTOR *)&work->unk54, (s32)&work->unk64, work->model150[2],
+                                     work->model150[3], t);
+            ex->Hi_ModifyEffModelAbr(work->model150[2], 1);
             if (work->unk148 >= 0 || work->unk144 >= 0) {
-                ex->Hi_ModifyEffModelRGB(work->unk150[2], work->unk78, work->unk78, work->unk78);
+                ex->Hi_ModifyEffModelRGB(work->model150[2], work->unk78, work->unk78, work->unk78);
             }
         }
         if (frame >= 0xB1 && frame < 0xCD) {
@@ -754,10 +754,10 @@ s32 fx_0e2_op80(s32 mode, Fx0e2Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
                 } else {
                     t = 0x1000 - ((f - 0xC) << 9);
                 }
-                ex->Hi_DrawMorphEffModel(&work->unk7C, &work->unk84, (s32)&work->unk94, work->unk150[4], work->unk150[5],
+                ex->Hi_DrawMorphEffModel(&work->unk7C, &work->unk84, (s32)&work->unk94, work->model150[4], work->model150[5],
                                          t);
                 work->unkB4 = -((0x13 - f) * 6);
-                ex->Hi_ModifyEffModelRGB(work->unk150[4], work->unkB4, work->unkB4, work->unkB4);
+                ex->Hi_ModifyEffModelRGB(work->model150[4], work->unkB4, work->unkB4, work->unkB4);
                 if (frame >= 0xB5) {
                     if (work->emit28[i5] != NULL && work->emit28[i5]->state == BTLFX_EMIT_DONE) {
                         work->emit28[i5] = NULL;
@@ -785,7 +785,7 @@ s32 fx_0e2_op80(s32 mode, Fx0e2Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
                 work->unk7C.vx = D_801F0FFC.vx;
                 work->unk7C.vy = D_801F0FFC.vy;
                 work->unk7C.vz = D_801F0FFC.vz;
-                ex->Hi_DrawMorphEffModel(&work->unk7C, &work->unk84, (s32)&work->unk94, work->unk150[4], work->unk150[5],
+                ex->Hi_DrawMorphEffModel(&work->unk7C, &work->unk84, (s32)&work->unk94, work->model150[4], work->model150[5],
                                          0);
                 if (work->emit28[i6] != NULL && work->emit28[i6]->state == BTLFX_EMIT_DONE) {
                     work->emit28[i6] = NULL;
@@ -815,8 +815,8 @@ s32 fx_0e2_op80(s32 mode, Fx0e2Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
                 work->unk7C.vx = D_801F0FFC.vx;
                 work->unk7C.vy = D_801F0FFC.vy;
                 work->unk7C.vz = D_801F0FFC.vz;
-                ex->Hi_DrawEffModel(&work->unk7C, &work->unk84, (s32)&work->unk94, work->unk150[6]);
-                ex->Hi_DrawEffModel(&work->unk7C, &work->unk84, (s32)&work->unk94, work->unk150[7]);
+                ex->Hi_DrawEffModel(&work->unk7C, &work->unk84, (s32)&work->unk94, work->model150[6]);
+                ex->Hi_DrawEffModel(&work->unk7C, &work->unk84, (s32)&work->unk94, work->model150[7]);
                 fxm_drawScrollMoveX(work->unk14E * 0x14A - work->unk14C * work->unk14E, 0x1C0, 0x180, 0x80, 0x40, 0x1C0, 0x1C0);
                 work->unk14C++;
                 if (frame >= 0xF8) {
@@ -830,10 +830,10 @@ s32 fx_0e2_op80(s32 mode, Fx0e2Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
         m = frame - 0x2E;
         if (m >= 0 && m < 0x69 && !(frame >= 0x97 && frame < 0xF0)) {
             if (m < 0x14) {
-                ex->Hi_DrawEffModel(&work->unkB8, &work->unkC0, (s32)&work->unkD0, work->unk150[8]);
-                ex->Hi_DrawEffModel(&work->unkB8, &work->unkC0, (s32)&work->unkD0, work->unk150[9]);
+                ex->Hi_DrawEffModel(&work->unkB8, &work->unkC0, (s32)&work->unkD0, work->model150[8]);
+                ex->Hi_DrawEffModel(&work->unkB8, &work->unkC0, (s32)&work->unkD0, work->model150[9]);
             } else {
-                ex->Hi_DrawEffModel(&work->unkB8, &work->unkC0, (s32)&work->unkD0, work->unk150[10]);
+                ex->Hi_DrawEffModel(&work->unkB8, &work->unkC0, (s32)&work->unkD0, work->model150[10]);
             }
         }
         if (frame >= 0x97 && frame < 0xF0) {
@@ -849,7 +849,7 @@ s32 fx_0e2_op80(s32 mode, Fx0e2Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
                         work->unkE8.vy -= 0xC18;
                         work->unkE8.vz -= 0x4E20;
                     }
-                    ex->Hi_DrawEffModel(&work->unkE0, &work->unkE8, (s32)&work->unkF8, work->unk150[j + 11]);
+                    ex->Hi_DrawEffModel(&work->unkE0, &work->unkE8, (s32)&work->unkF8, work->model150[j + 11]);
                     dr->unk0[k][0] += dr->unk30[0];
                     dr->unk0[k][1] += dr->unk30[1];
                     dr->unk0[k][2] += dr->unk30[2];
@@ -965,7 +965,7 @@ s32 fx_0e2_op81(s32 mode, Fx0e2Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
         work->unk2C.vy = 0x1000;
         work->unk2C.vz = 0x1000;
         for (i = 0; i < 3; i++) {
-            work->unk124[i] = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, D_801ECB68[i]), 1);
+            work->model124[i] = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, D_801ECB68[i]), 1);
         }
         work->unk3C.vx = 0;
         work->unk3C.vy = 0;
@@ -978,13 +978,13 @@ s32 fx_0e2_op81(s32 mode, Fx0e2Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
         work->unk54.vz = 0x1000;
         for (i = 0; i < 5; i++) {
             fxm_rotPosPathInit(&D_801EE99C[i], (u16 *)fxm_offsetTableEntry(ex->btlfx_getFileData(entry->file, 0x9C), (u16)i));
-            work->unk124[i + 3] = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, D_801ECB70[i]), 1);
+            work->model124[i + 3] = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, D_801ECB70[i]), 1);
         }
         for (i = 0; i < 4; i++) {
             setVector(&work->unk64[i], 0, 0, 0);
             setVector(&work->unk84[i], 0, 0, 0);
             setVector(&work->unkC4[i], 0x1000, 0x1000, 0x1000);
-            work->unk124[i + 8] = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, 0x80), 1);
+            work->model124[i + 8] = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, 0x80), 1);
         }
         return 0;
     } else {
@@ -1044,11 +1044,11 @@ s32 fx_0e2_op81(s32 mode, Fx0e2Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
         }
         if ((u32)(frame - 1) < 0x2D) {
             if (frame - 1 >= 0x12) {
-                m = work->unk124[2];
+                m = work->model124[2];
             } else if (frame - 1 >= 5) {
-                m = work->unk124[1];
+                m = work->model124[1];
             } else {
-                m = work->unk124[0];
+                m = work->model124[0];
             }
             ex->Hi_SetEffModelSlice(m, work->unk1C.vy);
             ex->Hi_DrawSliceEffModel(&work->unk14, &work->unk1C, (s32)&work->unk2C, m);
@@ -1063,15 +1063,15 @@ s32 fx_0e2_op81(s32 mode, Fx0e2Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
                 work->unk44.vz = v.vz;
                 work->unk44.vx -= 0x18D;
                 work->unk44.vz -= 0x25E;
-                ex->Hi_SetEffModelSlice(work->unk124[i4 + 3], work->unk44.vy);
-                ex->Hi_DrawSliceEffModel(&work->unk3C, &work->unk44, (s32)&work->unk54, work->unk124[i4 + 3]);
+                ex->Hi_SetEffModelSlice(work->model124[i4 + 3], work->unk44.vy);
+                ex->Hi_DrawSliceEffModel(&work->unk3C, &work->unk44, (s32)&work->unk54, work->model124[i4 + 3]);
             }
         }
         if ((u32)(frame - 1) < 0x2D) {
             for (i5 = 1; i5 < 4; i5++) {
                 setVector(&work->unk84[i5], D_801F103C[i5].vx, D_801F103C[i5].vy, D_801F103C[i5].vz);
-                ex->Hi_SetEffModelSlice(work->unk124[i5 + 8], work->unk84[i5].vy);
-                ex->Hi_DrawSliceEffModel(&work->unk64[i5], &work->unk84[i5], (s32)&work->unkC4[i5], work->unk124[i5 + 8]);
+                ex->Hi_SetEffModelSlice(work->model124[i5 + 8], work->unk84[i5].vy);
+                ex->Hi_DrawSliceEffModel(&work->unk64[i5], &work->unk84[i5], (s32)&work->unkC4[i5], work->model124[i5 + 8]);
             }
         }
         return frame >= 0x30;
@@ -1137,8 +1137,8 @@ s32 fx_0e2_op82(s32 mode, Fx0e2Work82 *work, Unk800F78A4 *env, Unk80100C78Entry 
         setVector(&work->unk14, 0, 0, 0);
         setVector(&work->unk1C, 0, 0, 0x4B0);
         setVector(&work->unk2C, 0x1CCC, 0x1000, 0x1CCC);
-        work->unk68 = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, 0x11), mode);
-        work->unk6A = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, 0x1D), mode);
+        work->model68 = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, 0x11), mode);
+        work->model6A = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, 0x1D), mode);
         work->unk58 = -1;
         work->unk5C = -1;
         work->unk60 = mode;
@@ -1324,13 +1324,13 @@ s32 fx_0e2_op82(s32 mode, Fx0e2Work82 *work, Unk800F78A4 *env, Unk80100C78Entry 
             }
         }
         if (frame >= 8 && frame < 60) {
-            ex->Hi_DrawEffModel(&work->unkC, &work->unk1C, (s32)&work->unk2C, work->unk68);
-            ex->Hi_DrawEffModel(&work->unk14, &work->unk1C, (s32)&work->unk2C, work->unk6A);
+            ex->Hi_DrawEffModel(&work->unkC, &work->unk1C, (s32)&work->unk2C, work->model68);
+            ex->Hi_DrawEffModel(&work->unk14, &work->unk1C, (s32)&work->unk2C, work->model6A);
             if (work->unk60 >= 0) {
                 work->unk3C = fxm_lerpRatio(0, -0x80, 0x20 - work->unk60, 0x20);
                 work->unk60--;
-                ex->Hi_ModifyEffModelRGB(work->unk68, work->unk3C, work->unk3C, work->unk3C);
-                ex->Hi_ModifyEffModelRGB(work->unk6A, work->unk3C, work->unk3C, work->unk3C);
+                ex->Hi_ModifyEffModelRGB(work->model68, work->unk3C, work->unk3C, work->unk3C);
+                ex->Hi_ModifyEffModelRGB(work->model6A, work->unk3C, work->unk3C, work->unk3C);
             }
         }
         fxm_drawScrollMoveX(work->unk66 * 0x78 - work->unk64 * work->unk66, 0x1C0, 0x180, 0x80, 0x40, 0x1C0, 0x1C0);

@@ -49,7 +49,7 @@ typedef struct {
     Fx063Model unk40[3];
     VECTOR unk94; /* position */
     SVECTOR unkA4; /* eye */
-    s32 unkAC; /* model */
+    s32 modelAC; /* model */
     SVECTOR unkB0; /* rotation */
     VECTOR unkB8; /* position */
     VECTOR unkC8; /* scale */

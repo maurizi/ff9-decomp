@@ -31,7 +31,7 @@ static s32 fx_0cc_op80PoolTask(s32 mode, Fx0ccPart *part, Unk800F78A4 *env, Unk8
             rot.vx = frame * 0x18;
             rot.vy = frame * 0x28;
             rot.vz = 0;
-            ex->Hi_DrawEffModel(&rot, (VECTOR *)mpos, (s32)scale, work->unk10);
+            ex->Hi_DrawEffModel(&rot, (VECTOR *)mpos, (s32)scale, work->model10);
             env->otZ = 0x80;
             ex->btlfx_drawParticles((u8 *)ex->btlfx_getFileData(entry->file, 7), &part->unk4, NULL, 0x1000, 0, 1, -1, 0, 0);
             env->otZ = 0;
@@ -86,7 +86,7 @@ s32 fx_0cc_op80(s32 mode, Fx0ccWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
         work->unkC = 0;
         fx_0cc_env = env;
         ex->btlfx_initEffModels(fx_0cc_effModels, 1);
-        work->unk10 = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, 0xF), 0);
+        work->model10 = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, 0xF), 0);
         BTLFX_COPY_SVEC(&work->unk4, &env->targets->centerX);
         work->unk4.vy = 0;
     } else {

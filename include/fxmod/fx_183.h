@@ -31,7 +31,7 @@ typedef struct {
     SVECTOR unk20; /* model rotation */
     VECTOR unk28; /* model position */
     VECTOR unk38; /* model scale */
-    u16 unk48; /* model */
+    u16 model48; /* model */
 } Fx183Work81; /* 0x4C */
 
 typedef struct {
@@ -44,7 +44,7 @@ typedef struct {
     SVECTOR unk40; /* target position */
     s32 unk48; /* fade-in countdown */
     s32 unk4C; /* fade-out countdown */
-    u16 unk50[6]; /* models */
+    u16 model50[6]; /* models */
 } Fx183Work82; /* 0x5C */
 
 typedef struct {

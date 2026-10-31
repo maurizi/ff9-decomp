@@ -99,8 +99,8 @@ typedef struct {
     SVECTOR unk140;
     SVECTOR unk148[6];
     s16 unk178;
-    u16 unk17A[6];
-    u16 unk186;
+    u16 model17A[6];
+    u16 model186;
 } Fx123Work81; /* 0x188 */
 
 typedef struct {

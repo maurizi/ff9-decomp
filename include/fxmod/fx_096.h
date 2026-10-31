@@ -22,8 +22,8 @@ typedef struct {
     s32 unk54; /* brightness */
     SVECTOR unk58; /* caster position */
     s16 unk60; /* fade countdown */
-    u16 unk62; /* models */
-    u16 unk64;
+    u16 model62; /* models */
+    u16 model64;
 } Fx096Work81;
 
 typedef struct {

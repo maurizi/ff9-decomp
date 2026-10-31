@@ -5,7 +5,7 @@
 #include "btlfx_mod.h"
 
 typedef struct {
-    s32 unk0; /* model */
+    s32 model0; /* model */
     VECTOR unk4; /* scale */
     VECTOR unk14; /* position */
     SVECTOR unk24; /* rotation */

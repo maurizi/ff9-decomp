@@ -68,22 +68,22 @@ typedef struct {
     Pool6CEntry *emit74;
     s16 unk78;
     s16 unk7A;
-    s32 unk7C; /* model */
+    s32 model7C; /* model */
     SVECTOR unk80;
     Fx0e31Vec3 unk88;
     Fx0e31Vec3 unk94;
-    s32 unkA0; /* model */
+    s32 modelA0; /* model */
     Fx0e31Vec3 unkA4;
     Fx0e31Vec3 unkB0;
     SVECTOR unkBC;
-    s32 unkC4; /* models */
-    s32 unkC8;
-    s32 unkCC;
-    s32 unkD0;
-    s32 unkD4;
-    s32 unkD8;
-    s32 unkDC;
-    s32 unkE0;
+    s32 modelC4; /* models */
+    s32 modelC8;
+    s32 modelCC;
+    s32 modelD0;
+    s32 modelD4;
+    s32 modelD8;
+    s32 modelDC;
+    s32 modelE0;
 } Fx0e31Work80; /* 0xE4 */
 
 typedef struct {

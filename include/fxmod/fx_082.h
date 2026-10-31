@@ -12,8 +12,8 @@ typedef struct {
     SVECTOR unk18; /* unk8 moved 0x226 along unk20, raised by 0x145 */
     SVECTOR unk20; /* caster rotation */
     SVECTOR unk28; /* model rotation */
-    s32 unk30; /* models */
-    s32 unk34;
+    s32 model30; /* models */
+    s32 model34;
 } Fx082Work80;
 
 typedef struct {

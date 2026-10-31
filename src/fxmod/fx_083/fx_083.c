@@ -28,7 +28,7 @@ s32 fx_083_op80(s32 mode, Fx083Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
         tex[5] = 0x80;
         tex[7] = 0;
         for (i = 0; i < 4; i++) {
-            work->unk28[i] = ex->Hi_RegisterTexEffModel((BtlUnit9C8 *)ex->btlfx_getFileData(entry->file, 5), 0xFA, 0x3DC0,
+            work->model28[i] = ex->Hi_RegisterTexEffModel((BtlUnit9C8 *)ex->btlfx_getFileData(entry->file, 5), 0xFA, 0x3DC0,
                                                         0x80, 0x80);
             work->unk38[i].vy = i << 10;
             work->unk38[i].vx = 0x100;
@@ -39,7 +39,7 @@ s32 fx_083_op80(s32 mode, Fx083Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
         work->unk98.vy = 0x333;
         work->unk98.vz = 0x333;
         for (i = 0; i < 5; i++) {
-            work->unkB0[i] = ex->Hi_RegisterTexEffModel((BtlUnit9C8 *)ex->btlfx_getFileData(entry->file, 1), 0xB8, 0x3D40,
+            work->modelB0[i] = ex->Hi_RegisterTexEffModel((BtlUnit9C8 *)ex->btlfx_getFileData(entry->file, 1), 0xB8, 0x3D40,
                                                         0xC0, 0);
             work->unkC4[i] = 0;
             work->unkD8[i] = -1;
@@ -146,7 +146,7 @@ s32 fx_083_op80(s32 mode, Fx083Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
                 work->unk58[i].vz =
                     work->unk158.vz + ((ex->math_cos(work->unk38[i].vy) * (work->unk168 + work->unkA8)) >> 12);
                 work->unk58[i].vy = work->unkAC - ((ex->math_sin(0x200) * work->unkA8) >> 12);
-                ex->Hi_DrawEffModel(&work->unk38[i], &work->unk58[i], (s32)&work->unk98, work->unk28[i]);
+                ex->Hi_DrawEffModel(&work->unk38[i], &work->unk58[i], (s32)&work->unk98, work->model28[i]);
             }
             env->camera->points[0].vx = work->unk58[0].vx;
             env->camera->points[0].vy = work->unk58[0].vy;
@@ -198,11 +198,11 @@ s32 fx_083_op80(s32 mode, Fx083Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
             work->unk140.vz = 0;
             for (i = 0; i < 5; i++) {
                 if (work->unkC4[i] != 0) {
-                    ex->Hi_DrawEffModel(&work->unk140, &work->unkEC[i], (s32)&work->unk148, work->unkB0[i]);
+                    ex->Hi_DrawEffModel(&work->unk140, &work->unkEC[i], (s32)&work->unk148, work->modelB0[i]);
                     if (work->unkD8[i] > 0) {
                         work->unkD8[i]--;
                         r = (work->unkD8[i] << 5) - 0x100;
-                        ex->Hi_ModifyEffModelRGB(work->unkB0[i], r, r, r);
+                        ex->Hi_ModifyEffModelRGB(work->modelB0[i], r, r, r);
                         if (work->unkD8[i] == 0) {
                             work->unkC4[i] = 0;
                         }
@@ -210,7 +210,7 @@ s32 fx_083_op80(s32 mode, Fx083Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
                     if (i == 0 && work->unk13C != 0) {
                         work->unk13C--;
                         r = -(work->unk13C * 0x10);
-                        ex->Hi_ModifyEffModelRGB(work->unkB0[0], r, r, r);
+                        ex->Hi_ModifyEffModelRGB(work->modelB0[0], r, r, r);
                     }
                 }
             }

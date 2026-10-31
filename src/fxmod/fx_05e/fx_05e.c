@@ -165,7 +165,7 @@ s32 fx_05e_op80(s32 mode, Fx05eWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
         work->unk2C.vz = 0;
         work->unk2C.vy = work->unk10.vy;
         ex->btlfx_initEffModels(fx_05e_effModels, 1);
-        work->unk28 = (s16)ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, 0x1C), 0);
+        work->model28 = (s16)ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, 0x1C), 0);
     } else {
         state = work->unk0;
         frame = entry->frame;
@@ -194,9 +194,9 @@ s32 fx_05e_op80(s32 mode, Fx05eWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
                 pos.vz = work->unk18.vz;
                 h = ((0x1000 - ex->math_sin(t0 >> 2)) * 0x514) >> 12;
                 pos.vy += h;
-                ex->Hi_SetEffModelSlice(work->unk28, h);
-                ex->Hi_DrawSliceEffModel(&work->unk2C, &pos, (s32)work->unk34, work->unk28);
-                ex->Hi_ModifyEffModelRGB(work->unk28, (((t0 >> 1) + 0x800) >> 5) - 0x80, (((t0 >> 1) + 0x800) >> 5) - 0x80,
+                ex->Hi_SetEffModelSlice(work->model28, h);
+                ex->Hi_DrawSliceEffModel(&work->unk2C, &pos, (s32)work->unk34, work->model28);
+                ex->Hi_ModifyEffModelRGB(work->model28, (((t0 >> 1) + 0x800) >> 5) - 0x80, (((t0 >> 1) + 0x800) >> 5) - 0x80,
                                          (((t0 >> 1) + 0x800) >> 5) - 0x80);
             }
             if (frame >= 0x18) {

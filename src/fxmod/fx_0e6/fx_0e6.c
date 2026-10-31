@@ -20,7 +20,7 @@ s32 fx_0e6_op80(s32 mode, Fx0e6Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
         work->unk4.vx = 0x1000;
         work->unk4.vy = 0x1000;
         work->unk4.vz = 0x1000;
-        work->unk0 = ex->Hi_RegisterTexEffModel((BtlUnit9C8 *)ex->btlfx_getFileData(entry->file, 2), 0xF7, 0x3D00, 0, 0);
+        work->model0 = ex->Hi_RegisterTexEffModel((BtlUnit9C8 *)ex->btlfx_getFileData(entry->file, 2), 0xF7, 0x3D00, 0, 0);
         ex->btlfx_getUnitPos(0x10, (s16 *)&work->unk2C);
         ex->btlfx_getUnitBodyPos(0, 0, (s16 *)&work->unk34);
         ex->btlfx_drawTrail((u8 *)ex->btlfx_getFileData(entry->file, 9), 0, 0, -1, 0x1000, 0x1000, mode,
@@ -32,7 +32,7 @@ s32 fx_0e6_op80(s32 mode, Fx0e6Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
         work->unk14.vy = pos.vy;
         work->unk14.vz = pos.vz;
         if (frame < 4) {
-            ex->Hi_DrawEffModel(&work->unk24, &work->unk14, (s32)&work->unk4, work->unk0);
+            ex->Hi_DrawEffModel(&work->unk24, &work->unk14, (s32)&work->unk4, work->model0);
         }
         if (frame < 8) {
             n = 25;

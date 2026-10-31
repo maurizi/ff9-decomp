@@ -13,8 +13,8 @@ s32 fx_126_op80(s32 mode, Fx126Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
         ex->btlfx_getUnitBonePos(0x10, 0x30, (u16 *)&work->unk60);
         ex->btlfx_getUnitBonePos(0x10, 8, (u16 *)&work->unk58);
         ex->btlfx_initEffModels(fx_126_effModels, 2);
-        work->unk0 = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, 7), 0xFF);
-        work->unk4 = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, 7), 0xFF);
+        work->model0 = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, 7), 0xFF);
+        work->model4 = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, 7), 0xFF);
         work->unk28.vy = 0x700;
         work->unk28.vz = 0x400;
         work->unk30.vy = -0x700;
@@ -40,9 +40,9 @@ s32 fx_126_op80(s32 mode, Fx126Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
     frame = entry->frame;
     if (frame >= 1 && frame <= 0x18) {
         func_801E7D48(0x18, frame, &work->unk58, &work->unk70, &work->unk50, &work->unk68, &work->unk60, &work->unk8);
-        ex->Hi_DrawEffModel(&work->unk28, &work->unk8, (s32)&work->unk38, work->unk0);
+        ex->Hi_DrawEffModel(&work->unk28, &work->unk8, (s32)&work->unk38, work->model0);
         func_801E7D48(0x18, frame, &work->unk60, &work->unk68, &work->unk50, &work->unk70, &work->unk58, &work->unk18);
-        ex->Hi_DrawEffModel(&work->unk30, &work->unk18, (s32)&work->unk38, work->unk4);
+        ex->Hi_DrawEffModel(&work->unk30, &work->unk18, (s32)&work->unk38, work->model4);
         work->unk28.vy -= 0x180;
         work->unk30.vy += 0x180;
         env->camera->points[0].vx = work->unk8.vx;

@@ -40,8 +40,8 @@ typedef struct {
     s32 unk58; /* morph counter */
     s32 unk5C; /* fade-in countdown */
     s32 unk60; /* fade-out countdown */
-    u16 unk64; /* models */
-    u16 unk66;
+    u16 model64; /* models */
+    u16 model66;
 } Fx1e6Work81; /* 0x68 */
 
 extern Unk800F78A4 *fx_1e6_env;

@@ -96,10 +96,10 @@ s32 fx_081_op80(s32 mode, Fx081Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             work->emit34->otZ = 0x10;
         }
         ex->btlfx_initEffModels(fx_081_effModels, 3);
-        work->unk8 = ex->Hi_RegisterTexEffModel((BtlUnit9C8 *)ex->btlfx_getFileData(entry->file, 0x21), 0x137,
+        work->model8 = ex->Hi_RegisterTexEffModel((BtlUnit9C8 *)ex->btlfx_getFileData(entry->file, 0x21), 0x137,
                                                 0xFFFF, 0,
                                                 0x80);
-        work->unkC = ex->Hi_RegisterGouEffModel((BtlUnit9C8 *)ex->btlfx_getFileData(entry->file, 0x17));
+        work->modelC = ex->Hi_RegisterGouEffModel((BtlUnit9C8 *)ex->btlfx_getFileData(entry->file, 0x17));
     } else {
         frame = entry->frame;
         sc = b = 0;
@@ -205,13 +205,13 @@ s32 fx_081_op80(s32 mode, Fx081Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             rot.vx = 0;
             rot.vy = -0x400;
             rot.vz = 0;
-            ex->Hi_DrawEffModel(&rot, (VECTOR *)&work->unk18, (s32)&scale, work->unk8);
-            ex->Hi_ModifyEffModelAbr(work->unk8, 0xFF);
-            ex->Hi_ModifyEffModelRGB(work->unk8, (D_801EA73C >> 5) - 0x80, (D_801EA73C >> 5) - 0x80,
+            ex->Hi_DrawEffModel(&rot, (VECTOR *)&work->unk18, (s32)&scale, work->model8);
+            ex->Hi_ModifyEffModelAbr(work->model8, 0xFF);
+            ex->Hi_ModifyEffModelRGB(work->model8, (D_801EA73C >> 5) - 0x80, (D_801EA73C >> 5) - 0x80,
                                      (D_801EA73C >> 5) - 0x80);
-            ex->Hi_DrawEffModel(&rot, (VECTOR *)&work->unk18, (s32)&scale, work->unkC);
-            ex->Hi_ModifyEffModelAbr(work->unkC, 0xFF);
-            ex->Hi_ModifyEffModelRGB(work->unkC, (D_801EA73C >> 5) - 0x80, (D_801EA73C >> 5) - 0x80,
+            ex->Hi_DrawEffModel(&rot, (VECTOR *)&work->unk18, (s32)&scale, work->modelC);
+            ex->Hi_ModifyEffModelAbr(work->modelC, 0xFF);
+            ex->Hi_ModifyEffModelRGB(work->modelC, (D_801EA73C >> 5) - 0x80, (D_801EA73C >> 5) - 0x80,
                                      (D_801EA73C >> 5) - 0x80);
             ex->btlfx_drawBackdrop((BtlBgLayers *)ex->btlfx_getFileData(entry->file, 0x20), work->unk4);
             env->otZ = 0x80;
@@ -306,7 +306,7 @@ s32 fx_081_op81(s32 mode, Fx081Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
             if (frame >= 7) {
                 work->unk0 = 1;
                 entry->frame = -1;
-                work->unk28 = ex->Hi_RegisterTexEffModel((BtlUnit9C8 *)ex->btlfx_getFileData(entry->file, 0xA), 0xB9,
+                work->model28 = ex->Hi_RegisterTexEffModel((BtlUnit9C8 *)ex->btlfx_getFileData(entry->file, 0xA), 0xB9,
                                                          0x3E00, 0x80, 0);
                 ex->btlfx_drawScreenTint((u32 *)(env->ot + 1), 1, 0, 0, 0xFF);
             }

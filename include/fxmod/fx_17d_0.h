@@ -56,10 +56,10 @@ typedef struct {
     SVECTOR unk48; /* camera */
     u8 pad50[0x58 - 0x50];
     s32 unk58; /* spark count */
-    s16 unk5C[21]; /* piece models */
+    s16 model5C[21]; /* piece models */
     s16 unk86[21]; /* piece morph models */
     s16 unkB0[5]; /* body models */
-    s16 unkBA; /* model */
+    s16 modelBA; /* model */
 } Fx17d0Work80; /* 0xBC */
 
 typedef struct {

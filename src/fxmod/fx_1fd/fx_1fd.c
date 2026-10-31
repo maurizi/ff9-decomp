@@ -332,8 +332,8 @@ s32 fx_1fd_op82(s32 mode, Fx1fdWork82 *work, Unk800F78A4 *env, Unk80100C78Entry 
         setVector(&work->unk14, 0, 0, 0);
         setVector(&work->unk1C, 0, 0, 0x4B0);
         setVector(&work->unk2C, 0x1CCC, 0x1000, 0x1CCC);
-        work->unk68 = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, 5), mode);
-        work->unk6A = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, 6), mode);
+        work->model68 = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, 5), mode);
+        work->model6A = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, 6), mode);
         work->unk58 = -1;
         work->unk5C = -1;
         work->unk60 = mode;
@@ -519,13 +519,13 @@ s32 fx_1fd_op82(s32 mode, Fx1fdWork82 *work, Unk800F78A4 *env, Unk80100C78Entry 
             }
         }
         if (frame >= 8 && frame < 60) {
-            ex->Hi_DrawEffModel(&work->unkC, &work->unk1C, (s32)&work->unk2C, work->unk68);
-            ex->Hi_DrawEffModel(&work->unk14, &work->unk1C, (s32)&work->unk2C, work->unk6A);
+            ex->Hi_DrawEffModel(&work->unkC, &work->unk1C, (s32)&work->unk2C, work->model68);
+            ex->Hi_DrawEffModel(&work->unk14, &work->unk1C, (s32)&work->unk2C, work->model6A);
             if (work->unk60 >= 0) {
                 work->unk3C = fxm_lerpRatio(0, -0x80, 0x20 - work->unk60, 0x20);
                 work->unk60--;
-                ex->Hi_ModifyEffModelRGB(work->unk68, work->unk3C, work->unk3C, work->unk3C);
-                ex->Hi_ModifyEffModelRGB(work->unk6A, work->unk3C, work->unk3C, work->unk3C);
+                ex->Hi_ModifyEffModelRGB(work->model68, work->unk3C, work->unk3C, work->unk3C);
+                ex->Hi_ModifyEffModelRGB(work->model6A, work->unk3C, work->unk3C, work->unk3C);
             }
         }
         fxm_drawScrollMoveX(work->unk66 * 0x78 - work->unk64 * work->unk66, 0x1C0, 0x180, 0x80, 0x40, 0x1C0, 0x1C0);

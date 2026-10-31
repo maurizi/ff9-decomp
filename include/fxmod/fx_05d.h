@@ -38,7 +38,7 @@ typedef struct {
     SVECTOR unk4C;
     s32 unk54; /* frames into the current morph */
     s32 unk58;
-    u16 unk5C[6]; /* morph models */
+    u16 model5C[6]; /* morph models */
 } Fx05dWork; /* 0x68 */
 
 extern u8 D_801E8048[6];

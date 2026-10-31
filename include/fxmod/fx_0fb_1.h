@@ -83,7 +83,7 @@ typedef struct {
     SVECTOR unk34; /* summon rotation */
     SVECTOR unk3C; /* camera */
     u8 pad44[8];
-    s32 unk4C[2]; /* models */
+    s32 model4C[2]; /* models */
     Fx0fb1Vec3 unk54; /* model position */
     Fx0fb1Vec3 unk60; /* model scale */
     SVECTOR unk6C; /* model rotation */
@@ -91,15 +91,15 @@ typedef struct {
     Fx0fb1Vec3 unk80;
     SVECTOR unk8C;
     Fx0fb1Vec3 unk94;
-    s32 unkA0; /* models */
-    s32 unkA4;
-    s32 unkA8;
-    s32 unkAC;
-    s32 unkB0;
-    s32 unkB4;
-    s32 unkB8;
-    s32 unkBC;
-    s32 unkC0;
+    s32 modelA0; /* models */
+    s32 modelA4;
+    s32 modelA8;
+    s32 modelAC;
+    s32 modelB0;
+    s32 modelB4;
+    s32 modelB8;
+    s32 modelBC;
+    s32 modelC0;
     SVECTOR unkC4[4];
     Pool6CEntry *emitE4;
 } Fx0fb1Op80Work; /* 0xE8 */

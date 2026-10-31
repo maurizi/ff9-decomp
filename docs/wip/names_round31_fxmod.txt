@@ -838,3 +838,7 @@ fx_1fe_effModels  <-  fx_1fe:D_801E9070
 ## Fields: emitter handles
 Every unkXX member declared Pool6CEntry * (or an array of them) in the module structs -> emitXX (834 members;
 Pool6CEntry is the emitter btlfx_startEmitter / btlfx_spawnEmitter return).
+
+## Fields: effect model ids
+Integer members that receive btlfx_registerEffectModel / Hi_Register{Tex,Gou,Solid}EffModel / Hi_RegisterTex{List,Ptr}Model
+(the effect model slot id later passed to Hi_DrawEffModel and friends) -> modelXX (476 members).

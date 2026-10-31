@@ -399,18 +399,18 @@ s32 fx_0fb_1_op80(s32 mode, Fx0fb1Op80Work *work, Unk800F78A4 *env, Unk80100C78E
         fx_0fb_1_env = env;
         ex->btlfx_initEffModels(((Fx0fb1Summon *)env->loader)->unk38, 0x1F);
         for (i = 0; i < 2; i++) {
-            work->unk4C[i] = ex->Hi_RegisterTexEffModel((BtlUnit9C8 *)ex->btlfx_getFileData(entry->file, D_801F0864[i]),
+            work->model4C[i] = ex->Hi_RegisterTexEffModel((BtlUnit9C8 *)ex->btlfx_getFileData(entry->file, D_801F0864[i]),
                                                         0x9A, 0x3E00, 0, 0);
         }
-        work->unkA0 = ex->Hi_RegisterTexEffModel((BtlUnit9C8 *)ex->btlfx_getFileData(entry->file, 0x82), 0x96, 0x3D40, 0, 0);
-        work->unkA4 = ex->Hi_RegisterTexEffModel((BtlUnit9C8 *)ex->btlfx_getFileData(entry->file, 0x87), 0x9A, 0x3E00, 0, 0);
-        work->unkA8 = ex->Hi_RegisterTexEffModel((BtlUnit9C8 *)ex->btlfx_getFileData(entry->file, 0x90), 0xBD, 0x3E40, 0, 0);
-        work->unkAC = ex->Hi_RegisterTexEffModel((BtlUnit9C8 *)ex->btlfx_getFileData(entry->file, 0x8F), 0xBD, 0x3E40, 0, 0);
-        work->unkB0 = ex->Hi_RegisterTexEffModel((BtlUnit9C8 *)ex->btlfx_getFileData(entry->file, 0x89), 0xBD, 0x3E40, 0, 0);
-        work->unkB4 = ex->Hi_RegisterTexEffModel((BtlUnit9C8 *)ex->btlfx_getFileData(entry->file, 0x13), 0xBD, 0x3EC0, 0, 0x80);
-        work->unkB8 = ex->Hi_RegisterTexEffModel((BtlUnit9C8 *)ex->btlfx_getFileData(entry->file, 0x23), 0x3D, 0x3E81, 0, 0x80);
-        work->unkBC = ex->Hi_RegisterTexEffModel((BtlUnit9C8 *)ex->btlfx_getFileData(entry->file, 3), 0x138, 0xFFFF, 0, 0x80);
-        work->unkC0 = ex->Hi_RegisterTexEffModel((BtlUnit9C8 *)ex->btlfx_getFileData(entry->file, 0x8C), 0x3A, 0x3D0A, 0, 0x80);
+        work->modelA0 = ex->Hi_RegisterTexEffModel((BtlUnit9C8 *)ex->btlfx_getFileData(entry->file, 0x82), 0x96, 0x3D40, 0, 0);
+        work->modelA4 = ex->Hi_RegisterTexEffModel((BtlUnit9C8 *)ex->btlfx_getFileData(entry->file, 0x87), 0x9A, 0x3E00, 0, 0);
+        work->modelA8 = ex->Hi_RegisterTexEffModel((BtlUnit9C8 *)ex->btlfx_getFileData(entry->file, 0x90), 0xBD, 0x3E40, 0, 0);
+        work->modelAC = ex->Hi_RegisterTexEffModel((BtlUnit9C8 *)ex->btlfx_getFileData(entry->file, 0x8F), 0xBD, 0x3E40, 0, 0);
+        work->modelB0 = ex->Hi_RegisterTexEffModel((BtlUnit9C8 *)ex->btlfx_getFileData(entry->file, 0x89), 0xBD, 0x3E40, 0, 0);
+        work->modelB4 = ex->Hi_RegisterTexEffModel((BtlUnit9C8 *)ex->btlfx_getFileData(entry->file, 0x13), 0xBD, 0x3EC0, 0, 0x80);
+        work->modelB8 = ex->Hi_RegisterTexEffModel((BtlUnit9C8 *)ex->btlfx_getFileData(entry->file, 0x23), 0x3D, 0x3E81, 0, 0x80);
+        work->modelBC = ex->Hi_RegisterTexEffModel((BtlUnit9C8 *)ex->btlfx_getFileData(entry->file, 3), 0x138, 0xFFFF, 0, 0x80);
+        work->modelC0 = ex->Hi_RegisterTexEffModel((BtlUnit9C8 *)ex->btlfx_getFileData(entry->file, 0x8C), 0x3A, 0x3D0A, 0, 0x80);
         work->unkC.vy = -0x1000;
         work->unkC.vx = 0;
         work->unk8C.vz = 0;
@@ -467,9 +467,9 @@ s32 fx_0fb_1_op80(s32 mode, Fx0fb1Op80Work *work, Unk800F78A4 *env, Unk80100C78E
         }
         work->unk54.vy -= 0x20;
         work->unk54.vz += 0x40;
-        ex->Hi_DrawEffModel(&work->unk6C, (VECTOR *)&work->unk54, (s32)&work->unk60, work->unkA8);
+        ex->Hi_DrawEffModel(&work->unk6C, (VECTOR *)&work->unk54, (s32)&work->unk60, work->modelA8);
         work->unk6C.vz += 0x400;
-        ex->Hi_DrawEffModel(&work->unk6C, (VECTOR *)&work->unk54, (s32)&work->unk60, work->unkA8);
+        ex->Hi_DrawEffModel(&work->unk6C, (VECTOR *)&work->unk54, (s32)&work->unk60, work->modelA8);
         s = 0x1000;
         work->unk6C.vz -= 0x400;
         glow = 0x97;
@@ -543,17 +543,17 @@ s32 fx_0fb_1_op80(s32 mode, Fx0fb1Op80Work *work, Unk800F78A4 *env, Unk80100C78E
         work->unk6C.vz += 0x10;
         t = (frame << 12) / 22;
         if (frame < 5) {
-            ex->Hi_DrawEffModel(&work->unk6C, (VECTOR *)&work->unk54, (s32)&work->unk60, work->unkA8);
+            ex->Hi_DrawEffModel(&work->unk6C, (VECTOR *)&work->unk54, (s32)&work->unk60, work->modelA8);
             work->unk6C.vz += 0x400;
-            ex->Hi_DrawEffModel(&work->unk6C, (VECTOR *)&work->unk54, (s32)&work->unk60, work->unkA8);
+            ex->Hi_DrawEffModel(&work->unk6C, (VECTOR *)&work->unk54, (s32)&work->unk60, work->modelA8);
             work->unk6C.vz -= 0x400;
         } else {
             s32 m;
 
             m = 0x1000 - ex->math_sin(((frame - 4) << 10) / 18);
-            ex->Hi_DrawMorphEffModel(&work->unk6C, (VECTOR *)&work->unk54, (s32)&work->unk60, work->unkA8, work->unkAC, m);
+            ex->Hi_DrawMorphEffModel(&work->unk6C, (VECTOR *)&work->unk54, (s32)&work->unk60, work->modelA8, work->modelAC, m);
             work->unk6C.vz += 0x400;
-            ex->Hi_DrawMorphEffModel(&work->unk6C, (VECTOR *)&work->unk54, (s32)&work->unk60, work->unkA8, work->unkAC, m);
+            ex->Hi_DrawMorphEffModel(&work->unk6C, (VECTOR *)&work->unk54, (s32)&work->unk60, work->modelA8, work->modelAC, m);
             work->unk6C.vz -= 0x400;
         }
         ex->btlfx_drawScreenTint((u32 *)(env->ot + 1), 1, t >> 8, t >> 7, t >> 6);
@@ -611,15 +611,15 @@ s32 fx_0fb_1_op80(s32 mode, Fx0fb1Op80Work *work, Unk800F78A4 *env, Unk80100C78E
             ex->Hi_DrawSummonModel(&work->unk34, (VECTOR *)&work->unk1C, (s32)&work->unk28,
                                    ((Fx0fb1Summon *)env->loader)->unk60, 1);
             work->unk1C.vy += 0x10E;
-            ex->Hi_DrawEffModel(&work->unk34, (VECTOR *)&work->unk1C, (s32)&work->unk94, work->unkA4);
+            ex->Hi_DrawEffModel(&work->unk34, (VECTOR *)&work->unk1C, (s32)&work->unk94, work->modelA4);
             work->unk1C.vy -= 0x10E;
         }
         work->unk6C.vx += 0x20;
         work->unk6C.vy += 0x10;
         work->unk60.vx = work->unk60.vy = work->unk60.vz = 0xAAA - t / 4;
-        ex->Hi_DrawEffModel(&work->unk6C, (VECTOR *)&work->unk54, (s32)&work->unk60, work->unkB0);
+        ex->Hi_DrawEffModel(&work->unk6C, (VECTOR *)&work->unk54, (s32)&work->unk60, work->modelB0);
         work->unk6C.vz += 0x400;
-        ex->Hi_DrawEffModel(&work->unk6C, (VECTOR *)&work->unk54, (s32)&work->unk60, work->unkB0);
+        ex->Hi_DrawEffModel(&work->unk6C, (VECTOR *)&work->unk54, (s32)&work->unk60, work->modelB0);
         work->unk6C.vz -= 0x400;
         zz5 = ex->math_sin(c) + 0x2000;
         ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->file, 8), &work->unkC, NULL, zz5, frame, 1, -1);
@@ -650,9 +650,9 @@ s32 fx_0fb_1_op80(s32 mode, Fx0fb1Op80Work *work, Unk800F78A4 *env, Unk80100C78E
         ca = ((0x1000 - (t * 2) / 3) >> 5) - 0x80;
         ex->Hi_ModifySummonModelRGB(((Fx0fb1Summon *)env->loader)->unk60, ca, ca, ca);
         work->unk1C.vy += 0x10E;
-        ex->Hi_DrawEffModel(&work->unk34, (VECTOR *)&work->unk1C, (s32)&work->unk94, work->unkA4);
+        ex->Hi_DrawEffModel(&work->unk34, (VECTOR *)&work->unk1C, (s32)&work->unk94, work->modelA4);
         cb = ((0x1000 - t) >> 5) - 0x80;
-        ex->Hi_ModifyEffModelRGB(work->unkA4, cb, cb, cb);
+        ex->Hi_ModifyEffModelRGB(work->modelA4, cb, cb, cb);
         glow = 0xAA;
         work->unk1C.vy -= 0x10E;
         work->unk6C.vx += 0x20;
@@ -666,9 +666,9 @@ s32 fx_0fb_1_op80(s32 mode, Fx0fb1Op80Work *work, Unk800F78A4 *env, Unk80100C78E
         }
         if (b != 0) {
             work->unk60.vx = work->unk60.vy = work->unk60.vz = b;
-            ex->Hi_DrawEffModel(&work->unk6C, (VECTOR *)&work->unk54, (s32)&work->unk60, work->unkB0);
+            ex->Hi_DrawEffModel(&work->unk6C, (VECTOR *)&work->unk54, (s32)&work->unk60, work->modelB0);
             work->unk6C.vz += 0x400;
-            ex->Hi_DrawEffModel(&work->unk6C, (VECTOR *)&work->unk54, (s32)&work->unk60, work->unkB0);
+            ex->Hi_DrawEffModel(&work->unk6C, (VECTOR *)&work->unk54, (s32)&work->unk60, work->modelB0);
             work->unk6C.vz -= 0x400;
         }
         b = b * 5 + 0x1000;
@@ -689,9 +689,9 @@ s32 fx_0fb_1_op80(s32 mode, Fx0fb1Op80Work *work, Unk800F78A4 *env, Unk80100C78E
             sc.vx = sc.vy = sc.vz = zz2;
             for (b = 0; b < 4; b++) {
                 work->unkC4[b].vz = (s16)(work->unkC4[b].vz - 0x18) - b * 0x30;
-                ex->Hi_DrawEffModel(&work->unkC4[b], (VECTOR *)&work->unk54, (s32)&sc, work->unkB4);
+                ex->Hi_DrawEffModel(&work->unkC4[b], (VECTOR *)&work->unk54, (s32)&sc, work->modelB4);
                 sc.vx = sc.vy = sc.vz = (sc.vx * 0x12) >> 4;
-                ex->Hi_ModifyEffModelRGB(work->unkB4, ((ex->math_sin(r) * 2) / 3 >> 5) - 0x80,
+                ex->Hi_ModifyEffModelRGB(work->modelB4, ((ex->math_sin(r) * 2) / 3 >> 5) - 0x80,
                                          ((ex->math_sin(r) * 2) / 3 >> 5) - 0x80,
                                          ((ex->math_sin(r) * 2) / 3 >> 5) - 0x80);
             }
@@ -751,9 +751,9 @@ s32 fx_0fb_1_op80(s32 mode, Fx0fb1Op80Work *work, Unk800F78A4 *env, Unk80100C78E
             c = (frame << 12) >> 4;
             a = ex->math_sin((frame << 12) >> 6) >> 1;
             work->unk60.vx = work->unk60.vy = work->unk60.vz = a;
-            ex->Hi_DrawEffModel(&work->unk6C, (VECTOR *)&work->unk54, (s32)&work->unk60, work->unkB0);
+            ex->Hi_DrawEffModel(&work->unk6C, (VECTOR *)&work->unk54, (s32)&work->unk60, work->modelB0);
             v = ((0x1000 - c) >> 5) - 0x80;
-            ex->Hi_ModifyEffModelRGB(work->unkB0, v, v, v);
+            ex->Hi_ModifyEffModelRGB(work->modelB0, v, v, v);
         }
         env->otZ = 0x100;
         c = ex->math_cos(t >> 2);
@@ -855,8 +855,8 @@ s32 fx_0fb_1_op80(s32 mode, Fx0fb1Op80Work *work, Unk800F78A4 *env, Unk80100C78E
         if (frame < 0x20) {
             work->unk6C.vz += 0xC;
             r = 0x1000 - (frame << 7);
-            ex->Hi_DrawEffModel(&work->unk6C, (VECTOR *)&work->unk54, (s32)&work->unk60, work->unkB8);
-            ex->Hi_ModifyEffModelRGB(work->unkB8, ((ex->math_sin(r >> 2) - 0x800) >> 5) - 0x80,
+            ex->Hi_DrawEffModel(&work->unk6C, (VECTOR *)&work->unk54, (s32)&work->unk60, work->modelB8);
+            ex->Hi_ModifyEffModelRGB(work->modelB8, ((ex->math_sin(r >> 2) - 0x800) >> 5) - 0x80,
                                      ((ex->math_sin(r >> 2) - 0x800) >> 5) - 0x80,
                                      ((ex->math_sin(r >> 2) - 0x800) >> 5) - 0x80);
         }
@@ -864,8 +864,8 @@ s32 fx_0fb_1_op80(s32 mode, Fx0fb1Op80Work *work, Unk800F78A4 *env, Unk80100C78E
         rot.vy = 0x400;
         rot.vz = 0;
         sc.vx = sc.vy = sc.vz = ex->math_sin(f6) + 0x800;
-        ex->Hi_DrawEffModel(&rot, (VECTOR *)&work->unk54, (s32)&sc, work->unkBC);
-        ex->Hi_ModifyEffModelRGB(work->unkBC, (((ex->math_cos(f6) >> 1) + 0x800) >> 5) - 0x80,
+        ex->Hi_DrawEffModel(&rot, (VECTOR *)&work->unk54, (s32)&sc, work->modelBC);
+        ex->Hi_ModifyEffModelRGB(work->modelBC, (((ex->math_cos(f6) >> 1) + 0x800) >> 5) - 0x80,
                                  (((ex->math_cos(f6) >> 1) + 0x800) >> 5) - 0x80,
                                  (((ex->math_cos(f6) >> 1) + 0x800) >> 5) - 0x80);
         ex->btlfx_drawBackdrop((BtlBgLayers *)ex->btlfx_getFileData(entry->file, 0x11), work->unk4);
@@ -992,11 +992,11 @@ s32 fx_0fb_1_op80(s32 mode, Fx0fb1Op80Work *work, Unk800F78A4 *env, Unk80100C78E
         } else {
             work->unk8C.vz += 8;
         }
-        ex->Hi_DrawEffModel(&work->unk8C, (VECTOR *)&work->unk74, (s32)&work->unk80, work->unkA0);
+        ex->Hi_DrawEffModel(&work->unk8C, (VECTOR *)&work->unk74, (s32)&work->unk80, work->modelA0);
         if (s != 0x1000) {
             s32 v = (s >> 5) - 0x80;
 
-            ex->Hi_ModifyEffModelRGB(work->unkA0, v, v, v);
+            ex->Hi_ModifyEffModelRGB(work->modelA0, v, v, v);
         }
     }
     if (trail != 0) {

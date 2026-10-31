@@ -53,13 +53,13 @@ static s32 fx_0dc_op80PoolTask(s32 mode, Fx0dcItem *it, Unk800F78A4 *env, Unk801
 typedef struct {
     s32 unk0; /* state */
     s32 unk4; /* frame */
-    s32 unk8; /* models */
-    s32 unkC;
-    s32 unk10;
-    s32 unk14;
-    s32 unk18;
-    s32 unk1C;
-    s32 unk20[14]; /* shard models */
+    s32 model8; /* models */
+    s32 modelC;
+    s32 model10;
+    s32 model14;
+    s32 model18;
+    s32 model1C;
+    s32 model20[14]; /* shard models */
     SVECTOR unk58; /* target position */
     SVECTOR unk60;
     SVECTOR unk68;

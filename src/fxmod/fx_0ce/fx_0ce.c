@@ -20,7 +20,7 @@ s32 fx_0ce_op80(s32 mode, Fx0ceWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
         ex->btlfx_getUnitArgBonePos(0x10, 0, (u16 *)&work->unk18);
         ex->btlfx_aimAngles((s16 *)&work->unk18, (s16 *)&work->unk8, (s16 *)&work->unk24);
         ex->btlfx_initEffModels(fx_0ce_effModels, 1);
-        work->unk20 = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, 7), 1);
+        work->model20 = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, 7), 1);
         p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 2), (s32)&work->unk18);
         if (p != NULL) {
             p->otZ = ex->btlfx_addRadiusSixth(0x10, 0x10);
@@ -67,18 +67,18 @@ s32 fx_0ce_op80(s32 mode, Fx0ceWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
             }
             scale[0] = scale[2] = 0x1A00;
             scale[1] = s;
-            ex->Hi_DrawEffModel(&rot, (VECTOR *)mpos, (s32)scale, work->unk20);
-            ex->Hi_ModifyEffModelAbr(work->unk20, 2);
-            ex->Hi_ModifyEffModelRGB(work->unk20, (ex->math_sin(t >> 1) / 3 >> 5) - 0x80, (ex->math_sin(t >> 1) / 3 >> 5) - 0x80,
+            ex->Hi_DrawEffModel(&rot, (VECTOR *)mpos, (s32)scale, work->model20);
+            ex->Hi_ModifyEffModelAbr(work->model20, 2);
+            ex->Hi_ModifyEffModelRGB(work->model20, (ex->math_sin(t >> 1) / 3 >> 5) - 0x80, (ex->math_sin(t >> 1) / 3 >> 5) - 0x80,
                                      (ex->math_sin(t >> 1) / 3 >> 5) - 0x80);
             rot.vy = -frame * 0x80;
             rot.vz = 0;
             rot.vx = 0;
             scale[0] = scale[2] = 0x2400;
             scale[1] = s;
-            ex->Hi_DrawEffModel(&rot, (VECTOR *)mpos, (s32)scale, work->unk20);
-            ex->Hi_ModifyEffModelAbr(work->unk20, 1);
-            ex->Hi_ModifyEffModelRGB(work->unk20, (ex->math_sin(t >> 1) / 2 >> 5) - 0x80, (ex->math_sin(t >> 1) / 2 >> 5) - 0x80,
+            ex->Hi_DrawEffModel(&rot, (VECTOR *)mpos, (s32)scale, work->model20);
+            ex->Hi_ModifyEffModelAbr(work->model20, 1);
+            ex->Hi_ModifyEffModelRGB(work->model20, (ex->math_sin(t >> 1) / 2 >> 5) - 0x80, (ex->math_sin(t >> 1) / 2 >> 5) - 0x80,
                                      (ex->math_sin(t >> 1) / 2 >> 5) - 0x80);
             if (frame >= 0x14) {
                 ex->btlfx_clearEffModels();

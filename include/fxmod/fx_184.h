@@ -11,7 +11,7 @@ typedef struct {
     SVECTOR unk18; /* model rotation */
     VECTOR unk20; /* model position */
     VECTOR unk30; /* model scale */
-    u16 unk40; /* model */
+    u16 model40; /* model */
 } Fx184Work80;
 
 typedef struct {

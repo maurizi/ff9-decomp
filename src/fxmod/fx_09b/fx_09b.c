@@ -80,7 +80,7 @@ s32 fx_09b_op80(s32 mode, Fx09bWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
         work->unk2C.vx = 0x1000;
         work->unk2C.vy = 0x1000;
         work->unk2C.vz = 0x1000;
-        work->unk70 = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, 6), 1);
+        work->model70 = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, 6), 1);
         work->emit0 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 1), (s32)&work->unk3C);
         work->emit4 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, D_801E80F4[work->unk6C]),
                                        (s32)&D_801E9A64[work->unk6C]);
@@ -132,7 +132,7 @@ s32 fx_09b_op80(s32 mode, Fx09bWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
             work->unk1C.vx = D_801E9A34[work->unk6C].vx;
             work->unk1C.vy = D_801E9A34[work->unk6C].vy;
             work->unk1C.vz = D_801E9A34[work->unk6C].vz;
-            ex->Hi_DrawEffModel(&work->unk14, &work->unk1C, (s32)&work->unk2C, work->unk70);
+            ex->Hi_DrawEffModel(&work->unk14, &work->unk1C, (s32)&work->unk2C, work->model70);
             if (frame == 5 && work->unk6C != 4) {
                 fxm_startMotion2IfActive(0);
             }

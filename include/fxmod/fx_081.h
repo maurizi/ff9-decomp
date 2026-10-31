@@ -24,8 +24,8 @@ typedef struct {
 typedef struct {
     s32 unk0; /* state */
     s32 unk4; /* frame */
-    s32 unk8; /* model */
-    s32 unkC; /* model */
+    s32 model8; /* model */
+    s32 modelC; /* model */
     SVECTOR unk10;
     Fx081Vec3 unk18;
     SVECTOR unk24;
@@ -44,7 +44,7 @@ typedef struct {
     SVECTOR unkC; /* target position */
     SVECTOR unk14;
     Fx081Vec3 unk1C;
-    s32 unk28; /* model */
+    s32 model28; /* model */
 } Fx081Work81; /* 0x2C */
 
 extern s16 D_801E8E7C[10]; /* ring point counts */

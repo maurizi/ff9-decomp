@@ -112,57 +112,57 @@ static s32 fx_004_op80PoolTask(s32 mode, Fx004Item *it, Unk800F78A4 *env, Unk801
     scale.vx >>= 1;
     scale.vy >>= 1;
     if (it->unk4 < 2) {
-        ex->Hi_SetEffModelOffset(work->unk4, 2);
-        ex->Hi_DrawEffModel(r, (VECTOR *)&it->unkC[0], (s32)&scale, work->unk4);
+        ex->Hi_SetEffModelOffset(work->model4, 2);
+        ex->Hi_DrawEffModel(r, (VECTOR *)&it->unkC[0], (s32)&scale, work->model4);
         if (fade < 4000) {
-            ex->Hi_ModifyEffModelAbr(work->unk4, 1);
+            ex->Hi_ModifyEffModelAbr(work->model4, 1);
             c = fade >> 5;
         } else {
-            ex->Hi_ModifyEffModelAbr(work->unk4, 0);
+            ex->Hi_ModifyEffModelAbr(work->model4, 0);
             c = fade * 2;
             c += fade;
             c >>= 6;
         }
         c -= 0x80;
-        ex->Hi_ModifyEffModelRGB(work->unk4, c, c, c);
-        ex->Hi_DrawEffModel(r, (VECTOR *)&it->unkC[0], (s32)&scale, work->unk14);
+        ex->Hi_ModifyEffModelRGB(work->model4, c, c, c);
+        ex->Hi_DrawEffModel(r, (VECTOR *)&it->unkC[0], (s32)&scale, work->model14);
     } else {
-        ex->Hi_DrawEffModel(r, (VECTOR *)&it->unkC[0], (s32)&scale, work->unk10);
+        ex->Hi_DrawEffModel(r, (VECTOR *)&it->unkC[0], (s32)&scale, work->model10);
         if (fade < 4000) {
-            ex->Hi_ModifyEffModelAbr(work->unk10, 1);
+            ex->Hi_ModifyEffModelAbr(work->model10, 1);
             c = fade >> 5;
         } else {
-            ex->Hi_ModifyEffModelAbr(work->unk10, 0);
+            ex->Hi_ModifyEffModelAbr(work->model10, 0);
             c = fade * 2;
             c += fade;
             c >>= 6;
         }
         c -= 0x80;
-        ex->Hi_ModifyEffModelRGB(work->unk10, c, c, c);
-        ex->Hi_DrawEffModel(r, (VECTOR *)&it->unkC[1], (s32)&scale, work->unkC);
+        ex->Hi_ModifyEffModelRGB(work->model10, c, c, c);
+        ex->Hi_DrawEffModel(r, (VECTOR *)&it->unkC[1], (s32)&scale, work->modelC);
         if (fade < 4000) {
-            ex->Hi_ModifyEffModelAbr(work->unkC, 1);
+            ex->Hi_ModifyEffModelAbr(work->modelC, 1);
             c = fade >> 5;
         } else {
-            ex->Hi_ModifyEffModelAbr(work->unkC, 0);
+            ex->Hi_ModifyEffModelAbr(work->modelC, 0);
             c = fade * 2;
             c += fade;
             c >>= 6;
         }
         c -= 0x80;
-        ex->Hi_ModifyEffModelRGB(work->unkC, c, c, c);
-        ex->Hi_DrawEffModel(r, (VECTOR *)&it->unkC[2], (s32)&scale, work->unk8);
+        ex->Hi_ModifyEffModelRGB(work->modelC, c, c, c);
+        ex->Hi_DrawEffModel(r, (VECTOR *)&it->unkC[2], (s32)&scale, work->model8);
         if (fade < 4000) {
-            ex->Hi_ModifyEffModelAbr(work->unk8, 1);
+            ex->Hi_ModifyEffModelAbr(work->model8, 1);
             c = fade >> 5;
         } else {
-            ex->Hi_ModifyEffModelAbr(work->unk8, 0);
+            ex->Hi_ModifyEffModelAbr(work->model8, 0);
             c = fade * 2;
             c += fade;
             c >>= 6;
         }
         c -= 0x80;
-        ex->Hi_ModifyEffModelRGB(work->unk8, c, c, c);
+        ex->Hi_ModifyEffModelRGB(work->model8, c, c, c);
     }
     return 0;
 }
@@ -186,11 +186,11 @@ s32 fx_004_op80(s32 mode, Fx004Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
     } else if (mode == 1) {
         fx_004_env = env;
         ex->btlfx_initEffModels(fx_004_effModels, 6);
-        work->unk4 = (s16)ex->Hi_RegisterTexEffModel((BtlUnit9C8 *)ex->btlfx_getFileData(entry->file, 0x13), 0x9A, 0x3DC0, 0x80, 0);
-        work->unk8 = (s16)ex->Hi_RegisterTexEffModel((BtlUnit9C8 *)ex->btlfx_getFileData(entry->file, 0x15), 0x9A, 0x3DC0, 0x80, 0);
-        work->unkC = (s16)ex->Hi_RegisterTexEffModel((BtlUnit9C8 *)ex->btlfx_getFileData(entry->file, 0x16), 0x9A, 0x3DC0, 0x80, 0);
-        work->unk10 = (s16)ex->Hi_RegisterTexEffModel((BtlUnit9C8 *)ex->btlfx_getFileData(entry->file, 0x17), 0x9A, 0x3DC0, 0x80, 0);
-        work->unk14 = (s16)ex->Hi_RegisterTexEffModel((BtlUnit9C8 *)ex->btlfx_getFileData(entry->file, 0xB), 0xBA, 0x3D40, 0, 0x80);
+        work->model4 = (s16)ex->Hi_RegisterTexEffModel((BtlUnit9C8 *)ex->btlfx_getFileData(entry->file, 0x13), 0x9A, 0x3DC0, 0x80, 0);
+        work->model8 = (s16)ex->Hi_RegisterTexEffModel((BtlUnit9C8 *)ex->btlfx_getFileData(entry->file, 0x15), 0x9A, 0x3DC0, 0x80, 0);
+        work->modelC = (s16)ex->Hi_RegisterTexEffModel((BtlUnit9C8 *)ex->btlfx_getFileData(entry->file, 0x16), 0x9A, 0x3DC0, 0x80, 0);
+        work->model10 = (s16)ex->Hi_RegisterTexEffModel((BtlUnit9C8 *)ex->btlfx_getFileData(entry->file, 0x17), 0x9A, 0x3DC0, 0x80, 0);
+        work->model14 = (s16)ex->Hi_RegisterTexEffModel((BtlUnit9C8 *)ex->btlfx_getFileData(entry->file, 0xB), 0xBA, 0x3D40, 0, 0x80);
         work->unk0 = 0;
         work->unk2A = 0;
         work->unk2C = 0;

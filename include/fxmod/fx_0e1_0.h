@@ -46,11 +46,11 @@ typedef struct {
     Pool6CEntry *emit44;
     Pool6CEntry *emit48;
     s32 unk4C; /* ribbons need a reset */
-    s32 unk50;
-    s32 unk54;
-    s32 unk58;
-    s32 unk5C;
-    s32 unk60;
+    s32 model50;
+    s32 model54;
+    s32 model58;
+    s32 model5C;
+    s32 model60;
     SVECTOR unk64;
     Fx0e10Vec3 unk6C;
     Fx0e10Vec3 unk78;

@@ -24,7 +24,7 @@ typedef struct {
     SVECTOR unk10; /* summoner rotation */
     SVECTOR unk18; /* summon position */
     SVECTOR unk20; /* ribbon head */
-    s32 unk28; /* slice model */
+    s32 model28; /* slice model */
     SVECTOR unk2C; /* summon rotation */
     s32 unk34[3]; /* summon scale */
 } Fx05eWork; /* 0x40 */

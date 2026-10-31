@@ -170,8 +170,8 @@ s32 fx_034_op80(s32 mode, Fx034Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
         work->unk20.vy = 0x800;
         work->unk20.vz = 0x800;
         work->unk30 = -0x20;
-        work->unk6E = ex->Hi_RegisterTexEffModel((BtlUnit9C8 *)ex->btlfx_getFileData(entry->file, 1), 0x99, 0x3D80, 0, 0);
-        work->unk70 = ex->Hi_RegisterTexEffModel((BtlUnit9C8 *)ex->btlfx_getFileData(entry->file, 0xA), 0x9A, 0x3DC0, 0, 0x80);
+        work->model6E = ex->Hi_RegisterTexEffModel((BtlUnit9C8 *)ex->btlfx_getFileData(entry->file, 1), 0x99, 0x3D80, 0, 0);
+        work->model70 = ex->Hi_RegisterTexEffModel((BtlUnit9C8 *)ex->btlfx_getFileData(entry->file, 0xA), 0x9A, 0x3DC0, 0, 0x80);
         work->unk6C = 0;
     } else {
         frame = entry->frame;
@@ -183,7 +183,7 @@ s32 fx_034_op80(s32 mode, Fx034Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
             }
             break;
         case 28:
-            func_801E7A00(work->unk6E, D_801E8990);
+            func_801E7A00(work->model6E, D_801E8990);
             break;
         }
         if (work->emit0 != NULL) {
@@ -216,18 +216,18 @@ s32 fx_034_op80(s32 mode, Fx034Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
             }
             early = frame < 28;
             if (!early) {
-                func_801E7744(work->unk6E, frame, D_801E8990);
+                func_801E7744(work->model6E, frame, D_801E8990);
             }
-            ex->Hi_DrawEffModel(&work->unk8, &work->unk10, (s32)&work->unk20, work->unk6E);
+            ex->Hi_DrawEffModel(&work->unk8, &work->unk10, (s32)&work->unk20, work->model6E);
             if (early) {
-                ex->Hi_DrawEffModel(&work->unk8, &work->unk10, (s32)&work->unk20, work->unk70);
-                ex->Hi_ModifyEffModelAbr(work->unk70, 1);
+                ex->Hi_DrawEffModel(&work->unk8, &work->unk10, (s32)&work->unk20, work->model70);
+                ex->Hi_ModifyEffModelAbr(work->model70, 1);
             } else {
                 work->unk20.vx -= 0x10;
                 work->unk20.vy -= 0x10;
                 work->unk20.vz -= 0x10;
-                ex->Hi_ModifyEffModelAbr(work->unk6E, 1);
-                ex->Hi_ModifyEffModelRGB(work->unk6E, work->unk30, work->unk30, work->unk30);
+                ex->Hi_ModifyEffModelAbr(work->model6E, 1);
+                ex->Hi_ModifyEffModelRGB(work->model6E, work->unk30, work->unk30, work->unk30);
                 work->unk30 -= 8;
             }
             if (frame >= 24 && frame < 28) {

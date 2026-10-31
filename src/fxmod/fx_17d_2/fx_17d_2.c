@@ -20,8 +20,8 @@ static s32 fx_17d_2_op80PoolTask(s32 mode, Fx17d2Elem *e, Unk800F78A4 *env, Unk8
     pos.vx = e->unk8.vx;
     pos.vy = e->unk8.vy;
     pos.vz = e->unk8.vz;
-    ex->Hi_DrawEffModel(&e->unk10, &pos, (s32)&sc, work->unk74);
-    ex->Hi_ModifyEffModelRGB(work->unk74, (((ex->math_cos(t >> 1) >> 2) + 0xC00) >> 5) - 0x80,
+    ex->Hi_DrawEffModel(&e->unk10, &pos, (s32)&sc, work->model74);
+    ex->Hi_ModifyEffModelRGB(work->model74, (((ex->math_cos(t >> 1) >> 2) + 0xC00) >> 5) - 0x80,
                              (((ex->math_cos(t >> 1) >> 2) + 0xC00) >> 5) - 0x80,
                              (((ex->math_cos(t >> 1) >> 2) + 0xC00) >> 5) - 0x80);
     if (frame >= 0x40) {
@@ -56,11 +56,11 @@ s32 fx_17d_2_op80(s32 mode, Fx17d2Work *work, Unk800F78A4 *env, Unk80100C78Entry
         fx_17d_2_env = env;
         ex->btlfx_initParticleSystem();
         ex->btlfx_initEffModels(fx_17d_2_effModels, 5);
-        work->unk78 = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, 7), 1);
-        work->unk68 = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, 0xB), 1);
-        work->unk6C = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, 5), 1);
-        work->unk70 = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, 0xA), 1);
-        work->unk74 = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, 2), 1);
+        work->model78 = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, 7), 1);
+        work->model68 = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, 0xB), 1);
+        work->model6C = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, 5), 1);
+        work->model70 = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, 0xA), 1);
+        work->model74 = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, 2), 1);
         work->unk28[0] = 0;
         work->unk28[1] = -0x2000;
         work->unk28[2] = 0;
@@ -108,21 +108,21 @@ s32 fx_17d_2_op80(s32 mode, Fx17d2Work *work, Unk800F78A4 *env, Unk80100C78Entry
         if (work->unk0 == 0) {
             work->unk54.vz += 2;
             t = (frame << 12) / 60;
-            ex->Hi_DrawEffModel(&work->unk54, (VECTOR *)work->unk48, (s32)work->unk5C, work->unk78);
+            ex->Hi_DrawEffModel(&work->unk54, (VECTOR *)work->unk48, (s32)work->unk5C, work->model78);
             work->unk28[1] += 0x46;
-            ex->Hi_SetEffModelOffset(work->unk68, 0x80);
-            ex->Hi_DrawEffModel(&work->unk40, (VECTOR *)work->unk28, (s32)work->unk34, work->unk68);
-            ex->Hi_ModifyEffModelRGB(work->unk68, ((0x1000 - t) >> 5) - 0x80, ((0x1000 - t) >> 5) - 0x80,
+            ex->Hi_SetEffModelOffset(work->model68, 0x80);
+            ex->Hi_DrawEffModel(&work->unk40, (VECTOR *)work->unk28, (s32)work->unk34, work->model68);
+            ex->Hi_ModifyEffModelRGB(work->model68, ((0x1000 - t) >> 5) - 0x80, ((0x1000 - t) >> 5) - 0x80,
                                      ((0x1000 - t) >> 5) - 0x80);
             work->unk40.vz -= frame * 0xC;
-            ex->Hi_DrawEffModel(&work->unk40, (VECTOR *)work->unk28, (s32)work->unk34, work->unk6C);
-            ex->Hi_ModifyEffModelRGB(work->unk6C, (t >> 5) - 0x80, (t >> 5) - 0x80, (t >> 5) - 0x80);
+            ex->Hi_DrawEffModel(&work->unk40, (VECTOR *)work->unk28, (s32)work->unk34, work->model6C);
+            ex->Hi_ModifyEffModelRGB(work->model6C, (t >> 5) - 0x80, (t >> 5) - 0x80, (t >> 5) - 0x80);
             work->unk40.vz += frame * 0xC;
             work->unk10.vx = work->unk28[0];
             work->unk10.vy = work->unk28[1];
             work->unk10.vz = work->unk28[2];
             s3.vx = s3.vy = s3.vz = t / 5 + 0x333;
-            ex->Hi_DrawEffModel(&work->unk40, (VECTOR *)work->unk28, (s32)&s3, work->unk70);
+            ex->Hi_DrawEffModel(&work->unk40, (VECTOR *)work->unk28, (s32)&s3, work->model70);
             env->otZ = 0x100;
             ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->file, 1), &work->unk10, NULL, 0xAAA, 0, 1, -1);
             env->otZ = 0;

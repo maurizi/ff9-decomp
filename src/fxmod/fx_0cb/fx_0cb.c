@@ -194,14 +194,14 @@ static s32 fx_0cb_op80PoolTask(s32 mode, Fx0cbPart *p, Unk800F78A4 *env, Unk8010
         } else {
             c = ex->math_cos(((frame - 3) << 10) / 5);
         }
-        ex->Hi_DrawEffModel(&rot, &pos, (s32)&scale, work->unk20);
+        ex->Hi_DrawEffModel(&rot, &pos, (s32)&scale, work->model20);
         s = c >> 5;
         s -= 0x80;
-        ex->Hi_ModifyEffModelRGB(work->unk20, s, s, s);
-        ex->Hi_DrawEffModel(&rot, &pos, (s32)&scale, work->unk24);
+        ex->Hi_ModifyEffModelRGB(work->model20, s, s, s);
+        ex->Hi_DrawEffModel(&rot, &pos, (s32)&scale, work->model24);
         s = c >> 6;
         s -= 0x80;
-        ex->Hi_ModifyEffModelRGB(work->unk24, s, s, s);
+        ex->Hi_ModifyEffModelRGB(work->model24, s, s, s);
         if (frame >= 8) {
             return 1;
         }
@@ -239,8 +239,8 @@ s32 fx_0cb_op80(s32 mode, Fx0cbWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
         work->unk14.vy = work->unkC.vy;
         work->unk14.vz = work->unkC.vz;
         ex->btlfx_initEffModels(fx_0cb_effModels, 3);
-        work->unk20 = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, 0x12), 1);
-        work->unk24 = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, 8), 1);
+        work->model20 = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, 0x12), 1);
+        work->model24 = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, 8), 1);
     } else {
         frame = entry->frame;
         if (work->unk0 == 0) {

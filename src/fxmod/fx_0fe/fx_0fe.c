@@ -37,7 +37,7 @@ s32 fx_0fe_op80(s32 mode, Fx0feWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
             (work->unk4 + i)->vz = 0;
         }
         for (i = 0; i < 3; i++) {
-            work->unkB8[i] = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, D_801E7BF4[i]), 1);
+            work->modelB8[i] = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, D_801E7BF4[i]), 1);
         }
         work->unkB0 = -1;
         work->unkB4 = -1;
@@ -69,7 +69,7 @@ s32 fx_0fe_op80(s32 mode, Fx0feWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
                 }
             }
             o = D_801E7EB4;
-            m = work->unkB8[0];
+            m = work->modelB8[0];
             for (j = 0; j < 6; j++, o++) {
                 rot.vx = 0;
                 rot.vy = o->unk2;
@@ -84,8 +84,8 @@ s32 fx_0fe_op80(s32 mode, Fx0feWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
                     ex->Hi_ModifyEffModelRGB(m, work->unkA4, work->unkA4, work->unkA4);
                 }
                 m++;
-                if (m > work->unkB8[2]) {
-                    m = work->unkB8[0];
+                if (m > work->modelB8[2]) {
+                    m = work->modelB8[0];
                 }
                 o->unk2 += 0x55;
                 o->unk4 += 0x200;

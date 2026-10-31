@@ -18,7 +18,7 @@ typedef struct {
     s32 unk50; /* enemy side */
     s16 unk54; /* fade-in countdown */
     s16 unk56; /* fade-out countdown */
-    u16 unk58; /* model */
+    u16 model58; /* model */
 } Fx0f2Work;
 
 extern Unk800F78A4 *fx_0f2_env;

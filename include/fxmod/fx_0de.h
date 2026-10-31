@@ -29,7 +29,7 @@ typedef struct {
     s32 unk0; /* done */
     SVECTOR unk4; /* caster body position */
     SVECTOR unkC; /* caster position */
-    s32 unk14[8]; /* models */
+    s32 model14[8]; /* models */
     s32 unk34; /* scale from the caster's size */
 } Fx0deWork80; /* 0x38 */
 typedef struct {

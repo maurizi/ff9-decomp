@@ -86,7 +86,7 @@ s32 fx_1fc_op83(s32 mode, Fx1fcWork83 *work, Unk800F78A4 *env, Unk80100C78Entry 
         work->unk20.vz = 0x1000;
         fx_1fc_env = env;
         fxm_rotPosPathInit((Fx1fcPath *)&D_801EDA5C, (u16 *)ex->btlfx_getFileData(entry->file, 0x13));
-        work->unk136[0] = ex->btlfx_registerEffectModel(&D_801E99A4, 1);
+        work->model136[0] = ex->btlfx_registerEffectModel(&D_801E99A4, 1);
         work->unk8.vx = 0;
         work->unk8.vy = 0x800;
         work->unk8.vz = 0;
@@ -100,7 +100,7 @@ s32 fx_1fc_op83(s32 mode, Fx1fcWork83 *work, Unk800F78A4 *env, Unk80100C78Entry 
         for (i = 0; i < 3; i++) {
             model = ex->Hi_RegisterTexPtrModel((BtlUnit9C8 *)ex->btlfx_getFileData(entry->file, D_801E8CC0[i]),
                                                D_801E8CC8, D_801E8CD8);
-            work->unk136[i + 1] = model;
+            work->model136[i + 1] = model;
         }
         work->unk30.vx = 0;
         work->unk30.vy = 0;
@@ -112,7 +112,7 @@ s32 fx_1fc_op83(s32 mode, Fx1fcWork83 *work, Unk800F78A4 *env, Unk80100C78Entry 
         work->unk48.vy = 0x1000;
         work->unk48.vz = 0x1000;
         for (i = 0; i < 5; i++) {
-            work->unk136[i + 4] = ex->btlfx_registerEffectModel((Unk800E8F50 *)fxm_offsetTableEntry(D_801E8CE8, i), 1);
+            work->model136[i + 4] = ex->btlfx_registerEffectModel((Unk800E8F50 *)fxm_offsetTableEntry(D_801E8CE8, i), 1);
         }
         for (i = 0; i < 10; i++) {
             fxm_rotPosPathInit((Fx1fcPath *)&D_801EDA7C[i],
@@ -176,8 +176,8 @@ s32 fx_1fc_op83(s32 mode, Fx1fcWork83 *work, Unk800F78A4 *env, Unk80100C78Entry 
             work->unk10.vy = a.vy;
             work->unk10.vz = a.vz;
             work->unk8.vz = -work->unk8.vz;
-            ex->Hi_SetEffModelSlice(work->unk136[0], work->unk10.vy);
-            ex->Hi_DrawSliceEffModel(&work->unk8, (VECTOR *)&work->unk10, (s32)&work->unk20, work->unk136[0]);
+            ex->Hi_SetEffModelSlice(work->model136[0], work->unk10.vy);
+            ex->Hi_DrawSliceEffModel(&work->unk8, (VECTOR *)&work->unk10, (s32)&work->unk20, work->model136[0]);
         }
         if ((u32)k < 0x28) {
             switch (k) {
@@ -201,8 +201,8 @@ s32 fx_1fc_op83(s32 mode, Fx1fcWork83 *work, Unk800F78A4 *env, Unk80100C78Entry 
             work->unk10.vz = b.vz;
             work->unk8.vz = -work->unk8.vz;
             fxm_valuePathGet(&D_801EDA6C, k, &t);
-            ex->Hi_DrawMorphEffModel(&work->unk8, (VECTOR *)&work->unk10, (s32)&work->unk20, work->unk136[m0],
-                                     work->unk136[m1], t);
+            ex->Hi_DrawMorphEffModel(&work->unk8, (VECTOR *)&work->unk10, (s32)&work->unk20, work->model136[m0],
+                                     work->model136[m1], t);
         }
         if ((u32)(frame - 1) < 0x18) {
             k2 = frame - 1;
@@ -212,7 +212,7 @@ s32 fx_1fc_op83(s32 mode, Fx1fcWork83 *work, Unk800F78A4 *env, Unk80100C78Entry 
                 work->unk38.vx = c.vx;
                 work->unk38.vy = c.vy;
                 work->unk38.vz = c.vz;
-                ex->Hi_DrawEffModel(&work->unk30, (VECTOR *)&work->unk38, (s32)&work->unk48, work->unk136[j]);
+                ex->Hi_DrawEffModel(&work->unk30, (VECTOR *)&work->unk38, (s32)&work->unk48, work->model136[j]);
                 j++;
                 if (j >= 9) {
                     j = 4;

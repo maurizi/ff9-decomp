@@ -24,14 +24,14 @@ s32 fx_05f_op80(s32 mode, Fx05fWork80 *work, Unk800F78A4 *env, Unk80100C78Entry 
         BTLFX_COPY_SVEC(&work->unk4, &work->unkC);
         work->unk4.vy -= 0x200;
         ex->btlfx_initEffModels(fx_05f_effModels, 8);
-        work->unk14 = ex->Hi_RegisterTexEffModel((BtlUnit9C8 *)ex->btlfx_getFileData(entry->file, 6), 0x39, 0x3D00, 0, 0x80);
-        work->unk18 = ex->Hi_RegisterTexEffModel((BtlUnit9C8 *)ex->btlfx_getFileData(entry->file, 4), 0x39, 0x3D00, 0, 0x80);
-        work->unk1C = ex->Hi_RegisterTexEffModel((BtlUnit9C8 *)ex->btlfx_getFileData(entry->file, 5), 0x39, 0x3D00, 0, 0x80);
-        work->unk20 = ex->Hi_RegisterTexEffModel((BtlUnit9C8 *)ex->btlfx_getFileData(entry->file, 3), 0x39, 0x3D00, 0, 0x80);
-        work->unk24 = ex->Hi_RegisterTexEffModel((BtlUnit9C8 *)ex->btlfx_getFileData(entry->file, 2), 0x39, 0x3D00, 0, 0x80);
-        work->unk28 = ex->Hi_RegisterTexEffModel((BtlUnit9C8 *)ex->btlfx_getFileData(entry->file, 8), 0x3B, 0x3D01, 0, 0x80);
-        work->unk2C = ex->Hi_RegisterTexEffModel((BtlUnit9C8 *)ex->btlfx_getFileData(entry->file, 7), 0x3B, 0x3D01, 0, 0x80);
-        work->unk30 = ex->Hi_RegisterTexEffModel((BtlUnit9C8 *)ex->btlfx_getFileData(entry->file, 9), 0x39, 0x3D00, 0, 0x80);
+        work->model14 = ex->Hi_RegisterTexEffModel((BtlUnit9C8 *)ex->btlfx_getFileData(entry->file, 6), 0x39, 0x3D00, 0, 0x80);
+        work->model18 = ex->Hi_RegisterTexEffModel((BtlUnit9C8 *)ex->btlfx_getFileData(entry->file, 4), 0x39, 0x3D00, 0, 0x80);
+        work->model1C = ex->Hi_RegisterTexEffModel((BtlUnit9C8 *)ex->btlfx_getFileData(entry->file, 5), 0x39, 0x3D00, 0, 0x80);
+        work->model20 = ex->Hi_RegisterTexEffModel((BtlUnit9C8 *)ex->btlfx_getFileData(entry->file, 3), 0x39, 0x3D00, 0, 0x80);
+        work->model24 = ex->Hi_RegisterTexEffModel((BtlUnit9C8 *)ex->btlfx_getFileData(entry->file, 2), 0x39, 0x3D00, 0, 0x80);
+        work->model28 = ex->Hi_RegisterTexEffModel((BtlUnit9C8 *)ex->btlfx_getFileData(entry->file, 8), 0x3B, 0x3D01, 0, 0x80);
+        work->model2C = ex->Hi_RegisterTexEffModel((BtlUnit9C8 *)ex->btlfx_getFileData(entry->file, 7), 0x3B, 0x3D01, 0, 0x80);
+        work->model30 = ex->Hi_RegisterTexEffModel((BtlUnit9C8 *)ex->btlfx_getFileData(entry->file, 9), 0x39, 0x3D00, 0, 0x80);
     } else {
         frame = entry->frame;
         if (work->unk0 == 0) {
@@ -49,17 +49,17 @@ s32 fx_05f_op80(s32 mode, Fx05fWork80 *work, Unk800F78A4 *env, Unk80100C78Entry 
                 scale.vx = v;
                 scale.vy = v / 2;
                 if (m > 0x3000) {
-                    ex->Hi_DrawMorphEffModel(&rot, &pos, (s32)&scale, work->unk14, work->unk18, m - 0x3000);
+                    ex->Hi_DrawMorphEffModel(&rot, &pos, (s32)&scale, work->model14, work->model18, m - 0x3000);
                 } else if (m > 0x2000) {
-                    ex->Hi_DrawMorphEffModel(&rot, &pos, (s32)&scale, work->unk18, work->unk1C, m - 0x2000);
+                    ex->Hi_DrawMorphEffModel(&rot, &pos, (s32)&scale, work->model18, work->model1C, m - 0x2000);
                 } else if (m > 0x1000) {
-                    ex->Hi_DrawMorphEffModel(&rot, &pos, (s32)&scale, work->unk1C, work->unk20, m - 0x1000);
+                    ex->Hi_DrawMorphEffModel(&rot, &pos, (s32)&scale, work->model1C, work->model20, m - 0x1000);
                 } else {
-                    ex->Hi_DrawMorphEffModel(&rot, &pos, (s32)&scale, work->unk20, work->unk24, m);
+                    ex->Hi_DrawMorphEffModel(&rot, &pos, (s32)&scale, work->model20, work->model24, m);
                 }
                 scale.vx = scale.vz = (scale.vx * 5) >> 2;
-                ex->Hi_DrawEffModel(&rot, &pos, (s32)&scale, work->unk30);
-                ex->Hi_ModifyEffModelRGB(work->unk30, (ex->math_sin(a >> 2) >> 5) - 0x80, (ex->math_sin(a >> 2) >> 5) - 0x80,
+                ex->Hi_DrawEffModel(&rot, &pos, (s32)&scale, work->model30);
+                ex->Hi_ModifyEffModelRGB(work->model30, (ex->math_sin(a >> 2) >> 5) - 0x80, (ex->math_sin(a >> 2) >> 5) - 0x80,
                                          (ex->math_sin(a >> 2) >> 5) - 0x80);
                 /* Dead test, removed after reload: it keeps m live (and call-crossing) through this branch, so
                  * global-alloc gives it s2 and the else branch's division temporary lands in t0. */
@@ -78,12 +78,12 @@ s32 fx_05f_op80(s32 mode, Fx05fWork80 *work, Unk800F78A4 *env, Unk80100C78Entry 
                 rot.vz = 0;
                 rot.vx = 0;
                 rot.vy = -frame * 0x20;
-                ex->Hi_DrawEffModel(&rot, &pos, (s32)&scale, work->unk24);
-                ex->Hi_ModifyEffModelRGB(work->unk24, (ex->math_cos(c) >> 5) - 0x80, (ex->math_cos(c) >> 5) - 0x80,
+                ex->Hi_DrawEffModel(&rot, &pos, (s32)&scale, work->model24);
+                ex->Hi_ModifyEffModelRGB(work->model24, (ex->math_cos(c) >> 5) - 0x80, (ex->math_cos(c) >> 5) - 0x80,
                                          (ex->math_cos(c) >> 5) - 0x80);
                 scale.vx = scale.vz = (scale.vx * 5) >> 2;
-                ex->Hi_DrawEffModel(&rot, &pos, (s32)&scale, work->unk30);
-                ex->Hi_ModifyEffModelRGB(work->unk30, (ex->math_cos(c) >> 5) - 0x80, (ex->math_cos(c) >> 5) - 0x80,
+                ex->Hi_DrawEffModel(&rot, &pos, (s32)&scale, work->model30);
+                ex->Hi_ModifyEffModelRGB(work->model30, (ex->math_cos(c) >> 5) - 0x80, (ex->math_cos(c) >> 5) - 0x80,
                                          (ex->math_cos(c) >> 5) - 0x80);
                 scale.vx = scale.vz = (scale.vx * 4) / 5;
             }
@@ -99,13 +99,13 @@ s32 fx_05f_op80(s32 mode, Fx05fWork80 *work, Unk800F78A4 *env, Unk80100C78Entry 
                 rot.vy = -frame * 0x40;
                 rot.vz = 0;
                 rot.vx = 0;
-                ex->Hi_DrawMorphEffModel(&rot, &pos, (s32)&scale, work->unk28, work->unk2C, 0x1000 - a);
+                ex->Hi_DrawMorphEffModel(&rot, &pos, (s32)&scale, work->model28, work->model2C, 0x1000 - a);
                 /* Scheduling barrier: the morph call's arguments are scheduled as at a block end (&scale last,
                  * in the call's delay slot). */
                 do {
                 } while (0);
                 a >>= 1;
-                ex->Hi_ModifyEffModelRGB(work->unk28, (ex->math_sin(a) >> 5) - 0x80, (ex->math_sin(a) >> 5) - 0x80,
+                ex->Hi_ModifyEffModelRGB(work->model28, (ex->math_sin(a) >> 5) - 0x80, (ex->math_sin(a) >> 5) - 0x80,
                                          (ex->math_sin(a) >> 5) - 0x80);
             }
             if (frame == 16) {

@@ -25,11 +25,11 @@ typedef struct {
 
 typedef struct {
     s32 unk0;
-    s32 unk4; /* models */
-    s32 unk8;
-    s32 unkC;
-    s32 unk10;
-    s32 unk14;
+    s32 model4; /* models */
+    s32 model8;
+    s32 modelC;
+    s32 model10;
+    s32 model14;
     SVECTOR unk18;
     SVECTOR unk20;
     s16 unk28; /* split now */

@@ -121,7 +121,7 @@ s32 fx_114_op80(s32 mode, Fx114Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
         work->unk78.vy = 0x1000;
         work->unk78.vz = 0x1000;
         fxm_vecPathInit(&D_801ED0C8, (u16 *)ex->btlfx_getFileData(entry->file, 0x95));
-        work->unk178 = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, 0x80), 1);
+        work->model178 = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, 0x80), 1);
         work->unk88.vx = 0;
         work->unk88.vy = 0;
         work->unk88.vz = 0;
@@ -132,7 +132,7 @@ s32 fx_114_op80(s32 mode, Fx114Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
         work->unkA0.vy = 0x1000;
         work->unkA0.vz = 0x1000;
         fxm_vecTrackInit(&D_801ED0E8, (u16 *)ex->btlfx_getFileData(entry->file, 0x84));
-        work->unk17A = ex->Hi_RegisterGouEffModel((BtlUnit9C8 *)ex->btlfx_getFileData(entry->file, 0x85));
+        work->model17A = ex->Hi_RegisterGouEffModel((BtlUnit9C8 *)ex->btlfx_getFileData(entry->file, 0x85));
         work->unkB4.vx = 0;
         work->unkB4.vy = 0;
         work->unkB4.vz = 0;
@@ -154,7 +154,7 @@ s32 fx_114_op80(s32 mode, Fx114Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
         work->unkF8.vy = 0x1000;
         work->unkF8.vz = 0x1000;
         fxm_vecTrackInit(&D_801ED0D8, (u16 *)ex->btlfx_getFileData(entry->file, 0x87));
-        work->unk17E = ex->Hi_RegisterTexEffModel((BtlUnit9C8 *)ex->btlfx_getFileData(entry->file, 0x82), 0x9A, 0x3DC0, 0, 0);
+        work->model17E = ex->Hi_RegisterTexEffModel((BtlUnit9C8 *)ex->btlfx_getFileData(entry->file, 0x82), 0x9A, 0x3DC0, 0, 0);
         work->unk10C.vx = 0;
         work->unk10C.vy = 0;
         work->unk10C.vz = 0;
@@ -165,7 +165,7 @@ s32 fx_114_op80(s32 mode, Fx114Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
         work->unk124.vy = 0x1000;
         work->unk124.vz = 0x1000;
         fxm_vecTrackInit(&D_801ED0E0, (u16 *)ex->btlfx_getFileData(entry->file, 0x88));
-        work->unk180 = ex->Hi_RegisterTexEffModel((BtlUnit9C8 *)ex->btlfx_getFileData(entry->file, 0x83), 0x117, 0, 0, 0);
+        work->model180 = ex->Hi_RegisterTexEffModel((BtlUnit9C8 *)ex->btlfx_getFileData(entry->file, 0x83), 0x117, 0, 0, 0);
         work->unk15C = 0;
         work->unk15D = 0;
         work->unk15E = 0;
@@ -312,10 +312,10 @@ s32 fx_114_op80(s32 mode, Fx114Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
     }
     switch (frame) {
     case 0x2C:
-        ex->Hi_FreeEffModel(work->unk178);
+        ex->Hi_FreeEffModel(work->model178);
         break;
     case 0x2E:
-        ex->Hi_FreeEffModel(work->unk17A);
+        ex->Hi_FreeEffModel(work->model17A);
         break;
     case 0x43:
         ex->Hi_FreeEffModel(work->unk17C);
@@ -411,8 +411,8 @@ s32 fx_114_op80(s32 mode, Fx114Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
         work->unk68.vy = work->unk28.vy;
         work->unk68.vz = work->unk28.vz;
         fxm_vecPathGet(&D_801ED0C8, frame + 0x10, (VECTOR *)&work->unk78);
-        ex->Hi_DrawEffModel(&work->unk60, (VECTOR *)&work->unk68, (s32)&work->unk78, work->unk178);
-        ex->Hi_ModifyEffModelAbr(work->unk178, 1);
+        ex->Hi_DrawEffModel(&work->unk60, (VECTOR *)&work->unk68, (s32)&work->unk78, work->model178);
+        ex->Hi_ModifyEffModelAbr(work->model178, 1);
         work->unk134.vx = work->unk68.vx;
         work->unk134.vy = work->unk68.vy;
         work->unk134.vz = work->unk68.vz;
@@ -424,11 +424,11 @@ s32 fx_114_op80(s32 mode, Fx114Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
     }
     if (frame >= 0x28 && frame < 0x2E) {
         fxm_vecTrackGet(&D_801ED0E8, frame, (VECTOR *)&work->unkA0);
-        ex->Hi_DrawEffModel(&work->unk88, (VECTOR *)&work->unk90, (s32)&work->unkA0, work->unk17A);
-        ex->Hi_ModifyEffModelAbr(work->unk17A, 1);
+        ex->Hi_DrawEffModel(&work->unk88, (VECTOR *)&work->unk90, (s32)&work->unkA0, work->model17A);
+        ex->Hi_ModifyEffModelAbr(work->model17A, 1);
         if (work->unk172 >= 0) {
             work->unkB0 = fxm_lerpRatio(0, -0xFF, 6 - work->unk172, 6);
-            ex->Hi_ModifyEffModelRGB(work->unk17A, work->unkB0, work->unkB0, work->unkB0);
+            ex->Hi_ModifyEffModelRGB(work->model17A, work->unkB0, work->unkB0, work->unkB0);
             work->unk172--;
         }
     }
@@ -447,14 +447,14 @@ s32 fx_114_op80(s32 mode, Fx114Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
         if (work->unk108 >= -0x7F) {
             fxm_vecTrackGet(&D_801ED0D8, frame + 0x10, (VECTOR *)&work->unkF8);
             fxm_vecTrackGet(&D_801ED0E0, frame + 0x10, (VECTOR *)&work->unk124);
-            ex->Hi_DrawEffModel(&work->unkE0, (VECTOR *)&work->unkE8, (s32)&work->unkF8, work->unk17E);
-            ex->Hi_DrawEffModel(&work->unk10C, (VECTOR *)&work->unk114, (s32)&work->unk124, work->unk180);
-            ex->Hi_ModifyEffModelAbr(work->unk17E, 1);
-            ex->Hi_ModifyEffModelAbr(work->unk180, 1);
+            ex->Hi_DrawEffModel(&work->unkE0, (VECTOR *)&work->unkE8, (s32)&work->unkF8, work->model17E);
+            ex->Hi_DrawEffModel(&work->unk10C, (VECTOR *)&work->unk114, (s32)&work->unk124, work->model180);
+            ex->Hi_ModifyEffModelAbr(work->model17E, 1);
+            ex->Hi_ModifyEffModelAbr(work->model180, 1);
             if (work->unk176 >= 0) {
                 work->unk108 = fxm_lerpRatio(0, -0x80, 0xD - work->unk176, 0xD);
-                ex->Hi_ModifyEffModelRGB(work->unk17E, work->unk108, work->unk108, work->unk108);
-                ex->Hi_ModifyEffModelRGB(work->unk180, work->unk108, work->unk108, work->unk108);
+                ex->Hi_ModifyEffModelRGB(work->model17E, work->unk108, work->unk108, work->unk108);
+                ex->Hi_ModifyEffModelRGB(work->model180, work->unk108, work->unk108, work->unk108);
                 work->unk176--;
             }
         }
@@ -511,7 +511,7 @@ s32 fx_114_op81(s32 mode, Fx114Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
         work->unk20.vz = 0x1000;
         fx_114_env = env;
         fxm_vecTrackInit(&D_801ED0E8, (u16 *)ex->btlfx_getFileData(entry->file, 0x89));
-        work->unk46 = ex->Hi_RegisterGouEffModel((BtlUnit9C8 *)ex->btlfx_getFileData(entry->file, 0x85));
+        work->model46 = ex->Hi_RegisterGouEffModel((BtlUnit9C8 *)ex->btlfx_getFileData(entry->file, 0x85));
         work->unk44 = -1;
     } else {
         frame = entry->frame;
@@ -529,18 +529,18 @@ s32 fx_114_op81(s32 mode, Fx114Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
             work->unk44 = 0xC;
             break;
         case 0xD:
-            ex->Hi_FreeEffModel(work->unk46);
+            ex->Hi_FreeEffModel(work->model46);
             ex->btlfx_stopEmitter(work->emit0);
             ex->btlfx_stopEmitter(work->emit4);
             break;
         }
         if (frame >= 1 && frame < 0xD) {
             fxm_vecTrackGet(&D_801ED0E8, frame - 1, &work->unk20);
-            ex->Hi_DrawEffModel(&work->unk8, &work->unk10, (s32)&work->unk20, work->unk46);
-            ex->Hi_ModifyEffModelAbr(work->unk46, 1);
+            ex->Hi_DrawEffModel(&work->unk8, &work->unk10, (s32)&work->unk20, work->model46);
+            ex->Hi_ModifyEffModelAbr(work->model46, 1);
             if (work->unk44 >= 0) {
                 work->unk30 = c = fxm_lerpRatio(0, -0xFF, 0xC - work->unk44, 0xC);
-                ex->Hi_ModifyEffModelRGB(work->unk46, c, c, c);
+                ex->Hi_ModifyEffModelRGB(work->model46, c, c, c);
                 work->unk44--;
             }
         }
@@ -575,8 +575,8 @@ s32 fx_114_op82(s32 mode, Fx114Work82 *work, Unk800F78A4 *env, Unk80100C78Entry 
         work->unk1C.vy = 0x1000;
         work->unk1C.vz = 0x1000;
         fx_114_env = env;
-        work->unk66 = ex->Hi_RegisterTexEffModel((BtlUnit9C8 *)ex->btlfx_getFileData(entry->file, 0x2A), 0x117, 0, 0, 0);
-        ex->Hi_SetEffModelOffset(work->unk66, 0x6E);
+        work->model66 = ex->Hi_RegisterTexEffModel((BtlUnit9C8 *)ex->btlfx_getFileData(entry->file, 0x2A), 0x117, 0, 0, 0);
+        ex->Hi_SetEffModelOffset(work->model66, 0x6E);
         work->unk2C.vx = 0;
         work->unk2C.vy = 0;
         work->unk2C.vz = 0;
@@ -586,7 +586,7 @@ s32 fx_114_op82(s32 mode, Fx114Work82 *work, Unk800F78A4 *env, Unk80100C78Entry 
         work->unk44.vx = 0x1000;
         work->unk44.vy = 0x1000;
         work->unk44.vz = 0x1000;
-        work->unk68 = ex->Hi_RegisterTexEffModel((BtlUnit9C8 *)ex->btlfx_getFileData(entry->file, 0x20), 0x17, 0x3D00, 0x80, 0xE0);
+        work->model68 = ex->Hi_RegisterTexEffModel((BtlUnit9C8 *)ex->btlfx_getFileData(entry->file, 0x20), 0x17, 0x3D00, 0x80, 0xE0);
         D_801ED078.unk10 = 0x60;
         D_801ED078.unk8 = 0;
         D_801ED078.unkA = 0;
@@ -615,15 +615,15 @@ s32 fx_114_op82(s32 mode, Fx114Work82 *work, Unk800F78A4 *env, Unk80100C78Entry 
             work->unk62 = 6;
             break;
         case 29:
-            ex->Hi_FreeEffModel(work->unk66);
+            ex->Hi_FreeEffModel(work->model66);
             break;
         case 18:
-            ex->Hi_FreeEffModel(work->unk68);
+            ex->Hi_FreeEffModel(work->model68);
             break;
         }
         if ((u32)frame < 0x1D) {
-            ex->Hi_DrawEffModel(&work->unk4, &work->unkC, (s32)&work->unk1C, work->unk66);
-            ex->Hi_ModifyEffModelRGB(work->unk66, 6, 6, 6);
+            ex->Hi_DrawEffModel(&work->unk4, &work->unkC, (s32)&work->unk1C, work->model66);
+            ex->Hi_ModifyEffModelRGB(work->model66, 6, 6, 6);
         }
         if ((u32)(frame - 8) < 10) {
             D_801ED078.unkA = (frame - 8) * 2;
@@ -751,8 +751,8 @@ s32 fx_114_op83(s32 mode, Fx114Work83 *work, Unk800F78A4 *env, Unk80100C78Entry 
         work->unkE4.vx = 0x1000;
         work->unkE4.vy = 0x1000;
         work->unkE4.vz = 0x1000;
-        work->unk14A = ex->Hi_RegisterTexEffModel((BtlUnit9C8 *)ex->btlfx_getFileData(entry->file, 0x27), 0x9A, 0x3DC0, 0, 0);
-        work->unk14C = ex->Hi_RegisterTexEffModel((BtlUnit9C8 *)ex->btlfx_getFileData(entry->file, 0x22), 0x9A, 0x3DC0, 0, 0);
+        work->model14A = ex->Hi_RegisterTexEffModel((BtlUnit9C8 *)ex->btlfx_getFileData(entry->file, 0x27), 0x9A, 0x3DC0, 0, 0);
+        work->model14C = ex->Hi_RegisterTexEffModel((BtlUnit9C8 *)ex->btlfx_getFileData(entry->file, 0x22), 0x9A, 0x3DC0, 0, 0);
         fxm_posTrackInit(&D_801ED1B0, (u16 *)ex->btlfx_getFileData(entry->file, 0x23));
         fxm_vecTrackInit(&D_801ED1B8, (u16 *)ex->btlfx_getFileData(entry->file, 0x24));
         fxm_vecTrackInit(&D_801ED1C0, (u16 *)ex->btlfx_getFileData(entry->file, 0x25));
@@ -897,8 +897,8 @@ s32 fx_114_op83(s32 mode, Fx114Work83 *work, Unk800F78A4 *env, Unk80100C78Entry 
                 work->unk10E--;
             }
             fxm_vecTrackGet(&D_801ED1B8, frame - 4, (VECTOR *)&work->unkB4);
-            ex->Hi_DrawEffModel(&work->unk9C, (VECTOR *)&work->unkA4, (s32)&work->unkB4, work->unk14A);
-            ex->Hi_ModifyEffModelAbr(work->unk14A, 1);
+            ex->Hi_DrawEffModel(&work->unk9C, (VECTOR *)&work->unkA4, (s32)&work->unkB4, work->model14A);
+            ex->Hi_ModifyEffModelAbr(work->model14A, 1);
             if (work->unk110 >= 0 || work->unk112 >= 0) {
                 if (work->unk110 >= 0) {
                     work->unkC4 = fxm_lerpRatio(-0x80, 0, 3 - work->unk110, 3);
@@ -908,7 +908,7 @@ s32 fx_114_op83(s32 mode, Fx114Work83 *work, Unk800F78A4 *env, Unk80100C78Entry 
                     work->unkC4 = fxm_lerpRatio(0, -0x80, 0x10 - work->unk112, 0x10);
                     work->unk112--;
                 }
-                ex->Hi_ModifyEffModelRGB(work->unk14A, work->unkC4, work->unkC4, work->unkC4);
+                ex->Hi_ModifyEffModelRGB(work->model14A, work->unkC4, work->unkC4, work->unkC4);
             }
             work->unk9C.vy += 0x40;
             if (frame >= 4 && frame < 0x25) {
@@ -920,8 +920,8 @@ s32 fx_114_op83(s32 mode, Fx114Work83 *work, Unk800F78A4 *env, Unk80100C78Entry 
                 work->unkD4.vy += w.vy;
                 work->unkD4.vz += w.vz;
                 fxm_vecTrackGet(&D_801ED1C0, frame - 4, (VECTOR *)&work->unkE4);
-                ex->Hi_DrawEffModel(&work->unkCC, (VECTOR *)&work->unkD4, (s32)&work->unkE4, work->unk14C);
-                ex->Hi_ModifyEffModelAbr(work->unk14C, 1);
+                ex->Hi_DrawEffModel(&work->unkCC, (VECTOR *)&work->unkD4, (s32)&work->unkE4, work->model14C);
+                ex->Hi_ModifyEffModelAbr(work->model14C, 1);
                 if (work->unk114 >= 0 || work->unk116 >= 0) {
                     if (work->unk114 >= 0) {
                         work->unkC8 = fxm_lerpRatio(-0x80, 0, 6 - work->unk114, 6);
@@ -931,7 +931,7 @@ s32 fx_114_op83(s32 mode, Fx114Work83 *work, Unk800F78A4 *env, Unk80100C78Entry 
                         work->unkC8 = fxm_lerpRatio(0, -0x80, 0x10 - work->unk116, 0x10);
                         work->unk116--;
                     }
-                    ex->Hi_ModifyEffModelRGB(work->unk14C, work->unkC8, work->unkC8, work->unkC8);
+                    ex->Hi_ModifyEffModelRGB(work->model14C, work->unkC8, work->unkC8, work->unkC8);
                 }
             }
         }

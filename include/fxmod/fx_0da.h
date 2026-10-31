@@ -15,10 +15,10 @@ extern BtlModel fx_0da_effModels[];
 
 typedef struct {
     s32 unk0; /* state */
-    s32 unk4; /* models */
-    s32 unk8;
-    s32 unkC;
-    s32 unk10;
+    s32 model4; /* models */
+    s32 model8;
+    s32 modelC;
+    s32 model10;
     SVECTOR unk14; /* caster body position */
     SVECTOR unk1C; /* caster position */
     s32 unk24; /* frame counter */

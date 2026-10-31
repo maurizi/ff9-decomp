@@ -17,14 +17,14 @@ typedef struct {
     SVECTOR unkC; /* position */
     SVECTOR unk14;
     Fx057Vec3 unk1C;
-    s32 unk28; /* model */
+    s32 model28; /* model */
 } Fx057Work81; /* 0x2C */
 
 typedef struct {
     s32 unk0; /* state */
     s32 unk4; /* frame */
-    s32 unk8; /* model */
-    s32 unkC; /* model */
+    s32 model8; /* model */
+    s32 modelC; /* model */
     SVECTOR unk10; /* position */
     Fx057Vec3 unk18; /* model position */
     SVECTOR unk24;

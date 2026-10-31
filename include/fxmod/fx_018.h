@@ -40,8 +40,8 @@ typedef struct {
     SVECTOR unk0; /* target body */
     SVECTOR unk8; /* target */
     s32 unk10; /* state */
-    s32 unk14; /* models */
-    s32 unk18;
+    s32 model14; /* models */
+    s32 model18;
     Pool6CEntry *emit1C;
     Pool6CEntry *emit20;
 } Fx018Work80; /* 0x24 */

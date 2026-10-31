@@ -42,7 +42,7 @@ static s32 fx_038_op80PoolTask(s32 mode, Fx038Item *it, Unk800F78A4 *env, Unk801
         scale.vz = 0x199;
         scale.vy = 0x199;
         scale.vx = 0x199;
-        ex->Hi_DrawEffModel(&it->unkC, &pos, (s32)&scale, work->unk10);
+        ex->Hi_DrawEffModel(&it->unkC, &pos, (s32)&scale, work->model10);
         env->otZ = 0x100;
         BTLFX_COPY_SVEC(&b, &it->unk4);
         b.vy += 0x140;
@@ -103,8 +103,8 @@ static s32 fx_038_op80PoolTask(s32 mode, Fx038Item *it, Unk800F78A4 *env, Unk801
             scale.vz = v;
             scale.vx = v;
             scale.vy = (v * 9) >> 3;
-            ex->Hi_DrawEffModel(&it->unkC, &pos, (s32)&scale, work->unk14);
-            ex->Hi_ModifyEffModelRGB(work->unk14, ((k * 2 - 0x1000) >> 5) - 0x80, ((k * 2 - 0x1000) >> 5) - 0x80,
+            ex->Hi_DrawEffModel(&it->unkC, &pos, (s32)&scale, work->model14);
+            ex->Hi_ModifyEffModelRGB(work->model14, ((k * 2 - 0x1000) >> 5) - 0x80, ((k * 2 - 0x1000) >> 5) - 0x80,
                                      ((k * 2 - 0x1000) >> 5) - 0x80);
         }
         t = (frame << 12) / 18;
@@ -112,8 +112,8 @@ static s32 fx_038_op80PoolTask(s32 mode, Fx038Item *it, Unk800F78A4 *env, Unk801
         q = t >> 2;
         scale.vx = scale.vz = (ex->math_sin(q) / 3 + 0xAAA) * 3 / 4;
         scale.vy = ex->math_cos(q) * 2 / 3 + 0x800;
-        ex->Hi_DrawEffModel(&it->unkC, &pos, (s32)&scale, work->unk18);
-        ex->Hi_ModifyEffModelRGB(work->unk18, (k >> 5) - 0x80, (k >> 5) - 0x80, (k >> 5) - 0x80);
+        ex->Hi_DrawEffModel(&it->unkC, &pos, (s32)&scale, work->model18);
+        ex->Hi_ModifyEffModelRGB(work->model18, (k >> 5) - 0x80, (k >> 5) - 0x80, (k >> 5) - 0x80);
         d.pad = 1;
         d.vx = 0x400;
         d.vz = 0;
@@ -154,10 +154,10 @@ s32 fx_038_op80(s32 mode, Fx038Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
         fx_038_env = env;
         ex->btlfx_getUnitPos(0, (s16 *)&work->unk4);
         ex->btlfx_initEffModels(fx_038_effModels, 3);
-        work->unk10 = ex->Hi_RegisterTexEffModel((BtlUnit9C8 *)ex->btlfx_getFileData(entry->file, 2), 0x97, 0x3C80, 0, 0);
-        work->unk18 =
+        work->model10 = ex->Hi_RegisterTexEffModel((BtlUnit9C8 *)ex->btlfx_getFileData(entry->file, 2), 0x97, 0x3C80, 0, 0);
+        work->model18 =
             ex->Hi_RegisterTexEffModel((BtlUnit9C8 *)ex->btlfx_getFileData(entry->file, 0xB), 0x137, 0xFFFF, -0x40, 0x80);
-        work->unk14 = ex->Hi_RegisterGouEffModel((BtlUnit9C8 *)ex->btlfx_getFileData(entry->file, 0xA));
+        work->model14 = ex->Hi_RegisterGouEffModel((BtlUnit9C8 *)ex->btlfx_getFileData(entry->file, 0xA));
     } else {
         frame = entry->frame;
         if (work->unk0 == 0) {

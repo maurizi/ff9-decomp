@@ -282,12 +282,12 @@ s32 fx_0df_op80(s32 mode, Fx0dfWork80 *work, Unk800F78A4 *env, Unk80100C78Entry 
         work->unk1C = work->unkC.vz;
         ex->btlfx_drawScreenTint((u32 *)(env->ot + 1), 2, 0x80, 0xFF, 0xFF);
         ex->btlfx_initEffModels(fx_0df_effModels, 6);
-        work->unk20 = ex->Hi_RegisterTexEffModel((BtlUnit9C8 *)ex->btlfx_getFileData(entry->file, 0x12), 0x139, 0xFFFF,
+        work->model20 = ex->Hi_RegisterTexEffModel((BtlUnit9C8 *)ex->btlfx_getFileData(entry->file, 0x12), 0x139, 0xFFFF,
                                                  0, 0x80);
-        work->unk24 = ex->Hi_RegisterTexEffModel((BtlUnit9C8 *)ex->btlfx_getFileData(entry->file, 5), 0x38, 0x3E83, 0, 0);
-        work->unk28 = ex->Hi_RegisterTexEffModel((BtlUnit9C8 *)ex->btlfx_getFileData(entry->file, 0xC), 0x13C, 0xFFFF,
+        work->model24 = ex->Hi_RegisterTexEffModel((BtlUnit9C8 *)ex->btlfx_getFileData(entry->file, 5), 0x38, 0x3E83, 0, 0);
+        work->model28 = ex->Hi_RegisterTexEffModel((BtlUnit9C8 *)ex->btlfx_getFileData(entry->file, 0xC), 0x13C, 0xFFFF,
                                                  0x10, 0x80);
-        work->unk2C = ex->Hi_RegisterGouEffModel((BtlUnit9C8 *)ex->btlfx_getFileData(entry->file, 0xD));
+        work->model2C = ex->Hi_RegisterGouEffModel((BtlUnit9C8 *)ex->btlfx_getFileData(entry->file, 0xD));
     } else {
         frame = entry->frame;
         switch (work->unk0) {
@@ -375,7 +375,7 @@ s32 fx_0df_op80(s32 mode, Fx0dfWork80 *work, Unk800F78A4 *env, Unk80100C78Entry 
                 fxm_anglesFromEye(&work->unkC, &rot2);
                 rot2.vx = work->unk38 + (s16)(rot2.vx + 0x400);
                 rot2.vz = 0;
-                ex->Hi_DrawEffModel(&rot2, &pos, (s32)&scale, work->unk24);
+                ex->Hi_DrawEffModel(&rot2, &pos, (s32)&scale, work->model24);
                 if (frame == 10) {
                     ex->btlfx_drawScreenTint((u32 *)(env->ot + 2), 1, 0x64, 0x40, 0);
                 }
@@ -422,7 +422,7 @@ s32 fx_0df_op80(s32 mode, Fx0dfWork80 *work, Unk800F78A4 *env, Unk80100C78Entry 
                 fxm_anglesFromEye(&work->unkC, &rot2);
                 rot2.vx = work->unk38 + (s16)(rot2.vx + 0x400);
                 rot2.vz = 0;
-                ex->Hi_DrawEffModel(&rot2, &pos, (s32)&scale, work->unk24);
+                ex->Hi_DrawEffModel(&rot2, &pos, (s32)&scale, work->model24);
                 rot3.vy = 0;
                 rot3.vx = 0;
                 rot3.vz = 0;

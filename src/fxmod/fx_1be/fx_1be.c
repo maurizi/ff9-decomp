@@ -97,7 +97,7 @@ s32 fx_1be_op80(s32 mode, Fx1beWork80 *w, Unk800F78A4 *env, Unk80100C78Entry *en
         w->unkCC.vx = 0;
         w->unkCC.vy = -0x2000;
         w->unkCC.vz = 0x418;
-        w->unk60 = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, 0xC), 0xFF);
+        w->model60 = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, 0xC), 0xFF);
         w->unk74.vx = 0x1800;
         w->unk74.vy = 0x1800;
         w->unk74.vz = 0x1800;
@@ -113,10 +113,10 @@ s32 fx_1be_op80(s32 mode, Fx1beWork80 *w, Unk800F78A4 *env, Unk80100C78Entry *en
         w->unkAC.vx = 0x1A80;
         w->unkAC.vy = 0x1A80;
         w->unkAC.vz = 0x1A80;
-        w->unkA8 = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, 0xD), 1);
-        w->unk98 = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, 0xE), 1);
-        w->unk94 = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, 9), 1);
-        w->unkA4 = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, 0xA), 1);
+        w->modelA8 = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, 0xD), 1);
+        w->model98 = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, 0xE), 1);
+        w->model94 = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, 9), 1);
+        w->modelA4 = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, 0xA), 1);
     } else {
         frame = entry->frame;
         env->camera->points[1].vx = 0;
@@ -223,14 +223,14 @@ s32 fx_1be_op80(s32 mode, Fx1beWork80 *w, Unk800F78A4 *env, Unk80100C78Entry *en
         }
         if (w->unk0[0] != 0) {
             ex->btlfx_drawBackdrop((BtlBgLayers *)ex->btlfx_getFileData(entry->file, 0xF), frame);
-            ex->Hi_DrawEffModel(&w->unk84, &w->unk64, (s32)&w->unk74, w->unk60);
+            ex->Hi_DrawEffModel(&w->unk84, &w->unk64, (s32)&w->unk74, w->model60);
         }
         if (w->unk0[0xD] != 0) {
             w->unk0[0xD]--;
-            ex->Hi_DrawEffModel(&w->unk84, &w->unk64, (s32)&w->unkAC, w->unkA8);
+            ex->Hi_DrawEffModel(&w->unk84, &w->unk64, (s32)&w->unkAC, w->modelA8);
             if (w->unk0[0xD] < 0x10) {
                 a = (w->unk0[0xD] - 0x10) * 0x10;
-                ex->Hi_ModifyEffModelRGB(w->unkA8, a, a, a);
+                ex->Hi_ModifyEffModelRGB(w->modelA8, a, a, a);
             }
         }
         if (w->unk0[0xF] != 0) {
@@ -256,16 +256,16 @@ s32 fx_1be_op80(s32 mode, Fx1beWork80 *w, Unk800F78A4 *env, Unk80100C78Entry *en
             aim.vy = w->unk64.vy;
             aim.vz = w->unk64.vz;
             ex->btlfx_aimAngles((s16 *)&env->camera->eye, (s16 *)&aim, (s16 *)&w->unk9C);
-            ex->Hi_DrawEffModel(&w->unk9C, &w->unk64, (s32)&w->unk74, w->unk94);
+            ex->Hi_DrawEffModel(&w->unk9C, &w->unk64, (s32)&w->unk74, w->model94);
             if (w->unk0[6] != 0) {
-                ex->Hi_DrawEffModel(&w->unk9C, &w->unk64, (s32)&w->unk74, w->unk98);
-                ex->Hi_DrawEffModel(&w->unk84, &w->unk64, (s32)&w->unk74, w->unkA4);
+                ex->Hi_DrawEffModel(&w->unk9C, &w->unk64, (s32)&w->unk74, w->model98);
+                ex->Hi_DrawEffModel(&w->unk84, &w->unk64, (s32)&w->unk74, w->modelA4);
             }
         }
         if (w->unk0[7] != 0) {
             w->unk0[7]--;
             a = -(w->unk0[7] * 0x10);
-            ex->Hi_ModifyEffModelRGB(w->unk94, a, a, a);
+            ex->Hi_ModifyEffModelRGB(w->model94, a, a, a);
         }
         if (w->unk0[0xC] != 0) {
             w->unk0[0xC]--;

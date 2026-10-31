@@ -25,8 +25,8 @@ typedef struct {
     s32 unk8; /* priority */
     SVECTOR unkC; /* caster body position */
     Fx0cbVec3 unk14;
-    s32 unk20; /* model */
-    s32 unk24; /* model */
+    s32 model20; /* model */
+    s32 model24; /* model */
     s32 unk28;
 } Fx0cbWork; /* 0x2C */
 

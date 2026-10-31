@@ -10,7 +10,7 @@ typedef struct {
     SVECTOR unk8; /* position: env->targets->centerX..Z */
     SVECTOR unk10; /* unk8 raised by 0x100 */
     s32 unk18[3]; /* model position (VECTOR without its pad word) */
-    s32 unk24; /* model */
+    s32 model24; /* model */
 } Fx08cWork;
 
 extern Unk800F78A4 *fx_08c_env;

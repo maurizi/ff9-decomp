@@ -79,7 +79,7 @@ typedef struct {
     s32 unk98; /* fade-in countdown */
     s32 unk9C;
     s32 unkA0;
-    u16 unkA4[10]; /* models */
+    u16 modelA4[10]; /* models */
 } Fx1eaWork81; /* 0xB8 */
 
 typedef struct {

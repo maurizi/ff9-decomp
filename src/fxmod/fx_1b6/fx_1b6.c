@@ -244,12 +244,12 @@ s32 fx_1b6_op80(s32 mode, Fx1b6Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
                 entry->frame = -1;
                 ex->btlfx_initEffModels(fx_1b6_effModels, 7);
                 for (i = 0; i < 7; i++) {
-                    work->unk28[i] = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, D_801E855C[i]), 0);
+                    work->model28[i] = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, D_801E855C[i]), 0);
                 }
                 buf = ((Fx1b6Summon *)env->loader)->unk54->unk50 + 0x19000;
                 func_801E7704((Fx1b6Split *)buf, (SVECTOR (*)[3])(buf + 0xC5A8));
                 for (i = 0; i < 7; i++) {
-                    func_801E774C(work->unk28[i]);
+                    func_801E774C(work->model28[i]);
                 }
                 p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 7), (s32)&work->unk54);
                 if (p != NULL) {
@@ -280,7 +280,7 @@ s32 fx_1b6_op80(s32 mode, Fx1b6Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             }
             if (frame > 0) {
                 for (i = 0; i < 7; i++) {
-                    ex->Hi_DrawEffModel(&work->unk14, (VECTOR *)work->unk8, (s32)work->unk1C, work->unk28[i]);
+                    ex->Hi_DrawEffModel(&work->unk14, (VECTOR *)work->unk8, (s32)work->unk1C, work->model28[i]);
                 }
                 if (frame < 0x31) {
                     D_801E974C = 0x514 - ((t * 0x960) >> 12);

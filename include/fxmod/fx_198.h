@@ -12,7 +12,7 @@ typedef struct {
     s16 unk14;
     s16 unk16;
     s16 unk18;
-    s32 unk1C; /* model */
+    s32 model1C; /* model */
     s32 unk20;
 } Fx198Work; /* 0x24 */
 

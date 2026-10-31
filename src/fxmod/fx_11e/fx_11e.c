@@ -39,8 +39,8 @@ s32 fx_11e_op80(s32 mode, Fx11eWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
         work->unkC.vx = work->unk48.vx;
         work->unkC.vy = work->unk48.vy;
         work->unkC.vz = work->unk48.vz;
-        work->unk5C = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, 1), 1);
-        work->unk5E = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, 2), 1);
+        work->model5C = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, 1), 1);
+        work->model5E = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, 2), 1);
         work->unk30 = ex->btlfx_rand() % 2;
         work->unk34 = ex->btlfx_rand() % 2;
         work->unk38 = ex->btlfx_rand() % 400 + 200;
@@ -101,9 +101,9 @@ s32 fx_11e_op80(s32 mode, Fx11eWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
                 work->unk1C.vz += 0x80;
             }
             if (t & 1) {
-                m = work->unk5C;
+                m = work->model5C;
             } else {
-                m = work->unk5E;
+                m = work->model5E;
             }
             ex->Hi_DrawEffModel(&work->unk4, &work->unkC, (s32)&work->unk1C, m);
         }

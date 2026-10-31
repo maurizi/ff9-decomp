@@ -47,8 +47,8 @@ typedef struct {
     s32 unk64; /* fade countdown */
     s16 unk68; /* screen fade countdown */
     s16 unk6A; /* screen flash */
-    u16 unk6C; /* models */
-    u16 unk6E;
+    u16 model6C; /* models */
+    u16 model6E;
 } Fx1ecWork82; /* 0x70 */
 
 extern BtlModel fx_1ec_effModels[];

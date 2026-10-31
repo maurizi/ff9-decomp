@@ -167,11 +167,11 @@ s32 fx_1ea_op81(s32 mode, Fx1eaWork81 *work, Unk800F78A4 *env, Unk80100C78Entry 
         work->unk44.vz = 0x1800;
         fxm_rotPosPathInit((Fx1eaPath *)&D_801E95F0, (u16 *)ex->btlfx_getFileData(entry->file, 0xB));
         for (i = 0; i < 5; i++) {
-            work->unkA4[i] = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, D_801E8D5C[i]), 1);
+            work->modelA4[i] = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, D_801E8D5C[i]), 1);
         }
         for (i = 0; i < 5; i++) {
             fxm_rotPosPathInit((Fx1eaPath *)&D_801E95F8[i], (u16 *)ex->btlfx_getFileData(entry->file, D_801E8D74[i]));
-            work->unkA4[i + 5] = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, D_801E8D68[i]), 1);
+            work->modelA4[i + 5] = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, D_801E8D68[i]), 1);
         }
         D_801E95B8.unk8 = 0;
         D_801E95B8.unkA = 1;
@@ -276,10 +276,10 @@ s32 fx_1ea_op81(s32 mode, Fx1eaWork81 *work, Unk800F78A4 *env, Unk80100C78Entry 
             work->unk2C.vy = 0x800;
             work->unk34.vy += work->unk84.vy;
             work->unk34.vz += work->unk84.vz;
-            ex->Hi_DrawMorphEffModel(&work->unk2C, (VECTOR *)&work->unk34, (s32)&work->unk44, work->unkA4[a],
-                                     work->unkA4[b], t);
+            ex->Hi_DrawMorphEffModel(&work->unk2C, (VECTOR *)&work->unk34, (s32)&work->unk44, work->modelA4[a],
+                                     work->modelA4[b], t);
             if (work->unk98 >= 0) {
-                ex->Hi_ModifyEffModelRGB(work->unkA4[a], work->unk54, work->unk54, work->unk54);
+                ex->Hi_ModifyEffModelRGB(work->modelA4[a], work->unk54, work->unk54, work->unk54);
             }
             for (i2 = 0; i2 < 5; i2++) {
                 fxm_rotPosPathGet(&D_801E95F8[i2], k, &work->unk2C, &pos2);
@@ -290,10 +290,10 @@ s32 fx_1ea_op81(s32 mode, Fx1eaWork81 *work, Unk800F78A4 *env, Unk80100C78Entry 
                 work->unk2C.vy = 0x800;
                 work->unk34.vy += work->unk84.vy;
                 work->unk34.vz += work->unk84.vz;
-                ex->Hi_SetEffModelSlice(work->unkA4[i2 + 5], work->unk34.vy);
-                ex->Hi_DrawSliceEffModel(&work->unk2C, (VECTOR *)&work->unk34, (s32)&work->unk44, work->unkA4[i2 + 5]);
+                ex->Hi_SetEffModelSlice(work->modelA4[i2 + 5], work->unk34.vy);
+                ex->Hi_DrawSliceEffModel(&work->unk2C, (VECTOR *)&work->unk34, (s32)&work->unk44, work->modelA4[i2 + 5]);
                 if (work->unk98 >= 0) {
-                    ex->Hi_ModifyEffModelRGB(work->unkA4[i2 + 5], work->unk54, work->unk54, work->unk54);
+                    ex->Hi_ModifyEffModelRGB(work->modelA4[i2 + 5], work->unk54, work->unk54, work->unk54);
                 }
             }
             work->unk94++;

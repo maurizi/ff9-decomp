@@ -53,7 +53,7 @@ typedef struct {
     SVECTOR unk30;
     SVECTOR unk38;
     Pool6CEntry *emit40;
-    s32 unk44[8]; /* split models */
+    s32 model44[8]; /* split models */
 } Fx1b7Work80; /* 0x64 */
 
 extern s16 D_801E8788[8]; /* model files */

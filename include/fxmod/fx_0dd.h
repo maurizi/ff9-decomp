@@ -35,7 +35,7 @@ typedef struct {
     SVECTOR unk4C; /* effect position */
     s32 unk54; /* morph time */
     s32 unk58;
-    u16 unk5C[6]; /* models */
+    u16 model5C[6]; /* models */
 } Fx0ddWork80; /* 0x68 */
 
 static void fxm_rotPosTrackInit(Fx0ddTrack12 *track, u16 *data);

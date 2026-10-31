@@ -35,8 +35,8 @@ s32 fx_07f_op80(s32 mode, Fx07fWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
             p->otZ = -0x20;
         }
         ex->btlfx_initEffModels(fx_07f_effModels, 2);
-        work->unk2C = ex->Hi_RegisterTexEffModel((BtlUnit9C8 *)ex->btlfx_getFileData(entry->file, 5), 0xB7, 0x3D40, 0, 0);
-        work->unk30 = ex->Hi_RegisterTexEffModel((BtlUnit9C8 *)ex->btlfx_getFileData(entry->file, 1), 0x139, 0xFFFF, 0x40, 0x80);
+        work->model2C = ex->Hi_RegisterTexEffModel((BtlUnit9C8 *)ex->btlfx_getFileData(entry->file, 5), 0xB7, 0x3D40, 0, 0);
+        work->model30 = ex->Hi_RegisterTexEffModel((BtlUnit9C8 *)ex->btlfx_getFileData(entry->file, 1), 0x139, 0xFFFF, 0x40, 0x80);
     } else {
         frame = entry->frame;
         switch (work->unk0) {
@@ -53,17 +53,17 @@ s32 fx_07f_op80(s32 mode, Fx07fWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
             } else {
                 work->unk24.vy = 0x400;
             }
-            ex->Hi_DrawEffModel(&work->unk24, (VECTOR *)work->unk18, (s32)&scale, work->unk2C);
-            ex->Hi_ModifyEffModelAbr(work->unk2C, 1);
+            ex->Hi_DrawEffModel(&work->unk24, (VECTOR *)work->unk18, (s32)&scale, work->model2C);
+            ex->Hi_ModifyEffModelAbr(work->model2C, 1);
             c = (s >> 5) - 0x80;
-            ex->Hi_ModifyEffModelRGB(work->unk2C, c, c, c);
+            ex->Hi_ModifyEffModelRGB(work->model2C, c, c, c);
             scale.vx = sxz;
             scale.vy = sy;
             scale.vz = sxz;
             work->unk24.vy = frame * 0x18;
-            ex->Hi_DrawEffModel(&work->unk24, (VECTOR *)work->unk18, (s32)&scale, work->unk30);
-            ex->Hi_ModifyEffModelAbr(work->unk30, 1);
-            ex->Hi_ModifyEffModelRGB(work->unk30, c, c, c);
+            ex->Hi_DrawEffModel(&work->unk24, (VECTOR *)work->unk18, (s32)&scale, work->model30);
+            ex->Hi_ModifyEffModelAbr(work->model30, 1);
+            ex->Hi_ModifyEffModelRGB(work->model30, c, c, c);
             if (frame == 0xC) {
                 p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 3), (s32)&work->unk10);
                 if (p != NULL) {

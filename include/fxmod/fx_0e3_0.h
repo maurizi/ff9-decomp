@@ -54,11 +54,11 @@ typedef struct {
     s32 unk48;
     Pool6CEntry *emit4C;
     s32 unk50; /* bolts need a reset */
-    s32 unk54; /* models */
-    s32 unk58;
-    s32 unk5C;
-    s32 unk60;
-    s32 unk64;
+    s32 model54; /* models */
+    s32 model58;
+    s32 model5C;
+    s32 model60;
+    s32 model64;
     SVECTOR unk68;
     Fx0e30Vec3 unk70;
     Fx0e30Vec3 unk7C;

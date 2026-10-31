@@ -20,14 +20,14 @@ s32 fx_0de_op80(s32 mode, Fx0deWork80 *work, Unk800F78A4 *env, Unk80100C78Entry 
         ex->btlfx_getUnitBodyPos(0, 0, &work->unk4.vx);
         ex->btlfx_getUnitPos(0, &work->unkC.vx);
         ex->btlfx_initEffModels(fx_0de_effModels, 8);
-        work->unk14[0] = ex->Hi_RegisterTexEffModel((BtlUnit9C8 *)ex->btlfx_getFileData(entry->file, 5), 0x39, 0x3D00, 0, 0x80);
-        work->unk14[1] = ex->Hi_RegisterTexEffModel((BtlUnit9C8 *)ex->btlfx_getFileData(entry->file, 2), 0x39, 0x3D00, 0, 0x80);
-        work->unk14[2] = ex->Hi_RegisterTexEffModel((BtlUnit9C8 *)ex->btlfx_getFileData(entry->file, 3), 0x39, 0x3D00, 0, 0x80);
-        work->unk14[3] = ex->Hi_RegisterTexEffModel((BtlUnit9C8 *)ex->btlfx_getFileData(entry->file, 4), 0x39, 0x3D00, 0, 0x80);
-        work->unk14[4] = ex->Hi_RegisterTexEffModel((BtlUnit9C8 *)ex->btlfx_getFileData(entry->file, 0xD), 0x39, 0x3D00, 0, 0x80);
-        work->unk14[5] = ex->Hi_RegisterTexEffModel((BtlUnit9C8 *)ex->btlfx_getFileData(entry->file, 7), 0x3B, 0x3D01, 0, 0x80);
-        work->unk14[6] = ex->Hi_RegisterTexEffModel((BtlUnit9C8 *)ex->btlfx_getFileData(entry->file, 6), 0x3B, 0x3D01, 0, 0x80);
-        work->unk14[7] = ex->Hi_RegisterTexEffModel((BtlUnit9C8 *)ex->btlfx_getFileData(entry->file, 8), 0x39, 0x3D00, 0, 0x80);
+        work->model14[0] = ex->Hi_RegisterTexEffModel((BtlUnit9C8 *)ex->btlfx_getFileData(entry->file, 5), 0x39, 0x3D00, 0, 0x80);
+        work->model14[1] = ex->Hi_RegisterTexEffModel((BtlUnit9C8 *)ex->btlfx_getFileData(entry->file, 2), 0x39, 0x3D00, 0, 0x80);
+        work->model14[2] = ex->Hi_RegisterTexEffModel((BtlUnit9C8 *)ex->btlfx_getFileData(entry->file, 3), 0x39, 0x3D00, 0, 0x80);
+        work->model14[3] = ex->Hi_RegisterTexEffModel((BtlUnit9C8 *)ex->btlfx_getFileData(entry->file, 4), 0x39, 0x3D00, 0, 0x80);
+        work->model14[4] = ex->Hi_RegisterTexEffModel((BtlUnit9C8 *)ex->btlfx_getFileData(entry->file, 0xD), 0x39, 0x3D00, 0, 0x80);
+        work->model14[5] = ex->Hi_RegisterTexEffModel((BtlUnit9C8 *)ex->btlfx_getFileData(entry->file, 7), 0x3B, 0x3D01, 0, 0x80);
+        work->model14[6] = ex->Hi_RegisterTexEffModel((BtlUnit9C8 *)ex->btlfx_getFileData(entry->file, 6), 0x3B, 0x3D01, 0, 0x80);
+        work->model14[7] = ex->Hi_RegisterTexEffModel((BtlUnit9C8 *)ex->btlfx_getFileData(entry->file, 8), 0x39, 0x3D00, 0, 0x80);
         v = (ex->btlfx_getUnitRadius(0) << 12) / 720;
         if (v < 0x400) {
             v = 0x6A4;
@@ -56,16 +56,16 @@ s32 fx_0de_op80(s32 mode, Fx0deWork80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             sc.vz = v;
             sc.vx = v;
             if (m > 0x3000) {
-                ex->Hi_DrawMorphEffModel(&rot, &pos, (s32)&sc, work->unk14[0], work->unk14[1], m - 0x3000);
+                ex->Hi_DrawMorphEffModel(&rot, &pos, (s32)&sc, work->model14[0], work->model14[1], m - 0x3000);
             } else if (m > 0x2000) {
-                ex->Hi_DrawMorphEffModel(&rot, &pos, (s32)&sc, work->unk14[1], work->unk14[2], m - 0x2000);
+                ex->Hi_DrawMorphEffModel(&rot, &pos, (s32)&sc, work->model14[1], work->model14[2], m - 0x2000);
             } else if (m > 0x1000) {
-                ex->Hi_DrawMorphEffModel(&rot, &pos, (s32)&sc, work->unk14[2], work->unk14[3], m - 0x1000);
+                ex->Hi_DrawMorphEffModel(&rot, &pos, (s32)&sc, work->model14[2], work->model14[3], m - 0x1000);
             } else {
-                ex->Hi_DrawMorphEffModel(&rot, &pos, (s32)&sc, work->unk14[3], work->unk14[4], m);
+                ex->Hi_DrawMorphEffModel(&rot, &pos, (s32)&sc, work->model14[3], work->model14[4], m);
             }
-            ex->Hi_DrawEffModel(&rot, &pos, (s32)&sc, work->unk14[7]);
-            ex->Hi_ModifyEffModelRGB(work->unk14[7], (ex->math_sin(t >> 2) >> 5) - 0x80, (ex->math_sin(t >> 2) >> 5) - 0x80, (ex->math_sin(t >> 2) >> 5) - 0x80);
+            ex->Hi_DrawEffModel(&rot, &pos, (s32)&sc, work->model14[7]);
+            ex->Hi_ModifyEffModelRGB(work->model14[7], (ex->math_sin(t >> 2) >> 5) - 0x80, (ex->math_sin(t >> 2) >> 5) - 0x80, (ex->math_sin(t >> 2) >> 5) - 0x80);
             /* Dead test, removed after reload: it keeps m live (and call-crossing) through this branch, so
              * global-alloc gives it s2 (as in fx_05f op80). */
             if (m != 0) {
@@ -82,10 +82,10 @@ s32 fx_0de_op80(s32 mode, Fx0deWork80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             rot.vz = 0;
             rot.vx = 0;
             rot.vy = -frame << 5;
-            ex->Hi_DrawEffModel(&rot, &pos, (s32)&sc, work->unk14[4]);
-            ex->Hi_ModifyEffModelRGB(work->unk14[4], (ex->math_cos(c) >> 5) - 0x80, (ex->math_cos(c) >> 5) - 0x80, (ex->math_cos(c) >> 5) - 0x80);
-            ex->Hi_DrawEffModel(&rot, &pos, (s32)&sc, work->unk14[7]);
-            ex->Hi_ModifyEffModelRGB(work->unk14[7], (ex->math_cos(c) >> 5) - 0x80, (ex->math_cos(c) >> 5) - 0x80, (ex->math_cos(c) >> 5) - 0x80);
+            ex->Hi_DrawEffModel(&rot, &pos, (s32)&sc, work->model14[4]);
+            ex->Hi_ModifyEffModelRGB(work->model14[4], (ex->math_cos(c) >> 5) - 0x80, (ex->math_cos(c) >> 5) - 0x80, (ex->math_cos(c) >> 5) - 0x80);
+            ex->Hi_DrawEffModel(&rot, &pos, (s32)&sc, work->model14[7]);
+            ex->Hi_ModifyEffModelRGB(work->model14[7], (ex->math_cos(c) >> 5) - 0x80, (ex->math_cos(c) >> 5) - 0x80, (ex->math_cos(c) >> 5) - 0x80);
         }
         ex->btlfx_drawScrollMove(frame, 0x240, 0x180, 0x10, 0x40, D_801E85F0[frame % 23 + 1].unk0, D_801E85F0[frame % 23 + 1].unk2);
         if (frame >= 0x18) {
@@ -98,12 +98,12 @@ s32 fx_0de_op80(s32 mode, Fx0deWork80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             rot.vz = 0;
             rot.vx = 0;
             rot.vy = -frame << 6;
-            ex->Hi_DrawMorphEffModel(&rot, &pos, (s32)&sc, work->unk14[5], work->unk14[6], 0x1000 - t);
+            ex->Hi_DrawMorphEffModel(&rot, &pos, (s32)&sc, work->model14[5], work->model14[6], 0x1000 - t);
             /* Scheduling barrier (as in fx_05f op80). */
             do {
             } while (0);
             t >>= 1;
-            ex->Hi_ModifyEffModelRGB(work->unk14[5], (ex->math_sin(t) >> 5) - 0x80, (ex->math_sin(t) >> 5) - 0x80, (ex->math_sin(t) >> 5) - 0x80);
+            ex->Hi_ModifyEffModelRGB(work->model14[5], (ex->math_sin(t) >> 5) - 0x80, (ex->math_sin(t) >> 5) - 0x80, (ex->math_sin(t) >> 5) - 0x80);
         }
         if (frame == 0x10) {
             p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 1), (s32)&work->unk4);

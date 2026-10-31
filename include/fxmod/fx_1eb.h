@@ -46,8 +46,8 @@ typedef struct {
     SVECTOR unk44; /* target position */
     s32 unk4C; /* fade countdown */
     u16 unk50;
-    u16 unk52[3]; /* models */
-    u16 unk58; /* morph target */
+    u16 model52[3]; /* models */
+    u16 model58; /* morph target */
 } Fx1ebWork82; /* 0x60 */
 
 typedef struct {

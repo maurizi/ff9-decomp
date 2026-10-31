@@ -267,8 +267,8 @@ s32 fx_180_op82(s32 mode, Fx180Work82 *work, Unk800F78A4 *env, Unk80100C78Entry 
         work->unk38.vx = 0x4000;
         work->unk38.vy = 0x4000;
         work->unk38.vz = 0x4000;
-        work->unk68 = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, 0x17), 1);
-        work->unk6A = ex->Hi_RegisterGouEffModel((BtlUnit9C8 *)ex->btlfx_getFileData(entry->file, 1));
+        work->model68 = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, 0x17), 1);
+        work->model6A = ex->Hi_RegisterGouEffModel((BtlUnit9C8 *)ex->btlfx_getFileData(entry->file, 1));
         work->unk64 = -1;
     } else {
         frame = entry->frame;
@@ -324,11 +324,11 @@ s32 fx_180_op82(s32 mode, Fx180Work82 *work, Unk800F78A4 *env, Unk80100C78Entry 
             } else {
                 w = 0x1000 - (t << 12) / 20;
             }
-            ex->Hi_DrawMorphEffModel(&work->unk20, &work->unk28, (s32)&work->unk38, work->unk68, work->unk6A, w);
+            ex->Hi_DrawMorphEffModel(&work->unk20, &work->unk28, (s32)&work->unk38, work->model68, work->model6A, w);
             if (work->unk64 >= 0) {
                 work->unk48 = fxm_lerpRatio(0, -0xFF, 8 - work->unk64, 8);
                 work->unk64--;
-                ex->Hi_ModifyEffModelRGB(work->unk68, work->unk48, work->unk48, work->unk48);
+                ex->Hi_ModifyEffModelRGB(work->model68, work->unk48, work->unk48, work->unk48);
             }
         }
         if (frame >= 0x20) {

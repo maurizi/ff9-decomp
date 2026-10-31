@@ -41,7 +41,7 @@ typedef struct {
     SVECTOR unk14; /* caster body position */
     s32 unk1C; /* loop counter */
     s32 unk20; /* camera shake on */
-    s32 unk24; /* model */
+    s32 model24; /* model */
 } Fx101Work80;
 
 /* View of Unk800F78A40 up to the byte fx_101 reads (ovl_0b.h has it as padding). */

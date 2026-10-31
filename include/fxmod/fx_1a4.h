@@ -35,9 +35,9 @@ typedef struct {
     s16 unk4E;
     s16 unk50;
     s16 unk52; /* fade countdown */
-    u16 unk54; /* models */
-    u16 unk56;
-    u16 unk58;
+    u16 model54; /* models */
+    u16 model56;
+    u16 model58;
 } Fx1a4Work81; /* 0x5C */
 
 extern Unk800F78A4 *fx_1a4_env;

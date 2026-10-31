@@ -36,9 +36,9 @@ typedef struct {
     SVECTOR unk0; /* target body position */
     SVECTOR unk8; /* target position */
     s32 unk10; /* state */
-    s32 unk14[4]; /* models */
-    s32 unk24;
-    s32 unk28;
+    s32 model14[4]; /* models */
+    s32 model24;
+    s32 model28;
     Pool6CEntry *emit2C;
     Pool6CEntry *emit30;
     s32 unk34; /* frame */

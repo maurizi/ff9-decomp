@@ -29,7 +29,7 @@ s32 fx_125_op80(s32 mode, Fx125Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
         work->unkC.vy -= 0x100;
         work->unk1C.vy -= 0x400;
         ex->btlfx_initEffModels(fx_125_effModels, 3);
-        work->unk24 = (s16)ex->Hi_RegisterTexEffModel((BtlUnit9C8 *)ex->btlfx_getFileData(entry->file, 0xD), 0xB3,
+        work->model24 = (s16)ex->Hi_RegisterTexEffModel((BtlUnit9C8 *)ex->btlfx_getFileData(entry->file, 0xD), 0xB3,
                                                       0x3D40, 0, 0);
         x = env->dispEnv->disp.x;
         if (x < 0x100) {
@@ -39,9 +39,9 @@ s32 fx_125_op80(s32 mode, Fx125Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
         }
         tp1 = getTPage(2, 3, x, env->dispEnv->disp.y);
         tp2 = getTPage(2, 3, x2, env->dispEnv->disp.y);
-        work->unk28[0] = (s16)ex->Hi_RegisterTexEffModel((BtlUnit9C8 *)ex->btlfx_getFileData(entry->file, 0xE), tp1,
+        work->model28[0] = (s16)ex->Hi_RegisterTexEffModel((BtlUnit9C8 *)ex->btlfx_getFileData(entry->file, 0xE), tp1,
                                                          0xFFFF, 0, 0);
-        work->unk28[1] = (s16)ex->Hi_RegisterTexEffModel((BtlUnit9C8 *)ex->btlfx_getFileData(entry->file, 0xE), tp2,
+        work->model28[1] = (s16)ex->Hi_RegisterTexEffModel((BtlUnit9C8 *)ex->btlfx_getFileData(entry->file, 0xE), tp2,
                                                          0xFFFF, 0, 0);
         q = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 7), (s32)&work->unk4);
         if (q != NULL) {
@@ -66,12 +66,12 @@ s32 fx_125_op80(s32 mode, Fx125Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
             scale.vz = s;
             scale.vy = s;
             scale.vx = s;
-            ex->Hi_DrawEffModel(&rot, &pos, (s32)&scale, work->unk24);
-            ex->Hi_ModifyEffModelAbr(work->unk24, 1);
-            ex->Hi_ModifyEffModelRGB(work->unk24, -0x56, -0x56, -0x56);
-            ex->Hi_DrawEffModel(&rot, &pos, (s32)&scale, work->unk28[frame & 1]);
-            ex->Hi_ModifyEffModelAbr(work->unk28[frame & 1], 0xFF);
-            ex->Hi_ModifyEffModelRGB(work->unk28[frame & 1], 0x40, 0x40, 0x40);
+            ex->Hi_DrawEffModel(&rot, &pos, (s32)&scale, work->model24);
+            ex->Hi_ModifyEffModelAbr(work->model24, 1);
+            ex->Hi_ModifyEffModelRGB(work->model24, -0x56, -0x56, -0x56);
+            ex->Hi_DrawEffModel(&rot, &pos, (s32)&scale, work->model28[frame & 1]);
+            ex->Hi_ModifyEffModelAbr(work->model28[frame & 1], 0xFF);
+            ex->Hi_ModifyEffModelRGB(work->model28[frame & 1], 0x40, 0x40, 0x40);
         }
         if (frame == 0x10) {
             Pool6CEntry *p;
