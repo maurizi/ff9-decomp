@@ -279,16 +279,16 @@ s32 fx_114_op80(s32 mode, Fx114Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             work->emit1C->trailStride = 0xD0;
         }
         if (work->emit10 != NULL) {
-            ((EffMotion *)work->emit10->file)->update = fxm_pinParticle0;
+            work->emit10->file->m.module.update = fxm_pinParticle0;
         }
         if (work->emit14 != NULL) {
-            ((EffMotion *)work->emit14->file)->update = fxm_pinParticle1;
+            work->emit14->file->m.module.update = fxm_pinParticle1;
         }
         if (work->emit18 != NULL) {
-            ((EffMotion *)work->emit18->file)->update = fxm_pinParticle2;
+            work->emit18->file->m.module.update = fxm_pinParticle2;
         }
         if (work->emit1C != NULL) {
-            ((EffMotion *)work->emit1C->file)->update = fxm_pinParticle3;
+            work->emit1C->file->m.module.update = fxm_pinParticle3;
         }
         break;
     case 0x2C:

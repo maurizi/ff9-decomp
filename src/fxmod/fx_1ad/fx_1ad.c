@@ -70,7 +70,7 @@ s32 fx_1ad_op80(s32 mode, Fx1adWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
                     work->emit20->otZ = k;
                 }
                 if (work->emit20 != NULL) {
-                    ((EffMotion *)work->emit20->file)->update = fx_1ad_op80ParticleMotion;
+                    work->emit20->file->m.module.update = fx_1ad_op80ParticleMotion;
                 }
                 p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 4), (s32)&work->pos10);
                 if (p != NULL) {

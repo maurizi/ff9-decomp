@@ -112,7 +112,7 @@ s32 fx_1ec_op80(s32 mode, Fx1ecWork80 *work, Unk800F78A4 *env, Unk80100C78Entry 
                 work->emit0[7]->trailSlots = 0x12;
                 work->emit0[7]->trailStride = 0x70;
                 if (work->emit0[7] != NULL) {
-                    ((EffMotion *)work->emit0[7]->file)->update = fx_1ec_op80ParticleMotion;
+                    work->emit0[7]->file->m.module.update = fx_1ec_op80ParticleMotion;
                 }
             }
             if (work->emit0[5] != NULL) {
@@ -207,7 +207,7 @@ s32 fx_1ec_op81(s32 mode, Fx1ecWork81 *work, Unk800F78A4 *env, Unk80100C78Entry 
             work->emit0[9]->trailSlots = 0x2A;
             work->emit0[9]->trailStride = 0x90;
             if (work->emit0[9] != NULL) {
-                ((EffMotion *)work->emit0[9]->file)->update = fx_1ec_op81ParticleMotion;
+                work->emit0[9]->file->m.module.update = fx_1ec_op81ParticleMotion;
             }
         }
         break;

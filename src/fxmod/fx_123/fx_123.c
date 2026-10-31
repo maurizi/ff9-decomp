@@ -263,7 +263,7 @@ s32 fx_123_op81(s32 mode, Fx123Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
                                     work->emit30[i]->trailSlots = 2;
                                     work->emit30[i]->trailStride = 0x70;
                                     if (work->emit30[i] != NULL) {
-                                        *(s32 *)&work->emit30[i]->file->unk8 = fx_123_pinParticles[i];
+                                        *(s32 *)&work->emit30[i]->file->m.module.update = fx_123_pinParticles[i];
                                     }
                                 }
                             }

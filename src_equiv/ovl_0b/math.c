@@ -238,8 +238,8 @@ void btlfx_lerpVec(s16 *from, s16 *to, s32 t, s16 *out) {
     out[2] = GTE_MFC2(27);
 }
 
-/* Particle motion step (Pool30Entry: unk0 position 20.12, unkC-unk10 velocity, unk1E time step).
- * velocity = velocity * drag >> 12 (GPF; drag is unk20 for btlfx_stepParticle, unk28.s.y for btlfx_stepParticleAltDrag);
+/* Particle motion step (Pool30Entry: pos 20.12, motA.vel, timeStep).
+ * velocity = velocity * drag >> 12 (GPF; drag is motB.ballistic.drag for btlfx_stepParticle, motB.orbit.drag for btlfx_stepParticleAltDrag);
  * velocity.y += gravity * step >> 7 (stored only: this step moves with the velocity before gravity);
  * position += velocity << 6 (GPL with IR0 = 0x40) + (accel * (step << 6) >> 12) << 6 (GPF);
  * out = position >> 12. GTE: IR0-IR3, MAC1-MAC3. btlfx_stepParticle is a two-instruction entry that jumps into
@@ -250,9 +250,9 @@ static void btlfx_particleStep(Pool30Entry *e, s32 drag, s32 gravity, s16 *accel
     s32 step;
 
     GTE_MTC2(8, drag);
-    GTE_MTC2(9, e->unkC);
-    GTE_MTC2(10, e->unkE);
-    GTE_MTC2(11, *(u32 *)&e->unk10);
+    GTE_MTC2(9, e->motA.vel.x);
+    GTE_MTC2(10, e->motA.vel.y);
+    GTE_MTC2(11, *(u32 *)&e->motA.vel.z);
     step = e->timeStep;
     GTE_CMD(0x4B98003D);
     vx = GTE_MFC2(9);
@@ -263,9 +263,9 @@ static void btlfx_particleStep(Pool30Entry *e, s32 drag, s32 gravity, s16 *accel
     GTE_MTC2(26, e->pos.vy);
     GTE_MTC2(27, e->pos.vz);
     GTE_CMD(0x4BA0003E);
-    e->unkC = vx;
-    e->unkE = vy;
-    e->unk10 = vz;
+    e->motA.vel.x = vx;
+    e->motA.vel.y = vy;
+    e->motA.vel.z = vz;
     px = GTE_MFC2(25);
     py = GTE_MFC2(26);
     pz = GTE_MFC2(27);
@@ -286,15 +286,15 @@ static void btlfx_particleStep(Pool30Entry *e, s32 drag, s32 gravity, s16 *accel
 }
 
 void btlfx_stepParticle(Pool30Entry *e, s32 gravity, s16 *accel, SVECTOR *out) {
-    btlfx_particleStep(e, e->unk20, gravity, accel, out);
+    btlfx_particleStep(e, e->motB.ballistic.drag, gravity, accel, out);
 }
 
 void btlfx_stepParticleAltDrag(Pool30Entry *e, s32 gravity, s16 *accel, SVECTOR *out) {
-    btlfx_particleStep(e, e->unk28.s.y, gravity, accel, out);
+    btlfx_particleStep(e, e->motB.orbit.drag, gravity, accel, out);
 }
 
-/* Particle motion step without drag: *acc += speed * step >> 7 (an s16: unk10 = velocity z for
- * btlfx_stepParticleNoDrag, unk24.s.x for btlfx_stepParticleNoDragAlt; btlfx_stepParticleNoDrag jumps into btlfx_stepParticleNoDragAlt's body);
+/* Particle motion step without drag: *acc += speed * step >> 7 (an s16: motA.spin.fall for
+ * btlfx_stepParticleNoDrag, motB.wobble.fall for btlfx_stepParticleNoDragAlt; btlfx_stepParticleNoDrag jumps into btlfx_stepParticleNoDragAlt's body);
  * position += (dir * (step << 6) >> 12) << 6, with the new *acc added to y first; out = position >> 12.
  * GTE: IR0-IR3, MAC1-MAC3. */
 static void btlfx_particleStepNoDrag(Pool30Entry *e, s16 *acc, s32 speed, s16 *dir, SVECTOR *out) {
@@ -321,11 +321,11 @@ static void btlfx_particleStepNoDrag(Pool30Entry *e, s16 *acc, s32 speed, s16 *d
 }
 
 void btlfx_stepParticleNoDrag(Pool30Entry *e, s32 speed, s16 *dir, SVECTOR *out) {
-    btlfx_particleStepNoDrag(e, &e->unk10, speed, dir, out);
+    btlfx_particleStepNoDrag(e, &e->motA.spin.fall, speed, dir, out);
 }
 
 void btlfx_stepParticleNoDragAlt(Pool30Entry *e, s32 speed, s16 *dir, SVECTOR *out) {
-    btlfx_particleStepNoDrag(e, &e->unk24.s.x, speed, dir, out);
+    btlfx_particleStepNoDrag(e, &e->motB.wobble.fall, speed, dir, out);
 }
 
 /* The particle btlfx_stepModuleParticle moves (the effect modules' own records, passed as Pool6CEntry * through the

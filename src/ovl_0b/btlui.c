@@ -978,7 +978,7 @@ void btlui_removeItem(s32 arg0) {
                 g_btluiItems->itemCount--;
             }
         }
-        if (arg0 < 0x58 && (g_weaponTable[arg0].flags & 4)) {
+        if (arg0 < BTL_WEAPON_COUNT && (g_weaponTable[arg0].flags & BTL_WEAPON_THROWABLE)) {
             i = btlui_findThrowListEntry(arg0);
             if (i != 0xFF && g_btluiItems->throwItems[i]->count == 0) {
                 g_btluiItems->throwItems[i] = 0;
@@ -1004,10 +1004,10 @@ void btlui_addItem(s32 arg0) {
     if (item_add(arg0, 1) == 0) {
         return;
     }
-    if (arg0 >= 0xE0 && btlui_findItemListEntry(arg0) == 0xFF) {
+    if (arg0 >= ITEM_FIRST_USABLE && btlui_findItemListEntry(arg0) == 0xFF) {
         btlui_addItemListEntry(arg0);
     }
-    if (arg0 < 0x58 && (g_weaponTable[arg0].flags & 4) && btlui_findThrowListEntry(arg0) == 0xFF) {
+    if (arg0 < BTL_WEAPON_COUNT && (g_weaponTable[arg0].flags & BTL_WEAPON_THROWABLE) && btlui_findThrowListEntry(arg0) == 0xFF) {
         btlui_addThrowListEntry(arg0);
     }
 }
@@ -1037,8 +1037,8 @@ void btlui_buildItemList(void) {
     s32 i;
     UnkPair *p = g_gameState->gameData->items.slots;
     Unk80104FA8 *f = g_btluiItems;
-    for (i = 0; i < 0x100; i++, p++) {
-        if (p->count != 0 && p->id != 0xFF && p->id >= 0xE0) {
+    for (i = 0; i < ITEM_SLOT_COUNT; i++, p++) {
+        if (p->count != 0 && p->id != ITEM_NONE && p->id >= ITEM_FIRST_USABLE) {
             f->items[n] = p;
             n++;
         }
@@ -1055,13 +1055,13 @@ void btlui_buildThrowList(void) {
     UnkPair *e;
     Unk80104FA8 *p = g_btluiItems;
     e = g_gameState->gameData->items.slots;
-    for (; i < 0x100; i++, e++) {
-        if (e->count != 0 && e->id != 0xFF && e->id < 0x58 && (g_weaponTable[e->id].flags & 4)) {
+    for (; i < ITEM_SLOT_COUNT; i++, e++) {
+        if (e->count != 0 && e->id != ITEM_NONE && e->id < BTL_WEAPON_COUNT && (g_weaponTable[e->id].flags & BTL_WEAPON_THROWABLE)) {
             p->throwItems[n] = e;
             n++;
         }
     }
-    for (i = n; i < 0x58; i++) {
+    for (i = n; i < BTL_WEAPON_COUNT; i++) {
         g_btluiItems->throwItems[i] = NULL;
     }
     g_btluiItems->throwCount = n;
@@ -1813,11 +1813,11 @@ s32 btlui_selectItem(void) {
         s.returnState = 2;
         s.cmdNo = g_btluiList.cmdNo;
         s.subNo = p->id;
-        s.targetType = e->unk0_0;
-        s.defaultSide = e->unk0_4;
-        s.koFirst = e->unk0_31;
-        s.listKind = e->unk0_5;
-        s.allowKo = e->unk0_29;
+        s.targetType = e->targetType;
+        s.defaultSide = e->defaultSide;
+        s.koFirst = e->koFirst;
+        s.listKind = e->listKind;
+        s.allowKo = e->allowKo;
         s.doubleCast = g_btluiList.doubleCast;
         s.trance = g_btluiList.trance;
         btlui_startTargetSelect(&s);
@@ -2101,7 +2101,7 @@ char *btlui_getAbilityHelpText(void) {
     if (btlui_getAbilityState(k) == 0) {
         return NULL;
     }
-    return g_btlAbilityHelp + g_btlAbilityHelpOfs[k].unk0;
+    return g_btlAbilityHelp + g_btlAbilityHelpOfs[k].text;
 }
 
 u8 *btlui_getItemHelpText(void) {
@@ -3528,7 +3528,7 @@ void btlui_showListHeader(s32 arg0) {
     btlui_startLabelSlide(&g_btluiPanel->labels[2], &g_btluiListShowSlide);
     btlui_startLabelSlide(&g_btluiPanel->labels[3], &g_btluiListShowSlide);
     btlui_startLabelSlide(&g_btluiPanel->labels[4], &g_btluiListShowTitleSlide);
-    g_btluiPanel->labels[4].text = g_btluiListTitles[arg0].unk0;
+    g_btluiPanel->labels[4].text = g_btluiListTitles[arg0].text;
     btlui_setMenuState(BTLUI_MENU_CLOSING);
 }
 

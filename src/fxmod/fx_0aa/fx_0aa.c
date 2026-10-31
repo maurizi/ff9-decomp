@@ -47,10 +47,10 @@ s32 fx_0aa_op80(s32 mode, Fx0aaWork80 *work, Unk800F78A4 *env, Unk80100C78Entry 
                 work->emitC->trailStride = 0x70;
             }
             if (work->emit8 != NULL) {
-                ((EffMotion *)work->emit8->file)->update = fx_0aa_op80ParticleMotion0;
+                work->emit8->file->m.module.update = fx_0aa_op80ParticleMotion0;
             }
             if (work->emitC != NULL) {
-                ((EffMotion *)work->emitC->file)->update = fx_0aa_op80ParticleMotion1;
+                work->emitC->file->m.module.update = fx_0aa_op80ParticleMotion1;
             }
             fx_0aa_pathFrom0.vx = work->pos10.vx;
             fx_0aa_pathFrom0.vy = work->pos10.vy;

@@ -340,7 +340,7 @@ s32 fx_1b0_op80(s32 mode, Fx1b0Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             if (frame == 0x31) {
                 p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 3), (s32)&work->pos28);
                 if (p != NULL) {
-                    ((EffMotion *)p->file)->update = fx_1b0_op80ParticleMotion;
+                    p->file->m.module.update = fx_1b0_op80ParticleMotion;
                     p->trails = (s32)fx_1b0_op80Trails0;
                     p->trailSlots = 0x20;
                     p->trailStride = 0xAC;

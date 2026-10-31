@@ -34,7 +34,7 @@ s32 btlfx_updateParticles(Pool30 *pool) {
     s32 scale;
     Pool30Entry *e;
     Pool6CEntry *owner;
-    EffMotion *m;
+    EffEmit *m;
     EffElem *el;
     EffSub *sub;
     SVECTOR *vp;
@@ -83,7 +83,7 @@ s32 btlfx_updateParticles(Pool30 *pool) {
         pool->live++;
         t = (frame << 12) / frames;
         if (e->spawnFlags & BTLFX_PART_SUB) {
-            m = (EffMotion *)owner->sub;
+            m = (EffEmit *)owner->sub;
             sub = owner->sub - 1;
             mode = sub->fieldMode;
             rs = owner->subGravity;
@@ -98,7 +98,7 @@ s32 btlfx_updateParticles(Pool30 *pool) {
                 }
             }
         } else {
-            m = (EffMotion *)owner->file;
+            m = owner->file;
             mode = owner->tail->anim.fieldMode;
             rs = owner->gravity;
             rp = owner->accel;
@@ -121,113 +121,113 @@ s32 btlfx_updateParticles(Pool30 *pool) {
             }
         }
         switch (m->kind) {
-        case 0:
+        case BTLFX_MOTION_BALLISTIC:
             btlfx_stepParticle(e, rs, rp, &pos);
-            if (m->unk18 != 0) {
-                e->unkC += btlfx_randCentered(m->unk1A);
-                e->unkE += btlfx_randCentered(m->unk1C);
-                e->unk10 += btlfx_randCentered(m->unk1E);
+            if (m->m.ballistic.jitter != 0) {
+                e->motA.vel.x += btlfx_randCentered(m->m.ballistic.jitterX);
+                e->motA.vel.y += btlfx_randCentered(m->m.ballistic.jitterY);
+                e->motA.vel.z += btlfx_randCentered(m->m.ballistic.jitterZ);
             }
-            if (m->unk12 != 0) {
-                if (m->unk12 == 1) {
-                    if (owner->rot.pad - m->unk14 < pos.vy && e->unkE > 0) {
-                        e->unkE = -e->unkE;
-                        e->unkE = (e->unkE * m->unk16) >> 8;
+            if (m->m.ballistic.floorMode != 0) {
+                if (m->m.ballistic.floorMode == 1) {
+                    if (owner->rot.pad - m->m.ballistic.floorMargin < pos.vy && e->motA.vel.y > 0) {
+                        e->motA.vel.y = -e->motA.vel.y;
+                        e->motA.vel.y = (e->motA.vel.y * m->m.ballistic.bounce) >> 8;
                     }
-                } else if (owner->rot.pad - m->unk14 < pos.vy) {
-                    if (e->unkE > 0) {
-                        s32 x = e->unkE * (owner->rot.pad - pos.vy);
-                        if (m->unk14 != 0) {
-                            x /= m->unk14;
+                } else if (owner->rot.pad - m->m.ballistic.floorMargin < pos.vy) {
+                    if (e->motA.vel.y > 0) {
+                        s32 x = e->motA.vel.y * (owner->rot.pad - pos.vy);
+                        if (m->m.ballistic.floorMargin != 0) {
+                            x /= m->m.ballistic.floorMargin;
                         }
-                        e->unkE = x;
+                        e->motA.vel.y = x;
                     }
-                    if (owner->rot.pad - (m->unk14 >> 1) < pos.vy) {
-                        e->unkE = (s16)(e->unkE - 0x40) - ((owner->gravity * e->timeStep) >> 6);
+                    if (owner->rot.pad - (m->m.ballistic.floorMargin >> 1) < pos.vy) {
+                        e->motA.vel.y = (s16)(e->motA.vel.y - 0x40) - ((owner->gravity * e->timeStep) >> 6);
                     }
                     if (pos.vy > owner->rot.pad) {
-                        e->unkE = 0;
+                        e->motA.vel.y = 0;
                     }
                 }
             }
             break;
-        case 1:
+        case BTLFX_MOTION_ORBIT:
             btlfx_stepParticleAltDrag(e, rs, rp, &pos);
-            e->unk24.s.x += e->unk20;
-            e->unk24.s.y += e->unk22;
-            v.vx = e->unk24.s.x;
-            v.vy = e->unk24.s.y;
-            switch (m->unk14) {
-            case 0:
-                rs = (math_sin(btlfx_lerp(m->unk1C, m->unk1E, t)) * e->unk28.s.x) >> 12;
+            e->motB.orbit.dir.s.x += e->motB.orbit.turnX;
+            e->motB.orbit.dir.s.y += e->motB.orbit.turnY;
+            v.vx = e->motB.orbit.dir.s.x;
+            v.vy = e->motB.orbit.dir.s.y;
+            switch (m->m.orbit.radiusCurve) {
+            case BTLFX_RADIUS_SIN:
+                rs = (math_sin(btlfx_lerp(m->m.orbit.sinStart, m->m.orbit.sinEnd, t)) * e->motB.orbit.radius) >> 12;
                 break;
-            case 1:
-                rs = (e->unk28.s.x * t) >> 12;
+            case BTLFX_RADIUS_GROW:
+                rs = (e->motB.orbit.radius * t) >> 12;
                 break;
-            case 2:
-                rs = e->unk28.s.x - ((e->unk28.s.x * t) >> 12);
+            case BTLFX_RADIUS_SHRINK:
+                rs = e->motB.orbit.radius - ((e->motB.orbit.radius * t) >> 12);
                 break;
             }
             btlfx_pointAhead((s16 *)&pos, (s16 *)&v, rs, (s16 *)&pos);
             break;
-        case 2:
+        case BTLFX_MOTION_SPIRAL:
             btlfx_stepParticleNoDrag(e, rs, rp, &pos);
-            e->unkC += e->unkE;
-            e->unk20 += e->unk22;
-            e->unk24.s.x += e->unk24.s.y;
-            btlfx_offsetPoint(&pos, (s32)&pos, e->unk20 >> 2, &e->unk28, e->unk24.s.x >> 2, e->unkC);
+            e->motA.spin.angle += e->motA.spin.speed;
+            e->motB.spiral.axial += e->motB.spiral.axialSpeed;
+            e->motB.spiral.radius += e->motB.spiral.radiusSpeed;
+            btlfx_offsetPoint(&pos, (s32)&pos, e->motB.spiral.axial >> 2, &e->motB.spiral.axis, e->motB.spiral.radius >> 2, e->motA.spin.angle);
             break;
-        case 3:
+        case BTLFX_MOTION_WOBBLE:
             btlfx_stepParticleNoDragAlt(e, rs, rp, &pos);
-            e->unkC += e->unk20;
-            e->unkE += e->unk22;
-            v.vx = e->unk24.s.y + math_sin(e->unkC);
-            v.vy = e->unk28.s.x + math_sin(e->unkE);
-            switch (m->unk14) {
-            case 0:
-                rs = (math_sin(btlfx_lerp(m->unk1C, m->unk1E, t)) * e->unk10) >> 12;
+            e->motA.wobble.phaseX += e->motB.wobble.swingXSpeed;
+            e->motA.wobble.phaseY += e->motB.wobble.swingYSpeed;
+            v.vx = e->motB.wobble.dirX + math_sin(e->motA.wobble.phaseX);
+            v.vy = e->motB.wobble.dirY + math_sin(e->motA.wobble.phaseY);
+            switch (m->m.wobble.radiusCurve) {
+            case BTLFX_RADIUS_SIN:
+                rs = (math_sin(btlfx_lerp(m->m.wobble.sinStart, m->m.wobble.sinEnd, t)) * e->motA.wobble.radius) >> 12;
                 break;
-            case 1:
-                rs = (e->unk10 * t) >> 12;
+            case BTLFX_RADIUS_GROW:
+                rs = (e->motA.wobble.radius * t) >> 12;
                 break;
-            case 2:
-                rs = e->unk10 - ((e->unk10 * t) >> 12);
+            case BTLFX_RADIUS_SHRINK:
+                rs = e->motA.wobble.radius - ((e->motA.wobble.radius * t) >> 12);
                 break;
             }
             btlfx_pointAhead((s16 *)&pos, (s16 *)&v, rs, (s16 *)&pos);
             break;
-        case 4:
+        case BTLFX_MOTION_HELIX:
             btlfx_stepParticleNoDrag(e, rs, rp, &pos);
-            e->unk24.w += e->unk22;
-            e->unkC += e->unkE;
-            switch (m->unkE) {
-            case 0:
-                rs = (math_sin(btlfx_lerp(m->unk1C, m->unk1E, t)) * e->unk20) >> 12;
+            e->motB.helix.axial += e->motB.helix.axialSpeed;
+            e->motA.spin.angle += e->motA.spin.speed;
+            switch (m->m.helix.radiusCurve) {
+            case BTLFX_RADIUS_SIN:
+                rs = (math_sin(btlfx_lerp(m->m.helix.sinStart, m->m.helix.sinEnd, t)) * e->motB.helix.radius) >> 12;
                 break;
-            case 1:
-                rs = (e->unk20 * t) >> 12;
+            case BTLFX_RADIUS_GROW:
+                rs = (e->motB.helix.radius * t) >> 12;
                 break;
-            case 2:
-                rs = e->unk20 - ((e->unk20 * t) >> 12);
+            case BTLFX_RADIUS_SHRINK:
+                rs = e->motB.helix.radius - ((e->motB.helix.radius * t) >> 12);
                 break;
             }
-            btlfx_offsetPoint(&pos, (s32)&pos, e->unk24.w >> 6, &e->unk28, rs, e->unkC);
+            btlfx_offsetPoint(&pos, (s32)&pos, e->motB.helix.axial >> 6, &e->motB.helix.axis, rs, e->motA.spin.angle);
             break;
-        case 5:
+        case BTLFX_MOTION_HOMING:
             btlfx_stepParticle(e, rs, rp, &pos);
-            if (m->unk18 != 0) {
-                e->unkC += btlfx_randCentered(m->unk1A);
-                e->unkE += btlfx_randCentered(m->unk1C);
-                e->unk10 += btlfx_randCentered(m->unk1E);
+            if (m->m.homing.jitter != 0) {
+                e->motA.vel.x += btlfx_randCentered(m->m.homing.jitterX);
+                e->motA.vel.y += btlfx_randCentered(m->m.homing.jitterY);
+                e->motA.vel.z += btlfx_randCentered(m->m.homing.jitterZ);
             }
-            rs = btlfx_lerp(m->unk12, m->unk14, t);
+            rs = btlfx_lerp(m->m.homing.steerStart, m->m.homing.steerEnd, t);
             btlfx_aimAngles((s16 *)&pos, (s16 *)owner->target, (s16 *)&v);
-            v.vx += m->unk20;
-            v.vy += m->unk22;
-            btlfx_pointAhead(&e->unkC, (s16 *)&v, rs, &e->unkC);
+            v.vx += m->m.homing.aimX;
+            v.vy += m->m.homing.aimY;
+            btlfx_pointAhead(&e->motA.vel.x, (s16 *)&v, rs, &e->motA.vel.x);
             break;
-        case 0xFF:
-            if (m->update(e, owner, &pos, btlfx_getParticleTrail(e, owner), frame, frames) != 0) {
+        case BTLFX_MOTION_MODULE:
+            if (m->m.module.update(e, owner, &pos, btlfx_getParticleTrail(e, owner), frame, frames) != 0) {
                 e->slot = 0;
                 if (e->spawnFlags & BTLFX_PART_SUB) {
                     owner->live.s.y--;
@@ -517,13 +517,13 @@ Pool6CEntry *btlfx_spawnEmitter(Pool30 *arg0, Pool6C *arg1, u8 *arg2, s32 arg3) 
             e->trails = 0;
             e->spawnFrac = 0xFF;
             e->otZ = 0;
-            e->file = (EffFileHdr *)p;
+            e->file = (EffEmit *)p;
             if (*p != 0xFF) {
                 p += 0x28;
             } else {
                 p += 0x10;
             }
-            if (e->file->hasSub != 0) {
+            if (e->file->emitsSub != 0) {
                 p += 0x38;
                 e->sub = (EffSub *)p;
                 p += 0x28;
@@ -548,13 +548,13 @@ Pool6CEntry *btlfx_spawnEmitter(Pool30 *arg0, Pool6C *arg1, u8 *arg2, s32 arg3) 
                     }
                 }
             }
-            /* unk24 (tail), unk28, unk2C written through one pointer */
+            /* tail, origin, target written through one pointer */
             q = (s32 *)&e->tail;
             q[0] = (s32)p;
             v = *(s32 *)p;
             k = (u32)p;
-            if (v == -1) {
-                *(s32 *)&((EffTail *)k)->unk3C = 0;
+            if (v == BTLFX_SHAPE_MODULE) {
+                ((EffTail *)k)->s.module.spawnFn = NULL;
             }
             q[1] = arg3;
             q[2] = arg3;
@@ -616,7 +616,7 @@ s32 btlfx_updateEmitters(Pool30 *arg0, Pool6C *arg1) {
     EffAnim *an;
     EffElemHdr *hdr;
     EffSub *sub;
-    EffFileHdr *f;
+    EffEmit *f;
     s16 *tbl;
     s32 frame;
     s32 t;
@@ -661,10 +661,10 @@ s32 btlfx_updateEmitters(Pool30 *arg0, Pool6C *arg1) {
             break;
         case 2:
             def = e->tail;
-            if (def->shape != -1) {
+            if (def->shape != BTLFX_SHAPE_MODULE) {
                 tbl = def->rateTable;
             } else {
-                tbl = def->unk40;
+                tbl = def->s.module.rateTable;
             }
             v = tbl[(frame << 4) / y];
             break;
@@ -738,62 +738,62 @@ s32 btlfx_updateEmitters(Pool30 *arg0, Pool6C *arg1) {
         }
         d2 = e->tail;
         switch (d2->shape) {
-        case 0:
-            a.h[0] = d2->unk3C;
-            a.h[1] = d2->unk40[0];
-            b[0] = d2->unk3E;
-            b[1] = d2->unk40[1];
+        case BTLFX_SHAPE_SPHERE:
+            a.h[0] = d2->s.sphere.radiusMinStart;
+            a.h[1] = d2->s.sphere.radiusMaxStart;
+            b[0] = d2->s.sphere.radiusMinEnd;
+            b[1] = d2->s.sphere.radiusMaxEnd;
             btlfx_lerpVec(a.h, b, t, a.h);
             e->radiusMin = a.h[0];
             e->radiusMax = a.h[1];
             break;
-        case 1:
-        case 2:
-        case 3:
-            a.h[0] = d2->unk3C;
-            a.h[1] = d2->unk3E;
-            b[0] = d2->unk40[0];
-            b[1] = d2->unk40[1];
+        case BTLFX_SHAPE_CYLINDER:
+        case BTLFX_SHAPE_AXIS:
+        case BTLFX_SHAPE_TUBE:
+            a.h[0] = d2->s.cylinder.radiusStart[0];
+            a.h[1] = d2->s.cylinder.radiusStart[1];
+            b[0] = d2->s.cylinder.radiusEnd[0];
+            b[1] = d2->s.cylinder.radiusEnd[1];
             btlfx_lerpVec(a.h, b, t, a.h);
             e->radiusMin = a.h[0];
             e->radiusMax = a.h[1];
-            a.h[0] = d2->unk40[2];
-            a.h[1] = d2->unk40[3];
-            b[0] = d2->unk40[4];
-            b[1] = d2->unk40[5];
+            a.h[0] = d2->s.cylinder.spanStart[0];
+            a.h[1] = d2->s.cylinder.spanStart[1];
+            b[0] = d2->s.cylinder.spanEnd[0];
+            b[1] = d2->s.cylinder.spanEnd[1];
             btlfx_lerpVec(a.h, b, t, a.h);
-            e->unk40 = a.h[0];
-            e->unk42 = a.h[1];
+            e->shape.span.min = a.h[0];
+            e->shape.span.max = a.h[1];
             break;
-        case 4:
-            a.h[0] = d2->unk3C;
-            a.h[1] = d2->unk40[0];
-            a.h[2] = d2->unk40[2];
-            b[0] = d2->unk3E;
-            b[1] = d2->unk40[1];
-            b[2] = d2->unk40[3];
+        case BTLFX_SHAPE_CONE:
+            a.h[0] = d2->s.cone.radiusMinStart;
+            a.h[1] = d2->s.cone.radiusMaxStart;
+            a.h[2] = d2->s.cone.lengthStart;
+            b[0] = d2->s.cone.radiusMinEnd;
+            b[1] = d2->s.cone.radiusMaxEnd;
+            b[2] = d2->s.cone.lengthEnd;
             btlfx_lerpVec(a.h, b, t, a.h);
             e->radiusMin = a.h[0];
             e->radiusMax = a.h[1];
-            e->unk40 = a.h[2];
+            e->shape.cone.length = a.h[2];
             break;
         }
         switch (e->file->kind) {
-        case 0:
-        case 5:
-            e->unk8 = btlfx_lerp(e->file->unk8, e->file->unkA, t);
+        case BTLFX_MOTION_BALLISTIC:
+        case BTLFX_MOTION_HOMING:
+            e->cur.ballistic.speed = btlfx_lerp(e->file->m.ballistic.speedStart, e->file->m.ballistic.speedEnd, t);
             break;
-        case 1:
+        case BTLFX_MOTION_ORBIT:
             f = e->file;
-            e->unk8 = btlfx_lerp(f->unk18, f->unk1A, t);
-            e->unkA = btlfx_lerp(f->unk20, f->unk22, t);
+            e->cur.orbit.radius = btlfx_lerp(f->m.orbit.radiusStart, f->m.orbit.radiusEnd, t);
+            e->cur.orbit.speed = btlfx_lerp(f->m.orbit.speedStart, f->m.orbit.speedEnd, t);
             break;
-        case 2:
-        case 4:
-            e->unk8 = btlfx_lerp(e->file->unk8, e->file->unkA, t);
+        case BTLFX_MOTION_SPIRAL:
+        case BTLFX_MOTION_HELIX:
+            e->cur.spiral.axialSpeed = btlfx_lerp(e->file->m.spiral.axialSpeedStart, e->file->m.spiral.axialSpeedEnd, t);
             break;
-        case 3:
-            e->unk8 = btlfx_lerp(e->file->unk18, e->file->unk1A, t);
+        case BTLFX_MOTION_WOBBLE:
+            e->cur.wobble.radius = btlfx_lerp(e->file->m.wobble.radiusStart, e->file->m.wobble.radiusEnd, t);
             break;
         }
         frame++;
@@ -883,8 +883,8 @@ void btlfx_runEmitters(Pool30 *pool, Pool6C *list) {
             p->elem = k;
             p->elemFrame = 0;
             if (k == 0xFF) {
-                acc = btlfx_lerp(((EffEmit *)e->file)->lifeStart, ((EffEmit *)e->file)->lifeEnd, t);
-                acc += btlfx_randCentered(((EffEmit *)e->file)->lifeSpread);
+                acc = btlfx_lerp(e->file->lifeStart, e->file->lifeEnd, t);
+                acc += btlfx_randCentered(e->file->lifeSpread);
                 if (acc <= 0) {
                     acc = 1;
                 }
@@ -893,8 +893,8 @@ void btlfx_runEmitters(Pool30 *pool, Pool6C *list) {
                 if (el->frameMode == 1) {
                     acc = el->frameCount;
                 } else {
-                    acc = btlfx_lerp(((EffEmit *)e->file)->lifeStart, ((EffEmit *)e->file)->lifeEnd, t);
-                    acc += btlfx_randCentered(((EffEmit *)e->file)->lifeSpread);
+                    acc = btlfx_lerp(e->file->lifeStart, e->file->lifeEnd, t);
+                    acc += btlfx_randCentered(e->file->lifeSpread);
                     if (acc <= 0) {
                         acc = 1;
                     }
@@ -919,7 +919,7 @@ void btlfx_runEmitters(Pool30 *pool, Pool6C *list) {
             p->frame = 0;
             p->owner = e;
             p->timeStep = btlfx_randCentered(anim->stepSpread) + 0x40;
-            if (((EffEmit *)e->file)->emitsSub != 0) {
+            if (e->file->emitsSub != 0) {
                 p->spawnFlags = BTLFX_PART_SUB_FRAC;
             } else {
                 p->spawnFlags = 0;
@@ -929,52 +929,52 @@ void btlfx_runEmitters(Pool30 *pool, Pool6C *list) {
                 e->spawnCount %= e->trailSlots;
             }
             switch (e->tail->shape) {
-            case 0:
+            case BTLFX_SHAPE_SPHERE:
                 btlfx_randRotation(&rot);
                 acc = btlfx_randRange(e->radiusMin, e->radiusMax);
-                if (((EffTailSpawn *)e->tail)->axisScaleStart.cd == 1) {
+                if (e->tail->s.sphere.axisScaleStart.cd == 1) {
                     if (rot.vx > 0x800) {
                         rot.vx -= 0x800;
                     }
-                } else if (((EffTailSpawn *)e->tail)->axisScaleStart.cd == 2) {
+                } else if (e->tail->s.sphere.axisScaleStart.cd == 2) {
                     if (rot.vx < 0x800) {
                         rot.vx += 0x800;
                     }
                 }
                 btlfx_rotateOffset(&rot, acc, (s32)&off);
-                LoadAverageCol((u8 *)&((EffTailSpawn *)e->tail)->axisScaleStart, (u8 *)&((EffTailSpawn *)e->tail)->axisScaleEnd.c, 0x1000 - t, t, (u8 *)&col);
+                LoadAverageCol((u8 *)&e->tail->s.sphere.axisScaleStart, (u8 *)&e->tail->s.sphere.axisScaleEnd, 0x1000 - t, t, (u8 *)&col);
                 off.vx = (off.vx * col.r) >> 7;
                 off.vy = (off.vy * col.g) >> 7;
                 off.vz = (off.vz * col.b) >> 7;
                 base = e->origin;
                 break;
-            case 1:
+            case BTLFX_SHAPE_CYLINDER:
                 rot.vx = 0;
                 rot.vy = btlfx_rand();
                 rot.vz = 0;
                 btlfx_rotateOffset(&rot, btlfx_randRange(e->radiusMin, e->radiusMax), (s32)&off);
-                off.vy = btlfx_randRange(e->unk40, e->unk42);
-                if (((EffTailSpawn *)e->tail)->dirMode == 1) {
+                off.vy = btlfx_randRange(e->shape.span.min, e->shape.span.max);
+                if (e->tail->s.cylinder.dirMode == 1) {
                     rot.vx = 0x400;
                     rot.vy = 0;
-                } else if (((EffTailSpawn *)e->tail)->dirMode == 2) {
+                } else if (e->tail->s.cylinder.dirMode == 2) {
                     rot.vx = -0x400;
                     rot.vy = 0;
                 }
                 base = e->origin;
                 break;
-            case 2:
+            case BTLFX_SHAPE_AXIS:
                 ((XY32 *)&ang)[0].w = ((XY32 *)&e->rot)[0].w;
                 ((XY32 *)&ang)[1].w = ((XY32 *)&e->rot)[1].w;
                 d58 = btlfx_rand();
-                acc = btlfx_randRange(e->unk40, e->unk42);
+                acc = btlfx_randRange(e->shape.span.min, e->shape.span.max);
                 r = btlfx_randRange(e->radiusMin, e->radiusMax);
                 *(s32 *)&off.vx = 0;
                 *(s32 *)&off.vz = 0;
                 btlfx_offsetPoint(&off, (s32)&off, acc, (XY32 *)&ang, r, d58);
-                if (((EffTailSpawn *)e->tail)->dirMode == 1) {
+                if (e->tail->s.cylinder.dirMode == 1) {
                     ((XY32 *)&rot)[0].w = ((XY32 *)&ang)[0].w;
-                } else if (((EffTailSpawn *)e->tail)->dirMode == 2) {
+                } else if (e->tail->s.cylinder.dirMode == 2) {
                     ((XY32 *)&rot)[0].w = ((XY32 *)&ang)[0].w;
                     rot.vx += 0x800;
                 } else {
@@ -982,16 +982,16 @@ void btlfx_runEmitters(Pool30 *pool, Pool6C *list) {
                 }
                 base = e->origin;
                 break;
-            case 3:
+            case BTLFX_SHAPE_TUBE:
                 btlfx_aimAngles((s16 *)e->origin, (s16 *)e->target, &ang.vx);
                 d58 = btlfx_rand();
-                acc = btlfx_randRange(e->unk40, e->unk42);
+                acc = btlfx_randRange(e->shape.span.min, e->shape.span.max);
                 r = btlfx_randRange(e->radiusMin, e->radiusMax);
                 btlfx_lerpVec((s16 *)e->origin, (s16 *)e->target, acc, &off.vx);
                 btlfx_offsetPoint(&off, (s32)&off, 0, (XY32 *)&ang, r, d58);
-                if (((EffTailSpawn *)e->tail)->dirMode == 1) {
+                if (e->tail->s.cylinder.dirMode == 1) {
                     ((XY32 *)&rot)[0].w = ((XY32 *)&ang)[0].w;
-                } else if (((EffTailSpawn *)e->tail)->dirMode == 2) {
+                } else if (e->tail->s.cylinder.dirMode == 2) {
                     ((XY32 *)&rot)[0].w = ((XY32 *)&ang)[0].w;
                     rot.vx += 0x800;
                 } else {
@@ -1002,13 +1002,13 @@ void btlfx_runEmitters(Pool30 *pool, Pool6C *list) {
                 off.vy -= base->vy;
                 off.vz -= base->vz;
                 break;
-            case 4: {
+            case BTLFX_SHAPE_CONE: {
                 s32 y4;
                 ((XY32 *)&ang)[0].w = ((XY32 *)&e->rot)[0].w;
                 ((XY32 *)&ang)[1].w = ((XY32 *)&e->rot)[1].w;
                 n = 1;
-                if (e->unk40 != 0) {
-                    n = e->unk40;
+                if (e->shape.cone.length != 0) {
+                    n = e->shape.cone.length;
                 }
                 acc = btlfx_rand() % n;
                 r = btlfx_rand() & 0xFFF;
@@ -1019,9 +1019,9 @@ void btlfx_runEmitters(Pool30 *pool, Pool6C *list) {
                 *(s32 *)&off.vx = 0;
                 *(s32 *)&off.vz = 0;
                 btlfx_offsetPoint(&off, (s32)&off, acc, (XY32 *)&ang, r, n);
-                if (((EffTailSpawn *)e->tail)->axisScaleEnd.h == 1) {
+                if (e->tail->s.cone.dirMode == 1) {
                     ((XY32 *)&rot)[0].w = ((XY32 *)&ang)[0].w;
-                } else if (((EffTailSpawn *)e->tail)->axisScaleEnd.h == 2) {
+                } else if (e->tail->s.cone.dirMode == 2) {
                     ((XY32 *)&rot)[0].w = ((XY32 *)&ang)[0].w;
                     rot.vx += 0x800;
                 } else {
@@ -1030,7 +1030,7 @@ void btlfx_runEmitters(Pool30 *pool, Pool6C *list) {
                     btlfx_offsetPoint(&tmp, (s32)&tmp, 0, (XY32 *)&ang, d58, n);
                     *(s32 *)&rot.vx = 0;
                     *(s32 *)&rot.vz = 0;
-                    btlfx_offsetPoint(&rot, (s32)&rot, e->unk40, (XY32 *)&ang, y4, n);
+                    btlfx_offsetPoint(&rot, (s32)&rot, e->shape.cone.length, (XY32 *)&ang, y4, n);
                     ((XY32 *)&ang)[0].w = ((XY32 *)&rot)[0].w;
                     ((XY32 *)&ang)[1].w = ((XY32 *)&rot)[1].w;
                     btlfx_aimAngles(&tmp.vx, &ang.vx, &rot.vx);
@@ -1038,9 +1038,9 @@ void btlfx_runEmitters(Pool30 *pool, Pool6C *list) {
                 base = e->origin;
                 break;
             }
-            case -1:
+            case BTLFX_SHAPE_MODULE:
                 off.pad = 0;
-                if (((EffTailSpawn *)e->tail)->spawnFn(&off, &rot, frame, dur) != 0) {
+                if (e->tail->s.module.spawnFn(&off, &rot, frame, dur) != 0) {
                     anim->duration = 0;
                 }
                 if (off.pad != 0) {
@@ -1079,74 +1079,74 @@ void btlfx_runEmitters(Pool30 *pool, Pool6C *list) {
                 p->elemRot.s.x += rot.vx;
                 p->elemRot.s.y += rot.vy;
             }
-            switch (((EffEmit *)e->file)->kind) {
-            case 1: {
-                EffEmit *mot = (EffEmit *)e->file;
-                acc = e->unkA;
-                btlfx_rotateOffset(&rot, acc + btlfx_randCentered(mot->unk24), (s32)&p->unkC);
-                acc = mot->unk10 + btlfx_randCentered(mot->unk12);
+            switch (e->file->kind) {
+            case BTLFX_MOTION_ORBIT: {
+                EffEmit *mot = e->file;
+                acc = e->cur.orbit.speed;
+                btlfx_rotateOffset(&rot, acc + btlfx_randCentered(mot->m.orbit.speedSpread), (s32)&p->motA.vel);
+                acc = mot->m.orbit.drag + btlfx_randCentered(mot->m.orbit.dragSpread);
                 if (acc < 0) {
                     acc = 0;
                 }
-                p->unk28.s.y = acc;
-                p->unk24.w = *(s32 *)&rot.vx;
-                p->unk20 = mot->unk8 + btlfx_randCentered(mot->unkC);
-                p->unk22 = mot->unkA + btlfx_randCentered(mot->unkE);
-                p->unk28.s.x = e->unk8 + btlfx_randCentered(mot->unk16);
+                p->motB.orbit.drag = acc;
+                p->motB.orbit.dir.w = *(s32 *)&rot.vx;
+                p->motB.orbit.turnX = mot->m.orbit.turnX + btlfx_randCentered(mot->m.orbit.turnXSpread);
+                p->motB.orbit.turnY = mot->m.orbit.turnY + btlfx_randCentered(mot->m.orbit.turnYSpread);
+                p->motB.orbit.radius = e->cur.orbit.radius + btlfx_randCentered(mot->m.orbit.radiusSpread);
                 break;
             }
-            case 2: {
-                EffEmit *mot = (EffEmit *)e->file;
-                p->unk28.w = *(s32 *)&rot.vx;
-                btlfx_lerpVec(&mot->unk10, &mot->unk14, t, &tmp.vx);
-                p->unkE = tmp.vy + btlfx_randCentered(mot->unkE);
-                p->unk24.s.y = tmp.vx + btlfx_randCentered(mot->unk18);
-                p->unk22 = e->unk8 + btlfx_randCentered(mot->unkC);
+            case BTLFX_MOTION_SPIRAL: {
+                EffEmit *mot = e->file;
+                p->motB.spiral.axis.w = *(s32 *)&rot.vx;
+                btlfx_lerpVec(&mot->m.spiral.radiusSpeedStart, &mot->m.spiral.radiusSpeedEnd, t, &tmp.vx);
+                p->motA.spin.speed = tmp.vy + btlfx_randCentered(mot->m.spiral.spinSpeedSpread);
+                p->motB.spiral.radiusSpeed = tmp.vx + btlfx_randCentered(mot->m.spiral.radiusSpeedSpread);
+                p->motB.spiral.axialSpeed = e->cur.spiral.axialSpeed + btlfx_randCentered(mot->m.spiral.axialSpeedSpread);
                 *(s32 *)&tmp.vx = 0;
                 *(s32 *)&tmp.vz = 0;
                 btlfx_toLocalPolar(&off, &tmp, &rot, (s32)&k, (s32)&r, &d58);
-                p->unkC = d58;
-                p->unk20 = k;
-                p->unk24.s.x = r;
+                p->motA.spin.angle = d58;
+                p->motB.spiral.axial = k;
+                p->motB.spiral.radius = r;
                 p->pos.vx = base->vx << 12;
                 p->pos.vy = base->vy << 12;
                 p->pos.vz = base->vz << 12;
-                p->unk10 = 0;
+                p->motA.spin.fall = 0;
                 break;
             }
-            case 3: {
-                EffEmit *mot = (EffEmit *)e->file;
-                *(s32 *)&p->unkC = *(s32 *)&rot.vx;
-                p->unk20 = mot->unk8 + btlfx_randCentered(mot->unkC);
-                p->unk22 = mot->unkA + btlfx_randCentered(mot->unkE);
-                p->unk10 = e->unk8 + btlfx_randCentered(mot->unk16);
-                p->unk24.s.y = rot.vx + btlfx_randCentered(mot->unk10);
-                p->unk28.s.x = rot.vy + btlfx_randCentered(mot->unk12);
-                p->unk24.s.x = 0;
+            case BTLFX_MOTION_WOBBLE: {
+                EffEmit *mot = e->file;
+                *(s32 *)&p->motA.wobble.phaseX = *(s32 *)&rot.vx;
+                p->motB.wobble.swingXSpeed = mot->m.wobble.swingXSpeed + btlfx_randCentered(mot->m.wobble.swingXSpread);
+                p->motB.wobble.swingYSpeed = mot->m.wobble.swingYSpeed + btlfx_randCentered(mot->m.wobble.swingYSpread);
+                p->motA.wobble.radius = e->cur.wobble.radius + btlfx_randCentered(mot->m.wobble.radiusSpread);
+                p->motB.wobble.dirX = rot.vx + btlfx_randCentered(mot->m.wobble.dirXSpread);
+                p->motB.wobble.dirY = rot.vy + btlfx_randCentered(mot->m.wobble.dirYSpread);
+                p->motB.wobble.fall = 0;
                 break;
             }
-            case 4: {
-                EffEmit *mot = (EffEmit *)e->file;
-                p->unk28.w = *(s32 *)&rot.vx;
-                btlfx_lerpVec(&mot->unk10, &mot->unk14, t, &tmp.vx);
-                p->unkE = tmp.vy + btlfx_randCentered(mot->unk1A);
-                p->unk20 = tmp.vx + btlfx_randCentered(mot->unk18);
-                p->unk22 = e->unk8 + btlfx_randCentered(mot->unkC);
-                p->unkC = btlfx_rand();
-                p->unk24.w = 0;
-                p->unk10 = 0;
+            case BTLFX_MOTION_HELIX: {
+                EffEmit *mot = e->file;
+                p->motB.helix.axis.w = *(s32 *)&rot.vx;
+                btlfx_lerpVec(&mot->m.helix.radiusStart, &mot->m.helix.radiusEnd, t, &tmp.vx);
+                p->motA.spin.speed = tmp.vy + btlfx_randCentered(mot->m.helix.spinSpeedSpread);
+                p->motB.helix.radius = tmp.vx + btlfx_randCentered(mot->m.helix.radiusSpread);
+                p->motB.helix.axialSpeed = e->cur.spiral.axialSpeed + btlfx_randCentered(mot->m.helix.axialSpeedSpread);
+                p->motA.spin.angle = btlfx_rand();
+                p->motB.helix.axial = 0;
+                p->motA.spin.fall = 0;
                 break;
             }
-            case 0:
-            case 5: {
-                EffEmit *mot = (EffEmit *)e->file;
-                acc = e->unk8;
-                btlfx_rotateOffset(&rot, acc + btlfx_randCentered(mot->unkC), (s32)&p->unkC);
-                acc = mot->unkE + btlfx_randCentered(mot->unk10);
+            case BTLFX_MOTION_BALLISTIC:
+            case BTLFX_MOTION_HOMING: {
+                EffEmit *mot = e->file;
+                acc = e->cur.ballistic.speed;
+                btlfx_rotateOffset(&rot, acc + btlfx_randCentered(mot->m.ballistic.speedSpread), (s32)&p->motA.vel);
+                acc = mot->m.ballistic.drag + btlfx_randCentered(mot->m.ballistic.dragSpread);
                 if (acc < 0) {
                     acc = 0;
                 }
-                p->unk20 = acc;
+                p->motB.ballistic.drag = acc;
                 break;
             }
             }
@@ -1320,78 +1320,78 @@ void btlfx_runSubEmitter(Pool30 *pool, Pool30Entry *e, SVECTOR *pos, SVECTOR *ro
                     p->elemRot.s.y += ang.vy;
                 }
                 switch (((EffEmit *)owner->sub)->kind) {
-                case 1:
+                case BTLFX_MOTION_ORBIT:
                     {
                     EffEmit *mot = (EffEmit *)owner->sub;
-                    r = btlfx_lerp(mot->unk20, mot->unk22, t);
-                    btlfx_rotateOffset(&ang, r + btlfx_randCentered(mot->unk24), (s32)&p->unkC);
-                    r = mot->unk10 + btlfx_randCentered(mot->unk12);
+                    r = btlfx_lerp(mot->m.orbit.speedStart, mot->m.orbit.speedEnd, t);
+                    btlfx_rotateOffset(&ang, r + btlfx_randCentered(mot->m.orbit.speedSpread), (s32)&p->motA.vel);
+                    r = mot->m.orbit.drag + btlfx_randCentered(mot->m.orbit.dragSpread);
                     if (r < 0) {
                         r = 0;
                     }
-                    p->unk28.s.y = r;
-                    p->unk24.w = *(s32 *)&ang.vx;
-                    p->unk20 = mot->unk8 + btlfx_randCentered(mot->unkC);
-                    p->unk22 = mot->unkA + btlfx_randCentered(mot->unkE);
-                    p->unk28.s.x = btlfx_lerp(mot->unk18, mot->unk1A, t) + btlfx_randCentered(mot->unk16);
+                    p->motB.orbit.drag = r;
+                    p->motB.orbit.dir.w = *(s32 *)&ang.vx;
+                    p->motB.orbit.turnX = mot->m.orbit.turnX + btlfx_randCentered(mot->m.orbit.turnXSpread);
+                    p->motB.orbit.turnY = mot->m.orbit.turnY + btlfx_randCentered(mot->m.orbit.turnYSpread);
+                    p->motB.orbit.radius = btlfx_lerp(mot->m.orbit.radiusStart, mot->m.orbit.radiusEnd, t) + btlfx_randCentered(mot->m.orbit.radiusSpread);
                     break;
                     }
-                case 2:
+                case BTLFX_MOTION_SPIRAL:
                     {
                     EffEmit *mot = (EffEmit *)owner->sub;
-                    p->unk28.w = *(s32 *)&ang.vx;
-                    btlfx_lerpVec(&mot->unk10, &mot->unk14, t, (s16 *)&dir);
-                    p->unkE = dir.vy + btlfx_randCentered(mot->unkE);
-                    p->unk24.s.y = dir.vx + btlfx_randCentered(mot->unk18);
-                    p->unk22 = btlfx_lerp(mot->unk8, mot->unkA, t) + btlfx_randCentered(mot->unkC);
+                    p->motB.spiral.axis.w = *(s32 *)&ang.vx;
+                    btlfx_lerpVec(&mot->m.spiral.radiusSpeedStart, &mot->m.spiral.radiusSpeedEnd, t, (s16 *)&dir);
+                    p->motA.spin.speed = dir.vy + btlfx_randCentered(mot->m.spiral.spinSpeedSpread);
+                    p->motB.spiral.radiusSpeed = dir.vx + btlfx_randCentered(mot->m.spiral.radiusSpeedSpread);
+                    p->motB.spiral.axialSpeed = btlfx_lerp(mot->m.spiral.axialSpeedStart, mot->m.spiral.axialSpeedEnd, t) + btlfx_randCentered(mot->m.spiral.axialSpeedSpread);
                     *(s32 *)&dir.vx = 0;
                     *(s32 *)&dir.vz = 0;
                     btlfx_toLocalPolar(&off, &dir, &ang, (s32)&d40, (s32)&cnt, &k);
-                    p->unkC = k;
-                    p->unk20 = d40;
-                    p->unk24.s.x = cnt;
+                    p->motA.spin.angle = k;
+                    p->motB.spiral.axial = d40;
+                    p->motB.spiral.radius = cnt;
                     p->pos.vx = e->pos.vx;
                 p->pos.vy = e->pos.vy;
                 p->pos.vz = e->pos.vz;
-                    p->unk10 = 0;
+                    p->motA.spin.fall = 0;
                     break;
                     }
-                case 3:
+                case BTLFX_MOTION_WOBBLE:
                     {
                     EffEmit *mot = (EffEmit *)owner->sub;
-                    *(s32 *)&p->unkC = *(s32 *)&ang.vx;
-                    p->unk20 = mot->unk8 + btlfx_randCentered(mot->unkC);
-                    p->unk22 = mot->unkA + btlfx_randCentered(mot->unkE);
-                    p->unk10 = btlfx_lerp(mot->unk18, mot->unk1A, t) + btlfx_randCentered(mot->unk16);
-                    p->unk24.s.y = ang.vx + btlfx_randCentered(mot->unk10);
-                    p->unk28.s.x = ang.vy + btlfx_randCentered(mot->unk12);
-                    p->unk24.s.x = 0;
+                    *(s32 *)&p->motA.wobble.phaseX = *(s32 *)&ang.vx;
+                    p->motB.wobble.swingXSpeed = mot->m.wobble.swingXSpeed + btlfx_randCentered(mot->m.wobble.swingXSpread);
+                    p->motB.wobble.swingYSpeed = mot->m.wobble.swingYSpeed + btlfx_randCentered(mot->m.wobble.swingYSpread);
+                    p->motA.wobble.radius = btlfx_lerp(mot->m.wobble.radiusStart, mot->m.wobble.radiusEnd, t) + btlfx_randCentered(mot->m.wobble.radiusSpread);
+                    p->motB.wobble.dirX = ang.vx + btlfx_randCentered(mot->m.wobble.dirXSpread);
+                    p->motB.wobble.dirY = ang.vy + btlfx_randCentered(mot->m.wobble.dirYSpread);
+                    p->motB.wobble.fall = 0;
                     break;
                     }
-                case 4:
+                case BTLFX_MOTION_HELIX:
                     {
                     EffEmit *mot = (EffEmit *)owner->sub;
-                    p->unk28.w = *(s32 *)&ang.vx;
-                    btlfx_lerpVec(&mot->unk10, &mot->unk14, t, (s16 *)&dir);
-                    p->unkE = dir.vy + btlfx_randCentered(mot->unk1A);
-                    p->unk20 = dir.vx + btlfx_randCentered(mot->unk18);
-                    p->unk22 = btlfx_lerp(mot->unk8, mot->unkA, t) + btlfx_randCentered(mot->unkC);
-                    p->unkC = btlfx_rand();
-                    p->unk24.w = 0;
-                    p->unk10 = 0;
+                    p->motB.helix.axis.w = *(s32 *)&ang.vx;
+                    btlfx_lerpVec(&mot->m.helix.radiusStart, &mot->m.helix.radiusEnd, t, (s16 *)&dir);
+                    p->motA.spin.speed = dir.vy + btlfx_randCentered(mot->m.helix.spinSpeedSpread);
+                    p->motB.helix.radius = dir.vx + btlfx_randCentered(mot->m.helix.radiusSpread);
+                    p->motB.helix.axialSpeed = btlfx_lerp(mot->m.helix.axialSpeedStart, mot->m.helix.axialSpeedEnd, t) + btlfx_randCentered(mot->m.helix.axialSpeedSpread);
+                    p->motA.spin.angle = btlfx_rand();
+                    p->motB.helix.axial = 0;
+                    p->motA.spin.fall = 0;
                     break;
                     }
-                case 0:
-                case 5:
+                case BTLFX_MOTION_BALLISTIC:
+                case BTLFX_MOTION_HOMING:
                     {
                     EffEmit *mot = (EffEmit *)owner->sub;
-                    r = btlfx_lerp(mot->unk8, mot->unkA, t);
-                    btlfx_rotateOffset(&ang, r + btlfx_randCentered(mot->unkC), (s32)&p->unkC);
-                    r = mot->unkE + btlfx_randCentered(mot->unk10);
+                    r = btlfx_lerp(mot->m.ballistic.speedStart, mot->m.ballistic.speedEnd, t);
+                    btlfx_rotateOffset(&ang, r + btlfx_randCentered(mot->m.ballistic.speedSpread), (s32)&p->motA.vel);
+                    r = mot->m.ballistic.drag + btlfx_randCentered(mot->m.ballistic.dragSpread);
                     if (r < 0) {
                         r = 0;
                     }
-                    p->unk20 = r;
+                    p->motB.ballistic.drag = r;
                     break;
                     }
                 }

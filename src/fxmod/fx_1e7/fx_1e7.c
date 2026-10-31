@@ -103,7 +103,7 @@ s32 fx_1e7_op80(s32 mode, Fx1e7Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
                     work->emit0->trailStride = 0xD0;
                 }
                 if (work->emit0 != NULL) {
-                    ((EffMotion *)work->emit0->file)->update = fx_1e7_op80ParticleMotion0;
+                    work->emit0->file->m.module.update = fx_1e7_op80ParticleMotion0;
                 }
                 if (work->emit0 != NULL) {
                     work->emit0->otZ = ex->btlfx_addRadiusSixth(0, 0x80);
@@ -117,7 +117,7 @@ s32 fx_1e7_op80(s32 mode, Fx1e7Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
                 work->emit4->trailStride = 0xD0;
             }
             if (work->emit4 != NULL) {
-                ((EffMotion *)work->emit4->file)->update = fx_1e7_op80ParticleMotion1;
+                work->emit4->file->m.module.update = fx_1e7_op80ParticleMotion1;
             }
             if (work->emit4 != NULL) {
                 work->emit4->otZ = ex->btlfx_addRadiusSixth(0, 0x80);
@@ -161,7 +161,7 @@ s32 fx_1e7_op81(s32 mode, Fx1e7Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
             work->emit4[i] = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, fx_1e7_op81EmitFileIds[i]), (s32)&fx_1e7_emitPos1[i]);
             if (work->emit4[i] != NULL) {
                 work->emit4[i]->tail->shape = -1;
-                ((EffTailSpawn *)work->emit4[i]->tail)->spawnFn = fx_1e7_op81SpawnPoints[i];
+                work->emit4[i]->tail->s.module.spawnFn = fx_1e7_op81SpawnPoints[i];
             }
         }
         work->unk30 = 0;

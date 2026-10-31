@@ -79,7 +79,7 @@ s32 fx_1a6_op80(s32 mode, Fx1a6Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             work->emit4->trailStride = 0x40;
         }
         if (work->emit4 != NULL) {
-            ((EffMotion *)work->emit4->file)->update = fx_1a6_op80ParticleMotions[work->index48];
+            work->emit4->file->m.module.update = fx_1a6_op80ParticleMotions[work->index48];
         }
         if (work->emit0 != NULL) {
             work->emit0->otZ = ex->btlfx_addRadiusSixth(0x10, 0x20);
