@@ -6268,3 +6268,10 @@ akao_cmdE6 akao_cmdSetStreamPan
 akao_cmdE8 akao_cmdStreamSetupRing
 akao_cmdEC akao_cmdStreamPlayOneShot
 akao_cmdED akao_cmdStreamPlayResident
+
+# ===== constants runtime pass: macro renames =====
+WM_MOVE_CHOCOBO WM_MOVE_CHOCOBO_FIELD
+WM_MOVE_STEER WM_MOVE_BOAT
+WM_MOVE_AIRSHIP WM_MOVE_HILDA_GARDE
+WM_MOVE_AIRSHIP2 WM_MOVE_INVINCIBLE
+# FIELDS include/ovl_0c.h WmActorType: unk4=rideMode
