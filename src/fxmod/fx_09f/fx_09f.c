@@ -9,7 +9,7 @@ s32 fx_09f_op80(s32 mode, Fx09fWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
         *arg4 = 0x14;
     } else if (mode == 1) {
         fx_09f_env = env;
-        work->unk0 = 0;
+        work->state0 = 0;
         ex->btlfx_getUnitBodyPos(0, 0, (s16 *)&work->posC);
         ex->btlfx_getUnitPos(0, (s16 *)&work->pos4);
         p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 7), (s32)&work->pos4);
@@ -31,7 +31,7 @@ s32 fx_09f_op80(s32 mode, Fx09fWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
         ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 5), (s32)&work->pos4);
     } else {
         frame = entry->frame;
-        switch (work->unk0) {
+        switch (work->state0) {
         case 0:
             if (frame == 8) {
                 p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 3), (s32)&work->pos4);

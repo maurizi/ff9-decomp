@@ -1,15 +1,17 @@
 #ifndef FX_093_H
 #define FX_093_H
 
-/* Effect module fx_093 (dir 13 file 0x93). */
+/* Effect module fx_093 (dir 13 file 0x93): enemy Cannon (Armstrong and others). Emitters only. Evidence: [data]
+ * the party ability / item tables and enemy sequences that play this file id (tools/effect_labels.py;
+ * docs/runtime-findings.md, "Round 31 runtime pass"). */
 #include "btlfx_mod.h"
 
 typedef struct {
     SVECTOR pos0; /* btlfx_getUnitArgBonePos(0x10, 0) */
-    SVECTOR unk8; /* unit 0x10 bone position */
+    SVECTOR pos8; /* unit 0x10 bone position */
     SVECTOR pos10; /* caster body position */
     SVECTOR pos18; /* caster position */
-    SVECTOR unk20; /* angles from unk0 to unk8 */
+    SVECTOR aim20; /* angles from pos0 to pos8 */
     Pool6CEntry *emit28;
 } Fx093Work;
 

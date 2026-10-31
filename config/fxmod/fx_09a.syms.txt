@@ -4,3 +4,14 @@ fx_09a_op80 = 0x801E7C98; // type:func [code] header op entry 0, effect script o
 fxm_getSummonBonePoint = 0x801E7B74; // type:func [code] transforms in by Hi_GetSummonBoneMatrix(model, bone) to out, restores the view matrix
 fxm_drawRibbonTrail = 0x801E7704; // type:func [code] pushes the a-b edge into a history of n edges and draws POLY_G4 between them, colours fading along it (n >= 1000 clears)
 fx_09a_env = 0x801E8858; // [code] the effect env (Unk800F78A4) the op handlers store in mode 1, used by the helpers for BTLFX_EXPORTS
+fx_09a_hitBlocks = 0x801E87E4; // [code] two effect file blocks of the frame 27 emitter, picked by whether the unit and the camera face the same side
+fx_09a_ribbonColA = 0x801E87EC; // [code] colour of edge point a of the first fxm_drawRibbonTrail ribbon
+fx_09a_ribbonColB = 0x801E87F0; // [code] colour of the shared middle edge point of both fxm_drawRibbonTrail ribbons
+fx_09a_ribbonColC = 0x801E87F4; // [code] colour of edge point c of the second fxm_drawRibbonTrail ribbon
+fx_09a_bonePtA = 0x801E87F8; // [code] point a in bone 9 space (fxm_getSummonBonePoint), one edge end of the first ribbon
+fx_09a_bonePtB = 0x801E8800; // [code] point b in bone 9 space (fxm_getSummonBonePoint), shared by both ribbons
+fx_09a_bonePtC = 0x801E8808; // [code] point c in bone 9 space (fxm_getSummonBonePoint), one edge end of the second ribbon
+fx_09a_summonModel = 0x801E8868; // [code] Unk80100DC054 passed to btlfx_registerSummonModel in fx_09a_op80 mode 1
+fx_09a_trails = 0x801E89F8; // [code] trail buffer given to the state 3 emitter (Pool6CEntry trails, 0x18 slots of 0x44)
+fx_09a_ribbon0 = 0x801E9058; // [code] edge history (Fx09aSeg) of the a-b ribbon drawn by fxm_drawRibbonTrail, sagged each frame in fx_09a_op80
+fx_09a_ribbon1 = 0x801E9168; // [code] edge history (Fx09aSeg) of the b-c ribbon drawn by fxm_drawRibbonTrail, sagged each frame in fx_09a_op80

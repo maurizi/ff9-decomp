@@ -150,3 +150,94 @@ fx_08e Fx08eWork unk44=bright44 unk60=fadeIn60 unk64=fadeOut64
 fx_08f D_801E9054 fx_08f_streakPts  # [code] 0x180 random disc points (fxm_randDiscPoints) followed by their previous screen xy, drawn by fxm_drawStreakField
 fx_08f D_801EA254 fx_08f_trail  # [code] btlfx_drawTrail strip buffer of the block 0x1C trail in fx_08f_op80 (set up with frame -1, then drawn at pos14)
 fx_08f Fx08fWork80 unk0=state0 unk4=frame4 unk1C=camPos1C
+
+## fx_090
+fx_090 D_801E7DB4 fx_090_texAnimSrc  # [code] VRAM source x y per frame (frame mod 15) of the 0x20 by 0x80 MoveImage into 0x2C0 0x100 in fx_090_op80
+fx_090 D_801E7FD8 fx_090_trails  # [code] trail buffer given to the first emitter (Pool6CEntry trails, 0xC slots of 0xA0)
+fx_090 Fx090Work unk4C=bright4C unk60=pos60 unk68=fadeIn68 unk6C=fadeOut6C
+
+## fx_091
+fx_091 Fx091Work unk0=bgFrame0 unk18=aim18
+
+## fx_092
+fx_092 Fx092Work unk40=aim40
+
+## fx_093
+fx_093 Fx093Work unk8=pos8 unk20=aim20
+
+## fx_094
+fx_094 Fx094Work unk18=aim18
+
+## fx_095
+fx_095 D_801E890C fx_095_bodyPos  # [code] btlfx_getUnitBodyPos of unit 0, projected each frame to the screen centre of the clock (fx_095_op80, fx_095_op81)
+fx_095 D_801E882C fx_095_markBlocks  # [code] effect file block per clock position (12, Fx095Part.index8) of the sprite fx_095_op80PoolTask draws in states 0-1
+fx_095 D_801E885C fx_095_glowBlocks  # [code] effect file block per clock position of the glow sprite fx_095_op80PoolTask draws over the first frames of state 1
+fx_095 D_801E888C fx_095_markBlocks2  # [code] effect file block per clock position of the sprite fx_095_op80PoolTask draws in states 2-3
+fx_095 func_801E7CBC fx_095_greyScreenCopy  # [code] frame 0 MoveImage of the screen around x y into r, later frames StoreImage a third of r, average rgb to grey, LoadImage it back
+fx_095 func_801E7F48 fx_095_drawTexDisc  # [code] 16-segment disc around x y, POLY_FT3 fan and POLY_GT4 rim textured from rect, plus POLY_F3 and POLY_G4 overlays of colour c
+fx_095 Fx095Work80 unk0=state0 unk4=spawnCount4 unk8=screenXY8 unkC=releaseC
+fx_095 Fx095Work81 unk0=state0 unk8=pixels8
+fx_095 Fx095Part unk0=angle0 unk4=state4 unk8=index8
+fx_095 Fx095Ctl unk8=screenX8 unkA=screenYA unkC=releaseC
+
+## fx_096
+fx_096 D_801E84BC fx_096_verts  # [code] split vertex buffer of model62 (Hi_SplitMdlVertex in fx_096_splitModel), moved by fx_096_explodeModel
+fx_096 D_801E990C fx_096_restVerts  # [code] copy of fx_096_verts taken at frame 0 of fx_096_op81, restored before each fx_096_explodeModel
+fx_096 D_801EAD5C fx_096_polyCenters  # [code] per-polygon centres computed by fx_096_calcPolyCenters, the direction fx_096_explodePolys pushes each polygon
+fx_096 D_801EB28C fx_096_polyVerts  # [code] vertex pointer per polygon kind (8) from Hi_GetMdlVertexPtr in fx_096_splitModel
+fx_096 D_801EB2CC fx_096_polyCounts  # [code] polygon count per polygon kind (8) from Hi_GetMdlVertexPtr in fx_096_splitModel
+fx_096 func_801E7744 fx_096_explodeModel  # [code] fx_096_explodePolys for each of the 8 polygon kinds of each mesh of the model (btlfx_getEffModelMeshCount)
+fx_096 func_801E7840 fx_096_explodePolys  # [code] moves the 3 or 4 vertices of each polygon of a kind outward by its centre times t / 2
+fx_096 func_801E7A74 fx_096_splitModel  # [code] Hi_SplitMdlVertex into verts, Hi_GetMdlVertexPtr per polygon kind into fx_096_polyVerts fx_096_polyCounts, then fx_096_calcPolyCenters
+fx_096 func_801E7BC4 fx_096_calcPolyCenters  # [code] average of the 3 or 4 vertices of each polygon of a kind into centers
+fx_096 Fx096Work81 unk54=bright54 unk60=fade60
+
+## fx_097
+fx_097 D_801E9D50 fx_097_pieceDist  # [code] per-piece distance (times 0x455 / 0x200) fx_097_piecePos moves back along the shard direction
+fx_097 D_801E9CE8 fx_097_shardRot  # [code] rotation per shard (Fx097Item.index4), the model rotation and the direction pieces fly along in fx_097_op80PoolTask
+fx_097 D_801E9D18 fx_097_pieceBlocks  # [code] effect file block per piece model (14, model20 of Fx097Work80), Hi_RegisterTexEffModel in fx_097_op80 mode 1
+fx_097 func_801E8284 fx_097_piecePos  # [code] btlfx_pointAhead from a along rotation b by minus fx_097_pieceDist i, the start of a flying piece
+fx_097 Fx097Item unk0=state0 unk2=flying2 unk4=index4 unk8=frame8 unkC=posC unk28=spinX28 unk2A=spinY2A unk2C=model2C unk30=model30
+fx_097 Fx097Work unk20=models20 unk78=shatter78
+fx_097 Fx097Work80 unk0=state0 unk4=frame4 unk78=shatter78 unk7A=shardCount7A unk7C=scrollStep7C unk80=scroll80
+
+## fx_098
+fx_098 D_801E9CB8 fx_098_pieceDist  # [code] per-piece distance (times 3) fx_098_piecePos moves back along the shard direction
+fx_098 D_801E9C50 fx_098_shardRot  # [code] rotation per shard (Fx098Item.index4), the model rotation and the direction pieces fly along in fx_098_op80PoolTask
+fx_098 D_801E9C80 fx_098_pieceBlocks  # [code] effect file block per piece model (14, model20 of Fx098Work80), Hi_RegisterTexEffModel in fx_098_op80 mode 1
+fx_098 func_801E8284 fx_098_piecePos  # [code] btlfx_pointAhead from a along rotation b by minus fx_098_pieceDist i times 3, the start of a flying piece
+fx_098 Fx098Item unk0=state0 unk2=flying2 unk4=index4 unk8=frame8 unkC=posC unk28=spinX28 unk2A=spinY2A unk2C=model2C unk30=model30
+fx_098 Fx098Work unk20=models20 unk78=shatter78
+fx_098 Fx098Work80 unk0=state0 unk4=frame4 unk78=shatter78 unk7A=shardCount7A unk7C=scrollStep7C unk80=scroll80
+
+## fx_099
+fx_099 Fx099Work unk0=state0 unk4=frame4 unk18=scale18 unk20=rot20 unk28=scale28 unk34=modelPos34
+
+## fx_09a
+fx_09a D_801E87E4 fx_09a_hitBlocks  # [code] two effect file blocks of the frame 27 emitter, picked by whether the unit and the camera face the same side
+fx_09a D_801E87EC fx_09a_ribbonColA  # [code] colour of edge point a of the first fxm_drawRibbonTrail ribbon
+fx_09a D_801E87F0 fx_09a_ribbonColB  # [code] colour of the shared middle edge point of both fxm_drawRibbonTrail ribbons
+fx_09a D_801E87F4 fx_09a_ribbonColC  # [code] colour of edge point c of the second fxm_drawRibbonTrail ribbon
+fx_09a D_801E87F8 fx_09a_bonePtA  # [code] point a in bone 9 space (fxm_getSummonBonePoint), one edge end of the first ribbon
+fx_09a D_801E8800 fx_09a_bonePtB  # [code] point b in bone 9 space (fxm_getSummonBonePoint), shared by both ribbons
+fx_09a D_801E8808 fx_09a_bonePtC  # [code] point c in bone 9 space (fxm_getSummonBonePoint), one edge end of the second ribbon
+fx_09a D_801E8868 fx_09a_summonModel  # [code] Unk80100DC054 passed to btlfx_registerSummonModel in fx_09a_op80 mode 1
+fx_09a D_801E89F8 fx_09a_trails  # [code] trail buffer given to the state 3 emitter (Pool6CEntry trails, 0x18 slots of 0x44)
+fx_09a D_801E9058 fx_09a_ribbon0  # [code] edge history (Fx09aSeg) of the a-b ribbon drawn by fxm_drawRibbonTrail, sagged each frame in fx_09a_op80
+fx_09a D_801E9168 fx_09a_ribbon1  # [code] edge history (Fx09aSeg) of the b-c ribbon drawn by fxm_drawRibbonTrail, sagged each frame in fx_09a_op80
+fx_09a Fx09aSeg unk0=a0 unk8=b8
+fx_09a Fx09aWork unk0=state0 unk4=frame4 unk8=unit8 unkC=unitsDoneC unk10=unitCount10 unk2C=ribbonHead2C unk3C=scale3C
+fx_09a Fx09aSummon unk60=model60
+
+## fx_09b
+fx_09b D_801E80F4 fx_09b_shotBlocks  # [code] effect file block per instance (Fx09bWork.instance6C, 0..4) of the emitter pinned by fx_09b_pinParticles
+fx_09b D_801E8564 fx_09b_trails  # [code] trail buffer per instance (5) given to the pinned emitter (Pool6CEntry trails, 0xE slots of 0x4C)
+fx_09b D_801E9A34 fx_09b_shotPos  # [code] position per instance, lerped from the bone to the target over frames 0-5 in fx_09b_op80, where fxm_pinParticleN holds the particles
+fx_09b D_801E9A64 fx_09b_emitStartPos  # [code] start position per instance of the pinned emitter (btlfx_startEmitter in fx_09b_op80 mode 1)
+fx_09b Fx09bWork unk5C=fromPos5C unk6C=instance6C
+
+## fx_09c
+fx_09c Fx09cWork unk34=aim34
+
+## fx_09f
+fx_09f Fx09fWork unk0=state0

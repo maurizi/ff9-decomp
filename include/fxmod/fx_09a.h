@@ -7,29 +7,29 @@
 #include "btlfx_mod.h"
 
 typedef struct {
-    SVECTOR unk0;
-    SVECTOR unk8;
+    SVECTOR a0;
+    SVECTOR b8;
 } Fx09aSeg; /* 0x10 */
 static void fxm_drawRibbonTrail(SVECTOR *a, SVECTOR *b, u32 n, CVECTOR *ca, CVECTOR *cb, s32 p, Fx09aSeg *buf, s32 abr);
 extern Unk800F78A4 *fx_09a_env;
 static void fxm_getSummonBonePoint(s32 model, s32 bone, SVECTOR *in, SVECTOR *out);
 
 typedef struct {
-    s32 unk0; /* state */
-    s32 unk4; /* frame */
-    s32 unk8; /* unit */
-    s32 unkC; /* units done */
-    s32 unk10; /* unit count */
+    s32 state0; /* state */
+    s32 frame4; /* frame */
+    s32 unit8; /* unit */
+    s32 unitsDoneC; /* units done */
+    s32 unitCount10; /* unit count */
     SVECTOR pos14; /* unit position */
     SVECTOR rot1C; /* unit rotation */
     SVECTOR pos24; /* summon position */
-    s32 unk2C; /* ribbon head */
+    s32 ribbonHead2C; /* ribbon head */
     s32 unk30;
     SVECTOR rot34; /* summon rotation */
-    s32 unk3C[3]; /* summon scale */
+    s32 scale3C[3]; /* summon scale */
 } Fx09aWork; /* 0x48 */
 
-/* the summon slot behind env->unk4 */
+/* the summon slot behind env->loader */
 typedef struct {
     u8 pad0[0x54];
     struct {
@@ -37,19 +37,19 @@ typedef struct {
         BtlUnit9CC *motion180;
     } *unk54;
     u8 pad58[8];
-    s32 unk60; /* summon model */
+    s32 model60; /* summon model */
 } Fx09aSummon;
 
-extern s32 D_801E87E4[2];
-extern SVECTOR D_801E87EC;
-extern SVECTOR D_801E87F0;
-extern SVECTOR D_801E87F4;
-extern SVECTOR D_801E87F8;
-extern SVECTOR D_801E8800;
-extern SVECTOR D_801E8808;
-extern Unk80100DC054 D_801E8868;
-extern u8 D_801E89F8[];
-extern Fx09aSeg D_801E9058[];
-extern Fx09aSeg D_801E9168[];
+extern s32 fx_09a_hitBlocks[2];
+extern SVECTOR fx_09a_ribbonColA;
+extern SVECTOR fx_09a_ribbonColB;
+extern SVECTOR fx_09a_ribbonColC;
+extern SVECTOR fx_09a_bonePtA;
+extern SVECTOR fx_09a_bonePtB;
+extern SVECTOR fx_09a_bonePtC;
+extern Unk80100DC054 fx_09a_summonModel;
+extern u8 fx_09a_trails[];
+extern Fx09aSeg fx_09a_ribbon0[];
+extern Fx09aSeg fx_09a_ribbon1[];
 
 #endif
