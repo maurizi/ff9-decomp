@@ -137,7 +137,7 @@ s32 fx_034_op80(s32 mode, Fx034Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
         fx_034_env = env;
         ex->btlfx_initEffModels(fx_034_effModels, 2);
         ex->btlfx_getUnitBodyPos(0x10, 0, (s16 *)&work->unk34);
-        ex->btlfx_getUnitRot(0x10, (s16 *)&work->unk3C);
+        ex->btlfx_getUnitRot(0x10, (s16 *)&work->rot3C);
         ex->btlfx_getUnitPos(0, (s16 *)&work->unk44);
         ex->btlfx_getUnitArgBonePos(0x10, 0, (u16 *)&work->pos4C);
         work->emit0 = (Pool6CEntry *)ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 3), (s32)&work->pos4C);

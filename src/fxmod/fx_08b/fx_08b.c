@@ -21,9 +21,9 @@ s32 fx_08b_op80(s32 mode, Fx08bWork80 *work, Unk800F78A4 *env, Unk80100C78Entry 
     } else if (mode == 1) {
         fx_08b_env = env;
         ex->btlfx_getUnitPos(0x10, (s16 *)&work->unk18);
-        ex->btlfx_getUnitRot(0x10, (s16 *)&work->unk20);
-        ex->btlfx_pointAhead((s16 *)&work->unk18, (s16 *)&work->unk20, 0x708, (s16 *)&work->pos38);
-        ex->btlfx_pointAhead((s16 *)&work->unk18, (s16 *)&work->unk20, 0x7D0, (s16 *)&work->unk50);
+        ex->btlfx_getUnitRot(0x10, (s16 *)&work->rot20);
+        ex->btlfx_pointAhead((s16 *)&work->unk18, (s16 *)&work->rot20, 0x708, (s16 *)&work->pos38);
+        ex->btlfx_pointAhead((s16 *)&work->unk18, (s16 *)&work->rot20, 0x7D0, (s16 *)&work->unk50);
         work->pos38.vy = -0xC8;
         work->unk50.vy = -0xC8;
         ex->btlfx_getUnitBoneMatrix(0x10, 5, &u.bone);

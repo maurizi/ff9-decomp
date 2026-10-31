@@ -24,8 +24,8 @@ s32 fx_051_op80(s32 mode, Fx051Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
         if (work->emit0 != NULL) {
             work->emit0->otZ = ex->btlfx_addRadiusSixth(work->unk18, 0x20);
         }
-        ex->btlfx_getUnitRot(0, (s16 *)&work->unk10);
-        D_801E799C.vy = work->unk10.vy;
+        ex->btlfx_getUnitRot(0, (s16 *)&work->rot10);
+        D_801E799C.vy = work->rot10.vy;
     } else {
         frame = entry->frame;
         if (frame == 0x12) {

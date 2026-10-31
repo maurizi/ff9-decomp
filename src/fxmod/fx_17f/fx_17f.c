@@ -25,7 +25,7 @@ s32 fx_17f_op80(s32 mode, Fx17fWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
         fx_17f_env = env;
         ex->btlfx_getUnitPos(0, (s16 *)&work->pos20);
         if (ex->btlfx_isEnemyUnit(0x10) != 0) {
-            ex->btlfx_getUnitRot(0x10, (s16 *)&work->unk14);
+            ex->btlfx_getUnitRot(0x10, (s16 *)&work->rot14);
             ex->btlfx_getUnitScale(0x10, (VECTOR *)work->unk0);
             ex->btlfx_getUnitPos(0x10, (s16 *)&work->posC);
             ex->btlfx_setPartnerByArg(0);
@@ -33,7 +33,7 @@ s32 fx_17f_op80(s32 mode, Fx17fWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
             work->unk1C = (BtlUnit9C8 *)ex->btlfx_swapModelData(0xE, D_801E88E0);
             ex->btlfx_fadeUnitById(0x11, 0x1000);
             ex->btlfx_fadeUnitById(0x11, -2);
-            ex->btlfx_setUnitRot(0x11, (s16 *)&work->unk14);
+            ex->btlfx_setUnitRot(0x11, (s16 *)&work->rot14);
             ex->btlfx_setUnitScale(0x11, work->unk0);
             ex->btlfx_aimAngles((s16 *)&work->posC, (s16 *)&work->pos20, (s16 *)&ang);
             ex->btlfx_pointAhead((s16 *)&work->posC, (s16 *)&ang, -0x104, (s16 *)&work->posC);

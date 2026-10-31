@@ -91,7 +91,7 @@ s32 fx_1ea_op80(s32 mode, Fx1eaWork80 *work, Unk800F78A4 *env, Unk80100C78Entry 
     } else if (mode == 1) {
         fx_1ea_env = env;
         ex->btlfx_getUnitBodyPos(0x10, 0, (s16 *)&work->pos8);
-        ex->btlfx_getUnitRot(0x10, (s16 *)&work->unk10);
+        ex->btlfx_getUnitRot(0x10, (s16 *)&work->rot10);
         work->emit0 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0x13), (s32)&work->pos8);
         work->emit4 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0x14), (s32)&work->pos8);
         if (work->emit0 != NULL) {
@@ -108,9 +108,9 @@ s32 fx_1ea_op80(s32 mode, Fx1eaWork80 *work, Unk800F78A4 *env, Unk80100C78Entry 
                 work->emit0 = NULL;
             }
             if (work->emit0 != NULL) {
-                work->emit0->rot.vx = work->unk10.vx;
-                work->emit0->rot.vy = work->unk10.vy;
-                work->emit0->rot.vz = work->unk10.vz;
+                work->emit0->rot.vx = work->rot10.vx;
+                work->emit0->rot.vy = work->rot10.vy;
+                work->emit0->rot.vz = work->rot10.vz;
             }
         }
         if (work->emit4 != NULL) {
@@ -118,9 +118,9 @@ s32 fx_1ea_op80(s32 mode, Fx1eaWork80 *work, Unk800F78A4 *env, Unk80100C78Entry 
                 work->emit4 = NULL;
             }
             if (work->emit4 != NULL) {
-                work->emit4->rot.vx = work->unk10.vx;
-                work->emit4->rot.vy = work->unk10.vy;
-                work->emit4->rot.vz = work->unk10.vz;
+                work->emit4->rot.vx = work->rot10.vx;
+                work->emit4->rot.vy = work->rot10.vy;
+                work->emit4->rot.vz = work->rot10.vz;
             }
         }
         return frame >= 0x28;
@@ -155,7 +155,7 @@ s32 fx_1ea_op81(s32 mode, Fx1eaWork81 *work, Unk800F78A4 *env, Unk80100C78Entry 
         D_801E9B58.vx = work->pos84.vx;
         D_801E9B58.vy = work->pos84.vy;
         D_801E9B58.vz = work->pos84.vz;
-        ex->btlfx_getUnitRot(0x10, (s16 *)&work->unk8C);
+        ex->btlfx_getUnitRot(0x10, (s16 *)&work->rot8C);
         work->rot2C.vx = 0;
         work->rot2C.vy = 0;
         work->rot2C.vz = 0;

@@ -7,12 +7,12 @@
 typedef struct {
     s32 unk0; /* state */
     SVECTOR unk4; /* unit home position */
-    SVECTOR unkC; /* unit rotation */
+    SVECTOR rotC; /* unit rotation */
     s16 unk14; /* spin speed */
     s16 unk16;
     s16 unk18;
     u8 pad1A[0x1C - 0x1A];
-    SVECTOR unk1C; /* current rotation */
+    SVECTOR rot1C; /* current rotation */
     s32 unk24; /* unit count */
     s32 unk28; /* lift height */
     s32 unk2C; /* unit */

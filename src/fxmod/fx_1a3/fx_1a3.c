@@ -25,13 +25,13 @@ s32 fx_1a3_op80(s32 mode, Fx1a3Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
         *arg4 = 0x28;
     } else if (mode == 1) {
         fx_1a3_env = env;
-        ex->btlfx_getUnitRot(0x10, (s16 *)&work->unk8);
+        ex->btlfx_getUnitRot(0x10, (s16 *)&work->rot8);
         ex->btlfx_getUnitBodyPos(0, 0, (s16 *)&work->unk10);
         D_801E93FC.vx = work->unk10.vx;
         D_801E93FC.vy = work->unk10.vy;
         D_801E93FC.vz = work->unk10.vz;
         ex->btlfx_getUnitArgBonePos(0x10, 0, (u16 *)&work->unk18);
-        ex->btlfx_pointAhead((s16 *)&work->unk18, (s16 *)&work->unk8, 0x190, (s16 *)&work->pos20);
+        ex->btlfx_pointAhead((s16 *)&work->unk18, (s16 *)&work->rot8, 0x190, (s16 *)&work->pos20);
         D_801E93F4.vx = work->pos20.vx;
         D_801E93F4.vy = work->pos20.vy;
         D_801E93F4.vz = work->pos20.vz;

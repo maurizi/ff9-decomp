@@ -18,7 +18,7 @@ typedef struct {
     Pool6CEntry *emit0;
     Pool6CEntry *emit4;
     SVECTOR pos8; /* caster body position */
-    SVECTOR unk10; /* caster rotation */
+    SVECTOR rot10; /* caster rotation */
 } Fx1eaWork80; /* 0x18 */
 
 typedef struct {
@@ -74,7 +74,7 @@ typedef struct {
     s32 unk54; /* model colour */
     u8 pad58[0x84 - 0x58];
     SVECTOR pos84; /* caster position */
-    SVECTOR unk8C; /* caster rotation */
+    SVECTOR rot8C; /* caster rotation */
     s32 unk94; /* morph frame */
     s32 unk98; /* fade-in countdown */
     s32 unk9C;

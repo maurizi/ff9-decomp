@@ -31,7 +31,7 @@ s32 fx_112_op80(s32 mode, Fx112Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
         ex->btlfx_initEffModels(fx_112_effModels, 1);
         work->model20 = ex->Hi_RegisterTexEffModel((BtlUnit9C8 *)ex->btlfx_getFileData(entry->file, 1), 0x137, 0xFFFF, 0, 0);
         ex->btlfx_getUnitPos(0, (s16 *)&work->unk4);
-        ex->btlfx_getUnitRot(0, (s16 *)&work->unkC);
+        ex->btlfx_getUnitRot(0, (s16 *)&work->rotC);
         ex->btlfx_getUnitScale(0, (VECTOR *)&work->unk14);
         ex->btlfx_getUnitBodyPos(0, 1, (s16 *)&work->unk38);
         work->unk38.vy += 0x80;
@@ -142,9 +142,9 @@ s32 fx_112_op80(s32 mode, Fx112Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
             u.s4.scale.vx = u.s4.scale.vy = u.s4.scale.vz =
                 work->unk14.vx / 2 + ((work->unk14.vx / 2 * ((frame << 12) / 12)) >> 12);
             ex->btlfx_setUnitScale(0, (s32 *)&u.s4.scale);
-            u.s4.r.vx = work->unkC.vx + ((0x1000 - (frame << 12) / 12) >> 1);
-            u.s4.r.vy = work->unkC.vy - (0x1000 - (frame << 12) / 12) / 3;
-            u.s4.r.vz = work->unkC.vz;
+            u.s4.r.vx = work->rotC.vx + ((0x1000 - (frame << 12) / 12) >> 1);
+            u.s4.r.vy = work->rotC.vy - (0x1000 - (frame << 12) / 12) / 3;
+            u.s4.r.vz = work->rotC.vz;
             ex->btlfx_setUnitRot(0, (s16 *)&u.s4.r);
         }
         if (frame >= 0x10) {

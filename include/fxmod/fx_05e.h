@@ -21,7 +21,7 @@ typedef struct {
     s32 unk0;
     s32 unk4; /* frame */
     SVECTOR pos8; /* summoner position */
-    SVECTOR unk10; /* summoner rotation */
+    SVECTOR rot10; /* summoner rotation */
     SVECTOR pos18; /* summon position */
     SVECTOR unk20; /* ribbon head */
     s32 model28; /* slice model */

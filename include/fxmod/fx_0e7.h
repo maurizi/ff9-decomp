@@ -22,7 +22,7 @@ typedef struct {
     VECTOR scale2C; /* model scale */
     s32 unk3C; /* model brightness */
     SVECTOR unk40; /* target position */
-    SVECTOR unk48; /* target rotation */
+    SVECTOR rot48; /* target rotation */
     SVECTOR pos50;
     SVECTOR pos58;
     SVECTOR pos60;

@@ -1121,8 +1121,8 @@ s32 fx_0fb_1_op82(s32 mode, Fx0fb1Work82 *work, Unk800F78A4 *env, Unk80100C78Ent
         }
         work->unk2C = n;
         ex->btlfx_getUnitHomePos(n, (s16 *)&work->unk4);
-        ex->btlfx_getUnitRot(work->unk2C, (s16 *)&work->unkC);
-        BTLFX_COPY_SVEC(&work->unk1C, &work->unkC);
+        ex->btlfx_getUnitRot(work->unk2C, (s16 *)&work->rotC);
+        BTLFX_COPY_SVEC(&work->rot1C, &work->rotC);
         work->unk14 = 0x2000 / (((ex->btlfx_rand() & 1) + 1) * 16);
         work->unk16 = 0x2000 / (((ex->btlfx_rand() & 1) + 1) * 16);
         work->unk18 = 0x2000 / (((ex->btlfx_rand() & 1) + 1) * 16);
@@ -1134,12 +1134,12 @@ s32 fx_0fb_1_op82(s32 mode, Fx0fb1Work82 *work, Unk800F78A4 *env, Unk80100C78Ent
             BTLFX_COPY_SVEC(&v, &work->unk4);
             v.vy += (work->unk28 * ex->math_cos(k >> 2)) >> 12;
             ex->btlfx_setUnitPos(work->unk2C, (s16 *)&v);
-            work->unk1C.vx += work->unk14;
-            work->unk1C.vy += work->unk16;
-            work->unk1C.vz += work->unk18;
-            ex->btlfx_setUnitRot(work->unk2C, (s16 *)&work->unk1C);
+            work->rot1C.vx += work->unk14;
+            work->rot1C.vy += work->unk16;
+            work->rot1C.vz += work->unk18;
+            ex->btlfx_setUnitRot(work->unk2C, (s16 *)&work->rot1C);
             if (frame >= 0x10) {
-                ex->btlfx_setUnitRot(work->unk2C, (s16 *)&work->unkC);
+                ex->btlfx_setUnitRot(work->unk2C, (s16 *)&work->rotC);
                 ex->btlfx_getUnitHomePos(work->unk2C, (s16 *)&v);
                 ex->btlfx_setUnitPos(work->unk2C, (s16 *)&v);
                 work->unk0 = 1;

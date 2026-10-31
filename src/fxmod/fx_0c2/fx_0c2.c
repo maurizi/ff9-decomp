@@ -49,9 +49,9 @@ s32 fx_0c2_op81(s32 mode, Fx0c2Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
         fxm_setSignal(env, 7, 0);
         fxm_startUnitMotion(0x10, 0x1C);
         ex->btlfx_getUnitPos(0x10, (s16 *)&work->unkC);
-        ex->btlfx_getUnitRot(0x10, (s16 *)&work->unk14);
+        ex->btlfx_getUnitRot(0x10, (s16 *)&work->rot14);
         ex->btlfx_getUnitBodyPos(work->unk4C, 0, (s16 *)&work->pos1C);
-        ex->btlfx_getUnitRot(work->unk4C, (s16 *)&work->unk24);
+        ex->btlfx_getUnitRot(work->unk4C, (s16 *)&work->rot24);
     } else {
         frame = entry->frame;
         if (frame == 4) {
@@ -59,8 +59,8 @@ s32 fx_0c2_op81(s32 mode, Fx0c2Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
             D_801E8484.vx = work->unk34.vx;
             D_801E8484.vy = work->unk34.vy;
             D_801E8484.vz = work->unk34.vz;
-            ex->btlfx_getUnitRot(0x10, (s16 *)&work->unk14);
-            ex->btlfx_pointAhead((s16 *)&work->unkC, (s16 *)&work->unk14, 0x12C, (s16 *)&work->pos2C);
+            ex->btlfx_getUnitRot(0x10, (s16 *)&work->rot14);
+            ex->btlfx_pointAhead((s16 *)&work->unkC, (s16 *)&work->rot14, 0x12C, (s16 *)&work->pos2C);
             ex->btlfx_aimAngles((s16 *)&work->unkC, (s16 *)&work->pos1C, (s16 *)&ang);
             ex->btlfx_pointAhead((s16 *)&work->pos1C, (s16 *)&ang, 0, (s16 *)&D_801E848C);
             work->emit0 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0xD), (s32)&work->pos2C);

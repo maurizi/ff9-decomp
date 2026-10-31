@@ -6,7 +6,7 @@
 
 typedef struct {
     SVECTOR pos0;
-    SVECTOR unk8;
+    SVECTOR rot8;
 } Fx0eeWork;
 
 extern Unk800F78A4 *fx_0ee_env;

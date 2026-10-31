@@ -15,10 +15,10 @@ s32 fx_07b_op80(s32 mode, Fx07bWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
             work->emit0->trailSlots = 6;
             work->emit0->trailStride = 0xA0;
         }
-        ex->btlfx_getUnitRot(0, (s16 *)&work->unk10);
-        D_801E79C8.vy = work->unk10.vy;
-        work->pos8.vx -= ex->math_sin(work->unk10.vy) * 0x190 / 4096;
-        work->pos8.vz -= ex->math_cos(work->unk10.vy) * 0x190 / 4096;
+        ex->btlfx_getUnitRot(0, (s16 *)&work->rot10);
+        D_801E79C8.vy = work->rot10.vy;
+        work->pos8.vx -= ex->math_sin(work->rot10.vy) * 0x190 / 4096;
+        work->pos8.vz -= ex->math_cos(work->rot10.vy) * 0x190 / 4096;
     } else {
         frame = entry->frame;
         if (frame == 0xE) {

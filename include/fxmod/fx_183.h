@@ -19,7 +19,7 @@ typedef struct {
     Pool6CEntry *emit0;
     Pool6CEntry *emit4;
     SVECTOR pos8; /* caster body position */
-    SVECTOR unk10; /* caster rotation */
+    SVECTOR rot10; /* caster rotation */
 } Fx183Work80; /* 0x18 */
 
 typedef struct {

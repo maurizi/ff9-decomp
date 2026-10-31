@@ -33,7 +33,7 @@ typedef struct {
     s32 unk0; /* state */
     s32 unk4; /* frame counter */
     SVECTOR pos8; /* unit position */
-    SVECTOR unk10; /* unit rotation */
+    SVECTOR rot10; /* unit rotation */
     SVECTOR pos18; /* model position */
     SVECTOR unk20;
     s32 model28; /* model */

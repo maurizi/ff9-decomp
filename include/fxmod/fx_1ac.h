@@ -9,9 +9,9 @@ typedef struct {
     SVECTOR unk20; /* caster position */
     SVECTOR pos28; /* target position */
     SVECTOR unk30; /* bone position */
-    SVECTOR unk38; /* target rotation */
+    SVECTOR rot38; /* target rotation */
     u8 pad40[0x44 - 0x40];
-    SVECTOR unk44; /* saved target rotation */
+    SVECTOR rot44; /* saved target rotation */
     Pool6CEntry *emit4C[5];
 } Fx1acWork; /* 0x60 */
 

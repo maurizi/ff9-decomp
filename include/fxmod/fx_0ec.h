@@ -66,7 +66,7 @@ typedef struct {
     s32 unk0; /* state */
     s32 unk4; /* frame counter */
     SVECTOR unk8; /* caster position */
-    SVECTOR unk10; /* caster rotation */
+    SVECTOR rot10; /* caster rotation */
     SVECTOR pos18; /* summon position */
     SVECTOR pos20;
     SVECTOR unk28[2];

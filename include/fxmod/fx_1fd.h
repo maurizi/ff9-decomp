@@ -35,7 +35,7 @@ typedef struct {
 
 typedef struct {
     SVECTOR unk0; /* unit position */
-    SVECTOR unk8; /* unit rotation */
+    SVECTOR rot8; /* unit rotation */
     s16 unk10; /* distance from the centre */
     s16 unk12; /* angle around it */
 } Fx1fdOrbit; /* 0x14 */

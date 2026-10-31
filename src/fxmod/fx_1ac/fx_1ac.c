@@ -37,8 +37,8 @@ s32 fx_1ac_op80(s32 mode, Fx1acWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
         for (i = 7; i >= 0; i--) {
             work->unk0[i] = 0;
         }
-        ex->btlfx_getUnitRot(0, (s16 *)&work->unk38);
-        ex->btlfx_getUnitRot(0, (s16 *)&work->unk44);
+        ex->btlfx_getUnitRot(0, (s16 *)&work->rot38);
+        ex->btlfx_getUnitRot(0, (s16 *)&work->rot44);
         work->emit4C[0] = NULL;
         work->emit4C[1] = NULL;
         work->emit4C[2] = NULL;
@@ -103,7 +103,7 @@ s32 fx_1ac_op80(s32 mode, Fx1acWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
         case 50:
             work->unk0[2] = 2;
             ex->btlfx_fadeUnitById(0, 0x80);
-            ex->btlfx_setUnitRot(0, (s16 *)&work->unk44);
+            ex->btlfx_setUnitRot(0, (s16 *)&work->rot44);
             ex->btlfx_getUnitHomePos(0, (s16 *)&D_801E85A0);
             work->emit4C[4] = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 3), (s32)&D_801E85A0);
             work->unk0[7] = 0x10;
@@ -116,8 +116,8 @@ s32 fx_1ac_op80(s32 mode, Fx1acWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
             D_801E85A8.vz = ex->btlfx_lerpRatio(work->pos28.vz, work->unk30.vz, t, 0xE);
             D_801E85A8.vy = work->pos28.vy - (t * 0x258 - (t * 0x25) * t);
             ex->btlfx_setUnitPos(0, (s16 *)&D_801E85A8);
-            work->unk38.vx -= 0xAA;
-            ex->btlfx_setUnitRot(0, (s16 *)&work->unk38);
+            work->rot38.vx -= 0xAA;
+            ex->btlfx_setUnitRot(0, (s16 *)&work->rot38);
         }
         if (work->unk0[3] != 0) {
             MATRIX m;

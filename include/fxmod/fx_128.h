@@ -15,7 +15,7 @@ typedef struct {
     Pool6CEntry *emit0;
     Pool6CEntry *emit4;
     SVECTOR pos8; /* caster body position */
-    SVECTOR unk10; /* caster rotation */
+    SVECTOR rot10; /* caster rotation */
 } Fx128Work80;
 
 extern Unk800F78A4 *fx_128_env;
@@ -79,7 +79,7 @@ typedef struct {
     s32 pad48;
     s32 unk4C; /* model colour */
     SVECTOR unk50; /* caster position */
-    SVECTOR unk58; /* caster rotation */
+    SVECTOR rot58; /* caster rotation */
     SVECTOR pos60; /* target body position */
     SVECTOR pos68; /* target position */
     SVECTOR pos70;

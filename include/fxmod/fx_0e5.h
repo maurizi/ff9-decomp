@@ -10,7 +10,7 @@ typedef struct {
     SVECTOR unk8;
     SVECTOR pos10;
     SVECTOR unk18;
-    SVECTOR unk20;
+    SVECTOR rot20;
     SVECTOR unk28;
     SVECTOR pos30;
     SVECTOR unk38;

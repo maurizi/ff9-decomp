@@ -7,7 +7,7 @@
 typedef struct {
     s32 unk0[3]; /* target scale */
     SVECTOR posC; /* target position */
-    SVECTOR unk14; /* target rotation */
+    SVECTOR rot14; /* target rotation */
     BtlUnit9C8 *unk1C;
     SVECTOR pos20; /* caster position */
 } Fx17fWork;

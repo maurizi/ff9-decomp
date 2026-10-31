@@ -18,7 +18,7 @@ typedef struct {
     s32 unk0; /* state */
     SVECTOR pos4; /* target */
     SVECTOR unkC; /* caster body position */
-    SVECTOR unk14; /* caster rotation */
+    SVECTOR rot14; /* caster rotation */
     s32 unk1C; /* spawned */
 } Fx188Work; /* 0x20 */
 

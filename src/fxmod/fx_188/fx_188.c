@@ -68,9 +68,9 @@ s32 fx_188_op80(s32 mode, Fx188Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
         BTLFX_COPY_SVEC(&work->pos4, &env->targets->centerX);
         work->pos4.vy -= 0x200;
         ex->btlfx_getUnitBodyPos(0x10, 0, (s16 *)&work->unkC);
-        ex->btlfx_getUnitRot(0x10, (s16 *)&work->unk14);
+        ex->btlfx_getUnitRot(0x10, (s16 *)&work->rot14);
         D_801E86CC = 0x1000;
-        work->unk14.vy += 0x800;
+        work->rot14.vy += 0x800;
     } else {
         frame = entry->frame;
         switch (work->unk0) {
@@ -85,9 +85,9 @@ s32 fx_188_op80(s32 mode, Fx188Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
                         e->unk20.vz = work->pos4.vz;
                         e->unk20.vy = work->pos4.vy;
                         n = work->unk1C & 3;
-                        e->unk14.vy = (s16)(work->unk14.vy - 0x300) + (n << 9);
+                        e->unk14.vy = (s16)(work->rot14.vy - 0x300) + (n << 9);
                         n = work->unk1C >> 2;
-                        e->unk14.vx = work->unk14.vx + n * 0x180;
+                        e->unk14.vx = work->rot14.vx + n * 0x180;
                         e->unk14.vz = 0;
                     }
                 }

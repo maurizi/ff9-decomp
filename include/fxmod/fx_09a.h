@@ -19,7 +19,7 @@ typedef struct {
     s32 unkC; /* units done */
     s32 unk10; /* unit count */
     SVECTOR pos14; /* unit position */
-    SVECTOR unk1C; /* unit rotation */
+    SVECTOR rot1C; /* unit rotation */
     SVECTOR pos24; /* summon position */
     s32 unk2C; /* ribbon head */
     s32 unk30;

@@ -12,7 +12,7 @@ typedef struct {
     s16 unk2C; /* model brightness */
     s16 unk2E; /* model height */
     SVECTOR unk30; /* target position */
-    SVECTOR unk38; /* target rotation */
+    SVECTOR rot38; /* target rotation */
     SVECTOR pos40;
     s16 unk48; /* fade-in countdown */
     s16 unk4A; /* fade-out countdown */

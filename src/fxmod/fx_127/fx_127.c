@@ -43,7 +43,7 @@ s32 fx_127_op80(s32 mode, Fx127Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
     } else if (mode == 1) {
         fx_127_env = env;
         ex->btlfx_getUnitPos(0x10, (s16 *)&work->unk24);
-        ex->btlfx_getUnitRot(0x10, (s16 *)&work->unk2C);
+        ex->btlfx_getUnitRot(0x10, (s16 *)&work->rot2C);
         ex->btlfx_getUnitBodyPos(0, 0, (s16 *)&work->unk34);
         ex->btlfx_getUnitPos(0, (s16 *)&work->unk3C);
     } else {

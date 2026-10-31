@@ -12,7 +12,7 @@ typedef struct {
     s32 unk10;
     Pool6CEntry *emit14;
     SVECTOR unk18; /* unit 0x10 position */
-    SVECTOR unk20; /* unit 0x10 rotation */
+    SVECTOR rot20; /* unit 0x10 rotation */
     SVECTOR pos28; /* unit 0x10 bone 5 position */
     SVECTOR pos30; /* unit 0x10 bone 0x22 position */
     SVECTOR pos38; /* unk18 moved 0x708 along unk20 */

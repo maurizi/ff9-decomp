@@ -18,12 +18,12 @@ s32 fx_082_op80(s32 mode, Fx082Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
         fx_082_env = env;
         ex->btlfx_getUnitBodyPos(0, 1, (s16 *)&work->unk18);
         BTLFX_COPY_SVEC(&work->pos8, &work->unk18);
-        ex->btlfx_getUnitRot(0, (s16 *)&work->unk20);
-        ex->btlfx_pointAhead((s16 *)&work->unk18, (s16 *)&work->unk20, 0x226, (s16 *)&work->unk18);
+        ex->btlfx_getUnitRot(0, (s16 *)&work->rot20);
+        ex->btlfx_pointAhead((s16 *)&work->unk18, (s16 *)&work->rot20, 0x226, (s16 *)&work->unk18);
         work->unk0 = 0;
         work->unk4 = 0;
         work->unk18.vy -= 0x145;
-        BTLFX_COPY_SVEC(&work->rot28, &work->unk20);
+        BTLFX_COPY_SVEC(&work->rot28, &work->rot20);
         ex->btlfx_initEffModels(fx_082_effModels, 2);
         work->model30 = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, 5), 0);
         work->model34 = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, 5), 0);

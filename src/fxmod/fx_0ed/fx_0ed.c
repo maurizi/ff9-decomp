@@ -124,14 +124,14 @@ s32 fx_0ed_op80(s32 mode, Fx0edWork80 *work, Unk800F78A4 *env, Unk80100C78Entry 
         work->unk4 = 0;
         fx_0ed_env = env;
         ex->btlfx_getUnitPos(0, (s16 *)&work->pos8);
-        ex->btlfx_getUnitRot(0, (s16 *)&work->unk10);
-        work->unk10.vy &= 0xFFF;
-        if ((u32)(work->unk10.vy - 0x400) > 0x800) {
-            work->unk10.vy = 0;
+        ex->btlfx_getUnitRot(0, (s16 *)&work->rot10);
+        work->rot10.vy &= 0xFFF;
+        if ((u32)(work->rot10.vy - 0x400) > 0x800) {
+            work->rot10.vy = 0;
         } else {
-            work->unk10.vy = 0x800;
+            work->rot10.vy = 0x800;
         }
-        ex->btlfx_rotateOffset(&work->unk10, ex->btlfx_getUnitRadius(0) + 0x78, (s32)&pos);
+        ex->btlfx_rotateOffset(&work->rot10, ex->btlfx_getUnitRadius(0) + 0x78, (s32)&pos);
         work->pos18.vx = work->pos8.vx + ((SVECTOR *)&pos)->vx;
         work->pos18.vy = work->pos8.vy + ((SVECTOR *)&pos)->vy;
         work->pos18.vz = work->pos8.vz + ((SVECTOR *)&pos)->vz;
@@ -141,14 +141,14 @@ s32 fx_0ed_op80(s32 mode, Fx0edWork80 *work, Unk800F78A4 *env, Unk80100C78Entry 
         env->camera->points[0].vx = ((SVECTOR *)&pos)[1].vx;
         env->camera->points[0].vy = ((SVECTOR *)&pos)[1].vy;
         env->camera->points[0].vz = ((SVECTOR *)&pos)[1].vz;
-        ex->btlfx_rotateOffset(&work->unk10, -0xD2, (s32)&pos);
+        ex->btlfx_rotateOffset(&work->rot10, -0xD2, (s32)&pos);
         ((SVECTOR *)&pos)[1].vx = work->pos18.vx + ((SVECTOR *)&pos)->vx;
         ((SVECTOR *)&pos)[1].vy = work->pos18.vy + ((SVECTOR *)&pos)->vy - 0x140;
         ((SVECTOR *)&pos)[1].vz = work->pos18.vz + ((SVECTOR *)&pos)->vz;
         env->camera->points[1].vx = ((SVECTOR *)&pos)[1].vx;
         env->camera->points[1].vy = ((SVECTOR *)&pos)[1].vy;
         env->camera->points[1].vz = ((SVECTOR *)&pos)[1].vz;
-        ex->btlfx_rotateOffset(&work->unk10, -ex->btlfx_getUnitRadius(0), (s32)&pos);
+        ex->btlfx_rotateOffset(&work->rot10, -ex->btlfx_getUnitRadius(0), (s32)&pos);
         ((SVECTOR *)&pos)[1].vx = work->pos8.vx + ((SVECTOR *)&pos)->vx;
         ((SVECTOR *)&pos)[1].vy = ((SVECTOR *)&pos)->vy - 0x140;
         ((SVECTOR *)&pos)[1].vz = work->pos8.vz + ((SVECTOR *)&pos)->vz;
@@ -161,7 +161,7 @@ s32 fx_0ed_op80(s32 mode, Fx0edWork80 *work, Unk800F78A4 *env, Unk80100C78Entry 
         work->unk34[0] = work->unk34[1] = work->unk34[2] = 0x1000;
         work->rot2C.vx = 0;
         work->rot2C.vz = 0;
-        work->rot2C.vy = work->unk10.vy;
+        work->rot2C.vy = work->rot10.vy;
         ex->btlfx_initEffModels(fx_0ed_effModels, 1);
         work->model28 = (s16)ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, 8), 0);
     } else {
@@ -237,7 +237,7 @@ s32 fx_0ed_op80(s32 mode, Fx0edWork80 *work, Unk800F78A4 *env, Unk80100C78Entry 
                 s32 ang;
 
                 p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file,
-                                                           *(D_801E8C10 + (((ang = work->unk10.vy & 0xFFF) - 0x400U > 0x800) !=
+                                                           *(D_801E8C10 + (((ang = work->rot10.vy & 0xFFF) - 0x400U > 0x800) !=
                                                                       ((ang = env->camera->yaw & 0xFFF) - 0x400U > 0x800)))),
                                       (s32)&work->pos8);
                 if (p != NULL) {

@@ -140,14 +140,14 @@ s32 fx_09a_op80(s32 mode, Fx09aWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
                 break;
             }
             ex->btlfx_getUnitPos(work->unk8, (s16 *)&work->pos14);
-            ex->btlfx_getUnitRot(work->unk8, (s16 *)&work->unk1C);
-            work->unk1C.vy &= 0xFFF;
-            if (work->unk1C.vy - 0x400U > 0x800) {
-                work->unk1C.vy = 0;
+            ex->btlfx_getUnitRot(work->unk8, (s16 *)&work->rot1C);
+            work->rot1C.vy &= 0xFFF;
+            if (work->rot1C.vy - 0x400U > 0x800) {
+                work->rot1C.vy = 0;
             } else {
-                work->unk1C.vy = 0x800;
+                work->rot1C.vy = 0x800;
             }
-            ex->btlfx_rotateOffset(&work->unk1C, ex->btlfx_getUnitRadius(work->unk8) + 0x78, (s32)&a);
+            ex->btlfx_rotateOffset(&work->rot1C, ex->btlfx_getUnitRadius(work->unk8) + 0x78, (s32)&a);
             work->pos24.vx = work->pos14.vx + a.vx;
             work->pos24.vy = work->pos14.vy + a.vy;
             work->pos24.vz = work->pos14.vz + a.vz;
@@ -157,14 +157,14 @@ s32 fx_09a_op80(s32 mode, Fx09aWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
             env->camera->points[0].vx = b.vx;
             env->camera->points[0].vy = b.vy;
             env->camera->points[0].vz = b.vz;
-            ex->btlfx_rotateOffset(&work->unk1C, -0xD2, (s32)&a);
+            ex->btlfx_rotateOffset(&work->rot1C, -0xD2, (s32)&a);
             b.vx = work->pos24.vx + a.vx;
             b.vy = work->pos24.vy + a.vy - 0x140;
             b.vz = work->pos24.vz + a.vz;
             env->camera->points[1].vx = b.vx;
             env->camera->points[1].vy = b.vy;
             env->camera->points[1].vz = b.vz;
-            ex->btlfx_rotateOffset(&work->unk1C, -ex->btlfx_getUnitRadius(0), (s32)&a);
+            ex->btlfx_rotateOffset(&work->rot1C, -ex->btlfx_getUnitRadius(0), (s32)&a);
             b.vx = work->pos14.vx + a.vx;
             b.vy = a.vy - 0x140;
             b.vz = work->pos14.vz + a.vz;
@@ -178,7 +178,7 @@ s32 fx_09a_op80(s32 mode, Fx09aWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
             work->unk3C[0] = 0x1000;
             work->rot34.vx = 0;
             work->rot34.vz = 0;
-            work->rot34.vy = work->unk1C.vy;
+            work->rot34.vy = work->rot1C.vy;
             ex->btlfx_playFileSound(0xF, entry->file, -1);
             ex->btlfx_playFileSound(0x10, entry->file, -1);
             ex->btlfx_playFileSound(0x11, entry->file, -1);
@@ -217,7 +217,7 @@ s32 fx_09a_op80(s32 mode, Fx09aWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
 
                 p = (Pool6CEntry *)ex->btlfx_startEmitter(
                     ex->btlfx_getFileData(entry->file,
-                                          *(D_801E87E4 + (((ang = work->unk1C.vy & 0xFFF) - 0x400U > 0x800) !=
+                                          *(D_801E87E4 + (((ang = work->rot1C.vy & 0xFFF) - 0x400U > 0x800) !=
                                                           ((ang = env->camera->yaw & 0xFFF) - 0x400U > 0x800)))),
                     (s32)&work->pos14);
                 if (p != NULL) {

@@ -18,11 +18,11 @@ s32 fx_024_op80(s32 mode, Fx024Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
     } else if (mode == 1) {
         fx_024_env = env;
         ex->btlfx_getUnitPos(0x10, (s16 *)&work->unk18);
-        ex->btlfx_getUnitRot(0x10, (s16 *)&work->unk20);
+        ex->btlfx_getUnitRot(0x10, (s16 *)&work->rot20);
         work->pos38.vx = work->unk18.vx;
         work->pos38.vy = work->unk18.vy;
         work->pos38.vz = work->unk18.vz;
-        ex->btlfx_pointAhead((s16 *)&work->unk18, (s16 *)&work->unk20, 0x3E8, (s16 *)&work->pos38);
+        ex->btlfx_pointAhead((s16 *)&work->unk18, (s16 *)&work->rot20, 0x3E8, (s16 *)&work->pos38);
         work->pos38.vy = -0xC8;
         ex->btlfx_getUnitBoneMatrix(0x10, 0xD, (BtlBone *)&u.m);
         ex->btlfx_matrixPointAhead(&u.m, 0x1F4, (s32)&work->pos28);

@@ -15,13 +15,13 @@ s32 fx_122_op80(s32 mode, Fx122Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
         fx_122_env = env;
         env->camera->paused = 0;
         ex->btlfx_getUnitPos(0, (s16 *)&work->unk30);
-        ex->btlfx_getUnitRot(0, (s16 *)&work->unk38);
+        ex->btlfx_getUnitRot(0, (s16 *)&work->rot38);
         work->rot4.vx = 0;
         work->rot4.vz = 0;
         work->scale1C.vx = 0x2000;
         work->scale1C.vy = 0x2000;
         work->scale1C.vz = 0x2000;
-        work->rot4.vy = work->unk38.vy + 0x800;
+        work->rot4.vy = work->rot38.vy + 0x800;
         if (ex->btlfx_isEnemyUnit(0)) {
             id = ex->btlfx_getUnitHeight(0);
             r = ex->btlfx_getUnitRadius(0x100);

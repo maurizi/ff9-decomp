@@ -371,25 +371,25 @@ s32 fx_0ec_op80(s32 mode, Fx0ecWork80 *work, Unk800F78A4 *env, Unk80100C78Entry 
         fx_0ec_env = env;
         ex->btlfx_getUnitPos(0, (s16 *)&work->unk8);
         r = ex->btlfx_getUnitRadius(0) + 0xF0;
-        ex->btlfx_getUnitRot(0, (s16 *)&work->unk10);
-        work->unk10.vy &= 0xFFF;
-        if (work->unk10.vy - 0x400U > 0x800) {
-            work->unk10.vy = 0;
+        ex->btlfx_getUnitRot(0, (s16 *)&work->rot10);
+        work->rot10.vy &= 0xFFF;
+        if (work->rot10.vy - 0x400U > 0x800) {
+            work->rot10.vy = 0;
         } else {
-            work->unk10.vy = 0x800;
+            work->rot10.vy = 0x800;
         }
-        ex->btlfx_pointAhead((s16 *)&work->unk8, (s16 *)&work->unk10, r, (s16 *)&work->pos18);
+        ex->btlfx_pointAhead((s16 *)&work->unk8, (s16 *)&work->rot10, r, (s16 *)&work->pos18);
         if (ex->btlfx_isEnemyUnit(0) != 0 && work->pos18.vz < -0x200) {
             work->pos18.vz = -0x200;
         }
-        ex->btlfx_rotateOffset(&work->unk10, -0xD2, (s32)&rot);
+        ex->btlfx_rotateOffset(&work->rot10, -0xD2, (s32)&rot);
         sv.vx = work->pos18.vx + rot.vx;
         sv.vy = work->pos18.vy + rot.vy - 0x140;
         sv.vz = work->pos18.vz + rot.vz;
         env->camera->points[1].vx = sv.vx;
         env->camera->points[1].vy = sv.vy;
         env->camera->points[1].vz = sv.vz;
-        ex->btlfx_rotateOffset(&work->unk10, -ex->btlfx_getUnitRadius(0), (s32)&rot);
+        ex->btlfx_rotateOffset(&work->rot10, -ex->btlfx_getUnitRadius(0), (s32)&rot);
         sv.vx = work->unk8.vx + rot.vx;
         sv.vy = work->unk8.vy + rot.vy - 0x140;
         sv.vz = work->unk8.vz + rot.vz;
@@ -447,9 +447,9 @@ s32 fx_0ec_op80(s32 mode, Fx0ecWork80 *work, Unk800F78A4 *env, Unk80100C78Entry 
     switch (work->unk0) {
     case 0:
         sc.vx = sc.vy = sc.vz = work->unk5C;
-        rot.vx = work->unk10.vx;
-        rot.vy = work->unk10.vy;
-        rot.vz = work->unk10.vz;
+        rot.vx = work->rot10.vx;
+        rot.vy = work->rot10.vy;
+        rot.vz = work->rot10.vz;
         t = (frame << 12) / 22;
         rot.vy += (0x1000 - t) >> 1;
         pos.vx = work->pos18.vx;
@@ -488,9 +488,9 @@ s32 fx_0ec_op80(s32 mode, Fx0ecWork80 *work, Unk800F78A4 *env, Unk80100C78Entry 
         break;
     case 1:
         sc.vx = sc.vy = sc.vz = work->unk5C;
-        rot.vx = work->unk10.vx;
-        rot.vy = work->unk10.vy;
-        rot.vz = work->unk10.vz;
+        rot.vx = work->rot10.vx;
+        rot.vy = work->rot10.vy;
+        rot.vz = work->rot10.vz;
         pos.vx = work->pos18.vx;
         pos.vy = work->pos18.vy;
         pos.vz = work->pos18.vz;
@@ -514,9 +514,9 @@ s32 fx_0ec_op80(s32 mode, Fx0ecWork80 *work, Unk800F78A4 *env, Unk80100C78Entry 
         break;
     case 2:
         sc.vx = sc.vy = sc.vz = work->unk5C;
-        rot.vx = work->unk10.vx;
-        rot.vy = work->unk10.vy;
-        rot.vz = work->unk10.vz;
+        rot.vx = work->rot10.vx;
+        rot.vy = work->rot10.vy;
+        rot.vz = work->rot10.vz;
         pos.vx = work->pos18.vx;
         pos.vy = work->pos18.vy;
         pos.vz = work->pos18.vz;
@@ -608,9 +608,9 @@ s32 fx_0ec_op80(s32 mode, Fx0ecWork80 *work, Unk800F78A4 *env, Unk80100C78Entry 
                 work->emit60 = NULL;
             }
         skip:
-            sv.vx = work->unk10.vx;
-            sv.vy = work->unk10.vy;
-            sv.vz = work->unk10.vz;
+            sv.vx = work->rot10.vx;
+            sv.vy = work->rot10.vy;
+            sv.vz = work->rot10.vz;
             sv.vy += 0x800;
             if (work->emit60 != NULL) {
                 work->emit60->rot.vx = sv.vx;
@@ -622,9 +622,9 @@ s32 fx_0ec_op80(s32 mode, Fx0ecWork80 *work, Unk800F78A4 *env, Unk80100C78Entry 
         sv.vy = 0;
         sv.vz = 0;
         sc.vx = sc.vy = sc.vz = work->unk5C;
-        rot.vx = work->unk10.vx;
-        rot.vy = work->unk10.vy;
-        rot.vz = work->unk10.vz;
+        rot.vx = work->rot10.vx;
+        rot.vy = work->rot10.vy;
+        rot.vz = work->rot10.vz;
         pos.vx = work->pos18.vx;
         pos.vy = work->pos18.vy;
         pos.vz = work->pos18.vz;

@@ -1364,7 +1364,7 @@ s32 fx_0e2_op83(s32 mode, SVECTOR *work, Unk800F78A4 *env, Unk80100C78Entry *ent
         fx_0e2_env = env;
         for (i = 0; i < env->targets->targetCount; i++, o++) {
             ex->btlfx_getUnitPos(i, (s16 *)&o->unk0);
-            ex->btlfx_getUnitRot(i, (s16 *)&o->unk8);
+            ex->btlfx_getUnitRot(i, (s16 *)&o->rot8);
             ex->btlfx_aimAngles((s16 *)work, (s16 *)&o->unk0, (s16 *)&a);
             o->unk12 = a.vy;
             d.vx = work->vx - o->unk0.vx;
@@ -1409,7 +1409,7 @@ s32 fx_0e2_op84(s32 mode, Fx0e2Work84 *work, Unk800F78A4 *env, Unk80100C78Entry 
             ex->btlfx_getUnitHomePos(i, (s16 *)&work->unk40[i]);
             work->unk40[i].vy = -0xBB8;
             ex->btlfx_setUnitPos(i, (s16 *)&work->unk40[i]);
-            ex->btlfx_setUnitRot(i, (s16 *)&o->unk8);
+            ex->btlfx_setUnitRot(i, (s16 *)&o->rot8);
         }
     } else {
         frame = entry->frame;

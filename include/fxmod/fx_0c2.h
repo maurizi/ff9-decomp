@@ -14,9 +14,9 @@ typedef struct {
     Pool6CEntry *emit4;
     Pool6CEntry *emit8;
     SVECTOR unkC; /* unit 0x10 position */
-    SVECTOR unk14; /* unit 0x10 rotation */
+    SVECTOR rot14; /* unit 0x10 rotation */
     SVECTOR pos1C; /* target body position */
-    SVECTOR unk24; /* target rotation */
+    SVECTOR rot24; /* target rotation */
     SVECTOR pos2C; /* unkC moved 0x12C along unk14 */
     SVECTOR unk34; /* btlfx_getUnitBonePos(0x10, 0x17) */
     SVECTOR unk3C; /* copy of unk44 */

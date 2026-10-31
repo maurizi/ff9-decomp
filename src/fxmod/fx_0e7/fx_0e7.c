@@ -49,14 +49,14 @@ s32 fx_0e7_op81(s32 mode, Fx0e7Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
         fx_0e7_env = env;
         ex->btlfx_initEffModels(fx_0e7_effModels, 2);
         ex->btlfx_getUnitPos(0, (s16 *)&work->unk40);
-        ex->btlfx_getUnitRot(0, (s16 *)&work->unk48);
-        ex->btlfx_pointAhead((s16 *)&work->unk40, (s16 *)&work->unk48, ex->btlfx_getUnitRadius(0) + 0x190, (s16 *)&pos);
+        ex->btlfx_getUnitRot(0, (s16 *)&work->rot48);
+        ex->btlfx_pointAhead((s16 *)&work->unk40, (s16 *)&work->rot48, ex->btlfx_getUnitRadius(0) + 0x190, (s16 *)&pos);
         work->rotC.vx = 0;
         work->rotC.vz = 0;
         work->rot14.vx = 0;
         work->rot14.vz = 0;
-        work->rotC.vy = work->unk48.vy;
-        work->rot14.vy = work->unk48.vy;
+        work->rotC.vy = work->rot48.vy;
+        work->rot14.vy = work->rot48.vy;
         work->pos1C.vx = pos.vx;
         work->pos1C.vy = pos.vy;
         work->pos1C.vz = pos.vz;

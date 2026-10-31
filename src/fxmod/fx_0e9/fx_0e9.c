@@ -56,10 +56,10 @@ s32 fx_0e9_op80(s32 mode, Fx0e9Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
     } else if (mode == 1) {
         fx_0e9_env = env;
         ex->btlfx_getUnitPos(0x10, (s16 *)&work->unk8);
-        ex->btlfx_getUnitRot(0x10, (s16 *)&work->unk10);
+        ex->btlfx_getUnitRot(0x10, (s16 *)&work->rot10);
         ex->btlfx_getUnitPos(0, (s16 *)&work->pos18);
-        ex->btlfx_pointAhead((s16 *)&work->unk8, (s16 *)&work->unk10, 0xC8, (s16 *)&D_801E7D1C);
-        ex->btlfx_pointAhead((s16 *)&work->unk8, (s16 *)&work->unk10, 0x348, (s16 *)&D_801E7D24);
+        ex->btlfx_pointAhead((s16 *)&work->unk8, (s16 *)&work->rot10, 0xC8, (s16 *)&D_801E7D1C);
+        ex->btlfx_pointAhead((s16 *)&work->unk8, (s16 *)&work->rot10, 0x348, (s16 *)&D_801E7D24);
         D_801E7D2C.vx = work->pos18.vx;
         D_801E7D2C.vy = work->pos18.vy;
         D_801E7D2C.vz = work->pos18.vz;

@@ -10,9 +10,9 @@ s32 fx_0ee_op80(s32 mode, Fx0eeWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
     } else if (mode == 1) {
         fx_0ee_env = env;
         ex->btlfx_getUnitBodyPos(0x10, 0, (s16 *)&work->pos0);
-        ex->btlfx_getUnitRot(0x10, (s16 *)&work->unk8);
-        work->pos0.vx += ex->math_sin(work->unk8.vy) >> 4;
-        work->pos0.vz += ex->math_cos(work->unk8.vy) >> 4;
+        ex->btlfx_getUnitRot(0x10, (s16 *)&work->rot8);
+        work->pos0.vx += ex->math_sin(work->rot8.vy) >> 4;
+        work->pos0.vz += ex->math_cos(work->rot8.vy) >> 4;
     } else {
         frame = entry->frame;
         switch (frame) {

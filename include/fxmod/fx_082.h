@@ -10,7 +10,7 @@ typedef struct {
     SVECTOR pos8; /* caster body position */
     SVECTOR pos10;
     SVECTOR unk18; /* unk8 moved 0x226 along unk20, raised by 0x145 */
-    SVECTOR unk20; /* caster rotation */
+    SVECTOR rot20; /* caster rotation */
     SVECTOR rot28; /* model rotation */
     s32 model30; /* models */
     s32 model34;
