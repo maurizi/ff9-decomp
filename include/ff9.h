@@ -1104,7 +1104,7 @@ extern HelpState g_menuHelp;
 
 /* sound sequencer state (AKAO), g_akaoSeq */
 typedef struct {
-    s32 flags; /* 0x10/0x20 instrument set (akao_startSeq: 0x20 remaps programs 0x20-0x7F, akao_remapInstrument), 1/2 out of voices (akao_assignVoices) */
+    s32 flags; /* AKAO_SEQ_* */
     s32 activeMask; /* channels running (akao_tickChannels) */
     s32 priorityMask; /* channels that take voices first, from voice 0 (header +0x24, ops FE1D/FE1E; akao_findFreeVoice) */
     s32 keepVoiceMask; /* channels that keep their voice between notes (header +0x28); the others get flag 0x40 */
@@ -1145,6 +1145,11 @@ typedef struct {
     u16 tick;
     u16 measure; /* measure counter (op FE16 sets it) */
 } AkaoSeq;
+/* AkaoSeq.flags */
+#define AKAO_SEQ_NO_VOICE 0x1 /* akao_assignVoices found no voice for a channel */
+#define AKAO_SEQ_VOICE_STOLEN 0x2 /* akao_assignVoices had to steal a voice (akao_stealVoice) */
+#define AKAO_SEQ_INSTR_MAIN 0x10 /* the sequence's instrument set isn't D_8007F8DC (akao_startSeq) */
+#define AKAO_SEQ_INSTR_ALT 0x20 /* it is: programs 0x20-0x7F use the instruments 0x30 up (akao_remapInstrument, akao_shiftInstrumentUp/Down) */
 extern AkaoSeq *g_akaoSeq;
 extern AkaoSeq g_akaoMainSeq; /* main sequencer state */
 extern s32 g_akaoTickTimeSum;

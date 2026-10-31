@@ -505,7 +505,7 @@ s32 akao_peekNextNote(AkaoChannel *c) {
 }
 
 s32 akao_remapInstrument(s32 a, s32 b) {
-    if ((a & 0x20) && (u32)(b - 0x20) < 0x60) {
+    if ((a & AKAO_SEQ_INSTR_ALT) && (u32)(b - 0x20) < 0x60) {
         return b + 0x30;
     }
     return b;

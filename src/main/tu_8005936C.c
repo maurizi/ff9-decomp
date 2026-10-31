@@ -1,7 +1,7 @@
 #include "ff9.h"
 
 u16 akao_shiftInstrumentUp(u32 flags, AkaoChannel *c) {
-    if ((flags & 0x20) && (u16)(c->instrument - 0x20) < 0x60) {
+    if ((flags & AKAO_SEQ_INSTR_ALT) && (u16)(c->instrument - 0x20) < 0x60) {
         c->voiceStartAddr += 0x20000;
         c->voiceLoopAddr += 0x20000;
         c->instrument += 0x30;
@@ -10,7 +10,7 @@ u16 akao_shiftInstrumentUp(u32 flags, AkaoChannel *c) {
 }
 
 u16 akao_shiftInstrumentDown(u32 flags, AkaoChannel *c) {
-    if ((flags & 0x20) && (u16)(c->instrument - 0x20) < 0x60) {
+    if ((flags & AKAO_SEQ_INSTR_ALT) && (u16)(c->instrument - 0x20) < 0x60) {
         c->voiceStartAddr -= 0x20000;
         c->voiceLoopAddr -= 0x20000;
         c->instrument -= 0x30;

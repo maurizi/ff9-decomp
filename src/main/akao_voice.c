@@ -680,12 +680,12 @@ void akao_assignVoices(AkaoChannel *ch, u32 mask, u32 keep, u32 *used) {
                         f = (g_akaoSeq->priorityMask & bit) != 0;
                         v = akao_findFreeVoice(f);
                         if (v == 24) {
-                            g_akaoSeq->flags |= 2;
+                            g_akaoSeq->flags |= AKAO_SEQ_VOICE_STOLEN;
                             v = akao_stealVoice(f);
                         }
                         if (v == 24) {
                             ch->voice = v;
-                            g_akaoSeq->flags |= 1;
+                            g_akaoSeq->flags |= AKAO_SEQ_NO_VOICE;
                         } else {
                             *used |= 1 << v;
                             ch->voice = v;
