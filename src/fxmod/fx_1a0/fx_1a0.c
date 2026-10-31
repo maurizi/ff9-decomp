@@ -81,7 +81,7 @@ s32 fx_1a0_op80(s32 mode, Fx1a0Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             for (i = 0; i < 6; i++, b++) {
                 ex->btlfx_getUnitBoneMatrix(0x10, b->unk0, (BtlBone *)&m);
                 ex->btlfx_matrixPointAhead(&m, b->unk2, (s32)&work->unk18[i]);
-                if (work->unk0[i] != NULL && work->unk0[i]->state == -1) {
+                if (work->unk0[i] != NULL && work->unk0[i]->state == BTLFX_EMIT_DONE) {
                     work->unk0[i] = NULL;
                 }
                 ex->btlfx_moveEmitterTo((s32)work->unk0[i], (s32)&work->unk18[i]);

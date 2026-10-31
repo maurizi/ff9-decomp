@@ -159,11 +159,11 @@ s32 fx_1a7_op80(s32 mode, Fx1a7Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             }
         }
         if (frame >= 0 && frame < 0x18) {
-            if (work->unk0 != NULL && work->unk0->state == -1) {
+            if (work->unk0 != NULL && work->unk0->state == BTLFX_EMIT_DONE) {
                 work->unk0 = NULL;
             }
             ex->btlfx_moveEmitterTo((s32)work->unk0, (s32)&work->unk34);
-            if (work->unk4 != NULL && work->unk4->state == -1) {
+            if (work->unk4 != NULL && work->unk4->state == BTLFX_EMIT_DONE) {
                 work->unk4 = NULL;
             }
             ex->btlfx_moveEmitterTo((s32)work->unk4, (s32)&work->unk34);

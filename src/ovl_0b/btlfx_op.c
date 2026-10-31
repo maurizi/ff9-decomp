@@ -202,7 +202,7 @@ s32 btlfx_opBounce(s32 arg0, Unk800E4634 *c, Unk800E4634Arg2 *arg2, s32 *arg3, s
                 c->emitters[i]->rot.vx = c->rot[0];
                 c->emitters[i]->rot.vy = c->rot[1];
                 c->emitters[i]->rot.vz = c->rot[2];
-                if (c->emitters[i]->state == -1) {
+                if (c->emitters[i]->state == BTLFX_EMIT_DONE) {
                     c->emitters[i] = NULL;
                 }
             }
@@ -411,7 +411,7 @@ s32 btlfx_opCast(s32 arg0, Unk800E4C88 *arg1, Unk800F78A4 *arg2, s32 *arg3, s32 
         }
         break;
     case 2:
-        if (arg1->emitter != NULL && arg1->emitter->state == -1) {
+        if (arg1->emitter != NULL && arg1->emitter->state == BTLFX_EMIT_DONE) {
             arg1->emitter = NULL;
         }
         if (t == 0) {
@@ -496,7 +496,7 @@ s32 btlfx_opCast(s32 arg0, Unk800E4C88 *arg1, Unk800F78A4 *arg2, s32 *arg3, s32 
         }
         if (arg1->motionMode != 3) {
             if (arg1->emitter != NULL) {
-                if (arg1->emitter->state == -1) {
+                if (arg1->emitter->state == BTLFX_EMIT_DONE) {
                     arg1->emitter = NULL;
                 }
                 if (arg1->emitter != NULL && t < 5) {
@@ -726,7 +726,7 @@ s32 btlfx_opDrawOnUnit(s32 arg0, Unk800E57B0 *arg1, Unk800F78A4 *arg2, s32 *arg3
                     e->rot.vy = arg1->rot[1];
                     e->rot.vz = arg1->rot[2];
                 }
-                if (e->state == -1) {
+                if (e->state == BTLFX_EMIT_DONE) {
                     return 1;
                 }
             }

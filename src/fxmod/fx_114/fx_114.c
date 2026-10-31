@@ -416,7 +416,7 @@ s32 fx_114_op80(s32 mode, Fx114Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
         work->unk134.vx = work->unk68.vx;
         work->unk134.vy = work->unk68.vy;
         work->unk134.vz = work->unk68.vz;
-        if (work->unk0 != NULL && work->unk0->state == -1) {
+        if (work->unk0 != NULL && work->unk0->state == BTLFX_EMIT_DONE) {
             work->unk0 = NULL;
         }
         ex->btlfx_moveEmitterTo((s32)work->unk0, (s32)&work->unk134);

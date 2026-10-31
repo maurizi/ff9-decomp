@@ -483,7 +483,7 @@ void btlfx_initEmitters(u32 arg0, Pool6C *arg1) {
     arg1->maxUsed = 0;
     for (i = 0; i < arg1->capacity;) {
         i++;
-        e->state = 0;
+        e->state = BTLFX_EMIT_FREE;
         e++;
     }
 }
@@ -500,7 +500,7 @@ Pool6CEntry *btlfx_spawnEmitter(Pool30 *arg0, Pool6C *arg1, u8 *arg2, s32 arg3) 
 
     e = arg1->entries;
     for (i = 0; i < arg1->capacity; i++, e++) {
-        if (e->state == 0) {
+        if (e->state == BTLFX_EMIT_FREE) {
             if (arg1->maxUsed < i) {
                 arg1->maxUsed = i;
             }
@@ -508,7 +508,7 @@ Pool6CEntry *btlfx_spawnEmitter(Pool30 *arg0, Pool6C *arg1, u8 *arg2, s32 arg3) 
             for (k = 0; k < 0x6C; k += 4) {
                 *(s32 *)((u8 *)e + k) = 0;
             }
-            e->state = 1;
+            e->state = BTLFX_EMIT_LIVE;
             e->unkE = 0;
             e->unk10 = 0;
             e->unk32 = 0;
@@ -599,7 +599,7 @@ void btlfx_killEmitter(Pool30 *arg0, Pool6CEntry *arg1) {
             p++;
         } while (i < arg0->capacity);
     }
-    arg1->state = -1;
+    arg1->state = BTLFX_EMIT_DONE;
 }
 
 s32 btlfx_updateEmitters(Pool30 *arg0, Pool6C *arg1) {
@@ -631,11 +631,11 @@ s32 btlfx_updateEmitters(Pool30 *arg0, Pool6C *arg1) {
     i = 0;
     p->live = 0;
     for (; i <= p->maxUsed; i++, e++) {
-        if (e->state == 0) {
+        if (e->state == BTLFX_EMIT_FREE) {
             continue;
         }
-        if (e->state == -1) {
-            e->state = 0;
+        if (e->state == BTLFX_EMIT_DONE) {
+            e->state = BTLFX_EMIT_FREE;
             continue;
         }
         p->live++;
@@ -648,7 +648,7 @@ s32 btlfx_updateEmitters(Pool30 *arg0, Pool6C *arg1) {
         e->unk32 = 0;
         if (frame >= y) {
             if (e->unk34.w == 0) {
-                e->state = -1;
+                e->state = BTLFX_EMIT_DONE;
             }
             continue;
         }
@@ -849,10 +849,10 @@ void btlfx_runEmitters(Pool30 *pool, Pool6C *list) {
     e = pl->entries;
     base = NULL;
     for (i = 0; i <= pl->maxUsed; i++, e++) {
-        if (e->state == 0) {
+        if (e->state == BTLFX_EMIT_FREE) {
             continue;
         }
-        if (e->state == -1) {
+        if (e->state == BTLFX_EMIT_DONE) {
             continue;
         }
         for (j = 0; j < e->unk32; j++) {
@@ -1179,10 +1179,10 @@ void btlfx_runSubEmitter(Pool30 *pool, Pool30Entry *e, SVECTOR *pos, SVECTOR *ro
 
     owner = e->owner;
     el = NULL;
-    if (owner->state == 0) {
+    if (owner->state == BTLFX_EMIT_FREE) {
         return;
     }
-    if (owner->state != -1) {
+    if (owner->state != BTLFX_EMIT_DONE) {
         sub = owner->sub - 1;
         frame = e->frame;
         t = (frame << 12) / e->frames;

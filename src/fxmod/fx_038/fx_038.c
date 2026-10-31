@@ -56,7 +56,7 @@ s32 func_801E7704(s32 mode, Fx038Item *it, Unk800F78A4 *env, Unk80100C78Entry *e
             env->camera->points[0].vy = it->unk4.vy;
             env->camera->points[0].vz = it->unk4.vz;
         }
-        if (it->unk14 != NULL && it->unk14->state == -1) {
+        if (it->unk14 != NULL && it->unk14->state == BTLFX_EMIT_DONE) {
             it->unk14 = NULL;
         }
         if (frame >= 15) {

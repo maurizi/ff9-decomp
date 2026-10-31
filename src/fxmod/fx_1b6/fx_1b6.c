@@ -215,7 +215,7 @@ s32 fx_1b6_op80(s32 mode, Fx1b6Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
         case 0:
             t = (frame << 12) / 24;
             if (work->unk5C != NULL) {
-                if (work->unk5C->state == -1) {
+                if (work->unk5C->state == BTLFX_EMIT_DONE) {
                     work->unk5C = NULL;
                 }
                 if (work->unk5C != NULL) {
@@ -223,7 +223,7 @@ s32 fx_1b6_op80(s32 mode, Fx1b6Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
                 }
             }
             if (work->unk60 != NULL) {
-                if (work->unk60->state == -1) {
+                if (work->unk60->state == BTLFX_EMIT_DONE) {
                     work->unk60 = NULL;
                 }
                 if (work->unk60 != NULL) {

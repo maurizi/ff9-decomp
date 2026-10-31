@@ -208,7 +208,7 @@ s32 fx_1be_op80(s32 mode, Fx1beWork80 *w, Unk800F78A4 *env, Unk80100C78Entry *en
             return 1;
         }
         for (i = 0; i < 16; i++) {
-            if (w->unk20[i] != NULL && w->unk20[i]->state == -1) {
+            if (w->unk20[i] != NULL && w->unk20[i]->state == BTLFX_EMIT_DONE) {
                 w->unk20[i] = NULL;
             }
         }

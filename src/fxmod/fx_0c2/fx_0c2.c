@@ -96,7 +96,7 @@ s32 fx_0c2_op81(s32 mode, Fx0c2Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
         }
         if (frame >= 4) {
             if (work->unk0 != NULL) {
-                if (work->unk0->state == -1) {
+                if (work->unk0->state == BTLFX_EMIT_DONE) {
                     work->unk0 = NULL;
                 }
                 if (work->unk0 != NULL) {
@@ -106,7 +106,7 @@ s32 fx_0c2_op81(s32 mode, Fx0c2Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
                 }
             }
             if (work->unk4 != NULL) {
-                if (work->unk4->state == -1) {
+                if (work->unk4->state == BTLFX_EMIT_DONE) {
                     work->unk4 = NULL;
                 }
                 if (work->unk4 != NULL) {

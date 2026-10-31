@@ -2016,7 +2016,7 @@ typedef struct Pool6CEntry {
     EffTail *tail;
     SVECTOR *origin; /* emitter position (btlfx_moveEmitter shifts its particles with it) */
     s32 unk2C;
-    s16 state; /* in use, -1 = release */
+    s16 state; /* BTLFX_EMIT_* */
     s16 unk32;
     XY32 unk34; /* live particle counts (s.x, s.y) */
     s16 frame; /* frame */
@@ -2035,6 +2035,11 @@ typedef struct Pool6CEntry {
     SVECTOR *fieldPos; /* centre of the force-field modes 1-9 (btlfx_updateParticles) */
     SVECTOR *fieldRot; /* angles of the force field (modes 5, 6, 9: btlfx_toLocalPolar) */
 } Pool6CEntry; /* 0x6C */
+
+/* Pool6CEntry.state (btlfx_spawnEmitter, the emitter updates). Evidence: [code] */
+#define BTLFX_EMIT_FREE 0
+#define BTLFX_EMIT_LIVE 1
+#define BTLFX_EMIT_DONE (-1) /* finished: freed by the next update; effect code polls it to drop its pointer */
 
 typedef struct {
     s32 capacity; /* entries */

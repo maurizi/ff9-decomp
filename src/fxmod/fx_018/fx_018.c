@@ -123,7 +123,7 @@ s32 fx_018_op80(s32 mode, Fx018Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             d.vz = 0;
             d.vy = 0;
             if (work->unk1C != NULL) {
-                if (work->unk1C->state == -1) {
+                if (work->unk1C->state == BTLFX_EMIT_DONE) {
                     work->unk1C = NULL;
                 }
                 if (work->unk1C != NULL) {

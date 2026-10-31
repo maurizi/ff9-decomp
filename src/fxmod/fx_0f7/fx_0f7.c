@@ -41,10 +41,10 @@ s32 fx_0f7_op80(s32 mode, Fx0f7Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
             }
             break;
         }
-        if (work->unkC != NULL && work->unkC->state == -1) {
+        if (work->unkC != NULL && work->unkC->state == BTLFX_EMIT_DONE) {
             work->unkC = NULL;
         }
-        if (work->unk14 != NULL && work->unk14->state == -1) {
+        if (work->unk14 != NULL && work->unk14->state == BTLFX_EMIT_DONE) {
             work->unk14 = NULL;
         }
         if (work->unkC != NULL) {
