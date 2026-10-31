@@ -2699,7 +2699,7 @@ Encounters entered with `tools/rt/enter_battle.py ENC --disc 1 --field 351 --bas
   `press cross` (Attack → target select), `press cross` (confirm), reads every 10-20 frames.
 - party at rest: Zidane 0x51010101, Vivi 0xD101E023, Eiko 0xD101EC4D, Amarant 0xD101E16F; enemy (units[4]) 0x11013280.
   Bit 0 set on the party only; bits 1-4 = character id (0 Zidane, 1 Vivi, 6 Eiko, 7 Amarant) = BTL_UNIT_INDEX;
-  bits 5-7 = 0,1,2,3 for the party and 4 for the enemy = BTL_UNIT_SLOT; bits 8-9 = 1 for Zidane/Amarant (back row),
+  bits 5-7 = 0,1,2,3 for the party and 4 for the enemy = BTL_UNIT_SLOT; bits 8-9 = 1 for Zidane/Amarant,
   0 for Vivi/Eiko, 2 for the enemy = BTL_UNIT_ROW; bits 16 (ATB_ACTIVE), 24 (SHADOW), 28 (TARGETABLE) on every unit;
   bit 30 (TRANCE_ENABLED) on the party only. Bits 10-15 and 31 are set on some units but no C code reads or writes
   them (left unnamed).
