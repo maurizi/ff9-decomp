@@ -278,3 +278,29 @@ fx_0d2 Fx0d2Work81 unk14=pos14 unk24=scale24
 fx_0d2 Fx0d2Work80 unk1C=summonPos1C unk2C=summonScale2C unk44=pos44 unk54=scale54 unk6C=pos6C unk84=pos84 unk8C=pos8C unk9C=pathFrame9C
 fx_0d2 Fx0d2Summon unk60=model60
 fx_0d2 Fx0d2Work83 unk10=pos10 unk20=scale20 unk38=pos38 unk48=scale48 unk58=unitPos58 unk98=unitScale98 unk128=rot128 unk130=fadeOut130 unk132=fadeIn132 unk134=white134
+
+## fx_0d3
+fx_0d3 D_801EB048 fx_0d3_summonPos  # [code] base position of Phoenix (Hi_DrawSummonModel position, camera point 3) in fx_0d3_op80 and fx_0d3_op81, never written
+fx_0d3 D_801EB040 fx_0d3_centerPos  # [code] fixed point the fx_0d3_op81 emitters, texel quads (fxm_drawTexelQuads) and camera target use, never written
+fx_0d3 D_801EB050 fx_0d3_sharedModel  # [code] model id of file block 0x26 registered by fx_0d3_op80, fx_0d3_op81 keeps it in Fx0d3Work81.model60 and draws it again
+fx_0d3 D_801EB084 fx_0d3_spawnBones  # [code] 5 summon bone indices cycled by fx_0d3_op81SpawnPoint (Hi_GetSummonBonePos)
+fx_0d3 D_801EB098 fx_0d3_spawnBoneNext  # [code] next index into fx_0d3_spawnBones (mod 5), fx_0d3_op81SpawnPoint
+fx_0d3 D_801EB0C4 fx_0d3_camKeyBlocks  # [code] effect file blocks of the two fxm_keyGetVec camera tracks of fx_0d3_op87 (points 0 and 1) and its end frame
+fx_0d3 D_801EDF44 fx_0d3_waveAmp  # [code] amplitude of the fxm_waveVertexX sine offset, set by fx_0d3_op81
+fx_0d3 D_801EDF48 fx_0d3_wavePhase  # [code] phase of the fxm_waveVertexX sine offset, set by fx_0d3_op81 every frame
+fx_0d3 D_801EB114 fx_0d3_trails  # [code] particle trail buffer of the file block 2 emitter (0xC0 slots of 0x1C bytes), fx_0d3_op80
+fx_0d3 D_801EC614 fx_0d3_trails2  # [code] particle trail buffer of the file block 0xB emitter (0x4A slots of 0x1C bytes), fx_0d3_op81
+fx_0d3 D_801ECE34 fx_0d3_trails3  # [code] particle trail buffer of the file block 0x10 emitter (0x40 slots of 0x1C bytes), fx_0d3_op81
+fx_0d3 D_801EB054 fx_0d3_ribbonBones  # [code] 6 summon bone index pairs, the two edge points (Hi_GetSummonBonePos) of each fxm_drawTexRibbonTrail ribbon in fx_0d3_op81
+fx_0d3 D_801EDAC4 fx_0d3_ribbonSegs  # [code] per ribbon (6) the 12-step edge history (Fx0d3Seg) of fxm_drawTexRibbonTrail in fx_0d3_op81
+fx_0d3 D_801EB09C fx_0d3_rippleColors  # [code] CVECTOR gradient passed to btlfx_drawRippleGrid by fx_0d3_op81 (first ripple)
+fx_0d3 D_801EB0AC fx_0d3_rippleColors2  # [code] CVECTOR gradient passed to btlfx_drawRippleGrid by fx_0d3_op81 (second ripple)
+fx_0d3 D_801EB0B8 fx_0d3_rippleColors3  # [code] CVECTOR gradient passed to btlfx_drawRippleGrid by fx_0d3_op81 (third ripple)
+fx_0d3 D_801EDF54 fx_0d3_texels  # [code] 16-bit texel buffer of fxm_drawTexelQuads (vertex colours read from it, refilled by StoreImage), fx_0d3_op81
+fx_0d3 Fx0d3Track unk2=count2 unk4=keys4
+fx_0d3 Fx0d3Seg unk0=edgeA0 unk8=edgeB8
+fx_0d3 Fx0d3Work80 unk0=state0 unk4=frame4 unk10=summonPos10 unk1C=summonScale1C unk64=model64 unk68=scroll68
+fx_0d3 Fx0d3Summon unk60=model60
+fx_0d3 Fx0d3Work81 unk0=state0 unk4=frame4 unk10=summonPos10 unk1C=summonScale1C unk40=camAt40 unk60=model60
+fx_0d3 Fx0d3Summon81 unk60=model60
+fx_0d3 Fx0d3BonePair unk0=bone0 unk4=bone4

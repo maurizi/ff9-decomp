@@ -7,28 +7,28 @@
 #include "btlfx_mod.h"
 
 extern Unk800F78A4 *fx_0d3_env;
-extern s32 D_801EB084[5];
-extern s32 D_801EB098;
-extern u16 D_801EB0C4[3]; /* file ids for op87 tracks, end frame */
-extern s32 D_801EDF44;
-extern s32 D_801EDF48;
+extern s32 fx_0d3_spawnBones[5];
+extern s32 fx_0d3_spawnBoneNext;
+extern u16 fx_0d3_camKeyBlocks[3]; /* file ids for op87 tracks, end frame */
+extern s32 fx_0d3_waveAmp;
+extern s32 fx_0d3_wavePhase;
 
 static void fx_0d3_op80GridVertex(s32 a0, s32 frame, s32 a2, s32 a3, s16 *v);
 static s32 fx_0d3_op81SpawnPoint(SVECTOR *v);
 static void fxm_waveVertexX(s16 *v);
 typedef struct {
     s16 unk0;
-    s16 unk2; /* count */
-    s16 unk4[1]; /* keys: 1, 3, 6 or 9 halfwords each */
+    s16 count2; /* count */
+    s16 keys4[1]; /* keys: 1, 3, 6 or 9 halfwords each */
 } Fx0d3Track;
 static void fxm_keyGetVec(Fx0d3Track *track, s32 t, SVECTOR *out);
 static void fxm_keyGetVec2(Fx0d3Track *track, s32 t, SVECTOR *a, SVECTOR *b);
 static void fxm_keyGetVec3(Fx0d3Track *track, s32 t, SVECTOR *a, SVECTOR *b, SVECTOR *c);
 static s32 fxm_keyGetValue(Fx0d3Track *track, s32 t);
-/* ribbon history: two edge points per step, unk0.pad = live */
+/* ribbon history: two edge points per step, edgeA0.pad = live */
 typedef struct {
-    SVECTOR unk0;
-    SVECTOR unk8;
+    SVECTOR edgeA0;
+    SVECTOR edgeB8;
 } Fx0d3Seg; /* 0x10 */
 
 #define gte_stszotz(r0) __asm__ volatile( \
@@ -47,18 +47,18 @@ typedef struct {
 } Fx0d3Vec3;
 
 typedef struct {
-    s32 unk0; /* state */
-    s32 unk4; /* frame */
+    s32 state0; /* state */
+    s32 frame4; /* frame */
     SVECTOR pos8; /* summon position */
-    Fx0d3Vec3 unk10;
-    Fx0d3Vec3 unk1C; /* summon scale */
+    Fx0d3Vec3 summonPos10;
+    Fx0d3Vec3 summonScale1C; /* summon scale */
     SVECTOR rot28; /* summon rotation */
     Pool6CEntry *emit30;
     Pool6CEntry *emit34;
     u8 pad38[0x60 - 0x38];
     s32 model60; /* models */
-    s32 unk64;
-    s32 unk68; /* tint */
+    s32 model64;
+    s32 scroll68; /* tint */
 } Fx0d3Work80; /* 0x6C */
 
 /* the summon slot behind env->unk4 */
@@ -69,32 +69,32 @@ typedef struct {
         BtlUnit9CC *motion180;
     } *unk54;
     u8 pad58[8];
-    s32 unk60; /* summon model */
+    s32 model60; /* summon model */
 } Fx0d3Summon;
 
-extern SVECTOR D_801EB048;
-extern s32 D_801EB050;
-extern u8 D_801EB114[];
+extern SVECTOR fx_0d3_summonPos;
+extern s32 fx_0d3_sharedModel;
+extern u8 fx_0d3_trails[];
 extern BtlModel fx_0d3_effModels[];
 s32 fx_0d3_op80(s32 mode, Fx0d3Work80 *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *arg4);
 
 typedef struct {
-    s32 unk0; /* state */
-    s32 unk4; /* frame */
+    s32 state0; /* state */
+    s32 frame4; /* frame */
     SVECTOR pos8;
-    Fx0d3Vec3 unk10; /* summon position */
-    Fx0d3Vec3 unk1C; /* summon scale */
+    Fx0d3Vec3 summonPos10; /* summon position */
+    Fx0d3Vec3 summonScale1C; /* summon scale */
     SVECTOR rot28; /* summon rotation */
     SVECTOR pos30;
     SVECTOR pos38;
-    SVECTOR unk40; /* camera */
+    SVECTOR camAt40; /* camera */
     u8 pad48[4];
     Pool6CEntry *emit4C;
     Pool6CEntry *emit50;
     s32 model54; /* models */
     s32 model58;
     s32 model5C;
-    s32 unk60;
+    s32 model60;
 } Fx0d3Work81; /* 0x64 */
 
 typedef struct {
@@ -104,23 +104,23 @@ typedef struct {
         BtlUnit9CC *motion180[4];
     } *unk54;
     u8 pad58[8];
-    s32 unk60; /* summon model */
+    s32 model60; /* summon model */
 } Fx0d3Summon81;
 
 typedef struct {
-    s32 unk0;
-    s32 unk4;
+    s32 bone0;
+    s32 bone4;
 } Fx0d3BonePair;
 
-extern SVECTOR D_801EB040;
-extern Fx0d3BonePair D_801EB054[6];
-extern CVECTOR D_801EB09C[];
-extern CVECTOR D_801EB0AC[];
-extern CVECTOR D_801EB0B8[];
-extern u8 D_801EC614[];
-extern u8 D_801ECE34[];
-extern Fx0d3Seg D_801EDAC4[6][12];
-extern u16 D_801EDF54[];
+extern SVECTOR fx_0d3_centerPos;
+extern Fx0d3BonePair fx_0d3_ribbonBones[6];
+extern CVECTOR fx_0d3_rippleColors[];
+extern CVECTOR fx_0d3_rippleColors2[];
+extern CVECTOR fx_0d3_rippleColors3[];
+extern u8 fx_0d3_trails2[];
+extern u8 fx_0d3_trails3[];
+extern Fx0d3Seg fx_0d3_ribbonSegs[6][12];
+extern u16 fx_0d3_texels[];
 s32 fx_0d3_op81(s32 mode, Fx0d3Work81 *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *arg4);
 
 /* propagated */
