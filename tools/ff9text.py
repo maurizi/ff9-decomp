@@ -173,7 +173,7 @@ def table(kind):
 
 
 def macro_name(prefix, text):
-    t = text.replace('&', ' AND ').replace('+', ' PLUS ').replace("'", '').replace('’', '')
+    t = re.sub(r'\+(?=\d)', ' ', text).replace('&', ' AND ').replace('+', ' PLUS ').replace("'", '').replace('’', '')
     t = ''.join(c if c.isascii() else {'é': 'E', 'è': 'E'}.get(c, '_') for c in t)
     t = re.sub(r'[^A-Za-z0-9]+', '_', t).strip('_').upper()
     return prefix + t

@@ -540,12 +540,12 @@ s32 evt_exprSpecial(s32 op) {
         break;
     case 0x64:
         x = evt_popResult();
-        if (x < 0x100) {
+        if (x < ITEM_ID_KEY_FIRST) {
             r = item_getCount(x);
-        } else if (x < 0x200) {
-            r = (u8)keyItem_has(x - 0x100);
+        } else if (x < ITEM_ID_CARD_FIRST) {
+            r = (u8)keyItem_has(x - ITEM_ID_KEY_FIRST);
         } else {
-            r = card_countOf(x - 0x200);
+            r = card_countOf(x - ITEM_ID_CARD_FIRST);
         }
         break;
     case 0x65:

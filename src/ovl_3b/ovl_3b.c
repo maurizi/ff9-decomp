@@ -266,12 +266,12 @@ void menuParty_drawPortrait(s32 x, s32 y, s32 otz, s32 id, s32 h, u8 arg5) {
     yy = base - 8;
     if (id != PARTY_EMPTY) {
         c = &g_gameState->gameData->characters[id];
-        if (c->status & 2) {
+        if (c->status & CHR_STATUS_VENOM) {
             icon = &D_800687C0;
             ui_drawSpriteDef(x + ((0x20 - icon->unk4) >> 1), yy, otz, icon, 0);
             yy = base - 0xF;
         }
-        if (c->status & 1) {
+        if (c->status & CHR_STATUS_PETRIFY) {
             icon = &D_80068E38;
             ui_drawSpriteDef(x + ((0x20 - icon->unk4) >> 1), yy, otz, icon, 0);
             yy -= 7;
@@ -321,7 +321,7 @@ u8 menuParty_isValid(void) {
         id = s_menuParty.slots[0][i];
         if (id != PARTY_EMPTY) {
             n++;
-            if (g_gameState->gameData->characters[id].hp != 0 && !(g_gameState->gameData->characters[id].status & 3)) {
+            if (g_gameState->gameData->characters[id].hp != 0 && !(g_gameState->gameData->characters[id].status & (CHR_STATUS_PETRIFY | CHR_STATUS_VENOM))) {
                 alive++;
             }
         }

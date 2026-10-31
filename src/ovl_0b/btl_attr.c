@@ -579,7 +579,7 @@ s32 btl_getBattleVar(s32 arg0) {
     case BTL_GETVAR_ABILITY_ELEMENT:
         if (b->curCmd != NULL && b->curCmd->caster != NULL) {
             r = 0;
-            if (!(b->curCmd->caster->support[1] & 1)) {
+            if (!(b->curCmd->caster->support[1] & SA_BIT(SA_MAG_ELEM_NULL))) {
                 r = b->curCmd->ability->element;
             }
         }

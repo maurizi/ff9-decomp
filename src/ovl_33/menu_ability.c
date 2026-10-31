@@ -467,7 +467,7 @@ void menuAbility_setMember(s32 slot, s32 arg1) {
             }
         }
     }
-    s_menuAbility.tabEnabled[0] = c->hp != 0 && !(c->status & 9) && nItems != 0 && g_evtGlobalVars.b[EVT_GB_NO_ACTION_ABILITIES] == 0;
+    s_menuAbility.tabEnabled[0] = c->hp != 0 && !(c->status & (CHR_STATUS_PETRIFY | CHR_STATUS_SILENCE)) && nItems != 0 && g_evtGlobalVars.b[EVT_GB_NO_ACTION_ABILITIES] == 0;
     s_menuAbility.tabEnabled[1] = chr_canLearnAbilities(c);
     menuAbility_initActionCursor();
     menuAbility_initSupportCursor();
@@ -496,7 +496,7 @@ s32 menuAbility_getActionState(s32 id, Character *c) {
             }
         }
     }
-    if (c->status & 9) {
+    if (c->status & (CHR_STATUS_PETRIFY | CHR_STATUS_SILENCE)) {
         return ABILITY_GREYED;
     }
     if (!(info->flags & 1)) {

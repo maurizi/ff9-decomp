@@ -1984,23 +1984,23 @@ s32 evt_execInstr(void) {
     case EVT_OP_ADD_ITEM:
         a = evt_getArg16_inline();
         b = evt_getArg8_inline();
-        if (a < 0x100) {
+        if (a < ITEM_ID_KEY_FIRST) {
             item_add(a, b);
-        } else if (a < 0x200) {
-            keyItem_add(a - 0x100);
+        } else if (a < ITEM_ID_CARD_FIRST) {
+            keyItem_add(a - ITEM_ID_KEY_FIRST);
         } else {
             while (--b != -1) {
-                card_add(a - 0x200);
+                card_add(a - ITEM_ID_CARD_FIRST);
             }
         }
         return 0;
     case 0x49:
         a = evt_getArg16_inline();
         b = evt_getArg8_inline();
-        if (a < 0x100) {
+        if (a < ITEM_ID_KEY_FIRST) {
             item_remove(a, b);
-        } else if (a < 0x200) {
-            keyItem_remove(a - 0x100);
+        } else if (a < ITEM_ID_CARD_FIRST) {
+            keyItem_remove(a - ITEM_ID_KEY_FIRST);
         }
         return 0;
     case 0xCE:

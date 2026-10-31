@@ -18,6 +18,7 @@
 #define CHR_EIKO    6
 #define CHR_AMARANT 7
 #define CHR_BEATRIX 8
+#define CHR_COUNT   9 /* GameData.characters entries (party_initNewGame, chr_setRecruited) */
 
 /* ---- items: GameData.items ids, Character.equip, BtlCmd.subNo of Item commands. [text items] */
 #define ITEM_SLOT_COUNT 0x100 /* GameData.items slots */
@@ -34,10 +35,16 @@
 #define ITEM_TOPAZ          0xEA /* [text items] "Topaz" */
 #define ITEM_LAPIS_LAZULI   0xEB /* [text items] "Lapis Lazuli" */
 #define ITEM_PHOENIX_PINION 0xF9 /* [text items] "Phoenix Pinion" */
+#define ITEM_GYSAHL_GREENS  0xFB /* [text items] "Gysahl Greens" */
 #define ITEM_ORE            0xFE /* [text items] "Ore" */
 
 /* ---- key items: keyItem_has/add/remove ids (msg ids 0x100 + id). [text keyitems] */
 #define KEY_ITEM_COUNT 0x50 /* key item ids (keyItem_has) */
+/* code: one id space for items, key items and cards in the event script and messages (EVT_OP_ADD_ITEM, event
+ * expression 0x64, msg_emitItemName): ids below 0x100 are items, then key items (id - ITEM_ID_KEY_FIRST), then
+ * Tetra Master cards (id - ITEM_ID_CARD_FIRST) */
+#define ITEM_ID_KEY_FIRST  0x100
+#define ITEM_ID_CARD_FIRST 0x200
 
 /* ---- abilities: ids 0x00-0xBF are action abilities (BtlCmd.subNo, Battle.abilities), 0xC0-0xFF support abilities
  * (g_abilityRows, AbilityEntry.id). [text abilities] = the menus' action ability names (ovl_33
@@ -85,7 +92,15 @@
  * name text). Character.supportAbilities / BtlUnit.support hold them as bits: word (id - 0xC0) >> 5,
  * bit (id - 0xC0) & 0x1F (chr_testSupportBit). */
 #define SA_BIT(id) ((u32)1 << (((id) - ABILITY_SUPPORT_FIRST) & 0x1F))
+#define SA_AUTO_REFLECT   0xC0 /* [text support] "Auto-Reflect" */
+#define SA_AUTO_FLOAT     0xC1 /* [text support] "Auto-Float" */
+#define SA_AUTO_HASTE     0xC2 /* [text support] "Auto-Haste" */
+#define SA_AUTO_REGEN     0xC3 /* [text support] "Auto-Regen" */
 #define SA_AUTO_LIFE      0xC4 /* [text support] "Auto-Life" */
+#define SA_HP_10          0xC5 /* [text support] "HP+10%" */
+#define SA_HP_20          0xC6 /* [text support] "HP+20%" */
+#define SA_MP_10          0xC7 /* [text support] "MP+10%" */
+#define SA_MP_20          0xC8 /* [text support] "MP+20%" */
 #define SA_ACCURACY_PLUS  0xC9 /* [text support] "Accuracy+" */
 #define SA_DISTRACT       0xCA /* [text support] "Distract" */
 #define SA_LONG_REACH     0xCB /* [text support] "Long Reach" */
@@ -100,7 +115,10 @@
 #define SA_POWER_THROW    0xDC /* [text support] "Power Throw" */
 #define SA_POWER_UP       0xDD /* [text support] "Power Up" */
 #define SA_REFLECT_NULL   0xDE /* [text support] "Reflect-Null" */
+#define SA_MAG_ELEM_NULL  0xE0 /* [text support] "Mag Elem Null" */
+#define SA_CONCENTRATE    0xE1 /* [text support] "Concentrate" */
 #define SA_HALF_MP        0xE2 /* [text support] "Half MP" */
+#define SA_HIGH_TIDE      0xE3 /* [text support] "High Tide" */
 #define SA_COUNTER        0xE4 /* [text support] "Counter" */
 #define SA_COVER          0xE5 /* [text support] "Cover" */
 #define SA_PROTECT_GIRLS  0xE6 /* [text support] "Protect Girls" */
@@ -219,6 +237,11 @@
 #define BTL_STATUS_REFLECT         0x20000000 /* runtime: Reflect */
 #define BTL_STATUS_JUMP            0x40000000 /* code: in the air (btl_checkCmdUsable) */
 #define BTL_STATUS_GRADUAL_PETRIFY 0x80000000 /* code: countdown number (btl_drawStatusCountdown) */
+/* Character.status: the same bits */
+#define CHR_STATUS_PETRIFY BTL_STATUS_PETRIFY
+#define CHR_STATUS_VENOM   BTL_STATUS_VENOM
+#define CHR_STATUS_SILENCE BTL_STATUS_SILENCE
+#define CHR_STATUS_ZOMBIE  BTL_STATUS_ZOMBIE
 
 /* ---- elements: bits of BtlUnit.elem*, BtlCmd8.element, weapon[6]. [text messages] g_btlMessages entries 1-8: the
  * names btl_getElementName returns for bit n - 1. */

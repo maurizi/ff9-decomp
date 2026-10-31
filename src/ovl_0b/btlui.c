@@ -393,7 +393,7 @@ void btlui_copyTranceAbilities(Unk80104F88Entry *arg0) {
 /* character 3: also list the abilities of character record 1 and its equipment */
 void btlui_linkSwdMagAbilities(Unk80104F88Entry *arg0) {
     Unk800FD56C *m = &g_btlCmdTable[BTL_CMD_SWD_MAG];
-    Character *c = &g_gameState->gameData->characters[1];
+    Character *c = &g_gameState->gameData->characters[CHR_VIVI];
     AbilityEntry *ab = g_abilityRows[1];
     s32 i;
     s32 j;

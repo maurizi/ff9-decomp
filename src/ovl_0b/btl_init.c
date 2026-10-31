@@ -155,7 +155,7 @@ void btl_initPartyUnit(Character *c, BtlUnit *u, u16 slot, u16 n) {
         u->status |= BTL_STATUS_LOW_HP;
     }
     btl_addStatuses(u, c->status & 0xFE);
-    if (c->status & 1) {
+    if (c->status & CHR_STATUS_PETRIFY) {
         btl_addStatus(u, BTL_STATUS_PETRIFY);
     }
     btl_applyAutoAbilities(u);

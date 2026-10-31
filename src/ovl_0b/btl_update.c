@@ -385,7 +385,7 @@ void btl_initBattleState(void) {
     if (gd->darkBattle != 0) {
         v = 8;
     }
-    gd->characters[3].info.w = (gd->characters[3].info.w & ~0x1F0) | (v << 4);
+    gd->characters[CHR_STEINER].info.w = (gd->characters[CHR_STEINER].info.w & ~0x1F0) | (v << 4);
     g_gameState->gameData->battleResult = 0;
     btl_initState();
     btlfx_initAll();
