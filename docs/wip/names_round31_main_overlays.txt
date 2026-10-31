@@ -51,3 +51,4 @@
 # FIELDS include/ff9.h Unk80010CE0: unk0=insets
 # FIELDS include/ff9.h Unk80010CD0: unk0=w
 # FIELDS include/ff9.h GameData: sfxSlotBuf0,sfxSlotBuf1 -> sfxSlotBuf[2] (ovl_0a GameDataSfx.unk828 view removed)
+# MACRO ff9.h CHR_INFO_* (CharBits.w masks: event.c, ovl_0b btl_init/btl_update), EVT_ANIM_FOREVER

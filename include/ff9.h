@@ -109,6 +109,15 @@ typedef union {
         u32 unk11 : 15;
     } b;
 } CharBits;
+/* CharBits.w masks, for the code that reads the word */
+#define CHR_INFO_ID 0xF
+#define CHR_INFO_KIND_SHIFT 4
+#define CHR_INFO_KIND 0x1F0
+#define CHR_INFO_BATTLE_ROW_BIT 9
+#define CHR_INFO_BATTLE_ROW (1 << CHR_INFO_BATTLE_ROW_BIT)
+#define CHR_INFO_RECRUITED_BIT 11
+#define CHR_INFO_ROW_SHIFT 12
+#define CHR_INFO_ROW 0x1F000
 
 /* Character record: GameData.characters[9]; GameData.party[] points at the party members. Field names checked
  * against the main menu at runtime (docs/runtime-findings.md). */
@@ -1315,7 +1324,7 @@ typedef struct EvtObject {
     u8 animStart; /* op 0x3D */
     u8 animEnd; /* op 0x3D */
     u8 animFlags; /* EVT_ANIM_* */
-    u8 animLoops; /* loop count (ops 0x3F/0x98), 0xFF forever */
+    u8 animLoops; /* loop count (ops 0x3F/0x98), EVT_ANIM_FOREVER */
     u8 animSubFrame; /* 4-bit fraction of the 12.4 frame position */
     u8 pad65[0x68 - 0x65];
     u8 jumpFrame; /* 0 .. jumpFrames */
@@ -1400,7 +1409,8 @@ typedef struct EvtObject {
 #define EVT_ANIM_HOLD 0x08 /* at the end keep the last frame instead of going back to standAnim */
 #define EVT_MODEL_NONE 0xFFFF /* EvtObject.modelId before op 0x2F (evt_initActor) */
 #define EVT_BALLOON_NONE 0xFF /* EvtObject.balloonWindow: no window follows the actor */
-#define EVT_ANIM_LOOP 0x10 /* at the end restart from animStart (animLoops times, 0xFF forever) */
+#define EVT_ANIM_LOOP 0x10 /* at the end restart from animStart (animLoops times, EVT_ANIM_FOREVER) */
+#define EVT_ANIM_FOREVER 0xFF /* EvtObject.animLoops: loop without end */
 #define EVT_ANIM_BOUNCE 0x20 /* at the end reverse direction */
 #define EVT_ANIM_REVERSE 0x40 /* playing backwards */
 #define EVT_ANIM_SCRIPTED 0x80 /* a script animation is playing (EVT_OP_WAIT_ANIM waits for it to end) */
