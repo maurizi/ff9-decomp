@@ -608,10 +608,10 @@ fx_0e3_0 fx_0e3_0_op80 0x2714 0x801e80d4
 fx_0e3_1 fxm_drawOffsetTrail0 0x1f4 0x801ec71c
 fx_0e3_1 fxm_drawOffsetTrail1 0x1e8 0x801ec910
 fx_0e3_1 fxm_drawOffsetTrail2 0x1fc 0x801ecaf8
-fx_0e3_1 func_801ECCF4 0xf8 0x801eccf4
+fx_0e3_1 fxm_drawOffsetBranch 0xf8 0x801eccf4
 fx_0e3_1 fxm_drawOffsetTrail3 0x1f8 0x801ecdec
 fx_0e3_1 fxm_drawTexCylinder 0x724 0x801ecfe4
-fx_0e3_1 func_801ED708 0x84 0x801ed708
+fx_0e3_1 fxm_rollTowardEye 0x84 0x801ed708
 fx_0e3_1 fx_0e3_1_op80 0x3228 0x801ed78c
 fx_0e4 fx_0e4_op80 0x558 0x801e7704
 fx_0e4 fxm_lerpSvec 0x44 0x801e7c5c

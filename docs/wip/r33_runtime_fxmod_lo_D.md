@@ -13,3 +13,6 @@ Placeholders left after the code-only pass, with what to watch in the emulator t
 - fx_0ec `Fx0ecShard.unk1A`: a start delay in fxm_shatterModelUpdate (age waits until it), a triangle index in fxm_splitRelease / fxm_splitUpdate. Left unnamed; the shard struct serves both pools.
 - fx_0ec `Fx0ecVertex.unk6`: cleared per triangle by fxm_splitModelAdd; it is the pad of the first vertex, which fxm_splitRelease uses as "already released". Hypothesis: released flag; confirm with a watch during Doom.
 - fx_0ed `Fx0edWork80.unk20`: gets ribbon point a each frame but nothing reads it in the module. Hypothesis: unused; watch reads of work+0x20 during Roulette.
+- fx_0e3_0 `Fx0e30Work80.unk68/unk70/unk7C`: a rotation, position (fx_0e3_0_origin) and scale (0x1000) set in mode 1 that no state reads; `unk48` only cleared. Hypothesis: a model transform the Bahamut code no longer uses.
+- fx_0e3_0 `Fx0e30BonePair.unk0/unk2`: entries 0-3 are bone pairs, entries 4-7 distances for btlfx_matrixPointAhead, so the members stay unnamed.
+- fx_0e3_1 `Fx0e31Work80.unk48` (a point ahead of a hand bone, the base of the camera target swing) and `unk6C` (never touched by the C). Hypothesis: unk48 = swing base; confirm with a watch during Bahamut's Mega Flare.

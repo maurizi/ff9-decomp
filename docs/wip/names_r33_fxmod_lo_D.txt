@@ -169,3 +169,28 @@ fx_0ed Fx0edWork81 unk0=state0 unk4=endFrame4 unk8=frame8 unkC=unitC unk10=pos10
 fx_0ed Fx0edWork80 unk0=state0 unk4=frame4 unk34=scale34
 fx_0ed Fx0edSummon unk60=summonModel60
 fx_0ed Fx0edSeg unk0=a0 unk8=b8
+
+## fx_0e3_0
+fx_0e3_0 D_801EA7E8 fx_0e3_0_origin  # [code] summon origin, the start of the summon model position and the camera point in several fx_0e3_0_op80 states
+fx_0e3_0 D_801EA7F0 fx_0e3_0_trailBones  # [code] four summon bones (Hi_GetSummonBonePos and Hi_GetSummonBoneMatrix) then four distances ahead of them (btlfx_matrixPointAhead), the btlfx_drawTrail anchors and arc starts
+fx_0e3_0 D_801EA800 fx_0e3_0_ribbonBones  # [code] four summon bone pairs then four distance pairs (btlfx_matrixPointAhead), the a and b edge points of fxm_drawTexRibbonTrail
+fx_0e3_0 D_801EA878 fx_0e3_0_ribbons  # [code] four 15-step ribbon histories (Fx0e30Seg) of fxm_drawTexRibbonTrail
+fx_0e3_0 D_801EAC38 fx_0e3_0_strips  # [code] four strip buffers drawn with btlfx_drawTrail anchored at a fx_0e3_0_trailBones point
+fx_0e3_0 D_801EB0E8 fx_0e3_0_arcs  # [code] 13-point strip buffers (Fx0e30Arc) filled and drawn by fxm_drawOffsetTrail0
+fx_0e3_0 D_801EB388 fx_0e3_0_bolts  # [code] 49-point strip buffers (Fx0e30Bolt) filled and drawn by fxm_drawOffsetTrail1
+fx_0e3_0 D_801EB370 fx_0e3_0_alongJitter  # [code] btlfx_randCentered range added to the position along the strip in fxm_drawOffsetTrail0, set by fx_0e3_0_op80 before each use
+fx_0e3_0 D_801EB374 fx_0e3_0_ampJitter  # [code] btlfx_randCentered range of the sideways offset in fxm_drawOffsetTrail0, set by fx_0e3_0_op80 before each use
+fx_0e3_0 D_801EB378 fx_0e3_0_angleJitter  # [code] btlfx_randCentered range added to the offset angle step in fxm_drawOffsetTrail0, set by fx_0e3_0_op80 before each use
+fx_0e3_0 Fx0e30Work80 unk0=state0 unk4=frame4 unk8=basePos8 unk10=summonPos10 unk1C=summonScale1C unk50=trailReset50 unk90=pos90 unk9C=scale9C
+fx_0e3_0 Fx0e30Puff unk0=pos0 unk8=phase8 unkC=sizeC unkE=speedE
+fx_0e3_0 Fx0e30Seg unk0=a0 unk8=b8
+fx_0e3_0 Fx0e30Summon unk60=summonModel60
+
+## fx_0e3_1
+fx_0e3_1 D_801F09B4 fx_0e3_1_origin  # [code] summon origin, copied into the op80 work centre and model positions and the camera point
+fx_0e3_1 D_801F0A14 fx_0e3_1_arcs  # [code] 13-point strip buffers (Fx0e31Bolt13, also used as 5-point branch buffers) of fxm_drawOffsetTrail0 and fxm_drawOffsetTrail3
+fx_0e3_1 D_801F0D14 fx_0e3_1_bolts  # [code] three 57-point strip buffers (Fx0e31Bolt) of fxm_drawOffsetTrail2, the sources of fxm_drawOffsetBranch
+fx_0e3_1 func_801ECCF4 fxm_drawOffsetBranch  # [code] fxm_drawOffsetTrail1 into dst from a random point of the src strip toward the point after it
+fx_0e3_1 func_801ED708 fxm_rollTowardEye  # [code] sets rot vz from the polar angle of the camera eye around pos (btlfx_toLocalPolar), so the model rolls to face the eye
+fx_0e3_1 Fx0e31Work80 unk0=state0 unk4=frame4 unk8=center8 unk10=summonPos10 unk1C=summonScale1C unk40=camTarget40 unk58=handRot58 unk78=sound78 unk7A=sound7A unk88=pos88 unk94=scale94 unkA4=posA4 unkB0=scaleB0
+fx_0e3_1 Fx0e31Summon unk60=summonModel60
