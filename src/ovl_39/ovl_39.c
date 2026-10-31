@@ -37,11 +37,11 @@ void menuSave_drawHelp(void) {
     u8 *s = text_get(g_menu.cardSlot + SAVE_TEXT_SLOT1);
     s32 w = text_measureWidth((s32)s);
 
-    text_drawBlock(s_menuSaveSlotNameRect.x + ((s_menuSaveSlotNameRect.w - w) >> 1), s_menuSaveSlotNameRect.y + 2, 5, s, (menuSave_isSlotReady(g_menu.cardSlot, 1) == 0) * 2);
+    text_drawBlock(s_menuSaveSlotNameRect.x + ((s_menuSaveSlotNameRect.w - w) >> 1), s_menuSaveSlotNameRect.y + 2, 5, s, (menuSave_isSlotReady(g_menu.cardSlot, 1) == 0) * TEXT_PAL_GREY);
     if (s_menuSave.help != NULL) {
-        text_drawBlock(s_menuSaveHelpRect.x + 0xA, s_menuSaveHelpRect.y + 6, 5, s_menuSave.help, 0);
+        text_drawBlock(s_menuSaveHelpRect.x + 0xA, s_menuSaveHelpRect.y + 6, 5, s_menuSave.help, TEXT_PAL_WHITE);
     }
-    ui_drawLabel(s_menuSaveHelpRect.x + 6, s_menuSaveHelpRect.y - 3, 5, g_labelHelp, 0);
+    ui_drawLabel(s_menuSaveHelpRect.x + 6, s_menuSaveHelpRect.y - 3, 5, g_labelHelp, UI_LABEL_NORMAL);
     win_drawBox(&s_menuSaveSlotNameRect, 5, WIN_STYLE_LINE);
     win_drawBox(&s_menuSaveHelpRect, 5, WIN_STYLE_LINE_RULE);
     win_drawShadow(&s_menuSaveHelpRect, 5, WIN_STYLE_LINE_RULE);
@@ -85,7 +85,7 @@ void menuSave_drawSlotWindow(void) {
         if (s == CARD_RES_DONE || s == CARD_RES_NEW) {
             ok = 1;
         }
-        text_drawBlock(s_menuSaveSlotWindowRect.x + 10, s_menuSaveSlotWindowRect.y + 10 + i * 18, 0x33, str, (ok ^ 1) * 2);
+        text_drawBlock(s_menuSaveSlotWindowRect.x + 10, s_menuSaveSlotWindowRect.y + 10 + i * 18, 0x33, str, (ok ^ 1) * TEXT_PAL_GREY);
     }
 }
 
@@ -97,7 +97,7 @@ void menuSave_drawFileList(void) {
     MenuList *l = &s_menuSave.list;
 
     menuSave_drawScrollArrows();
-    ui_drawLabel(0xE, 0x23, 0x2C, g_labelFile, 0);
+    ui_drawLabel(0xE, 0x23, 0x2C, g_labelFile, UI_LABEL_NORMAL);
     ui_drawRule(8, 0x26, 0x2C, 1, 0x12C, (g_gameState->config >> CFG_BIT_WINDOW_COLOR) & 1);
     r.x = SAVE_LIST_X;
     r.y = 0;
@@ -131,7 +131,7 @@ void menuSave_drawFile(RECT *r, s32 otz, s32 file) {
     strcpy(name, "File00");
     name[4] = (file + 1) / 10 + '0';
     name[5] = (file + 1) % 10 + '0';
-    ui_drawSmallDigits(r->x + 6, r->y + 3, otz, (u8 *)name, 0);
+    ui_drawSmallDigits(r->x + 6, r->y + 3, otz, (u8 *)name, TEXT_PAL_WHITE);
     fn = s_menuSaveFileDrawers[s_menuSave.files[file].state];
     if (fn != NULL) {
         fn(r, otz, file);
@@ -160,29 +160,29 @@ void menuSave_drawFileInfo(RECT *r, s32 z, s32 i) {
         }
     }
     buf[n] = 0;
-    ui_drawSmallDigits(r->x + 0x30, r->y + 3, z, "/DISC", 0);
-    ui_drawSmallDigits(r->x + 0x56, r->y + 3, z, buf, 0);
+    ui_drawSmallDigits(r->x + 0x30, r->y + 3, z, "/DISC", TEXT_PAL_WHITE);
+    ui_drawSmallDigits(r->x + 0x56, r->y + 3, z, buf, TEXT_PAL_WHITE);
     for (j = 0; j < 4; j++) {
         if (s->party[j].portrait != PORTRAIT_NONE) {
             ui_drawPortraitId(r->x + 6 + j * 0x21, r->y + 0xD, z, s->party[j].portrait, 0x2C, 0);
         }
     }
     text_formatNumber(s->level, buf, 2, TEXT_NUM_ASCII);
-    text_drawBlock(r->x + 0x90, r->y + 6, z, s->name.v, 0);
+    text_drawBlock(r->x + 0x90, r->y + 6, z, s->name.v, TEXT_PAL_WHITE);
     ui_drawSprite(r->x + 0x90, r->y + 0x17, z, 0xB4, 0);
-    ui_drawDigits(r->x + 0xA2, r->y + 0x15, z, buf, 0);
+    ui_drawDigits(r->x + 0xA2, r->y + 0x15, z, buf, DIGITS_WHITE);
     ui_drawSprite(r->x + 0xD8, r->y + 9, z, 0xB1, 0);
     ui_drawSprite(r->x + 0xD8, r->y + 0x16, z, 0xB2, 0);
     ui_drawSmallDigits(r->x + 0xE4, r->y + 0xA, z, buf, text_formatTime(s->playTime, buf, 0));
     text_formatNumber(s->gil, buf, 7, TEXT_NUM_ASCII);
     buf[7] = 0xA4;
     buf[8] = 0;
-    ui_drawSmallDigits(r->x + 0xE4, r->y + 0x17, z, buf, 0);
+    ui_drawSmallDigits(r->x + 0xE4, r->y + 0x17, z, buf, TEXT_PAL_WHITE);
     rr.x = r->x + 0x8E;
     rr.y = r->y + 0x25;
     rr.w = 0x9C;
     rr.h = 0x15;
-    text_drawBlock(rr.x + 8, rr.y + 3, z, (u8 *)&s->location, 0);
+    text_drawBlock(rr.x + 8, rr.y + 3, z, (u8 *)&s->location, TEXT_PAL_WHITE);
     win_drawBoxEx(&rr, z, WIN_STYLE_LINE, s->windowColor);
 }
 
@@ -360,7 +360,7 @@ void menuSave_close(void) {
 void menuSave_drawTitle(void) {
     win_drawBox(&s_menuSaveTitleRect, 5, WIN_STYLE_BEVEL);
     win_drawShadow(&s_menuSaveTitleRect, 5, WIN_STYLE_BEVEL);
-    text_drawBlock(s_menuSaveTitleRect.x + 0xA, s_menuSaveTitleRect.y + 6, 4, (u8 *)text_getFrom(g_saveMenuText, s_menuSave.mode), 0);
+    text_drawBlock(s_menuSaveTitleRect.x + 0xA, s_menuSaveTitleRect.y + 6, 4, (u8 *)text_getFrom(g_saveMenuText, s_menuSave.mode), TEXT_PAL_WHITE);
 }
 
 void menuSave_drawState(void) {
@@ -448,15 +448,15 @@ void menuSave_drawScrollArrows(void) {
 }
 
 void menuSave_drawEmptyFile(RECT *r, s32 otz) {
-    text_drawBlock(r->x + 0x10, r->y + 0x16, otz, text_get(SAVE_TEXT_EMPTY_BLOCK), 0);
+    text_drawBlock(r->x + 0x10, r->y + 0x16, otz, text_get(SAVE_TEXT_EMPTY_BLOCK), TEXT_PAL_WHITE);
 }
 
 void menuSave_drawOtherFile(RECT *r, s32 otz) {
-    text_drawBlock(r->x + 0x10, r->y + 0x16, otz, text_get(SAVE_TEXT_OTHER_GAME), 0);
+    text_drawBlock(r->x + 0x10, r->y + 0x16, otz, text_get(SAVE_TEXT_OTHER_GAME), TEXT_PAL_WHITE);
 }
 
 void menuSave_drawCorruptFile(RECT *r, s32 otz) {
-    text_drawBlock(r->x + 0x10, r->y + 0x16, otz, text_get(SAVE_TEXT_DATA_CORRUPTED), 0);
+    text_drawBlock(r->x + 0x10, r->y + 0x16, otz, text_get(SAVE_TEXT_DATA_CORRUPTED), TEXT_PAL_WHITE);
 }
 
 void menuSave_selectSlot(void) {
@@ -656,10 +656,10 @@ void menuSave_drawConfirm(Window *w) {
     if (b < (a & 0xFFF)) {
         b = a & 0xFFF;
     }
-    text_drawBlock(w->x + 8, w->y + 8, w->otz, (u8 *)s_menuSaveConfirm.text, 0);
+    text_drawBlock(w->x + 8, w->y + 8, w->otz, (u8 *)s_menuSaveConfirm.text, TEXT_PAL_WHITE);
     m = b;
-    text_drawBlock(w->x + ((s32)(w->w - m) >> 1), (w->y - d1) + w->h, w->otz, text_get(SAVE_TEXT_YES), 0);
-    text_drawBlock(w->x + ((s32)(w->w - m) >> 1), (w->y - d2) + w->h, w->otz, text_get(SAVE_TEXT_NO), 0);
+    text_drawBlock(w->x + ((s32)(w->w - m) >> 1), (w->y - d1) + w->h, w->otz, text_get(SAVE_TEXT_YES), TEXT_PAL_WHITE);
+    text_drawBlock(w->x + ((s32)(w->w - m) >> 1), (w->y - d2) + w->h, w->otz, text_get(SAVE_TEXT_NO), TEXT_PAL_WHITE);
 }
 
 void menuSave_drawConfirmCursor(Window *w) {
@@ -1039,7 +1039,7 @@ void menuSave_retryCheck(s32 result) {
 
 void menuSave_drawCheck(Window *w) {
     menuSave_drawBook(w->x + 0xE, w->y + 0x12, w->otz);
-    text_drawBlock(w->x + 0x4A, w->y + 0xE, w->otz, text_get(SAVE_TEXT_DO_NOT_REMOVE), 0);
+    text_drawBlock(w->x + 0x4A, w->y + 0xE, w->otz, text_get(SAVE_TEXT_DO_NOT_REMOVE), TEXT_PAL_WHITE);
 }
 
 void menuSave_onCheckOpened(Window *w) {
@@ -1207,7 +1207,7 @@ void menuSave_onSavedMsgClosed(Window *w) {
 void menuSave_drawSavedMsg(Window *w) {
     u8 *s = text_get(SAVE_TEXT_DATA_SAVED);
 
-    text_drawBlock(w->x + ((w->w - text_measureWidth((s32)s)) >> 1), w->y + 8, w->otz, s, 0);
+    text_drawBlock(w->x + ((w->w - text_measureWidth((s32)s)) >> 1), w->y + 8, w->otz, s, TEXT_PAL_WHITE);
 }
 
 void menuSave_openMessage(s32 id, s32 title) {
@@ -1274,7 +1274,7 @@ u8 menuSave_isMessageActive(void) {
 }
 
 void menuSave_drawMessage(Window *w) {
-    text_drawBlock(w->x + 8, w->y + 8, w->otz, s_menuSaveMessage.text, 0);
+    text_drawBlock(w->x + 8, w->y + 8, w->otz, s_menuSaveMessage.text, TEXT_PAL_WHITE);
 }
 
 void menuSave_onMessageOpened(Window *w) {
@@ -1461,13 +1461,13 @@ void menuSave_drawAccess(Window *w) {
             n = 5;
         }
         menuSave_drawBook(r->x + 0xE, r->y + 0x12, w->otz);
-        text_drawBlock(r->x + 0x4A, r->y + 0xE, w->otz, text_get(SAVE_TEXT_DO_NOT_REMOVE), 0);
+        text_drawBlock(r->x + 0x4A, r->y + 0xE, w->otz, text_get(SAVE_TEXT_DO_NOT_REMOVE), TEXT_PAL_WHITE);
         menuSave_drawGauge(r->x + 0x1A, r->y + 0x44, w->otz, st * ACCESS_GAUGE_STEP + n, ACCESS_GAUGE_W);
         s_menuSaveAccess.lastProgress = st;
         return;
     }
-    text_drawBlock(r->x + 0x26, r->y + 0xC, w->otz, text_get(SAVE_TEXT_FORMATTING_CARD), 0);
-    text_drawBlock(r->x + 0x32, r->y + 0x20, w->otz, text_get(SAVE_TEXT_DO_NOT_REMOVE), 0);
+    text_drawBlock(r->x + 0x26, r->y + 0xC, w->otz, text_get(SAVE_TEXT_FORMATTING_CARD), TEXT_PAL_WHITE);
+    text_drawBlock(r->x + 0x32, r->y + 0x20, w->otz, text_get(SAVE_TEXT_DO_NOT_REMOVE), TEXT_PAL_WHITE);
 }
 
 u8 menuSave_writeFile(void) {

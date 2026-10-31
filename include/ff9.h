@@ -555,7 +555,26 @@ typedef struct {
 } DrTpageWords;
 
 extern u16 g_textPalettes[];
+/* g_textPalettes indexes: the palette argument of text_drawBlock / text_buildBlock / text_draw / text_drawChar /
+ * text_buildGlyph / text_buildSmall / ui_drawSmallDigits, g_textColor and the TEXT_COLOR + n text codes
+ * (colours from the runtime pass: fill, outline) */
+#define TEXT_PAL_WHITE    0 /* white, dark outline: the default */
+#define TEXT_PAL_PLAIN    1 /* white without the dark outline (text_buildGlyph draws it semi-transparent) */
+#define TEXT_PAL_GREY     2 /* grey: not available / not selectable */
+#define TEXT_PAL_RED      3
+#define TEXT_PAL_YELLOW   4
+#define TEXT_PAL_CYAN     5
+#define TEXT_PAL_PURPLE   6
+#define TEXT_PAL_GREEN    7
+#define TEXT_PAL_HELP     8 /* pale steel blue: help text (help_draw, item descriptions) */
+#define TEXT_PAL_HELP_RED 9 /* orange-red with a lavender outline: the help window's red */
 extern u32 g_numberClutRows[]; /* per-style clut row offset for text_buildDigits */
+/* ui_drawDigits / text_buildDigits style (g_numberClutRows: 0,0,0,0x40,0x80,0,0,0xC0; 1, 5 and 6 are white too) */
+#define DIGITS_WHITE  0
+#define DIGITS_DIM    2 /* white, drawn dim and semi-transparent */
+#define DIGITS_RED    3 /* KO (hp 0) */
+#define DIGITS_YELLOW 4 /* low HP / MP */
+#define DIGITS_GREEN  7
 
 /* sprite descriptor: uv/clut word, size, tpage (g_uiSprites) */
 typedef struct {
@@ -914,7 +933,7 @@ typedef struct {
     u16 slideLen; /* pitch-slide length set by op A4 */
     u16 prevKey; /* key of the previous note (portamento start) */
     u16 portamentoLen; /* op DA (0 = off, op DB) */
-    s16 legato; /* 1 legato on (op CC), 2 this note is tied, 4 (op D0, sound effects) */
+    s16 legato; /* AKAO_LEGATO_* */
     u16 vibratoDelay; /* frames before the vibrato starts (op B4) */
     u16 vibratoDelayLeft;
     s16 vibratoPeriodSlideLen;
@@ -963,6 +982,10 @@ typedef struct {
     s16 voiceVolL; /* volume left */
     s16 voiceVolR; /* volume right */
 } AkaoChannel; /* 0x134 */
+/* AkaoChannel.legato (runtime: op D0 only runs on SE channels) */
+#define AKAO_LEGATO      1 /* legato on (ops CC, DA); copied to AKAO_LEGATO_TIED after each note */
+#define AKAO_LEGATO_TIED 2 /* the previous note is tied into this one: no vibrato/tremolo restart */
+#define AKAO_LEGATO_SE   4 /* op D0 on a sound-effect channel; like AKAO_LEGATO it suppresses the gate cut */
 /* AkaoChannel.voiceDirty / AkaoVoiceRegs.dirty: which SPU voice registers akao_flushVoice writes. The bits are
  * libspu's SpuVoiceAttr mask bits (SPU_VOICE_VOLL ... SPU_VOICE_LSAX); the AKAO ADSR ops set the ones they change. */
 /* AkaoChannel.flags */
@@ -1463,10 +1486,12 @@ extern s16 g_akaoSavedSeqMusicId;
 extern s32 D_8007F8DC;
 typedef struct {
     s32 bankUpload; /* 1 while a sound bank upload runs (akao_beginBankUpload / akao_uploadBank) */
-    s32 mode; /* output mode 1/2 (akao_cmdSetOutputMode1/2), | AKAO_MODE_CROSSFADE */
+    s32 mode; /* AKAO_MODE_STEREO / AKAO_MODE_MONO (akao_cmdSetOutputMode1/2), | AKAO_MODE_CROSSFADE */
     s32 dirty; /* AKAO_DIRTY_*: SPU state akao_updateVoices still has to write */
 } AkaoFlags;
 extern AkaoFlags g_akaoFlags;
+#define AKAO_MODE_STEREO 1 /* AkaoFlags.mode output mode (Config Sound row, runtime): akao_cmdSetOutputMode1, the reset value */
+#define AKAO_MODE_MONO 2 /* akao_cmdSetOutputMode2 */
 #define AKAO_MODE_CROSSFADE 0x100 /* AkaoFlags.mode: akao_cmdCrossfadeMusic started one, akao_tickCrossfade runs until the sub sequence ends */
 #define AKAO_DIRTY_NOISE_CLOCK 0x10 /* AkaoFlags.dirty: SpuSetNoiseClock */
 #define AKAO_DIRTY_REVERB_DEPTH 0x80 /* SpuSetReverbModeDepth */
@@ -2269,6 +2294,11 @@ typedef struct {
 #define UI_SPRITE_UNDERSCORE 0xDF
 #define UI_SPRITE_AP_GAUGE 3 /* gauge frame ui_buildApGauge sizes the bar by */
 #define UI_SPRITE_SMALL_DIGITS 0x22 /* '0'-'9', then '%' (10) and '/' (11) (ui_buildDigits) */
+/* ui_drawLabel / ui_buildLabel mode */
+#define UI_LABEL_NORMAL 0 /* full brightness */
+#define UI_LABEL_MASK   1 /* glyphs black and semi-transparent, CLUT 0x40 rows down: only the gradient behind shows
+                           * through the letters (btlui_drawTranceLabel's TRANCE title) */
+#define UI_LABEL_DIM    2 /* half brightness (any other value): win_drawTitle of an inactive window */
 void ui_drawLabel(s32, s32, s32, s32, s32);
 void ui_drawSmallDigits(s32, s32, s32, u8 *, s32);
 void text_drawBlock(s32, s32, s32, u8 *, s32);
@@ -3409,6 +3439,8 @@ void akao_channelsToVoiceMask(AkaoChannel *, u32 *, u32, u32);
 #define CFG_BIT_MOVEMENT      6  /* 1 = run */
 #define CFG_BIT_VIBRATION     7  /* 1 = off */
 #define CFG_SHIFT_BTL_SPEED   8  /* 3 bits, 0..CFG_BTL_SPEED_MAX */
+#define CFG_SHIFT_BTL_MSG_SPEED 11 /* 3 bits: battle message speed (g_btlBannerDurations index). Set only by config_reset (3);
+                                   * the NTSC-U Config screen has no row for it (runtime) */
 #define CFG_SHIFT_MSG_SPEED   14 /* 3 bits, 0..CFG_MSG_SPEED_MAX */
 #define CFG_BIT_HERE_ICON     17 /* 1 = off */
 #define CFG_BIT_WINDOW_COLOR  18 /* 1 = classic */
@@ -3429,7 +3461,7 @@ typedef struct {
     u32 movementRun : 1;
     u32 vibration : 1;
     u32 battleSpeed : 3;
-    u32 battleMsgSpeed : 3; /* bits 11-13: ovl_0b's battle message speed */
+    u32 battleMsgSpeed : 3; /* bits 11-13 (CFG_SHIFT_BTL_MSG_SPEED): ovl_0b's battle message speed, no Config row */
     u32 messageSpeed : 3;
     u32 unk0_17 : 15; /* CFG_BIT_HERE_ICON, CFG_BIT_WINDOW_COLOR, CFG_BIT_TARGET_WINDOW, CFG_SHIFT_CHAR_PORT.. */
     u32 buttonMap; /* 8 x 4 bits: game button i -> pad button (GameState.padMap) */

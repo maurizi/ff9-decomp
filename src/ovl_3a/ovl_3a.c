@@ -172,10 +172,10 @@ void menuName_drawCommands(void) {
     win_drawShadow(s_menuNameCommandWin, 5, WIN_STYLE_BEVEL);
     for (i = 0; i < 2; i++) {
         text_drawBlock(s_menuNameCommandWin->x + 0xA, s_menuNameCommandWin->y + 9 + i * 0x10, 4, text_get(i + NAME_TEXT_ALPHABET),
-                      s_menuName.charSet == i ? 4 : 0);
+                      s_menuName.charSet == i ? TEXT_PAL_YELLOW : TEXT_PAL_WHITE);
     }
     for (i = 0; i < 3; i++) {
-        text_drawBlock(s_menuNameCommandWin->x + 0xA, s_menuNameCommandWin->y + 0x31 + i * 0x10, 4, text_get(i + NAME_TEXT_DELETE), 0);
+        text_drawBlock(s_menuNameCommandWin->x + 0xA, s_menuNameCommandWin->y + 0x31 + i * 0x10, 4, text_get(i + NAME_TEXT_DELETE), TEXT_PAL_WHITE);
     }
 }
 
@@ -192,7 +192,7 @@ void menuName_drawNameWindow(void) {
     if (s_menuName.len < 6) {
         cursor = s_menuName.len;
     }
-    ui_drawLabel(s_menuNameNameWin->x + 0x23, s_menuNameNameWin->y - 4, 5, g_labelName, 0);
+    ui_drawLabel(s_menuNameNameWin->x + 0x23, s_menuNameNameWin->y - 4, 5, g_labelName, UI_LABEL_NORMAL);
     ui_drawEtchedLine(s_menuNameNameWin->x + 4, s_menuNameNameWin->y + 0x1A, 6, s_menuNameNameWin->w - 8);
     win_drawBox(s_menuNameNameWin, 6, WIN_STYLE_LINE_RULE);
     win_drawShadow(s_menuNameNameWin, 6, WIN_STYLE_LINE_RULE);
@@ -216,12 +216,12 @@ void menuName_drawNameWindow(void) {
         }
     }
     for (i = 0; i < s_menuName.len; i++) {
-        text_drawChar(s_menuNameNameWin->x + 0x3F + i * 16, s_menuNameNameWin->y + 7, 5, s_menuName.name[i], 0);
+        text_drawChar(s_menuNameNameWin->x + 0x3F + i * 16, s_menuNameNameWin->y + 7, 5, s_menuName.name[i], TEXT_PAL_WHITE);
     }
     for (i = 0; i < (u8)(s_menuName.gridSize[s_menuName.charSet] / NAME_GRID_COLS); i++) {
         for (j = 0; j < NAME_GRID_COLS; j++) {
             text_drawChar(s_menuNameNameWin->x + 0x3E + j * 14, s_menuNameNameWin->y + 0x22 + i * 21, 5,
-                          s_menuName.charSets[s_menuName.charSet][k], 0);
+                          s_menuName.charSets[s_menuName.charSet][k], TEXT_PAL_WHITE);
             k++;
         }
     }
@@ -303,14 +303,14 @@ void menuName_inputCommands(void) {
 void menuName_drawTitle(void) {
     win_drawBox(s_menuNameTitleWin, 6, WIN_STYLE_BEVEL);
     win_drawShadow(s_menuNameTitleWin, 6, WIN_STYLE_BEVEL);
-    text_drawBlock(s_menuNameTitleWin->x + 0xA, s_menuNameTitleWin->y + 6, 5, text_get(NAME_TEXT_TITLE), 0);
+    text_drawBlock(s_menuNameTitleWin->x + 0xA, s_menuNameTitleWin->y + 6, 5, text_get(NAME_TEXT_TITLE), TEXT_PAL_WHITE);
 }
 
 void menuName_drawHelp(void) {
     win_drawBox(s_menuNameHelpWin, 7, WIN_STYLE_LINE_RULE);
     win_drawShadow(s_menuNameHelpWin, 7, WIN_STYLE_LINE_RULE);
-    text_drawBlock(s_menuNameHelpWin->x + 0x3E, s_menuNameHelpWin->y + 6, 6, text_get(NAME_TEXT_PROMPT), 0);
-    ui_drawLabel(s_menuNameHelpWin->x + 0x23, s_menuNameHelpWin->y - 4, 6, g_labelHelp, 0);
+    text_drawBlock(s_menuNameHelpWin->x + 0x3E, s_menuNameHelpWin->y + 6, 6, text_get(NAME_TEXT_PROMPT), TEXT_PAL_WHITE);
+    ui_drawLabel(s_menuNameHelpWin->x + 0x23, s_menuNameHelpWin->y - 4, 6, g_labelHelp, UI_LABEL_NORMAL);
 }
 
 void menuName_loadPortrait(s32 chr) {

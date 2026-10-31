@@ -62,7 +62,7 @@ void btl_initBanner(void) {
     g_btlBanner.active = 0;
     g_btlBanner.timer = 0;
     g_btlBanner.text = 0xFF;
-    v = g_btlBannerDurations[(g_gameState->config >> 11) & 7];
+    v = g_btlBannerDurations[(g_gameState->config >> CFG_SHIFT_BTL_MSG_SPEED) & 7];
     r = &g_btlBanner.rect;
     r->x = 0x60;
     r->y = 8;
@@ -145,7 +145,7 @@ u8 *btl_buildBanner(u8 *arg0) {
             r = t;
         }
         arg0 = btl_buildBannerFrame(text_buildBlock(r->x + ((r->w - g_btlBanner.size.w) >> 1), r->y + 3,
-                                           g_btlBanner.ot, &g_btlBanner.text, 0, arg0),
+                                           g_btlBanner.ot, &g_btlBanner.text, TEXT_PAL_WHITE, arg0),
                              r);
     }
     return arg0;

@@ -78,7 +78,7 @@ void menuParty_drawParty(void) {
     s32 t;
     u8 *s;
 
-    ui_drawLabel(s_menuPartyListRect.x + 8, s_menuPartyListRect.y - 3, 7, g_labelParty, 0);
+    ui_drawLabel(s_menuPartyListRect.x + 8, s_menuPartyListRect.y - 3, 7, g_labelParty, UI_LABEL_NORMAL);
     for (i = 0; i < 3; i++) {
         ui_drawEtchedLine(s_menuPartyListRect.x + 4, s_menuPartyListRect.y + 0x35 + i * 0x33, 7, s_menuPartyListRect.w - 9);
     }
@@ -93,7 +93,7 @@ void menuParty_drawParty(void) {
             }
             s = text_get(t);
             text_drawBlock(s_menuPartyListRect.x + ((0x8D - text_measureWidth((s32)s)) >> 1), s_menuPartyListRect.y + 0x15 + i * 0x33, 6, s,
-                          i >= s_menuParty.size ? 2 : 0);
+                          i >= s_menuParty.size ? TEXT_PAL_GREY : TEXT_PAL_WHITE);
         }
     }
     win_drawBox(&s_menuPartyListRect, 7, WIN_STYLE_BEVEL);
@@ -106,7 +106,7 @@ void menuParty_drawInfo(void) {
     s32 dx;
     s32 dy;
 
-    ui_drawLabel(s_menuPartyInfoRect.x + 0xC, s_menuPartyInfoRect.y - 3, 7, g_labelInfo, 0);
+    ui_drawLabel(s_menuPartyInfoRect.x + 0xC, s_menuPartyInfoRect.y - 3, 7, g_labelInfo, UI_LABEL_NORMAL);
     ui_drawEtchedLine(s_menuPartyInfoRect.x + 4, s_menuPartyInfoRect.y + 0x35, 8, s_menuPartyInfoRect.w - 8);
     win_drawBox(&s_menuPartyInfoRect, 8, WIN_STYLE_LINE_RULE);
     win_drawShadow(&s_menuPartyInfoRect, 9, WIN_STYLE_LINE_RULE);
@@ -222,14 +222,14 @@ void menuParty_draw(void) {
 void menuParty_drawTitle(void) {
     win_drawBox(&s_menuPartyTitleRect, 8, WIN_STYLE_BEVEL);
     win_drawShadow(&s_menuPartyTitleRect, 8, WIN_STYLE_BEVEL);
-    text_drawBlock(s_menuPartyTitleRect.x + 9, s_menuPartyTitleRect.y + 6, 6, text_get(PARTY_TEXT_TITLE), 0);
+    text_drawBlock(s_menuPartyTitleRect.x + 9, s_menuPartyTitleRect.y + 6, 6, text_get(PARTY_TEXT_TITLE), TEXT_PAL_WHITE);
 }
 
 void menuParty_drawHelp(void) {
-    ui_drawLabel(s_menuPartyHelpRect.x + 0xC, s_menuPartyHelpRect.y - 3, 8, g_labelHelp, 0);
+    ui_drawLabel(s_menuPartyHelpRect.x + 0xC, s_menuPartyHelpRect.y - 3, 8, g_labelHelp, UI_LABEL_NORMAL);
     win_drawBox(&s_menuPartyHelpRect, 8, WIN_STYLE_LINE_RULE);
     win_drawShadow(&s_menuPartyHelpRect, 9, WIN_STYLE_LINE_RULE);
-    text_drawBlock(s_menuPartyHelpRect.x + 0x12, s_menuPartyHelpRect.y + 6, 6, text_get(s_menuParty.size), 0);
+    text_drawBlock(s_menuPartyHelpRect.x + 0x12, s_menuPartyHelpRect.y + 6, 6, text_get(s_menuParty.size), TEXT_PAL_WHITE);
 }
 
 void menuParty_confirm(void) {

@@ -578,7 +578,7 @@ void win_drawTitle(Window *w) {
     if (w->state != WIN_STATE_OPEN) {
         win_setClip(NULL, w->otz, WIN_STYLE_FRAMELESS);
     }
-    ui_drawLabel(w->x + w->titleX, w->cur.y + w->titleY, w->otz, w->title, w->active ? 0 : 2);
+    ui_drawLabel(w->x + w->titleX, w->cur.y + w->titleY, w->otz, w->title, w->active ? UI_LABEL_NORMAL : UI_LABEL_DIM);
     if (w->state != WIN_STATE_OPEN) {
         RECT *s = &w->cur;
         r.x = s->x;

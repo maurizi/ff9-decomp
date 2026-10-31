@@ -67,7 +67,7 @@ void btl_updatePause(void) {
             g_btlPauseStpOff.code[1] = 0;
             addPrim(g_btlPauseOt, &g_btlPauseStpOff);
             if (g_gameState->gameData->ctx.battle->flags & BTL_FLAG_DISC_COVER_OPEN) {
-                text_buildSmall(0x66, 0x6D, g_btlPauseOt, "Disc Cover Open", 4, (u8 *)g_gameState->gameData->ctx.battle->work->prims[g_gameState->gameData->drawBuf]);
+                text_buildSmall(0x66, 0x6D, g_btlPauseOt, "Disc Cover Open", TEXT_PAL_YELLOW, (u8 *)g_gameState->gameData->ctx.battle->work->prims[g_gameState->gameData->drawBuf]);
             } else {
                 ui_buildSprite((0x140 - g_uiSprites[0xEB].w) / 2, (0xDA - g_uiSprites[0xEB].h) / 2, g_btlPauseOt, 0xEB, 0, &w, g_btlPauseSprite);
             }

@@ -99,7 +99,7 @@ void akao_initState(void) {
     g_akaoLoadedBanks[0] = 0;
     D_8007F8E0 = 1;
     g_akaoFlags.bankUpload = 0;
-    g_akaoFlags.mode = 1;
+    g_akaoFlags.mode = AKAO_MODE_STEREO;
     g_akaoSeState.activeMask = 0;
     g_akaoMainSeq.activeMask = 0;
     g_akaoMainSeq.priorityMask = 0;

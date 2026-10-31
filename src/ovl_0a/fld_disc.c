@@ -155,10 +155,10 @@ void fld_discPromptDraw(void) {
     s32 y;
     HelpState *m;
 
-    ui_drawLabel(g_fieldDiscChangeRect.x + 8, g_fieldDiscChangeRect.y - 3, 0xA, g_fieldDiscChangeLabel, 0);
-    text_drawBlock(g_fieldDiscChangeRect.x + 0xE, g_fieldDiscChangeRect.y + 0xA, 0xA, text_get(0), 0);
-    text_drawBlock(g_fieldDiscChangeRect.x + 0x30, g_fieldDiscChangeRect.y + 0x2E, 0xA, text_get(1), 0);
-    text_drawBlock(g_fieldDiscChangeRect.x + 0x30, g_fieldDiscChangeRect.y + 0x3D, 0xA, text_get(2), 0);
+    ui_drawLabel(g_fieldDiscChangeRect.x + 8, g_fieldDiscChangeRect.y - 3, 0xA, g_fieldDiscChangeLabel, UI_LABEL_NORMAL);
+    text_drawBlock(g_fieldDiscChangeRect.x + 0xE, g_fieldDiscChangeRect.y + 0xA, 0xA, text_get(0), TEXT_PAL_WHITE);
+    text_drawBlock(g_fieldDiscChangeRect.x + 0x30, g_fieldDiscChangeRect.y + 0x2E, 0xA, text_get(1), TEXT_PAL_WHITE);
+    text_drawBlock(g_fieldDiscChangeRect.x + 0x30, g_fieldDiscChangeRect.y + 0x3D, 0xA, text_get(2), TEXT_PAL_WHITE);
     if (!fade_isBusy()) {
         m = &g_menuHelp;
         m->x = g_fieldDiscChangeRect.x + 0x16;

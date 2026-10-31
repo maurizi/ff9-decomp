@@ -712,7 +712,7 @@ void *tm_taskPlayerSelect(u32 *ot, void *p, TmState *s) {
             g_menuHelp.x = x + 2;
             g_menuHelp.y = y + 1;
             g_menuHelp.text = text_get(TM_HELP_SELECT);
-            text_drawBlock(0x12, 9, 0xFFA, text_get(TM_TEXT_ICON_R1), 0);
+            text_drawBlock(0x12, 9, 0xFFA, text_get(TM_TEXT_ICON_R1), TEXT_PAL_WHITE);
             setlen(sp, 4);
             sp->code = GPU_SPRT;
             sp->x0 = 0x1F;
@@ -762,7 +762,7 @@ void *tm_taskPlayerSelect(u32 *ot, void *p, TmState *s) {
                 r.h = 0x19;
                 k = s->nameSlide * 0xC - 0x78;
                 r.x -= k;
-                text_drawBlock(r.x + 8, r.y + 6, 5, (u8 *)card_getName(c->id), 0);
+                text_drawBlock(r.x + 8, r.y + 6, 5, (u8 *)card_getName(c->id), TEXT_PAL_WHITE);
                 win_drawBox(&r, 5, WIN_STYLE_BEVEL);
             }
             if (pad & BTN_CROSS) {
@@ -903,7 +903,7 @@ void tm_taskExtension(TmState *arg0) {
 }
 
 void tm_drawDrawWin(Window *arg0) {
-    text_drawBlock(arg0->x + 9, arg0->y + 7, arg0->otz, text_get(TM_TEXT_DRAW), 0);
+    text_drawBlock(arg0->x + 9, arg0->y + 7, arg0->otz, text_get(TM_TEXT_DRAW), TEXT_PAL_WHITE);
 }
 
 void tm_autoPlace(TmState *arg0) {
@@ -1216,11 +1216,11 @@ void tm_taskChoice2(TmState *s) {
 }
 
 void tm_drawConfirmWin(Window *arg0) {
-    text_drawBlock(arg0->x + 9, arg0->y + 7, arg0->otz, text_get(TM_TEXT_CONFIRM), 0);
+    text_drawBlock(arg0->x + 9, arg0->y + 7, arg0->otz, text_get(TM_TEXT_CONFIRM), TEXT_PAL_WHITE);
 }
 
 void tm_drawLess5Win(Window *arg0) {
-    text_drawBlock(arg0->x + 9, arg0->y + 7, arg0->otz, text_get(TM_TEXT_LESS_5), 0);
+    text_drawBlock(arg0->x + 9, arg0->y + 7, arg0->otz, text_get(TM_TEXT_LESS_5), TEXT_PAL_WHITE);
 }
 
 void tm_taskStageSelect(TmState *s) {
@@ -1331,7 +1331,7 @@ void tm_taskCardAway2(TmState *s) {
 }
 
 void tm_drawDiscardWin(Window *arg0) {
-    text_drawBlock(arg0->x + 0xA, arg0->y + 6, arg0->otz, text_get(TM_TEXT_DISCARD_ASK), 0);
+    text_drawBlock(arg0->x + 0xA, arg0->y + 6, arg0->otz, text_get(TM_TEXT_DISCARD_ASK), TEXT_PAL_WHITE);
 }
 
 void *tm_taskBattleSelect(u32 *ot, void *p, TmState *s) {
@@ -1513,7 +1513,7 @@ void *tm_taskGetSelect(u32 *ot, void *p, TmState *s) {
     r2.x = 0x52;
     r2.y = sel->y - 9;
     r2.h = 0x19;
-    text_drawBlock(0x5A, r2.y + 6, 3, buf, 0);
+    text_drawBlock(0x5A, r2.y + 6, 3, buf, TEXT_PAL_WHITE);
     win_drawBox(&r2, 3, WIN_STYLE_BEVEL);
     return p;
 }
@@ -1581,7 +1581,7 @@ void tm_taskGameQuit(TmState *s) {
 }
 
 void tm_drawQuitWin(Window *arg0) {
-    text_drawBlock(arg0->x + 9, arg0->y + 6, arg0->otz, text_get(TM_TEXT_QUIT_ASK), 0);
+    text_drawBlock(arg0->x + 9, arg0->y + 6, arg0->otz, text_get(TM_TEXT_QUIT_ASK), TEXT_PAL_WHITE);
 }
 
 void *tm_drawBattleSelect(u32 *ot, void *p, TmState *s) {
@@ -2511,11 +2511,11 @@ void tm_nextTrade(TmState *s) {
 }
 
 void tm_drawOver100Win(Window *arg0) {
-    text_drawBlock(arg0->x + 9, arg0->y + 7, arg0->otz, text_get(TM_TEXT_OVER_100), 0);
+    text_drawBlock(arg0->x + 9, arg0->y + 7, arg0->otz, text_get(TM_TEXT_OVER_100), TEXT_PAL_WHITE);
 }
 
 void tm_drawDiscardTitle(Window *arg0) {
-    text_drawBlock(0x82, 0x10, arg0->otz, text_get(TM_TEXT_DISCARD), 0);
+    text_drawBlock(0x82, 0x10, arg0->otz, text_get(TM_TEXT_DISCARD), TEXT_PAL_WHITE);
 }
 
 void *tm_taskCardChange(u32 *ot, void *p, TmState *s) {
@@ -2636,7 +2636,7 @@ void tm_drawTradeWin(Window *w) {
     }
     text_append(buf, (u8 *)card_getName(g_tmTradeCardId));
     text_append(buf, text_get(TM_TEXT_TRADE_END));
-    text_drawBlock(0x9F - text_measureWidth((s32)buf) / 2, v->y + 6, w->otz, buf, 0);
+    text_drawBlock(0x9F - text_measureWidth((s32)buf) / 2, v->y + 6, w->otz, buf, TEXT_PAL_WHITE);
 }
 
 void tm_endTrade(TmState *arg0) {
@@ -2996,8 +2996,8 @@ void tm_showStockCard(TmState *s) {
             text_formatNumber((s32)c0 + 1, buf, TEXT_NUM_NO_PAD, 3);
             i = text_measureDigits(buf) + 0xE;
             w = i / 2;
-            ui_drawSmallDigits(0xD8 - w, 0x78, 0xFFA, g_tmNoLabel, 0);
-            ui_drawDigits(0xE6 - w, 0x76, 0xFFA, buf, 0);
+            ui_drawSmallDigits(0xD8 - w, 0x78, 0xFFA, g_tmNoLabel, TEXT_PAL_WHITE);
+            ui_drawDigits(0xE6 - w, 0x76, 0xFFA, buf, DIGITS_WHITE);
             m = n;
             k = s->copyIdx;
             c0 = &s->cards[TM_HAND_SIZE];
@@ -3045,7 +3045,7 @@ void tm_showStockCard(TmState *s) {
                 }
             }
             i = card_getNameWidth(tm_getStockCursorId(s));
-            text_drawBlock(0xD9 - i / 2, 0xC7, 0xFFA, (u8 *)card_getName(tm_getStockCursorId(s)), 0);
+            text_drawBlock(0xD9 - i / 2, 0xC7, 0xFFA, (u8 *)card_getName(tm_getStockCursorId(s)), TEXT_PAL_WHITE);
         }
     } else {
         s->cards[5].visible = 0;
@@ -4408,24 +4408,24 @@ void *tm_drawStock(u32 *ot, SPRT *p, TmState *s) {
     AddPrim(ot + 11, p);
     p = (SPRT *)((DR_TPAGE *)p + 1);
 
-    ui_drawSmallDigits(0x19, 0xCB, 0xFFA, "Stock:", 7);
+    ui_drawSmallDigits(0x19, 0xCB, 0xFFA, "Stock:", TEXT_PAL_GREEN);
     text_formatNumber(g_tmStockCount, buf, 3, 3);
-    ui_drawDigits(0x43, 0xC9, 0xFFA, buf, 0);
-    ui_drawSmallDigits(0x65, 0xCB, 0xFFA, "Type:", 7);
+    ui_drawDigits(0x43, 0xC9, 0xFFA, buf, DIGITS_WHITE);
+    ui_drawSmallDigits(0x65, 0xCB, 0xFFA, "Type:", TEXT_PAL_GREEN);
     text_formatNumber(g_tmStockTypes, buf, 3, 3);
-    ui_drawDigits(0x89, 0xC9, 0xFFA, buf, 0);
+    ui_drawDigits(0x89, 0xC9, 0xFFA, buf, DIGITS_WHITE);
 
     if ((u32)(s->task - TM_TASK_CHOICE) < 2 || s->task == TM_TASK_GAME_QUIT || s->task == TM_TASK_END_FADE) {
 
-        ui_drawSmallDigits(0xBC, 0x42, 0xFFA, "WIN", 7);
+        ui_drawSmallDigits(0xBC, 0x42, 0xFFA, "WIN", TEXT_PAL_GREEN);
         text_formatNumber(card_getWins(), buf, 4, TEXT_NUM_ASCII);
-        ui_drawSmallDigits(0xDC, 0x42, 0xFFA, buf, 0);
-        ui_drawSmallDigits(0xBC, 0x4C, 0xFFA, "LOSE", 7);
+        ui_drawSmallDigits(0xDC, 0x42, 0xFFA, buf, TEXT_PAL_WHITE);
+        ui_drawSmallDigits(0xBC, 0x4C, 0xFFA, "LOSE", TEXT_PAL_GREEN);
         text_formatNumber(card_getLosses(), buf, 4, TEXT_NUM_ASCII);
-        ui_drawSmallDigits(0xDC, 0x4C, 0xFFA, buf, 0);
-        ui_drawSmallDigits(0xBC, 0x56, 0xFFA, "DRAW", 7);
+        ui_drawSmallDigits(0xDC, 0x4C, 0xFFA, buf, TEXT_PAL_WHITE);
+        ui_drawSmallDigits(0xBC, 0x56, 0xFFA, "DRAW", TEXT_PAL_GREEN);
         text_formatNumber(card_getDraws(), buf, 4, TEXT_NUM_ASCII);
-        ui_drawSmallDigits(0xDC, 0x56, 0xFFA, buf, 0);
+        ui_drawSmallDigits(0xDC, 0x56, 0xFFA, buf, TEXT_PAL_WHITE);
 
         setlen(p, 3);
         ((SPRT_8 *)p)->code = GPU_SPRT_8;
@@ -4545,12 +4545,12 @@ void *tm_drawStock(u32 *ot, SPRT *p, TmState *s) {
     }
     if (s->handCount != TM_HAND_SIZE && s->task != TM_TASK_AWAY_INFO && card_countOf(tm_getStockCursorId(s)) >= 2) {
         text_formatNumber(s->copyIdx + 1, buf, 3, TEXT_NUM_ASCII);
-        ui_drawSmallDigits(0xBF, 0xBA, 0xFFA, buf, 0);
-        ui_drawSmallDigits(0xD4, 0xBA, 0xFFA, g_tmSlash, 0);
+        ui_drawSmallDigits(0xBF, 0xBA, 0xFFA, buf, TEXT_PAL_WHITE);
+        ui_drawSmallDigits(0xD4, 0xBA, 0xFFA, g_tmSlash, TEXT_PAL_WHITE);
         text_formatNumber(card_countOf(tm_getStockCursorId(s)), buf, TEXT_NUM_NO_PAD, TEXT_NUM_ASCII);
-        ui_drawSmallDigits(0xDB, 0xBA, 0xFFA, buf, 0);
-        text_drawBlock(0xB5, 0xB6, 0xFFA, text_get(TM_TEXT_ICON_L1), 0);
-        text_drawBlock(0xF1, 0xB6, 0xFFA, text_get(TM_TEXT_ICON_R1), 0);
+        ui_drawSmallDigits(0xDB, 0xBA, 0xFFA, buf, TEXT_PAL_WHITE);
+        text_drawBlock(0xB5, 0xB6, 0xFFA, text_get(TM_TEXT_ICON_L1), TEXT_PAL_WHITE);
+        text_drawBlock(0xF1, 0xB6, 0xFFA, text_get(TM_TEXT_ICON_R1), TEXT_PAL_WHITE);
     }
     if (s->handCount == 0) {
         g_tmStockTypes = card_countKinds();
@@ -4566,7 +4566,7 @@ void tm_openStock(TmState *arg0) {
 }
 
 void tm_drawSelectTitle(Window *arg0) {
-    text_drawBlock(0x8A, 0x10, arg0->otz, text_get(TM_TEXT_SELECT_CARDS), 0);
+    text_drawBlock(0x8A, 0x10, arg0->otz, text_get(TM_TEXT_SELECT_CARDS), TEXT_PAL_WHITE);
 }
 
 void tm_resetStockCursor(TmState *arg0) {
@@ -4880,7 +4880,7 @@ void tm_askRematch(TmState *arg0) {
 }
 
 void tm_drawRematchWin(Window *arg0) {
-    text_drawBlock(arg0->x + 9, arg0->y + 6, arg0->otz, text_get(TM_TEXT_REMATCH), 0);
+    text_drawBlock(arg0->x + 9, arg0->y + 6, arg0->otz, text_get(TM_TEXT_REMATCH), TEXT_PAL_WHITE);
 }
 
 void tm_taskEndFade(TmState *arg0) {

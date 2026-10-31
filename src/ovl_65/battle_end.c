@@ -189,13 +189,13 @@ void battleEnd_preloadScene(void) {
 void rewards_drawInfo(void) {
     RECT *r = &s_rewards.wins[0].rect;
     s32 x, y;
-    ui_drawLabel(r->x + 6, r->y - 3, 0xB, g_labelInfo, 0);
+    ui_drawLabel(r->x + 6, r->y - 3, 0xB, g_labelInfo, UI_LABEL_NORMAL);
     win_drawBox(r, 0xB, WIN_STYLE_LINE_RULE);
     win_drawShadow(r, 0xC, WIN_STYLE_LINE_RULE);
     x = r->x;
     y = r->y;
     s_rewards.prim = text_buildBlock(x + 0x13, y + 6, g_ot + 10,
-                                      text_get(s_rewardsTitleText[s_rewards.screen]), 0, s_rewards.prim);
+                                      text_get(s_rewardsTitleText[s_rewards.screen]), TEXT_PAL_WHITE, s_rewards.prim);
 }
 
 void rewards_drawMembers(void) {
@@ -258,9 +258,9 @@ void rewards_drawExp(void) {
         x = r->x;
         y = r->y;
         s_rewards.prim = text_buildBlock(x + 0xC, y + 5, g_ot + 10,
-                                          text_get(REWARDS_TEXT_EXP), 0, s_rewards.prim);
+                                          text_get(REWARDS_TEXT_EXP), TEXT_PAL_WHITE, s_rewards.prim);
         s_rewards.prim = text_buildSmall(r->x + 0x5A, r->y + 9, g_ot + 10,
-                                          buf, 0, s_rewards.prim);
+                                          buf, TEXT_PAL_WHITE, s_rewards.prim);
     }
 }
 
@@ -276,9 +276,9 @@ void rewards_drawAp(void) {
         x = r->x;
         y = r->y;
         s_rewards.prim = text_buildBlock(x + 0xC, y + 5, g_ot + 10,
-                                          text_get(REWARDS_TEXT_AP), 0, s_rewards.prim);
+                                          text_get(REWARDS_TEXT_AP), TEXT_PAL_WHITE, s_rewards.prim);
         s_rewards.prim = text_buildSmall(r->x + 0x6F, r->y + 9, g_ot + 10,
-                                          buf, 0, s_rewards.prim);
+                                          buf, TEXT_PAL_WHITE, s_rewards.prim);
     }
 }
 
@@ -299,9 +299,9 @@ void rewards_drawReceivedGil(void) {
         x = r->x;
         y = r->y;
         s_rewards.prim = text_buildBlock(x + 0xC, y + 5, g_ot + 13,
-                                          text_get(REWARDS_TEXT_RECEIVED_GIL), 0, s_rewards.prim);
+                                          text_get(REWARDS_TEXT_RECEIVED_GIL), TEXT_PAL_WHITE, s_rewards.prim);
         s_rewards.prim = text_buildSmall(r->x + 0x54, r->y + 9, g_ot + 13,
-                                          buf, 0, s_rewards.prim);
+                                          buf, TEXT_PAL_WHITE, s_rewards.prim);
     }
 }
 
@@ -322,9 +322,9 @@ void rewards_drawCurrentGil(void) {
         x = r->x;
         y = r->y;
         s_rewards.prim = text_buildBlock(x + 0xC, y + 5, g_ot + 13,
-                                          text_get(REWARDS_TEXT_CURRENT_GIL), 0, s_rewards.prim);
+                                          text_get(REWARDS_TEXT_CURRENT_GIL), TEXT_PAL_WHITE, s_rewards.prim);
         s_rewards.prim = text_buildSmall(r->x + 0x4D, r->y + 9, g_ot + 13,
-                                          buf, 0, s_rewards.prim);
+                                          buf, TEXT_PAL_WHITE, s_rewards.prim);
     }
 }
 
@@ -677,13 +677,13 @@ void rewards_updateState(void) {
 void rewards_drawHelp(void) {
     s32 x, y;
     RECT *r = &s_rewards.wins[1].rect;
-    ui_drawLabel(r->x + 6, r->y - 3, 0xB, g_labelHelp, 0);
+    ui_drawLabel(r->x + 6, r->y - 3, 0xB, g_labelHelp, UI_LABEL_NORMAL);
     win_drawBox(r, 0xB, WIN_STYLE_LINE_RULE);
     win_drawShadow(r, 0xC, WIN_STYLE_LINE_RULE);
     x = r->x;
     y = r->y;
     s_rewards.prim = text_buildBlock(x + 0x13, y + 6, g_ot + 10,
-                                      text_get(REWARDS_TEXT_CONFIRM), 0, s_rewards.prim);
+                                      text_get(REWARDS_TEXT_CONFIRM), TEXT_PAL_WHITE, s_rewards.prim);
 }
 
 void rewards_initPrimBufs(void) {
@@ -971,7 +971,7 @@ void rewards_drawLearnWin(Window *w) {
         }
         ui_drawSprite(w->x + 6, w->y + 7, w->otz, icon, 0);
     }
-    text_drawBlock(v->x + 0x16, v->y + 6, w->otz, name, 0);
+    text_drawBlock(v->x + 0x16, v->y + 6, w->otz, name, TEXT_PAL_WHITE);
     setlen(g_primPtr, 3);
     t = (TileWords *)g_primPtr;
     t->rgbc = GPU_RGBC(GPU_TILE | GPU_ABE, 0x101010);
@@ -1390,19 +1390,19 @@ void rewards_drawItems(Window *w) {
         y2 = i * 15 + 10;
         text_formatNumber(rw->items[i][1], s_rewardsTextBuf, 2, TEXT_NUM_ASCII);
         ui_drawItemIcon(r->x + 7, r->y + y - off, w->otz, rw->items[i][0], 1);
-        text_drawBlock(r->x + 0x16, r->y + y - off, w->otz, g_itemNames + it->name, 0);
-        ui_drawSmallDigits(r->x + 0x88, r->y + y2 - off, w->otz, s_rewardsTextBuf, 0);
+        text_drawBlock(r->x + 0x16, r->y + y - off, w->otz, g_itemNames + it->name, TEXT_PAL_WHITE);
+        ui_drawSmallDigits(r->x + 0x88, r->y + y2 - off, w->otz, s_rewardsTextBuf, TEXT_PAL_WHITE);
     }
     if (rw->itemCount == 0) {
         s = text_get(REWARDS_TEXT_NO_ITEM);
-        text_drawBlock(r->x + ((r->w - (text_getInfo(REWARDS_TEXT_NO_ITEM) & 0xFFF)) >> 1), r->y - (k1 = off - 0x28), w->otz, s, 0);
+        text_drawBlock(r->x + ((r->w - (text_getInfo(REWARDS_TEXT_NO_ITEM) & 0xFFF)) >> 1), r->y - (k1 = off - 0x28), w->otz, s, TEXT_PAL_WHITE);
     }
     if (rw->card != ITEM_NONE) {
         k = off - 0x66;
         ui_drawSpriteDef(r->x + 8, r->y - k, w->otz, &s_rewardsCardIcon, 0);
         text_copy(s_rewardsTextBuf, (u8 *)card_getName(rw->card));
         text_append(s_rewardsTextBuf, text_get(REWARDS_TEXT_CARD));
-        text_drawBlock(r->x + 0x16, r->y - k, w->otz, s_rewardsTextBuf, 0);
+        text_drawBlock(r->x + 0x16, r->y - k, w->otz, s_rewardsTextBuf, TEXT_PAL_WHITE);
     }
     ui_drawEtchedLine(r->x + 2, r->y - (k3 = off - 0x61), w->otz, r->w - 5);
 }
@@ -1449,12 +1449,12 @@ void rewards_drawItemsLabels(Window *w) {
     s32 n = ui_measureLabel((u8 *)g_winLabelStrings.itemCount);
     s32 k = 0x97;
 
-    ui_drawLabel(w->x + 8, w->y - 3, w->otz - 1, g_winLabelStrings.itemList, 0);
-    ui_drawLabel(w->x - (n - k), w->y - 3, w->otz - 1, g_winLabelStrings.itemCount, 0);
+    ui_drawLabel(w->x + 8, w->y - 3, w->otz - 1, g_winLabelStrings.itemList, UI_LABEL_NORMAL);
+    ui_drawLabel(w->x - (n - k), w->y - 3, w->otz - 1, g_winLabelStrings.itemCount, UI_LABEL_NORMAL);
 }
 
 void rewards_drawFullWarning(Window *arg0) {
-    text_drawBlock(arg0->x + 8, arg0->y + 8, arg0->otz, text_get(REWARDS_TEXT_ITEMS_FULL), 0);
+    text_drawBlock(arg0->x + 8, arg0->y + 8, arg0->otz, text_get(REWARDS_TEXT_ITEMS_FULL), TEXT_PAL_WHITE);
 }
 
 void rewards_onFullWarningClosed(void) {

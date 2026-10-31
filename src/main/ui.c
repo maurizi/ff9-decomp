@@ -8,21 +8,21 @@ void ui_drawCharStatus(s32 x, s32 y, s32 otz, Character *c) {
         return;
     }
     text_formatNumber(c->level, buf, 2, TEXT_NUM_ASCII);
-    text_drawBlock(x, y, otz, c->name, 0);
-    ui_drawSmallDigits(x + 0x24, y + 0xE, otz, buf, 0);
+    text_drawBlock(x, y, otz, c->name, TEXT_PAL_WHITE);
+    ui_drawSmallDigits(x + 0x24, y + 0xE, otz, buf, TEXT_PAL_WHITE);
     ui_drawSprite(x, y + 0xE, otz, 0xB4, 0);
     ui_drawSprite(x, y + 0x17, otz, 0xAF, 0);
     ui_drawSprite(x, y + 0x20, otz, 0xB0, 0);
     if (c->hp != 0) {
-        col = ((u16)(c->maxHp / 6) >= c->hp) << 2;
+        col = ((u16)(c->maxHp / 6) >= c->hp) * TEXT_PAL_YELLOW;
     } else {
-        col = 3;
+        col = TEXT_PAL_RED;
     }
     text_formatNumber(c->hp, buf, 4, TEXT_NUM_ASCII);
     buf[4] = '/';
     text_formatNumber(c->maxHp, buf + 5, TEXT_NUM_NO_PAD, TEXT_NUM_ASCII);
     ui_drawSmallDigits(x + 0x16, y + 0x17, otz, buf, col);
-    col = ((s16)((s16)c->maxMp / 6) >= (s16)c->mp) << 2;
+    col = ((s16)((s16)c->maxMp / 6) >= (s16)c->mp) * TEXT_PAL_YELLOW;
     text_formatNumber((s16)c->mp, buf, 3, TEXT_NUM_ASCII);
     buf[3] = '/';
     text_formatNumber((s16)c->maxMp, buf + 4, TEXT_NUM_NO_PAD, TEXT_NUM_ASCII);
@@ -755,7 +755,7 @@ void ui_drawStones(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4) {
     text_formatNumber(arg4, &buf[3], TEXT_NUM_NO_PAD, TEXT_NUM_ASCII);
     buf[2] = '/';
     ui_drawSprite(arg0, arg1, arg2, 0xC1, 0);
-    ui_drawDigits(arg0 + 15, arg1 + 1, arg2, buf, arg3 == 0 ? 4 : 0);
+    ui_drawDigits(arg0 + 15, arg1 + 1, arg2, buf, arg3 == 0 ? DIGITS_YELLOW : DIGITS_WHITE);
 }
 
 u16 win_getPalClut(s32 arg0) {
@@ -869,8 +869,8 @@ void ui_drawCharStatuses(s32 x, s32 y, s32 otz, s32 slot) {
         return;
     }
     text_formatNumber(c->level, buf, 2, TEXT_NUM_ASCII);
-    text_drawBlock(x, y, otz, c->name, 0);
-    ui_drawSmallDigits(x + 0x26, y + 0xE, otz, buf, 0);
+    text_drawBlock(x, y, otz, c->name, TEXT_PAL_WHITE);
+    ui_drawSmallDigits(x + 0x26, y + 0xE, otz, buf, TEXT_PAL_WHITE);
     ui_drawSprite(x, y + 0xE, otz, 0xB4, 0);
     ui_drawStatusIcons(x, y + 0x1C, otz, c->status, 0);
     r.x = x - 4;

@@ -290,12 +290,12 @@ u8 *ui_buildLabel(s32 x, s32 y, u32 *ot, s32 str, s32 mode, u8 *pkt) {
     s32 w;
 
     rgbc = GPU_RGBC(GPU_SPRT, 0x404040);
-    if (mode == 0) {
+    if (mode == UI_LABEL_NORMAL) {
         rgbc = GPU_RGBC(GPU_SPRT, 0x808080);
     }
     tbl = (SpriteDesc16 *)g_uiSprites;
     clut = tbl[46].clut;
-    if (mode == 1) {
+    if (mode == UI_LABEL_MASK) {
         clut += 0x40;
         rgbc = GPU_CODE(GPU_SPRT | GPU_ABE);
     }
@@ -416,44 +416,44 @@ u8 *text_buildSmall(s32 x, s32 y, u32 *ot, u8 *s, s32 pal, u8 *pkt) {
 u8 *text_buildCode(s32 x, s32 y, u32 *ot, s32 code, s32 *w, u8 *pkt) {
     pkt = text_buildFontTpage(ot, (DrTpageWords *)pkt);
     switch (code & 0xFF) {
-    case TEXT_COLOR + 1:
-        g_textColor = 1;
+    case TEXT_COLOR + TEXT_PAL_PLAIN:
+        g_textColor = TEXT_PAL_PLAIN;
         *w = 0;
         break;
-    case TEXT_COLOR + 3:
-        g_textColor = 3;
+    case TEXT_COLOR + TEXT_PAL_RED:
+        g_textColor = TEXT_PAL_RED;
         *w = 0;
         break;
-    case TEXT_COLOR + 6:
-        g_textColor = 6;
+    case TEXT_COLOR + TEXT_PAL_PURPLE:
+        g_textColor = TEXT_PAL_PURPLE;
         *w = 0;
         break;
-    case TEXT_COLOR + 7:
-        g_textColor = 7;
+    case TEXT_COLOR + TEXT_PAL_GREEN:
+        g_textColor = TEXT_PAL_GREEN;
         *w = 0;
         break;
-    case TEXT_COLOR + 5:
-        g_textColor = 5;
+    case TEXT_COLOR + TEXT_PAL_CYAN:
+        g_textColor = TEXT_PAL_CYAN;
         *w = 0;
         break;
-    case TEXT_COLOR + 4:
-        g_textColor = 4;
+    case TEXT_COLOR + TEXT_PAL_YELLOW:
+        g_textColor = TEXT_PAL_YELLOW;
         *w = 0;
         break;
-    case TEXT_COLOR + 0:
-        g_textColor = 0;
+    case TEXT_COLOR + TEXT_PAL_WHITE:
+        g_textColor = TEXT_PAL_WHITE;
         *w = 0;
         break;
-    case TEXT_COLOR + 2:
-        g_textColor = 2;
+    case TEXT_COLOR + TEXT_PAL_GREY:
+        g_textColor = TEXT_PAL_GREY;
         *w = 0;
         break;
-    case TEXT_COLOR + 8:
-        g_textColor = 8;
+    case TEXT_COLOR + TEXT_PAL_HELP:
+        g_textColor = TEXT_PAL_HELP;
         *w = 0;
         break;
-    case TEXT_COLOR + 9:
-        g_textColor = 9;
+    case TEXT_COLOR + TEXT_PAL_HELP_RED:
+        g_textColor = TEXT_PAL_HELP_RED;
         *w = 0;
         break;
     case 0x30:
@@ -979,7 +979,7 @@ u8 *text_buildDigits(s32 x, s32 y, u32 *ot, u8 *s, s32 style, void *pkt) {
     s32 c;
     s32 u;
 
-    if (style == 2) {
+    if (style == DIGITS_DIM) {
         rgbc = GPU_RGBC(GPU_SPRT | GPU_ABE, 0x606060);
     }
     while ((c = *s) != 0) {
@@ -1014,7 +1014,7 @@ u8 *text_buildGlyph(s32 x, s32 y, u32 *ot, u32 a, s32 mode, s32 *out, SprtWords 
     s32 dx = (a >> 20) & 3;
     s32 h = (a >> 16) & 0xF;
     s32 n = a >> 28;
-    if (mode != 1) {
+    if (mode != TEXT_PAL_PLAIN) {
         rgbc = GPU_RGBC(GPU_SPRT, 0x808080);
     }
     setlen(p, 4);

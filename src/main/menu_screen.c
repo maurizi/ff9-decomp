@@ -43,7 +43,7 @@ void menuScreen_drawCommands(void) {
         y = i * 15 + 6;
         if (all || i == sel) {
             text_drawBlock(r->x + 10, r->y + y + g_menuScreenSwitch.titleScroll, 2,
-                          (u8 *)text_getFrom(g_menuScreenStrings, i), 0);
+                          (u8 *)text_getFrom(g_menuScreenStrings, i), TEXT_PAL_WHITE);
         }
     }
     win_setClip(r, 2, WIN_STYLE_BEVEL);

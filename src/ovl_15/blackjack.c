@@ -1156,36 +1156,36 @@ s32 bj_main(void) {
             bj_drawHand(&dealer, ofsX[0], ofsY[0], -1);
             if (dealer.count != 0 && g_bjState >= BJ_ST_DEALER) {
                 sprintf(buf, g_bjFmt2d, dealer.value);
-                ui_drawSmallDigits(10, dealer.y + 0x20, 0x10, buf, 0);
+                ui_drawSmallDigits(10, dealer.y + 0x20, 0x10, buf, TEXT_PAL_WHITE);
             }
             if (nsplit == 2) {
                 bj_drawHand(&split, ofsX[2], ofsY[2], -1);
                 if (split.count != 0) {
                     sprintf(buf, g_bjFmt2d, split.value);
-                    ui_drawSmallDigits(10, split.y + 0x20, 0x10, buf, 0);
+                    ui_drawSmallDigits(10, split.y + 0x20, 0x10, buf, TEXT_PAL_WHITE);
                     if (split.value != BJ_BLACKJACK && (split.flags & BJ_HAND_SOFT)) {
                         sprintf(buf, g_bjFmt2d, split.hardValue);
-                        ui_drawSmallDigits(10, split.y + 0x2A, 0x10, buf, 5);
+                        ui_drawSmallDigits(10, split.y + 0x2A, 0x10, buf, TEXT_PAL_CYAN);
                     }
                 }
             }
             bj_drawHand(&player, ofsX[1], ofsY[1], -1);
             if (player.count != 0) {
                 sprintf(buf, g_bjFmt2d, player.value);
-                ui_drawSmallDigits(10, player.y + 0x20, 0x10, buf, 0);
+                ui_drawSmallDigits(10, player.y + 0x20, 0x10, buf, TEXT_PAL_WHITE);
                 if (player.value != BJ_BLACKJACK && (player.flags & BJ_HAND_SOFT)) {
                     sprintf(buf, g_bjFmt2d, player.hardValue);
-                    ui_drawSmallDigits(10, player.y + 0x2A, 0x10, buf, 5);
+                    ui_drawSmallDigits(10, player.y + 0x2A, 0x10, buf, TEXT_PAL_CYAN);
                 }
             }
             if (nsplit == 1) {
                 bj_drawHand(&split, ofsX[2], ofsY[2], -1);
                 if (split.count != 0) {
                     sprintf(buf, g_bjFmt2d, split.value);
-                    ui_drawSmallDigits(10, split.y + 0x20, 0x10, buf, 0);
+                    ui_drawSmallDigits(10, split.y + 0x20, 0x10, buf, TEXT_PAL_WHITE);
                     if (split.value != BJ_BLACKJACK && (split.flags & BJ_HAND_SOFT)) {
                         sprintf(buf, g_bjFmt2d, split.hardValue);
-                        ui_drawSmallDigits(10, split.y + 0x2A, 0x10, buf, 5);
+                        ui_drawSmallDigits(10, split.y + 0x2A, 0x10, buf, TEXT_PAL_CYAN);
                     }
                 }
             }
@@ -1193,21 +1193,21 @@ s32 bj_main(void) {
         bj_drawShoe(BJ_SHOE_X, BJ_SHOE_Y);
         addPrim(g_gameState->gameData->ot[g_gameState->gameData->drawBuf] + BJ_OTZ, &g_bjTpage);
         sprintf(buf, g_bjStrBankroll);
-        ui_drawSmallDigits(0x10C - (text_measureSmall(buf) >> 1), 0x58, 0x10, buf, 4);
+        ui_drawSmallDigits(0x10C - (text_measureSmall(buf) >> 1), 0x58, 0x10, buf, TEXT_PAL_YELLOW);
         sprintf(buf, g_bjFmtLong, g_bjBankroll);
-        ui_drawSmallDigits(0x10C - (text_measureSmall(buf) >> 1), 0x64, 0x10, buf, 5);
+        ui_drawSmallDigits(0x10C - (text_measureSmall(buf) >> 1), 0x64, 0x10, buf, TEXT_PAL_CYAN);
         sprintf(buf, g_bjStrWager);
-        ui_drawSmallDigits(0x10C - (text_measureSmall(buf) >> 1), 0x70, 0x10, buf, 4);
+        ui_drawSmallDigits(0x10C - (text_measureSmall(buf) >> 1), 0x70, 0x10, buf, TEXT_PAL_YELLOW);
         sprintf(buf, g_bjFmtLong, g_bjWager);
-        ui_drawSmallDigits(0x10C - (text_measureSmall(buf) >> 1), 0x7C, 0x10, buf, 0);
+        ui_drawSmallDigits(0x10C - (text_measureSmall(buf) >> 1), 0x7C, 0x10, buf, TEXT_PAL_WHITE);
         sprintf(buf, g_bjStrStand);
-        ui_drawSmallDigits(0x10C - (text_measureSmall(buf) >> 1), 0x90, 0x10, buf, 0);
+        ui_drawSmallDigits(0x10C - (text_measureSmall(buf) >> 1), 0x90, 0x10, buf, TEXT_PAL_WHITE);
         sprintf(buf, g_bjStrHit);
-        ui_drawSmallDigits(0x10C - (text_measureSmall(buf) >> 1), 0xA0, 0x10, buf, 0);
+        ui_drawSmallDigits(0x10C - (text_measureSmall(buf) >> 1), 0xA0, 0x10, buf, TEXT_PAL_WHITE);
         sprintf(buf, g_bjStrDouble);
-        ui_drawSmallDigits(0x10C - (text_measureSmall(buf) >> 1), 0xB0, 0x10, buf, g_bjCanDouble ? 0 : 2);
+        ui_drawSmallDigits(0x10C - (text_measureSmall(buf) >> 1), 0xB0, 0x10, buf, g_bjCanDouble ? TEXT_PAL_WHITE : TEXT_PAL_GREY);
         sprintf(buf, g_bjStrSplit);
-        ui_drawSmallDigits(0x10C - (text_measureSmall(buf) >> 1), 0xC0, 0x10, buf, g_bjCanSplit ? 0 : 2);
+        ui_drawSmallDigits(0x10C - (text_measureSmall(buf) >> 1), 0xC0, 0x10, buf, g_bjCanSplit ? TEXT_PAL_WHITE : TEXT_PAL_GREY);
         g_padActuator[0].unk0 = 0;
         if (cnt > 0) {
             cnt--;

@@ -129,19 +129,19 @@ void menuCard_drawGrid(void) {
     r = &s_menuCard.gridRect;
     a = card_countAll();
     b = card_countKinds();
-    ui_drawLabel(r->x + 8, r->y - 3, 0x1E, g_labelCard, 0);
+    ui_drawLabel(r->x + 8, r->y - 3, 0x1E, g_labelCard, UI_LABEL_NORMAL);
     win_drawBox(r, 0x1E, WIN_STYLE_LINE_RULE);
     win_drawShadow(r, 0x1E, WIN_STYLE_LINE_RULE);
     s = text_get(CARD_TEXT_STOCK);
     w = text_measureWidth(s);
     text_formatNumber(a, buf, 3, TEXT_NUM_ASCII);
-    text_drawBlock(r->x + 8, r->y + 0xA2, 0x14, s, 0);
-    ui_drawDigits(r->x + (w + k), r->y + 0xA4, 0x14, buf, 0);
+    text_drawBlock(r->x + 8, r->y + 0xA2, 0x14, s, TEXT_PAL_WHITE);
+    ui_drawDigits(r->x + (w + k), r->y + 0xA4, 0x14, buf, DIGITS_WHITE);
     s = text_get(CARD_TEXT_TYPE);
     w = text_measureWidth(s);
     text_formatNumber(b, buf, 3, TEXT_NUM_ASCII);
-    ui_drawDigits(r->x + 0x80, r->y + 0xA4, 0x14, buf, 0);
-    text_drawBlock(r->x - (w - k2), r->y + 0xA2, 0x14, s, 0);
+    ui_drawDigits(r->x + 0x80, r->y + 0xA4, 0x14, buf, DIGITS_WHITE);
+    text_drawBlock(r->x - (w - k2), r->y + 0xA2, 0x14, s, TEXT_PAL_WHITE);
     for (n = 0, i = 0, x = 4; i < CARD_GRID_COLS; i++, x += 15) {
         for (j = 0, y = 10; j < CARD_GRID_ROWS; j++, y += 15) {
             menuCard_drawCell(r->x + x, r->y + y, 0x14, n);
@@ -176,26 +176,26 @@ void menuCard_drawInfo(void) {
         c = 99999;
     }
     rank = s_menuCard.rank;
-    ui_drawLabel(r->x + 8, r->y - 3, 0x1E, g_labelInfo, 0);
+    ui_drawLabel(r->x + 8, r->y - 3, 0x1E, g_labelInfo, UI_LABEL_NORMAL);
     win_drawBox(r, 0x1E, WIN_STYLE_BEVEL);
     win_drawShadow(r, 0x1F, WIN_STYLE_BEVEL);
     ui_drawEtchedLine(r->x + 4, r->y + 0x24, 0x14, r->w - 9);
     text_formatNumber(s_menuCard.points[CARD_PTS_TOTAL], buf, 4, TEXT_NUM_ASCII);
-    text_drawBlock(r->x + 0xA, r->y + 5, 0x14, text_get(CARD_TEXT_COLLECTORS), 0);
-    text_drawBlock(r->x + 0xA, r->y + 0x14, 0x14, text_get(rank), 0);
-    text_drawBlock(r->x + 0xA, r->y + 0x26, 0x14, text_get(CARD_TEXT_WIN), 0);
-    text_drawBlock(r->x + 0xA, r->y + 0x30, 0x14, text_get(CARD_TEXT_LOSE), 0);
-    text_drawBlock(r->x + 0xA, r->y + 0x3A, 0x14, text_get(CARD_TEXT_DRAW), 0);
-    ui_drawSmallDigits(r->x + 0x5A, r->y + 9, 0x14, buf, 0);
-    ui_drawSmallDigits(r->x + 0x78, r->y + 0xB, 0x14, s_menuCardPointsUnit, 0);
+    text_drawBlock(r->x + 0xA, r->y + 5, 0x14, text_get(CARD_TEXT_COLLECTORS), TEXT_PAL_WHITE);
+    text_drawBlock(r->x + 0xA, r->y + 0x14, 0x14, text_get(rank), TEXT_PAL_WHITE);
+    text_drawBlock(r->x + 0xA, r->y + 0x26, 0x14, text_get(CARD_TEXT_WIN), TEXT_PAL_WHITE);
+    text_drawBlock(r->x + 0xA, r->y + 0x30, 0x14, text_get(CARD_TEXT_LOSE), TEXT_PAL_WHITE);
+    text_drawBlock(r->x + 0xA, r->y + 0x3A, 0x14, text_get(CARD_TEXT_DRAW), TEXT_PAL_WHITE);
+    ui_drawSmallDigits(r->x + 0x5A, r->y + 9, 0x14, buf, TEXT_PAL_WHITE);
+    ui_drawSmallDigits(r->x + 0x78, r->y + 0xB, 0x14, s_menuCardPointsUnit, TEXT_PAL_WHITE);
     w = menuCard_drawInfo_width(text_get(CARD_TEXT_DRAW));
     text_formatNumber(a, buf, 5, TEXT_NUM_ASCII);
     w += 0xB;
-    ui_drawSmallDigits(r->x + w, r->y + 0x2A, 0x14, buf, 0);
+    ui_drawSmallDigits(r->x + w, r->y + 0x2A, 0x14, buf, TEXT_PAL_WHITE);
     text_formatNumber(b, buf, 5, TEXT_NUM_ASCII);
-    ui_drawSmallDigits(r->x + w, r->y + 0x34, 0x14, buf, 0);
+    ui_drawSmallDigits(r->x + w, r->y + 0x34, 0x14, buf, TEXT_PAL_WHITE);
     text_formatNumber(c, buf, 5, TEXT_NUM_ASCII);
-    ui_drawSmallDigits(r->x + w, r->y + 0x3E, 0x14, buf, 0);
+    ui_drawSmallDigits(r->x + w, r->y + 0x3E, 0x14, buf, TEXT_PAL_WHITE);
 }
 
 void menuCard_drawCardStack(s32 id) {
@@ -230,7 +230,7 @@ void menuCard_drawCardStack(s32 id) {
             text_formatNumber(s_menuCard.shown[id] + 1, buf, 3, TEXT_NUM_ASCII);
             text_formatNumber(cnt, buf + 4, TEXT_NUM_NO_PAD, TEXT_NUM_ASCII);
             buf[3] = '/';
-            ui_drawSmallDigits(r->x + 0x2B, r->y + 0x43, 0x14, buf, 0);
+            ui_drawSmallDigits(r->x + 0x2B, r->y + 0x43, 0x14, buf, TEXT_PAL_WHITE);
             a = text_getButtonSprite(4);
             b = text_getButtonSprite(5);
             ui_drawSprite(r->x + 0x1E, r->y + 0x41, 0x14, a, 0);
@@ -238,7 +238,7 @@ void menuCard_drawCardStack(s32 id) {
         }
         i = 0;
         menuCard_drawSprite(r->x + 0x10, r->y + 0x50, 0x14, CARD_SPR_NAME_ICON, GPU_RGBC(GPU_SPRT, GPU_RGB_NEUTRAL));
-        text_drawBlock(r->x + 0x20, r->y + 0x50, 0x14, name, 0);
+        text_drawBlock(r->x + 0x20, r->y + 0x50, 0x14, name, TEXT_PAL_WHITE);
 
         while (i < n) {
             dx = i * 4 + 0x2E;
@@ -616,7 +616,7 @@ void menuCard_drawCardInfo(void) {
     s32 cur;
 
     cur = s_menuCard.col * CARD_GRID_ROWS + s_menuCard.row;
-    ui_drawLabel(r->x + 8, r->y - 3, 0x1E, g_labelCardInfo, 0);
+    ui_drawLabel(r->x + 8, r->y - 3, 0x1E, g_labelCardInfo, UI_LABEL_NORMAL);
     if (c->shown != CARD_NONE) {
         if (c->shown != cur && c->fading != 0) {
             menuCard_drawCardStack(c->prev);
@@ -829,9 +829,9 @@ void menuCard_onDiscardClosed(Window *w) {
 }
 
 void menuCard_drawDiscardWindow(Window *w) {
-    text_drawBlock(w->x + 0xE, w->y + 0xA, w->otz, text_get(CARD_TEXT_DISCARD), 0);
-    text_drawBlock(w->x + 0x30, w->y + 0x2E, w->otz, text_get(CARD_TEXT_DISCARD + 1), 0);
-    text_drawBlock(w->x + 0x30, w->y + 0x3D, w->otz, text_get(CARD_TEXT_DISCARD + 2), 0);
+    text_drawBlock(w->x + 0xE, w->y + 0xA, w->otz, text_get(CARD_TEXT_DISCARD), TEXT_PAL_WHITE);
+    text_drawBlock(w->x + 0x30, w->y + 0x2E, w->otz, text_get(CARD_TEXT_DISCARD + 1), TEXT_PAL_WHITE);
+    text_drawBlock(w->x + 0x30, w->y + 0x3D, w->otz, text_get(CARD_TEXT_DISCARD + 2), TEXT_PAL_WHITE);
 }
 
 void menuCard_initFlip(void) {

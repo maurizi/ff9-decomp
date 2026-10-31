@@ -1256,7 +1256,7 @@ void akao_cmdStopAllSe(void) {
 }
 
 void akao_cmdSetOutputMode1(void) {
-    g_akaoFlags.mode = 1;
+    g_akaoFlags.mode = AKAO_MODE_STEREO;
     akao_markSeqDirty(g_akaoSeq, g_akaoChannels);
     if (g_akaoSubSeq != NULL) {
         akao_markSeqDirty(g_akaoSubSeq, g_akaoSubChannels);
@@ -1265,7 +1265,7 @@ void akao_cmdSetOutputMode1(void) {
 }
 
 void akao_cmdSetOutputMode2(void) {
-    g_akaoFlags.mode = 2;
+    g_akaoFlags.mode = AKAO_MODE_MONO;
     akao_markSeqDirty(g_akaoSeq, g_akaoChannels);
     if (g_akaoSubSeq != NULL) {
         akao_markSeqDirty(g_akaoSubSeq, g_akaoSubChannels);

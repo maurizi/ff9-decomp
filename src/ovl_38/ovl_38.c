@@ -102,9 +102,9 @@ void menuStatus_drawCommands(void) {
         y = i * 15 + 6;
         off = s_menuStatusCmds[i] * sizeof(StatusEntry);
         k = ((StatusEntry *)((u8 *)tp + off))->nameOffset;
-        s_menuStatus.prim = text_buildBlock(r.x + 0xC, r.y + y, g_ot + 25, pool.s + k, 0, s_menuStatus.prim);
+        s_menuStatus.prim = text_buildBlock(r.x + 0xC, r.y + y, g_ot + 25, pool.s + k, TEXT_PAL_WHITE, s_menuStatus.prim);
     }
-    ui_drawLabel(r.x + 6, r.y - 3, 0x19, g_labelCommand, 0);
+    ui_drawLabel(r.x + 6, r.y - 3, 0x19, g_labelCommand, UI_LABEL_NORMAL);
     win_drawBox(&r, 0x19, WIN_STYLE_BEVEL);
     win_drawShadow(&r, 0x19, WIN_STYLE_BEVEL);
 }
@@ -122,30 +122,30 @@ void menuStatus_drawStats(void) {
     c = g_gameState->gameData->party[m->slot];
     y = 0x3D;
     for (i = 0; i < 4; i++) {
-        s_menuStatus.prim = text_buildBlock(r->x + 0xA, r->y + (i * 13 + y) - 4, g_ot + 0x1D, text_get(s_menuStatusBaseStatText[i]), 0, s_menuStatus.prim);
+        s_menuStatus.prim = text_buildBlock(r->x + 0xA, r->y + (i * 13 + y) - 4, g_ot + 0x1D, text_get(s_menuStatusBaseStatText[i]), TEXT_PAL_WHITE, s_menuStatus.prim);
     }
     y = 0x72;
     for (i = 0; i < 5; i++) {
-        s_menuStatus.prim = text_buildBlock(r->x + 0xA, r->y + (i * 13 + y) - 4, g_ot + 0x1D, text_get(s_menuStatusBattleStatText[i]), 0, s_menuStatus.prim);
+        s_menuStatus.prim = text_buildBlock(r->x + 0xA, r->y + (i * 13 + y) - 4, g_ot + 0x1D, text_get(s_menuStatusBattleStatText[i]), TEXT_PAL_WHITE, s_menuStatus.prim);
     }
     text_formatNumber(c->speed, buf, 2, TEXT_NUM_ASCII);
-    ui_drawSmallDigits(r->x + 0x58, r->y + 0x3D, 0x1D, buf, 0);
+    ui_drawSmallDigits(r->x + 0x58, r->y + 0x3D, 0x1D, buf, TEXT_PAL_WHITE);
     text_formatNumber(c->strength, buf, 2, TEXT_NUM_ASCII);
-    ui_drawSmallDigits(r->x + 0x58, r->y + 0x4A, 0x1D, buf, 0);
+    ui_drawSmallDigits(r->x + 0x58, r->y + 0x4A, 0x1D, buf, TEXT_PAL_WHITE);
     text_formatNumber(c->magic, buf, 2, TEXT_NUM_ASCII);
-    ui_drawSmallDigits(r->x + 0x58, r->y + 0x57, 0x1D, buf, 0);
+    ui_drawSmallDigits(r->x + 0x58, r->y + 0x57, 0x1D, buf, TEXT_PAL_WHITE);
     text_formatNumber(c->spirit, buf, 2, TEXT_NUM_ASCII);
-    ui_drawSmallDigits(r->x + 0x58, r->y + 0x64, 0x1D, buf, 0);
+    ui_drawSmallDigits(r->x + 0x58, r->y + 0x64, 0x1D, buf, TEXT_PAL_WHITE);
     text_formatNumber(g_weaponTable[c->equip[0]].attack, buf, 3, TEXT_NUM_ASCII);
-    ui_drawSmallDigits(r->x + 0x51, r->y + 0x72, 0x1D, buf, 0);
+    ui_drawSmallDigits(r->x + 0x51, r->y + 0x72, 0x1D, buf, TEXT_PAL_WHITE);
     text_formatNumber(c->defense, buf, 3, TEXT_NUM_ASCII);
-    ui_drawSmallDigits(r->x + 0x51, r->y + 0x7F, 0x1D, buf, 0);
+    ui_drawSmallDigits(r->x + 0x51, r->y + 0x7F, 0x1D, buf, TEXT_PAL_WHITE);
     text_formatNumber(c->evade, buf, 3, TEXT_NUM_ASCII);
-    ui_drawSmallDigits(r->x + 0x51, r->y + 0x8C, 0x1D, buf, 0);
+    ui_drawSmallDigits(r->x + 0x51, r->y + 0x8C, 0x1D, buf, TEXT_PAL_WHITE);
     text_formatNumber(c->magicDef, buf, 3, TEXT_NUM_ASCII);
-    ui_drawSmallDigits(r->x + 0x51, r->y + 0x99, 0x1D, buf, 0);
+    ui_drawSmallDigits(r->x + 0x51, r->y + 0x99, 0x1D, buf, TEXT_PAL_WHITE);
     text_formatNumber(c->magicEva, buf, 3, TEXT_NUM_ASCII);
-    ui_drawSmallDigits(r->x + 0x51, r->y + 0xA6, 0x1D, buf, 0);
+    ui_drawSmallDigits(r->x + 0x51, r->y + 0xA6, 0x1D, buf, TEXT_PAL_WHITE);
 }
 
 void menuStatus_drawExp(void) {
@@ -166,20 +166,20 @@ void menuStatus_drawExp(void) {
         show = bit == 0;
     }
     if (show) {
-        st->prim = text_buildBlock(r->x + 0x74, r->y + 0x39, &g_ot[0x1D], text_get(STATUS_TEXT_TRANCE), 0, st->prim);
+        st->prim = text_buildBlock(r->x + 0x74, r->y + 0x39, &g_ot[0x1D], text_get(STATUS_TEXT_TRANCE), TEXT_PAL_WHITE, st->prim);
         ui_drawGauge(r->x + 0xB4, r->y + 0x3E, 0x1D, c->trance, 0xFF, 1, 1);
     }
-    text_drawBlock(r->x + 0x74, r->y + 0x46, 0x1D, text_get(STATUS_TEXT_EXP), 0);
-    text_drawBlock(r->x + 0x74, r->y + 0x53, 0x1D, text_get(STATUS_TEXT_NEXT), 0);
+    text_drawBlock(r->x + 0x74, r->y + 0x46, 0x1D, text_get(STATUS_TEXT_EXP), TEXT_PAL_WHITE);
+    text_drawBlock(r->x + 0x74, r->y + 0x53, 0x1D, text_get(STATUS_TEXT_NEXT), TEXT_PAL_WHITE);
     text_formatNumber(c->exp, buf, 7, TEXT_NUM_ASCII);
-    ui_drawSmallDigits(r->x + 0xAC, r->y + 0x4A, 0x1D, buf, 0);
+    ui_drawSmallDigits(r->x + 0xAC, r->y + 0x4A, 0x1D, buf, TEXT_PAL_WHITE);
     if (c->level >= 99) {
         next = c->exp;
     } else {
         next = g_levelExp[c->level];
     }
     text_formatNumber(next - c->exp, buf, 6, TEXT_NUM_ASCII);
-    ui_drawSmallDigits(r->x + 0xB3, r->y + 0x57, 0x1D, buf, 0);
+    ui_drawSmallDigits(r->x + 0xB3, r->y + 0x57, 0x1D, buf, TEXT_PAL_WHITE);
 }
 
 INCLUDE_RODATA("asm/us/ovl_38/nonmatchings/ovl_38", s_menuStatusCmdTable);
@@ -200,11 +200,11 @@ void menuStatus_drawEquipment(void) {
     c = g_gameState->gameData->party[st->slot];
     for (i = 0; i < 5; i++) {
         s_menuStatus.prim = ui_buildSprite(r->x + 0x74, r->y + 0x68 + i * 15 + 1, &g_ot[0x1D], i + 0xF9, 0, buf, s_menuStatus.prim);
-        s_menuStatus.prim = text_buildSmall(r->x + 0x84, r->y + 0x68 + i * 15 + 3, &g_ot[0x1D], s_menuStatusColon, 0, s_menuStatus.prim);
+        s_menuStatus.prim = text_buildSmall(r->x + 0x84, r->y + 0x68 + i * 15 + 3, &g_ot[0x1D], s_menuStatusColon, TEXT_PAL_WHITE, s_menuStatus.prim);
         id = c->equip[i];
         if (id != ITEM_NONE) {
             ui_drawItemIcon(r->x + 0x8D, r->y + 0x68 + i * 15 - 1, 0x1D, id, 1);
-            s_menuStatus.prim = text_buildBlock(r->x + 0x9D, r->y + 0x68 + i * 15 - 1, &g_ot[0x1D], g_itemNames + g_itemTable[id].name, 0, s_menuStatus.prim);
+            s_menuStatus.prim = text_buildBlock(r->x + 0x9D, r->y + 0x68 + i * 15 - 1, &g_ot[0x1D], g_itemNames + g_itemTable[id].name, TEXT_PAL_WHITE, s_menuStatus.prim);
         }
     }
 }
@@ -224,11 +224,11 @@ void menuStatus_drawAbilityPages(void) {
                 }
             }
             z = 0x14 - i;
-            ui_drawLabel(r->x + 6, r->y - 3, z, g_winLabelStrings.abilityList, 0);
+            ui_drawLabel(r->x + 6, r->y - 3, z, g_winLabelStrings.abilityList, UI_LABEL_NORMAL);
             if (s_menuStatus.pageOnTop[i] != 0) {
                 s_menuStatusPageLabel[1] = i + 0x31;
-                ui_drawLabel(r->x + 0x90, r->y - 3, z, g_winLabelStrings.labelNo, 0);
-                ui_drawLabel(r->x + 0x9A, r->y - 3, z, (s32)s_menuStatusPageLabel, 0);
+                ui_drawLabel(r->x + 0x90, r->y - 3, z, g_winLabelStrings.labelNo, UI_LABEL_NORMAL);
+                ui_drawLabel(r->x + 0x9A, r->y - 3, z, (s32)s_menuStatusPageLabel, UI_LABEL_NORMAL);
             }
             win_drawBox(r, z, WIN_STYLE_BEVEL);
             win_drawShadow(r, z, WIN_STYLE_BEVEL);
@@ -277,7 +277,7 @@ void menuStatus_drawAbilityRow(s32 x, s32 y, s32 z, s32 i, u8 draw) {
     }
     if (draw) {
         ui_drawSprite(x, y, z, icon, 0);
-        s_menuStatus.prim = text_buildBlock(x + 0x10, y, g_ot + z, name, 0, s_menuStatus.prim);
+        s_menuStatus.prim = text_buildBlock(x + 0x10, y, g_ot + z, name, TEXT_PAL_WHITE, s_menuStatus.prim);
     }
     if (ok) {
         s_menuStatus.prim = ui_buildApGauge(x + 0x70, y + 3, g_ot + z, cur, max, flag, 0, s_menuStatus.prim);

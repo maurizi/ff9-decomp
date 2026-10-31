@@ -400,7 +400,7 @@ s32 akao_peekNextNote(AkaoChannel *c) {
     for (;;) {
         if (*p < 0x9A) {
             if (*p >= 0x8F) {
-                c->legato = (u16)c->legato & ~5;
+                c->legato = (u16)c->legato & ~(AKAO_LEGATO | AKAO_LEGATO_SE);
             }
             return *p;
         }
@@ -487,7 +487,7 @@ s32 akao_peekNextNote(AkaoChannel *c) {
         case 0xCD:
         case 0xD1:
         case 0xDB:
-            c->legato = (u16)c->legato & ~5;
+            c->legato = (u16)c->legato & ~(AKAO_LEGATO | AKAO_LEGATO_SE);
             p++;
             continue;
         case 0xCA:
@@ -498,7 +498,7 @@ s32 akao_peekNextNote(AkaoChannel *c) {
             continue;
         default:
         end:
-            c->legato = (u16)c->legato & ~5;
+            c->legato = (u16)c->legato & ~(AKAO_LEGATO | AKAO_LEGATO_SE);
             return AKAO_OP_END;
         }
     }
@@ -712,13 +712,13 @@ void akao_execChannel(AkaoChannel *c, u32 mask) {
         c->noteTicks = c->gateTicks = c->fixedLen;
     }
     if (c->noteTicks != 0) {
-        if (vel >= 0x8F || (vel < 0x84 && !(c->legato & 5))) {
+        if (vel >= 0x8F || (vel < 0x84 && !(c->legato & (AKAO_LEGATO | AKAO_LEGATO_SE)))) {
             c->gateTicks -= 2;
         }
     } else {
         c->noteTicks = g_akaoNoteLengths[op % 11];
         len = c->noteTicks;
-        if ((vel < 0x84 || vel >= 0x8F) && !(c->legato & 5)) {
+        if ((vel < 0x84 || vel >= 0x8F) && !(c->legato & (AKAO_LEGATO | AKAO_LEGATO_SE))) {
             len -= 2;
         }
         c->gateTicks = len;
@@ -738,7 +738,7 @@ void akao_execChannel(AkaoChannel *c, u32 mask) {
         c->portamentoLen = 0;
         c->vibratoOut = 0;
         c->tremoloOut = 0;
-        c->legato &= ~2;
+        c->legato &= ~AKAO_LEGATO_TIED;
         return;
     }
     if (op < 0x84) {
@@ -748,7 +748,7 @@ void akao_execChannel(AkaoChannel *c, u32 mask) {
         if (f & AKAO_CH_DRUM_KIT) {
             vel = akao_playDrumNote(c, mask, op);
         } else {
-            if (!(c->legato & 2)) {
+            if (!(c->legato & AKAO_LEGATO_TIED)) {
                 if (c->isSe == 0) {
                     if (f & AKAO_CH_KEY_SPLIT) {
                         akao_applyKeySplit(c, op);
@@ -805,13 +805,13 @@ void akao_execChannel(AkaoChannel *c, u32 mask) {
                 v = (v * vel) >> 7;
             }
             c->vibratoDepth = v;
-            if (!(c->legato & 2)) {
+            if (!(c->legato & AKAO_LEGATO_TIED)) {
                 c->vibratoPhase = 0;
                 c->vibratoDelayLeft = c->vibratoDelay;
                 c->vibratoRate = 0x1000000 / ((u32)c->vibratoPeriod >> 12);
             }
         }
-        if ((op & AKAO_CH_TREMOLO) && !(c->legato & 2)) {
+        if ((op & AKAO_CH_TREMOLO) && !(c->legato & AKAO_LEGATO_TIED)) {
             c->tremoloPhase = 0;
             c->tremoloDelayLeft = c->tremoloDelay;
             c->tremoloRate = 0x1000000 / ((u32)c->tremoloPeriod >> 12);
@@ -820,7 +820,7 @@ void akao_execChannel(AkaoChannel *c, u32 mask) {
         c->tremoloOut = 0;
         c->pitchSlide = 0;
     }
-    c->legato = (c->legato & ~2) | ((c->legato & 1) << 1);
+    c->legato = (c->legato & ~AKAO_LEGATO_TIED) | ((c->legato & AKAO_LEGATO) << 1);
     if (c->slideKeys != 0) {
         c->curKey += c->slideKeys;
         vel = ((s32 (*)())akao_calcPitch)(&g_akaoInstruments[c->instrument], c->curKey + c->transpose, c->fineTune, &tmp) << 16;
@@ -1160,7 +1160,7 @@ void akao_opDA(AkaoChannel *c) {
     }
     c->prevTranspose = 0;
     c->prevKey = 0;
-    c->legato = 1;
+    c->legato = AKAO_LEGATO;
 }
 
 void akao_opDB(AkaoChannel *a) {
@@ -1438,7 +1438,7 @@ void akao_opC3(AkaoChannel *c, u32 mask) {
 }
 
 void akao_opCC(AkaoChannel *a) {
-    a->legato = 1;
+    a->legato = AKAO_LEGATO;
 }
 
 void akao_opCD(void) {
@@ -1446,7 +1446,7 @@ void akao_opCD(void) {
 
 void akao_opD0(AkaoChannel *c) {
     if (c->isSe != 0) {
-        c->legato = 4;
+        c->legato = AKAO_LEGATO_SE;
     }
 }
 
@@ -1689,7 +1689,7 @@ void akao_opCB(AkaoChannel *c, u32 mask) {
     akao_opC5(c, mask);
     akao_opC7(c, mask);
     akao_opC3(c, mask);
-    c->legato &= ~5;
+    c->legato &= ~(AKAO_LEGATO | AKAO_LEGATO_SE);
 }
 
 void akao_opD4(AkaoChannel *c) {

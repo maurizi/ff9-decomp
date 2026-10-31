@@ -153,15 +153,15 @@ void menuConfig_drawPadMap(void) {
     RECT *r2;
     s32 i = 0;
 
-    ui_drawLabel(r->x + 0xB, r->y - 3, 0x11, g_winLabelStrings.labelNew, 0);
-    ui_drawLabel(r->x + 0x2D, r->y - 3, 0x11, g_winLabelStrings.labelNormal, 0);
+    ui_drawLabel(r->x + 0xB, r->y - 3, 0x11, g_winLabelStrings.labelNew, UI_LABEL_NORMAL);
+    ui_drawLabel(r->x + 0x2D, r->y - 3, 0x11, g_winLabelStrings.labelNormal, UI_LABEL_NORMAL);
     r2 = &s_menuConfig.wins[1].rect;
-    text_drawBlock(r2->x + 0x2A, r2->y + 8, 0x11, text_get(CONFIG_TEXT_PAD_EXIT), 0);
+    text_drawBlock(r2->x + 0x2A, r2->y + 8, 0x11, text_get(CONFIG_TEXT_PAD_EXIT), TEXT_PAL_WHITE);
     for (; i < CONFIG_PAD_SLOTS; i++) {
         ui_drawSprite(r->x + 0x10, r->y + 0xB + i * 0x11, 0x11, s_menuConfigPadActions[(g_gameState->padMap >> (i * 4)) & 7].icon, 0);
-        menuConfig_drawSmallText(r->x + 0x27, r->y + 0xE + i * 0x11, 0x11, s_menuConfigPadArrow, 0);
+        menuConfig_drawSmallText(r->x + 0x27, r->y + 0xE + i * 0x11, 0x11, s_menuConfigPadArrow, TEXT_PAL_WHITE);
         ui_drawSprite(r->x + 0x3A, r->y + 0xB + i * 0x11, 0x11, s_menuConfigPadActions[i].icon, 0);
-        menuConfig_drawText(r->x + 0x54, r->y + 0xC + i * 0x11, 0x11, s_menuConfigPadActions[i].text, 0);
+        menuConfig_drawText(r->x + 0x54, r->y + 0xC + i * 0x11, 0x11, s_menuConfigPadActions[i].text, TEXT_PAL_WHITE);
     }
 }
 
@@ -172,10 +172,10 @@ void menuConfig_drawBattleControl(void) {
     u8 on;
 
     r2 = &s_menuConfig.wins[1].rect;
-    text_drawBlock(r2->x + 0x2A, r2->y + 8, 0x11, text_get(CONFIG_TEXT_PORT_EXIT), 0);
+    text_drawBlock(r2->x + 0x2A, r2->y + 8, 0x11, text_get(CONFIG_TEXT_PORT_EXIT), TEXT_PAL_WHITE);
     for (i = 0; i < s_menuConfig.charCount; i++) {
         on = ((s32)(g_gameState->config >> CFG_SHIFT_CHAR_PORT) >> s_menuConfig.charPortBit[i]) & 1;
-        text_drawBlock(r->x + 0xE, r->y + 0xA + i * 0x11, 0x11, g_gameState->gameData->characters[s_menuConfig.charIdx[i]].name, 0);
+        text_drawBlock(r->x + 0xE, r->y + 0xA + i * 0x11, 0x11, g_gameState->gameData->characters[s_menuConfig.charIdx[i]].name, TEXT_PAL_WHITE);
         menuConfig_drawIcon(r->x + 0x60, r->y + 0xA + i * 0x11, 0x11, 0xF8, on);
         menuConfig_drawIcon(r->x + 0x92, r->y + 0xA + i * 0x11, 0x11, 0x100, on == 0);
     }
@@ -487,7 +487,7 @@ void menuConfig_draw(void) {
 
     s_menuConfig.primFree = s_menuConfig.primBufs[g_gameState->gameData->drawBuf ^ 1] - (s_menuConfig.prim - k);
     s_menuConfig.prim = s_menuConfig.primBufs[g_gameState->gameData->drawBuf];
-    ui_drawLabel(0x10, 0x23, 0x16, g_labelConfig, 0);
+    ui_drawLabel(0x10, 0x23, 0x16, g_labelConfig, UI_LABEL_NORMAL);
     ui_drawRule(8, 0x26, 0x16, 0, 0x12C, (g_gameState->config >> CFG_BIT_WINDOW_COLOR) & 1);
     menuConfig_drawRows();
     menuConfig_drawSubWindows();
@@ -584,62 +584,62 @@ void menuConfig_drawRow(RECT *r, s32 otz, s32 i) {
 }
 
 void menuConfig_drawSoundRow(RECT *r, s32 otz) {
-    menuConfig_drawText(r->x + 0xF, r->y + 6, otz, s_menuConfigRowText[CONFIG_ROW_SOUND].title, 0);
+    menuConfig_drawText(r->x + 0xF, r->y + 6, otz, s_menuConfigRowText[CONFIG_ROW_SOUND].title, TEXT_PAL_WHITE);
     menuConfig_drawChoice(r, otz, (g_gameState->config >> CFG_BIT_SOUND) & 1, CONFIG_ROW_SOUND);
 }
 
 void menuConfig_drawControllerRow(RECT *r, s32 otz) {
-    menuConfig_drawText(r->x + 0xF, r->y + 6, otz, s_menuConfigRowText[CONFIG_ROW_CONTROLLER].title, 0);
+    menuConfig_drawText(r->x + 0xF, r->y + 6, otz, s_menuConfigRowText[CONFIG_ROW_CONTROLLER].title, TEXT_PAL_WHITE);
     menuConfig_drawChoice(r, otz, (g_gameState->config >> CFG_BIT_CONTROLLER) & 1, CONFIG_ROW_CONTROLLER);
 }
 
 void menuConfig_drawCursorRow(RECT *r, s32 otz) {
-    menuConfig_drawText(r->x + 0xF, r->y + 6, otz, s_menuConfigRowText[CONFIG_ROW_CURSOR].title, 0);
+    menuConfig_drawText(r->x + 0xF, r->y + 6, otz, s_menuConfigRowText[CONFIG_ROW_CURSOR].title, TEXT_PAL_WHITE);
     menuConfig_drawChoice(r, otz, (g_gameState->config >> CFG_BIT_CURSOR) & 1, CONFIG_ROW_CURSOR);
 }
 
 void menuConfig_drawAtbRow(RECT *r, s32 otz) {
-    menuConfig_drawText(r->x + 0xF, r->y + 6, otz, s_menuConfigRowText[CONFIG_ROW_ATB].title, 0);
+    menuConfig_drawText(r->x + 0xF, r->y + 6, otz, s_menuConfigRowText[CONFIG_ROW_ATB].title, TEXT_PAL_WHITE);
     menuConfig_drawChoice(r, otz, (g_gameState->config >> CFG_BIT_ATB) & 1, CONFIG_ROW_ATB);
 }
 
 void menuConfig_drawCameraRow(RECT *r, s32 otz) {
-    menuConfig_drawText(r->x + 0xF, r->y + 6, otz, s_menuConfigRowText[CONFIG_ROW_CAMERA].title, 0);
+    menuConfig_drawText(r->x + 0xF, r->y + 6, otz, s_menuConfigRowText[CONFIG_ROW_CAMERA].title, TEXT_PAL_WHITE);
     menuConfig_drawChoice(r, otz, (g_gameState->config >> CFG_BIT_CAMERA) & 1, CONFIG_ROW_CAMERA);
 }
 
 void menuConfig_drawBattleControlRow(RECT *r, s32 otz) {
-    menuConfig_drawText(r->x + 0xF, r->y + 6, otz, s_menuConfigRowText[CONFIG_ROW_BTL_CONTROL].title, 0);
+    menuConfig_drawText(r->x + 0xF, r->y + 6, otz, s_menuConfigRowText[CONFIG_ROW_BTL_CONTROL].title, TEXT_PAL_WHITE);
     menuConfig_drawChoice(r, otz, (g_gameState->config >> CFG_BIT_BTL_CONTROL) & 1, CONFIG_ROW_BTL_CONTROL);
 }
 
 void menuConfig_drawMovementRow(RECT *r, s32 otz) {
-    menuConfig_drawText(r->x + 0xF, r->y + 6, otz, s_menuConfigRowText[CONFIG_ROW_MOVEMENT].title, 0);
+    menuConfig_drawText(r->x + 0xF, r->y + 6, otz, s_menuConfigRowText[CONFIG_ROW_MOVEMENT].title, TEXT_PAL_WHITE);
     menuConfig_drawChoice(r, otz, (g_gameState->config >> CFG_BIT_MOVEMENT) & 1, CONFIG_ROW_MOVEMENT);
 }
 
 void menuConfig_drawBattleSpeedRow(RECT *r, s32 otz) {
-    menuConfig_drawText(r->x + 0xF, r->y + 6, otz, s_menuConfigRowText[CONFIG_ROW_BTL_SPEED].title, 0);
+    menuConfig_drawText(r->x + 0xF, r->y + 6, otz, s_menuConfigRowText[CONFIG_ROW_BTL_SPEED].title, TEXT_PAL_WHITE);
     menuConfig_drawSliderRow(r, otz, (g_gameState->config >> CFG_SHIFT_BTL_SPEED) & 7, CFG_BTL_SPEED_MAX, CONFIG_ROW_BTL_SPEED);
 }
 
 void menuConfig_drawMessageSpeedRow(RECT *r, s32 otz) {
-    menuConfig_drawText(r->x + 0xF, r->y + 6, otz, s_menuConfigRowText[CONFIG_ROW_MSG_SPEED].title, 0);
+    menuConfig_drawText(r->x + 0xF, r->y + 6, otz, s_menuConfigRowText[CONFIG_ROW_MSG_SPEED].title, TEXT_PAL_WHITE);
     menuConfig_drawSliderRow(r, otz, (g_gameState->config >> CFG_SHIFT_MSG_SPEED) & 7, CFG_MSG_SPEED_MAX, CONFIG_ROW_MSG_SPEED);
 }
 
 void menuConfig_drawHereIconRow(RECT *r, s32 otz) {
-    menuConfig_drawText(r->x + 0xF, r->y + 6, otz, s_menuConfigRowText[CONFIG_ROW_HERE_ICON].title, 0);
+    menuConfig_drawText(r->x + 0xF, r->y + 6, otz, s_menuConfigRowText[CONFIG_ROW_HERE_ICON].title, TEXT_PAL_WHITE);
     menuConfig_drawChoice(r, otz, (g_gameState->config >> CFG_BIT_HERE_ICON) & 1, CONFIG_ROW_HERE_ICON);
 }
 
 void menuConfig_drawWindowColorRow(RECT *r, s32 otz) {
-    menuConfig_drawText(r->x + 0xF, r->y + 6, otz, s_menuConfigRowText[CONFIG_ROW_WINDOW_COLOR].title, 0);
+    menuConfig_drawText(r->x + 0xF, r->y + 6, otz, s_menuConfigRowText[CONFIG_ROW_WINDOW_COLOR].title, TEXT_PAL_WHITE);
     menuConfig_drawChoice(r, otz, (g_gameState->config >> CFG_BIT_WINDOW_COLOR) & 1, CONFIG_ROW_WINDOW_COLOR);
 }
 
 void menuConfig_drawTargetWindowRow(RECT *r, s32 otz) {
-    menuConfig_drawText(r->x + 0xF, r->y + 6, otz, s_menuConfigRowText[CONFIG_ROW_TARGET_WINDOW].title, 0);
+    menuConfig_drawText(r->x + 0xF, r->y + 6, otz, s_menuConfigRowText[CONFIG_ROW_TARGET_WINDOW].title, TEXT_PAL_WHITE);
     menuConfig_drawChoice(r, otz, (g_gameState->config >> CFG_BIT_TARGET_WINDOW) & 1, CONFIG_ROW_TARGET_WINDOW);
 }
 
@@ -689,7 +689,7 @@ void menuConfig_drawChoice(RECT *r, s32 otz, s32 sel, s32 item) {
     s32 i;
 
     for (i = 0; i < 2; i++) {
-        menuConfig_drawText(r->x + 0x90 + i * 0x5A, r->y + 6, otz, s_menuConfigRowText[item].options[i], sel != i ? 2 : 0);
+        menuConfig_drawText(r->x + 0x90 + i * 0x5A, r->y + 6, otz, s_menuConfigRowText[item].options[i], sel != i ? TEXT_PAL_GREY : TEXT_PAL_WHITE);
     }
 }
 
@@ -713,8 +713,8 @@ void menuConfig_drawSliderRow(RECT *r, s32 otz, s32 v, s32 n, s32 item) {
             pos += -s_menuConfig.sliderTicks * step;
         }
     }
-    menuConfig_drawText(x - w + 0x9C, y, otz, (u8)s_menuConfigSlowText, 0);
-    menuConfig_drawText(x + 0x103, y, otz, (u8)s_menuConfigFastText, 0);
+    menuConfig_drawText(x - w + 0x9C, y, otz, (u8)s_menuConfigSlowText, TEXT_PAL_WHITE);
+    menuConfig_drawText(x + 0x103, y, otz, (u8)s_menuConfigFastText, TEXT_PAL_WHITE);
     menuConfig_drawSlider(x + 0x9E, y, otz, pos, 0x5A);
 }
 

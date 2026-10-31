@@ -2285,7 +2285,7 @@ typedef struct {
     s32 y; /* panel top */
     BtlUnit *menuUnit; /* unit whose row is highlighted */
     BtlUnit *units[4]; /* unit per row */
-    s8 rowColor[4]; /* text colour per row (btlui_updatePanelRowColor: 3 KO, 4 low HP) */
+    s8 rowColor[4]; /* ui_drawDigits style per row, also g_btluiRowCluts index (btlui_updatePanelRowColor: DIGITS_RED KO, DIGITS_YELLOW low HP) */
     u8 cantAct[4]; /* per row: the unit can't act (gauge greyed) */
     u8 slot[4]; /* per row: unit slot id */
     u8 atbKind[4]; /* per row: 0 normal, 2 slow/stop, 3 haste (gauge colour) */

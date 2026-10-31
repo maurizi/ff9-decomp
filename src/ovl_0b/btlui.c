@@ -863,7 +863,7 @@ void btlui_drawHelpWindow(void) {
         if (g_btluiHelp.text != 0) {
             win_setClip(NULL, 2, WIN_STYLE_BALLOON);
             m = text_getColor();
-            text_drawBlock(r.x + 6, r.y + 10, 2, g_btluiHelp.text, 8);
+            text_drawBlock(r.x + 6, r.y + 10, 2, g_btluiHelp.text, TEXT_PAL_HELP);
             text_setColor(m);
             win_setClip(&r, 2, WIN_STYLE_BALLOON);
         }
@@ -1149,9 +1149,9 @@ void btlui_drawCmdList(Window *arg0) {
     for (i = 0; i < 4; i++) {
         t = g_btlCmdNames + g_btlCmdTable[g_btlCmdMenu.cmdIds[i]].nameOfs;
         if (g_btlCmdMenu.enabled[i] == 0) {
-            text_draw(x, y, arg0->otz, t, 2);
+            text_draw(x, y, arg0->otz, t, TEXT_PAL_GREY);
         } else {
-            text_draw(x, y, arg0->otz, t, 0);
+            text_draw(x, y, arg0->otz, t, TEXT_PAL_WHITE);
         }
         do {
             y += 15;
@@ -1178,11 +1178,11 @@ void btlui_drawCmdOverlay(Window *arg0) {
         win_setClip(NULL, arg0->otz, WIN_STYLE_FRAMELESS);
     }
     if (g_btlCmdMenu.unit != NULL && !(btl_hasStatus(g_btlCmdMenu.unit, BTL_STATUS_TRANCE) & 0xFF)) {
-        ui_drawLabel(arg0->x + 6, r->y - 3, arg0->otz, g_winLabelStrings.command, arg0->active ? 0 : 2);
+        ui_drawLabel(arg0->x + 6, r->y - 3, arg0->otz, g_winLabelStrings.command, arg0->active ? UI_LABEL_NORMAL : UI_LABEL_DIM);
     } else if (arg0->active != 0) {
         btlui_drawTranceLabel(arg0->x + 6, r->y - 3, arg0->otz, s_btluiTranceLabel);
     } else {
-        ui_drawLabel(arg0->x + 6, r->y - 3, arg0->otz, (s32)s_btluiTranceLabel, 2);
+        ui_drawLabel(arg0->x + 6, r->y - 3, arg0->otz, (s32)s_btluiTranceLabel, UI_LABEL_DIM);
     }
     if (arg0->state != WIN_STATE_OPEN) {
         rc.x = r->x;
@@ -1221,7 +1221,7 @@ void btlui_drawSideCmd(Window *arg0) {
     r.w = 0x3E;
     r.h = 0x11;
     r.y = y + 4;
-    text_draw(r.x + dx, r.y + 2, arg0->otz, text_get(g_btluiSideCmdTexts[g_btlSideCmd.side]), 0);
+    text_draw(r.x + dx, r.y + 2, arg0->otz, text_get(g_btluiSideCmdTexts[g_btlSideCmd.side]), TEXT_PAL_WHITE);
     btlui_drawSideFrame(&r, arg0->otz);
 }
 
@@ -1428,7 +1428,7 @@ void btlui_drawTranceLabel(s32 x, s32 y, s32 otz, char *str) {
     ((DrMode2Words *)g_primPtr)->code[1] = 0;
     addPrim(&g_ot[otz], g_primPtr);
     g_primPtr += sizeof(DrMode2Words);
-    ui_drawLabel(x, y, otz, (s32)str, 1);
+    ui_drawLabel(x, y, otz, (s32)str, UI_LABEL_MASK);
     setlen(g_primPtr, 2);
     ((DrMode2Words *)g_primPtr)->code[0] = GPU_STP(0, 0);
     ((DrMode2Words *)g_primPtr)->code[1] = 0;
@@ -1449,7 +1449,7 @@ void btlui_drawTranceLabel(s32 x, s32 y, s32 otz, char *str) {
     ((DrMode2Words *)g_primPtr)->code[1] = 0;
     addPrim(&g_ot[otz], g_primPtr);
     g_primPtr += sizeof(DrMode2Words);
-    ui_drawLabel(x, y, otz, (s32)str, 0);
+    ui_drawLabel(x, y, otz, (s32)str, UI_LABEL_NORMAL);
 }
 
 void btlui_drawPulseGradient(s32 x, s32 y, s32 ot, s32 w, s32 h, CVECTOR *c) {
@@ -1882,10 +1882,10 @@ void btlui_drawListOverlay(Window *arg0) {
     s32 dy = 10;
     s32 dx = 0x74;
     if (g_btluiList.label != 0) {
-        ui_drawLabel(arg0->cur.x + 6, r->y - 4, arg0->otz, g_btluiList.label, 0);
+        ui_drawLabel(arg0->cur.x + 6, r->y - 4, arg0->otz, g_btluiList.label, UI_LABEL_NORMAL);
     }
     if (g_btluiList.label2 != 0) {
-        ui_drawLabel(arg0->cur.x - (g_btluiList.label2Width - dx), r->y - 4, arg0->otz, g_btluiList.label2, 0);
+        ui_drawLabel(arg0->cur.x - (g_btluiList.label2Width - dx), r->y - 4, arg0->otz, g_btluiList.label2, UI_LABEL_NORMAL);
     }
     if (btlui_getMenuState() == BTLUI_MENU_LIST || (btlui_getMenuState() == BTLUI_MENU_TARGET && btlui_getTargetReturnState() == BTLUI_MENU_LIST && !(btlui_isTargetWindowOpen() & 0xFF) && (g_btluiVsyncTick & 1))) {
         x = arg0->cur.x - 0x12;
@@ -1992,7 +1992,7 @@ void btlui_drawAbilityRow(s32 arg0, s32 arg1, s32 arg2, MenuView *arg3) {
         x = r->x;
         a = &g_gameState->gameData->ctx.battle->abilities[k];
         y = r->y + arg1 * 15 + arg3->y - dy;
-        c = (res != 2) * 2;
+        c = (res != 2) * TEXT_PAL_GREY;
         text_draw(x + 6, y, 7, g_btlAbilityNames + a->nameOfs, c);
         if (a->mpCost != 0) {
             text_formatNumber(btl_getMpCost((BtlCmd8 *)a), buf, 3, TEXT_NUM_ASCII);
@@ -2026,9 +2026,9 @@ void btlui_drawItemRow(s32 arg0, s32 arg1, s32 arg2, Window *arg3) {
             x5 = x + 5;
             y = r->y + arg1 * 15 + arg3->y - dy;
             ui_drawItemIcon(x5, y, 7, id, 1);
-            text_draw(x + 0x14, y, 7, g_itemNames + it->name, 0);
+            text_draw(x + 0x14, y, 7, g_itemNames + it->name, TEXT_PAL_WHITE);
             text_formatNumber(n, buf, 2, TEXT_NUM_ASCII);
-            ui_drawSmallDigits(x + 0x67, y + 4, 7, buf, 0);
+            ui_drawSmallDigits(x + 0x67, y + 4, 7, buf, TEXT_PAL_WHITE);
         }
     }
 }
@@ -2054,8 +2054,8 @@ void btlui_drawThrowRow(s32 arg0, s32 arg1, s32 arg2, Window *arg3) {
             it = &g_itemTable[e->unk0];
             y = r->y + arg1 * 15 + arg3->y - dy;
             text_formatNumber(n, buf, 2, TEXT_NUM_ASCII);
-            text_draw(x + 5, y, 7, g_itemNames + it->name, 0);
-            ui_drawSmallDigits(x + 0x67, y + 4, 7, buf, 0);
+            text_draw(x + 5, y, 7, g_itemNames + it->name, TEXT_PAL_WHITE);
+            ui_drawSmallDigits(x + 0x67, y + 4, 7, buf, TEXT_PAL_WHITE);
         }
     }
 }
@@ -2530,14 +2530,14 @@ void btlui_drawTargetList(Window *arg0) {
         if ((f >> BTL_UNIT_TARGETABLE_BIT) & 1) {
             if (f & BTL_UNIT_PARTY) {
                 if (u->hp != 0) {
-                    c = ((u16)(u->max->maxHp / 6) >= u->hp) * 4;
+                    c = ((u16)(u->max->maxHp / 6) >= u->hp) * TEXT_PAL_YELLOW;
                 } else {
-                    c = 3;
+                    c = TEXT_PAL_RED;
                 }
                 text_draw(w->x + 0x7A, y2, arg0->otz, name, c);
                 y2 += 15;
             } else {
-                c = ((u8)btl_hasStatus(u, BTL_STATUS_KO) != 0) * 2;
+                c = ((u8)btl_hasStatus(u, BTL_STATUS_KO) != 0) * TEXT_PAL_GREY;
                 text_drawBlock(w->x + 0xC, y1, arg0->otz, name, c);
                 y1 += 15;
             }
@@ -2563,8 +2563,8 @@ void btlui_drawTargetListOverlay(Window *arg0) {
     if (arg0->state != WIN_STATE_OPEN) {
         win_setClip(NULL, arg0->otz, WIN_STYLE_FRAMELESS);
     }
-    ui_drawLabel(w->x + 8, r->y - 3, arg0->otz, g_winLabelStrings.labelEnemy, 0);
-    ui_drawLabel(w->x + 0x76, r->y - 3, arg0->otz, g_winLabelStrings.labelPlayer, 0);
+    ui_drawLabel(w->x + 8, r->y - 3, arg0->otz, g_winLabelStrings.labelEnemy, UI_LABEL_NORMAL);
+    ui_drawLabel(w->x + 0x76, r->y - 3, arg0->otz, g_winLabelStrings.labelPlayer, UI_LABEL_NORMAL);
     if (arg0->state != WIN_STATE_OPEN) {
         rc.x = r->x;
         rc.y = r->y - 3;
@@ -3001,9 +3001,9 @@ void btlui_drawHpList(Window *arg0) {
     s32 dy = arg0->h - arg0->cur.h;
     s32 c;
     for (u = g_gameState->gameData->ctx.battle->unitList; u != 0 && (u->flags & BTL_UNIT_PARTY); u = u->next) {
-        c = 3;
+        c = DIGITS_RED;
         if (u->hp != 0) {
-            c = ((u->status & BTL_STATUS_LOW_HP) != 0) * 4;
+            c = ((u->status & BTL_STATUS_LOW_HP) != 0) * DIGITS_YELLOW;
         }
         b[0] = 0x2F;
         text_formatNumber(u->hp, a, 4, TEXT_NUM_ASCII);
@@ -3026,7 +3026,7 @@ void btlui_drawMpList(Window *arg0) {
     while (u != NULL) {
         if (u->flags & BTL_UNIT_PARTY) {
             yy = y - dy;
-            c = (u->mp < (s16)(u->max->maxMp / 6)) * 4;
+            c = (u->mp < (s16)(u->max->maxMp / 6)) * DIGITS_YELLOW;
             max[0] = 0x2F;
             text_formatNumber(u->mp, hp, 3, TEXT_NUM_ASCII);
             y += 0xC;
@@ -3407,7 +3407,7 @@ void btlui_drawPanelHeader(void) {
     for (i = 0; i < 5; e++, i++) {
         if (e->visible != 0) {
             ui_drawLabel((s16)e->x, g_btluiPanel->y + (s16)e->y, 7,
-                          ((s32 *)&g_winLabelStrings)[e->text], 0);
+                          ((s32 *)&g_winLabelStrings)[e->text], UI_LABEL_NORMAL);
         }
     }
     win_setClip(&r, 7, WIN_STYLE_FRAMELESS);
@@ -3613,10 +3613,10 @@ void btlui_updatePanelRowColor(s32 arg0) {
     BtlUnit *u = g_btluiPanel->units[arg0];
     s32 hp = u->hp;
     if (hp == 0) {
-        g_btluiPanel->rowColor[arg0] = 3;
+        g_btluiPanel->rowColor[arg0] = DIGITS_RED;
         return;
     }
-    g_btluiPanel->rowColor[arg0] = ((s32)(u16)(u->max->maxHp / 6) >= hp) << 2;
+    g_btluiPanel->rowColor[arg0] = ((s32)(u16)(u->max->maxHp / 6) >= hp) * DIGITS_YELLOW;
 }
 
 void btlui_alignPanelLabel(Unk800F412C *arg0) {
@@ -3656,7 +3656,7 @@ void btlui_drawPanelMp(BtlUnit *arg0, s32 arg1) {
     s32 c;
     s32 dy = 6;
     mp = arg0->menu->gauges[1].shown < 0 ? 0 : arg0->menu->gauges[1].shown;
-    c = ((s16)(arg0->max->maxMp / 6) >= mp) << 2;
+    c = ((s16)(arg0->max->maxMp / 6) >= mp) * DIGITS_YELLOW;
     text_formatNumber(mp, buf, 3, TEXT_NUM_ASCII);
     ui_drawDigits(0xEF, g_btluiPanel->y + (arg1 * 12 + dy), 0xE, buf, c);
 }

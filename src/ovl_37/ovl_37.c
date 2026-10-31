@@ -159,12 +159,12 @@ void menuItem_drawList(void) {
     s32 idx;
 
     il = &s_menuItemTabs[s_menuItem.tab];
-    ui_drawLabel(s_menuItemListRect->x + 0xE, s_menuItemListRect->y - 3, 0x1D, g_winLabelStrings.itemList, 0);
-    ui_drawLabel(s_menuItemListRect->x + 0xA4, s_menuItemListRect->y - 3, 0x1D, g_winLabelStrings.itemList, 0);
+    ui_drawLabel(s_menuItemListRect->x + 0xE, s_menuItemListRect->y - 3, 0x1D, g_winLabelStrings.itemList, UI_LABEL_NORMAL);
+    ui_drawLabel(s_menuItemListRect->x + 0xA4, s_menuItemListRect->y - 3, 0x1D, g_winLabelStrings.itemList, UI_LABEL_NORMAL);
     if (s_menuItem.tab != ITEM_TAB_KEY) {
         w = ui_measureLabel((u8 *)g_winLabelStrings.itemCount);
-        ui_drawLabel((s_menuItemListRect->x + 0x8A) - w, s_menuItemListRect->y - 3, 0x1D, g_winLabelStrings.itemCount, 0);
-        ui_drawLabel((s_menuItemListRect->x + 0x120) - w, s_menuItemListRect->y - 3, 0x1D, g_winLabelStrings.itemCount, 0);
+        ui_drawLabel((s_menuItemListRect->x + 0x8A) - w, s_menuItemListRect->y - 3, 0x1D, g_winLabelStrings.itemCount, UI_LABEL_NORMAL);
+        ui_drawLabel((s_menuItemListRect->x + 0x120) - w, s_menuItemListRect->y - 3, 0x1D, g_winLabelStrings.itemCount, UI_LABEL_NORMAL);
     }
     menuList_getView(il->list, &view);
     win_drawListBox(s_menuItemListRect, 0x1D, 1, il->list);
@@ -433,8 +433,8 @@ void menuItem_drawKeyItem(void) {
     if (m->keyView != 0) {
         x = m->keyViewX;
         name = g_keyItemNames + g_keyItemTable[m->keyViewId].name;
-        text_drawBlock(x + ((0xB0 - text_measureWidth((s32)name)) >> 1), 0x50, 0x14, name, 8);
-        text_drawBlock(x + 0xD, 0x66, 0x14, s_menuItemKeyDesc + g_keyItemTable[m->keyViewId].desc, 8);
+        text_drawBlock(x + ((0xB0 - text_measureWidth((s32)name)) >> 1), 0x50, 0x14, name, TEXT_PAL_HELP);
+        text_drawBlock(x + 0xD, 0x66, 0x14, s_menuItemKeyDesc + g_keyItemTable[m->keyViewId].desc, TEXT_PAL_HELP);
         setlen(g_primPtr, 4);
         ((SprtWords *)g_primPtr)->rgbc = GPU_RGBC(GPU_SPRT, GPU_RGB_NEUTRAL);
         ((SprtWords *)g_primPtr)->xy = (x & 0xFFFF) | 0x410000;
@@ -607,7 +607,7 @@ void menuItem_drawTabs(void) {
 
     r = &s_menuItem.cmdRect;
     for (i = 0; i < 3; i++) {
-        text_drawBlock(r->x + s_menuItemTabX[i], r->y + 6, 0x1C, text_get(s_menuItemTabText[i]), 0);
+        text_drawBlock(r->x + s_menuItemTabX[i], r->y + 6, 0x1C, text_get(s_menuItemTabText[i]), TEXT_PAL_WHITE);
     }
     win_drawBox(r, 0x1D, WIN_STYLE_BEVEL);
     win_drawShadow(r, 0x1D, WIN_STYLE_BEVEL);
@@ -661,9 +661,9 @@ void menuItem_drawRow(s32 col, s32 row, s32 i, MenuView *v) {
         y = row * 0xF + (v->y + k);
         text_formatNumber(p->unk1, buf, 2, TEXT_NUM_ASCII);
         x2 = x + 0x18;
-        text_drawBlock(x + 0x28, y, 0x1C, g_itemNames + it->name, ok ? 0 : 2);
+        text_drawBlock(x + 0x28, y, 0x1C, g_itemNames + it->name, ok ? TEXT_PAL_WHITE : TEXT_PAL_GREY);
         ui_drawItemIcon(x2, y, 0x1C, p->unk0, ok);
-        ui_drawSmallDigits(x2 + 0x6C, y + 4, 0x1C, buf, ok ? 0 : 2);
+        ui_drawSmallDigits(x2 + 0x6C, y + 4, 0x1C, buf, ok ? TEXT_PAL_WHITE : TEXT_PAL_GREY);
     }
 }
 
@@ -689,7 +689,7 @@ void menuItem_drawKeyRow(s32 col, s32 row, s32 i, MenuView *v) {
             ui_drawSprite(w + 5, y + 2, 0x1C, 0xB6, blink);
             ui_drawSprite(w - 1, y - 1, 0x1C, 0xB5, 0);
         }
-        text_drawBlock(x, y, 0x1C, name, 0);
+        text_drawBlock(x, y, 0x1C, name, TEXT_PAL_WHITE);
     }
 }
 
@@ -703,7 +703,7 @@ void menuItem_drawKweh(Window *w) {
     u8 *s;
 
     s = text_get(ITEM_TEXT_KWEH);
-    text_drawBlock(w->x + ((w->w - text_measureWidth((s32)s)) >> 1), w->y + 6, w->otz, s, 0);
+    text_drawBlock(w->x + ((w->w - text_measureWidth((s32)s)) >> 1), w->y + 6, w->otz, s, TEXT_PAL_WHITE);
 }
 
 void menuItem_stepKweh(void) {
@@ -785,7 +785,7 @@ void menuItem_drawArrangeWindow(Window *w) {
     s32 i;
 
     for (i = 0; i < 2; i++) {
-        text_drawBlock(p->x + 10, p->y + 6 + i * 15, w->otz, text_get(i + ITEM_TEXT_AUTO), 0);
+        text_drawBlock(p->x + 10, p->y + 6 + i * 15, w->otz, text_get(i + ITEM_TEXT_AUTO), TEXT_PAL_WHITE);
     }
 }
 

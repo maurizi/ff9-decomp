@@ -181,18 +181,18 @@ void menuMain_drawMember(s32 arg0) {
         x = r->x + 0x16;
     }
     ui_drawPortrait(x, r->y + 1, 0x14, arg0, 0x2D, c->hp == 0);
-    text_drawBlock(r->x + 0x3C, r->y + 3, 0x14, c->name, 0);
+    text_drawBlock(r->x + 0x3C, r->y + 3, 0x14, c->name, TEXT_PAL_WHITE);
     ui_drawStatusIcons(r->x + 0x86, r->y + 4, 0x14, c->status, 0);
     text_formatNumber(c->level, buf, 2, TEXT_NUM_ASCII);
     ui_drawSprite(r->x + 0x3C, r->y + 0x12, 0x14, 0xB4, 0);
-    ui_drawSmallDigits(r->x + 0x60, r->y + 0x12, 0x14, buf, 0);
+    ui_drawSmallDigits(r->x + 0x60, r->y + 0x12, 0x14, buf, TEXT_PAL_WHITE);
     ui_drawSprite(r->x + 0x3C, r->y + 0x1B, 0x14, 0xAF, 0);
     text_formatNumber(c->hp, buf, 4, TEXT_NUM_ASCII);
     buf[4] = 0x2F;
     if (c->hp != 0) {
-        color = ((u16)(c->maxHp / 6) >= c->hp) * 4;
+        color = ((u16)(c->maxHp / 6) >= c->hp) * TEXT_PAL_YELLOW;
     } else {
-        color = 3;
+        color = TEXT_PAL_RED;
     }
     text_formatNumber(c->maxHp, &buf[5], TEXT_NUM_NO_PAD, TEXT_NUM_ASCII);
     ui_drawSmallDigits(r->x + 0x52, r->y + 0x1B, 0x14, buf, color);
@@ -200,7 +200,7 @@ void menuMain_drawMember(s32 arg0) {
     text_formatNumber(c->mp, buf, 3, TEXT_NUM_ASCII);
     buf[3] = 0x2F;
     maxmp = c->maxMp;
-    color = ((s16)(maxmp / 6) >= c->mp) * 4;
+    color = ((s16)(maxmp / 6) >= c->mp) * TEXT_PAL_YELLOW;
     text_formatNumber(maxmp, &buf[4], TEXT_NUM_NO_PAD, TEXT_NUM_ASCII);
     ui_drawSmallDigits(r->x + 0x59, r->y + 0x24, 0x14, buf, color);
     ui_drawStones(r->x + 0x9B, r->y + 0x14, 0x14, c->stones, c->maxStones);
@@ -231,22 +231,22 @@ void menuMain_drawTimeGil(void) {
     ui_drawSmallDigits(s_menuMainTimeGilRect->x + 0x13, s_menuMainTimeGilRect->y + 9, 0x13, buf, text_formatTime(v, buf, 1));
     text_formatNumber(g_gameState->gameData->gil, buf, 7, TEXT_NUM_ASCII);
     strcat(buf, s_menuMainGilSuffix);
-    ui_drawSmallDigits(s_menuMainTimeGilRect->x + 0x13, s_menuMainTimeGilRect->y + 0x16, 0x13, buf, 0);
-    ui_drawLabel(s_menuMainTimeGilRect->x + 6, s_menuMainTimeGilRect->y - 3, 0x13, g_labelTimeAndGil, 0);
+    ui_drawSmallDigits(s_menuMainTimeGilRect->x + 0x13, s_menuMainTimeGilRect->y + 0x16, 0x13, buf, TEXT_PAL_WHITE);
+    ui_drawLabel(s_menuMainTimeGilRect->x + 6, s_menuMainTimeGilRect->y - 3, 0x13, g_labelTimeAndGil, UI_LABEL_NORMAL);
     win_drawBox(s_menuMainTimeGilRect, 0x14, WIN_STYLE_BEVEL);
 }
 
 void menuMain_drawLocation(void) {
     GameData *gd;
 
-    ui_drawLabel(s_menuMainLocationRect->x + 8, s_menuMainLocationRect->y - 3, 0x13, g_labelLocation, 0);
+    ui_drawLabel(s_menuMainLocationRect->x + 8, s_menuMainLocationRect->y - 3, 0x13, g_labelLocation, UI_LABEL_NORMAL);
     win_drawBox(s_menuMainLocationRect, 0x14, WIN_STYLE_BEVEL);
     win_drawShadow(s_menuMainLocationRect, 0x14, WIN_STYLE_BEVEL);
     gd = g_gameState->gameData;
     if (gd->locationName != NULL && *gd->locationName != 0xFF) {
-        text_drawBlock(s_menuMainLocationRect->x + 8, s_menuMainLocationRect->y + 7, 0x13, gd->locationName, 0);
+        text_drawBlock(s_menuMainLocationRect->x + 8, s_menuMainLocationRect->y + 7, 0x13, gd->locationName, TEXT_PAL_WHITE);
     } else {
-        text_drawBlock(s_menuMainLocationRect->x + 8, s_menuMainLocationRect->y + 7, 0x13, text_get(1), 0);
+        text_drawBlock(s_menuMainLocationRect->x + 8, s_menuMainLocationRect->y + 7, 0x13, text_get(1), TEXT_PAL_WHITE);
     }
 }
 
