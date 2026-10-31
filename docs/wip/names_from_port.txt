@@ -6275,3 +6275,1053 @@ WM_MOVE_STEER WM_MOVE_BOAT
 WM_MOVE_AIRSHIP WM_MOVE_HILDA_GARDE
 WM_MOVE_AIRSHIP2 WM_MOVE_INVINCIBLE
 # FIELDS include/ovl_0c.h WmActorType: unk4=rideMode
+
+# ===== round 31: names_round31_fxmod =====
+# Round 31: effect-module names (old -> new). Evidence [code]; the reason is in each module's
+# config/fxmod/fx_XXX.syms.txt entry. Shared helpers carry the fxm_ prefix and are static in every module
+# that does not reference them from its data (asm), so each copy stays module-local.
+
+## Batch 1: shared helpers (duplicate groups)
+fxm_posPathGet  <-  fx_041:func_801E7D08 fx_0d2:func_801E9E88 fx_0e2:func_801EC4A4 fx_0ef:func_801E7A64 fx_114:func_801EA6F4 fx_128:func_801E88B4 fx_12b:func_801E9744 fx_138:func_801E81F0 fx_180:func_801E8F08 fx_191:func_801E8478 fx_1a0:func_801E7E94 fx_1b4:func_801E8558 fx_1bd:func_801E8E90 fx_1e6:func_801E829C fx_1e7:func_801E806C fx_1ea:func_801E8C4C fx_1ec:func_801E8C60 fx_1fc:func_801E876C fx_1fd:func_801E97DC
+fxm_rotPosPathGet  <-  fx_0b4:func_801E8058 fx_0d2:func_801E9F04 fx_0e2:func_801EC520 fx_123:func_801E8E38 fx_128:func_801E8808 fx_183:func_801E81F4 fx_1ea:func_801E8CC8 fx_1eb:func_801E8120 fx_1fc:func_801E87E8 fx_1fd:func_801E9858
+fxm_valuePathGet  <-  fx_0d2:func_801E9FB0 fx_128:func_801E8930 fx_1eb:func_801E81CC fx_1fc:func_801E8894
+fxm_vecPathGet  <-  fx_0d2:func_801EA00C fx_114:func_801EA898 fx_1b2:func_801E8220 fx_1fc:func_801E88F0
+fxm_rotPosTrackGet  <-  fx_05d:func_801E7F34 fx_078:func_801E7B84 fx_0dd:func_801E824C fx_114:func_801EA76C fx_1bd:func_801E8F08
+fxm_vecTrackGet  <-  fx_05d:func_801E7FE4 fx_078:func_801E7CB4 fx_0dd:func_801E82FC fx_114:func_801EA81C fx_1bd:func_801E8FB8
+fxm_posTrackGet  <-  fx_078:func_801E7C34 fx_114:func_801EA670 fx_1bd:func_801E8E0C
+fxm_posPathInit  <-  fx_041:func_801E7CF0 fx_0d2:func_801E9E70 fx_0e2:func_801EC48C fx_0ef:func_801E7A4C fx_114:func_801EA6DC fx_128:func_801E889C fx_12b:func_801E972C fx_138:func_801E81D8 fx_180:func_801E8EF0 fx_191:func_801E8460 fx_1a0:func_801E7E7C fx_1b4:func_801E8540 fx_1bd:func_801E8E78 fx_1e6:func_801E8284 fx_1e7:func_801E8054 fx_1ea:func_801E8C34 fx_1ec:func_801E8C48 fx_1fc:func_801E8754 fx_1fd:func_801E97C4
+fxm_rotPosPathInit  <-  fx_0b4:func_801E8040 fx_0d2:func_801E9EEC fx_0e2:func_801EC508 fx_123:func_801E8E20 fx_128:func_801E87F0 fx_183:func_801E81DC fx_1ea:func_801E8CB0 fx_1eb:func_801E8108 fx_1fc:func_801E87D0 fx_1fd:func_801E9840
+fxm_valuePathInit  <-  fx_0d2:func_801E9F98 fx_128:func_801E8918 fx_1eb:func_801E81B4 fx_1fc:func_801E887C
+fxm_vecPathInit  <-  fx_0d2:func_801E9FF4 fx_114:func_801EA880 fx_1b2:func_801E8208 fx_1fc:func_801E88D8
+fxm_rotPosTrackInit  <-  fx_05d:func_801E7F20 fx_078:func_801E7B70 fx_0dd:func_801E8238 fx_114:func_801EA758 fx_1bd:func_801E8EF4
+fxm_vecTrackInit  <-  fx_05d:func_801E7FD0 fx_078:func_801E7CA0 fx_0dd:func_801E82E8 fx_114:func_801EA808 fx_1bd:func_801E8FA4
+fxm_posTrackInit  <-  fx_078:func_801E7C20 fx_114:func_801EA65C fx_1bd:func_801E8DF8
+fxm_lerpSvec  <-  fx_001:func_801E7D00 fx_023:func_801E7B4C fx_03d:func_801E7D7C fx_052:func_801E7E2C fx_08e:func_801E7D00 fx_090:func_801E7D18 fx_096:func_801E8238 fx_0cf:func_801E78F4 fx_0d2:func_801E9DD4 fx_0e2:func_801EC3F0 fx_0e4:func_801E7C5C fx_0e7:func_801E7E60 fx_0e9:func_801E7C18 fx_0eb:func_801E7B40 fx_0f2:func_801E7A9C fx_0f4:func_801E7CDC fx_0fe:func_801E7B58 fx_0ff:func_801E7BCC fx_114:func_801EA5C0 fx_122:func_801E7BF8 fx_123:func_801E8D84 fx_128:func_801E8754 fx_12b:func_801E9690 fx_12d:func_801E7C24 fx_138:func_801E813C fx_180:func_801E8DBC fx_183:func_801E8140 fx_184:func_801E7CE0 fx_19e:func_801E78F4 fx_1a4:func_801E8084 fx_1ab:func_801E7C9C fx_1b2:func_801E816C fx_1bd:func_801E8D5C fx_1e6:func_801E81E8 fx_1ea:func_801E8B00 fx_1eb:func_801E806C fx_1ec:func_801E8B14 fx_1fc:func_801E86B8 fx_1fd:func_801E9728
+fxm_lerpRatio  <-  fx_001:func_801E7D44 fx_023:func_801E7B90 fx_03d:func_801E7DC0 fx_052:func_801E7E70 fx_08e:func_801E7D44 fx_090:func_801E7D5C fx_096:func_801E827C fx_0cf:func_801E7938 fx_0d2:func_801E9E18 fx_0e2:func_801EC434 fx_0e4:func_801E7CA0 fx_0e7:func_801E7EA4 fx_0e9:func_801E7C5C fx_0eb:func_801E7B84 fx_0f2:func_801E7AE0 fx_0f4:func_801E7D20 fx_0fe:func_801E7B9C fx_0ff:func_801E7C10 fx_114:func_801EA604 fx_122:func_801E7C3C fx_123:func_801E8DC8 fx_128:func_801E8798 fx_12b:func_801E96D4 fx_12d:func_801E7C68 fx_138:func_801E8180 fx_180:func_801E8E00 fx_183:func_801E8184 fx_184:func_801E7D24 fx_19e:func_801E7938 fx_1a4:func_801E80C8 fx_1ab:func_801E7CE0 fx_1b2:func_801E81B0 fx_1bd:func_801E8DA0 fx_1e6:func_801E822C fx_1ea:func_801E8B44 fx_1eb:func_801E80B0 fx_1ec:func_801E8B58 fx_1fc:func_801E86FC fx_1fd:func_801E976C
+fxm_easeLerp  <-  fx_033:func_801E7704 fx_062:func_801E77F0 fx_063:func_801E7704 fx_079:func_801E77B8 fx_07a:func_801E78E4 fx_0b1:func_801E792C fx_0b8:func_801E7704 fx_130:func_801E7704 fx_18c:func_801E7704 fx_1ac:func_801E77D0 fx_1b3:func_801E77CC fx_1be:func_801E7840 fx_1ed:func_801E792C fx_1ee:func_801E792C fx_1ef:func_801E792C fx_1f0:func_801E7948 fx_1f1:func_801E7704 fx_1f2:func_801E7794 fx_1f3:func_801E7794
+fxm_easeLerpSvec  <-  fx_07a:func_801E77A8 fx_1be:func_801E7704
+fxm_easeBlend4  <-  fx_0fa:func_801E7704 fx_1f0:func_801E7704
+fxm_setSignal  <-  fx_01d:func_801E7CD8 fx_024:func_801E7D04 fx_02b:func_801E7CD8 fx_045:func_801E7CDC fx_051:func_801E7988 fx_053:func_801E7C50 fx_056:func_801E794C fx_08b:func_801E7D18 fx_0c2:func_801E8420 fx_0c6:func_801E78F4 fx_0ea:func_801E7DE0 fx_11e:func_801E7F70 fx_12a:func_801E7EA0 fx_12b:func_801E97A8 fx_138:func_801E8254 fx_1a5:func_801E78F4 fx_1e7:func_801E8258
+fxm_tintScreenLerp  <-  fx_052:func_801E7EC8 fx_0d2:func_801EA070 fx_0e2:func_801EC5B4 fx_114:func_801EA914 fx_123:func_801E8ECC fx_180:func_801E8E58 fx_1b2:func_801E8284 fx_1bd:func_801E9034 fx_1ea:func_801E8B9C fx_1ec:func_801E8BB0 fx_1fc:func_801E8954 fx_1fd:func_801E98EC
+fxm_tintScreenRatio  <-  fx_1b3:func_801E773C fx_1f2:func_801E7704 fx_1f3:func_801E7704
+fxm_drawTexelQuads  <-  fx_007:func_801E7704 fx_048:func_801E7704 fx_097:func_801E7720 fx_098:func_801E7720 fx_0d3:func_801E7720 fx_0d6:func_801E7704 fx_0e1_0:func_801E7718 fx_1cc:func_801E7720 fx_1fe:func_801E7704
+fxm_drawScrollMoveX  <-  fx_026:func_801E78BC fx_0b3:func_801E78BC fx_0e2:func_801EC920 fx_114:func_801EB154 fx_138:func_801E8268 fx_196:func_801E78BC fx_197:func_801E78BC fx_1bd:func_801E9874 fx_1fd:func_801E9C58
+fxm_startUnitMotion  <-  fx_041:func_801E7D6C fx_09b:func_801E7F6C fx_0c2:func_801E8298 fx_100:func_801E7B8C fx_180:func_801E8F6C fx_1a6:func_801E80B4 fx_1b2:func_801E831C fx_1e7:func_801E80D0 fx_1ec:func_801E8CC4
+fxm_isMotionDone  <-  fx_041:func_801E7DD8 fx_09b:func_801E7FD8 fx_0c2:func_801E8304 fx_100:func_801E7BF8 fx_180:func_801E8FD8 fx_1a6:func_801E8120 fx_1b2:func_801E8388 fx_1e7:func_801E813C fx_1ec:func_801E8D30
+fxm_startMotion2IfActive  <-  fx_041:func_801E7E5C fx_09b:func_801E805C fx_0c2:func_801E8388 fx_100:func_801E7C7C fx_180:func_801E905C fx_1a6:func_801E81A4 fx_1b2:func_801E840C fx_1e7:func_801E81C0 fx_1ec:func_801E8DB4
+fxm_startMotion3IfActive  <-  fx_041:func_801E7EA8 fx_09b:func_801E80A8 fx_0c2:func_801E83D4 fx_100:func_801E7CC8 fx_180:func_801E90A8 fx_1a6:func_801E81F0 fx_1b2:func_801E8458 fx_1e7:func_801E820C fx_1ec:func_801E8E00
+fxm_offsetTableEntry  <-  fx_0d2:func_801E9DBC fx_0e2:func_801EC3D8 fx_114:func_801EA8FC fx_180:func_801E8DA4 fx_1bd:func_801E901C fx_1ec:func_801E8AFC fx_1fc:func_801E86A0 fx_1fd:func_801E9710
+fxm_camChanReset  <-  fx_0d2:func_801EA1D4 fx_0e2:func_801EC718 fx_114:func_801EA9AC fx_1bd:func_801E90CC fx_1fc:func_801E8AB8 fx_1fd:func_801E9A50
+fxm_camChanAdd  <-  fx_0d2:func_801EA220 fx_0e2:func_801EC764 fx_114:func_801EA9F8 fx_1bd:func_801E9118 fx_1fc:func_801E8B04 fx_1fd:func_801E9A9C
+fxm_camChanUpdate  <-  fx_0d2:func_801EA27C fx_0e2:func_801EC7C0 fx_114:func_801EAA54 fx_1bd:func_801E9174 fx_1fc:func_801E8B60 fx_1fd:func_801E9AF8
+fxm_camKeyReset  <-  fx_0b1:func_801E7704 fx_105:func_801E7B74 fx_1ed:func_801E7704 fx_1ee:func_801E7704 fx_1ef:func_801E7704
+fxm_camKeyAdd  <-  fx_0b1:func_801E7738 fx_105:func_801E7BA8 fx_1ed:func_801E7738 fx_1ee:func_801E7738 fx_1ef:func_801E7738
+fxm_camKeyUpdate  <-  fx_0b1:func_801E7788 fx_105:func_801E7BF8 fx_1ed:func_801E7788 fx_1ee:func_801E7788 fx_1ef:func_801E7788
+fxm_keyGetVec  <-  fx_026:func_801E7704 fx_0b3:func_801E7704 fx_0d3:func_801E8470 fx_196:func_801E7704 fx_197:func_801E7704
+fxm_keyGetVec2  <-  fx_026:func_801E7754 fx_0b3:func_801E7754 fx_0d3:func_801E84C0 fx_196:func_801E7754 fx_197:func_801E7754
+fxm_keyGetVec3  <-  fx_026:func_801E77DC fx_0b3:func_801E77DC fx_0d3:func_801E8548 fx_196:func_801E77DC fx_197:func_801E77DC
+fxm_keyGetValue  <-  fx_026:func_801E7890 fx_0b3:func_801E7890 fx_0d3:func_801E85FC fx_196:func_801E7890 fx_197:func_801E7890
+fxm_turnUnitBy  <-  fx_088:func_801E7984 fx_0c2:func_801E7EC4 fx_0cf:func_801E7AAC fx_19e:func_801E7AAC
+fxm_turnUnitToward  <-  fx_088:func_801E7B00 fx_0c2:func_801E8040 fx_0cf:func_801E7C28 fx_19e:func_801E7C28
+fxm_pinParticle  <-  fx_09b:func_801E7808 fx_114:func_801E784C fx_123:func_801E7A24 fx_12b:func_801E8000
+fxm_moveUnitArc  <-  fx_0cf:func_801E7990 fx_180:func_801E90F4 fx_184:func_801E7BC4 fx_19e:func_801E7990
+fxm_moveUnitHome  <-  fx_0d2:func_801EA108 fx_0e2:func_801EC64C fx_1fc:func_801E89EC fx_1fd:func_801E9984
+fxm_getSummonBonePoint  <-  fx_05e:func_801E7B74 fx_09a:func_801E7B74 fx_0ed:func_801E7B74
+fxm_anglesFromEye  <-  fx_07d:func_801E80C4 fx_0cb:func_801E7EB8 fx_0df:func_801E80B0
+fxm_drawTrailLine  <-  fx_0a0:func_801E783C fx_17d_4:func_801E7720 fx_1bf_0:func_801E7704
+fxm_buildPathTrail  <-  fx_0d2:func_801E77A4 fx_114:func_801E78AC fx_1bd:func_801E77C0
+fxm_shatterInit  <-  fx_026:func_801E912C fx_197:func_801E7A5C
+fxm_shatterAddModel  <-  fx_026:func_801E9170 fx_197:func_801E7AA0
+fxm_shatterFreeShard  <-  fx_026:func_801E928C fx_197:func_801E7BBC
+fxm_shatterRelease  <-  fx_026:func_801E92EC fx_197:func_801E7C1C
+fxm_randDiscPoints  <-  fx_086:func_801E7E18 fx_08f:func_801E7704
+fxm_nextRingPoint  <-  fx_0b3:func_801EA6C8 fx_196:func_801E8370
+fxm_drawCenterBand  <-  fx_0ba:func_801E7704 fx_19f:func_801E7704
+fxm_waveVertexX  <-  fx_0d3:func_801E90D4 fx_1fe:func_801E7CA0
+fxm_drawMirrorSprite  <-  fx_0e0:func_801E7718 fx_134:func_801E7748
+fxm_randRingPoint  <-  fx_17d_7:func_801EC704 fx_1bf_1:func_801EC704
+fxm_splitModelAdd  <-  fx_1b0:func_801E774C fx_1b7:func_801E774C
+
+## Batch 2: strip, trail and grid drawers, shatter, pinned particle callbacks
+fxm_drawJaggedStrip16  <-  fx_003:func_801E7704 fx_005:func_801E7704 fx_042:func_801E7704 fx_049:func_801E7704 fx_0d7:func_801E7704 fx_0d8:func_801E7704
+fxm_drawJaggedStrip4  <-  fx_003:func_801E796C fx_005:func_801E796C fx_042:func_801E796C fx_049:func_801E796C fx_0d7:func_801E796C fx_0d8:func_801E796C
+fxm_drawJaggedBranch4  <-  fx_003:func_801E7BF8 fx_005:func_801E7BF8 fx_042:func_801E7BF8 fx_049:func_801E7BF8 fx_0d7:func_801E7BF8 fx_0d8:func_801E7BF8
+fxm_drawJaggedStrip15  <-  fx_018:func_801E82FC fx_085:func_801E82A0 fx_0d9:func_801E8188
+fxm_drawJaggedStrip3  <-  fx_018:func_801E8564 fx_085:func_801E8508 fx_0d9:func_801E83F0
+fxm_drawJaggedBranch3  <-  fx_018:func_801E87E8 fx_085:func_801E878C fx_0d9:func_801E8674
+fxm_jaggedStripTask  <-  fx_018:func_801E88DC fx_085:func_801E8880 fx_0d9:func_801E8768
+fxm_randStripPoint  <-  fx_018:func_801E8C84 fx_085:func_801E8C28 fx_0d9:func_801E8B10
+fxm_randStripPoint32  <-  fx_0ba:func_801EB1CC fx_19f:func_801E9FC4
+fxm_drawArcTrail  <-  fx_17d_6:func_801E8B10 fx_17d_7:func_801EE6E4 fx_1bf_1:func_801EE6BC
+fxm_drawArcTrailBranch  <-  fx_17d_6:func_801E8DBC fx_1bf_1:func_801EE968
+fxm_drawJaggedTrail  <-  fx_0ba:func_801EA850 fx_19f:func_801E9968
+fxm_drawJaggedTrailBranch  <-  fx_0ba:func_801EAAF0 fx_17d_7:func_801EE990 fx_19f:func_801E9C08
+fxm_drawRibbonTrail  <-  fx_05e:func_801E7704 fx_09a:func_801E7704 fx_0ed:func_801E7704 fx_0fb_0:func_801E7720 fx_105:func_801E7704 fx_1a2:func_801E7718
+fxm_drawRadialScreenGrid  <-  fx_07d:func_801E7718 fx_07e:func_801E7704 fx_0cb:func_801E7704 fx_0d3:func_801E7CBC fx_0df:func_801E7704 fx_18b:func_801E7704
+fxm_drawBulgeGrid14  <-  fx_097:func_801E7CBC fx_098:func_801E7CBC fx_1cc:func_801E7CBC
+fxm_drawBulgeGrid24  <-  fx_0e0:func_801E7E18 fx_134:func_801E7E48
+fxm_twistVertex  <-  fx_07d:func_801E7FF4 fx_0df:func_801E7FE0
+fxm_shatterUpdate  <-  fx_026:func_801E9564 fx_197:func_801E7E94
+fxm_drawStreakField  <-  fx_086:func_801E7F6C fx_08f:func_801E7858
+fxm_drawSprite3D  <-  fx_0e0:func_801E7B08 fx_134:func_801E7B38
+fxm_drawTiledStrip  <-  fx_0e0:func_801E7910 fx_134:func_801E7940
+fxm_drawTexelQuadsB  <-  fx_114:func_801EABB4 fx_1bd:func_801E92D4
+fxm_pinParticle0  <-  fx_09b:func_801E7704 fx_114:func_801E777C fx_123:func_801E77B4
+fxm_pinParticle1  <-  fx_09b:func_801E7738 fx_114:func_801E77B0 fx_123:func_801E77E8
+fxm_pinParticle2  <-  fx_09b:func_801E776C fx_114:func_801E77E4 fx_123:func_801E781C
+fxm_pinParticle3  <-  fx_09b:func_801E77A0 fx_114:func_801E7818 fx_123:func_801E7850
+fxm_pinParticle4  <-  fx_09b:func_801E77D4 fx_123:func_801E7884
+fxm_pinParticle5  <-  fx_123:func_801E78B8
+fxm_pinParticle6  <-  fx_123:func_801E78EC
+fxm_pinParticle7  <-  fx_123:func_801E7920
+fxm_pinParticle8  <-  fx_123:func_801E7954
+fxm_pinParticle9  <-  fx_123:func_801E7988
+fxm_pinParticle10  <-  fx_123:func_801E79BC
+fxm_pinParticle11  <-  fx_123:func_801E79F0
+
+## Batch 3: callbacks named by role and installing op (pool tasks, particle motions, spawn points, element draws, grid vertices)
+fx_003_op83PoolTask  <-  fx_003:func_801E7CEC
+fx_004_op80PoolTask  <-  fx_004:func_801E7704
+fx_005_op83PoolTask  <-  fx_005:func_801E7F60
+fx_026_op80PoolTask  <-  fx_026:func_801E7A5C
+fx_026_op82PoolTask  <-  fx_026:func_801E8670
+fx_026_op81PoolTask  <-  fx_026:func_801E98BC
+fx_038_op80PoolTask  <-  fx_038:func_801E7704
+fx_042_op83PoolTask  <-  fx_042:func_801E7CEC
+fx_049_op83PoolTask  <-  fx_049:func_801E7F5C
+fx_04d_op80PoolTask  <-  fx_04d:func_801E7704
+fx_04f_op80PoolTask  <-  fx_04f:func_801E7704
+fx_058_op80PoolTask  <-  fx_058:func_801E7704
+fx_059_op80PoolTask  <-  fx_059:func_801E7704
+fx_07d_op80PoolTask  <-  fx_07d:func_801E8108
+fx_07d_op83PoolTask  <-  fx_07d:func_801E9A40
+fx_07e_op80PoolTask  <-  fx_07e:func_801E7EB8
+fx_095_op80PoolTask  <-  fx_095:func_801E7704
+fx_097_op80PoolTask  <-  fx_097:func_801E82F4
+fx_098_op80PoolTask  <-  fx_098:func_801E82DC
+fx_0a9_op83PoolTask  <-  fx_0a9:func_801E77EC
+fx_0ba_op83PoolTask  <-  fx_0ba:func_801EAC08
+fx_0ba_op85PoolTask  <-  fx_0ba:func_801EBFB8
+fx_0cb_op80PoolTask  <-  fx_0cb:func_801E7EFC
+fx_0cc_op80PoolTask  <-  fx_0cc:func_801E7704
+fx_0d7_op83PoolTask  <-  fx_0d7:func_801E7CEC
+fx_0d8_op83PoolTask  <-  fx_0d8:func_801E7F80
+fx_0db_op80PoolTask  <-  fx_0db:func_801E7704
+fx_0dc_op80PoolTask  <-  fx_0dc:func_801E7788
+fx_0df_op80PoolTask  <-  fx_0df:func_801E80F4
+fx_0df_op83PoolTask  <-  fx_0df:func_801E9600
+fx_0e0_op80PoolTask  <-  fx_0e0:func_801E8628
+fx_0e3_0_op80PoolTask  <-  fx_0e3_0:func_801E7F48
+fx_0ec_op80PoolTask  <-  fx_0ec:func_801E7704
+fx_0fb_0_op80PoolTask  <-  fx_0fb_0:func_801E8540
+fx_0fb_1_op80PoolTask  <-  fx_0fb_1:func_801ECBE0
+fx_134_op80PoolTask  <-  fx_134:func_801E8658
+fx_17a_op80PoolTask  <-  fx_17a:func_801E7BC0
+fx_17d_0_op80PoolTask  <-  fx_17d_0:func_801E7FE0
+fx_17d_2_op80PoolTask  <-  fx_17d_2:func_801E7704
+fx_17d_5_op80PoolTask  <-  fx_17d_5:func_801EC704
+fx_17d_6_op83PoolTask  <-  fx_17d_6:func_801E8ED4
+fx_17d_7_op80PoolTask  <-  fx_17d_7:func_801EC7C8
+fx_17d_7_op83PoolTask  <-  fx_17d_7:func_801EEAA8
+fx_17d_8_op80PoolTask  <-  fx_17d_8:func_801E7718
+fx_186_op80PoolTask  <-  fx_186:func_801E7704
+fx_188_op80PoolTask  <-  fx_188:func_801E7704
+fx_18a_op82PoolTask  <-  fx_18a:func_801E844C
+fx_197_op81PoolTask  <-  fx_197:func_801E81EC
+fx_19f_op83PoolTask  <-  fx_19f:func_801E9D20
+fx_1a2_op80PoolTask  <-  fx_1a2:func_801E804C
+fx_1bf_1_op80PoolTask  <-  fx_1bf_1:func_801EC7C8
+fx_1bf_1_op83PoolTask  <-  fx_1bf_1:func_801EEA80
+fx_1bf_2_op80PoolTask  <-  fx_1bf_2:func_801E7718
+fx_1cc_op80PoolTask  <-  fx_1cc:func_801E82D0
+fx_1e9_op82PoolTask  <-  fx_1e9:func_801E7FCC
+fx_005_op83ElemDraw  <-  fx_005:func_801E7CEC
+fx_049_op83ElemDraw  <-  fx_049:func_801E7CEC
+fx_057_op80ElemDraw  <-  fx_057:func_801E7704
+fx_07d_op80ElemDraw  <-  fx_07d:func_801E7ECC
+fx_081_op80ElemDraw  <-  fx_081:func_801E7704
+fx_0a0_op80ElemDraw  <-  fx_0a0:func_801E78F8
+fx_0d8_op83ElemDraw  <-  fx_0d8:func_801E7CEC
+fx_1a8_op80ElemDraw0  <-  fx_1a8:func_801E7704
+fx_1a8_op80ElemDraw1  <-  fx_1a8:func_801E7828
+fx_036_op80SpawnPoint  <-  fx_036:func_801E7704
+fx_0d3_op81SpawnPoint  <-  fx_0d3:func_801E9050
+fx_0e1_0_op80SpawnPoint  <-  fx_0e1_0:func_801E8844
+fx_138_op81SpawnPoint0  <-  fx_138:func_801E7704
+fx_138_op81SpawnPoint1  <-  fx_138:func_801E7728
+fx_138_op81SpawnPoint2  <-  fx_138:func_801E774C
+fx_138_op81SpawnPoint3  <-  fx_138:func_801E7770
+fx_138_op81SpawnPoint4  <-  fx_138:func_801E7794
+fx_138_op81SpawnPoint5  <-  fx_138:func_801E77B8
+fx_1e7_op81SpawnPoint0  <-  fx_1e7:func_801E7908
+fx_1e7_op81SpawnPoint1  <-  fx_1e7:func_801E792C
+fx_1e7_op81SpawnPoint2  <-  fx_1e7:func_801E7950
+fx_1e7_op81SpawnPoint3  <-  fx_1e7:func_801E7974
+fx_1e7_op81SpawnPoint4  <-  fx_1e7:func_801E7998
+fx_040_op80ParticleMotion0  <-  fx_040:func_801E7704
+fx_040_op80ParticleMotion1  <-  fx_040:func_801E775C
+fx_040_op80ParticleMotion2  <-  fx_040:func_801E77B4
+fx_040_op80ParticleMotion3  <-  fx_040:func_801E780C
+fx_041_op80ParticleMotion  <-  fx_041:func_801E7704
+fx_043_op80ParticleMotion  <-  fx_043:func_801E7704
+fx_084_op80ParticleMotion  <-  fx_084:func_801E7704
+fx_0aa_op80ParticleMotion0  <-  fx_0aa:func_801E7704
+fx_0aa_op80ParticleMotion1  <-  fx_0aa:func_801E7744
+fx_0b4_op80ParticleMotion0  <-  fx_0b4:func_801E77BC
+fx_0b4_op80ParticleMotion1  <-  fx_0b4:func_801E77FC
+fx_0b4_op80ParticleMotion2  <-  fx_0b4:func_801E783C
+fx_0b4_op80ParticleMotion3  <-  fx_0b4:func_801E787C
+fx_0b4_op80ParticleMotion4  <-  fx_0b4:func_801E78BC
+fx_0b4_op80ParticleMotion5  <-  fx_0b4:func_801E78FC
+fx_0b8_op80ParticleMotion  <-  fx_0b8:func_801EA558
+fx_0c1_op80ParticleMotion  <-  fx_0c1:func_801E7704
+fx_0c2_op81ParticleMotion  <-  fx_0c2:func_801E7804
+fx_0c9_op81ParticleMotion  <-  fx_0c9:func_801E7828
+fx_0e9_op80ParticleMotion  <-  fx_0e9:func_801E7704
+fx_0ea_op81ParticleMotion0  <-  fx_0ea:func_801E7704
+fx_0ea_op81ParticleMotion1  <-  fx_0ea:func_801E7738
+fx_0ea_op81ParticleMotion2  <-  fx_0ea:func_801E776C
+fx_0ea_op81ParticleMotion3  <-  fx_0ea:func_801E77A0
+fx_106_op80ParticleMotion  <-  fx_106:func_801E7704
+fx_11d_op80ParticleMotion0  <-  fx_11d:func_801E7704
+fx_11d_op80ParticleMotion1  <-  fx_11d:func_801E7754
+fx_127_op80ParticleMotion0  <-  fx_127:func_801E7704
+fx_127_op80ParticleMotion1  <-  fx_127:func_801E77D0
+fx_128_op81ParticleMotion0  <-  fx_128:func_801E7704
+fx_128_op81ParticleMotion1  <-  fx_128:func_801E77C8
+fx_12b_op80ParticleMotion0  <-  fx_12b:func_801E7704
+fx_12b_op80ParticleMotion1  <-  fx_12b:func_801E77B0
+fx_12b_op80ParticleMotion2  <-  fx_12b:func_801E7E40
+fx_12b_op80ParticleMotion3  <-  fx_12b:func_801E7EB0
+fx_12b_op81ParticleMotion0  <-  fx_12b:func_801E785C
+fx_12b_op81ParticleMotion1  <-  fx_12b:func_801E78F8
+fx_12b_op81ParticleMotion2  <-  fx_12b:func_801E7F20
+fx_12b_op81ParticleMotion3  <-  fx_12b:func_801E7F90
+fx_180_op80ParticleMotion  <-  fx_180:func_801E78E0
+fx_180_op81ParticleMotion  <-  fx_180:func_801E79DC
+fx_191_op80ParticleMotion0  <-  fx_191:func_801E7704
+fx_191_op80ParticleMotion1  <-  fx_191:func_801E775C
+fx_191_op80ParticleMotion2  <-  fx_191:func_801E77B8
+fx_191_op80ParticleMotion3  <-  fx_191:func_801E7814
+fx_191_op81ParticleMotion0  <-  fx_191:func_801E7988
+fx_191_op81ParticleMotion1  <-  fx_191:func_801E79C4
+fx_193_op80ParticleMotion0  <-  fx_193:func_801E7704
+fx_193_op80ParticleMotion1  <-  fx_193:func_801E774C
+fx_1a0_op81ParticleMotion0  <-  fx_1a0:func_801E7704
+fx_1a0_op81ParticleMotion1  <-  fx_1a0:func_801E7748
+fx_1a0_op81ParticleMotion2  <-  fx_1a0:func_801E778C
+fx_1a0_op81ParticleMotion3  <-  fx_1a0:func_801E77D0
+fx_1a0_op81ParticleMotion4  <-  fx_1a0:func_801E7814
+fx_1a0_op81ParticleMotion5  <-  fx_1a0:func_801E7858
+fx_1a3_op80ParticleMotion  <-  fx_1a3:func_801E7704
+fx_1a6_op80ParticleMotion0  <-  fx_1a6:func_801E7704
+fx_1a6_op80ParticleMotion1  <-  fx_1a6:func_801E7744
+fx_1a6_op80ParticleMotion2  <-  fx_1a6:func_801E7784
+fx_1a7_op80ParticleMotion0  <-  fx_1a7:func_801E7704
+fx_1a7_op80ParticleMotion1  <-  fx_1a7:func_801E7748
+fx_1a7_op80ParticleMotion2  <-  fx_1a7:func_801E778C
+fx_1a7_op80ParticleMotion3  <-  fx_1a7:func_801E77D0
+fx_1a7_op80ParticleMotion4  <-  fx_1a7:func_801E7814
+fx_1a7_op80ParticleMotion5  <-  fx_1a7:func_801E7858
+fx_1a7_op80ParticleMotion6  <-  fx_1a7:func_801E789C
+fx_1a7_op80ParticleMotion7  <-  fx_1a7:func_801E78E0
+fx_1a7_op80ParticleMotion8  <-  fx_1a7:func_801E7924
+fx_1a7_op81ParticleMotion0  <-  fx_1a7:func_801E7AB4
+fx_1a7_op81ParticleMotion1  <-  fx_1a7:func_801E7AF8
+fx_1a7_op81ParticleMotion2  <-  fx_1a7:func_801E7B3C
+fx_1a7_op81ParticleMotion3  <-  fx_1a7:func_801E7B80
+fx_1a7_op81ParticleMotion4  <-  fx_1a7:func_801E7BC4
+fx_1a7_op81ParticleMotion5  <-  fx_1a7:func_801E7C08
+fx_1a7_op81ParticleMotion6  <-  fx_1a7:func_801E7C4C
+fx_1a7_op81ParticleMotion7  <-  fx_1a7:func_801E7C90
+fx_1a7_op81ParticleMotion8  <-  fx_1a7:func_801E7CD4
+fx_1ac_op80ParticleMotion  <-  fx_1ac:func_801E81C4
+fx_1ad_op80ParticleMotion  <-  fx_1ad:func_801E7704
+fx_1b0_op80ParticleMotion  <-  fx_1b0:func_801E7E48
+fx_1b4_op80ParticleMotion0  <-  fx_1b4:func_801E7704
+fx_1b4_op80ParticleMotion1  <-  fx_1b4:func_801E7738
+fx_1b4_op80ParticleMotion2  <-  fx_1b4:func_801E776C
+fx_1b4_op80ParticleMotion3  <-  fx_1b4:func_801E77A0
+fx_1b4_op80ParticleMotion4  <-  fx_1b4:func_801E77D4
+fx_1b4_op80ParticleMotion5  <-  fx_1b4:func_801E7808
+fx_1b4_op80ParticleMotion6  <-  fx_1b4:func_801E783C
+fx_1b4_op80ParticleMotion7  <-  fx_1b4:func_801E7870
+fx_1be_op80ParticleMotion  <-  fx_1be:func_801E8E10
+fx_1e7_op80ParticleMotion0  <-  fx_1e7:func_801E7704
+fx_1e7_op80ParticleMotion1  <-  fx_1e7:func_801E7738
+fx_1ec_op80ParticleMotion  <-  fx_1ec:func_801E78E0
+fx_1ec_op81ParticleMotion  <-  fx_1ec:func_801E79DC
+fx_07e_op81GridVertex  <-  fx_07e:func_801E8498
+fx_0d3_op80GridVertex  <-  fx_0d3:func_801E8A10
+fx_18b_op80GridVertex  <-  fx_18b:func_801E7EB8
+fx_194_op80GridVertex  <-  fx_194:func_801E7704
+
+## Batch 4: fx_XXX_env (the env global of every module)
+fx_000_env  <-  fx_000:D_801E78EC
+fx_001_env  <-  fx_001:D_801E7E20
+fx_002_env  <-  fx_002:D_801E7AF0
+fx_003_env  <-  fx_003:D_801E8580
+fx_004_env  <-  fx_004:D_801E860C
+fx_005_env  <-  fx_005:D_801E8C40
+fx_006_env  <-  fx_006:D_801E7F6C
+fx_007_env  <-  fx_007:D_801E8EE8
+fx_008_env  <-  fx_008:D_801E78EC
+fx_009_env  <-  fx_009:D_801E7818
+fx_00a_env  <-  fx_00a:D_801E784C
+fx_00b_env  <-  fx_00b:D_801E7868
+fx_00c_env  <-  fx_00c:D_801E787C
+fx_00d_env  <-  fx_00d:D_801E7908
+fx_00e_env  <-  fx_00e:D_801E7A78
+fx_00f_env  <-  fx_00f:D_801E7938
+fx_011_env  <-  fx_011:D_801E78EC
+fx_015_env  <-  fx_015:D_801E78E0
+fx_016_env  <-  fx_016:D_801E8358
+fx_017_env  <-  fx_017:D_801E78CC
+fx_018_env  <-  fx_018:D_801E9CE8
+fx_019_env  <-  fx_019:D_801E7808
+fx_01a_env  <-  fx_01a:D_801E7910
+fx_01b_env  <-  fx_01b:D_801E78CC
+fx_01c_env  <-  fx_01c:D_801E7B38
+fx_01d_env  <-  fx_01d:D_801E7D34
+fx_01e_env  <-  fx_01e:D_801E791C
+fx_01f_env  <-  fx_01f:D_801E7958
+fx_020_env  <-  fx_020:D_801E78E4
+fx_021_env  <-  fx_021:D_801E7874
+fx_022_env  <-  fx_022:D_801E7898
+fx_023_env  <-  fx_023:D_801E7C30
+fx_024_env  <-  fx_024:D_801E7D60
+fx_026_env  <-  fx_026:D_801EACCC
+fx_028_env  <-  fx_028:D_801E7A1C
+fx_029_env  <-  fx_029:D_801E7828
+fx_02a_env  <-  fx_02a:D_801E791C
+fx_02b_env  <-  fx_02b:D_801E7D34
+fx_02c_env  <-  fx_02c:D_801E7928
+fx_02d_env  <-  fx_02d:D_801E7838
+fx_02e_env  <-  fx_02e:D_801E7A64
+fx_02f_env  <-  fx_02f:D_801E7AEC
+fx_030_env  <-  fx_030:D_801E7A80
+fx_031_env  <-  fx_031:D_801E7AE8
+fx_032_env  <-  fx_032:D_801E7C60
+fx_033_env  <-  fx_033:D_801E7AE4
+fx_034_env  <-  fx_034:D_801E82A0
+fx_035_env  <-  fx_035:D_801E78FC
+fx_036_env  <-  fx_036:D_801E7C28
+fx_037_env  <-  fx_037:D_801E79B4
+fx_038_env  <-  fx_038:D_801E830C
+fx_039_env  <-  fx_039:D_801E7BA0
+fx_03a_env  <-  fx_03a:D_801E7DA8
+fx_03b_env  <-  fx_03b:D_801E7970
+fx_03c_env  <-  fx_03c:D_801E786C
+fx_03d_env  <-  fx_03d:D_801E7E60
+fx_03e_env  <-  fx_03e:D_801E7F70
+fx_03f_env  <-  fx_03f:D_801E7A58
+fx_040_env  <-  fx_040:D_801E7EF8
+fx_041_env  <-  fx_041:D_801E7F3C
+fx_042_env  <-  fx_042:D_801E856C
+fx_043_env  <-  fx_043:D_801E7BC8
+fx_044_env  <-  fx_044:D_801E7A64
+fx_045_env  <-  fx_045:D_801E7D38
+fx_046_env  <-  fx_046:D_801E7890
+fx_047_env  <-  fx_047:D_801E796C
+fx_048_env  <-  fx_048:D_801E8F3C
+fx_049_env  <-  fx_049:D_801E8D88
+fx_04a_env  <-  fx_04a:D_801E7834
+fx_04b_env  <-  fx_04b:D_801E7B94
+fx_04c_env  <-  fx_04c:D_801E7CB4
+fx_04d_env  <-  fx_04d:D_801E8610
+fx_04e_env  <-  fx_04e:D_801E7930
+fx_04f_env  <-  fx_04f:D_801E7F18
+fx_051_env  <-  fx_051:D_801E79EC
+fx_052_env  <-  fx_052:D_801E7FA8
+fx_053_env  <-  fx_053:D_801E7CAC
+fx_055_env  <-  fx_055:D_801E78BC
+fx_056_env  <-  fx_056:D_801E79A8
+fx_057_env  <-  fx_057:D_801E8EA4
+fx_058_env  <-  fx_058:D_801E7E64
+fx_059_env  <-  fx_059:D_801E7DB0
+fx_05a_env  <-  fx_05a:D_801E7B10
+fx_05c_env  <-  fx_05c:D_801E7924
+fx_05d_env  <-  fx_05d:D_801E8098
+fx_05e_env  <-  fx_05e:D_801E8E74
+fx_05f_env  <-  fx_05f:D_801E8320
+fx_060_env  <-  fx_060:D_801E7910
+fx_061_env  <-  fx_061:D_801E7914
+fx_062_env  <-  fx_062:D_801E882C
+fx_063_env  <-  fx_063:D_801E8710
+fx_078_env  <-  fx_078:D_801E7D6C
+fx_079_env  <-  fx_079:D_801E86F4
+fx_07a_env  <-  fx_07a:D_801E94F4
+fx_07b_env  <-  fx_07b:D_801E7A18
+fx_07c_env  <-  fx_07c:D_801E7818
+fx_07d_env  <-  fx_07d:D_801E9FB0
+fx_07e_env  <-  fx_07e:D_801E8AB8
+fx_07f_env  <-  fx_07f:D_801E7B4C
+fx_080_env  <-  fx_080:D_801E7920
+fx_081_env  <-  fx_081:D_801E8ED8
+fx_082_env  <-  fx_082:D_801E7E64
+fx_083_env  <-  fx_083:D_801E83B0
+fx_084_env  <-  fx_084:D_801E7B90
+fx_085_env  <-  fx_085:D_801E9DF4
+fx_086_env  <-  fx_086:D_801E9D6C
+fx_087_env  <-  fx_087:D_801E7958
+fx_088_env  <-  fx_088:D_801E7DA0
+fx_089_env  <-  fx_089:D_801E7874
+fx_08a_env  <-  fx_08a:D_801E7938
+fx_08b_env  <-  fx_08b:D_801E7D74
+fx_08c_env  <-  fx_08c:D_801E7AA8
+fx_08d_env  <-  fx_08d:D_801E79A0
+fx_08e_env  <-  fx_08e:D_801E7E20
+fx_08f_env  <-  fx_08f:D_801E8A04
+fx_090_env  <-  fx_090:D_801E7E38
+fx_091_env  <-  fx_091:D_801E7908
+fx_092_env  <-  fx_092:D_801E7A1C
+fx_093_env  <-  fx_093:D_801E79F4
+fx_094_env  <-  fx_094:D_801E79AC
+fx_095_env  <-  fx_095:D_801E8904
+fx_096_env  <-  fx_096:D_801E831C
+fx_097_env  <-  fx_097:D_801E9DB4
+fx_098_env  <-  fx_098:D_801E9D1C
+fx_099_env  <-  fx_099:D_801E7C28
+fx_09a_env  <-  fx_09a:D_801E8858
+fx_09b_env  <-  fx_09b:D_801E8164
+fx_09c_env  <-  fx_09c:D_801E7BB8
+fx_09d_env  <-  fx_09d:D_801E7880
+fx_09e_env  <-  fx_09e:D_801E7880
+fx_09f_env  <-  fx_09f:D_801E79B4
+fx_0a0_env  <-  fx_0a0:D_801E7D98
+fx_0a1_env  <-  fx_0a1:D_801E7C60
+fx_0a2_env  <-  fx_0a2:D_801E7884
+fx_0a3_env  <-  fx_0a3:D_801E791C
+fx_0a4_env  <-  fx_0a4:D_801E7870
+fx_0a5_env  <-  fx_0a5:D_801E7A2C
+fx_0a6_env  <-  fx_0a6:D_801E7974
+fx_0a7_env  <-  fx_0a7:D_801E7C78
+fx_0a8_env  <-  fx_0a8:D_801E7B68
+fx_0a9_env  <-  fx_0a9:D_801E7F58
+fx_0aa_env  <-  fx_0aa:D_801E7D78
+fx_0ab_env  <-  fx_0ab:D_801E7918
+fx_0ac_env  <-  fx_0ac:D_801E7A28
+fx_0ad_env  <-  fx_0ad:D_801E792C
+fx_0ae_env  <-  fx_0ae:D_801E79BC
+fx_0af_env  <-  fx_0af:D_801E798C
+fx_0b0_env  <-  fx_0b0:D_801E7CD8
+fx_0b1_env  <-  fx_0b1:D_801E8B8C
+fx_0b2_env  <-  fx_0b2:D_801E90A0
+fx_0b3_env  <-  fx_0b3:D_801ED5E0
+fx_0b4_env  <-  fx_0b4:D_801E8184
+fx_0b5_env  <-  fx_0b5:D_801E7900
+fx_0b6_env  <-  fx_0b6:D_801E78BC
+fx_0b7_env  <-  fx_0b7:D_801E786C
+fx_0b8_env  <-  fx_0b8:D_801EA7A0
+fx_0b9_env  <-  fx_0b9:D_801E7B94
+fx_0ba_env  <-  fx_0ba:D_801EC5F0
+fx_0bb_env  <-  fx_0bb:D_801E79A0
+fx_0bc_env  <-  fx_0bc:D_801E78DC
+fx_0bd_env  <-  fx_0bd:D_801E78DC
+fx_0be_env  <-  fx_0be:D_801E793C
+fx_0bf_env  <-  fx_0bf:D_801E7970
+fx_0c0_env  <-  fx_0c0:D_801E7974
+fx_0c1_env  <-  fx_0c1:D_801E7C18
+fx_0c2_env  <-  fx_0c2:D_801E847C
+fx_0c3_env  <-  fx_0c3:D_801E7834
+fx_0c4_env  <-  fx_0c4:D_801E785C
+fx_0c5_env  <-  fx_0c5:D_801E7888
+fx_0c6_env  <-  fx_0c6:D_801E7950
+fx_0c7_env  <-  fx_0c7:D_801E7834
+fx_0c9_env  <-  fx_0c9:D_801E7D38
+fx_0ca_env  <-  fx_0ca:D_801E78B8
+fx_0cb_env  <-  fx_0cb:D_801E8670
+fx_0cc_env  <-  fx_0cc:D_801E7C9C
+fx_0cd_env  <-  fx_0cd:D_801E7DD4
+fx_0ce_env  <-  fx_0ce:D_801E7D20
+fx_0cf_env  <-  fx_0cf:D_801E7EC8
+fx_0d0_env  <-  fx_0d0:D_801E79A0
+fx_0d1_env  <-  fx_0d1:D_801E7990
+fx_0d2_env  <-  fx_0d2:D_801ED8E0
+fx_0d3_env  <-  fx_0d3:D_801ED534
+fx_0d4_env  <-  fx_0d4:D_801E7C2C
+fx_0d5_env  <-  fx_0d5:D_801E7E30
+fx_0d6_env  <-  fx_0d6:D_801E9150
+fx_0d7_env  <-  fx_0d7:D_801E88C0
+fx_0d8_env  <-  fx_0d8:D_801E8FA0
+fx_0d9_env  <-  fx_0d9:D_801E9EA0
+fx_0da_env  <-  fx_0da:D_801E8220
+fx_0db_env  <-  fx_0db:D_801E894C
+fx_0dc_env  <-  fx_0dc:D_801E9354
+fx_0dd_env  <-  fx_0dd:D_801E83B0
+fx_0de_env  <-  fx_0de:D_801E8698
+fx_0df_env  <-  fx_0df:D_801E9E90
+fx_0e0_env  <-  fx_0e0:D_801EA918
+fx_0e1_0_env  <-  fx_0e1_0:D_801E9E38
+fx_0e1_1_env  <-  fx_0e1_1:D_801ECDD0
+fx_0e2_env  <-  fx_0e2:D_801ECC0C
+fx_0e3_0_env  <-  fx_0e3_0:D_801EA868
+fx_0e3_1_env  <-  fx_0e3_1:D_801F0A04
+fx_0e4_env  <-  fx_0e4:D_801E7D48
+fx_0e5_env  <-  fx_0e5:D_801E7A9C
+fx_0e6_env  <-  fx_0e6:D_801E7A88
+fx_0e7_env  <-  fx_0e7:D_801E7F54
+fx_0e8_env  <-  fx_0e8:D_801E7A70
+fx_0e9_env  <-  fx_0e9:D_801E7CFC
+fx_0ea_env  <-  fx_0ea:D_801E7E54
+fx_0eb_env  <-  fx_0eb:D_801E7C24
+fx_0ec_env  <-  fx_0ec:D_801E98A0
+fx_0ed_env  <-  fx_0ed:D_801E9224
+fx_0ee_env  <-  fx_0ee:D_801E792C
+fx_0ef_env  <-  fx_0ef:D_801E7B4C
+fx_0f0_env  <-  fx_0f0:D_801E7C20
+fx_0f1_env  <-  fx_0f1:D_801E7834
+fx_0f2_env  <-  fx_0f2:D_801E7B80
+fx_0f3_env  <-  fx_0f3:D_801E7CA0
+fx_0f4_env  <-  fx_0f4:D_801E7DC0
+fx_0f5_env  <-  fx_0f5:D_801E8A74
+fx_0f6_env  <-  fx_0f6:D_801E79FC
+fx_0f7_env  <-  fx_0f7:D_801E7BA8
+fx_0f8_env  <-  fx_0f8:D_801E7BD0
+fx_0f9_env  <-  fx_0f9:D_801E7820
+fx_0fa_env  <-  fx_0fa:D_801E8034
+fx_0fb_0_env  <-  fx_0fb_0:D_801EB3AC
+fx_0fb_1_env  <-  fx_0fb_1:D_801F0D2C
+fx_0fc_env  <-  fx_0fc:D_801E77F4
+fx_0fd_env  <-  fx_0fd:D_801E778C
+fx_0fe_env  <-  fx_0fe:D_801E7C44
+fx_0ff_env  <-  fx_0ff:D_801E7CB8
+fx_100_env  <-  fx_100:D_801E7D5C
+fx_101_env  <-  fx_101:D_801E85FC
+fx_102_env  <-  fx_102:D_801E797C
+fx_103_env  <-  fx_103:D_801E7A48
+fx_104_env  <-  fx_104:D_801E79F4
+fx_105_env  <-  fx_105:D_801EAB18
+fx_106_env  <-  fx_106:D_801E7C10
+fx_109_env  <-  fx_109:D_801E7BD4
+fx_10a_env  <-  fx_10a:D_801E7BB4
+fx_10b_env  <-  fx_10b:D_801E7B74
+fx_10c_env  <-  fx_10c:D_801E7B50
+fx_10d_env  <-  fx_10d:D_801E7B94
+fx_10e_env  <-  fx_10e:D_801E7BAC
+fx_10f_env  <-  fx_10f:D_801E7BAC
+fx_110_env  <-  fx_110:D_801E7BB0
+fx_112_env  <-  fx_112:D_801E8050
+fx_113_env  <-  fx_113:D_801E7A74
+fx_114_env  <-  fx_114:D_801EB768
+fx_115_env  <-  fx_115:D_801E7BB8
+fx_116_env  <-  fx_116:D_801E783C
+fx_117_env  <-  fx_117:D_801E783C
+fx_118_env  <-  fx_118:D_801E783C
+fx_119_env  <-  fx_119:D_801E783C
+fx_11a_env  <-  fx_11a:D_801E7814
+fx_11b_env  <-  fx_11b:D_801E783C
+fx_11c_env  <-  fx_11c:D_801E7F9C
+fx_11d_env  <-  fx_11d:D_801E7D9C
+fx_11e_env  <-  fx_11e:D_801E7FD0
+fx_11f_env  <-  fx_11f:D_801E7990
+fx_122_env  <-  fx_122:D_801E7D44
+fx_123_env  <-  fx_123:D_801E90CC
+fx_124_env  <-  fx_124:D_801E783C
+fx_125_env  <-  fx_125:D_801E7D78
+fx_126_env  <-  fx_126:D_801E80DC
+fx_127_env  <-  fx_127:D_801E82F0
+fx_128_env  <-  fx_128:D_801E89D4
+fx_129_env  <-  fx_129:D_801E7C04
+fx_12a_env  <-  fx_12a:D_801E7EFC
+fx_12b_env  <-  fx_12b:D_801E9B34
+fx_12c_env  <-  fx_12c:D_801E7EF8
+fx_12d_env  <-  fx_12d:D_801E7D68
+fx_12e_env  <-  fx_12e:D_801E77A8
+fx_12f_env  <-  fx_12f:D_801E7A54
+fx_130_env  <-  fx_130:D_801E7DF4
+fx_131_env  <-  fx_131:D_801E78EC
+fx_132_env  <-  fx_132:D_801E78BC
+fx_133_env  <-  fx_133:D_801E7874
+fx_134_env  <-  fx_134:D_801EC8E4
+fx_135_env  <-  fx_135:D_801E7918
+fx_136_env  <-  fx_136:D_801E79C8
+fx_137_env  <-  fx_137:D_801E7AC0
+fx_138_env  <-  fx_138:D_801E8500
+fx_179_env  <-  fx_179:D_801E8A0C
+fx_17a_env  <-  fx_17a:D_801E9F5C
+fx_17d_0_env  <-  fx_17d_0:D_801E9470
+fx_17d_1_env  <-  fx_17d_1:D_801ED420
+fx_17d_2_env  <-  fx_17d_2:D_801E8048
+fx_17d_3_env  <-  fx_17d_3:D_801EEC84
+fx_17d_4_env  <-  fx_17d_4:D_801E9890
+fx_17d_5_env  <-  fx_17d_5:D_801EE52C
+fx_17d_6_env  <-  fx_17d_6:D_801E93B4
+fx_17d_7_env  <-  fx_17d_7:D_801EF2DC
+fx_17d_8_env  <-  fx_17d_8:D_801E8A44
+fx_17e_env  <-  fx_17e:D_801E7AA8
+fx_17f_env  <-  fx_17f:D_801E7C50
+fx_180_env  <-  fx_180:D_801E9258
+fx_181_env  <-  fx_181:D_801E78B4
+fx_182_env  <-  fx_182:D_801E78A0
+fx_183_env  <-  fx_183:D_801E82E8
+fx_184_env  <-  fx_184:D_801E7DC4
+fx_185_env  <-  fx_185:D_801E7AD4
+fx_186_env  <-  fx_186:D_801E9214
+fx_187_env  <-  fx_187:D_801E7E04
+fx_188_env  <-  fx_188:D_801E7E88
+fx_18a_env  <-  fx_18a:D_801E8A24
+fx_18b_env  <-  fx_18b:D_801E827C
+fx_18c_env  <-  fx_18c:D_801E7B10
+fx_18d_env  <-  fx_18d:D_801E7A38
+fx_18e_env  <-  fx_18e:D_801E7894
+fx_18f_env  <-  fx_18f:D_801E7820
+fx_190_env  <-  fx_190:D_801E7AF8
+fx_191_env  <-  fx_191:D_801E855C
+fx_192_env  <-  fx_192:D_801E7800
+fx_193_env  <-  fx_193:D_801E7CB4
+fx_194_env  <-  fx_194:D_801E7DFC
+fx_195_env  <-  fx_195:D_801EA278
+fx_196_env  <-  fx_196:D_801E915C
+fx_197_env  <-  fx_197:D_801E9660
+fx_198_env  <-  fx_198:D_801E7E54
+fx_199_env  <-  fx_199:D_801E78DC
+fx_19a_env  <-  fx_19a:D_801E78DC
+fx_19b_env  <-  fx_19b:D_801E793C
+fx_19c_env  <-  fx_19c:D_801E7970
+fx_19e_env  <-  fx_19e:D_801E7EC8
+fx_19f_env  <-  fx_19f:D_801EAA48
+fx_1a0_env  <-  fx_1a0:D_801E7F88
+fx_1a1_env  <-  fx_1a1:D_801E7A38
+fx_1a2_env  <-  fx_1a2:D_801E9844
+fx_1a3_env  <-  fx_1a3:D_801E7C04
+fx_1a4_env  <-  fx_1a4:D_801E8168
+fx_1a5_env  <-  fx_1a5:D_801E7950
+fx_1a6_env  <-  fx_1a6:D_801E8298
+fx_1a7_env  <-  fx_1a7:D_801E8940
+fx_1a8_env  <-  fx_1a8:D_801E97CC
+fx_1a9_env  <-  fx_1a9:D_801E7820
+fx_1ab_env  <-  fx_1ab:D_801E7D80
+fx_1ac_env  <-  fx_1ac:D_801E8300
+fx_1ad_env  <-  fx_1ad:D_801E7D8C
+fx_1af_env  <-  fx_1af:D_801E7F48
+fx_1b0_env  <-  fx_1b0:D_801EBF34
+fx_1b1_env  <-  fx_1b1:D_801E78B0
+fx_1b2_env  <-  fx_1b2:D_801E84EC
+fx_1b3_env  <-  fx_1b3:D_801EB074
+fx_1b4_env  <-  fx_1b4:D_801E8654
+fx_1b6_env  <-  fx_1b6:D_801E85B4
+fx_1b7_env  <-  fx_1b7:D_801E87E0
+fx_1b8_env  <-  fx_1b8:D_801E7A24
+fx_1b9_env  <-  fx_1b9:D_801E7938
+fx_1bb_env  <-  fx_1bb:D_801E7804
+fx_1bd_env  <-  fx_1bd:D_801E9E54
+fx_1be_env  <-  fx_1be:D_801E8FD8
+fx_1bf_0_env  <-  fx_1bf_0:D_801E8830
+fx_1bf_1_env  <-  fx_1bf_1:D_801EF2D8
+fx_1bf_2_env  <-  fx_1bf_2:D_801E8A44
+fx_1c9_env  <-  fx_1c9:D_801E78C8
+fx_1cb_env  <-  fx_1cb:D_801E7828
+fx_1cc_env  <-  fx_1cc:D_801E9C34
+fx_1e6_env  <-  fx_1e6:D_801E8348
+fx_1e7_env  <-  fx_1e7:D_801E82E0
+fx_1e9_env  <-  fx_1e9:D_801E8564
+fx_1ea_env  <-  fx_1ea:D_801E8DD8
+fx_1eb_env  <-  fx_1eb:D_801E8268
+fx_1ec_env  <-  fx_1ec:D_801E8E94
+fx_1ed_env  <-  fx_1ed:D_801E8910
+fx_1ee_env  <-  fx_1ee:D_801E9104
+fx_1ef_env  <-  fx_1ef:D_801E8B9C
+fx_1f0_env  <-  fx_1f0:D_801E8548
+fx_1f1_env  <-  fx_1f1:D_801E7F04
+fx_1f2_env  <-  fx_1f2:D_801EA260
+fx_1f3_env  <-  fx_1f3:D_801E8DB0
+fx_1f4_env  <-  fx_1f4:D_801E79B8
+fx_1f5_env  <-  fx_1f5:D_801E79E8
+fx_1f6_env  <-  fx_1f6:D_801E7DD4
+fx_1f7_env  <-  fx_1f7:D_801E80C8
+fx_1f8_env  <-  fx_1f8:D_801E7B64
+fx_1f9_env  <-  fx_1f9:D_801E78E8
+fx_1fa_env  <-  fx_1fa:D_801E80DC
+fx_1fb_env  <-  fx_1fb:D_801E7B74
+fx_1fc_env  <-  fx_1fc:D_801EC14C
+fx_1fd_env  <-  fx_1fd:D_801E9E4C
+fx_1fe_env  <-  fx_1fe:D_801E9060
+
+## Batch 5: effect model buffers and stored task entries
+fx_001_effModels  <-  fx_001:D_801E7E30
+fx_004_effModels  <-  fx_004:D_801E861C
+fx_005_task  <-  fx_005:D_801E95E0
+fx_006_effModels  <-  fx_006:D_801E7F7C
+fx_007_effModels  <-  fx_007:D_801E8EF8
+fx_00e_effModels  <-  fx_00e:D_801E7A88
+fx_016_effModels  <-  fx_016:D_801E8368
+fx_018_effModels  <-  fx_018:D_801E9CF0
+fx_018_task  <-  fx_018:D_801E9CEC
+fx_026_effModels  <-  fx_026:D_801EACDC
+fx_034_effModels  <-  fx_034:D_801E88C0
+fx_038_effModels  <-  fx_038:D_801E831C
+fx_03a_effModels  <-  fx_03a:D_801E7FC8
+fx_03d_effModels  <-  fx_03d:D_801E7E70
+fx_03e_effModels  <-  fx_03e:D_801E7F80
+fx_048_effModels  <-  fx_048:D_801E8F4C
+fx_049_task  <-  fx_049:D_801E9728
+fx_04d_effModels  <-  fx_04d:D_801E8620
+fx_04f_effModels  <-  fx_04f:D_801E7F28
+fx_052_effModels  <-  fx_052:D_801E7FB8
+fx_057_effModels  <-  fx_057:D_801EA724
+fx_057_task  <-  fx_057:D_801EA97C
+fx_058_effModels  <-  fx_058:D_801E7E74
+fx_05a_effModels  <-  fx_05a:D_801E7B20
+fx_05d_effModels  <-  fx_05d:D_801E80A8
+fx_05e_effModels  <-  fx_05e:D_801E9014
+fx_05f_effModels  <-  fx_05f:D_801E8330
+fx_062_effModels  <-  fx_062:D_801E883C
+fx_063_effModels  <-  fx_063:D_801E8720
+fx_078_effModels  <-  fx_078:D_801E7D7C
+fx_079_effModels  <-  fx_079:D_801E8704
+fx_07a_effModels  <-  fx_07a:D_801E9934
+fx_07d_effModels  <-  fx_07d:D_801E9FC0
+fx_07d_task  <-  fx_07d:D_801EA534
+fx_07e_effModels  <-  fx_07e:D_801E8AC8
+fx_07f_effModels  <-  fx_07f:D_801E7B5C
+fx_081_effModels  <-  fx_081:D_801EA758
+fx_081_task  <-  fx_081:D_801EA9B0
+fx_082_effModels  <-  fx_082:D_801E7E74
+fx_083_effModels  <-  fx_083:D_801E83C0
+fx_084_task  <-  fx_084:D_801E7BA8
+fx_085_effModels  <-  fx_085:D_801E9DFC
+fx_085_task  <-  fx_085:D_801E9DF8
+fx_086_effModels  <-  fx_086:D_801E9D7C
+fx_08c_effModels  <-  fx_08c:D_801E7AB8
+fx_08e_effModels  <-  fx_08e:D_801E7E30
+fx_08f_effModels  <-  fx_08f:D_801E8A14
+fx_090_effModels  <-  fx_090:D_801E7E48
+fx_096_effModels  <-  fx_096:D_801E832C
+fx_097_effModels  <-  fx_097:D_801E9DC4
+fx_098_effModels  <-  fx_098:D_801E9D2C
+fx_099_effModels  <-  fx_099:D_801E7C38
+fx_09b_effModels  <-  fx_09b:D_801E8174
+fx_0a0_task  <-  fx_0a0:D_801E886C
+fx_0b1_effModels  <-  fx_0b1:D_801EAAEC
+fx_0b3_effModels  <-  fx_0b3:D_801ED5F0
+fx_0b8_effModels  <-  fx_0b8:D_801EA8B0
+fx_0ba_effModels0  <-  fx_0ba:D_801EC600
+fx_0ba_effModels1  <-  fx_0ba:D_801ECB90
+fx_0c9_effModels  <-  fx_0c9:D_801E7D48
+fx_0cb_effModels  <-  fx_0cb:D_801E8680
+fx_0cc_effModels  <-  fx_0cc:D_801E7CAC
+fx_0cd_effModels  <-  fx_0cd:D_801E7DE4
+fx_0ce_effModels  <-  fx_0ce:D_801E7D30
+fx_0d2_effModels  <-  fx_0d2:D_801ED8F0
+fx_0d3_effModels  <-  fx_0d3:D_801ED544
+fx_0d6_effModels  <-  fx_0d6:D_801E9160
+fx_0d8_task  <-  fx_0d8:D_801E9940
+fx_0d9_effModels  <-  fx_0d9:D_801E9EA8
+fx_0d9_task  <-  fx_0d9:D_801E9EA4
+fx_0da_effModels  <-  fx_0da:D_801E8230
+fx_0db_effModels  <-  fx_0db:D_801E895C
+fx_0dc_effModels  <-  fx_0dc:D_801E9364
+fx_0dd_effModels  <-  fx_0dd:D_801E83C0
+fx_0de_effModels  <-  fx_0de:D_801E86A8
+fx_0df_effModels  <-  fx_0df:D_801E9EA0
+fx_0df_task  <-  fx_0df:D_801EA414
+fx_0e0_effModels  <-  fx_0e0:D_801EAB98
+fx_0e1_0_effModels  <-  fx_0e1_0:D_801EA388
+fx_0e2_effModels  <-  fx_0e2:D_801ECC1C
+fx_0e3_0_effModels  <-  fx_0e3_0:D_801EB6A8
+fx_0e4_effModels  <-  fx_0e4:D_801E7D58
+fx_0e6_effModels  <-  fx_0e6:D_801E7A98
+fx_0e7_effModels  <-  fx_0e7:D_801E7F64
+fx_0ec_effModels  <-  fx_0ec:D_801EEB80
+fx_0ed_effModels  <-  fx_0ed:D_801E93C4
+fx_0f2_effModels  <-  fx_0f2:D_801E7B90
+fx_0f4_effModels  <-  fx_0f4:D_801E7DD0
+fx_0f5_effModels  <-  fx_0f5:D_801E8A84
+fx_0fa_effModels  <-  fx_0fa:D_801E8044
+fx_0fe_effModels  <-  fx_0fe:D_801E7C54
+fx_0ff_effModels  <-  fx_0ff:D_801E7CC8
+fx_101_effModels  <-  fx_101:D_801E860C
+fx_105_effModels  <-  fx_105:D_801EADD8
+fx_109_effModels  <-  fx_109:D_801E7BE4
+fx_10a_effModels  <-  fx_10a:D_801E7BC4
+fx_10b_effModels  <-  fx_10b:D_801E7B84
+fx_10c_effModels  <-  fx_10c:D_801E7B60
+fx_10d_effModels  <-  fx_10d:D_801E7BA4
+fx_10e_effModels  <-  fx_10e:D_801E7BBC
+fx_10f_effModels  <-  fx_10f:D_801E7BBC
+fx_110_effModels  <-  fx_110:D_801E7BC0
+fx_112_effModels  <-  fx_112:D_801E8060
+fx_114_effModels  <-  fx_114:D_801EB778
+fx_115_effModels  <-  fx_115:D_801E7BC8
+fx_11e_effModels  <-  fx_11e:D_801E7FE0
+fx_122_effModels  <-  fx_122:D_801E7D54
+fx_123_effModels  <-  fx_123:D_801E90DC
+fx_125_effModels  <-  fx_125:D_801E7D88
+fx_126_effModels  <-  fx_126:D_801E80EC
+fx_128_effModels  <-  fx_128:D_801E89E4
+fx_129_effModels  <-  fx_129:D_801E7C14
+fx_12c_effModels  <-  fx_12c:D_801E8118
+fx_12d_effModels  <-  fx_12d:D_801E7D78
+fx_130_effModels  <-  fx_130:D_801E7E04
+fx_134_effModels  <-  fx_134:D_801ECB64
+fx_138_effModels  <-  fx_138:D_801E8510
+fx_179_effModels  <-  fx_179:D_801EAA9C
+fx_17a_effModels  <-  fx_17a:D_801E9F64
+fx_17d_0_effModels  <-  fx_17d_0:D_801EA380
+fx_17d_1_effModels  <-  fx_17d_1:D_801ED430
+fx_17d_2_effModels  <-  fx_17d_2:D_801E8058
+fx_17d_3_effModels  <-  fx_17d_3:D_801EEC94
+fx_17d_4_effModels  <-  fx_17d_4:D_801EB65C
+fx_17d_5_effModels  <-  fx_17d_5:D_801EE53C
+fx_17d_6_effModels  <-  fx_17d_6:D_801E93C4
+fx_17d_7_effModels  <-  fx_17d_7:D_801EF2EC
+fx_17d_8_effModels  <-  fx_17d_8:D_801E8A54
+fx_17e_effModels  <-  fx_17e:D_801E7AB8
+fx_180_effModels  <-  fx_180:D_801E9268
+fx_183_effModels  <-  fx_183:D_801E82F8
+fx_184_effModels  <-  fx_184:D_801E7DD4
+fx_185_effModels  <-  fx_185:D_801E7AE4
+fx_186_effModels  <-  fx_186:D_801E9224
+fx_18a_effModels  <-  fx_18a:D_801E8A34
+fx_195_effModels  <-  fx_195:D_801EA288
+fx_197_effModels  <-  fx_197:D_801E9670
+fx_198_effModels  <-  fx_198:D_801E7E64
+fx_19f_effModels  <-  fx_19f:D_801EAB28
+fx_1a2_effModels  <-  fx_1a2:D_801EB2C4
+fx_1a4_effModels  <-  fx_1a4:D_801E8178
+fx_1a8_effModels  <-  fx_1a8:D_801E97DC
+fx_1ab_effModels  <-  fx_1ab:D_801E7D90
+fx_1ad_effModels  <-  fx_1ad:D_801E7D9C
+fx_1af_effModels  <-  fx_1af:D_801E7F58
+fx_1af_task  <-  fx_1af:D_801E7F4C
+fx_1b0_effModels  <-  fx_1b0:D_801EBF44
+fx_1b0_task  <-  fx_1b0:D_801EBF38
+fx_1b2_effModels  <-  fx_1b2:D_801E84FC
+fx_1b3_effModels  <-  fx_1b3:D_801EB7F4
+fx_1b6_effModels  <-  fx_1b6:D_801E9754
+fx_1b6_task  <-  fx_1b6:D_801E85B8
+fx_1b7_effModels  <-  fx_1b7:D_801E8800
+fx_1b7_task  <-  fx_1b7:D_801E87E4
+fx_1bd_effModels  <-  fx_1bd:D_801E9E64
+fx_1be_effModels  <-  fx_1be:D_801E91E8
+fx_1bf_0_effModels  <-  fx_1bf_0:D_801EA5FC
+fx_1bf_1_effModels  <-  fx_1bf_1:D_801EF2E8
+fx_1bf_2_effModels  <-  fx_1bf_2:D_801E8A54
+fx_1cc_effModels  <-  fx_1cc:D_801E9C44
+fx_1e6_effModels  <-  fx_1e6:D_801E8358
+fx_1e9_effModels  <-  fx_1e9:D_801E8574
+fx_1ea_effModels  <-  fx_1ea:D_801E8DE8
+fx_1eb_effModels  <-  fx_1eb:D_801E8278
+fx_1ec_effModels  <-  fx_1ec:D_801E8EA4
+fx_1f0_effModels  <-  fx_1f0:D_801E8608
+fx_1f1_effModels  <-  fx_1f1:D_801E8214
+fx_1f2_effModels  <-  fx_1f2:D_801ED090
+fx_1f3_effModels  <-  fx_1f3:D_801E8DC0
+fx_1f6_effModels  <-  fx_1f6:D_801E7DE4
+fx_1f8_effModels  <-  fx_1f8:D_801E7C14
+fx_1fc_effModels  <-  fx_1fc:D_801EC15C
+fx_1fd_effModels  <-  fx_1fd:D_801E9E5C
+fx_1fe_effModels  <-  fx_1fe:D_801E9070
+
+## Fields: emitter handles
+Every unkXX member declared Pool6CEntry * (or an array of them) in the module structs -> emitXX (834 members;
+Pool6CEntry is the emitter btlfx_startEmitter / btlfx_spawnEmitter return).
+
+## Fields: effect model ids
+Integer members that receive btlfx_registerEffectModel / Hi_Register{Tex,Gou,Solid}EffModel / Hi_RegisterTex{List,Ptr}Model
+(the effect model slot id later passed to Hi_DrawEffModel and friends) -> modelXX (476 members).
+
+## Fields: model rotation / position / scale, emitter origins
+SVECTOR/VECTOR members passed (only) as argument 0, 1 or 2 of Hi_DrawEffModel, Hi_DrawMorphEffModel, Hi_DrawSliceEffModel or
+Hi_DrawSummonModel -> rotXX (202), posXX, scaleXX (81); members passed as the origin of btlfx_startEmitter are positions too
+(posXX, 807 in all). Members used in more than one of these roles keep their unkXX name.
+
+## Fields: motions, unit rotations and positions
+BtlUnit9CC * members -> motionXX (41). SVECTOR members passed only to btlfx_getUnitRot / btlfx_setUnitRot -> rotXX (46);
+SVECTOR/VECTOR members filled by the unit position getters (btlfx_getUnitPos/HomePos/BodyPos/StrikePos/WeaponPos/
+BonePos/ArgBonePos, Hi_GetSummonBonePos) or given to btlfx_setUnitPos -> posXX (216).
+
+## Batch 6: screen capture helper
+fxm_captureScreen  <-  fx_112:func_801E7718
+
+## Batch 7: emitter handle globals and callback tables
+fx_040_op80ParticleMotions  <-  fx_040:D_801E7EA0
+fx_057_emitter0  <-  fx_057:D_801EA704
+fx_057_emitter1  <-  fx_057:D_801EA70C
+fx_079_emitter  <-  fx_079:D_801E8990
+fx_081_emitter0  <-  fx_081:D_801EA738
+fx_081_emitter1  <-  fx_081:D_801EA740
+fx_09b_pinParticles  <-  fx_09b:D_801E8108
+fx_0b1_emitter0  <-  fx_0b1:D_801E8D5C
+fx_0b1_emitter1  <-  fx_0b1:D_801E8D6C
+fx_0b1_emitter2  <-  fx_0b1:D_801E8D7C
+fx_0b1_emitter3  <-  fx_0b1:D_801EA86C
+fx_0b1_emitter4  <-  fx_0b1:D_801EA884
+fx_0b1_emitter5  <-  fx_0b1:D_801EA894
+fx_0b1_emitter6  <-  fx_0b1:D_801EA8A4
+fx_0b1_emitter7  <-  fx_0b1:D_801EA8B4
+fx_0b1_emitter8  <-  fx_0b1:D_801EA8C4
+fx_0b1_emitter9  <-  fx_0b1:D_801EA8D4
+fx_0b1_emitter10  <-  fx_0b1:D_801EA8E4
+fx_0b4_op80ParticleMotions  <-  fx_0b4:D_801E8124
+fx_0ea_op81ParticleMotions  <-  fx_0ea:D_801E7DFC
+fx_123_pinParticles  <-  fx_123:D_801E906C
+fx_127_emitter  <-  fx_127:D_801E8340
+fx_138_op81SpawnPoints  <-  fx_138:D_801E84A0
+fx_191_op80ParticleMotions  <-  fx_191:D_801E8504
+fx_1a0_op81ParticleMotions  <-  fx_1a0:D_801E7F28
+fx_1a6_op80ParticleMotions  <-  fx_1a6:D_801E8244
+fx_1a7_op80ParticleMotions  <-  fx_1a7:D_801E88B0
+fx_1a7_op81ParticleMotions  <-  fx_1a7:D_801E88D4
+fx_1ac_emitter  <-  fx_1ac:D_801E8304
+fx_1b4_op80ParticleMotions  <-  fx_1b4:D_801E85EC
+fx_1e7_op81SpawnPoints  <-  fx_1e7:D_801E8284
+fx_1ed_emitter0  <-  fx_1ed:D_801E8AE0
+fx_1ed_emitter1  <-  fx_1ed:D_801E8AF0
+fx_1ed_emitter2  <-  fx_1ed:D_801E8B00
+fx_1ed_emitter3  <-  fx_1ed:D_801EA5F0
+fx_1ed_emitter4  <-  fx_1ed:D_801EA608
+fx_1ed_emitter5  <-  fx_1ed:D_801EA618
+fx_1ed_emitter6  <-  fx_1ed:D_801EA628
+fx_1ed_emitter7  <-  fx_1ed:D_801EA638
+fx_1ed_emitter8  <-  fx_1ed:D_801EA648
+fx_1ed_emitter9  <-  fx_1ed:D_801EA658
+fx_1ed_emitter10  <-  fx_1ed:D_801EA668
+fx_1ee_emitter0  <-  fx_1ee:D_801E92D4
+fx_1ee_emitter1  <-  fx_1ee:D_801E92E4
+fx_1ee_emitter2  <-  fx_1ee:D_801E92F4
+fx_1ee_emitter3  <-  fx_1ee:D_801EADE4
+fx_1ee_emitter4  <-  fx_1ee:D_801EADFC
+fx_1ee_emitter5  <-  fx_1ee:D_801EAE0C
+fx_1ee_emitter6  <-  fx_1ee:D_801EAE1C
+fx_1ee_emitter7  <-  fx_1ee:D_801EAE2C
+fx_1ee_emitter8  <-  fx_1ee:D_801EAE3C
+fx_1ee_emitter9  <-  fx_1ee:D_801EAE4C
+fx_1ee_emitter10  <-  fx_1ee:D_801EAE5C
+fx_1ef_emitter0  <-  fx_1ef:D_801E8D6C
+fx_1ef_emitter1  <-  fx_1ef:D_801E8D7C
+fx_1ef_emitter2  <-  fx_1ef:D_801E8D8C
+fx_1ef_emitter3  <-  fx_1ef:D_801EA87C
+fx_1ef_emitter4  <-  fx_1ef:D_801EA894
+fx_1ef_emitter5  <-  fx_1ef:D_801EA8A4
+fx_1ef_emitter6  <-  fx_1ef:D_801EA8B4
+fx_1ef_emitter7  <-  fx_1ef:D_801EA8C4
+fx_1ef_emitter8  <-  fx_1ef:D_801EA8D4
+fx_1ef_emitter9  <-  fx_1ef:D_801EA8E4
+fx_1ef_emitter10  <-  fx_1ef:D_801EA8F4
+
+## Batch 8: particle motion cores
+fxm_lerpParticle  <-  fx_0aa:func_801E7784 fx_1a6:func_801E77C4 fx_127:func_801E7818 fx_191:func_801E7870
+fxm_arcParticle  <-  fx_0ea:func_801E77D4
+fxm_wobbleParticle  <-  fx_193:func_801E7794
+fxm_followPathParticle  <-  fx_1b4:func_801E78A4 fx_1a0:func_801E789C fx_1e7:func_801E776C fx_0b4:func_801E793C
+fxm_followPathParticle0  <-  fx_191:func_801E7A00
+fxm_followPathParticle1  <-  fx_191:func_801E7B24
+fxm_boneLerpParticle  <-  fx_11d:func_801E77A4
+fxm_lineOrbitParticle0  <-  fx_1a7:func_801E7968
+fxm_lineOrbitParticle1  <-  fx_1a7:func_801E7D18
+
+## Batch 9: trail, ribbon and cylinder drawers, shatter helpers
+fxm_drawOffsetTrail  <-  fx_07d:func_801E9834 fx_0b2:func_801E7704 fx_0ba:func_801E8778 fx_0df:func_801E93F4 fx_0e0:func_801E8430 fx_134:func_801E8460 fx_19f:func_801E7894
+fxm_drawOffsetTrail0  <-  fx_0e3_0:func_801E7B40 fx_0e3_1:func_801EC71C fx_195:func_801E78A4
+fxm_drawOffsetTrail1  <-  fx_0e3_0:func_801E7D40 fx_0e3_1:func_801EC910 fx_195:func_801E7AA0
+fxm_drawOffsetTrail2  <-  fx_0e3_1:func_801ECAF8
+fxm_drawOffsetTrail3  <-  fx_0e3_1:func_801ECDEC
+fxm_drawTexRibbonTrail  <-  fx_0d3:func_801E8628 fx_0e1_0:func_801E7CB4 fx_0e3_0:func_801E7730
+fxm_drawTexCylinder  <-  fx_086:func_801E7704 fx_0e3_1:func_801ECFE4 fx_0f5:func_801E7704 fx_179:func_801E7B68 fx_195:func_801E7C98 fx_1a8:func_801E7950 fx_0fb_1:func_801EC738 fx_17a:func_801E7718
+fxm_tintScreenLerp  <-  fx_0b8:func_801EA4E0
+fxm_randDiscPoints  <-  fx_17d_0:func_801E7894
+fxm_drawStreakField  <-  fx_17d_0:func_801E79E8
+fxm_splitModelAdd  <-  fx_0ec:func_801E7F40 fx_1b6:func_801E774C
+fxm_shatterModel  <-  fx_179:func_801E7704 fx_1a2:func_801E7B88 fx_0ec:func_801E798C
+
+# ===== round 31: names_round31_main_overlays =====
+# Round 31, main exe and overlays (not ovl_0b): struct fields and named constants.
+# `# FIELDS include/X.h Struct: unkXX=name,...` = one struct per line (tools/rename_fields.py input).
+# `OLD NEW` = macro renames. Lines starting `# MACRO` record new macros that replace literals (no rename).
+# Evidence for each is in the comment next to the definition.
+
+# MACRO snd_ids.h SPU_ADSR1_* / SPU_ADSR2_* (ADSR register fields) and AKAO_ENV_* (AKAO envelope mode numbers 1/3/5/7): akao.c, akao_cmd.c, akao_voice.c
+# MACRO snd_ids.h AKAO_PAUSED_MUSIC 0x1 / AKAO_PAUSED_SE 0x2 (g_akaoPauseFlags)
+# MACRO snd_ids.h AKAO_SE_DEFAULT 0x2000000 (AkaoChannel.seMask bit from akao_cmdPlaySeDefault)
+# MACRO snd_ids.h AKAO_STREAM_STEREO 0x1 / AKAO_STREAM_LOOP 0x2 / AKAO_STREAM_FOUR_VOICES 0x400 / AKAO_STREAM_RING_PENDING 0x1000000 (AkaoStreamState.flags)
+# MACRO g_akaoOutputFlags & 2 -> AKAO_MODE_MONO (g_akaoOutputFlags 0x8008315C is g_akaoFlags.mode)
+# MACRO snd_ids.h MUSIC_NONE 0xFFFF, SE_NONE 0xFFFF
+# MACRO ff9_ids.h CARD_NONE 0xFF (hoisted from ovl_36.h)
+# MACRO psyq.h TPAGE_ABR_MASK 0x60 (ovl_0a fldmdl_setAbr)
+# MACRO ff9.h ITEM_SLOT_* (ItemInfo.slots), CHR_CLASS_FEMALE / CHR_CLASS_GUEST (Character.classFlags)
+# MACRO ff9.h DISC_NONE / DISC_1 / DISC_4 (hoisted from ovl_14.h / ovl_15.h), EVT_MODEL_NONE, EVT_BALLOON_NONE, MSG_TAIL_*
+# MACRO ovl_64.h MBG_RING_STATE, ovl_0c.h WM_ATTR_TRIGGER_MASK / WM_ATTR_TRIGGER, ovl_0d.h TM_FIGHT_CLASH / TM_FIGHT_ROLL / TM_FIGHT_END
+
+# FIELDS include/ff9.h Unk8E4: unk0=flags,unk8=worldObj,unkC=fieldArea,unk1340=groupNo,unk1354=files
+# FIELDS include/ff9.h Unk1354: unk4=data1
+# FIELDS include/ff9.h Unk11C0: unk4=returnId,unk6=returnMode,unk10=eventScript,unk14=texts,unk1C=bgData,unk28=shadows
+# FIELDS include/ff9.h WmObjView (new type for Unk8E4.worldObj, was Unk11C0): unk14=areaData,unk1C=shadows,unk24=sceneId
+# FIELDS include/ff9.h Unk11C0Slot: unk8=prims
+# FIELDS include/ff9.h Unk8E4C14: unkA=nextId,unk2C=shadows
+# FIELDS include/ff9.h Unk8E4C: unk8=msgTable,unk14=scene
+# FIELDS include/ff9.h PadActuator (new type for g_padActuator, was UnkPair): unk0=smallMotor,unk1=largeMotor
+# FIELDS include/ff9.h UnkPair (now typedef ItemSlot): unk0=id,unk1=count
+# MACRO FLD_MAP_NO_WINDOWS / FLD_MAP_NO_BGI_ANIM / FLD_MAP_NO_PRELOAD moved from ovl_0a.h to ff9.h (main menu.c, ovl_64 mbg.c)
+# FIELDS include/ff9.h Unk8007B954: unk0=count,unk4=offsets
+# FIELDS include/ff9.h Unk8006D128: unk1=stones,unk2=name
+# FIELDS include/ff9.h WeaponEntry: unk5=attack
+# FIELDS include/ff9.h Ff9ImgHeader: unk8=dirCount,unk10=dirs
+# FIELDS include/ff9.h Unk80039C38Quad: unk14=count,unk18=pts
+# FIELDS include/ff9.h Unk80039C38Pt: unk0=x,unk2=z
+# FIELDS include/ff9.h Unk8006573C: unk12=mp
+# FIELDS include/ff9.h Unk8006DDD0: unk0=hp,unk2=mp
+# FIELDS include/ff9.h Glyph8: unk4=advance
+# FIELDS include/ff9.h Icon: unk4=w
+# FIELDS include/ff9.h Unk8006C9D4: unk0=init,unk4=update,unk8=exit
+# FIELDS include/ff9.h Unk8006BD04: unk0=start,unk4=update,unk8=draw
+# FIELDS include/ff9.h Unk80076F78: unk0=images,unk4=count
+# FIELDS include/ff9.h FileEntry: unk8=sectors,unkC=link
+# FIELDS include/ff9.h Unk8007B988: unk0=type,unk4=buttons
+# FIELDS include/ff9.h Unk80073940: unk0=hdr
+# FIELDS include/ff9.h Unk800703FC: unk0=labels
+# FIELDS include/ff9.h Unk8007AED0 (removed; event.c uses EvtObject): unkE=state (EVT_STATE_RUNNING / EVT_STATE_SUSPENDED)
+# FIELDS include/ff9.h Unk8005F038 (removed; akao_opFEReturn takes AkaoChannel): unk0=pc,unk14=returnAddr
+# FIELDS include/ff9.h Unk80021910 (removed; cdRead_getBytesRead takes CdReadCtx): unk1C=state
+# FIELDS include/ff9.h VibTrack: unk0[6]=flags[2],length[2],dataOfs[2]
+# FIELDS include/ff9.h LoadAddrs: unk0=addr
+# FIELDS include/ff9.h MainCalcCmd: unk0=info
+# FIELDS include/ff9.h Unk80010CE0: unk0=insets
+# FIELDS include/ff9.h Unk80010CD0: unk0=w
+# FIELDS include/ff9.h GameData: sfxSlotBuf0,sfxSlotBuf1 -> sfxSlotBuf[2] (ovl_0a GameDataSfx.unk828 view removed)
+# MACRO ff9.h CHR_INFO_* (CharBits.w masks: event.c, ovl_0b btl_init/btl_update), EVT_ANIM_FOREVER
+
+# ===== round 31: names_round31_ovl_0b =====
+# Round 31 ovl_0b naming (fields as "# FIELDS header Struct: old=new", macro renames as "OLD NEW").
+# New macros (no old name) are listed under "# MACROS".
+# FIELDS include/ovl_0b.h EffElem: unk2=blend, unk3=flags, unk4=frameMode, unk6=fadeCurve, unk7=alignRot, unk8=frameCount, unkA=rotStepX, unkC=rotStepY, unkE=rotStepZ, unk10=spinRange, unk11=baseRot, unk14=spawnRotStep, unk17=rotSpread, unk1A=scaleStart, unk1B=scaleEnd, unk24=draw
+# FIELDS include/ovl_0b.h EffFileHdr: unk0=kind, pad1=hasSub
+# FIELDS include/ovl_0b.h EffEmit: unk0=kind, unk1=emitsSub, unk2=lifeStart, unk4=lifeEnd, unk6=lifeSpread
+# FIELDS include/ovl_0b.h EffMotion: unk0=kind, unk8=update
+# FIELDS include/ovl_0b.h Pool30Entry: unk12=spawnFlags, unk13=spin, unk18=elemRotZ, unk1F=slot, unk14=elemRot
+# FIELDS include/ovl_0b.h EffElemHdr: unk6=scaleStart, unk8=scaleEnd, unkA=alphaStart, unkC=alphaEnd
+# FIELDS include/ovl_0b.h EffTailSpawn: unk0=shape, unk3C=spawnFn, unk44=axisScaleStart, unk48=axisScaleEnd, unk4C=dirMode, unk4=anim
+# FIELDS include/ovl_0b.h EffTail: unk0=shape, unk4=anim, unk50=rateTable
+# FIELDS include/ovl_0b.h Pool6CEntry: unk10=subSpawnCount, unk12=trailSlots, unk14=trails, unk1C=scale, unk20=alpha, unk2C=target, unk32=spawnNow, unk34=live, unk3A=spawnFrac, unk3E=radiusMax, unk4A=gravity, unk50=subAccel, unk56=subGravity, unk58=subField, unkC=trailStride, unkE=spawnCount, unk3C=radiusMin, unk44=accel, unk4C=field
+# FIELDS include/ovl_0b.h EffAnim: unk0=rateCurve, unk2=duration, unk4=rateStart, unk6=rateEnd, unk8=maxParticles, unkA=stepSpread, unkC=accelStart, unk12=gravityStart, unk14=accelEnd, unk1A=gravityEnd, unk1C=fieldMode, unk1E=fieldCurve, unk20=fieldStart, unk24=fieldEnd, unk28=rot, unk30=rotStep
+# FIELDS include/ovl_0b.h EffSub: unk0=rateStart, unk2=rateEnd, unk4=elems, unk8=weights, unkC=rotMode, unkD=elemCount, unkE=rotJitter, unk10=maxParticles, unk11=startFrame, unk12=stepSpread, unk14=accelStart, unk1A=gravityStart, unk1C=accelEnd, unk22=gravityEnd, unk24=fieldMode, unk26=fieldCurve, unk28=fieldStart, unk2C=fieldEnd, unk30=radiusStart, unk34=radiusEnd
+# FIELDS include/ovl_0b.h Unk800D1494: unk0=frameCount, unk2=length, unk4=tpage, unk6=clut, unk8=h, unk9=w, unkA=frameOfs
+# FIELDS include/ovl_0b.h Unk800E5538: unkC=startPos, unk1C=startRot
+# FIELDS include/ovl_0b.h Unk800E4C88: unk1C=startRot
+# FIELDS include/ovl_0b.h Unk8006B1F4: unk0_8=effect, unk5=power, unk7=rate, unk4=formula, unk8=statuses
+# FIELDS include/ovl_0b.h BtlCmd8: unkB=flags2
+# FIELDS include/ovl_0b.h Unk800AA08C: unk14=area
+# FIELDS include/ovl_0b.h Unk800D50A0Ctx: unk28=anchorXY, unk2C=anchorZ
+# FIELDS include/ovl_0b.h FileEntry16: unk4=sector, unkC=endSector
+# FIELDS include/ovl_0b.h Unk800D23D8Scale: unk0=x, unk2=y
+# FIELDS include/ovl_0b.h BtlShadow: unk8=quads
+# FIELDS include/ovl_0b.h Unk800D0940: unk0=tag, unk4=stp, unk8=nop, unkC=ot
+# FIELDS include/ovl_0b.h BtlAnimEvt: unk2=kind
+# FIELDS include/ovl_0b.h BtlStpPair: unk0=mainStp, unkC=bgStp
+# MACROS include/ovl_0b.h EffElem.flags: BTLFX_ELEM_NO_ROT BTLFX_ELEM_FIXED_SCALE BTLFX_ELEM_SCREEN_ROT BTLFX_ELEM_FIXED_ALPHA BTLFX_ELEM_SPIN_X BTLFX_ELEM_SPIN_Y BTLFX_ELEM_SPIN_Z
+# MACROS include/ovl_0b.h Pool30Entry.spawnFlags: BTLFX_PART_SUB BTLFX_PART_SUB_FRAC
+# MACROS include/ovl_0b.h WmSrc*.flags: WMSRC_SEMITRANS WMSRC_DOUBLE_SIDED WMSRC_TPAGE_BITS
+# MACROS include/ovl_0b.h BtlUnit9C8.flags: BTL_MODELHDR_RELOCATED
+# MACROS include/ovl_0b.h BtlUnitList.kind: BTL_FXK_PARTY_UNLOAD
+# MACROS include/ovl_0b.h Unk800FEC40.phase: BTLFX_PHASE_SAVE_VRAM BTLFX_PHASE_START BTLFX_PHASE_RESIDENT BTLFX_PHASE_LOADING BTLFX_PHASE_RUN
+# MACROS include/ovl_0b.h Unk800FEC40.flags: BTLFX_HDR_COMMON_VRAM BTLFX_HDR_PARTNER BTLFX_HDR_CAMERA BTLFX_HDR_CASTER(_SHIFT) BTLFX_HDR_BG_FADE(_SHIFT) BTLFX_HDR_VRAM_SWAP(_SHIFT) BTLFX_HDR_CAST_MODE(_SHIFT) BTLFX_HDR_RESIDENT
+# MACROS include/ovl_0b.h BtlCmd8.flags2: BTL_ABIL2_SUMMON
+# MACROS include/ovl_0b.h BtlCmd8.targetType: BTL_TGT_EVERYONE BTL_TGT_SELF
+# MACROS include/ovl_0b.h Battle.scene.flags: BTL_SCENE_KEEP_MUSIC(_BIT)
+# MACROS include/ovl_0b.h BtlObjSlot.kind: HI_EFFMODEL_SOLID HI_EFFMODEL_GOU HI_EFFMODEL_TEX
+# MACROS include/ovl_0b.h EffElem.kind: BTLFX_ELEMK_PARTICLES SPRITE ANIM_QUADS SPRITES TRAIL_3D TRAIL_FLAT RINGS FAN TRAIL_SCREEN CALLBACK NONE
+# MACROS include/ovl_0b.h sprite frame word: BTLFX_SPRF_COLOR BTLFX_SPRF_SCALE BTLFX_SPRF_COUNT
+# MACROS include/ovl_0b.h Unk800D23D8Hdr.flags: BTLFX_RINGS_SCALED
+# MACROS include/ovl_0b.h Unk80100DC0.state: BTLFX_LD_IDLE READ_HEADER WAIT_HEADER NEXT_BLOCK NEXT_CMD WAIT_CMD WAIT_SPU WAIT_SOUND
+# MACROS include/ovl_0b.h Unk80100DC0.cmdKind: BTLFX_LDCMD_TEX TEX_MORE DATA CODE SUMMON_TEX SUMMON_MODEL SUMMON_DATA SOUND LOADBUF COMMON_TEX RING
