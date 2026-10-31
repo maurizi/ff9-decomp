@@ -192,6 +192,8 @@ typedef struct {
 #define FLD_EXIT_FIELD 1 /* next field (fld_depFindField / fld_depFindArea) */
 #define FLD_EXIT_BATTLE 2 /* event result 3: battle, mode 2 */
 #define FLD_EXIT_WORLD 3 /* event result 5: world map, mode 3 */
+#define FLD_EXIT_ENDING 4 /* event result 4 (field change) to FLD_NEXT_ENDING: mode GS_MODE_ENDING */
+#define FLD_NEXT_ENDING 0x3E80 /* field id 16000 as a field-change target means the ending (fld_main) */
 #define FLD_EXIT_GAME_OVER 7 /* event result 8 (EVT_OP_GAME_OVER): mode 7, fld_gameOver */
 #define FLD_EXIT_TETRA_MASTER 9 /* event result 7: mode 9 loads ovl_0d (Tetra Master, docs/ff9img.md) */
 

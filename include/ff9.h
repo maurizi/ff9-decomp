@@ -1426,22 +1426,15 @@ typedef struct EvtObject {
 #define EVT_ANIM_SCRIPTED 0x80 /* a script animation is playing (EVT_OP_WAIT_ANIM waits for it to end) */
 #define EVT_ANIM_LOOP_MODE (EVT_ANIM_HOLD | EVT_ANIM_LOOP | EVT_ANIM_BOUNCE) /* EVT_OP_SET_ANIM_LOOP's argument << 3 */
 
-/* Model object flags: ovl_0a ModelObj.flags, main's views Unk8004AFF0.flags and Unk80047B90.flags */
+/* Model object flags: ovl_0a ModelObj.flags, main's view Unk8004AFF0.flags */
 #define MDL_LOOK_AT 0x1 /* fld_drawModels uses fldmdl_calcBoneMatricesLookAt (evt_updateLookAt sets it) */
 #define MDL_SCALED 0x2 /* fldmdl_applyScale and the look-at variant apply the scale (EVT_OP_MODEL_SCALE) */
 #define MDL_BEHIND_CAMERA 0x10 /* fldmdl_cullBehindCamera: origin SZ 0 or parent behind; colour/abr helpers skip it */
 
-/* model object as seen by evt_relaxLookAt (ovl_0a ModelObj, BtlUnit9C in ovl_0b; Unk8004AFF0 has the rest) */
-typedef struct {
-    u16 flags; /* MDL_* */
-    u8 pad2[0x48 - 0x2];
-    s16 lookAtX; /* look-at point (ModelObj.lookAtTarget) */
-    s16 lookAtY;
-    s16 lookAtZ;
-} Unk80047B90;
+struct Unk8004AFF0; /* main's view of the model object, below */
 void evt_onAnimLimit(EvtObject *);
 s32 evt_callTurnScript(EvtObject *, s32);
-void evt_relaxLookAt(EvtObject *, Unk80047B90 *);
+void evt_relaxLookAt(EvtObject *, struct Unk8004AFF0 *);
 s32 math_distSq2(s32, s32, s32); /* distance */
 s32 math_isqrt(s32);
 s32 math_dist2(s32, s32, s32);
@@ -4257,7 +4250,7 @@ typedef struct Unk8004AFF0 {
     u8 pad18[0x1C - 0x18];
     struct Unk8004AFF0 *parent; /* op 0x4C / 0x4D: model it is attached to */
     u8 pad20[0x48 - 0x20];
-    s16 lookAtX; /* look-at target (evt_relaxLookAt) */
+    s16 lookAtX; /* look-at point (evt_relaxLookAt; ModelObj.lookAtTarget) */
     s16 lookAtY;
     s16 lookAtZ;
     u8 pad4E[0x50 - 0x4E];

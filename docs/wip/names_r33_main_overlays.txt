@@ -23,3 +23,6 @@ FieldEvtCtx FieldObjSlot
 # FIELDS include/ovl_0a.h FieldActorExt: obj=actor
 # FIELDS include/ovl_0c.h WmObjSlot: obj=model
 # CONSTANTS FLD_OBJ_COLOR_WAIT 0x800 (ovl_0a.h), MAINCALC_RESULT_MISS 0x20 (ff9.h)
+# batch 3: Unk80047B90 (evt_relaxLookAt's subset view of the model object) merged into Unk8004AFF0 (same offsets)
+Unk80047B90 Unk8004AFF0
+# CONSTANTS FLD_EXIT_ENDING 4, FLD_NEXT_ENDING 0x3E80 (ovl_0a.h; fld_main sends a field change to 16000 to GS_MODE_ENDING)

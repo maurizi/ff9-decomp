@@ -41,8 +41,8 @@ void fld_main(s32 arg0) {
                     fld_startEncounter();
                     break;
                 case 4:
-                    if (g_gameState->gameData->ctx.field->area->scene->nextId == 0x3E80) {
-                        g_gameState->gameData->ctx.field->area->scene->exitReason = 4;
+                    if (g_gameState->gameData->ctx.field->area->scene->nextId == FLD_NEXT_ENDING) {
+                        g_gameState->gameData->ctx.field->area->scene->exitReason = FLD_EXIT_ENDING;
                         g_gameState->flags |= GS_FLD_LEAVE;
                     } else {
                         g_gameState->flags |= GS_FLD_NEW_FIELD;
@@ -470,7 +470,7 @@ void fld_exit(void) {
         g_gameState->mode = GS_MODE_GAME_OVER;
         g_gameState->prevMode = GS_MODE_FIELD;
         break;
-    case 4:
+    case FLD_EXIT_ENDING:
         akao_stopSe(-1, 0);
         akao_sendCmdE2();
         g_gameState->mode = GS_MODE_ENDING;
