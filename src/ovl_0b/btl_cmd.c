@@ -653,7 +653,7 @@ s32 btl_checkCmdUsable(Battle *arg0, BtlCmd *arg1) {
             btlui_setAtbEnabled(0);
             g_gameState->gameData->escapeCount++;
             if (arg1->subNo == 0) {
-                g_gameState->gameData->battleFlags |= 4;
+                g_gameState->gameData->battleFlags |= GD_BTL_FLED;
             }
             btl_clearCmdQueue(arg0);
         } else {
@@ -2801,8 +2801,8 @@ void btl_calcSteal(BtlCalc *arg0, Unk800B7F20 *arg1, s32 arg2) {
             }
             gd->gil = g_gameState->gameData->gil +
                          ((*g_randPtr << 8) | *g_randPtr++) % ((arg0->caster->level * arg0->target->level) / 4 + 1);
-            if (g_gameState->gameData->gil > 9999999) {
-                g_gameState->gameData->gil = 9999999;
+            if (g_gameState->gameData->gil > GIL_MAX) {
+                g_gameState->gameData->gil = GIL_MAX;
             }
         }
     } else {

@@ -1183,25 +1183,25 @@ s32 btl_pickRandomUnit(s32 arg0) {
 
 s32 btl_playVictoryMusic(GameData *arg0, u32 arg1, s32 arg2) {
     Battle *b;
-    if (!(arg0->battleFlags & 0x10)) {
+    if (!(arg0->battleFlags & GD_BTL_VICTORY_MUSIC_FADE)) {
         btl_soundCmd(SND_MUSIC_VOL_INTPL, 0, arg1, 0, 0);
-        arg0->battleFlags |= 0x10;
+        arg0->battleFlags |= GD_BTL_VICTORY_MUSIC_FADE;
     }
-    if (!(arg0->battleFlags & 2)) {
+    if (!(arg0->battleFlags & GD_BTL_VICTORY_MUSIC_LOADED)) {
         b = g_gameState->gameData->ctx.battle;
         b->partyBrightness += 4;
         if ((u32)(s8)b->partyBrightness < arg1) {
             return 0;
         }
         btl_soundCmd(SND_MUSIC_LOAD, arg2, 0, 0, 0);
-        arg0->battleFlags |= 2;
+        arg0->battleFlags |= GD_BTL_VICTORY_MUSIC_LOADED;
     }
     if (btl_soundCmd(SND_GET_STATE, 0, 0, 0, 0) != 0) {
         return 0;
     }
-    if (!(arg0->battleFlags & 0x20)) {
+    if (!(arg0->battleFlags & GD_BTL_VICTORY_MUSIC_PLAYING)) {
         btl_soundCmd(SND_MUSIC_PLAY, arg2, 0, 0, 0);
-        arg0->battleFlags |= 0x20;
+        arg0->battleFlags |= GD_BTL_VICTORY_MUSIC_PLAYING;
     }
     return 1;
 }

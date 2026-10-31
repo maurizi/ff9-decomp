@@ -1640,11 +1640,11 @@ s32 evt_execInstr(void) {
         a = evt_getArg8_inline();
         btl_setBattleVar(a, evt_getArg16_inline());
         return 0;
-    case 0x1B:
+    case EVT_OP_BTL_KEEP_MUSIC:
         if (evt_getArg8_inline()) {
-            g_gameState->gameData->battleFlags |= 8;
+            g_gameState->gameData->battleFlags |= GD_BTL_KEEP_MUSIC;
         } else {
-            g_gameState->gameData->battleFlags &= 0xF7;
+            g_gameState->gameData->battleFlags &= ~GD_BTL_KEEP_MUSIC;
         }
         return 0;
     case EVT_OP_REWARDS_CLOSE:

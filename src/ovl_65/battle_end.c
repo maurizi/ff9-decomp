@@ -51,7 +51,7 @@ void battleEnd_init(void) {
             msg_init();
         }
     }
-    if (g_gameState->gameData->battleFlags & 1) {
+    if (g_gameState->gameData->battleFlags & GD_BTL_NEXT_LOCATION) {
         e = dep_find(g_gameState->gameData->depTable, g_gameState->gameData->fieldId | DB_FIELD);
         if (e != NULL) {
             g_gameState->gameData->fieldAreaId = e->unkC;
@@ -71,7 +71,7 @@ void battleEnd_exit(void) {
     GameData *g = g_gameState->gameData;
     s32 i;
 
-    if (!(g->battleFlags & 8) && (g->flags & GD_MUSIC_PLAYING) && g->musicId[0] != 0xFFFF) {
+    if (!(g->battleFlags & GD_BTL_KEEP_MUSIC) && (g->flags & GD_MUSIC_PLAYING) && g->musicId[0] != 0xFFFF) {
         g->flags |= GD_MUSIC_LEFT_PLAYING;
     }
     g_gameState->gameData->depTable = (FileTable *)-1;

@@ -663,13 +663,13 @@ void btl_setBattleVar(s32 arg0, s32 arg1) {
         }
         break;
     case BTL_SETVAR_NEXT_LOCATION:
-        g_gameState->gameData->battleFlags |= 1;
+        g_gameState->gameData->battleFlags |= GD_BTL_NEXT_LOCATION;
         evt_setNextLocation(arg1);
         break;
     case BTL_SETVAR_ADD_GIL:
         g_gameState->gameData->gil += arg1;
-        if (g_gameState->gameData->gil > 9999999) {
-            g_gameState->gameData->gil = 9999999;
+        if (g_gameState->gameData->gil > GIL_MAX) {
+            g_gameState->gameData->gil = GIL_MAX;
         }
         break;
     case 39:
@@ -679,7 +679,7 @@ void btl_setBattleVar(s32 arg0, s32 arg1) {
         break;
     case 40:
         btl_soundCmd(SND_MUSIC_VOL_INTPL, 0, 0x1E, 0, 0);
-        g_gameState->gameData->battleFlags |= 0x10;
+        g_gameState->gameData->battleFlags |= GD_BTL_VICTORY_MUSIC_FADE;
         break;
     }
 }

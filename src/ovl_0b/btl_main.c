@@ -26,7 +26,7 @@ void btl_main(s32 arg0) {
                     btlui_init();
                     g_gameState->gameData->ctx.battle->flags |= 0x10;
                 }
-                if (!(g_gameState->gameData->ctx.battle->flags & 0x40) && (g_gameState->gameData->battleFlags & 0x40)) {
+                if (!(g_gameState->gameData->ctx.battle->flags & 0x40) && (g_gameState->gameData->battleFlags & GD_BTL_EXIT_PRELOAD)) {
                     btl_preloadExit();
                     g_gameState->gameData->ctx.battle->flags |= 0x40;
                 }

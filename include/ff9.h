@@ -310,7 +310,7 @@ typedef struct {
     s16 stealCount; /* +1 per successful steal (btl_calcSteal, max 9999); formula 0x43 = it * speed / 2 (Thievery) */
     s16 dragonKills; /* +1 per defeated enemy with enemy flag 8 (btl_updateKo) or BTL_SETVAR 39 (max 9999); formula 0x44 = it squared (Dragon's Crest) */
     u8 battleResult; /* how the battle ended, 6 = game over (ovl_0b, ovl_65 battle_end; event system variable 27) */
-    u8 battleFlags; /* per-battle flags, cleared by btl_initBattleState: 1 next location set, 2/0x10/0x20 victory music steps (btl_playVictoryMusic), 4 escaped, 8 event op 0x1B, 0x40 start the exit preload */
+    u8 battleFlags; /* GD_BTL_*, cleared by btl_initBattleState */
     u8 rainCount; /* rain streaks (event opcode 0xD8, ovl_0b) */
     u8 darkBattle; /* set from wm_isDarkWeather when a world-map battle starts in the dark weather zone - night battle, Steiner model kind 8 (runtime) */
     u8 pad572[2];
@@ -1983,6 +1983,15 @@ extern s32 g_padPortMask[];
 #define GD_MUSIC_PLAYING 0x20000000
 #define GD_MUSIC2_LOADED 0x40000000
 #define GD_MUSIC2_PLAYING 0x80000000
+
+/* GameData.battleFlags (per battle) */
+#define GD_BTL_NEXT_LOCATION 0x01 /* the battle set the next location (BTL_SETVAR_NEXT_LOCATION); battleEnd_main loads it */
+#define GD_BTL_VICTORY_MUSIC_LOADED 0x02 /* btl_playVictoryMusic steps */
+#define GD_BTL_FLED 0x04 /* escaped with the Flee command: the escape costs gil */
+#define GD_BTL_KEEP_MUSIC 0x08 /* the battle music goes on after the battle (battleEnd_exit doesn't set GD_MUSIC_LEFT_PLAYING); event op 0x1B */
+#define GD_BTL_VICTORY_MUSIC_FADE 0x10 /* the music fade before the victory music started */
+#define GD_BTL_VICTORY_MUSIC_PLAYING 0x20
+#define GD_BTL_EXIT_PRELOAD 0x40 /* btl_main starts the exit preload (btl_preloadExit) */
 
 /* inventory and character limits */
 #define LEVEL_MAX 99
@@ -3837,6 +3846,7 @@ typedef struct {
 #define EVT_OP_VIB_TRACK 0xF8 /* 3 x u8: vib_selectTrack */
 #define EVT_OP_PARTY_JOIN 0xFE /* chr_join */
 /* more opcodes, named from their evt_execInstr handlers (code) */
+#define EVT_OP_BTL_KEEP_MUSIC 0x1B /* u8: GD_BTL_KEEP_MUSIC on/off */
 #define EVT_OP_SET_ACTOR_TYPE 0x3B /* u8: EvtObject.actorType */
 #define EVT_OP_REMOVE_ITEM 0x49 /* u16 id, u8 n: item_remove / keyItem_remove */
 #define EVT_OP_SET_BATTLE_VAR 0x4A /* u8 var, u16 value: btl_setBattleVar */
