@@ -984,8 +984,8 @@ void akao_opFECall(AkaoChannel *c) {
     c->pc += off;
 }
 
-void akao_opFEReturn(Unk8005F038 *a) {
-    a->unk0 = a->unk14;
+void akao_opFEReturn(AkaoChannel *c) {
+    c->pc = c->returnAddr;
 }
 
 void akao_opA3(AkaoChannel *c) {

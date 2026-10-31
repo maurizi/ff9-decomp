@@ -68,9 +68,9 @@ void game_loadModeOverlay(s32 mode) {
     if (preload_isReady(id)) {
         e = preload_find(id);
         if (preload_isInVram(e)) {
-            StoreImage((RECT *)&e->vramX, addrs.unk0[mode]);
-        } else if ((s32)addrs.unk0[mode] != e->dest) {
-            file_copyViaVram((s32)addrs.unk0[mode], e->dest, e->loaded, NULL);
+            StoreImage((RECT *)&e->vramX, addrs.addr[mode]);
+        } else if ((s32)addrs.addr[mode] != e->dest) {
+            file_copyViaVram((s32)addrs.addr[mode], e->dest, e->loaded, NULL);
         }
         loaded = e->loaded >> 11;
         preload_remove(id);
@@ -79,7 +79,7 @@ void game_loadModeOverlay(s32 mode) {
     f = file_find(DIR_OVERLAYS, id);
     if (loaded < f->link - f->sector) {
         cd_readSync(g_gameState->imgSector + f->sector + loaded, (f->link - (f->sector + loaded)) << 11,
-                      (u8 *)addrs.unk0[mode] + (loaded << 11));
+                      (u8 *)addrs.addr[mode] + (loaded << 11));
     }
     EnterCriticalSection();
     FlushCache();

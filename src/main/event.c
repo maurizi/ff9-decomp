@@ -2814,7 +2814,7 @@ void evt_checkPlayerAction(EvtObject *p) {
 void evt_updateBattleObjects(void) {
     s32 i;
     s32 m;
-    Unk8007AED0 *o;
+    EvtObject *o;
 
     if (g_gameState->gameData->ctx.ovl65->phase != 0) {
         i = 3;
@@ -2823,15 +2823,15 @@ void evt_updateBattleObjects(void) {
         for (i = 4; i < 8; i++) {
             o = g_evtUnitObjects[i];
             if (o != NULL) {
-                switch (o->unkE) {
-                case 1:
+                switch (o->state) {
+                case EVT_STATE_RUNNING:
                     if (!(m & 0x10)) {
-                        o->unkE = 3;
+                        o->state = EVT_STATE_SUSPENDED;
                     }
                     break;
-                case 3:
+                case EVT_STATE_SUSPENDED:
                     if (m & 0x10) {
-                        o->unkE = 1;
+                        o->state = EVT_STATE_RUNNING;
                     }
                     break;
                 }

@@ -300,7 +300,7 @@ void win_setClip(RECT *r, s32 otz, s32 style) {
     clip = &g_gameState->dispEnv[g_drawBufs.cur ^ 1].disp;
     offs = g_winClipInsets;
     p = (DR_AREA *)g_primPtr;
-    o = offs.unk0[style];
+    o = offs.insets[style];
     if (r != NULL) {
         t.x = g_drawBufs.dispPos[g_drawBufs.cur ^ 1].vx + (r->x + o[0]);
         t.y = g_drawBufs.dispPos[g_drawBufs.cur ^ 1].vy + (r->y + o[1]);
@@ -561,7 +561,7 @@ u8 win_isVisible(Window *w) {
         return r;
     }
     if (w->style == WIN_STYLE_BEVEL || w->style == WIN_STYLE_BALLOON) {
-        if (w->cur.w >= min.unk0[w->style] && w->cur.h >= 16) {
+        if (w->cur.w >= min.w[w->style] && w->cur.h >= 16) {
             r = 1;
         }
     } else if ((u16)w->cur.w | (u16)w->cur.h) {

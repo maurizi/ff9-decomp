@@ -66,7 +66,7 @@ u8 item_useOnMember(Character *a, Character *t, MainCalcCmd *cmd, u8 kind, s32 e
         break;
     case 62:
     case 73:
-        if (((cmd->unk0 >> 8) & 0x1FF) == 0x121) {
+        if (((cmd->info >> 8) & 0x1FF) == 0x121) {
             return menuItem_callChocobo();
         }
         fieldCalc_cureStatus(&c);
@@ -156,7 +156,7 @@ void fieldCalc_supportBoost(MainCalc *a) {
 }
 
 void fieldCalc_multiTargetHalf(MainCalc *c) {
-    if (c->all == 1 && (u32)((c->cmd->unk0 & 0xF) - 3) < 3) {
+    if (c->all == 1 && (u32)((c->cmd->info & 0xF) - 3) < 3) {
         c->multiplier /= 2;
     }
 }

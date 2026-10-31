@@ -711,7 +711,7 @@ extern DrawBufs g_drawBufs;
 
 /* window frame insets per style (rodata, win_setClip) */
 typedef struct {
-    s8 unk0[5][4];
+    s8 insets[5][4]; /* per window style: x, y, w, h added to the clip rect (win_setClip) */
 } Unk80010CE0;
 extern Unk80010CE0 g_winClipInsets;
 
@@ -926,13 +926,8 @@ typedef struct {
     u8 unk38;
 } Unk8001A084; /* pad state? (near libpad) */
 
-typedef struct {
-    s32 unk0;
-    u8 pad4[0x10];
-    s32 unk14;
-} Unk8005F038;
 
-/* Sound sequencer channel (AKAO): unk0 is the byte-code read pointer. */
+/* Sound sequencer channel (AKAO) */
 typedef struct {
     u8 *pc; /* byte-code read pointer (akao_execChannel) */
     u8 *loopStart[4]; /* loop start addresses (op C8, C9/CA jump back) */
@@ -941,7 +936,7 @@ typedef struct {
     s32 (*vibratoWave)(u32); /* LFO wave functions (pitch, volume, pan): pitch LFO wave (op B4, g_akaoLfoWaves) */
     s32 (*tremoloWave)(u32); /* volume LFO wave (op B8) */
     s32 (*panLfoWave)(u32); /* pan LFO wave (op BC) */
-    u32 seMask; /* sound-effect channel group bits (VoiceParams +4; akao_stopSeChannels, akao_getActiveSe), 0x2000000 = ignores SE volume/pan/pitch commands */
+    u32 seMask; /* sound-effect channel group bits (VoiceParams +4; akao_stopSeChannels, akao_getActiveSe), AKAO_SE_DEFAULT */
     u32 pitch; /* pitch of the current note (akao_calcPitch), base of voicePitch and of the vibrato depth */
     s32 pitchSlide; /* pitch offset of a running slide (<< 16), added to voicePitch */
     u32 flags; /* AKAO_CH_* */
@@ -1644,10 +1639,6 @@ extern VibState g_vib;
 #define VIB_LOOP_MODE (VIB_LOOP | VIB_BOUNCE) /* the bits vib_setLoopMode sets (event op) */
 u8 btlui_isSecondPortUsed(void); /* ovl_0b */
 
-typedef struct {
-    u8 pad0[0x1C];
-    s32 unk1C;
-} Unk80021910;
 
 extern u8 g_chrAppearanceTypes[][2];
 extern u8 g_menuScreenStrings[];
@@ -2232,7 +2223,7 @@ void menu_onPortraitsRead(u8 *);
 void akao_relocInstruments(s32 *, AkaoInstrument *, u32, s32);
 s32 akao_loadBankAt(s32 *, s32, s32, u32);
 typedef struct {
-    s32 unk0[4];
+    s32 w[4]; /* per window style (win_isVisible) */
 } Unk80010CD0;
 extern Unk80010CD0 g_winMinWidths; /* min widths per window style */
 void akao_freeSubSeqVoices(void);
@@ -3328,8 +3319,11 @@ s32 akao_isqrt(s32);
 extern s32 g_akaoTempoScaleStep;
 extern s32 g_akaoPitchScaleStep;
 extern AkaoArgs g_akaoOpSeArgs;
+/* vibration track (g_vib.data + tracksOfs), [0] = actuator 1 (largeMotor), [1] = actuator 0 (smallMotor) as vib_update sums them */
 typedef struct {
-    u16 unk0[6];
+    u16 flags[2]; /* bit 0: enabled (vib_selectTrack, vib_setTrackEnabled) */
+    u16 length[2]; /* last frame with data */
+    u16 dataOfs[2]; /* per-frame strengths, from g_vib.data */
 } VibTrack;
 extern u32 g_akaoStreamVoices;
 /* voice parameter block written to the SPU by akao_writeVoice */
@@ -3345,11 +3339,6 @@ typedef struct {
     s16 volL; /* volume left */
     s16 volR; /* volume right */
 } AkaoVoiceRegs;
-/* script object (g_evtUnitObjects[]) */
-typedef struct Unk8007AED0 {
-    u8 pad0[0xE];
-    u8 unkE;
-} Unk8007AED0;
 typedef struct {
     void (*start)(FadeState *);
     s32 update;
@@ -3654,13 +3643,13 @@ void game_freezeScreen(void);
 /* overlay load addresses by game mode (game_loadModeOverlay). The rodata block
  * g_modeOverlayAddrs also holds the next word and libgpu's version string. */
 typedef struct {
-    u32 *unk0[10];
+    u32 *addr[10]; /* per GameState.mode */
 } LoadAddrs;
 extern LoadAddrs g_modeOverlayAddrs;
 
 /* battle calculation context (fieldCalc_checkAlive ... chr_addMp) */
 typedef struct {
-    u32 unk0; /* low nibble: kind */
+    u32 info; /* as ovl_0b BtlCmd8's first word: bits 0-3 target type (fieldCalc_multiTargetHalf), 8-16 effect id */
     u8 pad4;
     u8 power; /* power */
     u8 pad6[2];

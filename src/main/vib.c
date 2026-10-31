@@ -124,11 +124,11 @@ s32 vib_selectTrack(s32 row, s32 col, s32 sel) {
 
     r = (VibTrack *)((u8 *)g_vib.data + g_vib.data->tracksOfs);
     for (i = 0; i < g_vib.data->trackCount; r++, i++) {
-        r->unk0[col] &= ~1;
+        r->flags[col] &= ~1;
     }
     r = (VibTrack *)((u8 *)g_vib.data + g_vib.data->tracksOfs) + row;
     if (sel) {
-        r->unk0[col] |= 1;
+        r->flags[col] |= 1;
         g_padActuator[0].smallMotor = 0;
         g_padActuator[0].largeMotor = 0;
         g_padActuator[1].smallMotor = 0;
@@ -136,7 +136,7 @@ s32 vib_selectTrack(s32 row, s32 col, s32 sel) {
         g_vib.flags &= ~(VIB_PLAYING | VIB_RUNNING);
         g_vib.pos = g_vib.start << 8;
     } else {
-        r->unk0[col] &= ~1;
+        r->flags[col] &= ~1;
     }
     return 0;
 }
@@ -183,9 +183,9 @@ s32 vib_setTrackEnabled(s32 a, s32 b, s32 on) {
 
     e = (VibTrack *)((u8 *)g_vib.data + g_vib.data->tracksOfs) + a;
     if (on) {
-        e->unk0[b] |= 1;
+        e->flags[b] |= 1;
     } else {
-        e->unk0[b] &= ~1;
+        e->flags[b] &= ~1;
     }
     return 0;
 }

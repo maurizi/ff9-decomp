@@ -98,8 +98,8 @@ s32 cdRead_update(void *arg0) {
     return 0;
 }
 
-s32 cdRead_getBytesRead(Unk80021910 *a) {
-    if (a->unk1C >= 3) {
+s32 cdRead_getBytesRead(CdReadCtx *a) {
+    if (a->state >= CDREAD_READING) {
         return g_cdLoad.bytesRead;
     }
     return 0;

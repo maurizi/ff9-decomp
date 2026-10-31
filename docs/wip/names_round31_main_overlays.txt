@@ -42,3 +42,11 @@
 # FIELDS include/ff9.h Unk8007B988: unk0=type,unk4=buttons
 # FIELDS include/ff9.h Unk80073940: unk0=hdr
 # FIELDS include/ff9.h Unk800703FC: unk0=labels
+# FIELDS include/ff9.h Unk8007AED0 (removed; event.c uses EvtObject): unkE=state (EVT_STATE_RUNNING / EVT_STATE_SUSPENDED)
+# FIELDS include/ff9.h Unk8005F038 (removed; akao_opFEReturn takes AkaoChannel): unk0=pc,unk14=returnAddr
+# FIELDS include/ff9.h Unk80021910 (removed; cdRead_getBytesRead takes CdReadCtx): unk1C=state
+# FIELDS include/ff9.h VibTrack: unk0[6]=flags[2],length[2],dataOfs[2]
+# FIELDS include/ff9.h LoadAddrs: unk0=addr
+# FIELDS include/ff9.h MainCalcCmd: unk0=info
+# FIELDS include/ff9.h Unk80010CE0: unk0=insets
+# FIELDS include/ff9.h Unk80010CD0: unk0=w
