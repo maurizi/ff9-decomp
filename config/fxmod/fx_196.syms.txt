@@ -10,3 +10,9 @@ fxm_keyGetVec3 = 0x801E77DC; // type:func [code] three SVECTORs of key t (clampe
 fxm_keyGetValue = 0x801E7890; // type:func [code] s16 key t (clamped) of a key list
 fxm_nextRingPoint = 0x801E8370; // type:func [code] next of 16 stored points (wrapping index), sets pad 1
 fx_196_env = 0x801E915C; // [code] the effect env (Unk800F78A4) the op handlers store in mode 1, used by the helpers for BTLFX_EXPORTS
+fx_196_nextWavePoint = 0x801E90F8; // [code] index into fx_196_wavePoints read and advanced (wrap at 16) by fxm_nextRingPoint
+fx_196_rippleColors = 0x801E90FC; // [code] CVECTOR table given to btlfx_drawRippleGrid in fx_196_op85 state 0
+fx_196_camPaths = 0x801E910C; // [code] Fx196CamPath table indexed by the op argument in fx_196_op87 (track files for camera points[0] and [1], end frame)
+fx_196_wavePoints = 0x801E916C; // [code] world position of the first column of each mesh row stored by fx_196_drawWaveMesh (pad = on screen), drawn by btlfx_drawAnimQuads in fx_196_op85 and handed out by fxm_nextRingPoint
+fx_196_drawWaveMesh = 0x801E7AA0; // type:func [code] draws an 18x19 grid of textured quads displaced by sin (amp, phase step) with POLY_GT4/FT4 plus G4/F4 overlays and records fx_196_wavePoints, called by fx_196_op85
+fxm_sinHalfNeg = 0x801E7A5C; // type:func [code] copy of fx_0b3 fxm_sinHalfNeg, math_sin with the negative half halved

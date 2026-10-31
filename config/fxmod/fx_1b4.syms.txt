@@ -17,3 +17,15 @@ fx_1b4_op80ParticleMotion7 = 0x801E7870; // type:func [code] particle motion cal
 fx_1b4_env = 0x801E8654; // [code] the effect env (Unk800F78A4) the op handlers store in mode 1, used by the helpers for BTLFX_EXPORTS
 fx_1b4_op80ParticleMotions = 0x801E85EC; // [code] table of ParticleMotion callbacks (data), indexed by the op
 fxm_followPathParticle = 0x801E78A4; // type:func [code] particle motion core, position = posPath key frame plus a module offset
+fx_1b4_posPath = 0x801E8664; // [code] key path state for fxm_posPathInit and fxm_posPathGet
+fx_1b4_op80Trails0 = 0x801E86E4; // [code] trail point buffer (Pool6CEntry.trails) of an emitter started by the op80 handler
+fx_1b4_op80Trails1 = 0x801E8E64; // [code] trail point buffer (Pool6CEntry.trails) of an emitter started by the op80 handler
+fx_1b4_op81Trails = 0x801EAA64; // [code] trail point buffer (Pool6CEntry.trails) of an emitter started by the op81 handler
+fx_1b4_op82Trails0 = 0x801ECE64; // [code] trail point buffer (Pool6CEntry.trails) of an emitter started by the op82 handler
+fx_1b4_op82Trails1 = 0x801EE0F4; // [code] trail point buffer (Pool6CEntry.trails) of an emitter started by the op82 handler
+fx_1b4_emitPos = 0x801EF17C; // [code] emitter origin, passed to btlfx_startEmitter
+fx_1b4_emitFileIds0 = 0x801E85BC; // [code] u16 btlfx_getFileData ids of the 8 emit0[i] emitters started at frame 0 in fx_1b4_op80
+fx_1b4_emitFileIds1 = 0x801E85CC; // [code] u16 btlfx_getFileData ids of the 8 emit20[i] emitters started at frame 0x17 in fx_1b4_op80
+fx_1b4_pathFileIds = 0x801E85DC; // [code] u16 btlfx_getFileData ids of the 8 position paths given to fxm_posPathInit in fx_1b4_op80
+fx_1b4_op80ParticlePaths = 0x801E86A4; // [code] 8 posPath states set up at frame 0x17 in fx_1b4_op80, read by fx_1b4_op80ParticleMotion0..7 through fxm_followPathParticle
+fx_1b4_pathOrigin = 0x801EF174; // [code] SVECTOR set to the target center in fx_1b4_op80 mode 1, added to the path position in fxm_followPathParticle

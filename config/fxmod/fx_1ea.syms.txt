@@ -12,3 +12,17 @@ fxm_lerpRatio = 0x801E8B44; // type:func [code] (from * (n - t) + to * t) / n, t
 fxm_tintScreenLerp = 0x801E8B9C; // type:func [code] btlfx_drawScreenTint with a grey level lerped from to over n frames (fxm_lerpRatio inline)
 fx_1ea_env = 0x801E8DD8; // [code] the effect env (Unk800F78A4) the op handlers store in mode 1, used by the helpers for BTLFX_EXPORTS
 fx_1ea_effModels = 0x801E8DE8; // [code] effect model buffers given to btlfx_initEffModels (BtlModel per slot)
+fx_1ea_rotPosPath0 = 0x801E95F0; // [code] key path state for fxm_rotPosPathInit and fxm_rotPosPathGet
+fx_1ea_rotPosPath1 = 0x801E95F8; // [code] key path state for fxm_rotPosPathInit and fxm_rotPosPathGet
+fx_1ea_morphModelFileIds = 0x801E8D5C; // [code] 5 btlfx_getFileData indices registered into work modelA4[0..4] in op81 mode 1, drawn with Hi_DrawMorphEffModel
+fx_1ea_sliceModelFileIds = 0x801E8D68; // [code] 5 btlfx_getFileData indices registered into work modelA4[5..9], drawn with Hi_DrawSliceEffModel
+fx_1ea_slicePathFileIds = 0x801E8D74; // [code] 5 btlfx_getFileData indices given to fxm_rotPosPathInit for fx_1ea_rotPosPath1[i] (paths of the slice models)
+fx_1ea_trailPathFileIds0 = 0x801E8D80; // [code] 2 btlfx_getFileData indices given to fxm_posPathInit for ribbon fx_1ea_ribbon0 before fx_1ea_buildTrail
+fx_1ea_trailPathFileIds1 = 0x801E8D84; // [code] 6 btlfx_getFileData indices given to fxm_posPathInit for ribbon fx_1ea_ribbon1 before fx_1ea_buildTrailRotY
+fx_1ea_ribbon0 = 0x801E95B8; // [code] Fx1eaRibbon (path, base, count, alpha) of the 2 trails built by fx_1ea_buildTrail in op81 frames 0..0x1D
+fx_1ea_ribbon1 = 0x801E95D8; // [code] Fx1eaRibbon of the 6 trails built by fx_1ea_buildTrailRotY in op81 frames 0..0x1D
+fx_1ea_ribbonTrails0 = 0x801E9628; // [code] 2 trail buffers of 0x100 bytes filled by fx_1ea_buildTrail and drawn with btlfx_drawTrail
+fx_1ea_ribbonTrails1 = 0x801E9828; // [code] 6 trail buffers of 0x88 bytes filled by fx_1ea_buildTrailRotY and drawn with btlfx_drawTrail
+fx_1ea_trailOrigin = 0x801E9B58; // [code] set to the unit position in op81 mode 1, fx_1ea_buildTrail and fx_1ea_buildTrailRotY add it to every trail point
+fx_1ea_buildTrail = 0x801E7804; // type:func [code] fills a trail header and points from posPath keys base..base+start-1 (scaled 11/10, plus trailOrigin, pad = weight)
+fx_1ea_buildTrailRotY = 0x801E79D0; // type:func [code] same as fx_1ea_buildTrail but rotates each point by angle ang about y (math_rotMatrixYXZ) before adding trailOrigin

@@ -30,8 +30,8 @@ static void fxm_randDiscPoints(s32 n, s32 r, SVECTOR *pts);
 static void fxm_drawStreakField(u32 *ot, s32 n, s32 h, s32 dz, void *src, SVECTOR *pts, CVECTOR *col, s32 p, s32 abr);
 
 typedef struct {
-    s32 unk0; /* state */
-    s32 unk4; /* counter */
+    s32 state0; /* state */
+    s32 frame4; /* counter */
     s16 unk8[6];
     SVECTOR pos14; /* position */
     SVECTOR pos1C; /* target position */
@@ -47,8 +47,8 @@ typedef struct {
 } Fx086Work80; /* 0x48 */
 
 extern BtlModel fx_086_effModels[];
-extern SVECTOR D_801EA3BC[];
-extern SVECTOR D_801EB5BC[64];
+extern SVECTOR fx_086_streakPts[];
+extern SVECTOR fx_086_spritePos[64];
 static void fxm_drawTexCylinder(SVECTOR *pos, SVECTOR *rot, VECTOR *scale, s32 r0, s32 r1, s32 w0, s32 w1, s32 c, s32 tpage,
                    s32 clut, s32 u, s32 v, s32 ang, s32 dy, s32 abr, s32 dang);
 

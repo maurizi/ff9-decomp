@@ -1,7 +1,7 @@
 #include "fxmod/fx_17f.h"
 
-void func_801E7704(SVECTOR *v, s32 i) {
-    v->vy -= D_801E7C60[i];
+void fx_17f_op80MeltVertex(SVECTOR *v, s32 i) {
+    v->vy -= fx_17f_vertexDrops[i];
     if (v->vy < 0) {
         v->vy = 0;
     }
@@ -26,15 +26,15 @@ s32 fx_17f_op80(s32 mode, Fx17fWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
         ex->btlfx_getUnitPos(0, (s16 *)&work->pos20);
         if (ex->btlfx_isEnemyUnit(0x10) != 0) {
             ex->btlfx_getUnitRot(0x10, (s16 *)&work->rot14);
-            ex->btlfx_getUnitScale(0x10, (VECTOR *)work->unk0);
+            ex->btlfx_getUnitScale(0x10, (VECTOR *)work->scale0);
             ex->btlfx_getUnitPos(0x10, (s16 *)&work->posC);
             ex->btlfx_setPartnerByArg(0);
             ex->btlfx_fadeUnitById(0x10, -1);
-            work->unk1C = (BtlUnit9C8 *)ex->btlfx_swapModelData(0xE, D_801E88E0);
+            work->model1C = (BtlUnit9C8 *)ex->btlfx_swapModelData(0xE, fx_17f_modelBackup);
             ex->btlfx_fadeUnitById(0x11, 0x1000);
             ex->btlfx_fadeUnitById(0x11, -2);
             ex->btlfx_setUnitRot(0x11, (s16 *)&work->rot14);
-            ex->btlfx_setUnitScale(0x11, work->unk0);
+            ex->btlfx_setUnitScale(0x11, work->scale0);
             ex->btlfx_aimAngles((s16 *)&work->posC, (s16 *)&work->pos20, (s16 *)&ang);
             ex->btlfx_pointAhead((s16 *)&work->posC, (s16 *)&ang, -0x104, (s16 *)&work->posC);
             ex->btlfx_setUnitPos(0x11, (s16 *)&work->posC);
@@ -43,11 +43,11 @@ s32 fx_17f_op80(s32 mode, Fx17fWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
         work->pos20.vy = (work->pos20.vy + work->posC.vy) / 2 - 0x11C;
         work->pos20.vz = (work->pos20.vz + work->posC.vz) / 2;
         for (i = 0; i < 0x2BC; i++) {
-            D_801E7C60[i] = (ex->btlfx_rand() & 7) + 4;
+            fx_17f_vertexDrops[i] = (ex->btlfx_rand() & 7) + 4;
         }
     } else {
         frame = entry->frame;
-        ex->btl_forEachModelVertex(work->unk1C, func_801E7704);
+        ex->btl_forEachModelVertex(work->model1C, fx_17f_op80MeltVertex);
         if (frame >= 0x37) {
             c = 0x80 - (frame - 0x37) * 8;
             if (c < 0x10) {
@@ -78,7 +78,7 @@ s32 fx_17f_op80(s32 mode, Fx17fWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
         work->pos20.vy += 5;
         if (frame >= 0x47) {
             ex->btlfx_fadeUnitById(0x11, -1);
-            ex->btlfx_swapModelData(0xE, D_801E88E0);
+            ex->btlfx_swapModelData(0xE, fx_17f_modelBackup);
             work->posC.vx = 0;
             work->posC.vy = 0;
             work->posC.vz = 0x3A98;

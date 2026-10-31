@@ -11,21 +11,21 @@ typedef struct {
         BtlUnit9CC *motion180[8]; /* summon motions */
     } *unk54;
     u8 pad58[8];
-    s32 unk60; /* summon model */
+    s32 model60; /* summon model */
 } Fx17d3Summon;
 
 typedef struct {
-    u32 unk0; /* state */
-    s32 unk4; /* counter */
+    u32 state0; /* state */
+    s32 frame4; /* counter */
     u8 pad8[8];
     SVECTOR pos10;
     SVECTOR pos18;
     SVECTOR pos20; /* camera */
-    s32 unk28[3]; /* model position */
+    s32 pos28[3]; /* model position */
     SVECTOR rot34; /* model rotation */
-    s32 unk3C[3]; /* model scale */
-    s32 unk48[3]; /* summon position */
-    s32 unk54[3]; /* summon scale */
+    s32 scale3C[3]; /* model scale */
+    s32 pos48[3]; /* summon position */
+    s32 scale54[3]; /* summon scale */
     SVECTOR unk60;
     s32 model68; /* models */
     s32 model6C;
@@ -37,13 +37,13 @@ typedef struct {
 
 extern Unk800F78A4 *fx_17d_3_env;
 extern BtlModel fx_17d_3_effModels[];
-extern u8 D_801EEC2C[];
-extern u8 D_801EEC30[];
-extern u8 D_801EEC34[];
-extern u8 D_801EEC38[];
-extern u8 D_801EF084[];
-extern u8 D_801EFD44[];
-extern u8 D_801F02C4[];
+extern u8 fx_17d_3_bones0[];
+extern u8 fx_17d_3_bones1[];
+extern u8 fx_17d_3_bones2[];
+extern u8 fx_17d_3_bones3[];
+extern u8 fx_17d_3_op80Trails0[];
+extern u8 fx_17d_3_op80Trails1[];
+extern u8 fx_17d_3_op80Trails2[];
 
 #define SUMMON(env) ((Fx17d3Summon *)(env)->loader)
 

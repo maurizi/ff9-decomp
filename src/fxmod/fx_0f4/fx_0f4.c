@@ -32,13 +32,13 @@ s32 fx_0f4_op80(s32 mode, Fx0f4Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
         work->pos1C.vz = work->pos58.vz;
         work->model6C = ex->Hi_RegisterTexEffModel((BtlUnit9C8 *)ex->btlfx_getFileData(entry->file, 0xA), 0x11A, 0, 0, 0x80);
         work->model6E = ex->Hi_RegisterTexEffModel((BtlUnit9C8 *)ex->btlfx_getFileData(entry->file, 0xB), 0x11A, 0, 0, 0x80);
-        work->unk60.vx = work->pos1C.vx;
-        work->unk60.vy = work->pos1C.vy;
-        work->unk60.vz = work->pos1C.vz;
+        work->startPos60.vx = work->pos1C.vx;
+        work->startPos60.vy = work->pos1C.vy;
+        work->startPos60.vz = work->pos1C.vz;
         work->emit0 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 2), (s32)&work->pos58);
         work->emit4 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 3), (s32)&work->pos58);
-        work->unk68 = -1;
-        work->unk6A = -1;
+        work->fadeInTimer68 = -1;
+        work->fadeOutTimer6A = -1;
     } else {
         frame = entry->frame;
         switch (frame) {
@@ -61,7 +61,7 @@ s32 fx_0f4_op80(s32 mode, Fx0f4Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
             }
             break;
         case 0x52:
-            work->unk6A = 0x10;
+            work->fadeOutTimer6A = 0x10;
             break;
         }
         if ((u32)(frame - 0x32) < 0x30) {
@@ -72,19 +72,19 @@ s32 fx_0f4_op80(s32 mode, Fx0f4Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
             }
             ex->Hi_DrawEffModel(&work->rot40, &work->pos1C, (s32)&work->scale48, work->model6E);
             ex->Hi_ModifyEffModelAbr(work->model6E, 1);
-            if (work->unk68 >= 0 || work->unk6A >= 0) {
-                if (work->unk68 >= 0) {
-                    work->unk3C = fxm_lerpRatio(-0x80, 0, 3 - work->unk68, 3);
-                    work->unk68--;
+            if (work->fadeInTimer68 >= 0 || work->fadeOutTimer6A >= 0) {
+                if (work->fadeInTimer68 >= 0) {
+                    work->rgb3C = fxm_lerpRatio(-0x80, 0, 3 - work->fadeInTimer68, 3);
+                    work->fadeInTimer68--;
                 }
-                if (work->unk6A >= 0) {
-                    work->unk3C = fxm_lerpRatio(0, -0x100, 0x10 - work->unk6A, 0x10);
-                    work->unk6A--;
+                if (work->fadeOutTimer6A >= 0) {
+                    work->rgb3C = fxm_lerpRatio(0, -0x100, 0x10 - work->fadeOutTimer6A, 0x10);
+                    work->fadeOutTimer6A--;
                 }
                 if (t >= 4) {
-                    ex->Hi_ModifyEffModelRGB(work->model6C, work->unk3C, work->unk3C, work->unk3C);
+                    ex->Hi_ModifyEffModelRGB(work->model6C, work->rgb3C, work->rgb3C, work->rgb3C);
                 }
-                ex->Hi_ModifyEffModelRGB(work->model6E, work->unk3C, work->unk3C, work->unk3C);
+                ex->Hi_ModifyEffModelRGB(work->model6E, work->rgb3C, work->rgb3C, work->rgb3C);
             }
             if (t >= 4) {
                 work->scale2C.vx += 0x40;

@@ -42,19 +42,19 @@ s32 fx_1f1_op80(s32 mode, s32 *work, Unk800F78A4 *env, Unk80100C78Entry *entry, 
             work[i] = 0;
         }
         for (i = 0; i < env->targets->targetCount; i++) {
-            u = &D_801E7F14[i];
+            u = &fx_1f1_units[i];
             u->model18 = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, 2), 1);
             u->model1C = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, 4), 1);
-            ex->btlfx_getUnitPos(i, (s16 *)&D_801E7F14[i].unkC);
-            setVector(&D_801E7F14[i].unk20, 0, 0, 0);
-            setVector(&D_801E7F14[i].unk28, 0, 0, 0);
-            setVector(&D_801E7F14[i].unk30, 0x1100, 0x1000, 0x1100);
-            setVector(&D_801E7F14[i].unk40, 0x1000, 0x1000, 0x1000);
-            setVector(&D_801E7F14[i].unk50, u->unkC.vx, -0x800, u->unkC.vz);
-            k = D_801E7E9C[i];
-            u->unk4 = 0x20;
+            ex->btlfx_getUnitPos(i, (s16 *)&fx_1f1_units[i].posC);
+            setVector(&fx_1f1_units[i].rot20, 0, 0, 0);
+            setVector(&fx_1f1_units[i].rot28, 0, 0, 0);
+            setVector(&fx_1f1_units[i].scale30, 0x1100, 0x1000, 0x1100);
+            setVector(&fx_1f1_units[i].scale40, 0x1000, 0x1000, 0x1000);
+            setVector(&fx_1f1_units[i].pos50, u->posC.vx, -0x800, u->posC.vz);
+            k = fx_1f1_unitDelays[i];
+            u->timer4 = 0x20;
             u->unk14 = 0;
-            u->unk0 = k;
+            u->delay0 = k;
         }
     } else {
         frame = entry->frame;
@@ -64,15 +64,15 @@ s32 fx_1f1_op80(s32 mode, s32 *work, Unk800F78A4 *env, Unk80100C78Entry *entry, 
         if (work[0] != 0) {
             work[0]--;
             for (i = 0; i < env->targets->targetCount; i++) {
-                u = &D_801E7F14[i];
-                if (u->unk0 == 0) {
-                    if (u->unk4 != 0) {
-                        u->unk4--;
-                        if (u->unk4 == 0x1F) {
-                            ex->btlfx_getUnitPos(i, (s16 *)&D_801E7F14[i].unkC);
-                            u->unk8 = u->unkC.vy;
-                            u->unkC.vy = 0;
-                            p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 5), (s32)&D_801E7F14[i].unkC);
+                u = &fx_1f1_units[i];
+                if (u->delay0 == 0) {
+                    if (u->timer4 != 0) {
+                        u->timer4--;
+                        if (u->timer4 == 0x1F) {
+                            ex->btlfx_getUnitPos(i, (s16 *)&fx_1f1_units[i].posC);
+                            u->height8 = u->posC.vy;
+                            u->posC.vy = 0;
+                            p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 5), (s32)&fx_1f1_units[i].posC);
                             if (p != NULL) {
                                 p->otZ = ex->btlfx_addRadiusSixth(i, 0x100);
                             }
@@ -82,41 +82,41 @@ s32 fx_1f1_op80(s32 mode, s32 *work, Unk800F78A4 *env, Unk80100C78Entry *entry, 
                         }
                         /* mm holds the base so q and m are computed from it (base + 0x30, + 0x10) while its last
                          * use is the &mm[i] giv: loop.c then hoists the base without dragging + 0x10 along */
-                        mm = D_801E7F34;
-                        q = &D_801E7F34[i].unk30;
-                        m = D_801E7F34[i].unk10;
-                        ex->Hi_DrawEffModel(mm[i].unk0, q, (s32)m, u->model18);
-                        ex->Hi_DrawEffModel(mm[i].unk0 + 1, q, (s32)(m + 1), u->model1C);
-                        if (u->unk4 >= 0x10) {
-                            c = (0x10 - u->unk4) * 0x10;
+                        mm = fx_1f1_unitModels;
+                        q = &fx_1f1_unitModels[i].pos30;
+                        m = fx_1f1_unitModels[i].scale10;
+                        ex->Hi_DrawEffModel(mm[i].rot0, q, (s32)m, u->model18);
+                        ex->Hi_DrawEffModel(mm[i].rot0 + 1, q, (s32)(m + 1), u->model1C);
+                        if (u->timer4 >= 0x10) {
+                            c = (0x10 - u->timer4) * 0x10;
                             ex->Hi_ModifyEffModelRGB(u->model18, c, c, c);
                             ex->Hi_ModifyEffModelRGB(u->model1C, c, c, c);
-                            u->unk50.vy = fxm_easeLerp(2, 0x10, u->unk4 - 0x10, -0x800, 0);
-                            v.vy = fxm_easeLerp(2, 0x10, u->unk4 - 0x10, u->unk8, 0);
-                            v.vx = u->unkC.vx;
-                            v.vz = u->unkC.vz;
+                            u->pos50.vy = fxm_easeLerp(2, 0x10, u->timer4 - 0x10, -0x800, 0);
+                            v.vy = fxm_easeLerp(2, 0x10, u->timer4 - 0x10, u->height8, 0);
+                            v.vx = u->posC.vx;
+                            v.vz = u->posC.vz;
                             ex->btlfx_setUnitPos(i, (s16 *)&v);
                         }
-                        if (u->unk4 < 0x10) {
-                            c = (u->unk4 - 0x10) * 0x10;
+                        if (u->timer4 < 0x10) {
+                            c = (u->timer4 - 0x10) * 0x10;
                             ex->Hi_ModifyEffModelRGB(u->model18, c, c, c);
                             ex->Hi_ModifyEffModelRGB(u->model1C, c, c, c);
-                            ex->btlfx_fadeUnitById(i, u->unk4 * 8);
-                            v.vy = u->unk50.vy = fxm_easeLerp(1, 0x10, u->unk4, 0, -0x800);
-                            v.vx = u->unk50.vx;
-                            v.vz = u->unk50.vz;
+                            ex->btlfx_fadeUnitById(i, u->timer4 * 8);
+                            v.vy = u->pos50.vy = fxm_easeLerp(1, 0x10, u->timer4, 0, -0x800);
+                            v.vx = u->pos50.vx;
+                            v.vz = u->pos50.vz;
                             ex->btlfx_setUnitPos(i, (s16 *)&v);
                         }
-                        if (u->unk4 == 0) {
-                            u->unkC.vy = 0x3000;
-                            ex->btlfx_setUnitPos(i, (s16 *)&D_801E7F14[i].unkC);
+                        if (u->timer4 == 0) {
+                            u->posC.vy = 0x3000;
+                            ex->btlfx_setUnitPos(i, (s16 *)&fx_1f1_units[i].posC);
                             ex->btlfx_fadeUnitById(i, 0x80);
                             ex->btlfx_clearUnitStatus(i);
                         }
-                        u->unk28.vy += 0x13;
+                        u->rot28.vy += 0x13;
                     }
                 } else {
-                    u->unk0--;
+                    u->delay0--;
                 }
             }
         }

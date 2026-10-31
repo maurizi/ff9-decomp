@@ -21,9 +21,9 @@ s32 fx_0c9_op80(s32 mode, Fx0c9Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
 }
 
 static s32 fx_0c9_op81ParticleMotion(Pool30Entry *pt, s32 arg1, SVECTOR *pos, s32 arg3, s32 frame, s32 n) {
-    pos->vx = D_801E7E10.vx;
-    pos->vy = D_801E7E10.vy;
-    pos->vz = D_801E7E10.vz;
+    pos->vx = fx_0c9_particlePos.vx;
+    pos->vy = fx_0c9_particlePos.vy;
+    pos->vz = fx_0c9_particlePos.vz;
     pt->pos.vx = pos->vx << 12;
     pt->pos.vy = pos->vy << 12;
     pt->pos.vz = pos->vz << 12;
@@ -47,9 +47,9 @@ s32 fx_0c9_op81(s32 mode, Fx0c9Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
         ex->btlfx_getUnitBodyPos(0x10, 1, (s16 *)&work->posC);
         work->posC.vy -= 0x50;
         ex->btlfx_getUnitPos(0, (s16 *)&work->pos14);
-        work->unk1C.vx = work->pos14.vx;
-        work->unk1C.vy = work->pos14.vy;
-        work->unk1C.vz = work->pos14.vz;
+        work->pos1C.vx = work->pos14.vx;
+        work->pos1C.vy = work->pos14.vy;
+        work->pos1C.vz = work->pos14.vz;
         work->emit4 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 4), (s32)&work->pos14);
         if (work->emit4 != NULL) {
             work->emit4->otZ = ex->btlfx_addRadiusSixth(0, 0x80);
@@ -68,9 +68,9 @@ s32 fx_0c9_op81(s32 mode, Fx0c9Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
         frame = entry->frame;
         switch (frame) {
         case 0xA:
-            work->emit0 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 5), (s32)&D_801E7E18);
+            work->emit0 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 5), (s32)&fx_0c9_emitPos);
             if (work->emit0 != NULL) {
-                work->emit0->trails = (s32)D_801E7E28;
+                work->emit0->trails = (s32)fx_0c9_trails;
                 work->emit0->trailSlots = 0x12;
                 work->emit0->trailStride = 0xB0;
             }
@@ -82,18 +82,18 @@ s32 fx_0c9_op81(s32 mode, Fx0c9Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
             }
             break;
         case 0x1A:
-            work->pos4C.vx = work->unk1C.vx;
-            work->pos4C.vy = work->unk1C.vy;
-            work->pos4C.vz = work->unk1C.vz;
+            work->pos4C.vx = work->pos1C.vx;
+            work->pos4C.vy = work->pos1C.vy;
+            work->pos4C.vz = work->pos1C.vz;
             work->emit8 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0x10), (s32)&work->pos4C);
             break;
         }
         if (frame >= 0xA) {
             f = frame - 0xA;
             if (f < 0x11) {
-                work->pos2C.vx = work->unk1C.vx;
-                work->pos2C.vy = work->unk1C.vy;
-                work->pos2C.vz = work->unk1C.vz;
+                work->pos2C.vx = work->pos1C.vx;
+                work->pos2C.vy = work->pos1C.vy;
+                work->pos2C.vz = work->pos1C.vz;
             }
             ex->Hi_DrawEffModel(&work->rot24, &work->pos2C, (s32)&work->scale3C, work->model54);
             ex->Hi_ModifyEffModelAbr(work->model54, 1);
@@ -112,12 +112,12 @@ s32 fx_0c9_op81(s32 mode, Fx0c9Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
                 }
             }
             if (f < 0x11) {
-                D_801E7E10.vx = work->unk1C.vx;
-                D_801E7E10.vy = work->unk1C.vy;
-                D_801E7E10.vz = work->unk1C.vz;
+                fx_0c9_particlePos.vx = work->pos1C.vx;
+                fx_0c9_particlePos.vy = work->pos1C.vy;
+                fx_0c9_particlePos.vz = work->pos1C.vz;
                 t = (f << 12) / 15;
-                ex->btlfx_lerpVec((s16 *)&work->pos14, (s16 *)&work->posC, t, (s16 *)&work->unk1C);
-                work->unk1C.vy -= (ex->math_sin(t >> 1) * 0x258) >> 12;
+                ex->btlfx_lerpVec((s16 *)&work->pos14, (s16 *)&work->posC, t, (s16 *)&work->pos1C);
+                work->pos1C.vy -= (ex->math_sin(t >> 1) * 0x258) >> 12;
             }
             ex->btlfx_drawBackdrop((BtlBgLayers *)ex->btlfx_getFileData(entry->file, 6), f);
         }

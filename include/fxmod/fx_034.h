@@ -14,30 +14,30 @@ typedef struct {
     SVECTOR rot8; /* model rotation */
     VECTOR pos10; /* model position */
     VECTOR scale20; /* model scale */
-    s32 unk30; /* colour */
+    s32 rgb30; /* colour */
     SVECTOR pos34;
     SVECTOR rot3C;
     SVECTOR pos44;
     SVECTOR pos4C;
-    SVECTOR unk54;
-    SVECTOR unk5C;
+    SVECTOR aim54;
+    SVECTOR aim5C;
     SVECTOR pos64;
-    s16 unk6C;
+    s16 scroll6C;
     u16 model6E; /* models */
     u16 model70;
 } Fx034Work; /* 0x74 */
 
 extern BtlModel fx_034_effModels[];
-extern u8 D_801E8990[];
-extern u8 D_801EA040[];
+extern u8 fx_034_splitBuf[];
+extern u8 fx_034_trails[];
 extern Unk800F78A4 *fx_034_env;
-extern SVECTOR *D_801E82B0[8]; /* split model vertices, per primitive kind */
-extern u16 D_801E82D0[8]; /* primitive counts */
-extern Fx034Point D_801E82E0[]; /* primitive centres */
+extern SVECTOR *fx_034_primVerts[8]; /* split model vertices, per primitive kind */
+extern u16 fx_034_primCounts[8]; /* primitive counts */
+extern Fx034Point fx_034_primCentres[]; /* primitive centres */
 
-void func_801E7744(s32 model, s32 scale, u8 *buf);
-void func_801E7810(s32 kind, s32 count, s32 scale, SVECTOR *v);
-void func_801E7A00(s32 model, u8 *buf);
-void func_801E7B1C(s32 kind, s32 count, SVECTOR *v);
+void fx_034_explodeModel(s32 model, s32 scale, u8 *buf);
+void fx_034_pushPrims(s32 kind, s32 count, s32 scale, SVECTOR *v);
+void fx_034_splitModel(s32 model, u8 *buf);
+void fx_034_calcPrimCentres(s32 kind, s32 count, SVECTOR *v);
 
 #endif

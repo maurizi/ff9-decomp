@@ -1,7 +1,8 @@
 #ifndef FX_1A6_H
 #define FX_1A6_H
 
-/* Effect module fx_1a6 (dir 13 file 0x1a6). */
+/* Effect module fx_1a6 (dir 13 file 0x1a6): enemy Water-gun (Kraken, ...). Evidence: the static sweep of the ability, item
+ * and enemy-sequence effect ids (docs/effect-modules.md, tools/effect_labels.py). */
 #include "btlfx_mod.h"
 
 typedef struct {
@@ -19,20 +20,20 @@ typedef struct {
     SVECTOR pos20; /* bone position */
     SVECTOR pos28;
     u8 pad30[0x38 - 0x30];
-    SVECTOR unk38; /* angles */
-    SVECTOR unk40;
-    s32 unk48; /* index */
+    SVECTOR angle38; /* angles */
+    SVECTOR angle40;
+    s32 index48; /* index */
 } Fx1a6Work80; /* 0x4C */
 
-extern u16 D_801E823C[3]; /* files */
+extern u16 fx_1a6_emitFileIds[3]; /* files */
 extern s32 (*fx_1a6_op80ParticleMotions[3])();
 extern Unk800F78A4 *fx_1a6_env;
-extern s32 D_801E82A8[3][0x5A];
-extern s32 D_801E86E8[3][0x1D0];
-extern s32 D_801E9CA8[3][0x560];
-extern SVECTOR D_801EDD28[3]; /* from */
-extern SVECTOR D_801EDD48[3]; /* to */
-extern SVECTOR D_801EDD68[3];
+extern s32 fx_1a6_op80Trails0[3][0x5A];
+extern s32 fx_1a6_op80Trails1[3][0x1D0];
+extern s32 fx_1a6_op80Trails2[3][0x560];
+extern SVECTOR fx_1a6_motionFrom[3]; /* from */
+extern SVECTOR fx_1a6_motionTo[3]; /* to */
+extern SVECTOR fx_1a6_emitPos0[3];
 
 static s32 fxm_lerpParticle(Pool30Entry *e, SVECTOR *pos, SVECTOR *from, SVECTOR *to, s32 frame, s32 frames);
 static void fxm_startUnitMotion(s32 unit, s32 motion);

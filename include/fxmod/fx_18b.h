@@ -7,16 +7,16 @@
 #include "btlfx_mod.h"
 
 typedef struct {
-    s32 unk0; /* state */
-    s32 unk4; /* counter */
+    s32 state0; /* state */
+    s32 frame4; /* counter */
     s32 unk8;
     SVECTOR posC; /* target body position */
     SVECTOR pos14; /* caster body position */
 } Fx18bWork; /* 0x1C */
 
 extern Unk800F78A4 *fx_18b_env;
-extern s32 D_801E8280; /* wave phase */
-extern s32 D_801E8284; /* wave amplitude */
+extern s32 fx_18b_wavePhase; /* wave phase */
+extern s32 fx_18b_waveAmp; /* wave amplitude */
 
 static void fx_18b_op80GridVertex(s32 r, s32 i, s32 ang, s32 arg3, s16 *out);
 

@@ -2359,8 +2359,8 @@ void evt_movePlayer(EvtObject *obj) {
     memset(&v, 0, 8);
     pad = msg_getPadHeld();
     if (((g_padBuf[0].hdr >> 12) & 0xF) == PAD_ID_ANALOG) {
-        x = g_padAnalog[0].unk0[2];
-        y = g_padAnalog[0].unk0[3];
+        x = g_padAnalog[0].b[2];
+        y = g_padAnalog[0].b[3];
         pad_getAnalogThresholds((Unk4 *)dz);
         /* The do-while(0) (a macro in the original?) doubles y's reference count in flow,
            which puts y ahead of x in global-alloc order (y s0, x s1). */
@@ -2530,7 +2530,7 @@ static inline void evt_updateLookAt_ahead(EvtObject *o, s32 a, VECTOR *out) {
     gte_stlvnl(out);
 }
 
-void evt_relaxLookAt(EvtObject *o, Unk80047B90 *m) {
+void evt_relaxLookAt(EvtObject *o, Unk8004AFF0 *m) {
     VECTOR out;
     s32 d;
 
@@ -2550,7 +2550,7 @@ void evt_relaxLookAt(EvtObject *o, Unk80047B90 *m) {
 }
 
 /* move the look-at point towards t */
-static inline void evt_updateLookAt_approach(EvtObject *o, Unk80047B90 *mdl, VECTOR *t) {
+static inline void evt_updateLookAt_approach(EvtObject *o, Unk8004AFF0 *mdl, VECTOR *t) {
     s32 d;
 
     d = math_length3(t->vx - o->lookAtX, t->vy - o->lookAtY, t->vz - o->lookAtZ);
@@ -2609,7 +2609,7 @@ void evt_updateLookAt(EvtObject *o) {
     s32 ang;
     s32 save;
     s32 x, y, z;
-    Unk80047B90 *mdl;
+    Unk8004AFF0 *mdl;
     EvtObject *tgt;
     EvtObject *best;
     EvtObject *q;
@@ -2621,7 +2621,7 @@ void evt_updateLookAt(EvtObject *o) {
     s32 ok;
 
     save = 0;
-    mdl = (Unk80047B90 *)((ModelSlot *)game_getModel(o->modelSlot))->model;
+    mdl = (Unk8004AFF0 *)((ModelSlot *)game_getModel(o->modelSlot))->model;
     tgt = NULL;
     if ((o->moveFlags & EVT_MOVE_LOOK_AT_SPEAKER) && g_evtLookTarget != NULL && g_evtLookTarget != o &&
         math_dist2(o->pos.vx - g_evtLookTarget->pos.vx, o->pos.vz - g_evtLookTarget->pos.vz, 0) >= 1000) {

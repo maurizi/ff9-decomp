@@ -31,7 +31,7 @@ s32 fx_039_op81(s32 mode, Fx039Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
         s32 n = *arg4;
 
         fx_039_env = env;
-        work->unk20 = n;
+        work->proj20 = n;
         if (n >= 3) {
             return 1;
         }
@@ -48,9 +48,9 @@ s32 fx_039_op81(s32 mode, Fx039Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
     } else {
         frame = entry->frame;
         if (frame == 0xA) {
-            work->emit0 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 9), (s32)&D_801EA0D0[work->unk20]);
+            work->emit0 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 9), (s32)&fx_039_emitPos[work->proj20]);
             if (work->emit0 != NULL) {
-                work->emit0->trails = (s32)D_801E7BB0[work->unk20];
+                work->emit0->trails = (s32)fx_039_trails[work->proj20];
                 work->emit0->trailSlots = 0x12;
                 work->emit0->trailStride = 0xB0;
             }
@@ -63,17 +63,17 @@ s32 fx_039_op81(s32 mode, Fx039Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
 
             if (d < 0x10) {
                 t = (d << 12) / 15;
-                ex->btlfx_lerpVec((s16 *)&work->pos10, (s16 *)&work->pos8, t, (s16 *)&work->unk18);
-                if (work->unk20 == 1) {
-                    work->unk18.vx -= (ex->math_sin(t >> 1) * 0x4B0) >> 12;
-                } else if (work->unk20 == 2) {
-                    work->unk18.vx += (ex->math_sin(t >> 1) * 0x4B0) >> 12;
+                ex->btlfx_lerpVec((s16 *)&work->pos10, (s16 *)&work->pos8, t, (s16 *)&work->pos18);
+                if (work->proj20 == 1) {
+                    work->pos18.vx -= (ex->math_sin(t >> 1) * 0x4B0) >> 12;
+                } else if (work->proj20 == 2) {
+                    work->pos18.vx += (ex->math_sin(t >> 1) * 0x4B0) >> 12;
                 }
-                work->unk18.vy -= (ex->math_sin(t >> 1) * 0x258) >> 12;
+                work->pos18.vy -= (ex->math_sin(t >> 1) * 0x258) >> 12;
                 if (work->emit0 != NULL && work->emit0->state == BTLFX_EMIT_DONE) {
                     work->emit0 = NULL;
                 }
-                ex->btlfx_moveEmitterTo((s32)work->emit0, (s32)&work->unk18);
+                ex->btlfx_moveEmitterTo((s32)work->emit0, (s32)&work->pos18);
             }
         }
         return frame >= 0x28;

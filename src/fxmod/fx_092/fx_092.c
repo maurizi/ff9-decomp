@@ -30,15 +30,15 @@ s32 fx_092_op80(s32 mode, Fx092Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
         }
     } else {
         frame = entry->frame;
-        ex->btlfx_aimAngles(&env->camera->eye.vx, (s16 *)&work->pos28, (s16 *)&work->unk40);
+        ex->btlfx_aimAngles(&env->camera->eye.vx, (s16 *)&work->pos28, (s16 *)&work->aim40);
         if (work->emit0 != NULL) {
             if (work->emit0->state == BTLFX_EMIT_DONE) {
                 work->emit0 = NULL;
             }
             if (work->emit0 != NULL) {
-                work->emit0->rot.vx = work->unk40.vx;
-                work->emit0->rot.vy = work->unk40.vy;
-                work->emit0->rot.vz = work->unk40.vz;
+                work->emit0->rot.vx = work->aim40.vx;
+                work->emit0->rot.vy = work->aim40.vy;
+                work->emit0->rot.vz = work->aim40.vz;
             }
         }
         if (frame == 0xA) {

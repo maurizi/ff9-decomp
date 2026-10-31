@@ -45,17 +45,17 @@ typedef struct {
 
 /* initialised by fld_initSprites */
 typedef struct FieldSpriteSet {
-    u16 unk0;
+    u16 unk0; /* write-only (fld_initSprites sets 1) */
     u8 capacity;
     u8 count; /* count of 0x24-byte entries at unk8 */
-    u16 *unk4; /* 16 entries, follows this header */
+    u16 *unk4; /* 16 entries, follows this header; write-only (fld_initSprites fills it with 0xFFFF) */
     FieldSprite *entries;
     u8 *primBufs[2]; /* primitive buffers, per draw buffer */
 } FieldSpriteSet; /* 0x14, followed by the buffers it points to */
 
 /* trigger table entry (fld_removeAnimSfx) */
 typedef struct FieldAnimSfx {
-    u8 uid; /* object uid; low 2 bits also select a channel */
+    u8 modelSlot; /* the actor's EvtObject.modelSlot (fld_addAnimSfx); low 2 bits also select a channel */
     u8 randomPitch;
     u16 modelId; /* the object's modelId when added (fld_addAnimSfx) */
     u16 anim;
@@ -63,7 +63,8 @@ typedef struct FieldAnimSfx {
     u16 sound[2];
 } FieldAnimSfx; /* 0xC */
 
-/* script object (fld_removeAnimSfx) */
+/* the first 0x4C bytes of an EvtObject (same offsets), copied as a block for the mirrored model
+ * (fld_modelCommand 8-11, FieldActorExt.objBuf) */
 typedef struct {
     u8 pad0[0x14];
     struct {
@@ -77,25 +78,28 @@ typedef struct {
     u16 anim;
     u8 pad38[2];
     u8 animFrame;
-    u8 uid; /* uid */
+    u8 modelSlot; /* EvtObject.modelSlot */
     u8 pad3C[0x4C - 0x3C];
 } FieldEvtObj; /* 0x4C */
 
+/* object model slot (game_getModel): ovl_0a's view of ModelSlot (ff9.h), with the field's model and actor types */
 typedef struct {
-    u32 flags; /* flags */
-    s32 modelId; /* model id (fld_setupActorModel), key of fld_findLightColor */
-    void *model; /* model (ModelObj) */
-    FieldEvtObj *obj;
-} FieldEvtCtx;
-/* FieldEvtCtx.flags / FieldObjSlot.flags */
-#define FLD_OBJ_LOADED 0x1 /* fld_setupActorModel finished setting up the slot */
+    u32 flags; /* FLD_OBJ_* */
+    s32 modelId; /* model item (fld_setupActorModel), key of fld_findLightColor */
+    struct ModelObj *model;
+    EvtObject *actor; /* the actor using the slot */
+} FieldObjSlot;
+/* FieldObjSlot.flags (ModelSlot.flags) */
+#define FLD_OBJ_LOADED MODEL_SLOT_LOADED /* fld_setupActorModel finished setting up the slot */
 #define FLD_OBJ_TILT 0x2 /* fld_drawModels tilts the model to the floor (bgi_getActorTilt) */
 #define FLD_OBJ_DIR_LIGHT 0x4 /* fld_applyLights uses the directional light */
-#define FLD_OBJ_NO_SHADOW 0x10 /* fld_drawShadow skips the object (event ops 0x7F/0x80; runtime: removes Zidane's shadow) */
+#define FLD_OBJ_NO_SHADOW MODEL_SLOT_NO_SHADOW /* fld_drawShadow skips the object (event ops 0x7F/0x80; runtime: removes Zidane's shadow) */
 #define FLD_OBJ_SHADOW_FIXED 0x20 /* fld_calcShadowMatrix uses the FieldObjEnt placement (event ops 0x83/0x84) */
 #define FLD_OBJ_NO_ANIM_SFX 0x40 /* fld_playAnimSfx skips the object */
 #define FLD_OBJ_LIT 0x100 /* light colour applied (fld_applyLights) */
 #define FLD_OBJ_COLOR_SET 0x400 /* fld_setSlotColor; fld_applyLights keeps it */
+#define FLD_OBJ_COLOR_WAIT 0x800 /* fld_setSlotColor sets the colour and returns 1, so EVT_OP_OBJ_COLOR runs again next frame;
+                                  * that second call only clears the bit and returns 0 (the op takes two frames) */
 #define FLD_OBJ_NO_IDLE_TEXANIM 0x1000 /* fld_drawModels doesn't restart texture animation 2 when no texture
                                         * animation runs (probably the blink; runtime: stops the restarts) */
 #define FLD_OBJ_SEMITRANS 0x10000 /* fld_modelCommand 0, applied by fld_applyModelCommands */
@@ -107,7 +111,7 @@ typedef struct {
 typedef struct {
     u32 flags; /* flags */
     s32 loadEnd; /* end of the load area */
-    u8 unk8;
+    u8 unk8; /* write-only (cleared) */
     s8 encounterMusicStep;
     s16 nextId; /* current field, then the destination set by game_setNextScene */
     void *eventScript; /* db item 0x5xxxx (fld_findEventScript), passed to evt_init */
@@ -143,12 +147,12 @@ typedef struct {
     u8 sndVolume;
     u8 movieSndVolume;
     u8 soundBankSlot;
-    u8 unk5F;
+    u8 unk5F; /* write-only: fld_soundCommand class 2 kind 2 sub 12 sets it, playing a sound effect clears it */
     u8 modelQueueCount; /* g_fieldModelQueue count */
-    u8 unk61[1];
-    s16 unk62;
-    s32 unk64;
-    u8 unk68[4];
+    u8 unk61[1]; /* write-only (cleared) */
+    s16 unk62; /* write-only (cleared) */
+    s32 unk64; /* write-only (cleared) */
+    u8 unk68[4]; /* write-only (cleared) */
     s32 modelBundleBuf[9]; /* fld_allocScene */
     u8 actorInfoBuf[0x270 - 0x90]; /* FieldActorInfo[24] (fld_allocScene) */
     u8 animSfxBuf[0x330 - 0x270]; /* FieldAnimSfx[16] (fld_allocScene) */
@@ -188,19 +192,21 @@ typedef struct {
 #define FLD_EXIT_FIELD 1 /* next field (fld_depFindField / fld_depFindArea) */
 #define FLD_EXIT_BATTLE 2 /* event result 3: battle, mode 2 */
 #define FLD_EXIT_WORLD 3 /* event result 5: world map, mode 3 */
+#define FLD_EXIT_ENDING 4 /* event result 4 (field change) to FLD_NEXT_ENDING: mode GS_MODE_ENDING */
+#define FLD_NEXT_ENDING 0x3E80 /* field id 16000 as a field-change target means the ending (fld_main) */
 #define FLD_EXIT_GAME_OVER 7 /* event result 8 (EVT_OP_GAME_OVER): mode 7, fld_gameOver */
 #define FLD_EXIT_TETRA_MASTER 9 /* event result 7: mode 9 loads ovl_0d (Tetra Master, docs/ff9img.md) */
 
 /* 0x38-byte object hanging off FieldMap.unkC */
 typedef struct {
-    s32 unk0;
+    s32 unk0; /* write-only (cleared) */
     s32 loadEnd;    /* end of the load area */
     void *msgTable;  /* file 0x6xxxx */
     void *areaFile;
     u16 areaId;
-    u8 unk12[2];
+    u8 unk12[2]; /* write-only (cleared) */
     FieldScene *scene;
-    u8 unk18[0x20];
+    u8 unk18[0x20]; /* write-only (cleared) */
 } FieldMapObj;
 
 /* field context, GameData.unk8E4.field (0x50 bytes) */
@@ -208,15 +214,15 @@ typedef struct FieldMap {
     u32 flags; /* flags */
     s32 loadEnd;
     s8 playerObj;
-    s8 unk9;
+    s8 unk9; /* write-only (cleared) */
     s16 prevFieldId;
     FieldMapObj *area;
     void *commonFile;
-    s32 unk14;
-    s32 unk18;
+    s32 unk14; /* write-only (set to -1) */
+    s32 unk18; /* write-only (set to -1) */
     u8 pad1C[0x20 - 0x1C];
     s32 soundBankSize;
-    u8 unk24[0x2C];
+    u8 unk24[0x2C]; /* write-only (cleared) */
 } FieldMap;
 /* FieldMap.flags (g_fieldFlagQueue.mapFlags queues changes one frame ahead); FLD_MAP_NO_WINDOWS 0x1,
  * FLD_MAP_NO_BGI_ANIM 0x8 and FLD_MAP_NO_PRELOAD 0x1000 are in ff9.h (main and ovl_64 set them) */
@@ -257,7 +263,7 @@ typedef struct FieldMap {
 /* walkmesh actor entry (g_fieldBgi.actors, 0x28 bytes) */
 typedef struct BgiActor {
     s16 flags;
-    s16 unk2;
+    s16 unk2; /* write-only (cleared with flags) */
     s16 floor;
     s16 triangle;
     s16 lastFloor;
@@ -315,19 +321,19 @@ typedef struct {
     s16 playerScreenX; /* projected origin */
     s16 playerScreenY;
     u8 pad30[0x72 - 0x30];
-    u8 unk72;
-    u8 unk73;
-    u8 unk74;
+    u8 unk72; /* write-only (cleared) */
+    u8 unk73; /* write-only (cleared) */
+    u8 unk74; /* write-only (set to 0x40) */
     u8 cameraId;
     s16 followHeight;
-    s32 unk78;
+    s32 unk78; /* write-only: a squared distance, 60 * 60 by default, func_800C0FF4 sets arg * arg */
     u8 pad7C[0x9C - 0x7C];
-    s16 unk9C;
+    s16 unk9C; /* write-only (cleared) */
     u8 pad9E[2];
     u8 clutRows; /* same byte as g_fieldBgClutRows (fldbg_buildOverlaySprites reads and updates it there, runtime) */
-    u8 unkA1;
-    u8 unkA2;
-    u8 unkA3;
+    u8 unkA1; /* write-only (set to 0xFF) */
+    u8 unkA2; /* write-only (set to 0xFF) */
+    u8 unkA3; /* write-only (set to 0xFF) */
     s16 parallaxOriginX;
     s16 parallaxOriginY;
     s16 viewportPos[4][2];
@@ -716,7 +722,7 @@ typedef struct {
 } WmAnimTableEntry; /* 0xC */
 
 typedef struct {
-    u8 unk0;
+    u8 unk0; /* not read by C */
     u8 count; /* count */
     u8 pad2[2];
     WmAnimTableEntry entries[1];
@@ -731,7 +737,7 @@ typedef struct {
     u16 uvs[4]; /* uv */
     u8 rgb[3]; /* rgb */
     u8 texture;    /* texture */
-    u8 unk14;
+    u8 unk14; /* not read by C */
     u8 flags; /* WMSRC_* */
     u8 pad16[2];
 } WmSrcFT4; /* 0x18 */
@@ -831,10 +837,10 @@ typedef struct {
 #define WMMODEL_RELOCATED 0x1 /* fldmdl_initModel turned the file offsets into pointers */
 
 typedef struct {
-    s16 unk0;
+    s16 unk0; /* write-only (cleared) */
     u8 pad2[2];
     void *prims; /* first primitive */
-    s32 unk8;
+    s32 unk8; /* write-only (cleared) */
 } WmModelOut; /* 0xC */
 
 typedef struct {
@@ -851,15 +857,15 @@ typedef struct {
 /* skeleton bone (WmModel.unkC, 4 bytes) */
 typedef struct {
     s16 length; /* length: z offset from the parent */
-    u8 unk2;
+    u8 unk2; /* not read by C */
     u8 parent; /* parent bone */
 } WmBone;
 
 /* animation track: three 16-bit offsets/constants (x, y in unk0, z in unk4)
  * and their flags in the high half of unk4 (see gte_ldrotkey) */
 typedef struct {
-    u32 unk0;
-    u32 unk4;
+    u32 unk0; /* read only by the gte_ldrotkey asm */
+    u32 unk4; /* read only by the gte_ldrotkey asm */
 } WmAnimKey;
 
 /* SVECTOR copied as two words */
@@ -903,7 +909,7 @@ typedef struct ModelObj {
     u16 scaleY;
     u16 scaleZ;
     s16 clipY; /* screen y limit (fldmdl_projectMeshClipY) */
-    s32 unk5C;
+    s32 unk5C; /* write-only (cleared) */
     struct ModelObj *mirrorSrc; /* mirrored model (fldmdl_reflectModel) */
     SVECTOR4 mirrorNormal; /* mirror plane normal */
     SVECTOR4 mirrorPoint; /* point on the mirror plane */
@@ -922,16 +928,16 @@ typedef union {
     u8 c[4];
 } FieldColor;
 
-/* per-actor extension (FieldActorInfo.unk10) */
+/* per-actor extension (FieldActorInfo.mirror): starts like a FieldObjSlot for the mirrored copy */
 typedef struct FieldActorExt {
     u32 flags; /* flags */
     s32 modelId; /* model file id */
     ModelObj *model; /* = unk14 */
-    FieldEvtObj *obj; /* = unkAC */
-    s32 unk10;
+    EvtObject *actor; /* = objBuf (fld_modelCommand 8-11) */
+    s32 unk10; /* write-only (cleared) */
     u8 modelBuf[0xAC - 0x14]; /* mirrored model */
     u8 objBuf[0xF8 - 0xAC]; /* copy of the object */
-    FieldEvtCtx *src;
+    FieldObjSlot *src;
     SVECTOR4 mirrorPoint; /* mirror plane point */
     SVECTOR4 mirrorNormal; /* mirror plane normal */
     FieldColor tint; /* rgb, [3]: frames left */
@@ -947,8 +953,8 @@ typedef struct FieldActorInfo {
     u32 flags; /* flags */
     s8 litFloor; /* walkmesh floor the light was computed for, -1 = none */
     u8 abr;
-    u8 unk6;
-    u8 unk7;
+    u8 unk6; /* write-only (cleared) */
+    u8 unk7; /* write-only (cleared) */
     FieldColor color; /* colour */
     FieldColor nextColor; /* next colour */
     FieldActorExt *mirror;
@@ -1006,7 +1012,7 @@ typedef struct {
     u8 count;  /* colour count */
     u8 first;  /* first */
     u8 last;  /* last */
-    s16 unk4; /* mode */
+    s16 unk4; /* mode; write-only: 1 for fade mode 2, else 0 */
     u8 pad6[2];
     u32 frames; /* frames */
     s32 frame;
@@ -1080,8 +1086,8 @@ typedef struct {
 
 /* texture set tables (fld_loadModelBundle) */
 typedef struct {
-    s16 unk0;
-    s16 unk2;
+    s16 unk0; /* not used by C */
+    s16 unk2; /* not used by C */
 } FieldTexPair; /* tpage/clut or u/v */
 
 /* ModelTexOfs as fld_loadModelBundle fills it in (signed view, the loads must stay lh): on input srcX is a key,
@@ -1120,15 +1126,7 @@ FieldLight *fld_getLightColorTable(Unk800B3254 *);
 s32 bgi_getActorTriangle(s32, u16 *, u16 *);
 s32 bgi_linkFrameNeighbors(BgiHeader *, BgiAnim *, BgiKeyframe *);
 FieldLight *fld_findGlobalLights(Unk800B3254 *, FieldLight **, FieldLight **);
-FieldLight *fld_findFloorLight(Unk800B3254 *, FieldEvtCtx *, s16 *);
-
-/* object model slot (game_getModel) */
-typedef struct {
-    s32 flags; /* FLD_OBJ_* */
-    s32 modelId; /* file id */
-    ModelObj *model;
-    void *actor; /* actor */
-} FieldObjSlot;
+FieldLight *fld_findFloorLight(Unk800B3254 *, FieldObjSlot *, s16 *);
 
 /* field directory entry (fld_refindSectors): the next entry's sector ends this one */
 typedef struct {
@@ -1146,7 +1144,7 @@ typedef struct {
 } TexAnimRelocRect; /* 0xC */
 
 typedef struct {
-    u8 unk0;
+    u8 unk0; /* not read by C */
     u8 frameCount; /* frame count (= TexAnim.frameCount) */
     u8 pad2[0xC - 2];
     u8 rectCount; /* part count */
@@ -1189,7 +1187,7 @@ s32 fld_preloadRequest(s32, s32);
 s32 fld_preloadHook(void);
 void fld_clearPreloadLists(void);
 s32 game_getModel(s32);
-s32 fld_setSlotColor(FieldEvtCtx *, s32, s32, s32);
+s32 fld_setSlotColor(FieldObjSlot *, s32, s32, s32);
 void fld_discChangeFinish(void);
 void fld_invalidateModelCache(s32);
 s32 fldbg_scrollToPlayer(s32, s32);
@@ -1300,7 +1298,7 @@ extern u8 s_menuMainStatusAbnormal[];
 /* 10 VRAM cache slots at 0x800C9CCC. splat puts the first word at the end of
  * .text (as "g_fieldModelCache"), so the array is reached through that label. */
 typedef struct {
-    s16 unk0;
+    s16 unk0; /* write-only (cleared) */
     s16 id; /* id */
     u32 addr; /* address (0 = free) */
     s32 size; /* size */
@@ -1423,9 +1421,9 @@ void fldmdl_applyScale(ModelObj *);
 void fldmdl_calcBoneMatrices(ModelObj *, u16);
 s32 fld_isModelTexAnimActive(ModelObj *);
 void fldmdl_updateTexAnims(TexAnimSet *);
-void fld_applyLights(FieldEvtCtx **, s32);
-void fld_playAnimSfx(FieldEvtCtx **, s32);
-void fld_applyModelCommands(FieldEvtCtx **, s32);
+void fld_applyLights(FieldObjSlot **, s32);
+void fld_playAnimSfx(FieldObjSlot **, s32);
+void fld_applyModelCommands(FieldObjSlot **, s32);
 void fldmdl_calcBoneMatricesLookAt(ModelObj *, s32);
 void fld_drawShadow(struct FieldObjPlace *, s32);
 s32 mbg_getGeomOffset(s32 *, s32 *); /* ovl_64 */
@@ -1589,7 +1587,7 @@ void akao_sendCmdE6(s32);
 
 s32 fld_initShadows(s32, s32, s32, s32); /* returns shadow_initSlots's result (the next free address) */
 
-FieldAnimSfx *fld_addAnimSfx(FieldEvtCtx *, s32, s32); /* returns the new entry */
+FieldAnimSfx *fld_addAnimSfx(FieldObjSlot *, s32, s32); /* returns the new entry */
 
 /* Functions called before (or without) a declaration in scope (tools/decl_check.py --protos) */
 void akao_resume(u32 x); /* main */
@@ -1630,7 +1628,7 @@ void fld_drawModels(void);
 void fld_drawSprites(void);
 void fld_endFrame(void);
 void fld_exit(void);
-FieldAnimSfx *fld_findAnimSfx(); /* (FieldEvtCtx *, u16, s16); unprototyped: callers pass the argument unconverted */
+FieldAnimSfx *fld_findAnimSfx(); /* (FieldObjSlot *, u16, s16); unprototyped: callers pass the argument unconverted */
 s32 fld_findAreaItem(); /* (FieldMapObj *, u16); unprototyped: callers pass the argument unconverted */
 s32 fld_findEventScript(); /* (FieldScene *, u16); unprototyped: callers pass the argument unconverted */
 Unk800B3294 *fld_findLightColor(); /* (Unk800B3254 *, u16); unprototyped: callers pass the argument unconverted */
@@ -1662,7 +1660,7 @@ s32 fld_needsSplashImage(void);
 s32 fld_readSoundBank(void);
 void fld_refindSectors(void);
 s32 fld_remapModelId(s32 arg0);
-s32 fld_removeAnimSfx(); /* (FieldEvtCtx *, u16, s16); unprototyped: callers pass the argument unconverted */
+s32 fld_removeAnimSfx(); /* (FieldObjSlot *, u16, s16); unprototyped: callers pass the argument unconverted */
 void fld_resetSprite(FieldSprite *arg0);
 void fld_resumeResidentSfx(void);
 void fld_runDiscChange(void);

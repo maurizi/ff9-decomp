@@ -14,3 +14,12 @@ fx_1a0_op81ParticleMotion5 = 0x801E7858; // type:func [code] particle motion cal
 fx_1a0_env = 0x801E7F88; // [code] the effect env (Unk800F78A4) the op handlers store in mode 1, used by the helpers for BTLFX_EXPORTS
 fx_1a0_op81ParticleMotions = 0x801E7F28; // [code] table of ParticleMotion callbacks (data), indexed by the op
 fxm_followPathParticle = 0x801E789C; // type:func [code] particle motion core, position = posPath key t plus a module offset
+fx_1a0_op81Trails = 0x801E7F98; // [code] trail point buffer (Pool6CEntry.trails) of an emitter started by the op81 handler
+fx_1a0_emitPos = 0x801E8288; // [code] emitter origin, passed to btlfx_startEmitter
+fx_1a0_op80Bones = 0x801E7EF8; // [code] 6 bone id and distance pairs, btlfx_getUnitBoneMatrix then btlfx_matrixPointAhead give the point each emitter follows in fx_1a0_op80
+fx_1a0_op81EmitFileIds = 0x801E7F10; // [code] 6 file ids indexed by the op argument, given to btlfx_getFileData for emit0 in fx_1a0_op81
+fx_1a0_pathFileIds = 0x801E7F1C; // [code] 6 file ids indexed by the op argument, data given to fxm_posPathInit in fx_1a0_op81
+fx_1a0_posPaths = 0x801E8238; // [code] 6 fxm_posPathInit states, read by fxm_followPathParticle through the ParticleMotion callbacks
+fx_1a0_pathFrames = 0x801E8268; // [code] per index, set to the task frame in fx_1a0_op81, ParticleMotion callbacks use 2 * it as the path key
+fx_1a0_pathOrigin = 0x801E8280; // [code] target body position from fx_1a0_op81, added to every path key in fxm_followPathParticle
+fx_1a0_emitPos1 = 0x801E82B8; // [code] per index, origin given to btlfx_startEmitter for emit0 in fx_1a0_op81

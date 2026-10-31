@@ -5,3 +5,4 @@ fx_088_op81 = 0x801E78E8; // type:func [code] header op entry 1, effect script o
 fxm_turnUnitBy = 0x801E7984; // type:func [code] adds delta / n to the unit rotation each frame, returns 1 on frame n - 1
 fxm_turnUnitToward = 0x801E7B00; // type:func [code] on frame 0 aims unit at target (optionally relative and turned back), then turns by 1/n of it per frame
 fx_088_env = 0x801E7DA0; // [code] the effect env (Unk800F78A4) the op handlers store in mode 1, used by the helpers for BTLFX_EXPORTS
+fx_088_trails = 0x801E7DB0; // [code] trail buffer given to the fx_088_op80 emitter (Pool6CEntry trails, 0x19 slots of 0x30)

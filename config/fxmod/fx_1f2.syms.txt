@@ -5,3 +5,23 @@ fxm_easeLerp = 0x801E7794; // type:func [code] btlfx_lerp from to over n frames 
 fxm_tintScreenRatio = 0x801E7704; // type:func [code] btlfx_drawScreenTint with a grey level btlfx_lerpRatio(from, to, t, n)
 fx_1f2_env = 0x801EA260; // [code] the effect env (Unk800F78A4) the op handlers store in mode 1, used by the helpers for BTLFX_EXPORTS
 fx_1f2_effModels = 0x801ED090; // [code] effect model buffers given to btlfx_initEffModels (BtlModel per slot)
+fx_1f2_model0 = 0x801EA270; // [code] Fx1f2Model (file 0x84) drawn while work active0, rot8.vy++ per frame
+fx_1f2_model1 = 0x801EA2A0; // [code] Fx1f2Model (file 0x87) drawn while work active0, rotation from faceAngles
+fx_1f2_model2 = 0x801EA2D0; // [code] Fx1f2Model (file 0x89) drawn while work active0, rot8.vy-- per frame
+fx_1f2_orbitModels = 0x801EA300; // [code] Fx1f2Ring[4] three models each placed at sin/cos(rot.vy)*radius while work active0
+fx_1f2_model3 = 0x801EA3E0; // [code] Fx1f2Model (file 0x88) drawn while work active0, rot8.vy += 3 per frame
+fx_1f2_model4 = 0x801EA410; // [code] Fx1f2Model[2] (files 0x80 and 0x8A) pos.vy = cos(rot.vz)*radius4, radius shrinks by 4 per frame
+fx_1f2_model5 = 0x801EA470; // [code] Fx1f2Model (file 0x8C) drawn while timer4 runs, scale grows by 8 per frame
+fx_1f2_model6 = 0x801EA4A0; // [code] Fx1f2Model[2] (file 0x8D) drawn while timer8 runs
+fx_1f2_model7 = 0x801EA500; // [code] Fx1f2Model (file 0x8E) drawn while timer24 runs, rotation from faceAngles
+fx_1f2_model8 = 0x801EA530; // [code] Fx1f2Model[4] (files 7 and 9) drawn while timer28 runs, rot.vz += spin2C every frame
+fx_1f2_sparkRot = 0x801EA568; // [code] = model8[1].rot8 (0x801EA530 + 0x38), given to math_rotMatrixYXZ for the spark spawn matrix
+fx_1f2_model9 = 0x801EA5F0; // [code] Fx1f2Model (file 0xF) drawn while timer50 runs
+fx_1f2_model9Pos = 0x801EA600; // [code] = model9.pos10 (0x801EA5F0 + 0x10), set to (0, -0x4FD, 0) at frame 0x14F
+fx_1f2_model10 = 0x801EA620; // [code] Fx1f2Model (file 1) drawn while timer54 runs, placed at work pos120
+fx_1f2_emitPos0 = 0x801EA650; // [code] SVECTOR emitter origin at 0xFF and btlfx_moveEmitterTo target at 0x14F, btlfx_aimAngles from, spark matrix translation
+fx_1f2_faceAngles = 0x801EA658; // [code] btlfx_aimAngles output (emitPos0 toward camera eye), copied into the rotations of the camera-facing models
+fx_1f2_emitPos1 = 0x801EA660; // [code] SVECTOR origin of the two emitters started at frame 0x11F
+fx_1f2_unitPos = 0x801EA670; // [code] SVECTOR per target from btlfx_getUnitPos with vy 0, base of unitTrails points
+fx_1f2_trails = 0x801EA690; // [code] Fx1f2Trail[16] buffers given to btlfx_drawTrail (sparks and bone-anchored trails)
+fx_1f2_unitTrails = 0x801EBB90; // [code] Fx1f2Trail per target rising from unitPos, drawn with btlfx_drawTrail while timer58 runs

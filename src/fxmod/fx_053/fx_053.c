@@ -58,7 +58,7 @@ s32 fx_053_op81(s32 mode, Fx053Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
         fx_053_env = env;
         work->emit0 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0xF), (s32)&work->posC);
         if (work->emit0 != NULL) {
-            work->emit0->trails = (s32)D_801E7CBC;
+            work->emit0->trails = (s32)fx_053_trails;
             work->emit0->trailSlots = 6;
             work->emit0->trailStride = 0x88;
         }
@@ -81,23 +81,23 @@ s32 fx_053_op82(s32 mode, Fx053Work82 *work, Unk800F78A4 *env, Unk80100C78Entry 
     } else if (mode == 1) {
         s32 n = *arg4;
 
-        work->unk18 = n;
+        work->target18 = n;
         fx_053_env = env;
         if (n >= env->targets->targetCount) {
             fxm_setSignal(env, BTLFX_SIG_WAIT, 1);
             return 1;
         }
         fxm_setSignal(env, BTLFX_SIG_WAIT, 0);
-        ex->btlfx_getUnitBodyPos(work->unk18, 0, (s16 *)&work->pos10);
+        ex->btlfx_getUnitBodyPos(work->target18, 0, (s16 *)&work->pos10);
         work->emit0 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 2), (s32)&work->pos10);
         work->emit4 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 1), (s32)&work->pos10);
         work->emit8 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0x13), (s32)&work->pos10);
         work->emitC = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0x14), (s32)&work->pos10);
         if (work->emit0 != NULL) {
-            work->emit0->otZ = ex->btlfx_addRadiusSixth(work->unk18, 0x80);
+            work->emit0->otZ = ex->btlfx_addRadiusSixth(work->target18, 0x80);
         }
         if (work->emit4 != NULL) {
-            work->emit4->otZ = ex->btlfx_addRadiusSixth(work->unk18, 0x80);
+            work->emit4->otZ = ex->btlfx_addRadiusSixth(work->target18, 0x80);
         }
     } else {
         frame = entry->frame;

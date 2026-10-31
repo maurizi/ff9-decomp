@@ -2999,3 +2999,29 @@ No new save states.
     to the main menu with the cursor on Card, and a second Circle closes the menu.
 - confidence: high for all four (code plus runtime). The ATE variables (b[0xEE], u16 at 0xEC, s16 at 0xF1) are
   script conventions seen in 47 disc-1 fields, not engine state.
+
+## R32b 3DS requests: pointed-at item/ability/block per menu screen, Mognet, navi map names  (status: proposed; details in docs/r32/3ds-requests-2.md)
+- binary: ovl_37, ovl_33, ovl_3c, ovl_39, ovl_0c, main (msg); existing names, plus the event-global/text-code names
+  proposed at the end of docs/r32/3ds-requests-2.md
+- evidence (disc 1):
+  - `menu_items`: s_menuItem tab 0 state 2, itemList cursor 0 → g_menuHelp.text = s_menuItemHelp+0x3081 (Potion).
+    Right, Down x2: cursor 2 col 1 → slot 5 = {0xF9, 2} Phoenix Pinion, help s_menuItemHelp+0x3229 = g_itemTable[0xF9].help.
+    The help blobs of ovl_37/ovl_33/ovl_3c (0x33B4 bytes) are byte-identical.
+  - `menu_equip`: Cross, Down, Cross, Down → s_menuEquip state 3, equipSlot 1, list cursor 1, items[1] = 0x72 Feather
+    Hat. `until menuEquip_drawInfo+0x1DC` (return of chr_calcEquipStats): in.equip = 08 72 5a 98 ff, out stats
+    32/50/47/39, defs 24/9/10/8/7 = the on-screen "after" column.
+  - `menu_ability`: Cross, Right, Down → tab 0 state 2, lists[0] cursor 1 col 1 → actions[3].id 0x68 Soul Blade;
+    trace shows chr_getApNeeded(0, 0x68) from menuAbility_drawInfo+0x1C8 each frame.
+  - `menu_shop_weapons`: Buy, Down x2 → s_shop kind 1 cursor 0 inMode 1, s_shopBuy.items[2] = 0x10 Broadsword (hand on
+    it). Sell, Right, Down → s_shopSell list slot 3 = Elixir.
+  - `menu_save`: Down, Cross, 320 frames → s_menuSave state 4, list top 3 cursor 2 → files[5] (FILE06 Crystal World
+    21:28:08): playTime 4637282 frames = 77288 s at 60/s, gil 9999999.
+  - `field_dali_inn_moogle`: Mognet is script only (ovl_0a resident). msg_open log: (0xC,5), (8,2) moogle menu,
+    (0x2C,2) "Read mail", (0x2E,3,flags 0x10) the letter "From Mois to Gumo"; letter list cursor = g_msgChoice.
+    New state `build3ds2_mog_choice` (moogle menu open, Mognet highlighted).
+  - `field_worldmap_ice_exit`, Select: navi full map. R1/L1 cycle g_worldNaviPlace; b[0x67] (0x8007AF57) = place + 1;
+    each change calls msg_open(3, 4, .., 4), message 3 = F9 45 F9 0C F9 06 00 FF, inserting g_msgTextBanks[0] entry
+    g_msgNumbers[0] (= b[0x67]). Writing g_worldNaviCursorX/Y near Ice Cavern snaps to it (b[0x67] 4); an unknown
+    place gives 0. Markers measured at (mapX + 40.5, mapY + 9.5) ± 0.5 px for 7 places. New state `build3ds2_wm_navi`
+    (full map open, cursor on Ice Cavern).
+- confidence: high (code plus runtime for each).

@@ -1,7 +1,8 @@
 #ifndef FX_1B4_H
 #define FX_1B4_H
 
-/* Effect module fx_1b4 (dir 13 file 0x1b4). */
+/* Effect module fx_1b4 (dir 13 file 0x1b4): enemy Flare Star (Kuja/Trance Kuja, ...). Evidence: the static sweep of the ability, item
+ * and enemy-sequence effect ids (docs/effect-modules.md, tools/effect_labels.py). */
 #include "btlfx_mod.h"
 
 typedef struct {
@@ -10,16 +11,16 @@ typedef struct {
 
 typedef struct {
     s16 unk0;
-    u16 unk2; /* count */
-    Fx1b4Point *unk4;
+    u16 count2; /* count */
+    Fx1b4Point *keys4;
 } Fx1b4Path;
 
 typedef struct {
     Pool6CEntry *emit0[8];
     Pool6CEntry *emit20[8];
     Pool6CEntry *emit40;
-    SVECTOR unk44; /* target position */
-    SVECTOR unk4C[8];
+    SVECTOR pos44; /* target position */
+    SVECTOR pos4C[8];
     SVECTOR pos8C;
 } Fx1b4Work80; /* 0x94 */
 
@@ -38,20 +39,20 @@ typedef struct {
     SVECTOR pos4; /* target position */
 } Fx1b4Work83; /* 0xC */
 
-extern u16 D_801E85BC[8];
-extern u16 D_801E85CC[8];
-extern u16 D_801E85DC[8];
+extern u16 fx_1b4_emitFileIds0[8];
+extern u16 fx_1b4_emitFileIds1[8];
+extern u16 fx_1b4_pathFileIds[8];
 extern s32 (*fx_1b4_op80ParticleMotions[8])();
 extern Unk800F78A4 *fx_1b4_env;
-extern Fx1b4Path D_801E8664[8];
-extern Fx1b4Path D_801E86A4[8];
-extern s32 D_801E86E4[8][0x3C];
-extern s32 D_801E8E64[8][0xE0];
-extern s32 D_801EAA64[];
-extern s32 D_801ECE64[];
-extern s32 D_801EE0F4[];
-extern SVECTOR D_801EF174; /* origin */
-extern SVECTOR D_801EF17C;
+extern Fx1b4Path fx_1b4_posPath[8];
+extern Fx1b4Path fx_1b4_op80ParticlePaths[8];
+extern s32 fx_1b4_op80Trails0[8][0x3C];
+extern s32 fx_1b4_op80Trails1[8][0xE0];
+extern s32 fx_1b4_op81Trails[];
+extern s32 fx_1b4_op82Trails0[];
+extern s32 fx_1b4_op82Trails1[];
+extern SVECTOR fx_1b4_pathOrigin; /* origin */
+extern SVECTOR fx_1b4_emitPos;
 
 static s32 fxm_followPathParticle(Pool30Entry *e, SVECTOR *pos, Fx1b4Path *path, s32 frame, s32 frames);
 static void fxm_posPathInit(Fx1b4Path *path, u16 *data);

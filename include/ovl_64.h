@@ -33,7 +33,7 @@ extern volatile u32 *g_mdec1Reg; /* MDEC1 register pointer */
 typedef struct {
     char *path; /* movie file name (cd_findFile, mbg_getEntryName) */
     u8 rgb24;
-    u8 unk5;
+    u8 background; /* copied to g_mbgIsBackground by mbg_play */
     s16 startFrame;
     s16 lastFrame; /* last frame */
     s16 xOffset; /* x offset */
@@ -59,7 +59,7 @@ typedef struct {
     u8 savedCameraId; /* field background camera at the start (fldbg_getCamera), restored at the end */
     u8 modeSwitch; /* MBG_SWITCH_* */
     u8 pauseReq;
-    u8 unk5;
+    u8 unk5; /* write-only (cleared) */
     s8 firstFrame; /* set by mbg_play; mbg_readFrame keeps the first frame's camera in g_mbgStartCamera and clears it */
     u8 pad7;
     s32 shortFrame; /* set by mbg_update on every 50th movie frame, the next frame then waits vsyncMode 3 instead of 4 and clears it */
@@ -81,7 +81,7 @@ typedef struct {
     s32 ringBuf;
     s32 audioBuf;
     void (*endCallback)(); /* end callback (called without arguments) */
-    s32 unk64;
+    s32 unk64; /* not used by C */
 } Ovl64State;
 /* Ovl64State.modeSwitch */
 #define MBG_SWITCH_NONE 0
@@ -117,8 +117,8 @@ extern Ovl64Dec g_mbgDecode;
 extern u8 g_mbgVlcTable[];
 
 typedef struct {
-    u8 unk0;
-    u8 unk1;
+    u8 unk0; /* not used by C */
+    u8 unk1; /* not used by C */
 } Ovl64Vlc;
 extern Ovl64Vlc g_mbgVlcPairs[108];
 extern s32 g_mbgVlcSize;
@@ -143,7 +143,7 @@ typedef struct {
 
 /* sector header at the end of each ring slot */
 typedef struct {
-    u16 unk0;
+    u16 unk0; /* not used by C */
     u16 type; /* 4: the frame's first sector, read for the mask info */
     u8 pad4[4];
     s32 frame; /* frame number, must equal g_mbgStream.frame */
@@ -188,13 +188,13 @@ typedef struct {
 } MbgRumble;
 
 typedef struct {
-    u8 unk0;
+    u8 unk0; /* write-only (set to 1) */
     u8 stalled; /* the ring was full: reading paused until mbg_streamFreeFrame */
     u8 endState; /* MBG_END_*; when set, mbg_streamGetFrame returns 5 instead of 3 for an empty ring */
     u8 hasCamera; /* frames carry camera / mask data */
     void (*frameInfoCallback)(u8 *, u8 *, Ovl64FrameInfo *);
     void (*frameCallback)(void); /* called after each complete frame */
-    s32 unkC;
+    s32 unkC; /* write-only (set from an argument) */
     s32 cameraSel;
     s32 lastReadTime;
     s32 channel;

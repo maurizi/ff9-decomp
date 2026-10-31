@@ -7,7 +7,7 @@ s32 fx_091_op80(s32 mode, Fx091Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
     if (mode == 0) {
         *arg4 = 0x20;
     } else if (mode == 1) {
-        work->unk0 = 0;
+        work->bgFrame0 = 0;
         fx_091_env = env;
         ex->btlfx_getUnitArgBonePos(0x10, 0, (u16 *)&work->pos8);
         ex->btlfx_getUnitBodyPos(0, 0, (s16 *)&work->pos10);
@@ -15,7 +15,7 @@ s32 fx_091_op80(s32 mode, Fx091Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
         if (work->emit4 != NULL) {
             work->emit4->otZ = ex->btlfx_addRadiusSixth(0, 0xC8);
         }
-        ex->btlfx_aimAngles((s16 *)&work->pos8, (s16 *)&work->pos10, (s16 *)&work->unk18);
+        ex->btlfx_aimAngles((s16 *)&work->pos8, (s16 *)&work->pos10, (s16 *)&work->aim18);
     } else {
         frame = entry->frame;
         if (work->emit4 != NULL) {
@@ -23,13 +23,13 @@ s32 fx_091_op80(s32 mode, Fx091Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
                 work->emit4 = NULL;
             }
             if (work->emit4 != NULL) {
-                work->emit4->rot.vx = work->unk18.vx;
-                work->emit4->rot.vy = work->unk18.vy;
-                work->emit4->rot.vz = work->unk18.vz;
+                work->emit4->rot.vx = work->aim18.vx;
+                work->emit4->rot.vy = work->aim18.vy;
+                work->emit4->rot.vz = work->aim18.vz;
             }
         }
-        ex->btlfx_drawBackdrop((BtlBgLayers *)ex->btlfx_getFileData(entry->file, 1), work->unk0);
-        work->unk0++;
+        ex->btlfx_drawBackdrop((BtlBgLayers *)ex->btlfx_getFileData(entry->file, 1), work->bgFrame0);
+        work->bgFrame0++;
         return frame >= 0x42;
     }
     return 0;

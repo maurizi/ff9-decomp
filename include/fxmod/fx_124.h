@@ -1,7 +1,8 @@
 #ifndef FX_124_H
 #define FX_124_H
 
-/* Effect module fx_124 (dir 13 file 0x124). */
+/* Effect module fx_124 (dir 13 file 0x124): items Amethyst, Aquamarine, Diamond, Emerald, Garnet, Lapis Lazuli, Moonstone, Opal and others. Evidence: the static sweep of the ability, item
+ * and enemy-sequence effect ids (docs/effect-modules.md, tools/effect_labels.py). */
 #include "btlfx_mod.h"
 
 typedef struct {

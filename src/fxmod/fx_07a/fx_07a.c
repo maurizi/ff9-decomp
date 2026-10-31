@@ -65,245 +65,245 @@ s32 fx_07a_op80(s32 mode, Fx07aWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
         fx_07a_env = env;
         ex->btlfx_initEffModels(fx_07a_effModels, 3);
         for (i = 15; i >= 0; i--) {
-            work->unk0[i] = 0;
+            work->timers0[i] = 0;
         }
         for (i = 0; i < 5; i++) {
-            D_801E9BA4[i].unk10C = -i;
+            fx_07a_strips[i].timer10C = -i;
             ex->btlfx_drawTrail((u8 *)ex->btlfx_getFileData(entry->file, 0xC), 0, NULL, -1, 0x1000, 0x1000, 1,
-                                (u8 *)&D_801E9BA4[i], 0);
+                                (u8 *)&fx_07a_strips[i], 0);
         }
-        work->pos94.vx = D_801E9B94.vx = env->targets->centerX;
-        work->pos94.vy = D_801E9B94.vz = env->targets->centerZ;
-        work->pos94.vz = D_801E9B94.vy = -0x500;
-        work->unk40[0].unk0 = ex->Hi_RegisterTexEffModel((BtlUnit9C8 *)ex->btlfx_getFileData(entry->file, 0xB), 0x137,
+        work->pos94.vx = fx_07a_centerPos.vx = env->targets->centerX;
+        work->pos94.vy = fx_07a_centerPos.vz = env->targets->centerZ;
+        work->pos94.vz = fx_07a_centerPos.vy = -0x500;
+        work->models40[0].model0 = ex->Hi_RegisterTexEffModel((BtlUnit9C8 *)ex->btlfx_getFileData(entry->file, 0xB), 0x137,
                                                          0xFFFF, 0, 0);
-        work->unk40[0].unk4.vx = 0x800;
-        work->unk40[0].unk4.vy = 0;
-        work->unk40[0].unk4.vz = 0;
-        work->unk40[0].unkC.vx = 0x5C;
-        work->unk40[0].unkC.vy = 0x5C;
-        work->unk40[0].unkC.vz = 0x5C;
-        work->unk40[1].unk0 = ex->Hi_RegisterGouEffModel((BtlUnit9C8 *)ex->btlfx_getFileData(entry->file, 0xD));
-        work->unk40[1].unk4.vx = 0;
-        work->unk40[1].unk4.vy = 0;
-        work->unk40[1].unk4.vz = 0;
-        work->unk40[1].unkC.vx = 0x50;
-        work->unk40[1].unkC.vy = 0x50;
-        work->unk40[1].unkC.vz = 0x50;
-        work->unk40[2].unk0 = ex->Hi_RegisterGouEffModel((BtlUnit9C8 *)ex->btlfx_getFileData(entry->file, 0xE));
-        work->unk40[2].unk4.vx = 0;
-        work->unk40[2].unk4.vy = 0;
-        work->unk40[2].unk4.vz = 0;
-        work->unk40[2].unkC.vx = 0x66;
-        work->unk40[2].unkC.vy = 0x66;
-        work->unk40[2].unkC.vz = 0x66;
+        work->models40[0].rot4.vx = 0x800;
+        work->models40[0].rot4.vy = 0;
+        work->models40[0].rot4.vz = 0;
+        work->models40[0].scaleC.vx = 0x5C;
+        work->models40[0].scaleC.vy = 0x5C;
+        work->models40[0].scaleC.vz = 0x5C;
+        work->models40[1].model0 = ex->Hi_RegisterGouEffModel((BtlUnit9C8 *)ex->btlfx_getFileData(entry->file, 0xD));
+        work->models40[1].rot4.vx = 0;
+        work->models40[1].rot4.vy = 0;
+        work->models40[1].rot4.vz = 0;
+        work->models40[1].scaleC.vx = 0x50;
+        work->models40[1].scaleC.vy = 0x50;
+        work->models40[1].scaleC.vz = 0x50;
+        work->models40[2].model0 = ex->Hi_RegisterGouEffModel((BtlUnit9C8 *)ex->btlfx_getFileData(entry->file, 0xE));
+        work->models40[2].rot4.vx = 0;
+        work->models40[2].rot4.vy = 0;
+        work->models40[2].rot4.vz = 0;
+        work->models40[2].scaleC.vx = 0x66;
+        work->models40[2].scaleC.vy = 0x66;
+        work->models40[2].scaleC.vz = 0x66;
         for (i = 0; i < env->targets->targetCount; i++) {
-            ex->btlfx_getUnitHomePos(i, (s16 *)&work->unkA4[i]);
-            work->unkE4[i] = ex->btlfx_rand() & 7;
+            ex->btlfx_getUnitHomePos(i, (s16 *)&work->homePosA4[i]);
+            work->delayE4[i] = ex->btlfx_rand() & 7;
         }
-        D_801E94F8 = 0;
-        D_801E9500 = 0;
-        D_801E94FC = 0;
+        fx_07a_discRadius = 0;
+        fx_07a_uvRadiusOut = 0;
+        fx_07a_uvRadiusIn = 0;
         D_801E9504 = 0;
-        D_801E9514[4] = 0;
-        D_801E9514[3] = 0;
-        D_801E9514[2] = 0;
-        D_801E9514[1] = 0;
-        D_801E9514[0] = 0;
+        fx_07a_ringTwist[4] = 0;
+        fx_07a_ringTwist[3] = 0;
+        fx_07a_ringTwist[2] = 0;
+        fx_07a_ringTwist[1] = 0;
+        fx_07a_ringTwist[0] = 0;
     } else {
         frame = entry->frame;
-        ex->btlfx_getUnitBonePos(0x10, 0x17, (u16 *)&D_801E9B8C);
+        ex->btlfx_getUnitBonePos(0x10, 0x17, (u16 *)&fx_07a_bonePos);
         switch (frame) {
         case 0:
-            ex->btlfx_drawBgOffscreen(0x1C0, 0x17E, 0x70, 0x70, D_801E9534, D_801E9B94.vx, D_801E9B94.vz, 0x1208);
+            ex->btlfx_drawBgOffscreen(0x1C0, 0x17E, 0x70, 0x70, fx_07a_bgOt, fx_07a_centerPos.vx, fx_07a_centerPos.vz, 0x1208);
             break;
         case 1:
-            work->unk0[9] = 1;
-            work->unk0[1] = 1;
-            work->unk0[0] = 0x24;
-            work->unk0[2] = 8;
-            work->unk0[4] = 0x10;
+            work->timers0[9] = 1;
+            work->timers0[1] = 1;
+            work->timers0[0] = 0x24;
+            work->timers0[2] = 8;
+            work->timers0[4] = 0x10;
             break;
         case 8:
-            work->unk0[10] = 1;
-            work->unk0[11] = 8;
-            work->unk0[12] = 0x20;
-            work->unk0[6] = 0x1C;
+            work->timers0[10] = 1;
+            work->timers0[11] = 8;
+            work->timers0[12] = 0x20;
+            work->timers0[6] = 0x1C;
             break;
         case 12:
-            ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 6), (s32)&D_801E9B94);
+            ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 6), (s32)&fx_07a_centerPos);
             break;
         case 24:
-            work->unk0[13] = 0x10;
-            work->unk0[5] = 0x10;
+            work->timers0[13] = 0x10;
+            work->timers0[5] = 0x10;
             break;
         case 36:
-            work->unk0[7] = 4;
-            p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 9), (s32)&D_801E9B94);
+            work->timers0[7] = 4;
+            p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 9), (s32)&fx_07a_centerPos);
             if (p != NULL) {
                 p->otZ = ex->btlfx_addRadiusSixth(0, 0x80);
             }
             break;
         case 40:
-            work->unk0[10] = 0;
+            work->timers0[10] = 0;
             ex->btlfx_drawScreenTint((u32 *)env->ot, 0xFF, 0xFF, 0xFF, 0xFF);
-            work->unk0[1] = 0;
+            work->timers0[1] = 0;
             break;
         }
-        pos.vx = D_801E9B94.vx;
+        pos.vx = fx_07a_centerPos.vx;
         pos.vy = 0;
-        pos.vz = D_801E9B94.vz;
-        if (work->unk0[11] != 0) {
-            work->unk0[11]--;
-            D_801E9508 = fxm_easeLerp(0, 8, work->unk0[11], 0, 0x4A00);
-            D_801E94F8 = fxm_easeLerp(0, 8, work->unk0[11], 0, 0x5A00);
-            D_801E950C = fxm_easeLerp(0, 8, work->unk0[11], 0, 0xB20);
-            D_801E9500 = fxm_easeLerp(0, 8, work->unk0[11], 0, 0x340);
+        pos.vz = fx_07a_centerPos.vz;
+        if (work->timers0[11] != 0) {
+            work->timers0[11]--;
+            fx_07a_outerBandRadius = fxm_easeLerp(0, 8, work->timers0[11], 0, 0x4A00);
+            fx_07a_discRadius = fxm_easeLerp(0, 8, work->timers0[11], 0, 0x5A00);
+            fx_07a_innerBandRadius = fxm_easeLerp(0, 8, work->timers0[11], 0, 0xB20);
+            fx_07a_uvRadiusOut = fxm_easeLerp(0, 8, work->timers0[11], 0, 0x340);
         }
-        if (work->unk0[12] != 0) {
-            work->unk0[12]--;
-            D_801E9514[1] = fxm_easeLerp(1, 0x20, work->unk0[12], 0, 0x1000);
-            D_801E9514[2] = fxm_easeLerp(1, 0x20, work->unk0[12], 0, 0xEAB);
-            D_801E9514[3] = fxm_easeLerp(1, 0x20, work->unk0[12], 0, 0xD56);
-            D_801E9514[4] = fxm_easeLerp(1, 0x20, work->unk0[12], 0, 0xC00);
-            D_801E94FC = fxm_easeLerp(1, 0x20, work->unk0[12], 0, 0x340);
+        if (work->timers0[12] != 0) {
+            work->timers0[12]--;
+            fx_07a_ringTwist[1] = fxm_easeLerp(1, 0x20, work->timers0[12], 0, 0x1000);
+            fx_07a_ringTwist[2] = fxm_easeLerp(1, 0x20, work->timers0[12], 0, 0xEAB);
+            fx_07a_ringTwist[3] = fxm_easeLerp(1, 0x20, work->timers0[12], 0, 0xD56);
+            fx_07a_ringTwist[4] = fxm_easeLerp(1, 0x20, work->timers0[12], 0, 0xC00);
+            fx_07a_uvRadiusIn = fxm_easeLerp(1, 0x20, work->timers0[12], 0, 0x340);
         }
-        if (work->unk0[13] != 0) {
-            work->unk0[13]--;
-            D_801E9508 = fxm_easeLerp(0, 0x10, work->unk0[12], 0x4A00, 0);
-            D_801E950C = fxm_easeLerp(0, 0x10, work->unk0[13], 0xB20, 0);
-            D_801E94F8 = fxm_easeLerp(0, 0x10, work->unk0[12], 0x5A00, 0);
+        if (work->timers0[13] != 0) {
+            work->timers0[13]--;
+            fx_07a_outerBandRadius = fxm_easeLerp(0, 0x10, work->timers0[12], 0x4A00, 0);
+            fx_07a_innerBandRadius = fxm_easeLerp(0, 0x10, work->timers0[13], 0xB20, 0);
+            fx_07a_discRadius = fxm_easeLerp(0, 0x10, work->timers0[12], 0x5A00, 0);
         }
-        if (work->unk0[10] != 0) {
-            func_801E8A88(&pos, 0xFFF, 0x117, -1, 0xFF);
+        if (work->timers0[10] != 0) {
+            fx_07a_drawTwistDisc(&pos, 0xFFF, 0x117, -1, 0xFF);
         }
-        if (work->unk0[2] != 0) {
-            work->unk0[2]--;
-            fxm_easeLerpSvec(0, 8, work->unk0[2], &D_801E9B8C, &D_801E9B94, &out);
+        if (work->timers0[2] != 0) {
+            work->timers0[2]--;
+            fxm_easeLerpSvec(0, 8, work->timers0[2], &fx_07a_bonePos, &fx_07a_centerPos, &out);
             work->pos94.vx = out.vx;
             work->pos94.vy = out.vy;
             work->pos94.vz = out.vz;
         }
-        if (work->unk0[4] != 0) {
-            work->unk0[4]--;
-            work->unk40[0].unkC.vx = work->unk40[0].unkC.vy = work->unk40[0].unkC.vz =
-                fxm_easeLerp(0, 0x10, work->unk0[4], 0x5C, 0x2A2);
-            work->unk40[1].unkC.vx = work->unk40[1].unkC.vy = work->unk40[1].unkC.vz =
-                fxm_easeLerp(0, 0x10, work->unk0[4], 0x50, 0x243);
-            work->unk40[2].unkC.vx = work->unk40[2].unkC.vy = work->unk40[2].unkC.vz =
-                fxm_easeLerp(0, 0x10, work->unk0[4], 0x66, 0x299);
+        if (work->timers0[4] != 0) {
+            work->timers0[4]--;
+            work->models40[0].scaleC.vx = work->models40[0].scaleC.vy = work->models40[0].scaleC.vz =
+                fxm_easeLerp(0, 0x10, work->timers0[4], 0x5C, 0x2A2);
+            work->models40[1].scaleC.vx = work->models40[1].scaleC.vy = work->models40[1].scaleC.vz =
+                fxm_easeLerp(0, 0x10, work->timers0[4], 0x50, 0x243);
+            work->models40[2].scaleC.vx = work->models40[2].scaleC.vy = work->models40[2].scaleC.vz =
+                fxm_easeLerp(0, 0x10, work->timers0[4], 0x66, 0x299);
         }
-        if (work->unk0[5] != 0) {
-            work->unk0[5]--;
-            work->unk40[0].unkC.vx = work->unk40[0].unkC.vy = work->unk40[0].unkC.vz =
-                fxm_easeLerp(0, 0x10, work->unk0[5], 0x2A2, 0);
-            work->unk40[1].unkC.vx = work->unk40[1].unkC.vy = work->unk40[1].unkC.vz =
-                fxm_easeLerp(0, 0x10, work->unk0[5], 0x243, 0);
-            work->unk40[2].unkC.vx = work->unk40[2].unkC.vy = work->unk40[2].unkC.vz =
-                fxm_easeLerp(0, 0x10, work->unk0[5], 0x299, 0);
+        if (work->timers0[5] != 0) {
+            work->timers0[5]--;
+            work->models40[0].scaleC.vx = work->models40[0].scaleC.vy = work->models40[0].scaleC.vz =
+                fxm_easeLerp(0, 0x10, work->timers0[5], 0x2A2, 0);
+            work->models40[1].scaleC.vx = work->models40[1].scaleC.vy = work->models40[1].scaleC.vz =
+                fxm_easeLerp(0, 0x10, work->timers0[5], 0x243, 0);
+            work->models40[2].scaleC.vx = work->models40[2].scaleC.vy = work->models40[2].scaleC.vz =
+                fxm_easeLerp(0, 0x10, work->timers0[5], 0x299, 0);
         }
-        if (work->unk0[6] != 0) {
-            work->unk0[6]--;
+        if (work->timers0[6] != 0) {
+            work->timers0[6]--;
             for (i = 0; i < env->targets->targetCount; i++) {
-                if (0x1C - work->unk0[6] >= work->unkE4[i]) {
-                    pos.vx = work->unkA4[i].vx;
-                    pos.vz = work->unkA4[i].vz;
-                    pos.vy = fxm_easeLerp(2, 0x1C - work->unkE4[i], work->unk0[6], work->unkA4[i].vy,
-                                           work->unkA4[i].vy - 0x200);
+                if (0x1C - work->timers0[6] >= work->delayE4[i]) {
+                    pos.vx = work->homePosA4[i].vx;
+                    pos.vz = work->homePosA4[i].vz;
+                    pos.vy = fxm_easeLerp(2, 0x1C - work->delayE4[i], work->timers0[6], work->homePosA4[i].vy,
+                                           work->homePosA4[i].vy - 0x200);
                     ex->btlfx_setUnitPos(i, (s16 *)&pos);
                 }
             }
         }
-        if (work->unk0[7] != 0) {
-            work->unk0[7]--;
+        if (work->timers0[7] != 0) {
+            work->timers0[7]--;
             for (i = 0; i < env->targets->targetCount; i++) {
-                if (work->unk0[7] != 0) {
-                    pos.vx = work->unkA4[i].vx;
-                    pos.vz = work->unkA4[i].vz;
-                    pos.vy = fxm_easeLerp(2, 4, work->unk0[7], work->unkA4[i].vy - 0x200, work->unkA4[i].vy);
+                if (work->timers0[7] != 0) {
+                    pos.vx = work->homePosA4[i].vx;
+                    pos.vz = work->homePosA4[i].vz;
+                    pos.vy = fxm_easeLerp(2, 4, work->timers0[7], work->homePosA4[i].vy - 0x200, work->homePosA4[i].vy);
                 } else {
                     ex->btlfx_getUnitHomePos(i, (s16 *)&pos);
                 }
                 ex->btlfx_setUnitPos(i, (s16 *)&pos);
             }
         }
-        if (work->unk0[1] != 0) {
-            ex->btlfx_aimAngles((s16 *)&D_801E9B94, (s16 *)&env->camera->eye, (s16 *)&work->unk40[1].unk4);
-            work->unk40[0].unk4.vx = work->unk40[1].unk4.vx + 0x800;
-            work->unk40[0].unk4.vy = work->unk40[1].unk4.vy;
-            work->unk40[2].unk4.vy = work->unk40[1].unk4.vy;
-            work->unk40[2].unk4.vx = work->unk40[1].unk4.vx + 0x400;
-            work->unk40[1].unk4.vx -= 0x400;
-            ex->Hi_DrawEffModel(&work->unk40[1].unk4, &work->pos94, (s32)&work->unk40[1].unkC, work->unk40[1].unk0);
-            ex->Hi_DrawEffModel(&work->unk40[2].unk4, &work->pos94, (s32)&work->unk40[2].unkC, work->unk40[2].unk0);
-            ex->Hi_DrawEffModel(&work->unk40[0].unk4, &work->pos94, (s32)&work->unk40[0].unkC, work->unk40[0].unk0);
-            ex->Hi_ModifyEffModelAbr(work->unk40[0].unk0, 1);
+        if (work->timers0[1] != 0) {
+            ex->btlfx_aimAngles((s16 *)&fx_07a_centerPos, (s16 *)&env->camera->eye, (s16 *)&work->models40[1].rot4);
+            work->models40[0].rot4.vx = work->models40[1].rot4.vx + 0x800;
+            work->models40[0].rot4.vy = work->models40[1].rot4.vy;
+            work->models40[2].rot4.vy = work->models40[1].rot4.vy;
+            work->models40[2].rot4.vx = work->models40[1].rot4.vx + 0x400;
+            work->models40[1].rot4.vx -= 0x400;
+            ex->Hi_DrawEffModel(&work->models40[1].rot4, &work->pos94, (s32)&work->models40[1].scaleC, work->models40[1].model0);
+            ex->Hi_DrawEffModel(&work->models40[2].rot4, &work->pos94, (s32)&work->models40[2].scaleC, work->models40[2].model0);
+            ex->Hi_DrawEffModel(&work->models40[0].rot4, &work->pos94, (s32)&work->models40[0].scaleC, work->models40[0].model0);
+            ex->Hi_ModifyEffModelAbr(work->models40[0].model0, 1);
         }
-        if (work->unk0[0] != 0) {
-            work->unk0[0]--;
+        if (work->timers0[0] != 0) {
+            work->timers0[0]--;
             for (i = 0; i < 5; i++) {
-                tr = &D_801E9BA4[i];
-                if (tr->unk10C > 0) {
-                    tr->unk10C--;
+                tr = &fx_07a_strips[i];
+                if (tr->timer10C > 0) {
+                    tr->timer10C--;
                     tr->unk0 = tr->unk2 = n - 1;
                     tr->unk1 = 0;
-                    cur.vx = D_801E9B8C.vx << 12;
-                    cur.vy = D_801E9B8C.vy << 12;
-                    cur.vz = D_801E9B8C.vz << 12;
-                    step.vx = ((work->pos94.vx + tr->unk5C - D_801E9B8C.vx) << 12) / n;
-                    step.vy = ((work->pos94.vy + tr->unk60 - D_801E9B8C.vy) << 12) / n;
-                    step.vz = ((work->pos94.vz + tr->unk64 - D_801E9B8C.vz) << 12) / n;
+                    cur.vx = fx_07a_bonePos.vx << 12;
+                    cur.vy = fx_07a_bonePos.vy << 12;
+                    cur.vz = fx_07a_bonePos.vz << 12;
+                    step.vx = ((work->pos94.vx + tr->endX5C - fx_07a_bonePos.vx) << 12) / n;
+                    step.vy = ((work->pos94.vy + tr->endY60 - fx_07a_bonePos.vy) << 12) / n;
+                    step.vz = ((work->pos94.vz + tr->endZ64 - fx_07a_bonePos.vz) << 12) / n;
                     q = tr;
-                    for (j = 0, pt = tr->unk4; j < n; pt++, j++) {
+                    for (j = 0, pt = tr->pts4; j < n; pt++, j++) {
                         pt->vx = cur.vx >> 12;
                         pt->vz = cur.vz >> 12;
-                        pt->vy = tr->unk6C[j] + (cur.vy >> 12);
-                        pt->unk6 = (u16)tr->unk10C * 4;
+                        pt->vy = tr->offsetY6C[j] + (cur.vy >> 12);
+                        pt->unk6 = (u16)tr->timer10C * 4;
                         cur.vx += step.vx;
                         cur.vy += step.vy;
                         cur.vz += step.vz;
-                        tr->unk6C[j] += tr->unkBC[j];
+                        tr->offsetY6C[j] += tr->speedYBC[j];
                     }
-                    if (tr->unk10C < 4) {
+                    if (tr->timer10C < 4) {
                         ex->btlfx_drawTrail((u8 *)ex->btlfx_getFileData(entry->file, 0xC), 0, NULL, frame, 0x1000,
-                                            tr->unk10C << 10, 1, (u8 *)q, 0);
+                                            tr->timer10C << 10, 1, (u8 *)q, 0);
                     } else {
                         ex->btlfx_drawTrail((u8 *)ex->btlfx_getFileData(entry->file, 0xC), 0, NULL, frame, 0x1000,
                                             0x1000, 1, (u8 *)q, 0);
                     }
-                } else if (tr->unk10C < 0) {
-                    tr->unk10C++;
-                } else if (work->unk0[0] >= 5) {
-                    tr->unk10C = ex->btlfx_randRange(4, 8);
+                } else if (tr->timer10C < 0) {
+                    tr->timer10C++;
+                } else if (work->timers0[0] >= 5) {
+                    tr->timer10C = ex->btlfx_randRange(4, 8);
                     j = 1;
                     a = ex->btlfx_rand() & 0xFFF;
                     b = ex->btlfx_rand() & 0xFFF;
-                    r = (ex->math_cos(a) * (work->unk40[0].unkC.vx + 0x80)) >> 12;
-                    tr->unk60 = r;
-                    tr->unk5C = (ex->math_sin(b) * abs(r)) >> 12;
-                    tr->unk64 = (ex->math_cos(b) * abs(r)) >> 12;
-                    tr->unkBC[0] = 0;
-                    tr->unk6C[0] = 0;
+                    r = (ex->math_cos(a) * (work->models40[0].scaleC.vx + 0x80)) >> 12;
+                    tr->endY60 = r;
+                    tr->endX5C = (ex->math_sin(b) * abs(r)) >> 12;
+                    tr->endZ64 = (ex->math_cos(b) * abs(r)) >> 12;
+                    tr->speedYBC[0] = 0;
+                    tr->offsetY6C[0] = 0;
                     for (; j < n - 1; j++) {
                         w = j * 8 + 0x10;
-                        tr->unk6C[j] = ex->btlfx_randRange(-w * 2, w * 2);
-                        tr->unkBC[j] = ex->btlfx_randRange(-w, w);
+                        tr->offsetY6C[j] = ex->btlfx_randRange(-w * 2, w * 2);
+                        tr->speedYBC[j] = ex->btlfx_randRange(-w, w);
                     }
-                    tr->unkBC[j] = 0;
-                    tr->unk6C[j] = 0;
+                    tr->speedYBC[j] = 0;
+                    tr->offsetY6C[j] = 0;
                 }
             }
         }
-        if (work->unk0[9] != 0) {
-            ex->btlfx_drawBackdrop((BtlBgLayers *)ex->btlfx_getFileData(entry->file, 8), work->unk0[9]);
-            work->unk0[9]++;
+        if (work->timers0[9] != 0) {
+            ex->btlfx_drawBackdrop((BtlBgLayers *)ex->btlfx_getFileData(entry->file, 8), work->timers0[9]);
+            work->timers0[9]++;
         }
         return frame >= 0x46;
     }
     return 0;
 }
 
-void func_801E8A88(SVECTOR *pos, s32 ot, s32 tpage, s32 clut, s32 abr) {
+void fx_07a_drawTwistDisc(SVECTOR *pos, s32 ot, s32 tpage, s32 clut, s32 abr) {
     Unk800F78A4 *env = fx_07a_env;
     BtlfxExports *ex = BTLFX_EXPORTS(env);
     u8 uv[4][8];
@@ -341,29 +341,29 @@ void func_801E8A88(SVECTOR *pos, s32 ot, s32 tpage, s32 clut, s32 abr) {
     gte_SetRotMatrix(&m);
     gte_SetTransMatrix(&m);
     a = 0;
-    dr = D_801E94F8 >> 2;
-    dk = (D_801E9500 - D_801E94FC) >> 2;
+    dr = fx_07a_discRadius >> 2;
+    dk = (fx_07a_uvRadiusOut - fx_07a_uvRadiusIn) >> 2;
     for (; a < 0x1000; a += 0x100) {
         r = 0;
         k = 0;
         for (j = 0; j < 4; j++) {
-            b = a + D_801E9514[j];
-            uv[0][0] = ((ex->math_cos(a) * (D_801E94FC + k)) >> 16) + 0x38;
-            uv[0][1] = ((ex->math_sin(a) * (D_801E94FC + k)) >> 16) - 0x48;
-            uv[1][0] = ((ex->math_cos(a + 0x100) * (D_801E94FC + k)) >> 16) + 0x38;
-            uv[1][1] = ((ex->math_sin(a + 0x100) * (D_801E94FC + k)) >> 16) - 0x48;
+            b = a + fx_07a_ringTwist[j];
+            uv[0][0] = ((ex->math_cos(a) * (fx_07a_uvRadiusIn + k)) >> 16) + 0x38;
+            uv[0][1] = ((ex->math_sin(a) * (fx_07a_uvRadiusIn + k)) >> 16) - 0x48;
+            uv[1][0] = ((ex->math_cos(a + 0x100) * (fx_07a_uvRadiusIn + k)) >> 16) + 0x38;
+            uv[1][1] = ((ex->math_sin(a + 0x100) * (fx_07a_uvRadiusIn + k)) >> 16) - 0x48;
             p[0].vx = (ex->math_cos(b) * r) >> 16;
             p[0].vz = -((ex->math_sin(b) * r) >> 16) - 0x20;
             b += 0x100;
             p[1].vx = (ex->math_cos(b) * r) >> 16;
             p[1].vz = -((ex->math_sin(b) * r) >> 16) - 0x20;
-            b = a + D_801E9514[j + 1];
+            b = a + fx_07a_ringTwist[j + 1];
             k += dk;
-            uv[2][0] = ((ex->math_cos(a) * (D_801E94FC + k)) >> 16) + 0x38;
-            uv[2][1] = ((ex->math_sin(a) * (D_801E94FC + k)) >> 16) - 0x48;
-            uv[3][0] = ((ex->math_cos(a + 0x100) * (D_801E94FC + k)) >> 16) + 0x38;
+            uv[2][0] = ((ex->math_cos(a) * (fx_07a_uvRadiusIn + k)) >> 16) + 0x38;
+            uv[2][1] = ((ex->math_sin(a) * (fx_07a_uvRadiusIn + k)) >> 16) - 0x48;
+            uv[3][0] = ((ex->math_cos(a + 0x100) * (fx_07a_uvRadiusIn + k)) >> 16) + 0x38;
             r += dr;
-            uv[3][1] = ((ex->math_sin(a + 0x100) * (D_801E94FC + k)) >> 16) - 0x48;
+            uv[3][1] = ((ex->math_sin(a + 0x100) * (fx_07a_uvRadiusIn + k)) >> 16) - 0x48;
             p[2].vx = (ex->math_cos(b) * r) >> 16;
             p[2].vz = -((ex->math_sin(b) * r) >> 16) - 0x20;
             b += 0x100;
@@ -390,14 +390,14 @@ void func_801E8A88(SVECTOR *pos, s32 ot, s32 tpage, s32 clut, s32 abr) {
         }
         for (j = 0; j < 2; j++) {
             if (j != 0) {
-                p[2].vx = (ex->math_cos(a) * D_801E9508) >> 16;
-                p[2].vz = -((ex->math_sin(a) * D_801E9508) >> 16) - 0x20;
-                p[3].vx = (ex->math_cos(a + 0x100) * D_801E9508) >> 16;
-                p[3].vz = -((ex->math_sin(a + 0x100) * D_801E9508) >> 16) - 0x20;
-                p[0].vx = (ex->math_cos(a) * D_801E94F8) >> 16;
-                p[0].vz = -((ex->math_sin(a) * D_801E94F8) >> 16) - 0x20;
-                p[1].vx = (ex->math_cos(a + 0x100) * D_801E94F8) >> 16;
-                p[1].vz = -((ex->math_sin(a + 0x100) * D_801E94F8) >> 16) - 0x20;
+                p[2].vx = (ex->math_cos(a) * fx_07a_outerBandRadius) >> 16;
+                p[2].vz = -((ex->math_sin(a) * fx_07a_outerBandRadius) >> 16) - 0x20;
+                p[3].vx = (ex->math_cos(a + 0x100) * fx_07a_outerBandRadius) >> 16;
+                p[3].vz = -((ex->math_sin(a + 0x100) * fx_07a_outerBandRadius) >> 16) - 0x20;
+                p[0].vx = (ex->math_cos(a) * fx_07a_discRadius) >> 16;
+                p[0].vz = -((ex->math_sin(a) * fx_07a_discRadius) >> 16) - 0x20;
+                p[1].vx = (ex->math_cos(a + 0x100) * fx_07a_discRadius) >> 16;
+                p[1].vz = -((ex->math_sin(a + 0x100) * fx_07a_discRadius) >> 16) - 0x20;
                 g4->b1 = 0x80;
                 g4->g1 = 0x80;
                 g4->r1 = 0x80;
@@ -411,14 +411,14 @@ void func_801E8A88(SVECTOR *pos, s32 ot, s32 tpage, s32 clut, s32 abr) {
                 g4->g2 = 0;
                 g4->r2 = 0;
             } else {
-                p[2].vx = (ex->math_cos(a) * D_801E94F8) >> 16;
-                p[2].vz = -((ex->math_sin(a) * D_801E94F8) >> 16) - 0x20;
-                p[3].vx = (ex->math_cos(a + 0x100) * D_801E94F8) >> 16;
-                p[3].vz = -((ex->math_sin(a + 0x100) * D_801E94F8) >> 16) - 0x20;
-                p[0].vx = (ex->math_cos(a) * D_801E950C) >> 12;
-                p[0].vz = -((ex->math_sin(a) * D_801E950C) >> 12) - 0x20;
-                p[1].vx = (ex->math_cos(a + 0x100) * D_801E950C) >> 12;
-                p[1].vz = -((ex->math_sin(a + 0x100) * D_801E950C) >> 12) - 0x20;
+                p[2].vx = (ex->math_cos(a) * fx_07a_discRadius) >> 16;
+                p[2].vz = -((ex->math_sin(a) * fx_07a_discRadius) >> 16) - 0x20;
+                p[3].vx = (ex->math_cos(a + 0x100) * fx_07a_discRadius) >> 16;
+                p[3].vz = -((ex->math_sin(a + 0x100) * fx_07a_discRadius) >> 16) - 0x20;
+                p[0].vx = (ex->math_cos(a) * fx_07a_innerBandRadius) >> 12;
+                p[0].vz = -((ex->math_sin(a) * fx_07a_innerBandRadius) >> 12) - 0x20;
+                p[1].vx = (ex->math_cos(a + 0x100) * fx_07a_innerBandRadius) >> 12;
+                p[1].vz = -((ex->math_sin(a + 0x100) * fx_07a_innerBandRadius) >> 12) - 0x20;
                 g4->b1 = 0;
                 g4->g1 = 0;
                 g4->r1 = 0;

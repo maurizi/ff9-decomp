@@ -2,3 +2,4 @@ fx_0b5_headerPtr = 0x801E7700; // type:u32 size:0x4 [code] word 0 of a module, r
 fx_0b5_header = 0x801E78B8; // [code] module header (0, init, ops), btlfx_updateLoader
 fx_0b5_op80 = 0x801E7704; // type:func [code] header op entry 0, effect script op 0x80 (btlfx_spawnTask)
 fx_0b5_env = 0x801E7900; // [code] the effect env (Unk800F78A4) the op handlers store in mode 1, used by the helpers for BTLFX_EXPORTS
+fx_0b5_trails = 0x801E7910; // [code] particle trail buffer of the file block 1 emitter (Pool6CEntry trails, 0x24 slots of 0x44 bytes), fx_0b5_op80

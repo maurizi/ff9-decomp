@@ -40,23 +40,23 @@ s32 fx_10b_op80(s32 mode, Fx10bWork80 *work, Unk800F78A4 *env, Unk80100C78Entry 
         for (i = 0; i < 2; i++) {
             if (frame >= i + 1) {
                 c = -(i * 16);
-                ex->Hi_DrawEffModel(&work->unk40[i], &work->unk50[i], (s32)&work->scale30, work->model72);
+                ex->Hi_DrawEffModel(&work->rot40[i], &work->pos50[i], (s32)&work->scale30, work->model72);
                 ex->Hi_ModifyEffModelAbr(work->model72, 3);
                 ex->Hi_ModifyEffModelRGB(work->model72, c, c, c);
             }
         }
-        work->unk40[1].vx = work->unk40[0].vx;
-        work->unk40[1].vy = work->unk40[0].vy;
-        work->unk40[1].vz = work->unk40[0].vz;
-        work->unk50[1].vx = work->unk50[0].vx;
-        work->unk50[1].vy = work->unk50[0].vy;
-        work->unk50[1].vz = work->unk50[0].vz;
-        work->unk40[0].vx = work->rot18.vx;
-        work->unk40[0].vy = work->rot18.vy;
-        work->unk40[0].vz = work->rot18.vz;
-        work->unk50[0].vx = work->pos20.vx;
-        work->unk50[0].vy = work->pos20.vy;
-        work->unk50[0].vz = work->pos20.vz;
+        work->rot40[1].vx = work->rot40[0].vx;
+        work->rot40[1].vy = work->rot40[0].vy;
+        work->rot40[1].vz = work->rot40[0].vz;
+        work->pos50[1].vx = work->pos50[0].vx;
+        work->pos50[1].vy = work->pos50[0].vy;
+        work->pos50[1].vz = work->pos50[0].vz;
+        work->rot40[0].vx = work->rot18.vx;
+        work->rot40[0].vy = work->rot18.vy;
+        work->rot40[0].vz = work->rot18.vz;
+        work->pos50[0].vx = work->pos20.vx;
+        work->pos50[0].vy = work->pos20.vy;
+        work->pos50[0].vz = work->pos20.vz;
         if (frame >= 6) {
             ex->btlfx_clearEffModels();
             return 1;

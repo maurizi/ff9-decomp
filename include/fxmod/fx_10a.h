@@ -1,7 +1,8 @@
 #ifndef FX_10A_H
 #define FX_10A_H
 
-/* Effect module fx_10a (dir 13 file 0x10A). */
+/* Effect module fx_10a (dir 13 file 0x10A): Throw thief sword. Evidence: the static sweep of the ability, item
+ * and enemy-sequence effect ids (docs/effect-modules.md, tools/effect_labels.py). */
 #include "btlfx_mod.h"
 
 typedef struct {
@@ -11,8 +12,8 @@ typedef struct {
     SVECTOR rot18; /* model rotation */
     VECTOR pos20; /* model position */
     VECTOR scale30; /* model scale */
-    SVECTOR unk40[3]; /* rotation trail */
-    VECTOR unk58[3]; /* position trail */
+    SVECTOR rot40[3]; /* rotation trail */
+    VECTOR pos58[3]; /* position trail */
     u16 model88; /* models */
     u16 model8A;
 } Fx10aWork80;

@@ -280,8 +280,8 @@ s32 fade_reverse(void (*fn)(void)) {
     c1 = p->startColor;
     c2 = *(Unk4 *)&p->endR;
     fade_setAngle(p->angle ^ 0x800);
-    fade_start(g_fade.type, p->subtract, 0, c2.unk0[0] | (c2.unk0[1] << 8) | (c2.unk0[2] << 16));
-    fade_start(g_fade.type, p->subtract, p->frames, c1.unk0[0] | (c1.unk0[1] << 8) | (c1.unk0[2] << 16));
+    fade_start(g_fade.type, p->subtract, 0, c2.b[0] | (c2.b[1] << 8) | (c2.b[2] << 16));
+    fade_start(g_fade.type, p->subtract, p->frames, c1.b[0] | (c1.b[1] << 8) | (c1.b[2] << 16));
     g_fadeSeekFuncs[g_fade.type](p, d);
     p->onDone = (s32)fn;
     p->frame += d;

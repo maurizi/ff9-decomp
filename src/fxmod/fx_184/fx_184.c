@@ -11,13 +11,13 @@ s32 fx_184_op80(s32 mode, Fx184Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
         fx_184_env = env;
         ex->btlfx_initEffModels(fx_184_effModels, 1);
         ex->btlfx_getUnitBodyPos(0x10, 0, (s16 *)&work->pos0);
-        work->unk10.vx = work->pos0.vx;
-        work->unk10.vy = work->pos0.vy;
-        work->unk10.vz = work->pos0.vz;
-        work->unk10.vy = -0xFA0;
+        work->pos10.vx = work->pos0.vx;
+        work->pos10.vy = work->pos0.vy;
+        work->pos10.vz = work->pos0.vz;
+        work->pos10.vy = -0xFA0;
         ex->btlfx_getUnitBodyPos(0, 0, (s16 *)&work->pos8);
-        ex->btlfx_aimAngles((s16 *)&work->unk10, (s16 *)&work->pos8, (s16 *)&work->rot18);
-        work->rot18.vx = ex->ratan2(work->pos8.vy - work->unk10.vy, work->unk10.vz - work->pos8.vz);
+        ex->btlfx_aimAngles((s16 *)&work->pos10, (s16 *)&work->pos8, (s16 *)&work->rot18);
+        work->rot18.vx = ex->ratan2(work->pos8.vy - work->pos10.vy, work->pos10.vz - work->pos8.vz);
         work->scale30.vx = 0x1000;
         work->scale30.vy = 0x1000;
         work->scale30.vz = 0x1000;
@@ -26,7 +26,7 @@ s32 fx_184_op80(s32 mode, Fx184Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
     } else {
         frame = entry->frame;
         if (frame < 6) {
-            ex->btlfx_lerpVec((s16 *)&work->unk10, (s16 *)&work->pos8, frame << 10, (s16 *)&v);
+            ex->btlfx_lerpVec((s16 *)&work->pos10, (s16 *)&work->pos8, frame << 10, (s16 *)&v);
             work->pos20.vx = v.vx;
             work->pos20.vy = v.vy;
             work->pos20.vz = v.vz;
@@ -75,33 +75,33 @@ s32 fx_184_op82(s32 mode, Fx184Work82 *work, Unk800F78A4 *env, Unk80100C78Entry 
         work->unk8.vy = 0;
         ex->btlfx_setUnitPos(0x10, (s16 *)&work->pos0);
         ex->btlfx_getUnitPos(0, (s16 *)&work->pos10);
-        work->unk20.vx = 0;
-        work->unk20.vy = 0x800;
-        work->unk20.vz = 0;
-        ex->btlfx_pointAhead((s16 *)&work->pos10, (s16 *)&work->unk20, ex->btlfx_getUnitRadius(0) + 0x320, (s16 *)&work->unk18);
+        work->rot20.vx = 0;
+        work->rot20.vy = 0x800;
+        work->rot20.vz = 0;
+        ex->btlfx_pointAhead((s16 *)&work->pos10, (s16 *)&work->rot20, ex->btlfx_getUnitRadius(0) + 0x320, (s16 *)&work->pos18);
         ex->btlfx_setUnitVisible(0x10, 1);
-        work->unk30 = 0;
-        work->unk34 = 6;
-        work->unk38 = 0;
+        work->state30 = 0;
+        work->duration34 = 6;
+        work->frame38 = 0;
     } else {
         if (entry->frame == 6) {
             ex->btlfx_setWeaponVisible(0x10, 1);
         }
-        switch (work->unk30) {
+        switch (work->state30) {
         case 0:
-            if (fxm_moveUnitArc(0x10, &work->unk18, work->unk38, work->unk34, 0, &work->unk28)) {
-                work->unk30 = 1;
-                work->unk34 = 0x10;
-                work->unk38 = 0;
+            if (fxm_moveUnitArc(0x10, &work->pos18, work->frame38, work->duration34, 0, &work->pos28)) {
+                work->state30 = 1;
+                work->duration34 = 0x10;
+                work->frame38 = 0;
             } else {
-                work->unk38++;
+                work->frame38++;
             }
             break;
         case 1:
-            if (work->unk38 == work->unk34) {
+            if (work->frame38 == work->duration34) {
                 return 1;
             }
-            work->unk38++;
+            work->frame38++;
             break;
         }
         return 0;

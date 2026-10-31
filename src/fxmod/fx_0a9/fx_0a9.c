@@ -8,7 +8,7 @@ s32 fx_0a9_op80(s32 mode, Fx0a9Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
     if (mode == 0) {
         *arg4 = 0xC;
     } else if (mode == 1) {
-        work->unk0 = 0;
+        work->state0 = 0;
         fx_0a9_env = env;
         ex->btlfx_getUnitBodyPos(0, 0, (s16 *)&work->pos4);
         p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 3), (s32)&work->pos4);
@@ -17,7 +17,7 @@ s32 fx_0a9_op80(s32 mode, Fx0a9Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
         }
     } else {
         frame = entry->frame;
-        switch (work->unk0) {
+        switch (work->state0) {
         case 0:
             if (frame >= 0x20) {
                 return 1;
@@ -37,23 +37,23 @@ static s32 fx_0a9_op83PoolTask(s32 mode, Fx0a9Part *part, Unk800F78A4 *env, Unk8
 
     if (mode == 1) {
         part->unk12 = ex->btlfx_randCentered(0x20) + 0xE00;
-        part->unk17 = (ex->btlfx_rand() % 3) / 2;
+        part->kind17 = (ex->btlfx_rand() % 3) / 2;
     } else {
-        pt = part->unk18;
+        pt = part->point18;
         pt->pad = 0x18;
         c = ex->math_cos(frame << 7);
         ((s32 *)&v)[0] = 0;
         ((s32 *)&v)[1] = 0;
         ex->btlfx_stepModuleParticle((Pool6CEntry *)part, 0, &v, pt);
-        if (part->unk16 == 0) {
-            ((Fx0a9Bolt *)(part->unk18 - 2))->unk0 = ((Fx0a9Bolt *)(part->unk18 - 2))->unk2 = 0xA;
-            ((Fx0a9Bolt *)(part->unk18 - 2))->unk1 = 0;
-            if (part->unk17 == 0) {
+        if (part->fromEnd16 == 0) {
+            ((Fx0a9Bolt *)(part->point18 - 2))->unk0 = ((Fx0a9Bolt *)(part->point18 - 2))->unk2 = 0xA;
+            ((Fx0a9Bolt *)(part->point18 - 2))->unk1 = 0;
+            if (part->kind17 == 0) {
                 ex->btlfx_drawTrail((u8 *)ex->btlfx_getFileData(entry->file, 1), 0, NULL, 4, 0x1000, c, 1,
-                                  (u8 *)part->unk18 - 4, 0);
+                                  (u8 *)part->point18 - 4, 0);
             } else {
                 ex->btlfx_drawTrail((u8 *)ex->btlfx_getFileData(entry->file, 4), 0, NULL, 4, 0x1000, c, 1,
-                                  (u8 *)part->unk18 - 4, 2);
+                                  (u8 *)part->point18 - 4, 2);
             }
         }
         if (frame >= 8) {
@@ -63,11 +63,11 @@ static s32 fx_0a9_op83PoolTask(s32 mode, Fx0a9Part *part, Unk800F78A4 *env, Unk8
     return 0;
 }
 
-void func_801E79C8(void) {
-    D_801E8528 = 0;
+static void fxm_resetBolts(void) {
+    fx_0a9_nextBolt = 0;
 }
 
-void func_801E79D4(Unk80100C78Entry *entry, SVECTOR *from, SVECTOR *to) {
+static void fxm_spawnBolt(Unk80100C78Entry *entry, SVECTOR *from, SVECTOR *to) {
     BtlfxExports *ex = BTLFX_EXPORTS(fx_0a9_env);
     SVECTOR pos;
     SVECTOR ang;
@@ -83,8 +83,8 @@ void func_801E79D4(Unk80100C78Entry *entry, SVECTOR *from, SVECTOR *to) {
     ex->btlfx_aimAngles((s16 *)from, (s16 *)to, (s16 *)&ang);
     i = 0;
     r = ex->btlfx_rand();
-    bolt = &D_801E7F68[D_801E8528];
-    p = &bolt->unk4[10];
+    bolt = &fx_0a9_bolts[fx_0a9_nextBolt];
+    p = &bolt->pts4[10];
     bolt->unk0 = bolt->unk2 = 0xA;
     bolt->unk1 = 0;
     do {
@@ -96,21 +96,21 @@ void func_801E79D4(Unk80100C78Entry *entry, SVECTOR *from, SVECTOR *to) {
         ex->btlfx_offsetPoint(&pos, (s32)p, 0, (XY32 *)&ang, (s * ((ex->btlfx_rand() & 0x7F) + 0x40)) >> 12, z);
         part = ex->btlfx_poolSpawn((s16 *)entry->pool);
         if (part != NULL) {
-            part->unk14 = D_801E8528;
-            part->unk16 = 0xA - i;
-            part->unk18 = p;
-            part->unk0[0] = p->vx << 12;
-            part->unk0[1] = p->vy << 12;
-            part->unk0[2] = p->vz << 12;
-            part->unkC[0] = ((p->vx - pos.vx) >> 1) + ((ex->btlfx_randCentered(0x18) * s) >> 12);
-            part->unkC[1] = ((p->vy - pos.vy) >> 1) + ((ex->btlfx_randCentered(0x18) * s) >> 12);
-            part->unkC[2] = ((p->vz - pos.vz) >> 1) + ((ex->btlfx_randCentered(0x18) * s) >> 12);
+            part->bolt14 = fx_0a9_nextBolt;
+            part->fromEnd16 = 0xA - i;
+            part->point18 = p;
+            part->pos0[0] = p->vx << 12;
+            part->pos0[1] = p->vy << 12;
+            part->pos0[2] = p->vz << 12;
+            part->velC[0] = ((p->vx - pos.vx) >> 1) + ((ex->btlfx_randCentered(0x18) * s) >> 12);
+            part->velC[1] = ((p->vy - pos.vy) >> 1) + ((ex->btlfx_randCentered(0x18) * s) >> 12);
+            part->velC[2] = ((p->vz - pos.vz) >> 1) + ((ex->btlfx_randCentered(0x18) * s) >> 12);
         }
         i++;
         p--;
     } while (i < 11);
-    D_801E8528++;
-    D_801E8528 = D_801E8528 % 16;
+    fx_0a9_nextBolt++;
+    fx_0a9_nextBolt = fx_0a9_nextBolt % 16;
 }
 
 s32 fx_0a9_op83(s32 mode, Fx0a9Work83 *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *arg4) {
@@ -128,7 +128,7 @@ s32 fx_0a9_op83(s32 mode, Fx0a9Work83 *work, Unk800F78A4 *env, Unk80100C78Entry 
         fx_0a9_env = env;
         ex->btlfx_getUnitBodyPos(0, 0, (s16 *)&work->pos0);
         ex->btlfx_getUnitArgBonePos(0x10, 0, (u16 *)&work->pos8);
-        func_801E79C8();
+        fxm_resetBolts();
         return 0;
     } else {
         frame = entry->frame;
@@ -139,7 +139,7 @@ s32 fx_0a9_op83(s32 mode, Fx0a9Work83 *work, Unk800F78A4 *env, Unk80100C78Entry 
                 v.vx += ex->btlfx_randCentered(0x180);
                 v.vy += ex->btlfx_randCentered(0x180);
                 v.vz += ex->btlfx_randCentered(0x180);
-                func_801E79D4(entry, &work->pos8, &v);
+                fxm_spawnBolt(entry, &work->pos8, &v);
             }
         }
         env->otZ = 0x40;

@@ -6,3 +6,5 @@ fxm_drawStreakField = 0x801E7F6C; // type:func [code] fxm_randDiscPoints points 
 fx_086_env = 0x801E9D6C; // [code] the effect env (Unk800F78A4) the op handlers store in mode 1, used by the helpers for BTLFX_EXPORTS
 fx_086_effModels = 0x801E9D7C; // [code] effect model buffers given to btlfx_initEffModels (BtlModel per slot)
 fxm_drawTexCylinder = 0x801E7704; // type:func [code] textured quads around a circle (cos/sin of an advancing angle times a radius) in rows, at pos rotated and scaled
+fx_086_streakPts = 0x801EA3BC; // [code] 0x180 random disc points (fxm_randDiscPoints) followed by their previous screen xy, drawn by fxm_drawStreakField
+fx_086_spritePos = 0x801EB5BC; // [code] 64 positions around the target (btlfx_pointAhead plus noise, pad = animation frame) drawn with btlfx_drawSprites in fx_086_op80 state 3

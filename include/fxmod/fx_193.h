@@ -1,7 +1,8 @@
 #ifndef FX_193_H
 #define FX_193_H
 
-/* Effect module fx_193 (dir 13 file 0x193). */
+/* Effect module fx_193 (dir 13 file 0x193): enemy Counter Horn (Antlion). Evidence: the static sweep of the ability, item
+ * and enemy-sequence effect ids (docs/effect-modules.md, tools/effect_labels.py). */
 #include "btlfx_mod.h"
 
 typedef struct {
@@ -20,13 +21,13 @@ typedef struct {
 } Fx193Work81;
 
 extern Unk800F78A4 *fx_193_env;
-extern SVECTOR D_801E7CBC;
-extern SVECTOR D_801E7CC4;
-extern SVECTOR D_801E7CCC;
-extern SVECTOR D_801E7CD4;
-extern SVECTOR D_801E7CDC;
-extern s32 D_801E7CE4[];
-extern s32 D_801E80A4[];
+extern SVECTOR fx_193_op80From0;
+extern SVECTOR fx_193_op80To0;
+extern SVECTOR fx_193_op80From1;
+extern SVECTOR fx_193_op80To1;
+extern SVECTOR fx_193_emitPos;
+extern s32 fx_193_op80Trails0[];
+extern s32 fx_193_op80Trails1[];
 
 static s32 fx_193_op80ParticleMotion0(Pool30Entry *e, Pool6CEntry *owner, SVECTOR *pos, s32 arg3, s32 frame, s32 frames);
 static s32 fx_193_op80ParticleMotion1(Pool30Entry *e, Pool6CEntry *owner, SVECTOR *pos, s32 arg3, s32 frame, s32 frames);

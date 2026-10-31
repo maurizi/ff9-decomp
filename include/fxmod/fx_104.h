@@ -1,14 +1,15 @@
 #ifndef FX_104_H
 #define FX_104_H
 
-/* Effect module fx_104 (dir 13 file 0x104). */
+/* Effect module fx_104 (dir 13 file 0x104): enemy Everyone's Grudge (Tonberry). Evidence: the static sweep of the ability, item
+ * and enemy-sequence effect ids (docs/effect-modules.md, tools/effect_labels.py). */
 #include "btlfx_mod.h"
 
 typedef struct {
     Pool6CEntry *emit0;
     s32 unk4;
     SVECTOR pos8;
-    SVECTOR unk10;
+    SVECTOR pos10;
 } Fx104Work80;
 
 typedef struct {
@@ -19,6 +20,6 @@ typedef struct {
 } Fx104Work81;
 
 extern Unk800F78A4 *fx_104_env;
-extern s32 D_801E7A04[];
+extern s32 fx_104_op81Trails[];
 
 #endif

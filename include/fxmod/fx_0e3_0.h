@@ -13,21 +13,21 @@ typedef struct {
 } Fx0e30Bolt;
 
 typedef struct {
-    SVECTOR unk0; /* position */
-    s32 unk8; /* phase */
-    s16 unkC; /* size */
-    s16 unkE; /* speed */
+    SVECTOR pos0; /* position */
+    s32 phase8; /* phase */
+    s16 sizeC; /* size */
+    s16 speedE; /* speed */
 } Fx0e30Puff;
 
 typedef struct {
-    SVECTOR unk0; /* pad: point valid */
-    SVECTOR unk8;
+    SVECTOR a0; /* pad: point valid */
+    SVECTOR b8;
 } Fx0e30Seg; /* 0x10: one step of the ribbon history */
 
 extern Unk800F78A4 *fx_0e3_0_env;
-extern s32 D_801EB370;
-extern s32 D_801EB374;
-extern s32 D_801EB378;
+extern s32 fx_0e3_0_alongJitter;
+extern s32 fx_0e3_0_ampJitter;
+extern s32 fx_0e3_0_angleJitter;
 
 static void fxm_drawTexRibbonTrail(SVECTOR *a, SVECTOR *b, s32 n, s32 tpage, s32 clut, s32 u, s32 v, s32 w, s32 h, s32 p,
                    Fx0e30Seg *buf, s32 abr, s32 phase);
@@ -42,18 +42,18 @@ typedef struct {
 } Fx0e30Vec3;
 
 typedef struct {
-    u32 unk0; /* state */
-    s32 unk4; /* frame counter */
-    SVECTOR unk8; /* summon position */
-    Fx0e30Vec3 unk10; /* summon model position */
-    Fx0e30Vec3 unk1C; /* summon model scale */
+    u32 state0; /* state */
+    s32 frame4; /* frame counter */
+    SVECTOR basePos8; /* summon position */
+    Fx0e30Vec3 summonPos10; /* summon model position */
+    Fx0e30Vec3 summonScale1C; /* summon model scale */
     SVECTOR rot28; /* summon model rotation */
     SVECTOR pos30; /* camera */
     SVECTOR pos38; /* bone position */
     SVECTOR pos40; /* bone position */
     s32 unk48;
     Pool6CEntry *emit4C;
-    s32 unk50; /* bolts need a reset */
+    s32 trailReset50; /* bolts need a reset */
     s32 model54; /* models */
     s32 model58;
     s32 model5C;
@@ -63,8 +63,8 @@ typedef struct {
     Fx0e30Vec3 unk70;
     Fx0e30Vec3 unk7C;
     SVECTOR rot88;
-    Fx0e30Vec3 unk90;
-    Fx0e30Vec3 unk9C;
+    Fx0e30Vec3 pos90;
+    Fx0e30Vec3 scale9C;
 } Fx0e30Work80; /* 0xA8 */
 
 typedef struct {
@@ -79,7 +79,7 @@ typedef struct {
         BtlUnit9CC *motion194;
     } *unk54;
     u8 pad58[8];
-    s32 unk60; /* summon model */
+    s32 summonModel60; /* summon model */
 } Fx0e30Summon;
 
 typedef struct {
@@ -95,13 +95,13 @@ typedef struct {
     SVECTOR unk4[13];
 } Fx0e30Arc; /* 0x6C */
 
-extern SVECTOR D_801EA7E8;
-extern s16 D_801EA7F0[];
-extern Fx0e30BonePair D_801EA800[8];
-extern Fx0e30Seg D_801EA878[4][15];
-extern u8 D_801EAC38[4][0x12C];
-extern Fx0e30Arc D_801EB0E8[];
-extern Fx0e30Bolt D_801EB388[];
+extern SVECTOR fx_0e3_0_origin;
+extern s16 fx_0e3_0_trailBones[];
+extern Fx0e30BonePair fx_0e3_0_ribbonBones[8];
+extern Fx0e30Seg fx_0e3_0_ribbons[4][15];
+extern u8 fx_0e3_0_strips[4][0x12C];
+extern Fx0e30Arc fx_0e3_0_arcs[];
+extern Fx0e30Bolt fx_0e3_0_bolts[];
 extern BtlModel fx_0e3_0_effModels[];
 
 #define SUMMON(env) ((Fx0e30Summon *)(env)->loader)

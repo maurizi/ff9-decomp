@@ -1,14 +1,15 @@
 #ifndef FX_190_H
 #define FX_190_H
 
-/* Effect module fx_190 (dir 13 file 0x190). */
+/* Effect module fx_190 (dir 13 file 0x190): enemy Viral Smoke (Meltigemini). Evidence: the static sweep of the ability, item
+ * and enemy-sequence effect ids (docs/effect-modules.md, tools/effect_labels.py). */
 #include "btlfx_mod.h"
 
 typedef struct {
-    s32 unk0; /* count */
-    SVECTOR unk4; /* angles */
-    SVECTOR unkC; /* angles */
-    SVECTOR unk14[4];
+    s32 count0; /* count */
+    SVECTOR rot4; /* angles */
+    SVECTOR rotC; /* angles */
+    SVECTOR rot14[4];
     SVECTOR pos34; /* caster position */
     SVECTOR pos3C; /* target position */
     SVECTOR pos44;

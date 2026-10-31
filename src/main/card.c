@@ -259,7 +259,7 @@ void card_rollStats(CardEntry *card, u8 id) {
     for (i = 0; i < n; i++) {
         done = 0;
         do {
-            b = &bits.unk0[rand() & 7];
+            b = &bits.b[rand() & 7];
             if (!(card->arrows & *b)) {
                 card->arrows |= *b;
                 done = 1;

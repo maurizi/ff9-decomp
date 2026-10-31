@@ -5,10 +5,10 @@
 #include "btlfx_mod.h"
 
 typedef struct {
-    SVECTOR unk0[8]; /* target home positions */
-    s32 unk40; /* target count */
-    s32 unk44; /* jump height */
-    s32 unk48[8]; /* target heights */
+    SVECTOR home0[8]; /* target home positions */
+    s32 count40; /* target count */
+    s32 jump44; /* jump height */
+    s32 height48[8]; /* target heights */
 } Fx016Work81; /* 0x68 */
 
 typedef struct {
@@ -23,17 +23,17 @@ typedef struct {
     s32 model28;
     s32 model2C;
     s32 model30;
-    s32 unk34; /* scale */
+    s32 scale34; /* scale */
 } Fx016Work80; /* 0x38 */
 
 typedef struct {
-    u16 unk0;
-    u16 unk2;
+    u16 x0;
+    u16 y2;
 } Fx016Pair;
 
 extern BtlModel fx_016_effModels[];
-extern Fx016Pair D_801E82B0[];
+extern Fx016Pair fx_016_scrollDst[];
 extern Unk800F78A4 *fx_016_env;
-extern s32 D_801E89A8; /* jump scale */
+extern s32 fx_016_radiusScale; /* jump scale */
 
 #endif

@@ -45,7 +45,7 @@ typedef struct {
     u8 sliderDir;      /* CONFIG_SLIDE_*: slider knob moving */
     u8 sliderTicks;    /* slider move frames (5 per step) */
     u8 rumbleTicks;    /* rumble frames (9) */
-    u8 unk7;
+    u8 unk7; /* not used by C */
     u8 charPortBit[9]; /* per port window row: bit of the character in the port bits (chr_getClass) */
     u8 charIdx[9];     /* per port window row: character index */
     u8 pad1A[2];

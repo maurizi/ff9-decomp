@@ -14,16 +14,16 @@ s32 fx_090_op80(s32 mode, Fx090Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
         work->pos58.vx = env->targets->centerX;
         work->pos58.vy = env->targets->centerY;
         work->pos58.vz = env->targets->centerZ;
-        work->unk60.vx = env->targets->centerX;
-        work->unk60.vy = env->targets->centerY;
-        work->unk60.vz = env->targets->centerZ;
+        work->pos60.vx = env->targets->centerX;
+        work->pos60.vy = env->targets->centerY;
+        work->pos60.vz = env->targets->centerZ;
         work->pos58.vy -= 0x320;
-        work->unk60.vy -= 0x4B0;
+        work->pos60.vy -= 0x4B0;
         fx_090_env = env;
         work->emit0 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 5), (s32)&work->pos50);
         work->emitC = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0xE), (s32)&work->pos50);
         if (work->emit0 != NULL) {
-            work->emit0->trails = (s32)D_801E7FD8;
+            work->emit0->trails = (s32)fx_090_trails;
             work->emit0->trailSlots = 0xC;
             work->emit0->trailStride = 0xA0;
         }
@@ -42,7 +42,7 @@ s32 fx_090_op80(s32 mode, Fx090Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
         ex->btlfx_initEffModels(fx_090_effModels, 2);
         work->model70 = ex->Hi_RegisterTexEffModel((BtlUnit9C8 *)ex->btlfx_getFileData(entry->file, 0xB), 0x1B, 0x3D09, 0, 0);
         work->model72 = ex->Hi_RegisterTexEffModel((BtlUnit9C8 *)ex->btlfx_getFileData(entry->file, 0xD), 0x1B, 0x3D09, 0, 0);
-        work->unk6C = work->unk68 = -1;
+        work->fadeOut6C = work->fadeIn68 = -1;
     } else {
         frame = entry->frame;
         switch (frame) {
@@ -52,7 +52,7 @@ s32 fx_090_op80(s32 mode, Fx090Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
             if (work->emit10 != NULL) {
                 work->emit10->otZ = 0x180;
             }
-            work->unk68 = 0x12;
+            work->fadeIn68 = 0x12;
             break;
         case 22:
             work->emit14 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 3), (s32)&work->pos58);
@@ -62,31 +62,31 @@ s32 fx_090_op80(s32 mode, Fx090Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
             work->emit1C = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0x10), (s32)&work->pos58);
             break;
         case 28:
-            work->unk6C = 0x1A;
+            work->fadeOut6C = 0x1A;
             break;
         }
-        if (work->unk68 >= 0) {
-            work->unk4C = fxm_lerpRatio(-0x80, 0, 0x12 - work->unk68, 0x12);
-            work->unk68--;
+        if (work->fadeIn68 >= 0) {
+            work->bright4C = fxm_lerpRatio(-0x80, 0, 0x12 - work->fadeIn68, 0x12);
+            work->fadeIn68--;
         }
-        if (work->unk6C >= 0) {
-            work->unk4C = fxm_lerpRatio(0, -0x80, 0x1A - work->unk6C, 0x1A);
-            work->unk6C--;
+        if (work->fadeOut6C >= 0) {
+            work->bright4C = fxm_lerpRatio(0, -0x80, 0x1A - work->fadeOut6C, 0x1A);
+            work->fadeOut6C--;
         }
         if (frame >= 0x12 && frame < 0x18) {
             work->scale3C.vy = ((frame - 0x12) << 12) / 6;
             ex->Hi_DrawEffModel(&work->rot24, &work->pos2C, (s32)&work->scale3C, work->model70);
             ex->Hi_ModifyEffModelAbr(work->model70, 1);
-            ex->Hi_ModifyEffModelRGB(work->model70, work->unk4C, work->unk4C, work->unk4C);
+            ex->Hi_ModifyEffModelRGB(work->model70, work->bright4C, work->bright4C, work->bright4C);
         }
         if (frame >= 0x18 && frame < 0x32) {
             ex->Hi_DrawMorphEffModel(&work->rot24, &work->pos2C, (s32)&work->scale3C, work->model70, work->model72,
                                      0x1000 - ((frame - 0x18) << 12) / 26);
             ex->Hi_ModifyEffModelAbr(work->model70, 1);
-            ex->Hi_ModifyEffModelRGB(work->model70, work->unk4C, work->unk4C, work->unk4C);
+            ex->Hi_ModifyEffModelRGB(work->model70, work->bright4C, work->bright4C, work->bright4C);
         }
         if (frame >= 0x12) {
-            s16 *p = D_801E7DB4[frame % 15];
+            s16 *p = fx_090_texAnimSrc[frame % 15];
             r.x = p[0];
             r.y = p[1];
             r.w = 0x20;

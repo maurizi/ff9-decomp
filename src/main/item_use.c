@@ -90,7 +90,7 @@ s32 chr_payMp(Unk8006573C *a, s16 b) {
 
 u8 fieldCalc_apply(MainCalc *c) {
     if (c->flags & MAINCALC_MISS) {
-        c->result |= 0x20;
+        c->result |= MAINCALC_RESULT_MISS;
         return 0;
     }
     if (c->hpChange > 0) {

@@ -1,11 +1,11 @@
 #include "fxmod/fx_193.h"
 
 static s32 fx_193_op80ParticleMotion0(Pool30Entry *e, Pool6CEntry *owner, SVECTOR *pos, s32 arg3, s32 frame, s32 frames) {
-    return fxm_wobbleParticle(e, pos, &D_801E7CBC, &D_801E7CC4, -0x320, frame, frames);
+    return fxm_wobbleParticle(e, pos, &fx_193_op80From0, &fx_193_op80To0, -0x320, frame, frames);
 }
 
 static s32 fx_193_op80ParticleMotion1(Pool30Entry *e, Pool6CEntry *owner, SVECTOR *pos, s32 arg3, s32 frame, s32 frames) {
-    return fxm_wobbleParticle(e, pos, &D_801E7CCC, &D_801E7CD4, 0x320, frame, frames);
+    return fxm_wobbleParticle(e, pos, &fx_193_op80From1, &fx_193_op80To1, 0x320, frame, frames);
 }
 
 static s32 fxm_wobbleParticle(Pool30Entry *e, SVECTOR *pos, SVECTOR *from, SVECTOR *to, s32 amp, s32 frame, s32 frames) {
@@ -37,23 +37,23 @@ s32 fx_193_op80(s32 mode, Fx193Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
     } else if (mode == 1) {
         fx_193_env = env;
         ex->btlfx_getUnitBodyPos(0, 0, (s16 *)&work->pos8);
-        D_801E7CC4.vx = work->pos8.vx;
-        D_801E7CC4.vy = work->pos8.vy;
-        D_801E7CC4.vz = work->pos8.vz;
-        D_801E7CD4.vx = work->pos8.vx;
-        D_801E7CD4.vy = work->pos8.vy;
-        D_801E7CD4.vz = work->pos8.vz;
-        ex->btlfx_getUnitBonePos(0x10, 0xE, (u16 *)&D_801E7CBC);
-        ex->btlfx_getUnitBonePos(0x10, 0x10, (u16 *)&D_801E7CCC);
-        work->emit0 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 1), (s32)&D_801E7CDC);
-        work->emit4 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0xF), (s32)&D_801E7CDC);
+        fx_193_op80To0.vx = work->pos8.vx;
+        fx_193_op80To0.vy = work->pos8.vy;
+        fx_193_op80To0.vz = work->pos8.vz;
+        fx_193_op80To1.vx = work->pos8.vx;
+        fx_193_op80To1.vy = work->pos8.vy;
+        fx_193_op80To1.vz = work->pos8.vz;
+        ex->btlfx_getUnitBonePos(0x10, 0xE, (u16 *)&fx_193_op80From0);
+        ex->btlfx_getUnitBonePos(0x10, 0x10, (u16 *)&fx_193_op80From1);
+        work->emit0 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 1), (s32)&fx_193_emitPos);
+        work->emit4 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0xF), (s32)&fx_193_emitPos);
         if (work->emit0 != NULL) {
-            work->emit0->trails = (s32)D_801E7CE4;
+            work->emit0->trails = (s32)fx_193_op80Trails0;
             work->emit0->trailSlots = 4;
             work->emit0->trailStride = 0xF0;
         }
         if (work->emit4 != NULL) {
-            work->emit4->trails = (s32)D_801E80A4;
+            work->emit4->trails = (s32)fx_193_op80Trails1;
             work->emit4->trailSlots = 4;
             work->emit4->trailStride = 0xF0;
         }

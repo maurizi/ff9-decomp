@@ -1,7 +1,9 @@
 #ifndef FX_0F2_H
 #define FX_0F2_H
 
-/* Effect module fx_0f2 (dir 13 file 0x0F2). */
+/* Effect module fx_0f2 (dir 13 file 0x0F2): Tidal Flame. A textured model sweeping across the field over a backdrop
+ * (btlfx_drawBackdrop). Evidence: [data] the party ability / item tables and enemy sequences that play this file id
+ * (tools/effect_labels.py; docs/runtime-findings.md, "Round 31 runtime pass"). */
 #include "btlfx_mod.h"
 
 typedef struct {
@@ -10,14 +12,14 @@ typedef struct {
     SVECTOR rot8; /* model rotation */
     VECTOR pos10; /* model position */
     VECTOR scale20; /* model scale */
-    s32 unk30; /* model brightness */
-    s32 unk34; /* z speed */
+    s32 rgb30; /* model brightness */
+    s32 speed34; /* z speed */
     SVECTOR pos38;
-    SVECTOR unk40;
+    SVECTOR startPos40;
     SVECTOR pos48;
-    s32 unk50; /* enemy side */
-    s16 unk54; /* fade-in countdown */
-    s16 unk56; /* fade-out countdown */
+    s32 isEnemy50; /* enemy side */
+    s16 fadeInTimer54; /* fade-in countdown */
+    s16 fadeOutTimer56; /* fade-out countdown */
     u16 model58; /* model */
 } Fx0f2Work;
 

@@ -20,7 +20,7 @@ s32 fx_129_op80(s32 mode, Fx129Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
         clut[1] = 0x80;
         clut[3] = 0;
         /* passes three arguments; the fourth parameter keeps whatever is in $a3 */
-        work->unk0 = (u16)((s32(*)())ex->Hi_RegisterTexListModel)(ex->btlfx_getFileData(entry->file, 7), tex, clut);
+        work->model0 = (u16)((s32(*)())ex->Hi_RegisterTexListModel)(ex->btlfx_getFileData(entry->file, 7), tex, clut);
         ex->btlfx_getUnitBodyPos(0, 1, (s16 *)&work->pos2C);
         ex->btlfx_getUnitRot(0, (s16 *)&work->rot14);
         work->rot14.vy += 0x800;
@@ -30,33 +30,33 @@ s32 fx_129_op80(s32 mode, Fx129Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
         work->scale1C.vz = 0x330;
         work->scale1C.vy = 0x330;
         work->scale1C.vx = 0x330;
-        work->unk34 = 0;
-        work->unk38 = 0;
-        work->unk3C = -0x1B00;
-        work->unk44 = 0;
-        work->unk4C = 0;
-        work->unk54 = 0;
-        work->unk58 = 0;
+        work->phase34 = 0;
+        work->speed38 = 0;
+        work->height3C = -0x1B00;
+        work->frame44 = 0;
+        work->fade4C = 0;
+        work->timer54 = 0;
+        work->count58 = 0;
         work->unk5C = 0;
-        work->unk60 = 0;
-        ex->btlfx_getUnitScale(0, (VECTOR *)&work->unk64);
-        work->unk70.vx = work->unk64.vx;
-        work->unk70.vz = work->unk64.vz;
+        work->timer60 = 0;
+        ex->btlfx_getUnitScale(0, (VECTOR *)&work->scale64);
+        work->scale70.vx = work->scale64.vx;
+        work->scale70.vz = work->scale64.vz;
     } else {
         frame = entry->frame;
-        if (work->unk34 < 9) {
-            t = ++work->unk44;
-            switch (work->unk34 & 1) {
+        if (work->phase34 < 9) {
+            t = ++work->frame44;
+            switch (work->phase34 & 1) {
             case 0:
-                work->unk40 = work->unk3C + (((t * 0x60) * t) >> 1);
-                if (work->unk40 >= 0) {
-                    work->unk38 = work->unk44 * 0x180 / 10;
-                    work->unk44 = 0;
-                    work->unk40 = 0;
-                    work->unk54 = 4;
-                    work->unk34++;
-                    work->scale1C.vy = 0x330 - work->unk38;
-                    switch (work->unk58) {
+                work->height40 = work->height3C + (((t * 0x60) * t) >> 1);
+                if (work->height40 >= 0) {
+                    work->speed38 = work->frame44 * 0x180 / 10;
+                    work->frame44 = 0;
+                    work->height40 = 0;
+                    work->timer54 = 4;
+                    work->phase34++;
+                    work->scale1C.vy = 0x330 - work->speed38;
+                    switch (work->count58) {
                     case 0:
                         ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 3), (s32)&work->pos2C);
                         break;
@@ -65,50 +65,50 @@ s32 fx_129_op80(s32 mode, Fx129Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
                         ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 1), (s32)&work->pos2C);
                         break;
                     }
-                    work->unk58++;
+                    work->count58++;
                 }
                 break;
             case 1:
-                v = -(work->unk38 * t) + (((t * 0x60) * t) >> 1);
-                if (v < work->unk40) {
-                    work->unk40 = v;
+                v = -(work->speed38 * t) + (((t * 0x60) * t) >> 1);
+                if (v < work->height40) {
+                    work->height40 = v;
                 } else {
-                    work->unk3C = work->unk40;
-                    work->unk44 = 0;
-                    work->unk34++;
+                    work->height3C = work->height40;
+                    work->frame44 = 0;
+                    work->phase34++;
                 }
                 break;
             }
-            if (work->unk54 != 0) {
-                work->unk54--;
-                v = (ex->math_cos(work->unk54 << 9) * (work->unk38 >> 2)) >> 12;
+            if (work->timer54 != 0) {
+                work->timer54--;
+                v = (ex->math_cos(work->timer54 << 9) * (work->speed38 >> 2)) >> 12;
                 work->scale1C.vy = 0x330 - ((v >= 0) ? v : -v);
             }
         }
         if (frame == 0xB) {
-            work->unk60 = 0x10;
+            work->timer60 = 0x10;
         }
-        if (work->unk60 != 0) {
-            work->unk60--;
-            if (work->unk60 != 0) {
-                work->unk70.vy = work->unk64.vy + ((ex->math_cos((work->unk60 << 10) | 0x200) * (work->unk60 << 5)) >> 12);
-                if (work->unk70.vy < 0) {
-                    work->unk70.vy = 0;
+        if (work->timer60 != 0) {
+            work->timer60--;
+            if (work->timer60 != 0) {
+                work->scale70.vy = work->scale64.vy + ((ex->math_cos((work->timer60 << 10) | 0x200) * (work->timer60 << 5)) >> 12);
+                if (work->scale70.vy < 0) {
+                    work->scale70.vy = 0;
                 }
             } else {
-                work->unk70.vy = work->unk64.vy;
+                work->scale70.vy = work->scale64.vy;
             }
-            ex->btlfx_setUnitScale(0, (s32 *)&work->unk70);
+            ex->btlfx_setUnitScale(0, (s32 *)&work->scale70);
         }
-        env->camera->points[0].vy = work->pos4.vy = work->pos2C.vy + work->unk40;
-        ex->Hi_DrawEffModel(&work->rot14, &work->pos4, (s32)&work->scale1C, work->unk0);
-        if (work->unk34 >= 9) {
-            if (work->unk4C < 0x10) {
-                work->unk4C++;
+        env->camera->points[0].vy = work->pos4.vy = work->pos2C.vy + work->height40;
+        ex->Hi_DrawEffModel(&work->rot14, &work->pos4, (s32)&work->scale1C, work->model0);
+        if (work->phase34 >= 9) {
+            if (work->fade4C < 0x10) {
+                work->fade4C++;
             }
-            work->unk50 = -(work->unk4C * 16);
-            ex->Hi_ModifyEffModelAbr(work->unk0, 1);
-            ex->Hi_ModifyEffModelRGB(work->unk0, work->unk50, work->unk50, work->unk50);
+            work->color50 = -(work->fade4C * 16);
+            ex->Hi_ModifyEffModelAbr(work->model0, 1);
+            ex->Hi_ModifyEffModelRGB(work->model0, work->color50, work->color50, work->color50);
         }
         return frame >= 0x40;
     }

@@ -11,8 +11,8 @@ typedef struct {
     SVECTOR rot10; /* target rotation */
 } Fx07bWork;
 
-extern SVECTOR D_801E79C8;
+extern SVECTOR fx_07b_emitRot;
 extern Unk800F78A4 *fx_07b_env;
-extern s32 D_801E7A28[];
+extern s32 fx_07b_trails[];
 
 #endif

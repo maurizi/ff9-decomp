@@ -5,3 +5,7 @@ fx_0dc_op84 = 0x801E8F5C; // type:func [code] header op entry 4, effect script o
 fx_0dc_op80PoolTask = 0x801E7788; // type:func [code] btlfx pool element function (btlfx_poolInit elemFn, run by btlfx_poolUpdate with mode, element, env, task, frame), installed by fx_0dc_op80
 fx_0dc_env = 0x801E9354; // [code] the effect env (Unk800F78A4) the op handlers store in mode 1, used by the helpers for BTLFX_EXPORTS
 fx_0dc_effModels = 0x801E9364; // [code] effect model buffers given to btlfx_initEffModels (BtlModel per slot)
+fx_0dc_shardAngles = 0x801E9288; // [code] SVECTOR per ice shard, model rotation and spawn direction, indexed by Fx0dcItem.shard4 in fx_0dc_op80PoolTask and fx_0dc_op80
+fx_0dc_shardModelBlocks = 0x801E92B8; // [code] effect file block of each of the 14 shard models (Hi_RegisterTexEffModel, Fx0dcWork80.model20) in fx_0dc_op80
+fx_0dc_shardDists = 0x801E92F0; // [code] s16 distance per piece, fx_0dc_shardPoint moves a point back by it (btlfx_pointAhead)
+fx_0dc_shardPoint = 0x801E7718; // type:func [code] btlfx_pointAhead from a along angles b by minus fx_0dc_shardDists[i], places the pieces of a breaking shard in fx_0dc_op80PoolTask

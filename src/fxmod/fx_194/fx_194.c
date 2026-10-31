@@ -4,14 +4,14 @@ static void fx_194_op80GridVertex(SVECTOR *v) {
     s32 y = v->vy;
     s32 x = v->vx;
     BtlfxExports *ex = BTLFX_EXPORTS(fx_194_env);
-    s32 nx = x + ((ex->math_cos(D_801E7E04 + y * 0x18) * D_801E7E00) >> 13);
-    s32 ny = y + ((ex->math_sin(D_801E7E04 + x * 0x18) * D_801E7E00) >> 12);
+    s32 nx = x + ((ex->math_cos(fx_194_wavePhase + y * 0x18) * fx_194_waveAmp) >> 13);
+    s32 ny = y + ((ex->math_sin(fx_194_wavePhase + x * 0x18) * fx_194_waveAmp) >> 12);
 
     v->vx = nx;
     v->vy = ny;
 }
 
-void func_801E77DC(s32 frame, s32 amp, SVECTOR *v) {
+void fx_194_shakeCamPoint(s32 frame, s32 amp, SVECTOR *v) {
     s32 d;
 
     if (frame == 2) {
@@ -21,7 +21,7 @@ void func_801E77DC(s32 frame, s32 amp, SVECTOR *v) {
         v->vy -= d;
     }
     if (frame >= 0x13 && frame < 0x19) {
-        SVECTOR *t = &D_801E7D78[frame - 0x13];
+        SVECTOR *t = &fx_194_shakeOffsets[frame - 0x13];
         v->vx += (t->vx * amp) >> 7;
         v->vy += (t->vy * amp) >> 7;
         v->vz += (t->vz * amp) >> 7;
@@ -44,7 +44,7 @@ s32 fx_194_op80(s32 mode, Fx194Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
     if (mode == 0) {
         *arg4 = 0x1C;
     } else if (mode == 1) {
-        work->unk0 = 0;
+        work->state0 = 0;
         fx_194_env = env;
         ex->btlfx_getUnitBodyPos(0x10, 0, (s16 *)&work->pos4);
         ex->btlfx_getUnitPos(0x10, (s16 *)&work->posC);
@@ -57,30 +57,30 @@ s32 fx_194_op80(s32 mode, Fx194Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
         if (p != NULL) {
             p->otZ = 0x200;
         }
-        work->unk14.vx = work->pos4.vx;
-        work->unk14.vy = work->pos4.vy;
-        work->unk14.vz = work->pos4.vz;
-        env->camera->points[3].vx = work->unk14.vx;
-        env->camera->points[3].vy = work->unk14.vy;
-        env->camera->points[3].vz = work->unk14.vz;
+        work->camPos14.vx = work->pos4.vx;
+        work->camPos14.vy = work->pos4.vy;
+        work->camPos14.vz = work->pos4.vz;
+        env->camera->points[3].vx = work->camPos14.vx;
+        env->camera->points[3].vy = work->camPos14.vy;
+        env->camera->points[3].vz = work->camPos14.vz;
     } else {
         frame = entry->frame;
-        state = work->unk0;
+        state = work->state0;
         switch (state) {
         case 0:
             if (frame >= 0x13 && frame < 0x19) {
-                s32 k = D_801E7DA8[frame - 0x13] * 0xFF / 100;
+                s32 k = fx_194_flashLevels[frame - 0x13] * 0xFF / 100;
                 ex->btlfx_drawScreenTint((u32 *)(env->ot + 1), 1, k, k, k);
             }
-            v.vx = work->unk14.vx;
-            v.vy = work->unk14.vy;
-            v.vz = work->unk14.vz;
-            func_801E77DC(frame, 0x300, &v);
+            v.vx = work->camPos14.vx;
+            v.vy = work->camPos14.vy;
+            v.vz = work->camPos14.vz;
+            fx_194_shakeCamPoint(frame, 0x300, &v);
             env->camera->points[3].vx = v.vx;
             env->camera->points[3].vy = v.vy;
             env->camera->points[3].vz = v.vz;
             if (frame >= 0x18) {
-                work->unk0 = 1;
+                work->state0 = 1;
                 entry->frame = -1;
             }
             break;
@@ -91,8 +91,8 @@ s32 fx_194_op80(s32 mode, Fx194Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
                 ex->btlfx_drawScreenTint((u32 *)(env->ot + 1), 1, k, k, k);
             }
             t >>= 2;
-            D_801E7E00 = (ex->math_cos(t) * 0xC) >> 12;
-            D_801E7E04 = frame << 6;
+            fx_194_waveAmp = (ex->math_cos(t) * 0xC) >> 12;
+            fx_194_wavePhase = frame << 6;
             col.r = col.g = col.b = (ex->math_cos(t) * 0x64) >> 12;
             scale.vx = 0x1080;
             scale.vy = 0x1200;
@@ -119,7 +119,7 @@ s32 fx_194_op81(s32 mode, Fx194Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
         *arg4 = 0xC;
     } else if (mode == 1) {
         fx_194_env = env;
-        work->unk0 = 0;
+        work->state0 = 0;
         ex->btlfx_getUnitBodyPos(0x10, 0, (s16 *)&work->pos4);
         p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 6), (s32)&work->pos4);
         if (p != NULL) {
@@ -130,7 +130,7 @@ s32 fx_194_op81(s32 mode, Fx194Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
         env->camera->points[3].vz = work->pos4.vz;
     } else {
         s32 frame = entry->frame;
-        if (work->unk0 == 0 && frame >= 0x20) {
+        if (work->state0 == 0 && frame >= 0x20) {
             return 1;
         }
     }

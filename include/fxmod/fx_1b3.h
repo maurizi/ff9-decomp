@@ -1,56 +1,57 @@
 #ifndef FX_1B3_H
 #define FX_1B3_H
 
-/* Effect module fx_1b3 (dir 13 file 0x1b3). */
+/* Effect module fx_1b3 (dir 13 file 0x1b3): enemy Death1 (Dummy/Necron). Evidence: the static sweep of the ability, item
+ * and enemy-sequence effect ids (docs/effect-modules.md, tools/effect_labels.py). */
 #include "btlfx_mod.h"
 
 typedef struct {
-    s16 unk0; /* velocity */
-    s16 unk2;
-    s16 unk4;
-    s16 unk6; /* frames left */
-    s16 unk8; /* spin */
+    s16 velX0; /* velocity */
+    s16 velY2;
+    s16 velZ4;
+    s16 timer6; /* frames left */
+    s16 rot8; /* spin */
     s16 unkA;
     s16 unkC;
-    s16 unkE; /* scale step */
-    s16 unk10; /* center */
-    s16 unk12;
-    s16 unk14;
-    s16 unk16; /* scale */
+    s16 scaleStepE; /* scale step */
+    s16 posX10; /* center */
+    s16 posY12;
+    s16 posZ14;
+    s16 scale16; /* scale */
 } Fx1b3Piece; /* 0x18 */
 
 typedef struct {
-    s32 unk0; /* model */
-    s32 unk4; /* frames left */
-    s32 unk8[8]; /* primitive counts */
-    SVECTOR *unk28[8]; /* vertices */
-    Fx1b3Piece *unk48[8]; /* pieces */
+    s32 model0; /* model */
+    s32 timer4; /* frames left */
+    s32 count8[8]; /* primitive counts */
+    SVECTOR *verts28[8]; /* vertices */
+    Fx1b3Piece *pieces48[8]; /* pieces */
 } Fx1b3Split;
 
-extern u8 *D_801EB0C0;
+extern u8 *fx_1b3_splitBufPtr;
 
 typedef struct {
-    s32 unk0; /* mode */
-    s16 unk4; /* target */
-    s16 unk6;
-    s16 unk8;
+    s32 mode0; /* mode */
+    s16 posX4; /* target */
+    s16 posY6;
+    s16 posZ8;
     s16 padA;
-    s32 unkC; /* radius */
-    s32 unk10; /* sweep angle */
-    s32 unk14; /* sweep step */
+    s32 radiusC; /* radius */
+    s32 angle10; /* sweep angle */
+    s32 spin14; /* sweep step */
 } Fx1b3Blast;
 
-extern Fx1b3Blast D_801EB0D4;
+extern Fx1b3Blast fx_1b3_splitTrigger;
 
 typedef struct {
     u8 unk0;
     u8 unk1;
     u8 unk2;
     u8 pad3;
-    SVECTOR unk4[9]; /* drawn points */
-    s32 unk4C; /* frames left */
-    SVECTOR unk50[9]; /* points */
-    SVECTOR unk98[9]; /* point velocities */
+    SVECTOR points4[9]; /* drawn points */
+    s32 timer4C; /* frames left */
+    SVECTOR pos50[9]; /* points */
+    SVECTOR vel98[9]; /* point velocities */
 } Fx1b3Trail; /* 0xE0 */
 
 typedef struct {
@@ -61,13 +62,13 @@ typedef struct {
     SVECTOR pos110;
     SVECTOR pos118;
     SVECTOR pos120;
-    SVECTOR unk128;
-    SVECTOR unk130;
-    SVECTOR unk138;
-    SVECTOR unk140;
-    SVECTOR unk148;
-    SVECTOR unk150;
-    s32 unk158; /* model */
+    SVECTOR rot128;
+    SVECTOR rot130;
+    SVECTOR rot138;
+    SVECTOR rot140;
+    SVECTOR rot148;
+    SVECTOR rot150;
+    s32 model158; /* model */
     SVECTOR rot15C;
     SVECTOR rot164;
     VECTOR pos16C;
@@ -91,25 +92,25 @@ typedef struct {
     VECTOR scale254;
 } Fx1b3Work80; /* 0x264 */
 
-extern s32 D_801EAFC4[];
-extern s32 D_801EB004[];
-extern s32 D_801EB018[];
-extern BtlTexInfo D_801EB084;
-extern BtlTexInfo D_801EB0A4;
-extern u8 *D_801EB0BC;
-extern Fx1b3Trail *D_801EB0C4;
-extern s32 D_801EB0C8;
-extern s32 D_801EB0CC;
-extern Fx1b3Split D_801EB0F4[9];
-extern Fx1b3Split D_801EB4A4[2];
-extern Fx1b3Split D_801EB574;
-extern Fx1b3Split D_801EB5E4[2];
-extern Fx1b3Split D_801EB6B4[3];
-extern SVECTOR D_801EB7EC;
+extern s32 fx_1b3_trailBones0[];
+extern s32 fx_1b3_trailBones1[];
+extern s32 fx_1b3_trailBones2[];
+extern BtlTexInfo fx_1b3_casterTexInfo;
+extern BtlTexInfo fx_1b3_casterTexPos;
+extern u8 *fx_1b3_splitBuf;
+extern Fx1b3Trail *fx_1b3_trails;
+extern s32 fx_1b3_op80Trails0;
+extern s32 fx_1b3_op80Trails1;
+extern Fx1b3Split fx_1b3_splits0[9];
+extern Fx1b3Split fx_1b3_splits1[2];
+extern Fx1b3Split fx_1b3_splits2;
+extern Fx1b3Split fx_1b3_splits3[2];
+extern Fx1b3Split fx_1b3_splits4[3];
+extern SVECTOR fx_1b3_emitPos0;
 extern BtlModel fx_1b3_effModels[];
 
-void func_801EA39C(Fx1b3Split *sp);
-void func_801EA7E4(Fx1b3Split *sp);
+void fx_1b3_splitModel(Fx1b3Split *sp);
+void fx_1b3_updateSplitPieces(Fx1b3Split *sp);
 
 /* copied */
 extern Unk800F78A4 *fx_1b3_env;

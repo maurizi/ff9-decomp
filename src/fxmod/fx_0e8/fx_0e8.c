@@ -15,7 +15,7 @@ s32 fx_0e8_op80(s32 mode, Fx0e8Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
         work->pos3C.vy = work->pos14.vy;
         work->pos3C.vz = work->pos14.vz;
         work->pos3C.vy -= 0x12C;
-        ex->btlfx_getUnitScale(0x10, &work->unk2C);
+        ex->btlfx_getUnitScale(0x10, &work->scale2C);
     } else {
         frame = entry->frame;
         switch (frame) {
@@ -30,7 +30,7 @@ s32 fx_0e8_op80(s32 mode, Fx0e8Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
             work->emit8 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 3), (s32)&work->pos14);
             work->emitC = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 4), (s32)&work->pos14);
             if (work->emit4 != NULL) {
-                work->emit4->trails = (s32)D_801E7A80;
+                work->emit4->trails = (s32)fx_0e8_op80Trails;
                 work->emit4->trailSlots = 0x14;
                 work->emit4->trailStride = 0xD0;
             }
@@ -51,9 +51,9 @@ s32 fx_0e8_op80(s32 mode, Fx0e8Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
                 ex->btlfx_fadeUnitById(0x10, 0);
             } else {
                 ex->btlfx_getUnitScale(0x10, &scale);
-                scale.vx = work->unk2C.vx - work->unk2C.vx / 4 * i;
+                scale.vx = work->scale2C.vx - work->scale2C.vx / 4 * i;
                 scale.vy += 0x190;
-                scale.vz = work->unk2C.vz - work->unk2C.vz / 4 * i;
+                scale.vz = work->scale2C.vz - work->scale2C.vz / 4 * i;
             }
             ex->btlfx_setUnitScale(0x10, (s32 *)&scale);
         }

@@ -21,7 +21,7 @@ s32 fx_0c2_op80(s32 mode, Fx0c2Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
 }
 
 static s32 fx_0c2_op81ParticleMotion(Pool30Entry *pt, s32 arg1, SVECTOR *pos, s32 arg3, s32 frame, s32 n) {
-    BTLFX_EXPORTS(fx_0c2_env)->btlfx_lerpVec((s16 *)&D_801E8484, (s16 *)&D_801E848C, (frame << 12) / 9, (s16 *)pos);
+    BTLFX_EXPORTS(fx_0c2_env)->btlfx_lerpVec((s16 *)&fx_0c2_pathFrom, (s16 *)&fx_0c2_pathTo, (frame << 12) / 9, (s16 *)pos);
     pt->pos.vx = pos->vx << 12;
     pt->pos.vy = pos->vy << 12;
     pt->pos.vz = pos->vz << 12;
@@ -40,7 +40,7 @@ s32 fx_0c2_op81(s32 mode, Fx0c2Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
         *arg4 = 0x50;
     } else if (mode == 1) {
         s32 n = *arg4;
-        work->unk4C = n;
+        work->unit4C = n;
         fx_0c2_env = env;
         if (n >= env->targets->targetCount) {
             fxm_setSignal(env, BTLFX_SIG_WAIT, 1);
@@ -50,36 +50,36 @@ s32 fx_0c2_op81(s32 mode, Fx0c2Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
         fxm_startUnitMotion(0x10, 0x1C);
         ex->btlfx_getUnitPos(0x10, (s16 *)&work->posC);
         ex->btlfx_getUnitRot(0x10, (s16 *)&work->rot14);
-        ex->btlfx_getUnitBodyPos(work->unk4C, 0, (s16 *)&work->pos1C);
-        ex->btlfx_getUnitRot(work->unk4C, (s16 *)&work->rot24);
+        ex->btlfx_getUnitBodyPos(work->unit4C, 0, (s16 *)&work->pos1C);
+        ex->btlfx_getUnitRot(work->unit4C, (s16 *)&work->rot24);
     } else {
         frame = entry->frame;
         if (frame == 4) {
             ex->btlfx_getUnitBonePos(0x10, 0x17, (u16 *)&work->pos34);
-            D_801E8484.vx = work->pos34.vx;
-            D_801E8484.vy = work->pos34.vy;
-            D_801E8484.vz = work->pos34.vz;
+            fx_0c2_pathFrom.vx = work->pos34.vx;
+            fx_0c2_pathFrom.vy = work->pos34.vy;
+            fx_0c2_pathFrom.vz = work->pos34.vz;
             ex->btlfx_getUnitRot(0x10, (s16 *)&work->rot14);
             ex->btlfx_pointAhead((s16 *)&work->posC, (s16 *)&work->rot14, 0x12C, (s16 *)&work->pos2C);
             ex->btlfx_aimAngles((s16 *)&work->posC, (s16 *)&work->pos1C, (s16 *)&ang);
-            ex->btlfx_pointAhead((s16 *)&work->pos1C, (s16 *)&ang, 0, (s16 *)&D_801E848C);
+            ex->btlfx_pointAhead((s16 *)&work->pos1C, (s16 *)&ang, 0, (s16 *)&fx_0c2_pathTo);
             work->emit0 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0xD), (s32)&work->pos2C);
-            work->emit4 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0xA), (s32)&D_801E8494);
+            work->emit4 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0xA), (s32)&fx_0c2_emitPos);
             if (work->emit4 != NULL) {
                 work->emit4->file->m.module.update = fx_0c2_op81ParticleMotion;
             }
             if (work->emit4 != NULL) {
                 work->emit4->otZ = ex->btlfx_addRadiusSixth(0x10, 0x80);
             }
-            ex->btlfx_aimAngles((s16 *)&work->pos34, (s16 *)&work->pos1C, (s16 *)&work->unk44);
-            work->unk3C.vx = work->unk44.vx;
-            work->unk3C.vy = work->unk44.vy;
-            work->unk3C.vz = work->unk44.vz;
+            ex->btlfx_aimAngles((s16 *)&work->pos34, (s16 *)&work->pos1C, (s16 *)&work->rot44);
+            work->rot3C.vx = work->rot44.vx;
+            work->rot3C.vy = work->rot44.vy;
+            work->rot3C.vz = work->rot44.vz;
         }
         if (frame == 0xD) {
             work->emit8 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0xB), (s32)&work->pos1C);
             if (work->emit8 != NULL) {
-                work->emit8->otZ = ex->btlfx_addRadiusSixth(work->unk4C, 0x80);
+                work->emit8->otZ = ex->btlfx_addRadiusSixth(work->unit4C, 0x80);
             }
         }
         switch (frame) {
@@ -100,9 +100,9 @@ s32 fx_0c2_op81(s32 mode, Fx0c2Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
                     work->emit0 = NULL;
                 }
                 if (work->emit0 != NULL) {
-                    work->emit0->rot.vx = work->unk3C.vx;
-                    work->emit0->rot.vy = work->unk3C.vy;
-                    work->emit0->rot.vz = work->unk3C.vz;
+                    work->emit0->rot.vx = work->rot3C.vx;
+                    work->emit0->rot.vy = work->rot3C.vy;
+                    work->emit0->rot.vz = work->rot3C.vz;
                 }
             }
             if (work->emit4 != NULL) {
@@ -110,9 +110,9 @@ s32 fx_0c2_op81(s32 mode, Fx0c2Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
                     work->emit4 = NULL;
                 }
                 if (work->emit4 != NULL) {
-                    work->emit4->rot.vx = work->unk44.vx;
-                    work->emit4->rot.vy = work->unk44.vy;
-                    work->emit4->rot.vz = work->unk44.vz;
+                    work->emit4->rot.vx = work->rot44.vx;
+                    work->emit4->rot.vy = work->rot44.vy;
+                    work->emit4->rot.vz = work->rot44.vz;
                 }
             }
         }
@@ -133,13 +133,13 @@ s32 fx_0c2_op82(s32 mode, Fx0c2Work82 *work, Unk800F78A4 *env, Unk80100C78Entry 
     if (mode == 0) {
         *arg4 = 0x10;
     } else if (mode == 1) {
-        work->unk8.vx = env->targets->centerX;
-        work->unk8.vy = env->targets->centerY;
+        work->pos8.vx = env->targets->centerX;
+        work->pos8.vy = env->targets->centerY;
         fx_0c2_env = env;
-        work->unk8.vz = env->targets->centerZ;
+        work->pos8.vz = env->targets->centerZ;
     } else {
         frame = entry->frame;
-        return fxm_turnUnitBy(0x10, frame, 0xF, &work->unk8, &work->unk0) != 0;
+        return fxm_turnUnitBy(0x10, frame, 0xF, &work->pos8, &work->turn0) != 0;
     }
     return 0;
 }
@@ -152,7 +152,7 @@ s32 fx_0c2_op83(s32 mode, Fx0c2Work83 *work, Unk800F78A4 *env, Unk80100C78Entry 
         *arg4 = 0x14;
     } else if (mode == 1) {
         s32 n = *arg4;
-        work->unk10 = n;
+        work->unit10 = n;
         fx_0c2_env = env;
         if (n >= env->targets->targetCount) {
             return 1;
@@ -160,7 +160,7 @@ s32 fx_0c2_op83(s32 mode, Fx0c2Work83 *work, Unk800F78A4 *env, Unk80100C78Entry 
         ex->btlfx_getUnitPos(n, (s16 *)&work->pos8);
     } else {
         frame = entry->frame;
-        return fxm_turnUnitToward(0x10, work->unk10, frame, 4, 0, 1, &work->unk0) != 0;
+        return fxm_turnUnitToward(0x10, work->unit10, frame, 4, 0, 1, &work->turn0) != 0;
     }
     return 0;
 }

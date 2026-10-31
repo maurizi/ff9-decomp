@@ -13,14 +13,14 @@ typedef struct {
     SVECTOR pos14; /* target position */
     SVECTOR pos1C; /* target home position */
     SVECTOR pos24;
-    SVECTOR unk2C;
-    s16 unk34; /* rise countdown */
-    s16 unk36; /* fall countdown */
-    s16 unk38; /* held up */
+    SVECTOR target2C;
+    s16 rise34; /* rise countdown */
+    s16 fall36; /* fall countdown */
+    s16 held38; /* held up */
 } Fx023Work; /* 0x3C */
 
 extern Unk800F78A4 *fx_023_env;
-extern s32 D_801E7C40[];
+extern s32 fx_023_trails[];
 
 static void fxm_lerpSvec(SVECTOR *a, SVECTOR *b, s32 t, SVECTOR *out);
 static s32 fxm_lerpRatio(s32 from, s32 to, s32 t, s32 n);

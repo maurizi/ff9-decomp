@@ -1,11 +1,12 @@
 #ifndef FX_1A8_H
 #define FX_1A8_H
 
-/* Effect module fx_1a8 (dir 13 file 0x1a8). */
+/* Effect module fx_1a8 (dir 13 file 0x1a8): Odin (short); Zantetsuken. Evidence: the static sweep of the ability, item
+ * and enemy-sequence effect ids (docs/effect-modules.md, tools/effect_labels.py). */
 #include "btlfx_mod.h"
 
 extern Unk800F78A4 *fx_1a8_env;
-extern s32 D_801E97D4[2]; /* models */
+extern s32 fx_1a8_elemModels[2]; /* models */
 
 static void fx_1a8_op80ElemDraw0(s32 arg0, s32 arg1, SVECTOR *pos, SVECTOR *rot, s32 *scale, s32 arg5, s32 arg6, s32 t, s32 n);
 static void fx_1a8_op80ElemDraw1(s32 arg0, s32 arg1, SVECTOR *pos, SVECTOR *rot, s32 *scale, s32 arg5, s32 arg6, s32 t, s32 n);
@@ -19,16 +20,16 @@ typedef struct {
 } Fx1a8Vec3;
 
 typedef struct {
-    s32 unk0; /* state */
-    s32 unk4; /* frame */
+    s32 state0; /* state */
+    s32 frame4; /* frame */
     SVECTOR pos8;
     SVECTOR pos10;
     u8 pad18[0x20 - 0x18];
-    SVECTOR unk20; /* ring position */
+    SVECTOR pos20; /* ring position */
     s32 model28; /* model */
     SVECTOR rot2C; /* rotation */
-    Fx1a8Vec3 unk34; /* scale */
-    Fx1a8Vec3 unk40; /* position */
+    Fx1a8Vec3 scale34; /* scale */
+    Fx1a8Vec3 pos40; /* position */
     s32 model4C[4]; /* models */
     s32 model5C;
     s32 model60;
@@ -37,9 +38,9 @@ typedef struct {
     u8 pad6C[0x74 - 0x6C];
 } Fx1a8Work80; /* 0x74 */
 
-extern SVECTOR D_801E937C;
-extern u32 D_801E93CC[];
+extern SVECTOR fx_1a8_targetPos;
+extern u32 fx_1a8_bgOt[];
 extern BtlModel fx_1a8_effModels[];
-extern u8 D_801EA13C[];
+extern u8 fx_1a8_trailPoints[];
 
 #endif

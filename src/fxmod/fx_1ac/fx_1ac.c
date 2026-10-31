@@ -35,7 +35,7 @@ s32 fx_1ac_op80(s32 mode, Fx1acWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
     } else if (mode == 1) {
         fx_1ac_env = env;
         for (i = 7; i >= 0; i--) {
-            work->unk0[i] = 0;
+            work->timer0[i] = 0;
         }
         ex->btlfx_getUnitRot(0, (s16 *)&work->rot38);
         ex->btlfx_getUnitRot(0, (s16 *)&work->rot44);
@@ -68,12 +68,12 @@ s32 fx_1ac_op80(s32 mode, Fx1acWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
             ex->btlfx_getUnitPos(0, (s16 *)&work->pos28);
             fx_1ac_emitter = p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 5), (s32)&work->pos28);
             if (p != NULL) {
-                p->trails = (s32)D_801E8310;
+                p->trails = (s32)fx_1ac_op80Trails;
                 p->trailSlots = 4;
                 p->trailStride = 0x9C;
                 p->file->m.module.update = fx_1ac_op80ParticleMotion;
             }
-            work->unk0[0] = 0xE;
+            work->timer0[0] = 0xE;
             break;
         case 14:
             ex->btlfx_fadeUnitById(0, 0);
@@ -81,48 +81,48 @@ s32 fx_1ac_op80(s32 mode, Fx1acWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
             ex->btlfx_setUnitPos(0, (s16 *)&v);
             break;
         case 20:
-            ex->btlfx_getUnitBonePos(0x10, 4, (u16 *)&D_801E8580);
-            work->emit4C[0] = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 1), (s32)&D_801E8580);
-            work->unk0[3] = 0x10;
+            ex->btlfx_getUnitBonePos(0x10, 4, (u16 *)&fx_1ac_emitPos0);
+            work->emit4C[0] = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 1), (s32)&fx_1ac_emitPos0);
+            work->timer0[3] = 0x10;
             break;
         case 26:
-            ex->btlfx_getUnitBonePos(0x10, 4, (u16 *)&D_801E8588);
-            work->emit4C[1] = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 1), (s32)&D_801E8588);
-            work->unk0[4] = 0x10;
+            ex->btlfx_getUnitBonePos(0x10, 4, (u16 *)&fx_1ac_emitPos1);
+            work->emit4C[1] = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 1), (s32)&fx_1ac_emitPos1);
+            work->timer0[4] = 0x10;
             break;
         case 32:
-            ex->btlfx_getUnitBonePos(0x10, 4, (u16 *)&D_801E8590);
-            work->emit4C[2] = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 1), (s32)&D_801E8590);
-            work->unk0[5] = 0x10;
+            ex->btlfx_getUnitBonePos(0x10, 4, (u16 *)&fx_1ac_emitPos2);
+            work->emit4C[2] = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 1), (s32)&fx_1ac_emitPos2);
+            work->timer0[5] = 0x10;
             break;
         case 46:
-            ex->btlfx_getUnitBonePos(0x10, 4, (u16 *)&D_801E8598);
-            work->emit4C[3] = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 2), (s32)&D_801E8598);
-            work->unk0[6] = 0x10;
+            ex->btlfx_getUnitBonePos(0x10, 4, (u16 *)&fx_1ac_emitPos3);
+            work->emit4C[3] = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 2), (s32)&fx_1ac_emitPos3);
+            work->timer0[6] = 0x10;
             break;
         case 50:
-            work->unk0[2] = 2;
+            work->timer0[2] = 2;
             ex->btlfx_fadeUnitById(0, 0x80);
             ex->btlfx_setUnitRot(0, (s16 *)&work->rot44);
-            ex->btlfx_getUnitHomePos(0, (s16 *)&D_801E85A0);
-            work->emit4C[4] = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 3), (s32)&D_801E85A0);
-            work->unk0[7] = 0x10;
+            ex->btlfx_getUnitHomePos(0, (s16 *)&fx_1ac_emitPos4);
+            work->emit4C[4] = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 3), (s32)&fx_1ac_emitPos4);
+            work->timer0[7] = 0x10;
             break;
         }
-        if (work->unk0[0] != 0) {
-            work->unk0[0]--;
-            t = 0xE - work->unk0[0];
-            D_801E85A8.vx = ex->btlfx_lerpRatio(work->pos28.vx, work->pos30.vx, t, 0xE);
-            D_801E85A8.vz = ex->btlfx_lerpRatio(work->pos28.vz, work->pos30.vz, t, 0xE);
-            D_801E85A8.vy = work->pos28.vy - (t * 0x258 - (t * 0x25) * t);
-            ex->btlfx_setUnitPos(0, (s16 *)&D_801E85A8);
+        if (work->timer0[0] != 0) {
+            work->timer0[0]--;
+            t = 0xE - work->timer0[0];
+            fx_1ac_targetPos.vx = ex->btlfx_lerpRatio(work->pos28.vx, work->pos30.vx, t, 0xE);
+            fx_1ac_targetPos.vz = ex->btlfx_lerpRatio(work->pos28.vz, work->pos30.vz, t, 0xE);
+            fx_1ac_targetPos.vy = work->pos28.vy - (t * 0x258 - (t * 0x25) * t);
+            ex->btlfx_setUnitPos(0, (s16 *)&fx_1ac_targetPos);
             work->rot38.vx -= 0xAA;
             ex->btlfx_setUnitRot(0, (s16 *)&work->rot38);
         }
-        if (work->unk0[3] != 0) {
+        if (work->timer0[3] != 0) {
             MATRIX m;
 
-            work->unk0[3]--;
+            work->timer0[3]--;
             ex->btlfx_getUnitBoneMatrix(0x10, 4, (BtlBone *)&m);
             ex->btlfx_matrixAngles(&m, (s16 *)&a);
             if (work->emit4C[0] != NULL) {
@@ -133,10 +133,10 @@ s32 fx_1ac_op80(s32 mode, Fx1acWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
             ex->btlfx_getUnitBonePos(0x10, 4, (u16 *)&v);
             ex->btlfx_moveEmitterTo((s32)work->emit4C[0], (s32)&v);
         }
-        if (work->unk0[4] != 0) {
+        if (work->timer0[4] != 0) {
             MATRIX m;
 
-            work->unk0[4]--;
+            work->timer0[4]--;
             ex->btlfx_getUnitBoneMatrix(0x10, 4, (BtlBone *)&m);
             ex->btlfx_matrixAngles(&m, (s16 *)&a);
             if (work->emit4C[1] != NULL) {
@@ -147,10 +147,10 @@ s32 fx_1ac_op80(s32 mode, Fx1acWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
             ex->btlfx_getUnitBonePos(0x10, 4, (u16 *)&v);
             ex->btlfx_moveEmitterTo((s32)work->emit4C[1], (s32)&v);
         }
-        if (work->unk0[5] != 0) {
+        if (work->timer0[5] != 0) {
             MATRIX m;
 
-            work->unk0[5]--;
+            work->timer0[5]--;
             ex->btlfx_getUnitBoneMatrix(0x10, 4, (BtlBone *)&m);
             ex->btlfx_matrixAngles(&m, (s16 *)&a);
             if (work->emit4C[2] != NULL) {
@@ -161,10 +161,10 @@ s32 fx_1ac_op80(s32 mode, Fx1acWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
             ex->btlfx_getUnitBonePos(0x10, 4, (u16 *)&v);
             ex->btlfx_moveEmitterTo((s32)work->emit4C[2], (s32)&v);
         }
-        if (work->unk0[6] != 0) {
+        if (work->timer0[6] != 0) {
             MATRIX m;
 
-            work->unk0[6]--;
+            work->timer0[6]--;
             ex->btlfx_getUnitBoneMatrix(0x10, 4, (BtlBone *)&m);
             ex->btlfx_matrixAngles(&m, (s16 *)&a);
             if (work->emit4C[3] != NULL) {
@@ -175,8 +175,8 @@ s32 fx_1ac_op80(s32 mode, Fx1acWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
             ex->btlfx_getUnitBonePos(0x10, 4, (u16 *)&v);
             ex->btlfx_moveEmitterTo((s32)work->emit4C[3], (s32)&v);
         }
-        if (work->unk0[7] != 0) {
-            work->unk0[7]--;
+        if (work->timer0[7] != 0) {
+            work->timer0[7]--;
             a.vx = 0xC00;
             a.vz = 0;
             a.vy = 0;
@@ -186,10 +186,10 @@ s32 fx_1ac_op80(s32 mode, Fx1acWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
                 work->emit4C[4]->rot.vz = a.vz;
             }
         }
-        if (work->unk0[2] != 0) {
-            work->unk0[2]--;
-            if (work->unk0[2] != 0) {
-                ex->btlfx_lerpVec((s16 *)&work->pos28, (s16 *)&work->pos20, (work->unk0[2] << 23) >> 12, (s16 *)&v);
+        if (work->timer0[2] != 0) {
+            work->timer0[2]--;
+            if (work->timer0[2] != 0) {
+                ex->btlfx_lerpVec((s16 *)&work->pos28, (s16 *)&work->pos20, (work->timer0[2] << 23) >> 12, (s16 *)&v);
             } else {
                 ex->btlfx_getUnitHomePos(0, (s16 *)&v);
             }
@@ -205,7 +205,7 @@ static s32 fx_1ac_op80ParticleMotion(Pool30Entry *e, Pool6CEntry *owner, SVECTOR
 
     switch (e->slot - 1) {
     case 0: {
-        SVECTOR *src = &D_801E85A8;
+        SVECTOR *src = &fx_1ac_targetPos;
         s16 x = src->vx;
         s16 y = src->vy;
         s16 z = src->vz;
@@ -217,7 +217,7 @@ static s32 fx_1ac_op80ParticleMotion(Pool30Entry *e, Pool6CEntry *owner, SVECTOR
         break;
     }
     default: {
-        SVECTOR *src = &D_801E85B0;
+        SVECTOR *src = &fx_1ac_lastParticlePos;
         s16 x = src->vx;
         s16 y = src->vy;
         s16 z = src->vz;
@@ -228,9 +228,9 @@ static s32 fx_1ac_op80ParticleMotion(Pool30Entry *e, Pool6CEntry *owner, SVECTOR
         break;
     }
     }
-    D_801E85B0.vx = e->pos.vx >> 12;
-    D_801E85B0.vy = e->pos.vy >> 12;
-    D_801E85B0.vz = e->pos.vz >> 12;
+    fx_1ac_lastParticlePos.vx = e->pos.vx >> 12;
+    fx_1ac_lastParticlePos.vy = e->pos.vy >> 12;
+    fx_1ac_lastParticlePos.vz = e->pos.vz >> 12;
     pos->vx = v.vx;
     pos->vy = v.vy;
     pos->vz = v.vz;

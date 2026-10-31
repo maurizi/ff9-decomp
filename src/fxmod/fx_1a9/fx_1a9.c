@@ -8,8 +8,8 @@ s32 fx_1a9_op80(s32 mode, void *work, Unk800F78A4 *env, Unk80100C78Entry *entry,
         *arg4 = 0;
     } else if (mode == 1) {
         fx_1a9_env = env;
-        ex->btlfx_getUnitBodyPos(0, 0, (s16 *)&D_801E7828);
-        p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 3), (s32)&D_801E7828);
+        ex->btlfx_getUnitBodyPos(0, 0, (s16 *)&fx_1a9_emitPos0);
+        p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 3), (s32)&fx_1a9_emitPos0);
         if (p != NULL) {
             p->otZ = ex->btlfx_addRadiusSixth(0, 0x80);
         }

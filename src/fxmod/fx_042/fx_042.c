@@ -28,10 +28,10 @@ static void fxm_drawJaggedStrip16(Unk80100C78Entry *entry, Fx042Strip *strip, s3
         p++;
     }
     if (kind < 2) {
-        ex->btlfx_drawTrail((u8 *)ex->btlfx_getFileData(entry->file, D_801E8514[kind]), 0, NULL, frame, 0x1000, arg10, 1,
+        ex->btlfx_drawTrail((u8 *)ex->btlfx_getFileData(entry->file, fx_042_strip16Blocks[kind]), 0, NULL, frame, 0x1000, arg10, 1,
                           (u8 *)strip, 0);
     } else {
-        ex->btlfx_drawTrail((u8 *)ex->btlfx_getFileData(entry->file, D_801E8514[kind]), 0, NULL, frame, 0x1000, arg10, 1,
+        ex->btlfx_drawTrail((u8 *)ex->btlfx_getFileData(entry->file, fx_042_strip16Blocks[kind]), 0, NULL, frame, 0x1000, arg10, 1,
                           (u8 *)strip, 2);
     }
 }
@@ -65,10 +65,10 @@ static void fxm_drawJaggedStrip4(Unk80100C78Entry *entry, Fx042Strip *strip, s32
         p++;
     }
     if (kind < 2) {
-        ex->btlfx_drawTrail((u8 *)ex->btlfx_getFileData(entry->file, D_801E851C[kind]), 0, NULL, frame, 0x1000, arg9, 1,
+        ex->btlfx_drawTrail((u8 *)ex->btlfx_getFileData(entry->file, fx_042_strip4Blocks[kind]), 0, NULL, frame, 0x1000, arg9, 1,
                           (u8 *)strip, 0);
     } else {
-        ex->btlfx_drawTrail((u8 *)ex->btlfx_getFileData(entry->file, D_801E851C[kind]), 0, NULL, frame, 0x1000, arg9, 1,
+        ex->btlfx_drawTrail((u8 *)ex->btlfx_getFileData(entry->file, fx_042_strip4Blocks[kind]), 0, NULL, frame, 0x1000, arg9, 1,
                           (u8 *)strip, 2);
     }
 }
@@ -93,20 +93,20 @@ static s32 fx_042_op83PoolTask(s32 mode, Fx042Bolt *it, Unk800F78A4 *env, Unk801
     s32 t;
 
     if (mode == 1) {
-        it->unk11 = 0;
+        it->state11 = 0;
         return 0;
     }
-    switch (it->unk11) {
+    switch (it->state11) {
     case 0:
         t = frame << 10;
-        if (it->unk14 < 2) {
+        if (it->kind14 < 2) {
             c = ex->math_cos(t >> 2);
-            strip = &D_801E857C[it->unk10];
-            br = (Fx042Strip *)&D_801E8BAC[it->unk10];
-            fxm_drawJaggedStrip16(entry, strip, it->unk18, &it->pos0, &it->unk8, 0, 0x200, frame << 7, 0x186, frame, c,
-                          ((0x1000 - t) * 0xF1) >> 12, it->unk14);
-            fxm_drawJaggedBranch4(entry, strip, br, it->unk18, it->unk12, c, (0x1000 - t) >> 6, it->unk14);
-            fxm_drawJaggedBranch4(entry, strip, br, it->unk18 + 3, it->unk13, c, (0x1000 - t) >> 6, it->unk14);
+            strip = &fx_042_strips[it->strip10];
+            br = (Fx042Strip *)&fx_042_branches[it->strip10];
+            fxm_drawJaggedStrip16(entry, strip, it->jitter18, &it->pos0, &it->pos8, 0, 0x200, frame << 7, 0x186, frame, c,
+                          ((0x1000 - t) * 0xF1) >> 12, it->kind14);
+            fxm_drawJaggedBranch4(entry, strip, br, it->jitter18, it->branchAt12, c, (0x1000 - t) >> 6, it->kind14);
+            fxm_drawJaggedBranch4(entry, strip, br, it->jitter18 + 3, it->branchAt13, c, (0x1000 - t) >> 6, it->kind14);
             if (frame == 0) {
                 it->emit1C = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 8), (s32)&it->pos0);
                 if (it->emit1C != NULL) {
@@ -115,17 +115,17 @@ static s32 fx_042_op83PoolTask(s32 mode, Fx042Bolt *it, Unk800F78A4 *env, Unk801
                 ex->btlfx_drawScreenTint((u32 *)(env->ot + 1), 1, 0, 7, 0x20);
             }
             if (frame >= 4) {
-                it->unk11 = 1;
+                it->state11 = 1;
                 ((s16 *)it)[-1] = -1;
             }
         } else {
             t = (frame << 12) / 3;
             c = ex->math_cos(t >> 2);
-            strip = &D_801E857C[it->unk10];
-            br = (Fx042Strip *)&D_801E8BAC[it->unk10];
-            fxm_drawJaggedStrip16(entry, strip, it->unk18, &it->pos0, &it->unk8, 0, 0x200, frame << 7, 0x186, frame, c,
-                          ((0x1000 - t) * 0xAA) >> 12, it->unk14);
-            fxm_drawJaggedBranch4(entry, strip, br, it->unk18, it->unk12, c, (0x1000 - t) >> 6, it->unk14);
+            strip = &fx_042_strips[it->strip10];
+            br = (Fx042Strip *)&fx_042_branches[it->strip10];
+            fxm_drawJaggedStrip16(entry, strip, it->jitter18, &it->pos0, &it->pos8, 0, 0x200, frame << 7, 0x186, frame, c,
+                          ((0x1000 - t) * 0xAA) >> 12, it->kind14);
+            fxm_drawJaggedBranch4(entry, strip, br, it->jitter18, it->branchAt12, c, (0x1000 - t) >> 6, it->kind14);
             if (frame >= 3) {
                 return 1;
             }
@@ -158,25 +158,25 @@ s32 fx_042_op83(s32 mode, Fx042Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
         init->poolCount = 0xC;
     } else {
         if (mode == 1) {
-            work->unk0.vx = env->targets->centerX;
-            work->unk0.vy = env->targets->centerY;
-            work->unk0.vz = env->targets->centerZ;
+            work->pos0.vx = env->targets->centerX;
+            work->pos0.vy = env->targets->centerY;
+            work->pos0.vz = env->targets->centerZ;
             fx_042_env = env;
-            work->unk0.vy = 0;
-            q = work->unk8 = D_801E8F0C;
+            work->pos0.vy = 0;
+            q = work->jitter8 = fx_042_jitter;
             for (i = 0; i < 0x40; i++) {
                 *q++ = ex->btlfx_randCentered(0x100);
                 *q++ = ex->btlfx_randCentered(0x180);
                 *q++ = ex->btlfx_randCentered(0xC0);
             }
-            work->unkC = 0;
+            work->boltCountC = 0;
         } else {
             frame = entry->frame;
-            if (work->unkC < 0x18) {
-                work->unkC++;
-                BTLFX_COPY_SVEC(&a, &work->unk0);
-                if (work->unkC != 1) {
-                    if ((work->unkC / 2) & 1) {
+            if (work->boltCountC < 0x18) {
+                work->boltCountC++;
+                BTLFX_COPY_SVEC(&a, &work->pos0);
+                if (work->boltCountC != 1) {
+                    if ((work->boltCountC / 2) & 1) {
                         a.vx += 0x46 + (ex->btlfx_rand() % 14) * 0x6E;
                     } else {
                         a.vx -= 0x46 + (ex->btlfx_rand() % 14) * 0x6E;
@@ -189,18 +189,18 @@ s32 fx_042_op83(s32 mode, Fx042Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
                     BTLFX_COPY_SVEC(&b, &a);
                     b.vy -= 0xC00;
                     r = ex->btlfx_randCentered(0x100) + 0x400;
-                    ang = (work->unkC << 10) - 0x200 + ex->btlfx_randCentered(0x100);
+                    ang = (work->boltCountC << 10) - 0x200 + ex->btlfx_randCentered(0x100);
                     b.vx += (ex->math_cos(ang) * r) >> 12;
                     b.vz += (ex->math_sin(ang) * r) >> 12;
-                    BTLFX_COPY_SVEC(&it->unk8, &b);
-                    it->unk10 = work->unkC % 12;
-                    it->unk18 = work->unk8 + (ex->btlfx_rand() & 0x1F);
-                    it->unk12 = ex->btlfx_rand() % 14;
-                    it->unk13 = ex->btlfx_rand() % 14;
-                    if (work->unkC & 1) {
-                        it->unk14 = 2;
+                    BTLFX_COPY_SVEC(&it->pos8, &b);
+                    it->strip10 = work->boltCountC % 12;
+                    it->jitter18 = work->jitter8 + (ex->btlfx_rand() & 0x1F);
+                    it->branchAt12 = ex->btlfx_rand() % 14;
+                    it->branchAt13 = ex->btlfx_rand() % 14;
+                    if (work->boltCountC & 1) {
+                        it->kind14 = 2;
                     } else {
-                        it->unk14 = ex->btlfx_rand() & 1;
+                        it->kind14 = ex->btlfx_rand() & 1;
                     }
                 }
             }

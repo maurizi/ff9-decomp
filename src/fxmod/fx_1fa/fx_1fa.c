@@ -6,11 +6,11 @@ s32 fx_1fa_op80(s32 mode, void *work, Unk800F78A4 *env, Unk80100C78Entry *entry,
     if (mode == 0) {
         *arg4 = 0;
     } else if (mode == 1) {
-        D_801E80E4.vx = 0;
-        D_801E80E4.vy = 0;
-        D_801E80E4.vz = -0x618;
+        fx_1fa_emitPos0.vx = 0;
+        fx_1fa_emitPos0.vy = 0;
+        fx_1fa_emitPos0.vz = -0x618;
         fx_1fa_env = env;
-        ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0x1E), (s32)&D_801E80E4);
+        ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0x1E), (s32)&fx_1fa_emitPos0);
     } else {
         return entry->frame >= 0x40;
     }
@@ -18,10 +18,10 @@ s32 fx_1fa_op80(s32 mode, void *work, Unk800F78A4 *env, Unk80100C78Entry *entry,
 }
 
 #define LOAD(r, a, b) \
-    D_801E811C[r][0].unk8 = (u8 *)ex->btlfx_getFileData(entry->file, a); \
-    D_801E811C[r][1].unk8 = (u8 *)ex->btlfx_getFileData(entry->file, b); \
-    D_801E811C[r][2].unk8 = (u8 *)ex->btlfx_getFileData(entry->file, b); \
-    D_801E811C[r][3].unk8 = (u8 *)ex->btlfx_getFileData(entry->file, b);
+    fx_1fa_spiralSprites[r][0].sprite8 = (u8 *)ex->btlfx_getFileData(entry->file, a); \
+    fx_1fa_spiralSprites[r][1].sprite8 = (u8 *)ex->btlfx_getFileData(entry->file, b); \
+    fx_1fa_spiralSprites[r][2].sprite8 = (u8 *)ex->btlfx_getFileData(entry->file, b); \
+    fx_1fa_spiralSprites[r][3].sprite8 = (u8 *)ex->btlfx_getFileData(entry->file, b);
 
 s32 fx_1fa_op81(s32 mode, void *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *arg4) {
     BtlfxExports *ex = BTLFX_EXPORTS(env);
@@ -37,7 +37,7 @@ s32 fx_1fa_op81(s32 mode, void *work, Unk800F78A4 *env, Unk80100C78Entry *entry,
     if (mode == 0) {
         *arg4 = 0;
     } else if (mode == 1) {
-        D_801E80EC[0] = 0;
+        fx_1fa_timer[0] = 0;
         fx_1fa_env = env;
         LOAD(0, 3, 0x12)
         LOAD(1, 8, 0xF)
@@ -53,62 +53,62 @@ s32 fx_1fa_op81(s32 mode, void *work, Unk800F78A4 *env, Unk80100C78Entry *entry,
         LOAD(11, 0x11, 5)
         for (i = 0; i < 12; i++) {
             for (j = 0; j < 4; j++) {
-                D_801E811C[i][j].unkC = i * -0x2A9 + j * 0xC0;
-                D_801E811C[i][j].unk10 = j * 16 + 16;
-                D_801E811C[i][j].unk0 = i + 4 - j;
-                D_801E811C[i][j].unk4 = 8;
+                fx_1fa_spiralSprites[i][j].angleC = i * -0x2A9 + j * 0xC0;
+                fx_1fa_spiralSprites[i][j].radius10 = j * 16 + 16;
+                fx_1fa_spiralSprites[i][j].delay0 = i + 4 - j;
+                fx_1fa_spiralSprites[i][j].timer4 = 8;
             }
         }
-        D_801E80F4.vx = env->camera->points[3].vx;
-        D_801E80F4.vy = env->camera->points[3].vy;
-        D_801E80F4.vz = env->camera->points[3].vz;
+        fx_1fa_emitPos1.vx = env->camera->points[3].vx;
+        fx_1fa_emitPos1.vy = env->camera->points[3].vy;
+        fx_1fa_emitPos1.vz = env->camera->points[3].vz;
     } else {
         frame = entry->frame;
         switch (frame) {
         case 0:
-            D_801E80EC[0] = 0x20;
+            fx_1fa_timer[0] = 0x20;
             break;
         case 8:
-            p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0x13), (s32)&D_801E80F4);
+            p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0x13), (s32)&fx_1fa_emitPos1);
             if (p != NULL) {
                 p->otZ = 0x80;
             }
             break;
         case 0x18:
             for (i = 0; i < env->targets->targetCount; i++) {
-                ex->btlfx_getUnitBodyPos(i, 0, (s16 *)&D_801E80FC[i]);
-                p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0x14), (s32)&D_801E80FC[i]);
+                ex->btlfx_getUnitBodyPos(i, 0, (s16 *)&fx_1fa_emitPos2[i]);
+                p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0x14), (s32)&fx_1fa_emitPos2[i]);
                 if (p != NULL) {
                     p->otZ = ex->btlfx_addRadiusSixth(i, 0x80);
                 }
-                p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 2), (s32)&D_801E80FC[i]);
+                p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 2), (s32)&fx_1fa_emitPos2[i]);
                 if (p != NULL) {
                     p->otZ = ex->btlfx_addRadiusSixth(i, 0x80);
                 }
-                p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0x17), (s32)&D_801E80FC[i]);
+                p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0x17), (s32)&fx_1fa_emitPos2[i]);
                 if (p != NULL) {
                     p->otZ = ex->btlfx_addRadiusSixth(i, 0x80);
                 }
             }
             break;
         }
-        if (D_801E80EC[0] != 0) {
-            D_801E80EC[0]--;
+        if (fx_1fa_timer[0] != 0) {
+            fx_1fa_timer[0]--;
             env->otZ = 0x200;
             for (i = 0; i < 12; i++) {
                 for (j = 0; j < 4; j++) {
-                    e = (Fx1faRing *)(i * 0x50 + j * 0x14 + (s32)D_801E811C);
-                    if (e->unk0 != 0) {
-                        e->unk0--;
-                    } else if (e->unk4 != 0) {
-                        e->unkC -= 0x40;
-                        e->unk10 -= 2;
-                        e->unk4--;
-                        r = (e->unk10 << 8) + 0x4000;
-                        n = e->unk4 << 9;
-                        s = (ex->math_sin(e->unkC) * e->unk10) >> 12;
-                        ex->btlfx_drawParticles(e->unk8, &D_801E80F4, NULL, r, 0, 1, n, s,
-                                                (ex->math_cos(e->unkC) * e->unk10) >> 12);
+                    e = (Fx1faRing *)(i * 0x50 + j * 0x14 + (s32)fx_1fa_spiralSprites);
+                    if (e->delay0 != 0) {
+                        e->delay0--;
+                    } else if (e->timer4 != 0) {
+                        e->angleC -= 0x40;
+                        e->radius10 -= 2;
+                        e->timer4--;
+                        r = (e->radius10 << 8) + 0x4000;
+                        n = e->timer4 << 9;
+                        s = (ex->math_sin(e->angleC) * e->radius10) >> 12;
+                        ex->btlfx_drawParticles(e->sprite8, &fx_1fa_emitPos1, NULL, r, 0, 1, n, s,
+                                                (ex->math_cos(e->angleC) * e->radius10) >> 12);
                     }
                 }
             }

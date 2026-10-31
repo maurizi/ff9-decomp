@@ -854,7 +854,7 @@ s32 wm_drawActorModel(EvtObject *arg0, SVECTOR *arg1, s32 unused) { /* its calle
 
     c = &g_worldActorTypeInfo[arg0->actorType];
     s = (WmObjSlot *)game_getModel(arg0->modelSlot);
-    m = s->obj;
+    m = s->model;
     memset(&r, 0, 8);
     r.vx = s->actor->pos.rotX;
     r.vy = s->actor->pos.rotY;
@@ -2112,8 +2112,8 @@ s32 wm_getLeftStickX(s32 *arg0) {
 
     *arg0 = 0;
     if (((g_padBuf[0].hdr >> 12) & 0xF) == PAD_ID_ANALOG) {
-        v = g_padAnalog[0].unk0[2] - 0x80;
-        if (g_padAnalog[0].unk0[2] - 0x40U <= 0x80) {
+        v = g_padAnalog[0].b[2] - 0x80;
+        if (g_padAnalog[0].b[2] - 0x40U <= 0x80) {
             v = 0;
         }
         if (v > 0x40) {
@@ -2142,8 +2142,8 @@ s32 wm_getLeftStickY(s32 *arg0) {
 
     *arg0 = 0;
     if (((g_padBuf[0].hdr >> 12) & 0xF) == PAD_ID_ANALOG) {
-        v = g_padAnalog[0].unk0[3] - 0x80;
-        if (g_padAnalog[0].unk0[3] - 0x40U <= 0x80) {
+        v = g_padAnalog[0].b[3] - 0x80;
+        if (g_padAnalog[0].b[3] - 0x40U <= 0x80) {
             v = 0;
         }
         if (v > 0x40) {
@@ -2171,7 +2171,7 @@ s32 wm_getRightStickY(s32 *arg0) {
 
     *arg0 = 0;
     if (((g_padBuf[0].hdr >> 12) & 0xF) == PAD_ID_ANALOG) {
-        v = 0x80 - g_padAnalog[0].unk0[1];
+        v = 0x80 - g_padAnalog[0].b[1];
         if (v + 0x40U <= 0x80) {
             v = 0;
         }

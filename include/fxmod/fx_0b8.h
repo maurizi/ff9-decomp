@@ -1,7 +1,9 @@
 #ifndef FX_0B8_H
 #define FX_0B8_H
 
-/* Effect module fx_0b8 (dir 13 file 0xB8): Atomos, full summon. Evidence: btlfx_start and btlfx_loadFile get the same id for summons (docs/runtime-findings.md). */
+/* Effect module fx_0b8 (dir 13 file 0xB8): Atomos, full summon. Screen bands (fx_0b8_drawScreenBand), a gradient
+ * plane, jagged bolts (fx_0b8_bolts), and the targets lifted and spun (fx_0b8_units). Evidence: btlfx_start and
+ * btlfx_loadFile get the same id for summons (docs/runtime-findings.md). */
 #include "btlfx_mod.h"
 
 typedef struct {
@@ -9,15 +11,15 @@ typedef struct {
     u8 v;
 } Fx0b8UV;
 
-extern SVECTOR D_801EA7B0[32];
+extern SVECTOR fx_0b8_particleFrom[32];
 
-void func_801EA1E0(s32 ot, s32 y, s32 h, s32 x, s32 c0, s32 c1, s32 tpage, s32 clut, s32 abr);
-void func_801EA424(s32 ot);
+void fx_0b8_drawScreenBand(s32 ot, s32 y, s32 h, s32 x, s32 c0, s32 c1, s32 tpage, s32 clut, s32 abr);
+void fx_0b8_drawScreenGradient(s32 ot);
 static void fxm_tintScreenLerp(s32 a, s32 b, s32 t, s32 n, s32 mode, s32 ot);
 static s32 fx_0b8_op80ParticleMotion(Pool30Entry *pt, s32 a1, SVECTOR *pos, s32 a3, s32 frame, s32 n);
 extern Unk800F78A4 *fx_0b8_env;
-extern SVECTOR D_801EA680[]; /* colour table */
-void func_801E9D80(SVECTOR *pos, SVECTOR *rot, s32 n, s32 tpage, s32 clut, s32 abr);
+extern SVECTOR fx_0b8_planeColors[]; /* colour table */
+void fx_0b8_drawGradientPlane(SVECTOR *pos, SVECTOR *rot, s32 n, s32 tpage, s32 clut, s32 abr);
 static s32 fxm_easeLerp(s32 curve, s32 n, s32 t, s32 from, s32 to);
 
 typedef struct {
@@ -49,7 +51,7 @@ typedef struct {
     VECTOR posFC;
     VECTOR scale10C;
     SVECTOR rot11C;
-    s32 unk124;
+    s32 scale124;
     s32 model128; /* models */
     s32 model12C;
     s32 model130;
@@ -79,8 +81,8 @@ typedef struct {
     SVECTOR pos1CC;
     SVECTOR pos1D4;
     SVECTOR pos1DC;
-    s32 unk1E4;
-    s32 unk1E8;
+    s32 scroll1E4;
+    s32 scrollSpeed1E8;
 } Fx0b8Work80; /* 0x1EC */
 
 typedef struct {
@@ -89,11 +91,11 @@ typedef struct {
     u8 unk2;
     u8 pad3;
     SVECTOR unk4[9]; /* trail points */
-    s32 unk4C[9]; /* x */
-    s32 unk70[9]; /* y */
-    s32 unk94[9]; /* x speed */
-    s32 unkB8[9]; /* y speed */
-    s32 unkDC; /* timer */
+    s32 x4C[9]; /* x */
+    s32 y70[9]; /* y */
+    s32 dx94[9]; /* x speed */
+    s32 dyB8[9]; /* y speed */
+    s32 timerDC; /* timer */
 } Fx0b8Bolt; /* 0xE0 */
 
 typedef struct {
@@ -103,44 +105,44 @@ typedef struct {
 } Fx0b8Vec3;
 
 typedef struct {
-    SVECTOR unk0; /* rotation */
-    Fx0b8Vec3 unk8; /* scale */
-    SVECTOR unk14; /* home position */
-    s16 unk1C;
-    s16 unk1E;
+    SVECTOR rot0; /* rotation */
+    Fx0b8Vec3 scale8; /* scale */
+    SVECTOR pos14; /* home position */
+    s16 pitch1C;
+    s16 yaw1E;
     s16 unk20;
     s16 pad22;
-    SVECTOR unk24; /* rotation */
-    s16 unk2C; /* rotation speed */
-    s16 unk2E;
-    s16 unk30;
+    SVECTOR rot24; /* rotation */
+    s16 spinX2C; /* rotation speed */
+    s16 spinY2E;
+    s16 spinZ30;
     s16 pad32;
 } Fx0b8Unit; /* 0x34 */
 
 typedef struct {
-    s32 unk0; /* y */
-    s32 unk4; /* h */
-    s32 unk8; /* x */
-    s32 unkC; /* colours */
-    s32 unk10;
-    s32 unk14; /* x speed */
-    s32 unk18; /* y speed */
+    s32 y0; /* y */
+    s32 h4; /* h */
+    s32 x8; /* x */
+    s32 colorC; /* colours */
+    s32 color10;
+    s32 dx14; /* x speed */
+    s32 dy18; /* y speed */
     s32 unk1C;
 } Fx0b8Band; /* 0x20 */
 
 typedef struct {
     u8 pad0[0x60];
-    s32 unk60; /* summon model */
+    s32 model60; /* summon model */
 } Fx0b8Summon;
 
 #define SUMMON(env) ((Fx0b8Summon *)(env)->loader)
 
-extern Fx0b8Band D_801EA6D8[4];
+extern Fx0b8Band fx_0b8_bands[4];
 extern BtlModel fx_0b8_effModels[];
 extern s32 D_801EC1B0;
-extern Fx0b8Bolt D_801EC1C0[8];
-extern Fx0b8Unit D_801EC8C0[];
-extern s32 D_801ECA60[];
-extern s32 D_801ED8C0;
+extern Fx0b8Bolt fx_0b8_bolts[8];
+extern Fx0b8Unit fx_0b8_units[];
+extern s32 fx_0b8_trails[];
+extern s32 fx_0b8_gridShift;
 
 #endif

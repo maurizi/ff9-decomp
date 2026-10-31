@@ -18,37 +18,37 @@ typedef struct {
     u8 unk2;
     u8 pad3;
     Fx063Pt unk4[11];
-    SVECTOR unk5C[9]; /* jitter */
-    s32 unkA4[9]; /* jitter speed x */
-    s32 unkC8[9]; /* jitter speed z */
-    s32 unkEC; /* angle */
-    s32 unkF0; /* angle */
-    s32 unkF4; /* angle speed */
-    s32 unkF8; /* angle speed */
+    SVECTOR jitter5C[9]; /* jitter */
+    s32 jitterVelA4[9]; /* jitter speed x */
+    s32 jitterVelC8[9]; /* jitter speed z */
+    s32 angleEC; /* angle */
+    s32 angleF0; /* angle */
+    s32 spinF4; /* angle speed */
+    s32 spinF8; /* angle speed */
     s32 unkFC; /* colour */
-    s32 unk100; /* timer */
+    s32 timer100; /* timer */
 } Fx063Strip; /* 0x104 */
 
 /* per unit: bobbing */
 typedef struct {
-    s32 unk0; /* timer */
-    s32 unk4; /* phase */
-    s32 unk8; /* phase speed */
-    SVECTOR unkC; /* home position */
-    SVECTOR unk14; /* position */
+    s32 timer0; /* timer */
+    s32 phase4; /* phase */
+    s32 phaseSpeed8; /* phase speed */
+    SVECTOR homeC; /* home position */
+    SVECTOR pos14; /* position */
 } Fx063Unit; /* 0x1C */
 
 typedef struct {
-    s32 unk0; /* model */
-    SVECTOR unk4; /* rotation */
-    VECTOR unkC; /* scale */
+    s32 model0; /* model */
+    SVECTOR rot4; /* rotation */
+    VECTOR scaleC; /* scale */
 } Fx063Model; /* 0x1C */
 
 typedef struct {
-    s32 unk0[16]; /* timers */
-    Fx063Model unk40[3];
+    s32 timers0[16]; /* timers */
+    Fx063Model models40[3];
     VECTOR pos94; /* position */
-    SVECTOR unkA4; /* eye */
+    SVECTOR posA4; /* centre the models face the camera from */
     s32 modelAC; /* model */
     SVECTOR rotB0; /* rotation */
     VECTOR posB8; /* position */
@@ -58,9 +58,9 @@ typedef struct {
 
 extern Unk800F78A4 *fx_063_env;
 extern BtlModel fx_063_effModels[];
-extern u32 D_801E8A40[];
-extern Fx063Strip D_801E8E40[10];
-extern Fx063Unit D_801E9870[];
+extern u32 fx_063_bgOt[];
+extern Fx063Strip fx_063_strips[10];
+extern Fx063Unit fx_063_unitBob[];
 
 static s32 fxm_easeLerp(s32 curve, s32 n, s32 t, s32 from, s32 to);
 

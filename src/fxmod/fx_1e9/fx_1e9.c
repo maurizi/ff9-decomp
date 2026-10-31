@@ -20,19 +20,19 @@ s32 fx_1e9_op80(s32 mode, Fx1e9Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
     if (mode == 0) {
         *arg4 = 0x28;
     } else if (mode == 1) {
-        work->unk0 = 0;
+        work->state0 = 0;
         fx_1e9_env = env;
         ex->btlfx_getUnitPos(0x10, (s16 *)&work->posC);
         ex->btlfx_getUnitBodyPos(0x10, 0, (s16 *)&work->pos14);
         work->unk20 = 0;
-        work->unk4 = 0;
-        D_801E8518 = 0;
+        work->frame4 = 0;
+        fx_1e9_stopBolts = 0;
         ex->btlfx_initEffModels(fx_1e9_effModels, 1);
         work->model24 = ex->Hi_RegisterTexEffModel((BtlUnit9C8 *)ex->btlfx_getFileData(entry->file, 3), 0xB7, 0x3D80, 0, 0);
     } else {
     b = 0;
     frame = entry->frame;
-    switch (work->unk0) {
+    switch (work->state0) {
     case 0:
         t0 = frame << 8;
         a0 = (ex->math_sin(t0 >> 2) * 0x10FF) >> 12;
@@ -49,7 +49,7 @@ s32 fx_1e9_op80(s32 mode, Fx1e9Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
         scale.vy = ex->math_sin(t0 >> 2) / 6;
         b = t0;
         if (frame >= 0x10) {
-            work->unk0 = 1;
+            work->state0 = 1;
             entry->frame = -1;
             env->state->signals[0] = 0;
             ex->btlfx_fadeUnitById(0x10, 0);
@@ -57,11 +57,11 @@ s32 fx_1e9_op80(s32 mode, Fx1e9Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             if (work->emit8 != NULL) {
                 work->emit8->otZ = ex->btlfx_addRadiusSixth(0x10, 0x20);
             }
-            work->unk1C = 0;
+            work->frame1C = 0;
         }
         break;
     case 1:
-        n = ++work->unk1C;
+        n = ++work->frame1C;
         t0 = ((n % 10) << 12) / 10;
         a1 = (ex->math_sin(t0) >> 4) + 0x10FF;
         env->otZ = 0x7C;
@@ -80,7 +80,7 @@ s32 fx_1e9_op80(s32 mode, Fx1e9Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             work->emit8 = NULL;
         }
         if (frame != 0 && t0 == 0 && env->state->signals[0] != 0) {
-            work->unk0 = 2;
+            work->state0 = 2;
             entry->frame = -1;
             env->camera->paused = 0;
             ex->btlfx_fadeUnitById(0x10, 0x80);
@@ -119,7 +119,7 @@ s32 fx_1e9_op80(s32 mode, Fx1e9Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             work->unk20 = 0;
         }
         if (frame >= 0x2F) {
-            D_801E8518 = 1;
+            fx_1e9_stopBolts = 1;
             ex->btlfx_clearEffModels();
             return 1;
         }
@@ -130,7 +130,7 @@ s32 fx_1e9_op80(s32 mode, Fx1e9Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
         pos.vy = work->posC.vy;
         pos.vz = work->posC.vz;
         rot.vx = 0;
-        rot.vy = work->unk4 * 32;
+        rot.vy = work->frame4 * 32;
         rot.vz = 0;
         ex->Hi_DrawEffModel(&rot, &pos, (s32)&scale, work->model24);
         a = (b >> 5) - 0x80;
@@ -140,8 +140,8 @@ s32 fx_1e9_op80(s32 mode, Fx1e9Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
         ex->Hi_DrawEffModel(&rot, &pos, (s32)&scale, work->model24);
         ex->Hi_ModifyEffModelRGB(work->model24, a, a, a);
     }
-    ex->btlfx_drawScrollMove(work->unk4 * 4, 0x1C0, 0x120, 0x20, 0x40, 0x1E0, 0x120);
-    work->unk4++;
+    ex->btlfx_drawScrollMove(work->frame4 * 4, 0x1C0, 0x120, 0x20, 0x40, 0x1E0, 0x120);
+    work->frame4++;
     }
     return 0;
 }
@@ -156,15 +156,15 @@ static s32 fx_1e9_op82PoolTask(s32 mode, Fx1e9Spark *e, Unk800F78A4 *env, Unk801
         e->unk12 = ex->btlfx_randCentered(0x200) + 0xE00;
     } else {
         a = 0x1000 - (frame << 9);
-        pt = e->unk18;
+        pt = e->pos18;
         zero[0] = 0;
         zero[1] = 0;
         pt->pad = 0x14;
         ex->btlfx_stepModuleParticle((Pool6CEntry *)e, 0, (SVECTOR *)zero, pt);
-        if (e->unk16 == 0) {
+        if (e->index16 == 0) {
             TRAIL(e)->unk0 = TRAIL(e)->unk2 = 8;
             TRAIL(e)->unk1 = 0;
-            ex->btlfx_drawTrail((u8 *)ex->btlfx_getFileData(entry->file, 8), 0, NULL, 5, 0x1000, a, 1, (u8 *)e->unk18 - 4, 0);
+            ex->btlfx_drawTrail((u8 *)ex->btlfx_getFileData(entry->file, 8), 0, NULL, 5, 0x1000, a, 1, (u8 *)e->pos18 - 4, 0);
         }
         if (frame >= 8) {
             return 1;
@@ -173,13 +173,13 @@ static s32 fx_1e9_op82PoolTask(s32 mode, Fx1e9Spark *e, Unk800F78A4 *env, Unk801
     return 0;
 }
 
-void func_801E810C(void) {
-    D_801E88A4 = 0;
+void fx_1e9_resetBolts(void) {
+    fx_1e9_nextBolt = 0;
 }
 
-void func_801E8118(Fx1e9Inst *inst, SVECTOR *origin, s32 h, SVECTOR *from, SVECTOR *to) {
-    Fx1e9Trail *tr = &D_801E8644[D_801E88A4];
-    SVECTOR *pt = &tr->unk4[8];
+void fx_1e9_spawnBolt(Fx1e9Inst *inst, SVECTOR *origin, s32 h, SVECTOR *from, SVECTOR *to) {
+    Fx1e9Trail *tr = &fx_1e9_bolts[fx_1e9_nextBolt];
+    SVECTOR *pt = &tr->pos4[8];
     BtlfxExports *ex = BTLFX_EXPORTS(fx_1e9_env);
     SVECTOR v;
     Fx1e9Spark *e;
@@ -194,24 +194,24 @@ void func_801E8118(Fx1e9Inst *inst, SVECTOR *origin, s32 h, SVECTOR *from, SVECT
         v.vx += ex->btlfx_randCentered(0x20);
         v.vy += ex->btlfx_randCentered(0x20);
         ex->btlfx_pointAhead((s16 *)origin, (s16 *)&v, h + ex->btlfx_randCentered(0x10) + (ex->math_sin(t >> 1) >> 5), (s16 *)pt);
-        e = ex->btlfx_poolSpawn(inst->unk10);
+        e = ex->btlfx_poolSpawn(inst->pool10);
         if (e != NULL) {
-            e->unk14 = D_801E88A4;
-            e->unk16 = 8 - i;
-            e->unk18 = pt;
-            e->unk0 = pt->vx << 12;
-            e->unk4 = pt->vy << 12;
-            e->unk8 = pt->vz << 12;
-            e->unkC = 0;
-            e->unkE = 0;
-            e->unk10 = 0;
-            e->unkC = ((pt->vx - origin->vx) >> 4) + ex->btlfx_randCentered(0x20);
-            e->unkE = ((pt->vy - origin->vy) >> 3) + ex->btlfx_randCentered(0x20);
-            e->unk10 = ((pt->vz - origin->vz) >> 4) + ex->btlfx_randCentered(0x20);
+            e->index14 = fx_1e9_nextBolt;
+            e->index16 = 8 - i;
+            e->pos18 = pt;
+            e->posX0 = pt->vx << 12;
+            e->posY4 = pt->vy << 12;
+            e->posZ8 = pt->vz << 12;
+            e->velXC = 0;
+            e->velYE = 0;
+            e->velZ10 = 0;
+            e->velXC = ((pt->vx - origin->vx) >> 4) + ex->btlfx_randCentered(0x20);
+            e->velYE = ((pt->vy - origin->vy) >> 3) + ex->btlfx_randCentered(0x20);
+            e->velZ10 = ((pt->vz - origin->vz) >> 4) + ex->btlfx_randCentered(0x20);
         }
     }
-    D_801E88A4++;
-    D_801E88A4 %= 8;
+    fx_1e9_nextBolt++;
+    fx_1e9_nextBolt %= 8;
 }
 
 s32 fx_1e9_op82(s32 mode, Fx1e9Work82 *work, Unk800F78A4 *env, Fx1e9Inst *inst, EffInit *init) {
@@ -225,21 +225,21 @@ s32 fx_1e9_op82(s32 mode, Fx1e9Work82 *work, Unk800F78A4 *env, Fx1e9Inst *inst, 
         init->poolCount = 0x48;
     } else if (mode == 1) {
         fx_1e9_env = env;
-        func_801E810C();
+        fx_1e9_resetBolts();
         ex->btlfx_getUnitBodyPos(0x10, 0, (s16 *)&work->pos0);
-        work->unk8.vx = 0;
-        work->unk8.vy = 0;
-        work->unk8.vz = 0;
+        work->angle8.vx = 0;
+        work->angle8.vy = 0;
+        work->angle8.vz = 0;
     } else {
-        if (D_801E8518 == 0) {
-            BTLFX_COPY_SVEC(&from, &work->unk8);
-            work->unk8.vx += 0x300 + (ex->btlfx_rand() & 0x7F);
-            work->unk8.vy += 0x400 + (ex->btlfx_rand() & 0x7F);
-            func_801E8118(inst, &work->pos0, 0x80, &from, &work->unk8);
+        if (fx_1e9_stopBolts == 0) {
+            BTLFX_COPY_SVEC(&from, &work->angle8);
+            work->angle8.vx += 0x300 + (ex->btlfx_rand() & 0x7F);
+            work->angle8.vy += 0x400 + (ex->btlfx_rand() & 0x7F);
+            fx_1e9_spawnBolt(inst, &work->pos0, 0x80, &from, &work->angle8);
         }
-        work->unk8.vx &= 0xFFF;
-        work->unk8.vy &= 0xFFF;
-        if (D_801E8518 != 0) {
+        work->angle8.vx &= 0xFFF;
+        work->angle8.vy &= 0xFFF;
+        if (fx_1e9_stopBolts != 0) {
             return 1;
         }
     }

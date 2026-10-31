@@ -20,56 +20,56 @@ s32 fx_17d_6_op80(s32 mode, Fx17d6Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
     if (mode == 0) {
         *arg4 = 0x84;
     } else if (mode == 1) {
-        work->unk0 = 0;
-        work->unk4 = 0;
+        work->state0 = 0;
+        work->frame4 = 0;
         fx_17d_6_env = env;
         ex->btlfx_initParticleSystem();
         ex->btlfx_initEffModels(fx_17d_6_effModels, 3);
         work->model7C = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, 0x8B), 1);
         work->model80 = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, 0x8D), 2);
-        ex->Hi_SetSummonMotion(SUMMON(env)->unk54->motion1A8, SUMMON(env)->unk60);
+        ex->Hi_SetSummonMotion(SUMMON(env)->unk54->motion1A8, SUMMON(env)->model60);
         work->rot70.vx = 0x100;
         work->rot70.vy = 0x780;
-        work->unk58.vz = work->unk58.vy = -0x2000;
-        work->unk64.vx = work->unk64.vy = work->unk64.vz = 0x800;
+        work->pos58.vz = work->pos58.vy = -0x2000;
+        work->scale64.vx = work->scale64.vy = work->scale64.vz = 0x800;
         work->rot70.vz = 0;
-        work->unk58.vx = 0;
-        work->unk44.vx = 0;
-        work->unk44.vy = 0x400;
-        work->unk44.vz = 0;
-        work->unk38.vx = D_801E9360.vx;
-        work->unk38.vy = D_801E9360.vy;
-        work->unk38.vz = D_801E9360.vz;
-        work->unk4C.vx = work->unk4C.vz = work->unk4C.vy = 0x1800;
-        ((s32 *)&work->unk8)[0] = ((s32 *)&D_801E9360)[0];
-        work->unk38.vy -= 0x800;
-        ((s32 *)&work->unk8)[1] = ((s32 *)&D_801E9360)[1];
-        work->unk8.vy -= 0x400;
-        BTLFX_COPY_SVEC(&work->pos10, &work->unk8);
-        work->pos18.vx = work->unk58.vx;
-        work->pos18.vy = work->unk58.vy;
-        work->pos18.vz = work->unk58.vz - 0x200;
+        work->pos58.vx = 0;
+        work->rot44.vx = 0;
+        work->rot44.vy = 0x400;
+        work->rot44.vz = 0;
+        work->pos38.vx = fx_17d_6_basePos.vx;
+        work->pos38.vy = fx_17d_6_basePos.vy;
+        work->pos38.vz = fx_17d_6_basePos.vz;
+        work->scale4C.vx = work->scale4C.vz = work->scale4C.vy = 0x1800;
+        ((s32 *)&work->pos8)[0] = ((s32 *)&fx_17d_6_basePos)[0];
+        work->pos38.vy -= 0x800;
+        ((s32 *)&work->pos8)[1] = ((s32 *)&fx_17d_6_basePos)[1];
+        work->pos8.vy -= 0x400;
+        BTLFX_COPY_SVEC(&work->pos10, &work->pos8);
+        work->pos18.vx = work->pos58.vx;
+        work->pos18.vy = work->pos58.vy;
+        work->pos18.vz = work->pos58.vz - 0x200;
         work->pos18.vy -= 0x200;
         env->camera->points[2].vx = work->pos18.vx;
         env->camera->points[2].vy = work->pos18.vy;
         env->camera->points[2].vz = work->pos18.vz;
-        work->unk20.vx = D_801E9360.vx;
-        work->unk20.vy = D_801E9360.vy;
-        work->unk20.vz = D_801E9360.vz;
-        env->camera->points[3].vx = work->unk20.vx;
-        env->camera->points[3].vy = work->unk20.vy;
-        env->camera->points[3].vz = work->unk20.vz;
-        work->unk58.vx += 0x19F;
-        work->unk58.vy -= 0x200;
+        work->pos20.vx = fx_17d_6_basePos.vx;
+        work->pos20.vy = fx_17d_6_basePos.vy;
+        work->pos20.vz = fx_17d_6_basePos.vz;
+        env->camera->points[3].vx = work->pos20.vx;
+        env->camera->points[3].vy = work->pos20.vy;
+        env->camera->points[3].vz = work->pos20.vz;
+        work->pos58.vx += 0x19F;
+        work->pos58.vy -= 0x200;
         p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 2), (s32)&work->pos10);
         work->emit78 = p;
         if (p != NULL) {
             p->otZ = 0x200;
         }
-        D_801EB114 = 0;
+        fx_17d_6_boltState = 0;
     } else {
         frame = entry->frame;
-        switch (work->unk0) {
+        switch (work->state0) {
         case 0:
             u = (frame << 12) / 66;
             if (frame < 0x10) {
@@ -81,30 +81,30 @@ s32 fx_17d_6_op80(s32 mode, Fx17d6Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
                                          0xFF - ((frame * 0xFF) >> 2), 0xFF - ((frame * 0xFF) >> 2));
             }
             if (frame < 0x1D) {
-                ex->Hi_SetSummonMotFrame(SUMMON(env)->unk60, 0);
+                ex->Hi_SetSummonMotFrame(SUMMON(env)->model60, 0);
             }
-            pos.vx = work->unk58.vx;
-            pos.vy = work->unk58.vy;
-            pos.vz = work->unk58.vz;
+            pos.vx = work->pos58.vx;
+            pos.vy = work->pos58.vy;
+            pos.vz = work->pos58.vz;
             pos.vy += (ex->math_sin(u >> 2) * 0x6A4) >> 12;
-            ex->Hi_DrawSummonModel(&work->rot70, &pos, (s32)&work->unk64, SUMMON(env)->unk60, 0);
-            ex->Hi_ModifySummonModelRGB(SUMMON(env)->unk60, ex->btlfx_rand() & 0x1F, -0x20, -0x40);
-            work->unk44.vy += 6;
+            ex->Hi_DrawSummonModel(&work->rot70, &pos, (s32)&work->scale64, SUMMON(env)->model60, 0);
+            ex->Hi_ModifySummonModelRGB(SUMMON(env)->model60, ex->btlfx_rand() & 0x1F, -0x20, -0x40);
+            work->rot44.vy += 6;
             for (n1 = 0; n1 < 4; n1++) {
-                sc.vx = sc.vy = sc.vz = (work->unk4C.vx * (n1 + 1)) >> 1;
-                BTLFX_COPY_SVEC(&ang, &work->unk44);
+                sc.vx = sc.vy = sc.vz = (work->scale4C.vx * (n1 + 1)) >> 1;
+                BTLFX_COPY_SVEC(&ang, &work->rot44);
                 ang.vy = ang.vy * (n1 + 2) / 3;
                 if (n1 != 2) {
-                    ex->Hi_DrawEffModel(&ang, (VECTOR *)&work->unk38, (s32)&sc, work->model7C);
+                    ex->Hi_DrawEffModel(&ang, (VECTOR *)&work->pos38, (s32)&sc, work->model7C);
                 } else {
-                    ex->Hi_DrawEffModel(&ang, (VECTOR *)&work->unk38, (s32)&sc, work->model80);
+                    ex->Hi_DrawEffModel(&ang, (VECTOR *)&work->pos38, (s32)&sc, work->model80);
                 }
             }
             ex->btlfx_drawScrollMove(0x3E8 - frame * 6, 0x280, 0x100, 0x20, 0x80, 0x2A0, 0x100);
-            ex->Hi_GetSummonBonePos(SUMMON(env)->unk60, D_801E9368[0], (u16 *)&work->pos28);
-            ex->Hi_GetSummonBonePos(SUMMON(env)->unk60, D_801E9368[2], (u16 *)&work->pos30);
-            BTLFX_COPY_SVEC(&D_801EB104, &work->pos28);
-            BTLFX_COPY_SVEC(&D_801EB10C, &work->pos30);
+            ex->Hi_GetSummonBonePos(SUMMON(env)->model60, fx_17d_6_bones[0], (u16 *)&work->pos28);
+            ex->Hi_GetSummonBonePos(SUMMON(env)->model60, fx_17d_6_bones[2], (u16 *)&work->pos30);
+            BTLFX_COPY_SVEC(&fx_17d_6_boltTo, &work->pos28);
+            BTLFX_COPY_SVEC(&fx_17d_6_boltFrom, &work->pos30);
             env->otZ = 0x80;
             ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->file, 6), &work->pos30, NULL, ex->math_sin(u >> 2) >> 3,
                               0, 1, ex->math_sin(u >> 2));
@@ -118,17 +118,17 @@ s32 fx_17d_6_op80(s32 mode, Fx17d6Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
             vv.vz = 0x1000;
             ex->btlfx_drawScreenGrid(1, 0xA0, 0x70, 0x50, 0x38, 4, 4, 2, 2, &rot, &vv, &col, 0, NULL);
             if (frame >= 0x42) {
-                work->unk0 = 1;
+                work->state0 = 1;
                 entry->frame = -1;
                 ex->btlfx_stopEmitter((Pool6CEntry *)&work->emit78);
-                ex->Hi_SetSummonMotion(SUMMON(env)->unk54->motion1AC, SUMMON(env)->unk60);
-                pos.vx = work->unk58.vx;
-                pos.vy = work->unk58.vy;
-                pos.vz = work->unk58.vz;
+                ex->Hi_SetSummonMotion(SUMMON(env)->unk54->motion1AC, SUMMON(env)->model60);
+                pos.vx = work->pos58.vx;
+                pos.vy = work->pos58.vy;
+                pos.vz = work->pos58.vz;
                 work->rot70.vx = 0;
                 work->rot70.vy = 0x800;
                 work->rot70.vz = 0;
-                ex->Hi_GetSummonBonePos(SUMMON(env)->unk60, D_801E9368[0], (u16 *)&work->pos18);
+                ex->Hi_GetSummonBonePos(SUMMON(env)->model60, fx_17d_6_bones[0], (u16 *)&work->pos18);
                 env->camera->points[2].vx = work->pos18.vx;
                 env->camera->points[2].vy = work->pos18.vy;
                 env->camera->points[2].vz = work->pos18.vz;
@@ -140,13 +140,13 @@ s32 fx_17d_6_op80(s32 mode, Fx17d6Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
             break;
         case 1:
             u = (frame << 12) / 100;
-            ex->Hi_DrawSummonModel(&work->rot70, (VECTOR *)&work->unk58, (s32)&work->unk64, SUMMON(env)->unk60, 0);
-            ex->Hi_GetSummonBonePos(SUMMON(env)->unk60, D_801E9368[0], (u16 *)&work->pos28);
-            ex->Hi_GetSummonBonePos(SUMMON(env)->unk60, D_801E9368[2], (u16 *)&work->pos30);
-            BTLFX_COPY_SVEC(&D_801EB104, &work->pos28);
-            BTLFX_COPY_SVEC(&D_801EB10C, &work->pos30);
+            ex->Hi_DrawSummonModel(&work->rot70, (VECTOR *)&work->pos58, (s32)&work->scale64, SUMMON(env)->model60, 0);
+            ex->Hi_GetSummonBonePos(SUMMON(env)->model60, fx_17d_6_bones[0], (u16 *)&work->pos28);
+            ex->Hi_GetSummonBonePos(SUMMON(env)->model60, fx_17d_6_bones[2], (u16 *)&work->pos30);
+            BTLFX_COPY_SVEC(&fx_17d_6_boltTo, &work->pos28);
+            BTLFX_COPY_SVEC(&fx_17d_6_boltFrom, &work->pos30);
             ex->btlfx_lerpVec((s16 *)&work->pos28, (s16 *)&work->pos30, frame < 0x20 ? ex->math_sin(frame << 5) : 0x1000,
-                              (s16 *)&work->unk8);
+                              (s16 *)&work->pos8);
             env->otZ = 0x80;
             ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->file, 6), &work->pos30, NULL,
                               (ex->math_sin(u >> 2) >> 1) + 0x400, 0, 1, 0xAAA);
@@ -155,7 +155,7 @@ s32 fx_17d_6_op80(s32 mode, Fx17d6Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
             ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->file, 0xA), &work->pos30, NULL,
                               ex->math_cos(u >> 2) / 3 + 0x5DC, 0, 1, u);
             env->otZ = 0;
-            BTLFX_COPY_SVEC(&work->pos18, &work->unk8);
+            BTLFX_COPY_SVEC(&work->pos18, &work->pos8);
             env->camera->points[2].vx = work->pos18.vx;
             env->camera->points[2].vy = work->pos18.vy;
             env->camera->points[2].vz = work->pos18.vz;
@@ -168,7 +168,7 @@ s32 fx_17d_6_op80(s32 mode, Fx17d6Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
             if (frame == 0x20) {
                 p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 5), (s32)&work->pos30);
                 if (p != NULL) {
-                    p->trails = (s32)D_801E9624;
+                    p->trails = (s32)fx_17d_6_op80Trails;
                     p->trailSlots = 0x28;
                     p->trailStride = 0xAC;
                     p->otZ = 0x80;
@@ -190,11 +190,11 @@ s32 fx_17d_6_op80(s32 mode, Fx17d6Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
                 ex->btlfx_drawScreenGrid(1, 0xA0, 0x70, 0x50, 0x38, 4, 4, 2, 2, &rot, &vv2, &col, 1, NULL);
             }
             if (frame >= 0x64) {
-                work->unk0 = 2;
+                work->state0 = 2;
                 entry->frame = -1;
                 ex->btlfx_initParticleSystem();
-                D_801EB114 = 2;
-                BTLFX_COPY_SVEC(&work->pos18, &D_801E9360);
+                fx_17d_6_boltState = 2;
+                BTLFX_COPY_SVEC(&work->pos18, &fx_17d_6_basePos);
                 work->pos18.vy -= 0x200;
                 env->camera->points[3].vx = work->pos18.vx;
                 env->camera->points[3].vy = work->pos18.vy;
@@ -207,18 +207,18 @@ s32 fx_17d_6_op80(s32 mode, Fx17d6Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
             u = (frame << 12) / 18;
             ex->btlfx_drawScreenTint((u32 *)(env->ot + 2), 2, 0, (0x40 - (frame << 6) / 18) >> 2,
                                      0x40 - (frame << 6) / 18);
-            work->unk44.vy += 6;
+            work->rot44.vy += 6;
             for (i = 0; i < 4; i++) {
-                sc.vx = sc.vy = sc.vz = (work->unk4C.vx * (i + 1)) >> 1;
-                BTLFX_COPY_SVEC(&ang, &work->unk44);
+                sc.vx = sc.vy = sc.vz = (work->scale4C.vx * (i + 1)) >> 1;
+                BTLFX_COPY_SVEC(&ang, &work->rot44);
                 ang.vy = ang.vy * (i + 2) / 3;
                 if (i != 2) {
-                    ex->Hi_DrawEffModel(&ang, (VECTOR *)&work->unk38, (s32)&sc, work->model7C);
+                    ex->Hi_DrawEffModel(&ang, (VECTOR *)&work->pos38, (s32)&sc, work->model7C);
                     ex->Hi_ModifyEffModelRGB(work->model7C, ((ex->math_cos(u >> 2) * 2 / 3) >> 5) - 0x80,
                                              ((ex->math_cos(u >> 2) * 2 / 3) >> 5) - 0x80,
                                              ((ex->math_cos(u >> 2) * 2 / 3) >> 5) - 0x80);
                 } else {
-                    ex->Hi_DrawEffModel(&ang, (VECTOR *)&work->unk38, (s32)&sc, work->model80);
+                    ex->Hi_DrawEffModel(&ang, (VECTOR *)&work->pos38, (s32)&sc, work->model80);
                 }
             }
             env->otZ = 0x9B;
@@ -235,24 +235,24 @@ s32 fx_17d_6_op80(s32 mode, Fx17d6Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
             rot.vz = 0;
             ex->btlfx_drawScreenGrid(1, 0xA0, 0x70, 0x50, 0x38, 4, 4, 2, 2, &rot, &vv, &col, 0, NULL);
             if (frame >= 0x12) {
-                work->unk0 = 3;
+                work->state0 = 3;
                 entry->frame = -1;
-                D_801EB114 = 0;
+                fx_17d_6_boltState = 0;
             }
             break;
         case 3:
             u = (frame << 12) / 14;
-            ex->Hi_DrawSummonModel(&work->rot70, (VECTOR *)&work->unk58, (s32)&work->unk64, SUMMON(env)->unk60, 0);
-            ex->Hi_GetSummonBonePos(SUMMON(env)->unk60, 0x21, (u16 *)&work->pos18);
+            ex->Hi_DrawSummonModel(&work->rot70, (VECTOR *)&work->pos58, (s32)&work->scale64, SUMMON(env)->model60, 0);
+            ex->Hi_GetSummonBonePos(SUMMON(env)->model60, 0x21, (u16 *)&work->pos18);
             env->camera->points[2].vx = work->pos18.vx;
             env->camera->points[2].vy = work->pos18.vy;
             env->camera->points[2].vz = work->pos18.vz;
-            ex->Hi_GetSummonBonePos(SUMMON(env)->unk60, D_801E9368[0], (u16 *)&work->pos28);
-            ex->Hi_GetSummonBonePos(SUMMON(env)->unk60, D_801E9368[2], (u16 *)&work->pos30);
-            BTLFX_COPY_SVEC(&D_801EB104, &work->pos28);
-            BTLFX_COPY_SVEC(&D_801EB10C, &work->pos30);
-            ex->Hi_GetSummonBonePos(SUMMON(env)->unk60, D_801E9368[1], (u16 *)&work->pos28);
-            BTLFX_COPY_SVEC(&D_801EB10C, &work->pos28);
+            ex->Hi_GetSummonBonePos(SUMMON(env)->model60, fx_17d_6_bones[0], (u16 *)&work->pos28);
+            ex->Hi_GetSummonBonePos(SUMMON(env)->model60, fx_17d_6_bones[2], (u16 *)&work->pos30);
+            BTLFX_COPY_SVEC(&fx_17d_6_boltTo, &work->pos28);
+            BTLFX_COPY_SVEC(&fx_17d_6_boltFrom, &work->pos30);
+            ex->Hi_GetSummonBonePos(SUMMON(env)->model60, fx_17d_6_bones[1], (u16 *)&work->pos28);
+            BTLFX_COPY_SVEC(&fx_17d_6_boltFrom, &work->pos28);
             if (frame == 0) {
                 p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0xC), (s32)&work->pos28);
                 if (p != NULL) {
@@ -271,22 +271,22 @@ s32 fx_17d_6_op80(s32 mode, Fx17d6Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
             rot.vz = 0;
             ex->btlfx_drawScreenGrid(1, 0xA0, 0x70, 0x50, 0x38, 4, 4, 2, 2, &rot, &vv, &col, 1, NULL);
             if (frame >= 0xE) {
-                work->unk0 = 4;
-                cam.vx = D_801E9360.vx;
-                cam.vy = D_801E9360.vy;
-                cam.vz = D_801E9360.vz;
+                work->state0 = 4;
+                cam.vx = fx_17d_6_basePos.vx;
+                cam.vy = fx_17d_6_basePos.vy;
+                cam.vz = fx_17d_6_basePos.vz;
                 cam.vy -= 0x300;
                 env->camera->points[3].vx = cam.vx;
                 env->camera->points[3].vy = cam.vy;
                 env->camera->points[3].vz = cam.vz;
-                D_801EB114 = 1;
+                fx_17d_6_boltState = 1;
                 ex->btlfx_clearEffModels();
                 return 1;
             }
             break;
         }
         env->otZ = 0;
-        work->unk4++;
+        work->frame4++;
     }
     return 0;
 }
@@ -309,7 +309,7 @@ static void fxm_drawArcTrail(Unk80100C78Entry *entry, s32 file, s32 ot, Fx17d6Tr
     a = cnt;
     trail->unk0 = trail->unk2 = a - 1;
     trail->unk1 = 0;
-    pt = trail->unk4;
+    pt = trail->points4;
     for (i = 0; i < a; i++, pt++) {
         t = 0x1000 - (i << 12) / (a - 1);
         t += *noise++ / 2;
@@ -332,7 +332,7 @@ static void fxm_drawArcTrail(Unk80100C78Entry *entry, s32 file, s32 ot, Fx17d6Tr
 
 static void fxm_drawArcTrailBranch(Unk80100C78Entry *entry, s32 file, s32 ot, Fx17d6Trail *path, Fx17d6Trail *trail, s32 n, s32 *noise,
                    s32 i, s32 type, s32 alpha, s32 pad) {
-    SVECTOR *pt = path->unk4;
+    SVECTOR *pt = path->points4;
     BtlfxExports *ex = BTLFX_EXPORTS(fx_17d_6_env);
     SVECTOR mid;
 
@@ -352,19 +352,19 @@ static s32 fx_17d_6_op83PoolTask(s32 mode, Fx17d6Bolt *b, Unk800F78A4 *env, Unk8
     Fx17d6Trail *tr2;
     s32 u;
 
-    if (mode != 1 && b->unk11 == 0) {
+    if (mode != 1 && b->kind11 == 0) {
         t = (frame << 12) / 6;
         c = ex->math_cos(t >> 2);
         k = frame < 3;
         a = 0x1000 - t;
-        i = b->unk10;
-        u = b->unk15;
-        tr = (Fx17d6Trail *)&D_801EB124[i];
-        tr2 = (Fx17d6Trail *)&D_801EB474[i];
-        b->unk14 += 3;
-        fxm_drawArcTrail(entry, 8, 0, tr, 0x8C, b->unk18 + frame * k, &b->unk8, &b->unk0, 0, 0xDC, b->unk14 * 16, 0xF0,
+        i = b->slot10;
+        u = b->width15;
+        tr = (Fx17d6Trail *)&fx_17d_6_boltTrails[i];
+        tr2 = (Fx17d6Trail *)&fx_17d_6_branchTrails[i];
+        b->angle14 += 3;
+        fxm_drawArcTrail(entry, 8, 0, tr, 0x8C, b->noise18 + frame * k, &b->from8, &b->to0, 0, 0xDC, b->angle14 * 16, 0xF0,
                       frame, c, a * u / 1500, 0);
-        fxm_drawArcTrailBranch(entry, 7, 0, tr, tr2, 0x2C, b->unk18, b->unk12, frame, c, (a * u) >> 12);
+        fxm_drawArcTrailBranch(entry, 7, 0, tr, tr2, 0x2C, b->noise18, b->index12, frame, c, (a * u) >> 12);
         if (frame >= 6) {
             return 1;
         }
@@ -388,42 +388,42 @@ s32 fx_17d_6_op83(s32 mode, Fx17d6Work83 *work, Unk800F78A4 *env, Fx17d6Inst *in
     } else if (mode == 1) {
         n = init->workSize;
         fx_17d_6_env = env;
-        work->unk0 = D_801EB584[0];
-        p = D_801EB584[0];
+        work->noise0 = fx_17d_6_noise[0];
+        p = fx_17d_6_noise[0];
         for (i = 0; i < 64; i++) {
             *p++ = ex->btlfx_randCentered(0xD2);
             *p++ = ex->btlfx_randCentered(0x1C3);
             *p++ = ex->btlfx_randCentered(0xDC);
         }
-        work->unk8 = n;
-        work->unk4 = 0;
+        work->kind8 = n;
+        work->count4 = 0;
     } else {
-        frame = inst->unk0;
-        if (work->unk8 != 0) {
+        frame = inst->frame0;
+        if (work->kind8 != 0) {
             return 0;
         }
-        if (D_801EB114 == 0) {
+        if (fx_17d_6_boltState == 0) {
             if (frame < 0x43 && (frame & 3)) {
                 return 0;
             }
-            work->unk4++;
-            b = ex->btlfx_poolSpawn(inst->unk10);
+            work->count4++;
+            b = ex->btlfx_poolSpawn(inst->pool10);
             if (b != NULL) {
-                ((s32 *)&b->unk0)[0] = ((s32 *)&D_801EB104)[0];
-                ((s32 *)&b->unk0)[1] = ((s32 *)&D_801EB104)[1];
-                ((s32 *)&b->unk8)[0] = ((s32 *)&D_801EB10C)[0];
-                ((s32 *)&b->unk8)[1] = ((s32 *)&D_801EB10C)[1];
-                b->unk11 = 0;
-                b->unk10 = work->unk4 % 6;
-                b->unk18 = work->unk0 + (ex->btlfx_rand() & 0x1F);
-                b->unk12 = ex->btlfx_rand() % 15;
+                ((s32 *)&b->to0)[0] = ((s32 *)&fx_17d_6_boltTo)[0];
+                ((s32 *)&b->to0)[1] = ((s32 *)&fx_17d_6_boltTo)[1];
+                ((s32 *)&b->from8)[0] = ((s32 *)&fx_17d_6_boltFrom)[0];
+                ((s32 *)&b->from8)[1] = ((s32 *)&fx_17d_6_boltFrom)[1];
+                b->kind11 = 0;
+                b->slot10 = work->count4 % 6;
+                b->noise18 = work->noise0 + (ex->btlfx_rand() & 0x1F);
+                b->index12 = ex->btlfx_rand() % 15;
                 b->unk13 = ex->btlfx_rand() % 15;
-                b->unk15 = 0xB;
-                b->unk14 = ex->btlfx_rand();
+                b->width15 = 0xB;
+                b->angle14 = ex->btlfx_rand();
             }
         }
-        if (D_801EB114 == 1) {
-            ex->btlfx_poolClear((Unk800DA1B8 *)inst->unk10);
+        if (fx_17d_6_boltState == 1) {
+            ex->btlfx_poolClear((Unk800DA1B8 *)inst->pool10);
             return 1;
         }
     }

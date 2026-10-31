@@ -3,3 +3,5 @@ fx_188_header = 0x801E7E40; // [code] module header (0, init, ops), btlfx_update
 fx_188_op80 = 0x801E79B0; // type:func [code] header op entry 0, effect script op 0x80 (btlfx_spawnTask)
 fx_188_op80PoolTask = 0x801E7704; // type:func [code] btlfx pool element function (btlfx_poolInit elemFn, run by btlfx_poolUpdate with mode, element, env, task, frame), installed by fx_188_op80
 fx_188_env = 0x801E7E88; // [code] the effect env (Unk800F78A4) the op handlers store in mode 1, used by the helpers for BTLFX_EXPORTS
+fx_188_op80Trails = 0x801E7E98; // [code] trail point buffer (Pool6CEntry.trails) of an emitter started by the op80 handler
+fx_188_particleScale = 0x801E86CC; // [code] 0x1000 in mode 1, cos fade in state 1 of fx_188_op80, scales the btlfx_drawParticles size in fx_188_op80PoolTask, 0 ends the elements

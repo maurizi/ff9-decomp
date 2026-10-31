@@ -1,7 +1,8 @@
 #ifndef FX_11C_H
 #define FX_11C_H
 
-/* Effect module fx_11c (dir 13 file 0x11C). */
+/* Effect module fx_11c (dir 13 file 0x11C): enemy High Wind (Abadon). Evidence: the static sweep of the ability, item
+ * and enemy-sequence effect ids (docs/effect-modules.md, tools/effect_labels.py). */
 #include "btlfx_mod.h"
 
 typedef struct {
@@ -33,17 +34,17 @@ typedef struct {
 
 typedef struct {
     SVECTOR pos0; /* spawn position */
-    SVECTOR unk8;
-    u16 unk10; /* started */
-    u16 unk12; /* age */
-    u16 unk14; /* start frame */
-    u16 unk16; /* file */
+    SVECTOR pos8;
+    u16 active10; /* started */
+    u16 frame12; /* age */
+    u16 startFrame14; /* start frame */
+    u16 fileId16; /* file */
 } Fx11cBurst;
 
-extern Fx11cBurst D_801E7EDC[5];
+extern Fx11cBurst fx_11c_op81Bursts[5];
 extern Unk800F78A4 *fx_11c_env;
-extern s32 D_801E7FAC[];
-extern s32 D_801E86FC[];
-extern s32 D_801E8E4C[];
+extern s32 fx_11c_op80Trails0[];
+extern s32 fx_11c_op80Trails1[];
+extern s32 fx_11c_op82Trails[];
 
 #endif

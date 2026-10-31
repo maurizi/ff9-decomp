@@ -1,7 +1,9 @@
 #ifndef FX_0F0_H
 #define FX_0F0_H
 
-/* Effect module fx_0f0 (dir 13 file 0x0F0). */
+/* Effect module fx_0f0 (dir 13 file 0x0F0): enemy Zombie Powder (Whale Zombie). Emitters from a caster bone with
+ * trail buffers, one homing on the target. Evidence: [data] the party ability / item tables and enemy sequences
+ * that play this file id (tools/effect_labels.py; docs/runtime-findings.md, "Round 31 runtime pass"). */
 #include "btlfx_mod.h"
 
 typedef struct {
@@ -23,8 +25,8 @@ typedef struct {
 } Fx0f0Work81;
 
 extern Unk800F78A4 *fx_0f0_env;
-extern s32 D_801E7C30[];
-extern s32 D_801E8D40[];
-extern s32 D_801E9E50[];
+extern s32 fx_0f0_op80Trails0[];
+extern s32 fx_0f0_op80Trails1[];
+extern s32 fx_0f0_op80Trails2[];
 
 #endif

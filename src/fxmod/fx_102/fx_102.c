@@ -12,12 +12,12 @@ s32 fx_102_op80(s32 mode, Fx102Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
         ex->btlfx_getUnitPos(0, (s16 *)&work->pos28);
         work->emit0 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 9), (s32)&work->pos28);
         for (i = 0; i < 8; i++) {
-            (work->unk30 + i)->vx = work->pos28.vx;
-            (work->unk30 + i)->vy = work->pos28.vy;
-            (work->unk30 + i)->vz = work->pos28.vz;
-            work->unk30[i].vx += ex->math_sin(i << 9) * 800 / 4096;
-            work->unk30[i].vz += ex->math_cos(i << 9) * 800 / 4096;
-            work->emit4[i] = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, D_801E7924[i]), (s32)&work->unk30[i]);
+            (work->pos30 + i)->vx = work->pos28.vx;
+            (work->pos30 + i)->vy = work->pos28.vy;
+            (work->pos30 + i)->vz = work->pos28.vz;
+            work->pos30[i].vx += ex->math_sin(i << 9) * 800 / 4096;
+            work->pos30[i].vz += ex->math_cos(i << 9) * 800 / 4096;
+            work->emit4[i] = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, fx_102_emitFileIds[i]), (s32)&work->pos30[i]);
         }
     } else {
         frame = entry->frame;

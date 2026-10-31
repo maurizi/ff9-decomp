@@ -1,45 +1,45 @@
 #include "fxmod/fx_1a7.h"
 
 s32 fx_1a7_op80ParticleMotion0(Pool30Entry *e, Pool6CEntry *owner, SVECTOR *pos, s32 arg3, s32 frame, s32 frames) {
-    return fxm_lineOrbitParticle0(e, pos, D_801E8950[0], D_801E8990[0], frame, frames);
+    return fxm_lineOrbitParticle0(e, pos, fx_1a7_op80Angles[0], fx_1a7_op80Radii[0], frame, frames);
 }
 
 s32 fx_1a7_op80ParticleMotion1(Pool30Entry *e, Pool6CEntry *owner, SVECTOR *pos, s32 arg3, s32 frame, s32 frames) {
-    return fxm_lineOrbitParticle0(e, pos, D_801E8950[1], D_801E8990[1], frame, frames);
+    return fxm_lineOrbitParticle0(e, pos, fx_1a7_op80Angles[1], fx_1a7_op80Radii[1], frame, frames);
 }
 
 s32 fx_1a7_op80ParticleMotion2(Pool30Entry *e, Pool6CEntry *owner, SVECTOR *pos, s32 arg3, s32 frame, s32 frames) {
-    return fxm_lineOrbitParticle0(e, pos, D_801E8950[2], D_801E8990[2], frame, frames);
+    return fxm_lineOrbitParticle0(e, pos, fx_1a7_op80Angles[2], fx_1a7_op80Radii[2], frame, frames);
 }
 
 s32 fx_1a7_op80ParticleMotion3(Pool30Entry *e, Pool6CEntry *owner, SVECTOR *pos, s32 arg3, s32 frame, s32 frames) {
-    return fxm_lineOrbitParticle0(e, pos, D_801E8950[3], D_801E8990[3], frame, frames);
+    return fxm_lineOrbitParticle0(e, pos, fx_1a7_op80Angles[3], fx_1a7_op80Radii[3], frame, frames);
 }
 
 s32 fx_1a7_op80ParticleMotion4(Pool30Entry *e, Pool6CEntry *owner, SVECTOR *pos, s32 arg3, s32 frame, s32 frames) {
-    return fxm_lineOrbitParticle0(e, pos, D_801E8950[4], D_801E8990[4], frame, frames);
+    return fxm_lineOrbitParticle0(e, pos, fx_1a7_op80Angles[4], fx_1a7_op80Radii[4], frame, frames);
 }
 
 s32 fx_1a7_op80ParticleMotion5(Pool30Entry *e, Pool6CEntry *owner, SVECTOR *pos, s32 arg3, s32 frame, s32 frames) {
-    return fxm_lineOrbitParticle0(e, pos, D_801E8950[5], D_801E8990[5], frame, frames);
+    return fxm_lineOrbitParticle0(e, pos, fx_1a7_op80Angles[5], fx_1a7_op80Radii[5], frame, frames);
 }
 
 s32 fx_1a7_op80ParticleMotion6(Pool30Entry *e, Pool6CEntry *owner, SVECTOR *pos, s32 arg3, s32 frame, s32 frames) {
-    return fxm_lineOrbitParticle0(e, pos, D_801E8950[6], D_801E8990[6], frame, frames);
+    return fxm_lineOrbitParticle0(e, pos, fx_1a7_op80Angles[6], fx_1a7_op80Radii[6], frame, frames);
 }
 
 s32 fx_1a7_op80ParticleMotion7(Pool30Entry *e, Pool6CEntry *owner, SVECTOR *pos, s32 arg3, s32 frame, s32 frames) {
-    return fxm_lineOrbitParticle0(e, pos, D_801E8950[7], D_801E8990[7], frame, frames);
+    return fxm_lineOrbitParticle0(e, pos, fx_1a7_op80Angles[7], fx_1a7_op80Radii[7], frame, frames);
 }
 
 s32 fx_1a7_op80ParticleMotion8(Pool30Entry *e, Pool6CEntry *owner, SVECTOR *pos, s32 arg3, s32 frame, s32 frames) {
-    return fxm_lineOrbitParticle0(e, pos, D_801E8950[8], D_801E8990[8], frame, frames);
+    return fxm_lineOrbitParticle0(e, pos, fx_1a7_op80Angles[8], fx_1a7_op80Radii[8], frame, frames);
 }
 
 static s32 fxm_lineOrbitParticle0(Pool30Entry *e, SVECTOR *pos, s32 angle, s32 radius, s32 frame, s32 frames) {
     BtlfxExports *ex = BTLFX_EXPORTS(fx_1a7_env);
 
-    ex->btlfx_lerpVec((s16 *)&D_801EA5C0, (s16 *)&D_801EA5D0, (frame << 12) / 12, (s16 *)pos);
+    ex->btlfx_lerpVec((s16 *)&fx_1a7_op80MotionFrom, (s16 *)&fx_1a7_op80MotionTo, (frame << 12) / 12, (s16 *)pos);
     pos->vx += radius * ex->math_sin(angle) / 4096;
     pos->vy += radius * ex->math_cos(angle) / 4096;
     e->pos.vx = pos->vx << 12;
@@ -52,45 +52,45 @@ static s32 fxm_lineOrbitParticle0(Pool30Entry *e, SVECTOR *pos, s32 angle, s32 r
 }
 
 s32 fx_1a7_op81ParticleMotion0(Pool30Entry *e, Pool6CEntry *owner, SVECTOR *pos, s32 arg3, s32 frame, s32 frames) {
-    return fxm_lineOrbitParticle1(e, pos, D_801E8970[0], D_801E89B0[0], frame, frames);
+    return fxm_lineOrbitParticle1(e, pos, fx_1a7_op81Angles[0], fx_1a7_op81Radii[0], frame, frames);
 }
 
 s32 fx_1a7_op81ParticleMotion1(Pool30Entry *e, Pool6CEntry *owner, SVECTOR *pos, s32 arg3, s32 frame, s32 frames) {
-    return fxm_lineOrbitParticle1(e, pos, D_801E8970[1], D_801E89B0[1], frame, frames);
+    return fxm_lineOrbitParticle1(e, pos, fx_1a7_op81Angles[1], fx_1a7_op81Radii[1], frame, frames);
 }
 
 s32 fx_1a7_op81ParticleMotion2(Pool30Entry *e, Pool6CEntry *owner, SVECTOR *pos, s32 arg3, s32 frame, s32 frames) {
-    return fxm_lineOrbitParticle1(e, pos, D_801E8970[2], D_801E89B0[2], frame, frames);
+    return fxm_lineOrbitParticle1(e, pos, fx_1a7_op81Angles[2], fx_1a7_op81Radii[2], frame, frames);
 }
 
 s32 fx_1a7_op81ParticleMotion3(Pool30Entry *e, Pool6CEntry *owner, SVECTOR *pos, s32 arg3, s32 frame, s32 frames) {
-    return fxm_lineOrbitParticle1(e, pos, D_801E8970[3], D_801E89B0[3], frame, frames);
+    return fxm_lineOrbitParticle1(e, pos, fx_1a7_op81Angles[3], fx_1a7_op81Radii[3], frame, frames);
 }
 
 s32 fx_1a7_op81ParticleMotion4(Pool30Entry *e, Pool6CEntry *owner, SVECTOR *pos, s32 arg3, s32 frame, s32 frames) {
-    return fxm_lineOrbitParticle1(e, pos, D_801E8970[4], D_801E89B0[4], frame, frames);
+    return fxm_lineOrbitParticle1(e, pos, fx_1a7_op81Angles[4], fx_1a7_op81Radii[4], frame, frames);
 }
 
 s32 fx_1a7_op81ParticleMotion5(Pool30Entry *e, Pool6CEntry *owner, SVECTOR *pos, s32 arg3, s32 frame, s32 frames) {
-    return fxm_lineOrbitParticle1(e, pos, D_801E8970[5], D_801E89B0[5], frame, frames);
+    return fxm_lineOrbitParticle1(e, pos, fx_1a7_op81Angles[5], fx_1a7_op81Radii[5], frame, frames);
 }
 
 s32 fx_1a7_op81ParticleMotion6(Pool30Entry *e, Pool6CEntry *owner, SVECTOR *pos, s32 arg3, s32 frame, s32 frames) {
-    return fxm_lineOrbitParticle1(e, pos, D_801E8970[6], D_801E89B0[6], frame, frames);
+    return fxm_lineOrbitParticle1(e, pos, fx_1a7_op81Angles[6], fx_1a7_op81Radii[6], frame, frames);
 }
 
 s32 fx_1a7_op81ParticleMotion7(Pool30Entry *e, Pool6CEntry *owner, SVECTOR *pos, s32 arg3, s32 frame, s32 frames) {
-    return fxm_lineOrbitParticle1(e, pos, D_801E8970[7], D_801E89B0[7], frame, frames);
+    return fxm_lineOrbitParticle1(e, pos, fx_1a7_op81Angles[7], fx_1a7_op81Radii[7], frame, frames);
 }
 
 s32 fx_1a7_op81ParticleMotion8(Pool30Entry *e, Pool6CEntry *owner, SVECTOR *pos, s32 arg3, s32 frame, s32 frames) {
-    return fxm_lineOrbitParticle1(e, pos, D_801E8970[8], D_801E89B0[8], frame, frames);
+    return fxm_lineOrbitParticle1(e, pos, fx_1a7_op81Angles[8], fx_1a7_op81Radii[8], frame, frames);
 }
 
 static s32 fxm_lineOrbitParticle1(Pool30Entry *e, SVECTOR *pos, s32 angle, s32 radius, s32 frame, s32 frames) {
     BtlfxExports *ex = BTLFX_EXPORTS(fx_1a7_env);
 
-    ex->btlfx_lerpVec((s16 *)&D_801EA5C8, (s16 *)&D_801EA5D8, (frame << 12) / 12, (s16 *)pos);
+    ex->btlfx_lerpVec((s16 *)&fx_1a7_op81MotionFrom, (s16 *)&fx_1a7_op81MotionTo, (frame << 12) / 12, (s16 *)pos);
     pos->vx += radius * ex->math_sin(angle) / 4096;
     pos->vy += radius * ex->math_cos(angle) / 4096;
     e->pos.vx = pos->vx << 12;
@@ -115,46 +115,46 @@ s32 fx_1a7_op80(s32 mode, Fx1a7Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
     } else if (mode == 1) {
         fx_1a7_env = env;
         ex->btlfx_getUnitBodyPos(0, 0, (s16 *)&work->pos2C);
-        D_801EA5D0.vx = work->pos2C.vx;
-        D_801EA5D0.vy = work->pos2C.vy;
-        D_801EA5D0.vz = work->pos2C.vz;
-        work->emit0 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 1), (s32)&D_801EA5E0);
+        fx_1a7_op80MotionTo.vx = work->pos2C.vx;
+        fx_1a7_op80MotionTo.vy = work->pos2C.vy;
+        fx_1a7_op80MotionTo.vz = work->pos2C.vz;
+        work->emit0 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 1), (s32)&fx_1a7_emitPos);
         if (work->emit0 != NULL) {
-            work->emit0->trails = (s32)D_801E89D0;
+            work->emit0->trails = (s32)fx_1a7_op80Trails0;
             work->emit0->trailSlots = 0x10;
             work->emit0->trailStride = 0x60;
         }
-        work->emit4 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 2), (s32)&D_801EA5E0);
+        work->emit4 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 2), (s32)&fx_1a7_emitPos);
         if (work->emit4 != NULL) {
             work->emit4->otZ = ex->btlfx_addRadiusSixth(0x10, 0x80);
         }
     } else {
         frame = entry->frame;
         ex->btlfx_getUnitBoneMatrix(0x10, 0x1C, (BtlBone *)&m);
-        ex->btlfx_matrixPointAhead(&m, 0x190, (s32)&work->unk34);
+        ex->btlfx_matrixPointAhead(&m, 0x190, (s32)&work->pos34);
         if (frame == 0x32) {
             ex->btlfx_getUnitBoneMatrix(0x10, 0x1C, (BtlBone *)&m2);
-            ex->btlfx_matrixPointAhead(&m2, 0xC8, (s32)&D_801EA5C0);
-            D_801EA5C0.vy -= 0xC8;
+            ex->btlfx_matrixPointAhead(&m2, 0xC8, (s32)&fx_1a7_op80MotionFrom);
+            fx_1a7_op80MotionFrom.vy -= 0xC8;
         }
         if (frame >= 0x32) {
             t = frame - 0x32;
             for (i = 0; i < 9; i++) {
-                if (t == D_801E8874[i]) {
-                    work->emit8[i] = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, D_801E8860[i]), (s32)&D_801EA5E0);
+                if (t == fx_1a7_op80StartFrames[i]) {
+                    work->emit8[i] = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, fx_1a7_op80EmitFileIds[i]), (s32)&fx_1a7_emitPos);
                     if (work->emit8[i] != NULL) {
-                        work->emit8[i]->trails = (s32)D_801E8FD0[i];
+                        work->emit8[i]->trails = (s32)fx_1a7_op80Trails1[i];
                         work->emit8[i]->trailSlots = 1;
                         work->emit8[i]->trailStride = 0x38;
                     }
                     if (work->emit8[i] != NULL) {
                         work->emit8[i]->file->m.module.update = fx_1a7_op80ParticleMotions[i];
                     }
-                    D_801E8950[i] = i * 0x155 + ex->btlfx_rand() % 4096;
-                    D_801E8990[i] = i * 10;
-                } else if (t >= D_801E8874[i]) {
-                    D_801E8950[i] += 0x200;
-                    D_801E8990[i] += (i / 2 + 1) * 8;
+                    fx_1a7_op80Angles[i] = i * 0x155 + ex->btlfx_rand() % 4096;
+                    fx_1a7_op80Radii[i] = i * 10;
+                } else if (t >= fx_1a7_op80StartFrames[i]) {
+                    fx_1a7_op80Angles[i] += 0x200;
+                    fx_1a7_op80Radii[i] += (i / 2 + 1) * 8;
                 }
             }
         }
@@ -162,11 +162,11 @@ s32 fx_1a7_op80(s32 mode, Fx1a7Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             if (work->emit0 != NULL && work->emit0->state == BTLFX_EMIT_DONE) {
                 work->emit0 = NULL;
             }
-            ex->btlfx_moveEmitterTo((s32)work->emit0, (s32)&work->unk34);
+            ex->btlfx_moveEmitterTo((s32)work->emit0, (s32)&work->pos34);
             if (work->emit4 != NULL && work->emit4->state == BTLFX_EMIT_DONE) {
                 work->emit4 = NULL;
             }
-            ex->btlfx_moveEmitterTo((s32)work->emit4, (s32)&work->unk34);
+            ex->btlfx_moveEmitterTo((s32)work->emit4, (s32)&work->pos34);
         }
         return frame >= 0x50;
     }
@@ -185,57 +185,57 @@ s32 fx_1a7_op81(s32 mode, Fx1a7Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
     } else if (mode == 1) {
         fx_1a7_env = env;
         ex->btlfx_getUnitBodyPos(0x10, 0, (s16 *)&work->pos34);
-        D_801EA5D8.vx = work->pos34.vx;
-        D_801EA5D8.vy = work->pos34.vy;
-        D_801EA5D8.vz = work->pos34.vz;
+        fx_1a7_op81MotionTo.vx = work->pos34.vx;
+        fx_1a7_op81MotionTo.vy = work->pos34.vy;
+        fx_1a7_op81MotionTo.vz = work->pos34.vz;
         ex->btlfx_getUnitBodyPos(0, 0, (s16 *)&work->pos3C);
         ex->btlfx_getUnitPos(0, (s16 *)&work->pos44);
-        D_801EA5C8.vx = work->pos3C.vx;
-        D_801EA5C8.vy = work->pos3C.vy;
-        D_801EA5C8.vz = work->pos3C.vz;
+        fx_1a7_op81MotionFrom.vx = work->pos3C.vx;
+        fx_1a7_op81MotionFrom.vy = work->pos3C.vy;
+        fx_1a7_op81MotionFrom.vz = work->pos3C.vz;
         work->pos54.vx = work->pos3C.vx;
         work->pos54.vy = work->pos3C.vy;
         work->pos54.vz = work->pos3C.vz;
         work->pos54.vy -= 0xC8;
         work->emit0 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 4), (s32)&work->pos54);
         if (work->emit0 != NULL) {
-            work->emit0->trails = (s32)D_801E91D0;
+            work->emit0->trails = (s32)fx_1a7_op81Trails0;
             work->emit0->trailSlots = 0x16;
             work->emit0->trailStride = 0x38;
         }
         work->emit4 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 5), (s32)&work->pos44);
-        ex->btlfx_aimAngles((s16 *)&work->pos44, (s16 *)&work->pos34, (s16 *)&work->unk4C);
-        ex->btlfx_pointAhead((s16 *)&work->pos34, (s16 *)&work->unk4C, -0x190, (s16 *)&work->pos5C);
-        D_801EA5D8.vx = work->pos5C.vx;
-        D_801EA5D8.vy = work->pos5C.vy;
-        D_801EA5D8.vz = work->pos5C.vz;
+        ex->btlfx_aimAngles((s16 *)&work->pos44, (s16 *)&work->pos34, (s16 *)&work->angle4C);
+        ex->btlfx_pointAhead((s16 *)&work->pos34, (s16 *)&work->angle4C, -0x190, (s16 *)&work->pos5C);
+        fx_1a7_op81MotionTo.vx = work->pos5C.vx;
+        fx_1a7_op81MotionTo.vy = work->pos5C.vy;
+        fx_1a7_op81MotionTo.vz = work->pos5C.vz;
     } else {
         frame = entry->frame;
         if (frame >= 0x14) {
             t = frame - 0x14;
             for (i = 0; i < 9; i++) {
-                if (t == D_801E889C[i]) {
-                    work->emit8[i] = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, D_801E8888[i]), (s32)&D_801EA5E0);
+                if (t == fx_1a7_op81StartFrames[i]) {
+                    work->emit8[i] = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, fx_1a7_op81EmitFileIds[i]), (s32)&fx_1a7_emitPos);
                     if (work->emit8[i] != NULL) {
-                        work->emit8[i]->trails = (s32)D_801E96A0[i];
+                        work->emit8[i]->trails = (s32)fx_1a7_op81Trails1[i];
                         work->emit8[i]->trailSlots = 1;
                         work->emit8[i]->trailStride = 0xB0;
                     }
                     if (work->emit8[i] != NULL) {
                         work->emit8[i]->file->m.module.update = fx_1a7_op81ParticleMotions[i];
                     }
-                    D_801E8970[i] = i * 0x155 + ex->btlfx_rand() % 4096;
-                    D_801E89B0[i] = ex->btlfx_rand() % 200 + 0x64;
-                } else if (t >= D_801E889C[i]) {
-                    D_801E8970[i] += 0x80;
+                    fx_1a7_op81Angles[i] = i * 0x155 + ex->btlfx_rand() % 4096;
+                    fx_1a7_op81Radii[i] = ex->btlfx_rand() % 200 + 0x64;
+                } else if (t >= fx_1a7_op81StartFrames[i]) {
+                    fx_1a7_op81Angles[i] += 0x80;
                     k = 0x78;
-                    if (t - D_801E889C[i] >= 5) {
+                    if (t - fx_1a7_op81StartFrames[i] >= 5) {
                         k = 0x28;
                     }
                     if (ex->btlfx_rand() & 1) {
-                        D_801E89B0[i] += ex->btlfx_rand() % k;
+                        fx_1a7_op81Radii[i] += ex->btlfx_rand() % k;
                     } else {
-                        D_801E89B0[i] -= ex->btlfx_rand() % k;
+                        fx_1a7_op81Radii[i] -= ex->btlfx_rand() % k;
                     }
                 }
             }
@@ -243,7 +243,7 @@ s32 fx_1a7_op81(s32 mode, Fx1a7Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
         if (frame == 0x1C) {
             work->emit2C = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 7), (s32)&work->pos34);
             if (work->emit2C != NULL) {
-                work->emit2C->trails = (s32)D_801E9CD0;
+                work->emit2C->trails = (s32)fx_1a7_op81Trails2;
                 work->emit2C->trailSlots = 0xD;
                 work->emit2C->trailStride = 0xB0;
             }

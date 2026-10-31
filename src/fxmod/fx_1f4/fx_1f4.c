@@ -9,13 +9,13 @@ s32 fx_1f4_op80(s32 mode, Fx1f4Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
         *arg4 = 0x10;
     } else if (mode == 1) {
         fx_1f4_env = env;
-        work->unk0 = 0;
-        work->unk4 = 0;
+        work->fadeOut0 = 0;
+        work->fadeIn4 = 0;
         ex->btlfx_getUnitBodyPos(0, 0, (s16 *)&work->pos8);
         p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 2), (s32)&work->pos8);
         if (p != NULL) {
             p->otZ = ex->btlfx_addRadiusSixth(0, 0x200);
-            p->trails = (s32)D_801E79C8;
+            p->trails = (s32)fx_1f4_op80Trails0;
             p->trailSlots = 0x1E;
             p->trailStride = 0x9C;
         }
@@ -26,7 +26,7 @@ s32 fx_1f4_op80(s32 mode, Fx1f4Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
             p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 1), (s32)&work->pos8);
             if (p != NULL) {
                 p->otZ = ex->btlfx_addRadiusSixth(0, 0x200);
-                p->trails = (s32)D_801E8C18;
+                p->trails = (s32)fx_1f4_op80Trails1;
                 p->trailSlots = 0x1E;
                 p->trailStride = 0x9C;
             }
@@ -36,19 +36,19 @@ s32 fx_1f4_op80(s32 mode, Fx1f4Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
             }
             break;
         case 24:
-            work->unk0 = 0x10;
+            work->fadeOut0 = 0x10;
             break;
         case 40:
-            work->unk4 = 0x10;
+            work->fadeIn4 = 0x10;
             break;
         }
-        if (work->unk0 != 0) {
-            work->unk0--;
-            ex->btlfx_fadeUnitById(0, work->unk0 * 8);
+        if (work->fadeOut0 != 0) {
+            work->fadeOut0--;
+            ex->btlfx_fadeUnitById(0, work->fadeOut0 * 8);
         }
-        if (work->unk4 != 0) {
-            work->unk4--;
-            ex->btlfx_fadeUnitById(0, 0x80 - work->unk4 * 8);
+        if (work->fadeIn4 != 0) {
+            work->fadeIn4--;
+            ex->btlfx_fadeUnitById(0, 0x80 - work->fadeIn4 * 8);
         }
         return frame >= 0x56;
     }

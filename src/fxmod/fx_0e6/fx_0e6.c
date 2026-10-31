@@ -24,7 +24,7 @@ s32 fx_0e6_op80(s32 mode, Fx0e6Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
         ex->btlfx_getUnitPos(0x10, (s16 *)&work->pos2C);
         ex->btlfx_getUnitBodyPos(0, 0, (s16 *)&work->pos34);
         ex->btlfx_drawTrail((u8 *)ex->btlfx_getFileData(entry->file, 9), 0, 0, -1, 0x1000, 0x1000, mode,
-                          (u8 *)&D_801E7B68, 0);
+                          (u8 *)&fx_0e6_strip, 0);
     } else {
         frame = entry->frame;
         ex->btlfx_lerpVec((s16 *)&work->pos2C, (s16 *)&work->pos34, (frame << 22) >> 12, (s16 *)&pos);
@@ -36,7 +36,7 @@ s32 fx_0e6_op80(s32 mode, Fx0e6Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
         }
         if (frame < 8) {
             n = 25;
-            line = &D_801E7B68;
+            line = &fx_0e6_strip;
             line->unk2 = 0x18;
             line->unk0 = 0x18;
             line->unk1 = 0;

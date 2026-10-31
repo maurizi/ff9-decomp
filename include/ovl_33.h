@@ -257,7 +257,7 @@ void menuEquip_drawListRow(s32, s32, s32, MenuView *);
 
 typedef struct {
     u16 helpOffset;
-    u16 unk2;
+    u16 unk2; /* not used by C */
 } HelpOfs; /* item help text offsets into s_menuAbilityActionHelp */
 extern HelpOfs s_menuAbilityActionHelpOfs[];
 extern u8 s_menuAbilityActionHelp[];

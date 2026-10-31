@@ -24,11 +24,11 @@ typedef struct {
     Pool6CEntry *emit8;
     Pool6CEntry *emitC;
     SVECTOR pos10; /* target body position */
-    s32 unk18; /* target index */
+    s32 target18; /* target index */
 } Fx053Work82;
 
 extern Unk800F78A4 *fx_053_env;
-extern s32 D_801E7CBC[];
+extern s32 fx_053_trails[];
 
 static void fxm_setSignal(Unk800F78A4 *env, s32 i, s32 v);
 

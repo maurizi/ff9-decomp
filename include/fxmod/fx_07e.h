@@ -5,35 +5,35 @@
 #include "btlfx_mod.h"
 
 typedef struct {
-    s32 unk0; /* state */
-    s32 unk4; /* spawned */
-    s32 unk8; /* frame */
+    s32 state0; /* state */
+    s32 spawnCount4; /* spawned */
+    s32 frame8; /* frame */
     SVECTOR posC; /* caster body position */
-    SVECTOR unk14; /* ring rotation */
-    s32 unk1C; /* radius */
-    s32 unk20; /* scale */
-    s32 unk24; /* shrink done */
+    SVECTOR ringRot14; /* ring rotation */
+    s32 radius1C; /* radius */
+    s32 scale20; /* scale */
+    s32 shrinkDone24; /* shrink done */
     s32 model28; /* model */
 } Fx07eWork80; /* 0x2C */
 
 typedef struct {
-    s32 unk0; /* angle offset */
-    s32 unk4; /* state */
-    s32 unk8; /* index */
+    s32 angle0; /* angle offset */
+    s32 state4; /* state */
+    s32 index8; /* index */
 } Fx07ePart; /* 0xC */
 
 extern Unk800F78A4 *fx_07e_env;
 extern BtlModel fx_07e_effModels[];
-extern s32 D_801E8B90;
+extern s32 fx_07e_twist;
 
 static s32 fx_07e_op80PoolTask(s32 mode, Fx07ePart *part, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 frame, s32 a5,
                   Fx07eWork80 *work);
 static void fx_07e_op81GridVertex(s32 r, s32 a1, s32 a, s32 a3, s16 *out);
 
 typedef struct {
-    s32 unk0; /* state */
-    s32 unk4; /* frame counter */
-    s32 unk8; /* blend */
+    s32 state0; /* state */
+    s32 frame4; /* frame counter */
+    s32 otZ8; /* blend */
     SVECTOR posC; /* caster body position */
 } Fx07eWork81; /* 0x14 */
 

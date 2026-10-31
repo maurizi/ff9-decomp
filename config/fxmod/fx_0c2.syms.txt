@@ -13,3 +13,6 @@ fxm_turnUnitBy = 0x801E7EC4; // type:func [code] adds delta / n to the unit rota
 fxm_turnUnitToward = 0x801E8040; // type:func [code] on frame 0 aims unit at target (optionally relative and turned back), then turns by 1/n of it per frame
 fx_0c2_op81ParticleMotion = 0x801E7804; // type:func [code] particle motion callback (EffMotion kind 0xFF, called by btlfx_updateParticles, nonzero ends the particle), installed by fx_0c2_op81
 fx_0c2_env = 0x801E847C; // [code] the effect env (Unk800F78A4) the op handlers store in mode 1, used by the helpers for BTLFX_EXPORTS
+fx_0c2_pathFrom = 0x801E8484; // [code] start of the btlfx_lerpVec path of fx_0c2_op81ParticleMotion, set to the unit 0x10 bone 0x17 position by fx_0c2_op81
+fx_0c2_pathTo = 0x801E848C; // [code] end of the btlfx_lerpVec path of fx_0c2_op81ParticleMotion, a point on the target set by fx_0c2_op81 (btlfx_pointAhead)
+fx_0c2_emitPos = 0x801E8494; // [code] origin passed to btlfx_startEmitter for the file block 0xA emitter whose particles fx_0c2_op81ParticleMotion moves

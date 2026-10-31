@@ -10,10 +10,10 @@ void pad_resetState(void) {
     s32 j;
 
     g_padFlags = 0x8000;
-    g_padAnalogThresholds.unk0[0] = 0x5A;
-    g_padAnalogThresholds.unk0[1] = 0xA6;
-    g_padAnalogThresholds.unk0[2] = 0x5A;
-    g_padAnalogThresholds.unk0[3] = 0xA6;
+    g_padAnalogThresholds.b[0] = 0x5A;
+    g_padAnalogThresholds.b[1] = 0xA6;
+    g_padAnalogThresholds.b[2] = 0x5A;
+    g_padAnalogThresholds.b[3] = 0xA6;
     for (i = 0; i < 2; i++) {
         g_padPortHeld[i] = g_padPortPressed[i] = g_padPortReleased[i] = g_padPortMask[i] = g_padPortState[i] = 0;
         g_padPortPrevHeld[i] = 0;
@@ -93,10 +93,10 @@ void pad_update(void) {
             j = 0;
             buttons = ~PADBUF(i)->buttons;
             buttons &= 0xFFFF;
-            g_padAnalog[i].unk0[0] = PADBUF(i)->analog[0];
-            g_padAnalog[i].unk0[1] = PADBUF(i)->analog[1];
-            g_padAnalog[i].unk0[2] = PADBUF(i)->analog[2];
-            g_padAnalog[i].unk0[3] = PADBUF(i)->analog[3];
+            g_padAnalog[i].b[0] = PADBUF(i)->analog[0];
+            g_padAnalog[i].b[1] = PADBUF(i)->analog[1];
+            g_padAnalog[i].b[2] = PADBUF(i)->analog[2];
+            g_padAnalog[i].b[3] = PADBUF(i)->analog[3];
             g_padPortPrevHeld[i] = g_padPortHeld[i];
             g_padPortHeld[i] = 0;
             for (; j < 32; j++) {
@@ -108,31 +108,31 @@ void pad_update(void) {
                 }
             }
             if ((g_padFlags & 0x8000) && ((g_padBuf[i].hdr >> 12) & 0xF) == PAD_ID_ANALOG) {
-                if (g_padAnalog[i].unk0[2] < g_padAnalogThresholds.unk0[2]) {
+                if (g_padAnalog[i].b[2] < g_padAnalogThresholds.b[2]) {
                     g_padPortHeld[i] |= PAD_LEFT;
                 }
-                if (g_padAnalog[i].unk0[2] > g_padAnalogThresholds.unk0[3]) {
+                if (g_padAnalog[i].b[2] > g_padAnalogThresholds.b[3]) {
                     g_padPortHeld[i] |= PAD_RIGHT;
                 }
-                if (g_padAnalog[i].unk0[3] < g_padAnalogThresholds.unk0[0]) {
+                if (g_padAnalog[i].b[3] < g_padAnalogThresholds.b[0]) {
                     g_padPortHeld[i] |= PAD_UP;
                 }
-                if (g_padAnalog[i].unk0[3] > g_padAnalogThresholds.unk0[1]) {
+                if (g_padAnalog[i].b[3] > g_padAnalogThresholds.b[1]) {
                     g_padPortHeld[i] |= PAD_DOWN;
                 }
             }
             g_padPortHeld[i] &= ~g_padPortMask[i];
-            if ((g_padPortMask[i] & PAD_UP) && (s8)g_padAnalog[i].unk0[3] >= 0) {
-                g_padAnalog[i].unk0[3] = 0x80;
+            if ((g_padPortMask[i] & PAD_UP) && (s8)g_padAnalog[i].b[3] >= 0) {
+                g_padAnalog[i].b[3] = 0x80;
             }
-            if ((g_padPortMask[i] & PAD_DOWN) && g_padAnalog[i].unk0[3] > 0x80) {
-                g_padAnalog[i].unk0[3] = 0x80;
+            if ((g_padPortMask[i] & PAD_DOWN) && g_padAnalog[i].b[3] > 0x80) {
+                g_padAnalog[i].b[3] = 0x80;
             }
-            if ((g_padPortMask[i] & PAD_LEFT) && (s8)g_padAnalog[i].unk0[2] >= 0) {
-                g_padAnalog[i].unk0[2] = 0x80;
+            if ((g_padPortMask[i] & PAD_LEFT) && (s8)g_padAnalog[i].b[2] >= 0) {
+                g_padAnalog[i].b[2] = 0x80;
             }
-            if ((g_padPortMask[i] & PAD_RIGHT) && g_padAnalog[i].unk0[2] > 0x80) {
-                g_padAnalog[i].unk0[2] = 0x80;
+            if ((g_padPortMask[i] & PAD_RIGHT) && g_padAnalog[i].b[2] > 0x80) {
+                g_padAnalog[i].b[2] = 0x80;
             }
             g_padPortPressed[i] = (g_padPortHeld[i] ^ g_padPortPrevHeld[i]) & g_padPortHeld[i];
             g_padPortReleased[i] = (g_padPortHeld[i] ^ g_padPortPrevHeld[i]) & g_padPortPrevHeld[i];

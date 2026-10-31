@@ -6,3 +6,12 @@ fxm_lerpSvec = 0x801E8238; // type:func [code] out = a + (b - a) * t / 0x1000 (L
 fxm_lerpRatio = 0x801E827C; // type:func [code] (from * (n - t) + to * t) / n, the module copy of btlfx_lerpRatio
 fx_096_env = 0x801E831C; // [code] the effect env (Unk800F78A4) the op handlers store in mode 1, used by the helpers for BTLFX_EXPORTS
 fx_096_effModels = 0x801E832C; // [code] effect model buffers given to btlfx_initEffModels (BtlModel per slot)
+fx_096_verts = 0x801E84BC; // [code] split vertex buffer of model62 (Hi_SplitMdlVertex in fx_096_splitModel), moved by fx_096_explodeModel
+fx_096_restVerts = 0x801E990C; // [code] copy of fx_096_verts taken at frame 0 of fx_096_op81, restored before each fx_096_explodeModel
+fx_096_polyCenters = 0x801EAD5C; // [code] per-polygon centres computed by fx_096_calcPolyCenters, the direction fx_096_explodePolys pushes each polygon
+fx_096_polyVerts = 0x801EB28C; // [code] vertex pointer per polygon kind (8) from Hi_GetMdlVertexPtr in fx_096_splitModel
+fx_096_polyCounts = 0x801EB2CC; // [code] polygon count per polygon kind (8) from Hi_GetMdlVertexPtr in fx_096_splitModel
+fx_096_explodeModel = 0x801E7744; // type:func [code] fx_096_explodePolys for each of the 8 polygon kinds of each mesh of the model (btlfx_getEffModelMeshCount)
+fx_096_explodePolys = 0x801E7840; // type:func [code] moves the 3 or 4 vertices of each polygon of a kind outward by its centre times t / 2
+fx_096_splitModel = 0x801E7A74; // type:func [code] Hi_SplitMdlVertex into verts, Hi_GetMdlVertexPtr per polygon kind into fx_096_polyVerts fx_096_polyCounts, then fx_096_calcPolyCenters
+fx_096_calcPolyCenters = 0x801E7BC4; // type:func [code] average of the 3 or 4 vertices of each polygon of a kind into centers

@@ -286,7 +286,7 @@ s32 mbg_play(u32 movie, s32 idx) {
         return 0;
     }
     g_mbgMovie = &g_mbgMovieLists[movie].entries[idx];
-    g_mbgIsBackground = g_mbgMovie->unk5;
+    g_mbgIsBackground = g_mbgMovie->background;
     if (g_mbgRgb24 < 0) {
         mbg_setRgb24(g_mbgMovie->rgb24);
     }

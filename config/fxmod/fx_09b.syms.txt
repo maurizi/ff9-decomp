@@ -14,3 +14,7 @@ fxm_pinParticle4 = 0x801E77D4; // type:func [code] particle motion callback (Eff
 fx_09b_env = 0x801E8164; // [code] the effect env (Unk800F78A4) the op handlers store in mode 1, used by the helpers for BTLFX_EXPORTS
 fx_09b_effModels = 0x801E8174; // [code] effect model buffers given to btlfx_initEffModels (BtlModel per slot)
 fx_09b_pinParticles = 0x801E8108; // [code] table of PinParticle callbacks (data), indexed by the op
+fx_09b_shotBlocks = 0x801E80F4; // [code] effect file block per instance (Fx09bWork.instance6C, 0..4) of the emitter pinned by fx_09b_pinParticles
+fx_09b_trails = 0x801E8564; // [code] trail buffer per instance (5) given to the pinned emitter (Pool6CEntry trails, 0xE slots of 0x4C)
+fx_09b_shotPos = 0x801E9A34; // [code] position per instance, lerped from the bone to the target over frames 0-5 in fx_09b_op80, where fxm_pinParticleN holds the particles
+fx_09b_emitStartPos = 0x801E9A64; // [code] start position per instance of the pinned emitter (btlfx_startEmitter in fx_09b_op80 mode 1)

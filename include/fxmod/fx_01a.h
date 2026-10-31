@@ -12,7 +12,7 @@ typedef struct {
 } Fx01aWork;
 
 extern Unk800F78A4 *fx_01a_env;
-extern s32 D_801E7920[];
-extern s32 D_801E7D80[];
+extern s32 fx_01a_trails[];
+extern s32 fx_01a_trails2[];
 
 #endif

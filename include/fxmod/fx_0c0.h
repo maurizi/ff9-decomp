@@ -1,7 +1,9 @@
 #ifndef FX_0C0_H
 #define FX_0C0_H
 
-/* Effect module fx_0c0 (dir 13 file 0xC0). */
+/* Effect module fx_0c0 (dir 13 file 0xC0): Shock; Shock (Seiken); enemy Shock (Beatrix). Evidence: [data] the party
+ * ability / item tables and enemy sequences that play this file id (tools/effect_labels.py;
+ * docs/runtime-findings.md, "Round 31 runtime pass"). */
 #include "btlfx_mod.h"
 
 typedef struct {

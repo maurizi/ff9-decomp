@@ -20,15 +20,15 @@ s32 fx_12a_op80(s32 mode, Fx12aWork80 *work, Unk800F78A4 *env, Unk80100C78Entry 
         work->pos28.vy += 0x64;
         work->pos20.vz -= 0x64;
         work->pos28.vz -= 0x64;
-        work->unk40.vx = env->targets->centerX;
-        work->unk40.vy = env->targets->centerY;
-        work->unk40.vz = env->targets->centerZ;
-        work->unk48.vx = env->targets->centerX;
-        work->unk48.vy = env->targets->centerY;
-        work->unk48.vz = env->targets->centerZ;
-        work->unk40.vx = work->pos20.vx;
-        work->unk48.vx = work->pos28.vx;
-        work->unk40.vy -= 0x190;
+        work->pos40.vx = env->targets->centerX;
+        work->pos40.vy = env->targets->centerY;
+        work->pos40.vz = env->targets->centerZ;
+        work->pos48.vx = env->targets->centerX;
+        work->pos48.vy = env->targets->centerY;
+        work->pos48.vz = env->targets->centerZ;
+        work->pos40.vx = work->pos20.vx;
+        work->pos48.vx = work->pos28.vx;
+        work->pos40.vy -= 0x190;
         work->emit0 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 1), (s32)&work->pos20);
         work->emit8 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 2), (s32)&work->pos20);
         work->emit4 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 1), (s32)&work->pos28);
@@ -39,8 +39,8 @@ s32 fx_12a_op80(s32 mode, Fx12aWork80 *work, Unk800F78A4 *env, Unk80100C78Entry 
         if (work->emitC != NULL) {
             work->emitC->otZ = ex->btlfx_addRadiusSixth(0x10, 0x80);
         }
-        ex->btlfx_aimAngles((s16 *)&work->pos20, (s16 *)&work->unk40, (s16 *)&work->unk50);
-        ex->btlfx_aimAngles((s16 *)&work->pos28, (s16 *)&work->unk48, (s16 *)&work->unk58);
+        ex->btlfx_aimAngles((s16 *)&work->pos20, (s16 *)&work->pos40, (s16 *)&work->rot50);
+        ex->btlfx_aimAngles((s16 *)&work->pos28, (s16 *)&work->pos48, (s16 *)&work->rot58);
     } else {
         frame = entry->frame;
         if (frame == 6) {
@@ -61,9 +61,9 @@ s32 fx_12a_op80(s32 mode, Fx12aWork80 *work, Unk800F78A4 *env, Unk80100C78Entry 
                     work->emit10 = NULL;
                 }
                 if (work->emit10 != NULL) {
-                    work->emit10->rot.vx = work->unk50.vx;
-                    work->emit10->rot.vy = work->unk50.vy;
-                    work->emit10->rot.vz = work->unk50.vz;
+                    work->emit10->rot.vx = work->rot50.vx;
+                    work->emit10->rot.vy = work->rot50.vy;
+                    work->emit10->rot.vz = work->rot50.vz;
                 }
             }
             if (work->emit18 != NULL) {
@@ -71,9 +71,9 @@ s32 fx_12a_op80(s32 mode, Fx12aWork80 *work, Unk800F78A4 *env, Unk80100C78Entry 
                     work->emit18 = NULL;
                 }
                 if (work->emit18 != NULL) {
-                    work->emit18->rot.vx = work->unk50.vx;
-                    work->emit18->rot.vy = work->unk50.vy;
-                    work->emit18->rot.vz = work->unk50.vz;
+                    work->emit18->rot.vx = work->rot50.vx;
+                    work->emit18->rot.vy = work->rot50.vy;
+                    work->emit18->rot.vz = work->rot50.vz;
                 }
             }
             if (work->emit14 != NULL) {
@@ -81,9 +81,9 @@ s32 fx_12a_op80(s32 mode, Fx12aWork80 *work, Unk800F78A4 *env, Unk80100C78Entry 
                     work->emit14 = NULL;
                 }
                 if (work->emit14 != NULL) {
-                    work->emit14->rot.vx = work->unk58.vx;
-                    work->emit14->rot.vy = work->unk58.vy;
-                    work->emit14->rot.vz = work->unk58.vz;
+                    work->emit14->rot.vx = work->rot58.vx;
+                    work->emit14->rot.vy = work->rot58.vy;
+                    work->emit14->rot.vz = work->rot58.vz;
                 }
             }
             if (work->emit1C != NULL) {
@@ -91,9 +91,9 @@ s32 fx_12a_op80(s32 mode, Fx12aWork80 *work, Unk800F78A4 *env, Unk80100C78Entry 
                     work->emit1C = NULL;
                 }
                 if (work->emit1C != NULL) {
-                    work->emit1C->rot.vx = work->unk58.vx;
-                    work->emit1C->rot.vy = work->unk58.vy;
-                    work->emit1C->rot.vz = work->unk58.vz;
+                    work->emit1C->rot.vx = work->rot58.vx;
+                    work->emit1C->rot.vy = work->rot58.vy;
+                    work->emit1C->rot.vz = work->rot58.vz;
                 }
             }
         }
@@ -128,17 +128,17 @@ s32 fx_12a_op82(s32 mode, Fx12aWork82 *work, Unk800F78A4 *env, Unk80100C78Entry 
         *arg4 = 0x14;
     } else if (mode == 1) {
         n = *arg4;
-        work->unk10 = n;
+        work->unit10 = n;
         fx_12a_env = env;
         if (n >= env->targets->targetCount) {
             fxm_setSignal(env, BTLFX_SIG_WAIT, 1);
             return 1;
         }
         fxm_setSignal(env, BTLFX_SIG_WAIT, 0);
-        ex->btlfx_getUnitPos(work->unk10, (s16 *)&work->pos8);
+        ex->btlfx_getUnitPos(work->unit10, (s16 *)&work->pos8);
         work->emit0 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0xC), (s32)&work->pos8);
         if (work->emit0 != NULL) {
-            work->emit0->otZ = ex->btlfx_addRadiusSixth(work->unk10, 0x80);
+            work->emit0->otZ = ex->btlfx_addRadiusSixth(work->unit10, 0x80);
         }
     } else {
         frame = entry->frame;

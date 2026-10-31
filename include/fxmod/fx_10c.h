@@ -1,7 +1,8 @@
 #ifndef FX_10C_H
 #define FX_10C_H
 
-/* Effect module fx_10c (dir 13 file 0x10C). */
+/* Effect module fx_10c (dir 13 file 0x10C): Throw spear. Evidence: the static sweep of the ability, item
+ * and enemy-sequence effect ids (docs/effect-modules.md, tools/effect_labels.py). */
 #include "btlfx_mod.h"
 
 typedef struct {
@@ -11,8 +12,8 @@ typedef struct {
     SVECTOR rot18; /* model rotation */
     VECTOR pos20; /* model position */
     VECTOR scale30; /* model scale */
-    SVECTOR unk40[2]; /* rotation trail */
-    VECTOR unk50[2]; /* position trail */
+    SVECTOR rot40[2]; /* rotation trail */
+    VECTOR pos50[2]; /* position trail */
     u16 model70; /* models */
     u16 model72;
 } Fx10cWork80;

@@ -161,9 +161,9 @@ static void fxm_drawRadialScreenGrid(u32 ot, s32 x, s32 y, s32 n, s32 m, s32 dr,
 
 static void fx_18b_op80GridVertex(s32 r, s32 i, s32 ang, s32 arg3, s16 *out) {
     BtlfxExports *ex = BTLFX_EXPORTS(fx_18b_env);
-    s32 s = (ex->math_sin((i << 11) >> 4) * D_801E8284) >> 12;
+    s32 s = (ex->math_sin((i << 11) >> 4) * fx_18b_waveAmp) >> 12;
 
-    r += (s * ex->math_sin(D_801E8280 + (i << 10))) >> 12;
+    r += (s * ex->math_sin(fx_18b_wavePhase + (i << 10))) >> 12;
     out[0] = (ex->math_cos(ang) * r) >> 12;
     out[1] = (ex->math_sin(ang) * r) >> 12;
 }
@@ -182,25 +182,25 @@ s32 fx_18b_op80(s32 mode, Fx18bWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
         ex->btlfx_getUnitBodyPos(0, 0, (s16 *)&work->posC);
         ex->btlfx_getUnitBodyPos(0x10, 0, (s16 *)&work->pos14);
         work->unk8 = ex->btlfx_addRadiusSixth(0, 0x20);
-        D_801E8280 = 0;
-        work->unk0 = 0;
-        D_801E8284 = 0;
+        fx_18b_wavePhase = 0;
+        work->state0 = 0;
+        fx_18b_waveAmp = 0;
     } else {
         frame = entry->frame;
-        switch (work->unk0) {
+        switch (work->state0) {
         case 0:
             t = (frame << 12) / 40;
-            D_801E8284 = ex->math_sin(t >> 2) / 320;
-            D_801E8280 -= 0x200;
+            fx_18b_waveAmp = ex->math_sin(t >> 2) / 320;
+            fx_18b_wavePhase -= 0x200;
             if (frame >= 0x28) {
-                work->unk0 = 1;
+                work->state0 = 1;
                 entry->frame = -1;
             }
             break;
         case 1:
             t = (frame << 12) / 40;
-            D_801E8284 = ex->math_cos(t >> 2) / 320;
-            D_801E8280 += 0x200;
+            fx_18b_waveAmp = ex->math_cos(t >> 2) / 320;
+            fx_18b_wavePhase += 0x200;
             if (frame == 1) {
                 p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 1), (s32)&work->posC);
                 if (p != NULL) {
@@ -217,7 +217,7 @@ s32 fx_18b_op80(s32 mode, Fx18bWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
         rect.w = 0x100;
         rect.h = 0x100;
         fxm_drawRadialScreenGrid(1, 0xA0, 0x68, 0x10, 0x10, 8, 0x88, 0x88, &rect, fx_18b_op80GridVertex);
-        work->unk4++;
+        work->frame4++;
     }
     return 0;
 }

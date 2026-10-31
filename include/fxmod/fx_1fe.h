@@ -7,12 +7,12 @@
 #include "btlfx_mod.h"
 
 typedef struct {
-    s32 unk0; /* state */
-    s32 unk4; /* frame counter */
+    s32 state0; /* state */
+    s32 frame4; /* frame counter */
     SVECTOR unk8;
     SVECTOR pos10;
     SVECTOR pos18;
-    SVECTOR unk20; /* camera target */
+    SVECTOR camTarget20; /* camera target */
     u8 pad28[0x34 - 0x28];
     s32 model34; /* model */
     s32 model38; /* model */
@@ -20,17 +20,17 @@ typedef struct {
 } Fx1feWork81; /* 0x40 */
 
 extern BtlModel fx_1fe_effModels[];
-extern SVECTOR D_801E88F8;
-extern SVECTOR D_801E8900;
-extern CVECTOR D_801E8908;
-extern u8 D_801E8960[];
+extern SVECTOR fx_1fe_basePos0;
+extern SVECTOR fx_1fe_basePos1;
+extern CVECTOR fx_1fe_rippleColor;
+extern u8 fx_1fe_op81Trails[];
 s32 fx_1fe_op81(s32 mode, Fx1feWork81 *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *arg4);
 
 /* propagated */
 
 extern Unk800F78A4 *fx_1fe_env;
-extern s32 D_801E95E8;
-extern s32 D_801E95EC;
+extern s32 fx_1fe_waveAmp;
+extern s32 fx_1fe_wavePhase;
 static void fxm_waveVertexX(s16 *v);
 s32 fx_1fe_op85(s32 mode, void *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *arg4);
 

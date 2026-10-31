@@ -23,14 +23,14 @@ static void fxm_buildPathTrail(Fx1bdPath *keys, u8 *buf, s32 size, s32 start, s3
     for (i = 0; i < n; i++) {
         k = i + 1;
         j = n - k + start;
-        if (clip != 0 && j >= keys->unk2) {
+        if (clip != 0 && j >= keys->count2) {
             break;
         }
         fxm_posPathGet(keys, j, &v);
         p->vx = v.vx;
         p->vy = v.vy;
         p->vz = v.vz;
-        p->pad = from + (to - from) / keys->unk2 * (n - i);
+        p->pad = from + (to - from) / keys->count2 * (n - i);
         p++;
     }
 }
@@ -107,20 +107,20 @@ s32 fx_1bd_op82(s32 mode, Fx1bdWork82 *work, Unk800F78A4 *env, Unk80100C78Entry 
         work->unk44.vy = 0x1000;
         work->unk44.vz = 0x1000;
         work->model68 = ex->Hi_RegisterTexEffModel((BtlUnit9C8 *)ex->btlfx_getFileData(entry->file, 0x2B), 0x17, 0x3D00, 0x80, 0xE0);
-        D_801EB764.unk10 = 0x60;
-        D_801EB764.unk8 = 0;
-        D_801EB764.unkA = 0;
-        D_801EB764.unkC = 0x1000;
-        D_801EB764.unkE = 0x1000;
-        D_801EB764.unk12 = 0x30;
-        work->unk60 = -1;
-        work->unk62 = -1;
+        fx_1bd_pathTrail.alpha10 = 0x60;
+        fx_1bd_pathTrail.start8 = 0;
+        fx_1bd_pathTrail.countA = 0;
+        fx_1bd_pathTrail.alphaC = 0x1000;
+        fx_1bd_pathTrail.unkE = 0x1000;
+        fx_1bd_pathTrail.alpha12 = 0x30;
+        work->timer60 = -1;
+        work->timer62 = -1;
         work->unk64 = 0;
     } else {
         frame = entry->frame;
         switch (frame) {
         case 0:
-            ex->btlfx_drawBgOffscreen(0x1C0, 0x100, 0x80, 0xA0, D_801EB854, 0, 0x168, 0xF6E);
+            ex->btlfx_drawBgOffscreen(0x1C0, 0x100, 0x80, 0xA0, fx_1bd_bgOt, 0, 0x168, 0xF6E);
             break;
         case 22:
             work->pos58.vx = -3;
@@ -129,10 +129,10 @@ s32 fx_1bd_op82(s32 mode, Fx1bdWork82 *work, Unk800F78A4 *env, Unk80100C78Entry 
             work->emit0 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0x18), (s32)&work->pos58);
             break;
         case 21:
-            work->unk60 = 4;
+            work->timer60 = 4;
             break;
         case 15:
-            work->unk62 = 6;
+            work->timer62 = 6;
             break;
         case 46:
             ex->Hi_FreeEffModel(work->model66);
@@ -146,22 +146,22 @@ s32 fx_1bd_op82(s32 mode, Fx1bdWork82 *work, Unk800F78A4 *env, Unk80100C78Entry 
             ex->Hi_ModifyEffModelRGB(work->model66, 6, 6, 6);
         }
         if (frame >= 21 && frame < 31) {
-            D_801EB764.unkA = (frame - 21) * 2;
-            D_801EB764.unkA = D_801EB764.unkA >= 10 ? 9 : D_801EB764.unkA;
-            if (work->unk60 >= 0) {
-                D_801EB764.unkC = fxm_lerpRatio(0, 0x1000, 4 - work->unk60, 4);
-                work->unk60--;
+            fx_1bd_pathTrail.countA = (frame - 21) * 2;
+            fx_1bd_pathTrail.countA = fx_1bd_pathTrail.countA >= 10 ? 9 : fx_1bd_pathTrail.countA;
+            if (work->timer60 >= 0) {
+                fx_1bd_pathTrail.alphaC = fxm_lerpRatio(0, 0x1000, 4 - work->timer60, 4);
+                work->timer60--;
             }
-            if (work->unk62 >= 0) {
-                D_801EB764.unkC = fxm_lerpRatio(0x1000, 0, 6 - work->unk62, 6);
-                work->unk62--;
+            if (work->timer62 >= 0) {
+                fx_1bd_pathTrail.alphaC = fxm_lerpRatio(0x1000, 0, 6 - work->timer62, 6);
+                work->timer62--;
             }
             for (i = 0; i < 13; i++) {
-                fxm_posPathInit(&D_801EB764.unk0, fxm_offsetTableEntry((u16 *)ex->btlfx_getFileData(entry->file, 0x16), i));
-                fxm_buildPathTrail(&D_801EB764.unk0, D_801EBC54[i], 0x50, D_801EB764.unk8, D_801EB764.unkA, D_801EB764.unk10,
-                              D_801EB764.unk12, 0);
-                ex->btlfx_drawTrail((u8 *)ex->btlfx_getFileData(entry->file, 0x17), 0, NULL, 0, D_801EB764.unkE,
-                                    D_801EB764.unkC, 1, D_801EBC54[i], 0);
+                fxm_posPathInit(&fx_1bd_pathTrail.path0, fxm_offsetTableEntry((u16 *)ex->btlfx_getFileData(entry->file, 0x16), i));
+                fxm_buildPathTrail(&fx_1bd_pathTrail.path0, fx_1bd_op82Trails[i], 0x50, fx_1bd_pathTrail.start8, fx_1bd_pathTrail.countA, fx_1bd_pathTrail.alpha10,
+                              fx_1bd_pathTrail.alpha12, 0);
+                ex->btlfx_drawTrail((u8 *)ex->btlfx_getFileData(entry->file, 0x17), 0, NULL, 0, fx_1bd_pathTrail.unkE,
+                                    fx_1bd_pathTrail.alphaC, 1, fx_1bd_op82Trails[i], 0);
             }
         }
         if (frame >= 26 && frame < 30) {
@@ -214,256 +214,256 @@ s32 fx_1bd_op83(s32 mode, Fx1bdWork83 *work, Unk800F78A4 *env, Unk80100C78Entry 
         work->unk14.vy = -0x78;
         work->unk14.vz = 0x320;
         work->unk1C = 0x1800;
-        work->unk20.unk0.vx = 0;
-        work->unk20.unk0.vy = 0;
-        work->unk20.unk0.vz = 0;
-        work->unk20.unk8.vx = 0;
-        work->unk20.unk8.vy = 0;
-        work->unk20.unk8.vz = 0x320;
-        work->unk20.unk18.vx = 0x1000;
-        work->unk20.unk18.vy = 0x1000;
-        work->unk20.unk18.vz = 0x1000;
+        work->xform20.rot0.vx = 0;
+        work->xform20.rot0.vy = 0;
+        work->xform20.rot0.vz = 0;
+        work->xform20.pos8.vx = 0;
+        work->xform20.pos8.vy = 0;
+        work->xform20.pos8.vz = 0x320;
+        work->xform20.scale18.vx = 0x1000;
+        work->xform20.scale18.vy = 0x1000;
+        work->xform20.scale18.vz = 0x1000;
         fx_1bd_env = env;
-        work->unk118[0] = ((s32(*)())ex->Hi_RegisterTexListModel)(ex->btlfx_getFileData(entry->file, 0x2C), D_801E9DC4,
-                                                                  D_801E9DD0);
-        ex->Hi_SetEffModelOffset(work->unk118[0], 0x6E);
-        work->unk48.unk0.vx = 0;
-        work->unk48.unk0.vy = 0;
-        work->unk48.unk0.vz = 0;
-        work->unk48.unk8.vx = 0;
-        work->unk48.unk8.vy = 0;
-        work->unk48.unk8.vz = 0x320;
-        work->unk48.unk18.vx = 0x1000;
-        work->unk48.unk18.vy = 0x1000;
-        work->unk48.unk18.vz = 0x1000;
+        work->model118[0] = ((s32(*)())ex->Hi_RegisterTexListModel)(ex->btlfx_getFileData(entry->file, 0x2C), fx_1bd_texInfo0,
+                                                                  fx_1bd_texPos0);
+        ex->Hi_SetEffModelOffset(work->model118[0], 0x6E);
+        work->xform48.rot0.vx = 0;
+        work->xform48.rot0.vy = 0;
+        work->xform48.rot0.vz = 0;
+        work->xform48.pos8.vx = 0;
+        work->xform48.pos8.vy = 0;
+        work->xform48.pos8.vz = 0x320;
+        work->xform48.scale18.vx = 0x1000;
+        work->xform48.scale18.vy = 0x1000;
+        work->xform48.scale18.vz = 0x1000;
         for (j = 0; j < 23; j++) {
-            if (D_801E9DAC[j]) {
-                tex = D_801E9DE4;
-                clut = D_801E9DF4;
+            if (fx_1bd_op83TexSelect[j]) {
+                tex = fx_1bd_texInfo2;
+                clut = fx_1bd_texPos2;
             } else {
-                tex = D_801E9DDC;
-                clut = D_801E9DEC;
+                tex = fx_1bd_texInfo1;
+                clut = fx_1bd_texPos1;
             }
             a = fxm_offsetTableEntry((u16 *)ex->btlfx_getFileData(entry->file, 0x29), j);
             b = fxm_offsetTableEntry((u16 *)ex->btlfx_getFileData(entry->file, 0x28), j);
-            work->unk118[j + 1] = ((s32(*)())ex->Hi_RegisterTexListModel)(a, tex, clut);
-            ex->Hi_SetEffModelOffset(work->unk118[j + 1], 0x6E);
-            fxm_rotPosTrackInit(&D_801EB784[j], b);
+            work->model118[j + 1] = ((s32(*)())ex->Hi_RegisterTexListModel)(a, tex, clut);
+            ex->Hi_SetEffModelOffset(work->model118[j + 1], 0x6E);
+            fxm_rotPosTrackInit(&fx_1bd_rotPosTrack[j], b);
         }
-        work->unk70.unk0.vx = 0;
-        work->unk70.unk0.vy = 0;
-        work->unk70.unk0.vz = 0;
-        work->unk70.unk8.vx = 0;
-        work->unk70.unk8.vy = 0;
-        work->unk70.unk8.vz = 0x320;
-        work->unk70.unk18.vx = 0x1000;
-        work->unk70.unk18.vy = 0x1000;
-        work->unk70.unk18.vz = 0x1000;
-        fxm_vecTrackInit((Fx1bdTrack12 *)&D_801EB77C, (u16 *)ex->btlfx_getFileData(entry->file, 6));
-        work->unk148 = ((s32(*)())ex->Hi_RegisterTexListModel)(ex->btlfx_getFileData(entry->file, 0x13), D_801E9DFC,
-                                                               D_801E9E04);
-        work->unk9C.unk0.vx = 0;
-        work->unk9C.unk0.vy = 0;
-        work->unk9C.unk0.vz = 0;
-        work->unk9C.unk8.vx = 0;
-        work->unk9C.unk8.vy = 0;
-        work->unk9C.unk8.vz = 0x320;
-        work->unk9C.unk18.vx = 0x1000;
-        work->unk9C.unk18.vy = 0x1000;
-        work->unk9C.unk18.vz = 0x1000;
-        work->unkCC.unk0.vx = 0;
-        work->unkCC.unk0.vy = 0;
-        work->unkCC.unk0.vz = 0;
-        work->unkCC.unk8.vx = 0;
-        work->unkCC.unk8.vy = 0;
-        work->unkCC.unk8.vz = 0x320;
-        work->unkCC.unk18.vx = 0x1000;
-        work->unkCC.unk18.vy = 0x1000;
-        work->unkCC.unk18.vz = 0x1000;
+        work->xform70.rot0.vx = 0;
+        work->xform70.rot0.vy = 0;
+        work->xform70.rot0.vz = 0;
+        work->xform70.pos8.vx = 0;
+        work->xform70.pos8.vy = 0;
+        work->xform70.pos8.vz = 0x320;
+        work->xform70.scale18.vx = 0x1000;
+        work->xform70.scale18.vy = 0x1000;
+        work->xform70.scale18.vz = 0x1000;
+        fxm_vecTrackInit((Fx1bdTrack12 *)&fx_1bd_vecTrack0, (u16 *)ex->btlfx_getFileData(entry->file, 6));
+        work->model148 = ((s32(*)())ex->Hi_RegisterTexListModel)(ex->btlfx_getFileData(entry->file, 0x13), fx_1bd_texInfo3,
+                                                               fx_1bd_texPos3);
+        work->xform9C.rot0.vx = 0;
+        work->xform9C.rot0.vy = 0;
+        work->xform9C.rot0.vz = 0;
+        work->xform9C.pos8.vx = 0;
+        work->xform9C.pos8.vy = 0;
+        work->xform9C.pos8.vz = 0x320;
+        work->xform9C.scale18.vx = 0x1000;
+        work->xform9C.scale18.vy = 0x1000;
+        work->xform9C.scale18.vz = 0x1000;
+        work->xformCC.rot0.vx = 0;
+        work->xformCC.rot0.vy = 0;
+        work->xformCC.rot0.vz = 0;
+        work->xformCC.pos8.vx = 0;
+        work->xformCC.pos8.vy = 0;
+        work->xformCC.pos8.vz = 0x320;
+        work->xformCC.scale18.vx = 0x1000;
+        work->xformCC.scale18.vy = 0x1000;
+        work->xformCC.scale18.vz = 0x1000;
         work->model14A = ex->Hi_RegisterTexEffModel((BtlUnit9C8 *)ex->btlfx_getFileData(entry->file, 0xE), 0x9A, 0x3DC0, 0, 0);
         work->model14C = ex->Hi_RegisterTexEffModel((BtlUnit9C8 *)ex->btlfx_getFileData(entry->file, 0xB), 0x9A, 0x3DC0, 0, 0);
-        fxm_posTrackInit((Fx1bdTrack12 *)&D_801EB83C, (u16 *)ex->btlfx_getFileData(entry->file, 8));
-        fxm_vecTrackInit((Fx1bdTrack12 *)&D_801EB844, (u16 *)ex->btlfx_getFileData(entry->file, 9));
-        fxm_vecTrackInit((Fx1bdTrack12 *)&D_801EB84C, (u16 *)ex->btlfx_getFileData(entry->file, 7));
-        work->unk10C = 0;
+        fxm_posTrackInit((Fx1bdTrack12 *)&fx_1bd_posTrack, (u16 *)ex->btlfx_getFileData(entry->file, 8));
+        fxm_vecTrackInit((Fx1bdTrack12 *)&fx_1bd_vecTrack1, (u16 *)ex->btlfx_getFileData(entry->file, 9));
+        fxm_vecTrackInit((Fx1bdTrack12 *)&fx_1bd_vecTrack2, (u16 *)ex->btlfx_getFileData(entry->file, 7));
+        work->frame10C = 0;
         work->unk104.vx = work->unk14.vx;
         work->unk104.vy = work->unk14.vy;
         work->unk104.vz = work->unk14.vz;
-        work->unk10E = -1;
-        work->unk110 = -1;
-        work->unk112 = -1;
-        work->unk114 = -1;
-        work->unk116 = -1;
+        work->timer10E = -1;
+        work->timer110 = -1;
+        work->timer112 = -1;
+        work->timer114 = -1;
+        work->timer116 = -1;
         work->unk104.vy -= 0xF0;
     } else {
         frame = entry->frame;
         switch (frame) {
         case 0:
-            work->posF4.vx = work->unk20.unk8.vx;
-            work->posF4.vy = work->unk20.unk8.vy;
-            work->posF4.vz = work->unk20.unk8.vz;
+            work->posF4.vx = work->xform20.pos8.vx;
+            work->posF4.vy = work->xform20.pos8.vy;
+            work->posF4.vz = work->xform20.pos8.vz;
             work->emit0 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0x12), (s32)&work->posF4);
             work->emit4 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0x26), (s32)&work->posF4);
             break;
         case 3:
-            work->unkCC.unk8.vx = work->unk20.unk8.vx;
-            work->unkCC.unk8.vy = work->unk20.unk8.vy;
-            work->unkCC.unk8.vz = work->unk20.unk8.vz;
-            work->posFC.vx = work->unk20.unk8.vx;
-            work->posFC.vy = work->unk20.unk8.vy;
-            work->posFC.vz = work->unk20.unk8.vz;
+            work->xformCC.pos8.vx = work->xform20.pos8.vx;
+            work->xformCC.pos8.vy = work->xform20.pos8.vy;
+            work->xformCC.pos8.vz = work->xform20.pos8.vz;
+            work->posFC.vx = work->xform20.pos8.vx;
+            work->posFC.vy = work->xform20.pos8.vy;
+            work->posFC.vz = work->xform20.pos8.vz;
             work->emit8 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0xA), (s32)&work->posFC);
             if (work->emit8 != NULL) {
                 work->emit8->otZ = 0x100;
             }
             break;
         case 4:
-            work->unk110 = 3;
-            work->unk114 = 6;
+            work->timer110 = 3;
+            work->timer114 = 6;
             break;
         case 21:
-            work->unk112 = 0x10;
-            work->unk116 = 0x10;
-            work->unk10E = 0x10;
+            work->timer112 = 0x10;
+            work->timer116 = 0x10;
+            work->timer10E = 0x10;
             break;
         }
         if (frame >= 6 && frame < 20) {
-            ex->Hi_DrawEffModel(&work->unk20.unk0, &work->unk20.unk8, (s32)&work->unk20.unk18, work->unk118[0]);
-            ex->Hi_ModifyEffModelRGB(work->unk118[0], 6, 6, 6);
-            for (i = 0, r = D_801E9A14; i < 23; i++, r++) {
+            ex->Hi_DrawEffModel(&work->xform20.rot0, &work->xform20.pos8, (s32)&work->xform20.scale18, work->model118[0]);
+            ex->Hi_ModifyEffModelRGB(work->model118[0], 6, 6, 6);
+            for (i = 0, r = fx_1bd_op83Pieces; i < 23; i++, r++) {
                 t = frame - 2;
-                if (r->unk2) {
+                if (r->done2) {
                     t = 0;
                 }
-                if (t == r->unk0) {
+                if (t == r->frame0) {
                     v.vx = r->pos18.vx;
                     v.vy = r->pos18.vy;
                     v.vz = r->pos18.vz - 400;
-                    ex->btlfx_aimAngles((s16 *)&work->unk48.unk8, (s16 *)&v, (s16 *)&r->unk8);
-                    dist = ex->btlfx_distance(&v, (SVECTOR *)&work->unk48.unk8);
-                    r->unk6 = 200;
-                    r->unk4 = dist / 30;
-                    r->unk6 += ex->btlfx_rand() % 100;
-                    r->unk4 += ex->btlfx_rand() % 50;
-                    r->unk6 /= 2;
-                    r->unk8.vx &= 0xFFF;
-                    r->unk8.vy &= 0xFFF;
-                    r->unk8.vz &= 0xFFF;
-                    r->unk4 /= 2;
-                    if (r->unk8.vy < 0x800) {
-                        r->unk1 |= 1;
+                    ex->btlfx_aimAngles((s16 *)&work->xform48.pos8, (s16 *)&v, (s16 *)&r->angle8);
+                    dist = ex->btlfx_distance(&v, (SVECTOR *)&work->xform48.pos8);
+                    r->vel6 = 200;
+                    r->speed4 = dist / 30;
+                    r->vel6 += ex->btlfx_rand() % 100;
+                    r->speed4 += ex->btlfx_rand() % 50;
+                    r->vel6 /= 2;
+                    r->angle8.vx &= 0xFFF;
+                    r->angle8.vy &= 0xFFF;
+                    r->angle8.vz &= 0xFFF;
+                    r->speed4 /= 2;
+                    if (r->angle8.vy < 0x800) {
+                        r->flag1 |= 1;
                     } else {
-                        r->unk1 |= 2;
+                        r->flag1 |= 2;
                     }
-                    if (r->unk8.vy < 0x800) {
-                        r->unk1 |= 4;
+                    if (r->angle8.vy < 0x800) {
+                        r->flag1 |= 4;
                     } else {
-                        r->unk1 |= 8;
+                        r->flag1 |= 8;
                     }
                 }
-                if (t >= r->unk0) {
+                if (t >= r->frame0) {
                     v.vx = r->pos18.vx;
                     v.vy = r->pos18.vy;
                     v.vz = r->pos18.vz;
-                    ex->btlfx_pointAhead((s16 *)&v, (s16 *)&r->unk8, r->unk4, (s16 *)&v);
+                    ex->btlfx_pointAhead((s16 *)&v, (s16 *)&r->angle8, r->speed4, (s16 *)&v);
                     r->pos18.vx = v.vx;
                     r->pos18.vy = v.vy;
                     r->pos18.vz = v.vz;
-                    r->pos18.vy -= r->unk6;
-                    if (t < r->unk0 + 2) {
-                        if (r->unk1 & 1) {
-                            r->unk10.vx += 0x40;
+                    r->pos18.vy -= r->vel6;
+                    if (t < r->frame0 + 2) {
+                        if (r->flag1 & 1) {
+                            r->rot10.vx += 0x40;
                         } else {
-                            r->unk10.vx -= 0x40;
+                            r->rot10.vx -= 0x40;
                         }
-                        if (r->unk1 & 4) {
-                            r->unk10.vz += 0x40;
+                        if (r->flag1 & 4) {
+                            r->rot10.vz += 0x40;
                         } else {
-                            r->unk10.vz -= 0x40;
+                            r->rot10.vz -= 0x40;
                         }
                     }
-                    work->unk48.unk0.vx = r->unk10.vx;
-                    work->unk48.unk0.vy = r->unk10.vy;
-                    work->unk48.unk0.vz = r->unk10.vz;
-                    r->unk6 -= 20;
-                    if (r->unk6 >= 4) {
-                        r->unk6 -= t * 5;
+                    work->xform48.rot0.vx = r->rot10.vx;
+                    work->xform48.rot0.vy = r->rot10.vy;
+                    work->xform48.rot0.vz = r->rot10.vz;
+                    r->vel6 -= 20;
+                    if (r->vel6 >= 4) {
+                        r->vel6 -= t * 5;
                     }
                     if (r->pos18.vy >= 50) {
-                        r->unk2 = 1;
+                        r->done2 = 1;
                         continue;
                     }
                 } else {
-                    fxm_rotPosTrackGet(&D_801EB784[i], t, &work->unk48.unk0, &v);
+                    fxm_rotPosTrackGet(&fx_1bd_rotPosTrack[i], t, &work->xform48.rot0, &v);
                     v.vx = -v.vx;
-                    work->unk48.unk8.vx = 0;
-                    work->unk48.unk8.vy = 0;
-                    work->unk48.unk8.vz = 0x320;
-                    work->unk48.unk0.vz = -work->unk48.unk0.vz;
-                    work->unk48.unk8.vx += v.vx;
-                    work->unk48.unk8.vy += v.vy;
-                    work->unk48.unk8.vz += v.vz;
-                    r->pos18.vx = work->unk48.unk8.vx;
-                    r->pos18.vy = work->unk48.unk8.vy;
-                    r->pos18.vz = work->unk48.unk8.vz;
-                    work->unk48.unk8.vx = 0;
-                    work->unk48.unk8.vy = 0;
-                    work->unk48.unk8.vz = 0x320;
+                    work->xform48.pos8.vx = 0;
+                    work->xform48.pos8.vy = 0;
+                    work->xform48.pos8.vz = 0x320;
+                    work->xform48.rot0.vz = -work->xform48.rot0.vz;
+                    work->xform48.pos8.vx += v.vx;
+                    work->xform48.pos8.vy += v.vy;
+                    work->xform48.pos8.vz += v.vz;
+                    r->pos18.vx = work->xform48.pos8.vx;
+                    r->pos18.vy = work->xform48.pos8.vy;
+                    r->pos18.vz = work->xform48.pos8.vz;
+                    work->xform48.pos8.vx = 0;
+                    work->xform48.pos8.vy = 0;
+                    work->xform48.pos8.vz = 0x320;
                 }
-                ex->Hi_DrawEffModel(&work->unk48.unk0, &r->pos18, (s32)&work->unk48.unk18, work->unk118[i + 1]);
-                ex->Hi_ModifyEffModelRGB(work->unk118[i + 1], 6, 6, 6);
+                ex->Hi_DrawEffModel(&work->xform48.rot0, &r->pos18, (s32)&work->xform48.scale18, work->model118[i + 1]);
+                ex->Hi_ModifyEffModelRGB(work->model118[i + 1], 6, 6, 6);
             }
         }
         if (frame >= 4 && frame < 37) {
-            fxm_vecTrackGet(&D_801EB77C, frame - 4, &work->unk70.unk18);
-            ex->Hi_DrawEffModel(&work->unk70.unk0, &work->unk70.unk8, (s32)&work->unk70.unk18, work->unk148);
-            ex->Hi_ModifyEffModelAbr(work->unk148, 1);
-            if (work->unk10E >= 0) {
-                work->unk98 = fxm_lerpRatio(0, -0x80, 0x10 - work->unk10E, 0x10);
-                ex->Hi_ModifyEffModelRGB(work->unk148, work->unk98, work->unk98, work->unk98);
-                work->unk10E--;
+            fxm_vecTrackGet(&fx_1bd_vecTrack0, frame - 4, &work->xform70.scale18);
+            ex->Hi_DrawEffModel(&work->xform70.rot0, &work->xform70.pos8, (s32)&work->xform70.scale18, work->model148);
+            ex->Hi_ModifyEffModelAbr(work->model148, 1);
+            if (work->timer10E >= 0) {
+                work->fade98 = fxm_lerpRatio(0, -0x80, 0x10 - work->timer10E, 0x10);
+                ex->Hi_ModifyEffModelRGB(work->model148, work->fade98, work->fade98, work->fade98);
+                work->timer10E--;
             }
-            fxm_vecTrackGet(&D_801EB844, frame - 4, &work->unk9C.unk18);
-            ex->Hi_DrawEffModel(&work->unk9C.unk0, &work->unk9C.unk8, (s32)&work->unk9C.unk18, work->model14A);
+            fxm_vecTrackGet(&fx_1bd_vecTrack1, frame - 4, &work->xform9C.scale18);
+            ex->Hi_DrawEffModel(&work->xform9C.rot0, &work->xform9C.pos8, (s32)&work->xform9C.scale18, work->model14A);
             ex->Hi_ModifyEffModelAbr(work->model14A, 1);
-            if (work->unk110 >= 0 || work->unk112 >= 0) {
-                if (work->unk110 >= 0) {
-                    work->unkC4 = fxm_lerpRatio(-0x80, 0, 3 - work->unk110, 3);
-                    work->unk110--;
+            if (work->timer110 >= 0 || work->timer112 >= 0) {
+                if (work->timer110 >= 0) {
+                    work->fadeC4 = fxm_lerpRatio(-0x80, 0, 3 - work->timer110, 3);
+                    work->timer110--;
                 }
-                if (work->unk112 >= 0) {
-                    work->unkC4 = fxm_lerpRatio(0, -0x80, 0x10 - work->unk112, 0x10);
-                    work->unk112--;
+                if (work->timer112 >= 0) {
+                    work->fadeC4 = fxm_lerpRatio(0, -0x80, 0x10 - work->timer112, 0x10);
+                    work->timer112--;
                 }
-                ex->Hi_ModifyEffModelRGB(work->model14A, work->unkC4, work->unkC4, work->unkC4);
+                ex->Hi_ModifyEffModelRGB(work->model14A, work->fadeC4, work->fadeC4, work->fadeC4);
             }
-            work->unk9C.unk0.vy += 0x40;
+            work->xform9C.rot0.vy += 0x40;
         }
         if (frame >= 4 && frame < 37) {
-            work->unkCC.unk8.vx = 0;
-            work->unkCC.unk8.vy = 0;
-            work->unkCC.unk8.vz = 0x320;
-            fxm_posTrackGet(&D_801EB83C, frame - 4, &d);
-            work->unkCC.unk8.vx += d.vx;
-            work->unkCC.unk8.vy += d.vy;
-            work->unkCC.unk8.vz += d.vz;
-            fxm_vecTrackGet(&D_801EB84C, frame - 4, &work->unkCC.unk18);
-            ex->Hi_DrawEffModel(&work->unkCC.unk0, &work->unkCC.unk8, (s32)&work->unkCC.unk18, work->model14C);
+            work->xformCC.pos8.vx = 0;
+            work->xformCC.pos8.vy = 0;
+            work->xformCC.pos8.vz = 0x320;
+            fxm_posTrackGet(&fx_1bd_posTrack, frame - 4, &d);
+            work->xformCC.pos8.vx += d.vx;
+            work->xformCC.pos8.vy += d.vy;
+            work->xformCC.pos8.vz += d.vz;
+            fxm_vecTrackGet(&fx_1bd_vecTrack2, frame - 4, &work->xformCC.scale18);
+            ex->Hi_DrawEffModel(&work->xformCC.rot0, &work->xformCC.pos8, (s32)&work->xformCC.scale18, work->model14C);
             ex->Hi_ModifyEffModelAbr(work->model14C, 1);
-            if (work->unk114 >= 0 || work->unk116 >= 0) {
-                if (work->unk114 >= 0) {
-                    work->unkC8 = fxm_lerpRatio(-0x80, 0, 6 - work->unk114, 6);
-                    work->unk114--;
+            if (work->timer114 >= 0 || work->timer116 >= 0) {
+                if (work->timer114 >= 0) {
+                    work->fadeC8 = fxm_lerpRatio(-0x80, 0, 6 - work->timer114, 6);
+                    work->timer114--;
                 }
-                if (work->unk116 >= 0) {
-                    work->unkC8 = fxm_lerpRatio(0, -0x80, 0x10 - work->unk116, 0x10);
-                    work->unk116--;
+                if (work->timer116 >= 0) {
+                    work->fadeC8 = fxm_lerpRatio(0, -0x80, 0x10 - work->timer116, 0x10);
+                    work->timer116--;
                 }
-                ex->Hi_ModifyEffModelRGB(work->model14C, work->unkC8, work->unkC8, work->unkC8);
+                ex->Hi_ModifyEffModelRGB(work->model14C, work->fadeC8, work->fadeC8, work->fadeC8);
             }
         }
-        ex->btlfx_drawScrollMove(0x3C0 - work->unk10C * 16, 0x280, 0x100, 0x40, 0x80, 0x240, 0x100);
-        work->unk10C++;
+        ex->btlfx_drawScrollMove(0x3C0 - work->frame10C * 16, 0x280, 0x100, 0x40, 0x80, 0x240, 0x100);
+        work->frame10C++;
         return frame >= 0x3C;
     }
     return 0;
@@ -478,12 +478,12 @@ static s32 fxm_lerpRatio(s32 from, s32 to, s32 t, s32 n) {
 }
 
 static void fxm_posTrackInit(Fx1bdTrack12 *track, u16 *data) {
-    track->unk0 = *data++;
-    track->unk4 = (Fx1bdKey12 *)data;
+    track->count0 = *data++;
+    track->keys4 = (Fx1bdKey12 *)data;
 }
 
 static s32 fxm_posTrackGet(Fx1bdTrack6 *track, s32 t, SVECTOR *out) {
-    s32 last = track->unk0 - 1;
+    s32 last = track->count0 - 1;
     s32 done = 1;
     Fx1bdKey6 *k;
 
@@ -492,7 +492,7 @@ static s32 fxm_posTrackGet(Fx1bdTrack6 *track, s32 t, SVECTOR *out) {
     } else {
         done = 0;
     }
-    k = &track->unk4[t];
+    k = &track->keys4[t];
     out->vx = -k->x;
     out->vy = k->y;
     out->vz = -k->z;
@@ -501,12 +501,12 @@ static s32 fxm_posTrackGet(Fx1bdTrack6 *track, s32 t, SVECTOR *out) {
 
 static void fxm_posPathInit(Fx1bdPath *path, u16 *data) {
     data++;
-    path->unk2 = *data++;
-    path->unk4 = (Fx1bdPoint *)data;
+    path->count2 = *data++;
+    path->keys4 = (Fx1bdPoint *)data;
 }
 
 static s32 fxm_posPathGet(Fx1bdPath *path, s32 t, SVECTOR *out) {
-    s32 last = path->unk2 - 1;
+    s32 last = path->count2 - 1;
     s32 done = 1;
     Fx1bdPoint *p;
 
@@ -515,7 +515,7 @@ static s32 fxm_posPathGet(Fx1bdPath *path, s32 t, SVECTOR *out) {
     } else {
         done = 0;
     }
-    p = &path->unk4[t];
+    p = &path->keys4[t];
     out->vx = p->x;
     out->vy = p->y;
     out->vz = p->z;
@@ -523,12 +523,12 @@ static s32 fxm_posPathGet(Fx1bdPath *path, s32 t, SVECTOR *out) {
 }
 
 static void fxm_rotPosTrackInit(Fx1bdTrack12 *track, u16 *data) {
-    track->unk0 = *data++;
-    track->unk4 = (Fx1bdKey12 *)data;
+    track->count0 = *data++;
+    track->keys4 = (Fx1bdKey12 *)data;
 }
 
 static s32 fxm_rotPosTrackGet(Fx1bdTrack12 *track, s32 t, SVECTOR *rot, SVECTOR *pos) {
-    s32 last = track->unk0 - 1;
+    s32 last = track->count0 - 1;
     s32 done = 1;
     Fx1bdKey12 *k;
 
@@ -537,27 +537,27 @@ static s32 fxm_rotPosTrackGet(Fx1bdTrack12 *track, s32 t, SVECTOR *rot, SVECTOR 
     } else {
         done = 0;
     }
-    k = &track->unk4[t];
+    k = &track->keys4[t];
     if (rot != NULL) {
-        rot->vx = k->unk6;
-        rot->vy = k->unk8;
-        rot->vz = k->unkA;
+        rot->vx = k->rot6;
+        rot->vy = k->rot8;
+        rot->vz = k->rotA;
     }
     if (pos != NULL) {
-        pos->vx = -k->unk0;
-        pos->vy = k->unk2;
-        pos->vz = -k->unk4;
+        pos->vx = -k->pos0;
+        pos->vy = k->pos2;
+        pos->vz = -k->pos4;
     }
     return done;
 }
 
 static void fxm_vecTrackInit(Fx1bdTrack12 *track, u16 *data) {
-    track->unk0 = *data++;
-    track->unk4 = (Fx1bdKey12 *)data;
+    track->count0 = *data++;
+    track->keys4 = (Fx1bdKey12 *)data;
 }
 
 static s32 fxm_vecTrackGet(Fx1bdTrack6 *track, s32 t, VECTOR *out) {
-    s32 last = track->unk0 - 1;
+    s32 last = track->count0 - 1;
     s32 done = 1;
     Fx1bdKey6 *k;
 
@@ -566,7 +566,7 @@ static s32 fxm_vecTrackGet(Fx1bdTrack6 *track, s32 t, VECTOR *out) {
     } else {
         done = 0;
     }
-    k = &track->unk4[t];
+    k = &track->keys4[t];
     out->vx = k->x;
     out->vy = k->y;
     out->vz = k->z;
@@ -588,10 +588,10 @@ static void fxm_camChanReset(void) {
     s32 m = -1;
 
     for (i = 63; i >= 0; i--) {
-        D_801EC064[i].unk6 = m;
+        fx_1bd_camKeys[i].timer6 = m;
     }
     for (i = 3; i >= 0; i--) {
-        D_801EC464[i] = 0;
+        fx_1bd_camChanFrames[i] = 0;
     }
 }
 
@@ -602,14 +602,14 @@ static void fxm_camChanAdd(s16 start, u16 dst, s16 ch, s16 *data) {
     data++;
     c = *data;
     for (i = 0; i < 64; i++) {
-        if (D_801EC064[i].unk6 == -1) {
-            D_801EC064[i].unk6 = 0;
-            D_801EC064[i].unk0 = data;
-            D_801EC064[i].unk4 = start;
-            D_801EC064[i].unkA = dst;
-            D_801EC064[i].unkC = 0;
-            D_801EC064[i].unkE = c;
-            D_801EC064[i].unk8 = ch;
+        if (fx_1bd_camKeys[i].timer6 == -1) {
+            fx_1bd_camKeys[i].timer6 = 0;
+            fx_1bd_camKeys[i].keys0 = data;
+            fx_1bd_camKeys[i].frame4 = start;
+            fx_1bd_camKeys[i].dstA = dst;
+            fx_1bd_camKeys[i].indexC = 0;
+            fx_1bd_camKeys[i].countE = c;
+            fx_1bd_camKeys[i].chan8 = ch;
             return;
         }
     }
@@ -622,29 +622,29 @@ static void fxm_camChanUpdate(s32 ch) {
     s32 d;
 
     for (i = 0; i < 64; i++) {
-        if (D_801EC064[i].unk8 == ch) {
-            if (D_801EC064[i].unk6 == 0 && D_801EC064[i].unk4 == D_801EC464[ch]) {
-                D_801EC064[i].unk6 = *D_801EC064[i].unk0;
-                D_801EC064[i].unk0++;
+        if (fx_1bd_camKeys[i].chan8 == ch) {
+            if (fx_1bd_camKeys[i].timer6 == 0 && fx_1bd_camKeys[i].frame4 == fx_1bd_camChanFrames[ch]) {
+                fx_1bd_camKeys[i].timer6 = *fx_1bd_camKeys[i].keys0;
+                fx_1bd_camKeys[i].keys0++;
             }
-            if (D_801EC064[i].unk6 > 0) {
-                D_801EC064[i].unk6--;
+            if (fx_1bd_camKeys[i].timer6 > 0) {
+                fx_1bd_camKeys[i].timer6--;
                 for (k = 0; k < 3; k++) {
-                    d = ((D_801EC064[i].unkA >> (k * 4)) & 0xF) - 1;
+                    d = ((fx_1bd_camKeys[i].dstA >> (k * 4)) & 0xF) - 1;
                     if (d >= 0) {
-                        ((SVECTOR *)env->camera)[d].vx = D_801EC064[i].unk0[0];
-                        ((SVECTOR *)env->camera)[d].vy = D_801EC064[i].unk0[1];
-                        ((SVECTOR *)env->camera)[d].vz = D_801EC064[i].unk0[2];
-                        if (D_801EC064[i].unkC < D_801EC064[i].unkE) {
-                            D_801EC064[i].unk0 += 3;
-                            D_801EC064[i].unkC++;
+                        ((SVECTOR *)env->camera)[d].vx = fx_1bd_camKeys[i].keys0[0];
+                        ((SVECTOR *)env->camera)[d].vy = fx_1bd_camKeys[i].keys0[1];
+                        ((SVECTOR *)env->camera)[d].vz = fx_1bd_camKeys[i].keys0[2];
+                        if (fx_1bd_camKeys[i].indexC < fx_1bd_camKeys[i].countE) {
+                            fx_1bd_camKeys[i].keys0 += 3;
+                            fx_1bd_camKeys[i].indexC++;
                         }
                     }
                 }
             }
         }
     }
-    D_801EC464[ch]++;
+    fx_1bd_camChanFrames[ch]++;
 }
 
 static void fxm_drawTexelQuadsB(SVECTOR *pos, SVECTOR *rot, s32 tp, s32 x, s32 y, s32 div, s32 idx, s32 size, s32 w, s32 h,

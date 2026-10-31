@@ -1,6 +1,6 @@
 #include "fxmod/fx_096.h"
 
-void func_801E7744(u16 model, s32 idx, s32 t, u16 *verts, Fx096Vec3 *centers) {
+void fx_096_explodeModel(u16 model, s32 idx, s32 t, u16 *verts, Fx096Vec3 *centers) {
     s32 n;
     s32 i;
     s32 j;
@@ -8,14 +8,14 @@ void func_801E7744(u16 model, s32 idx, s32 t, u16 *verts, Fx096Vec3 *centers) {
     n = BTLFX_EXPORTS(fx_096_env)->btlfx_getEffModelMeshCount(model);
     for (j = 0; j < n; j++) {
         for (i = 0; i < 8; i++) {
-            func_801E7840(i, D_801EB2CC[idx][i], t, (SVECTOR *)D_801EB28C[idx][i], centers);
+            fx_096_explodePolys(i, fx_096_polyCounts[idx][i], t, (SVECTOR *)fx_096_polyVerts[idx][i], centers);
         }
     }
 }
 
 INCLUDE_RODATA("asm/us/fx_096/nonmatchings/fx_096", fx_096_headerPtr);
 
-void func_801E7840(u32 kind, s32 count, s32 t, SVECTOR *verts, Fx096Vec3 *centers) {
+void fx_096_explodePolys(u32 kind, s32 count, s32 t, SVECTOR *verts, Fx096Vec3 *centers) {
     Fx096Vec3 d;
     Fx096Vec3 to;
     Fx096Vec3 from;
@@ -68,7 +68,7 @@ void func_801E7840(u32 kind, s32 count, s32 t, SVECTOR *verts, Fx096Vec3 *center
     }
 }
 
-void func_801E7A74(u16 model, s32 idx, u16 *verts, Fx096Vec3 *centers) {
+void fx_096_splitModel(u16 model, s32 idx, u16 *verts, Fx096Vec3 *centers) {
     BtlfxExports *ex = BTLFX_EXPORTS(fx_096_env);
     s32 c;
     s32 n;
@@ -79,14 +79,14 @@ void func_801E7A74(u16 model, s32 idx, u16 *verts, Fx096Vec3 *centers) {
     n = ex->btlfx_getEffModelMeshCount(model);
     for (j = 0; j < n; j++) {
         for (i = 0; i < 8; i++) {
-            c = ex->Hi_GetMdlVertexPtr(model, j, (s32)verts, &D_801EB28C[idx][i], i);
-            D_801EB2CC[idx][i] = c;
-            func_801E7BC4(i, D_801EB2CC[idx][i], (SVECTOR *)D_801EB28C[idx][i], centers);
+            c = ex->Hi_GetMdlVertexPtr(model, j, (s32)verts, &fx_096_polyVerts[idx][i], i);
+            fx_096_polyCounts[idx][i] = c;
+            fx_096_calcPolyCenters(i, fx_096_polyCounts[idx][i], (SVECTOR *)fx_096_polyVerts[idx][i], centers);
         }
     }
 }
 
-void func_801E7BC4(u32 kind, s32 count, SVECTOR *verts, Fx096Vec3 *centers) {
+void fx_096_calcPolyCenters(u32 kind, s32 count, SVECTOR *verts, Fx096Vec3 *centers) {
     Fx096Vec3 sum;
     s32 nv;
     s32 k;
@@ -174,7 +174,7 @@ s32 fx_096_op81(s32 mode, Fx096Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
         work->pos14.vy = -0x258;
         work->model62 = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, 0xA), 1);
         work->model64 = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, 0xB), 1);
-        work->unk60 = -1;
+        work->fade60 = -1;
     } else {
         frame = entry->frame;
         switch (frame) {
@@ -185,13 +185,13 @@ s32 fx_096_op81(s32 mode, Fx096Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
             }
             break;
         case 0:
-            func_801E7A74(work->model62, 0, D_801E84BC, D_801EAD5C);
+            fx_096_splitModel(work->model62, 0, fx_096_verts, fx_096_polyCenters);
             for (i = 0; i < 0xA28; i++) {
-                D_801E990C[i] = D_801E84BC[i];
+                fx_096_restVerts[i] = fx_096_verts[i];
             }
             break;
         case 0x18:
-            work->unk60 = 0x10;
+            work->fade60 = 0x10;
             break;
         }
         if (frame >= 0 && frame < 0x28) {
@@ -205,18 +205,18 @@ s32 fx_096_op81(s32 mode, Fx096Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
             if (frame >= 0 && frame < 6) {
                 t = frame;
                 for (i = 0; i < 0xA28; i++) {
-                    D_801E84BC[i] = D_801E990C[i];
+                    fx_096_verts[i] = fx_096_restVerts[i];
                 }
-                func_801E7744(work->model62, 0, 5 - t, D_801E84BC, D_801EAD5C);
+                fx_096_explodeModel(work->model62, 0, 5 - t, fx_096_verts, fx_096_polyCenters);
                 work->rot4.vy += 0x200;
             }
             ex->Hi_DrawEffModel(&work->rot4, &work->pos14, (s32)&work->scale34, work->model62);
             ex->Hi_DrawEffModel(&work->rotC, &work->pos24, (s32)&work->scale44, work->model64);
-            if (work->unk60 >= 0) {
-                work->unk54 = fxm_lerpRatio(0, -0x80, 0x10 - work->unk60, 0x10);
-                work->unk60--;
-                ex->Hi_ModifyEffModelRGB(work->model62, work->unk54, work->unk54, work->unk54);
-                ex->Hi_ModifyEffModelRGB(work->model64, work->unk54, work->unk54, work->unk54);
+            if (work->fade60 >= 0) {
+                work->bright54 = fxm_lerpRatio(0, -0x80, 0x10 - work->fade60, 0x10);
+                work->fade60--;
+                ex->Hi_ModifyEffModelRGB(work->model62, work->bright54, work->bright54, work->bright54);
+                ex->Hi_ModifyEffModelRGB(work->model64, work->bright54, work->bright54, work->bright54);
             }
         }
         ex->btlfx_drawBackdrop((BtlBgLayers *)ex->btlfx_getFileData(entry->file, 0xC), frame);

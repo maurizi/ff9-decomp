@@ -1,22 +1,23 @@
 #ifndef FX_1F0_H
 #define FX_1F0_H
 
-/* Effect module fx_1f0 (dir 13 file 0x1f0). */
+/* Effect module fx_1f0 (dir 13 file 0x1f0): enemy Appearance (Dummy/Necron). Evidence: the static sweep of the ability, item
+ * and enemy-sequence effect ids (docs/effect-modules.md, tools/effect_labels.py). */
 #include "btlfx_mod.h"
 
 typedef struct {
-    s32 unk0; /* start delay */
-    s32 unk4; /* flight countdown */
-    SVECTOR unk8; /* start position */
-    SVECTOR unk10; /* home position */
-    SVECTOR unk18;
-    SVECTOR unk20; /* current position */
+    s32 delay0; /* start delay */
+    s32 timer4; /* flight countdown */
+    SVECTOR startPos8; /* start position */
+    SVECTOR homePos10; /* home position */
+    SVECTOR emitPos18;
+    SVECTOR pos20; /* current position */
     Pool6CEntry *emit28;
 } Fx1f0Unit; /* 0x2C */
 
 typedef struct {
-    s32 unk0[16]; /* timers */
-    SVECTOR unk40[4]; /* curve control points */
+    s32 timer0[16]; /* timers */
+    SVECTOR ctrlPts40[4]; /* curve control points */
     s32 model60; /* models */
     s32 model64;
     s32 model68;
@@ -26,13 +27,13 @@ typedef struct {
     VECTOR scale90;
     SVECTOR rotA0; /* model rotation */
     SVECTOR rotA8;
-    s32 unkB0;
-    s32 unkB4;
+    s32 spinB0;
+    s32 spinB4;
 } Fx1f0Work; /* 0xB8 */
 
-extern s32 D_801E84F0[];
+extern s32 fx_1f0_unitDelays[];
 extern Unk800F78A4 *fx_1f0_env;
-extern Fx1f0Unit D_801E8558[4];
+extern Fx1f0Unit fx_1f0_units[4];
 extern BtlModel fx_1f0_effModels[];
 
 static s32 fxm_easeLerp(s32 curve, s32 n, s32 t, s32 from, s32 to);

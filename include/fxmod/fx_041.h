@@ -11,8 +11,8 @@ typedef struct {
 /* point list read from the effect file */
 typedef struct {
     s16 unk0;
-    u16 unk2; /* count */
-    Fx041Point *unk4;
+    u16 count2; /* count */
+    Fx041Point *points4;
 } Fx041Path;
 
 typedef struct {
@@ -36,11 +36,11 @@ typedef struct {
 } Fx041Work81; /* 0x1C */
 
 extern Unk800F78A4 *fx_041_env;
-extern Fx041Path D_801E7F44;
-extern SVECTOR D_801E7F4C; /* target position */
-extern SVECTOR D_801E7F54; /* last path point */
-extern SVECTOR D_801E7F5C;
-extern s32 D_801E7F6C[];
+extern Fx041Path fx_041_path;
+extern SVECTOR fx_041_targetPos; /* target position */
+extern SVECTOR fx_041_lastPathPos; /* last path point */
+extern SVECTOR fx_041_emitPos;
+extern s32 fx_041_trails[];
 
 static s32 fx_041_op80ParticleMotion(VECTOR *out, s32 arg1, SVECTOR *pos, s32 arg3, s32 t, s32 n);
 static void fxm_posPathInit(Fx041Path *path, u16 *data);

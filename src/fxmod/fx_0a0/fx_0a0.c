@@ -1,7 +1,7 @@
 #include "fxmod/fx_0a0.h"
 
 /* Draws a gouraud line from a to b, colors c0/c1 faded towards black by p (0x1000 = full; < 0 = full). */
-void func_801E7704(SVECTOR *a, SVECTOR *b, CVECTOR *c0, CVECTOR *c1, s32 p, s32 abr) {
+void fx_0a0_drawGouraudLine(SVECTOR *a, SVECTOR *b, CVECTOR *c0, CVECTOR *c1, s32 p, s32 abr) {
     Unk800F78A4 *env = fx_0a0_env;
     BtlfxExports *ex = BTLFX_EXPORTS(env);
     LINE_G2 *prim;
@@ -33,9 +33,9 @@ static void fxm_drawTrailLine(u8 *file, SVECTOR *a, SVECTOR *b, s32 arg3, s32 ar
     BtlfxExports *ex = BTLFX_EXPORTS(fx_0a0_env);
     SVECTOR *v;
 
-    D_801E7D84.unk0 = D_801E7D84.unk2 = 1;
-    D_801E7D84.unk1 = 0;
-    v = D_801E7D84.unk4;
+    fx_0a0_line.unk0 = fx_0a0_line.unk2 = 1;
+    fx_0a0_line.unk1 = 0;
+    v = fx_0a0_line.pts4;
     v[0].vx = a->vx;
     v[0].vy = a->vy;
     v[0].vz = a->vz;
@@ -44,7 +44,7 @@ static void fxm_drawTrailLine(u8 *file, SVECTOR *a, SVECTOR *b, s32 arg3, s32 ar
     v[1].vy = b->vy;
     v[1].vz = b->vz;
     v[1].pad = arg6;
-    ex->btlfx_drawTrail(file, 0, NULL, arg3, 0x1000, arg4, arg5, (u8 *)&D_801E7D84, 0);
+    ex->btlfx_drawTrail(file, 0, NULL, arg3, 0x1000, arg4, arg5, (u8 *)&fx_0a0_line, 0);
 }
 
 static void fx_0a0_op80ElemDraw(Pool30Entry *pt, Pool6CEntry *p, SVECTOR *pos, s32 arg3, s32 *arg4, s32 arg5, s32 arg6, s32 frame) {
@@ -59,13 +59,13 @@ static void fx_0a0_op80ElemDraw(Pool30Entry *pt, Pool6CEntry *p, SVECTOR *pos, s
     if (frame == 0) {
         ex->btlfx_drawTrail((u8 *)ex->btlfx_getFileData(entry->file, 7), (s32)pos, NULL, -1, 0, 0, 0, (u8 *)r, 2);
     }
-    ex->btlfx_drawTrail((u8 *)ex->btlfx_getFileData(entry->file, 7), (s32)pos, (s32 *)p->origin, frame, *arg4, D_801E8870, 1,
+    ex->btlfx_drawTrail((u8 *)ex->btlfx_getFileData(entry->file, 7), (s32)pos, (s32 *)p->origin, frame, *arg4, fx_0a0_trailAlpha, 1,
                       (u8 *)r, 2);
     if (frame < 0x28) {
         s = ex->math_cos((frame << 10) / 40);
         c0.r = c0.g = c0.b = 0x80;
         c1.r = c1.g = c1.b = 0x31;
-        fxm_drawTrailLine((u8 *)ex->btlfx_getFileData(entry->file, 6), pos, &D_801E8864, 0, s, 1, 0x40);
+        fxm_drawTrailLine((u8 *)ex->btlfx_getFileData(entry->file, 6), pos, &fx_0a0_bonePos, 0, s, 1, 0x40);
     }
 }
 
@@ -78,11 +78,11 @@ s32 fx_0a0_op80(s32 mode, Fx0a0Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
         *arg4 = 0x24;
     } else if (mode == 1) {
         fx_0a0_env = env;
-        work->unk0 = 0;
-        D_801E8870 = 0x1000;
+        work->state0 = 0;
+        fx_0a0_trailAlpha = 0x1000;
         fx_0a0_task = entry;
         ex->btlfx_getUnitArgBonePos(0x10, 0, (u16 *)&work->pos4);
-        BTLFX_COPY_SVEC(&D_801E8864, &work->pos4);
+        BTLFX_COPY_SVEC(&fx_0a0_bonePos, &work->pos4);
         BTLFX_COPY_SVEC(&work->posC, &work->pos4);
         ex->btlfx_getUnitBodyPos(0, 0, (s16 *)&work->pos14);
         work->emit1C = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 1), (s32)&work->pos14);
@@ -90,7 +90,7 @@ s32 fx_0a0_op80(s32 mode, Fx0a0Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
             work->emit1C->otZ = ex->btlfx_addRadiusSixth(0, 0x10);
         }
         if (work->emit1C != NULL) {
-            work->emit1C->trails = (s32)D_801E7DA4;
+            work->emit1C->trails = (s32)fx_0a0_trails;
             work->emit1C->trailSlots = 0x10;
             work->emit1C->trailStride = 0xAC;
         }
@@ -102,21 +102,21 @@ s32 fx_0a0_op80(s32 mode, Fx0a0Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
     } else {
         frame = entry->frame;
         ex->btlfx_getUnitArgBonePos(0x10, 0, (u16 *)&work->pos4);
-        BTLFX_COPY_SVEC(&D_801E8864, &work->pos4);
-        switch (work->unk0) {
+        BTLFX_COPY_SVEC(&fx_0a0_bonePos, &work->pos4);
+        switch (work->state0) {
         case 0:
             if (work->emit20 != NULL && work->emit20->state == BTLFX_EMIT_DONE) {
                 work->emit20 = NULL;
             }
             ex->btlfx_moveEmitterTo((s32)work->emit20, (s32)&work->pos4);
             if (frame >= 0x29) {
-                work->unk0 = 1;
+                work->state0 = 1;
                 entry->frame = -1;
             }
             break;
         case 1:
             t = frame * 0x200;
-            D_801E8870 = 0x1000 - t;
+            fx_0a0_trailAlpha = 0x1000 - t;
             if (frame >= 8) {
                 ex->btlfx_stopEmitter(work->emit1C);
                 return 1;

@@ -86,7 +86,7 @@ typedef struct {
     unsigned int pad0_8 : 24;
     u8 effect; /* calculation script, item_useOnMember's kind */
     u8 pad5[3];
-    s32 unk8;
+    s32 unk8; /* not used by C */
 } Unk8006B1F4; /* 0xC, items 0xE0.. (also in ovl_0b.h) */
 extern Unk8006B1F4 g_usableItemTable[];
 u8 item_useOnMember(Character *, Character *, Unk8006B1F4 *, s32, s32);

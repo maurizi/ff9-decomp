@@ -25,3 +25,21 @@ fx_1a7_op80ParticleMotions = 0x801E88B0; // [code] table of ParticleMotion callb
 fx_1a7_op81ParticleMotions = 0x801E88D4; // [code] table of ParticleMotion callbacks (data), indexed by the op
 fxm_lineOrbitParticle0 = 0x801E7968; // type:func [code] particle motion core, along a module line over 12 frames plus a circle offset (angle, radius)
 fxm_lineOrbitParticle1 = 0x801E7D18; // type:func [code] particle motion core, the same along a second module line
+fx_1a7_op80Trails0 = 0x801E89D0; // [code] trail point buffer (Pool6CEntry.trails) of an emitter started by the op80 handler
+fx_1a7_op80Trails1 = 0x801E8FD0; // [code] trail point buffer (Pool6CEntry.trails) of an emitter started by the op80 handler
+fx_1a7_op81Trails0 = 0x801E91D0; // [code] trail point buffer (Pool6CEntry.trails) of an emitter started by the op81 handler
+fx_1a7_op81Trails1 = 0x801E96A0; // [code] trail point buffer (Pool6CEntry.trails) of an emitter started by the op81 handler
+fx_1a7_op81Trails2 = 0x801E9CD0; // [code] trail point buffer (Pool6CEntry.trails) of an emitter started by the op81 handler
+fx_1a7_emitPos = 0x801EA5E0; // [code] emitter origin, passed to btlfx_startEmitter
+fx_1a7_op80EmitFileIds = 0x801E8860; // [code] 9 file ids given to btlfx_getFileData for the emit8[i] emitters in fx_1a7_op80
+fx_1a7_op80StartFrames = 0x801E8874; // [code] 9 frame offsets compared with frame - 0x32 in fx_1a7_op80, emitter i starts when equal
+fx_1a7_op81EmitFileIds = 0x801E8888; // [code] 9 file ids given to btlfx_getFileData for the emit8[i] emitters in fx_1a7_op81
+fx_1a7_op81StartFrames = 0x801E889C; // [code] 9 frame offsets compared with frame - 0x14 in fx_1a7_op81, emitter i starts when equal
+fx_1a7_op80Angles = 0x801E8950; // [code] per emitter, randomized at start and += 0x200 per frame in fx_1a7_op80, given to math_sin and math_cos by fxm_lineOrbitParticle0
+fx_1a7_op81Angles = 0x801E8970; // [code] per emitter, randomized at start and += 0x80 per frame in fx_1a7_op81, angle of fxm_lineOrbitParticle1
+fx_1a7_op80Radii = 0x801E8990; // [code] per emitter, i * 10 then grows each frame in fx_1a7_op80, radius multiplying sin and cos in fxm_lineOrbitParticle0
+fx_1a7_op81Radii = 0x801E89B0; // [code] per emitter, random 0x64 plus up to 200 then jittered in fx_1a7_op81, radius of fxm_lineOrbitParticle1
+fx_1a7_op80MotionFrom = 0x801EA5C0; // [code] set 0xC8 ahead of caster bone 0x1C at frame 0x32 in fx_1a7_op80, lerp start of fxm_lineOrbitParticle0
+fx_1a7_op81MotionFrom = 0x801EA5C8; // [code] target body position in fx_1a7_op81, lerp start of fxm_lineOrbitParticle1
+fx_1a7_op80MotionTo = 0x801EA5D0; // [code] target body position in fx_1a7_op80, lerp end of fxm_lineOrbitParticle0
+fx_1a7_op81MotionTo = 0x801EA5D8; // [code] point 0x190 behind the caster in fx_1a7_op81, lerp end of fxm_lineOrbitParticle1

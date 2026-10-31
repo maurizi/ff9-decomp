@@ -8,26 +8,24 @@
 #include "btlfx_mod.h"
 
 typedef struct {
-    s32 unk0; /* state */
-    s32 unk4; /* frame counter */
+    s32 state0; /* state */
+    s32 frame4; /* frame counter */
     SVECTOR pos8; /* btlfx_getWeaponPos(0x10, 1) */
 } Fx0d8Work84;
 
 extern Unk80100C78Entry *fx_0d8_task;
-extern u8 D_801E8FB0[][0x84];
-extern u8 D_801E95E0[][0x48];
 
 typedef struct {
     SVECTOR pos0;
-    SVECTOR unk8;
-    u8 unk10; /* index */
-    u8 unk11; /* state */
-    u8 unk12;
-    u8 unk13;
-    u8 unk14; /* kind */
-    u8 unk15;
+    SVECTOR pos8;
+    u8 strip10; /* index */
+    u8 state11; /* state */
+    u8 branchAt12;
+    u8 branchAt13;
+    u8 kind14; /* kind */
+    u8 width15;
     s16 unk16;
-    s32 *unk18;
+    s32 *jitter18;
     Pool6CEntry *emit1C;
     Pool6CEntry *emit20;
 } Fx0d8Part; /* pool entry data */
@@ -44,10 +42,20 @@ typedef struct {
     u8 unk3;
     SVECTOR unk4[16];
 } Fx0d8Strip; /* 0x84 */
-extern u16 D_801E8F28[];
+typedef struct {
+    u8 unk0;
+    u8 unk1;
+    u8 unk2;
+    u8 unk3;
+    SVECTOR unk4[8];
+    u8 pad44[4];
+} Fx0d8Branch; /* 0x48 */
+extern Fx0d8Strip fx_0d8_strips[];
+extern Fx0d8Branch fx_0d8_branches[];
+extern u16 fx_0d8_strip16Blocks[];
 static void fxm_drawJaggedStrip16(Unk80100C78Entry *entry, Fx0d8Strip *strip, s32 *tbl, SVECTOR *from, SVECTOR *to, s32 from1, s32 to1,
                    s32 width, s32 dwidth, s32 frame, s32 arg10, s32 arg11, s32 kind);
-extern u16 D_801E8F30[];
+extern u16 fx_0d8_strip4Blocks[];
 extern Unk800F78A4 *fx_0d8_env;
 static void fxm_drawJaggedStrip4(Unk80100C78Entry *entry, Fx0d8Strip *strip, s32 *tbl, SVECTOR *from, SVECTOR *to, s32 amp,
                    s32 width, s32 dwidth, s32 frame, s32 arg9, s32 arg10, s32 kind);
@@ -56,12 +64,12 @@ static void fxm_drawJaggedBranch4(Unk80100C78Entry *entry, Fx0d8Strip *strip, Fx
 typedef struct {
     SVECTOR pos0; /* caster body position */
     SVECTOR pos8; /* caster position */
-    s32 *unk10; /* jitter table (D_801E9950) */
-    s32 unk14; /* bolts spawned */
+    s32 *jitter10; /* jitter table (fx_0d8_jitter) */
+    s32 boltCount14; /* bolts spawned */
 } Fx0d8Work83; /* 0x18 */
 
-extern s16 D_801E8F38[16]; /* bolt kind per frame */
-extern s32 D_801E9950[];
+extern s16 fx_0d8_spawnKinds[16]; /* bolt kind per frame */
+extern s32 fx_0d8_jitter[];
 s32 fx_0d8_op83(s32 mode, Fx0d8Work83 *work, Unk800F78A4 *env, Unk80100C78Entry *entry, EffInit *init);
 
 #endif

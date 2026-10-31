@@ -15,3 +15,17 @@ fx_191_op80ParticleMotions = 0x801E8504; // [code] table of ParticleMotion callb
 fxm_lerpParticle = 0x801E7870; // type:func [code] particle motion core, particle lerped from base + a module point to to by the module frame / 12
 fxm_followPathParticle0 = 0x801E7A00; // type:func [code] particle motion core, position = a module posPath key (module frame * 3) plus offsets
 fxm_followPathParticle1 = 0x801E7B24; // type:func [code] particle motion core, position = a second module posPath key (module frame - 5) * 3 plus offsets
+fx_191_posPath0 = 0x801E8564; // [code] key path state for fxm_posPathInit and fxm_posPathGet
+fx_191_posPath1 = 0x801E856C; // [code] key path state for fxm_posPathInit and fxm_posPathGet
+fx_191_emitPos0 = 0x801E85CC; // [code] emitter origin, passed to btlfx_startEmitter
+fx_191_emitPos1 = 0x801E85D4; // [code] emitter origin, passed to btlfx_startEmitter
+fx_191_op80Trails = 0x801E85DC; // [code] trail point buffer (Pool6CEntry.trails) of an emitter started by the op80 handler
+fx_191_op81Trails0 = 0x801E8BDC; // [code] trail point buffer (Pool6CEntry.trails) of an emitter started by the op81 handler
+fx_191_op81Trails1 = 0x801E8CBC; // [code] trail point buffer (Pool6CEntry.trails) of an emitter started by the op81 handler
+fx_191_emitFileIds = 0x801E84DC; // [code] 4 btlfx_getFileData indices of the emitters started in the loop of fx_191_op80 mode 1
+fx_191_op80Offsets = 0x801E84E4; // [code] 4 SVECTOR offsets moved in x each call of fx_191_op80ParticleMotion0-3, added to fx_191_op80Origin in fxm_lerpParticle
+fx_191_op80Origin = 0x801E8574; // [code] caster position set in fx_191_op80 mode 1, lerp start base in fxm_lerpParticle
+fx_191_op80Targets = 0x801E857C; // [code] 4 points around the target set in fx_191_op80 mode 1, lerp end of fxm_lerpParticle for each motion
+fx_191_op81PathOrigin = 0x801E859C; // [code] target body position set in fx_191_op81 mode 1, added to every fxm_posPathGet key in fxm_followPathParticle0/1
+fx_191_op80Frame = 0x801E8D9C; // [code] entry->frame stored each update of fx_191_op80, the lerp parameter (frame/12) of fxm_lerpParticle
+fx_191_op81Frame = 0x801E8DA0; // [code] entry->frame stored each update of fx_191_op81, picks the path key in fxm_followPathParticle0/1

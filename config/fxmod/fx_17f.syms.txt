@@ -2,3 +2,6 @@ fx_17f_headerPtr = 0x801E7700; // type:u32 size:0x4 [code] word 0 of a module, r
 fx_17f_header = 0x801E7C08; // [code] module header (0, init, ops), btlfx_updateLoader
 fx_17f_op80 = 0x801E77D8; // type:func [code] header op entry 0, effect script op 0x80 (btlfx_spawnTask)
 fx_17f_env = 0x801E7C50; // [code] the effect env (Unk800F78A4) the op handlers store in mode 1, used by the helpers for BTLFX_EXPORTS
+fx_17f_vertexDrops = 0x801E7C60; // [code] 0x2BC words filled with rand&7+4 in fx_17f_op80 mode 1, subtracted from vertex vy by index in fx_17f_op80MeltVertex
+fx_17f_modelBackup = 0x801E88E0; // [code] buffer given to btlfx_swapModelData(0xE) at start and end of fx_17f_op80 (saves then restores the model data)
+fx_17f_op80MeltVertex = 0x801E7704; // type:func [code] vertex callback given to btl_forEachModelVertex in fx_17f_op80, lowers vy to 0 and squeezes x/z near the floor

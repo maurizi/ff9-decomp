@@ -11,7 +11,7 @@ typedef struct {
     Pool6CEntry *emitC;
     SVECTOR pos10; /* caster body position */
     SVECTOR pos18; /* target body position */
-    SVECTOR unk20; /* angles to unk18 */
+    SVECTOR aim20; /* angles from the camera eye to pos18 */
 } Fx02eWork; /* 0x28 */
 
 extern Unk800F78A4 *fx_02e_env;

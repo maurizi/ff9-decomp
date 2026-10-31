@@ -1,15 +1,15 @@
 #include "fxmod/fx_1a6.h"
 
 s32 fx_1a6_op80ParticleMotion0(Pool30Entry *pt, s32 arg1, SVECTOR *pos, s32 arg3, s32 frame, s32 n) {
-    return fxm_lerpParticle(pt, pos, &D_801EDD28[0], &D_801EDD48[0], frame, n);
+    return fxm_lerpParticle(pt, pos, &fx_1a6_motionFrom[0], &fx_1a6_motionTo[0], frame, n);
 }
 
 s32 fx_1a6_op80ParticleMotion1(Pool30Entry *pt, s32 arg1, SVECTOR *pos, s32 arg3, s32 frame, s32 n) {
-    return fxm_lerpParticle(pt, pos, &D_801EDD28[1], &D_801EDD48[1], frame, n);
+    return fxm_lerpParticle(pt, pos, &fx_1a6_motionFrom[1], &fx_1a6_motionTo[1], frame, n);
 }
 
 s32 fx_1a6_op80ParticleMotion2(Pool30Entry *pt, s32 arg1, SVECTOR *pos, s32 arg3, s32 frame, s32 n) {
-    return fxm_lerpParticle(pt, pos, &D_801EDD28[2], &D_801EDD48[2], frame, n);
+    return fxm_lerpParticle(pt, pos, &fx_1a6_motionFrom[2], &fx_1a6_motionTo[2], frame, n);
 }
 
 static s32 fxm_lerpParticle(Pool30Entry *e, SVECTOR *pos, SVECTOR *from, SVECTOR *to, s32 frame, s32 frames) {
@@ -38,7 +38,7 @@ s32 fx_1a6_op80(s32 mode, Fx1a6Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
     } else if (mode == 1) {
         s32 n = *arg4;
         fx_1a6_env = env;
-        work->unk48 = n;
+        work->index48 = n;
         if (n >= 3) {
             return 1;
         }
@@ -58,28 +58,28 @@ s32 fx_1a6_op80(s32 mode, Fx1a6Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
         } else {
             work->pos18.vy -= 0x32 + (s32)ex->btlfx_rand % 200;
         }
-        ex->btlfx_aimAngles((s16 *)&work->pos20, (s16 *)&work->pos18, (s16 *)&work->unk38);
-        ex->btlfx_aimAngles((s16 *)&work->pos18, (s16 *)&work->pos20, (s16 *)&work->unk40);
-        ex->btlfx_pointAhead((s16 *)&work->pos20, (s16 *)&work->unk38, 0x12C, (s16 *)&work->pos28);
-        ex->btlfx_pointAhead((s16 *)&work->pos20, (s16 *)&work->unk38, 0xC8, (s16 *)&D_801EDD28[work->unk48]);
-        D_801EDD48[work->unk48].vx = work->pos18.vx;
-        D_801EDD48[work->unk48].vy = work->pos18.vy;
-        D_801EDD48[work->unk48].vz = work->pos18.vz;
+        ex->btlfx_aimAngles((s16 *)&work->pos20, (s16 *)&work->pos18, (s16 *)&work->angle38);
+        ex->btlfx_aimAngles((s16 *)&work->pos18, (s16 *)&work->pos20, (s16 *)&work->angle40);
+        ex->btlfx_pointAhead((s16 *)&work->pos20, (s16 *)&work->angle38, 0x12C, (s16 *)&work->pos28);
+        ex->btlfx_pointAhead((s16 *)&work->pos20, (s16 *)&work->angle38, 0xC8, (s16 *)&fx_1a6_motionFrom[work->index48]);
+        fx_1a6_motionTo[work->index48].vx = work->pos18.vx;
+        fx_1a6_motionTo[work->index48].vy = work->pos18.vy;
+        fx_1a6_motionTo[work->index48].vz = work->pos18.vz;
         work->emit0 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 3), (s32)&work->pos28);
-        work->emit4 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, D_801E823C[work->unk48]),
-                                       (s32)&D_801EDD68[work->unk48]);
+        work->emit4 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, fx_1a6_emitFileIds[work->index48]),
+                                       (s32)&fx_1a6_emitPos0[work->index48]);
         if (work->emit0 != NULL) {
-            work->emit0->trails = (s32)D_801E82A8[work->unk48];
+            work->emit0->trails = (s32)fx_1a6_op80Trails0[work->index48];
             work->emit0->trailSlots = 0xF;
             work->emit0->trailStride = 0x18;
         }
         if (work->emit4 != NULL) {
-            work->emit4->trails = (s32)D_801E86E8[work->unk48];
+            work->emit4->trails = (s32)fx_1a6_op80Trails1[work->index48];
             work->emit4->trailSlots = 0x1D;
             work->emit4->trailStride = 0x40;
         }
         if (work->emit4 != NULL) {
-            work->emit4->file->m.module.update = fx_1a6_op80ParticleMotions[work->unk48];
+            work->emit4->file->m.module.update = fx_1a6_op80ParticleMotions[work->index48];
         }
         if (work->emit0 != NULL) {
             work->emit0->otZ = ex->btlfx_addRadiusSixth(0x10, 0x20);
@@ -91,13 +91,13 @@ s32 fx_1a6_op80(s32 mode, Fx1a6Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
         frame = entry->frame;
         switch (frame) {
         case 6:
-            if (work->unk48 != 2) {
+            if (work->index48 != 2) {
                 fxm_startHitMotionIfActive(0);
             }
             work->emit8 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 6), (s32)&work->pos18);
             work->emitC = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 5), (s32)&work->pos18);
             if (work->emit8 != NULL) {
-                work->emit8->trails = (s32)D_801E9CA8[work->unk48];
+                work->emit8->trails = (s32)fx_1a6_op80Trails2[work->index48];
                 work->emit8->trailSlots = 0x56;
                 work->emit8->trailStride = 0x40;
             }
@@ -119,9 +119,9 @@ s32 fx_1a6_op80(s32 mode, Fx1a6Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
                 work->emit0 = NULL;
             }
             if (work->emit0 != NULL) {
-                work->emit0->rot.vx = work->unk40.vx;
-                work->emit0->rot.vy = work->unk40.vy;
-                work->emit0->rot.vz = work->unk40.vz;
+                work->emit0->rot.vx = work->angle40.vx;
+                work->emit0->rot.vy = work->angle40.vy;
+                work->emit0->rot.vz = work->angle40.vz;
             }
         }
         if (frame >= 6) {
@@ -130,12 +130,12 @@ s32 fx_1a6_op80(s32 mode, Fx1a6Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
                     work->emitC = NULL;
                 }
                 if (work->emitC != NULL) {
-                    work->emitC->rot.vx = work->unk38.vx;
-                    work->emitC->rot.vy = work->unk38.vy;
-                    work->emitC->rot.vz = work->unk38.vz;
+                    work->emitC->rot.vx = work->angle38.vx;
+                    work->emitC->rot.vy = work->angle38.vy;
+                    work->emitC->rot.vz = work->angle38.vz;
                 }
             }
-            if (frame >= 6 && work->unk48 != 2 && fxm_isMotionDone(0) != 0) {
+            if (frame >= 6 && work->index48 != 2 && fxm_isMotionDone(0) != 0) {
                 fxm_startUnitMotion(0, 0);
             }
         }

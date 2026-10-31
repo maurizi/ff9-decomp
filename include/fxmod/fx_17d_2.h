@@ -6,25 +6,25 @@
 
 typedef struct {
     s16 unk0; /* state */
-    s16 unk2; /* spin */
-    s32 unk4; /* size */
-    SVECTOR unk8; /* position */
+    s16 spin2; /* spin */
+    s32 scale4; /* size */
+    SVECTOR pos8; /* position */
     SVECTOR rot10; /* rotation */
 } Fx17d2Elem; /* 0x18 */
 
 typedef struct {
-    s32 unk0; /* state */
-    s32 unk4; /* counter */
-    SVECTOR unk8;
+    s32 state0; /* state */
+    s32 frame4; /* counter */
+    SVECTOR pos8;
     SVECTOR pos10;
-    SVECTOR unk18;
+    SVECTOR pos18;
     u8 pad20[0x28 - 0x20];
-    s32 unk28[3]; /* model position */
-    s32 unk34[3]; /* model scale */
+    s32 pos28[3]; /* model position */
+    s32 scale34[3]; /* model scale */
     SVECTOR rot40; /* model rotation */
-    s32 unk48[3]; /* model 2 position */
+    s32 pos48[3]; /* model 2 position */
     SVECTOR rot54; /* model 2 rotation */
-    s32 unk5C[3]; /* model 2 scale */
+    s32 scale5C[3]; /* model 2 scale */
     s32 model68; /* models */
     s32 model6C;
     s32 model70;

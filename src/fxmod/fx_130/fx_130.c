@@ -31,7 +31,7 @@ s32 fx_130_op80(s32 mode, Fx130Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
         *arg4 = 0x28;
     } else if (mode == 1) {
         fx_130_env = env;
-        for (i = 7, q = &work->unk0[7]; i >= 0; i--) {
+        for (i = 7, q = &work->timer0[7]; i >= 0; i--) {
             *q-- = 0;
         }
         ex->btlfx_initEffModels(fx_130_effModels, 4);
@@ -39,20 +39,20 @@ s32 fx_130_op80(s32 mode, Fx130Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
         work->pos20.vz = env->targets->centerZ;
         work->pos20.vy = 0;
         for (i = 0; i < 4; i++) {
-            D_801E8124[i].unk18 = -1;
-            D_801E8124[i].unk1C = -1;
+            fx_130_units[i].timer18 = -1;
+            fx_130_units[i].timer1C = -1;
         }
         for (i = 0; i < env->targets->targetCount; i++) {
-            ex->btlfx_getUnitPos(i, &D_801E8124[i].unk0.vx);
-            ex->btlfx_getUnitRot(i, &D_801E8124[i].unk8.vx);
-            ex->btlfx_getUnitRot(i, &D_801E8124[i].unk10.vx);
-            D_801E8124[i].unk18 = i * 6;
-            D_801E8124[i].unk1C = 0x20;
-            D_801E8124[i].unk20 = i * 6;
-            D_801E8124[i].unk24 = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, 1), 1);
-            setVector(&D_801E8124[i].unk30, D_801E8124[i].unk0.vx, D_801E8124[i].unk0.vy, D_801E8124[i].unk0.vz);
-            setVector(&D_801E8124[i].unk28, 0, 0, 0);
-            setVector(&D_801E8124[i].unk40, 0x1000, 0x1000, 0x1000);
+            ex->btlfx_getUnitPos(i, &fx_130_units[i].pos0.vx);
+            ex->btlfx_getUnitRot(i, &fx_130_units[i].rot8.vx);
+            ex->btlfx_getUnitRot(i, &fx_130_units[i].rot10.vx);
+            fx_130_units[i].timer18 = i * 6;
+            fx_130_units[i].timer1C = 0x20;
+            fx_130_units[i].timer20 = i * 6;
+            fx_130_units[i].model24 = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, 1), 1);
+            setVector(&fx_130_units[i].pos30, fx_130_units[i].pos0.vx, fx_130_units[i].pos0.vy, fx_130_units[i].pos0.vz);
+            setVector(&fx_130_units[i].rot28, 0, 0, 0);
+            setVector(&fx_130_units[i].scale40, 0x1000, 0x1000, 0x1000);
         }
     } else {
         frame = entry->frame;
@@ -68,8 +68,8 @@ s32 fx_130_op80(s32 mode, Fx130Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
             }
             break;
         case 8:
-            work->unk0[0] = 0x38;
-            work->unk0[1] = 0x20;
+            work->timer0[0] = 0x38;
+            work->timer0[1] = 0x20;
             break;
         case 0x2A:
             p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 2), (s32)&work->pos20);
@@ -78,46 +78,46 @@ s32 fx_130_op80(s32 mode, Fx130Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
             }
             break;
         }
-        if (work->unk0[0] != 0) {
-            work->unk0[0]--;
+        if (work->timer0[0] != 0) {
+            work->timer0[0]--;
             for (i = 0; i < 4; i++) {
-                if (D_801E8124[i].unk18 == 0) {
-                    if (D_801E8124[i].unk1C != 0) {
-                        D_801E8124[i].unk1C--;
-                        ex->Hi_DrawEffModel(&D_801E8124[i].unk28, &D_801E8124[i].unk30, (s32)&D_801E8124[i].unk40, D_801E8124[i].unk24);
-                        D_801E8124[i].unk28.vy += 0x80;
-                        if (D_801E8124[i].unk1C > 0x10) {
-                            D_801E8124[i].unk8.vy = (D_801E8124[i].unk10.vy + fxm_easeLerp(1, 0x10, D_801E8124[i].unk1C - 0x10, 0, 0x2000)) & 0xFFF;
+                if (fx_130_units[i].timer18 == 0) {
+                    if (fx_130_units[i].timer1C != 0) {
+                        fx_130_units[i].timer1C--;
+                        ex->Hi_DrawEffModel(&fx_130_units[i].rot28, &fx_130_units[i].pos30, (s32)&fx_130_units[i].scale40, fx_130_units[i].model24);
+                        fx_130_units[i].rot28.vy += 0x80;
+                        if (fx_130_units[i].timer1C > 0x10) {
+                            fx_130_units[i].rot8.vy = (fx_130_units[i].rot10.vy + fxm_easeLerp(1, 0x10, fx_130_units[i].timer1C - 0x10, 0, 0x2000)) & 0xFFF;
                         } else {
-                            D_801E8124[i].unk8.vy = (D_801E8124[i].unk10.vy + fxm_easeLerp(2, 0x10, D_801E8124[i].unk1C, 0x2000, 0x4000)) & 0xFFF;
+                            fx_130_units[i].rot8.vy = (fx_130_units[i].rot10.vy + fxm_easeLerp(2, 0x10, fx_130_units[i].timer1C, 0x2000, 0x4000)) & 0xFFF;
                         }
-                        if (D_801E8124[i].unk1C == 0) {
-                            D_801E8124[i].unk8.vy = D_801E8124[i].unk10.vy;
+                        if (fx_130_units[i].timer1C == 0) {
+                            fx_130_units[i].rot8.vy = fx_130_units[i].rot10.vy;
                         }
-                        ex->btlfx_setUnitRot(i, &D_801E8124[i].unk8.vx);
-                        if (D_801E8124[i].unk1C > 0x18) {
-                            D_801E8124[i].unk40.vx = D_801E8124[i].unk40.vz = ex->btlfx_lerpRatio(0x1000, 0, D_801E8124[i].unk1C - 0x18, 8);
-                            r = -((D_801E8124[i].unk1C - 0x18) << 5);
-                            ex->Hi_ModifyEffModelRGB(D_801E8124[i].unk24, r, r, r);
+                        ex->btlfx_setUnitRot(i, &fx_130_units[i].rot8.vx);
+                        if (fx_130_units[i].timer1C > 0x18) {
+                            fx_130_units[i].scale40.vx = fx_130_units[i].scale40.vz = ex->btlfx_lerpRatio(0x1000, 0, fx_130_units[i].timer1C - 0x18, 8);
+                            r = -((fx_130_units[i].timer1C - 0x18) << 5);
+                            ex->Hi_ModifyEffModelRGB(fx_130_units[i].model24, r, r, r);
                         }
-                        if (D_801E8124[i].unk1C < 8) {
-                            D_801E8124[i].unk40.vx = D_801E8124[i].unk40.vz = ex->btlfx_lerpRatio(0, 0x1000, D_801E8124[i].unk1C, 8);
-                            r = -((8 - D_801E8124[i].unk1C) << 5);
-                            ex->Hi_ModifyEffModelRGB(D_801E8124[i].unk24, r, r, r);
+                        if (fx_130_units[i].timer1C < 8) {
+                            fx_130_units[i].scale40.vx = fx_130_units[i].scale40.vz = ex->btlfx_lerpRatio(0, 0x1000, fx_130_units[i].timer1C, 8);
+                            r = -((8 - fx_130_units[i].timer1C) << 5);
+                            ex->Hi_ModifyEffModelRGB(fx_130_units[i].model24, r, r, r);
                         }
                     }
                 } else {
-                    D_801E8124[i].unk18--;
+                    fx_130_units[i].timer18--;
                 }
             }
         }
-        if (work->unk0[1] != 0) {
-            work->unk0[1]--;
+        if (work->timer0[1] != 0) {
+            work->timer0[1]--;
             for (i = 0; i < 4; i++) {
-                if (D_801E8124[i].unk20 == 0) {
-                    ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 3), (s32)&D_801E8124[i]);
+                if (fx_130_units[i].timer20 == 0) {
+                    ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 3), (s32)&fx_130_units[i]);
                 }
-                D_801E8124[i].unk20--;
+                fx_130_units[i].timer20--;
             }
         }
         return frame >= 0x50;

@@ -1,7 +1,9 @@
 #ifndef FX_0A8_H
 #define FX_0A8_H
 
-/* Effect module fx_0a8 (dir 13 file 0xA8). */
+/* Effect module fx_0a8 (dir 13 file 0xA8): Reis's Wind. Emitters only. Evidence: [data] the party ability / item
+ * tables and enemy sequences that play this file id (tools/effect_labels.py; docs/runtime-findings.md, "Round 31
+ * runtime pass"). */
 #include "btlfx_mod.h"
 
 typedef struct {
@@ -24,6 +26,6 @@ typedef struct {
 } Fx0a8Work81;
 
 extern Unk800F78A4 *fx_0a8_env;
-extern s32 D_801E7B78[];
+extern s32 fx_0a8_trails[];
 
 #endif

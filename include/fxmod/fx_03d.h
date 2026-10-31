@@ -25,16 +25,16 @@ typedef struct {
     VECTOR pos8; /* model position */
     VECTOR scale18; /* model 1 scale */
     VECTOR scale28; /* model 2 scale */
-    s32 unk38; /* model brightness */
-    s16 unk3C; /* fade-in countdown */
-    s16 unk3E; /* fade-out countdown */
+    s32 rgb38; /* model brightness */
+    s16 fadeIn3C; /* fade-in countdown */
+    s16 fadeOut3E; /* fade-out countdown */
     u16 model40; /* models */
     u16 model42;
 } Fx03dWork82; /* 0x44 */
 
 extern Unk800F78A4 *fx_03d_env;
 extern BtlModel fx_03d_effModels[];
-extern s32 D_801E8000[];
+extern s32 fx_03d_trails[];
 
 static void fxm_lerpSvec(SVECTOR *a, SVECTOR *b, s32 t, SVECTOR *out);
 static s32 fxm_lerpRatio(s32 from, s32 to, s32 t, s32 n);

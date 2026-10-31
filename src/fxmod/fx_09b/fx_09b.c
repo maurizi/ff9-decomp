@@ -1,23 +1,23 @@
 #include "fxmod/fx_09b.h"
 
 s32 fxm_pinParticle0(Pool30Entry *pt, s32 arg1, SVECTOR *pos, s32 arg3, s32 frame, s32 n) {
-    return fxm_pinParticle(pt, pos, &D_801E9A34[0], frame, n);
+    return fxm_pinParticle(pt, pos, &fx_09b_shotPos[0], frame, n);
 }
 
 s32 fxm_pinParticle1(Pool30Entry *pt, s32 arg1, SVECTOR *pos, s32 arg3, s32 frame, s32 n) {
-    return fxm_pinParticle(pt, pos, &D_801E9A34[1], frame, n);
+    return fxm_pinParticle(pt, pos, &fx_09b_shotPos[1], frame, n);
 }
 
 s32 fxm_pinParticle2(Pool30Entry *pt, s32 arg1, SVECTOR *pos, s32 arg3, s32 frame, s32 n) {
-    return fxm_pinParticle(pt, pos, &D_801E9A34[2], frame, n);
+    return fxm_pinParticle(pt, pos, &fx_09b_shotPos[2], frame, n);
 }
 
 s32 fxm_pinParticle3(Pool30Entry *pt, s32 arg1, SVECTOR *pos, s32 arg3, s32 frame, s32 n) {
-    return fxm_pinParticle(pt, pos, &D_801E9A34[3], frame, n);
+    return fxm_pinParticle(pt, pos, &fx_09b_shotPos[3], frame, n);
 }
 
 s32 fxm_pinParticle4(Pool30Entry *pt, s32 arg1, SVECTOR *pos, s32 arg3, s32 frame, s32 n) {
-    return fxm_pinParticle(pt, pos, &D_801E9A34[4], frame, n);
+    return fxm_pinParticle(pt, pos, &fx_09b_shotPos[4], frame, n);
 }
 
 static s32 fxm_pinParticle(Pool30Entry *pt, SVECTOR *pos, SVECTOR *src, s32 frame, s32 n) {
@@ -43,7 +43,7 @@ s32 fx_09b_op80(s32 mode, Fx09bWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
     } else if (mode == 1) {
         s32 n = *arg4;
         fx_09b_env = env;
-        work->unk6C = n;
+        work->instance6C = n;
         if (n >= 5) {
             return 1;
         }
@@ -65,9 +65,9 @@ s32 fx_09b_op80(s32 mode, Fx09bWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
             work->pos64.vy -= ex->btlfx_rand() % 100;
         }
         ex->btlfx_getUnitArgBonePos(0x10, 0, (u16 *)&work->pos3C);
-        work->unk5C.vx = work->pos3C.vx;
-        work->unk5C.vy = work->pos3C.vy;
-        work->unk5C.vz = work->pos3C.vz;
+        work->fromPos5C.vx = work->pos3C.vx;
+        work->fromPos5C.vy = work->pos3C.vy;
+        work->fromPos5C.vz = work->pos3C.vz;
         env->camera->points[0].vx = work->pos3C.vx;
         env->camera->points[0].vy = work->pos3C.vy;
         env->camera->points[0].vz = work->pos3C.vz;
@@ -82,15 +82,15 @@ s32 fx_09b_op80(s32 mode, Fx09bWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
         work->scale2C.vz = 0x1000;
         work->model70 = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, 6), 1);
         work->emit0 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 1), (s32)&work->pos3C);
-        work->emit4 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, D_801E80F4[work->unk6C]),
-                                       (s32)&D_801E9A64[work->unk6C]);
+        work->emit4 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, fx_09b_shotBlocks[work->instance6C]),
+                                       (s32)&fx_09b_emitStartPos[work->instance6C]);
         if (work->emit4 != NULL) {
-            work->emit4->trails = (s32)D_801E8564[work->unk6C];
+            work->emit4->trails = (s32)fx_09b_trails[work->instance6C];
             work->emit4->trailSlots = 0xE;
             work->emit4->trailStride = 0x4C;
         }
         if (work->emit4 != NULL) {
-            work->emit4->file->m.module.update = fx_09b_pinParticles[work->unk6C];
+            work->emit4->file->m.module.update = fx_09b_pinParticles[work->instance6C];
         }
         if (work->emit0 != NULL) {
             work->emit0->otZ = ex->btlfx_addRadiusSixth(0x10, 0x80);
@@ -127,18 +127,18 @@ s32 fx_09b_op80(s32 mode, Fx09bWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
             break;
         }
         if ((u32)frame < 6) {
-            ex->btlfx_lerpVec((s16 *)&work->unk5C, (s16 *)&work->pos64, (frame << 12) / 5,
-                              (s16 *)&D_801E9A34[work->unk6C]);
-            work->pos1C.vx = D_801E9A34[work->unk6C].vx;
-            work->pos1C.vy = D_801E9A34[work->unk6C].vy;
-            work->pos1C.vz = D_801E9A34[work->unk6C].vz;
+            ex->btlfx_lerpVec((s16 *)&work->fromPos5C, (s16 *)&work->pos64, (frame << 12) / 5,
+                              (s16 *)&fx_09b_shotPos[work->instance6C]);
+            work->pos1C.vx = fx_09b_shotPos[work->instance6C].vx;
+            work->pos1C.vy = fx_09b_shotPos[work->instance6C].vy;
+            work->pos1C.vz = fx_09b_shotPos[work->instance6C].vz;
             ex->Hi_DrawEffModel(&work->rot14, &work->pos1C, (s32)&work->scale2C, work->model70);
-            if (frame == 5 && work->unk6C != 4) {
+            if (frame == 5 && work->instance6C != 4) {
                 fxm_startHitMotionIfActive(0);
             }
         }
         if (frame >= 0x28) {
-            if (work->unk6C == 4) {
+            if (work->instance6C == 4) {
                 ex->btlfx_clearEffModels();
                 return 1;
             }

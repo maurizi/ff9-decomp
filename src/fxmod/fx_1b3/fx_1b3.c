@@ -70,17 +70,17 @@ s32 fx_1b3_op80(s32 mode, Fx1b3Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             work->emit80[i] = NULL;
         }
         buf = (s32)ex->btlfx_getFileData(entry->file, 0x93);
-        D_801EB0C4 = (Fx1b3Trail *)buf;
+        fx_1b3_trails = (Fx1b3Trail *)buf;
         buf += 0xE00;
-        D_801EB0C8 = buf;
+        fx_1b3_op80Trails0 = buf;
         buf += 0xF30;
-        D_801EB0CC = buf;
+        fx_1b3_op80Trails1 = buf;
         buf += 0x2448;
-        D_801EB0BC = (u8 *)buf;
-        ex->btlfx_getUnitBodyPos(0x10, 0, (s16 *)&D_801EB7EC);
-        D_801EB7EC.vy = -0x514;
-        D_801EB7EC.vz += 0x800;
-        env->camera->points[1].vx = D_801EB7EC.vx;
+        fx_1b3_splitBuf = (u8 *)buf;
+        ex->btlfx_getUnitBodyPos(0x10, 0, (s16 *)&fx_1b3_emitPos0);
+        fx_1b3_emitPos0.vy = -0x514;
+        fx_1b3_emitPos0.vz += 0x800;
+        env->camera->points[1].vx = fx_1b3_emitPos0.vx;
         env->camera->points[1].vy = 0;
         env->camera->points[1].vz = 0;
         ex->btlfx_getUnitBodyPos(0x10, 0, (s16 *)&work->pos100);
@@ -93,7 +93,7 @@ s32 fx_1b3_op80(s32 mode, Fx1b3Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
         ((BtlTexInfo *)w)->pages[1][0] = 0;
         ((BtlTexInfo *)w)->pages[0][1] = 0;
         ((BtlTexInfo *)w)->pages[1][1] = 0;
-        work->unk158 = REGTEX(0x81);
+        work->model158 = REGTEX(0x81);
         ((BtlTexInfo *)v)->pages[0][0] = 0x8E;
         ((BtlTexInfo *)v)->pages[1][0] = 0x8F;
         ((BtlTexInfo *)v)->pages[0][1] = 0x3900;
@@ -118,33 +118,33 @@ s32 fx_1b3_op80(s32 mode, Fx1b3Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
         work->rot15C.vx = 0;
         work->rot15C.vy = 0;
         work->rot15C.vz = 0;
-        D_801EB0F4[0].unk0 = REGTEX(0x85);
-        D_801EB0F4[1].unk0 = REGTEX(0x8A);
-        D_801EB0F4[2].unk0 = REGTEX(0x89);
-        D_801EB0F4[3].unk0 = REGTEX(0x8F);
-        D_801EB0F4[4].unk0 = REGTEX(0x86);
-        D_801EB0F4[5].unk0 = REGTEX(0x87);
-        D_801EB0F4[6].unk0 = REGTEX(0x83);
-        D_801EB0F4[7].unk0 = REGTEX(0x90);
-        D_801EB0F4[8].unk0 = REGTEX(0x92);
-        D_801EB0F4[5].unk4 = 0x40;
-        D_801EB0F4[4].unk4 = 0x40;
-        D_801EB0F4[3].unk4 = 0x40;
-        D_801EB0F4[2].unk4 = 0x40;
-        D_801EB0F4[1].unk4 = 0x40;
-        D_801EB0F4[0].unk4 = 0x40;
-        D_801EB0F4[8].unk4 = 0x64;
-        D_801EB0F4[7].unk4 = 0x64;
-        D_801EB0F4[6].unk4 = 0x64;
-        ex->btlfx_getCasterTexInfo(&D_801EB084, &D_801EB0A4, 0x2A0);
-        ((BtlTexInfo *)v)->pages[0][0] = D_801EB084.pages[5][0];
-        ((BtlTexInfo *)v)->pages[0][1] = D_801EB084.pages[5][1];
-        ((BtlTexInfo *)w)->pages[0][0] = D_801EB0A4.pages[5][0];
-        ((BtlTexInfo *)w)->pages[0][1] = D_801EB0A4.pages[5][1];
-        D_801EB4A4[0].unk0 = REGTEX(0x91);
-        D_801EB4A4[1].unk0 = REGTEX(0x8D);
-        D_801EB4A4[1].unk4 = 0x80;
-        D_801EB4A4[0].unk4 = 0x80;
+        fx_1b3_splits0[0].model0 = REGTEX(0x85);
+        fx_1b3_splits0[1].model0 = REGTEX(0x8A);
+        fx_1b3_splits0[2].model0 = REGTEX(0x89);
+        fx_1b3_splits0[3].model0 = REGTEX(0x8F);
+        fx_1b3_splits0[4].model0 = REGTEX(0x86);
+        fx_1b3_splits0[5].model0 = REGTEX(0x87);
+        fx_1b3_splits0[6].model0 = REGTEX(0x83);
+        fx_1b3_splits0[7].model0 = REGTEX(0x90);
+        fx_1b3_splits0[8].model0 = REGTEX(0x92);
+        fx_1b3_splits0[5].timer4 = 0x40;
+        fx_1b3_splits0[4].timer4 = 0x40;
+        fx_1b3_splits0[3].timer4 = 0x40;
+        fx_1b3_splits0[2].timer4 = 0x40;
+        fx_1b3_splits0[1].timer4 = 0x40;
+        fx_1b3_splits0[0].timer4 = 0x40;
+        fx_1b3_splits0[8].timer4 = 0x64;
+        fx_1b3_splits0[7].timer4 = 0x64;
+        fx_1b3_splits0[6].timer4 = 0x64;
+        ex->btlfx_getCasterTexInfo(&fx_1b3_casterTexInfo, &fx_1b3_casterTexPos, 0x2A0);
+        ((BtlTexInfo *)v)->pages[0][0] = fx_1b3_casterTexInfo.pages[5][0];
+        ((BtlTexInfo *)v)->pages[0][1] = fx_1b3_casterTexInfo.pages[5][1];
+        ((BtlTexInfo *)w)->pages[0][0] = fx_1b3_casterTexPos.pages[5][0];
+        ((BtlTexInfo *)w)->pages[0][1] = fx_1b3_casterTexPos.pages[5][1];
+        fx_1b3_splits1[0].model0 = REGTEX(0x91);
+        fx_1b3_splits1[1].model0 = REGTEX(0x8D);
+        fx_1b3_splits1[1].timer4 = 0x80;
+        fx_1b3_splits1[0].timer4 = 0x80;
         work->pos19C.vx = 0;
         work->pos19C.vy = 0;
         work->pos19C.vz = 0;
@@ -154,12 +154,12 @@ s32 fx_1b3_op80(s32 mode, Fx1b3Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
         work->scale1BC.vx = 0x1000;
         work->scale1BC.vy = 0x1000;
         work->scale1BC.vz = 0x1000;
-        ((BtlTexInfo *)v)->pages[0][0] = D_801EB084.pages[0][0];
-        ((BtlTexInfo *)v)->pages[0][1] = D_801EB084.pages[0][1];
-        ((BtlTexInfo *)w)->pages[0][0] = D_801EB0A4.pages[0][0];
-        ((BtlTexInfo *)w)->pages[0][1] = D_801EB0A4.pages[0][1];
-        D_801EB574.unk0 = REGTEX(0x8B);
-        D_801EB574.unk4 = 0x80;
+        ((BtlTexInfo *)v)->pages[0][0] = fx_1b3_casterTexInfo.pages[0][0];
+        ((BtlTexInfo *)v)->pages[0][1] = fx_1b3_casterTexInfo.pages[0][1];
+        ((BtlTexInfo *)w)->pages[0][0] = fx_1b3_casterTexPos.pages[0][0];
+        ((BtlTexInfo *)w)->pages[0][1] = fx_1b3_casterTexPos.pages[0][1];
+        fx_1b3_splits2.model0 = REGTEX(0x8B);
+        fx_1b3_splits2.timer4 = 0x80;
         work->pos1D4.vx = 0;
         work->pos1D4.vy = 0;
         work->pos1D4.vz = 0;
@@ -169,16 +169,16 @@ s32 fx_1b3_op80(s32 mode, Fx1b3Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
         work->scale1E4.vx = 0x1000;
         work->scale1E4.vy = 0x1000;
         work->scale1E4.vz = 0x1000;
-        ((BtlTexInfo *)v)->pages[0][0] = D_801EB084.pages[3][0];
-        ((BtlTexInfo *)v)->pages[0][1] = D_801EB084.pages[3][1];
-        ((BtlTexInfo *)w)->pages[0][0] = D_801EB0A4.pages[3][0];
-        ((BtlTexInfo *)w)->pages[0][1] = D_801EB0A4.pages[3][1];
-        ((BtlTexInfo *)v)->pages[1][0] = D_801EB084.pages[1][0];
-        ((BtlTexInfo *)v)->pages[1][1] = D_801EB084.pages[1][1];
-        ((BtlTexInfo *)w)->pages[1][0] = D_801EB0A4.pages[1][0];
-        ((BtlTexInfo *)w)->pages[1][1] = D_801EB0A4.pages[1][1];
-        D_801EB5E4[0].unk0 = REGTEX(0x8E);
-        D_801EB5E4[1].unk0 = REGTEX(0x8C);
+        ((BtlTexInfo *)v)->pages[0][0] = fx_1b3_casterTexInfo.pages[3][0];
+        ((BtlTexInfo *)v)->pages[0][1] = fx_1b3_casterTexInfo.pages[3][1];
+        ((BtlTexInfo *)w)->pages[0][0] = fx_1b3_casterTexPos.pages[3][0];
+        ((BtlTexInfo *)w)->pages[0][1] = fx_1b3_casterTexPos.pages[3][1];
+        ((BtlTexInfo *)v)->pages[1][0] = fx_1b3_casterTexInfo.pages[1][0];
+        ((BtlTexInfo *)v)->pages[1][1] = fx_1b3_casterTexInfo.pages[1][1];
+        ((BtlTexInfo *)w)->pages[1][0] = fx_1b3_casterTexPos.pages[1][0];
+        ((BtlTexInfo *)w)->pages[1][1] = fx_1b3_casterTexPos.pages[1][1];
+        fx_1b3_splits3[0].model0 = REGTEX(0x8E);
+        fx_1b3_splits3[1].model0 = REGTEX(0x8C);
         work->rot1FC.vx = 0;
         work->rot1FC.vy = 0;
         work->rot1FC.vz = 0;
@@ -188,20 +188,20 @@ s32 fx_1b3_op80(s32 mode, Fx1b3Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
         work->scale22C.vx = 0x1000;
         work->scale22C.vy = 0x1000;
         work->scale22C.vz = 0x1000;
-        ((BtlTexInfo *)v)->pages[0][0] = D_801EB084.pages[3][0];
-        ((BtlTexInfo *)v)->pages[0][1] = D_801EB084.pages[3][1];
-        ((BtlTexInfo *)w)->pages[0][0] = D_801EB0A4.pages[3][0];
-        ((BtlTexInfo *)w)->pages[0][1] = D_801EB0A4.pages[3][1];
-        ((BtlTexInfo *)v)->pages[1][0] = D_801EB084.pages[2][0];
-        ((BtlTexInfo *)v)->pages[1][1] = D_801EB084.pages[2][1];
-        ((BtlTexInfo *)w)->pages[1][0] = D_801EB0A4.pages[2][0];
-        ((BtlTexInfo *)w)->pages[1][1] = D_801EB0A4.pages[2][1];
-        ((BtlTexInfo *)v)->pages[2][0] = D_801EB084.pages[0][0];
-        ((BtlTexInfo *)v)->pages[2][1] = D_801EB084.pages[0][1];
-        ((BtlTexInfo *)w)->pages[2][0] = D_801EB0A4.pages[0][0];
-        ((BtlTexInfo *)w)->pages[2][1] = D_801EB0A4.pages[0][1];
-        D_801EB6B4[0].unk0 = REGTEX(0x88);
-        D_801EB6B4[1].unk0 = REGTEX(0x82);
+        ((BtlTexInfo *)v)->pages[0][0] = fx_1b3_casterTexInfo.pages[3][0];
+        ((BtlTexInfo *)v)->pages[0][1] = fx_1b3_casterTexInfo.pages[3][1];
+        ((BtlTexInfo *)w)->pages[0][0] = fx_1b3_casterTexPos.pages[3][0];
+        ((BtlTexInfo *)w)->pages[0][1] = fx_1b3_casterTexPos.pages[3][1];
+        ((BtlTexInfo *)v)->pages[1][0] = fx_1b3_casterTexInfo.pages[2][0];
+        ((BtlTexInfo *)v)->pages[1][1] = fx_1b3_casterTexInfo.pages[2][1];
+        ((BtlTexInfo *)w)->pages[1][0] = fx_1b3_casterTexPos.pages[2][0];
+        ((BtlTexInfo *)w)->pages[1][1] = fx_1b3_casterTexPos.pages[2][1];
+        ((BtlTexInfo *)v)->pages[2][0] = fx_1b3_casterTexInfo.pages[0][0];
+        ((BtlTexInfo *)v)->pages[2][1] = fx_1b3_casterTexInfo.pages[0][1];
+        ((BtlTexInfo *)w)->pages[2][0] = fx_1b3_casterTexPos.pages[0][0];
+        ((BtlTexInfo *)w)->pages[2][1] = fx_1b3_casterTexPos.pages[0][1];
+        fx_1b3_splits4[0].model0 = REGTEX(0x88);
+        fx_1b3_splits4[1].model0 = REGTEX(0x82);
         work->rot23C.vx = 0;
         work->rot23C.vy = 0;
         work->rot23C.vz = 0;
@@ -211,15 +211,15 @@ s32 fx_1b3_op80(s32 mode, Fx1b3Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
         work->pos244.vx = work->pos108.vx;
         work->pos244.vy = work->pos108.vy;
         work->pos244.vz = work->pos108.vz;
-        ((BtlTexInfo *)v)->pages[0][0] = D_801EB084.pages[4][0];
-        ((BtlTexInfo *)v)->pages[0][1] = D_801EB084.pages[4][1];
-        ((BtlTexInfo *)w)->pages[0][0] = D_801EB0A4.pages[4][0];
-        ((BtlTexInfo *)w)->pages[0][1] = D_801EB0A4.pages[4][1];
-        ((BtlTexInfo *)v)->pages[1][0] = D_801EB084.pages[0][0];
-        ((BtlTexInfo *)v)->pages[1][1] = D_801EB084.pages[0][1];
-        ((BtlTexInfo *)w)->pages[1][0] = D_801EB0A4.pages[0][0];
-        ((BtlTexInfo *)w)->pages[1][1] = D_801EB0A4.pages[0][1];
-        D_801EB6B4[2].unk0 = REGTEX(0x80);
+        ((BtlTexInfo *)v)->pages[0][0] = fx_1b3_casterTexInfo.pages[4][0];
+        ((BtlTexInfo *)v)->pages[0][1] = fx_1b3_casterTexInfo.pages[4][1];
+        ((BtlTexInfo *)w)->pages[0][0] = fx_1b3_casterTexPos.pages[4][0];
+        ((BtlTexInfo *)w)->pages[0][1] = fx_1b3_casterTexPos.pages[4][1];
+        ((BtlTexInfo *)v)->pages[1][0] = fx_1b3_casterTexInfo.pages[0][0];
+        ((BtlTexInfo *)v)->pages[1][1] = fx_1b3_casterTexInfo.pages[0][1];
+        ((BtlTexInfo *)w)->pages[1][0] = fx_1b3_casterTexPos.pages[0][0];
+        ((BtlTexInfo *)w)->pages[1][1] = fx_1b3_casterTexPos.pages[0][1];
+        fx_1b3_splits4[2].model0 = REGTEX(0x80);
     } else {
         frame = entry->frame;
         switch (frame) {
@@ -249,13 +249,13 @@ s32 fx_1b3_op80(s32 mode, Fx1b3Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             work->unk0[2] = 0x40;
             work->unk0[3] = 0;
             for (i = 0; i < 16; i++) {
-                D_801EB0C4[i].unk4C = 0;
+                fx_1b3_trails[i].timer4C = 0;
                 ex->btlfx_drawTrail((u8 *)ex->btlfx_getFileData(entry->file, 0x15), 0, NULL, -1, 0x1000, 0x1000, 1,
-                                    (u8 *)&D_801EB0C4[i], 0);
+                                    (u8 *)&fx_1b3_trails[i], 0);
             }
             p = work->emit80[3] = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 4), (s32)&work->pos100);
             if (p != NULL) {
-                p->trails = D_801EB0C8;
+                p->trails = fx_1b3_op80Trails0;
                 work->emit80[3]->trailSlots = 0x24;
                 work->emit80[3]->trailStride = 0x6C;
                 p = work->emit80[3];
@@ -271,13 +271,13 @@ s32 fx_1b3_op80(s32 mode, Fx1b3Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             ex->btlfx_stopEmitter(work->emit80[2]);
             ex->btlfx_stopEmitter(work->emit80[3]);
             work->unk0[13] = 0x20;
-            D_801EB0C0 = D_801EB0BC;
+            fx_1b3_splitBufPtr = fx_1b3_splitBuf;
             for (i = 0; i < 3; i++) {
-                func_801EA39C(&D_801EB0F4[i]);
+                fx_1b3_splitModel(&fx_1b3_splits0[i]);
             }
-            D_801EB0D4.unk0 = 0;
-            D_801EB0D4.unk10 = 0;
-            D_801EB0D4.unk14 = -0xA;
+            fx_1b3_splitTrigger.mode0 = 0;
+            fx_1b3_splitTrigger.angle10 = 0;
+            fx_1b3_splitTrigger.spin14 = -0xA;
             work->unk0[4] = 0x3C;
             work->unk0[5] = 0;
             p = work->emit80[16] = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0xC), (s32)&work->pos110);
@@ -294,13 +294,13 @@ s32 fx_1b3_op80(s32 mode, Fx1b3Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             ex->btlfx_stopEmitter(work->emit80[16]);
             ex->btlfx_stopEmitter(work->emit80[17]);
             work->unk0[13] = 0x20;
-            D_801EB0C0 = D_801EB0BC;
+            fx_1b3_splitBufPtr = fx_1b3_splitBuf;
             for (i = 0; i < 3; i++) {
-                func_801EA39C(&D_801EB0F4[3 + i]);
+                fx_1b3_splitModel(&fx_1b3_splits0[3 + i]);
             }
-            D_801EB0D4.unk0 = 0;
-            D_801EB0D4.unk10 = -0x800;
-            D_801EB0D4.unk14 = 0xA;
+            fx_1b3_splitTrigger.mode0 = 0;
+            fx_1b3_splitTrigger.angle10 = -0x800;
+            fx_1b3_splitTrigger.spin14 = 0xA;
             work->unk0[4] = 0x3C;
             work->unk0[5] = 3;
             p = work->emit80[18] = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0xC), (s32)&work->pos110);
@@ -317,13 +317,13 @@ s32 fx_1b3_op80(s32 mode, Fx1b3Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             ex->btlfx_stopEmitter(work->emit80[18]);
             ex->btlfx_stopEmitter(work->emit80[19]);
             work->unk0[13] = 0x20;
-            D_801EB0C0 = D_801EB0BC;
+            fx_1b3_splitBufPtr = fx_1b3_splitBuf;
             for (i = 0; i < 3; i++) {
-                func_801EA39C(&D_801EB0F4[6 + i]);
+                fx_1b3_splitModel(&fx_1b3_splits0[6 + i]);
             }
-            D_801EB0D4.unk0 = 1;
-            D_801EB0D4.unk10 = 0;
-            D_801EB0D4.unk14 = 0xE;
+            fx_1b3_splitTrigger.mode0 = 1;
+            fx_1b3_splitTrigger.angle10 = 0;
+            fx_1b3_splitTrigger.spin14 = 0xE;
             work->unk0[4] = 0x4B;
             work->unk0[5] = 6;
             p = work->emit80[20] = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0xC), (s32)&work->pos110);
@@ -339,9 +339,9 @@ s32 fx_1b3_op80(s32 mode, Fx1b3Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             work->unk0[2] = 0x48;
             work->unk0[3] = 1;
             for (i = 0; i < 16; i++) {
-                D_801EB0C4[i].unk4C = 0;
+                fx_1b3_trails[i].timer4C = 0;
                 ex->btlfx_drawTrail((u8 *)ex->btlfx_getFileData(entry->file, 0x15), 0, NULL, -1, 0x1000, 0x1000, 1,
-                                    (u8 *)&D_801EB0C4[i], 0);
+                                    (u8 *)&fx_1b3_trails[i], 0);
             }
             break;
         case 0x106:
@@ -367,14 +367,14 @@ s32 fx_1b3_op80(s32 mode, Fx1b3Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
         case 0x11F:
             ex->btlfx_stopEmitter(work->emit80[4]);
             work->unk0[11] = 0x10;
-            D_801EB0C0 = D_801EB0BC;
-            func_801EA39C(&D_801EB4A4[0]);
+            fx_1b3_splitBufPtr = fx_1b3_splitBuf;
+            fx_1b3_splitModel(&fx_1b3_splits1[0]);
             work->pos19C.vx = work->pos108.vx;
             work->pos19C.vy = work->pos108.vy;
             work->pos19C.vz = work->pos108.vz;
-            D_801EB0D4.unk6 = 0x990;
-            D_801EB0D4.unk4 = 0x3CF;
-            D_801EB0D4.unk8 = 0;
+            fx_1b3_splitTrigger.posY6 = 0x990;
+            fx_1b3_splitTrigger.posX4 = 0x3CF;
+            fx_1b3_splitTrigger.posZ8 = 0;
             work->unk0[6] = 0x80;
             break;
         case 0x136:
@@ -386,27 +386,27 @@ s32 fx_1b3_op80(s32 mode, Fx1b3Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             work->emit80[8] = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0xE), (s32)&work->pos118);
             p = work->emit80[9] = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0x3A), (s32)&work->pos118);
             if (p != NULL) {
-                p->trails = D_801EB0CC;
+                p->trails = fx_1b3_op80Trails1;
                 work->emit80[9]->trailSlots = 0x36;
                 work->emit80[9]->trailStride = 0xAC;
             }
-            work->unk130.vy = 0x800;
-            work->unk128.vx = 0;
-            work->unk128.vy = 0;
-            work->unk128.vz = 0;
-            work->unk130.vx = 0;
-            work->unk130.vz = 0;
-            work->unk138.vx = 0;
-            work->unk138.vy = 0x400;
-            work->unk138.vz = 0;
+            work->rot130.vy = 0x800;
+            work->rot128.vx = 0;
+            work->rot128.vy = 0;
+            work->rot128.vz = 0;
+            work->rot130.vx = 0;
+            work->rot130.vz = 0;
+            work->rot138.vx = 0;
+            work->rot138.vy = 0x400;
+            work->rot138.vz = 0;
             break;
         case 0x14F:
             work->unk0[2] = 0x48;
             work->unk0[3] = 2;
             for (i = 0; i < 16; i++) {
-                D_801EB0C4[i].unk4C = 0;
+                fx_1b3_trails[i].timer4C = 0;
                 ex->btlfx_drawTrail((u8 *)ex->btlfx_getFileData(entry->file, 0x15), 0, NULL, -1, 0x1000, 0x1000, 1,
-                                    (u8 *)&D_801EB0C4[i], 0);
+                                    (u8 *)&fx_1b3_trails[i], 0);
             }
             break;
         case 0x157:
@@ -433,9 +433,9 @@ s32 fx_1b3_op80(s32 mode, Fx1b3Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
         case 0x170:
             ex->btlfx_stopEmitter(work->emit80[10]);
             work->unk0[11] = 0x10;
-            D_801EB0C0 = D_801EB0BC;
-            func_801EA39C(&D_801EB4A4[1]);
-            func_801EA39C(&D_801EB574);
+            fx_1b3_splitBufPtr = fx_1b3_splitBuf;
+            fx_1b3_splitModel(&fx_1b3_splits1[1]);
+            fx_1b3_splitModel(&fx_1b3_splits2);
             work->unk0[7] = 0x80;
             work->pos1AC.vx = work->pos108.vx;
             work->pos1AC.vy = work->pos108.vy;
@@ -456,27 +456,27 @@ s32 fx_1b3_op80(s32 mode, Fx1b3Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             work->emit80[14] = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0xE), (s32)&work->pos120);
             p = work->emit80[15] = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0x39), (s32)&work->pos120);
             if (p != NULL) {
-                p->trails = D_801EB0CC;
+                p->trails = fx_1b3_op80Trails1;
                 work->emit80[15]->trailSlots = 0x36;
                 work->emit80[15]->trailStride = 0xAC;
             }
-            work->unk148.vx = -0x600;
-            work->unk148.vy = -0x400;
-            work->unk140.vx = 0;
-            work->unk140.vy = 0;
-            work->unk140.vz = 0;
-            work->unk148.vz = 0;
-            work->unk150.vx = 0;
-            work->unk150.vy = 0xC00;
-            work->unk150.vz = 0;
+            work->rot148.vx = -0x600;
+            work->rot148.vy = -0x400;
+            work->rot140.vx = 0;
+            work->rot140.vy = 0;
+            work->rot140.vz = 0;
+            work->rot148.vz = 0;
+            work->rot150.vx = 0;
+            work->rot150.vy = 0xC00;
+            work->rot150.vz = 0;
             break;
         case 0x1A8:
             work->unk0[2] = 0x30;
             work->unk0[3] = 3;
             for (i = 0; i < 16; i++) {
-                D_801EB0C4[i].unk4C = 0;
+                fx_1b3_trails[i].timer4C = 0;
                 ex->btlfx_drawTrail((u8 *)ex->btlfx_getFileData(entry->file, 0x15), 0, NULL, -1, 0x1000, 0x1000, 1,
-                                    (u8 *)&D_801EB0C4[i], 0);
+                                    (u8 *)&fx_1b3_trails[i], 0);
             }
             break;
         case 0x1C0:
@@ -485,9 +485,9 @@ s32 fx_1b3_op80(s32 mode, Fx1b3Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             ex->btlfx_stopEmitter(work->emit80[10]);
             ex->btlfx_stopEmitter(work->emit80[11]);
             ex->btlfx_stopEmitter(work->emit80[12]);
-            D_801EB0C0 = D_801EB0BC;
-            func_801EA39C(&D_801EB5E4[0]);
-            func_801EA39C(&D_801EB5E4[1]);
+            fx_1b3_splitBufPtr = fx_1b3_splitBuf;
+            fx_1b3_splitModel(&fx_1b3_splits3[0]);
+            fx_1b3_splitModel(&fx_1b3_splits3[1]);
             work->unk0[8] = 0x3C;
             work->pos20C.vx = work->pos108.vx;
             work->pos20C.vy = work->pos108.vy;
@@ -515,13 +515,13 @@ s32 fx_1b3_op80(s32 mode, Fx1b3Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             break;
         case 0x1E2:
             for (i = 0; i < 3; i++) {
-                func_801EA39C(&D_801EB6B4[i]);
+                fx_1b3_splitModel(&fx_1b3_splits4[i]);
             }
             break;
         case 0x1E3:
             p = work->emit80[24] = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0x12), (s32)&work->pos100);
             if (p != NULL) {
-                p->trails = D_801EB0C8;
+                p->trails = fx_1b3_op80Trails0;
                 work->emit80[24]->trailSlots = 0x24;
                 work->emit80[24]->trailStride = 0x6C;
                 p = work->emit80[24];
@@ -529,9 +529,9 @@ s32 fx_1b3_op80(s32 mode, Fx1b3Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
                     p->otZ = 0x400;
                 }
             }
-            ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0x10), (s32)&D_801EB7EC);
-            ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0x11), (s32)&D_801EB7EC);
-            p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0x14), (s32)&D_801EB7EC);
+            ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0x10), (s32)&fx_1b3_emitPos0);
+            ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0x11), (s32)&fx_1b3_emitPos0);
+            p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0x14), (s32)&fx_1b3_emitPos0);
             if (p != NULL) {
                 p->otZ = 0x100;
             }
@@ -544,7 +544,7 @@ s32 fx_1b3_op80(s32 mode, Fx1b3Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             ex->btlfx_fadeUnitById(0x10, 0);
             break;
         case 0x264:
-            ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0x13), (s32)&D_801EB7EC);
+            ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0x13), (s32)&fx_1b3_emitPos0);
             break;
         case 0x27C:
             work->unk0[12] = 0x20;
@@ -559,19 +559,19 @@ s32 fx_1b3_op80(s32 mode, Fx1b3Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             }
         }
         if (work->emit80[8] != NULL) {
-            work->unk128.vx += 0x80;
-            work->unk128.vy += 0x80;
-            SET_ROT(work->emit80[8], work->unk128);
+            work->rot128.vx += 0x80;
+            work->rot128.vy += 0x80;
+            SET_ROT(work->emit80[8], work->rot128);
         }
-        SET_ROT(work->emit80[9], work->unk130);
-        SET_ROT(work->emit80[7], work->unk138);
+        SET_ROT(work->emit80[9], work->rot130);
+        SET_ROT(work->emit80[7], work->rot138);
         if (work->emit80[14] != NULL) {
-            work->unk140.vx += 0x80;
-            work->unk140.vy += 0x80;
-            SET_ROT(work->emit80[14], work->unk140);
+            work->rot140.vx += 0x80;
+            work->rot140.vy += 0x80;
+            SET_ROT(work->emit80[14], work->rot140);
         }
-        SET_ROT(work->emit80[15], work->unk148);
-        SET_ROT(work->emit80[13], work->unk150);
+        SET_ROT(work->emit80[15], work->rot148);
+        SET_ROT(work->emit80[13], work->rot150);
         if (work->emit80[9] != NULL || work->emit80[15] != NULL) {
             ex->btlfx_drawBackdrop((BtlBgLayers *)ex->btlfx_getFileData(entry->file, 0xA), frame);
         }
@@ -595,10 +595,10 @@ s32 fx_1b3_op80(s32 mode, Fx1b3Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             switch (work->unk0[3]) {
             case 0:
                 for (i = 0; i < 16; i++) {
-                    if (D_801EB0C4[i].unk4C == 0 && work->unk0[2] >= 0xD) {
+                    if (fx_1b3_trails[i].timer4C == 0 && work->unk0[2] >= 0xD) {
 
-                        ex->btlfx_getUnitBonePos(0x10, D_801EAFC4[ex->btlfx_rand() & 0xF], (u16 *)&v[0]);
-                        D_801EB0C4[i].unk4C = (ex->btlfx_rand() & 7) + 4;
+                        ex->btlfx_getUnitBonePos(0x10, fx_1b3_trailBones0[ex->btlfx_rand() & 0xF], (u16 *)&v[0]);
+                        fx_1b3_trails[i].timer4C = (ex->btlfx_rand() & 7) + 4;
                         w[0].vx = ex->btlfx_randRange(-0x100, 0x100);
                         w[0].vy = ex->btlfx_randRange(-0x100, 0x100);
                         w[0].vz = -(ex->btlfx_rand() % 255) - 0x200;
@@ -606,12 +606,12 @@ s32 fx_1b3_op80(s32 mode, Fx1b3Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
                             v[0].vx += w[0].vx;
                             v[0].vy += w[0].vy;
                             v[0].vz += w[0].vz;
-                            D_801EB0C4[i].unk50[j].vx = v[0].vx;
-                            D_801EB0C4[i].unk50[j].vy = v[0].vy;
-                            D_801EB0C4[i].unk50[j].vz = v[0].vz;
-                            D_801EB0C4[i].unk98[j].vx = ex->btlfx_randRange(-0x60, 0x60);
-                            D_801EB0C4[i].unk98[j].vy = ex->btlfx_randRange(-0x60, 0x60);
-                            D_801EB0C4[i].unk98[j].vz = 0;
+                            fx_1b3_trails[i].pos50[j].vx = v[0].vx;
+                            fx_1b3_trails[i].pos50[j].vy = v[0].vy;
+                            fx_1b3_trails[i].pos50[j].vz = v[0].vz;
+                            fx_1b3_trails[i].vel98[j].vx = ex->btlfx_randRange(-0x60, 0x60);
+                            fx_1b3_trails[i].vel98[j].vy = ex->btlfx_randRange(-0x60, 0x60);
+                            fx_1b3_trails[i].vel98[j].vz = 0;
                         }
                     }
                 }
@@ -619,17 +619,17 @@ s32 fx_1b3_op80(s32 mode, Fx1b3Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             case 1:
             case 2:
                 for (i = 0; i < 5; i++) {
-                    if (D_801EB0C4[i].unk4C == 0 && work->unk0[2] >= 0xD) {
+                    if (fx_1b3_trails[i].timer4C == 0 && work->unk0[2] >= 0xD) {
 
-                        D_801EB0C4[i].unk4C = (ex->btlfx_rand() & 3) + 4;
+                        fx_1b3_trails[i].timer4C = (ex->btlfx_rand() & 3) + 4;
                         for (zz2 = 0; zz2 < 4; zz2++) {
 
                             if (work->unk0[3] == 1) {
-                                ex->btlfx_getUnitBonePos(0x10, D_801EB004[zz2], (u16 *)&v[1]);
-                                ex->btlfx_getUnitBonePos(0x10, D_801EB004[zz2 + 1], (u16 *)&v[2]);
+                                ex->btlfx_getUnitBonePos(0x10, fx_1b3_trailBones1[zz2], (u16 *)&v[1]);
+                                ex->btlfx_getUnitBonePos(0x10, fx_1b3_trailBones1[zz2 + 1], (u16 *)&v[2]);
                             } else {
-                                ex->btlfx_getUnitBonePos(0x10, D_801EB018[zz2], (u16 *)&v[1]);
-                                ex->btlfx_getUnitBonePos(0x10, D_801EB018[zz2 + 1], (u16 *)&v[2]);
+                                ex->btlfx_getUnitBonePos(0x10, fx_1b3_trailBones2[zz2], (u16 *)&v[1]);
+                                ex->btlfx_getUnitBonePos(0x10, fx_1b3_trailBones2[zz2 + 1], (u16 *)&v[2]);
                             }
                             v[2].vx += ex->btlfx_randRange(-0x100, 0x100);
                             v[2].vy += ex->btlfx_randRange(-0x100, 0x100);
@@ -638,32 +638,32 @@ s32 fx_1b3_op80(s32 mode, Fx1b3Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
                             v[2].vy = (s16)(v[2].vy - v[1].vy) >> 2;
                             v[2].vz = (s16)(v[2].vz - v[1].vz) >> 2;
                             for (c = 0; c < 2; c++) {
-                                D_801EB0C4[i].unk50[zz2 * 2 + c].vx = v[1].vx;
-                                D_801EB0C4[i].unk50[zz2 * 2 + c].vy = v[1].vy;
-                                D_801EB0C4[i].unk50[zz2 * 2 + c].vz = v[1].vz;
-                                D_801EB0C4[i].unk98[zz2 * 2 + c].vx = ex->btlfx_randRange(-0x20, 0x20);
-                                D_801EB0C4[i].unk98[zz2 * 2 + c].vz = ex->btlfx_randRange(-0x20, 0x20);
-                                D_801EB0C4[i].unk98[zz2 * 2 + c].vy = ex->btlfx_randRange(-4, 4);
+                                fx_1b3_trails[i].pos50[zz2 * 2 + c].vx = v[1].vx;
+                                fx_1b3_trails[i].pos50[zz2 * 2 + c].vy = v[1].vy;
+                                fx_1b3_trails[i].pos50[zz2 * 2 + c].vz = v[1].vz;
+                                fx_1b3_trails[i].vel98[zz2 * 2 + c].vx = ex->btlfx_randRange(-0x20, 0x20);
+                                fx_1b3_trails[i].vel98[zz2 * 2 + c].vz = ex->btlfx_randRange(-0x20, 0x20);
+                                fx_1b3_trails[i].vel98[zz2 * 2 + c].vy = ex->btlfx_randRange(-4, 4);
                                 v[1].vx += v[2].vx;
                                 v[1].vy += v[2].vy;
                                 v[1].vz += v[2].vz;
                             }
-                            D_801EB0C4[i].unk98[8].vx = 0;
-                            D_801EB0C4[i].unk98[8].vz = 0;
-                            D_801EB0C4[i].unk98[8].vy = 0;
-                            D_801EB0C4[i].unk50[8].vx = D_801EB0C4[i].unk50[7].vx;
-                            D_801EB0C4[i].unk50[8].vy = D_801EB0C4[i].unk50[7].vy;
-                            D_801EB0C4[i].unk50[8].vz = D_801EB0C4[i].unk50[7].vz;
+                            fx_1b3_trails[i].vel98[8].vx = 0;
+                            fx_1b3_trails[i].vel98[8].vz = 0;
+                            fx_1b3_trails[i].vel98[8].vy = 0;
+                            fx_1b3_trails[i].pos50[8].vx = fx_1b3_trails[i].pos50[7].vx;
+                            fx_1b3_trails[i].pos50[8].vy = fx_1b3_trails[i].pos50[7].vy;
+                            fx_1b3_trails[i].pos50[8].vz = fx_1b3_trails[i].pos50[7].vz;
                         }
                     }
                 }
                 break;
             case 3:
                 for (i = 0; i < 6; i++) {
-                    if (D_801EB0C4[i].unk4C == 0 && work->unk0[2] >= 0xD) {
+                    if (fx_1b3_trails[i].timer4C == 0 && work->unk0[2] >= 0xD) {
                         s32 ang;
 
-                        D_801EB0C4[i].unk4C = (ex->btlfx_rand() & 3) + 4;
+                        fx_1b3_trails[i].timer4C = (ex->btlfx_rand() & 3) + 4;
                         if (i & 1) {
                             ex->btlfx_getUnitBonePos(0x10, 3, (u16 *)&v[0]);
                             c = 0x200;
@@ -673,30 +673,30 @@ s32 fx_1b3_op80(s32 mode, Fx1b3Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
                         }
                         ang = ex->btlfx_rand() & 0xFFF;
                         for (zz2 = 0; zz2 < 8; zz2++) {
-                            D_801EB0C4[i].unk50[zz2].vx = v[0].vx + ((ex->math_sin(ang) * (c + (ex->btlfx_rand() & 0x7F))) >> 12);
-                            D_801EB0C4[i].unk50[zz2].vz = v[0].vz + ((ex->math_cos(ang) * (c + (ex->btlfx_rand() & 0x7F))) >> 12);
-                            D_801EB0C4[i].unk50[zz2].vy = v[0].vy + ex->btlfx_randRange(-0x40, 0x40);
-                            D_801EB0C4[i].unk98[zz2].vx = ex->btlfx_randRange(-0x20, 0x20);
-                            D_801EB0C4[i].unk98[zz2].vz = ex->btlfx_randRange(-0x20, 0x20);
-                            D_801EB0C4[i].unk98[zz2].vy = ex->btlfx_randRange(-0x20, 0x20);
+                            fx_1b3_trails[i].pos50[zz2].vx = v[0].vx + ((ex->math_sin(ang) * (c + (ex->btlfx_rand() & 0x7F))) >> 12);
+                            fx_1b3_trails[i].pos50[zz2].vz = v[0].vz + ((ex->math_cos(ang) * (c + (ex->btlfx_rand() & 0x7F))) >> 12);
+                            fx_1b3_trails[i].pos50[zz2].vy = v[0].vy + ex->btlfx_randRange(-0x40, 0x40);
+                            fx_1b3_trails[i].vel98[zz2].vx = ex->btlfx_randRange(-0x20, 0x20);
+                            fx_1b3_trails[i].vel98[zz2].vz = ex->btlfx_randRange(-0x20, 0x20);
+                            fx_1b3_trails[i].vel98[zz2].vy = ex->btlfx_randRange(-0x20, 0x20);
                             ang += 0x100;
                         }
-                        D_801EB0C4[i].unk98[8].vx = 0;
-                        D_801EB0C4[i].unk98[8].vz = 0;
-                        D_801EB0C4[i].unk98[8].vy = 0;
-                        D_801EB0C4[i].unk50[8].vx = D_801EB0C4[i].unk50[0].vx;
-                        D_801EB0C4[i].unk50[8].vy = D_801EB0C4[i].unk50[0].vy;
-                        D_801EB0C4[i].unk50[8].vz = D_801EB0C4[i].unk50[0].vz;
+                        fx_1b3_trails[i].vel98[8].vx = 0;
+                        fx_1b3_trails[i].vel98[8].vz = 0;
+                        fx_1b3_trails[i].vel98[8].vy = 0;
+                        fx_1b3_trails[i].pos50[8].vx = fx_1b3_trails[i].pos50[0].vx;
+                        fx_1b3_trails[i].pos50[8].vy = fx_1b3_trails[i].pos50[0].vy;
+                        fx_1b3_trails[i].pos50[8].vz = fx_1b3_trails[i].pos50[0].vz;
                     }
                 }
                 break;
             }
             env->otZ = 0x40;
             for (i = 0; i < 16; i++) {
-                if (D_801EB0C4[i].unk4C != 0) {
-                    tr = &D_801EB0C4[i];
-                    tr->unk4C--;
-                    if (tr->unk4C < 4) {
+                if (fx_1b3_trails[i].timer4C != 0) {
+                    tr = &fx_1b3_trails[i];
+                    tr->timer4C--;
+                    if (tr->timer4C < 4) {
                         s32 n;
                         SVECTOR *pt;
 
@@ -704,18 +704,18 @@ s32 fx_1b3_op80(s32 mode, Fx1b3Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
                         tr->unk0 = 8;
                         tr->unk1 = 0;
                         n = 9;
-                        for (pt = tr->unk4, j = 0; j < n; j++, pt++) {
-                            D_801EB0C4[i].unk50[j].vx += D_801EB0C4[i].unk98[j].vx;
-                            D_801EB0C4[i].unk50[j].vy += D_801EB0C4[i].unk98[j].vy;
-                            D_801EB0C4[i].unk50[j].vz += D_801EB0C4[i].unk98[j].vz;
-                            pt->vx = D_801EB0C4[i].unk50[j].vx;
-                            pt->vy = D_801EB0C4[i].unk50[j].vy;
-                            pt->vz = D_801EB0C4[i].unk50[j].vz;
+                        for (pt = tr->points4, j = 0; j < n; j++, pt++) {
+                            fx_1b3_trails[i].pos50[j].vx += fx_1b3_trails[i].vel98[j].vx;
+                            fx_1b3_trails[i].pos50[j].vy += fx_1b3_trails[i].vel98[j].vy;
+                            fx_1b3_trails[i].pos50[j].vz += fx_1b3_trails[i].vel98[j].vz;
+                            pt->vx = fx_1b3_trails[i].pos50[j].vx;
+                            pt->vy = fx_1b3_trails[i].pos50[j].vy;
+                            pt->vz = fx_1b3_trails[i].pos50[j].vz;
                             pt->pad = 0x80;
                         }
-                        zz1 = D_801EB0C4[i].unk4C << 10;
+                        zz1 = fx_1b3_trails[i].timer4C << 10;
                         ex->btlfx_drawTrail((u8 *)ex->btlfx_getFileData(entry->file, 0x15), 0, NULL, frame, 0x1000,
-                                            zz1, 1, (u8 *)&D_801EB0C4[i], 0);
+                                            zz1, 1, (u8 *)&fx_1b3_trails[i], 0);
                     }
                 }
             }
@@ -723,85 +723,85 @@ s32 fx_1b3_op80(s32 mode, Fx1b3Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
         }
         if (work->unk0[4] != 0) {
             work->unk0[4]--;
-            D_801EB0D4.unkC = 0x80;
-            D_801EB0D4.unk4 = (u32)(ex->math_sin(D_801EB0D4.unk10) * 0x341) >> 9;
-            D_801EB0D4.unk8 = -(ex->math_cos(D_801EB0D4.unk10) * 0x1A08) >> 12;
-            D_801EB0D4.unk6 = 0;
-            D_801EB0D4.unk10 += D_801EB0D4.unk14;
-            work->pos110.vx = D_801EB0D4.unk4;
-            work->pos110.vy = D_801EB0D4.unk6;
-            work->pos110.vz = -D_801EB0D4.unk8;
+            fx_1b3_splitTrigger.radiusC = 0x80;
+            fx_1b3_splitTrigger.posX4 = (u32)(ex->math_sin(fx_1b3_splitTrigger.angle10) * 0x341) >> 9;
+            fx_1b3_splitTrigger.posZ8 = -(ex->math_cos(fx_1b3_splitTrigger.angle10) * 0x1A08) >> 12;
+            fx_1b3_splitTrigger.posY6 = 0;
+            fx_1b3_splitTrigger.angle10 += fx_1b3_splitTrigger.spin14;
+            work->pos110.vx = fx_1b3_splitTrigger.posX4;
+            work->pos110.vy = fx_1b3_splitTrigger.posY6;
+            work->pos110.vz = -fx_1b3_splitTrigger.posZ8;
             for (i = work->unk0[5]; i < work->unk0[5] + 3; i++) {
-                if (D_801EB0F4[i].unk4 != 0) {
-                    D_801EB0F4[i].unk4--;
-                    func_801EA7E4(&D_801EB0F4[i]);
-                    ex->Hi_DrawEffModel(&work->rot164, &work->pos16C, (s32)&work->scale17C, D_801EB0F4[i].unk0);
+                if (fx_1b3_splits0[i].timer4 != 0) {
+                    fx_1b3_splits0[i].timer4--;
+                    fx_1b3_updateSplitPieces(&fx_1b3_splits0[i]);
+                    ex->Hi_DrawEffModel(&work->rot164, &work->pos16C, (s32)&work->scale17C, fx_1b3_splits0[i].model0);
                 }
             }
         }
         if (work->unk0[6] != 0) {
             work->unk0[6]--;
-            D_801EB0D4.unk0 = 2;
-            D_801EB0D4.unkC = 0x80;
-            D_801EB0D4.unk6 -= 0x80;
-            if (D_801EB4A4[0].unk4 != 0) {
-                D_801EB4A4[0].unk4--;
-                func_801EA7E4(&D_801EB4A4[0]);
-                ex->Hi_DrawEffModel(&work->rot18C, &work->pos19C, (s32)&work->scale1BC, D_801EB4A4[0].unk0);
+            fx_1b3_splitTrigger.mode0 = 2;
+            fx_1b3_splitTrigger.radiusC = 0x80;
+            fx_1b3_splitTrigger.posY6 -= 0x80;
+            if (fx_1b3_splits1[0].timer4 != 0) {
+                fx_1b3_splits1[0].timer4--;
+                fx_1b3_updateSplitPieces(&fx_1b3_splits1[0]);
+                ex->Hi_DrawEffModel(&work->rot18C, &work->pos19C, (s32)&work->scale1BC, fx_1b3_splits1[0].model0);
             }
         }
         if (work->unk0[7] != 0) {
             work->unk0[7]--;
-            D_801EB0D4.unk0 = 2;
-            D_801EB0D4.unkC = 0x80;
-            D_801EB0D4.unk6 = 0x990 - (0x80 - work->unk0[7]) * 0x80;
-            D_801EB0D4.unk4 = -0x3CF;
-            D_801EB0D4.unk8 = 0;
-            if (D_801EB4A4[1].unk4 != 0) {
-                D_801EB4A4[1].unk4--;
-                func_801EA7E4(&D_801EB4A4[1]);
-                ex->Hi_DrawEffModel(&work->rot194, &work->pos1AC, (s32)&work->scale1BC, D_801EB4A4[1].unk0);
+            fx_1b3_splitTrigger.mode0 = 2;
+            fx_1b3_splitTrigger.radiusC = 0x80;
+            fx_1b3_splitTrigger.posY6 = 0x990 - (0x80 - work->unk0[7]) * 0x80;
+            fx_1b3_splitTrigger.posX4 = -0x3CF;
+            fx_1b3_splitTrigger.posZ8 = 0;
+            if (fx_1b3_splits1[1].timer4 != 0) {
+                fx_1b3_splits1[1].timer4--;
+                fx_1b3_updateSplitPieces(&fx_1b3_splits1[1]);
+                ex->Hi_DrawEffModel(&work->rot194, &work->pos1AC, (s32)&work->scale1BC, fx_1b3_splits1[1].model0);
             }
-            D_801EB0D4.unk0 = 3;
-            D_801EB0D4.unkC = 0x100;
-            D_801EB0D4.unk4 = (0x80 - work->unk0[7]) * 0x80 - 0x600;
-            D_801EB0D4.unk6 = 0;
-            D_801EB0D4.unk8 = 0;
-            if (D_801EB574.unk4 != 0) {
-                D_801EB574.unk4--;
-                func_801EA7E4(&D_801EB574);
-                ex->Hi_DrawEffModel(&work->rot1CC, &work->pos1D4, (s32)&work->scale1E4, D_801EB574.unk0);
+            fx_1b3_splitTrigger.mode0 = 3;
+            fx_1b3_splitTrigger.radiusC = 0x100;
+            fx_1b3_splitTrigger.posX4 = (0x80 - work->unk0[7]) * 0x80 - 0x600;
+            fx_1b3_splitTrigger.posY6 = 0;
+            fx_1b3_splitTrigger.posZ8 = 0;
+            if (fx_1b3_splits2.timer4 != 0) {
+                fx_1b3_splits2.timer4--;
+                fx_1b3_updateSplitPieces(&fx_1b3_splits2);
+                ex->Hi_DrawEffModel(&work->rot1CC, &work->pos1D4, (s32)&work->scale1E4, fx_1b3_splits2.model0);
             }
         }
         if (work->unk0[8] != 0) {
             work->unk0[8]--;
             if (work->unk0[9] != 0) {
                 work->unk0[9]--;
-                D_801EB0D4.unk0 = 4;
-                D_801EB0D4.unkC = 0x100;
-                D_801EB0D4.unk6 = 0x331;
-                D_801EB0D4.unk4 = 0x2BC - (0x22 - work->unk0[9]) * 0x100;
-                D_801EB0D4.unk8 = 0;
-                func_801EA7E4(&D_801EB5E4[0]);
-                func_801EA7E4(&D_801EB5E4[1]);
+                fx_1b3_splitTrigger.mode0 = 4;
+                fx_1b3_splitTrigger.radiusC = 0x100;
+                fx_1b3_splitTrigger.posY6 = 0x331;
+                fx_1b3_splitTrigger.posX4 = 0x2BC - (0x22 - work->unk0[9]) * 0x100;
+                fx_1b3_splitTrigger.posZ8 = 0;
+                fx_1b3_updateSplitPieces(&fx_1b3_splits3[0]);
+                fx_1b3_updateSplitPieces(&fx_1b3_splits3[1]);
             }
-            ex->Hi_DrawEffModel(&work->rot1FC, &work->pos20C, (s32)&work->scale22C, D_801EB5E4[0].unk0);
-            ex->Hi_DrawEffModel(&work->rot204, &work->pos21C, (s32)&work->scale22C, D_801EB5E4[1].unk0);
+            ex->Hi_DrawEffModel(&work->rot1FC, &work->pos20C, (s32)&work->scale22C, fx_1b3_splits3[0].model0);
+            ex->Hi_DrawEffModel(&work->rot204, &work->pos21C, (s32)&work->scale22C, fx_1b3_splits3[1].model0);
         }
         if (work->unk0[10] != 0) {
             work->unk0[10]--;
-            D_801EB0D4.unk0 = 5;
+            fx_1b3_splitTrigger.mode0 = 5;
             if (work->unk0[10] < 0x80) {
-                D_801EB0D4.unkC = 0;
+                fx_1b3_splitTrigger.radiusC = 0;
             } else {
-                D_801EB0D4.unkC = (work->unk0[10] - 0x80) * 16;
+                fx_1b3_splitTrigger.radiusC = (work->unk0[10] - 0x80) * 16;
             }
-            D_801EB0D4.unk6 = 0x514;
-            D_801EB0D4.unk4 = 0;
-            D_801EB0D4.unk8 = 0x800;
+            fx_1b3_splitTrigger.posY6 = 0x514;
+            fx_1b3_splitTrigger.posX4 = 0;
+            fx_1b3_splitTrigger.posZ8 = 0x800;
             for (i = 0; i < 3; i++) {
-                func_801EA7E4(&D_801EB6B4[i]);
-                ex->Hi_DrawEffModel(&work->rot23C, &work->pos244, (s32)&work->scale254, D_801EB6B4[i].unk0);
+                fx_1b3_updateSplitPieces(&fx_1b3_splits4[i]);
+                ex->Hi_DrawEffModel(&work->rot23C, &work->pos244, (s32)&work->scale254, fx_1b3_splits4[i].model0);
             }
         }
         if (work->unk0[13] != 0) {
@@ -833,7 +833,7 @@ s32 fx_1b3_op80(s32 mode, Fx1b3Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
         }
         if (frame >= 0x61) {
             work->rot15C.vy++;
-            ex->Hi_DrawEffModel(&work->rot15C, &work->pos16C, (s32)&work->scale17C, work->unk158);
+            ex->Hi_DrawEffModel(&work->rot15C, &work->pos16C, (s32)&work->scale17C, work->model158);
         }
     }
     return 0;
@@ -841,45 +841,45 @@ s32 fx_1b3_op80(s32 mode, Fx1b3Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
 
 INCLUDE_RODATA("asm/us/fx_1b3/nonmatchings/fx_1b3", fx_1b3_headerPtr);
 
-void func_801EA39C(Fx1b3Split *sp) {
+void fx_1b3_splitModel(Fx1b3Split *sp) {
     BtlfxExports *ex = BTLFX_EXPORTS(fx_1b3_env);
     SVECTOR *q;
     Fx1b3Piece *p;
     s32 i;
     s32 j;
 
-    ex->Hi_SplitMdlVertex(sp->unk0, -1, (s32)D_801EB0C0);
+    ex->Hi_SplitMdlVertex(sp->model0, -1, (s32)fx_1b3_splitBufPtr);
     for (i = 0; i < 8; i++) {
-        sp->unk8[i] = ex->Hi_GetMdlVertexPtr(sp->unk0, 0, (s32)D_801EB0C0, (s32 *)&sp->unk28[i], i);
+        sp->count8[i] = ex->Hi_GetMdlVertexPtr(sp->model0, 0, (s32)fx_1b3_splitBufPtr, (s32 *)&sp->verts28[i], i);
     }
-    D_801EB0C0 += ex->Hi_GetSplitMdlVertex(sp->unk0, -1);
+    fx_1b3_splitBufPtr += ex->Hi_GetSplitMdlVertex(sp->model0, -1);
     for (i = 0; i < 8; i++) {
-        sp->unk48[i] = (Fx1b3Piece *)D_801EB0C0;
-        D_801EB0C0 += sp->unk8[i] * 0x18;
+        sp->pieces48[i] = (Fx1b3Piece *)fx_1b3_splitBufPtr;
+        fx_1b3_splitBufPtr += sp->count8[i] * 0x18;
     }
     for (i = 0; i < 8; i++) {
-        p = sp->unk48[i];
-        q = sp->unk28[i];
+        p = sp->pieces48[i];
+        q = sp->verts28[i];
         switch (i) {
         case 0:
         case 2:
         case 4:
         case 6:
-            for (j = 0; j < sp->unk8[i]; j++) {
-                p->unk6 = -1;
-                p->unk10 = q[0].vx;
-                p->unk10 += q[1].vx;
-                p->unk10 += q[2].vx;
-                p->unk10 = (s16)(p->unk10 + q[3].vx) >> 2;
-                p->unk12 = q[0].vy;
-                p->unk12 += q[1].vy;
-                p->unk12 += q[2].vy;
-                p->unk12 = (s16)(p->unk12 + q[3].vy) >> 2;
-                p->unk14 = q[0].vz;
-                p->unk14 += q[1].vz;
-                p->unk14 += q[2].vz;
-                p->unk14 = (s16)(p->unk14 + q[3].vz) >> 2;
-                p->unk8 = (ex->btlfx_rand() & 0xFF) - 0x80;
+            for (j = 0; j < sp->count8[i]; j++) {
+                p->timer6 = -1;
+                p->posX10 = q[0].vx;
+                p->posX10 += q[1].vx;
+                p->posX10 += q[2].vx;
+                p->posX10 = (s16)(p->posX10 + q[3].vx) >> 2;
+                p->posY12 = q[0].vy;
+                p->posY12 += q[1].vy;
+                p->posY12 += q[2].vy;
+                p->posY12 = (s16)(p->posY12 + q[3].vy) >> 2;
+                p->posZ14 = q[0].vz;
+                p->posZ14 += q[1].vz;
+                p->posZ14 += q[2].vz;
+                p->posZ14 = (s16)(p->posZ14 + q[3].vz) >> 2;
+                p->rot8 = (ex->btlfx_rand() & 0xFF) - 0x80;
                 p->unkA = (ex->btlfx_rand() & 0xFF) - 0x80;
                 p->unkC = (ex->btlfx_rand() & 0xFF) - 0x80;
                 p++;
@@ -890,18 +890,18 @@ void func_801EA39C(Fx1b3Split *sp) {
         case 3:
         case 5:
         case 7:
-            for (j = 0; j < sp->unk8[i]; j++) {
-                p->unk6 = -1;
-                p->unk10 = q[0].vx;
-                p->unk10 += q[1].vx;
-                p->unk10 = (s16)(p->unk10 + q[2].vx) / 3;
-                p->unk12 = q[0].vy;
-                p->unk12 += q[1].vy;
-                p->unk12 = (s16)(p->unk12 + q[2].vy) / 3;
-                p->unk14 = q[0].vz;
-                p->unk14 += q[1].vz;
-                p->unk14 = (s16)(p->unk14 + q[2].vz) / 3;
-                p->unk8 = (ex->btlfx_rand() & 0xFF) - 0x80;
+            for (j = 0; j < sp->count8[i]; j++) {
+                p->timer6 = -1;
+                p->posX10 = q[0].vx;
+                p->posX10 += q[1].vx;
+                p->posX10 = (s16)(p->posX10 + q[2].vx) / 3;
+                p->posY12 = q[0].vy;
+                p->posY12 += q[1].vy;
+                p->posY12 = (s16)(p->posY12 + q[2].vy) / 3;
+                p->posZ14 = q[0].vz;
+                p->posZ14 += q[1].vz;
+                p->posZ14 = (s16)(p->posZ14 + q[2].vz) / 3;
+                p->rot8 = (ex->btlfx_rand() & 0xFF) - 0x80;
                 p->unkA = (ex->btlfx_rand() & 0xFF) - 0x80;
                 p->unkC = (ex->btlfx_rand() & 0xFF) - 0x80;
                 p++;
@@ -912,7 +912,7 @@ void func_801EA39C(Fx1b3Split *sp) {
     }
 }
 
-void func_801EA7E4(Fx1b3Split *sp) {
+void fx_1b3_updateSplitPieces(Fx1b3Split *sp) {
     SVECTOR d[4];
     VECTOR out;
     VECTOR scale;
@@ -927,51 +927,51 @@ void func_801EA7E4(Fx1b3Split *sp) {
     s32 dz;
 
     for (i = 0; i < 8; i++) {
-        v = sp->unk28[i];
-        p = sp->unk48[i];
-        for (j = 0; j < sp->unk8[i]; j++) {
-            if (p->unk6 > 0) {
-                ex->math_rotMatrixYXZ(&p->unk8, &m);
-                m.t[0] = p->unk10 + p->unk0;
-                m.t[1] = p->unk12 + p->unk2;
-                m.t[2] = p->unk14 + p->unk4;
-                scale.vx = scale.vy = scale.vz = p->unk16;
-                p->unk16 -= p->unkE;
+        v = sp->verts28[i];
+        p = sp->pieces48[i];
+        for (j = 0; j < sp->count8[i]; j++) {
+            if (p->timer6 > 0) {
+                ex->math_rotMatrixYXZ(&p->rot8, &m);
+                m.t[0] = p->posX10 + p->velX0;
+                m.t[1] = p->posY12 + p->velY2;
+                m.t[2] = p->posZ14 + p->velZ4;
+                scale.vx = scale.vy = scale.vz = p->scale16;
+                p->scale16 -= p->scaleStepE;
                 ex->ScaleMatrix(&m, &scale);
                 gte_SetRotMatrix(&m);
                 gte_SetTransMatrix(&m);
-                d[0].vx = v[0].vx - p->unk10;
-                d[0].vy = v[0].vy - p->unk12;
-                d[0].vz = v[0].vz - p->unk14;
+                d[0].vx = v[0].vx - p->posX10;
+                d[0].vy = v[0].vy - p->posY12;
+                d[0].vz = v[0].vz - p->posZ14;
                 gte_ldv0(&d[0]);
                 gte_rtv0tr();
-                d[1].vx = v[1].vx - p->unk10;
-                d[1].vy = v[1].vy - p->unk12;
-                d[1].vz = v[1].vz - p->unk14;
+                d[1].vx = v[1].vx - p->posX10;
+                d[1].vy = v[1].vy - p->posY12;
+                d[1].vz = v[1].vz - p->posZ14;
                 gte_stlvnl(&out);
                 gte_ldv0(&d[1]);
                 gte_rtv0tr();
                 v[0].vx = out.vx;
                 v[0].vy = out.vy;
                 v[0].vz = out.vz;
-                d[2].vx = v[2].vx - p->unk10;
-                d[2].vy = v[2].vy - p->unk12;
-                d[2].vz = v[2].vz - p->unk14;
+                d[2].vx = v[2].vx - p->posX10;
+                d[2].vy = v[2].vy - p->posY12;
+                d[2].vz = v[2].vz - p->posZ14;
                 gte_stlvnl(&out);
                 gte_ldv0(&d[2]);
                 gte_rtv0tr();
                 v[1].vx = out.vx;
                 v[1].vy = out.vy;
                 v[1].vz = out.vz;
-                p->unk6--;
+                p->timer6--;
                 gte_stlvnl(&out);
                 v[2].vx = out.vx;
                 v[2].vy = out.vy;
                 v[2].vz = out.vz;
                 if (!(i & 1)) {
-                    d[3].vx = v[3].vx - p->unk10;
-                    d[3].vy = v[3].vy - p->unk12;
-                    d[3].vz = v[3].vz - p->unk14;
+                    d[3].vx = v[3].vx - p->posX10;
+                    d[3].vy = v[3].vy - p->posY12;
+                    d[3].vz = v[3].vz - p->posZ14;
                     gte_ldv0(&d[3]);
                     gte_rtv0tr();
                     gte_stlvnl(&out);
@@ -979,72 +979,72 @@ void func_801EA7E4(Fx1b3Split *sp) {
                     v[3].vy = out.vy;
                     v[3].vz = out.vz;
                 }
-                p->unk10 += p->unk0;
-                p->unk12 += p->unk2;
-                p->unk14 += p->unk4;
+                p->posX10 += p->velX0;
+                p->posY12 += p->velY2;
+                p->posZ14 += p->velZ4;
             } else {
-                dx = D_801EB0D4.unk4 - p->unk10;
-                dz = D_801EB0D4.unk8 - p->unk14;
-                dy = D_801EB0D4.unk6 - p->unk12;
-                switch (D_801EB0D4.unk0) {
+                dx = fx_1b3_splitTrigger.posX4 - p->posX10;
+                dz = fx_1b3_splitTrigger.posZ8 - p->posZ14;
+                dy = fx_1b3_splitTrigger.posY6 - p->posY12;
+                switch (fx_1b3_splitTrigger.mode0) {
                 case 0:
-                    if (abs(dx) < D_801EB0D4.unkC && abs(dz) < D_801EB0D4.unkC) {
-                        p->unk6 = 0x40;
-                        p->unk16 = 0x1000;
-                        p->unkE = 0x20;
-                        p->unk0 = (ex->btlfx_rand() & 0x7F) + 0x20;
-                        p->unk2 = (ex->btlfx_rand() & 0x3F) - 0x20;
-                        p->unk4 = 0;
+                    if (abs(dx) < fx_1b3_splitTrigger.radiusC && abs(dz) < fx_1b3_splitTrigger.radiusC) {
+                        p->timer6 = 0x40;
+                        p->scale16 = 0x1000;
+                        p->scaleStepE = 0x20;
+                        p->velX0 = (ex->btlfx_rand() & 0x7F) + 0x20;
+                        p->velY2 = (ex->btlfx_rand() & 0x3F) - 0x20;
+                        p->velZ4 = 0;
                     }
                     break;
                 case 1:
-                    if (abs(dx) < D_801EB0D4.unkC && abs(dz) < D_801EB0D4.unkC) {
-                        p->unk6 = 0x40;
-                        p->unk16 = 0x1000;
-                        p->unkE = 0x20;
-                        p->unk0 = (ex->btlfx_rand() & 0x1F) - 0x10;
-                        p->unk2 = (ex->btlfx_rand() & 0x1F) - 0x10;
-                        p->unk4 = -0x20 - (ex->btlfx_rand() & 0x7F);
+                    if (abs(dx) < fx_1b3_splitTrigger.radiusC && abs(dz) < fx_1b3_splitTrigger.radiusC) {
+                        p->timer6 = 0x40;
+                        p->scale16 = 0x1000;
+                        p->scaleStepE = 0x20;
+                        p->velX0 = (ex->btlfx_rand() & 0x1F) - 0x10;
+                        p->velY2 = (ex->btlfx_rand() & 0x1F) - 0x10;
+                        p->velZ4 = -0x20 - (ex->btlfx_rand() & 0x7F);
                     }
                     break;
                 case 2:
-                    if (abs(dy) < D_801EB0D4.unkC) {
-                        p->unk6 = 0x80;
-                        p->unk0 = -(dx >> 3);
-                        p->unk2 = -(dy >> 3);
-                        p->unk4 = -(dz >> 3);
-                        p->unk16 = 0x1000;
-                        p->unkE = 0x10;
+                    if (abs(dy) < fx_1b3_splitTrigger.radiusC) {
+                        p->timer6 = 0x80;
+                        p->velX0 = -(dx >> 3);
+                        p->velY2 = -(dy >> 3);
+                        p->velZ4 = -(dz >> 3);
+                        p->scale16 = 0x1000;
+                        p->scaleStepE = 0x10;
                     }
                     break;
                 case 3:
-                    if (abs(dx) < D_801EB0D4.unkC && abs(dz) < D_801EB0D4.unkC) {
-                        p->unk6 = 0x80;
-                        p->unk0 = -(dx >> 2) + (ex->btlfx_rand() & 0x3F) - 0x20;
-                        p->unk2 = -(ex->btlfx_rand() & 0x7F) + 0x40;
-                        p->unk4 = -(dz >> 2) + (ex->btlfx_rand() & 0x3F) - 0x20;
-                        p->unk16 = 0x1000;
-                        p->unkE = 0x10;
+                    if (abs(dx) < fx_1b3_splitTrigger.radiusC && abs(dz) < fx_1b3_splitTrigger.radiusC) {
+                        p->timer6 = 0x80;
+                        p->velX0 = -(dx >> 2) + (ex->btlfx_rand() & 0x3F) - 0x20;
+                        p->velY2 = -(ex->btlfx_rand() & 0x7F) + 0x40;
+                        p->velZ4 = -(dz >> 2) + (ex->btlfx_rand() & 0x3F) - 0x20;
+                        p->scale16 = 0x1000;
+                        p->scaleStepE = 0x10;
                     }
                     break;
                 case 4:
-                    if (abs(dx) < D_801EB0D4.unkC) {
-                        p->unk6 = 0x22;
-                        p->unk0 = -(dx >> 4) + (ex->btlfx_rand() & 0x3F) - 0x20;
-                        p->unk2 = -(ex->btlfx_rand() & 0x3F);
-                        p->unk4 = -(dz >> 4) + (ex->btlfx_rand() & 0x3F) - 0x20;
-                        p->unk16 = 0x1000;
-                        p->unkE = 0x10;
+                    if (abs(dx) < fx_1b3_splitTrigger.radiusC) {
+                        p->timer6 = 0x22;
+                        p->velX0 = -(dx >> 4) + (ex->btlfx_rand() & 0x3F) - 0x20;
+                        p->velY2 = -(ex->btlfx_rand() & 0x3F);
+                        p->velZ4 = -(dz >> 4) + (ex->btlfx_rand() & 0x3F) - 0x20;
+                        p->scale16 = 0x1000;
+                        p->scaleStepE = 0x10;
                     }
                     break;
                 case 5:
-                    if (D_801EB0D4.unkC < ex->btlfx_sqrt(dy * dy + dx * dx, 0xF)) {
-                        p->unk6 = 0x40;
-                        p->unk0 = dx >> 7;
-                        p->unk2 = dy >> 7;
-                        p->unk4 = -(dz >> 7);
-                        p->unk16 = 0x1000;
-                        p->unkE = 0x20;
+                    if (fx_1b3_splitTrigger.radiusC < ex->btlfx_sqrt(dy * dy + dx * dx, 0xF)) {
+                        p->timer6 = 0x40;
+                        p->velX0 = dx >> 7;
+                        p->velY2 = dy >> 7;
+                        p->velZ4 = -(dz >> 7);
+                        p->scale16 = 0x1000;
+                        p->scaleStepE = 0x20;
                     }
                     break;
                 }

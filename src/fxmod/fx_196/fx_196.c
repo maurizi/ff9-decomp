@@ -1,10 +1,10 @@
 #include "fxmod/fx_196.h"
 
 static void fxm_keyGetVec(Fx196Track *track, s32 t, SVECTOR *out) {
-    if (t >= track->unk2) {
-        t = track->unk2 - 1;
+    if (t >= track->count2) {
+        t = track->count2 - 1;
     }
-    track = (Fx196Track *)&track->unk4[t * 3];
+    track = (Fx196Track *)&track->keys4[t * 3];
     out->vx = ((s16 *)track)[0];
     out->vy = ((s16 *)track)[1];
     out->vz = ((s16 *)track)[2];
@@ -13,10 +13,10 @@ static void fxm_keyGetVec(Fx196Track *track, s32 t, SVECTOR *out) {
 static void fxm_keyGetVec2(Fx196Track *track, s32 t, SVECTOR *a, SVECTOR *b) {
     s16 *k;
 
-    if (t >= track->unk2) {
-        t = track->unk2 - 1;
+    if (t >= track->count2) {
+        t = track->count2 - 1;
     }
-    k = &track->unk4[t * 6];
+    k = &track->keys4[t * 6];
     if (a != NULL) {
         a->vx = k[0];
         a->vy = k[1];
@@ -32,10 +32,10 @@ static void fxm_keyGetVec2(Fx196Track *track, s32 t, SVECTOR *a, SVECTOR *b) {
 static void fxm_keyGetVec3(Fx196Track *track, s32 t, SVECTOR *a, SVECTOR *b, SVECTOR *c) {
     s16 *k;
 
-    if (t >= track->unk2) {
-        t = track->unk2 - 1;
+    if (t >= track->count2) {
+        t = track->count2 - 1;
     }
-    k = &track->unk4[t * 9];
+    k = &track->keys4[t * 9];
     if (a != NULL) {
         a->vx = k[0];
         a->vy = k[1];
@@ -54,10 +54,10 @@ static void fxm_keyGetVec3(Fx196Track *track, s32 t, SVECTOR *a, SVECTOR *b, SVE
 }
 
 static s32 fxm_keyGetValue(Fx196Track *track, s32 t) {
-    if (t >= track->unk2) {
-        t = track->unk2 - 1;
+    if (t >= track->count2) {
+        t = track->count2 - 1;
     }
-    return (track->unk4 + t)[0];
+    return (track->keys4 + t)[0];
 }
 
 static void fxm_drawScrollMoveX(s32 x, s32 dx, s32 dy, s32 w, s32 h, s32 sx, s32 sy) {
@@ -90,7 +90,7 @@ static void fxm_drawScrollMoveX(s32 x, s32 dx, s32 dy, s32 w, s32 h, s32 sx, s32
     }
 }
 
-s32 func_801E7A5C(s32 a) {
+s32 fxm_sinHalfNeg(s32 a) {
     s32 v = BTLFX_EXPORTS(fx_196_env)->math_sin(a);
 
     if (v < 0) {
@@ -99,7 +99,7 @@ s32 func_801E7A5C(s32 a) {
     return v;
 }
 
-void func_801E7AA0(SVECTOR *pos, SVECTOR *rot, VECTOR *scale, s32 col, s32 col2, s32 tpage, s32 clut, s32 u, s32 v,
+void fx_196_drawWaveMesh(SVECTOR *pos, SVECTOR *rot, VECTOR *scale, s32 col, s32 col2, s32 tpage, s32 clut, s32 u, s32 v,
                    s32 amp, s32 ph, s32 step, s32 r, s32 ang, s32 d) {
     Unk800F78A4 *env = fx_196_env;
     BtlfxExports *ex = BTLFX_EXPORTS(env);
@@ -187,8 +187,8 @@ void func_801E7AA0(SVECTOR *pos, SVECTOR *rot, VECTOR *scale, s32 col, s32 col2,
             x += (t * amp) >> 12;
             vs[2].vx = x;
             vs[3].vx = x + 0x41A;
-            vs[0].vz = vs[2].vz = (func_801E7A5C(ang + j * d) * r) >> 12;
-            vs[1].vz = vs[3].vz = (func_801E7A5C(ang + (j + 1) * d) * r) >> 12;
+            vs[0].vz = vs[2].vz = (fxm_sinHalfNeg(ang + j * d) * r) >> 12;
+            vs[1].vz = vs[3].vz = (fxm_sinHalfNeg(ang + (j + 1) * d) * r) >> 12;
             gte_ldv3c(vs);
             gte_rtpt();
             u0 = u + ((j & 3) << 5);
@@ -259,18 +259,18 @@ void func_801E7AA0(SVECTOR *pos, SVECTOR *rot, VECTOR *scale, s32 col, s32 col2,
                     gte_ldv0(vs);
                     gte_rtv0tr();
                     gte_stlvnl(&lv);
-                    D_801E916C[i].vx = lv.vx;
-                    D_801E916C[i].vy = lv.vy;
-                    D_801E916C[i].vz = lv.vz;
+                    fx_196_wavePoints[i].vx = lv.vx;
+                    fx_196_wavePoints[i].vy = lv.vy;
+                    fx_196_wavePoints[i].vz = lv.vz;
                     gte_SetRotMatrix(&m);
                     gte_SetTransMatrix(&m);
                     gte_ldv0(vs);
                     gte_rtps();
                     gte_stsxy(&sxy);
                     if ((u16)(sxy.vx + 0x20) > 0x180 || sxy.vy < -0x20 || sxy.vy > 0x110) {
-                        D_801E916C[i].pad = 0;
+                        fx_196_wavePoints[i].pad = 0;
                     } else {
-                        D_801E916C[i].pad = 1;
+                        fx_196_wavePoints[i].pad = 1;
                     }
                 }
                 gte_ldv0(&vs[3]);
@@ -296,17 +296,17 @@ void func_801E7AA0(SVECTOR *pos, SVECTOR *rot, VECTOR *scale, s32 col, s32 col2,
 }
 
 static s32 fxm_nextRingPoint(SVECTOR *v) {
-    s32 i = D_801E90F8;
+    s32 i = fx_196_nextWavePoint;
 
     v->pad = 1;
-    v->vx = D_801E916C[i].vx;
-    v->vy = D_801E916C[i].vy;
-    v->vz = D_801E916C[i].vz;
+    v->vx = fx_196_wavePoints[i].vx;
+    v->vy = fx_196_wavePoints[i].vy;
+    v->vz = fx_196_wavePoints[i].vz;
     i++;
     if (i >= 16) {
         i = 0;
     }
-    D_801E90F8 = i;
+    fx_196_nextWavePoint = i;
     return 0;
 }
 
@@ -325,11 +325,11 @@ s32 fx_196_op85(s32 mode, Fx196Work85 *work, Unk800F78A4 *env, Unk80100C78Entry 
         *arg4 = 0x4C;
     } else if (mode == 1) {
         fx_196_env = env;
-        work->unk0 = 0;
-        work->unk4 = 0;
+        work->state0 = 0;
+        work->frame4 = 0;
     } else {
         frame = entry->frame;
-        switch (work->unk0) {
+        switch (work->state0) {
         case 0: {
             s32 s;
             s32 r;
@@ -394,21 +394,21 @@ s32 fx_196_op85(s32 mode, Fx196Work85 *work, Unk800F78A4 *env, Unk80100C78Entry 
                 } else {
                     env->otZ = -0x80;
                 }
-                func_801E7AA0(&pos, &rot, &sc, b, a, 0x17, 0x3D04, 0, 0x80, 0x7D0, s * m, -0x140, r,
+                fx_196_drawWaveMesh(&pos, &rot, &sc, b, a, 0x17, 0x3D04, 0, 0x80, 0x7D0, s * m, -0x140, r,
                               ex->math_cos(s >> 2) + 0x400, 0x100);
                 env->otZ = 0x7C;
                 for (i = 0; i < 18; i++) {
-                    if (D_801E916C[i].pad != 0) {
+                    if (fx_196_wavePoints[i].pad != 0) {
                         b = (i & 1) << 12;
-                        ex->btlfx_drawAnimQuads((u8 *)ex->btlfx_getFileData(entry->file, 6), &D_801E916C[i], NULL,
+                        ex->btlfx_drawAnimQuads((u8 *)ex->btlfx_getFileData(entry->file, 6), &fx_196_wavePoints[i], NULL,
                                                 ((t * 3) >> 3) + 0x3800 + b, frame + i * 2, 1, 0x1000);
                     }
                 }
                 env->otZ = 0x37;
                 if (frame >= 0x1D) {
                     for (i = 0; i < 7; i++) {
-                        if (D_801E916C[i].pad != 0) {
-                            ex->btlfx_drawAnimQuads((u8 *)ex->btlfx_getFileData(entry->file, 6), &D_801E916C[i], NULL,
+                        if (fx_196_wavePoints[i].pad != 0) {
+                            ex->btlfx_drawAnimQuads((u8 *)ex->btlfx_getFileData(entry->file, 6), &fx_196_wavePoints[i], NULL,
                                                     0x2400, frame + i * 2 + 4, 1, 0x1000);
                         }
                     }
@@ -438,7 +438,7 @@ s32 fx_196_op85(s32 mode, Fx196Work85 *work, Unk800F78A4 *env, Unk80100C78Entry 
                 u = ((frame - 0x2B) << 10) / 38;
                 ex->math_cos(u);
                 ex->math_cos(u);
-                ex->btlfx_drawRippleGrid((s32)&env->ot[2], -0x20, 0x10, 3, 0x50, 1, D_801E90FC, 0x18, frame << 8, 0x186,
+                ex->btlfx_drawRippleGrid((s32)&env->ot[2], -0x20, 0x10, 3, 0x50, 1, fx_196_rippleColors, 0x18, frame << 8, 0x186,
                                   0x100);
                 if (frame == 0x2B) {
                     ex->btlfx_drawScreenTint((u32 *)&env->ot[2], 0, 0x20, 0xAA, 0xFF);
@@ -463,17 +463,17 @@ s32 fx_196_op85(s32 mode, Fx196Work85 *work, Unk800F78A4 *env, Unk80100C78Entry 
             if (frame >= 0x51) {
                 SVECTOR bp;
 
-                work->unk0 = 1;
-                work->unk18.vx = 0;
-                work->unk18.vy = -0x64;
-                work->unk18.vz = 0;
-                env->camera->points[3].vx = work->unk18.vx;
-                env->camera->points[3].vy = work->unk18.vy;
-                env->camera->points[3].vz = work->unk18.vz;
+                work->state0 = 1;
+                work->camPos18.vx = 0;
+                work->camPos18.vy = -0x64;
+                work->camPos18.vz = 0;
+                env->camera->points[3].vx = work->camPos18.vx;
+                env->camera->points[3].vy = work->camPos18.vy;
+                env->camera->points[3].vz = work->camPos18.vz;
                 ex->btlfx_getUnitBodyPos(0, 1, (s16 *)&bp);
                 if (bp.vy < -0x800) {
-                    work->unk18.vz = 0x300;
-                    work->unk18.vy -= 0x1F4;
+                    work->camPos18.vz = 0x300;
+                    work->camPos18.vy -= 0x1F4;
                 }
                 entry->frame = -1;
             }
@@ -488,10 +488,10 @@ s32 fx_196_op85(s32 mode, Fx196Work85 *work, Unk800F78A4 *env, Unk80100C78Entry 
 
             t = (frame << 12) / 24;
             s = t >> 2;
-            work->unk18.vy -= (ex->math_cos(s) * 0x18) >> 12;
-            env->camera->points[3].vx = work->unk18.vx;
-            env->camera->points[3].vy = work->unk18.vy;
-            env->camera->points[3].vz = work->unk18.vz;
+            work->camPos18.vy -= (ex->math_cos(s) * 0x18) >> 12;
+            env->camera->points[3].vx = work->camPos18.vx;
+            env->camera->points[3].vy = work->camPos18.vy;
+            env->camera->points[3].vz = work->camPos18.vz;
             pos1.vx = 0;
             pos1.vy = -0x200 - (ex->math_cos(s) >> 3);
             rot1.vx = 0x400;
@@ -501,7 +501,7 @@ s32 fx_196_op85(s32 mode, Fx196Work85 *work, Unk800F78A4 *env, Unk80100C78Entry 
             sc1.vx = sc1.vy = 0x1000;
             sc1.vz = 0;
             c = ex->math_cos(s) >> 5;
-            func_801E7AA0(&pos1, &rot1, &sc1, c, c, 0x17, 0x3D04, 0, 0x80, (ex->math_cos(s) >> 3) + 0x300, s, 0x100, 0, 0,
+            fx_196_drawWaveMesh(&pos1, &rot1, &sc1, c, c, 0x17, 0x3D04, 0, 0x80, (ex->math_cos(s) >> 3) + 0x300, s, 0x100, 0, 0,
                           0);
             fxm_drawScrollMoveX(frame * 3, 0x1C0, 0x180, 0x20, 0x80, 0x1E0, 0x180);
             if (frame >= 0x18) {
@@ -511,7 +511,7 @@ s32 fx_196_op85(s32 mode, Fx196Work85 *work, Unk800F78A4 *env, Unk80100C78Entry 
             break;
         }
         }
-        work->unk4++;
+        work->frame4++;
     }
     return 0;
 }
@@ -525,13 +525,13 @@ s32 fx_196_op86(s32 mode, Fx196Work86 *work, Unk800F78A4 *env, Unk80100C78Entry 
         *arg4 = 0x44;
     } else if (mode == 1) {
         fx_196_env = env;
-        work->unk40 = env->targets->targetCount;
-        for (i = 0; i < work->unk40; i++) {
+        work->count40 = env->targets->targetCount;
+        for (i = 0; i < work->count40; i++) {
             if (ex->btlfx_isEnemyUnit(i) != 0) {
-                ex->btlfx_getUnitHomePos(i, (s16 *)&work->unk0[i]);
-                work->unk0[i].vz -= ex->btlfx_getUnitRadius(i);
-                work->unk0[i].vy -= 0x200;
-                p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 8), (s32)&work->unk0[i]);
+                ex->btlfx_getUnitHomePos(i, (s16 *)&work->pos0[i]);
+                work->pos0[i].vz -= ex->btlfx_getUnitRadius(i);
+                work->pos0[i].vy -= 0x200;
+                p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 8), (s32)&work->pos0[i]);
                 if (p != NULL) {
                     p->otZ = ex->btlfx_addRadiusSixth(i, 0x200);
                 }
@@ -559,15 +559,15 @@ s32 fx_196_op87(s32 mode, s32 *work, Unk800F78A4 *env, Unk80100C78Entry *entry, 
         *work = n;
     } else {
         frame = entry->frame;
-        fxm_keyGetVec((Fx196Track *)ex->btlfx_getFileData(entry->file, D_801E910C[*work].unk2), frame, &v);
+        fxm_keyGetVec((Fx196Track *)ex->btlfx_getFileData(entry->file, fx_196_camPaths[*work].fileId2), frame, &v);
         env->camera->points[1].vx = v.vx;
         env->camera->points[1].vy = v.vy;
         env->camera->points[1].vz = v.vz;
-        fxm_keyGetVec((Fx196Track *)ex->btlfx_getFileData(entry->file, D_801E910C[*work].unk0), frame, &v);
+        fxm_keyGetVec((Fx196Track *)ex->btlfx_getFileData(entry->file, fx_196_camPaths[*work].fileId0), frame, &v);
         env->camera->points[0].vx = v.vx;
         env->camera->points[0].vy = v.vy;
         env->camera->points[0].vz = v.vz;
-        if (frame >= D_801E910C[*work].unk4) {
+        if (frame >= fx_196_camPaths[*work].duration4) {
             return 1;
         }
     }

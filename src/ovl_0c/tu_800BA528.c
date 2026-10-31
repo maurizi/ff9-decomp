@@ -997,7 +997,7 @@ void wm_blockListInit(void) {
     g_worldBlockNodes[0].pos = &g_worldBlockPositions[0];
     g_worldBlockNodes[0].next = &g_worldBlockNodes[1];
     g_worldBlockNodes[0].block = NULL;
-    g_worldBlockNodes[0].state = 0;
+    g_worldBlockNodes[0].state = WM_BLOCK_NONE;
     g_worldBlockNodes[0].cell = -1;
     g_worldBlockNodes[0].slot = 0;
     for (i = 1; i < 39; i++) {
@@ -1005,7 +1005,7 @@ void wm_blockListInit(void) {
         g_worldBlockNodes[i].next = &g_worldBlockNodes[i + 1];
         g_worldBlockNodes[i].block = NULL;
         g_worldBlockNodes[i].pos = NULL;
-        g_worldBlockNodes[i].state = 0;
+        g_worldBlockNodes[i].state = WM_BLOCK_NONE;
         g_worldBlockNodes[i].cell = -1;
         g_worldBlockNodes[i].slot = -1;
     }
@@ -1018,7 +1018,7 @@ void wm_blockListInit(void) {
     g_worldBlockNodes[i].next = &g_worldBlockTail;
     g_worldBlockNodes[i].block = NULL;
     g_worldBlockNodes[i].pos = NULL;
-    g_worldBlockNodes[i].state = 0;
+    g_worldBlockNodes[i].state = WM_BLOCK_NONE;
     g_worldBlockNodes[i].cell = -1;
     g_worldBlockNodes[i].slot = -1;
     g_worldBlockHead.prev = NULL;
@@ -1056,7 +1056,7 @@ void wm_drawBlocks(void) {
         wm_worldToView((VECTOR *)pos, &a, &b, 0);
         far = b.vz < -10000 || b.vz > 11000;
         k = n->cell % g_worldCellsW + n->cell / g_worldCellsW;
-        if (n->state == 2) {
+        if (n->state == WM_BLOCK_SET) {
             wm_drawBlock((u8 *)n->block, (n->cell % g_worldCellsW + n->cell / g_worldCellsW) % 2, far);
             if (RotTransPers4(&quad.v[0], &quad.v[1], &quad.v[2], &quad.v[3], &sxy[0], &sxy[1], &sxy[2], &sxy[3], &p, &flag) < 7000
                 && g_worldPlayer->pos.vy > -7000) {
@@ -1266,7 +1266,7 @@ s32 wm_blockListRequest(s16 arg0) {
                 g_worldBlockHead.next = n;
             } else {
                 n->cell = arg0;
-                n->state = 0;
+                n->state = WM_BLOCK_NONE;
             }
             break;
         }
@@ -1300,12 +1300,12 @@ void wm_blockListResolve(void) {
             return;
         }
         wm_cellToChunk(n->cell, &id);
-        n->state = 0;
+        n->state = WM_BLOCK_NONE;
         p = g_worldChunkHead.next;
         for (j = 0; j < 16; j++, p = p->next) {
             if (id == p->chunkId) {
                 if (p->state == WM_CHUNK_READY) {
-                    n->state = 2;
+                    n->state = WM_BLOCK_SET;
                     wm_cellToPos(n->cell, &n->pos->pos[0], &n->pos->pos[2]);
                     n->pos->pos[1] = 0;
                     m = n->cell % 2;
@@ -1319,7 +1319,7 @@ void wm_blockListResolve(void) {
                     }
                     break;
                 }
-                n->state = 2;
+                n->state = WM_BLOCK_SET;
                 n->pos->pos[1] = 0;
                 m = n->cell % 2;
                 k = m + (n->cell / g_worldCellsW) % 2 * 2;

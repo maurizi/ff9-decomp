@@ -1,20 +1,22 @@
 #ifndef FX_0CC_H
 #define FX_0CC_H
 
-/* Effect module fx_0cc (dir 13 file 0xCC). */
+/* Effect module fx_0cc (dir 13 file 0xCC): enemy Meteorite (Thorn/Zorn). Falling models (pool items) that burst on
+ * the ground. Evidence: [data] the party ability / item tables and enemy sequences that play this file id
+ * (tools/effect_labels.py; docs/runtime-findings.md, "Round 31 runtime pass"). */
 #include "btlfx_mod.h"
 
 typedef struct {
-    s32 unk0; /* state */
+    s32 state0; /* state */
     SVECTOR pos4; /* position */
     Pool6CEntry *emitC;
-    SVECTOR unk10; /* start position */
+    SVECTOR pos10; /* start position */
 } Fx0ccPart; /* pool entry data */
 
 typedef struct {
-    s32 unk0; /* state */
-    SVECTOR unk4; /* position: env->targets->centerX, 0, centerZ */
-    s32 unkC; /* particles spawned */
+    s32 state0; /* state */
+    SVECTOR pos4; /* position: env->targets->centerX, 0, centerZ */
+    s32 spawnCountC; /* particles spawned */
     s32 model10; /* model */
 } Fx0ccWork;
 
